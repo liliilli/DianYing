@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Source\Entry\entry.cc" />
+    <ClCompile Include="Source\precompiled.cc" />
+    <ClCompile Include="Source\Management\TimeManager.cc" />
+    <ClCompile Include="Source\Management\SettingManager.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Include\precompiled.h" />
+    <ClInclude Include="Include\Dy\Helper\macroes.h" />
+    <ClInclude Include="Include\Dy\Helper\disable_warnings.h" />
+    <ClInclude Include="Include\Dy\Helper\aliases.h" />
+    <ClInclude Include="Include\Dy\Helper\enum_flags.h" />
+    <ClInclude Include="Include\Dy\Management\TimeManager.h" />
+    <ClInclude Include="Include\Dy\Management\SettingManager.h" />
+    <ClInclude Include="Include\Dy\Management\Interface\ISingletonCrtp.h" />
+  </ItemGroup>
+</Project>
