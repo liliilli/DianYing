@@ -12,6 +12,11 @@
     <ClCompile Include="Source\Helper\Type\Vector2.cc" />
     <ClCompile Include="Source\Helper\Type\Vector3.cc" />
     <ClCompile Include="Source\Helper\Type\Vector4.cc" />
+    <ClCompile Include="Libraries\imgui\imgui\imgui.cpp" />
+    <ClCompile Include="Libraries\imgui\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="Libraries\imgui\imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="Libraries\imgui\imgui\imgui_draw.cpp" />
+    <ClCompile Include="Libraries\imgui\imgui\imgui_demo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -32,6 +37,10 @@
     <ClInclude Include="Include\Dy\Helper\Type\Color32.h" />
     <ClInclude Include="Include\Dy\Helper\Math\Random.h" />
     <ClInclude Include="Include\Dy\Helper\Math\Math.h" />
+    <ClInclude Include="Libraries\imgui\imgui\imgui.h" />
+    <ClInclude Include="Libraries\imgui\imgui\imconfig.h" />
+    <ClInclude Include="Libraries\imgui\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="Libraries\imgui\imgui\imgui_impl_glfw.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

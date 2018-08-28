@@ -31,27 +31,28 @@
 /// Dependent Header files
 
 #include <vulkan/vulkan.h>
+
 #if !defined(NDEBUG)
-#define GLEW_STATIC
+  #define GLEW_STATIC
 #endif
 #include <GL/glew.h>
 
 #if defined(_WIN32)
-#include <DirectXMath.h>
-#include <d3d11.h>
-#include <d3d12.h>
-#include <vulkan/vulkan_win32.h>
+  #include <DirectXMath.h>
+  #include <d3d11.h>
+  #include <d3d12.h>
+  #include <vulkan/vulkan_win32.h>
 
-#include <Windows.h>
-#include <GLFW/glfw3.h>
+  #include <Windows.h>
+  #include <GLFW/glfw3.h>
 
-#if !defined(NDEBUG)
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
-#endif
+  #if !defined(NDEBUG)
+    #define _CRTDBG_MAP_ALLOC
+    #include <stdlib.h>
+    #include <crtdbg.h>
+  #endif
 
-#pragma comment(lib, "d3d11.lib")
+  #pragma comment(lib, "d3d11.lib")
 #endif
 
 

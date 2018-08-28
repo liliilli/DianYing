@@ -23,9 +23,13 @@
 #endif
 
 #include <d3dx11effect.h>
+#include <imgui/imgui.h>
+#include <imgui/imgui_impl_glfw.h>
+#include <imgui/imgui_impl_opengl3.h>
 
 #include <Dy/Management/TimeManager.h>
 #include <Dy/Management/SettingManager.h>
+#include <Dy/Helper/Type/Color.h>
 
 #define MDY_RESOLUTION_WIDTH 1280
 #define MDY_RESOLUTION_HEIGHT 720
@@ -120,22 +124,70 @@ std::optional<std::vector<char>> DyReadBinaryFile(const std::string& fileName) {
 ID3D11Device* d11Device = nullptr;
 ID3D11DeviceContext* d11DeviceContext = nullptr;
 
+bool gImguiShowDemoWindow = true;
+bool gImguiShowAnotherWindow = false;
+
+dy::DVector3 gColor {1.f, 0.f, 0.5f};
+
 void GlRenderFrame()
 {
-  glClearColor(1.f, 0.f, 1.f, 1.f);
+  glClearColor(gColor.X, gColor.Y, gColor.Z, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+  ImGui_ImplOpenGL3_NewFrame();
+  ImGui_ImplGlfw_NewFrame();
+  ImGui::NewFrame();
 
+  if (gImguiShowDemoWindow)
+  {
+    ImGui::ShowDemoWindow(&gImguiShowDemoWindow);
+  }
+
+  {
+    static float f = 0.0f;
+    static int32_t counter = 0;
+
+    ImGui::Begin("Hello, world!");
+    ImGui::Text("This is some useful text.");
+    ImGui::Checkbox("Demo Window", &gImguiShowDemoWindow);
+    ImGui::Checkbox("Another Window", &gImguiShowAnotherWindow);
+
+    ImGui::SliderFloat("Float", &f, 0.0f, 1.0f);
+    ImGui::ColorEdit3("Clear color", gColor.Data().data());
+
+    if (ImGui::Button("Button"))
+    {
+      ++counter;
+    }
+    ImGui::SameLine();
+    ImGui::Text("Counter = %d", counter);
+
+    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+    ImGui::End();
+
+    if (gImguiShowAnotherWindow)
+    {
+      ImGui::Begin("Another Window", &gImguiShowAnotherWindow);
+      ImGui::Text("Hello from another window!");
+      if (ImGui::Button("Close me"))
+      {
+        gImguiShowAnotherWindow = false;
+      }
+      ImGui::End();
+    }
+  }
+
+  ImGui::Render();
+  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 void GlRenderLoop()
 {
   while (!glfwWindowShouldClose(gGlWindow))
   {
-    GlRenderFrame();
-
-    glfwSwapBuffers(gGlWindow);
     glfwPollEvents();
+    GlRenderFrame();
+    glfwSwapBuffers(gGlWindow);
   }
 #ifdef false
 #if defined(_WIN32)
@@ -358,7 +410,20 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLin
       glDepthFunc(GL_LESS);
       glEnable(GL_DEPTH_TEST);
 
+      // IMGUI DEMO
+      IMGUI_CHECKVERSION();
+      ImGui::CreateContext();
+      ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+      ImGui_ImplGlfw_InitForOpenGL(gGlWindow, true);
+      ImGui_ImplOpenGL3_Init("#version 430");
+      ImGui::StyleColorsDark();
+
       GlRenderLoop();
+
+      ImGui_ImplOpenGL3_Shutdown();
+      ImGui_ImplGlfw_Shutdown();
+      ImGui::DestroyContext();
 
       glfwDestroyWindow(gGlWindow);
       glfwTerminate();
