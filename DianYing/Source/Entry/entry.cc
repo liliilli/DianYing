@@ -27,9 +27,10 @@
 #include <imgui/imgui_impl_glfw.h>
 #include <imgui/imgui_impl_opengl3.h>
 
+#include <Dy/Core/Component/Shader.h>
+#include <Dy/Helper/Type/Color.h>
 #include <Dy/Management/TimeManager.h>
 #include <Dy/Management/SettingManager.h>
-#include <Dy/Helper/Type/Color.h>
 
 #define MDY_RESOLUTION_WIDTH 1280
 #define MDY_RESOLUTION_HEIGHT 720
@@ -128,6 +129,7 @@ bool gImguiShowDemoWindow = true;
 bool gImguiShowAnotherWindow = false;
 
 dy::DVector3 gColor {1.f, 0.f, 0.5f};
+dy::CDyShaderComponent gShader;
 
 void GlRenderFrame()
 {
@@ -179,6 +181,10 @@ void GlRenderFrame()
 
   ImGui::Render();
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+  gShader.BindShader();
+  gShader.TempRender();
+  gShader.UnbindShader();
 }
 
 void GlRenderLoop()
@@ -400,9 +406,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLin
       }
 
       glfwMakeContextCurrent(gGlWindow);
+      gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+
       glfwSetInputMode(gGlWindow, GLFW_STICKY_KEYS, GL_FALSE);
       glfwSetFramebufferSizeCallback(gGlWindow, &OnCallbackFrameBufferSize);
-      glewInit();
 
       glViewport(0, 0, MDY_RESOLUTION_WIDTH, MDY_RESOLUTION_HEIGHT);
       glClearColor(0, 0, 0, 0);
@@ -418,6 +425,22 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLin
       ImGui_ImplGlfw_InitForOpenGL(gGlWindow, true);
       ImGui_ImplOpenGL3_Init("#version 430");
       ImGui::StyleColorsDark();
+
+      // Shader DEMO
+      dy::PDyShaderConstructionDescriptor shaderDesc;
+      {
+        dy::PDyShaderFragmentInformation fragmentInfo;
+        fragmentInfo.mShaderType = dy::EDyShaderFragmentType::Vertex;
+        fragmentInfo.mShaderPath = "./glShader.vert";
+        shaderDesc.mShaderFragments.emplace_back(fragmentInfo);
+      }
+      {
+        dy::PDyShaderFragmentInformation fragmentInfo;
+        fragmentInfo.mShaderType = dy::EDyShaderFragmentType::Pixel;
+        fragmentInfo.mShaderPath = "./glShader.frag";
+        shaderDesc.mShaderFragments.emplace_back(fragmentInfo);
+      }
+      MDY_CALL_ASSERT_SUCCESS(gShader.pInitializeShaderProgram(shaderDesc));
 
       GlRenderLoop();
 

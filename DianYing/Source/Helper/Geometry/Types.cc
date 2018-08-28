@@ -1,5 +1,4 @@
-#ifndef GUARD_DIANYING_HELPER_DISABLE_WARNING_H
-#define GUARD_DIANYING_HELPER_DISABLE_WARNING_H
+#include <precompiled.h>
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,10 +12,7 @@
 /// SOFTWARE.
 ///
 
-#if defined(_WIN32)
-#pragma warning(disable:4100)
-#pragma warning(disable:4127)
-#pragma warning(disable:4201)
-#endif
+namespace dy
+{
 
-#endif ///  GUARD_DIANYING_HELPER_DISABLE_WARNING_H
+} /// ::dy namespace

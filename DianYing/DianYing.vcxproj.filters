@@ -17,6 +17,10 @@
     <ClCompile Include="Libraries\imgui\imgui\imgui_impl_glfw.cpp" />
     <ClCompile Include="Libraries\imgui\imgui\imgui_draw.cpp" />
     <ClCompile Include="Libraries\imgui\imgui\imgui_demo.cpp" />
+    <ClCompile Include="Libraries\glad\src\glad.c" />
+    <ClCompile Include="Source\Helper\Geometry\Types.cc" />
+    <ClCompile Include="Source\Core\Component\Shader.cc" />
+    <ClCompile Include="Source\Helper\Geometry\Mesh.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -41,6 +45,17 @@
     <ClInclude Include="Libraries\imgui\imgui\imconfig.h" />
     <ClInclude Include="Libraries\imgui\imgui\imgui_impl_opengl3.h" />
     <ClInclude Include="Libraries\imgui\imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="Libraries\glad\include\glad\glad.h" />
+    <ClInclude Include="Include\Dy\Helper\Geometry\Types.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Shader.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\Matrix4.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\Matrix3.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\Matrix2.h" />
+    <ClInclude Include="Include\Dy\Helper\IoHelper.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Material.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Model.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Texture.h" />
+    <ClInclude Include="Include\Dy\Helper\Geometry\Mesh.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />
