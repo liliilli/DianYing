@@ -107,6 +107,51 @@ struct DVector3 final {
     return aiVector3D{X, Y, Z};
   }
 
+#if defined(_WIN32)
+  explicit DVector3(const DirectX::XMFLOAT2& value) noexcept : X{value.x}, Y{value.y}, Z{0.0f} {}
+  DVector3(const DirectX::XMFLOAT3& value) noexcept : X{value.x}, Y{value.y}, Z{value.z} {}
+  DVector3(DirectX::FXMVECTOR value) noexcept
+  {
+    DirectX::XMFLOAT3 xmVector = {};
+    DirectX::XMStoreFloat3(&xmVector, value);
+    this->X = xmVector.x;
+    this->Y = xmVector.y;
+    this->Z = xmVector.z;
+  }
+
+  DVector3& operator=(const DirectX::XMFLOAT2& value) noexcept
+  {
+    X = value.x;
+    Y = value.y;
+    Z = 0.0f;
+    return *this;
+  }
+
+  DVector3& operator=(const DirectX::XMFLOAT3& value) noexcept
+  {
+    X = value.x;
+    Y = value.y;
+    Z = value.z;
+    return *this;
+  }
+
+  explicit operator DirectX::XMFLOAT2() const noexcept
+  {
+    return DirectX::XMFLOAT2{X, Y};
+  }
+
+  operator DirectX::XMFLOAT3() const noexcept
+  {
+    return DirectX::XMFLOAT3{X, Y, Z};
+  }
+
+  operator DirectX::XMVECTOR() const noexcept
+  {
+    auto xmVector = static_cast<DirectX::XMFLOAT3>(*this);
+    return XMLoadFloat3(&xmVector);
+  }
+#endif /// End defined(_WIN32)
+
   //!
   //! Methods
   //!

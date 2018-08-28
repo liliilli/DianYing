@@ -95,6 +95,72 @@ struct DVector4 final {
     return *this;
   }
 
+#if defined(_WIN32)
+  explicit DVector4(const DirectX::XMFLOAT2& value) noexcept :
+      X{value.x}, Y{value.y}, Z{0.0f}, W{1.0f} {}
+  explicit DVector4(const DirectX::XMFLOAT3& value) noexcept :
+      X{value.x}, Y{value.y}, Z{value.z}, W{1.0f} {}
+  DVector4(const DirectX::XMFLOAT4& value) noexcept :
+      X{value.x}, Y{value.y}, Z{value.z}, W{value.w} {}
+  DVector4(DirectX::FXMVECTOR value) noexcept
+  {
+    DirectX::XMFLOAT4 xmVector = {};
+    DirectX::XMStoreFloat4(&xmVector, value);
+    this->X = xmVector.x;
+    this->Y = xmVector.y;
+    this->Z = xmVector.z;
+    this->W = xmVector.w;
+  }
+
+  DVector4& operator=(const DirectX::XMFLOAT2& value) noexcept
+  {
+    X = value.x;
+    Y = value.y;
+    Z = 0.0f;
+    W = 1.0f;
+    return *this;
+  }
+
+  DVector4& operator=(const DirectX::XMFLOAT3& value) noexcept
+  {
+    X = value.x;
+    Y = value.y;
+    Z = value.z;
+    W = 1.0f;
+    return *this;
+  }
+
+  DVector4& operator=(const DirectX::XMFLOAT4& value) noexcept
+  {
+    X = value.x;
+    Y = value.y;
+    Z = value.z;
+    W = value.w;
+    return *this;
+  }
+
+  explicit operator DirectX::XMFLOAT2() const noexcept
+  {
+    return DirectX::XMFLOAT2{X, Y};
+  }
+
+  explicit operator DirectX::XMFLOAT3() const noexcept
+  {
+    return DirectX::XMFLOAT3{X, Y, Z};
+  }
+
+  operator DirectX::XMFLOAT4() const noexcept
+  {
+    return DirectX::XMFLOAT4{X, Y, Z, W};
+  }
+
+  operator DirectX::XMVECTOR() const noexcept
+  {
+    auto xmVector4 = static_cast<DirectX::XMFLOAT4>(*this);
+    return XMLoadFloat4(&xmVector4);
+  }
+#endif /// End defined(_WIN32)
+
   //!
   //! Conversion operators for dependencies.
   //!

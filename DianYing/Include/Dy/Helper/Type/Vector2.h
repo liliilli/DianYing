@@ -27,6 +27,10 @@
 #include <Dy/Helper/macroes.h>
 #include <Dy/Helper/Math/Math.h>
 
+#if defined(_WIN32)
+#include <DirectXMath.h>
+#endif
+
 namespace dy {
 ///
 /// @struct DVector2
@@ -45,16 +49,18 @@ struct DVector2 final {
   //! Constructor and assign operator for dependencies.
   //!
 
-  DVector2(const aiVector2D& value) noexcept : X{value.x}, Y{value.y} {};
-  DVector2(const glm::vec2& value) noexcept : X{value.x}, Y{value.y} {};
+  DVector2(const aiVector2D& value) noexcept : X{value.x}, Y{value.y} {}
+  DVector2(const glm::vec2& value) noexcept : X{value.x}, Y{value.y} {}
 
-  DVector2& operator=(const aiVector2D& value) noexcept {
+  DVector2& operator=(const aiVector2D& value) noexcept
+  {
     X = value.x;
     Y = value.y;
     return *this;
   }
 
-  DVector2& operator=(const glm::vec2& value) noexcept {
+  DVector2& operator=(const glm::vec2& value) noexcept
+  {
     X = value.x;
     Y = value.y;
     return *this;
@@ -64,13 +70,44 @@ struct DVector2 final {
   //! Conversion operators for dependencies.
   //!
 
-  operator aiVector2D() const noexcept {
+  operator aiVector2D() const noexcept
+  {
     return aiVector2D{X, Y};
   }
 
-  operator glm::vec2() const noexcept {
+  operator glm::vec2() const noexcept
+  {
     return glm::vec2{X, Y};
   }
+
+#if defined(_WIN32)
+  DVector2(const DirectX::XMFLOAT2& value) noexcept : X{value.x}, Y{value.y} {}
+  DVector2(DirectX::FXMVECTOR value) noexcept
+  {
+    DirectX::XMFLOAT2 xmVector = {};
+    DirectX::XMStoreFloat2(&xmVector, value);
+    this->X = xmVector.x;
+    this->Y = xmVector.y;
+  }
+
+  DVector2& operator=(const DirectX::XMFLOAT2& value) noexcept
+  {
+    X = value.x;
+    Y = value.y;
+    return *this;
+  }
+
+  operator DirectX::XMFLOAT2() const noexcept
+  {
+    return DirectX::XMFLOAT2{X, Y};
+  }
+
+  operator DirectX::XMVECTOR() const noexcept
+  {
+    auto xmVector = static_cast<DirectX::XMFLOAT2>(*this);
+    return XMLoadFloat2(&xmVector);
+  }
+#endif /// End defined(_WIN32)
 
   //!
   //! Methods
