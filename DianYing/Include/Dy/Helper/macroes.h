@@ -25,14 +25,12 @@
 ///
 /// @macro
 ///
-#define MDY_CASE_RETURN(__Code__) \
-  case __Code__: return MDY_TO_STRING(__Code__)
+#define MDY_CASE_RETURN(__Code__) case __Code__: return MDY_TO_STRING(__Code__)
 
 ///
 /// @macro
 ///
-#define MDY_BITMASK_FLAG_TRUE(__MATarget__, __MAFlags__) \
-  __MATarget__ & __MAFlags__
+#define MDY_BITMASK_FLAG_TRUE(__MATarget__, __MAFlags__) __MATarget__ & __MAFlags__
 
 ///
 /// @macro
@@ -141,5 +139,19 @@ private:                                                  \
     [[nodiscard]] EDySuccess pfInitialize();              \
     [[nodiscard]] EDySuccess pfRelease();                 \
     friend class ISingleton<__MADerivedSingletonType__>
+
+//!
+//! Function type macros.
+//!
+
+#define VARARGS     __cdecl											/* Functions with variable arguments */
+#ifndef CDECL
+#define CDECL	    __cdecl											/* Standard C function */
+#endif
+#define STDCALL		__stdcall										/* Standard calling convention */
+#define FORCEINLINE __forceinline									/* Force code to be inline */
+#define FORCENOINLINE __declspec(noinline)							/* Force code to NOT be inline */
+#define FUNCTION_NO_RETURN_START __declspec(noreturn)				/* Indicate that the function never returns. */
+#define FUNCTION_NON_NULL_RETURN_START _Ret_notnull_				/* Indicate that the function never returns nullptr. */
 
 #endif /// GUARD_DY_HELPER_MACROES_H

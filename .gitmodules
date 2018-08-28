@@ -1,3 +1,6 @@
 [submodule "DianYing/Libraries/FX11"]
 	path = DianYing/Libraries/FX11
 	url = https://github.com/Microsoft/FX11
+[submodule "DianYing/Libraries/spdlog"]
+	path = DianYing/Libraries/spdlog
+	url = https://github.com/gabime/spdlog

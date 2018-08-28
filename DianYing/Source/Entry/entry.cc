@@ -22,6 +22,8 @@
 #include <Dy/VkInterface.h>
 #endif
 
+#include <d3dx11effect.h>
+
 #include <Dy/Management/TimeManager.h>
 #include <Dy/Management/SettingManager.h>
 
@@ -35,16 +37,13 @@
 #undef min
 
 //!
-//! Forward declaration
+//! Forward declarations
 //!
-
-template <typename TType> using TOptional = std::optional<TType>;
-template <typename TType> using TVector   = std::vector<TType>;
 
 bool bDyWindowCloseSign = false;
 bool bIsEnabledFeatureMsaa4x = true;
 
-TOptional<std::vector<char>> DyReadBinaryFile(const std::string& fileName);
+std::optional<std::vector<char>> DyReadBinaryFile(const std::string& fileName);
 
 //!
 //! DirectX11 API
@@ -52,21 +51,53 @@ TOptional<std::vector<char>> DyReadBinaryFile(const std::string& fileName);
 
 EDySuccess                DyD11InitializeDirect3D();
 void                      DyD11RenderLoop();
+void                      DyD11RenderFrame();
+
+/// @todo Chapter 6
+struct DVertex1
+{
+  DirectX::XMFLOAT3 position;
+  DirectX::XMFLOAT4 color;
+};
+
+struct DVectex2
+{
+  DirectX::XMFLOAT3 position;
+  DirectX::XMFLOAT2 normal;
+  DirectX::XMFLOAT2 texCoord0;
+  DirectX::XMFLOAT2 texCoord1;
+};
+
+void                      DyD11BindVertexLayout();
+
+ID3D11Buffer* sDyVertexBuffer = nullptr;
+ID3D11Buffer* sDyIndexBuffer  = nullptr;
+ID3D11RenderTargetView* sDyRenderTargetView = nullptr;
+ID3D11DepthStencilView* sDyDepthStencilView = nullptr;
+ID3D11InputLayout*      sDyInputLayout = nullptr;
+IDXGISwapChain*         sDySwapChain = nullptr;
+
+//!
+//! DirectX12 API
+//!
+
+void                      DyD12RenderLoop();
+void                      DyD12RenderFrame();
 
 //!
 //! OpenGL 4 API
 //!
 
 EDySuccess                DyGlCreateContentWgl();
+EDySuccess                DyGlRenderLoop();
+EDySuccess                DyGlRenderFrame();
 
 //!
 //! Global DianYing API
 //!
 
 #if defined(_WIN32)
-
 HWND windowHandle = nullptr;
-
 #endif
 
 //!
@@ -110,7 +141,8 @@ void DyD11ReleaseComInstance(TType*& instance) {
 ///
 /// @brief
 ///
-[[nodiscard]] EDySuccess DyD11InitializeDirect3D() {
+[[nodiscard]] EDySuccess DyD11InitializeDirect3D()
+{
   UINT createDeviceFlags = 0;
 #if !defined(NDEBUG)
   createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
@@ -130,7 +162,8 @@ void DyD11ReleaseComInstance(TType*& instance) {
       &d11Device,
       &resultFeatureLevel,
       &d11DeviceContext);
-  if ( result != S_OK ) {
+  if ( result != S_OK )
+  {
     MessageBox(nullptr, L"D3D11CreateDevice Failed.", nullptr, 0);
     return DY_FAILURE;
   }
@@ -155,11 +188,13 @@ void DyD11ReleaseComInstance(TType*& instance) {
   sd.BufferDesc.Format                = DXGI_FORMAT_R8G8B8A8_UNORM;
   sd.BufferDesc.ScanlineOrdering      = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 
-  if (bIsEnabledFeatureMsaa4x) {
+  if (bIsEnabledFeatureMsaa4x)
+  {
     sd.SampleDesc.Count   = 4;
     sd.SampleDesc.Quality = msaa4xQuality - 1;
   }
-  else {
+  else
+  {
     sd.SampleDesc.Count   = 1;
     sd.SampleDesc.Quality = 0;
   }
@@ -180,6 +215,7 @@ void DyD11ReleaseComInstance(TType*& instance) {
 
   IDXGISwapChain* dxgiSwapChain = nullptr;
   HR(dxgiFactory->CreateSwapChain(d11Device, &sd, &dxgiSwapChain));
+  sDySwapChain = dxgiSwapChain;
 
   DyD11ReleaseComInstance(dxgiFactory);
   DyD11ReleaseComInstance(dxgiAdapter);
@@ -190,6 +226,8 @@ void DyD11ReleaseComInstance(TType*& instance) {
   ID3D11Texture2D*        backBuffer        = nullptr;
   dxgiSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer));
   d11Device->CreateRenderTargetView(backBuffer, nullptr, &renderTargetView);
+  sDyRenderTargetView = renderTargetView;
+
   DyD11ReleaseComInstance(backBuffer);
 
   // Create Depth/Stencil Buffer.
@@ -200,11 +238,13 @@ void DyD11ReleaseComInstance(TType*& instance) {
   depthStencilDesc.MipLevels      = 1;
   depthStencilDesc.ArraySize      = 1;
   depthStencilDesc.Format         = DXGI_FORMAT_D24_UNORM_S8_UINT;
-  if (bIsEnabledFeatureMsaa4x) {
+  if (bIsEnabledFeatureMsaa4x)
+  {
     depthStencilDesc.SampleDesc.Count    = 4;
     depthStencilDesc.SampleDesc.Quality  = msaa4xQuality - 1;
   }
-  else {
+  else
+  {
     depthStencilDesc.SampleDesc.Count    = 1;
     depthStencilDesc.SampleDesc.Quality  = 0;
   }
@@ -218,6 +258,7 @@ void DyD11ReleaseComInstance(TType*& instance) {
   ID3D11DepthStencilView* depthStencilView;
   HR(d11Device->CreateTexture2D(&depthStencilDesc, nullptr, &depthStencilBuffer));
   HR(d11Device->CreateDepthStencilView(depthStencilBuffer, nullptr, &depthStencilView));
+  sDyDepthStencilView = depthStencilView;
 
   // Bind the RTV and DSV to the pipeline.
   d11DeviceContext->OMSetRenderTargets(1, &renderTargetView, depthStencilView);
@@ -236,9 +277,99 @@ void DyD11ReleaseComInstance(TType*& instance) {
   return DY_SUCCESS;
 }
 
-//!
-//! Platform dependent codes
-//!
+///
+/// @brief
+///
+void DyD11CreateEffectFx()
+{
+
+}
+
+///
+/// @brief
+///
+void DyD11BindVertexLayout()
+{
+  std::array<D3D11_INPUT_ELEMENT_DESC, 2> inputElementDescs =
+  {
+    D3D11_INPUT_ELEMENT_DESC\
+    {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0,},
+    {"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0,},
+  };
+
+  assert(d11Device);
+  //ID3DX11Effect* fx = nullptr;
+  ID3DX11EffectTechnique* effectTechnique = nullptr;
+  ID3D11InputLayout* inputLayout = nullptr;
+
+  assert(effectTechnique);
+  D3DX11_PASS_DESC passDesc = {};
+  effectTechnique->GetPassByIndex(0)->GetDesc(&passDesc);
+  HR(d11Device->CreateInputLayout(
+      inputElementDescs.data(),
+      2,
+      passDesc.pIAInputSignature,
+      passDesc.IAInputSignatureSize,
+      &inputLayout));
+  sDyInputLayout = inputLayout;
+}
+
+void DyD11CreateVertexBuffer()
+{
+  using DirectX::XMFLOAT3;
+  using DirectX::XMFLOAT4;
+  std::array<DVertex1, 8> vertices =
+  {
+    DVertex1\
+    { XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },
+    { XMFLOAT3(-1.0f, +1.0f, -1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f) },
+    { XMFLOAT3(+1.0f, +1.0f, -1.0f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f) },
+    { XMFLOAT3(+1.0f, -1.0f, -1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },
+    { XMFLOAT3(-1.0f, -1.0f, +1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) },
+    { XMFLOAT3(-1.0f, +1.0f, +1.0f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f) },
+    { XMFLOAT3(+1.0f, +1.0f, +1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f)},
+    { XMFLOAT3(+1.0f, -1.0f, +1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f)}
+  };
+
+  D3D11_BUFFER_DESC vertexBufferDesc = {};
+  vertexBufferDesc.Usage      = D3D11_USAGE_IMMUTABLE;
+  vertexBufferDesc.BindFlags  = D3D11_BIND_VERTEX_BUFFER;
+  vertexBufferDesc.ByteWidth  = sizeof(DVertex1) * 8;
+
+  D3D11_SUBRESOURCE_DATA vertexBufferInitialData = {};
+  vertexBufferInitialData.pSysMem = vertices.data();
+
+  ID3D11Buffer* vertexBuffer = nullptr;
+  HR(d11Device->CreateBuffer(&vertexBufferDesc, &vertexBufferInitialData, &vertexBuffer));
+  sDyVertexBuffer = vertexBuffer;
+
+  std::array<UINT, 36> indices = {
+    // front face
+    0, 1, 2, 0, 2, 3,
+    // back face
+    4, 6, 5, 4, 7, 6,
+    // left face
+    4, 5, 1, 4, 1, 0,
+    // right face
+    3, 2, 6, 3, 6, 7,
+    // top face
+    1, 5, 6, 1, 6, 2,
+    // bottom face
+    4, 0, 3, 4, 3, 7
+  };
+
+  D3D11_BUFFER_DESC indicesBufferDesc = {};
+  indicesBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+  indicesBufferDesc.ByteWidth = sizeof(UINT) * static_cast<UINT>(indices.size());
+  indicesBufferDesc.Usage     = D3D11_USAGE_IMMUTABLE;
+
+  D3D11_SUBRESOURCE_DATA indicesBufferInitialData = {};
+  indicesBufferInitialData.pSysMem = indices.data();
+
+  ID3D11Buffer* indexBuffer = nullptr;
+  HR(d11Device->CreateBuffer(&indicesBufferDesc, &indicesBufferInitialData, &indexBuffer));
+  sDyIndexBuffer = indexBuffer;
+}
 
 ///
 /// @brief
@@ -261,7 +392,7 @@ void DyD11RenderLoop()
     }
 
     if (!IsIconic(windowHandle)) {
-      // Do something.
+      DyD11RenderFrame();
     }
   }
 #elif defined(__linux__)
@@ -272,18 +403,37 @@ void DyD11RenderLoop()
 ///
 /// @brief
 ///
-void DyD12RenderLoop()
+void DyD11RenderFrame()
 {
+#ifdef false
+  const auto backColor = DirectX::XMFLOAT4{.1f, .1f, .1f, 1.f};
+  d11DeviceContext->ClearRenderTargetView(
+      sDyRenderTargetView,
+      reinterpret_cast<const float*>(&backColor)
+  );
+  d11DeviceContext->ClearDepthStencilView(
+      sDyDepthStencilView,
+      D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
+      1.0f,
+      0
+  );
 
+  d11DeviceContext->IASetInputLayout(sDyInputLayout);
+  d11DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+  UINT stride = sizeof(DVertex1);
+  UINT offset = 0;
+  d11DeviceContext->IASetVertexBuffers(0, 1, &sDyVertexBuffer, &stride, &offset);
+  d11DeviceContext->IASetIndexBuffer(sDyIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+  d11DeviceContext->DrawIndexed(36, 0, 0);
+#endif
+
+  HR(sDySwapChain->Present(0, 0));
 }
 
-///
-/// @brief
-///
-void DyGlRenderLoop()
-{
-
-}
+//!
+//! Platform dependent codes
+//!
 
 void DyInitiailzeAllManagers()
 {
@@ -299,6 +449,7 @@ void DyInitiailzeAllManagers()
 #endif
     MDY_CALL_ASSERT_SUCCESS(dy::MDySetting::Initialize());
   }
+  // Time manager
   MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Initialize());
 }
 
@@ -432,6 +583,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLin
     SetForegroundWindow(windowHandle);
     SetFocus(windowHandle);
 
+    DyD11CreateEffectFx();
+    DyD11BindVertexLayout();
+    DyD11CreateVertexBuffer();
     DyD11RenderLoop();
     break;
   case dy::ERenderingType::DirectX12:

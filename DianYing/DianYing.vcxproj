@@ -107,11 +107,11 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.82.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>C:\VulkanSDK\1.1.82.0\Lib32;</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)Libraries\FX11\bin\$(Platform)\$(Configuration);C:\VulkanSDK\1.1.82.0\Lib32</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -129,11 +129,11 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.82.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>C:\VulkanSDK\1.1.82.0\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)Libraries\FX11\bin\$(Platform)\$(Configuration);C:\VulkanSDK\1.1.82.0\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -153,14 +153,14 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.82.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>C:\VulkanSDK\1.1.82.0\Lib32;</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)Libraries\FX11\bin\$(Platform)\$(Configuration);C:\VulkanSDK\1.1.82.0\Lib32</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -180,19 +180,26 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.82.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>C:\VulkanSDK\1.1.82.0\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)Libraries\FX11\bin\$(Platform)\$(Configuration);C:\VulkanSDK\1.1.82.0\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\Entry\entry.cc" />
+    <ClCompile Include="Source\Helper\Math\Math.cc" />
+    <ClCompile Include="Source\Helper\Math\Random.cc" />
+    <ClCompile Include="Source\Helper\Type\Color.cc" />
+    <ClCompile Include="Source\Helper\Type\Color32.cc" />
+    <ClCompile Include="Source\Helper\Type\Vector2.cc" />
+    <ClCompile Include="Source\Helper\Type\Vector3.cc" />
+    <ClCompile Include="Source\Helper\Type\Vector4.cc" />
     <ClCompile Include="Source\Management\SettingManager.cc" />
     <ClCompile Include="Source\Management\TimeManager.cc" />
     <ClCompile Include="Source\precompiled.cc">
@@ -207,10 +214,28 @@
     <ClInclude Include="Include\Dy\Helper\disable_warnings.h" />
     <ClInclude Include="Include\Dy\Helper\enum_flags.h" />
     <ClInclude Include="Include\Dy\Helper\macroes.h" />
+    <ClInclude Include="Include\Dy\Helper\Math\Math.h" />
+    <ClInclude Include="Include\Dy\Helper\Math\Random.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\Color.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\Color32.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\MathEnum.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\Quaternion.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\Transform.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\Vector2.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\Vector3.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\Vector4.h" />
     <ClInclude Include="Include\Dy\Management\Interface\ISingletonCrtp.h" />
     <ClInclude Include="Include\Dy\Management\SettingManager.h" />
     <ClInclude Include="Include\Dy\Management\TimeManager.h" />
     <ClInclude Include="Include\precompiled.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Source\box.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

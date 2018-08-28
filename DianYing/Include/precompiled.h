@@ -19,6 +19,7 @@
 #include <cstdint>
 
 #include <algorithm>
+#include <array>
 #include <fstream>
 #include <memory>
 #include <mutex>
@@ -33,6 +34,7 @@
 
 #if defined(_WIN32)
 #include <Windows.h>
+#include <DirectXMath.h>
 #include <d3d11.h>
 #include <d3d12.h>
 #include <vulkan/vulkan_win32.h>
