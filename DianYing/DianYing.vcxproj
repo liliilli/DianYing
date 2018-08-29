@@ -299,6 +299,7 @@
     <ClCompile Include="Libraries\imgui\imgui\imgui_impl_glfw.cpp" />
     <ClCompile Include="Libraries\imgui\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="Libraries\imgui\imgui\imgui.cpp" />
+    <ClCompile Include="Libraries\stb\stb_image.cc" />
     <ClCompile Include="Source\Core\Component\Material.cc" />
     <ClCompile Include="Source\Core\Component\Model.cc" />
     <ClCompile Include="Source\Core\Component\Texture.cc" />
@@ -361,6 +362,7 @@
     <ClInclude Include="Libraries\imgui\imgui\imgui_impl_opengl3.h" />
     <ClInclude Include="Libraries\imgui\imgui\imconfig.h" />
     <ClInclude Include="Libraries\imgui\imgui\imgui.h" />
+    <ClInclude Include="Libraries\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl">
