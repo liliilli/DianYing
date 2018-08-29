@@ -50,7 +50,8 @@ struct PDyTextureConstructionDescriptor final
   dy::DColor  mConstantBorderColor;
   std::vector<PDyTextureParameterOption> mTextureParameterOptions;
   uint32_t    mTextureType;
-  bool        mIsTextureParameterCustomed;
+  bool        mIsEnabledCustomedTextureParameter;
+  bool        mIsEnabledCreateMipmap;
 };
 
 class CDyTextureComponent final
@@ -65,6 +66,30 @@ public:
 
   [[nodiscard]]
   EDySuccess pInitializeTextureResource(const PDyTextureConstructionDescriptor& textureConstructionDescriptor);
+
+  ///
+  /// @brief
+  ///
+  FORCEINLINE uint32_t GetTextureId() const noexcept
+  {
+    return mTextureResourceId;
+  };
+
+  ///
+  /// @brief
+  ///
+  FORCEINLINE int32_t GetTextureWidth() const noexcept
+  {
+    return mTextureWidth;
+  }
+
+  ///
+  /// @brief
+  ///
+  FORCEINLINE int32_t GetTextureHeight() const noexcept
+  {
+    return mTextureHeight;
+  }
 
 private:
   /// Valid texture id must not be 0.
