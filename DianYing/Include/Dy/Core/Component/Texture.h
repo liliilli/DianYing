@@ -13,46 +13,10 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/Color.h>
+#include <Dy/Core/Component/Internal/TextureType.h>
 
 namespace dy
 {
-
-///
-/// @class PDyTextureParameterOption
-/// @brief
-///
-struct PDyTextureParameterOption final
-{
-  PDyTextureParameterOption(uint32_t option, uint32_t value) : mOption{option}, mValue{value} {};
-
-  const auto& GetOption() const noexcept
-  {
-    return mOption;
-  }
-
-  const auto& GetValue() const noexcept
-  {
-    return mValue;
-  }
-private:
-  uint32_t mOption;
-  uint32_t mValue;
-};
-
-///
-/// @class PDyTextureConstructionDescriptor
-/// @brief
-///
-struct PDyTextureConstructionDescriptor final
-{
-  std::string mTexturePath;
-  dy::DColor  mConstantBorderColor;
-  std::vector<PDyTextureParameterOption> mTextureParameterOptions;
-  uint32_t    mTextureType;
-  bool        mIsEnabledCustomedTextureParameter;
-  bool        mIsEnabledCreateMipmap;
-};
 
 class CDyTextureComponent final
 {

@@ -14,8 +14,9 @@
 ///
 
 #include <unordered_map>
-
 #include <glm/glm.hpp>
+
+#include <Dy/Core/Component/Internal/ShaderType.h>
 
 //!
 //! Forward declaration
@@ -33,55 +34,6 @@ struct DVector4;
 //!
 
 namespace dy {
-
-///
-/// @brief
-///
-enum class EDyShaderFragmentType
-{
-  Vertex,
-  TesselationControl,
-  TesselationEvaluation,
-  Geometry,
-  Pixel
-};
-
-///
-/// @brief Shader internal variable type for uniform and textures.
-///
-enum class EDyUniformVariableType {
-  Matrix4 = 0,
-  Matrix3,
-  Matrix2,
-  Vector4,
-  Vector3,
-  Vector2,
-  IVec4,
-  IVec3,
-  IVec2,
-  Integer,
-  IntegerPointer,
-  Float,
-  FloatPointer,
-  Texture2D
-};
-
-///
-/// @brief
-///
-struct PDyShaderFragmentInformation final
-{
-  EDyShaderFragmentType mShaderType;
-  std::string           mShaderPath = "";
-};
-
-///
-/// @brief
-///
-struct PDyShaderConstructionDescriptor final
-{
-  std::vector<PDyShaderFragmentInformation> mShaderFragments;
-};
 
 ///
 /// @class CDyShaderComponent

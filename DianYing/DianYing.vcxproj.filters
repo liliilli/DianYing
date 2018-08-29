@@ -28,6 +28,7 @@
     <ClCompile Include="Source\Helper\Type\Matrix3.cc" />
     <ClCompile Include="Source\Helper\Type\Matrix4.cc" />
     <ClCompile Include="Source\Helper\Internal\ImageBinaryBuffer.cc" />
+    <ClCompile Include="Source\Management\HandleManager.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -65,6 +66,9 @@
     <ClInclude Include="Include\Dy\Helper\Geometry\Mesh.h" />
     <ClInclude Include="Libraries\stb\stb_image.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\ImageBinaryBuffer.h" />
+    <ClInclude Include="Include\Dy\Management\HandleManager.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Internal\ShaderType.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Internal\TextureType.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />
