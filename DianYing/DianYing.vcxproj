@@ -299,7 +299,6 @@
     <ClCompile Include="Libraries\imgui\imgui\imgui_impl_glfw.cpp" />
     <ClCompile Include="Libraries\imgui\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="Libraries\imgui\imgui\imgui.cpp" />
-    <ClCompile Include="Libraries\stb\stb_image.cc" />
     <ClCompile Include="Source\Core\Component\Material.cc" />
     <ClCompile Include="Source\Core\Component\Model.cc" />
     <ClCompile Include="Source\Core\Component\Texture.cc" />
@@ -307,6 +306,7 @@
     <ClCompile Include="Source\Core\Component\Shader.cc" />
     <ClCompile Include="Source\Entry\entry.cc" />
     <ClCompile Include="Source\Helper\Geometry\Types.cc" />
+    <ClCompile Include="Source\Helper\Internal\ImageBinaryBuffer.cc" />
     <ClCompile Include="Source\Helper\Math\Math.cc" />
     <ClCompile Include="Source\Helper\Math\Random.cc" />
     <ClCompile Include="Source\Helper\Type\Color.cc" />
@@ -338,6 +338,7 @@
     <ClInclude Include="Include\Dy\Helper\enum_flags.h" />
     <ClInclude Include="Include\Dy\Helper\Geometry\Mesh.h" />
     <ClInclude Include="Include\Dy\Helper\Geometry\Types.h" />
+    <ClInclude Include="Include\Dy\Helper\Internal\ImageBinaryBuffer.h" />
     <ClInclude Include="Include\Dy\Helper\IoHelper.h" />
     <ClInclude Include="Include\Dy\Helper\macroes.h" />
     <ClInclude Include="Include\Dy\Helper\Math\Math.h" />
