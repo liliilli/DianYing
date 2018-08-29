@@ -24,6 +24,7 @@
     <ClCompile Include="Source\Core\Component\Material.cc" />
     <ClCompile Include="Source\Core\Component\Model.cc" />
     <ClCompile Include="Source\Core\Component\Texture.cc" />
+    <ClCompile Include="Source\Helper\Type\Matrix2.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />

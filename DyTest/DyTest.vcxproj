@@ -17,6 +17,14 @@
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="TestBuild|Win32">
+      <Configuration>TestBuild</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="TestBuild|x64">
+      <Configuration>TestBuild</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8d53497a-1112-4598-af64-e59523069697}</ProjectGuid>
@@ -39,10 +47,13 @@
     <ClCompile Include="test.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TestMatrix.cc" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DianYing\DianYing.vcxproj">
@@ -62,11 +73,35 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_HAS_TR1_NAMESPACE;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>$(SolutionDir)DianYing\Libraries\glad\include;$(SolutionDir)DianYing\Libraries\stb;$(SolutionDir)DianYing\Libraries\imgui;$(SolutionDir)DianYing\Libraries\glfw\include;$(SolutionDir)DianYing\Libraries\assimp\assimp\$(Platform);$(SolutionDir)DianYing\Libraries\assimp;$(SolutionDir)DianYing\Libraries\glm;$(SolutionDir)DianYing\Libraries\spdlog\include;$(SolutionDir)DianYing\Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;$(SolutionDir)DianYing\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OpenMPSupport>
+      </OpenMPSupport>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='TestBuild|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_HAS_TR1_NAMESPACE;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>$(SolutionDir)DianYing\Libraries\glad\include;$(SolutionDir)DianYing\Libraries\stb;$(SolutionDir)DianYing\Libraries\imgui;$(SolutionDir)DianYing\Libraries\glfw\include;$(SolutionDir)DianYing\Libraries\assimp\assimp\$(Platform);$(SolutionDir)DianYing\Libraries\assimp;$(SolutionDir)DianYing\Libraries\glm;$(SolutionDir)DianYing\Libraries\spdlog\include;$(SolutionDir)DianYing\Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;$(SolutionDir)DianYing\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OpenMPSupport>
+      </OpenMPSupport>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -78,11 +113,35 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>X64;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_HAS_TR1_NAMESPACE;X64;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>$(SolutionDir)DianYing\Libraries\glad\include;$(SolutionDir)DianYing\Libraries\stb;$(SolutionDir)DianYing\Libraries\imgui;$(SolutionDir)DianYing\Libraries\glfw\include;$(SolutionDir)DianYing\Libraries\assimp\assimp\$(Platform);$(SolutionDir)DianYing\Libraries\assimp;$(SolutionDir)DianYing\Libraries\glm;$(SolutionDir)DianYing\Libraries\spdlog\include;$(SolutionDir)DianYing\Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;$(SolutionDir)DianYing\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OpenMPSupport>
+      </OpenMPSupport>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_HAS_TR1_NAMESPACE;X64;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>$(SolutionDir)DianYing\Libraries\glad\include;$(SolutionDir)DianYing\Libraries\stb;$(SolutionDir)DianYing\Libraries\imgui;$(SolutionDir)DianYing\Libraries\glfw\include;$(SolutionDir)DianYing\Libraries\assimp\assimp\$(Platform);$(SolutionDir)DianYing\Libraries\assimp;$(SolutionDir)DianYing\Libraries\glm;$(SolutionDir)DianYing\Libraries\spdlog\include;$(SolutionDir)DianYing\Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;$(SolutionDir)DianYing\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OpenMPSupport>
+      </OpenMPSupport>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -93,11 +152,15 @@
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_HAS_TR1_NAMESPACE;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>$(SolutionDir)DianYing\Libraries\glad\include;$(SolutionDir)DianYing\Libraries\stb;$(SolutionDir)DianYing\Libraries\imgui;$(SolutionDir)DianYing\Libraries\glfw\include;$(SolutionDir)DianYing\Libraries\assimp\assimp\$(Platform);$(SolutionDir)DianYing\Libraries\assimp;$(SolutionDir)DianYing\Libraries\glm;$(SolutionDir)DianYing\Libraries\spdlog\include;$(SolutionDir)DianYing\Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;$(SolutionDir)DianYing\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OpenMPSupport>
+      </OpenMPSupport>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -110,11 +173,15 @@
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <PreprocessorDefinitions>X64;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_HAS_TR1_NAMESPACE;X64;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>$(SolutionDir)DianYing\Libraries\glad\include;$(SolutionDir)DianYing\Libraries\stb;$(SolutionDir)DianYing\Libraries\imgui;$(SolutionDir)DianYing\Libraries\glfw\include;$(SolutionDir)DianYing\Libraries\assimp\assimp\$(Platform);$(SolutionDir)DianYing\Libraries\assimp;$(SolutionDir)DianYing\Libraries\glm;$(SolutionDir)DianYing\Libraries\spdlog\include;$(SolutionDir)DianYing\Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;$(SolutionDir)DianYing\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OpenMPSupport>
+      </OpenMPSupport>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
