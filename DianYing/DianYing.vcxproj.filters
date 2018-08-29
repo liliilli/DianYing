@@ -21,6 +21,9 @@
     <ClCompile Include="Source\Helper\Geometry\Types.cc" />
     <ClCompile Include="Source\Core\Component\Shader.cc" />
     <ClCompile Include="Source\Helper\Geometry\Mesh.cc" />
+    <ClCompile Include="Source\Core\Component\Material.cc" />
+    <ClCompile Include="Source\Core\Component\Model.cc" />
+    <ClCompile Include="Source\Core\Component\Texture.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
