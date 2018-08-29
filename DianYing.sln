@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27703.2047
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DianYing", "DianYing\DianYing.vcxproj", "{B2B6E771-0680-4E19-AB53-78F5AA9FEB7A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DyTest", "DyTest\DyTest.vcxproj", "{8D53497A-1112-4598-AF64-E59523069697}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{B2B6E771-0680-4E19-AB53-78F5AA9FEB7A}.Release|x64.Build.0 = Release|x64
 		{B2B6E771-0680-4E19-AB53-78F5AA9FEB7A}.Release|x86.ActiveCfg = Release|Win32
 		{B2B6E771-0680-4E19-AB53-78F5AA9FEB7A}.Release|x86.Build.0 = Release|Win32
+		{8D53497A-1112-4598-AF64-E59523069697}.Debug|x64.ActiveCfg = Debug|x64
+		{8D53497A-1112-4598-AF64-E59523069697}.Debug|x64.Build.0 = Debug|x64
+		{8D53497A-1112-4598-AF64-E59523069697}.Debug|x86.ActiveCfg = Debug|Win32
+		{8D53497A-1112-4598-AF64-E59523069697}.Debug|x86.Build.0 = Debug|Win32
+		{8D53497A-1112-4598-AF64-E59523069697}.Release|x64.ActiveCfg = Release|x64
+		{8D53497A-1112-4598-AF64-E59523069697}.Release|x64.Build.0 = Release|x64
+		{8D53497A-1112-4598-AF64-E59523069697}.Release|x86.ActiveCfg = Release|Win32
+		{8D53497A-1112-4598-AF64-E59523069697}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
