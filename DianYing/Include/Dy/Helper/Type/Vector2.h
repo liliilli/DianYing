@@ -19,9 +19,9 @@
 ///
 
 #include <array>
+#include <stdexcept>
 
 #include <assimp/vector2.h>
-#include <assimp/vector3.h>
 #include <glm/glm.hpp>
 
 #include <Dy/Helper/macroes.h>
@@ -32,7 +32,9 @@
 #endif
 
 namespace dy {
-///
+  class DDyMatrix2x2;
+
+  ///
 /// @struct DVector2
 /// @brief Float type 2-element vector struct.
 ///
@@ -64,6 +66,25 @@ struct DVector2 final {
     X = value.x;
     Y = value.y;
     return *this;
+  }
+
+  auto& operator[](std::size_t index)
+  {
+    switch (index)
+    {
+    case 0: return X;
+    case 1: return Y;
+    default: throw std::out_of_range("DVector2 range is out of bound.");
+    }
+  }
+
+  const auto& operator[](std::size_t index) const
+  {
+    switch (index) {
+    case 0: return X;
+    case 1: return Y;
+    default: throw std::out_of_range("DVector2 range is out of bound.");
+    }
   }
 
   //!
@@ -275,6 +296,11 @@ struct DVector2 final {
 
     return *this;
   }
+
+  ///
+  /// @brief
+  ///
+  DVector2 MultiplyMatrix(const dy::DDyMatrix2x2& matrix) const noexcept;
 
   ///
   /// @brief Compare length of two vectors and return if they are same length.
