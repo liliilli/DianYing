@@ -3,7 +3,10 @@
   <ItemGroup>
     <ClCompile Include="test.cpp" />
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="TestMatrix.cc">
+    <ClCompile Include="TestMatrix2x2.cc">
+      <Filter>DyTypeTest</Filter>
+    </ClCompile>
+    <ClCompile Include="TestMatrix3x3.cc">
       <Filter>DyTypeTest</Filter>
     </ClCompile>
   </ItemGroup>
@@ -14,5 +17,8 @@
     <Filter Include="DyTypeTest">
       <UniqueIdentifier>{f3129f9a-09d9-4764-a8b6-13e86a1e70ba}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>
