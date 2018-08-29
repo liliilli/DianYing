@@ -58,7 +58,7 @@
 ///
 /// @macro
 ///
-#define MDY_NOT_INITIALIZED -1
+#define MDY_NOT_INITIALIZED_M1 -1
 
 ///
 /// @macro

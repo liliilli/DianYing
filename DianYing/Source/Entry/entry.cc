@@ -31,6 +31,7 @@
 #include <Dy/Helper/Type/Color.h>
 #include <Dy/Management/TimeManager.h>
 #include <Dy/Management/SettingManager.h>
+#include "Dy/Core/Component/Texture.h"
 
 #define MDY_RESOLUTION_WIDTH 1280
 #define MDY_RESOLUTION_HEIGHT 720
@@ -100,24 +101,6 @@ HGLRC windowGlResourceContext = nullptr;
 //! Implementation
 //!
 
-///
-/// @brief
-///
-std::optional<std::vector<char>> DyReadBinaryFile(const std::string& fileName) {
-  std::ifstream fileStream { fileName, std::ios::ate | std::ios::binary };
-  if (!fileStream.is_open()) return std::nullopt;
-
-  const size_t fileSize = fileStream.tellg();
-  std::vector<char> fileBuffer(fileSize);
-
-  fileStream.seekg(0);
-  fileStream.read(fileBuffer.data(), fileSize);
-
-  fileStream.close();
-  return fileBuffer;
-}
-
-
 //!
 //! ~DirectX11 Codes
 //!
@@ -130,6 +113,7 @@ bool gImguiShowAnotherWindow = false;
 
 dy::DVector3 gColor {1.f, 0.f, 0.5f};
 dy::CDyShaderComponent gShader;
+dy::CDyTextureComponent gTexture;
 
 void GlRenderFrame()
 {
@@ -441,6 +425,15 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLin
         shaderDesc.mShaderFragments.emplace_back(fragmentInfo);
       }
       MDY_CALL_ASSERT_SUCCESS(gShader.pInitializeShaderProgram(shaderDesc));
+
+      // OpenGL (native) Texture binding DEMO
+      dy::PDyTextureConstructionDescriptor textureDesc;
+      {
+        textureDesc.mTexturePath = "./TestResource/S_7325920284368.jpg";
+        textureDesc.mTextureType = GL_TEXTURE_2D;
+        textureDesc.mIsTextureParameterCustomed = false;
+      }
+      MDY_CALL_ASSERT_SUCCESS(gTexture.pInitializeTextureResource(textureDesc));
 
       GlRenderLoop();
 

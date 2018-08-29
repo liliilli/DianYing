@@ -84,7 +84,7 @@ private:
   mutable float mGameTickElapsedTime = 0.f;
   int32_t       mGameTickedFps    = 0;
   const int32_t mGameGoalFps      = 60;
-  mutable float mGameTickFragment = MDY_NOT_INITIALIZED;
+  mutable float mGameTickFragment = MDY_NOT_INITIALIZED_M1;
 };
 
 } /// ::dy namespace

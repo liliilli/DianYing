@@ -139,8 +139,7 @@ public:
      *  @param axis Axis to rotate around
      *  @param out To be filled
      */
-    static aiMatrix3x3t& Rotation( TReal a,
-        const aiVector3t<TReal>& axis, aiMatrix3x3t& out);
+    static aiMatrix3x3t& Rotation( TReal a, const aiVector3t<TReal>& axis, aiMatrix3x3t& out);
 
     // -------------------------------------------------------------------
     /** @brief Returns a translation matrix
@@ -159,8 +158,7 @@ public:
      *          "Efficiently Building a Matrix to Rotate One Vector to Another"
      *          Journal of Graphics Tools, 4(4):1-4, 1999
      */
-    static aiMatrix3x3t& FromToMatrix(const aiVector3t<TReal>& from,
-        const aiVector3t<TReal>& to, aiMatrix3x3t& out);
+    static aiMatrix3x3t& FromToMatrix(const aiVector3t<TReal>& from, const aiVector3t<TReal>& to, aiMatrix3x3t& out);
 
 public:
     TReal a1, a2, a3;

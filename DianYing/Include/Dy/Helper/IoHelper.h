@@ -23,7 +23,7 @@ std::optional<std::vector<char>> DyReadBinaryFileAll(const std::string& filePath
   std::ifstream fileStream { filePath, std::ios::ate | std::ios::binary };
   if (!fileStream.is_open()) return std::nullopt;
 
-  const size_t fileSize = fileStream.tellg();
+  const size_t fileSize = static_cast<size_t>(fileStream.tellg());
   std::vector<char> fileBuffer(fileSize + 1);
 
   fileStream.seekg(0);
@@ -32,6 +32,8 @@ std::optional<std::vector<char>> DyReadBinaryFileAll(const std::string& filePath
   fileStream.close();
   return fileBuffer;
 }
+
+
 
 } /// ::dy namespace
 

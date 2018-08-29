@@ -87,7 +87,8 @@ struct PDyShaderConstructionDescriptor final
 /// @class CDyShaderComponent
 /// @brief New shader wrapper class
 ///
-class CDyShaderComponent final {
+class CDyShaderComponent final
+{
   using TUniformId = int32_t;
   using TUniformStruct = std::tuple<std::string, EDyUniformVariableType, TUniformId>;
 public:
@@ -115,7 +116,8 @@ public:
   /// @brief Get shader program id.
   /// @return Program id.
   ///
-  uint32_t GetShaderProgramId() const noexcept {
+  uint32_t GetShaderProgramId() const noexcept
+  {
     return mShaderProgramId;
   }
 
