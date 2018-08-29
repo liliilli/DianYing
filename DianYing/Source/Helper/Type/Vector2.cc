@@ -15,12 +15,22 @@
 
 /// Header file
 #include <Dy/Helper/Type/Vector2.h>
+
 #include <Dy/Helper/Math/Math.h>
+#include <Dy/Helper/Type/Matrix2.h>
 
 namespace dy {
 
 bool DVector2::IsAllZero(const DVector2& vector) noexcept {
   return math::IsAllZero(vector);
+}
+
+DVector2 DVector2::MultiplyMatrix(const dy::DDyMatrix2x2& matrix) const noexcept
+{
+  return DVector2{
+      this->X * matrix[0][0] + this->Y * matrix[0][1],
+      this->X * matrix[1][0] + this->Y * matrix[1][1]
+  };
 }
 
 bool DVector2::IsAllZero() const noexcept {

@@ -27,7 +27,9 @@
 #include <Dy/Helper/Type/Vector3.h>
 
 namespace dy {
-///
+  class DDyMatrix4x4;
+
+  ///
 /// @struct DVector4
 /// @brief Float type 4-element vector struct.
 ///
@@ -38,12 +40,14 @@ struct DVector4 final {
   float W = 1.f;
 
   DVector4() = default;
+  DVector4(const DVector4&) = default;
+  DVector4& operator=(const DVector4&) = default;
 
   explicit DVector4(const float value) noexcept : X{value}, Y{value}, Z{value}, W{value} {};
   explicit DVector4(const DVector2& value) noexcept : X{value.X}, Y{value.Y}, Z{0.0f}, W{1.0f} {};
   explicit DVector4(const DVector3& value) noexcept : X{value.X}, Y{value.Y}, Z{value.Z}, W{1.0f} {};
-  DVector4(const float x, const float y) noexcept : X(x), Y(y), Z(0.0f), W{1.0f} {};
   DVector4(const float x, const float y, const float z) noexcept : X(x), Y(y), Z(z), W{1.0f} {};
+  DVector4(const float x, const float y, const float z, const float w) noexcept : X(x), Y(y), Z(z), W{w} {};
 
   //!
   //! Constructor and assign operator for dependencies.
@@ -93,6 +97,29 @@ struct DVector4 final {
     Z = value.z;
     W = value.w;
     return *this;
+  }
+
+  auto& operator[](std::size_t index)
+  {
+    switch (index)
+    {
+    case 0: return X;
+    case 1: return Y;
+    case 2: return Z;
+    case 3: return W;
+    default: throw std::out_of_range("DVector2 range is out of bound.");
+    }
+  }
+
+  const auto& operator[](std::size_t index) const
+  {
+    switch (index) {
+    case 0: return X;
+    case 1: return Y;
+    case 2: return Z;
+    case 3: return W;
+    default: throw std::out_of_range("DVector2 range is out of bound.");
+    }
   }
 
 #if defined(_WIN32)
@@ -201,6 +228,11 @@ struct DVector4 final {
   std::array<float, 4> Data() const noexcept {
     return {X, Y, Z, W};
   }
+
+  ///
+  /// @brief
+  ///
+  DVector4 MultiplyMatrix(const dy::DDyMatrix4x4& matrix) const noexcept;
 
   //!
   //! Operators

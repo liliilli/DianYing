@@ -23,28 +23,34 @@ namespace dy
 
 DDyMatrix3x3::operator glm::mat2() const noexcept
 {
-
+  return glm::mat2{
+      mMatrixValue[0][0], mMatrixValue[0][1],
+      mMatrixValue[1][0], mMatrixValue[1][1]
+  };
 }
 
 DDyMatrix3x3::operator DDyMatrix2x2() const noexcept
 {
-
+  return DDyMatrix2x2{
+      mMatrixValue[0][0], mMatrixValue[1][0],
+      mMatrixValue[0][1], mMatrixValue[1][1]
+  };
 }
 
 DDyMatrix3x3::operator glm::mat3() const noexcept
 {
   return glm::mat3{
-      mMatrixValue[0][0], mMatrixValue[1][0], mMatrixValue[2][0],
-      mMatrixValue[0][1], mMatrixValue[1][1], mMatrixValue[2][1],
-      mMatrixValue[0][2], mMatrixValue[1][2], mMatrixValue[2][2] };
+      mMatrixValue[0][0], mMatrixValue[0][1], mMatrixValue[0][2],
+      mMatrixValue[1][0], mMatrixValue[1][1], mMatrixValue[1][2],
+      mMatrixValue[2][0], mMatrixValue[2][1], mMatrixValue[2][2] };
 }
 
 DDyMatrix3x3::operator glm::mat4() const noexcept
 {
   return glm::mat4{
-      mMatrixValue[0][0], mMatrixValue[1][0], mMatrixValue[2][0], 0,
-      mMatrixValue[0][1], mMatrixValue[1][1], mMatrixValue[2][1], 0,
-      mMatrixValue[0][2], mMatrixValue[1][2], mMatrixValue[2][2], 0,
+      mMatrixValue[0][0], mMatrixValue[0][1], mMatrixValue[0][2], 0,
+      mMatrixValue[1][0], mMatrixValue[1][1], mMatrixValue[1][2], 0,
+      mMatrixValue[2][0], mMatrixValue[2][1], mMatrixValue[2][2], 0,
       0, 0, 0, 0 };
 }
 
@@ -178,7 +184,7 @@ DDyMatrix3x3 DDyMatrix3x3::Multiply(const DDyMatrix3x3& rhs) const noexcept
   return DDyMatrix3x3{
       (*this)[0][0] * rhs[0][0] + (*this)[1][0] * rhs[0][1] + (*this)[2][0] * rhs[0][2],
       (*this)[0][0] * rhs[1][0] + (*this)[1][0] * rhs[1][1] + (*this)[2][0] * rhs[1][2],
-      (*this)[0][0] * rhs[2][0] + (*this)[1][1] * rhs[2][1] + (*this)[2][0] * rhs[2][2],
+      (*this)[0][0] * rhs[2][0] + (*this)[1][0] * rhs[2][1] + (*this)[2][0] * rhs[2][2],
 
       (*this)[0][1] * rhs[0][0] + (*this)[1][1] * rhs[0][1] + (*this)[2][1] * rhs[0][2],
       (*this)[0][1] * rhs[1][0] + (*this)[1][1] * rhs[1][1] + (*this)[2][1] * rhs[1][2],

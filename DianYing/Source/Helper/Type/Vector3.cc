@@ -17,9 +17,20 @@
 
 /// Header file
 #include <Dy/Helper/Type/Vector3.h>
+
 #include <Dy/Helper/Math/Math.h>
+#include <Dy/Helper/Type/Matrix3.h>
 
 namespace dy {
+
+DVector3 DVector3::MultiplyMatrix(const dy::DDyMatrix3x3& matrix) const noexcept
+{
+  return DVector3{
+      this->X * matrix[0][0] + this->Y * matrix[0][1] + this->Z * matrix[0][2],
+      this->X * matrix[1][0] + this->Y * matrix[1][1] + this->Z * matrix[1][2],
+      this->X * matrix[2][0] + this->Y * matrix[2][1] + this->Z * matrix[2][2]
+  };
+}
 
 bool DVector3::IsAllZero(const DVector3& vector) noexcept {
   return math::IsAllZero(vector);

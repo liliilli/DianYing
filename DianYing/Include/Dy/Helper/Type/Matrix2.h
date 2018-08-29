@@ -27,13 +27,18 @@ namespace dy
 class DDyMatrix2x2 final
 {
 public:
-  DDyMatrix2x2() = default;
+  DDyMatrix2x2()  = default;
+  ~DDyMatrix2x2() = default;
+
+  DDyMatrix2x2(const DDyMatrix2x2& value) = default;
+  DDyMatrix2x2(DDyMatrix2x2&& value)      = default;
+  DDyMatrix2x2& operator=(const DDyMatrix2x2& value)  = default;
+  DDyMatrix2x2& operator=(DDyMatrix2x2&& value)       = default;
   DDyMatrix2x2(std::initializer_list<float>&) = delete;
 
   DDyMatrix2x2(const float _00, const float _01, const float _10, const float _11) :
       mMatrixValue{dy::DVector2{_00, _10},
-                   dy::DVector2{_01, _11}}
-  {};
+                   dy::DVector2{_01, _11}} {};
 
   DDyMatrix2x2(const glm::mat2& glmMatrix) noexcept
   {
@@ -253,16 +258,6 @@ public:
     result[1][0] = -(*this)[1][0] / def;
     result[0][1] = -(*this)[0][1] / def;
     return result;
-  }
-
-  ///
-  /// @brief
-  ///
-  static DDyMatrix2x2 Transpose(const DDyMatrix2x2& matrix) noexcept
-  {
-    return DDyMatrix2x2{
-      matrix.mMatrixValue[0][0], matrix.mMatrixValue[0][1],
-      matrix.mMatrixValue[1][0], matrix.mMatrixValue[1][1]};
   }
 
   ///

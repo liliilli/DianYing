@@ -42,6 +42,9 @@ public:
                    dy::DVector3{_01, _11, _21},
                    dy::DVector3{_02, _12, _22}} {}
 
+  DDyMatrix3x3(const DVector3& column1, const DVector3& column2, const DVector3& column3) :
+      mMatrixValue{ column1, column2, column3 } {}
+
   DDyMatrix3x3(const glm::mat2& glmMatrix) noexcept
   {
     mMatrixValue[0] = glmMatrix[0];

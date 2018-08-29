@@ -27,7 +27,9 @@
 #include <Dy/Helper/Math/Math.h>
 
 namespace dy {
-///
+  class DDyMatrix3x3;
+
+  ///
 /// @struct DVector3
 /// @brief Float type 3-element vector struct.
 ///
@@ -81,6 +83,27 @@ struct DVector3 final {
     Y = value.y;
     Z = value.z;
     return *this;
+  }
+
+  auto& operator[](std::size_t index)
+  {
+    switch (index)
+    {
+    case 0: return X;
+    case 1: return Y;
+    case 2: return Z;
+    default: throw std::out_of_range("DVector2 range is out of bound.");
+    }
+  }
+
+  const auto& operator[](std::size_t index) const
+  {
+    switch (index) {
+    case 0: return X;
+    case 1: return Y;
+    case 2: return Z;
+    default: throw std::out_of_range("DVector2 range is out of bound.");
+    }
   }
 
   //!
@@ -331,6 +354,11 @@ struct DVector3 final {
 
     return *this;
   }
+
+  ///
+  /// @brief
+  ///
+  DVector3 MultiplyMatrix(const dy::DDyMatrix3x3& matrix) const noexcept;
 
   ///
   /// @brief Compare length of two vectors and return if they are same length.

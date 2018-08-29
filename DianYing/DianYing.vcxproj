@@ -311,6 +311,8 @@
     <ClCompile Include="Source\Helper\Type\Color.cc" />
     <ClCompile Include="Source\Helper\Type\Color32.cc" />
     <ClCompile Include="Source\Helper\Type\Matrix2.cc" />
+    <ClCompile Include="Source\Helper\Type\Matrix3.cc" />
+    <ClCompile Include="Source\Helper\Type\Matrix4.cc" />
     <ClCompile Include="Source\Helper\Type\Vector2.cc" />
     <ClCompile Include="Source\Helper\Type\Vector3.cc" />
     <ClCompile Include="Source\Helper\Type\Vector4.cc" />
