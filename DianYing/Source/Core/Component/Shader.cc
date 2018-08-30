@@ -154,7 +154,7 @@ EDySuccess CDyShaderComponent::pInitializeShaderProgram(const std::vector<std::p
 
 void CDyShaderComponent::UseShader()
 {
-
+  glUseProgram(mShaderProgramId);
 }
 
 void CDyShaderComponent::UpdateUniformVariables()
@@ -164,18 +164,13 @@ void CDyShaderComponent::UpdateUniformVariables()
 
 void CDyShaderComponent::BindShader()
 {
-  glUseProgram(mShaderProgramId);
+  glBindVertexArray(mTemporalVertexArray);
 }
 
 void CDyShaderComponent::UnbindShader()
 {
+  glBindVertexArray(0);
   glUseProgram(0);
 }
 
-void CDyShaderComponent::TempRender()
-{
-  glBindVertexArray(mTemporalVertexArray);
-  glDrawArrays(GL_TRIANGLES, 0, 3);
-  glBindVertexArray(0);
-}
 } /// ::dy namespace
