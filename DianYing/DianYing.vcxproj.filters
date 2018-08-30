@@ -69,6 +69,7 @@
     <ClInclude Include="Include\Dy\Management\HandleManager.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\ShaderType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\TextureType.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Internal\MaterialType.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

@@ -83,11 +83,6 @@ public:
   ///
   void UnbindShader();
 
-  ///
-  /// @todo TEMPORAL FUNCTION
-  ///
-  void TempRender();
-
   //!
   //! uniform functions (ONLY OPENGL!)
   //!

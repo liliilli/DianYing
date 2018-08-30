@@ -330,6 +330,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\Dy\Core\Component\Internal\MaterialType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\ShaderType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\TextureType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Material.h" />

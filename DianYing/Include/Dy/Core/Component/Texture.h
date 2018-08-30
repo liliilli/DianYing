@@ -36,15 +36,23 @@ public:
   ///
   FORCEINLINE uint32_t GetTextureId() const noexcept
   {
-    return mTextureResourceId;
+    return this->mTextureResourceId;
   };
+
+  ///
+  /// @brief
+  ///
+  FORCEINLINE int32_t GetTextureType() const noexcept
+  {
+    return this->mTextureType;
+  }
 
   ///
   /// @brief
   ///
   FORCEINLINE int32_t GetTextureWidth() const noexcept
   {
-    return mTextureWidth;
+    return this->mTextureWidth;
   }
 
   ///
@@ -52,13 +60,13 @@ public:
   ///
   FORCEINLINE int32_t GetTextureHeight() const noexcept
   {
-    return mTextureHeight;
+    return this->mTextureHeight;
   }
 
 private:
   /// Valid texture id must not be 0.
   // @todo JUST ONLY OPENGL
-  int32_t   mTextureType        = MDY_NOT_INITIALIZED_M1;
+  int32_t   mTextureType        = GL_TEXTURE_2D;
 	GLuint    mTextureResourceId  = 0;
   int32_t   mTextureWidth       = MDY_NOT_INITIALIZED_M1;
   int32_t   mTextureHeight      = MDY_NOT_INITIALIZED_M1;
