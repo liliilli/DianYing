@@ -30,6 +30,14 @@
     <ClCompile Include="Source\Management\DataInformationManager.cc" />
     <ClCompile Include="Source\Management\HeapResourceManager.cc" />
     <ClCompile Include="Source\Core\Component\Information\ShaderInformation.cc" />
+    <ClCompile Include="Source\Core\Component\Information\TextureInformation.cc" />
+    <ClCompile Include="Source\Core\Component\Information\MaterialInformation.cc" />
+    <ClCompile Include="Source\Core\Component\Information\MeshInformation.cc" />
+    <ClCompile Include="Source\Core\Component\Information\ModelInformation.cc" />
+    <ClCompile Include="Source\Core\Component\Resource\TextureResource.cc" />
+    <ClCompile Include="Source\Core\Component\Resource\MaterialResource.cc" />
+    <ClCompile Include="Source\Core\Component\Resource\MeshResource.cc" />
+    <ClCompile Include="Source\Core\Component\Resource\ModelResource.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -68,7 +76,6 @@
     <ClInclude Include="Include\Dy\Core\Component\Internal\ShaderType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\TextureType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\MaterialType.h" />
-    <ClInclude Include="Include\Dy\Core\Component\Renderer.h" />
     <ClInclude Include="Include\Dy\Helper\Geometry\GeometryEnumTypes.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\ShaderInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\TextureInformation.h" />
@@ -82,8 +89,8 @@
     <ClInclude Include="Include\Dy\Core\Component\Resource\ModelResource.h" />
     <ClInclude Include="Include\Dy\Management\DataInformationManager.h" />
     <ClInclude Include="Include\Dy\Management\HeapResourceManager.h" />
-    <ClInclude Include="Include\Dy\Interface\IBindPrevLevelOnlyOne.h" />
-    <ClInclude Include="Include\Dy\Interface\IBindNextLevelOnlyOne.h" />
+    <ClInclude Include="Include\Dy\Core\Component\MeshImporter.h" />
+    <ClInclude Include="Include\Dy\Core\Component\MeshRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

@@ -299,8 +299,16 @@
     <ClCompile Include="Libraries\imgui\imgui\imgui_impl_glfw.cpp" />
     <ClCompile Include="Libraries\imgui\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="Libraries\imgui\imgui\imgui.cpp" />
+    <ClCompile Include="Source\Core\Component\Information\MaterialInformation.cc" />
+    <ClCompile Include="Source\Core\Component\Information\MeshInformation.cc" />
+    <ClCompile Include="Source\Core\Component\Information\ModelInformation.cc" />
     <ClCompile Include="Source\Core\Component\Information\ShaderInformation.cc" />
+    <ClCompile Include="Source\Core\Component\Information\TextureInformation.cc" />
     <ClCompile Include="Source\Core\Component\Material.cc" />
+    <ClCompile Include="Source\Core\Component\Resource\MaterialResource.cc" />
+    <ClCompile Include="Source\Core\Component\Resource\MeshResource.cc" />
+    <ClCompile Include="Source\Core\Component\Resource\ModelResource.cc" />
+    <ClCompile Include="Source\Core\Component\Resource\TextureResource.cc" />
     <ClCompile Include="Source\Core\Component\Texture.cc" />
     <ClCompile Include="Source\Helper\Geometry\Mesh.cc" />
     <ClCompile Include="Source\Core\Component\Resource\ShaderResource.cc" />
@@ -340,7 +348,8 @@
     <ClInclude Include="Include\Dy\Core\Component\Internal\ShaderType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\TextureType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Material.h" />
-    <ClInclude Include="Include\Dy\Core\Component\Renderer.h" />
+    <ClInclude Include="Include\Dy\Core\Component\MeshImporter.h" />
+    <ClInclude Include="Include\Dy\Core\Component\MeshRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\MaterialResource.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\MeshResource.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\ModelResource.h" />
@@ -369,8 +378,6 @@
     <ClInclude Include="Include\Dy\Helper\Type\Vector2.h" />
     <ClInclude Include="Include\Dy\Helper\Type\Vector3.h" />
     <ClInclude Include="Include\Dy\Helper\Type\Vector4.h" />
-    <ClInclude Include="Include\Dy\Interface\IBindPrevLevelOnlyOne.h" />
-    <ClInclude Include="Include\Dy\Interface\IBindNextLevelOnlyOne.h" />
     <ClInclude Include="Include\Dy\Management\HeapResourceManager.h" />
     <ClInclude Include="Include\Dy\Management\Interface\ISingletonCrtp.h" />
     <ClInclude Include="Include\Dy\Management\DataInformationManager.h" />
