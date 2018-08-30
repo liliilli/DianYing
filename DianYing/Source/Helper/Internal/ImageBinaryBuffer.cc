@@ -1,0 +1,92 @@
+#include <precompiled.h>
+///
+/// MIT License
+/// Copyright (c) 2018 Jongmin Yun
+///
+/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+/// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+/// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+/// SOFTWARE.
+///
+
+/// Header file
+#include <Dy/Helper/Internal/ImageBinaryBuffer.h>
+
+#define STB_IMAGE_IMPLEMENTATION
+#define STBI_NO_FAILURE_STRINGS
+#define STBI_FAILURE_USERMSG
+#if defined(_WIN32)
+#pragma warning(push)
+#pragma warning(disable:4100 4505)
+#endif
+#include <stb_image.h>
+#if defined(_WIN32)
+#pragma warning(pop)
+#endif
+
+namespace
+{
+
+///
+/// @brief Return color format
+/// @param[in] channelsValue Color channels value for being used to get GL_COLOR channels.
+///
+dy::EDyImageColorFormatStyle GetColorFormat(const int32_t channelsValue) noexcept {
+  switch (channelsValue) {
+  /// Red (one channel)
+  case 1:   return dy::EDyImageColorFormatStyle::R;
+  /// Red and Green only.
+  case 2:   return dy::EDyImageColorFormatStyle::RG;
+  /// RGB without alpha
+  case 3:   return dy::EDyImageColorFormatStyle::RGB;
+  /// RGB with alpha
+  case 4:   return dy::EDyImageColorFormatStyle::RGBA;
+  /// else, return Error type
+  default:  return dy::EDyImageColorFormatStyle::NoneError;
+  }
+}
+
+} /// unnamed namespace
+
+namespace dy
+{
+
+DDyImageBinaryDataBuffer::DDyImageBinaryDataBuffer(const std::string& imagePath)
+{
+  stbi_set_flip_vertically_on_load(true);
+
+  mBufferStartPoint = stbi_load(
+      imagePath.c_str(),
+      &mWidth, &mHeight,
+      &mImageChannel, 0);
+  mImageFormat = GetColorFormat(mImageChannel);
+  if (mImageFormat == EDyImageColorFormatStyle::NoneError)
+  {
+    stbi_image_free(mBufferStartPoint);
+#ifdef false
+    stbi_failure_reason();
+#endif
+    mIsBufferCreatedProperly = false;
+  }
+  else if (!mBufferStartPoint)
+  {
+    mIsBufferCreatedProperly = false;
+  }
+  else
+  {
+    mIsBufferCreatedProperly = true;
+  }
+}
+
+DDyImageBinaryDataBuffer::~DDyImageBinaryDataBuffer()
+{
+  if (mIsBufferCreatedProperly)
+  {
+    stbi_image_free(mBufferStartPoint);
+  }
+}
+
+} /// ::dy namespace

@@ -17,6 +17,8 @@
 /// 2018-07-05 Create file.
 ///
 
+#include <list>
+
 //!
 //! Forward declaration
 //!

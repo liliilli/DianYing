@@ -14,8 +14,9 @@
 ///
 
 #include <unordered_map>
-
 #include <glm/glm.hpp>
+
+#include <Dy/Core/Component/Internal/ShaderType.h>
 
 //!
 //! Forward declaration
@@ -35,59 +36,11 @@ struct DVector4;
 namespace dy {
 
 ///
-/// @brief
-///
-enum class EDyShaderFragmentType
-{
-  Vertex,
-  TesselationControl,
-  TesselationEvaluation,
-  Geometry,
-  Pixel
-};
-
-///
-/// @brief Shader internal variable type for uniform and textures.
-///
-enum class EDyUniformVariableType {
-  Matrix4 = 0,
-  Matrix3,
-  Matrix2,
-  Vector4,
-  Vector3,
-  Vector2,
-  IVec4,
-  IVec3,
-  IVec2,
-  Integer,
-  IntegerPointer,
-  Float,
-  FloatPointer,
-  Texture2D
-};
-
-///
-/// @brief
-///
-struct PDyShaderFragmentInformation final
-{
-  EDyShaderFragmentType mShaderType;
-  std::string           mShaderPath = "";
-};
-
-///
-/// @brief
-///
-struct PDyShaderConstructionDescriptor final
-{
-  std::vector<PDyShaderFragmentInformation> mShaderFragments;
-};
-
-///
 /// @class CDyShaderComponent
 /// @brief New shader wrapper class
 ///
-class CDyShaderComponent final {
+class CDyShaderComponent final
+{
   using TUniformId = int32_t;
   using TUniformStruct = std::tuple<std::string, EDyUniformVariableType, TUniformId>;
 public:
@@ -115,7 +68,8 @@ public:
   /// @brief Get shader program id.
   /// @return Program id.
   ///
-  uint32_t GetShaderProgramId() const noexcept {
+  uint32_t GetShaderProgramId() const noexcept
+  {
     return mShaderProgramId;
   }
 
@@ -128,11 +82,6 @@ public:
   /// @brief
   ///
   void UnbindShader();
-
-  ///
-  /// @todo TEMPORAL FUNCTION
-  ///
-  void TempRender();
 
   //!
   //! uniform functions (ONLY OPENGL!)

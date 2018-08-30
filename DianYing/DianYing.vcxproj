@@ -306,6 +306,7 @@
     <ClCompile Include="Source\Core\Component\Shader.cc" />
     <ClCompile Include="Source\Entry\entry.cc" />
     <ClCompile Include="Source\Helper\Geometry\Types.cc" />
+    <ClCompile Include="Source\Helper\Internal\ImageBinaryBuffer.cc" />
     <ClCompile Include="Source\Helper\Math\Math.cc" />
     <ClCompile Include="Source\Helper\Math\Random.cc" />
     <ClCompile Include="Source\Helper\Type\Color.cc" />
@@ -316,6 +317,7 @@
     <ClCompile Include="Source\Helper\Type\Vector2.cc" />
     <ClCompile Include="Source\Helper\Type\Vector3.cc" />
     <ClCompile Include="Source\Helper\Type\Vector4.cc" />
+    <ClCompile Include="Source\Management\HandleManager.cc" />
     <ClCompile Include="Source\Management\SettingManager.cc" />
     <ClCompile Include="Source\Management\TimeManager.cc" />
     <ClCompile Include="Source\precompiled.cc">
@@ -328,6 +330,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\Dy\Core\Component\Internal\MaterialType.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Internal\ShaderType.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Internal\TextureType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Material.h" />
     <ClInclude Include="Include\Dy\Core\Component\Model.h" />
     <ClInclude Include="Include\Dy\Core\Component\Shader.h" />
@@ -337,6 +342,7 @@
     <ClInclude Include="Include\Dy\Helper\enum_flags.h" />
     <ClInclude Include="Include\Dy\Helper\Geometry\Mesh.h" />
     <ClInclude Include="Include\Dy\Helper\Geometry\Types.h" />
+    <ClInclude Include="Include\Dy\Helper\Internal\ImageBinaryBuffer.h" />
     <ClInclude Include="Include\Dy\Helper\IoHelper.h" />
     <ClInclude Include="Include\Dy\Helper\macroes.h" />
     <ClInclude Include="Include\Dy\Helper\Math\Math.h" />
@@ -352,6 +358,7 @@
     <ClInclude Include="Include\Dy\Helper\Type\Vector2.h" />
     <ClInclude Include="Include\Dy\Helper\Type\Vector3.h" />
     <ClInclude Include="Include\Dy\Helper\Type\Vector4.h" />
+    <ClInclude Include="Include\Dy\Management\HandleManager.h" />
     <ClInclude Include="Include\Dy\Management\Interface\ISingletonCrtp.h" />
     <ClInclude Include="Include\Dy\Management\SettingManager.h" />
     <ClInclude Include="Include\Dy\Management\TimeManager.h" />
@@ -361,6 +368,7 @@
     <ClInclude Include="Libraries\imgui\imgui\imgui_impl_opengl3.h" />
     <ClInclude Include="Libraries\imgui\imgui\imconfig.h" />
     <ClInclude Include="Libraries\imgui\imgui\imgui.h" />
+    <ClInclude Include="Libraries\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl">

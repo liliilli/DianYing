@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_HELPER_IO_HELPER_H
-#define GUARD_DY_HELPER_IO_HELPER_H
+#ifndef GUARD_DY_CORE_COMPONENT_MODEL_H
+#define GUARD_DY_CORE_COMPONENT_MODEL_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -16,25 +16,6 @@
 namespace dy
 {
 
-///
-/// @brief
-///
-std::optional<std::vector<char>> DyReadBinaryFileAll(const std::string& filePath) {
-  std::ifstream fileStream { filePath, std::ios::ate | std::ios::binary };
-  if (!fileStream.is_open()) return std::nullopt;
-
-  const size_t fileSize = static_cast<size_t>(fileStream.tellg());
-  std::vector<char> fileBuffer(fileSize + 1);
-
-  fileStream.seekg(0);
-  fileStream.read(fileBuffer.data(), fileSize);
-
-  fileStream.close();
-  return fileBuffer;
-}
-
-
-
 } /// ::dy namespace
 
-#endif /// GUARD_DY_HELPER_IO_HELPER_H
+#endif /// GUARD_DY_CORE_COMPONENT_MODEL_H

@@ -14,9 +14,8 @@
 ///
 
 #if defined(_WIN32)
-#pragma warning(disable:4100)
-#pragma warning(disable:4127)
-#pragma warning(disable:4201)
+#pragma warning(push)
+#pragma warning(disable:4100 4127 4201)
 #endif
 
 #endif ///  GUARD_DIANYING_HELPER_DISABLE_WARNING_H
