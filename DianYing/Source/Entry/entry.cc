@@ -31,7 +31,10 @@
 #include <Dy/Helper/Type/Color.h>
 #include <Dy/Management/TimeManager.h>
 #include <Dy/Management/SettingManager.h>
-#include "Dy/Core/Component/Texture.h"
+#include <Dy/Management/HandleManager.h>
+#include <Dy/Core/Component/Texture.h>
+#include "Dy/Core/Component/Internal/MaterialType.h"
+#include "Dy/Core/Component/Material.h"
 
 #define MDY_RESOLUTION_WIDTH 1280
 #define MDY_RESOLUTION_HEIGHT 720
@@ -112,8 +115,7 @@ bool gImguiShowDemoWindow = true;
 bool gImguiShowAnotherWindow = false;
 
 dy::DVector3 gColor {1.f, 0.f, 0.5f};
-dy::CDyShaderComponent gShader;
-dy::CDyTextureComponent gTexture;
+dy::CDyMaterialComponent material;
 
 void GlRenderFrame()
 {
@@ -166,9 +168,7 @@ void GlRenderFrame()
   ImGui::Render();
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-  gShader.BindShader();
-  gShader.TempRender();
-  gShader.UnbindShader();
+  material.TemporalRender();
 }
 
 void GlRenderLoop()
@@ -225,10 +225,12 @@ void DyInitiailzeAllManagers()
   }
   // Time manager
   MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyHandle::Initialize());
 }
 
 void DyReleaseAllManagers()
 {
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyHandle::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDySetting::Release());
 }
@@ -410,6 +412,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLin
       ImGui_ImplOpenGL3_Init("#version 430");
       ImGui::StyleColorsDark();
 
+      auto& handle = dy::MDyHandle::GetInstance();
       // Shader DEMO
       dy::PDyShaderConstructionDescriptor shaderDesc;
       {
@@ -424,16 +427,24 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLin
         fragmentInfo.mShaderPath = "./glShader.frag";
         shaderDesc.mShaderFragments.emplace_back(fragmentInfo);
       }
-      MDY_CALL_ASSERT_SUCCESS(gShader.pInitializeShaderProgram(shaderDesc));
+      MDY_CALL_ASSERT_SUCCESS(handle.CreateShaderResource("TestShader", shaderDesc));
 
       // OpenGL (native) Texture binding DEMO
       dy::PDyTextureConstructionDescriptor textureDesc;
       {
         textureDesc.mTexturePath = "./TestResource/S_7325920284368.jpg";
         textureDesc.mTextureType = GL_TEXTURE_2D;
-        textureDesc.mIsTextureParameterCustomed = false;
+        textureDesc.mIsEnabledCustomedTextureParameter = false;
       }
-      MDY_CALL_ASSERT_SUCCESS(gTexture.pInitializeTextureResource(textureDesc));
+      MDY_CALL_ASSERT_SUCCESS(handle.CreateTextureResource("TestTexture", textureDesc));
+
+      dy::PDyMaterialConstructionDescriptor materialDesc;
+      materialDesc.mBlendMode = dy::EDyMaterialBlendMode::Opaque;
+      materialDesc.mShaderComponentPtr = handle.GetShaderResource("TestShader");
+      materialDesc.mTextureComponents = {
+          handle.GetTextureResource("TestTexture")
+      };
+      MDY_CALL_ASSERT_SUCCESS(material.pInitializeMaterial(materialDesc));
 
       GlRenderLoop();
 
