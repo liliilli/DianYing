@@ -21,7 +21,7 @@
 
 namespace dy
 {
-class CDyShaderComponent;
+class CDyShaderResource;
 class CDyTextureComponent;
 } /// ::dy namespace
 
@@ -49,7 +49,7 @@ public:
   void TemporalRender();
 
 private:
-  CDyShaderComponent* mShaderResourcePtr = nullptr;
+  CDyShaderResource* mShaderResourcePtr = nullptr;
   std::vector<CDyTextureComponent*> mTextureResourcePtrs;
 
   EDyMaterialBlendMode mBlendMode = EDyMaterialBlendMode::Opaque;

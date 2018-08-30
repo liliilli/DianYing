@@ -13,8 +13,10 @@
 ///
 
 /// Header file
-#include <Dy/Core/Component/Shader.h>
+#include <Dy/Core/Component/Resource/ShaderResource.h>
+
 #include <Dy/Helper/IoHelper.h>
+#include <Dy/Core/Component/Information/ShaderInformation.h>
 
 namespace {
 
@@ -49,23 +51,27 @@ void PrintShaderProgramErrorLog(GLuint shaderProgramId) {
 namespace dy
 {
 
-CDyShaderComponent::~CDyShaderComponent()
+CDyShaderResource::~CDyShaderResource()
 {
+  if (mPrevLevelPtr)
+  {
+    mPrevLevelPtr->pfSetNextLevel(nullptr);
+  }
   glDeleteProgram(mShaderProgramId);
 }
 
-EDySuccess CDyShaderComponent::pInitializeShaderProgram(const PDyShaderConstructionDescriptor& shaderConstructionDescriptor)
+EDySuccess CDyShaderResource::pfInitializeShaderResource(const CDyShaderInformation& shaderInformation)
 {
   std::vector<std::pair<EDyShaderFragmentType, uint32_t>> shaderFragmentIdList;
 
-  MDY_CALL_ASSERT_SUCCESS(pInitializeShaderFragments(shaderConstructionDescriptor, shaderFragmentIdList));
+  MDY_CALL_ASSERT_SUCCESS(pInitializeShaderFragments(shaderInformation.GetInformation(), shaderFragmentIdList));
   MDY_CALL_ASSERT_SUCCESS(pInitializeShaderProgram(shaderFragmentIdList));
 
   glGenVertexArrays(1, &mTemporalVertexArray);
   return DY_SUCCESS;
 }
 
-EDySuccess CDyShaderComponent::pInitializeShaderFragments(
+EDySuccess CDyShaderResource::pInitializeShaderFragments(
     const PDyShaderConstructionDescriptor& shaderConstructionDescriptor,
     std::vector<std::pair<EDyShaderFragmentType, uint32_t>>& shaderFragmentIdList)
 {
@@ -127,7 +133,7 @@ EDySuccess CDyShaderComponent::pInitializeShaderFragments(
   return DY_SUCCESS;
 }
 
-EDySuccess CDyShaderComponent::pInitializeShaderProgram(const std::vector<std::pair<EDyShaderFragmentType, uint32_t>>& shaderFragmentIdList)
+EDySuccess CDyShaderResource::pInitializeShaderProgram(const std::vector<std::pair<EDyShaderFragmentType, uint32_t>>& shaderFragmentIdList)
 {
   mShaderProgramId = glCreateProgram();
   for (auto& [shaderFragmentType, shaderFragmentId] : shaderFragmentIdList) {
@@ -152,24 +158,28 @@ EDySuccess CDyShaderComponent::pInitializeShaderProgram(const std::vector<std::p
   return DY_SUCCESS;
 }
 
-void CDyShaderComponent::UseShader()
+void CDyShaderResource::UseShader() noexcept
 {
   glUseProgram(mShaderProgramId);
 }
 
-void CDyShaderComponent::UpdateUniformVariables()
+void CDyShaderResource::UpdateUniformVariables()
 {
-
+  assert(false && "NOT IMPLEMENTED");
 }
 
-void CDyShaderComponent::BindShader()
+void CDyShaderResource::BindShader() noexcept
 {
   glBindVertexArray(mTemporalVertexArray);
 }
 
-void CDyShaderComponent::UnbindShader()
+void CDyShaderResource::UnbindShader() noexcept
 {
   glBindVertexArray(0);
+}
+
+void CDyShaderResource::UnuseShader() noexcept
+{
   glUseProgram(0);
 }
 

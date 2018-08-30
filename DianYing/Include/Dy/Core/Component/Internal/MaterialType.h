@@ -21,7 +21,7 @@
 
 namespace dy
 {
-class CDyShaderComponent;
+class CDyShaderResource;
 class CDyTextureComponent;
 }
 
@@ -48,7 +48,7 @@ enum class EDyMaterialBlendMode
 ///
 struct PDyMaterialConstructionDescriptor final
 {
-  CDyShaderComponent* mShaderComponentPtr = nullptr;
+  CDyShaderResource* mShaderComponentPtr = nullptr;
   std::vector<CDyTextureComponent*> mTextureComponents;
 
   EDyMaterialBlendMode mBlendMode = EDyMaterialBlendMode::Opaque;

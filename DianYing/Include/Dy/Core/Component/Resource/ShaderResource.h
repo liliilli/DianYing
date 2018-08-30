@@ -13,9 +13,6 @@
 /// SOFTWARE.
 ///
 
-#include <unordered_map>
-#include <glm/glm.hpp>
-
 #include <Dy/Core/Component/Internal/ShaderType.h>
 
 //!
@@ -24,9 +21,11 @@
 
 namespace dy
 {
+class CDyShaderInformation;
 struct DVector2;
 struct DVector3;
 struct DVector4;
+class DDyMatrix4x4;
 } /// ::dy namespace
 
 //!
@@ -36,28 +35,40 @@ struct DVector4;
 namespace dy {
 
 ///
-/// @class CDyShaderComponent
+/// @class CDyShaderResource
 /// @brief New shader wrapper class
 ///
-class CDyShaderComponent final
+class CDyShaderResource final
 {
   using TUniformId = int32_t;
   using TUniformStruct = std::tuple<std::string, EDyUniformVariableType, TUniformId>;
 public:
-  CDyShaderComponent() = default;
-  CDyShaderComponent(const CDyShaderComponent&) = delete;
-  CDyShaderComponent& operator=(const CDyShaderComponent&) = delete;
-  CDyShaderComponent(CDyShaderComponent&&) = default;
-  CDyShaderComponent& operator=(CDyShaderComponent&&) = default;
-  ~CDyShaderComponent();
+  CDyShaderResource() = default;
+  CDyShaderResource(const CDyShaderResource&) = delete;
+  CDyShaderResource& operator=(const CDyShaderResource&) = delete;
+  CDyShaderResource(CDyShaderResource&&) = default;
+  CDyShaderResource& operator=(CDyShaderResource&&) = default;
+  ~CDyShaderResource();
 
-  [[nodiscard]]
-  EDySuccess pInitializeShaderProgram(const PDyShaderConstructionDescriptor& shaderConstructionDescriptor);
+  ///
+  /// @brief Turn on shader program.
+  ///
+  void UseShader() noexcept;
 
   ///
   /// @brief
   ///
-  void UseShader();
+  void BindShader() noexcept;
+
+  ///
+  /// @brief
+  ///
+  void UnbindShader() noexcept;
+
+  ///
+  /// @brief Turn off shader program.
+  ///
+  void UnuseShader() noexcept;
 
   ///
   /// @brief
@@ -72,16 +83,6 @@ public:
   {
     return mShaderProgramId;
   }
-
-  ///
-  /// @brief
-  ///
-  void BindShader();
-
-  ///
-  /// @brief
-  ///
-  void UnbindShader();
 
   //!
   //! uniform functions (ONLY OPENGL!)
@@ -130,7 +131,7 @@ public:
   /// @brief The method sets $ \mathbf{M}_{4x4} $ matrix to
   /// arbitary uniform variable.
   ///
-  void SetUniformMatrix4Float(int32_t uniform_id, const glm::mat4& matrix);
+  void SetUniformMatrix4Float(int32_t uniform_id, const DDyMatrix4x4& matrix);
 
   ///
   /// @brief The method sets singed-integer value to arbitary uniform variable.
@@ -178,10 +179,17 @@ public:
    void SetStructSpotlight(const std::string& name, const light::Spotlight& container);
 #endif
 
-protected:
+private:
 #ifdef false
   void pInitializeUniformVariables(const resource::SShader::TVariableList& uniforms);
 #endif
+
+  ///
+  /// @brief private-friend function, initialize shader resource with information.
+  ///
+  [[nodiscard]]
+  EDySuccess pfInitializeShaderResource(const CDyShaderInformation& shaderInformation);
+
   ///
   /// @brief
   ///
@@ -194,9 +202,20 @@ protected:
   EDySuccess pInitializeShaderProgram(const std::vector<std::pair<EDyShaderFragmentType, uint32_t>>& shaderFragmentIdList);
 
   uint32_t mShaderProgramId = 0;
+  uint32_t mTemporalVertexArray = 0;
+
   std::vector<TUniformStruct> mUniformVariableContainer;
 
-  uint32_t mTemporalVertexArray = 0;
+  void pfSetPrevLevel(CDyShaderInformation* ptr) const noexcept
+  {
+    mPrevLevelPtr = ptr;
+  }
+
+  //
+  mutable CDyShaderInformation* mPrevLevelPtr = nullptr;
+
+  friend class CDyShaderInformation;
+  friend class MDyResource;
 };
 
 } /// ::dy namespace

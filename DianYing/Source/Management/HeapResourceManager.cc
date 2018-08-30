@@ -13,50 +13,54 @@
 ///
 
 /// Header file
-#include <Dy/Management/HandleManager.h>
+#include <Dy/Management/HeapResourceManager.h>
+
+#include <Dy/Management/DataInformationManager.h>
 
 namespace dy
 {
 
-EDySuccess MDyHandle::pfInitialize()
+EDySuccess MDyResource::CreateShaderResource(const std::string& shaderName)
 {
-  return DY_SUCCESS;
-}
+  // Get information from MDyDataInformation manager.
+  const auto& manInfo   = MDyDataInformation::GetInstance();
+  const CDyShaderInformation* shaderInfo = manInfo.pfGetShaderInformation(shaderName);
+  if (!shaderInfo)
+  {
+    return DY_FAILURE;
+  }
 
-EDySuccess MDyHandle::pfRelease()
-{
-  this->mOnBoardShaderLists.clear();
-
-  return DY_SUCCESS;
-}
-
-EDySuccess MDyHandle::CreateShaderResource(const std::string& shaderName, const PDyShaderConstructionDescriptor& shaderDescriptor)
-{
+  // Create memory space for new shader resource.
   auto [it, result] = this->mOnBoardShaderLists.try_emplace(shaderName, nullptr);
   if (!result)
   {
     return DY_FAILURE;
   }
 
-  std::unique_ptr<CDyShaderComponent> shaderResource = std::make_unique<CDyShaderComponent>();
-  if (const auto success = shaderResource->pInitializeShaderProgram(shaderDescriptor);
-      success == DY_FAILURE)
+  // Make resource in heap, and insert it to empty memory space.
+  auto shaderResource = std::make_unique<CDyShaderResource>();
+  if (const auto success = shaderResource->pfInitializeShaderResource(*shaderInfo); success == DY_FAILURE)
   {
     this->mOnBoardShaderLists.erase(shaderName);
     return DY_FAILURE;
   }
-
-  it->second.swap(shaderResource);
-  if (!it->second)
+  else
   {
-    this->mOnBoardShaderLists.erase(shaderName);
-    return DY_FAILURE;
+    it->second.swap(shaderResource);
+    if (!it->second)
+    {
+      this->mOnBoardShaderLists.erase(shaderName);
+      return DY_FAILURE;
+    }
   }
 
+  // At last, setting pointers to each other.
+  shaderInfo->pfSetNextLevel(it->second.get());
+  it->second->pfSetPrevLevel(const_cast<CDyShaderInformation*>(shaderInfo));
   return DY_SUCCESS;
 }
 
-EDySuccess MDyHandle::CreateTextureResource(const std::string& textureName, const PDyTextureConstructionDescriptor& textureDescriptor)
+EDySuccess MDyResource::CreateTextureResource(const std::string& textureName, const PDyTextureConstructionDescriptor& textureDescriptor)
 {
   auto [it, result] = this->mOnBoardTextureLists.try_emplace(textureName, nullptr);
   if (!result)
@@ -82,7 +86,7 @@ EDySuccess MDyHandle::CreateTextureResource(const std::string& textureName, cons
   return DY_SUCCESS;
 }
 
-CDyShaderComponent* MDyHandle::GetShaderResource(const std::string& shaderName)
+CDyShaderResource* MDyResource::GetShaderResource(const std::string& shaderName)
 {
   const auto it = this->mOnBoardShaderLists.find(shaderName);
   if (it == this->mOnBoardShaderLists.end())
@@ -93,7 +97,7 @@ CDyShaderComponent* MDyHandle::GetShaderResource(const std::string& shaderName)
   return it->second.get();
 }
 
-CDyTextureComponent* MDyHandle::GetTextureResource(const std::string& textureName)
+CDyTextureComponent* MDyResource::GetTextureResource(const std::string& textureName)
 {
   const auto it = this->mOnBoardTextureLists.find(textureName);
   if (it == this->mOnBoardTextureLists.end())
@@ -102,6 +106,17 @@ CDyTextureComponent* MDyHandle::GetTextureResource(const std::string& textureNam
   }
 
   return it->second.get();
+}
+
+EDySuccess MDyResource::pfInitialize()
+{
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyResource::pfRelease()
+{
+  this->mOnBoardShaderLists.clear();
+  return DY_SUCCESS;
 }
 
 } /// ::dy namespace

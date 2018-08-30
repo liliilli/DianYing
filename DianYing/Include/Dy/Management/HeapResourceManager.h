@@ -19,7 +19,7 @@
 #include <Dy/Core/Component/Internal/ShaderType.h>
 #include <Dy/Core/Component/Internal/TextureType.h>
 
-#include <Dy/Core/Component/Shader.h>
+#include <Dy/Core/Component/Resource/ShaderResource.h>
 #include <Dy/Core/Component/Texture.h>
 
 //!
@@ -34,18 +34,20 @@
 namespace dy
 {
 
-class MDyHandle final : public dy::ISingleton<MDyHandle>
+class MDyResource final : public dy::ISingleton<MDyResource>
 {
-  MDY_SINGLETON_DERIVED(MDyHandle);
-  MDY_SINGLETON_PROPERTIES(MDyHandle);
+  MDY_SINGLETON_DERIVED(MDyResource);
+  MDY_SINGLETON_PROPERTIES(MDyResource);
 
   template <typename TType>
   using THashList = std::unordered_map<std::string, TType>;
 public:
   ///
-  /// @brief
+  /// @brief Create shader resource on cpu and gpu.
+  /// @param[in] shaderName name to create shader, must be same with shader information name.
   ///
-  EDySuccess CreateShaderResource(const std::string& shaderName, const PDyShaderConstructionDescriptor& shaderDescriptor);
+  [[nodiscard]]
+  EDySuccess CreateShaderResource(const std::string& shaderName);
 
   ///
   /// @brief
@@ -55,15 +57,17 @@ public:
   ///
   /// @brief
   ///
-  CDyShaderComponent* GetShaderResource(const std::string& shaderName);
+  [[nodiscard]]
+  CDyShaderResource* GetShaderResource(const std::string& shaderName);
 
   ///
   /// @brief
   ///
-  CDyTextureComponent* GetTextureResource(const std::string& shaderName);
+  [[nodiscard]]
+  CDyTextureComponent* GetTextureResource(const std::string& textureName);
 
 private:
-  THashList<std::unique_ptr<CDyShaderComponent>>  mOnBoardShaderLists;
+  THashList<std::unique_ptr<CDyShaderResource>>   mOnBoardShaderLists;
   THashList<std::unique_ptr<CDyTextureComponent>> mOnBoardTextureLists;
 };
 
