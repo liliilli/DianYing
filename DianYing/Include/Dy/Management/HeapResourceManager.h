@@ -21,6 +21,7 @@
 
 #include <Dy/Core/Component/Resource/ShaderResource.h>
 #include <Dy/Core/Component/Resource/TextureResource.h>
+#include "Dy/Core/Component/Resource/MaterialResource.h"
 
 //!
 //! Forward declaration
@@ -53,7 +54,16 @@ public:
   /// @brief Create texture resource on gpu.
   /// @param[in] textureName name to create texture, must be same with texture information name.
   ///
+  [[nodiscard]]
   EDySuccess CreateTextureResource(const std::string& textureName);
+
+  ///
+  /// @brief Create material resource on cpu and gpu.
+  /// @param[in] materialName name to create material which must be same with material information name.
+  /// and material informaiton to be a target should be capable of create all resource related to material.
+  ///
+  [[nodiscard]]
+  EDySuccess CreateMaterialResource(const std::string& materialName);
 
   ///
   /// @brief
@@ -67,9 +77,16 @@ public:
   [[nodiscard]]
   CDyTextureResource* GetTextureResource(const std::string& textureName);
 
+  ///
+  /// @brief
+  ///
+  [[nodiscard]]
+  CDyMaterialResource* GetMaterialResource(const std::string& materialName);
+
 private:
   THashList<std::unique_ptr<CDyShaderResource>>   mOnBoardShaderLists;
-  THashList<std::unique_ptr<CDyTextureResource>> mOnBoardTextureLists;
+  THashList<std::unique_ptr<CDyTextureResource>>  mOnBoardTextureLists;
+  THashList<std::unique_ptr<CDyMaterialResource>> mOnBoardMaterialLists;
 };
 
 } /// ::dy namespace

@@ -13,8 +13,54 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Core/Component/Internal/MaterialType.h>
+
+//!
+//! Forward declaration
+//!
+
 namespace dy
 {
+class CDyMaterialResource;
+} /// ::dy namespace
+
+//!
+//! Implementation
+//!
+
+namespace dy
+{
+
+class DDyMaterialInformation final
+{
+public:
+  DDyMaterialInformation(const PDyMaterialConstructionDescriptor& shaderConstructionDescriptor) :
+      mMaterialInformation{shaderConstructionDescriptor}
+  {};
+
+  DDyMaterialInformation(const DDyMaterialInformation&)            = delete;
+  DDyMaterialInformation& operator=(const DDyMaterialInformation&) = delete;
+  DDyMaterialInformation(DDyMaterialInformation&&)            = default;
+  DDyMaterialInformation& operator=(DDyMaterialInformation&&) = default;
+  ~DDyMaterialInformation();
+
+  ///
+  /// @brief return immutable descriptor information reference.
+  ///
+  const PDyMaterialConstructionDescriptor& GetInformation() const noexcept
+  {
+    return this->mMaterialInformation;
+  }
+
+private:
+  PDyMaterialConstructionDescriptor mMaterialInformation;
+
+  void __pfSetNextLevel(CDyMaterialResource* ptr) const noexcept { mNextLevelPtr = ptr; }
+  mutable CDyMaterialResource* mNextLevelPtr = nullptr;
+
+  friend class CDyMaterialResource;
+  friend class MDyResource;
+};
 
 } /// ::dy namespace
 

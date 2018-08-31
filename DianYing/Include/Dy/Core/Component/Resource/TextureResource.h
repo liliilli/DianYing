@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Core/Component/Internal/TextureType.h>
+#include "MaterialResource.h"
 
 //!
 //! Forward declaration
@@ -22,6 +23,7 @@
 namespace dy
 {
 class CDyTextureInformation;
+class CDyMaterialResource;
 }
 
 //!
@@ -52,7 +54,7 @@ public:
   ///
   /// @brief
   ///
-  FORCEINLINE int32_t GetTextureType() const noexcept
+  FORCEINLINE EDyTextureStyleType GetTextureType() const noexcept
   {
     return this->mTextureType;
   }
@@ -82,20 +84,37 @@ private:
 
   /// Valid texture id must not be 0.
   // @todo JUST ONLY OPENGL
-  int32_t   mTextureType        = GL_TEXTURE_2D;
-	GLuint    mTextureResourceId  = 0;
-  int32_t   mTextureWidth       = MDY_NOT_INITIALIZED_M1;
-  int32_t   mTextureHeight      = MDY_NOT_INITIALIZED_M1;
+  EDyTextureStyleType mTextureType  = EDyTextureStyleType::None;
+	uint32_t  mTextureResourceId      = 0;
+  int32_t   mTextureWidth           = MDY_NOT_INITIALIZED_M1;
+  int32_t   mTextureHeight          = MDY_NOT_INITIALIZED_M1;
 
-  void __pfSetPrevLevel(CDyTextureInformation* ptr) const noexcept { mPrevLevelPtr = ptr; }
-  void __pfSetNextLevel(void* ptr) const noexcept
+  //!
+  //! Level pointers binding
+  //!
+
+  template <typename TType>
+  using TBindPtrMap = std::unordered_map<TType*, TType*>;
+  ///
+  /// @brief
+  ///
+  void __pfSetPrevLevel(CDyTextureInformation* ptr) const noexcept { __mPrevLevelPtr = ptr; }
+  void __pfSetMaterialBind(CDyMaterialResource* ptr) const noexcept
   {
-
+    auto [it, result] = __mBindMaterialPtrs.try_emplace(ptr, ptr);
+    if (!result) {
+      assert(false);
+    }
   }
-  mutable CDyTextureInformation* mPrevLevelPtr = nullptr;
-  mutable std::unordered_map<void*, void*> mNextLevelMap;
+  void __pfSetMaterialReset(CDyMaterialResource* ptr) const noexcept
+  {
+    __mBindMaterialPtrs.erase(ptr);
+  }
+  mutable CDyTextureInformation*            __mPrevLevelPtr   = nullptr;
+  mutable TBindPtrMap<CDyMaterialResource>  __mBindMaterialPtrs;
 
   friend class CDyTextureInformation;
+  friend class CDyMaterialResource;
   friend class MDyResource;
 };
 

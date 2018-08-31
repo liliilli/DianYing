@@ -13,16 +13,75 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Core/Component/Internal/MaterialType.h>
+
+//!
+//! Forward declaration
+//!
+
+namespace dy
+{
+class DDyMaterialInformation;
+class CDyShaderResource;
+class CDyTextureResource;
+} /// ::dy namespace
+
+//!
+//! Implementation
+//!
 
 namespace dy
 {
 
-class CDyMaterialResource final
+class CDyMaterialResource
 {
 public:
+  CDyMaterialResource()  = default;
+  CDyMaterialResource(const CDyMaterialResource&)             = delete;
+  CDyMaterialResource(CDyMaterialResource&&)                  = default;
+  CDyMaterialResource& operator=(const CDyMaterialResource&)  = delete;
+  CDyMaterialResource& operator=(CDyMaterialResource&&)       = default;
+  ~CDyMaterialResource();
+
+  // @todo TEMPORAL FUNCTION
+  void TemporalRender();
 
 private:
+  ///
+  /// @brief
+  ///
+  [[nodiscard]]
+  EDySuccess pInitializeMaterial(const PDyMaterialResourceDescriptor& materialInformation);
 
+  std::string                           mMaterialName         = {};
+  DDyMaterialShaderTuple                mShaderResource       = {};
+  std::vector<DDyMaterialTextureTuple>  mTextureResources     = {};
+  EDyMaterialBlendMode                  mBlendMode            = EDyMaterialBlendMode::Opaque;
+
+  //!
+  //! Level pointers binding
+  //!
+
+  template <typename TType>
+  using TBindPtrMap = std::unordered_map<TType*, TType*>;
+  ///
+  /// @brief
+  ///
+  void __pfSetPrevLevel(DDyMaterialInformation* ptr) const noexcept { __mPrevLevelPtr = ptr; }
+  void __pfSetRendererBind(void* ptr) const noexcept
+  {
+
+  }
+  void __pfSetRendererReset(void* ptr) const noexcept
+  {
+
+  }
+  mutable DDyMaterialInformation*           __mPrevLevelPtr     = nullptr;
+  mutable TBindPtrMap<void>                 __mBindRendererPtrs;
+
+  friend class CDyTextureResource;
+  friend class DDyMaterialInformation;
+  friend class MDyResource;
 };
 
 } /// ::dy namespace

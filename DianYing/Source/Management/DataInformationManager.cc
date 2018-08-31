@@ -79,6 +79,33 @@ EDySuccess MDyDataInformation::CreateTextureInformation(const std::string& textu
   return DY_SUCCESS;
 }
 
+EDySuccess MDyDataInformation::CreateMaterialInformation(const PDyMaterialConstructionDescriptor& materialDescriptor)
+{
+  const auto& materialName = materialDescriptor.mMaterialName;
+  if (mMaterialInformation.find(materialName) != mMaterialInformation.end())
+  {
+    return DY_FAILURE;
+  }
+
+  // Check there is already in the information map.
+  auto [it, creationResult] = mMaterialInformation.try_emplace(materialName, nullptr);
+  if (!creationResult) {
+
+    return DY_FAILURE;
+  }
+
+  // Make resource in heap, and insert it to empty memory space.
+  auto materialInformation = std::make_unique<DDyMaterialInformation>(materialDescriptor);
+  it->second.swap(materialInformation);
+  if (!it->second)
+  {
+    this->mMaterialInformation.erase(materialName);
+    return DY_FAILURE;
+  }
+
+  return DY_SUCCESS;
+}
+
 EDySuccess MDyDataInformation::DeleteShaderInformation(const std::string& shaderName)
 {
   const auto iterator = mShaderInformation.find(shaderName);
@@ -109,7 +136,22 @@ EDySuccess MDyDataInformation::DeleteTextureInformation(const std::string& textu
   return DY_SUCCESS;
 }
 
-const CDyShaderInformation* MDyDataInformation::pfGetShaderInformation(const std::string& shaderName) const noexcept
+EDySuccess MDyDataInformation::DeleteMaterialInformation(const std::string& materialName)
+{
+  const auto iterator = mTextureInformation.find(materialName);
+  if (iterator == mTextureInformation.end())
+  {
+    return DY_FAILURE;
+  }
+
+  // IF mMaterialInformation is being used by another resource instance?
+  // then, return DY_FAILURE or remove it.
+  assert(false);
+
+  return DY_SUCCESS;
+}
+
+  const CDyShaderInformation* MDyDataInformation::pfGetShaderInformation(const std::string& shaderName) const noexcept
 {
   const auto iterator = mShaderInformation.find(shaderName);
   if (iterator == mShaderInformation.end())
@@ -132,4 +174,17 @@ const CDyTextureInformation* MDyDataInformation::pfGetTextureInformation(const s
 
   return iterator->second.get();
 }
+
+const DDyMaterialInformation* MDyDataInformation::pfGetMaterialInformation(const std::string& materialName) const noexcept
+{
+  const auto iterator = mMaterialInformation.find(materialName);
+  if (iterator == mMaterialInformation.end())
+  {
+    // @todo Error log message
+    return nullptr;
+  }
+
+  return iterator->second.get();
+}
+
 } /// ::dy namespace

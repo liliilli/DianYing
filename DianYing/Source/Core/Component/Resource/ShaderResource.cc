@@ -53,11 +53,23 @@ namespace dy
 
 CDyShaderResource::~CDyShaderResource()
 {
-  if (mPrevLevelPtr)
+  // Release heap resources
+  if (mShaderProgramId)
   {
-    mPrevLevelPtr->__pfSetNextLevel(nullptr);
+    glDeleteProgram(mShaderProgramId);
   }
-  glDeleteProgram(mShaderProgramId);
+
+  // Unbind previous and next level.
+  if (__mPrevLevelPtr)
+  {
+    __mPrevLevelPtr->__pfSetNextLevel(nullptr);
+  }
+  for (auto& [notUsed, materialPtr] : __mBindMaterialPtrs)
+  {
+#ifdef false
+    materialPtr->__pfResetTextureRefPtr(nullptr);
+#endif
+  }
 }
 
 EDySuccess CDyShaderResource::pfInitializeResource(const CDyShaderInformation& shaderInformation)

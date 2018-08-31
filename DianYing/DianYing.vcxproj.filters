@@ -20,8 +20,6 @@
     <ClCompile Include="Libraries\glad\src\glad.c" />
     <ClCompile Include="Source\Helper\Geometry\Types.cc" />
     <ClCompile Include="Source\Helper\Geometry\Mesh.cc" />
-    <ClCompile Include="Source\Core\Component\Material.cc" />
-    <ClCompile Include="Source\Core\Component\Texture.cc" />
     <ClCompile Include="Source\Helper\Type\Matrix2.cc" />
     <ClCompile Include="Source\Helper\Type\Matrix3.cc" />
     <ClCompile Include="Source\Helper\Type\Matrix4.cc" />
@@ -68,15 +66,12 @@
     <ClInclude Include="Include\Dy\Helper\Type\Matrix3.h" />
     <ClInclude Include="Include\Dy\Helper\Type\Matrix2.h" />
     <ClInclude Include="Include\Dy\Helper\IoHelper.h" />
-    <ClInclude Include="Include\Dy\Core\Component\Material.h" />
-    <ClInclude Include="Include\Dy\Core\Component\Texture.h" />
     <ClInclude Include="Include\Dy\Helper\Geometry\Mesh.h" />
     <ClInclude Include="Libraries\stb\stb_image.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\ImageBinaryBuffer.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\ShaderType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\TextureType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\MaterialType.h" />
-    <ClInclude Include="Include\Dy\Helper\Geometry\GeometryEnumTypes.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\ShaderInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\TextureInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\MaterialInformation.h" />
@@ -91,6 +86,7 @@
     <ClInclude Include="Include\Dy\Management\HeapResourceManager.h" />
     <ClInclude Include="Include\Dy\Core\Component\MeshImporter.h" />
     <ClInclude Include="Include\Dy\Core\Component\MeshRenderer.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Internal\TextureEnums.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

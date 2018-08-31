@@ -15,9 +15,11 @@
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 
-#include <Dy/Core/Component/Information/ShaderInformation.h>
 #include <unordered_map>
-#include "Dy/Core/Component/Information/TextureInformation.h"
+
+#include <Dy/Core/Component/Information/MaterialInformation.h>
+#include <Dy/Core/Component/Information/ShaderInformation.h>
+#include <Dy/Core/Component/Information/TextureInformation.h>
 
 namespace dy
 {
@@ -38,6 +40,11 @@ public:
   EDySuccess CreateTextureInformation(const std::string& textureName, const PDyTextureConstructionDescriptor& textureDescriptor);
 
   ///
+  /// @brief Create material information.
+  ///
+  EDySuccess CreateMaterialInformation(const PDyMaterialConstructionDescriptor& materialDescriptor);
+
+  ///
   /// @brief Destroy shader information. Runtime instances binded to specified shader information
   /// will have nullptr or default shader resource instead.
   ///
@@ -48,6 +55,12 @@ public:
   /// will have nullptr or default builtin texture resource instead.
   ///
   EDySuccess DeleteTextureInformation(const std::string& textureName);
+
+  ///
+  /// @brief Destroy material information. Runtime instances which are binded to speicifed material information
+  /// will have nullptr or default builtin material resource instead.
+  ///
+  EDySuccess DeleteMaterialInformation(const std::string& materialName);
 
 private:
   ///
@@ -64,8 +77,19 @@ private:
   [[nodiscard]]
   const CDyTextureInformation* pfGetTextureInformation(const std::string& textureName) const noexcept;
 
-  std::unordered_map<std::string, std::unique_ptr<CDyShaderInformation>>  mShaderInformation;
-  std::unordered_map<std::string, std::unique_ptr<CDyTextureInformation>> mTextureInformation;
+  ///
+  /// @brief Get material information.
+  /// @return Valid material information pointer reference, or nullptr when not found.
+  ///
+  [[nodiscard]]
+  const DDyMaterialInformation* pfGetMaterialInformation(const std::string& materialName) const noexcept;
+
+  template <typename TInformationType>
+  using THeapHash = std::unordered_map<std::string, std::unique_ptr<TInformationType>>;
+
+  THeapHash<CDyShaderInformation>    mShaderInformation;
+  THeapHash<CDyTextureInformation>   mTextureInformation;
+  THeapHash<DDyMaterialInformation>  mMaterialInformation;
 
   friend class MDyResource;
 };

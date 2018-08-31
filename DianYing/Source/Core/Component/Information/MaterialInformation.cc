@@ -14,8 +14,19 @@
 
 /// Header file
 #include <Dy/Core/Component/Information/MaterialInformation.h>
+#include <Dy/Core/Component/Resource/MaterialResource.h>
 
 namespace dy
 {
+
+DDyMaterialInformation::~DDyMaterialInformation()
+{
+  if (mNextLevelPtr)
+  {
+#ifdef false
+    mNextLevelPtr->__pfSetPrevLevel(nullptr);
+#endif
+  }
+}
 
 } /// ::dy namespace

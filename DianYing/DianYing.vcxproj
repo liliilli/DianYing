@@ -304,12 +304,10 @@
     <ClCompile Include="Source\Core\Component\Information\ModelInformation.cc" />
     <ClCompile Include="Source\Core\Component\Information\ShaderInformation.cc" />
     <ClCompile Include="Source\Core\Component\Information\TextureInformation.cc" />
-    <ClCompile Include="Source\Core\Component\Material.cc" />
     <ClCompile Include="Source\Core\Component\Resource\MaterialResource.cc" />
     <ClCompile Include="Source\Core\Component\Resource\MeshResource.cc" />
     <ClCompile Include="Source\Core\Component\Resource\ModelResource.cc" />
     <ClCompile Include="Source\Core\Component\Resource\TextureResource.cc" />
-    <ClCompile Include="Source\Core\Component\Texture.cc" />
     <ClCompile Include="Source\Helper\Geometry\Mesh.cc" />
     <ClCompile Include="Source\Core\Component\Resource\ShaderResource.cc" />
     <ClCompile Include="Source\Entry\entry.cc" />
@@ -346,8 +344,8 @@
     <ClInclude Include="Include\Dy\Core\Component\Information\TextureInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\MaterialType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\ShaderType.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Internal\TextureEnums.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\TextureType.h" />
-    <ClInclude Include="Include\Dy\Core\Component\Material.h" />
     <ClInclude Include="Include\Dy\Core\Component\MeshImporter.h" />
     <ClInclude Include="Include\Dy\Core\Component\MeshRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\MaterialResource.h" />
@@ -355,11 +353,9 @@
     <ClInclude Include="Include\Dy\Core\Component\Resource\ModelResource.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\ShaderResource.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\TextureResource.h" />
-    <ClInclude Include="Include\Dy\Core\Component\Texture.h" />
     <ClInclude Include="Include\Dy\Helper\aliases.h" />
     <ClInclude Include="Include\Dy\Helper\disable_warnings.h" />
     <ClInclude Include="Include\Dy\Helper\enum_flags.h" />
-    <ClInclude Include="Include\Dy\Helper\Geometry\GeometryEnumTypes.h" />
     <ClInclude Include="Include\Dy\Helper\Geometry\Mesh.h" />
     <ClInclude Include="Include\Dy\Helper\Geometry\Types.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\ImageBinaryBuffer.h" />

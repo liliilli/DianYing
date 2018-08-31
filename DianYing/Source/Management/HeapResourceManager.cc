@@ -78,23 +78,122 @@ EDySuccess MDyResource::CreateTextureResource(const std::string& textureName)
     return DY_FAILURE;
   }
 
+  // Create texture resource and insert to empty memory space.
   std::unique_ptr<CDyTextureResource> textureResource = std::make_unique<CDyTextureResource>();
- if (const auto success = textureResource->pfInitializeResource(*textureInfo); success == DY_FAILURE)
+  if (const auto success = textureResource->pfInitializeResource(*textureInfo); success == DY_FAILURE)
   {
-    this->mOnBoardShaderLists.erase(textureName);
+    this->mOnBoardTextureLists.erase(textureName);
     return DY_FAILURE;
   }
 
   it->second.swap(textureResource);
   if (!it->second)
   {
-    this->mOnBoardShaderLists.erase(textureName);
+    this->mOnBoardTextureLists.erase(textureName);
     return DY_FAILURE;
   }
 
   // At last, setting pointers to each other.
   textureInfo->__pfSetNextLevel(it->second.get());
   it->second->__pfSetPrevLevel(const_cast<CDyTextureInformation*>(textureInfo));
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyResource::CreateMaterialResource(const std::string& materialName)
+{
+  // Get information from MDyDataInformation manager.
+  const auto& manInfo = MDyDataInformation::GetInstance();
+  const DDyMaterialInformation* materialInfo = manInfo.pfGetMaterialInformation(materialName);
+  if (!materialInfo)
+  {
+    return DY_FAILURE;
+  }
+
+  auto [it, result] = this->mOnBoardMaterialLists.try_emplace(materialName, nullptr);
+  if (!result)
+  {
+    /*
+     * std::cout << "Failure : " << "Unexpected error";
+     */
+    return DY_FAILURE;
+  }
+
+  // Specify shader is already created.
+  // If not, create shader in advance but return error code when cannot.
+  const auto& information = materialInfo->GetInformation();
+  const auto* shaderResource = this->GetShaderResource(information.mShaderName);
+  if (!shaderResource)
+  {
+    if (this->CreateShaderResource(information.mShaderName) == DY_FAILURE)
+    {
+      /*
+       * std::cout << "Failure : " << "Could not create shader which name is " << information.mShaderName;
+       */
+      return DY_FAILURE;
+    }
+  }
+
+  // Verify texture resource instance also.
+  if (information.mTextureName.size() > 16)
+  {
+    /*
+     * std::cout << "Failure : " << "Texture size must not be bigger than 16.";
+     */
+    return DY_FAILURE;
+  }
+
+  for (const auto& textureName : information.mTextureName)
+  {
+    const auto* textureResource = this->GetTextureResource(textureName);
+    if (!textureResource)
+    {
+      if (this->CreateTextureResource(textureName) == DY_FAILURE)
+      {
+        /*
+         * std::cout << "Failure : " << "Could not create shader which name is " << textureName;
+         */
+        return DY_FAILURE;
+      }
+    }
+  }
+
+  // Make material resource descriptor.
+  PDyMaterialResourceDescriptor mParamterDescriptor;
+  {
+    mParamterDescriptor.mMaterialName   = information.mMaterialName;
+    mParamterDescriptor.mBlendMode      = information.mBlendMode;
+    mParamterDescriptor.mShaderTuple    = DDyMaterialShaderTuple{
+        information.mShaderName,
+        this->GetShaderResource(information.mShaderName)
+    };
+    for (const auto& textureName : information.mTextureName)
+    {
+      mParamterDescriptor.mTextureTuples.emplace_back(
+        decltype(mParamterDescriptor.mTextureTuples)::value_type\
+        {textureName, this->GetTextureResource(textureName)}
+      );
+    }
+  }
+
+  // Create texture resource and insert to empty memory space.
+  auto materialResource = std::make_unique<CDyMaterialResource>();
+  if (const auto success = materialResource->pInitializeMaterial(mParamterDescriptor);
+      success == DY_FAILURE)
+  {
+    this->mOnBoardMaterialLists.erase(materialName);
+    return DY_FAILURE;
+  }
+
+  it->second.swap(materialResource);
+  if (!it->second)
+  {
+    this->mOnBoardMaterialLists.erase(materialName);
+    return DY_FAILURE;
+  }
+
+  // At last, setting pointers to each other.
+  materialInfo->__pfSetNextLevel(it->second.get());
+  it->second  ->__pfSetPrevLevel(const_cast<DDyMaterialInformation*>(materialInfo));
   return DY_SUCCESS;
 }
 
@@ -117,6 +216,17 @@ CDyTextureResource* MDyResource::GetTextureResource(const std::string& textureNa
 {
   const auto it = this->mOnBoardTextureLists.find(textureName);
   if (it == this->mOnBoardTextureLists.end())
+  {
+    return nullptr;
+  }
+
+  return it->second.get();
+}
+
+CDyMaterialResource* MDyResource::GetMaterialResource(const std::string& materialName)
+{
+  const auto it = this->mOnBoardMaterialLists.find(materialName);
+  if (it == this->mOnBoardMaterialLists.end())
   {
     return nullptr;
   }

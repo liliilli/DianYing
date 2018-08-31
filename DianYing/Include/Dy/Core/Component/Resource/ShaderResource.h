@@ -22,6 +22,7 @@
 namespace dy
 {
 class CDyShaderInformation;
+class CDyMaterialResource;
 struct DVector2;
 struct DVector3;
 struct DVector4;
@@ -206,13 +207,32 @@ private:
 
   std::vector<TUniformStruct> mUniformVariableContainer;
 
+  //!
+  //! Level pointers binding
+  //!
+
+  template <typename TType>
+  using TBindPtrMap = std::unordered_map<TType*, TType*>;
   ///
   /// @brief
   ///
-  void __pfSetPrevLevel(CDyShaderInformation* ptr) const noexcept { mPrevLevelPtr = ptr; }
-  mutable CDyShaderInformation* mPrevLevelPtr = nullptr;
+  void __pfSetPrevLevel(CDyShaderInformation* ptr) const noexcept { __mPrevLevelPtr = ptr; }
+  void __pfSetMaterialBind(CDyMaterialResource* ptr) const noexcept
+  {
+    auto [it, result] = __mBindMaterialPtrs.try_emplace(ptr, ptr);
+    if (!result) {
+      assert(false);
+    }
+  }
+  void __pfSetMaterialReset(CDyMaterialResource* ptr) const noexcept
+  {
+    __mBindMaterialPtrs.erase(ptr);
+  }
+  mutable CDyShaderInformation*             __mPrevLevelPtr     = nullptr;
+  mutable TBindPtrMap<CDyMaterialResource>  __mBindMaterialPtrs;
 
   friend class CDyShaderInformation;
+  friend class CDyMaterialResource;
   friend class MDyResource;
 };
 

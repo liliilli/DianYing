@@ -47,22 +47,16 @@ private:
 ///
 struct PDyTextureConstructionDescriptor final
 {
-  std::string mTexturePath;
-  dy::DColor  mConstantBorderColor;
-  std::vector<PDyTextureParameterOption> mTextureParameterOptions;
-  uint32_t    mTextureType;
-  bool        mIsEnabledCustomedTextureParameter;
-  bool        mIsEnabledCreateMipmap;
-};
+  std::string mTextureFileLocalPath                                   = "";
+  std::string mTextureFileAbsolutePath                                = "";
+  DColor      mConstantBorderColor                                = DColor::Black;
 
-///
-/// @struct DDyInformationTexture
-/// @brief
-///
-struct DDyInformationTexture final
-{
-  std::string mTextureLocalPath;
-  std::string mTextureAbsolutePath;
+  std::vector<PDyTextureParameterOption> mTextureParameterOptions;
+
+  bool        mIsEnabledAbsolutePath                              = true;
+  bool        mIsEnabledCustomedTextureParameter                  = false;
+  bool        mIsEnabledCreateMipmap                              = false;
+  EDyTextureStyleType mTextureType                                = EDyTextureStyleType::None;
 };
 
 ///
@@ -71,8 +65,8 @@ struct DDyInformationTexture final
 ///
 struct DDyInformationTextureModelBinded final
 {
-  DDyInformationTexture mTextureInformation;
-  EDyTextureMapType     mTextureMapType = EDyTextureMapType::None;
+  PDyTextureConstructionDescriptor  mTextureInformation           = {};
+  EDyTextureMapType                 mTextureMapType               = EDyTextureMapType::None;
 };
 
 } /// ::dy namespace
