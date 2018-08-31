@@ -57,9 +57,7 @@ CDyTextureResource::~CDyTextureResource()
   }
   for (auto& [notUsed, materialPtr] : __mBindMaterialPtrs)
   {
-#ifdef false
-    materialPtr->__pfResetTextureRefPtr(nullptr);
-#endif
+    materialPtr->__pfResetTexturePtr(this);
   }
 }
 
@@ -121,6 +119,7 @@ EDySuccess CDyTextureResource::pfInitializeResource(const CDyTextureInformation&
   }
 
   // Forward dataBuffer's retrieved information to data members.
+  this->mTextureName    = textureInfo.mTextureName;
   this->mTextureType    = textureInfo.mTextureType;
   this->mTextureWidth   = dataBuffer->GetImageWidth();
   switch (textureInfo.mTextureType)

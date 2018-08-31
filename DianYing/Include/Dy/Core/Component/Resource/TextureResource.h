@@ -84,10 +84,11 @@ private:
 
   /// Valid texture id must not be 0.
   // @todo JUST ONLY OPENGL
-  EDyTextureStyleType mTextureType  = EDyTextureStyleType::None;
-	uint32_t  mTextureResourceId      = 0;
-  int32_t   mTextureWidth           = MDY_NOT_INITIALIZED_M1;
-  int32_t   mTextureHeight          = MDY_NOT_INITIALIZED_M1;
+  std::string         mTextureName          = "";
+  EDyTextureStyleType mTextureType          = EDyTextureStyleType::None;
+	uint32_t            mTextureResourceId    = 0;
+  int32_t             mTextureWidth         = MDY_NOT_INITIALIZED_M1;
+  int32_t             mTextureHeight        = MDY_NOT_INITIALIZED_M1;
 
   //!
   //! Level pointers binding

@@ -194,16 +194,17 @@ private:
   ///
   /// @brief
   ///
-  EDySuccess pInitializeShaderFragments(const PDyShaderConstructionDescriptor& shaderConstructionDescriptor,
+  EDySuccess __pInitializeShaderFragments(const PDyShaderConstructionDescriptor& shaderConstructionDescriptor,
                                         std::vector<std::pair<EDyShaderFragmentType, uint32_t>>& shaderFragmentIdList);
 
   ///
   /// @brief
   ///
-  EDySuccess pInitializeShaderProgram(const std::vector<std::pair<EDyShaderFragmentType, uint32_t>>& shaderFragmentIdList);
+  EDySuccess __pInitializeShaderProgram(const std::vector<std::pair<EDyShaderFragmentType, uint32_t>>& shaderFragmentIdList);
 
-  uint32_t mShaderProgramId = 0;
-  uint32_t mTemporalVertexArray = 0;
+  std::string mShaderName           = "";
+  uint32_t    mShaderProgramId      = 0;
+  uint32_t    mTemporalVertexArray  = 0;
 
   std::vector<TUniformStruct> mUniformVariableContainer;
 

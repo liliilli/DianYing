@@ -96,4 +96,16 @@ void CDyMaterialResource::TemporalRender()
   this->mShaderResource.mShaderPointer->UnbindShader();
 }
 
+void CDyMaterialResource::__pfResetTexturePtr(CDyTextureResource* ptr) noexcept
+{
+  for (auto& [textureName, texturePtr] : this->mTextureResources)
+  {
+    if (texturePtr == ptr)
+    {
+      textureName = "DY_RELEASED";
+      texturePtr  = nullptr;
+    }
+  }
+}
+
 } /// ::dy namespace

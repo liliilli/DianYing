@@ -68,6 +68,12 @@ private:
   /// @brief
   ///
   void __pfSetPrevLevel(DDyMaterialInformation* ptr) const noexcept { __mPrevLevelPtr = ptr; }
+  void __pfResetShaderPtr() noexcept
+  {
+    mShaderResource.mShaderName     = "DY_RELEASED";
+    mShaderResource.mShaderPointer  = nullptr;
+  }
+  void __pfResetTexturePtr(CDyTextureResource* ptr) noexcept;
   void __pfSetRendererBind(void* ptr) const noexcept
   {
 
@@ -80,6 +86,7 @@ private:
   mutable TBindPtrMap<void>                 __mBindRendererPtrs;
 
   friend class CDyTextureResource;
+  friend class CDyShaderResource;
   friend class DDyMaterialInformation;
   friend class MDyResource;
 };

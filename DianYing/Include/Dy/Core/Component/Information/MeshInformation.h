@@ -16,6 +16,24 @@
 namespace dy
 {
 
+class DDyModelInformation final
+{
+public:
+  DDyModelInformation(const PDyMaterialConstructionDescriptor& shaderConstructionDescriptor) :
+      mMaterialInformation{shaderConstructionDescriptor}
+  {};
+
+  DDyModelInformation(const DDyModelInformation&)            = delete;
+  DDyModelInformation& operator=(const DDyModelInformation&) = delete;
+  DDyModelInformation(DDyModelInformation&&)            = default;
+  DDyModelInformation& operator=(DDyModelInformation&&) = default;
+  ~DDyModelInformation();
+
+private:
+
+
+};
+
 } /// ::dy namespace
 
 #endif /// GUARD_DY_CORE_COMPONENT_INFORMATION_MESH_INFORMATION_H

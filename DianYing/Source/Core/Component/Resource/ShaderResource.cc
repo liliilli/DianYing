@@ -17,6 +17,7 @@
 
 #include <Dy/Helper/IoHelper.h>
 #include <Dy/Core/Component/Information/ShaderInformation.h>
+#include <Dy/Core/Component/Resource/MaterialResource.h>
 
 namespace {
 
@@ -66,24 +67,30 @@ CDyShaderResource::~CDyShaderResource()
   }
   for (auto& [notUsed, materialPtr] : __mBindMaterialPtrs)
   {
-#ifdef false
-    materialPtr->__pfResetTextureRefPtr(nullptr);
-#endif
+    materialPtr->__pfResetShaderPtr();
   }
 }
 
 EDySuccess CDyShaderResource::pfInitializeResource(const CDyShaderInformation& shaderInformation)
 {
-  std::vector<std::pair<EDyShaderFragmentType, uint32_t>> shaderFragmentIdList;
+  const auto& information = shaderInformation.GetInformation();
+  mShaderName = information.mShaderName;
 
-  MDY_CALL_ASSERT_SUCCESS(pInitializeShaderFragments(shaderInformation.GetInformation(), shaderFragmentIdList));
-  MDY_CALL_ASSERT_SUCCESS(pInitializeShaderProgram(shaderFragmentIdList));
+  std::vector<std::pair<EDyShaderFragmentType, uint32_t>> shaderFragmentIdList;
+  if (__pInitializeShaderFragments(information, shaderFragmentIdList) == DY_FAILURE)
+  {
+    return DY_FAILURE;
+  }
+  if (__pInitializeShaderProgram(shaderFragmentIdList) == DY_FAILURE)
+  {
+    return DY_FAILURE;
+  }
 
   glGenVertexArrays(1, &mTemporalVertexArray);
   return DY_SUCCESS;
 }
 
-EDySuccess CDyShaderResource::pInitializeShaderFragments(
+EDySuccess CDyShaderResource::__pInitializeShaderFragments(
     const PDyShaderConstructionDescriptor& shaderConstructionDescriptor,
     std::vector<std::pair<EDyShaderFragmentType, uint32_t>>& shaderFragmentIdList)
 {
@@ -91,6 +98,8 @@ EDySuccess CDyShaderResource::pInitializeShaderFragments(
   for (const auto& fragmentInformation : container)
   {
     GLuint shaderFragmentId = 0;
+
+    // Get OpenGL Shader type
     switch (fragmentInformation.mShaderType)
     {
     case EDyShaderFragmentType::Vertex:
@@ -110,9 +119,26 @@ EDySuccess CDyShaderResource::pInitializeShaderFragments(
       break;
     }
 
+    // If shader creation had failed, revert and release all shader fragments.
+    if (shaderFragmentId <= 0)
+    {
+      for (auto& [type, compiledShaderId] : shaderFragmentIdList)
+      {
+        glDeleteShader(compiledShaderId);
+      }
+      return DY_FAILURE;
+    }
+
+    // Read shader fragment code. if something is wrong, revert and release all shader fragments.
     const auto opShaderFragmentCode = DyReadBinaryFileAll(fragmentInformation.mShaderPath);
     if (!opShaderFragmentCode.has_value())
     {
+      // @todo output error message;
+      glDeleteShader(shaderFragmentId);
+      for (auto& [type, compiledShaderId] : shaderFragmentIdList)
+      {
+        glDeleteShader(compiledShaderId);
+      }
       return DY_FAILURE;
     }
 
@@ -131,22 +157,26 @@ EDySuccess CDyShaderResource::pInitializeShaderFragments(
       if (glGetShaderiv(shaderFragmentId, GL_COMPILE_STATUS, &err); !err)
       {
         PrintShaderErrorLog(shaderFragmentId);
-        for (auto& [type, fragmentId] : shaderFragmentIdList)
+        glDeleteShader(shaderFragmentId);
+        for (auto& [type, compiledShaderId] : shaderFragmentIdList)
         {
-          glDeleteShader(fragmentId);
+          glDeleteShader(compiledShaderId);
         }
         return DY_FAILURE;
       }
     }
 #endif
+
+    // Insert newly compiled shader fragment for __pInitilaizeShaderProgram.
     shaderFragmentIdList.emplace_back(fragmentInformation.mShaderType, shaderFragmentId);
   }
 
   return DY_SUCCESS;
 }
 
-EDySuccess CDyShaderResource::pInitializeShaderProgram(const std::vector<std::pair<EDyShaderFragmentType, uint32_t>>& shaderFragmentIdList)
+EDySuccess CDyShaderResource::__pInitializeShaderProgram(const std::vector<std::pair<EDyShaderFragmentType, uint32_t>>& shaderFragmentIdList)
 {
+  // Create GlShaderProgram, and attach fragments to link them.
   mShaderProgramId = glCreateProgram();
   for (auto& [shaderFragmentType, shaderFragmentId] : shaderFragmentIdList) {
     glAttachShader(mShaderProgramId, shaderFragmentId);
@@ -154,10 +184,11 @@ EDySuccess CDyShaderResource::pInitializeShaderProgram(const std::vector<std::pa
   glLinkProgram(mShaderProgramId);
   for (auto& [shaderFragmentType, shaderFragmentId] : shaderFragmentIdList) {
     glDetachShader(mShaderProgramId, shaderFragmentId);
+    glDeleteShader(shaderFragmentId);
   }
 
-#if !defined(NDEBUG)
   // Check shader program linking status only in debug mode.
+#if !defined(NDEBUG)
   {
     GLint isLinked = 0;
     glGetProgramiv(mShaderProgramId, GL_LINK_STATUS, &isLinked);
@@ -167,6 +198,7 @@ EDySuccess CDyShaderResource::pInitializeShaderProgram(const std::vector<std::pa
     }
   }
 #endif
+
   return DY_SUCCESS;
 }
 
