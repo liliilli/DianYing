@@ -55,12 +55,12 @@ CDyShaderResource::~CDyShaderResource()
 {
   if (mPrevLevelPtr)
   {
-    mPrevLevelPtr->pfSetNextLevel(nullptr);
+    mPrevLevelPtr->__pfSetNextLevel(nullptr);
   }
   glDeleteProgram(mShaderProgramId);
 }
 
-EDySuccess CDyShaderResource::pfInitializeShaderResource(const CDyShaderInformation& shaderInformation)
+EDySuccess CDyShaderResource::pfInitializeResource(const CDyShaderInformation& shaderInformation)
 {
   std::vector<std::pair<EDyShaderFragmentType, uint32_t>> shaderFragmentIdList;
 

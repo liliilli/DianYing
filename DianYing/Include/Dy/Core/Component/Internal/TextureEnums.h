@@ -1,4 +1,5 @@
-#include <precompiled.h>
+#ifndef GUARD_DY_COMPONENT_INTENRAL_TEXTURE_ENUMS_H
+#define GUARD_DY_COMPONENT_INTENRAL_TEXTURE_ENUMS_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -12,19 +13,39 @@
 /// SOFTWARE.
 ///
 
-/// Header file
-#include <Dy/Core/Component/Information/ShaderInformation.h>
-#include <Dy/Core/Component/Resource/ShaderResource.h>
-
 namespace dy
 {
 
-CDyShaderInformation::~CDyShaderInformation()
+///
+/// @enum EDyTextureMapType
+/// @brief Texture mapping type
+///
+enum class EDyTextureMapType : unsigned char
 {
-  if (mNextLevelPtr)
-  {
-    mNextLevelPtr->__pfSetPrevLevel(nullptr);
-  }
-}
+  None,
+  Diffuse,
+  Specular,
+  Ambient,
+  Height,
+  Displacement,
+  Emissive,
+  LightMap,
+  Normal,
+  Reflection,
+  Shininess
+};
+
+///
+/// @enum EDyTextureStyleType
+/// @brief Texture loading type
+///
+enum class EDyTextureStyleType : unsigned char
+{
+  None,
+  D1,
+  D2,
+};
 
 } /// ::dy namespace
+
+#endif /// GUARD_DY_COMPONENT_INTENRAL_TEXTURE_ENUMS_H

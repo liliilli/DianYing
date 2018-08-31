@@ -53,15 +53,56 @@ EDySuccess MDyDataInformation::CreateShaderInformation(const std::string& shader
   return DY_SUCCESS;
 }
 
+EDySuccess MDyDataInformation::CreateTextureInformation(const std::string& textureName, const PDyTextureConstructionDescriptor& textureDescriptor)
+{
+  if (mTextureInformation.find(textureName) != mTextureInformation.end())
+  {
+    return DY_FAILURE;
+  }
+
+  // Check there is already in the information map.
+  auto [it, creationResult] = mTextureInformation.try_emplace(textureName, nullptr);
+  if (!creationResult) {
+
+    return DY_FAILURE;
+  }
+
+  // Make resource in heap, and insert it to empty memory space.
+  auto textureInformation = std::make_unique<CDyTextureInformation>(textureDescriptor);
+  it->second.swap(textureInformation);
+  if (!it->second)
+  {
+    this->mTextureInformation.erase(textureName);
+    return DY_FAILURE;
+  }
+
+  return DY_SUCCESS;
+}
+
 EDySuccess MDyDataInformation::DeleteShaderInformation(const std::string& shaderName)
 {
-  auto iterator = mShaderInformation.find(shaderName);
+  const auto iterator = mShaderInformation.find(shaderName);
   if (iterator == mShaderInformation.end())
   {
     return DY_FAILURE;
   }
 
   // IF mShaderInformation is being used by another resource instance?
+  // then, return DY_FAILURE or remove it.
+  assert(false);
+
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyDataInformation::DeleteTextureInformation(const std::string& textureName)
+{
+  const auto iterator = mTextureInformation.find(textureName);
+  if (iterator == mTextureInformation.end())
+  {
+    return DY_FAILURE;
+  }
+
+  // IF mMaterialInformation is being used by another resource instance?
   // then, return DY_FAILURE or remove it.
   assert(false);
 
@@ -80,4 +121,15 @@ const CDyShaderInformation* MDyDataInformation::pfGetShaderInformation(const std
   return iterator->second.get();
 }
 
+const CDyTextureInformation* MDyDataInformation::pfGetTextureInformation(const std::string& textureName) const noexcept
+{
+  const auto iterator = mTextureInformation.find(textureName);
+  if (iterator == mTextureInformation.end())
+  {
+    // @todo Error log message
+    return nullptr;
+  }
+
+  return iterator->second.get();
+}
 } /// ::dy namespace

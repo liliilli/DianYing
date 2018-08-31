@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Helper/Type/Color.h>
+#include <Dy/Core/Component/Internal/TextureEnums.h>
 
 namespace dy
 {
@@ -52,6 +53,26 @@ struct PDyTextureConstructionDescriptor final
   uint32_t    mTextureType;
   bool        mIsEnabledCustomedTextureParameter;
   bool        mIsEnabledCreateMipmap;
+};
+
+///
+/// @struct DDyInformationTexture
+/// @brief
+///
+struct DDyInformationTexture final
+{
+  std::string mTextureLocalPath;
+  std::string mTextureAbsolutePath;
+};
+
+///
+/// @struct DDyInformationTextureModelBinded
+/// @brief
+///
+struct DDyInformationTextureModelBinded final
+{
+  DDyInformationTexture mTextureInformation;
+  EDyTextureMapType     mTextureMapType = EDyTextureMapType::None;
 };
 
 } /// ::dy namespace

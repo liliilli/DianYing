@@ -20,7 +20,7 @@
 #include <Dy/Core/Component/Internal/TextureType.h>
 
 #include <Dy/Core/Component/Resource/ShaderResource.h>
-#include <Dy/Core/Component/Texture.h>
+#include <Dy/Core/Component/Resource/TextureResource.h>
 
 //!
 //! Forward declaration
@@ -50,9 +50,10 @@ public:
   EDySuccess CreateShaderResource(const std::string& shaderName);
 
   ///
-  /// @brief
+  /// @brief Create texture resource on gpu.
+  /// @param[in] textureName name to create texture, must be same with texture information name.
   ///
-  EDySuccess CreateTextureResource(const std::string& textureName, const PDyTextureConstructionDescriptor& textureDescriptor);
+  EDySuccess CreateTextureResource(const std::string& textureName);
 
   ///
   /// @brief
@@ -64,11 +65,11 @@ public:
   /// @brief
   ///
   [[nodiscard]]
-  CDyTextureComponent* GetTextureResource(const std::string& textureName);
+  CDyTextureResource* GetTextureResource(const std::string& textureName);
 
 private:
   THashList<std::unique_ptr<CDyShaderResource>>   mOnBoardShaderLists;
-  THashList<std::unique_ptr<CDyTextureComponent>> mOnBoardTextureLists;
+  THashList<std::unique_ptr<CDyTextureResource>> mOnBoardTextureLists;
 };
 
 } /// ::dy namespace

@@ -13,8 +13,59 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Core/Component/Internal/TextureType.h>
+
+//!
+//! Forward declaration
+//!
+
 namespace dy
 {
+class CDyTextureResource;
+}
+
+//!
+//! Implementation
+//!
+
+namespace dy
+{
+
+///
+/// @class CDyTextureInformation
+/// @brief Texture information class that not serve heap instance
+/// but information to create heap instance.
+///
+class CDyTextureInformation final
+{
+public:
+  CDyTextureInformation(const PDyTextureConstructionDescriptor& shaderConstructionDescriptor) :
+      mTextureInformation{shaderConstructionDescriptor}
+  {};
+
+  CDyTextureInformation(const CDyTextureInformation&)            = delete;
+  CDyTextureInformation& operator=(const CDyTextureInformation&) = delete;
+  CDyTextureInformation(CDyTextureInformation&&)            = default;
+  CDyTextureInformation& operator=(CDyTextureInformation&&) = default;
+  ~CDyTextureInformation();
+
+  ///
+  /// @brief return immutable descriptor information reference.
+  ///
+  const PDyTextureConstructionDescriptor& GetInformation() const noexcept
+  {
+    return this->mTextureInformation;
+  }
+
+private:
+  PDyTextureConstructionDescriptor mTextureInformation;
+
+  void __pfSetNextLevel(CDyTextureResource* ptr) const noexcept { mNextLevelPtr = ptr; }
+  mutable CDyTextureResource* mNextLevelPtr = nullptr;
+
+  friend class CDyTextureResource;
+  friend class MDyResource;
+};
 
 } /// ::dy namespace
 

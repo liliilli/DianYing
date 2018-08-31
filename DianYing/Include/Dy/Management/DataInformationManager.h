@@ -17,6 +17,7 @@
 
 #include <Dy/Core/Component/Information/ShaderInformation.h>
 #include <unordered_map>
+#include "Dy/Core/Component/Information/TextureInformation.h"
 
 namespace dy
 {
@@ -27,24 +28,44 @@ class MDyDataInformation final : public ISingleton<MDyDataInformation>
   MDY_SINGLETON_PROPERTIES(MDyDataInformation);
 public:
   ///
-  /// @brief
+  /// @brief Create shader information.
   ///
   EDySuccess CreateShaderInformation(const std::string& shaderName, const PDyShaderConstructionDescriptor& shaderDescriptor);
 
   ///
-  /// @brief
+  /// @brief Create texture information.
+  ///
+  EDySuccess CreateTextureInformation(const std::string& textureName, const PDyTextureConstructionDescriptor& textureDescriptor);
+
+  ///
+  /// @brief Destroy shader information. Runtime instances binded to specified shader information
+  /// will have nullptr or default shader resource instead.
   ///
   EDySuccess DeleteShaderInformation(const std::string& shaderName);
+
+  ///
+  /// @brief Destroy texture information. Runtime instances bindned to specified texture information
+  /// will have nullptr or default builtin texture resource instead.
+  ///
+  EDySuccess DeleteTextureInformation(const std::string& textureName);
 
 private:
   ///
   /// @brief Get shader information.
-  /// @return
+  /// @return Valid shader information pointer reference, or nullptr when not found.
   ///
   [[nodiscard]]
   const CDyShaderInformation* pfGetShaderInformation(const std::string& shaderName) const noexcept;
 
-  std::unordered_map<std::string, std::unique_ptr<CDyShaderInformation>> mShaderInformation;
+  ///
+  /// @brief Get texture information.
+  /// @return Valid texture information pointer reference, or nullptr when not found.
+  ///
+  [[nodiscard]]
+  const CDyTextureInformation* pfGetTextureInformation(const std::string& textureName) const noexcept;
+
+  std::unordered_map<std::string, std::unique_ptr<CDyShaderInformation>>  mShaderInformation;
+  std::unordered_map<std::string, std::unique_ptr<CDyTextureInformation>> mTextureInformation;
 
   friend class MDyResource;
 };

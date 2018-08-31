@@ -188,7 +188,7 @@ private:
   /// @brief private-friend function, initialize shader resource with information.
   ///
   [[nodiscard]]
-  EDySuccess pfInitializeShaderResource(const CDyShaderInformation& shaderInformation);
+  EDySuccess pfInitializeResource(const CDyShaderInformation& shaderInformation);
 
   ///
   /// @brief
@@ -206,12 +206,10 @@ private:
 
   std::vector<TUniformStruct> mUniformVariableContainer;
 
-  void pfSetPrevLevel(CDyShaderInformation* ptr) const noexcept
-  {
-    mPrevLevelPtr = ptr;
-  }
-
-  //
+  ///
+  /// @brief
+  ///
+  void __pfSetPrevLevel(CDyShaderInformation* ptr) const noexcept { mPrevLevelPtr = ptr; }
   mutable CDyShaderInformation* mPrevLevelPtr = nullptr;
 
   friend class CDyShaderInformation;

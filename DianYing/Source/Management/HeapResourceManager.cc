@@ -20,6 +20,10 @@
 namespace dy
 {
 
+//!
+//! Create resource functions.
+//!
+
 EDySuccess MDyResource::CreateShaderResource(const std::string& shaderName)
 {
   // Get information from MDyDataInformation manager.
@@ -39,38 +43,43 @@ EDySuccess MDyResource::CreateShaderResource(const std::string& shaderName)
 
   // Make resource in heap, and insert it to empty memory space.
   auto shaderResource = std::make_unique<CDyShaderResource>();
-  if (const auto success = shaderResource->pfInitializeShaderResource(*shaderInfo); success == DY_FAILURE)
+  if (const auto success = shaderResource->pfInitializeResource(*shaderInfo); success == DY_FAILURE)
   {
     this->mOnBoardShaderLists.erase(shaderName);
     return DY_FAILURE;
   }
-  else
+
+  it->second.swap(shaderResource);
+  if (!it->second)
   {
-    it->second.swap(shaderResource);
-    if (!it->second)
-    {
-      this->mOnBoardShaderLists.erase(shaderName);
-      return DY_FAILURE;
-    }
+    this->mOnBoardShaderLists.erase(shaderName);
+    return DY_FAILURE;
   }
 
   // At last, setting pointers to each other.
-  shaderInfo->pfSetNextLevel(it->second.get());
-  it->second->pfSetPrevLevel(const_cast<CDyShaderInformation*>(shaderInfo));
+  shaderInfo->__pfSetNextLevel(it->second.get());
+  it->second->__pfSetPrevLevel(const_cast<CDyShaderInformation*>(shaderInfo));
   return DY_SUCCESS;
 }
 
-EDySuccess MDyResource::CreateTextureResource(const std::string& textureName, const PDyTextureConstructionDescriptor& textureDescriptor)
+EDySuccess MDyResource::CreateTextureResource(const std::string& textureName)
 {
+  // Get information from MDyDataInformation manager.
+  const auto& manInfo   = MDyDataInformation::GetInstance();
+  const CDyTextureInformation* textureInfo = manInfo.pfGetTextureInformation(textureName);
+  if (!textureInfo)
+  {
+    return DY_FAILURE;
+  }
+
   auto [it, result] = this->mOnBoardTextureLists.try_emplace(textureName, nullptr);
   if (!result)
   {
     return DY_FAILURE;
   }
 
-  std::unique_ptr<CDyTextureComponent> textureResource = std::make_unique<CDyTextureComponent>();
-  if (const auto success = textureResource->pInitializeTextureResource(textureDescriptor);
-      success == DY_FAILURE)
+  std::unique_ptr<CDyTextureResource> textureResource = std::make_unique<CDyTextureResource>();
+ if (const auto success = textureResource->pfInitializeResource(*textureInfo); success == DY_FAILURE)
   {
     this->mOnBoardShaderLists.erase(textureName);
     return DY_FAILURE;
@@ -83,8 +92,15 @@ EDySuccess MDyResource::CreateTextureResource(const std::string& textureName, co
     return DY_FAILURE;
   }
 
+  // At last, setting pointers to each other.
+  textureInfo->__pfSetNextLevel(it->second.get());
+  it->second->__pfSetPrevLevel(const_cast<CDyTextureInformation*>(textureInfo));
   return DY_SUCCESS;
 }
+
+//!
+//! Get resource functions
+//!
 
 CDyShaderResource* MDyResource::GetShaderResource(const std::string& shaderName)
 {
@@ -97,7 +113,7 @@ CDyShaderResource* MDyResource::GetShaderResource(const std::string& shaderName)
   return it->second.get();
 }
 
-CDyTextureComponent* MDyResource::GetTextureResource(const std::string& textureName)
+CDyTextureResource* MDyResource::GetTextureResource(const std::string& textureName)
 {
   const auto it = this->mOnBoardTextureLists.find(textureName);
   if (it == this->mOnBoardTextureLists.end())
@@ -116,6 +132,7 @@ EDySuccess MDyResource::pfInitialize()
 EDySuccess MDyResource::pfRelease()
 {
   this->mOnBoardShaderLists.clear();
+  this->mOnBoardTextureLists.clear();
   return DY_SUCCESS;
 }
 

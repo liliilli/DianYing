@@ -14,8 +14,18 @@
 
 /// Header file
 #include <Dy/Core/Component/Information/TextureInformation.h>
+#include <Dy/Core/Component/Resource/TextureResource.h>
 
 namespace dy
 {
+
+CDyTextureInformation::~CDyTextureInformation()
+{
+  if (mNextLevelPtr)
+  {
+    mNextLevelPtr->__pfSetPrevLevel(nullptr);
+  }
+}
+
 
 } /// ::dy namespace

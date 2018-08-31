@@ -33,7 +33,8 @@ namespace dy
 
 ///
 /// @class CDyShaderInformation
-/// @brief New shader wrapper class
+/// @brief Shader information class that not serve heap instance
+/// but information to create heap instance.
 ///
 class CDyShaderInformation final
 {
@@ -59,12 +60,10 @@ public:
 private:
   PDyShaderConstructionDescriptor mShaderInformation;
 
-  void pfSetNextLevel(CDyShaderResource* ptr) const noexcept
-  {
-    mNextLevelPtr = ptr;
-  }
-
-  //
+  ///
+  /// @brief
+  ///
+  void __pfSetNextLevel(CDyShaderResource* ptr) const noexcept { mNextLevelPtr = ptr; }
   mutable CDyShaderResource* mNextLevelPtr = nullptr;
 
   friend class CDyShaderResource;
