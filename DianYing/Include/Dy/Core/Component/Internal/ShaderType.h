@@ -68,7 +68,8 @@ struct PDyShaderFragmentInformation final
 ///
 struct PDyShaderConstructionDescriptor final
 {
-  std::vector<PDyShaderFragmentInformation> mShaderFragments;
+  std::string                               mShaderName       = "";
+  std::vector<PDyShaderFragmentInformation> mShaderFragments  = {};
 };
 
 } /// ::dy namespace

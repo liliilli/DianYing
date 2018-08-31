@@ -21,8 +21,8 @@
 
 namespace dy
 {
-class CDyShaderComponent;
-class CDyTextureComponent;
+class CDyShaderResource;
+class CDyTextureResource;
 }
 
 //!
@@ -40,18 +40,44 @@ enum class EDyMaterialBlendMode
 {
   Opaque,
   Translucent,
+  Custom,
 };
 
 ///
-/// @struct
+/// @struct PDyMaterialConstructionDescriptor
 /// @brief
 ///
 struct PDyMaterialConstructionDescriptor final
 {
-  CDyShaderComponent* mShaderComponentPtr = nullptr;
-  std::vector<CDyTextureComponent*> mTextureComponents;
+  std::string                           mMaterialName     = "";
+  std::string                           mShaderName       = "";
+  std::vector<std::string>              mTextureName;
+  EDyMaterialBlendMode                  mBlendMode        = EDyMaterialBlendMode::Opaque;
+};
 
-  EDyMaterialBlendMode mBlendMode = EDyMaterialBlendMode::Opaque;
+struct DDyMaterialShaderTuple final
+{
+  std::string                           mShaderName       = "";
+  CDyShaderResource*                    mShaderPointer    = nullptr;
+};
+
+struct DDyMaterialTextureTuple final
+{
+  std::string                           mTextureName      = "";
+  CDyTextureResource*                   mTexturePointer   = nullptr;
+};
+
+///
+/// @struct PDyMaterialResourceDescriptor
+/// @brief
+///
+struct PDyMaterialResourceDescriptor final
+{
+  std::string                           mMaterialName     = "";
+  DDyMaterialShaderTuple                mShaderTuple      = {};
+  std::vector<DDyMaterialTextureTuple>  mTextureTuples;
+
+  EDyMaterialBlendMode                  mBlendMode        = EDyMaterialBlendMode::Opaque;
 };
 
 } /// ::dy namespace

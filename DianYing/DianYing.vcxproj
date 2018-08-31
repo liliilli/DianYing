@@ -299,11 +299,17 @@
     <ClCompile Include="Libraries\imgui\imgui\imgui_impl_glfw.cpp" />
     <ClCompile Include="Libraries\imgui\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="Libraries\imgui\imgui\imgui.cpp" />
-    <ClCompile Include="Source\Core\Component\Material.cc" />
-    <ClCompile Include="Source\Core\Component\Model.cc" />
-    <ClCompile Include="Source\Core\Component\Texture.cc" />
+    <ClCompile Include="Source\Core\Component\Information\MaterialInformation.cc" />
+    <ClCompile Include="Source\Core\Component\Information\MeshInformation.cc" />
+    <ClCompile Include="Source\Core\Component\Information\ModelInformation.cc" />
+    <ClCompile Include="Source\Core\Component\Information\ShaderInformation.cc" />
+    <ClCompile Include="Source\Core\Component\Information\TextureInformation.cc" />
+    <ClCompile Include="Source\Core\Component\Resource\MaterialResource.cc" />
+    <ClCompile Include="Source\Core\Component\Resource\MeshResource.cc" />
+    <ClCompile Include="Source\Core\Component\Resource\ModelResource.cc" />
+    <ClCompile Include="Source\Core\Component\Resource\TextureResource.cc" />
     <ClCompile Include="Source\Helper\Geometry\Mesh.cc" />
-    <ClCompile Include="Source\Core\Component\Shader.cc" />
+    <ClCompile Include="Source\Core\Component\Resource\ShaderResource.cc" />
     <ClCompile Include="Source\Entry\entry.cc" />
     <ClCompile Include="Source\Helper\Geometry\Types.cc" />
     <ClCompile Include="Source\Helper\Internal\ImageBinaryBuffer.cc" />
@@ -317,7 +323,8 @@
     <ClCompile Include="Source\Helper\Type\Vector2.cc" />
     <ClCompile Include="Source\Helper\Type\Vector3.cc" />
     <ClCompile Include="Source\Helper\Type\Vector4.cc" />
-    <ClCompile Include="Source\Management\HandleManager.cc" />
+    <ClCompile Include="Source\Management\DataInformationManager.cc" />
+    <ClCompile Include="Source\Management\HeapResourceManager.cc" />
     <ClCompile Include="Source\Management\SettingManager.cc" />
     <ClCompile Include="Source\Management\TimeManager.cc" />
     <ClCompile Include="Source\precompiled.cc">
@@ -330,13 +337,22 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\Dy\Core\Component\Information\MaterialInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Information\MeshInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Information\ModelInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Information\ShaderInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Information\TextureInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\MaterialType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\ShaderType.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Internal\TextureEnums.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\TextureType.h" />
-    <ClInclude Include="Include\Dy\Core\Component\Material.h" />
-    <ClInclude Include="Include\Dy\Core\Component\Model.h" />
-    <ClInclude Include="Include\Dy\Core\Component\Shader.h" />
-    <ClInclude Include="Include\Dy\Core\Component\Texture.h" />
+    <ClInclude Include="Include\Dy\Core\Component\MeshImporter.h" />
+    <ClInclude Include="Include\Dy\Core\Component\MeshRenderer.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Resource\MaterialResource.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Resource\MeshResource.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Resource\ModelResource.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Resource\ShaderResource.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Resource\TextureResource.h" />
     <ClInclude Include="Include\Dy\Helper\aliases.h" />
     <ClInclude Include="Include\Dy\Helper\disable_warnings.h" />
     <ClInclude Include="Include\Dy\Helper\enum_flags.h" />
@@ -358,8 +374,9 @@
     <ClInclude Include="Include\Dy\Helper\Type\Vector2.h" />
     <ClInclude Include="Include\Dy\Helper\Type\Vector3.h" />
     <ClInclude Include="Include\Dy\Helper\Type\Vector4.h" />
-    <ClInclude Include="Include\Dy\Management\HandleManager.h" />
+    <ClInclude Include="Include\Dy\Management\HeapResourceManager.h" />
     <ClInclude Include="Include\Dy\Management\Interface\ISingletonCrtp.h" />
+    <ClInclude Include="Include\Dy\Management\DataInformationManager.h" />
     <ClInclude Include="Include\Dy\Management\SettingManager.h" />
     <ClInclude Include="Include\Dy\Management\TimeManager.h" />
     <ClInclude Include="Include\precompiled.h" />

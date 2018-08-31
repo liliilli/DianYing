@@ -13,9 +13,6 @@
 /// SOFTWARE.
 ///
 
-#include <unordered_map>
-#include <glm/glm.hpp>
-
 #include <Dy/Core/Component/Internal/ShaderType.h>
 
 //!
@@ -24,9 +21,12 @@
 
 namespace dy
 {
+class CDyShaderInformation;
+class CDyMaterialResource;
 struct DVector2;
 struct DVector3;
 struct DVector4;
+class DDyMatrix4x4;
 } /// ::dy namespace
 
 //!
@@ -36,28 +36,40 @@ struct DVector4;
 namespace dy {
 
 ///
-/// @class CDyShaderComponent
+/// @class CDyShaderResource
 /// @brief New shader wrapper class
 ///
-class CDyShaderComponent final
+class CDyShaderResource final
 {
   using TUniformId = int32_t;
   using TUniformStruct = std::tuple<std::string, EDyUniformVariableType, TUniformId>;
 public:
-  CDyShaderComponent() = default;
-  CDyShaderComponent(const CDyShaderComponent&) = delete;
-  CDyShaderComponent& operator=(const CDyShaderComponent&) = delete;
-  CDyShaderComponent(CDyShaderComponent&&) = default;
-  CDyShaderComponent& operator=(CDyShaderComponent&&) = default;
-  ~CDyShaderComponent();
+  CDyShaderResource() = default;
+  CDyShaderResource(const CDyShaderResource&) = delete;
+  CDyShaderResource& operator=(const CDyShaderResource&) = delete;
+  CDyShaderResource(CDyShaderResource&&) = default;
+  CDyShaderResource& operator=(CDyShaderResource&&) = default;
+  ~CDyShaderResource();
 
-  [[nodiscard]]
-  EDySuccess pInitializeShaderProgram(const PDyShaderConstructionDescriptor& shaderConstructionDescriptor);
+  ///
+  /// @brief Turn on shader program.
+  ///
+  void UseShader() noexcept;
 
   ///
   /// @brief
   ///
-  void UseShader();
+  void BindShader() noexcept;
+
+  ///
+  /// @brief
+  ///
+  void UnbindShader() noexcept;
+
+  ///
+  /// @brief Turn off shader program.
+  ///
+  void UnuseShader() noexcept;
 
   ///
   /// @brief
@@ -72,16 +84,6 @@ public:
   {
     return mShaderProgramId;
   }
-
-  ///
-  /// @brief
-  ///
-  void BindShader();
-
-  ///
-  /// @brief
-  ///
-  void UnbindShader();
 
   //!
   //! uniform functions (ONLY OPENGL!)
@@ -130,7 +132,7 @@ public:
   /// @brief The method sets $ \mathbf{M}_{4x4} $ matrix to
   /// arbitary uniform variable.
   ///
-  void SetUniformMatrix4Float(int32_t uniform_id, const glm::mat4& matrix);
+  void SetUniformMatrix4Float(int32_t uniform_id, const DDyMatrix4x4& matrix);
 
   ///
   /// @brief The method sets singed-integer value to arbitary uniform variable.
@@ -178,25 +180,61 @@ public:
    void SetStructSpotlight(const std::string& name, const light::Spotlight& container);
 #endif
 
-protected:
+private:
 #ifdef false
   void pInitializeUniformVariables(const resource::SShader::TVariableList& uniforms);
 #endif
+
+  ///
+  /// @brief private-friend function, initialize shader resource with information.
+  ///
+  [[nodiscard]]
+  EDySuccess pfInitializeResource(const CDyShaderInformation& shaderInformation);
+
   ///
   /// @brief
   ///
-  EDySuccess pInitializeShaderFragments(const PDyShaderConstructionDescriptor& shaderConstructionDescriptor,
+  EDySuccess __pInitializeShaderFragments(const PDyShaderConstructionDescriptor& shaderConstructionDescriptor,
                                         std::vector<std::pair<EDyShaderFragmentType, uint32_t>>& shaderFragmentIdList);
 
   ///
   /// @brief
   ///
-  EDySuccess pInitializeShaderProgram(const std::vector<std::pair<EDyShaderFragmentType, uint32_t>>& shaderFragmentIdList);
+  EDySuccess __pInitializeShaderProgram(const std::vector<std::pair<EDyShaderFragmentType, uint32_t>>& shaderFragmentIdList);
 
-  uint32_t mShaderProgramId = 0;
+  std::string mShaderName           = "";
+  uint32_t    mShaderProgramId      = 0;
+  uint32_t    mTemporalVertexArray  = 0;
+
   std::vector<TUniformStruct> mUniformVariableContainer;
 
-  uint32_t mTemporalVertexArray = 0;
+  //!
+  //! Level pointers binding
+  //!
+
+  template <typename TType>
+  using TBindPtrMap = std::unordered_map<TType*, TType*>;
+  ///
+  /// @brief
+  ///
+  void __pfSetPrevLevel(CDyShaderInformation* ptr) const noexcept { __mPrevLevelPtr = ptr; }
+  void __pfSetMaterialBind(CDyMaterialResource* ptr) const noexcept
+  {
+    auto [it, result] = __mBindMaterialPtrs.try_emplace(ptr, ptr);
+    if (!result) {
+      assert(false);
+    }
+  }
+  void __pfSetMaterialReset(CDyMaterialResource* ptr) const noexcept
+  {
+    __mBindMaterialPtrs.erase(ptr);
+  }
+  mutable CDyShaderInformation*             __mPrevLevelPtr     = nullptr;
+  mutable TBindPtrMap<CDyMaterialResource>  __mBindMaterialPtrs;
+
+  friend class CDyShaderInformation;
+  friend class CDyMaterialResource;
+  friend class MDyResource;
 };
 
 } /// ::dy namespace

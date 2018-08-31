@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Helper/Type/Color.h>
+#include <Dy/Core/Component/Internal/TextureEnums.h>
 
 namespace dy
 {
@@ -46,12 +47,27 @@ private:
 ///
 struct PDyTextureConstructionDescriptor final
 {
-  std::string mTexturePath;
-  dy::DColor  mConstantBorderColor;
+  std::string mTextureName                                        = "";
+  std::string mTextureFileLocalPath                               = "";
+  std::string mTextureFileAbsolutePath                            = "";
+  DColor      mConstantBorderColor                                = DColor::Black;
+
   std::vector<PDyTextureParameterOption> mTextureParameterOptions;
-  uint32_t    mTextureType;
-  bool        mIsEnabledCustomedTextureParameter;
-  bool        mIsEnabledCreateMipmap;
+
+  bool        mIsEnabledAbsolutePath                              = true;
+  bool        mIsEnabledCustomedTextureParameter                  = false;
+  bool        mIsEnabledCreateMipmap                              = false;
+  EDyTextureStyleType mTextureType                                = EDyTextureStyleType::None;
+};
+
+///
+/// @struct DDyInformationTextureModelBinded
+/// @brief
+///
+struct DDyInformationTextureModelBinded final
+{
+  PDyTextureConstructionDescriptor  mTextureInformation           = {};
+  EDyTextureMapType                 mTextureMapType               = EDyTextureMapType::None;
 };
 
 } /// ::dy namespace

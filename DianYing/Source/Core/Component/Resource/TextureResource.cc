@@ -13,7 +13,10 @@
 ///
 
 /// Header file
-#include <Dy/Core/Component/Texture.h>
+#include <Dy/Core/Component/Resource/TextureResource.h>
+
+#include <Dy/Core/Component/Resource/MaterialResource.h>
+#include <Dy/Core/Component/Information/TextureInformation.h>
 #include <Dy/Helper/Internal/ImageBinaryBuffer.h>
 
 namespace
@@ -39,46 +42,95 @@ void DyGlSetDefaultOptionSetting(uint32_t textureId) {
 namespace dy
 {
 
-CDyTextureComponent::~CDyTextureComponent()
+CDyTextureResource::~CDyTextureResource()
 {
+  // Release heap resources
   if (mTextureResourceId)
   {
     glDeleteTextures(1, &mTextureResourceId);
   }
+
+  // Unbind previous and next level.
+  if (__mPrevLevelPtr)
+  {
+    __mPrevLevelPtr->__pfSetNextLevel(nullptr);
+  }
+  for (auto& [notUsed, materialPtr] : __mBindMaterialPtrs)
+  {
+    materialPtr->__pfResetTexturePtr(this);
+  }
 }
 
-EDySuccess CDyTextureComponent::pInitializeTextureResource(const PDyTextureConstructionDescriptor& textureConstructionDescriptor)
+EDySuccess CDyTextureResource::pfInitializeResource(const CDyTextureInformation& textureInformation)
 {
   // Make image binary data buffer.
-  DDyImageBinaryDataBuffer dataBuffer(textureConstructionDescriptor.mTexturePath);
-  if (!dataBuffer.IsBufferCreatedProperly())
+  const auto& textureInfo = textureInformation.GetInformation();
+
+  std::unique_ptr<DDyImageBinaryDataBuffer> dataBuffer = nullptr;
+  if (textureInfo.mIsEnabledAbsolutePath)
+  {
+    dataBuffer = std::make_unique<DDyImageBinaryDataBuffer>(textureInfo.mTextureFileAbsolutePath);
+  }
+  else
+  {
+    dataBuffer = std::make_unique<DDyImageBinaryDataBuffer>(textureInfo.mTextureFileLocalPath);
+  }
+
+  if (!dataBuffer->IsBufferCreatedProperly())
   {
     return DY_FAILURE;
   }
 
-  // Forward dataBuffer's retrieved information to data members.
-  mTextureWidth   = dataBuffer.GetImageWidth();
-  mTextureHeight  = dataBuffer.GetImageHeight();
   int32_t glImageFormat = GL_NO_ERROR;
-  switch (dataBuffer.GetImageFormat())
+  switch (dataBuffer->GetImageFormat())
   {
   case EDyImageColorFormatStyle::R:     glImageFormat = GL_R;     break;
   case EDyImageColorFormatStyle::RG:    glImageFormat = GL_RG;    break;
   case EDyImageColorFormatStyle::RGB:   glImageFormat = GL_RGB;   break;
   case EDyImageColorFormatStyle::RGBA:  glImageFormat = GL_RGBA;  break;
   default: // Unexpected branch (Error)
-    glImageFormat = GL_NO_ERROR;
+    assert(false);
     return DY_FAILURE;
   }
 
-  glGenTextures(1, &mTextureResourceId);
-  glBindTexture(GL_TEXTURE_2D, mTextureResourceId);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-               mTextureWidth, mTextureHeight, 0,
-               glImageFormat, GL_UNSIGNED_BYTE,
-               dataBuffer.GetBufferStartPoint());
+  // Get GL_TEXTURE_ TYPE from textureInfo.
+  switch (textureInfo.mTextureType)
+  {
+  case EDyTextureStyleType::D1:
+    glGenTextures(1, &mTextureResourceId);
+    glBindTexture(GL_TEXTURE_1D, mTextureResourceId);
+    glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA,
+                 dataBuffer->GetImageWidth(), 0,
+                 glImageFormat, GL_UNSIGNED_BYTE,
+                 dataBuffer->GetBufferStartPoint());
+    break;
+  case EDyTextureStyleType::D2:
+    glGenTextures(1, &mTextureResourceId);
+    glBindTexture(GL_TEXTURE_2D, mTextureResourceId);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
+                 dataBuffer->GetImageWidth(), dataBuffer->GetImageHeight(), 0,
+                 glImageFormat, GL_UNSIGNED_BYTE,
+                 dataBuffer->GetBufferStartPoint());
+    break;
+  default:
+    assert(false);
+    /// std;:cout << Not expected type. << '\n';
+    return DY_FAILURE;
+  }
 
-  if (!textureConstructionDescriptor.mIsEnabledCustomedTextureParameter)
+  // Forward dataBuffer's retrieved information to data members.
+  this->mTextureName    = textureInfo.mTextureName;
+  this->mTextureType    = textureInfo.mTextureType;
+  this->mTextureWidth   = dataBuffer->GetImageWidth();
+  switch (textureInfo.mTextureType)
+  {
+  case EDyTextureStyleType::D1: this->mTextureHeight  = 1; break;
+  case EDyTextureStyleType::D2: this->mTextureHeight  = dataBuffer->GetImageHeight(); break;
+  default: break;
+  }
+
+  // Set texture parameters.
+  if (!textureInfo.mIsEnabledCustomedTextureParameter)
   {
     DyGlSetDefaultOptionSetting(mTextureResourceId);
   }
