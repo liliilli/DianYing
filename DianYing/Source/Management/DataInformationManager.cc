@@ -28,8 +28,9 @@ EDySuccess MDyDataInformation::pfRelease()
   return DY_SUCCESS;
 }
 
-EDySuccess MDyDataInformation::CreateShaderInformation(const std::string& shaderName, const PDyShaderConstructionDescriptor& shaderDescriptor)
+EDySuccess MDyDataInformation::CreateShaderInformation(const PDyShaderConstructionDescriptor& shaderDescriptor)
 {
+  const auto& shaderName = shaderDescriptor.mShaderName;
   if (mShaderInformation.find(shaderName) != mShaderInformation.end())
   {
     return DY_FAILURE;
@@ -53,8 +54,9 @@ EDySuccess MDyDataInformation::CreateShaderInformation(const std::string& shader
   return DY_SUCCESS;
 }
 
-EDySuccess MDyDataInformation::CreateTextureInformation(const std::string& textureName, const PDyTextureConstructionDescriptor& textureDescriptor)
+EDySuccess MDyDataInformation::CreateTextureInformation(const PDyTextureConstructionDescriptor& textureDescriptor)
 {
+  const auto& textureName = textureDescriptor.mTextureName;
   if (mTextureInformation.find(textureName) != mTextureInformation.end())
   {
     return DY_FAILURE;

@@ -32,12 +32,12 @@ public:
   ///
   /// @brief Create shader information.
   ///
-  EDySuccess CreateShaderInformation(const std::string& shaderName, const PDyShaderConstructionDescriptor& shaderDescriptor);
+  EDySuccess CreateShaderInformation(const PDyShaderConstructionDescriptor& shaderDescriptor);
 
   ///
   /// @brief Create texture information.
   ///
-  EDySuccess CreateTextureInformation(const std::string& textureName, const PDyTextureConstructionDescriptor& textureDescriptor);
+  EDySuccess CreateTextureInformation(const PDyTextureConstructionDescriptor& textureDescriptor);
 
   ///
   /// @brief Create material information.
