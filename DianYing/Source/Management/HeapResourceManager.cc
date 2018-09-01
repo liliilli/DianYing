@@ -274,6 +274,17 @@ CDyMaterialResource* MDyResource::GetMaterialResource(const std::string& materia
   return it->second.get();
 }
 
+CDyModelResource* MDyResource::GetModelResource(const std::string& modelName)
+{
+  const auto it = this->mOnBoardModelLists.find(modelName);
+  if (it == this->mOnBoardModelLists.end())
+  {
+    return nullptr;
+  }
+
+  return it->second.get();
+}
+
 EDySuccess MDyResource::pfInitialize()
 {
   return DY_SUCCESS;

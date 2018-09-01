@@ -43,8 +43,26 @@ public:
   CDyMaterialResource& operator=(CDyMaterialResource&&)       = default;
   ~CDyMaterialResource();
 
-  // @todo TEMPORAL FUNCTION
-  void TemporalRender();
+  ///
+  /// @brief
+  ///
+  CDyShaderResource* GetShaderResource() noexcept;
+
+  ///
+  /// @brief
+  ///
+  const std::vector<DDyMaterialTextureTuple>& GetTextureResources() const noexcept
+  {
+    return this->mTextureResources;
+  }
+
+  ///
+  /// @brief
+  ///
+  EDyMaterialBlendMode GetBlendModeType() const noexcept
+  {
+    return this->mBlendMode;
+  }
 
 private:
   ///

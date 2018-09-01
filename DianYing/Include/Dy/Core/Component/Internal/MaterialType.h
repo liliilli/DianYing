@@ -81,6 +81,19 @@ struct PDyMaterialResourceDescriptor final
   EDyMaterialBlendMode                  mBlendMode        = EDyMaterialBlendMode::Opaque;
 };
 
+///
+/// @struct PDyMaterialPopulateDescriptor
+/// @brief
+///
+struct PDyMaterialPopulateDescriptor final
+{
+  std::string                           mMaterialOverrideName   = "";
+  std::string                           mOverrideShaderName     = "";
+
+  bool                                  mIsEnabledMaterialCustomNameOverride  = false;
+  bool                                  mIsEnabledShaderOverride        = false;
+};
+
 } /// ::dy namespace
 
 #endif /// GUARD_DY_CORE_COMPONENT_INTERNAL_MATERIAL_TYPE_H

@@ -53,12 +53,33 @@ public:
   }
 
 private:
+  ///
+  /// @brief
+  ///
+  int32_t __pfEnrollAndGetNextDerivedMaterialIndex(const std::string& name) const noexcept
+  {
+    if (auto it = __mIndexMap.find(name); it == __mIndexMap.end())
+    {
+      __mIndexMap.emplace(name, 0);
+      return 0;
+    }
+    else return (++it->second);
+  }
+  mutable std::unordered_map<std::string, int32_t> __mIndexMap = {};
+
+  ///
+  /// @brief Populate independent material reference and move ownership to outside.
+  ///
+  [[nodiscard]]
+  std::unique_ptr<DDyMaterialInformation> __pfPopulateWith(const PDyMaterialPopulateDescriptor& desc) const noexcept;
+
   PDyMaterialConstructionDescriptor mMaterialInformation;
 
   void __pfSetNextLevel(CDyMaterialResource* ptr) const noexcept { mNextLevelPtr = ptr; }
   mutable CDyMaterialResource* mNextLevelPtr = nullptr;
 
   friend class CDyMaterialResource;
+  friend class MDyDataInformation;
   friend class MDyResource;
 };
 

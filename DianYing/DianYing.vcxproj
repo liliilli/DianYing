@@ -303,6 +303,7 @@
     <ClCompile Include="Source\Core\Component\Information\ModelInformation.cc" />
     <ClCompile Include="Source\Core\Component\Information\ShaderInformation.cc" />
     <ClCompile Include="Source\Core\Component\Information\TextureInformation.cc" />
+    <ClCompile Include="Source\Core\Component\MeshRenderer.cc" />
     <ClCompile Include="Source\Core\Component\Resource\MaterialResource.cc" />
     <ClCompile Include="Source\Core\Component\Resource\MeshResource.cc" />
     <ClCompile Include="Source\Core\Component\Resource\ModelResource.cc" />
@@ -340,6 +341,7 @@
     <ClInclude Include="Include\Dy\Core\Component\Information\ModelInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\ShaderInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\TextureInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Internal\EtcType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\MaterialType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\ModelType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\ShaderType.h" />

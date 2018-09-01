@@ -34,6 +34,7 @@
     <ClCompile Include="Source\Core\Component\Resource\MeshResource.cc" />
     <ClCompile Include="Source\Core\Component\Resource\ModelResource.cc" />
     <ClCompile Include="Source\Core\Component\Information\ModelInformation.cc" />
+    <ClCompile Include="Source\Core\Component\MeshRenderer.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -85,6 +86,7 @@
     <ClInclude Include="Include\Dy\Core\Component\Internal\TextureEnums.h" />
     <ClInclude Include="Include\Dy\Helper\Geometry\GeometryType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\ModelType.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Internal\EtcType.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

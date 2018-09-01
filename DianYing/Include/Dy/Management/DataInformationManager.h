@@ -103,6 +103,13 @@ public:
   ///
   EDySuccess DeleteModelInformation(const std::string& modelName, bool isAllRemoveSubresource = false);
 
+  ///
+  /// @brief Populate derived material information.
+  ///
+  std::optional<std::string> PopulateMaterialInformation(
+      const std::string& materialName,
+      const PDyMaterialPopulateDescriptor& materialPopulateDescriptor);
+
 private:
   template <typename TInformationType>
   using THeapHash = std::unordered_map<std::string, std::unique_ptr<TInformationType>>;

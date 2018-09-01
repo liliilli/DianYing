@@ -45,6 +45,11 @@ public:
   CDyModelResource& operator=(CDyModelResource&&)       = default;
   ~CDyModelResource();
 
+  ///
+  /// @brief Get submesh resource, not modifiable.
+  ///
+  const std::vector<std::unique_ptr<CDyMeshResource>>& GetSubmeshResources() const noexcept;
+
 private:
   ///
   /// @brief

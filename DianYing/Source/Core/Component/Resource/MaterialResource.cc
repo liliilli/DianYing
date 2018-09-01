@@ -43,6 +43,11 @@ CDyMaterialResource::~CDyMaterialResource()
   }
 }
 
+CDyShaderResource* CDyMaterialResource::GetShaderResource() noexcept
+{
+  return this->mShaderResource.mShaderPointer;
+}
+
 EDySuccess CDyMaterialResource::pInitializeMaterial(const PDyMaterialResourceDescriptor& materialInformation)
 {
   // Forward descriptor information to member.
@@ -62,37 +67,6 @@ EDySuccess CDyMaterialResource::pInitializeMaterial(const PDyMaterialResourceDes
   }
 
   return DY_SUCCESS;
-}
-
-void CDyMaterialResource::TemporalRender()
-{
-  if (!this->mShaderResource.mShaderPointer)
-    return;
-
-  this->mShaderResource.mShaderPointer->UseShader();
-  this->mShaderResource.mShaderPointer->BindShader();
-
-  const auto textureResourceListSize = static_cast<int32_t>(this->mTextureResources.size());
-  for (int32_t i = 0; i < textureResourceListSize; ++i)
-  {
-    const auto* textureResource = this->mTextureResources[i].mTexturePointer;
-    if (!textureResource) continue;
-
-    glActiveTexture(GL_TEXTURE0 + i);
-    switch (textureResource->GetTextureType())
-    {
-    case EDyTextureStyleType::D1:
-      glBindTexture(GL_TEXTURE_1D, textureResource->GetTextureId());
-      break;
-    case EDyTextureStyleType::D2:
-      glBindTexture(GL_TEXTURE_2D, textureResource->GetTextureId());
-      break;
-    default: assert(false); break;
-    }
-  }
-
-  glDrawArrays(GL_TRIANGLES, 0, 3);
-  this->mShaderResource.mShaderPointer->UnbindShader();
 }
 
 void CDyMaterialResource::__pfResetTexturePtr(CDyTextureResource* ptr) noexcept

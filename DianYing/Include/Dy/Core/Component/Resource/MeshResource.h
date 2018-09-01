@@ -55,6 +55,16 @@ public:
   ///
   int32_t GetVertexArrayId() const noexcept;
 
+  ///
+  /// @brief
+  ///
+  int32_t GetVertexCounts() const noexcept;
+
+  ///
+  /// @brief
+  ///
+  int32_t GetIndicesCounts() const noexcept;
+
 private:
   ///
   /// @brief

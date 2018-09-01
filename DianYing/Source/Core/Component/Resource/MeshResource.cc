@@ -45,6 +45,16 @@ int32_t CDyMeshResource::GetVertexArrayId() const noexcept
   return this->mBufferIdInformation.mVao;
 }
 
+int32_t CDyMeshResource::GetVertexCounts() const noexcept
+{
+  return this->mMeshFlagInformation.mVertexSize;
+}
+
+int32_t CDyMeshResource::GetIndicesCounts() const noexcept
+{
+  return this->mMeshFlagInformation.mIndiceCount;
+}
+
 EDySuccess CDyMeshResource::pfInitializeMesh(const DDyMeshInformation& meshInformation) noexcept
 {
   const auto& info      = meshInformation.GetInformation();

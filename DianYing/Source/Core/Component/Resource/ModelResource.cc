@@ -30,6 +30,11 @@ CDyModelResource::~CDyModelResource()
   }
 }
 
+const std::vector<std::unique_ptr<CDyMeshResource>>& CDyModelResource::GetSubmeshResources() const noexcept
+{
+  return this->mMeshResource;
+}
+
 EDySuccess CDyModelResource::pInitializeModel(const DDyModelInformation& modelInformation)
 {
   const auto& submeshInformations = modelInformation.mMeshInformations;
