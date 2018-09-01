@@ -13,8 +13,74 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Core/Component/Resource/MeshResource.h>
+
+//!
+//! Forward declaration
+//!
+
 namespace dy
 {
+class DDyModelInformation;
+} /// ::dy namespace
+
+//!
+//! Implementation
+//!
+
+namespace dy
+{
+
+///
+/// @class CDyModelResource
+/// @brief
+///
+class CDyModelResource
+{
+public:
+  CDyModelResource() = default;
+  CDyModelResource(const CDyModelResource&)             = delete;
+  CDyModelResource(CDyModelResource&&)                  = default;
+  CDyModelResource& operator=(const CDyModelResource&)  = delete;
+  CDyModelResource& operator=(CDyModelResource&&)       = default;
+  ~CDyModelResource();
+
+private:
+  ///
+  /// @brief
+  ///
+  [[nodiscard]]
+  EDySuccess pInitializeModel(const DDyModelInformation& modelInformation);
+
+  std::vector<std::unique_ptr<CDyMeshResource>> mMeshResource = {};
+
+  //!
+  //! Level pointers binding
+  //!
+
+  template <typename TType>
+  using TBindPtrMap = std::unordered_map<TType*, TType*>;
+  ///
+  /// @brief
+  ///
+  void __pfSetPrevLevel(DDyModelInformation* ptr) const noexcept { __mPrevLevelPtr = ptr; }
+  void __pfSetRendererBind(void* ptr) const noexcept
+  {
+    auto [it, result] = __mBindRendererPtrs.try_emplace(ptr, ptr);
+    if (!result) {
+      assert(false);
+    }
+  }
+  void __pfSetRendererReset(void* ptr) const noexcept
+  {
+    __mBindRendererPtrs.erase(ptr);
+  }
+  mutable DDyModelInformation*  __mPrevLevelPtr     = nullptr;
+  mutable TBindPtrMap<void>     __mBindRendererPtrs;
+
+  friend class DDyModelInformation;
+  friend class MDyResource;
+};
 
 } /// ::dy namespace
 

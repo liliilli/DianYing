@@ -75,7 +75,7 @@ private:
   std::optional<std::vector<std::string>> __pLoadMaterialTextures(aiMaterial* material, EDyTextureMapType type);
 
   std::string                       mModelRootPath      = "";
-  std::vector<DDyMeshInformation>   mMeshInformation;
+  std::vector<DDyMeshInformation>   mMeshInformations;
   std::vector<std::string>          mBindedMaterialName = {};
   std::vector<std::string>          mTextureLocalPaths  = {};
 

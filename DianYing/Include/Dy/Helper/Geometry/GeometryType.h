@@ -54,8 +54,10 @@ struct PMeshInformationDescriptor final
 ///
 struct DMeshFlagInformation final
 {
-  bool mIsNotHaveIndices :1;
-  bool mIsNotHaveTextures:1;
+  int32_t                         mIndiceCount      = 0;
+  int32_t                         mVertexSize       = 0;
+  bool                            mIsNotHaveIndices :1;
+  bool                            mIsNotHaveTextures:1;
 
   DMeshFlagInformation() : mIsNotHaveIndices{false}, mIsNotHaveTextures{false} {};
 };

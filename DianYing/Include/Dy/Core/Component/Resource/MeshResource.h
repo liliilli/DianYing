@@ -13,8 +13,60 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Core/Component/Information/MeshInformation.h>
+
+//!
+//! Forward declration
+//!
+
 namespace dy
 {
+
+} /// ::dy namespace
+
+//!
+//! Implementation
+//!
+
+namespace dy
+{
+
+///
+/// @class CDyMeshResource
+/// @brief
+///
+class CDyMeshResource
+{
+public:
+  CDyMeshResource() = default;
+  CDyMeshResource(const CDyMeshResource&)             = delete;
+  CDyMeshResource(CDyMeshResource&&)                  = default;
+  CDyMeshResource& operator=(const CDyMeshResource&)  = delete;
+  CDyMeshResource& operator=(CDyMeshResource&&)       = default;
+  ~CDyMeshResource();
+
+  ///
+  /// @brief
+  ///
+  bool IsEnabledIndices() const noexcept;
+
+  ///
+  /// @brief
+  ///
+  int32_t GetVertexArrayId() const noexcept;
+
+private:
+  ///
+  /// @brief
+  ///
+  [[nodiscard]]
+  EDySuccess pfInitializeMesh(const DDyMeshInformation& meshInformation) noexcept;
+
+  DBufferIdInformation       mBufferIdInformation     = {};
+  DMeshFlagInformation       mMeshFlagInformation     = {};
+
+  friend class CDyModelResource;
+};
 
 } /// ::dy namespace
 

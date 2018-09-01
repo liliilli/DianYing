@@ -21,7 +21,8 @@
 
 #include <Dy/Core/Component/Resource/ShaderResource.h>
 #include <Dy/Core/Component/Resource/TextureResource.h>
-#include "Dy/Core/Component/Resource/MaterialResource.h"
+#include <Dy/Core/Component/Resource/MaterialResource.h>
+#include <Dy/Core/Component/Resource/ModelResource.h>
 
 //!
 //! Forward declaration
@@ -66,6 +67,15 @@ public:
   EDySuccess CreateMaterialResource(const std::string& materialName);
 
   ///
+  /// @brief Create model resource on cpu and gpu.
+  /// @param[in] modelName name to create model which must be same with model information name.
+  /// Model resource just populate geometry information, not material information.
+  /// User have to instantiate material information using Info::PopulateMaterialInfo(populateMaterialDescriptor);
+  ///
+  [[nodiscard]]
+  EDySuccess CreateModelResource(const std::string& modelName);
+
+  ///
   /// @brief
   ///
   [[nodiscard]]
@@ -83,10 +93,17 @@ public:
   [[nodiscard]]
   CDyMaterialResource* GetMaterialResource(const std::string& materialName);
 
+  ///
+  /// @brief
+  ///
+  [[nodiscard]]
+  CDyModelResource* GetModelResource(const std::string& modelName);
+
 private:
   THashList<std::unique_ptr<CDyShaderResource>>   mOnBoardShaderLists;
   THashList<std::unique_ptr<CDyTextureResource>>  mOnBoardTextureLists;
   THashList<std::unique_ptr<CDyMaterialResource>> mOnBoardMaterialLists;
+  THashList<std::unique_ptr<CDyModelResource>>    mOnBoardModelLists;
 };
 
 } /// ::dy namespace

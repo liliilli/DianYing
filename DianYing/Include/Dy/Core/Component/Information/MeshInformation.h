@@ -41,8 +41,6 @@ public:
 
 private:
   PMeshInformationDescriptor mMeshResourceInformation;
-  DBufferIdInformation       mBufferIdInformation;
-  DMeshFlagInformation       mMeshFlagInformation;
 };
 
 } /// ::dy namespace
