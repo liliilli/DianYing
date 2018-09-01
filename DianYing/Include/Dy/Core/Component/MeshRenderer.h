@@ -13,21 +13,53 @@
 /// SOFTWARE.
 ///
 
+//!
+//! Forward declaration
+//!
+
+namespace dy
+{
+struct  PDyRendererConsturctionDescriptor;
+class   CDyModelResource;
+class   CDyMaterialResource;
+} /// ::dy namespace
+
+//!
+//! Implementation
+//!
+
 namespace dy
 {
 
 ///
-/// @class CDyMeshImporter
+/// @class CDyMeshRenderer
 /// @brief Renderer component have reference of shader and model instance with material own properties.
 ///
-class CDyMeshImporter
+class CDyMeshRenderer
 {
 public:
+  CDyMeshRenderer() = default;
+  CDyMeshRenderer(const CDyMeshRenderer&) = delete;
+  CDyMeshRenderer(CDyMeshRenderer&&)      = default;
+  CDyMeshRenderer& operator=(const CDyMeshRenderer&)  = delete;
+  CDyMeshRenderer& operator=(CDyMeshRenderer&&)       = default;
+  //~CDyMeshRenderer();
 
+  ///
+  /// @brief
+  ///
+  [[nodiscard]]
+  EDySuccess pfInitialize(const PDyRendererConsturctionDescriptor& desc);
+
+  ///
+  /// @brief
+  ///
+  void Render();
 
 private:
 
-
+  CDyModelResource*                 mModelReferencePtr    = nullptr;
+  std::vector<CDyMaterialResource*> mMaterialResourcePtr  = {};
 };
 
 } /// ::dy namespace
