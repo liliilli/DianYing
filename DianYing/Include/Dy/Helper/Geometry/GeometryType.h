@@ -32,15 +32,6 @@ struct DVertexInformation final
 ///
 /// @brief
 ///
-struct DTextureIdInformation final
-{
-  uint32_t mTextureId;
-  std::string mType;
-};
-
-///
-/// @brief
-///
 struct DBufferIdInformation final
 {
   uint32_t mVao = 0;
@@ -54,8 +45,8 @@ struct DBufferIdInformation final
 struct PMeshInformationDescriptor final
 {
   std::vector<DVertexInformation> mVertices;
-  std::vector<int32_t> mIndices;
-  std::vector<DTextureIdInformation> mTextures;
+  std::vector<int32_t>            mIndices;
+  std::vector<std::string>        mMaterialNames;
 };
 
 ///

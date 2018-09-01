@@ -28,7 +28,7 @@ EDySuccess MDyResource::CreateShaderResource(const std::string& shaderName)
 {
   // Get information from MDyDataInformation manager.
   const auto& manInfo   = MDyDataInformation::GetInstance();
-  const CDyShaderInformation* shaderInfo = manInfo.pfGetShaderInformation(shaderName);
+  const CDyShaderInformation* shaderInfo = manInfo.GetShaderInformation(shaderName);
   if (!shaderInfo)
   {
     return DY_FAILURE;
@@ -66,7 +66,7 @@ EDySuccess MDyResource::CreateTextureResource(const std::string& textureName)
 {
   // Get information from MDyDataInformation manager.
   const auto& manInfo   = MDyDataInformation::GetInstance();
-  const CDyTextureInformation* textureInfo = manInfo.pfGetTextureInformation(textureName);
+  const CDyTextureInformation* textureInfo = manInfo.GetTextureInformation(textureName);
   if (!textureInfo)
   {
     return DY_FAILURE;
@@ -103,7 +103,7 @@ EDySuccess MDyResource::CreateMaterialResource(const std::string& materialName)
 {
   // Get information from MDyDataInformation manager.
   const auto& manInfo = MDyDataInformation::GetInstance();
-  const DDyMaterialInformation* materialInfo = manInfo.pfGetMaterialInformation(materialName);
+  const DDyMaterialInformation* materialInfo = manInfo.GetMaterialInformation(materialName);
   if (!materialInfo)
   {
     return DY_FAILURE;

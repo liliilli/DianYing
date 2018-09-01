@@ -15,7 +15,6 @@
 /// Header file
 #include <Dy/Core/Component/Resource/MaterialResource.h>
 
-#include <Dy/Core/Component/Texture.h>
 #include <Dy/Core/Component/Resource/ShaderResource.h>
 
 #include <Dy/Management/DataInformationManager.h>

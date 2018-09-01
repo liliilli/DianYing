@@ -1,5 +1,6 @@
 #ifndef GUARD_DY_CORE_COMPONENT_INFORMATION_MESH_INFORMATION_H
 #define GUARD_DY_CORE_COMPONENT_INFORMATION_MESH_INFORMATION_H
+
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,25 +14,35 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Helper/Geometry/GeometryType.h>
+
 namespace dy
 {
 
-class DDyModelInformation final
+class DDyMeshInformation final
 {
 public:
-  DDyModelInformation(const PDyMaterialConstructionDescriptor& shaderConstructionDescriptor) :
-      mMaterialInformation{shaderConstructionDescriptor}
+  DDyMeshInformation(const PMeshInformationDescriptor& meshInformation) :
+      mMeshResourceInformation(meshInformation)
   {};
 
-  DDyModelInformation(const DDyModelInformation&)            = delete;
-  DDyModelInformation& operator=(const DDyModelInformation&) = delete;
-  DDyModelInformation(DDyModelInformation&&)            = default;
-  DDyModelInformation& operator=(DDyModelInformation&&) = default;
-  ~DDyModelInformation();
+  DDyMeshInformation(const DDyMeshInformation&)             = delete;
+  DDyMeshInformation& operator=(const DDyMeshInformation&)  = delete;
+  DDyMeshInformation(DDyMeshInformation&&)                  = default;
+  DDyMeshInformation& operator=(DDyMeshInformation&&)       = default;
+
+  ///
+  /// @brief return immutable descriptor information reference.
+  ///
+  const PMeshInformationDescriptor& GetInformation() const noexcept
+  {
+    return this->mMeshResourceInformation;
+  }
 
 private:
-
-
+  PMeshInformationDescriptor mMeshResourceInformation;
+  DBufferIdInformation       mBufferIdInformation;
+  DMeshFlagInformation       mMeshFlagInformation;
 };
 
 } /// ::dy namespace

@@ -22,7 +22,7 @@ namespace dy
 ///
 enum class EDyTextureMapType : unsigned char
 {
-  None,
+  Custom,
   Diffuse,
   Specular,
   Ambient,

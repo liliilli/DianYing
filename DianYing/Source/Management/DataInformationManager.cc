@@ -108,6 +108,48 @@ EDySuccess MDyDataInformation::CreateMaterialInformation(const PDyMaterialConstr
   return DY_SUCCESS;
 }
 
+EDySuccess MDyDataInformation::CreateModelInformation(const PDyModelConstructionDescriptor& modelDescriptor)
+{
+  const auto& materialName = modelDescriptor.mModelName;
+  if (mModelInformation.find(materialName) != mModelInformation.end())
+  {
+    return DY_FAILURE;
+  }
+
+  // Check there is already in the information map.
+  auto [it, creationResult] = mModelInformation.try_emplace(materialName, nullptr);
+  if (!creationResult) {
+
+    return DY_FAILURE;
+  }
+
+  // Make resource in heap, and insert it to empty memory space.
+  try
+  {
+    auto materialInformation = std::make_unique<DDyModelInformation>(modelDescriptor);
+    it->second.swap(materialInformation);
+    if (!it->second)
+    {
+      this->mModelInformation.erase(materialName);
+      return DY_FAILURE;
+    }
+  }
+  catch (const std::runtime_error& e)
+  {
+#if defined(_WIN32)
+    const auto* log = e.what();
+    const int32_t neededSize = MultiByteToWideChar(CP_UTF8, 0, log, static_cast<int32_t>(std::strlen(log)), nullptr, 0);
+
+    std::wstring wstrTo( neededSize, 0 );
+    MultiByteToWideChar(CP_UTF8, 0, log, static_cast<int32_t>(std::strlen(log)), &wstrTo[0], neededSize);
+    MessageBox(nullptr, wstrTo.c_str(), L"Error", MB_OK | MB_ICONERROR);
+#endif
+    assert(false);
+  }
+
+  return DY_SUCCESS;
+}
+
 EDySuccess MDyDataInformation::DeleteShaderInformation(const std::string& shaderName)
 {
   const auto iterator = mShaderInformation.find(shaderName);
@@ -153,7 +195,31 @@ EDySuccess MDyDataInformation::DeleteMaterialInformation(const std::string& mate
   return DY_SUCCESS;
 }
 
-  const CDyShaderInformation* MDyDataInformation::pfGetShaderInformation(const std::string& shaderName) const noexcept
+EDySuccess MDyDataInformation::DeleteModelInformation(const std::string& modelName, bool isAllRemoveSubresource)
+{
+  const auto iterator = mTextureInformation.find(modelName);
+  if (iterator == mTextureInformation.end())
+  {
+    return DY_FAILURE;
+  }
+
+  // IF mMaterialInformation is being used by another resource instance?
+  // then, return DY_FAILURE or remove it.
+  assert(false);
+
+  // First, release all information and related subresource instances from system
+  // only when isAllRemoveSubresource true.
+  if (isAllRemoveSubresource)
+  {
+
+  }
+
+  // And remove model information!
+
+  return DY_SUCCESS;
+}
+
+const CDyShaderInformation* MDyDataInformation::GetShaderInformation(const std::string& shaderName) const noexcept
 {
   const auto iterator = mShaderInformation.find(shaderName);
   if (iterator == mShaderInformation.end())
@@ -165,7 +231,7 @@ EDySuccess MDyDataInformation::DeleteMaterialInformation(const std::string& mate
   return iterator->second.get();
 }
 
-const CDyTextureInformation* MDyDataInformation::pfGetTextureInformation(const std::string& textureName) const noexcept
+const CDyTextureInformation* MDyDataInformation::GetTextureInformation(const std::string& textureName) const noexcept
 {
   const auto iterator = mTextureInformation.find(textureName);
   if (iterator == mTextureInformation.end())
@@ -177,10 +243,22 @@ const CDyTextureInformation* MDyDataInformation::pfGetTextureInformation(const s
   return iterator->second.get();
 }
 
-const DDyMaterialInformation* MDyDataInformation::pfGetMaterialInformation(const std::string& materialName) const noexcept
+const DDyMaterialInformation* MDyDataInformation::GetMaterialInformation(const std::string& materialName) const noexcept
 {
   const auto iterator = mMaterialInformation.find(materialName);
   if (iterator == mMaterialInformation.end())
+  {
+    // @todo Error log message
+    return nullptr;
+  }
+
+  return iterator->second.get();
+}
+
+const DDyModelInformation* MDyDataInformation::GetModelInformation(const std::string& modelName) const noexcept
+{
+  const auto iterator = mModelInformation.find(modelName);
+  if (iterator == mModelInformation.end())
   {
     // @todo Error log message
     return nullptr;

@@ -53,6 +53,7 @@ struct PDyMaterialConstructionDescriptor final
   std::string                           mShaderName       = "";
   std::vector<std::string>              mTextureName;
   EDyMaterialBlendMode                  mBlendMode        = EDyMaterialBlendMode::Opaque;
+  bool                                  mIsShaderLazyInitialized = false;
 };
 
 struct DDyMaterialShaderTuple final

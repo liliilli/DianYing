@@ -58,16 +58,7 @@ struct PDyTextureConstructionDescriptor final
   bool        mIsEnabledCustomedTextureParameter                  = false;
   bool        mIsEnabledCreateMipmap                              = false;
   EDyTextureStyleType mTextureType                                = EDyTextureStyleType::None;
-};
-
-///
-/// @struct DDyInformationTextureModelBinded
-/// @brief
-///
-struct DDyInformationTextureModelBinded final
-{
-  PDyTextureConstructionDescriptor  mTextureInformation           = {};
-  EDyTextureMapType                 mTextureMapType               = EDyTextureMapType::None;
+  EDyTextureMapType   mTextureMapType                             = EDyTextureMapType::Custom;
 };
 
 } /// ::dy namespace
