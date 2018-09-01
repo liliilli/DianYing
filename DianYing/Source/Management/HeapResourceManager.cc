@@ -197,6 +197,46 @@ EDySuccess MDyResource::CreateMaterialResource(const std::string& materialName)
   return DY_SUCCESS;
 }
 
+EDySuccess MDyResource::CreateModelResource(const std::string& modelName)
+{
+  // Get information from MDyDataInformation manager.
+  const auto& manInfo   = MDyDataInformation::GetInstance();
+  const auto* modelInfo = manInfo.GetModelInformation(modelName);
+  if (!modelInfo)
+  {
+    return DY_FAILURE;
+  }
+
+  auto [it, result] = this->mOnBoardModelLists.try_emplace(modelName, nullptr);
+  if (!result)
+  {
+    /*
+     * std::cout << "Failure : " << "Unexpected error";
+     */
+    return DY_FAILURE;
+  }
+
+  // Create texture resource and insert to empty memory space.
+  auto modelResource = std::make_unique<CDyModelResource>();
+  if (const auto success = modelResource->pInitializeModel(*modelInfo); success == DY_FAILURE)
+  {
+    this->mOnBoardModelLists.erase(modelName);
+    return DY_FAILURE;
+  }
+
+  it->second.swap(modelResource);
+  if (!it->second)
+  {
+    this->mOnBoardModelLists.erase(modelName);
+    return DY_FAILURE;
+  }
+
+  // At last, setting pointers to each other.
+  modelInfo ->__pfSetNextLevel(it->second.get());
+  it->second->__pfSetPrevLevel(const_cast<DDyModelInformation*>(modelInfo));
+  return DY_SUCCESS;
+}
+
 //!
 //! Get resource functions
 //!

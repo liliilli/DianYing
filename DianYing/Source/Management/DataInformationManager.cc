@@ -150,6 +150,68 @@ EDySuccess MDyDataInformation::CreateModelInformation(const PDyModelConstruction
   return DY_SUCCESS;
 }
 
+std::optional<std::string> MDyDataInformation::PopulateMaterialInformation(
+    const std::string& materialName,
+    const PDyMaterialPopulateDescriptor& materialPopulateDescriptor)
+{
+  // Check if baseMaterial called materialName is already on information list.
+  const auto* baseMaterial = GetMaterialInformation(materialName);
+  if (!baseMaterial)
+  {
+    // @todo error log
+    return std::nullopt;
+  }
+
+  // Setup meterial populate descriptor from parameter descriptor.
+  // and error checking.
+  PDyMaterialPopulateDescriptor actualMaterialPopDesc = materialPopulateDescriptor;
+  if (!actualMaterialPopDesc.mIsEnabledMaterialCustomNameOverride)
+  {
+    std::string newName {fmt::format("ov_{0}", materialName)};
+    if (actualMaterialPopDesc.mIsEnabledShaderOverride)
+    {
+      newName.append(fmt::format("{0}{1}", 's', actualMaterialPopDesc.mOverrideShaderName));
+    }
+    const auto id = baseMaterial->__pfEnrollAndGetNextDerivedMaterialIndex(newName);
+    actualMaterialPopDesc.mMaterialOverrideName = newName + std::to_string(id);
+  }
+  else
+  {
+    if (actualMaterialPopDesc.mMaterialOverrideName.empty())
+    {
+      // @todo error log "Empty name is prohibited."
+      return std::nullopt;
+    }
+    if (GetMaterialInformation(actualMaterialPopDesc.mMaterialOverrideName))
+    {
+      // @todo error log "OverrideName is already posed by material instance."
+      return std::nullopt;
+    };
+  }
+
+  // Check there is already in the information map.
+  auto [infoIt, result] = this->mMaterialInformation.try_emplace(actualMaterialPopDesc.mMaterialOverrideName, nullptr);
+  if (!result)
+  {
+    // @todo error log
+    return std::nullopt;
+  }
+
+  // Let baseMaterial have created populated derived material and move ownership to list.
+  auto populateDerivedSmtPtr = baseMaterial->__pfPopulateWith(actualMaterialPopDesc);
+  infoIt->second.swap(populateDerivedSmtPtr);
+  if (!infoIt->second)
+  {
+    // @todo error log
+    return std::nullopt;
+  }
+  return actualMaterialPopDesc.mMaterialOverrideName;
+}
+
+//!
+//! Delete functions
+//!
+
 EDySuccess MDyDataInformation::DeleteShaderInformation(const std::string& shaderName)
 {
   const auto iterator = mShaderInformation.find(shaderName);
@@ -218,6 +280,10 @@ EDySuccess MDyDataInformation::DeleteModelInformation(const std::string& modelNa
 
   return DY_SUCCESS;
 }
+
+//!
+//! Get function.
+//!
 
 const CDyShaderInformation* MDyDataInformation::GetShaderInformation(const std::string& shaderName) const noexcept
 {

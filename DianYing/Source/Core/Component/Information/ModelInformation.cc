@@ -19,8 +19,9 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include <Dy/Core/Component/Resource/ModelResource.h>
 #include <Dy/Helper/Geometry/GeometryType.h>
-#include "Dy/Management/DataInformationManager.h"
+#include <Dy/Management/DataInformationManager.h>
 
 namespace dy
 {
@@ -160,7 +161,7 @@ void DDyModelInformation::__pProcessMesh(aiMesh* mesh, const aiScene* scene)
   meshInformationDescriptor.mMaterialNames.emplace_back(materialDescriptor.mMaterialName);
 
   // Create DDyMeshInformation with descriptor.
-  this->mMeshInformation    .emplace_back(meshInformationDescriptor);
+  this->mMeshInformations    .emplace_back(meshInformationDescriptor);
   this->mBindedMaterialName .emplace_back(materialDescriptor.mMaterialName);
 }
 
@@ -259,7 +260,10 @@ DDyModelInformation::__pLoadMaterialTextures(aiMaterial* material, EDyTextureMap
 
 DDyModelInformation::~DDyModelInformation()
 {
-
+  if (this->mNextLevelPtr)
+  {
+    this->mNextLevelPtr->__pfSetPrevLevel(nullptr);
+  }
 }
 
 } /// ::dy namespace

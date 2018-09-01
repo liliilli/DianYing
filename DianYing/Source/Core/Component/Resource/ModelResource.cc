@@ -15,7 +15,36 @@
 /// Header file
 #include <Dy/Core/Component/Resource/ModelResource.h>
 
+#include <Dy/Core/Component/Information/ModelInformation.h>
+#include <Dy/Core/Component/Resource/MeshResource.h>
+
 namespace dy
 {
+
+CDyModelResource::~CDyModelResource()
+{
+  // Release all resource bind to this instance.
+  if (this->__mPrevLevelPtr)
+  {
+    this->__mPrevLevelPtr->__pfSetNextLevel(nullptr);
+  }
+}
+
+EDySuccess CDyModelResource::pInitializeModel(const DDyModelInformation& modelInformation)
+{
+  const auto& submeshInformations = modelInformation.mMeshInformations;
+  for (const auto& submeshInformation : submeshInformations)
+  {
+    std::unique_ptr<CDyMeshResource> meshResource = std::make_unique<CDyMeshResource>();
+    if (meshResource->pfInitializeMesh(submeshInformation) == DY_FAILURE)
+    {
+      return DY_FAILURE;
+    }
+
+    this->mMeshResource.emplace_back(std::move(meshResource));
+  }
+
+  return DY_SUCCESS;
+}
 
 } /// ::dy namespace
