@@ -20,10 +20,31 @@ namespace dy
 {
 
 ///
+/// @enum EDyAttributeVariableType
+/// @brief Shader internal variable type for attributes.
+///
+enum class EDyAttributeVariableType
+{
+  Matrix4 = 0,
+  Matrix3,
+  Matrix2,
+  Vector4,
+  Vector3,
+  Vector2,
+  IVec4,
+  IVec3,
+  IVec2,
+  Integer,
+  Float,
+  NoneError,
+};
+
+///
 /// @enum EDyUniformVariableType
 /// @brief Shader internal variable type for uniform and textures.
 ///
-enum class EDyUniformVariableType {
+enum class EDyUniformVariableType
+{
   Matrix4 = 0,
   Matrix3,
   Matrix2,
@@ -37,7 +58,9 @@ enum class EDyUniformVariableType {
   IntegerPointer,
   Float,
   FloatPointer,
-  Texture2D
+  Texture1D,
+  Texture2D,
+  NoneError
 };
 
 ///
@@ -51,6 +74,28 @@ enum class EDyShaderFragmentType
   TesselationEvaluation,
   Geometry,
   Pixel
+};
+
+///
+/// @struct DDyAttributeVariableInformation
+/// @brief Store attribute variable information.
+///
+struct DDyAttributeVariableInformation final
+{
+  std::string               mVariableName = "";
+  int32_t                   mVariableSize = 0;
+  EDyAttributeVariableType  mVariableType = EDyAttributeVariableType::NoneError;
+};
+
+///
+/// @struct DDyUniformVariableInformation
+/// @brief Store uniform variable information.
+///
+struct DDyUniformVariableInformation final
+{
+  std::string               mVariableName = "";
+  int32_t                   mVariableSize = 0;
+  EDyUniformVariableType    mVariableType = EDyUniformVariableType::NoneError;
 };
 
 ///

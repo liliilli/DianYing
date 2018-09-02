@@ -21,7 +21,7 @@
 
 namespace {
 
-void PrintShaderErrorLog(GLuint shaderFragmentId) {
+void DyPrintShaderErrorLog(GLuint shaderFragmentId) {
   GLint max_length = 0;
   glGetShaderiv(shaderFragmentId, GL_INFO_LOG_LENGTH, &max_length);
 
@@ -34,7 +34,7 @@ void PrintShaderErrorLog(GLuint shaderFragmentId) {
 #endif
 }
 
-void PrintShaderProgramErrorLog(GLuint shaderProgramId) {
+void DyPrintShaderProgramErrorLog(GLuint shaderProgramId) {
   GLint max_length = 0;
   glGetProgramiv(shaderProgramId, GL_INFO_LOG_LENGTH, &max_length);
 
@@ -47,6 +47,46 @@ void PrintShaderProgramErrorLog(GLuint shaderProgramId) {
 #endif
 }
 
+dy::EDyAttributeVariableType DyGlGetAttributeVariableTypeFrom(GLenum type) noexcept
+{
+  switch (type)
+  {
+  case GL_FLOAT:      case GL_DOUBLE:       return dy::EDyAttributeVariableType::Float;
+  case GL_FLOAT_VEC2: case GL_DOUBLE_VEC2:  return dy::EDyAttributeVariableType::Vector2;
+  case GL_FLOAT_VEC3: case GL_DOUBLE_VEC3:  return dy::EDyAttributeVariableType::Vector3;
+  case GL_FLOAT_VEC4: case GL_DOUBLE_VEC4:  return dy::EDyAttributeVariableType::Vector4;
+  case GL_FLOAT_MAT2: case GL_DOUBLE_MAT2:  return dy::EDyAttributeVariableType::Matrix2;
+  case GL_FLOAT_MAT3: case GL_DOUBLE_MAT3:  return dy::EDyAttributeVariableType::Matrix3;
+  case GL_FLOAT_MAT4: case GL_DOUBLE_MAT4:  return dy::EDyAttributeVariableType::Matrix4;
+  case GL_INT:                              return dy::EDyAttributeVariableType::Integer;
+  case GL_INT_VEC2:                         return dy::EDyAttributeVariableType::IVec2;
+  case GL_INT_VEC3:                         return dy::EDyAttributeVariableType::IVec3;
+  case GL_INT_VEC4:                         return dy::EDyAttributeVariableType::IVec4;
+  default: return dy::EDyAttributeVariableType::NoneError;
+  }
+}
+
+dy::EDyUniformVariableType DyGlGetUniformVariableTypeFrom(GLenum type) noexcept
+{
+  switch (type)
+  {
+  case GL_FLOAT:      case GL_DOUBLE:       return dy::EDyUniformVariableType::Float;
+  case GL_FLOAT_VEC2: case GL_DOUBLE_VEC2:  return dy::EDyUniformVariableType::Vector2;
+  case GL_FLOAT_VEC3: case GL_DOUBLE_VEC3:  return dy::EDyUniformVariableType::Vector3;
+  case GL_FLOAT_VEC4: case GL_DOUBLE_VEC4:  return dy::EDyUniformVariableType::Vector4;
+  case GL_FLOAT_MAT2: case GL_DOUBLE_MAT2:  return dy::EDyUniformVariableType::Matrix2;
+  case GL_FLOAT_MAT3: case GL_DOUBLE_MAT3:  return dy::EDyUniformVariableType::Matrix3;
+  case GL_FLOAT_MAT4: case GL_DOUBLE_MAT4:  return dy::EDyUniformVariableType::Matrix4;
+  case GL_INT:                              return dy::EDyUniformVariableType::Integer;
+  case GL_INT_VEC2:                         return dy::EDyUniformVariableType::IVec2;
+  case GL_INT_VEC3:                         return dy::EDyUniformVariableType::IVec3;
+  case GL_INT_VEC4:                         return dy::EDyUniformVariableType::IVec4;
+  case GL_TEXTURE_1D:                       return dy::EDyUniformVariableType::Texture1D;
+  case GL_TEXTURE_2D:                       return dy::EDyUniformVariableType::Texture2D;
+  default: return dy::EDyUniformVariableType::NoneError;
+  }
+}
+
 } /// unnamed namespace
 
 namespace dy
@@ -55,15 +95,15 @@ namespace dy
 CDyShaderResource::~CDyShaderResource()
 {
   // Release heap resources
-  if (mShaderProgramId)
+  if (this->mShaderProgramId)
   {
-    glDeleteProgram(mShaderProgramId);
+    glDeleteProgram(this->mShaderProgramId);
   }
 
   // Unbind previous and next level.
-  if (__mPrevLevelPtr)
+  if (this->__mPrevLevelPtr)
   {
-    __mPrevLevelPtr->__pfSetNextLevel(nullptr);
+    this->__mPrevLevelPtr->__pfSetNextLevel(nullptr);
   }
   for (auto& [notUsed, materialPtr] : __mBindMaterialPtrs)
   {
@@ -74,9 +114,10 @@ CDyShaderResource::~CDyShaderResource()
 EDySuccess CDyShaderResource::pfInitializeResource(const CDyShaderInformation& shaderInformation)
 {
   const auto& information = shaderInformation.GetInformation();
-  mShaderName = information.mShaderName;
+  this->mShaderName = information.mShaderName;
 
   std::vector<std::pair<EDyShaderFragmentType, uint32_t>> shaderFragmentIdList;
+  // If failured, release resources.
   if (__pInitializeShaderFragments(information, shaderFragmentIdList) == DY_FAILURE)
   {
     return DY_FAILURE;
@@ -85,8 +126,16 @@ EDySuccess CDyShaderResource::pfInitializeResource(const CDyShaderInformation& s
   {
     return DY_FAILURE;
   }
+  if (__pStoreAttributePropertiesOfProgram() == DY_FAILURE)
+  {
+    return DY_FAILURE;
+  }
+  if (__pStoreConstantUniformPropertiesOfProgram() == DY_FAILURE)
+  {
+    return DY_FAILURE;
+  }
 
-  glGenVertexArrays(1, &mTemporalVertexArray);
+  glGenVertexArrays(1, &this->mTemporalVertexArray);
   return DY_SUCCESS;
 }
 
@@ -156,7 +205,7 @@ EDySuccess CDyShaderResource::__pInitializeShaderFragments(
       int32_t err;
       if (glGetShaderiv(shaderFragmentId, GL_COMPILE_STATUS, &err); !err)
       {
-        PrintShaderErrorLog(shaderFragmentId);
+        DyPrintShaderErrorLog(shaderFragmentId);
         glDeleteShader(shaderFragmentId);
         for (auto& [type, compiledShaderId] : shaderFragmentIdList)
         {
@@ -177,13 +226,13 @@ EDySuccess CDyShaderResource::__pInitializeShaderFragments(
 EDySuccess CDyShaderResource::__pInitializeShaderProgram(const std::vector<std::pair<EDyShaderFragmentType, uint32_t>>& shaderFragmentIdList)
 {
   // Create GlShaderProgram, and attach fragments to link them.
-  mShaderProgramId = glCreateProgram();
+  this->mShaderProgramId = glCreateProgram();
   for (auto& [shaderFragmentType, shaderFragmentId] : shaderFragmentIdList) {
-    glAttachShader(mShaderProgramId, shaderFragmentId);
+    glAttachShader(this->mShaderProgramId, shaderFragmentId);
   }
-  glLinkProgram(mShaderProgramId);
+  glLinkProgram(this->mShaderProgramId);
   for (auto& [shaderFragmentType, shaderFragmentId] : shaderFragmentIdList) {
-    glDetachShader(mShaderProgramId, shaderFragmentId);
+    glDetachShader(this->mShaderProgramId, shaderFragmentId);
     glDeleteShader(shaderFragmentId);
   }
 
@@ -191,14 +240,90 @@ EDySuccess CDyShaderResource::__pInitializeShaderProgram(const std::vector<std::
 #if !defined(NDEBUG)
   {
     GLint isLinked = 0;
-    glGetProgramiv(mShaderProgramId, GL_LINK_STATUS, &isLinked);
+    glGetProgramiv(this->mShaderProgramId, GL_LINK_STATUS, &isLinked);
     if (!isLinked) {
-      PrintShaderProgramErrorLog(mShaderProgramId);
+      DyPrintShaderProgramErrorLog(this->mShaderProgramId);
       return DY_FAILURE;
     }
   }
 #endif
 
+  return DY_SUCCESS;
+}
+
+EDySuccess CDyShaderResource::__pStoreAttributePropertiesOfProgram() noexcept
+{
+  // GL(native) code
+  int32_t activatedAttributeCount = 0;
+  glGetProgramiv(this->mShaderProgramId, GL_ACTIVE_ATTRIBUTES, &activatedAttributeCount);
+  int32_t attributeBufferLength = 0;
+  glGetProgramiv(this->mShaderProgramId, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &attributeBufferLength);
+  this->mAttributeVariableLists.resize(activatedAttributeCount);
+
+  GLchar* attributeName = new GLchar[attributeBufferLength];
+  std::memset(attributeName, '\0', attributeBufferLength);
+  for (int32_t i = 0; i < activatedAttributeCount; ++i)
+  {
+    GLsizei attributelength = 0;
+    GLint   attributeSize = 0;
+    GLenum  attributeType = GL_NONE;
+    glGetActiveAttrib(this->mShaderProgramId, i, attributeBufferLength,
+      &attributelength, &attributeSize, &attributeType, attributeName);
+
+    // Output log of attribute variables.
+    const auto storeType = DyGlGetAttributeVariableTypeFrom(attributeType);
+    if (storeType == EDyAttributeVariableType::NoneError)
+    {
+      // @todo error log "Does not support type", "attributeName", "attributeType"
+      assert(false);
+
+      this->mAttributeVariableLists.clear();
+      return DY_FAILURE;
+    }
+
+    this->mAttributeVariableLists[i].mVariableName = attributeName;
+    this->mAttributeVariableLists[i].mVariableSize = attributeSize;
+    this->mAttributeVariableLists[i].mVariableType = storeType;
+  }
+  delete[] attributeName;
+  return DY_SUCCESS;
+}
+
+EDySuccess CDyShaderResource::__pStoreConstantUniformPropertiesOfProgram() noexcept
+{
+  // GL(native) code
+  int32_t activatedUniformCount = 0;
+  glGetProgramiv(this->mShaderProgramId, GL_ACTIVE_UNIFORMS, &activatedUniformCount);
+  int32_t uniformBufferLength = 0;
+  glGetProgramiv(this->mShaderProgramId, GL_ACTIVE_UNIFORM_MAX_LENGTH, &uniformBufferLength);
+  this->mPlainUniformVariableLists.resize(activatedUniformCount);
+
+  GLchar* attributeName = new GLchar[uniformBufferLength];
+  std::memset(attributeName, '\0', uniformBufferLength);
+  for (int32_t i = 0; i < activatedUniformCount; ++i)
+  {
+    GLsizei attributelength = 0;
+    GLint   attributeSize = 0;
+    GLenum  attributeType = GL_NONE;
+    glGetActiveAttrib(this->mShaderProgramId, i, uniformBufferLength,
+      &attributelength, &attributeSize, &attributeType, attributeName);
+
+    // Output log of attribute variables.
+    const auto storeType = DyGlGetUniformVariableTypeFrom(attributeType);
+    if (storeType == EDyUniformVariableType::NoneError)
+    {
+      // @todo error log "Does not support type", "attributeName", "attributeType"
+      assert(false);
+
+      this->mPlainUniformVariableLists.clear();
+      return DY_FAILURE;
+    }
+
+    this->mPlainUniformVariableLists[i].mVariableName = attributeName;
+    this->mPlainUniformVariableLists[i].mVariableSize = attributeSize;
+    this->mPlainUniformVariableLists[i].mVariableType = storeType;
+  }
+  delete[] attributeName;
   return DY_SUCCESS;
 }
 

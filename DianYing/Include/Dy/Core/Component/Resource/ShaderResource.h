@@ -202,11 +202,23 @@ private:
   ///
   EDySuccess __pInitializeShaderProgram(const std::vector<std::pair<EDyShaderFragmentType, uint32_t>>& shaderFragmentIdList);
 
+  ///
+  /// @brief
+  ///
+  EDySuccess __pStoreAttributePropertiesOfProgram() noexcept;
+
+  ///
+  /// @brief
+  ///
+  EDySuccess __pStoreConstantUniformPropertiesOfProgram() noexcept;
+
   std::string mShaderName           = "";
   uint32_t    mShaderProgramId      = 0;
   uint32_t    mTemporalVertexArray  = 0;
 
-  std::vector<TUniformStruct> mUniformVariableContainer;
+  std::vector<TUniformStruct>                   mUniformVariableContainer;
+  std::vector<DDyAttributeVariableInformation>  mAttributeVariableLists;
+  std::vector<DDyUniformVariableInformation>    mPlainUniformVariableLists;
 
   //!
   //! Level pointers binding

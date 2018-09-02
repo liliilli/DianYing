@@ -35,6 +35,8 @@
     <ClCompile Include="Source\Core\Component\Resource\ModelResource.cc" />
     <ClCompile Include="Source\Core\Component\Information\ModelInformation.cc" />
     <ClCompile Include="Source\Core\Component\MeshRenderer.cc" />
+    <ClCompile Include="Source\Core\Component\Object\Camera.cc" />
+    <ClCompile Include="Source\Management\SceneManager.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -87,6 +89,9 @@
     <ClInclude Include="Include\Dy\Helper\Geometry\GeometryType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\ModelType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\EtcType.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Object\Camera.h" />
+    <ClInclude Include="Include\Dy\Helper\ImmutableSetting.h" />
+    <ClInclude Include="Include\Dy\Management\SceneManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />
