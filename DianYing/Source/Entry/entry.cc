@@ -30,16 +30,17 @@
 #include <Dy/Helper/Type/Color.h>
 #include <Dy/Core/Component/Resource/MaterialResource.h>
 
+#include <Dy/Helper/ImmutableSetting.h>
+
 #include <Dy/Management/TimeManager.h>
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/DataInformationManager.h>
 #include <Dy/Management/HeapResourceManager.h>
 #include <Dy/Core/Component/Internal/ModelType.h>
 #include <Dy/Core/Component/Internal/EtcType.h>
-#include "Dy/Core/Component/MeshRenderer.h"
-
-#define MDY_RESOLUTION_WIDTH 1280
-#define MDY_RESOLUTION_HEIGHT 720
+#include <Dy/Core/Component/MeshRenderer.h>
+#include <Dy/Management/SceneManager.h>
+#include <Dy/Core/Component/Object/Camera.h>
 
 ///
 /// Undefined proprocessor WIN32 macro "max, min" for preventing misuse.
@@ -127,9 +128,10 @@ void GLAPIENTRY DyGlMessageCallback(GLenum source, GLenum type, GLuint id, GLenu
 bool gImguiShowDemoWindow = true;
 bool gImguiShowAnotherWindow = false;
 
-dy::DVector3        gColor      {.2f, .2f, .2f};
-dy::CDyMeshRenderer gRenderer = {};
-dy::CDyShaderResource* gShaderPtr = nullptr;
+dy::DVector3                    gColor      {.2f, .2f, .2f};
+dy::CDyMeshRenderer             gRenderer   = {};
+dy::CDyShaderResource*          gShaderPtr  = nullptr;
+std::unique_ptr<dy::CDyCamera>  gCameraPtr  = nullptr;
 
 GLuint gVao = 0;
 GLuint gVbo = 0;
@@ -155,6 +157,16 @@ void DyGlTempInitializeResource()
 {
   auto& manInfo = dy::MDyDataInformation::GetInstance();
   auto& manResc = dy::MDyResource       ::GetInstance();
+
+  dy::PDyCameraConstructionDescriptor cameraDesc;
+  {
+    cameraDesc.mInitialFieldOfView  = 70.f;
+    cameraDesc.mIsMoveable          = true;
+    cameraDesc.mIsFocusInstantly    = true;
+    cameraDesc.mIsOrthographic      = false;
+    cameraDesc.mUseCustomViewport   = false;
+  }
+  gCameraPtr = std::make_unique<dy::CDyCamera>(cameraDesc);
 
   //!
   //! Grid rendering setting.
@@ -186,10 +198,10 @@ void DyGlTempInitializeResource()
 
   std::vector<dy::DVector3> mPointers;
   {
-    const float start = -1.f;
-    const float width =  2.f;
-    const int32_t step =   6;
-    const float interval = width / step;
+    const float start     = -1.f;
+    const float width     = 2.f;
+    const int32_t step    = 6;
+    const float interval  = width / step;
 
     for (int32_t i = 0; i <= step; ++i)
     {
@@ -201,12 +213,13 @@ void DyGlTempInitializeResource()
       mPointers.emplace_back(start + interval * i, 0.f, start + width);
     }
   }
+
   glBindBuffer(GL_ARRAY_BUFFER, gVbo);
   glBufferData(GL_ARRAY_BUFFER, sizeof(dy::DVector3) * mPointers.size(), mPointers.data(), GL_STATIC_DRAW);
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(dy::DVector3), nullptr);
   glEnableVertexAttribArray(0);
-
   glBindVertexArray(0);
+
   //!
   //! Other model and resource setting.
   //!
@@ -418,10 +431,12 @@ void DyInitiailzeAllManagers()
   MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyDataInformation::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyResource::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyScene::Initialize());
 }
 
 void DyReleaseAllManagers()
 {
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyScene::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyResource::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyDataInformation::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Release());
@@ -491,8 +506,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
   RECT  windowRect;
   windowRect.left    = 0L;
   windowRect.top     = 0L;
-  windowRect.right   = MDY_RESOLUTION_WIDTH;
-  windowRect.bottom  = MDY_RESOLUTION_HEIGHT;
+  windowRect.right   = dy::kScreenWidth;
+  windowRect.bottom  = dy::kScreenHeight;
   AdjustWindowRectEx(&windowRect, dwordStyle, FALSE, dwordExStyle);
 
   windowHandle = CreateWindowEx(0,
@@ -577,7 +592,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLin
       glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
       glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-      gGlWindow = glfwCreateWindow(MDY_RESOLUTION_WIDTH, MDY_RESOLUTION_HEIGHT, "DianYing", nullptr, nullptr);
+      gGlWindow = glfwCreateWindow(dy::kScreenWidth, dy::kScreenHeight, "DianYing", nullptr, nullptr);
       if (!gGlWindow) {
         glfwTerminate();
         break;
@@ -589,7 +604,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLin
       glfwSetInputMode(gGlWindow, GLFW_STICKY_KEYS, GL_FALSE);
       glfwSetFramebufferSizeCallback(gGlWindow, &OnCallbackFrameBufferSize);
 
-      glViewport(0, 0, MDY_RESOLUTION_WIDTH, MDY_RESOLUTION_HEIGHT);
+      glViewport(0, 0, dy::kScreenWidth, dy::kScreenHeight);
       glClearColor(0, 0, 0, 0);
       glClearDepth(1.0f);
 
