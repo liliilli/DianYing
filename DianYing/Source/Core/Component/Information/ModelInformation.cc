@@ -33,7 +33,7 @@ DDyModelInformation::DDyModelInformation(const PDyModelConstructionDescriptor& m
   Assimp::Importer assimpImporter;
   const aiScene* assimpModelScene = assimpImporter.ReadFile(
       modelPath.c_str(),
-      aiProcess_Triangulate | aiProcess_FlipUVs
+      aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals
   );
 
   if (!assimpModelScene ||
@@ -107,14 +107,19 @@ void DDyModelInformation::__pProcessMesh(aiMesh* mesh, const aiScene* scene)
   }
   meshInformationDescriptor.mIndices.shrink_to_fit();
 
+  // Get Mateiral information. IF not exists, just pass only mesh information.
   // Diffuse map, specular map, height map, ambient map, emissive map etc.
   const auto  materialIndex = mesh->mMaterialIndex;
-  aiMaterial* material      = scene->mMaterials[materialIndex];
-  aiString    materialName;
+  if (materialIndex == 0)
+  {
+    this->mMeshInformations.emplace_back(meshInformationDescriptor);
+    return;
+  }
 
-  const auto ret = material->Get(AI_MATKEY_NAME, materialName);
   // If retrieving material name has been failed, just replace it with model name + "0", "1"...
-  if (ret == AI_FAILURE)
+  aiMaterial* material      = scene->mMaterials[materialIndex];
+  aiString    materialName  = {};
+  if (const auto ret = material->Get(AI_MATKEY_NAME, materialName); ret == AI_FAILURE)
   {
     assert(false);
   }
@@ -149,20 +154,20 @@ void DDyModelInformation::__pProcessMesh(aiMesh* mesh, const aiScene* scene)
     const auto& heightMaps = opHeight.value();
     textureNames.insert(textureNames.end(), heightMaps.begin(), heightMaps.end());
   }
-
   materialDescriptor.mTextureName = textureNames;
 
-  // Initialzie material information instance to manager.
+  // Let InformationManager Initialzie material information instance.
   auto& manInfo = MDyDataInformation::GetInstance();
-  if (const auto ptr = manInfo.GetMaterialInformation(materialDescriptor.mMaterialName); !ptr)
+  if (const auto ptr = manInfo.GetMaterialInformation(materialDescriptor.mMaterialName);
+      !ptr)
   {
     MDY_CALL_ASSERT_SUCCESS(manInfo.CreateMaterialInformation(materialDescriptor));
   }
   meshInformationDescriptor.mMaterialNames.emplace_back(materialDescriptor.mMaterialName);
 
   // Create DDyMeshInformation with descriptor.
-  this->mMeshInformations    .emplace_back(meshInformationDescriptor);
-  this->mBindedMaterialName .emplace_back(materialDescriptor.mMaterialName);
+  this->mMeshInformations  .emplace_back(meshInformationDescriptor);
+  this->mBindedMaterialName.emplace_back(materialDescriptor.mMaterialName);
 }
 
 std::optional<std::vector<std::string>>

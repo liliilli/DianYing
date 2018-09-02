@@ -27,14 +27,16 @@
 #include <imgui/imgui_impl_glfw.h>
 #include <imgui/imgui_impl_opengl3.h>
 
-#include <Dy/Core/Component/Shader.h>
 #include <Dy/Helper/Type/Color.h>
+#include <Dy/Core/Component/Resource/MaterialResource.h>
+
 #include <Dy/Management/TimeManager.h>
 #include <Dy/Management/SettingManager.h>
-#include <Dy/Management/HandleManager.h>
-#include <Dy/Core/Component/Texture.h>
-#include "Dy/Core/Component/Internal/MaterialType.h"
-#include "Dy/Core/Component/Material.h"
+#include <Dy/Management/DataInformationManager.h>
+#include <Dy/Management/HeapResourceManager.h>
+#include <Dy/Core/Component/Internal/ModelType.h>
+#include <Dy/Core/Component/Internal/EtcType.h>
+#include "Dy/Core/Component/MeshRenderer.h"
 
 #define MDY_RESOLUTION_WIDTH 1280
 #define MDY_RESOLUTION_HEIGHT 720
@@ -111,17 +113,195 @@ HGLRC windowGlResourceContext = nullptr;
 ID3D11Device* d11Device = nullptr;
 ID3D11DeviceContext* d11DeviceContext = nullptr;
 
+//!
+//! ~OpenGL (native) Codes
+//!
+
+void GLAPIENTRY DyGlMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
+{
+  std::fprintf(stderr, "DianYing OpenGL callback : %s type = 0x%x, severity = 0x%x, message = %s\n",
+               (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
+               type, severity, message);
+}
+
 bool gImguiShowDemoWindow = true;
 bool gImguiShowAnotherWindow = false;
 
-dy::DVector3 gColor {1.f, 0.f, 0.5f};
-dy::CDyMaterialComponent material;
+dy::DVector3        gColor      {.2f, .2f, .2f};
+dy::CDyMeshRenderer gRenderer = {};
+dy::CDyShaderResource* gShaderPtr = nullptr;
 
-void GlRenderFrame()
+GLuint gVao = 0;
+GLuint gVbo = 0;
+
+void DyGlDrawGrid()
 {
-  glClearColor(gColor.X, gColor.Y, gColor.Z, 1.0f);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glDisable(GL_TEXTURE_2D);
+  glDisable(GL_LIGHTING);
+  glDisable(GL_BLEND);
 
+  gShaderPtr->UseShader();
+  glBindVertexArray(gVao);
+  glDrawArrays(GL_LINES, 0, 6 * 2);
+  glBindVertexArray(0);
+  gShaderPtr->UnuseShader();
+
+  glEnable(GL_BLEND);
+  glEnable(GL_TEXTURE_2D);
+  glEnable(GL_LIGHTING);
+}
+
+void DyGlTempInitializeResource()
+{
+  auto& manInfo = dy::MDyDataInformation::GetInstance();
+  auto& manResc = dy::MDyResource       ::GetInstance();
+
+  //!
+  //! Grid rendering setting.
+  //!
+
+  dy::PDyShaderConstructionDescriptor gridShaderDesc;
+  {
+    gridShaderDesc.mShaderName = "dyBuiltinGrid";
+    {
+      dy::PDyShaderFragmentInformation vertexShaderInfo;
+      vertexShaderInfo.mShaderType = dy::EDyShaderFragmentType::Vertex;
+      vertexShaderInfo.mShaderPath = "./ShaderResource/Gl/grid.vert";
+      gridShaderDesc.mShaderFragments.emplace_back(vertexShaderInfo);
+    }
+    {
+      dy::PDyShaderFragmentInformation fragmentShaderInfo;
+      fragmentShaderInfo.mShaderType = dy::EDyShaderFragmentType::Pixel;
+      fragmentShaderInfo.mShaderPath = "./ShaderResource/Gl/grid.frag";
+      gridShaderDesc.mShaderFragments.emplace_back(fragmentShaderInfo);
+    }
+  }
+  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateShaderInformation (gridShaderDesc)            );
+  MDY_CALL_ASSERT_SUCCESS(manResc.CreateShaderResource    (gridShaderDesc.mShaderName));
+  gShaderPtr = manResc.GetShaderResource(gridShaderDesc.mShaderName);
+
+  glGenVertexArrays(1, &gVao);
+  glGenBuffers(1, &gVbo);
+  glBindVertexArray(gVao);
+
+  std::vector<dy::DVector3> mPointers;
+  {
+    const float start = -1.f;
+    const float width =  2.f;
+    const int32_t step =   6;
+    const float interval = width / step;
+
+    for (int32_t i = 0; i <= step; ++i)
+    {
+      // Horizontal
+      mPointers.emplace_back(start,         0.f, start + interval * i);
+      mPointers.emplace_back(start + width, 0.f, start + interval * i);
+      // Vertical
+      mPointers.emplace_back(start + interval * i, 0.f,         start);
+      mPointers.emplace_back(start + interval * i, 0.f, start + width);
+    }
+  }
+  glBindBuffer(GL_ARRAY_BUFFER, gVbo);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(dy::DVector3) * mPointers.size(), mPointers.data(), GL_STATIC_DRAW);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(dy::DVector3), nullptr);
+  glEnableVertexAttribArray(0);
+
+  glBindVertexArray(0);
+  //!
+  //! Other model and resource setting.
+  //!
+
+  dy::PDyShaderConstructionDescriptor shaderDesc;
+  {
+    shaderDesc.mShaderName = "TestShader";
+    {
+      dy::PDyShaderFragmentInformation vertexShaderInfo;
+      vertexShaderInfo.mShaderType = dy::EDyShaderFragmentType::Vertex;
+      vertexShaderInfo.mShaderPath = "./glMeshVert.vert";
+      shaderDesc.mShaderFragments.emplace_back(vertexShaderInfo);
+    }
+    {
+      dy::PDyShaderFragmentInformation fragmentShaderInfo;
+      fragmentShaderInfo.mShaderType = dy::EDyShaderFragmentType::Pixel;
+      fragmentShaderInfo.mShaderPath = "./glShader.frag";
+      shaderDesc.mShaderFragments.emplace_back(fragmentShaderInfo);
+    }
+  }
+  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateShaderInformation(shaderDesc));
+
+  // OpenGL (native) Texture binding DEMO
+  dy::PDyTextureConstructionDescriptor textureDesc;
+  {
+    textureDesc.mTextureName                        = "TestTexture";
+    textureDesc.mTextureFileAbsolutePath            = "./TestResource/S_7325920284368.jpg";
+    textureDesc.mTextureType                        = dy::EDyTextureStyleType::D2;
+    textureDesc.mIsEnabledCustomedTextureParameter  = false;
+  }
+  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateTextureInformation(textureDesc));
+
+  dy::PDyMaterialConstructionDescriptor materialDesc;
+  {
+    materialDesc.mMaterialName  = "TestMaterial";
+    materialDesc.mBlendMode     = dy::EDyMaterialBlendMode::Opaque;
+    materialDesc.mShaderName    = "TestShader";
+    materialDesc.mTextureName   = { "TestTexture" };
+  }
+  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateMaterialInformation(materialDesc));
+
+#ifdef false
+  dy::PDyModelConstructionDescriptor modelDesc;
+  {
+    modelDesc.mModelName = "TestModel";
+    modelDesc.mModelPath = "./TestResource/nanosuit/nanosuit.obj";
+  }
+  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(modelDesc));
+#endif
+#ifdef false
+  std::vector<std::string> populatedMaterialNames;
+  {
+    const auto* model = manInfo.GetModelInformation(modelDesc.mModelName);
+    const auto& materialNameList = model->GetBindedMaterialNameLists();
+
+    dy::PDyMaterialPopulateDescriptor materialPopDesc;
+    materialPopDesc.mIsEnabledShaderOverride  = true;
+    materialPopDesc.mOverrideShaderName       = "TestShader";
+    for (const auto& materialName : materialNameList)
+    {
+      const auto resultMatString = manInfo.PopulateMaterialInformation(materialName, materialPopDesc);
+      if (!resultMatString.has_value()) { assert(false); }
+      else
+      {
+        populatedMaterialNames.emplace_back(resultMatString.value());
+      }
+    }
+  }
+  MDY_CALL_ASSERT_SUCCESS(manResc.CreateModelResource(modelDesc.mModelName));
+#endif
+
+  dy::PDyModelConstructionDescriptor bunnyModel;
+  {
+    bunnyModel.mModelName = "Bunny";
+    bunnyModel.mModelPath = "./TestResource/bun_zipper.ply";
+  }
+  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(bunnyModel));
+
+  dy::PDyModelConstructionDescriptor dragonModel;
+  {
+    bunnyModel.mModelName = "Dragon";
+    bunnyModel.mModelPath = "./TestResource/dragon_vrip_res2.ply";
+  }
+  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(bunnyModel));
+
+  dy::PDyRendererConsturctionDescriptor rendererDesc;
+  {
+    rendererDesc.mModelName     = "Dragon";
+    rendererDesc.mMaterialNames = {"TestMaterial"};
+  }
+  MDY_CALL_ASSERT_SUCCESS(gRenderer.pfInitialize(rendererDesc));
+}
+
+void DyImguiRenderFrame()
+{
   ImGui_ImplOpenGL3_NewFrame();
   ImGui_ImplGlfw_NewFrame();
   ImGui::NewFrame();
@@ -167,17 +347,28 @@ void GlRenderFrame()
 
   ImGui::Render();
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
 
-  material.TemporalRender();
+void GlRenderFrame()
+{
+  glClearColor(gColor.X, gColor.Y, gColor.Z, 1.0f);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+  DyGlDrawGrid();
+
+  gRenderer.Render();
+
+  DyImguiRenderFrame();
 }
 
 void GlRenderLoop()
 {
   while (!glfwWindowShouldClose(gGlWindow))
   {
-    glfwPollEvents();
     GlRenderFrame();
     glfwSwapBuffers(gGlWindow);
+    glfwPollEvents();
   }
 #ifdef false
 #if defined(_WIN32)
@@ -225,12 +416,14 @@ void DyInitiailzeAllManagers()
   }
   // Time manager
   MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Initialize());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyHandle::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyDataInformation::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyResource::Initialize());
 }
 
 void DyReleaseAllManagers()
 {
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyHandle::Release());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyResource::Release());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyDataInformation::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDySetting::Release());
 }
@@ -351,8 +544,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLin
 #endif
 
   DyInitiailzeAllManagers();
-  auto& setting = dy::MDySetting::GetInstance();
-  const auto renderingType = setting.GetRenderingType();
+  const auto renderingType = dy::MDySetting::GetInstance().GetRenderingType();
   switch (renderingType)
   {
   default: assert(false); break;
@@ -400,8 +592,16 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLin
       glViewport(0, 0, MDY_RESOLUTION_WIDTH, MDY_RESOLUTION_HEIGHT);
       glClearColor(0, 0, 0, 0);
       glClearDepth(1.0f);
-      glDepthFunc(GL_LESS);
+
       glEnable(GL_DEPTH_TEST);
+      glDepthFunc(GL_LEQUAL);
+      glEnable(GL_BLEND);
+      glBlendFunc(GL_BLEND_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+#if defined(_DEBUG) || !defined(_NDEBUG)
+      glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+      glDebugMessageCallback(DyGlMessageCallback, nullptr);
+#endif
 
       // IMGUI DEMO
       IMGUI_CHECKVERSION();
@@ -412,40 +612,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLin
       ImGui_ImplOpenGL3_Init("#version 430");
       ImGui::StyleColorsDark();
 
-      auto& handle = dy::MDyHandle::GetInstance();
       // Shader DEMO
-      dy::PDyShaderConstructionDescriptor shaderDesc;
-      {
-        dy::PDyShaderFragmentInformation fragmentInfo;
-        fragmentInfo.mShaderType = dy::EDyShaderFragmentType::Vertex;
-        fragmentInfo.mShaderPath = "./glShader.vert";
-        shaderDesc.mShaderFragments.emplace_back(fragmentInfo);
-      }
-      {
-        dy::PDyShaderFragmentInformation fragmentInfo;
-        fragmentInfo.mShaderType = dy::EDyShaderFragmentType::Pixel;
-        fragmentInfo.mShaderPath = "./glShader.frag";
-        shaderDesc.mShaderFragments.emplace_back(fragmentInfo);
-      }
-      MDY_CALL_ASSERT_SUCCESS(handle.CreateShaderResource("TestShader", shaderDesc));
-
-      // OpenGL (native) Texture binding DEMO
-      dy::PDyTextureConstructionDescriptor textureDesc;
-      {
-        textureDesc.mTexturePath = "./TestResource/S_7325920284368.jpg";
-        textureDesc.mTextureType = GL_TEXTURE_2D;
-        textureDesc.mIsEnabledCustomedTextureParameter = false;
-      }
-      MDY_CALL_ASSERT_SUCCESS(handle.CreateTextureResource("TestTexture", textureDesc));
-
-      dy::PDyMaterialConstructionDescriptor materialDesc;
-      materialDesc.mBlendMode = dy::EDyMaterialBlendMode::Opaque;
-      materialDesc.mShaderComponentPtr = handle.GetShaderResource("TestShader");
-      materialDesc.mTextureComponents = {
-          handle.GetTextureResource("TestTexture")
-      };
-      MDY_CALL_ASSERT_SUCCESS(material.pInitializeMaterial(materialDesc));
-
+      DyGlTempInitializeResource();
       GlRenderLoop();
 
       ImGui_ImplOpenGL3_Shutdown();
