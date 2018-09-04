@@ -102,7 +102,24 @@ EDySuccess MDyLog::pfTurnOn()
 
     // Caution :: To let spdlog create log file to specific path, directories must be created in advance.
     if (settingManager.IsEnableSubFeatureLoggingToFile()) {
-      this->mSinks.push_back(std::make_shared<spdlog::sinks::basic_file_sink_mt>("./logs/debug_log.txt", false));
+#ifdef false
+      std::string fileSinkPath;
+      const auto& filePath        = settingManager.GetLogFilePath();
+      const auto slashFirstIndex  = filePath.find_first_of('/');
+      if (slashFirstIndex == std::string::npos)
+      {
+        fileSinkPath += "./" + filePath;
+      }
+      else
+      {
+        const auto slashLastIndex   = filePath.find_last_of('/');
+        if (slashFirstIndex == slashLastIndex)
+        {
+
+        }
+      }
+#endif
+      this->mSinks.push_back(std::make_shared<spdlog::sinks::basic_file_sink_mt>(settingManager.GetLogFilePath(), false));
     }
   }
 

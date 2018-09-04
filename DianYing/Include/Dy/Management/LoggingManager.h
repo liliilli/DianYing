@@ -35,8 +35,8 @@ enum class EDyLogLevel
   Information,
   Debug,
   Warning,
-  Critical,
   Error,
+  Critical,
 };
 
 ///
@@ -68,8 +68,8 @@ public:
       case EDyLogLevel::Information:  this->mLogger->info(name, args...);      break;
       case EDyLogLevel::Debug:        this->mLogger->debug(name, args...);     break;
       case EDyLogLevel::Warning:      this->mLogger->warn(name, args...);      break;
-      case EDyLogLevel::Critical:     this->mLogger->critical(name, args...);  break;
       case EDyLogLevel::Error:        this->mLogger->error(name, args...);     break;;
+      case EDyLogLevel::Critical:     this->mLogger->critical(name, args...);  break;
       }
     }
   }
@@ -103,10 +103,10 @@ private:
   ::dy::MDyLog::GetInstance().PushLog(dy::EDyLogLevel::Debug, __MAString__, __VA_ARGS__)
   #define MDY_LOG_WARNING(__MAString__, ...) \
   ::dy::MDyLog::GetInstance().PushLog(dy::EDyLogLevel::Warning, __MAString__, __VA_ARGS__)
-  #define MDY_LOG_CRITICAL(__MAString__, ...) \
-  ::dy::MDyLog::GetInstance().PushLog(dy::EDyLogLevel::Critical, __MAString__, __VA_ARGS__)
   #define MDY_LOG_ERROR(__MAString__, ...) \
   ::dy::MDyLog::GetInstance().PushLog(dy::EDyLogLevel::Error, __MAString__, __VA_ARGS__)
+  #define MDY_LOG_CRITICAL(__MAString__, ...) \
+  ::dy::MDyLog::GetInstance().PushLog(dy::EDyLogLevel::Critical, __MAString__, __VA_ARGS__)
 #else
   #define MDY_LOG_INFORMATION(__MAString__, ...)   ((void*)0)
   #define MDY_LOG_DEBUG(__MAString__, ...)         ((void*)0)

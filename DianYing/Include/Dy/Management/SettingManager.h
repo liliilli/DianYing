@@ -49,7 +49,7 @@ public:
   bool IsVSyncEnabled() const noexcept;
 
   ///
-  /// @brief
+  /// @brief Get enable/disable flag of feature, logging as true/false.
   ///
   [[nodiscard]]
   FORCEINLINE bool IsEnabledFeatureLogging() const noexcept
@@ -58,7 +58,7 @@ public:
   }
 
   ///
-  /// @brief
+  /// @brief Get enable/disable flag of subfeature, logging to console as true/false.
   ///
   [[nodiscard]]
   FORCEINLINE bool IsEnabledSubFeatureLoggingToConsole() const noexcept
@@ -67,12 +67,21 @@ public:
   }
 
   ///
-  /// @brief
+  /// @brief Get enable/disable flag of subfeature, logging to file as true/false.
   ///
   [[nodiscard]]
   FORCEINLINE bool IsEnableSubFeatureLoggingToFile() const noexcept
   {
     return this->mIsEnabledLoggingToFile;
+  }
+
+  ///
+  /// @brief Get the path of log file.
+  ///
+  [[nodiscard]]
+  FORCEINLINE const std::string& GetLogFilePath() const noexcept
+  {
+    return this->mLogFilePath;
   }
 
   ///
@@ -98,6 +107,11 @@ public:
   void SetSubFeatureLoggingToFile(bool isEnabled) noexcept;
 
   ///
+  /// @brief
+  ///
+  void SetLogFilePath(const std::string& path);
+
+  ///
   /// @brief Set vsync mode.
   /// If vsync mode is off, application will be running by more 60 fps but unstable.
   /// If vsync mode is on, it will be running by your specified fps or 60 fps.
@@ -119,6 +133,7 @@ private:
   bool mIsEnabledLogging          = false;
   bool mIsEnabledLoggingToConsole = false;
   bool mIsEnabledLoggingToFile    = false;
+  std::string mLogFilePath        = "./log.txt";
 
   std::vector<const char*> mApplicationArgs;
   bool mIsInitialized           = false;
