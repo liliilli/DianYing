@@ -45,7 +45,57 @@ public:
   ///
   /// @brief
   ///
+  [[nodiscard]]
   bool IsVSyncEnabled() const noexcept;
+
+  ///
+  /// @brief
+  ///
+  [[nodiscard]]
+  FORCEINLINE bool IsEnabledFeatureLogging() const noexcept
+  {
+    return this->mIsEnabledLogging;
+  }
+
+  ///
+  /// @brief
+  ///
+  [[nodiscard]]
+  FORCEINLINE bool IsEnabledSubFeatureLoggingToConsole() const noexcept
+  {
+    return this->mIsEnabledLoggingToConsole;
+  }
+
+  ///
+  /// @brief
+  ///
+  [[nodiscard]]
+  FORCEINLINE bool IsEnableSubFeatureLoggingToFile() const noexcept
+  {
+    return this->mIsEnabledLoggingToFile;
+  }
+
+  ///
+  /// @brief
+  ///
+  [[nodiscard]]
+  ERenderingType GetRenderingType() const noexcept;
+
+  ///
+  /// @brief Enable or disable logging feature.
+  /// before enable logging feature, must set console or file sink.
+  ///
+  void SetFeatureLogging(bool isEnabled) noexcept;
+
+  ///
+  /// @brief Enable or disable log output sink console.
+  ///
+  void SetSubFeatureLoggingToConsole(bool isEnabled) noexcept;
+
+  ///
+  /// @brief Enable or disable log output sink file.
+  ///
+  void SetSubFeatureLoggingToFile(bool isEnabled) noexcept;
 
   ///
   /// @brief Set vsync mode.
@@ -54,10 +104,7 @@ public:
   ///
   void SetVSyncMode(bool enableVsync) noexcept;
 
-  ///
-  /// @brief
-  ///
-  ERenderingType GetRenderingType() const noexcept;
+
 
   ///
   /// @brief
@@ -65,10 +112,13 @@ public:
   void ArgsPushback(const char* argsString);
 
 private:
-  ERenderingType mRenderingType = ERenderingType::None;
-  bool mIsRenderingTypeSet      = false;
+  ERenderingType mRenderingType   = ERenderingType::None;
+  bool mIsRenderingTypeSet        = false;
+  bool mIsEnabledVsync            = true;
 
-  bool mIsEnabledVsync          = true;
+  bool mIsEnabledLogging          = false;
+  bool mIsEnabledLoggingToConsole = false;
+  bool mIsEnabledLoggingToFile    = false;
 
   std::vector<const char*> mApplicationArgs;
   bool mIsInitialized           = false;

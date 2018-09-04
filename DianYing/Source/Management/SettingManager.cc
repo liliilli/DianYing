@@ -21,6 +21,8 @@
 #include <iostream>
 #include <cassert>
 
+#include <Dy/Management/LoggingManager.h>
+
 namespace
 {
 
@@ -76,6 +78,31 @@ ERenderingType MDySetting::GetRenderingType() const noexcept
 {
   assert(this->mIsInitialized);
   return this->mRenderingType;
+}
+
+void MDySetting::SetFeatureLogging(bool isEnabled) noexcept
+{
+  if (this->mIsEnabledLogging != isEnabled)
+  {
+    auto& logManager = dy::MDyLog::GetInstance();
+    switch (isEnabled)
+    {
+    case false: logManager.pfTurnOff(); break;
+    case true:  logManager.pfTurnOn();  break;
+    }
+
+    this->mIsEnabledLogging = isEnabled;
+  }
+}
+
+void MDySetting::SetSubFeatureLoggingToConsole(bool isEnabled) noexcept
+{
+  this->mIsEnabledLoggingToConsole = isEnabled;
+}
+
+void MDySetting::SetSubFeatureLoggingToFile(bool isEnabled) noexcept
+{
+  this->mIsEnabledLoggingToFile = isEnabled;
 }
 
 void MDySetting::ArgsPushback(const char* argsString)
