@@ -257,7 +257,7 @@ struct DVector3 final {
   friend DVector3 operator/(DVector3 lhs, const float rhs) noexcept {
     if (rhs == 0.0f) {
 #ifdef false
-      PUSH_LOG_CRITICAL_EXT("DVector3 could not be divided by {0}.", rhs);
+      MDY_LOG_CRITICAL("DVector3 could not be divided by {0}.", rhs);
 #endif
     }
     else {
@@ -275,7 +275,7 @@ struct DVector3 final {
   friend DVector3 operator/(DVector3 lhs, const DVector3& rhs) noexcept {
     if (rhs.X == 0.0f || rhs.Y == 0.0f || rhs.Z == 0.0f) {
 #ifdef false
-      PUSH_LOG_CRITICAL_EXT(
+      MDY_LOG_CRITICAL(
           "DVector3 could not be devided by 0 included DVector3, ({0}, {1}, {2})",
           rhs.X, rhs.Y, rhs.Z);
 #endif
@@ -323,7 +323,7 @@ struct DVector3 final {
   DVector3& operator/=(const float value) noexcept {
     if (value == 0.0f) {
 #ifdef false
-      PUSH_LOG_CRITICAL_EXT("DVector3 could not be divided by {0}.", value);
+      MDY_LOG_CRITICAL("DVector3 could not be divided by {0}.", value);
 #endif
     }
     else {
@@ -341,7 +341,7 @@ struct DVector3 final {
   DVector3& operator/=(const DVector3& value) noexcept {
     if (value.X == 0.0f || value.Y == 0.0f || value.Z == 0.0f) {
 #ifdef false
-      PUSH_LOG_CRITICAL_EXT(
+      MDY_LOG_CRITICAL(
           "DVector3 could not be devided by 0 included DVector3, ({0}, {1}, {2})",
           value.X, value.Y, value.Z);
 #endif

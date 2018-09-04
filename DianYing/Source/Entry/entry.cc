@@ -178,15 +178,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLin
   i.SetSubFeatureLoggingToConsole(true);
   i.SetFeatureLogging(true);
 
-  MDY_LOG_INFORMATION("[Information] Hello world");
-  MDY_LOG_INFORMATION("[Information] Hello world");
-  MDY_LOG_DEBUG("[Debug] Hello world");
-  MDY_LOG_WARNING("[Warning] Hello world");
-  MDY_LOG_CRITICAL("[Critical] Hello world");
-  MDY_LOG_ERROR("[Error] Hello world");
-
   dy::MDyWindow::GetInstance().Run();
-
 
   DyReleaseAllManagers();
   MDY_WIN32_TRY_TURN_OFF_DEBUG();

@@ -212,14 +212,19 @@ std::optional<std::string> MDyDataInformation::PopulateMaterialInformation(
 //! Delete functions
 //!
 
-EDySuccess MDyDataInformation::DeleteShaderInformation(const std::string& shaderName)
+EDySuccess MDyDataInformation::DeleteShaderInformation(const std::string& shaderName, bool isForced)
 {
+
   const auto iterator = mShaderInformation.find(shaderName);
   if (iterator == mShaderInformation.end())
   {
     return DY_FAILURE;
   }
 
+  if (!isForced)
+  {
+
+  }
   // IF mShaderInformation is being used by another resource instance?
   // then, return DY_FAILURE or remove it.
   assert(false);
@@ -227,7 +232,7 @@ EDySuccess MDyDataInformation::DeleteShaderInformation(const std::string& shader
   return DY_SUCCESS;
 }
 
-EDySuccess MDyDataInformation::DeleteTextureInformation(const std::string& textureName)
+EDySuccess MDyDataInformation::DeleteTextureInformation(const std::string& textureName, bool isForced)
 {
   const auto iterator = mTextureInformation.find(textureName);
   if (iterator == mTextureInformation.end())
@@ -242,7 +247,7 @@ EDySuccess MDyDataInformation::DeleteTextureInformation(const std::string& textu
   return DY_SUCCESS;
 }
 
-EDySuccess MDyDataInformation::DeleteMaterialInformation(const std::string& materialName)
+EDySuccess MDyDataInformation::DeleteMaterialInformation(const std::string& materialName, bool isForced)
 {
   const auto iterator = mTextureInformation.find(materialName);
   if (iterator == mTextureInformation.end())
@@ -257,7 +262,7 @@ EDySuccess MDyDataInformation::DeleteMaterialInformation(const std::string& mate
   return DY_SUCCESS;
 }
 
-EDySuccess MDyDataInformation::DeleteModelInformation(const std::string& modelName, bool isAllRemoveSubresource)
+EDySuccess MDyDataInformation::DeleteModelInformation(const std::string& modelName, bool isAllRemoveSubresource, bool isForced)
 {
   const auto iterator = mTextureInformation.find(modelName);
   if (iterator == mTextureInformation.end())
