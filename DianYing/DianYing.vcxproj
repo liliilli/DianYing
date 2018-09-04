@@ -325,6 +325,7 @@
     <ClCompile Include="Source\Helper\Type\Vector4.cc" />
     <ClCompile Include="Source\Management\DataInformationManager.cc" />
     <ClCompile Include="Source\Management\HeapResourceManager.cc" />
+    <ClCompile Include="Source\Management\LoggingManager.cc" />
     <ClCompile Include="Source\Management\SceneManager.cc" />
     <ClCompile Include="Source\Management\SettingManager.cc" />
     <ClCompile Include="Source\Management\TimeManager.cc" />
@@ -356,6 +357,7 @@
     <ClInclude Include="Include\Dy\Core\Component\Resource\MaterialResource.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\MeshResource.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\ModelResource.h" />
+    <ClInclude Include="Include\Dy\Management\LoggingManager.h" />
     <ClInclude Include="Include\Dy\Management\WindowManager.h" />
     <ClInclude Include="Include\Dy\Management\SceneManager.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\ShaderResource.h" />

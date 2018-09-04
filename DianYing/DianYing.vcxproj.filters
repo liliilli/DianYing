@@ -38,6 +38,7 @@
     <ClCompile Include="Source\Core\Component\Object\Camera.cc" />
     <ClCompile Include="Source\Management\SceneManager.cc" />
     <ClCompile Include="Source\Management\WindowManager.cc" />
+    <ClCompile Include="Source\Management\LoggingManager.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -94,6 +95,7 @@
     <ClInclude Include="Include\Dy\Management\SceneManager.h" />
     <ClInclude Include="Include\Dy\Helper\Macroes.h" />
     <ClInclude Include="Include\Dy\Management\WindowManager.h" />
+    <ClInclude Include="Include\Dy\Management\LoggingManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

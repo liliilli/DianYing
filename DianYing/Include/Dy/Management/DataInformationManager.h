@@ -81,19 +81,19 @@ public:
   /// @brief Destroy shader information. Runtime instances binded to specified shader information
   /// will have nullptr or default shader resource instead.
   ///
-  EDySuccess DeleteShaderInformation(const std::string& shaderName);
+  EDySuccess DeleteShaderInformation(const std::string& shaderName, bool isForced = false);
 
   ///
   /// @brief Destroy texture information. Runtime instances bindned to specified texture information
   /// will have nullptr or default builtin texture resource instead.
   ///
-  EDySuccess DeleteTextureInformation(const std::string& textureName);
+  EDySuccess DeleteTextureInformation(const std::string& textureName, bool isForced = false);
 
   ///
   /// @brief Destroy material information. Runtime instances which are binded to speicifed material information
   /// will have nullptr or default builtin material resource instead.
   ///
-  EDySuccess DeleteMaterialInformation(const std::string& materialName);
+  EDySuccess DeleteMaterialInformation(const std::string& materialName, bool isForced = false);
 
   ///
   /// @brief Destroy model information. Runtime instances which are binded to specified model information
@@ -101,7 +101,7 @@ public:
   /// And if you check isAllRemoveSubresource true, material and texture related to this are also
   /// released from system.
   ///
-  EDySuccess DeleteModelInformation(const std::string& modelName, bool isAllRemoveSubresource = false);
+  EDySuccess DeleteModelInformation(const std::string& modelName, bool isAllRemoveSubresource = false, bool isForced = false);
 
   ///
   /// @brief Populate derived material information.

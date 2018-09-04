@@ -232,7 +232,7 @@ void DyGlTempInitializeResource()
 }
 
 ///
-/// @brief
+/// @brief Draw grid.
 ///
 void DyGlDrawGrid()
 {
@@ -435,9 +435,7 @@ void MDyWindow::Run()
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     DyGlDrawGrid();
-
     gRenderer.Render();
-
     DyImguiRenderFrame();
 
     glfwSwapBuffers(this->mGlfwWindow);
@@ -504,7 +502,7 @@ EDySuccess MDyWindow::pfInitialize()
       glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
       glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-      this->mGlfwWindow = glfwCreateWindow(dy::kScreenWidth, dy::kScreenHeight, "DianYing", nullptr, nullptr);
+      this->mGlfwWindow = glfwCreateWindow(kScreenWidth, kScreenHeight, "DianYing", nullptr, nullptr);
       if (!this->mGlfwWindow) {
         glfwTerminate();
         return DY_FAILURE;
@@ -516,7 +514,7 @@ EDySuccess MDyWindow::pfInitialize()
       glfwSetInputMode(this->mGlfwWindow, GLFW_STICKY_KEYS, GL_FALSE);
       glfwSetFramebufferSizeCallback(this->mGlfwWindow, &DyGlCallbackFrameBufferSize);
 
-      glViewport(0, 0, dy::kScreenWidth, dy::kScreenHeight);
+      glViewport(0, 0, kScreenWidth, kScreenHeight);
       glClearColor(0, 0, 0, 0);
       glClearDepth(1.0f);
 
@@ -581,13 +579,26 @@ EDySuccess MDyWindow::pfRelease()
 
   return DY_SUCCESS;
 }
+#elif defined(MDY_PLATFORM_FLAG_LINUX)
+EDySuccess MDyWindow::pfInitialize()
+{
 
-#endif
+}
 
-#if defined(MDY_PLATFORM_FLAG_LINUX)
-#endif
+EDySuccess MDyWindow::pfRelease()
+{
 
-#if defined(MDY_PLATFORM_FLAG_MACOS)
+}
+#elif defined(MDY_PLATFORM_FLAG_MACOS)
+EDySuccess MDyWindow::pfInitialize()
+{
+
+}
+
+EDySuccess MDyWindow::pfRelease()
+{
+
+}
 #endif
 
 } /// ::dy namespace
