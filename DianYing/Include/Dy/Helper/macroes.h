@@ -14,6 +14,29 @@
 ///
 
 //!
+//! Platform dependent macro
+//!
+
+#define MDY_PLATFORM_FLAG_WINDOWS
+//#define MDY_PLATFORM_FLAG_LINUX
+//#define MDY_PLATFORM_FLAG_MACOS
+
+///
+/// Do not touch below!
+///
+
+#if     defined(MDY_PLATFORM_FLAG_WINDOWS)
+#define MDY_INHERITENCE_RESOURCE_PLATFORM_WINDOWS       public SDyRendererWindows
+#define MDY_INHERITENCE_WINDOW_INFORMATION_SUPER public DDyWindowInformationWindows
+#elif   defined(MDY_PLATFORM_FLAG_LINUX)
+#define MDY_INHERITENCE_RESOURCE_PLATFORM_LINUX         public SDyRendererLinux
+#define MDY_INHERITENCE_WINDOW_INFORMATION_SUPER public DDyWindowInformationLinux
+#elif   defined(MDY_PLATFORM_FLAG_MACOS)
+#define MDY_INHERITENCE_RESOURCE_PLATFORM_MACOS         public SDyRendererMacOs
+#define MDY_INHERITENCE_WINDOW_INFORMATION_SUPER public DDyWindowInformationMacOs
+#endif
+
+//!
 //! Global macroes
 //!
 
@@ -153,5 +176,30 @@ private:                                                  \
 #define FORCENOINLINE __declspec(noinline)							/* Force code to NOT be inline */
 #define FUNCTION_NO_RETURN_START __declspec(noreturn)				/* Indicate that the function never returns. */
 #define FUNCTION_NON_NULL_RETURN_START _Ret_notnull_				/* Indicate that the function never returns nullptr. */
+
+///
+/// Macro static integrity test
+///
+
+#if defined(MDY_PLATFORM_FLAG_WINDOWS)
+#if defined(MDY_PLATFORM_FLAG_LINUX) || defined(MDY_PLATFORM_FLAG_MACOS)
+static_assert(false, "Platform flag multi checking is prohibited.");
+#endif
+#elif defined(MDY_PLATFORM_FLAG_LINUX)
+#if defined(MDY_PLATFORM_FLAG_WINDOWS) || defined(MDY_PLATFORM_FLAG_MACOS)
+static_assert(false, "Platform flag multi checking is prohibited.");
+#else
+static_assert(false, "Linux platform is not supported now.");
+#endif
+#elif defined(MDY_PLATFORM_FLAG_MACOS)
+#if defined(MDY_PLATFORM_FLAG_LINUX) || defined(MDY_PLATFORM_FLAG_WINDOWS)
+static_assert(false, "Platform flag multi checking is prohibited.");
+#else
+static_assert(false, "Windows platform is not supported now.");
+#endif
+#else
+static_assert(false, "Must set up one platform build option.");
+#endif
+
 
 #endif /// GUARD_DY_HELPER_MACROES_H

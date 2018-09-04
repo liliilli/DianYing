@@ -37,10 +37,10 @@
     <ClCompile Include="Source\Core\Component\MeshRenderer.cc" />
     <ClCompile Include="Source\Core\Component\Object\Camera.cc" />
     <ClCompile Include="Source\Management\SceneManager.cc" />
+    <ClCompile Include="Source\Management\WindowManager.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
-    <ClInclude Include="Include\Dy\Helper\macroes.h" />
     <ClInclude Include="Include\Dy\Helper\disable_warnings.h" />
     <ClInclude Include="Include\Dy\Helper\aliases.h" />
     <ClInclude Include="Include\Dy\Helper\enum_flags.h" />
@@ -92,6 +92,8 @@
     <ClInclude Include="Include\Dy\Core\Component\Object\Camera.h" />
     <ClInclude Include="Include\Dy\Helper\ImmutableSetting.h" />
     <ClInclude Include="Include\Dy\Management\SceneManager.h" />
+    <ClInclude Include="Include\Dy\Helper\Macroes.h" />
+    <ClInclude Include="Include\Dy\Management\WindowManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />
