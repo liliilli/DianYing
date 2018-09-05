@@ -14,17 +14,20 @@
 
 /// Header file
 #include <Dy/Management/SceneManager.h>
+#include <Dy/Management/LoggingManager.h>
 
 namespace dy
 {
 
 EDySuccess MDyScene::pfInitialize()
 {
+  MDY_LOG_INFO_D("{} | MDyScene::pfInitialize().", "FunctionCall");
   return DY_SUCCESS;
 }
 
 EDySuccess MDyScene::pfRelease()
 {
+  MDY_LOG_INFO_D("{} | MDyScene::pfRelease().", "FunctionCall");
   return DY_SUCCESS;
 }
 
@@ -42,7 +45,17 @@ void MDyScene::__pfBindFocusCamera(CDyCamera* validCameraPtr)
 
 void MDyScene::__pfUnbindCameraFocus()
 {
-  this->mValidMainCameraPtr = nullptr;
+  if (this->mValidMainCameraPtr)
+  {
+    this->mValidMainCameraPtr = nullptr;
+    MDY_LOG_INFO_D("{} | MainCamera pointing unbinded.",
+                   "MDyScene::__pfUnbindCameraFocus()");
+  }
+  else
+  {
+    MDY_LOG_WARNING_D("{} | Valid mainCamera pointer does not point anything.",
+                      "MDyScene::__pfUnbindCameraFocus()");
+  }
 }
 
 } /// ::dy namespace

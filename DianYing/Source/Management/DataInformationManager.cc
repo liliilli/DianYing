@@ -14,17 +14,20 @@
 
 /// Header file
 #include <Dy/Management/DataInformationManager.h>
+#include <Dy/Management/LoggingManager.h>
 
 namespace dy
 {
 
 EDySuccess MDyDataInformation::pfInitialize()
 {
+  MDY_LOG_INFO_D("{} | MDyDataInformation::pfInitialize().", "FunctionCall");
   return DY_SUCCESS;
 }
 
 EDySuccess MDyDataInformation::pfRelease()
 {
+  MDY_LOG_INFO_D("{} | MDyDataInformation::pfRelease().", "FunctionCall");
   return DY_SUCCESS;
 }
 
@@ -33,12 +36,16 @@ EDySuccess MDyDataInformation::CreateShaderInformation(const PDyShaderConstructi
   const auto& shaderName = shaderDescriptor.mShaderName;
   if (mShaderInformation.find(shaderName) != mShaderInformation.end())
   {
+    MDY_LOG_WARNING_D("{} | {} is already found in mShaderInformation list.",
+                      "MDyDataInformation::CreateShaderInformation().", shaderName);
     return DY_FAILURE;
   }
 
   auto [it, creationResult] = mShaderInformation.try_emplace(shaderName, nullptr);
   if (!creationResult) {
-    // Something is already in.
+    // Something is already in or memory oob.
+    MDY_LOG_CRITICAL("{} | Unexpected error happened during create memory for shader information {}.",
+                     "MDyDataInformation::CreateShaderInformation().", shaderName);
     return DY_FAILURE;
   }
 
@@ -47,10 +54,13 @@ EDySuccess MDyDataInformation::CreateShaderInformation(const PDyShaderConstructi
   it->second.swap(shaderInformation);
   if (!it->second)
   {
+    MDY_LOG_CRITICAL("{} | Unexpected error happened during swapping shader information {}.",
+                     "MDyDataInformation::CreateShaderInformation().", shaderName);
     this->mShaderInformation.erase(shaderName);
     return DY_FAILURE;
   }
 
+  MDY_LOG_CRITICAL("{} | \"{}\" shader information Created.", shaderName);
   return DY_SUCCESS;
 }
 

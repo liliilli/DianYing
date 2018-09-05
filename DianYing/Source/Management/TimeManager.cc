@@ -19,6 +19,7 @@
 #include <Dy/Management/TimeManager.h>
 
 #include <chrono>
+#include <Dy/Management/LoggingManager.h>
 
 namespace dy
 {
@@ -58,7 +59,8 @@ float MDyTime::GetGameSummedDeltaTimeValue() const noexcept
 
   void MDyTime::SetGameTimeScale(float timeScale) noexcept
 {
-  mTimeScale = timeScale;
+  this->mTimeScale = timeScale;
+  MDY_LOG_INFO_D("MDyTime::mTimeScale : {}.", this->mTimeScale);
 }
 
 void MDyTime::pUpdate() noexcept
@@ -104,12 +106,19 @@ void MDyTime::pUpdate() noexcept
 
 EDySuccess MDyTime::pfInitialize()
 {
-  mGameTickFragment = 1.0f / static_cast<float>(mGameGoalFps);
+  MDY_LOG_INFO_D("{} | MDyTime::pfInitialize().", "FunctionCall");
+
+  this->mGameTickFragment = 1.0f / static_cast<float>(this->mGameGoalFps);
+  MDY_LOG_INFO_D("MDyTime::mGameGoalFps : {}."      , this->mGameGoalFps);
+  MDY_LOG_INFO_D("MDyTime::mGameTickFragment : {}." , this->mGameTickFragment);
+  MDY_LOG_INFO_D("MDyTime::mTimeScale : {}."        , this->mTimeScale);
+
   return DY_SUCCESS;
 }
 
 EDySuccess MDyTime::pfRelease()
 {
+  MDY_LOG_INFO_D("{} | MDyTime::pfRelease().", "FunctionCall");
   return DY_SUCCESS;
 }
 

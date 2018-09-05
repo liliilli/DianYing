@@ -3,7 +3,7 @@
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
 ///
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 /// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 /// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 /// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -15,12 +15,22 @@
 /// Header file
 #include <Dy/Core/Component/Information/MaterialInformation.h>
 #include <Dy/Core/Component/Resource/MaterialResource.h>
+#include <Dy/Management/LoggingManager.h>
+
+namespace
+{
+
+MDY_SET_IMMUTABLE_STRING(kMaterialInformationTemplate,     "{} | Material information {} : {}");
+MDY_SET_IMMUTABLE_STRING(kMaterialInformation,             "DDyMaterialInformation");
+
+} /// ::unnamed namespace
 
 namespace dy
 {
 
 DDyMaterialInformation::~DDyMaterialInformation()
 {
+  MDY_LOG_INFO_D(kMaterialInformationTemplate, kMaterialInformation, "name", this->mMaterialInformation.mMaterialName);
   if (mNextLevelPtr)
   {
 #ifdef false
@@ -32,14 +42,17 @@ DDyMaterialInformation::~DDyMaterialInformation()
 std::unique_ptr<DDyMaterialInformation>
 DDyMaterialInformation::__pfPopulateWith(const PDyMaterialPopulateDescriptor& desc) const noexcept
 {
+  MDY_LOG_INFO_D("Populate derived material information {} from {}.",
+      desc.mMaterialOverrideName,
+      this->mMaterialInformation.mMaterialName);
+
   auto newDesc = this->mMaterialInformation;
   {
     newDesc.mMaterialName  = desc.mMaterialOverrideName;
     newDesc.mShaderName    = desc.mOverrideShaderName;
   }
 
-  auto newMaterial = std::make_unique<std::decay_t<decltype(*this)>>(newDesc);
-  return std::move(newMaterial);
+  return std::make_unique<std::decay_t<decltype(*this)>>(newDesc);
 }
 
 } /// ::dy namespace

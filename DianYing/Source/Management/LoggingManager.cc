@@ -55,12 +55,13 @@ namespace dy
 
 EDySuccess MDyLog::pfInitialize()
 {
-  //this->pfTurnOn();
+  MDY_LOG_DEBUG_D("{} | MDyLog::pfInitialize().", "FunctionCall");
   return DY_SUCCESS;
 }
 
 EDySuccess MDyLog::pfRelease()
 {
+  MDY_LOG_DEBUG_D("{} | MDyLog::pfRelease().", "FunctionCall");
   this->pfTurnOff();
   return DY_SUCCESS;
 }
@@ -74,11 +75,18 @@ void MDyLog::SetVisibleLevel(EDyLogLevel newLogLevel)
   {
     this->mLogger->set_level(DyGetLogLevel(this->mLogLevel));
   }
+
+  MDY_LOG_DEBUG_D("MDyLog::mLogger level : {}.", DyGetLogLevel(this->mLogLevel));
 }
 
 EDySuccess MDyLog::pfTurnOn()
 {
-  if (this->mLogger) return DY_SUCCESS;
+  MDY_LOG_DEBUG_D("{} | MDyLog::pfTurnOn()", "Function call");
+  if (this->mLogger)
+  {
+    MDY_LOG_INFO_D("MDyLog::mLogger already allocated.");
+    return DY_SUCCESS;
+  }
 
   const auto& settingManager = MDySetting::GetInstance();
   if (!settingManager.IsEnableSubFeatureLoggingToFile() &&
@@ -125,14 +133,19 @@ EDySuccess MDyLog::pfTurnOn()
 
   this->mLogger = std::make_shared<spdlog::logger>("DianYing", this->mSinks.begin(), this->mSinks.end());
   this->mLogger->set_level(DyGetLogLevel(this->mLogLevel));
+  MDY_LOG_DEBUG_D("MDyLog::mLogger level : {}.", DyGetLogLevel(this->mLogLevel));
+  MDY_LOG_DEBUG_D("MDyLog::mLogger resource allocated.");
 
   spdlog::register_logger(this->mLogger);
+  MDY_LOG_DEBUG_D("MDyLog::mLogger resource registered.");
   spdlog::set_error_handler(DyCallbackLoggerError);
   return DY_SUCCESS;
 }
 
 EDySuccess MDyLog::pfTurnOff()
 {
+  MDY_LOG_INFO_D("{} | MDyLog::pfTurnOff().", "FunctionCall");
+
   spdlog::drop_all();
   this->mLogger.reset();
   this->mSinks.clear();

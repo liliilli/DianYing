@@ -39,6 +39,10 @@ class CDyTextureInformation;
 namespace dy
 {
 
+///
+/// @class DDyModelInformation
+/// @brief Information class for model information.
+///
 class DDyModelInformation final
 {
 public:
@@ -51,29 +55,37 @@ public:
   ~DDyModelInformation();
 
   ///
-  /// @brief
+  /// @brief Return material name list which model information have.
   ///
-  const std::vector<std::string>& GetBindedMaterialNameLists() const noexcept
+  FORCEINLINE const std::vector<std::string>& GetBindedMaterialNameLists() const noexcept
   {
     return this->mBindedMaterialName;
   }
 
 private:
   ///
-  /// @brief
+  /// @brief Process assimp node so get information and resource from aiNode by iterating
+  /// submesh and children meshes.
   ///
-  void __pProcessNode(aiNode* node, const aiScene* scene);
+  void __pProcessAssimpNode(aiNode* node, const aiScene* scene);
 
   ///
-  /// @brief
+  /// @brief Process aiMesh, make mesh information description which stores vertex, indices,
+  /// innate material information, etc.
   ///
-  void __pProcessMesh(aiMesh* mesh, const aiScene* scene);
+  void __pProcessAssimpMesh(aiMesh* mesh, const aiScene* scene);
 
   ///
   /// @brief
   ///
   std::optional<std::vector<std::string>> __pLoadMaterialTextures(aiMaterial* material, EDyTextureMapType type);
 
+  ///
+  /// @brief Output information log only in debug mode.
+  ///
+  void __pOutputDebugInformationLog();
+
+  std::string                       mModelName          = "";
   std::string                       mModelRootPath      = "";
   std::vector<DDyMeshInformation>   mMeshInformations;
   std::vector<std::string>          mBindedMaterialName = {};

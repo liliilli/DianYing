@@ -21,6 +21,7 @@
 #include <imgui/imgui_impl_glfw.h>
 #include <imgui/imgui_impl_opengl3.h>
 
+#include <Dy/Core/Component/Internal/EtcType.h>
 #include <Dy/Core/Component/MeshRenderer.h>
 #include <Dy/Core/Component/Resource/ShaderResource.h>
 #include <Dy/Core/Component/Object/Camera.h>
@@ -29,7 +30,7 @@
 #include <Dy/Management/DataInformationManager.h>
 #include <Dy/Management/HeapResourceManager.h>
 #include <Dy/Management/SettingManager.h>
-#include <Dy/Core/Component/Internal/EtcType.h>
+#include <Dy/Management/LoggingManager.h>
 
 ///
 /// Undefined proprocessor WIN32 macro "max, min" for preventing misuse.
@@ -470,10 +471,13 @@ void MDyWindow::Run()
 #if defined(MDY_PLATFORM_FLAG_WINDOWS)
 EDySuccess MDyWindow::pfInitialize()
 {
+  MDY_LOG_INFO_D("{} | MDyWindow::pfInitialize().", "FunctionCall");
+
   switch (MDySetting::GetInstance().GetRenderingType())
   {
   default: assert(false); break;
   case dy::ERenderingType::DirectX11:
+    MDY_LOG_INFO_D("Initialize DirectX11 Context.");
     {
       assert(false);
 #ifdef false
@@ -492,6 +496,7 @@ EDySuccess MDyWindow::pfInitialize()
     }
     break;
   case dy::ERenderingType::OpenGL:
+    MDY_LOG_INFO_D("Initialize OpenGL Context.");
     {
       glfwInit();
       // OpenGL Setting
@@ -541,8 +546,13 @@ EDySuccess MDyWindow::pfInitialize()
       DyGlTempInitializeResource();
     }
     break;
-  case dy::ERenderingType::DirectX12: assert(false); break;
-  case dy::ERenderingType::Vulkan:    assert(false);
+  case dy::ERenderingType::DirectX12:
+    MDY_LOG_INFO_D("Initialize DirectX12 Context.");
+    assert(false);
+    break;
+  case dy::ERenderingType::Vulkan:
+    MDY_LOG_INFO_D("Initialize Vulkan Context.");
+    assert(false);
 #ifdef false
     dy::DyVkInitialize(windowHandle, hInstance);
 
@@ -561,20 +571,30 @@ EDySuccess MDyWindow::pfInitialize()
 
 EDySuccess MDyWindow::pfRelease()
 {
+  MDY_LOG_INFO_D("{} | MDyWindow::pfRelease().", "FunctionCall");
+
   switch (MDySetting::GetInstance().GetRenderingType())
   {
-  case ERenderingType::DirectX11: break;
-  case ERenderingType::DirectX12: break;
+  case ERenderingType::DirectX11:
+    MDY_LOG_INFO_D("Initialize DirectX11 Context.");
+    break;
+  case ERenderingType::DirectX12:
+    MDY_LOG_INFO_D("Initialize DirectX12 Context.");
+    break;
   case ERenderingType::OpenGL:
+    MDY_LOG_INFO_D("Initialize OpenGL Context.");
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
+    MDY_LOG_INFO_D("Released ImGui Context.");
 
     glfwDestroyWindow(this->mGlfwWindow);
     glfwTerminate();
     break;
-  case ERenderingType::Vulkan: break;
-  default: assert(false); return DY_FAILURE; break;
+  case ERenderingType::Vulkan:
+    MDY_LOG_INFO_D("Initialize Vulkan Context.");
+    break;
+  default: assert(false); return DY_FAILURE;
   }
 
   return DY_SUCCESS;

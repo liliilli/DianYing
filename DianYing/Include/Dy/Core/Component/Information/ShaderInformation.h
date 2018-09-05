@@ -39,9 +39,7 @@ namespace dy
 class CDyShaderInformation final
 {
 public:
-  CDyShaderInformation(const PDyShaderConstructionDescriptor& shaderConstructionDescriptor) :
-      mShaderInformation{shaderConstructionDescriptor}
-  {};
+  CDyShaderInformation(const PDyShaderConstructionDescriptor& shaderConstructionDescriptor);
 
   CDyShaderInformation(const CDyShaderInformation&)            = delete;
   CDyShaderInformation& operator=(const CDyShaderInformation&) = delete;
@@ -63,7 +61,7 @@ private:
   ///
   /// @brief
   ///
-  void __pfSetNextLevel(CDyShaderResource* ptr) const noexcept { mNextLevelPtr = ptr; }
+  void __pfSetNextLevel(CDyShaderResource* ptr) const noexcept;
   mutable CDyShaderResource* mNextLevelPtr = nullptr;
 
   friend class CDyShaderResource;

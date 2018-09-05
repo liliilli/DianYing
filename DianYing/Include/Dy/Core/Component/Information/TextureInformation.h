@@ -39,9 +39,7 @@ namespace dy
 class CDyTextureInformation final
 {
 public:
-  CDyTextureInformation(const PDyTextureConstructionDescriptor& shaderConstructionDescriptor) :
-      mTextureInformation{shaderConstructionDescriptor}
-  {};
+  CDyTextureInformation(const PDyTextureConstructionDescriptor& textureConstructionDescriptor);
 
   CDyTextureInformation(const CDyTextureInformation&)            = delete;
   CDyTextureInformation& operator=(const CDyTextureInformation&) = delete;
@@ -60,7 +58,7 @@ public:
 private:
   PDyTextureConstructionDescriptor mTextureInformation;
 
-  void __pfSetNextLevel(CDyTextureResource* ptr) const noexcept { mNextLevelPtr = ptr; }
+  void __pfSetNextLevel(CDyTextureResource* ptr) const noexcept;
   mutable CDyTextureResource* mNextLevelPtr = nullptr;
 
   friend class CDyTextureResource;

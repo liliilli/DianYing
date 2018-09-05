@@ -85,6 +85,7 @@ void MDySetting::SetFeatureLogging(bool isEnabled) noexcept
   if (this->mIsEnabledLogging != isEnabled)
   {
     auto& logManager = dy::MDyLog::GetInstance();
+    MDY_LOG_INFO_D("{} | Logging : {}", "Feature", isEnabled ? "ON" : "OFF");
     switch (isEnabled)
     {
     case false: logManager.pfTurnOff(); break;
@@ -98,11 +99,13 @@ void MDySetting::SetFeatureLogging(bool isEnabled) noexcept
 void MDySetting::SetSubFeatureLoggingToConsole(bool isEnabled) noexcept
 {
   this->mIsEnabledLoggingToConsole = isEnabled;
+  MDY_LOG_INFO_D("{} | Logging Console : {}. Need to be restart logger.", "SubFeature", isEnabled ? "ON" : "OFF");
 }
 
 void MDySetting::SetSubFeatureLoggingToFile(bool isEnabled) noexcept
 {
   this->mIsEnabledLoggingToFile = isEnabled;
+  MDY_LOG_INFO_D("{} | Logging File : {}. Need to be restart logger.", "SubFeature", isEnabled ? "ON" : "OFF");
 }
 
 void MDySetting::ArgsPushback(const char* argsString)
@@ -124,7 +127,16 @@ void MDySetting::SetVSyncMode(bool enableVsync) noexcept
 
 EDySuccess MDySetting::pfInitialize()
 {
-  std::cout << "MDySetting::pfInitialize()\n";
+  // Output setting options at debug mode.
+  MDY_LOG_INFO_D("{} | MDySetting::pfInitialize().", "FunctionCall");
+
+  for (const auto& args : this->mApplicationArgs) { MDY_LOG_INFO_D("{} | Arguments : {}", "Feature", args); }
+  MDY_LOG_INFO_D("{} | Logging : {}", "Feature", this->mIsEnabledLogging ? "ON" : "OFF");
+  MDY_LOG_INFO_D("{} | Logging Console : {}", "SubFeature", this->mIsEnabledLoggingToConsole ? "ON" : "OFF");
+  MDY_LOG_INFO_D("{} | Logging File : {}", "SubFeature", this->mIsEnabledLoggingToFile ? "ON" : "OFF");
+  MDY_LOG_INFO_D("{} | Logging File path : {}", "SubFeature", this->mLogFilePath);
+
+  // Set rendering api type.
   if (const auto type = __GetRenderingType(mApplicationArgs);
       type == ERenderingType::None) {
     return DY_FAILURE;
@@ -133,13 +145,23 @@ EDySuccess MDySetting::pfInitialize()
     this->mRenderingType = type;
   }
 
+  MDY_LOG_INFO_D("{} | Vsync : {}", "Feature", this->mIsEnabledVsync ? "ON" : "OFF");
+  switch (this->mRenderingType)
+  {
+  case ERenderingType::Vulkan:    MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "Vulkan");    break;
+  case ERenderingType::DirectX11: MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "DirectX11"); break;
+  case ERenderingType::DirectX12: MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "DirectX12"); break;
+  case ERenderingType::OpenGL:    MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "OpenGL");    break;
+  default:                        MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "Unknown");   break;
+  }
+
   mIsInitialized = true;
   return DY_SUCCESS;
 }
 
 EDySuccess MDySetting::pfRelease()
 {
-  std::cout << "MDySetting::pfRelease()\n";
+  MDY_LOG_INFO_D("{} | MDySetting::pfRelease()", "Function call");
   return DY_SUCCESS;
 }
 

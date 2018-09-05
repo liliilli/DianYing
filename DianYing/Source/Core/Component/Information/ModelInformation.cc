@@ -22,54 +22,75 @@
 #include <Dy/Core/Component/Resource/ModelResource.h>
 #include <Dy/Helper/Geometry/GeometryType.h>
 #include <Dy/Management/DataInformationManager.h>
+#include <Dy/Management/LoggingManager.h>
+
+namespace
+{
+
+MDY_SET_IMMUTABLE_STRING(kModelInformationTemplate,     "{} | Model information {} : {}");
+MDY_SET_IMMUTABLE_STRING(kModelInformationNumbTemplate, "{} | Model information {} No.{} : {}");
+MDY_SET_IMMUTABLE_STRING(kModelInformation,             "DDyModelInformation");
+
+} /// ::unnamed namespace
 
 namespace dy
 {
 
 DDyModelInformation::DDyModelInformation(const PDyModelConstructionDescriptor& modelConstructionDescriptor)
 {
+  // Insert name and check name is empty or not.
+  this->mModelName = modelConstructionDescriptor.mModelName;
+  if (this->mModelName.empty())
+  {
+    MDY_LOG_CRITICAL_D("{} | Failed to create model information. Model name is not speicified.", kModelInformation);
+    throw std::runtime_error("Model name is not specified.");
+  }
+  MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "name", this->mModelName);
+
   // Load model information, if failed throw exception outside afterward free scene.
   const auto& modelPath = modelConstructionDescriptor.mModelPath;
+  MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "model path", modelPath);
+
   Assimp::Importer assimpImporter;
   const aiScene* assimpModelScene = assimpImporter.ReadFile(
       modelPath.c_str(),
       aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals
   );
 
-  if (!assimpModelScene ||
-      assimpModelScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE ||
-      !assimpModelScene->mRootNode)
+  if (!assimpModelScene || assimpModelScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !assimpModelScene->mRootNode)
   {
     assimpImporter.FreeScene();
+    MDY_LOG_CRITICAL_D("{} | Failed to create load model scene.", kModelInformation);
     throw std::runtime_error("Could not load model " + modelConstructionDescriptor.mModelName + ".");
   }
 
   // Process Node
   this->mModelRootPath = modelPath.substr(0, modelPath.find_last_of('/'));
-  this->__pProcessNode(assimpModelScene->mRootNode, assimpModelScene);
+  this->__pProcessAssimpNode(assimpModelScene->mRootNode, assimpModelScene);
 
-  // (DEBUG) Output model, submesh, and material information to console.
-#if defined(_DEBUG) || !defined(NDEBUG)
+  MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "root path", this->mModelRootPath);
 
-#endif
+  // Output model, submesh, and material information to console.
+  this->__pOutputDebugInformationLog();
+
+  assimpImporter.FreeScene();
 }
 
-void DDyModelInformation::__pProcessNode(aiNode* node, const aiScene* scene)
+void DDyModelInformation::__pProcessAssimpNode(aiNode* node, const aiScene* scene)
 {
   for (uint32_t i = 0; i < node->mNumMeshes; ++i)
   {
     aiMesh* assimpMesh = scene->mMeshes[node->mMeshes[i]];
-    this->__pProcessMesh(assimpMesh, scene);
+    this->__pProcessAssimpMesh(assimpMesh, scene);
   }
 
   for (uint32_t i = 0; i < node->mNumChildren; ++i)
   {
-    this->__pProcessNode(node->mChildren[i], scene);
+    this->__pProcessAssimpNode(node->mChildren[i], scene);
   }
 }
 
-
-void DDyModelInformation::__pProcessMesh(aiMesh* mesh, const aiScene* scene)
+void DDyModelInformation::__pProcessAssimpMesh(aiMesh* mesh, const aiScene* scene)
 {
   PMeshInformationDescriptor meshInformationDescriptor;
 
@@ -263,8 +284,44 @@ DDyModelInformation::__pLoadMaterialTextures(aiMaterial* material, EDyTextureMap
   return textureInformationString;
 }
 
+void DDyModelInformation::__pOutputDebugInformationLog()
+{
+#if defined(_DEBUG) || !defined(NDEBUG)
+  int32_t i = 0;
+  for (const auto& baseMaterialName : this->mBindedMaterialName)
+  {
+    MDY_LOG_DEBUG_D(kModelInformationNumbTemplate, kModelInformation, "base material name", i, baseMaterialName);
+    ++i;
+  }
+
+  i = 0;
+  for (const auto& baseTexturePath : this->mTextureLocalPaths)
+  {
+    MDY_LOG_DEBUG_D(kModelInformationNumbTemplate, kModelInformation, "innate texture name", i, baseTexturePath);
+    ++i;
+  }
+
+  i = 0;
+  for (const auto& submeshInformation : this->mMeshInformations)
+  {
+    const auto& submeshInfo = submeshInformation.GetInformation();
+    MDY_LOG_DEBUG_D("{} | Model information submesh No.{} | Vertices count : {} | Indices count : {}",
+        kModelInformation,
+        i,
+        submeshInfo.mVertices.size(),
+        submeshInfo.mIndices.size()
+    );
+    for (const auto& submeshInnateMaterial : submeshInfo.mMaterialNames)
+    {
+      MDY_LOG_DEBUG_D("{} | Model information submesh No.{} | Innate material name : {}", kModelInformation, i, submeshInnateMaterial);
+    }
+  }
+#endif
+}
+
 DDyModelInformation::~DDyModelInformation()
 {
+  MDY_LOG_INFO_D(kModelInformationTemplate, "~DDyModelInformation", "name", this->mModelName);
   if (this->mNextLevelPtr)
   {
     this->mNextLevelPtr->__pfSetPrevLevel(nullptr);

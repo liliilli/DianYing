@@ -89,6 +89,13 @@
 #define MDY_BIND_BEGIN_END(__MAIteratorableType__) \
   __MAIteratorableType__.begin(), __MAIteratorableType__.end()
 
+///
+/// @macro MDY_SET_IMMUTABLE_STRING
+/// @brief Set immutable compile string_view variable __MAName__ with __MAString__.
+///
+#define MDY_SET_IMMUTABLE_STRING(__MAName__, __MAString__) \
+  constexpr std::string_view __MAName__ = __MAString__
+
 //!
 //! Do not touch below section!
 //!
