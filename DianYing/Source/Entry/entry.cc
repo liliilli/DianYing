@@ -178,7 +178,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLin
   i.SetSubFeatureLoggingToConsole(true);
   i.SetFeatureLogging(true);
 
+  MDY_LOG_INFO_D("Platform : Windows");
+  MDY_LOG_INFO_D("Running application routine.");
+
   dy::MDyWindow::GetInstance().Run();
+
+  MDY_LOG_INFO_D("Release all managers and resources.");
 
   DyReleaseAllManagers();
   MDY_WIN32_TRY_TURN_OFF_DEBUG();

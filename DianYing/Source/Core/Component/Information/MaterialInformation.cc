@@ -27,6 +27,28 @@ MDY_SET_IMMUTABLE_STRING(kMaterialInformation,             "DDyMaterialInformati
 
 namespace dy
 {
+DDyMaterialInformation::DDyMaterialInformation(const PDyMaterialConstructionDescriptor& shaderConstructionDescriptor) :
+    mMaterialInformation{shaderConstructionDescriptor}
+{
+  MDY_LOG_INFO_D(kMaterialInformationTemplate, kMaterialInformation, "material name", this->mMaterialInformation.mMaterialName);
+  MDY_LOG_INFO_D(kMaterialInformationTemplate, kMaterialInformation, "shader name"  , this->mMaterialInformation.mShaderName);
+
+  switch (this->mMaterialInformation.mBlendMode)
+  {
+  case EDyMaterialBlendMode::Opaque:
+    MDY_LOG_INFO_D(kMaterialInformationTemplate, kMaterialInformation, "blend mode", "Opaque"); break;
+  case EDyMaterialBlendMode::Translucent:
+    MDY_LOG_INFO_D(kMaterialInformationTemplate, kMaterialInformation, "blend mode", "Translucent"); break;
+  case EDyMaterialBlendMode::Custom:
+    MDY_LOG_INFO_D(kMaterialInformationTemplate, kMaterialInformation, "blend mode", "Custom"); break;
+  default: break;
+  }
+
+  for (const auto& textureName : this->mMaterialInformation.mTextureName)
+  {
+    MDY_LOG_INFO_D(kMaterialInformationTemplate, kMaterialInformation, "bind texture name", textureName);
+  }
+}
 
 DDyMaterialInformation::~DDyMaterialInformation()
 {

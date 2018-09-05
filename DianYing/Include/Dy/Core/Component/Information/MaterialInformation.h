@@ -31,12 +31,14 @@ class CDyMaterialResource;
 namespace dy
 {
 
+///
+/// @class DDyMaterialInformation
+/// @brief Information class for material information.
+///
 class DDyMaterialInformation final
 {
 public:
-  DDyMaterialInformation(const PDyMaterialConstructionDescriptor& shaderConstructionDescriptor) :
-      mMaterialInformation{shaderConstructionDescriptor}
-  {};
+  DDyMaterialInformation(const PDyMaterialConstructionDescriptor& shaderConstructionDescriptor);
 
   DDyMaterialInformation(const DDyMaterialInformation&)            = delete;
   DDyMaterialInformation& operator=(const DDyMaterialInformation&) = delete;
