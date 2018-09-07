@@ -63,6 +63,42 @@ public:
   ///
   /// @brief
   ///
+  FORCEINLINE float GetFieldOfView() const noexcept
+  {
+    return this->mFieldOfView;
+  }
+
+  ///
+  /// @brief
+  ///
+  FORCEINLINE float GetXYAspect() const noexcept
+  {
+    return this->mAspect;
+  }
+
+  ///
+  /// @brief
+  ///
+  const DDyMatrix4x4& GetViewMatrix() noexcept;
+
+  ///
+  /// @brief
+  ///
+  const DDyMatrix4x4& GetProjectionMatrix() noexcept;
+
+  ///
+  /// @brief
+  ///
+  void SetFieldOfView(float newFov) noexcept;
+
+  ///
+  /// @brief
+  ///
+  void SetAspect(float newAspect) noexcept;
+
+  ///
+  /// @brief
+  ///
   bool IsOrthographicCamera() const noexcept;
 
   ///
@@ -81,25 +117,54 @@ public:
   void Update(float dt);
 
 private:
+  ///
+  /// @brief
+  ///
+  void pUpdateCameraVectors();
+
+  ///
+  /// @brief
+  ///
+  void pUpdateViewMatrix();
+
+  ///
+  /// @brief
+  ///
+  void pUpdateProjectionMatrix();
+
+  ///
+  /// @brief
+  ///
+  void pProcessMouseMovement();
+
   DDyMatrix4x4  mViewMatrix;
   DDyMatrix4x4  mProjectionMatrix;
 
-  DVector3      mPosition         = {};
-  DVector3      mLookingAt        = {};
+  DVector3      mPosition                 = {};
+  DVector3      mRotationEulerAngle       = {};
+  DVector3      mLookingAtDirection       = {};
+  DVector3      mLookingAtRightDirection  = {};
+  DVector3      mLookingAtUpDirection     = {};
 
   //! (Camera) -> |Near| >>>>>>>>>>>>>>>|Far|
   //! Ground --------------------------------
 
   /// Camera's near value.
-  float mNear = 0;
+  float mNear                     = 0;
   /// Camera's far value.
-  float mFar  = 100;
+  float mFar                      = 100;
+  float mFieldOfView              = 0.f;
+  float mAspect                   = 0.f;
 
   bool mIsMoveable                = false;
   bool mIsEnableMeshUnClipped     = false;
   bool mIsOrthographicCamera      = false;
   ///
   bool mIsFirstTime = true;
+
+  bool mIsViewMatrixDirty         = true;
+  bool mIsPerspectiveMatrixDirty  = true;
+  bool mIsFocused                 = false;
 };
 
 } /// ::dy namespace

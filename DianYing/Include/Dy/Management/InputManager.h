@@ -85,6 +85,8 @@ private:
   bool              mIsEnabledJoystick    = false;
 
   std::vector<std::reference_wrapper<DDyKeyBindingInformation>> m_key_disposal;
+
+  friend class MDyWindow;
 };
 
 }

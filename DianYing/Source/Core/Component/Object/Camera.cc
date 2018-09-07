@@ -19,13 +19,17 @@
 #include <Dy/Helper/Type/Vector3.h>
 #include <Dy/Helper/ImmutableSetting.h>
 
+#include <Dy/Management/InputManager.h>
 #include <Dy/Management/SceneManager.h>
+#include <Phitos/Dbg/assert.h>
+#include <Dy/Management/LoggingManager.h>
 
 namespace dy
 {
 
 CDyCamera::CDyCamera(const PDyCameraConstructionDescriptor& descriptor)
 {
+  this->mLookingAtDirection = dy::DVector3{0, 0, -1};
   MDY_CALL_ASSERT_SUCCESS(this->UpdateSetting(descriptor));
 }
 
@@ -41,27 +45,14 @@ CDyCamera::~CDyCamera()
 
 EDySuccess CDyCamera::UpdateSetting(const PDyCameraConstructionDescriptor& descriptor)
 {
-  // Bind or unbind controller to main system (from main system).
-  if (descriptor.mIsMoveable)
-  {
-
-  }
-  else if (this->mIsMoveable && !this->mIsFirstTime)
-  {
-
-  }
+  this->mIsMoveable = descriptor.mIsMoveable;
 
   // Make lookat view.
-  this->mViewMatrix = glm::lookAt(
-      static_cast<glm::vec3>(mPosition),
-      static_cast<glm::vec3>(mLookingAt),
-      static_cast<glm::vec3>(DVector3::UpY())
-  );
+  this->pUpdateViewMatrix();
 
   // Make projection view.
-  float fov = descriptor.mInitialFieldOfView;
-  if (fov < 0.1f)   fov = 0.1f;
-  if (fov > 180.f)  fov = 180.f;
+  const float fov = descriptor.mInitialFieldOfView;
+  this->SetFieldOfView(fov);
 
   float aspect = static_cast<float>(kScreenWidth) / kScreenHeight;
   if (descriptor.mUseCustomViewport)
@@ -69,23 +60,9 @@ EDySuccess CDyCamera::UpdateSetting(const PDyCameraConstructionDescriptor& descr
     const auto& customViewportSize = descriptor.mViewportSize;
     aspect = customViewportSize.X / customViewportSize.Y;
   }
+  this->SetAspect(aspect);
+  this->pUpdateProjectionMatrix();
 
-  if (descriptor.mIsOrthographic)
-  {
-    this->mProjectionMatrix = glm::ortho(-static_cast<float>(kScreenWidth) / 2,
-                                          static_cast<float>(kScreenWidth) / 2,
-                                         -static_cast<float>(kScreenHeight) / 2,
-                                          static_cast<float>(kScreenHeight) / 2,
-                                          this->mNear, this->mFar);
-    this->mIsOrthographicCamera = true;
-  }
-  else
-  {
-    this->mProjectionMatrix     = glm::perspective(fov, aspect, this->mNear, this->mFar);
-    this->mIsOrthographicCamera = false;
-  }
-
-  //
   this->mIsEnableMeshUnClipped  = descriptor.mIsEnableMeshUnClipped;
 
   // If camera must be focused instantly, set it to present focused camera reference ptr of manager.
@@ -93,11 +70,50 @@ EDySuccess CDyCamera::UpdateSetting(const PDyCameraConstructionDescriptor& descr
   {
     auto& sceneManager = MDyScene::GetInstance();
     sceneManager.__pfBindFocusCamera(this);
+    this->mIsFocused = true;
   }
+
+  this->pUpdateCameraVectors();
 
   // Set first time flag to false to use second time flag logics.
   this->mIsFirstTime = false;
   return DY_SUCCESS;
+}
+
+const DDyMatrix4x4& CDyCamera::GetViewMatrix() noexcept
+{
+  if (this->mIsViewMatrixDirty)
+  {
+    this->pUpdateViewMatrix();
+  }
+
+  return this->mViewMatrix;
+}
+
+const DDyMatrix4x4& CDyCamera::GetProjectionMatrix() noexcept
+{
+  if (this->mIsPerspectiveMatrixDirty)
+  {
+    this->pUpdateProjectionMatrix();
+  }
+
+  return this->mProjectionMatrix;
+}
+
+void CDyCamera::SetFieldOfView(float newFov) noexcept
+{
+  if (newFov < 0.1f)   newFov = 0.1f;
+  if (newFov > 180.f)  newFov = 180.f;
+  this->mFieldOfView = newFov;
+  this->mIsPerspectiveMatrixDirty = true;
+}
+
+void CDyCamera::SetAspect(float newAspect) noexcept
+{
+  PHITOS_ASSERT(newAspect > 0.f, "Aspect value must bigger than 0.0f");
+
+  this->mAspect = newAspect;
+  this->mIsPerspectiveMatrixDirty = true;
 }
 
 bool CDyCamera::IsOrthographicCamera() const noexcept
@@ -118,7 +134,91 @@ bool CDyCamera::IsMoveable() const noexcept
 
 void CDyCamera::Update(float dt)
 {
+  if (this->mIsMoveable)
+  {
+     auto& input = MDyInput::GetInstance();
 
+    const auto xVal = input.GetKeyValue("XAxis");
+    const auto yVal = input.GetKeyValue("YAxis");
+
+    if (xVal == 0.0f && yVal == 0.0f) return;
+    else
+    {
+      MDY_LOG_DEBUG_D("Moved {} , {}", xVal, yVal);
+
+      this->mPosition += this->mLookingAtRightDirection * xVal * dt;
+      this->mPosition += this->mLookingAtDirection * yVal * dt;
+      this->mIsViewMatrixDirty = true;
+    }
+  }
+}
+
+#ifdef false
+void CDyCamera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true)
+{
+  xoffset *= MouseSensitivity;
+  yoffset *= MouseSensitivity;
+
+  Yaw += xoffset;
+  Pitch += yoffset;
+
+  // Make sure that when pitch is out of bounds, screen doesn't get flipped
+  if (constrainPitch)
+  {
+    if (Pitch > 89.0f)
+      Pitch = 89.0f;
+    if (Pitch < -89.0f)
+      Pitch = -89.0f;
+  }
+
+  // Update Front, Right and Up Vectors using the updated Euler angles
+  updateCameraVectors();
+}
+#endif
+
+void CDyCamera::pUpdateCameraVectors()
+{
+  // Calculate the new Front vector
+  DVector3 front;
+  front.X = cos(glm::radians(this->mRotationEulerAngle.Y)) * cos(glm::radians(this->mRotationEulerAngle.X));
+  front.Y = sin(glm::radians(this->mRotationEulerAngle.Z));
+  front.Z = sin(glm::radians(this->mRotationEulerAngle.Y)) * cos(glm::radians(this->mRotationEulerAngle.Z));
+  this->mLookingAtDirection = front.Normalize();
+
+  // Also re-calculate the Right and Up vector
+  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
+  this->mLookingAtRightDirection  = DVector3::Cross(front, DVector3::UpY()).Normalize();
+  this->mLookingAtUpDirection     = DVector3::Cross(this->mLookingAtRightDirection, this->mLookingAtDirection).Normalize();
+  this->mIsViewMatrixDirty        = true;
+}
+
+void CDyCamera::pUpdateViewMatrix()
+{
+  this->mViewMatrix = glm::lookAt(
+      static_cast<glm::vec3>(mPosition),
+      static_cast<glm::vec3>(mPosition + mLookingAtDirection),
+      static_cast<glm::vec3>(DVector3::UpY())
+  );
+  this->mIsViewMatrixDirty = false;
+}
+
+void CDyCamera::pUpdateProjectionMatrix()
+{
+  if (this->mIsOrthographicCamera)
+  {
+    this->mProjectionMatrix = glm::ortho(-static_cast<float>(kScreenWidth) / 2,
+                                          static_cast<float>(kScreenWidth) / 2,
+                                         -static_cast<float>(kScreenHeight) / 2,
+                                          static_cast<float>(kScreenHeight) / 2,
+                                          this->mNear, this->mFar);
+    this->mIsOrthographicCamera = true;
+  }
+  else
+  {
+    this->mProjectionMatrix     = glm::perspective(this->mFieldOfView, this->mAspect, this->mNear, this->mFar);
+    this->mIsOrthographicCamera = false;
+  }
+  this->mIsPerspectiveMatrixDirty = false;
 }
 
 } /// ::dy namespace

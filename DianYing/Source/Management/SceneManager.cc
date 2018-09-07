@@ -31,7 +31,7 @@ EDySuccess MDyScene::pfRelease()
   return DY_SUCCESS;
 }
 
-const CDyCamera* MDyScene::GetCamera() const noexcept
+CDyCamera* MDyScene::GetCamera() const noexcept
 {
   assert(this->mValidMainCameraPtr);
   return this->mValidMainCameraPtr;

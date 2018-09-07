@@ -40,7 +40,7 @@ public:
   ///
   /// @brief
   ///
-  const CDyCamera* GetCamera() const noexcept;
+  CDyCamera* GetCamera() const noexcept;
 
 private:
   void __pfBindFocusCamera(CDyCamera* validCameraPtr);
