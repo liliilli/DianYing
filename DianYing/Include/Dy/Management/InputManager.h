@@ -16,6 +16,7 @@
 #include <string>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Management/Type/KeyBindingInformation.h>
+#include "Dy/Helper/Type/Vector2.h"
 
 namespace dy
 {
@@ -25,7 +26,6 @@ class MDyInput final : public ISingleton<MDyInput>
   MDY_SINGLETON_PROPERTIES(MDyInput);
   MDY_SINGLETON_DERIVED(MDyInput);
 public:
-
   ///
   /// @brief Get Key value which is bound to key container.
   /// This returns [-1, 1] floating values of key information instance found.
@@ -35,42 +35,66 @@ public:
   /// @param[in] axisKeyName The key name which key instance has.
   /// @return float The key value which has [-1, 1] range floating value.
   ///
-  [[nodiscard]]
-  float GetKeyValue(const std::string& axisKeyName) noexcept;
+  [[nodiscard]] float GetKeyValue(const std::string& axisKeyName) noexcept;
+
+  ///
+  /// @brief
+  ///
+  [[nodiscard]] const DVector2& GetPresentMousePosition() const noexcept
+  {
+    return this->mMousePresentPosition;
+  }
+
+  ///
+  /// @brief
+  ///
+  [[nodiscard]] const DVector2& GetPresentLastPosition() const noexcept
+  {
+    return this->mMouseLastPosition;
+  }
 
   ///
   /// @brief Get whether or not specific key was pressed.
   /// @param[in] keyName The key name which key instance has.
   /// @return boolean value, if specific key was pressed, return true.
   ///
-  [[nodiscard]]
-  bool IsKeyPressed(const std::string& keyName) noexcept;
+  [[nodiscard]] bool IsKeyPressed(const std::string& keyName) noexcept;
 
   ///
   /// @brief Get whether or not specific key was released.
   /// @param[in] keyName The key name which key instance has.
   /// @return boolean value, if specific key was released, return true.
   ///
-  [[nodiscard]]
-  bool IsKeyReleased(const std::string& keyName) noexcept;
+  [[nodiscard]] bool IsKeyReleased(const std::string& keyName) noexcept;
 
   ///
   /// @brief
   ///
-  [[nodiscard]]
-  bool pIsKeyExist(const std::string& keyName) const noexcept;
+  [[nodiscard]] bool IsMouseMoved() const noexcept
+  {
+    return this->mIsMouseMoved;
+  }
 
   ///
   /// @brief
   ///
-  [[nodiscard]]
-  EDySuccess pInsertKey(const DDyKeyBindingInformation& bindingKey) noexcept;
+  [[nodiscard]] bool pIsKeyExist(const std::string& keyName) const noexcept;
+
+  ///
+  /// @brief
+  ///
+  [[nodiscard]] EDySuccess pInsertKey(const DDyKeyBindingInformation& bindingKey) noexcept;
 
 private:
   ///
   /// @brief
   ///
   void pfUpdate(float dt) noexcept;
+
+  ///
+  /// @brief
+  ///
+  [[nodiscard]] EDySuccess pReadInputFile(const std::string& file_path);
 
   using TKeyMap = std::unordered_map<std::string, DDyKeyBindingInformation>;
 
@@ -79,10 +103,14 @@ private:
   GLFWcursor*       mGlfwWindowCursorPtr  = nullptr;
 
   TKeyMap           mBindedKeyList;
+  DVector2          mMouseLastPosition    = {};
+  DVector2          mMousePresentPosition = {};
 
   bool              mIsEnabledKeyboard    = false;
   bool              mIsEnabledMouse       = false;
   bool              mIsEnabledJoystick    = false;
+
+  bool              mIsMouseMoved         = false;
 
   std::vector<std::reference_wrapper<DDyKeyBindingInformation>> m_key_disposal;
 

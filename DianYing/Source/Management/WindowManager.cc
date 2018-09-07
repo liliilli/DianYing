@@ -31,6 +31,10 @@
 #include <Dy/Management/HeapResourceManager.h>
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/LoggingManager.h>
+#include <future>
+#include "Dy/Management/SceneManager.h"
+#include "Dy/Management/InputManager.h"
+#include "Dy/Management/TimeManager.h"
 
 ///
 /// Undefined proprocessor WIN32 macro "max, min" for preventing misuse.
@@ -179,12 +183,6 @@ void DyGlTempInitializeResource()
   MDY_CALL_ASSERT_SUCCESS(manInfo.CreateMaterialInformation(materialDesc));
 
 #ifdef false
-  dy::PDyModelConstructionDescriptor modelDesc;
-  {
-    modelDesc.mModelName = "TestModel";
-    modelDesc.mModelPath = "./TestResource/nanosuit/nanosuit.obj";
-  }
-  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(modelDesc));
 #endif
 #ifdef false
   std::vector<std::string> populatedMaterialNames;
@@ -208,25 +206,41 @@ void DyGlTempInitializeResource()
   MDY_CALL_ASSERT_SUCCESS(manResc.CreateModelResource(modelDesc.mModelName));
 #endif
 
-  dy::PDyModelConstructionDescriptor bunnyModel;
-  {
-    bunnyModel.mModelName = "Bunny";
-    bunnyModel.mModelPath = "./TestResource/bun_zipper.ply";
-  }
-  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(bunnyModel));
+  auto tempAsyncTask = std::async(std::launch::async, [&manInfo] {
+    dy::PDyModelConstructionDescriptor bunnyModel;
+    {
+      bunnyModel.mModelName = "Bunny";
+      bunnyModel.mModelPath = "./TestResource/bun_zipper.ply";
+    }
+    MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(bunnyModel));
+    return true;
+  });
 
-#ifdef false
+  auto modelAsyncTask = std::async(std::launch::async, [&manInfo] {
+    dy::PDyModelConstructionDescriptor modelDesc;
+    {
+      modelDesc.mModelName = "TestModel";
+      modelDesc.mModelPath = "./TestResource/Maximilian/max.obj";
+    }
+    MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(modelDesc));
+    return true;
+  });
+
   dy::PDyModelConstructionDescriptor dragonModel;
   {
-    bunnyModel.mModelName = "Dragon";
-    bunnyModel.mModelPath = "./TestResource/dragon_vrip_res2.ply";
+    dragonModel.mModelName = "Dragon";
+    dragonModel.mModelPath = "./TestResource/dragon_vrip_res2.ply";
   }
-  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(bunnyModel));
-#endif
+  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(dragonModel));
+
+  if (tempAsyncTask.get() && modelAsyncTask.get())
+  {
+    MDY_LOG_DEBUG_D("OK");
+  };
 
   dy::PDyRendererConsturctionDescriptor rendererDesc;
   {
-    rendererDesc.mModelName     = "Bunny";
+    rendererDesc.mModelName     = "TestModel";
     rendererDesc.mMaterialNames = {"TestMaterial"};
   }
   MDY_CALL_ASSERT_SUCCESS(gRenderer.pfInitialize(rendererDesc));
@@ -429,8 +443,23 @@ namespace dy
 
 void MDyWindow::Run()
 {
+  // @todo temporal
+  auto& sceneManager = MDyScene::GetInstance();
+  auto& inputMaanger = MDyInput::GetInstance();
+  auto& timeManager  = MDyTime::GetInstance();
+
   while (!glfwWindowShouldClose(this->mGlfwWindow))
   {
+    timeManager.pUpdate();
+    const auto dt = timeManager.GetGameDeltaTimeValue();
+
+    inputMaanger.pfUpdate(dt);
+    auto* cam = sceneManager.GetCamera();
+    if (cam)
+    {
+      cam->Update(dt);
+    }
+
     glClearColor(gColor.X, gColor.Y, gColor.Z, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

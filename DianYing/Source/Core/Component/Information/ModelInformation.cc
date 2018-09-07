@@ -15,6 +15,8 @@
 /// Header file
 #include <Dy/Core/Component/Information/ModelInformation.h>
 
+#include <future>
+
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -23,6 +25,7 @@
 #include <Dy/Helper/Geometry/GeometryType.h>
 #include <Dy/Management/DataInformationManager.h>
 #include <Dy/Management/LoggingManager.h>
+#include "Dy/Helper/ThreadPool.h"
 
 namespace
 {
@@ -51,11 +54,17 @@ DDyModelInformation::DDyModelInformation(const PDyModelConstructionDescriptor& m
   const auto& modelPath = modelConstructionDescriptor.mModelPath;
   MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "model path", modelPath);
 
+  const auto start = std::chrono::system_clock::now();
+
   Assimp::Importer assimpImporter;
   const aiScene* assimpModelScene = assimpImporter.ReadFile(
       modelPath.c_str(),
       aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals
   );
+
+  const auto end = std::chrono::system_clock::now();
+  const auto cnt = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+  MDY_LOG_DEBUG_D("{} | Model importing elapsed time : {} us", this->mModelName, cnt.count());
 
   if (!assimpModelScene || assimpModelScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !assimpModelScene->mRootNode)
   {
@@ -95,25 +104,83 @@ void DDyModelInformation::__pProcessAssimpMesh(aiMesh* mesh, const aiScene* scen
   PMeshInformationDescriptor meshInformationDescriptor;
 
   // Retrieve vertex buffer informations of this mesh.
-  meshInformationDescriptor.mVertices.reserve(mesh->mNumVertices);
-  for (uint32_t i = 0; i < mesh->mNumVertices; ++i)
+  meshInformationDescriptor.mVertices.resize(mesh->mNumVertices);
+
+  constexpr int32_t mtThresholdSize = 1'000;
+
+  if (mesh->mNumVertices >= mtThresholdSize)
   {
-    DVertexInformation vertexInformation;
-    if (mesh->HasPositions()) vertexInformation.mPosition = mesh->mVertices[i];
-    if (mesh->HasNormals())   vertexInformation.mNormal   = mesh->mNormals[i];
+    constexpr int32_t mtTaskCount = 4;
+    dy::FDyThreadPool pool(mtTaskCount);
+    std::vector<std::future<bool>> results;
 
-    // Only supports texture coords 0 set (UV0) for now.
-    if (mesh->HasTextureCoords(0))
+    const int32_t vertexCountSize = static_cast<int32_t>(std::ceil(static_cast<float>(mesh->mNumVertices) / mtTaskCount));
+    int32_t start = 0;
+    int32_t to    = vertexCountSize;
+    for (int32_t i = 0; i < mtTaskCount; ++i)
     {
-      const auto& assimpTextureCoord = mesh->mTextureCoords[0][i];
-      vertexInformation.mTexCoords = DVector2{assimpTextureCoord.x, assimpTextureCoord.y};
+      // Do
+      results.emplace_back(
+          pool.Enqueue([](const aiMesh* mesh, PMeshInformationDescriptor& desc, int32_t start, int32_t to) {
+            for (int32_t i = start; i < to; ++i)
+            {
+              DVertexInformation vertexInformation;
+              if (mesh->HasPositions()) vertexInformation.mPosition = mesh->mVertices[i];
+              if (mesh->HasNormals())   vertexInformation.mNormal   = mesh->mNormals[i];
+
+              // Only supports texture coords 0 set (UV0) for now.
+              if (mesh->HasTextureCoords(0))
+              {
+                const auto& assimpTextureCoord = mesh->mTextureCoords[0][i];
+                vertexInformation.mTexCoords = DVector2{assimpTextureCoord.x, assimpTextureCoord.y};
+              }
+              else vertexInformation.mTexCoords = DVector2{0};
+
+              // また骨、Tangent, Bitangentはしない。
+
+              // Insert vertex information to vertice container of descriptor container.
+              desc.mVertices[i] = vertexInformation;
+            }
+            return true;
+          },
+          mesh, std::ref(meshInformationDescriptor), start, to)
+      );
+
+      start += vertexCountSize;
+      to    += vertexCountSize;
+      if (to >= static_cast<int32_t>(mesh->mNumVertices)) to = mesh->mNumVertices;
+    };
+
+    // Check result. (needs to check this routine not culled by optimization in release mode).
+    for (auto& result : results)
+    {
+      if (auto flag = result.get())
+      {
+        MDY_LOG_DEBUG_D("Vertex retriviation job task result {}", flag);
+      }
     }
-    else vertexInformation.mTexCoords = DVector2{0};
+  }
+  else
+  {
+    for (uint32_t i = 0; i < mesh->mNumVertices; ++i)
+    {
+      DVertexInformation vertexInformation;
+      if (mesh->HasPositions()) vertexInformation.mPosition = mesh->mVertices[i];
+      if (mesh->HasNormals())   vertexInformation.mNormal   = mesh->mNormals[i];
 
-    // また骨、Tangent, Bitangentはしない。
+      // Only supports texture coords 0 set (UV0) for now.
+      if (mesh->HasTextureCoords(0))
+      {
+        const auto& assimpTextureCoord = mesh->mTextureCoords[0][i];
+        vertexInformation.mTexCoords = DVector2{assimpTextureCoord.x, assimpTextureCoord.y};
+      }
+      else vertexInformation.mTexCoords = DVector2{0};
 
-    // Insert vertex information to vertice container of descriptor container.
-    meshInformationDescriptor.mVertices.emplace_back(vertexInformation);
+      // また骨、Tangent, Bitangentはしない。
+
+      // Insert vertex information to vertice container of descriptor container.
+      meshInformationDescriptor.mVertices[i] = vertexInformation;
+    }
   }
 
   // Retrieve indice for element buffer object (openGL)

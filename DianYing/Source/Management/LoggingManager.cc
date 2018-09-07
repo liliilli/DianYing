@@ -39,8 +39,8 @@ spdlog::level::level_enum DyGetLogLevel(dy::EDyLogLevel level) noexcept
   switch (level)
   {
   case dy::EDyLogLevel::Trace:        return spdlog::level::trace;
-  case dy::EDyLogLevel::Information:  return spdlog::level::info;
   case dy::EDyLogLevel::Debug:        return spdlog::level::debug;
+  case dy::EDyLogLevel::Information:  return spdlog::level::info;
   case dy::EDyLogLevel::Warning:      return spdlog::level::warn;
   case dy::EDyLogLevel::Critical:     return spdlog::level::critical;
   case dy::EDyLogLevel::Error:        return spdlog::level::err;
@@ -56,6 +56,7 @@ namespace dy
 EDySuccess MDyLog::pfInitialize()
 {
   MDY_LOG_DEBUG_D("{} | MDyLog::pfInitialize().", "FunctionCall");
+  this->pfTurnOn();
   return DY_SUCCESS;
 }
 
@@ -133,6 +134,7 @@ EDySuccess MDyLog::pfTurnOn()
 
   this->mLogger = std::make_shared<spdlog::logger>("DianYing", this->mSinks.begin(), this->mSinks.end());
   this->mLogger->set_level(DyGetLogLevel(this->mLogLevel));
+
   MDY_LOG_DEBUG_D("MDyLog::mLogger level : {}.", DyGetLogLevel(this->mLogLevel));
   MDY_LOG_DEBUG_D("MDyLog::mLogger resource allocated.");
 

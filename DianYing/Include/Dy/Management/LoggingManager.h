@@ -32,8 +32,8 @@ namespace dy
 enum class EDyLogLevel
 {
   Trace,
-  Information,
   Debug,
+  Information,
   Warning,
   Error,
   Critical,
@@ -89,7 +89,7 @@ private:
 
   std::vector<spdlog::sink_ptr>   mSinks        = {};
   std::shared_ptr<spdlog::logger> mLogger       = nullptr;
-  EDyLogLevel                     mLogLevel     = EDyLogLevel::Information;
+  EDyLogLevel                     mLogLevel     = EDyLogLevel::Debug;
 
   friend class MDySetting;
 };
@@ -116,10 +116,10 @@ private:
 #if !defined(NDEBUG)
   #define MDY_LOG_TRACE_D(__MAString__, ...) \
   ::dy::MDyLog::GetInstance().PushLog(dy::EDyLogLevel::Trace, __MAString__, __VA_ARGS__)
-  #define MDY_LOG_INFO_D(__MAString__, ...) \
-  ::dy::MDyLog::GetInstance().PushLog(dy::EDyLogLevel::Information, __MAString__, __VA_ARGS__)
   #define MDY_LOG_DEBUG_D(__MAString__, ...) \
   ::dy::MDyLog::GetInstance().PushLog(dy::EDyLogLevel::Debug, __MAString__, __VA_ARGS__)
+  #define MDY_LOG_INFO_D(__MAString__, ...) \
+  ::dy::MDyLog::GetInstance().PushLog(dy::EDyLogLevel::Information, __MAString__, __VA_ARGS__)
   #define MDY_LOG_WARNING_D(__MAString__, ...) \
   ::dy::MDyLog::GetInstance().PushLog(dy::EDyLogLevel::Warning, __MAString__, __VA_ARGS__)
   #define MDY_LOG_ERROR_D(__MAString__, ...) \

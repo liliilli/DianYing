@@ -21,6 +21,7 @@
 #include <Dy/Core/Component/Information/ShaderInformation.h>
 #include <Dy/Core/Component/Information/TextureInformation.h>
 #include <Dy/Core/Component/Information/ModelInformation.h>
+#include "Dy/Helper/ThreadPool.h"
 
 namespace dy
 {
@@ -118,6 +119,11 @@ private:
   THeapHash<CDyTextureInformation>   mTextureInformation;
   THeapHash<DDyMaterialInformation>  mMaterialInformation;
   THeapHash<DDyModelInformation>     mModelInformation;
+
+  mutable std::mutex                 mTemporalMutex;
+  // @todo not used yet.
+  //mutable dy::FDyThreadPool          mThreadPool {sThreadWorkerCount};
+  //inline static constexpr int32_t    sThreadWorkerCount = 4;
 };
 
 } /// ::dy namespace

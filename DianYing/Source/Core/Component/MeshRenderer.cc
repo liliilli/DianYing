@@ -19,6 +19,8 @@
 #include <Dy/Core/Component/Resource/ModelResource.h>
 
 #include <Dy/Management/HeapResourceManager.h>
+#include <Dy/Management/SceneManager.h>
+#include <Dy/Core/Component/Object/Camera.h>
 
 namespace dy
 {
@@ -72,7 +74,20 @@ void CDyMeshRenderer::Render()
     // Bind submesh VAO id.
     glBindVertexArray(submeshResource->GetVertexArrayId());
 
+    // @todo temporal
+    const auto viewMatrix = glGetUniformLocation(shaderResource->GetShaderProgramId(), "viewMatrix");
+    const auto projMatirx = glGetUniformLocation(shaderResource->GetShaderProgramId(), "projectionMatrix");
+
+    auto& sceneManager = MDyScene::GetInstance();
+    auto* camera = sceneManager.GetCamera();
+    if (camera)
+    {
+      glUniformMatrix4fv(viewMatrix, 1, GL_FALSE, &camera->GetViewMatrix()[0].X);
+      glUniformMatrix4fv(projMatirx, 1, GL_FALSE, &camera->GetProjectionMatrix()[0].X);
+    }
+
     // Bind textures of one material.
+#ifdef false
     {
       const auto& textureResources        = this->mMaterialResourcePtr[tempI]->GetTextureResources();
       const auto  textureResourceListSize = static_cast<int32_t>(textureResources.size());
@@ -92,6 +107,7 @@ void CDyMeshRenderer::Render()
         }
       }
     }
+#endif
 
     // Call function call drawing array or element. (not support instancing yet)
     if (submeshResource->IsEnabledIndices())

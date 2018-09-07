@@ -120,17 +120,25 @@ EDySuccess MDyDataInformation::CreateMaterialInformation(const PDyMaterialConstr
 
 EDySuccess MDyDataInformation::CreateModelInformation(const PDyModelConstructionDescriptor& modelDescriptor)
 {
-  const auto& materialName = modelDescriptor.mModelName;
-  if (mModelInformation.find(materialName) != mModelInformation.end())
+  // Integrity check
+  const auto& modelName = modelDescriptor.mModelName;
+  decltype(this->mModelInformation)::iterator it;
   {
-    return DY_FAILURE;
-  }
+    std::lock_guard<std::mutex> mt(this->mTemporalMutex);
+    if (mModelInformation.find(modelName) != mModelInformation.end())
+    {
+      MDY_LOG_WARNING_D("{} | Resource is already found. Name : {}", "MDyDataInformation", modelName);
+      return DY_FAILURE;
+    }
 
-  // Check there is already in the information map.
-  auto [it, creationResult] = mModelInformation.try_emplace(materialName, nullptr);
-  if (!creationResult) {
-
-    return DY_FAILURE;
+    // Check there is already in the information map, if not, make memory space to insert it.
+    bool creationResult = false;
+    std::tie(it, creationResult) = mModelInformation.try_emplace(modelName, nullptr);
+    if (!creationResult)
+    {
+      MDY_LOG_CRITICAL_D("{} | Failed to create resource memory space. Name : {}", "MDyDataInformation", modelName);
+      return DY_FAILURE;
+    }
   }
 
   // Make resource in heap, and insert it to empty memory space.
@@ -140,7 +148,8 @@ EDySuccess MDyDataInformation::CreateModelInformation(const PDyModelConstruction
     it->second.swap(materialInformation);
     if (!it->second)
     {
-      this->mModelInformation.erase(materialName);
+      MDY_LOG_CRITICAL_D("{} | Unexpected error occured. Name : {}", "MDyDataInformation", modelName);
+      this->mModelInformation.erase(modelName);
       return DY_FAILURE;
     }
   }
@@ -274,25 +283,34 @@ EDySuccess MDyDataInformation::DeleteMaterialInformation(const std::string& mate
 
 EDySuccess MDyDataInformation::DeleteModelInformation(const std::string& modelName, bool isAllRemoveSubresource, bool isForced)
 {
-  const auto iterator = mTextureInformation.find(modelName);
-  if (iterator == mTextureInformation.end())
+  const auto iterator = mModelInformation.find(modelName);
+  if (iterator == mModelInformation.end())
   {
+    MDY_LOG_ERROR_D("{} | Failed to remove model information. Have not model information. {} : {}", "MDyDataInformation", "ModelName", modelName);
     return DY_FAILURE;
   }
 
   // IF mMaterialInformation is being used by another resource instance?
-  // then, return DY_FAILURE or remove it.
-  assert(false);
+  // then, return DY_FAILURE, otherwise remove it.
+  if (iterator->second->IsBeingBinded())
+  {
+    MDY_LOG_ERROR_D("{} | Failed to remove model information. Must remove resource first. {} : {}", "MDyDataInformation", "ModelName", modelName);
+    return DY_FAILURE;
+  }
 
   // First, release all information and related subresource instances from system
   // only when isAllRemoveSubresource true.
   if (isAllRemoveSubresource)
   {
-
+    const auto& materialNameList = iterator->second->GetBindedMaterialNameLists();
+    for (const auto& materialName : materialNameList)
+    {
+      this->DeleteMaterialInformation(materialName);
+    }
   }
 
   // And remove model information!
-
+  mModelInformation.erase(iterator);
   return DY_SUCCESS;
 }
 
@@ -338,10 +356,12 @@ const DDyMaterialInformation* MDyDataInformation::GetMaterialInformation(const s
 
 const DDyModelInformation* MDyDataInformation::GetModelInformation(const std::string& modelName) const noexcept
 {
-  const auto iterator = mModelInformation.find(modelName);
-  if (iterator == mModelInformation.end())
+  std::lock_guard<std::mutex> mt(this->mTemporalMutex);
+
+  const auto iterator = this->mModelInformation.find(modelName);
+  if (iterator == this->mModelInformation.end())
   {
-    // @todo Error log message
+    MDY_LOG_ERROR_D("{} | Failed to find model information. {} : {}", "MDyDataInformation", "Model name", modelName);
     return nullptr;
   }
 

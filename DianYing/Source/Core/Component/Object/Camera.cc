@@ -136,53 +136,56 @@ void CDyCamera::Update(float dt)
 {
   if (this->mIsMoveable)
   {
-     auto& input = MDyInput::GetInstance();
+    auto& input = MDyInput::GetInstance();
 
     const auto xVal = input.GetKeyValue("XAxis");
     const auto yVal = input.GetKeyValue("YAxis");
 
-    if (xVal == 0.0f && yVal == 0.0f) return;
-    else
+    if (yVal != 0.0f || xVal != 0.0f)
     {
       MDY_LOG_DEBUG_D("Moved {} , {}", xVal, yVal);
 
-      this->mPosition += this->mLookingAtRightDirection * xVal * dt;
-      this->mPosition += this->mLookingAtDirection * yVal * dt;
+      this->mPosition += this->mLookingAtRightDirection * xVal * dt * mSpeed;
+      this->mPosition += this->mLookingAtDirection * yVal * dt * mSpeed;
       this->mIsViewMatrixDirty = true;
+    }
+
+    if (input.IsMouseMoved())
+    {
+      const auto& present = input.GetPresentMousePosition();
+      const auto& last = input.GetPresentLastPosition();
+      const auto offset = DVector2(present.X - last.X, last.Y - present.Y);
+      this->pProcessMouseMovement(offset, true);
     }
   }
 }
 
-#ifdef false
-void CDyCamera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true)
+void CDyCamera::pProcessMouseMovement(const DVector2& offset, bool constrainPitch)
 {
-  xoffset *= MouseSensitivity;
-  yoffset *= MouseSensitivity;
-
-  Yaw += xoffset;
-  Pitch += yoffset;
+  this->mRotationEulerAngle.Y += offset.X * this->mMouseSensitivity;
+  this->mRotationEulerAngle.X += offset.Y * this->mMouseSensitivity;
 
   // Make sure that when pitch is out of bounds, screen doesn't get flipped
   if (constrainPitch)
   {
-    if (Pitch > 89.0f)
-      Pitch = 89.0f;
-    if (Pitch < -89.0f)
-      Pitch = -89.0f;
+    if (this->mRotationEulerAngle.X > 89.0f)
+      this->mRotationEulerAngle.X = 89.0f;
+    if (this->mRotationEulerAngle.X < -89.0f)
+      this->mRotationEulerAngle.X = -89.0f;
   }
 
   // Update Front, Right and Up Vectors using the updated Euler angles
-  updateCameraVectors();
+  MDY_LOG_DEBUG_D("Euler angle | X : {}, Y : {}, Z : {}", this->mRotationEulerAngle.X, this->mRotationEulerAngle.Y, this->mRotationEulerAngle.Z);
+  this->pUpdateCameraVectors();
 }
-#endif
 
 void CDyCamera::pUpdateCameraVectors()
 {
   // Calculate the new Front vector
   DVector3 front;
   front.X = cos(glm::radians(this->mRotationEulerAngle.Y)) * cos(glm::radians(this->mRotationEulerAngle.X));
-  front.Y = sin(glm::radians(this->mRotationEulerAngle.Z));
-  front.Z = sin(glm::radians(this->mRotationEulerAngle.Y)) * cos(glm::radians(this->mRotationEulerAngle.Z));
+  front.Y = sin(glm::radians(this->mRotationEulerAngle.X));
+  front.Z = sin(glm::radians(this->mRotationEulerAngle.Y)) * cos(glm::radians(this->mRotationEulerAngle.X));
   this->mLookingAtDirection = front.Normalize();
 
   // Also re-calculate the Right and Up vector

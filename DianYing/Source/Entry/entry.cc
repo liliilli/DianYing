@@ -22,6 +22,9 @@
 
 #include <d3dx11effect.h>
 
+#include <tbb/parallel_for.h>
+#include <tbb/blocked_range.h>
+
 #include <Dy/Management/DataInformationManager.h>
 #include <Dy/Management/HeapResourceManager.h>
 #include <Dy/Management/SceneManager.h>
@@ -29,6 +32,7 @@
 #include <Dy/Management/TimeManager.h>
 #include <Dy/Management/WindowManager.h>
 #include <Dy/Management/LoggingManager.h>
+#include "Dy/Management/InputManager.h"
 
 /// @todo Chapter 6
 struct DVertex1
@@ -85,7 +89,11 @@ void DyInitiailzeAllManagers()
     MDY_CALL_ASSERT_SUCCESS(dy::MDySetting::Initialize());
   }
 
+  auto& i = dy::MDySetting::GetInstance();
+  i.SetSubFeatureLoggingToConsole(true);
+  i.SetSubFeatureLoggingToFile(true);
   MDY_CALL_ASSERT_SUCCESS(dy::MDyLog::Initialize());
+
   MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyDataInformation::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyResource::Initialize());
@@ -93,6 +101,7 @@ void DyInitiailzeAllManagers()
 
   // MDyWindow must be initialized at last.
   MDY_CALL_ASSERT_SUCCESS(dy::MDyWindow::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyInput::Initialize());
 }
 
 ///
@@ -101,6 +110,7 @@ void DyInitiailzeAllManagers()
 ///
 void DyReleaseAllManagers()
 {
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyInput::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyWindow::Release());
 
   // Release other management instance.
@@ -114,6 +124,56 @@ void DyReleaseAllManagers()
 }
 
 } /// unnamed namespace
+
+//!
+//! TBB TEST START
+//!
+
+class DyTestSubStringFinder
+{
+  const std::string     mString;
+  std::vector<int32_t>* mMaxArr = nullptr;
+  std::vector<int32_t>* mPosArr = nullptr;
+
+public:
+  DyTestSubStringFinder(
+      const std::string& str,
+      std::vector<int32_t>& maxArr,
+      std::vector<int32_t>& posArr) :
+      mString{str}, mMaxArr(&maxArr), mPosArr(&posArr)
+  { }
+
+  void operator() (const tbb::blocked_range<int32_t>& r) const
+  {
+    for (int32_t i = r.begin(); i != r.end(); ++i)
+    {
+      int32_t maxSize = 0, maxPos = 0;
+      for (int32_t j = 0, strSize = static_cast<int32_t>(mString.size()); j < strSize; ++j)
+      {
+        if (j != i)
+        {
+          const int32_t limit = strSize - std::max(i, j);
+          for (int32_t k = 0; k < limit; ++k)
+          {
+            if (this->mString[i + k] != this->mString[j + k]) break;
+            if (k > maxSize)
+            {
+              maxSize = k;
+              maxPos  = j;
+            }
+          }
+        }
+
+        this->mMaxArr->operator[](i) = maxSize;
+        this->mPosArr->operator[](i) = maxPos;
+      }
+    }
+  }
+};
+
+//!
+//! TBB TEST END
+//!
 
 ///
 /// @brief Main entry function of WIN32 platforms.
@@ -174,12 +234,30 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLin
   MDY_WIN32_TRY_TURN_ON_DEBUG();
   DyInitiailzeAllManagers();
 
-  auto& i = dy::MDySetting::GetInstance();
-  i.SetSubFeatureLoggingToConsole(true);
-  i.SetFeatureLogging(true);
-
   MDY_LOG_INFO_D("Platform : Windows");
   MDY_LOG_INFO_D("Running application routine.");
+
+#ifdef false
+  std::vector<std::string> str = { std::string("a"), std::string("b") };
+  str.resize(18);
+  for (int32_t i = 2; i < str.size(); ++i)
+  {
+    str[i] = str[i - 1] + str[i - 2];
+  }
+  std::string& toScan = *str.rbegin();
+  const int32_t numElem = static_cast<int32_t>(toScan.size());
+
+  std::vector<int32_t> max(numElem);
+  std::vector<int32_t> pos(numElem);
+
+  tbb::parallel_for(tbb::blocked_range<int32_t>(0, numElem),
+                    DyTestSubStringFinder(toScan, max, pos));
+
+  for (int32_t i = 0; i < numElem; ++i)
+  {
+    MDY_LOG_CRITICAL_D("{} ( {} )", max[i], pos[i]);
+  }
+#endif
 
   dy::MDyWindow::GetInstance().Run();
 

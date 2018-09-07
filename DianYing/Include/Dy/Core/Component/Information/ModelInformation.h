@@ -62,6 +62,14 @@ public:
     return this->mBindedMaterialName;
   }
 
+  ///
+  /// @brief Check if object is being binded to CDyModelResource instance.
+  ///
+  FORCEINLINE bool IsBeingBinded() const noexcept
+  {
+    return this->mNextLevelPtr != nullptr;
+  }
+
 private:
   ///
   /// @brief Process assimp node so get information and resource from aiNode by iterating

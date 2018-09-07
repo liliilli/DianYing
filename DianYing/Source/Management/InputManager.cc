@@ -50,7 +50,11 @@ constexpr const char err_input_failed_failed_bind_key[] = "Failed some operation
 constexpr const char err_input_keyboard_not_exist[]     = "Key {} is not found in mode object. [Path : {}]";
 constexpr const char err_input_disable_msg[]            = "{} input feature will be disabled.";
 
-EKeyPrimaryState sPrimaryKeys[349];
+EKeyPrimaryState  sPrimaryKeys[349];
+dy::DVector2      sMouseLastPosition    = {};
+dy::DVector2      sMousePresentPosition = {};
+bool              sIsFirstMouseMovement = true;
+bool              sMousePositionDirty   = false;
 
 } /// ::unnamed namespace
 
@@ -91,16 +95,29 @@ void __InputKeyCallback(GLFWwindow* window, int key, int scancode, int action, i
   }
 }
 
+void __InputMouseCallback(GLFWwindow* window, double xPos, double yPos)
+{
+  if (sIsFirstMouseMovement)
+  {
+    sMouseLastPosition.X = static_cast<float>(xPos);
+    sMouseLastPosition.Y = static_cast<float>(yPos);
+    sIsFirstMouseMovement = false;
+  }
+  else
+  {
+    sMouseLastPosition = sMousePresentPosition;
+  }
+
+  sMousePresentPosition.X = static_cast<float>(xPos);
+  sMousePresentPosition.Y = static_cast<float>(yPos);
+  sMousePositionDirty     = true;
+}
+
 ///
 /// @brief Apply gravity of each key information, and if key axis value is in range of threshold value,
 /// change key status to neutral status.
 ///
 void DyProceedGravity(dy::DDyKeyBindingInformation& key_info);
-
-///
-/// @brief ff
-///
-EDySuccess DyReadInputFile(const std::string& file_path);
 
 ///
 /// @brief ff
@@ -139,65 +156,6 @@ void DyProceedGravity(dy::DDyKeyBindingInformation& key_info) {
 			key_info.mKeyStatus = dy::DDyKeyBindingInformation::EDyKeyInputStatus::CommonNeutral;
 		}
 	}
-}
-
-EDySuccess DyReadInputFile(const std::string& file_path) {
-  std::ifstream stream { file_path, std::ios_base::in };
-  if (!stream.good()) {
-    MDY_LOG_CRITICAL(err_input_failed_load_file, file_path);
-    MDY_LOG_ERROR("Input feature will be disabled.");
-    stream.close();
-
-    PHITOS_NOT_IMPLEMENTED_ASSERT();
-    return DY_FAILURE;
-  }
-
-  nlohmann::json atlas_json;
-  stream >> atlas_json;
-  stream.close();
-
-  if (!dy::DyIsJsonKeyExist(atlas_json, "mode")) {
-    MDY_LOG_CRITICAL(err_input_failed_json_file, "mode", file_path);
-    MDY_LOG_ERROR("Input feature will be disabled.");
-    PHITOS_NOT_IMPLEMENTED_ASSERT();
-    return DY_FAILURE;
-  }
-
-  const auto input_mode = atlas_json["mode"];
-
-  const bool isActivatedKeyboard = DyModeVerifyInputStyle(input_mode, "keyboard", file_path);
-  const bool isActivatedMouse    = DyModeVerifyInputStyle(input_mode, "mouse", file_path);
-  const bool isActivatedJoystick = DyModeVerifyInputStyle(input_mode, "joystick", file_path);
-
-  // Joystick verification did not held, because not supported yet.
-
-  if (isActivatedKeyboard)
-  {
-    if (DyBindKeyboardKeyInformation(atlas_json) == DY_FAILURE)
-    {
-      MDY_LOG_WARNING(err_input_failed_failed_bind_key);
-      return DY_FAILURE;
-    }
-  }
-
-  if (isActivatedMouse)
-  {
-    if (atlas_json.find("mouse") == atlas_json.end())
-    {
-      MDY_LOG_CRITICAL(err_input_failed_json_file, "mouse", file_path);
-      MDY_LOG_ERROR("Input feature will be disabled.");
-      PHITOS_NOT_IMPLEMENTED_ASSERT();
-      return DY_FAILURE;
-    }
-    const auto mouse = atlas_json["mouse"];
-  }
-
-  if (isActivatedJoystick)
-  {
-    MDY_LOG_DEBUG_D("Joystick feature is not supported now.");
-  }
-
-  return DY_SUCCESS;
 }
 
 bool DyModeVerifyInputStyle(const nlohmann::json& json, const std::string& key, const std::string& file_path) {
@@ -354,13 +312,6 @@ namespace dy
 
 EDySuccess MDyInput::pfInitialize()
 {
-  auto& winManager = MDyWindow::GetInstance();
-  this->mTempGlfwWindowPtr = winManager.GetGlfwWindowContext();
-  glfwSetKeyCallback(this->mTempGlfwWindowPtr, __InputKeyCallback);
-
-  //!
-  //! Version 0.0.1 Milestone :: Mouse input.
-  //!
 #ifdef false
   PHITOS_NOT_IMPLEMENTED_ASSERT();
   glfwSetCursorPosCallback(mTempGlfwWindowPtr, __MousePositionCallback);
@@ -368,7 +319,96 @@ EDySuccess MDyInput::pfInitialize()
   SetMouseCursorTemporary();
 #endif
 
-  DyReadInputFile("./TestResource/input.meta");
+  if (!this->pReadInputFile("./TestResource/input.meta"))
+  {
+    PHITOS_UNEXPECTED_BRANCH();
+  }
+
+  auto& winManager = MDyWindow::GetInstance();
+  this->mTempGlfwWindowPtr = winManager.GetGlfwWindowContext();
+
+  if (this->mIsEnabledKeyboard)
+  {
+    glfwSetKeyCallback(this->mTempGlfwWindowPtr, __InputKeyCallback);
+  }
+
+  if (this->mIsEnabledMouse)
+  {
+    glfwSetCursorPosCallback(this->mTempGlfwWindowPtr, __InputMouseCallback);
+  }
+
+  if (this->mIsEnabledJoystick)
+  {
+    // @todo Implement joystick button and position callback function.
+  }
+
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyInput::pReadInputFile(const std::string& file_path) {
+  std::ifstream stream { file_path, std::ios_base::in };
+  if (!stream.good()) {
+    MDY_LOG_CRITICAL(err_input_failed_load_file, file_path);
+    MDY_LOG_ERROR("Input feature will be disabled.");
+    stream.close();
+
+    PHITOS_NOT_IMPLEMENTED_ASSERT();
+    return DY_FAILURE;
+  }
+
+  nlohmann::json atlas_json;
+  stream >> atlas_json;
+  stream.close();
+
+  if (!DyIsJsonKeyExist(atlas_json, "mode")) {
+    MDY_LOG_CRITICAL(err_input_failed_json_file, "mode", file_path);
+    MDY_LOG_ERROR("Input feature will be disabled.");
+    PHITOS_NOT_IMPLEMENTED_ASSERT();
+    return DY_FAILURE;
+  }
+
+  const auto input_mode = atlas_json["mode"];
+
+  const bool isActivatedKeyboard = DyModeVerifyInputStyle(input_mode, "keyboard", file_path);
+  const bool isActivatedMouse    = DyModeVerifyInputStyle(input_mode, "mouse", file_path);
+  const bool isActivatedJoystick = DyModeVerifyInputStyle(input_mode, "joystick", file_path);
+
+  // Joystick verification did not held, because not supported yet.
+
+  if (isActivatedKeyboard)
+  {
+    if (DyBindKeyboardKeyInformation(atlas_json) == DY_FAILURE)
+    {
+      MDY_LOG_WARNING(err_input_failed_failed_bind_key);
+      return DY_FAILURE;
+    }
+    else
+    {
+      this->mIsEnabledKeyboard = true;
+    }
+  }
+
+  if (isActivatedMouse)
+  {
+    if (atlas_json.find("mouse") == atlas_json.end())
+    {
+      MDY_LOG_CRITICAL(err_input_failed_json_file, "mouse", file_path);
+      MDY_LOG_ERROR("mouse input feature will be disabled.");
+      PHITOS_NOT_IMPLEMENTED_ASSERT();
+      return DY_FAILURE;
+    }
+    else
+    {
+      const auto mouse = atlas_json["mouse"];
+      this->mIsEnabledMouse = true;
+    }
+  }
+
+  if (isActivatedJoystick)
+  {
+    MDY_LOG_DEBUG_D("Joystick feature is not supported now.");
+  }
+
   return DY_SUCCESS;
 }
 
@@ -468,91 +508,112 @@ void MDyInput::pfUpdate(float dt) noexcept
 
   // PRESSED, CommonNeutral checks key pressed event.
   // If key released in state PRESSED, change it to CommonReleased.
-	for (auto& [keyName, key] : this->mBindedKeyList) {
-		using Status = DDyKeyBindingInformation::EDyKeyInputStatus;
 
-		switch (key.mKeyStatus) {
-    case Status::CommonReleased:
-			DyProceedGravity(key);
-      [[fallthrough]];
-		case Status::CommonNeutral:
-			if (key.mNegativeButtonId != MDY_NOT_INITIALIZED_M1 && sPrimaryKeys[key.mNegativeButtonId] == EKeyPrimaryState::Pressed)
-      {
-				key.mAxisValue = kNegativeValue;
-				key.mKeyStatus = Status::NegativePressed;
-			}
-			else if (key.mPositiveButtonId != MDY_NOT_INITIALIZED_M1 && sPrimaryKeys[key.mPositiveButtonId] == EKeyPrimaryState::Pressed)
-      {
-				key.mAxisValue = kPositiveValue;
-				key.mKeyStatus = Status::PositivePressed;
-			}
-			break;
-		case Status::NegativePressed:
-			if (key.mPositiveButtonId != MDY_NOT_INITIALIZED_M1 && sPrimaryKeys[key.mPositiveButtonId] == EKeyPrimaryState::Pressed)
-      {
-				key.mAxisValue = kPositiveValue;
-				key.mKeyStatus = Status::PositivePressed;
-			}
-			else if (key.mNegativeButtonId != MDY_NOT_INITIALIZED_M1) {
-        const auto keyPrimaryState = sPrimaryKeys[key.mNegativeButtonId];
-        if (key.mIsRepeatKey && keyPrimaryState == EKeyPrimaryState::Repeated) { key.mKeyStatus = Status::NegativeRepeated; }
-        else if (keyPrimaryState == EKeyPrimaryState::Released)
+  if (this->mIsEnabledKeyboard)
+  {
+    for (auto&[keyName, key] : this->mBindedKeyList) {
+      using Status = DDyKeyBindingInformation::EDyKeyInputStatus;
+
+      switch (key.mKeyStatus) {
+      case Status::CommonReleased:
+        DyProceedGravity(key);
+        [[fallthrough]];
+      case Status::CommonNeutral:
+        if (key.mNegativeButtonId != MDY_NOT_INITIALIZED_M1 && sPrimaryKeys[key.mNegativeButtonId] == EKeyPrimaryState::Pressed)
         {
-          key.mKeyStatus = Status::CommonReleased;
-          DyProceedGravity(key);
+          key.mAxisValue = kNegativeValue;
+          key.mKeyStatus = Status::NegativePressed;
         }
-      }
-			break;
-		case Status::PositivePressed:
-			if (key.mNegativeButtonId != MDY_NOT_INITIALIZED_M1 && sPrimaryKeys[key.mNegativeButtonId] == EKeyPrimaryState::Pressed)
-      {
-				key.mAxisValue = kNegativeValue;
-				key.mKeyStatus = Status::NegativePressed;
-			}
-			else if (key.mPositiveButtonId != MDY_NOT_INITIALIZED_M1) {
-        const auto keyPrimaryState = sPrimaryKeys[key.mPositiveButtonId];
-        if (key.mIsRepeatKey && keyPrimaryState == EKeyPrimaryState::Repeated) { key.mKeyStatus = Status::PositiveRepeated; }
-        else if (keyPrimaryState == EKeyPrimaryState::Released)
+        else if (key.mPositiveButtonId != MDY_NOT_INITIALIZED_M1 && sPrimaryKeys[key.mPositiveButtonId] == EKeyPrimaryState::Pressed)
         {
-          key.mKeyStatus = Status::CommonReleased;
-          DyProceedGravity(key);
+          key.mAxisValue = kPositiveValue;
+          key.mKeyStatus = Status::PositivePressed;
         }
-      }
-			break;
-    case Status::PositiveRepeated:
-      if (key.mNegativeButtonId != MDY_NOT_INITIALIZED_M1 && sPrimaryKeys[key.mNegativeButtonId] == EKeyPrimaryState::Pressed)
-      {
-				key.mAxisValue = kNegativeValue;
-				key.mKeyStatus = Status::NegativePressed;
-			}
-			else if (key.mPositiveButtonId != MDY_NOT_INITIALIZED_M1)
-      {
-        const auto key_md = sPrimaryKeys[key.mPositiveButtonId];
-        if (key_md == EKeyPrimaryState::Released)
+        break;
+      case Status::NegativePressed:
+        if (key.mPositiveButtonId != MDY_NOT_INITIALIZED_M1 && sPrimaryKeys[key.mPositiveButtonId] == EKeyPrimaryState::Pressed)
         {
-          key.mKeyStatus = Status::CommonReleased;
-          DyProceedGravity(key);
+          key.mAxisValue = kPositiveValue;
+          key.mKeyStatus = Status::PositivePressed;
         }
-      }
-      break;
-    case Status::NegativeRepeated:
-      if (key.mPositiveButtonId != MDY_NOT_INITIALIZED_M1 && sPrimaryKeys[key.mPositiveButtonId] == EKeyPrimaryState::Pressed)
-      {
-				key.mAxisValue = kPositiveValue;
-				key.mKeyStatus = Status::PositivePressed;
-			}
-			else if (key.mNegativeButtonId != MDY_NOT_INITIALIZED_M1)
-      {
-        const auto key_md = sPrimaryKeys[key.mPositiveButtonId];
-        if (key_md == EKeyPrimaryState::Released)
+        else if (key.mNegativeButtonId != MDY_NOT_INITIALIZED_M1) {
+          const auto keyPrimaryState = sPrimaryKeys[key.mNegativeButtonId];
+          if (key.mIsRepeatKey && keyPrimaryState == EKeyPrimaryState::Repeated) { key.mKeyStatus = Status::NegativeRepeated; }
+          else if (keyPrimaryState == EKeyPrimaryState::Released)
+          {
+            key.mKeyStatus = Status::CommonReleased;
+            DyProceedGravity(key);
+          }
+        }
+        break;
+      case Status::PositivePressed:
+        if (key.mNegativeButtonId != MDY_NOT_INITIALIZED_M1 && sPrimaryKeys[key.mNegativeButtonId] == EKeyPrimaryState::Pressed)
         {
-          key.mKeyStatus = Status::CommonReleased;
-          DyProceedGravity(key);
+          key.mAxisValue = kNegativeValue;
+          key.mKeyStatus = Status::NegativePressed;
         }
+        else if (key.mPositiveButtonId != MDY_NOT_INITIALIZED_M1) {
+          const auto keyPrimaryState = sPrimaryKeys[key.mPositiveButtonId];
+          if (key.mIsRepeatKey && keyPrimaryState == EKeyPrimaryState::Repeated) { key.mKeyStatus = Status::PositiveRepeated; }
+          else if (keyPrimaryState == EKeyPrimaryState::Released)
+          {
+            key.mKeyStatus = Status::CommonReleased;
+            DyProceedGravity(key);
+          }
+        }
+        break;
+      case Status::PositiveRepeated:
+        if (key.mNegativeButtonId != MDY_NOT_INITIALIZED_M1 && sPrimaryKeys[key.mNegativeButtonId] == EKeyPrimaryState::Pressed)
+        {
+          key.mAxisValue = kNegativeValue;
+          key.mKeyStatus = Status::NegativePressed;
+        }
+        else if (key.mPositiveButtonId != MDY_NOT_INITIALIZED_M1)
+        {
+          const auto key_md = sPrimaryKeys[key.mPositiveButtonId];
+          if (key_md == EKeyPrimaryState::Released)
+          {
+            key.mKeyStatus = Status::CommonReleased;
+            DyProceedGravity(key);
+          }
+        }
+        break;
+      case Status::NegativeRepeated:
+        if (key.mPositiveButtonId != MDY_NOT_INITIALIZED_M1 && sPrimaryKeys[key.mPositiveButtonId] == EKeyPrimaryState::Pressed)
+        {
+          key.mAxisValue = kPositiveValue;
+          key.mKeyStatus = Status::PositivePressed;
+        }
+        else if (key.mNegativeButtonId != MDY_NOT_INITIALIZED_M1)
+        {
+          const auto key_md = sPrimaryKeys[key.mPositiveButtonId];
+          if (key_md == EKeyPrimaryState::Released)
+          {
+            key.mKeyStatus = Status::CommonReleased;
+            DyProceedGravity(key);
+          }
+        }
+        break;
       }
-      break;
-		}
-	}
+    }
+  }
+
+  if (this->mIsEnabledMouse)
+  {
+    if (!sIsFirstMouseMovement && sMousePositionDirty)
+    {
+      this->mMousePresentPosition = sMousePresentPosition;
+      this->mMouseLastPosition    = sMouseLastPosition;
+
+      MDY_LOG_DEBUG_D("Mouse position : {}, {}", this->mMousePresentPosition.X, this->mMousePresentPosition.Y);
+      this->mIsMouseMoved = true;
+      sMousePositionDirty = false;
+    }
+    else
+    {
+      this->mIsMouseMoved = false;
+    }
+  }
 }
 
 } /// ::dy namespace

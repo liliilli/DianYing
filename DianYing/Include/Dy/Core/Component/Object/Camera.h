@@ -135,7 +135,7 @@ private:
   ///
   /// @brief
   ///
-  void pProcessMouseMovement();
+  void pProcessMouseMovement(const DVector2& offset, bool constrainPitch = true);
 
   DDyMatrix4x4  mViewMatrix;
   DDyMatrix4x4  mProjectionMatrix;
@@ -155,6 +155,8 @@ private:
   float mFar                      = 100;
   float mFieldOfView              = 0.f;
   float mAspect                   = 0.f;
+  float mMouseSensitivity         = 0.25f;
+  float mSpeed                    = 10.f;
 
   bool mIsMoveable                = false;
   bool mIsEnableMeshUnClipped     = false;
