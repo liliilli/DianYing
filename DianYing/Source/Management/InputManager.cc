@@ -237,9 +237,10 @@ EDySuccess DyBindKeyboardKeyInformation(const nlohmann::json& atlas_json) {
 EDySuccess DyKeyboardBindKey(const nlohmann::basic_json<>::const_iterator& it, dy::MDyInput& inputManager) {
   const auto key    = it.key();
   const auto& value = it.value();
-  dy::DDyKeyBindingInformation keyInformation;
 
-  keyInformation.mKeyName = key;
+  dy::PDyKeyBindingConstructionDescriptor desc;
+  desc.mKeyType = dy::EDyInputType::Keyboard;
+  desc.mKeyName = key;
   if (auto pos_it = value.find("+"); pos_it != value.end())
   {
     const auto& pos_it_value = pos_it.value();
@@ -259,7 +260,7 @@ EDySuccess DyKeyboardBindKey(const nlohmann::basic_json<>::const_iterator& it, d
     }
 
     MDY_LOG_DEBUG_D("Key axis bind : {} Positive : {}", key, key_string);
-    keyInformation.mPositiveButtonId = uid.value();
+    desc.mPositiveButtonId = uid.value();
   }
 
   if (auto neg_it = value.find("-"); neg_it != value.end())
@@ -281,7 +282,7 @@ EDySuccess DyKeyboardBindKey(const nlohmann::basic_json<>::const_iterator& it, d
     }
 
     MDY_LOG_DEBUG_D("Key axis bind : {} Negative : {}", key, key_string);
-    keyInformation.mNegativeButtonId = uid.value();
+    desc.mNegativeButtonId = uid.value();
   }
 
   const auto& gravity_it_value = value.find("gravity");
@@ -290,12 +291,14 @@ EDySuccess DyKeyboardBindKey(const nlohmann::basic_json<>::const_iterator& it, d
     MDY_LOG_ERROR("Keyboard key {} {} value is not number.", key, "gravity");
     return DY_FAILURE;
   }
-  keyInformation.mToNeutralGravity = static_cast<float>(gravity_it_value->get<unsigned>());
+  desc.mToNeutralGravity = static_cast<float>(gravity_it_value->get<unsigned>());
 
-  const auto& stick_it_value = value.find("repeat");
-  if (stick_it_value->is_boolean()) keyInformation.mIsRepeatKey = stick_it_value.value();
+  if (const auto& stick_it_value = value.find("repeat"); stick_it_value->is_boolean())
+  {
+    desc.mIsEnabledRepeatKey = stick_it_value.value();
+  }
 
-  if (!dy::MDyInput::GetInstance().pInsertKey(keyInformation))
+  if (!dy::MDyInput::GetInstance().pInsertKey(desc))
     return DY_FAILURE;
   else
     return DY_SUCCESS;
@@ -483,7 +486,7 @@ bool MDyInput::pIsKeyExist(const std::string& keyName) const noexcept
   return this->mBindedKeyList.find(keyName) != this->mBindedKeyList.end();
 }
 
-EDySuccess MDyInput::pInsertKey(const DDyKeyBindingInformation& bindingKey) noexcept
+EDySuccess MDyInput::pInsertKey(const PDyKeyBindingConstructionDescriptor& bindingKey) noexcept
 {
   if (this->pIsKeyExist(bindingKey.mKeyName))
   {
@@ -491,10 +494,36 @@ EDySuccess MDyInput::pInsertKey(const DDyKeyBindingInformation& bindingKey) noex
     return DY_FAILURE;
   }
 
-  auto [it, result] = this->mBindedKeyList.try_emplace(bindingKey.mKeyName, bindingKey);
-  if (!result)
+  try
   {
-    MDY_LOG_CRITICAL_D("{} | Unexpected error happened. Name : {}", "MDyInput::pInsertKey", bindingKey.mKeyName);
+    auto [it, result] = this->mBindedKeyList.try_emplace(bindingKey.mKeyName, bindingKey);
+    if (!result)
+    {
+      MDY_LOG_CRITICAL_D("{} | Unexpected error happened. Name : {}", "MDyInput::pInsertKey", bindingKey.mKeyName);
+      return DY_FAILURE;
+    }
+  }
+  catch (const std::runtime_error& e)
+  {
+    static auto DyGetDebugStringFromKeyStyle = [](EDyInputType type) -> std::string_view
+    {
+      switch (type)
+      {
+      case EDyInputType::Keyboard:  return "Keyboard";
+      case EDyInputType::Mouse:     return "Mouse";
+      case EDyInputType::Joystick:  return "Joystick";
+      default:                      return "ErrorNone";
+      }
+    };
+
+    MDY_LOG_CRITICAL_D("{} | Key binding failed because {}. | Name : {}", "MDyInput", e.what(), bindingKey.mKeyName);
+    MDY_LOG_CRITICAL_D("{} | Key name : {}", "MDyInput", bindingKey.mKeyName);
+    MDY_LOG_CRITICAL_D("{} | Key style : {}", "MDyInput", DyGetDebugStringFromKeyStyle(bindingKey.mKeyType));
+    MDY_LOG_CRITICAL_D("{} | Key positive : {}", "MDyInput", bindingKey.mPositiveButtonId);
+    MDY_LOG_CRITICAL_D("{} | Key negative : {}", "MDyInput", bindingKey.mNegativeButtonId);
+    MDY_LOG_CRITICAL_D("{} | Key gravity : {}", "MDyInput", bindingKey.mToNeutralGravity);
+    MDY_LOG_CRITICAL_D("{} | Key threshold : {}", "MDyInput", bindingKey.mNeturalThreshold);
+    MDY_LOG_CRITICAL_D("{} | Key repeat key : {}", "MDyInput", bindingKey.mIsEnabledRepeatKey ? "ON" : "OFF");
     return DY_FAILURE;
   }
 

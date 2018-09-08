@@ -20,6 +20,33 @@ namespace dy
 {
 
 ///
+/// @enum EDyInputType
+/// @brief The type of each key binding.
+///
+enum class EDyInputType {
+  NoneDoNothing,
+  Keyboard,
+  Mouse,
+  Joystick
+};
+
+///
+/// @struct PDyKeyBindingConstructionDescriptor
+/// @brief Construction descriptor for DDyKeyBindingInfomation type.
+///
+struct PDyKeyBindingConstructionDescriptor final
+{
+  std::string   mKeyName              = "";
+  int32_t       mNegativeButtonId     = MDY_NOT_INITIALIZED_M1;
+  int32_t       mPositiveButtonId     = MDY_NOT_INITIALIZED_M1;
+  float         mToNeutralGravity     = 1000.0f;
+  float         mNeturalThreshold     = 0.1f;
+
+  EDyInputType  mKeyType              = EDyInputType::NoneDoNothing;
+  bool          mIsEnabledRepeatKey   = false;
+};
+
+///
 /// @struct DDyKeyBindingInformation
 /// @brief Stores key info to use in this game, and overall application.
 /// You can bind arbitary (Supported on GLFW) key into key container, and get values from
@@ -47,21 +74,9 @@ struct DDyKeyBindingInformation {
     NegativeRepeated = 6
   };
 
-  ///
-  /// @enum EDyKeyType
-  /// @brief The type of each key binding.
-  ///
-  enum class EDyKeyType {
-    NoneDoNothing,
-    Keyboard,
-    Mouse,
-    Joystick
-  };
-
-  EDyKeyType          mKeyType            = EDyKeyType::NoneDoNothing;
+  EDyInputType        mKeyType            = EDyInputType::NoneDoNothing;
   EDyKeyInputStatus   mKeyStatus          = EDyKeyInputStatus::CommonNeutral;
   bool			          mIsRepeatKey        = true;
-  mutable bool	      mIsSentStuckSignal  = false;
 
   /// container key name must be same as structure's name. (Camel)
   std::string		      mKeyName            = "";
@@ -74,13 +89,35 @@ struct DDyKeyBindingInformation {
   float			mNeutralStatusThresholdValue  = 0.001f;
   /// Value moves along with mNegativeButtonId/pos/gravity.
   float			mAxisValue                    = 0.f;
+
+  ///
+  /// @brief constructor with descriptor.
+  ///
+  DDyKeyBindingInformation(const PDyKeyBindingConstructionDescriptor& descriptor) :
+      mKeyType { descriptor.mKeyType },
+      mIsRepeatKey( descriptor.mIsEnabledRepeatKey ),
+      mKeyName ( descriptor.mKeyName ),
+      mNegativeButtonId( descriptor.mNegativeButtonId ),
+      mPositiveButtonId( descriptor.mPositiveButtonId ),
+      mToNeutralGravity( descriptor.mToNeutralGravity ),
+      mNeutralStatusThresholdValue( descriptor.mNeturalThreshold )
+  {
+    if (this->mKeyType == EDyInputType::NoneDoNothing ||
+        this->mKeyName.empty() ||
+        (this->mNegativeButtonId == MDY_NOT_INITIALIZED_M1 && this->mPositiveButtonId == MDY_NOT_INITIALIZED_M1) ||
+        this->mToNeutralGravity == 0.f ||
+        this->mNeutralStatusThresholdValue < 0.f)
+    {
+      throw std::runtime_error("Key constraint of key binding desciptor is not satisfied.");
+    }
+  }
 };
 
-inline DDyKeyBindingInformation::EDyKeyType GetKeyType(const std::string& token) {
-  if (token == "KB") return DDyKeyBindingInformation::EDyKeyType::Keyboard;
-  if (token == "MS") return DDyKeyBindingInformation::EDyKeyType::Mouse;
-  if (token == "JS") return DDyKeyBindingInformation::EDyKeyType::Joystick;
-                     return DDyKeyBindingInformation::EDyKeyType::NoneDoNothing;
+inline EDyInputType GetKeyType(const std::string& token) noexcept {
+  if (token == "KB") return EDyInputType::Keyboard;
+  if (token == "MS") return EDyInputType::Mouse;
+  if (token == "JS") return EDyInputType::Joystick;
+                     return EDyInputType::NoneDoNothing;
 }
 
 } /// ::dy namespace

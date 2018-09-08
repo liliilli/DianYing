@@ -83,7 +83,7 @@ public:
   ///
   /// @brief
   ///
-  [[nodiscard]] EDySuccess pInsertKey(const DDyKeyBindingInformation& bindingKey) noexcept;
+  [[nodiscard]] EDySuccess pInsertKey(const PDyKeyBindingConstructionDescriptor& bindingKey) noexcept;
 
 private:
   ///
