@@ -57,24 +57,30 @@ public:
   void UseShader() noexcept;
 
   ///
-  /// @brief
-  ///
-  void BindShader() noexcept;
-
-  ///
-  /// @brief
-  ///
-  void UnbindShader() noexcept;
-
-  ///
   /// @brief Turn off shader program.
   ///
   void UnuseShader() noexcept;
 
   ///
-  /// @brief
+  /// @brief Update uniform variable values into shader.
   ///
   void UpdateUniformVariables();
+
+  ///
+  /// @brief Get activated plain attribute variable information list.
+  ///
+  const auto& GetAttributeVariableInformationList() const noexcept
+  {
+    return this->mAttributeVariableLists;
+  }
+
+  ///
+  /// @brief Get activated plain uniform variable information list.
+  ///
+  const auto& GetUniformVariableInformationList() const noexcept
+  {
+    return this->mPlainUniformVariableLists;
+  }
 
   ///
   /// @brief Get shader program id.
@@ -203,21 +209,22 @@ private:
   EDySuccess __pInitializeShaderProgram(const std::vector<std::pair<EDyShaderFragmentType, uint32_t>>& shaderFragmentIdList);
 
   ///
-  /// @brief
+  /// @brief Get shader attribute variables information and save to member list.
   ///
   EDySuccess __pStoreAttributePropertiesOfProgram() noexcept;
 
   ///
-  /// @brief
+  /// @brief Get shader uniform variables information and save to member list.
   ///
   EDySuccess __pStoreConstantUniformPropertiesOfProgram() noexcept;
 
   std::string mShaderName           = "";
   uint32_t    mShaderProgramId      = 0;
-  uint32_t    mTemporalVertexArray  = 0;
 
   std::vector<TUniformStruct>                   mUniformVariableContainer;
+  /// Shader attribute variable list  <Name, ByteSize, Type and Id>
   std::vector<DDyAttributeVariableInformation>  mAttributeVariableLists;
+  /// Shader uniform variable list    <Name, ByteSize, Type and Id>
   std::vector<DDyUniformVariableInformation>    mPlainUniformVariableLists;
 
   //!
