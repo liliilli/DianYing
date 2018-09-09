@@ -64,6 +64,14 @@ public:
     return this->mBlendMode;
   }
 
+  ///
+  /// @brief Get material name of this resource.
+  ///
+  FORCEINLINE const std::string& GetMaterialName() const noexcept
+  {
+    return this->mMaterialName;
+  }
+
 private:
   ///
   /// @brief

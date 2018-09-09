@@ -15,6 +15,7 @@
 
 #include <Dy/Core/Component/Internal/ModelType.h>
 #include <Dy/Core/Component/Information/MeshInformation.h>
+#include <Dy/Core/Component/Internal/MaterialType.h>
 
 //!
 //! Forward declaration
@@ -63,6 +64,14 @@ public:
   }
 
   ///
+  /// @brief Return mesh information list which have material name, vertex, indice etc.
+  ///
+  FORCEINLINE const auto& GetMeshInformation() const noexcept
+  {
+    return this->mMeshInformations;
+  }
+
+  ///
   /// @brief Check if object is being binded to CDyModelResource instance.
   ///
   FORCEINLINE bool IsBeingBinded() const noexcept
@@ -83,10 +92,16 @@ private:
   ///
   void __pProcessAssimpMesh(aiMesh* mesh, const aiScene* scene);
 
+  EDySuccess __pLoadVertexData(const aiMesh* mesh, PMeshInformationDescriptor& desc);
+
+  EDySuccess __pLoadIndiceData(const aiMesh* mesh, PMeshInformationDescriptor& desc);
+
+  std::optional<PDyMaterialConstructionDescriptor> __pReadMaterialData(const aiMaterial* material);
+
   ///
   /// @brief
   ///
-  std::optional<std::vector<std::string>> __pLoadMaterialTextures(aiMaterial* material, EDyTextureMapType type);
+  std::optional<std::vector<std::string>> __pLoadMaterialTextures(const aiMaterial* material, EDyTextureMapType type);
 
   ///
   /// @brief Output information log only in debug mode.
@@ -95,7 +110,7 @@ private:
 
   std::string                       mModelName          = "";
   std::string                       mModelRootPath      = "";
-  std::vector<DDyMeshInformation>   mMeshInformations;
+  std::vector<DDyMeshInformation>   mMeshInformations   = {};
   std::vector<std::string>          mBindedMaterialName = {};
   std::vector<std::string>          mTextureLocalPaths  = {};
 

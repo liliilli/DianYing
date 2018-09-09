@@ -145,13 +145,13 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <AdditionalIncludeDirectories>C:\TPLibraries\tbb-2018_U5\include;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>C:\TPLibraries\tbb-2018_U5\build\vs2013\$(Platform)\$(Configuration);$(ProjectDir)Libraries\assimp\lib\$(Configuration)\$(Platform);$(ProjectDir)Libraries\glfw\$(Platform);$(ProjectDir)Libraries\glew-2.1.0\lib\Release\$(Platform);$(ProjectDir)Libraries\FX11\bin\$(Platform)\$(Configuration);C:\VulkanSDK\1.1.82.0\Lib32</AdditionalLibraryDirectories>
-      <AdditionalDependencies>tbb_debug.lib;assimp-vc140-mt.lib;glfw3.lib;opengl32.lib;vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Libraries\assimp\lib\$(Configuration)\$(Platform);$(ProjectDir)Libraries\glfw\$(Platform);$(ProjectDir)Libraries\FX11\bin\$(Platform)\$(Configuration);C:\VulkanSDK\1.1.82.0\Lib32</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc140-mt.lib;glfw3.lib;opengl32.lib;vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>msvcrt.lib;libcmt.lib</IgnoreSpecificDefaultLibraries>
     </Link>
@@ -195,13 +195,13 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <AdditionalIncludeDirectories>C:\TPLibraries\tbb-2018_U5\include;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>C:\TPLibraries\tbb-2018_U5\build\vs2013\$(Platform)\$(Configuration);$(ProjectDir)Libraries\assimp\lib\$(Configuration)\$(Platform);$(ProjectDir)Libraries\glfw\$(Platform);$(ProjectDir)Libraries\glew-2.1.0\lib\Release\$(Platform);$(ProjectDir)Libraries\FX11\bin\$(Platform)\$(Configuration);C:\VulkanSDK\1.1.82.0\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>tbb_debug.lib;assimp-vc140-mt.lib;glfw3.lib;opengl32.lib;vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Libraries\assimp\lib\$(Configuration)\$(Platform);$(ProjectDir)Libraries\glfw\$(Platform);$(ProjectDir)Libraries\FX11\bin\$(Platform)\$(Configuration);C:\VulkanSDK\1.1.82.0\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc140-mt.lib;glfw3.lib;opengl32.lib;vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>msvcrt.lib;libcmt.lib</IgnoreSpecificDefaultLibraries>
     </Link>
@@ -288,11 +288,7 @@
   <ItemGroup>
     <ClCompile Include="Libraries\glad\src\glad.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Libraries\imgui\imgui\imgui_demo.cpp" />
     <ClCompile Include="Libraries\imgui\imgui\imgui_draw.cpp" />
@@ -305,6 +301,7 @@
     <ClCompile Include="Source\Core\Component\Information\TextureInformation.cc" />
     <ClCompile Include="Source\Core\Component\MeshRenderer.cc" />
     <ClCompile Include="Source\Core\Component\Object\Camera.cc" />
+    <ClCompile Include="Source\Core\Component\Object\Grid.cc" />
     <ClCompile Include="Source\Core\Component\Resource\MaterialResource.cc" />
     <ClCompile Include="Source\Core\Component\Resource\MeshResource.cc" />
     <ClCompile Include="Source\Core\Component\Resource\ModelResource.cc" />
@@ -313,6 +310,7 @@
     <ClCompile Include="Source\Entry\entry.cc" />
     <ClCompile Include="Source\Helper\Geometry\Types.cc" />
     <ClCompile Include="Source\Helper\Internal\ImageBinaryBuffer.cc" />
+    <ClCompile Include="Source\Helper\IoHelper.cc" />
     <ClCompile Include="Source\Helper\JsonHelper.cc" />
     <ClCompile Include="Source\Helper\Math\Math.cc" />
     <ClCompile Include="Source\Helper\Math\Random.cc" />
@@ -322,6 +320,7 @@
     <ClCompile Include="Source\Helper\Type\Matrix2.cc" />
     <ClCompile Include="Source\Helper\Type\Matrix3.cc" />
     <ClCompile Include="Source\Helper\Type\Matrix4.cc" />
+    <ClCompile Include="Source\Helper\Type\Quaternion.cc" />
     <ClCompile Include="Source\Helper\Type\Vector2.cc" />
     <ClCompile Include="Source\Helper\Type\Vector3.cc" />
     <ClCompile Include="Source\Helper\Type\Vector4.cc" />
@@ -348,6 +347,10 @@
     <ClInclude Include="Include\Dy\Core\Component\Information\ModelInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\ShaderInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\TextureInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Interface\ADyTransformable.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Interface\IDyScriptable.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Interface\IDyToString.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Interface\IDyUpdatable.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\EtcType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\MaterialType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\ModelType.h" />
@@ -357,6 +360,8 @@
     <ClInclude Include="Include\Dy\Core\Component\MeshImporter.h" />
     <ClInclude Include="Include\Dy\Core\Component\MeshRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Component\Object\Camera.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Object\Grid.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Object\Pawn.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\MaterialResource.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\MeshResource.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\ModelResource.h" />
@@ -398,6 +403,7 @@
     <ClInclude Include="Include\Dy\Management\TimeManager.h" />
     <ClInclude Include="Include\precompiled.h" />
     <ClInclude Include="Libraries\glad\include\glad\glad.h" />
+    <ClInclude Include="Libraries\glad\include\KHR\khrplatform.h" />
     <ClInclude Include="Libraries\imgui\imgui\imgui_impl_glfw.h" />
     <ClInclude Include="Libraries\imgui\imgui\imgui_impl_opengl3.h" />
     <ClInclude Include="Libraries\imgui\imgui\imconfig.h" />

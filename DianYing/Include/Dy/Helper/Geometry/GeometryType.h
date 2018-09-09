@@ -46,7 +46,7 @@ struct PMeshInformationDescriptor final
 {
   std::vector<DVertexInformation> mVertices;
   std::vector<int32_t>            mIndices;
-  std::vector<std::string>        mMaterialNames;
+  std::string                     mMaterialName;
 };
 
 ///

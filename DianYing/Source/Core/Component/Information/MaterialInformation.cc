@@ -44,7 +44,7 @@ DDyMaterialInformation::DDyMaterialInformation(const PDyMaterialConstructionDesc
   default: break;
   }
 
-  for (const auto& textureName : this->mMaterialInformation.mTextureName)
+  for (const auto& textureName : this->mMaterialInformation.mTextureNames)
   {
     MDY_LOG_INFO_D(kMaterialInformationTemplate, kMaterialInformation, "bind texture name", textureName);
   }
