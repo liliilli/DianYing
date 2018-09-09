@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/enum_flags.h>
+#include <Dy/Helper/GlobalEnumFlags.h>
 #include <Dy/Helper/Type/Matrix4.h>
 
 namespace dy
@@ -27,7 +27,7 @@ struct PDyCameraConstructionDescriptor
   /// Fov must be range from 0.1f to 180.f
   float mInitialFieldOfView   = 60.f;
   /// Custom viewport size, but mUseCustomViewport must be enabled.
-  DVector2 mViewportSize      = {};
+  DDyVector2 mViewportSize      = {};
 
   /// Just use main viewport as a size.
   bool mUseCustomViewport     = false;
@@ -135,22 +135,22 @@ private:
   ///
   /// @brief
   ///
-  void pProcessMouseMovement(const DVector2& offset, bool constrainPitch = true);
+  void pProcessMouseMovement(const DDyVector2& offset, bool constrainPitch = true);
 
   DDyMatrix4x4  mViewMatrix;
   DDyMatrix4x4  mProjectionMatrix;
 
-  DVector3      mPosition                 = {};
-  DVector3      mRotationEulerAngle       = {};
-  DVector3      mLookingAtDirection       = {};
-  DVector3      mLookingAtRightDirection  = {};
-  DVector3      mLookingAtUpDirection     = {};
+  DDyVector3      mPosition                 = {};
+  DDyVector3      mRotationEulerAngle       = {};
+  DDyVector3      mLookingAtDirection       = {};
+  DDyVector3      mLookingAtRightDirection  = {};
+  DDyVector3      mLookingAtUpDirection     = {};
 
   //! (Camera) -> |Near| >>>>>>>>>>>>>>>|Far|
   //! Ground --------------------------------
 
   /// Camera's near value.
-  float mNear                     = 0;
+  float mNear                     = 0.1f;
   /// Camera's far value.
   float mFar                      = 100;
   float mFieldOfView              = 0.f;

@@ -12,18 +12,11 @@
 /// SOFTWARE.
 ///
 
-#include <cassert>
-
-#include <iostream>
-
 #ifdef false
 #include <Dy/VkInterface.h>
 #endif
 
 #include <d3dx11effect.h>
-
-#include <tbb/parallel_for.h>
-#include <tbb/blocked_range.h>
 
 #include <Dy/Management/DataInformationManager.h>
 #include <Dy/Management/HeapResourceManager.h>
@@ -32,38 +25,7 @@
 #include <Dy/Management/TimeManager.h>
 #include <Dy/Management/WindowManager.h>
 #include <Dy/Management/LoggingManager.h>
-#include "Dy/Management/InputManager.h"
-
-/// @todo Chapter 6
-struct DVertex1
-{
-  DirectX::XMFLOAT3 position;
-  DirectX::XMFLOAT4 color;
-};
-
-struct DVectex2
-{
-  DirectX::XMFLOAT3 position;
-  DirectX::XMFLOAT2 normal;
-  DirectX::XMFLOAT2 texCoord0;
-  DirectX::XMFLOAT2 texCoord1;
-};
-
-//!
-//! DirectX12 API
-//!
-
-void                  DyD12RenderLoop();
-void                  DyD12RenderFrame();
-
-ID3D11Device*         d11Device         = nullptr;
-ID3D11DeviceContext*  d11DeviceContext  = nullptr;
-
-//!
-//! OpenGL 4 API
-//!
-
-EDySuccess                DyGlCreateContentWgl();
+#include <Dy/Management/InputManager.h>
 
 namespace
 {
@@ -78,20 +40,23 @@ void DyInitiailzeAllManagers()
     auto& settingManager = dy::MDySetting::GetInstance();
     #if defined(MDY_PLATFORM_FLAG_WINDOWS) && defined(_WIN32)
       const int32_t size = __argc;
-      for (int32_t i = 0; i < size; ++i) {
-        settingManager.ArgsPushback(__argv[i]);
+      for (int32_t i = 0; i < size; ++i)
+      {
+        settingManager.pArgsPushback(__argv[i]);
       }
     #elif defined(MDY_PLATFORM_FLAG_LINUX) && defined(__linux__)
-
+      static_assert(false, "Linux does not support now.");
     #elif defined(MDY_PLATFORM_FLAG_MACOS)
-
+      static_assert(false, "Macos does not support now.");
     #endif
     MDY_CALL_ASSERT_SUCCESS(dy::MDySetting::Initialize());
   }
 
-  auto& i = dy::MDySetting::GetInstance();
-  i.SetSubFeatureLoggingToConsole(true);
-  i.SetSubFeatureLoggingToFile(true);
+  {
+    auto& logManager = dy::MDySetting::GetInstance();
+    logManager.SetSubFeatureLoggingToConsole(true);
+    logManager.SetSubFeatureLoggingToFile(true);
+  }
   MDY_CALL_ASSERT_SUCCESS(dy::MDyLog::Initialize());
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Initialize());
@@ -102,6 +67,8 @@ void DyInitiailzeAllManagers()
   // MDyWindow must be initialized at last.
   MDY_CALL_ASSERT_SUCCESS(dy::MDyWindow::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyInput::Initialize());
+
+  MDY_LOG_WARNING_D("========== DIANYING MANAGER INITIALIZED ==========");
 }
 
 ///
@@ -110,6 +77,8 @@ void DyInitiailzeAllManagers()
 ///
 void DyReleaseAllManagers()
 {
+  MDY_LOG_WARNING_D("========== DIANYING MANAGER RELEASED ==========");
+
   MDY_CALL_ASSERT_SUCCESS(dy::MDyInput::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyWindow::Release());
 
@@ -125,56 +94,6 @@ void DyReleaseAllManagers()
 
 } /// unnamed namespace
 
-//!
-//! TBB TEST START
-//!
-
-class DyTestSubStringFinder
-{
-  const std::string     mString;
-  std::vector<int32_t>* mMaxArr = nullptr;
-  std::vector<int32_t>* mPosArr = nullptr;
-
-public:
-  DyTestSubStringFinder(
-      const std::string& str,
-      std::vector<int32_t>& maxArr,
-      std::vector<int32_t>& posArr) :
-      mString{str}, mMaxArr(&maxArr), mPosArr(&posArr)
-  { }
-
-  void operator() (const tbb::blocked_range<int32_t>& r) const
-  {
-    for (int32_t i = r.begin(); i != r.end(); ++i)
-    {
-      int32_t maxSize = 0, maxPos = 0;
-      for (int32_t j = 0, strSize = static_cast<int32_t>(mString.size()); j < strSize; ++j)
-      {
-        if (j != i)
-        {
-          const int32_t limit = strSize - std::max(i, j);
-          for (int32_t k = 0; k < limit; ++k)
-          {
-            if (this->mString[i + k] != this->mString[j + k]) break;
-            if (k > maxSize)
-            {
-              maxSize = k;
-              maxPos  = j;
-            }
-          }
-        }
-
-        this->mMaxArr->operator[](i) = maxSize;
-        this->mPosArr->operator[](i) = maxPos;
-      }
-    }
-  }
-};
-
-//!
-//! TBB TEST END
-//!
-
 ///
 /// @brief Main entry function of WIN32 platforms.
 ///
@@ -182,12 +101,16 @@ public:
 namespace
 {
 
-FILE* fp = nullptr;
+FILE*     gFp             = nullptr;
+HINSTANCE ghInstance      = nullptr;
+HINSTANCE ghPrevInstance  = nullptr;
+LPSTR     gpCmdLine;
+int       gnCmdShow;
 
 ///
 /// @brief Turn on memory leak detection feature and console window for logging.
 ///
-EDySuccess __InitializeWin32Debug()
+EDySuccess __DyInitializeWin32Debug()
 {
   _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
   _CrtSetReportMode( _CRT_ERROR, _CRTDBG_MODE_DEBUG );
@@ -197,31 +120,29 @@ EDySuccess __InitializeWin32Debug()
     return DY_FAILURE;
   }
 
-  freopen_s(&fp, "CONOUT$", "w", stdout);
-  std::cout << "Hello world!\n";
+  freopen_s(&gFp, "CONOUT$", "w", stdout);
   return DY_SUCCESS;
 }
 
 ///
 /// @brief Turn off memory leak detection feature and console window for logging.
 ///
-EDySuccess __ReleaseWin32Debug()
+EDySuccess __DyReleaseWin32Debug()
 {
-  fclose(fp);
+  fclose(gFp);
 
   if (!FreeConsole()) {
     MessageBox(nullptr, L"Failed to free console resource.", nullptr, MB_ICONEXCLAMATION);
     return DY_FAILURE;
   }
-
   return DY_SUCCESS;
 }
 
 } /// unname namespace
 
 #if defined(_DEBUG) || !defined(NDEBUG)
-#define MDY_WIN32_TRY_TURN_ON_DEBUG()   MDY_CALL_ASSERT_SUCCESS(__InitializeWin32Debug())
-#define MDY_WIN32_TRY_TURN_OFF_DEBUG()  MDY_CALL_ASSERT_SUCCESS(__ReleaseWin32Debug())
+#define MDY_WIN32_TRY_TURN_ON_DEBUG()   MDY_CALL_ASSERT_SUCCESS(__DyInitializeWin32Debug())
+#define MDY_WIN32_TRY_TURN_OFF_DEBUG()  MDY_CALL_ASSERT_SUCCESS(__DyReleaseWin32Debug())
 #else
 #define MDY_WIN32_TRY_TURN_ON_DEBUG()   (void)0
 #define MDY_WIN32_TRY_TURN_OFF_DEBUG()  (void)0
@@ -230,34 +151,18 @@ EDySuccess __ReleaseWin32Debug()
 ///
 /// @brief Main function of win32 / win64 platform.
 ///
-int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow) {
+int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow)
+{
+  ghInstance      = hInstance;
+  ghPrevInstance  = hPrevInstance;
+  gpCmdLine       = pCmdLine;
+  gnCmdShow       = nCmdShow;
+
   MDY_WIN32_TRY_TURN_ON_DEBUG();
   DyInitiailzeAllManagers();
 
   MDY_LOG_INFO_D("Platform : Windows");
   MDY_LOG_INFO_D("Running application routine.");
-
-#ifdef false
-  std::vector<std::string> str = { std::string("a"), std::string("b") };
-  str.resize(18);
-  for (int32_t i = 2; i < str.size(); ++i)
-  {
-    str[i] = str[i - 1] + str[i - 2];
-  }
-  std::string& toScan = *str.rbegin();
-  const int32_t numElem = static_cast<int32_t>(toScan.size());
-
-  std::vector<int32_t> max(numElem);
-  std::vector<int32_t> pos(numElem);
-
-  tbb::parallel_for(tbb::blocked_range<int32_t>(0, numElem),
-                    DyTestSubStringFinder(toScan, max, pos));
-
-  for (int32_t i = 0; i < numElem; ++i)
-  {
-    MDY_LOG_CRITICAL_D("{} ( {} )", max[i], pos[i]);
-  }
-#endif
 
   dy::MDyWindow::GetInstance().Run();
 

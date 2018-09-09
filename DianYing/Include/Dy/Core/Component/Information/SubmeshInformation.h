@@ -19,28 +19,31 @@
 namespace dy
 {
 
-class DDyMeshInformation final
+///
+/// @class DDySubmeshInformation
+/// @brief Store and manage submesh information.
+///
+class DDySubmeshInformation final
 {
 public:
-  DDyMeshInformation(const PMeshInformationDescriptor& meshInformation) :
-      mMeshResourceInformation(meshInformation)
-  {};
+  DDySubmeshInformation(const PDySubmeshInformationDescriptor& meshInformation) : mMeshResourceInformation(meshInformation) {};
 
-  DDyMeshInformation(const DDyMeshInformation&)             = delete;
-  DDyMeshInformation& operator=(const DDyMeshInformation&)  = delete;
-  DDyMeshInformation(DDyMeshInformation&&)                  = default;
-  DDyMeshInformation& operator=(DDyMeshInformation&&)       = default;
+  DDySubmeshInformation(const DDySubmeshInformation&)             = delete;
+  DDySubmeshInformation& operator=(const DDySubmeshInformation&)  = delete;
+  DDySubmeshInformation(DDySubmeshInformation&&)                  = default;
+  DDySubmeshInformation& operator=(DDySubmeshInformation&&)       = default;
+  ~DDySubmeshInformation()                                        = default;
 
   ///
   /// @brief return immutable descriptor information reference.
   ///
-  const PMeshInformationDescriptor& GetInformation() const noexcept
+  const PDySubmeshInformationDescriptor& GetInformation() const noexcept
   {
     return this->mMeshResourceInformation;
   }
 
 private:
-  PMeshInformationDescriptor mMeshResourceInformation;
+  PDySubmeshInformationDescriptor mMeshResourceInformation;
 };
 
 } /// ::dy namespace

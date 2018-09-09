@@ -40,10 +40,10 @@ class DDyMaterialInformation final
 public:
   DDyMaterialInformation(const PDyMaterialConstructionDescriptor& shaderConstructionDescriptor);
 
-  DDyMaterialInformation(const DDyMaterialInformation&)            = delete;
-  DDyMaterialInformation& operator=(const DDyMaterialInformation&) = delete;
-  DDyMaterialInformation(DDyMaterialInformation&&)            = default;
-  DDyMaterialInformation& operator=(DDyMaterialInformation&&) = default;
+  DDyMaterialInformation(const DDyMaterialInformation&)             = delete;
+  DDyMaterialInformation& operator=(const DDyMaterialInformation&)  = delete;
+  DDyMaterialInformation(DDyMaterialInformation&&)                  = default;
+  DDyMaterialInformation& operator=(DDyMaterialInformation&&)       = default;
   ~DDyMaterialInformation();
 
   ///
@@ -56,18 +56,19 @@ public:
 
 private:
   ///
-  /// @brief
+  /// @brief Enroll populated material name and get index for avoiding name duplication of
+  /// derived material name.
   ///
   int32_t __pfEnrollAndGetNextDerivedMaterialIndex(const std::string& name) const noexcept
   {
-    if (auto it = __mIndexMap.find(name); it == __mIndexMap.end())
+    if (auto it = this->__mPopulatedMaterialIndexMap.find(name); it == this->__mPopulatedMaterialIndexMap.end())
     {
-      __mIndexMap.emplace(name, 0);
+      this->__mPopulatedMaterialIndexMap.emplace(name, 0);
       return 0;
     }
     else return (++it->second);
   }
-  mutable std::unordered_map<std::string, int32_t> __mIndexMap = {};
+  mutable std::unordered_map<std::string, int32_t> __mPopulatedMaterialIndexMap = {};
 
   ///
   /// @brief Populate independent material reference and move ownership to outside.
@@ -75,14 +76,19 @@ private:
   [[nodiscard]]
   std::unique_ptr<DDyMaterialInformation> __pfPopulateWith(const PDyMaterialPopulateDescriptor& desc) const noexcept;
 
+  /// Information sturcture.
   PDyMaterialConstructionDescriptor mMaterialInformation;
 
-  void __pfSetNextLevel(CDyMaterialResource* ptr) const noexcept { mNextLevelPtr = ptr; }
-  mutable CDyMaterialResource* mNextLevelPtr = nullptr;
+  //!
+  //! Resource pointers binding
+  //!
+
+  void __pfSetMaterialResourceLink(CDyMaterialResource* ptr) const noexcept { mLinkedMaterialResourcePtr = ptr; }
+  mutable CDyMaterialResource* mLinkedMaterialResourcePtr = nullptr;
 
   friend class CDyMaterialResource;
   friend class MDyDataInformation;
-  friend class MDyResource;
+  friend class MDyHeapResource;
 };
 
 } /// ::dy namespace

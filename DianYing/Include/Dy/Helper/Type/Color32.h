@@ -8,7 +8,7 @@
 /// If you want to read full statements, read LICENSE file.
 ///
 /// @file Dy/Helper/Type/color32.h
-/// @brief 8-bit color type which stores 4 components (r, g, b, a)
+/// @brief 8-bit color type which stores 4 components (R, G, B, A)
 /// @author Jongmin Yun
 ///
 /// @log
@@ -21,19 +21,20 @@
 namespace dy {
 
 ///
-/// @class DColor32
-/// @brief 8-bit color type which stores 4 components (r, g, b, a)
+/// @class DDyColor32
+/// @brief 8-bit color type which stores 4 components (R, G, B, A)
 /// (h, s, v) does not support but can be converted calling HsvToRgb().
 ///
-struct DColor32 final {
+struct alignas(4) DDyColor32 final {
   uint8_t R = 0;
   uint8_t G = 0;
   uint8_t B = 0;
   uint8_t A = 0;
 
-  constexpr DColor32() = default;
-  explicit DColor32(uint8_t r, uint8_t g, uint8_t b) noexcept : DColor32{r, g, b, 0xFF} {}
-  explicit DColor32(uint8_t r, uint8_t g, uint8_t b, uint8_t a) noexcept {
+  constexpr DDyColor32() = default;
+  explicit DDyColor32(uint8_t r, uint8_t g, uint8_t b) noexcept : DDyColor32{r, g, b, 0xFF} {}
+  explicit DDyColor32(uint8_t r, uint8_t g, uint8_t b, uint8_t a) noexcept
+  {
     this->R = r;
     this->G = g;
     this->B = b;
@@ -44,15 +45,27 @@ struct DColor32 final {
   //! Methods
   //!
 
-  constexpr bool IsOpaque() const noexcept {
+  ///
+  /// @brief Check it is opaque (A == 0xFF) or not (otherwise).
+  ///
+  constexpr bool IsOpaque() const noexcept
+  {
     return this->A == std::numeric_limits<uint8_t>::max();
   }
 
-  constexpr void SetOpqaue() noexcept {
+  ///
+  /// @brief Set this color to be opaque.
+  ///
+  constexpr void SetOpqaue() noexcept
+  {
     this->A = 0xFF;
   }
 
-  constexpr float GetGrayScale() const noexcept {
+  ///
+  /// @brief Get color's grayscale value following sRGB.
+  ///
+  constexpr float GetGrayScale() const noexcept
+  {
     return 0.2126f * this->R + 0.7152f * this->G + 0.0722f * this->B;
   }
 
@@ -60,17 +73,16 @@ struct DColor32 final {
   //! Operator overloading
   //!
 
-
-
   //!
   //! Conversion operators
   //!
 
   ///
-  /// @brief Can be convert DColor explicitly.
+  /// @brief Can be convert DDyColor explicitly.
   ///
-  constexpr operator DColor() const noexcept {
-    return DColor
+  constexpr operator DDyColor() const noexcept
+  {
+    return DDyColor
     {
       static_cast<float>(R) / 0xFF,
       static_cast<float>(G) / 0xFF,
@@ -83,21 +95,21 @@ struct DColor32 final {
   //! Statics
   //!
 
-  static const DColor32 Aqua;
-  static const DColor32 Black;
-  static const DColor32 Blue;
-  static const DColor32 DarkRed;
-  static const DColor32 DarkGray;
-  static const DColor32 DarkGreen;
-  static const DColor32 Gold;
-  static const DColor32 Gray;
-  static const DColor32 Green;
-  static const DColor32 Magenta;
-  static const DColor32 Orange;
-  static const DColor32 Purple;
-  static const DColor32 Red;
-  static const DColor32 White;
-  static const DColor32 Yellow;
+  static const DDyColor32 Aqua;
+  static const DDyColor32 Black;
+  static const DDyColor32 Blue;
+  static const DDyColor32 DarkRed;
+  static const DDyColor32 DarkGray;
+  static const DDyColor32 DarkGreen;
+  static const DDyColor32 Gold;
+  static const DDyColor32 Gray;
+  static const DDyColor32 Green;
+  static const DDyColor32 Magenta;
+  static const DDyColor32 Orange;
+  static const DDyColor32 Purple;
+  static const DDyColor32 Red;
+  static const DDyColor32 White;
+  static const DDyColor32 Yellow;
 };
 
 } /// ::dy namespace

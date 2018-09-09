@@ -23,7 +23,8 @@ namespace dy
 /// @enum EDyInputType
 /// @brief The type of each key binding.
 ///
-enum class EDyInputType {
+enum class EDyInputType
+{
   NoneDoNothing,
   Keyboard,
   Mouse,
@@ -57,7 +58,8 @@ struct PDyKeyBindingConstructionDescriptor final
 /// And the user releases negative or positive key, key information instance let values
 /// go to neurtal zone. (within range of mNeutralStatusThresholdValue)
 ///
-struct DDyKeyBindingInformation {
+struct DDyKeyBindingInformation
+{
   using TNegativeButton = int32_t;
   using TPositiveButton = int32_t;
 
@@ -65,7 +67,8 @@ struct DDyKeyBindingInformation {
   /// @enum EDyKeyInputStatus
   /// @brief Indicates key status of keys.
   ///
-  enum class EDyKeyInputStatus : int {
+  enum class EDyKeyInputStatus : int
+  {
     PositivePressed = 1,	    // If positive key is pressed, mKeyStatus will sustain PRESSED.
     NegativePressed = 2,	    // If negative key is pressed, mKeyStatus will sustain PRESSED.
     CommonReleased = 3,	      // Changes to CommonReleased when released. constraints of Update.
@@ -113,7 +116,8 @@ struct DDyKeyBindingInformation {
   }
 };
 
-inline EDyInputType GetKeyType(const std::string& token) noexcept {
+inline EDyInputType GetKeyType(const std::string& token) noexcept
+{
   if (token == "KB") return EDyInputType::Keyboard;
   if (token == "MS") return EDyInputType::Mouse;
   if (token == "JS") return EDyInputType::Joystick;

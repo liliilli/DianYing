@@ -32,7 +32,7 @@ FDyGrid::FDyGrid()
   glGenBuffers(1, &this->mVbo);
   glBindVertexArray(this->mVao);
 
-  std::vector<dy::DVector3> mPointers;
+  std::vector<DVector3> mPointers;
   {
     const float start     = -6.f;
     const float width     = std::abs(start) * 2.f;
@@ -50,23 +50,23 @@ FDyGrid::FDyGrid()
   }
 
   glBindBuffer(GL_ARRAY_BUFFER, this->mVbo);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(dy::DVector3) * mPointers.size(), mPointers.data(), GL_STATIC_DRAW);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(dy::DVector3), nullptr);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(DVector3) * mPointers.size(), mPointers.data(), GL_STATIC_DRAW);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(DVector3), nullptr);
   glEnableVertexAttribArray(0);
   glBindVertexArray(0);
 
-  dy::PDyShaderConstructionDescriptor gridShaderDesc;
+  PDyShaderConstructionDescriptor gridShaderDesc;
   {
     gridShaderDesc.mShaderName = "dyBuiltinGrid";
     {
-      dy::PDyShaderFragmentInformation vertexShaderInfo;
-      vertexShaderInfo.mShaderType = dy::EDyShaderFragmentType::Vertex;
+      PDyShaderFragmentInformation vertexShaderInfo;
+      vertexShaderInfo.mShaderType = EDyShaderFragmentType::Vertex;
       vertexShaderInfo.mShaderPath = "./ShaderResource/Gl/grid.vert";
       gridShaderDesc.mShaderFragments.emplace_back(vertexShaderInfo);
     }
     {
-      dy::PDyShaderFragmentInformation fragmentShaderInfo;
-      fragmentShaderInfo.mShaderType = dy::EDyShaderFragmentType::Pixel;
+      PDyShaderFragmentInformation fragmentShaderInfo;
+      fragmentShaderInfo.mShaderType = EDyShaderFragmentType::Pixel;
       fragmentShaderInfo.mShaderPath = "./ShaderResource/Gl/grid.frag";
       gridShaderDesc.mShaderFragments.emplace_back(fragmentShaderInfo);
     }
@@ -101,7 +101,6 @@ void FDyGrid::RenderGrid() noexcept
   this->mShaderPtr->UnuseShader();
 
   glEnable(GL_BLEND);
-  glEnable(GL_TEXTURE_2D);
 }
 
 } /// ::dy namespace

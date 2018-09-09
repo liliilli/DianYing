@@ -32,20 +32,20 @@ namespace dy
 {
 
 ///
-/// @class CDyShaderInformation
+/// @class DDyShaderInformation
 /// @brief Shader information class that not serve heap instance
 /// but information to create heap instance.
 ///
-class CDyShaderInformation final
+class DDyShaderInformation final
 {
 public:
-  CDyShaderInformation(const PDyShaderConstructionDescriptor& shaderConstructionDescriptor);
+  DDyShaderInformation(const PDyShaderConstructionDescriptor& shaderConstructionDescriptor);
 
-  CDyShaderInformation(const CDyShaderInformation&)            = delete;
-  CDyShaderInformation& operator=(const CDyShaderInformation&) = delete;
-  CDyShaderInformation(CDyShaderInformation&&)            = default;
-  CDyShaderInformation& operator=(CDyShaderInformation&&) = default;
-  ~CDyShaderInformation();
+  DDyShaderInformation(const DDyShaderInformation&)            = delete;
+  DDyShaderInformation& operator=(const DDyShaderInformation&) = delete;
+  DDyShaderInformation(DDyShaderInformation&&)            = default;
+  DDyShaderInformation& operator=(DDyShaderInformation&&) = default;
+  ~DDyShaderInformation();
 
   ///
   /// @brief return immutable descriptor information reference.
@@ -58,14 +58,15 @@ public:
 private:
   PDyShaderConstructionDescriptor mShaderInformation;
 
-  ///
-  /// @brief
-  ///
-  void __pfSetNextLevel(CDyShaderResource* ptr) const noexcept;
-  mutable CDyShaderResource* mNextLevelPtr = nullptr;
+  //!
+  //! Resource pointers binding
+  //!
+
+  void __pfLinkShaderResourcePtr(CDyShaderResource* ptr) const noexcept;
+  mutable CDyShaderResource* mLinkedShaderResourcePtr = nullptr;
 
   friend class CDyShaderResource;
-  friend class MDyResource;
+  friend class MDyHeapResource;
 };
 
 } /// ::dy namespace

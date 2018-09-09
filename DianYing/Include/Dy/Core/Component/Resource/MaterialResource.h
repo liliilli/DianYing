@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Core/Component/Internal/MaterialType.h>
+#include <Dy/Core/Component/MeshRenderer.h>
 
 //!
 //! Forward declaration
@@ -33,6 +34,10 @@ class CDyTextureResource;
 namespace dy
 {
 
+///
+/// @class CDyMaterialResource
+/// @brief Material resource class which manage texture, properties instance (only moveable)
+///
 class CDyMaterialResource
 {
 public:
@@ -44,20 +49,20 @@ public:
   ~CDyMaterialResource();
 
   ///
-  /// @brief
+  /// @brief Get shader resource ptr which may be nullptr or not be.
   ///
   CDyShaderResource* GetShaderResource() noexcept;
 
   ///
-  /// @brief
+  /// @brief Return binded texture resource pointers list.
   ///
-  const std::vector<DDyMaterialTextureTuple>& GetTextureResources() const noexcept
+  const std::vector<DDyMaterialTextureTuple>& GetBindedTextureResources() const noexcept
   {
     return this->mTextureResources;
   }
 
   ///
-  /// @brief
+  /// @brief Get blend mode type.
   ///
   EDyMaterialBlendMode GetBlendModeType() const noexcept
   {
@@ -90,31 +95,26 @@ private:
 
   template <typename TType>
   using TBindPtrMap = std::unordered_map<TType*, TType*>;
-  ///
-  /// @brief
-  ///
-  void __pfSetPrevLevel(DDyMaterialInformation* ptr) const noexcept { __mPrevLevelPtr = ptr; }
-  void __pfResetShaderPtr() noexcept
+
+  void __pfLinkMaterialInformation(DDyMaterialInformation* ptr) const noexcept
+  {
+    this->__mLinkedMaterialInformationPtr = ptr;
+  }
+
+  void __pfResetShaderResourcePtr() noexcept
   {
     mShaderResource.mShaderName     = "DY_RELEASED";
     mShaderResource.mShaderPointer  = nullptr;
   }
-  void __pfResetTexturePtr(CDyTextureResource* ptr) noexcept;
-  void __pfSetRendererBind(void* ptr) const noexcept
-  {
 
-  }
-  void __pfSetRendererReset(void* ptr) const noexcept
-  {
+  void __pfResetTextureResourcePtr(CDyTextureResource* ptr) noexcept;
 
-  }
-  mutable DDyMaterialInformation*           __mPrevLevelPtr     = nullptr;
-  mutable TBindPtrMap<void>                 __mBindRendererPtrs;
+  mutable DDyMaterialInformation*           __mLinkedMaterialInformationPtr     = nullptr;
 
   friend class CDyTextureResource;
   friend class CDyShaderResource;
   friend class DDyMaterialInformation;
-  friend class MDyResource;
+  friend class MDyHeapResource;
 };
 
 } /// ::dy namespace

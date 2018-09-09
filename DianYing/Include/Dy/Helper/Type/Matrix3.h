@@ -38,11 +38,11 @@ public:
   DDyMatrix3x3(const float _00, const float _01, const float _02,
                const float _10, const float _11, const float _12,
                const float _20, const float _21, const float _22) :
-      mMatrixValue{dy::DVector3{_00, _10, _20},
-                   dy::DVector3{_01, _11, _21},
-                   dy::DVector3{_02, _12, _22}} {}
+      mMatrixValue{dy::DDyVector3{_00, _10, _20},
+                   dy::DDyVector3{_01, _11, _21},
+                   dy::DDyVector3{_02, _12, _22}} {}
 
-  DDyMatrix3x3(const DVector3& column1, const DVector3& column2, const DVector3& column3) :
+  DDyMatrix3x3(const DDyVector3& column1, const DDyVector3& column2, const DDyVector3& column3) :
       mMatrixValue{ column1, column2, column3 } {}
 
   DDyMatrix3x3(const glm::mat2& glmMatrix) noexcept
@@ -62,7 +62,7 @@ public:
   {
     this->mMatrixValue[0] = value[0];
     this->mMatrixValue[1] = value[1];
-    this->mMatrixValue[2] = DVector3{};
+    this->mMatrixValue[2] = DDyVector3{};
     return *this;
   }
 
@@ -119,12 +119,12 @@ public:
   }
 #endif
 
-  DVector3& operator[](std::size_t index) noexcept
+  DDyVector3& operator[](std::size_t index) noexcept
   {
     return mMatrixValue[index];
   }
 
-  const DVector3& operator[](std::size_t index) const noexcept
+  const DDyVector3& operator[](std::size_t index) const noexcept
   {
     return mMatrixValue[index];
   }
@@ -158,7 +158,7 @@ public:
   ///
   /// @brief
   ///
-  DVector3 MultiplyVector(const DVector3& rhs) const noexcept;
+  DDyVector3 MultiplyVector(const DDyVector3& rhs) const noexcept;
 
   ///
   /// @brief
@@ -175,7 +175,7 @@ private:
   explicit DDyMatrix3x3(bool);
 
   /// Column major
-  std::array<dy::DVector3, 3> mMatrixValue;
+  std::array<dy::DDyVector3, 3> mMatrixValue;
 };
 
 } /// ::dy namespace

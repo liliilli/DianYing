@@ -20,7 +20,7 @@ namespace dy
 
 ///
 /// @enum EDyImageColorFormatStyle
-/// @brief
+/// @brief Image color format which is a type of each pixel data.
 ///
 enum class EDyImageColorFormatStyle
 {
@@ -33,7 +33,7 @@ enum class EDyImageColorFormatStyle
 
 ///
 /// @class DDyImageBinaryDataBuffer
-/// @brief RAII
+/// @brief Image binary buffer that manages binary buffer chunk, automatically released when it's be out of scope.
 ///
 class DDyImageBinaryDataBuffer final
 {
@@ -41,13 +41,13 @@ public:
   DDyImageBinaryDataBuffer(const std::string& imagePath);
   ~DDyImageBinaryDataBuffer();
 
-  DDyImageBinaryDataBuffer(const DDyImageBinaryDataBuffer&)       = delete;
-  DDyImageBinaryDataBuffer& operator=(DDyImageBinaryDataBuffer&)  = delete;
+  DDyImageBinaryDataBuffer(const DDyImageBinaryDataBuffer&)                 = delete;
+  DDyImageBinaryDataBuffer& operator=(DDyImageBinaryDataBuffer&)            = delete;
   DDyImageBinaryDataBuffer(DDyImageBinaryDataBuffer&&) noexcept             = default;
   DDyImageBinaryDataBuffer& operator=(DDyImageBinaryDataBuffer&&) noexcept  = default;
 
   ///
-  /// @brief
+  /// @brief Check if buffer chunk is created properly when construction time.
   ///
   [[nodiscard]] bool IsBufferCreatedProperly() const noexcept
   {
@@ -55,7 +55,7 @@ public:
   }
 
   ///
-  /// @brief
+  /// @brief Get image width.
   ///
   [[nodiscard]] int32_t GetImageWidth() const noexcept
   {
@@ -63,7 +63,7 @@ public:
   }
 
   ///
-  /// @brief
+  /// @brief Get image height.
   ///
   [[nodiscard]] int32_t GetImageHeight() const noexcept
   {
@@ -71,7 +71,7 @@ public:
   }
 
   ///
-  /// @brief
+  /// @brief Get image format value.
   ///
   [[nodiscard]] EDyImageColorFormatStyle GetImageFormat() const noexcept
   {
@@ -79,7 +79,7 @@ public:
   }
 
   ///
-  /// @brief
+  /// @brief Get the start point of binary buffer chunk.
   ///
   const unsigned char* GetBufferStartPoint() const noexcept
   {
@@ -93,9 +93,8 @@ private:
   int32_t     mHeight         = MDY_NOT_INITIALIZED_M1;
   int32_t     mDesiredChannel = MDY_NOT_INITIALIZED_M1;
   EDyImageColorFormatStyle mImageFormat = EDyImageColorFormatStyle::NoneError;
-  unsigned char* mBufferStartPoint = nullptr;
-
-  bool mIsBufferCreatedProperly = false;
+  unsigned char* mBufferStartPoint      = nullptr;
+  bool mIsBufferCreatedProperly         = false;
 };
 
 } /// ::dy namespace

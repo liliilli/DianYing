@@ -1,16 +1,15 @@
 #include <precompiled.h>
 ///
-/// @license BSD 2-Clause License
+/// MIT License
+/// Copyright (c) 2018 Jongmin Yun
 ///
-/// Copyright (c) 2018, Jongmin Yun(Neu.), All rights reserved.
-/// If you want to read full statements, read LICENSE file.
-///
-/// @file Helper/Math/Math.cc
-///
-/// @author Jongmin Yun
-///
-/// @log
-/// 2018-08-28 Create file
+/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+/// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+/// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+/// SOFTWARE.
 ///
 
 /// Header file
@@ -24,20 +23,23 @@
 
 namespace dy::math {
 
-bool IsAllZero(const dy::DVector2& vector) noexcept {
+bool IsAllZero(const dy::DVector2& vector) noexcept
+{
   if (!IsNearlyEqual(vector.X, 0.f)) return false;
   if (!IsNearlyEqual(vector.Y, 0.f)) return false;
   return true;
 }
 
-bool IsAllZero(const dy::DVector3& vector) noexcept {
+bool IsAllZero(const dy::DVector3& vector) noexcept
+{
   if (!IsNearlyEqual(vector.X, 0.f)) return false;
   if (!IsNearlyEqual(vector.Y, 0.f)) return false;
   if (!IsNearlyEqual(vector.Z, 0.f)) return false;
   return true;
 }
 
-float Lerp(float lhs, float rhs, float offset) {
+float Lerp(float lhs, float rhs, float offset)
+{
   std::feclearexcept(FE_ALL_EXCEPT);
   const auto result = lhs * (1 - offset) + rhs * offset;
   if (std::fetestexcept(FE_INVALID | FE_OVERFLOW)) {
@@ -46,7 +48,8 @@ float Lerp(float lhs, float rhs, float offset) {
   return result;
 }
 
-double Lerp(double lhs, double rhs, float offset) {
+double Lerp(double lhs, double rhs, float offset)
+{
   std::feclearexcept(FE_ALL_EXCEPT);
   const auto result = lhs * (1 - offset) + rhs * offset;
   if (std::fetestexcept(FE_INVALID | FE_OVERFLOW)) {
@@ -55,26 +58,30 @@ double Lerp(double lhs, double rhs, float offset) {
   return result;
 }
 
-DVector2 Lerp(const DVector2& lhs, const DVector2& rhs, float offset) {
+DVector2 Lerp(const DVector2& lhs, const DVector2& rhs, float offset)
+{
   return lhs * (1 - offset) + rhs * offset;
 }
 
-DVector3 Lerp(const DVector3& lhs, const DVector3& rhs, float offset) {
+DVector3 Lerp(const DVector3& lhs, const DVector3& rhs, float offset)
+{
   return lhs * (1 - offset) + rhs * offset;
 }
 
-DVector2 GetQuadBezierCurvePoint(const DVector2& lhs, const DVector2& rhs, const DVector2& control,
-                                 float offset) {
+DVector2 GetQuadBezierCurvePoint(const DVector2& lhs, const DVector2& rhs, const DVector2& control, float offset)
+{
   return Lerp(Lerp(lhs, control, offset), Lerp(control, rhs, offset), offset);
 }
 
-DVector3 GetQuadBezierCurvePoint(const DVector3& lhs, const DVector3& rhs, const DVector3& control,
-                                 float offset) {
+DVector3 GetQuadBezierCurvePoint(const DVector3& lhs, const DVector3& rhs, const DVector3& control, float offset)
+{
   return Lerp(Lerp(lhs, control, offset), Lerp(control, rhs, offset), offset);
 }
 
-TMinMaxResult<float> GetMinMax(const dy::DVector2& vector) noexcept {
-  if (vector.X < vector.Y) {
+TMinMaxResult<float> GetMinMax(const dy::DVector2& vector) noexcept
+{
+  if (vector.X < vector.Y)
+  {
     return {vector.X, vector.Y};
   }
   else {
@@ -82,7 +89,8 @@ TMinMaxResult<float> GetMinMax(const dy::DVector2& vector) noexcept {
   }
 }
 
-TMinMaxResult<float> GetMinMax(const dy::DVector3& vector) noexcept {
+TMinMaxResult<float> GetMinMax(const dy::DVector3& vector) noexcept
+{
   auto min = vector.X;
   auto max = min;
 
@@ -93,39 +101,47 @@ TMinMaxResult<float> GetMinMax(const dy::DVector3& vector) noexcept {
   return {min, max};
 }
 
-float GetRotationAngle(float angle_value) noexcept {
+float GetRotationAngle(float angle_value) noexcept
+{
   const float angle = std::fmod(angle_value, 360.f);
   return (angle < 0.f) ? angle + 360.f : angle;
 }
 
-double GetRotationAngle(double angle_value) noexcept {
+double GetRotationAngle(double angle_value) noexcept
+{
   const double angle = std::fmod(angle_value, 360.0);
   return (angle <= 0.0) ? angle + 360.0 : angle;
 }
 
-float GetRotationAngleRadian(float angle_value) noexcept {
+float GetRotationAngleRadian(float angle_value) noexcept
+{
   const float angle = std::fmod(angle_value, math::Pi2<float>);
   return (angle <= 0.f) ? angle + (Pi2<float>) : angle;
 }
 
-double GetRotationAngleRadian(double angle_value) noexcept {
+double GetRotationAngleRadian(double angle_value) noexcept
+{
   const double angle = std::fmod(angle_value, math::Pi2<double>);
   return (angle <= 0.0) ? angle + (Pi2<float>) : angle;
 }
 
-float RadToDeg(float radian) noexcept {
+float RadToDeg(float radian) noexcept
+{
   return GetRotationAngle(radian * RadToDegVal<float>);
 }
 
-double RadToDeg(double radian) noexcept {
+double RadToDeg(double radian) noexcept
+{
   return GetRotationAngle(radian * RadToDegVal<double>);
 }
 
-float DegToRad(float degree) noexcept {
+float DegToRad(float degree) noexcept
+{
   return GetRotationAngleRadian(degree * DegToRadVal<float>);
 }
 
-double DegToRad(double degree) noexcept {
+double DegToRad(double degree) noexcept
+{
   return GetRotationAngleRadian(degree * DegToRadVal<double>);
 }
 

@@ -1,18 +1,16 @@
 #ifndef GUARD_DY_HELPER_TYPE_COLOR_H
 #define GUARD_DY_HELPER_TYPE_COLOR_H
-
 ///
-/// @license BSD 2-Clause License
+/// MIT License
+/// Copyright (c) 2018 Jongmin Yun
 ///
-/// Copyright (c) 2018, Jongmin Yun(Neu.), All rights reserved.
-/// If you want to read full statements, read LICENSE file.
-///
-/// @file Dy/Helper/Type/color.h
-/// @brief Float color type which stores 4 components (r, g, b, a)
-/// @author Jongmin Yun
-///
-/// @log
-/// 2018-08-23 Create file.
+/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+/// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+/// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+/// SOFTWARE.
 ///
 
 #include <Dy/Helper/Type/Vector3.h>
@@ -20,29 +18,30 @@
 namespace dy {
 
 ///
-/// @class DColor
-/// @brief Float color type which stores 4 components (r, g, b, a)
+/// @class DDyColor
+/// @brief Float color type which stores 4 components (R, G, B, A)
 /// (h, s, v) does not support but can be converted calling HsvToRgb().
 ///
-struct DColor final {
-  float r = 0.0f;
-  float g = 0.0f;
-  float b = 0.0f;
-  float a = 0.0f;
+struct DDyColor final
+{
+  float R = 0.0f;
+  float G = 0.0f;
+  float B = 0.0f;
+  float A = 0.0f;
 
-  constexpr DColor() = default;
+  constexpr DDyColor() = default;
 
-  constexpr explicit DColor(float r, float g, float b) noexcept : r{r}, g{g}, b{b}, a{1.0f} {
-    if (this->r < 0.0f) this->r = 0.0f; else if (this->r > 1.0f) this->r = 1.0f;
-    if (this->g < 0.0f) this->g = 0.0f; else if (this->g > 1.0f) this->g = 1.0f;
-    if (this->b < 0.0f) this->b = 0.0f; else if (this->b > 1.0f) this->b = 1.0f;
+  constexpr explicit DDyColor(float r, float g, float b) noexcept : R{r}, G{g}, B{b}, A{1.0f} {
+    if (this->R < 0.0f) this->R = 0.0f; else if (this->R > 1.0f) this->R = 1.0f;
+    if (this->G < 0.0f) this->G = 0.0f; else if (this->G > 1.0f) this->G = 1.0f;
+    if (this->B < 0.0f) this->B = 0.0f; else if (this->B > 1.0f) this->B = 1.0f;
   };
 
-  constexpr explicit DColor(float r, float g, float b, float a) noexcept : r{r}, g{g}, b{b}, a{a} {
-    if (this->r < 0.0f) this->r = 0.0f; else if (this->r > 1.0f) this->r = 1.0f;
-    if (this->g < 0.0f) this->g = 0.0f; else if (this->g > 1.0f) this->g = 1.0f;
-    if (this->b < 0.0f) this->b = 0.0f; else if (this->b > 1.0f) this->b = 1.0f;
-    if (this->a < 0.0f) this->a = 0.0f; else if (this->a > 1.0f) this->a = 1.0f;
+  constexpr explicit DDyColor(float r, float g, float b, float a) noexcept : R{r}, G{g}, B{b}, A{a} {
+    if (this->R < 0.0f) this->R = 0.0f; else if (this->R > 1.0f) this->R = 1.0f;
+    if (this->G < 0.0f) this->G = 0.0f; else if (this->G > 1.0f) this->G = 1.0f;
+    if (this->B < 0.0f) this->B = 0.0f; else if (this->B > 1.0f) this->B = 1.0f;
+    if (this->A < 0.0f) this->A = 0.0f; else if (this->A > 1.0f) this->A = 1.0f;
   };
 
   //!
@@ -50,24 +49,24 @@ struct DColor final {
   //!
 
   ///
-  /// @brief Check it is opaque (a == 1.0f) or not (otherwise).
+  /// @brief Check it is opaque (A == 1.0f) or not (otherwise).
   ///
-  constexpr bool IsOpaque() const noexcept {
-    return this->a == 1.0f;
+  [[nodiscard]] constexpr bool IsOpaque() const noexcept {
+    return this->A == 1.0f;
   }
 
   ///
   /// @brief Set this color to be opaque.
   ///
   constexpr void SetOpaque() noexcept {
-    this->a = 1.0f;
+    this->A = 1.0f;
   }
 
   ///
   /// @brief Get color's grayscale value following sRGB.
   ///
-  constexpr float GetGrayScale() const noexcept {
-    return 0.2126f * this->r + 0.7152f * this->g + 0.0722f * this->b;
+  [[nodiscard]] constexpr float GetGrayScale() const noexcept {
+    return 0.2126f * this->R + 0.7152f * this->G + 0.0722f * this->B;
   }
 
   //!
@@ -80,42 +79,42 @@ struct DColor final {
   //!
 
   ///
-  /// @brief Can be convert DVector3 explicitly, but alpha information passed.
+  /// @brief Can be convert DDyVector3 explicitly, but alpha information passed.
   ///
-  explicit operator DVector3() const noexcept
+  explicit operator DDyVector3() const noexcept
   {
-    return DVector3{r, g, b};
+    return DDyVector3{this->R, this->G, this->B};
   }
 
   explicit operator glm::vec3() const noexcept
   {
-    return glm::vec3{r, g, b};
+    return glm::vec3{this->R, this->G, this->B};
   }
 
   operator glm::vec4() const noexcept
   {
-    return glm::vec4{r, g, b, a};
+    return glm::vec4{this->R, this->G, this->B, this->A};
   }
 
   //!
   //! Statics
   //!
 
-  static const DColor Aqua;
-  static const DColor Black;
-  static const DColor Blue;
-  static const DColor DarkRed;
-  static const DColor DarkGray;
-  static const DColor DarkGreen;
-  static const DColor Gold;
-  static const DColor Gray;
-  static const DColor Green;
-  static const DColor Magenta;
-  static const DColor Orange;
-  static const DColor Purple;
-  static const DColor Red;
-  static const DColor White;
-  static const DColor Yellow;
+  static const DDyColor Aqua;
+  static const DDyColor Black;
+  static const DDyColor Blue;
+  static const DDyColor DarkRed;
+  static const DDyColor DarkGray;
+  static const DDyColor DarkGreen;
+  static const DDyColor Gold;
+  static const DDyColor Gray;
+  static const DDyColor Green;
+  static const DDyColor Magenta;
+  static const DDyColor Orange;
+  static const DDyColor Purple;
+  static const DDyColor Red;
+  static const DDyColor White;
+  static const DDyColor Yellow;
 };
 
 } /// ::dy namespace

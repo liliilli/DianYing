@@ -1,20 +1,16 @@
 #ifndef GUARD_DY_HELPER_MATH_MATH_H
 #define GUARD_DY_HELPER_MATH_MATH_H
-
 ///
-/// @license BSD 2-Clause License
+/// MIT License
+/// Copyright (c) 2018 Jongmin Yun
 ///
-/// Copyright (c) 2018, Jongmin Yun(Neu.), All rights reserved.
-/// If you want to read full statements, read LICENSE file.
-///
-/// @file Dy/Helper/Math/Math.h
-///
-/// @brief Restriction template struct type which has range.
-///
-/// @author Jongmin Yun
-///
-/// @log
-/// 2018-07-05 Create file.
+/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+/// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+/// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+/// SOFTWARE.
 ///
 
 #include <list>
@@ -25,8 +21,9 @@
 
 namespace dy
 {
-struct DVector2;
-struct DVector3;
+struct DDyVector2;
+struct DDyVector3;
+struct DDyVector4;
 }
 
 //!
@@ -59,11 +56,11 @@ constexpr TType RadToDegVal = TType(180.0) / Pi<TType>;
 //!
 
 ///
-/// @brief aef
-/// efef
+/// @brief Clamp value from 'from' and 'inclusive_to'.
 ///
 template <typename TType>
-constexpr TType Clamp(const TType& value, const TType& from, const TType& inclusive_to) noexcept {
+[[nodiscard]] constexpr TType Clamp(const TType& value, const TType& from, const TType& inclusive_to) noexcept
+{
   return (value > from ? (value < inclusive_to ? value : inclusive_to) : from);
 }
 
@@ -73,7 +70,8 @@ constexpr TType Clamp(const TType& value, const TType& from, const TType& inclus
 /// a floating-error such as 0.1 but 0.10000007, so you have to use this function
 /// if you want to compare two floating points.
 ///
-constexpr bool IsNearlyEqual(const float lhs, const float rhs, const float error_tolerance = 0.0001f) noexcept {
+[[nodiscard]] constexpr bool IsNearlyEqual(const float lhs, const float rhs, const float error_tolerance = 0.0001f) noexcept
+{
   return (rhs < lhs ? lhs - rhs : rhs - lhs) < error_tolerance;
 }
 
@@ -83,55 +81,78 @@ constexpr bool IsNearlyEqual(const float lhs, const float rhs, const float error
 /// a floating-error such as 0.1 but 0.10000007, so you have to use this function
 /// if you want to compare two double points.
 ///
-constexpr bool IsNearlyEqual(const double lhs, const double rhs, const double error_tolerance = 0.0001) noexcept {
+[[nodiscard]] constexpr bool IsNearlyEqual(const double lhs, const double rhs, const double error_tolerance = 0.0001) noexcept
+{
   return (rhs < lhs ? lhs - rhs : rhs - lhs) < error_tolerance;
+}
+
+///
+/// @brief Check float '0' is nearly equal to real actual 0.
+///
+[[nodiscard]] constexpr bool IsNearlyZero(const float lhs, const float errorTolerance = 0.0001f) noexcept
+{
+  return lhs < errorTolerance ? (lhs > -errorTolerance ? true : false) : false;
+}
+
+///
+/// @brief Check float '0' is nearly equal to real actual 0.
+///
+[[nodiscard]] constexpr bool IsNearlyZero(const double lhs, const double errorTolerance = 0.0001) noexcept
+{
+  return lhs < errorTolerance ? (lhs > -errorTolerance ? true : false) : false;
 }
 
 ///
 /// @brief Check if vector is all zero or nearly equal to zero.
 ///
-bool IsAllZero(const dy::DVector2& vector) noexcept;
+[[nodiscard]] bool IsAllZero(const DDyVector2& vector) noexcept;
 
 ///
 /// @brief Check if vector is all zero or nearly equal to zero.
 ///
-bool IsAllZero(const dy::DVector3& vector) noexcept;
+[[nodiscard]] bool IsAllZero(const DDyVector3& vector) noexcept;
 
-// @todo Need to implement DVector4 && DVectorInt4 version IsAllZero().
+///
+/// @brief Check if vector is all zero or nearly equal to zero.
+///
+[[nodiscard]] bool IsAllZero(const DDyVector4& vector) noexcept;
 
 ///
 /// @brief Do linear interpolation with float type.
 /// If something wrong has been happened, return lowest value of float.
 ///
-float Lerp(float lhs, float rhs, float offset);
+[[nodiscard]] float Lerp(float lhs, float rhs, float offset);
 
 ///
 /// @brief Do linear interpolation with double type.
 /// If something wrong has been happened, return lowest value of double.
 ///
-double Lerp(double lhs, double rhs, float offset);
+[[nodiscard]] double Lerp(double lhs, double rhs, float offset);
 
 ///
-/// @brief Do linear interpolation with DVector2 type.
+/// @brief Do linear interpolation with DDyVector2 type.
 ///
-DVector2 Lerp(const DVector2& lhs, const DVector2& rhs, float offset);
+[[nodiscard]] DDyVector2 Lerp(const DDyVector2& lhs, const DDyVector2& rhs, float offset) noexcept;
 
 ///
-/// @brief Do linear interpolation with DVector3 type.
+/// @brief Do linear interpolation with DDyVector3 type.
 ///
-DVector3 Lerp(const DVector3& lhs, const DVector3& rhs, float offset);
+[[nodiscard]] DDyVector3 Lerp(const DDyVector3& lhs, const DDyVector3& rhs, float offset) noexcept;
+
+///
+/// @brief Do linear interpolation with DDyVector4 type.
+///
+[[nodiscard]] DDyVector4 Lerp(const DDyVector4& lhs, const DDyVector4& rhs, float offset) noexcept;
 
 ///
 /// @brief Get result point through quadratic bezier curve calculation.
 ///
-DVector2 GetQuadBezierCurvePoint(const DVector2& lhs, const DVector2& rhs, const DVector2& control,
-                                 float offset);
+[[nodiscard]] DDyVector2 GetQuadBezierCurvePoint(const DDyVector2& lhs, const DDyVector2& rhs, const DDyVector2& control, float offset);
 
 ///
 /// @brief Get result point through quadratic bezier curve calculation.
 ///
-DVector3 GetQuadBezierCurvePoint(const DVector3& lhs, const DVector3& rhs, const DVector3& control,
-                                 float offset);
+[[nodiscard]] DDyVector3 GetQuadBezierCurvePoint(const DDyVector3& lhs, const DDyVector3& rhs, const DDyVector3& control, float offset);
 
 //!
 //! GetMinMax Functions
@@ -144,13 +165,14 @@ using TMinMaxResult = std::pair<TValueType, TValueType>;
 /// @brief Get min and max arithmetic value from list.
 /// Result container's first value has min, second value has max.
 ///
-template <typename TValueType,
-          typename = std::enable_if_t<std::is_arithmetic_v<TValueType>>>
-TMinMaxResult<TValueType> GetMinMax(const std::vector<TValueType>& list) {
+template <typename TValueType, typename = std::enable_if_t<std::is_arithmetic_v<TValueType>>>
+[[nodiscard]] TMinMaxResult<TValueType> GetMinMax(const std::vector<TValueType>& list)
+{
   TValueType min = std::numeric_limits<TValueType>::max();
   TValueType max = std::numeric_limits<TValueType>::lowest();
 
-  for (const auto& value : list) {
+  for (const auto& value : list)
+  {
     if (value < min) min = value;
     if (value > max) max = value;
   }
@@ -162,13 +184,14 @@ TMinMaxResult<TValueType> GetMinMax(const std::vector<TValueType>& list) {
 /// @brief Get min and max arithmetic value from list.
 /// Result container's first value has min, second value has max.
 ///
-template <typename TValueType,
-          typename = std::enable_if_t<std::is_arithmetic_v<TValueType>>>
-TMinMaxResult<TValueType> GetMinMax(const std::list<TValueType>& list) {
+template <typename TValueType, typename = std::enable_if_t<std::is_arithmetic_v<TValueType>>>
+[[nodiscard]] TMinMaxResult<TValueType> GetMinMax(const std::list<TValueType>& list)
+{
   TValueType min = std::numeric_limits<TValueType>::max();
   TValueType max = std::numeric_limits<TValueType>::lowest();
 
-  for (const auto& value : list) {
+  for (const auto& value : list)
+  {
     if (value < min) min = value;
     if (value > max) max = value;
   }
@@ -180,13 +203,14 @@ TMinMaxResult<TValueType> GetMinMax(const std::list<TValueType>& list) {
 /// @brief Get min and max arithmetic value from list.
 /// Result container's first value has min, second value has max.
 ///
-template <typename TValueType, int32_t TSize,
-          typename = std::enable_if_t<std::is_arithmetic_v<TValueType>>>
-TMinMaxResult<TValueType> GetMinMax(const std::array<TValueType, TSize>& list) {
+template <typename TValueType, int32_t TSize, typename = std::enable_if_t<std::is_arithmetic_v<TValueType>>>
+[[nodiscard]] TMinMaxResult<TValueType> GetMinMax(const std::array<TValueType, TSize>& list)
+{
   TValueType min = std::numeric_limits<TValueType>::max();
   TValueType max = std::numeric_limits<TValueType>::lowest();
 
-  for (const auto& value : list) {
+  for (const auto& value : list)
+  {
     if (value < min) min = value;
     if (value > max) max = value;
   }
@@ -198,13 +222,14 @@ TMinMaxResult<TValueType> GetMinMax(const std::array<TValueType, TSize>& list) {
 /// @brief Get min and max arithmetic value from list.
 /// Result container's first value has min, second value has max.
 ///
-template <typename TValueType, int32_t TSize,
-          typename = std::enable_if_t<std::is_arithmetic_v<TValueType>>>
-TMinMaxResult<TValueType> GetMinMax(const TValueType (&list)[TSize]) {
+template <typename TValueType, int32_t TSize, typename = std::enable_if_t<std::is_arithmetic_v<TValueType>>>
+[[nodiscard]] TMinMaxResult<TValueType> GetMinMax(const TValueType (&list)[TSize])
+{
   TValueType min = std::numeric_limits<TValueType>::max();
   TValueType max = std::numeric_limits<TValueType>::lowest();
 
-  for (const auto& value : list) {
+  for (const auto& value : list)
+  {
     if (value < min) min = value;
     if (value > max) max = value;
   }
@@ -213,56 +238,62 @@ TMinMaxResult<TValueType> GetMinMax(const TValueType (&list)[TSize]) {
 }
 
 ///
-/// @brief Get min and max arithmetic value from DVector2.
+/// @brief Get min and max arithmetic value from DDyVector2.
 /// Result container's first value has min, second value has max.
 ///
-TMinMaxResult<float> GetMinMax(const dy::DVector2& vector) noexcept;
+[[nodiscard]] TMinMaxResult<float> GetMinMax(const dy::DDyVector2& vector) noexcept;
 
 ///
-/// @brief Get min and max arithmetic value from DVector3.
+/// @brief Get min and max arithmetic value from DDyVector3.
 /// Result container's first value has min, second value has max.
 ///
-TMinMaxResult<float> GetMinMax(const dy::DVector3& vector) noexcept;
+[[nodiscard]] TMinMaxResult<float> GetMinMax(const dy::DDyVector3& vector) noexcept;
 
 ///
-/// @brief Get degree rotation angle from -180 to 180' automatically.
+/// @brief Get min and max arithmetic value from DDyVector3.
+/// Result container's first value has min, second value has max.
 ///
-float GetRotationAngle(float angle_value) noexcept;
+[[nodiscard]] TMinMaxResult<float> GetMinMax(const dy::DDyVector4& vector) noexcept;
 
 ///
-/// @brief Get degree rotation angle from -180 to 180' automatically.
+/// @brief Get degree rotation angle from 0 to 360' automatically.
 ///
-double GetRotationAngle(double angle_value) noexcept;
+[[nodiscard]] float GetClampedRotationDegreeAngle(float degreeAngle) noexcept;
 
 ///
-/// @brief Get degree rotation angle from -180 to 180' automatically.
+/// @brief Get degree rotation angle from 0 to 360' automatically.
 ///
-float GetRotationAngleRadian(float angle_value) noexcept;
+[[nodiscard]] double GetClampedRotationDegreeAngle(double degreeAngle) noexcept;
 
 ///
-/// @brief Get degree rotation angle from -180 to 180' automatically.
+/// @brief Get degree rotation angle from 0 to 2pi automatically.
 ///
-double GetRotationAngleRadian(double angle_value) noexcept;
+[[nodiscard]] float GetClampedRotationRadianAngle(float radianAngle) noexcept;
+
+///
+/// @brief Get degree rotation angle from 0 to 2pi automatically.
+///
+[[nodiscard]] double GetClampedRotationRadianAngle(double radianAngle) noexcept;
 
 ///
 /// @brief Convert radian to degree, return -180 to 180'.
 ///
-float RadToDeg(float radian) noexcept;
+[[nodiscard]] float ConvertRadianToDegree(float radian) noexcept;
 
 ///
 /// @brief Convert radian to degree, return -180 to 180'.
 ///
-double RadToDeg(double radian) noexcept;
+[[nodiscard]] double ConvertRadianToDegree(double radian) noexcept;
 
 ///
 /// @brief Convert degree to radian, return -pi to pi.
 ///
-float DegToRad(float degree) noexcept;
+[[nodiscard]] float ConvertDegreeToRadian(float degree) noexcept;
 
 ///
 /// @brief Convert degree to radian, return -pi to pi.
 ///
-double DegToRad(double degree) noexcept;
+[[nodiscard]] double ConvertDegreeToRadian(double degree) noexcept;
 
 } /// ::dy::math namespace
 

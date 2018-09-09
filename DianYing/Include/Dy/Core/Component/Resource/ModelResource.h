@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Component/Resource/MeshResource.h>
+#include <Dy/Core/Component/Resource/SubmeshResource.h>
 
 //!
 //! Forward declaration
@@ -33,7 +33,8 @@ namespace dy
 
 ///
 /// @class CDyModelResource
-/// @brief
+/// @brief Model resource instance for storing and managing mesh nonsafe heap resource
+/// and other properties.
 ///
 class CDyModelResource
 {
@@ -48,16 +49,15 @@ public:
   ///
   /// @brief Get submesh resource, not modifiable.
   ///
-  const std::vector<std::unique_ptr<CDyMeshResource>>& GetSubmeshResources() const noexcept;
+  const std::vector<std::unique_ptr<CDySubmeshResource>>& GetSubmeshResources() const noexcept;
 
 private:
   ///
-  /// @brief
+  /// @brief Initialize model resource with model information instance.
   ///
-  [[nodiscard]]
-  EDySuccess pInitializeModel(const DDyModelInformation& modelInformation);
+  [[nodiscard]] EDySuccess pInitializeModelResource(const DDyModelInformation& modelInformation);
 
-  std::vector<std::unique_ptr<CDyMeshResource>> mMeshResource = {};
+  std::vector<std::unique_ptr<CDySubmeshResource>> mMeshResource = {};
 
   //!
   //! Level pointers binding
@@ -65,26 +65,15 @@ private:
 
   template <typename TType>
   using TBindPtrMap = std::unordered_map<TType*, TType*>;
-  ///
-  /// @brief
-  ///
-  void __pfSetPrevLevel(DDyModelInformation* ptr) const noexcept { __mPrevLevelPtr = ptr; }
-  void __pfSetRendererBind(void* ptr) const noexcept
+
+  void __pfLinkModelInformationPtr(DDyModelInformation* ptr) const noexcept
   {
-    auto [it, result] = __mBindRendererPtrs.try_emplace(ptr, ptr);
-    if (!result) {
-      assert(false);
-    }
+    this->__mLinkedModelInformationPtr = ptr;
   }
-  void __pfSetRendererReset(void* ptr) const noexcept
-  {
-    __mBindRendererPtrs.erase(ptr);
-  }
-  mutable DDyModelInformation*  __mPrevLevelPtr     = nullptr;
-  mutable TBindPtrMap<void>     __mBindRendererPtrs;
+  mutable DDyModelInformation*  __mLinkedModelInformationPtr = nullptr;
 
   friend class DDyModelInformation;
-  friend class MDyResource;
+  friend class MDyHeapResource;
 };
 
 } /// ::dy namespace

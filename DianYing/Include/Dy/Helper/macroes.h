@@ -74,20 +74,27 @@
   }
 
 ///
-/// @macro
+/// @macro MDY_U8
 ///
 #define MDY_U8(__MAString__) u8##__MAString__
 
 ///
-/// @macro
+/// @macro MDY_NOT_INITIALIZED_M1
+/// @brief Initialize arbitary variable with -1.
 ///
 #define MDY_NOT_INITIALIZED_M1 -1
 
 ///
-/// @macro
+/// @macro MDY_NOT_INITIALIZED_0
+/// @brief Initialize arbitary variable with 0.
 ///
-#define MDY_BIND_BEGIN_END(__MAIteratorableType__) \
-  __MAIteratorableType__.begin(), __MAIteratorableType__.end()
+#define MDY_NOT_INITIALIZED_0   0
+
+///
+/// @macro MDY_BIND_BEGIN_END
+/// @brief Help forward iteratable type to bind .begin() and .end() to function.
+///
+#define MDY_BIND_BEGIN_END(__MAIteratorableType__) __MAIteratorableType__.begin(), __MAIteratorableType__.end()
 
 ///
 /// @macro MDY_SET_IMMUTABLE_STRING

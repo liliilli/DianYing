@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Core/Component/Internal/ModelType.h>
-#include <Dy/Core/Component/Information/MeshInformation.h>
+#include <Dy/Core/Component/Information/SubmeshInformation.h>
 #include <Dy/Core/Component/Internal/MaterialType.h>
 
 //!
@@ -30,7 +30,7 @@ namespace dy
 {
 enum class EDyTextureMapType : unsigned char;
 class CDyModelResource;
-class CDyTextureInformation;
+class DDyTextureInformation;
 } /// ::dy namespace
 
 //!
@@ -76,7 +76,7 @@ public:
   ///
   FORCEINLINE bool IsBeingBinded() const noexcept
   {
-    return this->mNextLevelPtr != nullptr;
+    return this->mLinkedModelResourcePtr != nullptr;
   }
 
 private:
@@ -92,37 +92,36 @@ private:
   ///
   void __pProcessAssimpMesh(aiMesh* mesh, const aiScene* scene);
 
-  EDySuccess __pLoadVertexData(const aiMesh* mesh, PMeshInformationDescriptor& desc);
+  /// Read vertex data, make data, and insert to PDySubmeshInformationDescriptor.
+  EDySuccess __pReadVertexData(const aiMesh* mesh, PDySubmeshInformationDescriptor& desc);
 
-  EDySuccess __pLoadIndiceData(const aiMesh* mesh, PMeshInformationDescriptor& desc);
+  /// Read index(element) data, make data, and insert to PDySubmeshInformationDescriptor.
+  EDySuccess __pReadIndiceData(const aiMesh* mesh, PDySubmeshInformationDescriptor& desc);
 
-  std::optional<PDyMaterialConstructionDescriptor> __pReadMaterialData(const aiMaterial* material);
+  /// Read material data and make descriptor.
+  PDyMaterialConstructionDescriptor __pReadMaterialData(const aiMaterial* material);
 
-  ///
-  /// @brief
-  ///
+  /// Read material texture data and insert texture information to manager.
   std::optional<std::vector<std::string>> __pLoadMaterialTextures(const aiMaterial* material, EDyTextureMapType type);
 
-  ///
-  /// @brief Output information log only in debug mode.
-  ///
+  /// Output information log only in debug mode.
   void __pOutputDebugInformationLog();
 
-  std::string                       mModelName          = "";
-  std::string                       mModelRootPath      = "";
-  std::vector<DDyMeshInformation>   mMeshInformations   = {};
-  std::vector<std::string>          mBindedMaterialName = {};
-  std::vector<std::string>          mTextureLocalPaths  = {};
+  std::string                         mModelName          = "";
+  std::string                         mModelRootPath      = "";
+  std::vector<DDySubmeshInformation>  mMeshInformations   = {};
+  std::vector<std::string>            mBindedMaterialName = {};
+  std::vector<std::string>            mTextureLocalPaths  = {};
 
   //!
-  //! Level pointers binding
+  //! Resource pointers binding
   //!
 
-  void __pfSetNextLevel(CDyModelResource* ptr) const noexcept { mNextLevelPtr = ptr; }
-  mutable CDyModelResource* mNextLevelPtr = nullptr;
+  void __pfSetModelResourceLink(CDyModelResource* ptr) const noexcept { mLinkedModelResourcePtr = ptr; }
+  mutable CDyModelResource* mLinkedModelResourcePtr = nullptr;
 
   friend class CDyModelResource;
-  friend class MDyResource;
+  friend class MDyHeapResource;
 };
 
 } /// ::dy namespace
