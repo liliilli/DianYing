@@ -50,12 +50,6 @@
   #pragma comment(lib, "d3d11.lib")
 #endif
 
-#ifdef false
-#if !defined(NDEBUG)
-  #define GLEW_STATIC
-#endif
-#include <GL/glew.h>
-#endif
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 

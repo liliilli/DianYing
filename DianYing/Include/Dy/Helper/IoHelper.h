@@ -19,7 +19,7 @@ namespace dy
 ///
 /// @brief
 ///
-std::optional<std::vector<char>> DyReadBinaryFileAll(const std::string& filePath) {
+inline std::optional<std::vector<char>> DyReadBinaryFileAll(const std::string& filePath) {
   std::ifstream fileStream { filePath, std::ios::ate | std::ios::binary };
   if (!fileStream.is_open()) return std::nullopt;
 
@@ -33,7 +33,10 @@ std::optional<std::vector<char>> DyReadBinaryFileAll(const std::string& filePath
   return fileBuffer;
 }
 
-
+///
+/// @brief Get file name from path without file speicification (.exe, like)
+///
+[[nodiscard]] std::string DyGetFileNameFromPath(const std::string& path) noexcept;
 
 } /// ::dy namespace
 

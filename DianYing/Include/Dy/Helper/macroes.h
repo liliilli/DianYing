@@ -174,15 +174,21 @@ private:                                                  \
 //! Function type macros.
 //!
 
-#define VARARGS     __cdecl											/* Functions with variable arguments */
+#define VARARGS     __cdecl										        // Functions with variable arguments */
 #ifndef CDECL
-#define CDECL	    __cdecl											/* Standard C function */
+#define CDECL	    __cdecl											        // Standard C function */
 #endif
-#define STDCALL		__stdcall										/* Standard calling convention */
-#define FORCEINLINE __forceinline									/* Force code to be inline */
-#define FORCENOINLINE __declspec(noinline)							/* Force code to NOT be inline */
-#define FUNCTION_NO_RETURN_START __declspec(noreturn)				/* Indicate that the function never returns. */
-#define FUNCTION_NON_NULL_RETURN_START _Ret_notnull_				/* Indicate that the function never returns nullptr. */
+#define STDCALL		__stdcall										        // Standard calling convention */
+#define FORCEINLINE __forceinline							        // Force code to be inline */
+#define FORCENOINLINE __declspec(noinline)		        // Force code to NOT be inline */
+#define FUNCTION_NO_RETURN_START __declspec(noreturn)	// Indicate that the function never returns. */
+#define FUNCTION_NON_NULL_RETURN_START _Ret_notnull_	// Indicate that the function never returns nullptr. */
+
+#if defined(_WIN32)
+#define MDY_NO_VTABLE __declspec(novtable)            // NO virtual table only for pure abstract class.
+#else
+#define MDY_NO_VTABLE
+#endif
 
 ///
 /// Macro static integrity test
