@@ -134,7 +134,7 @@ EDySuccess MDyResource::CreateMaterialResource(const std::string& materialName)
   }
 
   // Verify texture resource instance also.
-  if (information.mTextureName.size() > 16)
+  if (information.mTextureNames.size() > 16)
   {
     /*
      * std::cout << "Failure : " << "Texture size must not be bigger than 16.";
@@ -142,7 +142,7 @@ EDySuccess MDyResource::CreateMaterialResource(const std::string& materialName)
     return DY_FAILURE;
   }
 
-  for (const auto& textureName : information.mTextureName)
+  for (const auto& textureName : information.mTextureNames)
   {
     const auto* textureResource = this->GetTextureResource(textureName);
     if (!textureResource)
@@ -166,7 +166,7 @@ EDySuccess MDyResource::CreateMaterialResource(const std::string& materialName)
         information.mShaderName,
         this->GetShaderResource(information.mShaderName)
     };
-    for (const auto& textureName : information.mTextureName)
+    for (const auto& textureName : information.mTextureNames)
     {
       mParamterDescriptor.mTextureTuples.emplace_back(
         decltype(mParamterDescriptor.mTextureTuples)::value_type\

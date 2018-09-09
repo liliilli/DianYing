@@ -22,6 +22,7 @@ namespace dy
 struct  PDyRendererConsturctionDescriptor;
 class   CDyModelResource;
 class   CDyMaterialResource;
+class   CDyMeshResource;
 } /// ::dy namespace
 
 //!
@@ -52,14 +53,21 @@ public:
   EDySuccess pfInitialize(const PDyRendererConsturctionDescriptor& desc);
 
   ///
-  /// @brief
+  /// @brief Render mesh.
   ///
   void Render();
 
 private:
-
   CDyModelResource*                 mModelReferencePtr    = nullptr;
   std::vector<CDyMaterialResource*> mMaterialResourcePtr  = {};
+
+  struct DDyBindingInformation final
+  {
+    CDyMeshResource*      mSubmeshResource  = nullptr;
+    CDyMaterialResource*  mMaterialResource = nullptr;
+  };
+
+  std::vector<DDyBindingInformation> mMeshMaterialPtrBindingList = {};
 };
 
 } /// ::dy namespace

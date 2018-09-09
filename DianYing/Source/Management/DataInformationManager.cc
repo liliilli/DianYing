@@ -177,33 +177,32 @@ std::optional<std::string> MDyDataInformation::PopulateMaterialInformation(
   const auto* baseMaterial = GetMaterialInformation(materialName);
   if (!baseMaterial)
   {
-    // @todo error log
+    MDY_LOG_CRITICAL_D("{} | Failed to getting information of base material. base material name : {}", "MDyDataInformation::PopulateMaterialInformation", materialName);
     return std::nullopt;
   }
 
-  // Setup meterial populate descriptor from parameter descriptor.
-  // and error checking.
+  // Setup meterial populate descriptor from parameter descriptor and error checking.
   PDyMaterialPopulateDescriptor actualMaterialPopDesc = materialPopulateDescriptor;
   if (!actualMaterialPopDesc.mIsEnabledMaterialCustomNameOverride)
   {
-    std::string newName {fmt::format("ov_{0}", materialName)};
+    std::string newMaterialName {fmt::format("ov_{0}", materialName)};
     if (actualMaterialPopDesc.mIsEnabledShaderOverride)
     {
-      newName.append(fmt::format("{0}{1}", 's', actualMaterialPopDesc.mOverrideShaderName));
+      newMaterialName.append(fmt::format("{0}{1}", 's', actualMaterialPopDesc.mOverrideShaderName));
     }
-    const auto id = baseMaterial->__pfEnrollAndGetNextDerivedMaterialIndex(newName);
-    actualMaterialPopDesc.mMaterialOverrideName = newName + std::to_string(id);
+    const auto id = baseMaterial->__pfEnrollAndGetNextDerivedMaterialIndex(newMaterialName);
+    actualMaterialPopDesc.mMaterialOverrideName = newMaterialName + std::to_string(id);
   }
   else
   {
     if (actualMaterialPopDesc.mMaterialOverrideName.empty())
     {
-      // @todo error log "Empty name is prohibited."
+      MDY_LOG_ERROR("{} | Empty material override name is prohibitted.", "MDyDataInformation::PopulateMaterialInformation");
       return std::nullopt;
     }
     if (GetMaterialInformation(actualMaterialPopDesc.mMaterialOverrideName))
     {
-      // @todo error log "OverrideName is already posed by material instance."
+      MDY_LOG_ERROR("{} | Override name is already posed by any of material information.", "MDyDataInformation::PopulateMaterialInformation");
       return std::nullopt;
     };
   }
@@ -212,7 +211,7 @@ std::optional<std::string> MDyDataInformation::PopulateMaterialInformation(
   auto [infoIt, result] = this->mMaterialInformation.try_emplace(actualMaterialPopDesc.mMaterialOverrideName, nullptr);
   if (!result)
   {
-    // @todo error log
+    MDY_LOG_CRITICAL_D("{} | Unexpected error occured.", "MDyDataInformation::PopulateMaterialInformation");
     return std::nullopt;
   }
 
@@ -221,9 +220,10 @@ std::optional<std::string> MDyDataInformation::PopulateMaterialInformation(
   infoIt->second.swap(populateDerivedSmtPtr);
   if (!infoIt->second)
   {
-    // @todo error log
+    MDY_LOG_CRITICAL_D("{} | Unexpected error occured on swapping.", "MDyDataInformation::PopulateMaterialInformation");
     return std::nullopt;
   }
+
   return actualMaterialPopDesc.mMaterialOverrideName;
 }
 
