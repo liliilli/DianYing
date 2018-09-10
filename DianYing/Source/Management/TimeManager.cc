@@ -26,11 +26,18 @@ namespace dy
 
 EDySuccess MDyTime::IsGameFrameTicked() const noexcept
 {
-  if (this->mGameTickElapsedTime < this->mGameTickFragment)
-    return DY_FAILURE;
+  if (this->__mIsEnabledVsync)
+  {
+    if (this->mGameTickElapsedTime < this->mGameTickFragment)
+      return DY_FAILURE;
+    else
+    {
+      this->mGameTickElapsedTime -= this->mGameTickFragment;
+      return DY_SUCCESS;
+    }
+  }
   else
   {
-    this->mGameTickElapsedTime -= this->mGameTickFragment;
     return DY_SUCCESS;
   }
 }
@@ -40,9 +47,16 @@ int32_t MDyTime::GetPresentFpsValue() const noexcept
   return this->mGameTickedFps;
 }
 
-float MDyTime::GetGameDeltaTimeValue() const noexcept
+float MDyTime::GetGameScaledTickedDeltaTimeValue() const noexcept
 {
-  return this->mGameScaledDeltaTime;
+  if (this->__mIsEnabledVsync)
+  {
+    return this->mGameTickFragment * this->mTimeScale;
+  }
+  else
+  {
+    return this->mGameScaledDeltaTime;
+  }
 }
 
 float MDyTime::GetGameScaledElapsedTimeValue() const noexcept

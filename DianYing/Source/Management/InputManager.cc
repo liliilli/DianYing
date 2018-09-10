@@ -135,7 +135,7 @@ EDySuccess DyBindKeyboardKeyInformation(const nlohmann::json& atlas_json);
 EDySuccess DyKeyboardBindKey(const nlohmann::basic_json<>::const_iterator& it, dy::MDyInput& inputManager);
 
 void DyProceedGravity(dy::DDyKeyBindingInformation& key_info) {
-	const auto dt = dy::MDyTime::GetInstance().GetGameDeltaTimeValue();
+	const auto dt = dy::MDyTime::GetInstance().GetGameScaledTickedDeltaTimeValue();
   static constexpr float kZeroValue = 0.0f;
 
 	if (auto& value = key_info.mAxisValue; value < 0) // Negative

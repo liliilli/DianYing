@@ -44,7 +44,7 @@ public:
   ///
   /// @return Float value delta time value.
   ///
-  [[nodiscard]] float GetGameDeltaTimeValue() const noexcept;
+  [[nodiscard]] float GetGameScaledTickedDeltaTimeValue() const noexcept;
 
   ///
   /// @brief Get summed delta time from previous function call.

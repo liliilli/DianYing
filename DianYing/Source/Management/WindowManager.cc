@@ -56,7 +56,7 @@ namespace
 bool gImguiShowDemoWindow = true;
 bool gImguiShowAnotherWindow = false;
 
-dy::DDyVector3                    gColor      {.2f, .3f, .2f};
+dy::DDyVector3                  gColor      {.2f, .3f, .2f};
 dy::CDyMeshRenderer             gRenderer   = {};
 std::unique_ptr<dy::CDyCamera>  gCameraPtr  = nullptr;
 std::unique_ptr<dy::FDyGrid>    gGrid       = nullptr;
@@ -475,7 +475,6 @@ namespace dy
 
 void MDyWindow::Run()
 {
-  // @todo temporal
   auto& timeManager  = MDyTime::GetInstance();
 
   while (!glfwWindowShouldClose(this->mGlfwWindow))
@@ -483,7 +482,7 @@ void MDyWindow::Run()
     timeManager.pUpdate();
     if (timeManager.IsGameFrameTicked() == DY_SUCCESS)
     {
-      const auto dt = timeManager.GetGameDeltaTimeValue();
+      const auto dt = timeManager.GetGameScaledTickedDeltaTimeValue();
 
       this->pUpdate(dt);
       this->pRender();
