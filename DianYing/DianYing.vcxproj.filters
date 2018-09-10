@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Source\Entry\entry.cc" />
     <ClCompile Include="Source\precompiled.cc" />
     <ClCompile Include="Source\Management\TimeManager.cc" />
     <ClCompile Include="Source\Management\SettingManager.cc" />
@@ -30,7 +29,6 @@
     <ClCompile Include="Source\Core\Component\Information\MaterialInformation.cc" />
     <ClCompile Include="Source\Core\Component\Resource\TextureResource.cc" />
     <ClCompile Include="Source\Core\Component\Resource\MaterialResource.cc" />
-    <ClCompile Include="Source\Core\Component\Resource\MeshResource.cc" />
     <ClCompile Include="Source\Core\Component\Resource\ModelResource.cc" />
     <ClCompile Include="Source\Core\Component\Information\ModelInformation.cc" />
     <ClCompile Include="Source\Core\Component\MeshRenderer.cc" />
@@ -45,12 +43,11 @@
     <ClCompile Include="Source\Helper\Type\Quaternion.cc" />
     <ClCompile Include="Source\Helper\IoHelper.cc" />
     <ClCompile Include="Libraries\glad\src\glad.c" />
+    <ClCompile Include="Source\Entry\Entry.cc" />
+    <ClCompile Include="Source\Core\Component\Resource\SubmeshResource.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
-    <ClInclude Include="Include\Dy\Helper\disable_warnings.h" />
-    <ClInclude Include="Include\Dy\Helper\aliases.h" />
-    <ClInclude Include="Include\Dy\Helper\enum_flags.h" />
     <ClInclude Include="Include\Dy\Management\TimeManager.h" />
     <ClInclude Include="Include\Dy\Management\SettingManager.h" />
     <ClInclude Include="Include\Dy\Management\Interface\ISingletonCrtp.h" />
@@ -80,12 +77,10 @@
     <ClInclude Include="Include\Dy\Core\Component\Information\ShaderInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\TextureInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\MaterialInformation.h" />
-    <ClInclude Include="Include\Dy\Core\Component\Information\MeshInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\ModelInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\TextureResource.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\ShaderResource.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\MaterialResource.h" />
-    <ClInclude Include="Include\Dy\Core\Component\Resource\MeshResource.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\ModelResource.h" />
     <ClInclude Include="Include\Dy\Management\DataInformationManager.h" />
     <ClInclude Include="Include\Dy\Management\HeapResourceManager.h" />
@@ -96,7 +91,6 @@
     <ClInclude Include="Include\Dy\Core\Component\Internal\ModelType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\EtcType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Object\Camera.h" />
-    <ClInclude Include="Include\Dy\Helper\ImmutableSetting.h" />
     <ClInclude Include="Include\Dy\Management\SceneManager.h" />
     <ClInclude Include="Include\Dy\Helper\Macroes.h" />
     <ClInclude Include="Include\Dy\Management\WindowManager.h" />
@@ -114,6 +108,10 @@
     <ClInclude Include="Include\Dy\Core\Component\Interface\IDyToString.h" />
     <ClInclude Include="Libraries\glad\include\glad\glad.h" />
     <ClInclude Include="Libraries\glad\include\KHR\khrplatform.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Information\SubmeshInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Resource\SubmeshResource.h" />
+    <ClInclude Include="Include\Dy\Helper\DisableWarning.h" />
+    <ClInclude Include="Include\Dy\Helper\GlobalEnumFlags.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />
