@@ -43,6 +43,76 @@ MDY_SET_IMMUTABLE_STRING(kFunc__pProcessAssimpMesh,     "__pProcessAssimpMesh");
 MDY_SET_IMMUTABLE_STRING(kFunc__pReadMaterialData,      "__pReadMaterialData");
 MDY_SET_IMMUTABLE_STRING(kWarnDuplicatedMaterialName,   "{}::{} | Duplicated material name detected. Material name : {}");
 
+///
+/// @brief Convert Assimp texture map type to EDyTextureMapType.
+///
+[[nodiscard]] dy::EDyTextureMapType DyGetTextureMapTypeFromAssimp(aiTextureType type) noexcept
+{
+  switch (type)
+  {
+  case aiTextureType_DIFFUSE:       return dy::EDyTextureMapType::Diffuse;
+  case aiTextureType_SPECULAR:      return dy::EDyTextureMapType::Specular;
+  case aiTextureType_AMBIENT:       return dy::EDyTextureMapType::Ambient;
+  case aiTextureType_EMISSIVE:      return dy::EDyTextureMapType::Emissive;
+  case aiTextureType_HEIGHT:        return dy::EDyTextureMapType::Height;
+  case aiTextureType_NORMALS:       return dy::EDyTextureMapType::Normal;
+  case aiTextureType_SHININESS:     return dy::EDyTextureMapType::Shininess;
+  case aiTextureType_OPACITY:       return dy::EDyTextureMapType::Opacity;
+  case aiTextureType_DISPLACEMENT:  return dy::EDyTextureMapType::Displacement;
+  case aiTextureType_LIGHTMAP:      return dy::EDyTextureMapType::LightMap;
+  case aiTextureType_REFLECTION:    return dy::EDyTextureMapType::Reflection;
+  default:                          return dy::EDyTextureMapType::Custom;
+  }
+}
+
+///
+/// @brief EDyTextureMapType => aiTextureType
+///
+[[nodiscard]] aiTextureType DyGetAiTextureTypeFromEDyMapType(dy::EDyTextureMapType type) noexcept
+{
+  using dy::EDyTextureMapType;
+  switch (type)
+  {
+  case EDyTextureMapType::Diffuse:    return aiTextureType_DIFFUSE;
+  case EDyTextureMapType::Specular:   return aiTextureType_SPECULAR;
+  case EDyTextureMapType::Ambient:    return aiTextureType_AMBIENT;
+  case EDyTextureMapType::Emissive:   return aiTextureType_EMISSIVE;
+  case EDyTextureMapType::Height:     return aiTextureType_HEIGHT;
+  case EDyTextureMapType::Normal:     return aiTextureType_NORMALS;
+  case EDyTextureMapType::Shininess:  return aiTextureType_SHININESS;
+  case EDyTextureMapType::Opacity:    return aiTextureType_OPACITY;
+  case EDyTextureMapType::Displacement: return aiTextureType_DISPLACEMENT;
+  case EDyTextureMapType::LightMap:   return aiTextureType_LIGHTMAP;
+  case EDyTextureMapType::Reflection: return aiTextureType_REFLECTION;
+  case EDyTextureMapType::Custom:     return aiTextureType_NONE;
+  default: return aiTextureType_UNKNOWN;
+  }
+}
+
+///
+/// @brief
+///
+[[nodiscard]] std::string_view DyGetDebugStringFromEDyMapType(dy::EDyTextureMapType type) noexcept
+{
+  using dy::EDyTextureMapType;
+  switch (type)
+  {
+  case EDyTextureMapType::Diffuse:    return "Diffuse Map";
+  case EDyTextureMapType::Specular:   return "Specular Map";
+  case EDyTextureMapType::Ambient:    return "Ambient Map";
+  case EDyTextureMapType::Emissive:   return "Emissive Map";
+  case EDyTextureMapType::Height:     return "Height Map";
+  case EDyTextureMapType::Normal:     return "Normal(Bump) Map";
+  case EDyTextureMapType::Shininess:  return "Shininess Map";
+  case EDyTextureMapType::Opacity:    return "Opacity Map";
+  case EDyTextureMapType::Displacement: return "Displacement Map";
+  case EDyTextureMapType::LightMap:   return "Light Map";
+  case EDyTextureMapType::Reflection: return "Reflection Map";
+  case EDyTextureMapType::Custom:     return "Custom";
+  default: return "Unknown";
+  }
+}
+
 } /// ::unnamed namespace
 
 namespace dy
@@ -50,8 +120,6 @@ namespace dy
 
 DDyModelInformation::DDyModelInformation(const PDyModelConstructionDescriptor& modelConstructionDescriptor)
 {
-
-
   // Insert name and check name is empty or not.
   this->mModelName = modelConstructionDescriptor.mModelName;
   MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "Model name", this->mModelName);
@@ -255,6 +323,7 @@ PDyMaterialConstructionDescriptor DDyModelInformation::__pReadMaterialData(const
     const auto& normalMaps = opNormal.value();
     textureNames.insert(textureNames.end(), normalMaps.begin(), normalMaps.end());
   }
+  // @todo Normal map (tangent space) will be recognized as Height map, not Normal map. so need to rearrangement.
   if (const auto opHeight = __pLoadMaterialTextures(material, EDyTextureMapType::Height); opHeight.has_value())
   {
     const auto& heightMaps = opHeight.value();
@@ -316,16 +385,17 @@ DDyModelInformation::__pLoadMaterialTextures(const aiMaterial* material, EDyText
       textureDesc.mTextureFileLocalPath               = textureLocalPath.C_Str();
       textureDesc.mTextureFileAbsolutePath            = this->mModelRootPath + '/' + textureDesc.mTextureFileLocalPath;
       textureDesc.mTextureType                        = EDyTextureStyleType::D2;
-      textureDesc.mTextureMapType                     = type;
       textureDesc.mIsEnabledCustomedTextureParameter  = false;
       textureDesc.mIsEnabledAbsolutePath              = true;
       textureDesc.mIsEnabledCreateMipmap              = true;
+      textureDesc.mTextureMapType                     = type;
 
       MDY_CALL_ASSERT_SUCCESS(manInfo.CreateTextureInformation(textureDesc));
       this->mTextureLocalPaths.emplace_back(textureDesc.mTextureFileLocalPath);
     }
 
-    MDY_LOG_CRITICAL_D("{}::{} | Texture Name : {}", "DDyModelInformation", "__pLoadMaterialTextures", textureName);
+    MDY_LOG_DEBUG_D("{}::{} | Texture Name : {}", "DDyModelInformation", "__pLoadMaterialTextures", textureName);
+    MDY_LOG_DEBUG_D("{}::{} | Map Type : {}",     "DDyModelInformation", "__pLoadMaterialTextures", DyGetDebugStringFromEDyMapType(type).data());
     textureInformationString.emplace_back(textureName);
   }
 
