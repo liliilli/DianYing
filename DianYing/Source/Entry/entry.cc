@@ -27,6 +27,8 @@
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/InputManager.h>
 
+#include <sol2/sol.hpp>
+
 namespace
 {
 ///
@@ -163,6 +165,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLin
 
   MDY_LOG_INFO_D("Platform : Windows");
   MDY_LOG_INFO_D("Running application routine.");
+
+  sol::state lua;
+  lua.open_libraries(sol::lib::base, sol::lib::package);
+
+  int value = lua.script("return 54");
+  MDY_LOG_CRITICAL_D("Hello world Lua! : {}", value);
 
   dy::MDyWindow::GetInstance().Run();
 
