@@ -12,15 +12,22 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /// SOFTWARE.
 ///
+/// @TODO SEPARATE KEY TO ACTION AND AXIS, ACTION IS PUSH AND RELEASE BUT AXIS HAS REPEATED.
+///
 
 #include <string>
+
+#include <Dy/Helper/Type/Vector2.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Management/Type/KeyBindingInformation.h>
-#include "Dy/Helper/Type/Vector2.h"
 
 namespace dy
 {
 
+///
+/// @class MDyInput
+/// @brief Manages input polling, mouse movement and joystick input signaling.
+///
 class MDyInput final : public ISingleton<MDyInput>
 {
   MDY_SINGLETON_PROPERTIES(MDyInput);
@@ -38,9 +45,9 @@ public:
   [[nodiscard]] float GetKeyValue(const std::string& axisKeyName) noexcept;
 
   ///
-  /// @brief
+  /// @brief Return present mouse poisition.
   ///
-  [[nodiscard]] const DVector2& GetPresentMousePosition() const noexcept
+  [[nodiscard]] FORCEINLINE const DDyVector2& GetPresentMousePosition() const noexcept
   {
     return this->mMousePresentPosition;
   }
@@ -48,7 +55,7 @@ public:
   ///
   /// @brief
   ///
-  [[nodiscard]] const DVector2& GetPresentLastPosition() const noexcept
+  [[nodiscard]] FORCEINLINE const DDyVector2& GetPresentLastPosition() const noexcept
   {
     return this->mMouseLastPosition;
   }
@@ -68,32 +75,31 @@ public:
   [[nodiscard]] bool IsKeyReleased(const std::string& keyName) noexcept;
 
   ///
-  /// @brief
+  /// @brief check if mouse is moved on present frame, but false when mouse movement is not activated.
   ///
-  [[nodiscard]] bool IsMouseMoved() const noexcept
+  [[nodiscard]] FORCEINLINE bool IsMouseMoved() const noexcept
   {
     return this->mIsMouseMoved;
   }
 
   ///
-  /// @brief
+  /// @brief Check if key exist.
   ///
   [[nodiscard]] bool pIsKeyExist(const std::string& keyName) const noexcept;
 
   ///
-  /// @brief
+  /// @brief Insert
   ///
   [[nodiscard]] EDySuccess pInsertKey(const PDyKeyBindingConstructionDescriptor& bindingKey) noexcept;
 
 private:
   ///
-  /// @brief
+  /// @brief Update input polling on present frame with delta time.
+  /// This function must be called update phrase.
   ///
   void pfUpdate(float dt) noexcept;
 
-  ///
-  /// @brief
-  ///
+  /// Read input setting file. this function must be called just once.
   [[nodiscard]] EDySuccess pReadInputFile(const std::string& file_path);
 
   using TKeyMap = std::unordered_map<std::string, DDyKeyBindingInformation>;
@@ -103,8 +109,8 @@ private:
   GLFWcursor*       mGlfwWindowCursorPtr  = nullptr;
 
   TKeyMap           mBindedKeyList;
-  DVector2          mMouseLastPosition    = {};
-  DVector2          mMousePresentPosition = {};
+  DDyVector2        mMouseLastPosition    = {};
+  DDyVector2        mMousePresentPosition = {};
 
   bool              mIsEnabledKeyboard    = false;
   bool              mIsEnabledMouse       = false;

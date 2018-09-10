@@ -16,7 +16,8 @@
 #include <Dy/Core/Component/Resource/ModelResource.h>
 
 #include <Dy/Core/Component/Information/ModelInformation.h>
-#include <Dy/Core/Component/Resource/MeshResource.h>
+#include <Dy/Core/Component/Resource/SubmeshResource.h>
+#include <Dy/Management/LoggingManager.h>
 
 namespace dy
 {
@@ -24,31 +25,34 @@ namespace dy
 CDyModelResource::~CDyModelResource()
 {
   // Release all resource bind to this instance.
-  if (this->__mPrevLevelPtr)
+  if (this->__mLinkedModelInformationPtr)
   {
-    this->__mPrevLevelPtr->__pfSetNextLevel(nullptr);
+    this->__mLinkedModelInformationPtr->__pfSetModelResourceLink(nullptr);
   }
+
+  this->mMeshResource.clear();
 }
 
-const std::vector<std::unique_ptr<CDyMeshResource>>& CDyModelResource::GetSubmeshResources() const noexcept
+const std::vector<std::unique_ptr<CDySubmeshResource>>& CDyModelResource::GetSubmeshResources() const noexcept
 {
   return this->mMeshResource;
 }
 
-EDySuccess CDyModelResource::pInitializeModel(const DDyModelInformation& modelInformation)
+EDySuccess CDyModelResource::pInitializeModelResource(const DDyModelInformation& modelInformation)
 {
   const auto& submeshInformations = modelInformation.mMeshInformations;
   for (const auto& submeshInformation : submeshInformations)
   {
-    std::unique_ptr<CDyMeshResource> meshResource = std::make_unique<CDyMeshResource>();
-    if (meshResource->pfInitializeMesh(submeshInformation) == DY_FAILURE)
+    std::unique_ptr<CDySubmeshResource> meshResource = std::make_unique<CDySubmeshResource>();
+    if (meshResource->pfInitializeSubmeshResource(submeshInformation) == DY_FAILURE)
     {
+      MDY_LOG_ERROR("{} | Failed to create submesh resource. | Model name : {}",
+                    "CDyModelResource::pInitializeModelResource", modelInformation.mModelName);
       return DY_FAILURE;
     }
 
     this->mMeshResource.emplace_back(std::move(meshResource));
   }
-
   return DY_SUCCESS;
 }
 

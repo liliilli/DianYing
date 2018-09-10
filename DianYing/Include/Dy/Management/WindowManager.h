@@ -21,6 +21,11 @@ namespace dy
 {
 
 #if defined(MDY_PLATFORM_FLAG_WINDOWS)
+
+///
+/// @struct DDyWindowInformationWindows
+/// @brief Windows information for windows platform.
+///
 struct DDyWindowInformationWindows
 {
 protected:
@@ -30,7 +35,11 @@ protected:
   GLFWwindow* mGlfwWindow               = nullptr;
 };
 
-struct DDyDependentFunctionWindows
+///
+/// @struct DDyDependentFunctionWindows
+/// @brief Windows specific functions
+///
+struct [[maybe_unused]] DDyDependentFunctionWindows
 {
 
 };
@@ -57,8 +66,11 @@ public:
   }
 
 private:
+  ///
+  void pUpdate(float dt);
 
-
+  ///
+  void pRender();
 
 };
 

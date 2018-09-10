@@ -31,15 +31,14 @@ EDySuccess MDyScene::pfRelease()
   return DY_SUCCESS;
 }
 
-CDyCamera* MDyScene::GetCamera() const noexcept
+CDyCamera* MDyScene::GetMainCameraPtr() const noexcept
 {
-  assert(this->mValidMainCameraPtr);
   return this->mValidMainCameraPtr;
 }
 
 void MDyScene::__pfBindFocusCamera(CDyCamera* validCameraPtr)
 {
-  assert(validCameraPtr);
+  PHITOS_ASSERT(validCameraPtr != nullptr, "validCameraPtr must be valid, not nullptr.");
   this->mValidMainCameraPtr = validCameraPtr;
 }
 
@@ -48,13 +47,11 @@ void MDyScene::__pfUnbindCameraFocus()
   if (this->mValidMainCameraPtr)
   {
     this->mValidMainCameraPtr = nullptr;
-    MDY_LOG_INFO_D("{} | MainCamera pointing unbinded.",
-                   "MDyScene::__pfUnbindCameraFocus()");
+    MDY_LOG_INFO_D("{} | MainCamera pointing unbinded.", "MDyScene::__pfUnbindCameraFocus()");
   }
   else
   {
-    MDY_LOG_WARNING_D("{} | Valid mainCamera pointer does not point anything.",
-                      "MDyScene::__pfUnbindCameraFocus()");
+    MDY_LOG_WARNING_D("{} | Valid mainCamera pointer does not point anything.", "MDyScene::__pfUnbindCameraFocus()");
   }
 }
 

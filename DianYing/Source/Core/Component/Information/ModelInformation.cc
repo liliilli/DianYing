@@ -11,6 +11,8 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /// SOFTWARE.
 ///
+/// @TODO 骨、Tangent, Bitangent
+///
 
 /// Header file
 #include <Dy/Core/Component/Information/ModelInformation.h>
@@ -34,7 +36,12 @@ namespace
 
 MDY_SET_IMMUTABLE_STRING(kModelInformationTemplate,     "{} | Model information {} : {}");
 MDY_SET_IMMUTABLE_STRING(kModelInformationNumbTemplate, "{} | Model information {} No.{} : {}");
+MDY_SET_IMMUTABLE_STRING(kWarnNotHaveMaterial,          "{}::{} | This mesh does not have meterial information.");
+MDY_SET_IMMUTABLE_STRING(kErrorModelFailedToRead,       "{} | Failed to create read model scene.");
 MDY_SET_IMMUTABLE_STRING(kModelInformation,             "DDyModelInformation");
+MDY_SET_IMMUTABLE_STRING(kFunc__pProcessAssimpMesh,     "__pProcessAssimpMesh");
+MDY_SET_IMMUTABLE_STRING(kFunc__pReadMaterialData,      "__pReadMaterialData");
+MDY_SET_IMMUTABLE_STRING(kWarnDuplicatedMaterialName,   "{}::{} | Duplicated material name detected. Material name : {}");
 
 } /// ::unnamed namespace
 
@@ -43,35 +50,23 @@ namespace dy
 
 DDyModelInformation::DDyModelInformation(const PDyModelConstructionDescriptor& modelConstructionDescriptor)
 {
+
+
   // Insert name and check name is empty or not.
   this->mModelName = modelConstructionDescriptor.mModelName;
-  if (this->mModelName.empty())
-  {
-    MDY_LOG_CRITICAL_D("{} | Failed to create model information. Model name is not speicified.", kModelInformation);
-    throw std::runtime_error("Model name is not specified.");
-  }
-  MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "name", this->mModelName);
+  MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "Model name", this->mModelName);
 
   // Load model information, if failed throw exception outside afterward free scene.
   const auto& modelPath = modelConstructionDescriptor.mModelPath;
-  MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "model path", modelPath);
-
-  const auto start = std::chrono::system_clock::now();
+  MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "Model full path", modelPath);
 
   Assimp::Importer assimpImporter;
-  const aiScene* assimpModelScene = assimpImporter.ReadFile(
-      modelPath.c_str(),
-      aiProcess_Triangulate | aiProcess_GenNormals
-  );
-
-  const auto end = std::chrono::system_clock::now();
-  const auto cnt = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-  MDY_LOG_DEBUG_D("{} | Model importing elapsed time : {} us", this->mModelName, cnt.count());
+  const aiScene* assimpModelScene = assimpImporter.ReadFile(modelPath.c_str(), aiProcess_Triangulate | aiProcess_GenNormals);
 
   if (!assimpModelScene || assimpModelScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !assimpModelScene->mRootNode)
   {
     assimpImporter.FreeScene();
-    MDY_LOG_CRITICAL_D("{} | Failed to create load model scene.", kModelInformation);
+    MDY_LOG_CRITICAL_D(kErrorModelFailedToRead, kModelInformation);
     throw std::runtime_error("Could not load model " + modelConstructionDescriptor.mModelName + ".");
   }
 
@@ -79,11 +74,10 @@ DDyModelInformation::DDyModelInformation(const PDyModelConstructionDescriptor& m
   this->mModelRootPath = modelPath.substr(0, modelPath.find_last_of('/'));
   this->__pProcessAssimpNode(assimpModelScene->mRootNode, assimpModelScene);
 
-  MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "root path", this->mModelRootPath);
+  MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "Model root path", this->mModelRootPath);
 
   // Output model, submesh, and material information to console.
   this->__pOutputDebugInformationLog();
-
   assimpImporter.FreeScene();
 }
 
@@ -103,48 +97,40 @@ void DDyModelInformation::__pProcessAssimpNode(aiNode* node, const aiScene* scen
 
 void DDyModelInformation::__pProcessAssimpMesh(aiMesh* mesh, const aiScene* scene)
 {
-  PMeshInformationDescriptor meshInformationDescriptor;
-  if (this->__pLoadVertexData(mesh, meshInformationDescriptor) == DY_FAILURE)
-  {
-
-  };
-
-  // Retrieve indice for element buffer object (openGL)
-  if (this->__pLoadIndiceData(mesh, meshInformationDescriptor) == DY_FAILURE)
-  {
-
-  };
+  PDySubmeshInformationDescriptor meshInformationDescriptor;
+  // Retrieve vertex and indices for element buffer object (openGL)
+  this->__pReadVertexData(mesh, meshInformationDescriptor);
+  this->__pReadIndiceData(mesh, meshInformationDescriptor);
 
   // Get Mateiral information. IF not exists, just pass only mesh information.
   // Diffuse map, specular map, height map, ambient map, emissive map etc.
-  const auto materialIndex = mesh->mMaterialIndex;
-  if (materialIndex == 0)
+
+  // If material is not exist, just emplace mesh information.
+  if (const auto materialIndex = mesh->mMaterialIndex; materialIndex == 0)
   {
+    MDY_LOG_DEBUG_D(kWarnNotHaveMaterial, kModelInformation, kFunc__pProcessAssimpMesh);
     this->mMeshInformations.emplace_back(meshInformationDescriptor);
     return;
   }
-
-  // If retrieving material name has been failed, just replace it with model name + "0", "1"...
-  // Get texture informations from material with name?
-  aiMaterial* material    = scene->mMaterials[materialIndex];
-  auto optMaterialDesc    = this->__pReadMaterialData(material);
-  PHITOS_ASSERT(optMaterialDesc.has_value(), "Material must have value.");
-  if (optMaterialDesc.has_value())
+  else
   {
-    meshInformationDescriptor.mMaterialName = optMaterialDesc.value().mMaterialName;
-  }
+    // If retrieving material name has been failed, just replace it with model name + "0", "1"...
+    // Get texture informations from material with name?
+    aiMaterial* material    = scene->mMaterials[materialIndex];
+    auto materialDescriptor = this->__pReadMaterialData(material);
 
-  // Create DDyMeshInformation with material descriptor.
-  const auto& materialDescriptor = optMaterialDesc.value();
-  this->mMeshInformations.emplace_back(meshInformationDescriptor);
+    meshInformationDescriptor.mMaterialName = materialDescriptor.mMaterialName;
+    this->mMeshInformations.emplace_back(meshInformationDescriptor);
 
-  if (std::find(MDY_BIND_BEGIN_END(this->mBindedMaterialName), materialDescriptor.mMaterialName) == this->mBindedMaterialName.end())
-  {
-    this->mBindedMaterialName.emplace_back(materialDescriptor.mMaterialName);
+    // Create DDySubmeshInformation with material descriptor.
+    if (std::find(MDY_BIND_BEGIN_END(this->mBindedMaterialName), materialDescriptor.mMaterialName) == this->mBindedMaterialName.end())
+    {
+      this->mBindedMaterialName.emplace_back(materialDescriptor.mMaterialName);
+    }
   }
 }
 
-EDySuccess DDyModelInformation::__pLoadVertexData(const aiMesh* mesh, PMeshInformationDescriptor& desc)
+void DDyModelInformation::__pReadVertexData(const aiMesh* mesh, PDySubmeshInformationDescriptor& desc)
 {
   // Retrieve vertex buffer informations of this mesh.
   desc.mVertices.resize(mesh->mNumVertices);
@@ -163,10 +149,10 @@ EDySuccess DDyModelInformation::__pLoadVertexData(const aiMesh* mesh, PMeshInfor
     {
       // Do
       results.emplace_back(
-          pool.Enqueue([](const aiMesh* mesh, PMeshInformationDescriptor& desc, int32_t start, int32_t to) {
+          pool.Enqueue([](const aiMesh* mesh, PDySubmeshInformationDescriptor& desc, int32_t start, int32_t to) {
             for (int32_t i = start; i < to; ++i)
             {
-              DVertexInformation vertexInformation;
+              DDyVertexInformation vertexInformation;
               if (mesh->HasPositions()) vertexInformation.mPosition = mesh->mVertices[i];
               if (mesh->HasNormals())   vertexInformation.mNormal   = mesh->mNormals[i];
 
@@ -174,9 +160,9 @@ EDySuccess DDyModelInformation::__pLoadVertexData(const aiMesh* mesh, PMeshInfor
               if (mesh->HasTextureCoords(0))
               {
                 const auto& assimpTextureCoord = mesh->mTextureCoords[0][i];
-                vertexInformation.mTexCoords = DVector2{assimpTextureCoord.x, assimpTextureCoord.y};
+                vertexInformation.mTexCoords = DDyVector2{assimpTextureCoord.x, assimpTextureCoord.y};
               }
-              else vertexInformation.mTexCoords = DVector2{0};
+              else vertexInformation.mTexCoords = DDyVector2{0};
 
               // また骨、Tangent, Bitangentはしない。
 
@@ -206,7 +192,7 @@ EDySuccess DDyModelInformation::__pLoadVertexData(const aiMesh* mesh, PMeshInfor
   {
     for (uint32_t i = 0; i < mesh->mNumVertices; ++i)
     {
-      DVertexInformation vertexInformation;
+      DDyVertexInformation vertexInformation;
       if (mesh->HasPositions()) vertexInformation.mPosition = mesh->mVertices[i];
       if (mesh->HasNormals())   vertexInformation.mNormal   = mesh->mNormals[i];
 
@@ -214,21 +200,19 @@ EDySuccess DDyModelInformation::__pLoadVertexData(const aiMesh* mesh, PMeshInfor
       if (mesh->HasTextureCoords(0))
       {
         const auto& assimpTextureCoord = mesh->mTextureCoords[0][i];
-        vertexInformation.mTexCoords = DVector2{assimpTextureCoord.x, assimpTextureCoord.y};
+        vertexInformation.mTexCoords = DDyVector2{assimpTextureCoord.x, assimpTextureCoord.y};
       }
-      else vertexInformation.mTexCoords = DVector2{0};
+      else vertexInformation.mTexCoords = DDyVector2{0};
 
-      // また骨、Tangent, Bitangentはしない。
+      // @todo // また骨、Tangent, Bitangentはしない。
 
       // Insert vertex information to vertice container of descriptor container.
       desc.mVertices[i] = vertexInformation;
     }
   }
-
-  return DY_SUCCESS;
 }
 
-EDySuccess DDyModelInformation::__pLoadIndiceData(const aiMesh* mesh, PMeshInformationDescriptor& desc)
+void DDyModelInformation::__pReadIndiceData(const aiMesh* mesh, PDySubmeshInformationDescriptor& desc)
 {
   desc.mIndices.reserve(mesh->mNumFaces * 3);
   for (uint32_t i = 0; i < mesh->mNumFaces; ++i)
@@ -240,18 +224,17 @@ EDySuccess DDyModelInformation::__pLoadIndiceData(const aiMesh* mesh, PMeshInfor
     }
   }
   desc.mIndices.shrink_to_fit();
-  return DY_SUCCESS;
 }
 
-std::optional<PDyMaterialConstructionDescriptor> DDyModelInformation::__pReadMaterialData(const aiMaterial* material)
+PDyMaterialConstructionDescriptor DDyModelInformation::__pReadMaterialData(const aiMaterial* material)
 {
   aiString materialName  = {};
   if (const auto ret = material->Get(AI_MATKEY_NAME, materialName); ret == AI_FAILURE)
   {
-    assert(false);
-    return std::nullopt;
+    PHITOS_UNEXPECTED_BRANCH();
   }
 
+  // Get material textures information.
   PDyMaterialConstructionDescriptor materialDescriptor;
   materialDescriptor.mIsShaderLazyInitialized = true;
   materialDescriptor.mMaterialName            = materialName.C_Str();
@@ -279,19 +262,19 @@ std::optional<PDyMaterialConstructionDescriptor> DDyModelInformation::__pReadMat
   }
   materialDescriptor.mTextureNames = textureNames;
 
-  // Let InformationManager Initialzie material information instance.
+  // Let InformationManager initialize material information instance.
   auto& manInfo = MDyDataInformation::GetInstance();
   if (const auto ptr = manInfo.GetMaterialInformation(materialDescriptor.mMaterialName); !ptr)
   {
     MDY_CALL_ASSERT_SUCCESS(manInfo.CreateMaterialInformation(materialDescriptor));
-    return materialDescriptor;
   }
   else
   {
-    MDY_LOG_ERROR_D("{} | Duplicated material name detected. Material name : {}",
-                    "DDyModelInformation::__pReadMaterialData", materialDescriptor.mMaterialName);
-    return std::nullopt;
+    MDY_LOG_WARNING_D(kWarnDuplicatedMaterialName, kModelInformation, kFunc__pReadMaterialData,
+                      kFunc__pReadMaterialData, materialDescriptor.mMaterialName);
   }
+
+  return materialDescriptor;
 }
 
 std::optional<std::vector<std::string>>
@@ -342,36 +325,29 @@ DDyModelInformation::__pLoadMaterialTextures(const aiMaterial* material, EDyText
       this->mTextureLocalPaths.emplace_back(textureDesc.mTextureFileLocalPath);
     }
 
-    MDY_LOG_CRITICAL_D("Texture Name : {}", textureName);
+    MDY_LOG_CRITICAL_D("{}::{} | Texture Name : {}", "DDyModelInformation", "__pLoadMaterialTextures", textureName);
     textureInformationString.emplace_back(textureName);
   }
+
   return textureInformationString;
 }
 
 void DDyModelInformation::__pOutputDebugInformationLog()
 {
 #if defined(_DEBUG) || !defined(NDEBUG)
-  int32_t i = 0;
-  for (const auto& baseMaterialName : this->mBindedMaterialName)
+  for (auto i = 0; i < this->mBindedMaterialName.size(); ++i)
   {
-    MDY_LOG_DEBUG_D(kModelInformationNumbTemplate, kModelInformation.data(), "base material name", i, baseMaterialName);
-    ++i;
-
-    // @todo TEMPORAL
-
+    MDY_LOG_DEBUG_D(kModelInformationNumbTemplate, kModelInformation.data(), "base material name", i, this->mBindedMaterialName[i]);
   }
 
-  i = 0;
-  for (const auto& baseTexturePath : this->mTextureLocalPaths)
+  for (auto i = 0; i < this->mTextureLocalPaths.size(); ++i)
   {
-    MDY_LOG_DEBUG_D(kModelInformationNumbTemplate, kModelInformation.data(), "innate texture name", i, baseTexturePath);
-    ++i;
+    MDY_LOG_DEBUG_D(kModelInformationNumbTemplate, kModelInformation.data(), "innate texture name", i, this->mTextureLocalPaths[i]);
   }
 
-  i = 0;
-  for (const auto& submeshInformation : this->mMeshInformations)
+  for (auto i = 0; i < this->mMeshInformations.size(); ++i)
   {
-    const auto& submeshInfo = submeshInformation.GetInformation();
+    const auto& submeshInfo = this->mMeshInformations[i].GetInformation();
     MDY_LOG_DEBUG_D("{} | Model information submesh No.{} | Vertices count : {} | Indices count : {}",
         kModelInformation.data(),
         i,
@@ -386,9 +362,9 @@ void DDyModelInformation::__pOutputDebugInformationLog()
 DDyModelInformation::~DDyModelInformation()
 {
   MDY_LOG_INFO_D(kModelInformationTemplate, "~DDyModelInformation", "name", this->mModelName);
-  if (this->mNextLevelPtr)
+  if (this->mLinkedModelResourcePtr)
   {
-    this->mNextLevelPtr->__pfSetPrevLevel(nullptr);
+    this->mLinkedModelResourcePtr->__pfLinkModelInformationPtr(nullptr);
   }
 }
 

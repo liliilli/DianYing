@@ -74,7 +74,7 @@ public:
   ///
   /// @brief Check if object is being binded to CDyModelResource instance.
   ///
-  FORCEINLINE bool IsBeingBinded() const noexcept
+  FORCEINLINE bool IsBeingBindedToResource() const noexcept
   {
     return this->mLinkedModelResourcePtr != nullptr;
   }
@@ -93,10 +93,10 @@ private:
   void __pProcessAssimpMesh(aiMesh* mesh, const aiScene* scene);
 
   /// Read vertex data, make data, and insert to PDySubmeshInformationDescriptor.
-  EDySuccess __pReadVertexData(const aiMesh* mesh, PDySubmeshInformationDescriptor& desc);
+  void __pReadVertexData(const aiMesh* mesh, PDySubmeshInformationDescriptor& desc);
 
   /// Read index(element) data, make data, and insert to PDySubmeshInformationDescriptor.
-  EDySuccess __pReadIndiceData(const aiMesh* mesh, PDySubmeshInformationDescriptor& desc);
+  void __pReadIndiceData(const aiMesh* mesh, PDySubmeshInformationDescriptor& desc);
 
   /// Read material data and make descriptor.
   PDyMaterialConstructionDescriptor __pReadMaterialData(const aiMaterial* material);

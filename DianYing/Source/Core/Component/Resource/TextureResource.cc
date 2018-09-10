@@ -11,6 +11,8 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /// SOFTWARE.
 ///
+/// @TODO IMPLEMENT CUSTOM PARAMETER OPTION FEATURE USING DESCRIPTOR LIKE.
+///
 
 /// Header file
 #include <Dy/Core/Component/Resource/TextureResource.h>
@@ -18,6 +20,7 @@
 #include <Dy/Core/Component/Resource/MaterialResource.h>
 #include <Dy/Core/Component/Information/TextureInformation.h>
 #include <Dy/Helper/Internal/ImageBinaryBuffer.h>
+#include <Dy/Management/LoggingManager.h>
 
 namespace
 {
@@ -51,17 +54,17 @@ CDyTextureResource::~CDyTextureResource()
   }
 
   // Unbind previous and next level.
-  if (__mPrevLevelPtr)
+  if (__mLinkedTextureInformationPtr)
   {
-    __mPrevLevelPtr->__pfSetNextLevel(nullptr);
+    __mLinkedTextureInformationPtr->__pfLinkTextureResource(nullptr);
   }
   for (auto& [notUsed, materialPtr] : __mBindMaterialPtrs)
   {
-    materialPtr->__pfResetTexturePtr(this);
+    materialPtr->__pfResetTextureResourcePtr(this);
   }
 }
 
-EDySuccess CDyTextureResource::pfInitializeResource(const CDyTextureInformation& textureInformation)
+EDySuccess CDyTextureResource::pfInitializeTextureResource(const DDyTextureInformation& textureInformation)
 {
   // Make image binary data buffer.
   const auto& textureInfo = textureInformation.GetInformation();
@@ -158,6 +161,17 @@ EDySuccess CDyTextureResource::pfInitializeResource(const CDyTextureInformation&
   }
 
   return DY_SUCCESS;
+}
+
+void CDyTextureResource::__pfLinkMaterialResourcePtr(CDyMaterialResource* ptr) const noexcept
+{
+  auto [it, result] = __mBindMaterialPtrs.try_emplace(ptr, ptr);
+  if (!result)
+  {
+    MDY_LOG_ERROR("{} | Failed to link material resource. | Model name : {}",
+                  "CDyTextureResource::__pfLinkMaterialResourcePtr", ptr->GetMaterialName());
+    assert(false);
+  }
 }
 
 } /// ::dy namespace

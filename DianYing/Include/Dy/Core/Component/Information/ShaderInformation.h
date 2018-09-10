@@ -55,6 +55,12 @@ public:
     return this->mShaderInformation;
   }
 
+  /// Check if object is being binded to CDyTextureResource instance.
+  FORCEINLINE bool IsBeingBindedToResource() const noexcept
+  {
+    return this->mLinkedShaderResourcePtr != nullptr;
+  }
+
 private:
   PDyShaderConstructionDescriptor mShaderInformation;
 

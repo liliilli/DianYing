@@ -82,7 +82,7 @@ private:
   /// @brief
   ///
   [[nodiscard]]
-  EDySuccess pInitializeMaterial(const PDyMaterialResourceDescriptor& materialInformation);
+  EDySuccess pfInitializeMaterialResource(const PDyMaterialResourceDescriptor& materialInformation);
 
   std::string                           mMaterialName         = {};
   DDyMaterialShaderTuple                mShaderResource       = {};

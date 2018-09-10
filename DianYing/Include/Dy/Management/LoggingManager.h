@@ -27,7 +27,7 @@ namespace dy
 
 ///
 /// @enum EDyLogLevel
-/// @brief log level enumeration
+/// @brief Log level enumeration
 ///
 enum class EDyLogLevel
 {
@@ -41,7 +41,7 @@ enum class EDyLogLevel
 
 ///
 /// @class MDyLog
-/// @brief
+/// @brief Manages logging.
 ///
 class MDyLog final : public ISingleton<MDyLog>
 {

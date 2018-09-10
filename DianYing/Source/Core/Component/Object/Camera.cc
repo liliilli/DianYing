@@ -14,14 +14,15 @@
 
 /// Header file
 #include <Dy/Core/Component/Object/Camera.h>
+
+#include <Phitos/Dbg/assert.h>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <Dy/Helper/Type/Vector3.h>
-#include <Dy/Helper/ImmutableSetting.h>
 
 #include <Dy/Management/InputManager.h>
 #include <Dy/Management/SceneManager.h>
-#include <Phitos/Dbg/assert.h>
+#include <Dy/Management/SettingManager.h>
 #include <Dy/Management/LoggingManager.h>
 
 namespace dy
@@ -29,17 +30,17 @@ namespace dy
 
 CDyCamera::CDyCamera(const PDyCameraConstructionDescriptor& descriptor)
 {
-  this->mLookingAtDirection = dy::DVector3{0, 0, -1};
+  this->mLookingAtDirection = dy::DDyVector3{0, 0, -1};
   MDY_CALL_ASSERT_SUCCESS(this->UpdateSetting(descriptor));
 }
 
 CDyCamera::~CDyCamera()
 {
   // Unbind focus camera if this is being binded to camera focus of scene.
-  auto& sceneManager = MDyScene::GetInstance();
   if (this->IsBeingFocused())
   {
-    sceneManager.__pfUnbindCameraFocus();
+    MDyScene::GetInstance().__pfUnbindCameraFocus();
+    this->mIsFocused = false;
   }
 }
 
@@ -54,13 +55,15 @@ EDySuccess CDyCamera::UpdateSetting(const PDyCameraConstructionDescriptor& descr
   const float fov = descriptor.mInitialFieldOfView;
   this->SetFieldOfView(fov);
 
-  float aspect = static_cast<float>(kScreenWidth) / kScreenHeight;
+  const auto& settingManager = MDySetting::GetInstance();
+
+  float whAspectRatio = static_cast<float>(settingManager.GetWindowSizeWidth()) / settingManager.GetWindowSizeHeight();
   if (descriptor.mUseCustomViewport)
   {
     const auto& customViewportSize = descriptor.mViewportSize;
-    aspect = customViewportSize.X / customViewportSize.Y;
+    whAspectRatio = customViewportSize.X / customViewportSize.Y;
   }
-  this->SetAspect(aspect);
+  this->SetAspect(whAspectRatio);
   this->pUpdateProjectionMatrix();
 
   this->mIsEnableMeshUnClipped  = descriptor.mIsEnableMeshUnClipped;
@@ -124,7 +127,7 @@ bool CDyCamera::IsOrthographicCamera() const noexcept
 bool CDyCamera::IsBeingFocused() const noexcept
 {
   auto& sceneManager = MDyScene::GetInstance();
-  return sceneManager.GetCamera() == this;
+  return sceneManager.GetMainCameraPtr() == this;
 }
 
 bool CDyCamera::IsMoveable() const noexcept
@@ -143,24 +146,24 @@ void CDyCamera::Update(float dt)
 
     if (yVal != 0.0f || xVal != 0.0f)
     {
-      MDY_LOG_DEBUG_D("Moved {} , {}", xVal, yVal);
-
       this->mPosition += this->mLookingAtRightDirection * xVal * dt * mSpeed;
       this->mPosition += this->mLookingAtDirection * yVal * dt * mSpeed;
       this->mIsViewMatrixDirty = true;
+
+      MDY_LOG_DEBUG_D("dt : {}", dt);
     }
 
     if (input.IsMouseMoved())
     {
       const auto& present = input.GetPresentMousePosition();
       const auto& last = input.GetPresentLastPosition();
-      const auto offset = DVector2(present.X - last.X, last.Y - present.Y);
+      const auto offset = DDyVector2(present.X - last.X, last.Y - present.Y);
       this->pProcessMouseMovement(offset, true);
     }
   }
 }
 
-void CDyCamera::pProcessMouseMovement(const DVector2& offset, bool constrainPitch)
+void CDyCamera::pProcessMouseMovement(const DDyVector2& offset, bool constrainPitch)
 {
   this->mRotationEulerAngle.Y += offset.X * this->mMouseSensitivity;
   this->mRotationEulerAngle.X += offset.Y * this->mMouseSensitivity;
@@ -175,32 +178,34 @@ void CDyCamera::pProcessMouseMovement(const DVector2& offset, bool constrainPitc
   }
 
   // Update Front, Right and Up Vectors using the updated Euler angles
+#ifdef false
   MDY_LOG_DEBUG_D("Euler angle | X : {}, Y : {}, Z : {}", this->mRotationEulerAngle.X, this->mRotationEulerAngle.Y, this->mRotationEulerAngle.Z);
+#endif
   this->pUpdateCameraVectors();
 }
 
 void CDyCamera::pUpdateCameraVectors()
 {
   // Calculate the new Front vector
-  DVector3 front;
+  DDyVector3 front;
   front.X = cos(glm::radians(this->mRotationEulerAngle.Y)) * cos(glm::radians(this->mRotationEulerAngle.X));
   front.Y = sin(glm::radians(this->mRotationEulerAngle.X));
   front.Z = sin(glm::radians(this->mRotationEulerAngle.Y)) * cos(glm::radians(this->mRotationEulerAngle.X));
-  this->mLookingAtDirection = front.Normalize();
 
   // Also re-calculate the Right and Up vector
   // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
-  this->mLookingAtRightDirection  = DVector3::Cross(front, DVector3::UpY()).Normalize();
-  this->mLookingAtUpDirection     = DVector3::Cross(this->mLookingAtRightDirection, this->mLookingAtDirection).Normalize();
+  this->mLookingAtDirection       = front.Normalize();
+  this->mLookingAtRightDirection  = DDyVector3::Cross(front, DDyVector3::UpY()).Normalize();
+  this->mLookingAtUpDirection     = DDyVector3::Cross(this->mLookingAtRightDirection, this->mLookingAtDirection).Normalize();
   this->mIsViewMatrixDirty        = true;
 }
 
 void CDyCamera::pUpdateViewMatrix()
 {
   this->mViewMatrix = glm::lookAt(
-      static_cast<glm::vec3>(mPosition),
-      static_cast<glm::vec3>(mPosition + mLookingAtDirection),
-      static_cast<glm::vec3>(DVector3::UpY())
+      static_cast<glm::vec3>(this->mPosition),
+      static_cast<glm::vec3>(this->mPosition + this->mLookingAtDirection),
+      static_cast<glm::vec3>(DDyVector3::UpY())
   );
   this->mIsViewMatrixDirty = false;
 }
@@ -209,10 +214,14 @@ void CDyCamera::pUpdateProjectionMatrix()
 {
   if (this->mIsOrthographicCamera)
   {
-    this->mProjectionMatrix = glm::ortho(-static_cast<float>(kScreenWidth) / 2,
-                                          static_cast<float>(kScreenWidth) / 2,
-                                         -static_cast<float>(kScreenHeight) / 2,
-                                          static_cast<float>(kScreenHeight) / 2,
+    const auto& settingManager  = MDySetting::GetInstance();
+    const auto  width           = settingManager.GetWindowSizeWidth();
+    const auto  height          = settingManager.GetWindowSizeHeight();
+
+    this->mProjectionMatrix = glm::ortho(-static_cast<float>(width) / 2,
+                                          static_cast<float>(width) / 2,
+                                         -static_cast<float>(height) / 2,
+                                          static_cast<float>(height) / 2,
                                           this->mNear, this->mFar);
     this->mIsOrthographicCamera = true;
   }

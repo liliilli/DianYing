@@ -33,7 +33,7 @@ namespace
 
 ///
 /// @enum EKeyPrimaryState
-/// @brief
+/// @brief Check key primary state only in this file.
 ///
 enum class EKeyPrimaryState : char {
   Released  = 0,
@@ -51,8 +51,8 @@ constexpr const char err_input_keyboard_not_exist[]     = "Key {} is not found i
 constexpr const char err_input_disable_msg[]            = "{} input feature will be disabled.";
 
 EKeyPrimaryState  sPrimaryKeys[349];
-dy::DVector2      sMouseLastPosition    = {};
-dy::DVector2      sMousePresentPosition = {};
+dy::DDyVector2    sMouseLastPosition    = {};
+dy::DDyVector2    sMousePresentPosition = {};
 bool              sIsFirstMouseMovement = true;
 bool              sMousePositionDirty   = false;
 
@@ -338,6 +338,7 @@ EDySuccess MDyInput::pfInitialize()
   if (this->mIsEnabledMouse)
   {
     glfwSetCursorPosCallback(this->mTempGlfwWindowPtr, __InputMouseCallback);
+    glfwSetInputMode(this->mTempGlfwWindowPtr, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
   }
 
   if (this->mIsEnabledJoystick)

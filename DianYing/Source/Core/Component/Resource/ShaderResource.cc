@@ -166,17 +166,17 @@ CDyShaderResource::~CDyShaderResource()
   }
 
   // Unbind previous and next level.
-  if (this->__mPrevLevelPtr)
+  if (this->__mLinkedShaderInformationPtr)
   {
-    this->__mPrevLevelPtr->__pfSetNextLevel(nullptr);
+    this->__mLinkedShaderInformationPtr->__pfLinkShaderResourcePtr(nullptr);
   }
-  for (auto& [notUsed, materialPtr] : __mBindMaterialPtrs)
+  for (auto& [notUsed, materialPtr] : __mLinkedMaterialResourcePtrs)
   {
-    materialPtr->__pfResetShaderPtr();
+    materialPtr->__pfResetShaderResourcePtr();
   }
 }
 
-EDySuccess CDyShaderResource::pfInitializeResource(const CDyShaderInformation& shaderInformation)
+EDySuccess CDyShaderResource::pfInitializeResource(const DDyShaderInformation& shaderInformation)
 {
   const auto& information = shaderInformation.GetInformation();
   this->mShaderName = information.mShaderName;
@@ -425,6 +425,15 @@ EDySuccess CDyShaderResource::__pStoreConstantUniformPropertiesOfProgram() noexc
                     DyGetDebugStringOfUniformVariableType(variable.mVariableType).data(), variable.mVariableLocation);
   }
   return DY_SUCCESS;
+}
+
+void CDyShaderResource::__pfLinkMaterialResource(CDyMaterialResource* ptr) const noexcept
+{
+  auto [it, result] = this->__mLinkedMaterialResourcePtrs.try_emplace(ptr, ptr);
+  if (!result) {
+    MDY_LOG_CRITICAL_D("{} | Unexpected error occurred. | Shader Name : {}", "CDyShaderResource::__pfLinkMaterialResource", this->mShaderName);
+    PHITOS_UNEXPECTED_BRANCH();
+  }
 }
 
 void CDyShaderResource::UseShader() noexcept

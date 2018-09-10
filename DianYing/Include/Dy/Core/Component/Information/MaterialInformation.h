@@ -38,7 +38,7 @@ namespace dy
 class DDyMaterialInformation final
 {
 public:
-  DDyMaterialInformation(const PDyMaterialConstructionDescriptor& shaderConstructionDescriptor);
+  DDyMaterialInformation(const PDyMaterialConstructionDescriptor& materialConstructionDescriptor);
 
   DDyMaterialInformation(const DDyMaterialInformation&)             = delete;
   DDyMaterialInformation& operator=(const DDyMaterialInformation&)  = delete;
@@ -52,6 +52,12 @@ public:
   const PDyMaterialConstructionDescriptor& GetInformation() const noexcept
   {
     return this->mMaterialInformation;
+  }
+
+  /// Check if object is being binded to CDyMaterialResource instance.
+  FORCEINLINE bool IsBeingBindedToResource() const noexcept
+  {
+    return this->mLinkedMaterialResourcePtr != nullptr;
   }
 
 private:
@@ -84,6 +90,7 @@ private:
   //!
 
   void __pfSetMaterialResourceLink(CDyMaterialResource* ptr) const noexcept { mLinkedMaterialResourcePtr = ptr; }
+
   mutable CDyMaterialResource* mLinkedMaterialResourcePtr = nullptr;
 
   friend class CDyMaterialResource;

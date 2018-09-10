@@ -20,21 +20,31 @@
 
 #include <Dy/Helper/Type/Vector2.h>
 #include <Dy/Helper/Type/Vector3.h>
+#include <Dy/Helper/Type/Vector4.h>
 
 namespace dy::math {
 
-bool IsAllZero(const dy::DVector2& vector) noexcept
+bool IsAllZero(const dy::DDyVector2& vector) noexcept
 {
   if (!IsNearlyEqual(vector.X, 0.f)) return false;
   if (!IsNearlyEqual(vector.Y, 0.f)) return false;
   return true;
 }
 
-bool IsAllZero(const dy::DVector3& vector) noexcept
+bool IsAllZero(const dy::DDyVector3& vector) noexcept
 {
   if (!IsNearlyEqual(vector.X, 0.f)) return false;
   if (!IsNearlyEqual(vector.Y, 0.f)) return false;
   if (!IsNearlyEqual(vector.Z, 0.f)) return false;
+  return true;
+}
+
+bool IsAllZero(const dy::DDyVector4& vector) noexcept
+{
+  if (!IsNearlyEqual(vector.X, 0.f)) return false;
+  if (!IsNearlyEqual(vector.Y, 0.f)) return false;
+  if (!IsNearlyEqual(vector.Z, 0.f)) return false;
+  if (!IsNearlyEqual(vector.W, 0.f)) return false;
   return true;
 }
 
@@ -58,27 +68,32 @@ double Lerp(double lhs, double rhs, float offset)
   return result;
 }
 
-DVector2 Lerp(const DVector2& lhs, const DVector2& rhs, float offset)
+DDyVector2 Lerp(const DDyVector2& lhs, const DDyVector2& rhs, float offset) noexcept
 {
   return lhs * (1 - offset) + rhs * offset;
 }
 
-DVector3 Lerp(const DVector3& lhs, const DVector3& rhs, float offset)
+DDyVector3 Lerp(const DDyVector3& lhs, const DDyVector3& rhs, float offset) noexcept
 {
   return lhs * (1 - offset) + rhs * offset;
 }
 
-DVector2 GetQuadBezierCurvePoint(const DVector2& lhs, const DVector2& rhs, const DVector2& control, float offset)
+DDyVector4 Lerp(const DDyVector4& lhs, const DDyVector4& rhs, float offset) noexcept
+{
+  return lhs * (1 - offset) + rhs * offset;
+}
+
+DDyVector2 GetQuadBezierCurvePoint(const DDyVector2& lhs, const DDyVector2& rhs, const DDyVector2& control, float offset)
 {
   return Lerp(Lerp(lhs, control, offset), Lerp(control, rhs, offset), offset);
 }
 
-DVector3 GetQuadBezierCurvePoint(const DVector3& lhs, const DVector3& rhs, const DVector3& control, float offset)
+DDyVector3 GetQuadBezierCurvePoint(const DDyVector3& lhs, const DDyVector3& rhs, const DDyVector3& control, float offset)
 {
   return Lerp(Lerp(lhs, control, offset), Lerp(control, rhs, offset), offset);
 }
 
-TMinMaxResult<float> GetMinMax(const dy::DVector2& vector) noexcept
+TMinMaxResult<float> GetMinMax(const dy::DDyVector2& vector) noexcept
 {
   if (vector.X < vector.Y)
   {
@@ -89,7 +104,7 @@ TMinMaxResult<float> GetMinMax(const dy::DVector2& vector) noexcept
   }
 }
 
-TMinMaxResult<float> GetMinMax(const dy::DVector3& vector) noexcept
+TMinMaxResult<float> GetMinMax(const dy::DDyVector3& vector) noexcept
 {
   auto min = vector.X;
   auto max = min;
@@ -101,48 +116,62 @@ TMinMaxResult<float> GetMinMax(const dy::DVector3& vector) noexcept
   return {min, max};
 }
 
-float GetRotationAngle(float angle_value) noexcept
+TMinMaxResult<float> GetMinMax(const dy::DDyVector4& vector) noexcept
+{
+  auto min = vector.X;
+  auto max = min;
+
+  if (vector.Y < min) min = vector.Y;
+  if (vector.Y > max) max = vector.Y;
+  if (vector.Z < min) min = vector.Z;
+  if (vector.Z > max) max = vector.Z;
+  if (vector.W < min) min = vector.W;
+  if (vector.W > max) max = vector.W;
+  return {min, max};
+}
+
+float GetClampedRotationDegreeAngle(float angle_value) noexcept
 {
   const float angle = std::fmod(angle_value, 360.f);
   return (angle < 0.f) ? angle + 360.f : angle;
 }
 
-double GetRotationAngle(double angle_value) noexcept
+double GetClampedRotationDegreeAngle(double angle_value) noexcept
 {
   const double angle = std::fmod(angle_value, 360.0);
   return (angle <= 0.0) ? angle + 360.0 : angle;
 }
 
-float GetRotationAngleRadian(float angle_value) noexcept
+float GetClampedRotationRadianAngle(float angle_value) noexcept
 {
   const float angle = std::fmod(angle_value, math::Pi2<float>);
   return (angle <= 0.f) ? angle + (Pi2<float>) : angle;
 }
 
-double GetRotationAngleRadian(double angle_value) noexcept
+double GetClampedRotationRadianAngle(double angle_value) noexcept
 {
   const double angle = std::fmod(angle_value, math::Pi2<double>);
   return (angle <= 0.0) ? angle + (Pi2<float>) : angle;
 }
 
-float RadToDeg(float radian) noexcept
+float ConvertRadianToDegree(float radian) noexcept
 {
-  return GetRotationAngle(radian * RadToDegVal<float>);
+  return GetClampedRotationDegreeAngle(radian * RadToDegVal<float>);
 }
 
-double RadToDeg(double radian) noexcept
+double ConvertRadianToDegree(double radian) noexcept
 {
-  return GetRotationAngle(radian * RadToDegVal<double>);
+  return GetClampedRotationDegreeAngle(radian * RadToDegVal<double>);
 }
 
-float DegToRad(float degree) noexcept
+float ConvertDegreeToRadian(float degree) noexcept
 {
-  return GetRotationAngleRadian(degree * DegToRadVal<float>);
+  return GetClampedRotationRadianAngle(degree * DegToRadVal<float>);
 }
 
-double DegToRad(double degree) noexcept
+double ConvertDegreeToRadian(double degree) noexcept
 {
-  return GetRotationAngleRadian(degree * DegToRadVal<double>);
+  return GetClampedRotationRadianAngle(degree * DegToRadVal<double>);
 }
 
 } /// ::dy::math namespace

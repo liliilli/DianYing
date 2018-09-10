@@ -41,6 +41,12 @@
 //!
 
 ///
+/// @macro MDY_TRANSIENT
+/// @brief TRANSIENT variable
+///
+#define MDY_TRANSIENT mutable
+
+///
 /// @macro
 ///
 #define MDY_TO_STRING(__MAString__) #__MAString__

@@ -26,6 +26,32 @@ EDySuccess                DyD11InitializeDirect3D();
 void                      DyD11RenderLoop();
 void                      DyD11RenderFrame();
 
+/// @todo Chapter 6
+struct DVertex1
+{
+  DirectX::XMFLOAT3 position;
+  DirectX::XMFLOAT4 color;
+};
+
+struct DVectex2
+{
+  DirectX::XMFLOAT3 position;
+  DirectX::XMFLOAT2 normal;
+  DirectX::XMFLOAT2 texCoord0;
+  DirectX::XMFLOAT2 texCoord1;
+};
+
+//!
+//! DirectX12 API
+//!
+
+void                  DyD12RenderLoop();
+void                  DyD12RenderFrame();
+
+ID3D11Device*         d11Device         = nullptr;
+ID3D11DeviceContext*  d11DeviceContext  = nullptr;
+
+
 } /// ::dy namespace
 
 #endif /// GUARD_DY_DIRECTX11_INTERFACE_H

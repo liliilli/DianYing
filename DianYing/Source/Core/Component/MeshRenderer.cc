@@ -15,20 +15,22 @@
 /// Header file
 #include <Dy/Core/Component/MeshRenderer.h>
 
+#include <Phitos/Dbg/assert.h>
+
 #include <Dy/Core/Component/Internal/EtcType.h>
 #include <Dy/Core/Component/Resource/ModelResource.h>
 
 #include <Dy/Management/HeapResourceManager.h>
 #include <Dy/Management/SceneManager.h>
 #include <Dy/Core/Component/Object/Camera.h>
-#include "Dy/Management/LoggingManager.h"
+#include <Dy/Management/LoggingManager.h>
 
 namespace dy
 {
 
 EDySuccess CDyMeshRenderer::pfInitialize(const PDyRendererConsturctionDescriptor& desc)
 {
-  auto& resourceManager = MDyResource::GetInstance();
+  auto& resourceManager = MDyHeapResource::GetInstance();
 
   // Bind model. If not exists, make model resource using information but not have it, return fail.
   const auto modelResourcePtr = resourceManager.GetModelResource(desc.mModelName);
@@ -39,15 +41,12 @@ EDySuccess CDyMeshRenderer::pfInitialize(const PDyRendererConsturctionDescriptor
 
     this->mModelReferencePtr = resourceManager.GetModelResource(desc.mModelName);
   }
-  else
-  {
-    this->mModelReferencePtr = modelResourcePtr;
-  }
+  else { this->mModelReferencePtr = modelResourcePtr; }
 
   // Bind material. If not exists, make material resource using information, but return fail.
   for (const auto& materialName : desc.mMaterialNames)
   {
-    const auto materialResourcePtr = resourceManager.GetMaterialResource(materialName);
+    auto* materialResourcePtr = resourceManager.GetMaterialResource(materialName);
     if (!materialResourcePtr)
     {
       const auto res = resourceManager.CreateMaterialResource(materialName);
@@ -55,10 +54,7 @@ EDySuccess CDyMeshRenderer::pfInitialize(const PDyRendererConsturctionDescriptor
 
       this->mMaterialResourcePtr.emplace_back(resourceManager.GetMaterialResource(materialName));
     }
-    else
-    {
-      this->mMaterialResourcePtr.emplace_back(materialResourcePtr);
-    }
+    else { this->mMaterialResourcePtr.emplace_back(materialResourcePtr); }
   }
 
   const auto submeshResourceSize = static_cast<int32_t>(this->mModelReferencePtr->GetSubmeshResources().size());
@@ -122,7 +118,7 @@ void CDyMeshRenderer::Render()
     const auto projMatirx = glGetUniformLocation(shaderResource->GetShaderProgramId(), "projectionMatrix");
 
     auto& sceneManager = MDyScene::GetInstance();
-    auto* camera = sceneManager.GetCamera();
+    auto* camera = sceneManager.GetMainCameraPtr();
     if (camera)
     {
       glUniformMatrix4fv(viewMatrix, 1, GL_FALSE, &camera->GetViewMatrix()[0].X);
@@ -132,21 +128,19 @@ void CDyMeshRenderer::Render()
     // Bind textures of one material.
     if (bindedMeshMatInfo.mMaterialResource)
     {
-      const auto& textureResources        = bindedMeshMatInfo.mMaterialResource->GetTextureResources();
+      const auto& textureResources        = bindedMeshMatInfo.mMaterialResource->GetBindedTextureResources();
       const auto  textureResourceListSize = static_cast<int32_t>(textureResources.size());
       for (int32_t i = 0; i < textureResourceListSize; ++i)
       {
+        glUniform1i(glGetUniformLocation(shaderResource->GetShaderProgramId(), (std::string("uTexture") + std::to_string(i)).c_str()), i);
+
         const auto texturePointer = textureResources[i].mTexturePointer;
         glActiveTexture(GL_TEXTURE0 + i);
         switch (texturePointer->GetTextureType())
         {
-        case EDyTextureStyleType::D1:
-          glBindTexture(GL_TEXTURE_1D, texturePointer->GetTextureId());
-          break;
-        case EDyTextureStyleType::D2:
-          glBindTexture(GL_TEXTURE_2D, texturePointer->GetTextureId());
-          break;
-        default: assert(false); break;
+        case EDyTextureStyleType::D1: glBindTexture(GL_TEXTURE_1D, texturePointer->GetTextureId()); break;
+        case EDyTextureStyleType::D2: glBindTexture(GL_TEXTURE_2D, texturePointer->GetTextureId()); break;
+        default: PHITOS_UNEXPECTED_BRANCH(); break;
         }
       }
     }
@@ -162,6 +156,16 @@ void CDyMeshRenderer::Render()
     }
 
     // Unbind, unset, deactivate settings for this submesh and material.
+    if (bindedMeshMatInfo.mMaterialResource)
+    {
+      const auto& textureResources        = bindedMeshMatInfo.mMaterialResource->GetBindedTextureResources();
+      const auto  textureResourceListSize = static_cast<int32_t>(textureResources.size());
+      for (int32_t i = 0; i < textureResourceListSize; ++i)
+      {
+        glActiveTexture(GL_TEXTURE0 + i);
+        glBindTexture(GL_TEXTURE_2D, 0);
+      }
+    }
     glBindVertexArray(0);
     shaderResource->UnuseShader();
   }

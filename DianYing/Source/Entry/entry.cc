@@ -61,7 +61,7 @@ void DyInitiailzeAllManagers()
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyDataInformation::Initialize());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyResource::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyHeapResource::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyScene::Initialize());
 
   // MDyWindow must be initialized at last.
@@ -84,7 +84,7 @@ void DyReleaseAllManagers()
 
   // Release other management instance.
   MDY_CALL_ASSERT_SUCCESS(dy::MDyScene::Release());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyResource::Release());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyHeapResource::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyDataInformation::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyLog::Release());

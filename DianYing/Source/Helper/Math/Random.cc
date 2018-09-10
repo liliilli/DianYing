@@ -45,17 +45,17 @@ std::uniform_real_distribution<float> sRealDistribution{-1'000'000'000.f, 1'000'
 
 namespace dy::random {
 
-int32_t RandomInteger()
+int32_t RandomInteger() noexcept
 {
   return sIntDistribution(sRngGenerator);
 }
 
-float RandomFloat()
+float RandomFloat() noexcept
 {
   return sRealDistribution(sRngGenerator);
 }
 
-int32_t RandomPositiveInteger()
+int32_t RandomPositiveInteger() noexcept
 {
   const int32_t value = sIntDistribution(sRngGenerator);
 
@@ -64,7 +64,7 @@ int32_t RandomPositiveInteger()
   return value;
 }
 
-int32_t RandomNegativeInteger()
+int32_t RandomNegativeInteger() noexcept
 {
   const int32_t value = sIntDistribution(sRngGenerator);
 
@@ -88,7 +88,7 @@ float RandomNegativeFloat()
   return value;
 }
 
-int32_t RandomIntegerRange(const int32_t from, const int32_t inclusive_to)
+int32_t RandomIntegerRange(const int32_t from, const int32_t inclusive_to) noexcept
 {
   if (from > inclusive_to)
   {
@@ -103,7 +103,7 @@ int32_t RandomIntegerRange(const int32_t from, const int32_t inclusive_to)
   return result;
 }
 
-float RandomFloatRange(const float from, const float prior_to)
+float RandomFloatRange(const float from, const float prior_to) noexcept
 {
   if (from >= prior_to)
   {
@@ -115,7 +115,7 @@ float RandomFloatRange(const float from, const float prior_to)
   return rngGenerator(sRngGenerator);
 }
 
-DVector2 RandomVector2Length(float length)
+DDyVector2 RandomVector2Length(float length) noexcept
 {
   if (length < 0)
   {
@@ -123,7 +123,7 @@ DVector2 RandomVector2Length(float length)
     return {};
   }
 
-  DVector2 result;
+  DDyVector2 result;
   float squared_length;
 
   do
@@ -137,7 +137,7 @@ DVector2 RandomVector2Length(float length)
   return result * (length / std::sqrtf(squared_length));
 }
 
-DVector3 RandomVector3Length(float length)
+DDyVector3 RandomVector3Length(float length) noexcept
 {
   if (length < 0)
   {
@@ -145,7 +145,7 @@ DVector3 RandomVector3Length(float length)
     return {};
   }
 
-  DVector3 result;
+  DDyVector3 result;
   float squared_length;
 
   do
@@ -160,7 +160,7 @@ DVector3 RandomVector3Length(float length)
   return result * (length / std::sqrtf(squared_length));
 }
 
-DVector2 RandomVector2Range(ERandomPolicy policy, float from, float prior_to)
+DDyVector2 RandomVector2Range(EDyRandomPolicy policy, float from, float prior_to)
 {
   if (from >= prior_to)
   {
@@ -170,9 +170,9 @@ DVector2 RandomVector2Range(ERandomPolicy policy, float from, float prior_to)
 
   switch (policy)
   {
-  case ERandomPolicy::Uniform:
+  case EDyRandomPolicy::Uniform:
     return RandomVector2Length(1.f) * RandomFloatRange(from, prior_to);
-  case ERandomPolicy::Discrete:
+  case EDyRandomPolicy::Discrete:
     // @todo Implement this
     MDY_LOG_WARNING("{} | Discrete distribution is not implemented now.", "RandomVector2Range");
     return {};
@@ -180,7 +180,7 @@ DVector2 RandomVector2Range(ERandomPolicy policy, float from, float prior_to)
   }
 }
 
-DVector3 RandomVector3Range(ERandomPolicy policy, float from, float prior_to)
+DDyVector3 RandomVector3Range(EDyRandomPolicy policy, float from, float prior_to)
 {
   if (from >= prior_to)
   {
@@ -190,9 +190,9 @@ DVector3 RandomVector3Range(ERandomPolicy policy, float from, float prior_to)
 
   switch (policy)
   {
-  case ERandomPolicy::Uniform:
+  case EDyRandomPolicy::Uniform:
     return RandomVector3Length(1.f) * RandomFloatRange(from, prior_to);
-  case ERandomPolicy::Discrete:
+  case EDyRandomPolicy::Discrete:
     MDY_LOG_WARNING("{} | Discrete distribution is not implemented now.", "RandomVector3Range");
     return {};
   default: return {};

@@ -19,8 +19,8 @@
 namespace dy
 {
 
-DDyQuaternion::DDyQuaternion(const DVector3& eulerAngleXYZ) :
-    mQuaternion{ glm::vec3{math::DegToRad(eulerAngleXYZ.X), math::DegToRad(eulerAngleXYZ.Y), math::DegToRad(eulerAngleXYZ.Z)} }
+DDyQuaternion::DDyQuaternion(const DDyVector3& eulerAngleXYZ) :
+    mQuaternion{ glm::vec3{math::ConvertDegreeToRadian(eulerAngleXYZ.X), math::ConvertDegreeToRadian(eulerAngleXYZ.Y), math::ConvertDegreeToRadian(eulerAngleXYZ.Z)} }
 {}
 
 DDyMatrix4x4 DDyQuaternion::GetRotationMatrix4x4() const noexcept {
@@ -31,16 +31,16 @@ DDyMatrix3x3 DDyQuaternion::GetRotationMatrix3x3() const noexcept {
   return glm::mat3_cast(this->mQuaternion);
 }
 
-DVector3 DDyQuaternion::GetEulerRotationDegreeAngleVector() const noexcept {
+DDyVector3 DDyQuaternion::GetEulerRotationDegreeAngleVector() const noexcept {
   const auto radians = glm::eulerAngles(this->mQuaternion);
-  return {math::RadToDeg(radians.x), math::RadToDeg(radians.y), math::RadToDeg(radians.z)};
+  return {math::ConvertRadianToDegree(radians.x), math::ConvertRadianToDegree(radians.y), math::ConvertRadianToDegree(radians.z)};
 }
 
-DVector3 DDyQuaternion::GetEulerRotationRadiansAngleVector() const noexcept {
+DDyVector3 DDyQuaternion::GetEulerRotationRadiansAngleVector() const noexcept {
   return glm::eulerAngles(this->mQuaternion);
 }
 
-void DDyQuaternion::AddRotationAngle(const DVector3& eulerAngle) {
+void DDyQuaternion::AddRotationAngle(const DDyVector3& eulerAngle) {
   // @todo IS IT REALLY PRECISE? AND LILIABLE?
   const auto degree = GetEulerRotationDegreeAngleVector() + eulerAngle;
 
@@ -53,19 +53,19 @@ void DDyQuaternion::AddRotationAngle(const DDyQuaternion& quaternion) {
   this->mQuaternion = quaternion.pGetQuaternion() * this->mQuaternion;
 }
 
-void DDyQuaternion::AddRotationAngle(EAxis3D axis, float degreeEulerAngle) {
+void DDyQuaternion::AddRotationAngle(EDyAxis3D axis, float degreeEulerAngle) {
   const auto radians = glm::radians(degreeEulerAngle);
   switch (axis) {
-  case EAxis3D::X: {
-      const auto temp = glm::angleAxis(radians, static_cast<glm::vec3>(DVector3::RightX()));
+  case EDyAxis3D::X: {
+      const auto temp = glm::angleAxis(radians, static_cast<glm::vec3>(DDyVector3::RightX()));
       this->mQuaternion = temp * this->mQuaternion;
     } break;
-  case EAxis3D::Y: {
-      const auto temp = glm::angleAxis(radians, static_cast<glm::vec3>(DVector3::UpY()));
+  case EDyAxis3D::Y: {
+      const auto temp = glm::angleAxis(radians, static_cast<glm::vec3>(DDyVector3::UpY()));
       this->mQuaternion = temp * this->mQuaternion;
     } break;
-  case EAxis3D::Z: {
-      const auto temp = glm::angleAxis(radians, static_cast<glm::vec3>(DVector3::FrontZ()));
+  case EDyAxis3D::Z: {
+      const auto temp = glm::angleAxis(radians, static_cast<glm::vec3>(DDyVector3::FrontZ()));
       this->mQuaternion = temp * this->mQuaternion;
     } break;
   default:
@@ -74,11 +74,11 @@ void DDyQuaternion::AddRotationAngle(EAxis3D axis, float degreeEulerAngle) {
   }
 }
 
-void DDyQuaternion::SetRotationAngle(const DVector3& degreeEulerAngle) {
+void DDyQuaternion::SetRotationAngle(const DDyVector3& degreeEulerAngle) {
   this->mQuaternion = glm::quat{
-      glm::vec3{math::DegToRad(degreeEulerAngle.X),
-                math::DegToRad(degreeEulerAngle.Y),
-                math::DegToRad(degreeEulerAngle.Z)}
+      glm::vec3{math::ConvertDegreeToRadian(degreeEulerAngle.X),
+                math::ConvertDegreeToRadian(degreeEulerAngle.Y),
+                math::ConvertDegreeToRadian(degreeEulerAngle.Z)}
   };
 }
 

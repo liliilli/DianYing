@@ -18,6 +18,20 @@
 namespace dy
 {
 
+std::optional<std::vector<char>> DyReadBinaryFileAll(const std::string& filePath) {
+  std::ifstream fileStream { filePath, std::ios::ate | std::ios::binary };
+  if (!fileStream.is_open()) return std::nullopt;
+
+  const size_t fileSize = static_cast<size_t>(fileStream.tellg());
+  std::vector<char> fileBuffer(fileSize + 1);
+
+  fileStream.seekg(0);
+  fileStream.read(fileBuffer.data(), fileSize);
+
+  fileStream.close();
+  return fileBuffer;
+}
+
 std::string DyGetFileNameFromPath(const std::string& path) noexcept
 {
   auto start = path.find_last_of('/');
