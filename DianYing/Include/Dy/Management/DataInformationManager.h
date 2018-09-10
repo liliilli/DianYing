@@ -21,10 +21,15 @@
 #include <Dy/Core/Component/Information/ShaderInformation.h>
 #include <Dy/Core/Component/Information/TextureInformation.h>
 #include <Dy/Core/Component/Information/ModelInformation.h>
+#include <Dy/Helper/ThreadPool.h>
 
 namespace dy
 {
 
+///
+/// @class MDyDataInformation
+/// @brief Manages data information which are needed to create heap instances such as CDy-Resource.
+///
 class MDyDataInformation final : public ISingleton<MDyDataInformation>
 {
   MDY_SINGLETON_DERIVED(MDyDataInformation);
@@ -55,14 +60,14 @@ public:
   /// @return Valid shader information pointer reference, or nullptr when not found.
   ///
   [[nodiscard]]
-  const CDyShaderInformation* GetShaderInformation(const std::string& shaderName) const noexcept;
+  const DDyShaderInformation* GetShaderInformation(const std::string& shaderName) const noexcept;
 
   ///
   /// @brief Get texture information.
   /// @return Valid texture information pointer reference, or nullptr when not found.
   ///
   [[nodiscard]]
-  const CDyTextureInformation* GetTextureInformation(const std::string& textureName) const noexcept;
+  const DDyTextureInformation* GetTextureInformation(const std::string& textureName) const noexcept;
 
   ///
   /// @brief Get material information.
@@ -114,10 +119,15 @@ private:
   template <typename TInformationType>
   using THeapHash = std::unordered_map<std::string, std::unique_ptr<TInformationType>>;
 
-  THeapHash<CDyShaderInformation>    mShaderInformation;
-  THeapHash<CDyTextureInformation>   mTextureInformation;
+  THeapHash<DDyShaderInformation>    mShaderInformation;
+  THeapHash<DDyTextureInformation>   mTextureInformation;
   THeapHash<DDyMaterialInformation>  mMaterialInformation;
   THeapHash<DDyModelInformation>     mModelInformation;
+
+  mutable std::mutex                 mTemporalMutex;
+  // @todo not used yet.
+  //mutable dy::FDyThreadPool          mThreadPool {sThreadWorkerCount};
+  //inline static constexpr int32_t    sThreadWorkerCount = 4;
 };
 
 } /// ::dy namespace

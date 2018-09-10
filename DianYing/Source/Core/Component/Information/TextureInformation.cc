@@ -11,6 +11,8 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /// SOFTWARE.
 ///
+/// @TODO IMPLEMEMNT PARAMETER (MIN_ MAG_ MIPMAP_) CUSTOM OPTION MECHANISM.
+///
 
 /// Header file
 #include <Dy/Core/Component/Information/TextureInformation.h>
@@ -21,18 +23,19 @@ namespace
 {
 
 MDY_SET_IMMUTABLE_STRING(kTextureInformationTemplate,   "{} | Texture information {} : {}");
-MDY_SET_IMMUTABLE_STRING(kTextureInformationTypeError,  "{} | Texture information type must be specified.");
 MDY_SET_IMMUTABLE_STRING(kTextureInformationBindTo,     "{} | Texture information binds to {}");
-MDY_SET_IMMUTABLE_STRING(kTextureInformation,           "CDyTextureInformation");
+
+MDY_SET_IMMUTABLE_STRING(kTextureInformation,           "DDyTextureInformation");
 
 } /// ::unnamed namespace
 
 namespace dy
 {
 
-CDyTextureInformation::CDyTextureInformation(const PDyTextureConstructionDescriptor& textureConstructionDescriptor) :
+DDyTextureInformation::DDyTextureInformation(const PDyTextureConstructionDescriptor& textureConstructionDescriptor) :
     mTextureInformation{textureConstructionDescriptor}
 {
+  // Set properties and output log for properties.
   MDY_LOG_INFO_D(kTextureInformationTemplate, kTextureInformation, "name", this->mTextureInformation.mTextureName);
   MDY_LOG_INFO_D(kTextureInformationTemplate, kTextureInformation, "local path", this->mTextureInformation.mTextureFileLocalPath);
   MDY_LOG_INFO_D(kTextureInformationTemplate, kTextureInformation, "absolute path", this->mTextureInformation.mTextureFileAbsolutePath);
@@ -45,10 +48,7 @@ CDyTextureInformation::CDyTextureInformation(const PDyTextureConstructionDescrip
   case EDyTextureStyleType::D2:
     MDY_LOG_INFO_D(kTextureInformationTemplate, kTextureInformation, "texture type", "Texture2D");
     break;
-  default:
-    MDY_LOG_CRITICAL_D(kTextureInformationTypeError, kTextureInformation);
-    assert(false);
-    break;
+  default: PHITOS_UNEXPECTED_BRANCH(); break;
   }
 
   MDY_LOG_INFO_D(kTextureInformationTemplate, kTextureInformation, "absolute path", this->mTextureInformation.mIsEnabledAbsolutePath ? "ON" : "OFF");
@@ -58,18 +58,18 @@ CDyTextureInformation::CDyTextureInformation(const PDyTextureConstructionDescrip
   // @todo output log of map type and parameter options.
 }
 
-CDyTextureInformation::~CDyTextureInformation()
+DDyTextureInformation::~DDyTextureInformation()
 {
   MDY_LOG_INFO_D(kTextureInformationTemplate, "~CDyShaderInformation", "name", this->mTextureInformation.mTextureName);
-  if (mNextLevelPtr)
+  if (this->mLinkedTextureResourcePtr)
   {
-    mNextLevelPtr->__pfSetPrevLevel(nullptr);
+    this->mLinkedTextureResourcePtr->__pfLinkTextureInformationPtr(nullptr);
   }
 }
 
-void CDyTextureInformation::__pfSetNextLevel(CDyTextureResource* ptr) const noexcept
+void DDyTextureInformation::__pfLinkTextureResource(CDyTextureResource* ptr) const noexcept
 {
-  MDY_LOG_DEBUG_D(kTextureInformationBindTo, "__pfSetNextLevel", reinterpret_cast<std::ptrdiff_t>(ptr));
-  mNextLevelPtr = ptr;
+  MDY_LOG_DEBUG_D(kTextureInformationBindTo, "__pfLinkTextureResource", reinterpret_cast<std::ptrdiff_t>(ptr));
+  this->mLinkedTextureResourcePtr = ptr;
 }
 } /// ::dy namespace

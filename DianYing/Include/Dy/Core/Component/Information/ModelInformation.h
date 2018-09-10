@@ -14,7 +14,8 @@
 ///
 
 #include <Dy/Core/Component/Internal/ModelType.h>
-#include <Dy/Core/Component/Information/MeshInformation.h>
+#include <Dy/Core/Component/Information/SubmeshInformation.h>
+#include <Dy/Core/Component/Internal/MaterialType.h>
 
 //!
 //! Forward declaration
@@ -29,7 +30,7 @@ namespace dy
 {
 enum class EDyTextureMapType : unsigned char;
 class CDyModelResource;
-class CDyTextureInformation;
+class DDyTextureInformation;
 } /// ::dy namespace
 
 //!
@@ -62,6 +63,22 @@ public:
     return this->mBindedMaterialName;
   }
 
+  ///
+  /// @brief Return mesh information list which have material name, vertex, indice etc.
+  ///
+  FORCEINLINE const auto& GetMeshInformation() const noexcept
+  {
+    return this->mMeshInformations;
+  }
+
+  ///
+  /// @brief Check if object is being binded to CDyModelResource instance.
+  ///
+  FORCEINLINE bool IsBeingBindedToResource() const noexcept
+  {
+    return this->mLinkedModelResourcePtr != nullptr;
+  }
+
 private:
   ///
   /// @brief Process assimp node so get information and resource from aiNode by iterating
@@ -75,31 +92,36 @@ private:
   ///
   void __pProcessAssimpMesh(aiMesh* mesh, const aiScene* scene);
 
-  ///
-  /// @brief
-  ///
-  std::optional<std::vector<std::string>> __pLoadMaterialTextures(aiMaterial* material, EDyTextureMapType type);
+  /// Read vertex data, make data, and insert to PDySubmeshInformationDescriptor.
+  void __pReadVertexData(const aiMesh* mesh, PDySubmeshInformationDescriptor& desc);
 
-  ///
-  /// @brief Output information log only in debug mode.
-  ///
+  /// Read index(element) data, make data, and insert to PDySubmeshInformationDescriptor.
+  void __pReadIndiceData(const aiMesh* mesh, PDySubmeshInformationDescriptor& desc);
+
+  /// Read material data and make descriptor.
+  PDyMaterialConstructionDescriptor __pReadMaterialData(const aiMaterial* material);
+
+  /// Read material texture data and insert texture information to manager.
+  std::optional<std::vector<std::string>> __pLoadMaterialTextures(const aiMaterial* material, EDyTextureMapType type);
+
+  /// Output information log only in debug mode.
   void __pOutputDebugInformationLog();
 
-  std::string                       mModelName          = "";
-  std::string                       mModelRootPath      = "";
-  std::vector<DDyMeshInformation>   mMeshInformations;
-  std::vector<std::string>          mBindedMaterialName = {};
-  std::vector<std::string>          mTextureLocalPaths  = {};
+  std::string                         mModelName          = "";
+  std::string                         mModelRootPath      = "";
+  std::vector<DDySubmeshInformation>  mMeshInformations   = {};
+  std::vector<std::string>            mBindedMaterialName = {};
+  std::vector<std::string>            mTextureLocalPaths  = {};
 
   //!
-  //! Level pointers binding
+  //! Resource pointers binding
   //!
 
-  void __pfSetNextLevel(CDyModelResource* ptr) const noexcept { mNextLevelPtr = ptr; }
-  mutable CDyModelResource* mNextLevelPtr = nullptr;
+  void __pfSetModelResourceLink(CDyModelResource* ptr) const noexcept { mLinkedModelResourcePtr = ptr; }
+  mutable CDyModelResource* mLinkedModelResourcePtr = nullptr;
 
   friend class CDyModelResource;
-  friend class MDyResource;
+  friend class MDyHeapResource;
 };
 
 } /// ::dy namespace

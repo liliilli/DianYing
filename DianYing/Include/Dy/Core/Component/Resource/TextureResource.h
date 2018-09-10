@@ -22,7 +22,7 @@
 
 namespace dy
 {
-class CDyTextureInformation;
+class DDyTextureInformation;
 class CDyMaterialResource;
 }
 
@@ -33,6 +33,10 @@ class CDyMaterialResource;
 namespace dy
 {
 
+///
+/// @class CDyTextureResource
+/// @brief Texture resource type which manages texture heap unsafe resources safely.
+///
 class CDyTextureResource final
 {
 public:
@@ -44,33 +48,33 @@ public:
   ~CDyTextureResource();
 
   ///
-  /// @brief
+  /// @brief Get binded texture resource id.
   ///
-  FORCEINLINE uint32_t GetTextureId() const noexcept
+  [[nodiscard]] FORCEINLINE uint32_t GetTextureId() const noexcept
   {
     return this->mTextureResourceId;
   };
 
   ///
-  /// @brief
+  /// @brief Get texture type value.
   ///
-  FORCEINLINE EDyTextureStyleType GetTextureType() const noexcept
+  [[nodiscard]] FORCEINLINE EDyTextureStyleType GetTextureType() const noexcept
   {
     return this->mTextureType;
   }
 
   ///
-  /// @brief
+  /// @brief Get texture width size value.
   ///
-  FORCEINLINE int32_t GetTextureWidth() const noexcept
+  [[nodiscard]] FORCEINLINE int32_t GetTextureWidth() const noexcept
   {
     return this->mTextureWidth;
   }
 
   ///
-  /// @brief
+  /// @brief Get texture height size value.
   ///
-  FORCEINLINE int32_t GetTextureHeight() const noexcept
+  [[nodiscard]] FORCEINLINE int32_t GetTextureHeight() const noexcept
   {
     return this->mTextureHeight;
   }
@@ -79,8 +83,7 @@ private:
   ///
   /// @brief
   ///
-  [[nodiscard]]
-  EDySuccess pfInitializeResource(const CDyTextureInformation& textureInformation);
+  [[nodiscard]] EDySuccess pfInitializeTextureResource(const DDyTextureInformation& textureInformation);
 
   /// Valid texture id must not be 0.
   // @todo JUST ONLY OPENGL
@@ -96,27 +99,24 @@ private:
 
   template <typename TType>
   using TBindPtrMap = std::unordered_map<TType*, TType*>;
-  ///
-  /// @brief
-  ///
-  void __pfSetPrevLevel(CDyTextureInformation* ptr) const noexcept { __mPrevLevelPtr = ptr; }
-  void __pfSetMaterialBind(CDyMaterialResource* ptr) const noexcept
+
+  void __pfLinkTextureInformationPtr(DDyTextureInformation* ptr) const noexcept
   {
-    auto [it, result] = __mBindMaterialPtrs.try_emplace(ptr, ptr);
-    if (!result) {
-      assert(false);
-    }
+    this->__mLinkedTextureInformationPtr = ptr;
   }
-  void __pfSetMaterialReset(CDyMaterialResource* ptr) const noexcept
+
+  void __pfLinkMaterialResourcePtr(CDyMaterialResource* ptr) const noexcept;
+
+  void __pfResetMaterialResourcePtr(CDyMaterialResource* ptr) const noexcept
   {
     __mBindMaterialPtrs.erase(ptr);
   }
-  mutable CDyTextureInformation*            __mPrevLevelPtr   = nullptr;
+  mutable DDyTextureInformation*            __mLinkedTextureInformationPtr   = nullptr;
   mutable TBindPtrMap<CDyMaterialResource>  __mBindMaterialPtrs;
 
-  friend class CDyTextureInformation;
+  friend class DDyTextureInformation;
   friend class CDyMaterialResource;
-  friend class MDyResource;
+  friend class MDyHeapResource;
 };
 
 } /// ::dy namespace

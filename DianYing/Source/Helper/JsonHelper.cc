@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_HELPER_ALIASES_H
-#define GUARD_DY_HELPER_ALIASES_H
+#include <precompiled.h>
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,13 +12,17 @@
 /// SOFTWARE.
 ///
 
-#include <cstdint>
+/// Header file
+#include <Dy/Helper/JsonHelper.h>
 
-namespace dy {
+#include <nlohmann/json.hpp>
 
-using TInt32  = std::int32_t;
-using TUint32 = std::uint32_t;
+namespace dy
+{
+
+bool DyIsJsonKeyExist(const nlohmann::json& json, const std::string& key) noexcept
+{
+  return json.find(key) != json.end();
+}
 
 } /// ::dy namespace
-
-#endif /// GUARD_DY_HELPER_ALIASES_H

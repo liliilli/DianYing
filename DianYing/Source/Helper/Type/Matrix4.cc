@@ -21,8 +21,8 @@
 namespace dy
 {
 
-DDyMatrix4x4::DDyMatrix4x4(const DVector4& column1, const DVector4& column2,
-                           const DVector4& column3, const DVector4& column4) :
+DDyMatrix4x4::DDyMatrix4x4(const DDyVector4& column1, const DDyVector4& column2,
+                           const DDyVector4& column3, const DDyVector4& column4) :
     mMatrixValue{ column1, column2, column3, column4 } { }
 
 DDyMatrix4x4::DDyMatrix4x4(const glm::mat2& glmMatrix) noexcept
@@ -50,8 +50,8 @@ DDyMatrix4x4& DDyMatrix4x4::operator=(const glm::mat2& value) noexcept
 {
   this->mMatrixValue[0] = value[0];
   this->mMatrixValue[1] = value[1];
-  this->mMatrixValue[2] = DVector4{};
-  this->mMatrixValue[3] = DVector4{};
+  this->mMatrixValue[2] = DDyVector4{};
+  this->mMatrixValue[3] = DDyVector4{};
   return *this;
 }
 
@@ -60,7 +60,7 @@ DDyMatrix4x4& DDyMatrix4x4::operator=(const glm::mat3& value) noexcept
   this->mMatrixValue[0] = value[0];
   this->mMatrixValue[1] = value[1];
   this->mMatrixValue[2] = value[2];
-  this->mMatrixValue[3] = DVector4{};
+  this->mMatrixValue[3] = DDyVector4{};
   return *this;
 }
 
@@ -307,9 +307,9 @@ DDyMatrix4x4 DDyMatrix4x4::Multiply(const DDyMatrix4x4& rhs) const noexcept
   };
 }
 
-DVector4 DDyMatrix4x4::MultiplyVector(const DVector4& rhs) const noexcept
+DDyVector4 DDyMatrix4x4::MultiplyVector(const DDyVector4& rhs) const noexcept
 {
-  return DVector4{
+  return DDyVector4{
       (*this)[0][0] * rhs.X + (*this)[1][0] * rhs.Y + (*this)[2][0] * rhs.Z + (*this)[3][0] * rhs.W,
       (*this)[0][1] * rhs.X + (*this)[1][1] * rhs.Y + (*this)[2][1] * rhs.Z + (*this)[3][1] * rhs.W,
       (*this)[0][2] * rhs.X + (*this)[1][2] * rhs.Y + (*this)[2][2] * rhs.Z + (*this)[3][2] * rhs.W,

@@ -51,7 +51,7 @@ struct PDyMaterialConstructionDescriptor final
 {
   std::string                           mMaterialName     = "";
   std::string                           mShaderName       = "";
-  std::vector<std::string>              mTextureName;
+  std::vector<std::string>              mTextureNames;
   EDyMaterialBlendMode                  mBlendMode        = EDyMaterialBlendMode::Opaque;
   bool                                  mIsShaderLazyInitialized = false;
 };
@@ -83,15 +83,18 @@ struct PDyMaterialResourceDescriptor final
 
 ///
 /// @struct PDyMaterialPopulateDescriptor
-/// @brief
+/// @brief Material descriptor for populating from base material.
+/// Populated material will be automatically remove by being removed original base material.
 ///
 struct PDyMaterialPopulateDescriptor final
 {
   std::string                           mMaterialOverrideName   = "";
   std::string                           mOverrideShaderName     = "";
+  std::vector<std::string>              mTextureOverrideNames   = {};
 
   bool                                  mIsEnabledMaterialCustomNameOverride  = false;
-  bool                                  mIsEnabledShaderOverride        = false;
+  bool                                  mIsEnabledShaderOverride              = false;
+  bool                                  mIsEnabledTextureOverride             = false;
 };
 
 } /// ::dy namespace

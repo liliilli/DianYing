@@ -12,8 +12,7 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /// SOFTWARE.
 ///
-/// @log
-/// 2018-08-21 Create file.
+/// @todo IMPLEMENT SET OVERALL WINDOW WIDTH, HEIGHT AS CHANGING VIEWPORT OF EACH API FRAMEBUFFER.
 ///
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
@@ -22,15 +21,22 @@ namespace dy
 {
 
 ///
-/// @brief
+/// @enum EDyRenderingApiType
+/// @brief Rendering API type for rendering scene. Must not be EDyRenderingApiType::NoneError when using.
 ///
-enum class ERenderingType
+enum class EDyRenderingApiType
 {
-  None,
+  NoneError,
+  Vulkan,
+#if defined(_WIN32)
   DirectX11,
   DirectX12,
+#endif
+#if defined(__APPLE__)
+  Metal,
+#else
   OpenGL,
-  Vulkan
+#endif
 };
 
 ///
@@ -43,34 +49,34 @@ class MDySetting final : public ISingleton<MDySetting>
   MDY_SINGLETON_PROPERTIES(MDySetting);
 public:
   ///
-  /// @brief
+  /// @brief Check if rendering vsync is enabled.
+  /// If Vsync enabled, max frame per seconds are fixed by 60 fps.
+  /// If not, frame will be beyond 60 fps along your hardware but jittering may be occured sometimes.
   ///
-  [[nodiscard]]
-  bool IsVSyncEnabled() const noexcept;
+  [[nodiscard]] bool IsVSyncEnabled() const noexcept;
 
   ///
   /// @brief Get enable/disable flag of feature, logging as true/false.
   ///
-  [[nodiscard]]
-  FORCEINLINE bool IsEnabledFeatureLogging() const noexcept
+  [[nodiscard]] FORCEINLINE bool IsEnabledFeatureLogging() const noexcept
   {
     return this->mIsEnabledLogging;
   }
 
   ///
   /// @brief Get enable/disable flag of subfeature, logging to console as true/false.
+  /// If changed, logging feature must be restarted manually.
   ///
-  [[nodiscard]]
-  FORCEINLINE bool IsEnabledSubFeatureLoggingToConsole() const noexcept
+  [[nodiscard]] FORCEINLINE bool IsEnabledSubFeatureLoggingToConsole() const noexcept
   {
     return this->mIsEnabledLoggingToConsole;
   }
 
   ///
   /// @brief Get enable/disable flag of subfeature, logging to file as true/false.
+  /// If changed, logging feature must be restarted manually.
   ///
-  [[nodiscard]]
-  FORCEINLINE bool IsEnableSubFeatureLoggingToFile() const noexcept
+  [[nodiscard]] FORCEINLINE bool IsEnableSubFeatureLoggingToFile() const noexcept
   {
     return this->mIsEnabledLoggingToFile;
   }
@@ -78,17 +84,31 @@ public:
   ///
   /// @brief Get the path of log file.
   ///
-  [[nodiscard]]
-  FORCEINLINE const std::string& GetLogFilePath() const noexcept
+  [[nodiscard]] FORCEINLINE const std::string& GetLogFilePath() const noexcept
   {
     return this->mLogFilePath;
   }
 
   ///
-  /// @brief
+  /// @brief Get rendering type enum of present rendering api.
   ///
-  [[nodiscard]]
-  ERenderingType GetRenderingType() const noexcept;
+  [[nodiscard]] EDyRenderingApiType GetRenderingType() const noexcept;
+
+  ///
+  /// @brief Get overall window width size.
+  ///
+  [[nodiscard]] FORCEINLINE int32_t GetWindowSizeWidth() const noexcept
+  {
+    return this->mWindowSizeWidth;
+  }
+
+  ///
+  /// @brief Get overall window height size.
+  ///
+  [[nodiscard]] FORCEINLINE int32_t GetWindowSizeHeight() const noexcept
+  {
+    return this->mWindowSizeHeight;
+  }
 
   ///
   /// @brief Enable or disable logging feature.
@@ -107,9 +127,9 @@ public:
   void SetSubFeatureLoggingToFile(bool isEnabled) noexcept;
 
   ///
-  /// @brief
+  /// @brief Set file path for logging. Must be restarted when updated.
   ///
-  void SetLogFilePath(const std::string& path);
+  void SetLogFilePath(const std::string& path) noexcept;
 
   ///
   /// @brief Set vsync mode.
@@ -118,25 +138,27 @@ public:
   ///
   void SetVSyncMode(bool enableVsync) noexcept;
 
-
-
   ///
-  /// @brief
+  /// @brief Push arguments when executing program.
+  /// This function will not operate after manager initialized.
   ///
-  void ArgsPushback(const char* argsString);
+  void pArgsPushback(const char* argsString);
 
 private:
-  ERenderingType mRenderingType   = ERenderingType::None;
-  bool mIsRenderingTypeSet        = false;
-  bool mIsEnabledVsync            = true;
+  EDyRenderingApiType mRenderingType  = EDyRenderingApiType::NoneError;
+  bool mIsRenderingTypeSet            = false;
+  bool mIsEnabledVsync                = true;
 
-  bool mIsEnabledLogging          = false;
-  bool mIsEnabledLoggingToConsole = false;
-  bool mIsEnabledLoggingToFile    = false;
-  std::string mLogFilePath        = "./log.txt";
+  bool mIsEnabledLogging              = false;
+  bool mIsEnabledLoggingToConsole     = false;
+  bool mIsEnabledLoggingToFile        = false;
+  std::string mLogFilePath            = "./log.txt";
+
+  int32_t mWindowSizeWidth            = 1280;
+  int32_t mWindowSizeHeight           = 720;
 
   std::vector<const char*> mApplicationArgs;
-  bool mIsInitialized           = false;
+  bool mIsInitialized                 = false;
 };
 
 } /// ::dy namespace

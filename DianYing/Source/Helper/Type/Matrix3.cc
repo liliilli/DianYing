@@ -196,9 +196,9 @@ DDyMatrix3x3 DDyMatrix3x3::Multiply(const DDyMatrix3x3& rhs) const noexcept
   };
 }
 
-DVector3 DDyMatrix3x3::MultiplyVector(const DVector3& rhs) const noexcept
+DDyVector3 DDyMatrix3x3::MultiplyVector(const DDyVector3& rhs) const noexcept
 {
-  return DVector3{
+  return DDyVector3{
       (*this)[0][0] * rhs.X + (*this)[1][0] * rhs.Y + (*this)[2][0] * rhs.Z,
       (*this)[0][1] * rhs.X + (*this)[1][1] * rhs.Y + (*this)[2][1] * rhs.Z,
       (*this)[0][2] * rhs.X + (*this)[1][2] * rhs.Y + (*this)[2][2] * rhs.Z

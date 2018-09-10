@@ -22,6 +22,7 @@
 #include <cassert>
 
 #include <Dy/Management/LoggingManager.h>
+#include "Dy/Management/TimeManager.h"
 
 namespace
 {
@@ -33,14 +34,14 @@ bool __IsSameCString(const char* lhs, const char* rhs) noexcept
 }
 
 [[nodiscard]]
-dy::ERenderingType __GetRenderingType(const std::vector<const char*>& argsList) noexcept
+dy::EDyRenderingApiType __GetRenderingType(const std::vector<const char*>& argsList) noexcept
 {
   /// Temporal structure to bind option string and type.
   struct DItem final {
     const char*         mCString = "";
-    dy::ERenderingType  mType = dy::ERenderingType::None;
+    dy::EDyRenderingApiType  mType = dy::EDyRenderingApiType::NoneError;
 
-    explicit DItem(const char* cString, dy::ERenderingType type) : mCString(cString), mType(type) {};
+    explicit DItem(const char* cString, dy::EDyRenderingApiType type) : mCString(cString), mType(type) {};
   };
 #if defined(_WIN32)
   assert(argsList.size() == 2);
@@ -52,10 +53,10 @@ dy::ERenderingType __GetRenderingType(const std::vector<const char*>& argsList) 
 
   const std::vector<DItem> renderingTypeList =
   {
-    DItem{"vulkan", dy::ERenderingType::Vulkan},
-    DItem{"opengl", dy::ERenderingType::OpenGL},
-    DItem{"d3d11", dy::ERenderingType::DirectX11},
-    DItem{"d3d12", dy::ERenderingType::DirectX12}
+    DItem{"vulkan", dy::EDyRenderingApiType::Vulkan},
+    DItem{"opengl", dy::EDyRenderingApiType::OpenGL},
+    DItem{"d3d11", dy::EDyRenderingApiType::DirectX11},
+    DItem{"d3d12", dy::EDyRenderingApiType::DirectX12}
   };
 
   for (const auto& item : renderingTypeList)
@@ -66,7 +67,7 @@ dy::ERenderingType __GetRenderingType(const std::vector<const char*>& argsList) 
     }
   }
 
-  return dy::ERenderingType::None;
+  return dy::EDyRenderingApiType::NoneError;
 }
 
 } /// unnamed namespace
@@ -74,7 +75,7 @@ dy::ERenderingType __GetRenderingType(const std::vector<const char*>& argsList) 
 namespace dy
 {
 
-ERenderingType MDySetting::GetRenderingType() const noexcept
+EDyRenderingApiType MDySetting::GetRenderingType() const noexcept
 {
   assert(this->mIsInitialized);
   return this->mRenderingType;
@@ -108,21 +109,40 @@ void MDySetting::SetSubFeatureLoggingToFile(bool isEnabled) noexcept
   MDY_LOG_INFO_D("{} | Logging File : {}. Need to be restart logger.", "SubFeature", isEnabled ? "ON" : "OFF");
 }
 
-void MDySetting::ArgsPushback(const char* argsString)
+void MDySetting::SetLogFilePath(const std::string& path) noexcept
 {
-  assert(!this->mIsInitialized);
+  if (path.empty())
+  {
+    MDY_LOG_ERROR_D("{} | new log file path is empty. Log file path did not change. Log file path : {}", this->mLogFilePath);
+  }
+  else
+  {
+    this->mLogFilePath = path;
+    MDY_LOG_INFO_D("{} | Update Log file path : {}. Need to be restart logger.", "SubFeature", this->mLogFilePath);
+  }
+}
+
+void MDySetting::pArgsPushback(const char* argsString)
+{
+  PHITOS_ASSERT(!this->mIsInitialized, "Setting manager must not be initiailized before putting arguments");
   this->mApplicationArgs.emplace_back(argsString);
 }
 
 bool MDySetting::IsVSyncEnabled() const noexcept
 {
-  assert(this->mIsInitialized);
   return this->mIsEnabledVsync;
 }
 
 void MDySetting::SetVSyncMode(bool enableVsync) noexcept
 {
-
+  if (this->mIsEnabledVsync != enableVsync)
+  {
+    this->mIsEnabledVsync = enableVsync;
+    if (MDyTime::IsInitialized() && enableVsync)
+    {
+      MDyTime::GetInstance().pfSetVsync(enableVsync);
+    }
+  }
 }
 
 EDySuccess MDySetting::pfInitialize()
@@ -138,7 +158,7 @@ EDySuccess MDySetting::pfInitialize()
 
   // Set rendering api type.
   if (const auto type = __GetRenderingType(mApplicationArgs);
-      type == ERenderingType::None) {
+      type == EDyRenderingApiType::NoneError) {
     return DY_FAILURE;
   }
   else {
@@ -148,10 +168,10 @@ EDySuccess MDySetting::pfInitialize()
   MDY_LOG_INFO_D("{} | Vsync : {}", "Feature", this->mIsEnabledVsync ? "ON" : "OFF");
   switch (this->mRenderingType)
   {
-  case ERenderingType::Vulkan:    MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "Vulkan");    break;
-  case ERenderingType::DirectX11: MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "DirectX11"); break;
-  case ERenderingType::DirectX12: MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "DirectX12"); break;
-  case ERenderingType::OpenGL:    MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "OpenGL");    break;
+  case EDyRenderingApiType::Vulkan:    MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "Vulkan");    break;
+  case EDyRenderingApiType::DirectX11: MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "DirectX11"); break;
+  case EDyRenderingApiType::DirectX12: MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "DirectX12"); break;
+  case EDyRenderingApiType::OpenGL:    MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "OpenGL");    break;
   default:                        MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "Unknown");   break;
   }
 

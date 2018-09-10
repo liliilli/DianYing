@@ -50,12 +50,6 @@
   #pragma comment(lib, "d3d11.lib")
 #endif
 
-#ifdef false
-#if !defined(NDEBUG)
-  #define GLEW_STATIC
-#endif
-#include <GL/glew.h>
-#endif
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -63,9 +57,8 @@
 
 #include <spdlog/fmt/fmt.h>
 
-#include <Dy/Helper/aliases.h>
-#include <Dy/Helper/enum_flags.h>
-#include <Dy/Helper/disable_warnings.h>
-#include <Dy/Helper/macroes.h>
+#include <Dy/Helper/GlobalEnumFlags.h>
+#include <Dy/Helper/DisableWarning.h>
+#include <Dy/Helper/Macroes.h>
 
 #endif /// DIANYING_PRECOMPILED_H

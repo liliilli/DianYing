@@ -43,16 +43,16 @@ private:
 
 ///
 /// @class PDyTextureConstructionDescriptor
-/// @brief
+/// @brief Texture construction descriptor.
 ///
 struct PDyTextureConstructionDescriptor final
 {
   std::string mTextureName                                        = "";
   std::string mTextureFileLocalPath                               = "";
   std::string mTextureFileAbsolutePath                            = "";
-  DColor      mConstantBorderColor                                = DColor::Black;
+  DDyColor    mConstantBorderColor                                = DDyColor::Black;
 
-  std::vector<PDyTextureParameterOption> mTextureParameterOptions;
+  std::vector<PDyTextureParameterOption> mTextureParameterOptions = {};
 
   bool        mIsEnabledAbsolutePath                              = true;
   bool        mIsEnabledCustomedTextureParameter                  = false;

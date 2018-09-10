@@ -18,6 +18,71 @@
 #include <Dy/Helper/IoHelper.h>
 #include <Dy/Core/Component/Information/ShaderInformation.h>
 #include <Dy/Core/Component/Resource/MaterialResource.h>
+#include <Dy/Management/LoggingManager.h>
+#include <Phitos/Dbg/assert.h>
+
+//!
+//! Only this translate unit function.
+//!
+
+namespace
+{
+
+///
+/// @brief Retrieve immutable debug string (string_view) for attribute variable type. (GL)
+///
+[[nodiscard]] std::string_view DyGetDebugStringOfAttributeVariableType(dy::EDyAttributeVariableType type)
+{
+  switch (type)
+  {
+  case dy::EDyAttributeVariableType::Matrix4:   return "Real Matrix4x4";
+  case dy::EDyAttributeVariableType::Matrix3:   return "Real Matrix3x3";
+  case dy::EDyAttributeVariableType::Matrix2:   return "Real Matrix2x2";
+  case dy::EDyAttributeVariableType::Vector4:   return "Real Vector4";
+  case dy::EDyAttributeVariableType::Vector3:   return "Real Vector3";
+  case dy::EDyAttributeVariableType::Vector2:   return "Real Vector2";
+  case dy::EDyAttributeVariableType::IVec4:     return "Integer Vector4";
+  case dy::EDyAttributeVariableType::IVec3:     return "Integer Vector3";
+  case dy::EDyAttributeVariableType::IVec2:     return "Integer Vector2";
+  case dy::EDyAttributeVariableType::Integer:   return "Interger1";
+  case dy::EDyAttributeVariableType::Float:     return "Float1";
+  case dy::EDyAttributeVariableType::NoneError: return "None";
+  default: return "Error";
+  }
+}
+
+///
+/// @brief Retrieve immutable debug string (string_view) for uniform variable type. (GL)
+///
+[[nodiscard]] std::string_view DyGetDebugStringOfUniformVariableType(dy::EDyUniformVariableType type)
+{
+  switch (type)
+  {
+  case dy::EDyUniformVariableType::Matrix4:   return "Real Matrix4x4";
+  case dy::EDyUniformVariableType::Matrix3:   return "Real Matrix3x3";
+  case dy::EDyUniformVariableType::Matrix2:   return "Real Matrix2x2";
+  case dy::EDyUniformVariableType::Vector4:   return "Real Vector4";
+  case dy::EDyUniformVariableType::Vector3:   return "Real Vector3";
+  case dy::EDyUniformVariableType::Vector2:   return "Real Vector2";
+  case dy::EDyUniformVariableType::IVec4:     return "Integer Vector4";
+  case dy::EDyUniformVariableType::IVec3:     return "Integer Vector3";
+  case dy::EDyUniformVariableType::IVec2:     return "Integer Vector2";
+  case dy::EDyUniformVariableType::Integer:   return "Interger1";
+  case dy::EDyUniformVariableType::Float:     return "Float1";
+  case dy::EDyUniformVariableType::NoneError: return "None";
+  case dy::EDyUniformVariableType::IntegerPointer:  return "Integer Ptr";
+  case dy::EDyUniformVariableType::FloatPointer:    return "Float Ptr";
+  case dy::EDyUniformVariableType::Texture1D:       return "Texture 1D";
+  case dy::EDyUniformVariableType::Texture2D:       return "Texture 2D";
+  default: return "Error";
+  }
+}
+
+} /// ::unnamed namespace
+
+//!
+//! Implementation
+//!
 
 namespace {
 
@@ -81,8 +146,8 @@ dy::EDyUniformVariableType DyGlGetUniformVariableTypeFrom(GLenum type) noexcept
   case GL_INT_VEC2:                         return dy::EDyUniformVariableType::IVec2;
   case GL_INT_VEC3:                         return dy::EDyUniformVariableType::IVec3;
   case GL_INT_VEC4:                         return dy::EDyUniformVariableType::IVec4;
-  case GL_TEXTURE_1D:                       return dy::EDyUniformVariableType::Texture1D;
-  case GL_TEXTURE_2D:                       return dy::EDyUniformVariableType::Texture2D;
+  case GL_SAMPLER_1D:                       return dy::EDyUniformVariableType::Texture1D;
+  case GL_SAMPLER_2D:                       return dy::EDyUniformVariableType::Texture2D;
   default: return dy::EDyUniformVariableType::NoneError;
   }
 }
@@ -101,17 +166,17 @@ CDyShaderResource::~CDyShaderResource()
   }
 
   // Unbind previous and next level.
-  if (this->__mPrevLevelPtr)
+  if (this->__mLinkedShaderInformationPtr)
   {
-    this->__mPrevLevelPtr->__pfSetNextLevel(nullptr);
+    this->__mLinkedShaderInformationPtr->__pfLinkShaderResourcePtr(nullptr);
   }
-  for (auto& [notUsed, materialPtr] : __mBindMaterialPtrs)
+  for (auto& [notUsed, materialPtr] : __mLinkedMaterialResourcePtrs)
   {
-    materialPtr->__pfResetShaderPtr();
+    materialPtr->__pfResetShaderResourcePtr();
   }
 }
 
-EDySuccess CDyShaderResource::pfInitializeResource(const CDyShaderInformation& shaderInformation)
+EDySuccess CDyShaderResource::pfInitializeResource(const DDyShaderInformation& shaderInformation)
 {
   const auto& information = shaderInformation.GetInformation();
   this->mShaderName = information.mShaderName;
@@ -135,7 +200,6 @@ EDySuccess CDyShaderResource::pfInitializeResource(const CDyShaderInformation& s
     return DY_FAILURE;
   }
 
-  glGenVertexArrays(1, &this->mTemporalVertexArray);
   return DY_SUCCESS;
 }
 
@@ -260,6 +324,7 @@ EDySuccess CDyShaderResource::__pStoreAttributePropertiesOfProgram() noexcept
   glGetProgramiv(this->mShaderProgramId, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &attributeBufferLength);
   this->mAttributeVariableLists.resize(activatedAttributeCount);
 
+  // Retrieve attirbute variable information.
   GLchar* attributeName = new GLchar[attributeBufferLength];
   std::memset(attributeName, '\0', attributeBufferLength);
   for (int32_t i = 0; i < activatedAttributeCount; ++i)
@@ -267,25 +332,42 @@ EDySuccess CDyShaderResource::__pStoreAttributePropertiesOfProgram() noexcept
     GLsizei attributelength = 0;
     GLint   attributeSize = 0;
     GLenum  attributeType = GL_NONE;
-    glGetActiveAttrib(this->mShaderProgramId, i, attributeBufferLength,
-      &attributelength, &attributeSize, &attributeType, attributeName);
-
+    glGetActiveAttrib(this->mShaderProgramId, i, attributeBufferLength, &attributelength, &attributeSize, &attributeType, attributeName);
+    const auto attributeLocation = glGetAttribLocation(this->mShaderProgramId, attributeName);
     // Output log of attribute variables.
     const auto storeType = DyGlGetAttributeVariableTypeFrom(attributeType);
+
+    // Integrity check.
     if (storeType == EDyAttributeVariableType::NoneError)
     {
-      // @todo error log "Does not support type", "attributeName", "attributeType"
-      assert(false);
-
+      MDY_LOG_CRITICAL_D("{} | Failed to retrieve attribute information. Shader name : {}, Attribute varaible name : {}",
+                         "CDyShaderResource::__pStoreAttributePropertiesOfProgram", this->mShaderName, attributeName);
+      this->mAttributeVariableLists.clear();
+      return DY_FAILURE;
+    }
+    if (attributeLocation < 0)
+    {
+      MDY_LOG_CRITICAL_D("{} | Failed to retrieve attribute location. Shader name : {} | Attribute Variable Name : {}",
+                         "CDyShaderResource::__pStoreAttributePropertiesOfProgram", this->mShaderName, attributeLocation);
       this->mAttributeVariableLists.clear();
       return DY_FAILURE;
     }
 
     this->mAttributeVariableLists[i].mVariableName = attributeName;
-    this->mAttributeVariableLists[i].mVariableSize = attributeSize;
+    this->mAttributeVariableLists[i].mVariableSlotSize = attributeSize;
     this->mAttributeVariableLists[i].mVariableType = storeType;
+    this->mAttributeVariableLists[i].mVariableLocation = attributeLocation;
   }
   delete[] attributeName;
+
+  // Output activated attirbute variable information on console and file in debug_mode.
+  for (const auto& variable : this->mAttributeVariableLists)
+  {
+    MDY_LOG_DEBUG_D("{} | Shader attribute information | Name : {} | Slotsize : {} | Type : {} | Location : {}",
+                    this->mShaderName,
+                    variable.mVariableName, variable.mVariableSlotSize,
+                    DyGetDebugStringOfAttributeVariableType(variable.mVariableType).data(), variable.mVariableLocation);
+  }
   return DY_SUCCESS;
 }
 
@@ -298,33 +380,60 @@ EDySuccess CDyShaderResource::__pStoreConstantUniformPropertiesOfProgram() noexc
   glGetProgramiv(this->mShaderProgramId, GL_ACTIVE_UNIFORM_MAX_LENGTH, &uniformBufferLength);
   this->mPlainUniformVariableLists.resize(activatedUniformCount);
 
-  GLchar* attributeName = new GLchar[uniformBufferLength];
-  std::memset(attributeName, '\0', uniformBufferLength);
+  // Retrieve uniform variable information.
+  GLchar* uniformName = new GLchar[uniformBufferLength];
+  std::memset(uniformName, '\0', uniformBufferLength);
   for (int32_t i = 0; i < activatedUniformCount; ++i)
   {
-    GLsizei attributelength = 0;
-    GLint   attributeSize = 0;
-    GLenum  attributeType = GL_NONE;
-    glGetActiveAttrib(this->mShaderProgramId, i, uniformBufferLength,
-      &attributelength, &attributeSize, &attributeType, attributeName);
-
+    GLsizei uniformLength = 0;
+    GLint   uniformSize = 0;
+    GLenum  glUniformType = GL_NONE;
+    glGetActiveUniform(this->mShaderProgramId, i, uniformBufferLength, &uniformLength, &uniformSize, &glUniformType, uniformName);
+    const auto uniformLocation = glGetUniformLocation(this->mShaderProgramId, uniformName);
     // Output log of attribute variables.
-    const auto storeType = DyGlGetUniformVariableTypeFrom(attributeType);
+    const auto storeType = DyGlGetUniformVariableTypeFrom(glUniformType);
+
+    // Integrity check.
     if (storeType == EDyUniformVariableType::NoneError)
     {
-      // @todo error log "Does not support type", "attributeName", "attributeType"
-      assert(false);
-
+      MDY_LOG_CRITICAL_D("{} | Failed to retrieve uniform information. Shader name : {}, Uniform variable name : {}",
+                         "CDyShaderResource::__pStoreAttributePropertiesOfProgram", this->mShaderName, uniformName);
+      this->mPlainUniformVariableLists.clear();
+      return DY_FAILURE;
+    }
+    if (uniformLocation < 0)
+    {
+      MDY_LOG_CRITICAL_D("{} | Failed to retrieve uniform variable location. Shader name : {}, Uniform variable name : {}",
+                         "CDyShaderResource::__pStoreAttributePropertiesOfProgram", this->mShaderName, uniformName);
       this->mPlainUniformVariableLists.clear();
       return DY_FAILURE;
     }
 
-    this->mPlainUniformVariableLists[i].mVariableName = attributeName;
-    this->mPlainUniformVariableLists[i].mVariableSize = attributeSize;
+    this->mPlainUniformVariableLists[i].mVariableName = uniformName;
+    this->mPlainUniformVariableLists[i].mVariableSlotSize = uniformSize;
     this->mPlainUniformVariableLists[i].mVariableType = storeType;
+    this->mPlainUniformVariableLists[i].mVariableLocation = uniformLocation;
   }
-  delete[] attributeName;
+  delete[] uniformName;
+
+  // Output activated attirbute variable information on console and file in debug_mode.
+  for (const auto& variable : this->mPlainUniformVariableLists)
+  {
+    MDY_LOG_DEBUG_D("{} | Shader uniform variable information | Name : {} | Slotsize : {} | Type : {} | Location : {}",
+                    this->mShaderName,
+                    variable.mVariableName, variable.mVariableSlotSize,
+                    DyGetDebugStringOfUniformVariableType(variable.mVariableType).data(), variable.mVariableLocation);
+  }
   return DY_SUCCESS;
+}
+
+void CDyShaderResource::__pfLinkMaterialResource(CDyMaterialResource* ptr) const noexcept
+{
+  auto [it, result] = this->__mLinkedMaterialResourcePtrs.try_emplace(ptr, ptr);
+  if (!result) {
+    MDY_LOG_CRITICAL_D("{} | Unexpected error occurred. | Shader Name : {}", "CDyShaderResource::__pfLinkMaterialResource", this->mShaderName);
+    PHITOS_UNEXPECTED_BRANCH();
+  }
 }
 
 void CDyShaderResource::UseShader() noexcept
@@ -334,17 +443,7 @@ void CDyShaderResource::UseShader() noexcept
 
 void CDyShaderResource::UpdateUniformVariables()
 {
-  assert(false && "NOT IMPLEMENTED");
-}
-
-void CDyShaderResource::BindShader() noexcept
-{
-  glBindVertexArray(mTemporalVertexArray);
-}
-
-void CDyShaderResource::UnbindShader() noexcept
-{
-  glBindVertexArray(0);
+  PHITOS_NOT_IMPLEMENTED_ASSERT();
 }
 
 void CDyShaderResource::UnuseShader() noexcept

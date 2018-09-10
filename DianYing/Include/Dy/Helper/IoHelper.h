@@ -17,23 +17,14 @@ namespace dy
 {
 
 ///
-/// @brief
+/// @brief Read file as binary mode and return chunk of file buffer.
 ///
-std::optional<std::vector<char>> DyReadBinaryFileAll(const std::string& filePath) {
-  std::ifstream fileStream { filePath, std::ios::ate | std::ios::binary };
-  if (!fileStream.is_open()) return std::nullopt;
+[[nodiscard]] std::optional<std::vector<char>> DyReadBinaryFileAll(const std::string& filePath);
 
-  const size_t fileSize = static_cast<size_t>(fileStream.tellg());
-  std::vector<char> fileBuffer(fileSize + 1);
-
-  fileStream.seekg(0);
-  fileStream.read(fileBuffer.data(), fileSize);
-
-  fileStream.close();
-  return fileBuffer;
-}
-
-
+///
+/// @brief Get file name from path without file speicification (.exe, like)
+///
+[[nodiscard]] std::string DyGetFileNameFromPath(const std::string& path) noexcept;
 
 } /// ::dy namespace
 

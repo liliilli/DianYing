@@ -21,40 +21,57 @@ namespace
 {
 
 MDY_SET_IMMUTABLE_STRING(kShaderInformationTemplate,    "{} | Shader information {} : {}");
-MDY_SET_IMMUTABLE_STRING(kShaderFragmentTemplate,       "{} | Shader fragment {} : {}");
+MDY_SET_IMMUTABLE_STRING(kShaderFragmentTemplate,       "{} | Shader fragment | Shader file path : {} | Shader fragment type : {}");
 MDY_SET_IMMUTABLE_STRING(kShaderInformationBindTo,      "{} | Shader information binds to {}");
-MDY_SET_IMMUTABLE_STRING(kShaderInformation,            "CDyShaderInformation");
+MDY_SET_IMMUTABLE_STRING(kDyDataInformation,            "DDyShaderInformation");
+
+///
+/// @brief Get immutable string by reading EDyShaderFragmentType type.
+///
+std::string_view DyGetShaderFragmentTypeStringFrom(dy::EDyShaderFragmentType type) noexcept
+{
+  switch (type)
+  {
+  case dy::EDyShaderFragmentType::Vertex:                 return "Vertex shader";
+  case dy::EDyShaderFragmentType::TesselationControl:     return "Hull shader";
+  case dy::EDyShaderFragmentType::TesselationEvaluation:  return "Domain shader";
+  case dy::EDyShaderFragmentType::Geometry:               return "Geometry shader";
+  case dy::EDyShaderFragmentType::Pixel:                  return "Pixel shader";
+  default: return "Error";
+  }
+}
 
 } /// ::unnamed namespace
 
 namespace dy
 {
 
-CDyShaderInformation::CDyShaderInformation(const PDyShaderConstructionDescriptor& shaderConstructionDescriptor) :
+DDyShaderInformation::DDyShaderInformation(const PDyShaderConstructionDescriptor& shaderConstructionDescriptor) :
     mShaderInformation{shaderConstructionDescriptor} {
-  MDY_LOG_INFO_D(kShaderInformationTemplate, kShaderInformation, "name", this->mShaderInformation.mShaderName);
+  // Copy or move information from descriptor.
+  MDY_LOG_INFO_D(kShaderInformationTemplate, kDyDataInformation, "name", this->mShaderInformation.mShaderName);
 
   for (const auto& fragment : this->mShaderInformation.mShaderFragments)
   {
-    MDY_LOG_INFO_D(kShaderFragmentTemplate, kShaderInformation, "path", fragment.mShaderPath);
-    // @todo and output fragment type also.
+    MDY_LOG_INFO_D(kShaderFragmentTemplate, kDyDataInformation,
+                   fragment.mShaderPath, DyGetShaderFragmentTypeStringFrom(fragment.mShaderType).data());
   }
 }
 
-CDyShaderInformation::~CDyShaderInformation()
+DDyShaderInformation::~DDyShaderInformation()
 {
-  MDY_LOG_INFO_D(kShaderInformationTemplate, "~CDyShaderInformation", "name", this->mShaderInformation.mShaderName);
+  MDY_LOG_INFO_D(kShaderInformationTemplate, "~DDyShaderInformation", "name", this->mShaderInformation.mShaderName);
 
-  if (mNextLevelPtr)
+  if (mLinkedShaderResourcePtr)
   {
-    mNextLevelPtr->__pfSetPrevLevel(nullptr);
+    mLinkedShaderResourcePtr->__pfLinkShaderInformationPtr(nullptr);
   }
 }
 
-void CDyShaderInformation::__pfSetNextLevel(CDyShaderResource* ptr) const noexcept
+void DDyShaderInformation::__pfLinkShaderResourcePtr(CDyShaderResource* ptr) const noexcept
 {
-  MDY_LOG_DEBUG_D(kShaderInformationBindTo, "__pfSetNextLevel", reinterpret_cast<std::ptrdiff_t>(ptr));
-  mNextLevelPtr = ptr;
+  MDY_LOG_DEBUG_D(kShaderInformationBindTo, "__pfLinkShaderResourcePtr", reinterpret_cast<std::ptrdiff_t>(ptr));
+  mLinkedShaderResourcePtr = ptr;
 }
 
 } /// ::dy namespace

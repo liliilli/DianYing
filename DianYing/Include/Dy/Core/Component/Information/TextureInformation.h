@@ -32,20 +32,20 @@ namespace dy
 {
 
 ///
-/// @class CDyTextureInformation
+/// @class DDyTextureInformation
 /// @brief Texture information class that not serve heap instance
 /// but information to create heap instance.
 ///
-class CDyTextureInformation final
+class DDyTextureInformation final
 {
 public:
-  CDyTextureInformation(const PDyTextureConstructionDescriptor& textureConstructionDescriptor);
+  DDyTextureInformation(const PDyTextureConstructionDescriptor& textureConstructionDescriptor);
 
-  CDyTextureInformation(const CDyTextureInformation&)            = delete;
-  CDyTextureInformation& operator=(const CDyTextureInformation&) = delete;
-  CDyTextureInformation(CDyTextureInformation&&)            = default;
-  CDyTextureInformation& operator=(CDyTextureInformation&&) = default;
-  ~CDyTextureInformation();
+  DDyTextureInformation(const DDyTextureInformation&)            = delete;
+  DDyTextureInformation& operator=(const DDyTextureInformation&) = delete;
+  DDyTextureInformation(DDyTextureInformation&&)            = default;
+  DDyTextureInformation& operator=(DDyTextureInformation&&) = default;
+  ~DDyTextureInformation();
 
   ///
   /// @brief return immutable descriptor information reference.
@@ -55,14 +55,24 @@ public:
     return this->mTextureInformation;
   }
 
+  /// Check if object is being binded to CDyTextureResource instance.
+  FORCEINLINE bool IsBeingBindedToResource() const noexcept
+  {
+    return this->mLinkedTextureResourcePtr != nullptr;
+  }
+
 private:
   PDyTextureConstructionDescriptor mTextureInformation;
 
-  void __pfSetNextLevel(CDyTextureResource* ptr) const noexcept;
-  mutable CDyTextureResource* mNextLevelPtr = nullptr;
+  //!
+  //! Resource pointers binding
+  //!
+
+  void __pfLinkTextureResource(CDyTextureResource* ptr) const noexcept;
+  mutable CDyTextureResource* mLinkedTextureResourcePtr = nullptr;
 
   friend class CDyTextureResource;
-  friend class MDyResource;
+  friend class MDyHeapResource;
 };
 
 } /// ::dy namespace

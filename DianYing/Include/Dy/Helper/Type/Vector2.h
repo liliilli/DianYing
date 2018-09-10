@@ -24,8 +24,9 @@
 #include <assimp/vector2.h>
 #include <glm/glm.hpp>
 
-#include <Dy/Helper/macroes.h>
+#include <Dy/Helper/Macroes.h>
 #include <Dy/Helper/Math/Math.h>
+#include <Dy/Management/LoggingManager.h>
 
 #if defined(_WIN32)
 #include <DirectXMath.h>
@@ -35,55 +36,58 @@ namespace dy {
   class DDyMatrix2x2;
 
   ///
-/// @struct DVector2
+/// @struct DDyVector2
 /// @brief Float type 2-element vector struct.
 ///
-struct DVector2 final {
+struct DDyVector2 final {
   float X = 0.f;
   float Y = 0.f;
 
-  DVector2() = default;
+  DDyVector2() = default;
 
-  DVector2(const float x, const float y) noexcept : X{x}, Y{y} {};
-  explicit DVector2(const float value) noexcept : X{value}, Y{value} {}
+  DDyVector2(const float x, const float y) noexcept : X{x}, Y{y} {};
+  explicit DDyVector2(const float value) noexcept : X{value}, Y{value} {}
 
   //!
   //! Constructor and assign operator for dependencies.
   //!
 
-  DVector2(const aiVector2D& value) noexcept : X{value.x}, Y{value.y} {}
-  DVector2(const glm::vec2& value) noexcept : X{value.x}, Y{value.y} {}
+  DDyVector2(const aiVector2D& value) noexcept : X{value.x}, Y{value.y} {}
+  DDyVector2(const glm::vec2& value) noexcept : X{value.x}, Y{value.y} {}
+  DDyVector2(const DDyVector2& value) noexcept = default;
 
-  DVector2& operator=(const aiVector2D& value) noexcept
+  DDyVector2& operator=(const aiVector2D& value) noexcept
   {
-    X = value.x;
-    Y = value.y;
+    this->X = value.x;
+    this->Y = value.y;
     return *this;
   }
 
-  DVector2& operator=(const glm::vec2& value) noexcept
+  DDyVector2& operator=(const glm::vec2& value) noexcept
   {
-    X = value.x;
-    Y = value.y;
+    this->X = value.x;
+    this->Y = value.y;
     return *this;
   }
+
+  DDyVector2& operator=(const DDyVector2& value) noexcept = default;
 
   auto& operator[](std::size_t index)
   {
     switch (index)
     {
-    case 0: return X;
-    case 1: return Y;
-    default: throw std::out_of_range("DVector2 range is out of bound.");
+    case 0: return this->X;
+    case 1: return this->Y;
+    default: throw std::out_of_range("DDyVector2 range is out of bound.");
     }
   }
 
   const auto& operator[](std::size_t index) const
   {
     switch (index) {
-    case 0: return X;
-    case 1: return Y;
-    default: throw std::out_of_range("DVector2 range is out of bound.");
+    case 0: return this->X;
+    case 1: return this->Y;
+    default: throw std::out_of_range("DDyVector2 range is out of bound.");
     }
   }
 
@@ -93,17 +97,17 @@ struct DVector2 final {
 
   operator aiVector2D() const noexcept
   {
-    return aiVector2D{X, Y};
+    return aiVector2D{this->X, this->Y};
   }
 
   operator glm::vec2() const noexcept
   {
-    return glm::vec2{X, Y};
+    return glm::vec2{this->X, this->Y};
   }
 
 #if defined(_WIN32)
-  DVector2(const DirectX::XMFLOAT2& value) noexcept : X{value.x}, Y{value.y} {}
-  DVector2(DirectX::FXMVECTOR value) noexcept
+  DDyVector2(const DirectX::XMFLOAT2& value) noexcept : X{value.x}, Y{value.y} {}
+  DDyVector2(DirectX::FXMVECTOR value) noexcept
   {
     DirectX::XMFLOAT2 xmVector = {};
     DirectX::XMStoreFloat2(&xmVector, value);
@@ -111,16 +115,16 @@ struct DVector2 final {
     this->Y = xmVector.y;
   }
 
-  DVector2& operator=(const DirectX::XMFLOAT2& value) noexcept
+  DDyVector2& operator=(const DirectX::XMFLOAT2& value) noexcept
   {
-    X = value.x;
-    Y = value.y;
+    this->X = value.x;
+    this->Y = value.y;
     return *this;
   }
 
   operator DirectX::XMFLOAT2() const noexcept
   {
-    return DirectX::XMFLOAT2{X, Y};
+    return DirectX::XMFLOAT2{this->X, this->Y};
   }
 
   operator DirectX::XMVECTOR() const noexcept
@@ -135,67 +139,71 @@ struct DVector2 final {
   //!
 
   ///
-  /// @brief Return one-dimensional data chunk of DVector2.
+  /// @brief Return one-dimensional data chunk of DDyVector2.
   ///
-  FORCEINLINE std::array<float, 2> Data() const noexcept {
-    return {X, Y};
+  [[nodiscard]] FORCEINLINE std::array<float, 2> Data() const noexcept
+  {
+    return {this->X, this->Y};
   }
 
   ///
   /// @brief Return squared length of this vector.
-  /// @return Squared length of this DVector2.
+  /// @return Squared length of this DDyVector2.
   ///
-  FORCEINLINE float GetSquareLength() const noexcept {
-    return X * X + Y * Y;
+  [[nodiscard]] FORCEINLINE float GetSquareLength() const noexcept
+  {
+    return this->X * this->X + this->Y * this->Y;
   }
 
   ///
   /// @brief Returns the length of this vector.
-  /// @return Length of this DVector2.
+  /// @return Length of this DDyVector2.
   ///
-  FORCEINLINE float GetLength() const noexcept {
+  [[nodiscard]] FORCEINLINE float GetLength() const noexcept
+  {
     return std::sqrtf(this->GetSquareLength());
   }
 
   ///
-  /// @brief Return new DVector2 instance of normalized input vector.
-  /// @return Normalized DVector2 vector.
+  /// @brief Return new DDyVector2 instance of normalized input vector.
+  /// @return Normalized DDyVector2 vector.
   ///
-  FORCEINLINE DVector2 Normalize() const noexcept {
+  [[nodiscard]] FORCEINLINE DDyVector2 Normalize() const noexcept
+  {
     const auto length = this->GetLength();
-    return {X / length, Y / length};
+    return {this->X / length, this->Y / length};
   }
 
   //!
   //! Operators
   //!
 
-  friend DVector2 operator+(DVector2 lhs, const DVector2& rhs) noexcept {
+  friend DDyVector2 operator+(DDyVector2 lhs, const DDyVector2& rhs) noexcept {
     lhs.X += rhs.X;
     lhs.Y += rhs.Y;
     return lhs;
   }
 
-  friend DVector2 operator-(DVector2 lhs, const DVector2& rhs) noexcept {
+  friend DDyVector2 operator-(DDyVector2 lhs, const DDyVector2& rhs) noexcept {
     lhs.X -= rhs.X;
     lhs.Y -= rhs.Y;
     return lhs;
   }
 
   ///
-  /// DVector2 $$ v = (x, y) $$ and value $$ a $$
+  /// DDyVector2 $$ v = (x, y) $$ and value $$ a $$
   /// $$ av $$.
   ///
-  friend DVector2 operator*(DVector2 lhs, const float rhs) noexcept {
+  friend DDyVector2 operator*(DDyVector2 lhs, const float rhs) noexcept {
     lhs.X *= rhs;
     lhs.Y *= rhs;
     return lhs;
   }
 
   ///
-  /// If lhs and rhs are DVector2, element multiplication happens.
+  /// If lhs and rhs are DDyVector2, element multiplication happens.
   ///
-  friend DVector2 operator*(DVector2 lhs, const DVector2& rhs) noexcept {
+  friend DDyVector2 operator*(DDyVector2 lhs, const DDyVector2& rhs) noexcept {
     lhs.X *= rhs.X;
     lhs.Y *= rhs.Y;
     return lhs;
@@ -204,13 +212,13 @@ struct DVector2 final {
   ///
   /// If rhs has 0 value, this function just do nothing.
   ///
-  friend DVector2 operator/(DVector2 lhs, const float rhs) noexcept {
-    if (rhs == 0.0f) {
-#ifdef false
-      MDY_LOG_CRITICAL_D("DVector2 could not be divided by {0}.", rhs);
-#endif
+  friend DDyVector2 operator/(DDyVector2 lhs, const float rhs) noexcept {
+    if (rhs == 0.0f)
+    {
+      MDY_LOG_CRITICAL_D("DDyVector2 could not be divided by {0}.", rhs);
     }
-    else {
+    else
+    {
       lhs.X /= rhs;
       lhs.Y /= rhs;
     }
@@ -221,15 +229,13 @@ struct DVector2 final {
   ///
   /// If rhs vector has any 0 value, this function just do nothing.
   ///
-  friend DVector2 operator/(DVector2 lhs, const DVector2& rhs) noexcept {
-    if (rhs.X == 0.0f || rhs.Y == 0.0f) {
-#ifdef false
-      MDY_LOG_CRITICAL_D(
-          "DVector2 could not be devided by 0 included DVector2, ({0}, {1})",
-          rhs.X, rhs.Y);
-#endif
+  friend DDyVector2 operator/(DDyVector2 lhs, const DDyVector2& rhs) noexcept {
+    if (rhs.X == 0.0f || rhs.Y == 0.0f)
+    {
+      MDY_LOG_CRITICAL_D( "DDyVector2 could not be devided by 0 included DDyVector2, ({0}, {1})", rhs.X, rhs.Y);
     }
-    else {
+    else
+    {
       lhs.X /= rhs.X;
       lhs.Y /= rhs.Y;
     }
@@ -237,40 +243,45 @@ struct DVector2 final {
     return lhs;
   }
 
-  DVector2& operator+=(const DVector2& value) noexcept {
+  DDyVector2& operator+=(const DDyVector2& value) noexcept
+  {
     this->X += value.X;
     this->Y += value.Y;
     return *this;
   }
 
-  DVector2& operator-=(const DVector2& value) noexcept {
+  DDyVector2& operator-=(const DDyVector2& value) noexcept
+  {
     this->X -= value.X;
     this->Y -= value.Y;
     return *this;
   }
 
-  DVector2& operator*=(const float value) noexcept {
+  DDyVector2& operator*=(const float value) noexcept
+  {
     this->X *= value;
     this->Y *= value;
     return *this;
   }
 
-  DVector2& operator*=(const DVector2& value) noexcept {
+  DDyVector2& operator*=(const DDyVector2& value) noexcept
+  {
     this->X *= value.X;
     this->Y *= value.Y;
     return *this;
   }
 
   ///
-  /// If lhs and rhs are DVector2, element multiplication happens.
+  /// If lhs and rhs are DDyVector2, element multiplication happens.
   ///
-  DVector2& operator/=(const float value) noexcept {
-    if (value == 0.0f) {
-#ifdef false
-      MDY_LOG_CRITICAL_D("DVector2 could not be divided by {0}.", value);
-#endif
+  DDyVector2& operator/=(const float value) noexcept
+  {
+    if (value == 0.0f)
+    {
+      MDY_LOG_CRITICAL_D("DDyVector2 could not be divided by {0}.", value);
     }
-    else {
+    else
+    {
       this->X /= value;
       this->Y /= value;
     }
@@ -281,15 +292,14 @@ struct DVector2 final {
   ///
   /// If rhs vector has any 0 value, this function just do nothing.
   ///
-  DVector2& operator/=(const DVector2& value) noexcept {
-    if (value.X == 0.0f || value.Y == 0.0f) {
-#ifdef false
-      MDY_LOG_CRITICAL_D(
-          "DVector2 could not be devided by 0 included DVector2, ({0}, {1})",
-          value.X, value.Y);
-#endif
+  DDyVector2& operator/=(const DDyVector2& value) noexcept
+  {
+    if (value.X == 0.0f || value.Y == 0.0f)
+    {
+      MDY_LOG_CRITICAL_D("DDyVector2 could not be devided by 0 included DDyVector2, ({0}, {1})", value.X, value.Y);
     }
-    else {
+    else
+    {
       this->X /= value.X;
       this->Y /= value.Y;
     }
@@ -298,9 +308,9 @@ struct DVector2 final {
   }
 
   ///
-  /// @brief
+  /// @brief Multiply with DDyMatrix2x2 as (v^T * M)
   ///
-  DVector2 MultiplyMatrix(const dy::DDyMatrix2x2& matrix) const noexcept;
+  DDyVector2 MultiplyMatrix(const dy::DDyMatrix2x2& matrix) const noexcept;
 
   ///
   /// @brief Compare length of two vectors and return if they are same length.
@@ -308,117 +318,84 @@ struct DVector2 final {
   /// @param[in] rhs
   /// @return Equal flag.
   ///
-  friend bool operator==(const DVector2& lhs, const DVector2& rhs) noexcept {
+  friend bool operator==(const DDyVector2& lhs, const DDyVector2& rhs) noexcept
+  {
     return math::IsNearlyEqual(lhs.GetSquareLength(), rhs.GetSquareLength(), 0.001f);
   }
 
 private:
-  friend bool operator<(const DVector2& lhs, const DVector2& rhs) noexcept {
+  friend bool operator<(const DDyVector2& lhs, const DDyVector2& rhs) noexcept
+  {
     return lhs.GetSquareLength() < rhs.GetSquareLength();
   }
 
-  friend bool operator>(const DVector2& lhs, const DVector2& rhs) noexcept {
+  friend bool operator>(const DDyVector2& lhs, const DDyVector2& rhs) noexcept
+  {
     return rhs < lhs;
   }
 
-  friend bool operator<=(const DVector2& lhs, const DVector2& rhs) noexcept {
+  friend bool operator<=(const DDyVector2& lhs, const DDyVector2& rhs) noexcept
+  {
     return !(rhs < lhs);
   }
 
-  friend bool operator>=(const DVector2& lhs, const DVector2& rhs) noexcept {
+  friend bool operator>=(const DDyVector2& lhs, const DDyVector2& rhs) noexcept
+  {
     return !(lhs < rhs);
   }
 
 public:
 
   ///
-  /// @brief Check if this DVector2 is all zero or nearly equal to zero.
+  /// @brief Check if this DDyVector2 is all zero or nearly equal to zero.
   ///
-  bool IsAllZero() const noexcept;
+  [[nodiscard]] bool IsAllZero() const noexcept;
 
   //!
   //! Static functions
   //!
 public:
-
   ///
   /// @brief Do dot product of (x, y) R^2 vector.
   /// @return Dot product float value.
   ///
-  static float Dot(const DVector2& lhs, const DVector2& rhs) noexcept {
+  [[nodiscard]] static FORCEINLINE float Dot(const DDyVector2& lhs, const DDyVector2& rhs) noexcept
+  {
     return lhs.X * rhs.X + lhs.Y * rhs.Y;
   }
 
   ///
-  /// @brief
-  /// @param[in] lhs
-  /// @param[in] rhs
-  /// @param[in] value
-  /// @return
+  /// @brief Get linear interpolated DDyVector2 instance.
+  /// @param[in] lhs From DDyVector2 vector.
+  /// @param[in] rhs To DDyVector2 vector.
+  /// @param[in] value float [0, 1] value, it is okay that value is a out of bound.
+  /// @return interpolated vec2 value.
   ///
-  static DVector2 Lerp(const DVector2& lhs, const DVector2& rhs, float value) noexcept {
+  [[nodiscard]] static FORCEINLINE DDyVector2 Lerp(const DDyVector2& lhs, const DDyVector2& rhs, float value) noexcept
+  {
     return lhs * (1.0f - value) + rhs * value;
   }
 
   ///
-  /// @brief
-  /// @param[in] lhs
-  /// @param[in] rhs
-  /// @return
+  /// @brief Compare two DDyVector2 and return max DDyVector2 instance.
   ///
-  static DVector2 CompMaxLength(const DVector2& lhs, const DVector2& rhs) noexcept {
+  [[nodiscard]] static FORCEINLINE const DDyVector2& CompareMaxLength(const DDyVector2& lhs, const DDyVector2& rhs) noexcept
+  {
     return (lhs >= rhs) ? lhs : rhs;
   }
 
   ///
-  /// @brief
-  /// @param[in] lhs
-  /// @param[in] rhs
-  /// @return
+  /// @brief Compare two DDyVector2 and return max DDyVector2 instance.
   ///
-  static DVector2 CompMinLength(const DVector2& lhs, const DVector2& rhs) noexcept {
+  [[nodiscard]] static FORCEINLINE const DDyVector2& CompareMinLength(const DDyVector2& lhs, const DDyVector2& rhs) noexcept
+  {
     return (lhs < rhs) ? lhs : rhs;
   }
 
   ///
-  /// @brief
-  /// @param[in] lhs
-  /// @param[in] rhs
-  /// @param[in] normalized
-  /// @return
+  /// @brief Check if vector DDyVector2 is all zero or nearly equal to zero.
   ///
-  static float AngleRad(const DVector2& lhs, const DVector2& rhs,
-                        bool normalized = true) noexcept {
-    auto nlhs = lhs;
-    auto nrhs = rhs;
-    if (!normalized) {
-      nlhs = lhs.Normalize();
-      nrhs = rhs.Normalize();
-    }
-
-    const auto cos = nrhs.X * nlhs.X + nrhs.Y * nlhs.Y;
-    const auto sin = nrhs.Y * nlhs.X - nrhs.X * nlhs.Y;
-    const auto degree = std::acosf(cos);
-
-    return (sin < 0.0f) ? -degree : degree;
-  }
-
-  ///
-  /// @brief
-  /// @param[in] lhs
-  /// @param[in] rhs
-  /// @param[in] normalized
-  /// @return
-  ///
-  static float AngleDeg(const DVector2& lhs, const DVector2& rhs,
-                        bool normalized = true) noexcept {
-    return AngleRad(lhs, rhs, normalized) * 180.f / 3.1415926535f;
-  }
-
-  ///
-  /// @brief Check if vector DVector2 is all zero or nearly equal to zero.
-  ///
-  static bool IsAllZero(const DVector2& vector) noexcept;
+  [[nodiscard]] static bool IsAllZero(const DDyVector2& vector) noexcept;
 };
 
 } /// ::dy namespace

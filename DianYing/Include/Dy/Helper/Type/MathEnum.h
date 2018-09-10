@@ -1,21 +1,28 @@
 #ifndef GUARD_DY_HELPER_AXIS_H
 #define GUARD_DY_HELPER_AXIS_H
-
 ///
-/// @license BSD 2-Clause License
+/// MIT License
+/// Copyright (c) 2018 Jongmin Yun
 ///
-/// Copyright (c) 2018, Jongmin Yun(Neu.), All rights reserved.
-/// If you want to read full statements, read LICENSE file.
+/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+/// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+/// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+/// SOFTWARE.
 ///
 
 namespace dy {
 
 ///
-/// @enum EAxis3D
-/// @brief
-/// Axis enum type for being able to classify 3-dimensional coordinate axis.
+/// @enum EDyAxis3D
+/// @brief Axis enum type for being able to classify 3-dimensional coordinate axis.
 ///
-enum class EAxis3D { X, Y, Z };
+enum class EDyAxis3D
+{
+  X, Y, Z
+};
 
 } /// ::opgs16 namespace.
 

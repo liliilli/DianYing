@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_HELPER_IMMUTABLE_SETTING_H
-#define GUARD_DY_HELPER_IMMUTABLE_SETTING_H
+#ifndef GUARD_DY_CORE_INTERFACE_UPDATABLE_H
+#define GUARD_DY_CORE_INTERFACE_UPDATABLE_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,14 +13,20 @@
 /// SOFTWARE.
 ///
 
-#include <cstdint>
-
 namespace dy
 {
 
-constexpr int32_t kScreenWidth  = 1280;
-constexpr int32_t kScreenHeight = 720;
+///
+/// @class IDyUpdatable
+/// @brief The inteface capable of updating derived class routine.
+///
+class MDY_NO_VTABLE IDyUpdatable
+{
+public:
+  virtual ~IDyUpdatable() = default;
+  virtual void Update(float dt) = 0;
+};
 
 } /// ::dy namespace
 
-#endif /// GUARD_DY_HELPER_IMMUTABLE_SETTING_H
+#endif /// GUARD_DY_CORE_INTERFACE_UPDATABLE_H

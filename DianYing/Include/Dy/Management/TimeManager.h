@@ -12,9 +12,6 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /// SOFTWARE.
 ///
-/// @log
-/// 2018-08-21 Create file.
-///
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 
@@ -47,7 +44,7 @@ public:
   ///
   /// @return Float value delta time value.
   ///
-  [[nodiscard]] float GetGameDeltaTimeValue() const noexcept;
+  [[nodiscard]] float GetGameScaledTickedDeltaTimeValue() const noexcept;
 
   ///
   /// @brief Get summed delta time from previous function call.
@@ -55,36 +52,66 @@ public:
   ///
   /// @return Float value delta time value.
   ///
-  [[nodiscard]] float GetGameSummedDeltaTimeValue() const noexcept;
+  [[nodiscard]] float GetGameScaledElapsedTimeValue() const noexcept;
 
   ///
   /// @brief
   ///
-  [[nodiscard]] float GetGameTimeScale() const noexcept;
+  [[nodiscard]] float GetGameTimeScaleValue() const noexcept;
 
   ///
-  /// @brief
+  /// @brief Get steady (not-scaled) delta time value.
   ///
-  void SetGameTimeScale(float timeScale) noexcept;
+  [[nodiscard]] FORCEINLINE float GetSteadyDeltaTimeValue() const noexcept
+  {
+    return this->mSteadyDeltaTime;
+  }
 
   ///
-  /// @brief
+  /// @brief Get steady (not-scaled) elapsed time value.
+  ///
+  [[nodiscard]] FORCEINLINE float GetSteadyElapsedTimeValue() const noexcept
+  {
+    return this->mSteadyElapsedTime;
+  }
+
+  ///
+  /// @brief Set game time scale. This will affect game logic speed, timer, etc related to this
+  /// but actual fps will not changed.
+  ///
+  /// timeScale should not be 0, or changed 0.0001f;
+  ///
+  [[maybe_unused]] EDySuccess SetGameTimeScale(float timeScale) noexcept;
+
+private:
+  ///
+  /// @brief Update game time.
   ///
   void pUpdate() noexcept;
 
-private:
-  float mSteadyDeltaTime    = 0.f;
-  float mSteadyElapsedTime  = 0.f;
+  ///
+  /// @brief set vsync mode.
+  ///
+  void pfSetVsync(bool isVsyncEnabled) noexcept;
 
-  float mTimeScale = 1.0f;
-  float mGameElapsedTime    = 0.f;
-  mutable float mGameDeltaTime = 0.f;
-  mutable float mGameSummedDeltaTime = 0.f;
+  float mSteadyDeltaTime              = 0.0f;
+  float mSteadyElapsedTime            = 0.0f;
 
-  mutable float mGameTickElapsedTime = 0.f;
-  int32_t       mGameTickedFps    = 0;
-  const int32_t mGameGoalFps      = 60;
-  mutable float mGameTickFragment = MDY_NOT_INITIALIZED_M1;
+  float mTimeScale                    = 1.0f;
+  mutable float mGameScaledDeltaTime    = 0.0f;
+  mutable float mGameScaledElapsedTime  = 0.0f;
+
+  mutable float mGameTickElapsedTime  = 0.0f;
+  int32_t       mGameTickedFps        = 0;
+  const int32_t mGameGoalFps          = 60;
+  mutable float mGameTickFragment     = MDY_NOT_INITIALIZED_M1;
+
+  MDY_TRANSIENT float __mIsEnabledVsync = false;
+  MDY_TRANSIENT float __mGameGoalFps    = 60;
+  MDY_TRANSIENT float __mGameTimeScale  = 1.0f;
+
+  friend class MDySetting;
+  friend class MDyWindow;
 };
 
 } /// ::dy namespace

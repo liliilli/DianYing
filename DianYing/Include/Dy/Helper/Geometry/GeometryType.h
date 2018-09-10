@@ -20,19 +20,21 @@ namespace dy
 {
 
 ///
-/// @class DVertexInformation
+/// @class DDyVertexInformation
+/// @brief Vertex information (Input assembly unit data)
 ///
-struct DVertexInformation final
+struct DDyVertexInformation final
 {
-  DVector3 mPosition;
-  DVector3 mNormal;
-  DVector2 mTexCoords;
+  DDyVector3 mPosition;
+  DDyVector3 mNormal;
+  DDyVector2 mTexCoords;
 };
 
 ///
-/// @brief
+/// @struct DDyGlBufferIdInformation
+/// @brief OpenGL Buffer id information structure.
 ///
-struct DBufferIdInformation final
+struct DDyGlBufferIdInformation final
 {
   uint32_t mVao = 0;
   uint32_t mVbo = 0;
@@ -40,26 +42,28 @@ struct DBufferIdInformation final
 };
 
 ///
-/// @brief
+/// @struct PDySubmeshInformationDescriptor
+/// @brief Submesh information which is releated to mesh properties directly.
 ///
-struct PMeshInformationDescriptor final
+struct PDySubmeshInformationDescriptor final
 {
-  std::vector<DVertexInformation> mVertices;
-  std::vector<int32_t>            mIndices;
-  std::vector<std::string>        mMaterialNames;
+  std::vector<DDyVertexInformation> mVertices;
+  std::vector<int32_t>              mIndices;
+  std::string                       mMaterialName = "";
 };
 
 ///
-/// @brief
+/// @struct DDySubmeshFlagInformation
+/// @brief Submesh information which is not releated to mesh properties directly.
 ///
-struct DMeshFlagInformation final
+struct DDySubmeshFlagInformation final
 {
   int32_t                         mIndiceCount      = 0;
   int32_t                         mVertexSize       = 0;
   bool                            mIsNotHaveIndices :1;
   bool                            mIsNotHaveTextures:1;
 
-  DMeshFlagInformation() : mIsNotHaveIndices{false}, mIsNotHaveTextures{false} {};
+  DDySubmeshFlagInformation() : mIsNotHaveIndices{false}, mIsNotHaveTextures{false} {};
 };
 
 } /// ::dy namespace

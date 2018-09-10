@@ -1,17 +1,16 @@
 #ifndef GUARD_DY_HELPER_MATH_RANDOM_F
 #define GUARD_DY_HELPER_MATH_RANDOM_F
-
 ///
-/// @license BSD 2-Clause License
+/// MIT License
+/// Copyright (c) 2018 Jongmin Yun
 ///
-/// Copyright (c) 2018, Jongmin Yun(Neu.), All rights reserved.
-/// If you want to read full statements, read LICENSE file.
-///
-/// @file Dy/Helper/Math/Random.h
-/// @author Jongmin Yun
-///
-/// @log
-/// 2018-08-28 Create file.
+/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+/// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+/// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+/// SOFTWARE.
 ///
 
 #include <cstdint>
@@ -21,8 +20,8 @@
 //!
 
 namespace dy {
-struct DVector2;
-struct DVector3;
+struct DDyVector2;
+struct DDyVector3;
 } /// ::opgs16 namespace
 
 //!
@@ -32,9 +31,10 @@ struct DVector3;
 namespace dy::random {
 
 ///
-/// @enum ERandomPolicy
+/// @enum EDyRandomPolicy
+/// @brief Could be used in decinding random distribution policy.
 ///
-enum class ERandomPolicy {
+enum class EDyRandomPolicy {
   Uniform,
   Discrete,
 };
@@ -42,62 +42,62 @@ enum class ERandomPolicy {
 ///
 /// @brief Get random integer (32bit) uniformly.
 ///
-int32_t RandomInteger();
+[[nodiscard]] int32_t RandomInteger() noexcept;
 
 ///
 /// @brief Get random float (single-precision) uniformly.
 ///
-float RandomFloat();
+[[nodiscard]] float RandomFloat() noexcept;
 
 ///
 /// @brief Get random integer (32bit) but positive uniformly.
 ///
-int32_t RandomPositiveInteger();
+[[nodiscard]] int32_t RandomPositiveInteger() noexcept;
 
 ///
 /// @brief Get random negative integer (32bit) uniformly.
 ///
-int32_t RandomNegativeInteger();
+[[nodiscard]] int32_t RandomNegativeInteger() noexcept;
 
 ///
 /// @brief Get random positive float (single-presicion) uniformly.
 ///
-float RandomPositiveFloat();
+[[nodiscard]] float RandomPositiveFloat();
 
 ///
 /// @brief Get random negative float (single-precision) uniformly.
 ///
-float RandomNegativeFloat();
+[[nodiscard]] float RandomNegativeFloat();
 
 ///
 /// @brief Get integer from 'from' to 'inclusive_to' integer uniformly.
 ///
-int32_t RandomIntegerRange(const int32_t from, const int32_t inclusive_to);
+[[nodiscard]] int32_t RandomIntegerRange(const int32_t from, const int32_t inclusive_to) noexcept;
 
 ///
 /// @brief Get float from 'from' to 'prior_to' not included prior_to uniformly.
 ///
-float RandomFloatRange(const float from, const float prior_to);
+[[nodiscard]] float RandomFloatRange(const float from, const float prior_to) noexcept;
 
 ///
-/// @brief Get DVector2 (x, y) instance have length 'length'.
+/// @brief Get DDyVector2 (x, y) instance have length 'length'.
 ///
-DVector2 RandomVector2Length(float length);
+[[nodiscard]] DDyVector2 RandomVector2Length(float length) noexcept;
 
 ///
-/// @brief Get DVector3 (x, y, z) instance have length 'length'.
+/// @brief Get DDyVector3 (x, y, z) instance have length 'length'.
 ///
-DVector3 RandomVector3Length(float length);
+[[nodiscard]] DDyVector3 RandomVector3Length(float length) noexcept;
 
 ///
-/// @brief
+/// @brief Get DDyVector2 (x, y) which have length that in range from 'from' to 'priorTo'
 ///
-DVector2 RandomVector2Range(ERandomPolicy policy, float from, float prior_to);
+[[nodiscard]] DDyVector2 RandomVector2Range(EDyRandomPolicy policy, float from, float priorTo);
 
 ///
-/// @brief
+/// @brief Get DDyVector3 (x, y, z) which have length that in range from 'from' to 'priorTo'
 ///
-DVector3 RandomVector3Range(ERandomPolicy policy, float from, float prior_to);
+[[nodiscard]] DDyVector3 RandomVector3Range(EDyRandomPolicy policy, float from, float priorTo);
 
 } /// ::opgs16::math namespace
 

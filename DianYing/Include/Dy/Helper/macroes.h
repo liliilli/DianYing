@@ -41,6 +41,12 @@
 //!
 
 ///
+/// @macro MDY_TRANSIENT
+/// @brief TRANSIENT variable
+///
+#define MDY_TRANSIENT mutable
+
+///
 /// @macro
 ///
 #define MDY_TO_STRING(__MAString__) #__MAString__
@@ -74,20 +80,27 @@
   }
 
 ///
-/// @macro
+/// @macro MDY_U8
 ///
 #define MDY_U8(__MAString__) u8##__MAString__
 
 ///
-/// @macro
+/// @macro MDY_NOT_INITIALIZED_M1
+/// @brief Initialize arbitary variable with -1.
 ///
 #define MDY_NOT_INITIALIZED_M1 -1
 
 ///
-/// @macro
+/// @macro MDY_NOT_INITIALIZED_0
+/// @brief Initialize arbitary variable with 0.
 ///
-#define MDY_BIND_BEGIN_END(__MAIteratorableType__) \
-  __MAIteratorableType__.begin(), __MAIteratorableType__.end()
+#define MDY_NOT_INITIALIZED_0   0
+
+///
+/// @macro MDY_BIND_BEGIN_END
+/// @brief Help forward iteratable type to bind .begin() and .end() to function.
+///
+#define MDY_BIND_BEGIN_END(__MAIteratorableType__) __MAIteratorableType__.begin(), __MAIteratorableType__.end()
 
 ///
 /// @macro MDY_SET_IMMUTABLE_STRING
@@ -174,15 +187,21 @@ private:                                                  \
 //! Function type macros.
 //!
 
-#define VARARGS     __cdecl											/* Functions with variable arguments */
+#define VARARGS     __cdecl										        // Functions with variable arguments */
 #ifndef CDECL
-#define CDECL	    __cdecl											/* Standard C function */
+#define CDECL	    __cdecl											        // Standard C function */
 #endif
-#define STDCALL		__stdcall										/* Standard calling convention */
-#define FORCEINLINE __forceinline									/* Force code to be inline */
-#define FORCENOINLINE __declspec(noinline)							/* Force code to NOT be inline */
-#define FUNCTION_NO_RETURN_START __declspec(noreturn)				/* Indicate that the function never returns. */
-#define FUNCTION_NON_NULL_RETURN_START _Ret_notnull_				/* Indicate that the function never returns nullptr. */
+#define STDCALL		__stdcall										        // Standard calling convention */
+#define FORCEINLINE __forceinline							        // Force code to be inline */
+#define FORCENOINLINE __declspec(noinline)		        // Force code to NOT be inline */
+#define FUNCTION_NO_RETURN_START __declspec(noreturn)	// Indicate that the function never returns. */
+#define FUNCTION_NON_NULL_RETURN_START _Ret_notnull_	// Indicate that the function never returns nullptr. */
+
+#if defined(_WIN32)
+#define MDY_NO_VTABLE __declspec(novtable)            // NO virtual table only for pure abstract class.
+#else
+#define MDY_NO_VTABLE
+#endif
 
 ///
 /// Macro static integrity test
