@@ -59,6 +59,7 @@
 #include <sol2/sol_forward.hpp>
 
 #include <Dy/Helper/GlobalEnumFlags.h>
+#include <Dy/Helper/GlobalType.h>
 #include <Dy/Helper/DisableWarning.h>
 #include <Dy/Helper/Macroes.h>
 
