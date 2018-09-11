@@ -112,6 +112,9 @@
     <ClInclude Include="Include\Dy\Core\Component\Resource\SubmeshResource.h" />
     <ClInclude Include="Include\Dy\Helper\DisableWarning.h" />
     <ClInclude Include="Include\Dy\Helper\GlobalEnumFlags.h" />
+    <ClInclude Include="Libraries\sol2\sol2\sol.hpp" />
+    <ClInclude Include="Libraries\sol2\sol2\sol_forward.hpp" />
+    <ClInclude Include="Include\Dy\Helper\GlobalType.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

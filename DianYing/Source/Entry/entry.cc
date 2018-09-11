@@ -31,6 +31,22 @@
 
 namespace
 {
+
+#ifdef MDY_FLAG_IN_EDITOR
+///
+/// @brief Initialize all gui editor managers related to editing easily.
+///
+void DyInitializeEditorManagers()
+{
+
+}
+
+void DyReleaseEditorManagers()
+{
+
+}
+#endif
+
 ///
 /// @brief Initialize all managers related to DianYing rendering application.
 /// Initialzation order must be ended with MDyWindow and started with MDySetting by getting argv
@@ -161,6 +177,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLin
   gnCmdShow       = nCmdShow;
 
   MDY_WIN32_TRY_TURN_ON_DEBUG();
+
+#ifdef MDY_FLAG_IN_EDITOR
+  DyInitializeEditorManagers();
+#endif
   DyInitiailzeAllManagers();
 
   MDY_LOG_INFO_D("Platform : Windows");
@@ -177,6 +197,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLin
   MDY_LOG_INFO_D("Release all managers and resources.");
 
   DyReleaseAllManagers();
+#ifdef MDY_FLAG_IN_EDITOR
+  DyReleaseEditorManagers();
+#endif
   MDY_WIN32_TRY_TURN_OFF_DEBUG();
   return 0;
 }

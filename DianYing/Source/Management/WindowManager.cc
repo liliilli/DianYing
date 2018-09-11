@@ -35,6 +35,7 @@
 #include <Dy/Management/SceneManager.h>
 #include <Dy/Management/InputManager.h>
 #include <Dy/Management/TimeManager.h>
+#include <imgui/imgui_internal.h>
 
 ///
 /// Undefined proprocessor WIN32 macro "max, min" for preventing misuse.
@@ -158,6 +159,16 @@ void DyGlTempInitializeResource()
 
   if (tempAsyncTask.get() && modelAsyncTask.get()) { MDY_LOG_DEBUG_D("OK"); };
 
+#ifdef false
+  {
+    dy::PDyModelConstructionDescriptor modelDesc;
+    {
+      modelDesc.mModelName = "Sponza";
+      modelDesc.mModelPath = "./TestResource/crytek-sponza/sponza.obj";
+    }
+    MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(modelDesc));
+  };
+
   std::unordered_map<std::string, std::string> populatedMaterialList = {};
   dy::PDyMaterialPopulateDescriptor popDesc;
   {
@@ -208,6 +219,7 @@ void DyGlTempInitializeResource()
     };
   }
   MDY_CALL_ASSERT_SUCCESS(gRenderer.pfInitialize(rendererDesc));
+#endif
 
 #ifdef false
   {
@@ -296,6 +308,155 @@ void DyGlTempInitializeResource()
 
 }
 
+#ifdef MDY_FLAG_IN_EDITOR
+void DyImguiFeatGuiMainMenuRenderFrame()
+{
+  static bool sHelpLicenseWindow  = false;
+  static bool sHelpAboutLicenseWindow = false;
+  static bool sHelpAboutWindow    = false;
+
+  if (ImGui::BeginMainMenuBar())
+  {
+    if (ImGui::BeginMenu("File"))
+    {
+      if (ImGui::MenuItem("New Level")) {};
+      if (ImGui::MenuItem("Open Level")) {};
+      ImGui::Separator();
+      if (ImGui::MenuItem("Save Current Level")) {};
+      if (ImGui::MenuItem("Save Current Level As...")) {};
+      ImGui::Separator();
+      if (ImGui::MenuItem("Exit Editor"))
+      {
+        const auto ptr = dy::MDyWindow::GetInstance().GetGlfwWindowContext();
+        glfwSetKeyCallback(ptr, nullptr);
+        glfwSetCursorPosCallback(ptr, nullptr);
+
+        glfwDestroyWindow(ptr);
+      };
+      ImGui::EndMenu();
+    }
+
+    if (ImGui::BeginMenu("Edit"))
+    {
+      if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
+      if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
+      ImGui::Separator();
+      if (ImGui::MenuItem("Cut", "CTRL+X")) {}
+      if (ImGui::MenuItem("Copy", "CTRL+C")) {}
+      if (ImGui::MenuItem("Paste", "CTRL+V")) {}
+      ImGui::EndMenu();
+    }
+
+    if (ImGui::BeginMenu("Help"))
+    {
+      ImGui::MenuItem("Licenses", nullptr, &sHelpLicenseWindow);
+      ImGui::MenuItem("About", nullptr, &sHelpAboutWindow);
+      ImGui::EndMenu();
+    }
+
+    ImGui::EndMainMenuBar();
+  }
+
+  if (sHelpLicenseWindow)
+  {
+    ImGui::Begin("Lincense and third party library using", &sHelpLicenseWindow);
+
+    {
+      ImGui::Text("Library\nVersion"); ImGui::SameLine();
+      ImGui::Text("Assimp\n4.1.0");
+      if (ImGui::Button("Github"))
+      {
+      #if defined(_WIN32)
+        ShellExecute(nullptr, nullptr, L"https://github.com/assimp/assimp", nullptr, nullptr, SW_SHOW);
+      #elif defined(__linux__)
+
+      #endif
+      }
+      if (ImGui::TreeNode("License"))
+      {
+        ImGui::TextWrapped(R"dy(Assimp is released as Open Source under the terms of a 3-clause BSD license.
+An informal summary is: do whatever you want, but include Assimp's license text with your product - and don't sue us if our code doesn't work. Note that, unlike LGPLed code, you may link statically to Assimp. For the legal details, see the LICENSE file.)dy");
+        ImGui::TreePop();
+      }
+      ImGui::Separator();
+    }
+
+    {
+      ImGui::Text("Library\nVersion"); ImGui::SameLine();
+      ImGui::Text("glad\n0.1.27 on Tue Aug 28 10:32:57 2018");
+      if (ImGui::Button("Homepage"))
+      {
+      #if defined(_WIN32)
+        ShellExecute(nullptr, nullptr, L"https://glad.dav1d.de/", nullptr, nullptr, SW_SHOW);
+      #elif defined(__linux__)
+
+      #endif
+      }
+      ImGui::SameLine();
+      if (ImGui::Button("Github"))
+      {
+      #if defined(_WIN32)
+        ShellExecute(nullptr, nullptr, L"https://github.com/Dav1dde/glad", nullptr, nullptr, SW_SHOW);
+      #elif defined(__linux__)
+
+      #endif
+      }
+
+      if (ImGui::TreeNode("License"))
+      {
+        ImGui::TextWrapped(R"dy(The MIT License (MIT)
+
+Copyright (c) 2013-2018 David Herberth
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.)dy");
+        ImGui::TreePop();
+      }
+      ImGui::Separator();
+    }
+
+    ImGui::End();
+  }
+
+  if (sHelpAboutWindow)
+  {
+    ImGui::Begin("About DY(DianYing)", &sHelpAboutWindow, ImGuiWindowFlags_AlwaysAutoResize);
+    ImGui::Text(R"dy(DianYing, %s)dy", "v0.0.1");
+    ImGui::Text(R"dy(Copyright 2018 Jongmin Yun (neuliliilli).)dy");
+    ImGui::Text(R"dy(DianYing is licensed under the MIT license, see)dy");
+
+    ImGui::SameLine();
+    if (ImGui::Button("LICENSE")) { sHelpAboutLicenseWindow = !sHelpAboutLicenseWindow; }
+    ImGui::SameLine();
+
+    ImGui::Text(R"dy(for more information.)dy");
+    ImGui::End();
+  }
+
+  if (sHelpAboutLicenseWindow)
+  {
+    ImGui::Begin("About DianYing license...", &sHelpAboutLicenseWindow, ImGuiWindowFlags_AlwaysAutoResize);
+    ImGui::Text(R"dy(MIT License
+Copyright (c) 2018 Jongmin Yun
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.)dy");
+    ImGui::End();
+  }
+}
+#endif
+
 void DyImguiRenderFrame()
 {
   ImGui_ImplOpenGL3_NewFrame();
@@ -340,6 +501,7 @@ void DyImguiRenderFrame()
       ImGui::End();
     }
   }
+  DyImguiFeatGuiMainMenuRenderFrame();
 
   ImGui::Render();
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -447,11 +609,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 }
 
 ///
-/// @brief
-/// Callback method for size check and resizing.
+/// @brief Callback method for size check and resizing.
 ///
-void DyGlCallbackFrameBufferSize(GLFWwindow* window, int width, int height) {
+void DyGlCallbackFrameBufferSize(GLFWwindow* window, int width, int height)
+{
   glViewport(0, 0, width, height);
+}
+
+///
+/// @brief Callback method for closing arbitary glfw window window handle.
+///
+void DyGlCallbackWindowClose(GLFWwindow* window)
+{
+  glfwSetKeyCallback(window, nullptr);
+  glfwSetCursorPosCallback(window, nullptr);
+  glfwDestroyWindow(window);
 }
 
 } /// unnamed namespace
@@ -514,6 +686,9 @@ void MDyWindow::Run()
 #endif
 }
 
+///
+/// @brief
+///
 void MDyWindow::pUpdate(float dt)
 {
   MDyInput::GetInstance().pfUpdate(dt);
@@ -526,6 +701,9 @@ void MDyWindow::pUpdate(float dt)
   }
 }
 
+///
+/// @brief
+///
 void MDyWindow::pRender()
 {
   glClearColor(gColor.X, gColor.Y, gColor.Z, 1.0f);
@@ -537,11 +715,14 @@ void MDyWindow::pRender()
     gGrid->RenderGrid();
   };
 
+#ifdef false
   gRenderer.Render();
+#endif
 
   glDisable(GL_DEPTH_TEST);
 
   DyImguiRenderFrame();
+  if (glfwWindowShouldClose(this->mGlfwWindow)) return;
 
   glfwSwapBuffers(this->mGlfwWindow);
   glfwPollEvents();
@@ -594,10 +775,14 @@ EDySuccess MDyWindow::pfInitialize()
         return DY_FAILURE;
       }
 
-      glfwMakeContextCurrent(this->mGlfwWindow);
-      gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
-      glfwSetInputMode(this->mGlfwWindow, GLFW_STICKY_KEYS, GL_FALSE);
-      glfwSetFramebufferSizeCallback(this->mGlfwWindow, &DyGlCallbackFrameBufferSize);
+      {
+        glfwMakeContextCurrent(this->mGlfwWindow);
+        gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
+        glfwSetInputMode(this->mGlfwWindow, GLFW_STICKY_KEYS, GL_FALSE);
+
+        glfwSetFramebufferSizeCallback(this->mGlfwWindow, &DyGlCallbackFrameBufferSize);
+        glfwSetWindowCloseCallback(this->mGlfwWindow, &DyGlCallbackWindowClose);
+      }
 
       // If in debug build environment, enable debug output logging.
       #if defined(_DEBUG) || !defined(_NDEBUG)
@@ -664,7 +849,6 @@ EDySuccess MDyWindow::pfRelease()
     ImGui::DestroyContext();
     MDY_LOG_INFO_D("Released ImGui Context.");
 
-    glfwDestroyWindow(this->mGlfwWindow);
     glfwTerminate();
     break;
   case EDyRenderingApiType::Vulkan:

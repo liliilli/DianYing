@@ -145,13 +145,14 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <PreprocessorDefinitions>MDY_FLAG_IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>$(ProjectDir)Libraries\assimp\lib\$(Configuration)\$(Platform);$(ProjectDir)Libraries\glfw\$(Platform);$(ProjectDir)Libraries\FX11\bin\$(Platform)\$(Configuration);C:\VulkanSDK\1.1.82.0\Lib32</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp-vc140-mt.lib;glfw3.lib;opengl32.lib;vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\TPLibraries\lua\lib\$(Platform)\$(Configuration);$(ProjectDir)Libraries\assimp\lib\$(Configuration)\$(Platform);$(ProjectDir)Libraries\glfw\$(Platform);$(ProjectDir)Libraries\FX11\bin\$(Platform)\$(Configuration);C:\VulkanSDK\1.1.82.0\Lib32</AdditionalLibraryDirectories>
+      <AdditionalDependencies>lua_build.lib;assimp-vc140-mt.lib;glfw3.lib;opengl32.lib;vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>msvcrt.lib;libcmt.lib</IgnoreSpecificDefaultLibraries>
     </Link>
@@ -172,6 +173,7 @@
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
       <AdditionalIncludeDirectories>$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <PreprocessorDefinitions>MDY_FLAG_IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -195,13 +197,14 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <PreprocessorDefinitions>MDY_FLAG_IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>$(ProjectDir)Libraries\assimp\lib\$(Configuration)\$(Platform);$(ProjectDir)Libraries\glfw\$(Platform);$(ProjectDir)Libraries\FX11\bin\$(Platform)\$(Configuration);C:\VulkanSDK\1.1.82.0\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp-vc140-mt.lib;glfw3.lib;opengl32.lib;vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\TPLibraries\lua\lib\$(Platform)\$(Configuration);$(ProjectDir)Libraries\assimp\lib\$(Configuration)\$(Platform);$(ProjectDir)Libraries\glfw\$(Platform);$(ProjectDir)Libraries\FX11\bin\$(Platform)\$(Configuration);C:\VulkanSDK\1.1.82.0\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>lua_build.lib;assimp-vc140-mt.lib;glfw3.lib;opengl32.lib;vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>msvcrt.lib;libcmt.lib</IgnoreSpecificDefaultLibraries>
     </Link>
@@ -222,6 +225,7 @@
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
       <AdditionalIncludeDirectories>$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <PreprocessorDefinitions>MDY_FLAG_IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -247,15 +251,15 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>MDY_FLAG_IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>$(ProjectDir)Libraries\glfw\$(Platform);$(ProjectDir)Libraries\FX11\bin\$(Platform)\$(Configuration);C:\VulkanSDK\1.1.82.0\Lib32</AdditionalLibraryDirectories>
-      <AdditionalDependencies>tbb.lib;glfw3.lib;opengl32.lib;vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\TPLibraries\lua\lib\$(Platform)\$(Configuration);$(ProjectDir)Libraries\glfw\$(Platform);$(ProjectDir)Libraries\FX11\bin\$(Platform)\$(Configuration);C:\VulkanSDK\1.1.82.0\Lib32</AdditionalLibraryDirectories>
+      <AdditionalDependencies>lua_build.lib;tbb.lib;glfw3.lib;opengl32.lib;vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -274,15 +278,15 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>MDY_FLAG_IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>$(ProjectDir)Libraries\glfw\$(Platform);$(ProjectDir)Libraries\FX11\bin\$(Platform)\$(Configuration);C:\VulkanSDK\1.1.82.0\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>tbb.lib;glfw3.lib;opengl32.lib;vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\TPLibraries\lua\lib\$(Platform)\$(Configuration);$(ProjectDir)Libraries\glfw\$(Platform);$(ProjectDir)Libraries\FX11\bin\$(Platform)\$(Configuration);C:\VulkanSDK\1.1.82.0\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>lua_build.lib;tbb.lib;glfw3.lib;opengl32.lib;vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -365,6 +369,7 @@
     <ClInclude Include="Include\Dy\Core\Component\Resource\MaterialResource.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\SubmeshResource.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\ModelResource.h" />
+    <ClInclude Include="Include\Dy\Helper\GlobalType.h" />
     <ClInclude Include="Include\Dy\Helper\JsonHelper.h" />
     <ClInclude Include="Include\Dy\Helper\ThreadPool.h" />
     <ClInclude Include="Include\Dy\Management\Helper\InputKeyString.h" />
@@ -406,6 +411,8 @@
     <ClInclude Include="Libraries\imgui\imgui\imgui_impl_opengl3.h" />
     <ClInclude Include="Libraries\imgui\imgui\imconfig.h" />
     <ClInclude Include="Libraries\imgui\imgui\imgui.h" />
+    <ClInclude Include="Libraries\sol2\sol2\sol.hpp" />
+    <ClInclude Include="Libraries\sol2\sol2\sol_forward.hpp" />
     <ClInclude Include="Libraries\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>

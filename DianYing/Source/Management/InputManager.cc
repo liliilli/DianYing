@@ -315,13 +315,6 @@ namespace dy
 
 EDySuccess MDyInput::pfInitialize()
 {
-#ifdef false
-  PHITOS_NOT_IMPLEMENTED_ASSERT();
-  glfwSetCursorPosCallback(mTempGlfwWindowPtr, __MousePositionCallback);
-  glfwSetMouseButtonCallback(mTempGlfwWindowPtr, __MouseInputCallback);
-  SetMouseCursorTemporary();
-#endif
-
   if (!this->pReadInputFile("./TestResource/input.meta"))
   {
     PHITOS_UNEXPECTED_BRANCH();
@@ -338,7 +331,7 @@ EDySuccess MDyInput::pfInitialize()
   if (this->mIsEnabledMouse)
   {
     glfwSetCursorPosCallback(this->mTempGlfwWindowPtr, __InputMouseCallback);
-    glfwSetInputMode(this->mTempGlfwWindowPtr, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetInputMode(this->mTempGlfwWindowPtr, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
   }
 
   if (this->mIsEnabledJoystick)
