@@ -36,6 +36,7 @@
 #include <Dy/Management/InputManager.h>
 #include <Dy/Management/TimeManager.h>
 #include <imgui/imgui_internal.h>
+#include "Dy/Editor/Literals/LibraryLicenseString.h"
 
 ///
 /// Undefined proprocessor WIN32 macro "max, min" for preventing misuse.
@@ -361,65 +362,46 @@ void DyImguiFeatGuiMainMenuRenderFrame()
   {
     ImGui::Begin("Lincense and third party library using", &sHelpLicenseWindow);
 
+    for (const auto& libraryInfo : dy::editor::kLibraryLicenseInfo)
     {
-      ImGui::Text("Library\nVersion"); ImGui::SameLine();
-      ImGui::Text("Assimp\n4.1.0");
-      if (ImGui::Button("Github"))
-      {
-      #if defined(_WIN32)
-        ShellExecute(nullptr, nullptr, L"https://github.com/assimp/assimp", nullptr, nullptr, SW_SHOW);
-      #elif defined(__linux__)
+      ImGui::BeginGroup();
+      ImGui::BeginChild(libraryInfo.GetLibraryName(), ImVec2(0, 100), true);
+      ImGui::Text("Library"); ImGui::SameLine(); ImGui::Text(libraryInfo.GetLibraryName());
+      ImGui::Text("Version"); ImGui::SameLine(); ImGui::Text(libraryInfo.GetVersionName());
 
-      #endif
-      }
-      if (ImGui::TreeNode("License"))
+      bool isHp = false;
+      if (!libraryInfo.IsHomepageUrlEmpty())
       {
-        ImGui::TextWrapped(R"dy(Assimp is released as Open Source under the terms of a 3-clause BSD license.
-An informal summary is: do whatever you want, but include Assimp's license text with your product - and don't sue us if our code doesn't work. Note that, unlike LGPLed code, you may link statically to Assimp. For the legal details, see the LICENSE file.)dy");
-        ImGui::TreePop();
-      }
-      ImGui::Separator();
-    }
-
-    {
-      ImGui::Text("Library\nVersion"); ImGui::SameLine();
-      ImGui::Text("glad\n0.1.27 on Tue Aug 28 10:32:57 2018");
-      if (ImGui::Button("Homepage"))
-      {
-      #if defined(_WIN32)
-        ShellExecute(nullptr, nullptr, L"https://glad.dav1d.de/", nullptr, nullptr, SW_SHOW);
-      #elif defined(__linux__)
-
-      #endif
-      }
-      ImGui::SameLine();
-      if (ImGui::Button("Github"))
-      {
-      #if defined(_WIN32)
-        ShellExecute(nullptr, nullptr, L"https://github.com/Dav1dde/glad", nullptr, nullptr, SW_SHOW);
-      #elif defined(__linux__)
-
-      #endif
+        if (ImGui::Button("Homepage"))
+        {
+        #if defined(_WIN32)
+          ShellExecute(nullptr, nullptr, libraryInfo.GetHomepageUrl().c_str(), nullptr, nullptr, SW_SHOW);
+        #elif defined(__linux__)
+          // @todo EXECUTE WEB BROWSER WITH URL.
+        #endif
+        }
+        isHp = true;
       }
 
-      if (ImGui::TreeNode("License"))
+      if (!libraryInfo.IsGithubUrlEmpty())
       {
-        ImGui::TextWrapped(R"dy(The MIT License (MIT)
-
-Copyright (c) 2013-2018 David Herberth
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-the Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.)dy");
-        ImGui::TreePop();
+        if (isHp) ImGui::SameLine();
+        if (ImGui::Button("Github"))
+        {
+        #if defined(_WIN32)
+          ShellExecute(nullptr, nullptr, libraryInfo.GetGithubUrl().c_str(), nullptr, nullptr, SW_SHOW);
+        #elif defined(__linux__)
+          // @todo EXECUTE WEB BROWSER WITH URL.
+        #endif
+        }
       }
-      ImGui::Separator();
+
+      if (ImGui::Button("View license"))
+      {
+        //ImGui::TextWrapped(libraryInfo.GetLicenseStatement());
+      };
+      ImGui::EndChild();
+      ImGui::EndGroup();
     }
 
     ImGui::End();

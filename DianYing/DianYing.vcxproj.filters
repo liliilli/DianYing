@@ -115,6 +115,7 @@
     <ClInclude Include="Libraries\sol2\sol2\sol.hpp" />
     <ClInclude Include="Libraries\sol2\sol2\sol_forward.hpp" />
     <ClInclude Include="Include\Dy\Helper\GlobalType.h" />
+    <ClInclude Include="Include\Dy\Editor\Literals\LibraryLicenseString.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />
