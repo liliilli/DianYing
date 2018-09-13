@@ -35,13 +35,7 @@ public:
   ///
   [[nodiscard]] FORCEINLINE EDySuccess Initialize(const TConstructionDescriptorType& desc) noexcept
   {
-    PHITOS_ASSERT(mIsInitialized == false, "Singleton instance must be initialized only once.");
-    PHITOS_ASSERT(mIsShutdown    == false, "Singleton instance can not be reinitialized after shutting down.");
-
     const auto flag = static_cast<TType&>(*this).pfInitialize(desc);
-
-    bool oldValue = false;
-    mIsInitialized.compare_exchange_weak(oldValue, true);
     return flag;
   }
 
@@ -50,36 +44,11 @@ public:
   ///
   [[nodiscard]] FORCEINLINE EDySuccess Release() noexcept
   {
-    PHITOS_ASSERT(mIsInitialized == true , "Singleton instance must be initialized before shutting down.");
-    PHITOS_ASSERT(mIsShutdown    == false, "Singleton instance can not be shutted down again.");
-
     const auto flag = static_cast<TType&>(*this).pfRelease();
-
-    bool oldValue = false;
-    mIsShutdown.compare_exchange_weak(oldValue, true);
     return flag;
   }
 
-  ///
-  /// @brief Check whether singleton is initialized.
-  ///
-  [[nodiscard]] FORCEINLINE bool static IsInitialized() noexcept
-  {
-    return mIsInitialized && !mIsShutdown;
-  }
-
-  ///
-  /// @brief Check whether singleton is shutdowned.
-  ///
-  [[nodiscard]] FORCEINLINE bool static IsShutdowned() noexcept
-  {
-    return mIsShutdown;
-  }
-
 protected:
-  inline static std::atomic<bool> mIsInitialized = false;
-  inline static std::atomic<bool> mIsShutdown    = false;
-
   MDY_SINGLETON_PROPERTIES(IDyGuiWinSingleton);
 };
 

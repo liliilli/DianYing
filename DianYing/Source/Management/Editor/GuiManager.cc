@@ -15,6 +15,9 @@
 
 /// Header file
 #include <Dy/Management/Editor/GuiManager.h>
+
+#include <imgui/imgui.h>
+#include <imgui/imgui_internal.h>
 #include <Dy/Management/LoggingManager.h>
 
 namespace dy::editor
@@ -36,6 +39,18 @@ EDySuccess MDyEditorGui::pfRelease()
 {
   MDY_LOG_INFO_D("MDyEditorGui manager released.");
   return DY_SUCCESS;
+}
+
+void MDyEditorGui::Update(float dt) noexcept
+{
+  if (!this->__mDeleteCandidateList.empty())
+  {
+    for (auto it = this->__mDeleteCandidateList.begin(); it != this->__mDeleteCandidateList.end(); ++it)
+    {
+      delete *it;
+    }
+    this->__mDeleteCandidateList.clear();
+  }
 }
 
 void MDyEditorGui::DrawWindow(float dt) noexcept

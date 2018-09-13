@@ -15,6 +15,7 @@
 ///
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
+#include <Dy/Management/LoggingManager.h>
 #include <Dy/Editor/Gui/MainMenu.h>
 
 #define MDY_STATIC_CLASS(__MAClassType__) \
@@ -25,8 +26,50 @@
   __MAClassType__& operator=(const __MAClassType__&) = delete; \
   __MAClassType__& operator=(__MAClassType__&&) = delete
 
+//!
+//! Forward declaration
+//!
+
 namespace dy::editor
 {
+class MDyEditorGui;
+}
+
+//!
+//! Implementation
+//!
+
+namespace dy::editor
+{
+
+///
+/// @class MDyEditorGui
+/// @brief Gui management class for gui editor.
+///
+class MDyEditorGui : public ISingleton<MDyEditorGui>, public IDyGuiComponentBase
+{
+  MDY_SINGLETON_PROPERTIES(MDyEditorGui);
+  MDY_SINGLETON_DERIVED(MDyEditorGui);
+public:
+
+  void Update(float dt) noexcept override final;
+
+  void DrawWindow(float dt) noexcept override final;
+
+private:
+  ///
+  /// @brief
+  ///
+  void __pfInsertDeleteComponent(IDyGuiComponentBase* validInstance) noexcept
+  {
+    this->__mDeleteCandidateList.emplace_back(validInstance);
+  }
+  std::vector<IDyGuiComponentBase*> __mDeleteCandidateList = {};
+
+  std::unique_ptr<FDyMainMenu>  mMainMenu = nullptr;
+
+  friend class FDyEditorGuiWindowFactory;
+};
 
 ///
 /// @class FDyEditorGuiWindowFactory
@@ -52,43 +95,28 @@ public:
     }
   }
 
-#ifdef false
   template <typename TGuiComponentType>
-  [[nodiscard]] static EDySuccess RemoveGuiWindow(const IDyGuiHasChildren& parentWindow)
+  [[nodiscard]] static EDySuccess RemoveGuiWindow(IDyGuiHasChildren& parentWindow)
   {
-    auto it = parentWindow.mGuiChildComponentMap(TGuiComponentType::pfGetHashKey());
-    if (it == parentWindow.mGuiChildComponentMap.end())
+    auto it = parentWindow.mSubWindows.find(TGuiComponentType::__mHashVal);
+    if (it == parentWindow.mSubWindows.end())
     {
+      MDY_LOG_ERROR("{} | Failed to find gui window instance. | Name : {}", "FDyEditorGuiWindowFactory::RemoveGuiWindow", MDY_TO_STRING(TGuiComponentType));
       return DY_FAILURE;
     }
     else
     {
-      if (it->second->Release() == DY_FAILURE)
+      if (static_cast<TGuiComponentType*>(it->second.get())->Release() == DY_FAILURE)
       {
         MDY_LOG_ERROR("{} | Failed to release gui window. | Name : {}", "FDyEditorGuiWindowFactory::RemoveGuiWindow", MDY_TO_STRING(TGuiComponentType));
         return DY_FAILURE;
       }
 
+      MDyEditorGui::GetInstance().__pfInsertDeleteComponent(it->second.release());
+      MDY_LOG_INFO("{} | Remove gui component window. | Name : {}", "FDyEditorGuiWindowFactory::RemoveGuiWindow", MDY_TO_STRING(TGuiComponentType));
       return DY_SUCCESS;
     }
   }
-#endif
-};
-
-///
-/// @class MDyEditorGui
-/// @brief Gui management class for gui editor.
-///
-class MDyEditorGui : public ISingleton<MDyEditorGui>, public IDyGuiComponentBase
-{
-  MDY_SINGLETON_PROPERTIES(MDyEditorGui);
-  MDY_SINGLETON_DERIVED(MDyEditorGui);
-public:
-  void DrawWindow(float dt) noexcept override;
-
-private:
-  std::unique_ptr<FDyMainMenu> mMainMenu = nullptr;
-
 };
 
 } /// ::dy::editor namespace

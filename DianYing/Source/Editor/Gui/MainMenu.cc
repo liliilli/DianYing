@@ -1,4 +1,7 @@
 #include <precompiled.h>
+#include "Dy/Editor/Descriptor/DialogDescriptor.h"
+#include "Dy/Editor/Gui/EtcDialog.h"
+#if defined(MDY_FLAG_IN_EDITOR)
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -17,6 +20,7 @@
 
 #include <imgui/imgui.h>
 #include <Dy/Management/WindowManager.h>
+#include <Dy/Management/Editor/GuiManager.h>
 
 namespace dy::editor
 {
@@ -37,10 +41,20 @@ void FDyMainMenu::DrawWindow(float dt) noexcept
   {
     if (ImGui::BeginMenu("File"))
     {
-      if (ImGui::MenuItem("New Level"))
+      if (ImGui::MenuItem("New Level", nullptr, &this->mMenuItemNewLevelFlag))
       {
+        PDyGuiComponentDialogDescriptor desc;
+        desc.mDialogTitle               = "Dialog Test";
+        desc.mDialogTextBody            = "This is dialog test. Hello world!";
+        desc.mParentRawPtr              = this;
+        desc.mParentBoolFlag            = &this->mMenuItemNewLevelFlag;
 
-      };
+        if (auto i = FDyEditorGuiWindowFactory::CreateGuiWindow<FDyDialog>(desc); i)
+        {
+          auto [it, result] = this->mSubWindows.try_emplace(static_cast<FDyDialog*>(i.get())->__mHashVal, std::move(i));
+          if (!result) { PHITOS_UNEXPECTED_BRANCH(); }
+        }
+      }
       if (ImGui::MenuItem("Open Level"))
       {
 
@@ -105,3 +119,5 @@ void FDyMainMenu::DrawWindow(float dt) noexcept
 }
 
 } /// ::dy::editor namespace
+
+#endif /// MDY_FLAG_IN_EDITOR
