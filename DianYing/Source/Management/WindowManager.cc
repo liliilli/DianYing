@@ -35,8 +35,7 @@
 #include <Dy/Management/SceneManager.h>
 #include <Dy/Management/InputManager.h>
 #include <Dy/Management/TimeManager.h>
-#include <imgui/imgui_internal.h>
-#include "Dy/Editor/Literals/LibraryLicenseString.h"
+#include <Dy/Management/Editor/GuiManager.h>
 
 ///
 /// Undefined proprocessor WIN32 macro "max, min" for preventing misuse.
@@ -55,7 +54,7 @@
 namespace
 {
 
-bool gImguiShowDemoWindow = true;
+bool gImguiShowDemoWindow = false;
 bool gImguiShowAnotherWindow = false;
 
 dy::DDyVector3                  gColor      {.2f, .3f, .2f};
@@ -310,11 +309,14 @@ void DyGlTempInitializeResource()
 }
 
 #ifdef MDY_FLAG_IN_EDITOR
+#ifdef false
 void DyImguiFeatGuiMainMenuRenderFrame()
 {
   static bool sHelpLicenseWindow  = false;
   static bool sHelpAboutLicenseWindow = false;
   static bool sHelpAboutWindow    = false;
+  static bool sViewCpuUsage       = false;
+  static bool sViewLogWindow      = false;
 
   if (ImGui::BeginMainMenuBar())
   {
@@ -348,6 +350,13 @@ void DyImguiFeatGuiMainMenuRenderFrame()
       ImGui::EndMenu();
     }
 
+    if (ImGui::BeginMenu("View"))
+    {
+      ImGui::MenuItem("Cpu Usage", nullptr, &sViewCpuUsage);
+      ImGui::MenuItem("Console", nullptr, &sViewLogWindow);
+      ImGui::EndMenu();
+    }
+
     if (ImGui::BeginMenu("Help"))
     {
       ImGui::MenuItem("Licenses", nullptr, &sHelpLicenseWindow);
@@ -356,6 +365,19 @@ void DyImguiFeatGuiMainMenuRenderFrame()
     }
 
     ImGui::EndMainMenuBar();
+  }
+
+  if (sViewCpuUsage)
+  {
+    ImGui::Begin("Cpu Usage", &sViewCpuUsage, ImGuiWindowFlags_AlwaysAutoResize);
+    ImGui::End();
+  }
+
+  if (sViewLogWindow)
+  {
+    ImGui::Begin("Log Window", &sViewLogWindow, ImGuiWindowFlags_AlwaysAutoResize);
+
+    ImGui::End();
   }
 
   if (sHelpLicenseWindow)
@@ -438,6 +460,7 @@ SOFTWARE.)dy");
   }
 }
 #endif
+#endif
 
 void DyImguiRenderFrame()
 {
@@ -483,7 +506,9 @@ void DyImguiRenderFrame()
       ImGui::End();
     }
   }
-  DyImguiFeatGuiMainMenuRenderFrame();
+#if defined(MDY_FLAG_IN_EDITOR)
+  dy::editor::MDyEditorGui::GetInstance().DrawWindow(0);
+#endif
 
   ImGui::Render();
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
