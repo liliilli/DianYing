@@ -79,12 +79,12 @@ public:
 /// @class MDyEditorGui
 /// @brief Gui management class for gui editor.
 ///
-class MDyEditorGui : public ISingleton<MDyEditorGui>
+class MDyEditorGui : public ISingleton<MDyEditorGui>, public IDyGuiComponentBase
 {
   MDY_SINGLETON_PROPERTIES(MDyEditorGui);
   MDY_SINGLETON_DERIVED(MDyEditorGui);
 public:
-
+  void DrawWindow(float dt) noexcept override;
 
 private:
   std::unique_ptr<FDyMainMenu> mMainMenu = nullptr;

@@ -30,6 +30,17 @@ using TCrc32HashValue = TU32;
 class IDyGuiHasChildren
 {
 protected:
+  ///
+  /// @brief Render and polling clicking or keyboard input to subwindows.
+  ///
+  void pRenderSubwindows(float dt) noexcept
+  {
+    for (auto& [hashValue, componentSmtPtr] : this->mSubWindows)
+    {
+      if (componentSmtPtr) componentSmtPtr->DrawWindow(dt);
+    }
+  }
+
   std::unordered_map<TCrc32HashValue, std::unique_ptr<IDyGuiComponentBase>> mSubWindows;
 
   friend class FDyEditorGuiWindowFactory;

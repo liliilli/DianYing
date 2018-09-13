@@ -101,7 +101,7 @@ void FDyMainMenu::DrawWindow(float dt) noexcept
     ImGui::EndMainMenuBar();
   }
 
-
+  pRenderSubwindows(dt);
 }
 
 } /// ::dy::editor namespace

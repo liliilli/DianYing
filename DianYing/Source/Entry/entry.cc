@@ -17,6 +17,7 @@
 #endif
 
 #include <d3dx11effect.h>
+#include <sol2/sol.hpp>
 
 #include <Dy/Management/DataInformationManager.h>
 #include <Dy/Management/HeapResourceManager.h>
@@ -27,7 +28,7 @@
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/InputManager.h>
 
-#include <sol2/sol.hpp>
+#include <Dy/Management/Editor/GuiManager.h>
 
 namespace
 {
@@ -76,6 +77,9 @@ void DyInitiailzeAllManagers()
     logManager.SetSubFeatureLoggingToFile(true);
   }
   MDY_CALL_ASSERT_SUCCESS(dy::MDyLog::Initialize());
+#if defined(MDY_FLAG_IN_EDITOR)
+  MDY_CALL_ASSERT_SUCCESS(dy::editor::MDyEditorGui::Initialize());
+#endif
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyDataInformation::Initialize());
@@ -105,6 +109,10 @@ void DyReleaseAllManagers()
   MDY_CALL_ASSERT_SUCCESS(dy::MDyHeapResource::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyDataInformation::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Release());
+#if defined(MDY_FLAG_IN_EDITOR)
+  MDY_CALL_ASSERT_SUCCESS(dy::editor::MDyEditorGui::Release());
+#endif
+
   MDY_CALL_ASSERT_SUCCESS(dy::MDyLog::Release());
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDySetting::Release());

@@ -27,6 +27,8 @@ EDySuccess MDyEditorGui::pfInitialize()
   auto ptr = FDyEditorGuiWindowFactory::CreateGuiWindow<FDyMainMenu>(PDyGuiComponentEmptyDescriptor{});
   PHITOS_ASSERT(static_cast<bool>(ptr), "Failed to create MainMenu!");
 
+  this->mMainMenu = std::unique_ptr<FDyMainMenu>(static_cast<FDyMainMenu*>(ptr.release()));
+
   return DY_SUCCESS;
 }
 
@@ -34,6 +36,14 @@ EDySuccess MDyEditorGui::pfRelease()
 {
   MDY_LOG_INFO_D("MDyEditorGui manager released.");
   return DY_SUCCESS;
+}
+
+void MDyEditorGui::DrawWindow(float dt) noexcept
+{
+  if (mMainMenu)
+  {
+    this->mMainMenu->DrawWindow(dt);
+  }
 }
 
 } /// ::dy::editor namespace
