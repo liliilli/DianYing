@@ -29,15 +29,28 @@ using TCrc32HashValue = TU32;
 ///
 class IDyGuiHasChildren
 {
+  std::unordered_map<TCrc32HashValue, std::unique_ptr<IDyGuiComponentBase>>& GetChildrenMap() noexcept
+  {
+    return this->mSubWindows;
+  }
+
 protected:
   ///
   /// @brief Render and polling clicking or keyboard input to subwindows.
   ///
   void pRenderSubwindows(float dt) noexcept
   {
-    for (auto& [hashValue, componentSmtPtr] : this->mSubWindows)
+    for (auto it = this->mSubWindows.begin(); it != this->mSubWindows.end(); ++it)
     {
-      if (componentSmtPtr) componentSmtPtr->DrawWindow(dt);
+      if (it->second)
+      {
+        it->second->DrawWindow(dt);
+      }
+      else
+      {
+        it = this->mSubWindows.erase(it);
+        if (this->mSubWindows.empty()) break;
+      }
     }
   }
 

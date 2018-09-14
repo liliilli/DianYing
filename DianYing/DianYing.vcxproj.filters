@@ -48,6 +48,8 @@
     <ClCompile Include="Source\Helper\Dbg\CheckUsage.cc" />
     <ClCompile Include="Source\Editor\Gui\MainMenu.cc" />
     <ClCompile Include="Source\Management\Editor\GuiManager.cc" />
+    <ClCompile Include="Source\Editor\Gui\EtcDialog.cc" />
+    <ClCompile Include="Source\Management\Editor\GuiWindowFactory.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -127,6 +129,10 @@
     <ClInclude Include="Include\Dy\Editor\Interface\IDyGuiComponentBase.h" />
     <ClInclude Include="Include\Dy\Editor\Interface\IDyGuiHasChildren.h" />
     <ClInclude Include="Include\Dy\Editor\Descriptor\EmptyDescriptor.h" />
+    <ClInclude Include="Include\Dy\Editor\Gui\EtcDialog.h" />
+    <ClInclude Include="Include\Dy\Editor\Descriptor\DialogDescriptor.h" />
+    <ClInclude Include="Include\Dy\Editor\Literals\DIalogMessageString.h" />
+    <ClInclude Include="Include\Dy\Management\Editor\GuiWindowFactory.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

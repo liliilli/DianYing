@@ -15,65 +15,24 @@
 ///
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
+#include <Dy/Management/LoggingManager.h>
 #include <Dy/Editor/Gui/MainMenu.h>
 
-#define MDY_STATIC_CLASS(__MAClassType__) \
-  __MAClassType__() = delete; \
-  ~__MAClassType__() = delete; \
-  __MAClassType__(const __MAClassType__&) = delete; \
-  __MAClassType__(__MAClassType__&&) = delete; \
-  __MAClassType__& operator=(const __MAClassType__&) = delete; \
-  __MAClassType__& operator=(__MAClassType__&&) = delete
+//!
+//! Forward declaration
+//!
 
 namespace dy::editor
 {
+class MDyEditorGui;
+}
 
-///
-/// @class FDyEditorGuiWindowFactory
-///
-class FDyEditorGuiWindowFactory final
+//!
+//! Implementation
+//!
+
+namespace dy::editor
 {
-public:
-  MDY_STATIC_CLASS(FDyEditorGuiWindowFactory);
-
-  template <typename TGuiComponentType, typename TGuiComponentDescriptor>
-  [[nodiscard]] static std::unique_ptr<IDyGuiComponentBase>
-  CreateGuiWindow(const TGuiComponentDescriptor& descriptor)
-  {
-    auto ptr = std::make_unique<TGuiComponentType>();
-    if (ptr->Initialize(descriptor) == DY_FAILURE)
-    {
-      return nullptr;
-    }
-    else
-    {
-      /// @reference https://www.ficksworkshop.com/blog/how-to-static-cast-std-unique-ptr
-      return std::unique_ptr<IDyGuiComponentBase>(static_cast<IDyGuiComponentBase*>(ptr.release()));
-    }
-  }
-
-#ifdef false
-  template <typename TGuiComponentType>
-  [[nodiscard]] static EDySuccess RemoveGuiWindow(const IDyGuiHasChildren& parentWindow)
-  {
-    auto it = parentWindow.mGuiChildComponentMap(TGuiComponentType::pfGetHashKey());
-    if (it == parentWindow.mGuiChildComponentMap.end())
-    {
-      return DY_FAILURE;
-    }
-    else
-    {
-      if (it->second->Release() == DY_FAILURE)
-      {
-        MDY_LOG_ERROR("{} | Failed to release gui window. | Name : {}", "FDyEditorGuiWindowFactory::RemoveGuiWindow", MDY_TO_STRING(TGuiComponentType));
-        return DY_FAILURE;
-      }
-
-      return DY_SUCCESS;
-    }
-  }
-#endif
-};
 
 ///
 /// @class MDyEditorGui
@@ -84,11 +43,24 @@ class MDyEditorGui : public ISingleton<MDyEditorGui>, public IDyGuiComponentBase
   MDY_SINGLETON_PROPERTIES(MDyEditorGui);
   MDY_SINGLETON_DERIVED(MDyEditorGui);
 public:
-  void DrawWindow(float dt) noexcept override;
+
+  void Update(float dt) noexcept override final;
+
+  void DrawWindow(float dt) noexcept override final;
 
 private:
-  std::unique_ptr<FDyMainMenu> mMainMenu = nullptr;
+  ///
+  /// @brief
+  ///
+  void __pfInsertDeleteComponent(IDyGuiComponentBase* validInstance) noexcept
+  {
+    this->__mDeleteCandidateList.emplace_back(validInstance);
+  }
+  std::vector<IDyGuiComponentBase*> __mDeleteCandidateList = {};
 
+  std::unique_ptr<FDyMainMenu>  mMainMenu = nullptr;
+
+  friend class FDyEditorGuiWindowFactory;
 };
 
 } /// ::dy::editor namespace

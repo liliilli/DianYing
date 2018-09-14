@@ -28,10 +28,21 @@ public:
   ///
   /// @brief
   ///
-  void DrawWindow(float dt) noexcept override;
+  void DrawWindow(float dt) noexcept override final;
 
 private:
+  ///
+  /// @brief Create dialogue modal message.
+  ///
+  void pCreateNotSupportYetDialogMsg(bool* boolFlag);
 
+  bool mMenuItemNewLevelFlag      = false;
+  bool mMenuItemOpenLevelFlag     = false;
+  bool mMenuItemViewCpuUsage      = false;
+  bool mMenuItemViewLogWindow     = false;
+  bool mMenuItemHelpLicenseWindow = false;
+  bool mMenuItemHelpAboutWindow   = false;
+  bool mMenuItemViewViewport      = false;
 };
 
 } /// ::dy::editor namespace
