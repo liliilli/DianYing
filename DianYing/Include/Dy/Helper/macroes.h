@@ -163,7 +163,48 @@
 //!
 
 ///
-/// @macro
+/// @macro MDY_SET_CRC32_HASH
+/// @brief Declare type member variable, which is used for storing hashed type value.
+/// and value it in compile time.
+///
+#define MDY_SET_CRC32_HASH(__MAType__) \
+public: \
+static constexpr TU32 __mHashVal = dy::hash::DyToCrc32Hash(__MAType__);
+
+///
+/// @macro MDY_SET_CRC32_HASH
+/// @brief Declare type member variable, which is used for storing hashed type value.
+/// and value it in compile time.
+///
+#define MDY_SET_CRC32_HASH_WITH_TYPE(__MAType__) \
+public: \
+static constexpr TU32 __mHashVal = dy::hash::DyToCrc32Hash(MDY_TO_STRING(__MAType__));
+
+///
+/// @macro OVERRIDE_TYPEMATCH
+/// @brief Define override function of component::CComponent's DoesTypeMatch() to match with
+/// new type value of __DERIVED__ type. Defined function does not throw exception.
+///
+/// @param[in] __BASE__ Base type of __DERIVED__ type.
+/// The argument has to be a full name, with namespace.
+/// @param[in] __DERIVED__ __DERIVED__ type itself. The argument doesn't have to be a full name.
+///
+#define MDY_SET_TYPEMATCH_FUNCTION(__BASE__, __DERIVED__) \
+public: \
+virtual bool IsTypeMatched(const TU32 hashVal) const noexcept override { \
+  if (__DERIVED__::__mHashVal == hashVal) \
+  { \
+    return true; \
+  } \
+  else \
+  { \
+    return __BASE__::IsTypeMatched(hashVal); \
+  } \
+}
+
+///
+/// @macro MDY_SINGLETON_PROPERTIES
+/// This macro must not be attached to whichever class inherits ISingleton<>.
 ///
 #define MDY_SINGLETON_PROPERTIES(__MASingletonType__) \
 public: \
@@ -173,7 +214,8 @@ public: \
     __MASingletonType__##& operator=(__MASingletonType__##&&) = delete
 
 ///
-/// @macro
+/// @macro MDY_SINGLETON_DERIVED
+/// This macro must not be attached to whichever class inherits ISingleton<>.
 ///
 #define MDY_SINGLETON_DERIVED(__MADerivedSingletonType__) \
 private:                                                  \
@@ -182,6 +224,36 @@ private:                                                  \
     [[nodiscard]] EDySuccess pfInitialize();              \
     [[nodiscard]] EDySuccess pfRelease();                 \
     friend class ISingleton<__MADerivedSingletonType__>
+
+#if defined(MDY_FLAG_IN_EDITOR)
+///
+/// @macro MDY_GUISINGLETON_PROPERTIES
+/// @brief Set properties of gui window singleton types.
+/// This macro must not be attached to whichever class inherits IDyGuiWindowSingleton<>.
+///
+#define MDY_GUISINGLETON_PROPERTIES(__MASingletonType__) \
+public: \
+    __MASingletonType__(const __MASingletonType__##&) = delete; \
+    __MASingletonType__(__MASingletonType__##&&) = delete; \
+    __MASingletonType__##& operator=(const __MASingletonType__##&) = delete; \
+    __MASingletonType__##& operator=(__MASingletonType__##&&) = delete
+
+///
+/// @macro MDY_GUISINGLETON_DERIVED
+/// @brief Set boilerplate functions for gui window singleton types.
+/// This macro must not be attached to whichever class inherits IDyGuiWindowSingleton<>.
+///
+#define MDY_GUISINGLETON_DERIVED(__MADerivedSingletonType__, __MAConstructionDescriptorType__)  \
+public:                                                   \
+    __MADerivedSingletonType__() = default;               \
+    virtual ~__MADerivedSingletonType__() = default;      \
+private:                                                  \
+    [[nodiscard]] EDySuccess pfInitialize([[maybe_unused]] const __MAConstructionDescriptorType__& desc); \
+    [[nodiscard]] EDySuccess pfRelease();                 \
+    MDY_SET_CRC32_HASH_WITH_TYPE(__MADerivedSingletonType__); \
+    MDY_SET_TYPEMATCH_FUNCTION(IDyGuiComponentBase, __MADerivedSingletonType__); \
+    friend class IDyGuiWinSingleton<__MADerivedSingletonType__, __MAConstructionDescriptorType__>
+#endif /// MDY_FLAG_IN_EDITOR
 
 //!
 //! Function type macros.

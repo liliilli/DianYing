@@ -17,6 +17,7 @@
 #endif
 
 #include <d3dx11effect.h>
+#include <sol2/sol.hpp>
 
 #include <Dy/Management/DataInformationManager.h>
 #include <Dy/Management/HeapResourceManager.h>
@@ -27,10 +28,26 @@
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/InputManager.h>
 
-#include <sol2/sol.hpp>
+#include <Dy/Management/Editor/GuiManager.h>
 
 namespace
 {
+
+#ifdef MDY_FLAG_IN_EDITOR
+///
+/// @brief Initialize all gui editor managers related to editing easily.
+///
+void DyInitializeEditorManagers()
+{
+
+}
+
+void DyReleaseEditorManagers()
+{
+
+}
+#endif
+
 ///
 /// @brief Initialize all managers related to DianYing rendering application.
 /// Initialzation order must be ended with MDyWindow and started with MDySetting by getting argv
@@ -60,6 +77,9 @@ void DyInitiailzeAllManagers()
     logManager.SetSubFeatureLoggingToFile(true);
   }
   MDY_CALL_ASSERT_SUCCESS(dy::MDyLog::Initialize());
+#if defined(MDY_FLAG_IN_EDITOR)
+  MDY_CALL_ASSERT_SUCCESS(dy::editor::MDyEditorGui::Initialize());
+#endif
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyDataInformation::Initialize());
@@ -89,6 +109,10 @@ void DyReleaseAllManagers()
   MDY_CALL_ASSERT_SUCCESS(dy::MDyHeapResource::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyDataInformation::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Release());
+#if defined(MDY_FLAG_IN_EDITOR)
+  MDY_CALL_ASSERT_SUCCESS(dy::editor::MDyEditorGui::Release());
+#endif
+
   MDY_CALL_ASSERT_SUCCESS(dy::MDyLog::Release());
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDySetting::Release());
@@ -161,6 +185,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLin
   gnCmdShow       = nCmdShow;
 
   MDY_WIN32_TRY_TURN_ON_DEBUG();
+
+#ifdef MDY_FLAG_IN_EDITOR
+  DyInitializeEditorManagers();
+#endif
   DyInitiailzeAllManagers();
 
   MDY_LOG_INFO_D("Platform : Windows");
@@ -177,6 +205,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLin
   MDY_LOG_INFO_D("Release all managers and resources.");
 
   DyReleaseAllManagers();
+#ifdef MDY_FLAG_IN_EDITOR
+  DyReleaseEditorManagers();
+#endif
   MDY_WIN32_TRY_TURN_OFF_DEBUG();
   return 0;
 }

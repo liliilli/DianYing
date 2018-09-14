@@ -35,6 +35,7 @@
 #include <Dy/Management/SceneManager.h>
 #include <Dy/Management/InputManager.h>
 #include <Dy/Management/TimeManager.h>
+#include <Dy/Management/Editor/GuiManager.h>
 
 ///
 /// Undefined proprocessor WIN32 macro "max, min" for preventing misuse.
@@ -53,7 +54,7 @@
 namespace
 {
 
-bool gImguiShowDemoWindow = true;
+bool gImguiShowDemoWindow = false;
 bool gImguiShowAnotherWindow = false;
 
 dy::DDyVector3                  gColor      {.2f, .3f, .2f};
@@ -158,6 +159,16 @@ void DyGlTempInitializeResource()
 
   if (tempAsyncTask.get() && modelAsyncTask.get()) { MDY_LOG_DEBUG_D("OK"); };
 
+#ifdef false
+  {
+    dy::PDyModelConstructionDescriptor modelDesc;
+    {
+      modelDesc.mModelName = "Sponza";
+      modelDesc.mModelPath = "./TestResource/crytek-sponza/sponza.obj";
+    }
+    MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(modelDesc));
+  };
+
   std::unordered_map<std::string, std::string> populatedMaterialList = {};
   dy::PDyMaterialPopulateDescriptor popDesc;
   {
@@ -208,6 +219,7 @@ void DyGlTempInitializeResource()
     };
   }
   MDY_CALL_ASSERT_SUCCESS(gRenderer.pfInitialize(rendererDesc));
+#endif
 
 #ifdef false
   {
@@ -296,6 +308,51 @@ void DyGlTempInitializeResource()
 
 }
 
+#ifdef MDY_FLAG_IN_EDITOR
+#ifdef false
+void DyImguiFeatGuiMainMenuRenderFrame()
+{
+  static bool sHelpLicenseWindow  = false;
+  static bool sHelpAboutLicenseWindow = false;
+  static bool sHelpAboutWindow    = false;
+  static bool sViewCpuUsage       = false;
+  static bool sViewLogWindow      = false;
+
+  if (ImGui::BeginMainMenuBar())
+  {
+    if (ImGui::BeginMenu("View"))
+    {
+      ImGui::MenuItem("Cpu Usage", nullptr, &sViewCpuUsage);
+      ImGui::MenuItem("Console", nullptr, &sViewLogWindow);
+      ImGui::EndMenu();
+    }
+
+    if (ImGui::BeginMenu("Help"))
+    {
+      ImGui::MenuItem("Licenses", nullptr, &sHelpLicenseWindow);
+      ImGui::MenuItem("About", nullptr, &sHelpAboutWindow);
+      ImGui::EndMenu();
+    }
+
+    ImGui::EndMainMenuBar();
+  }
+
+  if (sViewCpuUsage)
+  {
+    ImGui::Begin("Cpu Usage", &sViewCpuUsage, ImGuiWindowFlags_AlwaysAutoResize);
+    ImGui::End();
+  }
+
+  if (sViewLogWindow)
+  {
+    ImGui::Begin("Log Window", &sViewLogWindow, ImGuiWindowFlags_AlwaysAutoResize);
+
+    ImGui::End();
+  }
+}
+#endif
+#endif
+
 void DyImguiRenderFrame()
 {
   ImGui_ImplOpenGL3_NewFrame();
@@ -340,6 +397,9 @@ void DyImguiRenderFrame()
       ImGui::End();
     }
   }
+#if defined(MDY_FLAG_IN_EDITOR)
+  dy::editor::MDyEditorGui::GetInstance().DrawWindow(0);
+#endif
 
   ImGui::Render();
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -447,11 +507,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 }
 
 ///
-/// @brief
-/// Callback method for size check and resizing.
+/// @brief Callback method for size check and resizing.
 ///
-void DyGlCallbackFrameBufferSize(GLFWwindow* window, int width, int height) {
+void DyGlCallbackFrameBufferSize(GLFWwindow* window, int width, int height)
+{
   glViewport(0, 0, width, height);
+}
+
+///
+/// @brief Callback method for closing arbitary glfw window window handle.
+///
+void DyGlCallbackWindowClose(GLFWwindow* window)
+{
+  glfwSetKeyCallback(window, nullptr);
+  glfwSetCursorPosCallback(window, nullptr);
+  glfwDestroyWindow(window);
 }
 
 } /// unnamed namespace
@@ -514,8 +584,14 @@ void MDyWindow::Run()
 #endif
 }
 
+///
+/// @brief
+///
 void MDyWindow::pUpdate(float dt)
 {
+#if defined(MDY_FLAG_IN_EDITOR)
+  editor::MDyEditorGui::GetInstance().Update(dt);
+#endif /// MDY_FLAG_IN_EDITOR
   MDyInput::GetInstance().pfUpdate(dt);
 
   auto& sceneManager = MDyScene::GetInstance();
@@ -526,6 +602,9 @@ void MDyWindow::pUpdate(float dt)
   }
 }
 
+///
+/// @brief
+///
 void MDyWindow::pRender()
 {
   glClearColor(gColor.X, gColor.Y, gColor.Z, 1.0f);
@@ -537,11 +616,14 @@ void MDyWindow::pRender()
     gGrid->RenderGrid();
   };
 
+#ifdef false
   gRenderer.Render();
+#endif
 
   glDisable(GL_DEPTH_TEST);
 
   DyImguiRenderFrame();
+  if (glfwWindowShouldClose(this->mGlfwWindow)) return;
 
   glfwSwapBuffers(this->mGlfwWindow);
   glfwPollEvents();
@@ -594,10 +676,14 @@ EDySuccess MDyWindow::pfInitialize()
         return DY_FAILURE;
       }
 
-      glfwMakeContextCurrent(this->mGlfwWindow);
-      gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
-      glfwSetInputMode(this->mGlfwWindow, GLFW_STICKY_KEYS, GL_FALSE);
-      glfwSetFramebufferSizeCallback(this->mGlfwWindow, &DyGlCallbackFrameBufferSize);
+      {
+        glfwMakeContextCurrent(this->mGlfwWindow);
+        gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
+        glfwSetInputMode(this->mGlfwWindow, GLFW_STICKY_KEYS, GL_FALSE);
+
+        glfwSetFramebufferSizeCallback(this->mGlfwWindow, &DyGlCallbackFrameBufferSize);
+        glfwSetWindowCloseCallback(this->mGlfwWindow, &DyGlCallbackWindowClose);
+      }
 
       // If in debug build environment, enable debug output logging.
       #if defined(_DEBUG) || !defined(_NDEBUG)
@@ -664,7 +750,6 @@ EDySuccess MDyWindow::pfRelease()
     ImGui::DestroyContext();
     MDY_LOG_INFO_D("Released ImGui Context.");
 
-    glfwDestroyWindow(this->mGlfwWindow);
     glfwTerminate();
     break;
   case EDyRenderingApiType::Vulkan:
