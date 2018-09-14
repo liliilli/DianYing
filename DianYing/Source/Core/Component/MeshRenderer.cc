@@ -50,7 +50,10 @@ EDySuccess CDyMeshRenderer::pfInitialize(const PDyRendererConsturctionDescriptor
     if (!materialResourcePtr)
     {
       const auto res = resourceManager.CreateMaterialResource(materialName);
-      if (res == DY_FAILURE) return DY_FAILURE;
+      if (res == DY_FAILURE)
+      {
+        return DY_FAILURE;
+      }
 
       this->mMaterialResourcePtr.emplace_back(resourceManager.GetMaterialResource(materialName));
     }

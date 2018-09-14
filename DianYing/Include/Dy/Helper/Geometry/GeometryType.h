@@ -14,20 +14,32 @@
 ///
 
 #include <vector>
-#include <Dy/Helper/Type/Vector3.h>
+#include <Dy/Helper/Type/Vector4.h>
 
 namespace dy
 {
 
 ///
-/// @class DDyVertexInformation
+/// @struct DDyVertexBoneData
+/// @brief Below elements are used when skeletal animation is applied.
+///
+struct DDyVertexBoneData final
+{
+  std::array<TU32, 4> mBoneId;
+  DDyVector4          mWeights;
+};
+
+///
+/// @struct DDyVertexInformation
 /// @brief Vertex information (Input assembly unit data)
 ///
 struct DDyVertexInformation final
 {
-  DDyVector3 mPosition;
-  DDyVector3 mNormal;
-  DDyVector2 mTexCoords;
+  DDyVector3          mPosition   = {};
+  DDyVector3          mNormal     = {};
+  DDyVector2          mTexCoords  = {};
+  // Below elements are used when skeletal animation is applied.
+  DDyVertexBoneData   mVertexBoneData;
 };
 
 ///

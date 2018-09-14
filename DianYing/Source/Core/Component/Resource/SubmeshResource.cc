@@ -92,18 +92,23 @@ EDySuccess CDySubmeshResource::pfInitializeSubmeshResource(const DDySubmeshInfor
   {
     // mSubmeshResourceInformation.mVertices.mPosition (DDyVector3)
     constexpr auto stride = sizeof(DDyVertexInformation);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, nullptr);
+    glBindVertexBuffer(0, this->mBufferIdInformation.mVbo, 0, stride);
+
     glEnableVertexAttribArray(0);
+    glVertexAttribFormat(0, 3, GL_FLOAT, GL_FALSE, offsetof(DDyVertexInformation, mPosition));
+    glVertexAttribBinding(0, 0);
 
     // mSubmeshResourceInformation.mVertices.mNormal   (DDyVector3)
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, (void*)(sizeof DDyVector3));
     glEnableVertexAttribArray(1);
+    glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, offsetof(DDyVertexInformation, mNormal));
+    glVertexAttribBinding(1, 0);
 
     // mSubmeshResourceInformation.mVertices.mTexCoord (DDyVector2) (UV1)
     if (!mMeshFlagInformation.mIsNotHaveIndices)
     {
-      glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, (void*)(sizeof DDyVector3 * 2));
       glEnableVertexAttribArray(2);
+      glVertexAttribFormat(2, 2, GL_FLOAT, GL_FALSE, offsetof(DDyVertexInformation, mTexCoords));
+      glVertexAttribBinding(2, 0);
     }
   }
 

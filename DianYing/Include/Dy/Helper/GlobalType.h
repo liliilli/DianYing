@@ -32,13 +32,15 @@ using TC16    = unsigned short;
 using TUTF8   = std::string;
 using TUTF16  = std::u16string;
 
+using TU08    = uint8_t;
 using TU16    = uint16_t;
 using TU32    = uint32_t;
 using TU64    = uint64_t;
 
-using TS16    = int16_t;
-using TS32    = int32_t;
-using TS64    = int64_t;
+using TI08    = int8_t;
+using TI16    = int16_t;
+using TI32    = int32_t;
+using TI64    = int64_t;
 
 using TF32    = float;
 using TF64    = double;

@@ -215,7 +215,7 @@ void DDyModelInformation::__pReadVertexData(const aiMesh* mesh, PDySubmeshInform
     int32_t to    = vertexCountSize;
     for (int32_t i = 0; i < mtTaskCount; ++i)
     {
-      // Do
+      // Do parallel
       results.emplace_back(
           pool.Enqueue([](const aiMesh* mesh, PDySubmeshInformationDescriptor& desc, int32_t start, int32_t to) {
             for (int32_t i = start; i < to; ++i)
@@ -230,7 +230,6 @@ void DDyModelInformation::__pReadVertexData(const aiMesh* mesh, PDySubmeshInform
                 const auto& assimpTextureCoord = mesh->mTextureCoords[0][i];
                 vertexInformation.mTexCoords = DDyVector2{assimpTextureCoord.x, assimpTextureCoord.y};
               }
-              else vertexInformation.mTexCoords = DDyVector2{0};
 
               // また骨、Tangent, Bitangentはしない。
 
@@ -270,7 +269,6 @@ void DDyModelInformation::__pReadVertexData(const aiMesh* mesh, PDySubmeshInform
         const auto& assimpTextureCoord = mesh->mTextureCoords[0][i];
         vertexInformation.mTexCoords = DDyVector2{assimpTextureCoord.x, assimpTextureCoord.y};
       }
-      else vertexInformation.mTexCoords = DDyVector2{0};
 
       // @todo // また骨、Tangent, Bitangentはしない。
 
