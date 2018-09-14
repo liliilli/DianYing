@@ -68,7 +68,7 @@ public:
   ///
   FORCEINLINE const auto& GetMeshInformation() const noexcept
   {
-    return this->mMeshInformations;
+    return this->mSubmeshInformations;
   }
 
   ///
@@ -81,12 +81,6 @@ public:
 
 private:
   ///
-  /// @brief Process assimp node so get information and resource from aiNode by iterating
-  /// submesh and children meshes.
-  ///
-  void __pProcessAssimpNode(aiNode* node, const aiScene* scene);
-
-  ///
   /// @brief Process aiMesh, make mesh information description which stores vertex, indices,
   /// innate material information, etc.
   ///
@@ -94,6 +88,9 @@ private:
 
   /// Read vertex data, make data, and insert to PDySubmeshInformationDescriptor.
   void __pReadVertexData(const aiMesh* mesh, PDySubmeshInformationDescriptor& desc);
+
+  /// Read bone data.
+  void __pReadBoneData(const aiMesh* mesh, PDySubmeshInformationDescriptor& desc);
 
   /// Read index(element) data, make data, and insert to PDySubmeshInformationDescriptor.
   void __pReadIndiceData(const aiMesh* mesh, PDySubmeshInformationDescriptor& desc);
@@ -107,11 +104,16 @@ private:
   /// Output information log only in debug mode.
   void __pOutputDebugInformationLog();
 
-  std::string                         mModelName          = "";
-  std::string                         mModelRootPath      = "";
-  std::vector<DDySubmeshInformation>  mMeshInformations   = {};
-  std::vector<std::string>            mBindedMaterialName = {};
-  std::vector<std::string>            mTextureLocalPaths  = {};
+  std::string                           mModelName            = "";
+  std::string                           mModelRootPath        = "";
+  std::vector<DDySubmeshInformation>    mSubmeshInformations  = {};
+  std::vector<std::string>              mBindedMaterialName   = {};
+  std::vector<std::string>              mTextureLocalPaths    = {};
+
+  // Added 2018-09-14
+  std::unordered_map<std::string, TU32>   mBoneMapping        = {};
+  std::vector<DDyGeometryBoneInformation> mBoneInformations   = {};
+  int32_t                                 mModelBoneCount     = 0;
 
   //!
   //! Resource pointers binding

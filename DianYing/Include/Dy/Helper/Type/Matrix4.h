@@ -17,6 +17,7 @@
 
 #include <Dy/Helper/Type/Matrix3.h>
 #include <Dy/Helper/Type/Vector4.h>
+#include <assimp/matrix4x4.h>
 
 namespace dy
 {
@@ -55,11 +56,15 @@ public:
 
   DDyMatrix4x4(const glm::mat4& glmMatrix) noexcept;
 
+  DDyMatrix4x4(const aiMatrix4x4& aiMatrix) noexcept;
+
   DDyMatrix4x4& operator=(const glm::mat2& value) noexcept;
 
   DDyMatrix4x4& operator=(const glm::mat3& value) noexcept;
 
   DDyMatrix4x4& operator=(const glm::mat4& value) noexcept;
+
+  DDyMatrix4x4& operator=(const aiMatrix4x4& value) noexcept;
 
   //!
   //! Conversion operators

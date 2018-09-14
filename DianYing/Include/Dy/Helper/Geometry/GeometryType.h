@@ -15,6 +15,7 @@
 
 #include <vector>
 #include <Dy/Helper/Type/Vector4.h>
+#include "Dy/Helper/Type/Matrix4.h"
 
 namespace dy
 {
@@ -25,8 +26,8 @@ namespace dy
 ///
 struct DDyVertexBoneData final
 {
-  std::array<TU32, 4> mBoneId;
-  DDyVector4          mWeights;
+  std::array<TU32, 4> mBoneId     = {0, 0, 0, 0};
+  DDyVector4          mWeights    = {0, 0, 0, 0};
 };
 
 ///
@@ -40,6 +41,16 @@ struct DDyVertexInformation final
   DDyVector2          mTexCoords  = {};
   // Below elements are used when skeletal animation is applied.
   DDyVertexBoneData   mVertexBoneData;
+};
+
+///
+/// @struct DDyGeometryBoneInformation
+/// @brief bone matrix information structure.
+///
+struct DDyGeometryBoneInformation final
+{
+  DDyMatrix4x4        mBoneOffsetMatrix     = {};
+  DDyMatrix4x4        mFinalTransformation  = {};
 };
 
 ///
@@ -61,6 +72,8 @@ struct PDySubmeshInformationDescriptor final
 {
   std::vector<DDyVertexInformation> mVertices;
   std::vector<int32_t>              mIndices;
+  TU32                              mBaseVertices = 0;
+  TU32                              mBaseIncides  = 0;
   std::string                       mMaterialName = "";
 };
 

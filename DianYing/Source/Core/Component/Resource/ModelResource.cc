@@ -40,7 +40,7 @@ const std::vector<std::unique_ptr<CDySubmeshResource>>& CDyModelResource::GetSub
 
 EDySuccess CDyModelResource::pInitializeModelResource(const DDyModelInformation& modelInformation)
 {
-  const auto& submeshInformations = modelInformation.mMeshInformations;
+  const auto& submeshInformations = modelInformation.mSubmeshInformations;
   for (const auto& submeshInformation : submeshInformations)
   {
     std::unique_ptr<CDySubmeshResource> meshResource = std::make_unique<CDySubmeshResource>();
