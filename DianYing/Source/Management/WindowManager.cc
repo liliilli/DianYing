@@ -698,6 +698,9 @@ void MDyWindow::Run()
 ///
 void MDyWindow::pUpdate(float dt)
 {
+#if defined(MDY_FLAG_IN_EDITOR)
+  editor::MDyEditorGui::GetInstance().Update(dt);
+#endif /// MDY_FLAG_IN_EDITOR
   MDyInput::GetInstance().pfUpdate(dt);
 
   auto& sceneManager = MDyScene::GetInstance();

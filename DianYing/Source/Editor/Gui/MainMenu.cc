@@ -20,7 +20,7 @@
 
 #include <imgui/imgui.h>
 #include <Dy/Management/WindowManager.h>
-#include <Dy/Management/Editor/GuiManager.h>
+#include <Dy/Management/Editor/GuiWindowFactory.h>
 
 namespace dy::editor
 {
@@ -41,31 +41,21 @@ void FDyMainMenu::DrawWindow(float dt) noexcept
   {
     if (ImGui::BeginMenu("File"))
     {
-      if (ImGui::MenuItem("New Level", nullptr, &this->mMenuItemNewLevelFlag))
+      if (ImGui::MenuItem("New Level", nullptr, &this->mMenuItemNewLevelFlag, true))
       {
-        PDyGuiComponentDialogDescriptor desc;
-        desc.mDialogTitle               = "Dialog Test";
-        desc.mDialogTextBody            = "This is dialog test. Hello world!";
-        desc.mParentRawPtr              = this;
-        desc.mParentBoolFlag            = &this->mMenuItemNewLevelFlag;
-
-        if (auto i = FDyEditorGuiWindowFactory::CreateGuiWindow<FDyDialog>(desc); i)
-        {
-          auto [it, result] = this->mSubWindows.try_emplace(static_cast<FDyDialog*>(i.get())->__mHashVal, std::move(i));
-          if (!result) { PHITOS_UNEXPECTED_BRANCH(); }
-        }
+        this->pCreateNotSupportYetDialogMsg(&this->mMenuItemNewLevelFlag);
       }
-      if (ImGui::MenuItem("Open Level"))
+      if (ImGui::MenuItem("Open Level", nullptr, &this->mMenuItemOpenLevelFlag, true))
       {
-
-      };
+        this->pCreateNotSupportYetDialogMsg(&this->mMenuItemOpenLevelFlag);
+      }
 
       ImGui::Separator();
-      if (ImGui::MenuItem("Save Current Level"))
+      if (ImGui::MenuItem("Save Current Level", nullptr, false, false))
       {
 
       };
-      if (ImGui::MenuItem("Save Current Level As..."))
+      if (ImGui::MenuItem("Save Current Level As...", nullptr, false, false))
       {
 
       };
@@ -76,7 +66,6 @@ void FDyMainMenu::DrawWindow(float dt) noexcept
         const auto ptr = MDyWindow::GetInstance().GetGlfwWindowContext();
         glfwSetKeyCallback(ptr, nullptr);
         glfwSetCursorPosCallback(ptr, nullptr);
-
         glfwDestroyWindow(ptr);
       };
       ImGui::EndMenu();
@@ -84,38 +73,81 @@ void FDyMainMenu::DrawWindow(float dt) noexcept
 
     if (ImGui::BeginMenu("Edit"))
     {
-      if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
-      // Disabled item
-      if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}
+      if (ImGui::MenuItem("Undo", "CTRL+Z", false, false))
+      {
+
+      }
+      if (ImGui::MenuItem("Redo", "CTRL+Y", false, false))
+      {
+
+      }
 
       ImGui::Separator();
-      if (ImGui::MenuItem("Cut", "CTRL+X")) {}
-      if (ImGui::MenuItem("Copy", "CTRL+C")) {}
-      if (ImGui::MenuItem("Paste", "CTRL+V")) {}
+      if (ImGui::MenuItem("Cut", "CTRL+X", false, false))
+      {
+
+      }
+      if (ImGui::MenuItem("Copy", "CTRL+C", false, false))
+      {
+
+      }
+      if (ImGui::MenuItem("Paste", "CTRL+V", false, false))
+      {
+
+      }
 
       ImGui::EndMenu();
     }
 
-#ifdef false
     if (ImGui::BeginMenu("View"))
     {
-      ImGui::MenuItem("Cpu Usage", nullptr, &sViewCpuUsage);
-      ImGui::MenuItem("Console", nullptr, &sViewLogWindow);
+      if (ImGui::MenuItem("Cpu Usage", nullptr, &this->mMenuItemViewCpuUsage, false))
+      {
+
+      }
+      if (ImGui::MenuItem("Console", nullptr, &this->mMenuItemViewLogWindow, false))
+      {
+
+      }
+      if (ImGui::MenuItem("Viewport", nullptr, &this->mMenuItemViewViewport, false))
+      {
+
+      }
       ImGui::EndMenu();
     }
 
     if (ImGui::BeginMenu("Help"))
     {
-      ImGui::MenuItem("Licenses", nullptr, &sHelpLicenseWindow);
-      ImGui::MenuItem("About", nullptr, &sHelpAboutWindow);
+      if (ImGui::MenuItem("Licenses", nullptr, &this->mMenuItemHelpLicenseWindow, false))
+      {
+
+      }
+      if (ImGui::MenuItem("About", nullptr, &this->mMenuItemHelpAboutWindow, false))
+      {
+
+      }
       ImGui::EndMenu();
     }
-#endif
 
     ImGui::EndMainMenuBar();
   }
 
   pRenderSubwindows(dt);
+}
+
+void FDyMainMenu::pCreateNotSupportYetDialogMsg(bool* boolFlag)
+{
+  PDyGuiComponentDialogDescriptor desc;
+  desc.mDialogTitle = "Warning!";
+  desc.mDialogTextBody = "This feature is not supported yet.";
+  desc.mParentRawPtr = this;
+  desc.mParentBoolFlag = boolFlag;
+
+  if (auto [hashVal, ptr] = FDyEditorGuiWindowFactory::CreateGuiComponent<FDyDialog>(desc); ptr)
+  {
+    auto[it, result] = this->mSubWindows.try_emplace(hashVal, std::move(ptr));
+    if (!result) { PHITOS_UNEXPECTED_BRANCH(); }
+  }
 }
 
 } /// ::dy::editor namespace

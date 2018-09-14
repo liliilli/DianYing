@@ -17,7 +17,7 @@
 
 /// Header file
 #include <Dy/Editor/Gui/EtcDialog.h>
-#include <Dy/Management/Editor/GuiManager.h>
+#include <Dy/Management/Editor/GuiWindowFactory.h>
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
 
@@ -64,7 +64,7 @@ void FDyDialog::DrawWindow(float dt) noexcept
       MDY_LOG_INFO("{} | Pressed OK button.", "FDyDialog::DrawWindow");
       ImGui::CloseCurrentPopup();
       // @todo DELETE THIS!
-      if (this->mParentRawPtr && FDyEditorGuiWindowFactory::RemoveGuiWindow<FDyDialog>(*(this->mParentRawPtr)))
+      if (this->mParentRawPtr && FDyEditorGuiWindowFactory::RemoveGuiComponent<FDyDialog>(*(this->mParentRawPtr)))
       {
 
       }

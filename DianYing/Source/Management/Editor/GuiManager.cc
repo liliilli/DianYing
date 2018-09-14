@@ -19,6 +19,7 @@
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
 #include <Dy/Management/LoggingManager.h>
+#include <Dy/Management/Editor/GuiWindowFactory.h>
 
 namespace dy::editor
 {
@@ -27,9 +28,8 @@ EDySuccess MDyEditorGui::pfInitialize()
 {
   MDY_LOG_INFO_D("MDyEditorGui manager initialized.");
 
-  auto ptr = FDyEditorGuiWindowFactory::CreateGuiWindow<FDyMainMenu>(PDyGuiComponentEmptyDescriptor{});
+  auto [hashVal, ptr] = FDyEditorGuiWindowFactory::CreateGuiComponent<FDyMainMenu>(PDyGuiComponentEmptyDescriptor{});
   PHITOS_ASSERT(static_cast<bool>(ptr), "Failed to create MainMenu!");
-
   this->mMainMenu = std::unique_ptr<FDyMainMenu>(static_cast<FDyMainMenu*>(ptr.release()));
 
   return DY_SUCCESS;
