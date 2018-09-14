@@ -70,11 +70,13 @@ struct DDyGlBufferIdInformation final
 ///
 struct PDySubmeshInformationDescriptor final
 {
-  std::vector<DDyVertexInformation> mVertices;
-  std::vector<int32_t>              mIndices;
-  TU32                              mBaseVertices = 0;
-  TU32                              mBaseIncides  = 0;
+  std::vector<DDyVertexInformation> mVertices     = {};
+  std::vector<int32_t>              mIndices      = {};
   std::string                       mMaterialName = "";
+  TU32                              mBaseVertices = 0;
+  TU32                              mBaseIndices  = 0;
+
+  bool                              mIsEnabledSkeletalAnimation = false;
 };
 
 ///
@@ -87,8 +89,9 @@ struct DDySubmeshFlagInformation final
   int32_t                         mVertexSize       = 0;
   bool                            mIsNotHaveIndices :1;
   bool                            mIsNotHaveTextures:1;
+  bool                            mIsEnabledSkeletalAnimation:1;
 
-  DDySubmeshFlagInformation() : mIsNotHaveIndices{false}, mIsNotHaveTextures{false} {};
+  DDySubmeshFlagInformation() : mIsNotHaveIndices{false}, mIsNotHaveTextures{false}, mIsEnabledSkeletalAnimation{false} {};
 };
 
 } /// ::dy namespace

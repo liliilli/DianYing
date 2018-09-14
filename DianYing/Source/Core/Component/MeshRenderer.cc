@@ -102,7 +102,7 @@ void CDyMeshRenderer::Render()
 {
   for (const auto& bindedMeshMatInfo : this->mMeshMaterialPtrBindingList)
   {
-    // Activate shader of one material.
+    // Integrity test.
     const auto shaderResource = bindedMeshMatInfo.mMaterialResource->GetShaderResource();
     if (!shaderResource)
     {
@@ -111,22 +111,25 @@ void CDyMeshRenderer::Render()
                        bindedMeshMatInfo.mMaterialResource->GetMaterialName());
       continue;
     }
+    // Activate shader of one material.
     shaderResource->UseShader();
 
     // Bind submesh VAO id.
     glBindVertexArray(bindedMeshMatInfo.mSubmeshResource->GetVertexArrayId());
 
     // @todo temporal
+    // Bind camera matrix.
     const auto viewMatrix = glGetUniformLocation(shaderResource->GetShaderProgramId(), "viewMatrix");
     const auto projMatirx = glGetUniformLocation(shaderResource->GetShaderProgramId(), "projectionMatrix");
 
-    auto& sceneManager = MDyScene::GetInstance();
-    auto* camera = sceneManager.GetMainCameraPtr();
-    if (camera)
+    if (auto* camera = MDyScene::GetInstance().GetMainCameraPtr(); camera)
     {
       glUniformMatrix4fv(viewMatrix, 1, GL_FALSE, &camera->GetViewMatrix()[0].X);
       glUniformMatrix4fv(projMatirx, 1, GL_FALSE, &camera->GetProjectionMatrix()[0].X);
     }
+
+    // If skeleton animation is enabled, get bone transform and bind to shader.
+
 
     // Bind textures of one material.
     if (bindedMeshMatInfo.mMaterialResource)

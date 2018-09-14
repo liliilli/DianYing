@@ -111,9 +111,10 @@ private:
   std::vector<std::string>              mTextureLocalPaths    = {};
 
   // Added 2018-09-14
-  std::unordered_map<std::string, TU32>   mBoneMapping        = {};
-  std::vector<DDyGeometryBoneInformation> mBoneInformations   = {};
-  int32_t                                 mModelBoneCount     = 0;
+  std::unordered_map<std::string, TU32>   mBoneStringBoneIdMap            = {};
+  std::vector<DDyGeometryBoneInformation> mOverallModelBoneInformations   = {};
+  int32_t                                 mModelBoneTotalCount            = 0;
+  const aiScene*                          mInternalModelGeometryResource  = nullptr;
 
   //!
   //! Resource pointers binding

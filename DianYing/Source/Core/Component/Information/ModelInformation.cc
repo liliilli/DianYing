@@ -138,7 +138,7 @@ DDyModelInformation::DDyModelInformation(const PDyModelConstructionDescriptor& m
     throw std::runtime_error("Could not load model " + modelConstructionDescriptor.mModelName + ".");
   }
 
-  // Process Node
+  // Process all meshes and retrieve material, bone, etc information.
   this->mModelRootPath = modelPath.substr(0, modelPath.find_last_of('/'));
   for (TU32 i = 0; i < assimpModelScene->mNumMeshes; ++i)
   {
@@ -146,19 +146,37 @@ DDyModelInformation::DDyModelInformation(const PDyModelConstructionDescriptor& m
   }
 
   MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "Model root path", this->mModelRootPath);
+  this->mInternalModelGeometryResource = assimpModelScene;
 
   // Output model, submesh, and material information to console.
   this->__pOutputDebugInformationLog();
-  assimpImporter.FreeScene();
+}
+
+DDyModelInformation::~DDyModelInformation()
+{
+  MDY_LOG_INFO_D(kModelInformationTemplate, "~DDyModelInformation", "name", this->mModelName);
+  if (this->mLinkedModelResourcePtr)
+  {
+    this->mLinkedModelResourcePtr->__pfLinkModelInformationPtr(nullptr);
+  }
+  if (this->mInternalModelGeometryResource) { this->mInternalModelGeometryResource = nullptr; }
 }
 
 void DDyModelInformation::__pProcessAssimpMesh(aiMesh* mesh, const aiScene* scene)
 {
   // Retrieve vertex and indices for element buffer object.
   PDySubmeshInformationDescriptor meshInformationDescriptor;
+
   this->__pReadVertexData (mesh, meshInformationDescriptor);
-  this->__pReadBoneData   (mesh, meshInformationDescriptor);
-  this->__pReadIndiceData (mesh, meshInformationDescriptor);
+  if (mesh->HasBones())
+  {
+    meshInformationDescriptor.mIsEnabledSkeletalAnimation = true;
+    this->__pReadBoneData (mesh, meshInformationDescriptor);
+  }
+  if (mesh->HasFaces())
+  {
+    this->__pReadIndiceData (mesh, meshInformationDescriptor);
+  }
 
   // Get Mateiral information. IF not exists, just pass only mesh information.
   // Diffuse map, specular map, height map, ambient map, emissive map etc.
@@ -294,15 +312,15 @@ void DDyModelInformation::__pReadBoneData(const aiMesh* mesh, PDySubmeshInformat
     TI32              boneId    = MDY_NOT_INITIALIZED_0;
     const std::string boneName  = mesh->mBones[i]->mName.C_Str();
 
-    if (const auto it = this->mBoneMapping.find(boneName); it != this->mBoneMapping.end()) { boneId = it->second; }
+    if (const auto it = this->mBoneStringBoneIdMap.find(boneName); it != this->mBoneStringBoneIdMap.end()) { boneId = it->second; }
     else
     {
       boneId = this->mModelBoneCount;
       DDyGeometryBoneInformation boneInformation;
       boneInformation.mBoneOffsetMatrix = mesh->mBones[i]->mOffsetMatrix;
 
-      this->mBoneInformations .emplace_back(boneInformation);
-      this->mBoneMapping      .try_emplace(boneName, boneId);
+      this->mOverallModelBoneInformations .emplace_back(boneInformation);
+      this->mBoneStringBoneIdMap      .try_emplace(boneName, boneId);
       this->mModelBoneCount   += 1;
     }
 
@@ -462,15 +480,6 @@ void DDyModelInformation::__pOutputDebugInformationLog()
     MDY_LOG_DEBUG_D("{} | Model information submesh No.{} | Innate material name : {}", kModelInformation.data(), i, submeshInfo.mMaterialName);
   }
 #endif
-}
-
-DDyModelInformation::~DDyModelInformation()
-{
-  MDY_LOG_INFO_D(kModelInformationTemplate, "~DDyModelInformation", "name", this->mModelName);
-  if (this->mLinkedModelResourcePtr)
-  {
-    this->mLinkedModelResourcePtr->__pfLinkModelInformationPtr(nullptr);
-  }
 }
 
 } /// ::dy namespace
