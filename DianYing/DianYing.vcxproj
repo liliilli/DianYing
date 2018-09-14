@@ -312,6 +312,7 @@
     <ClCompile Include="Source\Core\Component\Resource\TextureResource.cc" />
     <ClCompile Include="Source\Core\Component\Resource\ShaderResource.cc" />
     <ClCompile Include="Source\Editor\Gui\EtcDialog.cc" />
+    <ClCompile Include="Source\Editor\Gui\HelpAboutMain.cc" />
     <ClCompile Include="Source\Editor\Gui\MainMenu.cc" />
     <ClCompile Include="Source\Entry\Entry.cc" />
     <ClCompile Include="Source\Helper\Dbg\CheckUsage.cc" />
@@ -374,9 +375,11 @@
     <ClInclude Include="Include\Dy\Core\Component\Resource\MaterialResource.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\SubmeshResource.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\ModelResource.h" />
+    <ClInclude Include="Include\Dy\Editor\Descriptor\AboutMainDescriptor.h" />
     <ClInclude Include="Include\Dy\Editor\Descriptor\DialogDescriptor.h" />
     <ClInclude Include="Include\Dy\Editor\Descriptor\EmptyDescriptor.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\EtcDialog.h" />
+    <ClInclude Include="Include\Dy\Editor\Gui\HelpAboutMain.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\MainMenu.h" />
     <ClInclude Include="Include\Dy\Editor\Interface\IDyGuiComponentBase.h" />
     <ClInclude Include="Include\Dy\Editor\Interface\IDyGuiWindowSingletonCrtp.h" />

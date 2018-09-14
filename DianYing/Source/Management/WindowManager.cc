@@ -320,36 +320,6 @@ void DyImguiFeatGuiMainMenuRenderFrame()
 
   if (ImGui::BeginMainMenuBar())
   {
-    if (ImGui::BeginMenu("File"))
-    {
-      if (ImGui::MenuItem("New Level")) {};
-      if (ImGui::MenuItem("Open Level")) {};
-      ImGui::Separator();
-      if (ImGui::MenuItem("Save Current Level")) {};
-      if (ImGui::MenuItem("Save Current Level As...")) {};
-      ImGui::Separator();
-      if (ImGui::MenuItem("Exit Editor"))
-      {
-        const auto ptr = dy::MDyWindow::GetInstance().GetGlfwWindowContext();
-        glfwSetKeyCallback(ptr, nullptr);
-        glfwSetCursorPosCallback(ptr, nullptr);
-
-        glfwDestroyWindow(ptr);
-      };
-      ImGui::EndMenu();
-    }
-
-    if (ImGui::BeginMenu("Edit"))
-    {
-      if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
-      if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
-      ImGui::Separator();
-      if (ImGui::MenuItem("Cut", "CTRL+X")) {}
-      if (ImGui::MenuItem("Copy", "CTRL+C")) {}
-      if (ImGui::MenuItem("Paste", "CTRL+V")) {}
-      ImGui::EndMenu();
-    }
-
     if (ImGui::BeginMenu("View"))
     {
       ImGui::MenuItem("Cpu Usage", nullptr, &sViewCpuUsage);
@@ -426,36 +396,6 @@ void DyImguiFeatGuiMainMenuRenderFrame()
       ImGui::EndGroup();
     }
 
-    ImGui::End();
-  }
-
-  if (sHelpAboutWindow)
-  {
-    ImGui::Begin("About DY(DianYing)", &sHelpAboutWindow, ImGuiWindowFlags_AlwaysAutoResize);
-    ImGui::Text(R"dy(DianYing, %s)dy", "v0.0.1");
-    ImGui::Text(R"dy(Copyright 2018 Jongmin Yun (neuliliilli).)dy");
-    ImGui::Text(R"dy(DianYing is licensed under the MIT license, see)dy");
-
-    ImGui::SameLine();
-    if (ImGui::Button("LICENSE")) { sHelpAboutLicenseWindow = !sHelpAboutLicenseWindow; }
-    ImGui::SameLine();
-
-    ImGui::Text(R"dy(for more information.)dy");
-    ImGui::End();
-  }
-
-  if (sHelpAboutLicenseWindow)
-  {
-    ImGui::Begin("About DianYing license...", &sHelpAboutLicenseWindow, ImGuiWindowFlags_AlwaysAutoResize);
-    ImGui::Text(R"dy(MIT License
-Copyright (c) 2018 Jongmin Yun
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.)dy");
     ImGui::End();
   }
 }

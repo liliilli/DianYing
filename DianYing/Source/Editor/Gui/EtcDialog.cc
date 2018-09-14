@@ -24,7 +24,7 @@
 namespace dy::editor
 {
 
-EDySuccess FDyDialog::pfInitialize(const PDyGuiComponentDialogDescriptor& desc)
+EDySuccess FDyDialog::pfInitialize(const PDyGuiDialogDescriptor& desc)
 {
   this->mDialogTitle        = desc.mDialogTitle;
   this->mDialogTextBody     = desc.mDialogTextBody;

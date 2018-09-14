@@ -1,7 +1,6 @@
-#ifndef GUARD_DY_EDITOR_DESCRIPTOR_DIALOG_DESCRIPTOR_H
-#define GUARD_DY_EDITOR_DESCRIPTOR_DIALOG_DESCRIPTOR_H
+#ifndef GUARD_DY_EDITOR_DESCRIPTOR_ABOUT_MAIN_DESCRIPTOR_H
+#define GUARD_DY_EDITOR_DESCRIPTOR_ABOUT_MAIN_DESCRIPTOR_H
 #if defined(MDY_FLAG_IN_EDITOR)
-
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -15,8 +14,6 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/Vector2.h>
-
 //!
 //! Forward declaration
 //!
@@ -24,7 +21,7 @@
 namespace dy::editor
 {
 class IDyGuiHasChildren;
-}
+} /// ::dy::editor namespace
 
 //!
 //! Implementation
@@ -34,27 +31,18 @@ namespace dy::editor
 {
 
 ///
-/// @struct PDyGuiDialogDescriptor
+/// @struct PDyGuiAboutMainDescriptor
 /// @brief dialog construction descriptor for gui dialog.
 ///
-struct PDyGuiDialogDescriptor final
+struct PDyGuiAboutMainDescriptor final
 {
-  // Wrapping size of text when mIsWrappedTextLog is true.
-  DDyVector2  mTextLogWrappingSize        = {};
-  // Text of dialog subject header.
-  std::string mDialogTitle                = "Dialog";
-  // Text of dialog body.
-  std::string mDialogTextBody             = "";
-
-  // If true, texture will be wrapped, but mTextureLogWrappingSize is 0 or negative, this will do nothing.
-  bool        mIsWrappedTextLog           = false;
   //
-  bool*       mParentBoolFlag             = nullptr;
+  bool*               mParentBoolFlag = nullptr;
   //
-  IDyGuiHasChildren* mParentRawPtr        = nullptr;
+  IDyGuiHasChildren*  mParentRawPtr   = nullptr;
 };
 
 } /// ::dy::editor namespace
 
 #endif /// MDY_FLAG_IN_EDITOR
-#endif /// GUARD_DY_EDITOR_DESCRIPTOR_DIALOG_DESCRIPTOR_H
+#endif /// GUARD_DY_EDITOR_DESCRIPTOR_ABOUT_MAIN_DESCRIPTOR_H

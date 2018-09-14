@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_EDITOR_GUI_ETC_DIALOG_H
-#define GUARD_DY_EDITOR_GUI_ETC_DIALOG_H
+#ifndef GUARD_DY_EDITOR_GUI_HELPABOUTMAIN_H
+#define GUARD_DY_EDITOR_GUI_HELPABOUTMAIN_H
 #if defined(MDY_FLAG_IN_EDITOR)
 ///
 /// MIT License
@@ -14,30 +14,41 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Editor/Descriptor/DialogDescriptor.h>
 #include <Dy/Editor/Interface/IDyGuiWindowSingletonCrtp.h>
+#include <Dy/Editor/Descriptor/AboutMainDescriptor.h>
+
+//!
+//! Forward declaration
+//!
+
+namespace dy::editor
+{
+class IDyGuiHasChildren;
+} /// ::dy::editor namespace
+
+//!
+//! Implementation
+//!
 
 namespace dy::editor
 {
 
-class FDyDialog final : public IDyGuiWinSingleton<FDyDialog, PDyGuiDialogDescriptor>
+class FDyHelpAboutMain final : public IDyGuiWinSingleton<FDyHelpAboutMain, PDyGuiAboutMainDescriptor>
 {
-  MDY_GUISINGLETON_PROPERTIES(FDyDialog);
-  MDY_GUISINGLETON_DERIVED(FDyDialog, PDyGuiDialogDescriptor);
+  MDY_GUISINGLETON_PROPERTIES(FDyHelpAboutMain);
+  MDY_GUISINGLETON_DERIVED(FDyHelpAboutMain, PDyGuiAboutMainDescriptor);
 public:
   /// Draw dialog.
   void DrawWindow(float dt) noexcept override final;
 
 private:
-  std::string mDialogTitle              = "Dialog";
-  std::string mDialogTextBody           = "";
+  bool                sHelpAboutLicenseWindow = false;
 
-  bool        mIsPoppedUp               = false;
-  bool*       mParentBoolFlagPtr        = nullptr;
-  IDyGuiHasChildren* mParentRawPtr      = nullptr;
+  bool*               mParentBoolFlagPtr  = nullptr;
+  IDyGuiHasChildren*  mParentRawPtr       = nullptr;
 };
 
 } /// ::dy::editor namespace
 
 #endif /// MDY_FLAG_IN_EDITOR
-#endif /// GUARD_DY_EDITOR_GUI_ETC_DIALOG_H
+#endif /// GUARD_DY_EDITOR_GUI_HELPABOUTMAIN_H
