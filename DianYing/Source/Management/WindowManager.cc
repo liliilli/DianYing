@@ -349,55 +349,6 @@ void DyImguiFeatGuiMainMenuRenderFrame()
 
     ImGui::End();
   }
-
-  if (sHelpLicenseWindow)
-  {
-    ImGui::Begin("Lincense and third party library using", &sHelpLicenseWindow);
-
-    for (const auto& libraryInfo : dy::editor::kLibraryLicenseInfo)
-    {
-      ImGui::BeginGroup();
-      ImGui::BeginChild(libraryInfo.GetLibraryName(), ImVec2(0, 100), true);
-      ImGui::Text("Library"); ImGui::SameLine(); ImGui::Text(libraryInfo.GetLibraryName());
-      ImGui::Text("Version"); ImGui::SameLine(); ImGui::Text(libraryInfo.GetVersionName());
-
-      bool isHp = false;
-      if (!libraryInfo.IsHomepageUrlEmpty())
-      {
-        if (ImGui::Button("Homepage"))
-        {
-        #if defined(_WIN32)
-          ShellExecute(nullptr, nullptr, libraryInfo.GetHomepageUrl().c_str(), nullptr, nullptr, SW_SHOW);
-        #elif defined(__linux__)
-          // @todo EXECUTE WEB BROWSER WITH URL.
-        #endif
-        }
-        isHp = true;
-      }
-
-      if (!libraryInfo.IsGithubUrlEmpty())
-      {
-        if (isHp) ImGui::SameLine();
-        if (ImGui::Button("Github"))
-        {
-        #if defined(_WIN32)
-          ShellExecute(nullptr, nullptr, libraryInfo.GetGithubUrl().c_str(), nullptr, nullptr, SW_SHOW);
-        #elif defined(__linux__)
-          // @todo EXECUTE WEB BROWSER WITH URL.
-        #endif
-        }
-      }
-
-      if (ImGui::Button("View license"))
-      {
-        //ImGui::TextWrapped(libraryInfo.GetLicenseStatement());
-      };
-      ImGui::EndChild();
-      ImGui::EndGroup();
-    }
-
-    ImGui::End();
-  }
 }
 #endif
 #endif

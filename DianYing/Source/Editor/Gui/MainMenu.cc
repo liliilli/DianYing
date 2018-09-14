@@ -98,6 +98,12 @@ void FDyMainMenu::DrawWindow(float dt) noexcept
 
       }
 
+      ImGui::Separator();
+      if (ImGui::MenuItem("Project configuration", nullptr, false, false))
+      {
+
+      }
+
       ImGui::EndMenu();
     }
 
