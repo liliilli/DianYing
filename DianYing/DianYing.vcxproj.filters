@@ -51,6 +51,7 @@
     <ClCompile Include="Source\Editor\Gui\EtcDialog.cc" />
     <ClCompile Include="Source\Management\Editor\GuiWindowFactory.cc" />
     <ClCompile Include="Source\Editor\Gui\HelpAboutMain.cc" />
+    <ClCompile Include="Source\Editor\Gui\HelpLicenseWindow.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -136,6 +137,7 @@
     <ClInclude Include="Include\Dy\Management\Editor\GuiWindowFactory.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\HelpAboutMain.h" />
     <ClInclude Include="Include\Dy\Editor\Descriptor\AboutMainDescriptor.h" />
+    <ClInclude Include="Include\Dy\Editor\Gui\HelpLicenseWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

@@ -313,6 +313,7 @@
     <ClCompile Include="Source\Core\Component\Resource\ShaderResource.cc" />
     <ClCompile Include="Source\Editor\Gui\EtcDialog.cc" />
     <ClCompile Include="Source\Editor\Gui\HelpAboutMain.cc" />
+    <ClCompile Include="Source\Editor\Gui\HelpLicenseWindow.cc" />
     <ClCompile Include="Source\Editor\Gui\MainMenu.cc" />
     <ClCompile Include="Source\Entry\Entry.cc" />
     <ClCompile Include="Source\Helper\Dbg\CheckUsage.cc" />
@@ -380,6 +381,7 @@
     <ClInclude Include="Include\Dy\Editor\Descriptor\EmptyDescriptor.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\EtcDialog.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\HelpAboutMain.h" />
+    <ClInclude Include="Include\Dy\Editor\Gui\HelpLicenseWindow.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\MainMenu.h" />
     <ClInclude Include="Include\Dy\Editor\Interface\IDyGuiComponentBase.h" />
     <ClInclude Include="Include\Dy\Editor\Interface\IDyGuiWindowSingletonCrtp.h" />
