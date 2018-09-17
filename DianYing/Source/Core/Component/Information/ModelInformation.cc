@@ -128,12 +128,12 @@ DDyModelInformation::DDyModelInformation(const PDyModelConstructionDescriptor& m
   const auto& modelPath = modelConstructionDescriptor.mModelPath;
   MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "Model full path", modelPath);
 
-  Assimp::Importer assimpImporter;
-  const aiScene* assimpModelScene = assimpImporter.ReadFile(modelPath.c_str(), aiProcess_Triangulate | aiProcess_GenNormals);
+  this->mAssimpImporter = std::make_unique<Assimp::Importer>();
+  const aiScene* assimpModelScene = this->mAssimpImporter->ReadFile(modelPath.c_str(), aiProcess_Triangulate | aiProcess_GenNormals);
 
   if (!assimpModelScene || assimpModelScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !assimpModelScene->mRootNode)
   {
-    assimpImporter.FreeScene();
+    this->mAssimpImporter = nullptr;
     MDY_LOG_CRITICAL_D(kErrorModelFailedToRead, kModelInformation);
     throw std::runtime_error("Could not load model " + modelConstructionDescriptor.mModelName + ".");
   }
@@ -162,6 +162,7 @@ DDyModelInformation::~DDyModelInformation()
     this->mLinkedModelResourcePtr->__pfLinkModelInformationPtr(nullptr);
   }
   if (this->mInternalModelGeometryResource) { this->mInternalModelGeometryResource = nullptr; }
+  this->mAssimpImporter = nullptr;
 }
 
 void DDyModelInformation::__pProcessAssimpMesh(aiMesh* mesh, const aiScene* scene)

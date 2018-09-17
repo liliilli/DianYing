@@ -26,6 +26,11 @@ struct  aiMesh;
 struct  aiNode;
 struct  aiScene;
 
+namespace Assimp
+{
+class Importer;
+}
+
 namespace dy
 {
 enum class EDyTextureMapType : unsigned char;
@@ -117,6 +122,7 @@ private:
   std::vector<std::string>              mTextureLocalPaths    = {};
 
   // Added 2018-09-14
+  std::unique_ptr<Assimp::Importer>       mAssimpImporter                 = nullptr;
   std::unordered_map<std::string, TU32>   mBoneStringBoneIdMap            = {};
   std::vector<DDyGeometryBoneInformation> mOverallModelBoneInformations   = {};
   int32_t                                 mModelBoneTotalCount            = 0;

@@ -67,6 +67,19 @@ public:
   ///
   void GetBoneTransformLists(float runningTime, std::vector<DDyMatrix4x4>& transforms);
 
+  ///
+  /// @brief
+  ///
+  void SetBoneTransformLists(const std::vector<DDyMatrix4x4>& transforms);
+
+  ///
+  /// @brief
+  ///
+  FORCEINLINE const auto& GetModelAnimationTransformMatrixList() const noexcept
+  {
+    return this->mOverallModelAnimationMatrix;
+  }
+
 private:
   ///
   /// @brief Initialize model resource with model information instance.
@@ -76,10 +89,11 @@ private:
   ///
   /// @brief
   ///
-  void pReadNodeHierarchy(float, const aiNode&, DDyModelInformation& modelInfo, DDyMatrix4x4&);
+  void pReadNodeHierarchy(float, const aiNode&, DDyModelInformation& modelInfo, const DDyMatrix4x4&);
 
-  std::vector<std::unique_ptr<CDySubmeshResource>> mMeshResource = {};
-  bool mIsEnabledModelSkeletalAnimation = false;
+  std::vector<std::unique_ptr<CDySubmeshResource>>  mMeshResource                     = {};
+  std::vector<DDyMatrix4x4>                         mOverallModelAnimationMatrix      = {};
+  bool                                              mIsEnabledModelSkeletalAnimation  = false;
 
   //!
   //! Level pointers binding

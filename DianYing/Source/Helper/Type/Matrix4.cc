@@ -49,23 +49,23 @@ DDyMatrix4x4::DDyMatrix4x4(const glm::mat4& glmMatrix) noexcept
 DDyMatrix4x4::DDyMatrix4x4(const aiMatrix4x4& aiMatrix) noexcept
 {
   this->mMatrixValue[0][0] = aiMatrix.a1;
-  this->mMatrixValue[0][1] = aiMatrix.a2;
-  this->mMatrixValue[0][2] = aiMatrix.a3;
-  this->mMatrixValue[0][3] = aiMatrix.a4;
+  this->mMatrixValue[1][0] = aiMatrix.a2;
+  this->mMatrixValue[2][0] = aiMatrix.a3;
+  this->mMatrixValue[3][0] = aiMatrix.a4;
 
-  this->mMatrixValue[1][0] = aiMatrix.b1;
+  this->mMatrixValue[0][1] = aiMatrix.b1;
   this->mMatrixValue[1][1] = aiMatrix.b2;
-  this->mMatrixValue[1][2] = aiMatrix.b3;
-  this->mMatrixValue[1][3] = aiMatrix.b4;
+  this->mMatrixValue[2][1] = aiMatrix.b3;
+  this->mMatrixValue[3][1] = aiMatrix.b4;
 
-  this->mMatrixValue[2][0] = aiMatrix.c1;
-  this->mMatrixValue[2][1] = aiMatrix.c2;
+  this->mMatrixValue[0][2] = aiMatrix.c1;
+  this->mMatrixValue[1][2] = aiMatrix.c2;
   this->mMatrixValue[2][2] = aiMatrix.c3;
-  this->mMatrixValue[2][3] = aiMatrix.c4;
+  this->mMatrixValue[3][2] = aiMatrix.c4;
 
-  this->mMatrixValue[3][0] = aiMatrix.d1;
-  this->mMatrixValue[3][1] = aiMatrix.d2;
-  this->mMatrixValue[3][2] = aiMatrix.d3;
+  this->mMatrixValue[0][3] = aiMatrix.d1;
+  this->mMatrixValue[1][3] = aiMatrix.d2;
+  this->mMatrixValue[2][3] = aiMatrix.d3;
   this->mMatrixValue[3][3] = aiMatrix.d4;
 }
 
@@ -99,23 +99,23 @@ DDyMatrix4x4& DDyMatrix4x4::operator=(const glm::mat4& value) noexcept
 DDyMatrix4x4& DDyMatrix4x4::operator=(const aiMatrix4x4& value) noexcept
 {
   this->mMatrixValue[0][0] = value.a1;
-  this->mMatrixValue[0][1] = value.a2;
-  this->mMatrixValue[0][2] = value.a3;
-  this->mMatrixValue[0][3] = value.a4;
+  this->mMatrixValue[1][0] = value.a2;
+  this->mMatrixValue[2][0] = value.a3;
+  this->mMatrixValue[3][0] = value.a4;
 
-  this->mMatrixValue[1][0] = value.b1;
+  this->mMatrixValue[0][1] = value.b1;
   this->mMatrixValue[1][1] = value.b2;
-  this->mMatrixValue[1][2] = value.b3;
-  this->mMatrixValue[1][3] = value.b4;
+  this->mMatrixValue[2][1] = value.b3;
+  this->mMatrixValue[3][1] = value.b4;
 
-  this->mMatrixValue[2][0] = value.c1;
-  this->mMatrixValue[2][1] = value.c2;
+  this->mMatrixValue[0][2] = value.c1;
+  this->mMatrixValue[1][2] = value.c2;
   this->mMatrixValue[2][2] = value.c3;
-  this->mMatrixValue[2][3] = value.c4;
+  this->mMatrixValue[3][2] = value.c4;
 
-  this->mMatrixValue[3][0] = value.d1;
-  this->mMatrixValue[3][1] = value.d2;
-  this->mMatrixValue[3][2] = value.d3;
+  this->mMatrixValue[0][3] = value.d1;
+  this->mMatrixValue[1][3] = value.d2;
+  this->mMatrixValue[2][3] = value.d3;
   this->mMatrixValue[3][3] = value.d4;
 
   return *this;
@@ -378,11 +378,32 @@ DDyMatrix4x4 DDyMatrix4x4::IdentityMatrix() noexcept
   return staticInstance;
 }
 
+DDyMatrix4x4 DDyMatrix4x4::CreateWithScale(const DDyVector3& scaleVector)
+{
+  return DDyMatrix4x4{
+    scaleVector.X, 0, 0, 0,
+    0, scaleVector.Y, 0, 0,
+    0, 0, scaleVector.Z, 0,
+    0, 0, 0,             1};
+}
+
+DDyMatrix4x4 DDyMatrix4x4::CreateWithTranslation(const DDyVector3& translationPoint)
+{
+  return DDyMatrix4x4{
+    1, 0, 0, translationPoint.X,
+    0, 1, 0, translationPoint.Y,
+    0, 0, 1, translationPoint.Z,
+    0, 0, 0, 1};
+}
+
 DDyMatrix4x4::DDyMatrix4x4(bool)
 {
   this->mMatrixValue[0][0] = 1;
+  this->mMatrixValue[0][3] = 0;
   this->mMatrixValue[1][1] = 1;
+  this->mMatrixValue[1][3] = 0;
   this->mMatrixValue[2][2] = 1;
+  this->mMatrixValue[2][3] = 0;
   this->mMatrixValue[3][3] = 1;
 }
 

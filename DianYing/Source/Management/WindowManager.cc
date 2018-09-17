@@ -115,6 +115,24 @@ void DyGlTempInitializeResource()
   MDY_CALL_ASSERT_SUCCESS(manInfo.CreateShaderInformation(shaderDesc));
 
   {
+    dy::PDyShaderConstructionDescriptor desc;
+    desc.mShaderName = "TestSkeletalAnimShader";
+    {
+      dy::PDyShaderFragmentInformation vertexShaderInfo;
+      vertexShaderInfo.mShaderType = dy::EDyShaderFragmentType::Vertex;
+      vertexShaderInfo.mShaderPath = "./glMeshVertSAnim.vert";
+      desc.mShaderFragments.emplace_back(vertexShaderInfo);
+    }
+    {
+      dy::PDyShaderFragmentInformation fragmentShaderInfo;
+      fragmentShaderInfo.mShaderType = dy::EDyShaderFragmentType::Pixel;
+      fragmentShaderInfo.mShaderPath = "./glShader.frag";
+      desc.mShaderFragments.emplace_back(fragmentShaderInfo);
+    }
+    MDY_CALL_ASSERT_SUCCESS(manInfo.CreateShaderInformation(desc));
+  }
+
+  {
     shaderDesc.mShaderFragments.clear();
     shaderDesc.mShaderName = "MeshNanosuitShader";
     {
@@ -136,6 +154,7 @@ void DyGlTempInitializeResource()
   //! Model
   //!
 
+#ifdef false
   auto tempAsyncTask = std::async(std::launch::async, [&manInfo] {
     dy::PDyModelConstructionDescriptor bunnyModel;
     {
@@ -150,14 +169,36 @@ void DyGlTempInitializeResource()
     dy::PDyModelConstructionDescriptor modelDesc;
     {
       modelDesc.mModelName = "TestModel";
-      //modelDesc.mModelPath = "./TestResource/Maximilian/max.obj";
       modelDesc.mModelPath = "./TestResource/nanosuit/nanosuit.obj";
     }
     MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(modelDesc));
     return true;
   });
+#endif
 
-  if (tempAsyncTask.get() && modelAsyncTask.get()) { MDY_LOG_DEBUG_D("OK"); };
+  auto animAsyncTask = std::async(std::launch::async, [&manInfo] {
+    dy::PDyModelConstructionDescriptor modelDesc;
+    {
+      modelDesc.mModelName = "Boxing";
+      modelDesc.mModelPath = "./TestResource/Boxing.fbx";
+    }
+    MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(modelDesc));
+    return true;
+  });
+
+  {
+    dy::PDyMaterialConstructionDescriptor materialDesc;
+    materialDesc.mMaterialName= "BoxingTestMat";
+    materialDesc.mShaderName  = "TestShader";
+    materialDesc.mBlendMode   = dy::EDyMaterialBlendMode::Opaque;
+    MDY_CALL_ASSERT_SUCCESS(manInfo.CreateMaterialInformation(materialDesc));
+  }
+
+
+  if (animAsyncTask.get())
+  {
+    MDY_LOG_DEBUG_D("OK");
+  };
 
 #ifdef false
   {
@@ -276,82 +317,21 @@ void DyGlTempInitializeResource()
     if (auto matPtr = manInfo.PopulateMaterialInformation("Material__2413", popDesc); !matPtr.has_value()) { return; }
     else { materialNameList.emplace_back(matPtr.value()); }
   }
-
-  dy::PDyRendererConsturctionDescriptor rendererDesc;
-  {
-    rendererDesc.mModelName     = "TestModel";
-    rendererDesc.mMaterialNames = materialNameList;
-  }
-  MDY_CALL_ASSERT_SUCCESS(gRenderer.pfInitialize(rendererDesc));
 #endif
-
-  // OpenGL (native) Texture binding DEMO
-#ifdef false
-  { //
-    const auto cubeModelPtr = manInfo.GetModelInformation("Cube");
-    const std::vector<dy::DDySubmeshInformation>& cubeMeshInfoList = cubeModelPtr->GetMeshInformation();
-    // Iterate all mesh information list for createing populated mesh instance with shader and aligned textures.
-    for (const auto& info : cubeMeshInfoList)
-    {
-      const dy::PDySubmeshInformationDescriptor& i = info.GetInformation();
-      if (!i.mMaterialName.empty())
-      {
-        auto* materialPtr = manInfo.GetMaterialInformation(i.mMaterialName);
-        for (const auto& textureName : materialPtr->GetInformation().mTextureNames)
-        {
-
-        };
-      }
-    }
-  }
-#endif
-
-}
-
-#ifdef MDY_FLAG_IN_EDITOR
-#ifdef false
-void DyImguiFeatGuiMainMenuRenderFrame()
-{
-  static bool sHelpLicenseWindow  = false;
-  static bool sHelpAboutLicenseWindow = false;
-  static bool sHelpAboutWindow    = false;
-  static bool sViewCpuUsage       = false;
-  static bool sViewLogWindow      = false;
-
-  if (ImGui::BeginMainMenuBar())
   {
-    if (ImGui::BeginMenu("View"))
+    dy::PDyMaterialPopulateDescriptor popDesc;
+    popDesc.mIsEnabledShaderOverride  = true;
+    popDesc.mOverrideShaderName       = "TestShader";
+    const auto spawnedMatStr = manInfo.PopulateMaterialInformation("asdf1:Beta_HighLimbsGeoSG2", popDesc);
+
+    dy::PDyRendererConsturctionDescriptor rendererDesc;
     {
-      ImGui::MenuItem("Cpu Usage", nullptr, &sViewCpuUsage);
-      ImGui::MenuItem("Console", nullptr, &sViewLogWindow);
-      ImGui::EndMenu();
+      rendererDesc.mModelName     = "Boxing";
+      rendererDesc.mMaterialNames = { spawnedMatStr.value(), spawnedMatStr.value() };
     }
-
-    if (ImGui::BeginMenu("Help"))
-    {
-      ImGui::MenuItem("Licenses", nullptr, &sHelpLicenseWindow);
-      ImGui::MenuItem("About", nullptr, &sHelpAboutWindow);
-      ImGui::EndMenu();
-    }
-
-    ImGui::EndMainMenuBar();
-  }
-
-  if (sViewCpuUsage)
-  {
-    ImGui::Begin("Cpu Usage", &sViewCpuUsage, ImGuiWindowFlags_AlwaysAutoResize);
-    ImGui::End();
-  }
-
-  if (sViewLogWindow)
-  {
-    ImGui::Begin("Log Window", &sViewLogWindow, ImGuiWindowFlags_AlwaysAutoResize);
-
-    ImGui::End();
+    MDY_CALL_ASSERT_SUCCESS(gRenderer.pfInitialize(rendererDesc));
   }
 }
-#endif
-#endif
 
 void DyImguiRenderFrame()
 {
@@ -600,6 +580,8 @@ void MDyWindow::pUpdate(float dt)
   {
     cam->Update(dt);
   }
+
+  gRenderer.Update(dt);
 }
 
 ///
@@ -616,9 +598,7 @@ void MDyWindow::pRender()
     gGrid->RenderGrid();
   };
 
-#ifdef false
   gRenderer.Render();
-#endif
 
   glDisable(GL_DEPTH_TEST);
 

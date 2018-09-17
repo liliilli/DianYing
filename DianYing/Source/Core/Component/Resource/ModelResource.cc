@@ -56,7 +56,7 @@ void CDyModelResource::GetBoneTransformLists(float runningTime, std::vector<DDyM
   const float timeInTicks = runningTime * ticksPerSecond;
   const float animationTime = std::fmod(timeInTicks, static_cast<float>(animation0->mDuration));
 
-  pReadNodeHierarchy(runningTime, *modelScene.mRootNode, *this->__mLinkedModelInformationPtr, identityMatrix);
+  pReadNodeHierarchy(animationTime, *modelScene.mRootNode, *this->__mLinkedModelInformationPtr, identityMatrix);
 
   transforms.clear();
   transforms.reserve(this->__mLinkedModelInformationPtr->mModelBoneTotalCount);
@@ -67,7 +67,14 @@ void CDyModelResource::GetBoneTransformLists(float runningTime, std::vector<DDyM
   }
 }
 
-void CDyModelResource::pReadNodeHierarchy(float runningTime, const aiNode& nodeCursor, DDyModelInformation& modelInfo, DDyMatrix4x4& matrix)
+void CDyModelResource::SetBoneTransformLists(const std::vector<DDyMatrix4x4>& transforms)
+{
+  const auto transformSize = static_cast<TI32>(transforms.size());
+  this->mOverallModelAnimationMatrix.clear();
+  this->mOverallModelAnimationMatrix.insert(this->mOverallModelAnimationMatrix.begin(), MDY_BIND_BEGIN_END(transforms));
+}
+
+void CDyModelResource::pReadNodeHierarchy(float runningTime, const aiNode& nodeCursor, DDyModelInformation& modelInfo, const DDyMatrix4x4& parentTransform)
 {
   ///
   /// @brief
@@ -199,31 +206,32 @@ void CDyModelResource::pReadNodeHierarchy(float runningTime, const aiNode& nodeC
   if (const aiNodeAnim* nodeAnimation = FindNodeAnim(nodeName, animation); nodeAnimation)
   {
     // Interpolate scaling and generate scaling transformation matrix
-    const DDyVector3 scalingVector = CalcInterpolatedScaling(runningTime, nodeAnimation);
-    const DDyMatrix4x4 scalingMatrix = DDyMatrix4x4::CreateWithScale(scalingVector);
+    const DDyVector3 scalingVector          = CalcInterpolatedScaling(runningTime, nodeAnimation);
+    const DDyMatrix4x4 scalingMatrix        = DDyMatrix4x4::CreateWithScale(scalingVector);
 
     // Interpolate rotation and generate rotation transformation matrix
     const DDyQuaternion rotationQuaternion  = CalcInterpolatedRotation(runningTime, nodeAnimation);
     const DDyMatrix4x4  rotationMatrix      = rotationQuaternion.GetRotationMatrix4x4();
 
     // Interpolate translation and generate translation transformation matrix
-    const DDyVector3    translation       = CalcInterpolatedPosition(runningTime, nodeAnimation);
-    const DDyMatrix4x4  translationMatrix = DDyMatrix4x4::CreateWithTranslation(translation);
+    const DDyVector3    translation         = CalcInterpolatedPosition(runningTime, nodeAnimation);
+    const DDyMatrix4x4  translationMatrix   = DDyMatrix4x4::CreateWithTranslation(translation);
 
     // Combine the above transformations
-    nodeTransformation = translationMatrix * rotationMatrix * scalingMatrix;
+    nodeTransformation = scalingMatrix.Multiply(rotationMatrix.Multiply(translationMatrix));
   }
-  DDyMatrix4x4 globalTransformationMatrix = matrix * nodeTransformation;
+  const DDyMatrix4x4 globalTransformationMatrix = parentTransform.Multiply(nodeTransformation);
 
   if (const auto it = modelInfo.mBoneStringBoneIdMap.find(nodeName); it != modelInfo.mBoneStringBoneIdMap.end())
   {
     const TU32 boneId = it->second;
-    modelInfo.mOverallModelBoneInformations[boneId].mFinalTransformation =
-        modelInfo.mGlobalInverseTransform * globalTransformationMatrix *
-        modelInfo.mOverallModelBoneInformations[boneId].mBoneOffsetMatrix;
+    auto& finalTransformationRef = modelInfo.mOverallModelBoneInformations[boneId].mFinalTransformation;
+    auto& boneOffsetMatrixRef    = modelInfo.mOverallModelBoneInformations[boneId].mBoneOffsetMatrix;
+    finalTransformationRef       = modelInfo.mGlobalInverseTransform.Multiply(globalTransformationMatrix.Multiply(boneOffsetMatrixRef));
+    //finalTransformationRef       = globalTransformationMatrix.Multiply(boneOffsetMatrixRef);
   }
 
-  for (TU32 i = 0; i < modelInfo.pGetModelGeometryResource()->mRootNode->mNumChildren; i++)
+  for (TU32 i = 0; i < nodeCursor.mNumChildren; i++)
   {
     pReadNodeHierarchy(runningTime, *nodeCursor.mChildren[i], modelInfo, globalTransformationMatrix);
   }
