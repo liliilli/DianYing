@@ -62,7 +62,7 @@ private:
   ///
   [[nodiscard]] EDySuccess pfInitializeSubmeshResource(const DDySubmeshInformation& meshInformation) noexcept;
 
-  DDyGlBufferIdInformation       mBufferIdInformation     = {};
+  DDyGlBufferIdInformation        mBufferIdInformation     = {};
   DDySubmeshFlagInformation       mMeshFlagInformation     = {};
 
   friend class CDyModelResource;

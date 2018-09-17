@@ -50,7 +50,10 @@ EDySuccess CDyMeshRenderer::pfInitialize(const PDyRendererConsturctionDescriptor
     if (!materialResourcePtr)
     {
       const auto res = resourceManager.CreateMaterialResource(materialName);
-      if (res == DY_FAILURE) return DY_FAILURE;
+      if (res == DY_FAILURE)
+      {
+        return DY_FAILURE;
+      }
 
       this->mMaterialResourcePtr.emplace_back(resourceManager.GetMaterialResource(materialName));
     }
@@ -95,11 +98,23 @@ EDySuccess CDyMeshRenderer::pfInitialize(const PDyRendererConsturctionDescriptor
   return DY_SUCCESS;
 }
 
+void CDyMeshRenderer::Update(float dt)
+{
+  if (this->mModelReferencePtr == nullptr || !this->mModelReferencePtr->IsEnabledModelAnimated()) return;
+
+  static float runningTime = 0.f;
+  std::vector<DDyMatrix4x4> transforms;
+  runningTime += dt;
+
+  this->mModelReferencePtr->GetBoneTransformLists(runningTime, transforms);
+  this->mModelReferencePtr->SetBoneTransformLists(transforms);
+}
+
 void CDyMeshRenderer::Render()
 {
   for (const auto& bindedMeshMatInfo : this->mMeshMaterialPtrBindingList)
   {
-    // Activate shader of one material.
+    // Integrity test.
     const auto shaderResource = bindedMeshMatInfo.mMaterialResource->GetShaderResource();
     if (!shaderResource)
     {
@@ -108,21 +123,30 @@ void CDyMeshRenderer::Render()
                        bindedMeshMatInfo.mMaterialResource->GetMaterialName());
       continue;
     }
+    // Activate shader of one material.
     shaderResource->UseShader();
 
     // Bind submesh VAO id.
     glBindVertexArray(bindedMeshMatInfo.mSubmeshResource->GetVertexArrayId());
 
     // @todo temporal
+    // Bind camera matrix.
     const auto viewMatrix = glGetUniformLocation(shaderResource->GetShaderProgramId(), "viewMatrix");
     const auto projMatirx = glGetUniformLocation(shaderResource->GetShaderProgramId(), "projectionMatrix");
 
-    auto& sceneManager = MDyScene::GetInstance();
-    auto* camera = sceneManager.GetMainCameraPtr();
-    if (camera)
+    if (auto* camera = MDyScene::GetInstance().GetMainCameraPtr(); camera)
     {
       glUniformMatrix4fv(viewMatrix, 1, GL_FALSE, &camera->GetViewMatrix()[0].X);
       glUniformMatrix4fv(projMatirx, 1, GL_FALSE, &camera->GetProjectionMatrix()[0].X);
+    }
+
+    // If skeleton animation is enabled, get bone transform and bind to shader.
+    const auto boneTransform = glGetUniformLocation(shaderResource->GetShaderProgramId(), "boneTransform");
+    if (mModelReferencePtr && mModelReferencePtr->IsEnabledModelAnimated())
+    {
+      const auto& matrixList = this->mModelReferencePtr->GetModelAnimationTransformMatrixList();
+      const auto  matrixSize = static_cast<int32_t>(matrixList.size());
+      glUniformMatrix4fv(boneTransform, matrixSize, GL_FALSE, &matrixList[0][0].X);
     }
 
     // Bind textures of one material.

@@ -199,6 +199,7 @@ EDySuccess MDyDataInformation::CreateMaterialInformation(const PDyMaterialConstr
     return DY_FAILURE;
   }
 
+  MDY_LOG_INFO("{}::{} | Create material information. | Material name : {}.", kDyDataInformation, "CreateMaterialInformation", materialName);
   return DY_SUCCESS;
 }
 

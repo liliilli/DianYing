@@ -19,6 +19,9 @@
 //! Forward declaration
 //!
 
+struct aiScene;
+struct aiNode;
+
 namespace dy
 {
 class DDyModelInformation;
@@ -47,9 +50,35 @@ public:
   ~CDyModelResource();
 
   ///
+  /// @brief Check this model resource is able to animated.
+  ///
+  FORCEINLINE bool IsEnabledModelAnimated() const noexcept
+  {
+    return this->mIsEnabledModelSkeletalAnimation;
+  }
+
+  ///
   /// @brief Get submesh resource, not modifiable.
   ///
   const std::vector<std::unique_ptr<CDySubmeshResource>>& GetSubmeshResources() const noexcept;
+
+  ///
+  /// @brief
+  ///
+  void GetBoneTransformLists(float runningTime, std::vector<DDyMatrix4x4>& transforms);
+
+  ///
+  /// @brief
+  ///
+  void SetBoneTransformLists(const std::vector<DDyMatrix4x4>& transforms);
+
+  ///
+  /// @brief
+  ///
+  FORCEINLINE const auto& GetModelAnimationTransformMatrixList() const noexcept
+  {
+    return this->mOverallModelAnimationMatrix;
+  }
 
 private:
   ///
@@ -57,7 +86,14 @@ private:
   ///
   [[nodiscard]] EDySuccess pInitializeModelResource(const DDyModelInformation& modelInformation);
 
-  std::vector<std::unique_ptr<CDySubmeshResource>> mMeshResource = {};
+  ///
+  /// @brief
+  ///
+  void pReadNodeHierarchy(float, const aiNode&, DDyModelInformation& modelInfo, const DDyMatrix4x4&);
+
+  std::vector<std::unique_ptr<CDySubmeshResource>>  mMeshResource                     = {};
+  std::vector<DDyMatrix4x4>                         mOverallModelAnimationMatrix      = {};
+  bool                                              mIsEnabledModelSkeletalAnimation  = false;
 
   //!
   //! Level pointers binding

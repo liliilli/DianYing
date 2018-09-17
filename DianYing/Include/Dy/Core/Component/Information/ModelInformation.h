@@ -26,6 +26,11 @@ struct  aiMesh;
 struct  aiNode;
 struct  aiScene;
 
+namespace Assimp
+{
+class Importer;
+}
+
 namespace dy
 {
 enum class EDyTextureMapType : unsigned char;
@@ -68,7 +73,7 @@ public:
   ///
   FORCEINLINE const auto& GetMeshInformation() const noexcept
   {
-    return this->mMeshInformations;
+    return this->mSubmeshInformations;
   }
 
   ///
@@ -81,12 +86,6 @@ public:
 
 private:
   ///
-  /// @brief Process assimp node so get information and resource from aiNode by iterating
-  /// submesh and children meshes.
-  ///
-  void __pProcessAssimpNode(aiNode* node, const aiScene* scene);
-
-  ///
   /// @brief Process aiMesh, make mesh information description which stores vertex, indices,
   /// innate material information, etc.
   ///
@@ -94,6 +93,9 @@ private:
 
   /// Read vertex data, make data, and insert to PDySubmeshInformationDescriptor.
   void __pReadVertexData(const aiMesh* mesh, PDySubmeshInformationDescriptor& desc);
+
+  /// Read bone data.
+  void __pReadBoneData(const aiMesh* mesh, PDySubmeshInformationDescriptor& desc);
 
   /// Read index(element) data, make data, and insert to PDySubmeshInformationDescriptor.
   void __pReadIndiceData(const aiMesh* mesh, PDySubmeshInformationDescriptor& desc);
@@ -107,11 +109,25 @@ private:
   /// Output information log only in debug mode.
   void __pOutputDebugInformationLog();
 
-  std::string                         mModelName          = "";
-  std::string                         mModelRootPath      = "";
-  std::vector<DDySubmeshInformation>  mMeshInformations   = {};
-  std::vector<std::string>            mBindedMaterialName = {};
-  std::vector<std::string>            mTextureLocalPaths  = {};
+  ///
+  FORCEINLINE const aiScene* pGetModelGeometryResource() const noexcept
+  {
+    return this->mInternalModelGeometryResource;
+  }
+
+  std::string                           mModelName            = "";
+  std::string                           mModelRootPath        = "";
+  std::vector<DDySubmeshInformation>    mSubmeshInformations  = {};
+  std::vector<std::string>              mBindedMaterialName   = {};
+  std::vector<std::string>              mTextureLocalPaths    = {};
+
+  // Added 2018-09-14
+  std::unique_ptr<Assimp::Importer>       mAssimpImporter                 = nullptr;
+  std::unordered_map<std::string, TU32>   mBoneStringBoneIdMap            = {};
+  std::vector<DDyGeometryBoneInformation> mOverallModelBoneInformations   = {};
+  int32_t                                 mModelBoneTotalCount            = 0;
+  const aiScene*                          mInternalModelGeometryResource  = nullptr;
+  DDyMatrix4x4                            mGlobalInverseTransform         = {};
 
   //!
   //! Resource pointers binding

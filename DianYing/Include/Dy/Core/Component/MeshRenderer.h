@@ -52,6 +52,11 @@ public:
   [[nodiscard]] EDySuccess pfInitialize(const PDyRendererConsturctionDescriptor& desc);
 
   ///
+  /// @brief
+  ///
+  void Update(float dt);
+
+  ///
   /// @brief Render function. Renderer only draw the number of submesh regardless of material count.
   ///
   void Render();
