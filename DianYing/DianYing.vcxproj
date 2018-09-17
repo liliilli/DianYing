@@ -306,6 +306,7 @@
     <ClCompile Include="Source\Core\Component\MeshRenderer.cc" />
     <ClCompile Include="Source\Core\Component\Object\Camera.cc" />
     <ClCompile Include="Source\Core\Component\Object\Grid.cc" />
+    <ClCompile Include="Source\Core\Component\Object\RenderingMesh.cc" />
     <ClCompile Include="Source\Core\Component\Resource\MaterialResource.cc" />
     <ClCompile Include="Source\Core\Component\Resource\SubmeshResource.cc" />
     <ClCompile Include="Source\Core\Component\Resource\ModelResource.cc" />
@@ -340,6 +341,7 @@
     <ClCompile Include="Source\Management\HeapResourceManager.cc" />
     <ClCompile Include="Source\Management\InputManager.cc" />
     <ClCompile Include="Source\Management\LoggingManager.cc" />
+    <ClCompile Include="Source\Management\RenderingManager.cc" />
     <ClCompile Include="Source\Management\SceneManager.cc" />
     <ClCompile Include="Source\Management\SettingManager.cc" />
     <ClCompile Include="Source\Management\TimeManager.cc" />
@@ -374,6 +376,7 @@
     <ClInclude Include="Include\Dy\Core\Component\Object\Camera.h" />
     <ClInclude Include="Include\Dy\Core\Component\Object\Grid.h" />
     <ClInclude Include="Include\Dy\Core\Component\Object\Pawn.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Object\RenderingMesh.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\MaterialResource.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\SubmeshResource.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\ModelResource.h" />
@@ -400,6 +403,8 @@
     <ClInclude Include="Include\Dy\Management\Helper\InputKeyString.h" />
     <ClInclude Include="Include\Dy\Management\InputManager.h" />
     <ClInclude Include="Include\Dy\Management\LoggingManager.h" />
+    <ClInclude Include="Include\Dy\Management\RenderingManager.h" />
+    <ClInclude Include="Include\Dy\Management\SyncronizationManager.h" />
     <ClInclude Include="Include\Dy\Management\Type\KeyBindingInformation.h" />
     <ClInclude Include="Include\Dy\Management\WindowManager.h" />
     <ClInclude Include="Include\Dy\Management\SceneManager.h" />

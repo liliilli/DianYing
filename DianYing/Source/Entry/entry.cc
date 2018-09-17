@@ -27,6 +27,7 @@
 #include <Dy/Management/WindowManager.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/InputManager.h>
+#include <Dy/Management/RenderingManager.h>
 
 #include <Dy/Management/Editor/GuiManager.h>
 
@@ -88,6 +89,7 @@ void DyInitiailzeAllManagers()
 
   // MDyWindow must be initialized at last.
   MDY_CALL_ASSERT_SUCCESS(dy::MDyWindow::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyRendering::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyInput::Initialize());
 
   MDY_LOG_WARNING_D("========== DIANYING MANAGER INITIALIZED ==========");
@@ -102,6 +104,7 @@ void DyReleaseAllManagers()
   MDY_LOG_WARNING_D("========== DIANYING MANAGER RELEASED ==========");
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDyInput::Release());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyRendering::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyWindow::Release());
 
   // Release other management instance.

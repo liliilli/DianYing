@@ -1,0 +1,55 @@
+#ifndef GUARD_DY_RENDERING_MANAGER_H
+#define GUARD_DY_RENDERING_MANAGER_H
+///
+/// MIT License
+/// Copyright (c) 2018 Jongmin Yun
+///
+/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+/// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+/// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+/// SOFTWARE.
+///
+
+#include <Dy/Management/Interface/ISingletonCrtp.h>
+#include "Dy/Core/Component/Object/RenderingMesh.h"
+
+namespace dy
+{
+
+///
+/// @class MDyRendering
+/// @brief Rendering maanger
+///
+class MDyRendering final : public ISingleton<MDyRendering>
+{
+  MDY_SINGLETON_PROPERTIES(MDyRendering);
+  MDY_SINGLETON_DERIVED(MDyRendering);
+public:
+
+
+private:
+  ///
+  /// @brief Create geometry buffers (aka G-buffer) for deferred rendering.
+  ///
+  void pCreateGeometryBuffers() noexcept;
+
+  ///
+  /// @brief Release geometry buffers (aka G-buffer) for deferred rendering.
+  ///
+  void pReleaseGeometryBuffers() noexcept;
+
+  TU32                mDeferredFrameBufferId  = MDY_NOT_INITIALIZED_0;
+  std::array<TU32, 3> mAttachmentBuffers      = {};
+  const TI32          mAttachmentBuffersCount = static_cast<TI32>(mAttachmentBuffers.size());
+
+  std::unique_ptr<FDyDeferredRenderingMesh>   mFinalRenderingMesh = nullptr;
+
+  friend class FDyDeferredRenderingMesh;
+};
+
+} /// ::dy namespace
+
+#endif /// GUARD_DY_RENDERING_MANAGER_H

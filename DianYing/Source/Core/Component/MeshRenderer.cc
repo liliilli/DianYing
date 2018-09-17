@@ -141,6 +141,7 @@ void CDyMeshRenderer::Render()
     }
 
     // If skeleton animation is enabled, get bone transform and bind to shader.
+#ifdef false
     const auto boneTransform = glGetUniformLocation(shaderResource->GetShaderProgramId(), "boneTransform");
     if (mModelReferencePtr && mModelReferencePtr->IsEnabledModelAnimated())
     {
@@ -148,6 +149,7 @@ void CDyMeshRenderer::Render()
       const auto  matrixSize = static_cast<int32_t>(matrixList.size());
       glUniformMatrix4fv(boneTransform, matrixSize, GL_FALSE, &matrixList[0][0].X);
     }
+#endif
 
     // Bind textures of one material.
     if (bindedMeshMatInfo.mMaterialResource)
