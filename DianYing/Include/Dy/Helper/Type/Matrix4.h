@@ -165,6 +165,16 @@ public:
   ///
   static DDyMatrix4x4 IdentityMatrix() noexcept;
 
+  ///
+  /// @brief
+  ///
+  static DDyMatrix4x4 CreateWithScale(const DDyVector3& scaleVector);
+
+  ///
+  /// @brief
+  ///
+  static DDyMatrix4x4 CreateWithTranslation(const DDyVector3& translationPoint);
+
 private:
   /// Identity matrix constructor
   explicit DDyMatrix4x4(bool);

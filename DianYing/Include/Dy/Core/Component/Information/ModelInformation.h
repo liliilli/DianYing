@@ -104,6 +104,12 @@ private:
   /// Output information log only in debug mode.
   void __pOutputDebugInformationLog();
 
+  ///
+  FORCEINLINE const aiScene* pGetModelGeometryResource() const noexcept
+  {
+    return this->mInternalModelGeometryResource;
+  }
+
   std::string                           mModelName            = "";
   std::string                           mModelRootPath        = "";
   std::vector<DDySubmeshInformation>    mSubmeshInformations  = {};
@@ -115,6 +121,7 @@ private:
   std::vector<DDyGeometryBoneInformation> mOverallModelBoneInformations   = {};
   int32_t                                 mModelBoneTotalCount            = 0;
   const aiScene*                          mInternalModelGeometryResource  = nullptr;
+  DDyMatrix4x4                            mGlobalInverseTransform         = {};
 
   //!
   //! Resource pointers binding

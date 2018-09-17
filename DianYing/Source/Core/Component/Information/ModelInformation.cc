@@ -138,6 +138,8 @@ DDyModelInformation::DDyModelInformation(const PDyModelConstructionDescriptor& m
     throw std::runtime_error("Could not load model " + modelConstructionDescriptor.mModelName + ".");
   }
 
+  this->mGlobalInverseTransform = assimpModelScene->mRootNode->mTransformation.Inverse();
+
   // Process all meshes and retrieve material, bone, etc information.
   this->mModelRootPath = modelPath.substr(0, modelPath.find_last_of('/'));
   for (TU32 i = 0; i < assimpModelScene->mNumMeshes; ++i)
@@ -315,13 +317,13 @@ void DDyModelInformation::__pReadBoneData(const aiMesh* mesh, PDySubmeshInformat
     if (const auto it = this->mBoneStringBoneIdMap.find(boneName); it != this->mBoneStringBoneIdMap.end()) { boneId = it->second; }
     else
     {
-      boneId = this->mModelBoneCount;
+      boneId = this->mModelBoneTotalCount;
       DDyGeometryBoneInformation boneInformation;
       boneInformation.mBoneOffsetMatrix = mesh->mBones[i]->mOffsetMatrix;
 
-      this->mOverallModelBoneInformations .emplace_back(boneInformation);
-      this->mBoneStringBoneIdMap      .try_emplace(boneName, boneId);
-      this->mModelBoneCount   += 1;
+      this->mOverallModelBoneInformations.emplace_back(boneInformation);
+      this->mBoneStringBoneIdMap.try_emplace(boneName, boneId);
+      ++this->mModelBoneTotalCount;
     }
 
     for (TU32 j = 0; j < mesh->mBones[i]->mNumWeights; ++j)

@@ -98,8 +98,25 @@ EDySuccess CDyMeshRenderer::pfInitialize(const PDyRendererConsturctionDescriptor
   return DY_SUCCESS;
 }
 
+void CDyMeshRenderer::Update(float dt)
+{
+  if (this->mModelReferencePtr == nullptr || !this->mModelReferencePtr->IsEnabledModelAnimated()) return;
+
+  static float runningTime = 0.f;
+  std::vector<DDyMatrix4x4> transforms;
+  runningTime += dt;
+
+  this->mModelReferencePtr->GetBoneTransformLists(runningTime, transforms);
+}
+
 void CDyMeshRenderer::Render()
 {
+  if (mModelReferencePtr && mModelReferencePtr->IsEnabledModelAnimated())
+  {
+    std::vector<DDyMatrix4x4> transforms;
+
+  }
+
   for (const auto& bindedMeshMatInfo : this->mMeshMaterialPtrBindingList)
   {
     // Integrity test.
