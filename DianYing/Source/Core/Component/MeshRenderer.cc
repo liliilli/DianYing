@@ -24,6 +24,7 @@
 #include <Dy/Management/SceneManager.h>
 #include <Dy/Core/Component/Object/Camera.h>
 #include <Dy/Management/LoggingManager.h>
+#include <Dy/Management/RenderingManager.h>
 
 namespace dy
 {
@@ -110,7 +111,13 @@ void CDyMeshRenderer::Update(float dt)
   this->mModelReferencePtr->SetBoneTransformLists(transforms);
 }
 
-void CDyMeshRenderer::Render()
+void CDyMeshRenderer::CallDraw()
+{
+  auto& renderingManager = MDyRendering::GetInstance();
+  renderingManager.PushDrawCallTask(*this);
+}
+
+void CDyMeshRenderer::pfRender()
 {
   for (const auto& bindedMeshMatInfo : this->mMeshMaterialPtrBindingList)
   {
@@ -118,24 +125,19 @@ void CDyMeshRenderer::Render()
     const auto shaderResource = bindedMeshMatInfo.mMaterialResource->GetShaderResource();
     if (!shaderResource)
     {
-      MDY_LOG_CRITICAL("{} | Shader resource of {} is not binded, Can not render mesh.",
-                       "CDyMeshRenderer::Render",
-                       bindedMeshMatInfo.mMaterialResource->GetMaterialName());
+      MDY_LOG_CRITICAL("{} | Shader resource of {} is not binded, Can not render mesh.", "CDyMeshRenderer::Render", bindedMeshMatInfo.mMaterialResource->GetMaterialName());
       continue;
     }
-    // Activate shader of one material.
+    // Activate shader of one material and bind submesh VAO id.
     shaderResource->UseShader();
-
-    // Bind submesh VAO id.
     glBindVertexArray(bindedMeshMatInfo.mSubmeshResource->GetVertexArrayId());
 
-    // @todo temporal
-    // Bind camera matrix.
-    const auto viewMatrix = glGetUniformLocation(shaderResource->GetShaderProgramId(), "viewMatrix");
-    const auto projMatirx = glGetUniformLocation(shaderResource->GetShaderProgramId(), "projectionMatrix");
-
+    // @todo temporal Bind camera matrix.
     if (auto* camera = MDyScene::GetInstance().GetMainCameraPtr(); camera)
     {
+      const auto viewMatrix = glGetUniformLocation(shaderResource->GetShaderProgramId(), "viewMatrix");
+      const auto projMatirx = glGetUniformLocation(shaderResource->GetShaderProgramId(), "projectionMatrix");
+
       glUniformMatrix4fv(viewMatrix, 1, GL_FALSE, &camera->GetViewMatrix()[0].X);
       glUniformMatrix4fv(projMatirx, 1, GL_FALSE, &camera->GetProjectionMatrix()[0].X);
     }
@@ -192,6 +194,7 @@ void CDyMeshRenderer::Render()
         glBindTexture(GL_TEXTURE_2D, 0);
       }
     }
+
     glBindVertexArray(0);
     shaderResource->UnuseShader();
   }

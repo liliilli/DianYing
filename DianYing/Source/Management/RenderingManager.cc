@@ -40,6 +40,26 @@ EDySuccess MDyRendering::pfRelease()
   return DY_SUCCESS;
 }
 
+void MDyRendering::PushDrawCallTask(CDyMeshRenderer& rendererInstance)
+{
+  this->mDrawCallQueue.push(&rendererInstance);
+}
+
+void MDyRendering::RenderDrawCallQueue()
+{
+  glBindFramebuffer(GL_FRAMEBUFFER, this->mDeferredFrameBufferId);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  while (!this->mDrawCallQueue.empty())
+  {
+    auto& drawInstance = *this->mDrawCallQueue.front();
+    this->mDrawCallQueue.pop();
+
+    drawInstance.pfRender();
+  }
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  this->mFinalRenderingMesh->RenderScreen();
+}
+
 void MDyRendering::pCreateGeometryBuffers() noexcept
 {
   auto& settingManager = MDySetting::GetInstance();
@@ -52,9 +72,11 @@ void MDyRendering::pCreateGeometryBuffers() noexcept
 
   // Unlit g-buffer
   glBindTexture(GL_TEXTURE_2D, this->mAttachmentBuffers[0]);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, overallScreenWidth, overallScreenHeight, 0, GL_RGB, GL_FLOAT, nullptr);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, overallScreenWidth, overallScreenHeight, 0, GL_RGB, GL_FLOAT, nullptr);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->mAttachmentBuffers[0], 0);
 
   // Normal g-buffer

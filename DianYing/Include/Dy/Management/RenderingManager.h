@@ -13,8 +13,10 @@
 /// SOFTWARE.
 ///
 
+#include <queue>
+
 #include <Dy/Management/Interface/ISingletonCrtp.h>
-#include "Dy/Core/Component/Object/RenderingMesh.h"
+#include <Dy/Core/Component/Object/RenderingMesh.h>
 
 namespace dy
 {
@@ -28,7 +30,15 @@ class MDyRendering final : public ISingleton<MDyRendering>
   MDY_SINGLETON_PROPERTIES(MDyRendering);
   MDY_SINGLETON_DERIVED(MDyRendering);
 public:
+  ///
+  /// @brief
+  ///
+  void PushDrawCallTask(CDyMeshRenderer& rendererInstance);
 
+  ///
+  /// @brief
+  ///
+  void RenderDrawCallQueue();
 
 private:
   ///
@@ -46,6 +56,7 @@ private:
   const TI32          mAttachmentBuffersCount = static_cast<TI32>(mAttachmentBuffers.size());
 
   std::unique_ptr<FDyDeferredRenderingMesh>   mFinalRenderingMesh = nullptr;
+  std::queue<CDyMeshRenderer*> mDrawCallQueue = {};
 
   friend class FDyDeferredRenderingMesh;
 };

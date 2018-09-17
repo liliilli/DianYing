@@ -19,7 +19,7 @@
 
 #include <Dy/Management/DataInformationManager.h>
 #include <Dy/Management/HeapResourceManager.h>
-#include "Dy/Management/RenderingManager.h"
+#include <Dy/Management/RenderingManager.h>
 
 namespace
 {
@@ -52,16 +52,16 @@ FDyDeferredRenderingMesh::FDyDeferredRenderingMesh()
 
   std::vector<DDyMeshInfo> mVertexInformations;
   mVertexInformations.emplace_back(DDyVector3{-1, -1, 0}, DDyVector2{0, 0});
-  mVertexInformations.emplace_back(DDyVector3{ 3, -1, 0}, DDyVector2{2, 0});
-  mVertexInformations.emplace_back(DDyVector3{-1,  3, 0}, DDyVector2{0, 2});
-  glBufferData(GL_ARRAY_BUFFER, sizeof(DDyMeshInfo) * 3, &mVertexInformations[0], GL_STATIC_DRAW);
+  mVertexInformations.emplace_back(DDyVector3{ 1, -1, 0}, DDyVector2{1, 0});
+  mVertexInformations.emplace_back(DDyVector3{ 1,  1, 0}, DDyVector2{1, 1});
+  mVertexInformations.emplace_back(DDyVector3{-1,  1, 0}, DDyVector2{0, 1});
+  glBufferData(GL_ARRAY_BUFFER, sizeof(DDyMeshInfo) * 4, &mVertexInformations[0], GL_STATIC_DRAW);
   glBindVertexBuffer(0, this->mVbo, 0, sizeof(DDyMeshInfo));
 
   // DDyMeshInfo.mPosition (DDyVector3)
   glEnableVertexAttribArray(0);
   glVertexAttribFormat(0, 3, GL_FLOAT, GL_FALSE, offsetof(DDyMeshInfo, mPosition));
   glVertexAttribBinding(0, 0);
-
   // DDyMeshInfo.mTexCoord (DDyVector2)
   glEnableVertexAttribArray(1);
   glVertexAttribFormat(1, 2, GL_FLOAT, GL_FALSE, offsetof(DDyMeshInfo, mTexCoord));
@@ -116,7 +116,6 @@ void FDyDeferredRenderingMesh::RenderScreen()
   PHITOS_ASSERT(this->mShaderPtr, "FDyDeferredRenderingMesh::mShaderPtr must not be nullptr.");
 
   this->mShaderPtr->UseShader();
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
   glBindVertexArray(this->mVao);
 
   const auto& renderingManager = MDyRendering::GetInstance();
@@ -127,7 +126,7 @@ void FDyDeferredRenderingMesh::RenderScreen()
     glBindTexture(GL_TEXTURE_2D, renderingManager.mAttachmentBuffers[i]);
   }
 
-  glDrawArrays(GL_TRIANGLES, 0, 3);
+  glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
   glBindVertexArray(0);
   this->mShaderPtr->UnuseShader();
 }

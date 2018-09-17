@@ -145,6 +145,8 @@
     <ClInclude Include="Include\Dy\Management\RenderingManager.h" />
     <ClInclude Include="Include\Dy\Management\SyncronizationManager.h" />
     <ClInclude Include="Include\Dy\Core\Component\Object\RenderingMesh.h" />
+    <ClInclude Include="Include\Dy\Helper\Internal\Contracts.h" />
+    <ClInclude Include="Include\Dy\Helper\Pointer.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

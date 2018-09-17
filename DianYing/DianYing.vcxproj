@@ -393,10 +393,12 @@
     <ClInclude Include="Include\Dy\Editor\Interface\IDyGuiHasChildren.h" />
     <ClInclude Include="Include\Dy\Editor\Literals\DIalogMessageString.h" />
     <ClInclude Include="Include\Dy\Editor\Literals\LibraryLicenseString.h" />
+    <ClInclude Include="Include\Dy\Helper\Internal\Contracts.h" />
     <ClInclude Include="Include\Dy\Helper\Dbg\CheckUsage.h" />
     <ClInclude Include="Include\Dy\Helper\GlobalType.h" />
     <ClInclude Include="Include\Dy\Helper\HashCompileCrc32.h" />
     <ClInclude Include="Include\Dy\Helper\JsonHelper.h" />
+    <ClInclude Include="Include\Dy\Helper\Pointer.h" />
     <ClInclude Include="Include\Dy\Helper\ThreadPool.h" />
     <ClInclude Include="Include\Dy\Management\Editor\GuiManager.h" />
     <ClInclude Include="Include\Dy\Management\Editor\GuiWindowFactory.h" />

@@ -36,6 +36,7 @@
 #include <Dy/Management/InputManager.h>
 #include <Dy/Management/TimeManager.h>
 #include <Dy/Management/Editor/GuiManager.h>
+#include "Dy/Management/RenderingManager.h"
 
 ///
 /// Undefined proprocessor WIN32 macro "max, min" for preventing misuse.
@@ -96,24 +97,45 @@ void DyGlTempInitializeResource()
   //! Shader
   //!
 
-  dy::PDyShaderConstructionDescriptor shaderDesc;
   {
-    shaderDesc.mShaderName = "TestShader";
+    dy::PDyShaderConstructionDescriptor shaderDesc;
+    shaderDesc.mShaderName = "TestDeferredShader";
     {
-      dy::PDyShaderFragmentInformation vertexShaderInfo;
-      vertexShaderInfo.mShaderType = dy::EDyShaderFragmentType::Vertex;
-      vertexShaderInfo.mShaderPath = "./glMeshVert.vert";
-      shaderDesc.mShaderFragments.emplace_back(vertexShaderInfo);
+      dy::PDyShaderFragmentInformation vs;
+      vs.mShaderType = dy::EDyShaderFragmentType::Vertex;
+      vs.mShaderPath = "./glMeshVertSAnim.vert";
+      shaderDesc.mShaderFragments.emplace_back(vs);
     }
     {
-      dy::PDyShaderFragmentInformation fragmentShaderInfo;
-      fragmentShaderInfo.mShaderType = dy::EDyShaderFragmentType::Pixel;
-      fragmentShaderInfo.mShaderPath = "./glShader.frag";
-      shaderDesc.mShaderFragments.emplace_back(fragmentShaderInfo);
+      dy::PDyShaderFragmentInformation fs;
+      fs.mShaderType = dy::EDyShaderFragmentType::Pixel;
+      fs.mShaderPath = "./glMeshDeferredFrag.frag";
+      shaderDesc.mShaderFragments.emplace_back(fs);
     }
+    MDY_CALL_ASSERT_SUCCESS(manInfo.CreateShaderInformation(shaderDesc));
   }
-  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateShaderInformation(shaderDesc));
 
+  {
+    dy::PDyShaderConstructionDescriptor shaderDesc;
+    {
+      shaderDesc.mShaderName = "TestShader";
+      {
+        dy::PDyShaderFragmentInformation vertexShaderInfo;
+        vertexShaderInfo.mShaderType = dy::EDyShaderFragmentType::Vertex;
+        vertexShaderInfo.mShaderPath = "./glMeshVert.vert";
+        shaderDesc.mShaderFragments.emplace_back(vertexShaderInfo);
+      }
+      {
+        dy::PDyShaderFragmentInformation fragmentShaderInfo;
+        fragmentShaderInfo.mShaderType = dy::EDyShaderFragmentType::Pixel;
+        fragmentShaderInfo.mShaderPath = "./glShader.frag";
+        shaderDesc.mShaderFragments.emplace_back(fragmentShaderInfo);
+      }
+    }
+    MDY_CALL_ASSERT_SUCCESS(manInfo.CreateShaderInformation(shaderDesc));
+  }
+
+#ifdef false
   {
     dy::PDyShaderConstructionDescriptor desc;
     desc.mShaderName = "TestSkeletalAnimShader";
@@ -154,7 +176,6 @@ void DyGlTempInitializeResource()
   //! Model
   //!
 
-#ifdef false
   auto tempAsyncTask = std::async(std::launch::async, [&manInfo] {
     dy::PDyModelConstructionDescriptor bunnyModel;
     {
@@ -321,7 +342,7 @@ void DyGlTempInitializeResource()
   {
     dy::PDyMaterialPopulateDescriptor popDesc;
     popDesc.mIsEnabledShaderOverride  = true;
-    popDesc.mOverrideShaderName       = "TestShader";
+    popDesc.mOverrideShaderName       = "TestDeferredShader";
     const auto spawnedMatStr = manInfo.PopulateMaterialInformation("asdf1:Beta_HighLimbsGeoSG2", popDesc);
 
     dy::PDyRendererConsturctionDescriptor rendererDesc;
@@ -339,6 +360,7 @@ void DyImguiRenderFrame()
   ImGui_ImplGlfw_NewFrame();
   ImGui::NewFrame();
 
+#ifdef false
   if (gImguiShowDemoWindow)
   {
     ImGui::ShowDemoWindow(&gImguiShowDemoWindow);
@@ -377,6 +399,7 @@ void DyImguiRenderFrame()
       ImGui::End();
     }
   }
+#endif
 #if defined(MDY_FLAG_IN_EDITOR)
   dy::editor::MDyEditorGui::GetInstance().DrawWindow(0);
 #endif
@@ -592,17 +615,14 @@ void MDyWindow::pRender()
   glClearColor(gColor.X, gColor.Y, gColor.Z, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  glEnable(GL_DEPTH_TEST);
-  if (gGrid)
-  {
-    gGrid->RenderGrid();
-  };
+  gRenderer.CallDraw();
 
-  gRenderer.Render();
+  glEnable(GL_DEPTH_TEST);
+  MDyRendering::GetInstance().RenderDrawCallQueue();
+  //if (gGrid) { gGrid->RenderGrid(); };
 
   glDisable(GL_DEPTH_TEST);
-
-  DyImguiRenderFrame();
+  //DyImguiRenderFrame();
   if (glfwWindowShouldClose(this->mGlfwWindow)) return;
 
   glfwSwapBuffers(this->mGlfwWindow);
