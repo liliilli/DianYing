@@ -157,7 +157,7 @@ void CDyMeshRenderer::pfRender()
       {
         glUniform1i(glGetUniformLocation(shaderResource->GetShaderProgramId(), (std::string("uTexture") + std::to_string(i)).c_str()), i);
 
-        const auto texturePointer = textureResources[i].mTexturePointer;
+        const auto texturePointer = textureResources[i].mValidTexturePointer;
         glActiveTexture(GL_TEXTURE0 + i);
         switch (texturePointer->GetTextureType())
         {

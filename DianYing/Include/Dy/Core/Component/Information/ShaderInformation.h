@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Core/Component/Internal/ShaderType.h>
+#include <Dy/Helper/Pointer.h>
 
 //!
 //! Forward declaration
@@ -39,26 +40,26 @@ namespace dy
 class DDyShaderInformation final
 {
 public:
+  MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(DDyShaderInformation);
   DDyShaderInformation(const PDyShaderConstructionDescriptor& shaderConstructionDescriptor);
-
-  DDyShaderInformation(const DDyShaderInformation&)            = delete;
-  DDyShaderInformation& operator=(const DDyShaderInformation&) = delete;
-  DDyShaderInformation(DDyShaderInformation&&)            = default;
-  DDyShaderInformation& operator=(DDyShaderInformation&&) = default;
   ~DDyShaderInformation();
 
   ///
   /// @brief return immutable descriptor information reference.
   ///
-  const PDyShaderConstructionDescriptor& GetInformation() const noexcept
+  [[nodiscard]]
+  FORCEINLINE const PDyShaderConstructionDescriptor& GetInformation() const noexcept
   {
     return this->mShaderInformation;
   }
 
-  /// Check if object is being binded to CDyTextureResource instance.
+  ///
+  /// @brief Check if object is being binded to CDyTextureResource instance.
+  ///
+  [[nodiscard]]
   FORCEINLINE bool IsBeingBindedToResource() const noexcept
   {
-    return this->mLinkedShaderResourcePtr != nullptr;
+    return this->__mLinkedShaderResourcePtr != nullptr;
   }
 
 private:
@@ -68,8 +69,13 @@ private:
   //! Resource pointers binding
   //!
 
-  void __pfLinkShaderResourcePtr(CDyShaderResource* ptr) const noexcept;
-  mutable CDyShaderResource* mLinkedShaderResourcePtr = nullptr;
+  void __pfSetShaderResourceLink(NotNull<CDyShaderResource*> ptr) const noexcept;
+  FORCEINLINE void __pfResetShaderResourceLink() const noexcept
+  {
+    this->__mLinkedShaderResourcePtr = nullptr;
+  }
+
+  MDY_TRANSIENT CDyShaderResource* __mLinkedShaderResourcePtr = nullptr;
 
   friend class CDyShaderResource;
   friend class MDyHeapResource;

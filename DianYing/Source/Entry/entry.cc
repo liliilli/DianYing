@@ -30,6 +30,7 @@
 #include <Dy/Management/RenderingManager.h>
 
 #include <Dy/Management/Editor/GuiManager.h>
+#include "Dy/Helper/Pointer.h"
 
 namespace
 {
@@ -130,7 +131,7 @@ void DyReleaseAllManagers()
 namespace
 {
 
-FILE*     gFp             = nullptr;
+dy::Owner<FILE*> gFp      = nullptr;
 HINSTANCE ghInstance      = nullptr;
 HINSTANCE ghPrevInstance  = nullptr;
 LPSTR     gpCmdLine;

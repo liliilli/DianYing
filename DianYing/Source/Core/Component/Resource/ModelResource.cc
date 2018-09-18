@@ -28,10 +28,7 @@ namespace dy
 CDyModelResource::~CDyModelResource()
 {
   // Release all resource bind to this instance.
-  if (this->__mLinkedModelInformationPtr)
-  {
-    this->__mLinkedModelInformationPtr->__pfSetModelResourceLink(nullptr);
-  }
+  if (this->__mLinkedModelInformationPtr) { this->__mLinkedModelInformationPtr->__pfResetModelResourceLink(); }
 
   this->mMeshResource.clear();
 }
@@ -200,7 +197,7 @@ void CDyModelResource::pReadNodeHierarchy(float runningTime, const aiNode& nodeC
 
   //
   const std::string   nodeName  = nodeCursor.mName.C_Str();
-  const aiAnimation*  animation = modelInfo.pGetModelGeometryResource()->mAnimations[0];
+  const aiAnimation*  animation = modelInfo.pfGetModelGeometryResource()->mAnimations[0];
   DDyMatrix4x4        nodeTransformation{nodeCursor.mTransformation};
 
   if (const aiNodeAnim* nodeAnimation = FindNodeAnim(nodeName, animation); nodeAnimation)
