@@ -17,6 +17,7 @@
 
 #include <Dy/Helper/Type/Matrix3.h>
 #include <Dy/Helper/Type/Vector4.h>
+#include <assimp/matrix4x4.h>
 
 namespace dy
 {
@@ -41,13 +42,13 @@ public:
                const float _10, const float _11, const float _12, const float _13,
                const float _20, const float _21, const float _22, const float _23,
                const float _30, const float _31, const float _32, const float _33) :
-      mMatrixValue{dy::DVector4{_00, _10, _20, _30},
-                   dy::DVector4{_01, _11, _21, _31},
-                   dy::DVector4{_02, _12, _22, _32},
-                   dy::DVector4{_03, _13, _23, _33}} {}
+      mMatrixValue{dy::DDyVector4{_00, _10, _20, _30},
+                   dy::DDyVector4{_01, _11, _21, _31},
+                   dy::DDyVector4{_02, _12, _22, _32},
+                   dy::DDyVector4{_03, _13, _23, _33}} {}
 
-  DDyMatrix4x4(const DVector4& column1, const DVector4& column2,
-               const DVector4& column3, const DVector4& column4);
+  DDyMatrix4x4(const DDyVector4& column1, const DDyVector4& column2,
+               const DDyVector4& column3, const DDyVector4& column4);
 
   DDyMatrix4x4(const glm::mat2& glmMatrix) noexcept;
 
@@ -55,11 +56,15 @@ public:
 
   DDyMatrix4x4(const glm::mat4& glmMatrix) noexcept;
 
+  DDyMatrix4x4(const aiMatrix4x4& aiMatrix) noexcept;
+
   DDyMatrix4x4& operator=(const glm::mat2& value) noexcept;
 
   DDyMatrix4x4& operator=(const glm::mat3& value) noexcept;
 
   DDyMatrix4x4& operator=(const glm::mat4& value) noexcept;
+
+  DDyMatrix4x4& operator=(const aiMatrix4x4& value) noexcept;
 
   //!
   //! Conversion operators
@@ -109,12 +114,12 @@ public:
   }
 #endif
 
-  DVector4& operator[](std::size_t index) noexcept
+  DDyVector4& operator[](std::size_t index) noexcept
   {
     return mMatrixValue[index];
   }
 
-  const DVector4& operator[](std::size_t index) const noexcept
+  const DDyVector4& operator[](std::size_t index) const noexcept
   {
     return mMatrixValue[index];
   }
@@ -148,7 +153,7 @@ public:
   ///
   /// @brief
   ///
-  DVector4 MultiplyVector(const DVector4& rhs) const noexcept;
+  DDyVector4 MultiplyVector(const DDyVector4& rhs) const noexcept;
 
   ///
   /// @brief
@@ -160,12 +165,22 @@ public:
   ///
   static DDyMatrix4x4 IdentityMatrix() noexcept;
 
+  ///
+  /// @brief
+  ///
+  static DDyMatrix4x4 CreateWithScale(const DDyVector3& scaleVector);
+
+  ///
+  /// @brief
+  ///
+  static DDyMatrix4x4 CreateWithTranslation(const DDyVector3& translationPoint);
+
 private:
   /// Identity matrix constructor
   explicit DDyMatrix4x4(bool);
 
   /// Column major
-  std::array<dy::DVector4, 4> mMatrixValue;
+  std::array<dy::DDyVector4, 4> mMatrixValue;
 };
 
 } /// ::dy namespace

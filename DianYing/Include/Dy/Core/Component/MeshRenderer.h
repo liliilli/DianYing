@@ -22,6 +22,7 @@ namespace dy
 struct  PDyRendererConsturctionDescriptor;
 class   CDyModelResource;
 class   CDyMaterialResource;
+class   CDySubmeshResource;
 } /// ::dy namespace
 
 //!
@@ -43,23 +44,45 @@ public:
   CDyMeshRenderer(CDyMeshRenderer&&)      = default;
   CDyMeshRenderer& operator=(const CDyMeshRenderer&)  = delete;
   CDyMeshRenderer& operator=(CDyMeshRenderer&&)       = default;
-  //~CDyMeshRenderer();
+  ~CDyMeshRenderer() = default;
+
+  ///
+  /// @brief Initialize mesh renderer with this.
+  ///
+  [[nodiscard]] EDySuccess pfInitialize(const PDyRendererConsturctionDescriptor& desc);
 
   ///
   /// @brief
   ///
-  [[nodiscard]]
-  EDySuccess pfInitialize(const PDyRendererConsturctionDescriptor& desc);
+  void Update(float dt);
 
   ///
   /// @brief
   ///
-  void Render();
+  void CallDraw();
 
 private:
+  ///
+  /// @brief Render function. Renderer only draw the number of submesh regardless of material count.
+  ///
+  void pfRender();
 
   CDyModelResource*                 mModelReferencePtr    = nullptr;
   std::vector<CDyMaterialResource*> mMaterialResourcePtr  = {};
+
+  ///
+  /// @struct DDyBindingInformation
+  /// @brief
+  ///
+  struct DDyBindingInformation final
+  {
+    CDySubmeshResource*   mSubmeshResource  = nullptr;
+    CDyMaterialResource*  mMaterialResource = nullptr;
+  };
+
+  std::vector<DDyBindingInformation> mMeshMaterialPtrBindingList = {};
+
+  friend class MDyRendering;
 };
 
 } /// ::dy namespace

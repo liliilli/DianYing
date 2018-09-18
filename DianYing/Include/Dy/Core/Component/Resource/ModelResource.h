@@ -13,11 +13,14 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Component/Resource/MeshResource.h>
+#include <Dy/Core/Component/Resource/SubmeshResource.h>
 
 //!
 //! Forward declaration
 //!
+
+struct aiScene;
+struct aiNode;
 
 namespace dy
 {
@@ -33,7 +36,8 @@ namespace dy
 
 ///
 /// @class CDyModelResource
-/// @brief
+/// @brief Model resource instance for storing and managing mesh nonsafe heap resource
+/// and other properties.
 ///
 class CDyModelResource
 {
@@ -46,18 +50,50 @@ public:
   ~CDyModelResource();
 
   ///
+  /// @brief Check this model resource is able to animated.
+  ///
+  FORCEINLINE bool IsEnabledModelAnimated() const noexcept
+  {
+    return this->mIsEnabledModelSkeletalAnimation;
+  }
+
+  ///
   /// @brief Get submesh resource, not modifiable.
   ///
-  const std::vector<std::unique_ptr<CDyMeshResource>>& GetSubmeshResources() const noexcept;
+  const std::vector<std::unique_ptr<CDySubmeshResource>>& GetSubmeshResources() const noexcept;
 
-private:
   ///
   /// @brief
   ///
-  [[nodiscard]]
-  EDySuccess pInitializeModel(const DDyModelInformation& modelInformation);
+  void GetBoneTransformLists(float runningTime, std::vector<DDyMatrix4x4>& transforms);
 
-  std::vector<std::unique_ptr<CDyMeshResource>> mMeshResource = {};
+  ///
+  /// @brief
+  ///
+  void SetBoneTransformLists(const std::vector<DDyMatrix4x4>& transforms);
+
+  ///
+  /// @brief
+  ///
+  FORCEINLINE const auto& GetModelAnimationTransformMatrixList() const noexcept
+  {
+    return this->mOverallModelAnimationMatrix;
+  }
+
+private:
+  ///
+  /// @brief Initialize model resource with model information instance.
+  ///
+  [[nodiscard]] EDySuccess pInitializeModelResource(const DDyModelInformation& modelInformation);
+
+  ///
+  /// @brief
+  ///
+  void pReadNodeHierarchy(float, const aiNode&, DDyModelInformation& modelInfo, const DDyMatrix4x4&);
+
+  std::vector<std::unique_ptr<CDySubmeshResource>>  mMeshResource                     = {};
+  std::vector<DDyMatrix4x4>                         mOverallModelAnimationMatrix      = {};
+  bool                                              mIsEnabledModelSkeletalAnimation  = false;
 
   //!
   //! Level pointers binding
@@ -65,26 +101,15 @@ private:
 
   template <typename TType>
   using TBindPtrMap = std::unordered_map<TType*, TType*>;
-  ///
-  /// @brief
-  ///
-  void __pfSetPrevLevel(DDyModelInformation* ptr) const noexcept { __mPrevLevelPtr = ptr; }
-  void __pfSetRendererBind(void* ptr) const noexcept
+
+  void __pfLinkModelInformationPtr(DDyModelInformation* ptr) const noexcept
   {
-    auto [it, result] = __mBindRendererPtrs.try_emplace(ptr, ptr);
-    if (!result) {
-      assert(false);
-    }
+    this->__mLinkedModelInformationPtr = ptr;
   }
-  void __pfSetRendererReset(void* ptr) const noexcept
-  {
-    __mBindRendererPtrs.erase(ptr);
-  }
-  mutable DDyModelInformation*  __mPrevLevelPtr     = nullptr;
-  mutable TBindPtrMap<void>     __mBindRendererPtrs;
+  mutable DDyModelInformation*  __mLinkedModelInformationPtr = nullptr;
 
   friend class DDyModelInformation;
-  friend class MDyResource;
+  friend class MDyHeapResource;
 };
 
 } /// ::dy namespace

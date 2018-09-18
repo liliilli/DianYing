@@ -12,12 +12,12 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /// SOFTWARE.
 ///
+/// @todo IMPLEMENT THREAD-SAFE & BINDING-SAFE HEAP RESOURCE DELETION FUNCTIONS
+///
 
 #include <unordered_map>
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
-#include <Dy/Core/Component/Internal/ShaderType.h>
-#include <Dy/Core/Component/Internal/TextureType.h>
 
 #include <Dy/Core/Component/Resource/ShaderResource.h>
 #include <Dy/Core/Component/Resource/TextureResource.h>
@@ -36,10 +36,14 @@
 namespace dy
 {
 
-class MDyResource final : public dy::ISingleton<MDyResource>
+///
+/// @class MDyHeapResource
+/// @brief Manages heap resources which have actual memroy resource information for operation.
+///
+class MDyHeapResource final : public dy::ISingleton<MDyHeapResource>
 {
-  MDY_SINGLETON_DERIVED(MDyResource);
-  MDY_SINGLETON_PROPERTIES(MDyResource);
+  MDY_SINGLETON_DERIVED(MDyHeapResource);
+  MDY_SINGLETON_PROPERTIES(MDyHeapResource);
 
   template <typename TType>
   using THashList = std::unordered_map<std::string, TType>;
@@ -76,25 +80,25 @@ public:
   EDySuccess CreateModelResource(const std::string& modelName);
 
   ///
-  /// @brief
+  /// @brief Get valid shader resource instance. If not find, just return nullptr as failure sign.
   ///
   [[nodiscard]]
   CDyShaderResource* GetShaderResource(const std::string& shaderName);
 
   ///
-  /// @brief
+  /// @brief Get valid texture resource instance. If not find, just return nullptr as failure sign.
   ///
   [[nodiscard]]
   CDyTextureResource* GetTextureResource(const std::string& textureName);
 
   ///
-  /// @brief
+  /// @brief Get valid material resource instance. If not find, just return nullptr as failure sign.
   ///
   [[nodiscard]]
   CDyMaterialResource* GetMaterialResource(const std::string& materialName);
 
   ///
-  /// @brief
+  /// @brief Get valid model resource instance. If not find, just return nullptr as failure sign.
   ///
   [[nodiscard]]
   CDyModelResource* GetModelResource(const std::string& modelName);

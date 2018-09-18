@@ -14,7 +14,8 @@
 ///
 
 #include <Dy/Core/Component/Internal/ModelType.h>
-#include <Dy/Core/Component/Information/MeshInformation.h>
+#include <Dy/Core/Component/Information/SubmeshInformation.h>
+#include <Dy/Core/Component/Internal/MaterialType.h>
 
 //!
 //! Forward declaration
@@ -25,11 +26,16 @@ struct  aiMesh;
 struct  aiNode;
 struct  aiScene;
 
+namespace Assimp
+{
+class Importer;
+}
+
 namespace dy
 {
 enum class EDyTextureMapType : unsigned char;
 class CDyModelResource;
-class CDyTextureInformation;
+class DDyTextureInformation;
 } /// ::dy namespace
 
 //!
@@ -39,6 +45,10 @@ class CDyTextureInformation;
 namespace dy
 {
 
+///
+/// @class DDyModelInformation
+/// @brief Information class for model information.
+///
 class DDyModelInformation final
 {
 public:
@@ -51,43 +61,83 @@ public:
   ~DDyModelInformation();
 
   ///
-  /// @brief
+  /// @brief Return material name list which model information have.
   ///
-  const std::vector<std::string>& GetBindedMaterialNameLists() const noexcept
+  FORCEINLINE const std::vector<std::string>& GetBindedMaterialNameLists() const noexcept
   {
     return this->mBindedMaterialName;
   }
 
+  ///
+  /// @brief Return mesh information list which have material name, vertex, indice etc.
+  ///
+  FORCEINLINE const auto& GetMeshInformation() const noexcept
+  {
+    return this->mSubmeshInformations;
+  }
+
+  ///
+  /// @brief Check if object is being binded to CDyModelResource instance.
+  ///
+  FORCEINLINE bool IsBeingBindedToResource() const noexcept
+  {
+    return this->mLinkedModelResourcePtr != nullptr;
+  }
+
 private:
   ///
-  /// @brief
+  /// @brief Process aiMesh, make mesh information description which stores vertex, indices,
+  /// innate material information, etc.
   ///
-  void __pProcessNode(aiNode* node, const aiScene* scene);
+  void __pProcessAssimpMesh(aiMesh* mesh, const aiScene* scene);
+
+  /// Read vertex data, make data, and insert to PDySubmeshInformationDescriptor.
+  void __pReadVertexData(const aiMesh* mesh, PDySubmeshInformationDescriptor& desc);
+
+  /// Read bone data.
+  void __pReadBoneData(const aiMesh* mesh, PDySubmeshInformationDescriptor& desc);
+
+  /// Read index(element) data, make data, and insert to PDySubmeshInformationDescriptor.
+  void __pReadIndiceData(const aiMesh* mesh, PDySubmeshInformationDescriptor& desc);
+
+  /// Read material data and make descriptor.
+  PDyMaterialConstructionDescriptor __pReadMaterialData(const aiMaterial* material);
+
+  /// Read material texture data and insert texture information to manager.
+  std::optional<std::vector<std::string>> __pLoadMaterialTextures(const aiMaterial* material, EDyTextureMapType type);
+
+  /// Output information log only in debug mode.
+  void __pOutputDebugInformationLog();
 
   ///
-  /// @brief
-  ///
-  void __pProcessMesh(aiMesh* mesh, const aiScene* scene);
+  FORCEINLINE const aiScene* pGetModelGeometryResource() const noexcept
+  {
+    return this->mInternalModelGeometryResource;
+  }
 
-  ///
-  /// @brief
-  ///
-  std::optional<std::vector<std::string>> __pLoadMaterialTextures(aiMaterial* material, EDyTextureMapType type);
+  std::string                           mModelName            = "";
+  std::string                           mModelRootPath        = "";
+  std::vector<DDySubmeshInformation>    mSubmeshInformations  = {};
+  std::vector<std::string>              mBindedMaterialName   = {};
+  std::vector<std::string>              mTextureLocalPaths    = {};
 
-  std::string                       mModelRootPath      = "";
-  std::vector<DDyMeshInformation>   mMeshInformations;
-  std::vector<std::string>          mBindedMaterialName = {};
-  std::vector<std::string>          mTextureLocalPaths  = {};
+  // Added 2018-09-14
+  std::unique_ptr<Assimp::Importer>       mAssimpImporter                 = nullptr;
+  std::unordered_map<std::string, TU32>   mBoneStringBoneIdMap            = {};
+  std::vector<DDyGeometryBoneInformation> mOverallModelBoneInformations   = {};
+  int32_t                                 mModelBoneTotalCount            = 0;
+  const aiScene*                          mInternalModelGeometryResource  = nullptr;
+  DDyMatrix4x4                            mGlobalInverseTransform         = {};
 
   //!
-  //! Level pointers binding
+  //! Resource pointers binding
   //!
 
-  void __pfSetNextLevel(CDyModelResource* ptr) const noexcept { mNextLevelPtr = ptr; }
-  mutable CDyModelResource* mNextLevelPtr = nullptr;
+  void __pfSetModelResourceLink(CDyModelResource* ptr) const noexcept { mLinkedModelResourcePtr = ptr; }
+  mutable CDyModelResource* mLinkedModelResourcePtr = nullptr;
 
   friend class CDyModelResource;
-  friend class MDyResource;
+  friend class MDyHeapResource;
 };
 
 } /// ::dy namespace

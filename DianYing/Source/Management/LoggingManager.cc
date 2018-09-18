@@ -11,6 +11,8 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /// SOFTWARE.
 ///
+/// @TODO IMPLEMENT AUTOMATIC CREATION DIRECTORY FOR FILE SINKING.
+///
 
 /// Header file
 #include <Dy/Management/LoggingManager.h>
@@ -39,8 +41,8 @@ spdlog::level::level_enum DyGetLogLevel(dy::EDyLogLevel level) noexcept
   switch (level)
   {
   case dy::EDyLogLevel::Trace:        return spdlog::level::trace;
-  case dy::EDyLogLevel::Information:  return spdlog::level::info;
   case dy::EDyLogLevel::Debug:        return spdlog::level::debug;
+  case dy::EDyLogLevel::Information:  return spdlog::level::info;
   case dy::EDyLogLevel::Warning:      return spdlog::level::warn;
   case dy::EDyLogLevel::Critical:     return spdlog::level::critical;
   case dy::EDyLogLevel::Error:        return spdlog::level::err;
@@ -55,12 +57,14 @@ namespace dy
 
 EDySuccess MDyLog::pfInitialize()
 {
-  //this->pfTurnOn();
+  MDY_LOG_DEBUG_D("{} | MDyLog::pfInitialize().", "FunctionCall");
+  this->pfTurnOn();
   return DY_SUCCESS;
 }
 
 EDySuccess MDyLog::pfRelease()
 {
+  MDY_LOG_DEBUG_D("{} | MDyLog::pfRelease().", "FunctionCall");
   this->pfTurnOff();
   return DY_SUCCESS;
 }
@@ -74,11 +78,18 @@ void MDyLog::SetVisibleLevel(EDyLogLevel newLogLevel)
   {
     this->mLogger->set_level(DyGetLogLevel(this->mLogLevel));
   }
+
+  MDY_LOG_DEBUG_D("MDyLog::mLogger level : {}.", DyGetLogLevel(this->mLogLevel));
 }
 
 EDySuccess MDyLog::pfTurnOn()
 {
-  if (this->mLogger) return DY_SUCCESS;
+  MDY_LOG_DEBUG_D("{} | MDyLog::pfTurnOn()", "Function call");
+  if (this->mLogger)
+  {
+    MDY_LOG_INFO_D("MDyLog::mLogger already allocated.");
+    return DY_SUCCESS;
+  }
 
   const auto& settingManager = MDySetting::GetInstance();
   if (!settingManager.IsEnableSubFeatureLoggingToFile() &&
@@ -126,13 +137,19 @@ EDySuccess MDyLog::pfTurnOn()
   this->mLogger = std::make_shared<spdlog::logger>("DianYing", this->mSinks.begin(), this->mSinks.end());
   this->mLogger->set_level(DyGetLogLevel(this->mLogLevel));
 
+  MDY_LOG_DEBUG_D("MDyLog::mLogger level : {}.", DyGetLogLevel(this->mLogLevel));
+  MDY_LOG_DEBUG_D("MDyLog::mLogger resource allocated.");
+
   spdlog::register_logger(this->mLogger);
+  MDY_LOG_DEBUG_D("MDyLog::mLogger resource registered.");
   spdlog::set_error_handler(DyCallbackLoggerError);
   return DY_SUCCESS;
 }
 
 EDySuccess MDyLog::pfTurnOff()
 {
+  MDY_LOG_INFO_D("{} | MDyLog::pfTurnOff().", "FunctionCall");
+
   spdlog::drop_all();
   this->mLogger.reset();
   this->mSinks.clear();

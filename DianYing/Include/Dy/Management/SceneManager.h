@@ -31,6 +31,10 @@ class CDyCamera;
 namespace dy
 {
 
+///
+/// @class MDyScene
+/// @brief Manages scene and helping access each scene's unique properties.
+///
 class MDyScene final : public ISingleton<MDyScene>
 {
 public:
@@ -38,12 +42,22 @@ public:
   MDY_SINGLETON_PROPERTIES(MDyScene);
 
   ///
-  /// @brief
+  /// @brief Return main camera ptr.
   ///
-  const CDyCamera* GetCamera() const noexcept;
+  [[nodiscard]] CDyCamera* GetMainCameraPtr() const noexcept;
+
+  ///
+  /// @brief Check if main camera is binded so be able to focused by scene.
+  ///
+  [[nodiscard]] FORCEINLINE bool IsMainCameraFocused() const noexcept
+  {
+    return this->mValidMainCameraPtr != nullptr;
+  }
 
 private:
+  /// Bind valid camera to main camera and let object have focused.
   void __pfBindFocusCamera(CDyCamera* validCameraPtr);
+  /// Unbind main camera. this function must not be called manually, but using camera's mechanism.
   void __pfUnbindCameraFocus();
 
   /// @brief

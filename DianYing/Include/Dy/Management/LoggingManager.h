@@ -27,13 +27,13 @@ namespace dy
 
 ///
 /// @enum EDyLogLevel
-/// @brief log level enumeration
+/// @brief Log level enumeration
 ///
 enum class EDyLogLevel
 {
   Trace,
-  Information,
   Debug,
+  Information,
   Warning,
   Error,
   Critical,
@@ -41,7 +41,7 @@ enum class EDyLogLevel
 
 ///
 /// @class MDyLog
-/// @brief
+/// @brief Manages logging.
 ///
 class MDyLog final : public ISingleton<MDyLog>
 {
@@ -55,7 +55,7 @@ public:
 
   ///
   /// @brief This function can push the log manually.
-  /// In case of being intentialiy, recommend use MACRO version (MDY_LOG_INFORMATION)
+  /// In case of being intentialiy, recommend use MACRO version (MDY_LOG_INFO_D)
   ///
   template <typename... TArgs>
   void PushLog(EDyLogLevel logLevel, const std::string_view& name, const TArgs&... args)
@@ -64,12 +64,12 @@ public:
     {
       switch (logLevel)
       {
-      case EDyLogLevel::Trace:        this->mLogger->trace(name, args...);     break;
-      case EDyLogLevel::Information:  this->mLogger->info(name, args...);      break;
-      case EDyLogLevel::Debug:        this->mLogger->debug(name, args...);     break;
-      case EDyLogLevel::Warning:      this->mLogger->warn(name, args...);      break;
-      case EDyLogLevel::Error:        this->mLogger->error(name, args...);     break;;
-      case EDyLogLevel::Critical:     this->mLogger->critical(name, args...);  break;
+      case EDyLogLevel::Trace:        this->mLogger->trace(name.data(), args...);     break;
+      case EDyLogLevel::Information:  this->mLogger->info(name.data(), args...);      break;
+      case EDyLogLevel::Debug:        this->mLogger->debug(name.data(), args...);     break;
+      case EDyLogLevel::Warning:      this->mLogger->warn(name.data(), args...);      break;
+      case EDyLogLevel::Error:        this->mLogger->error(name.data(), args...);     break;;
+      case EDyLogLevel::Critical:     this->mLogger->critical(name.data(), args...);  break;
       }
     }
   }
@@ -89,30 +89,50 @@ private:
 
   std::vector<spdlog::sink_ptr>   mSinks        = {};
   std::shared_ptr<spdlog::logger> mLogger       = nullptr;
-  EDyLogLevel                     mLogLevel     = EDyLogLevel::Information;
+  EDyLogLevel                     mLogLevel     = EDyLogLevel::Debug;
 
   friend class MDySetting;
 };
 
 } /// ::dy namespace
 
+//!
+//! Global log macro
+//!
+
+#define MDY_LOG_INFO(__MAString__, ...) \
+::dy::MDyLog::GetInstance().PushLog(dy::EDyLogLevel::Information, __MAString__, __VA_ARGS__)
+#define MDY_LOG_WARNING(__MAString__, ...) \
+::dy::MDyLog::GetInstance().PushLog(dy::EDyLogLevel::Warning, __MAString__, __VA_ARGS__)
+#define MDY_LOG_ERROR(__MAString__, ...) \
+::dy::MDyLog::GetInstance().PushLog(dy::EDyLogLevel::Error, __MAString__, __VA_ARGS__)
+#define MDY_LOG_CRITICAL(__MAString__, ...) \
+::dy::MDyLog::GetInstance().PushLog(dy::EDyLogLevel::Critical, __MAString__, __VA_ARGS__)
+
+//!
+//! Debug log macro for just only debug mode
+//!
+
 #if !defined(NDEBUG)
-  #define MDY_LOG_INFORMATION(__MAString__, ...) \
-  ::dy::MDyLog::GetInstance().PushLog(dy::EDyLogLevel::Information, __MAString__, __VA_ARGS__)
-  #define MDY_LOG_DEBUG(__MAString__, ...) \
+  #define MDY_LOG_TRACE_D(__MAString__, ...) \
+  ::dy::MDyLog::GetInstance().PushLog(dy::EDyLogLevel::Trace, __MAString__, __VA_ARGS__)
+  #define MDY_LOG_DEBUG_D(__MAString__, ...) \
   ::dy::MDyLog::GetInstance().PushLog(dy::EDyLogLevel::Debug, __MAString__, __VA_ARGS__)
-  #define MDY_LOG_WARNING(__MAString__, ...) \
+  #define MDY_LOG_INFO_D(__MAString__, ...) \
+  ::dy::MDyLog::GetInstance().PushLog(dy::EDyLogLevel::Information, __MAString__, __VA_ARGS__)
+  #define MDY_LOG_WARNING_D(__MAString__, ...) \
   ::dy::MDyLog::GetInstance().PushLog(dy::EDyLogLevel::Warning, __MAString__, __VA_ARGS__)
-  #define MDY_LOG_ERROR(__MAString__, ...) \
+  #define MDY_LOG_ERROR_D(__MAString__, ...) \
   ::dy::MDyLog::GetInstance().PushLog(dy::EDyLogLevel::Error, __MAString__, __VA_ARGS__)
-  #define MDY_LOG_CRITICAL(__MAString__, ...) \
+  #define MDY_LOG_CRITICAL_D(__MAString__, ...) \
   ::dy::MDyLog::GetInstance().PushLog(dy::EDyLogLevel::Critical, __MAString__, __VA_ARGS__)
 #else
-  #define MDY_LOG_INFORMATION(__MAString__, ...)   ((void*)0)
-  #define MDY_LOG_DEBUG(__MAString__, ...)         ((void*)0)
-  #define MDY_LOG_WARNING(__MAString__, ...)       ((void*)0)
-  #define MDY_LOG_CRITICAL(__MAString__, ...)      ((void*)0)
-  #define MDY_LOG_ERROR(__MAString__, ...)         ((void*)0)
+  #define MDY_LOG_TRACE_D(__MAString__, ...)         ((void*)0)
+  #define MDY_LOG_INFO_D(__MAString__, ...)   ((void*)0)
+  #define MDY_LOG_DEBUG_D(__MAString__, ...)         ((void*)0)
+  #define MDY_LOG_WARNING_D(__MAString__, ...)       ((void*)0)
+  #define MDY_LOG_CRITICAL_D(__MAString__, ...)      ((void*)0)
+  #define MDY_LOG_ERROR_D(__MAString__, ...)         ((void*)0)
 #endif /// opgs16::debug::PushLog only on _DEBUG
 
 #endif /// GUARD_DY_MANAGEMENT_LOGGING_MANAGER_H

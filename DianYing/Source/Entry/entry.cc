@@ -12,15 +12,12 @@
 /// SOFTWARE.
 ///
 
-#include <cassert>
-
-#include <iostream>
-
 #ifdef false
 #include <Dy/VkInterface.h>
 #endif
 
 #include <d3dx11effect.h>
+#include <sol2/sol.hpp>
 
 #include <Dy/Management/DataInformationManager.h>
 #include <Dy/Management/HeapResourceManager.h>
@@ -29,40 +26,29 @@
 #include <Dy/Management/TimeManager.h>
 #include <Dy/Management/WindowManager.h>
 #include <Dy/Management/LoggingManager.h>
+#include <Dy/Management/InputManager.h>
+#include <Dy/Management/RenderingManager.h>
 
-/// @todo Chapter 6
-struct DVertex1
-{
-  DirectX::XMFLOAT3 position;
-  DirectX::XMFLOAT4 color;
-};
-
-struct DVectex2
-{
-  DirectX::XMFLOAT3 position;
-  DirectX::XMFLOAT2 normal;
-  DirectX::XMFLOAT2 texCoord0;
-  DirectX::XMFLOAT2 texCoord1;
-};
-
-//!
-//! DirectX12 API
-//!
-
-void                  DyD12RenderLoop();
-void                  DyD12RenderFrame();
-
-ID3D11Device*         d11Device         = nullptr;
-ID3D11DeviceContext*  d11DeviceContext  = nullptr;
-
-//!
-//! OpenGL 4 API
-//!
-
-EDySuccess                DyGlCreateContentWgl();
+#include <Dy/Management/Editor/GuiManager.h>
 
 namespace
 {
+
+#ifdef MDY_FLAG_IN_EDITOR
+///
+/// @brief Initialize all gui editor managers related to editing easily.
+///
+void DyInitializeEditorManagers()
+{
+
+}
+
+void DyReleaseEditorManagers()
+{
+
+}
+#endif
+
 ///
 /// @brief Initialize all managers related to DianYing rendering application.
 /// Initialzation order must be ended with MDyWindow and started with MDySetting by getting argv
@@ -74,25 +60,39 @@ void DyInitiailzeAllManagers()
     auto& settingManager = dy::MDySetting::GetInstance();
     #if defined(MDY_PLATFORM_FLAG_WINDOWS) && defined(_WIN32)
       const int32_t size = __argc;
-      for (int32_t i = 0; i < size; ++i) {
-        settingManager.ArgsPushback(__argv[i]);
+      for (int32_t i = 0; i < size; ++i)
+      {
+        settingManager.pArgsPushback(__argv[i]);
       }
     #elif defined(MDY_PLATFORM_FLAG_LINUX) && defined(__linux__)
-
+      static_assert(false, "Linux does not support now.");
     #elif defined(MDY_PLATFORM_FLAG_MACOS)
-
+      static_assert(false, "Macos does not support now.");
     #endif
     MDY_CALL_ASSERT_SUCCESS(dy::MDySetting::Initialize());
   }
 
+  {
+    auto& logManager = dy::MDySetting::GetInstance();
+    logManager.SetSubFeatureLoggingToConsole(true);
+    logManager.SetSubFeatureLoggingToFile(true);
+  }
   MDY_CALL_ASSERT_SUCCESS(dy::MDyLog::Initialize());
+#if defined(MDY_FLAG_IN_EDITOR)
+  MDY_CALL_ASSERT_SUCCESS(dy::editor::MDyEditorGui::Initialize());
+#endif
+
   MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyDataInformation::Initialize());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyResource::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyHeapResource::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyScene::Initialize());
 
   // MDyWindow must be initialized at last.
   MDY_CALL_ASSERT_SUCCESS(dy::MDyWindow::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyRendering::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyInput::Initialize());
+
+  MDY_LOG_WARNING_D("========== DIANYING MANAGER INITIALIZED ==========");
 }
 
 ///
@@ -101,13 +101,21 @@ void DyInitiailzeAllManagers()
 ///
 void DyReleaseAllManagers()
 {
+  MDY_LOG_WARNING_D("========== DIANYING MANAGER RELEASED ==========");
+
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyInput::Release());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyRendering::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyWindow::Release());
 
   // Release other management instance.
   MDY_CALL_ASSERT_SUCCESS(dy::MDyScene::Release());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyResource::Release());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyHeapResource::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyDataInformation::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Release());
+#if defined(MDY_FLAG_IN_EDITOR)
+  MDY_CALL_ASSERT_SUCCESS(dy::editor::MDyEditorGui::Release());
+#endif
+
   MDY_CALL_ASSERT_SUCCESS(dy::MDyLog::Release());
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDySetting::Release());
@@ -122,12 +130,16 @@ void DyReleaseAllManagers()
 namespace
 {
 
-FILE* fp = nullptr;
+FILE*     gFp             = nullptr;
+HINSTANCE ghInstance      = nullptr;
+HINSTANCE ghPrevInstance  = nullptr;
+LPSTR     gpCmdLine;
+int       gnCmdShow;
 
 ///
 /// @brief Turn on memory leak detection feature and console window for logging.
 ///
-EDySuccess __InitializeWin32Debug()
+EDySuccess __DyInitializeWin32Debug()
 {
   _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
   _CrtSetReportMode( _CRT_ERROR, _CRTDBG_MODE_DEBUG );
@@ -137,31 +149,29 @@ EDySuccess __InitializeWin32Debug()
     return DY_FAILURE;
   }
 
-  freopen_s(&fp, "CONOUT$", "w", stdout);
-  std::cout << "Hello world!\n";
+  freopen_s(&gFp, "CONOUT$", "w", stdout);
   return DY_SUCCESS;
 }
 
 ///
 /// @brief Turn off memory leak detection feature and console window for logging.
 ///
-EDySuccess __ReleaseWin32Debug()
+EDySuccess __DyReleaseWin32Debug()
 {
-  fclose(fp);
+  fclose(gFp);
 
   if (!FreeConsole()) {
     MessageBox(nullptr, L"Failed to free console resource.", nullptr, MB_ICONEXCLAMATION);
     return DY_FAILURE;
   }
-
   return DY_SUCCESS;
 }
 
 } /// unname namespace
 
 #if defined(_DEBUG) || !defined(NDEBUG)
-#define MDY_WIN32_TRY_TURN_ON_DEBUG()   MDY_CALL_ASSERT_SUCCESS(__InitializeWin32Debug())
-#define MDY_WIN32_TRY_TURN_OFF_DEBUG()  MDY_CALL_ASSERT_SUCCESS(__ReleaseWin32Debug())
+#define MDY_WIN32_TRY_TURN_ON_DEBUG()   MDY_CALL_ASSERT_SUCCESS(__DyInitializeWin32Debug())
+#define MDY_WIN32_TRY_TURN_OFF_DEBUG()  MDY_CALL_ASSERT_SUCCESS(__DyReleaseWin32Debug())
 #else
 #define MDY_WIN32_TRY_TURN_ON_DEBUG()   (void)0
 #define MDY_WIN32_TRY_TURN_OFF_DEBUG()  (void)0
@@ -170,17 +180,37 @@ EDySuccess __ReleaseWin32Debug()
 ///
 /// @brief Main function of win32 / win64 platform.
 ///
-int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow) {
+int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow)
+{
+  ghInstance      = hInstance;
+  ghPrevInstance  = hPrevInstance;
+  gpCmdLine       = pCmdLine;
+  gnCmdShow       = nCmdShow;
+
   MDY_WIN32_TRY_TURN_ON_DEBUG();
+
+#ifdef MDY_FLAG_IN_EDITOR
+  DyInitializeEditorManagers();
+#endif
   DyInitiailzeAllManagers();
 
-  auto& i = dy::MDySetting::GetInstance();
-  i.SetSubFeatureLoggingToConsole(true);
-  i.SetFeatureLogging(true);
+  MDY_LOG_INFO_D("Platform : Windows");
+  MDY_LOG_INFO_D("Running application routine.");
+
+  sol::state lua;
+  lua.open_libraries(sol::lib::base, sol::lib::package);
+
+  int value = lua.script("return 54");
+  MDY_LOG_CRITICAL_D("Hello world Lua! : {}", value);
 
   dy::MDyWindow::GetInstance().Run();
 
+  MDY_LOG_INFO_D("Release all managers and resources.");
+
   DyReleaseAllManagers();
+#ifdef MDY_FLAG_IN_EDITOR
+  DyReleaseEditorManagers();
+#endif
   MDY_WIN32_TRY_TURN_OFF_DEBUG();
   return 0;
 }

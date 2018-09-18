@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/enum_flags.h>
+#include <Dy/Helper/GlobalEnumFlags.h>
 #include <Dy/Helper/Type/Matrix4.h>
 
 namespace dy
@@ -27,7 +27,7 @@ struct PDyCameraConstructionDescriptor
   /// Fov must be range from 0.1f to 180.f
   float mInitialFieldOfView   = 60.f;
   /// Custom viewport size, but mUseCustomViewport must be enabled.
-  DVector2 mViewportSize      = {};
+  DDyVector2 mViewportSize      = {};
 
   /// Just use main viewport as a size.
   bool mUseCustomViewport     = false;
@@ -63,6 +63,42 @@ public:
   ///
   /// @brief
   ///
+  FORCEINLINE float GetFieldOfView() const noexcept
+  {
+    return this->mFieldOfView;
+  }
+
+  ///
+  /// @brief
+  ///
+  FORCEINLINE float GetXYAspect() const noexcept
+  {
+    return this->mAspect;
+  }
+
+  ///
+  /// @brief
+  ///
+  const DDyMatrix4x4& GetViewMatrix() noexcept;
+
+  ///
+  /// @brief
+  ///
+  const DDyMatrix4x4& GetProjectionMatrix() noexcept;
+
+  ///
+  /// @brief
+  ///
+  void SetFieldOfView(float newFov) noexcept;
+
+  ///
+  /// @brief
+  ///
+  void SetAspect(float newAspect) noexcept;
+
+  ///
+  /// @brief
+  ///
   bool IsOrthographicCamera() const noexcept;
 
   ///
@@ -81,25 +117,56 @@ public:
   void Update(float dt);
 
 private:
+  ///
+  /// @brief
+  ///
+  void pUpdateCameraVectors();
+
+  ///
+  /// @brief
+  ///
+  void pUpdateViewMatrix();
+
+  ///
+  /// @brief
+  ///
+  void pUpdateProjectionMatrix();
+
+  ///
+  /// @brief
+  ///
+  void pProcessMouseMovement(const DDyVector2& offset, bool constrainPitch = true);
+
   DDyMatrix4x4  mViewMatrix;
   DDyMatrix4x4  mProjectionMatrix;
 
-  DVector3      mPosition         = {};
-  DVector3      mLookingAt        = {};
+  DDyVector3      mPosition                 = {};
+  DDyVector3      mRotationEulerAngle       = {};
+  DDyVector3      mLookingAtDirection       = {};
+  DDyVector3      mLookingAtRightDirection  = {};
+  DDyVector3      mLookingAtUpDirection     = {};
 
   //! (Camera) -> |Near| >>>>>>>>>>>>>>>|Far|
   //! Ground --------------------------------
 
   /// Camera's near value.
-  float mNear = 0;
+  float mNear                     = 0.1f;
   /// Camera's far value.
-  float mFar  = 100;
+  float mFar                      = 100;
+  float mFieldOfView              = 0.f;
+  float mAspect                   = 0.f;
+  float mMouseSensitivity         = 0.25f;
+  float mSpeed                    = 10.f;
 
   bool mIsMoveable                = false;
   bool mIsEnableMeshUnClipped     = false;
   bool mIsOrthographicCamera      = false;
   ///
   bool mIsFirstTime = true;
+
+  bool mIsViewMatrixDirty         = true;
+  bool mIsPerspectiveMatrixDirty  = true;
+  bool mIsFocused                 = false;
 };
 
 } /// ::dy namespace

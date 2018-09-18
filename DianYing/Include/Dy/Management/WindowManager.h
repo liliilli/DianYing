@@ -15,11 +15,17 @@
 
 #include <Dy/Helper/Macroes.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
+#include <Phitos/Dbg/assert.h>
 
 namespace dy
 {
 
 #if defined(MDY_PLATFORM_FLAG_WINDOWS)
+
+///
+/// @struct DDyWindowInformationWindows
+/// @brief Windows information for windows platform.
+///
 struct DDyWindowInformationWindows
 {
 protected:
@@ -29,7 +35,11 @@ protected:
   GLFWwindow* mGlfwWindow               = nullptr;
 };
 
-struct DDyDependentFunctionWindows
+///
+/// @struct DDyDependentFunctionWindows
+/// @brief Windows specific functions
+///
+struct [[maybe_unused]] DDyDependentFunctionWindows
 {
 
 };
@@ -45,9 +55,22 @@ public:
   ///
   void Run();
 
+  ///
+  /// @brief Get glfw window context.
+  /// @todo TEMPORAL FUNCTION.
+  ///
+  GLFWwindow* GetGlfwWindowContext() const noexcept
+  {
+    PHITOS_ASSERT(this->mGlfwWindow, "GlfwWindow is not initiailized.");
+    return this->mGlfwWindow;
+  }
+
 private:
+  ///
+  void pUpdate(float dt);
 
-
+  ///
+  void pRender();
 
 };
 

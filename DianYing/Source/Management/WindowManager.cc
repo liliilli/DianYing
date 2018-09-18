@@ -16,20 +16,27 @@
 #include <Dy/Management/WindowManager.h>
 
 #include <iostream>
+#include <future>
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_glfw.h>
 #include <imgui/imgui_impl_opengl3.h>
 
+#include <Dy/Core/Component/Internal/EtcType.h>
 #include <Dy/Core/Component/MeshRenderer.h>
 #include <Dy/Core/Component/Resource/ShaderResource.h>
 #include <Dy/Core/Component/Object/Camera.h>
-#include <Dy/Helper/ImmutableSetting.h>
+#include <Dy/Core/Component/Object/Grid.h>
 #include <Dy/Helper/Type/Vector3.h>
 #include <Dy/Management/DataInformationManager.h>
 #include <Dy/Management/HeapResourceManager.h>
 #include <Dy/Management/SettingManager.h>
-#include <Dy/Core/Component/Internal/EtcType.h>
+#include <Dy/Management/LoggingManager.h>
+#include <Dy/Management/SceneManager.h>
+#include <Dy/Management/InputManager.h>
+#include <Dy/Management/TimeManager.h>
+#include <Dy/Management/Editor/GuiManager.h>
+#include "Dy/Management/RenderingManager.h"
 
 ///
 /// Undefined proprocessor WIN32 macro "max, min" for preventing misuse.
@@ -48,16 +55,13 @@
 namespace
 {
 
-bool gImguiShowDemoWindow = true;
+bool gImguiShowDemoWindow = false;
 bool gImguiShowAnotherWindow = false;
 
-dy::DVector3                    gColor      {.2f, .2f, .2f};
+dy::DDyVector3                  gColor      {.2f, .3f, .2f};
 dy::CDyMeshRenderer             gRenderer   = {};
-dy::CDyShaderResource*          gShaderPtr  = nullptr;
 std::unique_ptr<dy::CDyCamera>  gCameraPtr  = nullptr;
-
-GLuint gVao = 0;
-GLuint gVbo = 0;
+std::unique_ptr<dy::FDyGrid>    gGrid       = nullptr;
 
 void GLAPIENTRY DyGlMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
@@ -72,14 +76,13 @@ void GLAPIENTRY DyGlMessageCallback(GLenum source, GLenum type, GLuint id, GLenu
 void DyGlTempInitializeResource()
 {
   auto& manInfo = dy::MDyDataInformation::GetInstance();
-  auto& manResc = dy::MDyResource       ::GetInstance();
 
   dy::PDyCameraConstructionDescriptor cameraDesc;
   {
     cameraDesc.mInitialFieldOfView  = 70.f;
     cameraDesc.mIsMoveable          = true;
     cameraDesc.mIsFocusInstantly    = true;
-    cameraDesc.mIsOrthographic      = false;
+    cameraDesc.mIsOrthographic      = true;
     cameraDesc.mUseCustomViewport   = false;
   }
   gCameraPtr = std::make_unique<dy::CDyCamera>(cameraDesc);
@@ -88,61 +91,72 @@ void DyGlTempInitializeResource()
   //! Grid rendering setting.
   //!
 
-  dy::PDyShaderConstructionDescriptor gridShaderDesc;
+  gGrid = std::make_unique<dy::FDyGrid>();
+
+  //!
+  //! Shader
+  //!
+
   {
-    gridShaderDesc.mShaderName = "dyBuiltinGrid";
+    dy::PDyShaderConstructionDescriptor shaderDesc;
+    shaderDesc.mShaderName = "TestDeferredShader";
+    {
+      dy::PDyShaderFragmentInformation vs;
+      vs.mShaderType = dy::EDyShaderFragmentType::Vertex;
+      vs.mShaderPath = "./glMeshVert.vert";
+      shaderDesc.mShaderFragments.emplace_back(vs);
+    }
+    {
+      dy::PDyShaderFragmentInformation fs;
+      fs.mShaderType = dy::EDyShaderFragmentType::Pixel;
+      fs.mShaderPath = "./glMeshDeferredFrag.frag";
+      shaderDesc.mShaderFragments.emplace_back(fs);
+    }
+    MDY_CALL_ASSERT_SUCCESS(manInfo.CreateShaderInformation(shaderDesc));
+  }
+
+  {
+    dy::PDyShaderConstructionDescriptor shaderDesc;
+    {
+      shaderDesc.mShaderName = "TestShader";
+      {
+        dy::PDyShaderFragmentInformation vertexShaderInfo;
+        vertexShaderInfo.mShaderType = dy::EDyShaderFragmentType::Vertex;
+        vertexShaderInfo.mShaderPath = "./glMeshVert.vert";
+        shaderDesc.mShaderFragments.emplace_back(vertexShaderInfo);
+      }
+      {
+        dy::PDyShaderFragmentInformation fragmentShaderInfo;
+        fragmentShaderInfo.mShaderType = dy::EDyShaderFragmentType::Pixel;
+        fragmentShaderInfo.mShaderPath = "./glShader.frag";
+        shaderDesc.mShaderFragments.emplace_back(fragmentShaderInfo);
+      }
+    }
+    MDY_CALL_ASSERT_SUCCESS(manInfo.CreateShaderInformation(shaderDesc));
+  }
+
+#ifdef false
+  {
+    dy::PDyShaderConstructionDescriptor desc;
+    desc.mShaderName = "TestSkeletalAnimShader";
     {
       dy::PDyShaderFragmentInformation vertexShaderInfo;
       vertexShaderInfo.mShaderType = dy::EDyShaderFragmentType::Vertex;
-      vertexShaderInfo.mShaderPath = "./ShaderResource/Gl/grid.vert";
-      gridShaderDesc.mShaderFragments.emplace_back(vertexShaderInfo);
+      vertexShaderInfo.mShaderPath = "./glMeshVertSAnim.vert";
+      desc.mShaderFragments.emplace_back(vertexShaderInfo);
     }
     {
       dy::PDyShaderFragmentInformation fragmentShaderInfo;
       fragmentShaderInfo.mShaderType = dy::EDyShaderFragmentType::Pixel;
-      fragmentShaderInfo.mShaderPath = "./ShaderResource/Gl/grid.frag";
-      gridShaderDesc.mShaderFragments.emplace_back(fragmentShaderInfo);
+      fragmentShaderInfo.mShaderPath = "./glShader.frag";
+      desc.mShaderFragments.emplace_back(fragmentShaderInfo);
     }
-  }
-  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateShaderInformation (gridShaderDesc)            );
-  MDY_CALL_ASSERT_SUCCESS(manResc.CreateShaderResource    (gridShaderDesc.mShaderName));
-  gShaderPtr = manResc.GetShaderResource(gridShaderDesc.mShaderName);
-
-  glGenVertexArrays(1, &gVao);
-  glGenBuffers(1, &gVbo);
-  glBindVertexArray(gVao);
-
-  std::vector<dy::DVector3> mPointers;
-  {
-    const float start     = -1.f;
-    const float width     = 2.f;
-    const int32_t step    = 6;
-    const float interval  = width / step;
-
-    for (int32_t i = 0; i <= step; ++i)
-    {
-      // Horizontal
-      mPointers.emplace_back(start,         0.f, start + interval * i);
-      mPointers.emplace_back(start + width, 0.f, start + interval * i);
-      // Vertical
-      mPointers.emplace_back(start + interval * i, 0.f,         start);
-      mPointers.emplace_back(start + interval * i, 0.f, start + width);
-    }
+    MDY_CALL_ASSERT_SUCCESS(manInfo.CreateShaderInformation(desc));
   }
 
-  glBindBuffer(GL_ARRAY_BUFFER, gVbo);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(dy::DVector3) * mPointers.size(), mPointers.data(), GL_STATIC_DRAW);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(dy::DVector3), nullptr);
-  glEnableVertexAttribArray(0);
-  glBindVertexArray(0);
-
-  //!
-  //! Other model and resource setting.
-  //!
-
-  dy::PDyShaderConstructionDescriptor shaderDesc;
   {
-    shaderDesc.mShaderName = "TestShader";
+    shaderDesc.mShaderFragments.clear();
+    shaderDesc.mShaderName = "MeshNanosuitShader";
     {
       dy::PDyShaderFragmentInformation vertexShaderInfo;
       vertexShaderInfo.mShaderType = dy::EDyShaderFragmentType::Vertex;
@@ -152,152 +166,181 @@ void DyGlTempInitializeResource()
     {
       dy::PDyShaderFragmentInformation fragmentShaderInfo;
       fragmentShaderInfo.mShaderType = dy::EDyShaderFragmentType::Pixel;
-      fragmentShaderInfo.mShaderPath = "./glShader.frag";
+      fragmentShaderInfo.mShaderPath = "./glMeshDNSFrag.frag";
       shaderDesc.mShaderFragments.emplace_back(fragmentShaderInfo);
     }
   }
   MDY_CALL_ASSERT_SUCCESS(manInfo.CreateShaderInformation(shaderDesc));
 
-  // OpenGL (native) Texture binding DEMO
-  dy::PDyTextureConstructionDescriptor textureDesc;
-  {
-    textureDesc.mTextureName                        = "TestTexture";
-    textureDesc.mTextureFileAbsolutePath            = "./TestResource/S_7325920284368.jpg";
-    textureDesc.mTextureType                        = dy::EDyTextureStyleType::D2;
-    textureDesc.mIsEnabledCustomedTextureParameter  = false;
-  }
-  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateTextureInformation(textureDesc));
+  //!
+  //! Model
+  //!
 
-  dy::PDyMaterialConstructionDescriptor materialDesc;
-  {
-    materialDesc.mMaterialName  = "TestMaterial";
-    materialDesc.mBlendMode     = dy::EDyMaterialBlendMode::Opaque;
-    materialDesc.mShaderName    = "TestShader";
-    materialDesc.mTextureName   = { "TestTexture" };
-  }
-  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateMaterialInformation(materialDesc));
-
-#ifdef false
-  dy::PDyModelConstructionDescriptor modelDesc;
-  {
-    modelDesc.mModelName = "TestModel";
-    modelDesc.mModelPath = "./TestResource/nanosuit/nanosuit.obj";
-  }
-  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(modelDesc));
-#endif
-#ifdef false
-  std::vector<std::string> populatedMaterialNames;
-  {
-    const auto* model = manInfo.GetModelInformation(modelDesc.mModelName);
-    const auto& materialNameList = model->GetBindedMaterialNameLists();
-
-    dy::PDyMaterialPopulateDescriptor materialPopDesc;
-    materialPopDesc.mIsEnabledShaderOverride  = true;
-    materialPopDesc.mOverrideShaderName       = "TestShader";
-    for (const auto& materialName : materialNameList)
+  auto tempAsyncTask = std::async(std::launch::async, [&manInfo] {
+    dy::PDyModelConstructionDescriptor bunnyModel;
     {
-      const auto resultMatString = manInfo.PopulateMaterialInformation(materialName, materialPopDesc);
-      if (!resultMatString.has_value()) { assert(false); }
-      else
-      {
-        populatedMaterialNames.emplace_back(resultMatString.value());
-      }
+      bunnyModel.mModelName = "Bunny";
+      bunnyModel.mModelPath = "./TestResource/bun_zipper.ply";
     }
-  }
-  MDY_CALL_ASSERT_SUCCESS(manResc.CreateModelResource(modelDesc.mModelName));
-#endif
+    MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(bunnyModel));
+    return true;
+  });
 
-  dy::PDyModelConstructionDescriptor bunnyModel;
-  {
-    bunnyModel.mModelName = "Bunny";
-    bunnyModel.mModelPath = "./TestResource/bun_zipper.ply";
-  }
-  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(bunnyModel));
+  auto modelAsyncTask = std::async(std::launch::async, [&manInfo] {
+    dy::PDyModelConstructionDescriptor modelDesc;
+    {
+      modelDesc.mModelName = "TestModel";
+      modelDesc.mModelPath = "./TestResource/nanosuit/nanosuit.obj";
+    }
+    MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(modelDesc));
+    return true;
+  });
+#endif
 
 #ifdef false
-  dy::PDyModelConstructionDescriptor dragonModel;
   {
-    bunnyModel.mModelName = "Dragon";
-    bunnyModel.mModelPath = "./TestResource/dragon_vrip_res2.ply";
+    dy::PDyModelConstructionDescriptor modelDesc;
+    {
+      modelDesc.mModelName = "Sponza";
+      modelDesc.mModelPath = "./TestResource/crytek-sponza/sponza.obj";
+    }
+    MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(modelDesc));
+  };
+
+  std::unordered_map<std::string, std::string> populatedMaterialList = {};
+  dy::PDyMaterialPopulateDescriptor popDesc;
+  {
+    popDesc.mOverrideShaderName       = "MeshNanosuitShader";
+    popDesc.mTextureOverrideNames     = {"glass_dif", "glass_ddn"};
+    popDesc.mIsEnabledTextureOverride = true;
+    popDesc.mIsEnabledShaderOverride  = true;
+    if (auto matPtr = manInfo.PopulateMaterialInformation("Glass", popDesc); !matPtr.has_value()) { return; }
+    else { populatedMaterialList.try_emplace("Glass", matPtr.value()); }
   }
-  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(bunnyModel));
-#endif
+  {
+    popDesc.mTextureOverrideNames     = {"leg_dif", "leg_showroom_ddn", "leg_showroom_spec"};
+    if (auto matPtr = manInfo.PopulateMaterialInformation("Leg", popDesc); !matPtr.has_value()) { return; }
+    else { populatedMaterialList.try_emplace("Leg", matPtr.value()); }
+  }
+  {
+    popDesc.mTextureOverrideNames     = {"hand_dif", "hand_showroom_ddn", "hand_showroom_spec"};
+    if (auto matPtr = manInfo.PopulateMaterialInformation("Hand", popDesc); !matPtr.has_value()) { return; }
+    else { populatedMaterialList.try_emplace("Hand", matPtr.value()); }
+  }
+  {
+    popDesc.mTextureOverrideNames     = {"arm_dif", "arm_showroom_ddn", "arm_showroom_spec"};
+    if (auto matPtr = manInfo.PopulateMaterialInformation("Arm", popDesc); !matPtr.has_value()) { return; }
+    else { populatedMaterialList.try_emplace("Arm", matPtr.value()); }
+  }
+  {
+    popDesc.mTextureOverrideNames     = {"helmet_dif", "helmet_showroom_ddn", "helmet_showroom_spec"};
+    if (auto matPtr = manInfo.PopulateMaterialInformation("Helmet", popDesc); !matPtr.has_value()) { return; }
+    else { populatedMaterialList.try_emplace("Helmet", matPtr.value()); }
+  }
+  {
+    popDesc.mTextureOverrideNames     = {"body_dif", "body_showroom_ddn", "body_showroom_spec"};
+    if (auto matPtr = manInfo.PopulateMaterialInformation("Body", popDesc); !matPtr.has_value()) { return; }
+    else { populatedMaterialList.try_emplace("Body", matPtr.value()); }
+  }
 
   dy::PDyRendererConsturctionDescriptor rendererDesc;
   {
-    rendererDesc.mModelName     = "Bunny";
-    rendererDesc.mMaterialNames = {"TestMaterial"};
+    rendererDesc.mModelName     = "TestModel";
+    rendererDesc.mMaterialNames = {
+      populatedMaterialList["Glass"],
+      populatedMaterialList["Leg"],
+      populatedMaterialList["Hand"],
+      populatedMaterialList["Glass"],
+      populatedMaterialList["Arm"],
+      populatedMaterialList["Helmet"],
+      populatedMaterialList["Body"]
+    };
   }
   MDY_CALL_ASSERT_SUCCESS(gRenderer.pfInitialize(rendererDesc));
-}
+#endif
 
-///
-/// @brief Draw grid.
-///
-void DyGlDrawGrid()
-{
-  glDisable(GL_TEXTURE_2D);
-  glDisable(GL_LIGHTING);
-  glDisable(GL_BLEND);
-
-  gShaderPtr->UseShader();
-  glBindVertexArray(gVao);
-  glDrawArrays(GL_LINES, 0, 6 * 2);
-  glBindVertexArray(0);
-  gShaderPtr->UnuseShader();
-
-  glEnable(GL_BLEND);
-  glEnable(GL_TEXTURE_2D);
-  glEnable(GL_LIGHTING);
-}
-
-void DyImguiRenderFrame()
-{
-  ImGui_ImplOpenGL3_NewFrame();
-  ImGui_ImplGlfw_NewFrame();
-  ImGui::NewFrame();
-
-  if (gImguiShowDemoWindow)
+#ifdef false
   {
-    ImGui::ShowDemoWindow(&gImguiShowDemoWindow);
-  }
-
-  {
-    static float f = 0.0f;
-    static int32_t counter = 0;
-
-    ImGui::Begin("Hello, world!");
-    ImGui::Text("This is some useful text.");
-    ImGui::Checkbox("Demo Window", &gImguiShowDemoWindow);
-    ImGui::Checkbox("Another Window", &gImguiShowAnotherWindow);
-
-    ImGui::SliderFloat("Float", &f, 0.0f, 1.0f);
-    ImGui::ColorEdit3("Clear color", gColor.Data().data());
-
-    if (ImGui::Button("Button"))
+    shaderDesc.mShaderFragments.clear();
+    shaderDesc.mShaderName = "MeshShader";
     {
-      ++counter;
+      dy::PDyShaderFragmentInformation vertexShaderInfo;
+      vertexShaderInfo.mShaderType = dy::EDyShaderFragmentType::Vertex;
+      vertexShaderInfo.mShaderPath = "./glMeshVert.vert";
+      shaderDesc.mShaderFragments.emplace_back(vertexShaderInfo);
     }
-    ImGui::SameLine();
-    ImGui::Text("Counter = %d", counter);
-
-    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-    ImGui::End();
-
-    if (gImguiShowAnotherWindow)
     {
-      ImGui::Begin("Another Window", &gImguiShowAnotherWindow);
-      ImGui::Text("Hello from another window!");
-      if (ImGui::Button("Close me"))
-      {
-        gImguiShowAnotherWindow = false;
-      }
-      ImGui::End();
+      dy::PDyShaderFragmentInformation fragmentShaderInfo;
+      fragmentShaderInfo.mShaderType = dy::EDyShaderFragmentType::Pixel;
+      fragmentShaderInfo.mShaderPath = "./glMeshFrag.frag";
+      shaderDesc.mShaderFragments.emplace_back(fragmentShaderInfo);
     }
   }
+  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateShaderInformation(shaderDesc));
 
-  ImGui::Render();
-  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+  std::vector<std::string> materialNameList = {};
+  dy::PDyMaterialPopulateDescriptor popDesc;
+  {
+    popDesc.mOverrideShaderName       = "MeshShader";
+    popDesc.mIsEnabledShaderOverride  = true;
+    popDesc.mIsEnabledMaterialCustomNameOverride = true;
+
+    popDesc.mMaterialOverrideName     = "MaterialDennum1";
+    if (auto matPtr = manInfo.PopulateMaterialInformation("Material__2385", popDesc); !matPtr.has_value()) { return; }
+    else { materialNameList.emplace_back(matPtr.value()); }
+  }
+  {
+    popDesc.mMaterialOverrideName     = "MaterialCap";
+    if (auto matPtr = manInfo.PopulateMaterialInformation("Material__2412", popDesc); !matPtr.has_value()) { return; }
+    else { materialNameList.emplace_back(matPtr.value()); }
+  }
+  {
+    popDesc.mMaterialOverrideName     = "MaterialFace";
+    if (auto matPtr = manInfo.PopulateMaterialInformation("Material__2386", popDesc); !matPtr.has_value()) { return; }
+    else { materialNameList.emplace_back(matPtr.value()); }
+  }
+  {
+    popDesc.mMaterialOverrideName     = "MaterialDennum3";
+    if (auto matPtr = manInfo.PopulateMaterialInformation("Material__2410", popDesc); !matPtr.has_value()) { return; }
+    else { materialNameList.emplace_back(matPtr.value()); }
+  }
+  {
+    popDesc.mMaterialOverrideName     = "MaterialDennum2";
+    if (auto matPtr = manInfo.PopulateMaterialInformation("Material__2387", popDesc); !matPtr.has_value()) { return; }
+    else { materialNameList.emplace_back(matPtr.value()); }
+  }
+  {
+    popDesc.mMaterialOverrideName     = "MaterialShoes";
+    if (auto matPtr = manInfo.PopulateMaterialInformation("Material__2413", popDesc); !matPtr.has_value()) { return; }
+    else { materialNameList.emplace_back(matPtr.value()); }
+  }
+#endif
+
+  auto animAsyncTask = std::async(std::launch::async, [&manInfo] {
+    dy::PDyModelConstructionDescriptor modelDesc;
+    {
+      modelDesc.mModelName = "Boxing";
+      modelDesc.mModelPath = "./TestResource/Boxing.fbx";
+    }
+    MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(modelDesc));
+    return true;
+  });
+
+  if (animAsyncTask.get()) { MDY_LOG_DEBUG_D("OK"); };
+
+  {
+    dy::PDyMaterialPopulateDescriptor popDesc;
+    popDesc.mIsEnabledShaderOverride  = true;
+    popDesc.mOverrideShaderName       = "TestDeferredShader";
+    const auto spawnedMatStr = manInfo.PopulateMaterialInformation("asdf1:Beta_HighLimbsGeoSG2", popDesc);
+
+    dy::PDyRendererConsturctionDescriptor rendererDesc;
+    {
+      rendererDesc.mModelName     = "Boxing";
+      rendererDesc.mMaterialNames = { spawnedMatStr.value(), spawnedMatStr.value() };
+    }
+    MDY_CALL_ASSERT_SUCCESS(gRenderer.pfInitialize(rendererDesc));
+  }
 }
 
 
@@ -367,13 +410,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
   dy::TInt32 screenHeight = GetSystemMetrics(SM_CYSCREEN);
 #endif
 
+  const auto& settingManager = dy::MDySetting::GetInstance();
+
   const DWORD dwordExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
   const DWORD dwordStyle   = WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
   RECT  windowRect;
   windowRect.left    = 0L;
   windowRect.top     = 0L;
-  windowRect.right   = dy::kScreenWidth;
-  windowRect.bottom  = dy::kScreenHeight;
+  windowRect.right   = settingManager.GetWindowSizeWidth();
+  windowRect.bottom  = settingManager.GetWindowSizeHeight();
   AdjustWindowRectEx(&windowRect, dwordStyle, FALSE, dwordExStyle);
 
   *windowHandle = CreateWindowEx(0,
@@ -400,11 +445,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 }
 
 ///
-/// @brief
-/// Callback method for size check and resizing.
+/// @brief Callback method for size check and resizing.
 ///
-void DyGlCallbackFrameBufferSize(GLFWwindow* window, int width, int height) {
+void DyGlCallbackFrameBufferSize(GLFWwindow* window, int width, int height)
+{
   glViewport(0, 0, width, height);
+}
+
+///
+/// @brief Callback method for closing arbitary glfw window window handle.
+///
+void DyGlCallbackWindowClose(GLFWwindow* window)
+{
+  glfwSetKeyCallback(window, nullptr);
+  glfwSetCursorPosCallback(window, nullptr);
+  glfwDestroyWindow(window);
 }
 
 } /// unnamed namespace
@@ -428,18 +483,18 @@ namespace dy
 
 void MDyWindow::Run()
 {
+  auto& timeManager  = MDyTime::GetInstance();
+
   while (!glfwWindowShouldClose(this->mGlfwWindow))
   {
-    glClearColor(gColor.X, gColor.Y, gColor.Z, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    timeManager.pUpdate();
+    if (timeManager.IsGameFrameTicked() == DY_SUCCESS)
+    {
+      const auto dt = timeManager.GetGameScaledTickedDeltaTimeValue();
 
-    DyGlDrawGrid();
-    gRenderer.Render();
-    DyImguiRenderFrame();
-
-    glfwSwapBuffers(this->mGlfwWindow);
-    glfwPollEvents();
+      this->pUpdate(dt);
+      this->pRender();
+    }
   }
 #ifdef false
 #if defined(_WIN32)
@@ -467,34 +522,79 @@ void MDyWindow::Run()
 #endif
 }
 
+///
+/// @brief
+///
+void MDyWindow::pUpdate(float dt)
+{
+#if defined(MDY_FLAG_IN_EDITOR)
+  editor::MDyEditorGui::GetInstance().Update(dt);
+#endif /// MDY_FLAG_IN_EDITOR
+  MDyInput::GetInstance().pfUpdate(dt);
+
+  auto& sceneManager = MDyScene::GetInstance();
+  auto* cam = sceneManager.GetMainCameraPtr();
+  if (cam)
+  {
+    cam->Update(dt);
+  }
+
+  gRenderer.Update(dt);
+}
+
+///
+/// @brief
+///
+void MDyWindow::pRender()
+{
+  glClearColor(gColor.X, gColor.Y, gColor.Z, 1.0f);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  gRenderer.CallDraw();
+
+  glEnable(GL_DEPTH_TEST);
+  MDyRendering::GetInstance().RenderDrawCallQueue();
+  if (gGrid) { gGrid->RenderGrid(); };
+
+  glDisable(GL_DEPTH_TEST);
+
+#if defined(MDY_FLAG_IN_EDITOR)
+  editor::MDyEditorGui::GetInstance().DrawWindow(0);
+#endif
+  if (glfwWindowShouldClose(this->mGlfwWindow)) return;
+
+  glfwSwapBuffers(this->mGlfwWindow);
+  glfwPollEvents();
+}
+
 #if defined(MDY_PLATFORM_FLAG_WINDOWS)
 EDySuccess MDyWindow::pfInitialize()
 {
+  MDY_LOG_INFO_D("{} | MDyWindow::pfInitialize().", "FunctionCall");
+
   switch (MDySetting::GetInstance().GetRenderingType())
   {
   default: assert(false); break;
-  case dy::ERenderingType::DirectX11:
-    {
-      assert(false);
+  case EDyRenderingApiType::DirectX11: MDY_LOG_INFO_D("Initialize DirectX11 Context."); PHITOS_NOT_IMPLEMENTED_ASSERT();
 #ifdef false
-      MDY_CALL_ASSERT_SUCCESS(DyWin32InitializeWindow(hInstance));
-      MDY_CALL_ASSERT_SUCCESS(DyD11InitializeDirect3D());
+    MDY_CALL_ASSERT_SUCCESS(DyWin32InitializeWindow(hInstance));
+    MDY_CALL_ASSERT_SUCCESS(DyD11InitializeDirect3D());
 
-      ShowWindow(windowHandle, SW_SHOW);
-      SetForegroundWindow(windowHandle);
-      SetFocus(windowHandle);
+    ShowWindow(windowHandle, SW_SHOW);
+    SetForegroundWindow(windowHandle);
+    SetFocus(windowHandle);
 
-      DyD11CreateEffectFx();
-      DyD11BindVertexLayout();
-      DyD11CreateVertexBuffer();
-      DyD11RenderLoop();
+    DyD11CreateEffectFx();
+    DyD11BindVertexLayout();
+    DyD11CreateVertexBuffer();
+    DyD11RenderLoop();
 #endif
-    }
     break;
-  case dy::ERenderingType::OpenGL:
+  case EDyRenderingApiType::OpenGL:
+    MDY_LOG_INFO_D("Initialize OpenGL Context.");
     {
-      glfwInit();
       // OpenGL Setting
+      glfwInit();
       glfwWindowHint(GLFW_DOUBLEBUFFER, GL_TRUE);
       glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
       glfwWindowHint(GLFW_FOCUSED, GL_TRUE);
@@ -502,33 +602,32 @@ EDySuccess MDyWindow::pfInitialize()
       glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
       glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-      this->mGlfwWindow = glfwCreateWindow(kScreenWidth, kScreenHeight, "DianYing", nullptr, nullptr);
+      const auto& settingManager = MDySetting::GetInstance();
+      this->mGlfwWindow = glfwCreateWindow(settingManager.GetWindowSizeWidth(), settingManager.GetWindowSizeHeight(), "DianYing", nullptr, nullptr);
       if (!this->mGlfwWindow) {
         glfwTerminate();
         return DY_FAILURE;
       }
 
-      glfwMakeContextCurrent(this->mGlfwWindow);
-      gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+      {
+        glfwMakeContextCurrent(this->mGlfwWindow);
+        gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
+        glfwSetInputMode(this->mGlfwWindow, GLFW_STICKY_KEYS, GL_FALSE);
 
-      glfwSetInputMode(this->mGlfwWindow, GLFW_STICKY_KEYS, GL_FALSE);
-      glfwSetFramebufferSizeCallback(this->mGlfwWindow, &DyGlCallbackFrameBufferSize);
+        glfwSetFramebufferSizeCallback(this->mGlfwWindow, &DyGlCallbackFrameBufferSize);
+        glfwSetWindowCloseCallback(this->mGlfwWindow, &DyGlCallbackWindowClose);
+      }
 
-      glViewport(0, 0, kScreenWidth, kScreenHeight);
-      glClearColor(0, 0, 0, 0);
-      glClearDepth(1.0f);
+      // If in debug build environment, enable debug output logging.
+      #if defined(_DEBUG) || !defined(_NDEBUG)
+        glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+        glDebugMessageCallback(DyGlMessageCallback, nullptr);
+      #endif
 
       glEnable(GL_DEPTH_TEST);
-      glDepthFunc(GL_LEQUAL);
-      glEnable(GL_BLEND);
-      glBlendFunc(GL_BLEND_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-#if defined(_DEBUG) || !defined(_NDEBUG)
-      glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-      glDebugMessageCallback(DyGlMessageCallback, nullptr);
-#endif
-
-      // IMGUI DEMO
+      // IMGUI Setting
       IMGUI_CHECKVERSION();
       ImGui::CreateContext();
       ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -541,8 +640,8 @@ EDySuccess MDyWindow::pfInitialize()
       DyGlTempInitializeResource();
     }
     break;
-  case dy::ERenderingType::DirectX12: assert(false); break;
-  case dy::ERenderingType::Vulkan:    assert(false);
+  case EDyRenderingApiType::DirectX12:  MDY_LOG_INFO_D("Initialize DirectX12 Context."); PHITOS_NOT_IMPLEMENTED_ASSERT(); break;
+  case EDyRenderingApiType::Vulkan:     MDY_LOG_INFO_D("Initialize Vulkan Context."); PHITOS_NOT_IMPLEMENTED_ASSERT();
 #ifdef false
     dy::DyVkInitialize(windowHandle, hInstance);
 
@@ -561,44 +660,39 @@ EDySuccess MDyWindow::pfInitialize()
 
 EDySuccess MDyWindow::pfRelease()
 {
+  MDY_LOG_INFO_D("{} | MDyWindow::pfRelease().", "FunctionCall");
+
   switch (MDySetting::GetInstance().GetRenderingType())
   {
-  case ERenderingType::DirectX11: break;
-  case ERenderingType::DirectX12: break;
-  case ERenderingType::OpenGL:
+  case EDyRenderingApiType::DirectX11:
+    MDY_LOG_INFO_D("Initialize DirectX11 Context.");
+    break;
+  case EDyRenderingApiType::DirectX12:
+    MDY_LOG_INFO_D("Initialize DirectX12 Context.");
+    break;
+  case EDyRenderingApiType::OpenGL:
+    MDY_LOG_INFO_D("Initialize OpenGL Context.");
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
+    MDY_LOG_INFO_D("Released ImGui Context.");
 
-    glfwDestroyWindow(this->mGlfwWindow);
     glfwTerminate();
     break;
-  case ERenderingType::Vulkan: break;
-  default: assert(false); return DY_FAILURE; break;
+  case EDyRenderingApiType::Vulkan:
+    MDY_LOG_INFO_D("Initialize Vulkan Context.");
+    break;
+  default: assert(false); return DY_FAILURE;
   }
 
   return DY_SUCCESS;
 }
 #elif defined(MDY_PLATFORM_FLAG_LINUX)
-EDySuccess MDyWindow::pfInitialize()
-{
-
-}
-
-EDySuccess MDyWindow::pfRelease()
-{
-
-}
+EDySuccess MDyWindow::pfInitialize() { }
+EDySuccess MDyWindow::pfRelease() { }
 #elif defined(MDY_PLATFORM_FLAG_MACOS)
-EDySuccess MDyWindow::pfInitialize()
-{
-
-}
-
-EDySuccess MDyWindow::pfRelease()
-{
-
-}
+EDySuccess MDyWindow::pfInitialize() { }
+EDySuccess MDyWindow::pfRelease() { }
 #endif
 
 } /// ::dy namespace

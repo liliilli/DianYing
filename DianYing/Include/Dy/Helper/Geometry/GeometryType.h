@@ -14,25 +14,50 @@
 ///
 
 #include <vector>
-#include <Dy/Helper/Type/Vector3.h>
+#include <Dy/Helper/Type/Vector4.h>
+#include "Dy/Helper/Type/Matrix4.h"
 
 namespace dy
 {
 
 ///
-/// @class DVertexInformation
+/// @struct DDyVertexBoneData
+/// @brief Below elements are used when skeletal animation is applied.
 ///
-struct DVertexInformation final
+struct DDyVertexBoneData final
 {
-  DVector3 mPosition;
-  DVector3 mNormal;
-  DVector2 mTexCoords;
+  std::array<TU32, 4> mBoneId     = {0, 0, 0, 0};
+  DDyVector4          mWeights    = {0, 0, 0, 0};
 };
 
 ///
-/// @brief
+/// @struct DDyVertexInformation
+/// @brief Vertex information (Input assembly unit data)
 ///
-struct DBufferIdInformation final
+struct DDyVertexInformation final
+{
+  DDyVector3          mPosition   = {};
+  DDyVector3          mNormal     = {};
+  DDyVector2          mTexCoords  = {};
+  // Below elements are used when skeletal animation is applied.
+  DDyVertexBoneData   mVertexBoneData;
+};
+
+///
+/// @struct DDyGeometryBoneInformation
+/// @brief bone matrix information structure.
+///
+struct DDyGeometryBoneInformation final
+{
+  DDyMatrix4x4        mBoneOffsetMatrix     = {};
+  DDyMatrix4x4        mFinalTransformation  = {};
+};
+
+///
+/// @struct DDyGlBufferIdInformation
+/// @brief OpenGL Buffer id information structure.
+///
+struct DDyGlBufferIdInformation final
 {
   uint32_t mVao = 0;
   uint32_t mVbo = 0;
@@ -40,26 +65,33 @@ struct DBufferIdInformation final
 };
 
 ///
-/// @brief
+/// @struct PDySubmeshInformationDescriptor
+/// @brief Submesh information which is releated to mesh properties directly.
 ///
-struct PMeshInformationDescriptor final
+struct PDySubmeshInformationDescriptor final
 {
-  std::vector<DVertexInformation> mVertices;
-  std::vector<int32_t>            mIndices;
-  std::vector<std::string>        mMaterialNames;
+  std::vector<DDyVertexInformation> mVertices     = {};
+  std::vector<int32_t>              mIndices      = {};
+  std::string                       mMaterialName = "";
+  TU32                              mBaseVertices = 0;
+  TU32                              mBaseIndices  = 0;
+
+  bool                              mIsEnabledSkeletalAnimation = false;
 };
 
 ///
-/// @brief
+/// @struct DDySubmeshFlagInformation
+/// @brief Submesh information which is not releated to mesh properties directly.
 ///
-struct DMeshFlagInformation final
+struct DDySubmeshFlagInformation final
 {
   int32_t                         mIndiceCount      = 0;
   int32_t                         mVertexSize       = 0;
   bool                            mIsNotHaveIndices :1;
   bool                            mIsNotHaveTextures:1;
+  bool                            mIsEnabledSkeletalAnimation:1;
 
-  DMeshFlagInformation() : mIsNotHaveIndices{false}, mIsNotHaveTextures{false} {};
+  DDySubmeshFlagInformation() : mIsNotHaveIndices{false}, mIsNotHaveTextures{false}, mIsEnabledSkeletalAnimation{false} {};
 };
 
 } /// ::dy namespace

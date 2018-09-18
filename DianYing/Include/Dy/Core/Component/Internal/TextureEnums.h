@@ -32,7 +32,8 @@ enum class EDyTextureMapType : unsigned char
   LightMap,
   Normal,
   Reflection,
-  Shininess
+  Shininess,
+  Opacity,
 };
 
 ///

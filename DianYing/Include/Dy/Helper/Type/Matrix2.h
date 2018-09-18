@@ -37,8 +37,8 @@ public:
   DDyMatrix2x2(std::initializer_list<float>&) = delete;
 
   DDyMatrix2x2(const float _00, const float _01, const float _10, const float _11) :
-      mMatrixValue{dy::DVector2{_00, _10},
-                   dy::DVector2{_01, _11}} {};
+      mMatrixValue{dy::DDyVector2{_00, _10},
+                   dy::DDyVector2{_01, _11}} {};
 
   DDyMatrix2x2(const glm::mat2& glmMatrix) noexcept
   {
@@ -112,12 +112,12 @@ public:
   }
 #endif
 
-  DVector2& operator[](std::size_t index) noexcept
+  DDyVector2& operator[](std::size_t index) noexcept
   {
     return mMatrixValue[index];
   }
 
-  const DVector2& operator[](std::size_t index) const noexcept
+  const DDyVector2& operator[](std::size_t index) const noexcept
   {
     return mMatrixValue[index];
   }
@@ -236,9 +236,9 @@ public:
   ///
   /// @brief
   ///
-  DVector2 MultiplyVector(const DVector2& rhs) const noexcept
+  DDyVector2 MultiplyVector(const DDyVector2& rhs) const noexcept
   {
-    return DVector2{
+    return DDyVector2{
         (*this)[0][0] * rhs.X + (*this)[1][0] * rhs.Y,
         (*this)[0][1] * rhs.X + (*this)[1][1] * rhs.Y
     };
@@ -274,7 +274,7 @@ private:
   DDyMatrix2x2(bool);
 
   /// Column major
-  std::array<dy::DVector2, 2> mMatrixValue;
+  std::array<dy::DDyVector2, 2> mMatrixValue;
 };
 
 } /// ::dy namespace

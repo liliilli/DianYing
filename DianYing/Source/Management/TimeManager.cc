@@ -19,17 +19,25 @@
 #include <Dy/Management/TimeManager.h>
 
 #include <chrono>
+#include <Dy/Management/LoggingManager.h>
 
 namespace dy
 {
 
 EDySuccess MDyTime::IsGameFrameTicked() const noexcept
 {
-  if (this->mGameTickElapsedTime < this->mGameTickFragment)
-    return DY_FAILURE;
+  if (this->__mIsEnabledVsync)
+  {
+    if (this->mGameTickElapsedTime < this->mGameTickFragment)
+      return DY_FAILURE;
+    else
+    {
+      this->mGameTickElapsedTime -= this->mGameTickFragment;
+      return DY_SUCCESS;
+    }
+  }
   else
   {
-    this->mGameTickElapsedTime -= this->mGameTickFragment;
     return DY_SUCCESS;
   }
 }
@@ -39,26 +47,42 @@ int32_t MDyTime::GetPresentFpsValue() const noexcept
   return this->mGameTickedFps;
 }
 
-float MDyTime::GetGameDeltaTimeValue() const noexcept
+float MDyTime::GetGameScaledTickedDeltaTimeValue() const noexcept
 {
-  return this->mGameDeltaTime;
+  if (this->__mIsEnabledVsync)
+  {
+    return this->mGameTickFragment * this->mTimeScale;
+  }
+  else
+  {
+    return this->mGameScaledDeltaTime;
+  }
 }
 
-float MDyTime::GetGameSummedDeltaTimeValue() const noexcept
+float MDyTime::GetGameScaledElapsedTimeValue() const noexcept
 {
-  const auto summedDeltaTimeValue = this->mGameSummedDeltaTime;
-  this->mGameSummedDeltaTime = 0;
-  return summedDeltaTimeValue;
+  return this->mGameScaledElapsedTime;
 }
 
-  float MDyTime::GetGameTimeScale() const noexcept
+float MDyTime::GetGameTimeScaleValue() const noexcept
 {
   return this->mTimeScale;
 }
 
-  void MDyTime::SetGameTimeScale(float timeScale) noexcept
+EDySuccess MDyTime::SetGameTimeScale(float timeScale) noexcept
 {
-  mTimeScale = timeScale;
+  if (timeScale <= 0.f)
+  {
+    this->mTimeScale = 0.0001f;
+    MDY_LOG_WARNING_D("{} | Time scaling failed because of zero value or negative. Input timeScale : {}", "MDyTime::SetGameTimeScale", timeScale);
+    return DY_FAILURE;
+  }
+  else
+  {
+    this->mTimeScale = timeScale;
+    MDY_LOG_INFO_D("{} | MDyTime::mTimeScale : {}.", "MDyTime::SetGameTimeScale", this->mTimeScale);
+    return DY_SUCCESS;
+  }
 }
 
 void MDyTime::pUpdate() noexcept
@@ -78,17 +102,15 @@ void MDyTime::pUpdate() noexcept
 
   newTime = std::chrono::steady_clock::now();
   const auto timeFragment = std::chrono::duration_cast<TSeconds>(newTime - oldTime);
-  const float steadyDelta = timeFragment.count();
 
-  this->mSteadyDeltaTime       = steadyDelta;
+  this->mSteadyDeltaTime       = timeFragment.count();
   this->mSteadyElapsedTime    += this->mSteadyDeltaTime;
 
-  this->mGameTickElapsedTime  += this->mSteadyDeltaTime;
-  this->mGameDeltaTime         = this->mSteadyDeltaTime * this->mTimeScale;
-  this->mGameSummedDeltaTime  += this->mGameDeltaTime;
-  this->mGameElapsedTime      += this->mGameDeltaTime;
+  this->mGameTickElapsedTime    += this->mSteadyDeltaTime;
+  this->mGameScaledDeltaTime     = this->mSteadyDeltaTime * this->mTimeScale;
+  this->mGameScaledElapsedTime  += this->mGameScaledDeltaTime;
 
-  if (steadyElapsedFromSecond  += this->mGameDeltaTime;
+  if (steadyElapsedFromSecond += this->mSteadyDeltaTime;
       steadyElapsedFromSecond > 1.0f)
   {
     steadyElapsedFromSecond -= 1.0f;
@@ -102,14 +124,26 @@ void MDyTime::pUpdate() noexcept
   oldTime = newTime;
 }
 
+void MDyTime::pfSetVsync(bool isVsyncEnabled) noexcept
+{
+  this->__mIsEnabledVsync = isVsyncEnabled;
+}
+
 EDySuccess MDyTime::pfInitialize()
 {
-  mGameTickFragment = 1.0f / static_cast<float>(mGameGoalFps);
+  MDY_LOG_INFO_D("{} | MDyTime::pfInitialize().", "FunctionCall");
+
+  this->mGameTickFragment = 1.0f / static_cast<float>(this->mGameGoalFps);
+  MDY_LOG_INFO_D("MDyTime::mGameGoalFps : {}."      , this->mGameGoalFps);
+  MDY_LOG_INFO_D("MDyTime::mGameTickFragment : {}." , this->mGameTickFragment);
+  MDY_LOG_INFO_D("MDyTime::mTimeScale : {}."        , this->mTimeScale);
+
   return DY_SUCCESS;
 }
 
 EDySuccess MDyTime::pfRelease()
 {
+  MDY_LOG_INFO_D("{} | MDyTime::pfRelease().", "FunctionCall");
   return DY_SUCCESS;
 }
 
