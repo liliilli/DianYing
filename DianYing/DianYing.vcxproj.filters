@@ -53,6 +53,8 @@
     <ClCompile Include="Source\Editor\Gui\HelpAboutMain.cc" />
     <ClCompile Include="Source\Editor\Gui\HelpLicenseWindow.cc" />
     <ClCompile Include="Source\Editor\Gui\ViewViewportMain.cc" />
+    <ClCompile Include="Source\Management\RenderingManager.cc" />
+    <ClCompile Include="Source\Core\Component\Object\RenderingMesh.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -140,6 +142,11 @@
     <ClInclude Include="Include\Dy\Editor\Descriptor\AboutMainDescriptor.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\HelpLicenseWindow.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\ViewViewportMain.h" />
+    <ClInclude Include="Include\Dy\Management\RenderingManager.h" />
+    <ClInclude Include="Include\Dy\Management\SyncronizationManager.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Object\RenderingMesh.h" />
+    <ClInclude Include="Include\Dy\Helper\Internal\Contracts.h" />
+    <ClInclude Include="Include\Dy\Helper\Pointer.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

@@ -24,6 +24,7 @@
 #include <Dy/Management/SceneManager.h>
 #include <Dy/Core/Component/Object/Camera.h>
 #include <Dy/Management/LoggingManager.h>
+#include <Dy/Management/RenderingManager.h>
 
 namespace dy
 {
@@ -33,8 +34,7 @@ EDySuccess CDyMeshRenderer::pfInitialize(const PDyRendererConsturctionDescriptor
   auto& resourceManager = MDyHeapResource::GetInstance();
 
   // Bind model. If not exists, make model resource using information but not have it, return fail.
-  const auto modelResourcePtr = resourceManager.GetModelResource(desc.mModelName);
-  if (!modelResourcePtr)
+  if (const auto modelResourcePtr = resourceManager.GetModelResource(desc.mModelName); !modelResourcePtr)
   {
     const auto res = resourceManager.CreateModelResource(desc.mModelName);
     if (res == DY_FAILURE) return DY_FAILURE;
@@ -46,14 +46,10 @@ EDySuccess CDyMeshRenderer::pfInitialize(const PDyRendererConsturctionDescriptor
   // Bind material. If not exists, make material resource using information, but return fail.
   for (const auto& materialName : desc.mMaterialNames)
   {
-    auto* materialResourcePtr = resourceManager.GetMaterialResource(materialName);
-    if (!materialResourcePtr)
+    if (auto* materialResourcePtr = resourceManager.GetMaterialResource(materialName); !materialResourcePtr)
     {
       const auto res = resourceManager.CreateMaterialResource(materialName);
-      if (res == DY_FAILURE)
-      {
-        return DY_FAILURE;
-      }
+      if (res == DY_FAILURE) { return DY_FAILURE; }
 
       this->mMaterialResourcePtr.emplace_back(resourceManager.GetMaterialResource(materialName));
     }
@@ -110,7 +106,13 @@ void CDyMeshRenderer::Update(float dt)
   this->mModelReferencePtr->SetBoneTransformLists(transforms);
 }
 
-void CDyMeshRenderer::Render()
+void CDyMeshRenderer::CallDraw()
+{
+  auto& renderingManager = MDyRendering::GetInstance();
+  renderingManager.PushDrawCallTask(*this);
+}
+
+void CDyMeshRenderer::pfRender()
 {
   for (const auto& bindedMeshMatInfo : this->mMeshMaterialPtrBindingList)
   {
@@ -118,29 +120,25 @@ void CDyMeshRenderer::Render()
     const auto shaderResource = bindedMeshMatInfo.mMaterialResource->GetShaderResource();
     if (!shaderResource)
     {
-      MDY_LOG_CRITICAL("{} | Shader resource of {} is not binded, Can not render mesh.",
-                       "CDyMeshRenderer::Render",
-                       bindedMeshMatInfo.mMaterialResource->GetMaterialName());
+      MDY_LOG_CRITICAL("{} | Shader resource of {} is not binded, Can not render mesh.", "CDyMeshRenderer::Render", bindedMeshMatInfo.mMaterialResource->GetMaterialName());
       continue;
     }
-    // Activate shader of one material.
+    // Activate shader of one material and bind submesh VAO id.
     shaderResource->UseShader();
-
-    // Bind submesh VAO id.
     glBindVertexArray(bindedMeshMatInfo.mSubmeshResource->GetVertexArrayId());
 
-    // @todo temporal
-    // Bind camera matrix.
-    const auto viewMatrix = glGetUniformLocation(shaderResource->GetShaderProgramId(), "viewMatrix");
-    const auto projMatirx = glGetUniformLocation(shaderResource->GetShaderProgramId(), "projectionMatrix");
-
+    // @todo temporal Bind camera matrix.
     if (auto* camera = MDyScene::GetInstance().GetMainCameraPtr(); camera)
     {
+      const auto viewMatrix = glGetUniformLocation(shaderResource->GetShaderProgramId(), "viewMatrix");
+      const auto projMatirx = glGetUniformLocation(shaderResource->GetShaderProgramId(), "projectionMatrix");
+
       glUniformMatrix4fv(viewMatrix, 1, GL_FALSE, &camera->GetViewMatrix()[0].X);
       glUniformMatrix4fv(projMatirx, 1, GL_FALSE, &camera->GetProjectionMatrix()[0].X);
     }
 
     // If skeleton animation is enabled, get bone transform and bind to shader.
+#ifdef false
     const auto boneTransform = glGetUniformLocation(shaderResource->GetShaderProgramId(), "boneTransform");
     if (mModelReferencePtr && mModelReferencePtr->IsEnabledModelAnimated())
     {
@@ -148,6 +146,7 @@ void CDyMeshRenderer::Render()
       const auto  matrixSize = static_cast<int32_t>(matrixList.size());
       glUniformMatrix4fv(boneTransform, matrixSize, GL_FALSE, &matrixList[0][0].X);
     }
+#endif
 
     // Bind textures of one material.
     if (bindedMeshMatInfo.mMaterialResource)
@@ -190,6 +189,7 @@ void CDyMeshRenderer::Render()
         glBindTexture(GL_TEXTURE_2D, 0);
       }
     }
+
     glBindVertexArray(0);
     shaderResource->UnuseShader();
   }

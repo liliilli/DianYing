@@ -18,6 +18,9 @@
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
+#include <imgui/imgui_impl_opengl3.h>
+#include <imgui/imgui_impl_glfw.h>
+
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/Editor/GuiWindowFactory.h>
 
@@ -57,7 +60,14 @@ void MDyEditorGui::DrawWindow(float dt) noexcept
 {
   if (mMainMenu)
   {
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
     this->mMainMenu->DrawWindow(dt);
+
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
   }
 }
 
