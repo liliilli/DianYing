@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_INTERFACE_TO_STRING_H
-#define GUARD_DY_INTERFACE_TO_STRING_H
+#include <precompiled.h>
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,24 +12,27 @@
 /// SOFTWARE.
 ///
 
-#include <string>
+/// Header file
+#include <Dy/Core/Component/Internal/EtcType.h>
 
 namespace dy
 {
 
-///
-/// @class IDyToString
-/// @brief To string interface.
-///
-class MDY_NO_VTABLE IDyToString
+std::string PDyRendererConsturctionDescriptor::ToString()
 {
-public:
-  virtual ~IDyToString() = default;
+  auto log = fmt::format(
+R"dy(PDyRendererConsturctionDescriptor
+Model Name : {}
+)dy", this->mModelName);
 
-  [[nodiscard]]
-  virtual std::string ToString() = 0;
-};
+  int32_t i = 0;
+  for (const auto& materialName : this->mMaterialNames)
+  {
+    log += fmt::format("Material Name {} : {}\n", i, materialName);
+    i++;
+  }
+
+  return log;
+}
 
 } /// ::dy namespace
-
-#endif /// GUARD_DY_INTERFACE_TO_STRING_H

@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Core/Component/Internal/ShaderType.h>
+#include "Dy/Core/Component/Internal/MaterialType.h"
 
 //!
 //! Forward declaration
@@ -69,6 +70,7 @@ public:
   ///
   /// @brief Get activated plain attribute variable information list.
   ///
+  [[nodiscard]]
   const auto& GetAttributeVariableInformationList() const noexcept
   {
     return this->mAttributeVariableLists;
@@ -77,6 +79,7 @@ public:
   ///
   /// @brief Get activated plain uniform variable information list.
   ///
+  [[nodiscard]]
   const auto& GetUniformVariableInformationList() const noexcept
   {
     return this->mPlainUniformVariableLists;
@@ -194,22 +197,27 @@ private:
   ///
   /// @brief private-friend function, initialize shader resource with information.
   ///
-  [[nodiscard]] EDySuccess pfInitializeResource(const DDyShaderInformation& shaderInformation);
+  [[nodiscard]]
+  EDySuccess pfInitializeResource(const DDyShaderInformation& shaderInformation);
 
   /// Initialize shader fragments.
-  [[nodiscard]] EDySuccess __pInitializeShaderFragments(
+  [[nodiscard]]
+  EDySuccess __pInitializeShaderFragments(
       const PDyShaderConstructionDescriptor& shaderConstructionDescriptor,
       std::vector<std::pair<EDyShaderFragmentType, uint32_t>>& shaderFragmentIdList
   );
 
   /// Link fragments and make shader program.
-  [[nodiscard]] EDySuccess __pInitializeShaderProgram(const std::vector<std::pair<EDyShaderFragmentType, uint32_t>>& shaderFragmentIdList);
+  [[nodiscard]]
+  EDySuccess __pInitializeShaderProgram(const std::vector<std::pair<EDyShaderFragmentType, uint32_t>>& shaderFragmentIdList);
 
   /// Get shader attribute variables information and save to member list.
-  [[nodiscard]] EDySuccess __pStoreAttributePropertiesOfProgram() noexcept;
+  [[nodiscard]]
+  EDySuccess __pStoreAttributePropertiesOfProgram() noexcept;
 
   /// Get shader uniform variables information and save to member list.
-  [[nodiscard]] EDySuccess __pStoreConstantUniformPropertiesOfProgram() noexcept;
+  [[nodiscard]]
+  EDySuccess __pStoreConstantUniformPropertiesOfProgram() noexcept;
 
   std::string mShaderName           = "";
   uint32_t    mShaderProgramId      = 0;
@@ -227,20 +235,23 @@ private:
   template <typename TType>
   using TBindPtrMap = std::unordered_map<TType*, TType*>;
 
-  FORCEINLINE void __pfLinkShaderInformationPtr(DDyShaderInformation* ptr) const noexcept
+  FORCEINLINE void __pfSetShaderInformationLink(NotNull<DDyShaderInformation*> ptr) const noexcept
   {
     this->__mLinkedShaderInformationPtr = ptr;
   }
+  FORCEINLINE void __pfResetShaderInformationLink() const noexcept
+  {
+    this->__mLinkedShaderInformationPtr = nullptr;
+  }
 
-  void __pfLinkMaterialResource(CDyMaterialResource* ptr) const noexcept;
-
-  FORCEINLINE void __pfResetMaterialResourceLinking(CDyMaterialResource* ptr) const noexcept
+              void __pfSetMaterialResourceLink(CDyMaterialResource* ptr) const noexcept;
+  FORCEINLINE void __pfResetMaterialResourceLinking(NotNull<CDyMaterialResource*> ptr) const noexcept
   {
     this->__mLinkedMaterialResourcePtrs.erase(ptr);
   }
 
-  mutable DDyShaderInformation*             __mLinkedShaderInformationPtr = nullptr;
-  mutable TBindPtrMap<CDyMaterialResource>  __mLinkedMaterialResourcePtrs;
+  MDY_TRANSIENT DDyShaderInformation*             __mLinkedShaderInformationPtr = nullptr;
+  MDY_TRANSIENT TBindPtrMap<CDyMaterialResource>  __mLinkedMaterialResourcePtrs;
 
   friend class DDyShaderInformation;
   friend class CDyMaterialResource;

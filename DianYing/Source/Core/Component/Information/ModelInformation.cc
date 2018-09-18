@@ -39,7 +39,7 @@ MDY_SET_IMMUTABLE_STRING(kModelInformationNumbTemplate, "{} | Model information 
 MDY_SET_IMMUTABLE_STRING(kWarnNotHaveMaterial,          "{}::{} | This mesh does not have meterial information.");
 MDY_SET_IMMUTABLE_STRING(kErrorModelFailedToRead,       "{} | Failed to create read model scene.");
 MDY_SET_IMMUTABLE_STRING(kModelInformation,             "DDyModelInformation");
-MDY_SET_IMMUTABLE_STRING(kFunc__pProcessAssimpMesh,     "__pProcessAssimpMesh");
+MDY_SET_IMMUTABLE_STRING(kFunc__pProcessAssimpMesh,     "pProcessAssimpMesh");
 MDY_SET_IMMUTABLE_STRING(kFunc__pReadMaterialData,      "__pReadMaterialData");
 MDY_SET_IMMUTABLE_STRING(kWarnDuplicatedMaterialName,   "{}::{} | Duplicated material name detected. Material name : {}");
 
@@ -144,7 +144,7 @@ DDyModelInformation::DDyModelInformation(const PDyModelConstructionDescriptor& m
   this->mModelRootPath = modelPath.substr(0, modelPath.find_last_of('/'));
   for (TU32 i = 0; i < assimpModelScene->mNumMeshes; ++i)
   {
-    this->__pProcessAssimpMesh(assimpModelScene->mMeshes[i], assimpModelScene);
+    this->pProcessAssimpMesh(assimpModelScene->mMeshes[i], assimpModelScene);
   }
 
   MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "Model root path", this->mModelRootPath);
@@ -157,15 +157,12 @@ DDyModelInformation::DDyModelInformation(const PDyModelConstructionDescriptor& m
 DDyModelInformation::~DDyModelInformation()
 {
   MDY_LOG_INFO_D(kModelInformationTemplate, "~DDyModelInformation", "name", this->mModelName);
-  if (this->mLinkedModelResourcePtr)
-  {
-    this->mLinkedModelResourcePtr->__pfLinkModelInformationPtr(nullptr);
-  }
+  if (this->__mLinkedModelResourcePtr)      { this->__mLinkedModelResourcePtr->__pfResetModelInformationLink(); }
   if (this->mInternalModelGeometryResource) { this->mInternalModelGeometryResource = nullptr; }
   this->mAssimpImporter = nullptr;
 }
 
-void DDyModelInformation::__pProcessAssimpMesh(aiMesh* mesh, const aiScene* scene)
+void DDyModelInformation::pProcessAssimpMesh(aiMesh* mesh, const aiScene* scene)
 {
   // Retrieve vertex and indices for element buffer object.
   PDySubmeshInformationDescriptor meshInformationDescriptor;
@@ -202,10 +199,10 @@ void DDyModelInformation::__pProcessAssimpMesh(aiMesh* mesh, const aiScene* scen
     meshInformationDescriptor.mMaterialName = materialDescriptor.mMaterialName;
     this->mSubmeshInformations.emplace_back(meshInformationDescriptor);
 
-    if (const auto it = std::find(MDY_BIND_BEGIN_END(this->mBindedMaterialName), materialDescriptor.mMaterialName);
-        it == this->mBindedMaterialName.end())
+    if (const auto it = std::find(MDY_BIND_BEGIN_END(this->mOverallBindedMaterialName), materialDescriptor.mMaterialName);
+        it == this->mOverallBindedMaterialName.end())
     {
-      this->mBindedMaterialName.emplace_back(materialDescriptor.mMaterialName);
+      this->mOverallBindedMaterialName.emplace_back(materialDescriptor.mMaterialName);
     }
   }
 }
@@ -431,9 +428,9 @@ DDyModelInformation::__pLoadMaterialTextures(const aiMaterial* material, EDyText
     }
 
     // Check there is duplicated texture by comparing texture local path.
-    const auto dupTexturePath = std::find(MDY_BIND_BEGIN_END(this->mTextureLocalPaths), textureLocalPath.C_Str());
+    const auto dupTexturePath = std::find(MDY_BIND_BEGIN_END(this->mOverallTextureLocalPaths), textureLocalPath.C_Str());
     const auto textureName    = DyGetFileNameFromPath(textureLocalPath.C_Str());
-    if (dupTexturePath == this->mTextureLocalPaths.end())
+    if (dupTexturePath == this->mOverallTextureLocalPaths.end())
     {
       PDyTextureConstructionDescriptor textureDesc;
       // Set each texture name to texture file name except for file type like a .png .jpg.
@@ -447,7 +444,7 @@ DDyModelInformation::__pLoadMaterialTextures(const aiMaterial* material, EDyText
       textureDesc.mTextureMapType                     = type;
 
       MDY_CALL_ASSERT_SUCCESS(manInfo.CreateTextureInformation(textureDesc));
-      this->mTextureLocalPaths.emplace_back(textureDesc.mTextureFileLocalPath);
+      this->mOverallTextureLocalPaths.emplace_back(textureDesc.mTextureFileLocalPath);
     }
 
     MDY_LOG_DEBUG_D("{}::{} | Texture Name : {}", "DDyModelInformation", "__pLoadMaterialTextures", textureName);
@@ -461,14 +458,14 @@ DDyModelInformation::__pLoadMaterialTextures(const aiMaterial* material, EDyText
 void DDyModelInformation::__pOutputDebugInformationLog()
 {
 #if defined(_DEBUG) || !defined(NDEBUG)
-  for (auto i = 0; i < this->mBindedMaterialName.size(); ++i)
+  for (auto i = 0; i < this->mOverallBindedMaterialName.size(); ++i)
   {
-    MDY_LOG_DEBUG_D(kModelInformationNumbTemplate, kModelInformation.data(), "base material name", i, this->mBindedMaterialName[i]);
+    MDY_LOG_DEBUG_D(kModelInformationNumbTemplate, kModelInformation.data(), "base material name", i, this->mOverallBindedMaterialName[i]);
   }
 
-  for (auto i = 0; i < this->mTextureLocalPaths.size(); ++i)
+  for (auto i = 0; i < this->mOverallTextureLocalPaths.size(); ++i)
   {
-    MDY_LOG_DEBUG_D(kModelInformationNumbTemplate, kModelInformation.data(), "innate texture name", i, this->mTextureLocalPaths[i]);
+    MDY_LOG_DEBUG_D(kModelInformationNumbTemplate, kModelInformation.data(), "innate texture name", i, this->mOverallTextureLocalPaths[i]);
   }
 
   for (auto i = 0; i < this->mSubmeshInformations.size(); ++i)

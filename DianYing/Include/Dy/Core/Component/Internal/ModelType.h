@@ -14,18 +14,29 @@
 ///
 
 #include <string>
+#include <Dy/Core/Component/Interface/IDyToString.h>
 
 namespace dy
 {
 
 ///
 /// @struct PDyModelConstructionDescriptor
-/// @brief
+/// @brief Model information construction descriptor
 ///
-struct PDyModelConstructionDescriptor final
+struct PDyModelConstructionDescriptor final : public IDyToString
 {
   std::string                           mModelName        = "";
   std::string                           mModelPath        = "";
+
+  [[nodiscard]]
+  std::string ToString() override final
+  {
+    return fmt::format(
+R"dy(PDyModelConstructionDescriptor
+Model Name : {}
+Model Path : {}
+)dy", this->mModelName, this->mModelPath);
+  };
 };
 
 } /// ::dy namespace

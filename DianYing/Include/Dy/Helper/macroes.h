@@ -255,6 +255,24 @@ private:                                                  \
     friend class IDyGuiWinSingleton<__MADerivedSingletonType__, __MAConstructionDescriptorType__>
 #endif /// MDY_FLAG_IN_EDITOR
 
+#define MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(__MAType__)\
+  __MAType__(const __MAType__&)             = delete;   \
+  __MAType__& operator=(const __MAType__&)  = delete;   \
+  __MAType__(__MAType__&&)                  = default;  \
+  __MAType__& operator=(__MAType__&&)       = default;  \
+
+#define MDY_ONLY_MOVEABLE_PROPERTIES_CUSTOM(__MAType__) \
+  __MAType__(const __MAType__&)             = delete;   \
+  __MAType__& operator=(const __MAType__&)  = delete;   \
+  __MAType__(__MAType__&&);                             \
+  __MAType__& operator=(__MAType__&&);                  \
+
+#define MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(__MAType__)\
+  __MAType__(const __MAType__&)             = delete;   \
+  __MAType__& operator=(const __MAType__&)  = delete;   \
+  __MAType__(__MAType__&&)                  = delete;   \
+  __MAType__& operator=(__MAType__&&)       = delete;   \
+
 //!
 //! Function type macros.
 //!

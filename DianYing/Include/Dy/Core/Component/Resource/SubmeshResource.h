@@ -39,28 +39,33 @@ public:
   ///
   /// @brief Check whether indice (element) vertexes are binded, so be able to element drawing.
   ///
+  [[nodiscard]]
   bool IsEnabledIndices() const noexcept;
 
   ///
   /// @brief Get VAO id
   ///
+  [[nodiscard]]
   int32_t GetVertexArrayId() const noexcept;
 
   ///
   /// @brief Get Vertex's (one patch) all counts. If not exist, just return 0.
   ///
+  [[nodiscard]]
   int32_t GetVertexCounts() const noexcept;
 
   ///
   /// @brief Get Indices count. If not exist, just return 0.
   ///
+  [[nodiscard]]
   int32_t GetIndicesCounts() const noexcept;
 
 private:
   ///
   /// @brief Initialize mesh resource with valid submesh information instance.
   ///
-  [[nodiscard]] EDySuccess pfInitializeSubmeshResource(const DDySubmeshInformation& meshInformation) noexcept;
+  [[nodiscard]]
+  EDySuccess pfInitializeSubmeshResource(const DDySubmeshInformation& meshInformation) noexcept;
 
   DDyGlBufferIdInformation        mBufferIdInformation     = {};
   DDySubmeshFlagInformation       mMeshFlagInformation     = {};

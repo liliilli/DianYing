@@ -78,14 +78,27 @@ DDyMaterialInformation::DDyMaterialInformation(const PDyMaterialConstructionDesc
 DDyMaterialInformation::~DDyMaterialInformation()
 {
   MDY_LOG_INFO_D(kMaterialInformationTemplate, kMaterialInformation, kMaterialName, this->mMaterialInformation.mMaterialName);
-  if (mLinkedMaterialResourcePtr)
+
+  if (__mLinkedMaterialResourcePtr) { __mLinkedMaterialResourcePtr->__pfResetMaterialInformationLink(); }
+}
+
+std::string DDyMaterialInformation::ToString()
+{
+  return this->mMaterialInformation.ToString();
+}
+
+int32_t DDyMaterialInformation::__pfEnrollAndGetNextDerivedMaterialIndex(const std::string& name) const noexcept
+{
+  if (auto it = this->__mPopulatedMaterialIndexMap.find(name); it == this->__mPopulatedMaterialIndexMap.end())
   {
-    mLinkedMaterialResourcePtr->__pfLinkMaterialInformation(nullptr);
+    this->__mPopulatedMaterialIndexMap.emplace(name, 0);
+    return 0;
   }
+  else return (++it->second);
 }
 
 std::unique_ptr<DDyMaterialInformation>
-DDyMaterialInformation::__pfPopulateWith(const PDyMaterialPopulateDescriptor& desc) const noexcept
+DDyMaterialInformation::__pfPopulateMaterialWith(const PDyMaterialPopulateDescriptor& desc) const noexcept
 {
   MDY_LOG_INFO_D("Populate derived material information {} from {}.",
       desc.mMaterialOverrideName,

@@ -160,19 +160,14 @@ namespace dy
 CDyShaderResource::~CDyShaderResource()
 {
   // Release heap resources
-  if (this->mShaderProgramId)
-  {
-    glDeleteProgram(this->mShaderProgramId);
-  }
+  if (this->mShaderProgramId) { glDeleteProgram(this->mShaderProgramId); }
 
   // Unbind previous and next level.
-  if (this->__mLinkedShaderInformationPtr)
-  {
-    this->__mLinkedShaderInformationPtr->__pfLinkShaderResourcePtr(nullptr);
-  }
+  if (this->__mLinkedShaderInformationPtr) { this->__mLinkedShaderInformationPtr->__pfResetShaderResourceLink(); }
+
   for (auto& [notUsed, materialPtr] : __mLinkedMaterialResourcePtrs)
   {
-    materialPtr->__pfResetShaderResourcePtr();
+    materialPtr->__pfResetShaderResource();
   }
 }
 
@@ -427,11 +422,11 @@ EDySuccess CDyShaderResource::__pStoreConstantUniformPropertiesOfProgram() noexc
   return DY_SUCCESS;
 }
 
-void CDyShaderResource::__pfLinkMaterialResource(CDyMaterialResource* ptr) const noexcept
+void CDyShaderResource::__pfSetMaterialResourceLink(CDyMaterialResource* ptr) const noexcept
 {
   auto [it, result] = this->__mLinkedMaterialResourcePtrs.try_emplace(ptr, ptr);
   if (!result) {
-    MDY_LOG_CRITICAL_D("{} | Unexpected error occurred. | Shader Name : {}", "CDyShaderResource::__pfLinkMaterialResource", this->mShaderName);
+    MDY_LOG_CRITICAL_D("{} | Unexpected error occurred. | Shader Name : {}", "CDyShaderResource::__pfSetMaterialResourceLink", this->mShaderName);
     PHITOS_UNEXPECTED_BRANCH();
   }
 }
