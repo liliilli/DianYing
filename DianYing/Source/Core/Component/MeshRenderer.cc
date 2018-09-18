@@ -34,8 +34,7 @@ EDySuccess CDyMeshRenderer::pfInitialize(const PDyRendererConsturctionDescriptor
   auto& resourceManager = MDyHeapResource::GetInstance();
 
   // Bind model. If not exists, make model resource using information but not have it, return fail.
-  const auto modelResourcePtr = resourceManager.GetModelResource(desc.mModelName);
-  if (!modelResourcePtr)
+  if (const auto modelResourcePtr = resourceManager.GetModelResource(desc.mModelName); !modelResourcePtr)
   {
     const auto res = resourceManager.CreateModelResource(desc.mModelName);
     if (res == DY_FAILURE) return DY_FAILURE;
@@ -47,14 +46,10 @@ EDySuccess CDyMeshRenderer::pfInitialize(const PDyRendererConsturctionDescriptor
   // Bind material. If not exists, make material resource using information, but return fail.
   for (const auto& materialName : desc.mMaterialNames)
   {
-    auto* materialResourcePtr = resourceManager.GetMaterialResource(materialName);
-    if (!materialResourcePtr)
+    if (auto* materialResourcePtr = resourceManager.GetMaterialResource(materialName); !materialResourcePtr)
     {
       const auto res = resourceManager.CreateMaterialResource(materialName);
-      if (res == DY_FAILURE)
-      {
-        return DY_FAILURE;
-      }
+      if (res == DY_FAILURE) { return DY_FAILURE; }
 
       this->mMaterialResourcePtr.emplace_back(resourceManager.GetMaterialResource(materialName));
     }

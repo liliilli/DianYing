@@ -52,9 +52,8 @@ FDyDeferredRenderingMesh::FDyDeferredRenderingMesh()
 
   std::vector<DDyMeshInfo> mVertexInformations;
   mVertexInformations.emplace_back(DDyVector3{-1, -1, 0}, DDyVector2{0, 0});
-  mVertexInformations.emplace_back(DDyVector3{ 1, -1, 0}, DDyVector2{1, 0});
-  mVertexInformations.emplace_back(DDyVector3{ 1,  1, 0}, DDyVector2{1, 1});
-  mVertexInformations.emplace_back(DDyVector3{-1,  1, 0}, DDyVector2{0, 1});
+  mVertexInformations.emplace_back(DDyVector3{ 3, -1, 0}, DDyVector2{2, 0});
+  mVertexInformations.emplace_back(DDyVector3{-1,  3, 0}, DDyVector2{0, 2});
   glBufferData(GL_ARRAY_BUFFER, sizeof(DDyMeshInfo) * 4, &mVertexInformations[0], GL_STATIC_DRAW);
   glBindVertexBuffer(0, this->mVbo, 0, sizeof(DDyMeshInfo));
 
@@ -76,13 +75,13 @@ FDyDeferredRenderingMesh::FDyDeferredRenderingMesh()
     {
       PDyShaderFragmentInformation vertexShaderInfo;
       vertexShaderInfo.mShaderType = EDyShaderFragmentType::Vertex;
-      vertexShaderInfo.mShaderPath = "./glDeferred.vert";
+      vertexShaderInfo.mShaderPath = "./ShaderResource/Gl/glDeferred.vert";
       shaderDesc.mShaderFragments.emplace_back(vertexShaderInfo);
     }
     {
       PDyShaderFragmentInformation fragmentShaderInfo;
       fragmentShaderInfo.mShaderType = EDyShaderFragmentType::Pixel;
-      fragmentShaderInfo.mShaderPath = "./glDeferred.frag";
+      fragmentShaderInfo.mShaderPath = "./ShaderResource/Gl/glDeferred.frag";
       shaderDesc.mShaderFragments.emplace_back(fragmentShaderInfo);
     }
   }
@@ -126,7 +125,7 @@ void FDyDeferredRenderingMesh::RenderScreen()
     glBindTexture(GL_TEXTURE_2D, renderingManager.mAttachmentBuffers[i]);
   }
 
-  glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+  glDrawArrays(GL_TRIANGLES, 0, 3);
   glBindVertexArray(0);
   this->mShaderPtr->UnuseShader();
 }
