@@ -25,7 +25,7 @@ EDySuccess MDySync::pfInitialize()
   if (supportThreadNumber < 4) { supportThreadNumber = 4; }
 
   this->mThreadPool = new FDyThreadPool(supportThreadNumber - 2);
-  this->mIoThread   = std::thread(&MDySync::LoopIoJob, std::ref(*this));
+  this->mIoThread   = std::thread(&MDySync::pExecuteIoThread, std::ref(*this));
 
 #if defined(MDY_FLAG_IN_EDITOR)
 
@@ -42,7 +42,7 @@ EDySuccess MDySync::pfRelease()
   return DY_SUCCESS;
 }
 
-void MDySync::LoopIoJob()
+void MDySync::pExecuteIoThread()
 {
   while (true)
   {
@@ -58,6 +58,7 @@ void MDySync::LoopIoJob()
     }
 
     designatedIoTask();
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
 }
 

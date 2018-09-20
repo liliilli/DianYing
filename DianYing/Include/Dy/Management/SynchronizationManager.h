@@ -50,12 +50,12 @@ public:
     return taskResult;
   }
 
+private:
   ///
   /// @brief
   ///
-  void LoopIoJob();
+  void pExecuteIoThread();
 
-private:
   using TTaskQueue = std::queue<std::function<void(void)>>;
 
   Owner<FDyThreadPool*>   mThreadPool = nullptr;
