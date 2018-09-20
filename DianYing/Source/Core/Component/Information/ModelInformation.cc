@@ -39,7 +39,7 @@ MDY_SET_IMMUTABLE_STRING(kModelInformationNumbTemplate, "{} | Model information 
 MDY_SET_IMMUTABLE_STRING(kWarnNotHaveMaterial,          "{}::{} | This mesh does not have meterial information.");
 MDY_SET_IMMUTABLE_STRING(kErrorModelFailedToRead,       "{} | Failed to create read model scene.");
 MDY_SET_IMMUTABLE_STRING(kModelInformation,             "DDyModelInformation");
-MDY_SET_IMMUTABLE_STRING(kFunc__pProcessAssimpMesh,     "pProcessAssimpMesh");
+MDY_SET_IMMUTABLE_STRING(kFunc__pProcessAssimpMesh,     "__pProcessMeshInformation");
 MDY_SET_IMMUTABLE_STRING(kFunc__pReadMaterialData,      "__pReadMaterialData");
 MDY_SET_IMMUTABLE_STRING(kWarnDuplicatedMaterialName,   "{}::{} | Duplicated material name detected. Material name : {}");
 
@@ -128,72 +128,153 @@ DDyModelInformation::DDyModelInformation(const PDyModelConstructionDescriptor& m
   const auto& modelPath = modelConstructionDescriptor.mModelPath;
   MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "Model full path", modelPath);
 
-  this->mAssimpImporter = std::make_unique<Assimp::Importer>();
-  const aiScene* assimpModelScene = this->mAssimpImporter->ReadFile(modelPath.c_str(), aiProcess_Triangulate | aiProcess_GenNormals);
+  auto mAssimpImporter = std::make_unique<Assimp::Importer>();
+  const aiScene* assimpModelScene = mAssimpImporter->ReadFile(modelPath.c_str(),
+      aiProcess_Triangulate | aiProcess_OptimizeMeshes | aiProcess_GenNormals);
 
-  if (!assimpModelScene || assimpModelScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !assimpModelScene->mRootNode)
+  if (!assimpModelScene ||
+      !assimpModelScene->mRootNode ||
+      MDY_BITMASK_FLAG_TRUE(assimpModelScene->mFlags, AI_SCENE_FLAGS_INCOMPLETE))
   {
-    this->mAssimpImporter = nullptr;
+    mAssimpImporter = nullptr;
     MDY_LOG_CRITICAL_D(kErrorModelFailedToRead, kModelInformation);
     throw std::runtime_error("Could not load model " + modelConstructionDescriptor.mModelName + ".");
   }
 
-  this->mGlobalInverseTransform = assimpModelScene->mRootNode->mTransformation.Inverse();
+  this->mModelRootPath                  = modelPath.substr(0, modelPath.find_last_of('/'));
+  this->mGlobalTransform                = assimpModelScene->mRootNode->mTransformation;
 
-  // Process all meshes and retrieve material, bone, etc information.
-  this->mModelRootPath = modelPath.substr(0, modelPath.find_last_of('/'));
-  for (TU32 i = 0; i < assimpModelScene->mNumMeshes; ++i)
-  {
-    this->pProcessAssimpMesh(assimpModelScene->mMeshes[i], assimpModelScene);
+  if (assimpModelScene->HasAnimations())
+  { // Make animation informations from aiScene.
+    MDY_LOG_DEBUG_D("DDyModelInformation | Model : {} Has animations", this->mModelName);
+    this->pCreateAnimationInformation(*assimpModelScene);
   }
 
-  MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "Model root path", this->mModelRootPath);
-  this->mInternalModelGeometryResource = assimpModelScene;
+  // Process all meshes and retrieve material, bone, etc information.
+  pProcessNode(*assimpModelScene, *assimpModelScene->mRootNode);
+
+  // Create nodes instead of aiScene->aiNode* dependency.
+  this->mRootBoneNode.mName = "RootBone";
+  this->pCreateNodeInformation(*assimpModelScene->mRootNode, this->mRootBoneNode);
 
   // Output model, submesh, and material information to console.
+  MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "Model root path", this->mModelRootPath);
   this->__pOutputDebugInformationLog();
+
+  bool atmFalse = false;
+  while(!this->mModelInformationLoaded.compare_exchange_weak(atmFalse, true));
 }
 
 DDyModelInformation::~DDyModelInformation()
 {
   MDY_LOG_INFO_D(kModelInformationTemplate, "~DDyModelInformation", "name", this->mModelName);
+
   if (this->__mLinkedModelResourcePtr)      { this->__mLinkedModelResourcePtr->__pfResetModelInformationLink(); }
-  if (this->mInternalModelGeometryResource) { this->mInternalModelGeometryResource = nullptr; }
-  this->mAssimpImporter = nullptr;
 }
 
-void DDyModelInformation::pProcessAssimpMesh(aiMesh* mesh, const aiScene* scene)
+void DDyModelInformation::pCreateAnimationInformation(const aiScene& aiScene)
+{
+  for (TU32 i = 0; i < aiScene.mNumAnimations; ++i)
+  {
+    DMoeAnimationInformation tempAnim;
+    tempAnim.mName          = aiScene.mAnimations[i]->mName.data;
+    tempAnim.mDuration      = static_cast<float>(aiScene.mAnimations[i]->mDuration);
+    tempAnim.mTickPerSecond = static_cast<float>(aiScene.mAnimations[i]->mTicksPerSecond);
+
+    // Create animation channel information from aiNodeAnim;
+    for (TU32 y = 0; y < aiScene.mAnimations[i]->mNumChannels; ++y)
+    {
+      const auto& aiAnimationChannel = *aiScene.mAnimations[i]->mChannels[y];
+
+      DMoeAnimationInformation::DAnimChannel tempChannel;
+      // Same to arbitary aiNode that points one aiMesh information and bone.
+      // aiMesh and aiBone's name may be not same each other.
+      tempChannel.mName = aiAnimationChannel.mNodeName.data;
+
+      for (TU32 z = 0; z < aiAnimationChannel.mNumPositionKeys; ++z)
+      {
+        tempChannel.mPositionKeys.emplace_back(aiAnimationChannel.mPositionKeys[z].mValue);
+        tempChannel.mPositionTime.emplace_back(static_cast<float>(aiAnimationChannel.mPositionKeys[z].mTime));
+      }
+
+      for (TU32 z = 0; z < aiAnimationChannel.mNumRotationKeys; ++z)
+      {
+        tempChannel.mRotationKeys.emplace_back(aiAnimationChannel.mRotationKeys[z].mValue);
+        tempChannel.mRotationTime.emplace_back(static_cast<float>(aiAnimationChannel.mRotationKeys[z].mTime));
+      }
+
+      for (TU32 z = 0; z < aiAnimationChannel.mNumScalingKeys; ++z)
+      {
+        tempChannel.mScalingKeys.emplace_back(aiAnimationChannel.mScalingKeys[z].mValue);
+        tempChannel.mScalingTime.emplace_back(static_cast<float>(aiAnimationChannel.mScalingKeys[z].mTime));
+      }
+
+      tempAnim.mAnimationChannels.emplace_back(tempChannel);
+    }
+
+    // After creating animation channel information and insert it to animInfo,
+    // insert it to also.
+    this->mAnimationInformations.emplace_back(tempAnim);
+  }
+}
+
+void DDyModelInformation::pProcessNode(const aiScene& aiScene, const aiNode& aiNode)
+{
+  MDY_LOG_INFO_D("pProcessNode | Processing a node | Model name : {}", this->mModelName);
+
+  for (TU32 i = 0 ; i < aiNode.mNumMeshes; ++i)
+  {
+    __pProcessMeshInformation(aiScene, aiNode, *aiScene.mMeshes[aiNode.mMeshes[i]]);
+  }
+
+  for (TU32 i = 0; i < aiNode.mNumChildren; ++i)
+  {
+    pProcessNode(aiScene, *aiNode.mChildren[i]);
+  }
+}
+
+void DDyModelInformation::__pProcessMeshInformation(const aiScene& aiScene, const aiNode& aiNode, const aiMesh& mesh)
 {
   // Retrieve vertex and indices for element buffer object.
-  PDySubmeshInformationDescriptor meshInformationDescriptor;
+  PDySubmeshInformationDescriptor meshInformationDescriptor = {};
 
-  this->__pReadVertexData (mesh, meshInformationDescriptor);
-  if (mesh->HasBones())
-  {
+  if (mesh.HasPositions() || mesh.HasNormals() || mesh.HasTextureCoords(0))
+  { // Create position, normals, texture coordinates [UV0] from aiMesh.
+    this->__pReadVertexData (mesh, meshInformationDescriptor);
+  }
+
+  if (mesh.HasBones())
+  { // Create bone information    from aiMesh.
     meshInformationDescriptor.mIsEnabledSkeletalAnimation = true;
     this->__pReadBoneData (mesh, meshInformationDescriptor);
   }
-  if (mesh->HasFaces())
-  {
+
+  if (mesh.HasFaces())
+  { // Create indice information  from aiMesh.
     this->__pReadIndiceData (mesh, meshInformationDescriptor);
   }
 
-  // Get Mateiral information. IF not exists, just pass only mesh information.
+  if (aiNode.mParent)
+  { // If parent is exist, calculate dultiplied matrix with parent node's transformation.
+    meshInformationDescriptor.mBaseModelMatrix = aiNode.mParent->mTransformation * aiNode.mTransformation;
+  }
+  else { meshInformationDescriptor.mBaseModelMatrix = aiNode.mTransformation; }
+
+  // Get Material information. IF not exists, just pass only mesh information.
   // Diffuse map, specular map, height map, ambient map, emissive map etc.
 
   // If material is not exist, just emplace mesh information.
-  if (const auto materialIndex = mesh->mMaterialIndex; materialIndex == 0)
+  if (const auto materialIndex = mesh.mMaterialIndex; materialIndex == 0)
   {
     MDY_LOG_DEBUG_D(kWarnNotHaveMaterial, kModelInformation, kFunc__pProcessAssimpMesh);
     this->mSubmeshInformations.emplace_back(meshInformationDescriptor);
-    return;
   }
   else
   {
     // If retrieving material name has been failed, just replace it with model name + "0", "1"...
     // Get texture informations from material with name?
-    aiMaterial* material    = scene->mMaterials[materialIndex];
-    auto materialDescriptor = this->__pReadMaterialData(material);
+    const aiMaterial& material  = *aiScene.mMaterials[materialIndex];
+    auto materialDescriptor     = this->__pReadMaterialData(material);
 
     // Create DDySubmeshInformation with material descriptor.
     meshInformationDescriptor.mMaterialName = materialDescriptor.mMaterialName;
@@ -207,7 +288,7 @@ void DDyModelInformation::pProcessAssimpMesh(aiMesh* mesh, const aiScene* scene)
   }
 }
 
-void DDyModelInformation::__pReadVertexData(const aiMesh* mesh, PDySubmeshInformationDescriptor& desc)
+void DDyModelInformation::__pReadVertexData(const aiMesh& mesh, PDySubmeshInformationDescriptor& desc)
 {
   constexpr int32_t mtThresholdSize = 1'000;
   constexpr int32_t mtTaskCount     = 4;
@@ -215,17 +296,17 @@ void DDyModelInformation::__pReadVertexData(const aiMesh* mesh, PDySubmeshInform
   /// @brief Read geomtery information from mesh.
   /// Position, normal, texture coordination(UV0), --tangent, bitangent--.
   ///
-  static auto pReadGeometryInformation = [](const aiMesh* mesh, PDySubmeshInformationDescriptor& desc, int32_t start, int32_t to) {
+  static auto pReadGeometryInformation = [](const aiMesh& mesh, PDySubmeshInformationDescriptor& desc, int32_t start, int32_t to) {
     for (int32_t i = start; i < to; ++i)
     {
       DDyVertexInformation vertexInformation;
-      if (mesh->HasPositions()) vertexInformation.mPosition = mesh->mVertices[i];
-      if (mesh->HasNormals())   vertexInformation.mNormal = mesh->mNormals[i];
+      if (mesh.HasPositions()) vertexInformation.mPosition = mesh.mVertices[i];
+      if (mesh.HasNormals())   vertexInformation.mNormal = mesh.mNormals[i];
 
       // Only supports texture coords 0 set (UV0) for now.
-      if (mesh->HasTextureCoords(0))
+      if (mesh.HasTextureCoords(0))
       {
-        const auto& assimpTextureCoord = mesh->mTextureCoords[0][i];
+        const auto& assimpTextureCoord = mesh.mTextureCoords[0][i];
         vertexInformation.mTexCoords = DDyVector2{ assimpTextureCoord.x, assimpTextureCoord.y };
       }
 
@@ -238,24 +319,23 @@ void DDyModelInformation::__pReadVertexData(const aiMesh* mesh, PDySubmeshInform
   };
 
   // Retrieve vertex buffer informations of this mesh.
-  desc.mVertices.resize(mesh->mNumVertices);
+  desc.mVertices.resize(mesh.mNumVertices);
 
-  if (mesh->mNumVertices >= mtThresholdSize)
-  {
-    // Do parallel
+  if (mesh.mNumVertices >= mtThresholdSize)
+  { // Do parallel
     FDyThreadPool                   pool(mtTaskCount);
     std::vector<std::future<bool>>  results;
 
-    const auto vertexCountSize = static_cast<int32_t>(std::ceil(static_cast<float>(mesh->mNumVertices) / mtTaskCount));
+    const auto vertexCountSize = static_cast<int32_t>(std::ceil(static_cast<float>(mesh.mNumVertices) / mtTaskCount));
     {
       TI32 start = 0, to = vertexCountSize;
       for (int32_t i = 0; i < mtTaskCount; ++i)
       {
-        results.emplace_back(pool.Enqueue(pReadGeometryInformation, mesh, std::ref(desc), start, to));
+        results.emplace_back(pool.Enqueue(pReadGeometryInformation, std::ref(mesh), std::ref(desc), start, to));
 
         start += vertexCountSize;
         to    += vertexCountSize;
-        if (to >= static_cast<int32_t>(mesh->mNumVertices)) { to = mesh->mNumVertices; }
+        if (to >= static_cast<int32_t>(mesh.mNumVertices)) { to = mesh.mNumVertices; }
       }
     }
 
@@ -266,79 +346,74 @@ void DDyModelInformation::__pReadVertexData(const aiMesh* mesh, PDySubmeshInform
     }
   }
   else
-  {
-    // Do sequential
-    for (uint32_t i = 0; i < mesh->mNumVertices; ++i)
-    {
-      DDyVertexInformation vertexInformation;
-      if (mesh->HasPositions()) vertexInformation.mPosition = mesh->mVertices[i];
-      if (mesh->HasNormals())   vertexInformation.mNormal   = mesh->mNormals[i];
-
-      // Only supports texture coords 0 set (UV0) for now.
-      if (mesh->HasTextureCoords(0))
-      {
-        const auto& assimpTextureCoord = mesh->mTextureCoords[0][i];
-        vertexInformation.mTexCoords = DDyVector2{assimpTextureCoord.x, assimpTextureCoord.y};
-      }
-
-      // @todo また骨、Tangent, Bitangentはしない。
-
-      // Insert vertex information to vertice container of descriptor container.
-      desc.mVertices[i] = vertexInformation;
-    }
+  { // Do sequential
+    pReadGeometryInformation(mesh, desc, 0, mesh.mNumVertices);
   }
 }
 
-void DDyModelInformation::__pReadBoneData(const aiMesh* mesh, PDySubmeshInformationDescriptor& desc)
+void DDyModelInformation::__pReadBoneData(const aiMesh& mesh, PDySubmeshInformationDescriptor& desc)
 {
   ///
   /// @brief Add {boneId, weight} to vacant bone data slot of vertexBoneData.
   ///
-  static auto pAddBoneData = [](DDyVertexBoneData& vertexBoneData, int32_t boneId, float weight)
+  static auto pAddBoneDataToVertex = [](DDyVertexBoneData& vertexBoneData, int32_t boneId, float weight)
   {
     for (TU32 i = 0; i < 4; ++i)
     {
-      if (vertexBoneData.mWeights[i] == 0.0f)
+      if (vertexBoneData.mBoneId[i] == -1)
       {
-        vertexBoneData.mBoneId[i] = boneId;
-        vertexBoneData.mWeights[i] = weight;
+        vertexBoneData.mBoneId[i]   = boneId;
+        vertexBoneData.mWeights[i]  = weight;
         return;
       }
     }
   };
 
-  for (TU32 i = 0; i < mesh->mNumBones; ++i)
+  // Make bone data to submesh's vertices.
+  for (TU32 i = 0; i < mesh.mNumBones; ++i)
   {
+    const aiBone&     bone      = *mesh.mBones[i];
     TI32              boneId    = MDY_NOT_INITIALIZED_0;
-    const std::string boneName  = mesh->mBones[i]->mName.C_Str();
+    const std::string boneName  = bone.mName.C_Str();
 
-    if (const auto it = this->mBoneStringBoneIdMap.find(boneName); it != this->mBoneStringBoneIdMap.end()) { boneId = it->second; }
+    if (const auto it = this->mBoneIdMap.find(boneName); it != this->mBoneIdMap.end())
+    { // Check if bond id is already inserted to map of model information.
+      boneId = it->second;
+    }
     else
     {
-      boneId = this->mModelBoneTotalCount;
-      DDyGeometryBoneInformation boneInformation;
-      boneInformation.mBoneOffsetMatrix = mesh->mBones[i]->mOffsetMatrix;
+      boneId = static_cast<TI32>(this->mBoneIdMap.size());
+      this->mBoneIdMap.try_emplace(boneName, boneId);
 
-      this->mOverallModelBoneInformations.emplace_back(boneInformation);
-      this->mBoneStringBoneIdMap.try_emplace(boneName, boneId);
-      ++this->mModelBoneTotalCount;
+      for (auto& mAnimationChannel : this->mAnimationInformations[0].mAnimationChannels)
+      {
+        if (boneName == mAnimationChannel.mName)
+        { // If bondMap called boneName is not binded to the map yet,
+          // create information and mapping pointer so insert it to the list.
+          // aiMatrix is row but transported to column major of DDyMatrix4x4
+          DDyGeometryBoneInformation boneTransformInfo;
+          boneTransformInfo.mBoneOffsetMatrix = bone.mOffsetMatrix;
+          this->mOverallModelBoneInformations.emplace_back(boneTransformInfo);
+        }
+      }
     }
 
-    for (TU32 j = 0; j < mesh->mBones[i]->mNumWeights; ++j)
+    // Insert bondId (to the mOverallModelBoneInformation) and weight to the submesh information descriptor.
+    for (TU32 j = 0; j < bone.mNumWeights; ++j)
     {
-      const int32_t applyVertexId = mesh->mBones[i]->mWeights[j].mVertexId;
-      const float   applyWeight   = mesh->mBones[i]->mWeights[j].mWeight;
-      pAddBoneData(desc.mVertices[applyVertexId].mVertexBoneData, boneId, applyWeight);
+      const int32_t applyVertexId = bone.mWeights[j].mVertexId;
+      const float   applyWeight   = bone.mWeights[j].mWeight;
+      pAddBoneDataToVertex(desc.mVertices[applyVertexId].mVertexBoneData, boneId, applyWeight);
     }
   }
 }
 
-void DDyModelInformation::__pReadIndiceData(const aiMesh* mesh, PDySubmeshInformationDescriptor& desc)
+void DDyModelInformation::__pReadIndiceData(const aiMesh& mesh, PDySubmeshInformationDescriptor& desc)
 {
-  desc.mIndices.reserve(mesh->mNumFaces * 3);
-  for (uint32_t i = 0; i < mesh->mNumFaces; ++i)
+  desc.mIndices.reserve(mesh.mNumFaces * 3);
+  for (uint32_t i = 0; i < mesh.mNumFaces; ++i)
   {
-    const aiFace& assimpFace = mesh->mFaces[i];
+    const aiFace& assimpFace = mesh.mFaces[i];
     for (uint32_t j = 0; j < assimpFace.mNumIndices; ++j)
     {
       desc.mIndices.emplace_back(assimpFace.mIndices[j]);
@@ -347,10 +422,10 @@ void DDyModelInformation::__pReadIndiceData(const aiMesh* mesh, PDySubmeshInform
   desc.mIndices.shrink_to_fit();
 }
 
-PDyMaterialConstructionDescriptor DDyModelInformation::__pReadMaterialData(const aiMaterial* material)
+PDyMaterialConstructionDescriptor DDyModelInformation::__pReadMaterialData(const aiMaterial& material)
 {
   aiString materialName  = {};
-  if (const auto ret = material->Get(AI_MATKEY_NAME, materialName); ret == AI_FAILURE)
+  if (const auto ret = material.Get(AI_MATKEY_NAME, materialName); ret == AI_FAILURE)
   {
     PHITOS_UNEXPECTED_BRANCH();
   }
@@ -400,7 +475,7 @@ PDyMaterialConstructionDescriptor DDyModelInformation::__pReadMaterialData(const
 }
 
 std::optional<std::vector<std::string>>
-DDyModelInformation::__pLoadMaterialTextures(const aiMaterial* material, EDyTextureMapType type)
+DDyModelInformation::__pLoadMaterialTextures(const aiMaterial& material, EDyTextureMapType type)
 {
   // EDyTextureMapType => aiTextureType
   aiTextureType aiTextureType = aiTextureType_UNKNOWN;
@@ -417,11 +492,11 @@ DDyModelInformation::__pLoadMaterialTextures(const aiMaterial* material, EDyText
   auto& manInfo = MDyDataInformation::GetInstance();
 
   std::vector<std::string> textureInformationString;
-  const uint32_t textureMapCount = material->GetTextureCount(aiTextureType);
+  const uint32_t textureMapCount = material.GetTextureCount(aiTextureType);
   for (uint32_t i = 0; i < textureMapCount; ++i)
   {
     aiString textureLocalPath;
-    if (material->GetTexture(aiTextureType, i, &textureLocalPath) != AI_SUCCESS)
+    if (material.GetTexture(aiTextureType, i, &textureLocalPath) != AI_SUCCESS)
     {
       MDY_LOG_ERROR_D("{} | Failed to read texture information from assimp.", "DDyModelInformation::__pLoadMaterialTextures");
       return std::nullopt;
@@ -455,20 +530,47 @@ DDyModelInformation::__pLoadMaterialTextures(const aiMaterial* material, EDyText
   return textureInformationString;
 }
 
+void DDyModelInformation::pCreateNodeInformation(const aiNode& aiNode, DMoeBoneNodeInformation& nodeInfo)
+{
+  if (const auto idIt = this->mBoneIdMap.find(aiNode.mName.data);
+      idIt != this->mBoneIdMap.end())
+  {
+    DMoeBoneNodeInformation tempBoneNode;
+    tempBoneNode.mName          = aiNode.mName.data;
+    tempBoneNode.mParentNodePtr = &nodeInfo;
+    tempBoneNode.mNodeTransform = aiNode.mTransformation;
+    tempBoneNode.mOffsetMatrix  = this->mOverallModelBoneInformations[idIt->second].mBoneOffsetMatrix;
+
+    nodeInfo.mChildrenNodes.emplace_back(std::move(tempBoneNode));
+
+    for (TU32 i = 0; i < aiNode.mNumChildren; ++i)
+    { // If the node we just found was a bone node then pass it in.
+      this->pCreateNodeInformation(*aiNode.mChildren[i], *nodeInfo.mChildrenNodes.rbegin());
+    }
+  }
+  else
+  {
+    for (TU32 i = 0; i < aiNode.mNumChildren; ++i)
+    { // Else
+      this->pCreateNodeInformation(*aiNode.mChildren[i], nodeInfo);
+    }
+  }
+}
+
 void DDyModelInformation::__pOutputDebugInformationLog()
 {
 #if defined(_DEBUG) || !defined(NDEBUG)
-  for (auto i = 0; i < this->mOverallBindedMaterialName.size(); ++i)
+  for (TU32 i = 0; i < this->mOverallBindedMaterialName.size(); ++i)
   {
     MDY_LOG_DEBUG_D(kModelInformationNumbTemplate, kModelInformation.data(), "base material name", i, this->mOverallBindedMaterialName[i]);
   }
 
-  for (auto i = 0; i < this->mOverallTextureLocalPaths.size(); ++i)
+  for (TU32 i = 0; i < this->mOverallTextureLocalPaths.size(); ++i)
   {
     MDY_LOG_DEBUG_D(kModelInformationNumbTemplate, kModelInformation.data(), "innate texture name", i, this->mOverallTextureLocalPaths[i]);
   }
 
-  for (auto i = 0; i < this->mSubmeshInformations.size(); ++i)
+  for (TU32 i = 0; i < this->mSubmeshInformations.size(); ++i)
   {
     const auto& submeshInfo = this->mSubmeshInformations[i].GetInformation();
     MDY_LOG_DEBUG_D("{} | Model information submesh No.{} | Vertices count : {} | Indices count : {}",

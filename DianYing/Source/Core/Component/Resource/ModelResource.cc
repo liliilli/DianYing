@@ -20,7 +20,14 @@
 #include <Dy/Core/Component/Information/ModelInformation.h>
 #include <Dy/Core/Component/Resource/SubmeshResource.h>
 #include <Dy/Management/LoggingManager.h>
-#include "Dy/Helper/Type/Quaternion.h"
+#include <Dy/Helper/Type/Quaternion.h>
+
+namespace
+{
+
+constexpr float defaultTimeDuration = 30.f;
+
+} /// ::unnanemd namespace
 
 namespace dy
 {
@@ -29,81 +36,67 @@ CDyModelResource::~CDyModelResource()
 {
   // Release all resource bind to this instance.
   if (this->__mLinkedModelInformationPtr) { this->__mLinkedModelInformationPtr->__pfResetModelResourceLink(); }
-
   this->mMeshResource.clear();
 }
 
-const std::vector<std::unique_ptr<CDySubmeshResource>>& CDyModelResource::GetSubmeshResources() const noexcept
+void CDyModelResource::UpdateBoneAnimationTransformList(float elapsedTime)
 {
-  return this->mMeshResource;
+  // Get bone final transform list from informations's aiScene.
+  auto& modelInformation = *this->__mLinkedModelInformationPtr;
+
+  const auto& animation0 = this->__mLinkedModelInformationPtr->mAnimationInformations[0];
+
+  float ticksPerSecond = static_cast<float>(animation0.mTickPerSecond);
+  if (ticksPerSecond == 0.f) { ticksPerSecond = defaultTimeDuration; }
+
+  // Calculate animation timepoint from animation start.
+  const float animationTimePoint = std::fmod(elapsedTime * ticksPerSecond, static_cast<float>(animation0.mDuration));
+  pReadNodeHierarchy(animationTimePoint, modelInformation, modelInformation.mRootBoneNode, DDyMatrix4x4::IdentityMatrix());
 }
 
-void CDyModelResource::GetBoneTransformLists(float runningTime, std::vector<DDyMatrix4x4>& transforms)
+const std::vector<DDyGeometryBoneInformation>&
+CDyModelResource::GetModelAnimationTransformMatrixList() const noexcept
 {
-  DDyMatrix4x4 identityMatrix = DDyMatrix4x4::IdentityMatrix();
-  const auto& modelScene = *this->__mLinkedModelInformationPtr->mInternalModelGeometryResource;
-  const auto* animation0 = modelScene.mAnimations[0];
-
-  float ticksPerSecond = static_cast<float>(animation0->mTicksPerSecond);
-  if (ticksPerSecond == 0.f)
-  {
-    constexpr float defaultTimeDuration = 30.f;
-    ticksPerSecond = defaultTimeDuration;
-  }
-  const float timeInTicks = runningTime * ticksPerSecond;
-  const float animationTime = std::fmod(timeInTicks, static_cast<float>(animation0->mDuration));
-
-  pReadNodeHierarchy(animationTime, *modelScene.mRootNode, *this->__mLinkedModelInformationPtr, identityMatrix);
-
-  transforms.clear();
-  transforms.reserve(this->__mLinkedModelInformationPtr->mModelBoneTotalCount);
-
-  for (TI32 i = 0; i < this->__mLinkedModelInformationPtr->mModelBoneTotalCount; ++i)
-  {
-    transforms.emplace_back(this->__mLinkedModelInformationPtr->mOverallModelBoneInformations[i].mFinalTransformation);
-  }
+  return this->__mLinkedModelInformationPtr->mOverallModelBoneInformations;
 }
 
-void CDyModelResource::SetBoneTransformLists(const std::vector<DDyMatrix4x4>& transforms)
+void CDyModelResource::pReadNodeHierarchy(
+    float animationElapsedTime, DDyModelInformation& modelInfo,
+    const DMoeBoneNodeInformation& boneNode, const DDyMatrix4x4& parentTransform)
 {
-  const auto transformSize = static_cast<TI32>(transforms.size());
-  this->mOverallModelAnimationMatrix.clear();
-  this->mOverallModelAnimationMatrix.insert(this->mOverallModelAnimationMatrix.begin(), MDY_BIND_BEGIN_END(transforms));
-}
+  using TNodeAnim = NotNull<const DMoeAnimationInformation::DAnimChannel*>;
 
-void CDyModelResource::pReadNodeHierarchy(float runningTime, const aiNode& nodeCursor, DDyModelInformation& modelInfo, const DDyMatrix4x4& parentTransform)
-{
   ///
   /// @brief
   /// @todo WRITE DOCUMENT
   ///
-  static auto FindNodeAnim = [](const std::string& findNodeName, const aiAnimation* pAnimation) -> const aiNodeAnim*
+  static auto FindNodeAnimationChannel = [](const std::string& nodeAnimName, const DMoeAnimationInformation& pAnimation) -> std::optional<TNodeAnim>
   {
-    for (TU32 i = 0; i < pAnimation->mNumChannels; i++)
+    for (TU32 i = 0; i < pAnimation.mAnimationChannels.size(); i++)
     {
-      const aiNodeAnim* pNodeAnim = pAnimation->mChannels[i];
-      if (findNodeName == pNodeAnim->mNodeName.C_Str())
-      {
-        return pNodeAnim;
-      }
+      const auto& pNodeAnim = pAnimation.mAnimationChannels[i];
+      if (nodeAnimName == pNodeAnim.mName) { return DyMakeNotNull(&pNodeAnim); }
     }
-    return nullptr;
+    /// else case
+    return std::nullopt;
   };
 
   ///
   /// @brief
   /// @todo WRITE DOCUMENT
   ///
-  static auto CalcInterpolatedScaling = [](float runningTime, const aiNodeAnim* nodeAnimation) -> DDyVector3
+  static auto CalcInterpolatedScaling = [](float animElapsedTime, TNodeAnim nodeAnimChannel) -> DDyVector3
   {
-    PHITOS_ASSERT(nodeAnimation->mNumScalingKeys > 0, "nodeAnimation must have at least one scaling keys");
-    if (nodeAnimation->mNumScalingKeys == 1) { return nodeAnimation->mScalingKeys[0].mValue; }
+    const auto scalingKeySize = static_cast<TI32>(nodeAnimChannel->mScalingKeys.size());
+
+    PHITOS_ASSERT(scalingKeySize > 0, "nodeAnimChannel must have at least one scaling keys");
+    if (scalingKeySize == 1) { return nodeAnimChannel->mScalingKeys[0]; }
 
     // Get key frame iterating and verifying running time.
-    TU32 scalingIndex = MDY_NOT_INITIALIZED_0;
-    for (TU32 i = 0; i < nodeAnimation->mNumScalingKeys - 1; i++)
+    TI32 scalingIndex = MDY_NOT_INITIALIZED_0;
+    for (TI32 i = 0; i < scalingKeySize - 1; i++)
     {
-      if (runningTime < static_cast<float>(nodeAnimation->mScalingKeys[i + 1].mTime))
+      if (animElapsedTime < nodeAnimChannel->mScalingTime[i + 1])
       {
         scalingIndex = i;
         break;
@@ -111,33 +104,36 @@ void CDyModelResource::pReadNodeHierarchy(float runningTime, const aiNode& nodeC
     }
 
     // Calculate factor for scale value linear interpolation between key and next key.
-    PHITOS_ASSERT(scalingIndex + 1 < nodeAnimation->mNumScalingKeys, "scalingIndex out of bound.");
-    const TU32 nextScalingIndex = scalingIndex + 1;
-    const auto deltaTime = static_cast<float>(nodeAnimation->mScalingKeys[nextScalingIndex].mTime - nodeAnimation->mScalingKeys[scalingIndex].mTime);
-    const auto factor    = (runningTime - static_cast<float>(nodeAnimation->mScalingKeys[scalingIndex].mTime)) / deltaTime;
-    PHITOS_ASSERT(factor >= 0.0f && factor <= 1.0f, "Animation factor must be from 0.0f to 1.0f");
+    PHITOS_ASSERT(scalingIndex + 1 < scalingKeySize, "scalingIndex out of bound.");
+    const TU32 nextScalingIndex     = scalingIndex + 1;
+    const auto deltaTimeFromFrames  = nodeAnimChannel->mScalingTime[nextScalingIndex] - nodeAnimChannel->mScalingTime[scalingIndex];
+
+    const auto animationFactor      = (animElapsedTime - nodeAnimChannel->mScalingTime[scalingIndex]) / deltaTimeFromFrames;
+    PHITOS_ASSERT(animationFactor >= 0.0f && animationFactor <= 1.0f, "Animation factor must be from 0.0f to 1.0f");
 
     // Get interpolated scaling vector (x, y, z)
-    const aiVector3D& startScaling  = nodeAnimation->mScalingKeys[scalingIndex].mValue;
-    const aiVector3D& endScaling    = nodeAnimation->mScalingKeys[nextScalingIndex].mValue;
-    return startScaling + (endScaling - startScaling) * factor;
+    const aiVector3D& startScaling  = nodeAnimChannel->mScalingKeys[scalingIndex];
+    const aiVector3D& endScaling    = nodeAnimChannel->mScalingKeys[nextScalingIndex];
+    return startScaling + (endScaling - startScaling) * animationFactor;
   };
 
   ///
   /// @brief
   /// @todo WRITE DOCUMENT
   ///
-  static auto CalcInterpolatedRotation = [](float runningTime, const aiNodeAnim* nodeAnimation) -> DDyQuaternion
+  static auto CalcInterpolatedRotation = [](float animElapsedTime, TNodeAnim nodeAnimChannel) -> DDyQuaternion
   {
+    const auto rotationKeySize = static_cast<TI32>(nodeAnimChannel->mRotationKeys.size());
+
     // We need at least two values to interpolate...
-    PHITOS_ASSERT(nodeAnimation->mNumRotationKeys > 0, "nodeAnimation must have at least one rotation keys");
-    if (nodeAnimation->mNumRotationKeys == 1) { return nodeAnimation->mRotationKeys[0].mValue; }
+    PHITOS_ASSERT(rotationKeySize > 0, "nodeAnimChannel must have at least one rotation keys");
+    if (rotationKeySize == 1) { return nodeAnimChannel->mRotationKeys[0]; }
 
     // Get key frame iterating and verifying running time.
-    TU32 rotationIndex = MDY_NOT_INITIALIZED_0;
-    for (TU32 i = 0; i < nodeAnimation->mNumRotationKeys - 1; i++)
+    TI32 rotationIndex = MDY_NOT_INITIALIZED_0;
+    for (TI32 i = 0; i < rotationKeySize - 1; i++)
     {
-      if (runningTime < static_cast<float>(nodeAnimation->mRotationKeys[i + 1].mTime))
+      if (animElapsedTime < nodeAnimChannel->mRotationTime[i + 1])
       {
         rotationIndex = i;
         break;
@@ -145,37 +141,38 @@ void CDyModelResource::pReadNodeHierarchy(float runningTime, const aiNode& nodeC
     }
 
     // Calculate factor for rotation quaternion slerp (maybe?) between key and next key.
-    PHITOS_ASSERT(rotationIndex + 1 < nodeAnimation->mNumRotationKeys, "rotationIndex out of bound.");
-    const TU32 nextRotationIndex = rotationIndex + 1;
-    const auto dt     = static_cast<float>(nodeAnimation->mRotationKeys[nextRotationIndex].mTime - nodeAnimation->mRotationKeys[rotationIndex].mTime);
-    const auto factor = (runningTime - static_cast<float>(nodeAnimation->mRotationKeys[rotationIndex].mTime)) / dt;
-    PHITOS_ASSERT(factor >= 0.0f && factor <= 1.0f, "Animation factor must be from 0.0f to 1.0f");
+    PHITOS_ASSERT(rotationIndex + 1 < rotationKeySize, "rotationIndex out of bound.");
+    const TU32 nextRotationIndex    = rotationIndex + 1;
+    const auto deltaTimeFromFrames  = nodeAnimChannel->mRotationTime[nextRotationIndex] - nodeAnimChannel->mRotationTime[rotationIndex];
+
+    const auto animationFactor      = (animElapsedTime - nodeAnimChannel->mRotationTime[rotationIndex]) / deltaTimeFromFrames;
+    PHITOS_ASSERT(animationFactor >= 0.0f && animationFactor <= 1.0f, "Animation factor must be from 0.0f to 1.0f");
 
     // Get interpolated rotation quaternion (v (xi + yj + zk), w)
-    const aiQuaternion& startQuaternion = nodeAnimation->mRotationKeys[rotationIndex].mValue;
-    const aiQuaternion& endQuaternion   = nodeAnimation->mRotationKeys[nextRotationIndex].mValue;
+    const auto& startQuaternion = nodeAnimChannel->mRotationKeys[rotationIndex];
+    const auto& endQuaternion   = nodeAnimChannel->mRotationKeys[nextRotationIndex];
 
-    aiQuaternion outQuaternion;
-    aiQuaternion::Interpolate(outQuaternion, startQuaternion, endQuaternion, factor);
-    outQuaternion = outQuaternion.Normalize();
-    return outQuaternion;
+    auto outQuat = slerp(startQuaternion.pGetQuaternion(), endQuaternion.pGetQuaternion(), animationFactor);
+    return outQuat;
   };
 
   ///
   /// @brief
   /// @todo WRITE DOCUMENT
   ///
-  static auto CalcInterpolatedPosition = [](float runningTime, const aiNodeAnim* nodeAnimation) -> DDyVector3
+  static auto CalcInterpolatedPosition = [](float animElapsedTime, TNodeAnim nodeAnimChannel) -> DDyVector3
   {
+    const auto positionKeySize = static_cast<TI32>(nodeAnimChannel->mPositionKeys.size());
+
     // We need at least two values to interpolate...
-    PHITOS_ASSERT(nodeAnimation->mNumPositionKeys > 0, "nodeAnimation must have at least one position keys");
-    if (nodeAnimation->mNumPositionKeys == 1) { return nodeAnimation->mPositionKeys[0].mValue; }
+    PHITOS_ASSERT(positionKeySize > 0, "nodeAnimChannel must have at least one position keys");
+    if (positionKeySize == 1) { return nodeAnimChannel->mPositionKeys[0]; }
 
     // Get key frame iterating and verifying running time.
-    TU32 positionIndex = MDY_NOT_INITIALIZED_0;
-    for (TU32 i = 0; i < nodeAnimation->mNumRotationKeys - 1; i++)
+    TI32 positionIndex = MDY_NOT_INITIALIZED_0;
+    for (TI32 i = 0; i < positionKeySize - 1; i++)
     {
-      if (runningTime < static_cast<float>(nodeAnimation->mPositionKeys[i + 1].mTime))
+      if (animElapsedTime < nodeAnimChannel->mPositionTime[i + 1])
       {
         positionIndex = i;
         break;
@@ -183,54 +180,57 @@ void CDyModelResource::pReadNodeHierarchy(float runningTime, const aiNode& nodeC
     }
 
     // Calculate factor for position value linear interpolation between key and next key.
-    PHITOS_ASSERT(positionIndex + 1 < nodeAnimation->mNumPositionKeys, "positionIndex out of bound.");
-    const TU32 nextPositionIndex = positionIndex + 1;
-    const auto dt = static_cast<float>(nodeAnimation->mPositionKeys[nextPositionIndex].mTime - nodeAnimation->mPositionKeys[positionIndex].mTime);
-    const auto factor = (runningTime - static_cast<float>(nodeAnimation->mPositionKeys[positionIndex].mTime)) / dt;
-    PHITOS_ASSERT(factor >= 0.0f && factor <= 1.0f, "Animation factor must be from 0.0f to 1.0f");
+    PHITOS_ASSERT(positionIndex + 1 < positionKeySize, "positionIndex out of bound.");
+    const TU32 nextPositionIndex    = positionIndex + 1;
+    const auto deltaTimeFromFrames  = nodeAnimChannel->mPositionTime[nextPositionIndex] - nodeAnimChannel->mPositionTime[positionIndex];
+
+    const auto animationFactor      = (animElapsedTime - nodeAnimChannel->mPositionTime[positionIndex]) / deltaTimeFromFrames;
+    PHITOS_ASSERT(animationFactor >= 0.0f && animationFactor <= 1.0f, "Animation factor must be from 0.0f to 1.0f");
 
     // Get interpolated position (x, y, z)
-    const aiVector3D& Start = nodeAnimation->mPositionKeys[positionIndex].mValue;
-    const aiVector3D& End = nodeAnimation->mPositionKeys[nextPositionIndex].mValue;
-    return Start + factor * (End - Start);
+    const aiVector3D& Start = nodeAnimChannel->mPositionKeys[positionIndex];
+    const aiVector3D& End = nodeAnimChannel->mPositionKeys[nextPositionIndex];
+    return Start + animationFactor * (End - Start);
   };
 
-  //
-  const std::string   nodeName  = nodeCursor.mName.C_Str();
-  const aiAnimation*  animation = modelInfo.pfGetModelGeometryResource()->mAnimations[0];
-  DDyMatrix4x4        nodeTransformation{nodeCursor.mTransformation};
+  //!
+  //! Function Body
+  //!
 
-  if (const aiNodeAnim* nodeAnimation = FindNodeAnim(nodeName, animation); nodeAnimation)
+  // nodeName == boneName == animChannelName.
+  const auto&  aiAnimation = modelInfo.mAnimationInformations[0]; // 하나밖에 없다고 가정함.
+  DDyMatrix4x4 finalModel  = DDyMatrix4x4::IdentityMatrix();
+
+  if (auto nodeAnimationChannel = FindNodeAnimationChannel(boneNode.mName, aiAnimation);
+      nodeAnimationChannel.has_value())
   {
     // Interpolate scaling and generate scaling transformation matrix
-    const DDyVector3 scalingVector          = CalcInterpolatedScaling(runningTime, nodeAnimation);
-    const DDyMatrix4x4 scalingMatrix        = DDyMatrix4x4::CreateWithScale(scalingVector);
+    const DDyVector3    scalingVector      = CalcInterpolatedScaling(animationElapsedTime, nodeAnimationChannel.value());
+    const DDyMatrix4x4  scalingMatrix      = DDyMatrix4x4::CreateWithScale(scalingVector);
 
     // Interpolate rotation and generate rotation transformation matrix
-    const DDyQuaternion rotationQuaternion  = CalcInterpolatedRotation(runningTime, nodeAnimation);
-    const DDyMatrix4x4  rotationMatrix      = rotationQuaternion.GetRotationMatrix4x4();
+    const DDyQuaternion rotationQuaternion = CalcInterpolatedRotation(animationElapsedTime, nodeAnimationChannel.value());
+    const DDyMatrix4x4  rotationMatrix     = rotationQuaternion.GetRotationMatrix4x4();
 
     // Interpolate translation and generate translation transformation matrix
-    const DDyVector3    translation         = CalcInterpolatedPosition(runningTime, nodeAnimation);
-    const DDyMatrix4x4  translationMatrix   = DDyMatrix4x4::CreateWithTranslation(translation);
+    const DDyVector3    translation        = CalcInterpolatedPosition(animationElapsedTime, nodeAnimationChannel.value());
+    const DDyMatrix4x4  translationMatrix  = DDyMatrix4x4::CreateWithTranslation(translation);
 
     // Combine the above transformations
-    nodeTransformation = scalingMatrix.Multiply(rotationMatrix.Multiply(translationMatrix));
-  }
-  const DDyMatrix4x4 globalTransformationMatrix = parentTransform.Multiply(nodeTransformation);
+    finalModel = parentTransform.Multiply(translationMatrix.Multiply(rotationMatrix).Multiply(scalingMatrix));
 
-  if (const auto it = modelInfo.mBoneStringBoneIdMap.find(nodeName); it != modelInfo.mBoneStringBoneIdMap.end())
-  {
-    const TU32 boneId = it->second;
-    auto& finalTransformationRef = modelInfo.mOverallModelBoneInformations[boneId].mFinalTransformation;
-    auto& boneOffsetMatrixRef    = modelInfo.mOverallModelBoneInformations[boneId].mBoneOffsetMatrix;
-    finalTransformationRef       = modelInfo.mGlobalInverseTransform.Multiply(globalTransformationMatrix.Multiply(boneOffsetMatrixRef));
-    //finalTransformationRef       = globalTransformationMatrix.Multiply(boneOffsetMatrixRef);
+    if (const auto it = modelInfo.mBoneIdMap.find(boneNode.mName); it != modelInfo.mBoneIdMap.end())
+    {
+      const TU32 boneId               = it->second;
+      const auto& boneOffsetMatrixRef = modelInfo.mOverallModelBoneInformations[boneId].mBoneOffsetMatrix;
+      auto& finalTransformationRef    = modelInfo.mOverallModelBoneInformations[boneId].mFinalTransformation;
+      finalTransformationRef          = finalModel.Multiply(boneOffsetMatrixRef);
+    }
   }
 
-  for (TU32 i = 0; i < nodeCursor.mNumChildren; i++)
+  for (TU32 i = 0; i < boneNode.mChildrenNodes.size(); i++)
   {
-    pReadNodeHierarchy(runningTime, *nodeCursor.mChildren[i], modelInfo, globalTransformationMatrix);
+    pReadNodeHierarchy(animationElapsedTime, modelInfo, boneNode.mChildrenNodes[i], finalModel);
   }
 }
 
@@ -248,11 +248,10 @@ EDySuccess CDyModelResource::pInitializeModelResource(const DDyModelInformation&
     }
 
     this->mMeshResource.emplace_back(std::move(meshResource));
-    if (!this->mIsEnabledModelSkeletalAnimation && submeshInformation.GetInformation().mIsEnabledSkeletalAnimation)
+    if (submeshInformation.GetInformation().mIsEnabledSkeletalAnimation)
     {
       this->mIsEnabledModelSkeletalAnimation = true;
-      MDY_LOG_DEBUG_D("{} | Model has bone so can be animated. | Model name : {}",
-                      "CDyModelResource::pInitializeModelResource", modelInformation.mModelName);
+      MDY_LOG_DEBUG_D("{} | Model has bone so can be animated. | Model name : {}", "CDyModelResource::pInitializeModelResource", modelInformation.mModelName);
     }
   }
   return DY_SUCCESS;

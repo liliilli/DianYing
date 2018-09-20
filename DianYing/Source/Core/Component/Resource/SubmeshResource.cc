@@ -117,10 +117,10 @@ EDySuccess CDySubmeshResource::pfInitializeSubmeshResource(const DDySubmeshInfor
     }
 
     // mSubmeshResourceInformation.mVertices.mBondId, mWeights
-    if (!this->mMeshFlagInformation.mIsEnabledSkeletalAnimation)
+    if (this->mMeshFlagInformation.mIsEnabledSkeletalAnimation)
     {
       glEnableVertexAttribArray(3);
-      glVertexAttribFormat(3, 4, GL_INT, GL_FALSE, offsetof(DDyVertexInformation, mVertexBoneData.mBoneId));
+      glVertexAttribIFormat(3, 4, GL_INT, offsetof(DDyVertexInformation, mVertexBoneData.mBoneId));
       glVertexAttribBinding(3, 0);
 
       glEnableVertexAttribArray(4);

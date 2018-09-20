@@ -26,8 +26,8 @@ namespace dy
 ///
 struct DDyVertexBoneData final
 {
-  std::array<TU32, 4> mBoneId     = {0, 0, 0, 0};
-  DDyVector4          mWeights    = {0, 0, 0, 0};
+  std::array<TI32, 4> mBoneId     = {-1, -1, -1, -1};
+  DDyVector4          mWeights    = {0 ,  0,  0,  0};
 };
 
 ///
@@ -50,7 +50,7 @@ struct DDyVertexInformation final
 struct DDyGeometryBoneInformation final
 {
   DDyMatrix4x4        mBoneOffsetMatrix     = {};
-  DDyMatrix4x4        mFinalTransformation  = {};
+  DDyMatrix4x4        mFinalTransformation  = DDyMatrix4x4::IdentityMatrix();
 };
 
 ///
@@ -70,11 +70,12 @@ struct DDyGlBufferIdInformation final
 ///
 struct PDySubmeshInformationDescriptor final
 {
-  std::vector<DDyVertexInformation> mVertices     = {};
-  std::vector<int32_t>              mIndices      = {};
-  std::string                       mMaterialName = "";
-  TU32                              mBaseVertices = 0;
-  TU32                              mBaseIndices  = 0;
+  std::vector<DDyVertexInformation> mVertices         = {};
+  std::vector<int32_t>              mIndices          = {};
+  std::string                       mMaterialName     = "";
+  TU32                              mBaseVertices     = 0;
+  TU32                              mBaseIndices      = 0;
+  DDyMatrix4x4                      mBaseModelMatrix  = DDyMatrix4x4::IdentityMatrix();
 
   bool                              mIsEnabledSkeletalAnimation = false;
 };

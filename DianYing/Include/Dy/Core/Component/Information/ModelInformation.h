@@ -86,45 +86,51 @@ public:
 
 private:
   ///
+  /// @brief Create Animation information, not traversing aiMeshes.
+  ///
+  void pCreateAnimationInformation(const aiScene& ai_scene);
+
+  ///
+  /// @brief
+  ///
+  void pProcessNode(const aiScene& aiScene, const aiNode& aiNode);
+
+  ///
   /// @brief Process aiMesh, make mesh information description which stores vertex, indices,
   /// innate material information, etc.
   ///
-  void pProcessAssimpMesh(aiMesh* mesh, const aiScene* scene);
-
+  void __pProcessMeshInformation(const aiScene& aiScene, const aiNode& aiNode, const aiMesh& aiMesh);
   /// Read vertex data, make data, and insert to PDySubmeshInformationDescriptor.
-  void __pReadVertexData(const aiMesh* mesh, PDySubmeshInformationDescriptor& desc);
+  void __pReadVertexData(const aiMesh& mesh, PDySubmeshInformationDescriptor& desc);
   /// Read bone data.
-  void __pReadBoneData(const aiMesh* mesh, PDySubmeshInformationDescriptor& desc);
+  void __pReadBoneData(const aiMesh& mesh, PDySubmeshInformationDescriptor& desc);
   /// Read index(element) data, make data, and insert to PDySubmeshInformationDescriptor.
-  void __pReadIndiceData(const aiMesh* mesh, PDySubmeshInformationDescriptor& desc);
+  void __pReadIndiceData(const aiMesh& mesh, PDySubmeshInformationDescriptor& desc);
   /// Read material data and make descriptor.
-  PDyMaterialConstructionDescriptor       __pReadMaterialData(const aiMaterial* material);
+  PDyMaterialConstructionDescriptor       __pReadMaterialData(const aiMaterial& material);
   /// Read material texture data and insert texture information to manager.
-  std::optional<std::vector<std::string>> __pLoadMaterialTextures(const aiMaterial* material, EDyTextureMapType type);
-
+  std::optional<std::vector<std::string>> __pLoadMaterialTextures(const aiMaterial& material, EDyTextureMapType type);
+  /// Read node information from aiScene, and create DMoe's node information.
+  void pCreateNodeInformation(const aiNode& aiNode, DMoeBoneNodeInformation& nodeInfo);
   /// Output information log only in debug mode.
   void __pOutputDebugInformationLog();
 
-  /// Return valid model geometry resource as aiScene.
-  [[nodiscard]]
-  FORCEINLINE NotNull<const aiScene*> pfGetModelGeometryResource() const noexcept
-  {
-    return DyMakeNotNull(this->mInternalModelGeometryResource);
-  }
-
   std::string                             mModelName                      = "";
   std::string                             mModelRootPath                  = "";
+
   std::vector<DDySubmeshInformation>      mSubmeshInformations            = {};
   std::vector<std::string>                mOverallBindedMaterialName      = {};
   std::vector<std::string>                mOverallTextureLocalPaths       = {};
 
-  // Added 2018-09-14
-  std::unique_ptr<Assimp::Importer>       mAssimpImporter                 = nullptr;
-  std::unordered_map<std::string, TU32>   mBoneStringBoneIdMap            = {};
+  std::unordered_map<std::string, TU32>   mBoneIdMap                      = {};
   std::vector<DDyGeometryBoneInformation> mOverallModelBoneInformations   = {};
-  int32_t                                 mModelBoneTotalCount            = 0;
-  const aiScene*                          mInternalModelGeometryResource  = nullptr;
-  DDyMatrix4x4                            mGlobalInverseTransform         = {};
+  DDyMatrix4x4                            mGlobalTransform                = DDyMatrix4x4::IdentityMatrix();
+
+  std::vector<DMoeAnimationInformation>   mAnimationInformations          = {};
+  DMoeBoneNodeInformation                 mRootBoneNode;
+
+  // Added 2018-09-19
+  std::atomic<bool>                       mModelInformationLoaded         = false;
 
   //!
   //! Resource pointers binding

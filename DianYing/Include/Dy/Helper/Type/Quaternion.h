@@ -38,6 +38,9 @@ public:
   DDyQuaternion(const aiQuaternion& aiQuaternion);
   DDyQuaternion& operator=(const aiQuaternion& auQuaternion);
 
+  DDyQuaternion(const glm::quat& glmQuat);
+  DDyQuaternion& operator=(const glm::quat& glmQuat);
+
   ///
   /// @brief Get rotation matrix (4x4) from quaternion.
   ///
@@ -82,9 +85,10 @@ public:
   ///
   void SetRotationAngle(const DDyVector3& degreeEulerAngle);
 
-private:
+  ///
   const glm::quat& pGetQuaternion() const noexcept;
 
+private:
   glm::quat mQuaternion;
 };
 

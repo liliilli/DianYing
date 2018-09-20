@@ -15,9 +15,12 @@
 
 #include <string>
 #include <Dy/Core/Component/Interface/IDyToString.h>
+#include "Dy/Helper/Type/Quaternion.h"
 
 namespace dy
 {
+
+struct DMoeTempAnimationChannel;
 
 ///
 /// @struct PDyModelConstructionDescriptor
@@ -37,6 +40,51 @@ Model Name : {}
 Model Path : {}
 )dy", this->mModelName, this->mModelPath);
   };
+};
+
+///
+/// @struct DMoeAnimationInformation
+/// @brief
+///
+struct DMoeAnimationInformation final
+{
+  ///
+  /// @struct DAnimChannel
+  /// @brief
+  ///
+  struct DAnimChannel final
+  {
+    // Anim channel name == bondId name == node name.
+    std::string                 mName         = "";
+
+    std::vector<DDyQuaternion>  mRotationKeys = {};
+    std::vector<DDyVector3>     mPositionKeys = {};
+    std::vector<DDyVector3>     mScalingKeys  = {};
+
+    std::vector<float>          mRotationTime = {};
+    std::vector<float>          mPositionTime = {};
+    std::vector<float>          mScalingTime  = {};
+  };
+
+  std::string mName           = "";
+  float       mDuration       = MDY_NOT_INITIALIZED_0;
+  float       mTickPerSecond  = MDY_NOT_INITIALIZED_M1;
+
+  std::vector<DAnimChannel> mAnimationChannels      = {};
+};
+
+///
+/// @struct DMoeBoneNodeInformation
+/// @brief
+///
+struct DMoeBoneNodeInformation final
+{
+  DMoeBoneNodeInformation*              mParentNodePtr  = nullptr;
+
+  std::string                           mName           = "";
+  std::vector<DMoeBoneNodeInformation>  mChildrenNodes  = {};
+  DDyMatrix4x4                          mNodeTransform  = DDyMatrix4x4::IdentityMatrix();
+  DDyMatrix4x4                          mOffsetMatrix   = DDyMatrix4x4::IdentityMatrix();
 };
 
 } /// ::dy namespace

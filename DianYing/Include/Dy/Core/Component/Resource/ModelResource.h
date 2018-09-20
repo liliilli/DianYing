@@ -25,7 +25,8 @@ struct aiNode;
 
 namespace dy
 {
-class DDyModelInformation;
+  struct DMoeBoneNodeInformation;
+  class DDyModelInformation;
 } /// ::dy namespace
 
 //!
@@ -62,27 +63,23 @@ public:
   ///
   /// @brief Get valid submesh resource, not modifiable.
   ///
-  const std::vector<std::unique_ptr<CDySubmeshResource>>& GetSubmeshResources() const noexcept;
+  [[nodiscard]]
+  const std::vector<std::unique_ptr<CDySubmeshResource>>& GetSubmeshResources() const noexcept
+  {
+    return this->mMeshResource;
+  }
 
   ///
-  /// @brief Update bone transforms by runningTime. runningTime is not delta time, but elapsed time
-  /// from time point.
+  /// @brief Update bone transforms by elapsedTime.
   ///
-  void GetBoneTransformLists(float runningTime, std::vector<DDyMatrix4x4>& transforms);
-
-  ///
-  /// @brief
-  ///
-  void SetBoneTransformLists(const std::vector<DDyMatrix4x4>& transforms);
+  void UpdateBoneAnimationTransformList(float elapsedTime);
 
   ///
   /// @brief Get model animation transform matrix list for moving animation of model resource.
   ///
   [[nodiscard]]
-  FORCEINLINE const auto& GetModelAnimationTransformMatrixList() const noexcept
-  {
-    return this->mOverallModelAnimationMatrix;
-  }
+  const std::vector<DDyGeometryBoneInformation>&
+  GetModelAnimationTransformMatrixList() const noexcept;
 
 private:
   ///
@@ -94,11 +91,12 @@ private:
   ///
   /// @brief Read node hierarchy
   ///
-  void pReadNodeHierarchy(float, const aiNode&, DDyModelInformation& modelInfo, const DDyMatrix4x4&);
+  void pReadNodeHierarchy(float animationElapsedTime, DDyModelInformation& modelInfo,
+      const DMoeBoneNodeInformation& boneNode, const DDyMatrix4x4& parentTransform);
 
   std::vector<std::unique_ptr<CDySubmeshResource>>  mMeshResource                     = {};
-  std::vector<DDyMatrix4x4>                         mOverallModelAnimationMatrix      = {};
   bool                                              mIsEnabledModelSkeletalAnimation  = false;
+  TI32                                              tempAnimationNumber = 0;
 
   //!
   //! Level pointers binding

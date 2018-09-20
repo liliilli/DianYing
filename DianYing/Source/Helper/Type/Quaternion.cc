@@ -33,6 +33,16 @@ DDyQuaternion& DDyQuaternion::operator=(const aiQuaternion& aiQuatenrion)
   return *this;
 }
 
+DDyQuaternion::DDyQuaternion(const glm::quat& glmQuat) :
+  mQuaternion(glmQuat)
+{ }
+
+DDyQuaternion& DDyQuaternion::operator=(const glm::quat& glmQuat)
+{
+  mQuaternion = glmQuat;
+  return *this;
+}
+
 DDyMatrix4x4 DDyQuaternion::GetRotationMatrix4x4() const noexcept {
   return glm::mat4_cast(this->mQuaternion);
 }
