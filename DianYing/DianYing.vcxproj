@@ -346,6 +346,7 @@
     <ClCompile Include="Source\Management\RenderingManager.cc" />
     <ClCompile Include="Source\Management\SceneManager.cc" />
     <ClCompile Include="Source\Management\SettingManager.cc" />
+    <ClCompile Include="Source\Management\SynchronizationManager.cc" />
     <ClCompile Include="Source\Management\TimeManager.cc" />
     <ClCompile Include="Source\Management\WindowManager.cc" />
     <ClCompile Include="Source\precompiled.cc">
@@ -406,9 +407,10 @@
     <ClInclude Include="Include\Dy\Management\Editor\GuiWindowFactory.h" />
     <ClInclude Include="Include\Dy\Management\Helper\InputKeyString.h" />
     <ClInclude Include="Include\Dy\Management\InputManager.h" />
+    <ClInclude Include="Include\Dy\Management\Interface\IDyThreadHelper.h" />
     <ClInclude Include="Include\Dy\Management\LoggingManager.h" />
     <ClInclude Include="Include\Dy\Management\RenderingManager.h" />
-    <ClInclude Include="Include\Dy\Management\SyncronizationManager.h" />
+    <ClInclude Include="Include\Dy\Management\SynchronizationManager.h" />
     <ClInclude Include="Include\Dy\Management\Type\KeyBindingInformation.h" />
     <ClInclude Include="Include\Dy\Management\WindowManager.h" />
     <ClInclude Include="Include\Dy\Management\SceneManager.h" />
