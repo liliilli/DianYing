@@ -284,7 +284,7 @@ void DyGlTempInitializeResource()
     {
       dy::PDyShaderFragmentInformation vs;
       vs.mShaderType = dy::EDyShaderFragmentType::Vertex;
-      vs.mShaderPath = "./ShaderResource/Gl/glMeshVertSAnim.vert";
+      vs.mShaderPath = "./ShaderResource/Gl/glMeshVert.vert";
       shaderDesc.mShaderFragments.emplace_back(vs);
     }
     {
@@ -301,7 +301,7 @@ void DyGlTempInitializeResource()
       dy::PDyModelConstructionDescriptor modelDesc;
       {
         modelDesc.mModelName = "Boxing";
-        modelDesc.mModelPath = "./TestResource/Boxing.fbx";
+        modelDesc.mModelPath = "./TestResource/crytek-sponza/sponza.obj";
       }
       MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(modelDesc));
       return true;
@@ -310,6 +310,7 @@ void DyGlTempInitializeResource()
     if (animAsyncTask.get()) { MDY_LOG_DEBUG_D("OK"); };
   }
 
+#ifdef false
   {
     dy::PDyMaterialPopulateDescriptor popDesc;
     popDesc.mIsEnabledShaderOverride  = true;
@@ -323,7 +324,7 @@ void DyGlTempInitializeResource()
     }
     MDY_CALL_ASSERT_SUCCESS(gRenderer.pfInitialize(rendererDesc));
   }
-#ifdef false
+#endif
   dy::PDyMaterialConstructionDescriptor matDesc;
   matDesc.mMaterialName = "TestMat";
   matDesc.mShaderName   = "TestDeferredShader";
@@ -333,10 +334,9 @@ void DyGlTempInitializeResource()
   dy::PDyRendererConsturctionDescriptor rendererDesc;
   {
     rendererDesc.mModelName     = "Boxing";
-    rendererDesc.mMaterialNames = { "TestMat", "TestMat", "TestMat", "TestMat", "Test };
+    rendererDesc.mMaterialNames = std::vector<std::string>(394, "TestMat");
   }
   MDY_CALL_ASSERT_SUCCESS(gRenderer.pfInitialize(rendererDesc));
-#endif
 }
 
 

@@ -72,6 +72,7 @@ FDyGrid::FDyGrid()
     }
   }
   MDY_CALL_ASSERT_SUCCESS(manInfo.CreateShaderInformation (gridShaderDesc)            );
+  std::this_thread::sleep_for(std::chrono::seconds(1));
   MDY_CALL_ASSERT_SUCCESS(manResc.CreateShaderResource    (gridShaderDesc.mShaderName));
   this->mShaderPtr = manResc.GetShaderResource(gridShaderDesc.mShaderName);
 }
