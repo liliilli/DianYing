@@ -385,9 +385,9 @@ void DDyModelInformation::__pReadBoneData(const aiMesh& mesh, PDySubmeshInformat
       boneId = static_cast<TI32>(this->mBoneIdMap.size());
       this->mBoneIdMap.try_emplace(boneName, boneId);
 
-      for (auto& mAnimationChannel : this->mAnimationInformations[0].mAnimationChannels)
-      {
-        if (boneName == mAnimationChannel.mName)
+      //for (auto& mAnimationChannel : this->mAnimationInformations[0].mAnimationChannels)
+      //{
+        //if (boneName == mAnimationChannel.mName)
         { // If bondMap called boneName is not binded to the map yet,
           // create information and mapping pointer so insert it to the list.
           // aiMatrix is row but transported to column major of DDyMatrix4x4
@@ -395,7 +395,7 @@ void DDyModelInformation::__pReadBoneData(const aiMesh& mesh, PDySubmeshInformat
           boneTransformInfo.mBoneOffsetMatrix = bone.mOffsetMatrix;
           this->mOverallModelBoneInformations.emplace_back(boneTransformInfo);
         }
-      }
+      //}
     }
 
     // Insert bondId (to the mOverallModelBoneInformation) and weight to the submesh information descriptor.
@@ -532,8 +532,7 @@ DDyModelInformation::__pLoadMaterialTextures(const aiMaterial& material, EDyText
 
 void DDyModelInformation::pCreateNodeInformation(const aiNode& aiNode, DMoeBoneNodeInformation& nodeInfo)
 {
-  if (const auto idIt = this->mBoneIdMap.find(aiNode.mName.data);
-      idIt != this->mBoneIdMap.end())
+  if (const auto idIt = this->mBoneIdMap.find(aiNode.mName.data); idIt != this->mBoneIdMap.end())
   {
     DMoeBoneNodeInformation tempBoneNode;
     tempBoneNode.mName          = aiNode.mName.data;

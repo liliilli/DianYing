@@ -43,15 +43,17 @@ void CDyModelResource::UpdateBoneAnimationTransformList(float elapsedTime)
 {
   // Get bone final transform list from informations's aiScene.
   auto& modelInformation = *this->__mLinkedModelInformationPtr;
+  const auto& animation0 = modelInformation.mAnimationInformations[0];
 
-  const auto& animation0 = this->__mLinkedModelInformationPtr->mAnimationInformations[0];
-
-  float ticksPerSecond = static_cast<float>(animation0.mTickPerSecond);
-  if (ticksPerSecond == 0.f) { ticksPerSecond = defaultTimeDuration; }
+  auto ticksPerSecond = animation0.mTickPerSecond;
+  if (ticksPerSecond == 0.f)
+  {
+    ticksPerSecond = defaultTimeDuration;
+  }
 
   // Calculate animation timepoint from animation start.
   const float animationTimePoint = std::fmod(elapsedTime * ticksPerSecond, static_cast<float>(animation0.mDuration));
-  pReadNodeHierarchy(animationTimePoint, modelInformation, modelInformation.mRootBoneNode, DDyMatrix4x4::IdentityMatrix());
+  pReadNodeHierarchy(animationTimePoint, modelInformation, modelInformation.mRootBoneNode, modelInformation.mGlobalTransform);
 }
 
 const std::vector<DDyGeometryBoneInformation>&
@@ -60,9 +62,8 @@ CDyModelResource::GetModelAnimationTransformMatrixList() const noexcept
   return this->__mLinkedModelInformationPtr->mOverallModelBoneInformations;
 }
 
-void CDyModelResource::pReadNodeHierarchy(
-    float animationElapsedTime, DDyModelInformation& modelInfo,
-    const DMoeBoneNodeInformation& boneNode, const DDyMatrix4x4& parentTransform)
+void CDyModelResource::pReadNodeHierarchy(float animationElapsedTime, DDyModelInformation& modelInfo,
+                                          const DMoeBoneNodeInformation& boneNode, const DDyMatrix4x4& parentTransform)
 {
   using TNodeAnim = NotNull<const DMoeAnimationInformation::DAnimChannel*>;
 
@@ -152,8 +153,7 @@ void CDyModelResource::pReadNodeHierarchy(
     const auto& startQuaternion = nodeAnimChannel->mRotationKeys[rotationIndex];
     const auto& endQuaternion   = nodeAnimChannel->mRotationKeys[nextRotationIndex];
 
-    auto outQuat = slerp(startQuaternion.pGetQuaternion(), endQuaternion.pGetQuaternion(), animationFactor);
-    return outQuat;
+    return glm::slerp(startQuaternion.pGetQuaternion(), endQuaternion.pGetQuaternion(), animationFactor);
   };
 
   ///
@@ -205,19 +205,14 @@ void CDyModelResource::pReadNodeHierarchy(
       nodeAnimationChannel.has_value())
   {
     // Interpolate scaling and generate scaling transformation matrix
-    const DDyVector3    scalingVector      = CalcInterpolatedScaling(animationElapsedTime, nodeAnimationChannel.value());
-    const DDyMatrix4x4  scalingMatrix      = DDyMatrix4x4::CreateWithScale(scalingVector);
-
+    const DDyMatrix4x4  scalingMatrix      = DDyMatrix4x4::CreateWithScale(CalcInterpolatedScaling(animationElapsedTime, nodeAnimationChannel.value()));
     // Interpolate rotation and generate rotation transformation matrix
-    const DDyQuaternion rotationQuaternion = CalcInterpolatedRotation(animationElapsedTime, nodeAnimationChannel.value());
-    const DDyMatrix4x4  rotationMatrix     = rotationQuaternion.GetRotationMatrix4x4();
-
+    const DDyMatrix4x4  rotationMatrix     = CalcInterpolatedRotation(animationElapsedTime, nodeAnimationChannel.value()).GetRotationMatrix4x4();
     // Interpolate translation and generate translation transformation matrix
-    const DDyVector3    translation        = CalcInterpolatedPosition(animationElapsedTime, nodeAnimationChannel.value());
-    const DDyMatrix4x4  translationMatrix  = DDyMatrix4x4::CreateWithTranslation(translation);
+    const DDyMatrix4x4  translationMatrix  = DDyMatrix4x4::CreateWithTranslation(CalcInterpolatedPosition(animationElapsedTime, nodeAnimationChannel.value()));
 
     // Combine the above transformations
-    finalModel = parentTransform.Multiply(translationMatrix.Multiply(rotationMatrix).Multiply(scalingMatrix));
+    finalModel = parentTransform.Multiply(translationMatrix).Multiply(rotationMatrix).Multiply(scalingMatrix);
 
     if (const auto it = modelInfo.mBoneIdMap.find(boneNode.mName); it != modelInfo.mBoneIdMap.end())
     {
@@ -228,9 +223,9 @@ void CDyModelResource::pReadNodeHierarchy(
     }
   }
 
-  for (TU32 i = 0; i < boneNode.mChildrenNodes.size(); i++)
+  for (const auto& mChildrenNode : boneNode.mChildrenNodes)
   {
-    pReadNodeHierarchy(animationElapsedTime, modelInfo, boneNode.mChildrenNodes[i], finalModel);
+    pReadNodeHierarchy(animationElapsedTime, modelInfo, mChildrenNode, finalModel);
   }
 }
 
