@@ -16,7 +16,7 @@
 #include <queue>
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
-#include <Dy/Core/Component/Object/RenderingMesh.h>
+#include <Dy/Core/Component/Object/DeferredRenderingMesh.h>
 
 namespace dy
 {

@@ -99,11 +99,9 @@ void CDyMeshRenderer::Update(float dt)
   if (this->mModelReferencePtr == nullptr || !this->mModelReferencePtr->IsEnabledModelAnimated()) return;
 
   static float runningTime = 0.f;
-  std::vector<DDyMatrix4x4> transforms;
   runningTime += dt;
 
-  this->mModelReferencePtr->GetBoneTransformLists(runningTime, transforms);
-  this->mModelReferencePtr->SetBoneTransformLists(transforms);
+  this->mModelReferencePtr->UpdateBoneAnimationTransformList(runningTime);
 }
 
 void CDyMeshRenderer::CallDraw()
@@ -138,15 +136,16 @@ void CDyMeshRenderer::pfRender()
     }
 
     // If skeleton animation is enabled, get bone transform and bind to shader.
-#ifdef false
     const auto boneTransform = glGetUniformLocation(shaderResource->GetShaderProgramId(), "boneTransform");
     if (mModelReferencePtr && mModelReferencePtr->IsEnabledModelAnimated())
     {
       const auto& matrixList = this->mModelReferencePtr->GetModelAnimationTransformMatrixList();
       const auto  matrixSize = static_cast<int32_t>(matrixList.size());
-      glUniformMatrix4fv(boneTransform, matrixSize, GL_FALSE, &matrixList[0][0].X);
+      for (int32_t i = 0; i < matrixSize; ++i)
+      {
+        glUniformMatrix4fv(boneTransform + i, 1, GL_FALSE, &matrixList[i].mFinalTransformation[0].X);
+      }
     }
-#endif
 
     // Bind textures of one material.
     if (bindedMeshMatInfo.mMaterialResource)
@@ -157,7 +156,7 @@ void CDyMeshRenderer::pfRender()
       {
         glUniform1i(glGetUniformLocation(shaderResource->GetShaderProgramId(), (std::string("uTexture") + std::to_string(i)).c_str()), i);
 
-        const auto texturePointer = textureResources[i].mTexturePointer;
+        const auto texturePointer = textureResources[i].mValidTexturePointer;
         glActiveTexture(GL_TEXTURE0 + i);
         switch (texturePointer->GetTextureType())
         {

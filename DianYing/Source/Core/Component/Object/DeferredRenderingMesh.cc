@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Core/Component/Object/RenderingMesh.h>
+#include <Dy/Core/Component/Object/DeferredRenderingMesh.h>
 
 #include <Dy/Core/Component/Internal/ShaderType.h>
 

@@ -31,13 +31,13 @@ EDySuccess CDyMaterialResource::pfInitializeMaterialResource(const PDyMaterialRe
   this->mTextureResources = materialInformation.mTextureTuples;
 
   // Bind this to each valid resource.
-  if (this->mShaderResource.mShaderPointer)
+  if (this->mShaderResource.mValidShaderPointer)
   {
-    this->mShaderResource.mShaderPointer->__pfLinkMaterialResource(this);
+    this->mShaderResource.mValidShaderPointer->__pfSetMaterialResourceLink(this);
   }
   for (auto& pairTexture : this->mTextureResources)
   {
-    pairTexture.mTexturePointer->__pfLinkMaterialResourcePtr(this);
+    pairTexture.mValidTexturePointer->__pfSetMaterialResourceLink(DyMakeNotNull(this));
   }
 
   return DY_SUCCESS;
@@ -48,27 +48,27 @@ CDyMaterialResource::~CDyMaterialResource()
   // Unbind previous and next level.
   if (this->__mLinkedMaterialInformationPtr)
   {
-    this->__mLinkedMaterialInformationPtr->__pfSetMaterialResourceLink(nullptr);
+    this->__mLinkedMaterialInformationPtr->__pfResetMaterialResourceLink();
   }
 
   // Unbind with all valid shader and texture resources.
-  if (this->mShaderResource.mShaderPointer)
+  if (this->mShaderResource.mValidShaderPointer)
   {
-    this->mShaderResource.mShaderPointer->__pfResetMaterialResourceLinking(this);
+    this->mShaderResource.mValidShaderPointer->__pfResetMaterialResourceLinking(DyMakeNotNull(this));
   }
   for (auto& pairTexture : this->mTextureResources)
   {
-    if (!pairTexture.mTexturePointer) continue;
-    pairTexture.mTexturePointer->__pfResetMaterialResourcePtr(this);
+    if (!pairTexture.mValidTexturePointer) continue;
+    pairTexture.mValidTexturePointer->__pfResetMaterialResourceLink(DyMakeNotNull(this));
   }
 }
 
-CDyShaderResource* CDyMaterialResource::GetShaderResource() noexcept
+NotNull<CDyShaderResource*> CDyMaterialResource::GetShaderResource() noexcept
 {
-  return this->mShaderResource.mShaderPointer;
+  return DyMakeNotNull(this->mShaderResource.mValidShaderPointer);
 }
 
-void CDyMaterialResource::__pfResetTextureResourcePtr(CDyTextureResource* ptr) noexcept
+void CDyMaterialResource::__pfResetTextureResourcePtr(NotNull<CDyTextureResource*> ptr) noexcept
 {
   for (auto& [textureName, texturePtr] : this->mTextureResources)
   {

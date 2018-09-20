@@ -73,8 +73,8 @@ EDySuccess MDyHeapResource::CreateShaderResource(const std::string& shaderName)
   }
 
   // At last, setting pointers to each other.
-  shaderInfo->__pfLinkShaderResourcePtr(it->second.get());
-  it->second->__pfLinkShaderInformationPtr(const_cast<DDyShaderInformation*>(shaderInfo));
+  shaderInfo->__pfSetShaderResourceLink   (DyMakeNotNull(it->second.get()));
+  it->second->__pfSetShaderInformationLink(DyMakeNotNull(const_cast<DDyShaderInformation*>(shaderInfo)));
 
   MDY_LOG_INFO("{0}::{1} | Create {2} resource. | {2} resource name : {3}",
                "MDyHeapResource", "CreateShaderResource", "Shader", shaderName);
@@ -121,8 +121,8 @@ EDySuccess MDyHeapResource::CreateTextureResource(const std::string& textureName
   }
 
   // At last, setting pointers to each other.
-  textureInfo->__pfLinkTextureResource(it->second.get());
-  it->second->__pfLinkTextureInformationPtr(const_cast<DDyTextureInformation*>(textureInfo));
+  textureInfo->__pfLinkTextureResource      (it->second.get());
+  it->second->__pfSetTextureInformationLink (DyMakeNotNull(const_cast<DDyTextureInformation*>(textureInfo)));
 
   MDY_LOG_INFO("{0}::{1} | Create {2} resource. | {2} resource name : {3}",
                "MDyHeapResource", "CreateTextureResource", "Texture", textureName);
@@ -194,16 +194,11 @@ EDySuccess MDyHeapResource::CreateMaterialResource(const std::string& materialNa
   {
     mParamterDescriptor.mMaterialName   = materialInformation.mMaterialName;
     mParamterDescriptor.mBlendMode      = materialInformation.mBlendMode;
-    mParamterDescriptor.mShaderTuple    = DDyMaterialShaderTuple{
-        materialInformation.mShaderName,
-        this->GetShaderResource(materialInformation.mShaderName)
-    };
+    mParamterDescriptor.mShaderTuple    = DDyMaterialShaderTuple{materialInformation.mShaderName};
+
     for (const auto& textureName : materialInformation.mTextureNames)
     {
-      mParamterDescriptor.mTextureTuples.emplace_back(
-        decltype(mParamterDescriptor.mTextureTuples)::value_type\
-        {textureName, this->GetTextureResource(textureName)}
-      );
+      mParamterDescriptor.mTextureTuples.emplace_back(textureName);
     }
   }
 
@@ -228,8 +223,8 @@ EDySuccess MDyHeapResource::CreateMaterialResource(const std::string& materialNa
   }
 
   // At last, setting pointers to each other.
-  materialInfo->__pfSetMaterialResourceLink(it->second.get());
-  it->second  ->__pfLinkMaterialInformation(const_cast<DDyMaterialInformation*>(materialInfo));
+  materialInfo->__pfSetMaterialResourceLink(DyMakeNotNull(it->second.get()));
+  it->second  ->__pfSetMaterialInformationLink(DyMakeNotNull(const_cast<DDyMaterialInformation*>(materialInfo)));
 
   MDY_LOG_INFO("{0}::{1} | Create {2} resource. | {2} resource name : {3}",
                "MDyHeapResource", "CreateMaterialResource", "Material", materialName);
@@ -276,8 +271,8 @@ EDySuccess MDyHeapResource::CreateModelResource(const std::string& modelName)
   }
 
   // At last, setting pointers to each other.
-  modelInfo ->__pfSetModelResourceLink(it->second.get());
-  it->second->__pfLinkModelInformationPtr(const_cast<DDyModelInformation*>(modelInfo));
+  modelInfo ->__pfSetModelResourceLink(DyMakeNotNull(it->second.get()));
+  it->second->__pfSetModelInformationLink(DyMakeNotNull(const_cast<DDyModelInformation*>(modelInfo)));
 
   MDY_LOG_INFO("{0}::{1} | Create {2} resource. | {2} resource name : {3}",
                "MDyHeapResource", "CreateModelResource", "Model", modelName);

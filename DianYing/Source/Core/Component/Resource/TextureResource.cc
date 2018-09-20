@@ -60,7 +60,7 @@ CDyTextureResource::~CDyTextureResource()
   }
   for (auto& [notUsed, materialPtr] : __mBindMaterialPtrs)
   {
-    materialPtr->__pfResetTextureResourcePtr(this);
+    materialPtr->__pfResetTextureResourcePtr(DyMakeNotNull(this));
   }
 }
 
@@ -163,13 +163,13 @@ EDySuccess CDyTextureResource::pfInitializeTextureResource(const DDyTextureInfor
   return DY_SUCCESS;
 }
 
-void CDyTextureResource::__pfLinkMaterialResourcePtr(CDyMaterialResource* ptr) const noexcept
+void CDyTextureResource::__pfSetMaterialResourceLink(NotNull<CDyMaterialResource*> ptr) const noexcept
 {
   auto [it, result] = __mBindMaterialPtrs.try_emplace(ptr, ptr);
   if (!result)
   {
     MDY_LOG_ERROR("{} | Failed to link material resource. | Model name : {}",
-                  "CDyTextureResource::__pfLinkMaterialResourcePtr", ptr->GetMaterialName());
+                  "CDyTextureResource::__pfSetMaterialResourceLink", ptr->GetMaterialName());
     assert(false);
   }
 }

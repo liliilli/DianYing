@@ -296,7 +296,7 @@ std::optional<std::string> MDyDataInformation::PopulateMaterialInformation(
   }
 
   // Let baseMaterial have created populated derived material and move ownership to list.
-  auto populateDerivedSmtPtr = baseMaterial->__pfPopulateWith(actualMaterialPopDesc);
+  auto populateDerivedSmtPtr = baseMaterial->__pfPopulateMaterialWith(actualMaterialPopDesc);
   infoIt->second.swap(populateDerivedSmtPtr);
   if (!infoIt->second)
   {

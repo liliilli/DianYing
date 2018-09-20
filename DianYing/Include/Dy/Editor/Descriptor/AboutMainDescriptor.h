@@ -14,6 +14,8 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Core/Component/Internal/MaterialType.h>
+
 //!
 //! Forward declaration
 //!
@@ -36,10 +38,16 @@ namespace dy::editor
 ///
 struct PDyGuiAboutMainDescriptor final
 {
+  PDyGuiAboutMainDescriptor(const NotNull<bool*>& parent_bool_flag,
+                            const NotNull<IDyGuiHasChildren*>& parent_raw_ptr)
+    : mParentBoolFlag(parent_bool_flag),
+      mParentRawPtr(parent_raw_ptr)
+  { }
+
   //
-  bool*               mParentBoolFlag = nullptr;
+  NotNull<bool*>              mParentBoolFlag;
   //
-  IDyGuiHasChildren*  mParentRawPtr   = nullptr;
+  NotNull<IDyGuiHasChildren*> mParentRawPtr;
 };
 
 } /// ::dy::editor namespace

@@ -13,7 +13,6 @@
 /// SOFTWARE.
 ///
 
-#include <string>
 #include <Dy/Core/Component/Interface/IDyUpdatable.h>
 
 //!

@@ -97,44 +97,6 @@ void DyGlTempInitializeResource()
   //! Shader
   //!
 
-  {
-    dy::PDyShaderConstructionDescriptor shaderDesc;
-    shaderDesc.mShaderName = "TestDeferredShader";
-    {
-      dy::PDyShaderFragmentInformation vs;
-      vs.mShaderType = dy::EDyShaderFragmentType::Vertex;
-      vs.mShaderPath = "./glMeshVert.vert";
-      shaderDesc.mShaderFragments.emplace_back(vs);
-    }
-    {
-      dy::PDyShaderFragmentInformation fs;
-      fs.mShaderType = dy::EDyShaderFragmentType::Pixel;
-      fs.mShaderPath = "./glMeshDeferredFrag.frag";
-      shaderDesc.mShaderFragments.emplace_back(fs);
-    }
-    MDY_CALL_ASSERT_SUCCESS(manInfo.CreateShaderInformation(shaderDesc));
-  }
-
-  {
-    dy::PDyShaderConstructionDescriptor shaderDesc;
-    {
-      shaderDesc.mShaderName = "TestShader";
-      {
-        dy::PDyShaderFragmentInformation vertexShaderInfo;
-        vertexShaderInfo.mShaderType = dy::EDyShaderFragmentType::Vertex;
-        vertexShaderInfo.mShaderPath = "./glMeshVert.vert";
-        shaderDesc.mShaderFragments.emplace_back(vertexShaderInfo);
-      }
-      {
-        dy::PDyShaderFragmentInformation fragmentShaderInfo;
-        fragmentShaderInfo.mShaderType = dy::EDyShaderFragmentType::Pixel;
-        fragmentShaderInfo.mShaderPath = "./glShader.frag";
-        shaderDesc.mShaderFragments.emplace_back(fragmentShaderInfo);
-      }
-    }
-    MDY_CALL_ASSERT_SUCCESS(manInfo.CreateShaderInformation(shaderDesc));
-  }
-
 #ifdef false
   {
     dy::PDyShaderConstructionDescriptor desc;
@@ -316,17 +278,37 @@ void DyGlTempInitializeResource()
   }
 #endif
 
-  auto animAsyncTask = std::async(std::launch::async, [&manInfo] {
-    dy::PDyModelConstructionDescriptor modelDesc;
+  {
+    dy::PDyShaderConstructionDescriptor shaderDesc;
+    shaderDesc.mShaderName = "TestDeferredShader";
     {
-      modelDesc.mModelName = "Boxing";
-      modelDesc.mModelPath = "./TestResource/Boxing.fbx";
+      dy::PDyShaderFragmentInformation vs;
+      vs.mShaderType = dy::EDyShaderFragmentType::Vertex;
+      vs.mShaderPath = "./ShaderResource/Gl/glMeshVertSAnim.vert";
+      shaderDesc.mShaderFragments.emplace_back(vs);
     }
-    MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(modelDesc));
-    return true;
-  });
+    {
+      dy::PDyShaderFragmentInformation fs;
+      fs.mShaderType = dy::EDyShaderFragmentType::Pixel;
+      fs.mShaderPath = "./ShaderResource/Gl/glMeshDeferredFrag.frag";
+      shaderDesc.mShaderFragments.emplace_back(fs);
+    }
+    MDY_CALL_ASSERT_SUCCESS(manInfo.CreateShaderInformation(shaderDesc));
+  }
 
-  if (animAsyncTask.get()) { MDY_LOG_DEBUG_D("OK"); };
+  {
+    auto animAsyncTask = std::async(std::launch::async, [&manInfo] {
+      dy::PDyModelConstructionDescriptor modelDesc;
+      {
+        modelDesc.mModelName = "Boxing";
+        modelDesc.mModelPath = "./TestResource/Boxing.fbx";
+      }
+      MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(modelDesc));
+      return true;
+    });
+
+    if (animAsyncTask.get()) { MDY_LOG_DEBUG_D("OK"); };
+  }
 
   {
     dy::PDyMaterialPopulateDescriptor popDesc;
@@ -341,6 +323,20 @@ void DyGlTempInitializeResource()
     }
     MDY_CALL_ASSERT_SUCCESS(gRenderer.pfInitialize(rendererDesc));
   }
+#ifdef false
+  dy::PDyMaterialConstructionDescriptor matDesc;
+  matDesc.mMaterialName = "TestMat";
+  matDesc.mShaderName   = "TestDeferredShader";
+  matDesc.mBlendMode    = dy::EDyMaterialBlendMode::Opaque;
+  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateMaterialInformation(matDesc));
+
+  dy::PDyRendererConsturctionDescriptor rendererDesc;
+  {
+    rendererDesc.mModelName     = "Boxing";
+    rendererDesc.mMaterialNames = { "TestMat", "TestMat", "TestMat", "TestMat", "Test };
+  }
+  MDY_CALL_ASSERT_SUCCESS(gRenderer.pfInitialize(rendererDesc));
+#endif
 }
 
 

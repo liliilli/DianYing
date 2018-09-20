@@ -26,18 +26,15 @@ namespace dy
 class DDySubmeshInformation final
 {
 public:
+  MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(DDySubmeshInformation);
   DDySubmeshInformation(const PDySubmeshInformationDescriptor& meshInformation) : mMeshResourceInformation(meshInformation) {};
-
-  DDySubmeshInformation(const DDySubmeshInformation&)             = delete;
-  DDySubmeshInformation& operator=(const DDySubmeshInformation&)  = delete;
-  DDySubmeshInformation(DDySubmeshInformation&&)                  = default;
-  DDySubmeshInformation& operator=(DDySubmeshInformation&&)       = default;
   ~DDySubmeshInformation()                                        = default;
 
   ///
   /// @brief return immutable descriptor information reference.
   ///
-  const PDySubmeshInformationDescriptor& GetInformation() const noexcept
+  [[nodiscard]]
+  FORCEINLINE const PDySubmeshInformationDescriptor& GetInformation() const noexcept
   {
     return this->mMeshResourceInformation;
   }
