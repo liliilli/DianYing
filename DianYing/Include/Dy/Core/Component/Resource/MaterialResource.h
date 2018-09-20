@@ -51,7 +51,7 @@ public:
   ///
   /// @brief Get shader resource ptr which may be nullptr or not be.
   ///
-  CDyShaderResource* GetShaderResource() noexcept;
+  NotNull<CDyShaderResource*> GetShaderResource() noexcept;
 
   ///
   /// @brief Return binded texture resource pointers list.
@@ -84,32 +84,34 @@ private:
   [[nodiscard]]
   EDySuccess pfInitializeMaterialResource(const PDyMaterialResourceDescriptor& materialInformation);
 
-  std::string                           mMaterialName         = {};
-  DDyMaterialShaderTuple                mShaderResource       = {};
-  std::vector<DDyMaterialTextureTuple>  mTextureResources     = {};
-  EDyMaterialBlendMode                  mBlendMode            = EDyMaterialBlendMode::Opaque;
+  std::string                             mMaterialName         = {};
+  DDyMaterialShaderTuple                  mShaderResource       = {};
+  std::vector<DDyMaterialTextureTuple>    mTextureResources     = {};
+  EDyMaterialBlendMode                    mBlendMode            = EDyMaterialBlendMode::Opaque;
 
   //!
   //! Level pointers binding
   //!
 
-  template <typename TType>
-  using TBindPtrMap = std::unordered_map<TType*, TType*>;
-
-  void __pfLinkMaterialInformation(DDyMaterialInformation* ptr) const noexcept
+  FORCEINLINE void __pfSetMaterialInformationLink(NotNull<DDyMaterialInformation*> ptr) const noexcept
   {
     this->__mLinkedMaterialInformationPtr = ptr;
   }
 
-  void __pfResetShaderResourcePtr() noexcept
+  FORCEINLINE void __pfResetMaterialInformationLink() const noexcept
   {
-    mShaderResource.mShaderName     = "DY_RELEASED";
-    mShaderResource.mShaderPointer  = nullptr;
+    this->__mLinkedMaterialInformationPtr = nullptr;
   }
 
-  void __pfResetTextureResourcePtr(CDyTextureResource* ptr) noexcept;
+  void __pfResetTextureResourcePtr(NotNull<CDyTextureResource*> ptr) noexcept;
 
-  mutable DDyMaterialInformation*           __mLinkedMaterialInformationPtr     = nullptr;
+  FORCEINLINE void __pfResetShaderResource() noexcept
+  {
+    this->mShaderResource.mShaderName         = "NOT VALID";
+    this->mShaderResource.mValidShaderPointer = nullptr;
+  }
+
+  MDY_TRANSIENT DDyMaterialInformation*   __mLinkedMaterialInformationPtr = nullptr;
 
   friend class CDyTextureResource;
   friend class CDyShaderResource;

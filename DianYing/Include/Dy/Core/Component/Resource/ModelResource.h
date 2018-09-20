@@ -14,14 +14,19 @@
 ///
 
 #include <Dy/Core/Component/Resource/SubmeshResource.h>
+#include <Dy/Core/Component/Internal/MaterialType.h>
 
 //!
 //! Forward declaration
 //!
 
+struct aiScene;
+struct aiNode;
+
 namespace dy
 {
-class DDyModelInformation;
+  struct DMoeBoneNodeInformation;
+  class DDyModelInformation;
 } /// ::dy namespace
 
 //!
@@ -47,30 +52,66 @@ public:
   ~CDyModelResource();
 
   ///
-  /// @brief Get submesh resource, not modifiable.
+  /// @brief Check this model resource is able to animated.
   ///
-  const std::vector<std::unique_ptr<CDySubmeshResource>>& GetSubmeshResources() const noexcept;
+  [[nodiscard]]
+  FORCEINLINE bool IsEnabledModelAnimated() const noexcept
+  {
+    return this->mIsEnabledModelSkeletalAnimation;
+  }
+
+  ///
+  /// @brief Get valid submesh resource, not modifiable.
+  ///
+  [[nodiscard]]
+  const std::vector<std::unique_ptr<CDySubmeshResource>>& GetSubmeshResources() const noexcept
+  {
+    return this->mMeshResource;
+  }
+
+  ///
+  /// @brief Update bone transforms by elapsedTime.
+  ///
+  void UpdateBoneAnimationTransformList(float elapsedTime);
+
+  ///
+  /// @brief Get model animation transform matrix list for moving animation of model resource.
+  ///
+  [[nodiscard]]
+  const std::vector<DDyGeometryBoneInformation>&
+  GetModelAnimationTransformMatrixList() const noexcept;
 
 private:
   ///
   /// @brief Initialize model resource with model information instance.
   ///
-  [[nodiscard]] EDySuccess pInitializeModelResource(const DDyModelInformation& modelInformation);
+  [[nodiscard]]
+  EDySuccess pInitializeModelResource(const DDyModelInformation& modelInformation);
 
-  std::vector<std::unique_ptr<CDySubmeshResource>> mMeshResource = {};
+  ///
+  /// @brief Read node hierarchy
+  ///
+  void pReadNodeHierarchy(float animationElapsedTime, DDyModelInformation& modelInfo,
+      const DMoeBoneNodeInformation& boneNode, const DDyMatrix4x4& parentTransform);
+
+  std::vector<std::unique_ptr<CDySubmeshResource>>  mMeshResource                     = {};
+  bool                                              mIsEnabledModelSkeletalAnimation  = false;
+  TI32                                              tempAnimationNumber = 0;
 
   //!
   //! Level pointers binding
   //!
 
-  template <typename TType>
-  using TBindPtrMap = std::unordered_map<TType*, TType*>;
-
-  void __pfLinkModelInformationPtr(DDyModelInformation* ptr) const noexcept
+  FORCEINLINE void __pfSetModelInformationLink(NotNull<DDyModelInformation*> ptr) const noexcept
   {
     this->__mLinkedModelInformationPtr = ptr;
   }
-  mutable DDyModelInformation*  __mLinkedModelInformationPtr = nullptr;
+  FORCEINLINE void __pfResetModelInformationLink() const noexcept
+  {
+    this->__mLinkedModelInformationPtr = nullptr;
+  }
+
+  MDY_TRANSIENT DDyModelInformation*  __mLinkedModelInformationPtr = nullptr;
 
   friend class DDyModelInformation;
   friend class MDyHeapResource;

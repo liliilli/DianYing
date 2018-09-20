@@ -14,6 +14,8 @@
 ///
 
 #include <Dy/Core/Component/Internal/MaterialType.h>
+#include <Dy/Helper/Pointer.h>
+#include "Dy/Core/Component/Interface/IDyToString.h"
 
 //!
 //! Forward declaration
@@ -35,52 +37,50 @@ namespace dy
 /// @class DDyMaterialInformation
 /// @brief Information class for material information.
 ///
-class DDyMaterialInformation final
+class DDyMaterialInformation final : public IDyToString
 {
 public:
+  MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(DDyMaterialInformation);
   DDyMaterialInformation(const PDyMaterialConstructionDescriptor& materialConstructionDescriptor);
-
-  DDyMaterialInformation(const DDyMaterialInformation&)             = delete;
-  DDyMaterialInformation& operator=(const DDyMaterialInformation&)  = delete;
-  DDyMaterialInformation(DDyMaterialInformation&&)                  = default;
-  DDyMaterialInformation& operator=(DDyMaterialInformation&&)       = default;
   ~DDyMaterialInformation();
 
   ///
   /// @brief return immutable descriptor information reference.
   ///
-  const PDyMaterialConstructionDescriptor& GetInformation() const noexcept
+  [[nodiscard]]
+  FORCEINLINE const PDyMaterialConstructionDescriptor& GetInformation() const noexcept
   {
     return this->mMaterialInformation;
   }
 
-  /// Check if object is being binded to CDyMaterialResource instance.
+  ///
+  /// @brief Check if object is being binded to CDyMaterialResource instance.
+  ///
+  [[nodiscard]]
   FORCEINLINE bool IsBeingBindedToResource() const noexcept
   {
-    return this->mLinkedMaterialResourcePtr != nullptr;
+    return this->__mLinkedMaterialResourcePtr != nullptr;
   }
+
+  ///
+  /// mMaterialInformation.ToString();
+  ///
+  [[nodiscard]]
+  std::string ToString() override;
 
 private:
   ///
   /// @brief Enroll populated material name and get index for avoiding name duplication of
   /// derived material name.
   ///
-  int32_t __pfEnrollAndGetNextDerivedMaterialIndex(const std::string& name) const noexcept
-  {
-    if (auto it = this->__mPopulatedMaterialIndexMap.find(name); it == this->__mPopulatedMaterialIndexMap.end())
-    {
-      this->__mPopulatedMaterialIndexMap.emplace(name, 0);
-      return 0;
-    }
-    else return (++it->second);
-  }
-  mutable std::unordered_map<std::string, int32_t> __mPopulatedMaterialIndexMap = {};
+  [[nodiscard]]
+  int32_t __pfEnrollAndGetNextDerivedMaterialIndex(const std::string& name) const noexcept;
 
   ///
   /// @brief Populate independent material reference and move ownership to outside.
   ///
   [[nodiscard]]
-  std::unique_ptr<DDyMaterialInformation> __pfPopulateWith(const PDyMaterialPopulateDescriptor& desc) const noexcept;
+  std::unique_ptr<DDyMaterialInformation> __pfPopulateMaterialWith(const PDyMaterialPopulateDescriptor& desc) const noexcept;
 
   /// Information sturcture.
   PDyMaterialConstructionDescriptor mMaterialInformation;
@@ -89,9 +89,17 @@ private:
   //! Resource pointers binding
   //!
 
-  void __pfSetMaterialResourceLink(CDyMaterialResource* ptr) const noexcept { mLinkedMaterialResourcePtr = ptr; }
+  FORCEINLINE void __pfSetMaterialResourceLink(NotNull<CDyMaterialResource*> ptr) const noexcept
+  {
+    this->__mLinkedMaterialResourcePtr = ptr;
+  }
+  FORCEINLINE void __pfResetMaterialResourceLink() const noexcept
+  {
+    this->__mLinkedMaterialResourcePtr = nullptr;
+  }
 
-  mutable CDyMaterialResource* mLinkedMaterialResourcePtr = nullptr;
+  MDY_TRANSIENT CDyMaterialResource*                      __mLinkedMaterialResourcePtr = nullptr;
+  MDY_TRANSIENT std::unordered_map<std::string, int32_t>  __mPopulatedMaterialIndexMap = {};
 
   friend class CDyMaterialResource;
   friend class MDyDataInformation;

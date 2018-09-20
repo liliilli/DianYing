@@ -35,10 +35,19 @@ std::optional<std::vector<char>> DyReadBinaryFileAll(const std::string& filePath
 std::string DyGetFileNameFromPath(const std::string& path) noexcept
 {
   auto start = path.find_last_of('/');
-  if (start == std::string::npos)
+  bool isSlashFound = false;
+  if (start != std::string::npos)
+  {
+    isSlashFound = true;
+  }
+  else
   {
     start = path.find_last_of('\\');
-    if (start == std::string::npos)
+    if (start != std::string::npos)
+    {
+      isSlashFound = true;
+    }
+    else
     {
       start = 0;
     }
@@ -50,7 +59,10 @@ std::string DyGetFileNameFromPath(const std::string& path) noexcept
     count -= start;
   }
 
-  return path.substr(start, count);
+  if (isSlashFound)
+    return path.substr(start + 1, count - 1);
+  else
+    return path.substr(start, count);
 }
 
 } /// ::dy namespace

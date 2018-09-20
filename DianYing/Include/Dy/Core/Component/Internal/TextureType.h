@@ -21,21 +21,15 @@ namespace dy
 
 ///
 /// @class PDyTextureParameterOption
-/// @brief
+/// @brief Texture parameter option container such as MIN_FILTER MAG_FILTER WRAP_S WRAP_T etc.
 ///
 struct PDyTextureParameterOption final
 {
   PDyTextureParameterOption(uint32_t option, uint32_t value) : mOption{option}, mValue{value} {};
 
-  const auto& GetOption() const noexcept
-  {
-    return mOption;
-  }
+  const auto& GetOption() const noexcept  { return mOption; }
+  const auto& GetValue() const noexcept   { return mValue; }
 
-  const auto& GetValue() const noexcept
-  {
-    return mValue;
-  }
 private:
   uint32_t mOption = 0;
   uint32_t mValue  = 0;

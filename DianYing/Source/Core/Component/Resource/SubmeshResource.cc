@@ -64,6 +64,11 @@ EDySuccess CDySubmeshResource::pfInitializeSubmeshResource(const DDySubmeshInfor
     const auto indiceSize = static_cast<int32_t>(info.mIndices.size());
     if (indiceSize == 0)  { this->mMeshFlagInformation.mIsNotHaveIndices = true; }
     else                  { this->mMeshFlagInformation.mIndiceCount = indiceSize; }
+
+    if (meshInformation.GetInformation().mIsEnabledSkeletalAnimation)
+    {
+      this->mMeshFlagInformation.mIsEnabledSkeletalAnimation = true;
+    }
   }
 
   {
@@ -80,30 +85,47 @@ EDySuccess CDySubmeshResource::pfInitializeSubmeshResource(const DDySubmeshInfor
   glBindBuffer(GL_ARRAY_BUFFER, this->mBufferIdInformation.mVbo);
   glBufferData(GL_ARRAY_BUFFER, sizeof(DDyVertexInformation) * info.mVertices.size(), &info.mVertices[0], GL_STATIC_DRAW);
 
-  if (!mMeshFlagInformation.mIsNotHaveIndices)
+  if (!this->mMeshFlagInformation.mIsNotHaveIndices)
   {
     glGenBuffers(1, &this->mBufferIdInformation.mEbo);
 
     constexpr auto indiceElementSize = sizeof(decltype(info.mIndices)::value_type);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mBufferIdInformation.mEbo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->mBufferIdInformation.mEbo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indiceElementSize * info.mIndices.size(), &info.mIndices[0], GL_STATIC_DRAW);
   }
 
   {
     // mSubmeshResourceInformation.mVertices.mPosition (DDyVector3)
     constexpr auto stride = sizeof(DDyVertexInformation);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, nullptr);
+    glBindVertexBuffer(0, this->mBufferIdInformation.mVbo, 0, stride);
+
     glEnableVertexAttribArray(0);
+    glVertexAttribFormat(0, 3, GL_FLOAT, GL_FALSE, offsetof(DDyVertexInformation, mPosition));
+    glVertexAttribBinding(0, 0);
 
     // mSubmeshResourceInformation.mVertices.mNormal   (DDyVector3)
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, (void*)(sizeof DDyVector3));
     glEnableVertexAttribArray(1);
+    glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, offsetof(DDyVertexInformation, mNormal));
+    glVertexAttribBinding(1, 0);
 
-    // mSubmeshResourceInformation.mVertices.mTexCoord (DDyVector2) (UV1)
-    if (!mMeshFlagInformation.mIsNotHaveIndices)
+    // mSubmeshResourceInformation.mVertices.mTexCoord (DDyVector2) (UV0)
+    if (!this->mMeshFlagInformation.mIsNotHaveIndices)
     {
-      glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, (void*)(sizeof DDyVector3 * 2));
       glEnableVertexAttribArray(2);
+      glVertexAttribFormat(2, 2, GL_FLOAT, GL_FALSE, offsetof(DDyVertexInformation, mTexCoords));
+      glVertexAttribBinding(2, 0);
+    }
+
+    // mSubmeshResourceInformation.mVertices.mBondId, mWeights
+    if (this->mMeshFlagInformation.mIsEnabledSkeletalAnimation)
+    {
+      glEnableVertexAttribArray(3);
+      glVertexAttribIFormat(3, 4, GL_INT, offsetof(DDyVertexInformation, mVertexBoneData.mBoneId));
+      glVertexAttribBinding(3, 0);
+
+      glEnableVertexAttribArray(4);
+      glVertexAttribFormat(4, 4, GL_FLOAT, GL_FALSE, offsetof(DDyVertexInformation, mVertexBoneData.mWeights));
+      glVertexAttribBinding(4, 0);
     }
   }
 

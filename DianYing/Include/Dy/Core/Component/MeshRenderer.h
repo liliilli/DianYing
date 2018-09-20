@@ -52,11 +52,21 @@ public:
   [[nodiscard]] EDySuccess pfInitialize(const PDyRendererConsturctionDescriptor& desc);
 
   ///
-  /// @brief Render function. Renderer only draw the number of submesh regardless of material count.
+  /// @brief
   ///
-  void Render();
+  void Update(float dt);
+
+  ///
+  /// @brief
+  ///
+  void CallDraw();
 
 private:
+  ///
+  /// @brief Render function. Renderer only draw the number of submesh regardless of material count.
+  ///
+  void pfRender();
+
   CDyModelResource*                 mModelReferencePtr    = nullptr;
   std::vector<CDyMaterialResource*> mMaterialResourcePtr  = {};
 
@@ -71,6 +81,8 @@ private:
   };
 
   std::vector<DDyBindingInformation> mMeshMaterialPtrBindingList = {};
+
+  friend class MDyRendering;
 };
 
 } /// ::dy namespace
