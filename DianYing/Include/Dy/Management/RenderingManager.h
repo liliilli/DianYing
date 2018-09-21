@@ -17,6 +17,7 @@
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Core/Component/Object/DeferredRenderingMesh.h>
+#include <Dy/Core/Component/Object/PostEffectSsao.h>
 
 namespace dy
 {
@@ -52,13 +53,17 @@ private:
   void pReleaseGeometryBuffers() noexcept;
 
   TU32                mDeferredFrameBufferId  = MDY_NOT_INITIALIZED_0;
-  std::array<TU32, 3> mAttachmentBuffers      = {};
+  std::array<TU32, 4> mAttachmentBuffers      = {};
   const TI32          mAttachmentBuffersCount = static_cast<TI32>(mAttachmentBuffers.size());
 
-  std::unique_ptr<FDyDeferredRenderingMesh>   mFinalRenderingMesh = nullptr;
-  std::queue<CDyMeshRenderer*> mDrawCallQueue = {};
+  std::unique_ptr<FDyDeferredRenderingMesh>   mFinalRenderingMesh   = nullptr;
+  std::queue<CDyMeshRenderer*>                mDrawCallQueue        = {};
+
+  bool                                        mTempIsEnabledSsao    = true;
+  std::unique_ptr<FDyPostEffectSsao>          mTempSsaoObject       = nullptr;
 
   friend class FDyDeferredRenderingMesh;
+  friend class FDyPostEffectSsao;
 };
 
 } /// ::dy namespace
