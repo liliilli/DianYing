@@ -399,3 +399,10 @@ ASALocalRun/
 
 
 # End of https://www.gitignore.io/api/vim,visualstudio,visualstudiocode
+DianYing/TestResource/
+
+Docs/
+
+DianYing/log\.txt
+
+DianYing/ShaderResource/

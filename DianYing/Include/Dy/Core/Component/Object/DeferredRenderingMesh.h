@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_INTERFACE_TO_STRING_H
-#define GUARD_DY_INTERFACE_TO_STRING_H
+#ifndef GUARD_DY_RENDERING_MESH_H
+#define GUARD_DY_RENDERING_MESH_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,24 +13,31 @@
 /// SOFTWARE.
 ///
 
-#include <string>
+#include <Dy/Core/Component/MeshRenderer.h>
+#include <Dy/Core/Component/Resource/ShaderResource.h>
 
 namespace dy
 {
 
-///
-/// @class IDyToString
-/// @brief To string interface.
-///
-class MDY_NO_VTABLE IDyToString
+class FDyDeferredRenderingMesh final
 {
 public:
-  virtual ~IDyToString() = default;
+  FDyDeferredRenderingMesh();
+  ~FDyDeferredRenderingMesh();
 
-  [[nodiscard]]
-  virtual std::string ToString() = 0;
+  ///
+  /// @brief Rendering deferred contexts to default framebuffer.
+  ///
+  void RenderScreen();
+
+private:
+  GLuint              mVao        = 0;
+  GLuint              mVbo        = 0;
+
+  CDyMeshRenderer     mRenderer;
+  CDyShaderResource*  mShaderPtr  = nullptr;
 };
 
 } /// ::dy namespace
 
-#endif /// GUARD_DY_INTERFACE_TO_STRING_H
+#endif /// GUARD_DY_RENDERING_MESH_H

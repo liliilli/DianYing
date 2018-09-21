@@ -61,15 +61,12 @@ DDyTextureInformation::DDyTextureInformation(const PDyTextureConstructionDescrip
 DDyTextureInformation::~DDyTextureInformation()
 {
   MDY_LOG_INFO_D(kTextureInformationTemplate, "~CDyShaderInformation", "name", this->mTextureInformation.mTextureName);
-  if (this->mLinkedTextureResourcePtr)
-  {
-    this->mLinkedTextureResourcePtr->__pfLinkTextureInformationPtr(nullptr);
-  }
+  if (this->__mLinkedTextureResourcePtr) { this->__mLinkedTextureResourcePtr->__pfResetTextureInformationLink(); }
 }
 
 void DDyTextureInformation::__pfLinkTextureResource(CDyTextureResource* ptr) const noexcept
 {
   MDY_LOG_DEBUG_D(kTextureInformationBindTo, "__pfLinkTextureResource", reinterpret_cast<std::ptrdiff_t>(ptr));
-  this->mLinkedTextureResourcePtr = ptr;
+  this->__mLinkedTextureResourcePtr = ptr;
 }
 } /// ::dy namespace

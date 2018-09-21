@@ -1,5 +1,6 @@
-#ifndef GUARD_DY_INTERFACE_TO_STRING_H
-#define GUARD_DY_INTERFACE_TO_STRING_H
+#ifndef GUARD_DY_EDITOR_LITERALS_DIALOG_MESSAGE_STRING_H
+#define GUARD_DY_EDITOR_LITERALS_DIALOG_MESSAGE_STRING_H
+#if defined(MDY_FLAG_IN_EDITOR)
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,24 +14,14 @@
 /// SOFTWARE.
 ///
 
-#include <string>
+#include <string_view>
 
-namespace dy
+namespace dy::editor
 {
 
-///
-/// @class IDyToString
-/// @brief To string interface.
-///
-class MDY_NO_VTABLE IDyToString
-{
-public:
-  virtual ~IDyToString() = default;
 
-  [[nodiscard]]
-  virtual std::string ToString() = 0;
-};
 
-} /// ::dy namespace
+} /// ::dy::editor namespace
 
-#endif /// GUARD_DY_INTERFACE_TO_STRING_H
+#endif /// MDY_FLAG_IN_EDITOR
+#endif /// GUARD_DY_EDITOR_LITERALS_DIALOG_MESSAGE_STRING_H

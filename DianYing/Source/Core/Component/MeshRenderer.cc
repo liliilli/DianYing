@@ -24,6 +24,7 @@
 #include <Dy/Management/SceneManager.h>
 #include <Dy/Core/Component/Object/Camera.h>
 #include <Dy/Management/LoggingManager.h>
+#include <Dy/Management/RenderingManager.h>
 
 namespace dy
 {
@@ -33,8 +34,7 @@ EDySuccess CDyMeshRenderer::pfInitialize(const PDyRendererConsturctionDescriptor
   auto& resourceManager = MDyHeapResource::GetInstance();
 
   // Bind model. If not exists, make model resource using information but not have it, return fail.
-  const auto modelResourcePtr = resourceManager.GetModelResource(desc.mModelName);
-  if (!modelResourcePtr)
+  if (const auto modelResourcePtr = resourceManager.GetModelResource(desc.mModelName); !modelResourcePtr)
   {
     const auto res = resourceManager.CreateModelResource(desc.mModelName);
     if (res == DY_FAILURE) return DY_FAILURE;
@@ -46,11 +46,10 @@ EDySuccess CDyMeshRenderer::pfInitialize(const PDyRendererConsturctionDescriptor
   // Bind material. If not exists, make material resource using information, but return fail.
   for (const auto& materialName : desc.mMaterialNames)
   {
-    auto* materialResourcePtr = resourceManager.GetMaterialResource(materialName);
-    if (!materialResourcePtr)
+    if (auto* materialResourcePtr = resourceManager.GetMaterialResource(materialName); !materialResourcePtr)
     {
       const auto res = resourceManager.CreateMaterialResource(materialName);
-      if (res == DY_FAILURE) return DY_FAILURE;
+      if (res == DY_FAILURE) { return DY_FAILURE; }
 
       this->mMaterialResourcePtr.emplace_back(resourceManager.GetMaterialResource(materialName));
     }
@@ -95,34 +94,57 @@ EDySuccess CDyMeshRenderer::pfInitialize(const PDyRendererConsturctionDescriptor
   return DY_SUCCESS;
 }
 
-void CDyMeshRenderer::Render()
+void CDyMeshRenderer::Update(float dt)
+{
+  if (this->mModelReferencePtr == nullptr || !this->mModelReferencePtr->IsEnabledModelAnimated()) return;
+
+  static float runningTime = 0.f;
+  runningTime += dt;
+
+  this->mModelReferencePtr->UpdateBoneAnimationTransformList(runningTime);
+}
+
+void CDyMeshRenderer::CallDraw()
+{
+  auto& renderingManager = MDyRendering::GetInstance();
+  renderingManager.PushDrawCallTask(*this);
+}
+
+void CDyMeshRenderer::pfRender()
 {
   for (const auto& bindedMeshMatInfo : this->mMeshMaterialPtrBindingList)
   {
-    // Activate shader of one material.
+    // Integrity test.
     const auto shaderResource = bindedMeshMatInfo.mMaterialResource->GetShaderResource();
     if (!shaderResource)
     {
-      MDY_LOG_CRITICAL("{} | Shader resource of {} is not binded, Can not render mesh.",
-                       "CDyMeshRenderer::Render",
-                       bindedMeshMatInfo.mMaterialResource->GetMaterialName());
+      MDY_LOG_CRITICAL("{} | Shader resource of {} is not binded, Can not render mesh.", "CDyMeshRenderer::Render", bindedMeshMatInfo.mMaterialResource->GetMaterialName());
       continue;
     }
+    // Activate shader of one material and bind submesh VAO id.
     shaderResource->UseShader();
-
-    // Bind submesh VAO id.
     glBindVertexArray(bindedMeshMatInfo.mSubmeshResource->GetVertexArrayId());
 
-    // @todo temporal
-    const auto viewMatrix = glGetUniformLocation(shaderResource->GetShaderProgramId(), "viewMatrix");
-    const auto projMatirx = glGetUniformLocation(shaderResource->GetShaderProgramId(), "projectionMatrix");
-
-    auto& sceneManager = MDyScene::GetInstance();
-    auto* camera = sceneManager.GetMainCameraPtr();
-    if (camera)
+    // @todo temporal Bind camera matrix.
+    if (auto* camera = MDyScene::GetInstance().GetMainCameraPtr(); camera)
     {
+      const auto viewMatrix = glGetUniformLocation(shaderResource->GetShaderProgramId(), "viewMatrix");
+      const auto projMatirx = glGetUniformLocation(shaderResource->GetShaderProgramId(), "projectionMatrix");
+
       glUniformMatrix4fv(viewMatrix, 1, GL_FALSE, &camera->GetViewMatrix()[0].X);
       glUniformMatrix4fv(projMatirx, 1, GL_FALSE, &camera->GetProjectionMatrix()[0].X);
+    }
+
+    // If skeleton animation is enabled, get bone transform and bind to shader.
+    const auto boneTransform = glGetUniformLocation(shaderResource->GetShaderProgramId(), "boneTransform");
+    if (mModelReferencePtr && mModelReferencePtr->IsEnabledModelAnimated())
+    {
+      const auto& matrixList = this->mModelReferencePtr->GetModelAnimationTransformMatrixList();
+      const auto  matrixSize = static_cast<int32_t>(matrixList.size());
+      for (int32_t i = 0; i < matrixSize; ++i)
+      {
+        glUniformMatrix4fv(boneTransform + i, 1, GL_FALSE, &matrixList[i].mFinalTransformation[0].X);
+      }
     }
 
     // Bind textures of one material.
@@ -134,7 +156,7 @@ void CDyMeshRenderer::Render()
       {
         glUniform1i(glGetUniformLocation(shaderResource->GetShaderProgramId(), (std::string("uTexture") + std::to_string(i)).c_str()), i);
 
-        const auto texturePointer = textureResources[i].mTexturePointer;
+        const auto texturePointer = textureResources[i].mValidTexturePointer;
         glActiveTexture(GL_TEXTURE0 + i);
         switch (texturePointer->GetTextureType())
         {
@@ -166,6 +188,7 @@ void CDyMeshRenderer::Render()
         glBindTexture(GL_TEXTURE_2D, 0);
       }
     }
+
     glBindVertexArray(0);
     shaderResource->UnuseShader();
   }

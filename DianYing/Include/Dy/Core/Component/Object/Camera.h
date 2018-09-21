@@ -152,7 +152,7 @@ private:
   /// Camera's near value.
   float mNear                     = 0.1f;
   /// Camera's far value.
-  float mFar                      = 100;
+  float mFar                      = 1000;
   float mFieldOfView              = 0.f;
   float mAspect                   = 0.f;
   float mMouseSensitivity         = 0.25f;

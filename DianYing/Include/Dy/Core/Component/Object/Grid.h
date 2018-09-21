@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Core/Component/MeshRenderer.h>
-#include "Dy/Core/Component/Resource/ShaderResource.h"
+#include <Dy/Core/Component/Resource/ShaderResource.h>
 
 namespace dy
 {

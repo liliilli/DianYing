@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_INTERFACE_TO_STRING_H
-#define GUARD_DY_INTERFACE_TO_STRING_H
+#ifndef GUARD_DY_MANAGEMENT_INTERFACE_IDY_THREAD_HELPER_H
+#define GUARD_DY_MANAGEMENT_INTERFACE_IDY_THREAD_HELPER_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,24 +13,16 @@
 /// SOFTWARE.
 ///
 
-#include <string>
-
 namespace dy
 {
 
-///
-/// @class IDyToString
-/// @brief To string interface.
-///
-class MDY_NO_VTABLE IDyToString
+class MDY_NO_VTABLE IDyThreadHelper
 {
 public:
-  virtual ~IDyToString() = default;
-
-  [[nodiscard]]
-  virtual std::string ToString() = 0;
+  virtual ~IDyThreadHelper()      = default;
+  virtual TI32 GetThreadsCount()  = 0;
 };
 
 } /// ::dy namespace
 
-#endif /// GUARD_DY_INTERFACE_TO_STRING_H
+#endif /// GUARD_DY_MANAGEMENT_INTERFACE_IDY_THREAD_HELPER_H

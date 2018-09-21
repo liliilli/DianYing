@@ -14,20 +14,43 @@
 ///
 
 #include <vector>
-#include <Dy/Helper/Type/Vector3.h>
+#include <Dy/Helper/Type/Vector4.h>
+#include "Dy/Helper/Type/Matrix4.h"
 
 namespace dy
 {
 
 ///
-/// @class DDyVertexInformation
+/// @struct DDyVertexBoneData
+/// @brief Below elements are used when skeletal animation is applied.
+///
+struct DDyVertexBoneData final
+{
+  std::array<TI32, 4> mBoneId     = {-1, -1, -1, -1};
+  DDyVector4          mWeights    = {0 ,  0,  0,  0};
+};
+
+///
+/// @struct DDyVertexInformation
 /// @brief Vertex information (Input assembly unit data)
 ///
 struct DDyVertexInformation final
 {
-  DDyVector3 mPosition;
-  DDyVector3 mNormal;
-  DDyVector2 mTexCoords;
+  DDyVector3          mPosition   = {};
+  DDyVector3          mNormal     = {};
+  DDyVector2          mTexCoords  = {};
+  // Below elements are used when skeletal animation is applied.
+  DDyVertexBoneData   mVertexBoneData;
+};
+
+///
+/// @struct DDyGeometryBoneInformation
+/// @brief bone matrix information structure.
+///
+struct DDyGeometryBoneInformation final
+{
+  DDyMatrix4x4        mBoneOffsetMatrix     = {};
+  DDyMatrix4x4        mFinalTransformation  = DDyMatrix4x4::IdentityMatrix();
 };
 
 ///
@@ -47,9 +70,14 @@ struct DDyGlBufferIdInformation final
 ///
 struct PDySubmeshInformationDescriptor final
 {
-  std::vector<DDyVertexInformation> mVertices;
-  std::vector<int32_t>              mIndices;
-  std::string                       mMaterialName = "";
+  std::vector<DDyVertexInformation> mVertices         = {};
+  std::vector<int32_t>              mIndices          = {};
+  std::string                       mMaterialName     = "";
+  TU32                              mBaseVertices     = 0;
+  TU32                              mBaseIndices      = 0;
+  DDyMatrix4x4                      mBaseModelMatrix  = DDyMatrix4x4::IdentityMatrix();
+
+  bool                              mIsEnabledSkeletalAnimation = false;
 };
 
 ///
@@ -62,8 +90,9 @@ struct DDySubmeshFlagInformation final
   int32_t                         mVertexSize       = 0;
   bool                            mIsNotHaveIndices :1;
   bool                            mIsNotHaveTextures:1;
+  bool                            mIsEnabledSkeletalAnimation:1;
 
-  DDySubmeshFlagInformation() : mIsNotHaveIndices{false}, mIsNotHaveTextures{false} {};
+  DDySubmeshFlagInformation() : mIsNotHaveIndices{false}, mIsNotHaveTextures{false}, mIsEnabledSkeletalAnimation{false} {};
 };
 
 } /// ::dy namespace

@@ -23,6 +23,26 @@ DDyQuaternion::DDyQuaternion(const DDyVector3& eulerAngleXYZ) :
     mQuaternion{ glm::vec3{math::ConvertDegreeToRadian(eulerAngleXYZ.X), math::ConvertDegreeToRadian(eulerAngleXYZ.Y), math::ConvertDegreeToRadian(eulerAngleXYZ.Z)} }
 {}
 
+DDyQuaternion::DDyQuaternion(const aiQuaternion& aiQuaternion) :
+  mQuaternion{aiQuaternion.w, aiQuaternion.x, aiQuaternion.y, aiQuaternion.z}
+{ }
+
+DDyQuaternion& DDyQuaternion::operator=(const aiQuaternion& aiQuatenrion)
+{
+  mQuaternion = glm::quat{aiQuatenrion.w, aiQuatenrion.x, aiQuatenrion.y, aiQuatenrion.z};
+  return *this;
+}
+
+DDyQuaternion::DDyQuaternion(const glm::quat& glmQuat) :
+  mQuaternion(glmQuat)
+{ }
+
+DDyQuaternion& DDyQuaternion::operator=(const glm::quat& glmQuat)
+{
+  mQuaternion = glmQuat;
+  return *this;
+}
+
 DDyMatrix4x4 DDyQuaternion::GetRotationMatrix4x4() const noexcept {
   return glm::mat4_cast(this->mQuaternion);
 }

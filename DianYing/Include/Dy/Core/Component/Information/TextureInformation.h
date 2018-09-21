@@ -39,26 +39,24 @@ namespace dy
 class DDyTextureInformation final
 {
 public:
+  MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(DDyTextureInformation);
   DDyTextureInformation(const PDyTextureConstructionDescriptor& textureConstructionDescriptor);
-
-  DDyTextureInformation(const DDyTextureInformation&)            = delete;
-  DDyTextureInformation& operator=(const DDyTextureInformation&) = delete;
-  DDyTextureInformation(DDyTextureInformation&&)            = default;
-  DDyTextureInformation& operator=(DDyTextureInformation&&) = default;
   ~DDyTextureInformation();
 
   ///
   /// @brief return immutable descriptor information reference.
   ///
-  const PDyTextureConstructionDescriptor& GetInformation() const noexcept
+  [[nodiscard]]
+  FORCEINLINE const PDyTextureConstructionDescriptor& GetInformation() const noexcept
   {
     return this->mTextureInformation;
   }
 
   /// Check if object is being binded to CDyTextureResource instance.
+  [[nodiscard]]
   FORCEINLINE bool IsBeingBindedToResource() const noexcept
   {
-    return this->mLinkedTextureResourcePtr != nullptr;
+    return this->__mLinkedTextureResourcePtr != nullptr;
   }
 
 private:
@@ -69,7 +67,7 @@ private:
   //!
 
   void __pfLinkTextureResource(CDyTextureResource* ptr) const noexcept;
-  mutable CDyTextureResource* mLinkedTextureResourcePtr = nullptr;
+  MDY_TRANSIENT CDyTextureResource* __mLinkedTextureResourcePtr = nullptr;
 
   friend class CDyTextureResource;
   friend class MDyHeapResource;

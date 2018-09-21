@@ -36,6 +36,7 @@
 #include <Dy/Management/InputManager.h>
 #include <Dy/Management/TimeManager.h>
 #include <Dy/Management/Editor/GuiManager.h>
+#include "Dy/Management/RenderingManager.h"
 
 ///
 /// Undefined proprocessor WIN32 macro "max, min" for preventing misuse.
@@ -96,23 +97,24 @@ void DyGlTempInitializeResource()
   //! Shader
   //!
 
-  dy::PDyShaderConstructionDescriptor shaderDesc;
+#ifdef false
   {
-    shaderDesc.mShaderName = "TestShader";
+    dy::PDyShaderConstructionDescriptor desc;
+    desc.mShaderName = "TestSkeletalAnimShader";
     {
       dy::PDyShaderFragmentInformation vertexShaderInfo;
       vertexShaderInfo.mShaderType = dy::EDyShaderFragmentType::Vertex;
-      vertexShaderInfo.mShaderPath = "./glMeshVert.vert";
-      shaderDesc.mShaderFragments.emplace_back(vertexShaderInfo);
+      vertexShaderInfo.mShaderPath = "./glMeshVertSAnim.vert";
+      desc.mShaderFragments.emplace_back(vertexShaderInfo);
     }
     {
       dy::PDyShaderFragmentInformation fragmentShaderInfo;
       fragmentShaderInfo.mShaderType = dy::EDyShaderFragmentType::Pixel;
       fragmentShaderInfo.mShaderPath = "./glShader.frag";
-      shaderDesc.mShaderFragments.emplace_back(fragmentShaderInfo);
+      desc.mShaderFragments.emplace_back(fragmentShaderInfo);
     }
+    MDY_CALL_ASSERT_SUCCESS(manInfo.CreateShaderInformation(desc));
   }
-  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateShaderInformation(shaderDesc));
 
   {
     shaderDesc.mShaderFragments.clear();
@@ -150,14 +152,12 @@ void DyGlTempInitializeResource()
     dy::PDyModelConstructionDescriptor modelDesc;
     {
       modelDesc.mModelName = "TestModel";
-      //modelDesc.mModelPath = "./TestResource/Maximilian/max.obj";
       modelDesc.mModelPath = "./TestResource/nanosuit/nanosuit.obj";
     }
     MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(modelDesc));
     return true;
   });
-
-  if (tempAsyncTask.get() && modelAsyncTask.get()) { MDY_LOG_DEBUG_D("OK"); };
+#endif
 
 #ifdef false
   {
@@ -276,133 +276,67 @@ void DyGlTempInitializeResource()
     if (auto matPtr = manInfo.PopulateMaterialInformation("Material__2413", popDesc); !matPtr.has_value()) { return; }
     else { materialNameList.emplace_back(matPtr.value()); }
   }
+#endif
+
+  {
+    dy::PDyShaderConstructionDescriptor shaderDesc;
+    shaderDesc.mShaderName = "TestDeferredShader";
+    {
+      dy::PDyShaderFragmentInformation vs;
+      vs.mShaderType = dy::EDyShaderFragmentType::Vertex;
+      vs.mShaderPath = "./ShaderResource/Gl/glMeshVert.vert";
+      shaderDesc.mShaderFragments.emplace_back(vs);
+    }
+    {
+      dy::PDyShaderFragmentInformation fs;
+      fs.mShaderType = dy::EDyShaderFragmentType::Pixel;
+      fs.mShaderPath = "./ShaderResource/Gl/glMeshDeferredFrag.frag";
+      shaderDesc.mShaderFragments.emplace_back(fs);
+    }
+    MDY_CALL_ASSERT_SUCCESS(manInfo.CreateShaderInformation(shaderDesc));
+  }
+
+  {
+    auto animAsyncTask = std::async(std::launch::async, [&manInfo] {
+      dy::PDyModelConstructionDescriptor modelDesc;
+      {
+        modelDesc.mModelName = "Boxing";
+        modelDesc.mModelPath = "./TestResource/crytek-sponza/sponza.obj";
+      }
+      MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(modelDesc));
+      return true;
+    });
+
+    if (animAsyncTask.get()) { MDY_LOG_DEBUG_D("OK"); };
+  }
+
+#ifdef false
+  {
+    dy::PDyMaterialPopulateDescriptor popDesc;
+    popDesc.mIsEnabledShaderOverride  = true;
+    popDesc.mOverrideShaderName       = "TestDeferredShader";
+    const auto spawnedMatStr = manInfo.PopulateMaterialInformation("asdf1:Beta_HighLimbsGeoSG2", popDesc);
+
+    dy::PDyRendererConsturctionDescriptor rendererDesc;
+    {
+      rendererDesc.mModelName     = "Boxing";
+      rendererDesc.mMaterialNames = { spawnedMatStr.value(), spawnedMatStr.value() };
+    }
+    MDY_CALL_ASSERT_SUCCESS(gRenderer.pfInitialize(rendererDesc));
+  }
+#endif
+  dy::PDyMaterialConstructionDescriptor matDesc;
+  matDesc.mMaterialName = "TestMat";
+  matDesc.mShaderName   = "TestDeferredShader";
+  matDesc.mBlendMode    = dy::EDyMaterialBlendMode::Opaque;
+  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateMaterialInformation(matDesc));
 
   dy::PDyRendererConsturctionDescriptor rendererDesc;
   {
-    rendererDesc.mModelName     = "TestModel";
-    rendererDesc.mMaterialNames = materialNameList;
+    rendererDesc.mModelName     = "Boxing";
+    rendererDesc.mMaterialNames = std::vector<std::string>(394, "TestMat");
   }
   MDY_CALL_ASSERT_SUCCESS(gRenderer.pfInitialize(rendererDesc));
-#endif
-
-  // OpenGL (native) Texture binding DEMO
-#ifdef false
-  { //
-    const auto cubeModelPtr = manInfo.GetModelInformation("Cube");
-    const std::vector<dy::DDySubmeshInformation>& cubeMeshInfoList = cubeModelPtr->GetMeshInformation();
-    // Iterate all mesh information list for createing populated mesh instance with shader and aligned textures.
-    for (const auto& info : cubeMeshInfoList)
-    {
-      const dy::PDySubmeshInformationDescriptor& i = info.GetInformation();
-      if (!i.mMaterialName.empty())
-      {
-        auto* materialPtr = manInfo.GetMaterialInformation(i.mMaterialName);
-        for (const auto& textureName : materialPtr->GetInformation().mTextureNames)
-        {
-
-        };
-      }
-    }
-  }
-#endif
-
-}
-
-#ifdef MDY_FLAG_IN_EDITOR
-#ifdef false
-void DyImguiFeatGuiMainMenuRenderFrame()
-{
-  static bool sHelpLicenseWindow  = false;
-  static bool sHelpAboutLicenseWindow = false;
-  static bool sHelpAboutWindow    = false;
-  static bool sViewCpuUsage       = false;
-  static bool sViewLogWindow      = false;
-
-  if (ImGui::BeginMainMenuBar())
-  {
-    if (ImGui::BeginMenu("View"))
-    {
-      ImGui::MenuItem("Cpu Usage", nullptr, &sViewCpuUsage);
-      ImGui::MenuItem("Console", nullptr, &sViewLogWindow);
-      ImGui::EndMenu();
-    }
-
-    if (ImGui::BeginMenu("Help"))
-    {
-      ImGui::MenuItem("Licenses", nullptr, &sHelpLicenseWindow);
-      ImGui::MenuItem("About", nullptr, &sHelpAboutWindow);
-      ImGui::EndMenu();
-    }
-
-    ImGui::EndMainMenuBar();
-  }
-
-  if (sViewCpuUsage)
-  {
-    ImGui::Begin("Cpu Usage", &sViewCpuUsage, ImGuiWindowFlags_AlwaysAutoResize);
-    ImGui::End();
-  }
-
-  if (sViewLogWindow)
-  {
-    ImGui::Begin("Log Window", &sViewLogWindow, ImGuiWindowFlags_AlwaysAutoResize);
-
-    ImGui::End();
-  }
-}
-#endif
-#endif
-
-void DyImguiRenderFrame()
-{
-  ImGui_ImplOpenGL3_NewFrame();
-  ImGui_ImplGlfw_NewFrame();
-  ImGui::NewFrame();
-
-  if (gImguiShowDemoWindow)
-  {
-    ImGui::ShowDemoWindow(&gImguiShowDemoWindow);
-  }
-
-  {
-    static float f = 0.0f;
-    static int32_t counter = 0;
-
-    ImGui::Begin("Hello, world!");
-    ImGui::Text("This is some useful text.");
-    ImGui::Checkbox("Demo Window", &gImguiShowDemoWindow);
-    ImGui::Checkbox("Another Window", &gImguiShowAnotherWindow);
-
-    ImGui::SliderFloat("Float", &f, 0.0f, 1.0f);
-    ImGui::ColorEdit3("Clear color", gColor.Data().data());
-
-    if (ImGui::Button("Button"))
-    {
-      ++counter;
-    }
-    ImGui::SameLine();
-    ImGui::Text("Counter = %d", counter);
-
-    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-    ImGui::End();
-
-    if (gImguiShowAnotherWindow)
-    {
-      ImGui::Begin("Another Window", &gImguiShowAnotherWindow);
-      ImGui::Text("Hello from another window!");
-      if (ImGui::Button("Close me"))
-      {
-        gImguiShowAnotherWindow = false;
-      }
-      ImGui::End();
-    }
-  }
-#if defined(MDY_FLAG_IN_EDITOR)
-  dy::editor::MDyEditorGui::GetInstance().DrawWindow(0);
-#endif
-
-  ImGui::Render();
-  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 
@@ -600,6 +534,8 @@ void MDyWindow::pUpdate(float dt)
   {
     cam->Update(dt);
   }
+
+  gRenderer.Update(dt);
 }
 
 ///
@@ -610,19 +546,17 @@ void MDyWindow::pRender()
   glClearColor(gColor.X, gColor.Y, gColor.Z, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  glEnable(GL_DEPTH_TEST);
-  if (gGrid)
-  {
-    gGrid->RenderGrid();
-  };
+  gRenderer.CallDraw();
 
-#ifdef false
-  gRenderer.Render();
-#endif
+  glEnable(GL_DEPTH_TEST);
+  MDyRendering::GetInstance().RenderDrawCallQueue();
+  if (gGrid) { gGrid->RenderGrid(); };
 
   glDisable(GL_DEPTH_TEST);
 
-  DyImguiRenderFrame();
+#if defined(MDY_FLAG_IN_EDITOR)
+  editor::MDyEditorGui::GetInstance().DrawWindow(0);
+#endif
   if (glfwWindowShouldClose(this->mGlfwWindow)) return;
 
   glfwSwapBuffers(this->mGlfwWindow);
@@ -637,31 +571,26 @@ EDySuccess MDyWindow::pfInitialize()
   switch (MDySetting::GetInstance().GetRenderingType())
   {
   default: assert(false); break;
-  case dy::EDyRenderingApiType::DirectX11:
-    MDY_LOG_INFO_D("Initialize DirectX11 Context.");
-    {
-      assert(false);
+  case EDyRenderingApiType::DirectX11: MDY_LOG_INFO_D("Initialize DirectX11 Context."); PHITOS_NOT_IMPLEMENTED_ASSERT();
 #ifdef false
-      MDY_CALL_ASSERT_SUCCESS(DyWin32InitializeWindow(hInstance));
-      MDY_CALL_ASSERT_SUCCESS(DyD11InitializeDirect3D());
+    MDY_CALL_ASSERT_SUCCESS(DyWin32InitializeWindow(hInstance));
+    MDY_CALL_ASSERT_SUCCESS(DyD11InitializeDirect3D());
 
-      ShowWindow(windowHandle, SW_SHOW);
-      SetForegroundWindow(windowHandle);
-      SetFocus(windowHandle);
+    ShowWindow(windowHandle, SW_SHOW);
+    SetForegroundWindow(windowHandle);
+    SetFocus(windowHandle);
 
-      DyD11CreateEffectFx();
-      DyD11BindVertexLayout();
-      DyD11CreateVertexBuffer();
-      DyD11RenderLoop();
+    DyD11CreateEffectFx();
+    DyD11BindVertexLayout();
+    DyD11CreateVertexBuffer();
+    DyD11RenderLoop();
 #endif
-    }
     break;
-  case dy::EDyRenderingApiType::OpenGL:
+  case EDyRenderingApiType::OpenGL:
     MDY_LOG_INFO_D("Initialize OpenGL Context.");
     {
-      glfwInit();
-
       // OpenGL Setting
+      glfwInit();
       glfwWindowHint(GLFW_DOUBLEBUFFER, GL_TRUE);
       glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
       glfwWindowHint(GLFW_FOCUSED, GL_TRUE);
@@ -669,7 +598,7 @@ EDySuccess MDyWindow::pfInitialize()
       glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
       glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-      const auto& settingManager = dy::MDySetting::GetInstance();
+      const auto& settingManager = MDySetting::GetInstance();
       this->mGlfwWindow = glfwCreateWindow(settingManager.GetWindowSizeWidth(), settingManager.GetWindowSizeHeight(), "DianYing", nullptr, nullptr);
       if (!this->mGlfwWindow) {
         glfwTerminate();
@@ -691,11 +620,10 @@ EDySuccess MDyWindow::pfInitialize()
         glDebugMessageCallback(DyGlMessageCallback, nullptr);
       #endif
 
-      glEnable(GL_BLEND);
-      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
       glEnable(GL_DEPTH_TEST);
+      glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-      // IMGUI DEMO
+      // IMGUI Setting
       IMGUI_CHECKVERSION();
       ImGui::CreateContext();
       ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -708,13 +636,8 @@ EDySuccess MDyWindow::pfInitialize()
       DyGlTempInitializeResource();
     }
     break;
-  case dy::EDyRenderingApiType::DirectX12:
-    MDY_LOG_INFO_D("Initialize DirectX12 Context.");
-    assert(false);
-    break;
-  case dy::EDyRenderingApiType::Vulkan:
-    MDY_LOG_INFO_D("Initialize Vulkan Context.");
-    assert(false);
+  case EDyRenderingApiType::DirectX12:  MDY_LOG_INFO_D("Initialize DirectX12 Context."); PHITOS_NOT_IMPLEMENTED_ASSERT(); break;
+  case EDyRenderingApiType::Vulkan:     MDY_LOG_INFO_D("Initialize Vulkan Context."); PHITOS_NOT_IMPLEMENTED_ASSERT();
 #ifdef false
     dy::DyVkInitialize(windowHandle, hInstance);
 
@@ -761,25 +684,11 @@ EDySuccess MDyWindow::pfRelease()
   return DY_SUCCESS;
 }
 #elif defined(MDY_PLATFORM_FLAG_LINUX)
-EDySuccess MDyWindow::pfInitialize()
-{
-
-}
-
-EDySuccess MDyWindow::pfRelease()
-{
-
-}
+EDySuccess MDyWindow::pfInitialize() { }
+EDySuccess MDyWindow::pfRelease() { }
 #elif defined(MDY_PLATFORM_FLAG_MACOS)
-EDySuccess MDyWindow::pfInitialize()
-{
-
-}
-
-EDySuccess MDyWindow::pfRelease()
-{
-
-}
+EDySuccess MDyWindow::pfInitialize() { }
+EDySuccess MDyWindow::pfRelease() { }
 #endif
 
 } /// ::dy namespace

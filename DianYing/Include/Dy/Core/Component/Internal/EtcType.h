@@ -15,14 +15,25 @@
 
 #include <string>
 #include <vector>
+#include <Dy/Core/Component/Interface/IDyToString.h>
 
 namespace dy
 {
 
-struct PDyRendererConsturctionDescriptor final
+struct PDyRendererConsturctionDescriptor final : public IDyToString
 {
   std::string               mModelName      = "";
   std::vector<std::string>  mMaterialNames  = {};
+
+  ///
+  /// PDyRendererConsturctionDescriptor
+  /// Model Name : ""
+  /// Material Name 0 : ""
+  /// ...
+  /// Material Name N : ""
+  ///
+  [[nodiscard]]
+  std::string ToString() override final;
 };
 
 } /// ::dy namespace
