@@ -19,6 +19,11 @@
 #include <Dy/Core/Component/Object/DeferredRenderingMesh.h>
 #include <Dy/Core/Component/Object/PostEffectSsao.h>
 
+namespace dy::editor
+{
+class FDyMainViewport;
+}
+
 namespace dy
 {
 
@@ -63,6 +68,7 @@ private:
   std::unique_ptr<FDyPostEffectSsao>          mTempSsaoObject       = nullptr;
 
   friend class FDyDeferredRenderingMesh;
+  friend class editor::FDyMainViewport;
   friend class FDyPostEffectSsao;
 };
 

@@ -37,6 +37,7 @@
 #include <Dy/Management/TimeManager.h>
 #include <Dy/Management/Editor/GuiManager.h>
 #include "Dy/Management/RenderingManager.h"
+#include "Dy/Builtin/ShaderGl/RenderPass.h"
 
 ///
 /// Undefined proprocessor WIN32 macro "max, min" for preventing misuse.
@@ -96,6 +97,8 @@ void DyGlTempInitializeResource()
   //!
   //! Shader
   //!
+
+  dy::builtin::FDyBuiltinShaderGLRenderPass();
 
 #ifdef false
   {
@@ -301,7 +304,7 @@ void DyGlTempInitializeResource()
       dy::PDyModelConstructionDescriptor modelDesc;
       {
         modelDesc.mModelName = "Boxing";
-        modelDesc.mModelPath = "./TestResource/crytek-sponza/sponza.obj";
+        modelDesc.mModelPath = "./TestResource/bun_zipper.ply";
       }
       MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(modelDesc));
       return true;

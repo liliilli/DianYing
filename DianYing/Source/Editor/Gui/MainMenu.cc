@@ -3,6 +3,7 @@
 #include "Dy/Editor/Gui/EtcDialog.h"
 #include "Dy/Editor/Gui/HelpAboutMain.h"
 #include "Dy/Editor/Gui/HelpLicenseWindow.h"
+#include "Dy/Editor/Gui/ViewViewportMain.h"
 #if defined(MDY_FLAG_IN_EDITOR)
 ///
 /// MIT License
@@ -73,6 +74,15 @@ void FDyMainMenu::DrawWindow(float dt) noexcept
       ImGui::EndMenu();
     }
 
+    // Edit
+    // L Undo
+    // L Redo
+    // -------
+    // L Cut
+    // L Copy
+    // L Paste
+    // -------
+    // L Project Configuration
     if (ImGui::BeginMenu("Edit"))
     {
       if (ImGui::MenuItem("Undo", "CTRL+Z", false, false))
@@ -107,6 +117,11 @@ void FDyMainMenu::DrawWindow(float dt) noexcept
       ImGui::EndMenu();
     }
 
+    // View
+    // L Cpu Usage
+    // L Console
+    // L Viewport
+    // L Log View
     if (ImGui::BeginMenu("View"))
     {
       if (ImGui::MenuItem("Cpu Usage", nullptr, &this->mMenuItemViewCpuUsage, false))
@@ -117,15 +132,32 @@ void FDyMainMenu::DrawWindow(float dt) noexcept
       {
 
       }
-      if (ImGui::MenuItem("Viewport", nullptr, &this->mMenuItemViewViewport, false))
+      if (ImGui::MenuItem("Viewport", nullptr, &this->mMenuItemViewViewport))
+      {
+        if (this->mMenuItemViewViewport)
+        {
+          if (auto [hashVal, ptr] = FDyEditorGuiWindowFactory::CreateGuiComponent<FDyMainViewport>(PDyGuiComponentEmptyDescriptor{});
+              ptr)
+          {
+            auto [it, result] = this->mSubWindows.try_emplace(hashVal, std::move(ptr));
+            if (!result) { PHITOS_UNEXPECTED_BRANCH(); }
+          }
+        }
+        else { this->mSubWindows.erase(FDyMainViewport::__mHashVal); }
+      }
+      if (ImGui::MenuItem("Log View", nullptr, &this->mMenuItemViewLogWindow, false))
       {
 
       }
       ImGui::EndMenu();
     }
 
+    // Help
+    // L License
+    // L About
     if (ImGui::BeginMenu("Help"))
     {
+      // License
       if (ImGui::MenuItem("Library Licenses", nullptr, &this->mMenuItemHelpLicenseWindow, true))
       {
         if (this->mMenuItemHelpLicenseWindow)
@@ -139,13 +171,12 @@ void FDyMainMenu::DrawWindow(float dt) noexcept
         }
         else { this->mSubWindows.erase(FDyHelpLicenseWindow::__mHashVal); }
       }
+      // About
       if (ImGui::MenuItem("About", nullptr, &this->mMenuItemHelpAboutWindow, true))
       {
         if (this->mMenuItemHelpAboutWindow)
         {
-          PDyGuiAboutMainDescriptor desc;
-          desc.mParentBoolFlag    = &this->mMenuItemHelpAboutWindow;
-          desc.mParentRawPtr      = this;
+          const PDyGuiAboutMainDescriptor desc(DyMakeNotNull(&this->mMenuItemHelpAboutWindow), DyMakeNotNull(this));
           if (auto [hashVal, ptr] = FDyEditorGuiWindowFactory::CreateGuiComponent<FDyHelpAboutMain>(desc); ptr)
           {
             auto [it, result] = this->mSubWindows.try_emplace(hashVal, std::move(ptr));

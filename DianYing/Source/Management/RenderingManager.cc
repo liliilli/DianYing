@@ -20,6 +20,7 @@
 
 #include <Dy/Core/Component/Internal/ShaderType.h>
 #include <Dy/Management/DataInformationManager.h>
+#include "Dy/Helper/Math/Random.h"
 
 namespace dy
 {
@@ -28,6 +29,11 @@ EDySuccess MDyRendering::pfInitialize()
 {
   pCreateGeometryBuffers();
   mFinalRenderingMesh = std::make_unique<decltype(mFinalRenderingMesh)::element_type>();
+
+  if (this->mTempIsEnabledSsao)
+  {
+    mTempSsaoObject = std::make_unique<decltype(mTempSsaoObject)::element_type>();
+  }
 
   return DY_SUCCESS;
 }
@@ -53,15 +59,20 @@ void MDyRendering::RenderDrawCallQueue()
   while (!this->mDrawCallQueue.empty())
   {
     auto& drawInstance = *this->mDrawCallQueue.front();
-
     drawInstance.pfRender();
-
     this->mDrawCallQueue.pop();
+  }
+
+  if (this->mTempIsEnabledSsao)
+  {
+    this->mTempSsaoObject->RenderScreen();
   }
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+#ifdef false
   this->mFinalRenderingMesh->RenderScreen();
+#endif
 }
 
 void MDyRendering::pCreateGeometryBuffers() noexcept
@@ -76,7 +87,7 @@ void MDyRendering::pCreateGeometryBuffers() noexcept
 
   // Unlit g-buffer
   glBindTexture(GL_TEXTURE_2D, this->mAttachmentBuffers[0]);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, overallScreenWidth, overallScreenHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, overallScreenWidth, overallScreenHeight, 0, GL_RGBA, GL_FLOAT, nullptr);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -85,7 +96,7 @@ void MDyRendering::pCreateGeometryBuffers() noexcept
 
   // Normal g-buffer
   glBindTexture(GL_TEXTURE_2D, this->mAttachmentBuffers[1]);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, overallScreenWidth, overallScreenHeight, 0, GL_RGB, GL_FLOAT, nullptr);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, overallScreenWidth, overallScreenHeight, 0, GL_RGBA, GL_FLOAT, nullptr);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -94,12 +105,29 @@ void MDyRendering::pCreateGeometryBuffers() noexcept
 
   // Specular g-buffer
   glBindTexture(GL_TEXTURE_2D, this->mAttachmentBuffers[2]);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, overallScreenWidth, overallScreenHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, overallScreenWidth, overallScreenHeight, 0, GL_RGBA, GL_FLOAT, nullptr);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, this->mAttachmentBuffers[2], 0);
+  if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+  {
+    PHITOS_UNEXPECTED_BRANCH();
+  }
+
+  // View position g-buffer
+  glBindTexture(GL_TEXTURE_2D, this->mAttachmentBuffers[3]);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, overallScreenWidth, overallScreenHeight, 0, GL_RGB, GL_FLOAT, nullptr);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, this->mAttachmentBuffers[3], 0);
+  if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+  {
+    PHITOS_UNEXPECTED_BRANCH();
+  }
 
   // Depth g-buffer
   TU32 depthBuffer = MDY_NOT_INITIALIZED_0;
@@ -109,7 +137,9 @@ void MDyRendering::pCreateGeometryBuffers() noexcept
   glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
 
   // Let framebuffer know that attachmentBuffer's id will be drawn at framebuffer.
-  std::array<GLenum, 3> attachmentEnumList = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2};
+  std::array<GLenum, 4> attachmentEnumList = {
+      GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3
+  };
   glDrawBuffers(static_cast<TI32>(attachmentEnumList.size()), &attachmentEnumList[0]);
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 

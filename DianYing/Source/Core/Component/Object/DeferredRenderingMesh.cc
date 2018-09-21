@@ -122,7 +122,7 @@ void FDyDeferredRenderingMesh::RenderScreen()
 
   const auto& renderingManager = MDyRendering::GetInstance();
   // Bind g-buffers as textures.
-  for (int32_t i = 0; i < renderingManager.mAttachmentBuffers.size(); ++i)
+  for (TU32 i = 0; i < renderingManager.mAttachmentBuffers.size(); ++i)
   {
     glActiveTexture(GL_TEXTURE0 + i);
     glBindTexture(GL_TEXTURE_2D, renderingManager.mAttachmentBuffers[i]);
