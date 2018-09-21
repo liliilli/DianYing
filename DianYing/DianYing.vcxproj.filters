@@ -59,6 +59,8 @@
     <ClCompile Include="Source\Core\Component\Object\DeferredRenderingMesh.cc" />
     <ClCompile Include="Source\Management\SynchronizationManager.cc" />
     <ClCompile Include="Source\Core\Component\Object\PostEffectSsao.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\RenderPass.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\RenderGrid.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -153,6 +155,8 @@
     <ClInclude Include="Include\Dy\Management\Interface\IDyThreadHelper.h" />
     <ClInclude Include="Include\Dy\Management\SynchronizationManager.h" />
     <ClInclude Include="Include\Dy\Core\Component\Object\PostEffectSsao.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderPass.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderGrid.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

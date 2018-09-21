@@ -24,6 +24,10 @@ MDY_SET_IMMUTABLE_STRING(kDyDataInformation,            "MDyDataInformation");
 
 MDY_SET_IMMUTABLE_STRING(kErrorShaderNameNotSpecified,  "{} | Failed to create shader information. Shader name is not specified.");
 MDY_SET_IMMUTABLE_STRING(kErrorShaderFragmentEmpty,     "{} | Failed to create shader information. Shader fragments are empty.");
+MDY_SET_IMMUTABLE_STRING(kErrorShaderFramgmentRawCodeEmpty,
+    "{}::{} | Failed to create shader information. Shader fragment's mIsEnabledRawLoadShaderCode is true but not specified mShaderRawCode.");
+MDY_SET_IMMUTABLE_STRING(kErrorShaderFramgmentPathEmpty,
+    "{}::{} | Failed to create shader information. Shader fragment's path is not specified so can not arbitary fragment file.");
 
 MDY_SET_IMMUTABLE_STRING(kErrorTextureNameNotSpecified, "{} | Failed to create texture information. Texture name is not specified.");
 MDY_SET_IMMUTABLE_STRING(kErrorTextureLocalPathEmpty,   "{} | Failed to create texture information. \
@@ -73,6 +77,21 @@ EDySuccess MDyDataInformation::CreateShaderInformation(const PDyShaderConstructi
     {
       MDY_LOG_CRITICAL_D(kErrorShaderFragmentEmpty, kDyDataInformation);
       return DY_FAILURE;
+    }
+
+    for (const auto& shaderFragment : shaderDescriptor.mShaderFragments)
+    {
+      if (shaderFragment.mIsEnabledRawLoadShaderCode && shaderFragment.mShaderRawCode.empty())
+      {
+        MDY_LOG_CRITICAL_D(kErrorShaderFramgmentRawCodeEmpty, kDyDataInformation, "CheckIntegerityOfDescriptor");
+        return DY_FAILURE;
+      }
+
+      if (!shaderFragment.mIsEnabledRawLoadShaderCode && shaderFragment.mShaderPath.empty())
+      {
+        MDY_LOG_CRITICAL_D(kErrorShaderFramgmentPathEmpty, kDyDataInformation, "CheckIntegerityOfDescriptor");
+        return DY_FAILURE;
+      }
     }
 
     return DY_SUCCESS;

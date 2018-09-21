@@ -31,6 +31,7 @@
 
 #include <Dy/Management/Editor/GuiManager.h>
 #include "Dy/Helper/Pointer.h"
+#include "Dy/Management/SynchronizationManager.h"
 
 namespace
 {
@@ -93,6 +94,7 @@ void DyInitiailzeAllManagers()
   MDY_CALL_ASSERT_SUCCESS(dy::MDyRendering::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyInput::Initialize());
 
+  MDY_CALL_ASSERT_SUCCESS(dy::MDySync::Initialize());
   MDY_LOG_WARNING_D("========== DIANYING MANAGER INITIALIZED ==========");
 }
 
@@ -103,6 +105,7 @@ void DyInitiailzeAllManagers()
 void DyReleaseAllManagers()
 {
   MDY_LOG_WARNING_D("========== DIANYING MANAGER RELEASED ==========");
+  MDY_CALL_ASSERT_SUCCESS(dy::MDySync::Release());
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDyInput::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyRendering::Release());
