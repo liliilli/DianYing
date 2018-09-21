@@ -108,8 +108,13 @@ struct DDyUniformVariableInformation final
 ///
 struct PDyShaderFragmentInformation final
 {
-  EDyShaderFragmentType mShaderType;
-  std::string           mShaderPath = "";
+  EDyShaderFragmentType mShaderType                 = EDyShaderFragmentType::Vertex;
+  // I/O Shader fragment file path when mIsEnabledRawLoadShaderCode false (by default)
+  std::string           mShaderPath                 = "";
+  // This must be specified validly as glsl code when mIsEnabledRawLoadShaderCode is true.
+  std::string           mShaderRawCode              = "";
+  // If enabled, loader will load mShaderRawCode, but has nullptr throw assert.
+  bool                  mIsEnabledRawLoadShaderCode = false;
 };
 
 ///

@@ -39,8 +39,7 @@ EDySuccess MDyHeapResource::CreateShaderResource(const std::string& shaderName)
   const DDyShaderInformation* shaderInfo = manInfo.GetShaderInformation(shaderName);
   if (shaderInfo == nullptr)
   {
-    MDY_LOG_ERROR("{}::{} | Failed to find shader in information list. | Shader name : {}",
-                  "MDyHeapResource", "CreateShaderResource", shaderName);
+    MDY_LOG_ERROR("{}::{} | Failed to find shader in information list. | Shader name : {}", "MDyHeapResource", "CreateShaderResource", shaderName);
     return DY_FAILURE;
   }
 
@@ -48,8 +47,7 @@ EDySuccess MDyHeapResource::CreateShaderResource(const std::string& shaderName)
   auto [it, result] = this->mOnBoardShaderLists.try_emplace(shaderName, nullptr);
   if (!result)
   {
-    MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred. | Shader name : {}",
-                       "MDyHeapResource", "CreateShaderResource", shaderName);
+    MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred. | Shader name : {}", "MDyHeapResource", "CreateShaderResource", shaderName);
     return DY_FAILURE;
   }
 
@@ -57,8 +55,7 @@ EDySuccess MDyHeapResource::CreateShaderResource(const std::string& shaderName)
   auto shaderResource = std::make_unique<CDyShaderResource>();
   if (const auto success = shaderResource->pfInitializeResource(*shaderInfo); success == DY_FAILURE)
   {
-    MDY_LOG_ERROR("{}::{} | Cannot create shader resource. | Shader resource name : {}",
-                  "MDyHeapResource", "CreateShaderResource", shaderName);
+    MDY_LOG_ERROR("{}::{} | Cannot create shader resource. | Shader resource name : {}", "MDyHeapResource", "CreateShaderResource", shaderName);
     this->mOnBoardShaderLists.erase(shaderName);
     return DY_FAILURE;
   }
@@ -66,8 +63,7 @@ EDySuccess MDyHeapResource::CreateShaderResource(const std::string& shaderName)
   it->second.swap(shaderResource);
   if (!it->second)
   {
-    MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred in swapping. | Shader resource name : {}",
-                       "MDyHeapResource", "CreateShaderResource", shaderName);
+    MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred in swapping. | Shader resource name : {}", "MDyHeapResource", "CreateShaderResource", shaderName);
     this->mOnBoardShaderLists.erase(shaderName);
     return DY_FAILURE;
   }
