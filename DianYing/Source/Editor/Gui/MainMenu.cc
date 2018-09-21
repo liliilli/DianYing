@@ -4,6 +4,7 @@
 #include "Dy/Editor/Gui/HelpAboutMain.h"
 #include "Dy/Editor/Gui/HelpLicenseWindow.h"
 #include "Dy/Editor/Gui/ViewViewportMain.h"
+#include "Dy/Editor/Gui/LogWindow.h"
 #if defined(MDY_FLAG_IN_EDITOR)
 ///
 /// MIT License
@@ -128,10 +129,6 @@ void FDyMainMenu::DrawWindow(float dt) noexcept
       {
 
       }
-      if (ImGui::MenuItem("Console", nullptr, &this->mMenuItemViewLogWindow, false))
-      {
-
-      }
       if (ImGui::MenuItem("Viewport", nullptr, &this->mMenuItemViewViewport))
       {
         if (this->mMenuItemViewViewport)
@@ -145,9 +142,18 @@ void FDyMainMenu::DrawWindow(float dt) noexcept
         }
         else { this->mSubWindows.erase(FDyMainViewport::__mHashVal); }
       }
-      if (ImGui::MenuItem("Log View", nullptr, &this->mMenuItemViewLogWindow, false))
+      if (ImGui::MenuItem("Log View", nullptr, &this->mMenuItemViewLogWindow))
       {
-
+        if (this->mMenuItemViewLogWindow)
+        {
+          if (auto [hashVal, ptr] = FDyEditorGuiWindowFactory::CreateGuiComponent<FDyLogWindow>(PDyGuiComponentEmptyDescriptor{});
+              ptr)
+          {
+            auto [it, result] = this->mSubWindows.try_emplace(hashVal, std::move(ptr));
+            if (!result) { PHITOS_UNEXPECTED_BRANCH(); }
+          }
+        }
+        else { this->mSubWindows.erase(FDyLogWindow::__mHashVal); }
       }
       ImGui::EndMenu();
     }

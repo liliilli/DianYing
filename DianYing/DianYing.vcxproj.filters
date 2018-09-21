@@ -61,6 +61,8 @@
     <ClCompile Include="Source\Core\Component\Object\PostEffectSsao.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderPass.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderGrid.cc" />
+    <ClCompile Include="Source\Editor\Gui\LogWindow.cc" />
+    <ClCompile Include="Source\Management\Helper\GuiLogStreamSink.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -157,6 +159,8 @@
     <ClInclude Include="Include\Dy\Core\Component\Object\PostEffectSsao.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderPass.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderGrid.h" />
+    <ClInclude Include="Include\Dy\Editor\Gui\LogWindow.h" />
+    <ClInclude Include="Include\Dy\Management\Helper\GuiLogStreamSink.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

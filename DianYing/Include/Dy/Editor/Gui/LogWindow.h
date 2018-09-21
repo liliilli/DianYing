@@ -21,6 +21,10 @@
 namespace dy::editor
 {
 
+///
+/// @class FDyLogWindow
+/// @brief Gui logging window.
+///
 class FDyLogWindow final : public IDyGuiWinSingleton<FDyLogWindow, PDyGuiComponentEmptyDescriptor>
 {
   MDY_GUISINGLETON_PROPERTIES(FDyLogWindow);
@@ -29,14 +33,10 @@ public:
   void DrawWindow(float dt) noexcept override final;
 
 private:
-  ///
-  /// @brief
-  ///
+  /// Clear log message window.
   void pClearLog() noexcept;
 
-  ///
-  /// @brief
-  ///
+  /// Get log from spdlog sink stream and output to display.
   void pPushLog() noexcept;
 
   ImGuiTextBuffer     mBuf;

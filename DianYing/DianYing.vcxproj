@@ -320,6 +320,7 @@
     <ClCompile Include="Source\Editor\Gui\EtcDialog.cc" />
     <ClCompile Include="Source\Editor\Gui\HelpAboutMain.cc" />
     <ClCompile Include="Source\Editor\Gui\HelpLicenseWindow.cc" />
+    <ClCompile Include="Source\Editor\Gui\LogWindow.cc" />
     <ClCompile Include="Source\Editor\Gui\MainMenu.cc" />
     <ClCompile Include="Source\Editor\Gui\ViewViewportMain.cc" />
     <ClCompile Include="Source\Entry\Entry.cc" />
@@ -344,6 +345,7 @@
     <ClCompile Include="Source\Management\Editor\GuiManager.cc" />
     <ClCompile Include="Source\Management\Editor\GuiWindowFactory.cc" />
     <ClCompile Include="Source\Management\HeapResourceManager.cc" />
+    <ClCompile Include="Source\Management\Helper\GuiLogStreamSink.cc" />
     <ClCompile Include="Source\Management\InputManager.cc" />
     <ClCompile Include="Source\Management\LoggingManager.cc" />
     <ClCompile Include="Source\Management\RenderingManager.cc" />
@@ -395,6 +397,7 @@
     <ClInclude Include="Include\Dy\Editor\Gui\EtcDialog.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\HelpAboutMain.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\HelpLicenseWindow.h" />
+    <ClInclude Include="Include\Dy\Editor\Gui\LogWindow.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\MainMenu.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\ViewViewportMain.h" />
     <ClInclude Include="Include\Dy\Editor\Interface\IDyGuiComponentBase.h" />
@@ -411,6 +414,7 @@
     <ClInclude Include="Include\Dy\Helper\ThreadPool.h" />
     <ClInclude Include="Include\Dy\Management\Editor\GuiManager.h" />
     <ClInclude Include="Include\Dy\Management\Editor\GuiWindowFactory.h" />
+    <ClInclude Include="Include\Dy\Management\Helper\GuiLogStreamSink.h" />
     <ClInclude Include="Include\Dy\Management\Helper\InputKeyString.h" />
     <ClInclude Include="Include\Dy\Management\InputManager.h" />
     <ClInclude Include="Include\Dy\Management\Interface\IDyThreadHelper.h" />

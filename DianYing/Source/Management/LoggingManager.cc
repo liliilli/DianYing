@@ -17,10 +17,12 @@
 /// Header file
 #include <Dy/Management/LoggingManager.h>
 
+#include <spdlog/async.h>
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/basic_file_sink.h>
 
 #include <Dy/Management/SettingManager.h>
+#include <Dy/Management/Helper/GuiLogStreamSink.h>
 
 namespace {
 
@@ -66,6 +68,7 @@ EDySuccess MDyLog::pfRelease()
 {
   MDY_LOG_DEBUG_D("{} | MDyLog::pfRelease().", "FunctionCall");
   this->pfTurnOff();
+  spdlog::shutdown();
   return DY_SUCCESS;
 }
 
@@ -134,7 +137,10 @@ EDySuccess MDyLog::pfTurnOn()
     }
   }
 
-  this->mLogger = std::make_shared<spdlog::logger>("DianYing", this->mSinks.begin(), this->mSinks.end());
+  this->mSinks.push_back(std::make_shared<TGuiLogStreamSinkMt>());
+
+  spdlog::init_thread_pool(8192, 1);
+  this->mLogger = std::make_shared<spdlog::async_logger>("DianYing", this->mSinks.begin(), this->mSinks.end(), spdlog::thread_pool(), spdlog::async_overflow_policy::block);
   this->mLogger->set_level(DyGetLogLevel(this->mLogLevel));
 
   MDY_LOG_DEBUG_D("MDyLog::mLogger level : {}.", DyGetLogLevel(this->mLogLevel));
