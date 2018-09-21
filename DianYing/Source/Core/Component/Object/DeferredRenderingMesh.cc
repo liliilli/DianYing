@@ -96,6 +96,9 @@ FDyDeferredRenderingMesh::FDyDeferredRenderingMesh()
   glUniform1i(glGetUniformLocation(this->mShaderPtr->GetShaderProgramId(), "uUnlit"), 0);
   glUniform1i(glGetUniformLocation(this->mShaderPtr->GetShaderProgramId(), "uNormal"), 1);
   glUniform1i(glGetUniformLocation(this->mShaderPtr->GetShaderProgramId(), "uSpecular"), 2);
+#ifdef false
+  glUniform1i(glGetUniformLocation(this->mShaderPtr->GetShaderProgramId(), "uSsaoOcclusion"), 3);
+#endif
 
   this->mShaderPtr->UnuseShader();
 }
