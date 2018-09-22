@@ -56,13 +56,9 @@
 namespace
 {
 
-bool gImguiShowDemoWindow = false;
-bool gImguiShowAnotherWindow = false;
-
 dy::DDyVector3                  gColor      {.2f, .3f, .2f};
 dy::CDyMeshRenderer             gRenderer   = {};
 std::unique_ptr<dy::CDyCamera>  gCameraPtr  = nullptr;
-std::unique_ptr<dy::FDyGrid>    gGrid       = nullptr;
 
 void GLAPIENTRY DyGlMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
@@ -87,12 +83,6 @@ void DyGlTempInitializeResource()
     cameraDesc.mUseCustomViewport   = false;
   }
   gCameraPtr = std::make_unique<dy::CDyCamera>(cameraDesc);
-
-  //!
-  //! Grid rendering setting.
-  //!
-
-  gGrid = std::make_unique<dy::FDyGrid>();
 
   //!
   //! Shader
@@ -553,8 +543,6 @@ void MDyWindow::pRender()
 
   glEnable(GL_DEPTH_TEST);
   MDyRendering::GetInstance().RenderDrawCallQueue();
-  if (gGrid) { gGrid->RenderGrid(); };
-
   glDisable(GL_DEPTH_TEST);
 
 #if defined(MDY_FLAG_IN_EDITOR)

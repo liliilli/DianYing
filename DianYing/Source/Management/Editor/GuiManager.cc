@@ -1,4 +1,5 @@
 #include <precompiled.h>
+#include "Dy/Management/Editor/GuiSetting.h"
 #if defined(MDY_FLAG_IN_EDITOR)
 ///
 /// MIT License
@@ -30,6 +31,7 @@ namespace dy::editor
 EDySuccess MDyEditorGui::pfInitialize()
 {
   MDY_LOG_INFO_D("MDyEditorGui manager initialized.");
+  MDY_CALL_ASSERT_SUCCESS(MDyEditorSetting::Initialize());
 
   auto [hashVal, ptr] = FDyEditorGuiWindowFactory::CreateGuiComponent<FDyMainMenu>(PDyGuiComponentEmptyDescriptor{});
   PHITOS_ASSERT(static_cast<bool>(ptr), "Failed to create MainMenu!");
@@ -41,6 +43,7 @@ EDySuccess MDyEditorGui::pfInitialize()
 EDySuccess MDyEditorGui::pfRelease()
 {
   MDY_LOG_INFO_D("MDyEditorGui manager released.");
+  MDY_CALL_ASSERT_SUCCESS(MDyEditorSetting::Release());
   return DY_SUCCESS;
 }
 

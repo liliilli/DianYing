@@ -18,9 +18,8 @@
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/SettingManager.h>
 
-#include <Dy/Core/Component/Internal/ShaderType.h>
 #include <Dy/Management/DataInformationManager.h>
-#include "Dy/Helper/Math/Random.h"
+#include <Dy/Management/Editor/GuiSetting.h>
 
 namespace dy
 {
@@ -34,6 +33,11 @@ EDySuccess MDyRendering::pfInitialize()
   {
     mTempSsaoObject = std::make_unique<decltype(mTempSsaoObject)::element_type>();
   }
+
+#if defined(MDY_FLAG_IN_EDITOR)
+  //! Grid rendering setting.
+  this->mGridEffect = std::make_unique<decltype(this->mGridEffect)::element_type>();
+#endif /// MDY_FLAG_IN_EDITOR
 
   return DY_SUCCESS;
 }
@@ -63,10 +67,14 @@ void MDyRendering::RenderDrawCallQueue()
     this->mDrawCallQueue.pop();
   }
 
-  if (this->mTempIsEnabledSsao)
+#if defined(MDY_FLAG_IN_EDITOR)
+  if (editor::MDyEditorSetting::GetInstance().GetmIsEnabledViewportRenderGrid() && this->mGridEffect)
   {
-    this->mTempSsaoObject->RenderScreen();
+    this->mGridEffect->RenderGrid();
   }
+#endif /// MDY_FLAG_IN_EDITOR
+
+  if (this->mTempIsEnabledSsao) { this->mTempSsaoObject->RenderScreen(); }
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

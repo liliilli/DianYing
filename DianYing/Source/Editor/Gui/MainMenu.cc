@@ -5,6 +5,7 @@
 #include "Dy/Editor/Gui/HelpLicenseWindow.h"
 #include "Dy/Editor/Gui/ViewViewportMain.h"
 #include "Dy/Editor/Gui/LogWindow.h"
+#include "Dy/Editor/Gui/MainSetting.h"
 #if defined(MDY_FLAG_IN_EDITOR)
 ///
 /// MIT License
@@ -110,9 +111,18 @@ void FDyMainMenu::DrawWindow(float dt) noexcept
       }
 
       ImGui::Separator();
-      if (ImGui::MenuItem("Project configuration", nullptr, false, false))
+      if (ImGui::MenuItem("Project configuration", nullptr, &this->mMenuItemViewProjectConfiguration))
       {
-
+        if (this->mMenuItemViewProjectConfiguration)
+        {
+          if (auto [hashVal, ptr] = FDyEditorGuiWindowFactory::CreateGuiComponent<FDyMainSetting>(PDyGuiComponentEmptyDescriptor{});
+              ptr)
+          {
+            auto [it, result] = this->mSubWindows.try_emplace(hashVal, std::move(ptr));
+            if (!result) { PHITOS_UNEXPECTED_BRANCH(); }
+          }
+        }
+        else { this->mSubWindows.erase(FDyMainSetting::__mHashVal); }
       }
 
       ImGui::EndMenu();
