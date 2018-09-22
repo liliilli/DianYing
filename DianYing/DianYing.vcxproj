@@ -408,6 +408,9 @@
     <ClInclude Include="Include\Dy\Editor\Interface\IDyGuiHasChildren.h" />
     <ClInclude Include="Include\Dy\Editor\Literals\DIalogMessageString.h" />
     <ClInclude Include="Include\Dy\Editor\Literals\LibraryLicenseString.h" />
+    <ClInclude Include="Include\Dy\Element\Interface\IDyColliable.h" />
+    <ClInclude Include="Include\Dy\Element\Level.h" />
+    <ClInclude Include="Include\Dy\Element\LevelScriptor.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\Contracts.h" />
     <ClInclude Include="Include\Dy\Helper\Dbg\CheckUsage.h" />
     <ClInclude Include="Include\Dy\Helper\GlobalType.h" />

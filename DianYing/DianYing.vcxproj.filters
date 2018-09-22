@@ -165,6 +165,9 @@
     <ClInclude Include="Include\Dy\Management\Helper\GuiLogStreamSink.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\MainSetting.h" />
     <ClInclude Include="Include\Dy\Management\Editor\GuiSetting.h" />
+    <ClInclude Include="Include\Dy\Element\Level.h" />
+    <ClInclude Include="Include\Dy\Element\LevelScriptor.h" />
+    <ClInclude Include="Include\Dy\Element\Interface\IDyColliable.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

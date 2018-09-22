@@ -165,6 +165,14 @@ void FDyMainMenu::DrawWindow(float dt) noexcept
         }
         else { this->mSubWindows.erase(FDyLogWindow::__mHashVal); }
       }
+      if (ImGui::MenuItem("World Outliner", nullptr, false, false))
+      {
+
+      }
+      if (ImGui::MenuItem("Detail View", nullptr, false, false))
+      {
+
+      }
       ImGui::EndMenu();
     }
 
