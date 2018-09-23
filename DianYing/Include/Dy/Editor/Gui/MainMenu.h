@@ -16,6 +16,7 @@
 #include <Dy/Editor/Interface/IDyGuiWindowSingletonCrtp.h>
 #include <Dy/Editor/Descriptor/EmptyDescriptor.h>
 #include <Dy/Editor/Interface/IDyGuiHasChildren.h>
+#include <Dy/Helper/Pointer.h>
 
 namespace dy::editor
 {
@@ -31,10 +32,12 @@ public:
   void DrawWindow(float dt) noexcept override final;
 
 private:
-  ///
   /// @brief Create dialogue modal message.
-  ///
   void pCreateNotSupportYetDialogMsg(bool* boolFlag);
+  /// @brief Create dialogue
+  void pCreateCreateProjectDalog(NotNull<bool*> boolFlag);
+
+  bool mMenuItemNewProjectFlag    = false;
 
   bool mMenuItemNewLevelFlag      = false;
   bool mMenuItemOpenLevelFlag     = false;
@@ -45,6 +48,8 @@ private:
   bool mMenuItemViewViewport      = false;
 
   bool mMenuItemViewProjectConfiguration = false;
+
+  bool mNotSupport                = false;
 };
 
 } /// ::dy::editor namespace

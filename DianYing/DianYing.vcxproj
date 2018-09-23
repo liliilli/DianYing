@@ -319,8 +319,10 @@
     <ClCompile Include="Source\Core\Component\Resource\ModelResource.cc" />
     <ClCompile Include="Source\Core\Component\Resource\TextureResource.cc" />
     <ClCompile Include="Source\Core\Component\Resource\ShaderResource.cc" />
+    <ClCompile Include="Source\Editor\Gui\Dialog\ProjectCreator.cc" />
     <ClCompile Include="Source\Editor\Gui\EtcDialog.cc" />
     <ClCompile Include="Source\Editor\Gui\HelpAboutMain.cc" />
+    <ClCompile Include="Source\Editor\Gui\Helper\ComponentHelper.cc" />
     <ClCompile Include="Source\Editor\Gui\HelpLicenseWindow.cc" />
     <ClCompile Include="Source\Editor\Gui\LogWindow.cc" />
     <ClCompile Include="Source\Editor\Gui\MainMenu.cc" />
@@ -328,6 +330,7 @@
     <ClCompile Include="Source\Editor\Gui\ViewDetailView.cc" />
     <ClCompile Include="Source\Editor\Gui\ViewViewportMain.cc" />
     <ClCompile Include="Source\Editor\Gui\ViewWorldOutliner.cc" />
+    <ClCompile Include="Source\Editor\Helper\Win32Helper.cc" />
     <ClCompile Include="Source\Entry\Entry.cc" />
     <ClCompile Include="Source\Helper\Dbg\CheckUsage.cc" />
     <ClCompile Include="Source\Helper\Geometry\Types.cc" />
@@ -379,6 +382,9 @@
     <ClInclude Include="Include\Dy\Core\Component\Information\ModelInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\ShaderInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\TextureInformation.h" />
+    <ClInclude Include="Include\Dy\Editor\Gui\Dialog\ProjectCreator.h" />
+    <ClInclude Include="Include\Dy\Editor\Gui\Helper\ComponentHelper.h" />
+    <ClInclude Include="Include\Dy\Editor\Helper\Win32Helper.h" />
     <ClInclude Include="Include\Dy\Element\Abstract\ADyTransformable.h" />
     <ClInclude Include="Include\Dy\Element\Interface\IDyScriptable.h" />
     <ClInclude Include="Include\Dy\Element\Interface\IDyToString.h" />
