@@ -17,9 +17,11 @@
 
 /// Header file
 #include <Dy/Editor/Gui/EtcDialog.h>
-#include <Dy/Management/Editor/GuiWindowFactory.h>
+
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
+#include <Dy/Editor/Gui/Helper/ComponentHelper.h>
+#include <Dy/Management/Editor/GuiWindowFactory.h>
 
 namespace dy::editor
 {
