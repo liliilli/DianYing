@@ -20,7 +20,7 @@ namespace dy::builtin
 
 ///
 /// @class FDyBuiltinShaderGLRenderPass
-/// @brief
+/// @brief Instantiate rendering pass.
 ///
 class FDyBuiltinShaderGLRenderPass final
 {

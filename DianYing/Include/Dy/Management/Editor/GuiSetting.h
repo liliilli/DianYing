@@ -41,6 +41,8 @@ class MDyEditorSetting final : public ISingleton<MDyEditorSetting>
 private:
   // Enable rendering grid or not.
   bool mIsEnabledViewportRenderGrid = true;
+  TU32 mInitScreenSizeWidth         = MDY_NOT_INITIALIZED_0;
+  TU32 mInitScreensizeHeight        = MDY_NOT_INITIALIZED_0;
 
 public:
   MDY_GETSET(mIsEnabledViewportRenderGrid);

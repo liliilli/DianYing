@@ -26,7 +26,7 @@ namespace dy
 
 EDySuccess MDyRendering::pfInitialize()
 {
-  pCreateGeometryBuffers();
+  pCreateDeferredGeometryBuffers();
   mFinalRenderingMesh = std::make_unique<decltype(mFinalRenderingMesh)::element_type>();
 
   if (this->mTempIsEnabledSsao)
@@ -83,7 +83,7 @@ void MDyRendering::RenderDrawCallQueue()
 #endif
 }
 
-void MDyRendering::pCreateGeometryBuffers() noexcept
+void MDyRendering::pCreateDeferredGeometryBuffers() noexcept
 {
   auto& settingManager = MDySetting::GetInstance();
   const auto overallScreenWidth   = settingManager.GetWindowSizeWidth();
@@ -151,7 +151,7 @@ void MDyRendering::pCreateGeometryBuffers() noexcept
   glDrawBuffers(static_cast<TI32>(attachmentEnumList.size()), &attachmentEnumList[0]);
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-  MDY_LOG_INFO("{}::{} | Geometry buffer created.", "MDyRendering", "pCreateGeometryBuffers");
+  MDY_LOG_INFO("{}::{} | Geometry buffer created.", "MDyRendering", "pCreateDeferredGeometryBuffers");
 }
 
 void MDyRendering::pReleaseGeometryBuffers() noexcept
@@ -159,7 +159,7 @@ void MDyRendering::pReleaseGeometryBuffers() noexcept
   glDeleteTextures(this->mAttachmentBuffersCount, &this->mAttachmentBuffers[0]);
   if (this->mDeferredFrameBufferId) { glDeleteFramebuffers(1, &this->mDeferredFrameBufferId); }
 
-  MDY_LOG_INFO("{}::{} | Geometry buffer released.", "MDyRendering", "pCreateGeometryBuffers");
+  MDY_LOG_INFO("{}::{} | Geometry buffer released.", "MDyRendering", "pCreateDeferredGeometryBuffers");
 }
 
 } /// ::dy namespace

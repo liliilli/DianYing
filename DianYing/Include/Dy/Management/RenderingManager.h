@@ -51,7 +51,7 @@ private:
   ///
   /// @brief Create geometry buffers (aka G-buffer) for deferred rendering.
   ///
-  void pCreateGeometryBuffers() noexcept;
+  void pCreateDeferredGeometryBuffers() noexcept;
 
   ///
   /// @brief Release geometry buffers (aka G-buffer) for deferred rendering.

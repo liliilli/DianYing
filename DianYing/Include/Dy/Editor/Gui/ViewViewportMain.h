@@ -32,7 +32,7 @@ public:
   void DrawWindow(float dt) noexcept override final;
 
 private:
-
+  bool mIsEnabledShowGrid = false;
 };
 
 } /// ::dy::editor namespace

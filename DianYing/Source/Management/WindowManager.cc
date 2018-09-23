@@ -24,20 +24,21 @@
 
 #include <Dy/Core/Component/Internal/EtcType.h>
 #include <Dy/Core/Component/MeshRenderer.h>
-#include <Dy/Core/Component/Resource/ShaderResource.h>
 #include <Dy/Core/Component/Object/Camera.h>
-#include <Dy/Core/Component/Object/Grid.h>
 #include <Dy/Helper/Type/Vector3.h>
+
 #include <Dy/Management/DataInformationManager.h>
-#include <Dy/Management/HeapResourceManager.h>
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/SceneManager.h>
 #include <Dy/Management/InputManager.h>
 #include <Dy/Management/TimeManager.h>
 #include <Dy/Management/Editor/GuiManager.h>
-#include "Dy/Management/RenderingManager.h"
-#include "Dy/Builtin/ShaderGl/RenderPass.h"
+#include <Dy/Management/RenderingManager.h>
+
+#include <Dy/Builtin/Model/Box.h>
+#include <Dy/Builtin/ShaderGl/RenderPass.h>
+#include <Dy/Builtin/ShaderGl/RenderColorGeometry.h>
 
 ///
 /// Undefined proprocessor WIN32 macro "max, min" for preventing misuse.
@@ -89,6 +90,8 @@ void DyGlTempInitializeResource()
   //!
 
   dy::builtin::FDyBuiltinShaderGLRenderPass();
+  dy::builtin::FDyBuiltinShaderGLRenderColorGeometry();
+  dy::builtin::FDyBuiltinModelBox();
 
 #ifdef false
   {
@@ -394,11 +397,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     exit(1);
   }
 
-#ifdef false
-  dy::TInt32 screenWidth  = GetSystemMetrics(SM_CXSCREEN);
-  dy::TInt32 screenHeight = GetSystemMetrics(SM_CYSCREEN);
-#endif
-
   const auto& settingManager = dy::MDySetting::GetInstance();
 
   const DWORD dwordExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
@@ -453,14 +451,9 @@ void DyGlCallbackWindowClose(GLFWwindow* window)
 
 } /// unnamed namespace
 #elif defined(MDY_PLATFORM_FLAG_LINUX)
-namespace
-{
-
-} /// unnamed namespace
+namespace { } /// unnamed namespace
 #elif defined(MDY_PLATFORM_FLAG_MACOS)
-namespace {
-
-} /// unnamed namespace
+namespace { } /// unnamed namespace
 #endif
 
 //!
@@ -512,7 +505,7 @@ void MDyWindow::Run()
 }
 
 ///
-/// @brief
+/// @brief Update routine
 ///
 void MDyWindow::pUpdate(float dt)
 {
@@ -532,7 +525,7 @@ void MDyWindow::pUpdate(float dt)
 }
 
 ///
-/// @brief
+/// @brief Render routine.
 ///
 void MDyWindow::pRender()
 {

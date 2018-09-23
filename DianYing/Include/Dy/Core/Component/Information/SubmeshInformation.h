@@ -14,7 +14,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Geometry/GeometryType.h>
+#include <Dy/Core/Component/Internal/GeometryType.h>
 
 namespace dy
 {
