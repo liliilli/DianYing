@@ -1,5 +1,6 @@
-#ifndef GUARD_DY_BUILTIN_SHADER_GL_RENDERPASS_H
-#define GUARD_DY_BUILTIN_SHADER_GL_RENDERPASS_H
+#ifndef GUARD_DY_EDITOR_GUI_HELPER_COMPONENTHELPER_H
+#define GUARD_DY_EDITOR_GUI_HELPER_COMPONENTHELPER_H
+#if defined(MDY_FLAG_IN_EDITOR)
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -15,20 +16,15 @@
 
 #include <string_view>
 
-namespace dy::builtin
+namespace dy::editor
 {
 
 ///
-/// @class FDyBuiltinShaderGLRenderPass
-/// @brief Instantiate rendering pass.
+/// @brief Display message on hovering (?) marker.
 ///
-class FDyBuiltinShaderGLRenderPass final
-{
-public:
-  FDyBuiltinShaderGLRenderPass();
-  inline static constexpr std::string_view sName = "dyBtShaderGlRenderPass";
-};
+void DyShowHelpTooltipMarker(const std::string_view& tooltipMessage) noexcept;
 
-} /// ::dy::builtin namespace
+} /// ::dy::editor namespace
 
-#endif /// GUARD_DY_BUILTIN_SHADER_GL_RENDERPASS_H
+#endif /// MDY_FLAG_IN_EDITOR
+#endif /// GUARD_DY_EDITOR_GUI_HELPER_COMPONENTHELPER_H

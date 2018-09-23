@@ -14,8 +14,10 @@
 ///
 
 #include <string>
-#include <Dy/Core/Component/Interface/IDyToString.h>
-#include "Dy/Helper/Type/Quaternion.h"
+
+#include <Dy/Core/Component/Internal/GeometryType.h>
+#include <Dy/Element/Interface/IDyToString.h>
+#include <Dy/Helper/Type/Quaternion.h>
 
 namespace dy
 {
@@ -28,8 +30,8 @@ struct DMoeTempAnimationChannel;
 ///
 struct PDyModelConstructionDescriptor final : public IDyToString
 {
-  std::string                           mModelName        = "";
-  std::string                           mModelPath        = "";
+  std::string     mModelName = "";
+  std::string     mModelPath = "";
 
   [[nodiscard]]
   std::string ToString() override final
@@ -40,6 +42,22 @@ Model Name : {}
 Model Path : {}
 )dy", this->mModelName, this->mModelPath);
   };
+};
+
+///
+/// @struct PDyModelConstructionVertexDescriptor
+/// @brief Model information construction descriptor with customized static vertex information.
+///
+struct PDyModelConstructionVertexDescriptor final : public IDyToString
+{
+  std::string                                   mModelName                        = "";
+  std::vector<PDySubmeshInformationDescriptor>  mSubmeshConstructionInformations  = {};
+
+  ///
+  [[nodiscard]] std::string ToString() override final
+  {
+    return mModelName;
+  }
 };
 
 ///

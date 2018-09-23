@@ -1,4 +1,5 @@
 #include <precompiled.h>
+#if defined(MDY_FLAG_IN_EDITOR)
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -104,3 +105,4 @@ void FDyLogWindow::pPushLog() noexcept
 }
 
 } /// ::dy::editor namespace
+#endif

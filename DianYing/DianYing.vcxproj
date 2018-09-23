@@ -145,14 +145,14 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
       <PreprocessorDefinitions>MDY_FLAG_IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>C:\TPLibraries\lua\lib\$(Platform)\$(Configuration);$(ProjectDir)Libraries\assimp\lib\$(Configuration)\$(Platform);$(ProjectDir)Libraries\glfw\$(Platform);$(ProjectDir)Libraries\FX11\bin\$(Platform)\$(Configuration);C:\VulkanSDK\1.1.82.0\Lib32</AdditionalLibraryDirectories>
-      <AdditionalDependencies>lua_build.lib;assimp-vc140-mt.lib;glfw3.lib;opengl32.lib;vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\lib;C:\TPLibraries\lua\lib\$(Platform)\$(Configuration);$(ProjectDir)Libraries\assimp\lib\$(Configuration)\$(Platform);$(ProjectDir)Libraries\glfw\$(Platform);$(ProjectDir)Libraries\FX11\bin\$(Platform)\$(Configuration);C:\VulkanSDK\1.1.82.0\Lib32</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fmodL_vc.lib;lua_build.lib;assimp-vc140-mt.lib;glfw3.lib;opengl32.lib;vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>msvcrt.lib;libcmt.lib</IgnoreSpecificDefaultLibraries>
     </Link>
@@ -197,14 +197,14 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
       <PreprocessorDefinitions>MDY_FLAG_IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>C:\TPLibraries\lua\lib\$(Platform)\$(Configuration);$(ProjectDir)Libraries\assimp\lib\$(Configuration)\$(Platform);$(ProjectDir)Libraries\glfw\$(Platform);$(ProjectDir)Libraries\FX11\bin\$(Platform)\$(Configuration);C:\VulkanSDK\1.1.82.0\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>lua_build.lib;assimp-vc140-mt.lib;glfw3.lib;opengl32.lib;vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\lib;C:\TPLibraries\lua\lib\$(Platform)\$(Configuration);$(ProjectDir)Libraries\assimp\lib\$(Configuration)\$(Platform);$(ProjectDir)Libraries\glfw\$(Platform);$(ProjectDir)Libraries\FX11\bin\$(Platform)\$(Configuration);C:\VulkanSDK\1.1.82.0\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fmodL64_vc.lib;lua_build.lib;assimp-vc140-mt.lib;glfw3.lib;opengl32.lib;vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>msvcrt.lib;libcmt.lib</IgnoreSpecificDefaultLibraries>
     </Link>
@@ -299,6 +299,8 @@
     <ClCompile Include="Libraries\imgui\imgui\imgui_impl_glfw.cpp" />
     <ClCompile Include="Libraries\imgui\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="Libraries\imgui\imgui\imgui.cpp" />
+    <ClCompile Include="Source\Builtin\Model\Box.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\RenderColorGeometry.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderGrid.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderPass.cc" />
     <ClCompile Include="Source\Core\Component\Information\MaterialInformation.cc" />
@@ -317,12 +319,18 @@
     <ClCompile Include="Source\Core\Component\Resource\ModelResource.cc" />
     <ClCompile Include="Source\Core\Component\Resource\TextureResource.cc" />
     <ClCompile Include="Source\Core\Component\Resource\ShaderResource.cc" />
+    <ClCompile Include="Source\Editor\Gui\Dialog\ProjectCreator.cc" />
     <ClCompile Include="Source\Editor\Gui\EtcDialog.cc" />
     <ClCompile Include="Source\Editor\Gui\HelpAboutMain.cc" />
+    <ClCompile Include="Source\Editor\Gui\Helper\ComponentHelper.cc" />
     <ClCompile Include="Source\Editor\Gui\HelpLicenseWindow.cc" />
     <ClCompile Include="Source\Editor\Gui\LogWindow.cc" />
     <ClCompile Include="Source\Editor\Gui\MainMenu.cc" />
+    <ClCompile Include="Source\Editor\Gui\MainSetting.cc" />
+    <ClCompile Include="Source\Editor\Gui\ViewDetailView.cc" />
     <ClCompile Include="Source\Editor\Gui\ViewViewportMain.cc" />
+    <ClCompile Include="Source\Editor\Gui\ViewWorldOutliner.cc" />
+    <ClCompile Include="Source\Editor\Helper\Win32Helper.cc" />
     <ClCompile Include="Source\Entry\Entry.cc" />
     <ClCompile Include="Source\Helper\Dbg\CheckUsage.cc" />
     <ClCompile Include="Source\Helper\Geometry\Types.cc" />
@@ -343,6 +351,7 @@
     <ClCompile Include="Source\Helper\Type\Vector4.cc" />
     <ClCompile Include="Source\Management\DataInformationManager.cc" />
     <ClCompile Include="Source\Management\Editor\GuiManager.cc" />
+    <ClCompile Include="Source\Management\Editor\GuiSetting.cc" />
     <ClCompile Include="Source\Management\Editor\GuiWindowFactory.cc" />
     <ClCompile Include="Source\Management\HeapResourceManager.cc" />
     <ClCompile Include="Source\Management\Helper\GuiLogStreamSink.cc" />
@@ -364,6 +373,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\Dy\Builtin\Model\Box.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderColorGeometry.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderGrid.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderPass.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\MaterialInformation.h" />
@@ -371,10 +382,13 @@
     <ClInclude Include="Include\Dy\Core\Component\Information\ModelInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\ShaderInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\TextureInformation.h" />
-    <ClInclude Include="Include\Dy\Core\Component\Interface\ADyTransformable.h" />
-    <ClInclude Include="Include\Dy\Core\Component\Interface\IDyScriptable.h" />
-    <ClInclude Include="Include\Dy\Core\Component\Interface\IDyToString.h" />
-    <ClInclude Include="Include\Dy\Core\Component\Interface\IDyUpdatable.h" />
+    <ClInclude Include="Include\Dy\Editor\Gui\Dialog\ProjectCreator.h" />
+    <ClInclude Include="Include\Dy\Editor\Gui\Helper\ComponentHelper.h" />
+    <ClInclude Include="Include\Dy\Editor\Helper\Win32Helper.h" />
+    <ClInclude Include="Include\Dy\Element\Abstract\ADyTransformable.h" />
+    <ClInclude Include="Include\Dy\Element\Interface\IDyScriptable.h" />
+    <ClInclude Include="Include\Dy\Element\Interface\IDyToString.h" />
+    <ClInclude Include="Include\Dy\Element\Interface\IDyUpdatable.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\EtcType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\MaterialType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\ModelType.h" />
@@ -394,17 +408,24 @@
     <ClInclude Include="Include\Dy\Editor\Descriptor\AboutMainDescriptor.h" />
     <ClInclude Include="Include\Dy\Editor\Descriptor\DialogDescriptor.h" />
     <ClInclude Include="Include\Dy\Editor\Descriptor\EmptyDescriptor.h" />
+    <ClInclude Include="Include\Dy\Editor\Gui\Detail\Transform.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\EtcDialog.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\HelpAboutMain.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\HelpLicenseWindow.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\LogWindow.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\MainMenu.h" />
+    <ClInclude Include="Include\Dy\Editor\Gui\MainSetting.h" />
+    <ClInclude Include="Include\Dy\Editor\Gui\ViewDetailView.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\ViewViewportMain.h" />
+    <ClInclude Include="Include\Dy\Editor\Gui\ViewWorldOutliner.h" />
     <ClInclude Include="Include\Dy\Editor\Interface\IDyGuiComponentBase.h" />
     <ClInclude Include="Include\Dy\Editor\Interface\IDyGuiWindowSingletonCrtp.h" />
     <ClInclude Include="Include\Dy\Editor\Interface\IDyGuiHasChildren.h" />
     <ClInclude Include="Include\Dy\Editor\Literals\DIalogMessageString.h" />
     <ClInclude Include="Include\Dy\Editor\Literals\LibraryLicenseString.h" />
+    <ClInclude Include="Include\Dy\Element\Interface\IDyColliable.h" />
+    <ClInclude Include="Include\Dy\Element\Level.h" />
+    <ClInclude Include="Include\Dy\Element\LevelScriptor.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\Contracts.h" />
     <ClInclude Include="Include\Dy\Helper\Dbg\CheckUsage.h" />
     <ClInclude Include="Include\Dy\Helper\GlobalType.h" />
@@ -413,6 +434,7 @@
     <ClInclude Include="Include\Dy\Helper\Pointer.h" />
     <ClInclude Include="Include\Dy\Helper\ThreadPool.h" />
     <ClInclude Include="Include\Dy\Management\Editor\GuiManager.h" />
+    <ClInclude Include="Include\Dy\Management\Editor\GuiSetting.h" />
     <ClInclude Include="Include\Dy\Management\Editor\GuiWindowFactory.h" />
     <ClInclude Include="Include\Dy\Management\Helper\GuiLogStreamSink.h" />
     <ClInclude Include="Include\Dy\Management\Helper\InputKeyString.h" />
@@ -428,7 +450,7 @@
     <ClInclude Include="Include\Dy\Core\Component\Resource\TextureResource.h" />
     <ClInclude Include="Include\Dy\Helper\DisableWarning.h" />
     <ClInclude Include="Include\Dy\Helper\GlobalEnumFlags.h" />
-    <ClInclude Include="Include\Dy\Helper\Geometry\GeometryType.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Internal\GeometryType.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\ImageBinaryBuffer.h" />
     <ClInclude Include="Include\Dy\Helper\IoHelper.h" />
     <ClInclude Include="Include\Dy\Helper\Macroes.h" />

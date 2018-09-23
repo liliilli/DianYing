@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_BUILTIN_SHADER_GL_RENDERPASS_H
-#define GUARD_DY_BUILTIN_SHADER_GL_RENDERPASS_H
+#ifndef GUARD_DY_BUILTIN_SHADERGL_RENDERCOLORGEOMETRY_H
+#define GUARD_DY_BUILTIN_SHADERGL_RENDERCOLORGEOMETRY_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,22 +13,20 @@
 /// SOFTWARE.
 ///
 
-#include <string_view>
-
 namespace dy::builtin
 {
 
 ///
-/// @class FDyBuiltinShaderGLRenderPass
-/// @brief Instantiate rendering pass.
+/// @class FDyBuiltinShaderGLRenderColorGeometry
+/// @brief Just instantiate render color geometry shader information and resources.
 ///
-class FDyBuiltinShaderGLRenderPass final
+class FDyBuiltinShaderGLRenderColorGeometry final
 {
 public:
-  FDyBuiltinShaderGLRenderPass();
-  inline static constexpr std::string_view sName = "dyBtShaderGlRenderPass";
+  FDyBuiltinShaderGLRenderColorGeometry();
+  inline static constexpr std::string_view sName = "dyBtShaderGlRenderColGeom";
 };
 
 } /// ::dy::builtin namespace
 
-#endif /// GUARD_DY_BUILTIN_SHADER_GL_RENDERPASS_H
+#endif /// GUARD_DY_BUILTIN_SHADERGL_RENDERCOLORGEOMETRY_H

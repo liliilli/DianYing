@@ -24,7 +24,7 @@
 #include <assimp/postprocess.h>
 
 #include <Dy/Core/Component/Resource/ModelResource.h>
-#include <Dy/Helper/Geometry/GeometryType.h>
+#include <Dy/Core/Component/Internal/GeometryType.h>
 #include <Dy/Management/DataInformationManager.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Helper/ThreadPool.h>
@@ -160,6 +160,18 @@ DDyModelInformation::DDyModelInformation(const PDyModelConstructionDescriptor& m
   // Output model, submesh, and material information to console.
   MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "Model root path", this->mModelRootPath);
   this->__pOutputDebugInformationLog();
+
+  bool atmFalse = false;
+  while(!this->mModelInformationLoaded.compare_exchange_weak(atmFalse, true));
+}
+
+DDyModelInformation::DDyModelInformation(const PDyModelConstructionVertexDescriptor& modelConstructDescriptor)
+{
+  this->mModelName = modelConstructDescriptor.mModelName;
+  for (const auto& submeshInformation : modelConstructDescriptor.mSubmeshConstructionInformations)
+  {
+    this->mSubmeshInformations.emplace_back(submeshInformation);
+  }
 
   bool atmFalse = false;
   while(!this->mModelInformationLoaded.compare_exchange_weak(atmFalse, true));

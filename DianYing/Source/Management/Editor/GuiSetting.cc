@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_BUILTIN_SHADER_GL_RENDERPASS_H
-#define GUARD_DY_BUILTIN_SHADER_GL_RENDERPASS_H
+#include <precompiled.h>
+#if defined(MDY_FLAG_IN_EDITOR)
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,22 +13,22 @@
 /// SOFTWARE.
 ///
 
-#include <string_view>
+/// Header file
+#include <Dy/Management/Editor/GuiSetting.h>
 
-namespace dy::builtin
+namespace dy::editor
 {
 
-///
-/// @class FDyBuiltinShaderGLRenderPass
-/// @brief Instantiate rendering pass.
-///
-class FDyBuiltinShaderGLRenderPass final
+EDySuccess MDyEditorSetting::pfInitialize()
 {
-public:
-  FDyBuiltinShaderGLRenderPass();
-  inline static constexpr std::string_view sName = "dyBtShaderGlRenderPass";
-};
+  return DY_SUCCESS;
+}
 
-} /// ::dy::builtin namespace
+EDySuccess MDyEditorSetting::pfRelease()
+{
+  return DY_SUCCESS;
+}
 
-#endif /// GUARD_DY_BUILTIN_SHADER_GL_RENDERPASS_H
+} /// ::dy::editor namespace
+
+#endif /// MDY_FLAG_IN_EDITOR

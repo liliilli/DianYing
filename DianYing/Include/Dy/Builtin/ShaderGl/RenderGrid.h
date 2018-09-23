@@ -20,7 +20,7 @@ namespace dy::builtin
 
 ///
 /// @class FDyBuiltinShaderGLRenderGrid
-/// @brief
+/// @brief Rendering grid shader.
 ///
 class FDyBuiltinShaderGLRenderGrid final
 {

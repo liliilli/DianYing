@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_GUI_MAIN_VIEWPORT_H
-#define GUARD_DY_GUI_MAIN_VIEWPORT_H
+#ifndef GUARD_DY_EDITOR_GUI_VIEW_WORLDOUTLINER_H
+#define GUARD_DY_EDITOR_GUI_VIEW_WORLDOUTLINER_H
 #if defined(MDY_FLAG_IN_EDITOR)
 ///
 /// MIT License
@@ -21,21 +21,24 @@ namespace dy::editor
 {
 
 ///
-/// @class FDyMainViewport
-/// @brief Main viewport which displays game scene in editor.
+/// @class FDyViewWorldOutliner
+/// @brief World outliner which display objects and world components of this world.
 ///
-class FDyMainViewport final : public IDyGuiWinSingleton<FDyMainViewport, PDyGuiComponentEmptyDescriptor>
+class FDyViewWorldOutliner final : public IDyGuiWinSingleton<FDyViewWorldOutliner, PDyGuiComponentEmptyDescriptor>
 {
-  MDY_GUISINGLETON_PROPERTIES(FDyMainViewport);
-  MDY_GUISINGLETON_DERIVED(FDyMainViewport, PDyGuiComponentEmptyDescriptor);
+  MDY_GUISINGLETON_PROPERTIES(FDyViewWorldOutliner);
+  MDY_GUISINGLETON_DERIVED(FDyViewWorldOutliner, PDyGuiComponentEmptyDescriptor);
 public:
+  void Update(float dt) noexcept override final;
+
   void DrawWindow(float dt) noexcept override final;
 
 private:
-  bool mIsEnabledShowGrid = false;
+
+
 };
 
 } /// ::dy::editor namespace
 
 #endif /// MDY_FLAG_IN_EDITOR
-#endif /// GUARD_DY_GUI_MAIN_VIEWPORT_H
+#endif /// GUARD_DY_EDITOR_GUI_VIEW_WORLDOUTLINER_H

@@ -14,8 +14,8 @@
 ///
 
 #include <vector>
-#include <Dy/Core/Component/Interface/IDyToString.h>
-#include "Dy/Helper/Pointer.h"
+#include <Dy/Element/Interface/IDyToString.h>
+#include <Dy/Helper/Pointer.h>
 
 //!
 //! Forward declaration

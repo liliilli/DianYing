@@ -63,6 +63,15 @@
     <ClCompile Include="Source\Builtin\ShaderGl\RenderGrid.cc" />
     <ClCompile Include="Source\Editor\Gui\LogWindow.cc" />
     <ClCompile Include="Source\Management\Helper\GuiLogStreamSink.cc" />
+    <ClCompile Include="Source\Editor\Gui\MainSetting.cc" />
+    <ClCompile Include="Source\Management\Editor\GuiSetting.cc" />
+    <ClCompile Include="Source\Editor\Gui\ViewDetailView.cc" />
+    <ClCompile Include="Source\Editor\Gui\ViewWorldOutliner.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\RenderColorGeometry.cc" />
+    <ClCompile Include="Source\Builtin\Model\Box.cc" />
+    <ClCompile Include="Source\Editor\Gui\Dialog\ProjectCreator.cc" />
+    <ClCompile Include="Source\Editor\Gui\Helper\ComponentHelper.cc" />
+    <ClCompile Include="Source\Editor\Helper\Win32Helper.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -105,7 +114,6 @@
     <ClInclude Include="Include\Dy\Core\Component\MeshImporter.h" />
     <ClInclude Include="Include\Dy\Core\Component\MeshRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\TextureEnums.h" />
-    <ClInclude Include="Include\Dy\Helper\Geometry\GeometryType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\ModelType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\EtcType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Object\Camera.h" />
@@ -120,10 +128,6 @@
     <ClInclude Include="Include\Dy\Management\Helper\InputKeyString.h" />
     <ClInclude Include="Include\Dy\Core\Component\Object\Grid.h" />
     <ClInclude Include="Include\Dy\Core\Component\Object\Pawn.h" />
-    <ClInclude Include="Include\Dy\Core\Component\Interface\IDyScriptable.h" />
-    <ClInclude Include="Include\Dy\Core\Component\Interface\IDyUpdatable.h" />
-    <ClInclude Include="Include\Dy\Core\Component\Interface\ADyTransformable.h" />
-    <ClInclude Include="Include\Dy\Core\Component\Interface\IDyToString.h" />
     <ClInclude Include="Libraries\glad\include\glad\glad.h" />
     <ClInclude Include="Libraries\glad\include\KHR\khrplatform.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\SubmeshInformation.h" />
@@ -161,6 +165,24 @@
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderGrid.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\LogWindow.h" />
     <ClInclude Include="Include\Dy\Management\Helper\GuiLogStreamSink.h" />
+    <ClInclude Include="Include\Dy\Editor\Gui\MainSetting.h" />
+    <ClInclude Include="Include\Dy\Management\Editor\GuiSetting.h" />
+    <ClInclude Include="Include\Dy\Element\Level.h" />
+    <ClInclude Include="Include\Dy\Element\LevelScriptor.h" />
+    <ClInclude Include="Include\Dy\Element\Interface\IDyColliable.h" />
+    <ClInclude Include="Include\Dy\Editor\Gui\ViewWorldOutliner.h" />
+    <ClInclude Include="Include\Dy\Editor\Gui\ViewDetailView.h" />
+    <ClInclude Include="Include\Dy\Editor\Gui\Detail\Transform.h" />
+    <ClInclude Include="Include\Dy\Element\Interface\IDyScriptable.h" />
+    <ClInclude Include="Include\Dy\Element\Interface\IDyUpdatable.h" />
+    <ClInclude Include="Include\Dy\Element\Interface\IDyToString.h" />
+    <ClInclude Include="Include\Dy\Element\Abstract\ADyTransformable.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderColorGeometry.h" />
+    <ClInclude Include="Include\Dy\Builtin\Model\Box.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Internal\GeometryType.h" />
+    <ClInclude Include="Include\Dy\Editor\Gui\Dialog\ProjectCreator.h" />
+    <ClInclude Include="Include\Dy\Editor\Gui\Helper\ComponentHelper.h" />
+    <ClInclude Include="Include\Dy\Editor\Helper\Win32Helper.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

@@ -15,7 +15,7 @@
 
 #include <string>
 #include <vector>
-#include <Dy/Core/Component/Interface/IDyToString.h>
+#include <Dy/Element/Interface/IDyToString.h>
 
 namespace dy
 {

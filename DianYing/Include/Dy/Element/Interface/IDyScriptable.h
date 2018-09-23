@@ -86,38 +86,6 @@ public:
   ///
   virtual void OnDisabled() {};
 
-#ifdef false
-  ///
-  /// @brief Callback function of collider enter but both are collidable.
-  ///
-  virtual void OnCollisionEnter(CCollider* collider) {};
-
-  ///
-  /// @brief Callback function of collider stay but both are collidable.
-  ///
-  virtual void OnCollisionStay(CCollider* collider) {};
-
-  ///
-  /// @brief Callback function of collider exit but both are collidable.
-  ///
-  virtual void OnCollisionExit(CCollider* collider) {};
-
-  ///
-  /// @brief Callback function of trigger enter.
-  ///
-  virtual void OnTriggerEnter(CCollider* collider) {};
-
-  ///
-  /// @brief Callback function of trigger stay.
-  ///
-  virtual void OnTriggerStay(CCollider* collider) {};
-
-  ///
-  /// @brief Callback function of trigger exit.
-  ///
-  virtual void OnTriggerExit(CCollider* collider) {};
-#endif
-
 private:
   /// internal flag for OnStart() funciton.
   mutable bool mIsScriptStartedDirty = true;

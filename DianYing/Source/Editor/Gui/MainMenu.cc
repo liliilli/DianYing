@@ -1,10 +1,4 @@
 #include <precompiled.h>
-#include "Dy/Editor/Descriptor/DialogDescriptor.h"
-#include "Dy/Editor/Gui/EtcDialog.h"
-#include "Dy/Editor/Gui/HelpAboutMain.h"
-#include "Dy/Editor/Gui/HelpLicenseWindow.h"
-#include "Dy/Editor/Gui/ViewViewportMain.h"
-#include "Dy/Editor/Gui/LogWindow.h"
 #if defined(MDY_FLAG_IN_EDITOR)
 ///
 /// MIT License
@@ -23,6 +17,15 @@
 #include <Dy/Editor/Gui/MainMenu.h>
 
 #include <imgui/imgui.h>
+#include <Dy/Editor/Descriptor/DialogDescriptor.h>
+#include <Dy/Editor/Gui/EtcDialog.h>
+#include <Dy/Editor/Gui/HelpAboutMain.h>
+#include <Dy/Editor/Gui/HelpLicenseWindow.h>
+#include <Dy/Editor/Gui/ViewViewportMain.h>
+#include <Dy/Editor/Gui/LogWindow.h>
+#include <Dy/Editor/Gui/MainSetting.h>
+#include <Dy/Management/Editor/GuiSetting.h>
+#include <Dy/Editor/Gui/Dialog/ProjectCreator.h>
 #include <Dy/Management/WindowManager.h>
 #include <Dy/Management/Editor/GuiWindowFactory.h>
 
@@ -45,23 +48,39 @@ void FDyMainMenu::DrawWindow(float dt) noexcept
   {
     if (ImGui::BeginMenu("File"))
     {
-      if (ImGui::MenuItem("New Level", nullptr, &this->mMenuItemNewLevelFlag, true))
+      if (ImGui::MenuItem("New Project", nullptr, &this->mMenuItemNewProjectFlag))
       {
-        this->pCreateNotSupportYetDialogMsg(&this->mMenuItemNewLevelFlag);
+        this->pCreateCreateProjectDalog(DyMakeNotNull(&this->mMenuItemNewProjectFlag));
       }
-      if (ImGui::MenuItem("Open Level", nullptr, &this->mMenuItemOpenLevelFlag, true))
+      if (ImGui::MenuItem("Open Project", nullptr, &this->mNotSupport))
       {
-        this->pCreateNotSupportYetDialogMsg(&this->mMenuItemOpenLevelFlag);
+        this->pCreateNotSupportYetDialogMsg(&this->mNotSupport);
+      }
+      if (ImGui::Selectable("Save project", false))
+      {
+
       }
 
       ImGui::Separator();
-      if (ImGui::MenuItem("Save Current Level", nullptr, false, false))
-      {
 
+      auto& editorSettingManager = MDyEditorSetting::GetInstance();
+      const bool isProjectLoaded = editorSettingManager.GetmIsLoadedProject();
+
+      if (ImGui::MenuItem("New Level", nullptr, &this->mMenuItemNewLevelFlag, isProjectLoaded))
+      {
+        this->pCreateNotSupportYetDialogMsg(&this->mMenuItemNewLevelFlag);
+      }
+      if (ImGui::MenuItem("Open Level", nullptr, &this->mMenuItemOpenLevelFlag, isProjectLoaded))
+      {
+        this->pCreateNotSupportYetDialogMsg(&this->mMenuItemOpenLevelFlag);
+      }
+      if (ImGui::MenuItem("Save Current Level", nullptr, &this->mNotSupport, isProjectLoaded))
+      {
+        this->pCreateNotSupportYetDialogMsg(&this->mNotSupport);
       };
-      if (ImGui::MenuItem("Save Current Level As...", nullptr, false, false))
+      if (ImGui::MenuItem("Save Current Level As...", nullptr, &this->mNotSupport, isProjectLoaded))
       {
-
+        this->pCreateNotSupportYetDialogMsg(&this->mNotSupport);
       };
 
       ImGui::Separator();
@@ -110,9 +129,18 @@ void FDyMainMenu::DrawWindow(float dt) noexcept
       }
 
       ImGui::Separator();
-      if (ImGui::MenuItem("Project configuration", nullptr, false, false))
+      if (ImGui::MenuItem("Project configuration", nullptr, &this->mMenuItemViewProjectConfiguration))
       {
-
+        if (this->mMenuItemViewProjectConfiguration)
+        {
+          if (auto [hashVal, ptr] = FDyEditorGuiWindowFactory::CreateGuiComponent<FDyMainSetting>(PDyGuiComponentEmptyDescriptor{});
+              ptr)
+          {
+            auto [it, result] = this->mSubWindows.try_emplace(hashVal, std::move(ptr));
+            if (!result) { PHITOS_UNEXPECTED_BRANCH(); }
+          }
+        }
+        else { this->mSubWindows.erase(FDyMainSetting::__mHashVal); }
       }
 
       ImGui::EndMenu();
@@ -154,6 +182,14 @@ void FDyMainMenu::DrawWindow(float dt) noexcept
           }
         }
         else { this->mSubWindows.erase(FDyLogWindow::__mHashVal); }
+      }
+      if (ImGui::MenuItem("World Outliner", nullptr, false, false))
+      {
+
+      }
+      if (ImGui::MenuItem("Detail View", nullptr, false, false))
+      {
+
       }
       ImGui::EndMenu();
     }
@@ -209,6 +245,21 @@ void FDyMainMenu::pCreateNotSupportYetDialogMsg(bool* boolFlag)
   desc.mParentBoolFlag = boolFlag;
 
   if (auto [hashVal, ptr] = FDyEditorGuiWindowFactory::CreateGuiComponent<FDyDialog>(desc); ptr)
+  {
+    auto[it, result] = this->mSubWindows.try_emplace(hashVal, std::move(ptr));
+    if (!result) { PHITOS_UNEXPECTED_BRANCH(); }
+  }
+}
+
+void FDyMainMenu::pCreateCreateProjectDalog(NotNull<bool*> boolFlag)
+{
+  PDyGuiDialogDescriptor desc;
+  desc.mDialogTitle     = "";
+  desc.mDialogTextBody  = "";
+  desc.mParentRawPtr    = this;
+  desc.mParentBoolFlag  = boolFlag;
+
+  if (auto [hashVal, ptr] = FDyEditorGuiWindowFactory::CreateGuiComponent<FDyProjectCreator>(desc); ptr)
   {
     auto[it, result] = this->mSubWindows.try_emplace(hashVal, std::move(ptr));
     if (!result) { PHITOS_UNEXPECTED_BRANCH(); }
