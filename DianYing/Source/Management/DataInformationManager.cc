@@ -335,6 +335,52 @@ EDySuccess MDyDataInformation::CreateModelInformation(const PDyModelConstruction
   return DY_SUCCESS;
 }
 
+EDySuccess MDyDataInformation::CreateModelInformation(const PDyModelConstructionVertexDescriptor& modelDescriptor)
+{
+  // Integrity test
+  if (modelDescriptor.mModelName.empty())
+  {
+    MDY_LOG_CRITICAL_D(kErrorModelNameEmpty, kDyDataInformation, "CreateModelInformation");
+    throw std::runtime_error("Model name is not specified.");
+  }
+  const auto& modelName = modelDescriptor.mModelName;
+  if (modelDescriptor.mSubmeshConstructionInformations.empty())
+  {
+    MDY_LOG_CRITICAL_D(kErrorModelPathEmpty, kDyDataInformation, "CreateModelInformation", modelName);
+    throw std::runtime_error("Model submesh information list is empty.");
+  }
+
+  decltype(this->mModelInformation)::iterator it;
+  {
+    std::lock_guard<std::mutex> mt(this->mTemporalMutex);
+    if (mModelInformation.find(modelName) != mModelInformation.end())
+    {
+      MDY_LOG_WARNING_D("{} | Resource is already found. Name : {}", "MDyDataInformation", modelName);
+      return DY_FAILURE;
+    }
+
+    // Check there is already in the information map, if not, make memory space to insert it.
+    bool creationResult = false;
+    std::tie(it, creationResult) = mModelInformation.try_emplace(modelName, nullptr);
+    if (!creationResult)
+    {
+      MDY_LOG_CRITICAL_D("{} | Failed to create resource memory space. Name : {}", "MDyDataInformation", modelName);
+      return DY_FAILURE;
+    }
+  }
+
+  // Make resource in heap, and insert it to empty memory space.
+  auto materialInformation = std::make_unique<DDyModelInformation>(modelDescriptor);
+  if (it->second.swap(materialInformation); !it->second)
+  {
+    MDY_LOG_CRITICAL_D("{} | Unexpected error occured. Name : {}", "MDyDataInformation", modelName);
+    this->mModelInformation.erase(modelName);
+    return DY_FAILURE;
+  }
+
+  return DY_SUCCESS;
+}
+
 std::optional<std::string> MDyDataInformation::PopulateMaterialInformation(
     const std::string& materialName,
     const PDyMaterialPopulateDescriptor& materialPopulateDescriptor)

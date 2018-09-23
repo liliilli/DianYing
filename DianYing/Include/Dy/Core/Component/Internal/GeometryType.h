@@ -15,7 +15,7 @@
 
 #include <vector>
 #include <Dy/Helper/Type/Vector4.h>
-#include "Dy/Helper/Type/Matrix4.h"
+#include <Dy/Helper/Type/Matrix4.h>
 
 namespace dy
 {
@@ -27,7 +27,7 @@ namespace dy
 struct DDyVertexBoneData final
 {
   std::array<TI32, 4> mBoneId     = {-1, -1, -1, -1};
-  DDyVector4          mWeights    = {0 ,  0,  0,  0};
+  DDyVector4          mWeights    = { 0,  0,  0,  0};
 };
 
 ///
