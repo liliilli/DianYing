@@ -51,9 +51,15 @@ public:
   EDySuccess CreateMaterialInformation(const PDyMaterialConstructionDescriptor& materialDescriptor);
 
   ///
-  /// @brief Crate model information.
+  /// @brief Create model information.
   ///
   EDySuccess CreateModelInformation(const PDyModelConstructionDescriptor& modelDescriptor);
+
+  ///
+  /// @brief Create model information, with static code generated model information.
+  /// This function should used carefully, unless general version of CreateModelInformation.
+  ///
+  EDySuccess CreateModelInformation(const PDyModelConstructionVertexDescriptor& modelDescriptor);
 
   ///
   /// @brief Get shader information.

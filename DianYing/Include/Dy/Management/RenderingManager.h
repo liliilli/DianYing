@@ -18,6 +18,7 @@
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Core/Component/Object/DeferredRenderingMesh.h>
 #include <Dy/Core/Component/Object/PostEffectSsao.h>
+#include <Dy/Core/Component/Object/Grid.h>
 
 namespace dy::editor
 {
@@ -50,7 +51,7 @@ private:
   ///
   /// @brief Create geometry buffers (aka G-buffer) for deferred rendering.
   ///
-  void pCreateGeometryBuffers() noexcept;
+  void pCreateDeferredGeometryBuffers() noexcept;
 
   ///
   /// @brief Release geometry buffers (aka G-buffer) for deferred rendering.
@@ -66,6 +67,12 @@ private:
 
   bool                                        mTempIsEnabledSsao    = true;
   std::unique_ptr<FDyPostEffectSsao>          mTempSsaoObject       = nullptr;
+
+#if defined(MDY_FLAG_IN_EDITOR)
+
+  std::unique_ptr<FDyGrid>                    mGridEffect           = nullptr;
+
+#endif /// MDY_FLAG_IN_EDITOR
 
   friend class FDyDeferredRenderingMesh;
   friend class editor::FDyMainViewport;

@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_BUILTIN_SHADER_GL_RENDERPASS_H
-#define GUARD_DY_BUILTIN_SHADER_GL_RENDERPASS_H
+#include <precompiled.h>
+#if defined(MDY_FLAG_IN_EDITOR)
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,22 +13,32 @@
 /// SOFTWARE.
 ///
 
-#include <string_view>
+/// Header file
+#include <Dy/Editor/Gui/ViewWorldOutliner.h>
 
-namespace dy::builtin
+namespace dy::editor
 {
 
-///
-/// @class FDyBuiltinShaderGLRenderPass
-/// @brief Instantiate rendering pass.
-///
-class FDyBuiltinShaderGLRenderPass final
+EDySuccess FDyViewWorldOutliner::pfInitialize(const PDyGuiComponentEmptyDescriptor& desc)
 {
-public:
-  FDyBuiltinShaderGLRenderPass();
-  inline static constexpr std::string_view sName = "dyBtShaderGlRenderPass";
-};
+  return DY_SUCCESS;
+}
 
-} /// ::dy::builtin namespace
+EDySuccess FDyViewWorldOutliner::pfRelease()
+{
+  return DY_SUCCESS;
+}
 
-#endif /// GUARD_DY_BUILTIN_SHADER_GL_RENDERPASS_H
+void FDyViewWorldOutliner::DrawWindow(float dt) noexcept
+{
+
+}
+
+void FDyViewWorldOutliner::Update(float dt) noexcept
+{
+
+}
+
+} /// ::dy::editor namespace
+
+#endif /// MDY_FLAG_IN_EDITOR

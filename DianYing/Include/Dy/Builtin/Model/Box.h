@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_BUILTIN_SHADER_GL_RENDERPASS_H
-#define GUARD_DY_BUILTIN_SHADER_GL_RENDERPASS_H
+#ifndef GUARD_DY_BUILTIN_MODEL_BOX_H
+#define GUARD_DY_BUILTIN_MODEL_BOX_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -19,16 +19,16 @@ namespace dy::builtin
 {
 
 ///
-/// @class FDyBuiltinShaderGLRenderPass
-/// @brief Instantiate rendering pass.
+/// @class FDyBuiltinModelBox
+/// @brief Create model box information and resources.
 ///
-class FDyBuiltinShaderGLRenderPass final
+class FDyBuiltinModelBox final
 {
 public:
-  FDyBuiltinShaderGLRenderPass();
-  inline static constexpr std::string_view sName = "dyBtShaderGlRenderPass";
+  FDyBuiltinModelBox();
+  inline static constexpr std::string_view sName = "dyBtModelBox";
 };
 
 } /// ::dy::builtin namespace
 
-#endif /// GUARD_DY_BUILTIN_SHADER_GL_RENDERPASS_H
+#endif /// GUARD_DY_BUILTIN_MODEL_BOX_H

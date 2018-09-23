@@ -24,20 +24,21 @@
 
 #include <Dy/Core/Component/Internal/EtcType.h>
 #include <Dy/Core/Component/MeshRenderer.h>
-#include <Dy/Core/Component/Resource/ShaderResource.h>
 #include <Dy/Core/Component/Object/Camera.h>
-#include <Dy/Core/Component/Object/Grid.h>
 #include <Dy/Helper/Type/Vector3.h>
+
 #include <Dy/Management/DataInformationManager.h>
-#include <Dy/Management/HeapResourceManager.h>
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/SceneManager.h>
 #include <Dy/Management/InputManager.h>
 #include <Dy/Management/TimeManager.h>
 #include <Dy/Management/Editor/GuiManager.h>
-#include "Dy/Management/RenderingManager.h"
-#include "Dy/Builtin/ShaderGl/RenderPass.h"
+#include <Dy/Management/RenderingManager.h>
+
+#include <Dy/Builtin/Model/Box.h>
+#include <Dy/Builtin/ShaderGl/RenderPass.h>
+#include <Dy/Builtin/ShaderGl/RenderColorGeometry.h>
 
 ///
 /// Undefined proprocessor WIN32 macro "max, min" for preventing misuse.
@@ -56,13 +57,9 @@
 namespace
 {
 
-bool gImguiShowDemoWindow = false;
-bool gImguiShowAnotherWindow = false;
-
 dy::DDyVector3                  gColor      {.2f, .3f, .2f};
 dy::CDyMeshRenderer             gRenderer   = {};
 std::unique_ptr<dy::CDyCamera>  gCameraPtr  = nullptr;
-std::unique_ptr<dy::FDyGrid>    gGrid       = nullptr;
 
 void GLAPIENTRY DyGlMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
@@ -89,16 +86,12 @@ void DyGlTempInitializeResource()
   gCameraPtr = std::make_unique<dy::CDyCamera>(cameraDesc);
 
   //!
-  //! Grid rendering setting.
-  //!
-
-  gGrid = std::make_unique<dy::FDyGrid>();
-
-  //!
   //! Shader
   //!
 
   dy::builtin::FDyBuiltinShaderGLRenderPass();
+  dy::builtin::FDyBuiltinShaderGLRenderColorGeometry();
+  dy::builtin::FDyBuiltinModelBox();
 
 #ifdef false
   {
@@ -404,11 +397,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     exit(1);
   }
 
-#ifdef false
-  dy::TInt32 screenWidth  = GetSystemMetrics(SM_CXSCREEN);
-  dy::TInt32 screenHeight = GetSystemMetrics(SM_CYSCREEN);
-#endif
-
   const auto& settingManager = dy::MDySetting::GetInstance();
 
   const DWORD dwordExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
@@ -463,14 +451,9 @@ void DyGlCallbackWindowClose(GLFWwindow* window)
 
 } /// unnamed namespace
 #elif defined(MDY_PLATFORM_FLAG_LINUX)
-namespace
-{
-
-} /// unnamed namespace
+namespace { } /// unnamed namespace
 #elif defined(MDY_PLATFORM_FLAG_MACOS)
-namespace {
-
-} /// unnamed namespace
+namespace { } /// unnamed namespace
 #endif
 
 //!
@@ -522,7 +505,7 @@ void MDyWindow::Run()
 }
 
 ///
-/// @brief
+/// @brief Update routine
 ///
 void MDyWindow::pUpdate(float dt)
 {
@@ -542,7 +525,7 @@ void MDyWindow::pUpdate(float dt)
 }
 
 ///
-/// @brief
+/// @brief Render routine.
 ///
 void MDyWindow::pRender()
 {
@@ -553,8 +536,6 @@ void MDyWindow::pRender()
 
   glEnable(GL_DEPTH_TEST);
   MDyRendering::GetInstance().RenderDrawCallQueue();
-  if (gGrid) { gGrid->RenderGrid(); };
-
   glDisable(GL_DEPTH_TEST);
 
 #if defined(MDY_FLAG_IN_EDITOR)

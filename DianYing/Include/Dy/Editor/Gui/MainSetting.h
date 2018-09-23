@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_GUI_MAIN_VIEWPORT_H
-#define GUARD_DY_GUI_MAIN_VIEWPORT_H
+#ifndef GUARD_DY_EDITOR_GUI_MAINSETTING_H
+#define GUARD_DY_EDITOR_GUI_MAINSETTING_H
 #if defined(MDY_FLAG_IN_EDITOR)
 ///
 /// MIT License
@@ -21,21 +21,24 @@ namespace dy::editor
 {
 
 ///
-/// @class FDyMainViewport
-/// @brief Main viewport which displays game scene in editor.
+/// @class FDyMainSetting
+/// @brief Main setting window.
 ///
-class FDyMainViewport final : public IDyGuiWinSingleton<FDyMainViewport, PDyGuiComponentEmptyDescriptor>
+class FDyMainSetting final : public IDyGuiWinSingleton<FDyMainSetting, PDyGuiComponentEmptyDescriptor>
 {
-  MDY_GUISINGLETON_PROPERTIES(FDyMainViewport);
-  MDY_GUISINGLETON_DERIVED(FDyMainViewport, PDyGuiComponentEmptyDescriptor);
+  MDY_GUISINGLETON_PROPERTIES(FDyMainSetting);
+  MDY_GUISINGLETON_DERIVED(FDyMainSetting, PDyGuiComponentEmptyDescriptor);
 public:
+
+  /// Draw window
   void DrawWindow(float dt) noexcept override final;
 
 private:
-  bool mIsEnabledShowGrid = false;
+  bool mEnabledMenuDescription = true;
+  char mProjectName[64] = {0,};
 };
 
 } /// ::dy::editor namespace
 
 #endif /// MDY_FLAG_IN_EDITOR
-#endif /// GUARD_DY_GUI_MAIN_VIEWPORT_H
+#endif /// GUARD_DY_EDITOR_GUI_MAINSETTING_H

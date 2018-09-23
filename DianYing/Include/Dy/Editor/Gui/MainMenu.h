@@ -43,6 +43,8 @@ private:
   bool mMenuItemHelpLicenseWindow = false;
   bool mMenuItemHelpAboutWindow   = false;
   bool mMenuItemViewViewport      = false;
+
+  bool mMenuItemViewProjectConfiguration = false;
 };
 
 } /// ::dy::editor namespace

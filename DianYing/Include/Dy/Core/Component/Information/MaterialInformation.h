@@ -14,8 +14,8 @@
 ///
 
 #include <Dy/Core/Component/Internal/MaterialType.h>
+#include <Dy/Element/Interface/IDyToString.h>
 #include <Dy/Helper/Pointer.h>
-#include "Dy/Core/Component/Interface/IDyToString.h"
 
 //!
 //! Forward declaration

@@ -18,12 +18,16 @@
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Editor/Gui/LogWindow.h>
 #include <Dy/Management/RenderingManager.h>
+#include <Dy/Management/Editor/GuiSetting.h>
 
 namespace dy::editor
 {
 
 EDySuccess FDyMainViewport::pfInitialize(const PDyGuiComponentEmptyDescriptor& desc)
 {
+  const auto& setting = MDyEditorSetting::GetInstance();
+  this->mIsEnabledShowGrid = setting.GetmIsEnabledViewportRenderGrid();
+
   return DY_SUCCESS;
 }
 
@@ -54,7 +58,10 @@ void FDyMainViewport::DrawWindow(float dt) noexcept
 
       if (ImGui::BeginMenu("Show"))
       {
-        ImGui::MenuItem("Grid", nullptr, false, false);
+        if (ImGui::MenuItem("Grid", nullptr, &this->mIsEnabledShowGrid))
+        {
+          MDyEditorSetting::GetInstance().SetmIsEnabledViewportRenderGrid(this->mIsEnabledShowGrid);
+        }
         ImGui::EndMenu();
       }
 
