@@ -32,6 +32,12 @@ public:
   void Update(float dt) override final;
 
 private:
+  ///
+  /// @brief
+  ///
+  [[nodiscard]]
+  EDySuccess pfCreateSoundResource(const std::string& filePath, FMOD::Sound** soundResourcePtr);
+
   FMOD::System*       mSoundSystem            = nullptr;
   MDY_TRANSIENT TU32  mVersion                = MDY_NOT_INITIALIZED_0;
   MDY_TRANSIENT TI32  mSoundDriverCount       = MDY_NOT_INITIALIZED_M1;
@@ -42,6 +48,8 @@ private:
   FMOD::ChannelGroup* sBackgroundChannel      = nullptr;
 
   bool                sIssEnabledSoundSystem  = false;
+
+  friend class CDySoundResource;
 };
 
 } /// ::dy namespace

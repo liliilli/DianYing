@@ -73,6 +73,8 @@
     <ClCompile Include="Source\Editor\Gui\Helper\ComponentHelper.cc" />
     <ClCompile Include="Source\Editor\Helper\Win32Helper.cc" />
     <ClCompile Include="Source\Management\SoundManager.cc" />
+    <ClCompile Include="Source\Core\Component\Information\SoundInformation.cc" />
+    <ClCompile Include="Source\Core\Component\Resource\SoundResource.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -185,6 +187,8 @@
     <ClInclude Include="Include\Dy\Editor\Gui\Helper\ComponentHelper.h" />
     <ClInclude Include="Include\Dy\Editor\Helper\Win32Helper.h" />
     <ClInclude Include="Include\Dy\Management\SoundManager.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Information\SoundInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Resource\SoundResource.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

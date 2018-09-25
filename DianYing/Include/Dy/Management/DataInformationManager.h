@@ -21,6 +21,7 @@
 #include <Dy/Core/Component/Information/ShaderInformation.h>
 #include <Dy/Core/Component/Information/TextureInformation.h>
 #include <Dy/Core/Component/Information/ModelInformation.h>
+#include <Dy/Core/Component/Information/SoundInformation.h>
 #include <Dy/Helper/ThreadPool.h>
 
 namespace dy
@@ -62,6 +63,11 @@ public:
   EDySuccess CreateModelInformation(const PDyModelConstructionVertexDescriptor& modelDescriptor);
 
   ///
+  /// @brief Create sound information,
+  ///
+  EDySuccess CreateSoundInformation(const PDySoundConstructionDescriptor& soundDescriptor);
+
+  ///
   /// @brief Get shader information.
   /// @return Valid shader information pointer reference, or nullptr when not found.
   ///
@@ -87,6 +93,12 @@ public:
   /// @return Valid model information poiter reference, or nullptr when not found.
   ///
   const DDyModelInformation* GetModelInformation(const std::string& modelName) const noexcept;
+
+  ///
+  /// @brief Get sound information.
+  /// @return Valid model information pointer reference, or nullptr when not found.
+  ///
+  const DDySoundInformation* GetSoundInformation(const std::string& soundName) const noexcept;
 
   ///
   /// @brief Destroy shader information. Runtime instances binded to specified shader information
@@ -115,6 +127,12 @@ public:
   EDySuccess DeleteModelInformation(const std::string& modelName, bool isAllRemoveSubresource = false, bool isForced = false);
 
   ///
+  /// @brief Destroy sound information. Runtime instances which are binded to speicfied sound information
+  /// will have nullptr or default builtin sound resource instead.
+  ///
+  EDySuccess DeleteSoundInformation(const std::string& soundName, bool isForced = false);
+
+  ///
   /// @brief Populate derived material information.
   ///
   std::optional<std::string> PopulateMaterialInformation(
@@ -129,6 +147,7 @@ private:
   THeapHash<DDyTextureInformation>   mTextureInformation;
   THeapHash<DDyMaterialInformation>  mMaterialInformation;
   THeapHash<DDyModelInformation>     mModelInformation;
+  THeapHash<DDySoundInformation>     mSoundInformation;
 
   mutable std::mutex                 mTemporalMutex;
   // @todo not used yet.

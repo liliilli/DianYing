@@ -23,6 +23,7 @@
 #include <Dy/Core/Component/Resource/TextureResource.h>
 #include <Dy/Core/Component/Resource/MaterialResource.h>
 #include <Dy/Core/Component/Resource/ModelResource.h>
+#include <Dy/Core/Component/Resource/SoundResource.h>
 
 //!
 //! Forward declaration
@@ -71,6 +72,13 @@ public:
   EDySuccess CreateMaterialResource(const std::string& materialName);
 
   ///
+  /// @brief Create sound resource on cpu.
+  /// @param[in] soundName name to create sound which must be same with sound information name.
+  ///
+  [[nodiscard]]
+  EDySuccess CreateSoundResource(const std::string& soundName);
+
+  ///
   /// @brief Create model resource on cpu and gpu.
   /// @param[in] modelName name to create model which must be same with model information name.
   /// Model resource just populate geometry information, not material information.
@@ -103,11 +111,18 @@ public:
   [[nodiscard]]
   CDyModelResource* GetModelResource(const std::string& modelName);
 
+  ///
+  /// @brief
+  ///
+  [[nodiscard]]
+  CDySoundResource* GetSoundResource(const std::string& soundName);
+
 private:
   THashList<std::unique_ptr<CDyShaderResource>>   mOnBoardShaderLists;
   THashList<std::unique_ptr<CDyTextureResource>>  mOnBoardTextureLists;
   THashList<std::unique_ptr<CDyMaterialResource>> mOnBoardMaterialLists;
   THashList<std::unique_ptr<CDyModelResource>>    mOnBoardModelLists;
+  THashList<std::unique_ptr<CDySoundResource>>    mOnBoardSoundLists;
 };
 
 } /// ::dy namespace

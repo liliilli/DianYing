@@ -269,4 +269,28 @@ void MDySound::Update(float dt)
   if (this->mSoundSystem) { this->mSoundSystem->update(); }
 }
 
+EDySuccess MDySound::pfCreateSoundResource(const std::string& filePath, FMOD::Sound** soundResourcePtr)
+{
+  if (this->mSoundSystem)
+  {
+    const auto res = this->mSoundSystem->createSound(filePath.c_str(), FMOD_DEFAULT, nullptr, soundResourcePtr);
+    if (res != FMOD_OK)
+    {
+      // @TODO OUTPUT UNEXPECTED ERROR OCCURRED
+
+
+      *soundResourcePtr = nullptr;
+      return DY_FAILURE;
+    }
+  }
+  else
+  {
+    // @TODO OUTPUT SOUND SYSTEM IS NOT INITILAIZED
+
+    return DY_FAILURE;
+  }
+
+  return DY_SUCCESS;
+}
+
 } /// ::dy namespace
