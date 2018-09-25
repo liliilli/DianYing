@@ -306,6 +306,7 @@
     <ClCompile Include="Source\Core\Component\Information\MaterialInformation.cc" />
     <ClCompile Include="Source\Core\Component\Information\ModelInformation.cc" />
     <ClCompile Include="Source\Core\Component\Information\ShaderInformation.cc" />
+    <ClCompile Include="Source\Core\Component\Information\SoundInformation.cc" />
     <ClCompile Include="Source\Core\Component\Information\TextureInformation.cc" />
     <ClCompile Include="Source\Core\Component\Internal\EtcType.cc" />
     <ClCompile Include="Source\Core\Component\Internal\MaterialType.cc" />
@@ -315,6 +316,7 @@
     <ClCompile Include="Source\Core\Component\Object\DeferredRenderingMesh.cc" />
     <ClCompile Include="Source\Core\Component\Object\PostEffectSsao.cc" />
     <ClCompile Include="Source\Core\Component\Resource\MaterialResource.cc" />
+    <ClCompile Include="Source\Core\Component\Resource\SoundResource.cc" />
     <ClCompile Include="Source\Core\Component\Resource\SubmeshResource.cc" />
     <ClCompile Include="Source\Core\Component\Resource\ModelResource.cc" />
     <ClCompile Include="Source\Core\Component\Resource\TextureResource.cc" />
@@ -360,6 +362,7 @@
     <ClCompile Include="Source\Management\RenderingManager.cc" />
     <ClCompile Include="Source\Management\SceneManager.cc" />
     <ClCompile Include="Source\Management\SettingManager.cc" />
+    <ClCompile Include="Source\Management\SoundManager.cc" />
     <ClCompile Include="Source\Management\SynchronizationManager.cc" />
     <ClCompile Include="Source\Management\TimeManager.cc" />
     <ClCompile Include="Source\Management\WindowManager.cc" />
@@ -378,10 +381,12 @@
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderGrid.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderPass.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\MaterialInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Information\SoundInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\SubmeshInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\ModelInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\ShaderInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\TextureInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Resource\SoundResource.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\Dialog\ProjectCreator.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\Helper\ComponentHelper.h" />
     <ClInclude Include="Include\Dy\Editor\Helper\Win32Helper.h" />
@@ -442,6 +447,7 @@
     <ClInclude Include="Include\Dy\Management\Interface\IDyThreadHelper.h" />
     <ClInclude Include="Include\Dy\Management\LoggingManager.h" />
     <ClInclude Include="Include\Dy\Management\RenderingManager.h" />
+    <ClInclude Include="Include\Dy\Management\SoundManager.h" />
     <ClInclude Include="Include\Dy\Management\SynchronizationManager.h" />
     <ClInclude Include="Include\Dy\Management\Type\KeyBindingInformation.h" />
     <ClInclude Include="Include\Dy\Management\WindowManager.h" />

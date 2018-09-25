@@ -39,12 +39,21 @@ class MDyEditorSetting final : public ISingleton<MDyEditorSetting>
   MDY_SINGLETON_PROPERTIES(MDyEditorSetting);
   MDY_SINGLETON_DERIVED(MDyEditorSetting);
 private:
+  // Check if project is loaded or not. IF not, all buttons related to project will be deactivated.
+  bool mIsLoadedProject             = false;
+  //
+  bool mIsProcessingBackground      = false;
   // Enable rendering grid or not.
   bool mIsEnabledViewportRenderGrid = true;
+
+  //
   TU32 mInitScreenSizeWidth         = MDY_NOT_INITIALIZED_0;
+  //
   TU32 mInitScreensizeHeight        = MDY_NOT_INITIALIZED_0;
 
 public:
+  MDY_GETSET(mIsLoadedProject);
+  MDY_GETSET(mIsProcessingBackground);
   MDY_GETSET(mIsEnabledViewportRenderGrid);
 };
 

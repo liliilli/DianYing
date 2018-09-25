@@ -406,3 +406,7 @@ Docs/
 DianYing/log\.txt
 
 DianYing/ShaderResource/
+
+DianYing/imgui\.ini
+
+DianYing/glShader\.frag

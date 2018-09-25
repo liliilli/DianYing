@@ -219,7 +219,6 @@ EDySuccess MDyDataInformation::CreateTextureInformation(const PDyTextureConstruc
     return DY_SUCCESS;
   };
 
-  // Integrity test
   if (CheckIntegerityOfDescriptor(textureDescriptor) == DY_FAILURE)
   {
     return DY_FAILURE;
@@ -337,19 +336,35 @@ EDySuccess MDyDataInformation::CreateModelInformation(const PDyModelConstruction
 
 EDySuccess MDyDataInformation::CreateModelInformation(const PDyModelConstructionVertexDescriptor& modelDescriptor)
 {
+  ///
+  /// @function CheckIntegerityOfDescriptor
+  /// @brief
+  ///
+  static auto CheckIntegerityOfDescriptor = [](const PDyModelConstructionVertexDescriptor& desc) -> EDySuccess
+  {
+    if (desc.mModelName.empty())
+    {
+      MDY_LOG_CRITICAL_D(kErrorModelNameEmpty, kDyDataInformation, "CreateModelInformation");
+      throw std::runtime_error("Model name is not specified.");
+    }
+    const auto& modelName = desc.mModelName;
+    if (desc.mSubmeshConstructionInformations.empty())
+    {
+      MDY_LOG_CRITICAL_D(kErrorModelPathEmpty, kDyDataInformation, "CreateModelInformation", modelName);
+      throw std::runtime_error("Model submesh information list is empty.");
+    }
+
+    return DY_SUCCESS;
+  };
+
   // Integrity test
-  if (modelDescriptor.mModelName.empty())
+  if (CheckIntegerityOfDescriptor(modelDescriptor) == DY_FAILURE)
   {
-    MDY_LOG_CRITICAL_D(kErrorModelNameEmpty, kDyDataInformation, "CreateModelInformation");
-    throw std::runtime_error("Model name is not specified.");
-  }
-  const auto& modelName = modelDescriptor.mModelName;
-  if (modelDescriptor.mSubmeshConstructionInformations.empty())
-  {
-    MDY_LOG_CRITICAL_D(kErrorModelPathEmpty, kDyDataInformation, "CreateModelInformation", modelName);
-    throw std::runtime_error("Model submesh information list is empty.");
+    // @TODO OUTPUT LOG MESSAGE
+    return DY_FAILURE;
   }
 
+  const auto& modelName = modelDescriptor.mModelName;
   decltype(this->mModelInformation)::iterator it;
   {
     std::lock_guard<std::mutex> mt(this->mTemporalMutex);
@@ -379,6 +394,58 @@ EDySuccess MDyDataInformation::CreateModelInformation(const PDyModelConstruction
   }
 
   return DY_SUCCESS;
+}
+
+EDySuccess MDyDataInformation::CreateSoundInformation(const PDySoundConstructionDescriptor& soundDescriptor)
+{
+  ///
+  /// @function CheckIntegerityOfDescriptor
+  /// @brief Check sound escriptor is good to fit in.
+  ///
+  static auto CheckIntegerityOfDescriptor = [](const PDySoundConstructionDescriptor& soundDescriptor) -> EDySuccess
+  {
+    if (soundDescriptor.mSoundName.empty()) return DY_FAILURE;
+    if (soundDescriptor.mSoundPath.empty()) return DY_FAILURE;
+
+    return DY_SUCCESS;
+  };
+
+  if (CheckIntegerityOfDescriptor(soundDescriptor) == DY_FAILURE)
+  {
+    /// @TODO OUTPUT FAILURE MESSAGE WITH PROPER ERROR FLAG
+    return DY_FAILURE;
+  };
+
+  const auto& soundName = soundDescriptor.mSoundName;
+  decltype(this->mSoundInformation)::iterator it;
+  {
+    std::lock_guard<std::mutex> mt(this->mTemporalMutex);
+    if (mSoundInformation.find(soundName) != mSoundInformation.end())
+    {
+      MDY_LOG_WARNING_D("{} | Resource is already found. Name : {}", "MDyDataInformation", soundName);
+      return DY_FAILURE;
+    }
+
+    // Check there is already in the information map, if not, make memory space to insert it.
+    bool creationResult = false;
+    std::tie(it, creationResult) = mSoundInformation.try_emplace(soundName, nullptr);
+    if (!creationResult)
+    {
+      MDY_LOG_CRITICAL_D("{} | Failed to create information resource memory space. Name : {}", "MDyDataInformation", soundName);
+      return DY_FAILURE;
+    }
+  }
+
+  // Make resource in heap, and insert it to empty memory space.
+  auto soundInfo = std::make_unique<DDySoundInformation>(soundDescriptor);
+  if (it->second.swap(soundInfo); !it->second)
+  {
+    MDY_LOG_CRITICAL_D("{} | Unexpected error occured. Name : {}", "MDyDataInformation", soundName);
+    this->mSoundInformation.erase(soundName);
+    return DY_FAILURE;
+  }
+
+  return DY_SUCCESS;;
 }
 
 std::optional<std::string> MDyDataInformation::PopulateMaterialInformation(
@@ -552,6 +619,30 @@ EDySuccess MDyDataInformation::DeleteModelInformation(const std::string& modelNa
   return DY_SUCCESS;
 }
 
+EDySuccess MDyDataInformation::DeleteSoundInformation(const std::string& soundName, bool isForced)
+{
+  const auto iterator = mSoundInformation.find(soundName);
+  if (iterator == mSoundInformation.end())
+  {
+    MDY_LOG_ERROR_D("{}::{} | Failed to remove sound information. Have not sound information. | {} : {}",
+                    "MDyDataInformation", "DeleteSoundInformation", "Sound Name", soundName);
+    return DY_FAILURE;
+  }
+
+  // IF mTextureInformation is being used by another resource instance?
+  // then, return DY_FAILURE or remove it.
+  if (iterator->second->IsBeingBindedToResource() && !isForced)
+  {
+    MDY_LOG_ERROR_D("{}::{} | Failed to remove sound information. Must remove resource first. | {} : {}",
+                    "MDyDataInformation", "DeleteSoundInformation", "Sound Name", soundName);
+    return DY_FAILURE;
+  }
+
+  // And remove material information!
+  this->mSoundInformation.erase(iterator);
+  return DY_SUCCESS;
+}
+
 //!
 //! Get function.
 //!
@@ -604,6 +695,20 @@ const DDyModelInformation* MDyDataInformation::GetModelInformation(const std::st
   {
     MDY_LOG_WARNING("{} | Failed to find model information. | {} : {}",
                     "MDyDataInformation", "Model name", modelName);
+    return nullptr;
+  }
+
+  return iterator->second.get();
+}
+
+const DDySoundInformation* MDyDataInformation::GetSoundInformation(const std::string& soundName) const noexcept
+{
+  std::lock_guard<std::mutex> mt(this->mTemporalMutex);
+
+  const auto iterator = this->mSoundInformation.find(soundName);
+  if (iterator == this->mSoundInformation.end())
+  {
+    MDY_LOG_WARNING("{} | Failed to find model information. | {} : {}", "MDyDataInformation", "Sound name", soundName);
     return nullptr;
   }
 

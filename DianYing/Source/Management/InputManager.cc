@@ -628,7 +628,7 @@ void MDyInput::pfUpdate(float dt) noexcept
       this->mMousePresentPosition = sMousePresentPosition;
       this->mMouseLastPosition    = sMouseLastPosition;
 
-      MDY_LOG_DEBUG_D("Mouse position : {}, {}", this->mMousePresentPosition.X, this->mMousePresentPosition.Y);
+      //MDY_LOG_DEBUG_D("Mouse position : {}, {}", this->mMousePresentPosition.X, this->mMousePresentPosition.Y);
       this->mIsMouseMoved = true;
       sMousePositionDirty = false;
     }

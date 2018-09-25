@@ -20,6 +20,10 @@
 namespace dy
 {
 
+///
+/// @struct PDyRendererConsturctionDescriptor
+/// @brief
+///
 struct PDyRendererConsturctionDescriptor final : public IDyToString
 {
   std::string               mModelName      = "";
@@ -34,6 +38,16 @@ struct PDyRendererConsturctionDescriptor final : public IDyToString
   ///
   [[nodiscard]]
   std::string ToString() override final;
+};
+
+///
+/// @struct PDySoundConstructionDescriptor
+/// @brief Sound file information descriptor
+///
+struct PDySoundConstructionDescriptor final
+{
+  std::string mSoundName = "";
+  std::string mSoundPath = "";
 };
 
 } /// ::dy namespace

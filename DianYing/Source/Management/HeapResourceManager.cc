@@ -227,6 +227,50 @@ EDySuccess MDyHeapResource::CreateMaterialResource(const std::string& materialNa
   return DY_SUCCESS;
 }
 
+EDySuccess MDyHeapResource::CreateSoundResource(const std::string& soundName)
+{
+  // Get information from MDyDataInformation manager.
+  const DDySoundInformation* soundInformation = MDyDataInformation::GetInstance().GetSoundInformation(soundName);
+  if (soundInformation == nullptr)
+  {
+    MDY_LOG_ERROR("{}::{} | Failed to find sound in information list. | Sound name : {}", "MDyHeapResource", "CreateSoundResource", soundName);
+    return DY_FAILURE;
+  }
+
+  auto [it, result] = this->mOnBoardSoundLists.try_emplace(soundName, nullptr);
+  if (!result)
+  {
+    MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred. | Sound name : {}", "MDyHeapResource", "CreateSoundResource", soundName);
+    return DY_FAILURE;
+  }
+
+  // Create texture resource and insert to empty memory space.
+  auto soundResource = std::make_unique<CDySoundResource>();
+  if (const auto success = soundResource->pfInitializeResource(*soundInformation); success == DY_FAILURE)
+  {
+    MDY_LOG_ERROR("{}::{} | Cannot create sound resource properly. | Sound resource name : {}", "MDyHeapResource", "CreateSoundResource", soundName);
+
+    this->mOnBoardTextureLists.erase(soundName);
+    return DY_FAILURE;
+  }
+
+  it->second.swap(soundResource);
+  if (!it->second)
+  {
+    MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred in swapping. | Sound resource name : {}", "MDyHeapResource", "CreateSoundResource", soundName);
+
+    this->mOnBoardTextureLists.erase(soundName);
+    return DY_FAILURE;
+  }
+
+  // At last, setting pointers to each other.
+  soundInformation->__pfSetSoundResourceLink  (DyMakeNotNull(it->second.get()));
+  it->second->__pfSetSoundInformationLink     (DyMakeNotNull(const_cast<DDySoundInformation*>(soundInformation)));
+
+  MDY_LOG_INFO("{0}::{1} | Create {2} resource. | {2} resource name : {3}", "MDyHeapResource", "CreateSoundResource", "Sound", soundName);
+  return DY_SUCCESS;
+}
+
 EDySuccess MDyHeapResource::CreateModelResource(const std::string& modelName)
 {
   // Get information from MDyDataInformation manager.
@@ -325,6 +369,18 @@ CDyModelResource* MDyHeapResource::GetModelResource(const std::string& modelName
   {
     MDY_LOG_WARNING("{0}::{1} | Failed to find {2} resource. | {2} resource name : {3}",
                     "MDyHeapResource", "GetModelResource", "Model", modelName);
+    return nullptr;
+  }
+
+  return it->second.get();
+}
+
+CDySoundResource* MDyHeapResource::GetSoundResource(const std::string& soundName)
+{
+  const auto it = this->mOnBoardSoundLists.find(soundName);
+  if (it == this->mOnBoardSoundLists.end())
+  {
+    MDY_LOG_WARNING("{0}::{1} | Failed to find {2} resource. | {2} resource name : {3}", "MDyHeapResource", "GetSoundResource", "Sound", soundName);
     return nullptr;
   }
 
