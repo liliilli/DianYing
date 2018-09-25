@@ -20,6 +20,18 @@ namespace dy
 {
 
 ///
+/// @enum EDySoundStatus
+/// @brief Sound status enum type
+///
+enum class EDySoundStatus
+{
+  Playing,
+  Paused,
+  Stopped,
+  NoneError
+};
+
+///
 /// @class CDySoundResource
 /// @brief Sound resource type
 ///
@@ -42,7 +54,9 @@ private:
   [[nodiscard]]
   EDySuccess pfInitializeResource(const DDySoundInformation& modelInformation);
 
-  FMOD::Sound* mSoundResourcePtr = nullptr;
+  FMOD::Sound*    mSoundResourcePtr = nullptr;
+  FMOD::Channel*  mSoundChannel     = nullptr;
+  EDySoundStatus  mSoundStatus      = EDySoundStatus::NoneError;
 
   //!
   //! Level pointers binding
@@ -61,6 +75,9 @@ private:
 
   friend class DDySoundInformation;
   friend class MDyHeapResource;
+
+  // @TODO TEMPORAL
+  friend class MDySound;
 };
 
 } /// ::dy namespace

@@ -31,6 +31,32 @@ class MDySound final : public ISingleton<MDySound>, public IDyUpdatable
 public:
   void Update(float dt) override final;
 
+  ///
+  /// @brief Check whether sound system is enabled or not.
+  ///
+  [[nodiscard]] FORCEINLINE bool IsEnabledSoundSystem() const noexcept
+  {
+    return this->sIssEnabledSoundSystem;
+  }
+
+  ///
+  /// @brief Play sound element
+  /// @TODO THIS FUNCTION IS TEMPORARY FUNCTION, SO WHEN IN PRODUCTION CODE HAVE TO PAUSE INDIVIDUAL 'SOUND CUE' INSTNACE AS PARAMETER.
+  ///
+  EDySuccess PlaySoundElement(const std::string& soundName) const noexcept;
+
+  ///
+  /// @brief Pause sound element
+  /// @TODO THIS FUNCTION IS TEMPORARY FUNCTION, SO WHEN IN PRODUCTION CODE HAVE TO PAUSE INDIVIDUAL 'SOUND CUE' INSTNACE AS PARAMETER.
+  ///
+  EDySuccess PauseSoundElement(const std::string& soundName) const noexcept;
+
+  ///
+  /// @brief Stop sound element
+  /// @TODO THIS FUNCTION IS TEMPORARY FUNCTION, SO WHEN IN PRODUCTION CODE HAVE TO PAUSE INDIVIDUAL 'SOUND CUE' INSTNACE AS PARAMETER.
+  ///
+  EDySuccess StopSoundElement(const std::string& soundName) const noexcept;
+
 private:
   ///
   /// @brief

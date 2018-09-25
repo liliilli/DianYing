@@ -76,6 +76,7 @@ EDySuccess CDySoundResource::pfInitializeResource(const DDySoundInformation& sou
   }
 #endif
 
+  this->mSoundStatus = EDySoundStatus::Stopped;
   return DY_SUCCESS;
 }
 

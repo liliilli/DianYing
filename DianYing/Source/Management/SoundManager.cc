@@ -16,6 +16,7 @@
 #include <Dy/Management/SoundManager.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Helper/Pointer.h>
+#include "Dy/Management/HeapResourceManager.h"
 
 //!
 //! Forward declaration
@@ -267,6 +268,106 @@ EDySuccess MDySound::pfRelease()
 void MDySound::Update(float dt)
 {
   if (this->mSoundSystem) { this->mSoundSystem->update(); }
+}
+
+EDySuccess MDySound::PlaySoundElement(const std::string& soundName) const noexcept
+{
+  if (!this->sIssEnabledSoundSystem)
+  {
+    MDY_LOG_ERROR("Can not use sound system because of initialization error.");
+    return DY_FAILURE;
+  }
+
+  auto soundResource = MDyHeapResource::GetInstance().GetSoundResource(soundName);
+  if (soundResource == nullptr)
+  {
+    MDY_LOG_ERROR("Not found sound resource {}", soundName);
+    return DY_FAILURE;
+  }
+
+  if (soundResource->mSoundStatus == EDySoundStatus::Stopped ||
+      soundResource->mSoundStatus == EDySoundStatus::Paused)
+  {
+    switch (soundResource->mSoundStatus)
+    {
+    case EDySoundStatus::Stopped:
+    {
+      const auto result = this->mSoundSystem->playSound(soundResource->mSoundResourcePtr, this->sMasterChannel, false, &soundResource->mSoundChannel);
+      if (result != FMOD_OK)
+      {
+        MDY_LOG_ERROR("Failed to play sound. Something error happened. | {} : {}", "Sound name", soundName);
+        return DY_FAILURE;
+      }
+    } break;
+    case EDySoundStatus::Paused:
+    {
+      soundResource->mSoundChannel->setPaused(false);
+    } break;
+    default: PHITOS_UNEXPECTED_BRANCH(); break;
+    }
+
+    soundResource->mSoundStatus = EDySoundStatus::Playing;
+  }
+  else
+  {
+    MDY_LOG_ERROR("Failed to play sound. Because sound resource is not stopped yet.");
+    return DY_FAILURE;
+  }
+
+  return DY_SUCCESS;
+}
+
+EDySuccess MDySound::PauseSoundElement(const std::string& soundName) const noexcept
+{
+  if (!this->sIssEnabledSoundSystem)
+  {
+    MDY_LOG_ERROR("Can not use sound system because of initialization error.");
+    return DY_FAILURE;
+  }
+
+  auto soundResource = MDyHeapResource::GetInstance().GetSoundResource(soundName);
+  if (soundResource == nullptr)
+  {
+    MDY_LOG_ERROR("Not found sound resource {}", soundName);
+    return DY_FAILURE;
+  }
+
+  if (soundResource->mSoundStatus == EDySoundStatus::Playing)
+  {
+    soundResource->mSoundChannel->setPaused(true);
+    soundResource->mSoundStatus = EDySoundStatus::Paused;
+  }
+  else
+  {
+    MDY_LOG_ERROR("Failed to play sound. Because sound resource is not being played yet.");
+    return DY_FAILURE;
+  }
+
+  return DY_SUCCESS;
+}
+
+EDySuccess MDySound::StopSoundElement(const std::string& soundName) const noexcept
+{
+  if (!this->sIssEnabledSoundSystem)
+  {
+    MDY_LOG_ERROR("Can not use sound system because of initialization error.");
+    return DY_FAILURE;
+  }
+
+  auto soundResource = MDyHeapResource::GetInstance().GetSoundResource(soundName);
+  if (soundResource == nullptr)
+  {
+    MDY_LOG_ERROR("Not found sound resource {}", soundName);
+    return DY_FAILURE;
+  }
+
+  if (soundResource->mSoundStatus == EDySoundStatus::Playing)
+  {
+    soundResource->mSoundChannel->stop();
+    soundResource->mSoundStatus = EDySoundStatus::Stopped;
+  }
+
+  return DY_SUCCESS;
 }
 
 EDySuccess MDySound::pfCreateSoundResource(const std::string& filePath, FMOD::Sound** soundResourcePtr)
