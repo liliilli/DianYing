@@ -150,7 +150,7 @@ void CDyCamera::Update(float dt)
       this->mPosition += this->mLookingAtDirection * yVal * dt * mSpeed;
       this->mIsViewMatrixDirty = true;
 
-      MDY_LOG_DEBUG_D("dt : {}", dt);
+      //MDY_LOG_DEBUG_D("dt : {}", dt);
     }
 
     if (input.IsMouseMoved())

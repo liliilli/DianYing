@@ -40,6 +40,10 @@
 #include <Dy/Builtin/ShaderGl/RenderPass.h>
 #include <Dy/Builtin/ShaderGl/RenderColorGeometry.h>
 
+#include <fmod.hpp>
+#include "Dy/Core/Component/Resource/SoundResource.h"
+#include "Dy/Management/HeapResourceManager.h"
+
 ///
 /// Undefined proprocessor WIN32 macro "max, min" for preventing misuse.
 ///
@@ -335,8 +339,28 @@ void DyGlTempInitializeResource()
   MDY_CALL_ASSERT_SUCCESS(gRenderer.pfInitialize(rendererDesc));
 }
 
+///
+/// @brief
+///
+void DyTestSoundFmod()
+{
+  dy::PDySoundConstructionDescriptor desc;
+  desc.mSoundName = "1";
+  desc.mSoundPath = "./TestResource/_02Effect.mp3";
+
+  auto& manInfo = dy::MDyDataInformation::GetInstance();
+  auto& resInfo = dy::MDyHeapResource::GetInstance();
+  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateSoundInformation(desc));
+  MDY_CALL_ASSERT_SUCCESS(resInfo.CreateSoundResource(desc.mSoundName));
+}
 
 } /// unnamed namespace
+
+void DyTempInitializeTestResources()
+{
+  DyGlTempInitializeResource();
+  DyTestSoundFmod();
+}
 
 //!
 //! Platform depdendent anonymous namespace
@@ -538,11 +562,11 @@ void MDyWindow::pRender()
   MDyRendering::GetInstance().RenderDrawCallQueue();
   glDisable(GL_DEPTH_TEST);
 
-#if defined(MDY_FLAG_IN_EDITOR)
-  editor::MDyEditorGui::GetInstance().DrawWindow(0);
-#endif
-  if (glfwWindowShouldClose(this->mGlfwWindow)) return;
+  #if defined(MDY_FLAG_IN_EDITOR)
+    editor::MDyEditorGui::GetInstance().DrawWindow(0);
+  #endif
 
+  if (glfwWindowShouldClose(this->mGlfwWindow)) { return; }
   glfwSwapBuffers(this->mGlfwWindow);
   glfwPollEvents();
 }
@@ -554,7 +578,20 @@ EDySuccess MDyWindow::pfInitialize()
 
   switch (MDySetting::GetInstance().GetRenderingType())
   {
-  default: assert(false); break;
+  default: PHITOS_UNEXPECTED_BRANCH(); break;
+  case EDyRenderingApiType::DirectX12:  MDY_LOG_INFO_D("Initialize DirectX12 Context.");  PHITOS_NOT_IMPLEMENTED_ASSERT(); break;
+  case EDyRenderingApiType::Vulkan:     MDY_LOG_INFO_D("Initialize Vulkan Context.");     PHITOS_NOT_IMPLEMENTED_ASSERT();
+#ifdef false
+    dy::DyVkInitialize(windowHandle, hInstance);
+
+    ShowWindow(windowHandle, SW_SHOW);
+    SetForegroundWindow(windowHandle);
+    SetFocus(windowHandle);
+
+    dy::DyVkRenderLoop();
+    dy::DyVkCleanupResources();
+#endif
+    break;
   case EDyRenderingApiType::DirectX11: MDY_LOG_INFO_D("Initialize DirectX11 Context."); PHITOS_NOT_IMPLEMENTED_ASSERT();
 #ifdef false
     MDY_CALL_ASSERT_SUCCESS(DyWin32InitializeWindow(hInstance));
@@ -573,7 +610,6 @@ EDySuccess MDyWindow::pfInitialize()
   case EDyRenderingApiType::OpenGL:
     MDY_LOG_INFO_D("Initialize OpenGL Context.");
     {
-      // OpenGL Setting
       glfwInit();
       glfwWindowHint(GLFW_DOUBLEBUFFER, GL_TRUE);
       glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
@@ -605,33 +641,18 @@ EDySuccess MDyWindow::pfInitialize()
       #endif
 
       glEnable(GL_DEPTH_TEST);
-      glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      glEnable(GL_BLEND);
+      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
       // IMGUI Setting
-      IMGUI_CHECKVERSION();
-      ImGui::CreateContext();
-      ImGuiIO& io = ImGui::GetIO(); (void)io;
-
-      ImGui_ImplGlfw_InitForOpenGL(this->mGlfwWindow, true);
-      ImGui_ImplOpenGL3_Init("#version 430");
-      ImGui::StyleColorsDark();
-
-      // Shader DEMO
-      DyGlTempInitializeResource();
+      {
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
+        ImGui_ImplGlfw_InitForOpenGL(this->mGlfwWindow, true);
+        ImGui_ImplOpenGL3_Init("#version 430");
+        ImGui::StyleColorsDark();
+      }
     }
-    break;
-  case EDyRenderingApiType::DirectX12:  MDY_LOG_INFO_D("Initialize DirectX12 Context."); PHITOS_NOT_IMPLEMENTED_ASSERT(); break;
-  case EDyRenderingApiType::Vulkan:     MDY_LOG_INFO_D("Initialize Vulkan Context."); PHITOS_NOT_IMPLEMENTED_ASSERT();
-#ifdef false
-    dy::DyVkInitialize(windowHandle, hInstance);
-
-    ShowWindow(windowHandle, SW_SHOW);
-    SetForegroundWindow(windowHandle);
-    SetFocus(windowHandle);
-
-    dy::DyVkRenderLoop();
-    dy::DyVkCleanupResources();
-#endif
     break;
   }
 
@@ -644,14 +665,13 @@ EDySuccess MDyWindow::pfRelease()
 
   switch (MDySetting::GetInstance().GetRenderingType())
   {
-  case EDyRenderingApiType::DirectX11:
-    MDY_LOG_INFO_D("Initialize DirectX11 Context.");
-    break;
-  case EDyRenderingApiType::DirectX12:
-    MDY_LOG_INFO_D("Initialize DirectX12 Context.");
-    break;
+  default: PHITOS_UNEXPECTED_BRANCH(); return DY_FAILURE;
+  case EDyRenderingApiType::DirectX11:  MDY_LOG_INFO_D("Release DirectX11 Context.");  PHITOS_NOT_IMPLEMENTED_ASSERT(); break;
+  case EDyRenderingApiType::DirectX12:  MDY_LOG_INFO_D("Release DirectX12 Context.");  PHITOS_NOT_IMPLEMENTED_ASSERT(); break;
+  case EDyRenderingApiType::Vulkan:     MDY_LOG_INFO_D("Release Vulkan Context.");     PHITOS_NOT_IMPLEMENTED_ASSERT(); break;
   case EDyRenderingApiType::OpenGL:
-    MDY_LOG_INFO_D("Initialize OpenGL Context.");
+    MDY_LOG_INFO_D("Release OpenGL Context.");
+
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
@@ -659,20 +679,12 @@ EDySuccess MDyWindow::pfRelease()
 
     glfwTerminate();
     break;
-  case EDyRenderingApiType::Vulkan:
-    MDY_LOG_INFO_D("Initialize Vulkan Context.");
-    break;
-  default: assert(false); return DY_FAILURE;
   }
 
   return DY_SUCCESS;
 }
 #elif defined(MDY_PLATFORM_FLAG_LINUX)
-EDySuccess MDyWindow::pfInitialize() { }
-EDySuccess MDyWindow::pfRelease() { }
 #elif defined(MDY_PLATFORM_FLAG_MACOS)
-EDySuccess MDyWindow::pfInitialize() { }
-EDySuccess MDyWindow::pfRelease() { }
 #endif
 
 } /// ::dy namespace

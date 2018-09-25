@@ -13,6 +13,8 @@
 /// SOFTWARE.
 ///
 
+#include <Phitos/Dbg/assert.h>
+
 //!
 //! Platform dependent macro
 //!
@@ -76,7 +78,7 @@
   { \
     auto result = (__MAFunctionCall__); \
     result = result; \
-    assert(result == DY_SUCCESS); \
+    PHITOS_ASSERT(result == DY_SUCCESS, "Failed to execute expression successfully."); \
   }
 
 ///
