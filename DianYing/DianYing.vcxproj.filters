@@ -75,6 +75,11 @@
     <ClCompile Include="Source\Management\SoundManager.cc" />
     <ClCompile Include="Source\Core\Component\Information\SoundInformation.cc" />
     <ClCompile Include="Source\Core\Component\Resource\SoundResource.cc" />
+    <ClCompile Include="Source\Builtin\Object\Light\DirectionalLight.cc" />
+    <ClCompile Include="Source\Core\Rendering\BasicShadow.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\RenderBasicShadow.cc" />
+    <ClCompile Include="Source\Management\Helper\PhysXErrorCallback.cc" />
+    <ClCompile Include="Source\Management\PhysicsManager.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -189,6 +194,11 @@
     <ClInclude Include="Include\Dy\Management\SoundManager.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\SoundInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\SoundResource.h" />
+    <ClInclude Include="Include\Dy\Builtin\Object\Light\DirectionalLight.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\BasicShadow.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderBasicShadow.h" />
+    <ClInclude Include="Include\Dy\Management\Helper\PhysXErrorCallback.h" />
+    <ClInclude Include="Include\Dy\Management\PhysicsManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />
