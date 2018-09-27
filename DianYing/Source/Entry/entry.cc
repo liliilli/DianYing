@@ -26,6 +26,8 @@
 #include <Dy/Management/SynchronizationManager.h>
 #include <Dy/Management/TimeManager.h>
 #include <Dy/Management/WindowManager.h>
+#include <Dy/Management/ExternalResouceInfoManager.h>
+#include <Dy/Management/FontManager.h>
 
 #include <Dy/Management/Editor/GuiManager.h>
 #include <Dy/Helper/Pointer.h>
@@ -72,13 +74,14 @@ void DyInitiailzeAllManagers()
   MDY_CALL_ASSERT_SUCCESS(dy::MDyHeapResource::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyScene::Initialize());
 
-  // MDyWindow must be initialized at last.
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyExtRscInfo::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyWindow::Initialize());
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDyRendering::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyInput::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDySound::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyPhysics::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyFont::Initialize());
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDySync::Initialize());
   MDY_LOG_WARNING_D("========== DIANYING MANAGER INITIALIZED ==========");
@@ -93,12 +96,14 @@ void DyReleaseAllManagers()
   MDY_LOG_WARNING_D("========== DIANYING MANAGER RELEASED ==========");
   MDY_CALL_ASSERT_SUCCESS(dy::MDySync::Release());
 
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyFont::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyPhysics::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDySound::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyInput::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyRendering::Release());
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDyWindow::Release());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyExtRscInfo::Release());
 
   // Release other management instance.
   MDY_CALL_ASSERT_SUCCESS(dy::MDyScene::Release());

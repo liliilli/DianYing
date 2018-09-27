@@ -83,6 +83,7 @@
 
 ///
 /// @macro MDY_U8
+/// @brief
 ///
 #define MDY_U8(__MAString__) u8##__MAString__
 
@@ -97,6 +98,12 @@
 /// @brief Initialize arbitary variable with 0.
 ///
 #define MDY_NOT_INITIALIZED_0   0
+
+///
+/// @macro MDY_NOT_INITIALIZED_STR
+/// @brief Initialize arbitary string variable (const char*, std::string, std::string_view) with empty but '\0'.
+///
+#define MDY_NOT_INITILAIZED_STR ""
 
 ///
 /// @macro MDY_BIND_BEGIN_END
@@ -203,6 +210,26 @@ virtual bool IsTypeMatched(const TU32 hashVal) const noexcept override { \
     return __BASE__::IsTypeMatched(hashVal); \
   } \
 }
+
+///
+/// @macro MDY_INTERFACE
+/// @brief INTERFACE because pure virtual function must be exposed to outside.
+///
+#define MDY_INTERFACE struct
+
+///
+/// @macro MDY_ABSTRACT
+/// @brief ABSTRACT because non-static member variables might be in type.
+///
+#define MDY_ABSTRACT class
+
+///
+/// @macro MDY_INTERFACE_PROPERTY
+/// @brief INTERFACE variable
+/// @todo NOT WORKING! FIX THIS SOMEDAY.
+///
+#define MDY_INTERFACE_PROPERTY(__MAInterfaceType__) \
+  static_assert(std::is_abstract_v<__MAInterfaceType__>, MDY_TO_STRING(__MAInterfaceType__) " is not satisfied interface property.")
 
 ///
 /// @macro MDY_SINGLETON_PROPERTIES

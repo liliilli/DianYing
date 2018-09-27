@@ -23,20 +23,6 @@
 namespace dy {
 
 ///
-/// @struct PDyLevelConstructDescriptor
-/// @brief Level construction descriptor.
-///
-struct PDyLevelConstructDescriptor final
-{
-  // Initial level name
-  std::string mLevelName                  = MDY_NOT_INITILAIZED_STR;
-  // Initial background of scene to create
-  DDyColor    mLevelBackgroundColor       = DDyColor::White;
-  // Later use!
-  std::any    mLevelInformationDescriptor = false;
-};
-
-///
 /// @class FDyLevel
 /// @brief Level class type for managing run-time interactive world space.
 ///

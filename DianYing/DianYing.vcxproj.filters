@@ -83,6 +83,7 @@
     <ClCompile Include="Source\Management\ExternalResourceInfoManager.cc" />
     <ClCompile Include="Source\Management\FontManager.cc" />
     <ClCompile Include="Source\Element\Level.cc" />
+    <ClCompile Include="Source\Element\Descriptor\GetDescriptors.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -205,6 +206,7 @@
     <ClInclude Include="Include\Dy\Management\ExternalResouceInfoManager.h" />
     <ClInclude Include="Include\Dy\Element\Pawn.h" />
     <ClInclude Include="Include\Dy\Element\Object.h" />
+    <ClInclude Include="Include\Dy\Element\Descriptor\LevelDescriptor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
+#include <Dy/Element/Descriptor/LevelDescriptor.h>
 
 namespace dy
 {
@@ -29,8 +30,17 @@ class MDyExtRscInfo : public ISingleton<MDyExtRscInfo>
 public:
 
 
-private:
+  ///
+  /// @brief
+  ///
+  EDySuccess InsertLevelMetaInformation(const std::string& filePath);
 
+private:
+  template <typename TType>
+  using THashMap = std::unordered_map<std::string, TType>;
+
+  /// Level meta information map.
+  THashMap<PDyLevelConstructDescriptor> mLevelInfoMap = {};
 
 };
 

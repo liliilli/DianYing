@@ -15,11 +15,38 @@
 /// Header file
 #include <Dy/Management/ExternalResouceInfoManager.h>
 
+#include <nlohmann/json.hpp>
+#include <Dy/Helper/JsonHelper.h>
+#include <Dy/Element/Descriptor/LevelDescriptor.h>
+
+#define TESTCODE_20180927
+#if defined(TESTCODE_20180927)
+namespace
+{
+
+
+
+} /// unnamed namespace
+#endif // TESTCODE_20180927
+
 namespace dy
 {
 
 EDySuccess MDyExtRscInfo::pfInitialize()
 {
+#if defined(TESTCODE_20180927)
+  const auto opJsonAtlas = DyGetJsonAtlas("./TestScene.DDat");
+  if (!opJsonAtlas.has_value()) { return DY_FAILURE; }
+
+  PDyLevelConstructDescriptor desc = PDyLevelConstructDescriptor::GetDescriptor(opJsonAtlas.value());
+  auto [it, result] = this->mLevelInfoMap.try_emplace(desc.mLevelName, desc);
+  if (!result)
+  {
+    PHITOS_UNEXPECTED_BRANCH();
+    return DY_FAILURE;
+  }
+
+#endif // TESTCODE_20180927
 
   return DY_SUCCESS;
 }
