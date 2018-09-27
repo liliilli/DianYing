@@ -114,11 +114,11 @@ void MDyRendering::RenderDrawCallQueue()
     this->mTempSsaoObject->RenderScreen();
   }
 
+#if !defined(MDY_FLAG_IN_EDITOR)
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-#ifdef false
   this->mFinalRenderingMesh->RenderScreen();
-#endif
+#endif /// !MDY_FLAG_IN_EDITOR
 }
 
 void MDyRendering::pCreateDeferredGeometryBuffers() noexcept
