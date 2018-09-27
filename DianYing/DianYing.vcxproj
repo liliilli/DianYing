@@ -221,6 +221,8 @@
     <ClCompile Include="Source\Management\Editor\GuiManager.cc" />
     <ClCompile Include="Source\Management\Editor\GuiSetting.cc" />
     <ClCompile Include="Source\Management\Editor\GuiWindowFactory.cc" />
+    <ClCompile Include="Source\Management\ExternalResourceInfoManager.cc" />
+    <ClCompile Include="Source\Management\FontManager.cc" />
     <ClCompile Include="Source\Management\HeapResourceManager.cc" />
     <ClCompile Include="Source\Management\Helper\GuiLogStreamSink.cc" />
     <ClCompile Include="Source\Management\Helper\PhysXErrorCallback.cc" />
@@ -309,6 +311,8 @@
     <ClInclude Include="Include\Dy\Management\Editor\GuiManager.h" />
     <ClInclude Include="Include\Dy\Management\Editor\GuiSetting.h" />
     <ClInclude Include="Include\Dy\Management\Editor\GuiWindowFactory.h" />
+    <ClInclude Include="Include\Dy\Management\ExternalResouceInfoManager.h" />
+    <ClInclude Include="Include\Dy\Management\FontManager.h" />
     <ClInclude Include="Include\Dy\Management\Helper\GuiLogStreamSink.h" />
     <ClInclude Include="Include\Dy\Management\Helper\InputKeyString.h" />
     <ClInclude Include="Include\Dy\Management\Helper\PhysXErrorCallback.h" />

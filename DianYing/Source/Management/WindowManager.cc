@@ -38,6 +38,7 @@
 #include <Dy/Builtin/Model/Box.h>
 #include <Dy/Builtin/ShaderGl/RenderPass.h>
 #include <Dy/Builtin/ShaderGl/RenderColorGeometry.h>
+#include <Dy/Builtin/ShaderGl/RenderBasicShadow.h>
 
 #include <Dy/Management/HeapResourceManager.h>
 #include <Dy/Management/SoundManager.h>

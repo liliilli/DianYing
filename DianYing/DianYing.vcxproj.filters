@@ -80,6 +80,8 @@
     <ClCompile Include="Source\Builtin\ShaderGl\RenderBasicShadow.cc" />
     <ClCompile Include="Source\Management\Helper\PhysXErrorCallback.cc" />
     <ClCompile Include="Source\Management\PhysicsManager.cc" />
+    <ClCompile Include="Source\Management\ExternalResourceInfoManager.cc" />
+    <ClCompile Include="Source\Management\FontManager.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -199,6 +201,8 @@
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderBasicShadow.h" />
     <ClInclude Include="Include\Dy\Management\Helper\PhysXErrorCallback.h" />
     <ClInclude Include="Include\Dy\Management\PhysicsManager.h" />
+    <ClInclude Include="Include\Dy\Management\FontManager.h" />
+    <ClInclude Include="Include\Dy\Management\ExternalResouceInfoManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

@@ -19,6 +19,7 @@
 #include <Dy/Core/Component/Object/DeferredRenderingMesh.h>
 #include <Dy/Core/Component/Object/PostEffectSsao.h>
 #include <Dy/Core/Component/Object/Grid.h>
+#include "Dy/Core/Rendering/BasicShadow.h"
 
 namespace dy::editor
 {
@@ -58,6 +59,17 @@ private:
   ///
   void pReleaseGeometryBuffers() noexcept;
 
+  ///
+  /// @brief Reset all of rendering framebuffers related to rendering of scene for new frame rendering.
+  ///
+  void pResetRenderingFramebufferInstances() noexcept;
+
+  ///
+  void pRenderDeferredFrameBufferWith(const CDyMeshRenderer& renderer) noexcept;
+
+  ///
+  void pRenderShadowFrameBufferWith(const CDyMeshRenderer& renderer) noexcept;
+
   TU32                mDeferredFrameBufferId  = MDY_NOT_INITIALIZED_0;
   std::array<TU32, 4> mAttachmentBuffers      = {};
   const TI32          mAttachmentBuffersCount = static_cast<TI32>(mAttachmentBuffers.size());
@@ -68,10 +80,11 @@ private:
   bool                                        mTempIsEnabledSsao    = true;
   std::unique_ptr<FDyPostEffectSsao>          mTempSsaoObject       = nullptr;
 
+  bool                                        mTempIsEnabledShadow  = true;
+  std::unique_ptr<FDyBasicShadow>             mTempShadowObject     = nullptr;
+
 #if defined(MDY_FLAG_IN_EDITOR)
-
   std::unique_ptr<FDyGrid>                    mGridEffect           = nullptr;
-
 #endif /// MDY_FLAG_IN_EDITOR
 
   friend class FDyDeferredRenderingMesh;
