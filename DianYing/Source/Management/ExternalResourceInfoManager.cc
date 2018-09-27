@@ -19,23 +19,27 @@
 #include <Dy/Helper/JsonHelper.h>
 #include <Dy/Element/Descriptor/LevelDescriptor.h>
 
-#define TESTCODE_20180927
-#if defined(TESTCODE_20180927)
+//!
+//! Forward declaration
+//!
+
 namespace
 {
 
+MDY_SET_IMMUTABLE_STRING(sTestPath, "./TestScene.DDat");
 
+} /// ::unnamed namespace
 
-} /// unnamed namespace
-#endif // TESTCODE_20180927
+//!
+//! Implementation
+//!
 
 namespace dy
 {
 
 EDySuccess MDyExtRscInfo::pfInitialize()
 {
-#if defined(TESTCODE_20180927)
-  const auto opJsonAtlas = DyGetJsonAtlas("./TestScene.DDat");
+  const auto opJsonAtlas = DyGetJsonAtlas(sTestPath.data());
   if (!opJsonAtlas.has_value()) { return DY_FAILURE; }
 
   PDyLevelConstructDescriptor desc = PDyLevelConstructDescriptor::GetDescriptor(opJsonAtlas.value());
@@ -45,8 +49,6 @@ EDySuccess MDyExtRscInfo::pfInitialize()
     PHITOS_UNEXPECTED_BRANCH();
     return DY_FAILURE;
   }
-
-#endif // TESTCODE_20180927
 
   return DY_SUCCESS;
 }
