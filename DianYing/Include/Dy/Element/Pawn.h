@@ -20,16 +20,12 @@
 
 #include <Phitos/Dbg/assert.h>
 
+#include <Dy/Element/Object.h>
+#include <Dy/Element/Abstract/ADyTransformable.h>
+#include <Dy/Element/Interface/IDyScriptable.h>
 #include <Dy/Helper/Type/Vector3.h>
-#include <Dy/Management/LoggingManager.h>
-#include <Dy/Core/Component/Interface/IDyScriptable.h>
-#include <Dy/Core/Component/Interface/ADyTransformable.h>
 #include <Dy/Helper/Type/Matrix4.h>
-#include "Dy/Core/Component/Interface/IDyToString.h"
-
-//!
-//! Forward declaration
-//!
+#include <Dy/Management/LoggingManager.h>
 
 //!
 //! Implementation
@@ -46,7 +42,7 @@ namespace dy {
 /// polymorphism.
 /// Each object can be called using Update and Draw with shader to use.
 ///
-class CDyPawn : public IDyScriptable, public IDyToString, public ADyTransformable
+class CDyPawn : public FDyObject, public IDyScriptable, public ADyTransformable
 {
   using TNameCounterMap   = std::unordered_map<std::string, int32_t>;
 	using TGameObjectSmtPtr = std::unique_ptr<CDyPawn>;

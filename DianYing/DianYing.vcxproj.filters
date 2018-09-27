@@ -82,6 +82,7 @@
     <ClCompile Include="Source\Management\PhysicsManager.cc" />
     <ClCompile Include="Source\Management\ExternalResourceInfoManager.cc" />
     <ClCompile Include="Source\Management\FontManager.cc" />
+    <ClCompile Include="Source\Element\Level.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -137,7 +138,6 @@
     <ClInclude Include="Include\Dy\Helper\JsonHelper.h" />
     <ClInclude Include="Include\Dy\Management\Helper\InputKeyString.h" />
     <ClInclude Include="Include\Dy\Core\Component\Object\Grid.h" />
-    <ClInclude Include="Include\Dy\Core\Component\Object\Pawn.h" />
     <ClInclude Include="Libraries\glad\include\glad\glad.h" />
     <ClInclude Include="Libraries\glad\include\KHR\khrplatform.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\SubmeshInformation.h" />
@@ -203,6 +203,8 @@
     <ClInclude Include="Include\Dy\Management\PhysicsManager.h" />
     <ClInclude Include="Include\Dy\Management\FontManager.h" />
     <ClInclude Include="Include\Dy\Management\ExternalResouceInfoManager.h" />
+    <ClInclude Include="Include\Dy\Element\Pawn.h" />
+    <ClInclude Include="Include\Dy\Element\Object.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_ELEMENT_LEVELSCRIPTOR_H
-#define GUARD_DY_ELEMENT_LEVELSCRIPTOR_H
+#ifndef GUARD_DY_ELEMENT_OBJECT_H
+#define GUARD_DY_ELEMENT_OBJECT_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,25 +13,23 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Element/Interface/IDyScriptable.h>
+#include <Dy/Element/Interface/IDyToString.h>
 
 namespace dy
 {
 
 ///
-/// @class FDyLevelScriptor
-/// @brief
+/// @class FDyObject
+/// @brief all base type of all derived element types.
 ///
-class FDyLevelScriptor final : public IDyScriptable
+class FDyObject : public IDyToString
 {
 public:
+  virtual ~FDyObject() = 0;
 
-
-private:
-
-
+  std::string ToString() override = 0;
 };
 
 } /// ::dy namespace
 
-#endif /// GUARD_DY_ELEMENT_LEVELSCRIPTOR_H
+#endif /// GUARD_DY_ELEMENT_OBJECT_H

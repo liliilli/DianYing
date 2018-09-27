@@ -14,15 +14,38 @@
 ///
 
 #include <memory>
-#include <Phitos/Dbg/assert.h>
+#include <any>
+
+#include <Dy/Helper/Type/Color.h>
+#include <Dy/Element/Object.h>
+#include <Dy/Element/Pawn.h>
 
 namespace dy {
 
 ///
-/// @class FDyLevel
-/// @brief
+/// @struct PDyLevelConstructDescriptor
+/// @brief Level construction descriptor.
 ///
-class FDyLevel final {
+struct PDyLevelConstructDescriptor final
+{
+  // Initial level name
+  std::string mLevelName                  = MDY_NOT_INITILAIZED_STR;
+  // Initial background of scene to create
+  DDyColor    mLevelBackgroundColor       = DDyColor::White;
+  // Later use!
+  std::any    mLevelInformationDescriptor = false;
+};
+
+///
+/// @class FDyLevel
+/// @brief Level class type for managing run-time interactive world space.
+///
+class FDyLevel final : public FDyObject, public IDyUpdatable
+{
+  using TGameObjectSmtPtr = std::unique_ptr<CDyPawn>;
+  using TGameObjectMap    = std::unordered_map<std::string, TGameObjectSmtPtr>;
+  using TNameCounterMap   = std::unordered_map<std::string, int32_t>;
+
 public:
   ///
   /// @brief
@@ -30,14 +53,30 @@ public:
   void Initialize();
 
   ///
-  /// @brief
+  /// @brief Release level by release all subobjects in this level storing information or signalling something.
   ///
   void Release();
 
   ///
-  /// @brief
+  /// @brief Update level.
   ///
-  void Update(float delta_time);
+  void Update(float dt) override final;
+
+  /// Level information as string.
+  std::string ToString() override final;
+
+private:
+  /// Scene basic color
+  DDyColor        mLevelBackgroundColor = DDyColor::White;
+  /// Level's name. not modifiable
+  std::string     mLevelName            = MDY_NOT_INITILAIZED_STR;
+  /// Level's hash value for identifying scene in world's array.
+  TU32            mLevelHashIdentifier  = MDY_NOT_INITIALIZED_0;
+  ///
+  TGameObjectMap  mObjectList           = {};
+
+  /// Check if level is initialized or released. Level is active when only mInitialized is true.
+  bool            mInitialized          = false;
 
 #ifdef false
   ///
@@ -109,8 +148,8 @@ public:
 	///
 	/// @brief Get specific object with tag.
 	///
-	CObject* GetGameObject(const std::string& object_name,
-                         bool is_resursive = false);
+  [[nodiscard]]
+	std::optional<CDyPawn*> GetPawn(const std::string& objectName, bool isRecursive = false);
 
 	///
 	/// @brief Destroy object has unique tag key but not recursively.
@@ -118,20 +157,16 @@ public:
 	/// @return Success/Failed tag.
   /// If arbitary m_object_list has been destroied, return ture.
 	///
-  bool DestroyGameObject(const std::string& object_name);
+  [[nodiscard]] EDySuccess DestroyPawn(const std::string& object_name);
 
   ///
   /// @brief Destory child object with address.
-  /// @param[in] object_reference Object reference.
-  /// @param[in] is_recursive Flag for destruction of specified object recursively.
+  /// @param[in] objectRef    Object reference.
+  /// @param[in] isRecursive  Flag for destruction of specified object recursively.
 	/// @return Success/Failed tag.
   /// If arbitary m_object_list has been destroyed, return ture.
   ///
-  bool DestroyGameObject(const element::CObject& object_reference, bool is_recursive = false);
-
-  bool IsObjectExist(const std::string& name) const {
-    return m_object_list.find(name) != m_object_list.end();
-  }
+  [[nodiscard]] EDySuccess DestroyPawn(const CDyPawn& objectRef, bool isRecursive = false);
 
 private:
 #ifdef false

@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_ELEMENT_LEVELSCRIPTOR_H
-#define GUARD_DY_ELEMENT_LEVELSCRIPTOR_H
+#include <precompiled.h>
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,25 +12,31 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Element/Interface/IDyScriptable.h>
+/// Header file
+#include <Dy/Element/Level.h>
 
 namespace dy
 {
 
-///
-/// @class FDyLevelScriptor
-/// @brief
-///
-class FDyLevelScriptor final : public IDyScriptable
+void FDyLevel::Initialize()
 {
-public:
 
+}
 
-private:
+void FDyLevel::Release()
+{
 
+}
 
-};
+void FDyLevel::Update(float dt)
+{
+  if (this->mInitialized) { return; }
+}
+
+std::string FDyLevel::ToString()
+{
+  PHITOS_NOT_IMPLEMENTED_ASSERT();
+  return MDY_NOT_INITILAIZED_STR;
+}
 
 } /// ::dy namespace
-
-#endif /// GUARD_DY_ELEMENT_LEVELSCRIPTOR_H
