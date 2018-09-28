@@ -42,6 +42,7 @@
 
 #include <Dy/Management/HeapResourceManager.h>
 #include <Dy/Management/SoundManager.h>
+#include "Dy/Management/ExternalResouceInfoManager.h"
 
 ///
 /// Undefined proprocessor WIN32 macro "max, min" for preventing misuse.
@@ -401,8 +402,12 @@ namespace dy
 
 void MDyWindow::Run()
 {
-  auto& timeManager  = MDyTime::GetInstance();
-  MDY_CALL_ASSERT_SUCCESS(MDySound::GetInstance().PlaySoundElement("1"));
+  auto& timeManager     = MDyTime::GetInstance();
+  auto& settingManager  = MDySetting::GetInstance();
+  auto& sceneManager    = MDyScene::GetInstance();
+
+  sceneManager.OpenLevel(settingManager.GetInitialSceneInformationName());
+  sceneManager.Update(-1);
 
   while (!glfwWindowShouldClose(this->mGlfwWindow))
   {
@@ -427,6 +432,7 @@ void MDyWindow::pUpdate(float dt)
 #if defined(MDY_FLAG_IN_EDITOR)
   editor::MDyEditorGui::GetInstance().Update(dt);
 #endif /// MDY_FLAG_IN_EDITOR
+  MDyScene::GetInstance().Update(dt);
   MDyInput::GetInstance().pfUpdate(dt);
 
   auto& sceneManager = MDyScene::GetInstance();

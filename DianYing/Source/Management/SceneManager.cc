@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Management/SceneManager.h>
 #include <Dy/Management/LoggingManager.h>
+#include <Dy/Management/ExternalResouceInfoManager.h>
 
 namespace dy
 {
@@ -31,9 +32,48 @@ EDySuccess MDyScene::pfRelease()
   return DY_SUCCESS;
 }
 
+void MDyScene::Update(float dt)
+{
+  // Travel next level
+  if (!this->mNextLevelName.empty())
+  {
+    if (this->mLevel)
+    { // Let present level do release sequence
+      this->mLevel->Release();
+    }
+
+    auto& instance            = MDyExtRscInfo::GetInstance();
+    const auto* levelMetaInfo = instance.GetLevelMetaInformation(this->mNextLevelName);
+
+    this->mLevel = std::make_unique<FDyLevel>();
+    this->mLevel->Initialize(*levelMetaInfo);
+
+    this->mPreviousLevelName  = this->mPresentLevelName;
+    this->mPresentLevelName   = this->mNextLevelName;
+    this->mNextLevelName      = MDY_NOT_INITILAIZED_STR;
+  }
+
+  if (this->mLevel)
+  {
+    this->mLevel->Update(dt);
+  }
+}
+
 CDyCamera* MDyScene::GetMainCameraPtr() const noexcept
 {
   return this->mValidMainCameraPtr;
+}
+
+EDySuccess MDyScene::OpenLevel(const std::string& levelName)
+{
+  if (MDyExtRscInfo::GetInstance().GetLevelMetaInformation(levelName) == nullptr)
+  {
+    MDY_LOG_ERROR("{} | Failed to find and travel next level. Level name is not found. | Level name : {}", levelName);
+    return DY_FAILURE;
+  }
+
+  this->mNextLevelName = levelName;
+  return DY_SUCCESS;
 }
 
 void MDyScene::__pfBindFocusCamera(CDyCamera* validCameraPtr)

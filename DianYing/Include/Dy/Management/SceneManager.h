@@ -13,7 +13,9 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Element/Interface/IDyUpdatable.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
+#include "Dy/Element/Level.h"
 
 //!
 //! Forward declaration
@@ -35,11 +37,16 @@ namespace dy
 /// @class MDyScene
 /// @brief Manages scene and helping access each scene's unique properties.
 ///
-class MDyScene final : public ISingleton<MDyScene>
+class MDyScene final : public ISingleton<MDyScene>, public IDyUpdatable
 {
-public:
   MDY_SINGLETON_DERIVED(MDyScene);
   MDY_SINGLETON_PROPERTIES(MDyScene);
+public:
+  ///
+  /// @brief Update scene structures prior to dive in scene objects tree hierarchy.
+  /// Scene transition will be executed maybe.
+  ///
+  void Update(float dt) override final;
 
   ///
   /// @brief Return main camera ptr.
@@ -54,6 +61,12 @@ public:
     return this->mValidMainCameraPtr != nullptr;
   }
 
+  ///
+  /// @brief Ask it for opening level with levelName next frame.
+  /// @param levelName valid level meta information name
+  ///
+  EDySuccess OpenLevel(const std::string& levelName);
+
 private:
   /// Bind valid camera to main camera and let object have focused.
   void __pfBindFocusCamera(CDyCamera* validCameraPtr);
@@ -63,6 +76,12 @@ private:
   /// @brief
   CDyCamera*              mValidMainCameraPtr = nullptr;
   std::vector<CDyCamera*> mValidSubCameraPtrs = {};
+
+  std::string             mNextLevelName      = MDY_NOT_INITILAIZED_STR;
+  std::string             mPresentLevelName   = MDY_NOT_INITILAIZED_STR;
+  std::string             mPreviousLevelName  = MDY_NOT_INITILAIZED_STR;
+
+  std::unique_ptr<FDyLevel> mLevel            = nullptr;
 
   friend class CDyCamera;
 };

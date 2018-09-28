@@ -14,29 +14,42 @@
 
 /// Header file
 #include <Dy/Element/Level.h>
+#include <Dy/Helper/HashCompileCrc32.h>
 
 namespace dy
 {
 
-void FDyLevel::Initialize()
+void FDyLevel::Initialize(const PDyLevelConstructDescriptor& desc)
 {
+  this->mLevelName            = desc.mLevelName;
+  this->mLevelHashIdentifier  = hash::DyToCrc32Hash(this->mLevelName.c_str());
+  this->mLevelBackgroundColor = desc.mLevelBackgroundColor;
 
+#ifdef false
+  this->mObjectInformation = ...;
+#endif
+
+  MDY_LOG_INFO("{} | Initialize level context. | Level name : {}", "FDyLevel::Initialize()", this->mLevelName);
+  this->mInitialized = true;
 }
 
 void FDyLevel::Release()
 {
-
+  MDY_LOG_INFO("{} | Release level context. | Level name : {}", "FDyLevel::Release()", this->mLevelName);
+  this->mInitialized = false;
 }
 
 void FDyLevel::Update(float dt)
 {
-  if (this->mInitialized) { return; }
+  if (!this->mInitialized) { return; }
+
+
 }
 
 std::string FDyLevel::ToString()
 {
-  PHITOS_NOT_IMPLEMENTED_ASSERT();
-  return MDY_NOT_INITILAIZED_STR;
+PHITOS_NOT_IMPLEMENTED_ASSERT();
+return MDY_NOT_INITILAIZED_STR;
 }
 
 } /// ::dy namespace

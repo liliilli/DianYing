@@ -59,4 +59,11 @@ EDySuccess MDyExtRscInfo::pfRelease()
   return DY_SUCCESS;
 }
 
+const PDyLevelConstructDescriptor* MDyExtRscInfo::GetLevelMetaInformation(const std::string& levelName) const noexcept
+{
+  const auto it = this->mLevelInfoMap.find(levelName);
+  if (it == this->mLevelInfoMap.end())  { return nullptr; }
+  else                                  { return &it->second; }
+}
+
 } /// ::dy namespace

@@ -14,11 +14,11 @@
 ///
 
 #include <memory>
-#include <any>
 
 #include <Dy/Helper/Type/Color.h>
 #include <Dy/Element/Object.h>
 #include <Dy/Element/Pawn.h>
+#include <Dy/Element/Descriptor/LevelDescriptor.h>
 
 namespace dy {
 
@@ -34,9 +34,9 @@ class FDyLevel final : public FDyObject, public IDyUpdatable
 
 public:
   ///
-  /// @brief
+  /// @brief Initialize level context with valid descriptor.
   ///
-  void Initialize();
+  void Initialize(const PDyLevelConstructDescriptor& desc);
 
   ///
   /// @brief Release level by release all subobjects in this level storing information or signalling something.
@@ -52,12 +52,12 @@ public:
   std::string ToString() override final;
 
 private:
-  /// Scene basic color
-  DDyColor        mLevelBackgroundColor = DDyColor::White;
   /// Level's name. not modifiable
   std::string     mLevelName            = MDY_NOT_INITILAIZED_STR;
   /// Level's hash value for identifying scene in world's array.
   TU32            mLevelHashIdentifier  = MDY_NOT_INITIALIZED_0;
+  /// Scene basic color
+  DDyColor        mLevelBackgroundColor = DDyColor::White;
   ///
   TGameObjectMap  mObjectList           = {};
 
