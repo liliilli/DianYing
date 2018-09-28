@@ -200,8 +200,11 @@
     <ClCompile Include="Source\Editor\Gui\ViewViewportMain.cc" />
     <ClCompile Include="Source\Editor\Gui\ViewWorldOutliner.cc" />
     <ClCompile Include="Source\Editor\Helper\Win32Helper.cc" />
+    <ClCompile Include="Source\Element\Abstract\ADyTransformable.cc" />
+    <ClCompile Include="Source\Element\Actor.cc" />
     <ClCompile Include="Source\Element\Descriptor\GetDescriptors.cc" />
     <ClCompile Include="Source\Element\Level.cc" />
+    <ClCompile Include="Source\Element\Pawn.cc" />
     <ClCompile Include="Source\Entry\Entry.cc" />
     <ClCompile Include="Source\Helper\Dbg\CheckUsage.cc" />
     <ClCompile Include="Source\Helper\Geometry\Types.cc" />
@@ -265,6 +268,7 @@
     <ClInclude Include="Include\Dy\Editor\Gui\Helper\ComponentHelper.h" />
     <ClInclude Include="Include\Dy\Editor\Helper\Win32Helper.h" />
     <ClInclude Include="Include\Dy\Element\Abstract\ADyTransformable.h" />
+    <ClInclude Include="Include\Dy\Element\Actor.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\LevelDescriptor.h" />
     <ClInclude Include="Include\Dy\Element\Interface\IDyScriptable.h" />
     <ClInclude Include="Include\Dy\Element\Interface\IDyToString.h" />

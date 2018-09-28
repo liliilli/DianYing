@@ -13,20 +13,22 @@
 /// SOFTWARE.
 ///
 
-#include <functional>
 #include <memory>
 #include <unordered_map>
 #include <string>
 
-#include <Phitos/Dbg/assert.h>
-
-#include <Dy/Element/Object.h>
-#include <Dy/Element/Abstract/ADyTransformable.h>
 #include <Dy/Element/Interface/IDyScriptable.h>
-#include <Dy/Helper/Type/Vector3.h>
 #include <Dy/Helper/Type/Matrix4.h>
-#include <Dy/Management/LoggingManager.h>
-#include "Dy/Helper/HashCompileCrc32.h"
+#include <Dy/Element/Actor.h>
+
+//!
+//! Forward declaration
+//!
+
+namespace dy
+{
+struct DDyObjectInformation;
+} /// ::unnamed namespace
 
 //!
 //! Implementation
@@ -35,7 +37,7 @@
 namespace dy {
 
 ///
-/// @class CDyPawn
+/// @class FDyPawn
 /// @brief The class for every object to update and draw.
 ///
 /// Object abstract class stores common values and inheritable by derived each object class.
@@ -43,20 +45,32 @@ namespace dy {
 /// polymorphism.
 /// Each object can be called using Update and Draw with shader to use.
 ///
-class CDyPawn : public FDyObject, public IDyScriptable, public ADyTransformable
+class FDyPawn : public FDyActor, public IDyScriptable
 {
   using TNameCounterMap   = std::unordered_map<std::string, int32_t>;
-	using TGameObjectSmtPtr = std::unique_ptr<CDyPawn>;
+	using TGameObjectSmtPtr = std::unique_ptr<FDyPawn>;
 	using TGameObjectMap    = std::unordered_map<std::string, TGameObjectSmtPtr>;
 
 public:
-	CDyPawn();
-	virtual ~CDyPawn();
+	FDyPawn() = default;
+	virtual ~FDyPawn() = default;
 
-  CDyPawn(const CDyPawn&)             = delete;
-  CDyPawn& operator=(const CDyPawn&)  = delete;
-  CDyPawn(CDyPawn&&)                  = default;
-  CDyPawn& operator=(CDyPawn&&)       = default;
+  FDyPawn(const FDyPawn&)             = delete;
+  FDyPawn& operator=(const FDyPawn&)  = delete;
+  FDyPawn(FDyPawn&&)                  = default;
+  FDyPawn& operator=(FDyPawn&&)       = default;
+
+  /// Initialize properties
+  [[nodiscard]] EDySuccess Initialize(const DDyObjectInformation& desc);
+
+  /// Release properties
+  [[nodiscard]] EDySuccess Release();
+
+  /// Return pawn's information.
+  std::string ToString() override
+  {
+    return MDY_NOT_INITILAIZED_STR;
+  }
 
 #ifdef false
   ///
@@ -83,14 +97,6 @@ public:
   /// @return Tag name string.
   ///
   const std::string& GetObjectTagNameOf() const noexcept;
-#endif
-  ///
-  /// @brief Return object name
-  ///
-  const std::string& GetGameObjectName() const noexcept {
-    return this->mPawnName;
-  }
-
   //!
   //! Object creation.
   //!
@@ -110,7 +116,7 @@ public:
 	/// @return Success/Failed tag.
   /// If arbitary m_object_list has been destroyed, return ture.
   ///
-  bool DestroyGameObject(const CDyPawn& child_object, bool is_recursive = false);
+  bool DestroyGameObject(const FDyPawn& child_object, bool is_recursive = false);
 
 	///
 	/// @brief Get children tag list.
@@ -129,9 +135,8 @@ public:
 	/// @param[in] subobjectName The name of object to find.
 	/// @return Object's raw-pointer instance. this cannot removeable.
 	///
-	CDyPawn* GetChildSubObject(const std::string& subobjectName);
+	FDyPawn* GetChildSubObject(const std::string& subobjectName);
 
-#ifdef false
 	///
 	/// @brief This initiate object as a child of base object.
 	///
@@ -364,7 +369,7 @@ private:
   ///
   std::string pCreateChildTag(const std::string& name) noexcept;
 
-  CDyPawn* pGetGameObjectResursively(const std::string& object_name) noexcept;
+  FDyPawn* pGetGameObjectResursively(const std::string& object_name) noexcept;
 
   //!
   //! Propagation
@@ -422,10 +427,9 @@ private:
   const std::array<DDyVector3, 3>& pfGetObjectWorldSpaceAxis() const noexcept;
 #endif
 
-  MDY_TRANSIENT std::string mPawnName                     = "";
   MDY_TRANSIENT bool        mIsTransformInitialized       = false;
   /// Parent object. if nullptr, this object has no parent and be on scene.
-  CDyPawn*                  mParentRawPtr                 = nullptr;
+  FDyPawn*                  mParentRawPtr                 = nullptr;
 
   /// Object name counter to avoid duplicated object name
   TNameCounterMap           __mChildSubobjectNameCounter;

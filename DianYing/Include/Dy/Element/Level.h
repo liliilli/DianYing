@@ -17,8 +17,9 @@
 
 #include <Dy/Helper/Type/Color.h>
 #include <Dy/Element/Object.h>
-#include <Dy/Element/Pawn.h>
+#include <Dy/Element/Actor.h>
 #include <Dy/Element/Descriptor/LevelDescriptor.h>
+#include <Dy/Element/Interface/IDyUpdatable.h>
 
 namespace dy {
 
@@ -28,28 +29,29 @@ namespace dy {
 ///
 class FDyLevel final : public FDyObject, public IDyUpdatable
 {
-  using TGameObjectSmtPtr = std::unique_ptr<CDyPawn>;
-  using TGameObjectMap    = std::unordered_map<std::string, TGameObjectSmtPtr>;
+  using TActorSmtPtr = std::unique_ptr<FDyActor>;
+  using TActorMap    = std::unordered_map<std::string, TActorSmtPtr>;
   using TNameCounterMap   = std::unordered_map<std::string, int32_t>;
 
 public:
-  ///
-  /// @brief Initialize level context with valid descriptor.
-  ///
+  /// Initialize level context with valid descriptor.
   void Initialize(const PDyLevelConstructDescriptor& desc);
 
-  ///
-  /// @brief Release level by release all subobjects in this level storing information or signalling something.
-  ///
+  /// Release level by release all subobjects in this level storing information or signalling something.
   void Release();
 
-  ///
-  /// @brief Update level.
-  ///
+  /// Update level.
   void Update(float dt) override final;
 
-  /// Level information as string.
-  std::string ToString() override final;
+  ///
+  /// @brief Get present level name.
+  /// @return
+  ///
+  [[nodiscard]]
+  const std::string& GetLevelName() const noexcept
+  {
+    return this->mLevelName;
+  }
 
 private:
   /// Level's name. not modifiable
@@ -58,11 +60,14 @@ private:
   TU32            mLevelHashIdentifier  = MDY_NOT_INITIALIZED_0;
   /// Scene basic color
   DDyColor        mLevelBackgroundColor = DDyColor::White;
-  ///
-  TGameObjectMap  mObjectList           = {};
-
+  /// Actor list (hierarchial version)
+  TActorMap       mActorList            = {};
   /// Check if level is initialized or released. Level is active when only mInitialized is true.
   bool            mInitialized          = false;
+
+public:
+  /// Level information as string.
+  std::string ToString() override final;
 
 #ifdef false
   ///
@@ -129,7 +134,6 @@ private:
 
     return static_cast<TCObjectType*>(object_ref.get());
 	}
-#endif
 
 	///
 	/// @brief Get specific object with tag.
@@ -155,7 +159,6 @@ private:
   [[nodiscard]] EDySuccess DestroyPawn(const CDyPawn& objectRef, bool isRecursive = false);
 
 private:
-#ifdef false
   ///
   /// @brief Create child object name.
   /// @param[in] name

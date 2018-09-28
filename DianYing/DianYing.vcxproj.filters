@@ -85,6 +85,9 @@
     <ClCompile Include="Source\Element\Level.cc" />
     <ClCompile Include="Source\Element\Descriptor\GetDescriptors.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderDeferredRendering.cc" />
+    <ClCompile Include="Source\Element\Actor.cc" />
+    <ClCompile Include="Source\Element\Pawn.cc" />
+    <ClCompile Include="Source\Element\Abstract\ADyTransformable.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -209,6 +212,7 @@
     <ClInclude Include="Include\Dy\Element\Object.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\LevelDescriptor.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderDeferredRendering.h" />
+    <ClInclude Include="Include\Dy\Element\Actor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

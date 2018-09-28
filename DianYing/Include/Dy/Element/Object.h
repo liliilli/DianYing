@@ -28,6 +28,28 @@ public:
   virtual ~FDyObject() = default;
 
   std::string ToString() override = 0;
+
+protected:
+  ///
+  /// @brief Get present object name.
+  /// @return present object name.
+  ///
+  [[nodiscard]] const std::string& pGetObjectName() const noexcept
+  {
+    return this->mObjectName;
+  }
+
+  ///
+  /// @brief Set new object name.
+  /// @param newObjectName Objec name to apply newly.
+  ///
+  void pSetObjectName(const std::string& newObjectName) noexcept
+  {
+    this->mObjectName = newObjectName;
+  }
+
+private:
+  MDY_TRANSIENT std::string mObjectName = MDY_NOT_INITILAIZED_STR;
 };
 
 } /// ::dy namespace

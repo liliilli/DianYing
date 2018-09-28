@@ -15,6 +15,20 @@
 /// Header file
 #include <Dy/Element/Level.h>
 #include <Dy/Helper/HashCompileCrc32.h>
+#include "Dy/Element/Pawn.h"
+
+//!
+//! Local translation unit function & data
+//!
+
+namespace
+{
+
+} /// ::unnamed namespace
+
+//!
+//! Implementation
+//!
 
 namespace dy
 {
@@ -26,17 +40,33 @@ void FDyLevel::Initialize(const PDyLevelConstructDescriptor& desc)
   this->mLevelBackgroundColor = desc.mLevelBackgroundColor;
 
   // Create objects
-  for (const auto& objectInfo : desc.mLevelObjectInformations)
+  for (const auto& objectInformation : desc.mLevelObjectInformations)
   {
-    const auto objectType = objectInfo.mType;
-    switch (objectType)
+    const auto type = objectInformation.mType;
+    switch (type)
     {
     case EDyFDyObjectType::FDyPawn:
-      //auto pawnPtr =
-      //this->mObjectList.try_emplace(objectInfo.mName, )
-      break;
-    case EDyFDyObjectType::FDyPostprocessBlock:
+      {
+        auto instancePtr = std::make_unique<CDyPawn>();
+        MDY_CALL_ASSERT_SUCCESS(instancePtr->Initialize(objectInformation));
+        // @TODO IMPLEMENT PARENT TRANSFORMATION RELOCATION MECHANISM
+        if (objectInformation.mParentMetaIndex != -1)
+        {
+#ifdef false
+          instancePtr->SetParent();
+#endif
+        }
+        else
+        {
+          auto [it, result] = this->mActorList.try_emplace(objectInformation.mName, std::move(instancePtr));
+          if (result == false) { PHITOS_UNEXPECTED_BRANCH(); }
+        }
+      } break;
     case EDyFDyObjectType::FDyDirectionalLight:
+      {
+        MDY_LOG_CRITICAL("EDyFDyObjectType::FDyDirectionalLight: NOT IMPLEMENTED");
+      } break;
+    case EDyFDyObjectType::FDyPostprocessBlock:
     case EDyFDyObjectType::FDyPointLight:
     case EDyFDyObjectType::FDySpotLight:
     case EDyFDyObjectType::FDyObject:
@@ -45,7 +75,8 @@ void FDyLevel::Initialize(const PDyLevelConstructDescriptor& desc)
     case EDyFDyObjectType::FDySound:
     case EDyFDyObjectType::FDySoundListener:
     case EDyFDyObjectType::Error:
-      MDY_LOG_WARNING("Not supported object type");
+      MDY_LOG_CRITICAL("NOT IMPLEMENTED");
+      PHITOS_NOT_IMPLEMENTED_ASSERT();
       break;
     }
   }
