@@ -54,6 +54,7 @@ void MDyScene::Update(float dt)
 
   }
 
+  // Scene update routine
   if (this->mLevel)
   {
     this->mLevel->Update(dt);
@@ -62,7 +63,10 @@ void MDyScene::Update(float dt)
 
 void MDyScene::UpdateObjects(float dt)
 {
-
+  if (this->mLevel)
+  {
+    PHITOS_NOT_IMPLEMENTED_ASSERT();
+  }
 }
 
 CDyCamera* MDyScene::GetMainCameraPtr() const noexcept

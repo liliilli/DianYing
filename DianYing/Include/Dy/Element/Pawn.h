@@ -327,7 +327,6 @@ public:
     }
     return false;
   }
-#endif
 
 protected:
   /// The container stores child object (pawn, component etc.).
@@ -358,7 +357,6 @@ private:
 
 
 
-#ifdef false
   ///
   /// @brief Create child object name.
   /// @param[in] name
@@ -367,7 +365,6 @@ private:
   std::string pCreateChildTag(const std::string& name) noexcept;
 
   CDyPawn* pGetGameObjectResursively(const std::string& object_name) noexcept;
-#endif
 
   //!
   //! Propagation
@@ -403,7 +400,6 @@ private:
   ///
   void pSetWorldPropagatedPositionForcely(const DDyVector3& vector) noexcept;
 
-#ifdef false
   ///
   /// @brief
   ///
