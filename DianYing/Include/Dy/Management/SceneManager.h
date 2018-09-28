@@ -49,6 +49,11 @@ public:
   void Update(float dt) override final;
 
   ///
+  /// @brief Update valid objects. this function must be called after this->Update().
+  ///
+  void UpdateObjects(float dt);
+
+  ///
   /// @brief Return main camera ptr.
   ///
   [[nodiscard]] CDyCamera* GetMainCameraPtr() const noexcept;

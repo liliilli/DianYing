@@ -26,6 +26,7 @@
 #include <Dy/Helper/Type/Vector3.h>
 #include <Dy/Helper/Type/Matrix4.h>
 #include <Dy/Management/LoggingManager.h>
+#include "Dy/Helper/HashCompileCrc32.h"
 
 //!
 //! Implementation
@@ -345,15 +346,17 @@ private:
   ///
   /// @brief Set hash value
   ///
-  FORCEINLINE void pSetHash(const std::string& name) const {
+  FORCEINLINE void pSetHash(const std::string& name) const noexcept {
     PHITOS_ASSERT(__mHashInitialized == false, "Hash value of object is already defined.");
 
     mPawnName           = name;
-    __mHashValue        = static_cast<uint32_t>(std::hash<std::string>{}(name));
+    __mHashValue        = hash::DyToCrc32Hash(name.c_str());
     __mHashInitialized  = true;
 
     MDY_LOG_DEBUG_D("Create hash value for object, [Name : {0}] [Hash : {1:x}]", name, __mHashValue);
   }
+
+
 
 #ifdef false
   ///
@@ -423,15 +426,15 @@ private:
   const std::array<DDyVector3, 3>& pfGetObjectWorldSpaceAxis() const noexcept;
 #endif
 
-  mutable std::string mPawnName                     = "";
-  mutable bool        mIsTransformInitialized       = false;
+  MDY_TRANSIENT std::string mPawnName                     = "";
+  MDY_TRANSIENT bool        mIsTransformInitialized       = false;
   /// Parent object. if nullptr, this object has no parent and be on scene.
-  CDyPawn*            mParentPtr                    = nullptr;
+  CDyPawn*                  mParentRawPtr                 = nullptr;
 
   /// Object name counter to avoid duplicated object name
-  TNameCounterMap     __mChildSubobjectNameCounter;
-  mutable uint32_t    __mHashValue                  = 0;
-  mutable bool        __mHashInitialized            = false;
+  TNameCounterMap           __mChildSubobjectNameCounter;
+  mutable uint32_t          __mHashValue                  = 0;
+  mutable bool              __mHashInitialized            = false;
 };
 
 } /// ::dy namespace

@@ -25,7 +25,7 @@ namespace dy
 class FDyObject : public IDyToString
 {
 public:
-  virtual ~FDyObject() = 0;
+  virtual ~FDyObject() = default;
 
   std::string ToString() override = 0;
 };

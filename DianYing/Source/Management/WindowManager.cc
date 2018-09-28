@@ -429,13 +429,15 @@ void MDyWindow::Run()
 ///
 void MDyWindow::pUpdate(float dt)
 {
-#if defined(MDY_FLAG_IN_EDITOR)
-  editor::MDyEditorGui::GetInstance().Update(dt);
-#endif /// MDY_FLAG_IN_EDITOR
+  #if defined(MDY_FLAG_IN_EDITOR)
+    editor::MDyEditorGui::GetInstance().Update(dt);
+  #endif // MDY_FLAG_IN_EDITOR
+
   MDyScene::GetInstance().Update(dt);
   MDyInput::GetInstance().pfUpdate(dt);
+  MDyScene::GetInstance().UpdateObjects(dt);
 
-  auto& sceneManager = MDyScene::GetInstance();
+#ifdef false
   auto* cam = sceneManager.GetMainCameraPtr();
   if (cam)
   {
@@ -443,6 +445,7 @@ void MDyWindow::pUpdate(float dt)
   }
 
   gRenderer.Update(dt);
+#endif
 }
 
 ///
@@ -453,7 +456,9 @@ void MDyWindow::pRender()
   glClearColor(gColor.X, gColor.Y, gColor.Z, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+#ifdef false
   gRenderer.CallDraw();
+#endif
 
   glEnable(GL_DEPTH_TEST);
   MDyRendering::GetInstance().RenderDrawCallQueue();
@@ -461,7 +466,7 @@ void MDyWindow::pRender()
 
   #if defined(MDY_FLAG_IN_EDITOR)
     editor::MDyEditorGui::GetInstance().DrawWindow(0);
-  #endif
+  #endif // MDY_FLAG_IN_EDITOR
 
   if (glfwWindowShouldClose(this->mGlfwWindow)) { return; }
   glfwSwapBuffers(this->mGlfwWindow);

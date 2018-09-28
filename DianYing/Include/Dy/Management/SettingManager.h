@@ -111,6 +111,15 @@ public:
   }
 
   ///
+  /// @brief Get initial scene name to create initial scene instance.
+  /// @return PDyLevelConstructDescriptor name. Name is same to populated actual scene instance.
+  ///
+  [[nodiscard]] FORCEINLINE const std::string& GetInitialSceneInformationName() const noexcept
+  {
+    return this->mInitialSceneName;
+  }
+
+  ///
   /// @brief Enable or disable logging feature.
   /// before enable logging feature, must set console or file sink.
   ///

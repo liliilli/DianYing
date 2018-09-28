@@ -19,6 +19,30 @@
 #include <nlohmann/json.hpp>
 #include <Dy/Helper/Type/Color32.h>
 
+//!
+//! Local translation unit function & varaible data
+//!
+
+namespace
+{
+
+[[nodiscard]]
+dy::EDyFDyObjectType DyGetObjectTypeFrom(const std::string& typeString) noexcept
+{
+  static constexpr std::string_view sPawn             = "Pawn";
+  static constexpr std::string_view sDirectionalLight = "LightDirectional";
+
+  if (typeString == sPawn)              return dy::EDyFDyObjectType::FDyPawn;
+  if (typeString == sDirectionalLight)  return dy::EDyFDyObjectType::FDyDirectionalLight;
+  else return dy::EDyFDyObjectType::Error;
+}
+
+} /// ::unnamed namespace
+
+//!
+//! Implementation
+//!
+
 namespace dy
 {
 
@@ -68,7 +92,7 @@ PDyLevelConstructDescriptor PDyLevelConstructDescriptor::GetDescriptor(const nlo
 
     objInfo.mMetaIndex  = static_cast<TI32>(std::distance(objAtlas.begin(), jsonIt));
     objInfo.mName       = jsonIt->at("Name").get<std::string>();
-    objInfo.mType       = jsonIt->at("Type").get<std::string>();
+    objInfo.mType       = DyGetObjectTypeFrom(jsonIt->at("Type").get<std::string>());
     objInfo.mParentMetaIndex = jsonIt->at("Parent").get<TI32>();
 
     // Get position, rotation, and scale information.

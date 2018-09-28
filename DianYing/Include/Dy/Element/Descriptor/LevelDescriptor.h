@@ -21,6 +21,25 @@ namespace dy
 {
 
 ///
+/// @enum EDyFDyObjectType
+/// @brief
+///
+enum class EDyFDyObjectType
+{
+  FDyPawn,
+  FDyPostprocessBlock,
+  FDyDirectionalLight,
+  FDyPointLight,
+  FDySpotLight,
+  FDyObject,
+  FDySceneScriptableObject,
+  FDyCamera,
+  FDySound,
+  FDySoundListener,
+  Error
+};
+
+///
 /// @struct PDyLevelConstructDescriptor
 /// @brief Level construction descriptor.
 ///
@@ -33,19 +52,19 @@ struct PDyLevelConstructDescriptor final
   struct DDyObjectInformation final
   {
     /// Meta index for classification of objects. Might not be used in game runtime.
-    TI32        mMetaIndex  = MDY_NOT_INITIALIZED_M1;
+    TI32              mMetaIndex  = MDY_NOT_INITIALIZED_M1;
     /// Meta object's name.
-    std::string mName       = MDY_NOT_INITILAIZED_STR;
+    std::string       mName       = MDY_NOT_INITILAIZED_STR;
     /// The type (light, pawn, pp block etc...) of object
-    std::string mType       = MDY_NOT_INITILAIZED_STR;
+    EDyFDyObjectType  mType       = EDyFDyObjectType::Error;
     /// Parent name of this object.
     /// @TODO mParentName must be changed to other way to avoid duplicated object metaname. (Index + Name) CRC32 hashing value might be good.
     /// @TODO OR JUST USING METAINDEX...?
-    TI32        mParentMetaIndex = MDY_NOT_INITIALIZED_M1;
+    TI32              mParentMetaIndex = MDY_NOT_INITIALIZED_M1;
 
-    DDyVector3  mPosition   = {};
-    DDyVector3  mRotation   = {};
-    DDyVector3  mScale      = {};
+    DDyVector3        mPosition   = {};
+    DDyVector3        mRotation   = {};
+    DDyVector3        mScale      = {};
   };
 
   // Initial level name

@@ -51,12 +51,18 @@ void MDyScene::Update(float dt)
     this->mPreviousLevelName  = this->mPresentLevelName;
     this->mPresentLevelName   = this->mNextLevelName;
     this->mNextLevelName      = MDY_NOT_INITILAIZED_STR;
+
   }
 
   if (this->mLevel)
   {
     this->mLevel->Update(dt);
   }
+}
+
+void MDyScene::UpdateObjects(float dt)
+{
+
 }
 
 CDyCamera* MDyScene::GetMainCameraPtr() const noexcept

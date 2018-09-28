@@ -29,6 +29,11 @@ class MDyExtRscInfo : public ISingleton<MDyExtRscInfo>
   MDY_SINGLETON_DERIVED(MDyExtRscInfo);
 public:
 
+  ///
+  /// @brief Get level construction descriptor meta information from levelName which is same to actual level instance to be created.
+  /// @return Return value is nullable if not found.
+  ///
+  const PDyLevelConstructDescriptor* GetLevelMetaInformation(const std::string& levelName) const noexcept;
 
   ///
   /// @brief
