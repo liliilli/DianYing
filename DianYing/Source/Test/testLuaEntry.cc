@@ -29,8 +29,15 @@ void DyLuaEntryPoint()
   DyLuaVariablesOptionalLookup();
   DyLuaVariableGetOrLoopup();
   DyLuaVariableWriting();
-#endif
   DyLuaReferenceModify();
+  DyLuaFunctionRegisteringCpp();
+  DyLuaFunctionMemberFunction();
+  DyLuaFunctionTemplateFunction();
+  DyLuaFunctionProtectedFunction();
+  DyLuaFunctionMultipleReturnFromLua();
+  DyLuaFunctionMultipleReturnFromCpp();
+#endif
+  DyLuaFunctionAnyReturn();
 }
 
 } /// ::dy::test namespace

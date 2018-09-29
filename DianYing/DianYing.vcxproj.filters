@@ -92,6 +92,7 @@
     <ClCompile Include="Source\Test\testLuaVariable.cc" />
     <ClCompile Include="Source\Test\testLuaEntry.cc" />
     <ClCompile Include="Source\Test\testLuaHelloWorld.cc" />
+    <ClCompile Include="Source\Test\TestLuaFunctions.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />

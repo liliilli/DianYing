@@ -29,7 +29,7 @@
 
 #include <Dy/Management/Editor/GuiManager.h>
 #include <Dy/Helper/Pointer.h>
-#include <Dy/testLuaLibrary.h>
+#include <Dy/Test/testLua.h>
 
 
 namespace
@@ -198,7 +198,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLin
   MDY_LOG_INFO_D("Release all managers and resources.");
 #endif
 
-  dy::DyLuaEntryPoint();
+  dy::test::DyLuaEntryPoint();
 
   DyReleaseAllManagers();
   MDY_WIN32_TRY_TURN_OFF_DEBUG();

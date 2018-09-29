@@ -250,6 +250,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Source\Test\testLuaEntry.cc" />
+    <ClCompile Include="Source\Test\TestLuaFunctions.cc" />
     <ClCompile Include="Source\Test\testLuaHelloWorld.cc" />
     <ClCompile Include="Source\Test\testLuaVariable.cc" />
   </ItemGroup>
