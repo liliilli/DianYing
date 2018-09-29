@@ -21,7 +21,7 @@
 #include <Dy/Helper/Type/Vector3.h>
 
 #include <Dy/Management/InputManager.h>
-#include <Dy/Management/SceneManager.h>
+#include <Dy/Management/WorldManager.h>
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/LoggingManager.h>
 
@@ -39,7 +39,7 @@ CDyCamera::~CDyCamera()
   // Unbind focus camera if this is being binded to camera focus of scene.
   if (this->IsBeingFocused())
   {
-    MDyScene::GetInstance().__pfUnbindCameraFocus();
+    MDyWorld::GetInstance().__pfUnbindCameraFocus();
     this->mIsFocused = false;
   }
 }
@@ -71,7 +71,7 @@ EDySuccess CDyCamera::UpdateSetting(const PDyCameraConstructionDescriptor& descr
   // If camera must be focused instantly, set it to present focused camera reference ptr of manager.
   if (descriptor.mIsFocusInstantly)
   {
-    auto& sceneManager = MDyScene::GetInstance();
+    auto& sceneManager = MDyWorld::GetInstance();
     sceneManager.__pfBindFocusCamera(this);
     this->mIsFocused = true;
   }
@@ -126,7 +126,7 @@ bool CDyCamera::IsOrthographicCamera() const noexcept
 
 bool CDyCamera::IsBeingFocused() const noexcept
 {
-  auto& sceneManager = MDyScene::GetInstance();
+  auto& sceneManager = MDyWorld::GetInstance();
   return sceneManager.GetMainCameraPtr() == this;
 }
 

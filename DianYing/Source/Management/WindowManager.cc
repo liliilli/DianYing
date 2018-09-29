@@ -29,7 +29,7 @@
 #include <Dy/Management/DataInformationManager.h>
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/LoggingManager.h>
-#include <Dy/Management/SceneManager.h>
+#include <Dy/Management/WorldManager.h>
 #include <Dy/Management/InputManager.h>
 #include <Dy/Management/TimeManager.h>
 #include <Dy/Management/Editor/GuiManager.h>
@@ -404,7 +404,7 @@ void MDyWindow::Run()
 {
   auto& timeManager     = MDyTime::GetInstance();
   auto& settingManager  = MDySetting::GetInstance();
-  auto& sceneManager    = MDyScene::GetInstance();
+  auto& sceneManager    = MDyWorld::GetInstance();
 
   sceneManager.OpenLevel(settingManager.GetInitialSceneInformationName());
   sceneManager.Update(-1);
@@ -433,9 +433,9 @@ void MDyWindow::pUpdate(float dt)
     editor::MDyEditorGui::GetInstance().Update(dt);
   #endif // MDY_FLAG_IN_EDITOR
 
-  MDyScene::GetInstance().Update(dt);
+  MDyWorld::GetInstance().Update(dt);
   MDyInput::GetInstance().pfUpdate(dt);
-  MDyScene::GetInstance().UpdateObjects(dt);
+  MDyWorld::GetInstance().UpdateObjects(dt);
 
 #ifdef false
   auto* cam = sceneManager.GetMainCameraPtr();

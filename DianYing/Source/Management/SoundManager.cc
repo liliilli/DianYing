@@ -240,11 +240,6 @@ EDySuccess MDySound::pfInitialize()
 
 EDySuccess MDySound::pfRelease()
 {
-  if (this->sMasterChannel)
-  {
-    this->sMasterChannel->release();
-    this->sMasterChannel = nullptr;
-  }
   if (this->sBackgroundChannel)
   {
     this->sBackgroundChannel->release();
@@ -254,6 +249,10 @@ EDySuccess MDySound::pfRelease()
   {
     this->sEffectChannel->release();
     this->sEffectChannel = nullptr;
+  }
+  if (this->sMasterChannel)
+  {
+    this->sMasterChannel = nullptr;
   }
   if (this->mSoundSystem)
   {

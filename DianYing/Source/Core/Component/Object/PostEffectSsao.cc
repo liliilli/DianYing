@@ -21,7 +21,7 @@
 #include <Dy/Management/RenderingManager.h>
 #include <Dy/Helper/Math/Random.h>
 #include <Dy/Management/SettingManager.h>
-#include <Dy/Management/SceneManager.h>
+#include <Dy/Management/WorldManager.h>
 #include <Dy/Core/Component/Object/Camera.h>
 
 namespace
@@ -83,7 +83,7 @@ void FDyPostEffectSsao::RenderScreen()
   glActiveTexture   (GL_TEXTURE0 + 0); glBindTexture(GL_TEXTURE_2D, renderingManager.mAttachmentBuffers[3]); // ugPosition
   glActiveTexture   (GL_TEXTURE0 + 1); glBindTexture(GL_TEXTURE_2D, renderingManager.mAttachmentBuffers[1]); // ugNormal
   glActiveTexture   (GL_TEXTURE0 + 2); glBindTexture(GL_TEXTURE_2D, this->mSsaoNoiseTextureId);              // uTextureNoise
-  glUniformMatrix4fv(this->mUniformProjection, 1, GL_FALSE, &MDyScene::GetInstance().GetMainCameraPtr()->GetProjectionMatrix()[0].X);
+  glUniformMatrix4fv(this->mUniformProjection, 1, GL_FALSE, &MDyWorld::GetInstance().GetMainCameraPtr()->GetProjectionMatrix()[0].X);
   glDrawArrays      (GL_TRIANGLES, 0, 3);
 
   glBindVertexArray (0);

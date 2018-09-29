@@ -13,27 +13,54 @@
 ///
 
 /// Header file
-#include <Dy/Management/SceneManager.h>
+#include <Dy/Management/WorldManager.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/ExternalResouceInfoManager.h>
+
+#include <Dy/Element/Pawn.h>
 
 namespace dy
 {
 
-EDySuccess MDyScene::pfInitialize()
+EDySuccess MDyWorld::pfInitialize()
 {
-  MDY_LOG_INFO_D("{} | MDyScene::pfInitialize().", "FunctionCall");
+  MDY_LOG_INFO_D("{} | MDyWorld::pfInitialize().", "FunctionCall");
   return DY_SUCCESS;
 }
 
-EDySuccess MDyScene::pfRelease()
+EDySuccess MDyWorld::pfRelease()
 {
-  MDY_LOG_INFO_D("{} | MDyScene::pfRelease().", "FunctionCall");
+  MDY_LOG_INFO_D("{} | MDyWorld::pfRelease().", "FunctionCall");
+  if (this->mLevel)
+  {
+    this->mLevel->Release();
+    this->mLevel = nullptr;
+    this->Update(-1);
+  }
+
   return DY_SUCCESS;
 }
 
-void MDyScene::Update(float dt)
+void MDyWorld::Update(float dt)
 {
+  // Garbage collect needless "FDyActor"s
+  if (!this->mActorGc.empty())
+  {
+    this->mActorGc.clear();
+  }
+
+  // Remove activated pawn update list reversely.
+  if (!this->mErasionPawnCandidateList.empty())
+  {
+    std::sort(MDY_BIND_BEGIN_END(this->mErasionPawnCandidateList), std::greater<TI32>());
+    for (const auto& index : this->mErasionPawnCandidateList)
+    { // Remove!
+      this->mActivatedPawn.erase(this->mActivatedPawn.begin() + index);
+    }
+    // Clear!
+    this->mErasionPawnCandidateList.clear();
+  }
+
   // Travel next level
   if (!this->mNextLevelName.empty())
   {
@@ -51,7 +78,6 @@ void MDyScene::Update(float dt)
     this->mPreviousLevelName  = this->mPresentLevelName;
     this->mPresentLevelName   = this->mNextLevelName;
     this->mNextLevelName      = MDY_NOT_INITILAIZED_STR;
-
   }
 
   // Scene update routine
@@ -61,20 +87,24 @@ void MDyScene::Update(float dt)
   }
 }
 
-void MDyScene::UpdateObjects(float dt)
+void MDyWorld::UpdateObjects(float dt)
 {
   if (this->mLevel)
   {
-    PHITOS_NOT_IMPLEMENTED_ASSERT();
+    for (auto& pawnPtr : this->mActivatedPawn)
+    {
+      if (pawnPtr == nullptr) continue;
+      pawnPtr->ToString();
+    }
   }
 }
 
-CDyCamera* MDyScene::GetMainCameraPtr() const noexcept
+CDyCamera* MDyWorld::GetMainCameraPtr() const noexcept
 {
   return this->mValidMainCameraPtr;
 }
 
-EDySuccess MDyScene::OpenLevel(const std::string& levelName)
+EDySuccess MDyWorld::OpenLevel(const std::string& levelName)
 {
   if (MDyExtRscInfo::GetInstance().GetLevelMetaInformation(levelName) == nullptr)
   {
@@ -86,23 +116,40 @@ EDySuccess MDyScene::OpenLevel(const std::string& levelName)
   return DY_SUCCESS;
 }
 
-void MDyScene::__pfBindFocusCamera(CDyCamera* validCameraPtr)
+void MDyWorld::__pfBindFocusCamera(CDyCamera* validCameraPtr)
 {
   PHITOS_ASSERT(validCameraPtr != nullptr, "validCameraPtr must be valid, not nullptr.");
   this->mValidMainCameraPtr = validCameraPtr;
 }
 
-void MDyScene::__pfUnbindCameraFocus()
+void MDyWorld::__pfUnbindCameraFocus()
 {
   if (this->mValidMainCameraPtr)
   {
     this->mValidMainCameraPtr = nullptr;
-    MDY_LOG_INFO_D("{} | MainCamera pointing unbinded.", "MDyScene::__pfUnbindCameraFocus()");
+    MDY_LOG_INFO_D("{} | MainCamera pointing unbinded.", "MDyWorld::__pfUnbindCameraFocus()");
   }
   else
   {
-    MDY_LOG_WARNING_D("{} | Valid mainCamera pointer does not point anything.", "MDyScene::__pfUnbindCameraFocus()");
+    MDY_LOG_WARNING_D("{} | Valid mainCamera pointer does not point anything.", "MDyWorld::__pfUnbindCameraFocus()");
   }
+}
+
+void MDyWorld::pfMoveActorToGc(NotNull<FDyActor*> actorRawPtr) noexcept
+{
+  this->mActorGc.emplace_back(std::unique_ptr<FDyActor>(actorRawPtr));
+}
+
+TI32 MDyWorld::pfEnrollActivePawn(const NotNull<FDyPawn*>& pawnRawPtr) noexcept
+{
+  this->mActivatedPawn.emplace_back(pawnRawPtr);
+  return static_cast<TI32>(this->mActivatedPawn.size()) - 1;
+}
+
+void MDyWorld::pfUnenrollActivePawn(TI32 index) noexcept
+{
+  this->mActivatedPawn[index] = nullptr;
+  this->mErasionPawnCandidateList.emplace_back(index);
 }
 
 } /// ::dy namespace

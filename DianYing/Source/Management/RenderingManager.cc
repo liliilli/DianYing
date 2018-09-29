@@ -16,7 +16,7 @@
 #include <Dy/Management/RenderingManager.h>
 
 #include <Dy/Management/LoggingManager.h>
-#include <Dy/Management/SceneManager.h>
+#include <Dy/Management/WorldManager.h>
 #include <Dy/Management/SettingManager.h>
 
 #include <Dy/Management/DataInformationManager.h>
@@ -230,7 +230,7 @@ void MDyRendering::pRenderDeferredFrameBufferWith(const CDyMeshRenderer& rendere
     glBindVertexArray(bindedMeshMatInfo.mSubmeshResource->GetVertexArrayId());
 
     // @todo temporal Bind camera matrix.
-    if (auto* camera = MDyScene::GetInstance().GetMainCameraPtr(); camera)
+    if (auto* camera = MDyWorld::GetInstance().GetMainCameraPtr(); camera)
     {
       const auto viewMatrix = glGetUniformLocation(shaderResource->GetShaderProgramId(), "viewMatrix");
       const auto projMatirx = glGetUniformLocation(shaderResource->GetShaderProgramId(), "projectionMatrix");

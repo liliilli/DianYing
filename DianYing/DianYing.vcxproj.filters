@@ -33,7 +33,6 @@
     <ClCompile Include="Source\Core\Component\Information\ModelInformation.cc" />
     <ClCompile Include="Source\Core\Component\MeshRenderer.cc" />
     <ClCompile Include="Source\Core\Component\Object\Camera.cc" />
-    <ClCompile Include="Source\Management\SceneManager.cc" />
     <ClCompile Include="Source\Management\WindowManager.cc" />
     <ClCompile Include="Source\Management\LoggingManager.cc" />
     <ClCompile Include="Source\Helper\ThreadPool.cc" />
@@ -88,6 +87,8 @@
     <ClCompile Include="Source\Element\Actor.cc" />
     <ClCompile Include="Source\Element\Pawn.cc" />
     <ClCompile Include="Source\Element\Abstract\ADyTransformable.cc" />
+    <ClCompile Include="Source\Management\WorldManager.cc" />
+    <ClCompile Include="Source\Element\Abstract\ADyNameCounterMap.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -133,7 +134,6 @@
     <ClInclude Include="Include\Dy\Core\Component\Internal\ModelType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\EtcType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Object\Camera.h" />
-    <ClInclude Include="Include\Dy\Management\SceneManager.h" />
     <ClInclude Include="Include\Dy\Helper\Macroes.h" />
     <ClInclude Include="Include\Dy\Management\WindowManager.h" />
     <ClInclude Include="Include\Dy\Management\LoggingManager.h" />
@@ -213,6 +213,8 @@
     <ClInclude Include="Include\Dy\Element\Descriptor\LevelDescriptor.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderDeferredRendering.h" />
     <ClInclude Include="Include\Dy\Element\Actor.h" />
+    <ClInclude Include="Include\Dy\Management\WorldManager.h" />
+    <ClInclude Include="Include\Dy\Element\Abstract\ADyNameCounterMap.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />
