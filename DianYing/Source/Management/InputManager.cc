@@ -343,19 +343,15 @@ EDySuccess MDyInput::pfInitialize()
 }
 
 EDySuccess MDyInput::pReadInputFile(const std::string& file_path) {
-  std::ifstream stream { file_path, std::ios_base::in };
-  if (!stream.good()) {
+  auto opJsonAtlas = DyGetJsonAtlas(file_path);
+  if (!opJsonAtlas.has_value())
+  {
     MDY_LOG_CRITICAL(err_input_failed_load_file, file_path);
     MDY_LOG_ERROR("Input feature will be disabled.");
-    stream.close();
-
     PHITOS_NOT_IMPLEMENTED_ASSERT();
     return DY_FAILURE;
   }
-
-  nlohmann::json atlas_json;
-  stream >> atlas_json;
-  stream.close();
+  const auto& atlas_json = opJsonAtlas.value();
 
   if (!DyIsJsonKeyExist(atlas_json, "mode")) {
     MDY_LOG_CRITICAL(err_input_failed_json_file, "mode", file_path);
