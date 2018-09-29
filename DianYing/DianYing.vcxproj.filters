@@ -215,6 +215,33 @@
     <ClInclude Include="Include\Dy\Management\WorldManager.h" />
     <ClInclude Include="Include\Dy\Element\Abstract\ADyNameCounterMap.h" />
     <ClInclude Include="Include\Dy\Management\MetaInfoManager.h" />
+    <ClInclude Include="Include\Dy\testLuaLibrary.h" />
+    <ClInclude Include="Libraries\lua\include\lua.hpp" />
+    <ClInclude Include="Libraries\lua\include\lua.h" />
+    <ClInclude Include="Libraries\lua\include\lapi.h" />
+    <ClInclude Include="Libraries\lua\include\lauxlib.h" />
+    <ClInclude Include="Libraries\lua\include\lcode.h" />
+    <ClInclude Include="Libraries\lua\include\lctype.h" />
+    <ClInclude Include="Libraries\lua\include\ldebug.h" />
+    <ClInclude Include="Libraries\lua\include\ldo.h" />
+    <ClInclude Include="Libraries\lua\include\lfunc.h" />
+    <ClInclude Include="Libraries\lua\include\lgc.h" />
+    <ClInclude Include="Libraries\lua\include\llex.h" />
+    <ClInclude Include="Libraries\lua\include\llimits.h" />
+    <ClInclude Include="Libraries\lua\include\lmem.h" />
+    <ClInclude Include="Libraries\lua\include\lobject.h" />
+    <ClInclude Include="Libraries\lua\include\lopcodes.h" />
+    <ClInclude Include="Libraries\lua\include\lparser.h" />
+    <ClInclude Include="Libraries\lua\include\lprefix.h" />
+    <ClInclude Include="Libraries\lua\include\lstate.h" />
+    <ClInclude Include="Libraries\lua\include\lstring.h" />
+    <ClInclude Include="Libraries\lua\include\ltable.h" />
+    <ClInclude Include="Libraries\lua\include\ltm.h" />
+    <ClInclude Include="Libraries\lua\include\luaconf.h" />
+    <ClInclude Include="Libraries\lua\include\lualib.h" />
+    <ClInclude Include="Libraries\lua\include\lundump.h" />
+    <ClInclude Include="Libraries\lua\include\lvm.h" />
+    <ClInclude Include="Libraries\lua\include\lzio.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

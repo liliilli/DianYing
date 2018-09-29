@@ -12,8 +12,6 @@
 /// SOFTWARE.
 ///
 
-#include <sol2/sol.hpp>
-
 #include <Dy/Management/DataInformationManager.h>
 #include <Dy/Management/HeapResourceManager.h>
 #include <Dy/Management/InputManager.h>
@@ -31,6 +29,7 @@
 
 #include <Dy/Management/Editor/GuiManager.h>
 #include <Dy/Helper/Pointer.h>
+#include <Dy/testLuaLibrary.h>
 
 
 namespace
@@ -185,16 +184,11 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLin
   gpCmdLine       = pCmdLine;
   gnCmdShow       = nCmdShow;
 
-#ifdef false
-  sol::state lua;
-  lua.open_libraries(sol::lib::base, sol::lib::package);
-
-  int value = lua.script("return 54");
-  MDY_LOG_CRITICAL_D("Hello world Lua! : {}", value);
-#endif
-
   MDY_WIN32_TRY_TURN_ON_DEBUG();
+
   DyInitiailzeAllManagers();
+
+#ifdef false
 
   DyTempInitializeTestResources();
 
@@ -202,6 +196,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLin
   dy::MDyWindow::GetInstance().Run();
 
   MDY_LOG_INFO_D("Release all managers and resources.");
+#endif
+
+  dy::DyLuaEntryPoint();
+
   DyReleaseAllManagers();
   MDY_WIN32_TRY_TURN_OFF_DEBUG();
   return 0;

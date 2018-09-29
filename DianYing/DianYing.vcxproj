@@ -95,9 +95,10 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>C:\TPLibraries\PhysX-3.4\PxShared\lib\vc15win64;C:\TPLibraries\PhysX-3.4\PhysX_3.4\Lib\vc15win64;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\lib;C:\TPLibraries\lua\lib\$(Platform)\$(Configuration);$(ProjectDir)Libraries\assimp\lib\$(Configuration)\$(Platform);C:\TPLibraries\glfw-3.2.1\build\src\Debug;$(ProjectDir)Libraries\FX11\bin\$(Platform)\$(Configuration);C:\VulkanSDK\1.1.82.0\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>PxFoundationDEBUG_x64.lib;PhysX3DEBUG_x64.lib;PhysX3CommonDEBUG_x64.lib;PhysX3ExtensionsDEBUG.lib;fmodL64_vc.lib;lua_build.lib;assimp-vc140-mt.lib;glfw3dll.lib;opengl32.lib;vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>PxFoundationDEBUG_x64.lib;PhysX3DEBUG_x64.lib;PhysX3CommonDEBUG_x64.lib;PhysX3ExtensionsDEBUG.lib;lua_build.lib;fmodL64_vc.lib;assimp-vc140-mt.lib;glfw3dll.lib;opengl32.lib;vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;msvcrtd.lib;libcmtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
-      <IgnoreSpecificDefaultLibraries>msvcrt.lib;libcmt.lib</IgnoreSpecificDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">
@@ -364,6 +365,7 @@
     <ClInclude Include="Include\Dy\Management\DataInformationManager.h" />
     <ClInclude Include="Include\Dy\Management\SettingManager.h" />
     <ClInclude Include="Include\Dy\Management\TimeManager.h" />
+    <ClInclude Include="Include\Dy\testLuaLibrary.h" />
     <ClInclude Include="Include\precompiled.h" />
     <ClInclude Include="Libraries\glad\include\glad\glad.h" />
     <ClInclude Include="Libraries\glad\include\KHR\khrplatform.h" />
@@ -371,6 +373,32 @@
     <ClInclude Include="Libraries\imgui\imgui\imgui_impl_opengl3.h" />
     <ClInclude Include="Libraries\imgui\imgui\imconfig.h" />
     <ClInclude Include="Libraries\imgui\imgui\imgui.h" />
+    <ClInclude Include="Libraries\lua\include\lapi.h" />
+    <ClInclude Include="Libraries\lua\include\lauxlib.h" />
+    <ClInclude Include="Libraries\lua\include\lcode.h" />
+    <ClInclude Include="Libraries\lua\include\lctype.h" />
+    <ClInclude Include="Libraries\lua\include\ldebug.h" />
+    <ClInclude Include="Libraries\lua\include\ldo.h" />
+    <ClInclude Include="Libraries\lua\include\lfunc.h" />
+    <ClInclude Include="Libraries\lua\include\lgc.h" />
+    <ClInclude Include="Libraries\lua\include\llex.h" />
+    <ClInclude Include="Libraries\lua\include\llimits.h" />
+    <ClInclude Include="Libraries\lua\include\lmem.h" />
+    <ClInclude Include="Libraries\lua\include\lobject.h" />
+    <ClInclude Include="Libraries\lua\include\lopcodes.h" />
+    <ClInclude Include="Libraries\lua\include\lparser.h" />
+    <ClInclude Include="Libraries\lua\include\lprefix.h" />
+    <ClInclude Include="Libraries\lua\include\lstate.h" />
+    <ClInclude Include="Libraries\lua\include\lstring.h" />
+    <ClInclude Include="Libraries\lua\include\ltable.h" />
+    <ClInclude Include="Libraries\lua\include\ltm.h" />
+    <ClInclude Include="Libraries\lua\include\lua.h" />
+    <ClInclude Include="Libraries\lua\include\lua.hpp" />
+    <ClInclude Include="Libraries\lua\include\luaconf.h" />
+    <ClInclude Include="Libraries\lua\include\lualib.h" />
+    <ClInclude Include="Libraries\lua\include\lundump.h" />
+    <ClInclude Include="Libraries\lua\include\lvm.h" />
+    <ClInclude Include="Libraries\lua\include\lzio.h" />
     <ClInclude Include="Libraries\sol2\sol2\sol.hpp" />
     <ClInclude Include="Libraries\sol2\sol2\sol_forward.hpp" />
     <ClInclude Include="Libraries\stb\stb_image.h" />
