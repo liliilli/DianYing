@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Management/ExternalResouceInfoManager.h>
+#include <Dy/Management/MetaInfoManager.h>
 
 #include <nlohmann/json.hpp>
 #include <Dy/Helper/JsonHelper.h>
@@ -37,7 +37,7 @@ MDY_SET_IMMUTABLE_STRING(sTestPath, "./TestScene.DDat");
 namespace dy
 {
 
-EDySuccess MDyExtRscInfo::pfInitialize()
+EDySuccess MDyMetaInfo::pfInitialize()
 {
   const auto opJsonAtlas = DyGetJsonAtlas(sTestPath.data());
   if (!opJsonAtlas.has_value()) { return DY_FAILURE; }
@@ -53,13 +53,13 @@ EDySuccess MDyExtRscInfo::pfInitialize()
   return DY_SUCCESS;
 }
 
-EDySuccess MDyExtRscInfo::pfRelease()
+EDySuccess MDyMetaInfo::pfRelease()
 {
 
   return DY_SUCCESS;
 }
 
-const PDyLevelConstructDescriptor* MDyExtRscInfo::GetLevelMetaInformation(const std::string& levelName) const noexcept
+const PDyLevelConstructDescriptor* MDyMetaInfo::GetLevelMetaInformation(const std::string& levelName) const noexcept
 {
   const auto it = this->mLevelInfoMap.find(levelName);
   if (it == this->mLevelInfoMap.end())  { return nullptr; }

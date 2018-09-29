@@ -17,7 +17,7 @@
 #include <Dy/Helper/HashCompileCrc32.h>
 #include <Dy/Element/Pawn.h>
 #include <Dy/Management/WorldManager.h>
-#include "Dy/Management/ExternalResouceInfoManager.h"
+#include <Dy/Management/MetaInfoManager.h>
 
 //!
 //! Local translation unit function & data

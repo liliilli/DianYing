@@ -20,13 +20,13 @@ namespace dy
 {
 
 ///
-/// @class MDyExtRscInfo
+/// @class MDyMetaInfo
 /// @brief Resource path and information (not populaized) container type
 ///
-class MDyExtRscInfo : public ISingleton<MDyExtRscInfo>
+class MDyMetaInfo : public ISingleton<MDyMetaInfo>
 {
-  MDY_SINGLETON_PROPERTIES(MDyExtRscInfo);
-  MDY_SINGLETON_DERIVED(MDyExtRscInfo);
+  MDY_SINGLETON_PROPERTIES(MDyMetaInfo);
+  MDY_SINGLETON_DERIVED(MDyMetaInfo);
 public:
 
   ///
@@ -34,11 +34,6 @@ public:
   /// @return Return value is nullable if not found.
   ///
   const PDyLevelConstructDescriptor* GetLevelMetaInformation(const std::string& levelName) const noexcept;
-
-  ///
-  /// @brief
-  ///
-  EDySuccess InsertLevelMetaInformation(const std::string& filePath);
 
 private:
   template <typename TType>

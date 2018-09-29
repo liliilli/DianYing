@@ -79,7 +79,6 @@
     <ClCompile Include="Source\Builtin\ShaderGl\RenderBasicShadow.cc" />
     <ClCompile Include="Source\Management\Helper\PhysXErrorCallback.cc" />
     <ClCompile Include="Source\Management\PhysicsManager.cc" />
-    <ClCompile Include="Source\Management\ExternalResourceInfoManager.cc" />
     <ClCompile Include="Source\Management\FontManager.cc" />
     <ClCompile Include="Source\Element\Level.cc" />
     <ClCompile Include="Source\Element\Descriptor\GetDescriptors.cc" />
@@ -89,6 +88,7 @@
     <ClCompile Include="Source\Element\Abstract\ADyTransformable.cc" />
     <ClCompile Include="Source\Management\WorldManager.cc" />
     <ClCompile Include="Source\Element\Abstract\ADyNameCounterMap.cc" />
+    <ClCompile Include="Source\Management\MetaInfoManager.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -207,7 +207,6 @@
     <ClInclude Include="Include\Dy\Management\Helper\PhysXErrorCallback.h" />
     <ClInclude Include="Include\Dy\Management\PhysicsManager.h" />
     <ClInclude Include="Include\Dy\Management\FontManager.h" />
-    <ClInclude Include="Include\Dy\Management\ExternalResouceInfoManager.h" />
     <ClInclude Include="Include\Dy\Element\Pawn.h" />
     <ClInclude Include="Include\Dy\Element\Object.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\LevelDescriptor.h" />
@@ -215,6 +214,7 @@
     <ClInclude Include="Include\Dy\Element\Actor.h" />
     <ClInclude Include="Include\Dy\Management\WorldManager.h" />
     <ClInclude Include="Include\Dy\Element\Abstract\ADyNameCounterMap.h" />
+    <ClInclude Include="Include\Dy\Management\MetaInfoManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

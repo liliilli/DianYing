@@ -42,7 +42,7 @@
 
 #include <Dy/Management/HeapResourceManager.h>
 #include <Dy/Management/SoundManager.h>
-#include "Dy/Management/ExternalResouceInfoManager.h"
+#include "Dy/Management/MetaInfoManager.h"
 
 ///
 /// Undefined proprocessor WIN32 macro "max, min" for preventing misuse.

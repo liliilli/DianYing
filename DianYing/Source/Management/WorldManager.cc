@@ -15,7 +15,7 @@
 /// Header file
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Management/LoggingManager.h>
-#include <Dy/Management/ExternalResouceInfoManager.h>
+#include <Dy/Management/MetaInfoManager.h>
 
 #include <Dy/Element/Pawn.h>
 
@@ -69,7 +69,7 @@ void MDyWorld::Update(float dt)
       this->mLevel->Release();
     }
 
-    auto& instance            = MDyExtRscInfo::GetInstance();
+    auto& instance            = MDyMetaInfo::GetInstance();
     const auto* levelMetaInfo = instance.GetLevelMetaInformation(this->mNextLevelName);
 
     this->mLevel = std::make_unique<FDyLevel>();
@@ -106,7 +106,7 @@ CDyCamera* MDyWorld::GetMainCameraPtr() const noexcept
 
 EDySuccess MDyWorld::OpenLevel(const std::string& levelName)
 {
-  if (MDyExtRscInfo::GetInstance().GetLevelMetaInformation(levelName) == nullptr)
+  if (MDyMetaInfo::GetInstance().GetLevelMetaInformation(levelName) == nullptr)
   {
     MDY_LOG_ERROR("{} | Failed to find and travel next level. Level name is not found. | Level name : {}", levelName);
     return DY_FAILURE;
