@@ -89,6 +89,9 @@
     <ClCompile Include="Source\Management\WorldManager.cc" />
     <ClCompile Include="Source\Element\Abstract\ADyNameCounterMap.cc" />
     <ClCompile Include="Source\Management\MetaInfoManager.cc" />
+    <ClCompile Include="Source\Test\testLuaVariable.cc" />
+    <ClCompile Include="Source\Test\testLuaEntry.cc" />
+    <ClCompile Include="Source\Test\testLuaHelloWorld.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -215,7 +218,6 @@
     <ClInclude Include="Include\Dy\Management\WorldManager.h" />
     <ClInclude Include="Include\Dy\Element\Abstract\ADyNameCounterMap.h" />
     <ClInclude Include="Include\Dy\Management\MetaInfoManager.h" />
-    <ClInclude Include="Include\Dy\testLuaLibrary.h" />
     <ClInclude Include="Libraries\lua\include\lua.hpp" />
     <ClInclude Include="Libraries\lua\include\lua.h" />
     <ClInclude Include="Libraries\lua\include\lapi.h" />
@@ -242,8 +244,12 @@
     <ClInclude Include="Libraries\lua\include\lundump.h" />
     <ClInclude Include="Libraries\lua\include\lvm.h" />
     <ClInclude Include="Libraries\lua\include\lzio.h" />
+    <ClInclude Include="Include\Dy\Test\testLua.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TestResource\Lua\variables.lua" />
   </ItemGroup>
 </Project>

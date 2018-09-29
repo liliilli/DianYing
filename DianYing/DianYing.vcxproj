@@ -249,6 +249,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Source\Test\testLuaEntry.cc" />
+    <ClCompile Include="Source\Test\testLuaHelloWorld.cc" />
+    <ClCompile Include="Source\Test\testLuaVariable.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Dy\Builtin\Model\Box.h" />
@@ -365,7 +368,7 @@
     <ClInclude Include="Include\Dy\Management\DataInformationManager.h" />
     <ClInclude Include="Include\Dy\Management\SettingManager.h" />
     <ClInclude Include="Include\Dy\Management\TimeManager.h" />
-    <ClInclude Include="Include\Dy\testLuaLibrary.h" />
+    <ClInclude Include="Include\Dy\Test\testLua.h" />
     <ClInclude Include="Include\precompiled.h" />
     <ClInclude Include="Libraries\glad\include\glad\glad.h" />
     <ClInclude Include="Libraries\glad\include\KHR\khrplatform.h" />
@@ -409,6 +412,11 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TestResource\Lua\variables.lua">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
