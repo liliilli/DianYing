@@ -118,6 +118,13 @@
 #define MDY_SET_IMMUTABLE_STRING(__MAName__, __MAString__) \
   constexpr std::string_view __MAName__ = __MAString__
 
+///
+/// @macro MDY_UNQMVCAST
+/// @brief Static cast with moving of unique_ptr
+///
+#define MDY_UNQMVCAST(__MACastType__, __MAInstance__) \
+  std::unqiue_ptr<__MACastType__*>(static_cast<__MACastType__*>(__MAInstance__.release()))
+
 //!
 //! Do not touch below section!
 //!
