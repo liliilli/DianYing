@@ -26,8 +26,16 @@ namespace dy
 ///
 class FDyActor : public FDyObject, public ADyTransformable
 {
+  MDY_SET_CRC32_HASH_WITH_TYPE(FDyActor);
+  MDY_SET_TYPEMATCH_FUNCTION(FDyObject, FDyActor);
 public:
   FDyActor() = default;
+
+  ///
+  /// @brief Release function (virtual) because Initialize function has different parameter but release does not need any parameter.
+  /// @return Success flag.
+  ///
+  [[nodiscard]] virtual EDySuccess Release();
 
   ///
   /// @brief Get present actor name on runtime.

@@ -16,6 +16,7 @@
 #include <Dy/Element/Level.h>
 #include <Dy/Helper/HashCompileCrc32.h>
 #include "Dy/Element/Pawn.h"
+#include "Dy/Management/WorldManager.h"
 
 //!
 //! Local translation unit function & data
@@ -47,7 +48,7 @@ void FDyLevel::Initialize(const PDyLevelConstructDescriptor& desc)
     {
     case EDyFDyObjectType::FDyPawn:
       {
-        auto instancePtr = std::make_unique<CDyPawn>();
+        auto instancePtr = std::make_unique<FDyPawn>();
         MDY_CALL_ASSERT_SUCCESS(instancePtr->Initialize(objectInformation));
         // @TODO IMPLEMENT PARENT TRANSFORMATION RELOCATION MECHANISM
         if (objectInformation.mParentMetaIndex != -1)
@@ -58,8 +59,8 @@ void FDyLevel::Initialize(const PDyLevelConstructDescriptor& desc)
         }
         else
         {
-          auto [it, result] = this->mActorList.try_emplace(objectInformation.mName, std::move(instancePtr));
-          if (result == false) { PHITOS_UNEXPECTED_BRANCH(); }
+          auto [it, result] = this->mActorMap.try_emplace(objectInformation.mName, std::move(instancePtr));
+          if (!result) { PHITOS_UNEXPECTED_BRANCH(); }
         }
       } break;
     case EDyFDyObjectType::FDyDirectionalLight:
@@ -88,6 +89,22 @@ void FDyLevel::Initialize(const PDyLevelConstructDescriptor& desc)
 void FDyLevel::Release()
 {
   MDY_LOG_INFO("{} | Release level context. | Level name : {}", "FDyLevel::Release()", this->mLevelName);
+  for (auto& [name, actor] : this->mActorMap)
+  {
+    if (!actor) continue;
+    else
+    {
+      const auto flag = actor->Release();
+      if (flag == DY_FAILURE)
+      {
+        MDY_LOG_WARNING("{} | Release function is failed. | Actor name : {}", "FDyLevel::Release", actor->GetActorName());
+      }
+
+      MDyWorld::GetInstance().pfMoveActorToGc(DyMakeNotNull(actor.release()));
+      MDyWorld::GetInstance().pfMoveIteratorToGc(this->mActorMap.find(name));
+    }
+  }
+
   this->mInitialized = false;
 }
 

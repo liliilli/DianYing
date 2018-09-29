@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Element/Interface/IDyToString.h>
+#include <Dy/Helper/HashCompileCrc32.h>
 
 namespace dy
 {
@@ -48,8 +49,19 @@ protected:
     this->mObjectName = newObjectName;
   }
 
+  ///
+  /// @brief  Type match for static casting of instance in runtime
+  /// @param  hashVal CRC32 hashValue
+  /// @return If type is matched return true but false.
+  ///
+  virtual bool IsTypeMatched(const TU32 hashVal) const noexcept
+  {
+    return this->__mHashVal == hashVal;
+  }
+
 private:
   MDY_TRANSIENT std::string mObjectName = MDY_NOT_INITILAIZED_STR;
+  MDY_SET_CRC32_HASH_WITH_TYPE(FDyObject);
 };
 
 } /// ::dy namespace

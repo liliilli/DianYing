@@ -51,6 +51,8 @@ class FDyPawn : public FDyActor, public IDyScriptable
 	using TGameObjectSmtPtr = std::unique_ptr<FDyPawn>;
 	using TGameObjectMap    = std::unordered_map<std::string, TGameObjectSmtPtr>;
 
+  MDY_SET_CRC32_HASH_WITH_TYPE(FDyPawn);
+  MDY_SET_TYPEMATCH_FUNCTION(FDyActor, FDyPawn);
 public:
 	FDyPawn() = default;
 	virtual ~FDyPawn() = default;
@@ -64,7 +66,7 @@ public:
   [[nodiscard]] EDySuccess Initialize(const DDyObjectInformation& desc);
 
   /// Release properties
-  [[nodiscard]] EDySuccess Release();
+  [[nodiscard]] EDySuccess Release() override;
 
   /// Return pawn's information.
   std::string ToString() override

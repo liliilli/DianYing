@@ -18,6 +18,7 @@
 #include <Dy/Helper/Type/Color.h>
 #include <Dy/Element/Object.h>
 #include <Dy/Element/Actor.h>
+#include <Dy/Element/Abstract/ADyNameCounterMap.h>
 #include <Dy/Element/Descriptor/LevelDescriptor.h>
 #include <Dy/Element/Interface/IDyUpdatable.h>
 
@@ -27,7 +28,7 @@ namespace dy {
 /// @class FDyLevel
 /// @brief Level class type for managing run-time interactive world space.
 ///
-class FDyLevel final : public FDyObject, public IDyUpdatable
+class FDyLevel final : public FDyObject, public IDyUpdatable, public ADyNameCounterMap
 {
   using TActorSmtPtr = std::unique_ptr<FDyActor>;
   using TActorMap    = std::unordered_map<std::string, TActorSmtPtr>;
@@ -44,8 +45,8 @@ public:
   void Update(float dt) override final;
 
   ///
-  /// @brief Get present level name.
-  /// @return
+  /// @brief  Get present level name.
+  /// @return Level name.
   ///
   [[nodiscard]]
   const std::string& GetLevelName() const noexcept
@@ -61,7 +62,7 @@ private:
   /// Scene basic color
   DDyColor        mLevelBackgroundColor = DDyColor::White;
   /// Actor list (hierarchial version)
-  TActorMap       mActorList            = {};
+  TActorMap       mActorMap            = {};
   /// Check if level is initialized or released. Level is active when only mInitialized is true.
   bool            mInitialized          = false;
 
@@ -139,7 +140,7 @@ public:
 	/// @brief Get specific object with tag.
 	///
   [[nodiscard]]
-	std::optional<CDyPawn*> GetPawn(const std::string& objectName, bool isRecursive = false);
+	std::optional<FDyPawn*> GetPawn(const std::string& objectName, bool isRecursive = false);
 
 	///
 	/// @brief Destroy object has unique tag key but not recursively.
@@ -156,7 +157,7 @@ public:
 	/// @return Success/Failed tag.
   /// If arbitary m_object_list has been destroyed, return ture.
   ///
-  [[nodiscard]] EDySuccess DestroyPawn(const CDyPawn& objectRef, bool isRecursive = false);
+  [[nodiscard]] EDySuccess DestroyPawn(const FDyPawn& objectRef, bool isRecursive = false);
 
 private:
   ///

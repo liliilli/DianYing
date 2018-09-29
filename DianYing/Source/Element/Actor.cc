@@ -18,6 +18,11 @@
 namespace dy
 {
 
+EDySuccess FDyActor::Release()
+{
+  return DY_SUCCESS;
+}
+
 void FDyActor::SetParent(NotNull<FDyActor*> validParentRawPtr) noexcept
 {
   mParentFDyActorRawPtr = validParentRawPtr;

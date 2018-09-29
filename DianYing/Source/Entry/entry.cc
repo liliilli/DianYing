@@ -20,12 +20,12 @@
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/PhysicsManager.h>
 #include <Dy/Management/RenderingManager.h>
-#include <Dy/Management/SceneManager.h>
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/SoundManager.h>
 #include <Dy/Management/SynchronizationManager.h>
 #include <Dy/Management/TimeManager.h>
 #include <Dy/Management/WindowManager.h>
+#include <Dy/Management/WorldManager.h>
 #include <Dy/Management/ExternalResouceInfoManager.h>
 #include <Dy/Management/FontManager.h>
 
@@ -72,7 +72,7 @@ void DyInitiailzeAllManagers()
   MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyDataInformation::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyHeapResource::Initialize());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyScene::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyWorld::Initialize());
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDyExtRscInfo::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyWindow::Initialize());
@@ -106,7 +106,7 @@ void DyReleaseAllManagers()
   MDY_CALL_ASSERT_SUCCESS(dy::MDyExtRscInfo::Release());
 
   // Release other management instance.
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyScene::Release());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyWorld::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyHeapResource::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyDataInformation::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Release());
