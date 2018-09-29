@@ -15,8 +15,9 @@
 /// Header file
 #include <Dy/Element/Level.h>
 #include <Dy/Helper/HashCompileCrc32.h>
-#include "Dy/Element/Pawn.h"
-#include "Dy/Management/WorldManager.h"
+#include <Dy/Element/Pawn.h>
+#include <Dy/Management/WorldManager.h>
+#include "Dy/Management/ExternalResouceInfoManager.h"
 
 //!
 //! Local translation unit function & data
@@ -36,7 +37,48 @@ namespace dy
 
 void FDyLevel::Initialize(const PDyLevelConstructDescriptor& desc)
 {
-  this->mLevelName            = desc.mLevelName;
+  ///
+  /// @brief  Create pawn instance and set fundamental properties.
+  /// @param  objectInformation Information to create FDyPawn instance.
+  ///
+  static auto pCreatePawn = [&](const DDyObjectInformation& objectInformation)
+  {
+    auto instancePtr = std::make_unique<FDyPawn>();
+    MDY_CALL_ASSERT_SUCCESS(instancePtr->Initialize(objectInformation));
+
+    // @TODO IMPLEMENT PARENT TRANSFORMATION RELOCATION MECHANISM
+    if (objectInformation.mParentMetaIndex != -1)
+    {
+#ifdef false
+      PHITOS_NOT_IMPLEMENTED_ASSERT();
+      instancePtr->SetParent();
+#endif
+    }
+    else
+    {
+      // Insert created ptr into actor map of this scene. (root)
+      auto[it, result]    = this->mActorMap.try_emplace(objectInformation.mName, std::move(instancePtr));
+
+      // Insert inserted FDyPawn raw pointer instance to script update list.
+      FDyPawn* pawnRawPtr = static_cast<FDyPawn*>(it->second.get());
+      const auto id       = MDyWorld::GetInstance().pfEnrollActivePawn(DyMakeNotNull(pawnRawPtr));
+      pawnRawPtr->pfSetListIndex(id);
+
+      if (!result) { PHITOS_UNEXPECTED_BRANCH(); }
+    }
+  };
+
+  ///
+  /// @brief  Create FDyDirectionalLight instance and set fundamental properties.
+  /// @param  objectInformation Information to create FDyDirectionalLight instance.
+  ///
+  static auto pCreateDirectionalLight = [&](const DDyObjectInformation& objectInformation)
+  {
+    MDY_LOG_CRITICAL("EDyFDyObjectType::FDyDirectionalLight: NOT IMPLEMENTED");
+  };
+
+  // Body
+  this->mLevelName = desc.mLevelName;
   this->mLevelHashIdentifier  = hash::DyToCrc32Hash(this->mLevelName.c_str());
   this->mLevelBackgroundColor = desc.mLevelBackgroundColor;
 
@@ -46,27 +88,8 @@ void FDyLevel::Initialize(const PDyLevelConstructDescriptor& desc)
     const auto type = objectInformation.mType;
     switch (type)
     {
-    case EDyFDyObjectType::FDyPawn:
-      {
-        auto instancePtr = std::make_unique<FDyPawn>();
-        MDY_CALL_ASSERT_SUCCESS(instancePtr->Initialize(objectInformation));
-        // @TODO IMPLEMENT PARENT TRANSFORMATION RELOCATION MECHANISM
-        if (objectInformation.mParentMetaIndex != -1)
-        {
-#ifdef false
-          instancePtr->SetParent();
-#endif
-        }
-        else
-        {
-          auto [it, result] = this->mActorMap.try_emplace(objectInformation.mName, std::move(instancePtr));
-          if (!result) { PHITOS_UNEXPECTED_BRANCH(); }
-        }
-      } break;
-    case EDyFDyObjectType::FDyDirectionalLight:
-      {
-        MDY_LOG_CRITICAL("EDyFDyObjectType::FDyDirectionalLight: NOT IMPLEMENTED");
-      } break;
+    case EDyFDyObjectType::FDyPawn:                 pCreatePawn(objectInformation); break;
+    case EDyFDyObjectType::FDyDirectionalLight:     pCreateDirectionalLight(objectInformation); break;
     case EDyFDyObjectType::FDyPostprocessBlock:
     case EDyFDyObjectType::FDyPointLight:
     case EDyFDyObjectType::FDySpotLight:
@@ -101,7 +124,6 @@ void FDyLevel::Release()
       }
 
       MDyWorld::GetInstance().pfMoveActorToGc(DyMakeNotNull(actor.release()));
-      MDyWorld::GetInstance().pfMoveIteratorToGc(this->mActorMap.find(name));
     }
   }
 

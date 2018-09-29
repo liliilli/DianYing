@@ -429,14 +429,25 @@ private:
   const std::array<DDyVector3, 3>& pfGetObjectWorldSpaceAxis() const noexcept;
 #endif
 
+  ///
+  /// @brief  Set list index for iterating update sequence.
+  /// Index value should be invalidated when FDyPawn is disabled or destroyed.
+  /// @param  index new Index value.
+  ///
+  void pfSetListIndex(TI32 index) noexcept;
+
+  /// Transient variable, check transform is initialized with parent's transform finally.
   MDY_TRANSIENT bool        mIsTransformInitialized       = false;
-  /// Parent object. if nullptr, this object has no parent and be on scene.
-  FDyPawn*                  mParentRawPtr                 = nullptr;
+
+  /// Transient variable, list id for updating
+  MDY_TRANSIENT TI32        mActivatedUpdateListId        = MDY_NOT_INITIALIZED_M1;
 
   /// Object name counter to avoid duplicated object name
   TNameCounterMap           __mChildSubobjectNameCounter;
   mutable uint32_t          __mHashValue                  = 0;
   mutable bool              __mHashInitialized            = false;
+
+  friend class FDyLevel;
 };
 
 } /// ::dy namespace

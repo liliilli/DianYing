@@ -16,6 +16,7 @@
 #include <Dy/Element/Object.h>
 #include <Dy/Element/Abstract/ADyTransformable.h>
 #include <Dy/Core/Component/Internal/MaterialType.h>
+#include "Descriptor/LevelDescriptor.h"
 
 namespace dy
 {
@@ -73,14 +74,30 @@ public:
   void SetParentToRootRelocateTransform() noexcept;
 
   ///
+  /// @brief Return actor's information
+  /// @return information string.
+  ///
   std::string ToString() override
   {
     return MDY_NOT_INITILAIZED_STR;
   }
 
+  ///
+  /// @brief  Get actual actor type
+  /// @return Object type specifier
+  ///
+  [[nodiscard]] FORCEINLINE EDyFDyObjectType GetActorType() const noexcept
+  {
+    return this->mActorType;
+  }
+
+protected:
+  /// Actual actor type to discriminate actor type is so cast object with statically.
+  MDY_TRANSIENT EDyFDyObjectType mActorType = EDyFDyObjectType::Error;
+
 private:
   /// Parent FDyActor raw-pointer data.
-  FDyActor* mParentFDyActorRawPtr = nullptr;
+  FDyActor*         mParentFDyActorRawPtr = nullptr;
 };
 
 } /// ::dy namespace

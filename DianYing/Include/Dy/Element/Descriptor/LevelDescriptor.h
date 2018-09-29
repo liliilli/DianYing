@@ -22,7 +22,7 @@ namespace dy
 
 ///
 /// @enum EDyFDyObjectType
-/// @brief
+/// @brief Object type
 ///
 enum class EDyFDyObjectType
 {
@@ -41,7 +41,7 @@ enum class EDyFDyObjectType
 
 ///
 /// @enum EDyCDyComponentType
-/// @brief
+/// @brief Component type to attach FDyObject as component
 ///
 enum class EDyCDyComponentType
 {

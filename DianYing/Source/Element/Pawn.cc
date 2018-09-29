@@ -15,12 +15,14 @@
 /// Header file
 #include <Dy/Element/Pawn.h>
 #include <Dy/Element/Descriptor/LevelDescriptor.h>
+#include <Dy/Management/WorldManager.h>
 
 namespace dy
 {
 
 EDySuccess FDyPawn::Initialize(const DDyObjectInformation& desc)
 {
+  this->mActorType = desc.mType;
   this->pSetObjectName(desc.mName);
   this->SetWorldSpacePosition(desc.mTransform.mPosition);
   this->SetWorldEulerAngle(desc.mTransform.mRotation);
@@ -34,7 +36,18 @@ EDySuccess FDyPawn::Initialize(const DDyObjectInformation& desc)
 EDySuccess FDyPawn::Release()
 {
   MDY_LOG_CRITICAL("FDyPawn::Release, {}", this->GetActorName());
+
+  // If pawn is activated, request to MDyWorld to unenroll mine.
+  if (this->mActivatedUpdateListId != MDY_NOT_INITIALIZED_M1)
+  {
+    MDyWorld::GetInstance().pfUnenrollActivePawn(this->mActivatedUpdateListId);
+  }
   return DY_SUCCESS;
+}
+
+void FDyPawn::pfSetListIndex(TI32 index) noexcept
+{
+  this->mActivatedUpdateListId = index;
 }
 
 } /// ::dy namespace
