@@ -201,6 +201,7 @@
     <ClCompile Include="Source\Editor\Gui\ViewViewportMain.cc" />
     <ClCompile Include="Source\Editor\Gui\ViewWorldOutliner.cc" />
     <ClCompile Include="Source\Editor\Helper\Win32Helper.cc" />
+    <ClCompile Include="Source\Element\Abstract\ADyBaseComponent.cc" />
     <ClCompile Include="Source\Element\Abstract\ADyNameCounterMap.cc" />
     <ClCompile Include="Source\Element\Abstract\ADyTransformable.cc" />
     <ClCompile Include="Source\Element\Actor.cc" />
@@ -222,6 +223,7 @@
     <ClCompile Include="Source\Helper\Type\Matrix3.cc" />
     <ClCompile Include="Source\Helper\Type\Matrix4.cc" />
     <ClCompile Include="Source\Helper\Type\Quaternion.cc" />
+    <ClCompile Include="Source\Helper\Type\ThreeStateBool.cc" />
     <ClCompile Include="Source\Helper\Type\Vector2.cc" />
     <ClCompile Include="Source\Helper\Type\Vector3.cc" />
     <ClCompile Include="Source\Helper\Type\Vector4.cc" />
@@ -275,6 +277,8 @@
     <ClInclude Include="Include\Dy\Editor\Gui\Dialog\ProjectCreator.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\Helper\ComponentHelper.h" />
     <ClInclude Include="Include\Dy\Editor\Helper\Win32Helper.h" />
+    <ClInclude Include="Include\Dy\Element\Abstract\ADyBaseComponent.h" />
+    <ClInclude Include="Include\Dy\Element\Abstract\ADyGeneralBaseComponent.h" />
     <ClInclude Include="Include\Dy\Element\Abstract\ADyTransformable.h" />
     <ClInclude Include="Include\Dy\Element\Actor.h" />
     <ClInclude Include="Include\Dy\Element\Abstract\ADyNameCounterMap.h" />
@@ -327,6 +331,7 @@
     <ClInclude Include="Include\Dy\Helper\JsonHelper.h" />
     <ClInclude Include="Include\Dy\Helper\Pointer.h" />
     <ClInclude Include="Include\Dy\Helper\ThreadPool.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\ThreeStateBool.h" />
     <ClInclude Include="Include\Dy\Management\Editor\GuiManager.h" />
     <ClInclude Include="Include\Dy\Management\Editor\GuiSetting.h" />
     <ClInclude Include="Include\Dy\Management\Editor\GuiWindowFactory.h" />

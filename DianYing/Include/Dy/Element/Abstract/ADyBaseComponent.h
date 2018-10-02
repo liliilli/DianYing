@@ -14,7 +14,9 @@
 ///
 
 #include <Dy/Helper/HashCompileCrc32.h>
-#include "Dy/Helper/Type/ThreeStateBool.h"
+#include <Dy/Helper/Type/ThreeStateBool.h>
+#include <Dy/Element/Interface/IDyToString.h>
+#include "Dy/Core/Component/Internal/MaterialType.h"
 
 //!
 //! Forward declaration
@@ -36,10 +38,16 @@ namespace dy
 /// @class ADyBaseComponent
 /// @brief Base component type
 ///
-MDY_ABSTRACT ADyBaseComponent
+MDY_ABSTRACT ADyBaseComponent : public IDyToString
 {
 public:
   ADyBaseComponent(FDyActor& actorReference);
+
+  ADyBaseComponent(const ADyBaseComponent&)             = delete;
+  ADyBaseComponent& operator=(const ADyBaseComponent&)  = delete;
+  ADyBaseComponent(ADyBaseComponent&& instance) noexcept;
+  ADyBaseComponent& operator=(ADyBaseComponent&& instance) noexcept;
+
   virtual ~ADyBaseComponent() = default;
 
   ///
@@ -64,14 +72,6 @@ public:
   ///
   MDY_NODISCARD bool IsComponentActivated() const noexcept;
 
-private:
-
-  /// Activate flag for operating component.
-  DDy3StateBool mActivateFlag = {};
-
-  /// Transient variable, list id for updating
-  MDY_TRANSIENT TI32 mActivatedUpdateListId = MDY_INITIALIZE_DEFINT;
-
   ///
   /// @brief  Type match for static casting of instance in runtime
   /// @param  hashVal CRC32 hashValue
@@ -81,6 +81,13 @@ private:
   {
     return ADyBaseComponent::__mHashVal == hashVal;
   }
+private:
+  /// Activate flag for operating component.
+  DDy3StateBool       mActivateFlag           = {};
+  /// Binded actor raw pointer.
+  FDyActor*           mBindedActor            = MDY_INITIALIZE_NULL;
+  /// Transient variable, list id for updating
+  MDY_TRANSIENT TI32  mActivatedUpdateListId  = MDY_INITIALIZE_DEFINT;
 
   MDY_SET_CRC32_HASH_WITH_TYPE(ADyBaseComponent);
 };

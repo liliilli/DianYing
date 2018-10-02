@@ -50,6 +50,15 @@ public:
   ///
   MDY_NODISCARD bool IsOutputValueChanged() const noexcept;
 
+  ///
+  /// @brief Check output value is true.
+  /// @return Output value.
+  ///
+  operator bool() const noexcept
+  {
+    return this->mOutput;
+  }
+
 private:
   /// @brief Update output / oldOutput value comparing parent and input.
   void pUpdateOutputs();

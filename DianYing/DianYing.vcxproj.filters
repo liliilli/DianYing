@@ -95,6 +95,8 @@
     <ClCompile Include="Source\Test\TestLuaFunctions.cc" />
     <ClCompile Include="Source\Test\TestLuaCpp.cc" />
     <ClCompile Include="Source\Management\Helper\PhysxSimulationCallback.cc" />
+    <ClCompile Include="Source\Helper\Type\ThreeStateBool.cc" />
+    <ClCompile Include="Source\Element\Abstract\ADyBaseComponent.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -250,6 +252,9 @@
     <ClInclude Include="Include\Dy\Test\testLua.h" />
     <ClInclude Include="Include\Dy\Test\TestMacroSetting.h" />
     <ClInclude Include="Include\Dy\Management\Helper\PhysxSimulationCallback.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\ThreeStateBool.h" />
+    <ClInclude Include="Include\Dy\Element\Abstract\ADyBaseComponent.h" />
+    <ClInclude Include="Include\Dy\Element\Abstract\ADyGeneralBaseComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />
