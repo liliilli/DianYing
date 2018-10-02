@@ -24,7 +24,9 @@ class FDyBuiltinShaderGLRenderColorGeometry final
 {
 public:
   FDyBuiltinShaderGLRenderColorGeometry();
-  inline static constexpr std::string_view sName = "dyBtShaderGlRenderColGeom";
+
+  /// Constant name for creating DDyShaderInformation
+  inline static MDY_SET_IMMUTABLE_STRING(sName, "dyBtShaderGlRenderColGeom");
 };
 
 } /// ::dy::builtin namespace

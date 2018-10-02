@@ -31,6 +31,13 @@ EDySuccess FDyPawn::Initialize(const DDyObjectInformation& desc)
   const auto& scriptInfo = std::any_cast<const DDyFdyPawnDependencyInformation&>(desc.mDependencyInfo);
   MDY_LOG_CRITICAL("Script path : {}", scriptInfo.mScriptPath);
   return DY_SUCCESS;
+
+  //!
+  //! PHYSX TEST ROUTINE
+  //!
+#ifdef true
+
+#endif
 }
 
 EDySuccess FDyPawn::Release()
@@ -38,11 +45,41 @@ EDySuccess FDyPawn::Release()
   MDY_LOG_CRITICAL("FDyPawn::Release, {}", this->GetActorName());
 
   // If pawn is activated, request to MDyWorld to unenroll mine.
-  if (this->mActivatedUpdateListId != MDY_NOT_INITIALIZED_M1)
+  if (this->mActivatedUpdateListId != MDY_INITIALIZE_DEFINT)
   {
     MDyWorld::GetInstance().pfUnenrollActivePawn(this->mActivatedUpdateListId);
   }
   return DY_SUCCESS;
+}
+
+void FDyPawn::Initiate()
+{
+  MDY_LOG_WARNING("FDyPawn::Initiate() | {}", this->GetActorName());
+}
+
+void FDyPawn::Start()
+{
+  MDY_LOG_WARNING("FDyPawn::Start() | {}", this->GetActorName());
+}
+
+void FDyPawn::Update(float dt)
+{
+  //MDY_LOG_WARNING("FDyPawn::Update() | {} : {}", this->GetActorName(), dt);
+}
+
+void FDyPawn::Destroy()
+{
+  MDY_LOG_WARNING("FDyPawn::Destroy() | {}", this->GetActorName());
+}
+
+void FDyPawn::OnEnabled()
+{
+  MDY_LOG_WARNING("FDyPawn::OnEnabled() | {}", this->GetActorName());
+}
+
+void FDyPawn::OnDisabled()
+{
+  MDY_LOG_WARNING("FDyPawn::OnDisabled() | {}", this->GetActorName());
 }
 
 void FDyPawn::pfSetListIndex(TI32 index) noexcept

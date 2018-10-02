@@ -43,28 +43,69 @@
 //!
 
 ///
+/// @macro MDY_TO_STRING
+/// @macro Convert __MAString__ to const char* literal.
+///
+#define MDY_TO_STRING(__MAString__) #__MAString__
+
+///
 /// @macro MDY_TRANSIENT
 /// @brief TRANSIENT variable
 ///
 #define MDY_TRANSIENT mutable
 
 ///
-/// @macro
+/// @macro MDY_NODISCARD
+/// @brief Nodiscard specifier
 ///
-#define MDY_TO_STRING(__MAString__) #__MAString__
+#define MDY_NODISCARD [[nodiscard]]
 
 ///
-/// @macro
+/// @macro MDY_DEPRECATED
+/// @brief Depereacted speicifer.
+///
+#define MDY_DEPRECATED(__MAVersion__, __MAFunction__, __MAAlternative__) \
+  [[deprecated(MDY_TO_STRING(__MAFunction__) " is deprecated from " MDY_TO_STRING(__MAVersion__) ". Use " MDY_TO_STRING(__MAAlternative__) " instead.")]]
+
+///
+/// @macro MDY_FALLTHROUGH
+/// @brief switch/case statement fallthrough next case.
+///
+#define MDY_FALLTHROUGH [[fallthrough]]
+
+///
+/// @macro MDY_CHECK_ISNULL
+/// @brief Check raw pointer is empty or not.
+///
+#define MDY_CHECK_ISNULL(__MAPointer__)     __MAPointer__ == nullptr
+
+///
+/// @macro MDY_CHECK_ISNULL
+/// @brief Check raw pointer is empty or not.
+///
+#define MDY_CHECK_ISNOTNULL(__MAPointer__)  __MAPointer__ != nullptr
+
+///
+/// @macro MDY_CHECK_ISEMPTY
+/// @brief Check smart pointer is empty or not.
+///
+#define MDY_CHECK_ISEMPTY(__MASmartPointer__) std::is_pointer_v<__MASmartPointer
+
+///
+/// @macro MDY_CASE_RETURN
+/// @brief
 ///
 #define MDY_CASE_RETURN(__Code__) case __Code__: return MDY_TO_STRING(__Code__)
 
 ///
-/// @macro
+/// @macro MDY_BITMASK_FLAG_TRUE
+/// @brief
 ///
 #define MDY_BITMASK_FLAG_TRUE(__MATarget__, __MAFlags__) __MATarget__ & __MAFlags__
 
 ///
-/// @macro
+/// @macro MDY_CHECK_EXECUTE
+/// @brief
 ///
 #define MDY_CHECK_EXECUTE(__MAFlag__, __MAFunctionCall__) \
   { \
@@ -72,7 +113,8 @@
   }
 
 ///
-/// @macro
+/// @macro MDY_CALL_ASSERT_SUCCESS
+/// @brief Assert that expression must be successful or output error or message box when Windows.
 ///
 #define MDY_CALL_ASSERT_SUCCESS(__MAFunctionCall__) \
   { \
@@ -88,22 +130,28 @@
 #define MDY_U8(__MAString__) u8##__MAString__
 
 ///
-/// @macro MDY_NOT_INITIALIZED_M1
+/// @macro MDY_INITIALIZE_DEFINT
 /// @brief Initialize arbitary variable with -1.
 ///
-#define MDY_NOT_INITIALIZED_M1 -1
+#define MDY_INITIALIZE_DEFINT -1
 
 ///
-/// @macro MDY_NOT_INITIALIZED_0
+/// @macro MDY_INITIALIZE_DEFUINT
 /// @brief Initialize arbitary variable with 0.
 ///
-#define MDY_NOT_INITIALIZED_0   0
+#define MDY_INITIALIZE_DEFUINT 0
 
 ///
 /// @macro MDY_NOT_INITIALIZED_STR
 /// @brief Initialize arbitary string variable (const char*, std::string, std::string_view) with empty but '\0'.
 ///
-#define MDY_NOT_INITILAIZED_STR ""
+#define MDY_INITILAIZE_EMPTYSTR ""
+
+///
+/// @macro MDY_INITIALIZE_NULL
+/// @brief Initialize arbitary pointer with nullptr.
+///
+#define MDY_INITIALIZE_NULL nullptr
 
 ///
 /// @macro MDY_BIND_BEGIN_END
@@ -229,6 +277,21 @@ virtual bool IsTypeMatched(const TU32 hashVal) const noexcept override { \
 /// @brief ABSTRACT because non-static member variables might be in type.
 ///
 #define MDY_ABSTRACT class
+
+///
+/// @macro MDY_GETSET
+/// @brief Helping construction of get and set boilerplate function of member variable.
+///
+#define MDY_GETSET(__MAVariable__)                                                    \
+  [[nodiscard]] const decltype(__MAVariable__)& Get##__MAVariable__() const noexcept  \
+  {                                                                                   \
+    return this->__MAVariable__;                                                      \
+  }                                                                                   \
+                                                                                      \
+  void Set##__MAVariable__(const decltype(__MAVariable__)& input##__MAVariable__)     \
+  {                                                                                   \
+    this->__MAVariable__ = input##__MAVariable__;                                     \
+  }
 
 ///
 /// @macro MDY_INTERFACE_PROPERTY

@@ -1,0 +1,57 @@
+{
+  "Meta":
+  {
+    "Name"  : "TestScene",
+    "Color" : 16777215
+  },
+  "Object":
+  [
+    {
+      "Name"      : "Test",
+      "Hash"      : "42932",
+      "Type"      : "Pawn",
+      "Position"  : { "X": 0, "Y": 0, "Z": 0 },
+      "Rotation"  : { "X": 0, "Y": 0, "Z": 0 },
+      "Scale"     : { "X": 1, "Y": 1, "Z": 1 },
+      "Parent"    : -1
+    },
+    {
+      "Name"      : "Test2",
+      "Hash"      : "11555",
+      "Type"      : "Pawn",
+      "Position"  : { "X": 128, "Y": -126, "Z": 3.20 },
+      "Rotation"  : { "X": 60, "Y": 78.5, "Z": 0 },
+      "Scale"     : { "X": 1, "Y": 0.332, "Z": 23 },
+      "Parent"    : -1
+    },
+    {
+      "Name"      : "DirLight",
+      "Hash"      : "93712",
+      "Type"      : "LightDirectional",
+      "Position"  : { "X": 32, "Y": 32, "Z": 16.00 },
+      "Rotation"  : { "X": 60, "Y": 0, "Z": -63.2 },
+      "Scale"     : { "X": 1, "Y": 1, "Z": 1 },
+      "Parent"    : -1
+    }
+  ],
+  "Dependency":
+  {
+    "42932":
+    {
+      "Type"      : "Script",
+      "Path"      : ""
+    },
+    "11555":
+    {
+      "Type"      : "Script",
+      "Path"      : ""
+    },
+    "93712":
+    {
+      "Type"      : "DirectionalLight",
+      "LightDirection": { "X": 0, "Y": 1, "Z": 0 },
+      "LightIntensity": 1.00,
+      "LightTintColor": 16777215
+    }
+  }
+}

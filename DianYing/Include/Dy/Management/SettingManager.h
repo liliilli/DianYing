@@ -163,20 +163,20 @@ private:
   bool mIsEnabledLoggingToFile        = false;
   std::string mLogFilePath            = "./log.txt";
 
-  std::string mProjectName            = MDY_NOT_INITILAIZED_STR;
-  std::string mWindowName             = MDY_NOT_INITILAIZED_STR;
+  std::string mProjectName            = MDY_INITILAIZE_EMPTYSTR;
+  std::string mWindowName             = MDY_INITILAIZE_EMPTYSTR;
 
-  TI32 mVersionHigh                   = MDY_NOT_INITIALIZED_M1;
-  TI32 mVersionMid                    = MDY_NOT_INITIALIZED_M1;
-  TI32 mVersionLow                    = MDY_NOT_INITIALIZED_M1;
+  TI32 mVersionHigh                   = MDY_INITIALIZE_DEFINT;
+  TI32 mVersionMid                    = MDY_INITIALIZE_DEFINT;
+  TI32 mVersionLow                    = MDY_INITIALIZE_DEFINT;
 
-  std::string mCompanyName            = MDY_NOT_INITILAIZED_STR;
-  std::string mHomepage               = MDY_NOT_INITILAIZED_STR;
-  std::string mSupportContact         = MDY_NOT_INITILAIZED_STR;
+  std::string mCompanyName            = MDY_INITILAIZE_EMPTYSTR;
+  std::string mHomepage               = MDY_INITILAIZE_EMPTYSTR;
+  std::string mSupportContact         = MDY_INITILAIZE_EMPTYSTR;
 
-  std::string mInitialSceneName       = MDY_NOT_INITILAIZED_STR;
-  TI32 mWindowSizeWidth               = MDY_NOT_INITIALIZED_M1;
-  TI32 mWindowSizeHeight              = MDY_NOT_INITIALIZED_M1;
+  std::string mInitialSceneName       = MDY_INITILAIZE_EMPTYSTR;
+  TI32 mWindowSizeWidth               = MDY_INITIALIZE_DEFINT;
+  TI32 mWindowSizeHeight              = MDY_INITIALIZE_DEFINT;
 
   std::vector<const char*> mApplicationArgs;
   bool mIsInitialized                 = false;

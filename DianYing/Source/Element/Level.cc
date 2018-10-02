@@ -140,7 +140,7 @@ void FDyLevel::Update(float dt)
 std::string FDyLevel::ToString()
 {
 PHITOS_NOT_IMPLEMENTED_ASSERT();
-return MDY_NOT_INITILAIZED_STR;
+return MDY_INITILAIZE_EMPTYSTR;
 }
 
 } /// ::dy namespace

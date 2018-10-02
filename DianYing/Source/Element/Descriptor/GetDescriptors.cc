@@ -27,51 +27,14 @@ namespace
 {
 
 ///
-/// @brief
+/// @brief Get DDyColor32 RGB color from TU32 24 bit value.
+/// @param bit24Value 24bit value, [23...16] R [15...8] G [7...0] B
+/// @return RGB Color with alpha 1.0 (always alpha 1.0)
 ///
-[[nodiscard]] dy::EDyFDyObjectType DyGetObjectTypeFrom(const std::string& typeString) noexcept
+[[nodiscard]] dy::DDyColor32 DyGetRGBColorFromTU32(const TU32 bit24Value) noexcept
 {
-  static constexpr std::string_view sPawn             = "Pawn";
-  static constexpr std::string_view sDirectionalLight = "LightDirectional";
-
-  if (typeString == sPawn)              return dy::EDyFDyObjectType::FDyPawn;
-  if (typeString == sDirectionalLight)  return dy::EDyFDyObjectType::FDyDirectionalLight;
-  else return dy::EDyFDyObjectType::Error;
-}
-
-///
-/// @brief
-///
-[[nodiscard]] dy::EDyCDyComponentType DyGetComponentTypeFrom(const std::string& typeString) noexcept
-{
-  static constexpr std::string_view sScript           = "Script";
-  static constexpr std::string_view sDirLight         = "DirectionalLight";
-
-  if (typeString == sScript)            return dy::EDyCDyComponentType::Script;
-  if (typeString == sDirLight)          return dy::EDyCDyComponentType::DirectionalLight;
-  else return dy::EDyCDyComponentType::NoneError;
-}
-
-} /// ::unnamed namespace
-
-//!
-//! Implementation
-//!
-
-namespace dy
-{
-
-PDyLevelConstructDescriptor PDyLevelConstructDescriptor::GetDescriptor(const nlohmann::json& jsonAtlas)
-{
-  PDyLevelConstructDescriptor desc;
-
-  // Make meta information
-  const auto& metaAtlas   = jsonAtlas.at("Meta");
-  desc.mLevelName         = metaAtlas.at("Name").get<std::string>();
-
-  // Make color RGB. alpha is always 1.
-  std::bitset<24> backgroundColorBit  = metaAtlas.at("Color").get<TU32>();
-  DDyColor32      background8BitColor = DDyColor32{0, 0, 0, 1};
+  std::bitset<24> backgroundColorBit  = bit24Value;
+  dy::DDyColor32  background8BitColor = dy::DDyColor32{0, 0, 0, 1};
   {
     TU08 r = 0;
     for (TI32 i = 7; i >= 0; --i)
@@ -97,7 +60,58 @@ PDyLevelConstructDescriptor PDyLevelConstructDescriptor::GetDescriptor(const nlo
     }
     background8BitColor.B = b;
   }
-  desc.mLevelBackgroundColor = background8BitColor;
+
+  return background8BitColor;
+}
+
+///
+/// @brief  Get FDyObject derived class type helper enumration.
+/// @param  typeString Object type string from json.
+/// @return Object type
+///
+[[nodiscard]] dy::EDyFDyObjectType DyGetObjectTypeFrom(const std::string& typeString) noexcept
+{
+  static constexpr std::string_view sPawn             = "Pawn";
+  static constexpr std::string_view sDirectionalLight = "LightDirectional";
+
+  if (typeString == sPawn)              return dy::EDyFDyObjectType::FDyPawn;
+  if (typeString == sDirectionalLight)  return dy::EDyFDyObjectType::FDyDirectionalLight;
+  else return dy::EDyFDyObjectType::Error;
+}
+
+///
+/// @brief  Get additional type for constructing properties of object.
+/// @param  typeString Dependency type string from json.
+/// @return Dependency component properties type
+///
+[[nodiscard]] dy::EDyCDyComponentType DyGetComponentTypeFrom(const std::string& typeString) noexcept
+{
+  static constexpr std::string_view sScript           = "Script";
+  static constexpr std::string_view sDirLight         = "DirectionalLight";
+
+  if (typeString == sScript)            return dy::EDyCDyComponentType::Script;
+  if (typeString == sDirLight)          return dy::EDyCDyComponentType::DirectionalLight;
+  else return dy::EDyCDyComponentType::NoneError;
+}
+
+} /// ::unnamed namespace
+
+//!
+//! Implementation
+//!
+
+namespace dy
+{
+
+PDyLevelConstructDescriptor PDyLevelConstructDescriptor::GetDescriptor(const nlohmann::json& jsonAtlas)
+{
+  PDyLevelConstructDescriptor desc;
+
+  // Make meta information
+  // Make color RGB. alpha is always 1.
+  const auto& metaAtlas       = jsonAtlas.at("Meta");
+  desc.mLevelName             = metaAtlas.at("Name").get<std::string>();
+  desc.mLevelBackgroundColor  = DyGetRGBColorFromTU32(metaAtlas.at("Color").get<TU32>());
 
   // Make object information.
   const auto& objAtlas = jsonAtlas.at("Object");

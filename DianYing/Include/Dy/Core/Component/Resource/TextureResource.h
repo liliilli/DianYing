@@ -90,8 +90,8 @@ private:
   std::string         mTextureName          = "";
   EDyTextureStyleType mTextureType          = EDyTextureStyleType::None;
 	uint32_t            mTextureResourceId    = 0;
-  int32_t             mTextureWidth         = MDY_NOT_INITIALIZED_M1;
-  int32_t             mTextureHeight        = MDY_NOT_INITIALIZED_M1;
+  int32_t             mTextureWidth         = MDY_INITIALIZE_DEFINT;
+  int32_t             mTextureHeight        = MDY_INITIALIZE_DEFINT;
 
   //!
   //! Level pointers binding
