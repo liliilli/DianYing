@@ -170,6 +170,7 @@
     <ClCompile Include="Source\Builtin\ShaderGl\RenderDeferredRendering.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderGrid.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderPass.cc" />
+    <ClCompile Include="Source\Component\CDyScript.cc" />
     <ClCompile Include="Source\Core\Component\Information\MaterialInformation.cc" />
     <ClCompile Include="Source\Core\Component\Information\ModelInformation.cc" />
     <ClCompile Include="Source\Core\Component\Information\ShaderInformation.cc" />
@@ -266,6 +267,7 @@
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderDeferredRendering.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderGrid.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderPass.h" />
+    <ClInclude Include="Include\Dy\Component\CDyScript.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\MaterialInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\SoundInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\SubmeshInformation.h" />

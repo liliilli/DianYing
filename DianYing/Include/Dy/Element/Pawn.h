@@ -222,7 +222,7 @@ public:
           ->Initiate();
     }
 
-    return GetComponent<TComponent>();
+    return GetGeneralComponent<TComponent>();
   }
 
   ///
@@ -234,7 +234,7 @@ public:
     class TComponent,
     typename = std::enable_if_t<std::is_base_of_v<_Component, TComponent>>
   >
-  TComponent* GetComponent() {
+  TComponent* GetGeneralComponent() {
     // Component matching process is using recursion of each component
     // from last derived component class to highest base component class.
     for (auto& [component, type] : m_components) {

@@ -97,6 +97,7 @@
     <ClCompile Include="Source\Management\Helper\PhysxSimulationCallback.cc" />
     <ClCompile Include="Source\Helper\Type\ThreeStateBool.cc" />
     <ClCompile Include="Source\Element\Abstract\ADyBaseComponent.cc" />
+    <ClCompile Include="Source\Component\CDyScript.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -255,6 +256,7 @@
     <ClInclude Include="Include\Dy\Helper\Type\ThreeStateBool.h" />
     <ClInclude Include="Include\Dy\Element\Abstract\ADyBaseComponent.h" />
     <ClInclude Include="Include\Dy\Element\Abstract\ADyGeneralBaseComponent.h" />
+    <ClInclude Include="Include\Dy\Component\CDyScript.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />
