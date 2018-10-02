@@ -93,6 +93,8 @@
     <ClCompile Include="Source\Test\testLuaEntry.cc" />
     <ClCompile Include="Source\Test\testLuaHelloWorld.cc" />
     <ClCompile Include="Source\Test\TestLuaFunctions.cc" />
+    <ClCompile Include="Source\Test\TestLuaCpp.cc" />
+    <ClCompile Include="Source\Management\Helper\PhysxSimulationCallback.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -246,11 +248,14 @@
     <ClInclude Include="Libraries\lua\include\lvm.h" />
     <ClInclude Include="Libraries\lua\include\lzio.h" />
     <ClInclude Include="Include\Dy\Test\testLua.h" />
+    <ClInclude Include="Include\Dy\Test\TestMacroSetting.h" />
+    <ClInclude Include="Include\Dy\Management\Helper\PhysxSimulationCallback.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />
+    <None Include="TestResource\Lua\player_script.lua" />
   </ItemGroup>
 </Project>

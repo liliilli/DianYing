@@ -14,6 +14,7 @@
 
 /// Header file
 #include <Dy/Test/testLua.h>
+#if defined(MDY_FLAG_TEST_ENABLED)
 
 #include <sol2/sol.hpp>
 #include <Dy/Helper/GlobalType.h>
@@ -179,3 +180,5 @@ void DyLuaReferenceModify()
 }
 
 } /// ::dy::test namespace
+
+#endif /// MDY_FLAG_TEST_ENABLED

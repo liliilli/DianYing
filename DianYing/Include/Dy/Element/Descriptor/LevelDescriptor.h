@@ -61,7 +61,7 @@ struct IDyDependencyInformation
   EDyCDyComponentType mType       = EDyCDyComponentType::NoneError;
 
   /// hashTo must be same to hash string value of DDyObjectInformation instance to be binded.
-  std::string         mBindHashTo = MDY_NOT_INITILAIZED_STR;
+  std::string         mBindHashTo = MDY_INITILAIZE_EMPTYSTR;
 };
 
 ///
@@ -71,7 +71,7 @@ struct IDyDependencyInformation
 struct DDyFdyPawnDependencyInformation final : public IDyDependencyInformation
 {
   /// Lua script path. Must be valid and can be loaded anytime in runtime.
-  std::string         mScriptPath = MDY_NOT_INITILAIZED_STR;
+  std::string         mScriptPath = MDY_INITILAIZE_EMPTYSTR;
 };
 
 ///
@@ -87,7 +87,7 @@ struct DDyFDyDirLightDependencyInformation final : public IDyDependencyInformati
   DDyColor            mTintColor = {};
 
   /// Intensity of light must be set up to 0~.
-  TF32                mIntensity = MDY_NOT_INITIALIZED_M1;
+  TF32                mIntensity = MDY_INITIALIZE_DEFINT;
 };
 
 ///
@@ -113,13 +113,13 @@ struct DDyObjectInformation final
   };
 
   /// Meta index for classification of objects. Might not be used in game runtime.
-  TI32              mMetaIndex        = MDY_NOT_INITIALIZED_M1;
+  TI32              mMetaIndex        = MDY_INITIALIZE_DEFINT;
 
   /// Meta object's name.
-  std::string       mName             = MDY_NOT_INITILAIZED_STR;
+  std::string       mName             = MDY_INITILAIZE_EMPTYSTR;
 
   /// Meta object's hash value to verify it from other information instance.
-  std::string       mHashValue        = MDY_NOT_INITILAIZED_STR;
+  std::string       mHashValue        = MDY_INITILAIZE_EMPTYSTR;
 
   /// The type (light, pawn, pp block etc...) of object
   EDyFDyObjectType  mType             = EDyFDyObjectType::Error;
@@ -127,7 +127,7 @@ struct DDyObjectInformation final
   /// Parent name of this object.
   /// @TODO mParentName must be changed to other way to avoid duplicated object metaname. (Index + Name) CRC32 hashing value might be good.
   /// @TODO OR JUST USING METAINDEX...?
-  TI32              mParentMetaIndex  = MDY_NOT_INITIALIZED_M1;
+  TI32              mParentMetaIndex  = MDY_INITIALIZE_DEFINT;
 
   /// Common transform information.
   DDyTransform      mTransform        = {};
@@ -146,7 +146,7 @@ struct PDyLevelConstructDescriptor final
 {
 
   // Initial level name
-  std::string                       mLevelName                  = MDY_NOT_INITILAIZED_STR;
+  std::string                       mLevelName                  = MDY_INITILAIZE_EMPTYSTR;
   // Initial background of scene to create
   DDyColor                          mLevelBackgroundColor       = DDyColor::White;
   // Object information

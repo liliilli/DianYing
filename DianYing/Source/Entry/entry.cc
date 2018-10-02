@@ -187,18 +187,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLin
   MDY_WIN32_TRY_TURN_ON_DEBUG();
 
   DyInitiailzeAllManagers();
-
-#ifdef false
-
   DyTempInitializeTestResources();
 
   MDY_LOG_INFO_D("Running application routine.");
   dy::MDyWindow::GetInstance().Run();
 
   MDY_LOG_INFO_D("Release all managers and resources.");
-#endif
-
-  dy::test::DyLuaEntryPoint();
 
   DyReleaseAllManagers();
   MDY_WIN32_TRY_TURN_OFF_DEBUG();

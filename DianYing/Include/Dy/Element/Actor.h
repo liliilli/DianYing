@@ -79,7 +79,7 @@ public:
   ///
   std::string ToString() override
   {
-    return MDY_NOT_INITILAIZED_STR;
+    return MDY_INITILAIZE_EMPTYSTR;
   }
 
   ///

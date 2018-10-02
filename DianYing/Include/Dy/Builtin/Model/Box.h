@@ -26,7 +26,9 @@ class FDyBuiltinModelBox final
 {
 public:
   FDyBuiltinModelBox();
-  inline static constexpr std::string_view sName = "dyBtModelBox";
+
+  /// name for creating DDyModelInformation
+  inline static MDY_SET_IMMUTABLE_STRING(sName, "dyBtModelBox");
 };
 
 } /// ::dy::builtin namespace

@@ -14,6 +14,7 @@
 
 /// Header file
 #include <Dy/Test/testLua.h>
+#if defined(MDY_FLAG_TEST_ENABLED)
 
 namespace dy::test
 {
@@ -36,8 +37,12 @@ void DyLuaEntryPoint()
   DyLuaFunctionProtectedFunction();
   DyLuaFunctionMultipleReturnFromLua();
   DyLuaFunctionMultipleReturnFromCpp();
-#endif
   DyLuaFunctionAnyReturn();
+  DyLuaCppPlayerScript();
+#endif
+  DyLuaCppOwnershipPointerSafely();
 }
 
 } /// ::dy::test namespace
+
+#endif /// MDY_FLAG_TEST_ENABLED

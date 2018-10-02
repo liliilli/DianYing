@@ -176,7 +176,7 @@ void MDyRendering::pCreateDeferredGeometryBuffers() noexcept
   }
 
   // Depth g-buffer
-  TU32 depthBuffer = MDY_NOT_INITIALIZED_0;
+  TU32 depthBuffer = MDY_INITIALIZE_DEFUINT;
   glGenRenderbuffers(1, &depthBuffer);
   glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
   glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, overallScreenWidth, overallScreenHeight);

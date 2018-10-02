@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_BUILTIN_SHADER_GL_RENDERPASS_H
-#define GUARD_DY_BUILTIN_SHADER_GL_RENDERPASS_H
+#ifndef GUARD_DY_TEST_TESTMACROSETTING_H
+#define GUARD_DY_TEST_TESTMACROSETTING_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,24 +13,10 @@
 /// SOFTWARE.
 ///
 
-#include <string_view>
-
-namespace dy::builtin
-{
-
 ///
-/// @class FDyBuiltinShaderGLRenderPass
-/// @brief Instantiate rendering pass.
+/// @macro MDY_FLAG_TEST_ENABLED
+/// @brief Enable library and function test.
 ///
-class FDyBuiltinShaderGLRenderPass final
-{
-public:
-  FDyBuiltinShaderGLRenderPass();
+#define MDY_FLAG_TEST_ENABLED
 
-  /// Constant name for creating DDyShaderInformation
-  inline static MDY_SET_IMMUTABLE_STRING(sName, "dyBtShaderGlRenderPass");
-};
-
-} /// ::dy::builtin namespace
-
-#endif /// GUARD_DY_BUILTIN_SHADER_GL_RENDERPASS_H
+#endif /// GUARD_DY_TEST_TESTMACROSETTING_H

@@ -104,7 +104,7 @@ private:
   mutable float mGameTickElapsedTime  = 0.0f;
   int32_t       mGameTickedFps        = 0;
   const int32_t mGameGoalFps          = 60;
-  mutable float mGameTickFragment     = MDY_NOT_INITIALIZED_M1;
+  mutable float mGameTickFragment     = MDY_INITIALIZE_DEFINT;
 
   MDY_TRANSIENT float __mIsEnabledVsync = false;
   MDY_TRANSIENT float __mGameGoalFps    = 60;

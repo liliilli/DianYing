@@ -85,8 +85,8 @@ struct DMoeAnimationInformation final
   };
 
   std::string mName           = "";
-  float       mDuration       = MDY_NOT_INITIALIZED_0;
-  float       mTickPerSecond  = MDY_NOT_INITIALIZED_M1;
+  float       mDuration       = MDY_INITIALIZE_DEFUINT;
+  float       mTickPerSecond  = MDY_INITIALIZE_DEFINT;
 
   std::vector<DAnimChannel> mAnimationChannels      = {};
 };

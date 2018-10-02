@@ -68,10 +68,23 @@ public:
   /// Release properties
   [[nodiscard]] EDySuccess Release() override;
 
+  ///
+  void Initiate() override;
+  ///
+  void Start() override;
+  ///
+  void Update(float dt) override;
+  ///
+  void Destroy() override;
+  ///
+  void OnEnabled() override;
+  ///
+  void OnDisabled() override;
+
   /// Return pawn's information.
   std::string ToString() override
   {
-    return MDY_NOT_INITILAIZED_STR;
+    return MDY_INITILAIZE_EMPTYSTR;
   }
 
 #ifdef false
@@ -440,7 +453,7 @@ private:
   MDY_TRANSIENT bool        mIsTransformInitialized       = false;
 
   /// Transient variable, list id for updating
-  MDY_TRANSIENT TI32        mActivatedUpdateListId        = MDY_NOT_INITIALIZED_M1;
+  MDY_TRANSIENT TI32        mActivatedUpdateListId        = MDY_INITIALIZE_DEFINT;
 
   /// Object name counter to avoid duplicated object name
   TNameCounterMap           __mChildSubobjectNameCounter;

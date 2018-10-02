@@ -77,7 +77,7 @@ void MDyWorld::Update(float dt)
 
     this->mPreviousLevelName  = this->mPresentLevelName;
     this->mPresentLevelName   = this->mNextLevelName;
-    this->mNextLevelName      = MDY_NOT_INITILAIZED_STR;
+    this->mNextLevelName      = MDY_INITILAIZE_EMPTYSTR;
   }
 
   // Scene update routine
@@ -94,7 +94,7 @@ void MDyWorld::UpdateObjects(float dt)
     for (auto& pawnPtr : this->mActivatedPawn)
     {
       if (pawnPtr == nullptr) continue;
-      pawnPtr->ToString();
+      pawnPtr->Update(dt);
     }
   }
 }

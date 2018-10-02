@@ -26,7 +26,9 @@ class FDyBuiltinShaderGLRenderDeferredRendering final
 {
 public:
   FDyBuiltinShaderGLRenderDeferredRendering();
-  inline static constexpr std::string_view sName = "dyBtShaderGlDeferred";
+
+  /// Constant name for creating DDyShaderInformation
+  inline static MDY_SET_IMMUTABLE_STRING(sName, "dyBtShaderGlDeferred");
 };
 
 } /// ::dy::builtin namespace

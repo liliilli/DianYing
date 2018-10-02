@@ -65,8 +65,8 @@ private:
   EDySuccess pfCreateSoundResource(const std::string& filePath, FMOD::Sound** soundResourcePtr);
 
   FMOD::System*       mSoundSystem            = nullptr;
-  MDY_TRANSIENT TU32  mVersion                = MDY_NOT_INITIALIZED_0;
-  MDY_TRANSIENT TI32  mSoundDriverCount       = MDY_NOT_INITIALIZED_M1;
+  MDY_TRANSIENT TU32  mVersion                = MDY_INITIALIZE_DEFUINT;
+  MDY_TRANSIENT TI32  mSoundDriverCount       = MDY_INITIALIZE_DEFINT;
 
   //TSoundChannelGroup s_channel_group;
   FMOD::ChannelGroup* sMasterChannel          = nullptr;

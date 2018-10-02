@@ -43,6 +43,7 @@
 #include <Dy/Management/HeapResourceManager.h>
 #include <Dy/Management/SoundManager.h>
 #include "Dy/Management/MetaInfoManager.h"
+#include <Dy/Management/PhysicsManager.h>
 
 ///
 /// Undefined proprocessor WIN32 macro "max, min" for preventing misuse.
@@ -412,7 +413,7 @@ void MDyWindow::Run()
   while (!glfwWindowShouldClose(this->mGlfwWindow))
   {
     timeManager.pUpdate();
-    if (auto& instance = MDySound::GetInstance(); true) { instance.Update(MDY_NOT_INITIALIZED_M1); }
+    if (auto& instance = MDySound::GetInstance(); true) { instance.Update(MDY_INITIALIZE_DEFINT); }
 
     if (timeManager.IsGameFrameTicked() == DY_SUCCESS)
     {
@@ -433,6 +434,7 @@ void MDyWindow::pUpdate(float dt)
     editor::MDyEditorGui::GetInstance().Update(dt);
   #endif // MDY_FLAG_IN_EDITOR
 
+  MDyPhysics::GetInstance().Update(dt);
   MDyWorld::GetInstance().Update(dt);
   MDyInput::GetInstance().pfUpdate(dt);
   MDyWorld::GetInstance().UpdateObjects(dt);

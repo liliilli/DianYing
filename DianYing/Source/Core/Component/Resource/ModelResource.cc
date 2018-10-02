@@ -94,7 +94,7 @@ void CDyModelResource::pReadNodeHierarchy(float animationElapsedTime, DDyModelIn
     if (scalingKeySize == 1) { return nodeAnimChannel->mScalingKeys[0]; }
 
     // Get key frame iterating and verifying running time.
-    TI32 scalingIndex = MDY_NOT_INITIALIZED_0;
+    TI32 scalingIndex = MDY_INITIALIZE_DEFUINT;
     for (TI32 i = 0; i < scalingKeySize - 1; i++)
     {
       if (animElapsedTime < nodeAnimChannel->mScalingTime[i + 1])
@@ -131,7 +131,7 @@ void CDyModelResource::pReadNodeHierarchy(float animationElapsedTime, DDyModelIn
     if (rotationKeySize == 1) { return nodeAnimChannel->mRotationKeys[0]; }
 
     // Get key frame iterating and verifying running time.
-    TI32 rotationIndex = MDY_NOT_INITIALIZED_0;
+    TI32 rotationIndex = MDY_INITIALIZE_DEFUINT;
     for (TI32 i = 0; i < rotationKeySize - 1; i++)
     {
       if (animElapsedTime < nodeAnimChannel->mRotationTime[i + 1])
@@ -169,7 +169,7 @@ void CDyModelResource::pReadNodeHierarchy(float animationElapsedTime, DDyModelIn
     if (positionKeySize == 1) { return nodeAnimChannel->mPositionKeys[0]; }
 
     // Get key frame iterating and verifying running time.
-    TI32 positionIndex = MDY_NOT_INITIALIZED_0;
+    TI32 positionIndex = MDY_INITIALIZE_DEFUINT;
     for (TI32 i = 0; i < positionKeySize - 1; i++)
     {
       if (animElapsedTime < nodeAnimChannel->mPositionTime[i + 1])

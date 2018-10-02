@@ -70,7 +70,7 @@ private:
   ///
   void pRenderShadowFrameBufferWith(const CDyMeshRenderer& renderer) noexcept;
 
-  TU32                mDeferredFrameBufferId  = MDY_NOT_INITIALIZED_0;
+  TU32                mDeferredFrameBufferId  = MDY_INITIALIZE_DEFUINT;
   std::array<TU32, 4> mAttachmentBuffers      = {};
   const TI32          mAttachmentBuffersCount = static_cast<TI32>(mAttachmentBuffers.size());
 

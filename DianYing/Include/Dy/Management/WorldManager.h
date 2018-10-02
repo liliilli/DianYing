@@ -147,9 +147,9 @@ private:
   CDyCamera*                mValidMainCameraPtr = nullptr;
   std::vector<CDyCamera*>   mValidSubCameraPtrs = {};
 
-  std::string               mNextLevelName      = MDY_NOT_INITILAIZED_STR;
-  std::string               mPresentLevelName   = MDY_NOT_INITILAIZED_STR;
-  std::string               mPreviousLevelName  = MDY_NOT_INITILAIZED_STR;
+  std::string               mNextLevelName      = MDY_INITILAIZE_EMPTYSTR;
+  std::string               mPresentLevelName   = MDY_INITILAIZE_EMPTYSTR;
+  std::string               mPreviousLevelName  = MDY_INITILAIZE_EMPTYSTR;
 
   // Present valid level instance.
   std::unique_ptr<FDyLevel> mLevel              = nullptr;

@@ -550,24 +550,24 @@ void MDyInput::pfUpdate(float dt) noexcept
         DyProceedGravity(key);
         [[fallthrough]];
       case Status::CommonNeutral:
-        if (key.mNegativeButtonId != MDY_NOT_INITIALIZED_M1 && sPrimaryKeys[key.mNegativeButtonId] == EKeyPrimaryState::Pressed)
+        if (key.mNegativeButtonId != MDY_INITIALIZE_DEFINT && sPrimaryKeys[key.mNegativeButtonId] == EKeyPrimaryState::Pressed)
         {
           key.mAxisValue = kNegativeValue;
           key.mKeyStatus = Status::NegativePressed;
         }
-        else if (key.mPositiveButtonId != MDY_NOT_INITIALIZED_M1 && sPrimaryKeys[key.mPositiveButtonId] == EKeyPrimaryState::Pressed)
+        else if (key.mPositiveButtonId != MDY_INITIALIZE_DEFINT && sPrimaryKeys[key.mPositiveButtonId] == EKeyPrimaryState::Pressed)
         {
           key.mAxisValue = kPositiveValue;
           key.mKeyStatus = Status::PositivePressed;
         }
         break;
       case Status::NegativePressed:
-        if (key.mPositiveButtonId != MDY_NOT_INITIALIZED_M1 && sPrimaryKeys[key.mPositiveButtonId] == EKeyPrimaryState::Pressed)
+        if (key.mPositiveButtonId != MDY_INITIALIZE_DEFINT && sPrimaryKeys[key.mPositiveButtonId] == EKeyPrimaryState::Pressed)
         {
           key.mAxisValue = kPositiveValue;
           key.mKeyStatus = Status::PositivePressed;
         }
-        else if (key.mNegativeButtonId != MDY_NOT_INITIALIZED_M1) {
+        else if (key.mNegativeButtonId != MDY_INITIALIZE_DEFINT) {
           const auto keyPrimaryState = sPrimaryKeys[key.mNegativeButtonId];
           if (key.mIsRepeatKey && keyPrimaryState == EKeyPrimaryState::Repeated) { key.mKeyStatus = Status::NegativeRepeated; }
           else if (keyPrimaryState == EKeyPrimaryState::Released)
@@ -578,12 +578,12 @@ void MDyInput::pfUpdate(float dt) noexcept
         }
         break;
       case Status::PositivePressed:
-        if (key.mNegativeButtonId != MDY_NOT_INITIALIZED_M1 && sPrimaryKeys[key.mNegativeButtonId] == EKeyPrimaryState::Pressed)
+        if (key.mNegativeButtonId != MDY_INITIALIZE_DEFINT && sPrimaryKeys[key.mNegativeButtonId] == EKeyPrimaryState::Pressed)
         {
           key.mAxisValue = kNegativeValue;
           key.mKeyStatus = Status::NegativePressed;
         }
-        else if (key.mPositiveButtonId != MDY_NOT_INITIALIZED_M1) {
+        else if (key.mPositiveButtonId != MDY_INITIALIZE_DEFINT) {
           const auto keyPrimaryState = sPrimaryKeys[key.mPositiveButtonId];
           if (key.mIsRepeatKey && keyPrimaryState == EKeyPrimaryState::Repeated) { key.mKeyStatus = Status::PositiveRepeated; }
           else if (keyPrimaryState == EKeyPrimaryState::Released)
@@ -594,12 +594,12 @@ void MDyInput::pfUpdate(float dt) noexcept
         }
         break;
       case Status::PositiveRepeated:
-        if (key.mNegativeButtonId != MDY_NOT_INITIALIZED_M1 && sPrimaryKeys[key.mNegativeButtonId] == EKeyPrimaryState::Pressed)
+        if (key.mNegativeButtonId != MDY_INITIALIZE_DEFINT && sPrimaryKeys[key.mNegativeButtonId] == EKeyPrimaryState::Pressed)
         {
           key.mAxisValue = kNegativeValue;
           key.mKeyStatus = Status::NegativePressed;
         }
-        else if (key.mPositiveButtonId != MDY_NOT_INITIALIZED_M1)
+        else if (key.mPositiveButtonId != MDY_INITIALIZE_DEFINT)
         {
           const auto key_md = sPrimaryKeys[key.mPositiveButtonId];
           if (key_md == EKeyPrimaryState::Released)
@@ -610,12 +610,12 @@ void MDyInput::pfUpdate(float dt) noexcept
         }
         break;
       case Status::NegativeRepeated:
-        if (key.mPositiveButtonId != MDY_NOT_INITIALIZED_M1 && sPrimaryKeys[key.mPositiveButtonId] == EKeyPrimaryState::Pressed)
+        if (key.mPositiveButtonId != MDY_INITIALIZE_DEFINT && sPrimaryKeys[key.mPositiveButtonId] == EKeyPrimaryState::Pressed)
         {
           key.mAxisValue = kPositiveValue;
           key.mKeyStatus = Status::PositivePressed;
         }
-        else if (key.mNegativeButtonId != MDY_NOT_INITIALIZED_M1)
+        else if (key.mNegativeButtonId != MDY_INITIALIZE_DEFINT)
         {
           const auto key_md = sPrimaryKeys[key.mPositiveButtonId];
           if (key_md == EKeyPrimaryState::Released)

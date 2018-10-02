@@ -12,6 +12,9 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Test/testLua.h>
+#if defined(MDY_FLAG_TEST_ENABLED)
+
 #include <sol2/sol.hpp>
 #include <Dy/Helper/GlobalType.h>
 #include <Dy/Management/LoggingManager.h>
@@ -270,8 +273,8 @@ void DyLuaFunctionMultipleReturnFromCpp()
   MDY_LOG_CRITICAL("{} | iB = {}", "DyLuaFunctionMultipleReturnFromCpp", std::get<1>(result2));
   MDY_LOG_CRITICAL("{} | iC = {}", "DyLuaFunctionMultipleReturnFromCpp", std::get<2>(result2));
 
-  TI32 a = MDY_NOT_INITIALIZED_0;
-  TI32 b = MDY_NOT_INITIALIZED_0;
+  TI32 a = MDY_INITIALIZE_DEFUINT;
+  TI32 b = MDY_INITIALIZE_DEFUINT;
   std::string c;
   sol::tie(a, b, c) = lua["fFunc"](1, 2, "Meow");
 
@@ -309,3 +312,5 @@ void DyLuaFunctionAnyReturn()
 }
 
 } /// ::dy::test namespace
+
+#endif /// MDY_FLAG_TEST_ENABLED

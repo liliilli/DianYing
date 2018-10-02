@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_BUILTIN_SHADER_GL_RENDERPASS_H
-#define GUARD_DY_BUILTIN_SHADER_GL_RENDERPASS_H
+#include <precompiled.h>
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,24 +12,15 @@
 /// SOFTWARE.
 ///
 
-#include <string_view>
+/// Header file
+#include <Dy/Builtin/Object/Light/DirectionalLight.h>
 
 namespace dy::builtin
 {
 
-///
-/// @class FDyBuiltinShaderGLRenderPass
-/// @brief Instantiate rendering pass.
-///
-class FDyBuiltinShaderGLRenderPass final
+FDyDirectionalLight::FDyDirectionalLight()
 {
-public:
-  FDyBuiltinShaderGLRenderPass();
 
-  /// Constant name for creating DDyShaderInformation
-  inline static MDY_SET_IMMUTABLE_STRING(sName, "dyBtShaderGlRenderPass");
-};
+}
 
 } /// ::dy::builtin namespace
-
-#endif /// GUARD_DY_BUILTIN_SHADER_GL_RENDERPASS_H

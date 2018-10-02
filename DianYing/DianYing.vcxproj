@@ -229,6 +229,7 @@
     <ClCompile Include="Source\Management\Editor\GuiManager.cc" />
     <ClCompile Include="Source\Management\Editor\GuiSetting.cc" />
     <ClCompile Include="Source\Management\Editor\GuiWindowFactory.cc" />
+    <ClCompile Include="Source\Management\Helper\PhysxSimulationCallback.cc" />
     <ClCompile Include="Source\Management\MetaInfoManager.cc" />
     <ClCompile Include="Source\Management\FontManager.cc" />
     <ClCompile Include="Source\Management\HeapResourceManager.cc" />
@@ -249,6 +250,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Source\Test\TestLuaCpp.cc" />
     <ClCompile Include="Source\Test\testLuaEntry.cc" />
     <ClCompile Include="Source\Test\TestLuaFunctions.cc" />
     <ClCompile Include="Source\Test\testLuaHelloWorld.cc" />
@@ -328,6 +330,7 @@
     <ClInclude Include="Include\Dy\Management\Editor\GuiManager.h" />
     <ClInclude Include="Include\Dy\Management\Editor\GuiSetting.h" />
     <ClInclude Include="Include\Dy\Management\Editor\GuiWindowFactory.h" />
+    <ClInclude Include="Include\Dy\Management\Helper\PhysxSimulationCallback.h" />
     <ClInclude Include="Include\Dy\Management\MetaInfoManager.h" />
     <ClInclude Include="Include\Dy\Management\FontManager.h" />
     <ClInclude Include="Include\Dy\Management\Helper\GuiLogStreamSink.h" />
@@ -370,6 +373,7 @@
     <ClInclude Include="Include\Dy\Management\SettingManager.h" />
     <ClInclude Include="Include\Dy\Management\TimeManager.h" />
     <ClInclude Include="Include\Dy\Test\testLua.h" />
+    <ClInclude Include="Include\Dy\Test\TestMacroSetting.h" />
     <ClInclude Include="Include\precompiled.h" />
     <ClInclude Include="Libraries\glad\include\glad\glad.h" />
     <ClInclude Include="Libraries\glad\include\KHR\khrplatform.h" />
@@ -415,6 +419,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="TestResource\Lua\player_script.lua" />
     <None Include="TestResource\Lua\variables.lua">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </None>
