@@ -81,13 +81,16 @@ public:
   {
     return ADyBaseComponent::__mHashVal == hashVal;
   }
+
+protected:
+  /// Transient variable, list id for updating
+  MDY_TRANSIENT TI32  mActivatedUpdateListId  = MDY_INITIALIZE_DEFINT;
+
 private:
   /// Activate flag for operating component.
   DDy3StateBool       mActivateFlag           = {};
   /// Binded actor raw pointer.
   FDyActor*           mBindedActor            = MDY_INITIALIZE_NULL;
-  /// Transient variable, list id for updating
-  MDY_TRANSIENT TI32  mActivatedUpdateListId  = MDY_INITIALIZE_DEFINT;
 
   MDY_SET_CRC32_HASH_WITH_TYPE(ADyBaseComponent);
 };

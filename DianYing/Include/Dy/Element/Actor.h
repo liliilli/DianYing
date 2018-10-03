@@ -20,6 +20,7 @@
 #include <Dy/Element/Abstract/ADyBaseComponent.h>
 #include <Dy/Component/CDyScript.h>
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
+#include "Dy/Component/Abstract/ADyBaseTransform.h"
 
 namespace dy
 {
@@ -39,16 +40,23 @@ public:
   FDyActor() = default;
 
   ///
+  /// @brief Initialize FDyActor.
+  /// @param objectMetaDesc Meta descriptor information instance for FDyActor.
+  /// @return Success / Failure flag.
+  ///
+  MDY_NODISCARD EDySuccess Initialize(_MIN_ const DDyObjectInformation& objectMetaDesc);
+
+  ///
   /// @brief Release function (virtual) because Initialize function has different parameter but release does not need any parameter.
   /// @return Success flag.
   ///
-  [[nodiscard]] virtual EDySuccess Release();
+  MDY_NODISCARD virtual EDySuccess Release();
 
   ///
   /// @brief Get present actor name on runtime.
   /// @return Actor name of this instance.
   ///
-  [[nodiscard]] const std::string& GetActorName() const noexcept
+  MDY_NODISCARD const std::string& GetActorName() const noexcept
   {
     return this->pGetObjectName();
   }
@@ -56,17 +64,17 @@ public:
   ///
   /// @brief Set FDyActor's hierarchial position to Parent's children FDyActor.
   /// Transform update will be held automatically.
-  ///
   /// @param validParentRawPtr
+  /// @TODO SCRIPT THIS
   ///
-  void SetParent(NotNull<FDyActor*> validParentRawPtr) noexcept;
+  void SetParent(_MIN_ NotNull<FDyActor*> validParentRawPtr) noexcept;
 
   ///
   /// @brief
-  ///
   /// @param
+  /// @TODO SCRIPT THIS
   ///
-  void SetParentRelocateTransform(NotNull<FDyActor*> validParentRawPtr) noexcept;
+  void SetParentRelocateTransform(_MIN_ NotNull<FDyActor*> validParentRawPtr) noexcept;
 
   ///
   /// @brief Set FDyActor's hierarchial position to Scene's root.
@@ -83,7 +91,7 @@ public:
   /// @brief Return actor's information
   /// @return information string.
   ///
-  std::string ToString() override
+  MDY_NODISCARD std::string ToString() override
   {
     return MDY_INITILAIZE_EMPTYSTR;
   }
@@ -92,7 +100,7 @@ public:
   /// @brief  Get actual actor type
   /// @return Object type specifier
   ///
-  [[nodiscard]] FORCEINLINE EDyMetaObjectType GetActorType() const noexcept
+  MDY_NODISCARD FORCEINLINE EDyMetaObjectType GetActorType() const noexcept
   {
     return this->mActorType;
   }
@@ -109,20 +117,26 @@ public:
     MDY_TEST_IS_BASE_OF(ADyBaseComponent, TComponent);
 
     // Add and initialize component itself.
-    auto p = std::make_unique<TComponent>(std::ref(*this), std::forward<TArgs>(args)...);
+    auto componentPtr = std::make_unique<TComponent>(std::ref(*this));
+    MDY_CALL_ASSERT_SUCCESS(componentPtr->Initialize(std::forward<TArgs>(args)...));
 
     if constexpr (std::is_same_v<CDyScript, TComponent>)
     { // If component which just added is CDyScript, Call Initiate script first.
-      auto& reference = this->mScriptList.emplace_back(std::move(p));
-      reference->Initiate();
+      auto& reference = this->mScriptList.emplace_back(std::move(componentPtr));
+            reference->Initiate();
+      return DyMakeNotNull(reference.get());
+    }
+    else if constexpr (std::is_base_of_v<ADyBaseTransform, TComponent>)
+    {
+      PHITOS_ASSERT(MDY_CHECK_ISEMPTY(this->mTransform), "this->mTransform must be empty when insert new transform component.");
 
-      return reference.get();
+      this->mTransform.reset(static_cast<ADyBaseTransform*>(componentPtr.release()));
+      return DyMakeNotNull(static_cast<TComponent*>(this->mTransform.get()));
     }
     else
     { // Otherwise, just return Ptr.
-      auto& reference = this->mComponentList.emplace_back(std::move(p));
-
-      return static_cast<TComponent*>(reference.get());
+      auto& reference = this->mComponentList.emplace_back(std::move(componentPtr));
+      return DyMakeNotNull(static_cast<TComponent*>(reference.get()));
     }
   }
 
@@ -278,16 +292,17 @@ public:
 
 protected:
   /// Actual actor type to discriminate actor type is so cast object with statically.
-  MDY_TRANSIENT EDyMetaObjectType mActorType = EDyMetaObjectType::NoneError;
+  MDY_TRANSIENT EDyMetaObjectType   mActorType = EDyMetaObjectType::NoneError;
 
 private:
   /// Parent FDyActor raw-pointer data.
-  FDyActor*         mParentFDyActorRawPtr   = MDY_INITIALIZE_NULL;
-
+  FDyActor*                         mParentFDyActorRawPtr   = MDY_INITIALIZE_NULL;
+  /// Transform component.
+  std::unique_ptr<ADyBaseTransform> mTransform              = MDY_INITIALIZE_NULL;
   /// Component list (randomly) which attached to FDyActor instance (this!)
-  TComponentList    mComponentList          = {};
+  TComponentList                    mComponentList          = {};
   /// Script list (specialized!)
-  TScriptList       mScriptList             = {};
+  TScriptList                       mScriptList             = {};
 };
 
 } /// ::dy namespace

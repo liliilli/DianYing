@@ -34,7 +34,11 @@ public:
   CDyEmptyTransform(CDyEmptyTransform&& instance)                   noexcept  = default;
   CDyEmptyTransform& operator=(CDyEmptyTransform&& instance)        noexcept  = default;
 
+  /// @TODO NOT IMPLEMENTED YET
+  MDY_NODISCARD std::string ToString() override final;
 
+  ///
+  void Update(float dt) override final {};
 
   MDY_SET_TYPEMATCH_FUNCTION(::dy::ADyBaseTransform, CDyEmptyTransform);
   MDY_SET_CRC32_HASH_WITH_TYPE(CDyEmptyTransform);

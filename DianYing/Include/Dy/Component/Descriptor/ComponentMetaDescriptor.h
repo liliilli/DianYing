@@ -79,13 +79,13 @@ struct DDyTransformMetaInformation final : public IDyMetaInformation
   /// Local rotation
   DDyVector3        mLocalRotation  = {};
   /// Local scale
-  DDyVector3        mLocalScale     = {};
+  DDyVector3        mLocalScale     = DDyVector3{1, 1, 1};
   /// World position
   DDyVector3        mWorldPosition  = {};
   /// World rotation
   DDyVector3        mWorldRotation  = {};
   /// World scale
-  DDyVector3        mWorldScale     = {};
+  DDyVector3        mWorldScale     = DDyVector3{1, 1, 1};
 };
 
 } /// ::dy namespace

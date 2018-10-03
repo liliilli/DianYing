@@ -83,7 +83,6 @@
     <ClCompile Include="Source\Element\Level.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderDeferredRendering.cc" />
     <ClCompile Include="Source\Element\Actor.cc" />
-    <ClCompile Include="Source\Element\Pawn.cc" />
     <ClCompile Include="Source\Element\Abstract\ADyTransformable.cc" />
     <ClCompile Include="Source\Management\WorldManager.cc" />
     <ClCompile Include="Source\Element\Abstract\ADyNameCounterMap.cc" />
@@ -220,7 +219,6 @@
     <ClInclude Include="Include\Dy\Management\Helper\PhysXErrorCallback.h" />
     <ClInclude Include="Include\Dy\Management\PhysicsManager.h" />
     <ClInclude Include="Include\Dy\Management\FontManager.h" />
-    <ClInclude Include="Include\Dy\Element\Pawn.h" />
     <ClInclude Include="Include\Dy\Element\Object.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\LevelDescriptor.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderDeferredRendering.h" />

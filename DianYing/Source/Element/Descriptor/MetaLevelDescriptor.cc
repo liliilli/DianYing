@@ -71,6 +71,10 @@ MDY_SET_IMMUTABLE_STRING(sHeaderLightDirection, "LightDirection");
 MDY_SET_IMMUTABLE_STRING(sHeaderLightIntensity, "LightIntensity");
 MDY_SET_IMMUTABLE_STRING(sHeaderLightTintColor, "LightTintColor");
 
+//!
+//! Functions
+//!
+
 ///
 /// @brief Get DDyColor32 RGB color from TU32 24 bit value.
 /// @param bit24Value 24bit value, [23...16] R [15...8] G [7...0] B
@@ -143,15 +147,6 @@ MDY_NODISCARD dy::EDyComponentMetaType DyGetComponentTypeFrom(_MIN_ const std::s
   else                                 { return dy::EDyComponentMetaType::NoneError; }
 }
 
-} /// ::unnamed namespace
-
-//!
-//! Implementation
-//!
-
-namespace dy
-{
-
 ///
 /// @brief  Exceptionable.
 /// @param  jsonAtlas
@@ -171,15 +166,24 @@ MDY_NODISCARD TReturnType DyGetValue(_MIN_ const TParam1& jsonAtlas, _MIN_ const
 /// @return
 /// @TODO SCRIPT THIS.
 ///
-MDY_NODISCARD DDyVector3 DyGetDDyVector3FromJson(_MIN_ const nlohmann::json& jsonAtlas)
+MDY_NODISCARD dy::DDyVector3 DyGetDDyVector3FromJson(_MIN_ const nlohmann::json& jsonAtlas)
 {
-  DDyVector3 vector;
+  dy::DDyVector3 vector;
   vector.X = jsonAtlas.at("X").get<TF32>();
   vector.Y = jsonAtlas.at("Y").get<TF32>();
   vector.Z = jsonAtlas.at("Z").get<TF32>();
 
   return vector;
 }
+
+} /// ::unnamed namespace
+
+//!
+//! Implementation
+//!
+
+namespace dy
+{
 
 PDyLevelConstructDescriptor PDyLevelConstructDescriptor::CreateDescriptor(_MIN_ const nlohmann::json& jsonAtlas)
 {
@@ -272,10 +276,11 @@ PDyLevelConstructDescriptor PDyLevelConstructDescriptor::CreateDescriptor(_MIN_ 
     objInfo.mObjectName       = DyGetValue<std::string>(*jsonIt, sHeaderName);
     objInfo.mHashValue        = DyGetValue<std::string>(*jsonIt, sHeaderObjectHash);
     objInfo.mParentHashValue  = DyGetValue<std::string>(*jsonIt, sHeaderParentHash);
+    objInfo.mToComponentHash  = DyGetValue<std::string>(*jsonIt, sHeaderToComponent);
 
     // Set component meta dependency information to mMetaComponentInfo;
     const auto componentMap = jsonAtlas.at(MSVSTR(sCategoryComponent));
-    if (const auto it = componentMap.find(objInfo.mHashValue); it != componentMap.end())
+    if (const auto it = componentMap.find(objInfo.mToComponentHash); it != componentMap.end())
     {
       GetMetaComponentInformation(it.value(), objInfo);
     }

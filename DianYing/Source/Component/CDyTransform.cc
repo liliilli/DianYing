@@ -156,4 +156,9 @@ const DDyMatrix4x4& CDyTransform::GetTransform() const noexcept
   return this->mFinalRenderingTransform;
 }
 
+std::string CDyTransform::ToString()
+{
+  return MDY_INITILAIZE_EMPTYSTR;
+}
+
 } /// ::dy namespace

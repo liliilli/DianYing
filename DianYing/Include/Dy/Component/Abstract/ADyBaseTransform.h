@@ -13,6 +13,7 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Component/Descriptor/ComponentMetaDescriptor.h>
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
 
 namespace dy
@@ -28,6 +29,12 @@ MDY_ABSTRACT ADyBaseTransform : public ADyGeneralBaseComponent
 public:
   ADyBaseTransform(FDyActor& actorReference);
   virtual ~ADyBaseTransform() = default;
+
+  ///
+  MDY_NODISCARD EDySuccess Initialize(_MIN_ const DDyTransformMetaInformation& desc);
+
+  ///
+  void Release();
 
   ADyBaseTransform(const ADyBaseTransform&)                                 = delete;
   ADyBaseTransform& operator=(const ADyBaseTransform&)                      = delete;

@@ -14,6 +14,7 @@
 
 /// Header file
 #include <Dy/Component/CDyScript.h>
+#include <Dy/Management/WorldManager.h>
 
 namespace dy
 {
@@ -68,6 +69,21 @@ void CDyScript::Destroy()
 std::string CDyScript::ToString()
 {
   return "CDyScript::ToString NOT IMPLEMENTED YET!";
+}
+
+EDySuccess CDyScript::Initialize(const DDyScriptMetaInformation& metaInfo)
+{
+  // @TODO ASSERT THAT SCRIPT COMPONENT IS ACTIVATED EVEN WHEN FIRST TIME.
+  this->mScriptPath             = metaInfo.mScriptPath;
+  const auto activatedIndex     = MDyWorld::GetInstance().pfEnrollActiveScript(DyMakeNotNull(this));
+  this->mActivatedUpdateListId  = activatedIndex;
+
+  return DY_SUCCESS;
+}
+
+void CDyScript::Release()
+{
+  MDyWorld::GetInstance().pfUnenrollActiveScript(this->mActivatedUpdateListId);
 }
 
 } /// ::dy namespace

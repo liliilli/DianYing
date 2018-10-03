@@ -19,6 +19,16 @@ namespace dy
 {
 
 ADyBaseTransform::ADyBaseTransform(FDyActor& actorReference) : ADyGeneralBaseComponent(actorReference)
+{ }
+
+EDySuccess ADyBaseTransform::Initialize(const DDyTransformMetaInformation& desc)
+{
+
+
+  return DY_SUCCESS;
+}
+
+void ADyBaseTransform::Release()
 {
 
 }

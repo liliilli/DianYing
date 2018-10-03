@@ -17,8 +17,6 @@
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/MetaInfoManager.h>
 
-#include <Dy/Element/Pawn.h>
-
 namespace dy
 {
 
@@ -50,15 +48,15 @@ void MDyWorld::Update(float dt)
   }
 
   // Remove activated pawn update list reversely.
-  if (!this->mErasionPawnCandidateList.empty())
+  if (!this->mErasionScriptCandidateList.empty())
   {
-    std::sort(MDY_BIND_BEGIN_END(this->mErasionPawnCandidateList), std::greater<TI32>());
-    for (const auto& index : this->mErasionPawnCandidateList)
+    std::sort(MDY_BIND_BEGIN_END(this->mErasionScriptCandidateList), std::greater<TI32>());
+    for (const auto& index : this->mErasionScriptCandidateList)
     { // Remove!
-      this->mActivatedPawn.erase(this->mActivatedPawn.begin() + index);
+      this->mActivatedScripts.erase(this->mActivatedScripts.begin() + index);
     }
     // Clear!
-    this->mErasionPawnCandidateList.clear();
+    this->mErasionScriptCandidateList.clear();
   }
 
   // Travel next level
@@ -91,7 +89,7 @@ void MDyWorld::UpdateObjects(float dt)
 {
   if (this->mLevel)
   {
-    for (auto& pawnPtr : this->mActivatedPawn)
+    for (auto& pawnPtr : this->mActivatedScripts)
     {
       if (pawnPtr == nullptr) continue;
       pawnPtr->Update(dt);
@@ -140,16 +138,16 @@ void MDyWorld::pfMoveActorToGc(NotNull<FDyActor*> actorRawPtr) noexcept
   this->mActorGc.emplace_back(std::unique_ptr<FDyActor>(actorRawPtr));
 }
 
-TI32 MDyWorld::pfEnrollActivePawn(const NotNull<FDyPawn*>& pawnRawPtr) noexcept
+TI32 MDyWorld::pfEnrollActiveScript(const NotNull<CDyScript*>& pawnRawPtr) noexcept
 {
-  this->mActivatedPawn.emplace_back(pawnRawPtr);
-  return static_cast<TI32>(this->mActivatedPawn.size()) - 1;
+  this->mActivatedScripts.emplace_back(pawnRawPtr);
+  return static_cast<TI32>(this->mActivatedScripts.size()) - 1;
 }
 
-void MDyWorld::pfUnenrollActivePawn(TI32 index) noexcept
+void MDyWorld::pfUnenrollActiveScript(TI32 index) noexcept
 {
-  this->mActivatedPawn[index] = nullptr;
-  this->mErasionPawnCandidateList.emplace_back(index);
+  this->mActivatedScripts[index] = nullptr;
+  this->mErasionScriptCandidateList.emplace_back(index);
 }
 
 } /// ::dy namespace

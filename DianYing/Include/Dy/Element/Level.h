@@ -30,26 +30,25 @@ namespace dy {
 ///
 class FDyLevel final : public FDyObject, public IDyUpdatable, public ADyNameCounterMap
 {
-  using TActorSmtPtr = std::unique_ptr<FDyActor>;
-  using TActorMap    = std::unordered_map<std::string, TActorSmtPtr>;
+  using TActorSmtPtr      = std::unique_ptr<FDyActor>;
+  using TActorMap         = std::unordered_map<std::string, TActorSmtPtr>;
   using TNameCounterMap   = std::unordered_map<std::string, int32_t>;
 
 public:
   /// Initialize level context with valid descriptor.
-  void Initialize(const PDyLevelConstructDescriptor& desc);
+  void Initialize(_MIN_ const PDyLevelConstructDescriptor& desc);
 
   /// Release level by release all subobjects in this level storing information or signalling something.
   void Release();
 
   /// Update level.
-  void Update(float dt) override final;
+  void Update(_MIN_ float dt) override final;
 
   ///
   /// @brief  Get present level name.
   /// @return Level name.
   ///
-  [[nodiscard]]
-  const std::string& GetLevelName() const noexcept
+  MDY_NODISCARD const std::string& GetLevelName() const noexcept
   {
     return this->mLevelName;
   }
@@ -62,13 +61,13 @@ private:
   /// Scene basic color
   DDyColor        mLevelBackgroundColor = DDyColor::White;
   /// Actor list (hierarchial version)
-  TActorMap       mActorMap            = {};
+  TActorMap       mActorMap             = {};
   /// Check if level is initialized or released. Level is active when only mInitialized is true.
   bool            mInitialized          = false;
 
 public:
   /// Level information as string.
-  std::string ToString() override final;
+  MDY_NODISCARD std::string ToString() override final;
 
 #ifdef false
   ///

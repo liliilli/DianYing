@@ -16,12 +16,28 @@
 #include <Dy/Element/Abstract/ADyBaseComponent.h>
 #include <Dy/Element/Interface/IDyScriptable.h>
 
+//!
+//! Forward declaration
+//!
+
+namespace dy
+{
+
+struct DDyScriptMetaInformation;
+
+} /// ::unnamed namespace
+
+//!
+//! Implementation
+//!
+
 namespace dy
 {
 
 ///
 /// @class CDyScript
 /// @brief Script component type class.
+/// @TODO SCRIPT THIS
 ///
 class CDyScript final : public ADyBaseComponent, public IDyScriptable
 {
@@ -93,7 +109,20 @@ public:
   ///
   MDY_NODISCARD std::string ToString() override final;
 
+  ///
+  /// @brief
+  /// @param  metaInfo
+  /// @return
+  ///
+  MDY_NODISCARD EDySuccess Initialize(_MIN_ const DDyScriptMetaInformation& metaInfo);
+
+  ///
+  /// @brief
+  ///
+  void Release();
+
 private:
+  MDY_TRANSIENT std::string mScriptPath = MDY_INITILAIZE_EMPTYSTR;
 
   MDY_SET_TYPEMATCH_FUNCTION(::dy::ADyBaseComponent, CDyScript);
   MDY_SET_CRC32_HASH_WITH_TYPE(CDyScript);

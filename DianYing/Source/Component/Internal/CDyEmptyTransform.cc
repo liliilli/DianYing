@@ -18,6 +18,14 @@
 namespace dy
 {
 
+CDyEmptyTransform::CDyEmptyTransform(FDyActor& actorReference) :
+    ADyBaseTransform(actorReference)
+{
+}
 
+std::string CDyEmptyTransform::ToString()
+{
+  return MDY_INITILAIZE_EMPTYSTR;
+}
 
 } /// ::dy namespace

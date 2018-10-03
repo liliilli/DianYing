@@ -167,6 +167,12 @@ public:
   ///
   MDY_NODISCARD const DDyMatrix4x4& GetTransform() const noexcept;
 
+  /// @TODO NOT IMPLEMENTED YET
+  MDY_NODISCARD std::string ToString() override final;
+
+  ///
+  void Update(float dt) override final {};
+
 private:
 
   //!

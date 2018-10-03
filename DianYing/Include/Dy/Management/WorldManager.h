@@ -24,7 +24,6 @@
 namespace dy
 {
 class CDyCamera;
-class FDyPawn;
 } /// ::dy namespace
 
 //!
@@ -117,7 +116,7 @@ public:
 
 private:
   /// Bind valid camera to main camera and let object have focused.
-  void __pfBindFocusCamera(CDyCamera* validCameraPtr);
+  void __pfBindFocusCamera(_MIN_ CDyCamera* validCameraPtr);
   /// Unbind main camera. this function must not be called manually, but using camera's mechanism.
   void __pfUnbindCameraFocus();
 
@@ -125,14 +124,14 @@ private:
   /// @brief  Move FDyActor instance to gc.
   /// @param  actorRawPtr Valid FDyActor pointer instance.
   ///
-  void pfMoveActorToGc(NotNull<FDyActor*> actorRawPtr) noexcept;
+  void pfMoveActorToGc(_MIN_ NotNull<FDyActor*> actorRawPtr) noexcept;
 
   ///
   /// @brief  Enroll activated FDyPawn raw pointer instance to list to update.
   /// @param  pawnRawPtr FDyPawn instance to insert into activated list.
   /// @return index of pawn raw ptr. Always success.
   ///
-  [[nodiscard]] TI32 pfEnrollActivePawn(const NotNull<FDyPawn*>& pawnRawPtr) noexcept;
+  MDY_NODISCARD TI32 pfEnrollActiveScript(_MIN_ const NotNull<CDyScript*>& pawnRawPtr) noexcept;
 
   ///
   /// @brief  Unenroll activated FDyPawn raw pointer from list.
@@ -141,9 +140,9 @@ private:
   ///
   /// @param  index Index to erase.
   ///
-  void pfUnenrollActivePawn(TI32 index) noexcept;
+  void pfUnenrollActiveScript(_MIN_ TI32 index) noexcept;
 
-  /// @brief
+  /// Main Camera Ptr of present scene.
   CDyCamera*                mValidMainCameraPtr = nullptr;
   std::vector<CDyCamera*>   mValidSubCameraPtrs = {};
 
@@ -151,20 +150,21 @@ private:
   std::string               mPresentLevelName   = MDY_INITILAIZE_EMPTYSTR;
   std::string               mPreviousLevelName  = MDY_INITILAIZE_EMPTYSTR;
 
-  // Present valid level instance.
+  /// Present valid level instance.
   std::unique_ptr<FDyLevel> mLevel              = nullptr;
 
-  // Activated pawn list. this list must not be invalidated when iterating list, but except for unenrolling.
-  std::vector<FDyPawn*>     mActivatedPawn = {};
-  // Erasion (activated) pawn candidate list. this list must be sorted descendently not to invalidate order.
-  std::vector<TI32>         mErasionPawnCandidateList = {};
+  /// Activated CDyScript component list.
+  /// this list must not be invalidated when iterating list, but except for unenrolling.
+  std::vector<CDyScript*>   mActivatedScripts           = {};
+  /// Erasion (activated) pawn candidate list. this list must be sorted descendently not to invalidate order.
+  std::vector<TI32>         mErasionScriptCandidateList = {};
 
-  // Garbage collection actor instance list.
+  /// Garbage collection actor instance list.
   std::vector<std::unique_ptr<FDyActor>> mActorGc = {};
 
   friend class CDyCamera;
   friend class FDyLevel;
-  friend class FDyPawn;
+  friend class CDyScript;
 };
 
 } /// ::dy namespace

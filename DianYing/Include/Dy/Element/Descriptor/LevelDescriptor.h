@@ -49,6 +49,8 @@ struct DDyObjectInformation final
   std::string       mHashValue        = MDY_INITILAIZE_EMPTYSTR;
   /// Parent meta hash name of this object.
   std::string       mParentHashValue  = MDY_INITILAIZE_EMPTYSTR;
+  ///
+  std::string       mToComponentHash  = MDY_INITILAIZE_EMPTYSTR;
 
   /// Dependency information which are vary along with mType.
   /// If mType is "EDyFDyObjectType::FdyPawn", must be converted to "DDyScriptMetaInformation".
