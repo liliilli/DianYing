@@ -173,6 +173,22 @@
 #define MDY_UNQMVCAST(__MACastType__, __MAInstance__) \
   std::unqiue_ptr<__MACastType__*>(static_cast<__MACastType__*>(__MAInstance__.release()))
 
+///
+/// @macro MDY_TEST_IS_BASE_OF
+/// @brief Check __MADerivedType__ is derived from __MABaseType__.
+///
+#define MDY_TEST_IS_BASE_OF(__MABaseType__, __MADerivedType__) \
+  static_assert(std::is_base_of_v<__MABaseType__, __MADerivedType__>, \
+                MDY_TO_STRING(__MADerivedType__) " is not a derived type of " MDY_TO_STRING(__MABaseType__) ".")
+
+///
+/// @macro MDY_TEST_PARAM_PACK_COUNT
+/// @brief Check parameter pack count is same to speicified number.
+///
+#define MDY_TEST_PARAM_PACK_COUNT(__MAParamPack__, __MAGoalCount__) \
+  static_assert(sizeof...(__MAParamPack__) == __MAGoalCount__, \
+                __FILE__ " " __LINE__ " Parameter pack test failed, the number of parameter pack must be " #__MAGoalCount__ ".")
+
 //!
 //! Do not touch below section!
 //!
