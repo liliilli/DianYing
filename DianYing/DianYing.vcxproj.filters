@@ -263,6 +263,7 @@
     <ClInclude Include="Include\Dy\Component\Abstract\ADyBaseTransform.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyEmptyTransform.h" />
     <ClInclude Include="Include\Dy\Component\Descriptor\ComponentMetaDescriptor.h" />
+    <ClInclude Include="Include\Dy\Helper\Internal\TmpCheckTypeParams.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />
