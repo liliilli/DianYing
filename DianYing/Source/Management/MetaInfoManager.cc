@@ -26,7 +26,7 @@
 namespace
 {
 
-MDY_SET_IMMUTABLE_STRING(sTestPath, "./TestScene.DDat");
+MDY_SET_IMMUTABLE_STRING(sTestPath, "./TestScene.dydat");
 
 } /// ::unnamed namespace
 
@@ -42,7 +42,7 @@ EDySuccess MDyMetaInfo::pfInitialize()
   const auto opJsonAtlas = DyGetJsonAtlas(sTestPath.data());
   if (!opJsonAtlas.has_value()) { return DY_FAILURE; }
 
-  PDyLevelConstructDescriptor desc = PDyLevelConstructDescriptor::GetDescriptor(opJsonAtlas.value());
+  PDyLevelConstructDescriptor desc = PDyLevelConstructDescriptor::CreateDescriptor(opJsonAtlas.value());
   auto [it, result] = this->mLevelInfoMap.try_emplace(desc.mLevelName, desc);
   if (!result)
   {

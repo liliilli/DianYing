@@ -210,7 +210,7 @@
     <ClCompile Include="Source\Element\Abstract\ADyNameCounterMap.cc" />
     <ClCompile Include="Source\Element\Abstract\ADyTransformable.cc" />
     <ClCompile Include="Source\Element\Actor.cc" />
-    <ClCompile Include="Source\Element\Descriptor\GetDescriptors.cc" />
+    <ClCompile Include="Source\Element\Descriptor\MetaLevelDescriptor.cc" />
     <ClCompile Include="Source\Element\Level.cc" />
     <ClCompile Include="Source\Element\Pawn.cc" />
     <ClCompile Include="Source\Entry\Entry.cc" />
@@ -274,6 +274,7 @@
     <ClInclude Include="Include\Dy\Component\Abstract\ADyBaseTransform.h" />
     <ClInclude Include="Include\Dy\Component\CDyScript.h" />
     <ClInclude Include="Include\Dy\Component\CDyTransform.h" />
+    <ClInclude Include="Include\Dy\Component\Descriptor\ComponentMetaDescriptor.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyEmptyTransform.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\MaterialInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\SoundInformation.h" />

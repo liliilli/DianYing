@@ -92,14 +92,10 @@ public:
   /// @brief  Get actual actor type
   /// @return Object type specifier
   ///
-  [[nodiscard]] FORCEINLINE EDyFDyObjectType GetActorType() const noexcept
+  [[nodiscard]] FORCEINLINE EDyMetaObjectType GetActorType() const noexcept
   {
     return this->mActorType;
   }
-
-#define MDY_TEST_IS_BASE_OF(__MABaseType__, __MADerivedType__) \
-  static_assert(std::is_base_of_v<__MABaseType__, __MADerivedType__>, \
-                MDY_TO_STRING(__MADerivedType__) " is not a derived type of " MDY_TO_STRING(__MABaseType__) ".")
 
   ///
   /// @brief  Add component and bind to this object instance.
@@ -129,6 +125,13 @@ public:
       return static_cast<TComponent*>(reference.get());
     }
   }
+
+  ///
+  /// @brief
+  /// @param
+  /// @return
+  ///
+  MDY_NODISCARD std::optional<CDyScript*> GetScriptComponent(const std::string& scriptName) noexcept;
 
   ///
   /// @brief  Return component raw-pointer from general component list (not script)
@@ -275,7 +278,7 @@ public:
 
 protected:
   /// Actual actor type to discriminate actor type is so cast object with statically.
-  MDY_TRANSIENT EDyFDyObjectType mActorType = EDyFDyObjectType::Error;
+  MDY_TRANSIENT EDyMetaObjectType mActorType = EDyMetaObjectType::NoneError;
 
 private:
   /// Parent FDyActor raw-pointer data.

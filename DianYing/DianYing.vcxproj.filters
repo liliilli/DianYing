@@ -81,7 +81,6 @@
     <ClCompile Include="Source\Management\PhysicsManager.cc" />
     <ClCompile Include="Source\Management\FontManager.cc" />
     <ClCompile Include="Source\Element\Level.cc" />
-    <ClCompile Include="Source\Element\Descriptor\GetDescriptors.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderDeferredRendering.cc" />
     <ClCompile Include="Source\Element\Actor.cc" />
     <ClCompile Include="Source\Element\Pawn.cc" />
@@ -102,6 +101,7 @@
     <ClCompile Include="Source\Component\Internal\CDyEmptyTransform.cc" />
     <ClCompile Include="Source\Component\CDyTransform.cc" />
     <ClCompile Include="Source\Component\Abstract\ADyGeneralBaseComponent.cc" />
+    <ClCompile Include="Source\Element\Descriptor\MetaLevelDescriptor.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -264,6 +264,7 @@
     <ClInclude Include="Include\Dy\Component\CDyTransform.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyBaseTransform.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyEmptyTransform.h" />
+    <ClInclude Include="Include\Dy\Component\Descriptor\ComponentMetaDescriptor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />
