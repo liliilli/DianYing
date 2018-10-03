@@ -98,6 +98,10 @@
     <ClCompile Include="Source\Helper\Type\ThreeStateBool.cc" />
     <ClCompile Include="Source\Element\Abstract\ADyBaseComponent.cc" />
     <ClCompile Include="Source\Component\CDyScript.cc" />
+    <ClCompile Include="Source\Component\Abstract\ADyBaseTransform.cc" />
+    <ClCompile Include="Source\Component\Internal\CDyEmptyTransform.cc" />
+    <ClCompile Include="Source\Component\CDyTransform.cc" />
+    <ClCompile Include="Source\Component\Abstract\ADyGeneralBaseComponent.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -257,6 +261,9 @@
     <ClInclude Include="Include\Dy\Element\Abstract\ADyBaseComponent.h" />
     <ClInclude Include="Include\Dy\Element\Abstract\ADyGeneralBaseComponent.h" />
     <ClInclude Include="Include\Dy\Component\CDyScript.h" />
+    <ClInclude Include="Include\Dy\Component\CDyTransform.h" />
+    <ClInclude Include="Include\Dy\Component\Abstract\ADyBaseTransform.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\CDyEmptyTransform.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

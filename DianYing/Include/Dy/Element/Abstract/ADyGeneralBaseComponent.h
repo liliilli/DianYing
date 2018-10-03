@@ -25,12 +25,12 @@ namespace dy
 ///
 MDY_ABSTRACT ADyGeneralBaseComponent : public ADyBaseComponent, public IDyUpdatable
 {
-private:
+public:
   ADyGeneralBaseComponent(FDyActor& actorReference);
   virtual ~ADyGeneralBaseComponent() = default;
 
-  ADyGeneralBaseComponent(const ADyBaseComponent&)                                  = delete;
-  ADyGeneralBaseComponent& operator=(const ADyBaseComponent&)                       = delete;
+  ADyGeneralBaseComponent(const ADyGeneralBaseComponent&)                           = delete;
+  ADyGeneralBaseComponent& operator=(const ADyGeneralBaseComponent&)                = delete;
   ADyGeneralBaseComponent(ADyGeneralBaseComponent&& instance)             noexcept  = default;
   ADyGeneralBaseComponent& operator=(ADyGeneralBaseComponent&& instance)  noexcept  = default;
 
