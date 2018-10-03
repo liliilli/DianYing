@@ -46,11 +46,13 @@ public:
 
   ///
   /// @brief
+  /// @TODO SCRIPT THIS
   ///
   void Activate() noexcept override final;
 
   ///
   /// @brief
+  /// @TODO SCRIPT THIS
   ///
   void Deactivate() noexcept override final;
 
@@ -76,36 +78,43 @@ public:
 
   ///
   /// @brief
+  /// @TODO SCRIPT THIS
   ///
   void Initiate() override final;
 
   ///
   /// @brief
+  /// @TODO SCRIPT THIS
   ///
   void Start() override final;
 
   ///
   /// @brief
+  /// @TODO SCRIPT THIS
   ///
   void Update(float dt) override final;
 
   ///
   /// @brief
+  /// @TODO SCRIPT THIS
   ///
   void OnEnabled() override final;
 
   ///
   /// @brief
+  /// @TODO SCRIPT THIS
   ///
   void OnDisabled() override final;
 
   ///
   /// @brief
+  /// @TODO SCRIPT THIS
   ///
   void Destroy() override final;
 
   ///
   /// @brief
+  /// @TODO SCRIPT THIS
   ///
   MDY_NODISCARD std::string ToString() override final;
 
@@ -113,15 +122,30 @@ public:
   /// @brief
   /// @param  metaInfo
   /// @return
+  /// @TODO SCRIPT THIS
   ///
   MDY_NODISCARD EDySuccess Initialize(_MIN_ const DDyScriptMetaInformation& metaInfo);
 
   ///
   /// @brief
+  /// @TODO SCRIPT THIS
   ///
   void Release();
 
+  ///
+  /// @brief  Return verification name of this script component instance.
+  /// @return Script vertification name must not be empty.
+  ///
+  MDY_NODISCARD FORCEINLINE const std::string& GetScriptVerificationName() const noexcept
+  {
+    PHITOS_ASSERT(this->mScriptName.empty() == false, "Script name must not be empty.");
+    return this->mScriptName;
+  }
+
 private:
+  /// Script name for specification and searching.
+  MDY_TRANSIENT std::string mScriptName = MDY_INITILAIZE_EMPTYSTR;
+  /// Script path to execute lua script file.
   MDY_TRANSIENT std::string mScriptPath = MDY_INITILAIZE_EMPTYSTR;
 
   MDY_SET_TYPEMATCH_FUNCTION(::dy::ADyBaseComponent, CDyScript);

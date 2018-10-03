@@ -50,8 +50,10 @@ struct IDyMetaInformation
 ///
 struct DDyScriptMetaInformation final : public IDyMetaInformation
 {
+  /// Script name for specifying
+  std::string     mScriptName = MDY_INITILAIZE_EMPTYSTR;
   /// Lua script path. Must be valid and can be loaded anytime in runtime.
-  std::string      mScriptPath = MDY_INITILAIZE_EMPTYSTR;
+  std::string     mScriptPath = MDY_INITILAIZE_EMPTYSTR;
 };
 
 ///

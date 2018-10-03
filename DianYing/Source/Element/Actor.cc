@@ -113,9 +113,41 @@ void FDyActor::SetParentToRootRelocateTransform() noexcept
 
 std::optional<CDyScript*> FDyActor::GetScriptComponent(const std::string& scriptName) noexcept
 {
-  PHITOS_ASSERT(!scriptName.empty(), "scriptName must not be empty at FDyActor::GetScriptComponent()");
-  PHITOS_NOT_IMPLEMENTED_ASSERT();
-  return std::nullopt;
+  PHITOS_ASSERT(scriptName.empty() == false, "scriptName must not be empty at FDyActor::GetScriptComponent()");
+
+  using TInstanceType = decltype(this->mScriptList)::value_type;
+  const auto it = std::find_if(MDY_BIND_BEGIN_END(this->mScriptList), [&scriptName](const TInstanceType& instance)
+  {
+    return instance->GetScriptVerificationName() == scriptName;
+  });
+
+  if (it == this->mScriptList.end())  { return std::nullopt; }
+  else                                { return it->get(); }
+}
+
+EDySuccess FDyActor::RemoveScriptComponent(const std::string& scriptName) noexcept
+{
+  PHITOS_ASSERT(scriptName.empty() == false, "scriptName must not be empty at FDyActor::GetScriptComponent()");
+
+  using TInstanceType = decltype(this->mScriptList)::value_type;
+  const auto it = std::find_if(MDY_BIND_BEGIN_END(this->mScriptList), [&scriptName](const TInstanceType& instance)
+  {
+    return instance->GetScriptVerificationName() == scriptName;
+  });
+
+  if (it == this->mScriptList.end())
+  {
+    MDY_LOG_WARNING("FDyActor::RemoveComponent | Can not find script to remove. | Name : {}", scriptName);
+    return DY_FAILURE;
+  }
+  else
+  {
+    // @TODO MOVE DESTROY FUNCTION CALL TO AFTERWARD COMPONENT UPDATE() (BEFORE TRANFORM SYNCHRONIZATION)
+    (*it)->Destroy();
+    (*it)->Release();
+    this->mScriptList.erase(it);
+    return DY_SUCCESS;
+  }
 }
 
 } /// ::dy namespace

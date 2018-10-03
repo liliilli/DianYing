@@ -238,6 +238,7 @@ PDyLevelConstructDescriptor PDyLevelConstructDescriptor::CreateDescriptor(_MIN_ 
       {
         DDyScriptMetaInformation scriptMeta;
         scriptMeta.mType              = typeEnum;
+        scriptMeta.mScriptName        = DyGetValue<std::string>(componentMetaInfo, sHeaderName);
         scriptMeta.mBindHashTo        = desc.mHashValue;
         scriptMeta.mScriptPath        = DyGetValue<std::string>(componentMetaInfo, sHeaderScriptPath);
 

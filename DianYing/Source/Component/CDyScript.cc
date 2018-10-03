@@ -74,6 +74,7 @@ std::string CDyScript::ToString()
 EDySuccess CDyScript::Initialize(const DDyScriptMetaInformation& metaInfo)
 {
   // @TODO ASSERT THAT SCRIPT COMPONENT IS ACTIVATED EVEN WHEN FIRST TIME.
+  this->mScriptName             = metaInfo.mScriptName;
   this->mScriptPath             = metaInfo.mScriptPath;
   const auto activatedIndex     = MDyWorld::GetInstance().pfEnrollActiveScript(DyMakeNotNull(this));
   this->mActivatedUpdateListId  = activatedIndex;

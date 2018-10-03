@@ -14,13 +14,16 @@
 ///
 
 #include <Dy/Core/Component/Internal/MaterialType.h>
+#include <Dy/Component/CDyScript.h>
+#include <Dy/Component/Abstract/ADyBaseTransform.h>
+#include <Dy/Component/Helper/TmpCheckInitilizeParams.h>
+#include <Dy/Component/Helper/TmpCheckRemoveParams.h>
 #include <Dy/Element/Object.h>
-#include <Dy/Element/Abstract/ADyTransformable.h>
 #include <Dy/Element/Descriptor/LevelDescriptor.h>
 #include <Dy/Element/Abstract/ADyBaseComponent.h>
-#include <Dy/Component/CDyScript.h>
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
-#include "Dy/Component/Abstract/ADyBaseTransform.h"
+#include <Dy/Element/Abstract/ADyTransformable.h>
+#include <Dy/Management/MetaInfoManager.h>
 
 namespace dy
 {
@@ -112,9 +115,11 @@ public:
   /// @return Valid component instance pointer.
   ///
   template<class TComponent, typename... TArgs>
-  MDY_NODISCARD NotNull<TComponent*> AddComponent(TArgs&&... args)
+  MDY_NODISCARD NotNull<TComponent*> AddComponent(_MIN_ TArgs&&... args)
   {
+    // Integrity test
     MDY_TEST_IS_BASE_OF(ADyBaseComponent, TComponent);
+    DyCheckComponentInitializeFunctionParams<TComponent, TArgs...>();
 
     // Add and initialize component itself.
     auto componentPtr = std::make_unique<TComponent>(std::ref(*this));
@@ -139,13 +144,6 @@ public:
       return DyMakeNotNull(static_cast<TComponent*>(reference.get()));
     }
   }
-
-  ///
-  /// @brief
-  /// @param
-  /// @return
-  ///
-  MDY_NODISCARD std::optional<CDyScript*> GetScriptComponent(const std::string& scriptName) noexcept;
 
   ///
   /// @brief  Return component raw-pointer from general component list (not script)
@@ -197,19 +195,31 @@ public:
   }
 
   ///
-  /// @brief Remove component.
+  /// @brief
+  /// @param  scriptName
+  /// @return The pointer instance of CDyScript. If not found, return just no value.
+  ///
+  MDY_NODISCARD std::optional<CDyScript*> GetScriptComponent(_MIN_ const std::string& scriptName) noexcept;
+
+  ///
+  /// @brief
+  /// @param  scriptName
+  /// @return The pointer instance of CDyScript. If not found, return just no value.
+  ///
+  MDY_NODISCARD EDySuccess RemoveScriptComponent(_MIN_ const std::string& scriptName) noexcept;
+
+  ///
+  /// @brief  Remove component.
   /// @tparam TComponent Component type argument.
+  /// @tparam TArgs      Arguments
   /// @return If found, return true but otherwise false.
   ///
-  template <class TComponent>
-  MDY_NODISCARD EDySuccess RemoveComponent()
+  template <class TComponent, typename... TArgs>
+  MDY_NODISCARD EDySuccess RemoveComponent(TArgs&&... args)
   {
+    // Integrity test
     MDY_TEST_IS_BASE_OF(ADyBaseComponent, TComponent);
-#ifdef false
-    using component::CParticleSpawner;
-    using component::_internal::EComponentType;
-    using manager::object::pMoveParticleSpawner;
-#endif
+    DyCheckComponentRemoveFunctionParams<TComponent, TArgs...>();
 
     if constexpr (std::is_base_of_v<ADyGeneralBaseComponent, TComponent>)
     {
@@ -224,21 +234,8 @@ public:
     else if constexpr (std::is_same_v<CDyScript, TComponent>)
     {
       // @TODO IMPLEMENT SCRIPT DELETION USING DESCRIPTOR OR SCRIPT NAME.
-
-      static_cast<CDyScript*>(it->get())->Destroy();
-
-      this->mScriptList.erase(it);
-      return DY_SUCCESS;
+      return this->RemoveScriptComponent(std::forward<TArgs>(args)...);
     }
-#ifdef false
-    if (it->second == EComponentType::Particle) {
-      auto ptr = std::unique_ptr<CParticleSpawner>(static_cast<CParticleSpawner*>(it->first.release()));
-      pMoveParticleSpawner(ptr);
-    }
-    else if (it->second == EComponentType::Script) {
-      static_cast<component::CScriptFrame*>(it->first.get())->Destroy();
-    }
-#endif
 
     return DY_FAILURE;
   }

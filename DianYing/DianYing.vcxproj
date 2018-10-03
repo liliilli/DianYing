@@ -274,6 +274,8 @@
     <ClInclude Include="Include\Dy\Component\CDyScript.h" />
     <ClInclude Include="Include\Dy\Component\CDyTransform.h" />
     <ClInclude Include="Include\Dy\Component\Descriptor\ComponentMetaDescriptor.h" />
+    <ClInclude Include="Include\Dy\Component\Helper\TmpCheckInitilizeParams.h" />
+    <ClInclude Include="Include\Dy\Component\Helper\TmpCheckRemoveParams.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyEmptyTransform.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\MaterialInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\SoundInformation.h" />
