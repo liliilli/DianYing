@@ -87,9 +87,15 @@
 
 ///
 /// @macro MDY_CHECK_ISEMPTY
-/// @brief Check smart pointer is empty or not.
+/// @brief Check smart pointer is empty.
 ///
-#define MDY_CHECK_ISEMPTY(__MASmartPointer__) std::is_pointer_v<__MASmartPointer
+#define MDY_CHECK_ISEMPTY(__MASmartPointer__)     __MASmartPointer__.get() == nullptr
+
+///
+/// @macro MDY_CHECK_ISNOTEMPTY
+/// @brief Check smart pointer is not empty.
+///
+#define MDY_CHECK_ISNOTEMPTY(__MASmartPointer__)  __MASmartPointer__.get() != nullptr
 
 ///
 /// @macro MDY_CASE_RETURN
@@ -152,6 +158,12 @@
 /// @brief Initialize arbitary pointer with nullptr.
 ///
 #define MDY_INITIALIZE_NULL nullptr
+
+///
+/// @macro MSVSTR
+/// @brief M(MDY) read SV(std::string_view) as STR(std::string or const char*) using .data()
+///
+#define MSVSTR(__MAStringView__) __MAStringView__.data()
 
 ///
 /// @macro MDY_BIND_BEGIN_END
@@ -308,6 +320,24 @@ virtual bool IsTypeMatched(const TU32 hashVal) const noexcept override { \
   {                                                                                   \
     this->__MAVariable__ = input##__MAVariable__;                                     \
   }
+
+///
+/// @macro _MIN_
+/// @brief Specify that this parameter is input only.
+///
+#define _MIN_
+
+///
+/// @macro _MOUT_
+/// @brief Specify that this parameter is output only.
+///
+#define _MOUT_
+
+///
+/// @macro _MIO_
+/// @brief Specify that this paremeter will be read from function body and altered some properties.
+///
+#define _MIO_
 
 ///
 /// @macro MDY_INTERFACE_PROPERTY
