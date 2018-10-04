@@ -172,6 +172,8 @@
     <ClCompile Include="Source\Builtin\ShaderGl\RenderPass.cc" />
     <ClCompile Include="Source\Component\Abstract\ADyBaseTransform.cc" />
     <ClCompile Include="Source\Component\Abstract\ADyGeneralBaseComponent.cc" />
+    <ClCompile Include="Source\Component\CDyModelFilter.cc" />
+    <ClCompile Include="Source\Component\CDyModelRenderer.cc" />
     <ClCompile Include="Source\Component\CDyScript.cc" />
     <ClCompile Include="Source\Component\CDyTransform.cc" />
     <ClCompile Include="Source\Component\Internal\CDyEmptyTransform.cc" />
@@ -271,6 +273,13 @@
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderGrid.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderPass.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyBaseTransform.h" />
+    <ClInclude Include="Include\Dy\Component\Abstract\ADyPhysicsRIgidbody.h" />
+    <ClInclude Include="Include\Dy\Component\Abstract\ADyPhysicsShape.h" />
+    <ClInclude Include="Include\Dy\Component\CDyModelFilter.h" />
+    <ClInclude Include="Include\Dy\Component\CDyModelRenderer.h" />
+    <ClInclude Include="Include\Dy\Component\CDyPhysicsRigidbodyDynamic.h" />
+    <ClInclude Include="Include\Dy\Component\CDyPhysicsRigidbodyStatic.h" />
+    <ClInclude Include="Include\Dy\Component\CDyPhysicsShapeBox.h" />
     <ClInclude Include="Include\Dy\Component\CDyScript.h" />
     <ClInclude Include="Include\Dy\Component\CDyTransform.h" />
     <ClInclude Include="Include\Dy\Component\Descriptor\ComponentMetaDescriptor.h" />
