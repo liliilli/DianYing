@@ -74,6 +74,12 @@
 #define MDY_FALLTHROUGH [[fallthrough]]
 
 ///
+/// @macro MDY_NOTUSED
+/// @brief Specified function or variable maybe unused. (to suppress warning /W4)
+///
+#define MDY_NOTUSED [[maybe_unused]]
+
+///
 /// @macro MDY_CHECK_ISNULL
 /// @brief Check raw pointer is empty or not.
 ///
