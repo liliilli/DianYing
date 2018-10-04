@@ -50,7 +50,7 @@ EDySuccess FDyActor::Initialize(_MIN_ const DDyObjectInformation& objectMetaDesc
     case EDyComponentMetaType::Transform:
     {
       const auto& desc = std::any_cast<const DDyTransformMetaInformation&>(componentInfo);
-      [[maybe_unused]] auto transformComponentPtr = this->AddComponent<CDyTransform>(desc);
+      MDY_NOTUSED auto transformComponentPtr = this->AddComponent<CDyTransform>(desc);
 
       isTransformCreated = true;
     }
@@ -58,7 +58,7 @@ EDySuccess FDyActor::Initialize(_MIN_ const DDyObjectInformation& objectMetaDesc
     case EDyComponentMetaType::Script:
     {
       const auto& desc = std::any_cast<const DDyScriptMetaInformation&>(componentInfo);
-      [[maybe_unused]] auto scriptComponentPtr = this->AddComponent<CDyScript>(desc);
+      MDY_NOTUSED auto scriptComponentPtr = this->AddComponent<CDyScript>(desc);
     }
     break;
     case EDyComponentMetaType::DirectionalLight:
@@ -87,7 +87,50 @@ EDySuccess FDyActor::Release()
   return DY_SUCCESS;
 }
 
-void FDyActor::SetParent(NotNull<FDyActor*> validParentRawPtr) noexcept
+void FDyActor::Activate() noexcept
+{
+  this->mActivationFlag.UpdateInput(true);
+  this->pPropagateActivationFlag();
+}
+
+void FDyActor::Deactivate() noexcept
+{
+  this->mActivationFlag.UpdateInput(true);
+  this->pPropagateActivationFlag();
+}
+
+void FDyActor::pUpdateActivateFlagFromParent() noexcept
+{
+  if (MDY_CHECK_ISNULL(this->mParentFDyActorRawPtr))
+  {
+    this->mActivationFlag.UpdateParent(true);
+  }
+  else
+  {
+    this->mActivationFlag.UpdateParent(this->mParentFDyActorRawPtr->IsActivated());
+  }
+
+  this->pPropagateActivationFlag();
+}
+
+void FDyActor::pPropagateActivationFlag() noexcept
+{
+  for (auto& unknownComponent : mComponentList)
+  {
+    if (MDY_CHECK_ISEMPTY(unknownComponent)) { continue; }
+    unknownComponent->pPropagateParentActorActivation(this->mActivationFlag);
+  }
+
+  for (auto& unknownScript : this->mScriptList)
+  {
+    if (MDY_CHECK_ISEMPTY(unknownScript)) { continue; }
+    unknownScript->pPropagateParentActorActivation(this->mActivationFlag);
+  }
+
+  // @TODO PROPAGATE ACTIVATION FLAG TO SUBACTOR ALSO.
+}
+
+  void FDyActor::SetParent(NotNull<FDyActor*> validParentRawPtr) noexcept
 {
   mParentFDyActorRawPtr = validParentRawPtr;
   MDY_LOG_WARNING("NOT IMPLEMENTED {}", "FDyActor::SetParent");
@@ -99,15 +142,15 @@ void FDyActor::SetParentRelocateTransform(NotNull<FDyActor*> validParentRawPtr) 
   MDY_LOG_WARNING("NOT IMPLEMENTED {}", "FDyActor::SetParentRelocateTransform");
 }
 
-void FDyActor::SetParentToRoot() noexcept
+void FDyActor::SetParentAsRoot() noexcept
 {
 
-  MDY_LOG_WARNING("NOT IMPLEMENTED {}", "FDyActor::SetParentToRoot");
+  MDY_LOG_WARNING("NOT IMPLEMENTED {}", "FDyActor::SetParentAsRoot");
 }
 
 void FDyActor::SetParentToRootRelocateTransform() noexcept
 {
-  this->SetParentToRoot();
+  this->SetParentAsRoot();
   MDY_LOG_WARNING("NOT IMPLEMENTED {}", "FDyActor::SetParentToRootRelocateTransform");
 }
 
@@ -129,10 +172,12 @@ EDySuccess FDyActor::RemoveScriptComponent(const std::string& scriptName) noexce
 {
   PHITOS_ASSERT(scriptName.empty() == false, "scriptName must not be empty at FDyActor::GetScriptComponent()");
 
+  // Find script instance that has scriptName.
   using TInstanceType = decltype(this->mScriptList)::value_type;
   const auto it = std::find_if(MDY_BIND_BEGIN_END(this->mScriptList), [&scriptName](const TInstanceType& instance)
   {
-    return instance->GetScriptVerificationName() == scriptName;
+    if (MDY_CHECK_ISEMPTY(instance))  { return false; }
+    else                              { return instance->GetScriptVerificationName() == scriptName; }
   });
 
   if (it == this->mScriptList.end())
@@ -148,6 +193,11 @@ EDySuccess FDyActor::RemoveScriptComponent(const std::string& scriptName) noexce
     this->mScriptList.erase(it);
     return DY_SUCCESS;
   }
+}
+
+NotNull<ADyBaseTransform*> FDyActor::GetTransform() noexcept
+{
+  return DyMakeNotNull(this->mTransform.get());
 }
 
 } /// ::dy namespace

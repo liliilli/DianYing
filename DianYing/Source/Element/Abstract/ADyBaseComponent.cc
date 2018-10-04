@@ -56,14 +56,6 @@ void ADyBaseComponent::Activate() noexcept
 void ADyBaseComponent::Deactivate() noexcept
 {
   this->mActivateFlag.UpdateInput(false);
-
-#ifdef false
-  // If component is being binded to MDyWorld component activate list.
-  if (this->mActivatedUpdateListId != MDY_INITIALIZE_DEFINT)
-  {
-
-  }
-#endif
 }
 
 void ADyBaseComponent::pPropagateParentActorActivation(const DDy3StateBool& actorBool) noexcept

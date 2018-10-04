@@ -45,16 +45,20 @@ public:
   CDyScript(FDyActor& actorReference);
 
   ///
-  /// @brief
-  /// @TODO SCRIPT THIS
+  /// @brief  Activate CDyScript instance.
   ///
   void Activate() noexcept override final;
 
   ///
-  /// @brief
-  /// @TODO SCRIPT THIS
+  /// @brief  Deactivate CDyScript instance.
   ///
   void Deactivate() noexcept override final;
+
+  ///
+  /// @brief  Update parent activation flag from FDyActor.
+  /// @param  actorBool 3-state boolean type from FDyActor.
+  ///
+  void pPropagateParentActorActivation(const DDy3StateBool& actorBool) noexcept override final;
 
   //! Script calling sequence.
   //! 1) WHEN SCRIPT IS DEACTIVATED (any way) => Do nothing!

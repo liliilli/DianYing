@@ -19,21 +19,51 @@
 namespace dy
 {
 
-CDyScript::CDyScript(FDyActor& actorReference) : ADyBaseComponent(actorReference)
-{
-
-}
+CDyScript::CDyScript(FDyActor& actorReference) : ADyBaseComponent(actorReference) { }
 
 void CDyScript::Activate() noexcept
 {
   ADyBaseComponent::Activate();
-  //
+
+  // Check and rebind script instance to MDyWorld.
+  if (this->mActivateFlag.IsOutputValueChanged() == true && this->mActivateFlag.GetOutput() == true)
+  {
+    const auto activatedIndex     = MDyWorld::GetInstance().pfEnrollActiveScript(DyMakeNotNull(this));
+    this->mActivatedUpdateListId  = activatedIndex;
+  }
 }
 
 void CDyScript::Deactivate() noexcept
 {
   ADyBaseComponent::Deactivate();
-  //
+
+  // Check and unbind script instance to MDyWorld.
+  if (this->mActivateFlag.IsOutputValueChanged() == true && this->mActivateFlag.GetOutput() == false)
+  {
+    MDyWorld::GetInstance().pfUnenrollActiveScript(this->mActivatedUpdateListId);
+    this->mActivatedUpdateListId = MDY_INITIALIZE_DEFINT;
+  }
+}
+
+void CDyScript::pPropagateParentActorActivation(const DDy3StateBool& actorBool) noexcept
+{
+  ADyBaseComponent::pPropagateParentActorActivation(actorBool);
+
+  if (this->mActivateFlag.IsOutputValueChanged() == true)
+  {
+    auto& worldManager = MDyWorld::GetInstance();
+
+    if (this->mActivateFlag.GetOutput() == true)
+    { // Check and rebind script instance to MDyWorld.
+      const auto activatedIndex     = worldManager.pfEnrollActiveScript(DyMakeNotNull(this));
+      this->mActivatedUpdateListId  = activatedIndex;
+    }
+    else
+    { // Check and unbind script instance to MDyWorld.
+      worldManager.pfUnenrollActiveScript(this->mActivatedUpdateListId);
+      this->mActivatedUpdateListId = MDY_INITIALIZE_DEFINT;
+    }
+  }
 }
 
 void CDyScript::Initiate()
@@ -48,7 +78,7 @@ void CDyScript::Start()
 
 void CDyScript::Update(float dt)
 {
-
+  MDY_LOG_CRITICAL("{0}::Update()", dt);
 }
 
 void CDyScript::OnEnabled()
@@ -76,15 +106,15 @@ EDySuccess CDyScript::Initialize(const DDyScriptMetaInformation& metaInfo)
   // @TODO ASSERT THAT SCRIPT COMPONENT IS ACTIVATED EVEN WHEN FIRST TIME.
   this->mScriptName             = metaInfo.mScriptName;
   this->mScriptPath             = metaInfo.mScriptPath;
-  const auto activatedIndex     = MDyWorld::GetInstance().pfEnrollActiveScript(DyMakeNotNull(this));
-  this->mActivatedUpdateListId  = activatedIndex;
+
+  if (metaInfo.mInitiallyActivated) { this->Activate(); }
 
   return DY_SUCCESS;
 }
 
 void CDyScript::Release()
 {
-  MDyWorld::GetInstance().pfUnenrollActiveScript(this->mActivatedUpdateListId);
+  this->Deactivate();
 }
 
 } /// ::dy namespace

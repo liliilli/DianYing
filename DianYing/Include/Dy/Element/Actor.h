@@ -15,7 +15,6 @@
 
 #include <Dy/Core/Component/Internal/MaterialType.h>
 #include <Dy/Component/CDyScript.h>
-#include <Dy/Component/Abstract/ADyBaseTransform.h>
 #include <Dy/Component/Helper/TmpCheckInitilizeParams.h>
 #include <Dy/Component/Helper/TmpCheckRemoveParams.h>
 #include <Dy/Element/Object.h>
@@ -32,7 +31,7 @@ namespace dy
 /// @class FDyActor
 /// @brief FFF
 ///
-class FDyActor : public FDyObject, public ADyTransformable
+class FDyActor : public FDyObject
 {
   using TComponentList = std::vector<std::unique_ptr<ADyGeneralBaseComponent>>;
   using TScriptList    = std::vector<std::unique_ptr<CDyScript>>;
@@ -54,6 +53,25 @@ public:
   /// @return Success flag.
   ///
   MDY_NODISCARD virtual EDySuccess Release();
+
+  ///
+  /// @brief Activate FDyActor instance.
+  ///
+  void Activate() noexcept;
+
+  ///
+  /// @brief Deactivate FDyActor instance.
+  ///
+  void Deactivate() noexcept;
+
+  ///
+  /// @brief  Check FDyActor is activated or not.
+  /// @return Check flag for activation checking.
+  ///
+  MDY_NODISCARD FORCEINLINE bool IsActivated() const noexcept
+  {
+    return this->mActivationFlag.GetOutput();
+  }
 
   ///
   /// @brief Get present actor name on runtime.
@@ -83,10 +101,11 @@ public:
   /// @brief Set FDyActor's hierarchial position to Scene's root.
   /// Transform update will be held automatically.
   ///
-  void SetParentToRoot() noexcept;
+  void SetParentAsRoot() noexcept;
 
   ///
   /// @brief
+  /// @TODO SCRIPT THIS
   ///
   void SetParentToRootRelocateTransform() noexcept;
 
@@ -128,7 +147,7 @@ public:
     if constexpr (std::is_same_v<CDyScript, TComponent>)
     { // If component which just added is CDyScript, Call Initiate script first.
       auto& reference = this->mScriptList.emplace_back(std::move(componentPtr));
-            reference->Initiate();
+      reference->Initiate();
       return DyMakeNotNull(reference.get());
     }
     else if constexpr (std::is_base_of_v<ADyBaseTransform, TComponent>)
@@ -195,20 +214,6 @@ public:
   }
 
   ///
-  /// @brief
-  /// @param  scriptName
-  /// @return The pointer instance of CDyScript. If not found, return just no value.
-  ///
-  MDY_NODISCARD std::optional<CDyScript*> GetScriptComponent(_MIN_ const std::string& scriptName) noexcept;
-
-  ///
-  /// @brief
-  /// @param  scriptName
-  /// @return The pointer instance of CDyScript. If not found, return just no value.
-  ///
-  MDY_NODISCARD EDySuccess RemoveScriptComponent(_MIN_ const std::string& scriptName) noexcept;
-
-  ///
   /// @brief  Remove component.
   /// @tparam TComponent Component type argument.
   /// @tparam TArgs      Arguments
@@ -239,6 +244,26 @@ public:
 
     return DY_FAILURE;
   }
+
+  ///
+  /// @brief  Get script component pointer from script list using scriptName to verify.
+  /// @param  scriptName Script name to verify and get.
+  /// @return The pointer instance of CDyScript. If not found, return just no value.
+  ///
+  MDY_NODISCARD std::optional<CDyScript*> GetScriptComponent(_MIN_ const std::string& scriptName) noexcept;
+
+  ///
+  /// @brief  Remove script component manually from script list using scriptName to verify.
+  /// @param  scriptName  Script name to verify and remove from FDyActor.
+  /// @return The pointer instance of CDyScript. If not found, return just no value.
+  ///
+  MDY_NODISCARD EDySuccess RemoveScriptComponent(_MIN_ const std::string& scriptName) noexcept;
+
+  ///
+  /// @brief  Get tranform component pointer from FDyActor instance.
+  /// @return Valid transform pointer instance.
+  ///
+  MDY_NODISCARD NotNull<ADyBaseTransform*> GetTransform() noexcept;
 
 #ifdef false
   ///
@@ -286,12 +311,22 @@ public:
   }
 #endif
 
+  ///
+  /// @brief
+  ///
+  void pUpdateActivateFlagFromParent() noexcept;
 
 protected:
   /// Actual actor type to discriminate actor type is so cast object with statically.
   MDY_TRANSIENT EDyMetaObjectType   mActorType = EDyMetaObjectType::NoneError;
 
 private:
+  ///
+  /// @brief
+  ///
+  void pPropagateActivationFlag() noexcept;
+
+  DDy3StateBool                     mActivationFlag = {};
   /// Parent FDyActor raw-pointer data.
   FDyActor*                         mParentFDyActorRawPtr   = MDY_INITIALIZE_NULL;
   /// Transform component.

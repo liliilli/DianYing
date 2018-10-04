@@ -64,7 +64,7 @@ public:
   /// @brief  Update parent boolean value from FDyActor 3-state boolean variable.
   /// @param  actorBool 3-state boolean function from FDyActor.
   ///
-  void pPropagateParentActorActivation(const DDy3StateBool& actorBool) noexcept;
+  virtual void pPropagateParentActorActivation(const DDy3StateBool& actorBool) noexcept;
 
   ///
   /// @brief  Check component is activated.
@@ -82,13 +82,22 @@ public:
     return ADyBaseComponent::__mHashVal == hashVal;
   }
 
+  ///
+  /// @brief  Get binded FDyActor's pointer instance.
+  /// @return Binded FDyActor pointer instance.
+  ///
+  MDY_NODISCARD FDyActor* GetBindedActor() noexcept
+  {
+    return this->mBindedActor;
+  }
+
 protected:
   /// Transient variable, list id for updating
   MDY_TRANSIENT TI32  mActivatedUpdateListId  = MDY_INITIALIZE_DEFINT;
-
-private:
   /// Activate flag for operating component.
   DDy3StateBool       mActivateFlag           = {};
+
+private:
   /// Binded actor raw pointer.
   FDyActor*           mBindedActor            = MDY_INITIALIZE_NULL;
 

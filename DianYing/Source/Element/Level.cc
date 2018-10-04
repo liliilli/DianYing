@@ -42,6 +42,7 @@ void FDyLevel::Initialize(_MIN_ const PDyLevelConstructDescriptor& desc)
   ///
   static auto pCreateActorInstance = [&](_MIN_ const DDyObjectInformation& objectInformation)
   {
+    // Make FDyActor instance.
     auto instancePtr = std::make_unique<FDyActor>();
     MDY_CALL_ASSERT_SUCCESS(instancePtr->Initialize(objectInformation));
 
@@ -52,6 +53,14 @@ void FDyLevel::Initialize(_MIN_ const PDyLevelConstructDescriptor& desc)
       PHITOS_NOT_IMPLEMENTED_ASSERT();
       instancePtr->SetParent();
 #endif
+    }
+    else { }
+
+    // Check activation flags.
+    instancePtr->pUpdateActivateFlagFromParent();
+    if (objectInformation.mInitialActivated)
+    {
+      instancePtr->Activate();
     }
   };
 
