@@ -54,6 +54,8 @@ struct DDyScriptMetaInformation final : public IDyMetaInformation
   std::string     mScriptName = MDY_INITILAIZE_EMPTYSTR;
   /// Lua script path. Must be valid and can be loaded anytime in runtime.
   std::string     mScriptPath = MDY_INITILAIZE_EMPTYSTR;
+  /// Component is initially activated or not.
+  bool            mInitiallyActivated = false;
 };
 
 ///
@@ -68,6 +70,8 @@ struct DDyDirectionalLightMetaInformation final : public IDyMetaInformation
   DDyColor            mTintColor = {};
   /// Intensity of light must be set up to 0~.
   TF32                mIntensity = MDY_INITIALIZE_DEFINT;
+  /// Component is initially activated or not.
+  bool                mInitiallyActivated = false;
 };
 
 ///

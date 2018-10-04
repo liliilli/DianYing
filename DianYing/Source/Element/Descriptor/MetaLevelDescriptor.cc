@@ -45,6 +45,7 @@ MDY_SET_IMMUTABLE_STRING(sHeaderType,         "Type");
 MDY_SET_IMMUTABLE_STRING(sHeaderObjectHash,   "Hash");
 MDY_SET_IMMUTABLE_STRING(sHeaderToComponent,  "Component");
 MDY_SET_IMMUTABLE_STRING(sHeaderParentHash,   "Parent");
+MDY_SET_IMMUTABLE_STRING(sHeaderIsInitiallyActivated, "Activated");
 
 //!
 //! CDyTransform
@@ -241,6 +242,7 @@ PDyLevelConstructDescriptor PDyLevelConstructDescriptor::CreateDescriptor(_MIN_ 
         scriptMeta.mScriptName        = DyGetValue<std::string>(componentMetaInfo, sHeaderName);
         scriptMeta.mBindHashTo        = desc.mHashValue;
         scriptMeta.mScriptPath        = DyGetValue<std::string>(componentMetaInfo, sHeaderScriptPath);
+        scriptMeta.mInitiallyActivated= DyGetValue<bool>(componentMetaInfo, sHeaderIsInitiallyActivated);
 
         desc.mMetaComponentInfo.emplace_back(scriptMeta.mType, scriptMeta);
       }
@@ -253,6 +255,7 @@ PDyLevelConstructDescriptor PDyLevelConstructDescriptor::CreateDescriptor(_MIN_ 
         DirLightMeta.mDirection       = DyGetDDyVector3FromJson(componentMetaInfo.at(MSVSTR(sHeaderLightDirection)));
         DirLightMeta.mIntensity       = DyGetValue<TF32>(componentMetaInfo, sHeaderLightIntensity);
         DirLightMeta.mTintColor       = DyGetRGBColorFromTU32(componentMetaInfo.at(MSVSTR(sHeaderLightTintColor)).get<TU32>());
+        DirLightMeta.mInitiallyActivated = DyGetValue<bool>(componentMetaInfo, sHeaderIsInitiallyActivated);
 
         desc.mMetaComponentInfo.emplace_back(DirLightMeta.mType, DirLightMeta);
       }
@@ -278,6 +281,7 @@ PDyLevelConstructDescriptor PDyLevelConstructDescriptor::CreateDescriptor(_MIN_ 
     objInfo.mHashValue        = DyGetValue<std::string>(*jsonIt, sHeaderObjectHash);
     objInfo.mParentHashValue  = DyGetValue<std::string>(*jsonIt, sHeaderParentHash);
     objInfo.mToComponentHash  = DyGetValue<std::string>(*jsonIt, sHeaderToComponent);
+    objInfo.mInitialActivated = DyGetValue<bool>(*jsonIt, sHeaderIsInitiallyActivated);
 
     // Set component meta dependency information to mMetaComponentInfo;
     const auto componentMap = jsonAtlas.at(MSVSTR(sCategoryComponent));
