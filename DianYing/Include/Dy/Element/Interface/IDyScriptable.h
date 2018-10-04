@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Component/Interface/IDyUpdatable.h>
+#include <Dy/Element/Interface/IDyUpdatable.h>
 
 //!
 //! Implementation
@@ -34,7 +34,7 @@ namespace dy {
 /// Initiate() and Start() will be called only once in initialization time,
 /// and prior to first Update() call.
 ///
-class IDyScriptable : public IDyUpdatable
+MDY_ABSTRACT IDyScriptable : public IDyUpdatable
 {
 public:
   virtual ~IDyScriptable() = default;
@@ -86,9 +86,35 @@ public:
   ///
   virtual void OnDisabled() {};
 
+  ///
+  /// @brief Set calling Update() function flag not to call Update() or not.
+  ///
+  FORCEINLINE void SetUpdate(bool flag) const noexcept
+  {
+    this->mIsUpdatable = flag;
+  }
+
+  ///
+  /// @brief Check this type is able to call Update() function.
+  ///
+  FORCEINLINE bool IsUpdatable() const noexcept
+  {
+    return this->mIsUpdatable;
+  }
+
+  ///
+  /// @brief Check this type is start dirty so should call Start() function.
+  ///
+  FORCEINLINE bool IsScriptStartedDirty() const noexcept
+  {
+    return this->mIsScriptStartedDirty;
+  }
+
 private:
-  /// internal flag for OnStart() funciton.
-  mutable bool mIsScriptStartedDirty = true;
+  /// Internal flag for OnStart() function, when started or called OnDisabled, set true.
+  MDY_TRANSIENT bool mIsScriptStartedDirty  = true;
+  /// Internal flag for call Update() function.
+  MDY_TRANSIENT bool mIsUpdatable           = true;
 };
 
 } /// ::dy namespace

@@ -385,7 +385,7 @@ void DDyModelInformation::__pReadBoneData(const aiMesh& mesh, PDySubmeshInformat
   for (TU32 i = 0; i < mesh.mNumBones; ++i)
   {
     const aiBone&     bone      = *mesh.mBones[i];
-    TI32              boneId    = MDY_NOT_INITIALIZED_0;
+    TI32              boneId    = MDY_INITIALIZE_DEFUINT;
     const std::string boneName  = bone.mName.C_Str();
 
     if (const auto it = this->mBoneIdMap.find(boneName); it != this->mBoneIdMap.end())

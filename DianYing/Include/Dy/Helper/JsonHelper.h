@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <nlohmann/json_fwd.hpp>
+#include <nlohmann/json.hpp>
 
 namespace dy
 {
@@ -22,6 +22,12 @@ namespace dy
 /// @brief Check key is exist in present json instance.
 ///
 bool DyIsJsonKeyExist(const nlohmann::json& json, const std::string& key) noexcept;
+
+///
+/// @brief Read json file and return json container. If any error has happened just return nullopt.
+/// @TODO NEED TO WRAPPING VANILLA NLOHMANN::JSON?
+///
+std::optional<nlohmann::json> DyGetJsonAtlas(const std::string& filePath) noexcept;
 
 } /// ::dy namespace
 

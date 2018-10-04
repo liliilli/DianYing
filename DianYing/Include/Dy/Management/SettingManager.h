@@ -111,6 +111,15 @@ public:
   }
 
   ///
+  /// @brief Get initial scene name to create initial scene instance.
+  /// @return PDyLevelConstructDescriptor name. Name is same to populated actual scene instance.
+  ///
+  [[nodiscard]] FORCEINLINE const std::string& GetInitialSceneInformationName() const noexcept
+  {
+    return this->mInitialSceneName;
+  }
+
+  ///
   /// @brief Enable or disable logging feature.
   /// before enable logging feature, must set console or file sink.
   ///
@@ -154,8 +163,20 @@ private:
   bool mIsEnabledLoggingToFile        = false;
   std::string mLogFilePath            = "./log.txt";
 
-  int32_t mWindowSizeWidth            = 1280;
-  int32_t mWindowSizeHeight           = 720;
+  std::string mProjectName            = MDY_INITILAIZE_EMPTYSTR;
+  std::string mWindowName             = MDY_INITILAIZE_EMPTYSTR;
+
+  TI32 mVersionHigh                   = MDY_INITIALIZE_DEFINT;
+  TI32 mVersionMid                    = MDY_INITIALIZE_DEFINT;
+  TI32 mVersionLow                    = MDY_INITIALIZE_DEFINT;
+
+  std::string mCompanyName            = MDY_INITILAIZE_EMPTYSTR;
+  std::string mHomepage               = MDY_INITILAIZE_EMPTYSTR;
+  std::string mSupportContact         = MDY_INITILAIZE_EMPTYSTR;
+
+  std::string mInitialSceneName       = MDY_INITILAIZE_EMPTYSTR;
+  TI32 mWindowSizeWidth               = MDY_INITIALIZE_DEFINT;
+  TI32 mWindowSizeHeight              = MDY_INITIALIZE_DEFINT;
 
   std::vector<const char*> mApplicationArgs;
   bool mIsInitialized                 = false;

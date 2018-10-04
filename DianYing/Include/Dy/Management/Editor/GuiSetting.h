@@ -16,21 +16,6 @@
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 
-///
-/// @macro MDY_GETSET
-/// @brief Helping construction of get and set boilerplate function of member variable.
-///
-#define MDY_GETSET(__MAVariable__)                                                    \
-  [[nodiscard]] const decltype(__MAVariable__)& Get##__MAVariable__() const noexcept  \
-  {                                                                                   \
-    return this->__MAVariable__;                                                      \
-  }                                                                                   \
-                                                                                      \
-  void Set##__MAVariable__(const decltype(__MAVariable__)& input##__MAVariable__)     \
-  {                                                                                   \
-    this->__MAVariable__ = input##__MAVariable__;                                     \
-  }
-
 namespace dy::editor
 {
 
@@ -47,9 +32,9 @@ private:
   bool mIsEnabledViewportRenderGrid = true;
 
   //
-  TU32 mInitScreenSizeWidth         = MDY_NOT_INITIALIZED_0;
+  TU32 mInitScreenSizeWidth         = MDY_INITIALIZE_DEFUINT;
   //
-  TU32 mInitScreensizeHeight        = MDY_NOT_INITIALIZED_0;
+  TU32 mInitScreensizeHeight        = MDY_INITIALIZE_DEFUINT;
 
 public:
   MDY_GETSET(mIsLoadedProject);

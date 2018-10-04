@@ -12,22 +12,25 @@
 /// SOFTWARE.
 ///
 
-#include <sol2/sol.hpp>
-
 #include <Dy/Management/DataInformationManager.h>
 #include <Dy/Management/HeapResourceManager.h>
 #include <Dy/Management/InputManager.h>
 #include <Dy/Management/LoggingManager.h>
+#include <Dy/Management/MetaInfoManager.h>
+#include <Dy/Management/PhysicsManager.h>
 #include <Dy/Management/RenderingManager.h>
-#include <Dy/Management/SceneManager.h>
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/SoundManager.h>
 #include <Dy/Management/SynchronizationManager.h>
 #include <Dy/Management/TimeManager.h>
 #include <Dy/Management/WindowManager.h>
+#include <Dy/Management/WorldManager.h>
+#include <Dy/Management/FontManager.h>
 
 #include <Dy/Management/Editor/GuiManager.h>
 #include <Dy/Helper/Pointer.h>
+#include <Dy/Test/testLua.h>
+
 
 namespace
 {
@@ -68,14 +71,16 @@ void DyInitiailzeAllManagers()
   MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyDataInformation::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyHeapResource::Initialize());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyScene::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyWorld::Initialize());
 
-  // MDyWindow must be initialized at last.
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyMetaInfo::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyWindow::Initialize());
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDyRendering::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyInput::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDySound::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyPhysics::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyFont::Initialize());
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDySync::Initialize());
   MDY_LOG_WARNING_D("========== DIANYING MANAGER INITIALIZED ==========");
@@ -90,14 +95,17 @@ void DyReleaseAllManagers()
   MDY_LOG_WARNING_D("========== DIANYING MANAGER RELEASED ==========");
   MDY_CALL_ASSERT_SUCCESS(dy::MDySync::Release());
 
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyFont::Release());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyPhysics::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDySound::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyInput::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyRendering::Release());
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDyWindow::Release());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyMetaInfo::Release());
 
   // Release other management instance.
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyScene::Release());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyWorld::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyHeapResource::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyDataInformation::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Release());
@@ -176,23 +184,16 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLin
   gpCmdLine       = pCmdLine;
   gnCmdShow       = nCmdShow;
 
-#ifdef false
-  sol::state lua;
-  lua.open_libraries(sol::lib::base, sol::lib::package);
-
-  int value = lua.script("return 54");
-  MDY_LOG_CRITICAL_D("Hello world Lua! : {}", value);
-#endif
-
   MDY_WIN32_TRY_TURN_ON_DEBUG();
-  DyInitiailzeAllManagers();
 
+  DyInitiailzeAllManagers();
   DyTempInitializeTestResources();
 
   MDY_LOG_INFO_D("Running application routine.");
   dy::MDyWindow::GetInstance().Run();
 
   MDY_LOG_INFO_D("Release all managers and resources.");
+
   DyReleaseAllManagers();
   MDY_WIN32_TRY_TURN_OFF_DEBUG();
   return 0;

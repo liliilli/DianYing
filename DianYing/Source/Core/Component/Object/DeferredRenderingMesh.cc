@@ -20,6 +20,7 @@
 #include <Dy/Management/DataInformationManager.h>
 #include <Dy/Management/HeapResourceManager.h>
 #include <Dy/Management/RenderingManager.h>
+#include "Dy/Builtin/ShaderGl/RenderDeferredRendering.h"
 
 namespace
 {
@@ -41,7 +42,6 @@ namespace dy
 
 FDyDeferredRenderingMesh::FDyDeferredRenderingMesh()
 {
-  auto& manInfo = MDyDataInformation::GetInstance();
   auto& manResc = MDyHeapResource::GetInstance();
 
   // Make triangle that can represent context.
@@ -69,26 +69,8 @@ FDyDeferredRenderingMesh::FDyDeferredRenderingMesh()
   glBindVertexArray(0);
 
   // Make deferred shader
-  PDyShaderConstructionDescriptor shaderDesc;
-  {
-    shaderDesc.mShaderName = "dyDeferredShader";
-    {
-      PDyShaderFragmentInformation vertexShaderInfo;
-      vertexShaderInfo.mShaderType = EDyShaderFragmentType::Vertex;
-      vertexShaderInfo.mShaderPath = "./ShaderResource/Gl/glDeferred.vert";
-      shaderDesc.mShaderFragments.emplace_back(vertexShaderInfo);
-    }
-    {
-      PDyShaderFragmentInformation fragmentShaderInfo;
-      fragmentShaderInfo.mShaderType = EDyShaderFragmentType::Pixel;
-      fragmentShaderInfo.mShaderPath = "./ShaderResource/Gl/glDeferred.frag";
-      shaderDesc.mShaderFragments.emplace_back(fragmentShaderInfo);
-    }
-  }
-  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateShaderInformation(shaderDesc));
-  MDY_CALL_ASSERT_SUCCESS(manResc.CreateShaderResource(shaderDesc.mShaderName));
-
-  this->mShaderPtr = manResc.GetShaderResource(shaderDesc.mShaderName);
+  builtin::FDyBuiltinShaderGLRenderDeferredRendering();
+  this->mShaderPtr = manResc.GetShaderResource(builtin::FDyBuiltinShaderGLRenderDeferredRendering::sName.data());
 
   PHITOS_ASSERT(this->mShaderPtr, "FDyDeferredRenderingMesh::mShaderPtr must not be nullptr.");
   this->mShaderPtr->UseShader();

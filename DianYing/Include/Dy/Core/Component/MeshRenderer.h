@@ -62,11 +62,6 @@ public:
   void CallDraw();
 
 private:
-  ///
-  /// @brief Render function. Renderer only draw the number of submesh regardless of material count.
-  ///
-  void pfRender();
-
   CDyModelResource*                 mModelReferencePtr    = nullptr;
   std::vector<CDyMaterialResource*> mMaterialResourcePtr  = {};
 
@@ -83,6 +78,7 @@ private:
   std::vector<DDyBindingInformation> mMeshMaterialPtrBindingList = {};
 
   friend class MDyRendering;
+  friend class FDyBasicShadow;
 };
 
 } /// ::dy namespace

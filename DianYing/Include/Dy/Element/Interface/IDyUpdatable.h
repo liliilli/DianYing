@@ -20,11 +20,10 @@ namespace dy
 /// @class IDyUpdatable
 /// @brief The inteface capable of updating derived class routine.
 ///
-class MDY_NO_VTABLE IDyUpdatable
+MDY_INTERFACE MDY_NO_VTABLE IDyUpdatable
 {
-public:
-  virtual ~IDyUpdatable() = default;
-  virtual void Update(float dt) = 0;
+    virtual ~IDyUpdatable() = default;
+    virtual void Update(float dt) = 0;
 };
 
 } /// ::dy namespace

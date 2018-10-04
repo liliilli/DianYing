@@ -29,7 +29,7 @@
 #include <Dy/Management/DataInformationManager.h>
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/LoggingManager.h>
-#include <Dy/Management/SceneManager.h>
+#include <Dy/Management/WorldManager.h>
 #include <Dy/Management/InputManager.h>
 #include <Dy/Management/TimeManager.h>
 #include <Dy/Management/Editor/GuiManager.h>
@@ -38,9 +38,12 @@
 #include <Dy/Builtin/Model/Box.h>
 #include <Dy/Builtin/ShaderGl/RenderPass.h>
 #include <Dy/Builtin/ShaderGl/RenderColorGeometry.h>
+#include <Dy/Builtin/ShaderGl/RenderBasicShadow.h>
 
 #include <Dy/Management/HeapResourceManager.h>
 #include <Dy/Management/SoundManager.h>
+#include "Dy/Management/MetaInfoManager.h"
+#include <Dy/Management/PhysicsManager.h>
 
 ///
 /// Undefined proprocessor WIN32 macro "max, min" for preventing misuse.
@@ -400,13 +403,17 @@ namespace dy
 
 void MDyWindow::Run()
 {
-  auto& timeManager  = MDyTime::GetInstance();
-  MDY_CALL_ASSERT_SUCCESS(MDySound::GetInstance().PlaySoundElement("1"));
+  auto& timeManager     = MDyTime::GetInstance();
+  auto& settingManager  = MDySetting::GetInstance();
+  auto& sceneManager    = MDyWorld::GetInstance();
+
+  sceneManager.OpenLevel(settingManager.GetInitialSceneInformationName());
+  sceneManager.Update(-1);
 
   while (!glfwWindowShouldClose(this->mGlfwWindow))
   {
     timeManager.pUpdate();
-    if (auto& instance = MDySound::GetInstance(); true) { instance.Update(MDY_NOT_INITIALIZED_M1); }
+    if (auto& instance = MDySound::GetInstance(); true) { instance.Update(MDY_INITIALIZE_DEFINT); }
 
     if (timeManager.IsGameFrameTicked() == DY_SUCCESS)
     {
@@ -423,12 +430,16 @@ void MDyWindow::Run()
 ///
 void MDyWindow::pUpdate(float dt)
 {
-#if defined(MDY_FLAG_IN_EDITOR)
-  editor::MDyEditorGui::GetInstance().Update(dt);
-#endif /// MDY_FLAG_IN_EDITOR
-  MDyInput::GetInstance().pfUpdate(dt);
+  #if defined(MDY_FLAG_IN_EDITOR)
+    editor::MDyEditorGui::GetInstance().Update(dt);
+  #endif // MDY_FLAG_IN_EDITOR
 
-  auto& sceneManager = MDyScene::GetInstance();
+  MDyPhysics::GetInstance().Update(dt);
+  MDyWorld::GetInstance().Update(dt);
+  MDyInput::GetInstance().pfUpdate(dt);
+  MDyWorld::GetInstance().UpdateObjects(dt);
+
+#ifdef false
   auto* cam = sceneManager.GetMainCameraPtr();
   if (cam)
   {
@@ -436,6 +447,7 @@ void MDyWindow::pUpdate(float dt)
   }
 
   gRenderer.Update(dt);
+#endif
 }
 
 ///
@@ -446,7 +458,9 @@ void MDyWindow::pRender()
   glClearColor(gColor.X, gColor.Y, gColor.Z, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+#ifdef false
   gRenderer.CallDraw();
+#endif
 
   glEnable(GL_DEPTH_TEST);
   MDyRendering::GetInstance().RenderDrawCallQueue();
@@ -454,7 +468,7 @@ void MDyWindow::pRender()
 
   #if defined(MDY_FLAG_IN_EDITOR)
     editor::MDyEditorGui::GetInstance().DrawWindow(0);
-  #endif
+  #endif // MDY_FLAG_IN_EDITOR
 
   if (glfwWindowShouldClose(this->mGlfwWindow)) { return; }
   glfwSwapBuffers(this->mGlfwWindow);

@@ -22,13 +22,13 @@ namespace dy
 /// @class IDyToString
 /// @brief To string interface.
 ///
-class MDY_NO_VTABLE IDyToString
+MDY_INTERFACE MDY_NO_VTABLE IDyToString
 {
 public:
-  virtual ~IDyToString() = default;
-
-  [[nodiscard]]
-  virtual std::string ToString() = 0;
+  ///
+  /// @brief Output information as string.
+  ///
+  [[nodiscard]] virtual std::string ToString() = 0;
 };
 
 } /// ::dy namespace

@@ -33,7 +33,6 @@
     <ClCompile Include="Source\Core\Component\Information\ModelInformation.cc" />
     <ClCompile Include="Source\Core\Component\MeshRenderer.cc" />
     <ClCompile Include="Source\Core\Component\Object\Camera.cc" />
-    <ClCompile Include="Source\Management\SceneManager.cc" />
     <ClCompile Include="Source\Management\WindowManager.cc" />
     <ClCompile Include="Source\Management\LoggingManager.cc" />
     <ClCompile Include="Source\Helper\ThreadPool.cc" />
@@ -75,6 +74,35 @@
     <ClCompile Include="Source\Management\SoundManager.cc" />
     <ClCompile Include="Source\Core\Component\Information\SoundInformation.cc" />
     <ClCompile Include="Source\Core\Component\Resource\SoundResource.cc" />
+    <ClCompile Include="Source\Builtin\Object\Light\DirectionalLight.cc" />
+    <ClCompile Include="Source\Core\Rendering\BasicShadow.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\RenderBasicShadow.cc" />
+    <ClCompile Include="Source\Management\Helper\PhysXErrorCallback.cc" />
+    <ClCompile Include="Source\Management\PhysicsManager.cc" />
+    <ClCompile Include="Source\Management\FontManager.cc" />
+    <ClCompile Include="Source\Element\Level.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\RenderDeferredRendering.cc" />
+    <ClCompile Include="Source\Element\Actor.cc" />
+    <ClCompile Include="Source\Element\Abstract\ADyTransformable.cc" />
+    <ClCompile Include="Source\Management\WorldManager.cc" />
+    <ClCompile Include="Source\Element\Abstract\ADyNameCounterMap.cc" />
+    <ClCompile Include="Source\Management\MetaInfoManager.cc" />
+    <ClCompile Include="Source\Test\testLuaVariable.cc" />
+    <ClCompile Include="Source\Test\testLuaEntry.cc" />
+    <ClCompile Include="Source\Test\testLuaHelloWorld.cc" />
+    <ClCompile Include="Source\Test\TestLuaFunctions.cc" />
+    <ClCompile Include="Source\Test\TestLuaCpp.cc" />
+    <ClCompile Include="Source\Management\Helper\PhysxSimulationCallback.cc" />
+    <ClCompile Include="Source\Helper\Type\ThreeStateBool.cc" />
+    <ClCompile Include="Source\Element\Abstract\ADyBaseComponent.cc" />
+    <ClCompile Include="Source\Component\CDyScript.cc" />
+    <ClCompile Include="Source\Component\Abstract\ADyBaseTransform.cc" />
+    <ClCompile Include="Source\Component\Internal\CDyEmptyTransform.cc" />
+    <ClCompile Include="Source\Component\CDyTransform.cc" />
+    <ClCompile Include="Source\Component\Abstract\ADyGeneralBaseComponent.cc" />
+    <ClCompile Include="Source\Element\Descriptor\MetaLevelDescriptor.cc" />
+    <ClCompile Include="Source\Component\CDyModelFilter.cc" />
+    <ClCompile Include="Source\Component\CDyModelRenderer.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -120,7 +148,6 @@
     <ClInclude Include="Include\Dy\Core\Component\Internal\ModelType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\EtcType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Object\Camera.h" />
-    <ClInclude Include="Include\Dy\Management\SceneManager.h" />
     <ClInclude Include="Include\Dy\Helper\Macroes.h" />
     <ClInclude Include="Include\Dy\Management\WindowManager.h" />
     <ClInclude Include="Include\Dy\Management\LoggingManager.h" />
@@ -130,7 +157,6 @@
     <ClInclude Include="Include\Dy\Helper\JsonHelper.h" />
     <ClInclude Include="Include\Dy\Management\Helper\InputKeyString.h" />
     <ClInclude Include="Include\Dy\Core\Component\Object\Grid.h" />
-    <ClInclude Include="Include\Dy\Core\Component\Object\Pawn.h" />
     <ClInclude Include="Libraries\glad\include\glad\glad.h" />
     <ClInclude Include="Libraries\glad\include\KHR\khrplatform.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\SubmeshInformation.h" />
@@ -189,8 +215,72 @@
     <ClInclude Include="Include\Dy\Management\SoundManager.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\SoundInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\SoundResource.h" />
+    <ClInclude Include="Include\Dy\Builtin\Object\Light\DirectionalLight.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\BasicShadow.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderBasicShadow.h" />
+    <ClInclude Include="Include\Dy\Management\Helper\PhysXErrorCallback.h" />
+    <ClInclude Include="Include\Dy\Management\PhysicsManager.h" />
+    <ClInclude Include="Include\Dy\Management\FontManager.h" />
+    <ClInclude Include="Include\Dy\Element\Object.h" />
+    <ClInclude Include="Include\Dy\Element\Descriptor\LevelDescriptor.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderDeferredRendering.h" />
+    <ClInclude Include="Include\Dy\Element\Actor.h" />
+    <ClInclude Include="Include\Dy\Management\WorldManager.h" />
+    <ClInclude Include="Include\Dy\Element\Abstract\ADyNameCounterMap.h" />
+    <ClInclude Include="Include\Dy\Management\MetaInfoManager.h" />
+    <ClInclude Include="Libraries\lua\include\lua.hpp" />
+    <ClInclude Include="Libraries\lua\include\lua.h" />
+    <ClInclude Include="Libraries\lua\include\lapi.h" />
+    <ClInclude Include="Libraries\lua\include\lauxlib.h" />
+    <ClInclude Include="Libraries\lua\include\lcode.h" />
+    <ClInclude Include="Libraries\lua\include\lctype.h" />
+    <ClInclude Include="Libraries\lua\include\ldebug.h" />
+    <ClInclude Include="Libraries\lua\include\ldo.h" />
+    <ClInclude Include="Libraries\lua\include\lfunc.h" />
+    <ClInclude Include="Libraries\lua\include\lgc.h" />
+    <ClInclude Include="Libraries\lua\include\llex.h" />
+    <ClInclude Include="Libraries\lua\include\llimits.h" />
+    <ClInclude Include="Libraries\lua\include\lmem.h" />
+    <ClInclude Include="Libraries\lua\include\lobject.h" />
+    <ClInclude Include="Libraries\lua\include\lopcodes.h" />
+    <ClInclude Include="Libraries\lua\include\lparser.h" />
+    <ClInclude Include="Libraries\lua\include\lprefix.h" />
+    <ClInclude Include="Libraries\lua\include\lstate.h" />
+    <ClInclude Include="Libraries\lua\include\lstring.h" />
+    <ClInclude Include="Libraries\lua\include\ltable.h" />
+    <ClInclude Include="Libraries\lua\include\ltm.h" />
+    <ClInclude Include="Libraries\lua\include\luaconf.h" />
+    <ClInclude Include="Libraries\lua\include\lualib.h" />
+    <ClInclude Include="Libraries\lua\include\lundump.h" />
+    <ClInclude Include="Libraries\lua\include\lvm.h" />
+    <ClInclude Include="Libraries\lua\include\lzio.h" />
+    <ClInclude Include="Include\Dy\Test\testLua.h" />
+    <ClInclude Include="Include\Dy\Test\TestMacroSetting.h" />
+    <ClInclude Include="Include\Dy\Management\Helper\PhysxSimulationCallback.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\ThreeStateBool.h" />
+    <ClInclude Include="Include\Dy\Element\Abstract\ADyBaseComponent.h" />
+    <ClInclude Include="Include\Dy\Element\Abstract\ADyGeneralBaseComponent.h" />
+    <ClInclude Include="Include\Dy\Component\CDyScript.h" />
+    <ClInclude Include="Include\Dy\Component\CDyTransform.h" />
+    <ClInclude Include="Include\Dy\Component\Abstract\ADyBaseTransform.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\CDyEmptyTransform.h" />
+    <ClInclude Include="Include\Dy\Component\Descriptor\ComponentMetaDescriptor.h" />
+    <ClInclude Include="Include\Dy\Helper\Internal\TmpCheckTypeParams.h" />
+    <ClInclude Include="Include\Dy\Component\Helper\TmpCheckInitilizeParams.h" />
+    <ClInclude Include="Include\Dy\Component\Helper\TmpCheckRemoveParams.h" />
+    <ClInclude Include="Include\Dy\Component\CDyModelFilter.h" />
+    <ClInclude Include="Include\Dy\Component\CDyModelRenderer.h" />
+    <ClInclude Include="Include\Dy\Component\Abstract\ADyPhysicsShape.h" />
+    <ClInclude Include="Include\Dy\Component\CDyPhysicsShapeBox.h" />
+    <ClInclude Include="Include\Dy\Component\Abstract\ADyPhysicsRIgidbody.h" />
+    <ClInclude Include="Include\Dy\Component\CDyPhysicsRigidbodyDynamic.h" />
+    <ClInclude Include="Include\Dy\Component\CDyPhysicsRigidbodyStatic.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TestResource\Lua\variables.lua" />
+    <None Include="TestResource\Lua\player_script.lua" />
   </ItemGroup>
 </Project>
