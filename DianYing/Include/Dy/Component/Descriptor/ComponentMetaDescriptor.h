@@ -26,9 +26,15 @@ namespace dy
 ///
 enum class EDyComponentMetaType
 {
+  // CDyTransform
   Transform,
+  // CDyScript
   Script,
+  // CDyModelFilter
+  ModelFilter,
+  // CDyDirectionalLight
   DirectionalLight,
+  // ERROR!
   NoneError
 };
 
@@ -43,6 +49,30 @@ struct IDyMetaInformation
   /// hashTo must be same to hash string value of DDyObjectInformation instance to be binded.
   std::string          mBindHashTo = MDY_INITILAIZE_EMPTYSTR;
 };
+
+///
+/// @struct DDyModelMetaInformation
+/// @brief  Dependency information to CDyModelFilter component.
+///
+struct DDyModelMetaInformation final : public IDyMetaInformation
+{
+  /// Model resource name to filter
+  std::string     mModelName = MDY_INITILAIZE_EMPTYSTR;
+};
+
+///
+/// @struct DDyModelRendererMetaInformation
+/// @brief  Dependency information to CDYModelRenderer component.
+///
+struct DDyModelRendererMetaInformation final : public IDyMetaInformation
+{
+  /// Material resource name list to apply
+  std::vector<std::string> mMaterialName = {};
+};
+
+///
+///
+///
 
 ///
 /// @struct DDyScriptMetaInformation

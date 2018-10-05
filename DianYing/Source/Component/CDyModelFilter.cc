@@ -14,11 +14,38 @@
 
 /// Header file
 #include <Dy/Component/CDyModelFilter.h>
+#include <Dy/Management/HeapResourceManager.h>
 
 namespace dy
 {
 
 CDyModelFilter::CDyModelFilter(FDyActor& actorReference) : ADyGeneralBaseComponent(actorReference)
 { }
+
+EDySuccess CDyModelFilter::Initialize(const DDyModelMetaInformation& metaInfo)
+{
+  auto& resourceManager = MDyHeapResource::GetInstance();
+
+  // Bind model.
+  if (const auto modelResourcePtr = resourceManager.GetModelResource(metaInfo.mModelName);
+      MDY_CHECK_ISNULL(modelResourcePtr))
+  { // If not exists, make model resource using information but not have it, return fail.
+    const auto res = resourceManager.CreateModelResource(metaInfo.mModelName);
+    if (res == DY_FAILURE) { return DY_FAILURE; }
+
+    this->mModelReferencePtr = resourceManager.GetModelResource(metaInfo.mModelName);
+  }
+  else
+  {
+    this->mModelReferencePtr = modelResourcePtr;
+  }
+
+  return DY_SUCCESS;
+}
+
+void CDyModelFilter::Release()
+{
+  this->mModelReferencePtr = nullptr;
+}
 
 } /// ::dy namespace

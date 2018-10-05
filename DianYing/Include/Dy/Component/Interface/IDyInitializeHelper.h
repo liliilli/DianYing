@@ -30,7 +30,7 @@ MDY_INTERFACE MDY_NO_VTABLE IDyInitializeHelper
   /// @param  descriptor  Descriptor instance which to initialize with.
   /// @return If successful, return DY_SUCCESS but DY_FAILURE.
   ///
-  MDY_NODISCARD virtual EDySuccess Initialize(const TInitializeParam& descriptor) = 0;
+  MDY_NODISCARD virtual EDySuccess Initialize(_MIN_ const TInitializeParam& descriptor) = 0;
 
   ///
   /// @brief Release instance manually.

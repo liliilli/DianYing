@@ -14,6 +14,22 @@
 ///
 
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
+#include <Dy/Component/Descriptor/ComponentMetaDescriptor.h>
+#include <Dy/Component/Interface/IDyInitializeHelper.h>
+
+//!
+//! Forward decalartion
+//!
+
+namespace dy
+{
+class CDyModelResource;
+class CDyModelRenderer;
+} /// unnamed namespace
+
+//!
+//! Implementation
+//!
 
 namespace dy
 {
@@ -22,11 +38,23 @@ namespace dy
 /// @class CDyModelFilter
 /// @brief
 ///
-class CDyModelFilter final : public ADyGeneralBaseComponent
+class CDyModelFilter final : public ADyGeneralBaseComponent, public IDyInitializeHelper<DDyModelMetaInformation>
 {
 public:
   CDyModelFilter(FDyActor& actorReference);
   virtual ~CDyModelFilter() = default;
+
+  ///
+  /// @brief  Initialize component
+  /// @param  metaInfo
+  /// @return If successful just return DY_SUCCESS or DY_FAILURE.
+  ///
+  MDY_NODISCARD EDySuccess Initialize(_MIN_ const DDyModelMetaInformation& metaInfo) override final;
+
+  ///
+  /// @brief  Release component.
+  ///
+  void Release() override final;
 
   CDyModelFilter(const CDyModelFilter&)                                 = delete;
   CDyModelFilter& operator=(const CDyModelFilter&)                      = delete;
@@ -35,6 +63,23 @@ public:
 
   MDY_SET_TYPEMATCH_FUNCTION(::dy::ADyGeneralBaseComponent, CDyModelFilter);
   MDY_SET_CRC32_HASH_WITH_TYPE(CDyModelFilter);
+
+  ///
+  /// @brief  Get model reference ptr.
+  /// @return Valid model resource pointer reference.
+  ///
+  MDY_NODISCARD FORCEINLINE NotNull<CDyModelResource*> GetModelReference() const noexcept
+  {
+    return DyMakeNotNull(this->mModelReferencePtr);
+  }
+
+private:
+  /// Valid model rerenfence ptr.
+  MDY_TRANSIENT CDyModelResource* mModelReferencePtr          = MDY_INITIALIZE_NULL;
+  /// CDyModelRendererr reference ptr.
+  CDyModelRenderer*               mModelRendererReferencePtr  = MDY_INITIALIZE_NULL;
+
+  friend class CDyModelRenderer;
 };
 
 } /// ::dy namespace
