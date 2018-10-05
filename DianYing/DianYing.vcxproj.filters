@@ -275,6 +275,8 @@
     <ClInclude Include="Include\Dy\Component\Abstract\ADyPhysicsRIgidbody.h" />
     <ClInclude Include="Include\Dy\Component\CDyPhysicsRigidbodyDynamic.h" />
     <ClInclude Include="Include\Dy\Component\CDyPhysicsRigidbodyStatic.h" />
+    <ClInclude Include="Include\Dy\Component\Interface\IDyInitializeHelper.h" />
+    <ClInclude Include="Include\Dy\Helper\Internal\CheckingRule.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

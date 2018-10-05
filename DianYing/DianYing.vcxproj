@@ -285,6 +285,7 @@
     <ClInclude Include="Include\Dy\Component\Descriptor\ComponentMetaDescriptor.h" />
     <ClInclude Include="Include\Dy\Component\Helper\TmpCheckInitilizeParams.h" />
     <ClInclude Include="Include\Dy\Component\Helper\TmpCheckRemoveParams.h" />
+    <ClInclude Include="Include\Dy\Component\Interface\IDyInitializeHelper.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyEmptyTransform.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\MaterialInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\SoundInformation.h" />
@@ -347,6 +348,7 @@
     <ClInclude Include="Include\Dy\Helper\Dbg\CheckUsage.h" />
     <ClInclude Include="Include\Dy\Helper\GlobalType.h" />
     <ClInclude Include="Include\Dy\Helper\HashCompileCrc32.h" />
+    <ClInclude Include="Include\Dy\Helper\Internal\CheckingRule.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\TmpCheckTypeParams.h" />
     <ClInclude Include="Include\Dy\Helper\JsonHelper.h" />
     <ClInclude Include="Include\Dy\Helper\Pointer.h" />
