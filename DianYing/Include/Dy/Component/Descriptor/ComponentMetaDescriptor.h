@@ -32,6 +32,8 @@ enum class EDyComponentMetaType
   Script,
   // CDyModelFilter
   ModelFilter,
+  // CDyModelRenderer
+  ModelRenderer,
   // CDyDirectionalLight
   DirectionalLight,
   // ERROR!
@@ -51,10 +53,11 @@ struct IDyMetaInformation
 };
 
 ///
-/// @struct DDyModelMetaInformation
+/// @struct DDyModelFilterMetaInformation
 /// @brief  Dependency information to CDyModelFilter component.
+/// (EDyComponentMetaType::ModelFilter)
 ///
-struct DDyModelMetaInformation final : public IDyMetaInformation
+struct DDyModelFilterMetaInformation final : public IDyMetaInformation
 {
   /// Model resource name to filter
   std::string     mModelName = MDY_INITILAIZE_EMPTYSTR;
@@ -63,16 +66,15 @@ struct DDyModelMetaInformation final : public IDyMetaInformation
 ///
 /// @struct DDyModelRendererMetaInformation
 /// @brief  Dependency information to CDYModelRenderer component.
+/// (EDyComponentMetaType::ModelRenderer)
 ///
 struct DDyModelRendererMetaInformation final : public IDyMetaInformation
 {
+  /// Create shadow or not.
+  bool                      mIsEnabledCreateShadow  = false;
   /// Material resource name list to apply
-  std::vector<std::string> mMaterialName = {};
+  std::vector<std::string>  mMaterialName           = {};
 };
-
-///
-///
-///
 
 ///
 /// @struct DDyScriptMetaInformation

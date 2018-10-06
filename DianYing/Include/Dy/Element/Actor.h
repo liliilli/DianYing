@@ -150,15 +150,15 @@ public:
       reference->Initiate();
       return DyMakeNotNull(reference.get());
     }
-    else if constexpr (std::is_base_of_v<ADyBaseTransform, TComponent>)
-    {
+    if constexpr (std::is_base_of_v<ADyBaseTransform, TComponent>)
+    { // If component is not CDyScript but related to ADyBaseTransform (Transform components)
       PHITOS_ASSERT(MDY_CHECK_ISEMPTY(this->mTransform), "this->mTransform must be empty when insert new transform component.");
 
       this->mTransform.reset(static_cast<ADyBaseTransform*>(componentPtr.release()));
       return DyMakeNotNull(static_cast<TComponent*>(this->mTransform.get()));
     }
     else
-    { // Otherwise, just return Ptr.
+    { // Otherwise remain, just return Ptr.
       auto& reference = this->mComponentList.emplace_back(std::move(componentPtr));
       return DyMakeNotNull(static_cast<TComponent*>(reference.get()));
     }

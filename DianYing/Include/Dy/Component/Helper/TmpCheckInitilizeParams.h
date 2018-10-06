@@ -19,6 +19,8 @@
 #include <Dy/Component/Internal/CDyEmptyTransform.h>
 
 #include <Dy/Helper/Internal/TmpCheckTypeParams.h>
+#include "Dy/Component/CDyModelFilter.h"
+#include "Dy/Component/CDyModelRenderer.h"
 
 namespace dy
 {
@@ -40,15 +42,25 @@ constexpr void DyCheckComponentInitializeFunctionParams() noexcept
     static_assert(MetaTest<const DDyScriptMetaInformation&>::TypeMatched<TArgs...>::template Result<>::value,
                   "Failed compile test. Could not initilaize CDyScript instance.");
   }
-  else if constexpr (std::is_same_v<CDyTransform, TComponentType>)
+  if constexpr (std::is_same_v<CDyTransform, TComponentType>)
   {
     static_assert(MetaTest<const DDyTransformMetaInformation&>::TypeMatched<TArgs...>::template Result<>::value,
                   "Failed compile test. Could not initilaize CDyTransform instance.");
   }
-  else if constexpr (std::is_same_v<CDyEmptyTransform, TComponentType>)
+  if constexpr (std::is_same_v<CDyEmptyTransform, TComponentType>)
   {
     static_assert(MetaTest<const DDyTransformMetaInformation&>::TypeMatched<TArgs...>::template Result<>::value,
                   "Failed compile test. Could not initilaize CDyEmptyTransform instance.");
+  }
+  if constexpr (std::is_same_v<CDyModelFilter, TComponentType>)
+  {
+    static_assert(MetaTest<const DDyModelFilterMetaInformation&>::TypeMatched<TArgs...>::template Result<>::value,
+                  "Failed compile test. Could not initilaize CDyModelFilter instance.");
+  }
+  if constexpr (std::is_same_v<CDyModelRenderer, TComponentType>)
+  {
+    static_assert(MetaTest<const DDyModelRendererMetaInformation&>::TypeMatched<TArgs...>::template Result<>::value,
+                  "Failed compile test. Could not initilaize CDyModelRenderer instance.");
   }
 }
 

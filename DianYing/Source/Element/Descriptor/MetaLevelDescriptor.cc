@@ -19,6 +19,8 @@
 #include <bitset>
 #include <nlohmann/json.hpp>
 #include <Dy/Helper/Type/Color32.h>
+#include "Dy/Component/CDyModelFilter.h"
+#include "Dy/Component/CDyModelRenderer.h"
 
 //!
 //! Local translation unit function & varaible data
@@ -71,6 +73,19 @@ MDY_SET_IMMUTABLE_STRING(sHeaderScriptPath,   "Path");
 MDY_SET_IMMUTABLE_STRING(sHeaderLightDirection, "LightDirection");
 MDY_SET_IMMUTABLE_STRING(sHeaderLightIntensity, "LightIntensity");
 MDY_SET_IMMUTABLE_STRING(sHeaderLightTintColor, "LightTintColor");
+
+//!
+//! CDyModelFilter
+//!
+
+MDY_SET_IMMUTABLE_STRING(sHeaderModelName,      "ModelName");
+
+//!
+//! CDyModelRenderer
+//!
+
+MDY_SET_IMMUTABLE_STRING(sHeaderShadow,         "Shadow");
+MDY_SET_IMMUTABLE_STRING(sHeaderMaterials,      "Materials");
 
 //!
 //! Functions
@@ -141,10 +156,14 @@ MDY_NODISCARD dy::EDyComponentMetaType DyGetComponentTypeFrom(_MIN_ const std::s
   static MDY_SET_IMMUTABLE_STRING(sDirectionalLight,  "DirectionalLight");
   static MDY_SET_IMMUTABLE_STRING(sScript,            "Script");
   static MDY_SET_IMMUTABLE_STRING(sTransform,         "Transform");
+  static MDY_SET_IMMUTABLE_STRING(sModelFilter,       "ModelFilter");
+  static MDY_SET_IMMUTABLE_STRING(sModelRenderer,     "ModelRenderer");
 
   if (typeString == sScript)           { return dy::EDyComponentMetaType::Script; }
   if (typeString == sDirectionalLight) { return dy::EDyComponentMetaType::DirectionalLight; }
   if (typeString == sTransform)        { return dy::EDyComponentMetaType::Transform; }
+  if (typeString == sModelFilter)      { return dy::EDyComponentMetaType::ModelFilter; }
+  if (typeString == sModelRenderer)    { return dy::EDyComponentMetaType::ModelRenderer; }
   else                                 { return dy::EDyComponentMetaType::NoneError; }
 }
 
@@ -233,8 +252,7 @@ PDyLevelConstructDescriptor PDyLevelConstructDescriptor::CreateDescriptor(_MIN_ 
         transformMeta.mWorldScale     = DyGetDDyVector3FromJson(componentMetaInfo.at(MSVSTR(sHeaderWorldScale)));
 
         desc.mMetaComponentInfo.emplace_back(transformMeta.mType, transformMeta);
-      }
-      break;
+      } break;
       case EDyComponentMetaType::Script:            // Create and insert CDyScript meta information descriptor.
       {
         DDyScriptMetaInformation scriptMeta;
@@ -245,8 +263,7 @@ PDyLevelConstructDescriptor PDyLevelConstructDescriptor::CreateDescriptor(_MIN_ 
         scriptMeta.mInitiallyActivated= DyGetValue<bool>(componentMetaInfo, sHeaderIsInitiallyActivated);
 
         desc.mMetaComponentInfo.emplace_back(scriptMeta.mType, scriptMeta);
-      }
-      break;
+      } break;
       case EDyComponentMetaType::DirectionalLight:  // Create and insert CDyDirectionalLight meta information descriptor.
       {
         DDyDirectionalLightMetaInformation DirLightMeta;
@@ -258,8 +275,24 @@ PDyLevelConstructDescriptor PDyLevelConstructDescriptor::CreateDescriptor(_MIN_ 
         DirLightMeta.mInitiallyActivated = DyGetValue<bool>(componentMetaInfo, sHeaderIsInitiallyActivated);
 
         desc.mMetaComponentInfo.emplace_back(DirLightMeta.mType, DirLightMeta);
-      }
-      break;
+      } break;
+      case EDyComponentMetaType::ModelFilter:
+      {
+        DDyModelFilterMetaInformation modelFilterMeta;
+        modelFilterMeta.mType         = typeEnum;
+        modelFilterMeta.mModelName    = DyGetValue<std::string>(componentMetaInfo, sHeaderModelName);
+
+        desc.mMetaComponentInfo.emplace_back(modelFilterMeta.mType, modelFilterMeta);
+      } break;
+      case EDyComponentMetaType::ModelRenderer:
+      {
+        DDyModelRendererMetaInformation modelRendererMeta;
+        modelRendererMeta.mType                   = typeEnum;
+        modelRendererMeta.mIsEnabledCreateShadow  = DyGetValue<bool>(componentMetaInfo, sHeaderShadow);
+        modelRendererMeta.mMaterialName           = DyGetValue<std::vector<std::string>>(componentMetaInfo, sHeaderMaterials);
+
+        desc.mMetaComponentInfo.emplace_back(modelRendererMeta.mType, modelRendererMeta);
+      } break;
       }
     }
   };

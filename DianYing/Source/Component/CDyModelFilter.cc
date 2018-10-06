@@ -23,7 +23,7 @@ namespace dy
 
 CDyModelFilter::CDyModelFilter(FDyActor& actorReference) : ADyGeneralBaseComponent(actorReference) { }
 
-EDySuccess CDyModelFilter::Initialize(const DDyModelMetaInformation& metaInfo)
+EDySuccess CDyModelFilter::Initialize(const DDyModelFilterMetaInformation& metaInfo)
 {
   auto& resourceManager = MDyHeapResource::GetInstance();
 

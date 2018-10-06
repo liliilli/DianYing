@@ -38,7 +38,7 @@ namespace dy
 /// @class CDyModelFilter
 /// @brief
 ///
-class CDyModelFilter final : public ADyGeneralBaseComponent, public IDyInitializeHelper<DDyModelMetaInformation>
+class CDyModelFilter final : public ADyGeneralBaseComponent, public IDyInitializeHelper<DDyModelFilterMetaInformation>
 {
 public:
   CDyModelFilter(FDyActor& actorReference);
@@ -49,7 +49,7 @@ public:
   /// @param  metaInfo
   /// @return If successful just return DY_SUCCESS or DY_FAILURE.
   ///
-  MDY_NODISCARD EDySuccess Initialize(_MIN_ const DDyModelMetaInformation& metaInfo) override final;
+  MDY_NODISCARD EDySuccess Initialize(_MIN_ const DDyModelFilterMetaInformation& metaInfo) override final;
 
   ///
   /// @brief  Release component.
