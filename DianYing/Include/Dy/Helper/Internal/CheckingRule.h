@@ -20,98 +20,98 @@ namespace dy
 
 #define MDY_TEST_DEFAULT_CONSTRUCTIBLE(__MAType__) \
 	[]() { \
-		static_assert(std::is_default_constructible_v<t>, #__MAType__ " : must be default constructible"); \
-		return std::is_default_constructible_v<t>; \
+		static_assert(std::is_default_constructible_v<__MAType__>, #__MAType__ " : must be default constructible"); \
+		return std::is_default_constructible_v<__MAType__>; \
 	}
 
 #define MDY_TEST_TRIVIALLY_DEFAULT_CONSTRUCTIBLE(__MAType__) \
 	[]() { \
-		static_assert(std::is_trivially_default_constructible_v<t>, #__MAType__ " : must be trivially default constructible"); \
-		return std::is_trivially_default_constructible_v<t>; \
+		static_assert(std::is_trivially_default_constructible_v<__MAType__>, #__MAType__ " : must be trivially default constructible"); \
+		return std::is_trivially_default_constructible_v<__MAType__>; \
 	}
 
 #define MDY_TEST_COPY_CONSTRUCTIBLE(__MAType__) \
 	[]() { \
-		static_assert(std::is_copy_constructible_v<t>, #__MAType__ " : must be copy constructible"); \
-		return std::is_copy_constructible_v<t>; \
+		static_assert(std::is_copy_constructible_v<__MAType__>, #__MAType__ " : must be copy constructible"); \
+		return std::is_copy_constructible_v<__MAType__>; \
 	}
 
 #define MDY_TEST_NOT_COPY_CONSTRUCTIBLE(__MAType__) \
 	[]() { \
-		static_assert(!std::is_copy_constructible_v<t>, #__MAType__ " : must not be copy constructible"); \
-		return !std::is_copy_constructible_v<t>; \
+		static_assert(!std::is_copy_constructible_v<__MAType__>, #__MAType__ " : must not be copy constructible"); \
+		return !std::is_copy_constructible_v<__MAType__>; \
 	}
 
 #define MDY_TEST_TRIVIALLY_COPY_CONSTRUCTIBLE(__MAType__) \
 	[]() { \
-		static_assert(std::is_trivially_copy_constructible_v<t>, #__MAType__ " : must be trivially copy constructible"); \
-		return std::is_trivially_copy_constructible_v<t>; \
+		static_assert(std::is_trivially_copy_constructible_v<__MAType__>, #__MAType__ " : must be trivially copy constructible"); \
+		return std::is_trivially_copy_constructible_v<__MAType__>; \
 	}
 
 #define MDY_TEST_COPY_ASSIGNABLE(__MAType__) \
 	[]() { \
-		static_assert(std::is_copy_assignable_v<t>, #__MAType__ " : must be copy assignable"); \
-		return std::is_copy_assignable_v<t>; \
+		static_assert(std::is_copy_assignable_v<__MAType__>, #__MAType__ " : must be copy assignable"); \
+		return std::is_copy_assignable_v<__MAType__>; \
 	}
 
 #define MDY_TEST_NOT_COPY_ASSIGNABLE(__MAType__) \
 	[]() { \
-		static_assert(!std::is_copy_assignable_v<t>, #__MAType__ " : must not be copy assignable"); \
-		return !std::is_copy_assignable_v<t>; \
+		static_assert(!std::is_copy_assignable_v<__MAType__>, #__MAType__ " : must not be copy assignable"); \
+		return !std::is_copy_assignable_v<__MAType__>; \
 	}
 
 #define MDY_TEST_TRIVIALLY_COPY_ASSIGNABLE(__MAType__) \
 	[]() { \
-		static_assert(std::is_trivially_copy_assignable_v<t>, #__MAType__ " : must be trivially copy assignable"); \
-		return std::is_trivially_copy_assignable_v<t>; \
+		static_assert(std::is_trivially_copy_assignable_v<__MAType__>, #__MAType__ " : must be trivially copy assignable"); \
+		return std::is_trivially_copy_assignable_v<__MAType__>; \
 	}
 
 #define MDY_TEST_MOVE_CONSTRUCTIBLE(__MAType__) \
 	[]() { \
-		static_assert(std::is_move_constructible_v<t>, #__MAType__ " : must be move constructible"); \
-		return std::is_move_constructible_v<t>; \
+		static_assert(std::is_move_constructible_v<__MAType__>, #__MAType__ " : must be move constructible"); \
+		return std::is_move_constructible_v<__MAType__>; \
 	}
 
 #define MDY_TEST_TRIVIALLY_MOVE_CONSTRUCTIBLE(__MAType__) \
 	[]() { \
-		static_assert(std::is_trivially_move_constructible_v<t>, #__MAType__ " : must be trivially move constructible"); \
-		return std::is_trivially_move_constructible_v<t>; \
+		static_assert(std::is_trivially_move_constructible_v<__MAType__>, #__MAType__ " : must be trivially move constructible"); \
+		return std::is_trivially_move_constructible_v<__MAType__>; \
 	}
 
 #define MDY_TEST_NOTHROW_MOVE_CONSTRUCTIBLE(__MAType__) \
 	[]() { \
-		static_assert(std::is_nothrow_move_constructible_v<t>, #__MAType__ " : must be nothrow move constructible"); \
-		return std::is_nothrow_move_constructible_v<t>; \
+		static_assert(std::is_nothrow_move_constructible_v<__MAType__>, #__MAType__ " : must be nothrow move constructible"); \
+		return std::is_nothrow_move_constructible_v<__MAType__>; \
 	}
 
 #define MDY_TEST_MOVE_ASSIGNABLE(__MAType__) \
 	[]() { \
-		static_assert(std::is_move_assignable_v<t>, #__MAType__ " : must be move assignable"); \
-		return std::is_move_assignable_v<t>; \
+		static_assert(std::is_move_assignable_v<__MAType__>, #__MAType__ " : must be move assignable"); \
+		return std::is_move_assignable_v<__MAType__>; \
 	}
 
 #define MDY_TEST_TRIVIALLY_MOVE_ASSIGNABLE(__MAType__) \
 	[]() { \
-		static_assert(std::is_trivially_move_assignable_v<t>, #__MAType__ " : must be trivially move assignable"); \
-		return std::is_trivially_move_assignable_v<t>; \
+		static_assert(std::is_trivially_move_assignable_v<__MAType__>, #__MAType__ " : must be trivially move assignable"); \
+		return std::is_trivially_move_assignable_v<__MAType__>; \
 	}
 
 #define MDY_TEST_DESTRUCTIBLE(__MAType__) \
 	[]() { \
-		static_assert(std::is_destructible_v<t>, #__MAType__ " : must be destructible"); \
-		return std::is_destructible_v<t>; \
+		static_assert(std::is_destructible_v<__MAType__>, #__MAType__ " : must be destructible"); \
+		return std::is_destructible_v<__MAType__>; \
 	}
 
 #define MDY_TEST_TRIVIALLY_DESTRUCTIBLE(__MAType__) \
 	[]() { \
-		static_assert(std::is_trivially_destructible_v<t>, #__MAType__ " : must be trivially destructible"); \
-		return std::is_trivially_destructible_v<t>; \
+		static_assert(std::is_trivially_destructible_v<__MAType__>, #__MAType__ " : must be trivially destructible"); \
+		return std::is_trivially_destructible_v<__MAType__>; \
 	}
 
 #define MDY_TEST_TRIVIALLY_COPYABLE(__MAType__) \
 	[]() { \
-		static_assert(std::is_trivially_copyable_v<t>, #__MAType__ " : must be trivially copyable"); \
-		return std::is_trivially_copyable_v<t>; \
+		static_assert(std::is_trivially_copyable_v<__MAType__>, #__MAType__ " : must be trivially copyable"); \
+		return std::is_trivially_copyable_v<__MAType__>; \
 	}
 
 ///
