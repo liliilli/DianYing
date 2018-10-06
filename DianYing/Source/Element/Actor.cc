@@ -42,6 +42,7 @@ namespace dy
 EDySuccess FDyActor::Initialize(_MIN_ const DDyObjectInformation& objectMetaDesc)
 {
   bool isTransformCreated = false;
+  this->pSetObjectName(objectMetaDesc.mObjectName);
 
   // Create components
   for (const auto& [type, componentInfo] : objectMetaDesc.mMetaComponentInfo)

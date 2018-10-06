@@ -56,12 +56,16 @@ void FDyLevel::Initialize(_MIN_ const PDyLevelConstructDescriptor& desc)
     }
     else { }
 
-    // Check activation flags.
+    // Check activation flags and execute sub-routines of each components.
     instancePtr->pUpdateActivateFlagFromParent();
     if (objectInformation.mInitialActivated)
     {
       instancePtr->Activate();
     }
+
+    // @TODO TEMPORARY.
+    auto [it, result] = this->mActorMap.try_emplace(instancePtr->GetActorName(), std::move(instancePtr));
+    PHITOS_ASSERT(result == true, "Unexpected error occured in inserting FDyActor to object map.");
   };
 
   // FunctionBody ∨

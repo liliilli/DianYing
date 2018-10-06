@@ -72,7 +72,7 @@ EDySuccess CDyCamera::UpdateSetting(const PDyCameraConstructionDescriptor& descr
   if (descriptor.mIsFocusInstantly)
   {
     auto& sceneManager = MDyWorld::GetInstance();
-    sceneManager.__pfBindFocusCamera(this);
+    sceneManager.__pfBindFocusCamera(*this);
     this->mIsFocused = true;
   }
 

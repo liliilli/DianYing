@@ -150,7 +150,7 @@ public:
       reference->Initiate();
       return DyMakeNotNull(reference.get());
     }
-    if constexpr (std::is_base_of_v<ADyBaseTransform, TComponent>)
+    else if constexpr (std::is_base_of_v<ADyBaseTransform, TComponent>)
     { // If component is not CDyScript but related to ADyBaseTransform (Transform components)
       PHITOS_ASSERT(MDY_CHECK_ISEMPTY(this->mTransform), "this->mTransform must be empty when insert new transform component.");
 
