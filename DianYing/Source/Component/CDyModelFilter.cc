@@ -41,6 +41,7 @@ EDySuccess CDyModelFilter::Initialize(const DDyModelFilterMetaInformation& metaI
     this->mModelReferencePtr = modelResourcePtr;
   }
 
+  if (metaInfo.mInitiallyActivated) { this->Activate(); }
   return DY_SUCCESS;
 }
 
@@ -60,7 +61,7 @@ void CDyModelFilter::Activate() noexcept
 
   // Customized body ∨
 
-  MDY_CALL_ASSERT_SUCCESS(this->pTryBindingToModelRendererComponent());
+  MDY_NOTUSED auto _ = this->pTryBindingToModelRendererComponent();
 }
 
 void CDyModelFilter::Deactivate() noexcept
@@ -69,7 +70,7 @@ void CDyModelFilter::Deactivate() noexcept
 
   // Customized body ∨
 
-  MDY_CALL_ASSERT_SUCCESS(this->pTryUnbindingToModelRendererComponent());
+  MDY_NOTUSED auto _ = this->pTryUnbindingToModelRendererComponent();
 }
 
 void CDyModelFilter::pPropagateParentActorActivation(const DDy3StateBool& actorBool) noexcept
@@ -78,8 +79,8 @@ void CDyModelFilter::pPropagateParentActorActivation(const DDy3StateBool& actorB
 
   // Customized body ∨
 
-  MDY_CALL_ASSERT_SUCCESS(this->pTryBindingToModelRendererComponent());
-  MDY_CALL_ASSERT_SUCCESS(this->pTryUnbindingToModelRendererComponent());
+  { MDY_NOTUSED auto _ = this->pTryBindingToModelRendererComponent(); }
+  { MDY_NOTUSED auto _ = this->pTryUnbindingToModelRendererComponent(); }
 }
 
 std::string CDyModelFilter::ToString()

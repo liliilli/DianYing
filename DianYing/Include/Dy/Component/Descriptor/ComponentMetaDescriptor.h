@@ -60,7 +60,9 @@ struct IDyMetaInformation
 struct DDyModelFilterMetaInformation final : public IDyMetaInformation
 {
   /// Model resource name to filter
-  std::string     mModelName = MDY_INITILAIZE_EMPTYSTR;
+  std::string     mModelName          = MDY_INITILAIZE_EMPTYSTR;
+  /// Component is initially activated or not.
+  bool            mInitiallyActivated = false;
 };
 
 ///
@@ -74,6 +76,8 @@ struct DDyModelRendererMetaInformation final : public IDyMetaInformation
   bool                      mIsEnabledCreateShadow  = false;
   /// Material resource name list to apply
   std::vector<std::string>  mMaterialName           = {};
+  /// Component is initially activated or not.
+  bool                      mInitiallyActivated     = false;
 };
 
 ///

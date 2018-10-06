@@ -281,6 +281,7 @@ PDyLevelConstructDescriptor PDyLevelConstructDescriptor::CreateDescriptor(_MIN_ 
         DDyModelFilterMetaInformation modelFilterMeta;
         modelFilterMeta.mType         = typeEnum;
         modelFilterMeta.mModelName    = DyGetValue<std::string>(componentMetaInfo, sHeaderModelName);
+        modelFilterMeta.mInitiallyActivated = DyGetValue<bool>(componentMetaInfo, sHeaderIsInitiallyActivated);
 
         desc.mMetaComponentInfo.emplace_back(modelFilterMeta.mType, modelFilterMeta);
       } break;
@@ -290,6 +291,7 @@ PDyLevelConstructDescriptor PDyLevelConstructDescriptor::CreateDescriptor(_MIN_ 
         modelRendererMeta.mType                   = typeEnum;
         modelRendererMeta.mIsEnabledCreateShadow  = DyGetValue<bool>(componentMetaInfo, sHeaderShadow);
         modelRendererMeta.mMaterialName           = DyGetValue<std::vector<std::string>>(componentMetaInfo, sHeaderMaterials);
+        modelRendererMeta.mInitiallyActivated     = DyGetValue<bool>(componentMetaInfo, sHeaderIsInitiallyActivated);
 
         desc.mMetaComponentInfo.emplace_back(modelRendererMeta.mType, modelRendererMeta);
       } break;
