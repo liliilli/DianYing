@@ -73,7 +73,43 @@ public:
     return DyMakeNotNull(this->mModelReferencePtr);
   }
 
+  ///
+  /// @brief Bind valid CDyModelRenderer pointer from same FDyActor to this component.
+  /// @param validReference valid CDyModelReference instance.
+  ///
+  void fBindModelRendererReference(CDyModelRenderer& validReference);
+
+  /// @brief Unbind valid CDyModelRenderer pointer to null.
+  void fUnbindModelRendererReference();
+
+  /// @brief Do nothing.
+  void Update(float dt) override final {};
+
+  /// @brief Activate CDyModelFilter. Final activation value is also dependent on FDyActor activation flag.
+  void Activate() noexcept override final;
+
+  /// @brief Dectivate CDyModelFilter. Final activation value is also dependent on FDyActor activation flag.
+  void Deactivate() noexcept override final;
+
+  ///
+  /// @brief
+  /// @param
+  ///
+  void pPropagateParentActorActivation(const DDy3StateBool& actorBool) noexcept override final;
+
+  ///
+  /// @brief  Get information string of CDyModelFilter instance.
+  /// @return Information string of CDyModelFilter.
+  ///
+  MDY_NODISCARD std::string ToString() override final;
+
 private:
+  ///
+  MDY_NODISCARD EDySuccess pTryBindingToModelRendererComponent();
+
+  ///
+  MDY_NODISCARD EDySuccess pTryUnbindingToModelRendererComponent();
+
   /// Valid model rerenfence ptr.
   MDY_TRANSIENT CDyModelResource* mModelReferencePtr          = MDY_INITIALIZE_NULL;
   /// CDyModelRendererr reference ptr.

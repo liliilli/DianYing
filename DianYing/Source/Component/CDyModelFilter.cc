@@ -15,12 +15,13 @@
 /// Header file
 #include <Dy/Component/CDyModelFilter.h>
 #include <Dy/Management/HeapResourceManager.h>
+#include <Dy/Element/Actor.h>
+#include <Dy/Component/CDyModelRenderer.h>
 
 namespace dy
 {
 
-CDyModelFilter::CDyModelFilter(FDyActor& actorReference) : ADyGeneralBaseComponent(actorReference)
-{ }
+CDyModelFilter::CDyModelFilter(FDyActor& actorReference) : ADyGeneralBaseComponent(actorReference) { }
 
 EDySuccess CDyModelFilter::Initialize(const DDyModelMetaInformation& metaInfo)
 {
@@ -45,7 +46,89 @@ EDySuccess CDyModelFilter::Initialize(const DDyModelMetaInformation& metaInfo)
 
 void CDyModelFilter::Release()
 {
-  this->mModelReferencePtr = nullptr;
+  if (MDY_CHECK_ISNOTNULL(this->mModelRendererReferencePtr))
+  { // Unbind CDyModelFilter from binded CDyModelRenderer.
+    this->mModelRendererReferencePtr->UnbindModelFilterReference();
+  }
+
+  this->mModelReferencePtr = MDY_INITIALIZE_NULL;
+}
+
+void CDyModelFilter::Activate() noexcept
+{
+  ADyBaseComponent::Activate();
+
+  // Customized body ∨
+
+  MDY_CALL_ASSERT_SUCCESS(this->pTryBindingToModelRendererComponent());
+}
+
+void CDyModelFilter::Deactivate() noexcept
+{
+  ADyBaseComponent::Deactivate();
+
+  // Customized body ∨
+
+  MDY_CALL_ASSERT_SUCCESS(this->pTryUnbindingToModelRendererComponent());
+}
+
+void CDyModelFilter::pPropagateParentActorActivation(const DDy3StateBool& actorBool) noexcept
+{
+  ADyBaseComponent::pPropagateParentActorActivation(actorBool);
+
+  // Customized body ∨
+
+  MDY_CALL_ASSERT_SUCCESS(this->pTryBindingToModelRendererComponent());
+  MDY_CALL_ASSERT_SUCCESS(this->pTryUnbindingToModelRendererComponent());
+}
+
+std::string CDyModelFilter::ToString()
+{
+  PHITOS_NOT_IMPLEMENTED_ASSERT();
+  return MDY_INITILAIZE_EMPTYSTR;
+}
+
+EDySuccess CDyModelFilter::pTryBindingToModelRendererComponent()
+{
+  // Check final activation flag and rebind instance to CDyModelRenderer.
+
+  if (this->mActivateFlag.IsOutputValueChanged() == false)  { return DY_FAILURE; }
+  if (this->mActivateFlag.GetOutput() == false)             { return DY_FAILURE; }
+
+  auto opRenderer = this->GetBindedActor()->GetGeneralComponent<CDyModelRenderer>();
+  if (opRenderer.has_value() == false)                      { return DY_FAILURE; }
+
+  CDyModelRenderer& rendererRef = *opRenderer.value();
+  if (rendererRef.IsComponentActivated() == false)          { return DY_FAILURE; }
+
+  PHITOS_ASSERT(MDY_CHECK_ISNULL(this->mModelRendererReferencePtr), "CDyModelFilter::mModelRendererReferencePtr must be null when unbinding.");
+  rendererRef.BindModelFilterReference(*this);
+
+  return DY_SUCCESS;
+}
+
+EDySuccess CDyModelFilter::pTryUnbindingToModelRendererComponent()
+{
+  if (this->mActivateFlag.IsOutputValueChanged() == false)  { return DY_FAILURE; }
+  if (this->mActivateFlag.GetOutput() == true)             { return DY_FAILURE; }
+
+  // Check final activation flag and unbind instance from CDyModelRenderer.
+  PHITOS_ASSERT(MDY_CHECK_ISNOTNULL(this->mModelRendererReferencePtr), "CDyModelFilter::mModelRendererReferencePtr must not be null when unbinding.");
+  this->mModelRendererReferencePtr->UnbindModelFilterReference();
+
+  return DY_SUCCESS;
+}
+
+void CDyModelFilter::fBindModelRendererReference(CDyModelRenderer& validReference)
+{
+  PHITOS_ASSERT(MDY_CHECK_ISNULL(this->mModelRendererReferencePtr), "CDyModelFilter::mModelRendererReferencePtr must be null when unbinding.");
+  this->mModelRendererReferencePtr = &validReference;
+}
+
+void CDyModelFilter::fUnbindModelRendererReference()
+{
+  PHITOS_ASSERT(MDY_CHECK_ISNOTNULL(this->mModelRendererReferencePtr), "CDyModelFilter::mModelRendererReferencePtr must not be null when unbinding.");
+  this->mModelRendererReferencePtr = MDY_INITIALIZE_NULL;
 }
 
 } /// ::dy namespace
