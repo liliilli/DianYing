@@ -62,9 +62,9 @@ EDySuccess MDyRendering::pfRelease()
   return DY_SUCCESS;
 }
 
-void MDyRendering::PushDrawCallTask(CDyMeshRenderer& rendererInstance)
+void MDyRendering::PushDrawCallTask(_MIN_ CDyModelRenderer& rendererInstance)
 {
-  this->mDrawCallQueue.push(&rendererInstance);
+  this->mDrawCallQueue.push(DyMakeNotNull(&rendererInstance));
 }
 
 void MDyRendering::RenderDrawCallQueue()
@@ -76,9 +76,9 @@ void MDyRendering::RenderDrawCallQueue()
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
   // Draw
-  while (!this->mDrawCallQueue.empty())
+  while (this->mDrawCallQueue.empty() == false)
   {
-    CDyMeshRenderer& drawInstance = *this->mDrawCallQueue.front();
+    CDyModelRenderer& drawInstance = *this->mDrawCallQueue.front();
 
     { // General deferred rendering
       glViewport(0, 0, setting.GetWindowSizeWidth(), setting.GetWindowSizeHeight());
@@ -214,20 +214,32 @@ void MDyRendering::pResetRenderingFramebufferInstances() noexcept
   }
 }
 
-void MDyRendering::pRenderDeferredFrameBufferWith(const CDyMeshRenderer& renderer) noexcept
+void MDyRendering::pRenderDeferredFrameBufferWith(_MIN_ const CDyModelRenderer& renderer) noexcept
 {
-  for (const auto& bindedMeshMatInfo : renderer.mMeshMaterialPtrBindingList)
+  const auto materialListCount  = renderer.GetMaterialListCount();
+  const auto opSubmeshListCount = renderer.GetModelSubmeshCount();
+
+  // Integrity test
+  if (opSubmeshListCount.has_value() == false) { return; }
+
+  TI32 iterationCount = MDY_INITIALIZE_DEFINT;
+  if (materialListCount < opSubmeshListCount.value()) { iterationCount = materialListCount; }
+  else                                                { iterationCount = opSubmeshListCount.value(); }
+
+  for (TI32 i = 0; i < iterationCount; ++i)
   {
-    // Integrity test.
-    const auto shaderResource = bindedMeshMatInfo.mMaterialResource->GetShaderResource();
-    if (!shaderResource)
+    auto& material      = const_cast<CDyMaterialResource&>(renderer.GetMaterialResourcePtr(i));
+    auto shaderResource = material.GetShaderResource();
+    if (shaderResource == nullptr)
     {
-      MDY_LOG_CRITICAL("{} | Shader resource of {} is not binded, Can not render mesh.", "CDyMeshRenderer::Render", bindedMeshMatInfo.mMaterialResource->GetMaterialName());
+      MDY_LOG_CRITICAL("{} | Shader resource of {} is not binded, Can not render mesh.", "CDyMeshRenderer::Render", material.GetMaterialName());
       continue;
     }
-    // Activate shader of one material and bind submesh VAO id.
+
     shaderResource->UseShader();
-    glBindVertexArray(bindedMeshMatInfo.mSubmeshResource->GetVertexArrayId());
+
+    const CDySubmeshResource& submesh = renderer.GetSubmeshResourcePtr(i);
+    glBindVertexArray(submesh.GetVertexArrayId());
 
     // @todo temporal Bind camera matrix.
     if (auto* camera = MDyWorld::GetInstance().GetMainCameraPtr(); camera)
@@ -240,6 +252,7 @@ void MDyRendering::pRenderDeferredFrameBufferWith(const CDyMeshRenderer& rendere
     }
 
     // If skeleton animation is enabled, get bone transform and bind to shader.
+#ifdef false
     const auto boneTransform = glGetUniformLocation(shaderResource->GetShaderProgramId(), "boneTransform");
     if (renderer.mModelReferencePtr && renderer.mModelReferencePtr->IsEnabledModelAnimated())
     {
@@ -250,57 +263,47 @@ void MDyRendering::pRenderDeferredFrameBufferWith(const CDyMeshRenderer& rendere
         glUniformMatrix4fv(boneTransform + i, 1, GL_FALSE, &matrixList[i].mFinalTransformation[0].X);
       }
     }
+#endif
 
     // Bind textures of one material.
-    if (bindedMeshMatInfo.mMaterialResource)
+    const auto& textureResources        = material.GetBindedTextureResources();
+    const auto  textureResourceListSize = static_cast<int32_t>(textureResources.size());
+    for (int32_t j = 0; j < textureResourceListSize; ++j)
     {
-      const auto& textureResources        = bindedMeshMatInfo.mMaterialResource->GetBindedTextureResources();
-      const auto  textureResourceListSize = static_cast<int32_t>(textureResources.size());
-      for (int32_t i = 0; i < textureResourceListSize; ++i)
-      {
-        glUniform1i(glGetUniformLocation(shaderResource->GetShaderProgramId(), (std::string("uTexture") + std::to_string(i)).c_str()), i);
+      glUniform1i(glGetUniformLocation(shaderResource->GetShaderProgramId(), (std::string("uTexture") + std::to_string(j)).c_str()), j);
 
-        const auto texturePointer = textureResources[i].mValidTexturePointer;
-        glActiveTexture(GL_TEXTURE0 + i);
-        switch (texturePointer->GetTextureType())
-        {
-        case EDyTextureStyleType::D1: glBindTexture(GL_TEXTURE_1D, texturePointer->GetTextureId()); break;
-        case EDyTextureStyleType::D2: glBindTexture(GL_TEXTURE_2D, texturePointer->GetTextureId()); break;
-        default: PHITOS_UNEXPECTED_BRANCH(); break;
-        }
+      const auto texturePointer = textureResources[j].mValidTexturePointer;
+      glActiveTexture(GL_TEXTURE0 + j);
+      switch (texturePointer->GetTextureType())
+      {
+      case EDyTextureStyleType::D1: glBindTexture(GL_TEXTURE_1D, texturePointer->GetTextureId()); break;
+      case EDyTextureStyleType::D2: glBindTexture(GL_TEXTURE_2D, texturePointer->GetTextureId()); break;
+      default: PHITOS_UNEXPECTED_BRANCH(); break;
       }
     }
 
     // Call function call drawing array or element. (not support instancing yet)
-    if (bindedMeshMatInfo.mSubmeshResource->IsEnabledIndices())
-    {
-      glDrawElements(GL_TRIANGLES, bindedMeshMatInfo.mSubmeshResource->GetIndicesCounts(), GL_UNSIGNED_INT, nullptr);
-    }
-    else
-    {
-      glDrawArrays(GL_TRIANGLES, 0, bindedMeshMatInfo.mSubmeshResource->GetVertexCounts());
-    }
+    if (submesh.IsEnabledIndices()) { glDrawElements(GL_TRIANGLES, submesh.GetIndicesCounts(), GL_UNSIGNED_INT, nullptr); }
+    else                            { glDrawArrays(GL_TRIANGLES, 0, submesh.GetVertexCounts()); }
 
     // Unbind, unset, deactivate settings for this submesh and material.
-    if (bindedMeshMatInfo.mMaterialResource)
+    for (TI32 j = 0; j < textureResourceListSize; ++j)
     {
-      const auto& textureResources        = bindedMeshMatInfo.mMaterialResource->GetBindedTextureResources();
-      const auto  textureResourceListSize = static_cast<int32_t>(textureResources.size());
-      for (int32_t i = 0; i < textureResourceListSize; ++i)
-      {
-        glActiveTexture(GL_TEXTURE0 + i);
-        glBindTexture(GL_TEXTURE_2D, 0);
-      }
+      glActiveTexture(GL_TEXTURE0 + j);
+      glBindTexture(GL_TEXTURE_2D, 0);
     }
 
+    // Unbind present submesh vertex array object.
     glBindVertexArray(0);
     shaderResource->UnuseShader();
   }
 }
 
-void MDyRendering::pRenderShadowFrameBufferWith(const CDyMeshRenderer& renderer) noexcept
+void MDyRendering::pRenderShadowFrameBufferWith(_MIN_ const CDyModelRenderer& renderer) noexcept
 {
+#ifdef false
   this->mTempShadowObject->RenderScreen(renderer);
+#endif
 }
 
 } /// ::dy namespace

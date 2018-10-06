@@ -45,25 +45,35 @@ public:
   ///
   /// @brief Update scene structures prior to dive in scene objects tree hierarchy.
   /// Scene transition will be executed maybe.
+  /// @param dt
   ///
-  void Update(float dt) override final;
+  void Update(_MIN_ float dt) override final;
 
   ///
   /// @brief Update valid objects. this function must be called after this->Update().
+  /// @param dt Delta time
   ///
-  void UpdateObjects(float dt);
+  void UpdateObjects(_MIN_ float dt);
 
   ///
-  /// @brief Return main camera ptr.
+  /// @brief
+  /// @param
   ///
-  [[nodiscard]] CDyCamera* GetMainCameraPtr() const noexcept;
+  void RequestDrawCall(_MIN_ float dt);
 
   ///
-  /// @brief Check if main camera is binded so be able to focused by scene.
+  /// @brief  Return main camera ptr.
+  /// @return
   ///
-  [[nodiscard]] FORCEINLINE bool IsMainCameraFocused() const noexcept
+  MDY_NODISCARD CDyCamera* GetMainCameraPtr() const noexcept;
+
+  ///
+  /// @brief  Check if main camera is binded so be able to focused by scene.
+  /// @return
+  ///
+  MDY_NODISCARD FORCEINLINE bool IsMainCameraFocused() const noexcept
   {
-    return this->mValidMainCameraPtr != nullptr;
+    return MDY_CHECK_ISNOTNULL(this->mValidMainCameraPtr);
   }
 
   ///
@@ -116,7 +126,7 @@ public:
 
 private:
   /// Bind valid camera to main camera and let object have focused.
-  void __pfBindFocusCamera(_MIN_ CDyCamera* validCameraPtr);
+  void __pfBindFocusCamera(_MIN_ CDyCamera& validCameraPtr) noexcept;
   /// Unbind main camera. this function must not be called manually, but using camera's mechanism.
   void __pfUnbindCameraFocus();
 
@@ -142,6 +152,20 @@ private:
   ///
   void pfUnenrollActiveScript(_MIN_ TI32 index) noexcept;
 
+  ///
+  /// @brief
+  /// @param  validComponent
+  /// @return
+  ///
+  MDY_NODISCARD TI32 pfEnrollActiveModelRenderer(_MIN_ CDyModelRenderer& validComponent) noexcept;
+
+  ///
+  /// @brief
+  /// @param
+  /// @return
+  ///
+  void pfUnenrollActiveModelRenderer(_MIN_ TI32 index) noexcept;
+
   /// Main Camera Ptr of present scene.
   CDyCamera*                mValidMainCameraPtr = nullptr;
   std::vector<CDyCamera*>   mValidSubCameraPtrs = {};
@@ -156,8 +180,14 @@ private:
   /// Activated CDyScript component list.
   /// this list must not be invalidated when iterating list, but except for unenrolling.
   std::vector<CDyScript*>   mActivatedScripts           = {};
-  /// Erasion (activated) pawn candidate list. this list must be sorted descendently not to invalidate order.
+  /// Erasion (activated) script candidate list. this list must be sorted descendently not to invalidate order.
   std::vector<TI32>         mErasionScriptCandidateList = {};
+
+  /// Activated CDyModelRenderer component list.
+  /// this list must not be invalidated when iterating list, but except for unenrolling.
+  std::vector<CDyModelRenderer*>  mActivatedModelRenderers = {};
+  /// Erasion (activated) model rendrerer list. this list must be sorted descendently not to invalidate order.
+  std::vector<TI32>               mErasionModelRenderersCandidateList = {};
 
   /// Garbage collection actor instance list.
   std::vector<std::unique_ptr<FDyActor>> mActorGc = {};
@@ -165,6 +195,7 @@ private:
   friend class CDyCamera;
   friend class FDyLevel;
   friend class CDyScript;
+  friend class CDyModelRenderer;
 };
 
 } /// ::dy namespace

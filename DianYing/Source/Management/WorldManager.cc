@@ -39,16 +39,16 @@ EDySuccess MDyWorld::pfRelease()
   return DY_SUCCESS;
 }
 
-void MDyWorld::Update(float dt)
+void MDyWorld::Update(_MIN_ float dt)
 {
   // Garbage collect needless "FDyActor"s
-  if (!this->mActorGc.empty())
+  if (this->mActorGc.empty() == false)
   {
     this->mActorGc.clear();
   }
 
-  // Remove activated pawn update list reversely.
-  if (!this->mErasionScriptCandidateList.empty())
+  // Remove activated script update list reversely.
+  if (this->mErasionScriptCandidateList.empty() == false)
   {
     std::sort(MDY_BIND_BEGIN_END(this->mErasionScriptCandidateList), std::greater<TI32>());
     for (const auto& index : this->mErasionScriptCandidateList)
@@ -59,8 +59,20 @@ void MDyWorld::Update(float dt)
     this->mErasionScriptCandidateList.clear();
   }
 
+  // Remove activated model renderer (CDyModelRenderer) list reversely to avoiding invalidation index.
+  if (this->mErasionModelRenderersCandidateList.empty() == false)
+  {
+    std::sort(MDY_BIND_BEGIN_END(this->mErasionModelRenderersCandidateList), std::greater<>());
+    for (const auto& index : this->mErasionModelRenderersCandidateList)
+    { // Remove!
+      this->mActivatedModelRenderers.erase(this->mActivatedModelRenderers.begin() + index);
+    }
+    // Clear!
+    this->mErasionModelRenderersCandidateList.clear();
+  }
+
   // Travel next level
-  if (!this->mNextLevelName.empty())
+  if (this->mNextLevelName.empty() == false)
   {
     if (this->mLevel)
     { // Let present level do release sequence
@@ -85,15 +97,31 @@ void MDyWorld::Update(float dt)
   }
 }
 
-void MDyWorld::UpdateObjects(float dt)
+void MDyWorld::UpdateObjects(_MIN_ float dt)
 {
   if (this->mLevel)
-  {
+  { // Update(Start, Update, etc...) script carefully.
     for (auto& pawnPtr : this->mActivatedScripts)
     {
-      if (pawnPtr == nullptr) continue;
+      if (MDY_CHECK_ISNULL(pawnPtr)) { continue; }
       pawnPtr->Update(dt);
     }
+
+    // CDyModelRenderer update
+    for (auto& modelRenderer : this->mActivatedModelRenderers)
+    {
+      if (MDY_CHECK_ISNULL(modelRenderer)) { continue; }
+      modelRenderer->Update(dt);
+    }
+  }
+}
+
+void MDyWorld::RequestDrawCall(float dt)
+{
+  // @TODO IMPLEMENT SW OCCLUSION CULLING (HW?)
+  for (auto& modelRenderer : this->mActivatedModelRenderers)
+  { // Request draw calls (without SW occlusion culling)
+    modelRenderer->RequestDrawCall();
   }
 }
 
@@ -102,7 +130,7 @@ CDyCamera* MDyWorld::GetMainCameraPtr() const noexcept
   return this->mValidMainCameraPtr;
 }
 
-EDySuccess MDyWorld::OpenLevel(const std::string& levelName)
+EDySuccess MDyWorld::OpenLevel(_MIN_ const std::string& levelName)
 {
   if (MDyMetaInfo::GetInstance().GetLevelMetaInformation(levelName) == nullptr)
   {
@@ -114,10 +142,10 @@ EDySuccess MDyWorld::OpenLevel(const std::string& levelName)
   return DY_SUCCESS;
 }
 
-void MDyWorld::__pfBindFocusCamera(CDyCamera* validCameraPtr)
+void MDyWorld::__pfBindFocusCamera(_MIN_ CDyCamera& validCameraPtr) noexcept
 {
-  PHITOS_ASSERT(validCameraPtr != nullptr, "validCameraPtr must be valid, not nullptr.");
-  this->mValidMainCameraPtr = validCameraPtr;
+  PHITOS_ASSERT(MDY_CHECK_ISNOTNULL(&validCameraPtr), "validCameraPtr must be valid, not nullptr.");
+  this->mValidMainCameraPtr = &validCameraPtr;
 }
 
 void MDyWorld::__pfUnbindCameraFocus()
@@ -133,21 +161,37 @@ void MDyWorld::__pfUnbindCameraFocus()
   }
 }
 
-void MDyWorld::pfMoveActorToGc(NotNull<FDyActor*> actorRawPtr) noexcept
+void MDyWorld::pfMoveActorToGc(_MIN_ NotNull<FDyActor*> actorRawPtr) noexcept
 {
   this->mActorGc.emplace_back(std::unique_ptr<FDyActor>(actorRawPtr));
 }
 
-TI32 MDyWorld::pfEnrollActiveScript(const NotNull<CDyScript*>& pawnRawPtr) noexcept
+TI32 MDyWorld::pfEnrollActiveScript(_MIN_ const NotNull<CDyScript*>& pawnRawPtr) noexcept
 {
   this->mActivatedScripts.emplace_back(pawnRawPtr);
   return static_cast<TI32>(this->mActivatedScripts.size()) - 1;
 }
 
-void MDyWorld::pfUnenrollActiveScript(TI32 index) noexcept
+void MDyWorld::pfUnenrollActiveScript(_MIN_ TI32 index) noexcept
 {
-  this->mActivatedScripts[index] = nullptr;
+  PHITOS_ASSERT(index < this->mActivatedScripts.size(), "index must be smaller than this->mActivatedScripts.size().");
+
+  this->mActivatedScripts[index] = MDY_INITIALIZE_NULL;
   this->mErasionScriptCandidateList.emplace_back(index);
+}
+
+TI32 MDyWorld::pfEnrollActiveModelRenderer(_MIN_ CDyModelRenderer& validComponent) noexcept
+{
+  this->mActivatedModelRenderers.emplace_back(&validComponent);
+  return static_cast<TI32>(this->mActivatedModelRenderers.size()) - 1;
+}
+
+void MDyWorld::pfUnenrollActiveModelRenderer(_MIN_ TI32 index) noexcept
+{
+  PHITOS_ASSERT(index < this->mActivatedModelRenderers.size(), "index must be smaller than this->mActivatedScripts.size().");
+
+  this->mActivatedModelRenderers[index] = MDY_INITIALIZE_NULL;
+  this->mErasionModelRenderersCandidateList.emplace_back(index);
 }
 
 } /// ::dy namespace

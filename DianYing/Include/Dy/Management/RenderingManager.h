@@ -21,10 +21,23 @@
 #include <Dy/Core/Component/Object/Grid.h>
 #include "Dy/Core/Rendering/BasicShadow.h"
 
+//!
+//! Forward declaration
+//!
+
+namespace dy
+{
+class CDyModelRenderer;
+} /// ::dy namespace
+
 namespace dy::editor
 {
 class FDyMainViewport;
-}
+} /// ::dy::editor namespace
+
+//!
+//! Implementation
+//!
 
 namespace dy
 {
@@ -40,8 +53,9 @@ class MDyRendering final : public ISingleton<MDyRendering>
 public:
   ///
   /// @brief
+  /// @param rendererInstance
   ///
-  void PushDrawCallTask(CDyMeshRenderer& rendererInstance);
+  void PushDrawCallTask(_MIN_ CDyModelRenderer& rendererInstance);
 
   ///
   /// @brief
@@ -65,17 +79,17 @@ private:
   void pResetRenderingFramebufferInstances() noexcept;
 
   ///
-  void pRenderDeferredFrameBufferWith(const CDyMeshRenderer& renderer) noexcept;
+  void pRenderDeferredFrameBufferWith(_MIN_ const CDyModelRenderer& renderer) noexcept;
 
   ///
-  void pRenderShadowFrameBufferWith(const CDyMeshRenderer& renderer) noexcept;
+  void pRenderShadowFrameBufferWith(_MIN_ const CDyModelRenderer& renderer) noexcept;
 
   TU32                mDeferredFrameBufferId  = MDY_INITIALIZE_DEFUINT;
   std::array<TU32, 4> mAttachmentBuffers      = {};
   const TI32          mAttachmentBuffersCount = static_cast<TI32>(mAttachmentBuffers.size());
 
   std::unique_ptr<FDyDeferredRenderingMesh>   mFinalRenderingMesh   = nullptr;
-  std::queue<CDyMeshRenderer*>                mDrawCallQueue        = {};
+  std::queue<NotNull<CDyModelRenderer*>>      mDrawCallQueue        = {};
 
   bool                                        mTempIsEnabledSsao    = true;
   std::unique_ptr<FDyPostEffectSsao>          mTempSsaoObject       = nullptr;
