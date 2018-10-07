@@ -125,7 +125,7 @@ void MDyWorld::RequestDrawCall(float dt)
   }
 }
 
-CDyCamera* MDyWorld::GetMainCameraPtr() const noexcept
+CDyLegacyCamera* MDyWorld::GetMainCameraPtr() const noexcept
 {
   return this->mValidMainCameraPtr;
 }
@@ -142,7 +142,7 @@ EDySuccess MDyWorld::OpenLevel(_MIN_ const std::string& levelName)
   return DY_SUCCESS;
 }
 
-void MDyWorld::__pfBindFocusCamera(_MIN_ CDyCamera& validCameraPtr) noexcept
+void MDyWorld::pfBindFocusCamera(_MIN_ CDyLegacyCamera& validCameraPtr) noexcept
 {
   PHITOS_ASSERT(MDY_CHECK_ISNOTNULL(&validCameraPtr), "validCameraPtr must be valid, not nullptr.");
   this->mValidMainCameraPtr = &validCameraPtr;

@@ -64,7 +64,7 @@ namespace
 
 dy::DDyVector3                  gColor      {.2f, .3f, .2f};
 dy::CDyMeshRenderer             gRenderer   = {};
-std::unique_ptr<dy::CDyCamera>  gCameraPtr  = nullptr;
+std::unique_ptr<dy::CDyLegacyCamera>  gCameraPtr  = nullptr;
 
 void GLAPIENTRY DyGlMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
@@ -88,7 +88,7 @@ void DyGlTempInitializeResource()
     cameraDesc.mIsOrthographic      = true;
     cameraDesc.mUseCustomViewport   = false;
   }
-  gCameraPtr = std::make_unique<dy::CDyCamera>(cameraDesc);
+  gCameraPtr = std::make_unique<dy::CDyLegacyCamera>(cameraDesc);
 
   //!
   //! Shader
@@ -301,7 +301,7 @@ void DyGlTempInitializeResource()
     auto animAsyncTask = std::async(std::launch::async, [&manInfo] {
       dy::PDyModelConstructionDescriptor modelDesc;
       {
-        modelDesc.mModelName = "Boxing";
+        modelDesc.mModelName = "TestModel";
         modelDesc.mModelPath = "./TestResource/bun_zipper.ply";
       }
       MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(modelDesc));
@@ -334,7 +334,7 @@ void DyGlTempInitializeResource()
 
   dy::PDyRendererConsturctionDescriptor rendererDesc;
   {
-    rendererDesc.mModelName     = "Boxing";
+    rendererDesc.mModelName     = "TestModel";
     rendererDesc.mMaterialNames = std::vector<std::string>(394, "TestMat");
   }
   MDY_CALL_ASSERT_SUCCESS(gRenderer.pfInitialize(rendererDesc));
@@ -434,18 +434,23 @@ void MDyWindow::pUpdate(float dt)
     editor::MDyEditorGui::GetInstance().Update(dt);
   #endif // MDY_FLAG_IN_EDITOR
 
+  //
   MDyPhysics::GetInstance().Update(dt);
+  //
   MDyWorld::GetInstance().Update(dt);
+  //
   MDyInput::GetInstance().pfUpdate(dt);
   MDyWorld::GetInstance().UpdateObjects(dt);
+  //
+  MDyWorld::GetInstance().RequestDrawCall(dt);
 
-#ifdef false
-  auto* cam = sceneManager.GetMainCameraPtr();
+  auto* cam = MDyWorld::GetInstance().GetMainCameraPtr();
   if (cam)
   {
     cam->Update(dt);
   }
 
+#ifdef false
   gRenderer.Update(dt);
 #endif
 }

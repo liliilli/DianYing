@@ -23,7 +23,7 @@
 
 namespace dy
 {
-class CDyCamera;
+class CDyLegacyCamera;
 } /// ::dy namespace
 
 //!
@@ -65,7 +65,7 @@ public:
   /// @brief  Return main camera ptr.
   /// @return
   ///
-  MDY_NODISCARD CDyCamera* GetMainCameraPtr() const noexcept;
+  MDY_NODISCARD CDyLegacyCamera* GetMainCameraPtr() const noexcept;
 
   ///
   /// @brief  Check if main camera is binded so be able to focused by scene.
@@ -126,7 +126,7 @@ public:
 
 private:
   /// Bind valid camera to main camera and let object have focused.
-  void __pfBindFocusCamera(_MIN_ CDyCamera& validCameraPtr) noexcept;
+  void pfBindFocusCamera(_MIN_ CDyLegacyCamera& validCameraPtr) noexcept;
   /// Unbind main camera. this function must not be called manually, but using camera's mechanism.
   void __pfUnbindCameraFocus();
 
@@ -167,8 +167,8 @@ private:
   void pfUnenrollActiveModelRenderer(_MIN_ TI32 index) noexcept;
 
   /// Main Camera Ptr of present scene.
-  CDyCamera*                mValidMainCameraPtr = nullptr;
-  std::vector<CDyCamera*>   mValidSubCameraPtrs = {};
+  CDyLegacyCamera*                mValidMainCameraPtr = nullptr;
+  std::vector<CDyLegacyCamera*>   mValidSubCameraPtrs = {};
 
   std::string               mNextLevelName      = MDY_INITILAIZE_EMPTYSTR;
   std::string               mPresentLevelName   = MDY_INITILAIZE_EMPTYSTR;
@@ -192,10 +192,11 @@ private:
   /// Garbage collection actor instance list.
   std::vector<std::unique_ptr<FDyActor>> mActorGc = {};
 
-  friend class CDyCamera;
+  friend class CDyLegacyCamera;
   friend class FDyLevel;
   friend class CDyScript;
   friend class CDyModelRenderer;
+  friend class CDyCamera;
 };
 
 } /// ::dy namespace
