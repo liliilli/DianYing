@@ -103,6 +103,7 @@
     <ClCompile Include="Source\Element\Descriptor\MetaLevelDescriptor.cc" />
     <ClCompile Include="Source\Component\CDyModelFilter.cc" />
     <ClCompile Include="Source\Component\CDyModelRenderer.cc" />
+    <ClCompile Include="Source\Component\CDyCamera.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -277,6 +278,7 @@
     <ClInclude Include="Include\Dy\Component\CDyPhysicsRigidbodyStatic.h" />
     <ClInclude Include="Include\Dy\Component\Interface\IDyInitializeHelper.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\CheckingRule.h" />
+    <ClInclude Include="Include\Dy\Component\CDyCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />
