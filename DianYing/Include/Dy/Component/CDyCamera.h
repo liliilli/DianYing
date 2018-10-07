@@ -290,7 +290,7 @@ private:
   MDY_TRANSIENT bool mIsFirstTime = true;
 
   // @TODO TEMPORAL
-  DDyVector3 mPosition = {};
+  DDyVector3 mPosition = {-1, 0, 0};
 };
 
 } /// ::dy namespace

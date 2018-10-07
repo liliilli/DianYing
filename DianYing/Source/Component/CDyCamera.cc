@@ -79,7 +79,7 @@ void CDyCamera::Release()
 
 void CDyCamera::Update(_MIN_ float dt)
 {
-  PHITOS_NOT_IMPLEMENTED_ASSERT();
+
 }
 
 std::string CDyCamera::ToString()
@@ -225,7 +225,7 @@ EDySuccess CDyCamera::Focus()
     return DY_FAILURE;
   }
 
-  //MDyWorld::GetInstance().pfBindFocusCamera(*this);
+  this->mActivatedUpdateListId = MDyWorld::GetInstance().pfEnrollActiveCamera(*this);
   this->mIsFocused = true;
 
   return DY_SUCCESS;
@@ -240,7 +240,7 @@ EDySuccess CDyCamera::Unfocus()
     return DY_FAILURE;
   }
 
-  //MDyWorld::GetInstance().pfBindFocusCamera(*this);
+  MDyWorld::GetInstance().pfUnenrollActiveCamera(this->mActivatedUpdateListId);
   this->mIsFocused = false;
   return DY_SUCCESS;
 }

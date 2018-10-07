@@ -27,6 +27,7 @@
 
 namespace dy
 {
+class CDyCamera;
 class CDyModelRenderer;
 } /// ::dy namespace
 
@@ -54,11 +55,13 @@ public:
   ///
   /// @brief
   /// @param rendererInstance
+  /// @TODO SCRIPT THIS!
   ///
   void PushDrawCallTask(_MIN_ CDyModelRenderer& rendererInstance);
 
   ///
   /// @brief
+  /// @TODO SCRIPT THIS!
   ///
   void RenderDrawCallQueue();
 
@@ -79,8 +82,18 @@ private:
   void pResetRenderingFramebufferInstances() noexcept;
 
   ///
-  void pRenderDeferredFrameBufferWith(_MIN_ const CDyModelRenderer& renderer) noexcept;
+  /// @brief
+  /// @param  renderer
+  /// @param  validCamera
+  /// @TODO SCRIPT THIS!
+  ///
+  void pRenderDeferredFrameBufferWith(_MIN_ const CDyModelRenderer& renderer, _MIN_ const CDyCamera& validCamera) noexcept;
 
+  ///
+  /// @brief
+  /// @param
+  /// @param
+  /// @TODO SCRIPT THIS!
   ///
   void pRenderShadowFrameBufferWith(_MIN_ const CDyModelRenderer& renderer) noexcept;
 
@@ -89,7 +102,7 @@ private:
   const TI32          mAttachmentBuffersCount = static_cast<TI32>(mAttachmentBuffers.size());
 
   std::unique_ptr<FDyDeferredRenderingMesh>   mFinalRenderingMesh   = nullptr;
-  std::queue<NotNull<CDyModelRenderer*>>      mDrawCallQueue        = {};
+  std::vector<NotNull<CDyModelRenderer*>>     mDrawCallList        = {};
 
   bool                                        mTempIsEnabledSsao    = true;
   std::unique_ptr<FDyPostEffectSsao>          mTempSsaoObject       = nullptr;

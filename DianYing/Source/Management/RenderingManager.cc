@@ -64,7 +64,7 @@ EDySuccess MDyRendering::pfRelease()
 
 void MDyRendering::PushDrawCallTask(_MIN_ CDyModelRenderer& rendererInstance)
 {
-  this->mDrawCallQueue.push(DyMakeNotNull(&rendererInstance));
+  this->mDrawCallList.emplace_back(DyMakeNotNull(&rendererInstance));
 }
 
 void MDyRendering::RenderDrawCallQueue()
@@ -76,26 +76,34 @@ void MDyRendering::RenderDrawCallQueue()
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
   // Draw
-  while (this->mDrawCallQueue.empty() == false)
-  {
-    CDyModelRenderer& drawInstance = *this->mDrawCallQueue.front();
 
-    { // General deferred rendering
-      glViewport(0, 0, setting.GetWindowSizeWidth(), setting.GetWindowSizeHeight());
-      glBindFramebuffer(GL_FRAMEBUFFER, this->mDeferredFrameBufferId);
-      this->pRenderDeferredFrameBufferWith(drawInstance);
-    }
+  const auto cameraCount = MDyWorld::GetInstance().GetFocusedCameraCount();
+  for (TI32 i = 0; i < cameraCount; ++i)
+  {
+    const auto opCamera = MDyWorld::GetInstance().GetFocusedCameraValidReference(i);
+    if (opCamera.has_value() == false) { continue; }
+
+    for (const auto& drawInstance : this->mDrawCallList)
+    {
+      { // General deferred rendering
+        glViewport(0, 0, setting.GetWindowSizeWidth(), setting.GetWindowSizeHeight());
+        glBindFramebuffer(GL_FRAMEBUFFER, this->mDeferredFrameBufferId);
+
+        this->pRenderDeferredFrameBufferWith(*drawInstance, *opCamera.value());
+      }
 
 #ifdef false
-    if (this->mTempIsEnabledShadow)
-    { // Basic shadow (directional light etc)
-      glViewport(0, 0, 512, 512);
-      this->pRenderShadowFrameBufferWith(drawInstance);
-    }
+      if (this->mTempIsEnabledShadow)
+      { // Basic shadow (directional light etc)
+        glViewport(0, 0, 512, 512);
+        this->pRenderShadowFrameBufferWith(drawInstance);
+      }
 #endif
-
-    this->mDrawCallQueue.pop();
+    }
   }
+
+  // Clear draw call list
+  this->mDrawCallList.clear();
 
   glViewport(0, 0, setting.GetWindowSizeWidth(), setting.GetWindowSizeHeight());
   glBindFramebuffer(GL_FRAMEBUFFER, this->mDeferredFrameBufferId);
@@ -214,7 +222,7 @@ void MDyRendering::pResetRenderingFramebufferInstances() noexcept
   }
 }
 
-void MDyRendering::pRenderDeferredFrameBufferWith(_MIN_ const CDyModelRenderer& renderer) noexcept
+void MDyRendering::pRenderDeferredFrameBufferWith(_MIN_ const CDyModelRenderer& renderer, _MIN_ const CDyCamera& validCamera) noexcept
 {
   const auto materialListCount  = renderer.GetMaterialListCount();
   const auto opSubmeshListCount = renderer.GetModelSubmeshCount();
@@ -241,15 +249,10 @@ void MDyRendering::pRenderDeferredFrameBufferWith(_MIN_ const CDyModelRenderer& 
     const CDySubmeshResource& submesh = renderer.GetSubmeshResourcePtr(i);
     glBindVertexArray(submesh.GetVertexArrayId());
 
-    // @todo temporal Bind camera matrix.
-    if (auto* camera = MDyWorld::GetInstance().GetMainCameraPtr(); camera)
-    {
-      const auto viewMatrix = glGetUniformLocation(shaderResource->GetShaderProgramId(), "viewMatrix");
-      const auto projMatirx = glGetUniformLocation(shaderResource->GetShaderProgramId(), "projectionMatrix");
-
-      glUniformMatrix4fv(viewMatrix, 1, GL_FALSE, &camera->GetViewMatrix()[0].X);
-      glUniformMatrix4fv(projMatirx, 1, GL_FALSE, &camera->GetProjectionMatrix()[0].X);
-    }
+    const auto viewMatrix = glGetUniformLocation(shaderResource->GetShaderProgramId(), "viewMatrix");
+    const auto projMatirx = glGetUniformLocation(shaderResource->GetShaderProgramId(), "projectionMatrix");
+    glUniformMatrix4fv(viewMatrix, 1, GL_FALSE, &validCamera.GetViewMatrix()[0].X);
+    glUniformMatrix4fv(projMatirx, 1, GL_FALSE, &validCamera.GetProjectionMatrix()[0].X);
 
     // If skeleton animation is enabled, get bone transform and bind to shader.
 #ifdef false

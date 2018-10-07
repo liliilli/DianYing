@@ -39,7 +39,7 @@ CDyLegacyCamera::~CDyLegacyCamera()
   // Unbind focus camera if this is being binded to camera focus of scene.
   if (this->IsBeingFocused())
   {
-    MDyWorld::GetInstance().__pfUnbindCameraFocus();
+    MDyWorld::GetInstance().pfUnbindCameraFocus();
     this->mIsFocused = false;
   }
 }
