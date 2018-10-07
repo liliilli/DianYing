@@ -98,7 +98,6 @@ MDY_SET_IMMUTABLE_STRING(sValueOrthogonal,        "Orthographic");
 
 MDY_SET_IMMUTABLE_STRING(sHeaderClippingNear,     "ClippingNear");
 MDY_SET_IMMUTABLE_STRING(sHeaderClippingFar,      "ClippingFar");
-MDY_SET_IMMUTABLE_STRING(sHeaderIsCustomViewport, "IsCustomViewport");
 MDY_SET_IMMUTABLE_STRING(sHeaderViewportRect,     "ViewportRect");
 MDY_SET_IMMUTABLE_STRING(sHeaderIsFocusInstantly, "IsFocusInstantly");
 
@@ -390,7 +389,6 @@ PDyLevelConstructDescriptor PDyLevelConstructDescriptor::CreateDescriptor(_MIN_ 
         DDyCameraMetaInformation cameraMeta;
         cameraMeta.mType                = typeEnum;
         //
-        cameraMeta.mIsCustomViewport    = DyGetValue<bool>(componentMetaInfo, sHeaderIsCustomViewport);
         cameraMeta.mInitialFieldOfView  = DyGetValue<TF32>(componentMetaInfo, sHeaderFieldOfView);
         DyGetViewportRectFromJson(componentMetaInfo.at(MSVSTR(sHeaderViewportRect)), cameraMeta);
 

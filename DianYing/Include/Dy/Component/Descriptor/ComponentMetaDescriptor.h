@@ -74,8 +74,6 @@ struct DDyCameraMetaInformation final : public IDyMetaInformation
   bool        mIsFocusInstantly       = false;
   /// Component is initially activated or not.
   bool        mInitiallyActivated     = false;
-  /// Feature flag for using custom viewport size.
-  bool        mIsCustomViewport       = false;
   /// Custom viewport size, but mIsCustomViewport must be enabled.
   DDyVector2  mViewportSizeXY         = {0, 0};
   /// Custom viewport size
