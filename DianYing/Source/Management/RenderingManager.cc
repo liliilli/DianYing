@@ -82,15 +82,17 @@ void MDyRendering::RenderDrawCallQueue()
   {
     const auto opCamera = MDyWorld::GetInstance().GetFocusedCameraValidReference(i);
     if (opCamera.has_value() == false) { continue; }
+    const auto& validCameraRawPtr = *opCamera.value();
+    const auto pixelizedViewportRect = validCameraRawPtr.GetPixelizedViewportRectangle();
+    glViewport(pixelizedViewportRect[0], pixelizedViewportRect[1],
+               pixelizedViewportRect[2], pixelizedViewportRect[3]
+    );
+    glBindFramebuffer(GL_FRAMEBUFFER, this->mDeferredFrameBufferId);
 
     for (const auto& drawInstance : this->mDrawCallList)
     {
-      { // General deferred rendering
-        glViewport(0, 0, setting.GetWindowSizeWidth(), setting.GetWindowSizeHeight());
-        glBindFramebuffer(GL_FRAMEBUFFER, this->mDeferredFrameBufferId);
-
-        this->pRenderDeferredFrameBufferWith(*drawInstance, *opCamera.value());
-      }
+      // General deferred rendering
+      this->pRenderDeferredFrameBufferWith(*drawInstance, validCameraRawPtr);
 
 #ifdef false
       if (this->mTempIsEnabledShadow)

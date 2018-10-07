@@ -160,6 +160,22 @@ EDySuccess CDyCamera::pTryDeactivateCameraOperation()
   return DY_SUCCESS;
 }
 
+std::array<TI32, 4> CDyCamera::GetPixelizedViewportRectangle() const noexcept
+{
+  const auto& setting                 = MDySetting::GetInstance();
+  const auto presentResolutionWidth   = setting.GetWindowSizeWidth();
+  const auto presentResolutionHeight  = setting.GetWindowSizeHeight();
+
+  const auto& scaleXy = this->mViewportRectXY;
+  const auto& scaleWh = this->mViewportRectWH;
+
+  return {static_cast<TI32>(scaleXy.X * presentResolutionWidth),
+          static_cast<TI32>(scaleXy.Y * presentResolutionHeight),
+          static_cast<TI32>(scaleWh.X * presentResolutionWidth),
+          static_cast<TI32>(scaleWh.Y * presentResolutionHeight)
+  };
+}
+
 EDySuccess CDyCamera::SetNear(_MIN_ const float newNear) noexcept
 {
   if (newNear > this->mFar || newNear < 0) { return DY_FAILURE; }

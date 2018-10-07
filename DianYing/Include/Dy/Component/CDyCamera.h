@@ -103,6 +103,30 @@ public:
   }
 
   ///
+  /// @brief  Get scale value of xy (start point) of viewport rectangle.
+  /// @return Scaled start point of viewport rectangle.
+  ///
+  MDY_NODISCARD const DDyVector2& GetViewportRectScaleXy() const noexcept
+  {
+    return this->mViewportRectXY;
+  }
+
+  ///
+  /// @brief  Get scale value of wh (start point) of viewport rectangle.
+  /// @return Scaled width and height of viewport rectangle.
+  ///
+  MDY_NODISCARD const DDyVector2& GetViewportRectScaleWh() const noexcept
+  {
+    return this->mViewportRectWH;
+  }
+
+  ///
+  /// @brief  Get (x, y, w, h) pixel value of viewport rectangle along with present resolution size.
+  /// @return Pixelized (reflect present game resolution size) (x, y, w, h) integer container for representing viewport rectangle.
+  ///
+  MDY_NODISCARD std::array<TI32, 4> GetPixelizedViewportRectangle() const noexcept;
+
+  ///
   /// @brief  Set near value. If successful, return DY_SUCCESS.
   /// But when newNear value is bigger than mFar value, do nothing just return DY_FAILURE.
   /// When update near value, projection matrix will be updated also immediately.
