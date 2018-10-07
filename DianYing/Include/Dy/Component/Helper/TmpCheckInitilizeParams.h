@@ -21,6 +21,7 @@
 #include <Dy/Helper/Internal/TmpCheckTypeParams.h>
 #include "Dy/Component/CDyModelFilter.h"
 #include "Dy/Component/CDyModelRenderer.h"
+#include "Dy/Component/CDyCamera.h"
 
 namespace dy
 {
@@ -61,6 +62,11 @@ constexpr void DyCheckComponentInitializeFunctionParams() noexcept
   {
     static_assert(MetaTest<const DDyModelRendererMetaInformation&>::TypeMatched<TArgs...>::template Result<>::value,
                   "Failed compile test. Could not initilaize CDyModelRenderer instance.");
+  }
+  if constexpr (std::is_same_v<CDyCamera, TComponentType>)
+  {
+    static_assert(MetaTest<const DDyCameraMetaInformation&>::TypeMatched<TArgs...>::template Result<>::value,
+                  "Failed compile test. Could not initilaize CDyCamera instance.");
   }
 }
 

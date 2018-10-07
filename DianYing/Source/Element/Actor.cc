@@ -19,6 +19,7 @@
 #include <Dy/Component/Internal/CDyEmptyTransform.h>
 #include "Dy/Component/CDyModelFilter.h"
 #include "Dy/Component/CDyModelRenderer.h"
+#include "Dy/Component/CDyCamera.h"
 
 //!
 //! Forward declaration
@@ -77,6 +78,11 @@ EDySuccess FDyActor::Initialize(_MIN_ const DDyObjectInformation& objectMetaDesc
     {
       const auto& desc = std::any_cast<const DDyModelRendererMetaInformation&>(componentInfo);
       MDY_NOTUSED auto modelRendererComponentPtr = this->AddComponent<CDyModelRenderer>(desc);
+    } break;
+    case EDyComponentMetaType::Camera:
+    {
+      const auto& desc = std::any_cast<const DDyCameraMetaInformation&>(componentInfo);
+      MDY_NOTUSED auto cameraComponentPtr = this->AddComponent<CDyCamera>(desc);
     } break;
     }
   }
