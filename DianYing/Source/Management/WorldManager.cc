@@ -119,10 +119,10 @@ void MDyWorld::UpdateObjects(_MIN_ float dt)
 {
   if (this->mLevel)
   { // Update(Start, Update, etc...) script carefully.
-    for (auto& pawnPtr : this->mActivatedScripts)
+    for (auto& script : this->mActivatedScripts)
     {
-      if (MDY_CHECK_ISNULL(pawnPtr)) { continue; }
-      pawnPtr->Update(dt);
+      if (MDY_CHECK_ISNULL(script)) { continue; }
+      script->Update(dt);
     }
 
     // CDyModelRenderer update

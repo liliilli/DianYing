@@ -54,7 +54,8 @@ void FDyLevel::Initialize(_MIN_ const PDyLevelConstructDescriptor& desc)
       instancePtr->SetParent();
 #endif
     }
-    else { }
+
+
 
     // Check activation flags and execute sub-routines of each components.
     instancePtr->pUpdateActivateFlagFromParent();
