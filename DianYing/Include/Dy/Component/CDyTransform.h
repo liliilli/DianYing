@@ -13,11 +13,24 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Component/Abstract/ADyBaseTransform.h>
+#include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
 #include <Dy/Helper/Type/Vector3.h>
 #include <Dy/Helper/Type/MathEnum.h>
 #include <Dy/Helper/Type/Matrix4.h>
 #include <Dy/Helper/Type/Quaternion.h>
+
+//!
+//! Forward declaration
+//!
+
+namespace dy
+{
+struct DDyTransformMetaInformation;
+} /// ::dy namespace
+
+//!
+//! Implementation
+//!
 
 namespace dy
 {
@@ -27,7 +40,7 @@ namespace dy
 /// @brief
 /// @TODO SCRIPT THIS
 ///
-class CDyTransform final : public ADyBaseTransform
+class CDyTransform final : public ADyGeneralBaseComponent
 {
 public:
   CDyTransform(FDyActor& actorReference);
@@ -38,7 +51,17 @@ public:
   CDyTransform(CDyTransform&& instance)                   noexcept  = default;
   CDyTransform& operator=(CDyTransform&& instance)        noexcept  = default;
 
-   ///
+  ///
+  /// @brief
+  /// @param  desc
+  /// @return
+  ///
+  MDY_NODISCARD EDySuccess Initialize(_MIN_ const DDyTransformMetaInformation& desc);
+
+  ///
+  void Release();
+
+  ///
   /// @brief Return local position.
   /// @return Object's local position.
   ///
@@ -231,7 +254,7 @@ private:
   /// Final model matrix also reflected by parent's and world rot.
   MDY_TRANSIENT DDyMatrix4x4  mFinalRenderingTransform;
 
-  MDY_SET_TYPEMATCH_FUNCTION(::dy::ADyBaseTransform, CDyTransform);
+  MDY_SET_TYPEMATCH_FUNCTION(::dy::ADyGeneralBaseComponent, CDyTransform);
   MDY_SET_CRC32_HASH_WITH_TYPE(CDyTransform);
 };
 

@@ -16,7 +16,6 @@
 #include <Dy/Element/Actor.h>
 #include <Dy/Management/MetaInfoManager.h>
 #include <Dy/Component/CDyTransform.h>
-#include <Dy/Component/Internal/CDyEmptyTransform.h>
 #include "Dy/Component/CDyModelFilter.h"
 #include "Dy/Component/CDyModelRenderer.h"
 #include "Dy/Component/CDyCamera.h"
@@ -88,11 +87,7 @@ EDySuccess FDyActor::Initialize(_MIN_ const DDyObjectInformation& objectMetaDesc
   }
 
   // Create CDyEmptyTransform when not having CDyTransform.
-  if (isTransformCreated == false)
-  {
-    [[maybe_unused]] auto ptr = this->AddComponent<CDyEmptyTransform>(sDefaultTransformMetaInformation);
-  }
-
+  PHITOS_ASSERT(isTransformCreated == true, "CDyTransform component must be created to all FDyActor.");
   return DY_SUCCESS;
 }
 
@@ -211,7 +206,7 @@ EDySuccess FDyActor::RemoveScriptComponent(const std::string& scriptName) noexce
   }
 }
 
-NotNull<ADyBaseTransform*> FDyActor::GetTransform() noexcept
+NotNull<CDyTransform*> FDyActor::GetTransform() noexcept
 {
   return DyMakeNotNull(this->mTransform.get());
 }

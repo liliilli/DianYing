@@ -23,8 +23,18 @@ namespace dy
 //! Getter
 //!
 
-CDyTransform::CDyTransform(FDyActor& actorReference) : ADyBaseTransform(actorReference)
+CDyTransform::CDyTransform(FDyActor& actorReference) : ADyGeneralBaseComponent(actorReference)
 { }
+
+EDySuccess CDyTransform::Initialize(const DDyTransformMetaInformation& desc)
+{
+  return DY_SUCCESS;
+}
+
+void CDyTransform::Release()
+{
+
+}
 
 const DDyVector3& CDyTransform::GetLocalSpacePosition() const noexcept
 {

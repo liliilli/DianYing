@@ -150,12 +150,12 @@ public:
       reference->Initiate();
       return DyMakeNotNull(reference.get());
     }
-    else if constexpr (std::is_base_of_v<ADyBaseTransform, TComponent>)
+    else if constexpr (std::is_same_v<CDyTransform, TComponent>)
     { // If component is not CDyScript but related to ADyBaseTransform (Transform components)
-      PHITOS_ASSERT(MDY_CHECK_ISEMPTY(this->mTransform), "this->mTransform must be empty when insert new transform component.");
+      PHITOS_ASSERT(MDY_CHECK_ISEMPTY(this->mTransform), "FDyActor::mTransform must be empty when insert transform component.");
 
-      this->mTransform.reset(static_cast<ADyBaseTransform*>(componentPtr.release()));
-      return DyMakeNotNull(static_cast<TComponent*>(this->mTransform.get()));
+      this->mTransform.reset(componentPtr.release());
+      return DyMakeNotNull(this->mTransform.get());
     }
     else
     { // Otherwise remain, just return Ptr.
@@ -263,7 +263,7 @@ public:
   /// @brief  Get tranform component pointer from FDyActor instance.
   /// @return Valid transform pointer instance.
   ///
-  MDY_NODISCARD NotNull<ADyBaseTransform*> GetTransform() noexcept;
+  MDY_NODISCARD NotNull<CDyTransform*> GetTransform() noexcept;
 
 #ifdef false
   ///
@@ -330,7 +330,7 @@ private:
   /// Parent FDyActor raw-pointer data.
   FDyActor*                         mParentFDyActorRawPtr   = MDY_INITIALIZE_NULL;
   /// Transform component.
-  std::unique_ptr<ADyBaseTransform> mTransform              = MDY_INITIALIZE_NULL;
+  std::unique_ptr<CDyTransform>     mTransform              = MDY_INITIALIZE_NULL;
   /// Component list (randomly) which attached to FDyActor instance (this!)
   TComponentList                    mComponentList          = {};
   /// Script list (specialized!)

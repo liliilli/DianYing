@@ -13,7 +13,6 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Component/Abstract/ADyBaseTransform.h>
 #include <Dy/Component/CDyScript.h>
 #include <Dy/Component/CDyTransform.h>
 
@@ -40,9 +39,9 @@ constexpr void DyCheckComponentRemoveFunctionParams() noexcept
     static_assert(MetaTest<const std::string&>::TypeMatched<TArgs...>::template Result<>::value,
                   "Failed compile test. Could not remove CDyScript instance.");
   }
-  else if constexpr (std::is_base_of_v<ADyBaseTransform, TComponentType>)
+  else if constexpr (std::is_same_v<CDyTransform, TComponentType>)
   {
-    static_assert(!std::is_base_of_v<ADyBaseTransform, TComponentType>,
+    static_assert(!std::is_same_v<CDyTransform, TComponentType>,
                   "Can not delete CDyTransform and CDyEmptyTransform from component list.");
   }
   else

@@ -96,8 +96,6 @@
     <ClCompile Include="Source\Helper\Type\ThreeStateBool.cc" />
     <ClCompile Include="Source\Element\Abstract\ADyBaseComponent.cc" />
     <ClCompile Include="Source\Component\CDyScript.cc" />
-    <ClCompile Include="Source\Component\Abstract\ADyBaseTransform.cc" />
-    <ClCompile Include="Source\Component\Internal\CDyEmptyTransform.cc" />
     <ClCompile Include="Source\Component\CDyTransform.cc" />
     <ClCompile Include="Source\Component\Abstract\ADyGeneralBaseComponent.cc" />
     <ClCompile Include="Source\Element\Descriptor\MetaLevelDescriptor.cc" />
@@ -263,8 +261,6 @@
     <ClInclude Include="Include\Dy\Element\Abstract\ADyGeneralBaseComponent.h" />
     <ClInclude Include="Include\Dy\Component\CDyScript.h" />
     <ClInclude Include="Include\Dy\Component\CDyTransform.h" />
-    <ClInclude Include="Include\Dy\Component\Abstract\ADyBaseTransform.h" />
-    <ClInclude Include="Include\Dy\Component\Internal\CDyEmptyTransform.h" />
     <ClInclude Include="Include\Dy\Component\Descriptor\ComponentMetaDescriptor.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\TmpCheckTypeParams.h" />
     <ClInclude Include="Include\Dy\Component\Helper\TmpCheckInitilizeParams.h" />
