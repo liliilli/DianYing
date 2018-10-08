@@ -13,10 +13,8 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Component/Abstract/ADyBaseTransform.h>
 #include <Dy/Component/CDyScript.h>
 #include <Dy/Component/CDyTransform.h>
-#include <Dy/Component/Internal/CDyEmptyTransform.h>
 
 #include <Dy/Helper/Internal/TmpCheckTypeParams.h>
 #include "Dy/Component/CDyModelFilter.h"
@@ -47,11 +45,6 @@ constexpr void DyCheckComponentInitializeFunctionParams() noexcept
   {
     static_assert(MetaTest<const DDyTransformMetaInformation&>::TypeMatched<TArgs...>::template Result<>::value,
                   "Failed compile test. Could not initilaize CDyTransform instance.");
-  }
-  if constexpr (std::is_same_v<CDyEmptyTransform, TComponentType>)
-  {
-    static_assert(MetaTest<const DDyTransformMetaInformation&>::TypeMatched<TArgs...>::template Result<>::value,
-                  "Failed compile test. Could not initilaize CDyEmptyTransform instance.");
   }
   if constexpr (std::is_same_v<CDyModelFilter, TComponentType>)
   {

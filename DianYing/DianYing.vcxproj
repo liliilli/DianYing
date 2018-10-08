@@ -170,14 +170,12 @@
     <ClCompile Include="Source\Builtin\ShaderGl\RenderDeferredRendering.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderGrid.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderPass.cc" />
-    <ClCompile Include="Source\Component\Abstract\ADyBaseTransform.cc" />
     <ClCompile Include="Source\Component\Abstract\ADyGeneralBaseComponent.cc" />
     <ClCompile Include="Source\Component\CDyCamera.cc" />
     <ClCompile Include="Source\Component\CDyModelFilter.cc" />
     <ClCompile Include="Source\Component\CDyModelRenderer.cc" />
     <ClCompile Include="Source\Component\CDyScript.cc" />
     <ClCompile Include="Source\Component\CDyTransform.cc" />
-    <ClCompile Include="Source\Component\Internal\CDyEmptyTransform.cc" />
     <ClCompile Include="Source\Core\Component\Information\MaterialInformation.cc" />
     <ClCompile Include="Source\Core\Component\Information\ModelInformation.cc" />
     <ClCompile Include="Source\Core\Component\Information\ShaderInformation.cc" />
@@ -273,7 +271,6 @@
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderDeferredRendering.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderGrid.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderPass.h" />
-    <ClInclude Include="Include\Dy\Component\Abstract\ADyBaseTransform.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyPhysicsRIgidbody.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyPhysicsShape.h" />
     <ClInclude Include="Include\Dy\Component\CDyCamera.h" />
@@ -288,7 +285,6 @@
     <ClInclude Include="Include\Dy\Component\Helper\TmpCheckInitilizeParams.h" />
     <ClInclude Include="Include\Dy\Component\Helper\TmpCheckRemoveParams.h" />
     <ClInclude Include="Include\Dy\Component\Interface\IDyInitializeHelper.h" />
-    <ClInclude Include="Include\Dy\Component\Internal\CDyEmptyTransform.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\MaterialInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\SoundInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\SubmeshInformation.h" />
