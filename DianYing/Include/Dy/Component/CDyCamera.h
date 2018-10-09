@@ -35,7 +35,10 @@ enum class EDyCameraType
   /// `-    0        0           1          0     -` \n
   Perspective,
   /// Do projection matrix with orthographic.        \n
-  ///
+  /// .- 2/(r-l)     0           0    -(r+l)/(r-l)-. \n
+  /// |     0      2/(t-b)       0    -(t+b)/(t-b) | \n
+  /// |     0        0       -2/(f-n) -(f+n)/(f-n) | \n
+  /// `-    0        0           0          1     -`
   Orthographic,
 };
 
@@ -73,6 +76,15 @@ public:
   MDY_NODISCARD const DDyMatrix4x4& GetProjectionMatrix() const noexcept
   {
     return this->mProjectionMatrix;
+  }
+
+  ///
+  /// @brief  Get feature flag about mesh unclipping of this camera component.
+  /// @return Feature flag.
+  ///
+  FORCEINLINE MDY_NODISCARD bool IsEnabledMeshUnclipping() const noexcept
+  {
+    return this->mIsEnableMeshUnClipped;
   }
 
   ///
@@ -160,28 +172,34 @@ public:
   MDY_NODISCARD EDySuccess SetFieldOfView(_MIN_ const float degreeValue) noexcept;
 
   ///
-  /// @brief
+  /// @brief  Get unscaled viewport value x.
   /// @param  x
   ///
   void SetViewportX(_MIN_ const float x) noexcept;
 
   ///
-  /// @brief
+  /// @brief  Get unscaled viewport value y.
   /// @param  y
   ///
   void SetViewportY(_MIN_ const float y) noexcept;
 
   ///
-  /// @brief
+  /// @brief  Get unscaled viewport value w.
   /// @param  w
   ///
   void SetViewportW(_MIN_ const float w) noexcept;
 
   ///
-  /// @brief
+  /// @brief  Get unscaled viewport value h.
   /// @param  h
   ///
   void SetViewportH(_MIN_ const float h) noexcept;
+
+  ///
+  /// @brief  Set mesh unclipping feature of this camera component instance.
+  /// @param  flag Feature flag.
+  ///
+  void SetFeatureMeshUnclipping(_MIN_ const bool flag) noexcept;
 
   ///
   /// @brief  Do focusing camera as main camera.
@@ -195,39 +213,40 @@ public:
   ///
   EDySuccess Unfocus();
 
-  /// @brief Activate CDyCamera. Final activation value is also dependent on FDyActor activation flag.
+  /// @brief  Activate CDyCamera. Final activation value is also dependent on FDyActor activation flag.
   void Activate() noexcept override final;
 
-  /// @brief Deactivate CDyCamera. Final activation value is also dependent on FDyActor activation flag.
+  /// @brief  Deactivate CDyCamera. Final activation value is also dependent on FDyActor activation flag.
   void Deactivate() noexcept override final;
 
   ///
-  /// @brief
-  /// @param  actorBool
+  /// @brief  Propagate CDyActor's 3-state bool output value as component's parent.
+  /// @param  actorBool CDyActor's 3-state boolean value.
   ///
   void pPropagateParentActorActivation(_MIN_ const DDy3StateBool& actorBool) noexcept override final;
 
   ///
-  /// @brief
-  /// @param  descriptor
-  /// @return
+  /// @brief  Initilaize component property.
+  /// @param  descriptor Descriptor which has a values.
+  /// @return If succeeded, return true or false.
   ///
   MDY_NODISCARD EDySuccess Initialize(_MIN_ const DDyCameraMetaInformation& descriptor) override final;
 
   ///
-  /// @brief
+  /// @brief  Release component safely.
   ///
   void Release() override final;
 
   ///
-  /// @brief
-  /// @param dt
+  /// @brief  Update camera properties, like updating view matrix following final position of FDyActor.
+  /// @param  dt delta time. Not used.
   ///
-  void Update(_MIN_ float dt) override final;
+  void Update(_MIN_ MDY_NOTUSED float dt) override final;
 
   ///
-  /// @brief
-  /// @return
+  /// @brief  Return information string of this component.
+  /// @return Information string.
+  /// @TODO IMPLEMENT THIS, NOT IMPLEMENTED YET.
   ///
   MDY_NODISCARD std::string ToString() override final;
 
@@ -255,17 +274,12 @@ private:
   /// |  vx vy vz  0  ||   0  0  0 -z  | == |  vx vy vz -v*t  |  u(x, y, z) is camera's y-axis normal vector.
   /// '-  0  0  0  0 -``-  0  0  0  1 -`    `-  0  0  0    1 -`  We need to translate all object's in view frustum as camera's origin.
   DDyMatrix4x4    mViewMatrix;
-  ///
+  /// Projection matrix.
   DDyMatrix4x4    mProjectionMatrix;
-
-  ///
-  DDyVector3      mRotationEulerAngle       = {};
-  ///
-  DDyVector3      mLookingAtDirection       = {};
-  ///
-  DDyVector3      mLookingAtRightDirection  = {};
-  ///
-  DDyVector3      mLookingAtUpDirection     = {};
+  /// Normalized Lookat direction vector
+  DDyVector3      mLookingAtDirection     = {};
+  /// Camera final posittion
+  DDyVector3      mPosition               = {};
 
   //! (Camera) -> |Near| >>>>>>>>>>>>>>>|Far|
   //! Ground --------------------------------
@@ -310,11 +324,6 @@ private:
   float mMouseSensitivity         = 0.25f;
   float mSpeed                    = 10.f;
 #endif
-  ///
-  MDY_TRANSIENT bool mIsFirstTime = true;
-
-  // @TODO TEMPORAL
-  DDyVector3 mPosition = {-1, 0, 0};
 };
 
 } /// ::dy namespace

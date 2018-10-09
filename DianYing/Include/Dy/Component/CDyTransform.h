@@ -81,6 +81,12 @@ public:
   MDY_NODISCARD const DDyVector3& GetFinalPosition() const noexcept;
 
   ///
+  /// @brief  Get Object's to child basis (but not propagated to children FDyActor!)
+  /// @return Actor's to child basis (this::mLocalEulerAngle + this::mToChildEulerAngle)
+  ///
+  MDY_NODISCARD const std::array<DDyVector3, 3>& GetToChildBasis() const noexcept;
+
+  ///
   /// @brief
   /// @return
   /// @TODO SCRIPT THIS
@@ -247,6 +253,8 @@ private:
 
   /// @brief
   void pUpdateFinalRenderingAxis() const noexcept;
+  /// @brief
+  void pUpdateToChildBasisAxis() const noexcept;
 
   /// @brief
   void pUpdateFinalRenderingPosition() const noexcept;
@@ -360,8 +368,10 @@ private:
   MDY_TRANSIENT DDyVector3    mToChildWorldScale                = DDyVector3{ 1.f };
 
   /// from this::mFromParentWorldEulerAngle (parent::mToChildWorldEulerAngle)
-  MDY_TRANSIENT std::array<DDyVector3, 3>
-  mPositionMovementBasis = { DDyVector3::RightX(), DDyVector3::UpY(), DDyVector3::FrontZ() };
+  MDY_TRANSIENT std::array<DDyVector3, 3> mPositionMovementBasis= { DDyVector3::RightX(), DDyVector3::UpY(), DDyVector3::FrontZ() };
+  /// from this::mFromParentWorldEulerAngle (parent::mToChildWorldEulerAngle)
+  MDY_TRANSIENT std::array<DDyVector3, 3> mToChildBasis         = { DDyVector3::RightX(), DDyVector3::UpY(), DDyVector3::FrontZ() };
+
   /// from this::mPositionMovementBasis[0][1][2] * this::mLocalPosition.XYZ
   MDY_TRANSIENT DDyVector3    mFinalBasisAlignedLocalPosition   = {};
   /// from this::mPositionMovementBasis[0][1][2] * this::mWorldPosition.XYZ
@@ -392,6 +402,8 @@ private:
 
   ///
   MDY_TRANSIENT bool mIsFinalAxisDirty            = true;
+  ///
+  MDY_TRANSIENT bool mToChildBasisAxisDirty       = true;
 
   ///
   MDY_TRANSIENT bool mIsToChildRotationAngleDirty = true;

@@ -67,7 +67,6 @@ EDySuccess CDyCamera::Initialize(_MIN_ const DDyCameraMetaInformation& descripto
 
   // Set first time flag to false to use second time flag logics.
   if (descriptor.mInitiallyActivated) { this->Activate(); }
-  this->mIsFirstTime = false;
 
   return DY_SUCCESS;
 }
@@ -79,7 +78,10 @@ void CDyCamera::Release()
 
 void CDyCamera::Update(_MIN_ float dt)
 {
+  this->pUpdateCameraVectors();
 
+  if (this->mIsViewMatrixDirty)       { this->pUpdateViewMatrix(); }
+  if (this->mIsProjectionMatrixDirty) { this->pUpdateProjectionMatrix(); }
 }
 
 std::string CDyCamera::ToString()
@@ -91,16 +93,12 @@ std::string CDyCamera::ToString()
 void CDyCamera::pUpdateCameraVectors()
 {
   // Calculate the new Front vector
-  DDyVector3 front;
-  front.X = cos(glm::radians(this->mRotationEulerAngle.Y)) * cos(glm::radians(this->mRotationEulerAngle.X));
-  front.Y = sin(glm::radians(this->mRotationEulerAngle.X));
-  front.Z = sin(glm::radians(this->mRotationEulerAngle.Y)) * cos(glm::radians(this->mRotationEulerAngle.X));
+  const auto transform = this->GetBindedActor()->GetTransform();
 
   // Also re-calculate the Right and Up vector
   // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
-  this->mLookingAtDirection       = front.Normalize();
-  this->mLookingAtRightDirection  = DDyVector3::Cross(front, DDyVector3::UpY()).Normalize();
-  this->mLookingAtUpDirection     = DDyVector3::Cross(this->mLookingAtRightDirection, this->mLookingAtDirection).Normalize();
+  this->mLookingAtDirection = transform->GetToChildBasis()[2];
+  this->mPosition           = transform->GetFinalPosition();
 
   this->mIsViewMatrixDirty        = true;
   this->pUpdateViewMatrix();
@@ -230,6 +228,11 @@ void CDyCamera::SetViewportW(const float w) noexcept
 void CDyCamera::SetViewportH(const float h) noexcept
 {
   this->mViewportRectWH.Y = h;
+}
+
+void CDyCamera::SetFeatureMeshUnclipping(const bool flag) noexcept
+{
+  this->mIsEnableMeshUnClipped = flag;
 }
 
 EDySuccess CDyCamera::Focus()

@@ -64,6 +64,15 @@ const DDyVector3& CDyTransform::GetFinalPosition() const noexcept
   return this->mFinalRenderingPosition;
 }
 
+const std::array<DDyVector3, 3>& CDyTransform::GetToChildBasis() const noexcept
+{
+  this->pUpdateFromParentWorldEulerAngle();
+  this->pUpdateFinalRenderingEulerAngle();
+  this->pUpdateToChildBasisAxis();
+
+  return this->mToChildBasis;
+}
+
 float CDyTransform::GetLocalEulerAngle(_MIN_ EDyAxis3D direction) const noexcept
 {
   switch (direction)
@@ -177,6 +186,7 @@ void CDyTransform::SetLocalEulerAngle(_MIN_ const DDyVector3& eulerAngleValue) n
 {
   this->mLocalEulerAngle                = eulerAngleValue;
   this->mIsModelMatrixDirty             = true;
+  this->mToChildBasisAxisDirty          = true;
   this->mIsFinalRotationAngleDirty      = true;
 }
 
@@ -186,6 +196,7 @@ void CDyTransform::SetWorldEulerAngle(_MIN_ const DDyVector3& eulerAngleValue) n
   this->mIsModelMatrixDirty             = true;
   this->mIsFinalRotationAngleDirty      = true;
   this->mIsToChildRotationAngleDirty    = true;
+  this->mToChildBasisAxisDirty          = true;
   this->mIsFinalAxisDirty               = true;
 }
 
@@ -200,6 +211,7 @@ void CDyTransform::AddLocalEulerAngle(_MIN_ EDyAxis3D axis, _MIN_ float eulerAng
   }
 
   this->mIsFinalRotationAngleDirty      = true;
+  this->mToChildBasisAxisDirty          = true;
   this->mIsModelMatrixDirty             = true;
 }
 
@@ -215,6 +227,7 @@ void CDyTransform::AddWorldEulerAngle(_MIN_ EDyAxis3D axis, _MIN_ float eulerAng
   this->mIsFinalRotationAngleDirty      = true;
   this->mIsFinalAxisDirty               = true;
   this->mIsToChildRotationAngleDirty    = true;
+  this->mToChildBasisAxisDirty          = true;
   this->mIsModelMatrixDirty             = true;
 }
 
@@ -283,6 +296,7 @@ void CDyTransform::pUpdateFinalRenderingEulerAngle() const noexcept
     this->mFinalRenderRotationQuaternion.SetRotationAngle(this->mFinalRenderingEulerAngle);
 
     this->mIsFinalRotationAngleDirty      = false;
+    this->mToChildBasisAxisDirty          = true;
     this->mIsModelMatrixDirty             = true;
   }
 }
@@ -299,6 +313,7 @@ void CDyTransform::pUpdateToChildWorldEulerAngle() const noexcept
     this->mIsToChildRotationAngleDirty    = false;
     this->mIsFromChildRotationUpdated     = true;
     this->mIsFinalRotationAngleDirty      = true;
+    this->mToChildBasisAxisDirty          = true;
     this->mIsModelMatrixDirty             = true;
   }
 }
@@ -324,6 +339,7 @@ void CDyTransform::pUpdateFromParentWorldEulerAngle() const noexcept
 
   this->mIsFinalAxisDirty           = true;
   this->mIsFinalPositionDirty       = true;
+  this->mToChildBasisAxisDirty      = true;
   this->mIsModelMatrixDirty         = true;
 }
 
@@ -347,6 +363,22 @@ void CDyTransform::pUpdateFinalRenderingAxis() const noexcept
     this->mIsFinalAxisDirty         = false;
     this->mIsFinalPositionDirty     = true;
     this->mIsToChildPositionDirty   = true;
+  }
+}
+
+void CDyTransform::pUpdateToChildBasisAxis() const noexcept
+{
+  if (this->mToChildBasisAxisDirty == true)
+  { //
+    const auto m = DDyQuaternion{this->mFinalRenderingEulerAngle}.GetRotationMatrix3x3();
+
+    //
+    this->mToChildBasis[0] = DDyVector3{m[0][0], m[0][1], m[0][2]};
+    this->mToChildBasis[1] = DDyVector3{m[1][0], m[1][1], m[1][2]};
+    this->mToChildBasis[2] = DDyVector3{m[2][0], m[2][1], m[2][2]};
+
+    //
+    this->mToChildBasisAxisDirty = false;
   }
 }
 
