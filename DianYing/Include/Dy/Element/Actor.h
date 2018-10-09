@@ -110,6 +110,25 @@ public:
   void SetParentToRootRelocateTransform() noexcept;
 
   ///
+  /// @brief  Check FDyActor has a parent FDyActor.
+  /// @return If it has valid parent, return true but false.
+  ///
+  FORCEINLINE MDY_NODISCARD bool IsHaveParent() const noexcept
+  {
+    return MDY_CHECK_ISNOTNULL(this->mParentFDyActorRawPtr);
+  }
+
+  ///
+  /// @brief  Return valid parent FDyActor pointer instance with wrapping optional.
+  /// @return If parent is binded and exist, return optional valid pointer but just no value.
+  ///
+  FORCEINLINE MDY_NODISCARD std::optional<FDyActor*> GetParent() const noexcept
+  {
+    if (MDY_CHECK_ISNULL(this->mParentFDyActorRawPtr))  { return std::nullopt; }
+    else                                                { return this->mParentFDyActorRawPtr; }
+  }
+
+  ///
   /// @brief Return actor's information
   /// @return information string.
   ///

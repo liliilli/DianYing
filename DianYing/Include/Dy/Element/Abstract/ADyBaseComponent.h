@@ -91,6 +91,15 @@ public:
     return this->mBindedActor;
   }
 
+  ///
+  /// @brief  Get binded FDyActor's pointer instance.
+  /// @return Binded FDyActor pointer instance.
+  ///
+  MDY_NODISCARD const FDyActor* GetBindedActor() const noexcept
+  {
+    return this->mBindedActor;
+  }
+
 protected:
   /// Transient variable, list id for updating
   MDY_TRANSIENT TI32  mActivatedUpdateListId  = MDY_INITIALIZE_DEFINT;

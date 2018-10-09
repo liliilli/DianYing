@@ -52,63 +52,94 @@ public:
   CDyTransform& operator=(CDyTransform&& instance)        noexcept  = default;
 
   ///
-  /// @brief
+  /// @brief  Initilize component.
   /// @param  desc
   /// @return
+  /// @TODO SCRIPT THIS
   ///
   MDY_NODISCARD EDySuccess Initialize(_MIN_ const DDyTransformMetaInformation& desc);
 
-  ///
+  /// @brief Release component.
   void Release();
 
   ///
-  /// @brief Return local position.
-  /// @return Object's local position.
+  /// @brief  Return local position.
+  /// @return Actor's local position.
   ///
-  [[nodiscard]] const DDyVector3& GetLocalSpacePosition() const noexcept;
+  MDY_NODISCARD const DDyVector3& GetLocalPosition() const noexcept;
 
 	///
-	/// @brief Return world position.
-	/// @return Object's world position from parent object's position.
+	/// @brief  Return world position.
+	/// @return Actor's world position from parent object's world basis.
 	///
-  [[nodiscard]] const DDyVector3& GetWorldSpacePosition() const noexcept;
+  MDY_NODISCARD const DDyVector3& GetWorldPosition() const noexcept;
 
   ///
-  /// @brief Get Object's final position.
+  /// @brief  Get Object's final position.
+  /// @return Actor's final world position which to be rendered.
   ///
-  [[nodiscard]] const DDyVector3& GetFinalWorldSpacePosition() const noexcept;
+  MDY_NODISCARD const DDyVector3& GetFinalPosition() const noexcept;
 
   ///
-  /// @brief Return object final position not included local position.
+  /// @brief
+  /// @return
+  /// @TODO SCRIPT THIS
   ///
-  [[nodiscard]] const DDyVector3& GetParentWorldSpacePosition() const noexcept;
+  MDY_NODISCARD const DDyVector3& GetLocalRotationAngle() const noexcept;
 
   ///
-  /// @brief The method gets local rotation angle value. (euler degree value)
+  /// @brief
+  /// @return
+  /// @TODO SCRIPT THIS
+  ///
+  MDY_NODISCARD const DDyVector3& GetWorldRotationAngle() const noexcept;
+
+  ///
+  /// @brief
+  /// @return
+  /// @TODO SCRIPT THIS
+  ///
+  MDY_NODISCARD const DDyVector3& GetFinalRotationAngle() const noexcept;
+
+  ///
+  /// @brief  The method gets local rotation angle value. (euler degree value)
+  /// @param  direction Direction axis to get degree angle value.
   /// @return Object's rotation angle value.
   ///
-  [[nodiscard]] float GetLocalEulerAngle(EDyAxis3D direction) const noexcept;
+  MDY_NODISCARD float GetLocalEulerAngle(_MIN_ EDyAxis3D direction) const noexcept;
 
   ///
-  /// @brief The method gets world rotation angle value. (euler degree value)
+  /// @brief  The method gets world rotation angle value. (euler degree value)
+  /// @param  direction Direction axis to get degree angle value.
+  /// @return Object's rotation angle value.
   ///
-  [[nodiscard]] float GetWorldEulerAngle(EDyAxis3D direction) const noexcept;
+  MDY_NODISCARD float GetWorldEulerAngle(_MIN_ EDyAxis3D direction) const noexcept;
 
   ///
-  /// @brief The method gets final rendering angle value. (euler degree value)
+  /// @brief  The method gets final rendering angle value. (euler degree value)
+  /// @param  direction Direction axis to get degree angle value.
+  /// @return Object's rotation angle value.
   ///
-  [[nodiscard]] float GetFinalEulerAngle(EDyAxis3D direction) const noexcept;
+  MDY_NODISCARD float GetFinalEulerAngle(_MIN_ EDyAxis3D direction) const noexcept;
 
   ///
-  /// @brief The method gets (x, y, z) DDyVector3 scaling axis factor.
+  /// @brief  The method gets (x, y, z) DDyVector3 scaling axis factor.
   /// @return Object's scaling vector which has (x, y, z) axis factors.
   ///
-  [[nodiscard]] const DDyVector3& GetLocalScale() const noexcept;
+  MDY_NODISCARD const DDyVector3& GetLocalScale() const noexcept;
 
   ///
-  /// @brief Returns world scale which able to affect child object's transform.
+  /// @brief  Returns world scale which able to affect child object's transform.
+  /// @return Object's scaling vector which has (x, y, z) axis factors.
   ///
-  [[nodiscard]] const DDyVector3& GetWorldScale() const noexcept;
+  MDY_NODISCARD const DDyVector3& GetWorldScale() const noexcept;
+
+  ///
+  /// @brief  Return final producted scale value vector.
+  /// @return
+  /// @TODO SCRIPT THIS
+  ///
+  MDY_NODISCARD const DDyVector3& GetFinalScale() const noexcept;
 
   //!
   //! Setter
@@ -118,29 +149,32 @@ public:
   /// @brief Sets local position.
   /// @param[in] localPosition local position to set on.
   ///
-  void SetLocalSpacePosition(const DDyVector3& localPosition) noexcept;
+  void SetLocalPosition(_MIN_ const DDyVector3& localPosition) noexcept;
 
 	///
 	/// @brief Set world position.
 	/// @param[in] worldPosition Winal position in Screen space and from parent' object.
 	///
-	void SetWorldSpacePosition(const DDyVector3& worldPosition) noexcept;
+	void SetWorldPosition(_MIN_ const DDyVector3& worldPosition) noexcept;
 
   ///
   /// @brief The method set final position but keeping parent position
   /// but adjusting FDyPawn's world position.
+  /// @TODO SCRIPT THIS
   ///
-  void SetWorldPositionFromFinalPosition(const DDyVector3& finalPosition) noexcept;
+  void SetWorldPositionFromFinalPosition(_MIN_ const DDyVector3& finalPosition) noexcept;
 
   ///
   /// @brief Add offset value with axis as local position.
+  /// @TODO SCRIPT THIS
   ///
-  void AddOffsetLocalSpacePosition(EDyAxis3D axis, float value) noexcept;
+  void AddOffsetLocalPosition(_MIN_ EDyAxis3D axis, _MIN_ float value) noexcept;
 
   ///
   /// @brief Add offset value with axis as world position.
+  /// @TODO SCRIPT THIS
   ///
-  void AddOffsetWorldSpacePosition(EDyAxis3D axis, float value) noexcept;
+  void AddOffsetWorldPosition(_MIN_ EDyAxis3D axis, _MIN_ float value) noexcept;
 
   ///
   /// @brief The method adds local rotation angle values.
@@ -149,7 +183,7 @@ public:
   ///
   /// @param[in] eulerAngleValue Euler angle value to set on.
   ///
-  void SetLocalEulerAngle(const DDyVector3& eulerAngleValue) noexcept;
+  void SetLocalEulerAngle(_MIN_ const DDyVector3& eulerAngleValue) noexcept;
 
   ///
   /// @brief The method adds world rotation angle values.
@@ -158,27 +192,31 @@ public:
   ///
   /// @param[in] eulerAngleValue Euler angle value to set on.
   ///
-  void SetWorldEulerAngle(const DDyVector3& eulerAngleValue) noexcept;
+  void SetWorldEulerAngle(_MIN_ const DDyVector3& eulerAngleValue) noexcept;
 
   ///
   /// @brief Add offset eulerAngleValue with axis as local rotation angle.
+  /// @TODO SCRIPT THIS
   ///
-  void AddLocalEulerAngle(EDyAxis3D axis, float eulerAngleValue) noexcept;
+  void AddLocalEulerAngle(_MIN_ EDyAxis3D axis, _MIN_ float eulerAngleValue) noexcept;
 
   ///
   /// @brief Add offset eulerAngleValue with axis as world rotation angle.
+  /// @TODO SCRIPT THIS
   ///
-  void AddWorldEulerAngle(EDyAxis3D axis, float eulerAngleValue) noexcept;
+  void AddWorldEulerAngle(_MIN_ EDyAxis3D axis, _MIN_ float eulerAngleValue) noexcept;
 
   ///
   /// @brief The method sets scaling vector have (x, y, z) scaling factors.
+  /// @TODO SCRIPT THIS
   ///
-  void SetLocalScale(const DDyVector3& xyz_value) noexcept;
+  void SetLocalScale(_MIN_ const DDyVector3& xyz_value) noexcept;
 
   ///
   /// @brief Sets world scaling vector value which have (x, y, z).
+  /// @TODO SCRIPT THIS
   ///
-  void SetWorldScale(const DDyVector3& xyz_value) noexcept;
+  void SetWorldScale(_MIN_ const DDyVector3& xyz_value) noexcept;
 
   ///
   /// @brief The method returns Model matrix, M = TRS
@@ -190,69 +228,203 @@ public:
   ///
   MDY_NODISCARD const DDyMatrix4x4& GetTransform() const noexcept;
 
+  ///
+  /// @brief
   /// @TODO NOT IMPLEMENTED YET
+  ///
   MDY_NODISCARD std::string ToString() override final;
 
   ///
-  void Update(float dt) override final {};
+  void Update(_MIN_ float dt) override final {};
 
 private:
+  /// @brief
+  void pUpdateFinalRenderingEulerAngle() const noexcept;
+  /// @brief
+  void pUpdateToChildWorldEulerAngle() const noexcept;
+  /// @brief
+  void pUpdateFromParentWorldEulerAngle() const noexcept;
+
+  /// @brief
+  void pUpdateFinalRenderingAxis() const noexcept;
+
+  /// @brief
+  void pUpdateFinalRenderingPosition() const noexcept;
+  /// @brief
+  void pUpdateAxisAlignedLocalPosition() const noexcept;
+  /// @brief
+  void pUpdateAxisAlignedWorldPosition() const noexcept;
+  /// @brief
+  void pUpdateToChildPosition() const noexcept;
+  /// @brief
+  void pUpdateFromParentWorldPosition() const noexcept;
+
+  /// @brief
+  void pUpdateFinalRenderingScale() const noexcept;
+  /// @brief
+  void pUpdateToChildWorldScale() const noexcept;
+  /// @brief
+  void pUpdateFromParentWorldScale() const noexcept;
+
+  //!
+  //! Friend function
+  //!
+
+  ///
+  /// @brief
+  /// @return
+  ///
+  MDY_NODISCARD FORCEINLINE bool pfIsToChildPositionUpdated() const noexcept
+  {
+    return this->mIsFromChildPositionUpdated;
+  }
+
+  ///
+  /// @brief
+  /// @return
+  ///
+  MDY_NODISCARD FORCEINLINE bool pfIsToChildRotationUpdate() const noexcept
+  {
+    return this->mIsFromChildRotationUpdated;
+  }
+
+  ///
+  /// @brief
+  /// @return
+  ///
+  MDY_NODISCARD FORCEINLINE bool pfIsToChildScaleUpdate() const noexcept
+  {
+    return this->mIsFromChildScaleUpdated;
+  }
+
+  ///
+  /// @brief
+  /// @return
+  ///
+  MDY_NODISCARD const DDyVector3& pfGetToChildPosition() const noexcept;
+
+  ///
+  /// @brief
+  /// @return
+  ///
+  MDY_NODISCARD const DDyVector3& pfGetToChildWorldEulerAngle() const noexcept;
+
+  ///
+  /// @brief
+  /// @return
+  ///
+  MDY_NODISCARD const DDyVector3& pfGetToChildScale() const noexcept;
 
   //!
   //! Variables
   //!
 
   /// Local position
-  DDyVector3 mLocalPosition = {};
+  DDyVector3 mLocalPosition   = {0, 0, 0};
   /// World position.
-  DDyVector3 mWorldPosition = {};
-  /// Position basis from parent actor.
-  DDyVector3 mPositionBasisFromParent;
-
-  /// m_object_space_axis * local_position;
-  MDY_TRANSIENT DDyVector3 mBasisAlignedLocalPosition;
-  /// m_object_space_axis * world_position;
-  MDY_TRANSIENT DDyVector3 mBasisAlignedWorldPosition;
-  /// (x, y, z) parent position to bring child. mPositionBasisFromParent + mBasisAlignedWorldPosition.
-  MDY_TRANSIENT DDyVector3 mSummedWorldPositionToChild;
-  /// (x, y, z) final position in hierarchy. mSummedWorldPositionToChild + mBasisAlignedLocalPosition
-  MDY_TRANSIENT DDyVector3 mSummedFinalRenderingPosition;
+  DDyVector3 mWorldPosition   = {0, 0, 0};
 
   /// Local euler angle
-  DDyVector3 mLocalEulerAngle;
+  DDyVector3 mLocalEulerAngle = {0, 0, 0};
   /// World euler angle which affects to position basis to child actor.
-  DDyVector3 mWorldEulerAngle;
-  /// parent's propagated world rotation summed angle;
-  DDyVector3 mSummedWorldEulerAngleFromParent;
-
-  /// propagated_world_rotation_euler_angle + world
-  MDY_TRANSIENT DDyVector3    mSummedWorldEulerAngleToChild;
-  /// local + summed_world
-  MDY_TRANSIENT DDyVector3    mSummedFinalRenderingEulerAngle;
-
-  MDY_TRANSIENT DDyQuaternion m_local_rotation_quaternion;
-  MDY_TRANSIENT glm::mat3     m_local_rotation_matrix;
-
-  MDY_TRANSIENT DDyQuaternion m_propagated_rotation_quaternion;
-  MDY_TRANSIENT glm::mat3     m_propagated_rotation_matrix;
-
-  MDY_TRANSIENT DDyQuaternion m_summed_rotation_quaternion;
+  DDyVector3 mWorldEulerAngle = {0, 0, 0};
 
   /// Scale local factor, default is (1, 1, 1)
-  DDyVector3                  mLocalScale                       = DDyVector3{ 1.f };
+  DDyVector3 mLocalScale      = {1, 1, 1};
   /// Scale world factor. default is (1, 1, 1)
-  DDyVector3                  mWorldScale                       = DDyVector3{ 1.f };
-  /// Scale factor from parent.
-  MDY_TRANSIENT DDyVector3    mProductedWorldScaleFromParent    = DDyVector3{ 1.f };
-  /// mWorldScale * mProductedWorldScaleFromParent
-  MDY_TRANSIENT DDyVector3    mProductedWorldScaleToChild       = DDyVector3{ 1.f };
-  /// mProductedWorldScaleToChild * mLocalScale
-  MDY_TRANSIENT DDyVector3    mProductedFinalRenderingScale     = DDyVector3{ 1.f };
+  DDyVector3 mWorldScale      = {1, 1, 1};
 
-  /// World + Parent rotation matrix.
-  MDY_TRANSIENT glm::mat3     m_summed_rotation_matrix;
+  //!
+  //! Parent depdendent information
+  //!
+
+  /// parent::mPositionMovementBasis
+  MDY_TRANSIENT DDyVector3    mFromParentPositionBasis          = {};
+  /// parent::mToChildWorldPosition
+  MDY_TRANSIENT DDyVector3    mFromParentWorldPosition          = {};
+  /// parent::mToChildWorldEulerAngle
+  MDY_TRANSIENT DDyVector3    mFromParentWorldEulerAngle        = {};
+  /// parent::mToChildWorldScale
+  MDY_TRANSIENT DDyVector3    mFromParentWorldScale             = DDyVector3{ 1.f };
+
+  //!
+  //! Lazy evlauated variables by flag activation.
+  //!
+
+  /// (x, y, z) parent position to bring child. \n
+  /// from this::mFromParentWorldPosition + this::mFinalBasisAlignedWorldPosition.
+  MDY_TRANSIENT DDyVector3    mToChildWorldPosition             = {};
+  /// this::mWorldEulerAngle + this::mFromParentWorldEulerAngle
+  MDY_TRANSIENT DDyVector3    mToChildWorldEulerAngle           = {};
+  /// this::mWorldScale * this::mFromParentWorldScale
+  MDY_TRANSIENT DDyVector3    mToChildWorldScale                = DDyVector3{ 1.f };
+
+  /// from this::mFromParentWorldEulerAngle (parent::mToChildWorldEulerAngle)
+  MDY_TRANSIENT std::array<DDyVector3, 3>
+  mPositionMovementBasis = { DDyVector3::RightX(), DDyVector3::UpY(), DDyVector3::FrontZ() };
+  /// from this::mPositionMovementBasis[0][1][2] * this::mLocalPosition.XYZ
+  MDY_TRANSIENT DDyVector3    mFinalBasisAlignedLocalPosition   = {};
+  /// from this::mPositionMovementBasis[0][1][2] * this::mWorldPosition.XYZ
+  MDY_TRANSIENT DDyVector3    mFinalBasisAlignedWorldPosition   = {};
+
+  /// (x, y, z) final position in hierarchy. \n
+  /// from this::mToChildWorldPosition + this::mFinalBasisAlignedLocalPosition
+  MDY_TRANSIENT DDyVector3    mFinalRenderingPosition           = {};
+  /// from this::mLocalEulerAngle + this::mToChildWorldEulerAngle
+  MDY_TRANSIENT DDyVector3    mFinalRenderingEulerAngle         = {};
+  /// from this::mFinalRenderingEulerAngle
+  MDY_TRANSIENT DDyQuaternion mFinalRenderRotationQuaternion    = {DDyVector3{0, 0, 0}};
+  /// this::mLocalScale * this::mToChildWorldScale
+  MDY_TRANSIENT DDyVector3    mFinalRenderingScale              = DDyVector3{ 1.f };
+
+  //!
+  //! Result
+  //!
+
+  ///
+  MDY_TRANSIENT DDyMatrix3x3  mFinalPositionBasisMatrix;
   /// Final model matrix also reflected by parent's and world rot.
   MDY_TRANSIENT DDyMatrix4x4  mFinalRenderingTransform;
+
+  //!
+  //! Flags
+  //!
+
+  ///
+  MDY_TRANSIENT bool mIsFinalAxisDirty            = true;
+
+  ///
+  MDY_TRANSIENT bool mIsToChildRotationAngleDirty = true;
+  ///
+  MDY_TRANSIENT bool mIsFinalRotationAngleDirty   = true;
+
+  ///
+  MDY_TRANSIENT bool mIsToChildWorldScaleDirty    = true;
+  ///
+  MDY_TRANSIENT bool mIsFinalScaleDirty           = true;
+
+  ///
+  MDY_TRANSIENT bool mIsLocalPositionAlignDirty   = true;
+  ///
+  MDY_TRANSIENT bool mIsWorldPositionAlignDirty   = true;
+  ///
+  MDY_TRANSIENT bool mIsToChildPositionDirty      = true;
+  ///
+  MDY_TRANSIENT bool mIsFinalPositionDirty        = true;
+
+  ///
+  MDY_TRANSIENT bool mIsModelMatrixDirty          = true;
+
+  //!
+  //! Related to friend function called from children FDyActor's transform.
+  //!
+
+  ///
+  MDY_TRANSIENT bool mIsFromChildPositionUpdated  = true;
+  ///
+  MDY_TRANSIENT bool mIsFromChildRotationUpdated   = true;
+  ///
+  MDY_TRANSIENT bool mIsFromChildScaleUpdated      = true;
 
   MDY_SET_TYPEMATCH_FUNCTION(::dy::ADyGeneralBaseComponent, CDyTransform);
   MDY_SET_CRC32_HASH_WITH_TYPE(CDyTransform);
