@@ -102,6 +102,8 @@
     <ClCompile Include="Source\Component\CDyModelFilter.cc" />
     <ClCompile Include="Source\Component\CDyModelRenderer.cc" />
     <ClCompile Include="Source\Component\CDyCamera.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\RenderOpaqueStatic.cc" />
+    <ClCompile Include="Source\Builtin\Material\OpaqueStaticPlain.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -275,6 +277,8 @@
     <ClInclude Include="Include\Dy\Component\Interface\IDyInitializeHelper.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\CheckingRule.h" />
     <ClInclude Include="Include\Dy\Component\CDyCamera.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderOpaqueStatic.h" />
+    <ClInclude Include="Include\Dy\Builtin\Material\OpaqueStaticPlain.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />
