@@ -44,6 +44,8 @@
 #include <Dy/Management/SoundManager.h>
 #include "Dy/Management/MetaInfoManager.h"
 #include <Dy/Management/PhysicsManager.h>
+#include <Dy/Builtin/ShaderGl/RenderOpaqueStatic.h>
+#include <Dy/Builtin/Material/OpaqueStaticPlain.h>
 
 ///
 /// Undefined proprocessor WIN32 macro "max, min" for preventing misuse.
@@ -94,9 +96,13 @@ void DyGlTempInitializeResource()
   //! Shader
   //!
 
+  dy::builtin::FDyBuiltinModelBox();
+
   dy::builtin::FDyBuiltinShaderGLRenderPass();
   dy::builtin::FDyBuiltinShaderGLRenderColorGeometry();
-  dy::builtin::FDyBuiltinModelBox();
+  dy::builtin::FDyBuiltinShaderGLRenderOpaqueStatic();
+
+  dy::builtin::FDyBuiltinMaterialOpaqueStaticPlain();
 
 #ifdef false
   {
@@ -312,6 +318,12 @@ void DyGlTempInitializeResource()
   }
 
 #ifdef false
+  dy::PDyMaterialConstructionDescriptor matDesc;
+  matDesc.mMaterialName = "TestMat";
+  matDesc.mShaderName   = "TestDeferredShader";
+  matDesc.mBlendMode    = dy::EDyMaterialBlendMode::Opaque;
+  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateMaterialInformation(matDesc));
+
   {
     dy::PDyMaterialPopulateDescriptor popDesc;
     popDesc.mIsEnabledShaderOverride  = true;
@@ -325,12 +337,6 @@ void DyGlTempInitializeResource()
     }
     MDY_CALL_ASSERT_SUCCESS(gRenderer.pfInitialize(rendererDesc));
   }
-#endif
-  dy::PDyMaterialConstructionDescriptor matDesc;
-  matDesc.mMaterialName = "TestMat";
-  matDesc.mShaderName   = "TestDeferredShader";
-  matDesc.mBlendMode    = dy::EDyMaterialBlendMode::Opaque;
-  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateMaterialInformation(matDesc));
 
   dy::PDyRendererConsturctionDescriptor rendererDesc;
   {
@@ -338,6 +344,7 @@ void DyGlTempInitializeResource()
     rendererDesc.mMaterialNames = std::vector<std::string>(394, "TestMat");
   }
   MDY_CALL_ASSERT_SUCCESS(gRenderer.pfInitialize(rendererDesc));
+#endif
 }
 
 ///
