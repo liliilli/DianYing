@@ -125,6 +125,42 @@ EDySuccess MDyHeapResource::CreateTextureResource(const std::string& textureName
   return DY_SUCCESS;
 }
 
+EDySuccess MDyHeapResource::CreateTextureResourceWithChunk(_MIN_ const PDyTextureConstructionBufferChunkDescriptor& desc)
+{
+  // Get information from MDyDataInformation manager.
+  auto [it, result] = this->mOnBoardTextureLists.try_emplace(desc.mTextureName, nullptr);
+  if (!result)
+  {
+    MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred. | Texture name : {}",
+                       "MDyHeapResource", "CreateTextureResource", desc.mTextureName);
+    return DY_FAILURE;
+  }
+
+  // Create texture resource and insert to empty memory space.
+  std::unique_ptr<CDyTextureResource> textureResource = std::make_unique<CDyTextureResource>();
+  if (const auto success = textureResource->pfInitializeTextureResourceWithChunk(desc);
+      success == DY_FAILURE)
+  {
+    MDY_LOG_ERROR("{}::{} | Cannot create texture resource properly. | Texture resource name : {}",
+                  "MDyHeapResource", "CreateTextureResource", desc.mTextureName);
+    this->mOnBoardTextureLists.erase(desc.mTextureName);
+    return DY_FAILURE;
+  }
+
+  it->second.swap(textureResource);
+  if (!it->second)
+  {
+    MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred in swapping. | Texture resource name : {}",
+                       "MDyHeapResource", "CreateTextureResource", desc.mTextureName);
+    this->mOnBoardTextureLists.erase(desc.mTextureName);
+    return DY_FAILURE;
+  }
+
+  MDY_LOG_INFO("{0}::{1} | Create {2} resource. | {2} resource name : {3}",
+               "MDyHeapResource", "CreateTextureResource", "Texture", desc.mTextureName);
+  return DY_SUCCESS;
+}
+
 EDySuccess MDyHeapResource::CreateMaterialResource(const std::string& materialName)
 {
   // Get information from MDyDataInformation manager.

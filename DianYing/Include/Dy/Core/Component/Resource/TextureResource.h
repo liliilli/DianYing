@@ -82,8 +82,18 @@ public:
 private:
   ///
   /// @brief
+  /// @param  textureInformation Valid texture meta information instance.
+  /// @return Success flag.
   ///
-  [[nodiscard]] EDySuccess pfInitializeTextureResource(const DDyTextureInformation& textureInformation);
+  MDY_NODISCARD EDySuccess pfInitializeTextureResource(const DDyTextureInformation& textureInformation);
+
+  ///
+  /// @brief
+  /// @param  descriptor Valid texture with chunk meta information instance.
+  /// @return Success flag.
+  ///
+  MDY_NODISCARD EDySuccess
+  pfInitializeTextureResourceWithChunk(_MIN_ const PDyTextureConstructionBufferChunkDescriptor& descriptor);
 
   /// Valid texture id must not be 0.
   // @todo JUST ONLY OPENGL

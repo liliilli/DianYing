@@ -163,6 +163,50 @@ EDySuccess CDyTextureResource::pfInitializeTextureResource(const DDyTextureInfor
   return DY_SUCCESS;
 }
 
+EDySuccess CDyTextureResource::pfInitializeTextureResourceWithChunk(const PDyTextureConstructionBufferChunkDescriptor& descriptor)
+{
+  int32_t glImageFormat = GL_NO_ERROR;
+  switch (descriptor.mTextureColorType)
+  {
+  case EDyImageColorFormatStyle::R:     glImageFormat = GL_R;     break;
+  case EDyImageColorFormatStyle::RG:    glImageFormat = GL_RG;    break;
+  case EDyImageColorFormatStyle::RGB:   glImageFormat = GL_RGB;   break;
+  case EDyImageColorFormatStyle::RGBA:  glImageFormat = GL_RGBA;  break;
+  default: PHITOS_UNEXPECTED_BRANCH();  return DY_FAILURE;
+  }
+
+  // Get GL_TEXTURE_ TYPE from textureInfo.
+  switch (descriptor.mTextureType)
+  {
+  case EDyTextureStyleType::D1:
+    glGenTextures(1, &mTextureResourceId);
+    glBindTexture(GL_TEXTURE_1D, mTextureResourceId);
+    glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, descriptor.mWidth, 0, glImageFormat, GL_UNSIGNED_BYTE, descriptor.mBufferPtr);
+    break;
+  case EDyTextureStyleType::D2:
+    glGenTextures(1, &mTextureResourceId);
+    glBindTexture(GL_TEXTURE_2D, mTextureResourceId);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, descriptor.mWidth, descriptor.mHeight, 0, glImageFormat, GL_UNSIGNED_BYTE, descriptor.mBufferPtr);
+    break;
+  default: PHITOS_UNEXPECTED_BRANCH();  return DY_FAILURE;
+  }
+
+  // Forward dataBuffer's retrieved information to data members.
+  this->mTextureName    = descriptor.mTextureName;
+  this->mTextureType    = descriptor.mTextureType;
+  this->mTextureWidth   = descriptor.mHeight;
+  switch (descriptor.mTextureType)
+  {
+  case EDyTextureStyleType::D1: this->mTextureHeight  = 1; break;
+  case EDyTextureStyleType::D2: this->mTextureHeight  = descriptor.mHeight; break;
+  default: PHITOS_UNEXPECTED_BRANCH(); break;
+  }
+
+  // Set texture parameters.
+  DyGlSetDefaultOptionSetting(mTextureResourceId);
+  return DY_SUCCESS;;
+}
+
 void CDyTextureResource::__pfSetMaterialResourceLink(NotNull<CDyMaterialResource*> ptr) const noexcept
 {
   auto [it, result] = __mBindMaterialPtrs.try_emplace(ptr, ptr);
