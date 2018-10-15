@@ -19,6 +19,7 @@
 #include <Dy/Builtin/ShaderGl/RenderOpaqueStatic.h>
 #include <Dy/Core/Component/Internal/MaterialType.h>
 #include <Dy/Management/DataInformationManager.h>
+#include "Dy/Builtin/Texture/ErrorBlue.h"
 
 //!
 //! Implementation
@@ -36,7 +37,7 @@ FDyBuiltinMaterialOpaqueStaticPlain::FDyBuiltinMaterialOpaqueStaticPlain()
   matDesc.mShaderName   = FDyBuiltinShaderGLRenderOpaqueStatic::sName;
   matDesc.mBlendMode    = EDyMaterialBlendMode::Opaque;
 
-  matDesc.mTextureNames.emplace_back(MSVSTR(FDyBuiltinTextureChecker::sName));
+  matDesc.mTextureNames.emplace_back(MSVSTR(FDyBuiltinTextureErrorBlue::sName));
   MDY_CALL_ASSERT_SUCCESS(manInfo.CreateMaterialInformation(matDesc));
 }
 

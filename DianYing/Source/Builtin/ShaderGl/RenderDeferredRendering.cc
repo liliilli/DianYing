@@ -54,18 +54,15 @@ uniform sampler2D uViewPosition;
 vec3 dirLight		= normalize(vec3(-1, 1, 0));
 vec3 ambientColor	= vec3(1);
 
-void main() {
-
+void main()
+{
 	vec4 normalValue	= (texture(uNormal, fs_in.texCoord) - 0.5f) * 2.0f;
 	vec4 unlitValue		= texture(uUnlit, fs_in.texCoord);
 
 	float ambientFactor = 0.1f;
 	float diffuseFactor = max(dot(normalValue.xyz, dirLight), 0.1);
 
-    outColor = vec4(
-		vec3(1) * diffuseFactor +
-		ambientColor * ambientFactor,
-		1.0f);
+  outColor = vec4(unlitValue.rgb * diffuseFactor + ambientColor * ambientFactor, 1.0f);
 }
 )dy");
 

@@ -39,6 +39,7 @@
 #include <Dy/Builtin/Model/Plain.h>
 #include <Dy/Builtin/Model/Sphere.h>
 #include <Dy/Builtin/Texture/Checker.h>
+#include <Dy/Builtin/Texture/ErrorBlue.h>
 #include <Dy/Builtin/ShaderGl/RenderPass.h>
 #include <Dy/Builtin/ShaderGl/RenderColorGeometry.h>
 #include <Dy/Builtin/ShaderGl/RenderBasicShadow.h>
@@ -67,8 +68,6 @@ namespace
 {
 
 dy::DDyVector3                  gColor      {.2f, .3f, .2f};
-dy::CDyMeshRenderer             gRenderer   = {};
-std::unique_ptr<dy::CDyLegacyCamera>  gCameraPtr  = nullptr;
 
 void GLAPIENTRY DyGlMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
@@ -84,18 +83,6 @@ void DyGlTempInitializeResource()
 {
   //auto& manInfo = dy::MDyDataInformation::GetInstance();
 
-#ifdef false
-  dy::PDyCameraConstructionDescriptor cameraDesc;
-  {
-    cameraDesc.mInitialFieldOfView  = 70.f;
-    cameraDesc.mIsMoveable          = true;
-    cameraDesc.mIsFocusInstantly    = true;
-    cameraDesc.mIsOrthographic      = true;
-    cameraDesc.mUseCustomViewport   = false;
-  }
-  gCameraPtr = std::make_unique<dy::CDyLegacyCamera>(cameraDesc);
-#endif
-
   //!
   //! Shader
   //!
@@ -105,6 +92,7 @@ void DyGlTempInitializeResource()
   dy::builtin::FDyBuiltinModelSphere();
 
   dy::builtin::FDyBuiltinTextureChecker();
+  dy::builtin::FDyBuiltinTextureErrorBlue();
 
   dy::builtin::FDyBuiltinShaderGLRenderPass();
   dy::builtin::FDyBuiltinShaderGLRenderColorGeometry();
@@ -435,16 +423,6 @@ void MDyWindow::pUpdate(float dt)
   MDyWorld::GetInstance().UpdateObjects(dt);
   //
   MDyWorld::GetInstance().RequestDrawCall(dt);
-
-  auto* cam = MDyWorld::GetInstance().GetMainCameraPtr();
-  if (cam)
-  {
-    cam->Update(dt);
-  }
-
-#ifdef false
-  gRenderer.Update(dt);
-#endif
 }
 
 ///

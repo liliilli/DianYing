@@ -107,6 +107,7 @@
     <ClCompile Include="Source\Builtin\Model\Plain.cc" />
     <ClCompile Include="Source\Builtin\Model\Sphere.cc" />
     <ClCompile Include="Source\Builtin\Texture\Checker.cc" />
+    <ClCompile Include="Source\Builtin\Texture\ErrorBlue.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -285,6 +286,7 @@
     <ClInclude Include="Include\Dy\Builtin\Model\Plain.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\Sphere.h" />
     <ClInclude Include="Include\Dy\Builtin\Texture\Checker.h" />
+    <ClInclude Include="Include\Dy\Builtin\Texture\ErrorBlue.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

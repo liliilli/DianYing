@@ -46,7 +46,7 @@ EDySuccess MDyRendering::pfInitialize()
     this->mTempShadowObject = std::make_unique<decltype(this->mTempShadowObject)::element_type>();
   }
 
-#if defined(MDY_FLAG_IN_EDITOR)
+#if defined(MDY_FLAG_IN_EDITOR) == true
   //! Grid rendering setting.
   this->mGridEffect = std::make_unique<decltype(this->mGridEffect)::element_type>();
 #endif /// MDY_FLAG_IN_EDITOR
@@ -78,20 +78,22 @@ void MDyRendering::RenderDrawCallQueue()
   // Draw
 
   const auto cameraCount = MDyWorld::GetInstance().GetFocusedCameraCount();
-  for (TI32 i = 0; i < cameraCount; ++i)
-  {
-    const auto opCamera = MDyWorld::GetInstance().GetFocusedCameraValidReference(i);
+  for (TI32 camId = 0; camId < cameraCount; ++camId)
+  { // Get valid CDyCamera instance pointer address.
+    const auto opCamera = MDyWorld::GetInstance().GetFocusedCameraValidReference(camId);
     if (opCamera.has_value() == false) { continue; }
-    const auto& validCameraRawPtr = *opCamera.value();
-    const auto pixelizedViewportRect = validCameraRawPtr.GetPixelizedViewportRectangle();
+
+    // Set viewport values to camera's properties.
+    const auto& validCameraRawPtr     = *opCamera.value();
+    const auto pixelizedViewportRect  = validCameraRawPtr.GetPixelizedViewportRectangle();
     glViewport(pixelizedViewportRect[0], pixelizedViewportRect[1],
                pixelizedViewportRect[2], pixelizedViewportRect[3]
     );
-    glBindFramebuffer(GL_FRAMEBUFFER, this->mDeferredFrameBufferId);
 
+    // (1) Deferred rendering for opaque objects + shadowing
+    glBindFramebuffer(GL_FRAMEBUFFER, this->mDeferredFrameBufferId);
     for (const auto& drawInstance : this->mDrawCallList)
-    {
-      // General deferred rendering
+    { // General deferred rendering
       this->pRenderDeferredFrameBufferWith(*drawInstance, validCameraRawPtr);
 
 #ifdef false
@@ -104,14 +106,14 @@ void MDyRendering::RenderDrawCallQueue()
     }
   }
 
-  // Clear draw call list
+  // Clear draw queue list
   this->mDrawCallList.clear();
 
   glViewport(0, 0, setting.GetWindowSizeWidth(), setting.GetWindowSizeHeight());
   glBindFramebuffer(GL_FRAMEBUFFER, this->mDeferredFrameBufferId);
 
   // Only in editor effects
-#if defined(MDY_FLAG_IN_EDITOR)
+#if defined(MDY_FLAG_IN_EDITOR) == true
   if (editor::MDyEditorSetting::GetInstance().GetmIsEnabledViewportRenderGrid() && this->mGridEffect)
   {
     this->mGridEffect->RenderGrid();
@@ -126,11 +128,11 @@ void MDyRendering::RenderDrawCallQueue()
     this->mTempSsaoObject->RenderScreen();
   }
 
-#if !defined(MDY_FLAG_IN_EDITOR)
+#if defined(MDY_FLAG_IN_EDITOR) == false
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   this->mFinalRenderingMesh->RenderScreen();
-#endif /// !MDY_FLAG_IN_EDITOR
+#endif /// MDY_FLAG_IN_EDITOR == false
 }
 
 void MDyRendering::pCreateDeferredGeometryBuffers() noexcept
