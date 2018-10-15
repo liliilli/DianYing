@@ -72,10 +72,10 @@ layout (location = 1) out vec4 gNormal;
 layout (location = 2) out vec4 gSpecular;
 layout (location = 3) out vec4 gPosition;
 
-//uniform sampler2D uTexture0;
+uniform sampler2D uTexture0;
 
 void main() {
-	gUnlit	  = vec4(fs_in.fragColor, 1.0f);
+	gUnlit	  = vec4(fs_in.fragColor * texture(uTexture0, fs_in.texCoord).rgb, 1.0f);
 	gNormal	  = vec4(normalize(fs_in.normal) * 0.5f + 0.5f, 1.0f);
 	gSpecular = vec4(1, 0, 1, 1);
 	gPosition = vec4(fs_in.viewPosition, -1.0f);

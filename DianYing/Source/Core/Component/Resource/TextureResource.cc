@@ -58,7 +58,7 @@ CDyTextureResource::~CDyTextureResource()
   {
     __mLinkedTextureInformationPtr->__pfLinkTextureResource(nullptr);
   }
-  for (auto& [notUsed, materialPtr] : __mBindMaterialPtrs)
+  for (auto& [notUsed, materialPtr] : __mBindMaterialPtrCounters)
   {
     materialPtr->__pfResetTextureResourcePtr(DyMakeNotNull(this));
   }
@@ -87,7 +87,7 @@ EDySuccess CDyTextureResource::pfInitializeTextureResource(const DDyTextureInfor
   int32_t glImageFormat = GL_NO_ERROR;
   switch (dataBuffer->GetImageFormat())
   {
-  case EDyImageColorFormatStyle::R:     glImageFormat = GL_R;     break;
+  case EDyImageColorFormatStyle::R:     glImageFormat = GL_RED;   break;
   case EDyImageColorFormatStyle::RG:    glImageFormat = GL_RG;    break;
   case EDyImageColorFormatStyle::RGB:   glImageFormat = GL_RGB;   break;
   case EDyImageColorFormatStyle::RGBA:  glImageFormat = GL_RGBA;  break;
@@ -168,7 +168,7 @@ EDySuccess CDyTextureResource::pfInitializeTextureResourceWithChunk(const PDyTex
   int32_t glImageFormat = GL_NO_ERROR;
   switch (descriptor.mTextureColorType)
   {
-  case EDyImageColorFormatStyle::R:     glImageFormat = GL_R;     break;
+  case EDyImageColorFormatStyle::R:     glImageFormat = GL_RED;   break;
   case EDyImageColorFormatStyle::RG:    glImageFormat = GL_RG;    break;
   case EDyImageColorFormatStyle::RGB:   glImageFormat = GL_RGB;   break;
   case EDyImageColorFormatStyle::RGBA:  glImageFormat = GL_RGBA;  break;
@@ -209,12 +209,18 @@ EDySuccess CDyTextureResource::pfInitializeTextureResourceWithChunk(const PDyTex
 
 void CDyTextureResource::__pfSetMaterialResourceLink(NotNull<CDyMaterialResource*> ptr) const noexcept
 {
-  auto [it, result] = __mBindMaterialPtrs.try_emplace(ptr, ptr);
-  if (!result)
+  if (this->__mBindMaterialPtrCounters.find(ptr) != this->__mBindMaterialPtrCounters.end())
+  { // If found, just neglect.
+    return;
+  }
+
+  // If not found, create counter instance for valid mateiral resource.
+  auto [it, result] = this->__mBindMaterialPtrCounters.try_emplace(ptr, ptr);
+  if (result == false)
   {
     MDY_LOG_ERROR("{} | Failed to link material resource. | Model name : {}",
                   "CDyTextureResource::__pfSetMaterialResourceLink", ptr->GetMaterialName());
-    assert(false);
+    PHITOS_UNEXPECTED_BRANCH();
   }
 }
 

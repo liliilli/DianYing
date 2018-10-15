@@ -110,23 +110,26 @@ private:
   template <typename TType>
   using TBindPtrMap = std::unordered_map<TType*, TType*>;
 
+  ///
   FORCEINLINE void __pfSetTextureInformationLink(NotNull<DDyTextureInformation*> ptr) const noexcept
   {
     this->__mLinkedTextureInformationPtr = ptr;
   }
+  ///
   FORCEINLINE void __pfResetTextureInformationLink() const noexcept
   {
     this->__mLinkedTextureInformationPtr = nullptr;
   }
-
-              void __pfSetMaterialResourceLink(NotNull<CDyMaterialResource*> ptr) const noexcept;
+  ///
+  void __pfSetMaterialResourceLink(NotNull<CDyMaterialResource*> ptr) const noexcept;
+  ///
   FORCEINLINE void __pfResetMaterialResourceLink(NotNull<CDyMaterialResource*> ptr) const noexcept
   {
-    __mBindMaterialPtrs.erase(ptr);
+    this->__mBindMaterialPtrCounters.erase(ptr);
   }
 
   MDY_TRANSIENT DDyTextureInformation*           __mLinkedTextureInformationPtr   = nullptr;
-  MDY_TRANSIENT TBindPtrMap<CDyMaterialResource> __mBindMaterialPtrs;
+  MDY_TRANSIENT TBindPtrMap<CDyMaterialResource> __mBindMaterialPtrCounters;
 
   friend class DDyTextureInformation;
   friend class CDyMaterialResource;

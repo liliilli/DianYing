@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Builtin/Material/OpaqueStaticPlain.h>
 
+#include <Dy/Builtin/Texture/Checker.h>
 #include <Dy/Builtin/ShaderGl/RenderOpaqueStatic.h>
 #include <Dy/Core/Component/Internal/MaterialType.h>
 #include <Dy/Management/DataInformationManager.h>
@@ -34,6 +35,8 @@ FDyBuiltinMaterialOpaqueStaticPlain::FDyBuiltinMaterialOpaqueStaticPlain()
   matDesc.mMaterialName = FDyBuiltinMaterialOpaqueStaticPlain::sName;
   matDesc.mShaderName   = FDyBuiltinShaderGLRenderOpaqueStatic::sName;
   matDesc.mBlendMode    = EDyMaterialBlendMode::Opaque;
+
+  matDesc.mTextureNames.emplace_back(MSVSTR(FDyBuiltinTextureChecker::sName));
   MDY_CALL_ASSERT_SUCCESS(manInfo.CreateMaterialInformation(matDesc));
 }
 

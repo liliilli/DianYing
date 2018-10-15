@@ -119,7 +119,9 @@ void MDyRendering::RenderDrawCallQueue()
 #endif /// MDY_FLAG_IN_EDITOR
 
   // Post processing effects
-  if (this->mTempIsEnabledSsao)
+  //if (this->mTempIsEnabledSsao)
+  // @TODO FIX THIS (SSAO)
+  if (false)
   {
     this->mTempSsaoObject->RenderScreen();
   }
