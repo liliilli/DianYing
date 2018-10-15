@@ -46,7 +46,7 @@ EDySuccess MDyRendering::pfInitialize()
     this->mTempShadowObject = std::make_unique<decltype(this->mTempShadowObject)::element_type>();
   }
 
-#if defined(MDY_FLAG_IN_EDITOR)
+#if defined(MDY_FLAG_IN_EDITOR) == true
   //! Grid rendering setting.
   this->mGridEffect = std::make_unique<decltype(this->mGridEffect)::element_type>();
 #endif /// MDY_FLAG_IN_EDITOR
@@ -62,9 +62,9 @@ EDySuccess MDyRendering::pfRelease()
   return DY_SUCCESS;
 }
 
-void MDyRendering::PushDrawCallTask(CDyMeshRenderer& rendererInstance)
+void MDyRendering::PushDrawCallTask(_MIN_ CDyModelRenderer& rendererInstance)
 {
-  this->mDrawCallQueue.push(&rendererInstance);
+  this->mDrawCallList.emplace_back(DyMakeNotNull(&rendererInstance));
 }
 
 void MDyRendering::RenderDrawCallQueue()
@@ -76,32 +76,44 @@ void MDyRendering::RenderDrawCallQueue()
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
   // Draw
-  while (!this->mDrawCallQueue.empty())
-  {
-    CDyMeshRenderer& drawInstance = *this->mDrawCallQueue.front();
 
+  const auto cameraCount = MDyWorld::GetInstance().GetFocusedCameraCount();
+  for (TI32 camId = 0; camId < cameraCount; ++camId)
+  { // Get valid CDyCamera instance pointer address.
+    const auto opCamera = MDyWorld::GetInstance().GetFocusedCameraValidReference(camId);
+    if (opCamera.has_value() == false) { continue; }
+
+    // Set viewport values to camera's properties.
+    const auto& validCameraRawPtr     = *opCamera.value();
+    const auto pixelizedViewportRect  = validCameraRawPtr.GetPixelizedViewportRectangle();
+    glViewport(pixelizedViewportRect[0], pixelizedViewportRect[1],
+               pixelizedViewportRect[2], pixelizedViewportRect[3]
+    );
+
+    // (1) Deferred rendering for opaque objects + shadowing
+    glBindFramebuffer(GL_FRAMEBUFFER, this->mDeferredFrameBufferId);
+    for (const auto& drawInstance : this->mDrawCallList)
     { // General deferred rendering
-      glViewport(0, 0, setting.GetWindowSizeWidth(), setting.GetWindowSizeHeight());
-      glBindFramebuffer(GL_FRAMEBUFFER, this->mDeferredFrameBufferId);
-      this->pRenderDeferredFrameBufferWith(drawInstance);
-    }
+      this->pRenderDeferredFrameBufferWith(*drawInstance, validCameraRawPtr);
 
 #ifdef false
-    if (this->mTempIsEnabledShadow)
-    { // Basic shadow (directional light etc)
-      glViewport(0, 0, 512, 512);
-      this->pRenderShadowFrameBufferWith(drawInstance);
-    }
+      if (this->mTempIsEnabledShadow)
+      { // Basic shadow (directional light etc)
+        glViewport(0, 0, 512, 512);
+        this->pRenderShadowFrameBufferWith(drawInstance);
+      }
 #endif
-
-    this->mDrawCallQueue.pop();
+    }
   }
+
+  // Clear draw queue list
+  this->mDrawCallList.clear();
 
   glViewport(0, 0, setting.GetWindowSizeWidth(), setting.GetWindowSizeHeight());
   glBindFramebuffer(GL_FRAMEBUFFER, this->mDeferredFrameBufferId);
 
   // Only in editor effects
-#if defined(MDY_FLAG_IN_EDITOR)
+#if defined(MDY_FLAG_IN_EDITOR) == true
   if (editor::MDyEditorSetting::GetInstance().GetmIsEnabledViewportRenderGrid() && this->mGridEffect)
   {
     this->mGridEffect->RenderGrid();
@@ -109,16 +121,18 @@ void MDyRendering::RenderDrawCallQueue()
 #endif /// MDY_FLAG_IN_EDITOR
 
   // Post processing effects
-  if (this->mTempIsEnabledSsao)
+  //if (this->mTempIsEnabledSsao)
+  // @TODO FIX THIS (SSAO)
+  if (false)
   {
     this->mTempSsaoObject->RenderScreen();
   }
 
-#if !defined(MDY_FLAG_IN_EDITOR)
+#if defined(MDY_FLAG_IN_EDITOR) == false
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   this->mFinalRenderingMesh->RenderScreen();
-#endif /// !MDY_FLAG_IN_EDITOR
+#endif /// MDY_FLAG_IN_EDITOR == false
 }
 
 void MDyRendering::pCreateDeferredGeometryBuffers() noexcept
@@ -214,32 +228,45 @@ void MDyRendering::pResetRenderingFramebufferInstances() noexcept
   }
 }
 
-void MDyRendering::pRenderDeferredFrameBufferWith(const CDyMeshRenderer& renderer) noexcept
+void MDyRendering::pRenderDeferredFrameBufferWith(_MIN_ const CDyModelRenderer& renderer, _MIN_ const CDyCamera& validCamera) noexcept
 {
-  for (const auto& bindedMeshMatInfo : renderer.mMeshMaterialPtrBindingList)
+  const auto materialListCount  = renderer.GetMaterialListCount();
+  const auto opSubmeshListCount = renderer.GetModelSubmeshCount();
+
+  // Integrity test
+  if (opSubmeshListCount.has_value() == false) { return; }
+
+  TI32 iterationCount = MDY_INITIALIZE_DEFINT;
+  if (materialListCount < opSubmeshListCount.value()) { iterationCount = materialListCount; }
+  else                                                { iterationCount = opSubmeshListCount.value(); }
+
+  for (TI32 i = 0; i < iterationCount; ++i)
   {
-    // Integrity test.
-    const auto shaderResource = bindedMeshMatInfo.mMaterialResource->GetShaderResource();
-    if (!shaderResource)
+    auto& material      = const_cast<CDyMaterialResource&>(renderer.GetMaterialResourcePtr(i));
+    auto shaderResource = material.GetShaderResource();
+    if (shaderResource == nullptr)
     {
-      MDY_LOG_CRITICAL("{} | Shader resource of {} is not binded, Can not render mesh.", "CDyMeshRenderer::Render", bindedMeshMatInfo.mMaterialResource->GetMaterialName());
+      MDY_LOG_CRITICAL("{} | Shader resource of {} is not binded, Can not render mesh.", "CDyMeshRenderer::Render", material.GetMaterialName());
       continue;
     }
-    // Activate shader of one material and bind submesh VAO id.
+
     shaderResource->UseShader();
-    glBindVertexArray(bindedMeshMatInfo.mSubmeshResource->GetVertexArrayId());
 
-    // @todo temporal Bind camera matrix.
-    if (auto* camera = MDyWorld::GetInstance().GetMainCameraPtr(); camera)
-    {
-      const auto viewMatrix = glGetUniformLocation(shaderResource->GetShaderProgramId(), "viewMatrix");
-      const auto projMatirx = glGetUniformLocation(shaderResource->GetShaderProgramId(), "projectionMatrix");
+    const CDySubmeshResource& submesh = renderer.GetSubmeshResourcePtr(i);
+    glBindVertexArray(submesh.GetVertexArrayId());
 
-      glUniformMatrix4fv(viewMatrix, 1, GL_FALSE, &camera->GetViewMatrix()[0].X);
-      glUniformMatrix4fv(projMatirx, 1, GL_FALSE, &camera->GetProjectionMatrix()[0].X);
-    }
+    const auto modelMatrix = glGetUniformLocation(shaderResource->GetShaderProgramId(), "modelMatrix");
+    const auto viewMatrix = glGetUniformLocation(shaderResource->GetShaderProgramId(), "viewMatrix");
+    const auto projMatirx = glGetUniformLocation(shaderResource->GetShaderProgramId(), "projectionMatrix");
+
+    const auto& model = const_cast<FDyActor*>(renderer.GetBindedActor())->GetTransform()->GetTransform();
+
+    glUniformMatrix4fv(modelMatrix, 1, GL_FALSE, &model[0].X);
+    glUniformMatrix4fv(viewMatrix, 1, GL_FALSE, &validCamera.GetViewMatrix()[0].X);
+    glUniformMatrix4fv(projMatirx, 1, GL_FALSE, &validCamera.GetProjectionMatrix()[0].X);
 
     // If skeleton animation is enabled, get bone transform and bind to shader.
+#ifdef false
     const auto boneTransform = glGetUniformLocation(shaderResource->GetShaderProgramId(), "boneTransform");
     if (renderer.mModelReferencePtr && renderer.mModelReferencePtr->IsEnabledModelAnimated())
     {
@@ -250,57 +277,47 @@ void MDyRendering::pRenderDeferredFrameBufferWith(const CDyMeshRenderer& rendere
         glUniformMatrix4fv(boneTransform + i, 1, GL_FALSE, &matrixList[i].mFinalTransformation[0].X);
       }
     }
+#endif
 
     // Bind textures of one material.
-    if (bindedMeshMatInfo.mMaterialResource)
+    const auto& textureResources        = material.GetBindedTextureResources();
+    const auto  textureResourceListSize = static_cast<int32_t>(textureResources.size());
+    for (int32_t j = 0; j < textureResourceListSize; ++j)
     {
-      const auto& textureResources        = bindedMeshMatInfo.mMaterialResource->GetBindedTextureResources();
-      const auto  textureResourceListSize = static_cast<int32_t>(textureResources.size());
-      for (int32_t i = 0; i < textureResourceListSize; ++i)
-      {
-        glUniform1i(glGetUniformLocation(shaderResource->GetShaderProgramId(), (std::string("uTexture") + std::to_string(i)).c_str()), i);
+      glUniform1i(glGetUniformLocation(shaderResource->GetShaderProgramId(), (std::string("uTexture") + std::to_string(j)).c_str()), j);
 
-        const auto texturePointer = textureResources[i].mValidTexturePointer;
-        glActiveTexture(GL_TEXTURE0 + i);
-        switch (texturePointer->GetTextureType())
-        {
-        case EDyTextureStyleType::D1: glBindTexture(GL_TEXTURE_1D, texturePointer->GetTextureId()); break;
-        case EDyTextureStyleType::D2: glBindTexture(GL_TEXTURE_2D, texturePointer->GetTextureId()); break;
-        default: PHITOS_UNEXPECTED_BRANCH(); break;
-        }
+      const auto texturePointer = textureResources[j].mValidTexturePointer;
+      glActiveTexture(GL_TEXTURE0 + j);
+      switch (texturePointer->GetTextureType())
+      {
+      case EDyTextureStyleType::D1: glBindTexture(GL_TEXTURE_1D, texturePointer->GetTextureId()); break;
+      case EDyTextureStyleType::D2: glBindTexture(GL_TEXTURE_2D, texturePointer->GetTextureId()); break;
+      default: PHITOS_UNEXPECTED_BRANCH(); break;
       }
     }
 
     // Call function call drawing array or element. (not support instancing yet)
-    if (bindedMeshMatInfo.mSubmeshResource->IsEnabledIndices())
-    {
-      glDrawElements(GL_TRIANGLES, bindedMeshMatInfo.mSubmeshResource->GetIndicesCounts(), GL_UNSIGNED_INT, nullptr);
-    }
-    else
-    {
-      glDrawArrays(GL_TRIANGLES, 0, bindedMeshMatInfo.mSubmeshResource->GetVertexCounts());
-    }
+    if (submesh.IsEnabledIndices()) { glDrawElements(GL_TRIANGLES, submesh.GetIndicesCounts(), GL_UNSIGNED_INT, nullptr); }
+    else                            { glDrawArrays(GL_TRIANGLES, 0, submesh.GetVertexCounts()); }
 
     // Unbind, unset, deactivate settings for this submesh and material.
-    if (bindedMeshMatInfo.mMaterialResource)
+    for (TI32 j = 0; j < textureResourceListSize; ++j)
     {
-      const auto& textureResources        = bindedMeshMatInfo.mMaterialResource->GetBindedTextureResources();
-      const auto  textureResourceListSize = static_cast<int32_t>(textureResources.size());
-      for (int32_t i = 0; i < textureResourceListSize; ++i)
-      {
-        glActiveTexture(GL_TEXTURE0 + i);
-        glBindTexture(GL_TEXTURE_2D, 0);
-      }
+      glActiveTexture(GL_TEXTURE0 + j);
+      glBindTexture(GL_TEXTURE_2D, 0);
     }
 
+    // Unbind present submesh vertex array object.
     glBindVertexArray(0);
     shaderResource->UnuseShader();
   }
 }
 
-void MDyRendering::pRenderShadowFrameBufferWith(const CDyMeshRenderer& renderer) noexcept
+void MDyRendering::pRenderShadowFrameBufferWith(_MIN_ const CDyModelRenderer& renderer) noexcept
 {
+#ifdef false
   this->mTempShadowObject->RenderScreen(renderer);
+#endif
 }
 
 } /// ::dy namespace

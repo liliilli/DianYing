@@ -36,13 +36,18 @@
 #include <Dy/Management/RenderingManager.h>
 
 #include <Dy/Builtin/Model/Box.h>
+#include <Dy/Builtin/Model/Plain.h>
+#include <Dy/Builtin/Model/Sphere.h>
+#include <Dy/Builtin/Texture/Checker.h>
+#include <Dy/Builtin/Texture/ErrorBlue.h>
 #include <Dy/Builtin/ShaderGl/RenderPass.h>
 #include <Dy/Builtin/ShaderGl/RenderColorGeometry.h>
 #include <Dy/Builtin/ShaderGl/RenderBasicShadow.h>
+#include <Dy/Builtin/ShaderGl/RenderOpaqueStatic.h>
+#include <Dy/Builtin/Material/OpaqueStaticPlain.h>
 
 #include <Dy/Management/HeapResourceManager.h>
 #include <Dy/Management/SoundManager.h>
-#include "Dy/Management/MetaInfoManager.h"
 #include <Dy/Management/PhysicsManager.h>
 
 ///
@@ -63,8 +68,6 @@ namespace
 {
 
 dy::DDyVector3                  gColor      {.2f, .3f, .2f};
-dy::CDyMeshRenderer             gRenderer   = {};
-std::unique_ptr<dy::CDyCamera>  gCameraPtr  = nullptr;
 
 void GLAPIENTRY DyGlMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
@@ -78,25 +81,40 @@ void GLAPIENTRY DyGlMessageCallback(GLenum source, GLenum type, GLuint id, GLenu
 ///
 void DyGlTempInitializeResource()
 {
-  auto& manInfo = dy::MDyDataInformation::GetInstance();
-
-  dy::PDyCameraConstructionDescriptor cameraDesc;
-  {
-    cameraDesc.mInitialFieldOfView  = 70.f;
-    cameraDesc.mIsMoveable          = true;
-    cameraDesc.mIsFocusInstantly    = true;
-    cameraDesc.mIsOrthographic      = true;
-    cameraDesc.mUseCustomViewport   = false;
-  }
-  gCameraPtr = std::make_unique<dy::CDyCamera>(cameraDesc);
+  //auto& manInfo = dy::MDyDataInformation::GetInstance();
 
   //!
   //! Shader
   //!
 
+  dy::builtin::FDyBuiltinModelBox();
+  dy::builtin::FDyBuiltinModelPlain();
+  dy::builtin::FDyBuiltinModelSphere();
+
+  dy::builtin::FDyBuiltinTextureChecker();
+  dy::builtin::FDyBuiltinTextureErrorBlue();
+
   dy::builtin::FDyBuiltinShaderGLRenderPass();
   dy::builtin::FDyBuiltinShaderGLRenderColorGeometry();
-  dy::builtin::FDyBuiltinModelBox();
+  dy::builtin::FDyBuiltinShaderGLRenderOpaqueStatic();
+
+  dy::builtin::FDyBuiltinMaterialOpaqueStaticPlain();
+
+#ifdef false
+  {
+    auto animAsyncTask = std::async(std::launch::async, [&manInfo] {
+      dy::PDyModelConstructionDescriptor modelDesc;
+      {
+        modelDesc.mModelName = "TestModel";
+        modelDesc.mModelPath = "./TestResource/bun_zipper.ply";
+      }
+      MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(modelDesc));
+      return true;
+    });
+
+    if (animAsyncTask.get()) { MDY_LOG_DEBUG_D("OK"); };
+  }
+#endif
 
 #ifdef false
   {
@@ -278,39 +296,6 @@ void DyGlTempInitializeResource()
     else { materialNameList.emplace_back(matPtr.value()); }
   }
 #endif
-
-  {
-    dy::PDyShaderConstructionDescriptor shaderDesc;
-    shaderDesc.mShaderName = "TestDeferredShader";
-    {
-      dy::PDyShaderFragmentInformation vs;
-      vs.mShaderType = dy::EDyShaderFragmentType::Vertex;
-      vs.mShaderPath = "./ShaderResource/Gl/glMeshVert.vert";
-      shaderDesc.mShaderFragments.emplace_back(vs);
-    }
-    {
-      dy::PDyShaderFragmentInformation fs;
-      fs.mShaderType = dy::EDyShaderFragmentType::Pixel;
-      fs.mShaderPath = "./ShaderResource/Gl/glMeshDeferredFrag.frag";
-      shaderDesc.mShaderFragments.emplace_back(fs);
-    }
-    MDY_CALL_ASSERT_SUCCESS(manInfo.CreateShaderInformation(shaderDesc));
-  }
-
-  {
-    auto animAsyncTask = std::async(std::launch::async, [&manInfo] {
-      dy::PDyModelConstructionDescriptor modelDesc;
-      {
-        modelDesc.mModelName = "Boxing";
-        modelDesc.mModelPath = "./TestResource/bun_zipper.ply";
-      }
-      MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(modelDesc));
-      return true;
-    });
-
-    if (animAsyncTask.get()) { MDY_LOG_DEBUG_D("OK"); };
-  }
-
 #ifdef false
   {
     dy::PDyMaterialPopulateDescriptor popDesc;
@@ -325,19 +310,14 @@ void DyGlTempInitializeResource()
     }
     MDY_CALL_ASSERT_SUCCESS(gRenderer.pfInitialize(rendererDesc));
   }
-#endif
-  dy::PDyMaterialConstructionDescriptor matDesc;
-  matDesc.mMaterialName = "TestMat";
-  matDesc.mShaderName   = "TestDeferredShader";
-  matDesc.mBlendMode    = dy::EDyMaterialBlendMode::Opaque;
-  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateMaterialInformation(matDesc));
 
   dy::PDyRendererConsturctionDescriptor rendererDesc;
   {
-    rendererDesc.mModelName     = "Boxing";
+    rendererDesc.mModelName     = "TestModel";
     rendererDesc.mMaterialNames = std::vector<std::string>(394, "TestMat");
   }
   MDY_CALL_ASSERT_SUCCESS(gRenderer.pfInitialize(rendererDesc));
+#endif
 }
 
 ///
@@ -434,20 +414,15 @@ void MDyWindow::pUpdate(float dt)
     editor::MDyEditorGui::GetInstance().Update(dt);
   #endif // MDY_FLAG_IN_EDITOR
 
+  //
   MDyPhysics::GetInstance().Update(dt);
+  //
   MDyWorld::GetInstance().Update(dt);
+  //
   MDyInput::GetInstance().pfUpdate(dt);
   MDyWorld::GetInstance().UpdateObjects(dt);
-
-#ifdef false
-  auto* cam = sceneManager.GetMainCameraPtr();
-  if (cam)
-  {
-    cam->Update(dt);
-  }
-
-  gRenderer.Update(dt);
-#endif
+  //
+  MDyWorld::GetInstance().RequestDrawCall(dt);
 }
 
 ///

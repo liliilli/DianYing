@@ -13,12 +13,13 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Component/Abstract/ADyBaseTransform.h>
 #include <Dy/Component/CDyScript.h>
 #include <Dy/Component/CDyTransform.h>
-#include <Dy/Component/Internal/CDyEmptyTransform.h>
 
 #include <Dy/Helper/Internal/TmpCheckTypeParams.h>
+#include "Dy/Component/CDyModelFilter.h"
+#include "Dy/Component/CDyModelRenderer.h"
+#include "Dy/Component/CDyCamera.h"
 
 namespace dy
 {
@@ -40,15 +41,25 @@ constexpr void DyCheckComponentInitializeFunctionParams() noexcept
     static_assert(MetaTest<const DDyScriptMetaInformation&>::TypeMatched<TArgs...>::template Result<>::value,
                   "Failed compile test. Could not initilaize CDyScript instance.");
   }
-  else if constexpr (std::is_same_v<CDyTransform, TComponentType>)
+  if constexpr (std::is_same_v<CDyTransform, TComponentType>)
   {
     static_assert(MetaTest<const DDyTransformMetaInformation&>::TypeMatched<TArgs...>::template Result<>::value,
                   "Failed compile test. Could not initilaize CDyTransform instance.");
   }
-  else if constexpr (std::is_same_v<CDyEmptyTransform, TComponentType>)
+  if constexpr (std::is_same_v<CDyModelFilter, TComponentType>)
   {
-    static_assert(MetaTest<const DDyTransformMetaInformation&>::TypeMatched<TArgs...>::template Result<>::value,
-                  "Failed compile test. Could not initilaize CDyEmptyTransform instance.");
+    static_assert(MetaTest<const DDyModelFilterMetaInformation&>::TypeMatched<TArgs...>::template Result<>::value,
+                  "Failed compile test. Could not initilaize CDyModelFilter instance.");
+  }
+  if constexpr (std::is_same_v<CDyModelRenderer, TComponentType>)
+  {
+    static_assert(MetaTest<const DDyModelRendererMetaInformation&>::TypeMatched<TArgs...>::template Result<>::value,
+                  "Failed compile test. Could not initilaize CDyModelRenderer instance.");
+  }
+  if constexpr (std::is_same_v<CDyCamera, TComponentType>)
+  {
+    static_assert(MetaTest<const DDyCameraMetaInformation&>::TypeMatched<TArgs...>::template Result<>::value,
+                  "Failed compile test. Could not initilaize CDyCamera instance.");
   }
 }
 

@@ -21,10 +21,24 @@
 #include <Dy/Core/Component/Object/Grid.h>
 #include "Dy/Core/Rendering/BasicShadow.h"
 
+//!
+//! Forward declaration
+//!
+
+namespace dy
+{
+class CDyCamera;
+class CDyModelRenderer;
+} /// ::dy namespace
+
 namespace dy::editor
 {
 class FDyMainViewport;
-}
+} /// ::dy::editor namespace
+
+//!
+//! Implementation
+//!
 
 namespace dy
 {
@@ -40,11 +54,14 @@ class MDyRendering final : public ISingleton<MDyRendering>
 public:
   ///
   /// @brief
+  /// @param rendererInstance
+  /// @TODO SCRIPT THIS!
   ///
-  void PushDrawCallTask(CDyMeshRenderer& rendererInstance);
+  void PushDrawCallTask(_MIN_ CDyModelRenderer& rendererInstance);
 
   ///
   /// @brief
+  /// @TODO SCRIPT THIS!
   ///
   void RenderDrawCallQueue();
 
@@ -65,17 +82,27 @@ private:
   void pResetRenderingFramebufferInstances() noexcept;
 
   ///
-  void pRenderDeferredFrameBufferWith(const CDyMeshRenderer& renderer) noexcept;
+  /// @brief
+  /// @param  renderer
+  /// @param  validCamera
+  /// @TODO SCRIPT THIS!
+  ///
+  void pRenderDeferredFrameBufferWith(_MIN_ const CDyModelRenderer& renderer, _MIN_ const CDyCamera& validCamera) noexcept;
 
   ///
-  void pRenderShadowFrameBufferWith(const CDyMeshRenderer& renderer) noexcept;
+  /// @brief
+  /// @param
+  /// @param
+  /// @TODO SCRIPT THIS!
+  ///
+  void pRenderShadowFrameBufferWith(_MIN_ const CDyModelRenderer& renderer) noexcept;
 
   TU32                mDeferredFrameBufferId  = MDY_INITIALIZE_DEFUINT;
   std::array<TU32, 4> mAttachmentBuffers      = {};
   const TI32          mAttachmentBuffersCount = static_cast<TI32>(mAttachmentBuffers.size());
 
   std::unique_ptr<FDyDeferredRenderingMesh>   mFinalRenderingMesh   = nullptr;
-  std::queue<CDyMeshRenderer*>                mDrawCallQueue        = {};
+  std::vector<NotNull<CDyModelRenderer*>>     mDrawCallList        = {};
 
   bool                                        mTempIsEnabledSsao    = true;
   std::unique_ptr<FDyPostEffectSsao>          mTempSsaoObject       = nullptr;

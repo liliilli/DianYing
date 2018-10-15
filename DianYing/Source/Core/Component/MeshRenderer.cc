@@ -106,8 +106,8 @@ void CDyMeshRenderer::Update(float dt)
 
 void CDyMeshRenderer::CallDraw()
 {
-  auto& renderingManager = MDyRendering::GetInstance();
-  renderingManager.PushDrawCallTask(*this);
+  //auto& renderingManager = MDyRendering::GetInstance();
+  //renderingManager.PushDrawCallTask(*this);
 }
 
 } /// ::dy namespace

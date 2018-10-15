@@ -26,9 +26,19 @@ namespace dy
 ///
 enum class EDyComponentMetaType
 {
+  // CDyTransform
   Transform,
+  // CDyScript
   Script,
+  // CDyModelFilter
+  ModelFilter,
+  // CDyModelRenderer
+  ModelRenderer,
+  // CDyDirectionalLight
   DirectionalLight,
+  // CDyCamera
+  Camera,
+  // ERROR!
   NoneError
 };
 
@@ -42,6 +52,63 @@ struct IDyMetaInformation
   EDyComponentMetaType mType       = EDyComponentMetaType::NoneError;
   /// hashTo must be same to hash string value of DDyObjectInformation instance to be binded.
   std::string          mBindHashTo = MDY_INITILAIZE_EMPTYSTR;
+};
+
+///
+/// @struct DDyCameraMetaInformation
+/// @brief  Dependency information to CDyCamera (NEW! since 0.0.0~) component.
+///
+struct DDyCameraMetaInformation final : public IDyMetaInformation
+{
+  /// Fov must be range from 0.1f to 180.f
+  float       mInitialFieldOfView     = 70.f;
+  /// Near value of camera culling.
+  float       mNear                   = DDyCameraMetaInformation::sInitialNear;
+  /// Far value of camera culling.
+  float       mFar                    = DDyCameraMetaInformation::sInitialFar;
+  /// Camera will project objects as orthographic without vanishing point.
+  bool        mIsOrthographic         = false;
+  /// Clipped camera will be unclipped.
+  bool        mIsEnableMeshUnClipped  = false;
+  /// Camera will be focused instantly.
+  bool        mIsFocusInstantly       = false;
+  /// Component is initially activated or not.
+  bool        mInitiallyActivated     = false;
+  /// Custom viewport size, but mIsCustomViewport must be enabled.
+  DDyVector2  mViewportSizeXY         = {0, 0};
+  /// Custom viewport size
+  DDyVector2  mViewportSizeWH         = {1, 1};
+private:
+  inline static float sInitialNear    = 0.3f;
+  inline static float sInitialFar     = 1000.f;
+};
+
+///
+/// @struct DDyModelFilterMetaInformation
+/// @brief  Dependency information to CDyModelFilter component.
+/// (EDyComponentMetaType::ModelFilter)
+///
+struct DDyModelFilterMetaInformation final : public IDyMetaInformation
+{
+  /// Model resource name to filter
+  std::string     mModelName          = MDY_INITILAIZE_EMPTYSTR;
+  /// Component is initially activated or not.
+  bool            mInitiallyActivated = false;
+};
+
+///
+/// @struct DDyModelRendererMetaInformation
+/// @brief  Dependency information to CDYModelRenderer component.
+/// (EDyComponentMetaType::ModelRenderer)
+///
+struct DDyModelRendererMetaInformation final : public IDyMetaInformation
+{
+  /// Create shadow or not.
+  bool                      mIsEnabledCreateShadow  = false;
+  /// Material resource name list to apply
+  std::vector<std::string>  mMaterialName           = {};
+  /// Component is initially activated or not.
+  bool                      mInitiallyActivated     = false;
 };
 
 ///

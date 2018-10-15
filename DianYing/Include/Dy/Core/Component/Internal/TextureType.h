@@ -15,6 +15,7 @@
 
 #include <Dy/Helper/Type/Color.h>
 #include <Dy/Core/Component/Internal/TextureEnums.h>
+#include <Dy/Helper/Internal/ImageBinaryBuffer.h>
 
 namespace dy
 {
@@ -41,9 +42,9 @@ private:
 ///
 struct PDyTextureConstructionDescriptor final
 {
-  std::string mTextureName                                        = "";
-  std::string mTextureFileLocalPath                               = "";
-  std::string mTextureFileAbsolutePath                            = "";
+  std::string mTextureName                                        = MDY_INITILAIZE_EMPTYSTR;
+  std::string mTextureFileLocalPath                               = MDY_INITILAIZE_EMPTYSTR;
+  std::string mTextureFileAbsolutePath                            = MDY_INITILAIZE_EMPTYSTR;
   DDyColor    mConstantBorderColor                                = DDyColor::Black;
 
   std::vector<PDyTextureParameterOption> mTextureParameterOptions = {};
@@ -53,6 +54,26 @@ struct PDyTextureConstructionDescriptor final
   bool        mIsEnabledCreateMipmap                              = false;
   EDyTextureStyleType mTextureType                                = EDyTextureStyleType::None;
   EDyTextureMapType   mTextureMapType                             = EDyTextureMapType::Custom;
+};
+
+///
+/// @class PDyTextureConstructionBufferChunkDescriptor
+/// @brief
+///
+struct PDyTextureConstructionBufferChunkDescriptor final
+{
+  std::string         mTextureName                                = MDY_INITILAIZE_EMPTYSTR;
+  DDyColor            mConstantBorderColor                        = DDyColor::Black;
+  /// Buffer pointer (not owned so must manage resources manually)
+  void*               mBufferPtr                                  = MDY_INITIALIZE_NULL;
+  /// Texture width size
+  TU32                mWidth                                      = 1;
+  /// Texture height size
+  TU32                mHeight                                     = 1;
+  /// Texture type
+  EDyTextureStyleType mTextureType                                = EDyTextureStyleType::None;
+  EDyTextureMapType   mTextureMapType                             = EDyTextureMapType::Custom;
+  EDyImageColorFormatStyle mTextureColorType                      = EDyImageColorFormatStyle::NoneError;
 };
 
 } /// ::dy namespace

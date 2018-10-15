@@ -39,28 +39,19 @@ EDySuccess MDyWorld::pfRelease()
   return DY_SUCCESS;
 }
 
-void MDyWorld::Update(float dt)
+void MDyWorld::Update(_MIN_ float dt)
 {
   // Garbage collect needless "FDyActor"s
-  if (!this->mActorGc.empty())
+  if (this->mActorGc.empty() == false)
   {
     this->mActorGc.clear();
   }
 
-  // Remove activated pawn update list reversely.
-  if (!this->mErasionScriptCandidateList.empty())
-  {
-    std::sort(MDY_BIND_BEGIN_END(this->mErasionScriptCandidateList), std::greater<TI32>());
-    for (const auto& index : this->mErasionScriptCandidateList)
-    { // Remove!
-      this->mActivatedScripts.erase(this->mActivatedScripts.begin() + index);
-    }
-    // Clear!
-    this->mErasionScriptCandidateList.clear();
-  }
+  // GC components.
+  this->pGcAcitvatedComponents();
 
   // Travel next level
-  if (!this->mNextLevelName.empty())
+  if (this->mNextLevelName.empty() == false)
   {
     if (this->mLevel)
     { // Let present level do release sequence
@@ -85,24 +76,98 @@ void MDyWorld::Update(float dt)
   }
 }
 
-void MDyWorld::UpdateObjects(float dt)
+void MDyWorld::pGcAcitvatedComponents()
 {
-  if (this->mLevel)
+  // Remove activated script update list reversely.
+  if (this->mErasionScriptCandidateList.empty() == false)
   {
-    for (auto& pawnPtr : this->mActivatedScripts)
-    {
-      if (pawnPtr == nullptr) continue;
-      pawnPtr->Update(dt);
+    std::sort(MDY_BIND_BEGIN_END(this->mErasionScriptCandidateList), std::greater<TI32>());
+    for (const auto& index : this->mErasionScriptCandidateList)
+    { // Remove!
+      this->mActivatedScripts.erase(this->mActivatedScripts.begin() + index);
     }
+    // Clear!
+    this->mErasionScriptCandidateList.clear();
+  }
+
+  // Remove activated model renderer (CDyModelRenderer) list reversely to avoiding invalidation index.
+  if (this->mErasionModelRenderersCandidateList.empty() == false)
+  {
+    std::sort(MDY_BIND_BEGIN_END(this->mErasionModelRenderersCandidateList), std::greater<>());
+    for (const auto& index : this->mErasionModelRenderersCandidateList)
+    { // Remove!
+      this->mActivatedModelRenderers.erase(this->mActivatedModelRenderers.begin() + index);
+    }
+    // Clear!
+    this->mErasionModelRenderersCandidateList.clear();
+  }
+
+  // Remove activated camera (CDyCamera) list reversely to avoiding invalidation index.
+  if (this->mErasionCamerasCandidateList.empty() == false)
+  {
+    std::sort(MDY_BIND_BEGIN_END(this->mErasionCamerasCandidateList), std::greater<>());
+    for (const auto& index : this->mErasionCamerasCandidateList)
+    { // Remove!
+      this->mActivatedOnRenderingCameras.erase(this->mActivatedOnRenderingCameras.begin() + index);
+    }
+    // Clear!
+    this->mErasionCamerasCandidateList.clear();
   }
 }
 
-CDyCamera* MDyWorld::GetMainCameraPtr() const noexcept
+void MDyWorld::UpdateObjects(_MIN_ float dt)
+{
+  if (this->mLevel)
+  { // Update(Start, Update, etc...) script carefully.
+    for (auto& script : this->mActivatedScripts)
+    {
+      if (MDY_CHECK_ISNULL(script)) { continue; }
+      script->Update(dt);
+    }
+
+    // CDyModelRenderer update
+    for (auto& modelRenderer : this->mActivatedModelRenderers)
+    {
+      if (MDY_CHECK_ISNULL(modelRenderer)) { continue; }
+      modelRenderer->Update(dt);
+    }
+
+    // CDyCamera update
+    for (_MIO_ auto& camera : this->mActivatedOnRenderingCameras)
+    {
+      if (MDY_CHECK_ISNULL(camera)) { continue; }
+      camera->Update(dt);
+    }
+
+    //
+  }
+}
+
+void MDyWorld::RequestDrawCall(float dt)
+{
+  // @TODO IMPLEMENT SW OCCLUSION CULLING (HW?)
+  for (auto& modelRenderer : this->mActivatedModelRenderers)
+  { // Request draw calls (without SW occlusion culling)
+    modelRenderer->RequestDrawCall();
+  }
+}
+
+CDyLegacyCamera* MDyWorld::GetMainCameraPtr() const noexcept
 {
   return this->mValidMainCameraPtr;
 }
 
-EDySuccess MDyWorld::OpenLevel(const std::string& levelName)
+std::optional<CDyCamera*> MDyWorld::GetFocusedCameraValidReference(const TI32 index) const noexcept
+{
+  PHITOS_ASSERT(index < this->mActivatedOnRenderingCameras.size(),
+                R"dy(Input parameter "index" for "MDyWorld::GetFocusedCameraValidReferenc" must be equal or less than "MDyWorld::mActivatedOnRenderingCameras".)dy");
+
+  auto* camera = this->mActivatedOnRenderingCameras[index];
+  if (MDY_CHECK_ISNULL(camera)) { return std::nullopt; }
+  else                          { return camera; }
+}
+
+EDySuccess MDyWorld::OpenLevel(_MIN_ const std::string& levelName)
 {
   if (MDyMetaInfo::GetInstance().GetLevelMetaInformation(levelName) == nullptr)
   {
@@ -114,40 +179,72 @@ EDySuccess MDyWorld::OpenLevel(const std::string& levelName)
   return DY_SUCCESS;
 }
 
-void MDyWorld::__pfBindFocusCamera(CDyCamera* validCameraPtr)
+void MDyWorld::pfBindFocusCamera(_MIN_ CDyLegacyCamera& validCameraPtr) noexcept
 {
-  PHITOS_ASSERT(validCameraPtr != nullptr, "validCameraPtr must be valid, not nullptr.");
-  this->mValidMainCameraPtr = validCameraPtr;
+  PHITOS_ASSERT(MDY_CHECK_ISNOTNULL(&validCameraPtr), "validCameraPtr must be valid, not nullptr.");
+  this->mValidMainCameraPtr = &validCameraPtr;
 }
 
-void MDyWorld::__pfUnbindCameraFocus()
+void MDyWorld::pfUnbindCameraFocus()
 {
   if (this->mValidMainCameraPtr)
   {
     this->mValidMainCameraPtr = nullptr;
-    MDY_LOG_INFO_D("{} | MainCamera pointing unbinded.", "MDyWorld::__pfUnbindCameraFocus()");
+    MDY_LOG_INFO_D("{} | MainCamera pointing unbinded.", "MDyWorld::pfUnbindCameraFocus()");
   }
   else
   {
-    MDY_LOG_WARNING_D("{} | Valid mainCamera pointer does not point anything.", "MDyWorld::__pfUnbindCameraFocus()");
+    MDY_LOG_WARNING_D("{} | Valid mainCamera pointer does not point anything.", "MDyWorld::pfUnbindCameraFocus()");
   }
 }
 
-void MDyWorld::pfMoveActorToGc(NotNull<FDyActor*> actorRawPtr) noexcept
+void MDyWorld::pfMoveActorToGc(_MIN_ NotNull<FDyActor*> actorRawPtr) noexcept
 {
   this->mActorGc.emplace_back(std::unique_ptr<FDyActor>(actorRawPtr));
 }
 
-TI32 MDyWorld::pfEnrollActiveScript(const NotNull<CDyScript*>& pawnRawPtr) noexcept
+void MDyWorld::pfUnenrollActiveScript(_MIN_ TI32 index) noexcept
+{
+  PHITOS_ASSERT(index < this->mActivatedScripts.size(), "index must be smaller than this->mActivatedScripts.size().");
+
+  this->mActivatedScripts[index] = MDY_INITIALIZE_NULL;
+  this->mErasionScriptCandidateList.emplace_back(index);
+}
+
+void MDyWorld::pfUnenrollActiveModelRenderer(_MIN_ TI32 index) noexcept
+{
+  PHITOS_ASSERT(index < this->mActivatedModelRenderers.size(), "index must be smaller than this->mActivatedModelRenderers.size().");
+
+  this->mActivatedModelRenderers[index] = MDY_INITIALIZE_NULL;
+  this->mErasionModelRenderersCandidateList.emplace_back(index);
+}
+
+void MDyWorld::pfUnenrollActiveCamera(_MIO_ TI32& index) noexcept
+{
+  PHITOS_ASSERT(index < this->mActivatedOnRenderingCameras.size(), "index must be smaller than this->mActivatedOnRenderingCameras.size().");
+
+  this->mActivatedOnRenderingCameras[index] = MDY_INITIALIZE_NULL;
+  this->mErasionCamerasCandidateList.emplace_back(index);
+
+  index = MDY_INITIALIZE_DEFINT;
+}
+
+TI32 MDyWorld::pfEnrollActiveScript(_MIN_ const NotNull<CDyScript*>& pawnRawPtr) noexcept
 {
   this->mActivatedScripts.emplace_back(pawnRawPtr);
   return static_cast<TI32>(this->mActivatedScripts.size()) - 1;
 }
 
-void MDyWorld::pfUnenrollActiveScript(TI32 index) noexcept
+TI32 MDyWorld::pfEnrollActiveModelRenderer(_MIN_ CDyModelRenderer& validComponent) noexcept
 {
-  this->mActivatedScripts[index] = nullptr;
-  this->mErasionScriptCandidateList.emplace_back(index);
+  this->mActivatedModelRenderers.emplace_back(&validComponent);
+  return static_cast<TI32>(this->mActivatedModelRenderers.size()) - 1;
+}
+
+TI32 MDyWorld::pfEnrollActiveCamera(_MIN_ CDyCamera& validComponent) noexcept
+{
+  this->mActivatedOnRenderingCameras.emplace_back(&validComponent);
+  return static_cast<TI32>(this->mActivatedOnRenderingCameras.size()) - 1;
 }
 
 } /// ::dy namespace

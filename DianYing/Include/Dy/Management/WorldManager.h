@@ -23,7 +23,7 @@
 
 namespace dy
 {
-class CDyCamera;
+class CDyLegacyCamera;
 } /// ::dy namespace
 
 //!
@@ -45,26 +45,56 @@ public:
   ///
   /// @brief Update scene structures prior to dive in scene objects tree hierarchy.
   /// Scene transition will be executed maybe.
+  /// @param dt
   ///
-  void Update(float dt) override final;
+  void Update(_MIN_ float dt) override final;
 
   ///
   /// @brief Update valid objects. this function must be called after this->Update().
+  /// @param dt Delta time
   ///
-  void UpdateObjects(float dt);
+  void UpdateObjects(_MIN_ float dt);
 
   ///
-  /// @brief Return main camera ptr.
+  /// @brief
+  /// @param
   ///
-  [[nodiscard]] CDyCamera* GetMainCameraPtr() const noexcept;
+  void RequestDrawCall(_MIN_ float dt);
 
   ///
-  /// @brief Check if main camera is binded so be able to focused by scene.
+  /// @deprecated This function is deprecated since v0.0.1. Use
+  /// @brief  Return main camera ptr.
+  /// @return
   ///
-  [[nodiscard]] FORCEINLINE bool IsMainCameraFocused() const noexcept
+  MDY_DEPRECATED("v0.0.1", GetMainCameraPtr, pfEnrollActiveCamera)
+  MDY_NODISCARD CDyLegacyCamera* GetMainCameraPtr() const noexcept;
+
+  ///
+  /// @deprecated This function is deprecated since v0.0.1. Use
+  /// @brief  Check if main camera is binded so be able to focused by scene.
+  /// @return
+  ///
+  MDY_DEPRECATED("v0.0.1", IsMainCameraFocused, None)
+  MDY_NODISCARD FORCEINLINE bool IsMainCameraFocused() const noexcept
   {
-    return this->mValidMainCameraPtr != nullptr;
+    return MDY_CHECK_ISNOTNULL(this->mValidMainCameraPtr);
   }
+
+  ///
+  /// @brief
+  /// @return
+  ///
+  MDY_NODISCARD FORCEINLINE TI32 GetFocusedCameraCount() const noexcept
+  {
+    return static_cast<TI32>(this->mActivatedOnRenderingCameras.size());
+  }
+
+  ///
+  /// @brief
+  /// @param  index
+  /// @return
+  ///
+  MDY_NODISCARD std::optional<CDyCamera*> GetFocusedCameraValidReference(_MIN_ const TI32 index) const noexcept;
 
   ///
   /// @brief  Ask it for opening level with levelName next frame.
@@ -115,23 +145,25 @@ public:
 #endif
 
 private:
+  ///
+  /// @brief This function must be called in MDyWorld::Update() function.
+  /// Wipe out deactivated components from activated component lists.
+  ///
+  void pGcAcitvatedComponents();
+
   /// Bind valid camera to main camera and let object have focused.
-  void __pfBindFocusCamera(_MIN_ CDyCamera* validCameraPtr);
+  MDY_DEPRECATED("v0.0.1", pfBindFocusCamera, pfEnrollActiveCamera)
+  void pfBindFocusCamera(_MIN_ CDyLegacyCamera& validCameraPtr) noexcept;
+
   /// Unbind main camera. this function must not be called manually, but using camera's mechanism.
-  void __pfUnbindCameraFocus();
+  MDY_DEPRECATED("v0.0.1", pfUnbindCameraFocus, pfUnenrollActiveCamera)
+  void pfUnbindCameraFocus();
 
   ///
   /// @brief  Move FDyActor instance to gc.
   /// @param  actorRawPtr Valid FDyActor pointer instance.
   ///
   void pfMoveActorToGc(_MIN_ NotNull<FDyActor*> actorRawPtr) noexcept;
-
-  ///
-  /// @brief  Enroll activated FDyPawn raw pointer instance to list to update.
-  /// @param  pawnRawPtr FDyPawn instance to insert into activated list.
-  /// @return index of pawn raw ptr. Always success.
-  ///
-  MDY_NODISCARD TI32 pfEnrollActiveScript(_MIN_ const NotNull<CDyScript*>& pawnRawPtr) noexcept;
 
   ///
   /// @brief  Unenroll activated FDyPawn raw pointer from list.
@@ -142,9 +174,48 @@ private:
   ///
   void pfUnenrollActiveScript(_MIN_ TI32 index) noexcept;
 
+  ///
+  /// @brief
+  /// @param  index
+  /// @return
+  /// @TODO SCRIPT THIS!
+  ///
+  void pfUnenrollActiveModelRenderer(_MIN_ TI32 index) noexcept;
+
+  ///
+  /// @brief
+  /// @param  index
+  /// @return
+  /// @TODO SCRIPT THIS!
+  ///
+  void pfUnenrollActiveCamera(_MIO_ TI32& index) noexcept;
+
+  ///
+  /// @brief  Enroll activated FDyPawn raw pointer instance to list to update.
+  /// @param  pawnRawPtr FDyPawn instance to insert into activated list.
+  /// @return index of pawn raw ptr. Always success.
+  ///
+  MDY_NODISCARD TI32 pfEnrollActiveScript(_MIN_ const NotNull<CDyScript*>& pawnRawPtr) noexcept;
+
+  ///
+  /// @brief
+  /// @param  validComponent
+  /// @return
+  /// @TODO SCRIPT THIS!
+  ///
+  MDY_NODISCARD TI32 pfEnrollActiveModelRenderer(_MIN_ CDyModelRenderer& validComponent) noexcept;
+
+  ///
+  /// @brief
+  /// @param  validComponent
+  /// @return
+  /// @TODO SCRIPT THIS!
+  ///
+  MDY_NODISCARD TI32 pfEnrollActiveCamera(_MIN_ CDyCamera& validComponent) noexcept;
+
   /// Main Camera Ptr of present scene.
-  CDyCamera*                mValidMainCameraPtr = nullptr;
-  std::vector<CDyCamera*>   mValidSubCameraPtrs = {};
+  CDyLegacyCamera*                mValidMainCameraPtr = nullptr;
+  std::vector<CDyLegacyCamera*>   mValidSubCameraPtrs = {};
 
   std::string               mNextLevelName      = MDY_INITILAIZE_EMPTYSTR;
   std::string               mPresentLevelName   = MDY_INITILAIZE_EMPTYSTR;
@@ -156,15 +227,29 @@ private:
   /// Activated CDyScript component list.
   /// this list must not be invalidated when iterating list, but except for unenrolling.
   std::vector<CDyScript*>   mActivatedScripts           = {};
-  /// Erasion (activated) pawn candidate list. this list must be sorted descendently not to invalidate order.
+  /// Erasion (activated) script candidate list. this list must be sorted descendently not to invalidate order.
   std::vector<TI32>         mErasionScriptCandidateList = {};
+
+  /// Activated CDyModelRenderer component list.
+  /// this list must not be invalidated when iterating list, but except for unenrolling.
+  std::vector<CDyModelRenderer*>  mActivatedModelRenderers = {};
+  /// Erasion (activated) model rendrerer list. this list must be sorted descendently not to invalidate order.
+  std::vector<TI32>               mErasionModelRenderersCandidateList = {};
+
+  /// Valid camera ptr which to be used rendering sequence.
+  /// this list must not be invalidated when interating list, but except for unenrolling.
+  std::vector<CDyCamera*>   mActivatedOnRenderingCameras  = {};
+  /// Erasion (activated) model renderer list. this list must be sorted descendently not to invalidate order.
+  std::vector<TI32>         mErasionCamerasCandidateList  = {};
 
   /// Garbage collection actor instance list.
   std::vector<std::unique_ptr<FDyActor>> mActorGc = {};
 
-  friend class CDyCamera;
+  friend class CDyLegacyCamera;
   friend class FDyLevel;
   friend class CDyScript;
+  friend class CDyModelRenderer;
+  friend class CDyCamera;
 };
 
 } /// ::dy namespace

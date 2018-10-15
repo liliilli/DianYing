@@ -1,4 +1,5 @@
-#include <precompiled.h>
+#ifndef GAURD_DY_BUILTIN_MODEL_PLAIN_H
+#define GAURD_DY_BUILTIN_MODEL_PLAIN_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -12,20 +13,24 @@
 /// SOFTWARE.
 ///
 
-/// Header file
-#include <Dy/Component/Internal/CDyEmptyTransform.h>
+#include <string_view>
 
-namespace dy
+namespace dy::builtin
 {
 
-CDyEmptyTransform::CDyEmptyTransform(FDyActor& actorReference) :
-    ADyBaseTransform(actorReference)
+///
+/// @class FDyBuiltinModelPlain
+/// @brief Create model plain information and resources.
+///
+class FDyBuiltinModelPlain final
 {
-}
+public:
+  FDyBuiltinModelPlain();
 
-std::string CDyEmptyTransform::ToString()
-{
-  return MDY_INITILAIZE_EMPTYSTR;
-}
+  /// name for creating DDyModelInformation
+  inline static MDY_SET_IMMUTABLE_STRING(sName, "dyBtModelPlain");
+};
 
-} /// ::dy namespace
+} /// ::dy::builtin namespace
+
+#endif /// GAURD_DY_BUILTIN_MODEL_PLAIN_H

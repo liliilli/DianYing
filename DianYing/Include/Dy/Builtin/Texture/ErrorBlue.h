@@ -1,4 +1,5 @@
-#include <precompiled.h>
+#ifndef GUARD_DY_BUILTIN_TEXTURE_ERRORBLUE_H
+#define GUARD_DY_BUILTIN_TEXTURE_ERRORBLUE_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -12,25 +13,23 @@
 /// SOFTWARE.
 ///
 
-/// Header file
-#include <Dy/Component/Abstract/ADyBaseTransform.h>
+#include <string_view>
 
-namespace dy
+namespace dy::builtin
 {
 
-ADyBaseTransform::ADyBaseTransform(FDyActor& actorReference) : ADyGeneralBaseComponent(actorReference)
-{ }
-
-EDySuccess ADyBaseTransform::Initialize(const DDyTransformMetaInformation& desc)
+///
+/// @class FDyBuiltinTextureErrorBlue
+/// @brief Instantiate error blue builtin texture which set on if texture instantiation is failed.
+///
+class FDyBuiltinTextureErrorBlue final
 {
+public:
+  FDyBuiltinTextureErrorBlue();
+  /// name for creating DDyModelInformation
+  inline static MDY_SET_IMMUTABLE_STRING(sName, "dyBtTextureErrorBlue");
+};
 
+} /// ::dy::builtin namespace
 
-  return DY_SUCCESS;
-}
-
-void ADyBaseTransform::Release()
-{
-
-}
-
-} /// ::dy namespace
+#endif /// GUARD_DY_BUILTIN_TEXTURE_ERRORBLUE_H

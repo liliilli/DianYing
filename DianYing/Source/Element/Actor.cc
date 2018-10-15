@@ -16,7 +16,9 @@
 #include <Dy/Element/Actor.h>
 #include <Dy/Management/MetaInfoManager.h>
 #include <Dy/Component/CDyTransform.h>
-#include <Dy/Component/Internal/CDyEmptyTransform.h>
+#include "Dy/Component/CDyModelFilter.h"
+#include "Dy/Component/CDyModelRenderer.h"
+#include "Dy/Component/CDyCamera.h"
 
 //!
 //! Forward declaration
@@ -40,6 +42,7 @@ namespace dy
 EDySuccess FDyActor::Initialize(_MIN_ const DDyObjectInformation& objectMetaDesc)
 {
   bool isTransformCreated = false;
+  this->pSetObjectName(objectMetaDesc.mObjectName);
 
   // Create components
   for (const auto& [type, componentInfo] : objectMetaDesc.mMetaComponentInfo)
@@ -53,30 +56,38 @@ EDySuccess FDyActor::Initialize(_MIN_ const DDyObjectInformation& objectMetaDesc
       MDY_NOTUSED auto transformComponentPtr = this->AddComponent<CDyTransform>(desc);
 
       isTransformCreated = true;
-    }
-    break;
+    } break;
     case EDyComponentMetaType::Script:
     {
       const auto& desc = std::any_cast<const DDyScriptMetaInformation&>(componentInfo);
       MDY_NOTUSED auto scriptComponentPtr = this->AddComponent<CDyScript>(desc);
-    }
-    break;
+    } break;
     case EDyComponentMetaType::DirectionalLight:
     {
       const auto& desc = std::any_cast<const DDyDirectionalLightMetaInformation&>(componentInfo);
       (void)desc;
       //const auto& directionalLight = std::any_cast<const &>(componentInfo);
-    }
-    break;
+    } break;
+    case EDyComponentMetaType::ModelFilter:
+    {
+      const auto& desc = std::any_cast<const DDyModelFilterMetaInformation&>(componentInfo);
+      MDY_NOTUSED auto modelFilterComponentPtr = this->AddComponent<CDyModelFilter>(desc);
+    } break;
+    case EDyComponentMetaType::ModelRenderer:
+    {
+      const auto& desc = std::any_cast<const DDyModelRendererMetaInformation&>(componentInfo);
+      MDY_NOTUSED auto modelRendererComponentPtr = this->AddComponent<CDyModelRenderer>(desc);
+    } break;
+    case EDyComponentMetaType::Camera:
+    {
+      const auto& desc = std::any_cast<const DDyCameraMetaInformation&>(componentInfo);
+      MDY_NOTUSED auto cameraComponentPtr = this->AddComponent<CDyCamera>(desc);
+    } break;
     }
   }
 
   // Create CDyEmptyTransform when not having CDyTransform.
-  if (isTransformCreated == false)
-  {
-    [[maybe_unused]] auto ptr = this->AddComponent<CDyEmptyTransform>(sDefaultTransformMetaInformation);
-  }
-
+  PHITOS_ASSERT(isTransformCreated == true, "CDyTransform component must be created to all FDyActor.");
   return DY_SUCCESS;
 }
 
@@ -195,7 +206,7 @@ EDySuccess FDyActor::RemoveScriptComponent(const std::string& scriptName) noexce
   }
 }
 
-NotNull<ADyBaseTransform*> FDyActor::GetTransform() noexcept
+NotNull<CDyTransform*> FDyActor::GetTransform() noexcept
 {
   return DyMakeNotNull(this->mTransform.get());
 }

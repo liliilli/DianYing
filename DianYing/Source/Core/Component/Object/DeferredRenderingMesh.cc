@@ -20,7 +20,7 @@
 #include <Dy/Management/DataInformationManager.h>
 #include <Dy/Management/HeapResourceManager.h>
 #include <Dy/Management/RenderingManager.h>
-#include "Dy/Builtin/ShaderGl/RenderDeferredRendering.h"
+#include <Dy/Builtin/ShaderGl/RenderDeferredRendering.h>
 
 namespace
 {
