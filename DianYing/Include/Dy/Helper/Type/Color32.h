@@ -18,22 +18,25 @@
 #include <cstdint>
 #include <Dy/Helper/Type/Color.h>
 
-namespace dy {
+namespace dy
+{
 
 ///
 /// @class DDyColor32
 /// @brief 8-bit color type which stores 4 components (R, G, B, A)
 /// (h, s, v) does not support but can be converted calling HsvToRgb().
 ///
-struct alignas(4) DDyColor32 final {
-  uint8_t R = 0;
-  uint8_t G = 0;
-  uint8_t B = 0;
-  uint8_t A = 0;
+struct alignas(4) DDyColor32 final
+{
+  TU08 R = MDY_INITIALIZE_DEFUINT;
+  TU08 G = MDY_INITIALIZE_DEFUINT;
+  TU08 B = MDY_INITIALIZE_DEFUINT;
+  TU08 A = MDY_INITIALIZE_DEFUINT;
 
   constexpr DDyColor32() = default;
-  explicit DDyColor32(uint8_t r, uint8_t g, uint8_t b) noexcept : DDyColor32{r, g, b, 0xFF} {}
-  explicit DDyColor32(uint8_t r, uint8_t g, uint8_t b, uint8_t a) noexcept
+  constexpr explicit DDyColor32(_MIN_ const TU08 r, _MIN_ const TU08 g, _MIN_ const TU08 b) noexcept :
+      DDyColor32{r, g, b, 0b11111111} {}
+  constexpr explicit DDyColor32(_MIN_ const TU08 r, _MIN_ const TU08 g, _MIN_ const TU08 b, _MIN_ const TU08 a) noexcept
   {
     this->R = r;
     this->G = g;
@@ -48,7 +51,7 @@ struct alignas(4) DDyColor32 final {
   ///
   /// @brief Check it is opaque (A == 0xFF) or not (otherwise).
   ///
-  constexpr bool IsOpaque() const noexcept
+  MDY_NODISCARD constexpr bool IsOpaque() const noexcept
   {
     return this->A == std::numeric_limits<uint8_t>::max();
   }
@@ -64,7 +67,7 @@ struct alignas(4) DDyColor32 final {
   ///
   /// @brief Get color's grayscale value following sRGB.
   ///
-  constexpr float GetGrayScale() const noexcept
+  MDY_NODISCARD constexpr float GetGrayScale() const noexcept
   {
     return 0.2126f * this->R + 0.7152f * this->G + 0.0722f * this->B;
   }
