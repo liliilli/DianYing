@@ -104,6 +104,9 @@
     <ClCompile Include="Source\Component\CDyCamera.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderOpaqueStatic.cc" />
     <ClCompile Include="Source\Builtin\Material\OpaqueStaticPlain.cc" />
+    <ClCompile Include="Source\Builtin\Model\Plain.cc" />
+    <ClCompile Include="Source\Builtin\Model\Sphere.cc" />
+    <ClCompile Include="Source\Builtin\Texture\Checker.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -279,6 +282,9 @@
     <ClInclude Include="Include\Dy\Component\CDyCamera.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderOpaqueStatic.h" />
     <ClInclude Include="Include\Dy\Builtin\Material\OpaqueStaticPlain.h" />
+    <ClInclude Include="Include\Dy\Builtin\Model\Plain.h" />
+    <ClInclude Include="Include\Dy\Builtin\Model\Sphere.h" />
+    <ClInclude Include="Include\Dy\Builtin\Texture\Checker.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

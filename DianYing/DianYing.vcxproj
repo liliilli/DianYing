@@ -165,6 +165,8 @@
     <ClCompile Include="Libraries\imgui\imgui\imgui.cpp" />
     <ClCompile Include="Source\Builtin\Material\OpaqueStaticPlain.cc" />
     <ClCompile Include="Source\Builtin\Model\Box.cc" />
+    <ClCompile Include="Source\Builtin\Model\Plain.cc" />
+    <ClCompile Include="Source\Builtin\Model\Sphere.cc" />
     <ClCompile Include="Source\Builtin\Object\Light\DirectionalLight.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderBasicShadow.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderColorGeometry.cc" />
@@ -172,6 +174,7 @@
     <ClCompile Include="Source\Builtin\ShaderGl\RenderGrid.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderOpaqueStatic.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderPass.cc" />
+    <ClCompile Include="Source\Builtin\Texture\Checker.cc" />
     <ClCompile Include="Source\Component\Abstract\ADyGeneralBaseComponent.cc" />
     <ClCompile Include="Source\Component\CDyCamera.cc" />
     <ClCompile Include="Source\Component\CDyModelFilter.cc" />
@@ -268,6 +271,8 @@
   <ItemGroup>
     <ClInclude Include="Include\Dy\Builtin\Material\OpaqueStaticPlain.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\Box.h" />
+    <ClInclude Include="Include\Dy\Builtin\Model\Plain.h" />
+    <ClInclude Include="Include\Dy\Builtin\Model\Sphere.h" />
     <ClInclude Include="Include\Dy\Builtin\Object\Light\DirectionalLight.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderBasicShadow.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderColorGeometry.h" />
@@ -275,6 +280,7 @@
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderGrid.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderOpaqueStatic.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderPass.h" />
+    <ClInclude Include="Include\Dy\Builtin\Texture\Checker.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyPhysicsRIgidbody.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyPhysicsShape.h" />
     <ClInclude Include="Include\Dy\Component\CDyCamera.h" />
