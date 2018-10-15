@@ -30,6 +30,7 @@
 #include <Dy/Management/Editor/GuiManager.h>
 #include <Dy/Helper/Pointer.h>
 #include <Dy/Test/testLua.h>
+#include "Dy/Helper/Type/DyString.h"
 
 
 namespace
