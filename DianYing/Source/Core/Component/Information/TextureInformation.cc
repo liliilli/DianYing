@@ -48,7 +48,7 @@ DDyTextureInformation::DDyTextureInformation(const PDyTextureConstructionDescrip
   case EDyTextureStyleType::D2:
     MDY_LOG_INFO_D(kTextureInformationTemplate, kTextureInformation, "texture type", "Texture2D");
     break;
-  default: PHITOS_UNEXPECTED_BRANCH(); break;
+  default: MDY_UNEXPECTED_BRANCH(); break;
   }
 
   MDY_LOG_INFO_D(kTextureInformationTemplate, kTextureInformation, "absolute path", this->mTextureInformation.mIsEnabledAbsolutePath ? "ON" : "OFF");

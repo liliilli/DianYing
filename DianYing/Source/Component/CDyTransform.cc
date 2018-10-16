@@ -150,7 +150,7 @@ void CDyTransform::SetWorldPosition(_MIN_ const DDyVector3& worldPosition) noexc
 
 void CDyTransform::SetWorldPositionFromFinalPosition(_MIN_ const DDyVector3& finalPosition) noexcept
 {
-  PHITOS_NOT_IMPLEMENTED_ASSERT();
+  MDY_NOT_IMPLEMENTED_ASSERT();
 }
 
 void CDyTransform::AddOffsetLocalPosition(_MIN_ EDyAxis3D axis, _MIN_ float value) noexcept

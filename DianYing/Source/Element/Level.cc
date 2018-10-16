@@ -50,7 +50,7 @@ void FDyLevel::Initialize(_MIN_ const PDyLevelConstructDescriptor& desc)
     if (objectInformation.mParentHashValue.empty() == false)
     {
 #ifdef false
-      PHITOS_NOT_IMPLEMENTED_ASSERT();
+      MDY_NOT_IMPLEMENTED_ASSERT();
       instancePtr->SetParent();
 #endif
     }
@@ -64,7 +64,7 @@ void FDyLevel::Initialize(_MIN_ const PDyLevelConstructDescriptor& desc)
 
     // @TODO TEMPORARY.
     auto [it, result] = this->mActorMap.try_emplace(instancePtr->GetActorName(), std::move(instancePtr));
-    PHITOS_ASSERT(result == true, "Unexpected error occured in inserting FDyActor to object map.");
+    MDY_ASSERT(result == true, "Unexpected error occured in inserting FDyActor to object map.");
   };
 
   // FunctionBody ∨
@@ -80,10 +80,10 @@ void FDyLevel::Initialize(_MIN_ const PDyLevelConstructDescriptor& desc)
     const auto type = objectInformation.mObjectType;
     switch (type)
     {
-    default: PHITOS_UNEXPECTED_BRANCH();    break;
+    default: MDY_UNEXPECTED_BRANCH();    break;
     case EDyMetaObjectType::Actor:          pCreateActorInstance(objectInformation); break;
-    case EDyMetaObjectType::SceneScriptor:  PHITOS_NOT_IMPLEMENTED_ASSERT(); break;
-    case EDyMetaObjectType::Object:         PHITOS_NOT_IMPLEMENTED_ASSERT(); break;
+    case EDyMetaObjectType::SceneScriptor:  MDY_NOT_IMPLEMENTED_ASSERT(); break;
+    case EDyMetaObjectType::Object:         MDY_NOT_IMPLEMENTED_ASSERT(); break;
     }
   }
 
@@ -121,7 +121,7 @@ void FDyLevel::Update(float dt)
 
 std::string FDyLevel::ToString()
 {
-PHITOS_NOT_IMPLEMENTED_ASSERT();
+MDY_NOT_IMPLEMENTED_ASSERT();
 return MDY_INITILAIZE_EMPTYSTR;
 }
 

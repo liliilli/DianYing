@@ -171,7 +171,7 @@ public:
     }
     else if constexpr (std::is_same_v<CDyTransform, TComponent>)
     { // If component is not CDyScript but related to ADyBaseTransform (Transform components)
-      PHITOS_ASSERT(MDY_CHECK_ISEMPTY(this->mTransform), "FDyActor::mTransform must be empty when insert transform component.");
+      MDY_ASSERT(MDY_CHECK_ISEMPTY(this->mTransform), "FDyActor::mTransform must be empty when insert transform component.");
 
       this->mTransform.reset(componentPtr.release());
       return DyMakeNotNull(this->mTransform.get());

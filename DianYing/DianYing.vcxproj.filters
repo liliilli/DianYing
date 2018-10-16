@@ -108,6 +108,7 @@
     <ClCompile Include="Source\Builtin\Model\Sphere.cc" />
     <ClCompile Include="Source\Builtin\Texture\Checker.cc" />
     <ClCompile Include="Source\Builtin\Texture\ErrorBlue.cc" />
+    <ClCompile Include="Source\Helper\Type\DyString.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -287,6 +288,9 @@
     <ClInclude Include="Include\Dy\Builtin\Model\Sphere.h" />
     <ClInclude Include="Include\Dy\Builtin\Texture\Checker.h" />
     <ClInclude Include="Include\Dy\Builtin\Texture\ErrorBlue.h" />
+    <ClInclude Include="Include\Dy\Helper\Constant\StringPipelineUniform.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\DyString.h" />
+    <ClInclude Include="Include\Dy\Helper\Assertion.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

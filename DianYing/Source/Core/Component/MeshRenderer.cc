@@ -15,8 +15,6 @@
 /// Header file
 #include <Dy/Core/Component/MeshRenderer.h>
 
-#include <Phitos/Dbg/assert.h>
-
 #include <Dy/Core/Component/Internal/EtcType.h>
 #include <Dy/Core/Component/Resource/ModelResource.h>
 

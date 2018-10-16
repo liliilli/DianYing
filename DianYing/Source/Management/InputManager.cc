@@ -16,7 +16,7 @@
 #include <Dy/Management/InputManager.h>
 
 #include <nlohmann/json.hpp>
-#include <Phitos/Dbg/assert.h>
+
 
 #include <Dy/Helper/JsonHelper.h>
 #include <Dy/Management/LoggingManager.h>
@@ -206,7 +206,7 @@ EDySuccess DyBindKeyboardKeyInformation(const nlohmann::json& atlas_json) {
   {
     MDY_LOG_CRITICAL("Header {} is not found in json file.", sKeyboard.data());
     MDY_LOG_ERROR("Keyboard input feature will be disabled.");
-    PHITOS_NOT_IMPLEMENTED_ASSERT();
+    MDY_NOT_IMPLEMENTED_ASSERT();
     return DY_FAILURE;
   }
   const auto keyboard = atlas_json[sKeyboard.data()];
@@ -254,7 +254,7 @@ EDySuccess DyKeyboardBindKey(const nlohmann::basic_json<>::const_iterator& it, d
     if (!pos_it_value.is_string())
     {
       MDY_LOG_ERROR("Keyboard key {} {} value is not number.", key, "positive");
-      PHITOS_ASSERT(!pos_it_value.is_string(), "Key binding failed.");
+      MDY_ASSERT(!pos_it_value.is_string(), "Key binding failed.");
       return DY_FAILURE;
     }
     const auto key_string = pos_it_value.get<std::string>();
@@ -262,7 +262,7 @@ EDySuccess DyKeyboardBindKey(const nlohmann::basic_json<>::const_iterator& it, d
     if (!uid.has_value())
     {
       MDY_LOG_ERROR("Keyboard key {} might be not supported on this version.", key_string);
-      PHITOS_ASSERT(uid.has_value(), "Failed to bind spcified key value. Might be not supported key string.");
+      MDY_ASSERT(uid.has_value(), "Failed to bind spcified key value. Might be not supported key string.");
     }
 
     MDY_LOG_DEBUG_D("Key axis bind : {} Positive : {}", key, key_string);
@@ -276,7 +276,7 @@ EDySuccess DyKeyboardBindKey(const nlohmann::basic_json<>::const_iterator& it, d
     if (!neg_it_value.is_string())
     {
       MDY_LOG_ERROR("Keyboard key {} {} value is not number.", key, "negative");
-      PHITOS_ASSERT(!neg_it_value.is_string(), "Key binding failed.");
+      MDY_ASSERT(!neg_it_value.is_string(), "Key binding failed.");
       return DY_FAILURE;
     }
     const auto key_string = neg_it_value.get<std::string>();
@@ -284,7 +284,7 @@ EDySuccess DyKeyboardBindKey(const nlohmann::basic_json<>::const_iterator& it, d
     if (!uid.has_value())
     {
       MDY_LOG_ERROR("Keyboard key {} might be not supported on this version.", key_string);
-      PHITOS_ASSERT(uid.has_value(), "Failed to bind spcified key value. Might be not supported key string.");
+      MDY_ASSERT(uid.has_value(), "Failed to bind spcified key value. Might be not supported key string.");
     }
 
     MDY_LOG_DEBUG_D("Key axis bind : {} Negative : {}", key, key_string);
@@ -323,7 +323,7 @@ EDySuccess MDyInput::pfInitialize()
 {
   if (!this->pReadInputFile(sTestSettingFile.data()))
   {
-    PHITOS_UNEXPECTED_BRANCH();
+    MDY_UNEXPECTED_BRANCH();
   }
 
   auto& winManager = MDyWindow::GetInstance();
@@ -354,7 +354,7 @@ EDySuccess MDyInput::pReadInputFile(const std::string& file_path) {
   {
     MDY_LOG_CRITICAL(err_input_failed_load_file, file_path);
     MDY_LOG_ERROR("Input feature will be disabled.");
-    PHITOS_NOT_IMPLEMENTED_ASSERT();
+    MDY_NOT_IMPLEMENTED_ASSERT();
     return DY_FAILURE;
   }
   const auto& atlas_json = opJsonAtlas.value()["Input"];
@@ -362,7 +362,7 @@ EDySuccess MDyInput::pReadInputFile(const std::string& file_path) {
   if (!DyIsJsonKeyExist(atlas_json, sMode.data())) {
     MDY_LOG_CRITICAL(err_input_failed_json_file, sMode.data(), file_path);
     MDY_LOG_ERROR("Input feature will be disabled.");
-    PHITOS_NOT_IMPLEMENTED_ASSERT();
+    MDY_NOT_IMPLEMENTED_ASSERT();
     return DY_FAILURE;
   }
 
@@ -393,7 +393,7 @@ EDySuccess MDyInput::pReadInputFile(const std::string& file_path) {
     {
       MDY_LOG_CRITICAL(err_input_failed_json_file, sMouse.data(), file_path);
       MDY_LOG_ERROR("mouse input feature will be disabled.");
-      PHITOS_NOT_IMPLEMENTED_ASSERT();
+      MDY_NOT_IMPLEMENTED_ASSERT();
       return DY_FAILURE;
     }
     else

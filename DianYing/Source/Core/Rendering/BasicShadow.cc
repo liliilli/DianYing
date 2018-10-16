@@ -116,7 +116,7 @@ void FDyBasicShadow::pCreateFramebufferComponents()
   glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, this->mShadowDepthValueBuffer, 0);
-  if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) { PHITOS_UNEXPECTED_BRANCH(); }
+  if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) { MDY_UNEXPECTED_BRANCH(); }
 
   glDrawBuffer(GL_NONE);
   glReadBuffer(GL_NONE);

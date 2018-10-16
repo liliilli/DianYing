@@ -161,7 +161,7 @@ void MDySetting::SetLogFilePath(const std::string& path) noexcept
 
 void MDySetting::pArgsPushback(const char* argsString)
 {
-  PHITOS_ASSERT(!this->mIsInitialized, "Setting manager must not be initiailized before putting arguments");
+  MDY_ASSERT(!this->mIsInitialized, "Setting manager must not be initiailized before putting arguments");
   this->mApplicationArgs.emplace_back(argsString);
 }
 

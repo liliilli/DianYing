@@ -19,7 +19,7 @@
 #include <Dy/Core/Component/Information/ShaderInformation.h>
 #include <Dy/Core/Component/Resource/MaterialResource.h>
 #include <Dy/Management/LoggingManager.h>
-#include <Phitos/Dbg/assert.h>
+
 
 //!
 //! Only this translate unit function.
@@ -420,7 +420,7 @@ void CDyShaderResource::__pfSetMaterialResourceLink(CDyMaterialResource* ptr) co
   auto [it, result] = this->__mLinkedMaterialResourcePtrs.try_emplace(ptr, ptr);
   if (!result) {
     MDY_LOG_CRITICAL_D("{} | Unexpected error occurred. | Shader Name : {}", "CDyShaderResource::__pfSetMaterialResourceLink", this->mShaderName);
-    PHITOS_UNEXPECTED_BRANCH();
+    MDY_UNEXPECTED_BRANCH();
   }
 }
 
@@ -431,7 +431,7 @@ void CDyShaderResource::UseShader() noexcept
 
 void CDyShaderResource::UpdateUniformVariables()
 {
-  PHITOS_NOT_IMPLEMENTED_ASSERT();
+  MDY_NOT_IMPLEMENTED_ASSERT();
 }
 
 void CDyShaderResource::UnuseShader() noexcept

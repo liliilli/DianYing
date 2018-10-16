@@ -142,7 +142,7 @@ public:
   ///
   MDY_NODISCARD FORCEINLINE const std::string& GetScriptVerificationName() const noexcept
   {
-    PHITOS_ASSERT(this->mScriptName.empty() == false, "Script name must not be empty.");
+    MDY_ASSERT(this->mScriptName.empty() == false, "Script name must not be empty.");
     return this->mScriptName;
   }
 

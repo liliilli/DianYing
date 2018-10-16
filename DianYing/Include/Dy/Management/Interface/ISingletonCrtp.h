@@ -15,7 +15,6 @@
 
 #include <atomic>
 
-#include <Phitos/Dbg/assert.h>
 #include <Dy/Helper/Macroes.h>
 
 namespace dy
@@ -40,8 +39,8 @@ public:
   ///
   [[nodiscard]] FORCEINLINE EDySuccess static Initialize() noexcept
   {
-    PHITOS_ASSERT(ISingleton<TType>::mIsInitialized == false, "Singleton instance must be initialized only once.");
-    PHITOS_ASSERT(ISingleton<TType>::mIsShutdown    == false, "Singleton instance can not be reinitialized after shutting down.");
+    MDY_ASSERT(ISingleton<TType>::mIsInitialized == false, "Singleton instance must be initialized only once.");
+    MDY_ASSERT(ISingleton<TType>::mIsShutdown    == false, "Singleton instance can not be reinitialized after shutting down.");
 
     const auto flag = GetInstance().pfInitialize();
 
@@ -55,8 +54,8 @@ public:
   ///
   [[nodiscard]] FORCEINLINE EDySuccess static Release() noexcept
   {
-    PHITOS_ASSERT(ISingleton<TType>::mIsInitialized == true , "Singleton instance must be initialized before shutting down.");
-    PHITOS_ASSERT(ISingleton<TType>::mIsShutdown    == false, "Singleton instance can not be shutted down again.");
+    MDY_ASSERT(ISingleton<TType>::mIsInitialized == true , "Singleton instance must be initialized before shutting down.");
+    MDY_ASSERT(ISingleton<TType>::mIsShutdown    == false, "Singleton instance can not be shutted down again.");
 
     const auto flag = GetInstance().pfRelease();
 

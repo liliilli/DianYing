@@ -111,7 +111,7 @@ std::optional<TI32> CDyModelRenderer::GetModelSubmeshCount() const noexcept
 
 const CDyMaterialResource& CDyModelRenderer::GetMaterialResourcePtr(_MIN_ const TI32 index) const noexcept
 {
-  PHITOS_ASSERT(index < this->mMaterialResourcePtr.size(), "Index for CDyModelRenderer::mMaterialResourcePtr is out of bound.");
+  MDY_ASSERT(index < this->mMaterialResourcePtr.size(), "Index for CDyModelRenderer::mMaterialResourcePtr is out of bound.");
   return *this->mMaterialResourcePtr[index];
 }
 
@@ -150,7 +150,7 @@ void CDyModelRenderer::pPropagateParentActorActivation(const DDy3StateBool& acto
 
 std::string CDyModelRenderer::ToString()
 {
-  PHITOS_NOT_IMPLEMENTED_ASSERT();
+  MDY_NOT_IMPLEMENTED_ASSERT();
   return MDY_INITILAIZE_EMPTYSTR;
 }
 
@@ -167,7 +167,7 @@ EDySuccess CDyModelRenderer::pTryBindingToModelFilterComponent()
   CDyModelFilter& filterRef = *opRenderer.value();
   if (filterRef.IsComponentActivated() == false)            { return DY_FAILURE; }
 
-  PHITOS_ASSERT(MDY_CHECK_ISNULL(this->mModelFilter), "CDyModelFilter::mModelRendererReferencePtr must be null when unbinding.");
+  MDY_ASSERT(MDY_CHECK_ISNULL(this->mModelFilter), "CDyModelFilter::mModelRendererReferencePtr must be null when unbinding.");
   this->BindModelFilterReference(filterRef);
 
   return DY_SUCCESS;
@@ -179,7 +179,7 @@ EDySuccess CDyModelRenderer::pTryUnbindingToModelFilterComponent()
   if (this->mActivateFlag.GetOutput() == true)             { return DY_FAILURE; }
 
   // Check final activation flag and unbind instance from CDyModelRenderer.
-  PHITOS_ASSERT(MDY_CHECK_ISNOTNULL(this->mModelFilter), "CDyModelFilter::mModelRendererReferencePtr must not be null when unbinding.");
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mModelFilter), "CDyModelFilter::mModelRendererReferencePtr must not be null when unbinding.");
   this->UnbindModelFilterReference();
 
   return DY_SUCCESS;
@@ -187,14 +187,14 @@ EDySuccess CDyModelRenderer::pTryUnbindingToModelFilterComponent()
 
 void CDyModelRenderer::BindModelFilterReference(CDyModelFilter& validReference)
 {
-  PHITOS_ASSERT(MDY_CHECK_ISNULL(this->mModelFilter), "CDyModelRenderer::mModelFilter must be a nullptr when binding.");
+  MDY_ASSERT(MDY_CHECK_ISNULL(this->mModelFilter), "CDyModelRenderer::mModelFilter must be a nullptr when binding.");
   this->mModelFilter = &validReference;
   this->mModelFilter->fBindModelRendererReference(*this);
 }
 
 void CDyModelRenderer::UnbindModelFilterReference()
 {
-  PHITOS_ASSERT(MDY_CHECK_ISNOTNULL(this->mModelFilter), "CDyModelRenderer::mModelFilter must not be a nullptr when binding.");
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mModelFilter), "CDyModelRenderer::mModelFilter must not be a nullptr when binding.");
   this->mModelFilter->fUnbindModelRendererReference();
   this->mModelFilter = MDY_INITIALIZE_NULL;
 }

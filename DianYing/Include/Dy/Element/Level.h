@@ -92,7 +92,7 @@ public:
         object_final_name,
         nullptr);
     if (!result) {
-      PHITOS_ASSERT(result, "Object did not be made properly.");
+      MDY_ASSERT(result, "Object did not be made properly.");
       return nullptr;
     }
 
@@ -124,7 +124,7 @@ public:
 
     auto [result_pair, result] = m_object_list.try_emplace(object_final_name, nullptr);
     if (!result) {
-      PHITOS_ASSERT(result, "Object did not be made properly.");
+      MDY_ASSERT(result, "Object did not be made properly.");
       return nullptr;
     }
 

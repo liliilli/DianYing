@@ -46,7 +46,7 @@ EDySuccess MDyMetaInfo::pfInitialize()
   auto [it, result] = this->mLevelInfoMap.try_emplace(desc.mLevelName, desc);
   if (!result)
   {
-    PHITOS_UNEXPECTED_BRANCH();
+    MDY_UNEXPECTED_BRANCH();
     return DY_FAILURE;
   }
 

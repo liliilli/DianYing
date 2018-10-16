@@ -230,6 +230,7 @@
     <ClCompile Include="Source\Helper\ThreadPool.cc" />
     <ClCompile Include="Source\Helper\Type\Color.cc" />
     <ClCompile Include="Source\Helper\Type\Color32.cc" />
+    <ClCompile Include="Source\Helper\Type\DyString.cc" />
     <ClCompile Include="Source\Helper\Type\Matrix2.cc" />
     <ClCompile Include="Source\Helper\Type\Matrix3.cc" />
     <ClCompile Include="Source\Helper\Type\Matrix4.cc" />
@@ -354,6 +355,7 @@
     <ClInclude Include="Include\Dy\Element\Interface\IDyColliable.h" />
     <ClInclude Include="Include\Dy\Element\Level.h" />
     <ClInclude Include="Include\Dy\Element\LevelScriptor.h" />
+    <ClInclude Include="Include\Dy\Helper\Assertion.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\Contracts.h" />
     <ClInclude Include="Include\Dy\Helper\Dbg\CheckUsage.h" />
     <ClInclude Include="Include\Dy\Helper\GlobalType.h" />
@@ -363,6 +365,7 @@
     <ClInclude Include="Include\Dy\Helper\JsonHelper.h" />
     <ClInclude Include="Include\Dy\Helper\Pointer.h" />
     <ClInclude Include="Include\Dy\Helper\ThreadPool.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\DyString.h" />
     <ClInclude Include="Include\Dy\Helper\Type\ThreeStateBool.h" />
     <ClInclude Include="Include\Dy\Management\Editor\GuiManager.h" />
     <ClInclude Include="Include\Dy\Management\Editor\GuiSetting.h" />
@@ -411,6 +414,7 @@
     <ClInclude Include="Include\Dy\Management\TimeManager.h" />
     <ClInclude Include="Include\Dy\Test\testLua.h" />
     <ClInclude Include="Include\Dy\Test\TestMacroSetting.h" />
+    <ClInclude Include="Include\Dy\Helper\Constant\StringPipelineUniform.h" />
     <ClInclude Include="Include\precompiled.h" />
     <ClInclude Include="Libraries\glad\include\glad\glad.h" />
     <ClInclude Include="Libraries\glad\include\KHR\khrplatform.h" />

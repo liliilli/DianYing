@@ -15,7 +15,6 @@
 /// Header file
 #include <Dy/Core/Component/Object/Camera.h>
 
-#include <Phitos/Dbg/assert.h>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <Dy/Helper/Type/Vector3.h>
@@ -113,7 +112,7 @@ void CDyLegacyCamera::SetFieldOfView(float newFov) noexcept
 
 void CDyLegacyCamera::SetAspect(float newAspect) noexcept
 {
-  PHITOS_ASSERT(newAspect > 0.f, "Aspect value must bigger than 0.0f");
+  MDY_ASSERT(newAspect > 0.f, "Aspect value must bigger than 0.0f");
 
   this->mAspect = newAspect;
   this->mIsPerspectiveMatrixDirty = true;

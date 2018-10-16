@@ -50,11 +50,11 @@ void DyLuaFundamental01()
     ++x;
   });
   lua.script("Beep()");
-  PHITOS_ASSERT(x == 1, "LUA TEST FAILED");
+  MDY_ASSERT(x == 1, "LUA TEST FAILED");
 
   sol::function fnBeep = lua["Beep"];
   (void)fnBeep();
-  PHITOS_ASSERT(x == 2, "LUA TEST FAILED");
+  MDY_ASSERT(x == 2, "LUA TEST FAILED");
 }
 
 void DyLuaFundamental02()
@@ -84,10 +84,10 @@ bopValue = Beep:Bop()
   DDyVars& beep = lua["Beep"];
   TI32 bopValue = lua["bopValue"];
 
-  PHITOS_ASSERT(beep.mBoop == 1, "LUA TEST FAILED");
-  PHITOS_ASSERT(lua.get<DDyVars>("Beep").mBoop == 1, "LUA TEST FAILED");
-  PHITOS_ASSERT(beep.Bop() == 2, "LUA TEST FAILED");
-  PHITOS_ASSERT(bopValue = 2, "LUA TEST FAILED");
+  MDY_ASSERT(beep.mBoop == 1, "LUA TEST FAILED");
+  MDY_ASSERT(lua.get<DDyVars>("Beep").mBoop == 1, "LUA TEST FAILED");
+  MDY_ASSERT(beep.Bop() == 2, "LUA TEST FAILED");
+  MDY_ASSERT(bopValue = 2, "LUA TEST FAILED");
 
   MDY_LOG_CRITICAL("DyLuaFundamental02 Success");
 }
