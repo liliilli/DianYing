@@ -15,7 +15,6 @@
 /// Header file
 #include <Dy/Core/Component/Object/PostEffectSsao.h>
 
-#include <Phitos/Dbg/assert.h>
 #include <Dy/Management/DataInformationManager.h>
 #include <Dy/Management/HeapResourceManager.h>
 #include <Dy/Management/RenderingManager.h>

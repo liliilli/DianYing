@@ -290,6 +290,7 @@
     <ClInclude Include="Include\Dy\Builtin\Texture\ErrorBlue.h" />
     <ClInclude Include="Include\Dy\Helper\Constant\StringPipelineUniform.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DyString.h" />
+    <ClInclude Include="Include\Dy\Helper\Assertion.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

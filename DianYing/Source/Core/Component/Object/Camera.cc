@@ -15,7 +15,6 @@
 /// Header file
 #include <Dy/Core/Component/Object/Camera.h>
 
-#include <Phitos/Dbg/assert.h>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <Dy/Helper/Type/Vector3.h>

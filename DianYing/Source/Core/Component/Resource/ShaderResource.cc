@@ -19,7 +19,7 @@
 #include <Dy/Core/Component/Information/ShaderInformation.h>
 #include <Dy/Core/Component/Resource/MaterialResource.h>
 #include <Dy/Management/LoggingManager.h>
-#include <Phitos/Dbg/assert.h>
+
 
 //!
 //! Only this translate unit function.

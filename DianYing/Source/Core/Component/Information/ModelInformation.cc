@@ -29,7 +29,6 @@
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Helper/ThreadPool.h>
 #include <Dy/Helper/IoHelper.h>
-#include <Phitos/Dbg/assert.h>
 
 namespace
 {
