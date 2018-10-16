@@ -86,7 +86,7 @@ void CDyCamera::Update(_MIN_ float dt)
 
 std::string CDyCamera::ToString()
 {
-  PHITOS_NOT_IMPLEMENTED_ASSERT();
+  MDY_NOT_IMPLEMENTED_ASSERT();
   return MDY_INITILAIZE_EMPTYSTR;
 }
 

@@ -72,7 +72,7 @@ FDyDeferredRenderingMesh::FDyDeferredRenderingMesh()
   builtin::FDyBuiltinShaderGLRenderDeferredRendering();
   this->mShaderPtr = manResc.GetShaderResource(builtin::FDyBuiltinShaderGLRenderDeferredRendering::sName.data());
 
-  PHITOS_ASSERT(this->mShaderPtr, "FDyDeferredRenderingMesh::mShaderPtr must not be nullptr.");
+  MDY_ASSERT(this->mShaderPtr, "FDyDeferredRenderingMesh::mShaderPtr must not be nullptr.");
   this->mShaderPtr->UseShader();
 
   glUniform1i(glGetUniformLocation(this->mShaderPtr->GetShaderProgramId(), "uUnlit"), 0);
@@ -97,7 +97,7 @@ FDyDeferredRenderingMesh::~FDyDeferredRenderingMesh()
 
 void FDyDeferredRenderingMesh::RenderScreen()
 {
-  PHITOS_ASSERT(this->mShaderPtr, "FDyDeferredRenderingMesh::mShaderPtr must not be nullptr.");
+  MDY_ASSERT(this->mShaderPtr, "FDyDeferredRenderingMesh::mShaderPtr must not be nullptr.");
 
   this->mShaderPtr->UseShader();
   glBindVertexArray(this->mVao);

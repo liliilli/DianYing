@@ -457,9 +457,9 @@ EDySuccess MDyWindow::pfInitialize()
 
   switch (MDySetting::GetInstance().GetRenderingType())
   {
-  default: PHITOS_UNEXPECTED_BRANCH(); break;
-  case EDyRenderingApiType::DirectX12:  MDY_LOG_INFO_D("Initialize DirectX12 Context.");  PHITOS_NOT_IMPLEMENTED_ASSERT(); break;
-  case EDyRenderingApiType::Vulkan:     MDY_LOG_INFO_D("Initialize Vulkan Context.");     PHITOS_NOT_IMPLEMENTED_ASSERT();
+  default: MDY_UNEXPECTED_BRANCH(); break;
+  case EDyRenderingApiType::DirectX12:  MDY_LOG_INFO_D("Initialize DirectX12 Context.");  MDY_NOT_IMPLEMENTED_ASSERT(); break;
+  case EDyRenderingApiType::Vulkan:     MDY_LOG_INFO_D("Initialize Vulkan Context.");     MDY_NOT_IMPLEMENTED_ASSERT();
 #ifdef false
     dy::DyVkInitialize(windowHandle, hInstance);
 
@@ -471,7 +471,7 @@ EDySuccess MDyWindow::pfInitialize()
     dy::DyVkCleanupResources();
 #endif
     break;
-  case EDyRenderingApiType::DirectX11: MDY_LOG_INFO_D("Initialize DirectX11 Context."); PHITOS_NOT_IMPLEMENTED_ASSERT();
+  case EDyRenderingApiType::DirectX11: MDY_LOG_INFO_D("Initialize DirectX11 Context."); MDY_NOT_IMPLEMENTED_ASSERT();
 #ifdef false
     MDY_CALL_ASSERT_SUCCESS(DyWin32InitializeWindow(hInstance));
     MDY_CALL_ASSERT_SUCCESS(DyD11InitializeDirect3D());
@@ -544,10 +544,10 @@ EDySuccess MDyWindow::pfRelease()
 
   switch (MDySetting::GetInstance().GetRenderingType())
   {
-  default: PHITOS_UNEXPECTED_BRANCH(); return DY_FAILURE;
-  case EDyRenderingApiType::DirectX11:  MDY_LOG_INFO_D("Release DirectX11 Context.");  PHITOS_NOT_IMPLEMENTED_ASSERT(); break;
-  case EDyRenderingApiType::DirectX12:  MDY_LOG_INFO_D("Release DirectX12 Context.");  PHITOS_NOT_IMPLEMENTED_ASSERT(); break;
-  case EDyRenderingApiType::Vulkan:     MDY_LOG_INFO_D("Release Vulkan Context.");     PHITOS_NOT_IMPLEMENTED_ASSERT(); break;
+  default: MDY_UNEXPECTED_BRANCH(); return DY_FAILURE;
+  case EDyRenderingApiType::DirectX11:  MDY_LOG_INFO_D("Release DirectX11 Context.");  MDY_NOT_IMPLEMENTED_ASSERT(); break;
+  case EDyRenderingApiType::DirectX12:  MDY_LOG_INFO_D("Release DirectX12 Context.");  MDY_NOT_IMPLEMENTED_ASSERT(); break;
+  case EDyRenderingApiType::Vulkan:     MDY_LOG_INFO_D("Release Vulkan Context.");     MDY_NOT_IMPLEMENTED_ASSERT(); break;
   case EDyRenderingApiType::OpenGL:
     MDY_LOG_INFO_D("Release OpenGL Context.");
 

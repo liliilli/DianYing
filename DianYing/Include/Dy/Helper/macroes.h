@@ -132,7 +132,7 @@
   { \
     auto result = (__MAFunctionCall__); \
     result = result; \
-    PHITOS_ASSERT(result == DY_SUCCESS, "Failed to execute expression successfully."); \
+    MDY_ASSERT(result == DY_SUCCESS, "Failed to execute expression successfully."); \
   }
 
 ///

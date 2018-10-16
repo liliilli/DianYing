@@ -353,7 +353,7 @@ PDyLevelConstructDescriptor PDyLevelConstructDescriptor::CreateDescriptor(_MIN_ 
 
       switch (typeEnum)
       {
-      default: PHITOS_UNEXPECTED_BRANCH(); break;
+      default: MDY_UNEXPECTED_BRANCH(); break;
       case EDyComponentMetaType::Transform:         // Create and insert CDyTransform meta information descriptor.
       {
         const DDyTransformMetaInformation meta = CreateTransformMetaInfo(componentMetaInfo);

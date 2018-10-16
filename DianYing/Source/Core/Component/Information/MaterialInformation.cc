@@ -66,7 +66,7 @@ DDyMaterialInformation::DDyMaterialInformation(const PDyMaterialConstructionDesc
       this->mMaterialInformation.mBlendMode = EDyMaterialBlendMode::Opaque;
     }
     break;
-  default: PHITOS_UNEXPECTED_BRANCH(); break;
+  default: MDY_UNEXPECTED_BRANCH(); break;
   }
 
   for (const auto& textureName : this->mMaterialInformation.mTextureNames)

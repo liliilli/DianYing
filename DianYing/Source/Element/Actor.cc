@@ -49,7 +49,7 @@ EDySuccess FDyActor::Initialize(_MIN_ const DDyObjectInformation& objectMetaDesc
   {
     switch (type)
     {
-    default: PHITOS_UNEXPECTED_BRANCH(); break;
+    default: MDY_UNEXPECTED_BRANCH(); break;
     case EDyComponentMetaType::Transform:
     {
       const auto& desc = std::any_cast<const DDyTransformMetaInformation&>(componentInfo);
@@ -87,7 +87,7 @@ EDySuccess FDyActor::Initialize(_MIN_ const DDyObjectInformation& objectMetaDesc
   }
 
   // Create CDyEmptyTransform when not having CDyTransform.
-  PHITOS_ASSERT(isTransformCreated == true, "CDyTransform component must be created to all FDyActor.");
+  MDY_ASSERT(isTransformCreated == true, "CDyTransform component must be created to all FDyActor.");
   return DY_SUCCESS;
 }
 
@@ -167,7 +167,7 @@ void FDyActor::SetParentToRootRelocateTransform() noexcept
 
 std::optional<CDyScript*> FDyActor::GetScriptComponent(const std::string& scriptName) noexcept
 {
-  PHITOS_ASSERT(scriptName.empty() == false, "scriptName must not be empty at FDyActor::GetScriptComponent()");
+  MDY_ASSERT(scriptName.empty() == false, "scriptName must not be empty at FDyActor::GetScriptComponent()");
 
   using TInstanceType = decltype(this->mScriptList)::value_type;
   const auto it = std::find_if(MDY_BIND_BEGIN_END(this->mScriptList), [&scriptName](const TInstanceType& instance)
@@ -181,7 +181,7 @@ std::optional<CDyScript*> FDyActor::GetScriptComponent(const std::string& script
 
 EDySuccess FDyActor::RemoveScriptComponent(const std::string& scriptName) noexcept
 {
-  PHITOS_ASSERT(scriptName.empty() == false, "scriptName must not be empty at FDyActor::GetScriptComponent()");
+  MDY_ASSERT(scriptName.empty() == false, "scriptName must not be empty at FDyActor::GetScriptComponent()");
 
   // Find script instance that has scriptName.
   using TInstanceType = decltype(this->mScriptList)::value_type;

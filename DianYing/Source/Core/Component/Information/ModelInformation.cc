@@ -438,7 +438,7 @@ PDyMaterialConstructionDescriptor DDyModelInformation::__pReadMaterialData(const
   aiString materialName  = {};
   if (const auto ret = material.Get(AI_MATKEY_NAME, materialName); ret == AI_FAILURE)
   {
-    PHITOS_UNEXPECTED_BRANCH();
+    MDY_UNEXPECTED_BRANCH();
   }
 
   // Get material textures information.

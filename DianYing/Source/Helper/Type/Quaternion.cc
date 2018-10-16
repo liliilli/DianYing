@@ -89,7 +89,7 @@ void DDyQuaternion::AddRotationAngle(EDyAxis3D axis, float degreeEulerAngle) {
       this->mQuaternion = temp * this->mQuaternion;
     } break;
   default:
-    PHITOS_UNEXPECTED_BRANCH();
+    MDY_UNEXPECTED_BRANCH();
     break;
   }
 }

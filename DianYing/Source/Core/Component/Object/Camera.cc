@@ -112,7 +112,7 @@ void CDyLegacyCamera::SetFieldOfView(float newFov) noexcept
 
 void CDyLegacyCamera::SetAspect(float newAspect) noexcept
 {
-  PHITOS_ASSERT(newAspect > 0.f, "Aspect value must bigger than 0.0f");
+  MDY_ASSERT(newAspect > 0.f, "Aspect value must bigger than 0.0f");
 
   this->mAspect = newAspect;
   this->mIsPerspectiveMatrixDirty = true;

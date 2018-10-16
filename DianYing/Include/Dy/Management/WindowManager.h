@@ -61,7 +61,7 @@ public:
   ///
   GLFWwindow* GetGlfwWindowContext() const noexcept
   {
-    PHITOS_ASSERT(this->mGlfwWindow, "GlfwWindow is not initiailized.");
+    MDY_ASSERT(this->mGlfwWindow, "GlfwWindow is not initiailized.");
     return this->mGlfwWindow;
   }
 

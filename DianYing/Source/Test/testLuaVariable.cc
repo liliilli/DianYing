@@ -62,7 +62,7 @@ void DyLuaVariablesReading()
   auto isFullScreen = lua["config"]["invalidData"];
   if (isFullScreen.valid())
   {
-    PHITOS_UNEXPECTED_BRANCH();
+    MDY_UNEXPECTED_BRANCH();
   }
   else
   {
@@ -79,7 +79,7 @@ void DyLuaVariablesOptionalLookup()
   // Can bind value to sol::optional too. (WARNING : NOT std::optional! this leads to UB)
   {
     sol::optional<TF32> var = lua["config"]["invalidData"];
-    if (var) { PHITOS_UNEXPECTED_BRANCH(); }
+    if (var) { MDY_UNEXPECTED_BRANCH(); }
     else
     {
       MDY_LOG_CRITICAL("DyLuaVariablesOptionalLookup | config.invalidData is not exist on table.");
@@ -88,7 +88,7 @@ void DyLuaVariablesOptionalLookup()
 
   {
     sol::optional<bool> var = lua["config"]["fullscreen"];
-    if (!var) { PHITOS_UNEXPECTED_BRANCH(); }
+    if (!var) { MDY_UNEXPECTED_BRANCH(); }
     else
     {
       MDY_LOG_CRITICAL("DyLuaVariablesOptionalLookup | config.fullscreen {}", var.value());
@@ -97,7 +97,7 @@ void DyLuaVariablesOptionalLookup()
 
   {
     sol::optional<int> var = lua["config"]["fullscreen"];
-    if (var) { PHITOS_UNEXPECTED_BRANCH(); }
+    if (var) { MDY_UNEXPECTED_BRANCH(); }
     else
     {
       MDY_LOG_CRITICAL("DyLuaVariablesOptionalLookup | config.fullscreen is not a integer");
@@ -106,7 +106,7 @@ void DyLuaVariablesOptionalLookup()
 
   {
     sol::optional<std::tuple<TI32, TI32>> var = lua["config"]["resolution"];
-    if (var) { PHITOS_UNEXPECTED_BRANCH(); }
+    if (var) { MDY_UNEXPECTED_BRANCH(); }
     else
     {
       MDY_LOG_CRITICAL("DyLuaVariablesOptionalLookup | config.resolution is exist but the way of retrieving values is wrong.");
@@ -161,19 +161,19 @@ void DyLuaReferenceModify()
   {
     sol::state lua;
     auto barkkey = lua["Bark"];
-    PHITOS_ASSERT(!barkkey.valid(), "MUST SUCCESS");
+    MDY_ASSERT(!barkkey.valid(), "MUST SUCCESS");
 
     barkkey = 50;
-    PHITOS_ASSERT(barkkey.valid(), "MUST SUCCESS");
+    MDY_ASSERT(barkkey.valid(), "MUST SUCCESS");
   }
 
   {
     sol::state lua;
     lua["Bark"] = 50;
-    PHITOS_ASSERT(lua["Bark"].valid(), "MUST SUCCESS");
+    MDY_ASSERT(lua["Bark"].valid(), "MUST SUCCESS");
 
     lua["Bark"] = sol::nil;
-    PHITOS_ASSERT(!lua["Bark"].valid(), "MUST SUCCESS");
+    MDY_ASSERT(!lua["Bark"].valid(), "MUST SUCCESS");
   }
 
   MDY_LOG_CRITICAL("DyLuaReferenceModify Success.");

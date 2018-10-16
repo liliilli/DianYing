@@ -77,7 +77,7 @@ MDY_NODISCARD constexpr TC16 DyGetRawUtf16CharacterFrom(_MIN_ const char* utf8St
       (*(utf8StartCharacter + 3) & 0b00111111)) - 0x10000;
     return static_cast<TC16>((codepage_10k >> 10) + 0xD800);
   }
-  default: PHITOS_UNEXPECTED_BRANCH(); return 0;
+  default: MDY_UNEXPECTED_BRANCH(); return 0;
   }
 }
 
