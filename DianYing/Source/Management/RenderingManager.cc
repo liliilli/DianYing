@@ -173,7 +173,7 @@ void MDyRendering::pCreateDeferredGeometryBuffers() noexcept
   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, this->mAttachmentBuffers[2], 0);
   if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
   {
-    PHITOS_UNEXPECTED_BRANCH();
+    MDY_UNEXPECTED_BRANCH();
   }
 
   // View position g-buffer
@@ -186,7 +186,7 @@ void MDyRendering::pCreateDeferredGeometryBuffers() noexcept
   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, this->mAttachmentBuffers[3], 0);
   if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
   {
-    PHITOS_UNEXPECTED_BRANCH();
+    MDY_UNEXPECTED_BRANCH();
   }
 
   // Depth g-buffer
@@ -292,7 +292,7 @@ void MDyRendering::pRenderDeferredFrameBufferWith(_MIN_ const CDyModelRenderer& 
       {
       case EDyTextureStyleType::D1: glBindTexture(GL_TEXTURE_1D, texturePointer->GetTextureId()); break;
       case EDyTextureStyleType::D2: glBindTexture(GL_TEXTURE_2D, texturePointer->GetTextureId()); break;
-      default: PHITOS_UNEXPECTED_BRANCH(); break;
+      default: MDY_UNEXPECTED_BRANCH(); break;
       }
     }
 

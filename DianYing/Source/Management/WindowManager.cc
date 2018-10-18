@@ -67,7 +67,7 @@
 namespace
 {
 
-dy::DDyVector3                  gColor      {.2f, .3f, .2f};
+dy::DDyVector3 gColor {.2f, .3f, .2f};
 
 void GLAPIENTRY DyGlMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
@@ -76,17 +76,8 @@ void GLAPIENTRY DyGlMessageCallback(GLenum source, GLenum type, GLuint id, GLenu
                type, severity, message);
 }
 
-///
-/// @brief
-///
-void DyGlTempInitializeResource()
+void DyInitializeBuiltinResource()
 {
-  //auto& manInfo = dy::MDyDataInformation::GetInstance();
-
-  //!
-  //! Shader
-  //!
-
   dy::builtin::FDyBuiltinModelBox();
   dy::builtin::FDyBuiltinModelPlain();
   dy::builtin::FDyBuiltinModelSphere();
@@ -99,8 +90,20 @@ void DyGlTempInitializeResource()
   dy::builtin::FDyBuiltinShaderGLRenderOpaqueStatic();
 
   dy::builtin::FDyBuiltinMaterialOpaqueStaticPlain();
+}
 
 #ifdef false
+///
+/// @brief
+///
+void DyGlTempInitializeResource()
+{
+  //auto& manInfo = dy::MDyDataInformation::GetInstance();
+
+  //!
+  //! Shader
+  //!
+
   {
     auto animAsyncTask = std::async(std::launch::async, [&manInfo] {
       dy::PDyModelConstructionDescriptor modelDesc;
@@ -317,7 +320,6 @@ void DyGlTempInitializeResource()
     rendererDesc.mMaterialNames = std::vector<std::string>(394, "TestMat");
   }
   MDY_CALL_ASSERT_SUCCESS(gRenderer.pfInitialize(rendererDesc));
-#endif
 }
 
 ///
@@ -334,14 +336,9 @@ void DyTestSoundFmod()
   MDY_CALL_ASSERT_SUCCESS(manInfo.CreateSoundInformation(desc));
   MDY_CALL_ASSERT_SUCCESS(resInfo.CreateSoundResource(desc.mSoundName));
 }
+#endif
 
 } /// unnamed namespace
-
-void DyTempInitializeTestResources()
-{
-  DyGlTempInitializeResource();
-  DyTestSoundFmod();
-}
 
 //!
 //! Platform depdendent anonymous namespace
@@ -499,7 +496,8 @@ EDySuccess MDyWindow::pfInitialize()
 
       const auto& settingManager = MDySetting::GetInstance();
       this->mGlfwWindow = glfwCreateWindow(settingManager.GetWindowSizeWidth(), settingManager.GetWindowSizeHeight(), "DianYing", nullptr, nullptr);
-      if (!this->mGlfwWindow) {
+      if (!this->mGlfwWindow)
+      {
         glfwTerminate();
         return DY_FAILURE;
       }
@@ -531,6 +529,9 @@ EDySuccess MDyWindow::pfInitialize()
         ImGui_ImplOpenGL3_Init("#version 430");
         ImGui::StyleColorsDark();
       }
+
+      // Initialize builtin resources
+      DyInitializeBuiltinResource();
     }
     break;
   }

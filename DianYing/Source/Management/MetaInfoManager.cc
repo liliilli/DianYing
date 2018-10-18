@@ -18,17 +18,7 @@
 #include <nlohmann/json.hpp>
 #include <Dy/Helper/JsonHelper.h>
 #include <Dy/Element/Descriptor/LevelDescriptor.h>
-
-//!
-//! Forward declaration
-//!
-
-namespace
-{
-
-MDY_SET_IMMUTABLE_STRING(sTestPath, "./TestScene.dydat");
-
-} /// ::unnamed namespace
+#include <Dy/Helper/Constant/StringSettingFile.h>
 
 //!
 //! Implementation
@@ -39,7 +29,7 @@ namespace dy
 
 EDySuccess MDyMetaInfo::pfInitialize()
 {
-  const auto opJsonAtlas = DyGetJsonAtlas(sTestPath.data());
+  const auto opJsonAtlas = DyGetJsonAtlas(MSVSTR(gTestPath));
   if (!opJsonAtlas.has_value()) { return DY_FAILURE; }
 
   PDyLevelConstructDescriptor desc = PDyLevelConstructDescriptor::CreateDescriptor(opJsonAtlas.value());

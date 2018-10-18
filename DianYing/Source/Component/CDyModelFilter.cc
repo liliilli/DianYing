@@ -85,7 +85,7 @@ void CDyModelFilter::pPropagateParentActorActivation(const DDy3StateBool& actorB
 
 std::string CDyModelFilter::ToString()
 {
-  PHITOS_NOT_IMPLEMENTED_ASSERT();
+  MDY_NOT_IMPLEMENTED_ASSERT();
   return MDY_INITILAIZE_EMPTYSTR;
 }
 

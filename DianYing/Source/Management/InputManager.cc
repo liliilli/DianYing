@@ -17,12 +17,12 @@
 
 #include <nlohmann/json.hpp>
 
-
-#include <Dy/Helper/JsonHelper.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/TimeManager.h>
 #include <Dy/Management/WindowManager.h>
 #include <Dy/Management/Helper/InputKeyString.h>
+#include <Dy/Helper/JsonHelper.h>
+#include <Dy/Helper/Constant/StringSettingFile.h>
 
 //!
 //! Data
@@ -50,7 +50,6 @@ constexpr const char err_input_failed_failed_bind_key[] = "Failed some operation
 constexpr const char err_input_keyboard_not_exist[]     = "Key {} is not found in mode object. [Path : {}]";
 constexpr const char err_input_disable_msg[]            = "{} input feature will be disabled.";
 
-MDY_SET_IMMUTABLE_STRING(sTestSettingFile, "./TestSetting.DDat");
 MDY_SET_IMMUTABLE_STRING(sMode,     "Mode");
 MDY_SET_IMMUTABLE_STRING(sKeyboard, "Keyboard");
 MDY_SET_IMMUTABLE_STRING(sMouse,    "Mouse");
@@ -321,7 +320,7 @@ namespace dy
 
 EDySuccess MDyInput::pfInitialize()
 {
-  if (!this->pReadInputFile(sTestSettingFile.data()))
+  if (!this->pReadInputFile(MSVSTR(gSettingPathName)))
   {
     MDY_UNEXPECTED_BRANCH();
   }

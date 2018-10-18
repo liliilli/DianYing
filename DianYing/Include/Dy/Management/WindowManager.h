@@ -76,6 +76,4 @@ private:
 
 } /// ::dy namespace
 
-void DyTempInitializeTestResources();
-
 #endif /// GUARD_DY_MANAGEMENT_MANAGER_H

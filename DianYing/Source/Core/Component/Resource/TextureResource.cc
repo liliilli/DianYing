@@ -172,7 +172,7 @@ EDySuccess CDyTextureResource::pfInitializeTextureResourceWithChunk(const PDyTex
   case EDyImageColorFormatStyle::RG:    glImageFormat = GL_RG;    break;
   case EDyImageColorFormatStyle::RGB:   glImageFormat = GL_RGB;   break;
   case EDyImageColorFormatStyle::RGBA:  glImageFormat = GL_RGBA;  break;
-  default: PHITOS_UNEXPECTED_BRANCH();  return DY_FAILURE;
+  default: MDY_UNEXPECTED_BRANCH();  return DY_FAILURE;
   }
 
   // Get GL_TEXTURE_ TYPE from textureInfo.
@@ -188,7 +188,7 @@ EDySuccess CDyTextureResource::pfInitializeTextureResourceWithChunk(const PDyTex
     glBindTexture(GL_TEXTURE_2D, mTextureResourceId);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, descriptor.mWidth, descriptor.mHeight, 0, glImageFormat, GL_UNSIGNED_BYTE, descriptor.mBufferPtr);
     break;
-  default: PHITOS_UNEXPECTED_BRANCH();  return DY_FAILURE;
+  default: MDY_UNEXPECTED_BRANCH();  return DY_FAILURE;
   }
 
   // Forward dataBuffer's retrieved information to data members.
@@ -199,7 +199,7 @@ EDySuccess CDyTextureResource::pfInitializeTextureResourceWithChunk(const PDyTex
   {
   case EDyTextureStyleType::D1: this->mTextureHeight  = 1; break;
   case EDyTextureStyleType::D2: this->mTextureHeight  = descriptor.mHeight; break;
-  default: PHITOS_UNEXPECTED_BRANCH(); break;
+  default: MDY_UNEXPECTED_BRANCH(); break;
   }
 
   // Set texture parameters.
@@ -220,7 +220,7 @@ void CDyTextureResource::__pfSetMaterialResourceLink(NotNull<CDyMaterialResource
   {
     MDY_LOG_ERROR("{} | Failed to link material resource. | Model name : {}",
                   "CDyTextureResource::__pfSetMaterialResourceLink", ptr->GetMaterialName());
-    PHITOS_UNEXPECTED_BRANCH();
+    MDY_UNEXPECTED_BRANCH();
   }
 }
 

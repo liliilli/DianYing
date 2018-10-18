@@ -23,6 +23,7 @@
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/TimeManager.h>
 #include <Dy/Helper/JsonHelper.h>
+#include <Dy/Helper/Constant/StringSettingFile.h>
 
 namespace
 {
@@ -30,8 +31,6 @@ namespace
 //!
 //! Local translation unit varaibles
 //!
-
-MDY_SET_IMMUTABLE_STRING(sSettingPathName, "./TestSetting.DDat");
 
 MDY_SET_IMMUTABLE_STRING(sCategoryDescription,  "Description");
 MDY_SET_IMMUTABLE_STRING(sCategoryGameplay,     "Gameplay");
@@ -226,7 +225,7 @@ EDySuccess MDySetting::pfInitialize()
     return DY_FAILURE;
   }
 
-  if (const auto opSettingAtlas = DyGetJsonAtlas(sSettingPathName.data());
+  if (const auto opSettingAtlas = DyGetJsonAtlas(MSVSTR(gSettingPathName));
       !opSettingAtlas.has_value())
   {
     return DY_FAILURE;
