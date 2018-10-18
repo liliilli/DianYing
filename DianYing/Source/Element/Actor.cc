@@ -165,7 +165,7 @@ void FDyActor::SetParentToRootRelocateTransform() noexcept
   MDY_LOG_WARNING("NOT IMPLEMENTED {}", "FDyActor::SetParentToRootRelocateTransform");
 }
 
-std::optional<CDyScript*> FDyActor::GetScriptComponent(const std::string& scriptName) noexcept
+std::optional<CDyScript*> FDyActor::GetScriptComponent(_MIN_ const std::string& scriptName) noexcept
 {
   MDY_ASSERT(scriptName.empty() == false, "scriptName must not be empty at FDyActor::GetScriptComponent()");
 
@@ -179,7 +179,7 @@ std::optional<CDyScript*> FDyActor::GetScriptComponent(const std::string& script
   else                                { return it->get(); }
 }
 
-EDySuccess FDyActor::RemoveScriptComponent(const std::string& scriptName) noexcept
+EDySuccess FDyActor::RemoveScriptComponent(_MIN_ const std::string& scriptName) noexcept
 {
   MDY_ASSERT(scriptName.empty() == false, "scriptName must not be empty at FDyActor::GetScriptComponent()");
 
@@ -199,7 +199,8 @@ EDySuccess FDyActor::RemoveScriptComponent(const std::string& scriptName) noexce
   else
   {
     // @TODO MOVE DESTROY FUNCTION CALL TO AFTERWARD COMPONENT UPDATE() (BEFORE TRANFORM SYNCHRONIZATION)
-    (*it)->Destroy();
+    // @TODO FUCTION
+    //(*it)->Destroy();
     (*it)->Release();
     this->mScriptList.erase(it);
     return DY_SUCCESS;

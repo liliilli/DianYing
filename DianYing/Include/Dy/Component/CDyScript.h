@@ -15,6 +15,7 @@
 
 #include <Dy/Element/Abstract/ADyBaseComponent.h>
 #include <Dy/Element/Interface/IDyScriptable.h>
+#include <Dy/Component/Internal/ScriptState.h>
 
 //!
 //! Forward declaration
@@ -81,6 +82,42 @@ public:
   //!
 
   ///
+  /// @brief Call script function following status of CDyScript::mScriptState
+  ///
+  void CallScriptFunction(_MIN_ const float dt) noexcept;
+
+  ///
+  /// @brief
+  /// @TODO SCRIPT THIS
+  ///
+  MDY_NODISCARD std::string ToString() override final;
+
+  ///
+  /// @brief
+  /// @param  metaInfo
+  /// @return
+  /// @TODO SCRIPT THIS
+  ///
+  MDY_NODISCARD EDySuccess Initialize(_MIN_ const DDyScriptMetaInformation& metaInfo);
+
+  ///
+  /// @brief
+  /// @TODO SCRIPT THIS
+  ///
+  void Release();
+
+  ///
+  /// @brief  Return verification name of this script component instance.
+  /// @return Script vertification name must not be empty.
+  ///
+  MDY_NODISCARD FORCEINLINE const std::string& GetScriptVerificationName() const noexcept
+  {
+    MDY_ASSERT(this->mScriptName.empty() == false, "Script name must not be empty.");
+    return this->mScriptName;
+  }
+
+private:
+  ///
   /// @brief
   /// @TODO SCRIPT THIS
   ///
@@ -116,44 +153,17 @@ public:
   ///
   void Destroy() override final;
 
-  ///
-  /// @brief
-  /// @TODO SCRIPT THIS
-  ///
-  MDY_NODISCARD std::string ToString() override final;
-
-  ///
-  /// @brief
-  /// @param  metaInfo
-  /// @return
-  /// @TODO SCRIPT THIS
-  ///
-  MDY_NODISCARD EDySuccess Initialize(_MIN_ const DDyScriptMetaInformation& metaInfo);
-
-  ///
-  /// @brief
-  /// @TODO SCRIPT THIS
-  ///
-  void Release();
-
-  ///
-  /// @brief  Return verification name of this script component instance.
-  /// @return Script vertification name must not be empty.
-  ///
-  MDY_NODISCARD FORCEINLINE const std::string& GetScriptVerificationName() const noexcept
-  {
-    MDY_ASSERT(this->mScriptName.empty() == false, "Script name must not be empty.");
-    return this->mScriptName;
-  }
-
-private:
   /// Script name for specification and searching.
   MDY_TRANSIENT std::string mScriptName = MDY_INITILAIZE_EMPTYSTR;
   /// Script path to execute lua script file.
   MDY_TRANSIENT std::string mScriptPath = MDY_INITILAIZE_EMPTYSTR;
+  /// Script state for calling arbitary function.
+  FDyScriptState mScriptState;
 
   MDY_SET_TYPEMATCH_FUNCTION(::dy::ADyBaseComponent, CDyScript);
   MDY_SET_CRC32_HASH_WITH_TYPE(CDyScript);
+
+  friend void FDyScriptState::CallScriptFunction(_MIN_ const float dt) noexcept;
 };
 
 } /// ::dy namespace

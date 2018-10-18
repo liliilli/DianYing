@@ -122,7 +122,7 @@ void MDyWorld::UpdateObjects(_MIN_ float dt)
     for (auto& script : this->mActivatedScripts)
     {
       if (MDY_CHECK_ISNULL(script)) { continue; }
-      script->Update(dt);
+      script->CallScriptFunction(dt);
     }
 
     // CDyModelRenderer update
@@ -139,7 +139,7 @@ void MDyWorld::UpdateObjects(_MIN_ float dt)
       camera->Update(dt);
     }
 
-    //
+    // After update, check
   }
 }
 

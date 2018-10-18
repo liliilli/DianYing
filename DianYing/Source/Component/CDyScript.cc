@@ -66,19 +66,26 @@ void CDyScript::pPropagateParentActorActivation(const DDy3StateBool& actorBool) 
   }
 }
 
+void CDyScript::CallScriptFunction(_MIN_ const float dt) noexcept
+{
+  this->mScriptState.CallScriptFunction(dt);
+}
+
 void CDyScript::Initiate()
 {
-
+  MDY_LOG_INFO("{0}::{0}::Initiate()", this->GetBindedActor()->GetActorName());
 }
 
 void CDyScript::Start()
 {
-
+  MDY_LOG_INFO("{0}::{0}::Start()", this->GetBindedActor()->GetActorName());
 }
 
 void CDyScript::Update(float dt)
 {
-  MDY_LOG_CRITICAL("{0}::Update()", dt);
+  auto* obj       = this->GetBindedActor();
+  auto transform  = obj->GetTransform();
+  transform->AddWorldEulerAngle(EDyAxis3D::Z, 0.16f);
 }
 
 void CDyScript::OnEnabled()
@@ -106,14 +113,19 @@ EDySuccess CDyScript::Initialize(const DDyScriptMetaInformation& metaInfo)
   // @TODO ASSERT THAT SCRIPT COMPONENT IS ACTIVATED EVEN WHEN FIRST TIME.
   this->mScriptName             = metaInfo.mScriptName;
   this->mScriptPath             = metaInfo.mScriptPath;
-
   if (metaInfo.mInitiallyActivated) { this->Activate(); }
+
+  // Initialize script state instance.
+  PDyScriptStateDescriptor desc;
+  desc.mScriptPtr = this;
+  this->mScriptState.Initialize(desc);
 
   return DY_SUCCESS;
 }
 
 void CDyScript::Release()
 {
+  this->mScriptState.Release();
   this->Deactivate();
 }
 
