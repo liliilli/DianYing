@@ -13,8 +13,10 @@
 /// SOFTWARE.
 ///
 
+#include <unordered_map>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Element/Descriptor/LevelDescriptor.h>
+#include <Dy/Meta/Descriptor/ScriptDescriptor.h>
 
 namespace dy
 {
@@ -39,9 +41,16 @@ private:
   template <typename TType>
   using THashMap = std::unordered_map<std::string, TType>;
 
-  /// Level meta information map.
-  THashMap<PDyLevelConstructDescriptor> mLevelInfoMap = {};
+  ///
+  /// @brief
+  /// @param  metaFilePath
+  ///
+  MDY_NODISCARD EDySuccess pReadScriptResourceMetaInformation(_MIN_ const std::string& metaFilePath);
 
+  /// Level meta information map.
+  THashMap<PDyLevelConstructDescriptor> mLevelInfoMap   = {};
+  /// Script meta information map.
+  THashMap<PDyMetaScriptInformation>    mScriptMetaInfo = {};
 };
 
 } /// ::dy namespace
