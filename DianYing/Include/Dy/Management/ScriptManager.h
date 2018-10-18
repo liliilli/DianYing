@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_TEST_TESTMACROSETTING_H
-#define GUARD_DY_TEST_TESTMACROSETTING_H
+#ifndef GUARD_DY_MANAGEMENT_SCRIPTMANAGER_H
+#define GUARD_DY_MANAGEMENT_SCRIPTMANAGER_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,10 +13,29 @@
 /// SOFTWARE.
 ///
 
-///
-/// @macro MDY_FLAG_TEST_ENABLED
-/// @brief Enable library and function test.
-///
-//#define MDY_FLAG_TEST_ENABLED
+#include <Dy/Management/Interface/ISingletonCrtp.h>
 
-#endif /// GUARD_DY_TEST_TESTMACROSETTING_H
+#define SOL_CHECK_ARGUMENT 1
+#include <sol2/sol.hpp>
+
+namespace dy
+{
+
+///
+/// @class MDyScript
+/// @brief
+///
+class MDyScript final : public ISingleton<MDyScript>
+{
+  MDY_SINGLETON_DERIVED(MDyScript);
+  MDY_SINGLETON_PROPERTIES(MDyScript);
+public:
+
+
+private:
+  sol::state mLua;
+};
+
+} /// ::dy namespace
+
+#endif /// GUARD_DY_MANAGEMENT_SCRIPTMANAGER_H

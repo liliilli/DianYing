@@ -26,6 +26,7 @@
 #include <Dy/Management/WindowManager.h>
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Management/FontManager.h>
+#include <Dy/Management/ScriptManager.h>
 
 #include <Dy/Management/Editor/GuiManager.h>
 #include <Dy/Helper/Pointer.h>
@@ -84,6 +85,7 @@ void DyInitiailzeAllManagers()
   MDY_CALL_ASSERT_SUCCESS(dy::MDyFont::Initialize());
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDySync::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyScript::Initialize());
   MDY_LOG_WARNING_D("========== DIANYING MANAGER INITIALIZED ==========");
 }
 
@@ -94,6 +96,7 @@ void DyInitiailzeAllManagers()
 void DyReleaseAllManagers()
 {
   MDY_LOG_WARNING_D("========== DIANYING MANAGER RELEASED ==========");
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyScript::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDySync::Release());
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDyFont::Release());
@@ -190,7 +193,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLin
   DyInitiailzeAllManagers();
 
   MDY_LOG_INFO_D("Running application routine.");
-  MDY_TEST_LUA_FUNCTIONALITY();
   dy::MDyWindow::GetInstance().Run();
 
   MDY_LOG_INFO_D("Release all managers and resources.");
