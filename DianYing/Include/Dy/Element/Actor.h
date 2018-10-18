@@ -166,7 +166,8 @@ public:
     if constexpr (std::is_same_v<CDyScript, TComponent>)
     { // If component which just added is CDyScript, Call Initiate script first.
       auto& reference = this->mScriptList.emplace_back(std::move(componentPtr));
-      reference->Initiate();
+      // @TODO DO SOMETHING
+
       return DyMakeNotNull(reference.get());
     }
     else if constexpr (std::is_same_v<CDyTransform, TComponent>)
