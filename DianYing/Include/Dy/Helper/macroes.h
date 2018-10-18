@@ -371,10 +371,11 @@ public: \
 #define MDY_SINGLETON_DERIVED(__MADerivedSingletonType__) \
 private:                                                  \
     __MADerivedSingletonType__() = default;               \
-    virtual ~__MADerivedSingletonType__() = default;      \
     [[nodiscard]] EDySuccess pfInitialize();              \
     [[nodiscard]] EDySuccess pfRelease();                 \
-    friend class ISingleton<__MADerivedSingletonType__>
+    friend class ISingleton<__MADerivedSingletonType__>;  \
+public:                                                   \
+    virtual ~__MADerivedSingletonType__() = default;
 
 #if defined(MDY_FLAG_IN_EDITOR)
 ///
