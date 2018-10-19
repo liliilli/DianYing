@@ -15,6 +15,37 @@
 /// Header file
 #include <Dy/Component/CDyScript.h>
 #include <Dy/Management/WorldManager.h>
+#include <Dy/Management/ScriptManager.h>
+
+//!
+//! Forward declaration
+//!
+
+namespace dy
+{
+
+//!
+//! Error
+//!
+
+MDY_SET_IMMUTABLE_STRING(sErrorScriptNotFound, "CDyScript::Initialize | Failed to find script meta information. Unexpected error.");
+
+//!
+//! Keywords
+//!
+
+MDY_SET_IMMUTABLE_STRING(sFunction_Initiate,    "Initiate");
+MDY_SET_IMMUTABLE_STRING(sFunction_Start,       "Start");
+MDY_SET_IMMUTABLE_STRING(sFunction_Update,      "Update");
+MDY_SET_IMMUTABLE_STRING(sFunction_Destroy,     "Destroy");
+MDY_SET_IMMUTABLE_STRING(sFunction_OnEnabled,   "OnEnabled");
+MDY_SET_IMMUTABLE_STRING(sFunction_OnDisabled,  "OnDisabled");
+
+} /// ::dy namespace
+
+//!
+//! Implementation
+//!
 
 namespace dy
 {
@@ -73,16 +104,21 @@ void CDyScript::CallScriptFunction(_MIN_ const float dt) noexcept
 
 void CDyScript::Initiate()
 {
-  MDY_LOG_INFO("{0}::{0}::Initiate()", this->GetBindedActor()->GetActorName());
+  MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
+  this->mScriptInstance[MSVSTR(sFunction_Initiate)]();
 }
 
 void CDyScript::Start()
 {
-  MDY_LOG_INFO("{0}::{0}::Start()", this->GetBindedActor()->GetActorName());
+  MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
+  this->mScriptInstance[MSVSTR(sFunction_Start)]();
 }
 
 void CDyScript::Update(float dt)
 {
+  MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
+  this->mScriptInstance[MSVSTR(sFunction_Update)]();
+
   auto* obj       = this->GetBindedActor();
   auto transform  = obj->GetTransform();
   transform->AddWorldEulerAngle(EDyAxis3D::Z, 0.16f);
@@ -90,17 +126,20 @@ void CDyScript::Update(float dt)
 
 void CDyScript::OnEnabled()
 {
-
+  MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
+  this->mScriptInstance[MSVSTR(sFunction_OnEnabled)]();
 }
 
 void CDyScript::OnDisabled()
 {
-
+  MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
+  this->mScriptInstance[MSVSTR(sFunction_OnDisabled)]();
 }
 
 void CDyScript::Destroy()
 {
-
+  MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
+  this->mScriptInstance[MSVSTR(sFunction_Destroy)]();
 }
 
 std::string CDyScript::ToString()
@@ -108,12 +147,42 @@ std::string CDyScript::ToString()
   return "CDyScript::ToString NOT IMPLEMENTED YET!";
 }
 
-EDySuccess CDyScript::Initialize(const DDyScriptMetaInformation& metaInfo)
+EDySuccess CDyScript::Initialize(const PDyScriptComponentMetaInformation& metaInfo)
 {
-  // @TODO ASSERT THAT SCRIPT COMPONENT IS ACTIVATED EVEN WHEN FIRST TIME.
-  this->mScriptName             = metaInfo.mScriptName;
-  this->mScriptPath             = metaInfo.mScriptPath;
-  if (metaInfo.mInitiallyActivated) { this->Activate(); }
+  this->mScriptName = metaInfo.mScriptSpecifierName;
+
+  // Get script meta information.
+  auto& metaInfoManager = MDyMetaInfo::GetInstance();
+  MDY_ASSERT(metaInfoManager.IsScriptMetaInformationExist(this->mScriptName) == true, MSVSTR(sErrorScriptNotFound));
+  const PDyMetaScriptInformation& validScriptMetaInfo = metaInfoManager.GetScriptMetaInformation(this->mScriptName);
+
+  // Integrity test
+  MDY_ASSERT((validScriptMetaInfo.mIsUsingScriptInnateCode ^ validScriptMetaInfo.mIsUsingScriptPath) == true,
+             "Unexpected error occurred");
+
+  // Bind script, but need to check integrity test also.
+  if (validScriptMetaInfo.mIsUsingScriptInnateCode == true)
+  {
+    // @TODO IMPLEMENT THIS
+    MDY_NOT_IMPLEMENTED_ASSERT();
+  }
+  else if (validScriptMetaInfo.mIsUsingScriptPath == true)
+  {
+    auto& scriptManager   = MDyScript::GetInstance();
+    auto& luaInstance     = scriptManager.GetLuaInstance();
+
+    MDY_NOTUSED auto _    = luaInstance.safe_script_file(validScriptMetaInfo.mScriptPath);
+    this->mScriptInstance = luaInstance[this->mScriptName];
+    // @TODO RESOLVE THIS (ERROR & EXCEPTION FROM INSIDE)
+    //this->mScriptInstance["__pDyInitializeWith"](*this->GetBindedActor());
+    this->mIsScriptInstanceBinded = true;
+  }
+
+  //
+  if (metaInfo.mInitiallyActivated)
+  {
+    this->Activate();
+  }
 
   // Initialize script state instance.
   PDyScriptStateDescriptor desc;

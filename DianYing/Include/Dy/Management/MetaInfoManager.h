@@ -30,12 +30,30 @@ class MDyMetaInfo : public ISingleton<MDyMetaInfo>
   MDY_SINGLETON_PROPERTIES(MDyMetaInfo);
   MDY_SINGLETON_DERIVED(MDyMetaInfo);
 public:
-
   ///
   /// @brief Get level construction descriptor meta information from levelName which is same to actual level instance to be created.
   /// @return Return value is nullable if not found.
   ///
   const PDyLevelConstructDescriptor* GetLevelMetaInformation(const std::string& levelName) const noexcept;
+
+  ///
+  /// @brief
+  /// @param  specifierName
+  /// @return
+  /// @TODO SCRIPT THIS
+  ///
+  FORCEINLINE MDY_NODISCARD bool IsScriptMetaInformationExist(_MIN_ const std::string& specifierName)
+  {
+    return this->mScriptMetaInfo.find(specifierName) != this->mScriptMetaInfo.end();
+  }
+
+  ///
+  /// @brief
+  /// @param  specifierName
+  /// @return
+  /// @TODO SCRIPT THIS
+  ///
+  MDY_NODISCARD const PDyMetaScriptInformation& GetScriptMetaInformation(_MIN_ const std::string& specifierName) const;
 
 private:
   template <typename TType>

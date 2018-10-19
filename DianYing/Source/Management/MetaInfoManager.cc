@@ -109,6 +109,11 @@ const PDyLevelConstructDescriptor* MDyMetaInfo::GetLevelMetaInformation(const st
   else                                  { return &it->second; }
 }
 
+MDY_NODISCARD const PDyMetaScriptInformation & MDyMetaInfo::GetScriptMetaInformation(_MIN_ const std::string & specifierName) const
+{
+  return this->mScriptMetaInfo.at(specifierName);
+}
+
 EDySuccess MDyMetaInfo::pReadScriptResourceMetaInformation(_MIN_ const std::string& metaFilePath)
 {
   // Integrity Test
