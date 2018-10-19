@@ -14,6 +14,7 @@
 ///
 
 #include <string>
+#include <vector>
 #include <Dy/Helper/Type/Vector3.h>
 #include <Dy/Helper/Type/Color.h>
 
@@ -112,15 +113,13 @@ struct DDyModelRendererMetaInformation final : public IDyMetaInformation
 };
 
 ///
-/// @struct DDyScriptMetaInformation
+/// @struct PDyScriptComponentMetaInformation
 /// @brief Dependency information to DDyObjectInformation::mMetaComponentInfo when mType is FDyPawn.
 ///
-struct DDyScriptMetaInformation final : public IDyMetaInformation
+struct PDyScriptComponentMetaInformation final : public IDyMetaInformation
 {
   /// Script name for specifying
-  std::string     mScriptName = MDY_INITILAIZE_EMPTYSTR;
-  /// Lua script path. Must be valid and can be loaded anytime in runtime.
-  std::string     mScriptPath = MDY_INITILAIZE_EMPTYSTR;
+  std::string     mScriptSpecifierName = MDY_INITILAIZE_EMPTYSTR;
   /// Component is initially activated or not.
   bool            mInitiallyActivated = false;
 };

@@ -182,6 +182,7 @@
     <ClCompile Include="Source\Component\CDyModelRenderer.cc" />
     <ClCompile Include="Source\Component\CDyScript.cc" />
     <ClCompile Include="Source\Component\CDyTransform.cc" />
+    <ClCompile Include="Source\Component\Internal\ScriptState.cc" />
     <ClCompile Include="Source\Core\Component\Information\MaterialInformation.cc" />
     <ClCompile Include="Source\Core\Component\Information\ModelInformation.cc" />
     <ClCompile Include="Source\Core\Component\Information\ShaderInformation.cc" />
@@ -217,6 +218,7 @@
     <ClCompile Include="Source\Element\Abstract\ADyNameCounterMap.cc" />
     <ClCompile Include="Source\Element\Abstract\ADyTransformable.cc" />
     <ClCompile Include="Source\Element\Actor.cc" />
+    <ClCompile Include="Source\Element\Canvas\Text.cc" />
     <ClCompile Include="Source\Element\Descriptor\MetaLevelDescriptor.cc" />
     <ClCompile Include="Source\Element\Level.cc" />
     <ClCompile Include="Source\Entry\Entry.cc" />
@@ -253,6 +255,7 @@
     <ClCompile Include="Source\Management\LoggingManager.cc" />
     <ClCompile Include="Source\Management\PhysicsManager.cc" />
     <ClCompile Include="Source\Management\RenderingManager.cc" />
+    <ClCompile Include="Source\Management\ScriptManager.cc" />
     <ClCompile Include="Source\Management\WorldManager.cc" />
     <ClCompile Include="Source\Management\SettingManager.cc" />
     <ClCompile Include="Source\Management\SoundManager.cc" />
@@ -264,6 +267,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Source\Test\TestLuaBindingDy.cc" />
     <ClCompile Include="Source\Test\TestLuaCpp.cc" />
     <ClCompile Include="Source\Test\testLuaEntry.cc" />
     <ClCompile Include="Source\Test\TestLuaFunctions.cc" />
@@ -271,6 +275,7 @@
     <ClCompile Include="Source\Test\testLuaVariable.cc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\Dy\Binding\LuaScriptFrame.h" />
     <ClInclude Include="Include\Dy\Builtin\Material\OpaqueStaticPlain.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\Box.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\Plain.h" />
@@ -298,6 +303,7 @@
     <ClInclude Include="Include\Dy\Component\Helper\TmpCheckInitilizeParams.h" />
     <ClInclude Include="Include\Dy\Component\Helper\TmpCheckRemoveParams.h" />
     <ClInclude Include="Include\Dy\Component\Interface\IDyInitializeHelper.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\ScriptState.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\MaterialInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\SoundInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\SubmeshInformation.h" />
@@ -314,6 +320,9 @@
     <ClInclude Include="Include\Dy\Element\Abstract\ADyTransformable.h" />
     <ClInclude Include="Include\Dy\Element\Actor.h" />
     <ClInclude Include="Include\Dy\Element\Abstract\ADyNameCounterMap.h" />
+    <ClInclude Include="Include\Dy\Element\Canvas\Canvas.h" />
+    <ClInclude Include="Include\Dy\Element\Canvas\Text.h" />
+    <ClInclude Include="Include\Dy\Element\Descriptor\CanvasDescriptor.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\LevelDescriptor.h" />
     <ClInclude Include="Include\Dy\Element\Interface\IDyScriptable.h" />
     <ClInclude Include="Include\Dy\Element\Interface\IDyToString.h" />
@@ -356,6 +365,7 @@
     <ClInclude Include="Include\Dy\Element\Level.h" />
     <ClInclude Include="Include\Dy\Element\LevelScriptor.h" />
     <ClInclude Include="Include\Dy\Helper\Assertion.h" />
+    <ClInclude Include="Include\Dy\Helper\Constant\StringSettingFile.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\Contracts.h" />
     <ClInclude Include="Include\Dy\Helper\Dbg\CheckUsage.h" />
     <ClInclude Include="Include\Dy\Helper\GlobalType.h" />
@@ -381,6 +391,7 @@
     <ClInclude Include="Include\Dy\Management\LoggingManager.h" />
     <ClInclude Include="Include\Dy\Management\PhysicsManager.h" />
     <ClInclude Include="Include\Dy\Management\RenderingManager.h" />
+    <ClInclude Include="Include\Dy\Management\ScriptManager.h" />
     <ClInclude Include="Include\Dy\Management\SoundManager.h" />
     <ClInclude Include="Include\Dy\Management\SynchronizationManager.h" />
     <ClInclude Include="Include\Dy\Management\Type\KeyBindingInformation.h" />
@@ -412,6 +423,7 @@
     <ClInclude Include="Include\Dy\Management\DataInformationManager.h" />
     <ClInclude Include="Include\Dy\Management\SettingManager.h" />
     <ClInclude Include="Include\Dy\Management\TimeManager.h" />
+    <ClInclude Include="Include\Dy\Meta\Descriptor\ScriptDescriptor.h" />
     <ClInclude Include="Include\Dy\Test\testLua.h" />
     <ClInclude Include="Include\Dy\Test\TestMacroSetting.h" />
     <ClInclude Include="Include\Dy\Helper\Constant\StringPipelineUniform.h" />
@@ -461,9 +473,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\player_script.lua" />
+    <None Include="TestResource\Lua\test_bindingscript.lua" />
     <None Include="TestResource\Lua\variables.lua">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </None>
+    <None Include="TestResource\TestScript1.lua" />
+    <None Include="TestResource\TestScript2.lua" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
