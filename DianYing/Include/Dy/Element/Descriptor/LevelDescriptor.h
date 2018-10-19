@@ -14,6 +14,9 @@
 ///
 
 #include <any>
+#include <vector>
+#include <utility>
+
 #include <nlohmann/json_fwd.hpp>
 #include <Dy/Helper/Type/Color.h>
 #include <Dy/Component/Descriptor/ComponentMetaDescriptor.h>
@@ -55,7 +58,7 @@ struct DDyObjectInformation final
   bool              mInitialActivated = false;
 
   /// Dependency information which are vary along with mType.
-  /// If mType is "EDyFDyObjectType::FdyPawn", must be converted to "DDyScriptMetaInformation".
+  /// If mType is "EDyFDyObjectType::FdyPawn", must be converted to "PDyScriptComponentMetaInformation".
   /// If mType is ... not implemented yet!
   std::vector<std::pair<EDyComponentMetaType, std::any>> mMetaComponentInfo;
 };

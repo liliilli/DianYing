@@ -30,7 +30,14 @@ class MDyScript final : public ISingleton<MDyScript>
   MDY_SINGLETON_DERIVED(MDyScript);
   MDY_SINGLETON_PROPERTIES(MDyScript);
 public:
-
+  ///
+  /// @brief  Get reference of lua instance.
+  /// @return lua instance l-value reference.
+  ///
+  FORCEINLINE MDY_NODISCARD sol::state& GetLuaInstance() noexcept
+  {
+    return this->mLua;
+  }
 
 private:
   sol::state mLua;

@@ -13,6 +13,8 @@
 /// SOFTWARE.
 ///
 
+#include <functional>
+#include <sol2/sol.hpp>
 #include <Dy/Element/Abstract/ADyBaseComponent.h>
 #include <Dy/Element/Interface/IDyScriptable.h>
 #include <Dy/Component/Internal/ScriptState.h>
@@ -24,7 +26,7 @@
 namespace dy
 {
 
-struct DDyScriptMetaInformation;
+struct PDyScriptComponentMetaInformation;
 
 } /// ::unnamed namespace
 
@@ -98,7 +100,7 @@ public:
   /// @return
   /// @TODO SCRIPT THIS
   ///
-  MDY_NODISCARD EDySuccess Initialize(_MIN_ const DDyScriptMetaInformation& metaInfo);
+  MDY_NODISCARD EDySuccess Initialize(_MIN_ const PDyScriptComponentMetaInformation& metaInfo);
 
   ///
   /// @brief
@@ -154,11 +156,15 @@ private:
   void Destroy() override final;
 
   /// Script name for specification and searching.
-  MDY_TRANSIENT std::string mScriptName = MDY_INITILAIZE_EMPTYSTR;
+  MDY_TRANSIENT std::string           mScriptName   = MDY_INITILAIZE_EMPTYSTR;
   /// Script path to execute lua script file.
-  MDY_TRANSIENT std::string mScriptPath = MDY_INITILAIZE_EMPTYSTR;
+  MDY_TRANSIENT std::string           mScriptPath   = MDY_INITILAIZE_EMPTYSTR;
   /// Script state for calling arbitary function.
-  FDyScriptState mScriptState;
+  FDyScriptState                      mScriptState;
+  /// Script instance.
+  sol::table                          mScriptInstance;
+  /// Flag for checking binded script instance.
+  bool                                mIsScriptInstanceBinded = false;
 
   MDY_SET_TYPEMATCH_FUNCTION(::dy::ADyBaseComponent, CDyScript);
   MDY_SET_CRC32_HASH_WITH_TYPE(CDyScript);

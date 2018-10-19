@@ -59,7 +59,7 @@ EDySuccess FDyActor::Initialize(_MIN_ const DDyObjectInformation& objectMetaDesc
     } break;
     case EDyComponentMetaType::Script:
     {
-      const auto& desc = std::any_cast<const DDyScriptMetaInformation&>(componentInfo);
+      const auto& desc = std::any_cast<const PDyScriptComponentMetaInformation&>(componentInfo);
       MDY_NOTUSED auto scriptComponentPtr = this->AddComponent<CDyScript>(desc);
     } break;
     case EDyComponentMetaType::DirectionalLight:

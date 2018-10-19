@@ -38,7 +38,7 @@ constexpr void DyCheckComponentInitializeFunctionParams() noexcept
 
   if constexpr (std::is_same_v<CDyScript, TComponentType>)
   {
-    static_assert(MetaTest<const DDyScriptMetaInformation&>::TypeMatched<TArgs...>::template Result<>::value,
+    static_assert(MetaTest<const PDyScriptComponentMetaInformation&>::TypeMatched<TArgs...>::template Result<>::value,
                   "Failed compile test. Could not initilaize CDyScript instance.");
   }
   if constexpr (std::is_same_v<CDyTransform, TComponentType>)

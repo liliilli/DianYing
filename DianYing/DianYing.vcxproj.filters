@@ -109,6 +109,10 @@
     <ClCompile Include="Source\Builtin\Texture\Checker.cc" />
     <ClCompile Include="Source\Builtin\Texture\ErrorBlue.cc" />
     <ClCompile Include="Source\Helper\Type\DyString.cc" />
+    <ClCompile Include="Source\Element\Canvas\Text.cc" />
+    <ClCompile Include="Source\Component\Internal\ScriptState.cc" />
+    <ClCompile Include="Source\Test\TestLuaBindingDy.cc" />
+    <ClCompile Include="Source\Management\ScriptManager.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -291,6 +295,14 @@
     <ClInclude Include="Include\Dy\Helper\Constant\StringPipelineUniform.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DyString.h" />
     <ClInclude Include="Include\Dy\Helper\Assertion.h" />
+    <ClInclude Include="Include\Dy\Element\Canvas\Text.h" />
+    <ClInclude Include="Include\Dy\Element\Descriptor\CanvasDescriptor.h" />
+    <ClInclude Include="Include\Dy\Element\Canvas\Canvas.h" />
+    <ClInclude Include="Include\Dy\Helper\Constant\StringSettingFile.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\ScriptState.h" />
+    <ClInclude Include="Include\Dy\Binding\LuaScriptFrame.h" />
+    <ClInclude Include="Include\Dy\Management\ScriptManager.h" />
+    <ClInclude Include="Include\Dy\Meta\Descriptor\ScriptDescriptor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />
@@ -298,5 +310,8 @@
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />
     <None Include="TestResource\Lua\player_script.lua" />
+    <None Include="TestResource\Lua\test_bindingscript.lua" />
+    <None Include="TestResource\TestScript1.lua" />
+    <None Include="TestResource\TestScript2.lua" />
   </ItemGroup>
 </Project>

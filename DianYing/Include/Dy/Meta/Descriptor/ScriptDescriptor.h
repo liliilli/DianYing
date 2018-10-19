@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_INTERFACE_TO_STRING_H
-#define GUARD_DY_INTERFACE_TO_STRING_H
+#ifndef GUARD_DY_META_DESCRIPTOR_SCRIPTDESCRIPTOR_H
+#define GUARD_DY_META_DESCRIPTOR_SCRIPTDESCRIPTOR_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -19,19 +19,19 @@ namespace dy
 {
 
 ///
-/// @class IDyToString
-/// @brief To string interface.
+/// @struct PDyMetaScriptInformation
+/// @brief
 ///
-MDY_INTERFACE MDY_NO_VTABLE IDyToString
+struct PDyMetaScriptInformation final
 {
-public:
-    virtual ~IDyToString() = default;
-    ///
-  /// @brief Output information as string.
-  ///
-  [[nodiscard]] virtual std::string ToString() = 0;
+  std::string mName             = MDY_INITILAIZE_EMPTYSTR;
+  std::string mScriptPath       = MDY_INITILAIZE_EMPTYSTR;
+  std::string mScriptCode       = MDY_INITILAIZE_EMPTYSTR;
+
+  bool mIsUsingScriptPath       = false;
+  bool mIsUsingScriptInnateCode = false;
 };
 
 } /// ::dy namespace
 
-#endif /// GUARD_DY_INTERFACE_TO_STRING_H
+#endif /// GUARD_DY_META_DESCRIPTOR_SCRIPTDESCRIPTOR_H

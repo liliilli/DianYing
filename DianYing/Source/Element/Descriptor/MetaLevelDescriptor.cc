@@ -21,6 +21,7 @@
 #include <Dy/Helper/Type/Color32.h>
 #include <Dy/Component/CDyModelFilter.h>
 #include <Dy/Component/CDyModelRenderer.h>
+#include <Dy/Helper/JsonHelper.h>
 
 //!
 //! Local translation unit function & varaible data
@@ -64,7 +65,7 @@ MDY_SET_IMMUTABLE_STRING(sHeaderWorldScale,   "WScale");
 //! CDyScript
 //!
 
-MDY_SET_IMMUTABLE_STRING(sHeaderScriptPath,   "Path");
+
 
 //!
 //! CDyDirectionalLight
@@ -185,38 +186,10 @@ MDY_NODISCARD dy::EDyComponentMetaType DyGetComponentTypeFrom(_MIN_ const std::s
 }
 
 ///
-/// @brief  Exceptionable.
-/// @param  jsonAtlas
-/// @param  name
-/// @return
-/// @TODO SCRIPT THIS.
-///
-template <typename TReturnType, typename TParam1>
-MDY_NODISCARD TReturnType DyGetValue(_MIN_ const TParam1& jsonAtlas, _MIN_ const std::string_view& name)
-{
-  return jsonAtlas.at(MSVSTR(name)).template get<TReturnType>();
-}
-
-///
-/// @brief  Exceptionable.
-/// @param  jsonAtlas
-/// @return
-/// @TODO SCRIPT THIS.
-///
-MDY_NODISCARD dy::DDyVector3 DyGetDDyVector3FromJson(_MIN_ const nlohmann::json& jsonAtlas)
-{
-  dy::DDyVector3 vector;
-  vector.X = jsonAtlas.at("X").get<TF32>();
-  vector.Y = jsonAtlas.at("Y").get<TF32>();
-  vector.Z = jsonAtlas.at("Z").get<TF32>();
-
-  return vector;
-}
-
-///
 /// @brief  Get viewport rectangle size from proper jsonAtlas, save it to metaInfo as input value.
 /// @param  jsonAtlas
 /// @param  metaInfo
+/// @TODO SCRIPT THIS
 ///
 void DyGetViewportRectFromJson(_MIN_ const nlohmann::json& jsonAtlas, _MOUT_ dy::DDyCameraMetaInformation& metaInfo)
 {
@@ -298,14 +271,13 @@ PDyLevelConstructDescriptor PDyLevelConstructDescriptor::CreateDescriptor(_MIN_ 
     /// @param    componentMetaInfo
     /// @return
     ///
-    static auto CreateScriptMetaInfo    = [&desc](_MIN_ const auto& componentMetaInfo) -> DDyScriptMetaInformation
+    static auto CreateScriptMetaInfo    = [&desc](_MIN_ const auto& componentMetaInfo) -> PDyScriptComponentMetaInformation
     {
-      DDyScriptMetaInformation scriptMeta;
-      scriptMeta.mType        = EDyComponentMetaType::Script;
-      scriptMeta.mScriptName  = DyGetValue<std::string>(componentMetaInfo, sHeaderName);
-      scriptMeta.mBindHashTo  = desc.mHashValue;
-      scriptMeta.mScriptPath  = DyGetValue<std::string>(componentMetaInfo, sHeaderScriptPath);
-      scriptMeta.mInitiallyActivated = DyGetValue<bool>(componentMetaInfo, sHeaderIsInitiallyActivated);
+      PDyScriptComponentMetaInformation scriptMeta;
+      scriptMeta.mType                  = EDyComponentMetaType::Script;
+      scriptMeta.mScriptSpecifierName   = DyGetValue<std::string>(componentMetaInfo, sHeaderName);
+      scriptMeta.mBindHashTo            = desc.mHashValue;
+      scriptMeta.mInitiallyActivated    = DyGetValue<bool>(componentMetaInfo, sHeaderIsInitiallyActivated);
 
       return scriptMeta;
     };
@@ -361,7 +333,7 @@ PDyLevelConstructDescriptor PDyLevelConstructDescriptor::CreateDescriptor(_MIN_ 
       } break;
       case EDyComponentMetaType::Script:            // Create and insert CDyScript meta information descriptor.
       {
-        const DDyScriptMetaInformation meta = CreateScriptMetaInfo(componentMetaInfo);
+        const PDyScriptComponentMetaInformation meta = CreateScriptMetaInfo(componentMetaInfo);
         desc.mMetaComponentInfo.emplace_back(meta.mType, meta);
       } break;
       case EDyComponentMetaType::DirectionalLight:  // Create and insert CDyDirectionalLight meta information descriptor.

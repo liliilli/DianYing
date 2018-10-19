@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Management/ScriptManager.h>
 #include <Dy/Management/LoggingManager.h>
+#include "Dy/Element/Actor.h"
 
 //!
 //! Local function & forward declaration
@@ -27,16 +28,21 @@ namespace dy
 MDY_SET_IMMUTABLE_STRING(sCDyScriptFrame,
 R"dy(
 LDyScript = {
-    new = function(self, v)
+    mActor = nil
+  , new = function(self, v)
       o = v or {}
       setmetatable(o, self)
       self.__index = self
       return o
     end
 
+  , __pDyInitializeWith = function(self, actorInstance)
+      self.mActor = actorInstance
+    end
+
   , Initiate = function(self) end
   , Start = function(self) end
-  , Update = function(self, dt) end
+  , Update = function(self) end
   , Destroy = function(self) end
   , OnEnabled = function(self) end
   , OnDisabled = function(self) end
@@ -70,6 +76,38 @@ void DyInitializeMDyLog(_MIO_ sol::state& lua)
   );
 }
 
+///
+/// @brief
+/// @param  lua
+///
+void DyInitilaizeFDyObject(_MIO_ sol::state& lua)
+{
+  /// Binding lua
+  lua.new_usertype<dy::FDyObject>("FDyObject",
+      "new", sol::constructors<>()
+  );
+}
+
+///
+/// @brief
+/// @param  lua
+///
+void DyInitilaizeFDyActor(_MIO_ sol::state& lua)
+{
+  /// Binding lua
+  lua.new_usertype<dy::FDyActor>("FDyActor",
+      /// Base
+      sol::base_classes, sol::bases<FDyObject>(),
+      /// Cosntructors
+      "new", sol::constructors<FDyActor(void)>(),
+      ///
+      "Activate",     &FDyActor::Activate,
+      "Deactivate",   &FDyActor::Deactivate,
+      "IsActivated",  &FDyActor::IsActivated,
+      "GetActorName", &FDyActor::GetActorName
+  );
+}
+
 } /// ::dy namespace
 
 //!
@@ -85,23 +123,10 @@ EDySuccess MDyScript::pfInitialize()
 
   /// Manager binding
   DyInitializeMDyLog(mLua);
+  DyInitilaizeFDyObject(mLua);
+  DyInitilaizeFDyActor(mLua);
+
   mLua.safe_script(sCDyScriptFrame);
-
-  mLua.safe_script(R"dy(
-DerivedScript = LDyScript:new()
-
-function DerivedScript:Initiate()
-  print("Hello world!")
-  MDyLog:GetInstance():PushLog(EDyLogLevel.Critical, "Good bye world! by Dy.")
-  MDyLog:GetInstance():PushLog(EDyLogLevel.Debug, "Good bye world! by Dy. Another version")
-end
-)dy");
-
-  mLua.safe_script(R"dy(
-instance = DerivedScript:new()
-instance:Initiate()
-)dy");
-
   return DY_SUCCESS;
 }
 
