@@ -113,6 +113,7 @@
     <ClCompile Include="Source\Component\Internal\ScriptState.cc" />
     <ClCompile Include="Source\Test\TestLuaBindingDy.cc" />
     <ClCompile Include="Source\Management\ScriptManager.cc" />
+    <ClCompile Include="Source\Element\Helper\DescriptorHelperFunctions.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -303,6 +304,10 @@
     <ClInclude Include="Include\Dy\Binding\LuaScriptFrame.h" />
     <ClInclude Include="Include\Dy\Management\ScriptManager.h" />
     <ClInclude Include="Include\Dy\Meta\Descriptor\ScriptDescriptor.h" />
+    <ClInclude Include="Include\Dy\Element\Descriptor\PrefabDescriptor.h" />
+    <ClInclude Include="Include\Dy\Element\Descriptor\GlobalEnums.h" />
+    <ClInclude Include="Include\Dy\Element\Helper\DescriptorHelperFunctions.h" />
+    <ClInclude Include="Include\Dy\Element\Helper\DescriptorComponentHeaderString.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

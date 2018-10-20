@@ -16,6 +16,7 @@
 #include <unordered_map>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Element/Descriptor/LevelDescriptor.h>
+#include <Dy/Element/Descriptor/PrefabDescriptor.h>
 #include <Dy/Meta/Descriptor/ScriptDescriptor.h>
 
 namespace dy
@@ -42,7 +43,7 @@ public:
   /// @return
   /// @TODO SCRIPT THIS
   ///
-  FORCEINLINE MDY_NODISCARD bool IsScriptMetaInformationExist(_MIN_ const std::string& specifierName)
+  FORCEINLINE MDY_NODISCARD bool IsScriptMetaInformationExist(_MIN_ const std::string& specifierName) const noexcept
   {
     return this->mScriptMetaInfo.find(specifierName) != this->mScriptMetaInfo.end();
   }
@@ -55,6 +56,25 @@ public:
   ///
   MDY_NODISCARD const PDyMetaScriptInformation& GetScriptMetaInformation(_MIN_ const std::string& specifierName) const;
 
+  ///
+  /// @brief
+  /// @param  specifierName
+  /// @return
+  /// @TODO SCRIPT THIS
+  ///
+  FORCEINLINE MDY_NODISCARD bool IsPrefabMetaInformationExist(_MIN_ const std::string& specifierName) const noexcept
+  {
+    return this->mPrefabMetaInfo.find(specifierName) != this->mPrefabMetaInfo.end();
+  }
+
+  ///
+  /// @brief
+  /// @param  specifierName
+  /// @return
+  /// @TODO SCRIPT THIS
+  ///
+  MDY_NODISCARD const PDyPrefabMetaInformation& GetPrefabMetaInformation(_MIN_ const std::string& specifierName) const;
+
 private:
   template <typename TType>
   using THashMap = std::unordered_map<std::string, TType>;
@@ -65,10 +85,18 @@ private:
   ///
   MDY_NODISCARD EDySuccess pReadScriptResourceMetaInformation(_MIN_ const std::string& metaFilePath);
 
+  ///
+  /// @brief
+  /// @param
+  ///
+  MDY_NODISCARD EDySuccess pReadPrefabResourceMetaInformation(_MIN_ const std::string& metaFilePath);
+
   /// Level meta information map.
   THashMap<PDyLevelConstructDescriptor> mLevelInfoMap   = {};
   /// Script meta information map.
   THashMap<PDyMetaScriptInformation>    mScriptMetaInfo = {};
+  /// Prefab meta information map. (Temporary use std::unique_ptr, for reconstructing children tree)
+  THashMap<std::unique_ptr<PDyPrefabMetaInformation>>    mPrefabMetaInfo = {};
 };
 
 } /// ::dy namespace

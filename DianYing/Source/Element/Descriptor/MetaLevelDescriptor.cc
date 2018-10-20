@@ -19,9 +19,10 @@
 #include <bitset>
 #include <nlohmann/json.hpp>
 #include <Dy/Helper/Type/Color32.h>
-#include <Dy/Component/CDyModelFilter.h>
 #include <Dy/Component/CDyModelRenderer.h>
 #include <Dy/Helper/JsonHelper.h>
+#include <Dy/Element/Helper/DescriptorHelperFunctions.h>
+#include <Dy/Element/Helper/DescriptorComponentHeaderString.h>
 
 //!
 //! Local translation unit function & varaible data
@@ -51,161 +52,8 @@ MDY_SET_IMMUTABLE_STRING(sHeaderParentHash,   "Parent");
 MDY_SET_IMMUTABLE_STRING(sHeaderIsInitiallyActivated, "Activated");
 
 //!
-//! CDyTransform
-//!
-
-MDY_SET_IMMUTABLE_STRING(sHeaderLocalPosition,"LPosition");
-MDY_SET_IMMUTABLE_STRING(sHeaderLocalAngle,   "LRotation");
-MDY_SET_IMMUTABLE_STRING(sHeaderLocalScale,   "LScale");
-MDY_SET_IMMUTABLE_STRING(sHeaderWorldPosition,"WPosition");
-MDY_SET_IMMUTABLE_STRING(sHeaderWorldAngle,   "WRotation");
-MDY_SET_IMMUTABLE_STRING(sHeaderWorldScale,   "WScale");
-
-//!
-//! CDyScript
-//!
-
-
-
-//!
-//! CDyDirectionalLight
-//!
-
-MDY_SET_IMMUTABLE_STRING(sHeaderLightDirection, "LightDirection");
-MDY_SET_IMMUTABLE_STRING(sHeaderLightIntensity, "LightIntensity");
-MDY_SET_IMMUTABLE_STRING(sHeaderLightTintColor, "LightTintColor");
-
-//!
-//! CDyModelFilter
-//!
-
-MDY_SET_IMMUTABLE_STRING(sHeaderModelName,      "ModelName");
-
-//!
-//! CDyModelRenderer
-//!
-
-MDY_SET_IMMUTABLE_STRING(sHeaderShadow,         "Shadow");
-MDY_SET_IMMUTABLE_STRING(sHeaderMaterials,      "Materials");
-
-//!
-//! CDyCamera
-//!
-
-MDY_SET_IMMUTABLE_STRING(sHeaderFieldOfView,      "FieldOfView");
-MDY_SET_IMMUTABLE_STRING(sHeaderProjection,       "Projection");
-MDY_SET_IMMUTABLE_STRING(sValuePerspective,       "Perspective");
-MDY_SET_IMMUTABLE_STRING(sValueOrthogonal,        "Orthographic");
-
-MDY_SET_IMMUTABLE_STRING(sHeaderClippingNear,     "ClippingNear");
-MDY_SET_IMMUTABLE_STRING(sHeaderClippingFar,      "ClippingFar");
-MDY_SET_IMMUTABLE_STRING(sHeaderViewportRect,     "ViewportRect");
-MDY_SET_IMMUTABLE_STRING(sHeaderIsFocusInstantly, "IsFocusInstantly");
-
-
-//!
 //! Functions
 //!
-
-///
-/// @brief Get DDyColor32 RGB color from TU32 24 bit value.
-/// @param bit24Value 24bit value, [23...16] R [15...8] G [7...0] B
-/// @return RGB Color with alpha 1.0 (always alpha 1.0)
-///
-MDY_NODISCARD dy::DDyColor32 DyGetRGBColorFromTU32(_MIN_ const TU32 bit24Value) noexcept
-{
-  std::bitset<24> backgroundColorBit  = bit24Value;
-  dy::DDyColor32  background8BitColor = dy::DDyColor32{0, 0, 0, 1};
-  {
-    TU08 r = 0;
-    for (TI32 i = 7; i >= 0; --i)
-    {
-      const auto index = 16 + i;
-      r += backgroundColorBit[index] << i;
-    }
-    background8BitColor.R = r;
-
-    TU08 g = 0;
-    for (TI32 i = 7; i >= 0; --i)
-    {
-      const auto index = 8 + i;
-      g += backgroundColorBit[index] << i;
-    }
-    background8BitColor.G = g;
-
-    TU08 b = 0;
-    for (TI32 i = 7; i >= 0; --i)
-    {
-      const auto index = i;
-      b += backgroundColorBit[index] << i;
-    }
-    background8BitColor.B = b;
-  }
-
-  return background8BitColor;
-}
-
-///
-/// @brief  Get FDyObject derived class type helper enumration.
-/// @param  typeString Object type string from json.
-/// @return Object type
-///
-MDY_NODISCARD dy::EDyMetaObjectType DyGetObjectTypeFrom(_MIN_ const std::string& typeString) noexcept
-{
-  static MDY_SET_IMMUTABLE_STRING(sActor,           "Actor");
-  static MDY_SET_IMMUTABLE_STRING(sObject,          "Object");
-  static MDY_SET_IMMUTABLE_STRING(sSceneScriptor,   "SceneScriptor");
-
-  if (typeString == sActor)         { return dy::EDyMetaObjectType::Actor; }
-  if (typeString == sObject)        { return dy::EDyMetaObjectType::Object; }
-  if (typeString == sSceneScriptor) { return dy::EDyMetaObjectType::SceneScriptor; }
-  else                              { return dy::EDyMetaObjectType::NoneError; }
-}
-
-///
-/// @brief  Get additional type for constructing properties of object.
-/// @param  typeString Dependency type string from json.
-/// @return Dependency component properties type
-///
-MDY_NODISCARD dy::EDyComponentMetaType DyGetComponentTypeFrom(_MIN_ const std::string& typeString) noexcept
-{
-  static MDY_SET_IMMUTABLE_STRING(sDirectionalLight,  "DirectionalLight");
-  static MDY_SET_IMMUTABLE_STRING(sScript,            "Script");
-  static MDY_SET_IMMUTABLE_STRING(sTransform,         "Transform");
-  static MDY_SET_IMMUTABLE_STRING(sModelFilter,       "ModelFilter");
-  static MDY_SET_IMMUTABLE_STRING(sModelRenderer,     "ModelRenderer");
-  static MDY_SET_IMMUTABLE_STRING(sCamera,            "Camera");
-
-  if (typeString == sScript)           { return dy::EDyComponentMetaType::Script; }
-  if (typeString == sDirectionalLight) { return dy::EDyComponentMetaType::DirectionalLight; }
-  if (typeString == sTransform)        { return dy::EDyComponentMetaType::Transform; }
-  if (typeString == sModelFilter)      { return dy::EDyComponentMetaType::ModelFilter; }
-  if (typeString == sModelRenderer)    { return dy::EDyComponentMetaType::ModelRenderer; }
-  if (typeString == sCamera)           { return dy::EDyComponentMetaType::Camera; }
-  else                                 { return dy::EDyComponentMetaType::NoneError; }
-}
-
-///
-/// @brief  Get viewport rectangle size from proper jsonAtlas, save it to metaInfo as input value.
-/// @param  jsonAtlas
-/// @param  metaInfo
-/// @TODO SCRIPT THIS
-///
-void DyGetViewportRectFromJson(_MIN_ const nlohmann::json& jsonAtlas, _MOUT_ dy::DDyCameraMetaInformation& metaInfo)
-{
-  // Calculate
-  dy::DDyVector2 viewportRectXY = {};
-  viewportRectXY.X = jsonAtlas.at("X").get<TF32>();
-  viewportRectXY.Y = jsonAtlas.at("Y").get<TF32>();
-
-  dy::DDyVector2 viewportRectWH = {};
-  viewportRectWH.X = jsonAtlas.at("W").get<TF32>();
-  viewportRectWH.Y = jsonAtlas.at("H").get<TF32>();
-
-  // Update value.
-  metaInfo.mViewportSizeXY = viewportRectXY;
-  metaInfo.mViewportSizeWH = viewportRectWH;
-}
 
 } /// ::unnamed namespace
 
@@ -295,7 +143,7 @@ PDyLevelConstructDescriptor PDyLevelConstructDescriptor::CreateDescriptor(_MIN_ 
       meta.mBindHashTo  = desc.mHashValue;
       meta.mDirection   = DyGetDDyVector3FromJson(componentMetaInfo.at(MSVSTR(sHeaderLightDirection)));
       meta.mIntensity   = DyGetValue<TF32>(componentMetaInfo, sHeaderLightIntensity);
-      meta.mTintColor   = DyGetRGBColorFromTU32(componentMetaInfo.at(MSVSTR(sHeaderLightTintColor)).get<TU32>());
+      meta.mTintColor   = DyGetRGBColorFromTU32(componentMetaInfo.at(MSVSTR(sHeaderLightTintColor)).template get<TU32>());
       meta.mInitiallyActivated = DyGetValue<bool>(componentMetaInfo, sHeaderIsInitiallyActivated);
 
       return meta;
@@ -307,7 +155,7 @@ PDyLevelConstructDescriptor PDyLevelConstructDescriptor::CreateDescriptor(_MIN_ 
     /// @param
     /// @return
     ///
-    static auto CreateModelFilterMetaInfo = [&desc](_MIN_ const auto& componentMetaInfo) -> DDyModelFilterMetaInformation
+    static auto CreateModelFilterMetaInfo = [](_MIN_ const auto& componentMetaInfo) -> DDyModelFilterMetaInformation
     {
       DDyModelFilterMetaInformation modelFilterMeta;
       modelFilterMeta.mType               = EDyComponentMetaType::ModelFilter;
@@ -392,7 +240,7 @@ PDyLevelConstructDescriptor PDyLevelConstructDescriptor::CreateDescriptor(_MIN_ 
     DDyObjectInformation objInfo;
 
     objInfo.mMetaIndex        = static_cast<TI32>(std::distance(objAtlas.begin(), jsonIt));
-    objInfo.mObjectType       = DyGetObjectTypeFrom(DyGetValue<std::string>(*jsonIt, sHeaderType));
+    objInfo.mObjectType       = DyGetMetaObjectTypeFrom(DyGetValue<std::string>(*jsonIt, sHeaderType));
     objInfo.mObjectName       = DyGetValue<std::string>(*jsonIt, sHeaderName);
     objInfo.mHashValue        = DyGetValue<std::string>(*jsonIt, sHeaderObjectHash);
     objInfo.mParentHashValue  = DyGetValue<std::string>(*jsonIt, sHeaderParentHash);

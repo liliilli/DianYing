@@ -18,23 +18,12 @@
 #include <utility>
 
 #include <nlohmann/json_fwd.hpp>
-#include <Dy/Helper/Type/Color.h>
 #include <Dy/Component/Descriptor/ComponentMetaDescriptor.h>
+#include <Dy/Element/Descriptor/GlobalEnums.h>
+#include <Dy/Helper/Type/Color.h>
 
 namespace dy
 {
-
-///
-/// @enum EDyMetaObjectType
-/// @brief
-///
-enum class EDyMetaObjectType
-{
-  Actor,
-  SceneScriptor,
-  Object,
-  NoneError
-};
 
 ///
 /// @struct DDyObjectInformation
