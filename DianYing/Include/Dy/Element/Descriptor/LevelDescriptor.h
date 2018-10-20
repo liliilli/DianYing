@@ -43,8 +43,12 @@ struct DDyObjectInformation final
   std::string       mParentHashValue  = MDY_INITILAIZE_EMPTYSTR;
   /// Hash value for verifying component list in meta list.
   std::string       mToComponentHash  = MDY_INITILAIZE_EMPTYSTR;
+  /// Prefab specifier name.
+  std::string       mPrefabSpecifierName = MDY_INITILAIZE_EMPTYSTR;
   /// FDyObject is initially activated or not.
   bool              mInitialActivated = false;
+  /// FDyObject is using prefab.
+  bool              mIsUsingPrefab    = false;
 
   /// Dependency information which are vary along with mType.
   /// If mType is "EDyFDyObjectType::FdyPawn", must be converted to "PDyScriptComponentMetaInformation".

@@ -384,8 +384,7 @@ EDySuccess MDyMetaInfo::pReadPrefabResourceMetaInformation(const std::string& me
     }
   }
 
-  // Reconstruct list that parent have children recursively.
-  // O(N^2)
+  // Reconstruct list that parent have children recursively. O(N^2)
   for (auto& [string, metaInfoPtr] : this->mPrefabMetaInfo)
   {
     using TChildNameList      = PDyPrefabMetaInformation::TChildNameList;
