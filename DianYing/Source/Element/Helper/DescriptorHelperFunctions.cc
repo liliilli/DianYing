@@ -92,6 +92,18 @@ MDY_NODISCARD dy::DDyColor32 DyGetRGBColorFromTU32(_MIN_ const TU32 bit24Value) 
   return background8BitColor;
 }
 
+MDY_NODISCARD dy::EDyShadowType DyGetShadowTypeFromString(_MIN_ const std::string& value)
+{
+  static MDY_SET_IMMUTABLE_STRING(sHardShadow, "Hard");
+  static MDY_SET_IMMUTABLE_STRING(sSoftShadow, "Soft");
+
+  if (value == sHardShadow)       { return EDyShadowType::Hard; }
+  else if (value == sSoftShadow)  { return EDyShadowType::Soft; }
+
+  MDY_UNEXPECTED_BRANCH();
+  return EDyShadowType::NoneError;
+}
+
 DDyTransformMetaInformation CreateTransformMetaInfo(_MIN_ const nlohmann::json& componentMetaInfo)
 {
   DDyTransformMetaInformation transformMeta;
@@ -128,6 +140,13 @@ DDyDirectionalLightMetaInformation CreateDirectionalLightMetaInfo(_MIN_ const nl
   meta.mDiffuse     = DyGetRGBColorFromTU32(componentMetaInfo.at(MSVSTR(sHeaderLightDiffuse)).get<TU32>());
   meta.mSpecular    = DyGetRGBColorFromTU32(componentMetaInfo.at(MSVSTR(sHeaderLightSpecular)).get<TU32>());
   meta.mAmbient     = DyGetRGBColorFromTU32(componentMetaInfo.at(MSVSTR(sHeaderLightAmbient)).get<TU32>());
+
+  meta.mShadowType        = DyGetShadowTypeFromString(DyGetValue<std::string>(componentMetaInfo, sHeaderShadowType));
+  meta.mShadowStrength    = DyGetValue<float>(componentMetaInfo, sHeaderShadowStrength);
+  meta.mShadowBias        = DyGetValue<float>(componentMetaInfo, sHeaderShadowBias);
+  meta.mShadowResolution  = DyGetDDyVector2FromJson(componentMetaInfo.at(MSVSTR(sHeaderShadowResolution)));
+  meta.mShadowCullingMaskLayer        = DyGetValue<std::vector<std::string>>(componentMetaInfo, sHeaderShadowCullingMaskLayer);
+  meta.mIsUsingGlobalShadowResolution = DyGetValue<bool>(componentMetaInfo, sHeaderIsUsingGlobalShadowResolution);
 
   meta.mInitiallyActivated = DyGetValue<bool>(componentMetaInfo, sHeaderActivated);
   meta.mIsCastingLight  = DyGetValue<bool>(componentMetaInfo, sHeaderIsCastingLight);

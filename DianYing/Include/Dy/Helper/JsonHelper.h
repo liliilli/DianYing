@@ -59,7 +59,20 @@ inline MDY_NODISCARD dy::DDyVector3 DyGetDDyVector3FromJson(_MIN_ const nlohmann
   vector.X = jsonAtlas.at("X").get<TF32>();
   vector.Y = jsonAtlas.at("Y").get<TF32>();
   vector.Z = jsonAtlas.at("Z").get<TF32>();
+  return vector;
+}
 
+///
+/// @brief
+/// @param  jsonAtlas
+/// @return
+/// @TODO SCRIPT THIS
+///
+inline MDY_NODISCARD dy::DDyVector2 DyGetDDyVector2FromJson(_MIN_ const nlohmann::json& jsonAtlas)
+{
+  dy::DDyVector2 vector = {};
+  vector.X = jsonAtlas.at("X").get<TF32>();
+  vector.Y = jsonAtlas.at("Y").get<TF32>();
   return vector;
 }
 

@@ -16,6 +16,7 @@
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
 #include <Dy/Component/Descriptor/ComponentMetaDescriptor.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
+#include <Dy/Helper/Type/Matrix4.h>
 
 namespace dy
 {
@@ -38,6 +39,15 @@ struct alignas(16) DDyUboDirectionalLight final
   float       mIntensity  = MDY_INITIALIZE_DEFINT;
 };
 
+///
+/// @struct
+/// @brief
+/// @TODO SCRIPT THIS
+///
+struct alignas(16) DDyUboShadowMatrix final
+{
+  DDyMatrix4x4 mProjViewMatrix = {};
+};
 
 ///
 /// @struct CDyDirectionalLight
@@ -242,11 +252,12 @@ private:
   ///
   MDY_NODISCARD EDySuccess pTryUpdateDirectionalLight();
 
-  ///
+  /// Data for uniform buffer object.
   DDyUboDirectionalLight  mData           = {};
-  ///
+  DDyUboShadowMatrix      mDataShadow     = {};
+  /// Flag for casting light (binding to lighting system)
   MDY_NOTUSED bool        mIsCastingLight  = false;
-  ///
+  /// Flag for casting shadow (binding to shadow system)
   MDY_NOTUSED bool        mIsCastingShadow = false;
 
   ///

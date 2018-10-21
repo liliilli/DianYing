@@ -38,6 +38,11 @@ MDY_SET_IMMUTABLE_STRING(sHeaderWorldScale,   "WScale");
 MDY_SET_IMMUTABLE_STRING(sHeaderName,   "Name");
 
 //!
+//! Light component common headers
+//!
+
+
+//!
 //! CDyDirectionalLight
 //!
 
@@ -48,6 +53,13 @@ MDY_SET_IMMUTABLE_STRING(sHeaderLightSpecular,    "LightSpecular");
 MDY_SET_IMMUTABLE_STRING(sHeaderLightAmbient,     "LightAmbient");
 MDY_SET_IMMUTABLE_STRING(sHeaderIsCastingLight,   "IsCastingLight");
 MDY_SET_IMMUTABLE_STRING(sHeaderIsCastingShadow,  "IsCastingShadow");
+
+MDY_SET_IMMUTABLE_STRING(sHeaderShadowType,       "ShadowType");
+MDY_SET_IMMUTABLE_STRING(sHeaderShadowStrength,   "ShadowStrength");
+MDY_SET_IMMUTABLE_STRING(sHeaderShadowResolution, "ShadowResolution");
+MDY_SET_IMMUTABLE_STRING(sHeaderIsUsingGlobalShadowResolution, "IsUsingGlobalShadowResolution");
+MDY_SET_IMMUTABLE_STRING(sHeaderShadowBias,       "ShadowBias");
+MDY_SET_IMMUTABLE_STRING(sHeaderShadowCullingMaskLayer, "ShadowCullingMaskLayer");
 
 //!
 //! CDyModelFilter

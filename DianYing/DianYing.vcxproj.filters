@@ -310,6 +310,7 @@
     <ClInclude Include="Include\Dy\Element\Helper\DescriptorHelperFunctions.h" />
     <ClInclude Include="Include\Dy\Element\Helper\DescriptorComponentHeaderString.h" />
     <ClInclude Include="Include\Dy\Component\CDyDirectionalLight.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\Clamp.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

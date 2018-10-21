@@ -43,6 +43,13 @@ void DyGetViewportRectFromJson(_MIN_ const nlohmann::json& jsonAtlas, _MOUT_ DDy
 MDY_NODISCARD dy::DDyColor32 DyGetRGBColorFromTU32(_MIN_ const TU32 bit24Value) noexcept;
 
 ///
+/// @brief  Get EDyShadowType from valid std::string.
+/// @param  value
+/// @return Shadow type, if not found just cause assertion.
+///
+MDY_NODISCARD dy::EDyShadowType DyGetShadowTypeFromString(_MIN_ const std::string& value);
+
+///
 /// @brief
 /// @param    componentMetaInfo
 /// @return
