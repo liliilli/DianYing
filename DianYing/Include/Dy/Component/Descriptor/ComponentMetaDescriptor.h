@@ -131,13 +131,19 @@ struct PDyScriptComponentMetaInformation final : public IDyMetaInformation
 struct DDyDirectionalLightMetaInformation final : public IDyMetaInformation
 {
   /// Normalized light direction vector.
-  DDyVector3          mDirection = {};
-  /// Tinting diffuse color
-  DDyColor            mTintColor = {};
+  DDyVector3          mDirection  = {};
+  /// Tinting color
+  DDyColor            mDiffuse    = DDyColor::White;
+  DDyColor            mSpecular   = DDyColor::White;
+  DDyColor            mAmbient    = DDyColor::White;
   /// Intensity of light must be set up to 0~.
-  TF32                mIntensity = MDY_INITIALIZE_DEFINT;
+  TF32                mIntensity  = MDY_INITIALIZE_DEFINT;
   /// Component is initially activated or not.
   bool                mInitiallyActivated = false;
+  ///
+  bool                mIsCastingLight = false;
+  ///
+  bool                mIsCastingShadow = false;
 };
 
 ///

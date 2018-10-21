@@ -124,8 +124,14 @@ DDyDirectionalLightMetaInformation CreateDirectionalLightMetaInfo(_MIN_ const nl
   meta.mType        = EDyComponentMetaType::DirectionalLight;
   meta.mDirection   = DyGetDDyVector3FromJson(componentMetaInfo.at(MSVSTR(sHeaderLightDirection)));
   meta.mIntensity   = DyGetValue<TF32>(componentMetaInfo, sHeaderLightIntensity);
-  meta.mTintColor   = DyGetRGBColorFromTU32(componentMetaInfo.at(MSVSTR(sHeaderLightTintColor)).get<TU32>());
+
+  meta.mDiffuse     = DyGetRGBColorFromTU32(componentMetaInfo.at(MSVSTR(sHeaderLightDiffuse)).get<TU32>());
+  meta.mSpecular    = DyGetRGBColorFromTU32(componentMetaInfo.at(MSVSTR(sHeaderLightSpecular)).get<TU32>());
+  meta.mAmbient     = DyGetRGBColorFromTU32(componentMetaInfo.at(MSVSTR(sHeaderLightAmbient)).get<TU32>());
+
   meta.mInitiallyActivated = DyGetValue<bool>(componentMetaInfo, sHeaderActivated);
+  meta.mIsCastingLight  = DyGetValue<bool>(componentMetaInfo, sHeaderIsCastingLight);
+  meta.mIsCastingShadow = DyGetValue<bool>(componentMetaInfo, sHeaderIsCastingShadow);
 
   return meta;
 };

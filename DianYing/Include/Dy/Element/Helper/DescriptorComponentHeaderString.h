@@ -41,9 +41,13 @@ MDY_SET_IMMUTABLE_STRING(sHeaderName,   "Name");
 //! CDyDirectionalLight
 //!
 
-MDY_SET_IMMUTABLE_STRING(sHeaderLightDirection, "LightDirection");
-MDY_SET_IMMUTABLE_STRING(sHeaderLightIntensity, "LightIntensity");
-MDY_SET_IMMUTABLE_STRING(sHeaderLightTintColor, "LightTintColor");
+MDY_SET_IMMUTABLE_STRING(sHeaderLightDirection,   "LightDirection");
+MDY_SET_IMMUTABLE_STRING(sHeaderLightIntensity,   "LightIntensity");
+MDY_SET_IMMUTABLE_STRING(sHeaderLightDiffuse,     "LightDiffuse");
+MDY_SET_IMMUTABLE_STRING(sHeaderLightSpecular,    "LightSpecular");
+MDY_SET_IMMUTABLE_STRING(sHeaderLightAmbient,     "LightAmbient");
+MDY_SET_IMMUTABLE_STRING(sHeaderIsCastingLight,   "IsCastingLight");
+MDY_SET_IMMUTABLE_STRING(sHeaderIsCastingShadow,  "IsCastingShadow");
 
 //!
 //! CDyModelFilter
