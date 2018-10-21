@@ -23,6 +23,7 @@
 #include <Dy/Core/Component/Resource/TextureResource.h>
 #include <Dy/Core/Component/Resource/MaterialResource.h>
 #include <Dy/Core/Component/Resource/ModelResource.h>
+#include <Dy/Core/Component/Resource/SoundResource.h>
 
 //!
 //! Forward declaration
@@ -63,12 +64,27 @@ public:
   EDySuccess CreateTextureResource(const std::string& textureName);
 
   ///
+  /// @brief Create texture resource on gpu, with PDyTextureConstructionBufferChunkDescriptor.
+  /// @param desc Texture construction buffer chunk descriptor for creating resource instance.
+  /// @return Success flag.
+  ///
+  MDY_NODISCARD
+  EDySuccess CreateTextureResourceWithChunk(_MIN_ const PDyTextureConstructionBufferChunkDescriptor& desc);
+
+  ///
   /// @brief Create material resource on cpu and gpu.
   /// @param[in] materialName name to create material which must be same with material information name.
   /// and material informaiton to be a target should be capable of create all resource related to material.
   ///
   [[nodiscard]]
   EDySuccess CreateMaterialResource(const std::string& materialName);
+
+  ///
+  /// @brief Create sound resource on cpu.
+  /// @param[in] soundName name to create sound which must be same with sound information name.
+  ///
+  [[nodiscard]]
+  EDySuccess CreateSoundResource(const std::string& soundName);
 
   ///
   /// @brief Create model resource on cpu and gpu.
@@ -103,11 +119,18 @@ public:
   [[nodiscard]]
   CDyModelResource* GetModelResource(const std::string& modelName);
 
+  ///
+  /// @brief
+  ///
+  [[nodiscard]]
+  CDySoundResource* GetSoundResource(const std::string& soundName);
+
 private:
   THashList<std::unique_ptr<CDyShaderResource>>   mOnBoardShaderLists;
   THashList<std::unique_ptr<CDyTextureResource>>  mOnBoardTextureLists;
   THashList<std::unique_ptr<CDyMaterialResource>> mOnBoardMaterialLists;
   THashList<std::unique_ptr<CDyModelResource>>    mOnBoardModelLists;
+  THashList<std::unique_ptr<CDySoundResource>>    mOnBoardSoundLists;
 };
 
 } /// ::dy namespace

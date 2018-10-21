@@ -15,36 +15,35 @@
 /// Header file
 #include <Dy/Core/Component/Object/Camera.h>
 
-#include <Phitos/Dbg/assert.h>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <Dy/Helper/Type/Vector3.h>
 
 #include <Dy/Management/InputManager.h>
-#include <Dy/Management/SceneManager.h>
+#include <Dy/Management/WorldManager.h>
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/LoggingManager.h>
 
 namespace dy
 {
 
-CDyCamera::CDyCamera(const PDyCameraConstructionDescriptor& descriptor)
+CDyLegacyCamera::CDyLegacyCamera(const PDyCameraConstructionDescriptor& descriptor)
 {
   this->mLookingAtDirection = dy::DDyVector3{0, 0, -1};
   MDY_CALL_ASSERT_SUCCESS(this->UpdateSetting(descriptor));
 }
 
-CDyCamera::~CDyCamera()
+CDyLegacyCamera::~CDyLegacyCamera()
 {
   // Unbind focus camera if this is being binded to camera focus of scene.
   if (this->IsBeingFocused())
   {
-    MDyScene::GetInstance().__pfUnbindCameraFocus();
+    MDyWorld::GetInstance().pfUnbindCameraFocus();
     this->mIsFocused = false;
   }
 }
 
-EDySuccess CDyCamera::UpdateSetting(const PDyCameraConstructionDescriptor& descriptor)
+EDySuccess CDyLegacyCamera::UpdateSetting(const PDyCameraConstructionDescriptor& descriptor)
 {
   this->mIsMoveable = descriptor.mIsMoveable;
 
@@ -71,8 +70,8 @@ EDySuccess CDyCamera::UpdateSetting(const PDyCameraConstructionDescriptor& descr
   // If camera must be focused instantly, set it to present focused camera reference ptr of manager.
   if (descriptor.mIsFocusInstantly)
   {
-    auto& sceneManager = MDyScene::GetInstance();
-    sceneManager.__pfBindFocusCamera(this);
+    auto& sceneManager = MDyWorld::GetInstance();
+    sceneManager.pfBindFocusCamera(*this);
     this->mIsFocused = true;
   }
 
@@ -83,7 +82,7 @@ EDySuccess CDyCamera::UpdateSetting(const PDyCameraConstructionDescriptor& descr
   return DY_SUCCESS;
 }
 
-const DDyMatrix4x4& CDyCamera::GetViewMatrix() noexcept
+const DDyMatrix4x4& CDyLegacyCamera::GetViewMatrix() noexcept
 {
   if (this->mIsViewMatrixDirty)
   {
@@ -93,7 +92,7 @@ const DDyMatrix4x4& CDyCamera::GetViewMatrix() noexcept
   return this->mViewMatrix;
 }
 
-const DDyMatrix4x4& CDyCamera::GetProjectionMatrix() noexcept
+const DDyMatrix4x4& CDyLegacyCamera::GetProjectionMatrix() noexcept
 {
   if (this->mIsPerspectiveMatrixDirty)
   {
@@ -103,7 +102,7 @@ const DDyMatrix4x4& CDyCamera::GetProjectionMatrix() noexcept
   return this->mProjectionMatrix;
 }
 
-void CDyCamera::SetFieldOfView(float newFov) noexcept
+void CDyLegacyCamera::SetFieldOfView(float newFov) noexcept
 {
   if (newFov < 0.1f)   newFov = 0.1f;
   if (newFov > 180.f)  newFov = 180.f;
@@ -111,31 +110,31 @@ void CDyCamera::SetFieldOfView(float newFov) noexcept
   this->mIsPerspectiveMatrixDirty = true;
 }
 
-void CDyCamera::SetAspect(float newAspect) noexcept
+void CDyLegacyCamera::SetAspect(float newAspect) noexcept
 {
-  PHITOS_ASSERT(newAspect > 0.f, "Aspect value must bigger than 0.0f");
+  MDY_ASSERT(newAspect > 0.f, "Aspect value must bigger than 0.0f");
 
   this->mAspect = newAspect;
   this->mIsPerspectiveMatrixDirty = true;
 }
 
-bool CDyCamera::IsOrthographicCamera() const noexcept
+bool CDyLegacyCamera::IsOrthographicCamera() const noexcept
 {
   return this->mIsOrthographicCamera;
 }
 
-bool CDyCamera::IsBeingFocused() const noexcept
+bool CDyLegacyCamera::IsBeingFocused() const noexcept
 {
-  auto& sceneManager = MDyScene::GetInstance();
+  auto& sceneManager = MDyWorld::GetInstance();
   return sceneManager.GetMainCameraPtr() == this;
 }
 
-bool CDyCamera::IsMoveable() const noexcept
+bool CDyLegacyCamera::IsMoveable() const noexcept
 {
   return this->mIsMoveable;
 }
 
-void CDyCamera::Update(float dt)
+void CDyLegacyCamera::Update(float dt)
 {
   if (this->mIsMoveable)
   {
@@ -150,7 +149,7 @@ void CDyCamera::Update(float dt)
       this->mPosition += this->mLookingAtDirection * yVal * dt * mSpeed;
       this->mIsViewMatrixDirty = true;
 
-      MDY_LOG_DEBUG_D("dt : {}", dt);
+      //MDY_LOG_DEBUG_D("dt : {}", dt);
     }
 
     if (input.IsMouseMoved())
@@ -163,7 +162,7 @@ void CDyCamera::Update(float dt)
   }
 }
 
-void CDyCamera::pProcessMouseMovement(const DDyVector2& offset, bool constrainPitch)
+void CDyLegacyCamera::pProcessMouseMovement(const DDyVector2& offset, bool constrainPitch)
 {
   this->mRotationEulerAngle.Y += offset.X * this->mMouseSensitivity;
   this->mRotationEulerAngle.X += offset.Y * this->mMouseSensitivity;
@@ -184,7 +183,7 @@ void CDyCamera::pProcessMouseMovement(const DDyVector2& offset, bool constrainPi
   this->pUpdateCameraVectors();
 }
 
-void CDyCamera::pUpdateCameraVectors()
+void CDyLegacyCamera::pUpdateCameraVectors()
 {
   // Calculate the new Front vector
   DDyVector3 front;
@@ -200,7 +199,7 @@ void CDyCamera::pUpdateCameraVectors()
   this->mIsViewMatrixDirty        = true;
 }
 
-void CDyCamera::pUpdateViewMatrix()
+void CDyLegacyCamera::pUpdateViewMatrix()
 {
   this->mViewMatrix = glm::lookAt(
       static_cast<glm::vec3>(this->mPosition),
@@ -210,7 +209,7 @@ void CDyCamera::pUpdateViewMatrix()
   this->mIsViewMatrixDirty = false;
 }
 
-void CDyCamera::pUpdateProjectionMatrix()
+void CDyLegacyCamera::pUpdateProjectionMatrix()
 {
   if (this->mIsOrthographicCamera)
   {

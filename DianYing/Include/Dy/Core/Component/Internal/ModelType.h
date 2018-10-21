@@ -15,17 +15,94 @@
 
 #include <string>
 
+#include <Dy/Core/Component/Internal/GeometryType.h>
+#include <Dy/Element/Interface/IDyToString.h>
+#include <Dy/Helper/Type/Quaternion.h>
+
 namespace dy
 {
 
+struct DMoeTempAnimationChannel;
+
 ///
 /// @struct PDyModelConstructionDescriptor
+/// @brief Model information construction descriptor
+///
+struct PDyModelConstructionDescriptor final : public IDyToString
+{
+  std::string     mModelName = "";
+  std::string     mModelPath = "";
+
+  [[nodiscard]]
+  std::string ToString() override final
+  {
+    return fmt::format(
+R"dy(PDyModelConstructionDescriptor
+Model Name : {}
+Model Path : {}
+)dy", this->mModelName, this->mModelPath);
+  };
+};
+
+///
+/// @struct PDyModelConstructionVertexDescriptor
+/// @brief Model information construction descriptor with customized static vertex information.
+///
+struct PDyModelConstructionVertexDescriptor final : public IDyToString
+{
+  std::string                                   mModelName                        = "";
+  std::vector<PDySubmeshInformationDescriptor>  mSubmeshConstructionInformations  = {};
+
+  ///
+  [[nodiscard]] std::string ToString() override final
+  {
+    return mModelName;
+  }
+};
+
+///
+/// @struct DMoeAnimationInformation
 /// @brief
 ///
-struct PDyModelConstructionDescriptor final
+struct DMoeAnimationInformation final
 {
-  std::string                           mModelName        = "";
-  std::string                           mModelPath        = "";
+  ///
+  /// @struct DAnimChannel
+  /// @brief
+  ///
+  struct DAnimChannel final
+  {
+    // Anim channel name == bondId name == node name.
+    std::string                 mName         = "";
+
+    std::vector<DDyQuaternion>  mRotationKeys = {};
+    std::vector<DDyVector3>     mPositionKeys = {};
+    std::vector<DDyVector3>     mScalingKeys  = {};
+
+    std::vector<float>          mRotationTime = {};
+    std::vector<float>          mPositionTime = {};
+    std::vector<float>          mScalingTime  = {};
+  };
+
+  std::string mName           = "";
+  float       mDuration       = MDY_INITIALIZE_DEFUINT;
+  float       mTickPerSecond  = MDY_INITIALIZE_DEFINT;
+
+  std::vector<DAnimChannel> mAnimationChannels      = {};
+};
+
+///
+/// @struct DMoeBoneNodeInformation
+/// @brief
+///
+struct DMoeBoneNodeInformation final
+{
+  DMoeBoneNodeInformation*              mParentNodePtr  = nullptr;
+
+  std::string                           mName           = "";
+  std::vector<DMoeBoneNodeInformation>  mChildrenNodes  = {};
+  DDyMatrix4x4                          mNodeTransform  = DDyMatrix4x4::IdentityMatrix();
+  DDyMatrix4x4                          mOffsetMatrix   = DDyMatrix4x4::IdentityMatrix();
 };
 
 } /// ::dy namespace

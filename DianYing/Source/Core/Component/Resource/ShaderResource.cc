@@ -19,7 +19,7 @@
 #include <Dy/Core/Component/Information/ShaderInformation.h>
 #include <Dy/Core/Component/Resource/MaterialResource.h>
 #include <Dy/Management/LoggingManager.h>
-#include <Phitos/Dbg/assert.h>
+
 
 //!
 //! Only this translate unit function.
@@ -160,19 +160,14 @@ namespace dy
 CDyShaderResource::~CDyShaderResource()
 {
   // Release heap resources
-  if (this->mShaderProgramId)
-  {
-    glDeleteProgram(this->mShaderProgramId);
-  }
+  if (this->mShaderProgramId) { glDeleteProgram(this->mShaderProgramId); }
 
   // Unbind previous and next level.
-  if (this->__mLinkedShaderInformationPtr)
-  {
-    this->__mLinkedShaderInformationPtr->__pfLinkShaderResourcePtr(nullptr);
-  }
+  if (this->__mLinkedShaderInformationPtr) { this->__mLinkedShaderInformationPtr->__pfResetShaderResourceLink(); }
+
   for (auto& [notUsed, materialPtr] : __mLinkedMaterialResourcePtrs)
   {
-    materialPtr->__pfResetShaderResourcePtr();
+    materialPtr->__pfResetShaderResource();
   }
 }
 
@@ -215,50 +210,43 @@ EDySuccess CDyShaderResource::__pInitializeShaderFragments(
     // Get OpenGL Shader type
     switch (fragmentInformation.mShaderType)
     {
-    case EDyShaderFragmentType::Vertex:
-      shaderFragmentId = glCreateShader(GL_VERTEX_SHADER);
-      break;
-    case EDyShaderFragmentType::TesselationControl:
-      shaderFragmentId = glCreateShader(GL_TESS_CONTROL_SHADER);
-      break;
-    case EDyShaderFragmentType::TesselationEvaluation:
-      shaderFragmentId = glCreateShader(GL_TESS_EVALUATION_SHADER);
-      break;
-    case EDyShaderFragmentType::Geometry:
-      shaderFragmentId = glCreateShader(GL_GEOMETRY_SHADER);
-      break;
-    case EDyShaderFragmentType::Pixel:
-      shaderFragmentId = glCreateShader(GL_FRAGMENT_SHADER);
-      break;
+    case EDyShaderFragmentType::Vertex:                 shaderFragmentId = glCreateShader(GL_VERTEX_SHADER);          break;
+    case EDyShaderFragmentType::TesselationControl:     shaderFragmentId = glCreateShader(GL_TESS_CONTROL_SHADER);    break;
+    case EDyShaderFragmentType::TesselationEvaluation:  shaderFragmentId = glCreateShader(GL_TESS_EVALUATION_SHADER); break;
+    case EDyShaderFragmentType::Geometry:               shaderFragmentId = glCreateShader(GL_GEOMETRY_SHADER);        break;
+    case EDyShaderFragmentType::Pixel:                  shaderFragmentId = glCreateShader(GL_FRAGMENT_SHADER);        break;
     }
 
     // If shader creation had failed, revert and release all shader fragments.
     if (shaderFragmentId <= 0)
     {
-      for (auto& [type, compiledShaderId] : shaderFragmentIdList)
-      {
-        glDeleteShader(compiledShaderId);
-      }
+      for (auto& [type, compiledShaderId] : shaderFragmentIdList) { glDeleteShader(compiledShaderId); }
       return DY_FAILURE;
     }
 
     // Read shader fragment code. if something is wrong, revert and release all shader fragments.
-    const auto opShaderFragmentCode = DyReadBinaryFileAll(fragmentInformation.mShaderPath);
-    if (!opShaderFragmentCode.has_value())
-    {
-      // @todo output error message;
-      glDeleteShader(shaderFragmentId);
-      for (auto& [type, compiledShaderId] : shaderFragmentIdList)
+    if (!fragmentInformation.mIsEnabledRawLoadShaderCode)
+    { // If must read from external shader file, let it do.
+      const auto opShaderFragmentCode = DyReadBinaryFileAll(fragmentInformation.mShaderPath);
+      if (!opShaderFragmentCode.has_value())
       {
-        glDeleteShader(compiledShaderId);
+        // @todo output error message;
+        glDeleteShader(shaderFragmentId);
+        for (auto&[type, compiledShaderId] : shaderFragmentIdList) { glDeleteShader(compiledShaderId); }
+        return DY_FAILURE;
       }
-      return DY_FAILURE;
-    }
 
-    // Compile shader fragment.
-    {
-      const auto& codeString  = opShaderFragmentCode.value();
-      const char* codePtr     = codeString.data();
+      // Compile shader fragment.
+      {
+        const auto& codeString = opShaderFragmentCode.value();
+        const char* codePtr = codeString.data();
+        glShaderSource(shaderFragmentId, 1, &codePtr, nullptr);
+        glCompileShader(shaderFragmentId);
+      }
+    }
+    else
+    { // If must read from internal string code, let it do.
+      const auto codePtr = fragmentInformation.mShaderRawCode.data();
       glShaderSource(shaderFragmentId, 1, &codePtr, nullptr);
       glCompileShader(shaderFragmentId);
     }
@@ -427,12 +415,12 @@ EDySuccess CDyShaderResource::__pStoreConstantUniformPropertiesOfProgram() noexc
   return DY_SUCCESS;
 }
 
-void CDyShaderResource::__pfLinkMaterialResource(CDyMaterialResource* ptr) const noexcept
+void CDyShaderResource::__pfSetMaterialResourceLink(CDyMaterialResource* ptr) const noexcept
 {
   auto [it, result] = this->__mLinkedMaterialResourcePtrs.try_emplace(ptr, ptr);
   if (!result) {
-    MDY_LOG_CRITICAL_D("{} | Unexpected error occurred. | Shader Name : {}", "CDyShaderResource::__pfLinkMaterialResource", this->mShaderName);
-    PHITOS_UNEXPECTED_BRANCH();
+    MDY_LOG_CRITICAL_D("{} | Unexpected error occurred. | Shader Name : {}", "CDyShaderResource::__pfSetMaterialResourceLink", this->mShaderName);
+    MDY_UNEXPECTED_BRANCH();
   }
 }
 
@@ -443,7 +431,7 @@ void CDyShaderResource::UseShader() noexcept
 
 void CDyShaderResource::UpdateUniformVariables()
 {
-  PHITOS_NOT_IMPLEMENTED_ASSERT();
+  MDY_NOT_IMPLEMENTED_ASSERT();
 }
 
 void CDyShaderResource::UnuseShader() noexcept

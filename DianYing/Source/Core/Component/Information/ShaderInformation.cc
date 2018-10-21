@@ -62,16 +62,13 @@ DDyShaderInformation::~DDyShaderInformation()
 {
   MDY_LOG_INFO_D(kShaderInformationTemplate, "~DDyShaderInformation", "name", this->mShaderInformation.mShaderName);
 
-  if (mLinkedShaderResourcePtr)
-  {
-    mLinkedShaderResourcePtr->__pfLinkShaderInformationPtr(nullptr);
-  }
+  if (this->__mLinkedShaderResourcePtr) { this->__mLinkedShaderResourcePtr->__pfResetShaderInformationLink(); }
 }
 
-void DDyShaderInformation::__pfLinkShaderResourcePtr(CDyShaderResource* ptr) const noexcept
+void DDyShaderInformation::__pfSetShaderResourceLink(NotNull<CDyShaderResource*> ptr) const noexcept
 {
-  MDY_LOG_DEBUG_D(kShaderInformationBindTo, "__pfLinkShaderResourcePtr", reinterpret_cast<std::ptrdiff_t>(ptr));
-  mLinkedShaderResourcePtr = ptr;
+  MDY_LOG_DEBUG_D(kShaderInformationBindTo, "__pfSetShaderResourceLink", reinterpret_cast<std::ptrdiff_t>(ptr.Get()));
+  this->__mLinkedShaderResourcePtr = ptr;
 }
 
 } /// ::dy namespace

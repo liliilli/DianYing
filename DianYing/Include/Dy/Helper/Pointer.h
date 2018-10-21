@@ -69,17 +69,17 @@ public:
   template <typename TConvType, typename = std::enable_if_t<std::is_convertible_v<TConvType, TType>>>
   constexpr explicit NotNull(TConvType&& u) : mPtr(std::forward<TConvType>(u))
   {
-    Expects(mPtr != nullptr);
+    Expects(MDY_CHECK_ISNOTNULL(mPtr));
   }
 
   template <typename TConvType, typename = std::enable_if_t<std::is_convertible_v<TConvType, TType>>>
-  constexpr NotNull(const NotNull<TConvType>& other) : NotNull(other.get())
+  constexpr NotNull(const NotNull<TConvType>& other) : NotNull(other.Get())
   { }
 
   template <typename = std::enable_if_t<!std::is_same_v<std::nullptr_t, TType>>>
   constexpr explicit NotNull(TType u) : mPtr(u)
   {
-    Expects(mPtr != nullptr);
+    Expects(MDY_CHECK_ISNOTNULL(mPtr));
   }
 
   NotNull(NotNull&& other)                  = default;
@@ -116,7 +116,7 @@ private:
 };
 
 template <class TType>
-auto MakeNotNull(TType&& t)
+auto DyMakeNotNull(TType&& t)
 {
   return NotNull<std::remove_cv_t<std::remove_reference_t<TType>>>{std::forward<TType>(t)};
 }

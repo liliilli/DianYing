@@ -16,6 +16,7 @@
 #include <Dy/Core/Component/Internal/ModelType.h>
 #include <Dy/Core/Component/Information/SubmeshInformation.h>
 #include <Dy/Core/Component/Internal/MaterialType.h>
+#include <Dy/Helper/Pointer.h>
 
 //!
 //! Forward declaration
@@ -29,7 +30,7 @@ struct  aiScene;
 namespace Assimp
 {
 class Importer;
-}
+} /// ::Assimp namespace
 
 namespace dy
 {
@@ -52,25 +53,24 @@ namespace dy
 class DDyModelInformation final
 {
 public:
+  MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(DDyModelInformation);
   DDyModelInformation(const PDyModelConstructionDescriptor& modelConstructionDescriptor);
-
-  DDyModelInformation(const DDyModelInformation&)            = delete;
-  DDyModelInformation& operator=(const DDyModelInformation&) = delete;
-  DDyModelInformation(DDyModelInformation&&)            = default;
-  DDyModelInformation& operator=(DDyModelInformation&&) = default;
+  DDyModelInformation(const PDyModelConstructionVertexDescriptor& modelConstructDescriptor);
   ~DDyModelInformation();
 
   ///
   /// @brief Return material name list which model information have.
   ///
+  [[nodiscard]]
   FORCEINLINE const std::vector<std::string>& GetBindedMaterialNameLists() const noexcept
   {
-    return this->mBindedMaterialName;
+    return this->mOverallBindedMaterialName;
   }
 
   ///
   /// @brief Return mesh information list which have material name, vertex, indice etc.
   ///
+  [[nodiscard]]
   FORCEINLINE const auto& GetMeshInformation() const noexcept
   {
     return this->mSubmeshInformations;
@@ -79,62 +79,74 @@ public:
   ///
   /// @brief Check if object is being binded to CDyModelResource instance.
   ///
+  [[nodiscard]]
   FORCEINLINE bool IsBeingBindedToResource() const noexcept
   {
-    return this->mLinkedModelResourcePtr != nullptr;
+    return this->__mLinkedModelResourcePtr != nullptr;
   }
 
 private:
   ///
+  /// @brief Create Animation information, not traversing aiMeshes.
+  ///
+  void pCreateAnimationInformation(const aiScene& ai_scene);
+
+  ///
+  /// @brief
+  ///
+  void pProcessNode(const aiScene& aiScene, const aiNode& aiNode);
+
+  ///
   /// @brief Process aiMesh, make mesh information description which stores vertex, indices,
   /// innate material information, etc.
   ///
-  void __pProcessAssimpMesh(aiMesh* mesh, const aiScene* scene);
-
+  void __pProcessMeshInformation(const aiScene& aiScene, const aiNode& aiNode, const aiMesh& aiMesh);
   /// Read vertex data, make data, and insert to PDySubmeshInformationDescriptor.
-  void __pReadVertexData(const aiMesh* mesh, PDySubmeshInformationDescriptor& desc);
-
+  void __pReadVertexData(const aiMesh& mesh, PDySubmeshInformationDescriptor& desc);
   /// Read bone data.
-  void __pReadBoneData(const aiMesh* mesh, PDySubmeshInformationDescriptor& desc);
-
+  void __pReadBoneData(const aiMesh& mesh, PDySubmeshInformationDescriptor& desc);
   /// Read index(element) data, make data, and insert to PDySubmeshInformationDescriptor.
-  void __pReadIndiceData(const aiMesh* mesh, PDySubmeshInformationDescriptor& desc);
-
+  void __pReadIndiceData(const aiMesh& mesh, PDySubmeshInformationDescriptor& desc);
   /// Read material data and make descriptor.
-  PDyMaterialConstructionDescriptor __pReadMaterialData(const aiMaterial* material);
-
+  PDyMaterialConstructionDescriptor       __pReadMaterialData(const aiMaterial& material);
   /// Read material texture data and insert texture information to manager.
-  std::optional<std::vector<std::string>> __pLoadMaterialTextures(const aiMaterial* material, EDyTextureMapType type);
-
+  std::optional<std::vector<std::string>> __pLoadMaterialTextures(const aiMaterial& material, EDyTextureMapType type);
+  /// Read node information from aiScene, and create DMoe's node information.
+  void pCreateNodeInformation(const aiNode& aiNode, DMoeBoneNodeInformation& nodeInfo);
   /// Output information log only in debug mode.
   void __pOutputDebugInformationLog();
 
-  ///
-  FORCEINLINE const aiScene* pGetModelGeometryResource() const noexcept
-  {
-    return this->mInternalModelGeometryResource;
-  }
+  std::string                             mModelName                      = "";
+  std::string                             mModelRootPath                  = "";
 
-  std::string                           mModelName            = "";
-  std::string                           mModelRootPath        = "";
-  std::vector<DDySubmeshInformation>    mSubmeshInformations  = {};
-  std::vector<std::string>              mBindedMaterialName   = {};
-  std::vector<std::string>              mTextureLocalPaths    = {};
+  std::vector<DDySubmeshInformation>      mSubmeshInformations            = {};
+  std::vector<std::string>                mOverallBindedMaterialName      = {};
+  std::vector<std::string>                mOverallTextureLocalPaths       = {};
 
-  // Added 2018-09-14
-  std::unique_ptr<Assimp::Importer>       mAssimpImporter                 = nullptr;
-  std::unordered_map<std::string, TU32>   mBoneStringBoneIdMap            = {};
+  std::unordered_map<std::string, TU32>   mBoneIdMap                      = {};
   std::vector<DDyGeometryBoneInformation> mOverallModelBoneInformations   = {};
-  int32_t                                 mModelBoneTotalCount            = 0;
-  const aiScene*                          mInternalModelGeometryResource  = nullptr;
-  DDyMatrix4x4                            mGlobalInverseTransform         = {};
+  DDyMatrix4x4                            mGlobalTransform                = DDyMatrix4x4::IdentityMatrix();
+
+  std::vector<DMoeAnimationInformation>   mAnimationInformations          = {};
+  DMoeBoneNodeInformation                 mRootBoneNode;
+
+  // Added 2018-09-19
+  std::atomic<bool>                       mModelInformationLoaded         = false;
 
   //!
   //! Resource pointers binding
   //!
 
-  void __pfSetModelResourceLink(CDyModelResource* ptr) const noexcept { mLinkedModelResourcePtr = ptr; }
-  mutable CDyModelResource* mLinkedModelResourcePtr = nullptr;
+  FORCEINLINE void __pfSetModelResourceLink(NotNull<CDyModelResource*> ptr) const noexcept
+  {
+    __mLinkedModelResourcePtr = ptr;
+  }
+  FORCEINLINE void __pfResetModelResourceLink() const noexcept
+  {
+    this->__mLinkedModelResourcePtr = nullptr;
+  }
+
+  MDY_TRANSIENT CDyModelResource* __mLinkedModelResourcePtr = nullptr;
 
   friend class CDyModelResource;
   friend class MDyHeapResource;

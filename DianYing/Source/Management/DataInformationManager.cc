@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Management/DataInformationManager.h>
 #include <Dy/Management/LoggingManager.h>
+#include <Dy/Management/SynchronizationManager.h>
 
 namespace
 {
@@ -23,6 +24,10 @@ MDY_SET_IMMUTABLE_STRING(kDyDataInformation,            "MDyDataInformation");
 
 MDY_SET_IMMUTABLE_STRING(kErrorShaderNameNotSpecified,  "{} | Failed to create shader information. Shader name is not specified.");
 MDY_SET_IMMUTABLE_STRING(kErrorShaderFragmentEmpty,     "{} | Failed to create shader information. Shader fragments are empty.");
+MDY_SET_IMMUTABLE_STRING(kErrorShaderFramgmentRawCodeEmpty,
+    "{}::{} | Failed to create shader information. Shader fragment's mIsEnabledRawLoadShaderCode is true but not specified mShaderRawCode.");
+MDY_SET_IMMUTABLE_STRING(kErrorShaderFramgmentPathEmpty,
+    "{}::{} | Failed to create shader information. Shader fragment's path is not specified so can not arbitary fragment file.");
 
 MDY_SET_IMMUTABLE_STRING(kErrorTextureNameNotSpecified, "{} | Failed to create texture information. Texture name is not specified.");
 MDY_SET_IMMUTABLE_STRING(kErrorTextureLocalPathEmpty,   "{} | Failed to create texture information. \
@@ -57,15 +62,76 @@ EDySuccess MDyDataInformation::pfRelease()
 
 EDySuccess MDyDataInformation::CreateShaderInformation(const PDyShaderConstructionDescriptor& shaderDescriptor)
 {
+  ///
+  /// @callback CheckIntegrityOfDescriptor
+  /// @brief
+  ///
+  static auto CheckIntegerityOfDescriptor = [](const PDyShaderConstructionDescriptor& shaderDescriptor)
+  {
+    if (shaderDescriptor.mShaderName.empty())
+    {
+      MDY_LOG_CRITICAL_D(kErrorShaderNameNotSpecified, kDyDataInformation);
+      return DY_FAILURE;
+    }
+    if (shaderDescriptor.mShaderFragments.empty())
+    {
+      MDY_LOG_CRITICAL_D(kErrorShaderFragmentEmpty, kDyDataInformation);
+      return DY_FAILURE;
+    }
+
+    for (const auto& shaderFragment : shaderDescriptor.mShaderFragments)
+    {
+      if (shaderFragment.mIsEnabledRawLoadShaderCode && shaderFragment.mShaderRawCode.empty())
+      {
+        MDY_LOG_CRITICAL_D(kErrorShaderFramgmentRawCodeEmpty, kDyDataInformation, "CheckIntegerityOfDescriptor");
+        return DY_FAILURE;
+      }
+
+      if (!shaderFragment.mIsEnabledRawLoadShaderCode && shaderFragment.mShaderPath.empty())
+      {
+        MDY_LOG_CRITICAL_D(kErrorShaderFramgmentPathEmpty, kDyDataInformation, "CheckIntegerityOfDescriptor");
+        return DY_FAILURE;
+      }
+    }
+
+    return DY_SUCCESS;
+  };
+
+  ///
+  /// @callback TaskInsertShaderInformation
+  /// @brief
+  ///
+  static auto TaskInsertShaderInformation = [](const PDyShaderConstructionDescriptor& shaderDescriptor,
+                                               THeapHash<DDyShaderInformation>& shaderList)
+  {
+    // Create information space.
+    const auto& shaderName      = shaderDescriptor.mShaderName;
+    auto[it, creationResult]  = shaderList.try_emplace(shaderName, nullptr);
+    if (!creationResult)
+    {
+      // Something is already in or memory oob.
+      MDY_LOG_CRITICAL("{} | Unexpected error happened during create memory for shader information {}.",
+                       "MDyDataInformation::CreateShaderInformation().", shaderName);
+      return DY_FAILURE;
+    }
+
+    // Make resource in heap, and insert it to empty memory space.
+    auto shaderInformation = std::make_unique<DDyShaderInformation>(shaderDescriptor);
+    it->second.swap(shaderInformation);
+    if (!it->second)
+    {
+      MDY_LOG_CRITICAL("{} | Unexpected error happened during swapping shader information {}.",
+                       "MDyDataInformation::CreateShaderInformation().", shaderName);
+      shaderList.erase(shaderName);
+      return DY_FAILURE;
+    }
+
+    return DY_SUCCESS;
+  };
+
   // Integrity test
-  if (shaderDescriptor.mShaderName.empty())
+  if (CheckIntegerityOfDescriptor(shaderDescriptor) == DY_FAILURE)
   {
-    MDY_LOG_CRITICAL_D(kErrorShaderNameNotSpecified, kDyDataInformation);
-    return DY_FAILURE;
-  }
-  if (shaderDescriptor.mShaderFragments.empty())
-  {
-    MDY_LOG_CRITICAL_D(kErrorShaderFragmentEmpty, kDyDataInformation);
     return DY_FAILURE;
   }
 
@@ -79,22 +145,9 @@ EDySuccess MDyDataInformation::CreateShaderInformation(const PDyShaderConstructi
   }
 
   // Create information space.
-  auto [it, creationResult] = mShaderInformation.try_emplace(shaderName, nullptr);
-  if (!creationResult) {
-    // Something is already in or memory oob.
-    MDY_LOG_CRITICAL("{} | Unexpected error happened during create memory for shader information {}.",
-                     "MDyDataInformation::CreateShaderInformation().", shaderName);
-    return DY_FAILURE;
-  }
-
-  // Make resource in heap, and insert it to empty memory space.
-  auto shaderInformation = std::make_unique<DDyShaderInformation>(shaderDescriptor);
-  it->second.swap(shaderInformation);
-  if (!it->second)
+  // MDySync::EnqueueIO(TaskInsertShaderInformation, std::ref(shaderDescriptor), std::ref(this->mShaderInformation));
+  if (TaskInsertShaderInformation(shaderDescriptor, this->mShaderInformation) == DY_FAILURE)
   {
-    MDY_LOG_CRITICAL("{} | Unexpected error happened during swapping shader information {}.",
-                     "MDyDataInformation::CreateShaderInformation().", shaderName);
-    this->mShaderInformation.erase(shaderName);
     return DY_FAILURE;
   }
 
@@ -104,25 +157,70 @@ EDySuccess MDyDataInformation::CreateShaderInformation(const PDyShaderConstructi
 
 EDySuccess MDyDataInformation::CreateTextureInformation(const PDyTextureConstructionDescriptor& textureDescriptor)
 {
-  // Integrity test
-  if (textureDescriptor.mTextureName.empty())
+  ///
+  /// @function
+  /// @brief
+  ///
+  static auto CheckIntegerityOfDescriptor = [](const PDyTextureConstructionDescriptor& textureDescriptor)
   {
-    MDY_LOG_CRITICAL_D(kErrorTextureNameNotSpecified, kDyDataInformation);
-    return DY_FAILURE;
-  }
-  if (textureDescriptor.mIsEnabledAbsolutePath && textureDescriptor.mTextureFileAbsolutePath.empty())
+    // Integrity test
+    if (textureDescriptor.mTextureName.empty())
+    {
+      MDY_LOG_CRITICAL_D(kErrorTextureNameNotSpecified, kDyDataInformation);
+      return DY_FAILURE;
+    }
+    if (textureDescriptor.mIsEnabledAbsolutePath && textureDescriptor.mTextureFileAbsolutePath.empty())
+    {
+      MDY_LOG_CRITICAL_D(kErrorTextureAbsolPathEmpty, kDyDataInformation);
+      return DY_FAILURE;
+    }
+    else if (textureDescriptor.mTextureFileLocalPath.empty())
+    {
+      MDY_LOG_CRITICAL_D(kErrorTextureLocalPathEmpty, kDyDataInformation);
+      return DY_FAILURE;
+    }
+    if (textureDescriptor.mTextureType == EDyTextureStyleType::None)
+    {
+      MDY_LOG_CRITICAL_D(kErrorTextureTypeNone, kDyDataInformation);
+      return DY_FAILURE;
+    }
+
+    return DY_SUCCESS;
+  };
+
+  ///
+  /// @callback TaskInsertShaderInformation
+  /// @brief
+  ///
+  static auto TaskInsertTextureInformation = [](const PDyTextureConstructionDescriptor& textureDescriptor,
+                                                THeapHash<DDyTextureInformation>& textureMap)
   {
-    MDY_LOG_CRITICAL_D(kErrorTextureAbsolPathEmpty, kDyDataInformation);
-    return DY_FAILURE;
-  }
-  else if (textureDescriptor.mTextureFileLocalPath.empty())
+    // Check there is already in the information map.
+    const auto& textureName  = textureDescriptor.mTextureName;
+    auto[it, creationResult] = textureMap.try_emplace(textureName, nullptr);
+    if (!creationResult)
+    {
+      MDY_LOG_CRITICAL("{}::{} | Unexpected error happened during create memory for texture information. Texture name : {}.",
+        kDyDataInformation, "CreateTextureInformation", textureName);
+      return DY_FAILURE;
+    }
+
+    // Make resource in heap, and insert it to empty memory space.
+    auto textureInformation = std::make_unique<DDyTextureInformation>(textureDescriptor);
+    it->second.swap(textureInformation);
+    if (!it->second)
+    {
+      MDY_LOG_CRITICAL("{}::{} | Unexpected error happened during swapping texture information {}.",
+        kDyDataInformation, "CreateTextureInformation", textureName);
+      textureMap.erase(textureName);
+      return DY_FAILURE;
+    }
+
+    return DY_SUCCESS;
+  };
+
+  if (CheckIntegerityOfDescriptor(textureDescriptor) == DY_FAILURE)
   {
-    MDY_LOG_CRITICAL_D(kErrorTextureLocalPathEmpty, kDyDataInformation);
-    return DY_FAILURE;
-  }
-  if (textureDescriptor.mTextureType == EDyTextureStyleType::None)
-  {
-    MDY_LOG_CRITICAL_D(kErrorTextureTypeNone, kDyDataInformation);
     return DY_FAILURE;
   }
 
@@ -135,25 +233,12 @@ EDySuccess MDyDataInformation::CreateTextureInformation(const PDyTextureConstruc
   }
 
   // Check there is already in the information map.
-  auto [it, creationResult] = mTextureInformation.try_emplace(textureName, nullptr);
-  if (!creationResult)
+  if (TaskInsertTextureInformation(textureDescriptor, this->mTextureInformation) == DY_FAILURE)
   {
-    MDY_LOG_CRITICAL("{}::{} | Unexpected error happened during create memory for texture information. Texture name : {}.",
-                     kDyDataInformation, "CreateTextureInformation", textureName);
     return DY_FAILURE;
   }
 
-  // Make resource in heap, and insert it to empty memory space.
-  auto textureInformation = std::make_unique<DDyTextureInformation>(textureDescriptor);
-  it->second.swap(textureInformation);
-  if (!it->second)
-  {
-    MDY_LOG_CRITICAL("{}::{} | Unexpected error happened during swapping texture information {}.",
-                     kDyDataInformation, "CreateTextureInformation", textureName);
-    this->mTextureInformation.erase(textureName);
-    return DY_FAILURE;
-  }
-
+  MDY_LOG_CRITICAL("{} | \"{}\" texture information Created.", textureName);
   return DY_SUCCESS;
 }
 
@@ -249,6 +334,120 @@ EDySuccess MDyDataInformation::CreateModelInformation(const PDyModelConstruction
   return DY_SUCCESS;
 }
 
+EDySuccess MDyDataInformation::CreateModelInformation(const PDyModelConstructionVertexDescriptor& modelDescriptor)
+{
+  ///
+  /// @function CheckIntegerityOfDescriptor
+  /// @brief
+  ///
+  static auto CheckIntegerityOfDescriptor = [](const PDyModelConstructionVertexDescriptor& desc) -> EDySuccess
+  {
+    if (desc.mModelName.empty())
+    {
+      MDY_LOG_CRITICAL_D(kErrorModelNameEmpty, kDyDataInformation, "CreateModelInformation");
+      throw std::runtime_error("Model name is not specified.");
+    }
+    const auto& modelName = desc.mModelName;
+    if (desc.mSubmeshConstructionInformations.empty())
+    {
+      MDY_LOG_CRITICAL_D(kErrorModelPathEmpty, kDyDataInformation, "CreateModelInformation", modelName);
+      throw std::runtime_error("Model submesh information list is empty.");
+    }
+
+    return DY_SUCCESS;
+  };
+
+  // Integrity test
+  if (CheckIntegerityOfDescriptor(modelDescriptor) == DY_FAILURE)
+  {
+    // @TODO OUTPUT LOG MESSAGE
+    return DY_FAILURE;
+  }
+
+  const auto& modelName = modelDescriptor.mModelName;
+  decltype(this->mModelInformation)::iterator it;
+  {
+    std::lock_guard<std::mutex> mt(this->mTemporalMutex);
+    if (mModelInformation.find(modelName) != mModelInformation.end())
+    {
+      MDY_LOG_WARNING_D("{} | Resource is already found. Name : {}", "MDyDataInformation", modelName);
+      return DY_FAILURE;
+    }
+
+    // Check there is already in the information map, if not, make memory space to insert it.
+    bool creationResult = false;
+    std::tie(it, creationResult) = mModelInformation.try_emplace(modelName, nullptr);
+    if (!creationResult)
+    {
+      MDY_LOG_CRITICAL_D("{} | Failed to create resource memory space. Name : {}", "MDyDataInformation", modelName);
+      return DY_FAILURE;
+    }
+  }
+
+  // Make resource in heap, and insert it to empty memory space.
+  auto materialInformation = std::make_unique<DDyModelInformation>(modelDescriptor);
+  if (it->second.swap(materialInformation); !it->second)
+  {
+    MDY_LOG_CRITICAL_D("{} | Unexpected error occured. Name : {}", "MDyDataInformation", modelName);
+    this->mModelInformation.erase(modelName);
+    return DY_FAILURE;
+  }
+
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyDataInformation::CreateSoundInformation(const PDySoundConstructionDescriptor& soundDescriptor)
+{
+  ///
+  /// @function CheckIntegerityOfDescriptor
+  /// @brief Check sound escriptor is good to fit in.
+  ///
+  static auto CheckIntegerityOfDescriptor = [](const PDySoundConstructionDescriptor& soundDescriptor) -> EDySuccess
+  {
+    if (soundDescriptor.mSoundName.empty()) return DY_FAILURE;
+    if (soundDescriptor.mSoundPath.empty()) return DY_FAILURE;
+
+    return DY_SUCCESS;
+  };
+
+  if (CheckIntegerityOfDescriptor(soundDescriptor) == DY_FAILURE)
+  {
+    /// @TODO OUTPUT FAILURE MESSAGE WITH PROPER ERROR FLAG
+    return DY_FAILURE;
+  };
+
+  const auto& soundName = soundDescriptor.mSoundName;
+  decltype(this->mSoundInformation)::iterator it;
+  {
+    std::lock_guard<std::mutex> mt(this->mTemporalMutex);
+    if (mSoundInformation.find(soundName) != mSoundInformation.end())
+    {
+      MDY_LOG_WARNING_D("{} | Resource is already found. Name : {}", "MDyDataInformation", soundName);
+      return DY_FAILURE;
+    }
+
+    // Check there is already in the information map, if not, make memory space to insert it.
+    bool creationResult = false;
+    std::tie(it, creationResult) = mSoundInformation.try_emplace(soundName, nullptr);
+    if (!creationResult)
+    {
+      MDY_LOG_CRITICAL_D("{} | Failed to create information resource memory space. Name : {}", "MDyDataInformation", soundName);
+      return DY_FAILURE;
+    }
+  }
+
+  // Make resource in heap, and insert it to empty memory space.
+  auto soundInfo = std::make_unique<DDySoundInformation>(soundDescriptor);
+  if (it->second.swap(soundInfo); !it->second)
+  {
+    MDY_LOG_CRITICAL_D("{} | Unexpected error occured. Name : {}", "MDyDataInformation", soundName);
+    this->mSoundInformation.erase(soundName);
+    return DY_FAILURE;
+  }
+
+  return DY_SUCCESS;;
+}
+
 std::optional<std::string> MDyDataInformation::PopulateMaterialInformation(
     const std::string& materialName,
     const PDyMaterialPopulateDescriptor& materialPopulateDescriptor)
@@ -296,7 +495,7 @@ std::optional<std::string> MDyDataInformation::PopulateMaterialInformation(
   }
 
   // Let baseMaterial have created populated derived material and move ownership to list.
-  auto populateDerivedSmtPtr = baseMaterial->__pfPopulateWith(actualMaterialPopDesc);
+  auto populateDerivedSmtPtr = baseMaterial->__pfPopulateMaterialWith(actualMaterialPopDesc);
   infoIt->second.swap(populateDerivedSmtPtr);
   if (!infoIt->second)
   {
@@ -420,6 +619,30 @@ EDySuccess MDyDataInformation::DeleteModelInformation(const std::string& modelNa
   return DY_SUCCESS;
 }
 
+EDySuccess MDyDataInformation::DeleteSoundInformation(const std::string& soundName, bool isForced)
+{
+  const auto iterator = mSoundInformation.find(soundName);
+  if (iterator == mSoundInformation.end())
+  {
+    MDY_LOG_ERROR_D("{}::{} | Failed to remove sound information. Have not sound information. | {} : {}",
+                    "MDyDataInformation", "DeleteSoundInformation", "Sound Name", soundName);
+    return DY_FAILURE;
+  }
+
+  // IF mTextureInformation is being used by another resource instance?
+  // then, return DY_FAILURE or remove it.
+  if (iterator->second->IsBeingBindedToResource() && !isForced)
+  {
+    MDY_LOG_ERROR_D("{}::{} | Failed to remove sound information. Must remove resource first. | {} : {}",
+                    "MDyDataInformation", "DeleteSoundInformation", "Sound Name", soundName);
+    return DY_FAILURE;
+  }
+
+  // And remove material information!
+  this->mSoundInformation.erase(iterator);
+  return DY_SUCCESS;
+}
+
 //!
 //! Get function.
 //!
@@ -472,6 +695,20 @@ const DDyModelInformation* MDyDataInformation::GetModelInformation(const std::st
   {
     MDY_LOG_WARNING("{} | Failed to find model information. | {} : {}",
                     "MDyDataInformation", "Model name", modelName);
+    return nullptr;
+  }
+
+  return iterator->second.get();
+}
+
+const DDySoundInformation* MDyDataInformation::GetSoundInformation(const std::string& soundName) const noexcept
+{
+  std::lock_guard<std::mutex> mt(this->mTemporalMutex);
+
+  const auto iterator = this->mSoundInformation.find(soundName);
+  if (iterator == this->mSoundInformation.end())
+  {
+    MDY_LOG_WARNING("{} | Failed to find model information. | {} : {}", "MDyDataInformation", "Sound name", soundName);
     return nullptr;
   }
 

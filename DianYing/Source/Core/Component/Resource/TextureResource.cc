@@ -58,9 +58,9 @@ CDyTextureResource::~CDyTextureResource()
   {
     __mLinkedTextureInformationPtr->__pfLinkTextureResource(nullptr);
   }
-  for (auto& [notUsed, materialPtr] : __mBindMaterialPtrs)
+  for (auto& [notUsed, materialPtr] : __mBindMaterialPtrCounters)
   {
-    materialPtr->__pfResetTextureResourcePtr(this);
+    materialPtr->__pfResetTextureResourcePtr(DyMakeNotNull(this));
   }
 }
 
@@ -87,7 +87,7 @@ EDySuccess CDyTextureResource::pfInitializeTextureResource(const DDyTextureInfor
   int32_t glImageFormat = GL_NO_ERROR;
   switch (dataBuffer->GetImageFormat())
   {
-  case EDyImageColorFormatStyle::R:     glImageFormat = GL_R;     break;
+  case EDyImageColorFormatStyle::R:     glImageFormat = GL_RED;   break;
   case EDyImageColorFormatStyle::RG:    glImageFormat = GL_RG;    break;
   case EDyImageColorFormatStyle::RGB:   glImageFormat = GL_RGB;   break;
   case EDyImageColorFormatStyle::RGBA:  glImageFormat = GL_RGBA;  break;
@@ -163,14 +163,64 @@ EDySuccess CDyTextureResource::pfInitializeTextureResource(const DDyTextureInfor
   return DY_SUCCESS;
 }
 
-void CDyTextureResource::__pfLinkMaterialResourcePtr(CDyMaterialResource* ptr) const noexcept
+EDySuccess CDyTextureResource::pfInitializeTextureResourceWithChunk(const PDyTextureConstructionBufferChunkDescriptor& descriptor)
 {
-  auto [it, result] = __mBindMaterialPtrs.try_emplace(ptr, ptr);
-  if (!result)
+  int32_t glImageFormat = GL_NO_ERROR;
+  switch (descriptor.mTextureColorType)
+  {
+  case EDyImageColorFormatStyle::R:     glImageFormat = GL_RED;   break;
+  case EDyImageColorFormatStyle::RG:    glImageFormat = GL_RG;    break;
+  case EDyImageColorFormatStyle::RGB:   glImageFormat = GL_RGB;   break;
+  case EDyImageColorFormatStyle::RGBA:  glImageFormat = GL_RGBA;  break;
+  default: MDY_UNEXPECTED_BRANCH();  return DY_FAILURE;
+  }
+
+  // Get GL_TEXTURE_ TYPE from textureInfo.
+  switch (descriptor.mTextureType)
+  {
+  case EDyTextureStyleType::D1:
+    glGenTextures(1, &mTextureResourceId);
+    glBindTexture(GL_TEXTURE_1D, mTextureResourceId);
+    glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, descriptor.mWidth, 0, glImageFormat, GL_UNSIGNED_BYTE, descriptor.mBufferPtr);
+    break;
+  case EDyTextureStyleType::D2:
+    glGenTextures(1, &mTextureResourceId);
+    glBindTexture(GL_TEXTURE_2D, mTextureResourceId);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, descriptor.mWidth, descriptor.mHeight, 0, glImageFormat, GL_UNSIGNED_BYTE, descriptor.mBufferPtr);
+    break;
+  default: MDY_UNEXPECTED_BRANCH();  return DY_FAILURE;
+  }
+
+  // Forward dataBuffer's retrieved information to data members.
+  this->mTextureName    = descriptor.mTextureName;
+  this->mTextureType    = descriptor.mTextureType;
+  this->mTextureWidth   = descriptor.mHeight;
+  switch (descriptor.mTextureType)
+  {
+  case EDyTextureStyleType::D1: this->mTextureHeight  = 1; break;
+  case EDyTextureStyleType::D2: this->mTextureHeight  = descriptor.mHeight; break;
+  default: MDY_UNEXPECTED_BRANCH(); break;
+  }
+
+  // Set texture parameters.
+  DyGlSetDefaultOptionSetting(mTextureResourceId);
+  return DY_SUCCESS;;
+}
+
+void CDyTextureResource::__pfSetMaterialResourceLink(NotNull<CDyMaterialResource*> ptr) const noexcept
+{
+  if (this->__mBindMaterialPtrCounters.find(ptr) != this->__mBindMaterialPtrCounters.end())
+  { // If found, just neglect.
+    return;
+  }
+
+  // If not found, create counter instance for valid mateiral resource.
+  auto [it, result] = this->__mBindMaterialPtrCounters.try_emplace(ptr, ptr);
+  if (result == false)
   {
     MDY_LOG_ERROR("{} | Failed to link material resource. | Model name : {}",
-                  "CDyTextureResource::__pfLinkMaterialResourcePtr", ptr->GetMaterialName());
-    assert(false);
+                  "CDyTextureResource::__pfSetMaterialResourceLink", ptr->GetMaterialName());
+    MDY_UNEXPECTED_BRANCH();
   }
 }
 

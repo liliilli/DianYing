@@ -14,6 +14,8 @@
 ///
 
 #include <vector>
+#include <Dy/Element/Interface/IDyToString.h>
+#include <Dy/Helper/Pointer.h>
 
 //!
 //! Forward declaration
@@ -23,7 +25,7 @@ namespace dy
 {
 class CDyShaderResource;
 class CDyTextureResource;
-}
+} /// ::dy namespace
 
 //!
 //! Implementation
@@ -34,51 +36,82 @@ namespace dy
 
 ///
 /// @enum EDyMaterialBlendMode
-/// @brief
+/// @brief Specify material's blend mode. The way of rendering will be changed by this value.
 ///
 enum class EDyMaterialBlendMode
 {
+  // Material will be forward to deferred rendering (pass 2)
   Opaque,
+  // Material will be forward to forwarding rendering afterward deferred rendering (pass 3)
   Translucent,
+  // I dont know but will be used later. (pass x)
   Custom,
 };
 
 ///
 /// @struct PDyMaterialConstructionDescriptor
-/// @brief
+/// @brief Descriptor instance which saves information to create material information.
 ///
-struct PDyMaterialConstructionDescriptor final
+struct PDyMaterialConstructionDescriptor final : public IDyToString
 {
   std::string                           mMaterialName     = "";
   std::string                           mShaderName       = "";
   std::vector<std::string>              mTextureNames;
   EDyMaterialBlendMode                  mBlendMode        = EDyMaterialBlendMode::Opaque;
   bool                                  mIsShaderLazyInitialized = false;
+
+  ///
+  /// @brief Return information string.
+  ///
+  /// PDyMaterialConstructionDescriptor
+  /// Material Name : ""
+  /// Shader Name : ""
+  /// Texture Name (0) : ""
+  /// ...
+  /// Texture Name (N) : ""
+  /// Blend Mode : ""
+  /// Is shader lazy initialized : False / True
+  ///
+  [[nodiscard]]
+  std::string ToString() override final;
 };
 
+///
+/// @struct DDyMaterialShaderTuple
+/// @brief Shader tuple for binding to material resource.
+///
 struct DDyMaterialShaderTuple final
 {
-  std::string                           mShaderName       = "";
-  CDyShaderResource*                    mShaderPointer    = nullptr;
+  std::string                           mShaderName         = "";
+  CDyShaderResource*                    mValidShaderPointer = nullptr;
+
+  DDyMaterialShaderTuple(const std::string& shaderName);
+  DDyMaterialShaderTuple() noexcept = default;;
 };
 
+///
+/// @struct DDyMaterialTextureTuple
+/// @brief Texture tuple for binding to material resource.
+///
 struct DDyMaterialTextureTuple final
 {
-  std::string                           mTextureName      = "";
-  CDyTextureResource*                   mTexturePointer   = nullptr;
+  std::string                           mTextureName          = "";
+  CDyTextureResource*                   mValidTexturePointer  = nullptr;
+
+  DDyMaterialTextureTuple(const std::string& textureName);
 };
 
 ///
 /// @struct PDyMaterialResourceDescriptor
-/// @brief
+/// @brief Resource material construction descriptor.
 ///
 struct PDyMaterialResourceDescriptor final
 {
-  std::string                           mMaterialName     = "";
-  DDyMaterialShaderTuple                mShaderTuple      = {};
-  std::vector<DDyMaterialTextureTuple>  mTextureTuples;
+  std::string                             mMaterialName     = "";
+  DDyMaterialShaderTuple                  mShaderTuple      = {};
+  std::vector<DDyMaterialTextureTuple>    mTextureTuples;
 
-  EDyMaterialBlendMode                  mBlendMode        = EDyMaterialBlendMode::Opaque;
+  EDyMaterialBlendMode                    mBlendMode        = EDyMaterialBlendMode::Opaque;
 };
 
 ///

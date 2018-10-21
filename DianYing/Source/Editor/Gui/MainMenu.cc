@@ -1,8 +1,4 @@
 #include <precompiled.h>
-#include "Dy/Editor/Descriptor/DialogDescriptor.h"
-#include "Dy/Editor/Gui/EtcDialog.h"
-#include "Dy/Editor/Gui/HelpAboutMain.h"
-#include "Dy/Editor/Gui/HelpLicenseWindow.h"
 #if defined(MDY_FLAG_IN_EDITOR)
 ///
 /// MIT License
@@ -21,6 +17,15 @@
 #include <Dy/Editor/Gui/MainMenu.h>
 
 #include <imgui/imgui.h>
+#include <Dy/Editor/Descriptor/DialogDescriptor.h>
+#include <Dy/Editor/Gui/EtcDialog.h>
+#include <Dy/Editor/Gui/HelpAboutMain.h>
+#include <Dy/Editor/Gui/HelpLicenseWindow.h>
+#include <Dy/Editor/Gui/ViewViewportMain.h>
+#include <Dy/Editor/Gui/LogWindow.h>
+#include <Dy/Editor/Gui/MainSetting.h>
+#include <Dy/Management/Editor/GuiSetting.h>
+#include <Dy/Editor/Gui/Dialog/ProjectCreator.h>
 #include <Dy/Management/WindowManager.h>
 #include <Dy/Management/Editor/GuiWindowFactory.h>
 
@@ -43,23 +48,39 @@ void FDyMainMenu::DrawWindow(float dt) noexcept
   {
     if (ImGui::BeginMenu("File"))
     {
-      if (ImGui::MenuItem("New Level", nullptr, &this->mMenuItemNewLevelFlag, true))
+      if (ImGui::MenuItem("New Project", nullptr, &this->mMenuItemNewProjectFlag))
       {
-        this->pCreateNotSupportYetDialogMsg(&this->mMenuItemNewLevelFlag);
+        this->pCreateCreateProjectDalog(DyMakeNotNull(&this->mMenuItemNewProjectFlag));
       }
-      if (ImGui::MenuItem("Open Level", nullptr, &this->mMenuItemOpenLevelFlag, true))
+      if (ImGui::MenuItem("Open Project", nullptr, &this->mNotSupport))
       {
-        this->pCreateNotSupportYetDialogMsg(&this->mMenuItemOpenLevelFlag);
+        this->pCreateNotSupportYetDialogMsg(&this->mNotSupport);
+      }
+      if (ImGui::Selectable("Save project", false))
+      {
+
       }
 
       ImGui::Separator();
-      if (ImGui::MenuItem("Save Current Level", nullptr, false, false))
-      {
 
+      auto& editorSettingManager = MDyEditorSetting::GetInstance();
+      const bool isProjectLoaded = editorSettingManager.GetmIsLoadedProject();
+
+      if (ImGui::MenuItem("New Level", nullptr, &this->mMenuItemNewLevelFlag, isProjectLoaded))
+      {
+        this->pCreateNotSupportYetDialogMsg(&this->mMenuItemNewLevelFlag);
+      }
+      if (ImGui::MenuItem("Open Level", nullptr, &this->mMenuItemOpenLevelFlag, isProjectLoaded))
+      {
+        this->pCreateNotSupportYetDialogMsg(&this->mMenuItemOpenLevelFlag);
+      }
+      if (ImGui::MenuItem("Save Current Level", nullptr, &this->mNotSupport, isProjectLoaded))
+      {
+        this->pCreateNotSupportYetDialogMsg(&this->mNotSupport);
       };
-      if (ImGui::MenuItem("Save Current Level As...", nullptr, false, false))
+      if (ImGui::MenuItem("Save Current Level As...", nullptr, &this->mNotSupport, isProjectLoaded))
       {
-
+        this->pCreateNotSupportYetDialogMsg(&this->mNotSupport);
       };
 
       ImGui::Separator();
@@ -73,6 +94,15 @@ void FDyMainMenu::DrawWindow(float dt) noexcept
       ImGui::EndMenu();
     }
 
+    // Edit
+    // L Undo
+    // L Redo
+    // -------
+    // L Cut
+    // L Copy
+    // L Paste
+    // -------
+    // L Project Configuration
     if (ImGui::BeginMenu("Edit"))
     {
       if (ImGui::MenuItem("Undo", "CTRL+Z", false, false))
@@ -99,33 +129,77 @@ void FDyMainMenu::DrawWindow(float dt) noexcept
       }
 
       ImGui::Separator();
-      if (ImGui::MenuItem("Project configuration", nullptr, false, false))
+      if (ImGui::MenuItem("Project configuration", nullptr, &this->mMenuItemViewProjectConfiguration))
       {
-
+        if (this->mMenuItemViewProjectConfiguration)
+        {
+          if (auto [hashVal, ptr] = FDyEditorGuiWindowFactory::CreateGuiComponent<FDyMainSetting>(PDyGuiComponentEmptyDescriptor{});
+              ptr)
+          {
+            auto [it, result] = this->mSubWindows.try_emplace(hashVal, std::move(ptr));
+            if (!result) { MDY_UNEXPECTED_BRANCH(); }
+          }
+        }
+        else { this->mSubWindows.erase(FDyMainSetting::__mHashVal); }
       }
 
       ImGui::EndMenu();
     }
 
+    // View
+    // L Cpu Usage
+    // L Console
+    // L Viewport
+    // L Log View
     if (ImGui::BeginMenu("View"))
     {
       if (ImGui::MenuItem("Cpu Usage", nullptr, &this->mMenuItemViewCpuUsage, false))
       {
 
       }
-      if (ImGui::MenuItem("Console", nullptr, &this->mMenuItemViewLogWindow, false))
+      if (ImGui::MenuItem("Viewport", nullptr, &this->mMenuItemViewViewport))
+      {
+        if (this->mMenuItemViewViewport)
+        {
+          if (auto [hashVal, ptr] = FDyEditorGuiWindowFactory::CreateGuiComponent<FDyMainViewport>(PDyGuiComponentEmptyDescriptor{});
+              ptr)
+          {
+            auto [it, result] = this->mSubWindows.try_emplace(hashVal, std::move(ptr));
+            if (!result) { MDY_UNEXPECTED_BRANCH(); }
+          }
+        }
+        else { this->mSubWindows.erase(FDyMainViewport::__mHashVal); }
+      }
+      if (ImGui::MenuItem("Log View", nullptr, &this->mMenuItemViewLogWindow))
+      {
+        if (this->mMenuItemViewLogWindow)
+        {
+          if (auto [hashVal, ptr] = FDyEditorGuiWindowFactory::CreateGuiComponent<FDyLogWindow>(PDyGuiComponentEmptyDescriptor{});
+              ptr)
+          {
+            auto [it, result] = this->mSubWindows.try_emplace(hashVal, std::move(ptr));
+            if (!result) { MDY_UNEXPECTED_BRANCH(); }
+          }
+        }
+        else { this->mSubWindows.erase(FDyLogWindow::__mHashVal); }
+      }
+      if (ImGui::MenuItem("World Outliner", nullptr, false, false))
       {
 
       }
-      if (ImGui::MenuItem("Viewport", nullptr, &this->mMenuItemViewViewport, false))
+      if (ImGui::MenuItem("Detail View", nullptr, false, false))
       {
 
       }
       ImGui::EndMenu();
     }
 
+    // Help
+    // L License
+    // L About
     if (ImGui::BeginMenu("Help"))
     {
+      // License
       if (ImGui::MenuItem("Library Licenses", nullptr, &this->mMenuItemHelpLicenseWindow, true))
       {
         if (this->mMenuItemHelpLicenseWindow)
@@ -134,22 +208,21 @@ void FDyMainMenu::DrawWindow(float dt) noexcept
               ptr)
           {
             auto [it, result] = this->mSubWindows.try_emplace(hashVal, std::move(ptr));
-            if (!result) { PHITOS_UNEXPECTED_BRANCH(); }
+            if (!result) { MDY_UNEXPECTED_BRANCH(); }
           }
         }
         else { this->mSubWindows.erase(FDyHelpLicenseWindow::__mHashVal); }
       }
+      // About
       if (ImGui::MenuItem("About", nullptr, &this->mMenuItemHelpAboutWindow, true))
       {
         if (this->mMenuItemHelpAboutWindow)
         {
-          PDyGuiAboutMainDescriptor desc;
-          desc.mParentBoolFlag    = &this->mMenuItemHelpAboutWindow;
-          desc.mParentRawPtr      = this;
+          const PDyGuiAboutMainDescriptor desc(DyMakeNotNull(&this->mMenuItemHelpAboutWindow), DyMakeNotNull(this));
           if (auto [hashVal, ptr] = FDyEditorGuiWindowFactory::CreateGuiComponent<FDyHelpAboutMain>(desc); ptr)
           {
             auto [it, result] = this->mSubWindows.try_emplace(hashVal, std::move(ptr));
-            if (!result) { PHITOS_UNEXPECTED_BRANCH(); }
+            if (!result) { MDY_UNEXPECTED_BRANCH(); }
           }
         }
         else { this->mSubWindows.erase(FDyHelpAboutMain::__mHashVal); }
@@ -174,7 +247,22 @@ void FDyMainMenu::pCreateNotSupportYetDialogMsg(bool* boolFlag)
   if (auto [hashVal, ptr] = FDyEditorGuiWindowFactory::CreateGuiComponent<FDyDialog>(desc); ptr)
   {
     auto[it, result] = this->mSubWindows.try_emplace(hashVal, std::move(ptr));
-    if (!result) { PHITOS_UNEXPECTED_BRANCH(); }
+    if (!result) { MDY_UNEXPECTED_BRANCH(); }
+  }
+}
+
+void FDyMainMenu::pCreateCreateProjectDalog(NotNull<bool*> boolFlag)
+{
+  PDyGuiDialogDescriptor desc;
+  desc.mDialogTitle     = "";
+  desc.mDialogTextBody  = "";
+  desc.mParentRawPtr    = this;
+  desc.mParentBoolFlag  = boolFlag;
+
+  if (auto [hashVal, ptr] = FDyEditorGuiWindowFactory::CreateGuiComponent<FDyProjectCreator>(desc); ptr)
+  {
+    auto[it, result] = this->mSubWindows.try_emplace(hashVal, std::move(ptr));
+    if (!result) { MDY_UNEXPECTED_BRANCH(); }
   }
 }
 

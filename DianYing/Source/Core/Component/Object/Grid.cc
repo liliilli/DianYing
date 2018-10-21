@@ -17,16 +17,15 @@
 #include <Dy/Core/Component/Internal/ShaderType.h>
 #include <Dy/Management/HeapResourceManager.h>
 #include <Dy/Management/DataInformationManager.h>
-#include <Dy/Management/SceneManager.h>
+#include <Dy/Management/WorldManager.h>
 #include <Dy/Core/Component/Object/Camera.h>
+#include <Dy/Builtin/ShaderGl/RenderGrid.h>
 
 namespace dy
 {
 
 FDyGrid::FDyGrid()
 {
-  auto& manInfo = MDyDataInformation::GetInstance();
-  auto& manResc = MDyHeapResource       ::GetInstance();
 
   glGenVertexArrays(1, &this->mVao);
   glGenBuffers(1, &this->mVbo);
@@ -55,25 +54,8 @@ FDyGrid::FDyGrid()
   glEnableVertexAttribArray(0);
   glBindVertexArray(0);
 
-  PDyShaderConstructionDescriptor gridShaderDesc;
-  {
-    gridShaderDesc.mShaderName = "dyBuiltinGrid";
-    {
-      PDyShaderFragmentInformation vertexShaderInfo;
-      vertexShaderInfo.mShaderType = EDyShaderFragmentType::Vertex;
-      vertexShaderInfo.mShaderPath = "./ShaderResource/Gl/grid.vert";
-      gridShaderDesc.mShaderFragments.emplace_back(vertexShaderInfo);
-    }
-    {
-      PDyShaderFragmentInformation fragmentShaderInfo;
-      fragmentShaderInfo.mShaderType = EDyShaderFragmentType::Pixel;
-      fragmentShaderInfo.mShaderPath = "./ShaderResource/Gl/grid.frag";
-      gridShaderDesc.mShaderFragments.emplace_back(fragmentShaderInfo);
-    }
-  }
-  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateShaderInformation (gridShaderDesc)            );
-  MDY_CALL_ASSERT_SUCCESS(manResc.CreateShaderResource    (gridShaderDesc.mShaderName));
-  this->mShaderPtr = manResc.GetShaderResource(gridShaderDesc.mShaderName);
+  builtin::FDyBuiltinShaderGLRenderGrid();
+  this->mShaderPtr = MDyHeapResource::GetInstance().GetShaderResource(builtin::FDyBuiltinShaderGLRenderGrid::sName.data());
 }
 
 void FDyGrid::RenderGrid() noexcept
@@ -88,7 +70,7 @@ void FDyGrid::RenderGrid() noexcept
   const auto viewMatrix = glGetUniformLocation(this->mShaderPtr->GetShaderProgramId(), "viewMatrix");
   const auto projMatirx = glGetUniformLocation(this->mShaderPtr->GetShaderProgramId(), "projectionMatrix");
 
-  auto& sceneManager = MDyScene::GetInstance();
+  auto& sceneManager = MDyWorld::GetInstance();
   auto* camera = sceneManager.GetMainCameraPtr();
   if (camera)
   {

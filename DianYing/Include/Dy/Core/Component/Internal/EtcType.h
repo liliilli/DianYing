@@ -15,14 +15,39 @@
 
 #include <string>
 #include <vector>
+#include <Dy/Element/Interface/IDyToString.h>
 
 namespace dy
 {
 
-struct PDyRendererConsturctionDescriptor final
+///
+/// @struct PDyRendererConsturctionDescriptor
+/// @brief
+///
+struct PDyRendererConsturctionDescriptor final : public IDyToString
 {
   std::string               mModelName      = "";
   std::vector<std::string>  mMaterialNames  = {};
+
+  ///
+  /// PDyRendererConsturctionDescriptor
+  /// Model Name : ""
+  /// Material Name 0 : ""
+  /// ...
+  /// Material Name N : ""
+  ///
+  [[nodiscard]]
+  std::string ToString() override final;
+};
+
+///
+/// @struct PDySoundConstructionDescriptor
+/// @brief Sound file information descriptor
+///
+struct PDySoundConstructionDescriptor final
+{
+  std::string mSoundName = "";
+  std::string mSoundPath = "";
 };
 
 } /// ::dy namespace

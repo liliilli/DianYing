@@ -38,8 +38,8 @@ enum class EDyInputType
 struct PDyKeyBindingConstructionDescriptor final
 {
   std::string   mKeyName              = "";
-  int32_t       mNegativeButtonId     = MDY_NOT_INITIALIZED_M1;
-  int32_t       mPositiveButtonId     = MDY_NOT_INITIALIZED_M1;
+  int32_t       mNegativeButtonId     = MDY_INITIALIZE_DEFINT;
+  int32_t       mPositiveButtonId     = MDY_INITIALIZE_DEFINT;
   float         mToNeutralGravity     = 1000.0f;
   float         mNeturalThreshold     = 0.1f;
 
@@ -83,8 +83,8 @@ struct DDyKeyBindingInformation
 
   /// container key name must be same as structure's name. (Camel)
   std::string		      mKeyName            = "";
-  TNegativeButton     mNegativeButtonId   = MDY_NOT_INITIALIZED_M1;
-  TNegativeButton     mPositiveButtonId   = MDY_NOT_INITIALIZED_M1;
+  TNegativeButton     mNegativeButtonId   = MDY_INITIALIZE_DEFINT;
+  TNegativeButton     mPositiveButtonId   = MDY_INITIALIZE_DEFINT;
 
   /// Gravity to drag value down to neutral zone.
   float			mToNeutralGravity             = 1000.f;
@@ -107,7 +107,7 @@ struct DDyKeyBindingInformation
   {
     if (this->mKeyType == EDyInputType::NoneDoNothing ||
         this->mKeyName.empty() ||
-        (this->mNegativeButtonId == MDY_NOT_INITIALIZED_M1 && this->mPositiveButtonId == MDY_NOT_INITIALIZED_M1) ||
+        (this->mNegativeButtonId == MDY_INITIALIZE_DEFINT && this->mPositiveButtonId == MDY_INITIALIZE_DEFINT) ||
         this->mToNeutralGravity == 0.f ||
         this->mNeutralStatusThresholdValue < 0.f)
     {

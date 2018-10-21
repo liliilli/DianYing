@@ -65,7 +65,7 @@ enum class EDyUniformVariableType
 
 ///
 /// @enum EDyShaderFragmentType
-/// @brief
+/// @brief Shader fragment type. each fragment values are binded to each shader code prior to linking.
 ///
 enum class EDyShaderFragmentType
 {
@@ -79,39 +79,47 @@ enum class EDyShaderFragmentType
 ///
 /// @struct DDyAttributeVariableInformation
 /// @brief Store attribute variable information.
+/// @todo NOT USED IN PRODUCTION CODE YET.
 ///
 struct DDyAttributeVariableInformation final
 {
-  std::string               mVariableName = "";
+  std::string               mVariableName     = "";
   int32_t                   mVariableSlotSize = 0;
-  EDyAttributeVariableType  mVariableType = EDyAttributeVariableType::NoneError;
+  EDyAttributeVariableType  mVariableType     = EDyAttributeVariableType::NoneError;
   int32_t                   mVariableLocation = 0;
 };
 
 ///
 /// @struct DDyUniformVariableInformation
 /// @brief Store uniform variable information.
+/// @todo NOT USED IN PRODUCTION CODE YET.
 ///
 struct DDyUniformVariableInformation final
 {
-  std::string               mVariableName = "";
+  std::string               mVariableName     = "";
   int32_t                   mVariableSlotSize = 0;
-  EDyUniformVariableType    mVariableType = EDyUniformVariableType::NoneError;
+  EDyUniformVariableType    mVariableType     = EDyUniformVariableType::NoneError;
   int32_t                   mVariableLocation = 0;
 };
 
 ///
-/// @brief
+/// @struct PDyShaderFragmentInformation
+/// @brief Shader fragment information type for constructing shader program, resource informations.
 ///
 struct PDyShaderFragmentInformation final
 {
-  EDyShaderFragmentType mShaderType;
-  std::string           mShaderPath = "";
+  EDyShaderFragmentType mShaderType                 = EDyShaderFragmentType::Vertex;
+  // I/O Shader fragment file path when mIsEnabledRawLoadShaderCode false (by default)
+  std::string           mShaderPath                 = "";
+  // This must be specified validly as glsl code when mIsEnabledRawLoadShaderCode is true.
+  std::string           mShaderRawCode              = "";
+  // If enabled, loader will load mShaderRawCode, but has nullptr throw assert.
+  bool                  mIsEnabledRawLoadShaderCode = false;
 };
 
 ///
 /// @struct PDyShaderConstructionDescriptor
-/// @brief
+/// @brief Actual shader construction descriptor type.
 ///
 struct PDyShaderConstructionDescriptor final
 {
