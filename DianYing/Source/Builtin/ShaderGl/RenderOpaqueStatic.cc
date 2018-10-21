@@ -50,7 +50,7 @@ out VS_OUT {
 void main() {
   gl_Position			    = projectionMatrix * viewMatrix * modelMatrix * vec4(dyPosition, 1.0);
   vs_out.fragColor	  = dyNormal * 0.5f + 0.5f;
-	vs_out.normal		    = dyNormal;
+	vs_out.normal		    = mat3(modelMatrix) * dyNormal;
 	vs_out.texCoord		  = dyTexCoord0;
 	vs_out.viewPosition = (viewMatrix * vec4(dyPosition, 1.0)).xyz;
 }

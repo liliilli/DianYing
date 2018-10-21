@@ -34,7 +34,7 @@ FDyBuiltinModelSphere::FDyBuiltinModelSphere()
   const auto ta = DDyVector2{ 1, 1 };
   const auto tb = DDyVector2{ 0, 1 };
   const auto tc = DDyVector2{ 1, 0 };
-  const auto td = DDyVector2{ 0, 0 };
+  const auto td = DDyVector2{ -1, -1 };
 
   // Make vertex information
   const TI32 level = 4;

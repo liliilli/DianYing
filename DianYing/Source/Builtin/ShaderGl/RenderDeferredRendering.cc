@@ -48,21 +48,49 @@ layout (location = 0) out vec4 outColor;
 
 uniform sampler2D uUnlit;
 uniform sampler2D uNormal;
-uniform sampler2D uSpecular;
+uniform sampler2D uSpecular;     // View vector
 uniform sampler2D uViewPosition;
 
-vec3 dirLight		= normalize(vec3(-1, 1, 0));
-vec3 ambientColor	= vec3(1);
+// binding = 0 is view, project matrix
+// binding = 1 is DirectionalLightBlock uniform block.
+layout(std140, binding = 1) uniform DirectionalLightBlock
+{
+  vec3  mDirection; // World space
+  vec4  mDiffuse;   // Not use alpha value
+  vec4  mSpecular;  // Not use alpha value
+  vec4  mAmbient;   // Not use alpha value
+  float mIntensity; // Intensity
+} uLightDir[5];
+
+//vec3 dirLight		= normalize(vec3(-1, 1, 0));
+//vec3 ambientColor	= vec3(1);
 
 void main()
 {
-	vec4 normalValue	= (texture(uNormal, fs_in.texCoord) - 0.5f) * 2.0f;
-	vec4 unlitValue		= texture(uUnlit, fs_in.texCoord);
+  vec3 resultColor    = vec3(0);
+  vec4 normalValue	  = (texture(uNormal, fs_in.texCoord) - 0.5f) * 2.0f;
+  vec4 unlitValue	    = texture(uUnlit, fs_in.texCoord);
+  vec4 specularValue  = (texture(uSpecular, fs_in.texCoord) - 0.5f) * 2.0f;
 
-	float ambientFactor = 0.1f;
-	float diffuseFactor = max(dot(normalValue.xyz, dirLight), 0.1);
+  for (int i = 0; i < uLightDir.length; ++i)
+  {
+    float d_n_dl    = dot(normalValue.xyz, uLightDir[i].mDirection);
+    vec3  s_l_vd    = normalize(uLightDir[i].mDirection + specularValue.xyz);
+    float d_slvd_n  = pow(max(dot(s_l_vd, normalValue.xyz), 0.0f), 32);
 
-  outColor = vec4(unlitValue.rgb * diffuseFactor + ambientColor * ambientFactor, 1.0f);
+    float ambientFactor   = 0.05f;
+    vec3  ambientColor    = ambientFactor * vec3(1); //uLightDir[i].mAmbient.rgb;
+
+    float diffuseFactor   = max(d_n_dl, 0.1f) * uLightDir[i].mIntensity;
+    vec3  diffuseColor    = diffuseFactor * uLightDir[i].mDiffuse.rgb;
+
+    float specularFactor  = d_slvd_n * uLightDir[i].mIntensity;
+    vec3  specularColor   = specularFactor * uLightDir[i].mSpecular.rgb;
+
+    resultColor += (ambientColor + diffuseColor + specularColor) * unlitValue.rgb;
+  }
+
+  outColor = vec4(resultColor.rgb, 1.0f);
 }
 )dy");
 
