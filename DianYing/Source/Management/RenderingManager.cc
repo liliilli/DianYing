@@ -27,6 +27,7 @@
 #include <Dy/Core/Component/Resource/SubmeshResource.h>
 #include <Dy/Core/Component/Resource/TextureResource.h>
 #include <Dy/Core/Component/Object/Camera.h>
+#include <Dy/Component/CDyDirectionalLight.h>
 
 namespace dy
 {
@@ -346,6 +347,24 @@ void MDyRendering::pRenderShadowFrameBufferWith(_MIN_ const CDyModelRenderer& re
 #ifdef false
   this->mTempShadowObject->RenderScreen(renderer);
 #endif
+}
+
+std::optional<TI32> MDyRendering::pGetAvailableDirectionalLightIndex(_MIN_ const CDyDirectionalLight&)
+{
+  return this->mFinalRenderingMesh->GetAvailableDirectionalLightIndex();
+}
+
+EDySuccess MDyRendering::pUnbindDirectionalLight(const CDyDirectionalLight& component)
+{
+  if (component.IsBindedToLightingSystem() == false) { return DY_FAILURE; }
+  return this->mFinalRenderingMesh->UnbindDirectionalLight(component.TryGetBindedIndexValue().value());
+}
+
+EDySuccess MDyRendering::pUpdateDirectionalLightValueToGpu(
+    _MIN_ const TI32 index,
+    _MIN_ const DDyUboDirectionalLight& container)
+{
+  return this->mFinalRenderingMesh->UpdateDirectionalLightValueToGpu(index, container);
 }
 
 } /// ::dy namespace

@@ -14,6 +14,7 @@
 
 /// Header file
 #include <Dy/Component/CDyDirectionalLight.h>
+#include <Dy/Management/RenderingManager.h>
 
 namespace dy
 {
@@ -40,6 +41,19 @@ EDySuccess CDyDirectionalLight::Initialize(const DDyDirectionalLightMetaInformat
 void CDyDirectionalLight::Release()
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
+}
+
+void CDyDirectionalLight::Update(float dt)
+{
+  if (this->mIsCastingLight == true && this->mIsNeededUpdateValueToGpu == true)
+  {
+    MDY_CALL_ASSERT_SUCCESS(this->pTryUpdateDirectionalLight());
+  }
+
+  if (this->mIsCastingShadow == true)
+  {
+    /// @TODO NOT IMPLEMENTED YET
+  }
 }
 
 void CDyDirectionalLight::Activate() noexcept
@@ -115,10 +129,22 @@ EDySuccess CDyDirectionalLight::pTryActivateDirectionalLight()
   if (this->mIsBindedToRenderingManagerAsLighting == true)  { return DY_FAILURE; }
   if (this->mIsCastingLight == false)                       { return DY_FAILURE; }
   if (this->mActivateFlag.IsOutputValueChanged() == false)  { return DY_FAILURE; }
-  MDY_LOG_CRITICAL("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
-
   this->mIsBindedToRenderingManagerAsLighting = true;
-  return DY_FAILURE;
+
+  // Bind and get a index of UBO array.
+  auto& renderingManager  = MDyRendering::GetInstance();
+  const auto opIndex      = renderingManager.pGetAvailableDirectionalLightIndex(*this);
+  if (opIndex.has_value() == false)
+  {
+    MDY_LOG_WARNING("CDyDirectionalLight::pTryActivateCastingShadow | Failed to issue available directional light index.");
+    return DY_FAILURE;
+  }
+  this->mCastingLightUboIndex = opIndex.value();
+
+  // Update values
+  MDY_NOUSE_RTVAL_EXPR(this->pTryUpdateDirectionalLight());
+
+  return DY_SUCCESS;
 }
 
 EDySuccess CDyDirectionalLight::pTryActivateCastingShadow()
@@ -127,9 +153,9 @@ EDySuccess CDyDirectionalLight::pTryActivateCastingShadow()
   if (this->mIsCastingShadow == false)                      { return DY_FAILURE; }
   if (this->mActivateFlag.IsOutputValueChanged() == false)  { return DY_FAILURE; }
   MDY_NOT_IMPLEMENTED_ASSERT();
-
   this->mIsBindedToRenderingManagerAsShadow = true;
-  return DY_FAILURE;
+
+  return DY_SUCCESS;
 }
 
 EDySuccess CDyDirectionalLight::pTryDeactivateDirectionalLight()
@@ -137,11 +163,14 @@ EDySuccess CDyDirectionalLight::pTryDeactivateDirectionalLight()
   if (this->mIsBindedToRenderingManagerAsLighting == false) { return DY_FAILURE; }
   if (this->mIsCastingLight == true)                        { return DY_FAILURE; }
   if (this->mActivateFlag.IsOutputValueChanged() == false)  { return DY_FAILURE; }
-
-  MDY_LOG_CRITICAL("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
-
   this->mIsBindedToRenderingManagerAsLighting = false;
-  return DY_FAILURE;
+
+  // Unbind from lighting system.
+  auto& renderingManager = MDyRendering::GetInstance();
+  MDY_CALL_ASSERT_SUCCESS(renderingManager.pUnbindDirectionalLight(*this));
+  this->mCastingLightUboIndex = MDY_INITIALIZE_DEFINT;
+
+  return DY_SUCCESS;
 }
 
 EDySuccess CDyDirectionalLight::pTryDeactivateCastingShadow()
@@ -150,9 +179,22 @@ EDySuccess CDyDirectionalLight::pTryDeactivateCastingShadow()
   if (this->mIsCastingShadow == true)                       { return DY_FAILURE; }
   if (this->mActivateFlag.IsOutputValueChanged() == false)  { return DY_FAILURE; }
   MDY_NOT_IMPLEMENTED_ASSERT();
-
   this->mIsBindedToRenderingManagerAsShadow = false;
-  return DY_FAILURE;
+
+  return DY_SUCCESS;
+}
+
+EDySuccess CDyDirectionalLight::pTryUpdateDirectionalLight()
+{
+  if (this->mIsBindedToRenderingManagerAsLighting == false) { return DY_FAILURE; }
+  if (this->mCastingLightUboIndex == MDY_INITIALIZE_DEFINT) { return DY_FAILURE; }
+
+  auto& renderingManager  = MDyRendering::GetInstance();
+  MDY_CALL_ASSERT_SUCCESS( \
+      renderingManager.pUpdateDirectionalLightValueToGpu(this->mCastingLightUboIndex, this->mData));
+
+  this->mIsNeededUpdateValueToGpu = false;
+  return DY_SUCCESS;
 }
 
 } /// ::dy namespace

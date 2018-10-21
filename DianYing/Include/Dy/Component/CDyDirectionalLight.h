@@ -22,13 +22,14 @@ namespace dy
 
 ///
 /// @struct DDyUboDirectionalLight
-/// @brief
+/// @brief  This structure must be aligned by 16 bytes. (for std140 GL standard block layout)
 /// @TODO SCRIPT THIS
 ///
-struct DDyUboDirectionalLight final
+struct alignas(16) DDyUboDirectionalLight final
 {
   /// World space light direction
   DDyVector3  mDirection  = {};
+  MDY_NOTUSED TI32 ____padding;
   /// Light tint color
   DDyColor    mDiffuse    = DDyColor::White;
   DDyColor    mSpecular   = DDyColor::White;
@@ -70,7 +71,7 @@ public:
   MDY_SET_CRC32_HASH_WITH_TYPE(CDyDirectionalLight)
 
   /// @brief Do nothing.
-  void Update(float dt) override final {};
+  void Update(float dt) override final;
 
   /// @brief Activate CDyDirectionalLight. Final activation value is also dependent on FDyActor activation flag.
   void Activate() noexcept override final;
@@ -182,22 +183,64 @@ public:
     this->mIsNeededUpdateValueToGpu = true;
   }
 
+  ///
+  /// @brief
+  /// @return If binded to lighting system now, return true.
+  /// @TODO SCRIPT THIS
+  ///
+  FORCEINLINE MDY_NODISCARD bool IsBindedToLightingSystem() const noexcept
+  {
+    return this->mCastingLightUboIndex != MDY_INITIALIZE_DEFINT;
+  }
+
+  ///
+  /// @brief
+  /// @return
+  /// @TODO SCRIPT THIS
+  ///
+  MDY_NODISCARD std::optional<TI32> TryGetBindedIndexValue() const noexcept
+  {
+    if (this->mCastingLightUboIndex == MDY_INITIALIZE_DEFINT) { return std::nullopt; }
+    else                                                      { return this->mCastingLightUboIndex; }
+  }
+
 private:
-  /// Try activate camera operation.
+  ///
+  /// @brief Try activate camera operation. \n
   /// If parent is activate and itself activated, update all properties newly.
+  /// @return
+  /// @TODO SCRIPT THIS
+  ///
   MDY_NODISCARD EDySuccess pTryActivateDirectionalLight();
 
   ///
+  /// @brief
+  /// @return
+  /// @TODO SCRIPT THIS
   ///
   MDY_NODISCARD EDySuccess pTryActivateCastingShadow();
 
-  /// Try deactivate camera operation.
+  ///
+  /// @brief Try deactivate camera operation. \n
   /// If either parent or itself is deactivated, disconnect it with all outside system.
+  /// @return
+  /// @TODO SCRIPT THIS
+  ///
   MDY_NODISCARD EDySuccess pTryDeactivateDirectionalLight();
 
   ///
+  /// @brief
+  /// @return
+  /// @TODO SCRIPT THIS
   ///
   MDY_NODISCARD EDySuccess pTryDeactivateCastingShadow();
+
+  ///
+  /// @brief
+  /// @return
+  /// @TODO SCRIPT THIS
+  ///
+  MDY_NODISCARD EDySuccess pTryUpdateDirectionalLight();
 
   ///
   DDyUboDirectionalLight  mData           = {};
@@ -206,6 +249,8 @@ private:
   ///
   MDY_NOTUSED bool        mIsCastingShadow = false;
 
+  ///
+  TI32        mCastingLightUboIndex = MDY_INITIALIZE_DEFINT;
   ///
   bool        mIsBindedToRenderingManagerAsLighting = false;
   ///

@@ -68,18 +68,23 @@ layout(std140, binding = 1) uniform DirectionalLightBlock
 void main()
 {
   vec3 resultColor    = vec3(0);
-  vec4 normalValue	  = (texture(uNormal, fs_in.texCoord) - 0.5f) * 2.0f;
   vec4 unlitValue	    = texture(uUnlit, fs_in.texCoord);
+  if (unlitValue.a == 0) { discard; }
+
+  vec4 normalValue	  = (texture(uNormal, fs_in.texCoord) - 0.5f) * 2.0f;
   vec4 specularValue  = (texture(uSpecular, fs_in.texCoord) - 0.5f) * 2.0f;
 
   for (int i = 0; i < uLightDir.length; ++i)
-  {
+  { // Integrity test
+    if (length(uLightDir[i].mDirection) < 0.001) { continue; }
+
+    // Function body
     float d_n_dl    = dot(normalValue.xyz, uLightDir[i].mDirection);
     vec3  s_l_vd    = normalize(uLightDir[i].mDirection + specularValue.xyz);
     float d_slvd_n  = pow(max(dot(s_l_vd, normalValue.xyz), 0.0f), 32);
 
     float ambientFactor   = 0.05f;
-    vec3  ambientColor    = ambientFactor * vec3(1); //uLightDir[i].mAmbient.rgb;
+    vec3  ambientColor    = ambientFactor * uLightDir[i].mAmbient.rgb;
 
     float diffuseFactor   = max(d_n_dl, 0.1f) * uLightDir[i].mIntensity;
     vec3  diffuseColor    = diffuseFactor * uLightDir[i].mDiffuse.rgb;
