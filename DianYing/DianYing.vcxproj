@@ -178,6 +178,7 @@
     <ClCompile Include="Source\Builtin\Texture\ErrorBlue.cc" />
     <ClCompile Include="Source\Component\Abstract\ADyGeneralBaseComponent.cc" />
     <ClCompile Include="Source\Component\CDyCamera.cc" />
+    <ClCompile Include="Source\Component\CDyDirectionalLight.cc" />
     <ClCompile Include="Source\Component\CDyModelFilter.cc" />
     <ClCompile Include="Source\Component\CDyModelRenderer.cc" />
     <ClCompile Include="Source\Component\CDyScript.cc" />
@@ -293,6 +294,7 @@
     <ClInclude Include="Include\Dy\Component\Abstract\ADyPhysicsRIgidbody.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyPhysicsShape.h" />
     <ClInclude Include="Include\Dy\Component\CDyCamera.h" />
+    <ClInclude Include="Include\Dy\Component\CDyDirectionalLight.h" />
     <ClInclude Include="Include\Dy\Component\CDyModelFilter.h" />
     <ClInclude Include="Include\Dy\Component\CDyModelRenderer.h" />
     <ClInclude Include="Include\Dy\Component\CDyPhysicsRigidbodyDynamic.h" />

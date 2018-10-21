@@ -114,6 +114,7 @@
     <ClCompile Include="Source\Test\TestLuaBindingDy.cc" />
     <ClCompile Include="Source\Management\ScriptManager.cc" />
     <ClCompile Include="Source\Element\Helper\DescriptorHelperFunctions.cc" />
+    <ClCompile Include="Source\Component\CDyDirectionalLight.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -308,6 +309,7 @@
     <ClInclude Include="Include\Dy\Element\Descriptor\GlobalEnums.h" />
     <ClInclude Include="Include\Dy\Element\Helper\DescriptorHelperFunctions.h" />
     <ClInclude Include="Include\Dy\Element\Helper\DescriptorComponentHeaderString.h" />
+    <ClInclude Include="Include\Dy\Component\CDyDirectionalLight.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />
