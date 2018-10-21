@@ -29,18 +29,26 @@
 #include <Dy/Management/DataInformationManager.h>
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/LoggingManager.h>
-#include <Dy/Management/SceneManager.h>
+#include <Dy/Management/WorldManager.h>
 #include <Dy/Management/InputManager.h>
 #include <Dy/Management/TimeManager.h>
 #include <Dy/Management/Editor/GuiManager.h>
 #include <Dy/Management/RenderingManager.h>
 
 #include <Dy/Builtin/Model/Box.h>
+#include <Dy/Builtin/Model/Plain.h>
+#include <Dy/Builtin/Model/Sphere.h>
+#include <Dy/Builtin/Texture/Checker.h>
+#include <Dy/Builtin/Texture/ErrorBlue.h>
 #include <Dy/Builtin/ShaderGl/RenderPass.h>
 #include <Dy/Builtin/ShaderGl/RenderColorGeometry.h>
+#include <Dy/Builtin/ShaderGl/RenderBasicShadow.h>
+#include <Dy/Builtin/ShaderGl/RenderOpaqueStatic.h>
+#include <Dy/Builtin/Material/OpaqueStaticPlain.h>
 
 #include <Dy/Management/HeapResourceManager.h>
 #include <Dy/Management/SoundManager.h>
+#include <Dy/Management/PhysicsManager.h>
 
 ///
 /// Undefined proprocessor WIN32 macro "max, min" for preventing misuse.
@@ -59,9 +67,7 @@
 namespace
 {
 
-dy::DDyVector3                  gColor      {.2f, .3f, .2f};
-dy::CDyMeshRenderer             gRenderer   = {};
-std::unique_ptr<dy::CDyCamera>  gCameraPtr  = nullptr;
+dy::DDyVector3 gColor {.2f, .3f, .2f};
 
 void GLAPIENTRY DyGlMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
@@ -70,30 +76,48 @@ void GLAPIENTRY DyGlMessageCallback(GLenum source, GLenum type, GLuint id, GLenu
                type, severity, message);
 }
 
+void DyInitializeBuiltinResource()
+{
+  dy::builtin::FDyBuiltinModelBox();
+  dy::builtin::FDyBuiltinModelPlain();
+  dy::builtin::FDyBuiltinModelSphere();
+
+  dy::builtin::FDyBuiltinTextureChecker();
+  dy::builtin::FDyBuiltinTextureErrorBlue();
+
+  dy::builtin::FDyBuiltinShaderGLRenderPass();
+  dy::builtin::FDyBuiltinShaderGLRenderColorGeometry();
+  dy::builtin::FDyBuiltinShaderGLRenderOpaqueStatic();
+
+  dy::builtin::FDyBuiltinMaterialOpaqueStaticPlain();
+}
+
+#ifdef false
 ///
 /// @brief
 ///
 void DyGlTempInitializeResource()
 {
-  auto& manInfo = dy::MDyDataInformation::GetInstance();
-
-  dy::PDyCameraConstructionDescriptor cameraDesc;
-  {
-    cameraDesc.mInitialFieldOfView  = 70.f;
-    cameraDesc.mIsMoveable          = true;
-    cameraDesc.mIsFocusInstantly    = true;
-    cameraDesc.mIsOrthographic      = true;
-    cameraDesc.mUseCustomViewport   = false;
-  }
-  gCameraPtr = std::make_unique<dy::CDyCamera>(cameraDesc);
+  //auto& manInfo = dy::MDyDataInformation::GetInstance();
 
   //!
   //! Shader
   //!
 
-  dy::builtin::FDyBuiltinShaderGLRenderPass();
-  dy::builtin::FDyBuiltinShaderGLRenderColorGeometry();
-  dy::builtin::FDyBuiltinModelBox();
+  {
+    auto animAsyncTask = std::async(std::launch::async, [&manInfo] {
+      dy::PDyModelConstructionDescriptor modelDesc;
+      {
+        modelDesc.mModelName = "TestModel";
+        modelDesc.mModelPath = "./TestResource/bun_zipper.ply";
+      }
+      MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(modelDesc));
+      return true;
+    });
+
+    if (animAsyncTask.get()) { MDY_LOG_DEBUG_D("OK"); };
+  }
+#endif
 
 #ifdef false
   {
@@ -275,39 +299,6 @@ void DyGlTempInitializeResource()
     else { materialNameList.emplace_back(matPtr.value()); }
   }
 #endif
-
-  {
-    dy::PDyShaderConstructionDescriptor shaderDesc;
-    shaderDesc.mShaderName = "TestDeferredShader";
-    {
-      dy::PDyShaderFragmentInformation vs;
-      vs.mShaderType = dy::EDyShaderFragmentType::Vertex;
-      vs.mShaderPath = "./ShaderResource/Gl/glMeshVert.vert";
-      shaderDesc.mShaderFragments.emplace_back(vs);
-    }
-    {
-      dy::PDyShaderFragmentInformation fs;
-      fs.mShaderType = dy::EDyShaderFragmentType::Pixel;
-      fs.mShaderPath = "./ShaderResource/Gl/glMeshDeferredFrag.frag";
-      shaderDesc.mShaderFragments.emplace_back(fs);
-    }
-    MDY_CALL_ASSERT_SUCCESS(manInfo.CreateShaderInformation(shaderDesc));
-  }
-
-  {
-    auto animAsyncTask = std::async(std::launch::async, [&manInfo] {
-      dy::PDyModelConstructionDescriptor modelDesc;
-      {
-        modelDesc.mModelName = "Boxing";
-        modelDesc.mModelPath = "./TestResource/bun_zipper.ply";
-      }
-      MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(modelDesc));
-      return true;
-    });
-
-    if (animAsyncTask.get()) { MDY_LOG_DEBUG_D("OK"); };
-  }
-
 #ifdef false
   {
     dy::PDyMaterialPopulateDescriptor popDesc;
@@ -322,16 +313,10 @@ void DyGlTempInitializeResource()
     }
     MDY_CALL_ASSERT_SUCCESS(gRenderer.pfInitialize(rendererDesc));
   }
-#endif
-  dy::PDyMaterialConstructionDescriptor matDesc;
-  matDesc.mMaterialName = "TestMat";
-  matDesc.mShaderName   = "TestDeferredShader";
-  matDesc.mBlendMode    = dy::EDyMaterialBlendMode::Opaque;
-  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateMaterialInformation(matDesc));
 
   dy::PDyRendererConsturctionDescriptor rendererDesc;
   {
-    rendererDesc.mModelName     = "Boxing";
+    rendererDesc.mModelName     = "TestModel";
     rendererDesc.mMaterialNames = std::vector<std::string>(394, "TestMat");
   }
   MDY_CALL_ASSERT_SUCCESS(gRenderer.pfInitialize(rendererDesc));
@@ -351,14 +336,9 @@ void DyTestSoundFmod()
   MDY_CALL_ASSERT_SUCCESS(manInfo.CreateSoundInformation(desc));
   MDY_CALL_ASSERT_SUCCESS(resInfo.CreateSoundResource(desc.mSoundName));
 }
+#endif
 
 } /// unnamed namespace
-
-void DyTempInitializeTestResources()
-{
-  DyGlTempInitializeResource();
-  DyTestSoundFmod();
-}
 
 //!
 //! Platform depdendent anonymous namespace
@@ -400,13 +380,17 @@ namespace dy
 
 void MDyWindow::Run()
 {
-  auto& timeManager  = MDyTime::GetInstance();
-  MDY_CALL_ASSERT_SUCCESS(MDySound::GetInstance().PlaySoundElement("1"));
+  auto& timeManager     = MDyTime::GetInstance();
+  auto& settingManager  = MDySetting::GetInstance();
+  auto& sceneManager    = MDyWorld::GetInstance();
+
+  sceneManager.OpenLevel(settingManager.GetInitialSceneInformationName());
+  sceneManager.Update(-1);
 
   while (!glfwWindowShouldClose(this->mGlfwWindow))
   {
     timeManager.pUpdate();
-    if (auto& instance = MDySound::GetInstance(); true) { instance.Update(MDY_NOT_INITIALIZED_M1); }
+    if (auto& instance = MDySound::GetInstance(); true) { instance.Update(MDY_INITIALIZE_DEFINT); }
 
     if (timeManager.IsGameFrameTicked() == DY_SUCCESS)
     {
@@ -423,19 +407,19 @@ void MDyWindow::Run()
 ///
 void MDyWindow::pUpdate(float dt)
 {
-#if defined(MDY_FLAG_IN_EDITOR)
-  editor::MDyEditorGui::GetInstance().Update(dt);
-#endif /// MDY_FLAG_IN_EDITOR
+  #if defined(MDY_FLAG_IN_EDITOR)
+    editor::MDyEditorGui::GetInstance().Update(dt);
+  #endif // MDY_FLAG_IN_EDITOR
+
+  //
+  MDyPhysics::GetInstance().Update(dt);
+  //
+  MDyWorld::GetInstance().Update(dt);
+  //
   MDyInput::GetInstance().pfUpdate(dt);
-
-  auto& sceneManager = MDyScene::GetInstance();
-  auto* cam = sceneManager.GetMainCameraPtr();
-  if (cam)
-  {
-    cam->Update(dt);
-  }
-
-  gRenderer.Update(dt);
+  MDyWorld::GetInstance().UpdateObjects(dt);
+  //
+  MDyWorld::GetInstance().RequestDrawCall(dt);
 }
 
 ///
@@ -446,7 +430,9 @@ void MDyWindow::pRender()
   glClearColor(gColor.X, gColor.Y, gColor.Z, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+#ifdef false
   gRenderer.CallDraw();
+#endif
 
   glEnable(GL_DEPTH_TEST);
   MDyRendering::GetInstance().RenderDrawCallQueue();
@@ -454,7 +440,7 @@ void MDyWindow::pRender()
 
   #if defined(MDY_FLAG_IN_EDITOR)
     editor::MDyEditorGui::GetInstance().DrawWindow(0);
-  #endif
+  #endif // MDY_FLAG_IN_EDITOR
 
   if (glfwWindowShouldClose(this->mGlfwWindow)) { return; }
   glfwSwapBuffers(this->mGlfwWindow);
@@ -468,9 +454,9 @@ EDySuccess MDyWindow::pfInitialize()
 
   switch (MDySetting::GetInstance().GetRenderingType())
   {
-  default: PHITOS_UNEXPECTED_BRANCH(); break;
-  case EDyRenderingApiType::DirectX12:  MDY_LOG_INFO_D("Initialize DirectX12 Context.");  PHITOS_NOT_IMPLEMENTED_ASSERT(); break;
-  case EDyRenderingApiType::Vulkan:     MDY_LOG_INFO_D("Initialize Vulkan Context.");     PHITOS_NOT_IMPLEMENTED_ASSERT();
+  default: MDY_UNEXPECTED_BRANCH(); break;
+  case EDyRenderingApiType::DirectX12:  MDY_LOG_INFO_D("Initialize DirectX12 Context.");  MDY_NOT_IMPLEMENTED_ASSERT(); break;
+  case EDyRenderingApiType::Vulkan:     MDY_LOG_INFO_D("Initialize Vulkan Context.");     MDY_NOT_IMPLEMENTED_ASSERT();
 #ifdef false
     dy::DyVkInitialize(windowHandle, hInstance);
 
@@ -482,7 +468,7 @@ EDySuccess MDyWindow::pfInitialize()
     dy::DyVkCleanupResources();
 #endif
     break;
-  case EDyRenderingApiType::DirectX11: MDY_LOG_INFO_D("Initialize DirectX11 Context."); PHITOS_NOT_IMPLEMENTED_ASSERT();
+  case EDyRenderingApiType::DirectX11: MDY_LOG_INFO_D("Initialize DirectX11 Context."); MDY_NOT_IMPLEMENTED_ASSERT();
 #ifdef false
     MDY_CALL_ASSERT_SUCCESS(DyWin32InitializeWindow(hInstance));
     MDY_CALL_ASSERT_SUCCESS(DyD11InitializeDirect3D());
@@ -510,7 +496,8 @@ EDySuccess MDyWindow::pfInitialize()
 
       const auto& settingManager = MDySetting::GetInstance();
       this->mGlfwWindow = glfwCreateWindow(settingManager.GetWindowSizeWidth(), settingManager.GetWindowSizeHeight(), "DianYing", nullptr, nullptr);
-      if (!this->mGlfwWindow) {
+      if (!this->mGlfwWindow)
+      {
         glfwTerminate();
         return DY_FAILURE;
       }
@@ -542,6 +529,9 @@ EDySuccess MDyWindow::pfInitialize()
         ImGui_ImplOpenGL3_Init("#version 430");
         ImGui::StyleColorsDark();
       }
+
+      // Initialize builtin resources
+      DyInitializeBuiltinResource();
     }
     break;
   }
@@ -555,10 +545,10 @@ EDySuccess MDyWindow::pfRelease()
 
   switch (MDySetting::GetInstance().GetRenderingType())
   {
-  default: PHITOS_UNEXPECTED_BRANCH(); return DY_FAILURE;
-  case EDyRenderingApiType::DirectX11:  MDY_LOG_INFO_D("Release DirectX11 Context.");  PHITOS_NOT_IMPLEMENTED_ASSERT(); break;
-  case EDyRenderingApiType::DirectX12:  MDY_LOG_INFO_D("Release DirectX12 Context.");  PHITOS_NOT_IMPLEMENTED_ASSERT(); break;
-  case EDyRenderingApiType::Vulkan:     MDY_LOG_INFO_D("Release Vulkan Context.");     PHITOS_NOT_IMPLEMENTED_ASSERT(); break;
+  default: MDY_UNEXPECTED_BRANCH(); return DY_FAILURE;
+  case EDyRenderingApiType::DirectX11:  MDY_LOG_INFO_D("Release DirectX11 Context.");  MDY_NOT_IMPLEMENTED_ASSERT(); break;
+  case EDyRenderingApiType::DirectX12:  MDY_LOG_INFO_D("Release DirectX12 Context.");  MDY_NOT_IMPLEMENTED_ASSERT(); break;
+  case EDyRenderingApiType::Vulkan:     MDY_LOG_INFO_D("Release Vulkan Context.");     MDY_NOT_IMPLEMENTED_ASSERT(); break;
   case EDyRenderingApiType::OpenGL:
     MDY_LOG_INFO_D("Release OpenGL Context.");
 

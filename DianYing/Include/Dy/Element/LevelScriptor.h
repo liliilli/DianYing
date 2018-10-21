@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Component/Interface/IDyScriptable.h>
+#include <Dy/Element/Interface/IDyScriptable.h>
 
 namespace dy
 {
@@ -25,7 +25,7 @@ namespace dy
 class FDyLevelScriptor final : public IDyScriptable
 {
 public:
-
+  
 
 private:
 

@@ -24,7 +24,9 @@ class FDyBuiltinShaderGLRenderBasicShadow final
 {
 public:
   FDyBuiltinShaderGLRenderBasicShadow();
-  inline static constexpr std::string_view sName = "dyBtShaderGlRenderBscShadow";
+
+  /// Constant name for creating DDyShaderInformation
+  inline static MDY_SET_IMMUTABLE_STRING(sName, "dyBtShaderGlRenderBscShadow");
 };
 
 } /// ::dy::builtin namespace

@@ -20,6 +20,8 @@
 #include <Dy/Management/DataInformationManager.h>
 #include <Dy/Management/HeapResourceManager.h>
 #include <Dy/Management/RenderingManager.h>
+#include <Dy/Builtin/ShaderGl/RenderDeferredRendering.h>
+#include <Dy/Component/CDyDirectionalLight.h>
 
 namespace
 {
@@ -41,9 +43,97 @@ namespace dy
 
 FDyDeferredRenderingMesh::FDyDeferredRenderingMesh()
 {
-  auto& manInfo = MDyDataInformation::GetInstance();
-  auto& manResc = MDyHeapResource::GetInstance();
+  MDY_CALL_ASSERT_SUCCESS(this->pInitializeGeometries());
+  MDY_CALL_ASSERT_SUCCESS(this->pInitializeShaderSetting());
+  MDY_CALL_ASSERT_SUCCESS(this->pInitializeUboBuffers());
 
+  for (TI32 i = 0; i < FDyDeferredRenderingMesh::sDirectionalLightCount; ++i)
+  {
+    this->mAvailableList.push(i);
+  }
+}
+
+FDyDeferredRenderingMesh::~FDyDeferredRenderingMesh()
+{
+  if (this->mDirLight) glDeleteBuffers(1, &this->mDirLight);
+  if (this->mVbo) glDeleteBuffers(1, &this->mVbo);
+  if (this->mVao) glDeleteVertexArrays(1, &this->mVao);
+
+#ifdef false
+  auto& manResc = MDyHeapResource::GetInstance();
+#endif
+}
+
+void FDyDeferredRenderingMesh::RenderScreen()
+{
+  MDY_ASSERT(this->mShaderPtr, "FDyDeferredRenderingMesh::mShaderPtr must not be nullptr.");
+
+  this->mShaderPtr->UseShader();
+  glBindVertexArray(this->mVao);
+
+  const auto& renderingManager = MDyRendering::GetInstance();
+  // Bind g-buffers as textures.
+  for (TU32 i = 0; i < renderingManager.mAttachmentBuffers.size(); ++i)
+  {
+    glActiveTexture(GL_TEXTURE0 + i);
+    glBindTexture(GL_TEXTURE_2D, renderingManager.mAttachmentBuffers[i]);
+  }
+
+  glDrawArrays(GL_TRIANGLES, 0, 3);
+  glBindVertexArray(0);
+  this->mShaderPtr->UnuseShader();
+}
+
+std::optional<TI32> FDyDeferredRenderingMesh::GetAvailableDirectionalLightIndex() noexcept
+{
+  if (this->mAvailableList.empty() == true) { return std::nullopt; }
+  else
+  {
+    const auto returnId = this->mAvailableList.front();
+    this->mAvailableList.pop();
+
+    return returnId;
+  }
+}
+
+EDySuccess FDyDeferredRenderingMesh::UpdateDirectionalLightValueToGpu(
+    _MIN_ const TI32 index,
+    _MIN_ const DDyUboDirectionalLight& container)
+{ // Integrity check
+  if (index >= FDyDeferredRenderingMesh::sDirectionalLightCount)
+  {
+    MDY_LOG_ERROR("Directional light index is out of bound.");
+    return DY_FAILURE;
+  }
+
+  constexpr TI32 UboElementSize = sizeof(DDyUboDirectionalLight);
+  glBindBuffer    (GL_UNIFORM_BUFFER, this->mDirLight);
+  glBufferSubData (GL_UNIFORM_BUFFER, UboElementSize * index, UboElementSize, &container);
+  glBindBuffer    (GL_UNIFORM_BUFFER, 0);
+  return DY_SUCCESS;
+}
+
+EDySuccess FDyDeferredRenderingMesh::UnbindDirectionalLight(_MIN_ const TI32 index)
+{ // Integrity check
+  if (index >= FDyDeferredRenderingMesh::sDirectionalLightCount
+      || index <= MDY_INITIALIZE_DEFINT)
+  {
+    MDY_LOG_ERROR("Directional light index is out of bound.");
+    return DY_FAILURE;
+  }
+
+  constexpr TI32  UboElementSize = sizeof(DDyUboDirectionalLight);
+  constexpr float nullValue[1]   = {0.f};
+  glBindBuffer    (GL_UNIFORM_BUFFER, this->mDirLight);
+  glClearBufferSubData(GL_UNIFORM_BUFFER, GL_RGBA, UboElementSize * index, UboElementSize, GL_RED, GL_FLOAT, &nullValue);
+  glBindBuffer    (GL_UNIFORM_BUFFER, 0);
+
+  this->mAvailableList.push(index);
+  return DY_SUCCESS;
+}
+
+EDySuccess FDyDeferredRenderingMesh::pInitializeGeometries()
+{
   // Make triangle that can represent context.
   glGenVertexArrays(1, &this->mVao);
   glGenBuffers(1, &this->mVbo);
@@ -67,30 +157,17 @@ FDyDeferredRenderingMesh::FDyDeferredRenderingMesh()
   glVertexAttribBinding(1, 0);
 
   glBindVertexArray(0);
+  return DY_SUCCESS;
+}
 
+EDySuccess FDyDeferredRenderingMesh::pInitializeShaderSetting()
+{
+  auto& manResc = MDyHeapResource::GetInstance();
   // Make deferred shader
-  PDyShaderConstructionDescriptor shaderDesc;
-  {
-    shaderDesc.mShaderName = "dyDeferredShader";
-    {
-      PDyShaderFragmentInformation vertexShaderInfo;
-      vertexShaderInfo.mShaderType = EDyShaderFragmentType::Vertex;
-      vertexShaderInfo.mShaderPath = "./ShaderResource/Gl/glDeferred.vert";
-      shaderDesc.mShaderFragments.emplace_back(vertexShaderInfo);
-    }
-    {
-      PDyShaderFragmentInformation fragmentShaderInfo;
-      fragmentShaderInfo.mShaderType = EDyShaderFragmentType::Pixel;
-      fragmentShaderInfo.mShaderPath = "./ShaderResource/Gl/glDeferred.frag";
-      shaderDesc.mShaderFragments.emplace_back(fragmentShaderInfo);
-    }
-  }
-  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateShaderInformation(shaderDesc));
-  MDY_CALL_ASSERT_SUCCESS(manResc.CreateShaderResource(shaderDesc.mShaderName));
+  builtin::FDyBuiltinShaderGLRenderDeferredRendering();
+  this->mShaderPtr = manResc.GetShaderResource(builtin::FDyBuiltinShaderGLRenderDeferredRendering::sName.data());
 
-  this->mShaderPtr = manResc.GetShaderResource(shaderDesc.mShaderName);
-
-  PHITOS_ASSERT(this->mShaderPtr, "FDyDeferredRenderingMesh::mShaderPtr must not be nullptr.");
+  MDY_ASSERT(this->mShaderPtr, "FDyDeferredRenderingMesh::mShaderPtr must not be nullptr.");
   this->mShaderPtr->UseShader();
 
   glUniform1i(glGetUniformLocation(this->mShaderPtr->GetShaderProgramId(), "uUnlit"), 0);
@@ -101,36 +178,18 @@ FDyDeferredRenderingMesh::FDyDeferredRenderingMesh()
 #endif
 
   this->mShaderPtr->UnuseShader();
+  return DY_SUCCESS;
 }
 
-FDyDeferredRenderingMesh::~FDyDeferredRenderingMesh()
+EDySuccess FDyDeferredRenderingMesh::pInitializeUboBuffers()
 {
-  if (this->mVbo) glDeleteBuffers(1, &this->mVbo);
-  if (this->mVao) glDeleteVertexArrays(1, &this->mVao);
+  // Make uniform buffer object buffer space
+  glGenBuffers(1, &this->mDirLight);
+  glBindBuffer(GL_UNIFORM_BUFFER, this->mDirLight);
+  glBufferData(GL_UNIFORM_BUFFER, sizeof(DDyUboDirectionalLight) * FDyDeferredRenderingMesh::sDirectionalLightCount, nullptr, GL_DYNAMIC_DRAW);
+  glBindBufferBase(GL_UNIFORM_BUFFER, 1, this->mDirLight);
 
-#ifdef false
-  auto& manResc = MDyHeapResource::GetInstance();
-#endif
-}
-
-void FDyDeferredRenderingMesh::RenderScreen()
-{
-  PHITOS_ASSERT(this->mShaderPtr, "FDyDeferredRenderingMesh::mShaderPtr must not be nullptr.");
-
-  this->mShaderPtr->UseShader();
-  glBindVertexArray(this->mVao);
-
-  const auto& renderingManager = MDyRendering::GetInstance();
-  // Bind g-buffers as textures.
-  for (TU32 i = 0; i < renderingManager.mAttachmentBuffers.size(); ++i)
-  {
-    glActiveTexture(GL_TEXTURE0 + i);
-    glBindTexture(GL_TEXTURE_2D, renderingManager.mAttachmentBuffers[i]);
-  }
-
-  glDrawArrays(GL_TRIANGLES, 0, 3);
-  glBindVertexArray(0);
-  this->mShaderPtr->UnuseShader();
+  return DY_SUCCESS;
 }
 
 } /// ::dy namespace

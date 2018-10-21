@@ -42,18 +42,18 @@ struct PDyCameraConstructionDescriptor
 };
 
 ///
-/// @class CDyCamera
+/// @class CDyLegacyCamera
 /// @brief
 ///
-class CDyCamera
+class CDyLegacyCamera
 {
 public:
-  CDyCamera(const PDyCameraConstructionDescriptor& descriptor);
-  CDyCamera(const CDyCamera&)             = delete;
-  CDyCamera& operator=(const CDyCamera&)  = delete;
-  CDyCamera(CDyCamera&&)                  = default;
-  CDyCamera& operator=(CDyCamera&&)       = default;
-  ~CDyCamera();
+  CDyLegacyCamera(const PDyCameraConstructionDescriptor& descriptor);
+  CDyLegacyCamera(const CDyLegacyCamera&)             = delete;
+  CDyLegacyCamera& operator=(const CDyLegacyCamera&)  = delete;
+  CDyLegacyCamera(CDyLegacyCamera&&)                  = default;
+  CDyLegacyCamera& operator=(CDyLegacyCamera&&)       = default;
+  ~CDyLegacyCamera();
 
   ///
   /// @brief

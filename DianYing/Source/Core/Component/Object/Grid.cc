@@ -17,7 +17,7 @@
 #include <Dy/Core/Component/Internal/ShaderType.h>
 #include <Dy/Management/HeapResourceManager.h>
 #include <Dy/Management/DataInformationManager.h>
-#include <Dy/Management/SceneManager.h>
+#include <Dy/Management/WorldManager.h>
 #include <Dy/Core/Component/Object/Camera.h>
 #include <Dy/Builtin/ShaderGl/RenderGrid.h>
 
@@ -70,7 +70,7 @@ void FDyGrid::RenderGrid() noexcept
   const auto viewMatrix = glGetUniformLocation(this->mShaderPtr->GetShaderProgramId(), "viewMatrix");
   const auto projMatirx = glGetUniformLocation(this->mShaderPtr->GetShaderProgramId(), "projectionMatrix");
 
-  auto& sceneManager = MDyScene::GetInstance();
+  auto& sceneManager = MDyWorld::GetInstance();
   auto* camera = sceneManager.GetMainCameraPtr();
   if (camera)
   {

@@ -15,13 +15,12 @@
 /// Header file
 #include <Dy/Core/Component/Object/PostEffectSsao.h>
 
-#include <Phitos/Dbg/assert.h>
 #include <Dy/Management/DataInformationManager.h>
 #include <Dy/Management/HeapResourceManager.h>
 #include <Dy/Management/RenderingManager.h>
 #include <Dy/Helper/Math/Random.h>
 #include <Dy/Management/SettingManager.h>
-#include <Dy/Management/SceneManager.h>
+#include <Dy/Management/WorldManager.h>
 #include <Dy/Core/Component/Object/Camera.h>
 
 namespace
@@ -67,7 +66,7 @@ FDyPostEffectSsao::~FDyPostEffectSsao()
 
 void FDyPostEffectSsao::RenderScreen()
 {
-  PHITOS_ASSERT(this->mSsaoShaderPtr,     "FDyPostEffectSsao::mSsaoShaderPtr must not be nullptr.");
+  MDY_ASSERT(this->mSsaoShaderPtr,     "FDyPostEffectSsao::mSsaoShaderPtr must not be nullptr.");
 
   //!
   //! SSAO rendering
@@ -83,7 +82,7 @@ void FDyPostEffectSsao::RenderScreen()
   glActiveTexture   (GL_TEXTURE0 + 0); glBindTexture(GL_TEXTURE_2D, renderingManager.mAttachmentBuffers[3]); // ugPosition
   glActiveTexture   (GL_TEXTURE0 + 1); glBindTexture(GL_TEXTURE_2D, renderingManager.mAttachmentBuffers[1]); // ugNormal
   glActiveTexture   (GL_TEXTURE0 + 2); glBindTexture(GL_TEXTURE_2D, this->mSsaoNoiseTextureId);              // uTextureNoise
-  glUniformMatrix4fv(this->mUniformProjection, 1, GL_FALSE, &MDyScene::GetInstance().GetMainCameraPtr()->GetProjectionMatrix()[0].X);
+  glUniformMatrix4fv(this->mUniformProjection, 1, GL_FALSE, &MDyWorld::GetInstance().GetMainCameraPtr()->GetProjectionMatrix()[0].X);
   glDrawArrays      (GL_TRIANGLES, 0, 3);
 
   glBindVertexArray (0);
@@ -93,7 +92,7 @@ void FDyPostEffectSsao::RenderScreen()
   //! SSAO blurring rendering
   //!
 
-  PHITOS_ASSERT(this->mSsaoBlurShaderPtr, "FDyPostEffectSsao::mSsaoBlurShaderPtr must not be nullptr.");
+  MDY_ASSERT(this->mSsaoBlurShaderPtr, "FDyPostEffectSsao::mSsaoBlurShaderPtr must not be nullptr.");
 
   glBindFramebuffer (GL_FRAMEBUFFER, this->mSsaoBlurFrameBufferId);
   glClear           (GL_COLOR_BUFFER_BIT);
@@ -158,7 +157,7 @@ void FDyPostEffectSsao::pCreateSsaoFrameBufferComponents()
   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->mSsaoColorBuffer, 0);
   if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
   {
-    PHITOS_UNEXPECTED_BRANCH();
+    MDY_UNEXPECTED_BRANCH();
   }
 
   const GLenum attachment[] = { GL_COLOR_ATTACHMENT0 };
@@ -209,7 +208,7 @@ void FDyPostEffectSsao::pCreateBlurFrameBufferComponent()
   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->mSsaoBlurColorBuffer, 0);
   if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
   {
-    PHITOS_UNEXPECTED_BRANCH();
+    MDY_UNEXPECTED_BRANCH();
   }
 
   const GLenum attachment[] = { GL_COLOR_ATTACHMENT0 };
@@ -243,7 +242,7 @@ void FDyPostEffectSsao::pCreateSsaoShaderResource()
   MDY_CALL_ASSERT_SUCCESS(manResc.CreateShaderResource(shaderDesc.mShaderName));
 
   this->mSsaoShaderPtr = manResc.GetShaderResource(shaderDesc.mShaderName);
-  PHITOS_ASSERT(this->mSsaoShaderPtr, "FDyDeferredRenderingMesh::mSsaoShaderPtr must not be nullptr.");
+  MDY_ASSERT(this->mSsaoShaderPtr, "FDyDeferredRenderingMesh::mSsaoShaderPtr must not be nullptr.");
 
   this->mSsaoShaderPtr->UseShader();
   glUniform1i(glGetUniformLocation(this->mSsaoShaderPtr->GetShaderProgramId(), "ugPosition"), 0);
@@ -287,7 +286,7 @@ void FDyPostEffectSsao::pCreateSsaoBlurShaderResource()
   MDY_CALL_ASSERT_SUCCESS(manResc.CreateShaderResource(shaderDesc.mShaderName));
 
   this->mSsaoBlurShaderPtr = manResc.GetShaderResource(shaderDesc.mShaderName);
-  PHITOS_ASSERT(this->mSsaoBlurShaderPtr, "FDyDeferredRenderingMesh::mSsaoBlurShaderPtr must not be nullptr.");
+  MDY_ASSERT(this->mSsaoBlurShaderPtr, "FDyDeferredRenderingMesh::mSsaoBlurShaderPtr must not be nullptr.");
 
   this->mSsaoBlurShaderPtr->UseShader();
   glUniform1i(glGetUniformLocation(this->mSsaoBlurShaderPtr->GetShaderProgramId(), "uSsaoInput"), 0);

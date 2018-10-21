@@ -34,7 +34,7 @@ EDySuccess MDyEditorGui::pfInitialize()
   MDY_CALL_ASSERT_SUCCESS(MDyEditorSetting::Initialize());
 
   auto [hashVal, ptr] = FDyEditorGuiWindowFactory::CreateGuiComponent<FDyMainMenu>(PDyGuiComponentEmptyDescriptor{});
-  PHITOS_ASSERT(static_cast<bool>(ptr), "Failed to create MainMenu!");
+  MDY_ASSERT(static_cast<bool>(ptr), "Failed to create MainMenu!");
   this->mMainMenu = std::unique_ptr<FDyMainMenu>(static_cast<FDyMainMenu*>(ptr.release()));
 
   return DY_SUCCESS;

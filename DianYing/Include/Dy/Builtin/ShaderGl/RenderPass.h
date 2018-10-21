@@ -26,7 +26,9 @@ class FDyBuiltinShaderGLRenderPass final
 {
 public:
   FDyBuiltinShaderGLRenderPass();
-  inline static constexpr std::string_view sName = "dyBtShaderGlRenderPass";
+
+  /// Constant name for creating DDyShaderInformation
+  inline static MDY_SET_IMMUTABLE_STRING(sName, "dyBtShaderGlRenderPass");
 };
 
 } /// ::dy::builtin namespace

@@ -64,6 +64,14 @@ public:
   EDySuccess CreateTextureResource(const std::string& textureName);
 
   ///
+  /// @brief Create texture resource on gpu, with PDyTextureConstructionBufferChunkDescriptor.
+  /// @param desc Texture construction buffer chunk descriptor for creating resource instance.
+  /// @return Success flag.
+  ///
+  MDY_NODISCARD
+  EDySuccess CreateTextureResourceWithChunk(_MIN_ const PDyTextureConstructionBufferChunkDescriptor& desc);
+
+  ///
   /// @brief Create material resource on cpu and gpu.
   /// @param[in] materialName name to create material which must be same with material information name.
   /// and material informaiton to be a target should be capable of create all resource related to material.

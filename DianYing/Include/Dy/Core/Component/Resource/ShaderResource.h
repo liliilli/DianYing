@@ -197,27 +197,26 @@ private:
   ///
   /// @brief private-friend function, initialize shader resource with information.
   ///
-  [[nodiscard]]
-  EDySuccess pfInitializeResource(const DDyShaderInformation& shaderInformation);
+  MDY_NODISCARD EDySuccess pfInitializeResource(const DDyShaderInformation& shaderInformation);
 
   /// Initialize shader fragments.
-  [[nodiscard]]
-  EDySuccess __pInitializeShaderFragments(
+  MDY_NODISCARD EDySuccess __pInitializeShaderFragments(
       const PDyShaderConstructionDescriptor& shaderConstructionDescriptor,
       std::vector<std::pair<EDyShaderFragmentType, uint32_t>>& shaderFragmentIdList
   );
 
   /// Link fragments and make shader program.
-  [[nodiscard]]
+  MDY_NODISCARD
   EDySuccess __pInitializeShaderProgram(const std::vector<std::pair<EDyShaderFragmentType, uint32_t>>& shaderFragmentIdList);
 
   /// Get shader attribute variables information and save to member list.
-  [[nodiscard]]
-  EDySuccess __pStoreAttributePropertiesOfProgram() noexcept;
+  MDY_NODISCARD EDySuccess __pStoreAttributePropertiesOfProgram() noexcept;
 
   /// Get shader uniform variables information and save to member list.
-  [[nodiscard]]
-  EDySuccess __pStoreConstantUniformPropertiesOfProgram() noexcept;
+  MDY_NODISCARD EDySuccess __pStoreConstantUniformPropertiesOfProgram() noexcept;
+
+  ///
+  MDY_NODISCARD EDySuccess __pStoreUniformBufferObjectPropertiesOfProgram() noexcept;
 
   std::string mShaderName           = "";
   uint32_t    mShaderProgramId      = 0;
@@ -227,6 +226,8 @@ private:
   std::vector<DDyAttributeVariableInformation>  mAttributeVariableLists;
   /// Shader uniform variable list    <Name, ByteSize, Type and Id>
   std::vector<DDyUniformVariableInformation>    mPlainUniformVariableLists;
+  /// Shader uniform buffer object list <Name>
+  std::vector<DDyUniformBufferObjectInformation>mUniformBufferObjectList;
 
   //!
   //! Level pointers binding

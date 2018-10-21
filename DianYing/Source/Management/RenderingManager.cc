@@ -16,10 +16,18 @@
 #include <Dy/Management/RenderingManager.h>
 
 #include <Dy/Management/LoggingManager.h>
+#include <Dy/Management/WorldManager.h>
 #include <Dy/Management/SettingManager.h>
 
 #include <Dy/Management/DataInformationManager.h>
 #include <Dy/Management/Editor/GuiSetting.h>
+
+#include <Dy/Core/Component/Resource/MaterialResource.h>
+#include <Dy/Core/Component/Resource/ModelResource.h>
+#include <Dy/Core/Component/Resource/SubmeshResource.h>
+#include <Dy/Core/Component/Resource/TextureResource.h>
+#include <Dy/Core/Component/Object/Camera.h>
+#include <Dy/Component/CDyDirectionalLight.h>
 
 namespace dy
 {
@@ -34,7 +42,12 @@ EDySuccess MDyRendering::pfInitialize()
     mTempSsaoObject = std::make_unique<decltype(mTempSsaoObject)::element_type>();
   }
 
-#if defined(MDY_FLAG_IN_EDITOR)
+  if (this->mTempIsEnabledShadow)
+  {
+    this->mTempShadowObject = std::make_unique<decltype(this->mTempShadowObject)::element_type>();
+  }
+
+#if defined(MDY_FLAG_IN_EDITOR) == true
   //! Grid rendering setting.
   this->mGridEffect = std::make_unique<decltype(this->mGridEffect)::element_type>();
 #endif /// MDY_FLAG_IN_EDITOR
@@ -50,37 +63,83 @@ EDySuccess MDyRendering::pfRelease()
   return DY_SUCCESS;
 }
 
-void MDyRendering::PushDrawCallTask(CDyMeshRenderer& rendererInstance)
+void MDyRendering::PushDrawCallTask(_MIN_ CDyModelRenderer& rendererInstance)
 {
-  this->mDrawCallQueue.push(&rendererInstance);
+  this->mDrawCallList.emplace_back(DyMakeNotNull(&rendererInstance));
 }
 
 void MDyRendering::RenderDrawCallQueue()
 {
-  glBindFramebuffer(GL_FRAMEBUFFER, this->mDeferredFrameBufferId);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  const auto& setting = MDySetting::GetInstance();
+  auto& worldManager  = MDyWorld::GetInstance();
+  if (worldManager.IsLevelPresentValid() == false) { return; }
 
-  while (!this->mDrawCallQueue.empty())
-  {
-    auto& drawInstance = *this->mDrawCallQueue.front();
-    drawInstance.pfRender();
-    this->mDrawCallQueue.pop();
+  // Reset previous frame results of each framebuffers.
+  this->pResetRenderingFramebufferInstances();
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+  // Draw
+
+  const auto cameraCount = MDyWorld::GetInstance().GetFocusedCameraCount();
+  for (TI32 camId = 0; camId < cameraCount; ++camId)
+  { // Get valid CDyCamera instance pointer address.
+    const auto opCamera = MDyWorld::GetInstance().GetFocusedCameraValidReference(camId);
+    if (opCamera.has_value() == false) { continue; }
+
+    // Set viewport values to camera's properties.
+    const auto& validCameraRawPtr     = *opCamera.value();
+    const auto pixelizedViewportRect  = validCameraRawPtr.GetPixelizedViewportRectangle();
+    glViewport(pixelizedViewportRect[0], pixelizedViewportRect[1],
+               pixelizedViewportRect[2], pixelizedViewportRect[3]
+    );
+
+    // (1) Deferred rendering for opaque objects + shadowing
+    glBindFramebuffer(GL_FRAMEBUFFER, this->mDeferredFrameBufferId);
+    for (const auto& drawInstance : this->mDrawCallList)
+    { // General deferred rendering
+      this->pRenderDeferredFrameBufferWith(*drawInstance, validCameraRawPtr);
+    }
   }
 
-#if defined(MDY_FLAG_IN_EDITOR)
+  // (2) Shadow mapping
+#ifdef false
+  glBindFramebuffer(GL_FRAMEBUFFER, this->mDeferredFrameBufferId);
+  for (const auto& drawInstance : this->mDrawCallList)
+  { // General deferred rendering
+    if (this->mTempIsEnabledShadow)
+    { // Basic shadow (directional light etc)
+      glViewport(0, 0, 512, 512);
+      this->pRenderShadowFrameBufferWith(drawInstance);
+    }
+  }
+#endif
+
+  // Clear draw queue list
+  this->mDrawCallList.clear();
+
+  glViewport(0, 0, setting.GetWindowSizeWidth(), setting.GetWindowSizeHeight());
+  glBindFramebuffer(GL_FRAMEBUFFER, this->mDeferredFrameBufferId);
+
+  // Only in editor effects
+#if defined(MDY_FLAG_IN_EDITOR) == true
   if (editor::MDyEditorSetting::GetInstance().GetmIsEnabledViewportRenderGrid() && this->mGridEffect)
   {
     this->mGridEffect->RenderGrid();
   }
 #endif /// MDY_FLAG_IN_EDITOR
 
-  if (this->mTempIsEnabledSsao) { this->mTempSsaoObject->RenderScreen(); }
+  // Post processing effects
+  //if (this->mTempIsEnabledSsao)
+  // @TODO FIX THIS (SSAO)
+  if (false)
+  {
+    this->mTempSsaoObject->RenderScreen();
+  }
 
+#if defined(MDY_FLAG_IN_EDITOR) == false
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-#ifdef false
   this->mFinalRenderingMesh->RenderScreen();
-#endif
+#endif /// MDY_FLAG_IN_EDITOR == false
 }
 
 void MDyRendering::pCreateDeferredGeometryBuffers() noexcept
@@ -121,7 +180,7 @@ void MDyRendering::pCreateDeferredGeometryBuffers() noexcept
   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, this->mAttachmentBuffers[2], 0);
   if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
   {
-    PHITOS_UNEXPECTED_BRANCH();
+    MDY_UNEXPECTED_BRANCH();
   }
 
   // View position g-buffer
@@ -134,11 +193,11 @@ void MDyRendering::pCreateDeferredGeometryBuffers() noexcept
   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, this->mAttachmentBuffers[3], 0);
   if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
   {
-    PHITOS_UNEXPECTED_BRANCH();
+    MDY_UNEXPECTED_BRANCH();
   }
 
   // Depth g-buffer
-  TU32 depthBuffer = MDY_NOT_INITIALIZED_0;
+  TU32 depthBuffer = MDY_INITIALIZE_DEFUINT;
   glGenRenderbuffers(1, &depthBuffer);
   glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
   glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, overallScreenWidth, overallScreenHeight);
@@ -146,7 +205,10 @@ void MDyRendering::pCreateDeferredGeometryBuffers() noexcept
 
   // Let framebuffer know that attachmentBuffer's id will be drawn at framebuffer.
   std::array<GLenum, 4> attachmentEnumList = {
-      GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3
+      GL_COLOR_ATTACHMENT0, // gUnlit
+      GL_COLOR_ATTACHMENT1, // gNormal
+      GL_COLOR_ATTACHMENT2, // gSpecular
+      GL_COLOR_ATTACHMENT3  // gPosition
   };
   glDrawBuffers(static_cast<TI32>(attachmentEnumList.size()), &attachmentEnumList[0]);
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -160,6 +222,149 @@ void MDyRendering::pReleaseGeometryBuffers() noexcept
   if (this->mDeferredFrameBufferId) { glDeleteFramebuffers(1, &this->mDeferredFrameBufferId); }
 
   MDY_LOG_INFO("{}::{} | Geometry buffer released.", "MDyRendering", "pCreateDeferredGeometryBuffers");
+}
+
+void MDyRendering::pResetRenderingFramebufferInstances() noexcept
+{
+  auto& worldManager = MDyWorld::GetInstance();
+  if (worldManager.IsLevelPresentValid() == false) { return; }
+
+  // Reset overall deferred framebuffer setting
+  glBindFramebuffer(GL_FRAMEBUFFER, this->mDeferredFrameBufferId);
+  glClearColor(0, 0, 0, 0);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  if (this->mTempIsEnabledSsao)
+  {
+    // @TODO DO NOTHING NOW.
+  }
+
+  // Reset all shadow framebuffer setting
+  if (this->mTempIsEnabledShadow)
+  {
+    glBindFramebuffer(GL_FRAMEBUFFER, this->mTempShadowObject->GetShadowFrameBufferId());
+    glClear(GL_DEPTH_BUFFER_BIT);
+  }
+
+#if defined(MDY_FLAG_IN_EDITOR) == false
+  if (MDY_CHECK_ISNOTEMPTY(this->mFinalRenderingMesh))
+  {
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    const auto& backgroundColor = worldManager.GetValidLevelReference().GetBackgroundColor();
+    glClearColor(backgroundColor.R, backgroundColor.G, backgroundColor.B, backgroundColor.A);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  }
+#endif
+}
+
+void MDyRendering::pRenderDeferredFrameBufferWith(_MIN_ const CDyModelRenderer& renderer, _MIN_ const CDyCamera& validCamera) noexcept
+{
+  const auto materialListCount  = renderer.GetMaterialListCount();
+  const auto opSubmeshListCount = renderer.GetModelSubmeshCount();
+
+  // Integrity test
+  if (opSubmeshListCount.has_value() == false) { return; }
+
+  TI32 iterationCount = MDY_INITIALIZE_DEFINT;
+  if (materialListCount < opSubmeshListCount.value()) { iterationCount = materialListCount; }
+  else                                                { iterationCount = opSubmeshListCount.value(); }
+
+  for (TI32 i = 0; i < iterationCount; ++i)
+  {
+    auto& material      = const_cast<CDyMaterialResource&>(renderer.GetMaterialResourcePtr(i));
+    auto shaderResource = material.GetShaderResource();
+    if (shaderResource == nullptr)
+    {
+      MDY_LOG_CRITICAL("{} | Shader resource of {} is not binded, Can not render mesh.", "CDyMeshRenderer::Render", material.GetMaterialName());
+      continue;
+    }
+
+    shaderResource->UseShader();
+
+    const CDySubmeshResource& submesh = renderer.GetSubmeshResourcePtr(i);
+    glBindVertexArray(submesh.GetVertexArrayId());
+
+    const auto modelMatrix = glGetUniformLocation(shaderResource->GetShaderProgramId(), "modelMatrix");
+    const auto viewMatrix = glGetUniformLocation(shaderResource->GetShaderProgramId(), "viewMatrix");
+    const auto projMatirx = glGetUniformLocation(shaderResource->GetShaderProgramId(), "projectionMatrix");
+
+    const auto& model = const_cast<FDyActor*>(renderer.GetBindedActor())->GetTransform()->GetTransform();
+
+    glUniformMatrix4fv(modelMatrix, 1, GL_FALSE, &model[0].X);
+    glUniformMatrix4fv(viewMatrix, 1, GL_FALSE, &validCamera.GetViewMatrix()[0].X);
+    glUniformMatrix4fv(projMatirx, 1, GL_FALSE, &validCamera.GetProjectionMatrix()[0].X);
+
+    // If skeleton animation is enabled, get bone transform and bind to shader.
+#ifdef false
+    const auto boneTransform = glGetUniformLocation(shaderResource->GetShaderProgramId(), "boneTransform");
+    if (renderer.mModelReferencePtr && renderer.mModelReferencePtr->IsEnabledModelAnimated())
+    {
+      const auto& matrixList = renderer.mModelReferencePtr->GetModelAnimationTransformMatrixList();
+      const auto  matrixSize = static_cast<int32_t>(matrixList.size());
+      for (int32_t i = 0; i < matrixSize; ++i)
+      {
+        glUniformMatrix4fv(boneTransform + i, 1, GL_FALSE, &matrixList[i].mFinalTransformation[0].X);
+      }
+    }
+#endif
+
+    // Bind textures of one material.
+    const auto& textureResources        = material.GetBindedTextureResources();
+    const auto  textureResourceListSize = static_cast<int32_t>(textureResources.size());
+    for (int32_t j = 0; j < textureResourceListSize; ++j)
+    {
+      glUniform1i(glGetUniformLocation(shaderResource->GetShaderProgramId(), (std::string("uTexture") + std::to_string(j)).c_str()), j);
+
+      const auto texturePointer = textureResources[j].mValidTexturePointer;
+      glActiveTexture(GL_TEXTURE0 + j);
+      switch (texturePointer->GetTextureType())
+      {
+      case EDyTextureStyleType::D1: glBindTexture(GL_TEXTURE_1D, texturePointer->GetTextureId()); break;
+      case EDyTextureStyleType::D2: glBindTexture(GL_TEXTURE_2D, texturePointer->GetTextureId()); break;
+      default: MDY_UNEXPECTED_BRANCH(); break;
+      }
+    }
+
+    // Call function call drawing array or element. (not support instancing yet)
+    if (submesh.IsEnabledIndices()) { glDrawElements(GL_TRIANGLES, submesh.GetIndicesCounts(), GL_UNSIGNED_INT, nullptr); }
+    else                            { glDrawArrays(GL_TRIANGLES, 0, submesh.GetVertexCounts()); }
+
+    // Unbind, unset, deactivate settings for this submesh and material.
+    for (TI32 j = 0; j < textureResourceListSize; ++j)
+    {
+      glActiveTexture(GL_TEXTURE0 + j);
+      glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    // Unbind present submesh vertex array object.
+    glBindVertexArray(0);
+    shaderResource->UnuseShader();
+  }
+}
+
+void MDyRendering::pRenderShadowFrameBufferWith(_MIN_ const CDyModelRenderer& renderer) noexcept
+{
+#ifdef false
+  this->mTempShadowObject->RenderScreen(renderer);
+#endif
+}
+
+std::optional<TI32> MDyRendering::pGetAvailableDirectionalLightIndex(_MIN_ const CDyDirectionalLight&)
+{
+  return this->mFinalRenderingMesh->GetAvailableDirectionalLightIndex();
+}
+
+EDySuccess MDyRendering::pUnbindDirectionalLight(const CDyDirectionalLight& component)
+{
+  if (component.IsBindedToLightingSystem() == false) { return DY_FAILURE; }
+  return this->mFinalRenderingMesh->UnbindDirectionalLight(component.TryGetBindedIndexValue().value());
+}
+
+EDySuccess MDyRendering::pUpdateDirectionalLightValueToGpu(
+    _MIN_ const TI32 index,
+    _MIN_ const DDyUboDirectionalLight& container)
+{
+  return this->mFinalRenderingMesh->UpdateDirectionalLightValueToGpu(index, container);
 }
 
 } /// ::dy namespace

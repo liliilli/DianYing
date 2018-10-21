@@ -240,11 +240,6 @@ EDySuccess MDySound::pfInitialize()
 
 EDySuccess MDySound::pfRelease()
 {
-  if (this->sMasterChannel)
-  {
-    this->sMasterChannel->release();
-    this->sMasterChannel = nullptr;
-  }
   if (this->sBackgroundChannel)
   {
     this->sBackgroundChannel->release();
@@ -254,6 +249,10 @@ EDySuccess MDySound::pfRelease()
   {
     this->sEffectChannel->release();
     this->sEffectChannel = nullptr;
+  }
+  if (this->sMasterChannel)
+  {
+    this->sMasterChannel = nullptr;
   }
   if (this->mSoundSystem)
   {
@@ -303,7 +302,7 @@ EDySuccess MDySound::PlaySoundElement(const std::string& soundName) const noexce
     {
       soundResource->mSoundChannel->setPaused(false);
     } break;
-    default: PHITOS_UNEXPECTED_BRANCH(); break;
+    default: MDY_UNEXPECTED_BRANCH(); break;
     }
 
     soundResource->mSoundStatus = EDySoundStatus::Playing;

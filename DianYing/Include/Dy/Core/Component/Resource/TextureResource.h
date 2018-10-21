@@ -82,16 +82,26 @@ public:
 private:
   ///
   /// @brief
+  /// @param  textureInformation Valid texture meta information instance.
+  /// @return Success flag.
   ///
-  [[nodiscard]] EDySuccess pfInitializeTextureResource(const DDyTextureInformation& textureInformation);
+  MDY_NODISCARD EDySuccess pfInitializeTextureResource(const DDyTextureInformation& textureInformation);
+
+  ///
+  /// @brief
+  /// @param  descriptor Valid texture with chunk meta information instance.
+  /// @return Success flag.
+  ///
+  MDY_NODISCARD EDySuccess
+  pfInitializeTextureResourceWithChunk(_MIN_ const PDyTextureConstructionBufferChunkDescriptor& descriptor);
 
   /// Valid texture id must not be 0.
   // @todo JUST ONLY OPENGL
   std::string         mTextureName          = "";
   EDyTextureStyleType mTextureType          = EDyTextureStyleType::None;
 	uint32_t            mTextureResourceId    = 0;
-  int32_t             mTextureWidth         = MDY_NOT_INITIALIZED_M1;
-  int32_t             mTextureHeight        = MDY_NOT_INITIALIZED_M1;
+  int32_t             mTextureWidth         = MDY_INITIALIZE_DEFINT;
+  int32_t             mTextureHeight        = MDY_INITIALIZE_DEFINT;
 
   //!
   //! Level pointers binding
@@ -100,23 +110,26 @@ private:
   template <typename TType>
   using TBindPtrMap = std::unordered_map<TType*, TType*>;
 
+  ///
   FORCEINLINE void __pfSetTextureInformationLink(NotNull<DDyTextureInformation*> ptr) const noexcept
   {
     this->__mLinkedTextureInformationPtr = ptr;
   }
+  ///
   FORCEINLINE void __pfResetTextureInformationLink() const noexcept
   {
     this->__mLinkedTextureInformationPtr = nullptr;
   }
-
-              void __pfSetMaterialResourceLink(NotNull<CDyMaterialResource*> ptr) const noexcept;
+  ///
+  void __pfSetMaterialResourceLink(NotNull<CDyMaterialResource*> ptr) const noexcept;
+  ///
   FORCEINLINE void __pfResetMaterialResourceLink(NotNull<CDyMaterialResource*> ptr) const noexcept
   {
-    __mBindMaterialPtrs.erase(ptr);
+    this->__mBindMaterialPtrCounters.erase(ptr);
   }
 
   MDY_TRANSIENT DDyTextureInformation*           __mLinkedTextureInformationPtr   = nullptr;
-  MDY_TRANSIENT TBindPtrMap<CDyMaterialResource> __mBindMaterialPtrs;
+  MDY_TRANSIENT TBindPtrMap<CDyMaterialResource> __mBindMaterialPtrCounters;
 
   friend class DDyTextureInformation;
   friend class CDyMaterialResource;

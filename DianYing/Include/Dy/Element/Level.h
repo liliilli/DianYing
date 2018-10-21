@@ -14,30 +14,78 @@
 ///
 
 #include <memory>
-#include <Phitos/Dbg/assert.h>
+
+#include <Dy/Helper/Type/Color.h>
+#include <Dy/Element/Object.h>
+#include <Dy/Element/Actor.h>
+#include <Dy/Element/Abstract/ADyNameCounterMap.h>
+#include <Dy/Element/Descriptor/LevelDescriptor.h>
+#include <Dy/Element/Interface/IDyUpdatable.h>
 
 namespace dy {
 
 ///
 /// @class FDyLevel
-/// @brief
+/// @brief Level class type for managing run-time interactive world space.
 ///
-class FDyLevel final {
-public:
-  ///
-  /// @brief
-  ///
-  void Initialize();
+class FDyLevel final : public FDyObject, public IDyUpdatable, public ADyNameCounterMap
+{
+  using TActorSmtPtr      = std::unique_ptr<FDyActor>;
+  using TActorMap         = std::unordered_map<std::string, TActorSmtPtr>;
+  using TNameCounterMap   = std::unordered_map<std::string, int32_t>;
 
-  ///
-  /// @brief
-  ///
+public:
+  /// Initialize level context with valid descriptor.
+  void Initialize(_MIN_ const PDyLevelConstructDescriptor& desc);
+
+  /// Release level by release all subobjects in this level storing information or signalling something.
   void Release();
 
+  /// Update level.
+  void Update(_MIN_ float dt) override final;
+
   ///
-  /// @brief
+  /// @brief  Get background color of this scene.
+  /// @return background color [0, 1] (RGBA)
   ///
-  void Update(float delta_time);
+  FORCEINLINE MDY_NODISCARD const DDyColor& GetBackgroundColor() const noexcept
+  {
+    return this->mLevelBackgroundColor;
+  }
+
+  ///
+  /// @brief  Get present level name.
+  /// @return Level name.
+  ///
+  MDY_NODISCARD const std::string& GetLevelName() const noexcept
+  {
+    return this->mLevelName;
+  }
+
+  ///
+  /// @brief  Set background color of this scene.
+  /// @param  backgroundColor New backgrond color value.
+  ///
+  FORCEINLINE void SetBackgroundColor(_MIN_ const DDyColor& backgroundColor) noexcept
+  {
+    this->mLevelBackgroundColor = backgroundColor;
+  }
+
+private:
+  /// Level's name. not modifiable
+  std::string     mLevelName            = MDY_INITILAIZE_EMPTYSTR;
+  /// Level's hash value for identifying scene in world's array.
+  TU32            mLevelHashIdentifier  = MDY_INITIALIZE_DEFUINT;
+  /// Scene basic color
+  DDyColor        mLevelBackgroundColor = DDyColor::White;
+  /// Actor list (hierarchial version)
+  TActorMap       mActorMap             = {};
+  /// Check if level is initialized or released. Level is active when only mInitialized is true.
+  bool            mInitialized          = false;
+
+public:
+  /// Level information as string.
+  MDY_NODISCARD std::string ToString() override final;
 
 #ifdef false
   ///
@@ -62,7 +110,7 @@ public:
         object_final_name,
         nullptr);
     if (!result) {
-      PHITOS_ASSERT(result, "Object did not be made properly.");
+      MDY_ASSERT(result, "Object did not be made properly.");
       return nullptr;
     }
 
@@ -94,7 +142,7 @@ public:
 
     auto [result_pair, result] = m_object_list.try_emplace(object_final_name, nullptr);
     if (!result) {
-      PHITOS_ASSERT(result, "Object did not be made properly.");
+      MDY_ASSERT(result, "Object did not be made properly.");
       return nullptr;
     }
 
@@ -104,13 +152,12 @@ public:
 
     return static_cast<TCObjectType*>(object_ref.get());
 	}
-#endif
 
 	///
 	/// @brief Get specific object with tag.
 	///
-	CObject* GetGameObject(const std::string& object_name,
-                         bool is_resursive = false);
+  [[nodiscard]]
+	std::optional<FDyPawn*> GetPawn(const std::string& objectName, bool isRecursive = false);
 
 	///
 	/// @brief Destroy object has unique tag key but not recursively.
@@ -118,23 +165,18 @@ public:
 	/// @return Success/Failed tag.
   /// If arbitary m_object_list has been destroied, return ture.
 	///
-  bool DestroyGameObject(const std::string& object_name);
+  [[nodiscard]] EDySuccess DestroyPawn(const std::string& object_name);
 
   ///
   /// @brief Destory child object with address.
-  /// @param[in] object_reference Object reference.
-  /// @param[in] is_recursive Flag for destruction of specified object recursively.
+  /// @param[in] objectRef    Object reference.
+  /// @param[in] isRecursive  Flag for destruction of specified object recursively.
 	/// @return Success/Failed tag.
   /// If arbitary m_object_list has been destroyed, return ture.
   ///
-  bool DestroyGameObject(const element::CObject& object_reference, bool is_recursive = false);
-
-  bool IsObjectExist(const std::string& name) const {
-    return m_object_list.find(name) != m_object_list.end();
-  }
+  [[nodiscard]] EDySuccess DestroyPawn(const FDyPawn& objectRef, bool isRecursive = false);
 
 private:
-#ifdef false
   ///
   /// @brief Create child object name.
   /// @param[in] name
