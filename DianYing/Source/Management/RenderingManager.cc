@@ -70,6 +70,8 @@ void MDyRendering::PushDrawCallTask(_MIN_ CDyModelRenderer& rendererInstance)
 void MDyRendering::RenderDrawCallQueue()
 {
   const auto& setting = MDySetting::GetInstance();
+  auto& worldManager  = MDyWorld::GetInstance();
+  if (worldManager.IsLevelPresentValid() == false) { return; }
 
   // Reset previous frame results of each framebuffers.
   this->pResetRenderingFramebufferInstances();
@@ -95,16 +97,21 @@ void MDyRendering::RenderDrawCallQueue()
     for (const auto& drawInstance : this->mDrawCallList)
     { // General deferred rendering
       this->pRenderDeferredFrameBufferWith(*drawInstance, validCameraRawPtr);
-
-#ifdef false
-      if (this->mTempIsEnabledShadow)
-      { // Basic shadow (directional light etc)
-        glViewport(0, 0, 512, 512);
-        this->pRenderShadowFrameBufferWith(drawInstance);
-      }
-#endif
     }
   }
+
+  // (2) Shadow mapping
+#ifdef false
+  glBindFramebuffer(GL_FRAMEBUFFER, this->mDeferredFrameBufferId);
+  for (const auto& drawInstance : this->mDrawCallList)
+  { // General deferred rendering
+    if (this->mTempIsEnabledShadow)
+    { // Basic shadow (directional light etc)
+      glViewport(0, 0, 512, 512);
+      this->pRenderShadowFrameBufferWith(drawInstance);
+    }
+  }
+#endif
 
   // Clear draw queue list
   this->mDrawCallList.clear();
@@ -130,7 +137,6 @@ void MDyRendering::RenderDrawCallQueue()
 
 #if defined(MDY_FLAG_IN_EDITOR) == false
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   this->mFinalRenderingMesh->RenderScreen();
 #endif /// MDY_FLAG_IN_EDITOR == false
 }
@@ -198,7 +204,10 @@ void MDyRendering::pCreateDeferredGeometryBuffers() noexcept
 
   // Let framebuffer know that attachmentBuffer's id will be drawn at framebuffer.
   std::array<GLenum, 4> attachmentEnumList = {
-      GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3
+      GL_COLOR_ATTACHMENT0, // gUnlit
+      GL_COLOR_ATTACHMENT1, // gNormal
+      GL_COLOR_ATTACHMENT2, // gSpecular
+      GL_COLOR_ATTACHMENT3  // gPosition
   };
   glDrawBuffers(static_cast<TI32>(attachmentEnumList.size()), &attachmentEnumList[0]);
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -216,9 +225,18 @@ void MDyRendering::pReleaseGeometryBuffers() noexcept
 
 void MDyRendering::pResetRenderingFramebufferInstances() noexcept
 {
+  auto& worldManager = MDyWorld::GetInstance();
+  if (worldManager.IsLevelPresentValid() == false) { return; }
+
   // Reset overall deferred framebuffer setting
   glBindFramebuffer(GL_FRAMEBUFFER, this->mDeferredFrameBufferId);
+  glClearColor(0, 0, 0, 0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  if (this->mTempIsEnabledSsao)
+  {
+    // @TODO DO NOTHING NOW.
+  }
 
   // Reset all shadow framebuffer setting
   if (this->mTempIsEnabledShadow)
@@ -226,6 +244,16 @@ void MDyRendering::pResetRenderingFramebufferInstances() noexcept
     glBindFramebuffer(GL_FRAMEBUFFER, this->mTempShadowObject->GetShadowFrameBufferId());
     glClear(GL_DEPTH_BUFFER_BIT);
   }
+
+#if defined(MDY_FLAG_IN_EDITOR) == false
+  if (MDY_CHECK_ISNOTEMPTY(this->mFinalRenderingMesh))
+  {
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    const auto& backgroundColor = worldManager.GetValidLevelReference().GetBackgroundColor();
+    glClearColor(backgroundColor.R, backgroundColor.G, backgroundColor.B, backgroundColor.A);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  }
+#endif
 }
 
 void MDyRendering::pRenderDeferredFrameBufferWith(_MIN_ const CDyModelRenderer& renderer, _MIN_ const CDyCamera& validCamera) noexcept
