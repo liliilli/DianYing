@@ -28,8 +28,7 @@ namespace dy
 MDY_SET_IMMUTABLE_STRING(sCDyScriptFrame,
 R"dy(
 LDyScript = {
-    mActor = nil
-  , new = function(self, v)
+  new = function(self, v)
       o = v or {}
       setmetatable(o, self)
       self.__index = self

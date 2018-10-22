@@ -105,19 +105,19 @@ void CDyScript::CallScriptFunction(_MIN_ const float dt) noexcept
 void CDyScript::Initiate()
 {
   MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
-  this->mScriptInstance[MSVSTR(sFunction_Initiate)]();
+  this->mScriptInstance[MSVSTR(sFunction_Initiate)](this->mScriptInstance);
 }
 
 void CDyScript::Start()
 {
   MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
-  this->mScriptInstance[MSVSTR(sFunction_Start)]();
+  this->mScriptInstance[MSVSTR(sFunction_Start)](this->mScriptInstance);
 }
 
 void CDyScript::Update(float dt)
 {
   MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
-  this->mScriptInstance[MSVSTR(sFunction_Update)]();
+  //this->mScriptInstance[MSVSTR(sFunction_Update)]();
 
   auto* obj       = this->GetBindedActor();
   auto transform  = obj->GetTransform();
@@ -127,19 +127,19 @@ void CDyScript::Update(float dt)
 void CDyScript::OnEnabled()
 {
   MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
-  this->mScriptInstance[MSVSTR(sFunction_OnEnabled)]();
+  this->mScriptInstance[MSVSTR(sFunction_OnEnabled)](this->mScriptInstance);
 }
 
 void CDyScript::OnDisabled()
 {
   MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
-  this->mScriptInstance[MSVSTR(sFunction_OnDisabled)]();
+  this->mScriptInstance[MSVSTR(sFunction_OnDisabled)](this->mScriptInstance);
 }
 
 void CDyScript::Destroy()
 {
   MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
-  this->mScriptInstance[MSVSTR(sFunction_Destroy)]();
+  this->mScriptInstance[MSVSTR(sFunction_Destroy)](this->mScriptInstance);
 }
 
 std::string CDyScript::ToString()
@@ -174,7 +174,7 @@ EDySuccess CDyScript::Initialize(const PDyScriptComponentMetaInformation& metaIn
     MDY_NOTUSED auto _    = luaInstance.safe_script_file(validScriptMetaInfo.mScriptPath);
     this->mScriptInstance = luaInstance[this->mScriptName];
     // @TODO RESOLVE THIS (ERROR & EXCEPTION FROM INSIDE)
-    //this->mScriptInstance["__pDyInitializeWith"](*this->GetBindedActor());
+    this->mScriptInstance["__pDyInitializeWith"](this->mScriptInstance, *this->GetBindedActor());
     this->mIsScriptInstanceBinded = true;
   }
 
