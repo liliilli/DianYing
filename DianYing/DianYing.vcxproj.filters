@@ -115,6 +115,9 @@
     <ClCompile Include="Source\Management\ScriptManager.cc" />
     <ClCompile Include="Source\Element\Helper\DescriptorHelperFunctions.cc" />
     <ClCompile Include="Source\Component\CDyDirectionalLight.cc" />
+    <ClCompile Include="Source\Core\Rendering\BasicRenderer.cc" />
+    <ClCompile Include="Source\Management\Internal\FramebufferManager.cc" />
+    <ClCompile Include="Source\Management\Type\AttachmentInformation.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -311,6 +314,12 @@
     <ClInclude Include="Include\Dy\Element\Helper\DescriptorComponentHeaderString.h" />
     <ClInclude Include="Include\Dy\Component\CDyDirectionalLight.h" />
     <ClInclude Include="Include\Dy\Helper\Type\Clamp.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\BasicRenderer.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\VectorInt2.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\FramebufferManager.h" />
+    <ClInclude Include="Include\Dy\Management\Type\FramebufferInformation.h" />
+    <ClInclude Include="Include\Dy\Management\Type\AttachmentInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Helper\FrameAttachmentString.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

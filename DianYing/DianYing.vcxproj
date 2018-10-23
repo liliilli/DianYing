@@ -202,6 +202,7 @@
     <ClCompile Include="Source\Core\Component\Resource\ModelResource.cc" />
     <ClCompile Include="Source\Core\Component\Resource\TextureResource.cc" />
     <ClCompile Include="Source\Core\Component\Resource\ShaderResource.cc" />
+    <ClCompile Include="Source\Core\Rendering\BasicRenderer.cc" />
     <ClCompile Include="Source\Core\Rendering\BasicShadow.cc" />
     <ClCompile Include="Source\Editor\Gui\Dialog\ProjectCreator.cc" />
     <ClCompile Include="Source\Editor\Gui\EtcDialog.cc" />
@@ -248,6 +249,7 @@
     <ClCompile Include="Source\Management\Editor\GuiSetting.cc" />
     <ClCompile Include="Source\Management\Editor\GuiWindowFactory.cc" />
     <ClCompile Include="Source\Management\Helper\PhysxSimulationCallback.cc" />
+    <ClCompile Include="Source\Management\Internal\FramebufferManager.cc" />
     <ClCompile Include="Source\Management\MetaInfoManager.cc" />
     <ClCompile Include="Source\Management\FontManager.cc" />
     <ClCompile Include="Source\Management\HeapResourceManager.cc" />
@@ -258,6 +260,7 @@
     <ClCompile Include="Source\Management\PhysicsManager.cc" />
     <ClCompile Include="Source\Management\RenderingManager.cc" />
     <ClCompile Include="Source\Management\ScriptManager.cc" />
+    <ClCompile Include="Source\Management\Type\AttachmentInformation.cc" />
     <ClCompile Include="Source\Management\WorldManager.cc" />
     <ClCompile Include="Source\Management\SettingManager.cc" />
     <ClCompile Include="Source\Management\SoundManager.cc" />
@@ -314,7 +317,9 @@
     <ClInclude Include="Include\Dy\Core\Component\Information\ShaderInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\TextureInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\SoundResource.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\BasicRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\BasicShadow.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Helper\FrameAttachmentString.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\Dialog\ProjectCreator.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\Helper\ComponentHelper.h" />
     <ClInclude Include="Include\Dy\Editor\Helper\Win32Helper.h" />
@@ -385,10 +390,12 @@
     <ClInclude Include="Include\Dy\Helper\Type\Clamp.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DyString.h" />
     <ClInclude Include="Include\Dy\Helper\Type\ThreeStateBool.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\VectorInt2.h" />
     <ClInclude Include="Include\Dy\Management\Editor\GuiManager.h" />
     <ClInclude Include="Include\Dy\Management\Editor\GuiSetting.h" />
     <ClInclude Include="Include\Dy\Management\Editor\GuiWindowFactory.h" />
     <ClInclude Include="Include\Dy\Management\Helper\PhysxSimulationCallback.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\FramebufferManager.h" />
     <ClInclude Include="Include\Dy\Management\MetaInfoManager.h" />
     <ClInclude Include="Include\Dy\Management\FontManager.h" />
     <ClInclude Include="Include\Dy\Management\Helper\GuiLogStreamSink.h" />
@@ -402,6 +409,8 @@
     <ClInclude Include="Include\Dy\Management\ScriptManager.h" />
     <ClInclude Include="Include\Dy\Management\SoundManager.h" />
     <ClInclude Include="Include\Dy\Management\SynchronizationManager.h" />
+    <ClInclude Include="Include\Dy\Management\Type\AttachmentInformation.h" />
+    <ClInclude Include="Include\Dy\Management\Type\FramebufferInformation.h" />
     <ClInclude Include="Include\Dy\Management\Type\KeyBindingInformation.h" />
     <ClInclude Include="Include\Dy\Management\WindowManager.h" />
     <ClInclude Include="Include\Dy\Management\WorldManager.h" />
