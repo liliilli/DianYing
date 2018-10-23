@@ -20,6 +20,7 @@
 #include <Dy/Core/Component/Object/PostEffectSsao.h>
 #include <Dy/Core/Component/Object/Grid.h>
 #include <Dy/Core/Rendering/BasicShadow.h>
+#include <Dy/Core/Rendering/BasicRenderer.h>
 
 //!
 //! Forward declaration
@@ -27,15 +28,15 @@
 
 namespace dy
 {
-struct DDyUboDirectionalLight;
-class CDyCamera;
-class CDyModelRenderer;
-class CDyDirectionalLight;
+struct  DDyUboDirectionalLight;
+class   CDyCamera;
+class   CDyModelRenderer;
+class   CDyDirectionalLight;
 } /// ::dy namespace
 
 namespace dy::editor
 {
-class FDyMainViewport;
+class   FDyMainViewport;
 } /// ::dy::editor namespace
 
 //!
@@ -69,19 +70,9 @@ public:
 
 private:
   ///
-  /// @brief Create geometry buffers (aka G-buffer) for deferred rendering.
-  ///
-  void pCreateDeferredGeometryBuffers() noexcept;
-
-  ///
-  /// @brief Release geometry buffers (aka G-buffer) for deferred rendering.
-  ///
-  void pReleaseGeometryBuffers() noexcept;
-
-  ///
   /// @brief Reset all of rendering framebuffers related to rendering of scene for new frame rendering.
   ///
-  void pResetRenderingFramebufferInstances() noexcept;
+  void pClearRenderingFramebufferInstances() noexcept;
 
   ///
   /// @brief  Rendering function,
@@ -100,7 +91,8 @@ private:
   void pRenderShadowFrameBufferWith(_MIN_ const CDyModelRenderer& renderer) noexcept;
 
   ///
-  /// @brief
+  /// @brief  Issue available directional light index. If not available, just no value.
+  /// @param  Instance
   /// @return
   ///
   MDY_NODISCARD std::optional<TI32> pGetAvailableDirectionalLightIndex(_MIN_ const CDyDirectionalLight&);
@@ -122,12 +114,36 @@ private:
       _MIN_ const TI32 index,
       _MIN_ const DDyUboDirectionalLight& container);
 
-  TU32                mDeferredFrameBufferId  = MDY_INITIALIZE_DEFUINT;
-  std::array<TU32, 4> mAttachmentBuffers      = {};
-  const TI32          mAttachmentBuffersCount = static_cast<TI32>(mAttachmentBuffers.size());
+  ///
+  /// @brief  Check whether or not directional light shadow is available to instance.
+  /// @param  Instance for type trailing
+  /// @return If available, just return true or false.
+  ///
+  MDY_NODISCARD bool pfIsAvailableDirectionalLightShadow(_MIN_ const CDyDirectionalLight&);
+
+  ///
+  /// @brief
+  /// @param
+  /// @return
+  ///
+  MDY_NODISCARD EDySuccess pfUpdateDirectionalLightShadowToGpu(_MIN_ const CDyDirectionalLight& component);
+
+  ///
+  /// @brief
+  /// @param
+  /// @return
+  ///
+  MDY_NODISCARD EDySuccess pfUnbindDirectionalLightShadowToGpu(_MIN_ const CDyDirectionalLight& component);
+
+  //!
+  //! Members
+  //!
 
   std::unique_ptr<FDyDeferredRenderingMesh>   mFinalRenderingMesh   = nullptr;
-  std::vector<NotNull<CDyModelRenderer*>>     mDrawCallList        = {};
+  std::vector<NotNull<CDyModelRenderer*>>     mOpaqueDrawCallList        = {};
+
+  ///
+  std::unique_ptr<FDyBasicRenderer>           mBasicRenderer        = MDY_INITIALIZE_NULL;
 
   bool                                        mTempIsEnabledSsao    = true;
   std::unique_ptr<FDyPostEffectSsao>          mTempSsaoObject       = nullptr;
