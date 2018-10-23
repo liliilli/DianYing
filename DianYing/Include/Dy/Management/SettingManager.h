@@ -16,6 +16,7 @@
 ///
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
+#include "Dy/Helper/Type/Vector2.h"
 
 namespace dy
 {
@@ -53,12 +54,12 @@ public:
   /// If Vsync enabled, max frame per seconds are fixed by 60 fps.
   /// If not, frame will be beyond 60 fps along your hardware but jittering may be occured sometimes.
   ///
-  [[nodiscard]] bool IsVSyncEnabled() const noexcept;
+  MDY_NODISCARD bool IsVSyncEnabled() const noexcept;
 
   ///
   /// @brief Get enable/disable flag of feature, logging as true/false.
   ///
-  [[nodiscard]] FORCEINLINE bool IsEnabledFeatureLogging() const noexcept
+  MDY_NODISCARD FORCEINLINE bool IsEnabledFeatureLogging() const noexcept
   {
     return this->mIsEnabledLogging;
   }
@@ -67,7 +68,7 @@ public:
   /// @brief Get enable/disable flag of subfeature, logging to console as true/false.
   /// If changed, logging feature must be restarted manually.
   ///
-  [[nodiscard]] FORCEINLINE bool IsEnabledSubFeatureLoggingToConsole() const noexcept
+  MDY_NODISCARD FORCEINLINE bool IsEnabledSubFeatureLoggingToConsole() const noexcept
   {
     return this->mIsEnabledLoggingToConsole;
   }
@@ -76,7 +77,7 @@ public:
   /// @brief Get enable/disable flag of subfeature, logging to file as true/false.
   /// If changed, logging feature must be restarted manually.
   ///
-  [[nodiscard]] FORCEINLINE bool IsEnableSubFeatureLoggingToFile() const noexcept
+  MDY_NODISCARD FORCEINLINE bool IsEnableSubFeatureLoggingToFile() const noexcept
   {
     return this->mIsEnabledLoggingToFile;
   }
@@ -84,7 +85,7 @@ public:
   ///
   /// @brief Get the path of log file.
   ///
-  [[nodiscard]] FORCEINLINE const std::string& GetLogFilePath() const noexcept
+  MDY_NODISCARD FORCEINLINE const std::string& GetLogFilePath() const noexcept
   {
     return this->mLogFilePath;
   }
@@ -92,12 +93,12 @@ public:
   ///
   /// @brief Get rendering type enum of present rendering api.
   ///
-  [[nodiscard]] EDyRenderingApiType GetRenderingType() const noexcept;
+  MDY_NODISCARD EDyRenderingApiType GetRenderingType() const noexcept;
 
   ///
   /// @brief Get overall window width size.
   ///
-  [[nodiscard]] FORCEINLINE int32_t GetWindowSizeWidth() const noexcept
+  MDY_NODISCARD FORCEINLINE int32_t GetWindowSizeWidth() const noexcept
   {
     return this->mWindowSizeWidth;
   }
@@ -105,47 +106,71 @@ public:
   ///
   /// @brief Get overall window height size.
   ///
-  [[nodiscard]] FORCEINLINE int32_t GetWindowSizeHeight() const noexcept
+  MDY_NODISCARD FORCEINLINE int32_t GetWindowSizeHeight() const noexcept
   {
     return this->mWindowSizeHeight;
   }
 
   ///
-  /// @brief Get initial scene name to create initial scene instance.
+  /// @brief  Get initial scene name to create initial scene instance.
   /// @return PDyLevelConstructDescriptor name. Name is same to populated actual scene instance.
   ///
-  [[nodiscard]] FORCEINLINE const std::string& GetInitialSceneInformationName() const noexcept
+  MDY_NODISCARD FORCEINLINE const std::string& GetInitialSceneInformationName() const noexcept
   {
     return this->mInitialSceneName;
   }
 
   ///
+  /// @brief  Get global default shadow map resolution as DDyVector2
+  /// @return DDyVector2 size of default shadow map resolution.
+  ///
+  FORCEINLINE MDY_NODISCARD const DDyVector2& GetGlobalDefaultShadowMapResolution() const noexcept
+  {
+    return this->mShadowGlobalDefaultMap;
+  }
+
+  ///
   /// @brief Enable or disable logging feature.
   /// before enable logging feature, must set console or file sink.
+  /// @param isEnabled
   ///
-  void SetFeatureLogging(bool isEnabled) noexcept;
+  void SetFeatureLogging(_MIN_ bool isEnabled) noexcept;
 
   ///
   /// @brief Enable or disable log output sink console.
+  /// @param isEnabled
   ///
-  void SetSubFeatureLoggingToConsole(bool isEnabled) noexcept;
+  void SetSubFeatureLoggingToConsole(_MIN_ bool isEnabled) noexcept;
 
   ///
   /// @brief Enable or disable log output sink file.
+  /// @param isEnabled
   ///
-  void SetSubFeatureLoggingToFile(bool isEnabled) noexcept;
+  void SetSubFeatureLoggingToFile(_MIN_ bool isEnabled) noexcept;
 
   ///
   /// @brief Set file path for logging. Must be restarted when updated.
+  /// @param path
   ///
-  void SetLogFilePath(const std::string& path) noexcept;
+  void SetLogFilePath(_MIN_ const std::string& path) noexcept;
+
+  ///
+  /// @brief Set global default shadow map resolution.
+  /// @param size
+  ///
+  void SetGlobalDefaultShadowMapResolution(_MIN_ const DDyVector2& size) noexcept;
 
   ///
   /// @brief Set vsync mode.
   /// If vsync mode is off, application will be running by more 60 fps but unstable.
   /// If vsync mode is on, it will be running by your specified fps or 60 fps.
+  /// @param enableVsync
   ///
-  void SetVSyncMode(bool enableVsync) noexcept;
+  void SetVSyncMode(_MIN_ bool enableVsync) noexcept;
+
+  ///
+  ///
+  ///
 
   ///
   /// @brief Push arguments when executing program.
@@ -177,6 +202,9 @@ private:
   std::string mInitialSceneName       = MDY_INITILAIZE_EMPTYSTR;
   TI32 mWindowSizeWidth               = MDY_INITIALIZE_DEFINT;
   TI32 mWindowSizeHeight              = MDY_INITIALIZE_DEFINT;
+
+  /// Global default shadow map size.
+  DDyVector2 mShadowGlobalDefaultMap  = {};
 
   std::vector<const char*> mApplicationArgs;
   bool mIsInitialized                 = false;

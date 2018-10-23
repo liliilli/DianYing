@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_META_DESCRIPTOR_SCRIPTDESCRIPTOR_H
-#define GUARD_DY_META_DESCRIPTOR_SCRIPTDESCRIPTOR_H
+#ifndef GUARD_DY_MANAGEMENT_TYPE_FRAMEBUFFERCONTAINER_H
+#define GUARD_DY_MANAGEMENT_TYPE_FRAMEBUFFERCONTAINER_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,25 +13,22 @@
 /// SOFTWARE.
 ///
 
-#include <string>
-
 namespace dy
 {
 
 ///
-/// @struct PDyMetaScriptInformation
-/// @brief  Script meta information
+/// @class FDyFrameBufferContainer
+/// @brief Frame buffer and attachment container
 ///
-struct PDyMetaScriptInformation final
+class FDyFrameBufferContainer final
 {
-  std::string mName             = MDY_INITILAIZE_EMPTYSTR;
-  std::string mScriptPath       = MDY_INITILAIZE_EMPTYSTR;
-  std::string mScriptCode       = MDY_INITILAIZE_EMPTYSTR;
+public:
+  MDY_ONLY_MOVEABLE_PROPERTIES_CUSTOM(FDyFrameBufferContainer);
 
-  bool mIsUsingScriptPath       = false;
-  bool mIsUsingScriptInnateCode = false;
+private:
+
 };
 
 } /// ::dy namespace
 
-#endif /// GUARD_DY_META_DESCRIPTOR_SCRIPTDESCRIPTOR_H
+#endif /// GUARD_DY_MANAGEMENT_TYPE_FRAMEBUFFERCONTAINER_H

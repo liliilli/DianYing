@@ -83,7 +83,7 @@
     [
       {
         "Type"      : "Script",
-        "Name"      : "TestScript2",
+        "Name"      : "TestScript1",
         "Activated" : true
       },
       {
@@ -165,14 +165,20 @@
     "93712":
     [
       {
-        "Type"          : "DirectionalLight",
-        "LightDirection": { "X": 0, "Y": 1, "Z": 0 },
-        "LightIntensity": 1.00,
-        "LightDiffuse"  : 16777215,
-        "LightSpecular" : 16765536,
-        "LightAmbient"  : 1592739,
-        "IsCastingLight": true,
-        "IsCastingShadow": false,
+        "Type"            : "DirectionalLight",
+        "LightDirection"  : { "X": 0, "Y": 1, "Z": 0 },
+        "LightIntensity"  : 1.00,
+        "LightDiffuse"    : 16777215,
+        "LightSpecular"   : 16765536,
+        "LightAmbient"    : 1592739,
+        "ShadowType"      : "Hard",
+        "ShadowStrength"  : 0.5,
+        "ShadowResolution": {"X": 128, "Y": 128},
+        "IsUsingGlobalShadowResolution": false,
+        "ShadowBias"      : 0.02,
+        "ShadowCullingMaskLayer": [ ],
+        "IsCastingLight"  : true,
+        "IsCastingShadow" : true,
         "Activated" : true
       },
       {

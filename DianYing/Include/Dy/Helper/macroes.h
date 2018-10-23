@@ -430,8 +430,8 @@ private:                                                  \
 #define MDY_ONLY_MOVEABLE_PROPERTIES_CUSTOM(__MAType__) \
   __MAType__(const __MAType__&)             = delete;   \
   __MAType__& operator=(const __MAType__&)  = delete;   \
-  __MAType__(__MAType__&&);                             \
-  __MAType__& operator=(__MAType__&&);                  \
+  __MAType__(__MAType__&&) noexcept;                    \
+  __MAType__& operator=(__MAType__&&) noexcept;         \
 
 #define MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(__MAType__)\
   __MAType__(const __MAType__&)             = delete;   \
