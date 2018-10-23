@@ -121,27 +121,28 @@ FDyBasicRenderer::FDyBasicRenderer()
   // Create framebuffer.
   MDY_CALL_ASSERT_SUCCESS(framebufferManager.InitializeNewFrameBuffer(framebufferInfo));
   MDY_LOG_INFO("{}::{} | Geometry buffer created.", "MDyRendering", "pCreateDeferredGeometryBuffers");
+
+  this->mGivenFrameBufferPointer = framebufferManager.GetFrameBufferPointer(MSVSTR(sFrameBuffer_Deferred));
+  MDY_ASSERT(this->mGivenFrameBufferPointer != nullptr, "Unexpected error.");
 }
 
 FDyBasicRenderer::~FDyBasicRenderer()
 {
-#ifdef false
-  glDeleteTextures(this->mAttachmentBuffersCount, &this->mAttachmentBuffers[0]);
-  if (this->mDeferredFrameBufferId) { glDeleteFramebuffers(1, &this->mDeferredFrameBufferId); }
-#endif
-
   auto& framebufferManager  = MDyFramebuffer::GetInstance();
   MDY_CALL_ASSERT_SUCCESS(framebufferManager.RemoveFrameBuffer(MSVSTR(sFrameBuffer_Deferred)));
+  this->mGivenFrameBufferPointer = nullptr;
+
   MDY_LOG_INFO("{}::{} | Geometry buffer released.", "MDyRendering", "pCreateDeferredGeometryBuffers");
 }
 
 void FDyBasicRenderer::RenderScreen(_MIN_ const std::vector<NotNull<CDyModelRenderer*>>& rendererList)
-{
+{ // Integrity test
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mGivenFrameBufferPointer), "Unexpected error.");
   auto& worldManager      = MDyWorld::GetInstance();
   const auto cameraCount  = worldManager.GetFocusedCameraCount();
 
   // (1) Deferred rendering for opaque objects + shadowing
-  glBindFramebuffer(GL_FRAMEBUFFER, this->mDeferredFrameBufferId);
+  glBindFramebuffer(GL_FRAMEBUFFER, this->mGivenFrameBufferPointer->GetFramebufferId());
 
   for (TI32 cameraId = 0; cameraId < cameraCount; ++cameraId)
   { // Get valid CDyCamera instance pointer address.
@@ -165,9 +166,11 @@ void FDyBasicRenderer::RenderScreen(_MIN_ const std::vector<NotNull<CDyModelRend
 }
 
 void FDyBasicRenderer::Clear()
-{
+{ // Integrity test
+  if (MDY_CHECK_ISNULL(this->mGivenFrameBufferPointer)) { return; }
+
   // Reset overall deferred framebuffer setting
-  glBindFramebuffer(GL_FRAMEBUFFER, this->mDeferredFrameBufferId);
+  glBindFramebuffer(GL_FRAMEBUFFER, this->mGivenFrameBufferPointer->GetFramebufferId());
   glClearColor(0, 0, 0, 0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glBindFramebuffer(GL_FRAMEBUFFER, 0);

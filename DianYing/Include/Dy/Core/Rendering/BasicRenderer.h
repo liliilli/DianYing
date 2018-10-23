@@ -23,8 +23,9 @@
 
 namespace dy
 {
-class CDyCamera;
-class CDyModelRenderer;
+class   CDyCamera;
+class   CDyModelRenderer;
+struct  PDyGlFrameBufferInformation;
 } /// ::dy namespace
 
 //!
@@ -52,7 +53,7 @@ public:
   void RenderScreen(_MIN_ const std::vector<NotNull<CDyModelRenderer*>>& rendererList);
 
   ///
-  /// @brief
+  /// @brief Clear properties of given framebuffer.
   ///
   void Clear();
 
@@ -64,9 +65,8 @@ private:
   ///
   void pRenderScreen(_MIN_ const CDyModelRenderer& renderer, _MIN_ const CDyCamera& validCamera) noexcept;
 
-  TU32                mDeferredFrameBufferId  = MDY_INITIALIZE_DEFUINT;
-  std::array<TU32, 4> mAttachmentBuffers      = {};
-  const TI32          mAttachmentBuffersCount = static_cast<TI32>(mAttachmentBuffers.size());
+  /// PDyGlFrameBufferInformation
+  PDyGlFrameBufferInformation* mGivenFrameBufferPointer = MDY_INITIALIZE_NULL;
 
   friend class FDyDeferredRenderingMesh;
 };

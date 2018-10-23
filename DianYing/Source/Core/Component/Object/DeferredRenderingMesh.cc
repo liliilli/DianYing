@@ -15,13 +15,13 @@
 /// Header file
 #include <Dy/Core/Component/Object/DeferredRenderingMesh.h>
 
-#include <Dy/Core/Component/Internal/ShaderType.h>
-
+#include <Dy/Builtin/ShaderGl/RenderDeferredRendering.h>
+#include <Dy/Core/Rendering/Helper/FrameAttachmentString.h>
+#include <Dy/Component/CDyDirectionalLight.h>
+#include <Dy/Management/Internal/FramebufferManager.h>
 #include <Dy/Management/DataInformationManager.h>
 #include <Dy/Management/HeapResourceManager.h>
 #include <Dy/Management/RenderingManager.h>
-#include <Dy/Builtin/ShaderGl/RenderDeferredRendering.h>
-#include <Dy/Component/CDyDirectionalLight.h>
 
 namespace
 {
@@ -67,17 +67,21 @@ FDyDeferredRenderingMesh::~FDyDeferredRenderingMesh()
 void FDyDeferredRenderingMesh::RenderScreen()
 {
   MDY_ASSERT(this->mShaderPtr, "FDyDeferredRenderingMesh::mShaderPtr must not be nullptr.");
+  if (this->mIsAttachmentPtrBinded == false)
+  {
+    const auto flag = this->pTryGetAttachmentPointers();
+    if (flag == DY_SUCCESS) { this->mIsAttachmentPtrBinded = true; }
+    else                    { return; }
+  }
 
   this->mShaderPtr->UseShader();
   glBindVertexArray(this->mVao);
 
-  const auto& renderingManager = MDyRendering::GetInstance();
   // Bind g-buffers as textures.
-  for (TU32 i = 0; i < renderingManager.mAttachmentBuffers.size(); ++i)
-  {
-    glActiveTexture(GL_TEXTURE0 + i);
-    glBindTexture(GL_TEXTURE_2D, renderingManager.mAttachmentBuffers[i]);
-  }
+  glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, this->mAttachmentPtr_Unlit->GetAttachmentId());
+  glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, this->mAttachmentPtr_Normal->GetAttachmentId());
+  glActiveTexture(GL_TEXTURE2); glBindTexture(GL_TEXTURE_2D, this->mAttachmentPtr_Specular->GetAttachmentId());
+  glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, this->mAttachmentPtr_ViewPosition->GetAttachmentId());
 
   glDrawArrays(GL_TRIANGLES, 0, 3);
   glBindVertexArray(0);
@@ -190,6 +194,37 @@ EDySuccess FDyDeferredRenderingMesh::pInitializeUboBuffers()
   glBindBufferBase(GL_UNIFORM_BUFFER, 1, this->mDirLight);
 
   return DY_SUCCESS;
+}
+
+EDySuccess FDyDeferredRenderingMesh::pTryGetAttachmentPointers()
+{
+  TI32 count = 0;
+
+  auto& framebufferManager = MDyFramebuffer::GetInstance();
+  if (MDY_CHECK_ISNULL(this->mAttachmentPtr_Unlit))
+  {
+    this->mAttachmentPtr_Unlit = framebufferManager.GetAttachmentPointer(sAttachment_Unlit);
+  }
+  if (MDY_CHECK_ISNULL(this->mAttachmentPtr_Normal))
+  {
+    this->mAttachmentPtr_Normal = framebufferManager.GetAttachmentPointer(sAttachment_Normal);
+  }
+  if (MDY_CHECK_ISNULL(this->mAttachmentPtr_Specular))
+  {
+    this->mAttachmentPtr_Specular = framebufferManager.GetAttachmentPointer(sAttachment_Specular);
+  }
+  if (MDY_CHECK_ISNULL(this->mAttachmentPtr_ViewPosition))
+  {
+    this->mAttachmentPtr_ViewPosition = framebufferManager.GetAttachmentPointer(sAttachment_ViewPosition);
+  }
+
+  if (MDY_CHECK_ISNOTNULL(this->mAttachmentPtr_Unlit))        { count += 1; }
+  if (MDY_CHECK_ISNOTNULL(this->mAttachmentPtr_Normal))       { count += 1; }
+  if (MDY_CHECK_ISNOTNULL(this->mAttachmentPtr_Specular))     { count += 1; }
+  if (MDY_CHECK_ISNOTNULL(this->mAttachmentPtr_ViewPosition)) { count += 1; }
+
+  if (count == 4) { return DY_SUCCESS; }
+  else            { return DY_FAILURE; }
 }
 
 } /// ::dy namespace

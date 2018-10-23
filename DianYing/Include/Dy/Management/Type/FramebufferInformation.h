@@ -30,6 +30,15 @@ struct PDyGlFrameBufferInformation final
   DDyVectorInt2                                 mFrameBufferSize  = {};
   bool                                          mIsUsingDefaultDepthBuffer = {};
 
+  ///
+  /// @brief  Get framebuffer id. If not initialized yet, just return 0.
+  /// @return Framebuffer id.
+  ///
+  FORCEINLINE MDY_NODISCARD TU32 GetFramebufferId() const noexcept
+  {
+    return this->mFrameBufferId;
+  }
+
 private:
   ///
   TU32 mFrameBufferId         = MDY_INITIALIZE_DEFUINT;

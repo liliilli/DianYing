@@ -23,6 +23,7 @@
 
 namespace dy
 {
+struct PDyGlAttachmentInformation;
 struct DDyUboDirectionalLight;
 } /// ::dy namespace
 
@@ -86,12 +87,26 @@ private:
   ///
   MDY_NODISCARD EDySuccess pInitializeUboBuffers();
 
+  ///
+  /// @brief  Try to getting attachment instance pointers from management instance.
+  /// @return If successful to getting all attachment pointers, return true.
+  ///
+  MDY_NODISCARD EDySuccess pTryGetAttachmentPointers();
+
   inline static constexpr TI32 sDirectionalLightCount = 5;
 
   GLuint              mVao            = MDY_INITIALIZE_DEFUINT;
   GLuint              mVbo            = MDY_INITIALIZE_DEFUINT;
   GLuint              mDirLight       = MDY_INITIALIZE_DEFUINT;
   CDyShaderResource*  mShaderPtr      = MDY_INITIALIZE_NULL;
+
+  /// Attachment information pointer
+
+  PDyGlAttachmentInformation* mAttachmentPtr_Unlit        = MDY_INITIALIZE_NULL;
+  PDyGlAttachmentInformation* mAttachmentPtr_Normal       = MDY_INITIALIZE_NULL;
+  PDyGlAttachmentInformation* mAttachmentPtr_Specular     = MDY_INITIALIZE_NULL;
+  PDyGlAttachmentInformation* mAttachmentPtr_ViewPosition = MDY_INITIALIZE_NULL;
+  bool                        mIsAttachmentPtrBinded      = false;
 
   std::queue<TI32>    mAvailableList  = {};
 };

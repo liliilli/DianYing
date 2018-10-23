@@ -138,6 +138,15 @@ struct PDyGlAttachmentInformation final
   DDyVectorInt2                             mAttachmentSize = {};
   DDyColor                                  mBorderColor    = DDyColor::Black;
 
+  ///
+  /// @brief  Get attachment id. If attachment is not initialized yet, just return 0.
+  /// @return Attachment texture id.
+  ///
+  FORCEINLINE MDY_NODISCARD TU32 GetAttachmentId() const noexcept
+  {
+    return this->mAttachmentId;
+  }
+
 private:
   ///
   TU32 mAttachmentId = MDY_INITIALIZE_DEFUINT;
