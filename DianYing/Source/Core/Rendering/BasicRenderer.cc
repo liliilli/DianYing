@@ -24,6 +24,19 @@
 #include <Dy/Element/Actor.h>
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Management/SettingManager.h>
+#include <Dy/Helper/Type/VectorInt2.h>
+#include <Dy/Management/Type/FramebufferInformation.h>
+#include <Dy/Management/Internal/FramebufferManager.h>
+#include <Dy/Core/Rendering/Helper/FrameAttachmentString.h>
+
+//!
+//! Temporary
+//!
+
+namespace dy
+{
+
+}
 
 //!
 //! Implementation
@@ -34,83 +47,91 @@ namespace dy
 
 FDyBasicRenderer::FDyBasicRenderer()
 {
-  auto& settingManager = MDySetting::GetInstance();
+  auto& settingManager      = MDySetting::GetInstance();
+  auto& framebufferManager  = MDyFramebuffer::GetInstance();
   const auto overallScreenWidth   = settingManager.GetWindowSizeWidth();
   const auto overallScreenHeight  = settingManager.GetWindowSizeHeight();
+  const auto overallSize = DDyVectorInt2{overallScreenWidth, overallScreenHeight};
 
-  glGenFramebuffers(1, &this->mDeferredFrameBufferId);
-  glBindFramebuffer(GL_FRAMEBUFFER, this->mDeferredFrameBufferId);
-  glGenTextures(this->mAttachmentBuffersCount, &this->mAttachmentBuffers[0]);
+  PDyGlFrameBufferInformation       framebufferInfo = {};
+  PDyGlAttachmentInformation        attachmentInfo  = {};
+  PDyGlAttachmentBinderInformation  binderInfo      = {};
 
-  // Unlit g-buffer
-  glBindTexture(GL_TEXTURE_2D, this->mAttachmentBuffers[0]);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, overallScreenWidth, overallScreenHeight, 0, GL_RGBA, GL_FLOAT, nullptr);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->mAttachmentBuffers[0], 0);
+  framebufferInfo.mFrameBufferName = sFrameBuffer_Deferred;
+  framebufferInfo.mFrameBufferSize = overallSize;
+  framebufferInfo.mIsUsingDefaultDepthBuffer = true;
 
-  // Normal g-buffer
-  glBindTexture(GL_TEXTURE_2D, this->mAttachmentBuffers[1]);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, overallScreenWidth, overallScreenHeight, 0, GL_RGBA, GL_FLOAT, nullptr);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, this->mAttachmentBuffers[1], 0);
-
-  // Specular g-buffer
-  glBindTexture(GL_TEXTURE_2D, this->mAttachmentBuffers[2]);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, overallScreenWidth, overallScreenHeight, 0, GL_RGBA, GL_FLOAT, nullptr);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, this->mAttachmentBuffers[2], 0);
-  if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-  {
-    MDY_UNEXPECTED_BRANCH();
-  }
-
-  // View position g-buffer
-  glBindTexture(GL_TEXTURE_2D, this->mAttachmentBuffers[3]);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, overallScreenWidth, overallScreenHeight, 0, GL_RGB, GL_FLOAT, nullptr);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, this->mAttachmentBuffers[3], 0);
-  if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-  {
-    MDY_UNEXPECTED_BRANCH();
-  }
-
-  // Depth g-buffer
-  TU32 depthBuffer = MDY_INITIALIZE_DEFUINT;
-  glGenRenderbuffers(1, &depthBuffer);
-  glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
-  glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, overallScreenWidth, overallScreenHeight);
-  glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
-
-  // Let framebuffer know that attachmentBuffer's id will be drawn at framebuffer.
-  std::array<GLenum, 4> attachmentEnumList = {
-      GL_COLOR_ATTACHMENT0, // gUnlit
-      GL_COLOR_ATTACHMENT1, // gNormal
-      GL_COLOR_ATTACHMENT2, // gSpecular
-      GL_COLOR_ATTACHMENT3  // gPosition
+  // Unlit texture buffer
+  attachmentInfo.mAttachmentName = sAttachment_Unlit;
+  attachmentInfo.mAttachmentSize = overallSize;
+  attachmentInfo.mParameterList  = {
+    PDyGlTexParameterInformation\
+    {EDyGlParameterName::TextureMinFilter, EDyGlParameterValue::Nearest},
+    {EDyGlParameterName::TextureMagFilter, EDyGlParameterValue::Nearest},
+    {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::Repeat},
+    {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::Repeat},
   };
-  glDrawBuffers(static_cast<TI32>(attachmentEnumList.size()), &attachmentEnumList[0]);
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  binderInfo.mAttachmentName = attachmentInfo.mAttachmentName;
+  binderInfo.mAttachmentType = EDyGlAttachmentType::Color0;
+  framebufferInfo.mAttachmentList.push_back(binderInfo);
+  MDY_CALL_ASSERT_SUCCESS(framebufferManager.SetAttachmentInformation(attachmentInfo));
 
+  // Normal texture buffer
+  attachmentInfo.mAttachmentName = sAttachment_Normal;
+  attachmentInfo.mParameterList  = {
+    PDyGlTexParameterInformation\
+    {EDyGlParameterName::TextureMinFilter, EDyGlParameterValue::Nearest},
+    {EDyGlParameterName::TextureMagFilter, EDyGlParameterValue::Nearest},
+    {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::ClampToEdge},
+    {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::ClampToEdge},
+  };
+  binderInfo.mAttachmentName = attachmentInfo.mAttachmentName;
+  binderInfo.mAttachmentType = EDyGlAttachmentType::Color1;
+  framebufferInfo.mAttachmentList.push_back(binderInfo);
+  MDY_CALL_ASSERT_SUCCESS(framebufferManager.SetAttachmentInformation(attachmentInfo));
+
+  // Specular texture buffer
+  attachmentInfo.mAttachmentName = sAttachment_Specular;
+  attachmentInfo.mParameterList  = {
+    PDyGlTexParameterInformation\
+    {EDyGlParameterName::TextureMinFilter, EDyGlParameterValue::Nearest},
+    {EDyGlParameterName::TextureMagFilter, EDyGlParameterValue::Nearest},
+    {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::Repeat},
+    {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::Repeat},
+  };
+  binderInfo.mAttachmentName = attachmentInfo.mAttachmentName;
+  binderInfo.mAttachmentType = EDyGlAttachmentType::Color2;
+  framebufferInfo.mAttachmentList.push_back(binderInfo);
+  MDY_CALL_ASSERT_SUCCESS(framebufferManager.SetAttachmentInformation(attachmentInfo));
+
+  // View position texture buffer
+  attachmentInfo.mAttachmentName = sAttachment_ViewPosition;
+  attachmentInfo.mParameterList  = {
+    PDyGlTexParameterInformation\
+    {EDyGlParameterName::TextureMinFilter, EDyGlParameterValue::Nearest},
+    {EDyGlParameterName::TextureMagFilter, EDyGlParameterValue::Nearest},
+    {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::ClampToEdge},
+    {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::ClampToEdge},
+  };
+  binderInfo.mAttachmentName = attachmentInfo.mAttachmentName;
+  binderInfo.mAttachmentType = EDyGlAttachmentType::Color3;
+  framebufferInfo.mAttachmentList.push_back(binderInfo);
+  MDY_CALL_ASSERT_SUCCESS(framebufferManager.SetAttachmentInformation(attachmentInfo));
+
+  // Create framebuffer.
+  MDY_CALL_ASSERT_SUCCESS(framebufferManager.InitializeNewFrameBuffer(framebufferInfo));
   MDY_LOG_INFO("{}::{} | Geometry buffer created.", "MDyRendering", "pCreateDeferredGeometryBuffers");
 }
 
 FDyBasicRenderer::~FDyBasicRenderer()
 {
+#ifdef false
   glDeleteTextures(this->mAttachmentBuffersCount, &this->mAttachmentBuffers[0]);
   if (this->mDeferredFrameBufferId) { glDeleteFramebuffers(1, &this->mDeferredFrameBufferId); }
+#endif
 
+  auto& framebufferManager  = MDyFramebuffer::GetInstance();
+  MDY_CALL_ASSERT_SUCCESS(framebufferManager.RemoveFrameBuffer(MSVSTR(sFrameBuffer_Deferred)));
   MDY_LOG_INFO("{}::{} | Geometry buffer released.", "MDyRendering", "pCreateDeferredGeometryBuffers");
 }
 
@@ -140,6 +161,15 @@ void FDyBasicRenderer::RenderScreen(_MIN_ const std::vector<NotNull<CDyModelRend
   }
 
   // Return to default frame buffer.
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void FDyBasicRenderer::Clear()
+{
+  // Reset overall deferred framebuffer setting
+  glBindFramebuffer(GL_FRAMEBUFFER, this->mDeferredFrameBufferId);
+  glClearColor(0, 0, 0, 0);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 

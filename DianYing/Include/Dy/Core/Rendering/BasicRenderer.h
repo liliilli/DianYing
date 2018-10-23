@@ -51,6 +51,11 @@ public:
   ///
   void RenderScreen(_MIN_ const std::vector<NotNull<CDyModelRenderer*>>& rendererList);
 
+  ///
+  /// @brief
+  ///
+  void Clear();
+
 private:
   ///
   /// @brief
@@ -62,6 +67,8 @@ private:
   TU32                mDeferredFrameBufferId  = MDY_INITIALIZE_DEFUINT;
   std::array<TU32, 4> mAttachmentBuffers      = {};
   const TI32          mAttachmentBuffersCount = static_cast<TI32>(mAttachmentBuffers.size());
+
+  friend class FDyDeferredRenderingMesh;
 };
 
 } /// ::dy namespace
