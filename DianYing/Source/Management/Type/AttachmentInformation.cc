@@ -56,6 +56,7 @@ namespace dy
 GLenum DyGetAttachmentTypeValue(_MIN_ const EDyGlAttachmentType attachment) noexcept
 { // Integrity test
   if (attachment == EDyGlAttachmentType::NoneError) { return GL_NONE; }
+  if (attachment == EDyGlAttachmentType::Depth)     { return GL_DEPTH_ATTACHMENT; }
   return GL_COLOR_ATTACHMENT0 + static_cast<TI32>(attachment);
 }
 

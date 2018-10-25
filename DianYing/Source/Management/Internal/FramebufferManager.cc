@@ -97,18 +97,27 @@ EDySuccess MDyFramebuffer::InitializeNewFrameBuffer(const PDyGlFrameBufferInform
     // Check for parameter types.
     MDY_ASSERT(DyCheckTextureParameterList(attachmentInstance.mParameterList) == DY_SUCCESS, "FFFFFFFF");
     attachmentInstance.mAttachmentId = attachmentBufferIdList[i];
+
     // Bind texture.
     glBindTexture(GL_TEXTURE_2D, attachmentInstance.mAttachmentId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, attachmentInstance.mAttachmentSize.X, attachmentInstance.mAttachmentSize.Y, 0, GL_RGBA, GL_FLOAT, nullptr);
+    if (attachmentCursor.mAttachmentType != EDyGlAttachmentType::Depth)
+    {
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
+          attachmentInstance.mAttachmentSize.X, attachmentInstance.mAttachmentSize.Y,
+          0, GL_RGBA, GL_FLOAT, nullptr);
+    }
+    else
+    {
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32,
+          attachmentInstance.mAttachmentSize.X, attachmentInstance.mAttachmentSize.Y,
+          0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+    }
 
     // Apply parameter option list to attachment.
     bool isThisAttachmentUsingClampToBorder = false;
     for (const auto& parameter : attachmentInstance.mParameterList)
     { //
-      if (parameter.mParameterValue == EDyGlParameterValue::ClampToBorder)
-      {
-        isThisAttachmentUsingClampToBorder = true;
-      }
+      if (parameter.mParameterValue == EDyGlParameterValue::ClampToBorder) { isThisAttachmentUsingClampToBorder = true; }
       //
       glTexParameteri(GL_TEXTURE_2D,
           DyGetParameterNameValue(parameter.mParameterOption),
@@ -138,7 +147,16 @@ EDySuccess MDyFramebuffer::InitializeNewFrameBuffer(const PDyGlFrameBufferInform
   }
 
   // Let framebuffer know that attachmentBuffer's id will be drawn at framebuffer.
-  glDrawBuffers(attachmentBufferCount, attachmentTypeList.data());
+  if (framebuffer.mIsNotUsingPixelShader == true)
+  {
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+  }
+  else
+  {
+    glDrawBuffers(attachmentBufferCount, attachmentTypeList.data());
+  }
+
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   return DY_SUCCESS;
 }

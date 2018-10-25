@@ -22,6 +22,13 @@
 #include <Dy/Management/DataInformationManager.h>
 #include <Dy/Management/HeapResourceManager.h>
 #include <Dy/Management/RenderingManager.h>
+#include <Dy/Management/WorldManager.h>
+#include <glm/gtc/matrix_transform.inl>
+#include <Dy/Management/Internal/UniformBufferObjectManager.h>
+
+//!
+//! Forward declaration
+//!
 
 namespace
 {
@@ -35,6 +42,14 @@ struct DDyMeshInfo final
       mPosition{position}, mTexCoord{texCoord}
   {};
 };
+
+} /// ::unnamed namespace
+namespace
+{
+
+dy::DDyMatrix4x4 sSamplePvMatrix =
+    glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, 0.02f, 100.0f) *
+    glm::lookAt(glm::vec3(0, 20, 20), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 
 } /// ::unnamed namespace
 
@@ -55,7 +70,8 @@ FDyDeferredRenderingMesh::FDyDeferredRenderingMesh()
 
 FDyDeferredRenderingMesh::~FDyDeferredRenderingMesh()
 {
-  if (this->mDirLight) glDeleteBuffers(1, &this->mDirLight);
+  auto& uboManager = MDyUniformBufferObject::GetInstance();
+  MDY_CALL_ASSERT_SUCCESS(uboManager.RemoveUboContainer("dyBtUboDirLight"));
   if (this->mVbo) glDeleteBuffers(1, &this->mVbo);
   if (this->mVao) glDeleteVertexArrays(1, &this->mVao);
 
@@ -78,14 +94,30 @@ void FDyDeferredRenderingMesh::RenderScreen()
   glBindVertexArray(this->mVao);
 
   // Bind g-buffers as textures.
+  const auto uShadowPv_Id = glGetUniformLocation(this->mShaderPtr->GetShaderProgramId(), "uShadowPv");
+  glUniformMatrix4fv(uShadowPv_Id, 1, GL_FALSE, &sSamplePvMatrix[0].X);
+
   glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, this->mAttachmentPtr_Unlit->GetAttachmentId());
   glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, this->mAttachmentPtr_Normal->GetAttachmentId());
   glActiveTexture(GL_TEXTURE2); glBindTexture(GL_TEXTURE_2D, this->mAttachmentPtr_Specular->GetAttachmentId());
-  glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, this->mAttachmentPtr_ViewPosition->GetAttachmentId());
+  glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, this->mAttachmentPtr_ModelPosition->GetAttachmentId());
+  glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, this->mAttachmentPtr_Shadow->GetAttachmentId());
 
   glDrawArrays(GL_TRIANGLES, 0, 3);
   glBindVertexArray(0);
   this->mShaderPtr->UnuseShader();
+}
+
+void FDyDeferredRenderingMesh::Clear()
+{
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  auto& worldManager = MDyWorld::GetInstance();
+
+  const auto& backgroundColor = worldManager.GetValidLevelReference().GetBackgroundColor();
+  glClearColor(backgroundColor.R, backgroundColor.G, backgroundColor.B, backgroundColor.A);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 std::optional<TI32> FDyDeferredRenderingMesh::GetAvailableDirectionalLightIndex() noexcept
@@ -98,42 +130,6 @@ std::optional<TI32> FDyDeferredRenderingMesh::GetAvailableDirectionalLightIndex(
 
     return returnId;
   }
-}
-
-EDySuccess FDyDeferredRenderingMesh::UpdateDirectionalLightValueToGpu(
-    _MIN_ const TI32 index,
-    _MIN_ const DDyUboDirectionalLight& container)
-{ // Integrity check
-  if (index >= FDyDeferredRenderingMesh::sDirectionalLightCount)
-  {
-    MDY_LOG_ERROR("Directional light index is out of bound.");
-    return DY_FAILURE;
-  }
-
-  constexpr TI32 UboElementSize = sizeof(DDyUboDirectionalLight);
-  glBindBuffer    (GL_UNIFORM_BUFFER, this->mDirLight);
-  glBufferSubData (GL_UNIFORM_BUFFER, UboElementSize * index, UboElementSize, &container);
-  glBindBuffer    (GL_UNIFORM_BUFFER, 0);
-  return DY_SUCCESS;
-}
-
-EDySuccess FDyDeferredRenderingMesh::UnbindDirectionalLight(_MIN_ const TI32 index)
-{ // Integrity check
-  if (index >= FDyDeferredRenderingMesh::sDirectionalLightCount
-      || index <= MDY_INITIALIZE_DEFINT)
-  {
-    MDY_LOG_ERROR("Directional light index is out of bound.");
-    return DY_FAILURE;
-  }
-
-  constexpr TI32  UboElementSize = sizeof(DDyUboDirectionalLight);
-  constexpr float nullValue[1]   = {0.f};
-  glBindBuffer    (GL_UNIFORM_BUFFER, this->mDirLight);
-  glClearBufferSubData(GL_UNIFORM_BUFFER, GL_RGBA, UboElementSize * index, UboElementSize, GL_RED, GL_FLOAT, &nullValue);
-  glBindBuffer    (GL_UNIFORM_BUFFER, 0);
-
-  this->mAvailableList.push(index);
-  return DY_SUCCESS;
 }
 
 EDySuccess FDyDeferredRenderingMesh::pInitializeGeometries()
@@ -169,7 +165,7 @@ EDySuccess FDyDeferredRenderingMesh::pInitializeShaderSetting()
   auto& manResc = MDyHeapResource::GetInstance();
   // Make deferred shader
   builtin::FDyBuiltinShaderGLRenderDeferredRendering();
-  this->mShaderPtr = manResc.GetShaderResource(builtin::FDyBuiltinShaderGLRenderDeferredRendering::sName.data());
+  this->mShaderPtr = manResc.GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderDeferredRendering::sName));
 
   MDY_ASSERT(this->mShaderPtr, "FDyDeferredRenderingMesh::mShaderPtr must not be nullptr.");
   this->mShaderPtr->UseShader();
@@ -177,6 +173,8 @@ EDySuccess FDyDeferredRenderingMesh::pInitializeShaderSetting()
   glUniform1i(glGetUniformLocation(this->mShaderPtr->GetShaderProgramId(), "uUnlit"), 0);
   glUniform1i(glGetUniformLocation(this->mShaderPtr->GetShaderProgramId(), "uNormal"), 1);
   glUniform1i(glGetUniformLocation(this->mShaderPtr->GetShaderProgramId(), "uSpecular"), 2);
+  glUniform1i(glGetUniformLocation(this->mShaderPtr->GetShaderProgramId(), "uModelPosition"), 3);
+  glUniform1i(glGetUniformLocation(this->mShaderPtr->GetShaderProgramId(), "uShadow"), 4);
 #ifdef false
   glUniform1i(glGetUniformLocation(this->mShaderPtr->GetShaderProgramId(), "uSsaoOcclusion"), 3);
 #endif
@@ -187,14 +185,37 @@ EDySuccess FDyDeferredRenderingMesh::pInitializeShaderSetting()
 
 EDySuccess FDyDeferredRenderingMesh::pInitializeUboBuffers()
 {
-  // Make uniform buffer object buffer space
-  glGenBuffers(1, &this->mDirLight);
-  glBindBuffer(GL_UNIFORM_BUFFER, this->mDirLight);
-  glBufferData(GL_UNIFORM_BUFFER, sizeof(DDyUboDirectionalLight) * FDyDeferredRenderingMesh::sDirectionalLightCount, nullptr, GL_DYNAMIC_DRAW);
-  glBindBufferBase(GL_UNIFORM_BUFFER, 1, this->mDirLight);
-
+  auto& uboManager = MDyUniformBufferObject::GetInstance();
+  PDyUboConstructionDescriptor desc = {};
+  desc.mBindingIndex      = 1;
+  desc.mUboSpecifierName  = "dyBtUboDirLight";
+  desc.mBufferDrawType    = EDyBufferDrawType::DynamicDraw;
+  desc.mUboElementSize    = sizeof(DDyUboDirectionalLight);
+  desc.mUboArraySize      = FDyDeferredRenderingMesh::sDirectionalLightCount;
+  MDY_CALL_ASSERT_SUCCESS(uboManager.CreateUboContainer(desc));
   return DY_SUCCESS;
 }
+
+EDySuccess FDyDeferredRenderingMesh::UpdateDirectionalLightValueToGpu(
+    _MIN_ const TI32 index,
+    _MIN_ const DDyUboDirectionalLight& container)
+{ // Integrity check
+  constexpr TI32 UboElementSize = sizeof(DDyUboDirectionalLight);
+
+  auto& uboManager = MDyUniformBufferObject::GetInstance();
+  MDY_CALL_ASSERT_SUCCESS(uboManager.UpdateUboContainer("dyBtUboDirLight", UboElementSize * index, UboElementSize, &container));
+  return DY_SUCCESS;
+}
+
+EDySuccess FDyDeferredRenderingMesh::UnbindDirectionalLight(_MIN_ const TI32 index)
+{ // Integrity check
+  constexpr TI32 UboElementSize = sizeof(DDyUboDirectionalLight);
+
+  auto& uboManager = MDyUniformBufferObject::GetInstance();
+  MDY_CALL_ASSERT_SUCCESS(uboManager.ClearUboContainer("dyBtUboDirLight", UboElementSize * index, UboElementSize));
+  return DY_SUCCESS;
+}
+
 
 EDySuccess FDyDeferredRenderingMesh::pTryGetAttachmentPointers()
 {
@@ -213,17 +234,22 @@ EDySuccess FDyDeferredRenderingMesh::pTryGetAttachmentPointers()
   {
     this->mAttachmentPtr_Specular = framebufferManager.GetAttachmentPointer(sAttachment_Specular);
   }
-  if (MDY_CHECK_ISNULL(this->mAttachmentPtr_ViewPosition))
+  if (MDY_CHECK_ISNULL(this->mAttachmentPtr_ModelPosition))
   {
-    this->mAttachmentPtr_ViewPosition = framebufferManager.GetAttachmentPointer(sAttachment_ViewPosition);
+    this->mAttachmentPtr_ModelPosition = framebufferManager.GetAttachmentPointer(sAttachment_ModelPosition);
+  }
+  if (MDY_CHECK_ISNULL(this->mAttachmentPtr_Shadow))
+  {
+    this->mAttachmentPtr_Shadow = framebufferManager.GetAttachmentPointer(sAttachment_DirectionalBasicShadow);
   }
 
   if (MDY_CHECK_ISNOTNULL(this->mAttachmentPtr_Unlit))        { count += 1; }
   if (MDY_CHECK_ISNOTNULL(this->mAttachmentPtr_Normal))       { count += 1; }
   if (MDY_CHECK_ISNOTNULL(this->mAttachmentPtr_Specular))     { count += 1; }
-  if (MDY_CHECK_ISNOTNULL(this->mAttachmentPtr_ViewPosition)) { count += 1; }
+  if (MDY_CHECK_ISNOTNULL(this->mAttachmentPtr_ModelPosition)) { count += 1; }
+  if (MDY_CHECK_ISNOTNULL(this->mAttachmentPtr_Shadow))       { count += 1; }
 
-  if (count == 4) { return DY_SUCCESS; }
+  if (count == 5) { return DY_SUCCESS; }
   else            { return DY_FAILURE; }
 }
 

@@ -40,13 +40,15 @@ struct alignas(16) DDyUboDirectionalLight final
 };
 
 ///
-/// @struct
-/// @brief
+/// @struct DDyUboDirShadow
+/// @brief  This structure must be aligned by 16 bytes.
 /// @TODO SCRIPT THIS
 ///
-struct alignas(16) DDyUboShadowMatrix final
+struct alignas(16) DDyUboDirShadow final
 {
-  DDyMatrix4x4 mProjViewMatrix = {};
+  DDyMatrix4x4          mProjViewMatrix = {};
+  DDyClamp<float, 0, 2> mBias           = 0.02f;
+  DDyClamp<float, 0, 1> mStrength       = 0.5f;
 };
 
 ///
@@ -252,13 +254,21 @@ private:
   ///
   MDY_NODISCARD EDySuccess pTryUpdateDirectionalLight();
 
-  /// Data for uniform buffer object.
-  DDyUboDirectionalLight  mData           = {};
-  DDyUboShadowMatrix      mDataShadow     = {};
+  /// Data for uniform buffer object. <Direction, Diffuse, Specular, Ambient, Intensity>
+  DDyUboDirectionalLight    mData             = {};
+  /// Data for shadow buffer object.  <PV, Bias, Strength>
+  DDyUboDirShadow           mDataShadow       = {};
+  /// Shadow type.
+  EDyShadowType             mShadowType       = EDyShadowType::NoneError;
+  /// Shadow map resolution for shadow.
+  DDyVector2                mShadowResolution = {};
+  /// Shadow culling layer.
+  std::vector<std::string>  mShadowCullingLayerList = {};
+
   /// Flag for casting light (binding to lighting system)
-  MDY_NOTUSED bool        mIsCastingLight  = false;
+  MDY_NOTUSED bool          mIsCastingLight   = false;
   /// Flag for casting shadow (binding to shadow system)
-  MDY_NOTUSED bool        mIsCastingShadow = false;
+  MDY_NOTUSED bool          mIsCastingShadow  = false;
 
   ///
   TI32        mCastingLightUboIndex = MDY_INITIALIZE_DEFINT;

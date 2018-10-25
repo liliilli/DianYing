@@ -28,7 +28,8 @@ struct PDyGlFrameBufferInformation final
   std::string                                   mFrameBufferName  = MDY_INITILAIZE_EMPTYSTR;
   std::vector<PDyGlAttachmentBinderInformation> mAttachmentList   = {};
   DDyVectorInt2                                 mFrameBufferSize  = {};
-  bool                                          mIsUsingDefaultDepthBuffer = {};
+  bool                                          mIsUsingDefaultDepthBuffer  = false;
+  bool                                          mIsNotUsingPixelShader      = false;
 
   ///
   /// @brief  Get framebuffer id. If not initialized yet, just return 0.

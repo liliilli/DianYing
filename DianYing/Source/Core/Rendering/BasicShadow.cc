@@ -16,21 +16,48 @@
 #include <Dy/Core/Rendering/BasicShadow.h>
 #include <Dy/Core/Component/MeshRenderer.h>
 
-#include <Dy/Core/Component/Resource/ModelResource.h>
 #include <Dy/Core/Component/Resource/SubmeshResource.h>
 #include <Dy/Management/HeapResourceManager.h>
 
 #include <Dy/Builtin/ShaderGl/RenderBasicShadow.h>
+#include <Dy/Component/CDyDirectionalLight.h>
+#include <Dy/Component/CDyModelRenderer.h>
+#include <Dy/Core/Rendering/Helper/FrameAttachmentString.h>
+#include <Dy/Management/Internal/FramebufferManager.h>
+#include <Dy/Management/Type/FramebufferInformation.h>
+#include <Dy/Element/Actor.h>
+#include <glm/gtc/matrix_transform.inl>
+
+//!
+//! Forward declaration
+//!
+
+namespace
+{
+
+dy::DDyMatrix4x4 sSamplePvMatrix =
+    glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, 0.02f, 100.0f) *
+    glm::lookAt(glm::vec3(0, 20, 20), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+
+} /// ::unnamed namespace
+
+//!
+//! Implementation
+//!
 
 namespace dy
 {
 
 FDyBasicShadow::FDyBasicShadow()
 {
-  dy::builtin::FDyBuiltinShaderGLRenderBasicShadow();
-  this->mShaderResource = MDyHeapResource::GetInstance().GetShaderResource(builtin::FDyBuiltinShaderGLRenderBasicShadow::sName.data());
+  auto& heapManager = MDyHeapResource::GetInstance();
 
+  builtin::FDyBuiltinShaderGLRenderBasicShadow();
+  this->mDirLightShaderResource = heapManager.GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderBasicShadow::sName));
   this->pCreateFramebufferComponents();
+
+  // @TODO TEMPORAL
+  this->mIsUsingShadowDirectionalLight = true;
 }
 
 FDyBasicShadow::~FDyBasicShadow()
@@ -38,27 +65,39 @@ FDyBasicShadow::~FDyBasicShadow()
   this->pReleaseFrameBufferComponents();
 }
 
-void FDyBasicShadow::RenderScreen(const CDyMeshRenderer& renderer)
-{
-  glBindFramebuffer(GL_FRAMEBUFFER, this->GetShadowFrameBufferId());
-  this->mShaderResource->UseShader();
+void FDyBasicShadow::RenderScreen(const CDyModelRenderer& renderer)
+{ // Integrity test
+  if (this->mIsUsingShadowDirectionalLight == false) { return; }
 
-  for (const auto& bindedMeshMatInfo : renderer.mMeshMaterialPtrBindingList)
+  // FunctionBody∨
+  const auto materialListCount  = renderer.GetMaterialListCount();
+  const auto opSubmeshListCount = renderer.GetModelSubmeshCount();
+
+  //
+  GLint previousViewport[4] = {};
+  glGetIntegerv( GL_VIEWPORT, previousViewport );
+  glViewport(0, 0, 512, 512);
+
+  //
+  glBindFramebuffer(GL_FRAMEBUFFER, this->mShadowFrameBuffer->GetFramebufferId());
+  const auto shaderProgramId = mDirLightShaderResource->GetShaderProgramId();
+  this->mDirLightShaderResource->UseShader();
+
+  TI32 iterationCount = MDY_INITIALIZE_DEFINT;
+  if (materialListCount < opSubmeshListCount.value()) { iterationCount = materialListCount; }
+  else                                                { iterationCount = opSubmeshListCount.value(); }
+
+  for (TI32 i = 0; i < iterationCount; ++i)
   {
-    const auto shaderResource = bindedMeshMatInfo.mMaterialResource->GetShaderResource();
-    glBindVertexArray(bindedMeshMatInfo.mSubmeshResource->GetVertexArrayId());
+    const CDySubmeshResource& submesh = renderer.GetSubmeshResourcePtr(i);
+    glBindVertexArray(submesh.GetVertexArrayId());
 
-    // Bind camera
-#ifdef false
-    if (auto* camera = MDyWorld::GetInstance().GetMainCameraPtr(); camera)
-    {
-      const auto viewMatrix = glGetUniformLocation(shaderResource->GetShaderProgramId(), "viewMatrix");
-      const auto projMatirx = glGetUniformLocation(shaderResource->GetShaderProgramId(), "projectionMatrix");
-
-      glUniformMatrix4fv(viewMatrix, 1, GL_FALSE, &camera->GetViewMatrix()[0].X);
-      glUniformMatrix4fv(projMatirx, 1, GL_FALSE, &camera->GetProjectionMatrix()[0].X);
-    }
-#endif
+    // Bind shadow camera
+    const auto uPvLightMatrix = glGetUniformLocation(shaderProgramId, "uPvLightMatrix");
+    const auto uModelMatrix   = glGetUniformLocation(shaderProgramId, "uModelMatrix");
+    const auto& model         = const_cast<FDyActor*>(renderer.GetBindedActor())->GetTransform()->GetTransform();
+    glUniformMatrix4fv(uModelMatrix,    1, GL_FALSE, &model[0].X);
+    glUniformMatrix4fv(uPvLightMatrix,  1, GL_FALSE, &sSamplePvMatrix[0].X);
 
 #ifdef false
     // If skeleton animation is enabled, get bone transform and bind to shader.
@@ -75,58 +114,90 @@ void FDyBasicShadow::RenderScreen(const CDyMeshRenderer& renderer)
 #endif
 
     // Call function call drawing array or element. (not support instancing yet)
-    if (bindedMeshMatInfo.mSubmeshResource->IsEnabledIndices())
-    {
-      glDrawElements(GL_TRIANGLES, bindedMeshMatInfo.mSubmeshResource->GetIndicesCounts(), GL_UNSIGNED_INT, nullptr);
-    }
-    else
-    {
-      glDrawArrays(GL_TRIANGLES, 0, bindedMeshMatInfo.mSubmeshResource->GetVertexCounts());
-    }
-
+    if (submesh.IsEnabledIndices()) { glDrawElements(GL_TRIANGLES, submesh.GetIndicesCounts(), GL_UNSIGNED_INT, nullptr); }
+    else                            { glDrawArrays(GL_TRIANGLES, 0, submesh.GetVertexCounts()); }
     glBindVertexArray(0);
   }
 
-  this->mShaderResource->UnuseShader();
+  //
+  this->mDirLightShaderResource->UnuseShader();
+  glViewport(previousViewport[0], previousViewport[1], previousViewport[2], previousViewport[3]);
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-TU32 FDyBasicShadow::GetDepthTextureId() const noexcept
+void FDyBasicShadow::Clear()
 {
-  return this->mShadowDepthValueBuffer;
+  if (this->mIsUsingShadowDirectionalLight == false)  { return; }
+  if (MDY_CHECK_ISNULL(this->mShadowFrameBuffer))     { return; }
+
+  glBindFramebuffer (GL_FRAMEBUFFER, this->mShadowFrameBuffer->GetFramebufferId());
+  glClear           (GL_DEPTH_BUFFER_BIT);
+  glBindFramebuffer (GL_FRAMEBUFFER, 0);
 }
 
-std::pair<TI32, TI32> FDyBasicShadow::GetShadowMapSize() const noexcept
+bool FDyBasicShadow::IsAvailableDirectionalLightShadow() const noexcept
 {
-  return std::make_pair(this->mMapWidth, this->mMapHeight);
+  return this->mIsUsingShadowDirectionalLight;
+}
+
+EDySuccess FDyBasicShadow::UpdateDirectionalLightShadowToGpu(const CDyDirectionalLight& container)
+{
+  //const auto& pv = container.pfGetPvMatrix();
+  return DY_SUCCESS;
+}
+
+EDySuccess FDyBasicShadow::UnbindDirectionalLightShadowToGpu(const CDyDirectionalLight& container)
+{
+  return DY_SUCCESS;
+}
+
+TU32 FDyBasicShadow::GetDirectionalLightDepthTextureId() const noexcept
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+  return MDY_INITIALIZE_DEFUINT;
 }
 
 void FDyBasicShadow::pCreateFramebufferComponents()
 {
-  glGenFramebuffers(1, &this->mShadowFramebufferId);
-  glBindFramebuffer(GL_FRAMEBUFFER, this->mShadowFramebufferId);
+  // @TODO TEMPORAL!
+  PDyGlFrameBufferInformation       framebufferInfo = {};
+  PDyGlAttachmentInformation        attachmentInfo  = {};
+  PDyGlAttachmentBinderInformation  binderInfo      = {};
 
-  // Unlit g-buffer
-  glGenTextures   (1, &this->mShadowDepthValueBuffer);
-  glBindTexture   (GL_TEXTURE_2D, this->mShadowDepthValueBuffer);
-  glTexImage2D    (GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 512, 512, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
-  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  framebufferInfo.mFrameBufferName            = sFrameBuffer_Shadow;
+  framebufferInfo.mIsUsingDefaultDepthBuffer  = false;
+  framebufferInfo.mIsNotUsingPixelShader      = true;
 
-  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, this->mShadowDepthValueBuffer, 0);
-  if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) { MDY_UNEXPECTED_BRANCH(); }
+  // Depth texture buffer
+  attachmentInfo.mAttachmentName = sAttachment_DirectionalBasicShadow;
+  attachmentInfo.mAttachmentSize = DDyVectorInt2{512, 512};
+  attachmentInfo.mParameterList  = {
+      PDyGlTexParameterInformation\
+      {EDyGlParameterName::TextureMinFilter, EDyGlParameterValue::Nearest},
+      {EDyGlParameterName::TextureMagFilter, EDyGlParameterValue::Nearest},
+      {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::ClampToBorder},
+      {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::ClampToBorder},
+  };
 
-  glDrawBuffer(GL_NONE);
-  glReadBuffer(GL_NONE);
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  binderInfo.mAttachmentName = attachmentInfo.mAttachmentName;
+  binderInfo.mAttachmentType = EDyGlAttachmentType::Depth;
+  framebufferInfo.mAttachmentList.push_back(binderInfo);
+
+  auto& framebufferManager  = MDyFramebuffer::GetInstance();
+  MDY_CALL_ASSERT_SUCCESS(framebufferManager.SetAttachmentInformation(attachmentInfo));
+
+  // Create framebuffer.
+  MDY_CALL_ASSERT_SUCCESS(framebufferManager.InitializeNewFrameBuffer(framebufferInfo));
+  MDY_LOG_INFO("{}::{} | Geometry buffer created.", "MDyRendering", "pCreateDeferredGeometryBuffers");
+  this->mShadowFrameBuffer = framebufferManager.GetFrameBufferPointer(MSVSTR(sFrameBuffer_Shadow));
+  MDY_ASSERT(this->mShadowFrameBuffer != nullptr, "Unexpected error.");
 }
 
 void FDyBasicShadow::pReleaseFrameBufferComponents()
 {
-  glDeleteTextures(1, &this->mShadowDepthValueBuffer);
-  glDeleteFramebuffers(1, &this->mShadowFramebufferId);
+  auto& framebufferManager  = MDyFramebuffer::GetInstance();
+  MDY_CALL_ASSERT_SUCCESS(framebufferManager.RemoveFrameBuffer(MSVSTR(sFrameBuffer_Shadow)));
+  this->mShadowFrameBuffer = nullptr;
 }
 
 } /// ::dy namespace

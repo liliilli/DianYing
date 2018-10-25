@@ -44,7 +44,7 @@ out VS_OUT {
 	vec3 fragColor;
 	vec3 normal;
 	vec2 texCoord;
-	vec3 viewPosition;
+	vec4 modelPosition;
 } vs_out;
 
 void main() {
@@ -52,7 +52,7 @@ void main() {
   vs_out.fragColor	  = dyNormal * 0.5f + 0.5f;
 	vs_out.normal		    = mat3(modelMatrix) * dyNormal;
 	vs_out.texCoord		  = dyTexCoord0;
-	vs_out.viewPosition = (viewMatrix * vec4(dyPosition, 1.0)).xyz;
+	vs_out.modelPosition = modelMatrix * vec4(dyPosition, 1.0);
 }
 
 )dy");
@@ -64,7 +64,7 @@ in VS_OUT {
 	vec3 fragColor;
 	vec3 normal;
 	vec2 texCoord;
-	vec3 viewPosition;
+	vec4 modelPosition;
 } fs_in;
 
 layout (location = 0) out vec4 gUnlit;
@@ -78,7 +78,7 @@ void main() {
 	gUnlit	  = vec4(fs_in.fragColor * texture(uTexture0, fs_in.texCoord).rgb, 1.0f);
 	gNormal	  = vec4(normalize(fs_in.normal) * 0.5f + 0.5f, 1.0f);
 	gSpecular = vec4(1, 0, 1, 1);
-	gPosition = vec4(fs_in.viewPosition, -1.0f);
+	gPosition = fs_in.modelPosition;
 }
 )dy");
 

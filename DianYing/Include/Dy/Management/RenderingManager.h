@@ -75,22 +75,6 @@ private:
   void pClearRenderingFramebufferInstances() noexcept;
 
   ///
-  /// @brief  Rendering function,
-  /// @param  renderer
-  /// @param  validCamera
-  /// @TODO SCRIPT THIS!
-  ///
-  void pRenderDeferredFrameBufferWith(_MIN_ const CDyModelRenderer& renderer, _MIN_ const CDyCamera& validCamera) noexcept;
-
-  ///
-  /// @brief  Rendering function,
-  /// @param
-  /// @param
-  /// @TODO SCRIPT THIS!
-  ///
-  void pRenderShadowFrameBufferWith(_MIN_ const CDyModelRenderer& renderer) noexcept;
-
-  ///
   /// @brief  Issue available directional light index. If not available, just no value.
   /// @param  Instance
   /// @return
@@ -145,11 +129,11 @@ private:
   ///
   std::unique_ptr<FDyBasicRenderer>           mBasicRenderer        = MDY_INITIALIZE_NULL;
 
-  bool                                        mTempIsEnabledSsao    = true;
+  bool                                        mIsEnabledSsaoRendering    = true;
   std::unique_ptr<FDyPostEffectSsao>          mTempSsaoObject       = nullptr;
 
-  bool                                        mTempIsEnabledShadow  = true;
-  std::unique_ptr<FDyBasicShadow>             mTempShadowObject     = nullptr;
+  bool                                        mIsEnabledShadowRendering  = true;
+  std::unique_ptr<FDyBasicShadow>             mShadowRenderer     = nullptr;
 
 #if defined(MDY_FLAG_IN_EDITOR)
   std::unique_ptr<FDyGrid>                    mGridEffect           = nullptr;

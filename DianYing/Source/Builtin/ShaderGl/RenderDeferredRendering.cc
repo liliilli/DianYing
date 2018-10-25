@@ -32,24 +32,33 @@ layout (location = 0) in vec3 dyPosition;
 layout (location = 1) in vec2 dyTexCoord0;
 
 out gl_PerVertex { vec4 gl_Position; };
-out VS_OUT { vec2 texCoord; } vs_out;
+out VS_OUT {
+  vec2 texCoord;
+} vs_out;
 
 void main() {
-	vs_out.texCoord		= dyTexCoord0;
-    gl_Position			= vec4(dyPosition, 1.0);
+	vs_out.texCoord	= dyTexCoord0;
+  gl_Position			= vec4(dyPosition, 1.0);
 }
 )dy");
 
 MDY_SET_IMMUTABLE_STRING(sFragmentShaderCode, R"dy(
 #version 430
 
-in VS_OUT { vec2 texCoord; } fs_in;
+in VS_OUT {
+  vec2 texCoord;
+} fs_in;
 layout (location = 0) out vec4 outColor;
 
 uniform sampler2D uUnlit;
 uniform sampler2D uNormal;
 uniform sampler2D uSpecular;     // View vector
-uniform sampler2D uViewPosition;
+uniform sampler2D uModelPosition;
+uniform sampler2D uShadow;
+
+uniform mat4 uShadowPv;
+
+float sBias = 0.02f;
 
 // binding = 0 is view, project matrix
 // binding = 1 is DirectionalLightBlock uniform block.
@@ -62,9 +71,6 @@ layout(std140, binding = 1) uniform DirectionalLightBlock
   float mIntensity; // Intensity
 } uLightDir[5];
 
-//vec3 dirLight		= normalize(vec3(-1, 1, 0));
-//vec3 ambientColor	= vec3(1);
-
 void main()
 {
   vec3 resultColor    = vec3(0);
@@ -73,6 +79,10 @@ void main()
 
   vec4 normalValue	  = (texture(uNormal, fs_in.texCoord) - 0.5f) * 2.0f;
   vec4 specularValue  = (texture(uSpecular, fs_in.texCoord) - 0.5f) * 2.0f;
+  vec4 modelPos       = uShadowPv * texture(uModelPosition, fs_in.texCoord);
+  modelPos            = modelPos / modelPos.w;
+  modelPos            = modelPos * 0.5f + 0.5f;
+  float closestDepth  = texture(uShadow, modelPos.xy).r;
 
   for (int i = 0; i < uLightDir.length; ++i)
   { // Integrity test
@@ -92,7 +102,10 @@ void main()
     float specularFactor  = d_slvd_n * uLightDir[i].mIntensity;
     vec3  specularColor   = specularFactor * uLightDir[i].mSpecular.rgb;
 
-    resultColor += (ambientColor + diffuseColor + specularColor) * unlitValue.rgb;
+    float shadingOffset   = 1.f;
+    if (closestDepth < modelPos.z) { shadingOffset = 0.5f; }
+
+    resultColor += (ambientColor + diffuseColor + specularColor) * unlitValue.rgb * shadingOffset;
   }
 
   outColor = vec4(resultColor.rgb, 1.0f);

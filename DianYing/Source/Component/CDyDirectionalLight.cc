@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Component/CDyDirectionalLight.h>
 #include <Dy/Management/RenderingManager.h>
+#include <Dy/Management/SettingManager.h>
 
 namespace dy
 {
@@ -33,6 +34,21 @@ EDySuccess CDyDirectionalLight::Initialize(const DDyDirectionalLightMetaInformat
   this->mData.mSpecular   = metaInfo.mSpecular;
   this->mData.mAmbient    = metaInfo.mAmbient;
 
+  this->mShadowType             = metaInfo.mShadowType;
+  this->mShadowCullingLayerList = metaInfo.mShadowCullingMaskLayer;
+  this->mDataShadow.mBias       = metaInfo.mShadowBias;
+  this->mDataShadow.mStrength   = metaInfo.mShadowStrength;
+
+  if (metaInfo.mIsUsingGlobalShadowResolution == false)
+  { // Shadow resolution
+    this->mShadowResolution = metaInfo.mShadowResolution;
+  }
+  else
+  {
+    auto& settingManager = MDySetting::GetInstance();
+    this->mShadowResolution = settingManager.GetGlobalDefaultShadowMapResolution();
+  }
+
   // Set first time flag to false to use second time flag logics.
   if (metaInfo.mInitiallyActivated) { this->Activate(); }
   return DY_SUCCESS;
@@ -40,7 +56,8 @@ EDySuccess CDyDirectionalLight::Initialize(const DDyDirectionalLightMetaInformat
 
 void CDyDirectionalLight::Release()
 {
-  MDY_NOT_IMPLEMENTED_ASSERT();
+  MDY_NOUSE_RTVAL_EXPR(pTryDeactivateDirectionalLight());
+  MDY_NOUSE_RTVAL_EXPR(pTryDeactivateCastingShadow());
 }
 
 void CDyDirectionalLight::Update(float dt)
@@ -152,9 +169,14 @@ EDySuccess CDyDirectionalLight::pTryActivateCastingShadow()
   if (this->mIsBindedToRenderingManagerAsShadow == true)    { return DY_FAILURE; }
   if (this->mIsCastingShadow == false)                      { return DY_FAILURE; }
   if (this->mActivateFlag.IsOutputValueChanged() == false)  { return DY_FAILURE; }
-  MDY_NOT_IMPLEMENTED_ASSERT();
   this->mIsBindedToRenderingManagerAsShadow = true;
 
+  // Try bind to shadow system.
+  auto& renderingManager = MDyRendering::GetInstance();
+  if (renderingManager.pfIsAvailableDirectionalLightShadow(*this) == false) { return DY_FAILURE; }
+
+  // Update values
+  MDY_CALL_ASSERT_SUCCESS(renderingManager.pfUpdateDirectionalLightShadowToGpu(*this));
   return DY_SUCCESS;
 }
 
@@ -178,9 +200,13 @@ EDySuccess CDyDirectionalLight::pTryDeactivateCastingShadow()
   if (this->mIsBindedToRenderingManagerAsShadow == false)   { return DY_FAILURE; }
   if (this->mIsCastingShadow == true)                       { return DY_FAILURE; }
   if (this->mActivateFlag.IsOutputValueChanged() == false)  { return DY_FAILURE; }
-  MDY_NOT_IMPLEMENTED_ASSERT();
   this->mIsBindedToRenderingManagerAsShadow = false;
 
+  // Unbind from shadow system.
+  auto& renderingManager = MDyRendering::GetInstance();
+  if (renderingManager.pfIsAvailableDirectionalLightShadow(*this) == true) { return DY_FAILURE; }
+
+  MDY_CALL_ASSERT_SUCCESS(renderingManager.pfUnbindDirectionalLightShadowToGpu(*this));
   return DY_SUCCESS;
 }
 

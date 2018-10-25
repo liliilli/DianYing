@@ -118,6 +118,7 @@
     <ClCompile Include="Source\Core\Rendering\BasicRenderer.cc" />
     <ClCompile Include="Source\Management\Internal\FramebufferManager.cc" />
     <ClCompile Include="Source\Management\Type\AttachmentInformation.cc" />
+    <ClCompile Include="Source\Management\Internal\UniformBufferObjectManager.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -320,6 +321,9 @@
     <ClInclude Include="Include\Dy\Management\Type\FramebufferInformation.h" />
     <ClInclude Include="Include\Dy\Management\Type\AttachmentInformation.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Helper\FrameAttachmentString.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\UniformBufferObjectManager.h" />
+    <ClInclude Include="Include\Dy\Management\Type\UBOInformation.h" />
+    <ClInclude Include="Include\Dy\Helper\ContainerHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

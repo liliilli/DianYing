@@ -250,6 +250,7 @@
     <ClCompile Include="Source\Management\Editor\GuiWindowFactory.cc" />
     <ClCompile Include="Source\Management\Helper\PhysxSimulationCallback.cc" />
     <ClCompile Include="Source\Management\Internal\FramebufferManager.cc" />
+    <ClCompile Include="Source\Management\Internal\UniformBufferObjectManager.cc" />
     <ClCompile Include="Source\Management\MetaInfoManager.cc" />
     <ClCompile Include="Source\Management\FontManager.cc" />
     <ClCompile Include="Source\Management\HeapResourceManager.cc" />
@@ -378,6 +379,7 @@
     <ClInclude Include="Include\Dy\Element\LevelScriptor.h" />
     <ClInclude Include="Include\Dy\Helper\Assertion.h" />
     <ClInclude Include="Include\Dy\Helper\Constant\StringSettingFile.h" />
+    <ClInclude Include="Include\Dy\Helper\ContainerHelper.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\Contracts.h" />
     <ClInclude Include="Include\Dy\Helper\Dbg\CheckUsage.h" />
     <ClInclude Include="Include\Dy\Helper\GlobalType.h" />
@@ -396,6 +398,7 @@
     <ClInclude Include="Include\Dy\Management\Editor\GuiWindowFactory.h" />
     <ClInclude Include="Include\Dy\Management\Helper\PhysxSimulationCallback.h" />
     <ClInclude Include="Include\Dy\Management\Internal\FramebufferManager.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\UniformBufferObjectManager.h" />
     <ClInclude Include="Include\Dy\Management\MetaInfoManager.h" />
     <ClInclude Include="Include\Dy\Management\FontManager.h" />
     <ClInclude Include="Include\Dy\Management\Helper\GuiLogStreamSink.h" />
@@ -412,6 +415,7 @@
     <ClInclude Include="Include\Dy\Management\Type\AttachmentInformation.h" />
     <ClInclude Include="Include\Dy\Management\Type\FramebufferInformation.h" />
     <ClInclude Include="Include\Dy\Management\Type\KeyBindingInformation.h" />
+    <ClInclude Include="Include\Dy\Management\Type\UBOInformation.h" />
     <ClInclude Include="Include\Dy\Management\WindowManager.h" />
     <ClInclude Include="Include\Dy\Management\WorldManager.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\ShaderResource.h" />

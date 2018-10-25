@@ -104,8 +104,8 @@ FDyBasicRenderer::FDyBasicRenderer()
   framebufferInfo.mAttachmentList.push_back(binderInfo);
   MDY_CALL_ASSERT_SUCCESS(framebufferManager.SetAttachmentInformation(attachmentInfo));
 
-  // View position texture buffer
-  attachmentInfo.mAttachmentName = sAttachment_ViewPosition;
+  // Model position texture buffer
+  attachmentInfo.mAttachmentName = sAttachment_ModelPosition;
   attachmentInfo.mParameterList  = {
     PDyGlTexParameterInformation\
     {EDyGlParameterName::TextureMinFilter, EDyGlParameterValue::Nearest},
@@ -138,22 +138,21 @@ FDyBasicRenderer::~FDyBasicRenderer()
 void FDyBasicRenderer::RenderScreen(_MIN_ const std::vector<NotNull<CDyModelRenderer*>>& rendererList)
 { // Integrity test
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mGivenFrameBufferPointer), "Unexpected error.");
-  auto& worldManager      = MDyWorld::GetInstance();
-  const auto cameraCount  = worldManager.GetFocusedCameraCount();
 
-  // (1) Deferred rendering for opaque objects + shadowing
+  // Deferred rendering for opaque objects
   glBindFramebuffer(GL_FRAMEBUFFER, this->mGivenFrameBufferPointer->GetFramebufferId());
 
+  auto& worldManager     = MDyWorld::GetInstance();
+  const auto cameraCount = worldManager.GetFocusedCameraCount();
   for (TI32 cameraId = 0; cameraId < cameraCount; ++cameraId)
   { // Get valid CDyCamera instance pointer address.
     const auto opCamera = worldManager.GetFocusedCameraValidReference(cameraId);
     if (opCamera.has_value() == false) { continue; }
 
     // Set viewport values to camera's properties.
-    const auto& validCameraRawPtr     = *opCamera.value();
-    const auto pixelizedViewportRect  = validCameraRawPtr.GetPixelizedViewportRectangle();
-    glViewport(pixelizedViewportRect[0], pixelizedViewportRect[1],
-               pixelizedViewportRect[2], pixelizedViewportRect[3]);
+    const auto& validCameraRawPtr = *opCamera.value();
+    const auto viewportRect       = validCameraRawPtr.GetPixelizedViewportRectangle();
+    glViewport(viewportRect[0], viewportRect[1], viewportRect[2], viewportRect[3]);
 
     for (const auto& drawInstance : rendererList)
     { // General deferred rendering
