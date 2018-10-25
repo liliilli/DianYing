@@ -23,6 +23,7 @@
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/TimeManager.h>
 #include <Dy/Helper/JsonHelper.h>
+#include <Dy/Helper/Constant/StringSettingFile.h>
 
 namespace
 {
@@ -30,8 +31,6 @@ namespace
 //!
 //! Local translation unit varaibles
 //!
-
-MDY_SET_IMMUTABLE_STRING(sSettingPathName, "./TestSetting.DDat");
 
 MDY_SET_IMMUTABLE_STRING(sCategoryDescription,  "Description");
 MDY_SET_IMMUTABLE_STRING(sCategoryGameplay,     "Gameplay");
@@ -49,6 +48,9 @@ MDY_SET_IMMUTABLE_STRING(sSupportContact,       "SupportContact");
 MDY_SET_IMMUTABLE_STRING(sInitialScene,         "InitialScene");
 MDY_SET_IMMUTABLE_STRING(sInitWidth,            "InitWidth");
 MDY_SET_IMMUTABLE_STRING(sInitHeight,           "InitHeight");
+
+MDY_SET_IMMUTABLE_STRING(sGamePlay_Shadow,                      "Shadow");
+MDY_SET_IMMUTABLE_STRING(sGamePlay_Shadow_GlobalDefaultMapSize, "GlobalDefaultMapSize");
 
 //!
 //! Global function
@@ -159,9 +161,15 @@ void MDySetting::SetLogFilePath(const std::string& path) noexcept
   }
 }
 
+void MDySetting::SetGlobalDefaultShadowMapResolution(_MIN_ const DDyVector2& size) noexcept
+{
+  if (size.X <= 0 || size.Y <= 0) { return; }
+  this->mShadowGlobalDefaultMap = size;
+}
+
 void MDySetting::pArgsPushback(const char* argsString)
 {
-  PHITOS_ASSERT(!this->mIsInitialized, "Setting manager must not be initiailized before putting arguments");
+  MDY_ASSERT(!this->mIsInitialized, "Setting manager must not be initiailized before putting arguments");
   this->mApplicationArgs.emplace_back(argsString);
 }
 
@@ -201,7 +209,8 @@ EDySuccess MDySetting::pfInitialize()
     {
       return DY_FAILURE;
     }
-    else {
+    else
+    {
       manager.mRenderingType = type;
     }
 
@@ -226,7 +235,7 @@ EDySuccess MDySetting::pfInitialize()
     return DY_FAILURE;
   }
 
-  if (const auto opSettingAtlas = DyGetJsonAtlas(sSettingPathName.data());
+  if (const auto opSettingAtlas = DyGetJsonAtlas(MSVSTR(gSettingPathName));
       !opSettingAtlas.has_value())
   {
     return DY_FAILURE;
@@ -254,6 +263,11 @@ EDySuccess MDySetting::pfInitialize()
       this->mInitialSceneName = gameplay.at(sInitialScene.data()) .get<std::string>();
       this->mWindowSizeWidth  = gameplay.at(sInitWidth.data())    .get<TI32>();
       this->mWindowSizeHeight = gameplay.at(sInitHeight.data())   .get<TI32>();
+      // Shadow global default map size.
+      this->mShadowGlobalDefaultMap = DyGetDDyVector2FromJson(
+          gameplay.at(MSVSTR(sGamePlay_Shadow))
+                  .at(MSVSTR(sGamePlay_Shadow_GlobalDefaultMapSize))
+      );
     }
 
     { // Input[Gameplay]

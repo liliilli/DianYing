@@ -88,10 +88,10 @@ public:
 
 private:
   std::string mImagePath      = "";
-  int32_t     mImageChannel   = MDY_NOT_INITIALIZED_M1;
-  int32_t     mWidth          = MDY_NOT_INITIALIZED_M1;
-  int32_t     mHeight         = MDY_NOT_INITIALIZED_M1;
-  int32_t     mDesiredChannel = MDY_NOT_INITIALIZED_M1;
+  int32_t     mImageChannel   = MDY_INITIALIZE_DEFINT;
+  int32_t     mWidth          = MDY_INITIALIZE_DEFINT;
+  int32_t     mHeight         = MDY_INITIALIZE_DEFINT;
+  int32_t     mDesiredChannel = MDY_INITIALIZE_DEFINT;
   EDyImageColorFormatStyle mImageFormat = EDyImageColorFormatStyle::NoneError;
   unsigned char* mBufferStartPoint      = nullptr;
   bool mIsBufferCreatedProperly         = false;

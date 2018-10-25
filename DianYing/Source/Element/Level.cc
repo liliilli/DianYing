@@ -15,7 +15,6 @@
 /// Header file
 #include <Dy/Element/Level.h>
 #include <Dy/Helper/HashCompileCrc32.h>
-#include <Dy/Element/Pawn.h>
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Management/MetaInfoManager.h>
 
@@ -35,73 +34,58 @@ namespace
 namespace dy
 {
 
-void FDyLevel::Initialize(const PDyLevelConstructDescriptor& desc)
+void FDyLevel::Initialize(_MIN_ const PDyLevelConstructDescriptor& desc)
 {
+  // Lambda functions
+
   ///
   /// @brief  Create pawn instance and set fundamental properties.
   /// @param  objectInformation Information to create FDyPawn instance.
   ///
-  static auto pCreatePawn = [&](const DDyObjectInformation& objectInformation)
+  static auto pCreateActorInstance = [&](_MIN_ const DDyObjectInformation& objectInformation)
   {
-    auto instancePtr = std::make_unique<FDyPawn>();
+    // Make FDyActor instance.
+    auto instancePtr = std::make_unique<FDyActor>();
     MDY_CALL_ASSERT_SUCCESS(instancePtr->Initialize(objectInformation));
 
     // @TODO IMPLEMENT PARENT TRANSFORMATION RELOCATION MECHANISM
-    if (objectInformation.mParentMetaIndex != -1)
+    if (objectInformation.mParentHashValue.empty() == false)
     {
 #ifdef false
-      PHITOS_NOT_IMPLEMENTED_ASSERT();
+      MDY_NOT_IMPLEMENTED_ASSERT();
       instancePtr->SetParent();
 #endif
     }
-    else
-    {
-      // Insert created ptr into actor map of this scene. (root)
-      auto[it, result]    = this->mActorMap.try_emplace(objectInformation.mName, std::move(instancePtr));
 
-      // Insert inserted FDyPawn raw pointer instance to script update list.
-      FDyPawn* pawnRawPtr = static_cast<FDyPawn*>(it->second.get());
-      const auto id       = MDyWorld::GetInstance().pfEnrollActivePawn(DyMakeNotNull(pawnRawPtr));
-      pawnRawPtr->pfSetListIndex(id);
+    // Update transform to reflect transform information.
+    MDY_NOTUSED const auto& _ = instancePtr->GetTransform()->GetTransform();
 
-      if (!result) { PHITOS_UNEXPECTED_BRANCH(); }
-    }
+    // Check activation flags and execute sub-routines of each components.
+    instancePtr->pUpdateActivateFlagFromParent();
+    if (objectInformation.mInitialActivated) { instancePtr->Activate(); }
+
+    // @TODO TEMPORARY.
+    auto [it, result] = this->mActorMap.try_emplace(instancePtr->GetActorName(), std::move(instancePtr));
+    MDY_ASSERT(result == true, "Unexpected error occured in inserting FDyActor to object map.");
   };
 
-  ///
-  /// @brief  Create FDyDirectionalLight instance and set fundamental properties.
-  /// @param  objectInformation Information to create FDyDirectionalLight instance.
-  ///
-  static auto pCreateDirectionalLight = [&](const DDyObjectInformation& objectInformation)
-  {
-    MDY_LOG_CRITICAL("EDyFDyObjectType::FDyDirectionalLight: NOT IMPLEMENTED");
-  };
+  // FunctionBody ∨
 
-  // Body
-  this->mLevelName = desc.mLevelName;
+  this->mLevelName            = desc.mLevelName;
+  // @TODO REMOVE THIS AS SOON AS IMPLEMENT HASH SAVE
   this->mLevelHashIdentifier  = hash::DyToCrc32Hash(this->mLevelName.c_str());
   this->mLevelBackgroundColor = desc.mLevelBackgroundColor;
 
-  // Create objects
+  // Create object, FDyActor
   for (const auto& objectInformation : desc.mLevelObjectInformations)
   {
-    const auto type = objectInformation.mType;
+    const auto type = objectInformation.mObjectType;
     switch (type)
     {
-    case EDyFDyObjectType::FDyPawn:                 pCreatePawn(objectInformation); break;
-    case EDyFDyObjectType::FDyDirectionalLight:     pCreateDirectionalLight(objectInformation); break;
-    case EDyFDyObjectType::FDyPostprocessBlock:
-    case EDyFDyObjectType::FDyPointLight:
-    case EDyFDyObjectType::FDySpotLight:
-    case EDyFDyObjectType::FDyObject:
-    case EDyFDyObjectType::FDySceneScriptableObject:
-    case EDyFDyObjectType::FDyCamera:
-    case EDyFDyObjectType::FDySound:
-    case EDyFDyObjectType::FDySoundListener:
-    case EDyFDyObjectType::Error:
-      MDY_LOG_CRITICAL("NOT IMPLEMENTED");
-      PHITOS_NOT_IMPLEMENTED_ASSERT();
-      break;
+    default: MDY_UNEXPECTED_BRANCH();    break;
+    case EDyMetaObjectType::Actor:          pCreateActorInstance(objectInformation); break;
+    case EDyMetaObjectType::SceneScriptor:  MDY_NOT_IMPLEMENTED_ASSERT(); break;
+    case EDyMetaObjectType::Object:         MDY_NOT_IMPLEMENTED_ASSERT(); break;
     }
   }
 
@@ -139,8 +123,8 @@ void FDyLevel::Update(float dt)
 
 std::string FDyLevel::ToString()
 {
-PHITOS_NOT_IMPLEMENTED_ASSERT();
-return MDY_NOT_INITILAIZED_STR;
+MDY_NOT_IMPLEMENTED_ASSERT();
+return MDY_INITILAIZE_EMPTYSTR;
 }
 
 } /// ::dy namespace

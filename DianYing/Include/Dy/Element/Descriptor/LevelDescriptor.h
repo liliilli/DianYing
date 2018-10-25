@@ -14,81 +14,16 @@
 ///
 
 #include <any>
-#include <Dy/Helper/Type/Color.h>
+#include <vector>
+#include <utility>
+
 #include <nlohmann/json_fwd.hpp>
+#include <Dy/Component/Descriptor/ComponentMetaDescriptor.h>
+#include <Dy/Element/Descriptor/GlobalEnums.h>
+#include <Dy/Helper/Type/Color.h>
 
 namespace dy
 {
-
-///
-/// @enum EDyFDyObjectType
-/// @brief Object type
-///
-enum class EDyFDyObjectType
-{
-  FDyPawn,
-  FDyPostprocessBlock,
-  FDyDirectionalLight,
-  FDyPointLight,
-  FDySpotLight,
-  FDyObject,
-  FDySceneScriptableObject,
-  FDyCamera,
-  FDySound,
-  FDySoundListener,
-  Error
-};
-
-///
-/// @enum EDyCDyComponentType
-/// @brief Component type to attach FDyObject as component
-///
-enum class EDyCDyComponentType
-{
-  Script,
-  DirectionalLight,
-  Etc,
-  NoneError
-};
-
-///
-/// @struct IDyDependencyInformation
-/// @brief Dependency information
-///
-struct IDyDependencyInformation
-{
-  /// This mType must be EDyCDyComponentType::Script.
-  EDyCDyComponentType mType       = EDyCDyComponentType::NoneError;
-
-  /// hashTo must be same to hash string value of DDyObjectInformation instance to be binded.
-  std::string         mBindHashTo = MDY_NOT_INITILAIZED_STR;
-};
-
-///
-/// @struct DDyFdyPawnDependencyInformation
-/// @brief Dependency information to DDyObjectInformation::mDependencyInfo when mType is FDyPawn.
-///
-struct DDyFdyPawnDependencyInformation final : public IDyDependencyInformation
-{
-  /// Lua script path. Must be valid and can be loaded anytime in runtime.
-  std::string         mScriptPath = MDY_NOT_INITILAIZED_STR;
-};
-
-///
-/// @struct DDyFDyDirLightDependencyInformation
-/// @brief Dependency information to DDyObjectInformation::mDependencyInfo when mType is FDyDirectionalLight.
-///
-struct DDyFDyDirLightDependencyInformation final : public IDyDependencyInformation
-{
-  /// Normalized light direction vector.
-  DDyVector3          mDirection = {};
-
-  /// Tinting diffuse color
-  DDyColor            mTintColor = {};
-
-  /// Intensity of light must be set up to 0~.
-  TF32                mIntensity = MDY_NOT_INITIALIZED_M1;
-};
 
 ///
 /// @struct DDyObjectInformation
@@ -96,46 +31,29 @@ struct DDyFDyDirLightDependencyInformation final : public IDyDependencyInformati
 ///
 struct DDyObjectInformation final
 {
-  ///
-  /// @struct DDyObjectInformation::DDyTransform
-  /// @brief World transform information.
-  ///
-  struct DDyTransform final
-  {
-    /// World position
-    DDyVector3        mPosition = {};
-
-    /// Rotation position
-    DDyVector3        mRotation = {};
-
-    /// Scale position
-    DDyVector3        mScale = {};
-  };
-
   /// Meta index for classification of objects. Might not be used in game runtime.
-  TI32              mMetaIndex        = MDY_NOT_INITIALIZED_M1;
-
+  TI32              mMetaIndex        = MDY_INITIALIZE_DEFINT;
   /// Meta object's name.
-  std::string       mName             = MDY_NOT_INITILAIZED_STR;
-
-  /// Meta object's hash value to verify it from other information instance.
-  std::string       mHashValue        = MDY_NOT_INITILAIZED_STR;
-
+  std::string       mObjectName       = MDY_INITILAIZE_EMPTYSTR;
   /// The type (light, pawn, pp block etc...) of object
-  EDyFDyObjectType  mType             = EDyFDyObjectType::Error;
-
-  /// Parent name of this object.
-  /// @TODO mParentName must be changed to other way to avoid duplicated object metaname. (Index + Name) CRC32 hashing value might be good.
-  /// @TODO OR JUST USING METAINDEX...?
-  TI32              mParentMetaIndex  = MDY_NOT_INITIALIZED_M1;
-
-  /// Common transform information.
-  DDyTransform      mTransform        = {};
+  EDyMetaObjectType mObjectType       = EDyMetaObjectType::NoneError;
+  /// Meta object's hash value to verify it from other information instance.
+  std::string       mHashValue        = MDY_INITILAIZE_EMPTYSTR;
+  /// Parent meta hash name of this object.
+  std::string       mParentHashValue  = MDY_INITILAIZE_EMPTYSTR;
+  /// Hash value for verifying component list in meta list.
+  std::string       mToComponentHash  = MDY_INITILAIZE_EMPTYSTR;
+  /// Prefab specifier name.
+  std::string       mPrefabSpecifierName = MDY_INITILAIZE_EMPTYSTR;
+  /// FDyObject is initially activated or not.
+  bool              mInitialActivated = false;
+  /// FDyObject is using prefab.
+  bool              mIsUsingPrefab    = false;
 
   /// Dependency information which are vary along with mType.
-  /// If mType is "EDyFDyObjectType::FdyPawn", must be converted to "DDyFdyPawnDependencyInformation".
+  /// If mType is "EDyFDyObjectType::FdyPawn", must be converted to "PDyScriptComponentMetaInformation".
   /// If mType is ... not implemented yet!
-  std::any          mDependencyInfo;
+  std::vector<std::pair<EDyComponentMetaType, std::any>> mMetaComponentInfo;
 };
 
 ///
@@ -144,16 +62,15 @@ struct DDyObjectInformation final
 ///
 struct PDyLevelConstructDescriptor final
 {
-
-  // Initial level name
-  std::string                       mLevelName                  = MDY_NOT_INITILAIZED_STR;
-  // Initial background of scene to create
+  /// Initial level name
+  std::string                       mLevelName                  = MDY_INITILAIZE_EMPTYSTR;
+  /// Initial background of scene to create
   DDyColor                          mLevelBackgroundColor       = DDyColor::White;
-  // Object information
+  /// Object information
   std::vector<DDyObjectInformation> mLevelObjectInformations    = {};
 
   /// Make descriptor
-  static PDyLevelConstructDescriptor GetDescriptor(const nlohmann::json& jsonAtlas);
+  static MDY_NODISCARD PDyLevelConstructDescriptor CreateDescriptor(const nlohmann::json& jsonAtlas);
 };
 
 } /// ::dy namespace

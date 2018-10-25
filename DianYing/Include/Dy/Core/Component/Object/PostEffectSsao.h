@@ -62,33 +62,33 @@ private:
   //! Mesh
   //!
 
-  TU32                mTriangleVao            = MDY_NOT_INITIALIZED_0;
-  TU32                mTriangleVbo            = MDY_NOT_INITIALIZED_0;
+  TU32                mTriangleVao            = MDY_INITIALIZE_DEFUINT;
+  TU32                mTriangleVbo            = MDY_INITIALIZE_DEFUINT;
 
   //!
   //! General framebuffer
   //!
 
-  TU32                mSsaoFrameBufferId      = MDY_NOT_INITIALIZED_0;
-  TU32                mSsaoColorBuffer        = MDY_NOT_INITIALIZED_0;
+  TU32                mSsaoFrameBufferId      = MDY_INITIALIZE_DEFUINT;
+  TU32                mSsaoColorBuffer        = MDY_INITIALIZE_DEFUINT;
 
   std::vector<DDyVector3> mSsaoKernel         = {};
   std::vector<DDyVector3> mSsaoNoise          = {};
-  TU32                mSsaoNoiseTextureId     = MDY_NOT_INITIALIZED_0;
+  TU32                mSsaoNoiseTextureId     = MDY_INITIALIZE_DEFUINT;
 
-  TI32                mUniformSamples         = MDY_NOT_INITIALIZED_M1;
-  TI32                mUniformKernelSize      = MDY_NOT_INITIALIZED_M1;
-  TI32                mUniformRadius          = MDY_NOT_INITIALIZED_M1;
-  TI32                mUniformBias            = MDY_NOT_INITIALIZED_M1;
-  TI32                mUniformScreenSize      = MDY_NOT_INITIALIZED_M1;
-  TI32                mUniformProjection      = MDY_NOT_INITIALIZED_M1;
+  TI32                mUniformSamples         = MDY_INITIALIZE_DEFINT;
+  TI32                mUniformKernelSize      = MDY_INITIALIZE_DEFINT;
+  TI32                mUniformRadius          = MDY_INITIALIZE_DEFINT;
+  TI32                mUniformBias            = MDY_INITIALIZE_DEFINT;
+  TI32                mUniformScreenSize      = MDY_INITIALIZE_DEFINT;
+  TI32                mUniformProjection      = MDY_INITIALIZE_DEFINT;
 
   //!
   //! Blurring framebuffer
   //!
 
-  TU32                mSsaoBlurFrameBufferId  = MDY_NOT_INITIALIZED_0;
-  TU32                mSsaoBlurColorBuffer    = MDY_NOT_INITIALIZED_0;
+  TU32                mSsaoBlurFrameBufferId  = MDY_INITIALIZE_DEFUINT;
+  TU32                mSsaoBlurColorBuffer    = MDY_INITIALIZE_DEFUINT;
 
   CDyMeshRenderer     mRenderer;
   CDyShaderResource*  mSsaoShaderPtr          = nullptr;

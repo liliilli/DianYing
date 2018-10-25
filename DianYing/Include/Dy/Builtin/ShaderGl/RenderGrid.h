@@ -26,7 +26,9 @@ class FDyBuiltinShaderGLRenderGrid final
 {
 public:
   FDyBuiltinShaderGLRenderGrid();
-  inline static constexpr std::string_view sName = "dyBtShaderGlRenderGrid";
+
+  /// Constant name for creating DDyShaderInformation
+  inline static MDY_SET_IMMUTABLE_STRING(sName, "dyBtShaderGlRenderGrid");
 };
 
 } /// ::dy::builtin namespace

@@ -90,11 +90,11 @@ void CDyModelResource::pReadNodeHierarchy(float animationElapsedTime, DDyModelIn
   {
     const auto scalingKeySize = static_cast<TI32>(nodeAnimChannel->mScalingKeys.size());
 
-    PHITOS_ASSERT(scalingKeySize > 0, "nodeAnimChannel must have at least one scaling keys");
+    MDY_ASSERT(scalingKeySize > 0, "nodeAnimChannel must have at least one scaling keys");
     if (scalingKeySize == 1) { return nodeAnimChannel->mScalingKeys[0]; }
 
     // Get key frame iterating and verifying running time.
-    TI32 scalingIndex = MDY_NOT_INITIALIZED_0;
+    TI32 scalingIndex = MDY_INITIALIZE_DEFUINT;
     for (TI32 i = 0; i < scalingKeySize - 1; i++)
     {
       if (animElapsedTime < nodeAnimChannel->mScalingTime[i + 1])
@@ -105,12 +105,12 @@ void CDyModelResource::pReadNodeHierarchy(float animationElapsedTime, DDyModelIn
     }
 
     // Calculate factor for scale value linear interpolation between key and next key.
-    PHITOS_ASSERT(scalingIndex + 1 < scalingKeySize, "scalingIndex out of bound.");
+    MDY_ASSERT(scalingIndex + 1 < scalingKeySize, "scalingIndex out of bound.");
     const TU32 nextScalingIndex     = scalingIndex + 1;
     const auto deltaTimeFromFrames  = nodeAnimChannel->mScalingTime[nextScalingIndex] - nodeAnimChannel->mScalingTime[scalingIndex];
 
     const auto animationFactor      = (animElapsedTime - nodeAnimChannel->mScalingTime[scalingIndex]) / deltaTimeFromFrames;
-    PHITOS_ASSERT(animationFactor >= 0.0f && animationFactor <= 1.0f, "Animation factor must be from 0.0f to 1.0f");
+    MDY_ASSERT(animationFactor >= 0.0f && animationFactor <= 1.0f, "Animation factor must be from 0.0f to 1.0f");
 
     // Get interpolated scaling vector (x, y, z)
     const aiVector3D& startScaling  = nodeAnimChannel->mScalingKeys[scalingIndex];
@@ -127,11 +127,11 @@ void CDyModelResource::pReadNodeHierarchy(float animationElapsedTime, DDyModelIn
     const auto rotationKeySize = static_cast<TI32>(nodeAnimChannel->mRotationKeys.size());
 
     // We need at least two values to interpolate...
-    PHITOS_ASSERT(rotationKeySize > 0, "nodeAnimChannel must have at least one rotation keys");
+    MDY_ASSERT(rotationKeySize > 0, "nodeAnimChannel must have at least one rotation keys");
     if (rotationKeySize == 1) { return nodeAnimChannel->mRotationKeys[0]; }
 
     // Get key frame iterating and verifying running time.
-    TI32 rotationIndex = MDY_NOT_INITIALIZED_0;
+    TI32 rotationIndex = MDY_INITIALIZE_DEFUINT;
     for (TI32 i = 0; i < rotationKeySize - 1; i++)
     {
       if (animElapsedTime < nodeAnimChannel->mRotationTime[i + 1])
@@ -142,12 +142,12 @@ void CDyModelResource::pReadNodeHierarchy(float animationElapsedTime, DDyModelIn
     }
 
     // Calculate factor for rotation quaternion slerp (maybe?) between key and next key.
-    PHITOS_ASSERT(rotationIndex + 1 < rotationKeySize, "rotationIndex out of bound.");
+    MDY_ASSERT(rotationIndex + 1 < rotationKeySize, "rotationIndex out of bound.");
     const TU32 nextRotationIndex    = rotationIndex + 1;
     const auto deltaTimeFromFrames  = nodeAnimChannel->mRotationTime[nextRotationIndex] - nodeAnimChannel->mRotationTime[rotationIndex];
 
     const auto animationFactor      = (animElapsedTime - nodeAnimChannel->mRotationTime[rotationIndex]) / deltaTimeFromFrames;
-    PHITOS_ASSERT(animationFactor >= 0.0f && animationFactor <= 1.0f, "Animation factor must be from 0.0f to 1.0f");
+    MDY_ASSERT(animationFactor >= 0.0f && animationFactor <= 1.0f, "Animation factor must be from 0.0f to 1.0f");
 
     // Get interpolated rotation quaternion (v (xi + yj + zk), w)
     const auto& startQuaternion = nodeAnimChannel->mRotationKeys[rotationIndex];
@@ -165,11 +165,11 @@ void CDyModelResource::pReadNodeHierarchy(float animationElapsedTime, DDyModelIn
     const auto positionKeySize = static_cast<TI32>(nodeAnimChannel->mPositionKeys.size());
 
     // We need at least two values to interpolate...
-    PHITOS_ASSERT(positionKeySize > 0, "nodeAnimChannel must have at least one position keys");
+    MDY_ASSERT(positionKeySize > 0, "nodeAnimChannel must have at least one position keys");
     if (positionKeySize == 1) { return nodeAnimChannel->mPositionKeys[0]; }
 
     // Get key frame iterating and verifying running time.
-    TI32 positionIndex = MDY_NOT_INITIALIZED_0;
+    TI32 positionIndex = MDY_INITIALIZE_DEFUINT;
     for (TI32 i = 0; i < positionKeySize - 1; i++)
     {
       if (animElapsedTime < nodeAnimChannel->mPositionTime[i + 1])
@@ -180,12 +180,12 @@ void CDyModelResource::pReadNodeHierarchy(float animationElapsedTime, DDyModelIn
     }
 
     // Calculate factor for position value linear interpolation between key and next key.
-    PHITOS_ASSERT(positionIndex + 1 < positionKeySize, "positionIndex out of bound.");
+    MDY_ASSERT(positionIndex + 1 < positionKeySize, "positionIndex out of bound.");
     const TU32 nextPositionIndex    = positionIndex + 1;
     const auto deltaTimeFromFrames  = nodeAnimChannel->mPositionTime[nextPositionIndex] - nodeAnimChannel->mPositionTime[positionIndex];
 
     const auto animationFactor      = (animElapsedTime - nodeAnimChannel->mPositionTime[positionIndex]) / deltaTimeFromFrames;
-    PHITOS_ASSERT(animationFactor >= 0.0f && animationFactor <= 1.0f, "Animation factor must be from 0.0f to 1.0f");
+    MDY_ASSERT(animationFactor >= 0.0f && animationFactor <= 1.0f, "Animation factor must be from 0.0f to 1.0f");
 
     // Get interpolated position (x, y, z)
     const aiVector3D& Start = nodeAnimChannel->mPositionKeys[positionIndex];

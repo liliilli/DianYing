@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Phitos/Dbg/assert.h>
+#include <Dy/Helper/Assertion.h>
 
 //!
 //! Platform dependent macro
@@ -43,28 +43,88 @@
 //!
 
 ///
+/// @macro MDY_TO_STRING
+/// @macro Convert __MAString__ to const char* literal.
+///
+#define MDY_TO_STRING(__MAString__) #__MAString__
+
+///
 /// @macro MDY_TRANSIENT
 /// @brief TRANSIENT variable
 ///
 #define MDY_TRANSIENT mutable
 
 ///
-/// @macro
+/// @macro MDY_NODISCARD
+/// @brief Nodiscard specifier
 ///
-#define MDY_TO_STRING(__MAString__) #__MAString__
+#define MDY_NODISCARD [[nodiscard]]
 
 ///
-/// @macro
+/// @macro MDY_DEPRECATED
+/// @brief Depereacted speicifer.
+///
+#define MDY_DEPRECATED(__MAVersion__, __MAFunction__, __MAAlternative__) \
+  [[deprecated(MDY_TO_STRING(__MAFunction__) " is deprecated from " MDY_TO_STRING(__MAVersion__) ". Use " MDY_TO_STRING(__MAAlternative__) " instead.")]]
+
+///
+/// @macro MDY_FALLTHROUGH
+/// @brief switch/case statement fallthrough next case.
+///
+#define MDY_FALLTHROUGH [[fallthrough]]
+
+///
+/// @macro MDY_NOTUSED
+/// @brief Specified function or variable maybe unused. (to suppress warning /W4)
+///
+#define MDY_NOTUSED [[maybe_unused]]
+
+///
+/// @macro MDY_NOUSE_RTVAL_EXPR
+/// @brief Just neglect return value for calling function which return value is MDY_NODISCARD.
+///
+#define MDY_NOUSE_RTVAL_EXPR(__MAExpression__) \
+  { MDY_NOTUSED const auto _ = __MAExpression__; }
+
+///
+/// @macro MDY_CHECK_ISNULL
+/// @brief Check raw pointer is empty or not.
+///
+#define MDY_CHECK_ISNULL(__MAPointer__)     __MAPointer__ == nullptr
+
+///
+/// @macro MDY_CHECK_ISNULL
+/// @brief Check raw pointer is empty or not.
+///
+#define MDY_CHECK_ISNOTNULL(__MAPointer__)  __MAPointer__ != nullptr
+
+///
+/// @macro MDY_CHECK_ISEMPTY
+/// @brief Check smart pointer is empty.
+///
+#define MDY_CHECK_ISEMPTY(__MASmartPointer__)     __MASmartPointer__.get() == nullptr
+
+///
+/// @macro MDY_CHECK_ISNOTEMPTY
+/// @brief Check smart pointer is not empty.
+///
+#define MDY_CHECK_ISNOTEMPTY(__MASmartPointer__)  __MASmartPointer__.get() != nullptr
+
+///
+/// @macro MDY_CASE_RETURN
+/// @brief
 ///
 #define MDY_CASE_RETURN(__Code__) case __Code__: return MDY_TO_STRING(__Code__)
 
 ///
-/// @macro
+/// @macro MDY_BITMASK_FLAG_TRUE
+/// @brief
 ///
 #define MDY_BITMASK_FLAG_TRUE(__MATarget__, __MAFlags__) __MATarget__ & __MAFlags__
 
 ///
-/// @macro
+/// @macro MDY_CHECK_EXECUTE
+/// @brief
 ///
 #define MDY_CHECK_EXECUTE(__MAFlag__, __MAFunctionCall__) \
   { \
@@ -72,13 +132,14 @@
   }
 
 ///
-/// @macro
+/// @macro MDY_CALL_ASSERT_SUCCESS
+/// @brief Assert that expression must be successful or output error or message box when Windows.
 ///
 #define MDY_CALL_ASSERT_SUCCESS(__MAFunctionCall__) \
   { \
     auto result = (__MAFunctionCall__); \
     result = result; \
-    PHITOS_ASSERT(result == DY_SUCCESS, "Failed to execute expression successfully."); \
+    MDY_ASSERT(result == DY_SUCCESS, "Failed to execute expression successfully."); \
   }
 
 ///
@@ -88,22 +149,34 @@
 #define MDY_U8(__MAString__) u8##__MAString__
 
 ///
-/// @macro MDY_NOT_INITIALIZED_M1
+/// @macro MDY_INITIALIZE_DEFINT
 /// @brief Initialize arbitary variable with -1.
 ///
-#define MDY_NOT_INITIALIZED_M1 -1
+#define MDY_INITIALIZE_DEFINT -1
 
 ///
-/// @macro MDY_NOT_INITIALIZED_0
+/// @macro MDY_INITIALIZE_DEFUINT
 /// @brief Initialize arbitary variable with 0.
 ///
-#define MDY_NOT_INITIALIZED_0   0
+#define MDY_INITIALIZE_DEFUINT 0
 
 ///
 /// @macro MDY_NOT_INITIALIZED_STR
 /// @brief Initialize arbitary string variable (const char*, std::string, std::string_view) with empty but '\0'.
 ///
-#define MDY_NOT_INITILAIZED_STR ""
+#define MDY_INITILAIZE_EMPTYSTR ""
+
+///
+/// @macro MDY_INITIALIZE_NULL
+/// @brief Initialize arbitary pointer with nullptr.
+///
+#define MDY_INITIALIZE_NULL nullptr
+
+///
+/// @macro MSVSTR
+/// @brief M(MDY) read SV(std::string_view) as STR(std::string or const char*) using .data()
+///
+#define MSVSTR(__MAStringView__) __MAStringView__.data()
 
 ///
 /// @macro MDY_BIND_BEGIN_END
@@ -124,6 +197,22 @@
 ///
 #define MDY_UNQMVCAST(__MACastType__, __MAInstance__) \
   std::unqiue_ptr<__MACastType__*>(static_cast<__MACastType__*>(__MAInstance__.release()))
+
+///
+/// @macro MDY_TEST_IS_BASE_OF
+/// @brief Check __MADerivedType__ is derived from __MABaseType__.
+///
+#define MDY_TEST_IS_BASE_OF(__MABaseType__, __MADerivedType__) \
+  static_assert(std::is_base_of_v<__MABaseType__, __MADerivedType__>, \
+                MDY_TO_STRING(__MADerivedType__) " is not a derived type of " MDY_TO_STRING(__MABaseType__) ".")
+
+///
+/// @macro MDY_TEST_PARAM_PACK_COUNT
+/// @brief Check parameter pack count is same to speicified number.
+///
+#define MDY_TEST_PARAM_PACK_COUNT(__MAParamPack__, __MAGoalCount__) \
+  static_assert(sizeof...(__MAParamPack__) == __MAGoalCount__, \
+                __FILE__ " " __LINE__ " Parameter pack test failed, the number of parameter pack must be " #__MAGoalCount__ ".")
 
 //!
 //! Do not touch below section!
@@ -231,6 +320,46 @@ virtual bool IsTypeMatched(const TU32 hashVal) const noexcept override { \
 #define MDY_ABSTRACT class
 
 ///
+/// @macro MDY_GETSET
+/// @brief Helping construction of get and set boilerplate function of member variable.
+///
+#define MDY_GETSET(__MAVariable__)                                                    \
+  [[nodiscard]] const decltype(__MAVariable__)& Get##__MAVariable__() const noexcept  \
+  {                                                                                   \
+    return this->__MAVariable__;                                                      \
+  }                                                                                   \
+                                                                                      \
+  void Set##__MAVariable__(const decltype(__MAVariable__)& input##__MAVariable__)     \
+  {                                                                                   \
+    this->__MAVariable__ = input##__MAVariable__;                                     \
+  }
+
+///
+/// @macro _MIN_
+/// @brief Specify that this parameter is input only.
+///
+#define _MIN_
+
+///
+/// @macro _MOUT_
+/// @brief Specify that this parameter is output only.
+///
+#define _MOUT_
+
+///
+/// @macro _MIO_
+/// @brief Specify that this paremeter will be read from function body and altered some properties.
+/// @deprecated This macro will be deprecated.
+///
+#define _MIO_
+
+///
+/// @macro _MINOUT_
+/// @brief Specify that this parameter will be read from function body and altered some properties.
+///
+#define _MINOUT_
+
+///
 /// @macro MDY_INTERFACE_PROPERTY
 /// @brief INTERFACE variable
 /// @todo NOT WORKING! FIX THIS SOMEDAY.
@@ -256,10 +385,11 @@ public: \
 #define MDY_SINGLETON_DERIVED(__MADerivedSingletonType__) \
 private:                                                  \
     __MADerivedSingletonType__() = default;               \
-    virtual ~__MADerivedSingletonType__() = default;      \
     [[nodiscard]] EDySuccess pfInitialize();              \
     [[nodiscard]] EDySuccess pfRelease();                 \
-    friend class ISingleton<__MADerivedSingletonType__>
+    friend class ISingleton<__MADerivedSingletonType__>;  \
+public:                                                   \
+    virtual ~__MADerivedSingletonType__() = default;
 
 #if defined(MDY_FLAG_IN_EDITOR)
 ///
@@ -300,8 +430,8 @@ private:                                                  \
 #define MDY_ONLY_MOVEABLE_PROPERTIES_CUSTOM(__MAType__) \
   __MAType__(const __MAType__&)             = delete;   \
   __MAType__& operator=(const __MAType__&)  = delete;   \
-  __MAType__(__MAType__&&);                             \
-  __MAType__& operator=(__MAType__&&);                  \
+  __MAType__(__MAType__&&) noexcept;                    \
+  __MAType__& operator=(__MAType__&&) noexcept;         \
 
 #define MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(__MAType__)\
   __MAType__(const __MAType__&)             = delete;   \

@@ -22,31 +22,29 @@
 #include <Dy/Management/DataInformationManager.h>
 #include <Dy/Management/Editor/GuiSetting.h>
 
-#include <Dy/Core/Component/Resource/MaterialResource.h>
-#include <Dy/Core/Component/Resource/ModelResource.h>
-#include <Dy/Core/Component/Resource/SubmeshResource.h>
-#include <Dy/Core/Component/Resource/TextureResource.h>
 #include <Dy/Core/Component/Object/Camera.h>
+#include <Dy/Component/CDyDirectionalLight.h>
+#include <Dy/Management/Internal/FramebufferManager.h>
+#include <Dy/Management/Internal/UniformBufferObjectManager.h>
 
 namespace dy
 {
 
 EDySuccess MDyRendering::pfInitialize()
-{
-  pCreateDeferredGeometryBuffers();
-  mFinalRenderingMesh = std::make_unique<decltype(mFinalRenderingMesh)::element_type>();
+{ // Initialize framebuffer management singleton instance.
+  MDY_CALL_ASSERT_SUCCESS(MDyFramebuffer::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(MDyUniformBufferObject::Initialize());
 
-  if (this->mTempIsEnabledSsao)
+  this->mBasicRenderer      = std::make_unique<decltype(mBasicRenderer)::element_type>();
+  this->mFinalRenderingMesh = std::make_unique<decltype(mFinalRenderingMesh)::element_type>();
+  this->mShadowRenderer     = std::make_unique<decltype(this->mShadowRenderer)::element_type>();
+
+  if (this->mIsEnabledSsaoRendering)
   {
     mTempSsaoObject = std::make_unique<decltype(mTempSsaoObject)::element_type>();
   }
 
-  if (this->mTempIsEnabledShadow)
-  {
-    this->mTempShadowObject = std::make_unique<decltype(this->mTempShadowObject)::element_type>();
-  }
-
-#if defined(MDY_FLAG_IN_EDITOR)
+#if defined(MDY_FLAG_IN_EDITOR) == true
   //! Grid rendering setting.
   this->mGridEffect = std::make_unique<decltype(this->mGridEffect)::element_type>();
 #endif /// MDY_FLAG_IN_EDITOR
@@ -56,251 +54,156 @@ EDySuccess MDyRendering::pfInitialize()
 
 EDySuccess MDyRendering::pfRelease()
 {
-  mFinalRenderingMesh = nullptr;
-  pReleaseGeometryBuffers();
+  this->mFinalRenderingMesh = MDY_INITIALIZE_NULL;
+  this->mShadowRenderer     = MDY_INITIALIZE_NULL;
+  this->mTempSsaoObject     = MDY_INITIALIZE_NULL;
+  this->mBasicRenderer      = MDY_INITIALIZE_NULL;
 
+  // Initialize internal management singleton instance.
+  MDY_CALL_ASSERT_SUCCESS(MDyFramebuffer::Release());
+  MDY_CALL_ASSERT_SUCCESS(MDyUniformBufferObject::Release());
   return DY_SUCCESS;
 }
 
-void MDyRendering::PushDrawCallTask(CDyMeshRenderer& rendererInstance)
+void MDyRendering::PushDrawCallTask(_MIN_ CDyModelRenderer& rendererInstance)
 {
-  this->mDrawCallQueue.push(&rendererInstance);
+  this->mOpaqueDrawCallList.emplace_back(DyMakeNotNull(&rendererInstance));
 }
 
 void MDyRendering::RenderDrawCallQueue()
 {
-  const auto& setting = MDySetting::GetInstance();
+  if (MDyWorld::GetInstance().IsLevelPresentValid() == false) { return; }
 
-  // Reset previous frame results of each framebuffers.
-  this->pResetRenderingFramebufferInstances();
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-  // Draw
-  while (!this->mDrawCallQueue.empty())
-  {
-    CDyMeshRenderer& drawInstance = *this->mDrawCallQueue.front();
-
-    { // General deferred rendering
-      glViewport(0, 0, setting.GetWindowSizeWidth(), setting.GetWindowSizeHeight());
-      glBindFramebuffer(GL_FRAMEBUFFER, this->mDeferredFrameBufferId);
-      this->pRenderDeferredFrameBufferWith(drawInstance);
+  // (0) Clear previous frame results of each framebuffers.
+  this->pClearRenderingFramebufferInstances();
+  // (1) Draw opaque call list.
+  this->mBasicRenderer->RenderScreen(this->mOpaqueDrawCallList);
+  // (2) Shadow mapping to opaque call list.
+  if (this->mIsEnabledShadowRendering == true)
+  { // Basic shadow (directional light etc)
+    for (const auto& drawInstance : this->mOpaqueDrawCallList)
+    {
+      this->mShadowRenderer->RenderScreen(*drawInstance);
     }
-
-#ifdef false
-    if (this->mTempIsEnabledShadow)
-    { // Basic shadow (directional light etc)
-      glViewport(0, 0, 512, 512);
-      this->pRenderShadowFrameBufferWith(drawInstance);
-    }
-#endif
-
-    this->mDrawCallQueue.pop();
   }
+  // (3) Draw transparent call list with OIT.
+  // @TODO IMPLEMENT THIS!
 
-  glViewport(0, 0, setting.GetWindowSizeWidth(), setting.GetWindowSizeHeight());
+  // Clear opaque draw queue list
+  this->mOpaqueDrawCallList.clear();
+
+  //!
+  //! Post processing effects
+  //!
+
+  //if (this->mIsEnabledSsaoRendering)
+  // @TODO FIX THIS (SSAO)
+  if (false) { this->mTempSsaoObject->RenderScreen(); }
+
+  //!
+  //! Only in editor effects
+  //!
+
+#if defined(MDY_FLAG_IN_EDITOR) == true
   glBindFramebuffer(GL_FRAMEBUFFER, this->mDeferredFrameBufferId);
-
-  // Only in editor effects
-#if defined(MDY_FLAG_IN_EDITOR)
   if (editor::MDyEditorSetting::GetInstance().GetmIsEnabledViewportRenderGrid() && this->mGridEffect)
   {
     this->mGridEffect->RenderGrid();
   }
 #endif /// MDY_FLAG_IN_EDITOR
 
-  // Post processing effects
-  if (this->mTempIsEnabledSsao)
-  {
-    this->mTempSsaoObject->RenderScreen();
-  }
+  //!
+  //! Final
+  //!
 
-#if !defined(MDY_FLAG_IN_EDITOR)
+#if defined(MDY_FLAG_IN_EDITOR) == false
+  //glViewport(0, 0, setting.GetWindowSizeWidth(), setting.GetWindowSizeHeight());
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   this->mFinalRenderingMesh->RenderScreen();
-#endif /// !MDY_FLAG_IN_EDITOR
+#endif /// MDY_FLAG_IN_EDITOR == false
 }
 
-void MDyRendering::pCreateDeferredGeometryBuffers() noexcept
+void MDyRendering::pClearRenderingFramebufferInstances() noexcept
 {
-  auto& settingManager = MDySetting::GetInstance();
-  const auto overallScreenWidth   = settingManager.GetWindowSizeWidth();
-  const auto overallScreenHeight  = settingManager.GetWindowSizeHeight();
+  auto& worldManager = MDyWorld::GetInstance();
+  if (worldManager.IsLevelPresentValid() == false) { return; }
 
-  glGenFramebuffers(1, &this->mDeferredFrameBufferId);
-  glBindFramebuffer(GL_FRAMEBUFFER, this->mDeferredFrameBufferId);
-  glGenTextures(this->mAttachmentBuffersCount, &this->mAttachmentBuffers[0]);
+  if (MDY_CHECK_ISNOTEMPTY(this->mBasicRenderer)) { this->mBasicRenderer->Clear(); }
 
-  // Unlit g-buffer
-  glBindTexture(GL_TEXTURE_2D, this->mAttachmentBuffers[0]);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, overallScreenWidth, overallScreenHeight, 0, GL_RGBA, GL_FLOAT, nullptr);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->mAttachmentBuffers[0], 0);
+  if (this->mIsEnabledSsaoRendering == true)
+  { // @TODO DO NOTHING NOW.
 
-  // Normal g-buffer
-  glBindTexture(GL_TEXTURE_2D, this->mAttachmentBuffers[1]);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, overallScreenWidth, overallScreenHeight, 0, GL_RGBA, GL_FLOAT, nullptr);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, this->mAttachmentBuffers[1], 0);
-
-  // Specular g-buffer
-  glBindTexture(GL_TEXTURE_2D, this->mAttachmentBuffers[2]);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, overallScreenWidth, overallScreenHeight, 0, GL_RGBA, GL_FLOAT, nullptr);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, this->mAttachmentBuffers[2], 0);
-  if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-  {
-    PHITOS_UNEXPECTED_BRANCH();
   }
 
-  // View position g-buffer
-  glBindTexture(GL_TEXTURE_2D, this->mAttachmentBuffers[3]);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, overallScreenWidth, overallScreenHeight, 0, GL_RGB, GL_FLOAT, nullptr);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, this->mAttachmentBuffers[3], 0);
-  if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-  {
-    PHITOS_UNEXPECTED_BRANCH();
+  if (this->mIsEnabledShadowRendering == true)
+  { // Reset all shadow framebuffer setting.
+    this->mShadowRenderer->Clear();
   }
 
-  // Depth g-buffer
-  TU32 depthBuffer = MDY_NOT_INITIALIZED_0;
-  glGenRenderbuffers(1, &depthBuffer);
-  glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
-  glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, overallScreenWidth, overallScreenHeight);
-  glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
-
-  // Let framebuffer know that attachmentBuffer's id will be drawn at framebuffer.
-  std::array<GLenum, 4> attachmentEnumList = {
-      GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3
-  };
-  glDrawBuffers(static_cast<TI32>(attachmentEnumList.size()), &attachmentEnumList[0]);
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-  MDY_LOG_INFO("{}::{} | Geometry buffer created.", "MDyRendering", "pCreateDeferredGeometryBuffers");
-}
-
-void MDyRendering::pReleaseGeometryBuffers() noexcept
-{
-  glDeleteTextures(this->mAttachmentBuffersCount, &this->mAttachmentBuffers[0]);
-  if (this->mDeferredFrameBufferId) { glDeleteFramebuffers(1, &this->mDeferredFrameBufferId); }
-
-  MDY_LOG_INFO("{}::{} | Geometry buffer released.", "MDyRendering", "pCreateDeferredGeometryBuffers");
-}
-
-void MDyRendering::pResetRenderingFramebufferInstances() noexcept
-{
-  // Reset overall deferred framebuffer setting
-  glBindFramebuffer(GL_FRAMEBUFFER, this->mDeferredFrameBufferId);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-  // Reset all shadow framebuffer setting
-  if (this->mTempIsEnabledShadow)
-  {
-    glBindFramebuffer(GL_FRAMEBUFFER, this->mTempShadowObject->GetShadowFrameBufferId());
-    glClear(GL_DEPTH_BUFFER_BIT);
+#if defined(MDY_FLAG_IN_EDITOR) == false
+  if (MDY_CHECK_ISNOTEMPTY(this->mFinalRenderingMesh))
+  { // Reset final rendering mesh setting.
+    this->mFinalRenderingMesh->Clear();
   }
+#endif
 }
 
-void MDyRendering::pRenderDeferredFrameBufferWith(const CDyMeshRenderer& renderer) noexcept
+std::optional<TI32> MDyRendering::pGetAvailableDirectionalLightIndex(_MIN_ const CDyDirectionalLight&)
 {
-  for (const auto& bindedMeshMatInfo : renderer.mMeshMaterialPtrBindingList)
+  return this->mFinalRenderingMesh->GetAvailableDirectionalLightIndex();
+}
+
+EDySuccess MDyRendering::pUnbindDirectionalLight(const CDyDirectionalLight& component)
+{
+  if (component.IsBindedToLightingSystem() == false) { return DY_FAILURE; }
+  return this->mFinalRenderingMesh->UnbindDirectionalLight(component.TryGetBindedIndexValue().value());
+}
+
+EDySuccess MDyRendering::pUpdateDirectionalLightValueToGpu(
+    _MIN_ const TI32 index,
+    _MIN_ const DDyUboDirectionalLight& container)
+{
+  return this->mFinalRenderingMesh->UpdateDirectionalLightValueToGpu(index, container);
+}
+
+bool MDyRendering::pfIsAvailableDirectionalLightShadow(const CDyDirectionalLight&)
+{ // Integrity test
+  if (this->mIsEnabledShadowRendering == false)
   {
-    // Integrity test.
-    const auto shaderResource = bindedMeshMatInfo.mMaterialResource->GetShaderResource();
-    if (!shaderResource)
-    {
-      MDY_LOG_CRITICAL("{} | Shader resource of {} is not binded, Can not render mesh.", "CDyMeshRenderer::Render", bindedMeshMatInfo.mMaterialResource->GetMaterialName());
-      continue;
-    }
-    // Activate shader of one material and bind submesh VAO id.
-    shaderResource->UseShader();
-    glBindVertexArray(bindedMeshMatInfo.mSubmeshResource->GetVertexArrayId());
-
-    // @todo temporal Bind camera matrix.
-    if (auto* camera = MDyWorld::GetInstance().GetMainCameraPtr(); camera)
-    {
-      const auto viewMatrix = glGetUniformLocation(shaderResource->GetShaderProgramId(), "viewMatrix");
-      const auto projMatirx = glGetUniformLocation(shaderResource->GetShaderProgramId(), "projectionMatrix");
-
-      glUniformMatrix4fv(viewMatrix, 1, GL_FALSE, &camera->GetViewMatrix()[0].X);
-      glUniformMatrix4fv(projMatirx, 1, GL_FALSE, &camera->GetProjectionMatrix()[0].X);
-    }
-
-    // If skeleton animation is enabled, get bone transform and bind to shader.
-    const auto boneTransform = glGetUniformLocation(shaderResource->GetShaderProgramId(), "boneTransform");
-    if (renderer.mModelReferencePtr && renderer.mModelReferencePtr->IsEnabledModelAnimated())
-    {
-      const auto& matrixList = renderer.mModelReferencePtr->GetModelAnimationTransformMatrixList();
-      const auto  matrixSize = static_cast<int32_t>(matrixList.size());
-      for (int32_t i = 0; i < matrixSize; ++i)
-      {
-        glUniformMatrix4fv(boneTransform + i, 1, GL_FALSE, &matrixList[i].mFinalTransformation[0].X);
-      }
-    }
-
-    // Bind textures of one material.
-    if (bindedMeshMatInfo.mMaterialResource)
-    {
-      const auto& textureResources        = bindedMeshMatInfo.mMaterialResource->GetBindedTextureResources();
-      const auto  textureResourceListSize = static_cast<int32_t>(textureResources.size());
-      for (int32_t i = 0; i < textureResourceListSize; ++i)
-      {
-        glUniform1i(glGetUniformLocation(shaderResource->GetShaderProgramId(), (std::string("uTexture") + std::to_string(i)).c_str()), i);
-
-        const auto texturePointer = textureResources[i].mValidTexturePointer;
-        glActiveTexture(GL_TEXTURE0 + i);
-        switch (texturePointer->GetTextureType())
-        {
-        case EDyTextureStyleType::D1: glBindTexture(GL_TEXTURE_1D, texturePointer->GetTextureId()); break;
-        case EDyTextureStyleType::D2: glBindTexture(GL_TEXTURE_2D, texturePointer->GetTextureId()); break;
-        default: PHITOS_UNEXPECTED_BRANCH(); break;
-        }
-      }
-    }
-
-    // Call function call drawing array or element. (not support instancing yet)
-    if (bindedMeshMatInfo.mSubmeshResource->IsEnabledIndices())
-    {
-      glDrawElements(GL_TRIANGLES, bindedMeshMatInfo.mSubmeshResource->GetIndicesCounts(), GL_UNSIGNED_INT, nullptr);
-    }
-    else
-    {
-      glDrawArrays(GL_TRIANGLES, 0, bindedMeshMatInfo.mSubmeshResource->GetVertexCounts());
-    }
-
-    // Unbind, unset, deactivate settings for this submesh and material.
-    if (bindedMeshMatInfo.mMaterialResource)
-    {
-      const auto& textureResources        = bindedMeshMatInfo.mMaterialResource->GetBindedTextureResources();
-      const auto  textureResourceListSize = static_cast<int32_t>(textureResources.size());
-      for (int32_t i = 0; i < textureResourceListSize; ++i)
-      {
-        glActiveTexture(GL_TEXTURE0 + i);
-        glBindTexture(GL_TEXTURE_2D, 0);
-      }
-    }
-
-    glBindVertexArray(0);
-    shaderResource->UnuseShader();
+    MDY_LOG_WARNING("MDyRendering::pfIsAvailableDirectionalLightShadow | Shadow feature is disabled now.");
+    return false;
   }
+
+  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mShadowRenderer), "Shadow object must be valid if shadow feature is enabled.");
+  return this->mShadowRenderer->IsAvailableDirectionalLightShadow();
 }
 
-void MDyRendering::pRenderShadowFrameBufferWith(const CDyMeshRenderer& renderer) noexcept
-{
-  this->mTempShadowObject->RenderScreen(renderer);
+EDySuccess MDyRendering::pfUpdateDirectionalLightShadowToGpu(const CDyDirectionalLight& component)
+{ // Integrity test
+  if (this->mIsEnabledShadowRendering == false)          { return DY_FAILURE; }
+  if (MDY_CHECK_ISEMPTY(this->mShadowRenderer))   { return DY_FAILURE; }
+  if (MDY_CHECK_ISEMPTY(this->mFinalRenderingMesh)) { return DY_FAILURE; }
+
+  // Update values
+#ifdef false
+  MDY_NOTUSED
+  const auto flag1 = this->mShadowRenderer->UpdateDirectionalLightShadowToGpu(component);
+  MDY_NOT_IMPLEMENTED_ASSERT();
+#endif
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyRendering::pfUnbindDirectionalLightShadowToGpu(const CDyDirectionalLight& component)
+{ // Integrity test
+  if (this->mIsEnabledShadowRendering == false)          { return DY_FAILURE; }
+  if (MDY_CHECK_ISEMPTY(this->mShadowRenderer))   { return DY_FAILURE; }
+  if (MDY_CHECK_ISEMPTY(this->mFinalRenderingMesh)) { return DY_FAILURE; }
+
+  // Update values
+  MDY_NOTUSED
+  const auto flag1 = this->mShadowRenderer->UnbindDirectionalLightShadowToGpu(component);
+  MDY_NOT_IMPLEMENTED_ASSERT();
+  return DY_SUCCESS;
 }
 
 } /// ::dy namespace

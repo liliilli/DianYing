@@ -12,6 +12,9 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Test/testLua.h>
+#if defined(MDY_FLAG_TEST_ENABLED)
+
 #include <sol2/sol.hpp>
 #include <Dy/Helper/GlobalType.h>
 #include <Dy/Management/LoggingManager.h>
@@ -114,10 +117,10 @@ thirdValue  = DDyClassNotInstancedFunc(Object)
 fourthValue = DDyClassNotInstancedFunc(Object)
 )dy");
 
-  PHITOS_ASSERT(lua["firstValue"].get<TI32>()  == 1,  "MUST SUCCESS");
-  PHITOS_ASSERT(lua["secondValue"].get<TI32>() == 2,  "MUST SUCCESS");
-  PHITOS_ASSERT(lua["thirdValue"].get<TI32>()  == 25, "MUST SUCCESS");
-  PHITOS_ASSERT(lua["fourthValue"].get<TI32>() == 26, "MUST SUCCESS");
+  MDY_ASSERT(lua["firstValue"].get<TI32>()  == 1,  "MUST SUCCESS");
+  MDY_ASSERT(lua["secondValue"].get<TI32>() == 2,  "MUST SUCCESS");
+  MDY_ASSERT(lua["thirdValue"].get<TI32>()  == 25, "MUST SUCCESS");
+  MDY_ASSERT(lua["fourthValue"].get<TI32>() == 26, "MUST SUCCESS");
 
   // Member class functions and member class variables will both be turned into functions
   // when set in this manner.
@@ -169,11 +172,11 @@ void DyLuaFunctionGetFunctionFromLua()
 
   // Get and immediately call
   const TI32 x = lua["fFunc"](30);
-  PHITOS_ASSERT(x == 35, "MUST SUCCESS");
+  MDY_ASSERT(x == 35, "MUST SUCCESS");
 
   sol::function f = lua["fFunc"];
   const TI32 y = f(340);
-  PHITOS_ASSERT(y == 370, "MUST SUCCESS");
+  MDY_ASSERT(y == 370, "MUST SUCCESS");
 
   MDY_LOG_CRITICAL("{} | Success", "DyLuaFunctionGetFunctionFromLua");
 }
@@ -270,8 +273,8 @@ void DyLuaFunctionMultipleReturnFromCpp()
   MDY_LOG_CRITICAL("{} | iB = {}", "DyLuaFunctionMultipleReturnFromCpp", std::get<1>(result2));
   MDY_LOG_CRITICAL("{} | iC = {}", "DyLuaFunctionMultipleReturnFromCpp", std::get<2>(result2));
 
-  TI32 a = MDY_NOT_INITIALIZED_0;
-  TI32 b = MDY_NOT_INITIALIZED_0;
+  TI32 a = MDY_INITIALIZE_DEFUINT;
+  TI32 b = MDY_INITIALIZE_DEFUINT;
   std::string c;
   sol::tie(a, b, c) = lua["fFunc"](1, 2, "Meow");
 
@@ -309,3 +312,5 @@ void DyLuaFunctionAnyReturn()
 }
 
 } /// ::dy::test namespace
+
+#endif /// MDY_FLAG_TEST_ENABLED

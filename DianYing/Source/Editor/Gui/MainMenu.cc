@@ -137,7 +137,7 @@ void FDyMainMenu::DrawWindow(float dt) noexcept
               ptr)
           {
             auto [it, result] = this->mSubWindows.try_emplace(hashVal, std::move(ptr));
-            if (!result) { PHITOS_UNEXPECTED_BRANCH(); }
+            if (!result) { MDY_UNEXPECTED_BRANCH(); }
           }
         }
         else { this->mSubWindows.erase(FDyMainSetting::__mHashVal); }
@@ -165,7 +165,7 @@ void FDyMainMenu::DrawWindow(float dt) noexcept
               ptr)
           {
             auto [it, result] = this->mSubWindows.try_emplace(hashVal, std::move(ptr));
-            if (!result) { PHITOS_UNEXPECTED_BRANCH(); }
+            if (!result) { MDY_UNEXPECTED_BRANCH(); }
           }
         }
         else { this->mSubWindows.erase(FDyMainViewport::__mHashVal); }
@@ -178,7 +178,7 @@ void FDyMainMenu::DrawWindow(float dt) noexcept
               ptr)
           {
             auto [it, result] = this->mSubWindows.try_emplace(hashVal, std::move(ptr));
-            if (!result) { PHITOS_UNEXPECTED_BRANCH(); }
+            if (!result) { MDY_UNEXPECTED_BRANCH(); }
           }
         }
         else { this->mSubWindows.erase(FDyLogWindow::__mHashVal); }
@@ -208,7 +208,7 @@ void FDyMainMenu::DrawWindow(float dt) noexcept
               ptr)
           {
             auto [it, result] = this->mSubWindows.try_emplace(hashVal, std::move(ptr));
-            if (!result) { PHITOS_UNEXPECTED_BRANCH(); }
+            if (!result) { MDY_UNEXPECTED_BRANCH(); }
           }
         }
         else { this->mSubWindows.erase(FDyHelpLicenseWindow::__mHashVal); }
@@ -222,7 +222,7 @@ void FDyMainMenu::DrawWindow(float dt) noexcept
           if (auto [hashVal, ptr] = FDyEditorGuiWindowFactory::CreateGuiComponent<FDyHelpAboutMain>(desc); ptr)
           {
             auto [it, result] = this->mSubWindows.try_emplace(hashVal, std::move(ptr));
-            if (!result) { PHITOS_UNEXPECTED_BRANCH(); }
+            if (!result) { MDY_UNEXPECTED_BRANCH(); }
           }
         }
         else { this->mSubWindows.erase(FDyHelpAboutMain::__mHashVal); }
@@ -247,7 +247,7 @@ void FDyMainMenu::pCreateNotSupportYetDialogMsg(bool* boolFlag)
   if (auto [hashVal, ptr] = FDyEditorGuiWindowFactory::CreateGuiComponent<FDyDialog>(desc); ptr)
   {
     auto[it, result] = this->mSubWindows.try_emplace(hashVal, std::move(ptr));
-    if (!result) { PHITOS_UNEXPECTED_BRANCH(); }
+    if (!result) { MDY_UNEXPECTED_BRANCH(); }
   }
 }
 
@@ -262,7 +262,7 @@ void FDyMainMenu::pCreateCreateProjectDalog(NotNull<bool*> boolFlag)
   if (auto [hashVal, ptr] = FDyEditorGuiWindowFactory::CreateGuiComponent<FDyProjectCreator>(desc); ptr)
   {
     auto[it, result] = this->mSubWindows.try_emplace(hashVal, std::move(ptr));
-    if (!result) { PHITOS_UNEXPECTED_BRANCH(); }
+    if (!result) { MDY_UNEXPECTED_BRANCH(); }
   }
 }
 

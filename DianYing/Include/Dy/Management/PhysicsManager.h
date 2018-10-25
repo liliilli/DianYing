@@ -18,6 +18,7 @@
 #include <Dy/Element/Interface/IDyUpdatable.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Management/Helper/PhysXErrorCallback.h>
+#include <Dy/Management/Helper/PhysxSimulationCallback.h>
 
 namespace dy
 {
@@ -46,6 +47,9 @@ private:
   physx::PxMaterial*            gMaterial;
 
   physx::PxReal                 stackZ = 10.0f;
+
+  // Callback helper class instance.
+  FDyPxSimulationEventCallback  mCallback = {};
 };
 
 } /// ::dy namespace

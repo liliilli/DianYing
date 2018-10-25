@@ -22,7 +22,7 @@
 
 #include <Dy/Helper/Type/Vector2.h>
 #include <Dy/Helper/Type/Vector3.h>
-#include <Phitos/Dbg/assert.h>
+
 #include "Dy/Management/LoggingManager.h"
 
 //!

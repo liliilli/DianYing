@@ -163,13 +163,27 @@
     <ClCompile Include="Libraries\imgui\imgui\imgui_impl_glfw.cpp" />
     <ClCompile Include="Libraries\imgui\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="Libraries\imgui\imgui\imgui.cpp" />
+    <ClCompile Include="Source\Builtin\Material\OpaqueStaticPlain.cc" />
     <ClCompile Include="Source\Builtin\Model\Box.cc" />
+    <ClCompile Include="Source\Builtin\Model\Plain.cc" />
+    <ClCompile Include="Source\Builtin\Model\Sphere.cc" />
     <ClCompile Include="Source\Builtin\Object\Light\DirectionalLight.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderBasicShadow.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderColorGeometry.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderDeferredRendering.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderGrid.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\RenderOpaqueStatic.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderPass.cc" />
+    <ClCompile Include="Source\Builtin\Texture\Checker.cc" />
+    <ClCompile Include="Source\Builtin\Texture\ErrorBlue.cc" />
+    <ClCompile Include="Source\Component\Abstract\ADyGeneralBaseComponent.cc" />
+    <ClCompile Include="Source\Component\CDyCamera.cc" />
+    <ClCompile Include="Source\Component\CDyDirectionalLight.cc" />
+    <ClCompile Include="Source\Component\CDyModelFilter.cc" />
+    <ClCompile Include="Source\Component\CDyModelRenderer.cc" />
+    <ClCompile Include="Source\Component\CDyScript.cc" />
+    <ClCompile Include="Source\Component\CDyTransform.cc" />
+    <ClCompile Include="Source\Component\Internal\ScriptState.cc" />
     <ClCompile Include="Source\Core\Component\Information\MaterialInformation.cc" />
     <ClCompile Include="Source\Core\Component\Information\ModelInformation.cc" />
     <ClCompile Include="Source\Core\Component\Information\ShaderInformation.cc" />
@@ -188,6 +202,7 @@
     <ClCompile Include="Source\Core\Component\Resource\ModelResource.cc" />
     <ClCompile Include="Source\Core\Component\Resource\TextureResource.cc" />
     <ClCompile Include="Source\Core\Component\Resource\ShaderResource.cc" />
+    <ClCompile Include="Source\Core\Rendering\BasicRenderer.cc" />
     <ClCompile Include="Source\Core\Rendering\BasicShadow.cc" />
     <ClCompile Include="Source\Editor\Gui\Dialog\ProjectCreator.cc" />
     <ClCompile Include="Source\Editor\Gui\EtcDialog.cc" />
@@ -201,12 +216,14 @@
     <ClCompile Include="Source\Editor\Gui\ViewViewportMain.cc" />
     <ClCompile Include="Source\Editor\Gui\ViewWorldOutliner.cc" />
     <ClCompile Include="Source\Editor\Helper\Win32Helper.cc" />
+    <ClCompile Include="Source\Element\Abstract\ADyBaseComponent.cc" />
     <ClCompile Include="Source\Element\Abstract\ADyNameCounterMap.cc" />
     <ClCompile Include="Source\Element\Abstract\ADyTransformable.cc" />
     <ClCompile Include="Source\Element\Actor.cc" />
-    <ClCompile Include="Source\Element\Descriptor\GetDescriptors.cc" />
+    <ClCompile Include="Source\Element\Canvas\Text.cc" />
+    <ClCompile Include="Source\Element\Descriptor\MetaLevelDescriptor.cc" />
+    <ClCompile Include="Source\Element\Helper\DescriptorHelperFunctions.cc" />
     <ClCompile Include="Source\Element\Level.cc" />
-    <ClCompile Include="Source\Element\Pawn.cc" />
     <ClCompile Include="Source\Entry\Entry.cc" />
     <ClCompile Include="Source\Helper\Dbg\CheckUsage.cc" />
     <ClCompile Include="Source\Helper\Geometry\Types.cc" />
@@ -218,10 +235,12 @@
     <ClCompile Include="Source\Helper\ThreadPool.cc" />
     <ClCompile Include="Source\Helper\Type\Color.cc" />
     <ClCompile Include="Source\Helper\Type\Color32.cc" />
+    <ClCompile Include="Source\Helper\Type\DyString.cc" />
     <ClCompile Include="Source\Helper\Type\Matrix2.cc" />
     <ClCompile Include="Source\Helper\Type\Matrix3.cc" />
     <ClCompile Include="Source\Helper\Type\Matrix4.cc" />
     <ClCompile Include="Source\Helper\Type\Quaternion.cc" />
+    <ClCompile Include="Source\Helper\Type\ThreeStateBool.cc" />
     <ClCompile Include="Source\Helper\Type\Vector2.cc" />
     <ClCompile Include="Source\Helper\Type\Vector3.cc" />
     <ClCompile Include="Source\Helper\Type\Vector4.cc" />
@@ -229,6 +248,9 @@
     <ClCompile Include="Source\Management\Editor\GuiManager.cc" />
     <ClCompile Include="Source\Management\Editor\GuiSetting.cc" />
     <ClCompile Include="Source\Management\Editor\GuiWindowFactory.cc" />
+    <ClCompile Include="Source\Management\Helper\PhysxSimulationCallback.cc" />
+    <ClCompile Include="Source\Management\Internal\FramebufferManager.cc" />
+    <ClCompile Include="Source\Management\Internal\UniformBufferObjectManager.cc" />
     <ClCompile Include="Source\Management\MetaInfoManager.cc" />
     <ClCompile Include="Source\Management\FontManager.cc" />
     <ClCompile Include="Source\Management\HeapResourceManager.cc" />
@@ -238,6 +260,8 @@
     <ClCompile Include="Source\Management\LoggingManager.cc" />
     <ClCompile Include="Source\Management\PhysicsManager.cc" />
     <ClCompile Include="Source\Management\RenderingManager.cc" />
+    <ClCompile Include="Source\Management\ScriptManager.cc" />
+    <ClCompile Include="Source\Management\Type\AttachmentInformation.cc" />
     <ClCompile Include="Source\Management\WorldManager.cc" />
     <ClCompile Include="Source\Management\SettingManager.cc" />
     <ClCompile Include="Source\Management\SoundManager.cc" />
@@ -249,19 +273,44 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Source\Test\TestLuaBindingDy.cc" />
+    <ClCompile Include="Source\Test\TestLuaCpp.cc" />
     <ClCompile Include="Source\Test\testLuaEntry.cc" />
     <ClCompile Include="Source\Test\TestLuaFunctions.cc" />
     <ClCompile Include="Source\Test\testLuaHelloWorld.cc" />
     <ClCompile Include="Source\Test\testLuaVariable.cc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\Dy\Binding\LuaScriptFrame.h" />
+    <ClInclude Include="Include\Dy\Builtin\Material\OpaqueStaticPlain.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\Box.h" />
+    <ClInclude Include="Include\Dy\Builtin\Model\Plain.h" />
+    <ClInclude Include="Include\Dy\Builtin\Model\Sphere.h" />
     <ClInclude Include="Include\Dy\Builtin\Object\Light\DirectionalLight.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderBasicShadow.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderColorGeometry.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderDeferredRendering.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderGrid.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderOpaqueStatic.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderPass.h" />
+    <ClInclude Include="Include\Dy\Builtin\Texture\ErrorBlue.h" />
+    <ClInclude Include="Include\Dy\Builtin\Texture\Checker.h" />
+    <ClInclude Include="Include\Dy\Component\Abstract\ADyPhysicsRIgidbody.h" />
+    <ClInclude Include="Include\Dy\Component\Abstract\ADyPhysicsShape.h" />
+    <ClInclude Include="Include\Dy\Component\CDyCamera.h" />
+    <ClInclude Include="Include\Dy\Component\CDyDirectionalLight.h" />
+    <ClInclude Include="Include\Dy\Component\CDyModelFilter.h" />
+    <ClInclude Include="Include\Dy\Component\CDyModelRenderer.h" />
+    <ClInclude Include="Include\Dy\Component\CDyPhysicsRigidbodyDynamic.h" />
+    <ClInclude Include="Include\Dy\Component\CDyPhysicsRigidbodyStatic.h" />
+    <ClInclude Include="Include\Dy\Component\CDyPhysicsShapeBox.h" />
+    <ClInclude Include="Include\Dy\Component\CDyScript.h" />
+    <ClInclude Include="Include\Dy\Component\CDyTransform.h" />
+    <ClInclude Include="Include\Dy\Component\Descriptor\ComponentMetaDescriptor.h" />
+    <ClInclude Include="Include\Dy\Component\Helper\TmpCheckInitilizeParams.h" />
+    <ClInclude Include="Include\Dy\Component\Helper\TmpCheckRemoveParams.h" />
+    <ClInclude Include="Include\Dy\Component\Interface\IDyInitializeHelper.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\ScriptState.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\MaterialInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\SoundInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\SubmeshInformation.h" />
@@ -269,14 +318,25 @@
     <ClInclude Include="Include\Dy\Core\Component\Information\ShaderInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\TextureInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\SoundResource.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\BasicRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\BasicShadow.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Helper\FrameAttachmentString.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\Dialog\ProjectCreator.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\Helper\ComponentHelper.h" />
     <ClInclude Include="Include\Dy\Editor\Helper\Win32Helper.h" />
+    <ClInclude Include="Include\Dy\Element\Abstract\ADyBaseComponent.h" />
+    <ClInclude Include="Include\Dy\Element\Abstract\ADyGeneralBaseComponent.h" />
     <ClInclude Include="Include\Dy\Element\Abstract\ADyTransformable.h" />
     <ClInclude Include="Include\Dy\Element\Actor.h" />
     <ClInclude Include="Include\Dy\Element\Abstract\ADyNameCounterMap.h" />
+    <ClInclude Include="Include\Dy\Element\Canvas\Canvas.h" />
+    <ClInclude Include="Include\Dy\Element\Canvas\Text.h" />
+    <ClInclude Include="Include\Dy\Element\Descriptor\CanvasDescriptor.h" />
+    <ClInclude Include="Include\Dy\Element\Descriptor\GlobalEnums.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\LevelDescriptor.h" />
+    <ClInclude Include="Include\Dy\Element\Descriptor\PrefabDescriptor.h" />
+    <ClInclude Include="Include\Dy\Element\Helper\DescriptorComponentHeaderString.h" />
+    <ClInclude Include="Include\Dy\Element\Helper\DescriptorHelperFunctions.h" />
     <ClInclude Include="Include\Dy\Element\Interface\IDyScriptable.h" />
     <ClInclude Include="Include\Dy\Element\Interface\IDyToString.h" />
     <ClInclude Include="Include\Dy\Element\Interface\IDyUpdatable.h" />
@@ -291,7 +351,6 @@
     <ClInclude Include="Include\Dy\Core\Component\Object\Camera.h" />
     <ClInclude Include="Include\Dy\Core\Component\Object\Grid.h" />
     <ClInclude Include="Include\Dy\Element\Object.h" />
-    <ClInclude Include="Include\Dy\Element\Pawn.h" />
     <ClInclude Include="Include\Dy\Core\Component\Object\DeferredRenderingMesh.h" />
     <ClInclude Include="Include\Dy\Core\Component\Object\PostEffectSsao.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\MaterialResource.h" />
@@ -318,16 +377,28 @@
     <ClInclude Include="Include\Dy\Element\Interface\IDyColliable.h" />
     <ClInclude Include="Include\Dy\Element\Level.h" />
     <ClInclude Include="Include\Dy\Element\LevelScriptor.h" />
+    <ClInclude Include="Include\Dy\Helper\Assertion.h" />
+    <ClInclude Include="Include\Dy\Helper\Constant\StringSettingFile.h" />
+    <ClInclude Include="Include\Dy\Helper\ContainerHelper.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\Contracts.h" />
     <ClInclude Include="Include\Dy\Helper\Dbg\CheckUsage.h" />
     <ClInclude Include="Include\Dy\Helper\GlobalType.h" />
     <ClInclude Include="Include\Dy\Helper\HashCompileCrc32.h" />
+    <ClInclude Include="Include\Dy\Helper\Internal\CheckingRule.h" />
+    <ClInclude Include="Include\Dy\Helper\Internal\TmpCheckTypeParams.h" />
     <ClInclude Include="Include\Dy\Helper\JsonHelper.h" />
     <ClInclude Include="Include\Dy\Helper\Pointer.h" />
     <ClInclude Include="Include\Dy\Helper\ThreadPool.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\Clamp.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\DyString.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\ThreeStateBool.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\VectorInt2.h" />
     <ClInclude Include="Include\Dy\Management\Editor\GuiManager.h" />
     <ClInclude Include="Include\Dy\Management\Editor\GuiSetting.h" />
     <ClInclude Include="Include\Dy\Management\Editor\GuiWindowFactory.h" />
+    <ClInclude Include="Include\Dy\Management\Helper\PhysxSimulationCallback.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\FramebufferManager.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\UniformBufferObjectManager.h" />
     <ClInclude Include="Include\Dy\Management\MetaInfoManager.h" />
     <ClInclude Include="Include\Dy\Management\FontManager.h" />
     <ClInclude Include="Include\Dy\Management\Helper\GuiLogStreamSink.h" />
@@ -338,9 +409,13 @@
     <ClInclude Include="Include\Dy\Management\LoggingManager.h" />
     <ClInclude Include="Include\Dy\Management\PhysicsManager.h" />
     <ClInclude Include="Include\Dy\Management\RenderingManager.h" />
+    <ClInclude Include="Include\Dy\Management\ScriptManager.h" />
     <ClInclude Include="Include\Dy\Management\SoundManager.h" />
     <ClInclude Include="Include\Dy\Management\SynchronizationManager.h" />
+    <ClInclude Include="Include\Dy\Management\Type\AttachmentInformation.h" />
+    <ClInclude Include="Include\Dy\Management\Type\FramebufferInformation.h" />
     <ClInclude Include="Include\Dy\Management\Type\KeyBindingInformation.h" />
+    <ClInclude Include="Include\Dy\Management\Type\UBOInformation.h" />
     <ClInclude Include="Include\Dy\Management\WindowManager.h" />
     <ClInclude Include="Include\Dy\Management\WorldManager.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\ShaderResource.h" />
@@ -369,7 +444,10 @@
     <ClInclude Include="Include\Dy\Management\DataInformationManager.h" />
     <ClInclude Include="Include\Dy\Management\SettingManager.h" />
     <ClInclude Include="Include\Dy\Management\TimeManager.h" />
+    <ClInclude Include="Include\Dy\Meta\Descriptor\ScriptDescriptor.h" />
     <ClInclude Include="Include\Dy\Test\testLua.h" />
+    <ClInclude Include="Include\Dy\Test\TestMacroSetting.h" />
+    <ClInclude Include="Include\Dy\Helper\Constant\StringPipelineUniform.h" />
     <ClInclude Include="Include\precompiled.h" />
     <ClInclude Include="Libraries\glad\include\glad\glad.h" />
     <ClInclude Include="Libraries\glad\include\KHR\khrplatform.h" />
@@ -415,9 +493,13 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="TestResource\Lua\player_script.lua" />
+    <None Include="TestResource\Lua\test_bindingscript.lua" />
     <None Include="TestResource\Lua\variables.lua">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </None>
+    <None Include="TestResource\TestScript1.lua" />
+    <None Include="TestResource\TestScript2.lua" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -13,7 +13,9 @@
 /// SOFTWARE.
 ///
 
+#include <array>
 #include <vector>
+
 #include <Dy/Helper/Type/Vector4.h>
 #include <Dy/Helper/Type/Matrix4.h>
 

@@ -30,45 +30,62 @@ namespace dy {
 ///
 class FDyLevel final : public FDyObject, public IDyUpdatable, public ADyNameCounterMap
 {
-  using TActorSmtPtr = std::unique_ptr<FDyActor>;
-  using TActorMap    = std::unordered_map<std::string, TActorSmtPtr>;
+  using TActorSmtPtr      = std::unique_ptr<FDyActor>;
+  using TActorMap         = std::unordered_map<std::string, TActorSmtPtr>;
   using TNameCounterMap   = std::unordered_map<std::string, int32_t>;
 
 public:
   /// Initialize level context with valid descriptor.
-  void Initialize(const PDyLevelConstructDescriptor& desc);
+  void Initialize(_MIN_ const PDyLevelConstructDescriptor& desc);
 
   /// Release level by release all subobjects in this level storing information or signalling something.
   void Release();
 
   /// Update level.
-  void Update(float dt) override final;
+  void Update(_MIN_ float dt) override final;
+
+  ///
+  /// @brief  Get background color of this scene.
+  /// @return background color [0, 1] (RGBA)
+  ///
+  FORCEINLINE MDY_NODISCARD const DDyColor& GetBackgroundColor() const noexcept
+  {
+    return this->mLevelBackgroundColor;
+  }
 
   ///
   /// @brief  Get present level name.
   /// @return Level name.
   ///
-  [[nodiscard]]
-  const std::string& GetLevelName() const noexcept
+  MDY_NODISCARD const std::string& GetLevelName() const noexcept
   {
     return this->mLevelName;
   }
 
+  ///
+  /// @brief  Set background color of this scene.
+  /// @param  backgroundColor New backgrond color value.
+  ///
+  FORCEINLINE void SetBackgroundColor(_MIN_ const DDyColor& backgroundColor) noexcept
+  {
+    this->mLevelBackgroundColor = backgroundColor;
+  }
+
 private:
   /// Level's name. not modifiable
-  std::string     mLevelName            = MDY_NOT_INITILAIZED_STR;
+  std::string     mLevelName            = MDY_INITILAIZE_EMPTYSTR;
   /// Level's hash value for identifying scene in world's array.
-  TU32            mLevelHashIdentifier  = MDY_NOT_INITIALIZED_0;
+  TU32            mLevelHashIdentifier  = MDY_INITIALIZE_DEFUINT;
   /// Scene basic color
   DDyColor        mLevelBackgroundColor = DDyColor::White;
   /// Actor list (hierarchial version)
-  TActorMap       mActorMap            = {};
+  TActorMap       mActorMap             = {};
   /// Check if level is initialized or released. Level is active when only mInitialized is true.
   bool            mInitialized          = false;
 
 public:
   /// Level information as string.
-  std::string ToString() override final;
+  MDY_NODISCARD std::string ToString() override final;
 
 #ifdef false
   ///
@@ -93,7 +110,7 @@ public:
         object_final_name,
         nullptr);
     if (!result) {
-      PHITOS_ASSERT(result, "Object did not be made properly.");
+      MDY_ASSERT(result, "Object did not be made properly.");
       return nullptr;
     }
 
@@ -125,7 +142,7 @@ public:
 
     auto [result_pair, result] = m_object_list.try_emplace(object_final_name, nullptr);
     if (!result) {
-      PHITOS_ASSERT(result, "Object did not be made properly.");
+      MDY_ASSERT(result, "Object did not be made properly.");
       return nullptr;
     }
 

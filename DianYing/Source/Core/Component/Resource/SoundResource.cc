@@ -18,7 +18,7 @@
 #include <filesystem>
 #include <fmod.hpp>
 
-#include <Phitos/Dbg/assert.h>
+
 #include <Dy/Management/SoundManager.h>
 #include <Dy/Management/LoggingManager.h>
 
@@ -72,7 +72,7 @@ EDySuccess CDySoundResource::pfInitializeResource(const DDySoundInformation& sou
     sound_type = ESoundType::Effect;
     soundResource->setMode(FMOD_LOOP_OFF);
     break;
-  default: PHITOS_UNEXPECTED_BRANCH(); break;
+  default: MDY_UNEXPECTED_BRANCH(); break;
   }
 #endif
 

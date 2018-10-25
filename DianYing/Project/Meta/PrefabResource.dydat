@@ -1,0 +1,82 @@
+{
+  "Meta":
+  {
+
+  },
+  "ObjectList":
+  [
+    {
+      "SpecifierName" : "P_Parent01",
+      "Type"          : "Actor",
+      "IsInitiallyActivated": true,
+      "ChildrenName"  :
+      [
+        "P_Child01"
+      ],
+      "ComponentList" :
+      [
+        {
+          "Type": "Script",
+          "Name": "TestScript2",
+          "Activated": true
+        },
+        {
+          "Type": "Transform",
+          "LPosition" : { "X": 0, "Y": 0, "Z": 0 },
+          "LRotation" : { "X": 0, "Y": 0, "Z": 0 },
+          "LScale"    : { "X": 1, "Y": 1, "Z": 1 },
+          "WPosition" : { "X": 0, "Y": 0, "Z": 0 },
+          "WRotation" : { "X": 45, "Y": 50, "Z": -70 },
+          "WScale"    : { "X": 1, "Y": 1, "Z": 1 }
+        },
+        {
+          "Type": "ModelFilter",
+          "ModelName": "dyBtModelBox",
+          "Activated": true
+        },
+        {
+          "Type": "ModelRenderer",
+          "Shadow": true,
+          "Activated": true,
+          "Materials": [ "dyBtMatOpaqueStaticPlain" ]
+        }
+      ]
+    },
+    {
+      "SpecifierName" : "P_Child01",
+      "Type"          : "Actor",
+      "IsInitiallyActivated": true,
+      "ChildrenName"  : [],
+      "ComponentList" :
+      [
+        {
+          "Type": "Transform",
+          "LPosition" : { "X": 0, "Y": 0, "Z": 0 },
+          "LRotation" : { "X": 0, "Y": 0, "Z": 0 },
+          "LScale"    : { "X": 1, "Y": 1, "Z": 1 },
+          "WPosition" : { "X": 0, "Y": 0, "Z": 0 },
+          "WRotation" : { "X": 45, "Y": 50, "Z": -70 },
+          "WScale"    : { "X": 1, "Y": 1, "Z": 1 }
+        }
+      ]
+    },
+    {
+      "SpecifierName" : "P_Independent01",
+      "Type"          : "Actor",
+      "IsInitiallyActivated": true,
+      "ChildrenName"  : [],
+      "ComponentList" :
+      [
+        {
+          "Type": "Transform",
+          "LPosition" : { "X": 0, "Y": 0, "Z": 0 },
+          "LRotation" : { "X": 0, "Y": 0, "Z": 0 },
+          "LScale"    : { "X": 1, "Y": 1, "Z": 1 },
+          "WPosition" : { "X": 0, "Y": 0, "Z": 0 },
+          "WRotation" : { "X": 45, "Y": 50, "Z": -70 },
+          "WScale"    : { "X": 1, "Y": 1, "Z": 1 }
+        }
+      ]
+    }
+  ]
+}

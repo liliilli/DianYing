@@ -19,12 +19,29 @@
 #include <Dy/Core/Component/Object/DeferredRenderingMesh.h>
 #include <Dy/Core/Component/Object/PostEffectSsao.h>
 #include <Dy/Core/Component/Object/Grid.h>
-#include "Dy/Core/Rendering/BasicShadow.h"
+#include <Dy/Core/Rendering/BasicShadow.h>
+#include <Dy/Core/Rendering/BasicRenderer.h>
+
+//!
+//! Forward declaration
+//!
+
+namespace dy
+{
+struct  DDyUboDirectionalLight;
+class   CDyCamera;
+class   CDyModelRenderer;
+class   CDyDirectionalLight;
+} /// ::dy namespace
 
 namespace dy::editor
 {
-class FDyMainViewport;
-}
+class   FDyMainViewport;
+} /// ::dy::editor namespace
+
+//!
+//! Implementation
+//!
 
 namespace dy
 {
@@ -40,56 +57,92 @@ class MDyRendering final : public ISingleton<MDyRendering>
 public:
   ///
   /// @brief
+  /// @param rendererInstance
+  /// @TODO SCRIPT THIS!
   ///
-  void PushDrawCallTask(CDyMeshRenderer& rendererInstance);
+  void PushDrawCallTask(_MIN_ CDyModelRenderer& rendererInstance);
 
   ///
   /// @brief
+  /// @TODO SCRIPT THIS!
   ///
   void RenderDrawCallQueue();
 
 private:
   ///
-  /// @brief Create geometry buffers (aka G-buffer) for deferred rendering.
-  ///
-  void pCreateDeferredGeometryBuffers() noexcept;
-
-  ///
-  /// @brief Release geometry buffers (aka G-buffer) for deferred rendering.
-  ///
-  void pReleaseGeometryBuffers() noexcept;
-
-  ///
   /// @brief Reset all of rendering framebuffers related to rendering of scene for new frame rendering.
   ///
-  void pResetRenderingFramebufferInstances() noexcept;
+  void pClearRenderingFramebufferInstances() noexcept;
 
   ///
-  void pRenderDeferredFrameBufferWith(const CDyMeshRenderer& renderer) noexcept;
+  /// @brief  Issue available directional light index. If not available, just no value.
+  /// @param  Instance
+  /// @return
+  ///
+  MDY_NODISCARD std::optional<TI32> pGetAvailableDirectionalLightIndex(_MIN_ const CDyDirectionalLight&);
 
   ///
-  void pRenderShadowFrameBufferWith(const CDyMeshRenderer& renderer) noexcept;
+  /// @brief  Unbind valid directional light component that which is being binded to system.
+  /// @param  component Binded directional light component which has valid index.
+  /// @return If successfully unbinded, return true or false.
+  ///
+  MDY_NODISCARD EDySuccess pUnbindDirectionalLight(_MIN_ const CDyDirectionalLight& component);
 
-  TU32                mDeferredFrameBufferId  = MDY_NOT_INITIALIZED_0;
-  std::array<TU32, 4> mAttachmentBuffers      = {};
-  const TI32          mAttachmentBuffersCount = static_cast<TI32>(mAttachmentBuffers.size());
+  ///
+  /// @brief  Update UBO directional light container value to gpu memory for lighting.
+  /// @param  index     Valid index value which got by using pGetAvaiableDirectionalLightIndex().
+  /// @param  container Uniform buffer object C++ container instance.
+  /// @return If process is succeeded, return true but false when index is oob or container value is not valid.
+  ///
+  MDY_NODISCARD EDySuccess pUpdateDirectionalLightValueToGpu(
+      _MIN_ const TI32 index,
+      _MIN_ const DDyUboDirectionalLight& container);
+
+  ///
+  /// @brief  Check whether or not directional light shadow is available to instance.
+  /// @param  Instance for type trailing
+  /// @return If available, just return true or false.
+  ///
+  MDY_NODISCARD bool pfIsAvailableDirectionalLightShadow(_MIN_ const CDyDirectionalLight&);
+
+  ///
+  /// @brief
+  /// @param
+  /// @return
+  ///
+  MDY_NODISCARD EDySuccess pfUpdateDirectionalLightShadowToGpu(_MIN_ const CDyDirectionalLight& component);
+
+  ///
+  /// @brief
+  /// @param
+  /// @return
+  ///
+  MDY_NODISCARD EDySuccess pfUnbindDirectionalLightShadowToGpu(_MIN_ const CDyDirectionalLight& component);
+
+  //!
+  //! Members
+  //!
 
   std::unique_ptr<FDyDeferredRenderingMesh>   mFinalRenderingMesh   = nullptr;
-  std::queue<CDyMeshRenderer*>                mDrawCallQueue        = {};
+  std::vector<NotNull<CDyModelRenderer*>>     mOpaqueDrawCallList        = {};
 
-  bool                                        mTempIsEnabledSsao    = true;
+  ///
+  std::unique_ptr<FDyBasicRenderer>           mBasicRenderer        = MDY_INITIALIZE_NULL;
+
+  bool                                        mIsEnabledSsaoRendering    = true;
   std::unique_ptr<FDyPostEffectSsao>          mTempSsaoObject       = nullptr;
 
-  bool                                        mTempIsEnabledShadow  = true;
-  std::unique_ptr<FDyBasicShadow>             mTempShadowObject     = nullptr;
+  bool                                        mIsEnabledShadowRendering  = true;
+  std::unique_ptr<FDyBasicShadow>             mShadowRenderer     = nullptr;
 
 #if defined(MDY_FLAG_IN_EDITOR)
   std::unique_ptr<FDyGrid>                    mGridEffect           = nullptr;
 #endif /// MDY_FLAG_IN_EDITOR
 
+  friend class CDyDirectionalLight;
   friend class FDyDeferredRenderingMesh;
-  friend class editor::FDyMainViewport;
   friend class FDyPostEffectSsao;
+  friend class editor::FDyMainViewport;
 };
 
 } /// ::dy namespace

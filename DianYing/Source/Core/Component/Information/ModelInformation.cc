@@ -29,7 +29,6 @@
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Helper/ThreadPool.h>
 #include <Dy/Helper/IoHelper.h>
-#include <Phitos/Dbg/assert.h>
 
 namespace
 {
@@ -385,7 +384,7 @@ void DDyModelInformation::__pReadBoneData(const aiMesh& mesh, PDySubmeshInformat
   for (TU32 i = 0; i < mesh.mNumBones; ++i)
   {
     const aiBone&     bone      = *mesh.mBones[i];
-    TI32              boneId    = MDY_NOT_INITIALIZED_0;
+    TI32              boneId    = MDY_INITIALIZE_DEFUINT;
     const std::string boneName  = bone.mName.C_Str();
 
     if (const auto it = this->mBoneIdMap.find(boneName); it != this->mBoneIdMap.end())
@@ -439,7 +438,7 @@ PDyMaterialConstructionDescriptor DDyModelInformation::__pReadMaterialData(const
   aiString materialName  = {};
   if (const auto ret = material.Get(AI_MATKEY_NAME, materialName); ret == AI_FAILURE)
   {
-    PHITOS_UNEXPECTED_BRANCH();
+    MDY_UNEXPECTED_BRANCH();
   }
 
   // Get material textures information.

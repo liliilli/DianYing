@@ -302,7 +302,7 @@ EDySuccess MDySound::PlaySoundElement(const std::string& soundName) const noexce
     {
       soundResource->mSoundChannel->setPaused(false);
     } break;
-    default: PHITOS_UNEXPECTED_BRANCH(); break;
+    default: MDY_UNEXPECTED_BRANCH(); break;
     }
 
     soundResource->mSoundStatus = EDySoundStatus::Playing;

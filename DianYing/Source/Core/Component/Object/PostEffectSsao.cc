@@ -15,7 +15,6 @@
 /// Header file
 #include <Dy/Core/Component/Object/PostEffectSsao.h>
 
-#include <Phitos/Dbg/assert.h>
 #include <Dy/Management/DataInformationManager.h>
 #include <Dy/Management/HeapResourceManager.h>
 #include <Dy/Management/RenderingManager.h>
@@ -67,7 +66,8 @@ FDyPostEffectSsao::~FDyPostEffectSsao()
 
 void FDyPostEffectSsao::RenderScreen()
 {
-  PHITOS_ASSERT(this->mSsaoShaderPtr,     "FDyPostEffectSsao::mSsaoShaderPtr must not be nullptr.");
+#ifdef false
+  MDY_ASSERT(this->mSsaoShaderPtr,     "FDyPostEffectSsao::mSsaoShaderPtr must not be nullptr.");
 
   //!
   //! SSAO rendering
@@ -93,7 +93,7 @@ void FDyPostEffectSsao::RenderScreen()
   //! SSAO blurring rendering
   //!
 
-  PHITOS_ASSERT(this->mSsaoBlurShaderPtr, "FDyPostEffectSsao::mSsaoBlurShaderPtr must not be nullptr.");
+  MDY_ASSERT(this->mSsaoBlurShaderPtr, "FDyPostEffectSsao::mSsaoBlurShaderPtr must not be nullptr.");
 
   glBindFramebuffer (GL_FRAMEBUFFER, this->mSsaoBlurFrameBufferId);
   glClear           (GL_COLOR_BUFFER_BIT);
@@ -107,6 +107,7 @@ void FDyPostEffectSsao::RenderScreen()
   this->mSsaoBlurShaderPtr->UnuseShader();
 
   glBindFramebuffer (GL_FRAMEBUFFER, 0);
+#endif
 }
 
 void FDyPostEffectSsao::pCreateMesh()
@@ -158,7 +159,7 @@ void FDyPostEffectSsao::pCreateSsaoFrameBufferComponents()
   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->mSsaoColorBuffer, 0);
   if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
   {
-    PHITOS_UNEXPECTED_BRANCH();
+    MDY_UNEXPECTED_BRANCH();
   }
 
   const GLenum attachment[] = { GL_COLOR_ATTACHMENT0 };
@@ -209,7 +210,7 @@ void FDyPostEffectSsao::pCreateBlurFrameBufferComponent()
   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->mSsaoBlurColorBuffer, 0);
   if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
   {
-    PHITOS_UNEXPECTED_BRANCH();
+    MDY_UNEXPECTED_BRANCH();
   }
 
   const GLenum attachment[] = { GL_COLOR_ATTACHMENT0 };
@@ -243,7 +244,7 @@ void FDyPostEffectSsao::pCreateSsaoShaderResource()
   MDY_CALL_ASSERT_SUCCESS(manResc.CreateShaderResource(shaderDesc.mShaderName));
 
   this->mSsaoShaderPtr = manResc.GetShaderResource(shaderDesc.mShaderName);
-  PHITOS_ASSERT(this->mSsaoShaderPtr, "FDyDeferredRenderingMesh::mSsaoShaderPtr must not be nullptr.");
+  MDY_ASSERT(this->mSsaoShaderPtr, "FDyDeferredRenderingMesh::mSsaoShaderPtr must not be nullptr.");
 
   this->mSsaoShaderPtr->UseShader();
   glUniform1i(glGetUniformLocation(this->mSsaoShaderPtr->GetShaderProgramId(), "ugPosition"), 0);
@@ -287,7 +288,7 @@ void FDyPostEffectSsao::pCreateSsaoBlurShaderResource()
   MDY_CALL_ASSERT_SUCCESS(manResc.CreateShaderResource(shaderDesc.mShaderName));
 
   this->mSsaoBlurShaderPtr = manResc.GetShaderResource(shaderDesc.mShaderName);
-  PHITOS_ASSERT(this->mSsaoBlurShaderPtr, "FDyDeferredRenderingMesh::mSsaoBlurShaderPtr must not be nullptr.");
+  MDY_ASSERT(this->mSsaoBlurShaderPtr, "FDyDeferredRenderingMesh::mSsaoBlurShaderPtr must not be nullptr.");
 
   this->mSsaoBlurShaderPtr->UseShader();
   glUniform1i(glGetUniformLocation(this->mSsaoBlurShaderPtr->GetShaderProgramId(), "uSsaoInput"), 0);

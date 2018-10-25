@@ -59,7 +59,7 @@ public:
   [[nodiscard]]
   FORCEINLINE bool IsBeingBindedToResource() const noexcept
   {
-    return this->__mLinkedMaterialResourcePtr != nullptr;
+    return MDY_CHECK_ISNOTNULL(this->__mLinkedMaterialResourcePtr);
   }
 
   ///
@@ -95,10 +95,10 @@ private:
   }
   FORCEINLINE void __pfResetMaterialResourceLink() const noexcept
   {
-    this->__mLinkedMaterialResourcePtr = nullptr;
+    this->__mLinkedMaterialResourcePtr = MDY_INITIALIZE_NULL;
   }
 
-  MDY_TRANSIENT CDyMaterialResource*                      __mLinkedMaterialResourcePtr = nullptr;
+  MDY_TRANSIENT CDyMaterialResource*                      __mLinkedMaterialResourcePtr = MDY_INITIALIZE_NULL;
   MDY_TRANSIENT std::unordered_map<std::string, int32_t>  __mPopulatedMaterialIndexMap = {};
 
   friend class CDyMaterialResource;
