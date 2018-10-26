@@ -50,22 +50,26 @@ FDyBuiltinTextureChecker::FDyBuiltinTextureChecker()
   desc.mTextureName       = FDyBuiltinTextureChecker::sName;
   desc.mTextureType       = EDyTextureStyleType::D2;
   desc.mTextureMapType    = EDyTextureMapType::Diffuse;
-  desc.mTextureColorType  = EDyImageColorFormatStyle::R;
+  desc.mTextureColorType  = EDyImageColorFormatStyle::RGB;
   desc.mWidth             = 8;
   desc.mHeight            = 8;
 
-  std::array<TU08, 64> infoChunk =
+  constexpr std::array<TU08, 3> mOn = {sOn, sOn, sOn};
+  constexpr std::array<TU08, 3> mOf = {sOf, sOf, sOf};
+
+  std::array<std::array<TU08, 3>, 64> infoChunk =
   {
-    sOf, sOn, sOf, sOn, sOf, sOn, sOf, sOn,
-    sOn, sOf, sOn, sOf, sOn, sOf, sOn, sOf,
-    sOf, sOn, sOf, sOn, sOf, sOn, sOf, sOn,
-    sOn, sOf, sOn, sOf, sOn, sOf, sOn, sOf,
-    sOf, sOn, sOf, sOn, sOf, sOn, sOf, sOn,
-    sOn, sOf, sOn, sOf, sOn, sOf, sOn, sOf,
-    sOf, sOn, sOf, sOn, sOf, sOn, sOf, sOn,
-    sOn, sOf, sOn, sOf, sOn, sOf, sOn, sOf,
+    mOf, mOn, mOf, mOn, mOf, mOn, mOf, mOn,
+    mOn, mOf, mOn, mOf, mOn, mOf, mOn, mOf,
+    mOf, mOn, mOf, mOn, mOf, mOn, mOf, mOn,
+    mOn, mOf, mOn, mOf, mOn, mOf, mOn, mOf,
+    mOf, mOn, mOf, mOn, mOf, mOn, mOf, mOn,
+    mOn, mOf, mOn, mOf, mOn, mOf, mOn, mOf,
+    mOf, mOn, mOf, mOn, mOf, mOn, mOf, mOn,
+    mOn, mOf, mOn, mOf, mOn, mOf, mOn, mOf,
   };
   desc.mBufferPtr = infoChunk.data();
+  desc.mIsUsingDefaultMipmapGeneration = true;
 
   MDY_CALL_ASSERT_SUCCESS(MDyHeapResource::GetInstance().CreateTextureResourceWithChunk(desc));
 }
