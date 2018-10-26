@@ -27,6 +27,7 @@
 #include <Dy/Helper/Type/VectorInt2.h>
 #include <Dy/Management/Type/FramebufferInformation.h>
 #include <Dy/Management/Internal/FramebufferManager.h>
+#include <Dy/Management/Internal/UniformBufferObjectManager.h>
 #include <Dy/Core/Rendering/Helper/FrameAttachmentString.h>
 
 //!
@@ -124,10 +125,23 @@ FDyBasicRenderer::FDyBasicRenderer()
 
   this->mGivenFrameBufferPointer = framebufferManager.GetFrameBufferPointer(MSVSTR(sFrameBuffer_Deferred));
   MDY_ASSERT(this->mGivenFrameBufferPointer != nullptr, "Unexpected error.");
+
+  // Create ubo information for "CameraBlock"
+  auto& uboManager = MDyUniformBufferObject::GetInstance();
+  PDyUboConstructionDescriptor desc = {};
+  desc.mBindingIndex      = 0;
+  desc.mUboSpecifierName  = sUboCameraBlock;
+  desc.mBufferDrawType    = EDyBufferDrawType::DynamicDraw;
+  desc.mUboElementSize    = sizeof(DDyUboCameraBlock);
+  desc.mUboArraySize      = 1;
+  MDY_CALL_ASSERT_SUCCESS(uboManager.CreateUboContainer(desc));
 }
 
 FDyBasicRenderer::~FDyBasicRenderer()
 {
+  auto& uboManager = MDyUniformBufferObject::GetInstance();
+  MDY_CALL_ASSERT_SUCCESS(uboManager.RemoveUboContainer(MSVSTR(sUboCameraBlock)));
+
   auto& framebufferManager  = MDyFramebuffer::GetInstance();
   MDY_CALL_ASSERT_SUCCESS(framebufferManager.RemoveFrameBuffer(MSVSTR(sFrameBuffer_Deferred)));
   this->mGivenFrameBufferPointer = nullptr;
@@ -143,14 +157,32 @@ void FDyBasicRenderer::RenderScreen(_MIN_ const std::vector<NotNull<CDyModelRend
   glBindFramebuffer(GL_FRAMEBUFFER, this->mGivenFrameBufferPointer->GetFramebufferId());
 
   auto& worldManager     = MDyWorld::GetInstance();
+  auto& uboManager       = MDyUniformBufferObject::GetInstance();
   const auto cameraCount = worldManager.GetFocusedCameraCount();
   for (TI32 cameraId = 0; cameraId < cameraCount; ++cameraId)
   { // Get valid CDyCamera instance pointer address.
     const auto opCamera = worldManager.GetFocusedCameraValidReference(cameraId);
     if (opCamera.has_value() == false) { continue; }
 
-    // Set viewport values to camera's properties.
     const auto& validCameraRawPtr = *opCamera.value();
+    {
+      const auto flag = uboManager.UpdateUboContainer(
+          MSVSTR(sUboCameraBlock),
+          offsetof(DDyUboCameraBlock, mViewMatrix),
+          sizeof(DDyUboCameraBlock::mViewMatrix),
+          &validCameraRawPtr.GetViewMatrix()[0].X);
+      MDY_ASSERT(flag == DY_SUCCESS, "");
+    }
+    {
+      const auto flag = uboManager.UpdateUboContainer(
+          MSVSTR(sUboCameraBlock),
+          offsetof(DDyUboCameraBlock, mProjMatrix),
+          sizeof(DDyUboCameraBlock::mProjMatrix),
+          &validCameraRawPtr.GetProjectionMatrix()[0].X);
+      MDY_ASSERT(flag == DY_SUCCESS, "");
+    }
+
+    // Set viewport values to camera's properties.
     const auto viewportRect       = validCameraRawPtr.GetPixelizedViewportRectangle();
     glViewport(viewportRect[0], viewportRect[1], viewportRect[2], viewportRect[3]);
 
@@ -161,17 +193,6 @@ void FDyBasicRenderer::RenderScreen(_MIN_ const std::vector<NotNull<CDyModelRend
   }
 
   // Return to default frame buffer.
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
-void FDyBasicRenderer::Clear()
-{ // Integrity test
-  if (MDY_CHECK_ISNULL(this->mGivenFrameBufferPointer)) { return; }
-
-  // Reset overall deferred framebuffer setting
-  glBindFramebuffer(GL_FRAMEBUFFER, this->mGivenFrameBufferPointer->GetFramebufferId());
-  glClearColor(0, 0, 0, 0);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -203,14 +224,8 @@ void FDyBasicRenderer::pRenderScreen(const CDyModelRenderer& renderer, const CDy
     glBindVertexArray(submesh.GetVertexArrayId());
 
     const auto modelMatrix = glGetUniformLocation(shaderResource->GetShaderProgramId(), "modelMatrix");
-    const auto viewMatrix = glGetUniformLocation(shaderResource->GetShaderProgramId(), "viewMatrix");
-    const auto projMatirx = glGetUniformLocation(shaderResource->GetShaderProgramId(), "projectionMatrix");
-
     const auto& model = const_cast<FDyActor*>(renderer.GetBindedActor())->GetTransform()->GetTransform();
-
     glUniformMatrix4fv(modelMatrix, 1, GL_FALSE, &model[0].X);
-    glUniformMatrix4fv(viewMatrix, 1, GL_FALSE, &validCamera.GetViewMatrix()[0].X);
-    glUniformMatrix4fv(projMatirx, 1, GL_FALSE, &validCamera.GetProjectionMatrix()[0].X);
 
     // If skeleton animation is enabled, get bone transform and bind to shader.
 #ifdef false
@@ -259,5 +274,17 @@ void FDyBasicRenderer::pRenderScreen(const CDyModelRenderer& renderer, const CDy
     shaderResource->UnuseShader();
   }
 }
+
+void FDyBasicRenderer::Clear()
+{ // Integrity test
+  if (MDY_CHECK_ISNULL(this->mGivenFrameBufferPointer)) { return; }
+
+  // Reset overall deferred framebuffer setting
+  glBindFramebuffer(GL_FRAMEBUFFER, this->mGivenFrameBufferPointer->GetFramebufferId());
+  glClearColor(0, 0, 0, 0);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
 
 } /// ::dy namespace

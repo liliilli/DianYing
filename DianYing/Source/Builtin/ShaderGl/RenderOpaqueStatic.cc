@@ -33,26 +33,31 @@ layout (location = 1) in vec3 dyNormal;
 layout (location = 2) in vec2 dyTexCoord0;
 
 uniform mat4 modelMatrix;
-uniform mat4 viewMatrix;
-uniform mat4 projectionMatrix;
+//uniform mat4 viewMatrix;
+//uniform mat4 projectionMatrix;
 
-out gl_PerVertex {
-    vec4 gl_Position;
-};
+layout(std140, binding = 0) uniform CameraBlock
+{
+  uniform mat4 mProjMatrix;
+  uniform mat4 mViewMatrix;
+} uCamera;
 
-out VS_OUT {
+out gl_PerVertex { vec4 gl_Position; };
+out VS_OUT
+{
 	vec3 fragColor;
 	vec3 normal;
 	vec2 texCoord;
 	vec4 modelPosition;
 } vs_out;
 
-void main() {
-  gl_Position			    = projectionMatrix * viewMatrix * modelMatrix * vec4(dyPosition, 1.0);
-  vs_out.fragColor	  = dyNormal * 0.5f + 0.5f;
-	vs_out.normal		    = mat3(modelMatrix) * dyNormal;
-	vs_out.texCoord		  = dyTexCoord0;
-	vs_out.modelPosition = modelMatrix * vec4(dyPosition, 1.0);
+void main()
+{
+  gl_Position			      = uCamera.mProjMatrix * uCamera.mViewMatrix * modelMatrix * vec4(dyPosition, 1.0);
+  vs_out.fragColor	    = dyNormal * 0.5f + 0.5f;
+	vs_out.normal		      = mat3(modelMatrix) * dyNormal;
+	vs_out.texCoord		    = dyTexCoord0;
+	vs_out.modelPosition  = modelMatrix * vec4(dyPosition, 1.0);
 }
 
 )dy");

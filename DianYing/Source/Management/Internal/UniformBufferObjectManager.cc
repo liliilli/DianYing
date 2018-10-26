@@ -117,7 +117,7 @@ EDySuccess MDyUniformBufferObject::UpdateUboContainer(
     _MIN_ const TU32 bufferWrapSize,
     _MIN_ const void* bufferCopyPtr)
 { // Integrity test :: unvalid specifier test
-  DDyUboInstanceInformation* uboPtr = this->GetUboContainer(specifier);
+  const DDyUboInstanceInformation* uboPtr = this->GetUboContainer(specifier);
   if (MDY_CHECK_ISNULL(uboPtr))
   {
     MDY_LOG_ERROR("{} | Failed to update UBO container. Given name is not exist. | Name : {}",
@@ -147,7 +147,7 @@ EDySuccess MDyUniformBufferObject::ClearUboContainer(
     _MIN_ const TU32 bufferStartByte,
     _MIN_ const TU32 bufferWrapSize)
 { // Integrity test :: unvalid specifier test
-  DDyUboInstanceInformation* uboPtr = this->GetUboContainer(specifier);
+  const DDyUboInstanceInformation* uboPtr = this->GetUboContainer(specifier);
   if (MDY_CHECK_ISNULL(uboPtr))
   {
     MDY_LOG_ERROR("{} | Failed to clear UBO container. Given name is not exist. | Name : {}", MSVSTR(sFunc_CreateUboContainer), specifier);
@@ -173,7 +173,7 @@ EDySuccess MDyUniformBufferObject::ClearUboContainer(
 
 EDySuccess MDyUniformBufferObject::RemoveUboContainer(_MIN_ const std::string& specifier)
 { // Integrity test :: unvalid specifier test
-  DDyUboInstanceInformation* uboPtr = this->GetUboContainer(specifier);
+  const DDyUboInstanceInformation* uboPtr = this->GetUboContainer(specifier);
   if (MDY_CHECK_ISNULL(uboPtr))
   {
     MDY_LOG_ERROR("{} | Failed to clear UBO container. Given name is not exist. | Name : {}",
