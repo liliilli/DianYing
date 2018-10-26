@@ -39,7 +39,7 @@ namespace dy::builtin
 FDyBuiltinTextureErrorBlue::FDyBuiltinTextureErrorBlue()
 {
   PDyTextureConstructionBufferChunkDescriptor desc = {};
-  desc.mTextureName       = FDyBuiltinTextureErrorBlue::sName;
+  desc.mTextureSpecifierName       = FDyBuiltinTextureErrorBlue::sName;
   desc.mTextureType       = EDyTextureStyleType::D2;
   desc.mTextureMapType    = EDyTextureMapType::Diffuse;
   desc.mTextureColorType  = EDyImageColorFormatStyle::RGBA;

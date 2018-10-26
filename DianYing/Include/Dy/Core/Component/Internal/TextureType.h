@@ -16,33 +16,27 @@
 #include <Dy/Helper/Type/Color.h>
 #include <Dy/Core/Component/Internal/TextureEnums.h>
 #include <Dy/Helper/Internal/ImageBinaryBuffer.h>
+#include <Dy/Meta/Type/TextureParameter.h>
 
 namespace dy
 {
-
-///
-/// @class PDyTextureParameterOption
-/// @brief Texture parameter option container such as MIN_FILTER MAG_FILTER WRAP_S WRAP_T etc.
-///
-struct PDyTextureParameterOption final
-{
-  PDyTextureParameterOption(uint32_t option, uint32_t value) : mOption{option}, mValue{value} {};
-
-  const auto& GetOption() const noexcept  { return mOption; }
-  const auto& GetValue() const noexcept   { return mValue; }
-
-private:
-  uint32_t mOption = 0;
-  uint32_t mValue  = 0;
-};
 
 ///
 /// @struct PDyTextureConstructionBaseDesc
 /// @brief Texture construction base to apply to all derived descriptor type.
 ///
 struct PDyTextureConstructionBaseDesc
-{ // Use default opengl generated mipmap if true.
-  bool mIsUsingDefaultMipmapGeneration = false;
+{
+  /// Texture specification name.
+  std::string mTextureSpecifierName       = MDY_INITILAIZE_EMPTYSTR;
+  /// Texture parameters
+  std::vector<PDyGlTexParameterInformation> mParameterList = {};
+  /// Use customized texture parameters (PDyTextureConstructionBaseDesc::mParameterList)
+  bool mIsEnabledCustomedTextureParameter = false;
+  /// Use default opengl generated mipmap if true.
+  bool mIsUsingDefaultMipmapGeneration    = false;
+  /// Border color
+  DDyColor mBorderColor           = DDyColor::Black;
 };
 
 ///
@@ -51,18 +45,16 @@ struct PDyTextureConstructionBaseDesc
 ///
 struct PDyTextureConstructionDescriptor final : public PDyTextureConstructionBaseDesc
 {
-  std::string mTextureName                                        = MDY_INITILAIZE_EMPTYSTR;
-  std::string mTextureFileLocalPath                               = MDY_INITILAIZE_EMPTYSTR;
-  std::string mTextureFileAbsolutePath                            = MDY_INITILAIZE_EMPTYSTR;
-  DDyColor    mConstantBorderColor                                = DDyColor::Black;
-
-  std::vector<PDyTextureParameterOption> mTextureParameterOptions = {};
-
-  bool        mIsEnabledAbsolutePath                              = true;
-  bool        mIsEnabledCustomedTextureParameter                  = false;
-  bool        mIsEnabledCreateMipmap                              = false;
-  EDyTextureStyleType mTextureType                                = EDyTextureStyleType::None;
-  EDyTextureMapType   mTextureMapType                             = EDyTextureMapType::Custom;
+  ///
+  std::string mTextureFileLocalPath       = MDY_INITILAIZE_EMPTYSTR;
+  ///
+  std::string mTextureFileAbsolutePath    = MDY_INITILAIZE_EMPTYSTR;
+  ///
+  bool        mIsEnabledAbsolutePath      = true;
+  /// Texture is 1D or 2D?
+  EDyTextureStyleType mTextureType        = EDyTextureStyleType::None;
+  /// Map type @TODO NOT USED NOW.
+  EDyTextureMapType   mTextureMapType     = EDyTextureMapType::Custom;
 };
 
 ///
@@ -71,18 +63,18 @@ struct PDyTextureConstructionDescriptor final : public PDyTextureConstructionBas
 ///
 struct PDyTextureConstructionBufferChunkDescriptor final : public PDyTextureConstructionBaseDesc
 {
-  std::string         mTextureName                                = MDY_INITILAIZE_EMPTYSTR;
-  DDyColor            mConstantBorderColor                        = DDyColor::Black;
   /// Buffer pointer (not owned so must manage resources manually)
-  void*               mBufferPtr                                  = MDY_INITIALIZE_NULL;
+  void*               mBufferPtr             = MDY_INITIALIZE_NULL;
   /// Texture width size
-  TU32                mWidth                                      = 1;
+  TU32                mWidth                 = 1;
   /// Texture height size
-  TU32                mHeight                                     = 1;
+  TU32                mHeight                = 1;
   /// Texture type
-  EDyTextureStyleType mTextureType                                = EDyTextureStyleType::None;
-  EDyTextureMapType   mTextureMapType                             = EDyTextureMapType::Custom;
-  EDyImageColorFormatStyle mTextureColorType                      = EDyImageColorFormatStyle::NoneError;
+  EDyTextureStyleType mTextureType           = EDyTextureStyleType::None;
+  /// Map type @TODO NOT USED NOW.
+  EDyTextureMapType   mTextureMapType        = EDyTextureMapType::Custom;
+  ///
+  EDyImageColorFormatStyle mTextureColorType = EDyImageColorFormatStyle::NoneError;
 };
 
 } /// ::dy namespace

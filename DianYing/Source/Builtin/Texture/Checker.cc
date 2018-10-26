@@ -47,7 +47,7 @@ FDyBuiltinTextureChecker::FDyBuiltinTextureChecker()
   // 01010101
   // 10101010
   PDyTextureConstructionBufferChunkDescriptor desc = {};
-  desc.mTextureName       = FDyBuiltinTextureChecker::sName;
+  desc.mTextureSpecifierName       = FDyBuiltinTextureChecker::sName;
   desc.mTextureType       = EDyTextureStyleType::D2;
   desc.mTextureMapType    = EDyTextureMapType::Diffuse;
   desc.mTextureColorType  = EDyImageColorFormatStyle::RGB;
@@ -70,6 +70,15 @@ FDyBuiltinTextureChecker::FDyBuiltinTextureChecker()
   };
   desc.mBufferPtr = infoChunk.data();
   desc.mIsUsingDefaultMipmapGeneration = true;
+  // Add 2018-10-26
+  desc.mIsEnabledCustomedTextureParameter = true;
+  desc.mParameterList = {
+    PDyGlTexParameterInformation\
+    {EDyGlParameterName::TextureMinFilter, EDyGlParameterValue::Nearest},
+    {EDyGlParameterName::TextureMagFilter, EDyGlParameterValue::Nearest},
+    {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::ClampToEdge},
+    {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::ClampToEdge},
+  };
 
   MDY_CALL_ASSERT_SUCCESS(MDyHeapResource::GetInstance().CreateTextureResourceWithChunk(desc));
 }

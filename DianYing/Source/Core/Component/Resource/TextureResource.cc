@@ -22,26 +22,6 @@
 #include <Dy/Helper/Internal/ImageBinaryBuffer.h>
 #include <Dy/Management/LoggingManager.h>
 
-namespace
-{
-
-///
-/// @brief Set texture default parameter setting.
-/// GL_TEXTURE_MIN_FILTER to GL_NEAREST
-/// GL_TEXTURE_MAG_FILTER to GL_NEAREST
-/// GL_TEXTURE_WRAP_S to GL_REPEAT
-/// GL_TEXTURE_WRAP_T to GL_REPEAT
-///
-void DyGlSetDefaultOptionSetting(uint32_t textureId) {
-  glBindTexture(GL_TEXTURE_2D, textureId);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-}
-
-} /// ::unnamed namespace
-
 namespace dy
 {
 
@@ -96,6 +76,7 @@ EDySuccess CDyTextureResource::pfInitializeTextureResource(const DDyTextureInfor
     return DY_FAILURE;
   }
 
+  GLenum glTextureType = GL_NONE;
   // Get GL_TEXTURE_ TYPE from textureInfo.
   switch (textureInfo.mTextureType)
   {
@@ -106,6 +87,7 @@ EDySuccess CDyTextureResource::pfInitializeTextureResource(const DDyTextureInfor
                  dataBuffer->GetImageWidth(), 0,
                  glImageFormat, GL_UNSIGNED_BYTE,
                  dataBuffer->GetBufferStartPoint());
+    glTextureType = GL_TEXTURE_1D;
     break;
   case EDyTextureStyleType::D2:
     glGenTextures(1, &this->mTextureResourceId);
@@ -114,6 +96,7 @@ EDySuccess CDyTextureResource::pfInitializeTextureResource(const DDyTextureInfor
                  dataBuffer->GetImageWidth(), dataBuffer->GetImageHeight(), 0,
                  glImageFormat, GL_UNSIGNED_BYTE,
                  dataBuffer->GetBufferStartPoint());
+    glTextureType = GL_TEXTURE_2D;
     break;
   default: MDY_UNEXPECTED_BRANCH(); return DY_FAILURE;
   }
@@ -121,18 +104,10 @@ EDySuccess CDyTextureResource::pfInitializeTextureResource(const DDyTextureInfor
   // Check PDyTextureConstructionBaseDesc::mIsUsingDefaultMipmapGeneration for generating mipmap.
   // Specifies the target to which the texture whose mimaps to generate is bound.
   // target​ must be GL_TEXTURE_1D, GL_TEXTURE_2D, GL_TEXTURE_3D, GL_TEXTURE_1D_ARRAY, GL_TEXTURE_2D_ARRAY, GL_TEXTURE_CUBE_MAP, or GL_TEXTURE_CUBE_MAP_ARRAY.
-  if (textureInfo.mIsUsingDefaultMipmapGeneration == true)
-  {
-    switch (textureInfo.mTextureType)
-    {
-    case EDyTextureStyleType::D1: glGenerateMipmap(GL_TEXTURE_1D); break;
-    case EDyTextureStyleType::D2: glGenerateMipmap(GL_TEXTURE_2D); break;
-    default: MDY_UNEXPECTED_BRANCH(); return DY_FAILURE;
-    }
-  }
+  if (textureInfo.mIsUsingDefaultMipmapGeneration == true) { glGenerateMipmap(glTextureType); }
 
   // Forward dataBuffer's retrieved information to data members.
-  this->mTextureName    = textureInfo.mTextureName;
+  this->mTextureName    = textureInfo.mTextureSpecifierName;
   this->mTextureType    = textureInfo.mTextureType;
   this->mTextureWidth   = dataBuffer->GetImageWidth();
   switch (textureInfo.mTextureType)
@@ -143,40 +118,29 @@ EDySuccess CDyTextureResource::pfInitializeTextureResource(const DDyTextureInfor
   }
 
   // Set texture parameters.
-  if (!textureInfo.mIsEnabledCustomedTextureParameter)
+  if (textureInfo.mIsEnabledCustomedTextureParameter == true)
   {
-    DyGlSetDefaultOptionSetting(this->mTextureResourceId);
-  }
-  else
-  {
-#ifdef false
-    const auto& textureOptions = textureConstructionDescriptor.mTextureParameterOptions;
-    for (const auto& option : textureOptions)
-    {
-      const auto glOption = DyGlSpecifyOption(option.GetOption());
-      if (glOption == GL_NO_ERROR)
-      {
-        // Output error log to sink...
-        return DY_FAILURE;
-      }
+    MDY_ASSERT(DyCheckTextureParameterList(textureInfo.mParameterList) == DY_SUCCESS, "FFFFFFFF");
 
-      const auto glOptionValue = DyGlSpecifyOption(option.GetValue());
-      if (glOptionValue == GL_NO_ERROR)
-      {
-        // Output error log to sink...
-        return DY_FAILURE;
-      }
+    // Apply parameter option list to attachment.
+    bool isThisAttachmentUsingClampToBorder = false;
+    for (const auto& parameter : textureInfo.mParameterList)
+    { // Check there is ClmapToBorder for border coloring.
+      if (parameter.mParameterValue == EDyGlParameterValue::ClampToBorder) { isThisAttachmentUsingClampToBorder = true; }
+      // Set parameter
+      glTexParameteri(glTextureType,
+          DyGetParameterNameValue(parameter.mParameterOption),
+          DyGetParameterValueValue(parameter.mParameterValue));
     }
-#endif
+
+    if (isThisAttachmentUsingClampToBorder == true)
+    { // If isThisAttachmentUsingClampToBorder is true, apply border color to texture.
+      glTexParameterfv(glTextureType, GL_TEXTURE_BORDER_COLOR, textureInfo.mBorderColor.Data());
+    }
   }
 
   // Reset to default.
-  switch (textureInfo.mTextureType)
-  {
-  case EDyTextureStyleType::D1: glBindTexture(GL_TEXTURE_1D, 0); break;
-  case EDyTextureStyleType::D2: glBindTexture(GL_TEXTURE_2D, 0); break;
-  default: MDY_UNEXPECTED_BRANCH(); break;
-  }
+  glBindTexture(glTextureType, 0);
   return DY_SUCCESS;
 }
 
@@ -192,6 +156,7 @@ EDySuccess CDyTextureResource::pfInitializeTextureResourceWithChunk(const PDyTex
   default: MDY_UNEXPECTED_BRANCH();  return DY_FAILURE;
   }
 
+  GLenum glTextureType = GL_NONE;
   // Get GL_TEXTURE_ TYPE from textureInfo.
   switch (descriptor.mTextureType)
   {
@@ -199,11 +164,13 @@ EDySuccess CDyTextureResource::pfInitializeTextureResourceWithChunk(const PDyTex
     glGenTextures(1, &mTextureResourceId);
     glBindTexture(GL_TEXTURE_1D, mTextureResourceId);
     glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, descriptor.mWidth, 0, glImageFormat, GL_UNSIGNED_BYTE, descriptor.mBufferPtr);
+    glTextureType = GL_TEXTURE_1D;
     break;
   case EDyTextureStyleType::D2:
     glGenTextures(1, &mTextureResourceId);
     glBindTexture(GL_TEXTURE_2D, mTextureResourceId);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, descriptor.mWidth, descriptor.mHeight, 0, glImageFormat, GL_UNSIGNED_BYTE, descriptor.mBufferPtr);
+    glTextureType = GL_TEXTURE_2D;
     break;
   default: MDY_UNEXPECTED_BRANCH();  return DY_FAILURE;
   }
@@ -211,37 +178,43 @@ EDySuccess CDyTextureResource::pfInitializeTextureResourceWithChunk(const PDyTex
   // Check PDyTextureConstructionBaseDesc::mIsUsingDefaultMipmapGeneration for generating mipmap.
   // Specifies the target to which the texture whose mimaps to generate is bound.
   // target​ must be GL_TEXTURE_1D, GL_TEXTURE_2D, GL_TEXTURE_3D, GL_TEXTURE_1D_ARRAY, GL_TEXTURE_2D_ARRAY, GL_TEXTURE_CUBE_MAP, or GL_TEXTURE_CUBE_MAP_ARRAY.
-  if (descriptor.mIsUsingDefaultMipmapGeneration == true)
-  {
-    switch (descriptor.mTextureType)
-    {
-    case EDyTextureStyleType::D1: glGenerateMipmap(GL_TEXTURE_1D); break;
-    case EDyTextureStyleType::D2: glGenerateMipmap(GL_TEXTURE_2D); break;
-    default: MDY_UNEXPECTED_BRANCH(); return DY_FAILURE;
-    }
-  }
+  if (descriptor.mIsUsingDefaultMipmapGeneration == true) { glGenerateMipmap(glTextureType); }
 
   // Forward dataBuffer's retrieved information to data members.
-  this->mTextureName    = descriptor.mTextureName;
+  this->mTextureName    = descriptor.mTextureSpecifierName;
   this->mTextureType    = descriptor.mTextureType;
   this->mTextureWidth   = descriptor.mHeight;
   switch (descriptor.mTextureType)
   {
-  case EDyTextureStyleType::D1: this->mTextureHeight  = 1; break;
-  case EDyTextureStyleType::D2: this->mTextureHeight  = descriptor.mHeight; break;
+  case EDyTextureStyleType::D1: this->mTextureHeight = 1; break;
+  case EDyTextureStyleType::D2: this->mTextureHeight = descriptor.mHeight; break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 
   // Set texture parameters.
-  DyGlSetDefaultOptionSetting(mTextureResourceId);
+  if (descriptor.mIsEnabledCustomedTextureParameter == true)
+  { // Check for parameter types.
+    MDY_ASSERT(DyCheckTextureParameterList(descriptor.mParameterList) == DY_SUCCESS, "FFFFFFFF");
+
+    // Apply parameter option list to attachment.
+    bool isThisAttachmentUsingClampToBorder = false;
+    for (const auto& parameter : descriptor.mParameterList)
+    { // Check there is ClmapToBorder for border coloring.
+      if (parameter.mParameterValue == EDyGlParameterValue::ClampToBorder) { isThisAttachmentUsingClampToBorder = true; }
+      // Set parameter
+      glTexParameteri(glTextureType,
+          DyGetParameterNameValue(parameter.mParameterOption),
+          DyGetParameterValueValue(parameter.mParameterValue));
+    }
+
+    if (isThisAttachmentUsingClampToBorder == true)
+    { // If isThisAttachmentUsingClampToBorder is true, apply border color to texture.
+      glTexParameterfv(glTextureType, GL_TEXTURE_BORDER_COLOR, descriptor.mBorderColor.Data());
+    }
+  }
 
   // Reset to default.
-  switch (descriptor.mTextureType)
-  {
-  case EDyTextureStyleType::D1: glBindTexture(GL_TEXTURE_1D, 0); break;
-  case EDyTextureStyleType::D2: glBindTexture(GL_TEXTURE_2D, 0); break;
-  default: MDY_UNEXPECTED_BRANCH(); break;
-  }
+  glBindTexture(glTextureType, 0);
   return DY_SUCCESS;;
 }
 

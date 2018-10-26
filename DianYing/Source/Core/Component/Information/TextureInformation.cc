@@ -36,7 +36,7 @@ DDyTextureInformation::DDyTextureInformation(const PDyTextureConstructionDescrip
     mTextureInformation{textureConstructionDescriptor}
 {
   // Set properties and output log for properties.
-  MDY_LOG_INFO_D(kTextureInformationTemplate, kTextureInformation, "name", this->mTextureInformation.mTextureName);
+  MDY_LOG_INFO_D(kTextureInformationTemplate, kTextureInformation, "name", this->mTextureInformation.mTextureSpecifierName);
   MDY_LOG_INFO_D(kTextureInformationTemplate, kTextureInformation, "local path", this->mTextureInformation.mTextureFileLocalPath);
   MDY_LOG_INFO_D(kTextureInformationTemplate, kTextureInformation, "absolute path", this->mTextureInformation.mTextureFileAbsolutePath);
 
@@ -52,7 +52,7 @@ DDyTextureInformation::DDyTextureInformation(const PDyTextureConstructionDescrip
   }
 
   MDY_LOG_INFO_D(kTextureInformationTemplate, kTextureInformation, "absolute path", this->mTextureInformation.mIsEnabledAbsolutePath ? "ON" : "OFF");
-  MDY_LOG_INFO_D(kTextureInformationTemplate, kTextureInformation, "mipmap creation flag", this->mTextureInformation.mIsEnabledCreateMipmap ? "ON" : "OFF");
+  MDY_LOG_INFO_D(kTextureInformationTemplate, kTextureInformation, "mipmap creation flag", this->mTextureInformation.mIsUsingDefaultMipmapGeneration ? "ON" : "OFF");
   MDY_LOG_INFO_D(kTextureInformationTemplate, kTextureInformation, "custom parameter options", this->mTextureInformation.mIsEnabledCustomedTextureParameter ? "ON" : "OFF");
 
   // @todo output log of map type and parameter options.
@@ -60,7 +60,7 @@ DDyTextureInformation::DDyTextureInformation(const PDyTextureConstructionDescrip
 
 DDyTextureInformation::~DDyTextureInformation()
 {
-  MDY_LOG_INFO_D(kTextureInformationTemplate, "~CDyShaderInformation", "name", this->mTextureInformation.mTextureName);
+  MDY_LOG_INFO_D(kTextureInformationTemplate, "~CDyShaderInformation", "name", this->mTextureInformation.mTextureSpecifierName);
   if (this->__mLinkedTextureResourcePtr) { this->__mLinkedTextureResourcePtr->__pfResetTextureInformationLink(); }
 }
 
