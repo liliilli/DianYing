@@ -123,6 +123,8 @@
     <ClCompile Include="Source\Management\BindingLua\BindingComponentType.cc" />
     <ClCompile Include="Source\Core\Rendering\DeferredRenderingMesh.cc" />
     <ClCompile Include="Source\Meta\Type\TextureParameter.cc" />
+    <ClCompile Include="Source\Meta\Descriptor\WidgetComponentDescriptor.cc" />
+    <ClCompile Include="Source\Meta\Descriptor\WidgetCommponDescriptor.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -330,6 +332,8 @@
     <ClInclude Include="Include\Dy\Management\Helper\LuaBindingEntry.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\DeferredRenderingMesh.h" />
     <ClInclude Include="Include\Dy\Meta\Type\TextureParameter.h" />
+    <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetComponentDescriptor.h" />
+    <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetCommonDescriptor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

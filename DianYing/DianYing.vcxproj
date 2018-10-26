@@ -271,6 +271,8 @@
     <ClCompile Include="Source\Management\SynchronizationManager.cc" />
     <ClCompile Include="Source\Management\TimeManager.cc" />
     <ClCompile Include="Source\Management\WindowManager.cc" />
+    <ClCompile Include="Source\Meta\Descriptor\WidgetCommponDescriptor.cc" />
+    <ClCompile Include="Source\Meta\Descriptor\WidgetComponentDescriptor.cc" />
     <ClCompile Include="Source\Meta\Type\TextureParameter.cc" />
     <ClCompile Include="Source\precompiled.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -450,6 +452,8 @@
     <ClInclude Include="Include\Dy\Management\SettingManager.h" />
     <ClInclude Include="Include\Dy\Management\TimeManager.h" />
     <ClInclude Include="Include\Dy\Meta\Descriptor\ScriptDescriptor.h" />
+    <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetCommonDescriptor.h" />
+    <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetComponentDescriptor.h" />
     <ClInclude Include="Include\Dy\Meta\Type\TextureParameter.h" />
     <ClInclude Include="Include\Dy\Test\testLua.h" />
     <ClInclude Include="Include\Dy\Test\TestMacroSetting.h" />
