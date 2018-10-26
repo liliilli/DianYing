@@ -37,10 +37,19 @@ private:
 };
 
 ///
+/// @struct PDyTextureConstructionBaseDesc
+/// @brief Texture construction base to apply to all derived descriptor type.
+///
+struct PDyTextureConstructionBaseDesc
+{ // Use default opengl generated mipmap if true.
+  bool mIsUsingDefaultMipmapGeneration = false;
+};
+
+///
 /// @class PDyTextureConstructionDescriptor
 /// @brief Texture construction descriptor.
 ///
-struct PDyTextureConstructionDescriptor final
+struct PDyTextureConstructionDescriptor final : public PDyTextureConstructionBaseDesc
 {
   std::string mTextureName                                        = MDY_INITILAIZE_EMPTYSTR;
   std::string mTextureFileLocalPath                               = MDY_INITILAIZE_EMPTYSTR;
@@ -60,7 +69,7 @@ struct PDyTextureConstructionDescriptor final
 /// @class PDyTextureConstructionBufferChunkDescriptor
 /// @brief
 ///
-struct PDyTextureConstructionBufferChunkDescriptor final
+struct PDyTextureConstructionBufferChunkDescriptor final : public PDyTextureConstructionBaseDesc
 {
   std::string         mTextureName                                = MDY_INITILAIZE_EMPTYSTR;
   DDyColor            mConstantBorderColor                        = DDyColor::Black;
