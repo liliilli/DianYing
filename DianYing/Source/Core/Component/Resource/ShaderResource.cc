@@ -322,6 +322,7 @@ EDySuccess CDyShaderResource::__pStoreAttributePropertiesOfProgram() noexcept
     GLint   attributeSize = 0;
     GLenum  attributeType = GL_NONE;
     glGetActiveAttrib(this->mShaderProgramId, i, attributeBufferLength, &attributelength, &attributeSize, &attributeType, attributeName);
+    if (std::strcmp(attributeName, "gl_VertexID") == 0) { continue; }
     const auto attributeLocation = glGetAttribLocation(this->mShaderProgramId, attributeName);
     // Output log of attribute variables.
     const auto storeType = DyGlGetAttributeVariableTypeFrom(attributeType);
