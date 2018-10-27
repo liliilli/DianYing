@@ -25,6 +25,7 @@ namespace dy
 
 MDY_SET_IMMUTABLE_STRING(sFrameBuffer_Deferred,     "dyBtBasicRender");
 MDY_SET_IMMUTABLE_STRING(sFrameBuffer_Shadow,       "dyBtFbShadow");
+MDY_SET_IMMUTABLE_STRING(sFrameBuffer_UiBasic,      "dyBtFbUiBasic");
 
 //!
 //! Attachment
@@ -36,6 +37,9 @@ MDY_SET_IMMUTABLE_STRING(sAttachment_Specular,      "dyBtSpecular");
 MDY_SET_IMMUTABLE_STRING(sAttachment_ModelPosition,  "dyBtModelPosition");
 
 MDY_SET_IMMUTABLE_STRING(sAttachment_DirectionalBasicShadow, "dyBtAtDirBscShadow");
+
+/// sFrameBuffer_UiBasic
+MDY_SET_IMMUTABLE_STRING(sAttachment_Output,        "dyBtAtUiBasic_Output");
 
 } /// ::dy namespace
 

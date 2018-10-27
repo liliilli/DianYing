@@ -16,11 +16,13 @@
 #include <queue>
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
-#include <Dy/Core/Component/Object/DeferredRenderingMesh.h>
 #include <Dy/Core/Component/Object/PostEffectSsao.h>
 #include <Dy/Core/Component/Object/Grid.h>
 #include <Dy/Core/Rendering/BasicShadow.h>
 #include <Dy/Core/Rendering/BasicRenderer.h>
+#include <Dy/Core/Rendering/DeferredRenderingMesh.h>
+#include <Dy/Core/Rendering/FinalScreenDisplayRenderer.h>
+#include <Dy/Core/Rendering/UIBasicRenderer.h>
 
 //!
 //! Forward declaration
@@ -123,17 +125,23 @@ private:
   //! Members
   //!
 
-  std::unique_ptr<FDyDeferredRenderingMesh>   mFinalRenderingMesh   = nullptr;
-  std::vector<NotNull<CDyModelRenderer*>>     mOpaqueDrawCallList        = {};
-
   ///
-  std::unique_ptr<FDyBasicRenderer>           mBasicRenderer        = MDY_INITIALIZE_NULL;
+  std::unique_ptr<FDyBasicRenderer>               mBasicOpaqueRenderer  = MDY_INITIALIZE_NULL;
+  ///
+  bool                                            mIsEnabledSsaoRendering = true;
+  std::unique_ptr<FDyPostEffectSsao>              mTempSsaoObject       = MDY_INITIALIZE_NULL;
+  ///
+  bool                                            mIsEnabledShadowRendering = true;
+  std::unique_ptr<FDyBasicShadow>                 mShadowRenderer       = MDY_INITIALIZE_NULL;
+  ///
+  std::unique_ptr<FDyDeferredRenderingMesh>       mSceneFinalRenderer   = MDY_INITIALIZE_NULL;
+  ///
+  std::unique_ptr<FDyFinalScreenDisplayRenderer>  mFinalDisplayRenderer = MDY_INITIALIZE_NULL;
 
-  bool                                        mIsEnabledSsaoRendering    = true;
-  std::unique_ptr<FDyPostEffectSsao>          mTempSsaoObject       = nullptr;
-
-  bool                                        mIsEnabledShadowRendering  = true;
-  std::unique_ptr<FDyBasicShadow>             mShadowRenderer     = nullptr;
+  /// UI basic rendrerer (@TODO TEMP!)
+  std::unique_ptr<FDyUIBasicRenderer>             mUiBasicRenderer      = MDY_INITIALIZE_NULL;
+  /// Use basic renderer
+  std::vector<NotNull<CDyModelRenderer*>>         mOpaqueDrawCallList   = {};
 
 #if defined(MDY_FLAG_IN_EDITOR)
   std::unique_ptr<FDyGrid>                    mGridEffect           = nullptr;

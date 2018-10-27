@@ -35,9 +35,11 @@ EDySuccess MDyRendering::pfInitialize()
   MDY_CALL_ASSERT_SUCCESS(MDyFramebuffer::Initialize());
   MDY_CALL_ASSERT_SUCCESS(MDyUniformBufferObject::Initialize());
 
-  this->mBasicRenderer      = std::make_unique<decltype(mBasicRenderer)::element_type>();
-  this->mFinalRenderingMesh = std::make_unique<decltype(mFinalRenderingMesh)::element_type>();
-  this->mShadowRenderer     = std::make_unique<decltype(this->mShadowRenderer)::element_type>();
+  this->mBasicOpaqueRenderer  = std::make_unique<decltype(mBasicOpaqueRenderer)::element_type>();
+  this->mSceneFinalRenderer   = std::make_unique<decltype(mSceneFinalRenderer)::element_type>();
+  this->mShadowRenderer       = std::make_unique<decltype(this->mShadowRenderer)::element_type>();
+  this->mUiBasicRenderer      = std::make_unique<decltype(this->mUiBasicRenderer)::element_type>();
+  this->mFinalDisplayRenderer = std::make_unique<decltype(this->mFinalDisplayRenderer)::element_type>();
 
   if (this->mIsEnabledSsaoRendering)
   {
@@ -54,10 +56,10 @@ EDySuccess MDyRendering::pfInitialize()
 
 EDySuccess MDyRendering::pfRelease()
 {
-  this->mFinalRenderingMesh = MDY_INITIALIZE_NULL;
+  this->mSceneFinalRenderer = MDY_INITIALIZE_NULL;
   this->mShadowRenderer     = MDY_INITIALIZE_NULL;
   this->mTempSsaoObject     = MDY_INITIALIZE_NULL;
-  this->mBasicRenderer      = MDY_INITIALIZE_NULL;
+  this->mBasicOpaqueRenderer      = MDY_INITIALIZE_NULL;
 
   // Initialize internal management singleton instance.
   MDY_CALL_ASSERT_SUCCESS(MDyFramebuffer::Release());
@@ -77,7 +79,7 @@ void MDyRendering::RenderDrawCallQueue()
   // (0) Clear previous frame results of each framebuffers.
   this->pClearRenderingFramebufferInstances();
   // (1) Draw opaque call list.
-  this->mBasicRenderer->RenderScreen(this->mOpaqueDrawCallList);
+  this->mBasicOpaqueRenderer->RenderScreen(this->mOpaqueDrawCallList);
   // (2) Shadow mapping to opaque call list.
   if (this->mIsEnabledShadowRendering == true)
   { // Basic shadow (directional light etc)
@@ -119,8 +121,13 @@ void MDyRendering::RenderDrawCallQueue()
 #if defined(MDY_FLAG_IN_EDITOR) == false
   //glViewport(0, 0, setting.GetWindowSizeWidth(), setting.GetWindowSizeHeight());
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
-  this->mFinalRenderingMesh->RenderScreen();
+  this->mSceneFinalRenderer->RenderScreen();
 #endif /// MDY_FLAG_IN_EDITOR == false
+
+  if (MDY_CHECK_ISNOTEMPTY(this->mUiBasicRenderer))
+  {
+    this->mUiBasicRenderer->RenderScreen();
+  }
 }
 
 void MDyRendering::pClearRenderingFramebufferInstances() noexcept
@@ -128,7 +135,7 @@ void MDyRendering::pClearRenderingFramebufferInstances() noexcept
   auto& worldManager = MDyWorld::GetInstance();
   if (worldManager.IsLevelPresentValid() == false) { return; }
 
-  if (MDY_CHECK_ISNOTEMPTY(this->mBasicRenderer)) { this->mBasicRenderer->Clear(); }
+  if (MDY_CHECK_ISNOTEMPTY(this->mBasicOpaqueRenderer)) { this->mBasicOpaqueRenderer->Clear(); }
 
   if (this->mIsEnabledSsaoRendering == true)
   { // @TODO DO NOTHING NOW.
@@ -141,29 +148,34 @@ void MDyRendering::pClearRenderingFramebufferInstances() noexcept
   }
 
 #if defined(MDY_FLAG_IN_EDITOR) == false
-  if (MDY_CHECK_ISNOTEMPTY(this->mFinalRenderingMesh))
+  if (MDY_CHECK_ISNOTEMPTY(this->mSceneFinalRenderer))
   { // Reset final rendering mesh setting.
-    this->mFinalRenderingMesh->Clear();
+    this->mSceneFinalRenderer->Clear();
   }
 #endif
+
+  if (MDY_CHECK_ISNOTEMPTY(this->mUiBasicRenderer))
+  {
+    this->mUiBasicRenderer->Clear();
+  }
 }
 
 std::optional<TI32> MDyRendering::pGetAvailableDirectionalLightIndex(_MIN_ const CDyDirectionalLight&)
 {
-  return this->mFinalRenderingMesh->GetAvailableDirectionalLightIndex();
+  return this->mSceneFinalRenderer->GetAvailableDirectionalLightIndex();
 }
 
 EDySuccess MDyRendering::pUnbindDirectionalLight(const CDyDirectionalLight& component)
 {
   if (component.IsBindedToLightingSystem() == false) { return DY_FAILURE; }
-  return this->mFinalRenderingMesh->UnbindDirectionalLight(component.TryGetBindedIndexValue().value());
+  return this->mSceneFinalRenderer->UnbindDirectionalLight(component.TryGetBindedIndexValue().value());
 }
 
 EDySuccess MDyRendering::pUpdateDirectionalLightValueToGpu(
     _MIN_ const TI32 index,
     _MIN_ const DDyUboDirectionalLight& container)
 {
-  return this->mFinalRenderingMesh->UpdateDirectionalLightValueToGpu(index, container);
+  return this->mSceneFinalRenderer->UpdateDirectionalLightValueToGpu(index, container);
 }
 
 bool MDyRendering::pfIsAvailableDirectionalLightShadow(const CDyDirectionalLight&)
@@ -182,7 +194,7 @@ EDySuccess MDyRendering::pfUpdateDirectionalLightShadowToGpu(const CDyDirectiona
 { // Integrity test
   if (this->mIsEnabledShadowRendering == false)          { return DY_FAILURE; }
   if (MDY_CHECK_ISEMPTY(this->mShadowRenderer))   { return DY_FAILURE; }
-  if (MDY_CHECK_ISEMPTY(this->mFinalRenderingMesh)) { return DY_FAILURE; }
+  if (MDY_CHECK_ISEMPTY(this->mSceneFinalRenderer)) { return DY_FAILURE; }
 
   // Update values
 #ifdef false
@@ -197,7 +209,7 @@ EDySuccess MDyRendering::pfUnbindDirectionalLightShadowToGpu(const CDyDirectiona
 { // Integrity test
   if (this->mIsEnabledShadowRendering == false)          { return DY_FAILURE; }
   if (MDY_CHECK_ISEMPTY(this->mShadowRenderer))   { return DY_FAILURE; }
-  if (MDY_CHECK_ISEMPTY(this->mFinalRenderingMesh)) { return DY_FAILURE; }
+  if (MDY_CHECK_ISEMPTY(this->mSceneFinalRenderer)) { return DY_FAILURE; }
 
   // Update values
   MDY_NOTUSED
