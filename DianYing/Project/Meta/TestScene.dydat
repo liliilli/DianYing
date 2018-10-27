@@ -8,51 +8,38 @@
   [
     {
       "Name"      : "Test",
-      "Type"      : "Actor", "Hash"      : "42932",
-      "Component" : "42932", "Activated" : true,
-      "Parent"    : "",
-      "IsFromPrefab"       : false,
-      "PrefabSpecifierName" : ""
+      "Type"      : "Actor", "Hash" : "42932", "Component" : "42932", "Activated" : true,
+      "Parent"    : "", "IsFromPrefab"       : false, "PrefabSpecifierName" : ""
     },
     {
       "Name"      : "Test2",
-      "Type"      : "Actor", "Hash"      : "11555",
-      "Component" : "11555", "Activated" : true,
-      "Parent"    : "",
-      "IsFromPrefab"       : false,
-      "PrefabSpecifierName" : ""
+      "Type"      : "Actor", "Hash" : "11555", "Component" : "11555", "Activated" : true,
+      "Parent"    : "", "IsFromPrefab"       : false, "PrefabSpecifierName" : ""
     },
     {
       "Name"      : "Test3",
-      "Type"      : "Actor", "Hash"      : "12347",
-      "Component" : "12347", "Activated" : true,
-      "Parent"    : "",
-      "IsFromPrefab"       : false,
-      "PrefabSpecifierName" : ""
+      "Type"      : "Actor", "Hash" : "12347", "Component" : "12347", "Activated" : true,
+      "Parent"    : "", "IsFromPrefab"       : false, "PrefabSpecifierName" : ""
     },
     {
       "Name"      : "Test4",
-      "Type"      : "Actor", "Hash"      : "78021",
-      "Component" : "78021", "Activated" : true,
-      "Parent"    : "",
-      "IsFromPrefab"       : false,
-      "PrefabSpecifierName" : ""
+      "Type"      : "Actor", "Hash" : "78021", "Component" : "78021", "Activated" : true,
+      "Parent"    : "", "IsFromPrefab"       : false, "PrefabSpecifierName" : ""
     },
     {
       "Name"      : "DirLight",
-      "Type"      : "Actor", "Hash"      : "93712",
-      "Component" : "93712", "Activated" : true,
-      "Parent"    : "",
-      "IsFromPrefab"       : false,
-      "PrefabSpecifierName" : ""
+      "Type"      : "Actor", "Hash" : "93712", "Component" : "93712", "Activated" : true,
+      "Parent"    : "", "IsFromPrefab"       : false, "PrefabSpecifierName" : ""
     },
     {
       "Name"      : "FloorObj",
-      "Type"      : "Actor", "Hash"      : "11999",
-      "Component" : "11999", "Activated" : true,
-      "Parent"    : "",
-      "IsFromPrefab"       : false,
-      "PrefabSpecifierName" : ""
+      "Type"      : "Actor", "Hash" : "11999", "Component" : "11999", "Activated" : true,
+      "Parent"    : "", "IsFromPrefab"       : false, "PrefabSpecifierName" : ""
+    },
+    {
+      "Name"      : "WallObj",
+      "Type"      : "Actor", "Hash" : "11000", "Component" : "11000", "Activated" : true,
+      "Parent"    : "", "IsFromPrefab" : false, "PrefabSpecifierName" : ""
     }
   ],
   "Component":
@@ -64,7 +51,7 @@
         "LPosition" : { "X": 0, "Y": 0, "Z": 0 },
         "LRotation" : { "X": 0, "Y": 0, "Z": 0 },
         "LScale"    : { "X": 1, "Y": 1, "Z": 1 },
-        "WPosition" : { "X": 0, "Y": 0, "Z": 10 },
+        "WPosition" : { "X": -1, "Y": 0, "Z": 20 },
         "WRotation" : { "X": 0, "Y": 180, "Z": 0 },
         "WScale"    : { "X": 1, "Y": 1, "Z": 1 }
       },
@@ -167,7 +154,7 @@
       {
         "Type"            : "DirectionalLight",
         "LightDirection"  : { "X": 0, "Y": 1, "Z": 0 },
-        "LightIntensity"  : 1.00,
+        "LightIntensity"  : 3.00,
         "LightDiffuse"    : 16777215,
         "LightSpecular"   : 16765536,
         "LightAmbient"    : 1592739,
@@ -178,7 +165,7 @@
         "ShadowBias"      : 0.02,
         "ShadowCullingMaskLayer": [ ],
         "IsCastingLight"  : true,
-        "IsCastingShadow" : true,
+        "IsCastingShadow" : false,
         "Activated" : true
       },
       {
@@ -199,6 +186,28 @@
         "LRotation" : { "X": 0, "Y": 0, "Z": 0 },
         "LScale"    : { "X": 1, "Y": 1, "Z": 1 },
         "WPosition" : { "X": 0, "Y": -13, "Z": 0 },
+        "WRotation" : { "X": 0, "Y": 0, "Z": 0 },
+        "WScale"    : { "X": 10, "Y": 10, "Z": 10 }
+      },
+      {
+        "Type"      : "ModelFilter",
+        "ModelName" : "dyBtModelBox",
+        "Activated" : true
+      },
+      {
+        "Type"      : "ModelRenderer",
+        "Shadow"    : true, "Activated" : true,
+        "Materials" : [ "dyBtMatOpaqueStaticPlain" ]
+      }
+    ],
+    "11000":
+    [
+      {
+        "Type"      : "Transform",
+        "LPosition" : { "X": 5, "Y": 0, "Z": 0 },
+        "LRotation" : { "X": 0, "Y": 0, "Z": 0 },
+        "LScale"    : { "X": 1, "Y": 1, "Z": 1 },
+        "WPosition" : { "X": 10, "Y": 0, "Z": 0 },
         "WRotation" : { "X": 0, "Y": 0, "Z": 0 },
         "WScale"    : { "X": 10, "Y": 10, "Z": 10 }
       },

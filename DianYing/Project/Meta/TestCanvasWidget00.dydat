@@ -9,7 +9,7 @@
         {
             "Name": "WidgetName",
             "Type": "Text",
-            "Parent": "Root",
+            "Parent": "",
             "Details":
             {
                 "InitialString": "Hello world!",
@@ -24,24 +24,6 @@
                 "IsUsingEdge": false,
                 "IsUsingDefaultFont": true
             }
-        },
-        {
-            "Name": "__HorizontalBox",
-            "Type": "HorizontalBox",
-            "Parent": "Root",
-            "Details": {}
-        },
-        {
-            "Name": "Flick",
-            "Type": "Image",
-            "Parent": "__HorizontalBox",
-            "Details": {}
-        },
-        {
-            "Name": "Vert",
-            "Type": "VerticalBox",
-            "Parent": "Root",
-            "Details": {}
         }
     ]
 }

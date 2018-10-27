@@ -36,6 +36,10 @@ struct DDyVectorInt2 final {
       X{x}, Y{y} {}
   explicit DDyVectorInt2(_MIN_ const TI32 value) noexcept :
       X{value}, Y{value} {}
+  explicit DDyVectorInt2(_MIN_ const DDyVector2& value) noexcept :
+      X{static_cast<decltype(this->X)>(value.X)},
+      Y{static_cast<decltype(this->Y)>(value.Y)}
+  {};
 
   //!
   //! Constructor and assign operator for dependencies.
