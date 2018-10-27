@@ -125,6 +125,12 @@
     <ClCompile Include="Source\Meta\Type\TextureParameter.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetComponentDescriptor.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetCommponDescriptor.cc" />
+    <ClCompile Include="Source\Core\Rendering\FinalScreenDisplayRenderer.cc" />
+    <ClCompile Include="Source\Core\Rendering\UiBasicRenderer.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\RenderDefaultFont.cc" />
+    <ClCompile Include="Source\Component\Internal\CDyFontRenderer.cc" />
+    <ClCompile Include="Source\Management\Type\FontCharacter.cc" />
+    <ClCompile Include="Source\Management\Type\FontContainer.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -334,6 +340,12 @@
     <ClInclude Include="Include\Dy\Meta\Type\TextureParameter.h" />
     <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetComponentDescriptor.h" />
     <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetCommonDescriptor.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\FinalScreenDisplayRenderer.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\UIBasicRenderer.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderDefaultFont.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\CDyFontRenderer.h" />
+    <ClInclude Include="Include\Dy\Management\Type\FontContainer.h" />
+    <ClInclude Include="Include\Dy\Management\Type\FontCharacter.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />
