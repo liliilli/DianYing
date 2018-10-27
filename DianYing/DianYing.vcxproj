@@ -166,6 +166,7 @@
     <ClCompile Include="Source\Builtin\Material\OpaqueStaticPlain.cc" />
     <ClCompile Include="Source\Builtin\Model\Box.cc" />
     <ClCompile Include="Source\Builtin\Model\Plain.cc" />
+    <ClCompile Include="Source\Builtin\Model\ScreenProjectionTriangle.cc" />
     <ClCompile Include="Source\Builtin\Model\Sphere.cc" />
     <ClCompile Include="Source\Builtin\Object\Light\DirectionalLight.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderBasicShadow.cc" />
@@ -297,6 +298,7 @@
     <ClInclude Include="Include\Dy\Builtin\Material\OpaqueStaticPlain.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\Box.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\Plain.h" />
+    <ClInclude Include="Include\Dy\Builtin\Model\ScreenProjectionTriangle.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\Sphere.h" />
     <ClInclude Include="Include\Dy\Builtin\Object\Light\DirectionalLight.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderBasicShadow.h" />
