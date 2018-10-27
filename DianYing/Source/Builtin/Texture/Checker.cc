@@ -47,25 +47,38 @@ FDyBuiltinTextureChecker::FDyBuiltinTextureChecker()
   // 01010101
   // 10101010
   PDyTextureConstructionBufferChunkDescriptor desc = {};
-  desc.mTextureName       = FDyBuiltinTextureChecker::sName;
+  desc.mTextureSpecifierName       = FDyBuiltinTextureChecker::sName;
   desc.mTextureType       = EDyTextureStyleType::D2;
   desc.mTextureMapType    = EDyTextureMapType::Diffuse;
-  desc.mTextureColorType  = EDyImageColorFormatStyle::R;
+  desc.mTextureColorType  = EDyImageColorFormatStyle::RGB;
   desc.mWidth             = 8;
   desc.mHeight            = 8;
 
-  std::array<TU08, 64> infoChunk =
+  constexpr std::array<TU08, 3> mOn = {sOn, sOn, sOn};
+  constexpr std::array<TU08, 3> mOf = {sOf, sOf, sOf};
+
+  std::array<std::array<TU08, 3>, 64> infoChunk =
   {
-    sOf, sOn, sOf, sOn, sOf, sOn, sOf, sOn,
-    sOn, sOf, sOn, sOf, sOn, sOf, sOn, sOf,
-    sOf, sOn, sOf, sOn, sOf, sOn, sOf, sOn,
-    sOn, sOf, sOn, sOf, sOn, sOf, sOn, sOf,
-    sOf, sOn, sOf, sOn, sOf, sOn, sOf, sOn,
-    sOn, sOf, sOn, sOf, sOn, sOf, sOn, sOf,
-    sOf, sOn, sOf, sOn, sOf, sOn, sOf, sOn,
-    sOn, sOf, sOn, sOf, sOn, sOf, sOn, sOf,
+    mOf, mOn, mOf, mOn, mOf, mOn, mOf, mOn,
+    mOn, mOf, mOn, mOf, mOn, mOf, mOn, mOf,
+    mOf, mOn, mOf, mOn, mOf, mOn, mOf, mOn,
+    mOn, mOf, mOn, mOf, mOn, mOf, mOn, mOf,
+    mOf, mOn, mOf, mOn, mOf, mOn, mOf, mOn,
+    mOn, mOf, mOn, mOf, mOn, mOf, mOn, mOf,
+    mOf, mOn, mOf, mOn, mOf, mOn, mOf, mOn,
+    mOn, mOf, mOn, mOf, mOn, mOf, mOn, mOf,
   };
   desc.mBufferPtr = infoChunk.data();
+  desc.mIsUsingDefaultMipmapGeneration = true;
+  // Add 2018-10-26
+  desc.mIsEnabledCustomedTextureParameter = true;
+  desc.mParameterList = {
+    PDyGlTexParameterInformation\
+    {EDyGlParameterName::TextureMinFilter, EDyGlParameterValue::Nearest},
+    {EDyGlParameterName::TextureMagFilter, EDyGlParameterValue::Nearest},
+    {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::ClampToEdge},
+    {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::ClampToEdge},
+  };
 
   MDY_CALL_ASSERT_SUCCESS(MDyHeapResource::GetInstance().CreateTextureResourceWithChunk(desc));
 }

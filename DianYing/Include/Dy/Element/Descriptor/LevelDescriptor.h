@@ -18,23 +18,12 @@
 #include <utility>
 
 #include <nlohmann/json_fwd.hpp>
-#include <Dy/Helper/Type/Color.h>
 #include <Dy/Component/Descriptor/ComponentMetaDescriptor.h>
+#include <Dy/Element/Descriptor/GlobalEnums.h>
+#include <Dy/Helper/Type/Color.h>
 
 namespace dy
 {
-
-///
-/// @enum EDyMetaObjectType
-/// @brief
-///
-enum class EDyMetaObjectType
-{
-  Actor,
-  SceneScriptor,
-  Object,
-  NoneError
-};
 
 ///
 /// @struct DDyObjectInformation
@@ -54,8 +43,12 @@ struct DDyObjectInformation final
   std::string       mParentHashValue  = MDY_INITILAIZE_EMPTYSTR;
   /// Hash value for verifying component list in meta list.
   std::string       mToComponentHash  = MDY_INITILAIZE_EMPTYSTR;
+  /// Prefab specifier name.
+  std::string       mPrefabSpecifierName = MDY_INITILAIZE_EMPTYSTR;
   /// FDyObject is initially activated or not.
   bool              mInitialActivated = false;
+  /// FDyObject is using prefab.
+  bool              mIsUsingPrefab    = false;
 
   /// Dependency information which are vary along with mType.
   /// If mType is "EDyFDyObjectType::FdyPawn", must be converted to "PDyScriptComponentMetaInformation".

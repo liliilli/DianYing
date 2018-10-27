@@ -179,6 +179,17 @@ EDySuccess MDyWorld::OpenLevel(_MIN_ const std::string& levelName)
   return DY_SUCCESS;
 }
 
+bool MDyWorld::IsLevelPresentValid() const noexcept
+{
+  return MDY_CHECK_ISNOTEMPTY(this->mLevel);
+}
+
+FDyLevel& MDyWorld::GetValidLevelReference() noexcept
+{
+  MDY_ASSERT(IsLevelPresentValid() == true, "Level must be valid when retrieving level reference.");
+  return *this->mLevel;
+}
+
 void MDyWorld::pfBindFocusCamera(_MIN_ CDyLegacyCamera& validCameraPtr) noexcept
 {
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(&validCameraPtr), "validCameraPtr must be valid, not nullptr.");

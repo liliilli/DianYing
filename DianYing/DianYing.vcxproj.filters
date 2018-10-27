@@ -55,7 +55,6 @@
     <ClCompile Include="Source\Management\RenderingManager.cc" />
     <ClCompile Include="Source\Core\Component\Internal\MaterialType.cc" />
     <ClCompile Include="Source\Core\Component\Internal\EtcType.cc" />
-    <ClCompile Include="Source\Core\Component\Object\DeferredRenderingMesh.cc" />
     <ClCompile Include="Source\Management\SynchronizationManager.cc" />
     <ClCompile Include="Source\Core\Component\Object\PostEffectSsao.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderPass.cc" />
@@ -113,6 +112,25 @@
     <ClCompile Include="Source\Component\Internal\ScriptState.cc" />
     <ClCompile Include="Source\Test\TestLuaBindingDy.cc" />
     <ClCompile Include="Source\Management\ScriptManager.cc" />
+    <ClCompile Include="Source\Element\Helper\DescriptorHelperFunctions.cc" />
+    <ClCompile Include="Source\Component\CDyDirectionalLight.cc" />
+    <ClCompile Include="Source\Core\Rendering\BasicRenderer.cc" />
+    <ClCompile Include="Source\Management\Internal\FramebufferManager.cc" />
+    <ClCompile Include="Source\Management\Type\AttachmentInformation.cc" />
+    <ClCompile Include="Source\Management\Internal\UniformBufferObjectManager.cc" />
+    <ClCompile Include="Source\Management\BindingLua\BindingGlobalType.cc" />
+    <ClCompile Include="Source\Management\BindingLua\Entry.cc" />
+    <ClCompile Include="Source\Management\BindingLua\BindingComponentType.cc" />
+    <ClCompile Include="Source\Core\Rendering\DeferredRenderingMesh.cc" />
+    <ClCompile Include="Source\Meta\Type\TextureParameter.cc" />
+    <ClCompile Include="Source\Meta\Descriptor\WidgetComponentDescriptor.cc" />
+    <ClCompile Include="Source\Meta\Descriptor\WidgetCommponDescriptor.cc" />
+    <ClCompile Include="Source\Core\Rendering\FinalScreenDisplayRenderer.cc" />
+    <ClCompile Include="Source\Core\Rendering\UiBasicRenderer.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\RenderDefaultFont.cc" />
+    <ClCompile Include="Source\Component\Internal\CDyFontRenderer.cc" />
+    <ClCompile Include="Source\Management\Type\FontCharacter.cc" />
+    <ClCompile Include="Source\Management\Type\FontContainer.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -196,7 +214,6 @@
     <ClInclude Include="Include\Dy\Management\RenderingManager.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\Contracts.h" />
     <ClInclude Include="Include\Dy\Helper\Pointer.h" />
-    <ClInclude Include="Include\Dy\Core\Component\Object\DeferredRenderingMesh.h" />
     <ClInclude Include="Include\Dy\Management\Interface\IDyThreadHelper.h" />
     <ClInclude Include="Include\Dy\Management\SynchronizationManager.h" />
     <ClInclude Include="Include\Dy\Core\Component\Object\PostEffectSsao.h" />
@@ -303,6 +320,32 @@
     <ClInclude Include="Include\Dy\Binding\LuaScriptFrame.h" />
     <ClInclude Include="Include\Dy\Management\ScriptManager.h" />
     <ClInclude Include="Include\Dy\Meta\Descriptor\ScriptDescriptor.h" />
+    <ClInclude Include="Include\Dy\Element\Descriptor\PrefabDescriptor.h" />
+    <ClInclude Include="Include\Dy\Element\Descriptor\GlobalEnums.h" />
+    <ClInclude Include="Include\Dy\Element\Helper\DescriptorHelperFunctions.h" />
+    <ClInclude Include="Include\Dy\Element\Helper\DescriptorComponentHeaderString.h" />
+    <ClInclude Include="Include\Dy\Component\CDyDirectionalLight.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\Clamp.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\BasicRenderer.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\VectorInt2.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\FramebufferManager.h" />
+    <ClInclude Include="Include\Dy\Management\Type\FramebufferInformation.h" />
+    <ClInclude Include="Include\Dy\Management\Type\AttachmentInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Helper\FrameAttachmentString.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\UniformBufferObjectManager.h" />
+    <ClInclude Include="Include\Dy\Management\Type\UBOInformation.h" />
+    <ClInclude Include="Include\Dy\Helper\ContainerHelper.h" />
+    <ClInclude Include="Include\Dy\Management\Helper\LuaBindingEntry.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\DeferredRenderingMesh.h" />
+    <ClInclude Include="Include\Dy\Meta\Type\TextureParameter.h" />
+    <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetComponentDescriptor.h" />
+    <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetCommonDescriptor.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\FinalScreenDisplayRenderer.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\UIBasicRenderer.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderDefaultFont.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\CDyFontRenderer.h" />
+    <ClInclude Include="Include\Dy\Management\Type\FontContainer.h" />
+    <ClInclude Include="Include\Dy\Management\Type\FontCharacter.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

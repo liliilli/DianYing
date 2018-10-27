@@ -36,6 +36,8 @@ namespace dy
 
 void FDyLevel::Initialize(_MIN_ const PDyLevelConstructDescriptor& desc)
 {
+  // Lambda functions
+
   ///
   /// @brief  Create pawn instance and set fundamental properties.
   /// @param  objectInformation Information to create FDyPawn instance.

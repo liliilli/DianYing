@@ -80,6 +80,13 @@
 #define MDY_NOTUSED [[maybe_unused]]
 
 ///
+/// @macro MDY_NOUSE_RTVAL_EXPR
+/// @brief Just neglect return value for calling function which return value is MDY_NODISCARD.
+///
+#define MDY_NOUSE_RTVAL_EXPR(__MAExpression__) \
+  { MDY_NOTUSED const auto _ = __MAExpression__; }
+
+///
 /// @macro MDY_CHECK_ISNULL
 /// @brief Check raw pointer is empty or not.
 ///
@@ -342,8 +349,15 @@ virtual bool IsTypeMatched(const TU32 hashVal) const noexcept override { \
 ///
 /// @macro _MIO_
 /// @brief Specify that this paremeter will be read from function body and altered some properties.
+/// @deprecated This macro will be deprecated.
 ///
 #define _MIO_
+
+///
+/// @macro _MINOUT_
+/// @brief Specify that this parameter will be read from function body and altered some properties.
+///
+#define _MINOUT_
 
 ///
 /// @macro MDY_INTERFACE_PROPERTY
@@ -416,8 +430,8 @@ private:                                                  \
 #define MDY_ONLY_MOVEABLE_PROPERTIES_CUSTOM(__MAType__) \
   __MAType__(const __MAType__&)             = delete;   \
   __MAType__& operator=(const __MAType__&)  = delete;   \
-  __MAType__(__MAType__&&);                             \
-  __MAType__& operator=(__MAType__&&);                  \
+  __MAType__(__MAType__&&) noexcept;                    \
+  __MAType__& operator=(__MAType__&&) noexcept;         \
 
 #define MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(__MAType__)\
   __MAType__(const __MAType__&)             = delete;   \

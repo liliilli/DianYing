@@ -520,13 +520,13 @@ DDyModelInformation::__pLoadMaterialTextures(const aiMaterial& material, EDyText
     {
       PDyTextureConstructionDescriptor textureDesc;
       // Set each texture name to texture file name except for file type like a .png .jpg.
-      textureDesc.mTextureName                        = textureName;
+      textureDesc.mTextureSpecifierName                        = textureName;
       textureDesc.mTextureFileLocalPath               = textureLocalPath.C_Str();
       textureDesc.mTextureFileAbsolutePath            = this->mModelRootPath + '/' + textureDesc.mTextureFileLocalPath;
       textureDesc.mTextureType                        = EDyTextureStyleType::D2;
       textureDesc.mIsEnabledCustomedTextureParameter  = false;
       textureDesc.mIsEnabledAbsolutePath              = true;
-      textureDesc.mIsEnabledCreateMipmap              = true;
+      textureDesc.mIsUsingDefaultMipmapGeneration     = true;
       textureDesc.mTextureMapType                     = type;
 
       MDY_CALL_ASSERT_SUCCESS(manInfo.CreateTextureInformation(textureDesc));

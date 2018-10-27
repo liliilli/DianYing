@@ -1,0 +1,29 @@
+{
+    "Meta":
+    {
+        "Name": "WidgetName",
+        "Script": ""
+    },
+    "ObjectList":
+    [
+        {
+            "Name": "WidgetName",
+            "Type": "Text",
+            "Parent": "",
+            "Details":
+            {
+                "InitialString": "Hello world!",
+                "InitialPosition": { "X":0, "Y":0 },
+                "InitialColor": 16777215,
+                "InitialAlpha": 1.0,
+                "FontSize": 10,
+                "EdgeSize": 1,
+                "FontSpecifierName": "Arial",
+                "IsBold": true,
+                "IsItalic": false,
+                "IsUsingEdge": false,
+                "IsUsingDefaultFont": true
+            }
+        }
+    ]
+}

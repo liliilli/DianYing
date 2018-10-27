@@ -13,8 +13,23 @@
 /// SOFTWARE.
 ///
 
+#include <queue>
 #include <Dy/Core/Component/MeshRenderer.h>
 #include <Dy/Core/Component/Resource/ShaderResource.h>
+
+//!
+//! Forward declaration
+//!
+
+namespace dy
+{
+struct PDyGlAttachmentInformation;
+struct DDyUboDirectionalLight;
+} /// ::dy namespace
+
+//!
+//! Implementation
+//!
 
 namespace dy
 {
@@ -30,12 +45,75 @@ public:
   ///
   void RenderScreen();
 
-private:
-  GLuint              mVao        = 0;
-  GLuint              mVbo        = 0;
+  ///
+  /// @brief Clear properties of given framebuffer.
+  ///
+  void Clear();
 
-  CDyMeshRenderer     mRenderer;
-  CDyShaderResource*  mShaderPtr  = nullptr;
+  ///
+  /// @brief  Issue available directional light index if not available, just return nullopt;
+  /// @return Directional light index value or nullopt (no value).
+  ///
+  MDY_NODISCARD std::optional<TI32> GetAvailableDirectionalLightIndex() noexcept;
+
+  ///
+  /// @brief  Update FUCKFUCKFUCKFCUFKCUKFUCK
+  /// @param  index
+  /// @param  container
+  /// @return
+  ///
+  MDY_NODISCARD EDySuccess UpdateDirectionalLightValueToGpu(
+      _MIN_ const TI32 index,
+      _MIN_ const DDyUboDirectionalLight& container);
+
+  ///
+  /// @brief
+  /// @param  index
+  /// @return
+  ///
+  MDY_NODISCARD EDySuccess UnbindDirectionalLight(_MIN_ const TI32 index);
+
+private:
+  ///
+  /// @brief
+  /// @return
+  ///
+  MDY_NODISCARD EDySuccess pInitializeGeometries();
+
+  ///
+  /// @brief
+  /// @return
+  ///
+  MDY_NODISCARD EDySuccess pInitializeShaderSetting();
+
+  ///
+  /// @brief
+  /// @return
+  ///
+  MDY_NODISCARD EDySuccess pInitializeUboBuffers();
+
+  ///
+  /// @brief  Try to getting attachment instance pointers from management instance.
+  /// @return If successful to getting all attachment pointers, return true.
+  ///
+  MDY_NODISCARD EDySuccess pTryGetAttachmentPointers();
+
+  inline static constexpr TI32 sDirectionalLightCount = 5;
+
+  GLuint              mVao            = MDY_INITIALIZE_DEFUINT;
+  GLuint              mVbo            = MDY_INITIALIZE_DEFUINT;
+  CDyShaderResource*  mShaderPtr      = MDY_INITIALIZE_NULL;
+
+  /// Attachment information pointer
+
+  PDyGlAttachmentInformation* mAttachmentPtr_Unlit          = MDY_INITIALIZE_NULL;
+  PDyGlAttachmentInformation* mAttachmentPtr_Normal         = MDY_INITIALIZE_NULL;
+  PDyGlAttachmentInformation* mAttachmentPtr_Specular       = MDY_INITIALIZE_NULL;
+  PDyGlAttachmentInformation* mAttachmentPtr_ModelPosition  = MDY_INITIALIZE_NULL;
+  PDyGlAttachmentInformation* mAttachmentPtr_Shadow         = MDY_INITIALIZE_NULL;
+  bool                        mIsAttachmentPtrBinded        = false;
+
+  std::queue<TI32>    mAvailableList  = {};
 };
 
 } /// ::dy namespace

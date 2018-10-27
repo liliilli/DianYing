@@ -69,6 +69,15 @@ struct DDyColor final
     return 0.2126f * this->R + 0.7152f * this->G + 0.0722f * this->B;
   }
 
+  ///
+  /// @brief  Data pointer
+  /// @return Data pointer sequence.
+  ///
+  MDY_NODISCARD const float* Data() const noexcept
+  {
+    return &this->R;
+  }
+
   //!
   //! Operator overloading
   //!

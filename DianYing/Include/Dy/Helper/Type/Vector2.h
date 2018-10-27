@@ -32,10 +32,22 @@
 #include <DirectXMath.h>
 #endif
 
-namespace dy {
-  class DDyMatrix2x2;
+//!
+//! Forward declaration
+//!
 
-  ///
+namespace dy
+{
+class DDyMatrix2x2;
+} /// ::dy namespace
+
+//!
+//! Implementation
+//!
+
+namespace dy
+{
+///
 /// @struct DDyVector2
 /// @brief Float type 2-element vector struct.
 ///

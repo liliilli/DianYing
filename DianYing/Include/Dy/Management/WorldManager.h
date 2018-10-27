@@ -103,6 +103,18 @@ public:
   ///
   EDySuccess OpenLevel(const std::string& levelName);
 
+  ///
+  /// @brief  Check scene is initialized and valid.
+  /// @return
+  ///
+  MDY_NODISCARD bool IsLevelPresentValid() const noexcept;
+
+  ///
+  /// @brief  Get valid level reference.
+  /// @return Valid level reference. when level is not specified, unexpected behaviour.
+  ///
+  MDY_NODISCARD FDyLevel& GetValidLevelReference() noexcept;
+
 #ifdef false
   ///
   /// @brief  Spawn actor into present scene.

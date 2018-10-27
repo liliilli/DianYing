@@ -52,18 +52,6 @@ public:
   /// @brief
   /// @return
   ///
-  // cbegin
-
-  ///
-  /// @brief
-  /// @return
-  ///
-  // cend
-
-  ///
-  /// @brief
-  /// @return
-  ///
   MDY_NODISCARD TC16 operator[](_MIN_ const TU32 id)
   { // Integrity check
     if (id > this->mString.size())
@@ -78,7 +66,43 @@ public:
 
 private:
   std::vector<TC16> mString = {};
-};
+
+public:
+  ///
+  /// @brief
+  /// @return
+  ///
+  decltype(DDyString::mString)::const_iterator begin() const noexcept
+  {
+    return mString.begin();
+  }
+
+  ///
+  /// @brief
+  /// @return
+  ///
+  decltype(DDyString::mString)::const_iterator cbegin() const noexcept
+  {
+    return mString.cbegin();
+  }
+
+  ///
+  /// @brief
+  /// @return
+  ///
+  decltype(DDyString::mString)::const_iterator end() const noexcept
+  {
+    return mString.end();
+  }
+
+  ///
+  /// @brief
+  /// @return
+  ///
+  decltype(DDyString::mString)::const_iterator cend() const noexcept
+  {
+    return mString.cend();
+  }};
 
 ///
 /// @macro  MIMMSTR

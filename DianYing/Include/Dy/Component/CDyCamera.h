@@ -22,6 +22,22 @@ namespace dy
 {
 
 ///
+/// @brief specifier name for ubo "CameraBlock"
+///
+MDY_SET_IMMUTABLE_STRING(sUboCameraBlock, "dyBtUboCameraBlock");
+
+///
+/// @struct DDyUboCameraBlock
+/// @brief  This structure must be aligned by 16 bytes.
+/// @TODO SCRIPT THIS
+///
+struct alignas(16) DDyUboCameraBlock final
+{
+  DDyMatrix4x4 mProjMatrix = {};
+  DDyMatrix4x4 mViewMatrix = {};
+};
+
+///
 /// @enum   EDyCameraType
 /// @brief  Camera projection type. \n
 /// r = tan(\theta / 2) * d

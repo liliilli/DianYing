@@ -16,8 +16,11 @@
   "Gameplay":
   {
     "InitialScene": "TestScene",
-    "InitWidth": 1280,
-    "InitHeight": 720
+    "InitWidth": 1280, "InitHeight": 720,
+    "Shadow":
+    {
+      "GlobalDefaultMapSize": { "X": 128, "Y": 128 }
+    }
   },
 
   "Input":

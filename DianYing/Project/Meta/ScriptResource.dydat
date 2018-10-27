@@ -1,0 +1,18 @@
+{
+  "List": [
+    {
+      "ScriptName": "TestScript1",
+      "ScriptPath": "./TestResource/TestScript1.lua",
+      "ScriptCode": [],
+      "IsUsingScriptPath": true,
+      "IsUsingScriptInnateCode": false
+    },
+    {
+      "ScriptName": "TestScript2",
+      "ScriptPath": "./TestResource/TestScript2.lua",
+      "ScriptCode": [],
+      "IsUsingScriptPath": true,
+      "IsUsingScriptInnateCode": false
+    }
+  ]
+}

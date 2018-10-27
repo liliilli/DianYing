@@ -19,6 +19,7 @@
 #include "Dy/Component/CDyModelFilter.h"
 #include "Dy/Component/CDyModelRenderer.h"
 #include "Dy/Component/CDyCamera.h"
+#include "Dy/Component/CDyDirectionalLight.h"
 
 //!
 //! Forward declaration
@@ -65,8 +66,7 @@ EDySuccess FDyActor::Initialize(_MIN_ const DDyObjectInformation& objectMetaDesc
     case EDyComponentMetaType::DirectionalLight:
     {
       const auto& desc = std::any_cast<const DDyDirectionalLightMetaInformation&>(componentInfo);
-      (void)desc;
-      //const auto& directionalLight = std::any_cast<const &>(componentInfo);
+      MDY_NOTUSED auto directionLightComponentPtr = this->AddComponent<CDyDirectionalLight>(desc);
     } break;
     case EDyComponentMetaType::ModelFilter:
     {

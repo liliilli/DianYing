@@ -66,6 +66,7 @@ FDyPostEffectSsao::~FDyPostEffectSsao()
 
 void FDyPostEffectSsao::RenderScreen()
 {
+#ifdef false
   MDY_ASSERT(this->mSsaoShaderPtr,     "FDyPostEffectSsao::mSsaoShaderPtr must not be nullptr.");
 
   //!
@@ -106,6 +107,7 @@ void FDyPostEffectSsao::RenderScreen()
   this->mSsaoBlurShaderPtr->UnuseShader();
 
   glBindFramebuffer (GL_FRAMEBUFFER, 0);
+#endif
 }
 
 void FDyPostEffectSsao::pCreateMesh()

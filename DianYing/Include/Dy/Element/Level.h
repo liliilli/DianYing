@@ -45,12 +45,30 @@ public:
   void Update(_MIN_ float dt) override final;
 
   ///
+  /// @brief  Get background color of this scene.
+  /// @return background color [0, 1] (RGBA)
+  ///
+  FORCEINLINE MDY_NODISCARD const DDyColor& GetBackgroundColor() const noexcept
+  {
+    return this->mLevelBackgroundColor;
+  }
+
+  ///
   /// @brief  Get present level name.
   /// @return Level name.
   ///
   MDY_NODISCARD const std::string& GetLevelName() const noexcept
   {
     return this->mLevelName;
+  }
+
+  ///
+  /// @brief  Set background color of this scene.
+  /// @param  backgroundColor New backgrond color value.
+  ///
+  FORCEINLINE void SetBackgroundColor(_MIN_ const DDyColor& backgroundColor) noexcept
+  {
+    this->mLevelBackgroundColor = backgroundColor;
   }
 
 private:

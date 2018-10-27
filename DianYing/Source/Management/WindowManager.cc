@@ -49,6 +49,7 @@
 #include <Dy/Management/HeapResourceManager.h>
 #include <Dy/Management/SoundManager.h>
 #include <Dy/Management/PhysicsManager.h>
+#include "Dy/Builtin/ShaderGl/RenderDefaultFont.h"
 
 ///
 /// Undefined proprocessor WIN32 macro "max, min" for preventing misuse.
@@ -88,6 +89,7 @@ void DyInitializeBuiltinResource()
   dy::builtin::FDyBuiltinShaderGLRenderPass();
   dy::builtin::FDyBuiltinShaderGLRenderColorGeometry();
   dy::builtin::FDyBuiltinShaderGLRenderOpaqueStatic();
+  dy::builtin::FDyBuiltinShaderGLRenderDefaultFont();
 
   dy::builtin::FDyBuiltinMaterialOpaqueStaticPlain();
 }

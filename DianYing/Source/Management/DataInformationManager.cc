@@ -164,7 +164,7 @@ EDySuccess MDyDataInformation::CreateTextureInformation(const PDyTextureConstruc
   static auto CheckIntegerityOfDescriptor = [](const PDyTextureConstructionDescriptor& textureDescriptor)
   {
     // Integrity test
-    if (textureDescriptor.mTextureName.empty())
+    if (textureDescriptor.mTextureSpecifierName.empty())
     {
       MDY_LOG_CRITICAL_D(kErrorTextureNameNotSpecified, kDyDataInformation);
       return DY_FAILURE;
@@ -196,7 +196,7 @@ EDySuccess MDyDataInformation::CreateTextureInformation(const PDyTextureConstruc
                                                 THeapHash<DDyTextureInformation>& textureMap)
   {
     // Check there is already in the information map.
-    const auto& textureName  = textureDescriptor.mTextureName;
+    const auto& textureName  = textureDescriptor.mTextureSpecifierName;
     auto[it, creationResult] = textureMap.try_emplace(textureName, nullptr);
     if (!creationResult)
     {
@@ -225,7 +225,7 @@ EDySuccess MDyDataInformation::CreateTextureInformation(const PDyTextureConstruc
   }
 
   // Find if duplicated texture name is exist in information list.
-  const auto& textureName = textureDescriptor.mTextureName;
+  const auto& textureName = textureDescriptor.mTextureSpecifierName;
   if (mTextureInformation.find(textureName) != mTextureInformation.end())
   {
     MDY_LOG_WARNING_D("{}::{} | {} is already found in mTextureInformation list.", kDyDataInformation, "CreateTextureInformation", textureName);

@@ -1,8 +1,5 @@
 #ifndef GUARD_DY_CORE_RENDERING_BASICSHADOW_H
 #define GUARD_DY_CORE_RENDERING_BASICSHADOW_H
-#include "Dy/Helper/Type/Vector3.h"
-#include "Dy/Core/Component/Resource/ShaderResource.h"
-
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -16,10 +13,23 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Core/Component/Resource/ShaderResource.h>
+#include <Dy/Helper/Type/Vector3.h>
+
+//!
+//! Forward declaration
+//!
+
 namespace dy
 {
-class CDyMeshRenderer;
+class   CDyModelRenderer;
+class   CDyDirectionalLight;
+struct  PDyGlFrameBufferInformation;
 } /// ::dy namespace
+
+//!
+//! Implemenetation
+//!
 
 namespace dy
 {
@@ -35,26 +45,50 @@ public:
 
   ///
   /// @brief Rendering deferred contexts to default framebuffer.
+  /// @param renderer
   ///
-  void RenderScreen(const CDyMeshRenderer& renderer);
+  void RenderScreen(const CDyModelRenderer& renderer);
+
+  ///
+  /// @brief Clear properties of given framebuffer.
+  ///
+  void Clear();
+
+  ///
+  /// @brief  Check directional light is being used.
+  /// @return Flag for checking directional light shadow mapping is being used.
+  ///
+  MDY_NODISCARD bool IsAvailableDirectionalLightShadow() const noexcept;
 
   ///
   /// @brief
+  /// @param  container
+  /// @return
   ///
-  [[nodiscard]] TU32 GetDepthTextureId() const noexcept;
+  MDY_NODISCARD EDySuccess UpdateDirectionalLightShadowToGpu(_MIN_ const CDyDirectionalLight& container);
 
   ///
   /// @brief
+  /// @param  container
+  /// @return
   ///
-  [[nodiscard]] FORCEINLINE TU32 GetShadowFrameBufferId() const noexcept
+  MDY_NODISCARD EDySuccess UnbindDirectionalLightShadowToGpu(_MIN_ const CDyDirectionalLight& container);
+
+  ///
+  /// @brief
+  /// @return
+  ///
+  MDY_NODISCARD TU32 GetDirectionalLightDepthTextureId() const noexcept;
+
+  ///
+  /// @brief
+  /// @return
+  ///
+  FORCEINLINE MDY_NODISCARD TU32 GetShadowFrameBufferId() const noexcept
   {
-    return this->mShadowFramebufferId;
+    MDY_NOT_IMPLEMENTED_ASSERT();
+    return MDY_INITIALIZE_DEFUINT;
   }
-
-  ///
-  /// @brief
-  ///
-  [[nodiscard]] std::pair<TI32, TI32> GetShadowMapSize() const noexcept;
 
 private:
   /// Create shading framebuffer component
@@ -66,12 +100,16 @@ private:
   //! General framebuffer
   //!
 
-  TU32                mShadowFramebufferId    = MDY_INITIALIZE_DEFUINT;
-  TU32                mShadowDepthValueBuffer = MDY_INITIALIZE_DEFUINT;
-  TI32                mMapWidth               = 512;
-  TI32                mMapHeight              = 512;
+  /// Flag for checking directional light shadow mapping is being used.
+  bool                mIsUsingShadowDirectionalLight = false;
 
-  CDyShaderResource*  mShaderResource;
+  ///
+  CDyShaderResource*  mDirLightShaderResource   = MDY_INITIALIZE_NULL;
+  ///
+  CDyShaderResource*  mPointLightShaderResource = MDY_INITIALIZE_NULL;
+
+  ///
+  PDyGlFrameBufferInformation* mShadowFrameBuffer = MDY_INITIALIZE_NULL;
 };
 
 } /// ::dy namespace

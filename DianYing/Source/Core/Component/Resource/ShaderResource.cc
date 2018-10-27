@@ -178,19 +178,23 @@ EDySuccess CDyShaderResource::pfInitializeResource(const DDyShaderInformation& s
 
   std::vector<std::pair<EDyShaderFragmentType, uint32_t>> shaderFragmentIdList;
   // If failured, release resources.
-  if (__pInitializeShaderFragments(information, shaderFragmentIdList) == DY_FAILURE)
+  if (this->__pInitializeShaderFragments(information, shaderFragmentIdList) == DY_FAILURE)
   {
     return DY_FAILURE;
   }
-  if (__pInitializeShaderProgram(shaderFragmentIdList) == DY_FAILURE)
+  if (this->__pInitializeShaderProgram(shaderFragmentIdList) == DY_FAILURE)
   {
     return DY_FAILURE;
   }
-  if (__pStoreAttributePropertiesOfProgram() == DY_FAILURE)
+  if (this->__pStoreAttributePropertiesOfProgram() == DY_FAILURE)
   {
     return DY_FAILURE;
   }
-  if (__pStoreConstantUniformPropertiesOfProgram() == DY_FAILURE)
+  if (this->__pStoreConstantUniformPropertiesOfProgram() == DY_FAILURE)
+  {
+    return DY_FAILURE;
+  }
+  if (this->__pStoreUniformBufferObjectPropertiesOfProgram() == DY_FAILURE)
   {
     return DY_FAILURE;
   }
@@ -259,10 +263,7 @@ EDySuccess CDyShaderResource::__pInitializeShaderFragments(
       {
         DyPrintShaderErrorLog(shaderFragmentId);
         glDeleteShader(shaderFragmentId);
-        for (auto& [type, compiledShaderId] : shaderFragmentIdList)
-        {
-          glDeleteShader(compiledShaderId);
-        }
+        for (auto& [type, compiledShaderId] : shaderFragmentIdList) { glDeleteShader(compiledShaderId); }
         return DY_FAILURE;
       }
     }
@@ -321,6 +322,7 @@ EDySuccess CDyShaderResource::__pStoreAttributePropertiesOfProgram() noexcept
     GLint   attributeSize = 0;
     GLenum  attributeType = GL_NONE;
     glGetActiveAttrib(this->mShaderProgramId, i, attributeBufferLength, &attributelength, &attributeSize, &attributeType, attributeName);
+    if (std::strcmp(attributeName, "gl_VertexID") == 0) { continue; }
     const auto attributeLocation = glGetAttribLocation(this->mShaderProgramId, attributeName);
     // Output log of attribute variables.
     const auto storeType = DyGlGetAttributeVariableTypeFrom(attributeType);
@@ -377,6 +379,8 @@ EDySuccess CDyShaderResource::__pStoreConstantUniformPropertiesOfProgram() noexc
     GLint   uniformSize = 0;
     GLenum  glUniformType = GL_NONE;
     glGetActiveUniform(this->mShaderProgramId, i, uniformBufferLength, &uniformLength, &uniformSize, &glUniformType, uniformName);
+    // -1 When uniform buffer object member variable is detected.
+    // We must check uniform buffer object is exist, or error.
     const auto uniformLocation = glGetUniformLocation(this->mShaderProgramId, uniformName);
     // Output log of attribute variables.
     const auto storeType = DyGlGetUniformVariableTypeFrom(glUniformType);
@@ -391,10 +395,16 @@ EDySuccess CDyShaderResource::__pStoreConstantUniformPropertiesOfProgram() noexc
     }
     if (uniformLocation < 0)
     {
-      MDY_LOG_CRITICAL_D("{} | Failed to retrieve uniform variable location. Shader name : {}, Uniform variable name : {}",
-                         "CDyShaderResource::__pStoreAttributePropertiesOfProgram", this->mShaderName, uniformName);
-      this->mPlainUniformVariableLists.clear();
-      return DY_FAILURE;
+      const GLchar* uboNameLastPtr = std::strchr(uniformName, '.');
+      if (MDY_CHECK_ISNULL(uboNameLastPtr))
+      {
+        MDY_LOG_CRITICAL_D("{} | Failed to retrieve uniform variable location. Shader name : {}, Uniform variable name : {}",
+                           "CDyShaderResource::__pStoreAttributePropertiesOfProgram", this->mShaderName, uniformName);
+        this->mPlainUniformVariableLists.clear();
+        return DY_FAILURE;
+      }
+      // If UBO is exist, just continue until finding next plain uniform variable.
+      continue;
     }
 
     this->mPlainUniformVariableLists[i].mVariableName = uniformName;
@@ -411,6 +421,37 @@ EDySuccess CDyShaderResource::__pStoreConstantUniformPropertiesOfProgram() noexc
                     this->mShaderName,
                     variable.mVariableName, variable.mVariableSlotSize,
                     DyGetDebugStringOfUniformVariableType(variable.mVariableType).data(), variable.mVariableLocation);
+  }
+  return DY_SUCCESS;
+}
+
+EDySuccess CDyShaderResource::__pStoreUniformBufferObjectPropertiesOfProgram() noexcept
+{
+  // GL(native) code
+  TI32 activatedUboCount = 0;
+  glGetProgramiv(this->mShaderProgramId, GL_ACTIVE_UNIFORM_BLOCKS, &activatedUboCount);
+  this->mUniformBufferObjectList.resize(activatedUboCount);
+
+  TI32 uboNameMaxLength = 0;
+  glGetProgramiv(this->mShaderProgramId, GL_ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH, &uboNameMaxLength);
+
+  // Retrieve uniform variable information.
+  GLchar* uniformName = new GLchar[uboNameMaxLength];
+  std::memset(uniformName, '\0', uboNameMaxLength);
+  for (int32_t i = 0; i < activatedUboCount; ++i)
+  {
+    GLsizei uniformLength = 0;
+    glGetActiveUniformBlockName(this->mShaderProgramId, i, uboNameMaxLength, &uniformLength, uniformName);
+
+    if (uniformLength <= 0) { continue; }
+    this->mUniformBufferObjectList[i].mUboSpecifierName = uniformName;
+  }
+  delete[] uniformName;
+
+  // Output activated attirbute variable information on console and file in debug_mode.
+  for (const auto& variable : this->mUniformBufferObjectList)
+  {
+    MDY_LOG_DEBUG_D("{} | Shader UBO information | Buffer name : {}", this->mShaderName, variable.mUboSpecifierName);
   }
   return DY_SUCCESS;
 }

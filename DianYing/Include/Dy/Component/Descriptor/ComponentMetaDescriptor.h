@@ -17,6 +17,7 @@
 #include <vector>
 #include <Dy/Helper/Type/Vector3.h>
 #include <Dy/Helper/Type/Color.h>
+#include <Dy/Helper/Type/Clamp.h>
 
 namespace dy
 {
@@ -125,19 +126,56 @@ struct PDyScriptComponentMetaInformation final : public IDyMetaInformation
 };
 
 ///
+/// @enum   EDyShadowType
+/// @brief  EDyShadowType
+///
+enum class EDyShadowType
+{
+  Hard,
+  Soft,
+  NoneError
+};
+
+///
+/// @struct PDyCommonLightMetaInformation
+/// @brief  Dependency meta information for common light meta information.
+///
+struct PDyCommonLightMetaInformation
+{
+  ///
+  EDyShadowType             mShadowType                     = EDyShadowType::NoneError;
+  ///
+  DDyClamp<float, 0, 1>     mShadowStrength                 = MDY_INITIALIZE_DEFINT;
+  ///
+  DDyClamp<float, 0, 2>     mShadowBias                     = 0.02;
+  ///
+  DDyVector2                mShadowResolution               = {};
+  ///
+  std::vector<std::string>  mShadowCullingMaskLayer         = {};
+  ///
+  bool                      mIsUsingGlobalShadowResolution  = false;
+};
+
+///
 /// @struct DDyDirectionalLightMetaInformation
 /// @brief Dependency information to DDyObjectInformation::mMetaComponentInfo when mType is FDyDirectionalLight.
 ///
-struct DDyDirectionalLightMetaInformation final : public IDyMetaInformation
+struct DDyDirectionalLightMetaInformation final : public IDyMetaInformation, public PDyCommonLightMetaInformation
 {
   /// Normalized light direction vector.
-  DDyVector3          mDirection = {};
-  /// Tinting diffuse color
-  DDyColor            mTintColor = {};
+  DDyVector3          mDirection  = {};
+  /// Tinting color
+  DDyColor            mDiffuse    = DDyColor::White;
+  DDyColor            mSpecular   = DDyColor::White;
+  DDyColor            mAmbient    = DDyColor::White;
   /// Intensity of light must be set up to 0~.
-  TF32                mIntensity = MDY_INITIALIZE_DEFINT;
+  TF32                mIntensity  = MDY_INITIALIZE_DEFINT;
   /// Component is initially activated or not.
   bool                mInitiallyActivated = false;
+  ///
+  bool                mIsCastingLight = false;
+  ///
+  bool                mIsCastingShadow = false;
 };
 
 ///

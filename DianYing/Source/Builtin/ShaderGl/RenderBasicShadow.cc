@@ -31,9 +31,10 @@ MDY_SET_IMMUTABLE_STRING(sVertexShaderCode, R"dy(
 layout (location = 0) in vec3 dyPosition;
 
 uniform mat4 uPvLightMatrix;
+uniform mat4 uModelMatrix;
 
 void main() {
-    gl_Position = uPvLightMatrix * vec4(dyPosition, 1.0);
+    gl_Position = uPvLightMatrix * uModelMatrix * vec4(dyPosition, 1.0);
 }
 )dy");
 

@@ -20,7 +20,7 @@ namespace dy
 
 ///
 /// @struct PDyMetaScriptInformation
-/// @brief
+/// @brief  Script meta information
 ///
 struct PDyMetaScriptInformation final
 {
