@@ -41,12 +41,13 @@
 #include <Dy/Builtin/Model/ScreenProjectionTriangle.h>
 #include <Dy/Builtin/Texture/Checker.h>
 #include <Dy/Builtin/Texture/ErrorBlue.h>
+#include <Dy/Builtin/Material/OpaqueStaticPlain.h>
 #include <Dy/Builtin/ShaderGl/RenderPass.h>
 #include <Dy/Builtin/ShaderGl/RenderColorGeometry.h>
 #include <Dy/Builtin/ShaderGl/RenderBasicShadow.h>
 #include <Dy/Builtin/ShaderGl/RenderOpaqueStatic.h>
 #include <Dy/Builtin/ShaderGl/RenderDefaultFont.h>
-#include <Dy/Builtin/Material/OpaqueStaticPlain.h>
+#include <Dy/Builtin/ShaderGl/RenderScreenOutput.h>
 
 #include <Dy/Management/HeapResourceManager.h>
 #include <Dy/Management/SoundManager.h>

@@ -132,6 +132,7 @@
     <ClCompile Include="Source\Management\Type\FontCharacter.cc" />
     <ClCompile Include="Source\Management\Type\FontContainer.cc" />
     <ClCompile Include="Source\Builtin\Model\ScreenProjectionTriangle.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\RenderScreenOutput.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -348,6 +349,7 @@
     <ClInclude Include="Include\Dy\Management\Type\FontContainer.h" />
     <ClInclude Include="Include\Dy\Management\Type\FontCharacter.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\ScreenProjectionTriangle.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderScreenOutput.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />
