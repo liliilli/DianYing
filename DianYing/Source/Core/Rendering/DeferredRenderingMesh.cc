@@ -13,37 +13,25 @@
 ///
 
 /// Header file
-#include <Dy/Core/Component/Object/DeferredRenderingMesh.h>
+#include <Dy/Core/Rendering/DeferredRenderingMesh.h>
 
 #include <Dy/Builtin/ShaderGl/RenderDeferredRendering.h>
 #include <Dy/Core/Rendering/Helper/FrameAttachmentString.h>
 #include <Dy/Component/CDyDirectionalLight.h>
-#include <Dy/Management/Internal/FramebufferManager.h>
 #include <Dy/Management/DataInformationManager.h>
 #include <Dy/Management/HeapResourceManager.h>
 #include <Dy/Management/RenderingManager.h>
 #include <Dy/Management/WorldManager.h>
-#include <glm/gtc/matrix_transform.inl>
+#include <Dy/Management/SettingManager.h>
+#include <Dy/Management/Internal/FramebufferManager.h>
 #include <Dy/Management/Internal/UniformBufferObjectManager.h>
+#include <Dy/Builtin/Model/ScreenProjectionTriangle.h>
+#include <glm/gtc/matrix_transform.inl>
 
 //!
 //! Forward declaration
 //!
 
-namespace
-{
-
-struct DDyMeshInfo final
-{
-  dy::DDyVector3 mPosition = {};
-  dy::DDyVector2 mTexCoord = {};
-
-  DDyMeshInfo(const dy::DDyVector3& position, const dy::DDyVector2& texCoord) :
-      mPosition{position}, mTexCoord{texCoord}
-  {};
-};
-
-} /// ::unnamed namespace
 namespace
 {
 
@@ -58,13 +46,70 @@ namespace dy
 
 FDyDeferredRenderingMesh::FDyDeferredRenderingMesh()
 {
-  MDY_CALL_ASSERT_SUCCESS(this->pInitializeGeometries());
+  auto& settingManager      = MDySetting::GetInstance();
+  auto& framebufferManager  = MDyFramebuffer::GetInstance();
+  auto& heapManager         = MDyHeapResource::GetInstance();
+
+  ///
+  /// @function CreateFramebufferAttachmentSetting
+  /// @brief
+  ///
+  static auto CreateFramebufferAttachmentSetting = [&]()
+  {
+    const auto overallScreenWidth = settingManager.GetWindowSizeWidth();
+    const auto overallScreenHeight = settingManager.GetWindowSizeHeight();
+    const auto overallSize = DDyVectorInt2{ overallScreenWidth, overallScreenHeight };
+
+    PDyGlFrameBufferInformation       framebufferInfo = {};
+    PDyGlAttachmentInformation        attachmentInfo = {};
+    PDyGlAttachmentBinderInformation  binderInfo = {};
+
+    framebufferInfo.mFrameBufferName = sFrameBuffer_ScreenFinal;
+    framebufferInfo.mFrameBufferSize = overallSize;
+    framebufferInfo.mIsUsingDefaultDepthBuffer = true;
+
+    // Rendered texture buffer
+    attachmentInfo.mAttachmentName = sAttachment_ScreenFinal_Output;
+    attachmentInfo.mAttachmentSize = overallSize;
+    attachmentInfo.mParameterList  = {
+        PDyGlTexParameterInformation\
+        {EDyGlParameterName::TextureMinFilter, EDyGlParameterValue::Nearest},
+        {EDyGlParameterName::TextureMagFilter, EDyGlParameterValue::Nearest},
+        {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::ClampToBorder},
+        {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::ClampToBorder},
+    };
+    attachmentInfo.mBorderColor = DDyColor{ 0, 0, 0, 0 };
+
+    binderInfo.mAttachmentName = sAttachment_ScreenFinal_Output;
+    binderInfo.mAttachmentType = EDyGlAttachmentType::Color0;
+    framebufferInfo.mAttachmentList.push_back(binderInfo);
+
+    // Push attachment buffer
+    MDY_CALL_ASSERT_SUCCESS(framebufferManager.SetAttachmentInformation(attachmentInfo));
+    // Create framebuffer.
+    MDY_CALL_ASSERT_SUCCESS(framebufferManager.InitializeNewFrameBuffer(framebufferInfo));
+  };
+
+  // FunctionBody∨
+
+  CreateFramebufferAttachmentSetting();
   MDY_CALL_ASSERT_SUCCESS(this->pInitializeShaderSetting());
   MDY_CALL_ASSERT_SUCCESS(this->pInitializeUboBuffers());
 
+  //
+  this->mDyBtFbScrFin = framebufferManager.GetFrameBufferPointer(MSVSTR(sFrameBuffer_ScreenFinal));
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mDyBtFbScrFin), "Unexpected error.");
+
+  //
+  if (MDY_CHECK_ISNULL(heapManager.GetModelResource(MSVSTR(builtin::FDyBuiltinModelScreenProjectionTriangle::sName))))
+  {
+    MDY_CALL_ASSERT_SUCCESS(heapManager.CreateModelResource(MSVSTR(builtin::FDyBuiltinModelScreenProjectionTriangle::sName)));
+  }
+  this->mScreenRenderTrianglePtr = heapManager.GetModelResource(MSVSTR(builtin::FDyBuiltinModelScreenProjectionTriangle::sName));
+
   for (TI32 i = 0; i < FDyDeferredRenderingMesh::sDirectionalLightCount; ++i)
   {
-    this->mAvailableList.push(i);
+    this->mDirLightAvailableList.push(i);
   }
 }
 
@@ -72,17 +117,12 @@ FDyDeferredRenderingMesh::~FDyDeferredRenderingMesh()
 {
   auto& uboManager = MDyUniformBufferObject::GetInstance();
   MDY_CALL_ASSERT_SUCCESS(uboManager.RemoveUboContainer("dyBtUboDirLight"));
-  if (this->mVbo) glDeleteBuffers(1, &this->mVbo);
-  if (this->mVao) glDeleteVertexArrays(1, &this->mVao);
-
-#ifdef false
-  auto& manResc = MDyHeapResource::GetInstance();
-#endif
 }
 
 void FDyDeferredRenderingMesh::RenderScreen()
 {
-  MDY_ASSERT(this->mShaderPtr, "FDyDeferredRenderingMesh::mShaderPtr must not be nullptr.");
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mShaderPtr), "FDyDeferredRenderingMesh::mShaderPtr must not be nullptr.");
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mScreenRenderTrianglePtr), "");
   if (this->mIsAttachmentPtrBinded == false)
   {
     const auto flag = this->pTryGetAttachmentPointers();
@@ -90,8 +130,15 @@ void FDyDeferredRenderingMesh::RenderScreen()
     else                    { return; }
   }
 
+  const auto& submeshList = this->mScreenRenderTrianglePtr->GetSubmeshResources();
+  MDY_ASSERT(submeshList.size() == 1, "");
+  // Bind vertex array
+  const CDySubmeshResource& mesh = *submeshList[0];
+
+  // Set
+  glBindFramebuffer(GL_FRAMEBUFFER, this->mDyBtFbScrFin->GetFramebufferId());
   this->mShaderPtr->UseShader();
-  glBindVertexArray(this->mVao);
+  glBindVertexArray(mesh.GetVertexArrayId());
 
   // Bind g-buffers as textures.
   const auto uShadowPv_Id = glGetUniformLocation(this->mShaderPtr->GetShaderProgramId(), "uShadowPv");
@@ -102,15 +149,17 @@ void FDyDeferredRenderingMesh::RenderScreen()
   glActiveTexture(GL_TEXTURE2); glBindTexture(GL_TEXTURE_2D, this->mAttachmentPtr_Specular->GetAttachmentId());
   glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, this->mAttachmentPtr_ModelPosition->GetAttachmentId());
   glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, this->mAttachmentPtr_Shadow->GetAttachmentId());
+  glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
 
-  glDrawArrays(GL_TRIANGLES, 0, 3);
+  // Rewind
   glBindVertexArray(0);
   this->mShaderPtr->UnuseShader();
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void FDyDeferredRenderingMesh::Clear()
 {
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  glBindFramebuffer(GL_FRAMEBUFFER, this->mDyBtFbScrFin->GetFramebufferId());
   auto& worldManager = MDyWorld::GetInstance();
 
   const auto& backgroundColor = worldManager.GetValidLevelReference().GetBackgroundColor();
@@ -122,42 +171,14 @@ void FDyDeferredRenderingMesh::Clear()
 
 std::optional<TI32> FDyDeferredRenderingMesh::GetAvailableDirectionalLightIndex() noexcept
 {
-  if (this->mAvailableList.empty() == true) { return std::nullopt; }
+  if (this->mDirLightAvailableList.empty() == true) { return std::nullopt; }
   else
   {
-    const auto returnId = this->mAvailableList.front();
-    this->mAvailableList.pop();
+    const auto returnId = this->mDirLightAvailableList.front();
+    this->mDirLightAvailableList.pop();
 
     return returnId;
   }
-}
-
-EDySuccess FDyDeferredRenderingMesh::pInitializeGeometries()
-{
-  // Make triangle that can represent context.
-  glGenVertexArrays(1, &this->mVao);
-  glGenBuffers(1, &this->mVbo);
-  glBindVertexArray(this->mVao);
-  glBindBuffer(GL_ARRAY_BUFFER, this->mVbo);
-
-  std::vector<DDyMeshInfo> mVertexInformations;
-  mVertexInformations.emplace_back(DDyVector3{-1, -1, 0}, DDyVector2{0, 0});
-  mVertexInformations.emplace_back(DDyVector3{ 3, -1, 0}, DDyVector2{2, 0});
-  mVertexInformations.emplace_back(DDyVector3{-1,  3, 0}, DDyVector2{0, 2});
-  glBufferData(GL_ARRAY_BUFFER, sizeof(DDyMeshInfo) * 4, &mVertexInformations[0], GL_STATIC_DRAW);
-  glBindVertexBuffer(0, this->mVbo, 0, sizeof(DDyMeshInfo));
-
-  // DDyMeshInfo.mPosition (DDyVector3)
-  glEnableVertexAttribArray(0);
-  glVertexAttribFormat(0, 3, GL_FLOAT, GL_FALSE, offsetof(DDyMeshInfo, mPosition));
-  glVertexAttribBinding(0, 0);
-  // DDyMeshInfo.mTexCoord (DDyVector2)
-  glEnableVertexAttribArray(1);
-  glVertexAttribFormat(1, 2, GL_FLOAT, GL_FALSE, offsetof(DDyMeshInfo, mTexCoord));
-  glVertexAttribBinding(1, 0);
-
-  glBindVertexArray(0);
-  return DY_SUCCESS;
 }
 
 EDySuccess FDyDeferredRenderingMesh::pInitializeShaderSetting()
@@ -175,9 +196,6 @@ EDySuccess FDyDeferredRenderingMesh::pInitializeShaderSetting()
   glUniform1i(glGetUniformLocation(this->mShaderPtr->GetShaderProgramId(), "uSpecular"), 2);
   glUniform1i(glGetUniformLocation(this->mShaderPtr->GetShaderProgramId(), "uModelPosition"), 3);
   glUniform1i(glGetUniformLocation(this->mShaderPtr->GetShaderProgramId(), "uShadow"), 4);
-#ifdef false
-  glUniform1i(glGetUniformLocation(this->mShaderPtr->GetShaderProgramId(), "uSsaoOcclusion"), 3);
-#endif
 
   this->mShaderPtr->UnuseShader();
   return DY_SUCCESS;
