@@ -32,15 +32,13 @@ layout (location = 0) in vec3 dyPosition;
 layout (location = 1) in vec3 dyNormal;
 layout (location = 2) in vec2 dyTexCoord0;
 
-uniform mat4 modelMatrix;
-//uniform mat4 viewMatrix;
-//uniform mat4 projectionMatrix;
-
 layout(std140, binding = 0) uniform CameraBlock
 {
   uniform mat4 mProjMatrix;
   uniform mat4 mViewMatrix;
 } uCamera;
+
+uniform mat4 modelMatrix;
 
 out gl_PerVertex { vec4 gl_Position; };
 out VS_OUT
@@ -80,7 +78,7 @@ layout (location = 3) out vec4 gPosition;
 uniform sampler2D uTexture0;
 
 void main() {
-	gUnlit	  = vec4(fs_in.fragColor * texture(uTexture0, fs_in.texCoord).rgb, 1.0f);
+	gUnlit	  = vec4(texture(uTexture0, fs_in.texCoord).rgb, 1.0f);
 	gNormal	  = vec4(normalize(fs_in.normal) * 0.5f + 0.5f, 1.0f);
 	gSpecular = vec4(1, 0, 1, 1);
 	gPosition = fs_in.modelPosition;

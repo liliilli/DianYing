@@ -25,20 +25,28 @@ FDyBuiltinModelScreenProjectionTriangle::FDyBuiltinModelScreenProjectionTriangle
   PDySubmeshInformationDescriptor submeshDesc;
 
   // Make position, normal, texcoord vertex information
-  submeshDesc.mVertices.reserve(4);
+  submeshDesc.mVertices.reserve(3);
   {
     DDyVertexInformation vertex;
 
-    vertex.mPosition = DDyVector3{ -1, -1, 0 };
+    vertex.mPosition  = DDyVector3{ -1, -1, 0 };
+    vertex.mNormal    = DDyVector3{ 1 };
     vertex.mTexCoords = DDyVector2{ 0, 0 };
     submeshDesc.mVertices.emplace_back(vertex);
-    vertex.mPosition = DDyVector3{ 3, -1, 0 };
+    vertex.mPosition  = DDyVector3{ 3, -1, 0 };
+    vertex.mNormal    = DDyVector3{ 1 };
     vertex.mTexCoords = DDyVector2{ 2, 0 };
     submeshDesc.mVertices.emplace_back(vertex);
-    vertex.mPosition = DDyVector3{ -1, 3, 0 };
+    vertex.mPosition  = DDyVector3{ -1, 3, 0 };
+    vertex.mNormal    = DDyVector3{ 1 };
     vertex.mTexCoords = DDyVector2{ 0, 2 };
     submeshDesc.mVertices.emplace_back(vertex);
   }
+
+  // Make index information
+  submeshDesc.mIndices.reserve(3);
+  std::array<TU32, 3> indices = { 0, 1, 2 };
+  for (const auto index : indices) { submeshDesc.mIndices.emplace_back(index); }
 
   // Make model information
   PDyModelConstructionVertexDescriptor modelDesc;
