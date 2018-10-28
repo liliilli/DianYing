@@ -38,18 +38,20 @@
 #include <Dy/Builtin/Model/Box.h>
 #include <Dy/Builtin/Model/Plain.h>
 #include <Dy/Builtin/Model/Sphere.h>
+#include <Dy/Builtin/Model/ScreenProjectionTriangle.h>
 #include <Dy/Builtin/Texture/Checker.h>
 #include <Dy/Builtin/Texture/ErrorBlue.h>
+#include <Dy/Builtin/Material/OpaqueStaticPlain.h>
 #include <Dy/Builtin/ShaderGl/RenderPass.h>
 #include <Dy/Builtin/ShaderGl/RenderColorGeometry.h>
 #include <Dy/Builtin/ShaderGl/RenderBasicShadow.h>
 #include <Dy/Builtin/ShaderGl/RenderOpaqueStatic.h>
-#include <Dy/Builtin/Material/OpaqueStaticPlain.h>
+#include <Dy/Builtin/ShaderGl/RenderDefaultFont.h>
+#include <Dy/Builtin/ShaderGl/RenderScreenOutput.h>
 
 #include <Dy/Management/HeapResourceManager.h>
 #include <Dy/Management/SoundManager.h>
 #include <Dy/Management/PhysicsManager.h>
-#include "Dy/Builtin/ShaderGl/RenderDefaultFont.h"
 
 ///
 /// Undefined proprocessor WIN32 macro "max, min" for preventing misuse.
@@ -82,6 +84,7 @@ void DyInitializeBuiltinResource()
   dy::builtin::FDyBuiltinModelBox();
   dy::builtin::FDyBuiltinModelPlain();
   dy::builtin::FDyBuiltinModelSphere();
+  dy::builtin::FDyBuiltinModelScreenProjectionTriangle();
 
   dy::builtin::FDyBuiltinTextureChecker();
   dy::builtin::FDyBuiltinTextureErrorBlue();
