@@ -13,8 +13,9 @@
 ///
 
 /// Header file
-#include <Dy/Builtin/ShaderGl/RenderDefaultFont.h>
+#include <Dy/Builtin/ShaderGl/RenderFontMSDF.h>
 #include <Dy/Core/Component/Internal/ShaderType.h>
+#include <Dy/Builtin/ShaderGl/RenderDefaultFont.h>
 #include <Dy/Management/DataInformationManager.h>
 #include <Dy/Management/HeapResourceManager.h>
 
@@ -47,16 +48,24 @@ MDY_SET_IMMUTABLE_STRING(sFragmentShaderCode, R"dy(
 in VS_OUT { vec2 texCoord; } fs_in;
 
 layout (binding = 0) uniform sampler2D uCharTexture;
-uniform vec4 uTextColor;
+uniform float pxRange;
+uniform vec4  bgColor;
+uniform vec4  fgColor;
 
 layout (location = 0) out vec4 gOutput;
 
-void main()
-{
-  //float alpha = texture(uCharTexture, fs_in.texCoord).r;
-  //if (alpha <= 0.0f) { discard; }
+float median(float r, float g, float b) {
+    return max(min(r, g), min(max(r, g), b));
+}
 
-	gOutput = uTextColor * vec4(vec3(1), texture(uCharTexture, fs_in.texCoord).r);
+void main() {
+    vec2 msdfUnit = pxRange/vec2(textureSize(uCharTexture, 0));
+    vec3 samp     = texture(uCharTexture, fs_in.texCoord).rgb;
+    float sigDist = median(samp.r, samp.g, samp.b) - 0.5;
+    sigDist      *= dot(msdfUnit, 0.5/fwidth(fs_in.texCoord));
+    float opacity = clamp(sigDist + 0.5, 0.0, 1.0);
+
+    gOutput = mix(bgColor, fgColor, opacity);
 }
 )dy");
 
@@ -66,13 +75,13 @@ void main()
 //! Implementation
 //!
 
-namespace dy
+namespace dy::builtin
 {
 
-builtin::FDyBuiltinShaderGLRenderDefaultFont::FDyBuiltinShaderGLRenderDefaultFont()
+FDyBuiltinShaderGLRenderFontMSDF::FDyBuiltinShaderGLRenderFontMSDF()
 {
   PDyShaderConstructionDescriptor shaderDesc;
-  shaderDesc.mShaderName = FDyBuiltinShaderGLRenderDefaultFont::sName;
+  shaderDesc.mShaderName = FDyBuiltinShaderGLRenderFontMSDF::sName;
   {
     PDyShaderFragmentInformation vs;
     vs.mShaderType = EDyShaderFragmentType::Vertex;
@@ -92,7 +101,7 @@ builtin::FDyBuiltinShaderGLRenderDefaultFont::FDyBuiltinShaderGLRenderDefaultFon
   auto& rescManager = MDyHeapResource::GetInstance();
 
   MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation(shaderDesc));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(FDyBuiltinShaderGLRenderDefaultFont::sName)));
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(shaderDesc.mShaderName));
 }
 
-} /// ::dy namespace
+} /// ::dy::builtin namespace
