@@ -28,6 +28,9 @@ MDY_SET_IMMUTABLE_STRING(sFrameBuffer_Shadow,       "dyBtFbShadow");
 MDY_SET_IMMUTABLE_STRING(sFrameBuffer_ScreenFinal,  "dyBtFbScrFin");
 MDY_SET_IMMUTABLE_STRING(sFrameBuffer_UiBasic,      "dyBtFbUiBasic");
 
+// Test
+MDY_SET_IMMUTABLE_STRING(sFrameBuffer_Test,         "dyBtFbTest");
+
 //!
 //! Attachment
 //!
@@ -42,6 +45,9 @@ MDY_SET_IMMUTABLE_STRING(sAttachment_DirectionalBasicShadow, "dyBtAtDirBscShadow
 MDY_SET_IMMUTABLE_STRING(sAttachment_ScreenFinal_Output, "dyBtAtScrFin_Output");
 /// sFrameBuffer_UiBasic
 MDY_SET_IMMUTABLE_STRING(sAttachment_Output,        "dyBtAtUiBasic_Output");
+
+// Test
+MDY_SET_IMMUTABLE_STRING(sAttachment_Test_Output,   "dyBtAtTest_Output");
 
 /// Final (default framebuffer) must sum sAttachment_ScreenFinal_Output + sAttachment_Output...
 
