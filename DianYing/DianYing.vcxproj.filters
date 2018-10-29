@@ -133,6 +133,22 @@
     <ClCompile Include="Source\Management\Type\FontContainer.cc" />
     <ClCompile Include="Source\Builtin\Model\ScreenProjectionTriangle.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderScreenOutput.cc" />
+    <ClCompile Include="Source\Test\TestMSDF.cc" />
+    <ClCompile Include="Libraries\msdfgen\core\Bitmap.cpp" />
+    <ClCompile Include="Libraries\msdfgen\core\Contour.cpp" />
+    <ClCompile Include="Libraries\msdfgen\core\edge-coloring.cpp" />
+    <ClCompile Include="Libraries\msdfgen\core\EdgeHolder.cpp" />
+    <ClCompile Include="Libraries\msdfgen\core\edge-segments.cpp" />
+    <ClCompile Include="Libraries\msdfgen\core\equation-solver.cpp" />
+    <ClCompile Include="Libraries\msdfgen\core\msdfgen.cpp" />
+    <ClCompile Include="Libraries\msdfgen\core\render-sdf.cpp" />
+    <ClCompile Include="Libraries\msdfgen\core\save-bmp.cpp" />
+    <ClCompile Include="Libraries\msdfgen\core\Shape.cpp" />
+    <ClCompile Include="Libraries\msdfgen\core\shape-description.cpp" />
+    <ClCompile Include="Libraries\msdfgen\core\SignedDistance.cpp" />
+    <ClCompile Include="Libraries\msdfgen\core\Vector2.cpp" />
+    <ClCompile Include="Source\Builtin\ShaderGl\RenderFontMSDF.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\RenderFontSDF.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -350,6 +366,24 @@
     <ClInclude Include="Include\Dy\Management\Type\FontCharacter.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\ScreenProjectionTriangle.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderScreenOutput.h" />
+    <ClInclude Include="Include\Dy\Test\TestMSDF.h" />
+    <ClInclude Include="Libraries\msdfgen\core\arithmetics.hpp" />
+    <ClInclude Include="Libraries\msdfgen\core\Bitmap.h" />
+    <ClInclude Include="Libraries\msdfgen\core\Contour.h" />
+    <ClInclude Include="Libraries\msdfgen\core\EdgeColor.h" />
+    <ClInclude Include="Libraries\msdfgen\core\edge-coloring.h" />
+    <ClInclude Include="Libraries\msdfgen\core\EdgeHolder.h" />
+    <ClInclude Include="Libraries\msdfgen\core\edge-segments.h" />
+    <ClInclude Include="Libraries\msdfgen\core\equation-solver.h" />
+    <ClInclude Include="Libraries\msdfgen\core\render-sdf.h" />
+    <ClInclude Include="Libraries\msdfgen\core\save-bmp.h" />
+    <ClInclude Include="Libraries\msdfgen\core\Shape.h" />
+    <ClInclude Include="Libraries\msdfgen\core\shape-description.h" />
+    <ClInclude Include="Libraries\msdfgen\core\SignedDistance.h" />
+    <ClInclude Include="Libraries\msdfgen\core\Vector2.h" />
+    <ClInclude Include="Libraries\msdfgen\msdfgen.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderFontMSDF.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderFontSDF.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

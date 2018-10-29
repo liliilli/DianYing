@@ -4,3 +4,6 @@
 [submodule "DianYing/Libraries/spdlog"]
 	path = DianYing/Libraries/spdlog
 	url = https://github.com/gabime/spdlog
+[submodule "DianYing/Libraries/msdfgen"]
+	path = DianYing/Libraries/msdfgen
+	url = https://github.com/Chlumsky/msdfgen
