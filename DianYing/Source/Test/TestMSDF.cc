@@ -39,8 +39,9 @@
 #include <Dy/Management/Type/FramebufferInformation.h>
 #include <Dy/Management/Internal/FramebufferManager.h>
 #include <Dy/Builtin/ShaderGl/RenderFontMSDF.h>
-#include "Dy/Helper/Type/Matrix4.h"
-#include "Dy/Management/HeapResourceManager.h"
+#include <Dy/Helper/Type/Matrix4.h>
+#include <Dy/Management/HeapResourceManager.h>
+#include <Dy/Builtin/ShaderGl/RenderFontSDF.h>
 
 #if !defined(FT_FREETYPE_H)
 #define FT_FREETYPE_H
@@ -137,7 +138,11 @@ namespace dy::test
 void TestMsdfLibrary()
 {
   MDY_CALL_ASSERT_SUCCESS(DyInitializeFreetype());
-  MDY_CALL_ASSERT_SUCCESS(DyLoadFontFreetype("C:\\Windows\\Fonts\\SourceHanSerif-Medium.otf"));
+  //MDY_CALL_ASSERT_SUCCESS(DyLoadFontFreetype("C:\\Windows\\Fonts\\SourceHanSerif-Medium.otf"));
+  //MDY_CALL_ASSERT_SUCCESS(DyLoadFontFreetype("C:\\Windows\\Fonts\\msgothic.ttc"));
+  //MDY_CALL_ASSERT_SUCCESS(DyLoadFontFreetype("C:\\Windows\\Fonts\\UDDigiKyokashoN-R.ttc"));
+  MDY_CALL_ASSERT_SUCCESS(DyLoadFontFreetype("./TestResource/mincho.otf"));
+  const bool isThisFontOtf = true;
 
   msdfgen::Shape shape;
   DDyString sampleText = "誕";
@@ -146,8 +151,6 @@ void TestMsdfLibrary()
 
   shape.contours.clear();
   shape.inverseYAxis = false;
-  //if (advance)
-      //*advance = font->face->glyph->advance.x/64.;
 
   FtContext context = { };
   context.shape = &shape;
@@ -161,12 +164,9 @@ void TestMsdfLibrary()
   error = FT_Outline_Decompose(&sFreetypeFace->glyph->outline, &ftFunctions, &context);
   MDY_ASSERT(error == 0, "");
 
+  struct { double l, b, r, t; } bounds = { 1e240, 1e240, -1e240, -1e240 };
   shape.normalize();
-  double avgScale = .5*(1 + 1);
-  struct { double l, b, r, t; } bounds = {
-    1e240, 1e240, -1e240, -1e240
-  };
-  if (true) { shape.bounds(bounds.l, bounds.b, bounds.r, bounds.t); }
+  shape.bounds(bounds.l, bounds.b, bounds.r, bounds.t);
 
   double range = 1;
   const double pxRange = 4;
@@ -180,11 +180,12 @@ void TestMsdfLibrary()
     double l = bounds.l, b = bounds.b, r = bounds.r, t = bounds.t;
     msdfgen::Vector2 frame(64, 64);
     //
-    if (true)                         { frame -= 2 * pxRange; }
+    { frame -= 2 * pxRange; }
     if (l >= r || b >= t)             { l = 0, b = 0, r = 1, t = 1; }
     if (frame.x <= 0 || frame.y <= 0) { MDY_UNEXPECTED_BRANCH(); }
     //
     const msdfgen::Vector2 dims(r - l, t - b);
+    double avgScale = 1.f;
 
     if (dims.x*frame.y < dims.y*frame.x)
     {
@@ -197,7 +198,7 @@ void TestMsdfLibrary()
       scale = avgScale = frame.x / dims.x;
     }
 
-    if (true && true) { translate += pxRange / scale; }
+    translate += pxRange / scale;
   }
 
   if (true) { range = pxRange/msdfgen::min(scale.x, scale.y); }
@@ -205,6 +206,19 @@ void TestMsdfLibrary()
   //                      max. angle
   msdfgen::edgeColoringSimple(shape, 3.0);
 
+  msdfgen::Bitmap<float> sdf(64, 64);
+  msdfgen::generateSDF(sdf, shape, range, scale, translate);
+  if (isThisFontOtf == true)
+  {
+    for (TI32 y = 0; y < 64; ++y) { for (TI32 x = 0; x < 64; ++x) { sdf(x, y) = 1 - sdf(x, y); } }
+  }
+
+  // Generate Textures
+  TU32 textureId = MDY_INITIALIZE_DEFUINT;
+  glGenTextures (1, &textureId);
+  glBindTexture (GL_TEXTURE_2D, textureId);
+  glTexImage2D  (GL_TEXTURE_2D, 0, GL_RED, 64, 64, 0, GL_RED, GL_FLOAT, &sdf(0, 0));
+#ifdef false
   //           image width, height
   msdfgen::Bitmap<msdfgen::FloatRGB> msdf(64, 64);
   //                     range, scale, translation
@@ -215,9 +229,10 @@ void TestMsdfLibrary()
   glGenTextures(1, &textureId);
   glBindTexture(GL_TEXTURE_2D, textureId);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 64, 64, 0, GL_RGB, GL_FLOAT, &msdf(0, 0));
+#endif
   // Set Texture Options
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   // Store character for later use
@@ -254,13 +269,15 @@ void TestMsdfLibrary()
   MDY_CALL_ASSERT_SUCCESS(framebufferManager.SetAttachmentInformation(attachmentInfo));
   // Create framebuffer.
   MDY_CALL_ASSERT_SUCCESS(framebufferManager.InitializeNewFrameBuffer(framebufferInfo));
-  dy::PDyGlFrameBufferInformation* mDyBtFbTest = framebufferManager.GetFrameBufferPointer(MSVSTR(sFrameBuffer_Test));
+  PDyGlFrameBufferInformation* mDyBtFbTest = framebufferManager.GetFrameBufferPointer(MSVSTR(sFrameBuffer_Test));
 
   // Shader create
   // Create projection and uniform informations
-  builtin::FDyBuiltinShaderGLRenderFontMSDF();
+  //builtin::FDyBuiltinShaderGLRenderFontMSDF();
+  builtin::FDyBuiltinShaderGLRenderFontSDF();
   DDyMatrix4x4 uUiProjMatrix = glm::ortho<float>(-640, 640, -360, 360, 0.2f, 10.0f);
-  dy::CDyShaderResource* sSampleShaderPtr = MDyHeapResource::GetInstance().GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderFontMSDF::sName));
+  //CDyShaderResource* sSampleShaderPtr = MDyHeapResource::GetInstance().GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderFontMSDF::sName));
+  CDyShaderResource* sSampleShaderPtr = MDyHeapResource::GetInstance().GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderFontSDF::sName));
 
   //!
   //! Make vbo sample
@@ -310,8 +327,10 @@ void TestMsdfLibrary()
   //
   const auto uUiProjMatrixId = glGetUniformLocation(sSampleShaderPtr->GetShaderProgramId(), "uUiProjMatrix");
   glUniformMatrix4fv(uUiProjMatrixId, 1, GL_FALSE, &uUiProjMatrix[0].X);
+#ifdef false
   const auto pxRangeId       = glGetUniformLocation(sSampleShaderPtr->GetShaderProgramId(), "pxRange");
   glUniform1f(pxRangeId, pxRange);
+#endif
   const auto bgColorId       = glGetUniformLocation(sSampleShaderPtr->GetShaderProgramId(), "bgColor");
   const DDyColor bgColor     = DDyColor{1, 1, 1, 1};
   glUniform4fv(bgColorId, 1, &bgColor.R);
