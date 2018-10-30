@@ -35,14 +35,26 @@ public:
   /// glyph mBearing position
   DDyVectorInt2 mBearing    = {};
   /// glyph advance width
-  TU32          mAdvance    = MDY_INITIALIZE_DEFUINT;
+  TF32          mAdvance    = MDY_INITIALIZE_DEFUINT;
+  ///
+  DDyVector2    mGlyphScale = {};
+  ///
+  DDyVector2    mTranslate  = {};
 
   DDyFontCharacter() = default;
-  explicit DDyFontCharacter(const TU32 texture_id, const DDyVectorInt2 size, const DDyVectorInt2 bearing, const TU32 advance) :
+  explicit DDyFontCharacter(
+      const TU32 texture_id,
+      const DDyVectorInt2& size,
+      const DDyVectorInt2& bearing,
+      const TF32 advance,
+      const DDyVector2& glyphScale,
+      const DDyVector2& translate) :
       mTextureId{ texture_id },
       mSize{ size },
       mBearing{ bearing },
-      mAdvance{ advance } {};
+      mAdvance{ advance },
+      mGlyphScale{ glyphScale },
+      mTranslate{ translate } {};
 
   ~DDyFontCharacter() { if (mTextureId != MDY_INITIALIZE_DEFUINT) { glDeleteTextures(1, &mTextureId); } }
 };

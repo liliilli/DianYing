@@ -88,7 +88,7 @@ MDY_NODISCARD EDySuccess DyReleaseFreetype() noexcept
   return DY_SUCCESS;
 }
 
-struct FtContext {
+struct DDyFreeTypeContext {
   msdfgen::Point2 position;
   msdfgen::Shape *shape;
   msdfgen::Contour *contour;
@@ -99,28 +99,28 @@ static msdfgen::Point2 ftPoint2(const FT_Vector &vector) {
 }
 
 static int ftMoveTo(const FT_Vector *to, void *user) {
-    FtContext *context = reinterpret_cast<FtContext *>(user);
+    DDyFreeTypeContext *context = reinterpret_cast<DDyFreeTypeContext *>(user);
     context->contour = &context->shape->addContour();
     context->position = ftPoint2(*to);
     return 0;
 }
 
 static int ftLineTo(const FT_Vector *to, void *user) {
-    FtContext *context = reinterpret_cast<FtContext *>(user);
+    DDyFreeTypeContext *context = reinterpret_cast<DDyFreeTypeContext *>(user);
     context->contour->addEdge(new msdfgen::LinearSegment(context->position, ftPoint2(*to)));
     context->position = ftPoint2(*to);
     return 0;
 }
 
 static int ftConicTo(const FT_Vector *control, const FT_Vector *to, void *user) {
-    FtContext *context = reinterpret_cast<FtContext *>(user);
+    DDyFreeTypeContext *context = reinterpret_cast<DDyFreeTypeContext *>(user);
     context->contour->addEdge(new msdfgen::QuadraticSegment(context->position, ftPoint2(*control), ftPoint2(*to)));
     context->position = ftPoint2(*to);
     return 0;
 }
 
 static int ftCubicTo(const FT_Vector *control1, const FT_Vector *control2, const FT_Vector *to, void *user) {
-    FtContext *context = reinterpret_cast<FtContext *>(user);
+    DDyFreeTypeContext *context = reinterpret_cast<DDyFreeTypeContext *>(user);
     context->contour->addEdge(new msdfgen::CubicSegment(context->position, ftPoint2(*control1), ftPoint2(*control2), ftPoint2(*to)));
     context->position = ftPoint2(*to);
     return 0;
@@ -139,20 +139,20 @@ void TestMsdfLibrary()
 {
   MDY_CALL_ASSERT_SUCCESS(DyInitializeFreetype());
   //MDY_CALL_ASSERT_SUCCESS(DyLoadFontFreetype("C:\\Windows\\Fonts\\SourceHanSerif-Medium.otf"));
-  //MDY_CALL_ASSERT_SUCCESS(DyLoadFontFreetype("C:\\Windows\\Fonts\\msgothic.ttc"));
+  MDY_CALL_ASSERT_SUCCESS(DyLoadFontFreetype("C:\\Windows\\Fonts\\msgothic.ttc"));
   //MDY_CALL_ASSERT_SUCCESS(DyLoadFontFreetype("C:\\Windows\\Fonts\\UDDigiKyokashoN-R.ttc"));
-  MDY_CALL_ASSERT_SUCCESS(DyLoadFontFreetype("./TestResource/mincho.otf"));
-  const bool isThisFontOtf = true;
+  //MDY_CALL_ASSERT_SUCCESS(DyLoadFontFreetype("./TestResource/mincho.otf"));
+  const bool isThisFontOtf = false;
 
-  msdfgen::Shape shape;
   DDyString sampleText = "誕";
   FT_Error error = FT_Load_Char(sFreetypeFace, sampleText[0], FT_LOAD_NO_SCALE);
   MDY_ASSERT(error == 0, "");
 
+  msdfgen::Shape shape;
   shape.contours.clear();
   shape.inverseYAxis = false;
 
-  FtContext context = { };
+  DDyFreeTypeContext context = {};
   context.shape = &shape;
   FT_Outline_Funcs ftFunctions;
   ftFunctions.move_to   = &ftMoveTo;
@@ -206,6 +206,7 @@ void TestMsdfLibrary()
   //                      max. angle
   msdfgen::edgeColoringSimple(shape, 3.0);
 
+#ifdef false
   msdfgen::Bitmap<float> sdf(64, 64);
   msdfgen::generateSDF(sdf, shape, range, scale, translate);
   if (isThisFontOtf == true)
@@ -218,7 +219,7 @@ void TestMsdfLibrary()
   glGenTextures (1, &textureId);
   glBindTexture (GL_TEXTURE_2D, textureId);
   glTexImage2D  (GL_TEXTURE_2D, 0, GL_RED, 64, 64, 0, GL_RED, GL_FLOAT, &sdf(0, 0));
-#ifdef false
+#endif
   //           image width, height
   msdfgen::Bitmap<msdfgen::FloatRGB> msdf(64, 64);
   //                     range, scale, translation
@@ -229,7 +230,6 @@ void TestMsdfLibrary()
   glGenTextures(1, &textureId);
   glBindTexture(GL_TEXTURE_2D, textureId);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 64, 64, 0, GL_RGB, GL_FLOAT, &msdf(0, 0));
-#endif
   // Set Texture Options
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -273,11 +273,11 @@ void TestMsdfLibrary()
 
   // Shader create
   // Create projection and uniform informations
-  //builtin::FDyBuiltinShaderGLRenderFontMSDF();
-  builtin::FDyBuiltinShaderGLRenderFontSDF();
+  builtin::FDyBuiltinShaderGLRenderFontMSDF();
+  //builtin::FDyBuiltinShaderGLRenderFontSDF();
   DDyMatrix4x4 uUiProjMatrix = glm::ortho<float>(-640, 640, -360, 360, 0.2f, 10.0f);
-  //CDyShaderResource* sSampleShaderPtr = MDyHeapResource::GetInstance().GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderFontMSDF::sName));
-  CDyShaderResource* sSampleShaderPtr = MDyHeapResource::GetInstance().GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderFontSDF::sName));
+  CDyShaderResource* sSampleShaderPtr = MDyHeapResource::GetInstance().GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderFontMSDF::sName));
+  //CDyShaderResource* sSampleShaderPtr = MDyHeapResource::GetInstance().GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderFontSDF::sName));
 
   //!
   //! Make vbo sample
@@ -327,10 +327,8 @@ void TestMsdfLibrary()
   //
   const auto uUiProjMatrixId = glGetUniformLocation(sSampleShaderPtr->GetShaderProgramId(), "uUiProjMatrix");
   glUniformMatrix4fv(uUiProjMatrixId, 1, GL_FALSE, &uUiProjMatrix[0].X);
-#ifdef false
   const auto pxRangeId       = glGetUniformLocation(sSampleShaderPtr->GetShaderProgramId(), "pxRange");
   glUniform1f(pxRangeId, pxRange);
-#endif
   const auto bgColorId       = glGetUniformLocation(sSampleShaderPtr->GetShaderProgramId(), "bgColor");
   const DDyColor bgColor     = DDyColor{1, 1, 1, 1};
   glUniform4fv(bgColorId, 1, &bgColor.R);

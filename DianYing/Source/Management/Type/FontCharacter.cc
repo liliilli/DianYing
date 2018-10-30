@@ -35,12 +35,16 @@ DDyFontCharacter::DDyFontCharacter(DDyFontCharacter&& rhs) noexcept :
     mTextureId{ rhs.mTextureId },
     mSize { rhs.mSize },
     mBearing { rhs.mBearing },
-    mAdvance{ rhs.mAdvance }
+    mAdvance{ rhs.mAdvance },
+    mGlyphScale( rhs.mGlyphScale ),
+    mTranslate( rhs.mTranslate )
 {
   rhs.mTextureId  = MDY_INITIALIZE_DEFUINT;
   rhs.mSize       = DDyVectorInt2{};
   rhs.mBearing    = DDyVectorInt2{};
   rhs.mAdvance    = MDY_INITIALIZE_DEFUINT;
+  rhs.mGlyphScale = DDyVector2{};
+  rhs.mTranslate  = DDyVector2{};
 }
 
 DDyFontCharacter& DDyFontCharacter::operator=(DDyFontCharacter&& rhs) noexcept
@@ -50,11 +54,15 @@ DDyFontCharacter& DDyFontCharacter::operator=(DDyFontCharacter&& rhs) noexcept
   mSize       = rhs.mSize;
   mBearing    = rhs.mBearing;
   mAdvance    = rhs.mAdvance;
+  mGlyphScale = rhs.mGlyphScale;
+  mTranslate  = rhs.mTranslate;
 
   rhs.mTextureId = 0;
   rhs.mSize       = DDyVectorInt2{};
   rhs.mBearing    = DDyVectorInt2{};
   rhs.mAdvance    = MDY_INITIALIZE_DEFUINT;
+  rhs.mGlyphScale = DDyVector2{};
+  rhs.mTranslate  = DDyVector2{};
   return *this;
 }
 
