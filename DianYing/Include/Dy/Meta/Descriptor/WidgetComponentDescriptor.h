@@ -33,6 +33,10 @@ struct PDyMetaWidgetTextDescriptor final : public PDyMetaWidgetCommonBaseDesc
   DDyVectorInt2 mInitialPosition    = {};
   /// InitialColor(rgb) + InitialAlpha(a)
   DDyColor      mInitialColor       = DDyColor::White;
+  ///
+  DDyColor      mEdgeColor          = DDyColor{0, 0, 0, 0};
+  ///
+  DDyColor      mBackgroundColor    = DDyColor{0, 0, 0, 0};
   /// FontSize
   TU32          mFontSize           = MDY_INITIALIZE_DEFUINT;
   ///
@@ -45,6 +49,8 @@ struct PDyMetaWidgetTextDescriptor final : public PDyMetaWidgetCommonBaseDesc
   bool          mIsItalic           = false;
   ///
   bool          mIsUsingEdge        = false;
+  ///
+  bool          mIsUsingBackground  = false;
   ///
   bool          mIsUsingDefaultFont = true;
 

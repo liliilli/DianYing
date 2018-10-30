@@ -36,6 +36,7 @@ enum class EDyAttributeVariableType
   IVec2,
   Integer,
   Float,
+  Bool,
   NoneError,
 };
 
@@ -58,6 +59,7 @@ enum class EDyUniformVariableType
   IntegerPointer,
   Float,
   FloatPointer,
+  Bool,
   Texture1D,
   Texture2D,
   NoneError

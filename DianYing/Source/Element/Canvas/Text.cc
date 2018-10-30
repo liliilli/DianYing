@@ -30,15 +30,21 @@ std::string FDyText::ToString()
 
 EDySuccess FDyText::Initialize(_MIN_ const PDyMetaWidgetTextDescriptor& objectMetaDesc)
 {
-  this->mTextString = objectMetaDesc.mInitialString;
-  this->mFontColor  = objectMetaDesc.mInitialColor;
-  this->mFontSize   = objectMetaDesc.mFontSize;
+  this->mTextString             = objectMetaDesc.mInitialString;
+  this->mForegroundColor        = objectMetaDesc.mInitialColor;
+  this->mBackgroundColor        = objectMetaDesc.mBackgroundColor;
+  this->mEdgeColor              = objectMetaDesc.mEdgeColor;
+  this->mIsUsingEdgeRendering   = objectMetaDesc.mIsUsingEdge;
+  this->mIsUsingBackgroundColor = objectMetaDesc.mIsUsingBackground;
+  this->mFontSize               = objectMetaDesc.mFontSize;
+  this->mPosition               = objectMetaDesc.mInitialPosition;
 
   DDyFontRendererMetaInformation desc = {};
   desc.mFontComponentPtr = this;
   MDY_CALL_ASSERT_SUCCESS(this->mRenderer.Initialize(desc));
 
   // @TODO IMPLEMENT OTHER PROPERTIES
+
   return DY_SUCCESS;
 }
 
@@ -67,9 +73,24 @@ TU32 FDyText::GetFontSize() const noexcept
   return this->mFontSize;
 }
 
-const DDyColor& FDyText::GetColor() const noexcept
+const DDyColor& FDyText::GetBackgroundColor() const noexcept
 {
-  return this->mFontColor;
+  return this->mBackgroundColor;
+}
+
+const DDyColor& FDyText::GetEdgeColor() const noexcept
+{
+  return this->mEdgeColor;
+}
+
+const DDyColor& FDyText::GetForegroundColor() const noexcept
+{
+  return this->mForegroundColor;
+}
+
+const DDyVectorInt2& FDyText::GetRenderPosition() const noexcept
+{
+  return this->mPosition;
 }
 
 //!
@@ -96,7 +117,7 @@ EDySuccess FDyText::SetFontName(const std::string& fontName)
 void FDyText::SetColor(const DDyColor& color)
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
-  this->mFontColor = color;
+  this->mForegroundColor = color;
 }
 
 } /// ::dy namespace

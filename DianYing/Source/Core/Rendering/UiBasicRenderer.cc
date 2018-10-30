@@ -142,6 +142,11 @@ Canvas0 : 1
 Canvas1 : 0
 Camera0 : 2
 )dy";
+    desc.mFontSize = 16;
+    desc.mInitialPosition = DDyVectorInt2{0, 0};
+    desc.mInitialColor    = DDyColor::White;
+    desc.mIsUsingEdge     = true;
+    desc.mEdgeColor       = DDyColor::Black;
 #ifdef false
     desc.mInitialString = R"dy(Hello world!
 21世紀初頭、遺伝子工学技術の進歩により、
@@ -251,21 +256,30 @@ void FDyUIBasicRenderer::RenderScreen()
   //glUniform4fv(glGetUniformLocation(sSampleShaderPtr->GetShaderProgramId(), "uTextColor"), 1, &uTextColor.R);
   //const auto pxRangeId    = glGetUniformLocation(sSampleShaderPtr->GetShaderProgramId(), "pxRange");
   //glUniform1f(pxRangeId, 4.0f);
-  const auto bgColorId    = glGetUniformLocation(sSampleShaderPtr->GetShaderProgramId(), "bgColor");
-  const DDyColor bgColor  = DDyColor{0, 0, 0, 0};
-  glUniform4fv(bgColorId, 1, &bgColor.R);
-  const auto fgColorId    = glGetUniformLocation(sSampleShaderPtr->GetShaderProgramId(), "fgColor");
-  const DDyColor fgColor  = DDyColor{1, 1, 1, 1};
-  glUniform4fv(fgColorId, 1, &fgColor.R);
+
+  FDyFontContainer& container = textComponent->GetFontContainer();
+  const TI32 fontSize         = textComponent->GetFontSize();
+  const DDyVector2 initPos    = textComponent->GetRenderPosition();
+  const TU32 shaderProgramId  = sSampleShaderPtr->GetShaderProgramId();
+
+  const auto fgColorId        = glGetUniformLocation(shaderProgramId, "uFgColor");
+  glUniform4fv(fgColorId, 1, &textComponent->GetForegroundColor().R);
+  const auto bgColorId        = glGetUniformLocation(shaderProgramId, "uBgColor");
+  glUniform4fv(bgColorId, 1, &textComponent->GetBackgroundColor().R);
+  const auto edgeColorId      = glGetUniformLocation(shaderProgramId, "uEdgeColor");
+  glUniform4fv(edgeColorId, 1, &textComponent->GetEdgeColor().R);
+
+  const auto uIsUsingEdgeId   = glGetUniformLocation(shaderProgramId, "uIsUsingEdge");
+  glUniform1i(uIsUsingEdgeId, textComponent->CheckIsUsingEdgeRendering());
+  const auto uIsUsingBackgroundId = glGetUniformLocation(shaderProgramId, "uIsUsingBackground");
+  glUniform1i(uIsUsingBackgroundId, textComponent->CheckIsUsingBackgroundColor());
 
   //!
   //! Temporal code for font rendering!
   //!
 
-  FDyFontContainer& container = textComponent->GetFontContainer();
-  const TI32 fontSize = 12;
-  const DDyVector2 initPos  = { -640, 256 };
-  DDyVector2 renderPosition = initPos;
+  // RENDER!!
+  DDyVector2 renderPosition   = initPos;
   for (const TC16& ucs2Char : textComponent->GetText()) {
     // Line feed
     if (ucs2Char == '\n')

@@ -116,6 +116,7 @@ dy::EDyAttributeVariableType DyGlGetAttributeVariableTypeFrom(GLenum type) noexc
 {
   switch (type)
   {
+  case GL_BOOL:                             return dy::EDyAttributeVariableType::Bool;
   case GL_FLOAT:      case GL_DOUBLE:       return dy::EDyAttributeVariableType::Float;
   case GL_FLOAT_VEC2: case GL_DOUBLE_VEC2:  return dy::EDyAttributeVariableType::Vector2;
   case GL_FLOAT_VEC3: case GL_DOUBLE_VEC3:  return dy::EDyAttributeVariableType::Vector3;
@@ -135,6 +136,7 @@ dy::EDyUniformVariableType DyGlGetUniformVariableTypeFrom(GLenum type) noexcept
 {
   switch (type)
   {
+  case GL_BOOL:                             return dy::EDyUniformVariableType::Bool;
   case GL_FLOAT:      case GL_DOUBLE:       return dy::EDyUniformVariableType::Float;
   case GL_FLOAT_VEC2: case GL_DOUBLE_VEC2:  return dy::EDyUniformVariableType::Vector2;
   case GL_FLOAT_VEC3: case GL_DOUBLE_VEC3:  return dy::EDyUniformVariableType::Vector3;
