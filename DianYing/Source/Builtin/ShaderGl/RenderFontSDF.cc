@@ -47,18 +47,40 @@ MDY_SET_IMMUTABLE_STRING(sFragmentShaderCode, R"dy(
 in VS_OUT { vec2 texCoord; } fs_in;
 
 layout (binding = 0) uniform sampler2D uCharTexture;
-uniform vec4  bgColor;
-uniform vec4  fgColor;
+uniform vec4  uBgColor;
+uniform vec4  uFgColor;
+uniform vec4  uEdgeColor;
+uniform bool  uIsUsingEdge;
+uniform bool  uIsUsingBackground;
 
 layout (location = 0) out vec4 gOutput;
 
-const float u_buffer  = 0.5f;
-const float u_gamma   = 0.025f;
+const float uIntUpper  = 0.55f;
+const float uIntLower  = 0.4f;
+const float uEdgeUpper = 0.05f;
+const float uEdgeLimit = 0.00001f;
 
 void main() {
   float dist    = texture(uCharTexture, fs_in.texCoord).r;
-  float alpha   = smoothstep(u_buffer - u_gamma, u_buffer + u_gamma, dist);
-  gOutput       = vec4(fgColor.rgb, alpha * fgColor.a);
+  float alpha   = 1.0f;
+  vec4  color   = vec4(0);
+  vec4  egColor = vec4(0);
+  vec4  bkColor = vec4(0);
+  if (uIsUsingEdge == true)       { egColor = uEdgeColor; }
+  if (uIsUsingBackground == true) { bkColor = uBgColor; }
+
+  if (uIntLower < dist)
+  {
+    alpha = smoothstep(uIntLower, uIntUpper, dist);
+    color = uFgColor * alpha + egColor * (1 - alpha);
+  }
+  else
+  {
+    alpha = smoothstep(uEdgeLimit, uEdgeUpper, dist);
+    color = egColor * alpha + bkColor * (1 - alpha);
+  }
+
+  gOutput = color;
 }
 )dy");
 

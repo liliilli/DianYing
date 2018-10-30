@@ -313,7 +313,7 @@ MDY_NODISCARD dy::DDyFontCharacter DyCreateUcs2SDFCharTexture(_MIN_ const TC16 c
   shape.bounds(bounds.l, bounds.b, bounds.r, bounds.t);
   shape.inverseYAxis = true;
 
-  const double      pxRange = 4;
+  const double      pxRange = 12;
   msdfgen::Vector2  translate;
   msdfgen::Vector2  scale = 1;
 
