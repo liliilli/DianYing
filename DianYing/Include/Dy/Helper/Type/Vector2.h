@@ -66,7 +66,7 @@ struct DDyVector2 final {
 
   DDyVector2(const aiVector2D& value) noexcept : X{value.x}, Y{value.y} {}
   DDyVector2(const glm::vec2& value) noexcept : X{value.x}, Y{value.y} {}
-  DDyVector2(const DDyVector2& value) noexcept = default;
+  DDyVector2(const DDyVector2& value) noexcept : X{value.X}, Y{value.Y} {}
 
   DDyVector2& operator=(const aiVector2D& value) noexcept
   {
@@ -82,7 +82,13 @@ struct DDyVector2 final {
     return *this;
   }
 
-  DDyVector2& operator=(const DDyVector2& value) noexcept = default;
+  DDyVector2& operator=(const DDyVector2& value) noexcept
+  {
+    if (this == &value) { return *this; }
+    this->X = value.X;
+    this->Y = value.Y;
+    return *this;
+  }
 
   auto& operator[](std::size_t index)
   {
