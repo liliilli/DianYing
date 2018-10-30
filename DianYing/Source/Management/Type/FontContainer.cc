@@ -394,8 +394,9 @@ FDyFontContainer::FDyFontContainer(_MIN_ const std::string& fontFilePath)
     //FT_Set_Pixel_Sizes(sFreetypeFace, 0, 64);
 
     this->mFontGlyphContainer     = DyGetAsciiCharTextures();
-    const auto glyphScale = static_cast<float>(256) / sFreetypeFace->units_per_EM;
-    this->mUnscaledLinefeedHeight = sFreetypeFace->glyph->metrics.height / 64 * glyphScale;
+    const auto* freetypeFace      = sFreetypeFace;
+    const auto glyphScale = static_cast<float>(256) / freetypeFace->units_per_EM;
+    this->mUnscaledLinefeedHeight = freetypeFace->height / 64 * glyphScale;
     MDY_CALL_ASSERT_SUCCESS(DyReleaseFreetype());
   }
 }
