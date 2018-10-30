@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DianYing", "DianYing\DianYi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DyTest", "DyTest\DyTest.vcxproj", "{8D53497A-1112-4598-AF64-E59523069697}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DyFontAtlasGenerator", "DyFontAtlasGenerator\DyFontAtlasGenerator.vcxproj", "{B12702AD-ABFB-343A-A199-8E24837244A3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -26,6 +28,12 @@ Global
 		{8D53497A-1112-4598-AF64-E59523069697}.Release|x64.Build.0 = TestBuild|x64
 		{8D53497A-1112-4598-AF64-E59523069697}.TestBuild|x64.ActiveCfg = TestBuild|x64
 		{8D53497A-1112-4598-AF64-E59523069697}.TestBuild|x64.Build.0 = TestBuild|x64
+		{B12702AD-ABFB-343A-A199-8E24837244A3}.Debug|x64.ActiveCfg = Debug|x64
+		{B12702AD-ABFB-343A-A199-8E24837244A3}.Debug|x64.Build.0 = Debug|x64
+		{B12702AD-ABFB-343A-A199-8E24837244A3}.Release|x64.ActiveCfg = Release|x64
+		{B12702AD-ABFB-343A-A199-8E24837244A3}.Release|x64.Build.0 = Release|x64
+		{B12702AD-ABFB-343A-A199-8E24837244A3}.TestBuild|x64.ActiveCfg = Release|x64
+		{B12702AD-ABFB-343A-A199-8E24837244A3}.TestBuild|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

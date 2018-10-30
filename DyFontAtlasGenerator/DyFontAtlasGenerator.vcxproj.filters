@@ -33,20 +33,21 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DyFontAtlasGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="stdafx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <ClCompile Include="precompiled.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DyWindowAbout.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="DyFontAtlasGenerator.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="DyWindowAbout.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -54,10 +55,21 @@
     <QtUic Include="DyFontAtlasGenerator.ui">
       <Filter>Form Files</Filter>
     </QtUic>
+    <QtUic Include="DyWindowAbout.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="DyFontAtlasGenerator.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="precompiled.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GlobalEnums.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
