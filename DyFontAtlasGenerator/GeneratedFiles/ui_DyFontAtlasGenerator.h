@@ -48,6 +48,7 @@ public:
     QCheckBox *CB_OptionSeperate;
     QPushButton *BT_Create;
     QCheckBox *CB_MapHangul;
+    QCheckBox *CB_OptionCompressJson;
     QMenuBar *MNB_Menu;
     QMenu *MN_Main;
     QMenu *MN_Help;
@@ -59,7 +60,7 @@ public:
         if (DyFontAtlasGeneratorClass->objectName().isEmpty())
             DyFontAtlasGeneratorClass->setObjectName(QStringLiteral("DyFontAtlasGeneratorClass"));
         DyFontAtlasGeneratorClass->setEnabled(true);
-        DyFontAtlasGeneratorClass->resize(500, 260);
+        DyFontAtlasGeneratorClass->resize(500, 300);
         QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -144,7 +145,7 @@ public:
 
         PG_Loading = new QProgressBar(centralWidget);
         PG_Loading->setObjectName(QStringLiteral("PG_Loading"));
-        PG_Loading->setGeometry(QRect(0, 210, 500, 20));
+        PG_Loading->setGeometry(QRect(0, 250, 500, 20));
         PG_Loading->setValue(0);
         PG_Loading->setTextVisible(false);
         CB_MapEnglish = new QCheckBox(centralWidget);
@@ -165,10 +166,13 @@ public:
         CB_OptionSeperate->setGeometry(QRect(20, 140, 271, 21));
         BT_Create = new QPushButton(centralWidget);
         BT_Create->setObjectName(QStringLiteral("BT_Create"));
-        BT_Create->setGeometry(QRect(410, 170, 75, 23));
+        BT_Create->setGeometry(QRect(410, 210, 75, 23));
         CB_MapHangul = new QCheckBox(centralWidget);
         CB_MapHangul->setObjectName(QStringLiteral("CB_MapHangul"));
         CB_MapHangul->setGeometry(QRect(110, 70, 141, 21));
+        CB_OptionCompressJson = new QCheckBox(centralWidget);
+        CB_OptionCompressJson->setObjectName(QStringLiteral("CB_OptionCompressJson"));
+        CB_OptionCompressJson->setGeometry(QRect(20, 170, 271, 21));
         DyFontAtlasGeneratorClass->setCentralWidget(centralWidget);
         MNB_Menu = new QMenuBar(DyFontAtlasGeneratorClass);
         MNB_Menu->setObjectName(QStringLiteral("MNB_Menu"));
@@ -208,6 +212,7 @@ public:
         CB_OptionSeperate->setText(QApplication::translate("DyFontAtlasGeneratorClass", "Export as separated JSON and png files.", nullptr));
         BT_Create->setText(QApplication::translate("DyFontAtlasGeneratorClass", "Create", nullptr));
         CB_MapHangul->setText(QApplication::translate("DyFontAtlasGeneratorClass", "Hangul (Unicode 2.0)", nullptr));
+        CB_OptionCompressJson->setText(QApplication::translate("DyFontAtlasGeneratorClass", "Compress JSON String (Binary)", nullptr));
         MN_Main->setTitle(QApplication::translate("DyFontAtlasGeneratorClass", "Main", nullptr));
         MN_Help->setTitle(QApplication::translate("DyFontAtlasGeneratorClass", "Help", nullptr));
         Q_UNUSED(DyFontAtlasGeneratorClass);
