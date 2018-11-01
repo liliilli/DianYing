@@ -271,7 +271,7 @@
      <string>Create</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="CB_MapEnglish_2">
+   <widget class="QCheckBox" name="CB_MapHangul">
     <property name="geometry">
      <rect>
       <x>110</x>
@@ -294,7 +294,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Compress JSON String</string>
+     <string>Compress JSON String (Binary)</string>
     </property>
    </widget>
   </widget>

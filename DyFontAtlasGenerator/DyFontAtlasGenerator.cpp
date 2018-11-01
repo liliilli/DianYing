@@ -306,6 +306,7 @@ DyFontAtlasGenerator::DyFontAtlasGenerator(QWidget *parent) : QMainWindow(parent
   connect(ui.CB_MapEnglish,       &QCheckBox::stateChanged, this, &DyFontAtlasGenerator::UpdateCharmapFlag);
   connect(ui.CB_MapHangul,        &QCheckBox::stateChanged, this, &DyFontAtlasGenerator::UpdateCharmapFlag);
   connect(ui.CB_OptionSeperate,   &QCheckBox::stateChanged, this, &DyFontAtlasGenerator::UpdateOptionFlag);
+  connect(ui.CB_OptionCompressJson, &QCheckBox::stateChanged, this, &DyFontAtlasGenerator::UpdateOptionFlag);
   connect(ui.BT_Create,           &QPushButton::clicked,    this, &DyFontAtlasGenerator::CreateBatchFile);
   connect(this, &DyFontAtlasGenerator::SetProgressBarValue, ui.PG_Loading, &QProgressBar::setValue);
 
@@ -354,7 +355,8 @@ void DyFontAtlasGenerator::UpdateCharmapFlag(int value)
 void DyFontAtlasGenerator::UpdateOptionFlag(int value)
 {
   auto resultFlag {dy::EDyOptionCollections::None};
-  if (ui.CB_OptionSeperate->isChecked() == true) { resultFlag |= dy::EDyOptionCollections::SeparateJsonAndPng; }
+  if (ui.CB_OptionSeperate->isChecked() == true)      { resultFlag |= dy::EDyOptionCollections::SeparateJsonAndPng; }
+  if (ui.CB_OptionCompressJson->isChecked() == true)  { resultFlag |= dy::EDyOptionCollections::CompressJsonString; }
 
   this->mOptionFlag = resultFlag;
   this->pUpdateBT_CreateActivation();
@@ -363,8 +365,8 @@ void DyFontAtlasGenerator::UpdateOptionFlag(int value)
 void DyFontAtlasGenerator::pUpdateBT_CreateActivation()
 {
   const bool resultFlag = false
-    || dy::IsFlagNotCheckAll(this->mCharmapFlag)
-    || dy::IsFlagNotCheckAll(this->mOptionFlag);
+    || (dy::IsFlagNotCheckAll(this->mCharmapFlag) == true)
+    || (dy::IsHavingFlags(this->mOptionFlag, dy::EDyOptionCollections::SeparateJsonAndPng) == false);
 
   if (resultFlag == true)  { ui.BT_Create->setEnabled(false); }
   else                     { ui.BT_Create->setEnabled(true); }
