@@ -53,7 +53,7 @@
     <ClCompile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PreprocessorDefinitions>UNICODE;_UNICODE;WIN32;WIN64;QT_DLL;QT_CORE_LIB;QT_GUI_LIB;QT_OPENGL_LIB;QT_OPENGLEXTENSIONS_LIB;QT_WIDGETS_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtOpenGLExtensions;$(QTDIR)\include\QtWidgets;$(ProjectDir)Libraries\freetype\include;$(ProjectDir)Libraries\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtOpenGLExtensions;$(QTDIR)\include\QtWidgets;$(ProjectDir)Libraries\freetype\include;$(ProjectDir)Libraries\spdlog\include;$(ProjectDir)Libraries\msdfgen;$(ProjectDir)Libraries\nlohmann;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -72,7 +72,7 @@
     <QtMoc>
       <OutputFile>.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
       <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
-      <IncludePath>.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtOpenGLExtensions;$(QTDIR)\include\QtWidgets;$(ProjectDir)Libraries\freetype\include;$(ProjectDir)Libraries\spdlog\include;%(AdditionalIncludeDirectories)</IncludePath>
+      <IncludePath>.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtOpenGLExtensions;$(QTDIR)\include\QtWidgets;$(ProjectDir)Libraries\freetype\include;$(ProjectDir)Libraries\spdlog\include;$(ProjectDir)Libraries\msdfgen;$(ProjectDir)Libraries\nlohmann;%(AdditionalIncludeDirectories)</IncludePath>
       <Define>UNICODE;_UNICODE;WIN32;WIN64;QT_DLL;QT_CORE_LIB;QT_GUI_LIB;QT_OPENGL_LIB;QT_OPENGLEXTENSIONS_LIB;QT_WIDGETS_LIB</Define>
       <ForceInclude>precompiled.h;../../%(Filename)%(Extension)</ForceInclude>
     </QtMoc>
@@ -123,6 +123,45 @@
   <ItemGroup>
     <ClCompile Include="DyFontAtlasGenerator.cpp" />
     <ClCompile Include="DyWindowAbout.cpp" />
+    <ClCompile Include="Libraries\msdfgen\core\Bitmap.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Libraries\msdfgen\core\Contour.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Libraries\msdfgen\core\edge-coloring.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Libraries\msdfgen\core\edge-segments.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Libraries\msdfgen\core\EdgeHolder.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Libraries\msdfgen\core\equation-solver.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Libraries\msdfgen\core\msdfgen.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Libraries\msdfgen\core\render-sdf.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Libraries\msdfgen\core\save-bmp.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Libraries\msdfgen\core\shape-description.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Libraries\msdfgen\core\Shape.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Libraries\msdfgen\core\SignedDistance.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Libraries\msdfgen\core\Vector2.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="precompiled.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -130,9 +169,27 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GlobalEnums.h" />
+    <ClInclude Include="Helper\CoordinateBounds.h" />
+    <ClInclude Include="Helper\MsdfgenHelper.h" />
+    <ClInclude Include="Helper\GlobalEnums.h" />
     <QtMoc Include="DyWindowAbout.h" />
     <QtMoc Include="DyFontAtlasGenerator.h" />
+    <ClInclude Include="Helper\JsonTypeWriterHelper.h" />
+    <ClInclude Include="Helper\Vector2.h" />
+    <ClInclude Include="Libraries\msdfgen\core\arithmetics.hpp" />
+    <ClInclude Include="Libraries\msdfgen\core\Bitmap.h" />
+    <ClInclude Include="Libraries\msdfgen\core\Contour.h" />
+    <ClInclude Include="Libraries\msdfgen\core\edge-coloring.h" />
+    <ClInclude Include="Libraries\msdfgen\core\edge-segments.h" />
+    <ClInclude Include="Libraries\msdfgen\core\EdgeColor.h" />
+    <ClInclude Include="Libraries\msdfgen\core\EdgeHolder.h" />
+    <ClInclude Include="Libraries\msdfgen\core\equation-solver.h" />
+    <ClInclude Include="Libraries\msdfgen\core\render-sdf.h" />
+    <ClInclude Include="Libraries\msdfgen\core\save-bmp.h" />
+    <ClInclude Include="Libraries\msdfgen\core\shape-description.h" />
+    <ClInclude Include="Libraries\msdfgen\core\Shape.h" />
+    <ClInclude Include="Libraries\msdfgen\core\SignedDistance.h" />
+    <ClInclude Include="Libraries\msdfgen\core\Vector2.h" />
     <ClInclude Include="precompiled.h" />
   </ItemGroup>
   <ItemGroup>

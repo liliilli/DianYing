@@ -47,6 +47,7 @@ public:
     QLabel *label_3;
     QCheckBox *CB_OptionSeperate;
     QPushButton *BT_Create;
+    QCheckBox *CB_MapHangul;
     QMenuBar *MNB_Menu;
     QMenu *MN_Main;
     QMenu *MN_Help;
@@ -165,6 +166,9 @@ public:
         BT_Create = new QPushButton(centralWidget);
         BT_Create->setObjectName(QStringLiteral("BT_Create"));
         BT_Create->setGeometry(QRect(410, 170, 75, 23));
+        CB_MapHangul = new QCheckBox(centralWidget);
+        CB_MapHangul->setObjectName(QStringLiteral("CB_MapHangul"));
+        CB_MapHangul->setGeometry(QRect(110, 70, 141, 21));
         DyFontAtlasGeneratorClass->setCentralWidget(centralWidget);
         MNB_Menu = new QMenuBar(DyFontAtlasGeneratorClass);
         MNB_Menu->setObjectName(QStringLiteral("MNB_Menu"));
@@ -203,6 +207,7 @@ public:
         label_3->setText(QApplication::translate("DyFontAtlasGeneratorClass", "And...", nullptr));
         CB_OptionSeperate->setText(QApplication::translate("DyFontAtlasGeneratorClass", "Export as separated JSON and png files.", nullptr));
         BT_Create->setText(QApplication::translate("DyFontAtlasGeneratorClass", "Create", nullptr));
+        CB_MapHangul->setText(QApplication::translate("DyFontAtlasGeneratorClass", "Hangul (Unicode 2.0)", nullptr));
         MN_Main->setTitle(QApplication::translate("DyFontAtlasGeneratorClass", "Main", nullptr));
         MN_Help->setTitle(QApplication::translate("DyFontAtlasGeneratorClass", "Help", nullptr));
         Q_UNUSED(DyFontAtlasGeneratorClass);

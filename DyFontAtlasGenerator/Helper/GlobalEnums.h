@@ -15,7 +15,8 @@ namespace dy
 enum class EDyCharmapCollections : uint32_t
 {
   None    = 0b0000,
-  English = 0b0001
+  English = 0b0001,
+  Hangul  = 0b0010
 };
 
 ///
