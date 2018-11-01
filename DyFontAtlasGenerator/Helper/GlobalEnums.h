@@ -16,7 +16,7 @@ enum class EDyCharmapCollections : uint32_t
 {
   None    = 0b0000,
   English = 0b0001,
-  Hangul  = 0b0010
+  Hangul  = 0b0010,
 };
 
 ///
@@ -47,7 +47,8 @@ inline EDyCharmapCollections& operator|=(EDyCharmapCollections& lhs, EDyCharmapC
 enum class EDyOptionCollections : uint32_t
 {
   None                = 0b0000,
-  SeparateJsonAndPng  = 0b0001
+  SeparateJsonAndPng  = 0b0001,
+  CompressJsonString  = 0b0010,
 };
 
 ///
@@ -83,7 +84,7 @@ template <
       || std::is_same_v<TEnum, EDyOptionCollections>)
     >
 >
-inline bool IsHavingFlags(TEnum& lhs, TEnum rhs)
+inline bool IsHavingFlags(const TEnum& lhs, TEnum rhs)
 {
   const auto lhsValue = static_cast<std::underlying_type_t<TEnum>>(lhs);
   const auto rhsValue = static_cast<std::underlying_type_t<TEnum>>(rhs);
@@ -103,7 +104,7 @@ template <
       || std::is_same_v<TEnum, EDyOptionCollections>)
     >
 >
-inline bool IsFlagNotCheckAll(TEnum& lhs)
+inline bool IsFlagNotCheckAll(const TEnum& lhs)
 {
   const auto lhsValue = static_cast<std::underlying_type_t<TEnum>>(lhs);
   return (lhsValue ^ 0x00) == 0x00;

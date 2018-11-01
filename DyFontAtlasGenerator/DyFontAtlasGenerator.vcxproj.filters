@@ -81,6 +81,9 @@
     <ClCompile Include="Libraries\msdfgen\core\Vector2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Helper\HelperZlib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="DyFontAtlasGenerator.h">
