@@ -20,6 +20,8 @@
 #include "Helper/CoordinateBounds.h"
 #include "Helper/HelperZlib.h"
 
+#include "DyWindowAbout.h"
+
 namespace
 {
 
@@ -340,6 +342,7 @@ DyFontAtlasGenerator::DyFontAtlasGenerator(QWidget *parent) : QMainWindow(parent
   connect(ui.CB_OptionSeperate,   &QCheckBox::stateChanged, this, &DyFontAtlasGenerator::UpdateOptionFlag);
   connect(ui.CB_OptionCompressJson, &QCheckBox::stateChanged, this, &DyFontAtlasGenerator::UpdateOptionFlag);
   connect(ui.BT_Create,           &QPushButton::clicked,    this, &DyFontAtlasGenerator::CreateBatchFile);
+  //connect(ui.AC_About,            &QAction::triggered,      this, &DyFontAtlasGenerator::ShowAbout);
   connect(this, &DyFontAtlasGenerator::SetProgressBarValue, ui.PG_Loading, &QProgressBar::setValue);
 
   // Call private trivial functions.
@@ -466,5 +469,21 @@ void DyFontAtlasGenerator::CreationTaskFinished()
 {
   ui.PG_Loading->hide();
   this->setEnabled(true);
+}
+
+void DyFontAtlasGenerator::ShowAbout()
+{
+  // NOT IMPLEMENTED YET
+  this->mChildAbout = new DyWindowAbout();
+  this->mChildAbout->setWindowModality(Qt::WindowModality::ApplicationModal);
+  this->mChildAbout->SetParentMainWindow(*this);
+  this->mChildAbout->show();
+}
+
+void DyFontAtlasGenerator::ResumeFocus()
+{
+  // NOT IMPLEMENTED YET
+  delete this->mChildAbout;
+  this->mChildAbout = nullptr;
 }
 

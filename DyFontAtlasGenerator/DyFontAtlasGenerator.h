@@ -4,6 +4,16 @@
 #include "ui_DyFontAtlasGenerator.h"
 #include "Helper/GlobalEnums.h"
 
+//!
+//! Forward declaration
+//!
+
+class DyWindowAbout;
+
+//!
+//! Implementation
+//!
+
 struct DDyFontInformation final
 {
   /// File path on focus.
@@ -49,6 +59,14 @@ public slots:
   /// @brief
   ///
   void CreationTaskFinished();
+  ///
+  /// @brief
+  ///
+  void ShowAbout();
+  ///
+  /// @brief
+  ///
+  void ResumeFocus();
 
 signals:
   void SetProgressBarValue(int);
@@ -70,4 +88,6 @@ private:
   dy::EDyOptionCollections  mOptionFlag  = dy::EDyOptionCollections::None;
   ///
   DDyFontInformation        mFontInformation = {};
+  ///
+  DyWindowAbout*            mChildAbout = nullptr;
 };
