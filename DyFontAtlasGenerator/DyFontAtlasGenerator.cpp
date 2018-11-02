@@ -42,6 +42,11 @@ constexpr auto HANGUL_UNI20_START = 0xAC00;
 constexpr auto HANGUL_UNI20_END   = 0xD7AF;
 constexpr auto HANGUL_UNI20_RANGE = HANGUL_UNI20_END - HANGUL_UNI20_START + 1;
 
+constexpr auto JAPANESE_UNI20_KANA_START = 0x3000;
+constexpr auto JAPANESE_UNI20_KANA_END   = 0x30FF;
+constexpr auto JAPANESE_UNI20_KANA_RANGE = JAPANESE_UNI20_KANA_END - JAPANESE_UNI20_KANA_START + 1;
+
+
 //!
 //!
 //!
@@ -331,6 +336,7 @@ DyFontAtlasGenerator::DyFontAtlasGenerator(QWidget *parent) : QMainWindow(parent
   connect(ui.BT_FindFile,         SIGNAL(clicked()),        this, SLOT(FindFontFile()));
   connect(ui.CB_MapEnglish,       &QCheckBox::stateChanged, this, &DyFontAtlasGenerator::UpdateCharmapFlag);
   connect(ui.CB_MapHangul,        &QCheckBox::stateChanged, this, &DyFontAtlasGenerator::UpdateCharmapFlag);
+  connect(ui.CB_MapKana,          &QCheckBox::stateChanged, this, &DyFontAtlasGenerator::UpdateCharmapFlag);
   connect(ui.CB_OptionSeperate,   &QCheckBox::stateChanged, this, &DyFontAtlasGenerator::UpdateOptionFlag);
   connect(ui.CB_OptionCompressJson, &QCheckBox::stateChanged, this, &DyFontAtlasGenerator::UpdateOptionFlag);
   connect(ui.BT_Create,           &QPushButton::clicked,    this, &DyFontAtlasGenerator::CreateBatchFile);
@@ -373,6 +379,7 @@ void DyFontAtlasGenerator::UpdateCharmapFlag(int value)
   auto resultFlag {dy::EDyCharmapCollections::None};
   if (ui.CB_MapEnglish->isChecked() == true)  { resultFlag |= dy::EDyCharmapCollections::English; }
   if (ui.CB_MapHangul->isChecked() == true)   { resultFlag |= dy::EDyCharmapCollections::Hangul; }
+  if (ui.CB_MapKana->isChecked() == true)     { resultFlag |= dy::EDyCharmapCollections::Kana; }
 
   this->mCharmapFlag = resultFlag;
   this->pUpdateBT_CreateActivation();
@@ -403,12 +410,14 @@ void DyFontAtlasGenerator::CreateBatchFile()
   static auto sIsMapInitialized {false};
   static auto sEnglishMap       {std::vector<FT_ULong>(ENGLISH_UNI20_RANGE)};
   static auto sHangulMap        {std::vector<FT_ULong>(HANGUL_UNI20_RANGE)};
+  static auto sKanaMap          {std::vector<FT_ULong>(JAPANESE_UNI20_KANA_RANGE)};
 
   // First, initialize map charcode information.
   if (sIsMapInitialized == false)
   {
     std::generate(sEnglishMap.begin(), sEnglishMap.end(), [n = ENGLISH_UNI20_START]() mutable { return n++; });
     std::generate(sHangulMap.begin(), sHangulMap.end(),   [n = HANGUL_UNI20_START]() mutable { return n++; });
+    std::generate(sKanaMap.begin(), sKanaMap.end(),       [n = JAPANESE_UNI20_KANA_START]() mutable { return n++; });
     sIsMapInitialized = true;
   }
 
@@ -432,6 +441,11 @@ void DyFontAtlasGenerator::CreateBatchFile()
   {
     maxSize += sHangulMap.size();
     targetCharMap.insert(targetCharMap.end(), sHangulMap.begin(), sHangulMap.end());
+  }
+  if (dy::IsHavingFlags(this->mCharmapFlag, dy::EDyCharmapCollections::Kana)  == true)
+  {
+    maxSize += sKanaMap.size();
+    targetCharMap.insert(targetCharMap.end(), sKanaMap.begin(), sKanaMap.end());
   }
 
   // Set progress bar status.
