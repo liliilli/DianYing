@@ -84,12 +84,21 @@
     <ClCompile Include="Helper\HelperZlib.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Helper\GLOffscreenSurface.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Helper\PaintSurface.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="DyFontAtlasGenerator.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="DyWindowAbout.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Helper\GLOffscreenSurface.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -168,6 +177,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Helper\HelperZlib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Helper\PaintSurface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

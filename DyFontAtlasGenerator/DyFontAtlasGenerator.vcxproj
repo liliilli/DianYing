@@ -124,7 +124,9 @@
   <ItemGroup>
     <ClCompile Include="DyFontAtlasGenerator.cpp" />
     <ClCompile Include="DyWindowAbout.cpp" />
+    <ClCompile Include="Helper\GLOffscreenSurface.cc" />
     <ClCompile Include="Helper\HelperZlib.cpp" />
+    <ClCompile Include="Helper\PaintSurface.cc" />
     <ClCompile Include="Libraries\msdfgen\core\Bitmap.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -172,11 +174,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Helper\CoordinateBounds.h" />
+    <QtMoc Include="Helper\GLOffscreenSurface.h">
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName)\.;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtOpenGLExtensions;$(QTDIR)\include\QtWidgets;$(ProjectDir)Libraries\freetype\include;$(ProjectDir)Libraries\spdlog\include;$(ProjectDir)Libraries\msdfgen;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\zlib</IncludePath>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName)\.;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtOpenGLExtensions;$(QTDIR)\include\QtWidgets</IncludePath>
+    </QtMoc>
     <ClInclude Include="Helper\MsdfgenHelper.h" />
     <ClInclude Include="Helper\GlobalEnums.h" />
     <QtMoc Include="DyWindowAbout.h" />
     <QtMoc Include="DyFontAtlasGenerator.h" />
     <ClInclude Include="Helper\JsonTypeWriterHelper.h" />
+    <ClInclude Include="Helper\PaintSurface.h" />
     <ClInclude Include="Helper\Vector2.h" />
     <ClInclude Include="Helper\HelperZlib.h" />
     <ClInclude Include="Libraries\msdfgen\core\arithmetics.hpp" />
