@@ -106,10 +106,46 @@ public:
   MDY_NODISCARD TU32 GetFontSize() const noexcept;
 
   ///
+  /// @brief  Get DDyColor foreground color of text component.
+  /// @return Return foreground color.
+  ///
+  MDY_NODISCARD const DDyColor& GetForegroundColor() const noexcept;
+
+  ///
+  /// @brief  Get DDyColor background color of text component.
+  /// @return Return background color.
+  ///
+  MDY_NODISCARD const DDyColor& GetBackgroundColor() const noexcept;
+
+  ///
+  /// @brief  Get DDyColor edge color of text component.
+  /// @return Return edge color.
+  ///
+  MDY_NODISCARD const DDyColor& GetEdgeColor() const noexcept;
+
+  ///
   /// @brief
   /// @return
   ///
-  MDY_NODISCARD const DDyColor& GetColor() const noexcept;
+  MDY_NODISCARD const DDyVectorInt2& GetRenderPosition() const noexcept;
+
+  ///
+  /// @brief  Check if this text component is using edge rendering feature.
+  /// @return If used, return true or false.
+  ///
+  FORCEINLINE MDY_NODISCARD bool CheckIsUsingEdgeRendering() const noexcept
+  {
+    return this->mIsUsingEdgeRendering;
+  }
+
+  ///
+  /// @brief  Check if this text component is using background color.
+  /// @return If used, return true or false.
+  ///
+  FORCEINLINE MDY_NODISCARD bool CheckIsUsingBackgroundColor() const noexcept
+  {
+    return this->mIsUsingBackgroundColor;
+  }
 
   ///
   /// @brief Set text string to display.
@@ -142,18 +178,30 @@ public:
 
 private:
   /// Text to display on screen. String must be following UTF-8 encoding.
-  DDyString         mTextString = {""};
+  DDyString         mTextString       = {""};
   /// Text container instance to display font.
-  FDyFontContainer* mFontContainer = nullptr;
+  FDyFontContainer* mFontContainer    = nullptr;
   /// Font color
-	DDyColor          mFontColor  = DDyColor::White;
+	DDyColor          mForegroundColor  = DDyColor::White;
+  /// Font background color
+  DDyColor          mBackgroundColor  = DDyColor{0, 0, 0, 0};
+  /// Font Edge color
+  DDyColor          mEdgeColor        = DDyColor::Black;
   /// Font size
   TU32              mFontSize   = 16;
-
+  ///
+  DDyVectorInt2     mPosition   = {};
+  ///
   CDyFontRenderer   mRenderer = {};
 
-  bool mIsTextDirty  = true;
-  bool mIsColorDirty = true;
+  ///
+  bool mIsTextDirty                   = true;
+  ///
+  bool mIsColorDirty                  = true;
+  ///
+  bool mIsUsingEdgeRendering          = false;
+  ///
+  bool mIsUsingBackgroundColor        = false;
 };
 
 } /// ::dy namespace.

@@ -119,45 +119,29 @@ void MDyRendering::RenderDrawCallQueue()
   //!
 
 #if defined(MDY_FLAG_IN_EDITOR) == false
-  //glViewport(0, 0, setting.GetWindowSizeWidth(), setting.GetWindowSizeHeight());
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
   this->mSceneFinalRenderer->RenderScreen();
 #endif /// MDY_FLAG_IN_EDITOR == false
 
-  if (MDY_CHECK_ISNOTEMPTY(this->mUiBasicRenderer))
-  {
-    this->mUiBasicRenderer->RenderScreen();
-  }
+  if (MDY_CHECK_ISNOTEMPTY(this->mUiBasicRenderer))       { this->mUiBasicRenderer->RenderScreen(); }
+  if (MDY_CHECK_ISNOTEMPTY(this->mFinalDisplayRenderer))  { this->mFinalDisplayRenderer->RenderScreen(); }
 }
 
 void MDyRendering::pClearRenderingFramebufferInstances() noexcept
 {
-  auto& worldManager = MDyWorld::GetInstance();
-  if (worldManager.IsLevelPresentValid() == false) { return; }
+  if (MDyWorld::GetInstance().IsLevelPresentValid() == false) { return; }
 
-  if (MDY_CHECK_ISNOTEMPTY(this->mBasicOpaqueRenderer)) { this->mBasicOpaqueRenderer->Clear(); }
-
-  if (this->mIsEnabledSsaoRendering == true)
-  { // @TODO DO NOTHING NOW.
-
-  }
-
-  if (this->mIsEnabledShadowRendering == true)
-  { // Reset all shadow framebuffer setting.
-    this->mShadowRenderer->Clear();
-  }
+  if (MDY_CHECK_ISNOTEMPTY(this->mBasicOpaqueRenderer))   { this->mBasicOpaqueRenderer->Clear(); }
+  // @TODO DO NOTHING NOW.
+  if (this->mIsEnabledSsaoRendering == true) { }
+  // Reset all shadow framebuffer setting.
+  if (this->mIsEnabledShadowRendering == true)            { this->mShadowRenderer->Clear(); }
 
 #if defined(MDY_FLAG_IN_EDITOR) == false
-  if (MDY_CHECK_ISNOTEMPTY(this->mSceneFinalRenderer))
-  { // Reset final rendering mesh setting.
-    this->mSceneFinalRenderer->Clear();
-  }
+  // Reset final rendering mesh setting.
+  if (MDY_CHECK_ISNOTEMPTY(this->mSceneFinalRenderer))    { this->mSceneFinalRenderer->Clear(); }
 #endif
-
-  if (MDY_CHECK_ISNOTEMPTY(this->mUiBasicRenderer))
-  {
-    this->mUiBasicRenderer->Clear();
-  }
+  if (MDY_CHECK_ISNOTEMPTY(this->mUiBasicRenderer))       { this->mUiBasicRenderer->Clear(); }
+  if (MDY_CHECK_ISNOTEMPTY(this->mFinalDisplayRenderer))  { this->mFinalDisplayRenderer->Clear(); }
 }
 
 std::optional<TI32> MDyRendering::pGetAvailableDirectionalLightIndex(_MIN_ const CDyDirectionalLight&)

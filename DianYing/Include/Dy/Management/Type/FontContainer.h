@@ -51,10 +51,10 @@ public:
 
   ///
   /// @brief
-  /// @param  scaleOffset
+  /// @param  fontSize
   /// @return
   ///
-  MDY_NODISCARD TI32 GetScaledLinefeedHeight(_MIN_ const TF32 scaleOffset) const noexcept;
+  MDY_NODISCARD TI32 GetScaledLinefeedHeight(_MIN_ const TI32 fontSize) const noexcept;
 
 private:
   ///
@@ -62,7 +62,7 @@ private:
   ///
   std::string mFontFilePath       = MDY_INITILAIZE_EMPTYSTR;
   ///
-  TI32 mUnscaledLinefeedHeight    = MDY_INITIALIZE_DEFINT;
+  TF32 mUnscaledLinefeedHeight    = MDY_INITIALIZE_DEFINT;
   ///
   std::unordered_map<TC16, DDyFontCharacter> mFontGlyphContainer = {};
 };

@@ -36,14 +36,7 @@ uniform mat4 uUiProjMatrix;
 out VS_OUT { vec2 texCoord; } vs_out;
 
 void main() {
-  vec2 pos[4] = vec2[4](
-    vec2(0, 0),
-    vec2(0, 1),
-    vec2(1, 1),
-    vec2(1, 0)
-  );
 	gl_Position     = vec4((uUiProjMatrix * vec4(dyPosition, 0, 1)).xy, 0, 1);
-	//gl_Position     = vec4(pos[gl_VertexID], 0, 1);
 	vs_out.texCoord = dyTexCoord0.xy;
 }
 )dy");

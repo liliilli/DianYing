@@ -14,7 +14,6 @@
 ///
 
 #include <queue>
-#include <Dy/Core/Component/MeshRenderer.h>
 #include <Dy/Core/Component/Resource/ShaderResource.h>
 
 //!
@@ -23,8 +22,10 @@
 
 namespace dy
 {
-struct PDyGlAttachmentInformation;
-struct DDyUboDirectionalLight;
+struct  PDyGlAttachmentInformation;
+struct  DDyUboDirectionalLight;
+struct  PDyGlFrameBufferInformation;
+class   CDyModelResource;
 } /// ::dy namespace
 
 //!
@@ -78,12 +79,6 @@ private:
   /// @brief
   /// @return
   ///
-  MDY_NODISCARD EDySuccess pInitializeGeometries();
-
-  ///
-  /// @brief
-  /// @return
-  ///
   MDY_NODISCARD EDySuccess pInitializeShaderSetting();
 
   ///
@@ -100,8 +95,6 @@ private:
 
   inline static constexpr TI32 sDirectionalLightCount = 5;
 
-  GLuint              mVao            = MDY_INITIALIZE_DEFUINT;
-  GLuint              mVbo            = MDY_INITIALIZE_DEFUINT;
   CDyShaderResource*  mShaderPtr      = MDY_INITIALIZE_NULL;
 
   /// Attachment information pointer
@@ -113,7 +106,11 @@ private:
   PDyGlAttachmentInformation* mAttachmentPtr_Shadow         = MDY_INITIALIZE_NULL;
   bool                        mIsAttachmentPtrBinded        = false;
 
-  std::queue<TI32>    mAvailableList  = {};
+  /// mDyBtFbUiBasic
+  PDyGlFrameBufferInformation*  mDyBtFbScrFin               = MDY_INITIALIZE_NULL;
+  CDyModelResource*             mScreenRenderTrianglePtr    = MDY_INITIALIZE_NULL;
+
+  std::queue<TI32>    mDirLightAvailableList  = {};
 };
 
 } /// ::dy namespace

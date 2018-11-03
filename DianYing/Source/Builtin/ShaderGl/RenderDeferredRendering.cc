@@ -29,12 +29,10 @@ MDY_SET_IMMUTABLE_STRING(sVertexShaderCode, R"dy(
 #version 430
 
 layout (location = 0) in vec3 dyPosition;
-layout (location = 1) in vec2 dyTexCoord0;
+layout (location = 2) in vec2 dyTexCoord0;
 
 out gl_PerVertex { vec4 gl_Position; };
-out VS_OUT {
-  vec2 texCoord;
-} vs_out;
+out VS_OUT { vec2 texCoord; } vs_out;
 
 void main() {
 	vs_out.texCoord	= dyTexCoord0;
@@ -45,9 +43,7 @@ void main() {
 MDY_SET_IMMUTABLE_STRING(sFragmentShaderCode, R"dy(
 #version 430
 
-in VS_OUT {
-  vec2 texCoord;
-} fs_in;
+in VS_OUT { vec2 texCoord; } fs_in;
 layout (location = 0) out vec4 outColor;
 
 uniform sampler2D uUnlit;

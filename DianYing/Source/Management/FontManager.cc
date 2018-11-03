@@ -25,8 +25,9 @@
 namespace
 {
 
-MDY_SET_IMMUTABLE_STRING(sSampleEnglishFontPath,  "./TestResource/arial.ttf");
-MDY_SET_IMMUTABLE_STRING(sSampleJapaneseFontPath, "./TestResource/msgothic.ttc");
+MDY_SET_IMMUTABLE_STRING(sSampleEnglishFontPath,  "./TestResource/Inconsolata-Regular.ttf");
+MDY_SET_IMMUTABLE_STRING(sSampleJapaneseFontPath, "./TestResource/UDDigiKyokashoN-R.ttc");
+//MDY_SET_IMMUTABLE_STRING(sSampleJapaneseFontPath, "./TestResource/msgothic.ttc");
 MDY_SET_IMMUTABLE_STRING(sSampleHangleFontPath,   "./TestResource/KoPubDotumMedium.ttf");
 
 } /// ::unnamed namespace
@@ -41,7 +42,7 @@ namespace dy
 EDySuccess MDyFont::pfInitialize()
 {
   // Create font and move it.
-  mDefaultFontContainer = new FDyFontContainer(MSVSTR(sSampleJapaneseFontPath));
+  mDefaultFontContainer = new FDyFontContainer(MSVSTR(sSampleEnglishFontPath));
 
   return DY_SUCCESS;
 }
