@@ -124,6 +124,7 @@
   <ItemGroup>
     <ClCompile Include="DyFontAtlasGenerator.cpp" />
     <ClCompile Include="DyWindowAbout.cpp" />
+    <ClCompile Include="Helper\CoordinateBounds.cc" />
     <ClCompile Include="Helper\GLOffscreenSurface.cc" />
     <ClCompile Include="Helper\HelperZlib.cpp" />
     <ClCompile Include="Helper\PaintSurface.cc" />

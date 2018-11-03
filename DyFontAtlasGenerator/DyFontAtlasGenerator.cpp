@@ -21,6 +21,7 @@
 #include "Helper/HelperZlib.h"
 
 #include "DyWindowAbout.h"
+#include "Helper/PaintSurface.h"
 
 namespace
 {
@@ -34,6 +35,7 @@ static constexpr auto TEXTURE_CANVAS_S   = 1024;
 static constexpr auto TEXTURE_CANVAS_T   = 1024;
 static constexpr auto TEXTURE_SIZE_S     = 64;
 static constexpr auto TEXTURE_SIZE_T     = 64;
+static constexpr auto TEXTURE_MAPLIMIT   = (TEXTURE_CANVAS_S / TEXTURE_SIZE_S) * (TEXTURE_CANVAS_T / TEXTURE_SIZE_T);
 static constexpr auto TEXTURE_PXRANGE    = 12.0;
 
 constexpr auto ENGLISH_UNI20_START = 0x0000;
@@ -96,7 +98,7 @@ DDyFontInformation GetFontGeneralInformation(const QString fontPath)
 /// @param  ftFace
 ///
 nlohmann::json
-CreateGlyphInformation(const FT_Outline_Funcs& ftOutlineFunc, const FT_ULong charCode, FT_Face& ftFace, int32_t id)
+CreateGlyphInformation(const FT_Outline_Funcs& ftOutlineFunc, const FT_ULong charCode, CPaintSurface& paintSurface, FT_Face& ftFace, int32_t id)
 {
   struct DBounds final
   {
@@ -161,7 +163,7 @@ CreateGlyphInformation(const FT_Outline_Funcs& ftOutlineFunc, const FT_ULong cha
   /// @param buffer
   /// @return RVOed QOpenglTexture.
   ///
-  static auto CreateQOpenGLTextureForChar = [](const msdfgen::Bitmap<float>& buffer) -> QOpenGLTexture
+  static auto CreateQOpenGLTextureForChar = [](const msdfgen::Bitmap<float>& buffer)
   {
     auto imageBuffer {QImage{TEXTURE_SIZE_S, TEXTURE_SIZE_T, QImage::Format::Format_RGB32}};
     for (auto y{ int32_t{0} }; y < TEXTURE_SIZE_T; ++y)
@@ -176,7 +178,7 @@ CreateGlyphInformation(const FT_Outline_Funcs& ftOutlineFunc, const FT_ULong cha
       }
     }
 
-    return QOpenGLTexture{imageBuffer, QOpenGLTexture::MipMapGeneration::DontGenerateMipMaps};
+    return imageBuffer;
   };
 
   //!
@@ -211,9 +213,6 @@ CreateGlyphInformation(const FT_Outline_Funcs& ftOutlineFunc, const FT_ULong cha
   auto sdfFloatBuffer {msdfgen::Bitmap<float>{TEXTURE_SIZE_S, TEXTURE_SIZE_T}};
   msdfgen::generateSDF(sdfFloatBuffer, shape, alignedInfo.range, alignedInfo.scale, alignedInfo.translate);
 
-  // Make QImage from Bitmap<float> and texture from QImage. (RVO guaranted)
-  auto imageTexture   {CreateQOpenGLTextureForChar(sdfFloatBuffer)};
-
   // Realign and scale translate for saving.
   const auto glyphScale { static_cast<float>(STANDARD_UNITPEREM) / ftFace->units_per_EM };
   auto translate { alignedInfo.translate };
@@ -221,14 +220,22 @@ CreateGlyphInformation(const FT_Outline_Funcs& ftOutlineFunc, const FT_ULong cha
   translate *= glyphScale;
   translate += TEXTURE_PXRANGE / alignedInfo.scale * glyphScale;
 
+  auto texCoord {dy::CreateCoordinateInformation(TEXTURE_CANVAS_S, TEXTURE_CANVAS_T, TEXTURE_SIZE_S, TEXTURE_SIZE_T, id)};
+  paintSurface.UpdateBufferInformation(texCoord);
+
+  // Make QImage from Bitmap<float> and texture from QImage. (RVO guaranted)
+  paintSurface.BindTexturePointer(CreateQOpenGLTextureForChar(sdfFloatBuffer));
+  paintSurface.render();
+
   // Make json information and return.
   nlohmann::json jsonWrite;
   jsonWrite["Size"]        = dy::DDyVector2{float(ftFace->glyph->metrics.width), float(ftFace->glyph->metrics.height)} * glyphScale;
   jsonWrite["HoriBearing"] = dy::DDyVector2{float(ftFace->glyph->metrics.horiBearingX), float(ftFace->glyph->metrics.horiBearingY)} * glyphScale;
   jsonWrite["Scale"]       = dy::DDyVector2{float(alignedInfo.scale.x), float(alignedInfo.scale.y)} / glyphScale;
   jsonWrite["Translate"]   = dy::DDyVector2{float(translate.x), float(translate.y)} * 16;
-  jsonWrite["TexCoordBox"] = dy::CreateCoordinateInformation(TEXTURE_CANVAS_S, TEXTURE_CANVAS_T, TEXTURE_SIZE_S, TEXTURE_SIZE_T, id);
+  jsonWrite["TexCoordBox"] = texCoord;
   jsonWrite["HoriAdvance"] = ftFace->glyph->metrics.horiAdvance * glyphScale / 64.0;
+
   return jsonWrite;
 }
 
@@ -237,11 +244,10 @@ CreateGlyphInformation(const FT_Outline_Funcs& ftOutlineFunc, const FT_ULong cha
 /// @param information
 /// @param targetCharMap
 ///
-void CreateFontBuffer(
-    const DDyFontInformation information,
-    const std::vector<FT_ULong> targetCharMap,
-    const dy::EDyOptionCollections option,
-    DyFontAtlasGenerator& parent)
+void CreateFontBuffer(const DDyFontInformation information,
+                      const std::vector<FT_ULong> targetCharMap,
+                      const dy::EDyOptionCollections option,
+                      DyFontAtlasGenerator& parent)
 {
   static auto sFtFunctions          {FT_Outline_Funcs{}};
   static auto sIsFunctionInitialized{false};
@@ -258,6 +264,48 @@ void CreateFontBuffer(
   }
 
   //!
+  //! Lambda functions
+  //!
+
+  ///
+  /// @brief Store json file and pngs by following options...
+  /// @param
+  /// @param
+  ///
+  static auto ExportInformations = [&](const nlohmann::json& jsonInstance)
+  {
+    if (dy::IsHavingFlags(option, dy::EDyOptionCollections::CompressJsonString) == false)
+    {
+      const QString filename = fmt::format("./{}_{}.json", information.fontName, information.fontStyle).c_str();
+      auto file {QFile{filename}};
+      if (file.open(QIODevice::WriteOnly))
+      {
+        QTextStream stream(&file);
+        stream << jsonInstance.dump(2).c_str() << endl;
+      }
+      file.close();
+    }
+    else
+    {
+      const QString filename = fmt::format("./{}_{}.dyFntRes", information.fontName, information.fontStyle).c_str();
+      QFile file(filename);
+      if (file.open(QIODevice::WriteOnly))
+      {
+        QDataStream stream(&file);
+        auto buffer{ dy::zlib::CompressString(jsonInstance.dump(2)) };
+        stream.writeBytes(buffer.c_str(), buffer.size());
+      }
+      file.close();
+    }
+  };
+
+  ///
+  /// @brief
+  /// @param
+  /// @param
+  ///
+
+  //!
   //! FunctionBody
   //!
 
@@ -267,52 +315,51 @@ void CreateFontBuffer(
   DyLoadFontFreetype  (ftLibrary, ftFace, information.fontPath.c_str());
 
   // Make json information instance for font glyphs.
-  nlohmann::json jsonInstance;
+  nlohmann::json jsonDescriptor;
 
   auto metaInformation{dy::DMeta{}};
   metaInformation.mFontSpecifierName   = information.fontName;
   metaInformation.mFontStyleSpecifier  = information.fontStyle;
   metaInformation.mHoriLinefeed        = ftFace->height;
-  jsonInstance["Meta"] = metaInformation;
+  jsonDescriptor["Meta"] = metaInformation;
+
+  CPaintSurface paintSurface;
+  paintSurface.resize(TEXTURE_CANVAS_S, TEXTURE_CANVAS_T);
+  paintSurface.InitializeContext();
+  paintSurface.ClearSurface();
+
+  auto drawnImageList {std::vector<QImage>{}};
+  auto charId         {0};
+
+  for (const auto& charCode : targetCharMap)
+  {
+    const auto& jsonCharAtlas = CreateGlyphInformation(sFtFunctions, charCode, paintSurface, ftFace, charId);
+    jsonDescriptor["Characters"][fmt::format("{0}", charCode)] = jsonCharAtlas;
+    charId += 1;
+    //
+    parent.IncrementProgress();
+
+    // Export offscreen texture buffer to png or file information (binary).
+    if (charId % TEXTURE_MAPLIMIT == 0)
+    {
+      drawnImageList.emplace_back(paintSurface.grabFramebuffer());
+      paintSurface.ClearSurface();
+    }
+  }
+  drawnImageList.emplace_back(paintSurface.grabFramebuffer());
+  paintSurface.ClearSurface();
 
   {
-    int32_t id = 0;
-    for (const auto& charCode : targetCharMap)
+    auto i{0};
+    for (const QImage& image : drawnImageList)
     {
-      const auto& jsonCharAtlas = CreateGlyphInformation(sFtFunctions, charCode, ftFace, id);
-      jsonInstance["Characters"][fmt::format("{0}", charCode)] = jsonCharAtlas;
-      id += 1;
-      //
-      parent.IncrementProgress();
+      i++;
+      image.save(fmt::format("./{}_{}_{}.png", information.fontName, information.fontStyle, i).c_str(), "PNG");
     }
   }
 
   DyReleaseFreetype(ftLibrary, ftFace);
-
-  // Store json file and pngs by following options...
-  if (dy::IsHavingFlags(option, dy::EDyOptionCollections::CompressJsonString) == false)
-  {
-    const QString filename = fmt::format("./{}_{}.json", information.fontName, information.fontStyle).c_str();
-    QFile file(filename);
-    if (file.open(QIODevice::WriteOnly))
-    {
-      QTextStream stream(&file);
-      stream << jsonInstance.dump(2).c_str() << endl;
-    }
-    file.close();
-  }
-  else
-  {
-    const QString filename = fmt::format("./{}_{}.dyFntInf", information.fontName, information.fontStyle).c_str();
-    QFile file(filename);
-    if (file.open(QIODevice::WriteOnly))
-    {
-      QDataStream stream(&file);
-      auto buffer { dy::zlib::CompressString(jsonInstance.dump(2)) };
-      stream.writeBytes(buffer.c_str(), buffer.size());
-    }
-    file.close();
-  }
+  ExportInformations(jsonDescriptor);
 }
 
 } /// unnamed namespace
@@ -458,11 +505,14 @@ void DyFontAtlasGenerator::CreateBatchFile()
   ui.PG_Loading->show();
 
   // Start the computation in other thread.
-  const QFuture<void> future = QtConcurrent::run(CreateFontBuffer, this->mFontInformation,
-      std::move(targetCharMap),
-      this->mOptionFlag,
-      std::ref(*this));
-  this->mFutureWatcher.setFuture(future);
+  CreateFontBuffer(this->mFontInformation, std::move(targetCharMap), this->mOptionFlag, *this);
+  //const QFuture<void> future = QtConcurrent::run(CreateFontBuffer, this->mFontInformation,
+      //std::move(targetCharMap),
+      //this->mOptionFlag,
+      //std::ref(*this));
+  //this->mFutureWatcher.setFuture(future);
+
+  this->CreationTaskFinished();
 }
 
 void DyFontAtlasGenerator::CreationTaskFinished()

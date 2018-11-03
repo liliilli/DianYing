@@ -90,6 +90,11 @@ public:
   /// @param h Height.
   void resize(int w, int h);
 
+  ///
+  /// @brief Initialize context manually.
+  ///
+  void InitializeContext();
+
 public slots:
   /// @brief Lazy update routine like QWidget::update().
   void update();
@@ -143,7 +148,7 @@ private:
   void makeCurrentInternal();
 
   /// @brief Internal method to grab content of a specific framebuffer.
-  QImage grabFramebufferInternal(QOpenGLFramebufferObject* fbo);
+  QImage GrabFramebufferInternal(QOpenGLFramebufferObject* fbo);
 
   /// @brief (Re-)allocate FBO and paint device if needed due to size changes etc.
   void recreateFBOAndPaintDevice();

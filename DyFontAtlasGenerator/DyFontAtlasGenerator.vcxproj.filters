@@ -90,6 +90,9 @@
     <ClCompile Include="Helper\PaintSurface.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Helper\CoordinateBounds.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="DyFontAtlasGenerator.h">
