@@ -2,6 +2,8 @@
 /// Header file
 #include "DyFontAtlasGenerator.h"
 
+#include <thread>
+
 #include <QtOpenGL>
 #include <QtConcurrent/QtConcurrentRun>
 #include <QThread>
@@ -51,44 +53,190 @@ constexpr auto JAPANESE_UNI20_KANA_START = 0x3000;
 constexpr auto JAPANESE_UNI20_KANA_END   = 0x30FF;
 constexpr auto JAPANESE_UNI20_KANA_RANGE = JAPANESE_UNI20_KANA_END - JAPANESE_UNI20_KANA_START + 1;
 
+auto sFtLibraryList {std::vector<FT_Library>{}};
+auto sFtFaceList    {std::vector<FT_Face>{}};
+std::atomic<bool> sFtIsInitiailzed {false};
 
-//!
-//!
-//!
+using TSdfType = msdfgen::Bitmap<float>;
 
-void DyInitializeFreetype(FT_Library& ftLibrary) noexcept
-{ // Check Freetype is we`ll.
-  if (FT_Init_FreeType(&ftLibrary) != 0) { }
-}
-
-void DyLoadFontFreetype(FT_Library& ftLibrary, FT_Face& ftFace, const QString fontPath) noexcept
+///
+/// @struct DBounds
+/// @brief
+///
+struct DBounds final
 {
-  if (FT_New_Face(ftLibrary, fontPath.toStdString().c_str(), 0, &ftFace)) { }
-}
+  double l = std::numeric_limits<double>::max();
+  double b = std::numeric_limits<double>::max();
+  double r = std::numeric_limits<double>::lowest();
+  double t = std::numeric_limits<double>::lowest();
+};
 
-void DyReleaseFreetype(FT_Library& ftLibrary, FT_Face& ftFace) noexcept
+///
+/// @struct DResult
+/// @brief
+///
+struct DResult final
 {
-  if (FT_Done_Face(ftFace) != 0) { }
-  if (FT_Done_FreeType(ftLibrary) != 0) { }
+  dy::DDyCoordinateBounds mCoordinateBound;
+  QImage                  mImageBuffer;
+  nlohmann::json          mItemJsonAtlas;
+  FT_ULong                mCharCode;
+};
 
-  ftFace = nullptr;
-  ftLibrary = nullptr;
+///
+/// @struct DAlignedBBoxInfo
+/// @brief
+///
+struct DAlignedBBoxInfo final
+{
+  double            range;
+  msdfgen::Vector2  scale;
+  msdfgen::Vector2  translate;
+};
+
+//!
+//!
+//!
+
+///
+/// @brief
+/// @param value
+///
+void DyResizeFreetypeList(const int32_t value)
+{
+  Q_ASSERT(value > 0);
+  Q_ASSERT(sFtIsInitiailzed.load() == false);
+
+  sFtLibraryList.resize(value);
+  sFtFaceList   .resize(value);
 }
+
+void DyInitializeFreetype() noexcept
+{
+  // Check Freetype is we`ll.
+  for (auto i {0u}; i < sFtLibraryList.size(); ++i)
+  {
+    if (FT_Init_FreeType(&sFtLibraryList[i]) != 0) { }
+  }
+
+  auto previous {false};
+  while (sFtIsInitiailzed.compare_exchange_strong(previous, true, std::memory_order::memory_order_seq_cst) == false)
+    ;
+}
+
+void DyLoadFontFreetype(const QString fontPath) noexcept
+{
+  Q_ASSERT(sFtIsInitiailzed.load() == true);
+  for (auto i {0u}; i < sFtFaceList.size(); ++i)
+  {
+    Q_ASSERT(sFtLibraryList[i] != nullptr);
+    if (FT_New_Face(sFtLibraryList[i], fontPath.toStdString().c_str(), 0, &sFtFaceList[i])) { }
+  }
+}
+
+void DyReleaseFreetype() noexcept
+{
+  Q_ASSERT(sFtIsInitiailzed.load() == true);
+
+  for (auto i {0u}; i < sFtFaceList.size(); ++i)
+  {
+    Q_ASSERT(sFtLibraryList[i]  != nullptr);
+    Q_ASSERT(sFtFaceList[i]     != nullptr);
+
+    if (FT_Done_Face(sFtFaceList[i]) != 0) { }
+    if (FT_Done_FreeType(sFtLibraryList[i]) != 0) { }
+
+    sFtFaceList[i]    = nullptr;
+    sFtLibraryList[i] = nullptr;
+  }
+
+  auto previous {true};
+  while (sFtIsInitiailzed.compare_exchange_strong(previous, false, std::memory_order::memory_order_seq_cst) == false)
+    ;
+}
+
+///
+/// @brief
+/// @param  buffer
+/// @return RVOed QImage (copyable)
+///
+[[nodiscard]] QImage CreateQImageFromSDFBuffer(const TSdfType& buffer)
+{
+  auto imageBuffer {QImage{TEXTURE_SIZE_S, TEXTURE_SIZE_T, QImage::Format::Format_RGB32}};
+
+  for (auto y{ 0 }; y < TEXTURE_SIZE_T; ++y)
+  {
+    for (auto x{ 0 }; x < TEXTURE_SIZE_S; ++x)
+    {
+      auto value{ QRgb{} };
+      const auto changedUCharValue{ static_cast<uint8_t>(std::floor(std::max(buffer(x, y), 0.f) * 255)) };
+      // Just one.
+      value = qRgb(changedUCharValue, 0, 0);
+      imageBuffer.setPixel(x, y, value);
+    }
+  }
+
+  return imageBuffer;
+};
+
+///
+/// @brief Bounds boundary veridity check.
+/// @param bounds Bounds instance
+///
+void CheckAndChangeBounds(DBounds& bounds)
+{
+  if (bounds.l >= bounds.r || bounds.b >= bounds.t)
+  {
+    bounds.l = 0; bounds.b = 0; bounds.r = 1; bounds.t = 1;
+  }
+};
+
+///
+/// @brief
+/// @param bounds
+///
+DAlignedBBoxInfo AlignSDFBBoxFrame(const DBounds& bounds)
+{
+  const auto dims{ msdfgen::Vector2{bounds.r - bounds.l, bounds.t - bounds.b} };
+  auto translate{ msdfgen::Vector2{} };
+  auto scale{ msdfgen::Vector2{1, 1} };
+  auto frame{ msdfgen::Vector2{
+      static_cast<double>(TEXTURE_SIZE_S),
+      static_cast<double>(TEXTURE_SIZE_T)
+  } };
+  frame -= 2 * TEXTURE_PXRANGE;
+
+  if (dims.x * frame.y < dims.y * frame.x)
+  {
+    translate.set(.5 * (frame.x / frame.y * dims.y - dims.x) - bounds.l, -bounds.b);
+    scale = frame.y / dims.y;
+  }
+  else
+  {
+    translate.set(-bounds.l, .5 * (frame.y / frame.x * dims.x - dims.y) - bounds.b);
+    scale = frame.x / dims.x;
+  }
+
+  translate += TEXTURE_PXRANGE / scale;
+  const auto range{ double{TEXTURE_PXRANGE / msdfgen::min(scale.x, scale.y)} };
+  return DAlignedBBoxInfo{range, scale, translate };
+};
 
 DDyFontInformation GetFontGeneralInformation(const QString fontPath)
 {
   FT_Library sFtLibrary = nullptr;
   FT_Face    sFtFace    = nullptr;
 
-  DyInitializeFreetype(sFtLibrary);
-  DyLoadFontFreetype(sFtLibrary, sFtFace, fontPath);
+  if (FT_Init_FreeType(&sFtLibrary) != 0) { }
+  if (FT_New_Face(sFtLibrary, fontPath.toStdString().c_str(), 0, &sFtFace)) { }
 
   DDyFontInformation result = {};
   result.fontName   = sFtFace->family_name;
   result.fontStyle  = sFtFace->style_name;
   result.fontPath   = fontPath.toStdString();
 
-  DyReleaseFreetype(sFtLibrary, sFtFace);
+  if (FT_Done_Face(sFtFace) != 0)         { }
+  if (FT_Done_FreeType(sFtLibrary) != 0)  { }
   return result;
 }
 
@@ -97,95 +245,11 @@ DDyFontInformation GetFontGeneralInformation(const QString fontPath)
 /// @param  ftOutlineFunc
 /// @param  charCode
 /// @param  ftFace
+/// @param  id
+/// @return
 ///
-nlohmann::json
-CreateGlyphInformation(const FT_Outline_Funcs& ftOutlineFunc, const FT_ULong charCode, CPaintSurface& paintSurface, FT_Face& ftFace, int32_t id)
+DResult CreateGlyphInformation(const FT_Outline_Funcs& ftOutlineFunc, const FT_ULong charCode, const FT_Face ftFace, int32_t id)
 {
-  struct DBounds final
-  {
-    double l = std::numeric_limits<double>::max();
-    double b = std::numeric_limits<double>::max();
-    double r = std::numeric_limits<double>::lowest();
-    double t = std::numeric_limits<double>::lowest();
-  };
-
-  struct DAlignedBBoxInfo final
-  {
-    double            range;
-    msdfgen::Vector2  scale;
-    msdfgen::Vector2  translate;
-  };
-
-  ///
-  /// @brief Bounds boundary veridity check.
-  /// @param bounds Bounds instance
-  ///
-  static auto CheckAndChangeBounds = [](DBounds& bounds)
-  {
-    if (bounds.l >= bounds.r || bounds.b >= bounds.t)
-    {
-      bounds.l = 0; bounds.b = 0; bounds.r = 1; bounds.t = 1;
-    }
-  };
-
-  ///
-  /// @brief
-  /// @param bounds
-  ///
-  static auto AlignSDFBBoxFrame = [](const DBounds& bounds) -> DAlignedBBoxInfo
-  {
-    const auto dims{ msdfgen::Vector2{bounds.r - bounds.l, bounds.t - bounds.b} };
-    auto translate{ msdfgen::Vector2{} };
-    auto scale{ msdfgen::Vector2{1, 1} };
-    auto frame{ msdfgen::Vector2{
-        static_cast<double>(TEXTURE_SIZE_S),
-        static_cast<double>(TEXTURE_SIZE_T)
-    } };
-    frame -= 2 * TEXTURE_PXRANGE;
-
-    if (dims.x * frame.y < dims.y * frame.x)
-    {
-      translate.set(.5 * (frame.x / frame.y * dims.y - dims.x) - bounds.l, -bounds.b);
-      scale = frame.y / dims.y;
-    }
-    else
-    {
-      translate.set(-bounds.l, .5 * (frame.y / frame.x * dims.x - dims.y) - bounds.b);
-      scale = frame.x / dims.x;
-    }
-
-    translate += TEXTURE_PXRANGE / scale;
-    const auto range{ double{TEXTURE_PXRANGE / msdfgen::min(scale.x, scale.y)} };
-    return DAlignedBBoxInfo{range, scale, translate };
-  };
-
-  ///
-  /// @brief
-  /// @param buffer
-  /// @return RVOed QOpenglTexture.
-  ///
-  static auto CreateQOpenGLTextureForChar = [](const msdfgen::Bitmap<float>& buffer)
-  {
-    auto imageBuffer {QImage{TEXTURE_SIZE_S, TEXTURE_SIZE_T, QImage::Format::Format_RGB32}};
-    for (auto y{ int32_t{0} }; y < TEXTURE_SIZE_T; ++y)
-    {
-      for (auto x{ int32_t{0} }; x < TEXTURE_SIZE_S; ++x)
-      {
-        auto value{ QRgb{} };
-        const auto changedUCharValue{ static_cast<uint8_t>(std::floor(std::max(buffer(x, y), 0.f) * 255)) };
-        // Just one.
-        value = qRgb(changedUCharValue, 0, 0);
-        imageBuffer.setPixel(x, y, value);
-      }
-    }
-
-    return imageBuffer;
-  };
-
-  //!
-  //! FUNCTIONBODY
-  //!
-
   {
     const FT_Error errorFlag = FT_Load_Char(ftFace, charCode, FT_LOAD_NO_SCALE);
     Q_ASSERT(errorFlag == 0);
@@ -205,13 +269,12 @@ CreateGlyphInformation(const FT_Outline_Funcs& ftOutlineFunc, const FT_ULong cha
   shape.bounds(bounds.l, bounds.b, bounds.r, bounds.t);
   shape.inverseYAxis = true;
   CheckAndChangeBounds(bounds);
-
   // Set translate (non scaled)
   const auto alignedInfo {AlignSDFBBoxFrame(bounds)};
 
   // Generate information
   msdfgen::edgeColoringSimple(shape, 3.0);
-  auto sdfFloatBuffer {msdfgen::Bitmap<float>{TEXTURE_SIZE_S, TEXTURE_SIZE_T}};
+  auto sdfFloatBuffer {TSdfType{TEXTURE_SIZE_S, TEXTURE_SIZE_T}};
   msdfgen::generateSDF(sdfFloatBuffer, shape, alignedInfo.range, alignedInfo.scale, alignedInfo.translate);
 
   // Realign and scale translate for saving.
@@ -222,12 +285,6 @@ CreateGlyphInformation(const FT_Outline_Funcs& ftOutlineFunc, const FT_ULong cha
   translate += TEXTURE_PXRANGE / alignedInfo.scale * glyphScale;
 
   auto texCoord {dy::CreateCoordinateInformation(TEXTURE_CANVAS_S, TEXTURE_CANVAS_T, TEXTURE_SIZE_S, TEXTURE_SIZE_T, id)};
-  paintSurface.UpdateBufferInformation(texCoord);
-  paintSurface.CreatePreviousBufferStateTexture();
-
-  // Make QImage from Bitmap<float> and texture from QImage. (RVO guaranted)
-  paintSurface.BindTexturePointer(CreateQOpenGLTextureForChar(sdfFloatBuffer));
-  paintSurface.render();
 
   // Make json information and return.
   nlohmann::json jsonWrite;
@@ -238,7 +295,7 @@ CreateGlyphInformation(const FT_Outline_Funcs& ftOutlineFunc, const FT_ULong cha
   jsonWrite["TexCoordBox"] = texCoord;
   jsonWrite["HoriAdvance"] = ftFace->glyph->metrics.horiAdvance * glyphScale / 64.0;
 
-  return jsonWrite;
+  return DResult{texCoord, CreateQImageFromSDFBuffer(sdfFloatBuffer), jsonWrite, charCode};
 }
 
 ///
@@ -279,7 +336,7 @@ void CreateFontBuffer(const DDyFontInformation information,
     if (dy::IsHavingFlags(option, dy::EDyOptionCollections::CompressJsonString) == false)
     {
       const QString filename = fmt::format("./{}_{}.json", information.fontName, information.fontStyle).c_str();
-      auto file {QFile{filename}};
+      QFile file {filename};
       if (file.open(QIODevice::WriteOnly))
       {
         QTextStream stream(&file);
@@ -311,10 +368,14 @@ void CreateFontBuffer(const DDyFontInformation information,
   //! FunctionBody
   //!
 
-  auto ftLibrary{FT_Library{nullptr}};
-  auto ftFace   {FT_Face{nullptr}};
-  DyInitializeFreetype(ftLibrary);
-  DyLoadFontFreetype  (ftLibrary, ftFace, information.fontPath.c_str());
+  // Get concurrent thread number.
+  const auto concurrentThreadNumber {std::thread::hardware_concurrency()};
+  const auto targetCharMapSize      { targetCharMap.size() };
+
+  //
+  DyResizeFreetypeList(concurrentThreadNumber);
+  DyInitializeFreetype();
+  DyLoadFontFreetype  (information.fontPath.c_str());
 
   // Make json information instance for font glyphs.
   nlohmann::json jsonDescriptor;
@@ -322,7 +383,7 @@ void CreateFontBuffer(const DDyFontInformation information,
   auto metaInformation{dy::DMeta{}};
   metaInformation.mFontSpecifierName   = information.fontName;
   metaInformation.mFontStyleSpecifier  = information.fontStyle;
-  metaInformation.mHoriLinefeed        = ftFace->height;
+  metaInformation.mHoriLinefeed        = sFtFaceList[0]->height;
   jsonDescriptor["Meta"] = metaInformation;
 
   CPaintSurface paintSurface;
@@ -330,13 +391,104 @@ void CreateFontBuffer(const DDyFontInformation information,
   paintSurface.InitializeContext();
   paintSurface.ClearSurface();
 
-  auto drawnImageList {std::vector<QImage>{}};
-  auto charId         {0};
+  auto drawnImageList   {std::vector<QImage>{}};
+  auto charCount        {0};
 
+  //
+  std::vector<std::future<DResult>> threadResultList {};
+  threadResultList.reserve(concurrentThreadNumber);
+
+  const auto remainCharCount        {targetCharMapSize % concurrentThreadNumber};
+  const auto firstIterationMapCount {targetCharMapSize - remainCharCount};
+
+  for (auto i{0u}; i < firstIterationMapCount; i += concurrentThreadNumber)
+  {
+    // Issue task to parallel thread.
+    for (auto j{0u}; j < concurrentThreadNumber; ++j)
+    {
+      auto result = std::async(
+          std::launch::async,
+          CreateGlyphInformation,
+          std::cref(sFtFunctions), targetCharMap[i + j], sFtFaceList[j], charCount + j
+      );
+      threadResultList.emplace_back(std::move(result));
+    }
+
+    // Get result from future list and rendering.
+    for (auto j{0u}; j < concurrentThreadNumber; ++j)
+    {
+      DResult result {threadResultList[j].get()};
+      jsonDescriptor["Characters"][fmt::format("{0}", result.mCharCode)] = result.mItemJsonAtlas;
+
+      // Make QImage from Bitmap<float> and texture from QImage. (RVO guaranted)
+      paintSurface.UpdateBufferInformation(result.mCoordinateBound);
+      paintSurface.CreatePreviousBufferStateTexture();
+      paintSurface.BindTexturePointer(result.mImageBuffer);
+      paintSurface.render();
+
+      //
+      charCount += 1;
+      parent.IncrementProgress();
+
+      if (charCount % TEXTURE_MAPLIMIT == 0)
+      { // Export offscreen texture buffer to png or file information (binary).
+        drawnImageList.emplace_back(paintSurface.GetImageFromGLFBO());
+        paintSurface.ClearSurface();
+      }
+    }
+
+    threadResultList.clear();
+    threadResultList.reserve(concurrentThreadNumber);
+  }
+
+  // Issue task to parallel thread.
+  for (auto j{ 0u }; j < remainCharCount; ++j)
+  {
+    auto result = std::async(
+        std::launch::async,
+        CreateGlyphInformation,
+        std::cref(sFtFunctions), targetCharMap[firstIterationMapCount + j], sFtFaceList[j], charCount + j
+    );
+    threadResultList.emplace_back(std::move(result));
+  }
+
+  // Get result from future list and rendering.
+  for (auto j{ 0u }; j < remainCharCount; ++j)
+  {
+    DResult result{ threadResultList[j].get() };
+    jsonDescriptor["Characters"][fmt::format("{0}", result.mCharCode)] = result.mItemJsonAtlas;
+
+    // Make QImage from Bitmap<float> and texture from QImage. (RVO guaranted)
+    paintSurface.UpdateBufferInformation(result.mCoordinateBound);
+    paintSurface.CreatePreviousBufferStateTexture();
+    paintSurface.BindTexturePointer(result.mImageBuffer);
+    paintSurface.render();
+
+    //
+    charCount += 1;
+    parent.IncrementProgress();
+
+    if (charCount % TEXTURE_MAPLIMIT == 0)
+    { // Export offscreen texture buffer to png or file information (binary).
+      drawnImageList.emplace_back(paintSurface.GetImageFromGLFBO());
+      paintSurface.ClearSurface();
+    }
+  }
+
+  threadResultList.clear();
+
+#ifdef false
   for (const auto& charCode : targetCharMap)
   {
-    const auto& jsonCharAtlas = CreateGlyphInformation(sFtFunctions, charCode, paintSurface, ftFace, charId);
-    jsonDescriptor["Characters"][fmt::format("{0}", charCode)] = jsonCharAtlas;
+    const DResult result {CreateGlyphInformation(sFtFunctions, charCode, , charId)};
+    jsonDescriptor["Characters"][fmt::format("{0}", charCode)] = result.mItemJsonAtlas;
+
+    paintSurface.UpdateBufferInformation(result.mCoordinateBound);
+    paintSurface.CreatePreviousBufferStateTexture();
+    // Make QImage from Bitmap<float> and texture from QImage. (RVO guaranted)
+    paintSurface.BindTexturePointer(result.mImageBuffer);
+    paintSurface.render();
+
     charId += 1;
     //
     parent.IncrementProgress();
@@ -348,6 +500,7 @@ void CreateFontBuffer(const DDyFontInformation information,
       paintSurface.ClearSurface();
     }
   }
+#endif
   drawnImageList.emplace_back(paintSurface.GetImageFromGLFBO());
   paintSurface.ClearSurface();
 
@@ -360,7 +513,7 @@ void CreateFontBuffer(const DDyFontInformation information,
     }
   }
 
-  DyReleaseFreetype(ftLibrary, ftFace);
+  DyReleaseFreetype();
   ExportInformations(jsonDescriptor);
 }
 
