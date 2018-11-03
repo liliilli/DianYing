@@ -19,21 +19,14 @@ GlOffscreenSurface::GlOffscreenSurface(QScreen* targetScreen, const QSize& size)
 GlOffscreenSurface::~GlOffscreenSurface()
 {
   // to delete the FBOs we first need to make the context current
-  this->m_context->makeCurrent(this);
+  this->mGLContext->makeCurrent(this);
 
   // destroy framebuffer objects
-  if (this->m_fbo != nullptr)
+  if (this->mFboInstance != nullptr)
   {
-    this->m_fbo->release();
-    delete this->m_fbo;
-    this->m_fbo = nullptr;
-  }
-
-  if (this->m_resolvedFbo != nullptr)
-  {
-    this->m_resolvedFbo->release();
-    delete this->m_resolvedFbo;
-    this->m_resolvedFbo = nullptr;
+    this->mFboInstance->release();
+    delete this->mFboInstance;
+    this->mFboInstance = nullptr;
   }
 
   // destroy shader
@@ -45,18 +38,18 @@ GlOffscreenSurface::~GlOffscreenSurface()
   }
 
   // free context
-  if (this->m_context != nullptr)
+  if (this->mGLContext != nullptr)
   {
-    this->m_context->doneCurrent();
-    delete this->m_context;
-    this->m_context = nullptr;
+    this->mGLContext->doneCurrent();
+    delete this->mGLContext;
+    this->mGLContext = nullptr;
   }
 
   // free paint device
-  if (this->m_paintDevice != nullptr)
+  if (this->mPaintDeviceInstance != nullptr)
   {
-    delete this->m_paintDevice;
-    this->m_paintDevice = nullptr;
+    delete this->mPaintDeviceInstance;
+    this->mPaintDeviceInstance = nullptr;
   }
 
   this->m_initialized   = false;
@@ -64,82 +57,49 @@ GlOffscreenSurface::~GlOffscreenSurface()
   this->destroy();
 }
 
-QOpenGLContext* GlOffscreenSurface::context() const { return m_context; }
+QOpenGLContext* GlOffscreenSurface::GetGLContext() const { return mGLContext; }
 
-QOpenGLFunctions* GlOffscreenSurface::functions() const { return m_functions; }
+QOpenGLFunctions* GlOffscreenSurface::GetGLFunctions() const { return mGLFunctions; }
 
-GLuint GlOffscreenSurface::framebufferObjectHandle() const { return m_fbo ? m_fbo->handle() : 0; }
+GLuint GlOffscreenSurface::GetGLFBOHandleId() const { return mFboInstance ? mFboInstance->handle() : 0; }
 
-const QOpenGLFramebufferObject* GlOffscreenSurface::getFramebufferObject() const { return m_fbo; }
+const QOpenGLFramebufferObject* GlOffscreenSurface::GetGLFBORawPointer() const { return mFboInstance; }
 
-QPaintDevice* GlOffscreenSurface::getPaintDevice() const { return m_paintDevice; }
+QPaintDevice* GlOffscreenSurface::GetPaintDevice() const { return mPaintDeviceInstance; }
 
-bool GlOffscreenSurface::isValid() const { return (m_initialized && m_context && m_fbo); }
+bool GlOffscreenSurface::IsValid() const { return (m_initialized && mGLContext && mFboInstance); }
 
-void GlOffscreenSurface::makeCurrent() { makeCurrentInternal(); }
+void GlOffscreenSurface::MakeRenderingCurrentContext() { MakeCurrentInternalContext(); }
 
-void GlOffscreenSurface::doneCurrent() { if (m_context) { m_context->doneCurrent(); } }
+void GlOffscreenSurface::DoneRenderingCurrentContext() { if (mGLContext) { mGLContext->doneCurrent(); } }
 
-void GlOffscreenSurface::bindFramebufferObject()
+void GlOffscreenSurface::BindGLFBO()
 {
-  if (m_fbo)  { m_fbo->bind(); }
+  if (mFboInstance)  { mFboInstance->bind(); }
   else        { QOpenGLFramebufferObject::bindDefault(); }
 }
 
-void GlOffscreenSurface::makeCurrentInternal()
+void GlOffscreenSurface::MakeCurrentInternalContext()
 {
-  if (isValid())  { m_context->makeCurrent(this); }
+  if (IsValid())  { mGLContext->makeCurrent(this); }
   else            { throw ("GlOffscreenSurface::makeCurrent() - Window not yet properly initialized!"); }
 }
 
-QImage GlOffscreenSurface::grabFramebuffer()
+QImage GlOffscreenSurface::GetImageFromGLFBO()
 {
   std::lock_guard<std::mutex> locker{m_mutex};
-  makeCurrentInternal();
-
+  MakeCurrentInternalContext();
   // blit framebuffer to resolve framebuffer first if needed
-  if (m_fbo->format().samples() > 0)
-  {
-    // check if we have glFrameBufferBlit support. this is true for desktop OpenGL 3.0+, but not
-    // OpenGL ES 2.0
-    if (m_functions_3_0)
-    { // only blit the color buffer attachment
-      m_functions_3_0->glBindFramebuffer(GL_READ_FRAMEBUFFER, m_fbo->handle());
-      m_functions_3_0->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_resolvedFbo->handle());
-      m_functions_3_0->glBlitFramebuffer(0, 0, bufferSize().width(),
-        bufferSize().height(), 0, 0, bufferSize().width(),
-        bufferSize().height(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
-      m_functions_3_0->glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    }
-    else
-    { // we must unbind the FBO here, so we can use its texture and bind the default back-buffer
-      m_functions->glBindFramebuffer(GL_FRAMEBUFFER, m_resolvedFbo->handle());
-      // now use its texture for drawing in the shader --> bind shader and draw textured quad here
-      // bind regular FBO again
-      m_functions->glBindFramebuffer(GL_FRAMEBUFFER, m_fbo->handle());
-    }
-
-    // check if OpenGL errors happened
-    if (GLenum error = m_functions->glGetError() != GL_NO_ERROR)
-    {
-      qDebug() << "GlOffscreenSurface::grabFramebuffer() - OpenGL error" << error;
-    }
-
-    // now grab from resolve FBO
-    return GrabFramebufferInternal(m_resolvedFbo);
-  }
-  else
-  { // no multi-sampling. grab directly from FBO
-    return GrabFramebufferInternal(m_fbo);
-  }
+  return GrabFramebufferInternal(mFboInstance);
 }
 
 QImage GlOffscreenSurface::GrabFramebufferInternal(QOpenGLFramebufferObject* fbo)
 {
   QImage resultImage;
+
   // bind framebuffer first
-  m_functions->glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo->handle());
-  if (m_functions_3_0 != nullptr) { m_functions_3_0->glReadBuffer(GL_COLOR_ATTACHMENT0); }
+  mGLFunctions->glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo->handle());
+  if (mGLFunctionsAbove30 != nullptr) { mGLFunctionsAbove30->glReadBuffer(GL_COLOR_ATTACHMENT0); }
 
   const GLenum  internalFormat  = fbo->format().internalTextureFormat();
   const bool    hasAlpha        = internalFormat == GL_RGBA || internalFormat == GL_BGRA || internalFormat == GL_RGBA8;
@@ -147,17 +107,16 @@ QImage GlOffscreenSurface::GrabFramebufferInternal(QOpenGLFramebufferObject* fbo
   if (internalFormat == GL_BGRA)
   {
     resultImage = QImage(fbo->size(), hasAlpha ? QImage::Format_ARGB32 : QImage::Format_RGB32);
-    m_functions->glReadPixels(0, 0, fbo->size().width(), fbo->size().height(), GL_BGRA, GL_UNSIGNED_BYTE, resultImage.bits());
+    mGLFunctions->glReadPixels(0, 0, fbo->size().width(), fbo->size().height(), GL_BGRA, GL_UNSIGNED_BYTE, resultImage.bits());
   }
-  else if (internalFormat == GL_RGBA
-        || internalFormat == GL_RGBA8)
+  else if (internalFormat == GL_RGBA || internalFormat == GL_RGBA8)
   {
     resultImage = QImage(fbo->size(), hasAlpha ? QImage::Format_RGBA8888 : QImage::Format_RGBX8888);
-    m_functions->glReadPixels(0, 0, fbo->size().width(), fbo->size().height(), GL_RGBA, GL_UNSIGNED_BYTE, resultImage.bits());
+    mGLFunctions->glReadPixels(0, 0, fbo->size().width(), fbo->size().height(), GL_RGBA, GL_UNSIGNED_BYTE, resultImage.bits());
   }
   else { qDebug() << "GlOffscreenSurface::grabFramebuffer() - Unsupported framebuffer format" << internalFormat << "!"; }
 
-  m_functions->glBindFramebuffer(GL_FRAMEBUFFER, m_fbo->handle());
+  mGLFunctions->glBindFramebuffer(GL_FRAMEBUFFER, mFboInstance->handle());
   return resultImage.mirrored();
 }
 
@@ -170,142 +129,114 @@ void GlOffscreenSurface::swapBuffers()
 void GlOffscreenSurface::swapBuffersInternal()
 {
   // blit framebuffer to back buffer
-  m_context->makeCurrent(this);
-
+  this->mGLContext->makeCurrent(this);
   // make sure all paint operation have been processed
-  m_functions->glFlush();
+  this->mGLFunctions->glFlush();
 
-  // check if we have glFrameBufferBlit support. this is true for desktop OpenGL 3.0+, but not
-  // OpenGL ES 2.0
-  if (m_functions_3_0)
+  // check if we have glFrameBufferBlit support. this is true for desktop OpenGL 3.0+, but not OpenGL ES 2.0
+  if (this->mGLFunctionsAbove30 != nullptr)
   {
     // if our framebuffer has multi-sampling, the resolve should be done automagically
-    m_functions_3_0->glBindFramebuffer(GL_READ_FRAMEBUFFER, m_fbo->handle());
-    m_functions_3_0->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+    this->mGLFunctionsAbove30->glBindFramebuffer(GL_READ_FRAMEBUFFER, mFboInstance->handle());
+    this->mGLFunctionsAbove30->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
     // blit all buffers including depth buffer for further rendering
-    m_functions_3_0->glBlitFramebuffer(0, 0, bufferSize().width(),
-      bufferSize().height(), 0, 0, bufferSize().width(),
-      bufferSize().height(), GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT,
-      GL_NEAREST);
-    m_functions_3_0->glBindFramebuffer(GL_FRAMEBUFFER, m_fbo->handle());
+    this->mGLFunctionsAbove30->glBlitFramebuffer(0, 0, GetBufferSize().width(),
+        GetBufferSize().height(), 0, 0, GetBufferSize().width(),
+        GetBufferSize().height(), GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT,
+        GL_NEAREST);
+    this->mGLFunctionsAbove30->glBindFramebuffer(GL_FRAMEBUFFER, mFboInstance->handle());
   }
   else
   {
     // we must unbind the FBO here, so we can use its texture and bind the default back-buffer
-    m_functions->glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    // now use its texture for drawing in the shader
-    // --> bind shader and draw textured quad here
-    // bind regular FBO again
-    m_functions->glBindFramebuffer(GL_FRAMEBUFFER, m_fbo->handle());
+    // now use its texture for drawing in the shader and bind shader and draw textured quad here bind regular FBO again
+    this->mGLFunctions->glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    this->mGLFunctions->glBindFramebuffer(GL_FRAMEBUFFER, mFboInstance->handle());
   }
 
   // check if OpenGL errors happened
-  if (GLenum error = m_functions->glGetError() != GL_NO_ERROR)
+  if (const GLenum error = this->mGLFunctions->glGetError(); error != GL_NO_ERROR)
   {
     qDebug() << "GlOffscreenSurface::swapBuffersInternal() - OpenGL error" << error;
   }
 
   // now swap back buffer to front buffer
-  m_context->swapBuffers(this);
-}  // GlOffscreenSurface::swapBuffersInternal
+  this->mGLContext->swapBuffers(this);
+}
 
-
-void GlOffscreenSurface::recreateFBOAndPaintDevice()
+void GlOffscreenSurface::RecreateFBOAndPaintDevice()
 {
-  if (m_context && ((m_fbo == nullptr) || (m_fbo->size() != bufferSize())))
+  if (mGLContext && ((mFboInstance == nullptr) || (mFboInstance->size() != GetBufferSize())))
   {
-    m_context->makeCurrent(this);
+    mGLContext->makeCurrent(this);
     // free old FBOs
-    if (m_fbo)
+    if (mFboInstance)
     {
-      m_fbo->release();
-      delete m_fbo;
-      m_fbo = nullptr;
-    }
-    if (m_resolvedFbo)
-    {
-      m_resolvedFbo->release();
-      delete m_resolvedFbo;
-      m_resolvedFbo = nullptr;
+      mFboInstance->release();
+      delete mFboInstance;
+      mFboInstance = nullptr;
     }
 
-    // create new frame buffer
-//        QOpenGLFramebufferObjectFormat format = QGLInfo::DefaultFramebufferFormat();
-//        format.setSamples(QGLInfo::HasMultisamplingSupport(m_context) ? 4 : 0);
-    QOpenGLFramebufferObjectFormat format;
-    format.setSamples(0);
+    // Create new frame buffer
+    QOpenGLFramebufferObjectFormat fboFormat {}; fboFormat.setSamples(0);
 
-    m_fbo = new QOpenGLFramebufferObject(bufferSize(), format);
-    if (!m_fbo->isValid()) { throw ("GlOffscreenSurface::recreateFbo() - Failed to create background FBO!"); }
-
-    // clear framebuffer
-    m_fbo->bind();
-    m_functions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-    m_fbo->release();
-
-    // if multi sampling is requested and supported we need a resolve FBO
-    if (format.samples() > 0)
+    this->mFboInstance = new QOpenGLFramebufferObject(GetBufferSize(), fboFormat);
+    if (this->mFboInstance->isValid() == false)
     {
-      // create resolve framebuffer with only a color attachment
-      format.setAttachment(QOpenGLFramebufferObject::NoAttachment);
-      format.setSamples(0);
-      m_resolvedFbo = new QOpenGLFramebufferObject(bufferSize(), format);
-      if (!m_resolvedFbo->isValid()) {
-        throw ("GlOffscreenSurface::recreateFbo() - Failed to create resolve FBO!");
-      }
-      // clear resolve framebuffer
-      m_resolvedFbo->bind();
-      m_functions->glClear(GL_COLOR_BUFFER_BIT);
-      m_resolvedFbo->release();
+      throw "GlOffscreenSurface::recreateFbo() - Failed to create background FBO!";
     }
+    // Add color attachment (GL_COLOR_ATTACHMENT1) for ping-pong.
+    // @TODO UNCOMMENT THIS
+    //this->mFboInstance->addColorAttachment(GetBufferSize());
+
+    // Clear framebuffer
+    this->mFboInstance->bind();
+    this->mGLFunctions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    this->mFboInstance->release();
   }
-  // create paint device for painting with QPainter if needed
-  if (!m_paintDevice) { m_paintDevice = new QOpenGLPaintDevice; }
+  // Create paint device for painting with QPainter if needed
+  if (this->mPaintDeviceInstance == nullptr)
+  {
+    this->mPaintDeviceInstance = new QOpenGLPaintDevice();
+  }
 
-  // update paint device size if needed
-  if (m_paintDevice->size() != bufferSize()) { m_paintDevice->setSize(bufferSize()); }
+  // Update paint device size if needed
+  if (this->mPaintDeviceInstance->size() != this->GetBufferSize())
+  {
+    this->mPaintDeviceInstance->setSize(GetBufferSize());
+  }
 }
 
 void GlOffscreenSurface::initializeInternal()
 {
-  if (!m_initialized.exchange(true))
+  if (!this->m_initialized.exchange(true))
   {
-    // create OpenGL context. we set the format requested by the user (default:
-    // QWindow::requestedFormat())
-    m_context = new QOpenGLContext(this);
-    m_context->setFormat(format());
+    // create OpenGL context. we set the format requested by the user (default: QWindow::requestedFormat())
+    this->mGLContext = new QOpenGLContext(this);
+    this->mGLContext->setFormat(format());
 
-    if (m_context->create())
+    if (this->mGLContext->create() == true)
     {
-      m_context->makeCurrent(this);
+      this->mGLContext->makeCurrent(this);
 
       // initialize the OpenGL 2.1 / ES 2.0 functions for this object
-      m_functions = m_context->functions();
-      m_functions->initializeOpenGLFunctions();
+      this->mGLFunctions = this->mGLContext->functions();
+      this->mGLFunctions->initializeOpenGLFunctions();
 
       // try initializing the OpenGL 3.0 functions for this object
-      m_functions_3_0 = m_context->versionFunctions <QOpenGLFunctions_3_0>();
-      if (m_functions_3_0) { m_functions_3_0->initializeOpenGLFunctions(); }
-      else
-      {
-        // if we do not have OpenGL 3.0 functions, glBlitFrameBuffer is not available, so we
-        // must do the blit
-        // using a shader and the framebuffer texture, so we need to create the shader
-        // here...
-        // --> allocate m_blitShader, a simple shader for drawing a textured quad
-        // --> build quad geometry, VBO, whatever
-      }
+      this->mGLFunctionsAbove30 = mGLContext->versionFunctions <QOpenGLFunctions_3_0>();
+      if (this->mGLFunctionsAbove30 != nullptr) { mGLFunctionsAbove30->initializeOpenGLFunctions(); }
+      else                                      { throw "Failed to create OpenGL function above version 3.0."; }
 
       // now we have a context, create the FBO
-      recreateFBOAndPaintDevice();
+      RecreateFBOAndPaintDevice();
     }
     else
     {
       m_initialized = false;
-      delete m_context;
-      m_context = nullptr;
+      delete mGLContext;
+      mGLContext = nullptr;
       throw ("Failed to create OpenGL context!");
     }
   }
@@ -328,32 +259,30 @@ void GlOffscreenSurface::render()
   // check if we need to call the user initialization
 //    makeCurrent(); // TODO: may be makeCurrent() must be here, as noted for QOpenGLWidget.initializeGL()
 
-  if (m_initializedGL == false)
+  if (mIsOpenGLInitialized == false)
   {
     this->initializeGL();
-    m_initializedGL = true;
+    mIsOpenGLInitialized = true;
   }
 
   // make context current and bind framebuffer
-  this->makeCurrent();
-  this->bindFramebufferObject();
+  this->MakeRenderingCurrentContext();
+  this->BindGLFBO();
   // call user paint function
   this->paintGL();
-  this->doneCurrent();
+  this->DoneRenderingCurrentContext();
 
   // mark that we're done with updating
   m_updatePending = false;
 }
 
 void GlOffscreenSurface::exposeEvent(QExposeEvent* e)
-{
-  // render window content if window is exposed
+{ // render window content if window is exposed
   render();
 }
 
 void GlOffscreenSurface::resizeEvent(QResizeEvent* e)
-{
-  // call base implementation
+{ // call base implementation
   resize(e->size());
   emit resized();
 }
@@ -362,16 +291,17 @@ void GlOffscreenSurface::resize(const QSize& newSize)
 {
   m_mutex.lock();
   // make context current first
-  makeCurrent();
+  this->MakeRenderingCurrentContext();
 
   m_size = QSize(newSize);
 
   // update FBO and paint device
-  recreateFBOAndPaintDevice();
+  this->RecreateFBOAndPaintDevice();
   m_mutex.unlock();
+
   // call user-defined resize method
-  resizeGL(bufferSize().width(), bufferSize().height());
-}  // GlOffscreenSurface::resize
+  this->resizeGL(GetBufferSize().width(), GetBufferSize().height());
+}
 
 bool GlOffscreenSurface::event(QEvent* event)
 {
@@ -388,19 +318,21 @@ bool GlOffscreenSurface::event(QEvent* event)
   }
 }
 
-void GlOffscreenSurface::resize(int w, int h) { resize(QSize(w, h)); }
+void GlOffscreenSurface::resize(int w, int h) { this->resize(QSize(w, h)); }
 
 void GlOffscreenSurface::InitializeContext()
-{
-  // check if we need to initialize stuff
+{ // check if we need to initialize stuff
   std::lock_guard <std::mutex> locker(m_mutex);
-  initializeInternal();
+  this->initializeInternal();
 
-  if (m_initializedGL == false)
+  if (this->mIsOpenGLInitialized == false)
   {
     this->initializeGL();
-    m_initializedGL = true;
+    this->mIsOpenGLInitialized = true;
   }
 }
 
-QSize GlOffscreenSurface::bufferSize() const { return (m_size); }
+QSize GlOffscreenSurface::GetBufferSize() const
+{
+  return this->m_size;
+}

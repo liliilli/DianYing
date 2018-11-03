@@ -15,22 +15,47 @@ namespace
 constexpr const char* vertexShader = R"dy(
 attribute highp   vec2  vs_vertex;
 attribute mediump vec2  vs_texCoord;
+
 varying   mediump vec2  fs_texCoord;
+varying   mediump vec2  fs_prevCoord;
 
 void main()
 {
-  gl_Position = vec4((vs_vertex * 2) - 1, 0, 1);
-  fs_texCoord = vs_texCoord;
+  gl_Position   = vec4((vs_vertex * 2) - 1, 0, 1);
+  fs_texCoord   = vs_texCoord;
+  fs_prevCoord  = vs_vertex;
 }
 )dy";
 
 constexpr const char* fragmentShader = R"dy(
 varying   mediump vec2  fs_texCoord;
+varying   mediump vec2  fs_prevCoord;
+
+uniform   sampler2D     uPreviousTexture;
 uniform   sampler2D     uCharTexture;
+uniform   int           uChannelId;
 
 void main()
 {
-  gl_FragColor = texture(uCharTexture, fs_texCoord);
+  vec4  color = texture(uPreviousTexture, vec2(fs_prevCoord.x, 1 - fs_prevCoord.y));
+  float value = texture(uCharTexture,     fs_texCoord).r;
+
+  if      (uChannelId == 0) // R
+  {
+    gl_FragColor = color + vec4(value, 0, 0, 0);
+  }
+  else if (uChannelId == 1) // G
+  {
+    gl_FragColor = color + vec4(0, value, 0, 0);
+  }
+  else if (uChannelId == 2) // B
+  {
+    gl_FragColor = color + vec4(0, 0, value, 0);
+  }
+  else // A
+  {
+    gl_FragColor = color + vec4(0, 0, 0, value);
+  }
 }
 )dy";
 
@@ -44,9 +69,15 @@ CPaintSurface::CPaintSurface(QScreen* targetScreen, const QSize& size) : GlOffsc
 
 CPaintSurface::~CPaintSurface()
 {
-  this->makeCurrent();
+  this->MakeRenderingCurrentContext();
   // Destroy vbo instance resource.
   mVboInstance.destroy();
+
+  if (this->mPreviousTexture != nullptr)
+  {
+    delete this->mPreviousTexture;
+    this->mPreviousTexture = nullptr;
+  }
 
   if (this->mTexturePointer != nullptr)
   {
@@ -60,12 +91,12 @@ CPaintSurface::~CPaintSurface()
     this->mShaderProgram = nullptr;
   }
 
-  this->doneCurrent();
+  this->DoneRenderingCurrentContext();
 }
 
 void CPaintSurface::UpdateBufferInformation(const dy::DDyCoordinateBounds& texCoord)
 {
-  this->makeCurrent();
+  this->MakeRenderingCurrentContext();
   this->mVboInstance.bind();
   /// Counter-clockwisely...
   /// (vec2) vert.x, vert.y (0)
@@ -91,12 +122,17 @@ void CPaintSurface::UpdateBufferInformation(const dy::DDyCoordinateBounds& texCo
 
   this->mVboInstance.unmap();
   this->mVboInstance.release();
-  this->doneCurrent();
+
+  this->mShaderProgram->bind();
+  this->mShaderProgram->setUniformValue(this->mShaderProgram->uniformLocation("uChannelId"), texCoord.mChannel);
+  this->mShaderProgram->release();
+
+  this->DoneRenderingCurrentContext();
 }
 
 void CPaintSurface::BindTexturePointer(const QImage& textureImage)
 {
-  this->makeCurrent();
+  this->MakeRenderingCurrentContext();
 
   if (this->mTexturePointer != nullptr)
   {
@@ -107,24 +143,40 @@ void CPaintSurface::BindTexturePointer(const QImage& textureImage)
   this->mTexturePointer = new QOpenGLTexture(textureImage, QOpenGLTexture::MipMapGeneration::DontGenerateMipMaps);
   Q_ASSERT(this->mTexturePointer->textureId() != 0);
 
-  this->doneCurrent();
+  this->DoneRenderingCurrentContext();
+}
+
+void CPaintSurface::CreatePreviousBufferStateTexture()
+{
+  this->MakeRenderingCurrentContext();
+
+  if (this->mPreviousTexture != nullptr)
+  {
+    delete this->mPreviousTexture;
+    this->mPreviousTexture = nullptr;
+  }
+
+  this->mPreviousTexture = new QOpenGLTexture(this->GetImageFromGLFBO(), QOpenGLTexture::MipMapGeneration::DontGenerateMipMaps);
+  Q_ASSERT(this->mPreviousTexture->textureId() != 0);
+
+  this->DoneRenderingCurrentContext();
 }
 
 void CPaintSurface::ClearSurface()
 {
   // make context current and bind framebuffer
-  this->makeCurrent();
-  this->bindFramebufferObject();
+  this->MakeRenderingCurrentContext();
+  this->BindGLFBO();
 
-  auto painter {QPainter{this->getPaintDevice()}};
+  auto painter {QPainter{this->GetPaintDevice()}};
   painter.beginNativePainting();
 
-  glClearColor(0, 0, 0, 1);
+  glClearColor(0, 0, 0, 0);
   glClear     (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   painter.endNativePainting();
   painter.end();
-  this->doneCurrent();
+  this->DoneRenderingCurrentContext();
 }
 
 void CPaintSurface::initializeGL()
@@ -147,27 +199,34 @@ void CPaintSurface::initializeGL()
   this->mShaderProgram->bindAttributeLocation("vs_texCoord", 1);
 
   this->mShaderProgram->link();
+
   this->mShaderProgram->bind();
-  //this->mShaderProgram->setUniformValue(this->mShaderProgram->uniformLocation("uCharTexture"), 0);
+  this->mShaderProgram->setUniformValue(this->mShaderProgram->uniformLocation("uPreviousTexture"), 0);
+  this->mShaderProgram->setUniformValue(this->mShaderProgram->uniformLocation("uCharTexture"), 1);
+  this->mShaderProgram->release();
 }
 
 void CPaintSurface::resizeGL(int width, int height) { }
 
 void CPaintSurface::paintGL()
 {
+  Q_ASSERT(this->mPreviousTexture != nullptr);
   Q_ASSERT(this->mTexturePointer != nullptr);
 
-  auto painter {QPainter{this->getPaintDevice()}};
+  auto painter {QPainter{this->GetPaintDevice()}};
   painter.beginNativePainting();
   this->mVboInstance.bind();
   this->mShaderProgram->bind();
 
+  //
   this->mShaderProgram->enableAttributeArray(0);
   this->mShaderProgram->enableAttributeArray(1);
   this->mShaderProgram->setAttributeBuffer(0, GL_FLOAT, 0,                    2, 4 * sizeof(GLfloat));
   this->mShaderProgram->setAttributeBuffer(1, GL_FLOAT, 2 * sizeof(GLfloat),  2, 4 * sizeof(GLfloat));
-  this->mTexturePointer->bind();
 
+  //
+  this->mPreviousTexture->bind(0);
+  this->mTexturePointer ->bind(1);
   glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
   this->mVboInstance.release();
@@ -178,7 +237,7 @@ void CPaintSurface::paintGL()
 
 void CPaintSurface::pCreateVertexBufferObject()
 {
-  static constexpr std::array<std::array<float, 2>, 4> vs_texCoord = { std::array<float, 2>{0, 0}, {1, 0}, {1, 1}, {0, 1} };
+  static constexpr std::array<std::array<float, 2>, 4> vs_texCoord = { std::array<float, 2>{0, 1}, {1, 1}, {1, 0}, {0, 0} };
 
   QVector<GLfloat> vertexData;
   for (auto j {0}; j < 4; ++j)

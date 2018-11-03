@@ -35,7 +35,8 @@ static constexpr auto TEXTURE_CANVAS_S   = 1024;
 static constexpr auto TEXTURE_CANVAS_T   = 1024;
 static constexpr auto TEXTURE_SIZE_S     = 64;
 static constexpr auto TEXTURE_SIZE_T     = 64;
-static constexpr auto TEXTURE_MAPLIMIT   = (TEXTURE_CANVAS_S / TEXTURE_SIZE_S) * (TEXTURE_CANVAS_T / TEXTURE_SIZE_T);
+static constexpr auto CHANNEL_LIMIT      = 4;
+static constexpr auto TEXTURE_MAPLIMIT   = (TEXTURE_CANVAS_S / TEXTURE_SIZE_S) * (TEXTURE_CANVAS_T / TEXTURE_SIZE_T) * CHANNEL_LIMIT;
 static constexpr auto TEXTURE_PXRANGE    = 12.0;
 
 constexpr auto ENGLISH_UNI20_START = 0x0000;
@@ -222,6 +223,7 @@ CreateGlyphInformation(const FT_Outline_Funcs& ftOutlineFunc, const FT_ULong cha
 
   auto texCoord {dy::CreateCoordinateInformation(TEXTURE_CANVAS_S, TEXTURE_CANVAS_T, TEXTURE_SIZE_S, TEXTURE_SIZE_T, id)};
   paintSurface.UpdateBufferInformation(texCoord);
+  paintSurface.CreatePreviousBufferStateTexture();
 
   // Make QImage from Bitmap<float> and texture from QImage. (RVO guaranted)
   paintSurface.BindTexturePointer(CreateQOpenGLTextureForChar(sdfFloatBuffer));
@@ -342,11 +344,11 @@ void CreateFontBuffer(const DDyFontInformation information,
     // Export offscreen texture buffer to png or file information (binary).
     if (charId % TEXTURE_MAPLIMIT == 0)
     {
-      drawnImageList.emplace_back(paintSurface.grabFramebuffer());
+      drawnImageList.emplace_back(paintSurface.GetImageFromGLFBO());
       paintSurface.ClearSurface();
     }
   }
-  drawnImageList.emplace_back(paintSurface.grabFramebuffer());
+  drawnImageList.emplace_back(paintSurface.GetImageFromGLFBO());
   paintSurface.ClearSurface();
 
   {

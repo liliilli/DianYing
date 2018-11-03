@@ -26,6 +26,11 @@ public:
   ///
   /// @brief
   ///
+  void CreatePreviousBufferStateTexture();
+
+  ///
+  /// @brief
+  ///
   void ClearSurface();
 
 protected:
@@ -43,6 +48,8 @@ private:
 
   /// OpenGL Shader program
   QOpenGLShaderProgram* mShaderProgram  = nullptr;
+  ///
+  QOpenGLTexture*       mPreviousTexture = nullptr;
   ///
   QOpenGLTexture*       mTexturePointer = nullptr;
   /// OpenGL vbo (vec2, vec2) instance.
