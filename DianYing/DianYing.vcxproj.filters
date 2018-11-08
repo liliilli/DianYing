@@ -130,7 +130,6 @@
     <ClCompile Include="Source\Builtin\ShaderGl\RenderDefaultFont.cc" />
     <ClCompile Include="Source\Component\Internal\CDyFontRenderer.cc" />
     <ClCompile Include="Source\Management\Type\FontCharacter.cc" />
-    <ClCompile Include="Source\Management\Type\FontContainer.cc" />
     <ClCompile Include="Source\Builtin\Model\ScreenProjectionTriangle.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderScreenOutput.cc" />
     <ClCompile Include="Source\Test\TestMSDF.cc" />
@@ -150,6 +149,7 @@
     <ClCompile Include="Source\Builtin\ShaderGl\RenderFontMSDF.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderFontSDF.cc" />
     <ClCompile Include="Source\Meta\Information\FontMetaInformation.cc" />
+    <ClCompile Include="Source\Management\Type\FontContainer_Deprecated.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -363,7 +363,6 @@
     <ClInclude Include="Include\Dy\Core\Rendering\UIBasicRenderer.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderDefaultFont.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyFontRenderer.h" />
-    <ClInclude Include="Include\Dy\Management\Type\FontContainer.h" />
     <ClInclude Include="Include\Dy\Management\Type\FontCharacter.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\ScreenProjectionTriangle.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderScreenOutput.h" />
@@ -386,6 +385,7 @@
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderFontMSDF.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderFontSDF.h" />
     <ClInclude Include="Include\Dy\Meta\Information\FontMetaInformation.h" />
+    <ClInclude Include="Include\Dy\Management\Type\FontContainer_Deprecated.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

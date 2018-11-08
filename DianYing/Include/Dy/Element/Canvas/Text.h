@@ -17,7 +17,7 @@
 #include <Dy/Element/Descriptor/CanvasDescriptor.h>
 #include <Dy/Helper/Type/DyString.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
-#include <Dy/Management/Type/FontContainer.h>
+#include <Dy/Management/Type/FontContainer_Deprecated.h>
 #include "Dy/Component/Internal/CDyFontRenderer.h"
 
 //!
@@ -88,7 +88,7 @@ public:
   /// @brief  Return reference of valid font container.
   /// @return Valid font container reference.
   ///
-  MDY_NODISCARD FDyFontContainer& GetFontContainer() const noexcept
+  MDY_NODISCARD FDyFontContainer_Deprecated& GetFontContainer() const noexcept
   {
     return *this->mFontContainer;
   }
@@ -180,7 +180,7 @@ private:
   /// Text to display on screen. String must be following UTF-8 encoding.
   DDyString         mTextString       = {""};
   /// Text container instance to display font.
-  FDyFontContainer* mFontContainer    = nullptr;
+  FDyFontContainer_Deprecated* mFontContainer    = nullptr;
   /// Font color
 	DDyColor          mForegroundColor  = DDyColor::White;
   /// Font background color

@@ -19,14 +19,14 @@ namespace dy
 {
 
 ///
-/// @class FDyFontContainer
+/// @class FDyFontContainer_Deprecated
 /// @brief
 ///
-class FDyFontContainer final
+class FDyFontContainer_Deprecated final
 {
 public:
-  FDyFontContainer(_MIN_ const std::string& fontFilePath);
-  ~FDyFontContainer();
+  FDyFontContainer_Deprecated(_MIN_ const std::string& fontFilePath);
+  ~FDyFontContainer_Deprecated();
 
   ///
   /// @brief

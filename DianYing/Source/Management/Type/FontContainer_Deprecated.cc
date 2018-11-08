@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Management/Type/FontContainer.h>
+#include <Dy/Management/Type/FontContainer_Deprecated.h>
 #include <Dy/Helper/ThreadPool.h>
 
 #undef max
@@ -381,8 +381,8 @@ MDY_NODISCARD dy::DDyFontCharacter DyCreateUcs2SDFCharTexture(_MIN_ const TC16 c
 namespace dy
 {
 
-FDyFontContainer::~FDyFontContainer() = default;
-FDyFontContainer::FDyFontContainer(_MIN_ const std::string& fontFilePath)
+FDyFontContainer_Deprecated::~FDyFontContainer_Deprecated() = default;
+FDyFontContainer_Deprecated::FDyFontContainer_Deprecated(_MIN_ const std::string& fontFilePath)
 {
   //
   this->mFontFilePath = fontFilePath;
@@ -397,12 +397,12 @@ FDyFontContainer::FDyFontContainer(_MIN_ const std::string& fontFilePath)
   }
 }
 
-bool FDyFontContainer::IsFontGlyphExist(_MIN_ const TC16 fontCode)
+bool FDyFontContainer_Deprecated::IsFontGlyphExist(_MIN_ const TC16 fontCode)
 {
   return this->mFontGlyphContainer.find(fontCode) != this->mFontGlyphContainer.end();
 }
 
-EDySuccess FDyFontContainer::CreateFontGlyph(_MIN_ const TC16 fontCode)
+EDySuccess FDyFontContainer_Deprecated::CreateFontGlyph(_MIN_ const TC16 fontCode)
 {
   MDY_ASSERT(this->mFontFilePath.empty() == false, "Unexpected error occurred.");
 
@@ -420,12 +420,12 @@ EDySuccess FDyFontContainer::CreateFontGlyph(_MIN_ const TC16 fontCode)
   }
 }
 
-const DDyFontCharacter& FDyFontContainer::operator[](const TC16 fontCode)
+const DDyFontCharacter& FDyFontContainer_Deprecated::operator[](const TC16 fontCode)
 {
   return this->mFontGlyphContainer.at(fontCode);
 }
 
-TI32 FDyFontContainer::GetScaledLinefeedHeight(const TI32 fontSize) const noexcept
+TI32 FDyFontContainer_Deprecated::GetScaledLinefeedHeight(const TI32 fontSize) const noexcept
 {
   return static_cast<TI32>(this->mUnscaledLinefeedHeight * fontSize);
 }

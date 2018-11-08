@@ -42,42 +42,52 @@ namespace dy
 EDySuccess MDyFont::pfInitialize()
 {
   // Create font and move it.
-  mDefaultFontContainer = new FDyFontContainer(MSVSTR(sSampleJapaneseFontPath));
+  mDefaultFontContainer_Deprecated = new FDyFontContainer_Deprecated(MSVSTR(sSampleJapaneseFontPath));
 
   return DY_SUCCESS;
 }
 
 EDySuccess MDyFont::pfRelease()
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mDefaultFontContainer), "");
-  delete this->mDefaultFontContainer;
-  this->mDefaultFontContainer = nullptr;
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mDefaultFontContainer_Deprecated), "");
+  delete this->mDefaultFontContainer_Deprecated;
+  this->mDefaultFontContainer_Deprecated = nullptr;
 
   return DY_SUCCESS;
 }
 
-EDySuccess MDyFont::CreateFontContainer(const std::string& fontSpecifierName)
+EDySuccess MDyFont::CreateFontContainer_Deprecated(const std::string& fontSpecifierName)
 {
-  if (this->IsFontContainerExist(fontSpecifierName) == true) {
-    MDY_UNEXPECTED_BRANCH();
-    return DY_FAILURE;
+  if (this->IsFontContainerExist(fontSpecifierName) == true)
+  {
+    MDY_UNEXPECTED_BRANCH(); return DY_FAILURE;
   }
 
   // Create font and move it.
-  auto [it, isCreated] = mValidFontContainerMap.try_emplace(fontSpecifierName, MSVSTR(sSampleEnglishFontPath));
+  auto [it, isCreated] = mValidFontContainerMap_Deprecated.try_emplace(fontSpecifierName, MSVSTR(sSampleEnglishFontPath));
   if (isCreated == false)
   {
-    MDY_UNEXPECTED_BRANCH();
-    return DY_FAILURE;
+    MDY_UNEXPECTED_BRANCH(); return DY_FAILURE;
   }
 
   return DY_SUCCESS;
 }
 
-NotNull<FDyFontContainer*> MDyFont::GetDefaultFontContainer() const noexcept
+EDySuccess MDyFont::CreateFontResourceContainer(const std::string& fontSpecifierName)
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mDefaultFontContainer), "");
-  return DyMakeNotNull(this->mDefaultFontContainer);
+  if (this->IsFontContainerExist(fontSpecifierName) == true)
+  {
+    MDY_UNEXPECTED_BRANCH(); return DY_FAILURE;
+  }
+
+  // Create font information and move it.
+  return DY_FAILURE;
+}
+
+NotNull<FDyFontContainer_Deprecated*> MDyFont::GetDefaultFontContainer() const noexcept
+{
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mDefaultFontContainer_Deprecated), "");
+  return DyMakeNotNull(this->mDefaultFontContainer_Deprecated);
 }
 
 } /// ::dy namespace

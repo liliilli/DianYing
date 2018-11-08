@@ -313,7 +313,7 @@
     <ClCompile Include="Source\Management\ScriptManager.cc" />
     <ClCompile Include="Source\Management\Type\AttachmentInformation.cc" />
     <ClCompile Include="Source\Management\Type\FontCharacter.cc" />
-    <ClCompile Include="Source\Management\Type\FontContainer.cc" />
+    <ClCompile Include="Source\Management\Type\FontContainer_Deprecated.cc" />
     <ClCompile Include="Source\Management\WorldManager.cc" />
     <ClCompile Include="Source\Management\SettingManager.cc" />
     <ClCompile Include="Source\Management\SoundManager.cc" />
@@ -480,7 +480,7 @@
     <ClInclude Include="Include\Dy\Management\SynchronizationManager.h" />
     <ClInclude Include="Include\Dy\Management\Type\AttachmentInformation.h" />
     <ClInclude Include="Include\Dy\Management\Type\FontCharacter.h" />
-    <ClInclude Include="Include\Dy\Management\Type\FontContainer.h" />
+    <ClInclude Include="Include\Dy\Management\Type\FontContainer_Deprecated.h" />
     <ClInclude Include="Include\Dy\Management\Type\FramebufferInformation.h" />
     <ClInclude Include="Include\Dy\Management\Type\KeyBindingInformation.h" />
     <ClInclude Include="Include\Dy\Management\Type\UBOInformation.h" />
