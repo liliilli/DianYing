@@ -14,6 +14,7 @@
 
 /// Header file
 #include <Dy/Management/Type/FontContainer.h>
+#include <Dy/Helper/ThreadPool.h>
 
 #undef max
 #undef min
@@ -136,11 +137,8 @@ MDY_NODISCARD int ftCubicTo(_MIN_ const FT_Vector* control1, _MIN_ const FT_Vect
 MDY_NODISCARD std::unordered_map<TC16, dy::DDyFontCharacter> DyGetAsciiCharTextures()
 {
   auto glyphs = std::unordered_map<TC16, dy::DDyFontCharacter>{};
-
   for (TC16 charCode = 0; charCode < 128; ++charCode)
   {
-    //auto [_, isSucceeded] = glyphs.try_emplace(charCode, DyCreateUcs2CharTexture(charCode));
-    //auto [_, isSucceeded] = glyphs.try_emplace(charCode, DyCreateUcs2MSDFCharTexture(charCode));
     auto [_, isSucceeded] = glyphs.try_emplace(charCode, DyCreateUcs2SDFCharTexture(charCode, sFreetypeFace));
     MDY_ASSERT(isSucceeded == true, "Failed to insert some character.");
   }
@@ -391,8 +389,6 @@ FDyFontContainer::FDyFontContainer(_MIN_ const std::string& fontFilePath)
   //
   if (DyInitializeFreetype() == DY_SUCCESS && DyLoadFontFreetype(this->mFontFilePath) == DY_SUCCESS)
   {
-    //FT_Set_Pixel_Sizes(sFreetypeFace, 0, 64);
-
     this->mFontGlyphContainer     = DyGetAsciiCharTextures();
     const auto* freetypeFace      = sFreetypeFace;
     const auto glyphScale = static_cast<float>(256) / freetypeFace->units_per_EM;
@@ -412,8 +408,6 @@ EDySuccess FDyFontContainer::CreateFontGlyph(_MIN_ const TC16 fontCode)
 
   if (DyInitializeFreetype() == DY_SUCCESS && DyLoadFontFreetype(this->mFontFilePath) == DY_SUCCESS)
   {
-    //FT_Set_Pixel_Sizes(sFreetypeFace, 0, 64);
-
     auto [_, isSucceeded] = this->mFontGlyphContainer.try_emplace(fontCode, DyCreateUcs2SDFCharTexture(fontCode, sFreetypeFace));
     MDY_ASSERT(isSucceeded == true, "");
     MDY_CALL_ASSERT_SUCCESS(DyReleaseFreetype());

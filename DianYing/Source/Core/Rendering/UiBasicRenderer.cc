@@ -131,6 +131,7 @@ FDyUIBasicRenderer::FDyUIBasicRenderer()
     desc.mComponentType = EDyWidgetComponentType::Text;
     desc.mComponentSpecifierName = "sampleTestText";
     desc.mIsUsingDefaultFont = true;
+#ifdef false
     desc.mInitialString = R"dy(
 [Task]        A     B     C   DRAW  TOTAL
 Process : 1 0.123 0.456 0.789 0.123 0.123
@@ -142,17 +143,17 @@ Canvas0 : 1
 Canvas1 : 0
 Camera0 : 2
 )dy";
+#endif
     desc.mFontSize = 16;
-    desc.mInitialPosition = DDyVectorInt2{0, 0};
+    desc.mInitialPosition = DDyVectorInt2{-440, 250};
     desc.mInitialColor    = DDyColor::White;
     desc.mIsUsingEdge     = true;
     desc.mEdgeColor       = DDyColor::Black;
-#ifdef false
     desc.mInitialString = R"dy(Hello world!
 21世紀初頭、遺伝子工学技術の進歩により、
 タイレル社はロボットに代わるレプリカントと呼ばれる人造人間を発明した。
 彼らは優れた体力に、創造した科学者と同等の高い知性を持っていた。)dy";
-#endif
+
   };
 
   static auto SetTemporalFontArrayBuffer = [&] {

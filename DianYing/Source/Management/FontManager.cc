@@ -42,7 +42,7 @@ namespace dy
 EDySuccess MDyFont::pfInitialize()
 {
   // Create font and move it.
-  mDefaultFontContainer = new FDyFontContainer(MSVSTR(sSampleEnglishFontPath));
+  mDefaultFontContainer = new FDyFontContainer(MSVSTR(sSampleJapaneseFontPath));
 
   return DY_SUCCESS;
 }

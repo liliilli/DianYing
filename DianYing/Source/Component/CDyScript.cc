@@ -117,11 +117,13 @@ void CDyScript::Start()
 void CDyScript::Update(float dt)
 {
   MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
-  //this->mScriptInstance[MSVSTR(sFunction_Update)]();
+  this->mScriptInstance[MSVSTR(sFunction_Update)](this->mScriptInstance);
 
+#ifdef false
   auto* obj       = this->GetBindedActor();
   auto transform  = obj->GetTransform();
   transform->AddWorldEulerAngle(EDyAxis3D::Z, 0.16f);
+#endif
 }
 
 void CDyScript::OnEnabled()

@@ -1,4 +1,5 @@
-#include <precompiled.h>
+#ifndef GUARD_DY_ELEMENT_CANVAS_CANVAS_H
+#define GUARD_DY_ELEMENT_CANVAS_CANVAS_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -12,20 +13,11 @@
 /// SOFTWARE.
 ///
 
-/// Header file
-#include <Dy/Management/Type/FrameBufferContainer.h>
-
 namespace dy
 {
 
-FDyFrameBufferContainer::FDyFrameBufferContainer(FDyFrameBufferContainer&& instance) noexcept
-{
 
-}
-
-FDyFrameBufferContainer& FDyFrameBufferContainer::operator=(FDyFrameBufferContainer&& instance) noexcept
-{
-  return *this;
-}
 
 } /// ::dy namespace
+
+#endif /// GUARD_DY_ELEMENT_CANVAS_CANVAS_H
