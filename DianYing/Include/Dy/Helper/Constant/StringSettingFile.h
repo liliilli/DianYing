@@ -24,6 +24,7 @@ MDY_SET_IMMUTABLE_STRING(gTestCanvasMetaInfo, "./Project/Meta/TestCanvasWidget0.
 MDY_SET_IMMUTABLE_STRING(gScriptResourceMetaInfo, "./Project/Meta/ScriptResource.dydat");
 MDY_SET_IMMUTABLE_STRING(gPrefabResourceMetaInfo, "./Project/Meta/PrefabResource.dydat");
 MDY_SET_IMMUTABLE_STRING(gWidget0MetaInfo, "./Project/Meta/TestCanvasWidget00.dydat");
+MDY_SET_IMMUTABLE_STRING(gTestPackedFontMetaInfo, "./Project/Meta/PackedFontResource.dydat");
 
 } /// ::dy namespace
 

@@ -149,6 +149,7 @@
     <ClCompile Include="Libraries\msdfgen\core\Vector2.cpp" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderFontMSDF.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderFontSDF.cc" />
+    <ClCompile Include="Source\Meta\Information\FontMetaInformation.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -384,6 +385,7 @@
     <ClInclude Include="Libraries\msdfgen\msdfgen.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderFontMSDF.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderFontSDF.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\FontMetaInformation.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

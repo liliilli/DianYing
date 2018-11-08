@@ -64,20 +64,6 @@ MDY_SET_IMMUTABLE_STRING(sHeaderChildrenName,   "ChildrenName");
 MDY_SET_IMMUTABLE_STRING(sHeaderIsInitiallyActivated, "IsInitiallyActivated");
 MDY_SET_IMMUTABLE_STRING(sHeaderComponentList,  "ComponentList");
 
-
-///
-/// @brief  Find "Header" String is exist on given json atlas.
-/// @param  atlas Valid immutable json atlas instance.
-/// @param  string Header string to verify.
-/// @return If found, return DY_SUCCESS or DY_FAILURE.
-///
-MDY_NODISCARD EDySuccess
-DyCheckHeaderIsExist(_MIN_ const nlohmann::json& atlas, _MIN_ const std::string_view& string) noexcept
-{
-  if (atlas.find(MSVSTR(string)) == atlas.end())  { return DY_FAILURE; }
-  else                                            { return DY_SUCCESS; }
-}
-
 } /// ::dy namespace
 
 //!
@@ -91,6 +77,11 @@ EDySuccess MDyMetaInfo::pfInitialize()
 {
   const auto opJsonAtlas = DyGetJsonAtlas(MSVSTR(gTestPath));
   if (opJsonAtlas.has_value() == false) { return DY_FAILURE; }
+
+  { // @TODO TEST READING (FIXED PATH) script file from meta file.
+    const auto flag = this->pReadFontResourceMetaInformation(MSVSTR(gTestPackedFontMetaInfo));
+    if (flag == DY_FAILURE) { MDY_UNEXPECTED_BRANCH(); return DY_FAILURE; }
+  }
 
   { // @TODO TEST READING (FIXED PATH) script file from meta file.
     const auto flag = this->pReadScriptResourceMetaInformation(MSVSTR(gScriptResourceMetaInfo));
@@ -526,6 +517,29 @@ EDySuccess MDyMetaInfo::pReadWidgetResourceMetaInformation(_MIN_ const std::stri
 
   this->mWidgetMetaInfo.try_emplace(rootInstance->mWidgetSpecifierName, std::move(rootInstance));
   return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pReadFontResourceMetaInformation(_MIN_ const std::string& metaFilePath)
+{ // (1) Validity Test
+  const std::optional<nlohmann::json> opJsonAtlas = DyGetJsonAtlas(metaFilePath);
+  if (opJsonAtlas.has_value() == false)
+  {
+    MDY_ASSERT(opJsonAtlas.has_value() == true, "Failed to read font meta information. File is not exist.");
+    return DY_FAILURE;
+  }
+
+  // (2)
+  const nlohmann::json& jsonAtlas = opJsonAtlas.value();
+  for (auto it = jsonAtlas.cbegin(); it != jsonAtlas.cend(); ++it)
+  { // Create font meta information instance from each json atlas.
+    auto [_, isSucceeded] = this->mFontMetaInfo.try_emplace(
+        it.key(),
+        PDyMetaFontInformation::CreateWithJson(it.value())
+    );
+    MDY_ASSERT(isSucceeded == true, "Font meta information creation must be succeeded.");
+  }
+
+  return DY_SUCCESS;;
 }
 
 } /// ::dy namespace
