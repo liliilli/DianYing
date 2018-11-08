@@ -18,6 +18,7 @@ enum class EDyCharmapCollections : uint32_t
   English = 0b0001,
   Hangul  = 0b0010,
   Kana    = 0b0100,
+  CJK     = 0b1000,
 };
 
 ///

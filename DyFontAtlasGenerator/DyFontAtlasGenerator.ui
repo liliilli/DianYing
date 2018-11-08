@@ -172,7 +172,7 @@
      <item>
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Create SDF Atlas with...</string>
+        <string>Create Texture Atlas with...</string>
        </property>
        <property name="margin">
         <number>0</number>
@@ -312,7 +312,7 @@
    </widget>
    <widget class="QCheckBox" name="CB_MapCJKHanbun">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>

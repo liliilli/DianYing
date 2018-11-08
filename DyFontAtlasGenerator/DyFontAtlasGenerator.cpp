@@ -32,6 +32,15 @@ namespace
 //!
 //!
 
+///
+/// @brief Get range with [start, end].
+/// This must be proceeded with compiled time.
+///
+constexpr auto GetRangeFrom(const int start, const int end) noexcept
+{
+  return end - start + 1;
+}
+
 static constexpr auto STANDARD_UNITPEREM = 256;
 static constexpr auto TEXTURE_CANVAS_S   = 1024;
 static constexpr auto TEXTURE_CANVAS_T   = 1024;
@@ -52,6 +61,10 @@ constexpr auto HANGUL_UNI20_RANGE = HANGUL_UNI20_END - HANGUL_UNI20_START + 1;
 constexpr auto JAPANESE_UNI20_KANA_START = 0x3000;
 constexpr auto JAPANESE_UNI20_KANA_END   = 0x30FF;
 constexpr auto JAPANESE_UNI20_KANA_RANGE = JAPANESE_UNI20_KANA_END - JAPANESE_UNI20_KANA_START + 1;
+
+constexpr auto CJK_UNI20_HANBUN_START0 = 0x4E00;
+constexpr auto CJK_UNI20_HANBUN_END0   = 0x9FFF;
+constexpr auto CJK_UNI20_HANBUN_RANGE0 = GetRangeFrom(CJK_UNI20_HANBUN_START0, CJK_UNI20_HANBUN_END0);
 
 auto sFtLibraryList {std::vector<FT_Library>{}};
 auto sFtFaceList    {std::vector<FT_Face>{}};
@@ -476,31 +489,6 @@ void CreateFontBuffer(const DDyFontInformation information,
   }
 
   threadResultList.clear();
-
-#ifdef false
-  for (const auto& charCode : targetCharMap)
-  {
-    const DResult result {CreateGlyphInformation(sFtFunctions, charCode, , charId)};
-    jsonDescriptor["Characters"][fmt::format("{0}", charCode)] = result.mItemJsonAtlas;
-
-    paintSurface.UpdateBufferInformation(result.mCoordinateBound);
-    paintSurface.CreatePreviousBufferStateTexture();
-    // Make QImage from Bitmap<float> and texture from QImage. (RVO guaranted)
-    paintSurface.BindTexturePointer(result.mImageBuffer);
-    paintSurface.render();
-
-    charId += 1;
-    //
-    parent.IncrementProgress();
-
-    // Export offscreen texture buffer to png or file information (binary).
-    if (charId % TEXTURE_MAPLIMIT == 0)
-    {
-      drawnImageList.emplace_back(paintSurface.GetImageFromGLFBO());
-      paintSurface.ClearSurface();
-    }
-  }
-#endif
   drawnImageList.emplace_back(paintSurface.GetImageFromGLFBO());
   paintSurface.ClearSurface();
 
@@ -539,6 +527,7 @@ DyFontAtlasGenerator::DyFontAtlasGenerator(QWidget *parent) : QMainWindow(parent
   connect(&this->mFutureWatcher,  SIGNAL(finished()),       this, SLOT(CreationTaskFinished()));
   connect(ui.BT_FindFile,         SIGNAL(clicked()),        this, SLOT(FindFontFile()));
   connect(ui.CB_MapEnglish,       &QCheckBox::stateChanged, this, &DyFontAtlasGenerator::UpdateCharmapFlag);
+  connect(ui.CB_MapCJKHanbun,     &QCheckBox::stateChanged, this, &DyFontAtlasGenerator::UpdateCharmapFlag);
   connect(ui.CB_MapHangul,        &QCheckBox::stateChanged, this, &DyFontAtlasGenerator::UpdateCharmapFlag);
   connect(ui.CB_MapKana,          &QCheckBox::stateChanged, this, &DyFontAtlasGenerator::UpdateCharmapFlag);
   connect(ui.CB_OptionSeperate,   &QCheckBox::stateChanged, this, &DyFontAtlasGenerator::UpdateOptionFlag);
@@ -582,6 +571,7 @@ void DyFontAtlasGenerator::FindFontFile()
 void DyFontAtlasGenerator::UpdateCharmapFlag(int value)
 {
   auto resultFlag {dy::EDyCharmapCollections::None};
+  if (ui.CB_MapCJKHanbun->isChecked() == true){ resultFlag |= dy::EDyCharmapCollections::CJK; }
   if (ui.CB_MapEnglish->isChecked() == true)  { resultFlag |= dy::EDyCharmapCollections::English; }
   if (ui.CB_MapHangul->isChecked() == true)   { resultFlag |= dy::EDyCharmapCollections::Hangul; }
   if (ui.CB_MapKana->isChecked() == true)     { resultFlag |= dy::EDyCharmapCollections::Kana; }
@@ -616,13 +606,15 @@ void DyFontAtlasGenerator::CreateBatchFile()
   static auto sEnglishMap       {std::vector<FT_ULong>(ENGLISH_UNI20_RANGE)};
   static auto sHangulMap        {std::vector<FT_ULong>(HANGUL_UNI20_RANGE)};
   static auto sKanaMap          {std::vector<FT_ULong>(JAPANESE_UNI20_KANA_RANGE)};
+  static auto sCJKHanbunMap     {std::vector<FT_ULong>(CJK_UNI20_HANBUN_RANGE0)};
 
   // First, initialize map charcode information.
   if (sIsMapInitialized == false)
   {
-    std::generate(sEnglishMap.begin(), sEnglishMap.end(), [n = ENGLISH_UNI20_START]() mutable { return n++; });
-    std::generate(sHangulMap.begin(), sHangulMap.end(),   [n = HANGUL_UNI20_START]() mutable { return n++; });
-    std::generate(sKanaMap.begin(), sKanaMap.end(),       [n = JAPANESE_UNI20_KANA_START]() mutable { return n++; });
+    std::generate(sEnglishMap.begin(), sEnglishMap.end(),     [n = ENGLISH_UNI20_START]() mutable { return n++; });
+    std::generate(sHangulMap.begin(), sHangulMap.end(),       [n = HANGUL_UNI20_START]() mutable { return n++; });
+    std::generate(sKanaMap.begin(), sKanaMap.end(),           [n = JAPANESE_UNI20_KANA_START]() mutable { return n++; });
+    std::generate(sCJKHanbunMap.begin(), sCJKHanbunMap.end(), [n = CJK_UNI20_HANBUN_START0]() mutable { return n++; });
     sIsMapInitialized = true;
   }
 
@@ -651,6 +643,11 @@ void DyFontAtlasGenerator::CreateBatchFile()
   {
     maxSize += sKanaMap.size();
     targetCharMap.insert(targetCharMap.end(), sKanaMap.begin(), sKanaMap.end());
+  }
+  if (dy::IsHavingFlags(this->mCharmapFlag, dy::EDyCharmapCollections::CJK)  == true)
+  {
+    maxSize += sCJKHanbunMap.size();
+    targetCharMap.insert(targetCharMap.end(), sCJKHanbunMap.begin(), sCJKHanbunMap.end());
   }
 
   // Set progress bar status.
