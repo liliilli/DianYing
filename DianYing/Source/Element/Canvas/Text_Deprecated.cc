@@ -39,7 +39,7 @@ EDySuccess FDyText_Deprecated::Initialize(_MIN_ const PDyMetaWidgetTextDescripto
   this->mFontSize               = objectMetaDesc.mFontSize;
   this->mPosition               = objectMetaDesc.mInitialPosition;
 
-  DDyFontRendererMetaInformation desc = {};
+  PDyFontRendererCtorInformation_Deprecated desc = {};
   desc.mFontComponentPtr = this;
   MDY_CALL_ASSERT_SUCCESS(this->mRenderer.Initialize(desc));
 

@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_ELEMENT_CANVAS_H
-#define GUARD_DY_ELEMENT_CANVAS_H
+#ifndef GUARD_DY_ELEMENT_CANVAS_TEXT_DEPRECATED_H
+#define GUARD_DY_ELEMENT_CANVAS_TEXT_DEPRECATED_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -198,7 +198,7 @@ private:
   ///
   DDyVectorInt2     mPosition   = {};
   ///
-  CDyFontRenderer   mRenderer = {};
+  CDyFontRenderer_Deprecated   mRenderer = {};
 
   ///
   bool mIsTextDirty                   = true;
@@ -212,4 +212,4 @@ private:
 
 } /// ::dy namespace.
 
-#endif /// GUARD_DY_ELEMENT_CANVAS_TEXT_H
+#endif /// GUARD_DY_ELEMENT_CANVAS_TEXT_DEPRECATED_H

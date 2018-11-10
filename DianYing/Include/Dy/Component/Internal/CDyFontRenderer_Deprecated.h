@@ -15,6 +15,7 @@
 
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
+#include <Dy/Component/Ctor/PDyFontRenderer.h>
 
 //!
 //! Forward declaration
@@ -33,35 +34,26 @@ namespace dy
 {
 
 ///
-/// @struct DDyFontRendererMetaInformation
+/// @class CDyFontRenderer_Deprecated
 /// @brief
 ///
-struct DDyFontRendererMetaInformation final
-{ /// Font renderer pointer address.
-  FDyText_Deprecated* mFontComponentPtr = nullptr;
-};
-
-///
-/// @class CDyFontRenderer
-/// @brief
-///
-class CDyFontRenderer final : public IDyInitializeHelper<DDyFontRendererMetaInformation>
+class CDyFontRenderer_Deprecated final : public IDyInitializeHelper<PDyFontRendererCtorInformation_Deprecated>
 {
 public:
-  CDyFontRenderer()           = default;
-  virtual ~CDyFontRenderer()  = default;
+  CDyFontRenderer_Deprecated()           = default;
+  virtual ~CDyFontRenderer_Deprecated()  = default;
 
-  CDyFontRenderer(const CDyFontRenderer&)                                 = delete;
-  CDyFontRenderer& operator=(const CDyFontRenderer&)                      = delete;
-  CDyFontRenderer(CDyFontRenderer&& instance)                   noexcept  = default;
-  CDyFontRenderer& operator=(CDyFontRenderer&& instance)        noexcept  = default;
+  CDyFontRenderer_Deprecated(const CDyFontRenderer_Deprecated&)                                 = delete;
+  CDyFontRenderer_Deprecated& operator=(const CDyFontRenderer_Deprecated&)                      = delete;
+  CDyFontRenderer_Deprecated(CDyFontRenderer_Deprecated&& instance)                   noexcept  = default;
+  CDyFontRenderer_Deprecated& operator=(CDyFontRenderer_Deprecated&& instance)        noexcept  = default;
 
   ///
   /// @brief  Initialize with descriptor.
   /// @param  descriptor
   /// @return If successful, return DY_SUCCESS or DY_FAILURE.
   ///
-  MDY_NODISCARD EDySuccess Initialize(const DDyFontRendererMetaInformation& descriptor) override final;
+  MDY_NODISCARD EDySuccess Initialize(const PDyFontRendererCtorInformation_Deprecated& descriptor) override final;
 
   ///
   /// @brief Release resource of component.

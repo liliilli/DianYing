@@ -60,7 +60,7 @@ EDySuccess MDyFont::pfRelease()
 
 EDySuccess MDyFont::CreateFontResourceContainer(const std::string& fontSpecifierName)
 {
-  if (this->IsFontContainerExist(fontSpecifierName) == true)
+  if (this->IsFontResourceContainerExist(fontSpecifierName) == true)
   {
     MDY_UNEXPECTED_BRANCH(); return DY_FAILURE;
   }
@@ -103,9 +103,16 @@ NotNull<FDyFontContainer_Deprecated*> MDyFont::GetDefaultFontContainer() const n
   return DyMakeNotNull(this->mDefaultFontContainer_Deprecated);
 }
 
+IDyFontContainer* MDyFont::GetFontResourceContainer(_MIN_ const std::string& specifierName)
+{
+  if (this->IsFontResourceContainerExist(specifierName) == false) { return nullptr; }
+
+  return this->mFontResourceContainerMap[specifierName].get();
+}
+
 EDySuccess MDyFont::CreateFontContainer_Deprecated(const std::string& fontSpecifierName)
 {
-  if (this->IsFontContainerExist(fontSpecifierName) == true)
+  if (this->IsFontContainerExist_Deprecated(fontSpecifierName) == true)
   {
     MDY_UNEXPECTED_BRANCH(); return DY_FAILURE;
   }

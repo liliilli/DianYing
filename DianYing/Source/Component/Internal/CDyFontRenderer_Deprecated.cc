@@ -15,7 +15,7 @@
 /// Header file
 #include <Dy/Component/Internal/CDyFontRenderer_Deprecated.h>
 #include <Dy/Builtin/ShaderGl/RenderFontSDF_Deprecated.h>
-#include <Dy/Element/Canvas/Text.h>
+#include <Dy/Element/Canvas/Text_Deprecated.h>
 #include <Dy/Management/HeapResourceManager.h>
 #include <Dy/Management/SettingManager.h>
 #include <glm/gtc/matrix_transform.hpp>
@@ -90,7 +90,7 @@ void RenderFontCharacter(_MIN_ const dy::DDyFontCharacter_Deprecated& charInfo, 
 namespace dy
 {
 
-EDySuccess CDyFontRenderer::Initialize(const DDyFontRendererMetaInformation& descriptor)
+EDySuccess CDyFontRenderer_Deprecated::Initialize(const PDyFontRendererCtorInformation_Deprecated& descriptor)
 {
   static auto SetTemporalFontArrayBuffer = [&] {
     glGenVertexArrays(1, &mTextSampleVao);
@@ -140,14 +140,14 @@ EDySuccess CDyFontRenderer::Initialize(const DDyFontRendererMetaInformation& des
   return DY_SUCCESS;
 }
 
-void CDyFontRenderer::Release()
+void CDyFontRenderer_Deprecated::Release()
 {
   this->mFontObjectRawPtr = nullptr;
 }
 
-void CDyFontRenderer::Render()
+void CDyFontRenderer_Deprecated::Render()
 {
-  MDY_ASSERT(this->mSampleShaderPtr != nullptr, "CDyFontRenderer::mSampleShaderPtr must not be nullptr.");
+  MDY_ASSERT(this->mSampleShaderPtr != nullptr, "CDyFontRenderer_Deprecated::mSampleShaderPtr must not be nullptr.");
 
   glDepthFunc(GL_ALWAYS);
   this->mSampleShaderPtr->UseShader();
