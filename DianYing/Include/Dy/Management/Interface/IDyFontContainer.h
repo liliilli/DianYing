@@ -58,6 +58,12 @@ public:
   /// @return Scaled line feed height.
   ///
   virtual MDY_NODISCARD TI32 GetLinefeedHeight(_MIN_ const TI32 fontSize) const noexcept = 0;
+
+  ///
+  /// @brief
+  /// @return Texture array 2d id.
+  ///
+  virtual TI32 GetFontTextureArrayId() const noexcept = 0;
 };
 
 } /// ::dy namespace

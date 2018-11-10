@@ -45,6 +45,11 @@ public:
 
   MDY_NODISCARD const DDyFontCharacterInfo& operator[](_MIN_ const TC16 fontCode) override ;
 
+  MDY_NODISCARD TI32 GetFontTextureArrayId() const noexcept override
+  {
+    return this->mTexImageResId;
+  }
+
 private:
   ///
   using TCharContainer = std::unordered_map<TC16, DDyFontCharacterInfo>;
