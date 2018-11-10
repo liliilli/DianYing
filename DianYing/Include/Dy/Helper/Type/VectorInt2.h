@@ -15,6 +15,8 @@
 
 #include <array>
 #include <glm/vec2.hpp>
+#include <nlohmann/json_fwd.hpp>
+
 #include <Dy/Helper/Macroes.h>
 #include <Dy/Helper/GlobalType.h>
 #include <Dy/Helper/Type/Vector2.h>
@@ -349,6 +351,9 @@ public:
     return (lhs < rhs) ? lhs : rhs;
   }
 };
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDyVectorInt2& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDyVectorInt2& p);
 
 } /// ::dy namespace
 
