@@ -568,6 +568,48 @@ EDySuccess MDyWindow::pfRelease()
 
   return DY_SUCCESS;
 }
+
+EDySuccess MDyWindow::CreateConsoleWindow()
+{
+  MDY_ASSERT(this->mIsConsoleWindowInitialized.load() == false, "MDyWindow::mIsConsoleWindowInitialized must be falsed.");
+
+  // Allocate console and forward stdout to console.
+  if (AllocConsole() == false)
+  {
+    MessageBox(nullptr, L"The console window was not created.", nullptr, MB_ICONEXCLAMATION);
+    return DY_FAILURE;
+  }
+  freopen_s(&this->mFp, "CONOUT$", "w", stdout);
+
+  bool before = false;
+  while (this->mIsConsoleWindowInitialized.compare_exchange_strong(before, true, std::memory_order_seq_cst) == false)
+      ;
+  return DY_SUCCESS;
+}
+
+bool MDyWindow::IsCreatedConsoleWindow() const noexcept
+{
+  return this->mIsConsoleWindowInitialized.load();
+}
+
+EDySuccess MDyWindow::RemoveConsoleWindow()
+{
+  MDY_ASSERT(this->mIsConsoleWindowInitialized.load() == true, "MDyWIndow::mIsConsoleWindowInitialized must be trued.");
+
+  // Release console.
+  fclose(this->mFp);
+  if (FreeConsole() == false)
+  {
+    MessageBox(nullptr, L"Failed to free console resource.", nullptr, MB_ICONEXCLAMATION);
+    return DY_FAILURE;
+  }
+
+  bool before = true;
+  while (this->mIsConsoleWindowInitialized.compare_exchange_strong(before, false, std::memory_order_seq_cst) == false)
+      ;
+  return DY_SUCCESS;
+}
+
 #elif defined(MDY_PLATFORM_FLAG_LINUX)
 #elif defined(MDY_PLATFORM_FLAG_MACOS)
 #endif
