@@ -460,8 +460,8 @@ EDySuccess MDyWindow::pfInitialize()
   switch (MDySetting::GetInstance().GetRenderingType())
   {
   default: MDY_UNEXPECTED_BRANCH(); break;
-  case EDyRenderingApiType::DirectX12:  MDY_LOG_INFO_D("Initialize DirectX12 Context.");  MDY_NOT_IMPLEMENTED_ASSERT(); break;
-  case EDyRenderingApiType::Vulkan:     MDY_LOG_INFO_D("Initialize Vulkan Context.");     MDY_NOT_IMPLEMENTED_ASSERT();
+  case EDyRenderingApi::DirectX12:  MDY_LOG_INFO_D("Initialize DirectX12 Context.");  MDY_NOT_IMPLEMENTED_ASSERT(); break;
+  case EDyRenderingApi::Vulkan:     MDY_LOG_INFO_D("Initialize Vulkan Context.");     MDY_NOT_IMPLEMENTED_ASSERT();
 #ifdef false
     dy::DyVkInitialize(windowHandle, hInstance);
 
@@ -473,7 +473,7 @@ EDySuccess MDyWindow::pfInitialize()
     dy::DyVkCleanupResources();
 #endif
     break;
-  case EDyRenderingApiType::DirectX11: MDY_LOG_INFO_D("Initialize DirectX11 Context."); MDY_NOT_IMPLEMENTED_ASSERT();
+  case EDyRenderingApi::DirectX11: MDY_LOG_INFO_D("Initialize DirectX11 Context."); MDY_NOT_IMPLEMENTED_ASSERT();
 #ifdef false
     MDY_CALL_ASSERT_SUCCESS(DyWin32InitializeWindow(hInstance));
     MDY_CALL_ASSERT_SUCCESS(DyD11InitializeDirect3D());
@@ -488,7 +488,7 @@ EDySuccess MDyWindow::pfInitialize()
     DyD11RenderLoop();
 #endif
     break;
-  case EDyRenderingApiType::OpenGL:
+  case EDyRenderingApi::OpenGL:
     MDY_LOG_INFO_D("Initialize OpenGL Context.");
     {
       glfwInit();
@@ -551,10 +551,10 @@ EDySuccess MDyWindow::pfRelease()
   switch (MDySetting::GetInstance().GetRenderingType())
   {
   default: MDY_UNEXPECTED_BRANCH(); return DY_FAILURE;
-  case EDyRenderingApiType::DirectX11:  MDY_LOG_INFO_D("Release DirectX11 Context.");  MDY_NOT_IMPLEMENTED_ASSERT(); break;
-  case EDyRenderingApiType::DirectX12:  MDY_LOG_INFO_D("Release DirectX12 Context.");  MDY_NOT_IMPLEMENTED_ASSERT(); break;
-  case EDyRenderingApiType::Vulkan:     MDY_LOG_INFO_D("Release Vulkan Context.");     MDY_NOT_IMPLEMENTED_ASSERT(); break;
-  case EDyRenderingApiType::OpenGL:
+  case EDyRenderingApi::DirectX11:  MDY_LOG_INFO_D("Release DirectX11 Context.");  MDY_NOT_IMPLEMENTED_ASSERT(); break;
+  case EDyRenderingApi::DirectX12:  MDY_LOG_INFO_D("Release DirectX12 Context.");  MDY_NOT_IMPLEMENTED_ASSERT(); break;
+  case EDyRenderingApi::Vulkan:     MDY_LOG_INFO_D("Release Vulkan Context.");     MDY_NOT_IMPLEMENTED_ASSERT(); break;
+  case EDyRenderingApi::OpenGL:
     MDY_LOG_INFO_D("Release OpenGL Context.");
 
     ImGui_ImplOpenGL3_Shutdown();

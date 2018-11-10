@@ -42,26 +42,8 @@ void SDyCoreTrigger::InitiailzeAllManagers()
   ///
   static auto InsertExecuteRuntimeArguments = []()
   {
-    auto& settingManager = dy::MDySetting::GetInstance();
-
-    #if defined(MDY_PLATFORM_FLAG_WINDOWS) && defined(_WIN32)
-      const TI32 size = __argc;
-      for (TI32 i = 0; i < size; ++i) { settingManager.pfArgsPushback(__argv[i]); }
-    #elif defined(MDY_PLATFORM_FLAG_LINUX) && defined(__linux__)
-      static_assert(false, "Linux does not support now.");
-    #elif defined(MDY_PLATFORM_FLAG_MACOS)
-      static_assert(false, "Macos does not support now.");
-    #endif
-  };
-
-  ///
-  /// @brief Set logging feature.
-  ///
-  static auto FirstSetLoggingFeature = []()
-  {
-    auto& logManager = dy::MDySetting::GetInstance();
-    logManager.SetSubFeatureLoggingToConsole(true);
-    logManager.SetSubFeatureLoggingToFile(true);
+    auto& settingManager = MDySetting::GetInstance();
+    settingManager.pSetupExecutableArgumentSettings();
   };
 
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -69,10 +51,10 @@ void SDyCoreTrigger::InitiailzeAllManagers()
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   InsertExecuteRuntimeArguments();
+  // `MDyLog` must be initialized first because of logging message from each managers.
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyLog::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDySetting::Initialize());
 
-  FirstSetLoggingFeature();
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyLog::Initialize());
 #if defined(MDY_FLAG_IN_EDITOR)
   MDY_CALL_ASSERT_SUCCESS(dy::editor::MDyEditorGui::Initialize());
 #endif

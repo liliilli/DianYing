@@ -46,7 +46,8 @@ EDySuccess CDyDirectionalLight::Initialize(const DDyDirectionalLightMetaInformat
   else
   {
     auto& settingManager = MDySetting::GetInstance();
-    this->mShadowResolution = settingManager.GetGlobalDefaultShadowMapResolution();
+    const auto& i = settingManager.GetGlobalDefaultShadowMapResolution();
+    this->mShadowResolution = DDyVector2{static_cast<TF32>(i.X), static_cast<TF32>(i.Y)};
   }
 
   // Set first time flag to false to use second time flag logics.
