@@ -15,30 +15,14 @@
 /// @todo IMPLEMENT SET OVERALL WINDOW WIDTH, HEIGHT AS CHANGING VIEWPORT OF EACH API FRAMEBUFFER.
 ///
 
+#include <Dy/Core/Etc/StaticCoreTrigger.h>
+#include <Dy/Helper/Type/VectorInt2.h>
+#include <Dy/Meta/Type/EDyRenderingApi.h>
+#include <Dy/Management/Type/SettingContainer.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
-#include "Dy/Helper/Type/Vector2.h"
 
 namespace dy
 {
-
-///
-/// @enum EDyRenderingApiType
-/// @brief Rendering API type for rendering scene. Must not be EDyRenderingApiType::NoneError when using.
-///
-enum class EDyRenderingApiType
-{
-  NoneError,
-  Vulkan,
-#if defined(_WIN32)
-  DirectX11,
-  DirectX12,
-#endif
-#if defined(__APPLE__)
-  Metal,
-#else
-  OpenGL,
-#endif
-};
 
 ///
 /// @class MDySetting
@@ -93,22 +77,22 @@ public:
   ///
   /// @brief Get rendering type enum of present rendering api.
   ///
-  MDY_NODISCARD EDyRenderingApiType GetRenderingType() const noexcept;
+  MDY_NODISCARD EDyRenderingApi GetRenderingType() const noexcept;
 
   ///
   /// @brief Get overall window width size.
   ///
-  MDY_NODISCARD FORCEINLINE int32_t GetWindowSizeWidth() const noexcept
+  MDY_NODISCARD FORCEINLINE TI32 GetWindowSizeWidth() const noexcept
   {
-    return this->mWindowSizeWidth;
+    return this->mGamePlay.mInitialResolution.X;
   }
 
   ///
   /// @brief Get overall window height size.
   ///
-  MDY_NODISCARD FORCEINLINE int32_t GetWindowSizeHeight() const noexcept
+  MDY_NODISCARD FORCEINLINE TI32 GetWindowSizeHeight() const noexcept
   {
-    return this->mWindowSizeHeight;
+    return this->mGamePlay.mInitialResolution.Y;
   }
 
   ///
@@ -117,16 +101,16 @@ public:
   ///
   MDY_NODISCARD FORCEINLINE const std::string& GetInitialSceneInformationName() const noexcept
   {
-    return this->mInitialSceneName;
+    return this->mGamePlay.mInitialSceneSpecifier;
   }
 
   ///
   /// @brief  Get global default shadow map resolution as DDyVector2
   /// @return DDyVector2 size of default shadow map resolution.
   ///
-  FORCEINLINE MDY_NODISCARD const DDyVector2& GetGlobalDefaultShadowMapResolution() const noexcept
+  FORCEINLINE MDY_NODISCARD const DDyVectorInt2& GetGlobalDefaultShadowMapResolution() const noexcept
   {
-    return this->mShadowGlobalDefaultMap;
+    return this->mGamePlay.mShadow.mShadowGlobalDefaultMap;
   }
 
   ///
@@ -168,47 +152,34 @@ public:
   ///
   void SetVSyncMode(_MIN_ bool enableVsync) noexcept;
 
-  ///
-  ///
-  ///
-
-  ///
-  /// @brief Push arguments when executing program.
-  /// This function will not operate after manager initialized.
-  ///
-  void pArgsPushback(const char* argsString);
-
 private:
-  EDyRenderingApiType mRenderingType  = EDyRenderingApiType::NoneError;
-  bool mIsRenderingTypeSet            = false;
-  bool mIsEnabledVsync                = true;
+  ///
+  /// @brief Setup executable argument settings.
+  /// This function must be called before initialization.
+  ///
+  void pSetupExecutableArgumentSettings();
 
+  EDyRenderingApi mRenderingType      = EDyRenderingApi::NoneError;
   bool mIsEnabledLogging              = false;
   bool mIsEnabledLoggingToConsole     = false;
   bool mIsEnabledLoggingToFile        = false;
   std::string mLogFilePath            = "./log.txt";
 
-  std::string mProjectName            = MDY_INITILAIZE_EMPTYSTR;
-  std::string mWindowName             = MDY_INITILAIZE_EMPTYSTR;
+  //!
+  //! Serializable setting options.
+  //!
 
-  TI32 mVersionHigh                   = MDY_INITIALIZE_DEFINT;
-  TI32 mVersionMid                    = MDY_INITIALIZE_DEFINT;
-  TI32 mVersionLow                    = MDY_INITIALIZE_DEFINT;
+  DDySettingDescription mDescription  = {};
+  DDySettingGameplay    mGamePlay     = {};
 
-  std::string mCompanyName            = MDY_INITILAIZE_EMPTYSTR;
-  std::string mHomepage               = MDY_INITILAIZE_EMPTYSTR;
-  std::string mSupportContact         = MDY_INITILAIZE_EMPTYSTR;
+  bool mIsEnabledVsync = true;
+  bool mIsInitialized  = false;
 
-  std::string mInitialSceneName       = MDY_INITILAIZE_EMPTYSTR;
-  TI32 mWindowSizeWidth               = MDY_INITIALIZE_DEFINT;
-  TI32 mWindowSizeHeight              = MDY_INITIALIZE_DEFINT;
-
-  /// Global default shadow map size.
-  DDyVector2 mShadowGlobalDefaultMap  = {};
-
-  std::vector<const char*> mApplicationArgs;
-  bool mIsInitialized                 = false;
+  friend static void SDyCoreTrigger::InitiailzeAllManagers();
 };
+
+void to_json  (nlohmann::json& j,       const MDySetting& p);
+void from_json(const nlohmann::json& j, MDySetting& p);
 
 } /// ::dy namespace
 
