@@ -150,6 +150,8 @@
     <ClCompile Include="Source\Builtin\ShaderGl\RenderFontSDF.cc" />
     <ClCompile Include="Source\Meta\Information\FontMetaInformation.cc" />
     <ClCompile Include="Source\Management\Type\FontContainer_Deprecated.cc" />
+    <ClCompile Include="Source\Management\Type\FontResourceContainer.cc" />
+    <ClCompile Include="Source\Helper\HelperZlib.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -386,6 +388,8 @@
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderFontSDF.h" />
     <ClInclude Include="Include\Dy\Meta\Information\FontMetaInformation.h" />
     <ClInclude Include="Include\Dy\Management\Type\FontContainer_Deprecated.h" />
+    <ClInclude Include="Include\Dy\Management\Type\FontResourceContainer.h" />
+    <ClInclude Include="Include\Dy\Helper\HelperZlib.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

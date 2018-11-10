@@ -15,6 +15,7 @@
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Management/Type/FontContainer_Deprecated.h>
+#include <Dy/Management/Type/FontResourceContainer.h>
 #include <Dy/Helper/Pointer.h>
 
 namespace dy
@@ -64,12 +65,14 @@ public:
   MDY_NODISCARD NotNull<FDyFontContainer_Deprecated*> GetDefaultFontContainer() const noexcept;
 
 private:
-  using TFontContainerMap = std::unordered_map<std::string, FDyFontContainer_Deprecated>;
-
-
+  using TFontContainerMap = std::unordered_map<std::string, FDyFontResourceContainer>;
 
   ///
-  TFontContainerMap mValidFontContainerMap_Deprecated  = {};
+  TFontContainerMap   mFontResourceContainerMap = {};
+
+  using TFontContainerMap_Deprecated = std::unordered_map<std::string, FDyFontContainer_Deprecated>;
+  ///
+  TFontContainerMap_Deprecated mValidFontContainerMap_Deprecated  = {};
   /// Default font container pointer. This will be held pointer when creating manager.
   FDyFontContainer_Deprecated* mDefaultFontContainer_Deprecated   = MDY_INITIALIZE_NULL;
 };

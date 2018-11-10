@@ -77,6 +77,23 @@ public:
   ///
   MDY_NODISCARD const PDyPrefabMetaInformation& GetPrefabMetaInformation(_MIN_ const std::string& specifierName) const;
 
+  ///
+  /// @brief
+  /// @param  specifierName
+  /// @return
+  ///
+  MDY_NODISCARD const PDyMetaFontInformation& GetFontMetaInformation(_MIN_ const std::string& specifierName) const;
+
+  ///
+  /// @brief
+  /// @param  specifierName
+  /// @return
+  ///
+  FORCEINLINE MDY_NODISCARD bool IsFontMetaInformationExist(_MIN_ const std::string& specifierName) const noexcept
+  {
+    return this->mFontMetaInfo.find(specifierName) != this->mFontMetaInfo.end();
+  }
+
 private:
   template <typename TType>
   using THashMap = std::unordered_map<std::string, TType>;

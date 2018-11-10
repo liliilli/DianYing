@@ -16,7 +16,9 @@
 #include <Dy/Management/FontManager.h>
 
 #include <string>
-#include "Dy/Core/Component/Internal/MaterialType.h"
+#include <Dy/Core/Component/Internal/MaterialType.h>
+#include <Dy/Management/MetaInfoManager.h>
+#include <Dy/Management/Type/FontResourceContainer.h>
 
 //!
 //! Forward declaration
@@ -81,7 +83,18 @@ EDySuccess MDyFont::CreateFontResourceContainer(const std::string& fontSpecifier
   }
 
   // Create font information and move it.
-  return DY_FAILURE;
+  auto& metaManager = MDyMetaInfo::GetInstance();
+  if (metaManager.IsFontMetaInformationExist(fontSpecifierName) == false)
+  {
+    return DY_FAILURE;
+  }
+
+  const auto& fontMetaInformation = metaManager.GetFontMetaInformation(fontSpecifierName);
+  // Create font resource.
+  auto [_, isSucceeded] = this->mFontResourceContainerMap.try_emplace(fontSpecifierName, fontMetaInformation);
+  MDY_ASSERT(isSucceeded == true, "Font resource creation must be succeeded.");
+
+  return DY_SUCCESS;
 }
 
 NotNull<FDyFontContainer_Deprecated*> MDyFont::GetDefaultFontContainer() const noexcept

@@ -274,6 +274,7 @@
     <ClCompile Include="Source\Entry\Entry.cc" />
     <ClCompile Include="Source\Helper\Dbg\CheckUsage.cc" />
     <ClCompile Include="Source\Helper\Geometry\Types.cc" />
+    <ClCompile Include="Source\Helper\HelperZlib.cc" />
     <ClCompile Include="Source\Helper\Internal\ImageBinaryBuffer.cc" />
     <ClCompile Include="Source\Helper\IoHelper.cc" />
     <ClCompile Include="Source\Helper\JsonHelper.cc" />
@@ -314,6 +315,7 @@
     <ClCompile Include="Source\Management\Type\AttachmentInformation.cc" />
     <ClCompile Include="Source\Management\Type\FontCharacter.cc" />
     <ClCompile Include="Source\Management\Type\FontContainer_Deprecated.cc" />
+    <ClCompile Include="Source\Management\Type\FontResourceContainer.cc" />
     <ClCompile Include="Source\Management\WorldManager.cc" />
     <ClCompile Include="Source\Management\SettingManager.cc" />
     <ClCompile Include="Source\Management\SoundManager.cc" />
@@ -458,6 +460,7 @@
     <ClInclude Include="Include\Dy\Helper\Type\DyString.h" />
     <ClInclude Include="Include\Dy\Helper\Type\ThreeStateBool.h" />
     <ClInclude Include="Include\Dy\Helper\Type\VectorInt2.h" />
+    <ClInclude Include="Include\Dy\Helper\HelperZlib.h" />
     <ClInclude Include="Include\Dy\Management\Editor\GuiManager.h" />
     <ClInclude Include="Include\Dy\Management\Editor\GuiSetting.h" />
     <ClInclude Include="Include\Dy\Management\Editor\GuiWindowFactory.h" />
@@ -481,6 +484,7 @@
     <ClInclude Include="Include\Dy\Management\Type\AttachmentInformation.h" />
     <ClInclude Include="Include\Dy\Management\Type\FontCharacter.h" />
     <ClInclude Include="Include\Dy\Management\Type\FontContainer_Deprecated.h" />
+    <ClInclude Include="Include\Dy\Management\Type\FontResourceContainer.h" />
     <ClInclude Include="Include\Dy\Management\Type\FramebufferInformation.h" />
     <ClInclude Include="Include\Dy\Management\Type\KeyBindingInformation.h" />
     <ClInclude Include="Include\Dy\Management\Type\UBOInformation.h" />
