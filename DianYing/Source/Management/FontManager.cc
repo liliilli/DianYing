@@ -58,23 +58,6 @@ EDySuccess MDyFont::pfRelease()
   return DY_SUCCESS;
 }
 
-EDySuccess MDyFont::CreateFontContainer_Deprecated(const std::string& fontSpecifierName)
-{
-  if (this->IsFontContainerExist(fontSpecifierName) == true)
-  {
-    MDY_UNEXPECTED_BRANCH(); return DY_FAILURE;
-  }
-
-  // Create font and move it.
-  auto [it, isCreated] = mValidFontContainerMap_Deprecated.try_emplace(fontSpecifierName, MSVSTR(sSampleEnglishFontPath));
-  if (isCreated == false)
-  {
-    MDY_UNEXPECTED_BRANCH(); return DY_FAILURE;
-  }
-
-  return DY_SUCCESS;
-}
-
 EDySuccess MDyFont::CreateFontResourceContainer(const std::string& fontSpecifierName)
 {
   if (this->IsFontContainerExist(fontSpecifierName) == true)
@@ -90,9 +73,26 @@ EDySuccess MDyFont::CreateFontResourceContainer(const std::string& fontSpecifier
   }
 
   const auto& fontMetaInformation = metaManager.GetFontMetaInformation(fontSpecifierName);
-  // Create font resource.
-  auto [_, isSucceeded] = this->mFontResourceContainerMap.try_emplace(fontSpecifierName, fontMetaInformation);
-  MDY_ASSERT(isSucceeded == true, "Font resource creation must be succeeded.");
+  if (fontMetaInformation.mIsUsingRuntimeCreateionWhenGlyphNotExist == false)
+  { // Make space
+    auto [it, isSucceeded] = this->mFontResourceContainerMap.try_emplace(fontSpecifierName, nullptr);
+    MDY_ASSERT(isSucceeded == true, "Font resource creation must be succeeded.");
+
+    // Create font resource.
+    auto instance = std::make_unique<FDyFontResourceContainer>(fontMetaInformation);
+    { // Swapping
+      std::unique_ptr<IDyFontContainer> tempSwap{static_cast<IDyFontContainer*>(instance.release())};
+      it->second.swap(tempSwap);
+      MDY_ASSERT(it->second.get() != nullptr, "Unexpected error occurred");
+    }
+
+    //
+
+  }
+  else
+  {
+    MDY_NOT_IMPLEMENTED_ASSERT();
+  }
 
   return DY_SUCCESS;
 }
@@ -101,6 +101,23 @@ NotNull<FDyFontContainer_Deprecated*> MDyFont::GetDefaultFontContainer() const n
 {
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mDefaultFontContainer_Deprecated), "");
   return DyMakeNotNull(this->mDefaultFontContainer_Deprecated);
+}
+
+EDySuccess MDyFont::CreateFontContainer_Deprecated(const std::string& fontSpecifierName)
+{
+  if (this->IsFontContainerExist(fontSpecifierName) == true)
+  {
+    MDY_UNEXPECTED_BRANCH(); return DY_FAILURE;
+  }
+
+  // Create font and move it.
+  auto [it, isCreated] = mValidFontContainerMap_Deprecated.try_emplace(fontSpecifierName, MSVSTR(sSampleEnglishFontPath));
+  if (isCreated == false)
+  {
+    MDY_UNEXPECTED_BRANCH(); return DY_FAILURE;
+  }
+
+  return DY_SUCCESS;
 }
 
 } /// ::dy namespace

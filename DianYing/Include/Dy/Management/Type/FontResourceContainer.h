@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Meta/Information/FontMetaInformation.h>
+#include <Dy/Management/Interface/IDyFontContainer.h>
 
 namespace dy
 {
@@ -22,7 +23,7 @@ namespace dy
 /// @class FDyFontResourceContainer
 /// @brief
 ///
-class FDyFontResourceContainer final
+class FDyFontResourceContainer : public IDyFontContainer
 {
 public:
   ///
@@ -30,10 +31,28 @@ public:
   /// @param fontInformation
   ///
   FDyFontResourceContainer(_MIN_ const PDyMetaFontInformation& fontInformation);
-  ~FDyFontResourceContainer();
+
+  /// @brief Release font container resources.
+  virtual ~FDyFontResourceContainer();
+
+  MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(FDyFontResourceContainer);
+
+  MDY_NODISCARD bool IsCharacterGlyphExist(const TC16 fontCode) override;
+
+  MDY_NODISCARD const DDyFontCharacterInfo& GetGlyphCharacter(const TC16 fontCode) override;
+
+  MDY_NODISCARD TI32 GetLinefeedHeight(const TI32 fontSize) const noexcept override;
+
+  MDY_NODISCARD const DDyFontCharacterInfo& operator[](_MIN_ const TC16 fontCode) override ;
 
 private:
+  ///
+  using TCharContainer = std::unordered_map<TC16, DDyFontCharacterInfo>;
 
+  ///
+  TCharContainer  mCharContainer = {};
+  ///
+  TU32            mTexImageResId = MDY_INITIALIZE_DEFUINT;
 };
 
 } /// ::dy namespace

@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Management/Type/FontCharacter.h>
+#include <Dy/Management/Type/FontCharacter_Deprecated.h>
 
 //!
 //! Forward declaration
@@ -31,7 +31,7 @@ namespace
 namespace dy
 {
 
-DDyFontCharacter::DDyFontCharacter(DDyFontCharacter&& rhs) noexcept :
+DDyFontCharacter_Deprecated::DDyFontCharacter_Deprecated(DDyFontCharacter_Deprecated&& rhs) noexcept :
     mTextureId{ rhs.mTextureId },
     mSize { rhs.mSize },
     mBearing { rhs.mBearing },
@@ -47,7 +47,7 @@ DDyFontCharacter::DDyFontCharacter(DDyFontCharacter&& rhs) noexcept :
   rhs.mTranslate  = DDyVector2{};
 }
 
-DDyFontCharacter& DDyFontCharacter::operator=(DDyFontCharacter&& rhs) noexcept
+DDyFontCharacter_Deprecated& DDyFontCharacter_Deprecated::operator=(DDyFontCharacter_Deprecated&& rhs) noexcept
 {
   if (this == &rhs) { return *this; }
   mTextureId  = rhs.mTextureId;

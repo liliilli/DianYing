@@ -65,7 +65,7 @@ public:
   MDY_NODISCARD NotNull<FDyFontContainer_Deprecated*> GetDefaultFontContainer() const noexcept;
 
 private:
-  using TFontContainerMap = std::unordered_map<std::string, FDyFontResourceContainer>;
+  using TFontContainerMap = std::unordered_map<std::string, std::unique_ptr<IDyFontContainer>>;
 
   ///
   TFontContainerMap   mFontResourceContainerMap = {};

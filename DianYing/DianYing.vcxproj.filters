@@ -129,7 +129,6 @@
     <ClCompile Include="Source\Core\Rendering\UiBasicRenderer.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderDefaultFont.cc" />
     <ClCompile Include="Source\Component\Internal\CDyFontRenderer.cc" />
-    <ClCompile Include="Source\Management\Type\FontCharacter.cc" />
     <ClCompile Include="Source\Builtin\Model\ScreenProjectionTriangle.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderScreenOutput.cc" />
     <ClCompile Include="Source\Test\TestMSDF.cc" />
@@ -152,6 +151,8 @@
     <ClCompile Include="Source\Management\Type\FontContainer_Deprecated.cc" />
     <ClCompile Include="Source\Management\Type\FontResourceContainer.cc" />
     <ClCompile Include="Source\Helper\HelperZlib.cc" />
+    <ClCompile Include="Source\Management\Type\FontCharacter_Deprecated.cc" />
+    <ClCompile Include="Source\Management\Type\FontCharacterInfo.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -365,7 +366,6 @@
     <ClInclude Include="Include\Dy\Core\Rendering\UIBasicRenderer.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderDefaultFont.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyFontRenderer.h" />
-    <ClInclude Include="Include\Dy\Management\Type\FontCharacter.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\ScreenProjectionTriangle.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderScreenOutput.h" />
     <ClInclude Include="Include\Dy\Test\TestMSDF.h" />
@@ -390,6 +390,9 @@
     <ClInclude Include="Include\Dy\Management\Type\FontContainer_Deprecated.h" />
     <ClInclude Include="Include\Dy\Management\Type\FontResourceContainer.h" />
     <ClInclude Include="Include\Dy\Helper\HelperZlib.h" />
+    <ClInclude Include="Include\Dy\Management\Interface\IDyFontContainer.h" />
+    <ClInclude Include="Include\Dy\Management\Type\FontCharacter_Deprecated.h" />
+    <ClInclude Include="Include\Dy\Management\Type\FontCharacterInfo.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

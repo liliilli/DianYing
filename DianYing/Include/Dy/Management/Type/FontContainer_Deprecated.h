@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Management/Type/FontCharacter.h>
+#include <Dy/Management/Type/FontCharacter_Deprecated.h>
 
 namespace dy
 {
@@ -47,7 +47,7 @@ public:
   /// @param  fontCode
   /// @return
   ///
-  const DDyFontCharacter& operator[](_MIN_ const TC16 fontCode);
+  const DDyFontCharacter_Deprecated& operator[](_MIN_ const TC16 fontCode);
 
   ///
   /// @brief
@@ -64,7 +64,7 @@ private:
   ///
   TF32 mUnscaledLinefeedHeight    = MDY_INITIALIZE_DEFINT;
   ///
-  std::unordered_map<TC16, DDyFontCharacter> mFontGlyphContainer = {};
+  std::unordered_map<TC16, DDyFontCharacter_Deprecated> mFontGlyphContainer = {};
 };
 
 } /// ::dy namespace

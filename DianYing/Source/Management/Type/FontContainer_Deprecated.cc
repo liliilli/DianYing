@@ -40,9 +40,9 @@
 namespace
 {
 
-dy::DDyFontCharacter DyCreateUcs2CharTexture(_MIN_ const TC16 charCode);
-dy::DDyFontCharacter DyCreateUcs2MSDFCharTexture(_MIN_ const TC16 charCode);
-dy::DDyFontCharacter DyCreateUcs2SDFCharTexture(_MIN_ const TC16 charCode, _MIN_ FT_Face freetypeFace);
+dy::DDyFontCharacter_Deprecated DyCreateUcs2CharTexture(_MIN_ const TC16 charCode);
+dy::DDyFontCharacter_Deprecated DyCreateUcs2MSDFCharTexture(_MIN_ const TC16 charCode);
+dy::DDyFontCharacter_Deprecated DyCreateUcs2SDFCharTexture(_MIN_ const TC16 charCode, _MIN_ FT_Face freetypeFace);
 
 //!
 //! Freetype pointer
@@ -134,9 +134,9 @@ MDY_NODISCARD int ftCubicTo(_MIN_ const FT_Vector* control1, _MIN_ const FT_Vect
 /// @brief
 /// @return
 ///
-MDY_NODISCARD std::unordered_map<TC16, dy::DDyFontCharacter> DyGetAsciiCharTextures()
+MDY_NODISCARD std::unordered_map<TC16, dy::DDyFontCharacter_Deprecated> DyGetAsciiCharTextures()
 {
-  auto glyphs = std::unordered_map<TC16, dy::DDyFontCharacter>{};
+  auto glyphs = std::unordered_map<TC16, dy::DDyFontCharacter_Deprecated>{};
   for (TC16 charCode = 0; charCode < 128; ++charCode)
   {
     auto [_, isSucceeded] = glyphs.try_emplace(charCode, DyCreateUcs2SDFCharTexture(charCode, sFreetypeFace));
@@ -152,7 +152,7 @@ MDY_NODISCARD std::unordered_map<TC16, dy::DDyFontCharacter> DyGetAsciiCharTextu
 /// @return
 ///
 #ifdef false
-MDY_NODISCARD dy::DDyFontCharacter DyCreateUcs2CharTexture(_MIN_ const TC16 charCode)
+MDY_NODISCARD dy::DDyFontCharacter_Deprecated DyCreateUcs2CharTexture(_MIN_ const TC16 charCode)
 {
   if (FT_Load_Char(sFreetypeFace, charCode, FT_LOAD_RENDER) != 0) { MDY_UNEXPECTED_BRANCH(); return {}; }
 
@@ -174,7 +174,7 @@ MDY_NODISCARD dy::DDyFontCharacter DyCreateUcs2CharTexture(_MIN_ const TC16 char
 
   // Store character for later use
   glBindTexture(GL_TEXTURE_2D, 0);
-  return dy::DDyFontCharacter
+  return dy::DDyFontCharacter_Deprecated
   {
       textureId,
       dy::DDyVectorInt2{static_cast<TI32>(width), static_cast<TI32>(height)},
@@ -183,7 +183,7 @@ MDY_NODISCARD dy::DDyFontCharacter DyCreateUcs2CharTexture(_MIN_ const TC16 char
   };
 }
 
-MDY_NODISCARD dy::DDyFontCharacter DyCreateUcs2MSDFCharTexture(_MIN_ const TC16 charCode)
+MDY_NODISCARD dy::DDyFontCharacter_Deprecated DyCreateUcs2MSDFCharTexture(_MIN_ const TC16 charCode)
 {
   if (FT_Load_Char(sFreetypeFace, charCode, FT_LOAD_NO_SCALE) != 0) { MDY_UNEXPECTED_BRANCH(); return {}; }
 
@@ -263,7 +263,7 @@ MDY_NODISCARD dy::DDyFontCharacter DyCreateUcs2MSDFCharTexture(_MIN_ const TC16 
 
   const auto width  = sFreetypeFace->glyph->bitmap.width;
   const auto height = sFreetypeFace->glyph->bitmap.rows;
-  return dy::DDyFontCharacter
+  return dy::DDyFontCharacter_Deprecated
   {
       textureId,
       dy::DDyVectorInt2{static_cast<TI32>(width), static_cast<TI32>(height)},
@@ -279,7 +279,7 @@ MDY_NODISCARD dy::DDyFontCharacter DyCreateUcs2MSDFCharTexture(_MIN_ const TC16 
 /// @param  freetypeFace
 /// @return
 ///
-MDY_NODISCARD dy::DDyFontCharacter DyCreateUcs2SDFCharTexture(_MIN_ const TC16 charCode, _MIN_ FT_Face freetypeFace)
+MDY_NODISCARD dy::DDyFontCharacter_Deprecated DyCreateUcs2SDFCharTexture(_MIN_ const TC16 charCode, _MIN_ FT_Face freetypeFace)
 {
   if (FT_Load_Char(freetypeFace, charCode, FT_LOAD_NO_SCALE) != 0) { MDY_UNEXPECTED_BRANCH(); return {}; }
 
@@ -355,7 +355,7 @@ MDY_NODISCARD dy::DDyFontCharacter DyCreateUcs2SDFCharTexture(_MIN_ const TC16 c
   glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   glBindTexture   (GL_TEXTURE_2D, 0);
 
-  return dy::DDyFontCharacter
+  return dy::DDyFontCharacter_Deprecated
   {
       textureId,
       dy::DDyVectorInt2{
@@ -420,7 +420,7 @@ EDySuccess FDyFontContainer_Deprecated::CreateFontGlyph(_MIN_ const TC16 fontCod
   }
 }
 
-const DDyFontCharacter& FDyFontContainer_Deprecated::operator[](const TC16 fontCode)
+const DDyFontCharacter_Deprecated& FDyFontContainer_Deprecated::operator[](const TC16 fontCode)
 {
   return this->mFontGlyphContainer.at(fontCode);
 }

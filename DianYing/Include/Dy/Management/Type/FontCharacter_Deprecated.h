@@ -20,13 +20,13 @@ namespace dy
 {
 
 ///
-/// @class DDyFontCharacter
+/// @class DDyFontCharacter_Deprecated
 /// @brief Manages each texture of font glyphes.
 ///
-class DDyFontCharacter final
+class DDyFontCharacter_Deprecated final
 {
 public:
-  MDY_ONLY_MOVEABLE_PROPERTIES_CUSTOM(DDyFontCharacter);
+  MDY_ONLY_MOVEABLE_PROPERTIES_CUSTOM(DDyFontCharacter_Deprecated);
 
   /// texture id of each character.
   TU32          mTextureId  = MDY_INITIALIZE_DEFUINT;
@@ -41,8 +41,8 @@ public:
   ///
   DDyVector2    mTranslate  = {};
 
-  DDyFontCharacter() = default;
-  explicit DDyFontCharacter(
+  DDyFontCharacter_Deprecated() = default;
+  explicit DDyFontCharacter_Deprecated(
       const TU32 texture_id,
       const DDyVectorInt2& size,
       const DDyVectorInt2& bearing,
@@ -56,7 +56,7 @@ public:
       mGlyphScale{ glyphScale },
       mTranslate{ translate } {};
 
-  ~DDyFontCharacter() { if (mTextureId != MDY_INITIALIZE_DEFUINT) { glDeleteTextures(1, &mTextureId); } }
+  ~DDyFontCharacter_Deprecated() { if (mTextureId != MDY_INITIALIZE_DEFUINT) { glDeleteTextures(1, &mTextureId); } }
 };
 
 } /// ::dy namespace
