@@ -108,7 +108,6 @@
     <ClCompile Include="Source\Builtin\Texture\Checker.cc" />
     <ClCompile Include="Source\Builtin\Texture\ErrorBlue.cc" />
     <ClCompile Include="Source\Helper\Type\DyString.cc" />
-    <ClCompile Include="Source\Element\Canvas\Text.cc" />
     <ClCompile Include="Source\Component\Internal\ScriptState.cc" />
     <ClCompile Include="Source\Test\TestLuaBindingDy.cc" />
     <ClCompile Include="Source\Management\ScriptManager.cc" />
@@ -128,7 +127,6 @@
     <ClCompile Include="Source\Core\Rendering\FinalScreenDisplayRenderer.cc" />
     <ClCompile Include="Source\Core\Rendering\UiBasicRenderer.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderDefaultFont.cc" />
-    <ClCompile Include="Source\Component\Internal\CDyFontRenderer.cc" />
     <ClCompile Include="Source\Builtin\Model\ScreenProjectionTriangle.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderScreenOutput.cc" />
     <ClCompile Include="Source\Test\TestMSDF.cc" />
@@ -145,14 +143,17 @@
     <ClCompile Include="Libraries\msdfgen\core\shape-description.cpp" />
     <ClCompile Include="Libraries\msdfgen\core\SignedDistance.cpp" />
     <ClCompile Include="Libraries\msdfgen\core\Vector2.cpp" />
-    <ClCompile Include="Source\Builtin\ShaderGl\RenderFontMSDF.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\RenderFontSDF.cc" />
     <ClCompile Include="Source\Meta\Information\FontMetaInformation.cc" />
     <ClCompile Include="Source\Management\Type\FontContainer_Deprecated.cc" />
     <ClCompile Include="Source\Management\Type\FontResourceContainer.cc" />
     <ClCompile Include="Source\Helper\HelperZlib.cc" />
     <ClCompile Include="Source\Management\Type\FontCharacter_Deprecated.cc" />
     <ClCompile Include="Source\Management\Type\FontCharacterInfo.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\RenderFontMSDF_Deprecated.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\RenderFontSDF_Deprecated.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\RenderFontArraySDF.cc" />
+    <ClCompile Include="Source\Component\Internal\CDyFontRenderer_Deprecated.cc" />
+    <ClCompile Include="Source\Element\Canvas\Text_Deprecated.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -334,7 +335,6 @@
     <ClInclude Include="Include\Dy\Helper\Constant\StringPipelineUniform.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DyString.h" />
     <ClInclude Include="Include\Dy\Helper\Assertion.h" />
-    <ClInclude Include="Include\Dy\Element\Canvas\Text.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\CanvasDescriptor.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\Canvas.h" />
     <ClInclude Include="Include\Dy\Helper\Constant\StringSettingFile.h" />
@@ -365,7 +365,6 @@
     <ClInclude Include="Include\Dy\Core\Rendering\FinalScreenDisplayRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\UIBasicRenderer.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderDefaultFont.h" />
-    <ClInclude Include="Include\Dy\Component\Internal\CDyFontRenderer.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\ScreenProjectionTriangle.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderScreenOutput.h" />
     <ClInclude Include="Include\Dy\Test\TestMSDF.h" />
@@ -384,8 +383,6 @@
     <ClInclude Include="Libraries\msdfgen\core\SignedDistance.h" />
     <ClInclude Include="Libraries\msdfgen\core\Vector2.h" />
     <ClInclude Include="Libraries\msdfgen\msdfgen.h" />
-    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderFontMSDF.h" />
-    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderFontSDF.h" />
     <ClInclude Include="Include\Dy\Meta\Information\FontMetaInformation.h" />
     <ClInclude Include="Include\Dy\Management\Type\FontContainer_Deprecated.h" />
     <ClInclude Include="Include\Dy\Management\Type\FontResourceContainer.h" />
@@ -393,6 +390,13 @@
     <ClInclude Include="Include\Dy\Management\Interface\IDyFontContainer.h" />
     <ClInclude Include="Include\Dy\Management\Type\FontCharacter_Deprecated.h" />
     <ClInclude Include="Include\Dy\Management\Type\FontCharacterInfo.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderFontSDF_Deprecated.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderFontMSDF_Deprecated.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderFontArraySDF.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\CDyFontRenderer_Deprecated.h" />
+    <ClInclude Include="Include\Dy\Element\RenderableObject.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\CDyFontRenderer.h" />
+    <ClInclude Include="Include\Dy\Element\Canvas\Text_Deprecated.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

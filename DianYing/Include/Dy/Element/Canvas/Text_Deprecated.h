@@ -18,7 +18,8 @@
 #include <Dy/Helper/Type/DyString.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 #include <Dy/Management/Type/FontContainer_Deprecated.h>
-#include "Dy/Component/Internal/CDyFontRenderer.h"
+#include <Dy/Component/Internal/CDyFontRenderer_Deprecated.h>
+#include <Dy/Element/RenderableObject.h>
 
 //!
 //! Forward declaration
@@ -37,17 +38,17 @@ namespace dy
 {
 
 ///
-/// @class FDyText
+/// @class FDyText_Deprecated
 /// @brief This class display text on position aligned with FontManager.
 /// @log
-/// 2018-04-17 Move ::canvas::FDyText to ::opgs16::element::canvas::FDyText.
+/// 2018-04-17 Move ::canvas::FDyText_Deprecated to ::opgs16::element::canvas::FDyText_Deprecated.
 /// 2018-05-28 Remove pointer to implementation idiom.
 ///
-class FDyText final : public FDyObject, public IDyInitializeHelper<PDyMetaWidgetTextDescriptor>
+class FDyText_Deprecated final : public FDyRenderableObject, public IDyInitializeHelper<PDyMetaWidgetTextDescriptor>
 {
-  MDY_SET_CRC32_HASH_WITH_TYPE(FDyText);
-  MDY_SET_TYPEMATCH_FUNCTION(FDyObject, FDyText);
-  MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(FDyText);
+  MDY_SET_CRC32_HASH_WITH_TYPE(FDyText_Deprecated);
+  MDY_SET_TYPEMATCH_FUNCTION(FDyRenderableObject, FDyText_Deprecated);
+  MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(FDyText_Deprecated);
 public:
   ///
   /// @brief Text component (stand-alone) constructor.
@@ -55,8 +56,8 @@ public:
   /// position parameter was based on screen or parent's size where component
   /// is in hierarchy structrue of parent.
   ///
-	FDyText();
-  virtual ~FDyText() = default;
+	FDyText_Deprecated();
+  virtual ~FDyText_Deprecated() = default;
 
   ///
   /// @brief
@@ -175,6 +176,11 @@ public:
   /// each value must be in range of [0, 1], otherwise clamped to 0 or 1.
   ///
   void SetColor(_MIN_ const DDyColor& color);
+
+  ///
+  /// @brief Render font (old-way)
+  ///
+  void Render() override final;
 
 private:
   /// Text to display on screen. String must be following UTF-8 encoding.

@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_COMPONENT_INTERNAL_CDYFONTRENDERER_H
-#define GUARD_DY_COMPONENT_INTERNAL_CDYFONTRENDERER_H
+#ifndef GUARD_DY_COMPONENT_INTERNAL_CDYFONTRENDERER_DEPRECATED_H
+#define GUARD_DY_COMPONENT_INTERNAL_CDYFONTRENDERER_DEPRECATED_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -22,7 +22,7 @@
 
 namespace dy
 {
-class FDyText;
+class FDyText_Deprecated;
 } /// ::dy namespace
 
 //!
@@ -38,7 +38,7 @@ namespace dy
 ///
 struct DDyFontRendererMetaInformation final
 { /// Font renderer pointer address.
-  FDyText* mFontComponentPtr = nullptr;
+  FDyText_Deprecated* mFontComponentPtr = nullptr;
 };
 
 ///
@@ -75,11 +75,11 @@ public:
 
 private:
   /// LAZY NOT NULLABLE POINTER RAW PTR;
-  FDyText* mFontObjectRawPtr = MDY_INITIALIZE_NULL;
+  FDyText_Deprecated* mFontObjectRawPtr = MDY_INITIALIZE_NULL;
   ///
   CDyShaderResource* mSampleShaderPtr = nullptr;
 };
 
 } /// ::dy namespace
 
-#endif /// GUARD_DY_COMPONENT_INTERNAL_CDYFONTRENDERER_H
+#endif /// GUARD_DY_COMPONENT_INTERNAL_CDYFONTRENDERER_DEPRECATED_H

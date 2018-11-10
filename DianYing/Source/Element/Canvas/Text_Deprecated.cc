@@ -13,22 +13,22 @@
 ///
 
 /// Header file
-#include <Dy/Element/Canvas/Text.h>
+#include <Dy/Element/Canvas/Text_Deprecated.h>
 #include <Dy/Meta/Descriptor/WidgetComponentDescriptor.h>
 #include <Dy/Management/FontManager.h>
 
 namespace dy
 {
-FDyText::FDyText() : mFontContainer(MDyFont::GetInstance().GetDefaultFontContainer())
+FDyText_Deprecated::FDyText_Deprecated() : mFontContainer(MDyFont::GetInstance().GetDefaultFontContainer())
 { }
 
-std::string FDyText::ToString()
+std::string FDyText_Deprecated::ToString()
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
   return "";
 }
 
-EDySuccess FDyText::Initialize(_MIN_ const PDyMetaWidgetTextDescriptor& objectMetaDesc)
+EDySuccess FDyText_Deprecated::Initialize(_MIN_ const PDyMetaWidgetTextDescriptor& objectMetaDesc)
 {
   this->mTextString             = objectMetaDesc.mInitialString;
   this->mForegroundColor        = objectMetaDesc.mInitialColor;
@@ -48,7 +48,7 @@ EDySuccess FDyText::Initialize(_MIN_ const PDyMetaWidgetTextDescriptor& objectMe
   return DY_SUCCESS;
 }
 
-void FDyText::Release()
+void FDyText_Deprecated::Release()
 {
   this->mRenderer.Release();
 }
@@ -57,38 +57,38 @@ void FDyText::Release()
 //! Getter
 //!
 
-const DDyString& FDyText::GetText() const noexcept
+const DDyString& FDyText_Deprecated::GetText() const noexcept
 {
   return this->mTextString;
 }
 
-std::string FDyText::GetUtf8Text() const noexcept
+std::string FDyText_Deprecated::GetUtf8Text() const noexcept
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
   return MDY_INITILAIZE_EMPTYSTR;
 }
 
-TU32 FDyText::GetFontSize() const noexcept
+TU32 FDyText_Deprecated::GetFontSize() const noexcept
 {
   return this->mFontSize;
 }
 
-const DDyColor& FDyText::GetBackgroundColor() const noexcept
+const DDyColor& FDyText_Deprecated::GetBackgroundColor() const noexcept
 {
   return this->mBackgroundColor;
 }
 
-const DDyColor& FDyText::GetEdgeColor() const noexcept
+const DDyColor& FDyText_Deprecated::GetEdgeColor() const noexcept
 {
   return this->mEdgeColor;
 }
 
-const DDyColor& FDyText::GetForegroundColor() const noexcept
+const DDyColor& FDyText_Deprecated::GetForegroundColor() const noexcept
 {
   return this->mForegroundColor;
 }
 
-const DDyVectorInt2& FDyText::GetRenderPosition() const noexcept
+const DDyVectorInt2& FDyText_Deprecated::GetRenderPosition() const noexcept
 {
   return this->mPosition;
 }
@@ -97,27 +97,32 @@ const DDyVectorInt2& FDyText::GetRenderPosition() const noexcept
 //! Setter
 //!
 
-void FDyText::SetText(const std::string& newU8Text) noexcept
+void FDyText_Deprecated::SetText(const std::string& newU8Text) noexcept
 {
   this->mTextString = DDyString{newU8Text};
 }
 
-void FDyText::SetFontSize(TU32 fontSize) noexcept
+void FDyText_Deprecated::SetFontSize(TU32 fontSize) noexcept
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
   this->mFontSize = fontSize;
 }
 
-EDySuccess FDyText::SetFontName(const std::string& fontName)
+EDySuccess FDyText_Deprecated::SetFontName(const std::string& fontName)
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
   return DY_FAILURE;
 }
 
-void FDyText::SetColor(const DDyColor& color)
+void FDyText_Deprecated::SetColor(const DDyColor& color)
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
   this->mForegroundColor = color;
+}
+
+void FDyText_Deprecated::Render()
+{
+  this->mRenderer.Render();
 }
 
 } /// ::dy namespace
