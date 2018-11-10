@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Builtin/ShaderGl/RenderFontSDF.h>
+#include <Dy/Builtin/ShaderGl/RenderFontSDF_Deprecated.h>
 #include <Dy/Core/Component/Internal/ShaderType.h>
 #include <Dy/Management/DataInformationManager.h>
 #include <Dy/Management/HeapResourceManager.h>
@@ -93,10 +93,10 @@ void main() {
 namespace dy::builtin
 {
 
-FDyBuiltinShaderGLRenderFontSDF::FDyBuiltinShaderGLRenderFontSDF()
+FDyBuiltinShaderGLRenderFontSDF_Deprecated::FDyBuiltinShaderGLRenderFontSDF_Deprecated()
 {
   PDyShaderConstructionDescriptor shaderDesc;
-  shaderDesc.mShaderName = FDyBuiltinShaderGLRenderFontSDF::sName;
+  shaderDesc.mShaderName = FDyBuiltinShaderGLRenderFontSDF_Deprecated::sName;
   {
     PDyShaderFragmentInformation vs;
     vs.mShaderType = EDyShaderFragmentType::Vertex;

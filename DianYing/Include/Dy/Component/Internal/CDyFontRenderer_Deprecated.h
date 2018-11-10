@@ -68,9 +68,16 @@ public:
   ///
   void Release() override final;
 
+  ///
+  /// @brief
+  ///
+  void Render();
+
 private:
   /// LAZY NOT NULLABLE POINTER RAW PTR;
   FDyText* mFontObjectRawPtr = MDY_INITIALIZE_NULL;
+  ///
+  CDyShaderResource* mSampleShaderPtr = nullptr;
 };
 
 } /// ::dy namespace

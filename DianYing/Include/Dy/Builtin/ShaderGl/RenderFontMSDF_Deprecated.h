@@ -17,13 +17,13 @@ namespace dy::builtin
 {
 
 ///
-/// @class FDyBuiltinShaderGLRenderFontMSDF
+/// @class FDyBuiltinShaderGLRenderFontMSDF_Deprecated
 /// @brief Instantiate and create resource for basic shadow rendering.
 ///
-class FDyBuiltinShaderGLRenderFontMSDF final
+class FDyBuiltinShaderGLRenderFontMSDF_Deprecated final
 {
 public:
-  FDyBuiltinShaderGLRenderFontMSDF();
+  FDyBuiltinShaderGLRenderFontMSDF_Deprecated();
 
   /// Constant name for creating DDyShaderInformation
   inline static MDY_SET_IMMUTABLE_STRING(sName, "dyBtShaderGlRenderFontMSDF");
