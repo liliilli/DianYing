@@ -27,6 +27,7 @@
 #include <Dy/Helper/Macroes.h>
 #include <Dy/Helper/Math/Math.h>
 #include <Dy/Management/LoggingManager.h>
+#include <nlohmann/json_fwd.hpp>
 
 #if defined(_WIN32)
 #include <DirectXMath.h>
@@ -415,6 +416,9 @@ public:
   ///
   [[nodiscard]] static bool IsAllZero(const DDyVector2& vector) noexcept;
 };
+
+void to_json(nlohmann::json& j, const DDyVector2& p);
+void from_json(const nlohmann::json& j, DDyVector2& p);
 
 } /// ::dy namespace
 

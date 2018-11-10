@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_ELEMENT_CANVAS_H
-#define GUARD_DY_ELEMENT_CANVAS_H
+#ifndef GUARD_DY_ELEMENT_CANVAS_TEXT_H
+#define GUARD_DY_ELEMENT_CANVAS_TEXT_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -14,20 +14,13 @@
 ///
 
 #include <Dy/Element/Object.h>
+#include <Dy/Element/RenderableObject.h>
 #include <Dy/Element/Descriptor/CanvasDescriptor.h>
-#include <Dy/Helper/Type/DyString.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
-#include <Dy/Management/Type/FontContainer.h>
-#include "Dy/Component/Internal/CDyFontRenderer.h"
-
-//!
-//! Forward declaration
-//!
-
-namespace dy
-{
-class CFont2DRenderer;
-} /// ::opgs16::component namespace
+#include <Dy/Component/Internal/CDyFontRenderer.h>
+#include <Dy/Helper/Type/DyString.h>
+#include <Dy/Management/Type/FontContainer_Deprecated.h>
+#include <Dy/Management/Interface/IDyFontContainer.h>
 
 //!
 //! Implementation
@@ -39,14 +32,11 @@ namespace dy
 ///
 /// @class FDyText
 /// @brief This class display text on position aligned with FontManager.
-/// @log
-/// 2018-04-17 Move ::canvas::FDyText to ::opgs16::element::canvas::FDyText.
-/// 2018-05-28 Remove pointer to implementation idiom.
 ///
-class FDyText final : public FDyObject, public IDyInitializeHelper<PDyMetaWidgetTextDescriptor>
+class FDyText final : public FDyRenderableObject, public IDyInitializeHelper<PDyMetaWidgetTextDescriptor>
 {
   MDY_SET_CRC32_HASH_WITH_TYPE(FDyText);
-  MDY_SET_TYPEMATCH_FUNCTION(FDyObject, FDyText);
+  MDY_SET_TYPEMATCH_FUNCTION(FDyRenderableObject, FDyText);
   MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(FDyText);
 public:
   ///
@@ -55,8 +45,8 @@ public:
   /// position parameter was based on screen or parent's size where component
   /// is in hierarchy structrue of parent.
   ///
-	FDyText();
-  virtual ~FDyText() = default;
+	FDyText()           = default;
+  virtual ~FDyText()  = default;
 
   ///
   /// @brief
@@ -88,16 +78,10 @@ public:
   /// @brief  Return reference of valid font container.
   /// @return Valid font container reference.
   ///
-  MDY_NODISCARD FDyFontContainer& GetFontContainer() const noexcept
+  MDY_NODISCARD IDyFontContainer& GetFontContainer() const noexcept
   {
     return *this->mFontContainer;
   }
-
-  ///
-  /// @brief Get
-  /// @TODO THIS FUNCTION IS NOT IMPLEMENED YET.
-  ///
-  MDY_NODISCARD std::string GetUtf8Text() const noexcept;
 
   ///
   /// @brief Get font size which this instance has.
@@ -176,11 +160,16 @@ public:
   ///
   void SetColor(_MIN_ const DDyColor& color);
 
+  ///
+  /// @brief Render font (old-way)
+  ///
+  void Render() override final;
+
 private:
   /// Text to display on screen. String must be following UTF-8 encoding.
   DDyString         mTextString       = {""};
   /// Text container instance to display font.
-  FDyFontContainer* mFontContainer    = nullptr;
+  IDyFontContainer* mFontContainer    = nullptr;
   /// Font color
 	DDyColor          mForegroundColor  = DDyColor::White;
   /// Font background color
@@ -188,11 +177,11 @@ private:
   /// Font Edge color
   DDyColor          mEdgeColor        = DDyColor::Black;
   /// Font size
-  TU32              mFontSize   = 16;
+  TU32              mFontSize         = 16;
   ///
-  DDyVectorInt2     mPosition   = {};
+  DDyVectorInt2     mPosition         = {};
   ///
-  CDyFontRenderer   mRenderer = {};
+  CDyFontRenderer   mRenderer         = {};
 
   ///
   bool mIsTextDirty                   = true;

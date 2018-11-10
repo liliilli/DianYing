@@ -15,7 +15,8 @@
 /// Header file
 #include <Dy/Management/ScriptManager.h>
 #include <Dy/Management/LoggingManager.h>
-#include "Dy/Element/Actor.h"
+#include <Dy/Element/Actor.h>
+#include "Dy/Management/Helper/LuaBindingEntry.h"
 
 //!
 //! Local function & forward declaration
@@ -89,6 +90,24 @@ void DyInitilaizeFDyObject(_MIO_ sol::state& lua)
 
 ///
 /// @brief
+/// @param
+///
+void DyInitializeHelperTypes(_MIO_ sol::state& lua)
+{
+
+}
+
+///
+/// @brief
+/// @param  lua
+///
+void DyInitializeCDyComponents(_MIO_ sol::state& lua)
+{
+
+}
+
+///
+/// @brief
 /// @param  lua
 ///
 void DyInitilaizeFDyActor(_MIO_ sol::state& lua)
@@ -118,14 +137,15 @@ namespace dy
 
 EDySuccess MDyScript::pfInitialize()
 {
-  mLua.open_libraries(sol::lib::base, sol::lib::string, sol::lib::math);
+  this->mLua.open_libraries(sol::lib::base, sol::lib::string, sol::lib::math);
 
   /// Manager binding
+  DyBindLuaEntry(this->mLua);
   DyInitializeMDyLog(mLua);
   DyInitilaizeFDyObject(mLua);
   DyInitilaizeFDyActor(mLua);
 
-  mLua.safe_script(sCDyScriptFrame);
+  this->mLua.safe_script(sCDyScriptFrame);
   return DY_SUCCESS;
 }
 

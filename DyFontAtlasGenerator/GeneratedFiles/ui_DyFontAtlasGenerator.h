@@ -184,7 +184,7 @@ public:
         CB_MapKana->setGeometry(QRect(250, 110, 141, 21));
         CB_MapCJKHanbun = new QCheckBox(centralWidget);
         CB_MapCJKHanbun->setObjectName(QStringLiteral("CB_MapCJKHanbun"));
-        CB_MapCJKHanbun->setEnabled(false);
+        CB_MapCJKHanbun->setEnabled(true);
         CB_MapCJKHanbun->setGeometry(QRect(390, 110, 101, 21));
         label_4 = new QLabel(centralWidget);
         label_4->setObjectName(QStringLiteral("label_4"));
@@ -258,7 +258,7 @@ public:
         AC_About->setText(QApplication::translate("DyFontAtlasGeneratorClass", "About...", nullptr));
         label->setText(QApplication::translate("DyFontAtlasGeneratorClass", "Font       :", nullptr));
         BT_FindFile->setText(QApplication::translate("DyFontAtlasGeneratorClass", "Find", nullptr));
-        label_2->setText(QApplication::translate("DyFontAtlasGeneratorClass", "Create SDF Atlas with...", nullptr));
+        label_2->setText(QApplication::translate("DyFontAtlasGeneratorClass", "Create Texture Atlas with...", nullptr));
         CB_MapEnglish->setText(QApplication::translate("DyFontAtlasGeneratorClass", "English + ASCII", nullptr));
         label_3->setText(QApplication::translate("DyFontAtlasGeneratorClass", "And...", nullptr));
         CB_OptionSeperate->setText(QApplication::translate("DyFontAtlasGeneratorClass", "Export as separated JSON and png files.", nullptr));

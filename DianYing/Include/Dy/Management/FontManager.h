@@ -14,7 +14,8 @@
 ///
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
-#include <Dy/Management/Type/FontContainer.h>
+#include <Dy/Management/Type/FontContainer_Deprecated.h>
+#include <Dy/Management/Type/FontResourceContainer.h>
 #include <Dy/Helper/Pointer.h>
 
 namespace dy
@@ -30,16 +31,34 @@ public:
   /// @param  fontSpecifierName
   /// @return If succeeded return DY_SUCCESS or DY_FAILURE.
   ///
-  MDY_NODISCARD EDySuccess CreateFontContainer(_MIN_ const std::string& fontSpecifierName);
+  MDY_DEPRECATED(0.0.1, CreateFontContainer_Deprecated, CreateFontResourceContainer)
+  MDY_NODISCARD EDySuccess CreateFontContainer_Deprecated(_MIN_ const std::string& fontSpecifierName);
+
+  ///
+  /// @brief  Create font resource container from meta container.
+  /// @param  fontSpecifierName
+  /// @return If succeeded return DY_SUCCESS or DY_FAILURE.
+  ///
+  MDY_NODISCARD EDySuccess CreateFontResourceContainer(_MIN_ const std::string& fontSpecifierName);
 
   ///
   /// @brief  Check there is valid font container with name is fontSpecifierName.
   /// @param  fontSpecifierName
   /// @return If fount just return true or false.
   ///
-  FORCEINLINE MDY_NODISCARD bool IsFontContainerExist(_MIN_ const std::string& fontSpecifierName)
+  FORCEINLINE MDY_NODISCARD bool IsFontContainerExist_Deprecated(_MIN_ const std::string& fontSpecifierName)
   {
-    return this->mValidFontContainerMap.find(fontSpecifierName) != this->mValidFontContainerMap.end();
+    return this->mValidFontContainerMap_Deprecated.find(fontSpecifierName) != this->mValidFontContainerMap_Deprecated.end();
+  }
+
+  ///
+  /// @brief  Check there is valid font container with name is fontSpecifierName.
+  /// @param  specifierName Font container specifier name.
+  /// @return If found just return true or false.
+  ///
+  FORCEINLINE MDY_NODISCARD bool IsFontResourceContainerExist(_MIN_ const std::string& specifierName)
+  {
+    return this->mFontResourceContainerMap.find(specifierName) != this->mFontResourceContainerMap.end();
   }
 
   ///
@@ -49,19 +68,31 @@ public:
   ///
   MDY_NODISCARD EDySuccess RemoveFontContainer(_MIN_ const std::string& fontSpecifierName);
 
+
   ///
   /// @brief  Get Default font container.
   /// @return Return default font container.
   ///
-  MDY_NODISCARD NotNull<FDyFontContainer*> GetDefaultFontContainer() const noexcept;
-
-private:
-  using TFontContainerMap = std::unordered_map<std::string, FDyFontContainer>;
+  MDY_NODISCARD NotNull<FDyFontContainer_Deprecated*> GetDefaultFontContainer() const noexcept;
 
   ///
-  TFontContainerMap mValidFontContainerMap  = {};
+  /// @brief  Get font resource container.
+  /// @param  specifierName Font container speicfier name.
+  /// @return Return default font container reference.
+  ///
+  MDY_NODISCARD IDyFontContainer* GetFontResourceContainer(_MIN_ const std::string& specifierName);
+
+private:
+  using TFontContainerMap = std::unordered_map<std::string, std::unique_ptr<IDyFontContainer>>;
+
+  ///
+  TFontContainerMap   mFontResourceContainerMap = {};
+
+  using TFontContainerMap_Deprecated = std::unordered_map<std::string, FDyFontContainer_Deprecated>;
+  ///
+  TFontContainerMap_Deprecated mValidFontContainerMap_Deprecated  = {};
   /// Default font container pointer. This will be held pointer when creating manager.
-  FDyFontContainer* mDefaultFontContainer   = MDY_INITIALIZE_NULL;
+  FDyFontContainer_Deprecated* mDefaultFontContainer_Deprecated   = MDY_INITIALIZE_NULL;
 };
 
 } /// ::dy namespace

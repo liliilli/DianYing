@@ -150,6 +150,7 @@ dy::EDyUniformVariableType DyGlGetUniformVariableTypeFrom(GLenum type) noexcept
   case GL_INT_VEC4:                         return dy::EDyUniformVariableType::IVec4;
   case GL_SAMPLER_1D:                       return dy::EDyUniformVariableType::Texture1D;
   case GL_SAMPLER_2D:                       return dy::EDyUniformVariableType::Texture2D;
+  case GL_SAMPLER_2D_ARRAY:                 return dy::EDyUniformVariableType::Texture2DArray;
   default: return dy::EDyUniformVariableType::NoneError;
   }
 }

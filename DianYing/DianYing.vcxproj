@@ -87,15 +87,15 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <AdditionalIncludeDirectories>C:\TPLibraries\PhysX-3.4\PxShared\include;C:\TPLibraries\PhysX-3.4\PhysX_3.4\Include;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;$(ProjectDir)Libraries\msdfgen;$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDir)Libraries\freetype\include;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\TPLibraries\PhysX-3.4\PxShared\include;C:\TPLibraries\PhysX-3.4\PhysX_3.4\Include;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;$(ProjectDir)Libraries\msdfgen;$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDir)Libraries\freetype\include;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;$(ProjectDir)Libraries\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4244;4267;4189;4100;4458</DisableSpecificWarnings>
       <PreprocessorDefinitions>__MDY_FLAG_IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>C:\TPLibraries\PhysX-3.4\PxShared\lib\vc15win64;C:\TPLibraries\PhysX-3.4\PhysX_3.4\Lib\vc15win64;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\lib;C:\TPLibraries\lua\lib\$(Platform)\$(Configuration);$(ProjectDir)Libraries\assimp\lib\$(Configuration)\$(Platform);$(ProjectDir)Libraries\FX11\bin\$(Platform)\$(Configuration);$(ProjectDir)Libraries\freetype\objs\$(Platform)\$(Configuration) Static;C:\VulkanSDK\1.1.82.0\Lib;C:\TPLibraries\glfw-3.2.1\build\src\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>PxFoundationDEBUG_x64.lib;PhysX3DEBUG_x64.lib;PhysX3CommonDEBUG_x64.lib;PhysX3ExtensionsDEBUG.lib;freetype.lib;lua_build.lib;fmodL64_vc.lib;assimp-vc140-mt.lib;glfw3dll.lib;opengl32.lib;vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;msvcrtd.lib;libcmtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\TPLibraries\PhysX-3.4\PxShared\lib\vc15win64;C:\TPLibraries\PhysX-3.4\PhysX_3.4\Lib\vc15win64;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\lib;C:\TPLibraries\lua\lib\$(Platform)\$(Configuration);$(ProjectDir)Libraries\assimp\lib\$(Configuration)\$(Platform);$(ProjectDir)Libraries\FX11\bin\$(Platform)\$(Configuration);$(ProjectDir)Libraries\freetype\objs\$(Platform)\$(Configuration) Static;C:\VulkanSDK\1.1.82.0\Lib;C:\TPLibraries\glfw-3.2.1\build\src\Debug;$(ProjectDir)Libraries\zlib\zlib\build\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>PxFoundationDEBUG_x64.lib;PhysX3DEBUG_x64.lib;PhysX3CommonDEBUG_x64.lib;PhysX3ExtensionsDEBUG.lib;zlibstaticd.lib;freetype.lib;lua_build.lib;fmodL64_vc.lib;assimp-vc140-mt.lib;glfw3dll.lib;opengl32.lib;vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;msvcrtd.lib;libcmtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
@@ -150,7 +150,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>C:\TPLibraries\lua\lib\$(Platform)\$(Configuration);$(ProjectDir)Libraries\glfw\$(Platform);$(ProjectDir)Libraries\FX11\bin\$(Platform)\$(Configuration);C:\VulkanSDK\1.1.82.0\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\TPLibraries\lua\lib\$(Platform)\$(Configuration);$(ProjectDir)Libraries\glfw\$(Platform);$(ProjectDir)Libraries\FX11\bin\$(Platform)\$(Configuration);C:\VulkanSDK\1.1.82.0\Lib;$(ProjectDir)Libraries\zlib\zlib\build\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>lua_build.lib;tbb.lib;glfw3.lib;opengl32.lib;vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -212,8 +212,9 @@
     <ClCompile Include="Source\Builtin\ShaderGl\RenderColorGeometry.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderDefaultFont.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderDeferredRendering.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\RenderFontMSDF.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\RenderFontSDF.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\RenderFontArraySDF.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\RenderFontMSDF_Deprecated.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\RenderFontSDF_Deprecated.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderGrid.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderOpaqueStatic.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderPass.cc" />
@@ -228,6 +229,7 @@
     <ClCompile Include="Source\Component\CDyScript.cc" />
     <ClCompile Include="Source\Component\CDyTransform.cc" />
     <ClCompile Include="Source\Component\Internal\CDyFontRenderer.cc" />
+    <ClCompile Include="Source\Component\Internal\CDyFontRenderer_Deprecated.cc" />
     <ClCompile Include="Source\Component\Internal\ScriptState.cc" />
     <ClCompile Include="Source\Core\Component\Information\MaterialInformation.cc" />
     <ClCompile Include="Source\Core\Component\Information\ModelInformation.cc" />
@@ -268,12 +270,14 @@
     <ClCompile Include="Source\Element\Abstract\ADyTransformable.cc" />
     <ClCompile Include="Source\Element\Actor.cc" />
     <ClCompile Include="Source\Element\Canvas\Text.cc" />
+    <ClCompile Include="Source\Element\Canvas\Text_Deprecated.cc" />
     <ClCompile Include="Source\Element\Descriptor\MetaLevelDescriptor.cc" />
     <ClCompile Include="Source\Element\Helper\DescriptorHelperFunctions.cc" />
     <ClCompile Include="Source\Element\Level.cc" />
     <ClCompile Include="Source\Entry\Entry.cc" />
     <ClCompile Include="Source\Helper\Dbg\CheckUsage.cc" />
     <ClCompile Include="Source\Helper\Geometry\Types.cc" />
+    <ClCompile Include="Source\Helper\HelperZlib.cc" />
     <ClCompile Include="Source\Helper\Internal\ImageBinaryBuffer.cc" />
     <ClCompile Include="Source\Helper\IoHelper.cc" />
     <ClCompile Include="Source\Helper\JsonHelper.cc" />
@@ -312,8 +316,10 @@
     <ClCompile Include="Source\Management\RenderingManager.cc" />
     <ClCompile Include="Source\Management\ScriptManager.cc" />
     <ClCompile Include="Source\Management\Type\AttachmentInformation.cc" />
-    <ClCompile Include="Source\Management\Type\FontCharacter.cc" />
-    <ClCompile Include="Source\Management\Type\FontContainer.cc" />
+    <ClCompile Include="Source\Management\Type\FontCharacterInfo.cc" />
+    <ClCompile Include="Source\Management\Type\FontCharacter_Deprecated.cc" />
+    <ClCompile Include="Source\Management\Type\FontContainer_Deprecated.cc" />
+    <ClCompile Include="Source\Management\Type\FontResourceContainer.cc" />
     <ClCompile Include="Source\Management\WorldManager.cc" />
     <ClCompile Include="Source\Management\SettingManager.cc" />
     <ClCompile Include="Source\Management\SoundManager.cc" />
@@ -322,6 +328,7 @@
     <ClCompile Include="Source\Management\WindowManager.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetCommponDescriptor.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetComponentDescriptor.cc" />
+    <ClCompile Include="Source\Meta\Information\FontMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Type\TextureParameter.cc" />
     <ClCompile Include="Source\precompiled.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -348,9 +355,10 @@
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderColorGeometry.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderDefaultFont.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderDeferredRendering.h" />
-    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderFontSDF.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderFontArraySDF.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderFontSDF_Deprecated.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderGrid.h" />
-    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderFontMSDF.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderFontMSDF_Deprecated.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderOpaqueStatic.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderPass.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderScreenOutput.h" />
@@ -360,7 +368,9 @@
     <ClInclude Include="Include\Dy\Component\Abstract\ADyPhysicsShape.h" />
     <ClInclude Include="Include\Dy\Component\CDyCamera.h" />
     <ClInclude Include="Include\Dy\Component\CDyDirectionalLight.h" />
+    <ClInclude Include="Include\Dy\Component\Ctor\PDyFontRenderer.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyFontRenderer.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\CDyFontRenderer_Deprecated.h" />
     <ClInclude Include="Include\Dy\Component\CDyModelFilter.h" />
     <ClInclude Include="Include\Dy\Component\CDyModelRenderer.h" />
     <ClInclude Include="Include\Dy\Component\CDyPhysicsRigidbodyDynamic.h" />
@@ -395,6 +405,7 @@
     <ClInclude Include="Include\Dy\Element\Abstract\ADyNameCounterMap.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\Canvas.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\Text.h" />
+    <ClInclude Include="Include\Dy\Element\Canvas\Text_Deprecated.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\CanvasDescriptor.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\GlobalEnums.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\LevelDescriptor.h" />
@@ -441,6 +452,7 @@
     <ClInclude Include="Include\Dy\Element\Interface\IDyColliable.h" />
     <ClInclude Include="Include\Dy\Element\Level.h" />
     <ClInclude Include="Include\Dy\Element\LevelScriptor.h" />
+    <ClInclude Include="Include\Dy\Element\RenderableObject.h" />
     <ClInclude Include="Include\Dy\Helper\Assertion.h" />
     <ClInclude Include="Include\Dy\Helper\Constant\StringSettingFile.h" />
     <ClInclude Include="Include\Dy\Helper\ContainerHelper.h" />
@@ -457,11 +469,13 @@
     <ClInclude Include="Include\Dy\Helper\Type\DyString.h" />
     <ClInclude Include="Include\Dy\Helper\Type\ThreeStateBool.h" />
     <ClInclude Include="Include\Dy\Helper\Type\VectorInt2.h" />
+    <ClInclude Include="Include\Dy\Helper\HelperZlib.h" />
     <ClInclude Include="Include\Dy\Management\Editor\GuiManager.h" />
     <ClInclude Include="Include\Dy\Management\Editor\GuiSetting.h" />
     <ClInclude Include="Include\Dy\Management\Editor\GuiWindowFactory.h" />
     <ClInclude Include="Include\Dy\Management\Helper\LuaBindingEntry.h" />
     <ClInclude Include="Include\Dy\Management\Helper\PhysxSimulationCallback.h" />
+    <ClInclude Include="Include\Dy\Management\Interface\IDyFontContainer.h" />
     <ClInclude Include="Include\Dy\Management\Internal\FramebufferManager.h" />
     <ClInclude Include="Include\Dy\Management\Internal\UniformBufferObjectManager.h" />
     <ClInclude Include="Include\Dy\Management\MetaInfoManager.h" />
@@ -478,8 +492,10 @@
     <ClInclude Include="Include\Dy\Management\SoundManager.h" />
     <ClInclude Include="Include\Dy\Management\SynchronizationManager.h" />
     <ClInclude Include="Include\Dy\Management\Type\AttachmentInformation.h" />
-    <ClInclude Include="Include\Dy\Management\Type\FontCharacter.h" />
-    <ClInclude Include="Include\Dy\Management\Type\FontContainer.h" />
+    <ClInclude Include="Include\Dy\Management\Type\FontCharacter_Deprecated.h" />
+    <ClInclude Include="Include\Dy\Management\Type\FontContainer_Deprecated.h" />
+    <ClInclude Include="Include\Dy\Management\Type\FontCharacterInfo.h" />
+    <ClInclude Include="Include\Dy\Management\Type\FontResourceContainer.h" />
     <ClInclude Include="Include\Dy\Management\Type\FramebufferInformation.h" />
     <ClInclude Include="Include\Dy\Management\Type\KeyBindingInformation.h" />
     <ClInclude Include="Include\Dy\Management\Type\UBOInformation.h" />
@@ -514,6 +530,7 @@
     <ClInclude Include="Include\Dy\Meta\Descriptor\ScriptDescriptor.h" />
     <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetCommonDescriptor.h" />
     <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetComponentDescriptor.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\FontMetaInformation.h" />
     <ClInclude Include="Include\Dy\Meta\Type\TextureParameter.h" />
     <ClInclude Include="Include\Dy\Test\testLua.h" />
     <ClInclude Include="Include\Dy\Test\TestMacroSetting.h" />

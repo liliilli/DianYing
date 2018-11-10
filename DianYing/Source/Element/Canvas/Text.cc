@@ -14,13 +14,12 @@
 
 /// Header file
 #include <Dy/Element/Canvas/Text.h>
+#include <Dy/Component/Ctor/PDyFontRenderer.h>
 #include <Dy/Meta/Descriptor/WidgetComponentDescriptor.h>
 #include <Dy/Management/FontManager.h>
 
 namespace dy
 {
-FDyText::FDyText() : mFontContainer(MDyFont::GetInstance().GetDefaultFontContainer())
-{ }
 
 std::string FDyText::ToString()
 {
@@ -29,7 +28,7 @@ std::string FDyText::ToString()
 }
 
 EDySuccess FDyText::Initialize(_MIN_ const PDyMetaWidgetTextDescriptor& objectMetaDesc)
-{
+{ // Set properties.
   this->mTextString             = objectMetaDesc.mInitialString;
   this->mForegroundColor        = objectMetaDesc.mInitialColor;
   this->mBackgroundColor        = objectMetaDesc.mBackgroundColor;
@@ -39,11 +38,18 @@ EDySuccess FDyText::Initialize(_MIN_ const PDyMetaWidgetTextDescriptor& objectMe
   this->mFontSize               = objectMetaDesc.mFontSize;
   this->mPosition               = objectMetaDesc.mInitialPosition;
 
-  DDyFontRendererMetaInformation desc = {};
+  // Bind font container resource instance pointer to this.
+  auto& fontManager = MDyFont::GetInstance();
+  if (fontManager.IsFontResourceContainerExist(objectMetaDesc.mFontSpecifierName) == false)
+  {
+    MDY_CALL_ASSERT_SUCCESS(fontManager.CreateFontResourceContainer(objectMetaDesc.mFontSpecifierName));
+  }
+  this->mFontContainer = fontManager.GetFontResourceContainer(objectMetaDesc.mFontSpecifierName);
+
+  // Initialize FontRenderer.
+  PDyFontRendererCtorInformation desc = {};
   desc.mFontComponentPtr = this;
   MDY_CALL_ASSERT_SUCCESS(this->mRenderer.Initialize(desc));
-
-  // @TODO IMPLEMENT OTHER PROPERTIES
 
   return DY_SUCCESS;
 }
@@ -60,12 +66,6 @@ void FDyText::Release()
 const DDyString& FDyText::GetText() const noexcept
 {
   return this->mTextString;
-}
-
-std::string FDyText::GetUtf8Text() const noexcept
-{
-  MDY_NOT_IMPLEMENTED_ASSERT();
-  return MDY_INITILAIZE_EMPTYSTR;
 }
 
 TU32 FDyText::GetFontSize() const noexcept
@@ -118,6 +118,11 @@ void FDyText::SetColor(const DDyColor& color)
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
   this->mForegroundColor = color;
+}
+
+void FDyText::Render()
+{
+  this->mRenderer.Render();
 }
 
 } /// ::dy namespace

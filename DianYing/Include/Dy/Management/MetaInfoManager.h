@@ -19,6 +19,7 @@
 #include <Dy/Element/Descriptor/PrefabDescriptor.h>
 #include <Dy/Meta/Descriptor/ScriptDescriptor.h>
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
+#include <Dy/Meta/Information/FontMetaInformation.h>
 
 namespace dy
 {
@@ -76,6 +77,23 @@ public:
   ///
   MDY_NODISCARD const PDyPrefabMetaInformation& GetPrefabMetaInformation(_MIN_ const std::string& specifierName) const;
 
+  ///
+  /// @brief
+  /// @param  specifierName
+  /// @return
+  ///
+  MDY_NODISCARD const PDyMetaFontInformation& GetFontMetaInformation(_MIN_ const std::string& specifierName) const;
+
+  ///
+  /// @brief
+  /// @param  specifierName
+  /// @return
+  ///
+  FORCEINLINE MDY_NODISCARD bool IsFontMetaInformationExist(_MIN_ const std::string& specifierName) const noexcept
+  {
+    return this->mFontMetaInfo.find(specifierName) != this->mFontMetaInfo.end();
+  }
+
 private:
   template <typename TType>
   using THashMap = std::unordered_map<std::string, TType>;
@@ -89,19 +107,35 @@ private:
   ///
   /// @brief
   /// @param
+  /// @return
   ///
   MDY_NODISCARD EDySuccess pReadPrefabResourceMetaInformation(_MIN_ const std::string& metaFilePath);
 
   ///
   /// @brief
   /// @param
+  /// @return
   ///
   MDY_NODISCARD EDySuccess pReadWidgetResourceMetaInformation(_MIN_ const std::string& metaFilePath);
+
+  ///
+  /// @brief
+  /// @param
+  /// @return
+  ///
+  MDY_NODISCARD EDySuccess pReadFontResourceMetaInformation(_MIN_ const std::string& metaFilePath);
 
   /// Level meta information map.
   THashMap<PDyLevelConstructDescriptor> mLevelInfoMap   = {};
   /// Script meta information map.
   THashMap<PDyMetaScriptInformation>    mScriptMetaInfo = {};
+  /// Font meta information map.
+  THashMap<PDyMetaFontInformation>      mFontMetaInfo   = {};
+
+  //!
+  //! Hierarchial meta information containers.
+  //!
+
   /// Prefab meta information map. (Temporary use std::unique_ptr, for reconstructing children tree)
   THashMap<std::unique_ptr<PDyPrefabMetaInformation>>    mPrefabMetaInfo = {};
   /// Widget meta information map.

@@ -62,7 +62,8 @@ enum class EDyUniformVariableType
   Bool,
   Texture1D,
   Texture2D,
-  NoneError
+  NoneError,
+  Texture2DArray
 };
 
 ///

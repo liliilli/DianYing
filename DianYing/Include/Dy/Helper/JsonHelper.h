@@ -76,6 +76,19 @@ inline MDY_NODISCARD dy::DDyVector2 DyGetDDyVector2FromJson(_MIN_ const nlohmann
   return vector;
 }
 
+///
+/// @brief  Find "Header" String is exist on given json atlas.
+/// @param  atlas Valid immutable json atlas instance.
+/// @param  string Header string to verify.
+/// @return If found, return DY_SUCCESS or DY_FAILURE.
+///
+inline MDY_NODISCARD EDySuccess
+DyCheckHeaderIsExist(_MIN_ const nlohmann::json& atlas, _MIN_ const std::string_view& string) noexcept
+{
+  if (atlas.find(MSVSTR(string)) == atlas.end())  { return DY_FAILURE; }
+  else                                            { return DY_SUCCESS; }
+}
+
 } /// ::dy namespace
 
 #endif /// GUARD_DY_HELPER_JSON_HELPER_H
