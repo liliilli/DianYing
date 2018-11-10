@@ -154,6 +154,8 @@
     <ClCompile Include="Source\Builtin\ShaderGl\RenderFontArraySDF.cc" />
     <ClCompile Include="Source\Component\Internal\CDyFontRenderer_Deprecated.cc" />
     <ClCompile Include="Source\Element\Canvas\Text_Deprecated.cc" />
+    <ClCompile Include="Source\Element\Canvas\Text.cc" />
+    <ClCompile Include="Source\Component\Internal\CDyFontRenderer.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -397,6 +399,8 @@
     <ClInclude Include="Include\Dy\Element\RenderableObject.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyFontRenderer.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\Text_Deprecated.h" />
+    <ClInclude Include="Include\Dy\Component\Ctor\PDyFontRenderer.h" />
+    <ClInclude Include="Include\Dy\Element\Canvas\Text.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

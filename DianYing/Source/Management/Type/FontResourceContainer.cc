@@ -90,8 +90,8 @@ FDyFontResourceContainer::FDyFontResourceContainer(_MIN_ const PDyMetaFontInform
     MDY_ASSERT(dataBuffer->IsBufferCreatedProperly() == true, "Unexpected error occurred.");
     glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, 1024, 1024, 1, GL_RGBA, GL_UNSIGNED_BYTE, dataBuffer->GetBufferStartPoint());
   }
-  glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   glBindTexture (GL_TEXTURE_2D_ARRAY, 0);
@@ -111,7 +111,7 @@ bool FDyFontResourceContainer::IsCharacterGlyphExist(const TC16 fontCode)
 
 const DDyFontCharacterInfo& FDyFontResourceContainer::GetGlyphCharacter(const TC16 fontCode)
 {
-  if (this->IsCharacterGlyphExist(fontCode) == true)  { return *this->mCharContainer[fontCode].get(); }
+  if (this->IsCharacterGlyphExist(fontCode) == true)  { return this->mCharContainer[fontCode]; }
   else                                                { return sDefaultFontCharacterInfo; }
 }
 
@@ -123,7 +123,7 @@ TI32 FDyFontResourceContainer::GetLinefeedHeight(const TI32 fontSize) const noex
 
 const DDyFontCharacterInfo& FDyFontResourceContainer::operator[](const TC16 fontCode)
 {
-  return *this->mCharContainer[fontCode].get();
+  return this->mCharContainer[fontCode];
 }
 
 } /// ::dy namespace
