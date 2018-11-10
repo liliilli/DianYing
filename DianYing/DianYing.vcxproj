@@ -87,7 +87,7 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <AdditionalIncludeDirectories>C:\TPLibraries\PhysX-3.4\PxShared\include;C:\TPLibraries\PhysX-3.4\PhysX_3.4\Include;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;$(ProjectDir)Libraries\msdfgen;$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDir)Libraries\freetype\include;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;$(ProjectDir)Libraries\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\TPLibraries\PhysX-3.4\PxShared\include;C:\TPLibraries\PhysX-3.4\PhysX_3.4\Include;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;$(ProjectDir)Libraries\msdfgen;$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDir)Libraries\freetype\include;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;$(ProjectDir)Libraries\zlib;$(ProjectDir)Libraries\cxxopts\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4244;4267;4189;4100;4458</DisableSpecificWarnings>
       <PreprocessorDefinitions>__MDY_FLAG_IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -241,6 +241,7 @@
     <ClCompile Include="Source\Core\Component\MeshRenderer.cc" />
     <ClCompile Include="Source\Core\Component\Object\Camera.cc" />
     <ClCompile Include="Source\Core\Component\Object\Grid.cc" />
+    <ClCompile Include="Source\Core\Etc\StaticCoreTrigger.cc" />
     <ClCompile Include="Source\Core\Rendering\DeferredRenderingMesh.cc" />
     <ClCompile Include="Source\Core\Component\Object\PostEffectSsao.cc" />
     <ClCompile Include="Source\Core\Component\Resource\MaterialResource.cc" />
@@ -335,6 +336,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Source\Test\TestCxxopt.cc" />
     <ClCompile Include="Source\Test\TestLuaBindingDy.cc" />
     <ClCompile Include="Source\Test\TestLuaCpp.cc" />
     <ClCompile Include="Source\Test\testLuaEntry.cc" />
@@ -390,6 +392,7 @@
     <ClInclude Include="Include\Dy\Core\Component\Information\ShaderInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\TextureInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\SoundResource.h" />
+    <ClInclude Include="Include\Dy\Core\Etc\StaticCoreTrigger.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\BasicRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\BasicShadow.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\FinalScreenDisplayRenderer.h" />
@@ -532,6 +535,7 @@
     <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetComponentDescriptor.h" />
     <ClInclude Include="Include\Dy\Meta\Information\FontMetaInformation.h" />
     <ClInclude Include="Include\Dy\Meta\Type\TextureParameter.h" />
+    <ClInclude Include="Include\Dy\Test\TestCxxopt.h" />
     <ClInclude Include="Include\Dy\Test\testLua.h" />
     <ClInclude Include="Include\Dy\Test\TestMacroSetting.h" />
     <ClInclude Include="Include\Dy\Helper\Constant\StringPipelineUniform.h" />

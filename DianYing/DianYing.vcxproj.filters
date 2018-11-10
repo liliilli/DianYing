@@ -156,6 +156,8 @@
     <ClCompile Include="Source\Element\Canvas\Text_Deprecated.cc" />
     <ClCompile Include="Source\Element\Canvas\Text.cc" />
     <ClCompile Include="Source\Component\Internal\CDyFontRenderer.cc" />
+    <ClCompile Include="Source\Core\Etc\StaticCoreTrigger.cc" />
+    <ClCompile Include="Source\Test\TestCxxopt.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -401,6 +403,8 @@
     <ClInclude Include="Include\Dy\Element\Canvas\Text_Deprecated.h" />
     <ClInclude Include="Include\Dy\Component\Ctor\PDyFontRenderer.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\Text.h" />
+    <ClInclude Include="Include\Dy\Core\Etc\StaticCoreTrigger.h" />
+    <ClInclude Include="Include\Dy\Test\TestCxxopt.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />
