@@ -332,6 +332,7 @@
     <ClCompile Include="Source\Meta\Descriptor\WidgetCommponDescriptor.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetComponentDescriptor.cc" />
     <ClCompile Include="Source\Meta\Information\FontMetaInformation.cc" />
+    <ClCompile Include="Source\Meta\Type\EDyInput.cc" />
     <ClCompile Include="Source\Meta\Type\TextureParameter.cc" />
     <ClCompile Include="Source\precompiled.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -537,6 +538,7 @@
     <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetCommonDescriptor.h" />
     <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetComponentDescriptor.h" />
     <ClInclude Include="Include\Dy\Meta\Information\FontMetaInformation.h" />
+    <ClInclude Include="Include\Dy\Meta\Type\EDyInput.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyRenderingApi.h" />
     <ClInclude Include="Include\Dy\Meta\Type\TextureParameter.h" />
     <ClInclude Include="Include\Dy\Test\TestCxxopt.h" />

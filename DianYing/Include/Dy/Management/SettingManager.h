@@ -171,6 +171,8 @@ private:
 
   DDySettingDescription mDescription  = {};
   DDySettingGameplay    mGamePlay     = {};
+  DDySettingInput       mInput        = {};
+  DDySettingTag         mTag          = {};
 
   bool mIsEnabledVsync = true;
   bool mIsInitialized  = false;

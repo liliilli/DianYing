@@ -44,6 +44,23 @@ MDY_SET_IMMUTABLE_STRING(sInitialResolution,    "InitialResolution");
 MDY_SET_IMMUTABLE_STRING(sGamePlay_Shadow,                      "Shadow");
 MDY_SET_IMMUTABLE_STRING(sGamePlay_Shadow_GlobalDefaultMapSize, "GlobalDefaultMapSize");
 
+//! DDySettingInput
+
+MDY_SET_IMMUTABLE_STRING(sMode,     "Mode");
+MDY_SET_IMMUTABLE_STRING(sKeyboard, "Keyboard");
+MDY_SET_IMMUTABLE_STRING(sMouse,    "Mouse");
+MDY_SET_IMMUTABLE_STRING(sJoystick, "Joystick");
+
+MDY_SET_IMMUTABLE_STRING(sPositive, "+");
+MDY_SET_IMMUTABLE_STRING(sNegative, "-");
+MDY_SET_IMMUTABLE_STRING(sGravity,  "gravity");
+MDY_SET_IMMUTABLE_STRING(sRepeat,   "repeat");
+
+//! DDySettingTag
+
+MDY_SET_IMMUTABLE_STRING(sObject,     "Object");
+MDY_SET_IMMUTABLE_STRING(sCollision,  "Collision");
+
 } /// ::unnamed namespace
 
 //!
@@ -84,7 +101,11 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ DDySettingDescription& p)
   p.mSupportContact   = DyGetValue<std::string>(j, sSupportContact);
 }
 
-void to_json(nlohmann::json& j, const DDySettingGameplay& p)
+//!
+//! Gameplay
+//!
+
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingGameplay& p)
 {
   j = nlohmann::json
   {
@@ -94,14 +115,14 @@ void to_json(nlohmann::json& j, const DDySettingGameplay& p)
   };
 }
 
-void from_json(const nlohmann::json& j, DDySettingGameplay& p)
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingGameplay& p)
 {
   p.mInitialSceneSpecifier  = DyGetValue<std::string>         (j, sInitialScene);
   p.mInitialResolution      = DyGetValue<DDyVectorInt2>       (j, sInitialResolution);
   p.mShadow                 = DyGetValue<decltype(p.mShadow)> (j, sGamePlay_Shadow);
 }
 
-void to_json(nlohmann::json& j, const DDySettingGameplay::DDyShadow& p)
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingGameplay::DDyShadow& p)
 {
   j = nlohmann::json
   {
@@ -109,9 +130,102 @@ void to_json(nlohmann::json& j, const DDySettingGameplay::DDyShadow& p)
   };
 }
 
-void from_json(const nlohmann::json& j, DDySettingGameplay::DDyShadow& p)
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingGameplay::DDyShadow& p)
 {
   p.mShadowGlobalDefaultMap = DyGetValue<DDyVectorInt2>(j, sGamePlay_Shadow_GlobalDefaultMapSize);
+}
+
+//!
+//! Input
+//!
+
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingInput& p)
+{
+  j = nlohmann::json
+  {
+      {MSVSTR(sMode),       p.mMode},
+      {MSVSTR(sKeyboard),   p.mKeyboardMap},
+  };
+}
+
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingInput::DDyMode& p)
+{
+  j = nlohmann::json
+  {
+      {MSVSTR(sKeyboard), p.mIsEnabledKeyboard},
+      {MSVSTR(sMouse),    p.mIsEnabledMouse},
+      {MSVSTR(sJoystick), p.mIsEnabledJoystick},
+  };
+}
+
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingInput::DDyKeyboard& p)
+{
+  j = nlohmann::json
+  {
+      {MSVSTR(sGravity),  p.mGravity},
+      {MSVSTR(sRepeat),   p.mIsRepeatable},
+  };
+
+  if (p.mPositiveValue != EDyKeyboard::NoneError)
+  {
+    j[MSVSTR(sPositive)] = p.mPositiveValue;
+  }
+  if (p.mNegativeValue != EDyKeyboard::NoneError)
+  {
+    j[MSVSTR(sNegative)] = p.mNegativeValue;
+  }
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingInput& p)
+{
+  p.mMode         = DyGetValue<DDySettingInput::DDyMode>      (j, sMode);
+  p.mKeyboardMap  = DyGetValue<DDySettingInput::TKeyboardMap> (j, sKeyboard);
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingInput::DDyMode& p)
+{
+  p.mIsEnabledKeyboard  = DyGetValue<bool>(j, sKeyboard);
+  p.mIsEnabledJoystick  = DyGetValue<bool>(j, sJoystick);
+  p.mIsEnabledMouse     = DyGetValue<bool>(j, sMouse);
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingInput::DDyKeyboard& p)
+{
+  if (DyIsJsonKeyExist(j, MSVSTR(sPositive)) == true)
+  {
+    p.mPositiveValue = DyGetValue<EDyKeyboard>(j, sPositive);
+  }
+  if (DyIsJsonKeyExist(j, MSVSTR(sNegative)) == true)
+  {
+    p.mNegativeValue = DyGetValue<EDyKeyboard>(j, sNegative);
+  }
+
+  p.mGravity      = DyGetValue<TI32>(j, sGravity);
+  p.mIsRepeatable = DyGetValue<bool>(j, sRepeat);
+}
+
+DDySettingInput::DDyKeyboard
+DDySettingInput::DDyKeyboard::CreateInstance(_MIN_ const nlohmann::json& json, _MIN_ const std::string& specifierName)
+{
+  DDySettingInput::DDyKeyboard p = json.get<DDySettingInput::DDyKeyboard>();
+  p.mSpecifierName = specifierName;
+
+  return p;
+}
+
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingTag& p)
+{
+  j = nlohmann::json
+  {
+      {MSVSTR(sObject),     p.mObjectTag},
+      {MSVSTR(sCollision),  p.mCollisionTag},
+  };
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingTag& p)
+{
+  p.mObjectTag    = DyGetValue<DDySettingTag::TObjectTagList>   (j, sObject);
+  p.mCollisionTag = DyGetValue<DDySettingTag::TCollisionTagList>(j, sCollision);
 }
 
 } /// ::dy namespace

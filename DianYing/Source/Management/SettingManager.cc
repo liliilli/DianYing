@@ -33,33 +33,22 @@
 #include <Dy/Helper/JsonHelper.h>
 #include <Dy/Helper/Constant/StringSettingFile.h>
 
+//!
+//! Local translation unit variables or functions.
+//!
+
 namespace
 {
-
-//!
-//! Local translation unit varaibles
-//!
 
 MDY_SET_IMMUTABLE_STRING(sCategoryDescription,  "Description");
 MDY_SET_IMMUTABLE_STRING(sCategoryGameplay,     "Gameplay");
 MDY_SET_IMMUTABLE_STRING(sCategoryInput,        "Input");
-
-//!
-//! Global function
-//!
+MDY_SET_IMMUTABLE_STRING(sCategoryTag,          "Tag");
 
 ///
-/// @brief
-///
-[[nodiscard]] bool __IsSameCString(const char* lhs, const char* rhs) noexcept
-{
-  return strcmp(lhs, rhs) == 0;
-}
-
-///
-/// @brief
+/// @brief  Get rendering api type value from argument string.
 /// @param  argString Lowered graphics api argument string if not, just return Error type.
-/// @return
+/// @return Rendering api type value.
 ///
 MDY_NODISCARD dy::EDyRenderingApi DyGetRenderingApiType(_MIN_ const std::string& argString) noexcept
 {
@@ -107,7 +96,7 @@ EDyRenderingApi MDySetting::GetRenderingType() const noexcept
   return this->mRenderingType;
 }
 
-void MDySetting::SetFeatureLogging(bool isEnabled) noexcept
+void MDySetting::SetFeatureLogging(_MIN_ bool isEnabled) noexcept
 {
   if (this->mIsEnabledLogging != isEnabled)
   {
@@ -123,21 +112,21 @@ void MDySetting::SetFeatureLogging(bool isEnabled) noexcept
   }
 }
 
-void MDySetting::SetSubFeatureLoggingToConsole(bool isEnabled) noexcept
+void MDySetting::SetSubFeatureLoggingToConsole(_MIN_ bool isEnabled) noexcept
 {
   this->mIsEnabledLoggingToConsole = isEnabled;
   MDY_LOG_INFO_D("{} | Logging Console : {}. Need to be restart logger.", "SubFeature", isEnabled ? "ON" : "OFF");
 }
 
-void MDySetting::SetSubFeatureLoggingToFile(bool isEnabled) noexcept
+void MDySetting::SetSubFeatureLoggingToFile(_MIN_ bool isEnabled) noexcept
 {
   this->mIsEnabledLoggingToFile = isEnabled;
   MDY_LOG_INFO_D("{} | Logging File : {}. Need to be restart logger.", "SubFeature", isEnabled ? "ON" : "OFF");
 }
 
-void MDySetting::SetLogFilePath(const std::string& path) noexcept
+void MDySetting::SetLogFilePath(_MIN_ const std::string& path) noexcept
 {
-  if (path.empty())
+  if (path.empty() == true)
   {
     MDY_LOG_ERROR_D("{} | new log file path is empty. Log file path did not change. Log file path : {}", this->mLogFilePath);
   }
@@ -203,8 +192,8 @@ void MDySetting::pSetupExecutableArgumentSettings()
   };
 
   ///
-  /// @brief
-  /// @param result
+  /// @brief Setup feature logging to file from argument.
+  /// @param result ["enable_logging_file"] Option value from parsing library.
   ///
   static auto SetupLoggingFileFeature = [this](const cxxopts::OptionValue& result)
   {
@@ -299,16 +288,12 @@ EDySuccess MDySetting::pfInitialize()
   const auto opSettingAtlas = DyGetJsonAtlas(MSVSTR(gSettingPathName));
   MDY_ASSERT(opSettingAtlas.has_value() == true, "Failed to open application setting file.");
 
-
   { // Apply setting to project before everthing starts to working.
     const auto& settingAtlas = opSettingAtlas.value();
     this->mDescription  = DyGetValue<decltype(this->mDescription)>(settingAtlas, sCategoryDescription);
     this->mGamePlay     = DyGetValue<decltype(this->mGamePlay)>   (settingAtlas, sCategoryGameplay);
-
-    { // Input[Gameplay]
-      [[maybe_unused]]
-      const auto& input = settingAtlas.at(sCategoryInput.data());
-    }
+    this->mInput        = DyGetValue<decltype(this->mInput)>      (settingAtlas, sCategoryInput);
+    this->mTag          = DyGetValue<decltype(this->mTag)>        (settingAtlas, sCategoryTag);
   }
 
   this->mIsInitialized = true;

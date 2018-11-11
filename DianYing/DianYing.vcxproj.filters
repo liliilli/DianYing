@@ -160,6 +160,7 @@
     <ClCompile Include="Source\Test\TestCxxopt.cc" />
     <ClCompile Include="Source\Management\Type\SettingContainer.cc" />
     <ClCompile Include="Source\Helper\Type\VectorInt2.cc" />
+    <ClCompile Include="Source\Meta\Type\EDyInput.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -409,6 +410,7 @@
     <ClInclude Include="Include\Dy\Test\TestCxxopt.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyRenderingApi.h" />
     <ClInclude Include="Include\Dy\Management\Type\SettingContainer.h" />
+    <ClInclude Include="Include\Dy\Meta\Type\EDyInput.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

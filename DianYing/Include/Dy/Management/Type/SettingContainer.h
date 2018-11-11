@@ -13,9 +13,11 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/GlobalType.h>
 #include <nlohmann/json_fwd.hpp>
+
+#include <Dy/Helper/GlobalType.h>
 #include <Dy/Helper/Type/VectorInt2.h>
+#include <Dy/Meta/Type/EDyInput.h>
 
 namespace dy
 {
@@ -67,6 +69,68 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingGameplay& p);
 
 void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingGameplay::DDyShadow& p);
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingGameplay::DDyShadow& p);
+
+///
+/// @struct DDySettingInput
+/// @brief  Setting input that able to be serialized.
+/// @TODO NEED TO CHANGE STRUCTRUE TO `ACTION` `AXIS`, NOT MEDIA DEPENDENT.
+///
+struct DDySettingInput final
+{
+  struct DDyMode final
+  {
+    bool mIsEnabledKeyboard   = false;
+    bool mIsEnabledMouse      = false;
+    bool mIsEnabledJoystick    = false;
+  };
+
+  struct DDyKeyboard final
+  {
+    std::string mSpecifierName  = {};
+    EDyKeyboard mPositiveValue  = EDyKeyboard::NoneError;
+    EDyKeyboard mNegativeValue  = EDyKeyboard::NoneError;
+    TF32        mGravity        = MDY_INITIALIZE_DEFINT;
+    bool        mIsRepeatable   = false;
+
+    ///
+    /// @brief  Create `DDyKeyboard` with valid json atlas.
+    /// @param  json valid json atlas.
+    /// @param  specifierName `DDyKeyboard::mSpecifierName`.
+    /// @return If succeeded, just return `DDyKeyboard` instance.
+    ///
+    static MDY_NODISCARD DDyKeyboard CreateInstance(_MIN_ const nlohmann::json& json, _MIN_ const std::string& specifierName);
+  };
+
+  using TKeyboardMap = std::unordered_map<std::string, DDyKeyboard>;
+
+  DDyMode       mMode         = {};
+  TKeyboardMap  mKeyboardMap  = {};
+};
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingInput& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingInput& p);
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingInput::DDyMode& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingInput::DDyMode& p);
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingInput::DDyKeyboard& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingInput::DDyKeyboard& p);
+
+///
+/// @struct DDySettingTag
+/// @brief  Setting tag that able to be serialized.
+///
+struct DDySettingTag final
+{
+  using TObjectTagList    = std::vector<std::string>;
+  using TCollisionTagList = std::vector<std::string>;
+
+  TObjectTagList    mObjectTag     = {};
+  TCollisionTagList mCollisionTag  = {};
+};
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingTag& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingTag& p);
 
 } /// ::dy namespace
 
