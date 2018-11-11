@@ -74,7 +74,7 @@ private:
   MDY_TRANSIENT DDySoundInformation*  __mLinkedSoundInformationPtr = nullptr;
 
   friend class DDySoundInformation;
-  friend class MDyHeapResource;
+  friend class MDyIOResource;
 
   // @TODO TEMPORAL
   friend class MDySound;

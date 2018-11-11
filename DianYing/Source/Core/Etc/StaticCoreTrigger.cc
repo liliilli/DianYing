@@ -15,8 +15,8 @@
 /// Header file
 #include <Dy/Core/Etc/StaticCoreTrigger.h>
 
-#include <Dy/Management/DataInformationManager.h>
-#include <Dy/Management/HeapResourceManager.h>
+#include <Dy/Management/IODataManager.h>
+#include <Dy/Management/IOResourceManager.h>
 #include <Dy/Management/InputManager.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/MetaInfoManager.h>
@@ -60,8 +60,8 @@ void SDyCoreTrigger::InitiailzeAllManagers()
 #endif
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Initialize());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyDataInformation::Initialize());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyHeapResource::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyIOData::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyIOResource::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyWorld::Initialize());
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDyMetaInfo::Initialize());
@@ -95,8 +95,8 @@ void SDyCoreTrigger::ReleaseAllManagers()
 
   // Release other management instance.
   MDY_CALL_ASSERT_SUCCESS(dy::MDyWorld::Release());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyHeapResource::Release());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyDataInformation::Release());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyIOResource::Release());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyIOData::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Release());
 #if defined(MDY_FLAG_IN_EDITOR)
   MDY_CALL_ASSERT_SUCCESS(dy::editor::MDyEditorGui::Release());

@@ -15,8 +15,8 @@
 /// Header file
 #include <Dy/Core/Component/Object/PostEffectSsao.h>
 
-#include <Dy/Management/DataInformationManager.h>
-#include <Dy/Management/HeapResourceManager.h>
+#include <Dy/Management/IODataManager.h>
+#include <Dy/Management/IOResourceManager.h>
 #include <Dy/Management/RenderingManager.h>
 #include <Dy/Helper/Math/Random.h>
 #include <Dy/Management/SettingManager.h>
@@ -60,7 +60,7 @@ FDyPostEffectSsao::~FDyPostEffectSsao()
   this->pDeleteFrameBufferComponents();
 
 #ifdef false
-  auto& manResc = MDyHeapResource::GetInstance();
+  auto& manResc = MDyIOResource::GetInstance();
 #endif
 }
 
@@ -220,8 +220,8 @@ void FDyPostEffectSsao::pCreateBlurFrameBufferComponent()
 
 void FDyPostEffectSsao::pCreateSsaoShaderResource()
 {
-  auto& manInfo = MDyDataInformation::GetInstance();
-  auto& manResc = MDyHeapResource::GetInstance();
+  auto& manInfo = MDyIOData::GetInstance();
+  auto& manResc = MDyIOResource::GetInstance();
 
   // Make deferred shader
   PDyShaderConstructionDescriptor shaderDesc;
@@ -264,8 +264,8 @@ void FDyPostEffectSsao::pCreateSsaoShaderResource()
 
 void FDyPostEffectSsao::pCreateSsaoBlurShaderResource()
 {
-  auto& manInfo = MDyDataInformation::GetInstance();
-  auto& manResc = MDyHeapResource::GetInstance();
+  auto& manInfo = MDyIOData::GetInstance();
+  auto& manResc = MDyIOResource::GetInstance();
 
   // Make deferred shader
   PDyShaderConstructionDescriptor shaderDesc;

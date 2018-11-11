@@ -529,9 +529,9 @@
     <ClInclude Include="Include\Dy\Helper\Type\Vector2.h" />
     <ClInclude Include="Include\Dy\Helper\Type\Vector3.h" />
     <ClInclude Include="Include\Dy\Helper\Type\Vector4.h" />
-    <ClInclude Include="Include\Dy\Management\HeapResourceManager.h" />
+    <ClInclude Include="Include\Dy\Management\IOResourceManager.h" />
     <ClInclude Include="Include\Dy\Management\Interface\ISingletonCrtp.h" />
-    <ClInclude Include="Include\Dy\Management\DataInformationManager.h" />
+    <ClInclude Include="Include\Dy\Management\IODataManager.h" />
     <ClInclude Include="Include\Dy\Management\SettingManager.h" />
     <ClInclude Include="Include\Dy\Management\TimeManager.h" />
     <ClInclude Include="Include\Dy\Meta\Descriptor\ScriptDescriptor.h" />

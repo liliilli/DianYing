@@ -15,8 +15,8 @@
 /// Header file
 #include <Dy/Builtin/ShaderGl/RenderBasicShadow.h>
 #include <Dy/Core/Component/Internal/ShaderType.h>
-#include <Dy/Management/DataInformationManager.h>
-#include <Dy/Management/HeapResourceManager.h>
+#include <Dy/Management/IODataManager.h>
+#include <Dy/Management/IOResourceManager.h>
 
 //!
 //! Forward declaration and data
@@ -71,8 +71,8 @@ FDyBuiltinShaderGLRenderBasicShadow::FDyBuiltinShaderGLRenderBasicShadow()
     shaderDesc.mShaderFragments.emplace_back(fs);
   }
 
-  auto& infoManager = MDyDataInformation::GetInstance();
-  auto& rescManager = MDyHeapResource::GetInstance();
+  auto& infoManager = MDyIOData::GetInstance();
+  auto& rescManager = MDyIOResource::GetInstance();
 
   MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation(shaderDesc));
   MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(sName.data()));

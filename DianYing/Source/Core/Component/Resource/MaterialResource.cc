@@ -16,8 +16,8 @@
 #include <Dy/Core/Component/Resource/MaterialResource.h>
 
 #include <Dy/Core/Component/Resource/ShaderResource.h>
-#include <Dy/Management/DataInformationManager.h>
-#include <Dy/Management/HeapResourceManager.h>
+#include <Dy/Management/IODataManager.h>
+#include <Dy/Management/IOResourceManager.h>
 
 namespace dy
 {

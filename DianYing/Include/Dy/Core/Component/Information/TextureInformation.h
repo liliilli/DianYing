@@ -70,7 +70,7 @@ private:
   MDY_TRANSIENT CDyTextureResource* __mLinkedTextureResourcePtr = nullptr;
 
   friend class CDyTextureResource;
-  friend class MDyHeapResource;
+  friend class MDyIOResource;
 };
 
 } /// ::dy namespace

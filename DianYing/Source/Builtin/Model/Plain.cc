@@ -16,7 +16,7 @@
 #include <Dy/Builtin/Model/Plain.h>
 #include <Dy/Core/Component/Internal/ModelType.h>
 #include <Dy/Core/Component/Resource/SubmeshResource.h>
-#include <Dy/Management/DataInformationManager.h>
+#include <Dy/Management/IODataManager.h>
 
 namespace dy::builtin
 {
@@ -60,7 +60,7 @@ FDyBuiltinModelPlain::FDyBuiltinModelPlain()
     modelDesc.mSubmeshConstructionInformations.emplace_back(submeshDesc);
   }
 
-  auto& manInfo = MDyDataInformation::GetInstance();
+  auto& manInfo = MDyIOData::GetInstance();
   MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(modelDesc));
 }
 

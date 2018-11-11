@@ -26,7 +26,7 @@
 #include <Dy/Core/Component/Object/Camera.h>
 #include <Dy/Helper/Type/Vector3.h>
 
-#include <Dy/Management/DataInformationManager.h>
+#include <Dy/Management/IODataManager.h>
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/WorldManager.h>
@@ -49,7 +49,7 @@
 #include <Dy/Builtin/ShaderGl/RenderDefaultFont.h>
 #include <Dy/Builtin/ShaderGl/RenderScreenOutput.h>
 
-#include <Dy/Management/HeapResourceManager.h>
+#include <Dy/Management/IOResourceManager.h>
 #include <Dy/Management/SoundManager.h>
 #include <Dy/Management/PhysicsManager.h>
 
@@ -103,7 +103,7 @@ void DyInitializeBuiltinResource()
 ///
 void DyGlTempInitializeResource()
 {
-  //auto& manInfo = dy::MDyDataInformation::GetInstance();
+  //auto& manInfo = dy::MDyIOData::GetInstance();
 
   //!
   //! Shader
@@ -336,8 +336,8 @@ void DyTestSoundFmod()
   desc.mSoundName = "1";
   desc.mSoundPath = "./TestResource/_02Effect.mp3";
 
-  auto& manInfo = dy::MDyDataInformation::GetInstance();
-  auto& resInfo = dy::MDyHeapResource::GetInstance();
+  auto& manInfo = dy::MDyIOData::GetInstance();
+  auto& resInfo = dy::MDyIOResource::GetInstance();
   MDY_CALL_ASSERT_SUCCESS(manInfo.CreateSoundInformation(desc));
   MDY_CALL_ASSERT_SUCCESS(resInfo.CreateSoundResource(desc.mSoundName));
 }

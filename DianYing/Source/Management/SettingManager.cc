@@ -143,7 +143,7 @@ void MDySetting::SetGlobalDefaultShadowMapResolution(_MIN_ const DDyVector2& siz
   this->mGamePlay.mShadow.mShadowGlobalDefaultMap = DDyVectorInt2{size};
 }
 
-bool MDySetting::IsVSyncEnabled() const noexcept
+bool MDySetting::IsEnabledVSync() const noexcept
 {
   return this->mIsEnabledVsync;
 }
@@ -304,16 +304,6 @@ EDySuccess MDySetting::pfRelease()
 {
   MDY_LOG_INFO_D("{} | MDySetting::pfRelease()", "Function call");
   return DY_SUCCESS;
-}
-
-void to_json(nlohmann::json& j, const MDySetting& p)
-{
-
-}
-
-void from_json(const nlohmann::json& j, MDySetting& p)
-{
-
 }
 
 } /// ::dy namespace

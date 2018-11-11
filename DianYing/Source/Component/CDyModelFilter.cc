@@ -14,7 +14,7 @@
 
 /// Header file
 #include <Dy/Component/CDyModelFilter.h>
-#include <Dy/Management/HeapResourceManager.h>
+#include <Dy/Management/IOResourceManager.h>
 #include <Dy/Element/Actor.h>
 #include <Dy/Component/CDyModelRenderer.h>
 
@@ -25,7 +25,7 @@ CDyModelFilter::CDyModelFilter(FDyActor& actorReference) : ADyGeneralBaseCompone
 
 EDySuccess CDyModelFilter::Initialize(const DDyModelFilterMetaInformation& metaInfo)
 {
-  auto& resourceManager = MDyHeapResource::GetInstance();
+  auto& resourceManager = MDyIOResource::GetInstance();
 
   // Bind model.
   if (const auto modelResourcePtr = resourceManager.GetModelResource(metaInfo.mModelName);

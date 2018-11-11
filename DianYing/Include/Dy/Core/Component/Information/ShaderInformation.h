@@ -78,7 +78,7 @@ private:
   MDY_TRANSIENT CDyShaderResource* __mLinkedShaderResourcePtr = nullptr;
 
   friend class CDyShaderResource;
-  friend class MDyHeapResource;
+  friend class MDyIOResource;
 };
 
 } /// ::dy namespace

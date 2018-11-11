@@ -17,7 +17,7 @@
 #include <Dy/Core/Component/MeshRenderer.h>
 
 #include <Dy/Core/Component/Resource/SubmeshResource.h>
-#include <Dy/Management/HeapResourceManager.h>
+#include <Dy/Management/IOResourceManager.h>
 
 #include <Dy/Builtin/ShaderGl/RenderBasicShadow.h>
 #include <Dy/Component/CDyDirectionalLight.h>
@@ -50,7 +50,7 @@ namespace dy
 
 FDyBasicShadow::FDyBasicShadow()
 {
-  auto& heapManager = MDyHeapResource::GetInstance();
+  auto& heapManager = MDyIOResource::GetInstance();
 
   builtin::FDyBuiltinShaderGLRenderBasicShadow();
   this->mDirLightShaderResource = heapManager.GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderBasicShadow::sName));

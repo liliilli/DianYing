@@ -28,13 +28,13 @@ namespace dy
 {
 
 ///
-/// @class MDyDataInformation
+/// @class MDyIOData
 /// @brief Manages data information which are needed to create heap instances such as CDy-Resource.
 ///
-class MDyDataInformation final : public ISingleton<MDyDataInformation>
+class MDyIOData final : public ISingleton<MDyIOData>
 {
-  MDY_SINGLETON_DERIVED(MDyDataInformation);
-  MDY_SINGLETON_PROPERTIES(MDyDataInformation);
+  MDY_SINGLETON_DERIVED(MDyIOData);
+  MDY_SINGLETON_PROPERTIES(MDyIOData);
 public:
   ///
   /// @brief Create shader information.

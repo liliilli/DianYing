@@ -198,8 +198,6 @@
     <ClInclude Include="Include\Dy\Core\Component\Resource\ShaderResource.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\MaterialResource.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\ModelResource.h" />
-    <ClInclude Include="Include\Dy\Management\DataInformationManager.h" />
-    <ClInclude Include="Include\Dy\Management\HeapResourceManager.h" />
     <ClInclude Include="Include\Dy\Core\Component\MeshImporter.h" />
     <ClInclude Include="Include\Dy\Core\Component\MeshRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\TextureEnums.h" />
@@ -411,6 +409,8 @@
     <ClInclude Include="Include\Dy\Meta\Type\EDyRenderingApi.h" />
     <ClInclude Include="Include\Dy\Management\Type\SettingContainer.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyInput.h" />
+    <ClInclude Include="Include\Dy\Management\IODataManager.h" />
+    <ClInclude Include="Include\Dy\Management\IOResourceManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

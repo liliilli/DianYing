@@ -13,7 +13,7 @@
 ///
 
 #include <Dy/Core/Component/Internal/MaterialType.h>
-#include "Dy/Management/HeapResourceManager.h"
+#include "Dy/Management/IOResourceManager.h"
 
 namespace dy
 {
@@ -36,12 +36,12 @@ Shader Name : {1}
 
 DDyMaterialShaderTuple::DDyMaterialShaderTuple(const std::string& shaderName) :
     mShaderName(shaderName),
-    mValidShaderPointer(MDyHeapResource::GetInstance().GetShaderResource(shaderName))
+    mValidShaderPointer(MDyIOResource::GetInstance().GetShaderResource(shaderName))
 { }
 
 DDyMaterialTextureTuple::DDyMaterialTextureTuple(const std::string& textureName) :
     mTextureName(textureName),
-    mValidTexturePointer(MDyHeapResource::GetInstance().GetTextureResource(textureName))
+    mValidTexturePointer(MDyIOResource::GetInstance().GetTextureResource(textureName))
 { }
 
 } /// ::dy namespace

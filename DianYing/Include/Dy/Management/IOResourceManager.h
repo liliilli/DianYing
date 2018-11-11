@@ -38,13 +38,13 @@ namespace dy
 {
 
 ///
-/// @class MDyHeapResource
+/// @class MDyIOResource
 /// @brief Manages heap resources which have actual memroy resource information for operation.
 ///
-class MDyHeapResource final : public dy::ISingleton<MDyHeapResource>
+class MDyIOResource final : public dy::ISingleton<MDyIOResource>
 {
-  MDY_SINGLETON_DERIVED(MDyHeapResource);
-  MDY_SINGLETON_PROPERTIES(MDyHeapResource);
+  MDY_SINGLETON_DERIVED(MDyIOResource);
+  MDY_SINGLETON_PROPERTIES(MDyIOResource);
 
   template <typename TType>
   using THashList = std::unordered_map<std::string, TType>;

@@ -25,7 +25,7 @@
 #include <Dy/Helper/Type/Matrix4.h>
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/Internal/FramebufferManager.h>
-#include <Dy/Management/HeapResourceManager.h>
+#include <Dy/Management/IOResourceManager.h>
 #include <Dy/Meta/Descriptor/WidgetComponentDescriptor.h>
 #include <Dy/Builtin/ShaderGl/RenderFontSDF_Deprecated.h>
 #include <Dy/Management/FontManager.h>

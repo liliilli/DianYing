@@ -102,8 +102,8 @@ private:
   MDY_TRANSIENT std::unordered_map<std::string, int32_t>  __mPopulatedMaterialIndexMap = {};
 
   friend class CDyMaterialResource;
-  friend class MDyDataInformation;
-  friend class MDyHeapResource;
+  friend class MDyIOData;
+  friend class MDyIOResource;
 };
 
 } /// ::dy namespace

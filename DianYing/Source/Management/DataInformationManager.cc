@@ -13,14 +13,14 @@
 ///
 
 /// Header file
-#include <Dy/Management/DataInformationManager.h>
+#include <Dy/Management/IODataManager.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/SynchronizationManager.h>
 
 namespace
 {
 
-MDY_SET_IMMUTABLE_STRING(kDyDataInformation,            "MDyDataInformation");
+MDY_SET_IMMUTABLE_STRING(kDyDataInformation,            "MDyIOData");
 
 MDY_SET_IMMUTABLE_STRING(kErrorShaderNameNotSpecified,  "{} | Failed to create shader information. Shader name is not specified.");
 MDY_SET_IMMUTABLE_STRING(kErrorShaderFragmentEmpty,     "{} | Failed to create shader information. Shader fragments are empty.");
@@ -48,19 +48,19 @@ MDY_SET_IMMUTABLE_STRING(kErrorModelPathEmpty,          "{}::{} | Failed to crea
 namespace dy
 {
 
-EDySuccess MDyDataInformation::pfInitialize()
+EDySuccess MDyIOData::pfInitialize()
 {
-  MDY_LOG_INFO_D("{} | MDyDataInformation::pfInitialize().", "FunctionCall");
+  MDY_LOG_INFO_D("{} | MDyIOData::pfInitialize().", "FunctionCall");
   return DY_SUCCESS;
 }
 
-EDySuccess MDyDataInformation::pfRelease()
+EDySuccess MDyIOData::pfRelease()
 {
-  MDY_LOG_INFO_D("{} | MDyDataInformation::pfRelease().", "FunctionCall");
+  MDY_LOG_INFO_D("{} | MDyIOData::pfRelease().", "FunctionCall");
   return DY_SUCCESS;
 }
 
-EDySuccess MDyDataInformation::CreateShaderInformation(const PDyShaderConstructionDescriptor& shaderDescriptor)
+EDySuccess MDyIOData::CreateShaderInformation(const PDyShaderConstructionDescriptor& shaderDescriptor)
 {
   ///
   /// @callback CheckIntegrityOfDescriptor
@@ -111,7 +111,7 @@ EDySuccess MDyDataInformation::CreateShaderInformation(const PDyShaderConstructi
     {
       // Something is already in or memory oob.
       MDY_LOG_CRITICAL("{} | Unexpected error happened during create memory for shader information {}.",
-                       "MDyDataInformation::CreateShaderInformation().", shaderName);
+                       "MDyIOData::CreateShaderInformation().", shaderName);
       return DY_FAILURE;
     }
 
@@ -121,7 +121,7 @@ EDySuccess MDyDataInformation::CreateShaderInformation(const PDyShaderConstructi
     if (!it->second)
     {
       MDY_LOG_CRITICAL("{} | Unexpected error happened during swapping shader information {}.",
-                       "MDyDataInformation::CreateShaderInformation().", shaderName);
+                       "MDyIOData::CreateShaderInformation().", shaderName);
       shaderList.erase(shaderName);
       return DY_FAILURE;
     }
@@ -140,7 +140,7 @@ EDySuccess MDyDataInformation::CreateShaderInformation(const PDyShaderConstructi
   if (mShaderInformation.find(shaderName) != mShaderInformation.end())
   {
     MDY_LOG_WARNING_D("{} | {} is already found in mShaderInformation list.",
-                      "MDyDataInformation::CreateShaderInformation().", shaderName);
+                      "MDyIOData::CreateShaderInformation().", shaderName);
     return DY_FAILURE;
   }
 
@@ -155,7 +155,7 @@ EDySuccess MDyDataInformation::CreateShaderInformation(const PDyShaderConstructi
   return DY_SUCCESS;
 }
 
-EDySuccess MDyDataInformation::CreateTextureInformation(const PDyTextureConstructionDescriptor& textureDescriptor)
+EDySuccess MDyIOData::CreateTextureInformation(const PDyTextureConstructionDescriptor& textureDescriptor)
 {
   ///
   /// @function
@@ -242,7 +242,7 @@ EDySuccess MDyDataInformation::CreateTextureInformation(const PDyTextureConstruc
   return DY_SUCCESS;
 }
 
-EDySuccess MDyDataInformation::CreateMaterialInformation(const PDyMaterialConstructionDescriptor& materialDescriptor)
+EDySuccess MDyIOData::CreateMaterialInformation(const PDyMaterialConstructionDescriptor& materialDescriptor)
 {
   // Integrity test
   if (materialDescriptor.mMaterialName.empty())
@@ -288,7 +288,7 @@ EDySuccess MDyDataInformation::CreateMaterialInformation(const PDyMaterialConstr
   return DY_SUCCESS;
 }
 
-EDySuccess MDyDataInformation::CreateModelInformation(const PDyModelConstructionDescriptor& modelDescriptor)
+EDySuccess MDyIOData::CreateModelInformation(const PDyModelConstructionDescriptor& modelDescriptor)
 {
   // Integrity test
   if (modelDescriptor.mModelName.empty())
@@ -308,7 +308,7 @@ EDySuccess MDyDataInformation::CreateModelInformation(const PDyModelConstruction
     std::lock_guard<std::mutex> mt(this->mTemporalMutex);
     if (mModelInformation.find(modelName) != mModelInformation.end())
     {
-      MDY_LOG_WARNING_D("{} | Resource is already found. Name : {}", "MDyDataInformation", modelName);
+      MDY_LOG_WARNING_D("{} | Resource is already found. Name : {}", "MDyIOData", modelName);
       return DY_FAILURE;
     }
 
@@ -317,7 +317,7 @@ EDySuccess MDyDataInformation::CreateModelInformation(const PDyModelConstruction
     std::tie(it, creationResult) = mModelInformation.try_emplace(modelName, nullptr);
     if (!creationResult)
     {
-      MDY_LOG_CRITICAL_D("{} | Failed to create resource memory space. Name : {}", "MDyDataInformation", modelName);
+      MDY_LOG_CRITICAL_D("{} | Failed to create resource memory space. Name : {}", "MDyIOData", modelName);
       return DY_FAILURE;
     }
   }
@@ -326,7 +326,7 @@ EDySuccess MDyDataInformation::CreateModelInformation(const PDyModelConstruction
   auto materialInformation = std::make_unique<DDyModelInformation>(modelDescriptor);
   if (it->second.swap(materialInformation); !it->second)
   {
-    MDY_LOG_CRITICAL_D("{} | Unexpected error occured. Name : {}", "MDyDataInformation", modelName);
+    MDY_LOG_CRITICAL_D("{} | Unexpected error occured. Name : {}", "MDyIOData", modelName);
     this->mModelInformation.erase(modelName);
     return DY_FAILURE;
   }
@@ -334,7 +334,7 @@ EDySuccess MDyDataInformation::CreateModelInformation(const PDyModelConstruction
   return DY_SUCCESS;
 }
 
-EDySuccess MDyDataInformation::CreateModelInformation(const PDyModelConstructionVertexDescriptor& modelDescriptor)
+EDySuccess MDyIOData::CreateModelInformation(const PDyModelConstructionVertexDescriptor& modelDescriptor)
 {
   ///
   /// @function CheckIntegerityOfDescriptor
@@ -370,7 +370,7 @@ EDySuccess MDyDataInformation::CreateModelInformation(const PDyModelConstruction
     std::lock_guard<std::mutex> mt(this->mTemporalMutex);
     if (mModelInformation.find(modelName) != mModelInformation.end())
     {
-      MDY_LOG_WARNING_D("{} | Resource is already found. Name : {}", "MDyDataInformation", modelName);
+      MDY_LOG_WARNING_D("{} | Resource is already found. Name : {}", "MDyIOData", modelName);
       return DY_FAILURE;
     }
 
@@ -379,7 +379,7 @@ EDySuccess MDyDataInformation::CreateModelInformation(const PDyModelConstruction
     std::tie(it, creationResult) = mModelInformation.try_emplace(modelName, nullptr);
     if (!creationResult)
     {
-      MDY_LOG_CRITICAL_D("{} | Failed to create resource memory space. Name : {}", "MDyDataInformation", modelName);
+      MDY_LOG_CRITICAL_D("{} | Failed to create resource memory space. Name : {}", "MDyIOData", modelName);
       return DY_FAILURE;
     }
   }
@@ -388,7 +388,7 @@ EDySuccess MDyDataInformation::CreateModelInformation(const PDyModelConstruction
   auto materialInformation = std::make_unique<DDyModelInformation>(modelDescriptor);
   if (it->second.swap(materialInformation); !it->second)
   {
-    MDY_LOG_CRITICAL_D("{} | Unexpected error occured. Name : {}", "MDyDataInformation", modelName);
+    MDY_LOG_CRITICAL_D("{} | Unexpected error occured. Name : {}", "MDyIOData", modelName);
     this->mModelInformation.erase(modelName);
     return DY_FAILURE;
   }
@@ -396,7 +396,7 @@ EDySuccess MDyDataInformation::CreateModelInformation(const PDyModelConstruction
   return DY_SUCCESS;
 }
 
-EDySuccess MDyDataInformation::CreateSoundInformation(const PDySoundConstructionDescriptor& soundDescriptor)
+EDySuccess MDyIOData::CreateSoundInformation(const PDySoundConstructionDescriptor& soundDescriptor)
 {
   ///
   /// @function CheckIntegerityOfDescriptor
@@ -422,7 +422,7 @@ EDySuccess MDyDataInformation::CreateSoundInformation(const PDySoundConstruction
     std::lock_guard<std::mutex> mt(this->mTemporalMutex);
     if (mSoundInformation.find(soundName) != mSoundInformation.end())
     {
-      MDY_LOG_WARNING_D("{} | Resource is already found. Name : {}", "MDyDataInformation", soundName);
+      MDY_LOG_WARNING_D("{} | Resource is already found. Name : {}", "MDyIOData", soundName);
       return DY_FAILURE;
     }
 
@@ -431,7 +431,7 @@ EDySuccess MDyDataInformation::CreateSoundInformation(const PDySoundConstruction
     std::tie(it, creationResult) = mSoundInformation.try_emplace(soundName, nullptr);
     if (!creationResult)
     {
-      MDY_LOG_CRITICAL_D("{} | Failed to create information resource memory space. Name : {}", "MDyDataInformation", soundName);
+      MDY_LOG_CRITICAL_D("{} | Failed to create information resource memory space. Name : {}", "MDyIOData", soundName);
       return DY_FAILURE;
     }
   }
@@ -440,7 +440,7 @@ EDySuccess MDyDataInformation::CreateSoundInformation(const PDySoundConstruction
   auto soundInfo = std::make_unique<DDySoundInformation>(soundDescriptor);
   if (it->second.swap(soundInfo); !it->second)
   {
-    MDY_LOG_CRITICAL_D("{} | Unexpected error occured. Name : {}", "MDyDataInformation", soundName);
+    MDY_LOG_CRITICAL_D("{} | Unexpected error occured. Name : {}", "MDyIOData", soundName);
     this->mSoundInformation.erase(soundName);
     return DY_FAILURE;
   }
@@ -448,7 +448,7 @@ EDySuccess MDyDataInformation::CreateSoundInformation(const PDySoundConstruction
   return DY_SUCCESS;;
 }
 
-std::optional<std::string> MDyDataInformation::PopulateMaterialInformation(
+std::optional<std::string> MDyIOData::PopulateMaterialInformation(
     const std::string& materialName,
     const PDyMaterialPopulateDescriptor& materialPopulateDescriptor)
 {
@@ -456,7 +456,7 @@ std::optional<std::string> MDyDataInformation::PopulateMaterialInformation(
   const auto* baseMaterial = GetMaterialInformation(materialName);
   if (baseMaterial == nullptr)
   {
-    MDY_LOG_CRITICAL_D("{} | Failed to getting information of base material. base material name : {}", "MDyDataInformation::PopulateMaterialInformation", materialName);
+    MDY_LOG_CRITICAL_D("{} | Failed to getting information of base material. base material name : {}", "MDyIOData::PopulateMaterialInformation", materialName);
     return std::nullopt;
   }
 
@@ -476,12 +476,12 @@ std::optional<std::string> MDyDataInformation::PopulateMaterialInformation(
   {
     if (actualMaterialPopDesc.mMaterialOverrideName.empty())
     {
-      MDY_LOG_ERROR("{} | Empty material override name is prohibitted.", "MDyDataInformation::PopulateMaterialInformation");
+      MDY_LOG_ERROR("{} | Empty material override name is prohibitted.", "MDyIOData::PopulateMaterialInformation");
       return std::nullopt;
     }
     if (GetMaterialInformation(actualMaterialPopDesc.mMaterialOverrideName))
     {
-      MDY_LOG_ERROR("{} | Override name is already posed by any of material information.", "MDyDataInformation::PopulateMaterialInformation");
+      MDY_LOG_ERROR("{} | Override name is already posed by any of material information.", "MDyIOData::PopulateMaterialInformation");
       return std::nullopt;
     };
   }
@@ -490,7 +490,7 @@ std::optional<std::string> MDyDataInformation::PopulateMaterialInformation(
   auto [infoIt, result] = this->mMaterialInformation.try_emplace(actualMaterialPopDesc.mMaterialOverrideName, nullptr);
   if (!result)
   {
-    MDY_LOG_CRITICAL_D("{} | Unexpected error occured.", "MDyDataInformation::PopulateMaterialInformation");
+    MDY_LOG_CRITICAL_D("{} | Unexpected error occured.", "MDyIOData::PopulateMaterialInformation");
     return std::nullopt;
   }
 
@@ -499,7 +499,7 @@ std::optional<std::string> MDyDataInformation::PopulateMaterialInformation(
   infoIt->second.swap(populateDerivedSmtPtr);
   if (!infoIt->second)
   {
-    MDY_LOG_CRITICAL_D("{} | Unexpected error occured on swapping.", "MDyDataInformation::PopulateMaterialInformation");
+    MDY_LOG_CRITICAL_D("{} | Unexpected error occured on swapping.", "MDyIOData::PopulateMaterialInformation");
     return std::nullopt;
   }
 
@@ -512,13 +512,13 @@ std::optional<std::string> MDyDataInformation::PopulateMaterialInformation(
 //! Delete functions
 //!
 
-EDySuccess MDyDataInformation::DeleteShaderInformation(const std::string& shaderName, bool isForced)
+EDySuccess MDyIOData::DeleteShaderInformation(const std::string& shaderName, bool isForced)
 {
   const auto iterator = mShaderInformation.find(shaderName);
   if (iterator == mShaderInformation.end())
   {
     MDY_LOG_ERROR_D("{}::{} | Failed to remove shader information. Have not shader information. | {} : {}",
-                    "MDyDataInformation", "DeleteShaderInformation", "Shader Name", shaderName);
+                    "MDyIOData", "DeleteShaderInformation", "Shader Name", shaderName);
     return DY_FAILURE;
   }
 
@@ -527,7 +527,7 @@ EDySuccess MDyDataInformation::DeleteShaderInformation(const std::string& shader
   if (iterator->second->IsBeingBindedToResource() && !isForced)
   {
     MDY_LOG_ERROR_D("{}::{} | Failed to remove shader information. Must remove resource first. | {} : {}",
-                    "MDyDataInformation", "DeleteShaderInformation", "Shader lName", shaderName);
+                    "MDyIOData", "DeleteShaderInformation", "Shader lName", shaderName);
     return DY_FAILURE;
   }
 
@@ -536,13 +536,13 @@ EDySuccess MDyDataInformation::DeleteShaderInformation(const std::string& shader
   return DY_SUCCESS;
 }
 
-EDySuccess MDyDataInformation::DeleteTextureInformation(const std::string& textureName, bool isForced)
+EDySuccess MDyIOData::DeleteTextureInformation(const std::string& textureName, bool isForced)
 {
   const auto iterator = mTextureInformation.find(textureName);
   if (iterator == mTextureInformation.end())
   {
     MDY_LOG_ERROR_D("{}::{} | Failed to remove texture information. Have not texture information. | {} : {}",
-                    "MDyDataInformation", "DeleteTextureInformation", "Texture Name", textureName);
+                    "MDyIOData", "DeleteTextureInformation", "Texture Name", textureName);
     return DY_FAILURE;
   }
 
@@ -551,7 +551,7 @@ EDySuccess MDyDataInformation::DeleteTextureInformation(const std::string& textu
   if (iterator->second->IsBeingBindedToResource() && !isForced)
   {
     MDY_LOG_ERROR_D("{}::{} | Failed to remove material information. Must remove resource first. | {} : {}",
-                    "MDyDataInformation", "DeleteMaterialInformation", "Material lName", textureName);
+                    "MDyIOData", "DeleteMaterialInformation", "Material lName", textureName);
     return DY_FAILURE;
   }
 
@@ -560,13 +560,13 @@ EDySuccess MDyDataInformation::DeleteTextureInformation(const std::string& textu
   return DY_SUCCESS;
 }
 
-EDySuccess MDyDataInformation::DeleteMaterialInformation(const std::string& materialName, bool isForced)
+EDySuccess MDyIOData::DeleteMaterialInformation(const std::string& materialName, bool isForced)
 {
   const auto iterator = this->mMaterialInformation.find(materialName);
   if (iterator == this->mMaterialInformation.end())
   {
     MDY_LOG_ERROR_D("{}::{} | Failed to remove material information. Have not material information. | {} : {}",
-                    "MDyDataInformation", "DeleteMaterialInformation", "Material Name", materialName);
+                    "MDyIOData", "DeleteMaterialInformation", "Material Name", materialName);
     return DY_FAILURE;
   }
 
@@ -575,7 +575,7 @@ EDySuccess MDyDataInformation::DeleteMaterialInformation(const std::string& mate
   if (iterator->second->IsBeingBindedToResource() && !isForced)
   {
     MDY_LOG_ERROR_D("{}::{} | Failed to remove material information. Must remove resource first. | {} : {}",
-                    "MDyDataInformation", "DeleteMaterialInformation", "Material lName", materialName);
+                    "MDyIOData", "DeleteMaterialInformation", "Material lName", materialName);
     return DY_FAILURE;
   }
 
@@ -584,13 +584,13 @@ EDySuccess MDyDataInformation::DeleteMaterialInformation(const std::string& mate
   return DY_SUCCESS;
 }
 
-EDySuccess MDyDataInformation::DeleteModelInformation(const std::string& modelName, bool isAllRemoveSubresource, bool isForced)
+EDySuccess MDyIOData::DeleteModelInformation(const std::string& modelName, bool isAllRemoveSubresource, bool isForced)
 {
   const auto iterator = mModelInformation.find(modelName);
   if (iterator == mModelInformation.end())
   {
     MDY_LOG_ERROR_D("{}::{} | Failed to remove model information. Have not model information. | {} : {}",
-                    "MDyDataInformation", "DeleteModelInformation", "ModelName", modelName);
+                    "MDyIOData", "DeleteModelInformation", "ModelName", modelName);
     return DY_FAILURE;
   }
 
@@ -599,7 +599,7 @@ EDySuccess MDyDataInformation::DeleteModelInformation(const std::string& modelNa
   if (iterator->second->IsBeingBindedToResource() && !isForced)
   {
     MDY_LOG_ERROR_D("{}::{} | Failed to remove model information. Must remove resource first. | {} : {}",
-                    "MDyDataInformation", "DeleteModelInformation", "ModelName", modelName);
+                    "MDyIOData", "DeleteModelInformation", "ModelName", modelName);
     return DY_FAILURE;
   }
 
@@ -619,13 +619,13 @@ EDySuccess MDyDataInformation::DeleteModelInformation(const std::string& modelNa
   return DY_SUCCESS;
 }
 
-EDySuccess MDyDataInformation::DeleteSoundInformation(const std::string& soundName, bool isForced)
+EDySuccess MDyIOData::DeleteSoundInformation(const std::string& soundName, bool isForced)
 {
   const auto iterator = mSoundInformation.find(soundName);
   if (iterator == mSoundInformation.end())
   {
     MDY_LOG_ERROR_D("{}::{} | Failed to remove sound information. Have not sound information. | {} : {}",
-                    "MDyDataInformation", "DeleteSoundInformation", "Sound Name", soundName);
+                    "MDyIOData", "DeleteSoundInformation", "Sound Name", soundName);
     return DY_FAILURE;
   }
 
@@ -634,7 +634,7 @@ EDySuccess MDyDataInformation::DeleteSoundInformation(const std::string& soundNa
   if (iterator->second->IsBeingBindedToResource() && !isForced)
   {
     MDY_LOG_ERROR_D("{}::{} | Failed to remove sound information. Must remove resource first. | {} : {}",
-                    "MDyDataInformation", "DeleteSoundInformation", "Sound Name", soundName);
+                    "MDyIOData", "DeleteSoundInformation", "Sound Name", soundName);
     return DY_FAILURE;
   }
 
@@ -647,7 +647,7 @@ EDySuccess MDyDataInformation::DeleteSoundInformation(const std::string& soundNa
 //! Get function.
 //!
 
-const DDyShaderInformation* MDyDataInformation::GetShaderInformation(const std::string& shaderName) const noexcept
+const DDyShaderInformation* MDyIOData::GetShaderInformation(const std::string& shaderName) const noexcept
 {
   const auto iterator = mShaderInformation.find(shaderName);
   if (iterator == mShaderInformation.end())
@@ -660,33 +660,33 @@ const DDyShaderInformation* MDyDataInformation::GetShaderInformation(const std::
   return iterator->second.get();
 }
 
-const DDyTextureInformation* MDyDataInformation::GetTextureInformation(const std::string& textureName) const noexcept
+const DDyTextureInformation* MDyIOData::GetTextureInformation(const std::string& textureName) const noexcept
 {
   const auto iterator = mTextureInformation.find(textureName);
   if (iterator == mTextureInformation.end())
   {
     MDY_LOG_WARNING("{} | Failed to find texture information. | Texture name : {}",
-                    "MDyDataInformation::GetTextureInformation", textureName);
+                    "MDyIOData::GetTextureInformation", textureName);
     return nullptr;
   }
 
   return iterator->second.get();
 }
 
-const DDyMaterialInformation* MDyDataInformation::GetMaterialInformation(const std::string& materialName) const noexcept
+const DDyMaterialInformation* MDyIOData::GetMaterialInformation(const std::string& materialName) const noexcept
 {
   const auto iterator = mMaterialInformation.find(materialName);
   if (iterator == mMaterialInformation.end())
   {
     MDY_LOG_WARNING("{} | Failed to find material information. | Material name : {}",
-                    "MDyDataInformation::GetMaterialInformation", materialName);
+                    "MDyIOData::GetMaterialInformation", materialName);
     return nullptr;
   }
 
   return iterator->second.get();
 }
 
-const DDyModelInformation* MDyDataInformation::GetModelInformation(const std::string& modelName) const noexcept
+const DDyModelInformation* MDyIOData::GetModelInformation(const std::string& modelName) const noexcept
 {
   std::lock_guard<std::mutex> mt(this->mTemporalMutex);
 
@@ -694,21 +694,21 @@ const DDyModelInformation* MDyDataInformation::GetModelInformation(const std::st
   if (iterator == this->mModelInformation.end())
   {
     MDY_LOG_WARNING("{} | Failed to find model information. | {} : {}",
-                    "MDyDataInformation", "Model name", modelName);
+                    "MDyIOData", "Model name", modelName);
     return nullptr;
   }
 
   return iterator->second.get();
 }
 
-const DDySoundInformation* MDyDataInformation::GetSoundInformation(const std::string& soundName) const noexcept
+const DDySoundInformation* MDyIOData::GetSoundInformation(const std::string& soundName) const noexcept
 {
   std::lock_guard<std::mutex> mt(this->mTemporalMutex);
 
   const auto iterator = this->mSoundInformation.find(soundName);
   if (iterator == this->mSoundInformation.end())
   {
-    MDY_LOG_WARNING("{} | Failed to find model information. | {} : {}", "MDyDataInformation", "Sound name", soundName);
+    MDY_LOG_WARNING("{} | Failed to find model information. | {} : {}", "MDyIOData", "Sound name", soundName);
     return nullptr;
   }
 

@@ -17,7 +17,7 @@
 
 #include <Dy/Core/Component/Internal/TextureType.h>
 #include <Dy/Helper/Type/Color32.h>
-#include <Dy/Management/HeapResourceManager.h>
+#include <Dy/Management/IOResourceManager.h>
 
 //!
 //! Local variables
@@ -67,7 +67,7 @@ FDyBuiltinTextureErrorBlue::FDyBuiltinTextureErrorBlue()
   };
   desc.mBufferPtr = infoChunk.data();
 
-  MDY_CALL_ASSERT_SUCCESS(MDyHeapResource::GetInstance().CreateTextureResourceWithChunk(desc));
+  MDY_CALL_ASSERT_SUCCESS(MDyIOResource::GetInstance().CreateTextureResourceWithChunk(desc));
 }
 
 }

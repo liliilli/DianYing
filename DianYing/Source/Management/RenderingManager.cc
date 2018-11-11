@@ -19,7 +19,7 @@
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Management/SettingManager.h>
 
-#include <Dy/Management/DataInformationManager.h>
+#include <Dy/Management/IODataManager.h>
 #include <Dy/Management/Editor/GuiSetting.h>
 
 #include <Dy/Core/Component/Object/Camera.h>

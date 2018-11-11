@@ -18,7 +18,7 @@
 #include <Dy/Core/Component/Internal/EtcType.h>
 #include <Dy/Core/Component/Resource/ModelResource.h>
 
-#include <Dy/Management/HeapResourceManager.h>
+#include <Dy/Management/IOResourceManager.h>
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Core/Component/Object/Camera.h>
 #include <Dy/Management/LoggingManager.h>
@@ -29,7 +29,7 @@ namespace dy
 
 EDySuccess CDyMeshRenderer::pfInitialize(const PDyRendererConsturctionDescriptor& desc)
 {
-  auto& resourceManager = MDyHeapResource::GetInstance();
+  auto& resourceManager = MDyIOResource::GetInstance();
 
   // Bind model. If not exists, make model resource using information but not have it, return fail.
   if (const auto modelResourcePtr = resourceManager.GetModelResource(desc.mModelName); !modelResourcePtr)

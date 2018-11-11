@@ -13,9 +13,9 @@
 ///
 
 /// Header file
-#include <Dy/Management/HeapResourceManager.h>
+#include <Dy/Management/IOResourceManager.h>
 
-#include <Dy/Management/DataInformationManager.h>
+#include <Dy/Management/IODataManager.h>
 #include <Dy/Management/LoggingManager.h>
 
 namespace
@@ -32,14 +32,14 @@ namespace dy
 //! Create resource functions.
 //!
 
-EDySuccess MDyHeapResource::CreateShaderResource(const std::string& shaderName)
+EDySuccess MDyIOResource::CreateShaderResource(const std::string& shaderName)
 {
-  // Get information from MDyDataInformation manager.
-  const auto& manInfo   = MDyDataInformation::GetInstance();
+  // Get information from MDyIOData manager.
+  const auto& manInfo   = MDyIOData::GetInstance();
   const DDyShaderInformation* shaderInfo = manInfo.GetShaderInformation(shaderName);
   if (shaderInfo == nullptr)
   {
-    MDY_LOG_ERROR("{}::{} | Failed to find shader in information list. | Shader name : {}", "MDyHeapResource", "CreateShaderResource", shaderName);
+    MDY_LOG_ERROR("{}::{} | Failed to find shader in information list. | Shader name : {}", "MDyIOResource", "CreateShaderResource", shaderName);
     return DY_FAILURE;
   }
 
@@ -47,7 +47,7 @@ EDySuccess MDyHeapResource::CreateShaderResource(const std::string& shaderName)
   auto [it, result] = this->mOnBoardShaderLists.try_emplace(shaderName, nullptr);
   if (!result)
   {
-    MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred. | Shader name : {}", "MDyHeapResource", "CreateShaderResource", shaderName);
+    MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred. | Shader name : {}", "MDyIOResource", "CreateShaderResource", shaderName);
     return DY_FAILURE;
   }
 
@@ -55,7 +55,7 @@ EDySuccess MDyHeapResource::CreateShaderResource(const std::string& shaderName)
   auto shaderResource = std::make_unique<CDyShaderResource>();
   if (const auto success = shaderResource->pfInitializeResource(*shaderInfo); success == DY_FAILURE)
   {
-    MDY_LOG_ERROR("{}::{} | Cannot create shader resource. | Shader resource name : {}", "MDyHeapResource", "CreateShaderResource", shaderName);
+    MDY_LOG_ERROR("{}::{} | Cannot create shader resource. | Shader resource name : {}", "MDyIOResource", "CreateShaderResource", shaderName);
     this->mOnBoardShaderLists.erase(shaderName);
     return DY_FAILURE;
   }
@@ -63,7 +63,7 @@ EDySuccess MDyHeapResource::CreateShaderResource(const std::string& shaderName)
   it->second.swap(shaderResource);
   if (!it->second)
   {
-    MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred in swapping. | Shader resource name : {}", "MDyHeapResource", "CreateShaderResource", shaderName);
+    MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred in swapping. | Shader resource name : {}", "MDyIOResource", "CreateShaderResource", shaderName);
     this->mOnBoardShaderLists.erase(shaderName);
     return DY_FAILURE;
   }
@@ -73,18 +73,18 @@ EDySuccess MDyHeapResource::CreateShaderResource(const std::string& shaderName)
   it->second->__pfSetShaderInformationLink(DyMakeNotNull(const_cast<DDyShaderInformation*>(shaderInfo)));
 
   MDY_LOG_INFO("{0}::{1} | Create {2} resource. | {2} resource name : {3}",
-               "MDyHeapResource", "CreateShaderResource", "Shader", shaderName);
+               "MDyIOResource", "CreateShaderResource", "Shader", shaderName);
   return DY_SUCCESS;
 }
 
-EDySuccess MDyHeapResource::CreateTextureResource(const std::string& textureName)
-{ // Get information from MDyDataInformation manager.
-  const auto& manInfo   = MDyDataInformation::GetInstance();
+EDySuccess MDyIOResource::CreateTextureResource(const std::string& textureName)
+{ // Get information from MDyIOData manager.
+  const auto& manInfo   = MDyIOData::GetInstance();
   const DDyTextureInformation* textureInfo = manInfo.GetTextureInformation(textureName);
   if (textureInfo == nullptr)
   {
     MDY_LOG_ERROR("{}::{} | Failed to find texture in information list. | Texture name : {}",
-                  "MDyHeapResource", "CreateTextureResource", textureName);
+                  "MDyIOResource", "CreateTextureResource", textureName);
     return DY_FAILURE;
   }
 
@@ -92,7 +92,7 @@ EDySuccess MDyHeapResource::CreateTextureResource(const std::string& textureName
   if (!result)
   {
     MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred. | Texture name : {}",
-                       "MDyHeapResource", "CreateTextureResource", textureName);
+                       "MDyIOResource", "CreateTextureResource", textureName);
     return DY_FAILURE;
   }
 
@@ -101,7 +101,7 @@ EDySuccess MDyHeapResource::CreateTextureResource(const std::string& textureName
   if (const auto success = textureResource->pfInitializeTextureResource(*textureInfo); success == DY_FAILURE)
   {
     MDY_LOG_ERROR("{}::{} | Cannot create texture resource properly. | Texture resource name : {}",
-                  "MDyHeapResource", "CreateTextureResource", textureName);
+                  "MDyIOResource", "CreateTextureResource", textureName);
     this->mOnBoardTextureLists.erase(textureName);
     return DY_FAILURE;
   }
@@ -110,7 +110,7 @@ EDySuccess MDyHeapResource::CreateTextureResource(const std::string& textureName
   if (!it->second)
   {
     MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred in swapping. | Texture resource name : {}",
-                       "MDyHeapResource", "CreateTextureResource", textureName);
+                       "MDyIOResource", "CreateTextureResource", textureName);
     this->mOnBoardTextureLists.erase(textureName);
     return DY_FAILURE;
   }
@@ -120,17 +120,17 @@ EDySuccess MDyHeapResource::CreateTextureResource(const std::string& textureName
   it->second->__pfSetTextureInformationLink (DyMakeNotNull(const_cast<DDyTextureInformation*>(textureInfo)));
 
   MDY_LOG_INFO("{0}::{1} | Create {2} resource. | {2} resource name : {3}",
-               "MDyHeapResource", "CreateTextureResource", "Texture", textureName);
+               "MDyIOResource", "CreateTextureResource", "Texture", textureName);
   return DY_SUCCESS;
 }
 
-EDySuccess MDyHeapResource::CreateTextureResourceWithChunk(_MIN_ const PDyTextureConstructionBufferChunkDescriptor& desc)
-{ // Get information from MDyDataInformation manager.
+EDySuccess MDyIOResource::CreateTextureResourceWithChunk(_MIN_ const PDyTextureConstructionBufferChunkDescriptor& desc)
+{ // Get information from MDyIOData manager.
   auto [it, result] = this->mOnBoardTextureLists.try_emplace(desc.mTextureSpecifierName, nullptr);
   if (!result)
   {
     MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred. | Texture name : {}",
-                       "MDyHeapResource", "CreateTextureResource", desc.mTextureSpecifierName);
+                       "MDyIOResource", "CreateTextureResource", desc.mTextureSpecifierName);
     return DY_FAILURE;
   }
 
@@ -140,7 +140,7 @@ EDySuccess MDyHeapResource::CreateTextureResourceWithChunk(_MIN_ const PDyTextur
       success == DY_FAILURE)
   {
     MDY_LOG_ERROR("{}::{} | Cannot create texture resource properly. | Texture resource name : {}",
-                  "MDyHeapResource", "CreateTextureResource", desc.mTextureSpecifierName);
+                  "MDyIOResource", "CreateTextureResource", desc.mTextureSpecifierName);
     this->mOnBoardTextureLists.erase(desc.mTextureSpecifierName);
     return DY_FAILURE;
   }
@@ -149,25 +149,25 @@ EDySuccess MDyHeapResource::CreateTextureResourceWithChunk(_MIN_ const PDyTextur
   if (!it->second)
   {
     MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred in swapping. | Texture resource name : {}",
-                       "MDyHeapResource", "CreateTextureResource", desc.mTextureSpecifierName);
+                       "MDyIOResource", "CreateTextureResource", desc.mTextureSpecifierName);
     this->mOnBoardTextureLists.erase(desc.mTextureSpecifierName);
     return DY_FAILURE;
   }
 
   MDY_LOG_INFO("{0}::{1} | Create {2} resource. | {2} resource name : {3}",
-               "MDyHeapResource", "CreateTextureResource", "Texture", desc.mTextureSpecifierName);
+               "MDyIOResource", "CreateTextureResource", "Texture", desc.mTextureSpecifierName);
   return DY_SUCCESS;
 }
 
-EDySuccess MDyHeapResource::CreateMaterialResource(const std::string& materialName)
+EDySuccess MDyIOResource::CreateMaterialResource(const std::string& materialName)
 {
-  // Get information from MDyDataInformation manager.
-  const auto& manInfo = MDyDataInformation::GetInstance();
+  // Get information from MDyIOData manager.
+  const auto& manInfo = MDyIOData::GetInstance();
   const DDyMaterialInformation* materialInfo = manInfo.GetMaterialInformation(materialName);
   if (materialInfo == nullptr)
   {
     MDY_LOG_ERROR("{} | Failed to find material in information list. Material name : {}",
-                  "MDyHeapResource::CreateMaterialResource", materialName);
+                  "MDyIOResource::CreateMaterialResource", materialName);
     return DY_FAILURE;
   }
 
@@ -175,7 +175,7 @@ EDySuccess MDyHeapResource::CreateMaterialResource(const std::string& materialNa
   if (!result)
   {
     MDY_LOG_CRITICAL_D("{} | Unexpected error occurred. Material name : {}",
-                       "MDyHeapResource::CreateMaterialResource", materialName);
+                       "MDyIOResource::CreateMaterialResource", materialName);
     return DY_FAILURE;
   }
 
@@ -189,7 +189,7 @@ EDySuccess MDyHeapResource::CreateMaterialResource(const std::string& materialNa
     if (this->CreateShaderResource(materialInformation.mShaderName) == DY_FAILURE)
     {
       MDY_LOG_CRITICAL_D("{} | Could not create shader resource. | Shader resource name : {}",
-                         "MDyHeapResource::CreateMaterialResource", materialInformation.mShaderName);
+                         "MDyIOResource::CreateMaterialResource", materialInformation.mShaderName);
       return DY_FAILURE;
     }
   }
@@ -198,7 +198,7 @@ EDySuccess MDyHeapResource::CreateMaterialResource(const std::string& materialNa
   if (materialInformation.mTextureNames.size() > kTextureCountLimit)
   {
     MDY_LOG_CRITICAL_D("{} | Texture size must not be bigger than {}. | Material Name : {} | Material texture size : {}",
-                       "MDyHeapResource::CreateMaterialResource", kTextureCountLimit, materialName, materialInformation.mTextureNames.size());
+                       "MDyIOResource::CreateMaterialResource", kTextureCountLimit, materialName, materialInformation.mTextureNames.size());
     return DY_FAILURE;
   }
 
@@ -211,7 +211,7 @@ EDySuccess MDyHeapResource::CreateMaterialResource(const std::string& materialNa
       if (err == DY_FAILURE)
       {
         MDY_LOG_CRITICAL_D("{} | Could not create texture resource. | Texture resource name : {}",
-                           "MDyHeapResource::CreateMaterialResource", textureName);
+                           "MDyIOResource::CreateMaterialResource", textureName);
         return DY_FAILURE;
       }
     }
@@ -238,7 +238,7 @@ EDySuccess MDyHeapResource::CreateMaterialResource(const std::string& materialNa
       success == DY_FAILURE)
   {
     MDY_LOG_CRITICAL_D("{}::{} | Failed to create material resource in heap. | Material resource name : {}",
-                       "MDyHeapResource", "CreateMaterialResource", materialName);
+                       "MDyIOResource", "CreateMaterialResource", materialName);
     this->mOnBoardMaterialLists.erase(materialName);
     return DY_FAILURE;
   }
@@ -247,7 +247,7 @@ EDySuccess MDyHeapResource::CreateMaterialResource(const std::string& materialNa
   if (!it->second)
   {
     MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred in swapping. | Material resource name : {}",
-                       "MDyHeapResource", "CreateMaterialResource", materialName);
+                       "MDyIOResource", "CreateMaterialResource", materialName);
     this->mOnBoardMaterialLists.erase(materialName);
     return DY_FAILURE;
   }
@@ -257,24 +257,24 @@ EDySuccess MDyHeapResource::CreateMaterialResource(const std::string& materialNa
   it->second  ->__pfSetMaterialInformationLink(DyMakeNotNull(const_cast<DDyMaterialInformation*>(materialInfo)));
 
   MDY_LOG_INFO("{0}::{1} | Create {2} resource. | {2} resource name : {3}",
-               "MDyHeapResource", "CreateMaterialResource", "Material", materialName);
+               "MDyIOResource", "CreateMaterialResource", "Material", materialName);
   return DY_SUCCESS;
 }
 
-EDySuccess MDyHeapResource::CreateSoundResource(const std::string& soundName)
+EDySuccess MDyIOResource::CreateSoundResource(const std::string& soundName)
 {
-  // Get information from MDyDataInformation manager.
-  const DDySoundInformation* soundInformation = MDyDataInformation::GetInstance().GetSoundInformation(soundName);
+  // Get information from MDyIOData manager.
+  const DDySoundInformation* soundInformation = MDyIOData::GetInstance().GetSoundInformation(soundName);
   if (soundInformation == nullptr)
   {
-    MDY_LOG_ERROR("{}::{} | Failed to find sound in information list. | Sound name : {}", "MDyHeapResource", "CreateSoundResource", soundName);
+    MDY_LOG_ERROR("{}::{} | Failed to find sound in information list. | Sound name : {}", "MDyIOResource", "CreateSoundResource", soundName);
     return DY_FAILURE;
   }
 
   auto [it, result] = this->mOnBoardSoundLists.try_emplace(soundName, nullptr);
   if (!result)
   {
-    MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred. | Sound name : {}", "MDyHeapResource", "CreateSoundResource", soundName);
+    MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred. | Sound name : {}", "MDyIOResource", "CreateSoundResource", soundName);
     return DY_FAILURE;
   }
 
@@ -282,7 +282,7 @@ EDySuccess MDyHeapResource::CreateSoundResource(const std::string& soundName)
   auto soundResource = std::make_unique<CDySoundResource>();
   if (const auto success = soundResource->pfInitializeResource(*soundInformation); success == DY_FAILURE)
   {
-    MDY_LOG_ERROR("{}::{} | Cannot create sound resource properly. | Sound resource name : {}", "MDyHeapResource", "CreateSoundResource", soundName);
+    MDY_LOG_ERROR("{}::{} | Cannot create sound resource properly. | Sound resource name : {}", "MDyIOResource", "CreateSoundResource", soundName);
 
     this->mOnBoardTextureLists.erase(soundName);
     return DY_FAILURE;
@@ -291,7 +291,7 @@ EDySuccess MDyHeapResource::CreateSoundResource(const std::string& soundName)
   it->second.swap(soundResource);
   if (!it->second)
   {
-    MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred in swapping. | Sound resource name : {}", "MDyHeapResource", "CreateSoundResource", soundName);
+    MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred in swapping. | Sound resource name : {}", "MDyIOResource", "CreateSoundResource", soundName);
 
     this->mOnBoardTextureLists.erase(soundName);
     return DY_FAILURE;
@@ -301,19 +301,19 @@ EDySuccess MDyHeapResource::CreateSoundResource(const std::string& soundName)
   soundInformation->__pfSetSoundResourceLink  (DyMakeNotNull(it->second.get()));
   it->second->__pfSetSoundInformationLink     (DyMakeNotNull(const_cast<DDySoundInformation*>(soundInformation)));
 
-  MDY_LOG_INFO("{0}::{1} | Create {2} resource. | {2} resource name : {3}", "MDyHeapResource", "CreateSoundResource", "Sound", soundName);
+  MDY_LOG_INFO("{0}::{1} | Create {2} resource. | {2} resource name : {3}", "MDyIOResource", "CreateSoundResource", "Sound", soundName);
   return DY_SUCCESS;
 }
 
-EDySuccess MDyHeapResource::CreateModelResource(const std::string& modelName)
+EDySuccess MDyIOResource::CreateModelResource(const std::string& modelName)
 {
-  // Get information from MDyDataInformation manager.
-  const auto& manInfo   = MDyDataInformation::GetInstance();
+  // Get information from MDyIOData manager.
+  const auto& manInfo   = MDyIOData::GetInstance();
   const auto* modelInfo = manInfo.GetModelInformation(modelName);
   if (modelInfo == nullptr)
   {
     MDY_LOG_ERROR("{}::{} | Failed to find model in information list. | Model name : {}",
-                  "MDyHeapResource", "CreateModelResource", modelName);
+                  "MDyIOResource", "CreateModelResource", modelName);
     return DY_FAILURE;
   }
 
@@ -321,7 +321,7 @@ EDySuccess MDyHeapResource::CreateModelResource(const std::string& modelName)
   if (!result)
   {
     MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred in creating memory space. | Model name : {}",
-                       "MDyHeapResource", "CreateModelResource", modelName);
+                       "MDyIOResource", "CreateModelResource", modelName);
     return DY_FAILURE;
   }
 
@@ -330,7 +330,7 @@ EDySuccess MDyHeapResource::CreateModelResource(const std::string& modelName)
   if (const auto success = modelResource->pInitializeModelResource(*modelInfo); success == DY_FAILURE)
   {
     MDY_LOG_ERROR("{}::{} | Cannot create model resource properly. | Model resource name : {}",
-                  "MDyHeapResource", "CreateModelResource", modelName);
+                  "MDyIOResource", "CreateModelResource", modelName);
     this->mOnBoardModelLists.erase(modelName);
     return DY_FAILURE;
   }
@@ -339,7 +339,7 @@ EDySuccess MDyHeapResource::CreateModelResource(const std::string& modelName)
   if (!it->second)
   {
     MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred in swapping. | Model resource name : {}",
-                       "MDyHeapResource", "CreateModelResource", modelName);
+                       "MDyIOResource", "CreateModelResource", modelName);
     this->mOnBoardModelLists.erase(modelName);
     return DY_FAILURE;
   }
@@ -349,7 +349,7 @@ EDySuccess MDyHeapResource::CreateModelResource(const std::string& modelName)
   it->second->__pfSetModelInformationLink(DyMakeNotNull(const_cast<DDyModelInformation*>(modelInfo)));
 
   MDY_LOG_INFO("{0}::{1} | Create {2} resource. | {2} resource name : {3}",
-               "MDyHeapResource", "CreateModelResource", "Model", modelName);
+               "MDyIOResource", "CreateModelResource", "Model", modelName);
   return DY_SUCCESS;
 }
 
@@ -357,76 +357,76 @@ EDySuccess MDyHeapResource::CreateModelResource(const std::string& modelName)
 //! Get resource functions
 //!
 
-CDyShaderResource* MDyHeapResource::GetShaderResource(const std::string& shaderName)
+CDyShaderResource* MDyIOResource::GetShaderResource(const std::string& shaderName)
 {
   const auto it = this->mOnBoardShaderLists.find(shaderName);
   if (it == this->mOnBoardShaderLists.end())
   {
     MDY_LOG_WARNING("{0}::{1} | Failed to find {2} resource. | {2} resource name : {3}",
-                    "MDyHeapResource", "GetShaderResource", "Shader", shaderName);
+                    "MDyIOResource", "GetShaderResource", "Shader", shaderName);
     return nullptr;
   }
 
   return it->second.get();
 }
 
-CDyTextureResource* MDyHeapResource::GetTextureResource(const std::string& textureName)
+CDyTextureResource* MDyIOResource::GetTextureResource(const std::string& textureName)
 {
   const auto it = this->mOnBoardTextureLists.find(textureName);
   if (it == this->mOnBoardTextureLists.end())
   {
     MDY_LOG_WARNING("{0}::{1} | Failed to find {2} resource. | {2} resource name : {3}",
-                    "MDyHeapResource", "GetTextureResource", "Texture", textureName);
+                    "MDyIOResource", "GetTextureResource", "Texture", textureName);
     return nullptr;
   }
 
   return it->second.get();
 }
 
-CDyMaterialResource* MDyHeapResource::GetMaterialResource(const std::string& materialName)
+CDyMaterialResource* MDyIOResource::GetMaterialResource(const std::string& materialName)
 {
   const auto it = this->mOnBoardMaterialLists.find(materialName);
   if (it == this->mOnBoardMaterialLists.end())
   {
     MDY_LOG_WARNING("{0}::{1} | Failed to find {2} resource. | {2} resource name : {3}",
-                    "MDyHeapResource", "GetMaterialResource", "Material", materialName);
+                    "MDyIOResource", "GetMaterialResource", "Material", materialName);
     return nullptr;
   }
 
   return it->second.get();
 }
 
-CDyModelResource* MDyHeapResource::GetModelResource(const std::string& modelName)
+CDyModelResource* MDyIOResource::GetModelResource(const std::string& modelName)
 {
   const auto it = this->mOnBoardModelLists.find(modelName);
   if (it == this->mOnBoardModelLists.end())
   {
     MDY_LOG_WARNING("{0}::{1} | Failed to find {2} resource. | {2} resource name : {3}",
-                    "MDyHeapResource", "GetModelResource", "Model", modelName);
+                    "MDyIOResource", "GetModelResource", "Model", modelName);
     return nullptr;
   }
 
   return it->second.get();
 }
 
-CDySoundResource* MDyHeapResource::GetSoundResource(const std::string& soundName)
+CDySoundResource* MDyIOResource::GetSoundResource(const std::string& soundName)
 {
   const auto it = this->mOnBoardSoundLists.find(soundName);
   if (it == this->mOnBoardSoundLists.end())
   {
-    MDY_LOG_WARNING("{0}::{1} | Failed to find {2} resource. | {2} resource name : {3}", "MDyHeapResource", "GetSoundResource", "Sound", soundName);
+    MDY_LOG_WARNING("{0}::{1} | Failed to find {2} resource. | {2} resource name : {3}", "MDyIOResource", "GetSoundResource", "Sound", soundName);
     return nullptr;
   }
 
   return it->second.get();
 }
 
-EDySuccess MDyHeapResource::pfInitialize()
+EDySuccess MDyIOResource::pfInitialize()
 {
   return DY_SUCCESS;
 }
 
-EDySuccess MDyHeapResource::pfRelease()
+EDySuccess MDyIOResource::pfRelease()
 {
   this->mOnBoardShaderLists.clear();
   this->mOnBoardTextureLists.clear();

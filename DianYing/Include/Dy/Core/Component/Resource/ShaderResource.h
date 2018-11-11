@@ -256,7 +256,7 @@ private:
 
   friend class DDyShaderInformation;
   friend class CDyMaterialResource;
-  friend class MDyHeapResource;
+  friend class MDyIOResource;
 };
 
 } /// ::dy namespace
