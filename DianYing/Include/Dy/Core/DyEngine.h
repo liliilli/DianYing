@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_HELPER_DBG_CHECK_USAGE_H
-#define GUARD_DY_HELPER_DBG_CHECK_USAGE_H
+#ifndef GUARD_DY_CORE_MDYENGINE_H
+#define GUARD_DY_CORE_MDYENGINE_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -18,37 +18,21 @@
 namespace dy
 {
 
-class MDyUsageChecker final : public ISingleton<MDyUsageChecker>
+///
+/// @class DyEngine
+/// @brief
+///
+class DyEngine final : public IDySingleton<DyEngine>
 {
-  MDY_SINGLETON_PROPERTIES(MDyUsageChecker);
-  MDY_SINGLETON_DERIVED(MDyUsageChecker);
+  MDY_SINGLETON_PROPERTIES(DyEngine);
+  MDY_SINGLETON_DERIVED(DyEngine);
 public:
-
   ///
-  /// @brief Update cpu usage graph with dt.
+  /// @brief
   ///
-  void UpdateCpuUsageGraph(float dt);
-
-  ///
-  /// @brief Update cpu usgae graph with dt.
-  ///
-  void UpdateRanUsageGraph(float dt);
-
-  ///
-  /// @brief Reset cpu usage value array.
-  ///
-  void ResetCpuUsageGraph();
-
-  ///
-  /// @brief Reset cpu usage value array.
-  ///
-  void ResetRamUsageGraph();
-
-private:
-
-
+  void operator()();
 };
 
 } /// ::dy namespace
 
-#endif /// GUARD_DY_HELPER_DBG_CHECK_USAGE_H
+#endif /// GUARD_DY_CORE_MDYENGINE_H

@@ -12,8 +12,8 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Etc/StaticCoreTrigger.h>
 #include <Dy/Management/WindowManager.h>
+#include <Dy/Core/DyEngine.h>
 
 ///
 /// @brief Main entry function of WIN32 platforms.
@@ -52,23 +52,16 @@ EDySuccess DyInitializeWin32Debug()
 ///
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow)
 {
-  using dy::SDyCoreTrigger;
-
   ghInstance      = hInstance;
   ghPrevInstance  = hPrevInstance;
   gpCmdLine       = pCmdLine;
   gnCmdShow       = nCmdShow;
 
   MDY_WIN32_TRY_TURN_ON_DEBUG();
-  SDyCoreTrigger::InitiailzeAllManagers();
-
-  //MDY_LOG_INFO_D("Running application routine.");
-  dy::MDyWindow::GetInstance().Run();
-  //MDY_LOG_INFO_D("Release all managers and resources.");
-
-  SDyCoreTrigger::ReleaseAllManagers();
+  MDY_CALL_ASSERT_SUCCESS(dy::DyEngine::Initialize());
+  dy::DyEngine::GetInstance()();
+  MDY_CALL_ASSERT_SUCCESS(dy::DyEngine::Release());
   MDY_WIN32_TRY_TURN_OFF_DEBUG();
-
   return 0;
 }
 #elif defined(MDY_PLATFORM_FLAG_LINUX)

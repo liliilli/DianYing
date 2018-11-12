@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Core/Etc/StaticCoreTrigger.h>
+#include <Dy/Core/DyEngine.h>
 
 #include <Dy/Management/IODataManager.h>
 #include <Dy/Management/IOResourceManager.h>
@@ -35,7 +35,7 @@
 namespace dy
 {
 
-void SDyCoreTrigger::InitiailzeAllManagers()
+EDySuccess DyEngine::pfInitialize()
 {
   ///
   /// @brief Forward runtime arguments to setting manager.
@@ -59,12 +59,12 @@ void SDyCoreTrigger::InitiailzeAllManagers()
   MDY_CALL_ASSERT_SUCCESS(dy::editor::MDyEditorGui::Initialize());
 #endif
 
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Initialize());
+  // IO Manager (THREAD + TASK QUEUE)
   MDY_CALL_ASSERT_SUCCESS(dy::MDyIOData::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyIOResource::Initialize());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyWorld::Initialize());
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDyMetaInfo::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyWindow::Initialize());
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDyRendering::Initialize());
@@ -72,18 +72,22 @@ void SDyCoreTrigger::InitiailzeAllManagers()
   MDY_CALL_ASSERT_SUCCESS(dy::MDySound::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyPhysics::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyFont::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyWorld::Initialize());
 
-  MDY_CALL_ASSERT_SUCCESS(dy::MDySync::Initialize());
+  //MDY_CALL_ASSERT_SUCCESS(dy::MDySync::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyScript::Initialize());
   MDY_LOG_WARNING_D("========== DIANYING MANAGER INITIALIZED ==========");
+
+  return DY_SUCCESS;
 }
 
-void SDyCoreTrigger::ReleaseAllManagers()
+EDySuccess DyEngine::pfRelease()
 {
   MDY_LOG_WARNING_D("========== DIANYING MANAGER RELEASED ==========");
   MDY_CALL_ASSERT_SUCCESS(dy::MDyScript::Release());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDySync::Release());
+  //MDY_CALL_ASSERT_SUCCESS(dy::MDySync::Release());
 
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyWorld::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyFont::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyPhysics::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDySound::Release());
@@ -91,20 +95,24 @@ void SDyCoreTrigger::ReleaseAllManagers()
   MDY_CALL_ASSERT_SUCCESS(dy::MDyRendering::Release());
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDyWindow::Release());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyMetaInfo::Release());
 
-  // Release other management instance.
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyWorld::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyIOResource::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyIOData::Release());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Release());
 #if defined(MDY_FLAG_IN_EDITOR)
   MDY_CALL_ASSERT_SUCCESS(dy::editor::MDyEditorGui::Release());
 #endif
 
+  MDY_CALL_ASSERT_SUCCESS(dy::MDySetting::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyLog::Release());
 
-  MDY_CALL_ASSERT_SUCCESS(dy::MDySetting::Release());
+  return DY_SUCCESS;
+}
+
+void DyEngine::operator()()
+{
+  dy::MDyWindow::GetInstance().Run();
 }
 
 } /// ::dy namespace

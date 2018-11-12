@@ -241,7 +241,7 @@
     <ClCompile Include="Source\Core\Component\MeshRenderer.cc" />
     <ClCompile Include="Source\Core\Component\Object\Camera.cc" />
     <ClCompile Include="Source\Core\Component\Object\Grid.cc" />
-    <ClCompile Include="Source\Core\Etc\StaticCoreTrigger.cc" />
+    <ClCompile Include="Source\Core\DyEngine.cc" />
     <ClCompile Include="Source\Core\Rendering\DeferredRenderingMesh.cc" />
     <ClCompile Include="Source\Core\Component\Object\PostEffectSsao.cc" />
     <ClCompile Include="Source\Core\Component\Resource\MaterialResource.cc" />
@@ -398,7 +398,6 @@
     <ClInclude Include="Include\Dy\Core\Component\Information\ShaderInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\TextureInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\SoundResource.h" />
-    <ClInclude Include="Include\Dy\Core\Etc\StaticCoreTrigger.h" />
     <ClInclude Include="Include\Dy\Core\DyEngine.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\BasicRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\BasicShadow.h" />
