@@ -324,6 +324,7 @@
     <ClCompile Include="Source\Management\Type\FontCharacter_Deprecated.cc" />
     <ClCompile Include="Source\Management\Type\FontContainer_Deprecated.cc" />
     <ClCompile Include="Source\Management\Type\FontResourceContainer.cc" />
+    <ClCompile Include="Source\Management\Type\KeyAxisBindingInformation.cc" />
     <ClCompile Include="Source\Management\Type\SettingContainer.cc" />
     <ClCompile Include="Source\Management\WorldManager.cc" />
     <ClCompile Include="Source\Management\SettingManager.cc" />
@@ -504,13 +505,14 @@
     <ClInclude Include="Include\Dy\Management\SynchronizationManager.h" />
     <ClInclude Include="Include\Dy\Management\Type\AttachmentInformation.h" />
     <ClInclude Include="Include\Dy\Management\Type\EDyIOResourceScope.h" />
+    <ClInclude Include="Include\Dy\Management\Type\KeyActionBindingInformation.h" />
     <ClInclude Include="Include\Dy\Management\Type\SettingContainer.h" />
     <ClInclude Include="Include\Dy\Management\Type\FontCharacter_Deprecated.h" />
     <ClInclude Include="Include\Dy\Management\Type\FontContainer_Deprecated.h" />
     <ClInclude Include="Include\Dy\Management\Type\FontCharacterInfo.h" />
     <ClInclude Include="Include\Dy\Management\Type\FontResourceContainer.h" />
     <ClInclude Include="Include\Dy\Management\Type\FramebufferInformation.h" />
-    <ClInclude Include="Include\Dy\Management\Type\KeyBindingInformation.h" />
+    <ClInclude Include="Include\Dy\Management\Type\KeyAxisBindingInformation.h" />
     <ClInclude Include="Include\Dy\Management\Type\UBOInformation.h" />
     <ClInclude Include="Include\Dy\Management\WindowManager.h" />
     <ClInclude Include="Include\Dy\Management\WorldManager.h" />

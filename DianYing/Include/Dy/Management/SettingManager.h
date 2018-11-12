@@ -114,6 +114,15 @@ public:
   }
 
   ///
+  /// @brief Get input setting information.
+  /// @return Input setting information, not modifiable.
+  ///
+  MDY_NODISCARD const DDySettingInput& GetInputSettingInformation() const noexcept
+  {
+    return this->mInput;
+  }
+
+  ///
   /// @brief Enable or disable logging feature.
   /// before enable logging feature, must set console or file sink.
   /// @param isEnabled

@@ -12,14 +12,12 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /// SOFTWARE.
 ///
-/// @TODO SEPARATE KEY TO ACTION AND AXIS, ACTION IS PUSH AND RELEASE BUT AXIS HAS REPEATED.
-///
 
 #include <string>
 
 #include <Dy/Helper/Type/Vector2.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
-#include <Dy/Management/Type/KeyBindingInformation.h>
+#include <Dy/Management/Type/KeyAxisBindingInformation.h>
 
 namespace dy
 {
@@ -42,83 +40,70 @@ public:
   /// @param[in] axisKeyName The key name which key instance has.
   /// @return float The key value which has [-1, 1] range floating value.
   ///
-  [[nodiscard]] float GetKeyValue(const std::string& axisKeyName) noexcept;
+  MDY_NODISCARD TF32 GetAxisValue(_MIN_ const std::string& axisKeyName) noexcept;
 
   ///
-  /// @brief Return present mouse poisition.
+  /// @brief Return present-frame mouse position.
   ///
-  [[nodiscard]] FORCEINLINE const DDyVector2& GetPresentMousePosition() const noexcept
+  FORCEINLINE MDY_NODISCARD const DDyVector2& GetPresentMousePosition() const noexcept
   {
     return this->mMousePresentPosition;
   }
 
   ///
-  /// @brief
+  /// @brief Return old-frame mouse position.
   ///
-  [[nodiscard]] FORCEINLINE const DDyVector2& GetPresentLastPosition() const noexcept
+  FORCEINLINE MDY_NODISCARD const DDyVector2& GetPresentLastPosition() const noexcept
   {
     return this->mMouseLastPosition;
   }
 
   ///
   /// @brief Get whether or not specific key was pressed.
-  /// @param[in] keyName The key name which key instance has.
+  /// @param[in] axisSpecifier The key name which key instance has.
   /// @return boolean value, if specific key was pressed, return true.
   ///
-  [[nodiscard]] bool IsKeyPressed(const std::string& keyName) noexcept;
+  MDY_NODISCARD bool IsAxisPressed(_MIN_ const std::string& axisSpecifier) noexcept;
 
   ///
   /// @brief Get whether or not specific key was released.
-  /// @param[in] keyName The key name which key instance has.
+  /// @param[in] axisSpecifier The key name which key instance has.
   /// @return boolean value, if specific key was released, return true.
   ///
-  [[nodiscard]] bool IsKeyReleased(const std::string& keyName) noexcept;
+  MDY_NODISCARD bool IsAxisReleased(_MIN_ const std::string& axisSpecifier) noexcept;
 
   ///
   /// @brief check if mouse is moved on present frame, but false when mouse movement is not activated.
   ///
-  [[nodiscard]] FORCEINLINE bool IsMouseMoved() const noexcept
+  FORCEINLINE MDY_NODISCARD bool IsMouseMoved() const noexcept
   {
     return this->mIsMouseMoved;
   }
-
-  ///
-  /// @brief Check if key exist.
-  ///
-  [[nodiscard]] bool pIsKeyExist(const std::string& keyName) const noexcept;
-
-  ///
-  /// @brief Insert
-  ///
-  [[nodiscard]] EDySuccess pInsertKey(const PDyKeyBindingConstructionDescriptor& bindingKey) noexcept;
 
 private:
   ///
   /// @brief Update input polling on present frame with delta time.
   /// This function must be called update phrase.
   ///
-  void pfUpdate(float dt) noexcept;
+  void pfUpdate(_MIN_ TF32 dt) noexcept;
 
-  /// Read input setting file. this function must be called just once.
-  [[nodiscard]] EDySuccess pReadInputFile(const std::string& file_path);
+  ///
+  /// @brief Check if key (action, axis) exist.
+  /// @param keySpecifierName key (action, axis) specifier name.
+  ///
+  MDY_NODISCARD bool pIsAxisExist(_MIN_ const std::string& keySpecifierName) const noexcept;
 
-  using TKeyMap = std::unordered_map<std::string, DDyKeyBindingInformation>;
+  using TAxisMap = std::unordered_map<std::string, DDyAxisBindingInformation>;
 
   // Window handle pointer (temporal)
   GLFWwindow*       mTempGlfwWindowPtr    = nullptr;;
   GLFWcursor*       mGlfwWindowCursorPtr  = nullptr;
 
-  TKeyMap           mBindedKeyList;
+  TAxisMap          mBindedAxisMap        = {};
   DDyVector2        mMouseLastPosition    = {};
   DDyVector2        mMousePresentPosition = {};
 
-  bool              mIsEnabledKeyboard    = false;
-  bool              mIsEnabledMouse       = false;
-  bool              mIsEnabledJoystick    = false;
-
   bool              mIsMouseMoved         = false;
-
-  std::vector<std::reference_wrapper<DDyKeyBindingInformation>> m_key_disposal;
 
   friend class MDyWindow;
 };

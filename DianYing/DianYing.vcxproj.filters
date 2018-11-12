@@ -163,6 +163,7 @@
     <ClCompile Include="Source\Meta\Type\EDyInput.cc" />
     <ClCompile Include="Source\Management\Platform\DDyWindowInformationWindows.cc" />
     <ClCompile Include="Source\Core\Thread\TDyIO.cc" />
+    <ClCompile Include="Source\Management\Type\KeyAxisBindingInformation.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -211,7 +212,6 @@
     <ClInclude Include="Include\Dy\Management\LoggingManager.h" />
     <ClInclude Include="Include\Dy\Helper\ThreadPool.h" />
     <ClInclude Include="Include\Dy\Management\InputManager.h" />
-    <ClInclude Include="Include\Dy\Management\Type\KeyBindingInformation.h" />
     <ClInclude Include="Include\Dy\Helper\JsonHelper.h" />
     <ClInclude Include="Include\Dy\Management\Helper\InputKeyString.h" />
     <ClInclude Include="Include\Dy\Core\Component\Object\Grid.h" />
@@ -417,6 +417,8 @@
     <ClInclude Include="Include\Dy\Management\Interface\IDyWindowDependent.h" />
     <ClInclude Include="Include\Dy\Management\Platform\DDyWindowInformationWindows.h" />
     <ClInclude Include="Include\Dy\Core\Thread\TDyIO.h" />
+    <ClInclude Include="Include\Dy\Management\Type\KeyAxisBindingInformation.h" />
+    <ClInclude Include="Include\Dy\Management\Type\KeyActionBindingInformation.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />
