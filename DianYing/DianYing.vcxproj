@@ -359,6 +359,7 @@
     <ClInclude Include="Include\Dy\Builtin\Model\ScreenProjectionTriangle.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\Sphere.h" />
     <ClInclude Include="Include\Dy\Builtin\Object\Light\DirectionalLight.h" />
+    <ClInclude Include="Include\Dy\Builtin\Script\DebugUiScriptCpp.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderBasicShadow.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderColorGeometry.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderDefaultFont.h" />
@@ -372,11 +373,14 @@
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderScreenOutput.h" />
     <ClInclude Include="Include\Dy\Builtin\Texture\ErrorBlue.h" />
     <ClInclude Include="Include\Dy\Builtin\Texture\Checker.h" />
+    <ClInclude Include="Include\Dy\Builtin\Widget\DebugUiMeta.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyPhysicsRIgidbody.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyPhysicsShape.h" />
     <ClInclude Include="Include\Dy\Component\CDyCamera.h" />
     <ClInclude Include="Include\Dy\Component\CDyDirectionalLight.h" />
     <ClInclude Include="Include\Dy\Component\Ctor\PDyFontRenderer.h" />
+    <ClInclude Include="Include\Dy\Component\Interface\IDyCppScript.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\CDyScriptCpp.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyFontRenderer.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyFontRenderer_Deprecated.h" />
     <ClInclude Include="Include\Dy\Component\CDyModelFilter.h" />
@@ -390,6 +394,7 @@
     <ClInclude Include="Include\Dy\Component\Helper\TmpCheckInitilizeParams.h" />
     <ClInclude Include="Include\Dy\Component\Helper\TmpCheckRemoveParams.h" />
     <ClInclude Include="Include\Dy\Component\Interface\IDyInitializeHelper.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\CDyScriptLua.h" />
     <ClInclude Include="Include\Dy\Component\Internal\ScriptState.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\MaterialInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\SoundInformation.h" />
@@ -399,6 +404,7 @@
     <ClInclude Include="Include\Dy\Core\Component\Information\TextureInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\SoundResource.h" />
     <ClInclude Include="Include\Dy\Core\DyEngine.h" />
+    <ClInclude Include="Include\Dy\Core\Reflection\RDyCppScript.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\BasicRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\BasicShadow.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\FinalScreenDisplayRenderer.h" />

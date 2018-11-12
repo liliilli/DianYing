@@ -418,6 +418,12 @@
     <ClInclude Include="Include\Dy\Management\Type\KeyAxisBindingInformation.h" />
     <ClInclude Include="Include\Dy\Management\Type\KeyActionBindingInformation.h" />
     <ClInclude Include="Include\Dy\Core\DyEngine.h" />
+    <ClInclude Include="Include\Dy\Builtin\Widget\DebugUiMeta.h" />
+    <ClInclude Include="Include\Dy\Builtin\Script\DebugUiScriptCpp.h" />
+    <ClInclude Include="Include\Dy\Core\Reflection\RDyCppScript.h" />
+    <ClInclude Include="Include\Dy\Component\Interface\IDyCppScript.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\CDyScriptLua.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\CDyScriptCpp.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

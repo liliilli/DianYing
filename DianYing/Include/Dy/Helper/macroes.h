@@ -439,6 +439,26 @@ private:                                                  \
   __MAType__(__MAType__&&)                  = delete;   \
   __MAType__& operator=(__MAType__&&)       = delete;   \
 
+///
+/// @macro  MDY_REFLECT_GETINSTANCE_AS
+/// @brief  Get instance from reflection on compile time.
+/// @param  __MAInstanceType__ Type for verifying.
+/// @return Converted unique_ptr instance on runtime.
+///
+#define MDY_REFLECT_GETINSTANCE_AS(__MAInstanceType__) \
+  ::dy::ConvertUniquePtrTo<__MAInstanceType__>(\
+      ::dy::reflect::__Rfc__ObjectFactory::__Rfc__CreateInstance(#__MAInstanceType__) \
+  )
+
+///
+/// @macro MDY_REFLECT_ENABLE
+/// @brief Let reflection manager enable to apply reflection to given type.
+/// @param __MAType__ Type for being enabled.
+///
+#define MDY_REFLECT_ENABLE(__MAType__) \
+  private: \
+  inline static ::dy::reflect::__Rfc__DerivedRegister<__MAType__> __rfc__Type{#__MAType__}
+
 //!
 //! Function type macros.
 //!
