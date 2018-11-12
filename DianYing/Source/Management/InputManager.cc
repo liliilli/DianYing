@@ -166,18 +166,16 @@ EDySuccess MDyInput::pfInitialize()
   // AXIS MAP
   for (const auto& [specifierName, info] : keyInformation.mAxisMap)
   {
-    if (this->pIsAxisExist(specifierName) == true)
-    {
-      MDY_LOG_ERROR_D("{} | Key is already binded. Name : {}", "MDyInput::pInsertKey", specifierName);
-      return DY_FAILURE;
-    }
-
-    auto [it, result] = this->mBindedAxisMap.try_emplace(specifierName, info);
-    if (result == false)
-    {
-      MDY_LOG_CRITICAL_D("{} | Unexpected error happened. Name : {}", "MDyInput::pInsertKey", specifierName);
-      return DY_FAILURE;
-    }
+    MDY_ASSERT(this->IsAxisExist(specifierName) == false, "Duplicated axis-key specifier name is already binded.");
+    auto [_, isSucceeded] = this->mBindedAxisMap.try_emplace(specifierName, info);
+    MDY_ASSERT(isSucceeded == true, "");
+  }
+  // ACTION MAP
+  for (const auto& [specifierName, info] : keyInformation.mActionMap)
+  {
+    MDY_ASSERT(this->IsActionExist(specifierName) == false, "Duplicated action-key specifier name is already binded.");
+    auto [_, isSucceeded] = this->mBindedActionMap.try_emplace(specifierName, info);
+    MDY_ASSERT(isSucceeded == true, "");
   }
 
   auto& winManager = MDyWindow::GetInstance();
@@ -266,14 +264,65 @@ bool MDyInput::IsAxisReleased(_MIN_ const std::string& axisSpecifierName) noexce
   }
 }
 
-bool MDyInput::pIsAxisExist(_MIN_ const std::string& axisSpecifierName) const noexcept
+bool MDyInput::IsAxisRepeated(_MIN_ const std::string& axisSpecifier) noexcept
+{
+  // Validity test
+  const auto keyIt = this->mBindedAxisMap.find(axisSpecifier);
+  if (keyIt == mBindedAxisMap.end())
+  {
+    MDY_LOG_ERROR_D(err_input_key_not_exist, axisSpecifier);
+		return false;
+  }
+
+  switch (keyIt->second.mKeyStatus)
+  {
+  case DDyAxisBindingInformation::EDyAxisInputStatus::PositiveRepeated:
+  case DDyAxisBindingInformation::EDyAxisInputStatus::NegativeRepeated:
+    return true;
+  default: return false;
+  }
+}
+
+bool MDyInput::IsAxisExist(_MIN_ const std::string& axisSpecifierName) const noexcept
 {
   return this->mBindedAxisMap.find(axisSpecifierName) != this->mBindedAxisMap.end();
 }
 
+bool MDyInput::IsActionPressed(_MIN_ const std::string& actionSpecifier) const noexcept
+{
+  // Validity test
+  const auto keyIt = this->mBindedActionMap.find(actionSpecifier);
+  if (keyIt == mBindedActionMap.end())
+  {
+    MDY_LOG_ERROR_D(err_input_key_not_exist, actionSpecifier);
+		return false;
+  }
+
+  return keyIt->second.mKeyStatus == DDyActionBindingInformation::EDyActionInputStatus::Pressed;
+}
+
+bool MDyInput::IsActionReleased(_MIN_ const std::string& actionSpecifier) const noexcept
+{
+  // Validity test
+  const auto keyIt = this->mBindedActionMap.find(actionSpecifier);
+  if (keyIt == mBindedActionMap.end())
+  {
+    MDY_LOG_ERROR_D(err_input_key_not_exist, actionSpecifier);
+		return false;
+  }
+
+  return keyIt->second.mKeyStatus == DDyActionBindingInformation::EDyActionInputStatus::Released;
+}
+
+MDY_NODISCARD bool MDyInput::IsActionExist(_MIN_ const std::string& actionSpecifier) const noexcept
+{
+  return this->mBindedActionMap.find(actionSpecifier) != this->mBindedActionMap.end();
+}
+
 void MDyInput::pfUpdate(_MIN_ TF32 dt) noexcept
 {
-  using EStatus = DDyAxisBindingInformation::EDyAxisInputStatus;
+  using EAxisStatus   = DDyAxisBindingInformation::EDyAxisInputStatus;
+  using EActionStatus = DDyActionBindingInformation::EDyActionInputStatus;
   static constexpr TF32 kNegativeValue = -1.0f;
   static constexpr TF32 kPositiveValue = +1.0f;
 
@@ -313,13 +362,13 @@ void MDyInput::pfUpdate(_MIN_ TF32 dt) noexcept
     if (CheckAxisStatus(axisInfo, EKeyPrimaryState::Pressed, true, [](DDyAxisBindingInformation& axis)
     {
       axis.mAxisValue = kNegativeValue;
-      axis.mKeyStatus = EStatus::NegativePressed;
+      axis.mKeyStatus = EAxisStatus::NegativePressed;
     }) == DY_SUCCESS) { return; }
     // Positive
     if (CheckAxisStatus(axisInfo, EKeyPrimaryState::Pressed, false, [](DDyAxisBindingInformation& axis)
     {
       axis.mAxisValue = kPositiveValue;
-      axis.mKeyStatus = EStatus::PositivePressed;
+      axis.mKeyStatus = EAxisStatus::PositivePressed;
     }) == DY_SUCCESS) { return; }
   };
 
@@ -332,21 +381,21 @@ void MDyInput::pfUpdate(_MIN_ TF32 dt) noexcept
     if (CheckAxisStatus(axisInfo, EKeyPrimaryState::Pressed, false, [](DDyAxisBindingInformation& axis)
     {
       axis.mAxisValue = kPositiveValue;
-      axis.mKeyStatus = EStatus::PositivePressed;
+      axis.mKeyStatus = EAxisStatus::PositivePressed;
     }) == DY_SUCCESS) { return; }
     // Negative
     if (axisInfo.mIsRepeatKey == true)
     {
       CheckAxisStatus(axisInfo, EKeyPrimaryState::Repeated, true, [](DDyAxisBindingInformation& axis)
       {
-        axis.mKeyStatus = EStatus::NegativeRepeated;
+        axis.mKeyStatus = EAxisStatus::NegativeRepeated;
       });
     }
     else
     {
       CheckAxisStatus(axisInfo, EKeyPrimaryState::Released, true, [](DDyAxisBindingInformation& axis)
       {
-        axis.mKeyStatus = EStatus::CommonReleased;
+        axis.mKeyStatus = EAxisStatus::CommonReleased;
         DyProceedAxisGravity(axis);
       });
     }
@@ -361,21 +410,21 @@ void MDyInput::pfUpdate(_MIN_ TF32 dt) noexcept
     if (CheckAxisStatus(axisInfo, EKeyPrimaryState::Pressed, true, [](DDyAxisBindingInformation& axis)
     {
       axis.mAxisValue = kNegativeValue;
-      axis.mKeyStatus = EStatus::NegativePressed;
+      axis.mKeyStatus = EAxisStatus::NegativePressed;
     }) == DY_SUCCESS) { return; }
     // Positive
     if (axisInfo.mIsRepeatKey == true)
     {
       CheckAxisStatus(axisInfo, EKeyPrimaryState::Repeated, false, [](DDyAxisBindingInformation& axis)
       {
-        axis.mKeyStatus = EStatus::PositiveRepeated;
+        axis.mKeyStatus = EAxisStatus::PositiveRepeated;
       });
     }
     else
     {
       CheckAxisStatus(axisInfo, EKeyPrimaryState::Released, false, [](DDyAxisBindingInformation& axis)
       {
-        axis.mKeyStatus = EStatus::CommonReleased;
+        axis.mKeyStatus = EAxisStatus::CommonReleased;
         DyProceedAxisGravity(axis);
       });
     }
@@ -390,12 +439,12 @@ void MDyInput::pfUpdate(_MIN_ TF32 dt) noexcept
     if (CheckAxisStatus(axisInfo, EKeyPrimaryState::Pressed, true, [](DDyAxisBindingInformation& axis)
     {
       axis.mAxisValue = kNegativeValue;
-      axis.mKeyStatus = EStatus::NegativePressed;
+      axis.mKeyStatus = EAxisStatus::NegativePressed;
     }) == DY_SUCCESS) { return; }
     // Positive
     if (CheckAxisStatus(axisInfo, EKeyPrimaryState::Released, false, [](DDyAxisBindingInformation& axis)
     {
-      axis.mKeyStatus = EStatus::CommonReleased;
+      axis.mKeyStatus = EAxisStatus::CommonReleased;
       DyProceedAxisGravity(axis);
     }) == DY_SUCCESS) { return; }
   };
@@ -409,43 +458,108 @@ void MDyInput::pfUpdate(_MIN_ TF32 dt) noexcept
     if (CheckAxisStatus(axisInfo, EKeyPrimaryState::Pressed, false, [](DDyAxisBindingInformation& axis)
     {
       axis.mAxisValue = kPositiveValue;
-      axis.mKeyStatus = EStatus::PositivePressed;
+      axis.mKeyStatus = EAxisStatus::PositivePressed;
     }) == DY_SUCCESS) { return; }
     // Negative
     if (CheckAxisStatus(axisInfo, EKeyPrimaryState::Released, true, [](DDyAxisBindingInformation& axis)
     {
-      axis.mKeyStatus = EStatus::CommonReleased;
+      axis.mKeyStatus = EAxisStatus::CommonReleased;
       DyProceedAxisGravity(axis);
     }) == DY_SUCCESS) { return; }
+  };
+
+  ///
+  /// @brief
+  /// @param actionInfo action information
+  ///
+  static auto CheckActionStatus = [](_MINOUT_ DDyActionBindingInformation& actionInfo,
+                                     _MIN_ EKeyPrimaryState goalState,
+                                     auto callback)
+  {
+    for (const auto id : actionInfo.mActionId)
+    {
+      if (sPrimaryKeys[id] == goalState) { callback(actionInfo); return DY_SUCCESS; }
+    }
+
+    return DY_FAILURE;
+  };
+
+  ///
+  /// @brief Process action update routine when actionInfo status is `Status::Released`.
+  /// @param actionInfo action information
+  ///
+  static auto ProcessAction_Released = [](_MINOUT_ DDyActionBindingInformation& actionInfo)
+  {
+    CheckActionStatus(actionInfo, EKeyPrimaryState::Released, [](DDyActionBindingInformation& action)
+    {
+      action.mKeyStatus = EActionStatus::Pressed;
+    });
+  };
+
+  ///
+  /// @brief Process action update routine when actionInfo status is `Status::Pressed`.
+  /// @param actionInfo action information
+  ///
+  static auto ProcessAction_Pressed = [](_MINOUT_ DDyActionBindingInformation& actionInfo)
+  {
+    if (CheckActionStatus(actionInfo, EKeyPrimaryState::Released, [](DDyActionBindingInformation& action)
+    {
+      action.mKeyStatus = EActionStatus::Released;
+    }) == DY_SUCCESS) { return; }
+    else
+    {
+      CheckActionStatus(actionInfo, EKeyPrimaryState::Pressed, [](DDyActionBindingInformation& action)
+      {
+        action.mKeyStatus = EActionStatus::Bottled;
+      });
+    }
+  };
+
+  ///
+  /// @brief Process action update routine when actionInfo status is `Status::Bottled`.
+  /// @param actionInfo action information
+  ///
+  static auto ProcessAction_Bottled = [](_MINOUT_ DDyActionBindingInformation& actionInfo)
+  {
+    CheckActionStatus(actionInfo, EKeyPrimaryState::Released, [](DDyActionBindingInformation& action)
+    {
+      action.mKeyStatus = EActionStatus::Released;
+    });
   };
 
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   //! FUNCTIONBODY ∨
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  // PRESSED, CommonNeutral checks key pressed event.
-  // If key released in state PRESSED, change it to CommonReleased.
-
-  for (auto& [keyName, key] : this->mBindedAxisMap)
-  {
-    using Status = DDyAxisBindingInformation::EDyAxisInputStatus;
-
-    switch (key.mKeyStatus)
+  for (auto& [_, axis] : this->mBindedAxisMap)
+  { // AXIS
+    switch (axis.mKeyStatus)
     {
     default: MDY_UNEXPECTED_BRANCH(); break;
-    case Status::CommonReleased:
-      DyProceedAxisGravity(key);
+    case EAxisStatus::CommonReleased:
+      DyProceedAxisGravity(axis);
       [[fallthrough]];
-    case Status::CommonNeutral:     ProcessAxis_CommonNeutral(key);     break;
-    case Status::NegativePressed:   ProcessAxis_NegativePressed(key);   break;
-    case Status::PositivePressed:   ProcessAxis_PositivePressed(key);   break;
-    case Status::PositiveRepeated:  ProcessAxis_PositiveRepeated(key);  break;
-    case Status::NegativeRepeated:  ProcessAxis_NegativeRepeated(key);  break;
+    case EAxisStatus::CommonNeutral:     ProcessAxis_CommonNeutral(axis);     break;
+    case EAxisStatus::NegativePressed:   ProcessAxis_NegativePressed(axis);   break;
+    case EAxisStatus::PositivePressed:   ProcessAxis_PositivePressed(axis);   break;
+    case EAxisStatus::PositiveRepeated:  ProcessAxis_PositiveRepeated(axis);  break;
+    case EAxisStatus::NegativeRepeated:  ProcessAxis_NegativeRepeated(axis);  break;
+    }
+  }
+
+  for (auto& [_, action] : this->mBindedActionMap)
+  { // ACTION
+    switch (action.mKeyStatus)
+    {
+    default: MDY_UNEXPECTED_BRANCH(); break;
+    case EActionStatus::Released: ProcessAction_Released(action);  break;
+    case EActionStatus::Pressed:  ProcessAction_Pressed(action);   break;
+    case EActionStatus::Bottled:  ProcessAction_Bottled(action);   break;
     }
   }
 
   if (sIsFirstMouseMovement == false && sMousePositionDirty == true)
-  {
+  { // MOUSE
     this->mMousePresentPosition = sMousePresentPosition;
     this->mMouseLastPosition    = sMouseLastPosition;
 
@@ -453,10 +567,7 @@ void MDyInput::pfUpdate(_MIN_ TF32 dt) noexcept
     this->mIsMouseMoved = true;
     sMousePositionDirty = false;
   }
-  else
-  {
-    this->mIsMouseMoved = false;
-  }
+  else { this->mIsMouseMoved = false; }
 }
 
 } /// ::dy namespace
