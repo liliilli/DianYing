@@ -161,6 +161,8 @@
     <ClCompile Include="Source\Management\Type\SettingContainer.cc" />
     <ClCompile Include="Source\Helper\Type\VectorInt2.cc" />
     <ClCompile Include="Source\Meta\Type\EDyInput.cc" />
+    <ClCompile Include="Source\Management\Platform\DDyWindowInformationWindows.cc" />
+    <ClCompile Include="Source\Core\Thread\TDyIO.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -411,6 +413,10 @@
     <ClInclude Include="Include\Dy\Meta\Type\EDyInput.h" />
     <ClInclude Include="Include\Dy\Management\IODataManager.h" />
     <ClInclude Include="Include\Dy\Management\IOResourceManager.h" />
+    <ClInclude Include="Include\Dy\Management\Type\EDyIOResourceScope.h" />
+    <ClInclude Include="Include\Dy\Management\Interface\IDyWindowDependent.h" />
+    <ClInclude Include="Include\Dy\Management\Platform\DDyWindowInformationWindows.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\TDyIO.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

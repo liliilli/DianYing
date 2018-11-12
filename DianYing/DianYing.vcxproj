@@ -254,6 +254,7 @@
     <ClCompile Include="Source\Core\Rendering\BasicShadow.cc" />
     <ClCompile Include="Source\Core\Rendering\FinalScreenDisplayRenderer.cc" />
     <ClCompile Include="Source\Core\Rendering\UiBasicRenderer.cc" />
+    <ClCompile Include="Source\Core\Thread\TDyIO.cc" />
     <ClCompile Include="Source\Editor\Gui\Dialog\ProjectCreator.cc" />
     <ClCompile Include="Source\Editor\Gui\EtcDialog.cc" />
     <ClCompile Include="Source\Editor\Gui\HelpAboutMain.cc" />
@@ -315,6 +316,7 @@
     <ClCompile Include="Source\Management\InputManager.cc" />
     <ClCompile Include="Source\Management\LoggingManager.cc" />
     <ClCompile Include="Source\Management\PhysicsManager.cc" />
+    <ClCompile Include="Source\Management\Platform\DDyWindowInformationWindows.cc" />
     <ClCompile Include="Source\Management\RenderingManager.cc" />
     <ClCompile Include="Source\Management\ScriptManager.cc" />
     <ClCompile Include="Source\Management\Type\AttachmentInformation.cc" />
@@ -401,6 +403,7 @@
     <ClInclude Include="Include\Dy\Core\Rendering\FinalScreenDisplayRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Helper\FrameAttachmentString.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\UIBasicRenderer.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\TDyIO.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\Dialog\ProjectCreator.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\Helper\ComponentHelper.h" />
     <ClInclude Include="Include\Dy\Editor\Helper\Win32Helper.h" />
@@ -482,6 +485,7 @@
     <ClInclude Include="Include\Dy\Management\Helper\LuaBindingEntry.h" />
     <ClInclude Include="Include\Dy\Management\Helper\PhysxSimulationCallback.h" />
     <ClInclude Include="Include\Dy\Management\Interface\IDyFontContainer.h" />
+    <ClInclude Include="Include\Dy\Management\Interface\IDyWindowDependent.h" />
     <ClInclude Include="Include\Dy\Management\Internal\FramebufferManager.h" />
     <ClInclude Include="Include\Dy\Management\Internal\UniformBufferObjectManager.h" />
     <ClInclude Include="Include\Dy\Management\MetaInfoManager.h" />
@@ -493,11 +497,13 @@
     <ClInclude Include="Include\Dy\Management\Interface\IDyThreadHelper.h" />
     <ClInclude Include="Include\Dy\Management\LoggingManager.h" />
     <ClInclude Include="Include\Dy\Management\PhysicsManager.h" />
+    <ClInclude Include="Include\Dy\Management\Platform\DDyWindowInformationWindows.h" />
     <ClInclude Include="Include\Dy\Management\RenderingManager.h" />
     <ClInclude Include="Include\Dy\Management\ScriptManager.h" />
     <ClInclude Include="Include\Dy\Management\SoundManager.h" />
     <ClInclude Include="Include\Dy\Management\SynchronizationManager.h" />
     <ClInclude Include="Include\Dy\Management\Type\AttachmentInformation.h" />
+    <ClInclude Include="Include\Dy\Management\Type\EDyIOResourceScope.h" />
     <ClInclude Include="Include\Dy\Management\Type\SettingContainer.h" />
     <ClInclude Include="Include\Dy\Management\Type\FontCharacter_Deprecated.h" />
     <ClInclude Include="Include\Dy\Management\Type\FontContainer_Deprecated.h" />

@@ -15,38 +15,13 @@
 
 #include <Dy/Helper/Macroes.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
-#include <Dy/Helper/Pointer.h>
+
+#include <Dy/Management/Platform/DDyWindowInformationWindows.h>
 
 namespace dy
 {
 
-#if defined(MDY_PLATFORM_FLAG_WINDOWS)
-///
-/// @struct DDyWindowInformationWindows
-/// @brief Windows information for windows platform.
-///
-struct DDyWindowInformationWindows
-{
-protected:
-  dy::Owner<FILE*> mFp                  = nullptr;
-  HWND        mWindowHandle             = nullptr;
-  HDC         mWindowDeviceContext      = nullptr;
-  HGLRC       mWindowGlResourceContext  = nullptr;
-  GLFWwindow* mGlfwWindow               = nullptr;
-};
-
-///
-/// @struct DDyDependentFunctionWindows
-/// @brief Windows specific functions
-///
-struct [[maybe_unused]] DDyDependentFunctionWindows
-{
-
-};
-
-#endif
-
-class MDyWindow final : public ISingleton<MDyWindow>, MDY_INHERITENCE_WINDOW_INFORMATION_SUPER
+class MDyWindow final : public ISingleton<MDyWindow>, public MDY_INHERITENCE_WINDOW_INFORMATION_SUPER
 {
   MDY_SINGLETON_DERIVED(MDyWindow);
   MDY_SINGLETON_PROPERTIES(MDyWindow);
@@ -55,25 +30,6 @@ public:
   /// @brief Run application.
   ///
   void Run();
-
-  ///
-  /// @brief  Create console window if OS supports. Even though OS does not support console window,
-  /// This function will return DY_SUCCESS because of conformity with remove function.
-  /// @return If succeeded, return DY_SUCCESS or DY_FAILURE. \n
-  ///
-  MDY_NODISCARD EDySuccess CreateConsoleWindow();
-
-  ///
-  /// @brief  Check if console window is created or not.
-  /// @return If created anyway, return true or false.
-  ///
-  MDY_NODISCARD bool IsCreatedConsoleWindow() const noexcept;
-
-  ///
-  /// @brief  Remove console window when console window is initiailzed before.
-  /// @return If succeeded, return DY_SUCCESS or DY_FAILURE.
-  ///
-  MDY_NODISCARD EDySuccess RemoveConsoleWindow();
 
   ///
   /// @brief Get glfw window context.
@@ -92,8 +48,7 @@ private:
   ///
   void pRender();
 
-  ///
-  std::atomic<bool> mIsConsoleWindowInitialized = false;
+  GLFWwindow* mGlfwWindow               = nullptr;
 };
 
 } /// ::dy namespace

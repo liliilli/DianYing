@@ -29,7 +29,7 @@
 
 #if     defined(MDY_PLATFORM_FLAG_WINDOWS)
 #define MDY_INHERITENCE_RESOURCE_PLATFORM_WINDOWS       public SDyRendererWindows
-#define MDY_INHERITENCE_WINDOW_INFORMATION_SUPER public DDyWindowInformationWindows
+#define MDY_INHERITENCE_WINDOW_INFORMATION_SUPER DDyWindowInformationWindows
 #elif   defined(MDY_PLATFORM_FLAG_LINUX)
 #define MDY_INHERITENCE_RESOURCE_PLATFORM_LINUX         public SDyRendererLinux
 #define MDY_INHERITENCE_WINDOW_INFORMATION_SUPER public DDyWindowInformationLinux
