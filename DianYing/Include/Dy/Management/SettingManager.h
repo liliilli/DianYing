@@ -38,7 +38,7 @@ public:
   /// If Vsync enabled, max frame per seconds are fixed by 60 fps.
   /// If not, frame will be beyond 60 fps along your hardware but jittering may be occured sometimes.
   ///
-  MDY_NODISCARD bool IsVSyncEnabled() const noexcept;
+  MDY_NODISCARD bool IsEnabledVSync() const noexcept;
 
   ///
   /// @brief Get enable/disable flag of feature, logging as true/false.
@@ -175,13 +175,11 @@ private:
   DDySettingTag         mTag          = {};
 
   bool mIsEnabledVsync = true;
+
   bool mIsInitialized  = false;
 
   friend static void SDyCoreTrigger::InitiailzeAllManagers();
 };
-
-void to_json  (nlohmann::json& j,       const MDySetting& p);
-void from_json(const nlohmann::json& j, MDySetting& p);
 
 } /// ::dy namespace
 

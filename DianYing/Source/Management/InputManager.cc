@@ -320,10 +320,12 @@ namespace dy
 
 EDySuccess MDyInput::pfInitialize()
 {
+#ifdef false
   if (!this->pReadInputFile(MSVSTR(gSettingPathName)))
   {
     MDY_UNEXPECTED_BRANCH();
   }
+#endif
 
   auto& winManager = MDyWindow::GetInstance();
   this->mTempGlfwWindowPtr = winManager.GetGlfwWindowContext();

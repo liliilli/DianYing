@@ -13,6 +13,7 @@
 /// SOFTWARE.
 ///
 
+#include <vector>
 #include <nlohmann/json_fwd.hpp>
 
 #include <Dy/Helper/GlobalType.h>
@@ -72,49 +73,62 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingGameplay::DDyShad
 
 ///
 /// @struct DDySettingInput
-/// @brief  Setting input that able to be serialized.
-/// @TODO NEED TO CHANGE STRUCTRUE TO `ACTION` `AXIS`, NOT MEDIA DEPENDENT.
+/// @brief
 ///
-struct DDySettingInput final
+struct DDySettingInput
 {
-  struct DDyMode final
-  {
-    bool mIsEnabledKeyboard   = false;
-    bool mIsEnabledMouse      = false;
-    bool mIsEnabledJoystick    = false;
-  };
+  using TKeyListType = std::vector<EDyKeyboard>;
 
-  struct DDyKeyboard final
+  struct DAction final
   {
-    std::string mSpecifierName  = {};
-    EDyKeyboard mPositiveValue  = EDyKeyboard::NoneError;
-    EDyKeyboard mNegativeValue  = EDyKeyboard::NoneError;
-    TF32        mGravity        = MDY_INITIALIZE_DEFINT;
-    bool        mIsRepeatable   = false;
+    std::string               mSpecifierName  = MDY_INITILAIZE_EMPTYSTR;
+    std::vector<EDyKeyboard>  mKey            = {};
 
     ///
-    /// @brief  Create `DDyKeyboard` with valid json atlas.
+    /// @brief  Create `DAxis` with valid json atlas.
     /// @param  json valid json atlas.
-    /// @param  specifierName `DDyKeyboard::mSpecifierName`.
-    /// @return If succeeded, just return `DDyKeyboard` instance.
+    /// @param  specifierName `DAxis::mSpecifierName`.
+    /// @return If succeeded, just return `DAxis` instance.
     ///
-    static MDY_NODISCARD DDyKeyboard CreateInstance(_MIN_ const nlohmann::json& json, _MIN_ const std::string& specifierName);
+    static MDY_NODISCARD DAction CreateInstance(
+        _MIN_ const nlohmann::json& json,
+        _MIN_ const std::string& specifierName);
   };
 
-  using TKeyboardMap = std::unordered_map<std::string, DDyKeyboard>;
+  struct DAxis final
+  {
+    std::string               mSpecifierName  = MDY_INITILAIZE_EMPTYSTR;
+    std::vector<EDyKeyboard>  mPositive       = {};
+    std::vector<EDyKeyboard>  mNegative       = {};
+    TF32                      mGravity        = MDY_INITIALIZE_DEFINT;
+    bool                      mIsRepeatable   = false;
 
-  DDyMode       mMode         = {};
-  TKeyboardMap  mKeyboardMap  = {};
+    ///
+    /// @brief  Create `DAxis` with valid json atlas.
+    /// @param  json valid json atlas.
+    /// @param  specifierName `DAxis::mSpecifierName`.
+    /// @return If succeeded, just return `DAxis` instance.
+    ///
+    static MDY_NODISCARD DAxis CreateInstance(
+        _MIN_ const nlohmann::json& json,
+        _MIN_ const std::string& specifierName);
+  };
+
+  using TActionMap  = std::unordered_map<std::string, DAction>;
+  using TAxisMap    = std::unordered_map<std::string, DAxis>;
+
+  TActionMap mActionMap = {};
+  TAxisMap   mAxisMap   = {};
 };
 
 void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingInput& p);
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingInput& p);
 
-void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingInput::DDyMode& p);
-void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingInput::DDyMode& p);
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingInput::DAction& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingInput::DAction& p);
 
-void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingInput::DDyKeyboard& p);
-void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingInput::DDyKeyboard& p);
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingInput::DAxis& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingInput::DAxis& p);
 
 ///
 /// @struct DDySettingTag
@@ -133,5 +147,6 @@ void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingTag& p);
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingTag& p);
 
 } /// ::dy namespace
+
 
 #endif /// GUARD_DY_MANAGEMENT_TYPE_SETTINGCONTAINER_H

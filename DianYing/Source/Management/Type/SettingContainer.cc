@@ -46,10 +46,10 @@ MDY_SET_IMMUTABLE_STRING(sGamePlay_Shadow_GlobalDefaultMapSize, "GlobalDefaultMa
 
 //! DDySettingInput
 
-MDY_SET_IMMUTABLE_STRING(sMode,     "Mode");
-MDY_SET_IMMUTABLE_STRING(sKeyboard, "Keyboard");
-MDY_SET_IMMUTABLE_STRING(sMouse,    "Mouse");
-MDY_SET_IMMUTABLE_STRING(sJoystick, "Joystick");
+MDY_SET_IMMUTABLE_STRING(sAction, "Action");
+MDY_SET_IMMUTABLE_STRING(sAxis,   "Axis");
+
+MDY_SET_IMMUTABLE_STRING(sKey,    "Key");
 
 MDY_SET_IMMUTABLE_STRING(sPositive, "+");
 MDY_SET_IMMUTABLE_STRING(sNegative, "-");
@@ -143,22 +143,17 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingInput& p)
 {
   j = nlohmann::json
   {
-      {MSVSTR(sMode),       p.mMode},
-      {MSVSTR(sKeyboard),   p.mKeyboardMap},
+      {MSVSTR(sAction),   p.mActionMap},
+      {MSVSTR(sAxis),     p.mAxisMap},
   };
 }
 
-void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingInput::DDyMode& p)
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingInput::DAction& p)
 {
-  j = nlohmann::json
-  {
-      {MSVSTR(sKeyboard), p.mIsEnabledKeyboard},
-      {MSVSTR(sMouse),    p.mIsEnabledMouse},
-      {MSVSTR(sJoystick), p.mIsEnabledJoystick},
-  };
+  if (p.mKey.empty() == false) { j[MSVSTR(sKey)] = p.mKey; }
 }
 
-void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingInput::DDyKeyboard& p)
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingInput::DAxis& p)
 {
   j = nlohmann::json
   {
@@ -166,48 +161,46 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingInput::DDyKeyboar
       {MSVSTR(sRepeat),   p.mIsRepeatable},
   };
 
-  if (p.mPositiveValue != EDyKeyboard::NoneError)
-  {
-    j[MSVSTR(sPositive)] = p.mPositiveValue;
-  }
-  if (p.mNegativeValue != EDyKeyboard::NoneError)
-  {
-    j[MSVSTR(sNegative)] = p.mNegativeValue;
-  }
+  if (p.mPositive.empty() == false) { j[MSVSTR(sPositive)] = p.mPositive; }
+  if (p.mNegative.empty() == false) { j[MSVSTR(sNegative)] = p.mNegative; }
 }
 
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingInput& p)
 {
-  p.mMode         = DyGetValue<DDySettingInput::DDyMode>      (j, sMode);
-  p.mKeyboardMap  = DyGetValue<DDySettingInput::TKeyboardMap> (j, sKeyboard);
+  p.mAxisMap    = DyGetValue<DDySettingInput::TAxisMap>   (j, sAxis);
+  p.mActionMap  = DyGetValue<DDySettingInput::TActionMap> (j, sAction);
 }
 
-void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingInput::DDyMode& p)
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingInput::DAction& p)
 {
-  p.mIsEnabledKeyboard  = DyGetValue<bool>(j, sKeyboard);
-  p.mIsEnabledJoystick  = DyGetValue<bool>(j, sJoystick);
-  p.mIsEnabledMouse     = DyGetValue<bool>(j, sMouse);
+  using TKeyListType = DDySettingInput::TKeyListType;
+  if (DyIsJsonKeyExist(j, MSVSTR(sKey)) == true) { p.mKey = DyGetValue<TKeyListType>(j, sKey); }
 }
 
-void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingInput::DDyKeyboard& p)
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingInput::DAxis& p)
 {
-  if (DyIsJsonKeyExist(j, MSVSTR(sPositive)) == true)
-  {
-    p.mPositiveValue = DyGetValue<EDyKeyboard>(j, sPositive);
-  }
-  if (DyIsJsonKeyExist(j, MSVSTR(sNegative)) == true)
-  {
-    p.mNegativeValue = DyGetValue<EDyKeyboard>(j, sNegative);
-  }
+  using TKeyListType = DDySettingInput::TKeyListType;
+
+  if (DyIsJsonKeyExist(j, MSVSTR(sPositive)) == true) { p.mPositive = DyGetValue<TKeyListType>(j, sPositive); }
+  if (DyIsJsonKeyExist(j, MSVSTR(sNegative)) == true) { p.mNegative = DyGetValue<TKeyListType>(j, sNegative); }
 
   p.mGravity      = DyGetValue<TI32>(j, sGravity);
   p.mIsRepeatable = DyGetValue<bool>(j, sRepeat);
 }
 
-DDySettingInput::DDyKeyboard
-DDySettingInput::DDyKeyboard::CreateInstance(_MIN_ const nlohmann::json& json, _MIN_ const std::string& specifierName)
+DDySettingInput::DAction
+DDySettingInput::DAction::CreateInstance(_MIN_ const nlohmann::json& json, _MIN_ const std::string& specifierName)
 {
-  DDySettingInput::DDyKeyboard p = json.get<DDySettingInput::DDyKeyboard>();
+  DDySettingInput::DAction p = json.get<DDySettingInput::DAction>();
+  p.mSpecifierName = specifierName;
+
+  return p;
+}
+
+DDySettingInput::DAxis
+DDySettingInput::DAxis::CreateInstance(_MIN_ const nlohmann::json& json, _MIN_ const std::string& specifierName)
+{
+  DDySettingInput::DAxis p = json.get<DDySettingInput::DAxis>();
   p.mSpecifierName = specifierName;
 
   return p;
