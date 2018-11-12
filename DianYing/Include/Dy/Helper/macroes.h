@@ -369,7 +369,7 @@ virtual bool IsTypeMatched(const TU32 hashVal) const noexcept override { \
 
 ///
 /// @macro MDY_SINGLETON_PROPERTIES
-/// This macro must not be attached to whichever class inherits ISingleton<>.
+/// This macro must not be attached to whichever class inherits IDySingleton<>.
 ///
 #define MDY_SINGLETON_PROPERTIES(__MASingletonType__) \
 public: \
@@ -380,14 +380,14 @@ public: \
 
 ///
 /// @macro MDY_SINGLETON_DERIVED
-/// This macro must not be attached to whichever class inherits ISingleton<>.
+/// This macro must not be attached to whichever class inherits IDySingleton<>.
 ///
 #define MDY_SINGLETON_DERIVED(__MADerivedSingletonType__) \
 private:                                                  \
     __MADerivedSingletonType__() = default;               \
     [[nodiscard]] EDySuccess pfInitialize();              \
     [[nodiscard]] EDySuccess pfRelease();                 \
-    friend class ISingleton<__MADerivedSingletonType__>;  \
+    friend class IDySingleton<__MADerivedSingletonType__>;\
 public:                                                   \
     virtual ~__MADerivedSingletonType__() = default;
 

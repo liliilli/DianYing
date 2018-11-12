@@ -31,7 +31,7 @@ namespace dy
 /// @class MDyIOData
 /// @brief Manages data information which are needed to create heap instances such as CDy-Resource.
 ///
-class MDyIOData final : public ISingleton<MDyIOData>
+class MDyIOData final : public IDySingleton<MDyIOData>
 {
   MDY_SINGLETON_DERIVED(MDyIOData);
   MDY_SINGLETON_PROPERTIES(MDyIOData);

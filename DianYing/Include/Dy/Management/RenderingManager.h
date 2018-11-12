@@ -52,7 +52,7 @@ namespace dy
 /// @class MDyRendering
 /// @brief Rendering maanger
 ///
-class MDyRendering final : public ISingleton<MDyRendering>
+class MDyRendering final : public IDySingleton<MDyRendering>
 {
   MDY_SINGLETON_PROPERTIES(MDyRendering);
   MDY_SINGLETON_DERIVED(MDyRendering);

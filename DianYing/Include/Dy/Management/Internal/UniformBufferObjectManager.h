@@ -25,7 +25,7 @@ namespace dy
 /// @class MDyUniformBufferObject
 /// @brief Uniform buffer object management type.
 ///
-class MDyUniformBufferObject final : public ISingleton<MDyUniformBufferObject>
+class MDyUniformBufferObject final : public IDySingleton<MDyUniformBufferObject>
 {
   MDY_SINGLETON_PROPERTIES(MDyUniformBufferObject);
   MDY_SINGLETON_DERIVED(MDyUniformBufferObject);

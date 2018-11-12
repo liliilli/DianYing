@@ -21,7 +21,7 @@
 namespace dy
 {
 
-class MDyWindow final : public ISingleton<MDyWindow>, public MDY_INHERITENCE_WINDOW_INFORMATION_SUPER
+class MDyWindow final : public IDySingleton<MDyWindow>, public MDY_INHERITENCE_WINDOW_INFORMATION_SUPER
 {
   MDY_SINGLETON_DERIVED(MDyWindow);
   MDY_SINGLETON_PROPERTIES(MDyWindow);

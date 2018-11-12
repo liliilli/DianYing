@@ -19,7 +19,7 @@
 namespace dy::editor
 {
 
-class MDyEditorSetting final : public ISingleton<MDyEditorSetting>
+class MDyEditorSetting final : public IDySingleton<MDyEditorSetting>
 {
   MDY_SINGLETON_PROPERTIES(MDyEditorSetting);
   MDY_SINGLETON_DERIVED(MDyEditorSetting);

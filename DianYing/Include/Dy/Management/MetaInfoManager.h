@@ -28,7 +28,7 @@ namespace dy
 /// @class MDyMetaInfo
 /// @brief Resource path and information (not populaized) container type
 ///
-class MDyMetaInfo : public ISingleton<MDyMetaInfo>
+class MDyMetaInfo : public IDySingleton<MDyMetaInfo>
 {
   MDY_SINGLETON_PROPERTIES(MDyMetaInfo);
   MDY_SINGLETON_DERIVED(MDyMetaInfo);

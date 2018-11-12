@@ -23,7 +23,7 @@ namespace dy
 /// @brief Time class manages time fragment. \n
 /// This management type manages ticking of each frame.
 ///
-class MDyTime final : public ISingleton<MDyTime>
+class MDyTime final : public IDySingleton<MDyTime>
 {
   MDY_SINGLETON_DERIVED(MDyTime);
   MDY_SINGLETON_PROPERTIES(MDyTime);

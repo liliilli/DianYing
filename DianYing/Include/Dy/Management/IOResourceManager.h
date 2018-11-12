@@ -41,7 +41,7 @@ namespace dy
 /// @class MDyIOResource
 /// @brief Manages heap resources which have actual memroy resource information for operation.
 ///
-class MDyIOResource final : public dy::ISingleton<MDyIOResource>
+class MDyIOResource final : public dy::IDySingleton<MDyIOResource>
 {
   MDY_SINGLETON_DERIVED(MDyIOResource);
   MDY_SINGLETON_PROPERTIES(MDyIOResource);

@@ -20,7 +20,7 @@
 namespace dy
 {
 
-class MDySync final : public ISingleton<MDySync>
+class MDySync final : public IDySingleton<MDySync>
 {
   MDY_SINGLETON_PROPERTIES(MDySync);
   MDY_SINGLETON_DERIVED(MDySync);

@@ -28,7 +28,7 @@ namespace dy
 /// @class MDySetting
 /// @brief manages global settings of DianYing renderer application.
 ///
-class MDySetting final : public ISingleton<MDySetting>
+class MDySetting final : public IDySingleton<MDySetting>
 {
   MDY_SINGLETON_DERIVED(MDySetting);
   MDY_SINGLETON_PROPERTIES(MDySetting);

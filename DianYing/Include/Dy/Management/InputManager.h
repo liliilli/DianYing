@@ -27,7 +27,7 @@ namespace dy
 /// @class MDyInput
 /// @brief Manages input polling, mouse movement and joystick input signaling.
 ///
-class MDyInput final : public ISingleton<MDyInput>
+class MDyInput final : public IDySingleton<MDyInput>
 {
   MDY_SINGLETON_PROPERTIES(MDyInput);
   MDY_SINGLETON_DERIVED(MDyInput);

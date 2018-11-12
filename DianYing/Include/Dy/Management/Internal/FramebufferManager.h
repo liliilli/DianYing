@@ -25,7 +25,7 @@ namespace dy
 /// @class MDyFramebuffer
 /// @brief Management instance of customized framebuffer.
 ///
-class MDyFramebuffer final : public ISingleton<MDyFramebuffer>
+class MDyFramebuffer final : public IDySingleton<MDyFramebuffer>
 {
   MDY_SINGLETON_PROPERTIES(MDyFramebuffer);
   MDY_SINGLETON_DERIVED(MDyFramebuffer);

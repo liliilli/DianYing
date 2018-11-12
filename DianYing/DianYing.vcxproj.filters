@@ -44,7 +44,6 @@
     <ClCompile Include="Libraries\glad\src\glad.c" />
     <ClCompile Include="Source\Entry\Entry.cc" />
     <ClCompile Include="Source\Core\Component\Resource\SubmeshResource.cc" />
-    <ClCompile Include="Source\Helper\Dbg\CheckUsage.cc" />
     <ClCompile Include="Source\Editor\Gui\MainMenu.cc" />
     <ClCompile Include="Source\Management\Editor\GuiManager.cc" />
     <ClCompile Include="Source\Editor\Gui\EtcDialog.cc" />
@@ -164,6 +163,7 @@
     <ClCompile Include="Source\Management\Platform\DDyWindowInformationWindows.cc" />
     <ClCompile Include="Source\Core\Thread\TDyIO.cc" />
     <ClCompile Include="Source\Management\Type\KeyAxisBindingInformation.cc" />
+    <ClCompile Include="Source\Management\Type\KeyActionBindingInformation.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -225,7 +225,6 @@
     <ClInclude Include="Libraries\sol2\sol2\sol_forward.hpp" />
     <ClInclude Include="Include\Dy\Helper\GlobalType.h" />
     <ClInclude Include="Include\Dy\Editor\Literals\LibraryLicenseString.h" />
-    <ClInclude Include="Include\Dy\Helper\Dbg\CheckUsage.h" />
     <ClInclude Include="Include\Dy\Editor\Interface\IDyGuiWindowSingletonCrtp.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\MainMenu.h" />
     <ClInclude Include="Include\Dy\Helper\HashCompileCrc32.h" />
@@ -419,6 +418,7 @@
     <ClInclude Include="Include\Dy\Core\Thread\TDyIO.h" />
     <ClInclude Include="Include\Dy\Management\Type\KeyAxisBindingInformation.h" />
     <ClInclude Include="Include\Dy\Management\Type\KeyActionBindingInformation.h" />
+    <ClInclude Include="Include\Dy\Core\DyEngine.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />
