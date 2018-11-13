@@ -54,6 +54,7 @@ struct PDyScriptInstanceMetaInfo final
   EDyScriptType mScriptType    = EDyScriptType::NoneError;
   std::string   mSpecifierName = MDY_INITILAIZE_EMPTYSTR;
   std::string   mFilePath      = "";
+  bool          mIsCompressed  = false;
 };
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyScriptInstanceMetaInfo& p);

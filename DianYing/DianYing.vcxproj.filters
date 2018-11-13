@@ -338,11 +338,9 @@
     <ClInclude Include="Include\Dy\Helper\Type\DyString.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\CanvasDescriptor.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\Canvas.h" />
-    <ClInclude Include="Include\Dy\Helper\Constant\StringSettingFile.h" />
     <ClInclude Include="Include\Dy\Component\Internal\ScriptState.h" />
     <ClInclude Include="Include\Dy\Binding\LuaScriptFrame.h" />
     <ClInclude Include="Include\Dy\Management\ScriptManager.h" />
-    <ClInclude Include="Include\Dy\Meta\Descriptor\ScriptDescriptor.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\PrefabDescriptor.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\GlobalEnums.h" />
     <ClInclude Include="Include\Dy\Element\Helper\DescriptorHelperFunctions.h" />

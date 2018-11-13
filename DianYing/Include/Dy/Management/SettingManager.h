@@ -113,8 +113,7 @@ public:
   }
 
   ///
-  /// @brief Get input setting information.
-  /// @return Input setting information, not modifiable.
+  /// @brief Get input setting information, not modifiable.
   ///
   MDY_NODISCARD const DDySettingInput& GetInputSettingInformation() const noexcept
   {
@@ -122,12 +121,19 @@ public:
   }
 
   ///
-  /// @brief
-  /// @return
+  /// @brief Get gameplay (graphics etc) setting information, not modifiable.
   ///
   MDY_NODISCARD const DDySettingGameplay& GetGameplaySettingInformation() const noexcept
   {
     return this->mGamePlay;
+  }
+
+  ///
+  /// @brief Get meta file path setting information, not modifiable.
+  ///
+  MDY_NODISCARD const DDySettingMetaPath& GetMetaPathSettingInformation() const noexcept
+  {
+    return this->mMetaPath;
   }
 
   ///
@@ -190,6 +196,7 @@ private:
   DDySettingGameplay    mGamePlay     = {};
   DDySettingInput       mInput        = {};
   DDySettingTag         mTag          = {};
+  DDySettingMetaPath    mMetaPath     = {};
 
   bool mIsEnabledVsync = true;
   bool mIsInitialized  = false;

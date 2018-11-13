@@ -159,6 +159,22 @@ struct DDySettingTag final
 void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingTag& p);
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingTag& p);
 
+///
+/// @struct DDySettingMetaPath
+/// @brief  Setting meta file path that able to be serialized.
+///
+struct DDySettingMetaPath final
+{
+  std::string mSceneMetaPath  = MDY_INITILAIZE_EMPTYSTR;
+  std::string mWidgetMetaPath = MDY_INITILAIZE_EMPTYSTR;
+  std::string mPrefabMetaPath = MDY_INITILAIZE_EMPTYSTR;
+  std::string mFontMetaPath   = MDY_INITILAIZE_EMPTYSTR;
+  std::string mScriptMetaPath = MDY_INITILAIZE_EMPTYSTR;
+};
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingMetaPath& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingMetaPath& p);
+
 } /// ::dy namespace
 
 

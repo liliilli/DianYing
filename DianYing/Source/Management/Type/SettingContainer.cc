@@ -65,6 +65,14 @@ MDY_SET_IMMUTABLE_STRING(sRepeat,   "repeat");
 MDY_SET_IMMUTABLE_STRING(sObject,     "Object");
 MDY_SET_IMMUTABLE_STRING(sCollision,  "Collision");
 
+//! DDySettingMetaPath
+
+MDY_SET_IMMUTABLE_STRING(sHeader_MetaPath_Scene,    "Scene");
+MDY_SET_IMMUTABLE_STRING(sHeader_MetaPath_Widget,   "Widget");
+MDY_SET_IMMUTABLE_STRING(sHeader_MetaPath_Prefab,   "Prefab");
+MDY_SET_IMMUTABLE_STRING(sHeader_MetaPath_Font,     "Font");
+MDY_SET_IMMUTABLE_STRING(sHeader_MetaPath_Script,   "Script");
+
 } /// ::unnamed namespace
 
 //!
@@ -240,6 +248,27 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingTag& p)
 {
   p.mObjectTag    = DyGetValue<DDySettingTag::TObjectTagList>   (j, sObject);
   p.mCollisionTag = DyGetValue<DDySettingTag::TCollisionTagList>(j, sCollision);
+}
+
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingMetaPath& p)
+{
+  j = nlohmann::json
+  {
+      {MSVSTR(sHeader_MetaPath_Scene),  p.mSceneMetaPath},
+      {MSVSTR(sHeader_MetaPath_Widget), p.mWidgetMetaPath},
+      {MSVSTR(sHeader_MetaPath_Prefab), p.mPrefabMetaPath},
+      {MSVSTR(sHeader_MetaPath_Font),   p.mFontMetaPath},
+      {MSVSTR(sHeader_MetaPath_Script), p.mScriptMetaPath}
+  };
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingMetaPath& p)
+{
+  p.mSceneMetaPath  = DyGetValue<std::string>(j, sHeader_MetaPath_Scene);
+  p.mWidgetMetaPath = DyGetValue<std::string>(j, sHeader_MetaPath_Widget);
+  p.mPrefabMetaPath = DyGetValue<std::string>(j, sHeader_MetaPath_Prefab);
+  p.mFontMetaPath   = DyGetValue<std::string>(j, sHeader_MetaPath_Font);
+  p.mScriptMetaPath = DyGetValue<std::string>(j, sHeader_MetaPath_Script);
 }
 
 } /// ::dy namespace

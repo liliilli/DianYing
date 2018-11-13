@@ -474,7 +474,6 @@
     <ClInclude Include="Include\Dy\Element\LevelScriptor.h" />
     <ClInclude Include="Include\Dy\Element\RenderableObject.h" />
     <ClInclude Include="Include\Dy\Helper\System\Assertion.h" />
-    <ClInclude Include="Include\Dy\Helper\Constant\StringSettingFile.h" />
     <ClInclude Include="Include\Dy\Helper\ContainerHelper.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\Contracts.h" />
     <ClInclude Include="Include\Dy\Helper\GlobalType.h" />
@@ -550,7 +549,6 @@
     <ClInclude Include="Include\Dy\Management\IO\IODataManager.h" />
     <ClInclude Include="Include\Dy\Management\SettingManager.h" />
     <ClInclude Include="Include\Dy\Management\TimeManager.h" />
-    <ClInclude Include="Include\Dy\Meta\Descriptor\ScriptDescriptor.h" />
     <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetCommonDescriptor.h" />
     <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetComponentDescriptor.h" />
     <ClInclude Include="Include\Dy\Meta\Information\FontMetaInformation.h" />

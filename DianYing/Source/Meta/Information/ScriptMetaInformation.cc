@@ -19,9 +19,10 @@
 namespace
 {
 
-MDY_SET_IMMUTABLE_STRING(sHeader_Specifier, "Specifier");
-MDY_SET_IMMUTABLE_STRING(sHeader_Type,      "Type");
-MDY_SET_IMMUTABLE_STRING(sHeader_Path,      "Path");
+MDY_SET_IMMUTABLE_STRING(sHeader_Specifier,   "Specifier");
+MDY_SET_IMMUTABLE_STRING(sHeader_Type,        "Type");
+MDY_SET_IMMUTABLE_STRING(sHeader_Path,        "Path");
+MDY_SET_IMMUTABLE_STRING(sHeader_IsCompressed,"IsCompressed");
 
 MDY_SET_IMMUTABLE_STRING(sValue_Cpp, "Cpp");
 MDY_SET_IMMUTABLE_STRING(sValue_Lua, "Lua");
@@ -68,6 +69,7 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyScriptInstanceMetaInfo& 
       {MSVSTR(sHeader_Specifier),   p.mSpecifierName},
       {MSVSTR(sHeader_Type),        p.mScriptType},
       {MSVSTR(sHeader_Path),        p.mFilePath},
+      {MSVSTR(sHeader_IsCompressed),p.mIsCompressed},
   };
 }
 
@@ -76,6 +78,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ PDyScriptInstanceMetaInfo& 
   p.mSpecifierName  = DyGetValue<std::string>   (j, sHeader_Specifier);
   p.mScriptType     = DyGetValue<EDyScriptType> (j, sHeader_Type);
   p.mFilePath       = DyGetValue<std::string>   (j, sHeader_Path);
+  p.mIsCompressed   = DyGetValue<bool>          (j, sHeader_IsCompressed);
 }
 
 } /// ::dy namespace

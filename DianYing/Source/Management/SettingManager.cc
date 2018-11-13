@@ -31,7 +31,6 @@
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/TimeManager.h>
 #include <Dy/Helper/Library/HelperJson.h>
-#include <Dy/Helper/Constant/StringSettingFile.h>
 
 //!
 //! Local translation unit variables or functions.
@@ -44,6 +43,7 @@ MDY_SET_IMMUTABLE_STRING(sCategoryDescription,  "Description");
 MDY_SET_IMMUTABLE_STRING(sCategoryGameplay,     "Gameplay");
 MDY_SET_IMMUTABLE_STRING(sCategoryInput,        "Input");
 MDY_SET_IMMUTABLE_STRING(sCategoryTag,          "Tag");
+MDY_SET_IMMUTABLE_STRING(sCategoryMetaPath,     "MetaPath");
 
 ///
 /// @brief  Get rendering api type value from argument string.
@@ -285,6 +285,8 @@ EDySuccess MDySetting::pfInitialize()
 
   if (InitializeGraphicsApi(*this) == DY_FAILURE) { return DY_FAILURE; }
 
+  static MDY_SET_IMMUTABLE_STRING(gSettingPathName, "./Project/Meta/Setting.dydat");
+
   const auto opSettingAtlas = DyGetJsonAtlasFromFile(MSVSTR(gSettingPathName));
   MDY_ASSERT(opSettingAtlas.has_value() == true, "Failed to open application setting file.");
 
@@ -294,6 +296,7 @@ EDySuccess MDySetting::pfInitialize()
     this->mGamePlay     = DyGetValue<decltype(this->mGamePlay)>   (settingAtlas, sCategoryGameplay);
     this->mInput        = DyGetValue<decltype(this->mInput)>      (settingAtlas, sCategoryInput);
     this->mTag          = DyGetValue<decltype(this->mTag)>        (settingAtlas, sCategoryTag);
+    this->mMetaPath     = DyGetValue<decltype(this->mMetaPath)>   (settingAtlas, sCategoryMetaPath);
   }
 
   this->mIsInitialized = true;

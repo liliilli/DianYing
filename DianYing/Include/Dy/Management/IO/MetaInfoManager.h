@@ -17,10 +17,10 @@
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Element/Descriptor/LevelDescriptor.h>
 #include <Dy/Element/Descriptor/PrefabDescriptor.h>
-#include <Dy/Meta/Descriptor/ScriptDescriptor.h>
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
 #include <Dy/Meta/Information/FontMetaInformation.h>
 #include <Dy/Builtin/Helper/BuiltinInformationDeliver.h>
+#include <Dy/Helper/ContainerHelper.h>
 
 namespace dy
 {
@@ -29,7 +29,7 @@ namespace dy
 /// @class MDyMetaInfo
 /// @brief Resource path and information (not populaized) container type
 ///
-class MDyMetaInfo : public IDySingleton<MDyMetaInfo>
+class MDyMetaInfo final : public IDySingleton<MDyMetaInfo>
 {
   MDY_SINGLETON_PROPERTIES(MDyMetaInfo);
   MDY_SINGLETON_DERIVED(MDyMetaInfo);
@@ -41,34 +41,10 @@ public:
   const PDyLevelConstructDescriptor* GetLevelMetaInformation(const std::string& levelName) const noexcept;
 
   ///
-  /// @brief
-  /// @param  specifierName
-  /// @return
-  /// @TODO SCRIPT THIS
+  /// @brief  Get valid script meta information instance.
+  /// @return valid script meta information instance.
   ///
-  FORCEINLINE MDY_NODISCARD bool IsScriptMetaInformationExist(_MIN_ const std::string& specifierName) const noexcept
-  {
-    return this->mScriptMetaInfo.find(specifierName) != this->mScriptMetaInfo.end();
-  }
-
-  ///
-  /// @brief
-  /// @param  specifierName
-  /// @return
-  /// @TODO SCRIPT THIS
-  ///
-  MDY_NODISCARD const PDyMetaScriptInformation& GetScriptMetaInformation(_MIN_ const std::string& specifierName) const;
-
-  ///
-  /// @brief
-  /// @param  specifierName
-  /// @return
-  /// @TODO SCRIPT THIS
-  ///
-  FORCEINLINE MDY_NODISCARD bool IsPrefabMetaInformationExist(_MIN_ const std::string& specifierName) const noexcept
-  {
-    return this->mPrefabMetaInfo.find(specifierName) != this->mPrefabMetaInfo.end();
-  }
+  MDY_NODISCARD const PDyScriptInstanceMetaInfo& GetScriptMetaInformation(_MIN_ const std::string& specifierName) const;
 
   ///
   /// @brief
@@ -86,13 +62,30 @@ public:
   MDY_NODISCARD const PDyMetaFontInformation& GetFontMetaInformation(_MIN_ const std::string& specifierName) const;
 
   ///
-  /// @brief
-  /// @param  specifierName
-  /// @return
+  /// @brief  Check script meta information is exist.
+  /// @return If found, return true or false.
+  ///
+  FORCEINLINE MDY_NODISCARD bool IsScriptMetaInformationExist(_MIN_ const std::string& specifierName) const noexcept
+  {
+    return DyIsMapContains(this->mScriptMetaInfo, specifierName);
+  }
+
+  ///
+  /// @brief  Check prefab meta information is exist.
+  /// @return If found, return true or false.
+  ///
+  FORCEINLINE MDY_NODISCARD bool IsPrefabMetaInformationExist(_MIN_ const std::string& specifierName) const noexcept
+  {
+    return DyIsMapContains(this->mPrefabMetaInfo, specifierName);
+  }
+
+  ///
+  /// @brief  Check font meta information is exist.
+  /// @return If found, return true or false.
   ///
   FORCEINLINE MDY_NODISCARD bool IsFontMetaInformationExist(_MIN_ const std::string& specifierName) const noexcept
   {
-    return this->mFontMetaInfo.find(specifierName) != this->mFontMetaInfo.end();
+    return DyIsMapContains(this->mFontMetaInfo, specifierName);
   }
 
   template <typename TType>
@@ -135,7 +128,7 @@ private:
   /// Level meta information map.
   THashMap<PDyLevelConstructDescriptor> mLevelInfoMap   = {};
   /// Script meta information map.
-  THashMap<PDyMetaScriptInformation>    mScriptMetaInfo = {};
+  THashMap<PDyScriptInstanceMetaInfo>   mScriptMetaInfo = {};
   /// Font meta information map.
   THashMap<PDyMetaFontInformation>      mFontMetaInfo   = {};
 

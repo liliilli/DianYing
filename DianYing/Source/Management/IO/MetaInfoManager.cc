@@ -16,17 +16,19 @@
 #include <Dy/Management/IO/MetaInfoManager.h>
 
 #include <optional>
+#include <filesystem>
 #include <nlohmann/json.hpp>
 
+#include <Dy/Helper/Pointer.h>
+#include <Dy/Helper/ContainerHelper.h>
 #include <Dy/Helper/Library/HelperJson.h>
-#include <Dy/Helper/Constant/StringSettingFile.h>
 #include <Dy/Element/Descriptor/LevelDescriptor.h>
 #include <Dy/Element/Helper/DescriptorHelperFunctions.h>
 #include <Dy/Element/Helper/DescriptorComponentHeaderString.h>
+#include <Dy/Management/SettingManager.h>
 
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
 #include <Dy/Meta/Descriptor/WidgetComponentDescriptor.h>
-#include "Dy/Helper/Pointer.h"
 
 //!
 //! Local tranlation unit variables
@@ -168,30 +170,17 @@ namespace dy
 
 EDySuccess MDyMetaInfo::pfInitialize()
 {
-  const auto opJsonAtlas = DyGetJsonAtlasFromFile(MSVSTR(gTestPath));
-  if (opJsonAtlas.has_value() == false) { return DY_FAILURE; }
+  const auto& metaPath = MDySetting::GetInstance().GetMetaPathSettingInformation();
 
-  { // @TODO TEST READING (FIXED PATH) script file from meta file.
-    const auto flag = this->pReadFontResourceMetaInformation(MSVSTR(gTestPackedFontMetaInfo));
-    if (flag == DY_FAILURE) { MDY_UNEXPECTED_BRANCH(); return DY_FAILURE; }
-  }
-
-  { // @TODO TEST READING (FIXED PATH) script file from meta file.
-    const auto flag = this->pReadScriptResourceMetaInformation(MSVSTR(gScriptResourceMetaInfo));
-    if (flag == DY_FAILURE) { MDY_UNEXPECTED_BRANCH(); return DY_FAILURE; }
-  }
-
-  { // @TODO TEST READING (FIXED PATH) prefab file from meta file.
-    const auto flag = this->pReadPrefabResourceMetaInformation(MSVSTR(gPrefabResourceMetaInfo));
-    if (flag == DY_FAILURE) { MDY_UNEXPECTED_BRANCH(); return DY_FAILURE; }
-  }
-
-  { // @TODO TEST READING (FIXED PATH) widget0 file from meta file.
-    const auto flag = this->pReadWidgetResourceMetaInformation(MSVSTR(gWidget0MetaInfo));
-    if (flag == DY_FAILURE) { MDY_UNEXPECTED_BRANCH(); return DY_FAILURE; }
-  }
+  MDY_CALL_ASSERT_SUCCESS(this->pReadFontResourceMetaInformation  (metaPath.mFontMetaPath));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadScriptResourceMetaInformation(metaPath.mScriptMetaPath));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadPrefabResourceMetaInformation(metaPath.mPrefabMetaPath));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadWidgetResourceMetaInformation(metaPath.mWidgetMetaPath));
 
   // @TODO scene meta information reading from meta file.
+  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaPath.mSceneMetaPath);
+  if (opJsonAtlas.has_value() == false) { return DY_FAILURE; }
+
   PDyLevelConstructDescriptor desc = PDyLevelConstructDescriptor::CreateDescriptor(opJsonAtlas.value());
   auto [it, result] = this->mLevelInfoMap.try_emplace(desc.mLevelName, desc);
   if (result == false)
@@ -217,7 +206,7 @@ const PDyLevelConstructDescriptor* MDyMetaInfo::GetLevelMetaInformation(const st
   else                                  { return &it->second; }
 }
 
-const PDyMetaScriptInformation& MDyMetaInfo::GetScriptMetaInformation(_MIN_ const std::string& specifierName) const
+const PDyScriptInstanceMetaInfo& MDyMetaInfo::GetScriptMetaInformation(_MIN_ const std::string& specifierName) const
 {
   return this->mScriptMetaInfo.at(specifierName);
 }
@@ -229,99 +218,25 @@ const PDyMetaFontInformation& MDyMetaInfo::GetFontMetaInformation(_MIN_ const st
 
 EDySuccess MDyMetaInfo::pReadScriptResourceMetaInformation(_MIN_ const std::string& metaFilePath)
 {
-  // Integrity Test
+  // Validity Test
   const std::optional<nlohmann::json> opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
-  if (opJsonAtlas.has_value() == false)
-  {
-    MDY_ASSERT(opJsonAtlas.has_value() == true, "Failed to read script resource meta information. File path is not exist.");
-    return DY_FAILURE;
-  }
+  MDY_ASSERT(opJsonAtlas.has_value() == true, "Failed to read script resource meta information. File path is not exist.");
 
   // Check "List" Category is exist.
   const nlohmann::json& jsonAtlas = opJsonAtlas.value();
-  if (DyCheckHeaderIsExist(jsonAtlas, sCategoryList) == DY_FAILURE)
-  {
-    MDY_UNEXPECTED_BRANCH();
-    return DY_FAILURE;
-  }
-
-  ///
-  /// @brief  Check meta script information header list.
-  /// @param  atlas
-  /// @return If succeeded, return DY_SUCCESS flag for representing success.
-  ///
-  static auto CheckMetaScriptResourceHeaders = [](_MIN_ const nlohmann::json& atlas) -> EDySuccess
-  {
-    if (DyCheckHeaderIsExist(atlas, sHeaderScriptName) == DY_FAILURE) { return DY_FAILURE; }
-    if (DyCheckHeaderIsExist(atlas, sHeaderScriptPath) == DY_FAILURE) { return DY_FAILURE; }
-    if (DyCheckHeaderIsExist(atlas, sHeaderScriptCode) == DY_FAILURE) { return DY_FAILURE; }
-    if (DyCheckHeaderIsExist(atlas, sHeaderIsUsingScriptPath)        == DY_FAILURE) { return DY_FAILURE; }
-    if (DyCheckHeaderIsExist(atlas, sHeaderIsUsingScriptInnateCode)  == DY_FAILURE) { return DY_FAILURE; }
-    return DY_SUCCESS;
-  };
-
-  ///
-  /// @brief
-  /// @param atlas
-  /// @param code
-  ///
-  static auto GetInnatedScriptCodeFrom = [](_MIN_ const nlohmann::json& atlas, _MOUT_ std::string& code)
-  {
-    for (const auto& stringAtlas : atlas) { code += stringAtlas.get<std::string>(); }
-  };
-
-  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  //! FUNCTIONBODY ∨
-  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  MDY_ASSERT(DyCheckHeaderIsExist(jsonAtlas, sCategoryList) == DY_SUCCESS, "Unexpecte error occurred.");
 
   const auto& scriptResourceListAtlas = jsonAtlas.at(MSVSTR(sCategoryList));
   for (const auto& scriptResource : scriptResourceListAtlas)
-  { // Check Header list integrity
-    const auto flag = CheckMetaScriptResourceHeaders(scriptResource);
-    MDY_ASSERT(flag == DY_SUCCESS, "flag == DY_FAILURE");
-
-    PDyMetaScriptInformation metaInfo   = {};
-
-    const auto scriptSpecifierString    = DyGetValue<std::string>(scriptResource, sHeaderScriptName);
-    const auto isUsingScriptPath        = DyGetValue<bool>(scriptResource, sHeaderIsUsingScriptPath);
-    const auto isUsingScriptInnateCode  = DyGetValue<bool>(scriptResource, sHeaderIsUsingScriptInnateCode);
-    metaInfo.mName = scriptSpecifierString;
+  {
+    auto metaInfo = scriptResource.get<PDyScriptInstanceMetaInfo>();
 
     // Check Duplicated script specfier integrity
-    if (this->mScriptMetaInfo.find(scriptSpecifierString) != this->mScriptMetaInfo.end())
-    {
-      MDY_LOG_CRITICAL(sErrorSameName, scriptSpecifierString);
-      return DY_FAILURE;
-    }
+    MDY_ASSERT(DyIsMapContains(this->mScriptMetaInfo, metaInfo.mSpecifierName) == false, "Duplicated script specifier not permitted.");
+    MDY_ASSERT(std::filesystem::exists(metaInfo.mFilePath), "File not exist.");
 
-    // Check ambiguous flag integrity test
-    if ((isUsingScriptPath == true && isUsingScriptInnateCode == true) ||
-        (isUsingScriptPath == false && isUsingScriptInnateCode == false))
-    {
-      MDY_LOG_CRITICAL(sErrorAmbiguousFlag, scriptSpecifierString);
-      return DY_FAILURE;
-    }
-
-    if (isUsingScriptPath == true)
-    { // If using path, just do it.
-      const auto scriptPath       = DyGetValue<std::string>(scriptResource, sHeaderScriptPath);
-      metaInfo.mIsUsingScriptPath = true;
-      metaInfo.mScriptPath        = scriptPath;
-    }
-    else if (isUsingScriptInnateCode == true)
-    { // If using innate code, retrieve string code chunk from inside.
-      std::string scriptCode = MDY_INITILAIZE_EMPTYSTR;
-      GetInnatedScriptCodeFrom(scriptResource.at(MSVSTR(sHeaderScriptCode)), scriptCode);
-      metaInfo.mIsUsingScriptInnateCode = true;
-      metaInfo.mScriptCode              = scriptCode;
-    }
-
-    auto [it, result] = this->mScriptMetaInfo.try_emplace(metaInfo.mName, metaInfo);
-    if (result == false)
-    {
-      MDY_UNEXPECTED_BRANCH();
-      return DY_FAILURE;
-    }
+    auto [it, isSucceeded] = this->mScriptMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
+    MDY_ASSERT(isSucceeded == true, "Unexpected error occurred.");
   }
 
   return DY_SUCCESS;
@@ -509,9 +424,13 @@ EDySuccess MDyMetaInfo::pReadWidgetResourceMetaInformation(_MIN_ const std::stri
   const std::optional<nlohmann::json> opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
   MDY_ASSERT(opJsonAtlas.has_value() == true, "Must be valid json atlas from file path.");
 
-  auto rootInstance = DyCreateWidgetMetaInformation(opJsonAtlas.value());
-  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(rootInstance), "Widget root instance must not be empty.");
-  this->mWidgetMetaInfo.try_emplace(rootInstance->mWidgetSpecifierName, std::move(rootInstance));
+  auto& listAtlas = opJsonAtlas.value();
+  for (const auto& widgetMeta : listAtlas)
+  {
+    auto rootInstance = DyCreateWidgetMetaInformation(widgetMeta);
+    MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(rootInstance), "Widget root instance must not be empty.");
+    this->mWidgetMetaInfo.try_emplace(rootInstance->mWidgetSpecifierName, std::move(rootInstance));
+  }
   return DY_SUCCESS;
 }
 
