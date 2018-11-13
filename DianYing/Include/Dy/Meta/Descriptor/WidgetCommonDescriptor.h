@@ -18,13 +18,14 @@
 #include <unordered_map>
 #include <string_view>
 #include <nlohmann/json_fwd.hpp>
+#include "Dy/Meta/Information/ScriptMetaInformation.h"
 
 namespace dy
 {
 
 ///
 /// @enum   EDyWidgetComponentType
-/// @brief
+/// @brief  Widget component object type.
 ///
 enum class EDyWidgetComponentType
 {
@@ -35,12 +36,8 @@ enum class EDyWidgetComponentType
   NoneError
 };
 
-///
-/// @brief
-/// @param
-/// @return
-///
-MDY_NODISCARD EDyWidgetComponentType DyGetWidgetComponentTypeFrom(_MIN_ const std::string& typeString);
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const EDyWidgetComponentType& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ EDyWidgetComponentType& p);
 
 struct PDyMetaWidgetChildableBaseDesc;
 struct PDyMetaWidgetCommonBaseDesc;
@@ -77,8 +74,6 @@ struct PDyMetaWidgetCommonBaseDesc : public PDyMetaWidgetChildableBaseDesc
   inline static MDY_SET_IMMUTABLE_STRING(sHeader_Type,  "Type");
   inline static MDY_SET_IMMUTABLE_STRING(sHeader_Parent,"Parent");
   inline static MDY_SET_IMMUTABLE_STRING(sHeader_Details,"Details");
-
-  inline static MDY_SET_IMMUTABLE_STRING(sHeader_Script,"Script");
 };
 
 ///
@@ -89,8 +84,8 @@ struct PDyMetaWidgetRootDescriptor final : public PDyMetaWidgetChildableBaseDesc
 {
   /// Widget specifier name
   std::string   mWidgetSpecifierName  = MDY_INITILAIZE_EMPTYSTR;
-  /// Script (widget) specifier name
-  std::string   mScriptSpecifierName  = MDY_INITILAIZE_EMPTYSTR;
+  /// Script reference variable.
+  PDyScriptReferenceMetaInfo mScriptReference = {};
 
   ///
   /// @brief Factory function for PDyMetaWidgetTextDescriptor.
@@ -99,6 +94,9 @@ struct PDyMetaWidgetRootDescriptor final : public PDyMetaWidgetChildableBaseDesc
   ///
   static std::unique_ptr<PDyMetaWidgetRootDescriptor>
   CreateMetaInformation(_MIN_ const nlohmann::json& itemAtlas);
+
+  inline static MDY_SET_IMMUTABLE_STRING(sHeader_Name,  "Name");
+  inline static MDY_SET_IMMUTABLE_STRING(sHeader_Script,"Script");
 };
 
 } /// ::dy namespace

@@ -30,12 +30,7 @@ FDyBuiltinWidgetDebugUiMeta::FDyBuiltinWidgetDebugUiMeta()
   "Meta":
   {
     "Name": "DebugUi",
-    "Script":
-    {
-      "Type": "Cpp"
-      "Specifier": "DebugUiScriptCpp"
-      "Path": ""
-    }
+    "Script": { "Specifier": "DebugUiScriptCpp" }
   },
   "ObjectList":
   [

@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Helper/JsonHelper.h>
+#include <Dy/Helper/Library/HelperJson.h>
 
 #include <filesystem>
 #include <nlohmann/json.hpp>
@@ -27,17 +27,17 @@ bool DyIsJsonKeyExist(const nlohmann::json& json, const std::string& key) noexce
   return json.find(key) != json.end();
 }
 
-std::optional<nlohmann::json> DyGetJsonAtlas(const std::string& filePath) noexcept
+std::optional<nlohmann::json> DyGetJsonAtlasFromFile(const std::string& filePath) noexcept
 {
   if (!std::filesystem::exists(filePath))
   {
-    MDY_LOG_CRITICAL("DyGetJsonAtlas | File path is not exist so failed to read serialization file. | Path : {}", filePath);
+    MDY_LOG_CRITICAL("DyGetJsonAtlasFromFile | File path is not exist so failed to read serialization file. | Path : {}", filePath);
     return std::nullopt;
   }
 
   std::ifstream stream { filePath, std::ios_base::in };
   if (!stream.good()) {
-    MDY_LOG_ERROR("DyGetJsonAtlas | Unexpected error occurred in reading serializaition file. | Path : {}", filePath);
+    MDY_LOG_ERROR("DyGetJsonAtlasFromFile | Unexpected error occurred in reading serializaition file. | Path : {}", filePath);
     stream.close();
     return std::nullopt;
   }

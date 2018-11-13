@@ -35,7 +35,6 @@
     <ClCompile Include="Source\Management\LoggingManager.cc" />
     <ClCompile Include="Source\Helper\ThreadPool.cc" />
     <ClCompile Include="Source\Management\InputManager.cc" />
-    <ClCompile Include="Source\Helper\JsonHelper.cc" />
     <ClCompile Include="Source\Core\Component\Object\Grid.cc" />
     <ClCompile Include="Source\Helper\Type\Quaternion.cc" />
     <ClCompile Include="Source\Helper\IoHelper.cc" />
@@ -138,7 +137,6 @@
     <ClCompile Include="Source\Meta\Information\FontMetaInformation.cc" />
     <ClCompile Include="Source\Management\Type\FontContainer_Deprecated.cc" />
     <ClCompile Include="Source\Management\Type\FontResourceContainer.cc" />
-    <ClCompile Include="Source\Helper\HelperZlib.cc" />
     <ClCompile Include="Source\Management\Type\FontCharacter_Deprecated.cc" />
     <ClCompile Include="Source\Management\Type\FontCharacterInfo.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderFontMSDF_Deprecated.cc" />
@@ -165,6 +163,9 @@
     <ClCompile Include="Source\Management\Rendering\FramebufferManager.cc" />
     <ClCompile Include="Source\Management\Rendering\UniformBufferObjectManager.cc" />
     <ClCompile Include="Source\Management\Rendering\RenderingManager.cc" />
+    <ClCompile Include="Source\Meta\Information\ScriptMetaInformation.cc" />
+    <ClCompile Include="Source\Helper\Library\HelperZlib.cc" />
+    <ClCompile Include="Source\Helper\Library\HelperJson.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -208,19 +209,16 @@
     <ClInclude Include="Include\Dy\Core\Component\Internal\ModelType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\EtcType.h" />
     <ClInclude Include="Include\Dy\Core\Component\Object\Camera.h" />
-    <ClInclude Include="Include\Dy\Helper\Macroes.h" />
     <ClInclude Include="Include\Dy\Management\WindowManager.h" />
     <ClInclude Include="Include\Dy\Management\LoggingManager.h" />
     <ClInclude Include="Include\Dy\Helper\ThreadPool.h" />
     <ClInclude Include="Include\Dy\Management\InputManager.h" />
-    <ClInclude Include="Include\Dy\Helper\JsonHelper.h" />
     <ClInclude Include="Include\Dy\Management\Helper\InputKeyString.h" />
     <ClInclude Include="Include\Dy\Core\Component\Object\Grid.h" />
     <ClInclude Include="Libraries\glad\include\glad\glad.h" />
     <ClInclude Include="Libraries\glad\include\KHR\khrplatform.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\SubmeshInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\SubmeshResource.h" />
-    <ClInclude Include="Include\Dy\Helper\DisableWarning.h" />
     <ClInclude Include="Include\Dy\Helper\GlobalEnumFlags.h" />
     <ClInclude Include="Libraries\sol2\sol2\sol.hpp" />
     <ClInclude Include="Libraries\sol2\sol2\sol_forward.hpp" />
@@ -338,7 +336,6 @@
     <ClInclude Include="Include\Dy\Builtin\Texture\ErrorBlue.h" />
     <ClInclude Include="Include\Dy\Helper\Constant\StringPipelineUniform.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DyString.h" />
-    <ClInclude Include="Include\Dy\Helper\Assertion.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\CanvasDescriptor.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\Canvas.h" />
     <ClInclude Include="Include\Dy\Helper\Constant\StringSettingFile.h" />
@@ -388,7 +385,6 @@
     <ClInclude Include="Include\Dy\Meta\Information\FontMetaInformation.h" />
     <ClInclude Include="Include\Dy\Management\Type\FontContainer_Deprecated.h" />
     <ClInclude Include="Include\Dy\Management\Type\FontResourceContainer.h" />
-    <ClInclude Include="Include\Dy\Helper\HelperZlib.h" />
     <ClInclude Include="Include\Dy\Management\Interface\IDyFontContainer.h" />
     <ClInclude Include="Include\Dy\Management\Type\FontCharacter_Deprecated.h" />
     <ClInclude Include="Include\Dy\Management\Type\FontCharacterInfo.h" />
@@ -426,6 +422,12 @@
     <ClInclude Include="Include\Dy\Management\Rendering\RenderingManager.h" />
     <ClInclude Include="Include\Dy\Management\Rendering\FramebufferManager.h" />
     <ClInclude Include="Include\Dy\Management\Rendering\UniformBufferObjectManager.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\ScriptMetaInformation.h" />
+    <ClInclude Include="Include\Dy\Helper\Library\HelperZlib.h" />
+    <ClInclude Include="Include\Dy\Helper\System\Macroes.h" />
+    <ClInclude Include="Include\Dy\Helper\System\DisableWarning.h" />
+    <ClInclude Include="Include\Dy\Helper\System\Assertion.h" />
+    <ClInclude Include="Include\Dy\Helper\Library\HelperJson.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

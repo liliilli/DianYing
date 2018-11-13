@@ -127,7 +127,7 @@ Line : {3})dy",
 FORCEINLINE void __NotImplementedAssert( const char* filePath,  int line)
 {
   const auto msg = fmt::format(
-R"dy(This funciton is not implemented yet.
+R"dy(This function is not implemented yet.
 Source : {0},
 Line : {1}
 )dy", filePath, line);
@@ -149,7 +149,7 @@ Line : {1}
 FORCEINLINE void __UnexpectedBranch( const char* filePath,  int line)
 {
   const auto msg = fmt::format(
-R"dy(This funciton is not implemented yet.
+R"dy(Unexpected branch not intended.
 Source : {0},
 Line : {1}
 )dy", filePath, line);

@@ -30,7 +30,7 @@ bool DyIsJsonKeyExist(const nlohmann::json& json, const std::string& key) noexce
 /// @brief Read json file and return json container. If any error has happened just return nullopt.
 /// @TODO NEED TO WRAPPING VANILLA NLOHMANN::JSON?
 ///
-MDY_NODISCARD std::optional<nlohmann::json> DyGetJsonAtlas(const std::string& filePath) noexcept;
+MDY_NODISCARD std::optional<nlohmann::json> DyGetJsonAtlasFromFile(const std::string& filePath) noexcept;
 
 ///
 /// @brief  Exceptionable.

@@ -15,7 +15,7 @@
 /// Header file
 #include <Dy/Meta/Descriptor/WidgetComponentDescriptor.h>
 #include <nlohmann/json.hpp>
-#include <Dy/Helper/JsonHelper.h>
+#include <Dy/Helper/Library/HelperJson.h>
 #include "Dy/Element/Helper/DescriptorHelperFunctions.h"
 
 namespace dy

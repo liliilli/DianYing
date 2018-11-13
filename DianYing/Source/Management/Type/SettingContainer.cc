@@ -16,7 +16,7 @@
 #include <Dy/Management/Type/SettingContainer.h>
 #include <nlohmann/json.hpp>
 #include <nlohmann/adl_serializer.hpp>
-#include <Dy/Helper/JsonHelper.h>
+#include <Dy/Helper/Library/HelperJson.h>
 
 //!
 //! Forward declaration

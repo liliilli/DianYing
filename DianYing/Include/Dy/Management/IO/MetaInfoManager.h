@@ -95,10 +95,9 @@ public:
     return this->mFontMetaInfo.find(specifierName) != this->mFontMetaInfo.end();
   }
 
-private:
   template <typename TType>
   using THashMap = std::unordered_map<std::string, TType>;
-
+private:
   ///
   /// @brief
   /// @param  metaFilePath

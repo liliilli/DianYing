@@ -18,7 +18,7 @@
 #include <optional>
 #include <nlohmann/json.hpp>
 
-#include <Dy/Helper/JsonHelper.h>
+#include <Dy/Helper/Library/HelperJson.h>
 #include <Dy/Helper/Constant/StringSettingFile.h>
 #include <Dy/Element/Descriptor/LevelDescriptor.h>
 #include <Dy/Element/Helper/DescriptorHelperFunctions.h>
@@ -26,12 +26,13 @@
 
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
 #include <Dy/Meta/Descriptor/WidgetComponentDescriptor.h>
+#include "Dy/Helper/Pointer.h"
 
 //!
 //! Local tranlation unit variables
 //!
 
-namespace dy
+namespace
 {
 
 //!
@@ -64,7 +65,99 @@ MDY_SET_IMMUTABLE_STRING(sHeaderChildrenName,   "ChildrenName");
 MDY_SET_IMMUTABLE_STRING(sHeaderIsInitiallyActivated, "IsInitiallyActivated");
 MDY_SET_IMMUTABLE_STRING(sHeaderComponentList,  "ComponentList");
 
-} /// ::dy namespace
+std::unique_ptr<dy::PDyMetaWidgetRootDescriptor> DyCreateWidgetMetaInformation(_MIN_ const nlohmann::json& jsonAtlas)
+{
+  using namespace dy;
+  ///
+  /// @brief  Check widget meta information list.
+  /// @param  atlas Valid json atlas instance.
+  /// @return If succeeded, return DY_SUCCESS an
+  ///
+  static auto CheckWidgetCategories = [](_MIN_ const nlohmann::json& atlas) -> EDySuccess
+  {
+    if (DyCheckHeaderIsExist(atlas, sCategoryMeta) == DY_FAILURE)       { return DY_FAILURE; }
+    if (DyCheckHeaderIsExist(atlas, sCategoryObjectList) == DY_FAILURE) { return DY_FAILURE; }
+    return DY_SUCCESS;
+  };
+
+  ///
+  /// @brief  Check meta widget component information header list.
+  /// @param  atlas Valid json atlas instance.
+  /// @return If succeeded, return DY_SUCCESS flag for representing success.
+  ///
+  static auto CheckComponentCommonHeaders = [](_MIN_ const nlohmann::json& atlas) -> EDySuccess
+  {
+    if (DyCheckHeaderIsExist(atlas, PDyMetaWidgetCommonBaseDesc::sHeader_Name) == DY_FAILURE) { return DY_FAILURE; }
+    if (DyCheckHeaderIsExist(atlas, PDyMetaWidgetCommonBaseDesc::sHeader_Type) == DY_FAILURE) { return DY_FAILURE; }
+    if (DyCheckHeaderIsExist(atlas, PDyMetaWidgetCommonBaseDesc::sHeader_Parent) == DY_FAILURE) { return DY_FAILURE; }
+    if (DyCheckHeaderIsExist(atlas, PDyMetaWidgetCommonBaseDesc::sHeader_Details) == DY_FAILURE) { return DY_FAILURE; }
+    return DY_SUCCESS;
+  };
+
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  //! FUNCTIONBODY ∨
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  if (const auto flag = CheckWidgetCategories(jsonAtlas); flag == DY_FAILURE)
+  {
+    MDY_LOG_CRITICAL("Json log : {}", jsonAtlas.dump(2));
+    MDY_UNEXPECTED_BRANCH(); return nullptr;
+  }
+
+  // (3) Make widget component meta information instance sequencially.
+  const auto& componentAtlas = jsonAtlas[MSVSTR(sCategoryObjectList)];
+  MDyMetaInfo::THashMap<PDyMetaWidgetChildableBaseDesc::TElementType> tempWidgetObjectMap = {};
+
+  for (const auto& componentInfo : componentAtlas)
+  { // Check Header list integrity
+    MDY_ASSERT(CheckComponentCommonHeaders(componentInfo) == DY_SUCCESS, "Failed to check common headers of item.");
+
+    const auto componentType = DyGetValue<EDyWidgetComponentType>(componentInfo, PDyMetaWidgetCommonBaseDesc::sHeader_Type);
+    switch (componentType)
+    {
+    case EDyWidgetComponentType::Text:
+    { // Text component
+      auto instance = PDyMetaWidgetTextDescriptor::CreateMetaInformation(componentInfo);
+      const auto specifierName = instance->mComponentSpecifierName;
+      tempWidgetObjectMap.try_emplace(
+          specifierName,
+          std::make_pair<>(componentType, DyConvertUniquePtrTo<PDyMetaWidgetCommonBaseDesc>(std::move(instance)))
+      );
+    } break;
+    case EDyWidgetComponentType::HorizontalBox: MDY_NOT_IMPLEMENTED_ASSERT(); break;
+    case EDyWidgetComponentType::VerticalBox:   MDY_NOT_IMPLEMENTED_ASSERT(); break;
+    default: MDY_UNEXPECTED_BRANCH(); break;
+    }
+  }
+
+  // (4) Make a tree by iterating unordered_map, tempComponentMetaList.
+  for (auto it = tempWidgetObjectMap.begin(); it != tempWidgetObjectMap.end(); ++it)
+  {
+    if (auto& item = it->second.second; item->mParentSpecifierName.empty() == false)
+    { // Find parent's object instance iterator pointer.
+      auto parentIt = tempWidgetObjectMap.find(item->mParentSpecifierName);
+      MDY_ASSERT(parentIt == tempWidgetObjectMap.end(), "Unexpected error occurred.");
+
+      // Move pair to parent's children map and erase iterator of it.
+      auto& parentInstance = parentIt->second.second;
+      parentInstance->mChildComponentList.try_emplace(it->first, std::move(it->second));
+      it = tempWidgetObjectMap.erase(it);
+    }
+  }
+
+  // (5) Make root widget meta instance and retrieve information from headers.
+  //     ...and Make heap.
+  auto rootInstance = PDyMetaWidgetRootDescriptor::CreateMetaInformation(jsonAtlas[MSVSTR(sCategoryMeta)]);
+  for (auto it = tempWidgetObjectMap.begin(); it != tempWidgetObjectMap.end(); ++it)
+  {
+    auto [_, result] = rootInstance->mChildComponentList.try_emplace(it->first, std::move(it->second));
+    MDY_ASSERT(result == true, "Unexpected error occurred.");
+  }
+
+  return rootInstance;
+}
+
+} /// ::unnamed namespace
 
 //!
 //! Implementation
@@ -75,7 +168,7 @@ namespace dy
 
 EDySuccess MDyMetaInfo::pfInitialize()
 {
-  const auto opJsonAtlas = DyGetJsonAtlas(MSVSTR(gTestPath));
+  const auto opJsonAtlas = DyGetJsonAtlasFromFile(MSVSTR(gTestPath));
   if (opJsonAtlas.has_value() == false) { return DY_FAILURE; }
 
   { // @TODO TEST READING (FIXED PATH) script file from meta file.
@@ -137,7 +230,7 @@ const PDyMetaFontInformation& MDyMetaInfo::GetFontMetaInformation(_MIN_ const st
 EDySuccess MDyMetaInfo::pReadScriptResourceMetaInformation(_MIN_ const std::string& metaFilePath)
 {
   // Integrity Test
-  const std::optional<nlohmann::json> opJsonAtlas = DyGetJsonAtlas(metaFilePath);
+  const std::optional<nlohmann::json> opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
   if (opJsonAtlas.has_value() == false)
   {
     MDY_ASSERT(opJsonAtlas.has_value() == true, "Failed to read script resource meta information. File path is not exist.");
@@ -152,13 +245,10 @@ EDySuccess MDyMetaInfo::pReadScriptResourceMetaInformation(_MIN_ const std::stri
     return DY_FAILURE;
   }
 
-  // Lambda functions
-
   ///
   /// @brief  Check meta script information header list.
   /// @param  atlas
   /// @return If succeeded, return DY_SUCCESS flag for representing success.
-  /// @TODO SCRIPT THIS
   ///
   static auto CheckMetaScriptResourceHeaders = [](_MIN_ const nlohmann::json& atlas) -> EDySuccess
   {
@@ -174,14 +264,16 @@ EDySuccess MDyMetaInfo::pReadScriptResourceMetaInformation(_MIN_ const std::stri
   /// @brief
   /// @param atlas
   /// @param code
-  /// @TODO SCRIPT THIS
   ///
   static auto GetInnatedScriptCodeFrom = [](_MIN_ const nlohmann::json& atlas, _MOUT_ std::string& code)
   {
     for (const auto& stringAtlas : atlas) { code += stringAtlas.get<std::string>(); }
   };
 
-  // FunctionBody ∨
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  //! FUNCTIONBODY ∨
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
   const auto& scriptResourceListAtlas = jsonAtlas.at(MSVSTR(sCategoryList));
   for (const auto& scriptResource : scriptResourceListAtlas)
   { // Check Header list integrity
@@ -237,7 +329,6 @@ EDySuccess MDyMetaInfo::pReadScriptResourceMetaInformation(_MIN_ const std::stri
 
 EDySuccess MDyMetaInfo::pReadPrefabResourceMetaInformation(const std::string& metaFilePath)
 {
-  // Lambda functions
   ///
   /// @brief  Check prefab meta information list.
   /// @param  atlas Valid json atlas instance.
@@ -254,7 +345,6 @@ EDySuccess MDyMetaInfo::pReadPrefabResourceMetaInformation(const std::string& me
   /// @brief  Check meta script information header list.
   /// @param  atlas Valid json atlas instance.
   /// @return If succeeded, return DY_SUCCESS flag for representing success.
-  /// @TODO SCRIPT THIS
   ///
   static auto CheckPrefabObjectListHeaders = [](_MIN_ const nlohmann::json& atlas) -> EDySuccess
   {
@@ -271,7 +361,6 @@ EDySuccess MDyMetaInfo::pReadPrefabResourceMetaInformation(const std::string& me
   /// @brief
   /// @param validComponentAtlas
   /// @param desc
-  /// @TODO SCRIPT THIS
   ///
   static auto GetMetaComponentInformation = [](_MIN_ const auto& validComponentAtlas, _MOUT_ PDyPrefabMetaInformation& desc)
   {
@@ -332,12 +421,12 @@ EDySuccess MDyMetaInfo::pReadPrefabResourceMetaInformation(const std::string& me
     return list;
   };
 
-  //!
-  //! FunctionBody ∨
-  //!
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  //! FUNCTIONBODY ∨
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   // Integrity Test
-  const std::optional<nlohmann::json> opJsonAtlas = DyGetJsonAtlas(metaFilePath);
+  const std::optional<nlohmann::json> opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
   if (opJsonAtlas.has_value() == false)
   {
     MDY_ASSERT(opJsonAtlas.has_value() == true, "Failed to read prefab resource meta information. File path is not exist.");
@@ -416,109 +505,21 @@ EDySuccess MDyMetaInfo::pReadPrefabResourceMetaInformation(const std::string& me
 
 EDySuccess MDyMetaInfo::pReadWidgetResourceMetaInformation(_MIN_ const std::string& metaFilePath)
 {
-  // Lambda functions
-
-  ///
-  /// @brief  Check widget meta information list.
-  /// @param  atlas Valid json atlas instance.
-  /// @return If succeeded, return DY_SUCCESS an
-  ///
-  static auto CheckWidgetCategories = [](_MIN_ const nlohmann::json& atlas) -> EDySuccess
-  {
-    if (DyCheckHeaderIsExist(atlas, sCategoryMeta) == DY_FAILURE)       { return DY_FAILURE; }
-    if (DyCheckHeaderIsExist(atlas, sCategoryObjectList) == DY_FAILURE) { return DY_FAILURE; }
-    return DY_SUCCESS;
-  };
-
-  ///
-  /// @brief  Check meta widget component information header list.
-  /// @param  atlas Valid json atlas instance.
-  /// @return If succeeded, return DY_SUCCESS flag for representing success.
-  ///
-  static auto CheckComponentCommonHeaders = [](_MIN_ const nlohmann::json& atlas) -> EDySuccess
-  {
-    if (DyCheckHeaderIsExist(atlas, PDyMetaWidgetCommonBaseDesc::sHeader_Name) == DY_FAILURE) { return DY_FAILURE; }
-    if (DyCheckHeaderIsExist(atlas, PDyMetaWidgetCommonBaseDesc::sHeader_Type) == DY_FAILURE) { return DY_FAILURE; }
-    if (DyCheckHeaderIsExist(atlas, PDyMetaWidgetCommonBaseDesc::sHeader_Parent) == DY_FAILURE) { return DY_FAILURE; }
-    if (DyCheckHeaderIsExist(atlas, PDyMetaWidgetCommonBaseDesc::sHeader_Details) == DY_FAILURE) { return DY_FAILURE; }
-    return DY_SUCCESS;
-  };
-
-  //!
-  //! FunctionBody ∨
-  //!
-
   // (1) Integrity Test
-  const std::optional<nlohmann::json> opJsonAtlas = DyGetJsonAtlas(metaFilePath);
-  if (opJsonAtlas.has_value() == false)
-  {
-    MDY_ASSERT(opJsonAtlas.has_value() == true, "Failed to read widget meta information. File path is not exist.");
-    return DY_FAILURE;
-  }
+  const std::optional<nlohmann::json> opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  MDY_ASSERT(opJsonAtlas.has_value() == true, "Must be valid json atlas from file path.");
 
-  // (2) Check specified category are exist.
-  const nlohmann::json& jsonAtlas = opJsonAtlas.value();
-  if (const auto flag = CheckWidgetCategories(jsonAtlas);
-      flag == DY_FAILURE) { MDY_UNEXPECTED_BRANCH(); return DY_FAILURE; }
+  auto rootInstance = DyCreateWidgetMetaInformation(opJsonAtlas.value());
+  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(rootInstance), "Widget root instance must not be empty.");
+  this->mWidgetMetaInfo.try_emplace(rootInstance->mWidgetSpecifierName, std::move(rootInstance));
+  return DY_SUCCESS;
+}
 
-  // (4) Make widget component meta information instance sequencially.
-  const auto& componentAtlas = jsonAtlas[MSVSTR(sCategoryObjectList)];
-  THashMap<PDyMetaWidgetChildableBaseDesc::TElementType> tempComponentMetaList = {};
-
-  for (const auto& componentInfo : componentAtlas)
-  { // Check Header list integrity
-    MDY_ASSERT(CheckComponentCommonHeaders(componentInfo) == DY_SUCCESS, "Failed to check common headers of item.");
-
-    const EDyWidgetComponentType componentType = DyGetWidgetComponentTypeFrom(
-        DyGetValue<std::string>(componentInfo, PDyMetaWidgetCommonBaseDesc::sHeader_Type)
-    );
-
-    switch (componentType)
-    {
-    case EDyWidgetComponentType::Text:
-    { // Text component
-      auto instance = PDyMetaWidgetTextDescriptor::CreateMetaInformation(componentInfo);
-      const auto specifierName = instance->mComponentSpecifierName;
-      tempComponentMetaList.try_emplace(specifierName,
-          std::make_pair<>(
-              componentType,
-              std::unique_ptr<PDyMetaWidgetCommonBaseDesc>(
-                  static_cast<PDyMetaWidgetCommonBaseDesc*>(instance.release())
-              )
-          )
-      );
-    } break;
-    case EDyWidgetComponentType::HorizontalBox: MDY_NOT_IMPLEMENTED_ASSERT(); break;
-    case EDyWidgetComponentType::VerticalBox:   MDY_NOT_IMPLEMENTED_ASSERT(); break;
-    default: MDY_UNEXPECTED_BRANCH(); break;
-    }
-  }
-
-  // (5) Make a tree by iterating unordered_map, tempComponentMetaList.
-  for (auto it = tempComponentMetaList.begin(); it != tempComponentMetaList.end(); ++it)
-  {
-    std::unique_ptr<PDyMetaWidgetCommonBaseDesc>& item = it->second.second;
-    if (item->mParentSpecifierName.empty() == false)
-    { //
-      auto parentIt = tempComponentMetaList.find(item->mParentSpecifierName);
-      MDY_ASSERT(parentIt == tempComponentMetaList.end(), "Unexpected error occurred.");
-      //
-      // @TODO IMPLEMENT THIS
-      //std::unique_ptr<PDyMetaWidgetCommonBaseDesc>& parentInstance = parentIt->second.second;
-      //parentInstance->mChildComponentList.insert(*it);
-      //
-      it = tempComponentMetaList.erase(it);
-    }
-  }
-
-  // (6) Make root widget meta instance and retrieve information from headers.
-  //     ...and Make heap.
-  auto rootInstance = PDyMetaWidgetRootDescriptor::CreateMetaInformation(jsonAtlas[MSVSTR(sCategoryMeta)]);
-  for (auto it = tempComponentMetaList.begin(); it != tempComponentMetaList.end(); ++it)
-  {
-    auto [_, result] = rootInstance->mChildComponentList.try_emplace(it->first, std::move(it->second));
-    MDY_ASSERT(result == true, "Unexpected error occurred.");
-  }
+EDySuccess MDyMetaInfo::pfAddWidgetMetaInformation(_MIN_ const std::string& metaInformationString)
+{
+  nlohmann::json jsonAtlas = nlohmann::json::parse(metaInformationString);
+  auto rootInstance = DyCreateWidgetMetaInformation(jsonAtlas);
+  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(rootInstance), "Widget root instance must not be empty.");
 
   this->mWidgetMetaInfo.try_emplace(rootInstance->mWidgetSpecifierName, std::move(rootInstance));
   return DY_SUCCESS;
@@ -526,7 +527,7 @@ EDySuccess MDyMetaInfo::pReadWidgetResourceMetaInformation(_MIN_ const std::stri
 
 EDySuccess MDyMetaInfo::pReadFontResourceMetaInformation(_MIN_ const std::string& metaFilePath)
 { // (1) Validity Test
-  const std::optional<nlohmann::json> opJsonAtlas = DyGetJsonAtlas(metaFilePath);
+  const std::optional<nlohmann::json> opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
   if (opJsonAtlas.has_value() == false)
   {
     MDY_ASSERT(opJsonAtlas.has_value() == true, "Failed to read font meta information. File is not exist.");
@@ -545,12 +546,6 @@ EDySuccess MDyMetaInfo::pReadFontResourceMetaInformation(_MIN_ const std::string
   }
 
   return DY_SUCCESS;;
-}
-
-EDySuccess MDyMetaInfo::pfAddWidgetMetaInformation(_MIN_ const std::string& metaInformationString)
-{
-  nlohmann::json jsonAtlas = metaInformationString;
-  return DY_SUCCESS;
 }
 
 } /// ::dy namespace

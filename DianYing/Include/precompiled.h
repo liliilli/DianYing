@@ -60,7 +60,7 @@
 
 #include <Dy/Helper/GlobalEnumFlags.h>
 #include <Dy/Helper/GlobalType.h>
-#include <Dy/Helper/DisableWarning.h>
-#include <Dy/Helper/Macroes.h>
+#include <Dy/Helper/System/DisableWarning.h>
+#include <Dy/Helper/System/Macroes.h>
 
 #endif /// DIANYING_PRECOMPILED_H

@@ -32,6 +32,24 @@
 namespace dy
 {
 
+///
+/// @brief  Convert unique_ptr to another (inheritenced) unique_ptr instance.
+/// @tparam TTargetType
+/// @tparam TSourceType
+/// @param  instance
+/// @return Converted unique_ptr instance.
+///
+template <typename TTargetType, typename TSourceType>
+inline MDY_NODISCARD std::unique_ptr<TTargetType> DyConvertUniquePtrTo(_MIN_ std::unique_ptr<TSourceType> instance)
+{
+  static_assert(
+      std::is_convertible_v<TSourceType, TTargetType> ||
+      std::is_base_of_v<TSourceType, TTargetType>,
+      "Failed to convert TTargetType to TSourceType");
+
+  return std::unique_ptr<TTargetType>(static_cast<TTargetType*>(instance.release()));
+}
+
 //!
 //! GSL.Owner: ownership pointers
 //!

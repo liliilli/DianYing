@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Helper/HelperZlib.h>
+#include <Dy/Helper/Library/HelperZlib.h>
 /// Libraries
 #include <zlib/zlib.h>
 

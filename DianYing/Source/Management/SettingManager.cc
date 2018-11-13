@@ -30,7 +30,7 @@
 
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/TimeManager.h>
-#include <Dy/Helper/JsonHelper.h>
+#include <Dy/Helper/Library/HelperJson.h>
 #include <Dy/Helper/Constant/StringSettingFile.h>
 
 //!
@@ -285,7 +285,7 @@ EDySuccess MDySetting::pfInitialize()
 
   if (InitializeGraphicsApi(*this) == DY_FAILURE) { return DY_FAILURE; }
 
-  const auto opSettingAtlas = DyGetJsonAtlas(MSVSTR(gSettingPathName));
+  const auto opSettingAtlas = DyGetJsonAtlasFromFile(MSVSTR(gSettingPathName));
   MDY_ASSERT(opSettingAtlas.has_value() == true, "Failed to open application setting file.");
 
   { // Apply setting to project before everthing starts to working.
