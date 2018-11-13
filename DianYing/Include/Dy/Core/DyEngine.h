@@ -14,6 +14,22 @@
 ///
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
+#include <Dy/Core/Thread/TDyIO.h>
+#include <Dy/Helper/Pointer.h>
+
+//!
+//! Forward declaration
+//!
+
+namespace dy
+{
+class MDyTime;
+class MDyWindow;
+} /// ::dy namespace
+
+//!
+//! Implementation
+//!
 
 namespace dy
 {
@@ -28,10 +44,22 @@ class DyEngine final : public IDySingleton<DyEngine>
   MDY_SINGLETON_DERIVED(DyEngine);
 public:
   ///
-  /// @brief
+  /// @brief Run engine.
   ///
   void operator()();
+
+  /// @brief Get time manager reference.
+  MDY_NODISCARD MDyTime&    GetTimeManager();
+  /// @brief Get window manager reference.
+  MDY_NODISCARD MDyWindow&  GetWindowManager();
+
+private:
+  /// DO NOT TOUCH THIS!
+  TDyIO*        mIOThreadInstance = nullptr;
+  std::thread   mIOThread;
 };
+
+inline DyEngine* gEngine = nullptr;
 
 } /// ::dy namespace
 

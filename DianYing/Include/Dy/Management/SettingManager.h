@@ -15,7 +15,6 @@
 /// @todo IMPLEMENT SET OVERALL WINDOW WIDTH, HEIGHT AS CHANGING VIEWPORT OF EACH API FRAMEBUFFER.
 ///
 
-#include <Dy/Core/Etc/StaticCoreTrigger.h>
 #include <Dy/Helper/Type/VectorInt2.h>
 #include <Dy/Meta/Type/EDyRenderingApi.h>
 #include <Dy/Management/Type/SettingContainer.h>
@@ -123,6 +122,15 @@ public:
   }
 
   ///
+  /// @brief
+  /// @return
+  ///
+  MDY_NODISCARD const DDySettingGameplay& GetGameplaySettingInformation() const noexcept
+  {
+    return this->mGamePlay;
+  }
+
+  ///
   /// @brief Enable or disable logging feature.
   /// before enable logging feature, must set console or file sink.
   /// @param isEnabled
@@ -184,10 +192,9 @@ private:
   DDySettingTag         mTag          = {};
 
   bool mIsEnabledVsync = true;
-
   bool mIsInitialized  = false;
 
-  friend static void SDyCoreTrigger::InitiailzeAllManagers();
+  friend class DyEngine;
 };
 
 } /// ::dy namespace

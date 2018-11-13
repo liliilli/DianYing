@@ -15,9 +15,9 @@
 /// Header file
 #include <Dy/Core/Component/Object/PostEffectSsao.h>
 
-#include <Dy/Management/IODataManager.h>
-#include <Dy/Management/IOResourceManager.h>
-#include <Dy/Management/RenderingManager.h>
+#include <Dy/Management/IO/IODataManager.h>
+#include <Dy/Management/IO/IOResourceManager.h>
+#include <Dy/Management/Rendering/RenderingManager.h>
 #include <Dy/Helper/Math/Random.h>
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/WorldManager.h>

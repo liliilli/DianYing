@@ -22,7 +22,7 @@
 #include <Dy/Element/Abstract/ADyBaseComponent.h>
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
 #include <Dy/Element/Abstract/ADyTransformable.h>
-#include <Dy/Management/MetaInfoManager.h>
+#include <Dy/Management/IO/MetaInfoManager.h>
 
 namespace dy
 {

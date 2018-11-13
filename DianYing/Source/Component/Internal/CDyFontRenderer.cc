@@ -20,7 +20,7 @@
 #include <Dy/Builtin/ShaderGl/RenderFontArraySDF.h>
 #include <Dy/Element/Canvas/Text.h>
 #include <Dy/Management/SettingManager.h>
-#include <Dy/Management/IOResourceManager.h>
+#include <Dy/Management/IO/IOResourceManager.h>
 
 //!
 //! Forward declaration & Local translation unit function data.

@@ -17,8 +17,8 @@
 
 #include <Dy/Component/CDyModelFilter.h>
 #include <Dy/Element/Actor.h>
-#include <Dy/Management/IOResourceManager.h>
-#include <Dy/Management/RenderingManager.h>
+#include <Dy/Management/IO/IOResourceManager.h>
+#include <Dy/Management/Rendering/RenderingManager.h>
 #include <Dy/Management/WorldManager.h>
 
 namespace dy

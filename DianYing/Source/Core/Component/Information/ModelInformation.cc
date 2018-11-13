@@ -25,7 +25,7 @@
 
 #include <Dy/Core/Component/Resource/ModelResource.h>
 #include <Dy/Core/Component/Internal/GeometryType.h>
-#include <Dy/Management/IODataManager.h>
+#include <Dy/Management/IO/IODataManager.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Helper/ThreadPool.h>
 #include <Dy/Helper/IoHelper.h>

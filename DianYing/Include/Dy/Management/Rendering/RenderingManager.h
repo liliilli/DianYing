@@ -128,10 +128,8 @@ private:
   ///
   std::unique_ptr<FDyBasicRenderer>               mBasicOpaqueRenderer  = MDY_INITIALIZE_NULL;
   ///
-  bool                                            mIsEnabledSsaoRendering = true;
   std::unique_ptr<FDyPostEffectSsao>              mTempSsaoObject       = MDY_INITIALIZE_NULL;
   ///
-  bool                                            mIsEnabledShadowRendering = true;
   std::unique_ptr<FDyBasicShadow>                 mShadowRenderer       = MDY_INITIALIZE_NULL;
   ///
   std::unique_ptr<FDyDeferredRenderingMesh>       mSceneFinalRenderer   = MDY_INITIALIZE_NULL;

@@ -16,7 +16,7 @@
 #include <Dy/Component/Internal/CDyFontRenderer_Deprecated.h>
 #include <Dy/Builtin/ShaderGl/RenderFontSDF_Deprecated.h>
 #include <Dy/Element/Canvas/Text_Deprecated.h>
-#include <Dy/Management/IOResourceManager.h>
+#include <Dy/Management/IO/IOResourceManager.h>
 #include <Dy/Management/SettingManager.h>
 #include <glm/gtc/matrix_transform.hpp>
 

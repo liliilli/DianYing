@@ -16,7 +16,7 @@
 #include <Dy/Builtin/Texture/Checker.h>
 
 #include <Dy/Core/Component/Internal/TextureType.h>
-#include <Dy/Management/IOResourceManager.h>
+#include <Dy/Management/IO/IOResourceManager.h>
 
 //!
 //! Local variables

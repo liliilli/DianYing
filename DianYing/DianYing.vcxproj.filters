@@ -22,8 +22,6 @@
     <ClCompile Include="Source\Helper\Type\Matrix4.cc" />
     <ClCompile Include="Source\Helper\Internal\ImageBinaryBuffer.cc" />
     <ClCompile Include="Source\Core\Component\Resource\ShaderResource.cc" />
-    <ClCompile Include="Source\Management\DataInformationManager.cc" />
-    <ClCompile Include="Source\Management\HeapResourceManager.cc" />
     <ClCompile Include="Source\Core\Component\Information\ShaderInformation.cc" />
     <ClCompile Include="Source\Core\Component\Information\TextureInformation.cc" />
     <ClCompile Include="Source\Core\Component\Information\MaterialInformation.cc" />
@@ -51,10 +49,8 @@
     <ClCompile Include="Source\Editor\Gui\HelpAboutMain.cc" />
     <ClCompile Include="Source\Editor\Gui\HelpLicenseWindow.cc" />
     <ClCompile Include="Source\Editor\Gui\ViewViewportMain.cc" />
-    <ClCompile Include="Source\Management\RenderingManager.cc" />
     <ClCompile Include="Source\Core\Component\Internal\MaterialType.cc" />
     <ClCompile Include="Source\Core\Component\Internal\EtcType.cc" />
-    <ClCompile Include="Source\Management\SynchronizationManager.cc" />
     <ClCompile Include="Source\Core\Component\Object\PostEffectSsao.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderPass.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderGrid.cc" />
@@ -84,7 +80,6 @@
     <ClCompile Include="Source\Element\Abstract\ADyTransformable.cc" />
     <ClCompile Include="Source\Management\WorldManager.cc" />
     <ClCompile Include="Source\Element\Abstract\ADyNameCounterMap.cc" />
-    <ClCompile Include="Source\Management\MetaInfoManager.cc" />
     <ClCompile Include="Source\Test\testLuaVariable.cc" />
     <ClCompile Include="Source\Test\testLuaEntry.cc" />
     <ClCompile Include="Source\Test\testLuaHelloWorld.cc" />
@@ -113,9 +108,7 @@
     <ClCompile Include="Source\Element\Helper\DescriptorHelperFunctions.cc" />
     <ClCompile Include="Source\Component\CDyDirectionalLight.cc" />
     <ClCompile Include="Source\Core\Rendering\BasicRenderer.cc" />
-    <ClCompile Include="Source\Management\Internal\FramebufferManager.cc" />
     <ClCompile Include="Source\Management\Type\AttachmentInformation.cc" />
-    <ClCompile Include="Source\Management\Internal\UniformBufferObjectManager.cc" />
     <ClCompile Include="Source\Management\BindingLua\BindingGlobalType.cc" />
     <ClCompile Include="Source\Management\BindingLua\Entry.cc" />
     <ClCompile Include="Source\Management\BindingLua\BindingComponentType.cc" />
@@ -164,6 +157,14 @@
     <ClCompile Include="Source\Management\Type\KeyAxisBindingInformation.cc" />
     <ClCompile Include="Source\Management\Type\KeyActionBindingInformation.cc" />
     <ClCompile Include="Source\Core\DyEngine.cc" />
+    <ClCompile Include="Source\Builtin\Widget\DebugUiMeta.cc" />
+    <ClCompile Include="Source\Builtin\Helper\BuiltinInformationDeliver.cc" />
+    <ClCompile Include="Source\Management\IO\MetaInfoManager.cc" />
+    <ClCompile Include="Source\Management\IO\IODataManager.cc" />
+    <ClCompile Include="Source\Management\IO\IOResourceManager.cc" />
+    <ClCompile Include="Source\Management\Rendering\FramebufferManager.cc" />
+    <ClCompile Include="Source\Management\Rendering\UniformBufferObjectManager.cc" />
+    <ClCompile Include="Source\Management\Rendering\RenderingManager.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -240,11 +241,9 @@
     <ClInclude Include="Include\Dy\Editor\Descriptor\AboutMainDescriptor.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\HelpLicenseWindow.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\ViewViewportMain.h" />
-    <ClInclude Include="Include\Dy\Management\RenderingManager.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\Contracts.h" />
     <ClInclude Include="Include\Dy\Helper\Pointer.h" />
     <ClInclude Include="Include\Dy\Management\Interface\IDyThreadHelper.h" />
-    <ClInclude Include="Include\Dy\Management\SynchronizationManager.h" />
     <ClInclude Include="Include\Dy\Core\Component\Object\PostEffectSsao.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderPass.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderGrid.h" />
@@ -283,7 +282,6 @@
     <ClInclude Include="Include\Dy\Element\Actor.h" />
     <ClInclude Include="Include\Dy\Management\WorldManager.h" />
     <ClInclude Include="Include\Dy\Element\Abstract\ADyNameCounterMap.h" />
-    <ClInclude Include="Include\Dy\Management\MetaInfoManager.h" />
     <ClInclude Include="Libraries\lua\include\lua.hpp" />
     <ClInclude Include="Libraries\lua\include\lua.h" />
     <ClInclude Include="Libraries\lua\include\lapi.h" />
@@ -356,11 +354,9 @@
     <ClInclude Include="Include\Dy\Helper\Type\Clamp.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\BasicRenderer.h" />
     <ClInclude Include="Include\Dy\Helper\Type\VectorInt2.h" />
-    <ClInclude Include="Include\Dy\Management\Internal\FramebufferManager.h" />
     <ClInclude Include="Include\Dy\Management\Type\FramebufferInformation.h" />
     <ClInclude Include="Include\Dy\Management\Type\AttachmentInformation.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Helper\FrameAttachmentString.h" />
-    <ClInclude Include="Include\Dy\Management\Internal\UniformBufferObjectManager.h" />
     <ClInclude Include="Include\Dy\Management\Type\UBOInformation.h" />
     <ClInclude Include="Include\Dy\Helper\ContainerHelper.h" />
     <ClInclude Include="Include\Dy\Management\Helper\LuaBindingEntry.h" />
@@ -409,8 +405,6 @@
     <ClInclude Include="Include\Dy\Meta\Type\EDyRenderingApi.h" />
     <ClInclude Include="Include\Dy\Management\Type\SettingContainer.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyInput.h" />
-    <ClInclude Include="Include\Dy\Management\IODataManager.h" />
-    <ClInclude Include="Include\Dy\Management\IOResourceManager.h" />
     <ClInclude Include="Include\Dy\Management\Type\EDyIOResourceScope.h" />
     <ClInclude Include="Include\Dy\Management\Interface\IDyWindowDependent.h" />
     <ClInclude Include="Include\Dy\Management\Platform\DDyWindowInformationWindows.h" />
@@ -424,6 +418,14 @@
     <ClInclude Include="Include\Dy\Component\Interface\IDyCppScript.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyScriptLua.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyScriptCpp.h" />
+    <ClInclude Include="Include\Dy\Builtin\Helper\BuiltinInformationDeliver.h" />
+    <ClInclude Include="Include\Dy\Core\Reflection\RDyBuiltinResource.h" />
+    <ClInclude Include="Include\Dy\Management\IO\IODataManager.h" />
+    <ClInclude Include="Include\Dy\Management\IO\IOResourceManager.h" />
+    <ClInclude Include="Include\Dy\Management\IO\MetaInfoManager.h" />
+    <ClInclude Include="Include\Dy\Management\Rendering\RenderingManager.h" />
+    <ClInclude Include="Include\Dy\Management\Rendering\FramebufferManager.h" />
+    <ClInclude Include="Include\Dy\Management\Rendering\UniformBufferObjectManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

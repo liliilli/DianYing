@@ -17,7 +17,7 @@
 
 #include <Dy/Core/Component/Internal/TextureType.h>
 #include <Dy/Helper/Type/Color32.h>
-#include <Dy/Management/IOResourceManager.h>
+#include <Dy/Management/IO/IOResourceManager.h>
 
 //!
 //! Local variables

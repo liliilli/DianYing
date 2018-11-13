@@ -14,7 +14,7 @@
 
 /// Header file
 #include <Dy/Component/CDyModelFilter.h>
-#include <Dy/Management/IOResourceManager.h>
+#include <Dy/Management/IO/IOResourceManager.h>
 #include <Dy/Element/Actor.h>
 #include <Dy/Component/CDyModelRenderer.h>
 

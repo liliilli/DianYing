@@ -13,6 +13,8 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Core/Reflection/RDyBuiltinResource.h>
+
 namespace dy::builtin
 {
 
@@ -22,6 +24,7 @@ namespace dy::builtin
 ///
 class FDyBuiltinWidgetDebugUiMeta final
 {
+  MDY_REFLECT_ENABLE_RESOURCE(FDyBuiltinWidgetDebugUiMeta);
 public:
   FDyBuiltinWidgetDebugUiMeta();
 

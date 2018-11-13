@@ -16,8 +16,8 @@
 #include <Dy/Builtin/ShaderGl/RenderFontMSDF_Deprecated.h>
 #include <Dy/Core/Component/Internal/ShaderType.h>
 #include <Dy/Builtin/ShaderGl/RenderDefaultFont.h>
-#include <Dy/Management/IODataManager.h>
-#include <Dy/Management/IOResourceManager.h>
+#include <Dy/Management/IO/IODataManager.h>
+#include <Dy/Management/IO/IOResourceManager.h>
 
 //!
 //! Forward declaration

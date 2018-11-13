@@ -15,7 +15,7 @@
 /// Header file
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Management/LoggingManager.h>
-#include <Dy/Management/MetaInfoManager.h>
+#include <Dy/Management/IO/MetaInfoManager.h>
 
 namespace dy
 {

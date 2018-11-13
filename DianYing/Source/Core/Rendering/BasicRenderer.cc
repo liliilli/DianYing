@@ -26,8 +26,8 @@
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Helper/Type/VectorInt2.h>
 #include <Dy/Management/Type/FramebufferInformation.h>
-#include <Dy/Management/Internal/FramebufferManager.h>
-#include <Dy/Management/Internal/UniformBufferObjectManager.h>
+#include <Dy/Management/Rendering/FramebufferManager.h>
+#include <Dy/Management/Rendering/UniformBufferObjectManager.h>
 #include <Dy/Core/Rendering/Helper/FrameAttachmentString.h>
 
 //!

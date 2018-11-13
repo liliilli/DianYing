@@ -13,19 +13,19 @@
 ///
 
 /// Header file
-#include <Dy/Management/RenderingManager.h>
+#include <Dy/Management/Rendering/RenderingManager.h>
 
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Management/SettingManager.h>
 
-#include <Dy/Management/IODataManager.h>
+#include <Dy/Management/IO/IODataManager.h>
 #include <Dy/Management/Editor/GuiSetting.h>
 
 #include <Dy/Core/Component/Object/Camera.h>
 #include <Dy/Component/CDyDirectionalLight.h>
-#include <Dy/Management/Internal/FramebufferManager.h>
-#include <Dy/Management/Internal/UniformBufferObjectManager.h>
+#include <Dy/Management/Rendering/FramebufferManager.h>
+#include <Dy/Management/Rendering/UniformBufferObjectManager.h>
 
 namespace dy
 {
@@ -35,15 +35,19 @@ EDySuccess MDyRendering::pfInitialize()
   MDY_CALL_ASSERT_SUCCESS(MDyFramebuffer::Initialize());
   MDY_CALL_ASSERT_SUCCESS(MDyUniformBufferObject::Initialize());
 
-  this->mBasicOpaqueRenderer  = std::make_unique<decltype(mBasicOpaqueRenderer)::element_type>();
-  this->mSceneFinalRenderer   = std::make_unique<decltype(mSceneFinalRenderer)::element_type>();
-  this->mShadowRenderer       = std::make_unique<decltype(this->mShadowRenderer)::element_type>();
+  this->mBasicOpaqueRenderer  = std::make_unique<decltype(this->mBasicOpaqueRenderer)::element_type>();
+  this->mSceneFinalRenderer   = std::make_unique<decltype(this->mSceneFinalRenderer)::element_type>();
   this->mUiBasicRenderer      = std::make_unique<decltype(this->mUiBasicRenderer)::element_type>();
   this->mFinalDisplayRenderer = std::make_unique<decltype(this->mFinalDisplayRenderer)::element_type>();
 
-  if (this->mIsEnabledSsaoRendering)
+  const auto& information = MDySetting::GetInstance().GetGameplaySettingInformation();
+  if (information.mGraphics.mIsEnabledDefaultShadow == true)
   {
-    mTempSsaoObject = std::make_unique<decltype(mTempSsaoObject)::element_type>();
+    this->mShadowRenderer = std::make_unique<decltype(this->mShadowRenderer)::element_type>();
+  }
+  if (information.mGraphics.mIsEnabledDefaultSsao == true)
+  {
+    this->mTempSsaoObject = std::make_unique<decltype(mTempSsaoObject)::element_type>();
   }
 
 #if defined(MDY_FLAG_IN_EDITOR) == true
@@ -59,7 +63,7 @@ EDySuccess MDyRendering::pfRelease()
   this->mSceneFinalRenderer = MDY_INITIALIZE_NULL;
   this->mShadowRenderer     = MDY_INITIALIZE_NULL;
   this->mTempSsaoObject     = MDY_INITIALIZE_NULL;
-  this->mBasicOpaqueRenderer      = MDY_INITIALIZE_NULL;
+  this->mBasicOpaqueRenderer= MDY_INITIALIZE_NULL;
 
   // Initialize internal management singleton instance.
   MDY_CALL_ASSERT_SUCCESS(MDyFramebuffer::Release());
@@ -78,16 +82,20 @@ void MDyRendering::RenderDrawCallQueue()
 
   // (0) Clear previous frame results of each framebuffers.
   this->pClearRenderingFramebufferInstances();
+
   // (1) Draw opaque call list.
   this->mBasicOpaqueRenderer->RenderScreen(this->mOpaqueDrawCallList);
+
   // (2) Shadow mapping to opaque call list.
-  if (this->mIsEnabledShadowRendering == true)
+  const auto& information = MDySetting::GetInstance().GetGameplaySettingInformation();
+  if (information.mGraphics.mIsEnabledDefaultShadow == true)
   { // Basic shadow (directional light etc)
     for (const auto& drawInstance : this->mOpaqueDrawCallList)
     {
       this->mShadowRenderer->RenderScreen(*drawInstance);
     }
   }
+
   // (3) Draw transparent call list with OIT.
   // @TODO IMPLEMENT THIS!
 
@@ -131,10 +139,12 @@ void MDyRendering::pClearRenderingFramebufferInstances() noexcept
   if (MDyWorld::GetInstance().IsLevelPresentValid() == false) { return; }
 
   if (MDY_CHECK_ISNOTEMPTY(this->mBasicOpaqueRenderer))   { this->mBasicOpaqueRenderer->Clear(); }
+
   // @TODO DO NOTHING NOW.
-  if (this->mIsEnabledSsaoRendering == true) { }
+  const auto& information = MDySetting::GetInstance().GetGameplaySettingInformation();
+  if (information.mGraphics.mIsEnabledDefaultSsao == true) { }
   // Reset all shadow framebuffer setting.
-  if (this->mIsEnabledShadowRendering == true)            { this->mShadowRenderer->Clear(); }
+  if (information.mGraphics.mIsEnabledDefaultShadow == true) { this->mShadowRenderer->Clear(); }
 
 #if defined(MDY_FLAG_IN_EDITOR) == false
   // Reset final rendering mesh setting.
@@ -164,7 +174,8 @@ EDySuccess MDyRendering::pUpdateDirectionalLightValueToGpu(
 
 bool MDyRendering::pfIsAvailableDirectionalLightShadow(const CDyDirectionalLight&)
 { // Integrity test
-  if (this->mIsEnabledShadowRendering == false)
+  const auto& information = MDySetting::GetInstance().GetGameplaySettingInformation();
+  if (information.mGraphics.mIsEnabledDefaultShadow == false)
   {
     MDY_LOG_WARNING("MDyRendering::pfIsAvailableDirectionalLightShadow | Shadow feature is disabled now.");
     return false;
@@ -176,7 +187,8 @@ bool MDyRendering::pfIsAvailableDirectionalLightShadow(const CDyDirectionalLight
 
 EDySuccess MDyRendering::pfUpdateDirectionalLightShadowToGpu(const CDyDirectionalLight& component)
 { // Integrity test
-  if (this->mIsEnabledShadowRendering == false)          { return DY_FAILURE; }
+  const auto& information = MDySetting::GetInstance().GetGameplaySettingInformation();
+  if (information.mGraphics.mIsEnabledDefaultShadow == false) { return DY_FAILURE; }
   if (MDY_CHECK_ISEMPTY(this->mShadowRenderer))   { return DY_FAILURE; }
   if (MDY_CHECK_ISEMPTY(this->mSceneFinalRenderer)) { return DY_FAILURE; }
 
@@ -191,7 +203,8 @@ EDySuccess MDyRendering::pfUpdateDirectionalLightShadowToGpu(const CDyDirectiona
 
 EDySuccess MDyRendering::pfUnbindDirectionalLightShadowToGpu(const CDyDirectionalLight& component)
 { // Integrity test
-  if (this->mIsEnabledShadowRendering == false)          { return DY_FAILURE; }
+  const auto& information = MDySetting::GetInstance().GetGameplaySettingInformation();
+  if (information.mGraphics.mIsEnabledDefaultShadow == false) { return DY_FAILURE; }
   if (MDY_CHECK_ISEMPTY(this->mShadowRenderer))   { return DY_FAILURE; }
   if (MDY_CHECK_ISEMPTY(this->mSceneFinalRenderer)) { return DY_FAILURE; }
 

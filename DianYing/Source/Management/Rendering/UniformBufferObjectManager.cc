@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Management/Internal/UniformBufferObjectManager.h>
+#include <Dy/Management/Rendering/UniformBufferObjectManager.h>
 #include <Dy/Management/LoggingManager.h>
 
 //!

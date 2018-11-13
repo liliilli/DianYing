@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Management/MetaInfoManager.h>
+#include <Dy/Management/IO/MetaInfoManager.h>
 
 #include <optional>
 #include <nlohmann/json.hpp>
@@ -545,6 +545,12 @@ EDySuccess MDyMetaInfo::pReadFontResourceMetaInformation(_MIN_ const std::string
   }
 
   return DY_SUCCESS;;
+}
+
+EDySuccess MDyMetaInfo::pfAddWidgetMetaInformation(_MIN_ const std::string& metaInformationString)
+{
+  nlohmann::json jsonAtlas = metaInformationString;
+  return DY_SUCCESS;
 }
 
 } /// ::dy namespace

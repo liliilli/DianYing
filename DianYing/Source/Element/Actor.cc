@@ -14,7 +14,7 @@
 
 /// Header file
 #include <Dy/Element/Actor.h>
-#include <Dy/Management/MetaInfoManager.h>
+#include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Component/CDyTransform.h>
 #include "Dy/Component/CDyModelFilter.h"
 #include "Dy/Component/CDyModelRenderer.h"

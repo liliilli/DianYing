@@ -15,8 +15,8 @@
 /// Header file
 #include <Dy/Builtin/ShaderGl/RenderBasicShadow.h>
 #include <Dy/Core/Component/Internal/ShaderType.h>
-#include <Dy/Management/IODataManager.h>
-#include <Dy/Management/IOResourceManager.h>
+#include <Dy/Management/IO/IODataManager.h>
+#include <Dy/Management/IO/IOResourceManager.h>
 
 //!
 //! Forward declaration and data

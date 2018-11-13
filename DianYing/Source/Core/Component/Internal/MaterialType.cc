@@ -13,7 +13,7 @@
 ///
 
 #include <Dy/Core/Component/Internal/MaterialType.h>
-#include "Dy/Management/IOResourceManager.h"
+#include <Dy/Management/IO/IOResourceManager.h>
 
 namespace dy
 {

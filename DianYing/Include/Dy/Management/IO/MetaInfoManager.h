@@ -20,6 +20,7 @@
 #include <Dy/Meta/Descriptor/ScriptDescriptor.h>
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
 #include <Dy/Meta/Information/FontMetaInformation.h>
+#include <Dy/Builtin/Helper/BuiltinInformationDeliver.h>
 
 namespace dy
 {
@@ -125,6 +126,13 @@ private:
   ///
   MDY_NODISCARD EDySuccess pReadFontResourceMetaInformation(_MIN_ const std::string& metaFilePath);
 
+  ///
+  /// @brief
+  /// @param  metaInformationString
+  /// @return
+  ///
+  MDY_NODISCARD EDySuccess pfAddWidgetMetaInformation(_MIN_ const std::string& metaInformationString);
+
   /// Level meta information map.
   THashMap<PDyLevelConstructDescriptor> mLevelInfoMap   = {};
   /// Script meta information map.
@@ -140,6 +148,8 @@ private:
   THashMap<std::unique_ptr<PDyPrefabMetaInformation>>    mPrefabMetaInfo = {};
   /// Widget meta information map.
   THashMap<std::unique_ptr<PDyMetaWidgetRootDescriptor>> mWidgetMetaInfo = {};
+
+  friend EDySuccess FDyBuiltinInformationDeliver::ForwardWidgetMetaInformation(const std::string_view& metaString);
 };
 
 } /// ::dy namespace

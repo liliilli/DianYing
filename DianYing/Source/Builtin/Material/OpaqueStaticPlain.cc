@@ -18,7 +18,7 @@
 #include <Dy/Builtin/Texture/Checker.h>
 #include <Dy/Builtin/ShaderGl/RenderOpaqueStatic.h>
 #include <Dy/Core/Component/Internal/MaterialType.h>
-#include <Dy/Management/IODataManager.h>
+#include <Dy/Management/IO/IODataManager.h>
 
 //!
 //! Implementation

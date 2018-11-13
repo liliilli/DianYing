@@ -18,13 +18,13 @@
 #include <Dy/Builtin/ShaderGl/RenderDeferredRendering.h>
 #include <Dy/Core/Rendering/Helper/FrameAttachmentString.h>
 #include <Dy/Component/CDyDirectionalLight.h>
-#include <Dy/Management/IODataManager.h>
-#include <Dy/Management/IOResourceManager.h>
-#include <Dy/Management/RenderingManager.h>
+#include <Dy/Management/IO/IODataManager.h>
+#include <Dy/Management/IO/IOResourceManager.h>
+#include <Dy/Management/Rendering/RenderingManager.h>
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Management/SettingManager.h>
-#include <Dy/Management/Internal/FramebufferManager.h>
-#include <Dy/Management/Internal/UniformBufferObjectManager.h>
+#include <Dy/Management/Rendering/FramebufferManager.h>
+#include <Dy/Management/Rendering/UniformBufferObjectManager.h>
 #include <Dy/Builtin/Model/ScreenProjectionTriangle.h>
 #include <glm/gtc/matrix_transform.inl>
 

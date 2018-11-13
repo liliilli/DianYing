@@ -15,16 +15,15 @@
 /// Header file
 #include <Dy/Core/DyEngine.h>
 
-#include <Dy/Management/IODataManager.h>
-#include <Dy/Management/IOResourceManager.h>
+#include <Dy/Management/IO/IODataManager.h>
+#include <Dy/Management/IO/IOResourceManager.h>
 #include <Dy/Management/InputManager.h>
 #include <Dy/Management/LoggingManager.h>
-#include <Dy/Management/MetaInfoManager.h>
+#include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Management/PhysicsManager.h>
-#include <Dy/Management/RenderingManager.h>
+#include <Dy/Management/Rendering/RenderingManager.h>
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/SoundManager.h>
-#include <Dy/Management/SynchronizationManager.h>
 #include <Dy/Management/TimeManager.h>
 #include <Dy/Management/WindowManager.h>
 #include <Dy/Management/WorldManager.h>
@@ -46,6 +45,15 @@ EDySuccess DyEngine::pfInitialize()
     settingManager.pSetupExecutableArgumentSettings();
   };
 
+  ///
+  /// @brief Initialize threads.
+  ///
+  static auto InitializeThread = [this]
+  {
+    this->mIOThreadInstance = new TDyIO;
+    this->mIOThread = std::thread(&TDyIO::operator(), std::ref(*this->mIOThreadInstance));
+  };
+
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   //! FUNCTIONBODY ∨
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -60,10 +68,8 @@ EDySuccess DyEngine::pfInitialize()
 #endif
 
   // IO Manager (THREAD + TASK QUEUE)
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyIOData::Initialize());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyIOResource::Initialize());
+  InitializeThread();
 
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyMetaInfo::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyWindow::Initialize());
 
@@ -72,22 +78,34 @@ EDySuccess DyEngine::pfInitialize()
   MDY_CALL_ASSERT_SUCCESS(dy::MDySound::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyPhysics::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyFont::Initialize());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyWorld::Initialize());
-
-  //MDY_CALL_ASSERT_SUCCESS(dy::MDySync::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyScript::Initialize());
+
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyWorld::Initialize());
   MDY_LOG_WARNING_D("========== DIANYING MANAGER INITIALIZED ==========");
 
+  gEngine = this;
   return DY_SUCCESS;
 }
 
 EDySuccess DyEngine::pfRelease()
 {
-  MDY_LOG_WARNING_D("========== DIANYING MANAGER RELEASED ==========");
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyScript::Release());
-  //MDY_CALL_ASSERT_SUCCESS(dy::MDySync::Release());
+  static auto ReleaseThread = [this]
+  {
+    this->mIOThread.join();
+    delete this->mIOThreadInstance;
+    this->mIOThreadInstance = nullptr;
+  };
 
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  //! FUNCTIONBODY ∨
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  ReleaseThread();
+
+  MDY_LOG_WARNING_D("========== DIANYING MANAGER RELEASED ==========");
   MDY_CALL_ASSERT_SUCCESS(dy::MDyWorld::Release());
+
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyScript::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyFont::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyPhysics::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDySound::Release());
@@ -96,10 +114,7 @@ EDySuccess DyEngine::pfRelease()
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDyWindow::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Release());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyMetaInfo::Release());
 
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyIOResource::Release());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyIOData::Release());
 #if defined(MDY_FLAG_IN_EDITOR)
   MDY_CALL_ASSERT_SUCCESS(dy::editor::MDyEditorGui::Release());
 #endif
@@ -114,5 +129,9 @@ void DyEngine::operator()()
 {
   dy::MDyWindow::GetInstance().Run();
 }
+
+MDyTime& DyEngine::GetTimeManager() { return MDyTime::GetInstance(); }
+MDyWindow& DyEngine::GetWindowManager() { return MDyWindow::GetInstance(); }
+
 
 } /// ::dy namespace

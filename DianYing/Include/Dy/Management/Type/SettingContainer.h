@@ -57,12 +57,22 @@ struct DDySettingGameplay final
     DDyVectorInt2 mShadowGlobalDefaultMap = {};
   };
 
+  struct DDyGraphics final
+  {
+    ///
+    bool mIsEnabledDefaultShadow  = false;
+    ///
+    bool mIsEnabledDefaultSsao    = false;
+  };
+
   /// Initial scene name. (or uuid?)
   std::string   mInitialSceneSpecifier           = MDY_INITILAIZE_EMPTYSTR;
   /// Initial game resolution scene.
   DDyVectorInt2 mInitialResolution      = {};
   /// Shadow default map resolution or properties.
   DDyShadow     mShadow                 = {};
+  /// Graphics properties.
+  DDyGraphics   mGraphics               = {};
 };
 
 void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingGameplay& p);
@@ -70,6 +80,9 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingGameplay& p);
 
 void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingGameplay::DDyShadow& p);
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingGameplay::DDyShadow& p);
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingGameplay::DDyGraphics& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingGameplay::DDyGraphics& p);
 
 ///
 /// @struct DDySettingInput

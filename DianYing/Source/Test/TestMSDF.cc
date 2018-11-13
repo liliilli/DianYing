@@ -37,10 +37,10 @@
 #include <Dy/Core/Rendering/Helper/FrameAttachmentString.h>
 #include <Dy/Helper/Type/DyString.h>
 #include <Dy/Management/Type/FramebufferInformation.h>
-#include <Dy/Management/Internal/FramebufferManager.h>
+#include <Dy/Management/Rendering/FramebufferManager.h>
 #include <Dy/Builtin/ShaderGl/RenderFontMSDF_Deprecated.h>
 #include <Dy/Helper/Type/Matrix4.h>
-#include <Dy/Management/HeapResourceManager.h>
+#include <Dy/Management/IO/IOResourceManager.h>
 #include <Dy/Builtin/ShaderGl/RenderFontSDF_Deprecated.h>
 
 #if !defined(FT_FREETYPE_H)
@@ -276,8 +276,8 @@ void TestMsdfLibrary()
   builtin::FDyBuiltinShaderGLRenderFontMSDF_Deprecated();
   //builtin::FDyBuiltinShaderGLRenderFontSDF_Deprecated();
   DDyMatrix4x4 uUiProjMatrix = glm::ortho<float>(-640, 640, -360, 360, 0.2f, 10.0f);
-  CDyShaderResource* sSampleShaderPtr = MDyHeapResource::GetInstance().GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderFontMSDF_Deprecated::sName));
-  //CDyShaderResource* sSampleShaderPtr = MDyHeapResource::GetInstance().GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderFontSDF_Deprecated::sName));
+  CDyShaderResource* sSampleShaderPtr = MDyIOResource::GetInstance().GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderFontMSDF_Deprecated::sName));
+  //CDyShaderResource* sSampleShaderPtr = MDyIOResource::GetInstance().GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderFontSDF_Deprecated::sName));
 
   //!
   //! Make vbo sample

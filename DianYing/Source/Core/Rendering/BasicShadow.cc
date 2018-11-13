@@ -17,13 +17,13 @@
 #include <Dy/Core/Component/MeshRenderer.h>
 
 #include <Dy/Core/Component/Resource/SubmeshResource.h>
-#include <Dy/Management/IOResourceManager.h>
+#include <Dy/Management/IO/IOResourceManager.h>
 
 #include <Dy/Builtin/ShaderGl/RenderBasicShadow.h>
 #include <Dy/Component/CDyDirectionalLight.h>
 #include <Dy/Component/CDyModelRenderer.h>
 #include <Dy/Core/Rendering/Helper/FrameAttachmentString.h>
-#include <Dy/Management/Internal/FramebufferManager.h>
+#include <Dy/Management/Rendering/FramebufferManager.h>
 #include <Dy/Management/Type/FramebufferInformation.h>
 #include <Dy/Element/Actor.h>
 #include <glm/gtc/matrix_transform.inl>

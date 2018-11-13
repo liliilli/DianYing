@@ -16,7 +16,7 @@
 #include <Dy/Element/Level.h>
 #include <Dy/Helper/HashCompileCrc32.h>
 #include <Dy/Management/WorldManager.h>
-#include <Dy/Management/MetaInfoManager.h>
+#include <Dy/Management/IO/MetaInfoManager.h>
 
 //!
 //! Local translation unit function & data

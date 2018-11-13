@@ -24,13 +24,14 @@
 #include <Dy/Helper/Type/DyString.h>
 #include <Dy/Helper/Type/Matrix4.h>
 #include <Dy/Management/SettingManager.h>
-#include <Dy/Management/Internal/FramebufferManager.h>
-#include <Dy/Management/IOResourceManager.h>
+#include <Dy/Management/Rendering/FramebufferManager.h>
+#include <Dy/Management/IO/IOResourceManager.h>
 #include <Dy/Meta/Descriptor/WidgetComponentDescriptor.h>
 #include <Dy/Builtin/ShaderGl/RenderFontSDF_Deprecated.h>
 #include <Dy/Management/FontManager.h>
 #include <Dy/Builtin/ShaderGl/RenderFontArraySDF.h>
 #include <Dy/Element/Canvas/Text.h>
+#include "Dy/Management/WindowManager.h"
 
 //!
 //! Local translation unit data
@@ -82,7 +83,7 @@ Canvas0 : 1
 Canvas1 : 0
 Camera0 : 2
 )dy";
-    desc.mFontSize = 16;
+    desc.mFontSize = 12;
     desc.mInitialPosition = DDyVectorInt2{-440, 250};
     desc.mInitialColor    = DDyColor::White;
     desc.mFontSpecifierName = "Arial";
@@ -161,6 +162,7 @@ void FDyUIBasicRenderer::RenderScreen()
   }
 
   glBindFramebuffer(GL_FRAMEBUFFER, this->mDyBtFbUiBasic->GetFramebufferId());
+  textComponent->SetText(std::to_string(MDyWindow::GetInstance().GetCpuUsage()));
   textComponent->Render();
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

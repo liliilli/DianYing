@@ -26,14 +26,14 @@
 #include <Dy/Core/Component/Object/Camera.h>
 #include <Dy/Helper/Type/Vector3.h>
 
-#include <Dy/Management/IODataManager.h>
+#include <Dy/Management/IO/IODataManager.h>
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Management/InputManager.h>
 #include <Dy/Management/TimeManager.h>
 #include <Dy/Management/Editor/GuiManager.h>
-#include <Dy/Management/RenderingManager.h>
+#include <Dy/Management/Rendering/RenderingManager.h>
 
 #include <Dy/Builtin/Model/Box.h>
 #include <Dy/Builtin/Model/Plain.h>
@@ -49,9 +49,10 @@
 #include <Dy/Builtin/ShaderGl/RenderDefaultFont.h>
 #include <Dy/Builtin/ShaderGl/RenderScreenOutput.h>
 
-#include <Dy/Management/IOResourceManager.h>
+#include <Dy/Management/IO/IOResourceManager.h>
 #include <Dy/Management/SoundManager.h>
 #include <Dy/Management/PhysicsManager.h>
+#include "Dy/Builtin/Widget/DebugUiMeta.h"
 
 ///
 /// Undefined proprocessor WIN32 macro "max, min" for preventing misuse.
@@ -95,6 +96,7 @@ void DyInitializeBuiltinResource()
   dy::builtin::FDyBuiltinShaderGLRenderDefaultFont();
 
   dy::builtin::FDyBuiltinMaterialOpaqueStaticPlain();
+  MDY_REFLECT_SETUP_BUILTIN_RESOURCE();
 }
 
 } /// unnamed namespace

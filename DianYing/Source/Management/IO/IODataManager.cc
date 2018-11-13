@@ -13,9 +13,8 @@
 ///
 
 /// Header file
-#include <Dy/Management/IODataManager.h>
+#include <Dy/Management/IO/IODataManager.h>
 #include <Dy/Management/LoggingManager.h>
-#include <Dy/Management/SynchronizationManager.h>
 
 namespace
 {

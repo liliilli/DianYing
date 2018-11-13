@@ -18,11 +18,11 @@
 #include <Dy/Core/Component/Internal/EtcType.h>
 #include <Dy/Core/Component/Resource/ModelResource.h>
 
-#include <Dy/Management/IOResourceManager.h>
+#include <Dy/Management/IO/IOResourceManager.h>
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Core/Component/Object/Camera.h>
 #include <Dy/Management/LoggingManager.h>
-#include <Dy/Management/RenderingManager.h>
+#include <Dy/Management/Rendering/RenderingManager.h>
 
 namespace dy
 {

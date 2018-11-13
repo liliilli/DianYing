@@ -44,6 +44,10 @@ MDY_SET_IMMUTABLE_STRING(sInitialResolution,    "InitialResolution");
 MDY_SET_IMMUTABLE_STRING(sGamePlay_Shadow,                      "Shadow");
 MDY_SET_IMMUTABLE_STRING(sGamePlay_Shadow_GlobalDefaultMapSize, "GlobalDefaultMapSize");
 
+MDY_SET_IMMUTABLE_STRING(sGamePlay_Graphics,                    "Graphics");
+MDY_SET_IMMUTABLE_STRING(sGamePlay_Graphics_EnableDefaultSsao,  "EnableDefaultSsao");
+MDY_SET_IMMUTABLE_STRING(sGamePlay_Graphics_EnableDefaultShadow,"EnableDefaultShadow");
+
 //! DDySettingInput
 
 MDY_SET_IMMUTABLE_STRING(sAction, "Action");
@@ -112,6 +116,7 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingGameplay& p)
       {MSVSTR(sInitialScene),       p.mInitialSceneSpecifier},
       {MSVSTR(sInitialResolution),  p.mInitialResolution},
       {MSVSTR(sGamePlay_Shadow),    p.mShadow},
+      {MSVSTR(sGamePlay_Graphics),  p.mGraphics},
   };
 }
 
@@ -120,6 +125,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingGameplay& p)
   p.mInitialSceneSpecifier  = DyGetValue<std::string>         (j, sInitialScene);
   p.mInitialResolution      = DyGetValue<DDyVectorInt2>       (j, sInitialResolution);
   p.mShadow                 = DyGetValue<decltype(p.mShadow)> (j, sGamePlay_Shadow);
+  p.mGraphics               = DyGetValue<decltype(p.mGraphics)>(j, sGamePlay_Graphics);
 }
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingGameplay::DDyShadow& p)
@@ -133,6 +139,21 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingGameplay::DDyShad
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingGameplay::DDyShadow& p)
 {
   p.mShadowGlobalDefaultMap = DyGetValue<DDyVectorInt2>(j, sGamePlay_Shadow_GlobalDefaultMapSize);
+}
+
+void to_json(nlohmann::json& j, const DDySettingGameplay::DDyGraphics& p)
+{
+  j = nlohmann::json
+  {
+    {MSVSTR(sGamePlay_Graphics_EnableDefaultSsao),    p.mIsEnabledDefaultSsao},
+    {MSVSTR(sGamePlay_Graphics_EnableDefaultShadow),  p.mIsEnabledDefaultShadow},
+  };
+}
+
+void from_json(const nlohmann::json& j, DDySettingGameplay::DDyGraphics& p)
+{
+  p.mIsEnabledDefaultSsao   = DyGetValue<bool>(j, sGamePlay_Graphics_EnableDefaultSsao);
+  p.mIsEnabledDefaultShadow = DyGetValue<bool>(j, sGamePlay_Graphics_EnableDefaultShadow);
 }
 
 //!

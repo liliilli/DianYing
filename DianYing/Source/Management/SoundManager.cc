@@ -16,7 +16,7 @@
 #include <Dy/Management/SoundManager.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Helper/Pointer.h>
-#include "Dy/Management/IOResourceManager.h"
+#include <Dy/Management/IO/IOResourceManager.h>
 
 //!
 //! Forward declaration

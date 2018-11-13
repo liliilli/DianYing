@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Management/Internal/FramebufferManager.h>
+#include <Dy/Management/Rendering/FramebufferManager.h>
 
 namespace dy
 {

@@ -14,7 +14,7 @@
 
 /// Header file
 #include <Dy/Component/CDyDirectionalLight.h>
-#include <Dy/Management/RenderingManager.h>
+#include <Dy/Management/Rendering/RenderingManager.h>
 #include <Dy/Management/SettingManager.h>
 
 namespace dy

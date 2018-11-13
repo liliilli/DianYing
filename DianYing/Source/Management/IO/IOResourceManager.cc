@@ -13,9 +13,9 @@
 ///
 
 /// Header file
-#include <Dy/Management/IOResourceManager.h>
+#include <Dy/Management/IO/IOResourceManager.h>
 
-#include <Dy/Management/IODataManager.h>
+#include <Dy/Management/IO/IODataManager.h>
 #include <Dy/Management/LoggingManager.h>
 
 namespace
