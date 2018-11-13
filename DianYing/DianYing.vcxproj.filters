@@ -113,7 +113,6 @@
     <ClCompile Include="Source\Management\BindingLua\BindingComponentType.cc" />
     <ClCompile Include="Source\Core\Rendering\DeferredRenderingMesh.cc" />
     <ClCompile Include="Source\Meta\Type\TextureParameter.cc" />
-    <ClCompile Include="Source\Meta\Descriptor\WidgetComponentDescriptor.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetCommponDescriptor.cc" />
     <ClCompile Include="Source\Core\Rendering\FinalScreenDisplayRenderer.cc" />
     <ClCompile Include="Source\Core\Rendering\UiBasicRenderer.cc" />
@@ -166,6 +165,10 @@
     <ClCompile Include="Source\Meta\Information\ScriptMetaInformation.cc" />
     <ClCompile Include="Source\Helper\Library\HelperZlib.cc" />
     <ClCompile Include="Source\Helper\Library\HelperJson.cc" />
+    <ClCompile Include="Source\Helper\Type\Area2D.cc" />
+    <ClCompile Include="Source\Meta\Type\EDyWidgetTypes.cc" />
+    <ClCompile Include="Source\Meta\Descriptor\WidgetTextMetaInformation.cc" />
+    <ClCompile Include="Source\Meta\Descriptor\WidgetLayoutMetaInformation.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -357,7 +360,6 @@
     <ClInclude Include="Include\Dy\Management\Helper\LuaBindingEntry.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\DeferredRenderingMesh.h" />
     <ClInclude Include="Include\Dy\Meta\Type\TextureParameter.h" />
-    <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetComponentDescriptor.h" />
     <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetCommonDescriptor.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\FinalScreenDisplayRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\UIBasicRenderer.h" />
@@ -426,6 +428,10 @@
     <ClInclude Include="Include\Dy\Helper\System\DisableWarning.h" />
     <ClInclude Include="Include\Dy\Helper\System\Assertion.h" />
     <ClInclude Include="Include\Dy\Helper\Library\HelperJson.h" />
+    <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetTextMetaInformation.h" />
+    <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetLayoutMetaInformation.h" />
+    <ClInclude Include="Include\Dy\Meta\Type\EDyWidgetTypes.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\Area2D.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

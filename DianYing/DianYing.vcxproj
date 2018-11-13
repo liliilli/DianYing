@@ -287,6 +287,7 @@
     <ClCompile Include="Source\Helper\Math\Math.cc" />
     <ClCompile Include="Source\Helper\Math\Random.cc" />
     <ClCompile Include="Source\Helper\ThreadPool.cc" />
+    <ClCompile Include="Source\Helper\Type\Area2D.cc" />
     <ClCompile Include="Source\Helper\Type\Color.cc" />
     <ClCompile Include="Source\Helper\Type\Color32.cc" />
     <ClCompile Include="Source\Helper\Type\DyString.cc" />
@@ -334,10 +335,12 @@
     <ClCompile Include="Source\Management\TimeManager.cc" />
     <ClCompile Include="Source\Management\WindowManager.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetCommponDescriptor.cc" />
-    <ClCompile Include="Source\Meta\Descriptor\WidgetComponentDescriptor.cc" />
+    <ClCompile Include="Source\Meta\Descriptor\WidgetLayoutMetaInformation.cc" />
+    <ClCompile Include="Source\Meta\Descriptor\WidgetTextMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Information\FontMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Information\ScriptMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Type\EDyInput.cc" />
+    <ClCompile Include="Source\Meta\Type\EDyWidgetTypes.cc" />
     <ClCompile Include="Source\Meta\Type\TextureParameter.cc" />
     <ClCompile Include="Source\precompiled.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -483,6 +486,7 @@
     <ClInclude Include="Include\Dy\Helper\Library\HelperJson.h" />
     <ClInclude Include="Include\Dy\Helper\Pointer.h" />
     <ClInclude Include="Include\Dy\Helper\ThreadPool.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\Area2D.h" />
     <ClInclude Include="Include\Dy\Helper\Type\Clamp.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DyString.h" />
     <ClInclude Include="Include\Dy\Helper\Type\ThreeStateBool.h" />
@@ -550,11 +554,13 @@
     <ClInclude Include="Include\Dy\Management\SettingManager.h" />
     <ClInclude Include="Include\Dy\Management\TimeManager.h" />
     <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetCommonDescriptor.h" />
-    <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetComponentDescriptor.h" />
+    <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetLayoutMetaInformation.h" />
+    <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetTextMetaInformation.h" />
     <ClInclude Include="Include\Dy\Meta\Information\FontMetaInformation.h" />
     <ClInclude Include="Include\Dy\Meta\Information\ScriptMetaInformation.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyInput.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyRenderingApi.h" />
+    <ClInclude Include="Include\Dy\Meta\Type\EDyWidgetTypes.h" />
     <ClInclude Include="Include\Dy\Meta\Type\TextureParameter.h" />
     <ClInclude Include="Include\Dy\Test\TestCxxopt.h" />
     <ClInclude Include="Include\Dy\Test\testLua.h" />

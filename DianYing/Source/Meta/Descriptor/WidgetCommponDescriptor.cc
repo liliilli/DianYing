@@ -25,8 +25,8 @@ namespace
 
 MDY_SET_IMMUTABLE_STRING(sType_Root, "Root");
 MDY_SET_IMMUTABLE_STRING(sType_Text, "Text");
-MDY_SET_IMMUTABLE_STRING(sType_HorizontalBox, "HorizontalBox");
-MDY_SET_IMMUTABLE_STRING(sType_VerticalBox,   "VerticalBox");
+MDY_SET_IMMUTABLE_STRING(sType_HorizontalLayout, "HorizontalLayout");
+MDY_SET_IMMUTABLE_STRING(sType_VerticalLayout,   "VerticalLayout");
 
 } /// ::unnamed namespace
 
@@ -45,10 +45,11 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyWidgetComponentType& p)
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ EDyWidgetComponentType& p)
 {
   const std::string typeString = j.get<std::string>();
-  if      (typeString == sType_Root)          { p = EDyWidgetComponentType::Root; }
-  else if (typeString == sType_Text)          { p = EDyWidgetComponentType::Text; }
-  else if (typeString == sType_HorizontalBox) { p = EDyWidgetComponentType::HorizontalBox; }
-  else if (typeString == sType_VerticalBox)   { p = EDyWidgetComponentType::VerticalBox;   }
+  if      (typeString == sType_Root)              { p = EDyWidgetComponentType::Root; }
+  else if (typeString == sType_Text)              { p = EDyWidgetComponentType::Text; }
+  else if (typeString == sType_HorizontalLayout)  { p = EDyWidgetComponentType::HorizontalLayout; }
+  else if (typeString == sType_VerticalLayout)    { p = EDyWidgetComponentType::VerticalLayout;   }
+  else                                            { MDY_UNEXPECTED_BRANCH(); }
 }
 
 std::unique_ptr<PDyMetaWidgetRootDescriptor>

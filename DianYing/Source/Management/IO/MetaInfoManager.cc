@@ -28,7 +28,8 @@
 #include <Dy/Management/SettingManager.h>
 
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
-#include <Dy/Meta/Descriptor/WidgetComponentDescriptor.h>
+#include <Dy/Meta/Descriptor/WidgetTextMetaInformation.h>
+#include <Dy/Meta/Descriptor/WidgetLayoutMetaInformation.h>
 
 //!
 //! Local tranlation unit variables
@@ -126,8 +127,24 @@ std::unique_ptr<dy::PDyMetaWidgetRootDescriptor> DyCreateWidgetMetaInformation(_
           std::make_pair<>(componentType, DyConvertUniquePtrTo<PDyMetaWidgetCommonBaseDesc>(std::move(instance)))
       );
     } break;
-    case EDyWidgetComponentType::HorizontalBox: MDY_NOT_IMPLEMENTED_ASSERT(); break;
-    case EDyWidgetComponentType::VerticalBox:   MDY_NOT_IMPLEMENTED_ASSERT(); break;
+    case EDyWidgetComponentType::HorizontalLayout:
+    { // Horizontal layout component
+      auto instance = PDyMetaWidgetHorizontalLayout::CreateMetaInformation(componentInfo);
+      const auto specifierName = instance->mComponentSpecifierName;
+      tempWidgetObjectMap.try_emplace(
+          specifierName,
+          std::make_pair<>(componentType, DyConvertUniquePtrTo<PDyMetaWidgetCommonBaseDesc>(std::move(instance)))
+      );
+    } break;
+    case EDyWidgetComponentType::VerticalLayout:
+    { // Vertical layout component
+      auto instance = PDyMetaWidgetVerticalLayout::CreateMetaInformation(componentInfo);
+      const auto specifierName = instance->mComponentSpecifierName;
+      tempWidgetObjectMap.try_emplace(
+          specifierName,
+          std::make_pair<>(componentType, DyConvertUniquePtrTo<PDyMetaWidgetCommonBaseDesc>(std::move(instance)))
+      );
+    } break;
     default: MDY_UNEXPECTED_BRANCH(); break;
     }
   }
@@ -138,7 +155,7 @@ std::unique_ptr<dy::PDyMetaWidgetRootDescriptor> DyCreateWidgetMetaInformation(_
     if (auto& item = it->second.second; item->mParentSpecifierName.empty() == false)
     { // Find parent's object instance iterator pointer.
       auto parentIt = tempWidgetObjectMap.find(item->mParentSpecifierName);
-      MDY_ASSERT(parentIt == tempWidgetObjectMap.end(), "Unexpected error occurred.");
+      MDY_ASSERT(parentIt != tempWidgetObjectMap.end(), "Unexpected error occurred.");
 
       // Move pair to parent's children map and erase iterator of it.
       auto& parentInstance = parentIt->second.second;

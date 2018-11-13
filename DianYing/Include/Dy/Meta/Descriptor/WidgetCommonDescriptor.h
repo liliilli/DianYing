@@ -31,8 +31,8 @@ enum class EDyWidgetComponentType
 {
   Root,
   Text,
-  HorizontalBox,
-  VerticalBox,
+  HorizontalLayout,
+  VerticalLayout,
   NoneError
 };
 

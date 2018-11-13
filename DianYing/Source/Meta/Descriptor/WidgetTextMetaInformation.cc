@@ -13,10 +13,10 @@
 ///
 
 /// Header file
-#include <Dy/Meta/Descriptor/WidgetComponentDescriptor.h>
+#include <Dy/Meta/Descriptor/WidgetTextMetaInformation.h>
 #include <nlohmann/json.hpp>
 #include <Dy/Helper/Library/HelperJson.h>
-#include "Dy/Element/Helper/DescriptorHelperFunctions.h"
+#include <Dy/Element/Helper/DescriptorHelperFunctions.h>
 
 namespace dy
 {
@@ -46,10 +46,6 @@ PDyMetaWidgetTextDescriptor::CreateMetaInformation(_MIN_ const nlohmann::json& i
   }
   */
 
-  //!
-  //! Json header file
-  //!
-
   static MDY_SET_IMMUTABLE_STRING(sHeader_InitialString,     "InitialString");
   static MDY_SET_IMMUTABLE_STRING(sHeader_InitialPosition,   "InitialPosition");
   static MDY_SET_IMMUTABLE_STRING(sHeader_InitialColor,      "InitialColor");
@@ -63,6 +59,10 @@ PDyMetaWidgetTextDescriptor::CreateMetaInformation(_MIN_ const nlohmann::json& i
   static MDY_SET_IMMUTABLE_STRING(sHeader_IsUsingDefaultFont,"IsUsingDefaultFont");
 
   using TPDyMWCBD = PDyMetaWidgetCommonBaseDesc;
+
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  //! FUNCTIONBODY ∨
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   // Common
   auto instance = std::make_unique<PDyMetaWidgetTextDescriptor>();
