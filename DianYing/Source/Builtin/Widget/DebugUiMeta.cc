@@ -30,7 +30,11 @@ FDyBuiltinWidgetDebugUiMeta::FDyBuiltinWidgetDebugUiMeta()
   "Meta":
   {
     "Name": "DebugUi",
-    "Script": { "Specifier": "DebugUiScriptCpp" }
+    "Script": {
+      "Type"      : "Script",
+      "Activated" : true,
+      "Details"   : { "Specifier": "FDyBuiltinDebugUiScript" }
+    }
   },
   "ObjectList":
   [
@@ -50,7 +54,7 @@ FDyBuiltinWidgetDebugUiMeta::FDyBuiltinWidgetDebugUiMeta()
         "FontSpecifierName": "Arial",
         "IsBold": true,
         "IsItalic": false,
-        "IsUsingEdge": false,
+        "IsUsingEdge": true,
         "IsUsingDefaultFont": true
       }
     }

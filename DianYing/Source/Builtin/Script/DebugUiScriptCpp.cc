@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_ELEMENT_CANVAS_CANVAS_H
-#define GUARD_DY_ELEMENT_CANVAS_CANVAS_H
+#include <precompiled.h>
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,11 +12,20 @@
 /// SOFTWARE.
 ///
 
+/// Header file
+#include <Dy/Builtin/Script/DebugUiScriptCpp.h>
+
 namespace dy
 {
 
+void FDyBuiltinDebugUiScript::Start()
+{
 
+}
+
+void FDyBuiltinDebugUiScript::Update(_MIN_ TF32 dt)
+{
+
+}
 
 } /// ::dy namespace
-
-#endif /// GUARD_DY_ELEMENT_CANVAS_CANVAS_H
