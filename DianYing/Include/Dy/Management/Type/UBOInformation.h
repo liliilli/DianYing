@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Helper/GlobalType.h>
-#include <Dy/Helper/Macroes.h>
+#include <Dy/Helper/System/Macroes.h>
 
 namespace dy
 {
@@ -52,7 +52,7 @@ inline MDY_NODISCARD GLenum DyGetBufferDrawTypeValue(_MIN_ const EDyBufferDrawTy
 struct PDyUboConstructionDescriptor final
 {
   // This specifier name must not be duplicated with others.
-  std::string       mUboSpecifierName = MDY_INITILAIZE_EMPTYSTR;
+  std::string       mUboSpecifierName = MDY_INITIALIZE_EMPTYSTR;
   // Buffer drawing type.
   EDyBufferDrawType mBufferDrawType   = EDyBufferDrawType::StaticDraw;
   // Binding index must be not duplicated with valid ubo instance binding point.
@@ -85,7 +85,7 @@ public:
   {};
 
   // This specifier name must not be duplicated with others.
-  std::string       mUboSpecifierName = MDY_INITILAIZE_EMPTYSTR;
+  std::string       mUboSpecifierName = MDY_INITIALIZE_EMPTYSTR;
   // Buffer drawing type.
   EDyBufferDrawType mBufferDrawType   = EDyBufferDrawType::StaticDraw;
   // Binding index must be not duplicated with valid ubo instance binding point.

@@ -14,7 +14,7 @@
 
 /// Header file
 #include <Dy/Element/Canvas/Text_Deprecated.h>
-#include <Dy/Meta/Descriptor/WidgetComponentDescriptor.h>
+#include <Dy/Meta/Descriptor/WidgetTextMetaInformation.h>
 #include <Dy/Management/FontManager.h>
 
 namespace dy
@@ -65,7 +65,7 @@ const DDyString& FDyText_Deprecated::GetText() const noexcept
 std::string FDyText_Deprecated::GetUtf8Text() const noexcept
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
-  return MDY_INITILAIZE_EMPTYSTR;
+  return MDY_INITIALIZE_EMPTYSTR;
 }
 
 TU32 FDyText_Deprecated::GetFontSize() const noexcept
@@ -73,17 +73,17 @@ TU32 FDyText_Deprecated::GetFontSize() const noexcept
   return this->mFontSize;
 }
 
-const DDyColor& FDyText_Deprecated::GetBackgroundColor() const noexcept
+const DDyColorRGBA& FDyText_Deprecated::GetBackgroundColor() const noexcept
 {
   return this->mBackgroundColor;
 }
 
-const DDyColor& FDyText_Deprecated::GetEdgeColor() const noexcept
+const DDyColorRGBA& FDyText_Deprecated::GetEdgeColor() const noexcept
 {
   return this->mEdgeColor;
 }
 
-const DDyColor& FDyText_Deprecated::GetForegroundColor() const noexcept
+const DDyColorRGBA& FDyText_Deprecated::GetForegroundColor() const noexcept
 {
   return this->mForegroundColor;
 }
@@ -114,7 +114,7 @@ EDySuccess FDyText_Deprecated::SetFontName(const std::string& fontName)
   return DY_FAILURE;
 }
 
-void FDyText_Deprecated::SetColor(const DDyColor& color)
+void FDyText_Deprecated::SetColor(const DDyColorRGBA& color)
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
   this->mForegroundColor = color;

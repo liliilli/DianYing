@@ -16,7 +16,7 @@
 #include <Dy/Builtin/Texture/Checker.h>
 
 #include <Dy/Core/Component/Internal/TextureType.h>
-#include <Dy/Management/HeapResourceManager.h>
+#include <Dy/Management/IO/IOResourceManager.h>
 
 //!
 //! Local variables
@@ -80,7 +80,7 @@ FDyBuiltinTextureChecker::FDyBuiltinTextureChecker()
     {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::ClampToEdge},
   };
 
-  MDY_CALL_ASSERT_SUCCESS(MDyHeapResource::GetInstance().CreateTextureResourceWithChunk(desc));
+  MDY_CALL_ASSERT_SUCCESS(MDyIOResource::GetInstance().CreateTextureResourceWithChunk(desc));
 }
 
 } /// ::dy::builtin namespace

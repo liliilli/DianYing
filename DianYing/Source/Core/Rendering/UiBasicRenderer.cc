@@ -24,13 +24,14 @@
 #include <Dy/Helper/Type/DyString.h>
 #include <Dy/Helper/Type/Matrix4.h>
 #include <Dy/Management/SettingManager.h>
-#include <Dy/Management/Internal/FramebufferManager.h>
-#include <Dy/Management/HeapResourceManager.h>
-#include <Dy/Meta/Descriptor/WidgetComponentDescriptor.h>
+#include <Dy/Management/Rendering/FramebufferManager.h>
+#include <Dy/Management/IO/IOResourceManager.h>
+#include <Dy/Meta/Descriptor/WidgetTextMetaInformation.h>
 #include <Dy/Builtin/ShaderGl/RenderFontSDF_Deprecated.h>
 #include <Dy/Management/FontManager.h>
 #include <Dy/Builtin/ShaderGl/RenderFontArraySDF.h>
 #include <Dy/Element/Canvas/Text.h>
+#include "Dy/Management/WindowManager.h"
 
 //!
 //! Local translation unit data
@@ -82,12 +83,12 @@ Canvas0 : 1
 Canvas1 : 0
 Camera0 : 2
 )dy";
-    desc.mFontSize = 16;
+    desc.mFontSize = 12;
     desc.mInitialPosition = DDyVectorInt2{-440, 250};
-    desc.mInitialColor    = DDyColor::White;
+    desc.mInitialColor    = DDyColorRGBA::White;
     desc.mFontSpecifierName = "Arial";
     desc.mIsUsingEdge     = true;
-    desc.mEdgeColor       = DDyColor::Black;
+    desc.mEdgeColor       = DDyColorRGBA::Black;
 #ifdef false
     desc.mInitialString = R"dy(Hello world!
 21世紀初頭、遺伝子工学技術の進歩により、
@@ -115,7 +116,7 @@ Camera0 : 2
       {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::ClampToBorder},
       {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::ClampToBorder},
     };
-    attachmentInfo.mBorderColor = DDyColor{ 0, 0, 0, 0 };
+    attachmentInfo.mBorderColor = DDyColorRGBA{ 0, 0, 0, 0 };
 
     binderInfo.mAttachmentName = sAttachment_Output;
     binderInfo.mAttachmentType = EDyGlAttachmentType::Color0;
@@ -161,6 +162,7 @@ void FDyUIBasicRenderer::RenderScreen()
   }
 
   glBindFramebuffer(GL_FRAMEBUFFER, this->mDyBtFbUiBasic->GetFramebufferId());
+  textComponent->SetText(std::to_string(MDyWindow::GetInstance().GetCpuUsage()));
   textComponent->Render();
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

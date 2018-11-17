@@ -20,7 +20,7 @@
 #include <Dy/Builtin/ShaderGl/RenderFontArraySDF.h>
 #include <Dy/Element/Canvas/Text.h>
 #include <Dy/Management/SettingManager.h>
-#include <Dy/Management/HeapResourceManager.h>
+#include <Dy/Management/IO/IOResourceManager.h>
 
 //!
 //! Forward declaration & Local translation unit function data.
@@ -125,7 +125,7 @@ EDySuccess CDyFontRenderer::Initialize(const PDyFontRendererCtorInformation& des
 
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mFontComponentPtr), "descriptor.mFontComponentPtr must not be null.");
   this->mFontObjectRawPtr = descriptor.mFontComponentPtr;
-  this->mSampleShaderPtr  = MDyHeapResource::GetInstance().GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderFontArraySDF::sName));
+  this->mSampleShaderPtr  = MDyIOResource::GetInstance().GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderFontArraySDF::sName));
 
   // @TODO SAMPLE CODE (TEMPORAL)
   auto& settingManager            = MDySetting::GetInstance();

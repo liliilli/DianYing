@@ -26,7 +26,7 @@
 namespace dy
 {
 
-struct PDyScriptComponentMetaInformation;
+struct PDyScriptComponentMetaInfo;
 
 } /// ::unnamed namespace
 
@@ -100,7 +100,7 @@ public:
   /// @return
   /// @TODO SCRIPT THIS
   ///
-  MDY_NODISCARD EDySuccess Initialize(_MIN_ const PDyScriptComponentMetaInformation& metaInfo);
+  MDY_NODISCARD EDySuccess Initialize(_MIN_ const PDyScriptComponentMetaInfo& metaInfo);
 
   ///
   /// @brief
@@ -156,9 +156,9 @@ private:
   void Destroy() override final;
 
   /// Script name for specification and searching.
-  MDY_TRANSIENT std::string           mScriptName   = MDY_INITILAIZE_EMPTYSTR;
+  MDY_TRANSIENT std::string           mScriptName   = MDY_INITIALIZE_EMPTYSTR;
   /// Script path to execute lua script file.
-  MDY_TRANSIENT std::string           mScriptPath   = MDY_INITILAIZE_EMPTYSTR;
+  MDY_TRANSIENT std::string           mScriptPath   = MDY_INITIALIZE_EMPTYSTR;
   /// Script state for calling arbitary function.
   FDyScriptState                      mScriptState;
   /// Script instance.

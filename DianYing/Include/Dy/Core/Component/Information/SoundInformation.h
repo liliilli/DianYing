@@ -84,7 +84,7 @@ private:
   MDY_TRANSIENT CDySoundResource* __mLinkedSoundResourcePtr = nullptr;
 
   friend class CDySoundResource;
-  friend class MDyHeapResource;
+  friend class MDyIOResource;
 };
 
 } /// ::dy namespace

@@ -116,7 +116,7 @@ private:
   friend class CDyTextureResource;
   friend class CDyShaderResource;
   friend class DDyMaterialInformation;
-  friend class MDyHeapResource;
+  friend class MDyIOResource;
 };
 
 } /// ::dy namespace

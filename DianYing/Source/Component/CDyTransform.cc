@@ -14,24 +14,21 @@
 
 /// Header file
 #include <Dy/Component/CDyTransform.h>
-#include <Dy/Component/Descriptor/ComponentMetaDescriptor.h>
 #include <Dy/Element/Actor.h>
 
 namespace dy
 {
 
-CDyTransform::CDyTransform(FDyActor& actorReference) : ADyGeneralBaseComponent(actorReference)
-{ }
 
-EDySuccess CDyTransform::Initialize(const DDyTransformMetaInformation& desc)
+EDySuccess CDyTransform::Initialize(const PDyTransformComponentMetaInfo& desc)
 {
-  this->SetLocalPosition(desc.mLocalPosition);
-  this->SetLocalEulerAngle(desc.mLocalRotation);
-  this->SetLocalScale(desc.mLocalScale);
+  this->SetLocalPosition(desc.mDetails.mLocalPosition);
+  this->SetLocalEulerAngle(desc.mDetails.mLocalRotation);
+  this->SetLocalScale(desc.mDetails.mLocalScale);
 
-  this->SetWorldPosition(desc.mWorldPosition);
-  this->SetWorldEulerAngle(desc.mWorldRotation);
-  this->SetWorldScale(desc.mWorldScale);
+  this->SetWorldPosition(desc.mDetails.mWorldPosition);
+  this->SetWorldEulerAngle(desc.mDetails.mWorldRotation);
+  this->SetWorldScale(desc.mDetails.mWorldScale);
 
   return DY_SUCCESS;
 }
@@ -248,7 +245,7 @@ void CDyTransform::SetWorldScale(_MIN_ const DDyVector3& xyz_value) noexcept
 
 std::string CDyTransform::ToString()
 {
-  return MDY_INITILAIZE_EMPTYSTR;
+  return MDY_INITIALIZE_EMPTYSTR;
 }
 
 //!

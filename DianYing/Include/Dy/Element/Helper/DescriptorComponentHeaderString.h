@@ -24,7 +24,7 @@ MDY_SET_IMMUTABLE_STRING(sHeaderActivated,      "Activated");
 //! CDyTransform
 //!
 
-inline MDY_SET_IMMUTABLE_STRING(sHeaderLocalPosition, "LPosition");
+MDY_SET_IMMUTABLE_STRING(sHeaderLocalPosition, "LPosition");
 MDY_SET_IMMUTABLE_STRING(sHeaderLocalAngle,   "LRotation");
 MDY_SET_IMMUTABLE_STRING(sHeaderLocalScale,   "LScale");
 MDY_SET_IMMUTABLE_STRING(sHeaderWorldPosition,"WPosition");
@@ -81,12 +81,13 @@ MDY_SET_IMMUTABLE_STRING(sHeaderMaterials,      "Materials");
 MDY_SET_IMMUTABLE_STRING(sHeaderFieldOfView,      "FieldOfView");
 MDY_SET_IMMUTABLE_STRING(sHeaderProjection,       "Projection");
 MDY_SET_IMMUTABLE_STRING(sValuePerspective,       "Perspective");
-MDY_SET_IMMUTABLE_STRING(sValueOrthogonal,        "Orthographic");
+MDY_SET_IMMUTABLE_STRING(sValueOrthographic,        "Orthographic");
 
 MDY_SET_IMMUTABLE_STRING(sHeaderClippingNear,     "ClippingNear");
 MDY_SET_IMMUTABLE_STRING(sHeaderClippingFar,      "ClippingFar");
 MDY_SET_IMMUTABLE_STRING(sHeaderViewportRect,     "ViewportRect");
 MDY_SET_IMMUTABLE_STRING(sHeaderIsFocusInstantly, "IsFocusInstantly");
+MDY_SET_IMMUTABLE_STRING(sHeaderIsMeshUnclipped,  "IsMeshUnclipped");
 
 } /// ::dy namespace
 

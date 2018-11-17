@@ -18,7 +18,7 @@
 #include <Dy/Builtin/Texture/Checker.h>
 #include <Dy/Builtin/ShaderGl/RenderOpaqueStatic.h>
 #include <Dy/Core/Component/Internal/MaterialType.h>
-#include <Dy/Management/DataInformationManager.h>
+#include <Dy/Management/IO/IODataManager.h>
 
 //!
 //! Implementation
@@ -29,7 +29,7 @@ namespace dy::builtin
 
 FDyBuiltinMaterialOpaqueStaticPlain::FDyBuiltinMaterialOpaqueStaticPlain()
 {
-  auto& manInfo = MDyDataInformation::GetInstance();
+  auto& manInfo = MDyIOData::GetInstance();
 
   PDyMaterialConstructionDescriptor matDesc;
   matDesc.mMaterialName = FDyBuiltinMaterialOpaqueStaticPlain::sName;

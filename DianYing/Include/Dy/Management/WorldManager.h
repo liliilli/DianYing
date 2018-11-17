@@ -37,7 +37,7 @@ namespace dy
 /// @class MDyWorld
 /// @brief Manages scene and helping access each scene's unique properties.
 ///
-class MDyWorld final : public ISingleton<MDyWorld>, public IDyUpdatable
+class MDyWorld final : public IDySingleton<MDyWorld>, public IDyUpdatable
 {
   MDY_SINGLETON_DERIVED(MDyWorld);
   MDY_SINGLETON_PROPERTIES(MDyWorld);
@@ -229,9 +229,9 @@ private:
   CDyLegacyCamera*                mValidMainCameraPtr = nullptr;
   std::vector<CDyLegacyCamera*>   mValidSubCameraPtrs = {};
 
-  std::string               mNextLevelName      = MDY_INITILAIZE_EMPTYSTR;
-  std::string               mPresentLevelName   = MDY_INITILAIZE_EMPTYSTR;
-  std::string               mPreviousLevelName  = MDY_INITILAIZE_EMPTYSTR;
+  std::string               mNextLevelName      = MDY_INITIALIZE_EMPTYSTR;
+  std::string               mPresentLevelName   = MDY_INITIALIZE_EMPTYSTR;
+  std::string               mPreviousLevelName  = MDY_INITIALIZE_EMPTYSTR;
 
   /// Present valid level instance.
   std::unique_ptr<FDyLevel> mLevel              = nullptr;

@@ -16,11 +16,13 @@
 #include <array>
 #include <optional>
 
-#include <Dy/Helper/Macroes.h>
+#include <Dy/Helper/System/Macroes.h>
+#include <Dy/Meta/Type/EDyInput.h>
 
-namespace dy {
+namespace dy
+{
 
-using TInputKeyPair = std::pair<std::string_view, int32_t>;
+using TInputKeyPair = std::pair<std::string_view, TI32>;
 
 constexpr std::array<TInputKeyPair, 77> sKeyInputString =
 {
@@ -114,15 +116,16 @@ constexpr std::array<TInputKeyPair, 77> sKeyInputString =
 };
 
 ///
-/// @brief Get key uid string for glfw input access.
-/// @todo NEED TO CONVERT IT TO WIN32 / LINUX PLATFORM DEPENDENT STYLE.
+/// @brief  Get key uid string for glfw input access.
+/// @param  keyString Key string from json information string.
+/// @return If exists, return value.
 ///
-inline std::optional<int32_t> DyGetKeyUidValue(const std::string& key_string)
+inline std::optional<TI32> DyGetKeyUidValue(const std::string& keyString)
 {
-#if defined(_WIN32) && defined(MDY_PLATFORM_FLAG_WINDOWS)
-  for (auto& [c_str, uid] : sKeyInputString)
+#if (defined(_WIN32) == true) && (defined(MDY_PLATFORM_FLAG_WINDOWS) == true)
+  for (auto& [string, uid] : sKeyInputString)
   {
-    if (key_string == c_str) return uid;
+    if (keyString == string) { return uid; }
   }
 
   return std::nullopt;
@@ -133,6 +136,41 @@ inline std::optional<int32_t> DyGetKeyUidValue(const std::string& key_string)
 #else
   static_assert(false, "Need to specify platform macro.");
 #endif
+}
+
+///
+/// @brief  Convert `keyString` to appropriate `EDyKeyboard` value. If found nothing, just return Error value.
+/// @param  keyString String value.
+/// @return Proper `EDyKeyboard` value or `EDyKeyboard::NoneError`.
+///
+inline MDY_NODISCARD EDyKeyboard DyConvertToEDyKeyboard(_MIN_ const std::string& keyString) noexcept
+{
+  std::string key = keyString;
+  std::transform(key.begin(), key.end(), key.begin(), ::toupper);
+
+  for (auto& [string, uid] : sKeyInputString)
+  {
+    if (key == string) { return static_cast<EDyKeyboard>(uid); }
+  }
+
+  return EDyKeyboard::NoneError;
+}
+
+///
+/// @brief  Convert `EDyKeyboard` to plain string. This function is reverse version of `DyConvertToEDyKeyboard`,
+/// @param  keyEnum Enumeration value.
+/// @return Plain string or empty value when input is NoneError value.
+///
+inline MDY_NODISCARD std::string DyConvertToPlainString(_MIN_ const EDyKeyboard keyEnum) noexcept
+{
+  const TI32 keyUid = static_cast<std::underlying_type_t<EDyKeyboard>>(keyEnum);
+  for (auto& [string, uid] : sKeyInputString)
+  {
+    if (keyUid == uid) { return MSVSTR(string); }
+  }
+
+  MDY_UNEXPECTED_BRANCH();
+  return "";
 }
 
 } /// ::dy namespace

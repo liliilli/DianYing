@@ -25,7 +25,7 @@
 
 #include <Dy/Core/Component/Resource/ModelResource.h>
 #include <Dy/Core/Component/Internal/GeometryType.h>
-#include <Dy/Management/DataInformationManager.h>
+#include <Dy/Management/IO/IODataManager.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Helper/ThreadPool.h>
 #include <Dy/Helper/IoHelper.h>
@@ -471,7 +471,7 @@ PDyMaterialConstructionDescriptor DDyModelInformation::__pReadMaterialData(const
   materialDescriptor.mTextureNames = textureNames;
 
   // Let InformationManager initialize material information instance.
-  auto& manInfo = MDyDataInformation::GetInstance();
+  auto& manInfo = MDyIOData::GetInstance();
   if (const auto ptr = manInfo.GetMaterialInformation(materialDescriptor.mMaterialName); !ptr)
   {
     MDY_CALL_ASSERT_SUCCESS(manInfo.CreateMaterialInformation(materialDescriptor));
@@ -500,7 +500,7 @@ DDyModelInformation::__pLoadMaterialTextures(const aiMaterial& material, EDyText
   }
 
   // Get Texture Map which is being binded to material (aiMaterial*);
-  auto& manInfo = MDyDataInformation::GetInstance();
+  auto& manInfo = MDyIOData::GetInstance();
 
   std::vector<std::string> textureInformationString;
   const uint32_t textureMapCount = material.GetTextureCount(aiTextureType);

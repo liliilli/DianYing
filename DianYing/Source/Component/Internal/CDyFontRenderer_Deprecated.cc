@@ -16,7 +16,7 @@
 #include <Dy/Component/Internal/CDyFontRenderer_Deprecated.h>
 #include <Dy/Builtin/ShaderGl/RenderFontSDF_Deprecated.h>
 #include <Dy/Element/Canvas/Text_Deprecated.h>
-#include <Dy/Management/HeapResourceManager.h>
+#include <Dy/Management/IO/IOResourceManager.h>
 #include <Dy/Management/SettingManager.h>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -123,7 +123,7 @@ EDySuccess CDyFontRenderer_Deprecated::Initialize(const PDyFontRendererCtorInfor
 
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mFontComponentPtr), "descriptor.mFontComponentPtr must not be null.");
   this->mFontObjectRawPtr = descriptor.mFontComponentPtr;
-  this->mSampleShaderPtr = MDyHeapResource::GetInstance().GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderFontSDF_Deprecated::sName));
+  this->mSampleShaderPtr = MDyIOResource::GetInstance().GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderFontSDF_Deprecated::sName));
 
   // @TODO SAMPLE CODE (TEMPORAL)
   auto& settingManager            = MDySetting::GetInstance();

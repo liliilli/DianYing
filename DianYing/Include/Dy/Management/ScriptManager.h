@@ -25,7 +25,7 @@ namespace dy
 /// @class MDyScript
 /// @brief
 ///
-class MDyScript final : public ISingleton<MDyScript>
+class MDyScript final : public IDySingleton<MDyScript>
 {
   MDY_SINGLETON_DERIVED(MDyScript);
   MDY_SINGLETON_PROPERTIES(MDyScript);

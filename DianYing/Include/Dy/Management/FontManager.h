@@ -21,7 +21,7 @@
 namespace dy
 {
 
-class MDyFont final : public ISingleton<MDyFont>
+class MDyFont final : public IDySingleton<MDyFont>
 {
   MDY_SINGLETON_PROPERTIES(MDyFont);
   MDY_SINGLETON_DERIVED(MDyFont);

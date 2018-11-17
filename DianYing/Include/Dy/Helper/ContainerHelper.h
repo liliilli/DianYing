@@ -22,7 +22,7 @@ namespace dy
 {
 
 template <typename TKey, typename TInputKey>
-bool bIsInputKeyChangeableToKey = false
+constexpr bool bIsInputKeyChangeableToKey = false
     || std::is_same_v<TKey, TInputKey>
     || std::is_constructible_v<TInputKey, TKey>
     || std::is_convertible_v<TInputKey, TKey>;
@@ -45,7 +45,7 @@ template <
         >
     >
 >
-[[nodiscard]] bool IsMapContains(const TContainer<TKey, TValue>& hashMap, const TInputKey& specifier) noexcept
+MDY_NODISCARD bool DyIsMapContains(const TContainer<TKey, TValue>& hashMap, const TInputKey& specifier) noexcept
 {
     static_assert(bIsInputKeyChangeableToKey<TKey, TInputKey>,
         "TInputKey type cannot be used as a specifier key type of given specialized "
@@ -71,7 +71,7 @@ template <
         >
     >
 >
-[[nodiscard]] bool IsMapContains(const TContainer<TKey, TValue>& map, const TInputKey& specifier)
+MDY_NODISCARD bool DyIsMapContains(const TContainer<TKey, TValue>& map, const TInputKey& specifier)
 {
     static_assert(false
         || std::is_same_v<TKey, TInputKey>
@@ -97,7 +97,7 @@ template <
         >
     >
 >
-[[nodiscard]] bool IsSetContains(const TContainer<TKey>& set, const TInputKey& specifier)
+MDY_NODISCARD bool DyIsSetContains(const TContainer<TKey>& set, const TInputKey& specifier)
 {
     static_assert(false
         || std::is_same_v<TKey, TInputKey>
@@ -123,7 +123,7 @@ template <
         >
     >
 >
-[[nodiscard]] bool IsSetContains(const TContainer<TKey>& set, const TInputKey& specifier)
+MDY_NODISCARD bool DyIsSetContains(const TContainer<TKey>& set, const TInputKey& specifier)
 {
     static_assert(false
         || std::is_same_v<TKey, TInputKey>

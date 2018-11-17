@@ -14,7 +14,7 @@
 
 /// Header file
 #include <Dy/Management/Type/FontResourceContainer.h>
-#include <Dy/Helper/HelperZlib.h>
+#include <Dy/Helper/Library/HelperZlib.h>
 #include <nlohmann/json.hpp>
 
 #include <Dy/Helper/Internal/ImageBinaryBuffer.h>

@@ -86,7 +86,7 @@ enum class EDyShaderFragmentType
 ///
 struct DDyAttributeVariableInformation final
 {
-  std::string               mVariableName     = MDY_INITILAIZE_EMPTYSTR;
+  std::string               mVariableName     = MDY_INITIALIZE_EMPTYSTR;
   TI32                      mVariableSlotSize = MDY_INITIALIZE_DEFINT;
   EDyAttributeVariableType  mVariableType     = EDyAttributeVariableType::NoneError;
   TI32                      mVariableLocation = MDY_INITIALIZE_DEFINT;
@@ -99,7 +99,7 @@ struct DDyAttributeVariableInformation final
 ///
 struct DDyUniformVariableInformation final
 {
-  std::string               mVariableName     = MDY_INITILAIZE_EMPTYSTR;
+  std::string               mVariableName     = MDY_INITIALIZE_EMPTYSTR;
   TI32                      mVariableSlotSize = MDY_INITIALIZE_DEFINT;
   EDyUniformVariableType    mVariableType     = EDyUniformVariableType::NoneError;
   TI32                      mVariableLocation = MDY_INITIALIZE_DEFINT;
@@ -110,7 +110,7 @@ struct DDyUniformVariableInformation final
 ///
 struct DDyUniformBufferObjectInformation final
 {
-  std::string               mUboSpecifierName = MDY_INITILAIZE_EMPTYSTR;
+  std::string               mUboSpecifierName = MDY_INITIALIZE_EMPTYSTR;
 };
 
 ///

@@ -58,9 +58,9 @@ public:
 
 private:
   ///
-  std::string mFontSpecifierName  = MDY_INITILAIZE_EMPTYSTR;
+  std::string mFontSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
   ///
-  std::string mFontFilePath       = MDY_INITILAIZE_EMPTYSTR;
+  std::string mFontFilePath       = MDY_INITIALIZE_EMPTYSTR;
   ///
   TF32 mUnscaledLinefeedHeight    = MDY_INITIALIZE_DEFINT;
   ///

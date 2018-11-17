@@ -114,7 +114,7 @@ private:
   MDY_TRANSIENT DDyModelInformation*  __mLinkedModelInformationPtr = nullptr;
 
   friend class DDyModelInformation;
-  friend class MDyHeapResource;
+  friend class MDyIOResource;
 };
 
 } /// ::dy namespace

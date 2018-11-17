@@ -140,8 +140,8 @@ void CDyLegacyCamera::Update(float dt)
   {
     auto& input = MDyInput::GetInstance();
 
-    const auto xVal = input.GetKeyValue("XAxis");
-    const auto yVal = input.GetKeyValue("YAxis");
+    const auto xVal = input.GetAxisValue("XAxis");
+    const auto yVal = input.GetAxisValue("YAxis");
 
     if (yVal != 0.0f || xVal != 0.0f)
     {

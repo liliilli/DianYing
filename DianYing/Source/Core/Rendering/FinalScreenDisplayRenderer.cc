@@ -15,9 +15,9 @@
 /// Header file
 #include <Dy/Core/Rendering/FinalScreenDisplayRenderer.h>
 #include <Dy/Core/Rendering/Helper/FrameAttachmentString.h>
-#include <Dy/Management/Internal/FramebufferManager.h>
+#include <Dy/Management/Rendering/FramebufferManager.h>
 #include <Dy/Management/SettingManager.h>
-#include <Dy/Management/HeapResourceManager.h>
+#include <Dy/Management/IO/IOResourceManager.h>
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Builtin/ShaderGl/RenderScreenOutput.h>
 #include <Dy/Builtin/Model/ScreenProjectionTriangle.h>
@@ -28,7 +28,7 @@ namespace dy
 FDyFinalScreenDisplayRenderer::FDyFinalScreenDisplayRenderer()
 {
   auto& framebufferManager  = MDyFramebuffer::GetInstance();
-  auto& heapManager         = MDyHeapResource::GetInstance();
+  auto& heapManager         = MDyIOResource::GetInstance();
 
   //!
   //! Lambda function

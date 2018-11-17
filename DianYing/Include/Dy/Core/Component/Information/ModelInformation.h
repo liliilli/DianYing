@@ -149,7 +149,7 @@ private:
   MDY_TRANSIENT CDyModelResource* __mLinkedModelResourcePtr = nullptr;
 
   friend class CDyModelResource;
-  friend class MDyHeapResource;
+  friend class MDyIOResource;
 };
 
 } /// ::dy namespace

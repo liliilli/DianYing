@@ -15,8 +15,8 @@
 /// Header file
 #include <Dy/Builtin/ShaderGl/RenderDeferredRendering.h>
 #include <Dy/Core/Component/Internal/ShaderType.h>
-#include <Dy/Management/DataInformationManager.h>
-#include <Dy/Management/HeapResourceManager.h>
+#include <Dy/Management/IO/IODataManager.h>
+#include <Dy/Management/IO/IOResourceManager.h>
 
 //!
 //! Forward declaration
@@ -136,8 +136,8 @@ FDyBuiltinShaderGLRenderDeferredRendering::FDyBuiltinShaderGLRenderDeferredRende
     shaderDesc.mShaderFragments.emplace_back(fs);
   }
 
-  auto& infoManager = MDyDataInformation::GetInstance();
-  auto& rescManager = MDyHeapResource::GetInstance();
+  auto& infoManager = MDyIOData::GetInstance();
+  auto& rescManager = MDyIOResource::GetInstance();
 
   MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation(shaderDesc));
   MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(FDyBuiltinShaderGLRenderDeferredRendering::sName.data()));

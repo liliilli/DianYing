@@ -15,7 +15,7 @@
 /// Header file
 #include <Dy/Builtin/Model/ScreenProjectionTriangle.h>
 #include <Dy/Core/Component/Internal/ModelType.h>
-#include <Dy/Management/DataInformationManager.h>
+#include <Dy/Management/IO/IODataManager.h>
 
 namespace dy::builtin
 {
@@ -55,7 +55,7 @@ FDyBuiltinModelScreenProjectionTriangle::FDyBuiltinModelScreenProjectionTriangle
     modelDesc.mSubmeshConstructionInformations.emplace_back(submeshDesc);
   }
 
-  auto& manInfo = MDyDataInformation::GetInstance();
+  auto& manInfo = MDyIOData::GetInstance();
   MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(modelDesc));
 }
 

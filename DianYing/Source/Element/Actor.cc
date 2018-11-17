@@ -14,24 +14,12 @@
 
 /// Header file
 #include <Dy/Element/Actor.h>
-#include <Dy/Management/MetaInfoManager.h>
+#include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Component/CDyTransform.h>
 #include "Dy/Component/CDyModelFilter.h"
 #include "Dy/Component/CDyModelRenderer.h"
 #include "Dy/Component/CDyCamera.h"
 #include "Dy/Component/CDyDirectionalLight.h"
-
-//!
-//! Forward declaration
-//!
-
-namespace dy
-{
-
-///
-DDyTransformMetaInformation sDefaultTransformMetaInformation;
-
-} /// ::dy namespace
 
 //!
 //! Implementation
@@ -40,10 +28,10 @@ DDyTransformMetaInformation sDefaultTransformMetaInformation;
 namespace dy
 {
 
-EDySuccess FDyActor::Initialize(_MIN_ const DDyObjectInformation& objectMetaDesc)
+EDySuccess FDyActor::Initialize(_MIN_ const PDyObjectMetaInfo& objectMetaDesc)
 {
   bool isTransformCreated = false;
-  this->pSetObjectName(objectMetaDesc.mObjectName);
+  this->pSetObjectName(objectMetaDesc.mSpecifierName);
 
   // Create components
   for (const auto& [type, componentInfo] : objectMetaDesc.mMetaComponentInfo)
@@ -53,34 +41,34 @@ EDySuccess FDyActor::Initialize(_MIN_ const DDyObjectInformation& objectMetaDesc
     default: MDY_UNEXPECTED_BRANCH(); break;
     case EDyComponentMetaType::Transform:
     {
-      const auto& desc = std::any_cast<const DDyTransformMetaInformation&>(componentInfo);
+      const auto& desc = std::any_cast<const PDyTransformComponentMetaInfo&>(componentInfo);
       MDY_NOTUSED auto transformComponentPtr = this->AddComponent<CDyTransform>(desc);
 
       isTransformCreated = true;
     } break;
     case EDyComponentMetaType::Script:
     {
-      const auto& desc = std::any_cast<const PDyScriptComponentMetaInformation&>(componentInfo);
+      const auto& desc = std::any_cast<const PDyScriptComponentMetaInfo&>(componentInfo);
       MDY_NOTUSED auto scriptComponentPtr = this->AddComponent<CDyScript>(desc);
     } break;
     case EDyComponentMetaType::DirectionalLight:
     {
-      const auto& desc = std::any_cast<const DDyDirectionalLightMetaInformation&>(componentInfo);
+      const auto& desc = std::any_cast<const PDyDirLightComponentMetaInfo&>(componentInfo);
       MDY_NOTUSED auto directionLightComponentPtr = this->AddComponent<CDyDirectionalLight>(desc);
     } break;
     case EDyComponentMetaType::ModelFilter:
     {
-      const auto& desc = std::any_cast<const DDyModelFilterMetaInformation&>(componentInfo);
+      const auto& desc = std::any_cast<const PDyModelFilterComponentMetaInfo&>(componentInfo);
       MDY_NOTUSED auto modelFilterComponentPtr = this->AddComponent<CDyModelFilter>(desc);
     } break;
     case EDyComponentMetaType::ModelRenderer:
     {
-      const auto& desc = std::any_cast<const DDyModelRendererMetaInformation&>(componentInfo);
+      const auto& desc = std::any_cast<const PDyModelRendererComponentMetaInfo&>(componentInfo);
       MDY_NOTUSED auto modelRendererComponentPtr = this->AddComponent<CDyModelRenderer>(desc);
     } break;
     case EDyComponentMetaType::Camera:
     {
-      const auto& desc = std::any_cast<const DDyCameraMetaInformation&>(componentInfo);
+      const auto& desc = std::any_cast<const PDyCameraComponentMetaInfo&>(componentInfo);
       MDY_NOTUSED auto cameraComponentPtr = this->AddComponent<CDyCamera>(desc);
     } break;
     }

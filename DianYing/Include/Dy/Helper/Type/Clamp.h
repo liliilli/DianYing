@@ -13,6 +13,7 @@
 /// SOFTWARE.
 ///
 
+#include <nlohmann/json.hpp>
 #include <Dy/Helper/GlobalType.h>
 #include <Dy/Helper/Math/Math.h>
 
@@ -42,8 +43,14 @@ class DDyClamp final
   static_assert(IsNotUsingNarrowConversion() == true, "Specified value range is not matched specified range of given TType.");
 
 public:
+  constexpr DDyClamp() noexcept = default;
+  constexpr DDyClamp(_MIN_ const TType& value) noexcept
+  {
+    this->mValue = math::Clamp<TType>(static_cast<TType>(value), TStart, TEnd);
+  }
+
   template <typename TConvType, typename = std::enable_if_t<std::is_convertible_v<TConvType, TType>>>
-  constexpr DDyClamp(_MIN_ const TConvType value) noexcept
+  constexpr DDyClamp(_MIN_ const TConvType& value) noexcept
   {
     this->mValue = math::Clamp<TType>(static_cast<TType>(value), TStart, TEnd);
   }
@@ -52,11 +59,22 @@ public:
   constexpr DDyClamp(_MIN_ const DDyClamp& instance)            = default;
   constexpr DDyClamp& operator=(_MIN_ const DDyClamp& instance) = default;
 
-  template <typename TConvType, typename = std::enable_if_t<std::is_convertible_v<TConvType, TType>>>
-  constexpr DDyClamp& operator=(_MIN_ const TConvType value) noexcept
+  constexpr DDyClamp& operator=(_MIN_ const TType& value) noexcept
   {
     this->mValue = math::Clamp<TType>(static_cast<TType>(value), TStart, TEnd);
     return *this;
+  }
+
+  template <typename TConvType, typename = std::enable_if_t<std::is_convertible_v<TConvType, TType>>>
+  constexpr DDyClamp& operator=(_MIN_ const TConvType& value) noexcept
+  {
+    this->mValue = math::Clamp<TType>(static_cast<TType>(value), TStart, TEnd);
+    return *this;
+  }
+
+  constexpr operator TType() const noexcept
+  {
+    return this->mValue;
   }
 
   constexpr TType operator()() const noexcept
@@ -69,9 +87,35 @@ public:
     return lhs.mValue == value;
   }
 
+  constexpr friend TType operator*(_MIN_ const TType& lhs, _MIN_ const DDyClamp& value) noexcept
+  {
+    return lhs * value.mValue;
+  }
+
+  ///
+  /// @brief  Data pointer
+  /// @return Data pointer sequence.
+  ///
+  MDY_NODISCARD const TType* Data() const noexcept
+  {
+    return &this->mValue;
+  }
+
 private:
   TType mValue = (TType() < TStart ? TType() : TStart);
 };
+
+template <typename TType, TI32 TStart, TI32 TEnd>
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDyClamp<TType, TStart, TEnd>& p)
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+}
+
+template <typename TType, TI32 TStart, TI32 TEnd>
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ DDyClamp<TType, TStart, TEnd>& p)
+{
+  p = j.get<TType>();
+}
 
 } /// ::dy namespace
 

@@ -37,10 +37,10 @@
 #include <Dy/Core/Rendering/Helper/FrameAttachmentString.h>
 #include <Dy/Helper/Type/DyString.h>
 #include <Dy/Management/Type/FramebufferInformation.h>
-#include <Dy/Management/Internal/FramebufferManager.h>
+#include <Dy/Management/Rendering/FramebufferManager.h>
 #include <Dy/Builtin/ShaderGl/RenderFontMSDF_Deprecated.h>
 #include <Dy/Helper/Type/Matrix4.h>
-#include <Dy/Management/HeapResourceManager.h>
+#include <Dy/Management/IO/IOResourceManager.h>
 #include <Dy/Builtin/ShaderGl/RenderFontSDF_Deprecated.h>
 
 #if !defined(FT_FREETYPE_H)
@@ -258,7 +258,7 @@ void TestMsdfLibrary()
     {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::ClampToBorder},
     {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::ClampToBorder},
   };
-  attachmentInfo.mBorderColor = DDyColor{0, 0, 0, 0};
+  attachmentInfo.mBorderColor = DDyColorRGBA{0, 0, 0, 0};
 
   binderInfo.mAttachmentName  = sAttachment_Output;
   binderInfo.mAttachmentType  = EDyGlAttachmentType::Color0;
@@ -276,8 +276,8 @@ void TestMsdfLibrary()
   builtin::FDyBuiltinShaderGLRenderFontMSDF_Deprecated();
   //builtin::FDyBuiltinShaderGLRenderFontSDF_Deprecated();
   DDyMatrix4x4 uUiProjMatrix = glm::ortho<float>(-640, 640, -360, 360, 0.2f, 10.0f);
-  CDyShaderResource* sSampleShaderPtr = MDyHeapResource::GetInstance().GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderFontMSDF_Deprecated::sName));
-  //CDyShaderResource* sSampleShaderPtr = MDyHeapResource::GetInstance().GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderFontSDF_Deprecated::sName));
+  CDyShaderResource* sSampleShaderPtr = MDyIOResource::GetInstance().GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderFontMSDF_Deprecated::sName));
+  //CDyShaderResource* sSampleShaderPtr = MDyIOResource::GetInstance().GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderFontSDF_Deprecated::sName));
 
   //!
   //! Make vbo sample
@@ -330,10 +330,10 @@ void TestMsdfLibrary()
   const auto pxRangeId       = glGetUniformLocation(sSampleShaderPtr->GetShaderProgramId(), "pxRange");
   glUniform1f(pxRangeId, pxRange);
   const auto bgColorId       = glGetUniformLocation(sSampleShaderPtr->GetShaderProgramId(), "bgColor");
-  const DDyColor bgColor     = DDyColor{1, 1, 1, 1};
+  const DDyColorRGBA bgColor     = DDyColorRGBA{1, 1, 1, 1};
   glUniform4fv(bgColorId, 1, &bgColor.R);
   const auto fgColorId       = glGetUniformLocation(sSampleShaderPtr->GetShaderProgramId(), "fgColor");
-  const DDyColor fgColor     = DDyColor{0, 0, 0, 1};
+  const DDyColorRGBA fgColor     = DDyColorRGBA{0, 0, 0, 1};
   glUniform4fv(fgColorId, 1, &fgColor.R);
 
   // Render texture glyph

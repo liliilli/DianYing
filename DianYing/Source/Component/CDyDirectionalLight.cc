@@ -14,7 +14,7 @@
 
 /// Header file
 #include <Dy/Component/CDyDirectionalLight.h>
-#include <Dy/Management/RenderingManager.h>
+#include <Dy/Management/Rendering/RenderingManager.h>
 #include <Dy/Management/SettingManager.h>
 
 namespace dy
@@ -23,30 +23,31 @@ namespace dy
 CDyDirectionalLight::CDyDirectionalLight(FDyActor& actorReference) : ADyGeneralBaseComponent(actorReference)
 { }
 
-EDySuccess CDyDirectionalLight::Initialize(const DDyDirectionalLightMetaInformation& metaInfo)
+EDySuccess CDyDirectionalLight::Initialize(const PDyDirLightComponentMetaInfo& metaInfo)
 {
-  this->mData.mDirection  = metaInfo.mDirection.Normalize();
-  this->mData.mIntensity  = metaInfo.mIntensity;
-  this->mIsCastingLight   = metaInfo.mIsCastingLight;
-  this->mIsCastingShadow  = metaInfo.mIsCastingShadow;
+  this->mData.mDirection  = metaInfo.mDetails.mDirection.Normalize();
+  this->mData.mIntensity  = metaInfo.mDetails.mIntensity;
+  this->mIsCastingLight   = metaInfo.mDetails.mIsCastingLight;
+  this->mIsCastingShadow  = metaInfo.mDetails.mIsCastingShadow;
 
-  this->mData.mDiffuse    = metaInfo.mDiffuse;
-  this->mData.mSpecular   = metaInfo.mSpecular;
-  this->mData.mAmbient    = metaInfo.mAmbient;
+  this->mData.mDiffuse    = metaInfo.mDetails.mDiffuse;
+  this->mData.mSpecular   = metaInfo.mDetails.mSpecular;
+  this->mData.mAmbient    = metaInfo.mDetails.mAmbient;
 
-  this->mShadowType             = metaInfo.mShadowType;
-  this->mShadowCullingLayerList = metaInfo.mShadowCullingMaskLayer;
-  this->mDataShadow.mBias       = metaInfo.mShadowBias;
-  this->mDataShadow.mStrength   = metaInfo.mShadowStrength;
+  this->mShadowType             = metaInfo.mDetails.mShadowType;
+  this->mShadowCullingLayerList = metaInfo.mDetails.mShadowCullingMaskLayer;
+  this->mDataShadow.mBias       = metaInfo.mDetails.mShadowBias;
+  this->mDataShadow.mStrength   = metaInfo.mDetails.mShadowStrength;
 
-  if (metaInfo.mIsUsingGlobalShadowResolution == false)
+  if (metaInfo.mDetails.mIsUsingGlobalShadowResolution == false)
   { // Shadow resolution
-    this->mShadowResolution = metaInfo.mShadowResolution;
+    this->mShadowResolution = metaInfo.mDetails.mShadowResolution;
   }
   else
   {
     auto& settingManager = MDySetting::GetInstance();
-    this->mShadowResolution = settingManager.GetGlobalDefaultShadowMapResolution();
+    const auto& i = settingManager.GetGlobalDefaultShadowMapResolution();
+    this->mShadowResolution = DDyVector2{static_cast<TF32>(i.X), static_cast<TF32>(i.Y)};
   }
 
   // Set first time flag to false to use second time flag logics.
@@ -120,7 +121,7 @@ void CDyDirectionalLight::pPropagateParentActorActivation(const DDy3StateBool& a
 MDY_NODISCARD std::string CDyDirectionalLight::ToString()
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
-  return MDY_INITILAIZE_EMPTYSTR;
+  return MDY_INITIALIZE_EMPTYSTR;
 }
 
 void CDyDirectionalLight::SetCastingLightFlag(const bool flag) noexcept

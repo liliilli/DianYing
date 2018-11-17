@@ -22,6 +22,7 @@
 
 #include <assimp/vector3.h>
 #include <glm/glm.hpp>
+#include <nlohmann/json_fwd.hpp>
 
 #include <Dy/Helper/Type/Vector2.h>
 #include <Dy/Helper/Math/Math.h>
@@ -504,6 +505,9 @@ public:
   ///
   [[nodiscard]] bool IsAllZero() const noexcept;
 };
+
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDyVector3& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDyVector3& p);
 
 } /// ::dy namespace
 

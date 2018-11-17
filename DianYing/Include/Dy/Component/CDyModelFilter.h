@@ -14,8 +14,8 @@
 ///
 
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
-#include <Dy/Component/Descriptor/ComponentMetaDescriptor.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
+#include <Dy/Meta/Information/ComponentMetaInformation.h>
 
 //!
 //! Forward decalartion
@@ -38,7 +38,7 @@ namespace dy
 /// @class CDyModelFilter
 /// @brief
 ///
-class CDyModelFilter final : public ADyGeneralBaseComponent, public IDyInitializeHelper<DDyModelFilterMetaInformation>
+class CDyModelFilter final : public ADyGeneralBaseComponent, public IDyInitializeHelper<PDyModelFilterComponentMetaInfo>
 {
 public:
   CDyModelFilter(FDyActor& actorReference);
@@ -49,7 +49,7 @@ public:
   /// @param  metaInfo
   /// @return If successful just return DY_SUCCESS or DY_FAILURE.
   ///
-  MDY_NODISCARD EDySuccess Initialize(_MIN_ const DDyModelFilterMetaInformation& metaInfo) override final;
+  MDY_NODISCARD EDySuccess Initialize(_MIN_ const PDyModelFilterComponentMetaInfo& metaInfo) override final;
 
   ///
   /// @brief  Release component.

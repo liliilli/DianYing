@@ -13,39 +13,15 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Macroes.h>
+#include <Dy/Helper/System/Macroes.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 
+#include <Dy/Management/Platform/DDyWindowInformationWindows.h>
 
 namespace dy
 {
 
-#if defined(MDY_PLATFORM_FLAG_WINDOWS)
-
-///
-/// @struct DDyWindowInformationWindows
-/// @brief Windows information for windows platform.
-///
-struct DDyWindowInformationWindows
-{
-protected:
-  HWND        mWindowHandle             = nullptr;
-  HDC         mWindowDeviceContext      = nullptr;
-  HGLRC       mWindowGlResourceContext  = nullptr;
-  GLFWwindow* mGlfwWindow               = nullptr;
-};
-
-///
-/// @struct DDyDependentFunctionWindows
-/// @brief Windows specific functions
-///
-struct [[maybe_unused]] DDyDependentFunctionWindows
-{
-
-};
-#endif
-
-class MDyWindow final : public ISingleton<MDyWindow>, MDY_INHERITENCE_WINDOW_INFORMATION_SUPER
+class MDyWindow final : public IDySingleton<MDyWindow>, public MDY_INHERITENCE_WINDOW_INFORMATION_SUPER
 {
   MDY_SINGLETON_DERIVED(MDyWindow);
   MDY_SINGLETON_PROPERTIES(MDyWindow);
@@ -72,6 +48,7 @@ private:
   ///
   void pRender();
 
+  GLFWwindow* mGlfwWindow               = nullptr;
 };
 
 } /// ::dy namespace

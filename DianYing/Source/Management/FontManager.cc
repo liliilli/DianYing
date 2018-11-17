@@ -17,7 +17,7 @@
 
 #include <string>
 #include <Dy/Core/Component/Internal/MaterialType.h>
-#include <Dy/Management/MetaInfoManager.h>
+#include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Management/Type/FontResourceContainer.h>
 
 //!
