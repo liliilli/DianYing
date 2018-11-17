@@ -164,7 +164,7 @@
 /// @macro MDY_NOT_INITIALIZED_STR
 /// @brief Initialize arbitary string variable (const char*, std::string, std::string_view) with empty but '\0'.
 ///
-#define MDY_INITILAIZE_EMPTYSTR ""
+#define MDY_INITIALIZE_EMPTYSTR ""
 
 ///
 /// @macro MDY_INITIALIZE_NULL

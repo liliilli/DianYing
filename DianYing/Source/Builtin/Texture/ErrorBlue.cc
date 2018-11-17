@@ -16,7 +16,7 @@
 #include <Dy/Builtin/Texture/ErrorBlue.h>
 
 #include <Dy/Core/Component/Internal/TextureType.h>
-#include <Dy/Helper/Type/Color32.h>
+#include <Dy/Helper/Type/ColorRGBA32.h>
 #include <Dy/Management/IO/IOResourceManager.h>
 
 //!
@@ -25,8 +25,8 @@
 
 namespace dy
 {
-constexpr const DDyColor32 _0 = DDyColor32(  0,   0, 255);
-constexpr const DDyColor32 _1 = DDyColor32(255, 255, 255);
+constexpr const DDyColorRGBA32 _0 = DDyColorRGBA32(  0,   0, 255);
+constexpr const DDyColorRGBA32 _1 = DDyColorRGBA32(255, 255, 255);
 }
 
 //!
@@ -46,7 +46,7 @@ FDyBuiltinTextureErrorBlue::FDyBuiltinTextureErrorBlue()
   desc.mWidth             = 16;
   desc.mHeight            = 16;
 
-  std::array<DDyColor32, 256> infoChunk =
+  std::array<DDyColorRGBA32, 256> infoChunk =
   { //      0          4           8           12
     /* 0 */_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,
     /*   */_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,

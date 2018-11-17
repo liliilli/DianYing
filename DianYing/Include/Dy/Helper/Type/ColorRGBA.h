@@ -18,26 +18,26 @@
 namespace dy {
 
 ///
-/// @class DDyColor
+/// @class DDyColorRGBA
 /// @brief Float color type which stores 4 components (R, G, B, A)
 /// (h, s, v) does not support but can be converted calling HsvToRgb().
 ///
-struct DDyColor final
+struct DDyColorRGBA final
 {
   float R = 0.0f;
   float G = 0.0f;
   float B = 0.0f;
   float A = 0.0f;
 
-  constexpr DDyColor() = default;
+  constexpr DDyColorRGBA() = default;
 
-  constexpr explicit DDyColor(float r, float g, float b) noexcept : R{r}, G{g}, B{b}, A{1.0f} {
+  constexpr explicit DDyColorRGBA(float r, float g, float b) noexcept : R{r}, G{g}, B{b}, A{1.0f} {
     if (this->R < 0.0f) this->R = 0.0f; else if (this->R > 1.0f) this->R = 1.0f;
     if (this->G < 0.0f) this->G = 0.0f; else if (this->G > 1.0f) this->G = 1.0f;
     if (this->B < 0.0f) this->B = 0.0f; else if (this->B > 1.0f) this->B = 1.0f;
   };
 
-  constexpr explicit DDyColor(float r, float g, float b, float a) noexcept : R{r}, G{g}, B{b}, A{a} {
+  constexpr explicit DDyColorRGBA(float r, float g, float b, float a) noexcept : R{r}, G{g}, B{b}, A{a} {
     if (this->R < 0.0f) this->R = 0.0f; else if (this->R > 1.0f) this->R = 1.0f;
     if (this->G < 0.0f) this->G = 0.0f; else if (this->G > 1.0f) this->G = 1.0f;
     if (this->B < 0.0f) this->B = 0.0f; else if (this->B > 1.0f) this->B = 1.0f;
@@ -109,21 +109,21 @@ struct DDyColor final
   //! Statics
   //!
 
-  static const DDyColor Aqua;
-  static const DDyColor Black;
-  static const DDyColor Blue;
-  static const DDyColor DarkRed;
-  static const DDyColor DarkGray;
-  static const DDyColor DarkGreen;
-  static const DDyColor Gold;
-  static const DDyColor Gray;
-  static const DDyColor Green;
-  static const DDyColor Magenta;
-  static const DDyColor Orange;
-  static const DDyColor Purple;
-  static const DDyColor Red;
-  static const DDyColor White;
-  static const DDyColor Yellow;
+  static const DDyColorRGBA Aqua;
+  static const DDyColorRGBA Black;
+  static const DDyColorRGBA Blue;
+  static const DDyColorRGBA DarkRed;
+  static const DDyColorRGBA DarkGray;
+  static const DDyColorRGBA DarkGreen;
+  static const DDyColorRGBA Gold;
+  static const DDyColorRGBA Gray;
+  static const DDyColorRGBA Green;
+  static const DDyColorRGBA Magenta;
+  static const DDyColorRGBA Orange;
+  static const DDyColorRGBA Purple;
+  static const DDyColorRGBA Red;
+  static const DDyColorRGBA White;
+  static const DDyColorRGBA Yellow;
 };
 
 } /// ::dy namespace

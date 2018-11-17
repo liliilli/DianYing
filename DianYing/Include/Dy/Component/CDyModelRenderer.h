@@ -15,9 +15,9 @@
 
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
-#include <Dy/Component/Descriptor/ComponentMetaDescriptor.h>
 #include <Dy/Helper/Internal/CheckingRule.h>
 #include <Dy/Core/Component/Resource/MaterialResource.h>
+#include <Dy/Meta/Information/ComponentMetaInformation.h>
 
 //!
 //! Forward declaration
@@ -41,7 +41,7 @@ namespace dy
 /// @class CDyModelRenderer
 /// @brief
 ///
-class CDyModelRenderer final : public ADyGeneralBaseComponent, public IDyInitializeHelper<DDyModelRendererMetaInformation>
+class CDyModelRenderer final : public ADyGeneralBaseComponent, public IDyInitializeHelper<PDyModelRendererComponentMetaInfo>
 {
 public:
   CDyModelRenderer(FDyActor& actorReference);
@@ -57,7 +57,7 @@ public:
   /// @param  descriptor
   /// @return If successful, return DY_SUCCESS or DY_FAILURE.
   ///
-  MDY_NODISCARD EDySuccess Initialize(const DDyModelRendererMetaInformation& descriptor) override final;
+  MDY_NODISCARD EDySuccess Initialize(const PDyModelRendererComponentMetaInfo& descriptor) override final;
 
   /// Release component.
   void Release() override final;

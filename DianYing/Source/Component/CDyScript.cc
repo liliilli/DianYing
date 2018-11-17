@@ -149,36 +149,24 @@ std::string CDyScript::ToString()
   return "CDyScript::ToString NOT IMPLEMENTED YET!";
 }
 
-EDySuccess CDyScript::Initialize(const PDyScriptComponentMetaInformation& metaInfo)
+EDySuccess CDyScript::Initialize(const PDyScriptComponentMetaInfo& metaInfo)
 {
-  this->mScriptName = metaInfo.mScriptSpecifierName;
+  this->mScriptName = metaInfo.mDetails.mSpecifierName;
 
   // Get script meta information.
   auto& metaInfoManager = MDyMetaInfo::GetInstance();
   MDY_ASSERT(metaInfoManager.IsScriptMetaInformationExist(this->mScriptName) == true, MSVSTR(sErrorScriptNotFound));
-  const PDyMetaScriptInformation& validScriptMetaInfo = metaInfoManager.GetScriptMetaInformation(this->mScriptName);
-
-  // Integrity test
-  MDY_ASSERT((validScriptMetaInfo.mIsUsingScriptInnateCode ^ validScriptMetaInfo.mIsUsingScriptPath) == true,
-             "Unexpected error occurred");
+  const auto& validScriptMetaInfo = metaInfoManager.GetScriptMetaInformation(this->mScriptName);
 
   // Bind script, but need to check integrity test also.
-  if (validScriptMetaInfo.mIsUsingScriptInnateCode == true)
-  {
-    // @TODO IMPLEMENT THIS
-    MDY_NOT_IMPLEMENTED_ASSERT();
-  }
-  else if (validScriptMetaInfo.mIsUsingScriptPath == true)
-  {
-    auto& scriptManager   = MDyScript::GetInstance();
-    auto& luaInstance     = scriptManager.GetLuaInstance();
+  auto& scriptManager   = MDyScript::GetInstance();
+  auto& luaInstance     = scriptManager.GetLuaInstance();
 
-    MDY_NOTUSED auto _    = luaInstance.safe_script_file(validScriptMetaInfo.mScriptPath);
-    this->mScriptInstance = luaInstance[this->mScriptName];
-    // @TODO RESOLVE THIS (ERROR & EXCEPTION FROM INSIDE)
-    this->mScriptInstance["__pDyInitializeWith"](this->mScriptInstance, *this->GetBindedActor());
-    this->mIsScriptInstanceBinded = true;
-  }
+  MDY_NOTUSED auto _    = luaInstance.safe_script_file(validScriptMetaInfo.mFilePath);
+  this->mScriptInstance = luaInstance[this->mScriptName];
+  // @TODO RESOLVE THIS (ERROR & EXCEPTION FROM INSIDE)
+  this->mScriptInstance["__pDyInitializeWith"](this->mScriptInstance, *this->GetBindedActor());
+  this->mIsScriptInstanceBinded = true;
 
   //
   if (metaInfo.mInitiallyActivated)

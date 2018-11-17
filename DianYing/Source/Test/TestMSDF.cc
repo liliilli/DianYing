@@ -258,7 +258,7 @@ void TestMsdfLibrary()
     {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::ClampToBorder},
     {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::ClampToBorder},
   };
-  attachmentInfo.mBorderColor = DDyColor{0, 0, 0, 0};
+  attachmentInfo.mBorderColor = DDyColorRGBA{0, 0, 0, 0};
 
   binderInfo.mAttachmentName  = sAttachment_Output;
   binderInfo.mAttachmentType  = EDyGlAttachmentType::Color0;
@@ -330,10 +330,10 @@ void TestMsdfLibrary()
   const auto pxRangeId       = glGetUniformLocation(sSampleShaderPtr->GetShaderProgramId(), "pxRange");
   glUniform1f(pxRangeId, pxRange);
   const auto bgColorId       = glGetUniformLocation(sSampleShaderPtr->GetShaderProgramId(), "bgColor");
-  const DDyColor bgColor     = DDyColor{1, 1, 1, 1};
+  const DDyColorRGBA bgColor     = DDyColorRGBA{1, 1, 1, 1};
   glUniform4fv(bgColorId, 1, &bgColor.R);
   const auto fgColorId       = glGetUniformLocation(sSampleShaderPtr->GetShaderProgramId(), "fgColor");
-  const DDyColor fgColor     = DDyColor{0, 0, 0, 1};
+  const DDyColorRGBA fgColor     = DDyColorRGBA{0, 0, 0, 1};
   glUniform4fv(fgColorId, 1, &fgColor.R);
 
   // Render texture glyph

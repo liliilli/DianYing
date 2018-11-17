@@ -14,9 +14,9 @@
 ///
 
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
-#include <Dy/Component/Descriptor/ComponentMetaDescriptor.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 #include <Dy/Helper/Type/Matrix4.h>
+#include <Dy/Meta/Information/ComponentLightMetaInfo.h>
 
 namespace dy
 {
@@ -32,9 +32,9 @@ struct alignas(16) DDyUboDirectionalLight final
   DDyVector3  mDirection  = {};
   MDY_NOTUSED TI32 ____padding;
   /// Light tint color
-  DDyColor    mDiffuse    = DDyColor::White;
-  DDyColor    mSpecular   = DDyColor::White;
-  DDyColor    mAmbient    = DDyColor::White;
+  DDyColorRGBA    mDiffuse    = DDyColorRGBA::White;
+  DDyColorRGBA    mSpecular   = DDyColorRGBA::White;
+  DDyColorRGBA    mAmbient    = DDyColorRGBA::White;
   /// Light intensity for this light component.
   float       mIntensity  = MDY_INITIALIZE_DEFINT;
 };
@@ -56,7 +56,7 @@ struct alignas(16) DDyUboDirShadow final
 /// @brief
 /// @TODO SCRIPT THIS
 ///
-class CDyDirectionalLight final : public ADyGeneralBaseComponent, public IDyInitializeHelper<DDyDirectionalLightMetaInformation>
+class CDyDirectionalLight final : public ADyGeneralBaseComponent, public IDyInitializeHelper<PDyDirLightComponentMetaInfo>
 {
 public:
   CDyDirectionalLight(FDyActor& actorReference);
@@ -67,7 +67,7 @@ public:
   /// @param  metaInfo
   /// @return If successful just return DY_SUCCESS or DY_FAILURE.
   ///
-  MDY_NODISCARD EDySuccess Initialize(_MIN_ const DDyDirectionalLightMetaInformation& metaInfo) override final;
+  MDY_NODISCARD EDySuccess Initialize(_MIN_ const PDyDirLightComponentMetaInfo& metaInfo) override final;
 
   ///
   /// @brief  Release component.
@@ -156,7 +156,7 @@ public:
   /// @return
   /// @TODO SCRIPT THIS
   ///
-  FORCEINLINE MDY_NODISCARD const DDyColor& GetLightDiffuseColor() const noexcept
+  FORCEINLINE MDY_NODISCARD const DDyColorRGBA& GetLightDiffuseColor() const noexcept
   {
     return this->mData.mDiffuse;
   }
@@ -189,7 +189,7 @@ public:
   /// @param color
   /// @TODO SCRIPT THIS
   ///
-  FORCEINLINE void SetLightDiffuseColor(_MIN_ const DDyColor& color) noexcept
+  FORCEINLINE void SetLightDiffuseColor(_MIN_ const DDyColorRGBA& color) noexcept
   {
     this->mData.mDiffuse = color;
     this->mIsNeededUpdateValueToGpu = true;

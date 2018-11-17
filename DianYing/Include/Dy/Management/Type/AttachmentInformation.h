@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/Color.h>
+#include <Dy/Helper/Type/ColorRGBA.h>
 #include <Dy/Helper/Type/VectorInt2.h>
 #include <Dy/Meta/Type/TextureParameter.h>
 
@@ -47,7 +47,7 @@ MDY_NODISCARD GLenum DyGetAttachmentTypeValue(_MIN_ const EDyGlAttachmentType at
 ///
 struct PDyGlAttachmentBinderInformation final
 {
-  std::string         mAttachmentName = MDY_INITILAIZE_EMPTYSTR;
+  std::string         mAttachmentName = MDY_INITIALIZE_EMPTYSTR;
   EDyGlAttachmentType mAttachmentType = EDyGlAttachmentType::NoneError;
 };
 
@@ -57,10 +57,10 @@ struct PDyGlAttachmentBinderInformation final
 ///
 struct PDyGlAttachmentInformation final
 {
-  std::string                               mAttachmentName = MDY_INITILAIZE_EMPTYSTR;
+  std::string                               mAttachmentName = MDY_INITIALIZE_EMPTYSTR;
   std::vector<PDyGlTexParameterInformation> mParameterList  = {};
   DDyVectorInt2                             mAttachmentSize = {};
-  DDyColor                                  mBorderColor    = DDyColor::Black;
+  DDyColorRGBA                                  mBorderColor    = DDyColorRGBA::Black;
 
   ///
   /// @brief  Get attachment id. If attachment is not initialized yet, just return 0.

@@ -30,17 +30,17 @@ namespace dy
 struct DDySettingDescription final
 {
   /// Project name of this project.
-  std::string mProjectName    = MDY_INITILAIZE_EMPTYSTR;
+  std::string mProjectName    = MDY_INITIALIZE_EMPTYSTR;
   /// Window name of this project. if empty, just use MDySetting::mProjectName as window name with version.
-  std::string mWindowName     = MDY_INITILAIZE_EMPTYSTR;
+  std::string mWindowName     = MDY_INITIALIZE_EMPTYSTR;
   /// [High. Mid. Low]
   TI32 mVersionHigh           = MDY_INITIALIZE_DEFINT;
   TI32 mVersionMid            = MDY_INITIALIZE_DEFINT;
   TI32 mVersionLow            = MDY_INITIALIZE_DEFINT;
   ///
-  std::string mCompanyName    = MDY_INITILAIZE_EMPTYSTR;
-  std::string mHomepage       = MDY_INITILAIZE_EMPTYSTR;
-  std::string mSupportContact = MDY_INITILAIZE_EMPTYSTR;
+  std::string mCompanyName    = MDY_INITIALIZE_EMPTYSTR;
+  std::string mHomepage       = MDY_INITIALIZE_EMPTYSTR;
+  std::string mSupportContact = MDY_INITIALIZE_EMPTYSTR;
 };
 
 void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingDescription& p);
@@ -66,7 +66,7 @@ struct DDySettingGameplay final
   };
 
   /// Initial scene name. (or uuid?)
-  std::string   mInitialSceneSpecifier           = MDY_INITILAIZE_EMPTYSTR;
+  std::string   mInitialSceneSpecifier           = MDY_INITIALIZE_EMPTYSTR;
   /// Initial game resolution scene.
   DDyVectorInt2 mInitialResolution      = {};
   /// Shadow default map resolution or properties.
@@ -94,7 +94,7 @@ struct DDySettingInput
 
   struct DAction final
   {
-    std::string               mSpecifierName  = MDY_INITILAIZE_EMPTYSTR;
+    std::string               mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
     std::vector<EDyKeyboard>  mKey            = {};
 
     ///
@@ -110,7 +110,7 @@ struct DDySettingInput
 
   struct DAxis final
   {
-    std::string               mSpecifierName  = MDY_INITILAIZE_EMPTYSTR;
+    std::string               mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
     std::vector<EDyKeyboard>  mPositive       = {};
     std::vector<EDyKeyboard>  mNegative       = {};
     TF32                      mGravity        = MDY_INITIALIZE_DEFINT;
@@ -165,11 +165,11 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingTag& p);
 ///
 struct DDySettingMetaPath final
 {
-  std::string mSceneMetaPath  = MDY_INITILAIZE_EMPTYSTR;
-  std::string mWidgetMetaPath = MDY_INITILAIZE_EMPTYSTR;
-  std::string mPrefabMetaPath = MDY_INITILAIZE_EMPTYSTR;
-  std::string mFontMetaPath   = MDY_INITILAIZE_EMPTYSTR;
-  std::string mScriptMetaPath = MDY_INITILAIZE_EMPTYSTR;
+  std::string mSceneMetaPath  = MDY_INITIALIZE_EMPTYSTR;
+  std::string mWidgetMetaPath = MDY_INITIALIZE_EMPTYSTR;
+  std::string mPrefabMetaPath = MDY_INITIALIZE_EMPTYSTR;
+  std::string mFontMetaPath   = MDY_INITIALIZE_EMPTYSTR;
+  std::string mScriptMetaPath = MDY_INITIALIZE_EMPTYSTR;
 };
 
 void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingMetaPath& p);

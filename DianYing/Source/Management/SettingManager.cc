@@ -292,11 +292,11 @@ EDySuccess MDySetting::pfInitialize()
 
   { // Apply setting to project before everthing starts to working.
     const auto& settingAtlas = opSettingAtlas.value();
-    this->mDescription  = DyGetValue<decltype(this->mDescription)>(settingAtlas, sCategoryDescription);
-    this->mGamePlay     = DyGetValue<decltype(this->mGamePlay)>   (settingAtlas, sCategoryGameplay);
-    this->mInput        = DyGetValue<decltype(this->mInput)>      (settingAtlas, sCategoryInput);
-    this->mTag          = DyGetValue<decltype(this->mTag)>        (settingAtlas, sCategoryTag);
-    this->mMetaPath     = DyGetValue<decltype(this->mMetaPath)>   (settingAtlas, sCategoryMetaPath);
+    this->mDescription  = DyJsonGetValueFrom<decltype(this->mDescription)>(settingAtlas, sCategoryDescription);
+    this->mGamePlay     = DyJsonGetValueFrom<decltype(this->mGamePlay)>   (settingAtlas, sCategoryGameplay);
+    this->mInput        = DyJsonGetValueFrom<decltype(this->mInput)>      (settingAtlas, sCategoryInput);
+    this->mTag          = DyJsonGetValueFrom<decltype(this->mTag)>        (settingAtlas, sCategoryTag);
+    this->mMetaPath     = DyJsonGetValueFrom<decltype(this->mMetaPath)>   (settingAtlas, sCategoryMetaPath);
   }
 
   this->mIsInitialized = true;

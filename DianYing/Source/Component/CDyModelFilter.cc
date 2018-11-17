@@ -23,25 +23,26 @@ namespace dy
 
 CDyModelFilter::CDyModelFilter(FDyActor& actorReference) : ADyGeneralBaseComponent(actorReference) { }
 
-EDySuccess CDyModelFilter::Initialize(const DDyModelFilterMetaInformation& metaInfo)
+EDySuccess CDyModelFilter::Initialize(const PDyModelFilterComponentMetaInfo& metaInfo)
 {
   auto& resourceManager = MDyIOResource::GetInstance();
 
   // Bind model.
-  if (const auto modelResourcePtr = resourceManager.GetModelResource(metaInfo.mModelName);
+  const auto& modelSpecfier = metaInfo.mDetails.mModelSpecifierName;
+  if (const auto modelResourcePtr = resourceManager.GetModelResource(modelSpecfier);
       MDY_CHECK_ISNULL(modelResourcePtr))
   { // If not exists, make model resource using information but not have it, return fail.
-    const auto res = resourceManager.CreateModelResource(metaInfo.mModelName);
+    const auto res = resourceManager.CreateModelResource(modelSpecfier);
     if (res == DY_FAILURE) { return DY_FAILURE; }
 
-    this->mModelReferencePtr = resourceManager.GetModelResource(metaInfo.mModelName);
+    this->mModelReferencePtr = resourceManager.GetModelResource(modelSpecfier);
   }
   else
   {
     this->mModelReferencePtr = modelResourcePtr;
   }
 
-  if (metaInfo.mInitiallyActivated) { this->Activate(); }
+  this->Activate();
   return DY_SUCCESS;
 }
 
@@ -86,7 +87,7 @@ void CDyModelFilter::pPropagateParentActorActivation(const DDy3StateBool& actorB
 std::string CDyModelFilter::ToString()
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
-  return MDY_INITILAIZE_EMPTYSTR;
+  return MDY_INITIALIZE_EMPTYSTR;
 }
 
 EDySuccess CDyModelFilter::pTryBindingToModelRendererComponent()

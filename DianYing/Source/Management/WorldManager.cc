@@ -66,7 +66,7 @@ void MDyWorld::Update(_MIN_ float dt)
 
     this->mPreviousLevelName  = this->mPresentLevelName;
     this->mPresentLevelName   = this->mNextLevelName;
-    this->mNextLevelName      = MDY_INITILAIZE_EMPTYSTR;
+    this->mNextLevelName      = MDY_INITIALIZE_EMPTYSTR;
   }
 
   // Scene update routine

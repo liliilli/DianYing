@@ -18,7 +18,6 @@
 #include <Dy/Component/Helper/TmpCheckInitilizeParams.h>
 #include <Dy/Component/Helper/TmpCheckRemoveParams.h>
 #include <Dy/Element/Object.h>
-#include <Dy/Element/Descriptor/LevelDescriptor.h>
 #include <Dy/Element/Abstract/ADyBaseComponent.h>
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
 #include <Dy/Element/Abstract/ADyTransformable.h>
@@ -46,7 +45,7 @@ public:
   /// @param objectMetaDesc Meta descriptor information instance for FDyActor.
   /// @return Success / Failure flag.
   ///
-  MDY_NODISCARD EDySuccess Initialize(_MIN_ const DDyObjectInformation& objectMetaDesc);
+  MDY_NODISCARD EDySuccess Initialize(_MIN_ const PDyObjectMetaInfo& objectMetaDesc);
 
   ///
   /// @brief Release function (virtual) because Initialize function has different parameter but release does not need any parameter.
@@ -134,7 +133,7 @@ public:
   ///
   MDY_NODISCARD std::string ToString() override
   {
-    return MDY_INITILAIZE_EMPTYSTR;
+    return MDY_INITIALIZE_EMPTYSTR;
   }
 
   ///

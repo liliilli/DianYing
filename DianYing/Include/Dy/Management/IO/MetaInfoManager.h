@@ -15,10 +15,10 @@
 
 #include <unordered_map>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
-#include <Dy/Element/Descriptor/LevelDescriptor.h>
-#include <Dy/Element/Descriptor/PrefabDescriptor.h>
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
+#include <Dy/Meta/Information/ElementLevelMetaInfo.h>
 #include <Dy/Meta/Information/FontMetaInformation.h>
+#include <Dy/Meta/Information/PrefabMetaInformation.h>
 #include <Dy/Builtin/Helper/BuiltinInformationDeliver.h>
 #include <Dy/Helper/ContainerHelper.h>
 
@@ -38,7 +38,7 @@ public:
   /// @brief Get level construction descriptor meta information from levelName which is same to actual level instance to be created.
   /// @return Return value is nullable if not found.
   ///
-  const PDyLevelConstructDescriptor* GetLevelMetaInformation(const std::string& levelName) const noexcept;
+  const PDyLevelConstructMetaInfo* GetLevelMetaInformation(const std::string& levelName) const noexcept;
 
   ///
   /// @brief  Get valid script meta information instance.
@@ -52,7 +52,7 @@ public:
   /// @return
   /// @TODO SCRIPT THIS
   ///
-  MDY_NODISCARD const PDyPrefabMetaInformation& GetPrefabMetaInformation(_MIN_ const std::string& specifierName) const;
+  MDY_NODISCARD const PDyPrefabInstanceMetaInfo& GetPrefabMetaInformation(_MIN_ const std::string& specifierName) const;
 
   ///
   /// @brief
@@ -120,13 +120,20 @@ private:
 
   ///
   /// @brief
+  /// @param
+  /// @return
+  ///
+  MDY_NODISCARD EDySuccess pReadSceneResourceMetaInformation(_MIN_ const std::string& metaFilepath);
+
+  ///
+  /// @brief
   /// @param  metaInformationString
   /// @return
   ///
   MDY_NODISCARD EDySuccess pfAddWidgetMetaInformation(_MIN_ const std::string& metaInformationString);
 
   /// Level meta information map.
-  THashMap<PDyLevelConstructDescriptor> mLevelInfoMap   = {};
+  THashMap<PDyLevelConstructMetaInfo> mLevelInfoMap   = {};
   /// Script meta information map.
   THashMap<PDyScriptInstanceMetaInfo>   mScriptMetaInfo = {};
   /// Font meta information map.
@@ -137,7 +144,7 @@ private:
   //!
 
   /// Prefab meta information map. (Temporary use std::unique_ptr, for reconstructing children tree)
-  THashMap<std::unique_ptr<PDyPrefabMetaInformation>>    mPrefabMetaInfo = {};
+  THashMap<std::unique_ptr<PDyPrefabInstanceMetaInfo>>    mPrefabMetaInfo = {};
   /// Widget meta information map.
   THashMap<std::unique_ptr<PDyMetaWidgetRootDescriptor>> mWidgetMetaInfo = {};
 

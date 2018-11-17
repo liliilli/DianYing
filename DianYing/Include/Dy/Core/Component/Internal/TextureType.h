@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/Color.h>
+#include <Dy/Helper/Type/ColorRGBA.h>
 #include <Dy/Core/Component/Internal/TextureEnums.h>
 #include <Dy/Helper/Internal/ImageBinaryBuffer.h>
 #include <Dy/Meta/Type/TextureParameter.h>
@@ -28,7 +28,7 @@ namespace dy
 struct PDyTextureConstructionBaseDesc
 {
   /// Texture specification name.
-  std::string mTextureSpecifierName       = MDY_INITILAIZE_EMPTYSTR;
+  std::string mTextureSpecifierName       = MDY_INITIALIZE_EMPTYSTR;
   /// Texture parameters
   std::vector<PDyGlTexParameterInformation> mParameterList = {};
   /// Use customized texture parameters (PDyTextureConstructionBaseDesc::mParameterList)
@@ -36,7 +36,7 @@ struct PDyTextureConstructionBaseDesc
   /// Use default opengl generated mipmap if true.
   bool mIsUsingDefaultMipmapGeneration    = false;
   /// Border color
-  DDyColor mBorderColor           = DDyColor::Black;
+  DDyColorRGBA mBorderColor           = DDyColorRGBA::Black;
 };
 
 ///
@@ -46,9 +46,9 @@ struct PDyTextureConstructionBaseDesc
 struct PDyTextureConstructionDescriptor final : public PDyTextureConstructionBaseDesc
 {
   ///
-  std::string mTextureFileLocalPath       = MDY_INITILAIZE_EMPTYSTR;
+  std::string mTextureFileLocalPath       = MDY_INITIALIZE_EMPTYSTR;
   ///
-  std::string mTextureFileAbsolutePath    = MDY_INITILAIZE_EMPTYSTR;
+  std::string mTextureFileAbsolutePath    = MDY_INITIALIZE_EMPTYSTR;
   ///
   bool        mIsEnabledAbsolutePath      = true;
   /// Texture is 1D or 2D?

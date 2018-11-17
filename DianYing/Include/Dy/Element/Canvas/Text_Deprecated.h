@@ -110,19 +110,19 @@ public:
   /// @brief  Get DDyColor foreground color of text component.
   /// @return Return foreground color.
   ///
-  MDY_NODISCARD const DDyColor& GetForegroundColor() const noexcept;
+  MDY_NODISCARD const DDyColorRGBA& GetForegroundColor() const noexcept;
 
   ///
   /// @brief  Get DDyColor background color of text component.
   /// @return Return background color.
   ///
-  MDY_NODISCARD const DDyColor& GetBackgroundColor() const noexcept;
+  MDY_NODISCARD const DDyColorRGBA& GetBackgroundColor() const noexcept;
 
   ///
   /// @brief  Get DDyColor edge color of text component.
   /// @return Return edge color.
   ///
-  MDY_NODISCARD const DDyColor& GetEdgeColor() const noexcept;
+  MDY_NODISCARD const DDyColorRGBA& GetEdgeColor() const noexcept;
 
   ///
   /// @brief
@@ -175,7 +175,7 @@ public:
   /// @param[in] color New color value with consists of {r, g, b} glm::vec3 vector.
   /// each value must be in range of [0, 1], otherwise clamped to 0 or 1.
   ///
-  void SetColor(_MIN_ const DDyColor& color);
+  void SetColor(_MIN_ const DDyColorRGBA& color);
 
   ///
   /// @brief Render font (old-way)
@@ -188,11 +188,11 @@ private:
   /// Text container instance to display font.
   FDyFontContainer_Deprecated* mFontContainer    = nullptr;
   /// Font color
-	DDyColor          mForegroundColor  = DDyColor::White;
+	DDyColorRGBA          mForegroundColor  = DDyColorRGBA::White;
   /// Font background color
-  DDyColor          mBackgroundColor  = DDyColor{0, 0, 0, 0};
+  DDyColorRGBA          mBackgroundColor  = DDyColorRGBA{0, 0, 0, 0};
   /// Font Edge color
-  DDyColor          mEdgeColor        = DDyColor::Black;
+  DDyColorRGBA          mEdgeColor        = DDyColorRGBA::Black;
   /// Font size
   TU32              mFontSize   = 16;
   ///

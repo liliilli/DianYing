@@ -101,16 +101,16 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingDescription& p)
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ DDySettingDescription& p)
 {
-  p.mProjectName  = DyGetValue<std::string>(j, sProjectName);
-  p.mWindowName   = DyGetValue<std::string>(j, sWindowName);
+  p.mProjectName  = DyJsonGetValueFrom<std::string>(j, sProjectName);
+  p.mWindowName   = DyJsonGetValueFrom<std::string>(j, sWindowName);
 
-  p.mVersionHigh  = DyGetValue<TI32>(j, sVersionHigh);
-  p.mVersionMid   = DyGetValue<TI32>(j, sVersionMid);
-  p.mVersionLow   = DyGetValue<TI32>(j, sVersionLow);
+  p.mVersionHigh  = DyJsonGetValueFrom<TI32>(j, sVersionHigh);
+  p.mVersionMid   = DyJsonGetValueFrom<TI32>(j, sVersionMid);
+  p.mVersionLow   = DyJsonGetValueFrom<TI32>(j, sVersionLow);
 
-  p.mCompanyName      = DyGetValue<std::string>(j, sCompanyName);
-  p.mHomepage         = DyGetValue<std::string>(j, sHomepage);
-  p.mSupportContact   = DyGetValue<std::string>(j, sSupportContact);
+  p.mCompanyName      = DyJsonGetValueFrom<std::string>(j, sCompanyName);
+  p.mHomepage         = DyJsonGetValueFrom<std::string>(j, sHomepage);
+  p.mSupportContact   = DyJsonGetValueFrom<std::string>(j, sSupportContact);
 }
 
 //!
@@ -130,10 +130,10 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingGameplay& p)
 
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingGameplay& p)
 {
-  p.mInitialSceneSpecifier  = DyGetValue<std::string>         (j, sInitialScene);
-  p.mInitialResolution      = DyGetValue<DDyVectorInt2>       (j, sInitialResolution);
-  p.mShadow                 = DyGetValue<decltype(p.mShadow)> (j, sGamePlay_Shadow);
-  p.mGraphics               = DyGetValue<decltype(p.mGraphics)>(j, sGamePlay_Graphics);
+  p.mInitialSceneSpecifier  = DyJsonGetValueFrom<std::string>         (j, sInitialScene);
+  p.mInitialResolution      = DyJsonGetValueFrom<DDyVectorInt2>       (j, sInitialResolution);
+  p.mShadow                 = DyJsonGetValueFrom<decltype(p.mShadow)> (j, sGamePlay_Shadow);
+  p.mGraphics               = DyJsonGetValueFrom<decltype(p.mGraphics)>(j, sGamePlay_Graphics);
 }
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingGameplay::DDyShadow& p)
@@ -146,7 +146,7 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingGameplay::DDyShad
 
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingGameplay::DDyShadow& p)
 {
-  p.mShadowGlobalDefaultMap = DyGetValue<DDyVectorInt2>(j, sGamePlay_Shadow_GlobalDefaultMapSize);
+  p.mShadowGlobalDefaultMap = DyJsonGetValueFrom<DDyVectorInt2>(j, sGamePlay_Shadow_GlobalDefaultMapSize);
 }
 
 void to_json(nlohmann::json& j, const DDySettingGameplay::DDyGraphics& p)
@@ -160,8 +160,8 @@ void to_json(nlohmann::json& j, const DDySettingGameplay::DDyGraphics& p)
 
 void from_json(const nlohmann::json& j, DDySettingGameplay::DDyGraphics& p)
 {
-  p.mIsEnabledDefaultSsao   = DyGetValue<bool>(j, sGamePlay_Graphics_EnableDefaultSsao);
-  p.mIsEnabledDefaultShadow = DyGetValue<bool>(j, sGamePlay_Graphics_EnableDefaultShadow);
+  p.mIsEnabledDefaultSsao   = DyJsonGetValueFrom<bool>(j, sGamePlay_Graphics_EnableDefaultSsao);
+  p.mIsEnabledDefaultShadow = DyJsonGetValueFrom<bool>(j, sGamePlay_Graphics_EnableDefaultShadow);
 }
 
 //!
@@ -196,25 +196,25 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingInput::DAxis& p)
 
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingInput& p)
 {
-  p.mAxisMap    = DyGetValue<DDySettingInput::TAxisMap>   (j, sAxis);
-  p.mActionMap  = DyGetValue<DDySettingInput::TActionMap> (j, sAction);
+  p.mAxisMap    = DyJsonGetValueFrom<DDySettingInput::TAxisMap>   (j, sAxis);
+  p.mActionMap  = DyJsonGetValueFrom<DDySettingInput::TActionMap> (j, sAction);
 }
 
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingInput::DAction& p)
 {
   using TKeyListType = DDySettingInput::TKeyListType;
-  if (DyIsJsonKeyExist(j, MSVSTR(sKey)) == true) { p.mKey = DyGetValue<TKeyListType>(j, sKey); }
+  if (DyIsJsonKeyExist(j, MSVSTR(sKey)) == true) { p.mKey = DyJsonGetValueFrom<TKeyListType>(j, sKey); }
 }
 
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingInput::DAxis& p)
 {
   using TKeyListType = DDySettingInput::TKeyListType;
 
-  if (DyIsJsonKeyExist(j, MSVSTR(sPositive)) == true) { p.mPositive = DyGetValue<TKeyListType>(j, sPositive); }
-  if (DyIsJsonKeyExist(j, MSVSTR(sNegative)) == true) { p.mNegative = DyGetValue<TKeyListType>(j, sNegative); }
+  if (DyIsJsonKeyExist(j, MSVSTR(sPositive)) == true) { p.mPositive = DyJsonGetValueFrom<TKeyListType>(j, sPositive); }
+  if (DyIsJsonKeyExist(j, MSVSTR(sNegative)) == true) { p.mNegative = DyJsonGetValueFrom<TKeyListType>(j, sNegative); }
 
-  p.mGravity      = DyGetValue<TI32>(j, sGravity);
-  p.mIsRepeatable = DyGetValue<bool>(j, sRepeat);
+  p.mGravity      = DyJsonGetValueFrom<TI32>(j, sGravity);
+  p.mIsRepeatable = DyJsonGetValueFrom<bool>(j, sRepeat);
 }
 
 DDySettingInput::DAction
@@ -246,8 +246,8 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingTag& p)
 
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingTag& p)
 {
-  p.mObjectTag    = DyGetValue<DDySettingTag::TObjectTagList>   (j, sObject);
-  p.mCollisionTag = DyGetValue<DDySettingTag::TCollisionTagList>(j, sCollision);
+  p.mObjectTag    = DyJsonGetValueFrom<DDySettingTag::TObjectTagList>   (j, sObject);
+  p.mCollisionTag = DyJsonGetValueFrom<DDySettingTag::TCollisionTagList>(j, sCollision);
 }
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingMetaPath& p)
@@ -264,11 +264,11 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingMetaPath& p)
 
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingMetaPath& p)
 {
-  p.mSceneMetaPath  = DyGetValue<std::string>(j, sHeader_MetaPath_Scene);
-  p.mWidgetMetaPath = DyGetValue<std::string>(j, sHeader_MetaPath_Widget);
-  p.mPrefabMetaPath = DyGetValue<std::string>(j, sHeader_MetaPath_Prefab);
-  p.mFontMetaPath   = DyGetValue<std::string>(j, sHeader_MetaPath_Font);
-  p.mScriptMetaPath = DyGetValue<std::string>(j, sHeader_MetaPath_Script);
+  p.mSceneMetaPath  = DyJsonGetValueFrom<std::string>(j, sHeader_MetaPath_Scene);
+  p.mWidgetMetaPath = DyJsonGetValueFrom<std::string>(j, sHeader_MetaPath_Widget);
+  p.mPrefabMetaPath = DyJsonGetValueFrom<std::string>(j, sHeader_MetaPath_Prefab);
+  p.mFontMetaPath   = DyJsonGetValueFrom<std::string>(j, sHeader_MetaPath_Font);
+  p.mScriptMetaPath = DyJsonGetValueFrom<std::string>(j, sHeader_MetaPath_Script);
 }
 
 } /// ::dy namespace

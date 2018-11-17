@@ -27,13 +27,13 @@ namespace dy
 CDyModelRenderer::CDyModelRenderer(FDyActor& actorReference) : ADyGeneralBaseComponent(actorReference)
 { }
 
-EDySuccess CDyModelRenderer::Initialize(const DDyModelRendererMetaInformation& descriptor)
+EDySuccess CDyModelRenderer::Initialize(const PDyModelRendererComponentMetaInfo& descriptor)
 {
-  this->mIsEnabledCreateShadow = descriptor.mIsEnabledCreateShadow;
+  this->mIsEnabledCreateShadow = descriptor.mDetails.mIsEnabledCreateShadow;
 
   // Bind material. If not exists, make material resource using information, but return fail.
   auto& resourceManager = MDyIOResource::GetInstance();
-  for (const auto& materialName : descriptor.mMaterialName)
+  for (const auto& materialName : descriptor.mDetails.mMaterialName)
   {
     if (auto* materialResourcePtr = resourceManager.GetMaterialResource(materialName); !materialResourcePtr)
     {
@@ -151,7 +151,7 @@ void CDyModelRenderer::pPropagateParentActorActivation(const DDy3StateBool& acto
 std::string CDyModelRenderer::ToString()
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
-  return MDY_INITILAIZE_EMPTYSTR;
+  return MDY_INITIALIZE_EMPTYSTR;
 }
 
 EDySuccess CDyModelRenderer::pTryBindingToModelFilterComponent()

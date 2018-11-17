@@ -15,7 +15,7 @@
 /// Header file
 #include <Dy/Element/Canvas/Text.h>
 #include <Dy/Component/Ctor/PDyFontRenderer.h>
-#include <Dy/Meta/Descriptor/WidgetComponentDescriptor.h>
+#include <Dy/Meta/Descriptor/WidgetTextMetaInformation.h>
 #include <Dy/Management/FontManager.h>
 
 namespace dy
@@ -73,17 +73,17 @@ TU32 FDyText::GetFontSize() const noexcept
   return this->mFontSize;
 }
 
-const DDyColor& FDyText::GetBackgroundColor() const noexcept
+const DDyColorRGBA& FDyText::GetBackgroundColor() const noexcept
 {
   return this->mBackgroundColor;
 }
 
-const DDyColor& FDyText::GetEdgeColor() const noexcept
+const DDyColorRGBA& FDyText::GetEdgeColor() const noexcept
 {
   return this->mEdgeColor;
 }
 
-const DDyColor& FDyText::GetForegroundColor() const noexcept
+const DDyColorRGBA& FDyText::GetForegroundColor() const noexcept
 {
   return this->mForegroundColor;
 }
@@ -114,7 +114,7 @@ EDySuccess FDyText::SetFontName(const std::string& fontName)
   return DY_FAILURE;
 }
 
-void FDyText::SetColor(const DDyColor& color)
+void FDyText::SetColor(const DDyColorRGBA& color)
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
   this->mForegroundColor = color;

@@ -34,7 +34,7 @@ namespace
 namespace dy
 {
 
-void FDyLevel::Initialize(_MIN_ const PDyLevelConstructDescriptor& desc)
+void FDyLevel::Initialize(_MIN_ const PDyLevelConstructMetaInfo& desc)
 {
   // Lambda functions
 
@@ -42,27 +42,18 @@ void FDyLevel::Initialize(_MIN_ const PDyLevelConstructDescriptor& desc)
   /// @brief  Create pawn instance and set fundamental properties.
   /// @param  objectInformation Information to create FDyPawn instance.
   ///
-  static auto pCreateActorInstance = [&](_MIN_ const DDyObjectInformation& objectInformation)
+  static auto pCreateActorInstance = [&](_MIN_ const PDyObjectMetaInfo& objectInformation)
   {
     // Make FDyActor instance.
     auto instancePtr = std::make_unique<FDyActor>();
     MDY_CALL_ASSERT_SUCCESS(instancePtr->Initialize(objectInformation));
-
-    // @TODO IMPLEMENT PARENT TRANSFORMATION RELOCATION MECHANISM
-    if (objectInformation.mParentHashValue.empty() == false)
-    {
-#ifdef false
-      MDY_NOT_IMPLEMENTED_ASSERT();
-      instancePtr->SetParent();
-#endif
-    }
 
     // Update transform to reflect transform information.
     MDY_NOTUSED const auto& _ = instancePtr->GetTransform()->GetTransform();
 
     // Check activation flags and execute sub-routines of each components.
     instancePtr->pUpdateActivateFlagFromParent();
-    if (objectInformation.mInitialActivated) { instancePtr->Activate(); }
+    if (objectInformation.mProperties.mInitialActivated == true) { instancePtr->Activate(); }
 
     // @TODO TEMPORARY.
     auto [it, result] = this->mActorMap.try_emplace(instancePtr->GetActorName(), std::move(instancePtr));
@@ -71,19 +62,19 @@ void FDyLevel::Initialize(_MIN_ const PDyLevelConstructDescriptor& desc)
 
   // FunctionBody ∨
 
-  this->mLevelName            = desc.mLevelName;
+  this->mLevelName            = desc.mMetaCategory.mLevelName;
   // @TODO REMOVE THIS AS SOON AS IMPLEMENT HASH SAVE
   this->mLevelHashIdentifier  = hash::DyToCrc32Hash(this->mLevelName.c_str());
-  this->mLevelBackgroundColor = desc.mLevelBackgroundColor;
+  this->mLevelBackgroundColor = desc.mMetaCategory.mLevelBackgroundColor;
 
   // Create object, FDyActor
-  for (const auto& objectInformation : desc.mLevelObjectInformations)
+  for (const auto& objectInformation : desc.mLevelObjectMetaInfoList)
   {
-    const auto type = objectInformation.mObjectType;
+    const auto type = objectInformation->mObjectType;
     switch (type)
     {
     default: MDY_UNEXPECTED_BRANCH();    break;
-    case EDyMetaObjectType::Actor:          pCreateActorInstance(objectInformation); break;
+    case EDyMetaObjectType::Actor:          pCreateActorInstance(*objectInformation); break;
     case EDyMetaObjectType::SceneScriptor:  MDY_NOT_IMPLEMENTED_ASSERT(); break;
     case EDyMetaObjectType::Object:         MDY_NOT_IMPLEMENTED_ASSERT(); break;
     }
@@ -124,7 +115,7 @@ void FDyLevel::Update(float dt)
 std::string FDyLevel::ToString()
 {
 MDY_NOT_IMPLEMENTED_ASSERT();
-return MDY_INITILAIZE_EMPTYSTR;
+return MDY_INITIALIZE_EMPTYSTR;
 }
 
 } /// ::dy namespace

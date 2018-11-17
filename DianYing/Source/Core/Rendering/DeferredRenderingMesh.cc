@@ -78,7 +78,7 @@ FDyDeferredRenderingMesh::FDyDeferredRenderingMesh()
         {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::ClampToBorder},
         {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::ClampToBorder},
     };
-    attachmentInfo.mBorderColor = DDyColor{ 0, 0, 0, 0 };
+    attachmentInfo.mBorderColor = DDyColorRGBA{ 0, 0, 0, 0 };
 
     binderInfo.mAttachmentName = sAttachment_ScreenFinal_Output;
     binderInfo.mAttachmentType = EDyGlAttachmentType::Color0;

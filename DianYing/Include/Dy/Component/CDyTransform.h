@@ -18,15 +18,7 @@
 #include <Dy/Helper/Type/MathEnum.h>
 #include <Dy/Helper/Type/Matrix4.h>
 #include <Dy/Helper/Type/Quaternion.h>
-
-//!
-//! Forward declaration
-//!
-
-namespace dy
-{
-struct DDyTransformMetaInformation;
-} /// ::dy namespace
+#include "Dy/Meta/Information/ComponentMetaInformation.h"
 
 //!
 //! Implementation
@@ -43,7 +35,7 @@ namespace dy
 class CDyTransform final : public ADyGeneralBaseComponent
 {
 public:
-  CDyTransform(FDyActor& actorReference);
+  CDyTransform(FDyActor& actorReference) : ADyGeneralBaseComponent(actorReference) { }
   virtual ~CDyTransform() = default;
 
   CDyTransform(const CDyTransform&)                                 = delete;
@@ -57,7 +49,7 @@ public:
   /// @return
   /// @TODO SCRIPT THIS
   ///
-  MDY_NODISCARD EDySuccess Initialize(_MIN_ const DDyTransformMetaInformation& desc);
+  MDY_NODISCARD EDySuccess Initialize(_MIN_ const PDyTransformComponentMetaInfo& desc);
 
   /// @brief Release component.
   void Release();

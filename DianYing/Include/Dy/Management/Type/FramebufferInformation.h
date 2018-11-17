@@ -25,7 +25,7 @@ namespace dy
 ///
 struct PDyGlFrameBufferInformation final
 {
-  std::string                                   mFrameBufferName  = MDY_INITILAIZE_EMPTYSTR;
+  std::string                                   mFrameBufferName  = MDY_INITIALIZE_EMPTYSTR;
   std::vector<PDyGlAttachmentBinderInformation> mAttachmentList   = {};
   DDyVectorInt2                                 mFrameBufferSize  = {};
   bool                                          mIsUsingDefaultDepthBuffer  = false;
