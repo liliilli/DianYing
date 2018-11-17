@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_BUILTINSCRIPT_DEBUGUISCRIPTCPP_H
-#define GUARD_DY_BUILTINSCRIPT_DEBUGUISCRIPTCPP_H
+#include <precompiled.h>
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,23 +12,19 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Component/Interface/IDyCppScript.h>
+/// Header file
 #include <Dy/Core/Reflection/RDyCppScript.h>
+#include <Dy/Management/IO/MetaInfoManager.h>
 
-namespace dy
+namespace dy::reflect
 {
 
-class FDyBuiltinDebugUiScript final : public IDyCppScript
+void __Rfc__AddMetaInformation(const std::string& typeSpecifier)
 {
-  MDY_REFLECT_ENABLE(FDyBuiltinDebugUiScript);
-public:
-  void Start() override final;
+  PDyScriptInstanceMetaInfo metaInfo = {};
+  metaInfo.mScriptType    = EDyScriptType::Cpp;
+  metaInfo.mSpecifierName = typeSpecifier;
+  MDY_CALL_ASSERT_SUCCESS(MDyMetaInfo::GetInstance().pfAddScriptMetaInformation(metaInfo));
+}
 
-  void Update(_MIN_ TF32 dt) override final;
-
-private:
-};
-
-} /// ::dy namespace
-
-#endif /// GUARD_DY_BUILTINSCRIPT_DEBUGUISCRIPTCPP_H
+} /// ::dy::reflect namespace
