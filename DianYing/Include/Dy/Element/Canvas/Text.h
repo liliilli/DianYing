@@ -13,8 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Element/Object.h>
-#include <Dy/Element/RenderableObject.h>
+#include <Dy/Element/Canvas/UiObject.h>
 #include <Dy/Element/Descriptor/CanvasDescriptor.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 #include <Dy/Component/Internal/CDyFontRenderer.h>
@@ -33,10 +32,10 @@ namespace dy
 /// @class FDyText
 /// @brief This class display text on position aligned with FontManager.
 ///
-class FDyText final : public FDyRenderableObject, public IDyInitializeHelper<PDyMetaWidgetTextDescriptor>
+class FDyText final : public FDyUiObject, public IDyInitializeHelper<PDyMetaWidgetTextDescriptor>
 {
   MDY_SET_CRC32_HASH_WITH_TYPE(FDyText);
-  MDY_SET_TYPEMATCH_FUNCTION(FDyRenderableObject, FDyText);
+  MDY_SET_TYPEMATCH_FUNCTION(FDyUiObject, FDyText);
   MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(FDyText);
 public:
   ///

@@ -16,6 +16,7 @@
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
+#include <Dy/Helper/Pointer.h>
 
 //!
 //! Forward decalartion
