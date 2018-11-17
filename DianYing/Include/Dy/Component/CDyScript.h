@@ -42,7 +42,7 @@ namespace dy
 /// @brief Script component type class.
 /// @TODO SCRIPT THIS
 ///
-class CDyScript final : public ADyBaseComponent, public IDyScriptable
+class CDyScript : public ADyBaseComponent, public IDyScriptable
 {
 public:
   CDyScript(FDyActor& actorReference);
@@ -95,20 +95,6 @@ public:
   MDY_NODISCARD std::string ToString() override final;
 
   ///
-  /// @brief
-  /// @param  metaInfo
-  /// @return
-  /// @TODO SCRIPT THIS
-  ///
-  MDY_NODISCARD EDySuccess Initialize(_MIN_ const PDyScriptComponentMetaInfo& metaInfo);
-
-  ///
-  /// @brief
-  /// @TODO SCRIPT THIS
-  ///
-  void Release();
-
-  ///
   /// @brief  Return verification name of this script component instance.
   /// @return Script vertification name must not be empty.
   ///
@@ -118,51 +104,26 @@ public:
     return this->mScriptName;
   }
 
-private:
+  ///
+  /// @brief Release derived resources of `CDyScript`.
+  /// This function shadowing derived Release function intentionally.
+  ///
+  void Release()
+  {
+    return this->pScriptRelease();
+  }
+
+protected:
   ///
   /// @brief
-  /// @TODO SCRIPT THIS
   ///
-  void Initiate() override final;
+  virtual void pScriptRelease() = 0;
 
-  ///
-  /// @brief
-  /// @TODO SCRIPT THIS
-  ///
-  void Start() override final;
-
-  ///
-  /// @brief
-  /// @TODO SCRIPT THIS
-  ///
-  void Update(float dt) override final;
-
-  ///
-  /// @brief
-  /// @TODO SCRIPT THIS
-  ///
-  void OnEnabled() override final;
-
-  ///
-  /// @brief
-  /// @TODO SCRIPT THIS
-  ///
-  void OnDisabled() override final;
-
-  ///
-  /// @brief
-  /// @TODO SCRIPT THIS
-  ///
-  void Destroy() override final;
-
+protected:
   /// Script name for specification and searching.
   MDY_TRANSIENT std::string           mScriptName   = MDY_INITIALIZE_EMPTYSTR;
-  /// Script path to execute lua script file.
-  MDY_TRANSIENT std::string           mScriptPath   = MDY_INITIALIZE_EMPTYSTR;
   /// Script state for calling arbitary function.
   FDyScriptState                      mScriptState;
-  /// Script instance.
-  sol::table                          mScriptInstance;
   /// Flag for checking binded script instance.
   bool                                mIsScriptInstanceBinded = false;
 

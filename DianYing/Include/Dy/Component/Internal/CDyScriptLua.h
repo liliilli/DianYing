@@ -13,10 +13,45 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Component/CDyScript.h>
+#include <Dy/Component/Interface/IDyInitializeHelper.h>
+
 namespace dy
 {
 
+///
+/// @class CDyScriptLua
+/// @brief Only for lua internal script component.
+///
+class CDyScriptLua final : public CDyScript, public IDyInitializeHelper<PDyScriptComponentMetaInfo>
+{
+  MDY_SET_TYPEMATCH_FUNCTION(::dy::CDyScript, CDyScriptLua);
+  MDY_SET_CRC32_HASH_WITH_TYPE(CDyScriptLua);
 
+  CDyScriptLua(FDyActor& actorReference) : CDyScript(actorReference) {};
+  virtual ~CDyScriptLua() = default;
+
+  EDySuccess Initialize(const PDyScriptComponentMetaInfo& descriptor) override final;
+  void Release() override final;
+
+  void pScriptRelease() override final
+  {
+    return this->Release();
+  }
+
+private:
+  void Initiate() override final;
+  void Start() override final;
+  void Update(float dt) override final;
+  void OnEnabled() override final;
+  void OnDisabled() override final;
+  void Destroy() override final;
+
+  /// Script path to execute lua script file.
+  MDY_TRANSIENT std::string mScriptPath   = MDY_INITIALIZE_EMPTYSTR;
+  /// Script instance.
+  sol::table                mScriptInstance;
+};
 
 } /// ::dy namespace
 

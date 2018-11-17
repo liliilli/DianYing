@@ -13,10 +13,44 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Component/CDyScript.h>
+#include <Dy/Component/Interface/IDyInitializeHelper.h>
+#include <Dy/Component/Interface/IDyCppScript.h>
+
 namespace dy
 {
 
+///
+/// @class CDyScriptCpp
+/// @brief Only for cpp internal script component.
+///
+class CDyScriptCpp final : public CDyScript, public IDyInitializeHelper<PDyScriptComponentMetaInfo>
+{
+  MDY_SET_TYPEMATCH_FUNCTION(::dy::CDyScript, CDyScriptCpp);
+  MDY_SET_CRC32_HASH_WITH_TYPE(CDyScriptCpp);
 
+  CDyScriptCpp(FDyActor& actorReference) : CDyScript(actorReference) {};
+  virtual ~CDyScriptCpp() = default;
+
+  EDySuccess Initialize(const PDyScriptComponentMetaInfo& descriptor) override final;
+  void Release() override final;
+
+  void pScriptRelease() override final
+  {
+    return this->Release();
+  }
+
+private:
+  void Initiate()       override final;
+  void Start()          override final;
+  void Update(float dt) override final;
+  void OnEnabled()      override final;
+  void OnDisabled()     override final;
+  void Destroy()        override final;
+
+  /// Script instance.
+  std::unique_ptr<IDyCppScript> mScriptInstance = nullptr;
+};
 
 } /// ::dy namespace
 

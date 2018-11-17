@@ -13,10 +13,12 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Element/Interface/IDyScriptable.h>
+
 namespace dy
 {
 
-
+using IDyCppScript = IDyScriptable;
 
 } /// ::dy namespace
 
