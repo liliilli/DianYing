@@ -38,16 +38,16 @@ struct PDyMetaFontInformation final
   };
 
   ///
-  std::string mSpecifierName        = MDY_INITILAIZE_EMPTYSTR;
+  std::string mSpecifierName        = MDY_INITIALIZE_EMPTYSTR;
   ///
   EFontType   mFontType             = EFontType::NoneError;
   ///
-  std::string mFontInformationPath  = MDY_INITILAIZE_EMPTYSTR;
+  std::string mFontInformationPath  = MDY_INITIALIZE_EMPTYSTR;
   ///
   std::vector<std::string> mFontTexturePathList = {};
 
   ///
-  std::string mFontAlternativeFilePath = MDY_INITILAIZE_EMPTYSTR;
+  std::string mFontAlternativeFilePath = MDY_INITIALIZE_EMPTYSTR;
   ///
   bool        mIsUsingRuntimeCreateionWhenGlyphNotExist = false;
 

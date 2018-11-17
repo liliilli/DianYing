@@ -82,12 +82,12 @@ PDyMetaFontInformation PDyMetaFontInformation::CreateWithJson(const nlohmann::js
   // (2) Get Information from json atlas.
   PDyMetaFontInformation resultInstance   = {};
 
-  resultInstance.mSpecifierName           = DyGetValue<std::string>(fontAtlas, header_SpecifierName);
-  resultInstance.mFontType                = GetEFontTypeFrom(DyGetValue<std::string>(fontAtlas, header_FontType));
-  resultInstance.mFontInformationPath     = DyGetValue<std::string>(fontAtlas, header_FontInformationPath);
-  resultInstance.mFontTexturePathList     = DyGetValue<std::vector<std::string>>(fontAtlas, header_FontTexturePathList);
-  resultInstance.mFontAlternativeFilePath = DyGetValue<std::string>(fontAtlas, header_FontAlternativeFilePath);
-  resultInstance.mIsUsingRuntimeCreateionWhenGlyphNotExist = DyGetValue<bool>(fontAtlas, header_IsUsingRuntimeCreateionWhenGlyphNotExist);
+  resultInstance.mSpecifierName           = DyJsonGetValueFrom<std::string>(fontAtlas, header_SpecifierName);
+  resultInstance.mFontType                = GetEFontTypeFrom(DyJsonGetValueFrom<std::string>(fontAtlas, header_FontType));
+  resultInstance.mFontInformationPath     = DyJsonGetValueFrom<std::string>(fontAtlas, header_FontInformationPath);
+  resultInstance.mFontTexturePathList     = DyJsonGetValueFrom<std::vector<std::string>>(fontAtlas, header_FontTexturePathList);
+  resultInstance.mFontAlternativeFilePath = DyJsonGetValueFrom<std::string>(fontAtlas, header_FontAlternativeFilePath);
+  resultInstance.mIsUsingRuntimeCreateionWhenGlyphNotExist = DyJsonGetValueFrom<bool>(fontAtlas, header_IsUsingRuntimeCreateionWhenGlyphNotExist);
 
   // (3) Post-validity test.
   using namespace std::filesystem;

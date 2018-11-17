@@ -38,27 +38,27 @@ constexpr void DyCheckComponentInitializeFunctionParams() noexcept
 
   if constexpr (std::is_same_v<CDyScript, TComponentType>)
   {
-    static_assert(MetaTest<const PDyScriptComponentMetaInformation&>::TypeMatched<TArgs...>::template Result<>::value,
+    static_assert(MetaTest<const PDyScriptComponentMetaInfo&>::TypeMatched<TArgs...>::template Result<>::value,
                   "Failed compile test. Could not initilaize CDyScript instance.");
   }
   if constexpr (std::is_same_v<CDyTransform, TComponentType>)
   {
-    static_assert(MetaTest<const DDyTransformMetaInformation&>::TypeMatched<TArgs...>::template Result<>::value,
+    static_assert(MetaTest<const PDyTransformComponentMetaInfo&>::TypeMatched<TArgs...>::template Result<>::value,
                   "Failed compile test. Could not initilaize CDyTransform instance.");
   }
   if constexpr (std::is_same_v<CDyModelFilter, TComponentType>)
   {
-    static_assert(MetaTest<const DDyModelFilterMetaInformation&>::TypeMatched<TArgs...>::template Result<>::value,
+    static_assert(MetaTest<const PDyModelFilterComponentMetaInfo&>::TypeMatched<TArgs...>::template Result<>::value,
                   "Failed compile test. Could not initilaize CDyModelFilter instance.");
   }
   if constexpr (std::is_same_v<CDyModelRenderer, TComponentType>)
   {
-    static_assert(MetaTest<const DDyModelRendererMetaInformation&>::TypeMatched<TArgs...>::template Result<>::value,
+    static_assert(MetaTest<const PDyModelRendererComponentMetaInfo&>::TypeMatched<TArgs...>::template Result<>::value,
                   "Failed compile test. Could not initilaize CDyModelRenderer instance.");
   }
   if constexpr (std::is_same_v<CDyCamera, TComponentType>)
   {
-    static_assert(MetaTest<const DDyCameraMetaInformation&>::TypeMatched<TArgs...>::template Result<>::value,
+    static_assert(MetaTest<const PDyCameraComponentMetaInfo&>::TypeMatched<TArgs...>::template Result<>::value,
                   "Failed compile test. Could not initilaize CDyCamera instance.");
   }
 }

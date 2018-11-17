@@ -6,8 +6,6 @@
     <ClCompile Include="Source\Management\SettingManager.cc" />
     <ClCompile Include="Source\Helper\Math\Math.cc" />
     <ClCompile Include="Source\Helper\Math\Random.cc" />
-    <ClCompile Include="Source\Helper\Type\Color.cc" />
-    <ClCompile Include="Source\Helper\Type\Color32.cc" />
     <ClCompile Include="Source\Helper\Type\Vector2.cc" />
     <ClCompile Include="Source\Helper\Type\Vector3.cc" />
     <ClCompile Include="Source\Helper\Type\Vector4.cc" />
@@ -90,7 +88,6 @@
     <ClCompile Include="Source\Component\CDyScript.cc" />
     <ClCompile Include="Source\Component\CDyTransform.cc" />
     <ClCompile Include="Source\Component\Abstract\ADyGeneralBaseComponent.cc" />
-    <ClCompile Include="Source\Element\Descriptor\MetaLevelDescriptor.cc" />
     <ClCompile Include="Source\Component\CDyModelFilter.cc" />
     <ClCompile Include="Source\Component\CDyModelRenderer.cc" />
     <ClCompile Include="Source\Component\CDyCamera.cc" />
@@ -104,7 +101,6 @@
     <ClCompile Include="Source\Component\Internal\ScriptState.cc" />
     <ClCompile Include="Source\Test\TestLuaBindingDy.cc" />
     <ClCompile Include="Source\Management\ScriptManager.cc" />
-    <ClCompile Include="Source\Element\Helper\DescriptorHelperFunctions.cc" />
     <ClCompile Include="Source\Component\CDyDirectionalLight.cc" />
     <ClCompile Include="Source\Core\Rendering\BasicRenderer.cc" />
     <ClCompile Include="Source\Management\Type\AttachmentInformation.cc" />
@@ -169,6 +165,16 @@
     <ClCompile Include="Source\Meta\Type\EDyWidgetTypes.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetTextMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetLayoutMetaInformation.cc" />
+    <ClCompile Include="Source\Meta\Information\PrefabMetaInformation.cc" />
+    <ClCompile Include="Source\Element\Descriptor\GlobalEnums.cc" />
+    <ClCompile Include="Source\Meta\Type\EDyComponentTypes.cc" />
+    <ClCompile Include="Source\Meta\Information\ComponentMetaInformation.cc" />
+    <ClCompile Include="Source\Meta\Information\ComponentLightMetaInfo.cc" />
+    <ClCompile Include="Source\Helper\Type\ColorRGBA32.cc" />
+    <ClCompile Include="Source\Helper\Type\ColorRGBA.cc" />
+    <ClCompile Include="Source\Helper\Type\ColorRGB24.cc" />
+    <ClCompile Include="Source\Meta\Information\ElementLevelMetaInfo.cc" />
+    <ClCompile Include="Source\Meta\Information\ElementObjectMetaInfo.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -181,8 +187,6 @@
     <ClInclude Include="Include\Dy\Helper\Type\Vector4.h" />
     <ClInclude Include="Include\Dy\Helper\Type\Transform.h" />
     <ClInclude Include="Include\Dy\Helper\Type\MathEnum.h" />
-    <ClInclude Include="Include\Dy\Helper\Type\Color.h" />
-    <ClInclude Include="Include\Dy\Helper\Type\Color32.h" />
     <ClInclude Include="Include\Dy\Helper\Math\Random.h" />
     <ClInclude Include="Include\Dy\Helper\Math\Math.h" />
     <ClInclude Include="Libraries\imgui\imgui\imgui.h" />
@@ -278,7 +282,6 @@
     <ClInclude Include="Include\Dy\Management\PhysicsManager.h" />
     <ClInclude Include="Include\Dy\Management\FontManager.h" />
     <ClInclude Include="Include\Dy\Element\Object.h" />
-    <ClInclude Include="Include\Dy\Element\Descriptor\LevelDescriptor.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderDeferredRendering.h" />
     <ClInclude Include="Include\Dy\Element\Actor.h" />
     <ClInclude Include="Include\Dy\Management\WorldManager.h" />
@@ -317,7 +320,6 @@
     <ClInclude Include="Include\Dy\Element\Abstract\ADyGeneralBaseComponent.h" />
     <ClInclude Include="Include\Dy\Component\CDyScript.h" />
     <ClInclude Include="Include\Dy\Component\CDyTransform.h" />
-    <ClInclude Include="Include\Dy\Component\Descriptor\ComponentMetaDescriptor.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\TmpCheckTypeParams.h" />
     <ClInclude Include="Include\Dy\Component\Helper\TmpCheckInitilizeParams.h" />
     <ClInclude Include="Include\Dy\Component\Helper\TmpCheckRemoveParams.h" />
@@ -344,9 +346,7 @@
     <ClInclude Include="Include\Dy\Component\Internal\ScriptState.h" />
     <ClInclude Include="Include\Dy\Binding\LuaScriptFrame.h" />
     <ClInclude Include="Include\Dy\Management\ScriptManager.h" />
-    <ClInclude Include="Include\Dy\Element\Descriptor\PrefabDescriptor.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\GlobalEnums.h" />
-    <ClInclude Include="Include\Dy\Element\Helper\DescriptorHelperFunctions.h" />
     <ClInclude Include="Include\Dy\Element\Helper\DescriptorComponentHeaderString.h" />
     <ClInclude Include="Include\Dy\Component\CDyDirectionalLight.h" />
     <ClInclude Include="Include\Dy\Helper\Type\Clamp.h" />
@@ -432,6 +432,16 @@
     <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetLayoutMetaInformation.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyWidgetTypes.h" />
     <ClInclude Include="Include\Dy\Helper\Type\Area2D.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\PrefabMetaInformation.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\ComponentMetaInformation.h" />
+    <ClInclude Include="Include\Dy\Meta\Type\EDyComponentTypes.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\ComponentLightMetaInfo.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\ColorRGBA.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\ColorRGBA32.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\ColorRGB.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\ColorRGB24.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\ElementLevelMetaInfo.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\ElementObjectMetaInfo.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

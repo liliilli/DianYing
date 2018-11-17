@@ -58,13 +58,13 @@ struct PDyMetaWidgetChildableBaseDesc
 ///
 struct PDyMetaWidgetCommonBaseDesc : public PDyMetaWidgetChildableBaseDesc
 { /// Specification name
-  std::string                   mComponentSpecifierName = MDY_INITILAIZE_EMPTYSTR;
+  std::string                   mComponentSpecifierName = MDY_INITIALIZE_EMPTYSTR;
   /// Widget component type
   EDyWidgetComponentType        mComponentType          = EDyWidgetComponentType::NoneError;
   /// Parent component pointer. if root, rawptr must be nullptr.
   PDyMetaWidgetCommonBaseDesc*  mParentRawPtr           = MDY_INITIALIZE_NULL;
   /// Parent component specifier name.
-  std::string                   mParentSpecifierName    = MDY_INITILAIZE_EMPTYSTR;
+  std::string                   mParentSpecifierName    = MDY_INITIALIZE_EMPTYSTR;
 
   //!
   //! Json header file
@@ -83,7 +83,7 @@ struct PDyMetaWidgetCommonBaseDesc : public PDyMetaWidgetChildableBaseDesc
 struct PDyMetaWidgetRootDescriptor final : public PDyMetaWidgetChildableBaseDesc
 {
   /// Widget specifier name
-  std::string   mWidgetSpecifierName  = MDY_INITILAIZE_EMPTYSTR;
+  std::string   mWidgetSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
   /// Script reference variable.
   PDyScriptReferenceMetaInfo mScriptReference = {};
 

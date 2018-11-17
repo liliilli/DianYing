@@ -38,42 +38,36 @@ MDY_NODISCARD std::optional<nlohmann::json> DyGetJsonAtlasFromFile(const std::st
 /// @param  name Header string to find.
 /// @tparam TReturnType Type to retrieve from json atlas instance.
 /// @tparam TParam1 Json binding type parameter
-/// @return
-/// @TODO SCRIPT THIS.
 ///
 template <typename TReturnType, typename TParam1>
-MDY_NODISCARD TReturnType DyGetValue(_MIN_ const TParam1& jsonAtlas, _MIN_ const std::string_view& name)
+MDY_NODISCARD TReturnType DyJsonGetValueFrom(_MIN_ const TParam1& jsonAtlas, _MIN_ const std::string_view& name)
 {
   return jsonAtlas.at(MSVSTR(name)).template get<TReturnType>();
 }
 
 ///
-/// @brief  Exceptionable.
-/// @param  jsonAtlas
+/// @brief  Get value from json and bind value to destination automatically.
+/// Destination type must implement copy assignment operator or default behavior.
+/// @param  jsonAtlas Immutable valid json atlas like-a types.
+/// @param  key Header string to find.
+/// @param  destination Destination value.
+/// @tparam TReturnType Type to retrieve from json atlas instance.
+/// @tparam TJsonAtlas Json binding type paramter.
 /// @return
-/// @TODO SCRIPT THIS.
 ///
-inline MDY_NODISCARD dy::DDyVector3 DyGetDDyVector3FromJson(_MIN_ const nlohmann::json& jsonAtlas)
+template <typename TReturnType, typename TJsonAtlas>
+void DyJsonGetValueFromTo(_MIN_ const TJsonAtlas& jsonAtlas,
+                          _MIN_ const std::string_view& key,
+                          _MINOUT_ TReturnType& destination)
 {
-  dy::DDyVector3 vector;
-  vector.X = jsonAtlas.at("X").get<TF32>();
-  vector.Y = jsonAtlas.at("Y").get<TF32>();
-  vector.Z = jsonAtlas.at("Z").get<TF32>();
-  return vector;
-}
-
-///
-/// @brief
-/// @param  jsonAtlas
-/// @return
-/// @TODO SCRIPT THIS
-///
-inline MDY_NODISCARD dy::DDyVector2 DyGetDDyVector2FromJson(_MIN_ const nlohmann::json& jsonAtlas)
-{
-  dy::DDyVector2 vector = {};
-  vector.X = jsonAtlas.at("X").get<TF32>();
-  vector.Y = jsonAtlas.at("Y").get<TF32>();
-  return vector;
+  if constexpr (std::is_move_assignable_v<TReturnType> == true)
+  {
+    destination = std::move(jsonAtlas.at(MSVSTR(key)).template get<TReturnType>());
+  }
+  else
+  {
+    destination = jsonAtlas.at(MSVSTR(key)).template get<TReturnType>();
+  }
 }
 
 ///

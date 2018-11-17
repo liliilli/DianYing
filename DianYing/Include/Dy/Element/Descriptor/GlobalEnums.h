@@ -13,12 +13,14 @@
 /// SOFTWARE.
 ///
 
+#include <nlohmann/json_fwd.hpp>
+
 namespace dy
 {
 
 ///
 /// @enum   EDyMetaObjectType
-/// @brief  Meta object type for using DDyObjectInformation and PDyPrefabMetaInformation
+/// @brief  Meta object type for using DDyObjectInformation and PDyPrefabInstanceMetaInfo
 ///
 enum class EDyMetaObjectType
 {
@@ -28,22 +30,8 @@ enum class EDyMetaObjectType
   NoneError
 };
 
-///
-/// @brief  Get FDyObject derived class type helper enumration.
-/// @param  typeString Object type string from json.
-/// @return Object type
-///
-inline MDY_NODISCARD EDyMetaObjectType DyGetMetaObjectTypeFrom(_MIN_ const std::string& typeString) noexcept
-{
-  static MDY_SET_IMMUTABLE_STRING(sActor,           "Actor");
-  static MDY_SET_IMMUTABLE_STRING(sObject,          "Object");
-  static MDY_SET_IMMUTABLE_STRING(sSceneScriptor,   "SceneScriptor");
-
-  if (typeString == sActor)         { return EDyMetaObjectType::Actor; }
-  if (typeString == sObject)        { return EDyMetaObjectType::Object; }
-  if (typeString == sSceneScriptor) { return EDyMetaObjectType::SceneScriptor; }
-  else                              { return EDyMetaObjectType::NoneError; }
-}
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyMetaObjectType& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyMetaObjectType& p);
 
 } /// ::dy namespace
 

@@ -11,15 +11,14 @@
 ///
 /// @author Jongmin Yun
 ///
-/// @log
-/// 2018-08-28 Create file.
-///
 
 /// Header file
 #include <Dy/Helper/Type/Vector3.h>
 
+#include <nlohmann/json.hpp>
 #include <Dy/Helper/Math/Math.h>
 #include <Dy/Helper/Type/Matrix3.h>
+#include <Dy/Helper/Library/HelperJson.h>
 
 namespace dy {
 
@@ -38,6 +37,23 @@ bool DDyVector3::IsAllZero(const DDyVector3& vector) noexcept {
 
 bool DDyVector3::IsAllZero() const noexcept {
   return math::IsAllZero(*this);
+}
+
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDyVector3& p)
+{
+  j = nlohmann::json
+  {
+    {"X", p.X},
+    {"Y", p.Y},
+    {"Z", p.Z}
+  };
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDyVector3& p)
+{
+  p.X = DyJsonGetValueFrom<TF32>(j, "X");
+  p.Y = DyJsonGetValueFrom<TF32>(j, "Y");
+  p.Z = DyJsonGetValueFrom<TF32>(j, "Z");
 }
 
 } /// ::dy namespace

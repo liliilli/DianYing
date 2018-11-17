@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Helper/Type/Vector2.h>
-#include <Dy/Helper/Type/Color.h>
+#include <Dy/Helper/Type/ColorRGBA.h>
 #include <Dy/Helper/Type/DyString.h>
 
 //!

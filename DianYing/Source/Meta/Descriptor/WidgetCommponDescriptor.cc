@@ -57,8 +57,8 @@ PDyMetaWidgetRootDescriptor::CreateMetaInformation(_MIN_ const nlohmann::json& i
 {
   // Common
   auto instance = std::make_unique<PDyMetaWidgetRootDescriptor>();
-  instance->mWidgetSpecifierName = DyGetValue<std::string>(itemAtlas, PDyMetaWidgetRootDescriptor::sHeader_Name);
-  instance->mScriptReference     = DyGetValue<PDyScriptReferenceMetaInfo>(itemAtlas, PDyMetaWidgetRootDescriptor::sHeader_Script);
+  instance->mWidgetSpecifierName = DyJsonGetValueFrom<std::string>(itemAtlas, PDyMetaWidgetRootDescriptor::sHeader_Name);
+  instance->mScriptReference     = DyJsonGetValueFrom<PDyScriptReferenceMetaInfo>(itemAtlas, PDyMetaWidgetRootDescriptor::sHeader_Script);
 
   return instance;
 }

@@ -39,7 +39,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyScriptType& p);
 ///
 struct PDyScriptReferenceMetaInfo final
 {
-  std::string mSpecifierName = MDY_INITILAIZE_EMPTYSTR;
+  std::string mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
 };
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyScriptReferenceMetaInfo& p);
@@ -52,7 +52,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyScriptReferenceMetaInf
 struct PDyScriptInstanceMetaInfo final
 {
   EDyScriptType mScriptType    = EDyScriptType::NoneError;
-  std::string   mSpecifierName = MDY_INITILAIZE_EMPTYSTR;
+  std::string   mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
   std::string   mFilePath      = "";
   bool          mIsCompressed  = false;
 };

@@ -155,6 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Element\Descriptor\GlobalEnums.cc" />
     <ClCompile Include="Libraries\glad\src\glad.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -275,8 +276,7 @@
     <ClCompile Include="Source\Element\Actor.cc" />
     <ClCompile Include="Source\Element\Canvas\Text.cc" />
     <ClCompile Include="Source\Element\Canvas\Text_Deprecated.cc" />
-    <ClCompile Include="Source\Element\Descriptor\MetaLevelDescriptor.cc" />
-    <ClCompile Include="Source\Element\Helper\DescriptorHelperFunctions.cc" />
+    <ClCompile Include="Source\Meta\Information\ElementLevelMetaInfo.cc" />
     <ClCompile Include="Source\Element\Level.cc" />
     <ClCompile Include="Source\Entry\Entry.cc" />
     <ClCompile Include="Source\Helper\Geometry\Types.cc" />
@@ -288,8 +288,9 @@
     <ClCompile Include="Source\Helper\Math\Random.cc" />
     <ClCompile Include="Source\Helper\ThreadPool.cc" />
     <ClCompile Include="Source\Helper\Type\Area2D.cc" />
-    <ClCompile Include="Source\Helper\Type\Color.cc" />
-    <ClCompile Include="Source\Helper\Type\Color32.cc" />
+    <ClCompile Include="Source\Helper\Type\ColorRGB24.cc" />
+    <ClCompile Include="Source\Helper\Type\ColorRGBA.cc" />
+    <ClCompile Include="Source\Helper\Type\ColorRGBA32.cc" />
     <ClCompile Include="Source\Helper\Type\DyString.cc" />
     <ClCompile Include="Source\Helper\Type\Matrix2.cc" />
     <ClCompile Include="Source\Helper\Type\Matrix3.cc" />
@@ -337,8 +338,13 @@
     <ClCompile Include="Source\Meta\Descriptor\WidgetCommponDescriptor.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetLayoutMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetTextMetaInformation.cc" />
+    <ClCompile Include="Source\Meta\Information\ComponentLightMetaInfo.cc" />
+    <ClCompile Include="Source\Meta\Information\ComponentMetaInformation.cc" />
+    <ClCompile Include="Source\Meta\Information\ElementObjectMetaInfo.cc" />
     <ClCompile Include="Source\Meta\Information\FontMetaInformation.cc" />
+    <ClCompile Include="Source\Meta\Information\PrefabMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Information\ScriptMetaInformation.cc" />
+    <ClCompile Include="Source\Meta\Type\EDyComponentTypes.cc" />
     <ClCompile Include="Source\Meta\Type\EDyInput.cc" />
     <ClCompile Include="Source\Meta\Type\EDyWidgetTypes.cc" />
     <ClCompile Include="Source\Meta\Type\TextureParameter.cc" />
@@ -396,7 +402,6 @@
     <ClInclude Include="Include\Dy\Component\CDyPhysicsShapeBox.h" />
     <ClInclude Include="Include\Dy\Component\CDyScript.h" />
     <ClInclude Include="Include\Dy\Component\CDyTransform.h" />
-    <ClInclude Include="Include\Dy\Component\Descriptor\ComponentMetaDescriptor.h" />
     <ClInclude Include="Include\Dy\Component\Helper\TmpCheckInitilizeParams.h" />
     <ClInclude Include="Include\Dy\Component\Helper\TmpCheckRemoveParams.h" />
     <ClInclude Include="Include\Dy\Component\Interface\IDyInitializeHelper.h" />
@@ -431,10 +436,14 @@
     <ClInclude Include="Include\Dy\Element\Canvas\Text_Deprecated.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\CanvasDescriptor.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\GlobalEnums.h" />
-    <ClInclude Include="Include\Dy\Element\Descriptor\LevelDescriptor.h" />
-    <ClInclude Include="Include\Dy\Element\Descriptor\PrefabDescriptor.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\ElementLevelMetaInfo.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\ColorRGB.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\ColorRGB24.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\ComponentLightMetaInfo.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\ComponentMetaInformation.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\ElementObjectMetaInfo.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\PrefabMetaInformation.h" />
     <ClInclude Include="Include\Dy\Element\Helper\DescriptorComponentHeaderString.h" />
-    <ClInclude Include="Include\Dy\Element\Helper\DescriptorHelperFunctions.h" />
     <ClInclude Include="Include\Dy\Element\Interface\IDyScriptable.h" />
     <ClInclude Include="Include\Dy\Element\Interface\IDyToString.h" />
     <ClInclude Include="Include\Dy\Element\Interface\IDyUpdatable.h" />
@@ -537,8 +546,8 @@
     <ClInclude Include="Include\Dy\Helper\System\Macroes.h" />
     <ClInclude Include="Include\Dy\Helper\Math\Math.h" />
     <ClInclude Include="Include\Dy\Helper\Math\Random.h" />
-    <ClInclude Include="Include\Dy\Helper\Type\Color.h" />
-    <ClInclude Include="Include\Dy\Helper\Type\Color32.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\ColorRGBA.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\ColorRGBA32.h" />
     <ClInclude Include="Include\Dy\Helper\Type\MathEnum.h" />
     <ClInclude Include="Include\Dy\Helper\Type\Matrix2.h" />
     <ClInclude Include="Include\Dy\Helper\Type\Matrix3.h" />
@@ -558,6 +567,7 @@
     <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetTextMetaInformation.h" />
     <ClInclude Include="Include\Dy\Meta\Information\FontMetaInformation.h" />
     <ClInclude Include="Include\Dy\Meta\Information\ScriptMetaInformation.h" />
+    <ClInclude Include="Include\Dy\Meta\Type\EDyComponentTypes.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyInput.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyRenderingApi.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyWidgetTypes.h" />

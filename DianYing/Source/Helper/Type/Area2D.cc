@@ -48,8 +48,8 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDyArea2D& p)
 
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDyArea2D& p)
 {
-  p.mLeftDown = DyGetValue<DDyVector2>(j, sHeader_LeftDown);
-  p.mRightUp  = DyGetValue<DDyVector2>(j, sHeader_RightUp);
+  p.mLeftDown = DyJsonGetValueFrom<DDyVector2>(j, sHeader_LeftDown);
+  p.mRightUp  = DyJsonGetValueFrom<DDyVector2>(j, sHeader_RightUp);
 }
 
 } /// ::dy namespace

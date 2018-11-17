@@ -22,8 +22,6 @@
 #include <Dy/Helper/Pointer.h>
 #include <Dy/Helper/ContainerHelper.h>
 #include <Dy/Helper/Library/HelperJson.h>
-#include <Dy/Element/Descriptor/LevelDescriptor.h>
-#include <Dy/Element/Helper/DescriptorHelperFunctions.h>
 #include <Dy/Element/Helper/DescriptorComponentHeaderString.h>
 #include <Dy/Management/SettingManager.h>
 
@@ -50,11 +48,6 @@ MDY_SET_IMMUTABLE_STRING(sErrorAmbiguousFlag, "MDyMetaInfo::pReadScriptResourceM
 //!
 
 MDY_SET_IMMUTABLE_STRING(sCategoryList,     "List");
-MDY_SET_IMMUTABLE_STRING(sHeaderScriptName, "ScriptName");
-MDY_SET_IMMUTABLE_STRING(sHeaderScriptPath, "ScriptPath");
-MDY_SET_IMMUTABLE_STRING(sHeaderScriptCode, "ScriptCode");
-MDY_SET_IMMUTABLE_STRING(sHeaderIsUsingScriptPath,        "IsUsingScriptPath");
-MDY_SET_IMMUTABLE_STRING(sHeaderIsUsingScriptInnateCode,  "IsUsingScriptInnateCode");
 
 //!
 //! Prefab Meta information header list
@@ -62,11 +55,7 @@ MDY_SET_IMMUTABLE_STRING(sHeaderIsUsingScriptInnateCode,  "IsUsingScriptInnateCo
 
 MDY_SET_IMMUTABLE_STRING(sCategoryMeta,         "Meta");
 MDY_SET_IMMUTABLE_STRING(sCategoryObjectList,   "ObjectList");
-MDY_SET_IMMUTABLE_STRING(sHeaderSpecifierName,  "SpecifierName");
 MDY_SET_IMMUTABLE_STRING(sHeaderType,           "Type");
-MDY_SET_IMMUTABLE_STRING(sHeaderChildrenName,   "ChildrenName");
-MDY_SET_IMMUTABLE_STRING(sHeaderIsInitiallyActivated, "IsInitiallyActivated");
-MDY_SET_IMMUTABLE_STRING(sHeaderComponentList,  "ComponentList");
 
 std::unique_ptr<dy::PDyMetaWidgetRootDescriptor> DyCreateWidgetMetaInformation(_MIN_ const nlohmann::json& jsonAtlas)
 {
@@ -115,7 +104,7 @@ std::unique_ptr<dy::PDyMetaWidgetRootDescriptor> DyCreateWidgetMetaInformation(_
   { // Check Header list integrity
     MDY_ASSERT(CheckComponentCommonHeaders(componentInfo) == DY_SUCCESS, "Failed to check common headers of item.");
 
-    const auto componentType = DyGetValue<EDyWidgetComponentType>(componentInfo, PDyMetaWidgetCommonBaseDesc::sHeader_Type);
+    const auto componentType = DyJsonGetValueFrom<EDyWidgetComponentType>(componentInfo, PDyMetaWidgetCommonBaseDesc::sHeader_Type);
     switch (componentType)
     {
     case EDyWidgetComponentType::Text:
@@ -193,18 +182,7 @@ EDySuccess MDyMetaInfo::pfInitialize()
   MDY_CALL_ASSERT_SUCCESS(this->pReadScriptResourceMetaInformation(metaPath.mScriptMetaPath));
   MDY_CALL_ASSERT_SUCCESS(this->pReadPrefabResourceMetaInformation(metaPath.mPrefabMetaPath));
   MDY_CALL_ASSERT_SUCCESS(this->pReadWidgetResourceMetaInformation(metaPath.mWidgetMetaPath));
-
-  // @TODO scene meta information reading from meta file.
-  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaPath.mSceneMetaPath);
-  if (opJsonAtlas.has_value() == false) { return DY_FAILURE; }
-
-  PDyLevelConstructDescriptor desc = PDyLevelConstructDescriptor::CreateDescriptor(opJsonAtlas.value());
-  auto [it, result] = this->mLevelInfoMap.try_emplace(desc.mLevelName, desc);
-  if (result == false)
-  {
-    MDY_UNEXPECTED_BRANCH();
-    return DY_FAILURE;
-  }
+  MDY_CALL_ASSERT_SUCCESS(this->pReadSceneResourceMetaInformation (metaPath.mSceneMetaPath));
 
   return DY_SUCCESS;
 }
@@ -216,7 +194,7 @@ EDySuccess MDyMetaInfo::pfRelease()
   return DY_SUCCESS;
 }
 
-const PDyLevelConstructDescriptor* MDyMetaInfo::GetLevelMetaInformation(const std::string& levelName) const noexcept
+const PDyLevelConstructMetaInfo* MDyMetaInfo::GetLevelMetaInformation(const std::string& levelName) const noexcept
 {
   const auto it = this->mLevelInfoMap.find(levelName);
   if (it == this->mLevelInfoMap.end())  { return nullptr; }
@@ -273,142 +251,35 @@ EDySuccess MDyMetaInfo::pReadPrefabResourceMetaInformation(const std::string& me
     return DY_SUCCESS;
   };
 
-  ///
-  /// @brief  Check meta script information header list.
-  /// @param  atlas Valid json atlas instance.
-  /// @return If succeeded, return DY_SUCCESS flag for representing success.
-  ///
-  static auto CheckPrefabObjectListHeaders = [](_MIN_ const nlohmann::json& atlas) -> EDySuccess
-  {
-    if (DyCheckHeaderIsExist(atlas, sHeaderSpecifierName) == DY_FAILURE)  { return DY_FAILURE; }
-    if (DyCheckHeaderIsExist(atlas, sHeaderType) == DY_FAILURE)           { return DY_FAILURE; }
-    if (DyCheckHeaderIsExist(atlas, sHeaderChildrenName) == DY_FAILURE)   { return DY_FAILURE; }
-    if (DyCheckHeaderIsExist(atlas, sHeaderIsInitiallyActivated) == DY_FAILURE) { return DY_FAILURE; }
-    if (DyCheckHeaderIsExist(atlas, sHeaderComponentList) == DY_FAILURE)  { return DY_FAILURE; }
-    return DY_SUCCESS;
-  };
-
-  ///
-  /// @function GetMetaComponentInformation
-  /// @brief
-  /// @param validComponentAtlas
-  /// @param desc
-  ///
-  static auto GetMetaComponentInformation = [](_MIN_ const auto& validComponentAtlas, _MOUT_ PDyPrefabMetaInformation& desc)
-  {
-    for (const nlohmann::json& componentMetaInfo : validComponentAtlas)
-    {
-      const auto typeEnum = DyGetComponentTypeFrom(DyGetValue<std::string>(componentMetaInfo, sHeaderType));
-      switch (typeEnum)
-      {
-      default: MDY_UNEXPECTED_BRANCH(); break;
-      case EDyComponentMetaType::Transform:
-      {
-        const auto meta = CreateTransformMetaInfo(componentMetaInfo);
-        desc.mMetaComponentInfo.emplace_back(meta.mType, meta);
-      } break;
-      case EDyComponentMetaType::Script:
-      {
-        const auto meta = CreateScriptMetaInfo(componentMetaInfo);
-        desc.mMetaComponentInfo.emplace_back(meta.mType, meta);
-      } break;
-      case EDyComponentMetaType::DirectionalLight:
-      {
-        const auto meta = CreateDirectionalLightMetaInfo(componentMetaInfo);
-        desc.mMetaComponentInfo.emplace_back(meta.mType, meta);
-      } break;
-      case EDyComponentMetaType::ModelFilter:
-      {
-        const auto meta = CreateModelFilterMetaInfo(componentMetaInfo);
-        desc.mMetaComponentInfo.emplace_back(meta.mType, meta);
-      } break;
-      case EDyComponentMetaType::ModelRenderer:
-      {
-        const auto meta = CreateModelRendererMetaInfo(componentMetaInfo);
-        desc.mMetaComponentInfo.emplace_back(meta.mType, meta);
-      } break;
-      case EDyComponentMetaType::Camera:
-      {
-        const auto meta = CreateCameraMetaInfo(componentMetaInfo);
-        desc.mMetaComponentInfo.emplace_back(meta.mType, meta);
-      } break;
-      }
-    }
-  };
-
-  ///
-  /// @function
-  /// @brief
-  /// @param
-  /// @return
-  /// @TODO SCRIPT THIS
-  ///
-  static auto GetChildrenNameList = [](_MIN_ const nlohmann::json& atlas) -> PDyPrefabMetaInformation::TChildNameList
-  {
-    PDyPrefabMetaInformation::TChildNameList list = {};
-    for (const auto& childAtlas : atlas)
-    {
-      list.emplace_back(childAtlas.get<std::string>());
-    }
-    return list;
-  };
-
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   //! FUNCTIONBODY ∨
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  // Integrity Test
+  // Validity Test
   const std::optional<nlohmann::json> opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
-  if (opJsonAtlas.has_value() == false)
-  {
-    MDY_ASSERT(opJsonAtlas.has_value() == true, "Failed to read prefab resource meta information. File path is not exist.");
-    return DY_FAILURE;
-  }
+  MDY_ASSERT(opJsonAtlas.has_value() == true, "Failed to read prefab resource mta information.");
 
   // Check specified category are exist.
   const nlohmann::json& jsonAtlas = opJsonAtlas.value();
-  if (const auto flag = CheckPrefabMetaCategory(jsonAtlas); flag == DY_FAILURE)
-  {
-    MDY_UNEXPECTED_BRANCH();
-    return DY_FAILURE;
-  }
+  MDY_CALL_ASSERT_SUCCESS(CheckPrefabMetaCategory(jsonAtlas));
 
   // Make prefab meta information instance sequencially.
   const auto& prefabAtlas = jsonAtlas.at(MSVSTR(sCategoryObjectList));
-  THashMap<PDyPrefabMetaInformation::TChildNameList> childrenNameMetaList = {};
+  THashMap<PDyPrefabInstanceMetaInfo::TChildNameList> childrenNameMetaList = {};
 
   for (const auto& prefabInfo : prefabAtlas)
-  { // Check Header list integrity
-    const auto flag = CheckPrefabObjectListHeaders(prefabInfo);
-    MDY_ASSERT(flag == DY_SUCCESS, "flag == DY_FAILURE");
-
-    auto metaInfoPtr  = std::make_unique<PDyPrefabMetaInformation>();
-    auto& metaInfo    = *metaInfoPtr;
-    metaInfo.mSpecifierName           = DyGetValue<std::string>(prefabInfo, sHeaderSpecifierName);
-    metaInfo.mIsInitiallyActivated    = DyGetValue<bool>(prefabInfo, sHeaderIsInitiallyActivated);
-    metaInfo.mPrefabType              = DyGetMetaObjectTypeFrom(DyGetValue<std::string>(prefabInfo, sHeaderType));
-
-    // Set component meta dependency information to PDyPrefabMetaInformation;
-    const auto& componentMap = prefabInfo.at(MSVSTR(sHeaderComponentList));
-    GetMetaComponentInformation(componentMap, metaInfo);
-
-    // And Read children name and save first.
-    childrenNameMetaList.try_emplace(metaInfo.mSpecifierName, GetChildrenNameList(prefabInfo.at(MSVSTR(sHeaderChildrenName))));
-
-    auto [it, result] = this->mPrefabMetaInfo.try_emplace(metaInfo.mSpecifierName, std::move(metaInfoPtr));
-    if (result == false)
-    {
-      MDY_UNEXPECTED_BRANCH();
-      return DY_FAILURE;
-    }
+  {
+    auto metaInfoPtr  = PDyPrefabInstanceMetaInfo::CreateMetaInformation(prefabInfo);
+    auto [it, result] = this->mPrefabMetaInfo.try_emplace(metaInfoPtr->mSpecifierName, std::move(metaInfoPtr));
+    MDY_ASSERT(result == true, "Unexpected error occurred.");
   }
 
   // Reconstruct list that parent have children recursively. O(N^2)
   for (auto& [string, metaInfoPtr] : this->mPrefabMetaInfo)
   {
-    using TChildNameList      = PDyPrefabMetaInformation::TChildNameList;
-    using TChildMetaInfoList  = PDyPrefabMetaInformation::TChildMetaInfoList;
-    // Integrity Test
+    using TChildNameList      = PDyPrefabInstanceMetaInfo::TChildNameList;
+    using TChildMetaInfoList  = PDyPrefabInstanceMetaInfo::TChildMetaInfoList;
+    // (1) Validity Test
     if (MDY_CHECK_ISEMPTY(metaInfoPtr))                                   { continue; }
     if (childrenNameMetaList.find(string) == childrenNameMetaList.end())  { continue; };
 
@@ -436,8 +307,7 @@ EDySuccess MDyMetaInfo::pReadPrefabResourceMetaInformation(const std::string& me
 }
 
 EDySuccess MDyMetaInfo::pReadWidgetResourceMetaInformation(_MIN_ const std::string& metaFilePath)
-{
-  // (1) Integrity Test
+{ // (1) Validity Test
   const std::optional<nlohmann::json> opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
   MDY_ASSERT(opJsonAtlas.has_value() == true, "Must be valid json atlas from file path.");
 
@@ -463,7 +333,7 @@ EDySuccess MDyMetaInfo::pfAddWidgetMetaInformation(_MIN_ const std::string& meta
 
 EDySuccess MDyMetaInfo::pReadFontResourceMetaInformation(_MIN_ const std::string& metaFilePath)
 { // (1) Validity Test
-  const std::optional<nlohmann::json> opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
   if (opJsonAtlas.has_value() == false)
   {
     MDY_ASSERT(opJsonAtlas.has_value() == true, "Failed to read font meta information. File is not exist.");
@@ -481,7 +351,24 @@ EDySuccess MDyMetaInfo::pReadFontResourceMetaInformation(_MIN_ const std::string
     MDY_ASSERT(isSucceeded == true, "Font meta information creation must be succeeded.");
   }
 
-  return DY_SUCCESS;;
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pReadSceneResourceMetaInformation(_MIN_ const std::string& metaFilepath)
+{
+  // (1) Validity test
+  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilepath);
+  if (opJsonAtlas.has_value() == false) { return DY_FAILURE; }
+
+  // (2)
+  for (const auto& sceneAtlas : opJsonAtlas.value())
+  {
+    auto desc = sceneAtlas.get<PDyLevelConstructMetaInfo>();
+    auto [it, isSucceeded] = this->mLevelInfoMap.try_emplace(desc.mMetaCategory.mLevelName, std::move(desc));
+    MDY_ASSERT(isSucceeded == true, "Unexpected error occurred.");
+  }
+
+  return DY_SUCCESS;
 }
 
 } /// ::dy namespace
