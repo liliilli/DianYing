@@ -51,6 +51,15 @@ public:
     return this->pScriptRelease();
   }
 
+  ///
+  /// @brief Get mutable reference of widget.
+  ///
+  MDY_NODISCARD FDyUiWidget& GetWidgetReference() noexcept
+  {
+    MDY_ASSERT(this->mBindedWidget != nullptr, "Unexpected error occurred.");
+    return *this->mBindedWidget;
+  }
+
 protected:
   /// @brief
   virtual void pScriptRelease() = 0;

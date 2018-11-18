@@ -15,7 +15,7 @@
 
 #include <Dy/Component/CDyScript.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
-#include <Dy/Component/Interface/IDyCppScript.h>
+#include <Dy/Component/Interface/ADyActorCppScript.h>
 
 namespace dy
 {
@@ -49,7 +49,7 @@ private:
   void Destroy()        override final;
 
   /// Script instance.
-  std::unique_ptr<IDyCppScript> mScriptInstance = nullptr;
+  std::unique_ptr<ADyActorCppScript> mScriptInstance = nullptr;
 };
 
 } /// ::dy namespace

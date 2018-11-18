@@ -182,6 +182,8 @@
     <ClCompile Include="Source\Component\UI\CDyWidgetScriptCpp.cc" />
     <ClCompile Include="Source\Component\UI\CDyWidgetScriptLua.cc" />
     <ClCompile Include="Source\Core\Reflection\RDyCppScript.cc" />
+    <ClCompile Include="Source\Element\Canvas\UiObjectChildrenable.cc" />
+    <ClCompile Include="Source\Component\Abstract\ADyWidgetCppScript.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -417,7 +419,6 @@
     <ClInclude Include="Include\Dy\Builtin\Widget\DebugUiMeta.h" />
     <ClInclude Include="Include\Dy\Builtin\Script\DebugUiScriptCpp.h" />
     <ClInclude Include="Include\Dy\Core\Reflection\RDyCppScript.h" />
-    <ClInclude Include="Include\Dy\Component\Interface\IDyCppScript.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyScriptLua.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyScriptCpp.h" />
     <ClInclude Include="Include\Dy\Builtin\Helper\BuiltinInformationDeliver.h" />
@@ -453,6 +454,9 @@
     <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScript.h" />
     <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScriptCpp.h" />
     <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScriptLua.h" />
+    <ClInclude Include="Include\Dy\Element\Canvas\UiObjectChildrenable.h" />
+    <ClInclude Include="Include\Dy\Component\Abstract\ADyWidgetCppScript.h" />
+    <ClInclude Include="Include\Dy\Component\Interface\ADyActorCppScript.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

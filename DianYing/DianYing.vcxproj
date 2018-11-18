@@ -156,10 +156,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\Builtin\Script\DebugUiScriptCpp.cc" />
+    <ClCompile Include="Source\Component\Abstract\ADyWidgetCppScript.cc" />
     <ClCompile Include="Source\Component\Internal\CDyScriptCpp.cc" />
     <ClCompile Include="Source\Component\Internal\CDyScriptLua.cc" />
     <ClCompile Include="Source\Component\UI\CDyWidgetScriptCpp.cc" />
     <ClCompile Include="Source\Component\UI\CDyWidgetScriptLua.cc" />
+    <ClCompile Include="Source\Element\Canvas\UiObjectChildrenable.cc" />
     <ClCompile Include="Source\Core\Reflection\RDyCppScript.cc" />
     <ClCompile Include="Source\Element\Canvas\Widget.cc" />
     <ClCompile Include="Source\Element\Descriptor\GlobalEnums.cc" />
@@ -395,10 +397,11 @@
     <ClInclude Include="Include\Dy\Builtin\Widget\DebugUiMeta.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyPhysicsRIgidbody.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyPhysicsShape.h" />
+    <ClInclude Include="Include\Dy\Component\Abstract\ADyWidgetCppScript.h" />
     <ClInclude Include="Include\Dy\Component\CDyCamera.h" />
     <ClInclude Include="Include\Dy\Component\CDyDirectionalLight.h" />
     <ClInclude Include="Include\Dy\Component\Ctor\PDyFontRenderer.h" />
-    <ClInclude Include="Include\Dy\Component\Interface\IDyCppScript.h" />
+    <ClInclude Include="Include\Dy\Component\Interface\ADyActorCppScript.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyScriptCpp.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyFontRenderer.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyFontRenderer_Deprecated.h" />
@@ -442,6 +445,7 @@
     <ClInclude Include="Include\Dy\Element\Actor.h" />
     <ClInclude Include="Include\Dy\Element\Abstract\ADyNameCounterMap.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\UiObject.h" />
+    <ClInclude Include="Include\Dy\Element\Canvas\UiObjectChildrenable.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\Widget.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\Text.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\Text_Deprecated.h" />

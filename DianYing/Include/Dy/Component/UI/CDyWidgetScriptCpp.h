@@ -15,7 +15,7 @@
 
 #include <Dy/Component/UI/CDyWidgetScript.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
-#include <Dy/Component/Interface/IDyCppScript.h>
+#include <Dy/Component/Abstract/ADyWidgetCppScript.h>
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
 
 namespace dy
@@ -48,7 +48,7 @@ private:
   void Destroy()        override final;
 
   /// Script instance.
-  std::unique_ptr<IDyCppScript> mScriptInstance = nullptr;
+  std::unique_ptr<ADyWidgetCppScript> mScriptInstance = nullptr;
 };
 
 } /// ::dy namespace

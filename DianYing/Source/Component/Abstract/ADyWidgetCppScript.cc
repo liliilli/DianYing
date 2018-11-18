@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_BUILTINSCRIPT_DEBUGUISCRIPTCPP_H
-#define GUARD_DY_BUILTINSCRIPT_DEBUGUISCRIPTCPP_H
+#include <precompiled.h>
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,26 +12,17 @@
 /// SOFTWARE.
 ///
 
+/// Header file
 #include <Dy/Component/Abstract/ADyWidgetCppScript.h>
-#include <Dy/Core/Reflection/RDyCppScript.h>
+#include <Dy/Component/UI/CDyWidgetScriptCpp.h>
 
 namespace dy
 {
 
-class FDyBuiltinDebugUiScript final : public ADyWidgetCppScript
+FDyUiWidget& ADyWidgetCppScript::GetWidgetReference()
 {
-  MDY_REFLECT_ENABLE(FDyBuiltinDebugUiScript);
-public:
-  void Initiate() override final;
-
-  void Start() override final;
-
-  void Update(_MIN_ TF32 dt) override final;
-
-private:
-
-};
+  MDY_ASSERT(this->mOutside != nullptr, "Unexpected error occurred.");
+  return this->mOutside->GetWidgetReference();
+}
 
 } /// ::dy namespace
-
-#endif /// GUARD_DY_BUILTINSCRIPT_DEBUGUISCRIPTCPP_H
