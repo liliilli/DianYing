@@ -23,6 +23,8 @@
 namespace
 {
 
+constexpr TC16 SURROGATE_SIGN = 0xFFFF;
+
 ///
 /// @brief
 /// @param  utf8StartChar
@@ -70,12 +72,15 @@ MDY_NODISCARD constexpr TC16 DyGetRawUtf16CharacterFrom(_MIN_ const char* utf8St
   }
   case 4:
   {
+    return SURROGATE_SIGN;
+#ifdef false
     const char32_t codepage_10k = (
       ((*utf8StartCharacter) & 0b00000111) << 18 |
       (*(utf8StartCharacter + 1) & 0b00111111) << 12 |
       (*(utf8StartCharacter + 2) & 0b00111111) << 6 |
       (*(utf8StartCharacter + 3) & 0b00111111)) - 0x10000;
     return static_cast<TC16>((codepage_10k >> 10) + 0xD800);
+#endif
   }
   default: MDY_UNEXPECTED_BRANCH(); return 0;
   }
@@ -112,14 +117,36 @@ namespace dy
 
 DDyString::DDyString(_MIN_ const char* cString) noexcept
 {
-  this->mString.reserve(DyGetUtf16LengthFrom(cString));
-
-  for (auto it = cString; *it != '\0'; it += DyGetByteOfUtf8Char(it))
-  {
-    this->mString.emplace_back(DyGetRawUtf16CharacterFrom(it));
-  }
+  this->pUpdateString(cString);
 }
 
 DDyString::DDyString(_MIN_ const std::string& string) noexcept : DDyString(string.c_str()) { }
+
+void DDyString::SetText(_MIN_ const char* string) noexcept
+{
+  this->pUpdateString(string);
+}
+
+void DDyString::SetText(_MIN_ const std::string& string) noexcept
+{
+  this->SetText(string.c_str());
+}
+
+void DDyString::SetText(_MIN_ const std::string_view& string) noexcept
+{
+  this->SetText(string.data());
+}
+
+void DDyString::pUpdateString(_MIN_ const char* string) noexcept
+{
+  this->mString.clear();
+  this->mString.reserve(DyGetUtf16LengthFrom(string));
+
+  for (auto it = string; *it != '\0'; it += DyGetByteOfUtf8Char(it))
+  {
+    const auto chr = DyGetRawUtf16CharacterFrom(it);
+    if (chr != SURROGATE_SIGN) { this->mString.emplace_back(chr); }
+  }
+}
 
 } /// ::dy namespace
