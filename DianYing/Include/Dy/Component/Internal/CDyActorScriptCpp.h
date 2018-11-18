@@ -21,16 +21,16 @@ namespace dy
 {
 
 ///
-/// @class CDyScriptCpp
+/// @class CDyActorScriptCpp
 /// @brief Only for cpp internal script component.
 ///
-class CDyScriptCpp final : public CDyScript, public IDyInitializeHelper<PDyScriptComponentMetaInfo>
+class CDyActorScriptCpp final : public CDyScript, public IDyInitializeHelper<PDyScriptComponentMetaInfo>
 {
-  MDY_SET_TYPEMATCH_FUNCTION(::dy::CDyScript, CDyScriptCpp);
+  MDY_SET_TYPEMATCH_FUNCTION(::dy::CDyScript, CDyActorScriptCpp);
   MDY_SET_CRC32_HASH_WITH_TYPE(CDyScriptCpp);
 
-  CDyScriptCpp(FDyActor& actorReference) : CDyScript(actorReference) {};
-  virtual ~CDyScriptCpp() = default;
+  CDyActorScriptCpp(FDyActor& actorReference) : CDyScript(actorReference) {};
+  virtual ~CDyActorScriptCpp() = default;
 
   EDySuccess Initialize(const PDyScriptComponentMetaInfo& descriptor) override final;
   void Release() override final;

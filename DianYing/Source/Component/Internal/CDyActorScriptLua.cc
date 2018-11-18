@@ -12,7 +12,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Component/Internal/CDyScriptLua.h>
+#include <Dy/Component/Internal/CDyActorScriptLua.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Management/ScriptManager.h>
 #include <Dy/Element/Actor.h>
@@ -46,7 +46,7 @@ MDY_SET_IMMUTABLE_STRING(sFunction_OnDisabled,  "OnDisabled");
 namespace dy
 {
 
-EDySuccess CDyScriptLua::Initialize(const PDyScriptComponentMetaInfo& metaInfo)
+EDySuccess CDyActorScriptLua::Initialize(const PDyScriptComponentMetaInfo& metaInfo)
 {
   this->mScriptName = metaInfo.mDetails.mSpecifierName;
 
@@ -75,25 +75,25 @@ EDySuccess CDyScriptLua::Initialize(const PDyScriptComponentMetaInfo& metaInfo)
   return DY_SUCCESS;
 }
 
-void CDyScriptLua::Release()
+void CDyActorScriptLua::Release()
 {
   this->mScriptState.Release();
   this->Deactivate();
 }
 
-void CDyScriptLua::Initiate()
+void CDyActorScriptLua::Initiate()
 {
   MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
   this->mScriptInstance[MSVSTR(sFunction_Initiate)](this->mScriptInstance);
 }
 
-void CDyScriptLua::Start()
+void CDyActorScriptLua::Start()
 {
   MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
   this->mScriptInstance[MSVSTR(sFunction_Start)](this->mScriptInstance);
 }
 
-void CDyScriptLua::Update(float dt)
+void CDyActorScriptLua::Update(float dt)
 {
   MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
   this->mScriptInstance[MSVSTR(sFunction_Update)](this->mScriptInstance);
@@ -105,19 +105,19 @@ void CDyScriptLua::Update(float dt)
 #endif
 }
 
-void CDyScriptLua::OnEnabled()
+void CDyActorScriptLua::OnEnabled()
 {
   MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
   this->mScriptInstance[MSVSTR(sFunction_OnEnabled)](this->mScriptInstance);
 }
 
-void CDyScriptLua::OnDisabled()
+void CDyActorScriptLua::OnDisabled()
 {
   MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
   this->mScriptInstance[MSVSTR(sFunction_OnDisabled)](this->mScriptInstance);
 }
 
-void CDyScriptLua::Destroy()
+void CDyActorScriptLua::Destroy()
 {
   MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
   this->mScriptInstance[MSVSTR(sFunction_Destroy)](this->mScriptInstance);

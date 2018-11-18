@@ -12,60 +12,61 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Component/Internal/CDyScriptCpp.h>
+#include <Dy/Component/Internal/CDyActorScriptCpp.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Core/Reflection/RDyCppScript.h>
 
 namespace dy
 {
 
-EDySuccess CDyScriptCpp::Initialize(const PDyScriptComponentMetaInfo& descriptor)
+EDySuccess CDyActorScriptCpp::Initialize(const PDyScriptComponentMetaInfo& descriptor)
 {
   const auto& metaInfo = MDyMetaInfo::GetInstance().GetScriptMetaInformation(descriptor.mDetails.mSpecifierName);
   MDY_ASSERT(metaInfo.mScriptType == EDyScriptType::Cpp, "Script type is not matched to CDyScriptCpp.");
 
   this->mScriptInstance = DyRefGetActorScriptInstance(metaInfo.mSpecifierName);
+  this->mScriptInstance->pfSetOutsideReference(*this);
   MDY_ASSERT(this->mScriptInstance != nullptr, "Script instance could not bound to system.");
 
   return DY_SUCCESS;
 }
 
-void CDyScriptCpp::Release()
+void CDyActorScriptCpp::Release()
 {
   this->mScriptInstance = nullptr;
 }
 
-void CDyScriptCpp::Initiate()
+void CDyActorScriptCpp::Initiate()
 {
   MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
   this->mScriptInstance->Initiate();
 }
 
-void CDyScriptCpp::Start()
+void CDyActorScriptCpp::Start()
 {
   MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
   this->mScriptInstance->Start();
 }
 
-void CDyScriptCpp::Update(_MIN_ float dt)
+void CDyActorScriptCpp::Update(_MIN_ float dt)
 {
   MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
   this->mScriptInstance->Update(dt);
 }
 
-void CDyScriptCpp::OnEnabled()
+void CDyActorScriptCpp::OnEnabled()
 {
   MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
   this->mScriptInstance->OnEnabled();
 }
 
-void CDyScriptCpp::OnDisabled()
+void CDyActorScriptCpp::OnDisabled()
 {
   MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
   this->mScriptInstance->OnDisabled();
 }
 
-void CDyScriptCpp::Destroy()
+void CDyActorScriptCpp::Destroy()
 {
   MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
   this->mScriptInstance->Destroy();

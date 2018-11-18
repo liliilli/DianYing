@@ -15,8 +15,8 @@
 
 #include <Dy/Core/Component/Internal/MaterialType.h>
 #include <Dy/Component/CDyScript.h>
-#include <Dy/Component/Internal/CDyScriptCpp.h>
-#include <Dy/Component/Internal/CDyScriptLua.h>
+#include <Dy/Component/Internal/CDyActorScriptCpp.h>
+#include <Dy/Component/Internal/CDyActorScriptLua.h>
 #include <Dy/Component/Helper/TmpCheckInitilizeParams.h>
 #include <Dy/Component/Helper/TmpCheckRemoveParams.h>
 #include <Dy/Element/Object.h>
@@ -167,13 +167,13 @@ public:
       std::unique_ptr<CDyScript> component = nullptr;
       if (instanceInfo.mScriptType == EDyScriptType::Cpp)
       {
-        auto componentPtr = std::make_unique<CDyScriptCpp>(std::ref(*this));
+        auto componentPtr = std::make_unique<CDyActorScriptCpp>(std::ref(*this));
         MDY_CALL_ASSERT_SUCCESS(componentPtr->Initialize(info));
         component = std::move(componentPtr);
       }
       else
       {
-        auto componentPtr = std::make_unique<CDyScriptLua>(std::ref(*this));
+        auto componentPtr = std::make_unique<CDyActorScriptLua>(std::ref(*this));
         MDY_CALL_ASSERT_SUCCESS(componentPtr->Initialize(info));
         component = std::move(componentPtr);
       }

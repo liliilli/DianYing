@@ -156,9 +156,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\Builtin\Script\DebugUiScriptCpp.cc" />
+    <ClCompile Include="Source\Component\Abstract\ADyActorCppScript.cc" />
     <ClCompile Include="Source\Component\Abstract\ADyWidgetCppScript.cc" />
-    <ClCompile Include="Source\Component\Internal\CDyScriptCpp.cc" />
-    <ClCompile Include="Source\Component\Internal\CDyScriptLua.cc" />
+    <ClCompile Include="Source\Component\Internal\CDyActorScriptCpp.cc" />
+    <ClCompile Include="Source\Component\Internal\CDyActorScriptLua.cc" />
     <ClCompile Include="Source\Component\UI\CDyWidgetScriptCpp.cc" />
     <ClCompile Include="Source\Component\UI\CDyWidgetScriptLua.cc" />
     <ClCompile Include="Source\Element\Canvas\UiObjectChildrenable.cc" />
@@ -402,7 +403,7 @@
     <ClInclude Include="Include\Dy\Component\CDyDirectionalLight.h" />
     <ClInclude Include="Include\Dy\Component\Ctor\PDyFontRenderer.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyActorCppScript.h" />
-    <ClInclude Include="Include\Dy\Component\Internal\CDyScriptCpp.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\CDyActorScriptCpp.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyFontRenderer.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyFontRenderer_Deprecated.h" />
     <ClInclude Include="Include\Dy\Component\CDyModelFilter.h" />
@@ -415,7 +416,7 @@
     <ClInclude Include="Include\Dy\Component\Helper\TmpCheckInitilizeParams.h" />
     <ClInclude Include="Include\Dy\Component\Helper\TmpCheckRemoveParams.h" />
     <ClInclude Include="Include\Dy\Component\Interface\IDyInitializeHelper.h" />
-    <ClInclude Include="Include\Dy\Component\Internal\CDyScriptLua.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\CDyActorScriptLua.h" />
     <ClInclude Include="Include\Dy\Component\Internal\ScriptState.h" />
     <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScript.h" />
     <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScriptCpp.h" />

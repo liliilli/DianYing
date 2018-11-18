@@ -15,6 +15,20 @@
 
 #include <Dy/Component/Interface/IDyScriptable.h>
 
+//!
+//! Forward declaration
+//!
+
+namespace dy
+{
+class FDyActor;
+class CDyActorScriptCpp;
+} /// ::dy namespace
+
+//!
+//! Implementation
+//!
+
 namespace dy
 {
 
@@ -22,14 +36,26 @@ namespace dy
 /// @class ADyActorCppScript
 /// @brief Cpp script for Actor.
 ///
-class ADyActorCppScript : public IDyScriptable
+MDY_ABSTRACT ADyActorCppScript : public IDyScriptable
 {
 public:
-
+  ///
+  /// @brief Get widget reference.
+  ///
+  MDY_NODISCARD FDyActor& GetActorReference();
 
 private:
+  ///
+  /// @brief Set reference to outside world.
+  /// @param outsideReference Reference of WidgetScriptCpp instance.
+  ///
+  void pfSetOutsideReference(CDyActorScriptCpp& outsideReference) noexcept
+  {
+    this->mOutside = &outsideReference;
+  }
 
-
+  CDyActorScriptCpp* mOutside = nullptr;
+  friend class CDyActorScriptCpp;
 };
 
 } /// ::dy namespace

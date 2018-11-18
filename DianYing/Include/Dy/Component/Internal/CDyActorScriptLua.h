@@ -21,16 +21,16 @@ namespace dy
 {
 
 ///
-/// @class CDyScriptLua
+/// @class CDyActorScriptLua
 /// @brief Only for lua internal script component.
 ///
-class CDyScriptLua final : public CDyScript, public IDyInitializeHelper<PDyScriptComponentMetaInfo>
+class CDyActorScriptLua final : public CDyScript, public IDyInitializeHelper<PDyScriptComponentMetaInfo>
 {
-  MDY_SET_TYPEMATCH_FUNCTION(::dy::CDyScript, CDyScriptLua);
+  MDY_SET_TYPEMATCH_FUNCTION(::dy::CDyScript, CDyActorScriptLua);
   MDY_SET_CRC32_HASH_WITH_TYPE(CDyScriptLua);
 
-  CDyScriptLua(FDyActor& actorReference) : CDyScript(actorReference) {};
-  virtual ~CDyScriptLua() = default;
+  CDyActorScriptLua(FDyActor& actorReference) : CDyScript(actorReference) {};
+  virtual ~CDyActorScriptLua() = default;
 
   EDySuccess Initialize(const PDyScriptComponentMetaInfo& descriptor) override final;
   void Release() override final;
