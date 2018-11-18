@@ -15,23 +15,20 @@
 /// Header file
 #include <Dy/Core/Rendering/UIBasicRenderer.h>
 
-#include <glm/gtc/matrix_transform.hpp>
-
 #include <Dy/Builtin/ShaderGl/RenderDefaultFont.h>
 #include <Dy/Core/Component/Resource/ShaderResource.h>
 #include <Dy/Core/Rendering/Helper/FrameAttachmentString.h>
-#include <Dy/Element/Canvas/Text_Deprecated.h>
-#include <Dy/Helper/Type/DyString.h>
-#include <Dy/Helper/Type/Matrix4.h>
+#include <Dy/Element/Canvas/Text.h>
+#include <Dy/Meta/Descriptor/WidgetTextMetaInformation.h>
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/Rendering/FramebufferManager.h>
 #include <Dy/Management/IO/IOResourceManager.h>
-#include <Dy/Meta/Descriptor/WidgetTextMetaInformation.h>
-#include <Dy/Builtin/ShaderGl/RenderFontSDF_Deprecated.h>
 #include <Dy/Management/FontManager.h>
-#include <Dy/Builtin/ShaderGl/RenderFontArraySDF.h>
-#include <Dy/Element/Canvas/Text.h>
-#include "Dy/Management/WindowManager.h"
+#include <Dy/Management/WindowManager.h>
+
+#include <Dy/Element/Canvas/Widget.h>
+#include "Dy/Management/IO/MetaInfoManager.h"
+#include "Dy/Builtin/ShaderGl/RenderFontArraySDF.h"
 
 //!
 //! Local translation unit data
@@ -43,7 +40,7 @@ namespace
 dy::CDyShaderResource* sSampleShaderPtr = nullptr;
 
 dy::PDyMetaWidgetTextDescriptor desc{};
-std::unique_ptr<dy::FDyText> textComponent = nullptr;
+std::unique_ptr<dy::FDyUiWidget> testWidget = nullptr;
 
 } /// ::unnamed namespace
 
@@ -66,8 +63,9 @@ FDyUIBasicRenderer::FDyUIBasicRenderer()
   //! Lambda function
   //!
 
+  builtin::FDyBuiltinShaderGLRenderFontArraySDF();
+#ifdef false
   static auto SetTemporaryInitialSetting = [&] {
-    builtin::FDyBuiltinShaderGLRenderFontArraySDF();
 
     desc.mComponentType = EDyWidgetComponentType::Text;
     desc.mComponentSpecifierName = "sampleTestText";
@@ -96,6 +94,7 @@ Camera0 : 2
 彼らは優れた体力に、創造した科学者と同等の高い知性を持っていた。)dy";
 #endif
   };
+#endif
 
   static auto CreateUIGeneralFramebuffer = [&] {
     PDyGlFrameBufferInformation       framebufferInfo = {};
@@ -135,7 +134,6 @@ Camera0 : 2
   //! FUNCTIONBODY∨
   //!
 
-  SetTemporaryInitialSetting();
   CreateUIGeneralFramebuffer();
 
   // @TODO TEMPORAL
@@ -156,14 +154,13 @@ void FDyUIBasicRenderer::RenderScreen()
   static bool f = false;
   if (f == false)
   {
-    textComponent = std::make_unique<FDyText>();
-    MDY_CALL_ASSERT_SUCCESS(textComponent->Initialize(desc));
+    testWidget = std::make_unique<FDyUiWidget>();
+    MDY_CALL_ASSERT_SUCCESS(testWidget->Initialize(MDyMetaInfo::GetInstance().GetWidgetMetaInformation("DebugUi")));
     f = !f;
   }
 
   glBindFramebuffer(GL_FRAMEBUFFER, this->mDyBtFbUiBasic->GetFramebufferId());
-  textComponent->SetText(std::to_string(MDyWindow::GetInstance().GetCpuUsage()));
-  textComponent->Render();
+  testWidget->Render();
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 

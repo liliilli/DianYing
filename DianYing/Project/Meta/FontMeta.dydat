@@ -1,0 +1,14 @@
+{
+  "Arial":
+  {
+    "SpecifierName": "Arial",
+    "FontType": "SDF",
+    "FontInfoPath": "./TestResource/Font/UD Digi Kyokasho N-R_Regular.dyFntRes",
+    "FontTexturePath":
+    [
+        "./TestResource/Font/UD Digi Kyokasho N-R_Regular_1.png"
+    ],
+    "FontFilePath": "",
+    "IsUsingRuntimeCreationWhenNotExist": false
+  }
+}

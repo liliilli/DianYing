@@ -241,7 +241,7 @@ TEST(MDY_TEST_CATEGORY_MATRIX2x2, TestMultiplyWithVector)
     3, 5,
     6, 10
   };
-  const auto rhs = dy::DVector2{10, -10};
+  const auto rhs = dy::DDyVector2{10, -10};
 
   {
     const auto result = lhs.MultiplyVector(rhs);
