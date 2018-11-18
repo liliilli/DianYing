@@ -13,6 +13,7 @@
 /// SOFTWARE.
 ///
 
+#include <sol2/sol.hpp>
 #include <Dy/Component/CDyScript.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 

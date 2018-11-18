@@ -15,7 +15,7 @@
 
 #include <Dy/Component/CDyScript.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
-#include <Dy/Component/Interface/ADyActorCppScript.h>
+#include <Dy/Component/Abstract/ADyActorCppScript.h>
 
 namespace dy
 {

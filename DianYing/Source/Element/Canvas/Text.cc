@@ -29,6 +29,8 @@ std::string FDyText::ToString()
 
 EDySuccess FDyText::Initialize(_MIN_ const PDyMetaWidgetTextDescriptor& objectMetaDesc)
 { // Set properties.
+  this->pSetObjectName(objectMetaDesc.mUiObjectSpecifierName);
+
   this->mTextString             = objectMetaDesc.mInitialString;
   this->mForegroundColor        = objectMetaDesc.mInitialColor;
   this->mBackgroundColor        = objectMetaDesc.mBackgroundColor;

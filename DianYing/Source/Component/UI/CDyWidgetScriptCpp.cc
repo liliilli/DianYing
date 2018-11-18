@@ -26,7 +26,7 @@ EDySuccess CDyWidgetScriptCpp::Initialize(const PDyScriptComponentMetaInfo& desc
   const auto& metaInfo = MDyMetaInfo::GetInstance().GetScriptMetaInformation(descriptor.mDetails.mSpecifierName);
   MDY_ASSERT(metaInfo.mScriptType == EDyScriptType::Cpp, "Script type is not matched to CDyWidgetScriptCpp.");
 
-  this->mScriptInstance = DyRefGetScriptInstance(metaInfo.mSpecifierName);
+  this->mScriptInstance = DyRefGetWidgetScriptInstance(metaInfo.mSpecifierName);
   MDY_ASSERT(this->mScriptInstance != nullptr, "Script instance could not bound to system.");
 
   this->mScriptInstance->pfSetOutsideReference(*this);

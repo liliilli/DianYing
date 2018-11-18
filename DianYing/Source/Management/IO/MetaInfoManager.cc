@@ -110,7 +110,7 @@ std::unique_ptr<dy::PDyMetaWidgetRootDescriptor> DyCreateWidgetMetaInformation(_
     case EDyWidgetComponentType::Text:
     { // Text component
       auto instance = PDyMetaWidgetTextDescriptor::CreateMetaInformation(componentInfo);
-      const auto specifierName = instance->mComponentSpecifierName;
+      const auto specifierName = instance->mUiObjectSpecifierName;
       tempWidgetObjectMap.try_emplace(
           specifierName,
           std::make_pair<>(componentType, DyConvertUniquePtrTo<PDyMetaWidgetCommonBaseDesc>(std::move(instance)))
@@ -119,7 +119,7 @@ std::unique_ptr<dy::PDyMetaWidgetRootDescriptor> DyCreateWidgetMetaInformation(_
     case EDyWidgetComponentType::HorizontalLayout:
     { // Horizontal layout component
       auto instance = PDyMetaWidgetHorizontalLayout::CreateMetaInformation(componentInfo);
-      const auto specifierName = instance->mComponentSpecifierName;
+      const auto specifierName = instance->mUiObjectSpecifierName;
       tempWidgetObjectMap.try_emplace(
           specifierName,
           std::make_pair<>(componentType, DyConvertUniquePtrTo<PDyMetaWidgetCommonBaseDesc>(std::move(instance)))
@@ -128,7 +128,7 @@ std::unique_ptr<dy::PDyMetaWidgetRootDescriptor> DyCreateWidgetMetaInformation(_
     case EDyWidgetComponentType::VerticalLayout:
     { // Vertical layout component
       auto instance = PDyMetaWidgetVerticalLayout::CreateMetaInformation(componentInfo);
-      const auto specifierName = instance->mComponentSpecifierName;
+      const auto specifierName = instance->mUiObjectSpecifierName;
       tempWidgetObjectMap.try_emplace(
           specifierName,
           std::make_pair<>(componentType, DyConvertUniquePtrTo<PDyMetaWidgetCommonBaseDesc>(std::move(instance)))

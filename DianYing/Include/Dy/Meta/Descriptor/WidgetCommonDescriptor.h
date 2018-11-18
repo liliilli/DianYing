@@ -58,7 +58,7 @@ struct PDyMetaWidgetChildableBaseDesc
 ///
 struct PDyMetaWidgetCommonBaseDesc : public PDyMetaWidgetChildableBaseDesc
 { /// Specification name
-  std::string                   mComponentSpecifierName = MDY_INITIALIZE_EMPTYSTR;
+  std::string                   mUiObjectSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
   /// Widget component type
   EDyWidgetComponentType        mComponentType          = EDyWidgetComponentType::NoneError;
   /// Parent component pointer. if root, rawptr must be nullptr.

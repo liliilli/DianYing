@@ -19,10 +19,11 @@
 namespace dy::reflect
 {
 
-void __Rfc__AddMetaInformation(const std::string& typeSpecifier)
+void __Rfc__AddMetaInformation(_MIN_ const std::string& typeSpecifier, _MIN_ const EDyScriptMode mode)
 {
   PDyScriptInstanceMetaInfo metaInfo = {};
   metaInfo.mScriptType    = EDyScriptType::Cpp;
+  metaInfo.mScriptMode    = mode;
   metaInfo.mSpecifierName = typeSpecifier;
   MDY_CALL_ASSERT_SUCCESS(MDyMetaInfo::GetInstance().pfAddScriptMetaInformation(metaInfo));
 }

@@ -163,8 +163,8 @@ private:
   /// Widget meta information map.
   THashMap<std::unique_ptr<PDyMetaWidgetRootDescriptor>> mWidgetMetaInfo = {};
 
-  friend EDySuccess FDyBuiltinInformationDeliver::ForwardWidgetMetaInformation(const std::string_view& metaString);
-  friend void ::dy::reflect::__Rfc__AddMetaInformation(const std::string&);
+  friend EDySuccess FDyBuiltinInformationDeliver::ForwardWidgetMetaInformation(_MIN_ const std::string_view& metaString);
+  friend void ::dy::reflect::__Rfc__AddMetaInformation(_MIN_ const std::string&, _MIN_ const EDyScriptMode);
 };
 
 } /// ::dy namespace

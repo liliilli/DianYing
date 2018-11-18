@@ -271,7 +271,6 @@
     <ClInclude Include="Include\Dy\Editor\Gui\ViewWorldOutliner.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\ViewDetailView.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\Detail\Transform.h" />
-    <ClInclude Include="Include\Dy\Element\Interface\IDyScriptable.h" />
     <ClInclude Include="Include\Dy\Element\Interface\IDyUpdatable.h" />
     <ClInclude Include="Include\Dy\Element\Interface\IDyToString.h" />
     <ClInclude Include="Include\Dy\Element\Abstract\ADyTransformable.h" />
@@ -456,7 +455,8 @@
     <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScriptLua.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\UiObjectChildrenable.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyWidgetCppScript.h" />
-    <ClInclude Include="Include\Dy\Component\Interface\ADyActorCppScript.h" />
+    <ClInclude Include="Include\Dy\Component\Abstract\ADyActorCppScript.h" />
+    <ClInclude Include="Include\Dy\Component\Interface\IDyScriptable.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

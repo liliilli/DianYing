@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Element/RenderableObject.h>
+#include <Dy/Element/Canvas/UiObjectChildrenable.h>
 #include <Dy/Element/Canvas/UiObject.h>
 #include <Dy/Helper/Pointer.h>
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
@@ -28,13 +28,13 @@ namespace dy
 /// @class FDyUiWidget
 /// @brief FFF
 ///
-class FDyUiWidget final : public FDyRenderableObject, public IDyInitializeHelper<PDyMetaWidgetRootDescriptor>
+class FDyUiWidget final : public FDyUiObjectChildrenable, public IDyInitializeHelper<PDyMetaWidgetRootDescriptor>
 {
   using TUiObject       = std::unique_ptr<FDyUiObject>;
 	using TUiObjectMap    = std::unordered_map<std::string, TUiObject>;
 
   MDY_SET_CRC32_HASH_WITH_TYPE(FDyUiWidget);
-  MDY_SET_TYPEMATCH_FUNCTION(FDyRenderableObject, FDyUiWidget);
+  MDY_SET_TYPEMATCH_FUNCTION(FDyUiObjectChildrenable, FDyUiWidget);
 public:
   FDyUiWidget() = default;
 

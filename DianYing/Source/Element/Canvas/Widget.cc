@@ -22,28 +22,13 @@
 #include <Dy/Component/UI/CDyWidgetScriptCpp.h>
 #include <Dy/Component/UI/CDyWidgetScriptLua.h>
 
-//!
-//! Forward declaration
-//!
-
-namespace
-{
-
-std::unique_ptr<dy::FDyText> testWidget = nullptr;
-
-} /// ::unnamed namespace
-
-//!
-//! Implementation
-//!
-
 namespace dy
 {
 
 EDySuccess FDyUiWidget::Initialize(_MIN_ const PDyMetaWidgetRootDescriptor& widgetMetaDesc)
 {
   ///
-  /// @brief Make script component (lua or cpp)
+  /// @brief Make widget script component (lua or cpp)
   ///
   static auto MakeScriptComponent = [this](const PDyScriptComponentMetaInfo& info)
   {
@@ -71,16 +56,7 @@ EDySuccess FDyUiWidget::Initialize(_MIN_ const PDyMetaWidgetRootDescriptor& widg
   //! FUNCTIONBODY ∨
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  // (1) Make script instance following meta information.
-  this->pSetObjectName(widgetMetaDesc.mWidgetSpecifierName);
-  if (const auto& scriptName = widgetMetaDesc.mScriptReference.mDetails.mSpecifierName;
-      scriptName.empty() == false)
-  {
-    this->mWidgetScript = MakeScriptComponent(widgetMetaDesc.mScriptReference);
-    MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mWidgetScript), "Widget script must be valid in this case.");
-  }
-
-  // (2) Create UI objects.
+  // (1) Create UI objects.
   for (const auto& [specifier, objectMetaInfoPair] : widgetMetaDesc.mChildComponentList)
   {
     const auto& [objectType, objectMetaInfoPtr] = objectMetaInfoPair;
@@ -88,12 +64,19 @@ EDySuccess FDyUiWidget::Initialize(_MIN_ const PDyMetaWidgetRootDescriptor& widg
     {
     default: MDY_UNEXPECTED_BRANCH(); break;
     case EDyWidgetComponentType::Text:
-      testWidget = std::make_unique<FDyText>();
-      MDY_CALL_ASSERT_SUCCESS(testWidget->Initialize(
-          *static_cast<PDyMetaWidgetTextDescriptor*>(objectMetaInfoPtr.get()))
-      );
+      MDY_NOTUSED auto ptr = this->AddUiObject<FDyText>(*static_cast<PDyMetaWidgetTextDescriptor*>(objectMetaInfoPtr.get()));
       break;
     }
+  }
+
+  // (2) Make script instance following meta information.
+  this->pSetObjectName(widgetMetaDesc.mWidgetSpecifierName);
+  if (const auto& scriptName = widgetMetaDesc.mScriptReference.mDetails.mSpecifierName;
+      scriptName.empty() == false)
+  {
+    this->mWidgetScript = MakeScriptComponent(widgetMetaDesc.mScriptReference);
+    MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mWidgetScript), "Widget script must be valid in this case.");
+    this->mWidgetScript->Initiate();
   }
 
   return DY_SUCCESS;
@@ -106,11 +89,16 @@ void FDyUiWidget::Release()
 
 void FDyUiWidget::Render()
 {
+  if (this->mWidgetScript) { this->mWidgetScript->Update(0.0f); }
+  FDyUiObjectChildrenable::Render();
+
+#ifdef false
   if (testWidget)
   {
     testWidget->SetText(std::to_string(MDyWindow::GetInstance().GetCpuUsage()));
     testWidget->Render();
   };
+#endif
 }
 
 } /// ::dy namespace

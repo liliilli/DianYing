@@ -33,6 +33,20 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyScriptType& p);
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyScriptType& p);
 
 ///
+/// @enum   EDyScriptMode
+/// @brief  Script mode specification type.
+///
+enum class EDyScriptMode
+{
+  Widget,
+  Actor,
+  NoneError
+};
+
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyScriptMode& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyScriptMode& p);
+
+///
 /// @struct PDyScriptReferenceMetaInfo
 /// @brief  Reference meta information to `PDyScriptInstanceMetaInfo`. \n
 /// specifier must be valid on runtime.
@@ -52,6 +66,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyScriptReferenceMetaInf
 struct PDyScriptInstanceMetaInfo final
 {
   EDyScriptType mScriptType    = EDyScriptType::NoneError;
+  EDyScriptMode mScriptMode    = EDyScriptMode::NoneError;
   std::string   mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
   std::string   mFilePath      = "";
   bool          mIsCompressed  = false;

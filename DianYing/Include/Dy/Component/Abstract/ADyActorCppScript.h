@@ -13,12 +13,24 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Element/Interface/IDyScriptable.h>
+#include <Dy/Component/Interface/IDyScriptable.h>
 
 namespace dy
 {
 
-using IDyCppScript = IDyScriptable;
+///
+/// @class ADyActorCppScript
+/// @brief Cpp script for Actor.
+///
+class ADyActorCppScript : public IDyScriptable
+{
+public:
+
+
+private:
+
+
+};
 
 } /// ::dy namespace
 

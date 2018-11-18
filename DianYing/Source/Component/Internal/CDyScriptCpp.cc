@@ -24,7 +24,7 @@ EDySuccess CDyScriptCpp::Initialize(const PDyScriptComponentMetaInfo& descriptor
   const auto& metaInfo = MDyMetaInfo::GetInstance().GetScriptMetaInformation(descriptor.mDetails.mSpecifierName);
   MDY_ASSERT(metaInfo.mScriptType == EDyScriptType::Cpp, "Script type is not matched to CDyScriptCpp.");
 
-  this->mScriptInstance = DyRefGetScriptInstance(metaInfo.mSpecifierName);
+  this->mScriptInstance = DyRefGetActorScriptInstance(metaInfo.mSpecifierName);
   MDY_ASSERT(this->mScriptInstance != nullptr, "Script instance could not bound to system.");
 
   return DY_SUCCESS;

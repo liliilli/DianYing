@@ -45,6 +45,7 @@ FDyUiObject* FDyUiObjectChildrenable::GetUiObject(const std::string& objectName,
   else
   {
     MDY_NOT_IMPLEMENTED_ASSERT();
+    return nullptr;
   }
 }
 

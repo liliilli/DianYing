@@ -401,7 +401,7 @@
     <ClInclude Include="Include\Dy\Component\CDyCamera.h" />
     <ClInclude Include="Include\Dy\Component\CDyDirectionalLight.h" />
     <ClInclude Include="Include\Dy\Component\Ctor\PDyFontRenderer.h" />
-    <ClInclude Include="Include\Dy\Component\Interface\ADyActorCppScript.h" />
+    <ClInclude Include="Include\Dy\Component\Abstract\ADyActorCppScript.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyScriptCpp.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyFontRenderer.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyFontRenderer_Deprecated.h" />
@@ -459,7 +459,7 @@
     <ClInclude Include="Include\Dy\Meta\Information\ElementObjectMetaInfo.h" />
     <ClInclude Include="Include\Dy\Meta\Information\PrefabMetaInformation.h" />
     <ClInclude Include="Include\Dy\Element\Helper\DescriptorComponentHeaderString.h" />
-    <ClInclude Include="Include\Dy\Element\Interface\IDyScriptable.h" />
+    <ClInclude Include="Include\Dy\Component\Interface\IDyScriptable.h" />
     <ClInclude Include="Include\Dy\Element\Interface\IDyToString.h" />
     <ClInclude Include="Include\Dy\Element\Interface\IDyUpdatable.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\EtcType.h" />

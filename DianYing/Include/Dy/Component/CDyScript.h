@@ -14,9 +14,8 @@
 ///
 
 #include <functional>
-#include <sol2/sol.hpp>
 #include <Dy/Element/Abstract/ADyBaseComponent.h>
-#include <Dy/Element/Interface/IDyScriptable.h>
+#include <Dy/Component/Interface/IDyScriptable.h>
 #include <Dy/Component/Internal/ScriptState.h>
 
 //!
