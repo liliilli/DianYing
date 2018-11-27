@@ -29,14 +29,16 @@ struct PDyMetaWidgetTextDescriptor final : public PDyMetaWidgetCommonBaseDesc
 {
   /// UCS-2 string
   DDyString     mInitialString      = MDY_INITIALIZE_EMPTYSTR;
+  /// Size (px) of text widget (leaf widget).
+  DDyVectorInt2 mWidgetSize         = {};
   /// Initial position of canvas.
   DDyVectorInt2 mInitialPosition    = {};
   /// InitialColor(rgb) + InitialAlpha(a)
-  DDyColorRGBA      mInitialColor   = DDyColorRGBA::White;
+  DDyColorRGBA  mInitialColor       = DDyColorRGBA::White;
   /// Edge color of text. `mIsUsingEdge` must be enabled to use this.
-  DDyColorRGBA      mEdgeColor      = DDyColorRGBA{0, 0, 0, 0};
+  DDyColorRGBA  mEdgeColor          = DDyColorRGBA{0, 0, 0, 0};
   /// Background color of text. `mIsUsingBackground` must be enabled to use this.
-  DDyColorRGBA      mBackgroundColor= DDyColorRGBA{0, 0, 0, 0};
+  DDyColorRGBA  mBackgroundColor    = DDyColorRGBA{0, 0, 0, 0};
   /// Font Size (px?)
   TU32          mFontSize           = MDY_INITIALIZE_DEFUINT;
   /// If empty, just use default font.

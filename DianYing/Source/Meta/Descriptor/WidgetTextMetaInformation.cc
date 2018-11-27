@@ -31,6 +31,7 @@ PDyMetaWidgetTextDescriptor::CreateMetaInformation(_MIN_ const nlohmann::json& i
     "Parent": "Root",
     "Details":
     {
+      "WidgetSize": { "X": 200, "Y": 100 },
       "InitialString": "Hello world!",
       "InitialPosition": { "X":0, "Y":0 },
       "InitialColor": 16777215,
@@ -75,6 +76,8 @@ PDyMetaWidgetTextDescriptor::CreateMetaInformation(_MIN_ const nlohmann::json& i
   instance->mFontSize           = DyJsonGetValueFrom<TU32>(detailAtlas, sHeader_FontSize);
   instance->mFontSpecifierName  = DyJsonGetValueFrom<std::string>(detailAtlas, sHeader_FontSpecifierName);
   instance->mIsUsingEdge        = DyJsonGetValueFrom<bool>(detailAtlas, sHeader_IsUsingEdge);
+
+  instance->mWidgetSize         = DyJsonGetValueFrom<DDyVectorInt2>(detailAtlas, "WidgetSize");
   instance->mEdgeColor          = DyJsonGetValueFrom<DDyColorRGB24>(detailAtlas, "EdgeColor");
 
   return instance;

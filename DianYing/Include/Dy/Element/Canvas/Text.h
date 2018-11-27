@@ -48,6 +48,13 @@ public:
   virtual ~FDyText()  = default;
 
   ///
+  /// @brief Align final position of widget from parent information.
+  /// @param parentFinalPosition  Final position of parent.
+  /// @param parentFrameSize      Frame size of parent.
+  ///
+  void AlignFinalPosition(const DDyVector2& parentFinalPosition, const DDyVectorInt2& parentFrameSize) override final;
+
+  ///
   /// @brief
   /// @return
   /// @TODO NOT IMPLEMENTED YET
@@ -107,10 +114,10 @@ public:
   MDY_NODISCARD const DDyColorRGBA& GetEdgeColor() const noexcept;
 
   ///
-  /// @brief
-  /// @return
+  /// @brief  Get position to be rendered in UI.
+  /// @return Final rendered posiiton.
   ///
-  MDY_NODISCARD const DDyVectorInt2& GetRenderPosition() const noexcept;
+  MDY_NODISCARD const DDyVector2& GetRenderPosition() const noexcept;
 
   ///
   /// @brief  Check if this text component is using edge rendering feature.
@@ -177,8 +184,6 @@ private:
   DDyColorRGBA          mEdgeColor        = DDyColorRGBA::Black;
   /// Font size
   TU32              mFontSize         = 16;
-  ///
-  DDyVectorInt2     mPosition         = {};
   ///
   CDyFontRenderer   mRenderer         = {};
 

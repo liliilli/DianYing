@@ -185,6 +185,7 @@
     <ClCompile Include="Source\Component\Internal\CDyActorScriptCpp.cc" />
     <ClCompile Include="Source\Component\Internal\CDyActorScriptLua.cc" />
     <ClCompile Include="Source\Component\Abstract\ADyActorCppScript.cc" />
+    <ClCompile Include="Source\Element\Canvas\UiObject.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />

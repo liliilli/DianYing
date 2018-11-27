@@ -162,6 +162,7 @@
     <ClCompile Include="Source\Component\Internal\CDyActorScriptLua.cc" />
     <ClCompile Include="Source\Component\UI\CDyWidgetScriptCpp.cc" />
     <ClCompile Include="Source\Component\UI\CDyWidgetScriptLua.cc" />
+    <ClCompile Include="Source\Element\Canvas\UiObject.cc" />
     <ClCompile Include="Source\Element\Canvas\UiObjectChildrenable.cc" />
     <ClCompile Include="Source\Core\Reflection\RDyCppScript.cc" />
     <ClCompile Include="Source\Element\Canvas\Widget.cc" />

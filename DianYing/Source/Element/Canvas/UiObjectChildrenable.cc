@@ -29,6 +29,36 @@ void FDyUiObjectChildrenable::Render()
   }
 }
 
+void FDyUiObjectChildrenable::SetWidgetCentralPosition(const DDyVector2& position) noexcept
+{
+  FDyUiObject::SetWidgetCentralPosition(position);
+  this->mIsPositionChanged = true;
+}
+
+void FDyUiObjectChildrenable::SetWidgetFrameSize(const DDyVectorInt2& size) noexcept
+{
+  FDyUiObject::SetWidgetFrameSize(size);
+  this->mIsFrameSizeChanged = true;
+}
+
+void FDyUiObjectChildrenable::PropagateInformationToChildren()
+{
+  // Align children's position.
+  if (this->mIsPositionChanged == true || this->mIsFrameSizeChanged == true)
+  {
+    for (auto& children : this->mUiObjectList)
+    {
+      if (MDY_CHECK_ISEMPTY(children)) { continue; }
+      children->AlignFinalPosition(this->mFinalCentralPosition, this->GetFrameSize());
+    }
+
+    // And align Chidlrenable ui object's position using recursion.
+    // @TODO NOT IMPLEMENTD YET.
+    this->mIsFrameSizeChanged = false;
+    this->mIsPositionChanged  = false;
+  }
+}
+
 FDyUiObject* FDyUiObjectChildrenable::GetUiObject(const std::string& objectName, EDySearchMode searchMode)
 {
   if (searchMode == EDySearchMode::Default)

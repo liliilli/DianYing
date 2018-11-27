@@ -43,24 +43,6 @@ enum class EDyTextAlignmentType : int
   Right
 };
 
-///
-/// @brief This enum is need for calculating originable instance's final rendering position. \n
-/// IOriginable instance has a feature of calculating final poisiton mechanism with UiObject, or MFontManager. \n
-///
-/// \(7)|(8)/(9) At first, method gets Origin value of child which is left and calculate \n
-/// -(4).(5)-(6) with parent_x, y, width, height to be aligned Parent's region without \n
-/// /(1)|(2)\(3) applying child's local position. \n
-///
-/// Afterward, this method sets final rendering position of child and apply changed value to
-/// children of child calling SetUiParentPosition() of children of child.
-///
-enum class EDyOrigin : int
-{
-  UP_LEFT = 7,      UP_CENTER = 8,      UP_RIGHT = 9,
-  CENTER_LEFT = 4,  CENTER_CENTER = 5,  CENTER_RIGHT = 6,
-  DOWN_LEFT = 1,    DOWN_CENTER = 2,    DOWN_RIGHT = 3
-};
-
 } /// ::dy namespace
 
 #endif /// GUARD_DY_ELEMENT_DESCRIPTOR_CANVASDESCRIPTOR_H

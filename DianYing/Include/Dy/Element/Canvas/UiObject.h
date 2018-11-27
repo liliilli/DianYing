@@ -14,6 +14,8 @@
 ///
 
 #include <Dy/Element/RenderableObject.h>
+#include <Dy/Helper/Type/Vector2.h>
+#include <Dy/Helper/Type/VectorInt2.h>
 
 //!
 //! Forward declaration
@@ -21,6 +23,7 @@
 
 namespace dy
 {
+enum class EDyOrigin;
 class FDyUiObjectChildrenable;
 } /// ::dy namespace
 
@@ -55,17 +58,54 @@ public:
   }
 
   ///
+  /// @brief Set central position of widget.
+  /// @param position Position value.
+  ///
+  virtual void SetWidgetCentralPosition(_MIN_ const DDyVector2& position) noexcept;
+
+  ///
+  /// @brief  Get widget position following origin anchor input (not final position)
+  /// @param  origin Anchor.
+  /// @return widget position from parent.
+  ///
+  MDY_NODISCARD DDyVector2 GetWidgetPosition(_MIN_ const EDyOrigin& origin) const noexcept;
+
+  ///
+  /// @brief Set frame size of widget.
+  /// @param size Frame size. Must be full size, not half size.
+  ///
+  virtual void SetWidgetFrameSize(_MIN_ const DDyVectorInt2& size) noexcept;
+
+  ///
+  /// @brief  Get frame size of widget.
+  /// @return Frame size of widget.
+  ///
+  MDY_NODISCARD DDyVectorInt2 GetFrameSize() const noexcept;
+
+  ///
+  /// @brief Align final position of widget from parent information.
+  /// @param parentFinalPosition  Final position of parent.
+  /// @param parentFrameSize      Frame size of parent.
+  ///
+  virtual void AlignFinalPosition(_MIN_ const DDyVector2& parentFinalPosition, _MIN_ const DDyVectorInt2& parentFrameSize) = 0;
+
+  ///
   /// @brief  Get name of UiObject instance.
   /// @return UiObject Instance.
   ///
-  MDY_NODISCARD const std::string& GetUiObjectName() noexcept
+  MDY_NODISCARD const std::string& GetUiObjectName() const noexcept
   {
     MDY_ASSERT(this->pGetObjectName().empty() == false, "Unexpected error occurred.");
     return this->pGetObjectName();
   }
 
 private:
-  FDyUiObjectChildrenable* mParentUiObject = nullptr;
+  FDyUiObjectChildrenable* mParentUiObject        = nullptr;
+  DDyVector2               mCentralPosition       = {};
+  DDyVectorInt2            mWidgetSize            = {};
+
+protected:
+  DDyVector2               mFinalCentralPosition  = {};
 };
 
 } /// ::dy namespace

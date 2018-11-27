@@ -44,8 +44,9 @@ FDyBuiltinWidgetDebugUiMeta::FDyBuiltinWidgetDebugUiMeta()
       "Parent": "",
       "Details":
       {
-        "InitialString": "Hello world!",
         "InitialPosition": { "X":0, "Y":0 },
+        "WidgetSize": { "X": 200, "Y": 100 },
+        "InitialString": "Hello world!",
         "InitialColor": 16777215,
         "InitialAlpha": 1.0,
         "EdgeColor": 0,

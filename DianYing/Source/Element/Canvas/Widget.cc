@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Element/Canvas/Widget.h>
 #include <Dy/Meta/Descriptor/WidgetTextMetaInformation.h>
+#include <Dy/Meta/Type/EDyWidgetTypes.h>
 #include <Dy/Element/Canvas/Text.h>
 #include <Dy/Management/WindowManager.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
@@ -56,7 +57,11 @@ EDySuccess FDyUiWidget::Initialize(_MIN_ const PDyMetaWidgetRootDescriptor& widg
   //! FUNCTIONBODY ∨
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  // (1) Create UI objects.
+  // (1) Get position and frame size from meta.
+  this->SetWidgetFrameSize      ({ 1280, 720 });
+  this->SetWidgetCentralPosition({ 640, 360 });
+
+  // (2) Create UI objects.
   for (const auto& [specifier, objectMetaInfoPair] : widgetMetaDesc.mChildComponentList)
   {
     const auto& [objectType, objectMetaInfoPtr] = objectMetaInfoPair;
@@ -69,7 +74,7 @@ EDySuccess FDyUiWidget::Initialize(_MIN_ const PDyMetaWidgetRootDescriptor& widg
     }
   }
 
-  // (2) Make script instance following meta information.
+  // (3) Make script instance following meta information.
   this->pSetObjectName(widgetMetaDesc.mWidgetSpecifierName);
   if (const auto& scriptName = widgetMetaDesc.mScriptReference.mDetails.mSpecifierName;
       scriptName.empty() == false)
@@ -79,6 +84,9 @@ EDySuccess FDyUiWidget::Initialize(_MIN_ const PDyMetaWidgetRootDescriptor& widg
     this->mWidgetScript->Initiate();
   }
 
+  // (4) Propagate position and frame size to children.
+  this->PropagateInformationToChildren();
+
   return DY_SUCCESS;
 }
 
@@ -87,18 +95,22 @@ void FDyUiWidget::Release()
   this->mWidgetScript = nullptr;
 }
 
+void FDyUiWidget::SetWidgetCentralPosition(const DDyVector2& position) noexcept
+{
+  FDyUiObjectChildrenable::SetWidgetCentralPosition(position);
+  this->mFinalCentralPosition = this->GetWidgetPosition(EDyOrigin::Center_Center);
+}
+
+void FDyUiWidget::AlignFinalPosition(const DDyVector2& parentFinalPosition, const DDyVectorInt2& parentFrameSize)
+{
+  // Does not called yet!
+  MDY_NOT_IMPLEMENTED_ASSERT();
+}
+
 void FDyUiWidget::Render()
 {
   if (this->mWidgetScript) { this->mWidgetScript->Update(0.0f); }
   FDyUiObjectChildrenable::Render();
-
-#ifdef false
-  if (testWidget)
-  {
-    testWidget->SetText(std::to_string(MDyWindow::GetInstance().GetCpuUsage()));
-    testWidget->Render();
-  };
-#endif
 }
 
 } /// ::dy namespace
