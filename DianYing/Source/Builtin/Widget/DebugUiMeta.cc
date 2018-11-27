@@ -48,6 +48,7 @@ FDyBuiltinWidgetDebugUiMeta::FDyBuiltinWidgetDebugUiMeta()
         "InitialPosition": { "X":0, "Y":0 },
         "InitialColor": 16777215,
         "InitialAlpha": 1.0,
+        "EdgeColor": 0,
         "FontSize": 12,
         "FontAlignment": "Left",
         "EdgeSize": 1,
@@ -55,7 +56,7 @@ FDyBuiltinWidgetDebugUiMeta::FDyBuiltinWidgetDebugUiMeta()
         "IsBold": true,
         "IsItalic": false,
         "IsUsingEdge": true,
-        "IsUsingDefaultFont": true
+        "IsUsingDefaultFont": false
       }
     }
   ]

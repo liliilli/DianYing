@@ -36,6 +36,7 @@ PDyMetaWidgetTextDescriptor::CreateMetaInformation(_MIN_ const nlohmann::json& i
       "InitialColor": 16777215,
       "InitialAlpha": 1.0,
       "FontSize": 10,
+      "EdgeColor": 0,
       "EdgeSize": 1,
       "FontSpecifierName": "Arial",
       "IsBold": true,
@@ -85,6 +86,9 @@ PDyMetaWidgetTextDescriptor::CreateMetaInformation(_MIN_ const nlohmann::json& i
   instance->mIsItalic           = DyJsonGetValueFrom<bool>(detailAtlas, sHeader_IsItalic);
   instance->mIsUsingEdge        = DyJsonGetValueFrom<bool>(detailAtlas, sHeader_IsUsingEdge);
   instance->mIsUsingDefaultFont = DyJsonGetValueFrom<bool>(detailAtlas, sHeader_IsUsingDefaultFont);
+
+  instance->mEdgeColor          = DyJsonGetValueFrom<DDyColorRGB24>(detailAtlas, "EdgeColor");
+
   return instance;
 }
 
