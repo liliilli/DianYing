@@ -56,7 +56,7 @@ PDyMetaWidgetHorizontalLayout::CreateMetaInformation(_MIN_ const nlohmann::json&
   using TPDyMWCBD = PDyMetaWidgetCommonBaseDesc;
 
   auto instance = std::make_unique<PDyMetaWidgetHorizontalLayout>();
-  instance->mComponentSpecifierName = DyJsonGetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Name);
+  instance->mUiObjectSpecifierName = DyJsonGetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Name);
   instance->mComponentType          = EDyWidgetComponentType::HorizontalLayout;
   instance->mParentSpecifierName    = DyJsonGetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Parent);
 
@@ -89,7 +89,7 @@ PDyMetaWidgetVerticalLayout::CreateMetaInformation(_MIN_ const nlohmann::json& i
   using TPDyMWCBD = PDyMetaWidgetCommonBaseDesc;
 
   auto instance = std::make_unique<PDyMetaWidgetVerticalLayout>();
-  instance->mComponentSpecifierName = DyJsonGetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Name);
+  instance->mUiObjectSpecifierName = DyJsonGetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Name);
   instance->mComponentType          = EDyWidgetComponentType::VerticalLayout;
   instance->mParentSpecifierName    = DyJsonGetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Parent);
 

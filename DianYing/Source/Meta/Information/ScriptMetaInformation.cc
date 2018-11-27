@@ -27,6 +27,9 @@ MDY_SET_IMMUTABLE_STRING(sHeader_IsCompressed,"IsCompressed");
 MDY_SET_IMMUTABLE_STRING(sValue_Cpp, "Cpp");
 MDY_SET_IMMUTABLE_STRING(sValue_Lua, "Lua");
 
+MDY_SET_IMMUTABLE_STRING(sValue_Widget, "Widget");
+MDY_SET_IMMUTABLE_STRING(sValue_Actor,  "Actor");
+
 } /// ::unnamed namespace
 
 //!
@@ -47,6 +50,19 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ EDyScriptType& p)
   if      (typeString == sValue_Cpp)  { p = EDyScriptType::Cpp; }
   else if (typeString == sValue_Lua)  { p = EDyScriptType::Lua; }
   else                                { MDY_UNEXPECTED_BRANCH(); }
+}
+
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyScriptMode& p)
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyScriptMode& p)
+{
+  const auto typeString = j.get<std::string>();
+  if      (typeString == sValue_Widget) { p = EDyScriptMode::Widget; }
+  else if (typeString == sValue_Actor)  { p = EDyScriptMode::Actor; }
+  else                                  { MDY_UNEXPECTED_BRANCH(); }
 }
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyScriptReferenceMetaInfo& p)

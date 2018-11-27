@@ -1,0 +1,96 @@
+{
+  "Meta":
+  {
+    "IsUsingUUIDForSpecification": false
+  },
+  "ObjectList":
+  [
+    {
+      "SpecifierName" : "P_Parent01",
+      "UUID"          : "",
+      "Type"          : "Actor",
+      "CommonProperties": {
+        "ParentSpecifierName" : "",
+        "ParentSpecifierUUID" : "",
+        "IsInitiallyActivated": true
+      },
+      "ComponentList" : [
+        {
+          "Type": "Script",
+          "Activated": true,
+          "Details": { "Specifier": "TestScript2" }
+        },
+        {
+          "Type": "Transform",
+          "Details": {
+            "LPosition" : { "X": 0, "Y": 0, "Z": 0 },
+            "LRotation" : { "X": 0, "Y": 0, "Z": 0 },
+            "LScale"    : { "X": 1, "Y": 1, "Z": 1 },
+            "WPosition" : { "X": 0, "Y": 0, "Z": 0 },
+            "WRotation" : { "X": 45, "Y": 50, "Z": -70 },
+            "WScale"    : { "X": 1, "Y": 1, "Z": 1 }
+          }
+        },
+        {
+          "Type"      : "ModelFilter",
+          "Activated" : true,
+          "Details"   : { "ModelName": "dyBtModelBox" }
+        },
+        {
+          "Type"      : "ModelRenderer",
+          "Activated" : true,
+          "Details"   : {
+            "Shadow"    : true,
+            "Materials" : [ "dyBtMatOpaqueStaticPlain" ]
+          }
+        }
+      ]
+    },
+    {
+      "SpecifierName" : "P_Child01",
+      "UUID"          : "",
+      "Type"          : "Actor",
+      "CommonProperties": {
+        "ParentSpecifierName" : "P_Parent01",
+        "ParentSpecifierUUID" : "",
+        "IsInitiallyActivated": true
+      },
+      "ComponentList" : [
+        {
+          "Type": "Transform",
+          "Details": {
+            "LPosition" : { "X": 0, "Y": 0, "Z": 0 },
+            "LRotation" : { "X": 0, "Y": 0, "Z": 0 },
+            "LScale"    : { "X": 1, "Y": 1, "Z": 1 },
+            "WPosition" : { "X": 0, "Y": 0, "Z": 0 },
+            "WRotation" : { "X": 45, "Y": 50, "Z": -70 },
+            "WScale"    : { "X": 1, "Y": 1, "Z": 1 }
+          }
+        }
+      ]
+    },
+    {
+      "SpecifierName" : "P_Independent01",
+      "UUID"          : "",
+      "Type"          : "Actor",
+      "CommonProperties": {
+        "ParentSpecifierName" : "",
+        "ParentSpecifierUUID" : "",
+        "IsInitiallyActivated": true
+      },
+      "ComponentList" : [
+        {
+          "Type": "Transform",
+          "Details": {
+            "LPosition" : { "X": 0, "Y": 0, "Z": 0 },
+            "LRotation" : { "X": 0, "Y": 0, "Z": 0 },
+            "LScale"    : { "X": 1, "Y": 1, "Z": 1 },
+            "WPosition" : { "X": 0, "Y": 0, "Z": 0 },
+            "WRotation" : { "X": 45, "Y": 50, "Z": -70 },
+            "WScale"    : { "X": 1, "Y": 1, "Z": 1 }
+          }
+        }
+      ]
+    }
+  ]
+}

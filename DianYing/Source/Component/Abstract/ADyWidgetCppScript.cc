@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_ELEMENT_CANVAS_CANVAS_H
-#define GUARD_DY_ELEMENT_CANVAS_CANVAS_H
+#include <precompiled.h>
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,11 +12,17 @@
 /// SOFTWARE.
 ///
 
+/// Header file
+#include <Dy/Component/Abstract/ADyWidgetCppScript.h>
+#include <Dy/Component/UI/CDyWidgetScriptCpp.h>
+
 namespace dy
 {
 
-
+FDyUiWidget& ADyWidgetCppScript::GetWidgetReference()
+{
+  MDY_ASSERT(this->mOutside != nullptr, "Unexpected error occurred.");
+  return this->mOutside->GetWidgetReference();
+}
 
 } /// ::dy namespace
-
-#endif /// GUARD_DY_ELEMENT_CANVAS_CANVAS_H

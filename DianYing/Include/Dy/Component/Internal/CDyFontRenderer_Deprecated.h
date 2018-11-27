@@ -16,6 +16,7 @@
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 #include <Dy/Component/Ctor/PDyFontRenderer.h>
+#include <Dy/Core/Component/Resource/ShaderResource.h>
 
 //!
 //! Forward declaration

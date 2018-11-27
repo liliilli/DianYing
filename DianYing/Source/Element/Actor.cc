@@ -43,7 +43,6 @@ EDySuccess FDyActor::Initialize(_MIN_ const PDyObjectMetaInfo& objectMetaDesc)
     {
       const auto& desc = std::any_cast<const PDyTransformComponentMetaInfo&>(componentInfo);
       MDY_NOTUSED auto transformComponentPtr = this->AddComponent<CDyTransform>(desc);
-
       isTransformCreated = true;
     } break;
     case EDyComponentMetaType::Script:

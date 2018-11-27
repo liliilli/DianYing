@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_COMPONENT_INTERNAL_CDYCPPSCRIPT_H
-#define GUARD_DY_COMPONENT_INTERNAL_CDYCPPSCRIPT_H
+#include <precompiled.h>
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,11 +12,18 @@
 /// SOFTWARE.
 ///
 
+/// Header file
+#include <Dy/Component/Abstract/ADyActorCppScript.h>
+#include <Dy/Component/Internal/CDyActorScriptCpp.h>
+
 namespace dy
 {
 
-
+FDyActor& ADyActorCppScript::GetActorReference()
+{
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mOutside), "Unexpected error occurred.");
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mOutside->GetBindedActor()), "Unexpected error occurred.");
+  return *this->mOutside->GetBindedActor();
+}
 
 } /// ::dy namespace
-
-#endif /// GUARD_DY_COMPONENT_INTERNAL_CDYCPPSCRIPT_H

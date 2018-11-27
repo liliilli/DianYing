@@ -110,7 +110,7 @@ std::unique_ptr<dy::PDyMetaWidgetRootDescriptor> DyCreateWidgetMetaInformation(_
     case EDyWidgetComponentType::Text:
     { // Text component
       auto instance = PDyMetaWidgetTextDescriptor::CreateMetaInformation(componentInfo);
-      const auto specifierName = instance->mComponentSpecifierName;
+      const auto specifierName = instance->mUiObjectSpecifierName;
       tempWidgetObjectMap.try_emplace(
           specifierName,
           std::make_pair<>(componentType, DyConvertUniquePtrTo<PDyMetaWidgetCommonBaseDesc>(std::move(instance)))
@@ -119,7 +119,7 @@ std::unique_ptr<dy::PDyMetaWidgetRootDescriptor> DyCreateWidgetMetaInformation(_
     case EDyWidgetComponentType::HorizontalLayout:
     { // Horizontal layout component
       auto instance = PDyMetaWidgetHorizontalLayout::CreateMetaInformation(componentInfo);
-      const auto specifierName = instance->mComponentSpecifierName;
+      const auto specifierName = instance->mUiObjectSpecifierName;
       tempWidgetObjectMap.try_emplace(
           specifierName,
           std::make_pair<>(componentType, DyConvertUniquePtrTo<PDyMetaWidgetCommonBaseDesc>(std::move(instance)))
@@ -128,7 +128,7 @@ std::unique_ptr<dy::PDyMetaWidgetRootDescriptor> DyCreateWidgetMetaInformation(_
     case EDyWidgetComponentType::VerticalLayout:
     { // Vertical layout component
       auto instance = PDyMetaWidgetVerticalLayout::CreateMetaInformation(componentInfo);
-      const auto specifierName = instance->mComponentSpecifierName;
+      const auto specifierName = instance->mUiObjectSpecifierName;
       tempWidgetObjectMap.try_emplace(
           specifierName,
           std::make_pair<>(componentType, DyConvertUniquePtrTo<PDyMetaWidgetCommonBaseDesc>(std::move(instance)))
@@ -206,9 +206,21 @@ const PDyScriptInstanceMetaInfo& MDyMetaInfo::GetScriptMetaInformation(_MIN_ con
   return this->mScriptMetaInfo.at(specifierName);
 }
 
+const PDyPrefabInstanceMetaInfo& MDyMetaInfo::GetPrefabMetaInformation(_MIN_ const std::string& specifierName) const
+{
+  MDY_ASSERT(DyIsMapContains(this->mPrefabMetaInfo, specifierName) == true, "");
+  return *this->mPrefabMetaInfo.at(specifierName);
+}
+
 const PDyMetaFontInformation& MDyMetaInfo::GetFontMetaInformation(_MIN_ const std::string& specifierName) const
 {
   return this->mFontMetaInfo.at(specifierName);
+}
+
+const PDyMetaWidgetRootDescriptor& MDyMetaInfo::GetWidgetMetaInformation(_MIN_ const std::string& specifierName) const
+{
+  MDY_ASSERT(DyIsMapContains(this->mWidgetMetaInfo, specifierName) == true, "");
+  return *this->mWidgetMetaInfo.at(specifierName);
 }
 
 EDySuccess MDyMetaInfo::pReadScriptResourceMetaInformation(_MIN_ const std::string& metaFilePath)
@@ -328,6 +340,13 @@ EDySuccess MDyMetaInfo::pfAddWidgetMetaInformation(_MIN_ const std::string& meta
   MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(rootInstance), "Widget root instance must not be empty.");
 
   this->mWidgetMetaInfo.try_emplace(rootInstance->mWidgetSpecifierName, std::move(rootInstance));
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pfAddScriptMetaInformation(_MIN_ const PDyScriptInstanceMetaInfo& metaInfo)
+{
+  MDY_ASSERT(DyIsMapContains(this->mScriptMetaInfo, metaInfo.mSpecifierName) == false, "Duplicated script name is exist.");
+  this->mScriptMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
   return DY_SUCCESS;
 }
 

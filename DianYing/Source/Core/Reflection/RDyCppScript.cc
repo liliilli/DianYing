@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_COMPONENT_INTERNAL_CDYSCRIPTLUA_H
-#define GUARD_DY_COMPONENT_INTERNAL_CDYSCRIPTLUA_H
+#include <precompiled.h>
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,11 +12,20 @@
 /// SOFTWARE.
 ///
 
-namespace dy
+/// Header file
+#include <Dy/Core/Reflection/RDyCppScript.h>
+#include <Dy/Management/IO/MetaInfoManager.h>
+
+namespace dy::reflect
 {
 
+void __Rfc__AddMetaInformation(_MIN_ const std::string& typeSpecifier, _MIN_ const EDyScriptMode mode)
+{
+  PDyScriptInstanceMetaInfo metaInfo = {};
+  metaInfo.mScriptType    = EDyScriptType::Cpp;
+  metaInfo.mScriptMode    = mode;
+  metaInfo.mSpecifierName = typeSpecifier;
+  MDY_CALL_ASSERT_SUCCESS(MDyMetaInfo::GetInstance().pfAddScriptMetaInformation(metaInfo));
+}
 
-
-} /// ::dy namespace
-
-#endif /// GUARD_DY_COMPONENT_INTERNAL_CDYSCRIPTLUA_H
+} /// ::dy::reflect namespace

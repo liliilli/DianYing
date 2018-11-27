@@ -175,6 +175,16 @@
     <ClCompile Include="Source\Helper\Type\ColorRGB24.cc" />
     <ClCompile Include="Source\Meta\Information\ElementLevelMetaInfo.cc" />
     <ClCompile Include="Source\Meta\Information\ElementObjectMetaInfo.cc" />
+    <ClCompile Include="Source\Builtin\Script\DebugUiScriptCpp.cc" />
+    <ClCompile Include="Source\Element\Canvas\Widget.cc" />
+    <ClCompile Include="Source\Component\UI\CDyWidgetScriptCpp.cc" />
+    <ClCompile Include="Source\Component\UI\CDyWidgetScriptLua.cc" />
+    <ClCompile Include="Source\Core\Reflection\RDyCppScript.cc" />
+    <ClCompile Include="Source\Element\Canvas\UiObjectChildrenable.cc" />
+    <ClCompile Include="Source\Component\Abstract\ADyWidgetCppScript.cc" />
+    <ClCompile Include="Source\Component\Internal\CDyActorScriptCpp.cc" />
+    <ClCompile Include="Source\Component\Internal\CDyActorScriptLua.cc" />
+    <ClCompile Include="Source\Component\Abstract\ADyActorCppScript.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -262,7 +272,6 @@
     <ClInclude Include="Include\Dy\Editor\Gui\ViewWorldOutliner.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\ViewDetailView.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\Detail\Transform.h" />
-    <ClInclude Include="Include\Dy\Element\Interface\IDyScriptable.h" />
     <ClInclude Include="Include\Dy\Element\Interface\IDyUpdatable.h" />
     <ClInclude Include="Include\Dy\Element\Interface\IDyToString.h" />
     <ClInclude Include="Include\Dy\Element\Abstract\ADyTransformable.h" />
@@ -342,7 +351,6 @@
     <ClInclude Include="Include\Dy\Helper\Constant\StringPipelineUniform.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DyString.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\CanvasDescriptor.h" />
-    <ClInclude Include="Include\Dy\Element\Canvas\Canvas.h" />
     <ClInclude Include="Include\Dy\Component\Internal\ScriptState.h" />
     <ClInclude Include="Include\Dy\Binding\LuaScriptFrame.h" />
     <ClInclude Include="Include\Dy\Management\ScriptManager.h" />
@@ -411,9 +419,6 @@
     <ClInclude Include="Include\Dy\Builtin\Widget\DebugUiMeta.h" />
     <ClInclude Include="Include\Dy\Builtin\Script\DebugUiScriptCpp.h" />
     <ClInclude Include="Include\Dy\Core\Reflection\RDyCppScript.h" />
-    <ClInclude Include="Include\Dy\Component\Interface\IDyCppScript.h" />
-    <ClInclude Include="Include\Dy\Component\Internal\CDyScriptLua.h" />
-    <ClInclude Include="Include\Dy\Component\Internal\CDyScriptCpp.h" />
     <ClInclude Include="Include\Dy\Builtin\Helper\BuiltinInformationDeliver.h" />
     <ClInclude Include="Include\Dy\Core\Reflection\RDyBuiltinResource.h" />
     <ClInclude Include="Include\Dy\Management\IO\IODataManager.h" />
@@ -442,6 +447,17 @@
     <ClInclude Include="Include\Dy\Helper\Type\ColorRGB24.h" />
     <ClInclude Include="Include\Dy\Meta\Information\ElementLevelMetaInfo.h" />
     <ClInclude Include="Include\Dy\Meta\Information\ElementObjectMetaInfo.h" />
+    <ClInclude Include="Include\Dy\Element\Canvas\Widget.h" />
+    <ClInclude Include="Include\Dy\Element\Canvas\UiObject.h" />
+    <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScript.h" />
+    <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScriptCpp.h" />
+    <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScriptLua.h" />
+    <ClInclude Include="Include\Dy\Element\Canvas\UiObjectChildrenable.h" />
+    <ClInclude Include="Include\Dy\Component\Abstract\ADyWidgetCppScript.h" />
+    <ClInclude Include="Include\Dy\Component\Abstract\ADyActorCppScript.h" />
+    <ClInclude Include="Include\Dy\Component\Interface\IDyScriptable.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\CDyActorScriptCpp.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\CDyActorScriptLua.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

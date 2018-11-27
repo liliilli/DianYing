@@ -50,7 +50,7 @@ struct PDyObjectMetaInfo final
   /// Object specifier name
   std::string       mSpecifierName    = MDY_INITIALIZE_EMPTYSTR;
   /// Object specification uuid.
-  std::string       mUUID             = MDY_INITIALIZE_EMPTYSTR;
+  std::string       mUUID            = MDY_INITIALIZE_EMPTYSTR;
   /// Object properties.
   DCommonProperties mProperties       = {};
   /// The type (light, pawn, pp block etc...) of object

@@ -18,7 +18,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{B2B6E771-0680-4E19-AB53-78F5AA9FEB7A}</ProjectGuid>
     <RootNamespace>DianYing</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -87,14 +87,14 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <AdditionalIncludeDirectories>C:\TPLibraries\PhysX-3.4\PxShared\include;C:\TPLibraries\PhysX-3.4\PhysX_3.4\Include;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;$(ProjectDir)Libraries\msdfgen;$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDir)Libraries\freetype\include;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;$(ProjectDir)Libraries\zlib;$(ProjectDir)Libraries\cxxopts\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\TPLibraries\PhysX-3.4\PxShared\include;C:\TPLibraries\PhysX-3.4\PhysX_3.4\Include;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;$(ProjectDir)Libraries\msdfgen;$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDir)Libraries\freetype\include;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;C:\VulkanSDK\1.1.85.0\Include;$(ProjectDir)Libraries\zlib;$(ProjectDir)Libraries\cxxopts\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4244;4267;4189;4100;4458</DisableSpecificWarnings>
       <PreprocessorDefinitions>__MDY_FLAG_IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>C:\TPLibraries\PhysX-3.4\PxShared\lib\vc15win64;C:\TPLibraries\PhysX-3.4\PhysX_3.4\Lib\vc15win64;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\lib;C:\TPLibraries\lua\lib\$(Platform)\$(Configuration);$(ProjectDir)Libraries\assimp\lib\$(Configuration)\$(Platform);$(ProjectDir)Libraries\FX11\bin\$(Platform)\$(Configuration);$(ProjectDir)Libraries\freetype\objs\$(Platform)\$(Configuration) Static;C:\VulkanSDK\1.1.82.0\Lib;C:\TPLibraries\glfw-3.2.1\build\src\Debug;$(ProjectDir)Libraries\zlib\zlib\build\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\TPLibraries\PhysX-3.4\PxShared\lib\vc15win64;C:\TPLibraries\PhysX-3.4\PhysX_3.4\Lib\vc15win64;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\lib;C:\TPLibraries\lua\lib\$(Platform)\$(Configuration);$(ProjectDir)Libraries\assimp\lib\$(Configuration)\$(Platform);$(ProjectDir)Libraries\FX11\bin\$(Platform)\$(Configuration);$(ProjectDir)Libraries\freetype\objs\$(Platform)\$(Configuration) Static;C:\VulkanSDK\1.1.85.0\Lib;C:\TPLibraries\glfw-3.2.1\build\src\Debug;$(ProjectDir)Libraries\zlib\zlib\build\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>PxFoundationDEBUG_x64.lib;PhysX3DEBUG_x64.lib;PhysX3CommonDEBUG_x64.lib;PhysX3ExtensionsDEBUG.lib;zlibstaticd.lib;freetype.lib;lua_build.lib;fmodL64_vc.lib;assimp-vc140-mt.lib;glfw3dll.lib;opengl32.lib;vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;msvcrtd.lib;libcmtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>
@@ -155,6 +155,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Builtin\Script\DebugUiScriptCpp.cc" />
+    <ClCompile Include="Source\Component\Abstract\ADyActorCppScript.cc" />
+    <ClCompile Include="Source\Component\Abstract\ADyWidgetCppScript.cc" />
+    <ClCompile Include="Source\Component\Internal\CDyActorScriptCpp.cc" />
+    <ClCompile Include="Source\Component\Internal\CDyActorScriptLua.cc" />
+    <ClCompile Include="Source\Component\UI\CDyWidgetScriptCpp.cc" />
+    <ClCompile Include="Source\Component\UI\CDyWidgetScriptLua.cc" />
+    <ClCompile Include="Source\Element\Canvas\UiObjectChildrenable.cc" />
+    <ClCompile Include="Source\Core\Reflection\RDyCppScript.cc" />
+    <ClCompile Include="Source\Element\Canvas\Widget.cc" />
     <ClCompile Include="Source\Element\Descriptor\GlobalEnums.cc" />
     <ClCompile Include="Libraries\glad\src\glad.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
@@ -388,11 +398,12 @@
     <ClInclude Include="Include\Dy\Builtin\Widget\DebugUiMeta.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyPhysicsRIgidbody.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyPhysicsShape.h" />
+    <ClInclude Include="Include\Dy\Component\Abstract\ADyWidgetCppScript.h" />
     <ClInclude Include="Include\Dy\Component\CDyCamera.h" />
     <ClInclude Include="Include\Dy\Component\CDyDirectionalLight.h" />
     <ClInclude Include="Include\Dy\Component\Ctor\PDyFontRenderer.h" />
-    <ClInclude Include="Include\Dy\Component\Interface\IDyCppScript.h" />
-    <ClInclude Include="Include\Dy\Component\Internal\CDyScriptCpp.h" />
+    <ClInclude Include="Include\Dy\Component\Abstract\ADyActorCppScript.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\CDyActorScriptCpp.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyFontRenderer.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyFontRenderer_Deprecated.h" />
     <ClInclude Include="Include\Dy\Component\CDyModelFilter.h" />
@@ -405,8 +416,11 @@
     <ClInclude Include="Include\Dy\Component\Helper\TmpCheckInitilizeParams.h" />
     <ClInclude Include="Include\Dy\Component\Helper\TmpCheckRemoveParams.h" />
     <ClInclude Include="Include\Dy\Component\Interface\IDyInitializeHelper.h" />
-    <ClInclude Include="Include\Dy\Component\Internal\CDyScriptLua.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\CDyActorScriptLua.h" />
     <ClInclude Include="Include\Dy\Component\Internal\ScriptState.h" />
+    <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScript.h" />
+    <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScriptCpp.h" />
+    <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScriptLua.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\MaterialInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\SoundInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\SubmeshInformation.h" />
@@ -431,7 +445,9 @@
     <ClInclude Include="Include\Dy\Element\Abstract\ADyTransformable.h" />
     <ClInclude Include="Include\Dy\Element\Actor.h" />
     <ClInclude Include="Include\Dy\Element\Abstract\ADyNameCounterMap.h" />
-    <ClInclude Include="Include\Dy\Element\Canvas\Canvas.h" />
+    <ClInclude Include="Include\Dy\Element\Canvas\UiObject.h" />
+    <ClInclude Include="Include\Dy\Element\Canvas\UiObjectChildrenable.h" />
+    <ClInclude Include="Include\Dy\Element\Canvas\Widget.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\Text.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\Text_Deprecated.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\CanvasDescriptor.h" />
@@ -444,7 +460,7 @@
     <ClInclude Include="Include\Dy\Meta\Information\ElementObjectMetaInfo.h" />
     <ClInclude Include="Include\Dy\Meta\Information\PrefabMetaInformation.h" />
     <ClInclude Include="Include\Dy\Element\Helper\DescriptorComponentHeaderString.h" />
-    <ClInclude Include="Include\Dy\Element\Interface\IDyScriptable.h" />
+    <ClInclude Include="Include\Dy\Component\Interface\IDyScriptable.h" />
     <ClInclude Include="Include\Dy\Element\Interface\IDyToString.h" />
     <ClInclude Include="Include\Dy\Element\Interface\IDyUpdatable.h" />
     <ClInclude Include="Include\Dy\Core\Component\Internal\EtcType.h" />

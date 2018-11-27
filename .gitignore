@@ -410,3 +410,22 @@ DianYing/ShaderResource/
 DianYing/imgui\.ini
 
 DianYing/glShader\.frag
+
+DyFontAtlasGenerator/DEBUG1/
+
+DyFontAtlasGenerator/DEBUG2/
+
+DyFontAtlasGenerator/DEBUG3/
+
+DyFontAtlasGenerator/DEBUG4/
+
+DyFontAtlasGenerator/DEBUG5/
+
+DyFontAtlasGenerator/DEBUG6/
+
+DyFontAtlasGenerator/DEBUG7/
+
+DyFontAtlasGenerator/Kopub/
+
+*.dyFntRes
+DianYing/log_file_name\.txt

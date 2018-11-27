@@ -18,7 +18,7 @@
 #include <unordered_map>
 #include <string_view>
 #include <nlohmann/json_fwd.hpp>
-#include "Dy/Meta/Information/ScriptMetaInformation.h"
+#include <Dy/Meta/Information/ComponentMetaInformation.h>
 
 namespace dy
 {
@@ -58,7 +58,7 @@ struct PDyMetaWidgetChildableBaseDesc
 ///
 struct PDyMetaWidgetCommonBaseDesc : public PDyMetaWidgetChildableBaseDesc
 { /// Specification name
-  std::string                   mComponentSpecifierName = MDY_INITIALIZE_EMPTYSTR;
+  std::string                   mUiObjectSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
   /// Widget component type
   EDyWidgetComponentType        mComponentType          = EDyWidgetComponentType::NoneError;
   /// Parent component pointer. if root, rawptr must be nullptr.
@@ -84,8 +84,8 @@ struct PDyMetaWidgetRootDescriptor final : public PDyMetaWidgetChildableBaseDesc
 {
   /// Widget specifier name
   std::string   mWidgetSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
-  /// Script reference variable.
-  PDyScriptReferenceMetaInfo mScriptReference = {};
+  /// Script component variable.
+  PDyScriptComponentMetaInfo mScriptReference = {};
 
   ///
   /// @brief Factory function for PDyMetaWidgetTextDescriptor.

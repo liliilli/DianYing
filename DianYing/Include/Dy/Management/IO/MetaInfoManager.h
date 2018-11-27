@@ -14,6 +14,8 @@
 ///
 
 #include <unordered_map>
+
+#include <Dy/Core/Reflection/RDyCppScript.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
 #include <Dy/Meta/Information/ElementLevelMetaInfo.h>
@@ -50,7 +52,6 @@ public:
   /// @brief
   /// @param  specifierName
   /// @return
-  /// @TODO SCRIPT THIS
   ///
   MDY_NODISCARD const PDyPrefabInstanceMetaInfo& GetPrefabMetaInformation(_MIN_ const std::string& specifierName) const;
 
@@ -60,6 +61,13 @@ public:
   /// @return
   ///
   MDY_NODISCARD const PDyMetaFontInformation& GetFontMetaInformation(_MIN_ const std::string& specifierName) const;
+
+  ///
+  /// @brief
+  /// @param  specifierName
+  /// @return
+  ///
+  MDY_NODISCARD const PDyMetaWidgetRootDescriptor& GetWidgetMetaInformation(_MIN_ const std::string& specifierName) const;
 
   ///
   /// @brief  Check script meta information is exist.
@@ -132,6 +140,13 @@ private:
   ///
   MDY_NODISCARD EDySuccess pfAddWidgetMetaInformation(_MIN_ const std::string& metaInformationString);
 
+  ///
+  /// @brief
+  /// @param  metaInfo
+  /// @return
+  ///
+  MDY_NODISCARD EDySuccess pfAddScriptMetaInformation(_MIN_ const PDyScriptInstanceMetaInfo& metaInfo);
+
   /// Level meta information map.
   THashMap<PDyLevelConstructMetaInfo> mLevelInfoMap   = {};
   /// Script meta information map.
@@ -148,7 +163,8 @@ private:
   /// Widget meta information map.
   THashMap<std::unique_ptr<PDyMetaWidgetRootDescriptor>> mWidgetMetaInfo = {};
 
-  friend EDySuccess FDyBuiltinInformationDeliver::ForwardWidgetMetaInformation(const std::string_view& metaString);
+  friend EDySuccess FDyBuiltinInformationDeliver::ForwardWidgetMetaInformation(_MIN_ const std::string_view& metaString);
+  friend void ::dy::reflect::__Rfc__AddMetaInformation(_MIN_ const std::string&, _MIN_ const EDyScriptMode);
 };
 
 } /// ::dy namespace

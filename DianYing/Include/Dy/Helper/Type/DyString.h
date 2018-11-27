@@ -18,26 +18,35 @@ namespace dy
 
 ///
 /// @class DDyString
-/// @brief UCS-2 (UTF-16 but no 4bytes characters) string type. This string type is immutable.
+/// @brief UCS-2 (UTF-16 but no 4bytes characters) string type.
+/// This string type is immutable but newly assignable.
 ///
 class DDyString final
 {
 public:
-  //!
-  //! Constructor
-  //!
+  DDyString() = default;
 
   ///
   /// @brief Make UCS-2 String type from const char* c-char literals at runtime.
-  /// @param cString
+  /// @param cString c-style string start pointer.
   ///
   DDyString(_MIN_ const char* cString) noexcept;
 
   ///
   /// @brief Make UCS-2 String type from std::string c++ library string type at runtime.
-  /// @param string
+  /// @param string cpp-style string instance.
   ///
-  explicit DDyString(_MIN_ const std::string& string) noexcept;
+  DDyString(_MIN_ const std::string& string) noexcept;
+
+  ///
+  /// @brief  Set text newly. Surrogated characters which exceeded 2bytes will be discarded.
+  /// @param  string utf-8 or applied string.
+  ///
+  void SetText(_MIN_ const char* string) noexcept;
+  /// @brief `std::string` overloaded version of `DDyString::SetText`
+  void SetText(_MIN_ const std::string& string) noexcept;
+  /// @brief `std::string_view` overloaded version of `DDyString::SetText`
+  void SetText(_MIN_ const std::string_view& string) noexcept;
 
   ///
   /// @brief  Return UCS-2 (UTF-16 without 4bytes) string lenght.
@@ -52,7 +61,7 @@ public:
   /// @brief
   /// @return
   ///
-  MDY_NODISCARD TC16 operator[](_MIN_ const TU32 id)
+  MDY_NODISCARD TC16 operator[](_MIN_ const TU32 id) const
   { // Integrity check
     if (id > this->mString.size())
     {
@@ -68,6 +77,9 @@ private:
   std::vector<TC16> mString = {};
 
 public:
+  /// @brief Internal routine for updating UCS-2 string.
+  void pUpdateString(_MIN_ const char* string) noexcept;
+
   ///
   /// @brief
   /// @return
