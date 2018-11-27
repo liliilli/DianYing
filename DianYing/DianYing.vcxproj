@@ -18,7 +18,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{B2B6E771-0680-4E19-AB53-78F5AA9FEB7A}</ProjectGuid>
     <RootNamespace>DianYing</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -87,14 +87,14 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <AdditionalIncludeDirectories>C:\TPLibraries\PhysX-3.4\PxShared\include;C:\TPLibraries\PhysX-3.4\PhysX_3.4\Include;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;$(ProjectDir)Libraries\msdfgen;$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDir)Libraries\freetype\include;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;$(ProjectDir)Libraries\zlib;$(ProjectDir)Libraries\cxxopts\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\TPLibraries\PhysX-3.4\PxShared\include;C:\TPLibraries\PhysX-3.4\PhysX_3.4\Include;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;$(ProjectDir)Libraries\msdfgen;$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDir)Libraries\freetype\include;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;C:\VulkanSDK\1.1.85.0\Include;$(ProjectDir)Libraries\zlib;$(ProjectDir)Libraries\cxxopts\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4244;4267;4189;4100;4458</DisableSpecificWarnings>
       <PreprocessorDefinitions>__MDY_FLAG_IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>C:\TPLibraries\PhysX-3.4\PxShared\lib\vc15win64;C:\TPLibraries\PhysX-3.4\PhysX_3.4\Lib\vc15win64;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\lib;C:\TPLibraries\lua\lib\$(Platform)\$(Configuration);$(ProjectDir)Libraries\assimp\lib\$(Configuration)\$(Platform);$(ProjectDir)Libraries\FX11\bin\$(Platform)\$(Configuration);$(ProjectDir)Libraries\freetype\objs\$(Platform)\$(Configuration) Static;C:\VulkanSDK\1.1.82.0\Lib;C:\TPLibraries\glfw-3.2.1\build\src\Debug;$(ProjectDir)Libraries\zlib\zlib\build\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\TPLibraries\PhysX-3.4\PxShared\lib\vc15win64;C:\TPLibraries\PhysX-3.4\PhysX_3.4\Lib\vc15win64;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\lib;C:\TPLibraries\lua\lib\$(Platform)\$(Configuration);$(ProjectDir)Libraries\assimp\lib\$(Configuration)\$(Platform);$(ProjectDir)Libraries\FX11\bin\$(Platform)\$(Configuration);$(ProjectDir)Libraries\freetype\objs\$(Platform)\$(Configuration) Static;C:\VulkanSDK\1.1.85.0\Lib;C:\TPLibraries\glfw-3.2.1\build\src\Debug;$(ProjectDir)Libraries\zlib\zlib\build\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>PxFoundationDEBUG_x64.lib;PhysX3DEBUG_x64.lib;PhysX3CommonDEBUG_x64.lib;PhysX3ExtensionsDEBUG.lib;zlibstaticd.lib;freetype.lib;lua_build.lib;fmodL64_vc.lib;assimp-vc140-mt.lib;glfw3dll.lib;opengl32.lib;vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;msvcrtd.lib;libcmtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>
