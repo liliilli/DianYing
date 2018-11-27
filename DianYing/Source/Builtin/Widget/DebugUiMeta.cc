@@ -51,12 +51,8 @@ FDyBuiltinWidgetDebugUiMeta::FDyBuiltinWidgetDebugUiMeta()
         "EdgeColor": 0,
         "FontSize": 12,
         "FontAlignment": "Left",
-        "EdgeSize": 1,
         "FontSpecifierName": "Arial",
-        "IsBold": true,
-        "IsItalic": false,
-        "IsUsingEdge": true,
-        "IsUsingDefaultFont": false
+        "IsUsingEdge": true
       }
     }
   ]

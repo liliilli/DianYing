@@ -79,7 +79,7 @@ public:
   ///
   MDY_NODISCARD IDyFontContainer& GetFontContainer() const noexcept
   {
-    return *this->mFontContainer;
+    return *this->mPtrFontContainer;
   }
 
   ///
@@ -168,7 +168,7 @@ private:
   /// Text to display on screen. String must be following UTF-8 encoding.
   DDyString         mTextString       = {""};
   /// Text container instance to display font.
-  IDyFontContainer* mFontContainer    = nullptr;
+  IDyFontContainer* mPtrFontContainer    = nullptr;
   /// Font color
 	DDyColorRGBA          mForegroundColor  = DDyColorRGBA::White;
   /// Font background color

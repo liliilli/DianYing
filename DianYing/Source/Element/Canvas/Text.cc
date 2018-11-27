@@ -28,7 +28,25 @@ std::string FDyText::ToString()
 }
 
 EDySuccess FDyText::Initialize(_MIN_ const PDyMetaWidgetTextDescriptor& objectMetaDesc)
-{ // Set properties.
+{
+  /// @brief Bind font container resource instance pointer to this.
+  /// @TODO IMPLEMENT CHECKING DEFAULT FONT CASE.
+  static auto GetFontResource = [this](_MIN_ const std::string& fontSpecifierName) -> IDyFontContainer*
+  {
+    auto& fontManager = MDyFont::GetInstance();
+    if (fontManager.IsFontResourceContainerExist(fontSpecifierName) == false)
+    {
+      MDY_CALL_ASSERT_SUCCESS(fontManager.CreateFontResourceContainer(fontSpecifierName));
+    }
+
+    return fontManager.GetFontResourceContainer(fontSpecifierName);
+  };
+
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  //! FUNCTIONBODY ∨
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  // Set properties.
   this->pSetObjectName(objectMetaDesc.mUiObjectSpecifierName);
 
   this->mTextString             = objectMetaDesc.mInitialString;
@@ -39,14 +57,7 @@ EDySuccess FDyText::Initialize(_MIN_ const PDyMetaWidgetTextDescriptor& objectMe
   this->mIsUsingBackgroundColor = objectMetaDesc.mIsUsingBackground;
   this->mFontSize               = objectMetaDesc.mFontSize;
   this->mPosition               = objectMetaDesc.mInitialPosition;
-
-  // Bind font container resource instance pointer to this.
-  auto& fontManager = MDyFont::GetInstance();
-  if (fontManager.IsFontResourceContainerExist(objectMetaDesc.mFontSpecifierName) == false)
-  {
-    MDY_CALL_ASSERT_SUCCESS(fontManager.CreateFontResourceContainer(objectMetaDesc.mFontSpecifierName));
-  }
-  this->mFontContainer = fontManager.GetFontResourceContainer(objectMetaDesc.mFontSpecifierName);
+  this->mPtrFontContainer       = GetFontResource(objectMetaDesc.mFontSpecifierName);
 
   // Initialize FontRenderer.
   PDyFontRendererCtorInformation desc = {};

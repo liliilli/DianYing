@@ -20,12 +20,8 @@
           "InitialAlpha": 1.0,
           "FontSize": 10,
           "EdgeColor": 0,
-          "EdgeSize": 1,
           "FontSpecifierName": "Arial",
-          "IsBold": true,
-          "IsItalic": false,
-          "IsUsingEdge": false,
-          "IsUsingDefaultFont": true
+          "IsUsingEdge": false
         }
       }
     ]
@@ -51,12 +47,8 @@
           "InitialAlpha": 1.0,
           "FontSize": 10,
           "EdgeColor": 0,
-          "EdgeSize": 1,
           "FontSpecifierName": "Arial",
-          "IsBold": true,
-          "IsItalic": false,
-          "IsUsingEdge": false,
-          "IsUsingDefaultFont": true
+          "IsUsingEdge": false
         }
       },
       {

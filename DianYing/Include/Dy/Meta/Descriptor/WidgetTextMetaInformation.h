@@ -32,27 +32,19 @@ struct PDyMetaWidgetTextDescriptor final : public PDyMetaWidgetCommonBaseDesc
   /// Initial position of canvas.
   DDyVectorInt2 mInitialPosition    = {};
   /// InitialColor(rgb) + InitialAlpha(a)
-  DDyColorRGBA      mInitialColor       = DDyColorRGBA::White;
-  ///
-  DDyColorRGBA      mEdgeColor          = DDyColorRGBA{0, 0, 0, 0};
-  ///
-  DDyColorRGBA      mBackgroundColor    = DDyColorRGBA{0, 0, 0, 0};
-  /// FontSize
+  DDyColorRGBA      mInitialColor   = DDyColorRGBA::White;
+  /// Edge color of text. `mIsUsingEdge` must be enabled to use this.
+  DDyColorRGBA      mEdgeColor      = DDyColorRGBA{0, 0, 0, 0};
+  /// Background color of text. `mIsUsingBackground` must be enabled to use this.
+  DDyColorRGBA      mBackgroundColor= DDyColorRGBA{0, 0, 0, 0};
+  /// Font Size (px?)
   TU32          mFontSize           = MDY_INITIALIZE_DEFUINT;
-  ///
-  TU32          mEdgeSize           = MDY_INITIALIZE_DEFUINT;
-  ///
+  /// If empty, just use default font.
   std::string   mFontSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
-  ///
-  bool          mIsBold             = false;
-  ///
-  bool          mIsItalic           = false;
-  ///
+  /// Check rendering edge to text.
   bool          mIsUsingEdge        = false;
-  ///
+  /// Check use background outside of font region.
   bool          mIsUsingBackground  = false;
-  ///
-  bool          mIsUsingDefaultFont = true;
 
   ///
   /// @brief Factory function for PDyMetaWidgetTextDescriptor.
