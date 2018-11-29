@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_BUILTINSCRIPT_DEBUGUISCRIPTCPP_H
-#define GUARD_DY_BUILTINSCRIPT_DEBUGUISCRIPTCPP_H
+#ifndef GUARD_DY_META_TYPE_EDYRESOURCETYPES_H
+#define GUARD_DY_META_TYPE_EDYRESOURCETYPES_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,27 +13,20 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Component/Abstract/ADyWidgetCppScript.h>
-#include <Dy/Builtin/Abstract/ADyScriptResource.h>
-#include <Dy/Meta/Information/ScriptMetaInformation.h>
-
 namespace dy
 {
 
-class FDyBuiltinDebugUiScript final : public ADyScriptResource, public ADyWidgetCppScript
-{
-  MDY_REGISTER_RESOURCE_SCRIPT(FDyBuiltinDebugUiScript);
-public:
-  void Initiate() override final;
-
-  void Start() override final;
-
-  void Update(_MIN_ TF32 dt) override final;
-
-private:
-
+///
+/// @enum EDyResourceSource
+/// @brief Source type of resource.
+///
+enum EDyResourceSource
+{ // This resource is builtin resource (internal).
+  Builtin,
+  // This resource is external resource.
+  External,
 };
 
 } /// ::dy namespace
 
-#endif /// GUARD_DY_BUILTINSCRIPT_DEBUGUISCRIPTCPP_H
+#endif /// GUARD_DY_META_TYPE_EDYRESOURCETYPES_H

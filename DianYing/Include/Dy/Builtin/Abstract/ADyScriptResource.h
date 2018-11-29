@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_BUILTINSCRIPT_DEBUGUISCRIPTCPP_H
-#define GUARD_DY_BUILTINSCRIPT_DEBUGUISCRIPTCPP_H
+#ifndef GUARD_DY_BUILTIN_ABSTRACT_ADYSCRIPTRESOURCE_H
+#define GUARD_DY_BUILTIN_ABSTRACT_ADYSCRIPTRESOURCE_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,27 +13,17 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Component/Abstract/ADyWidgetCppScript.h>
-#include <Dy/Builtin/Abstract/ADyScriptResource.h>
-#include <Dy/Meta/Information/ScriptMetaInformation.h>
+#include <Dy/Builtin/Interface/IDyResource.h>
+#include <Dy/Core/Reflection/RDyBuiltinResources.h>
 
 namespace dy
 {
 
-class FDyBuiltinDebugUiScript final : public ADyScriptResource, public ADyWidgetCppScript
+struct ADyScriptResource : public IDyResource
 {
-  MDY_REGISTER_RESOURCE_SCRIPT(FDyBuiltinDebugUiScript);
-public:
-  void Initiate() override final;
-
-  void Start() override final;
-
-  void Update(_MIN_ TF32 dt) override final;
-
-private:
-
+  static constexpr auto value = EDyResourceType::Script;
 };
 
 } /// ::dy namespace
 
-#endif /// GUARD_DY_BUILTINSCRIPT_DEBUGUISCRIPTCPP_H
+#endif /// GUARD_DY_BUILTIN_ABSTRACT_ADYSCRIPTRESOURCE_H

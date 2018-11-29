@@ -15,7 +15,6 @@
 
 #include <unordered_map>
 
-#include <Dy/Core/Reflection/RDyCppScript.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
 #include <Dy/Meta/Information/ElementLevelMetaInfo.h>
@@ -23,6 +22,7 @@
 #include <Dy/Meta/Information/PrefabMetaInformation.h>
 #include <Dy/Builtin/Helper/BuiltinInformationDeliver.h>
 #include <Dy/Helper/ContainerHelper.h>
+#include <Dy/Core/Reflection/RDyBuiltinResources.h>
 
 namespace dy
 {
@@ -150,9 +150,9 @@ private:
   /// Level meta information map.
   THashMap<PDyLevelConstructMetaInfo> mLevelInfoMap   = {};
   /// Script meta information map.
-  THashMap<PDyScriptInstanceMetaInfo>   mScriptMetaInfo = {};
+  THashMap<PDyScriptInstanceMetaInfo> mScriptMetaInfo = {};
   /// Font meta information map.
-  THashMap<PDyMetaFontInformation>      mFontMetaInfo   = {};
+  THashMap<PDyMetaFontInformation>    mFontMetaInfo   = {};
 
   //!
   //! Hierarchial meta information containers.
@@ -164,7 +164,7 @@ private:
   THashMap<std::unique_ptr<PDyMetaWidgetRootDescriptor>> mWidgetMetaInfo = {};
 
   friend EDySuccess FDyBuiltinInformationDeliver::ForwardWidgetMetaInformation(_MIN_ const std::string_view& metaString);
-  friend void ::dy::reflect::__Rfc__AddMetaInformation(_MIN_ const std::string&, _MIN_ const EDyScriptMode);
+  friend void ::dy::reflect::RDyBuiltinResource::BindBuiltinResourcesToMetaManager();
 };
 
 } /// ::dy namespace

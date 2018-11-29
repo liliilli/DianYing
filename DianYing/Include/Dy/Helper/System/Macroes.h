@@ -459,6 +459,51 @@ private:                                                  \
   private: \
   inline static ::dy::reflect::__Rfc__DerivedRegister<__MAType__> __rfc__Type{#__MAType__}
 
+///
+/// @macro MDY_REGISTER_RESOURCE
+/// @brief Let reflection manager enable to apply reflection to given type.
+/// @param __MAType__ Type for being enabled.
+///
+#define MDY_REGISTER_RESOURCE(__MAType__) \
+  private: \
+  inline static ::dy::reflect::RDyBuiltinResourceRegister<__MAType__> __rfc__register{#__MAType__}
+
+///
+/// @macro MDY_REGISTER_RESOURCE_SCRIPT
+/// @brief Register cpp script source as builtin script resource.
+/// @param __MAType__ Type for being enabled.
+///
+#define MDY_REGISTER_RESOURCE_SCRIPT(__MAType__) \
+  MDY_REGISTER_RESOURCE(__MAType__); \
+private: \
+  std::any GetMetaInfo() override final { return 0; }; \
+public: \
+  class __ConstructionHelper final : public IDyResource \
+  { \
+    using TScriptableFunction = PDyScriptInstanceMetaInfo::TScriptableFunction; \
+    using TFunctionReturn = std::invoke_result_t<TScriptableFunction>; \
+    \
+    template<typename TType> \
+    static TFunctionReturn GetInstance() { return std::make_unique<TType>(); } \
+    using  TSuper = __MAType__; \
+    \
+    inline static auto function = GetInstance<TSuper>; \
+    \
+    std::any GetMetaInfo() override final \
+    { \
+      PDyScriptInstanceMetaInfo metaInfo = {}; \
+      metaInfo.mScriptType = EDyScriptType::Cpp; \
+      if constexpr (IsInheritancedFrom<FDyBuiltinDebugUiScript, ADyWidgetCppScript> == true) \
+            { metaInfo.mScriptMode = EDyScriptMode::Widget; } \
+      else  { metaInfo.mScriptMode = EDyScriptMode::Actor; } \
+      \
+      metaInfo.mSpecifierName = #__MAType__; \
+      metaInfo.mBtInstantiationFunction = function; \
+      return metaInfo; \
+    } \
+  }; \
+private:
+
 //!
 //! Function type macros.
 //!

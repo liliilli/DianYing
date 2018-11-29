@@ -14,6 +14,7 @@
 ///
 
 #include <nlohmann/json_fwd.hpp>
+#include <Dy/Component/Interface/IDyScriptable.h>
 
 namespace dy
 {
@@ -63,13 +64,16 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyScriptReferenceMetaInf
 /// @struct PDyScriptInstanceMetaInfo
 /// @brief  Instance meta information of `CDyScript` base type.
 ///
-struct PDyScriptInstanceMetaInfo final
+struct PDyScriptInstanceMetaInfo
 {
   EDyScriptType mScriptType    = EDyScriptType::NoneError;
   EDyScriptMode mScriptMode    = EDyScriptMode::NoneError;
   std::string   mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
   std::string   mFilePath      = "";
   bool          mIsCompressed  = false;
+
+  using TScriptableFunction = std::unique_ptr<IDyScriptable>(*)();
+  TScriptableFunction mBtInstantiationFunction = nullptr;
 };
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyScriptInstanceMetaInfo& p);
