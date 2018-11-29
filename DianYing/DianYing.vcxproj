@@ -156,12 +156,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\Builtin\Script\DebugUiScriptCpp.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\RenderUiBasicGaugeBar.cc" />
     <ClCompile Include="Source\Component\Abstract\ADyActorCppScript.cc" />
     <ClCompile Include="Source\Component\Abstract\ADyWidgetCppScript.cc" />
     <ClCompile Include="Source\Component\Internal\CDyActorScriptCpp.cc" />
     <ClCompile Include="Source\Component\Internal\CDyActorScriptLua.cc" />
+    <ClCompile Include="Source\Component\Internal\CDyBasicGaugeBarRenderer.cc" />
     <ClCompile Include="Source\Component\UI\CDyWidgetScriptCpp.cc" />
     <ClCompile Include="Source\Component\UI\CDyWidgetScriptLua.cc" />
+    <ClCompile Include="Source\Element\Canvas\FDyBasicGuageBar.cc" />
     <ClCompile Include="Source\Element\Canvas\UiObject.cc" />
     <ClCompile Include="Source\Element\Canvas\UiObjectChildrenable.cc" />
     <ClCompile Include="Source\Core\Reflection\RDyCppScript.cc" />
@@ -287,6 +290,7 @@
     <ClCompile Include="Source\Element\Actor.cc" />
     <ClCompile Include="Source\Element\Canvas\Text.cc" />
     <ClCompile Include="Source\Element\Canvas\Text_Deprecated.cc" />
+    <ClCompile Include="Source\Meta\Descriptor\WidgetBarMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Information\ElementLevelMetaInfo.cc" />
     <ClCompile Include="Source\Element\Level.cc" />
     <ClCompile Include="Source\Entry\Entry.cc" />
@@ -394,6 +398,7 @@
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderOpaqueStatic.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderPass.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderScreenOutput.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderUIBasicGaugeBar.h" />
     <ClInclude Include="Include\Dy\Builtin\Texture\ErrorBlue.h" />
     <ClInclude Include="Include\Dy\Builtin\Texture\Checker.h" />
     <ClInclude Include="Include\Dy\Builtin\Widget\DebugUiMeta.h" />
@@ -402,9 +407,11 @@
     <ClInclude Include="Include\Dy\Component\Abstract\ADyWidgetCppScript.h" />
     <ClInclude Include="Include\Dy\Component\CDyCamera.h" />
     <ClInclude Include="Include\Dy\Component\CDyDirectionalLight.h" />
+    <ClInclude Include="Include\Dy\Component\Ctor\PDyBarTypeRenderer.h" />
     <ClInclude Include="Include\Dy\Component\Ctor\PDyFontRenderer.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyActorCppScript.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyActorScriptCpp.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\CDyBasicGaugeBarRenderer.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyFontRenderer.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyFontRenderer_Deprecated.h" />
     <ClInclude Include="Include\Dy\Component\CDyModelFilter.h" />
@@ -446,6 +453,7 @@
     <ClInclude Include="Include\Dy\Element\Abstract\ADyTransformable.h" />
     <ClInclude Include="Include\Dy\Element\Actor.h" />
     <ClInclude Include="Include\Dy\Element\Abstract\ADyNameCounterMap.h" />
+    <ClInclude Include="Include\Dy\Element\Canvas\FDyBasicGaugeBar.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\UiObject.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\UiObjectChildrenable.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\Widget.h" />
@@ -453,6 +461,7 @@
     <ClInclude Include="Include\Dy\Element\Canvas\Text_Deprecated.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\CanvasDescriptor.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\GlobalEnums.h" />
+    <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetBarMetaInformation.h" />
     <ClInclude Include="Include\Dy\Meta\Information\ElementLevelMetaInfo.h" />
     <ClInclude Include="Include\Dy\Helper\Type\ColorRGB.h" />
     <ClInclude Include="Include\Dy\Helper\Type\ColorRGB24.h" />

@@ -15,8 +15,10 @@
 /// Header file
 #include <Dy/Element/Canvas/Widget.h>
 #include <Dy/Meta/Descriptor/WidgetTextMetaInformation.h>
+#include <Dy/Meta/Descriptor/WidgetBarMetaInformation.h>
 #include <Dy/Meta/Type/EDyWidgetTypes.h>
 #include <Dy/Element/Canvas/Text.h>
+#include <Dy/Element/Canvas/FDyBasicGaugeBar.h>
 #include <Dy/Management/WindowManager.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
 
@@ -68,9 +70,14 @@ EDySuccess FDyUiWidget::Initialize(_MIN_ const PDyMetaWidgetRootDescriptor& widg
     switch (objectType)
     {
     default: MDY_UNEXPECTED_BRANCH(); break;
+    case EDyWidgetComponentType::BasicGaugeBar:
+    {
+      MDY_NOTUSED auto ptr = this->AddUiObject<FDyBasicGaugeBar>(*static_cast<PDyMetaWidgetBarDescriptor*>(objectMetaInfoPtr.get()));
+    } break;
     case EDyWidgetComponentType::Text:
+    {
       MDY_NOTUSED auto ptr = this->AddUiObject<FDyText>(*static_cast<PDyMetaWidgetTextDescriptor*>(objectMetaInfoPtr.get()));
-      break;
+    } break;
     }
   }
 

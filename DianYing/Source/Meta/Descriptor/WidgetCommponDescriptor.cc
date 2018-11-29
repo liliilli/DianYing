@@ -25,6 +25,7 @@ namespace
 
 MDY_SET_IMMUTABLE_STRING(sType_Root, "Root");
 MDY_SET_IMMUTABLE_STRING(sType_Text, "Text");
+MDY_SET_IMMUTABLE_STRING(sType_BasicGaugeBar, "BasicBar");
 MDY_SET_IMMUTABLE_STRING(sType_HorizontalLayout, "HorizontalLayout");
 MDY_SET_IMMUTABLE_STRING(sType_VerticalLayout,   "VerticalLayout");
 
@@ -49,6 +50,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ EDyWidgetComponentType& p)
   else if (typeString == sType_Text)              { p = EDyWidgetComponentType::Text; }
   else if (typeString == sType_HorizontalLayout)  { p = EDyWidgetComponentType::HorizontalLayout; }
   else if (typeString == sType_VerticalLayout)    { p = EDyWidgetComponentType::VerticalLayout;   }
+  else if (typeString == sType_BasicGaugeBar)     { p = EDyWidgetComponentType::BasicGaugeBar; }
   else                                            { MDY_UNEXPECTED_BRANCH(); }
 }
 

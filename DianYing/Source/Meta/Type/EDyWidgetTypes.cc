@@ -16,6 +16,8 @@
 #include <Dy/Meta/Type/EDyWidgetTypes.h>
 #include <nlohmann/json.hpp>
 
+#include <Dy/Helper/Type/VectorInt2.h>
+
 //!
 //! Forward declaration & local translation unit data
 //!
@@ -110,6 +112,26 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ EDyOrigin& p)
   else if (valueString == sValue_Orig_Rig_Top)  { p = EDyOrigin::Right_Top; }
 
   else                                          { MDY_UNEXPECTED_BRANCH(); }
+}
+
+DDyVector2 DyGetPositionWithOrigin(const DDyVector2& position, const DDyVectorInt2& frameSize, EDyOrigin origin)
+{
+  switch (origin)
+  {
+  case EDyOrigin::Left_Bottom:  return position - (frameSize / 2);
+  case EDyOrigin::Left_Center:  return position - DDyVectorInt2{ frameSize.X >> 1, 0 };
+  case EDyOrigin::Left_Top:     return position + DDyVectorInt2{ -(frameSize.X >> 1), frameSize.Y >> 1 };
+  case EDyOrigin::Center_Bottom:return position - DDyVectorInt2{ 0, frameSize.Y >> 1 };
+  case EDyOrigin::Center_Center:return position;
+  case EDyOrigin::Center_Top:   return position + DDyVectorInt2{ 0, frameSize.Y >> 1 };
+  case EDyOrigin::Right_Bottom: return position + DDyVectorInt2{ frameSize.X >> 1, -(frameSize.Y >> 1) };
+  case EDyOrigin::Right_Center: return position + DDyVectorInt2{ frameSize.X >> 1, 0 };
+  case EDyOrigin::Right_Top:    return position + (frameSize / 2);
+  default: MDY_UNEXPECTED_BRANCH(); break;
+  }
+
+  MDY_UNEXPECTED_BRANCH();
+  return {};
 }
 
 } /// ::dy namespace

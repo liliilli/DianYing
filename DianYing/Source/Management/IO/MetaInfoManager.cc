@@ -28,6 +28,7 @@
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
 #include <Dy/Meta/Descriptor/WidgetTextMetaInformation.h>
 #include <Dy/Meta/Descriptor/WidgetLayoutMetaInformation.h>
+#include "Dy/Meta/Descriptor/WidgetBarMetaInformation.h"
 
 //!
 //! Local tranlation unit variables
@@ -132,6 +133,15 @@ std::unique_ptr<dy::PDyMetaWidgetRootDescriptor> DyCreateWidgetMetaInformation(_
       tempWidgetObjectMap.try_emplace(
           specifierName,
           std::make_pair<>(componentType, DyConvertUniquePtrTo<PDyMetaWidgetCommonBaseDesc>(std::move(instance)))
+      );
+    } break;
+    case EDyWidgetComponentType::BasicGaugeBar:
+    { // Basic gauge bar component. (plain color, without material and any effects).
+      auto instance = PDyMetaWidgetBarDescriptor::CreateMetaInformation(componentInfo);
+      const auto specifierName = instance->mUiObjectSpecifierName;
+      tempWidgetObjectMap.try_emplace(
+          specifierName,
+          std::make_pair(componentType, DyConvertUniquePtrTo<PDyMetaWidgetCommonBaseDesc>(std::move(instance)))
       );
     } break;
     default: MDY_UNEXPECTED_BRANCH(); break;

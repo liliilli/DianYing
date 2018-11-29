@@ -34,7 +34,7 @@ dy::DDyMatrix4x4 uUiProjMatrix = dy::DDyMatrix4x4{};
 
 constexpr auto stride = sizeof(dy::DDyVector2) * 2;
 GLuint mTextSampleVao = MDY_INITIALIZE_DEFUINT;
-GLuint mTextSampleVbo = MDY_INITIALIZE_DEFUINT;
+GLuint mTestVbo = MDY_INITIALIZE_DEFUINT;
 
 ///
 /// @brief The method gets character quad vertices to be needed for rendering.
@@ -76,7 +76,7 @@ void RenderFontCharacter(_MIN_ const std::array<dy::DDyVector2, 8>& vertices) {
 	// Update content of VBO
   static constexpr TU32 size = sizeof(dy::DDyVector2) * 8;
 
-	glBindBuffer    (GL_ARRAY_BUFFER, mTextSampleVbo);
+	glBindBuffer    (GL_ARRAY_BUFFER, mTestVbo);
   glBufferSubData (GL_ARRAY_BUFFER, 0, size, &vertices[0].X);
 	glBindBuffer    (GL_ARRAY_BUFFER, 0);
 
@@ -98,10 +98,10 @@ EDySuccess CDyFontRenderer::Initialize(const PDyFontRendererCtorInformation& des
   static auto SetTemporalFontArrayBuffer = [&]
   {
     glGenVertexArrays(1, &mTextSampleVao);
-    glGenBuffers(1, &mTextSampleVbo);
+    glGenBuffers(1, &mTestVbo);
 
     glBindVertexArray(mTextSampleVao);
-    glBindBuffer(GL_ARRAY_BUFFER, mTextSampleVbo);
+    glBindBuffer(GL_ARRAY_BUFFER, mTestVbo);
 
     std::array<DDyVector2, 8> value =
     {
@@ -110,7 +110,7 @@ EDySuccess CDyFontRenderer::Initialize(const PDyFontRendererCtorInformation& des
     };
     glBufferData(GL_ARRAY_BUFFER, stride * 4, value.data(), GL_DYNAMIC_DRAW);
 
-    glBindVertexBuffer(0, mTextSampleVbo, 0, stride);
+    glBindVertexBuffer(0, mTestVbo, 0, stride);
 
     glEnableVertexAttribArray(0);
     glVertexAttribFormat(0, 2, GL_FLOAT, GL_FALSE, 0);

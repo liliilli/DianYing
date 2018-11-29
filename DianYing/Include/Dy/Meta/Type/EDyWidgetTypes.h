@@ -14,10 +14,23 @@
 ///
 
 #include <nlohmann/json_fwd.hpp>
+#include <Dy/Helper/Type/Vector2.h>
+
+//!
+//! Forward declaration
+//!
 
 namespace dy
 {
+struct DDyVectorInt2;
+}
 
+//!
+//! Implementation
+//!
+
+namespace dy
+{
 ///
 /// @enum   EDyHorizontalAlignment
 /// @brief
@@ -67,7 +80,6 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ EDyVerticalAlignment& p);
 /// Afterward, this method sets final rendering position of child and apply changed value to
 /// children of child calling SetUiParentPosition() of children of child.
 ///
-
 enum class EDyOrigin
 {
   Left_Bottom,
@@ -85,6 +97,15 @@ enum class EDyOrigin
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyOrigin& p);
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ EDyOrigin& p);
+
+///
+/// @brief  Get calculated position with origin.
+/// @param
+/// @param
+/// @param
+/// @return
+///
+MDY_NODISCARD DDyVector2 DyGetPositionWithOrigin(const DDyVector2& position, const DDyVectorInt2& frameSize, EDyOrigin origin);
 
 } /// ::dy namespace
 
