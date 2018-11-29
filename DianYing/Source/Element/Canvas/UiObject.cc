@@ -36,22 +36,7 @@ DDyVectorInt2 FDyUiObject::GetFrameSize() const noexcept
 
 DDyVector2 FDyUiObject::GetWidgetPosition(const EDyOrigin& origin) const noexcept
 {
-  switch (origin)
-  {
-  case EDyOrigin::Left_Bottom:  return this->mCentralPosition - (this->mWidgetSize / 2);
-  case EDyOrigin::Left_Center:  return this->mCentralPosition - DDyVectorInt2{this->mWidgetSize.X >> 1, 0};
-  case EDyOrigin::Left_Top:     return this->mCentralPosition + DDyVectorInt2{-(this->mWidgetSize.X >> 1), this->mWidgetSize.Y >> 1};
-  case EDyOrigin::Center_Bottom:return this->mCentralPosition - DDyVectorInt2{0, this->mWidgetSize.Y >> 1};
-  case EDyOrigin::Center_Center:return this->mCentralPosition;
-  case EDyOrigin::Center_Top:   return this->mCentralPosition + DDyVectorInt2{0, this->mWidgetSize.Y >> 1};
-  case EDyOrigin::Right_Bottom: return this->mCentralPosition + DDyVectorInt2{this->mWidgetSize.X >> 1, -(this->mWidgetSize.Y >> 1)};
-  case EDyOrigin::Right_Center: return this->mCentralPosition + DDyVectorInt2{this->mWidgetSize.X >> 1, 0};
-  case EDyOrigin::Right_Top:    return this->mCentralPosition + (this->mWidgetSize / 2);
-  default: MDY_UNEXPECTED_BRANCH(); break;
-  }
-
-  MDY_UNEXPECTED_BRANCH();
-  return {};
+  return DyGetPositionWithOrigin(this->mCentralPosition, this->mWidgetSize, origin);
 }
 
 } /// ::dy namespace

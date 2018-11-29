@@ -52,7 +52,9 @@
 #include <Dy/Management/IO/IOResourceManager.h>
 #include <Dy/Management/SoundManager.h>
 #include <Dy/Management/PhysicsManager.h>
-#include "Dy/Builtin/Widget/DebugUiMeta.h"
+#include <Dy/Builtin/Widget/DebugUiMeta.h>
+#include <Dy/Builtin/ShaderGl/RenderFontArraySDF.h>
+#include <Dy/Builtin/ShaderGl/RenderUIBasicGaugeBar.h>
 
 ///
 /// Undefined proprocessor WIN32 macro "max, min" for preventing misuse.
@@ -94,6 +96,8 @@ void DyInitializeBuiltinResource()
   dy::builtin::FDyBuiltinShaderGLRenderColorGeometry();
   dy::builtin::FDyBuiltinShaderGLRenderOpaqueStatic();
   dy::builtin::FDyBuiltinShaderGLRenderDefaultFont();
+  dy::builtin::FDyBuiltinShaderGLRenderFontArraySDF();
+  dy::builtin::FDyBuiltinShaderGLRenderUiBasicGaugeBar();
 
   dy::builtin::FDyBuiltinMaterialOpaqueStaticPlain();
   MDY_REFLECT_SETUP_BUILTIN_RESOURCE();

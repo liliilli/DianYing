@@ -14,8 +14,10 @@
         "Type": "Text",
         "Parent": "",
         "Details": {
-          "InitialString": "Hello world!",
           "InitialPosition": { "X": 0, "Y": 0 },
+          "WidgetSize": { "X": 200, "Y": 100 },
+          "Origin": "Center_Center",
+          "InitialString": "Hello world!",
           "InitialColor": 16777215,
           "InitialAlpha": 1.0,
           "FontSize": 10,
@@ -41,8 +43,10 @@
         "Type": "Text",
         "Parent": "",
         "Details": {
-          "InitialString": "Hello world!",
           "InitialPosition": { "X": 0, "Y": 0 },
+          "WidgetSize": { "X": 200, "Y": 100 },
+          "InitialString": "Hello world!",
+          "Origin": "Center_Center",
           "InitialColor": 16777215,
           "InitialAlpha": 1.0,
           "FontSize": 10,
@@ -69,10 +73,34 @@
         "Parent": "",
         "Details": {
           "Area": {
-            "LeftDown": { "X": 0.0, "Y": 0.0 },
-            "RightUp" : { "X": 1.0, "Y": 1.0 }
+            "LeftDown": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "RightUp": {
+              "X": 1.0,
+              "Y": 1.0
+            }
           },
           "Alignment": "Bottom"
+        }
+      },
+      {
+        "Name": "BasicBarTest",
+        "Type": "BasicBar",
+        "Parent": "",
+        "Details": {
+          "InitialPosition": { "X": 0, "Y": 32 },
+          "WidgetSize": { "X": 600, "Y": 32 },
+          "Origin": "Center_Bottom",
+          "ForegroundColor": 16777215,
+          "ForegroundAlpha": 1.0,
+          "BackgroundColor": 16777215,
+          "BackgroundAlpha": 1.0,
+          "Padding": 4,
+          "Min": 0,
+          "Max": 100,
+          "IsUsingBackgroundColor": false
         }
       }
     ]

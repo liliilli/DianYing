@@ -24,7 +24,9 @@ namespace dy
 
 void FDyText::AlignFinalPosition(const DDyVector2& parentFinalPosition, const DDyVectorInt2& parentFrameSize)
 {
-  this->mFinalCentralPosition = parentFinalPosition + this->GetWidgetPosition(EDyOrigin::Center_Center);
+  this->mFinalCentralPosition =
+      DyGetPositionWithOrigin(parentFinalPosition, parentFrameSize, this->mOrigin)
+    + this->GetWidgetPosition(EDyOrigin::Center_Center);
 }
 
 std::string FDyText::ToString()
@@ -63,6 +65,7 @@ EDySuccess FDyText::Initialize(_MIN_ const PDyMetaWidgetTextDescriptor& objectMe
   this->mIsUsingBackgroundColor = objectMetaDesc.mIsUsingBackground;
   this->mFontSize               = objectMetaDesc.mFontSize;
   this->mPtrFontContainer       = GetFontResource(objectMetaDesc.mFontSpecifierName);
+  this->mOrigin                 = objectMetaDesc.mOrigin;
 
   this->SetWidgetCentralPosition(objectMetaDesc.mInitialPosition);
   this->SetWidgetFrameSize      (objectMetaDesc.mWidgetSize);

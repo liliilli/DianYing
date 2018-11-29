@@ -44,16 +44,30 @@ FDyBuiltinWidgetDebugUiMeta::FDyBuiltinWidgetDebugUiMeta()
       "Parent": "",
       "Details":
       {
-        "InitialPosition": { "X":0, "Y":0 },
+        "InitialPosition": { "X":32, "Y":32 },
         "WidgetSize": { "X": 200, "Y": 100 },
-        "InitialString": "Hello world!",
-        "InitialColor": 16777215,
-        "InitialAlpha": 1.0,
-        "EdgeColor": 0,
-        "FontSize": 12,
-        "FontAlignment": "Left",
-        "FontSpecifierName": "Arial",
-        "IsUsingEdge": true
+        "Origin": "Left_Bottom",
+        "InitialString": "", "InitialColor": 16777215, "InitialAlpha": 1.0,
+        "EdgeColor": 0, "FontSize": 12, "FontAlignment": "Left",
+        "FontSpecifierName": "Arial", "IsUsingEdge": true
+      }
+    },
+    {
+      "Name": "BasicBarTest",
+      "Type": "BasicBar",
+      "Parent": "",
+      "Details": {
+        "InitialPosition": { "X": 0, "Y": 32 },
+        "WidgetSize": { "X": 600, "Y": 32 },
+        "Origin": "Center_Bottom",
+        "ForegroundColor": 16776960,
+        "ForegroundAlpha": 1.0,
+        "BackgroundColor": 0,
+        "BackgroundAlpha": 0.75,
+        "Padding": 4,
+        "Min": 0,
+        "Max": 100,
+        "IsUsingBackgroundColor": true
       }
     }
   ]

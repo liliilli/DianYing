@@ -33,6 +33,7 @@ PDyMetaWidgetTextDescriptor::CreateMetaInformation(_MIN_ const nlohmann::json& i
     {
       "WidgetSize": { "X": 200, "Y": 100 },
       "InitialString": "Hello world!",
+      "Origin": { "Center-Center" },
       "InitialPosition": { "X":0, "Y":0 },
       "InitialColor": 16777215,
       "InitialAlpha": 1.0,
@@ -66,8 +67,7 @@ PDyMetaWidgetTextDescriptor::CreateMetaInformation(_MIN_ const nlohmann::json& i
 
   // Detail (TEXT)
   const auto& detailAtlas = itemAtlas[MSVSTR(TPDyMWCBD::sHeader_Details)];
-  instance->mInitialString    = DDyString{DyJsonGetValueFrom<std::string>(detailAtlas, sHeader_InitialString)};
-  instance->mInitialPosition  = DDyVectorInt2{DyJsonGetValueFrom<DDyVector2>(detailAtlas, sHeader_InitialPosition)};
+  instance->mInitialString      = DDyString{DyJsonGetValueFrom<std::string>(detailAtlas, sHeader_InitialString)};
 
   DDyColorRGBA colorRgb         = DyJsonGetValueFrom<DDyColorRGB24>(detailAtlas, sHeader_InitialColor);
   colorRgb.A                    = DyJsonGetValueFrom<float>(detailAtlas, sHeader_InitialAlpha);
@@ -75,10 +75,12 @@ PDyMetaWidgetTextDescriptor::CreateMetaInformation(_MIN_ const nlohmann::json& i
   instance->mInitialColor       = colorRgb;
   instance->mFontSize           = DyJsonGetValueFrom<TU32>(detailAtlas, sHeader_FontSize);
   instance->mFontSpecifierName  = DyJsonGetValueFrom<std::string>(detailAtlas, sHeader_FontSpecifierName);
+  instance->mEdgeColor          = DyJsonGetValueFrom<DDyColorRGB24>(detailAtlas, "EdgeColor");
   instance->mIsUsingEdge        = DyJsonGetValueFrom<bool>(detailAtlas, sHeader_IsUsingEdge);
 
+  instance->mInitialPosition    = DDyVectorInt2{DyJsonGetValueFrom<DDyVector2>(detailAtlas, sHeader_InitialPosition)};
+  instance->mOrigin             = DyJsonGetValueFrom<EDyOrigin>(detailAtlas, "Origin");
   instance->mWidgetSize         = DyJsonGetValueFrom<DDyVectorInt2>(detailAtlas, "WidgetSize");
-  instance->mEdgeColor          = DyJsonGetValueFrom<DDyColorRGB24>(detailAtlas, "EdgeColor");
 
   return instance;
 }

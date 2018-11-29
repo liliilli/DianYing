@@ -20,6 +20,7 @@
 #include <Dy/Helper/Type/DyString.h>
 #include <Dy/Management/Type/FontContainer_Deprecated.h>
 #include <Dy/Management/Interface/IDyFontContainer.h>
+#include <Dy/Meta/Type/EDyWidgetTypes.h>
 
 //!
 //! Implementation
@@ -172,16 +173,18 @@ public:
   void Render() override final;
 
 private:
+  ///
+  EDyOrigin         mOrigin           = EDyOrigin::Center_Center;
   /// Text to display on screen. String must be following UTF-8 encoding.
   DDyString         mTextString       = {""};
   /// Text container instance to display font.
-  IDyFontContainer* mPtrFontContainer    = nullptr;
+  IDyFontContainer* mPtrFontContainer = nullptr;
   /// Font color
-	DDyColorRGBA          mForegroundColor  = DDyColorRGBA::White;
+	DDyColorRGBA      mForegroundColor  = DDyColorRGBA::White;
   /// Font background color
-  DDyColorRGBA          mBackgroundColor  = DDyColorRGBA{0, 0, 0, 0};
+  DDyColorRGBA      mBackgroundColor  = DDyColorRGBA{0, 0, 0, 0};
   /// Font Edge color
-  DDyColorRGBA          mEdgeColor        = DDyColorRGBA::Black;
+  DDyColorRGBA      mEdgeColor        = DDyColorRGBA::Black;
   /// Font size
   TU32              mFontSize         = 16;
   ///

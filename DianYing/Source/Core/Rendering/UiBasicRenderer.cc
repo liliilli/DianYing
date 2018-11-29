@@ -62,8 +62,6 @@ FDyUIBasicRenderer::FDyUIBasicRenderer()
   //!
   //! Lambda function
   //!
-
-  builtin::FDyBuiltinShaderGLRenderFontArraySDF();
 #ifdef false
   static auto SetTemporaryInitialSetting = [&] {
     desc.mInitialString = R"dy(

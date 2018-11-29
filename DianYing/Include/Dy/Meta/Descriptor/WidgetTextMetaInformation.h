@@ -17,6 +17,7 @@
 #include <Dy/Helper/Type/VectorInt2.h>
 #include <Dy/Helper/Type/ColorRGBA.h>
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
+#include <Dy/Meta/Type/EDyWidgetTypes.h>
 
 namespace dy
 {
@@ -27,12 +28,15 @@ namespace dy
 ///
 struct PDyMetaWidgetTextDescriptor final : public PDyMetaWidgetCommonBaseDesc
 {
-  /// UCS-2 string
-  DDyString     mInitialString      = MDY_INITIALIZE_EMPTYSTR;
   /// Size (px) of text widget (leaf widget).
   DDyVectorInt2 mWidgetSize         = {};
   /// Initial position of canvas.
   DDyVectorInt2 mInitialPosition    = {};
+  /// Originable to parent frame (except for list layout)
+  EDyOrigin     mOrigin             = EDyOrigin::Center_Center;
+
+  /// UCS-2 string
+  DDyString     mInitialString      = MDY_INITIALIZE_EMPTYSTR;
   /// InitialColor(rgb) + InitialAlpha(a)
   DDyColorRGBA  mInitialColor       = DDyColorRGBA::White;
   /// Edge color of text. `mIsUsingEdge` must be enabled to use this.

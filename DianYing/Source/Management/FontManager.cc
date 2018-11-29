@@ -20,32 +20,11 @@
 #include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Management/Type/FontResourceContainer.h>
 
-//!
-//! Forward declaration
-//!
-
-namespace
-{
-
-MDY_SET_IMMUTABLE_STRING(sSampleEnglishFontPath,  "./TestResource/Inconsolata-Regular.ttf");
-MDY_SET_IMMUTABLE_STRING(sSampleJapaneseFontPath, "./TestResource/UDDigiKyokashoN-R.ttc");
-//MDY_SET_IMMUTABLE_STRING(sSampleJapaneseFontPath, "./TestResource/msgothic.ttc");
-MDY_SET_IMMUTABLE_STRING(sSampleHangleFontPath,   "./TestResource/KoPubDotumMedium.ttf");
-
-} /// ::unnamed namespace
-
-//!
-//! Implementation
-//!
-
 namespace dy
 {
 
 EDySuccess MDyFont::pfInitialize()
 {
-  // Create font and move it.
-  mDefaultFontContainer_Deprecated = new FDyFontContainer_Deprecated(MSVSTR(sSampleJapaneseFontPath));
-
   return DY_SUCCESS;
 }
 
@@ -113,13 +92,6 @@ IDyFontContainer* MDyFont::GetFontResourceContainer(_MIN_ const std::string& spe
 EDySuccess MDyFont::CreateFontContainer_Deprecated(const std::string& fontSpecifierName)
 {
   if (this->IsFontContainerExist_Deprecated(fontSpecifierName) == true)
-  {
-    MDY_UNEXPECTED_BRANCH(); return DY_FAILURE;
-  }
-
-  // Create font and move it.
-  auto [it, isCreated] = mValidFontContainerMap_Deprecated.try_emplace(fontSpecifierName, MSVSTR(sSampleEnglishFontPath));
-  if (isCreated == false)
   {
     MDY_UNEXPECTED_BRANCH(); return DY_FAILURE;
   }

@@ -19,6 +19,7 @@
 
 #include <Dy/Element/Canvas/Widget.h>
 #include <Dy/Element/Canvas/Text.h>
+#include "Dy/Element/Canvas/FDyBasicGaugeBar.h"
 
 namespace dy
 {
@@ -39,10 +40,12 @@ void FDyBuiltinDebugUiScript::Update(_MIN_ TF32 dt)
   auto& widgetRef = this->GetWidgetReference();
 
   FDyText* text = widgetRef.GetUiObject<FDyText>("DebugTestText");
+  FDyBasicGaugeBar* bar = widgetRef.GetUiObject<FDyBasicGaugeBar>("BasicBarTest");
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(text), "Unexpected error occurred.");
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(bar),  "Unexpected error occurred.");
 
   text->SetText(fmt::format("{:.2f} %", usage));
-  MDY_LOG_CRITICAL("CPU USAGE : {}%", usage);
+  bar->SetPresentValue(usage);
 }
 
 } /// ::dy namespace
