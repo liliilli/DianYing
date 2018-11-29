@@ -157,17 +157,20 @@
   <ItemGroup>
     <ClCompile Include="Source\Builtin\Script\DebugUiScriptCpp.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderUiBasicGaugeBar.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\RenderUIImage.cc" />
     <ClCompile Include="Source\Component\Abstract\ADyActorCppScript.cc" />
     <ClCompile Include="Source\Component\Abstract\ADyWidgetCppScript.cc" />
     <ClCompile Include="Source\Component\Internal\CDyActorScriptCpp.cc" />
     <ClCompile Include="Source\Component\Internal\CDyActorScriptLua.cc" />
     <ClCompile Include="Source\Component\Internal\CDyBasicGaugeBarRenderer.cc" />
+    <ClCompile Include="Source\Component\Internal\CDyImageRenderer.cc" />
     <ClCompile Include="Source\Component\UI\CDyWidgetScriptCpp.cc" />
     <ClCompile Include="Source\Component\UI\CDyWidgetScriptLua.cc" />
+    <ClCompile Include="Source\Core\Reflection\RDyBuiltinResources.cc" />
     <ClCompile Include="Source\Element\Canvas\FDyBasicGuageBar.cc" />
+    <ClCompile Include="Source\Element\Canvas\FDyImage.cc" />
     <ClCompile Include="Source\Element\Canvas\UiObject.cc" />
     <ClCompile Include="Source\Element\Canvas\UiObjectChildrenable.cc" />
-    <ClCompile Include="Source\Core\Reflection\RDyCppScript.cc" />
     <ClCompile Include="Source\Element\Canvas\Widget.cc" />
     <ClCompile Include="Source\Element\Descriptor\GlobalEnums.cc" />
     <ClCompile Include="Libraries\glad\src\glad.c">
@@ -291,6 +294,7 @@
     <ClCompile Include="Source\Element\Canvas\Text.cc" />
     <ClCompile Include="Source\Element\Canvas\Text_Deprecated.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetBarMetaInformation.cc" />
+    <ClCompile Include="Source\Meta\Descriptor\WidgetImageMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Information\ElementLevelMetaInfo.cc" />
     <ClCompile Include="Source\Element\Level.cc" />
     <ClCompile Include="Source\Entry\Entry.cc" />
@@ -379,7 +383,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Dy\Binding\LuaScriptFrame.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyScriptResource.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyTemp.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyWidgetMetaResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Helper\BuiltinInformationDeliver.h" />
+    <ClInclude Include="Include\Dy\Builtin\Interface\IDyResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Material\OpaqueStaticPlain.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\Box.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\Plain.h" />
@@ -399,6 +407,7 @@
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderPass.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderScreenOutput.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderUIBasicGaugeBar.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderUIImage.h" />
     <ClInclude Include="Include\Dy\Builtin\Texture\ErrorBlue.h" />
     <ClInclude Include="Include\Dy\Builtin\Texture\Checker.h" />
     <ClInclude Include="Include\Dy\Builtin\Widget\DebugUiMeta.h" />
@@ -410,6 +419,7 @@
     <ClInclude Include="Include\Dy\Component\Ctor\PDyBarTypeRenderer.h" />
     <ClInclude Include="Include\Dy\Component\Ctor\PDyFontRenderer.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyActorCppScript.h" />
+    <ClInclude Include="Include\Dy\Component\Ctor\PDyImageRenderer.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyActorScriptCpp.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyBasicGaugeBarRenderer.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyFontRenderer.h" />
@@ -425,6 +435,7 @@
     <ClInclude Include="Include\Dy\Component\Helper\TmpCheckRemoveParams.h" />
     <ClInclude Include="Include\Dy\Component\Interface\IDyInitializeHelper.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyActorScriptLua.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\CDyImageRenderer.h" />
     <ClInclude Include="Include\Dy\Component\Internal\ScriptState.h" />
     <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScript.h" />
     <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScriptCpp.h" />
@@ -437,8 +448,7 @@
     <ClInclude Include="Include\Dy\Core\Component\Information\TextureInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\SoundResource.h" />
     <ClInclude Include="Include\Dy\Core\DyEngine.h" />
-    <ClInclude Include="Include\Dy\Core\Reflection\RDyBuiltinResource.h" />
-    <ClInclude Include="Include\Dy\Core\Reflection\RDyCppScript.h" />
+    <ClInclude Include="Include\Dy\Core\Reflection\RDyBuiltinResources.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\BasicRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\BasicShadow.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\FinalScreenDisplayRenderer.h" />
@@ -454,6 +464,7 @@
     <ClInclude Include="Include\Dy\Element\Actor.h" />
     <ClInclude Include="Include\Dy\Element\Abstract\ADyNameCounterMap.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\FDyBasicGaugeBar.h" />
+    <ClInclude Include="Include\Dy\Element\Canvas\FDyImage.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\UiObject.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\UiObjectChildrenable.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\Widget.h" />
@@ -461,7 +472,9 @@
     <ClInclude Include="Include\Dy\Element\Canvas\Text_Deprecated.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\CanvasDescriptor.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\GlobalEnums.h" />
+    <ClInclude Include="Include\Dy\Helper\System\TypeTraits.h" />
     <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetBarMetaInformation.h" />
+    <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetImageMetaInformation.h" />
     <ClInclude Include="Include\Dy\Meta\Information\ElementLevelMetaInfo.h" />
     <ClInclude Include="Include\Dy\Helper\Type\ColorRGB.h" />
     <ClInclude Include="Include\Dy\Helper\Type\ColorRGB24.h" />
@@ -596,6 +609,7 @@
     <ClInclude Include="Include\Dy\Meta\Type\EDyComponentTypes.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyInput.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyRenderingApi.h" />
+    <ClInclude Include="Include\Dy\Meta\Type\EDyResourceTypes.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyWidgetTypes.h" />
     <ClInclude Include="Include\Dy\Meta\Type\TextureParameter.h" />
     <ClInclude Include="Include\Dy\Test\TestCxxopt.h" />

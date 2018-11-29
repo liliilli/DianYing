@@ -21,7 +21,7 @@ namespace dy
 MDY_INTERFACE IDyResource
 {
   virtual ~IDyResource() = default;
-  virtual std::any GetMetaInfo() = 0;
+  virtual MDY_NODISCARD std::any GetMetaInfo() = 0;
 };
 
 } /// ::dy namespace

@@ -6,6 +6,5 @@ namespace dy
 {
 struct IGLShaderResource : public IDyResource { static constexpr auto value = EDyResourceType::GLShader; };
 struct ITextureResource : public IDyResource { static constexpr auto value = EDyResourceType::Texture; };
-struct IWidgetMetaResource : public IDyResource { static constexpr auto value = EDyResourceType::WidgetMeta; };
 
 } /// ::dy namespace

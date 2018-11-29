@@ -469,6 +469,17 @@ private:                                                  \
   inline static ::dy::reflect::RDyBuiltinResourceRegister<__MAType__> __rfc__register{#__MAType__}
 
 ///
+/// @macro MDY_REGISTER_RESOURCE_WITH_SPECIFIER
+/// @brief Let reflection manager enable to apply reflection to given type.
+/// @param __MAType__ Type for being enabled.
+/// @param __MAName__ Specification name to apply.
+///
+#define MDY_REGISTER_RESOURCE_WITH_SPECIFIER(__MAType__, __MAName__) \
+  private: \
+  inline static MDY_SET_IMMUTABLE_STRING(sName, __MAName__); \
+  inline static ::dy::reflect::RDyBuiltinResourceRegister<__MAType__> __rfc__register{sName};
+
+///
 /// @macro MDY_REGISTER_RESOURCE_SCRIPT
 /// @brief Register cpp script source as builtin script resource.
 /// @param __MAType__ Type for being enabled.

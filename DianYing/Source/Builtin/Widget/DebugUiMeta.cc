@@ -16,16 +16,10 @@
 #include <Dy/Builtin/Widget/DebugUiMeta.h>
 #include <Dy/Builtin/Helper/BuiltinInformationDeliver.h>
 
-//!
-//! Implementation
-//!
-
-namespace dy::builtin
+namespace
 {
 
-FDyBuiltinWidgetDebugUiMeta::FDyBuiltinWidgetDebugUiMeta()
-{
-  constexpr const char* widgetMetaString = R"dy(
+MDY_SET_IMMUTABLE_STRING(sBuffer, R"dy(
 {
   "Meta":
   {
@@ -58,12 +52,12 @@ FDyBuiltinWidgetDebugUiMeta::FDyBuiltinWidgetDebugUiMeta()
       "Parent": "",
       "Details": {
         "InitialPosition": { "X": 0, "Y": 32 },
-        "WidgetSize": { "X": 600, "Y": 32 },
+        "WidgetSize": { "X": 600, "Y": 16 },
         "Origin": "Center_Bottom",
         "ForegroundColor": 16776960,
         "ForegroundAlpha": 1.0,
         "BackgroundColor": 0,
-        "BackgroundAlpha": 0.75,
+        "BackgroundAlpha": 0.85,
         "Padding": 4,
         "Min": 0,
         "Max": 100,
@@ -72,9 +66,20 @@ FDyBuiltinWidgetDebugUiMeta::FDyBuiltinWidgetDebugUiMeta()
     }
   ]
 }
-)dy";
+)dy");
 
-  MDY_CALL_ASSERT_SUCCESS(FDyBuiltinInformationDeliver::ForwardWidgetMetaInformation(widgetMetaString));
+} /// ::unnamed namespace
+
+//!
+//! Implementation
+//!
+
+namespace dy::builtin
+{
+
+FDyBuiltinWidgetDebugUiMeta::FDyBuiltinWidgetDebugUiMeta()
+{
+  this->mMetaBuffer = sBuffer;
 }
 
 } /// ::dy::builtin namespace
