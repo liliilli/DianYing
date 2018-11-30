@@ -55,6 +55,7 @@
 #include <Dy/Builtin/Widget/DebugUiMeta.h>
 #include <Dy/Builtin/ShaderGl/RenderFontArraySDF.h>
 #include <Dy/Builtin/ShaderGl/RenderUIBasicGaugeBar.h>
+#include <Dy/Builtin/ShaderGl/RenderUIImage.h>
 
 ///
 /// Undefined proprocessor WIN32 macro "max, min" for preventing misuse.
@@ -84,6 +85,11 @@ void GLAPIENTRY DyGlMessageCallback(GLenum source, GLenum type, GLuint id, GLenu
 
 void DyInitializeBuiltinResource()
 {
+  auto& infoManager = dy::MDyIOData::GetInstance();
+  auto& rescManager = dy::MDyIOResource::GetInstance();
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderPass::sName), dy::EDyScope::Global));
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderPass::sName)));
+
   dy::builtin::FDyBuiltinModelBox();
   dy::builtin::FDyBuiltinModelPlain();
   dy::builtin::FDyBuiltinModelSphere();
@@ -92,15 +98,14 @@ void DyInitializeBuiltinResource()
   dy::builtin::FDyBuiltinTextureChecker();
   dy::builtin::FDyBuiltinTextureErrorBlue();
 
-  dy::builtin::FDyBuiltinShaderGLRenderPass();
   dy::builtin::FDyBuiltinShaderGLRenderColorGeometry();
   dy::builtin::FDyBuiltinShaderGLRenderOpaqueStatic();
   dy::builtin::FDyBuiltinShaderGLRenderDefaultFont();
   dy::builtin::FDyBuiltinShaderGLRenderFontArraySDF();
   dy::builtin::FDyBuiltinShaderGLRenderUiBasicGaugeBar();
+  dy::builtin::FDyBuiltinShaderGLRenderUiImage();
 
   dy::builtin::FDyBuiltinMaterialOpaqueStaticPlain();
-  MDY_REFLECT_SETUP_BUILTIN_RESOURCE();
 }
 
 } /// unnamed namespace

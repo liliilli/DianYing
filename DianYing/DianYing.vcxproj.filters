@@ -151,7 +151,6 @@
     <ClCompile Include="Source\Management\Type\KeyActionBindingInformation.cc" />
     <ClCompile Include="Source\Core\DyEngine.cc" />
     <ClCompile Include="Source\Builtin\Widget\DebugUiMeta.cc" />
-    <ClCompile Include="Source\Builtin\Helper\BuiltinInformationDeliver.cc" />
     <ClCompile Include="Source\Management\IO\MetaInfoManager.cc" />
     <ClCompile Include="Source\Management\IO\IODataManager.cc" />
     <ClCompile Include="Source\Management\IO\IOResourceManager.cc" />
@@ -194,6 +193,8 @@
     <ClCompile Include="Source\Component\Internal\CDyImageRenderer.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderUIImage.cc" />
     <ClCompile Include="Source\Core\Reflection\RDyBuiltinResources.cc" />
+    <ClCompile Include="Source\Meta\Information\MetaInfoGLShader.cc" />
+    <ClCompile Include="Source\Builtin\Abstract\ADyGLShaderResources.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -427,7 +428,6 @@
     <ClInclude Include="Include\Dy\Core\DyEngine.h" />
     <ClInclude Include="Include\Dy\Builtin\Widget\DebugUiMeta.h" />
     <ClInclude Include="Include\Dy\Builtin\Script\DebugUiScriptCpp.h" />
-    <ClInclude Include="Include\Dy\Builtin\Helper\BuiltinInformationDeliver.h" />
     <ClInclude Include="Include\Dy\Management\IO\IODataManager.h" />
     <ClInclude Include="Include\Dy\Management\IO\IOResourceManager.h" />
     <ClInclude Include="Include\Dy\Management\IO\MetaInfoManager.h" />
@@ -480,8 +480,12 @@
     <ClInclude Include="Include\Dy\Meta\Type\EDyResourceTypes.h" />
     <ClInclude Include="Include\Dy\Builtin\Interface\IDyResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyScriptResource.h" />
-    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyTemp.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyWidgetMetaResource.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGLShaderResource.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyTextureResource.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\CommonResourceMetaInfo.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\GLShaderMetaInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Type\EDyScope.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

@@ -475,8 +475,9 @@ private:                                                  \
 /// @param __MAName__ Specification name to apply.
 ///
 #define MDY_REGISTER_RESOURCE_WITH_SPECIFIER(__MAType__, __MAName__) \
-  private: \
+  public: \
   inline static MDY_SET_IMMUTABLE_STRING(sName, __MAName__); \
+  private: \
   inline static ::dy::reflect::RDyBuiltinResourceRegister<__MAType__> __rfc__register{sName};
 
 ///

@@ -20,11 +20,29 @@ namespace dy
 /// @enum EDyResourceSource
 /// @brief Source type of resource.
 ///
-enum EDyResourceSource
+enum class EDyResourceSource
 { // This resource is builtin resource (internal).
   Builtin,
   // This resource is external resource.
   External,
+};
+
+///
+/// @enum EDyGLShaderType
+/// @brief
+///
+///
+/// @enum EDyShaderFragmentType
+/// @brief Shader fragment type. each fragment values are binded to each shader code prior to linking.
+///
+enum class EDyShaderFragmentType
+{
+  Vertex = 0,
+  Hull = 1,
+  Domain = 2,
+  Geometry = 3,
+  Pixel = 4,
+  Compute = 5
 };
 
 } /// ::dy namespace

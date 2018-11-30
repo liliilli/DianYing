@@ -218,8 +218,8 @@ EDySuccess CDyShaderResource::__pInitializeShaderFragments(
     switch (fragmentInformation.mShaderType)
     {
     case EDyShaderFragmentType::Vertex:                 shaderFragmentId = glCreateShader(GL_VERTEX_SHADER);          break;
-    case EDyShaderFragmentType::TesselationControl:     shaderFragmentId = glCreateShader(GL_TESS_CONTROL_SHADER);    break;
-    case EDyShaderFragmentType::TesselationEvaluation:  shaderFragmentId = glCreateShader(GL_TESS_EVALUATION_SHADER); break;
+    case EDyShaderFragmentType::Hull:     shaderFragmentId = glCreateShader(GL_TESS_CONTROL_SHADER);    break;
+    case EDyShaderFragmentType::Domain:  shaderFragmentId = glCreateShader(GL_TESS_EVALUATION_SHADER); break;
     case EDyShaderFragmentType::Geometry:               shaderFragmentId = glCreateShader(GL_GEOMETRY_SHADER);        break;
     case EDyShaderFragmentType::Pixel:                  shaderFragmentId = glCreateShader(GL_FRAGMENT_SHADER);        break;
     }

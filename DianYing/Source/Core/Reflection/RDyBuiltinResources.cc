@@ -36,7 +36,8 @@ void RDyBuiltinResource::BindBuiltinResourcesToMetaManager()
     } break;
     case EDyResourceType::GLShader:
     { // Shader (OpenGL)
-      MDY_NOT_IMPLEMENTED_ASSERT();
+      auto metaInfo = std::any_cast<PDyGLShaderInstanceMetaInfo>(function()->GetMetaInfo());
+      MDY_CALL_ASSERT_SUCCESS(metaManager.pfAddGLShaderMetaInfo(metaInfo));
     } break;
     case EDyResourceType::Model:
     { // Model

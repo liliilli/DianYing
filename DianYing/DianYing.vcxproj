@@ -155,6 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Builtin\Abstract\ADyGLShaderResources.cc" />
     <ClCompile Include="Source\Builtin\Script\DebugUiScriptCpp.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderUiBasicGaugeBar.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderUIImage.cc" />
@@ -220,7 +221,6 @@
     <ClCompile Include="Libraries\msdfgen\core\Vector2.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Source\Builtin\Helper\BuiltinInformationDeliver.cc" />
     <ClCompile Include="Source\Builtin\Material\OpaqueStaticPlain.cc" />
     <ClCompile Include="Source\Builtin\Model\Box.cc" />
     <ClCompile Include="Source\Builtin\Model\Plain.cc" />
@@ -361,6 +361,7 @@
     <ClCompile Include="Source\Meta\Information\ComponentMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Information\ElementObjectMetaInfo.cc" />
     <ClCompile Include="Source\Meta\Information\FontMetaInformation.cc" />
+    <ClCompile Include="Source\Meta\Information\MetaInfoGLShader.cc" />
     <ClCompile Include="Source\Meta\Information\PrefabMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Information\ScriptMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Type\EDyComponentTypes.cc" />
@@ -383,10 +384,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Dy\Binding\LuaScriptFrame.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGLShaderResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyScriptResource.h" />
-    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyTemp.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyTextureResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyWidgetMetaResource.h" />
-    <ClInclude Include="Include\Dy\Builtin\Helper\BuiltinInformationDeliver.h" />
     <ClInclude Include="Include\Dy\Builtin\Interface\IDyResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Material\OpaqueStaticPlain.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\Box.h" />
@@ -447,6 +448,7 @@
     <ClInclude Include="Include\Dy\Core\Component\Information\ShaderInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\TextureInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\SoundResource.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Type\EDyScope.h" />
     <ClInclude Include="Include\Dy\Core\DyEngine.h" />
     <ClInclude Include="Include\Dy\Core\Reflection\RDyBuiltinResources.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\BasicRenderer.h" />
@@ -475,12 +477,14 @@
     <ClInclude Include="Include\Dy\Helper\System\TypeTraits.h" />
     <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetBarMetaInformation.h" />
     <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetImageMetaInformation.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\CommonResourceMetaInfo.h" />
     <ClInclude Include="Include\Dy\Meta\Information\ElementLevelMetaInfo.h" />
     <ClInclude Include="Include\Dy\Helper\Type\ColorRGB.h" />
     <ClInclude Include="Include\Dy\Helper\Type\ColorRGB24.h" />
     <ClInclude Include="Include\Dy\Meta\Information\ComponentLightMetaInfo.h" />
     <ClInclude Include="Include\Dy\Meta\Information\ComponentMetaInformation.h" />
     <ClInclude Include="Include\Dy\Meta\Information\ElementObjectMetaInfo.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\GLShaderMetaInformation.h" />
     <ClInclude Include="Include\Dy\Meta\Information\PrefabMetaInformation.h" />
     <ClInclude Include="Include\Dy\Element\Helper\DescriptorComponentHeaderString.h" />
     <ClInclude Include="Include\Dy\Component\Interface\IDyScriptable.h" />

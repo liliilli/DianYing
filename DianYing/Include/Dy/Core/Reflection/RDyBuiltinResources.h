@@ -69,10 +69,12 @@ RDyBuiltinResource::TReturnType __Rfc__GetInstance() { return std::make_unique<T
 template <typename TType>
 struct RDyBuiltinResourceRegister final : public RDyBuiltinResource
 {
+  inline static bool mFlag = false;
   RDyBuiltinResourceRegister(const std::string_view& name)
   {
-    static_assert(IsInheritancedFrom<TType, IDyResource> == true, "TType must be IResource derived type.");
+    if (mFlag == true) { return; }
 
+    static_assert(IsInheritancedFrom<TType, IDyResource> == true, "TType must be IResource derived type.");
     std::string specifier = name.data(); specifier += std::to_string(count);
 
     if constexpr (TType::value == EDyResourceType::Script)
@@ -83,7 +85,9 @@ struct RDyBuiltinResourceRegister final : public RDyBuiltinResource
     {
       GetResourceMapReference().try_emplace(specifier, TType::value, &__Rfc__GetInstance<TType>);
     }
+
     count += 1;
+    mFlag = true;
   }
 };
 
