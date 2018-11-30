@@ -134,11 +134,7 @@
     <ClCompile Include="Source\Management\Type\FontResourceContainer.cc" />
     <ClCompile Include="Source\Management\Type\FontCharacter_Deprecated.cc" />
     <ClCompile Include="Source\Management\Type\FontCharacterInfo.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\RenderFontMSDF_Deprecated.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\RenderFontSDF_Deprecated.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderFontArraySDF.cc" />
-    <ClCompile Include="Source\Component\Internal\CDyFontRenderer_Deprecated.cc" />
-    <ClCompile Include="Source\Element\Canvas\Text_Deprecated.cc" />
     <ClCompile Include="Source\Element\Canvas\Text.cc" />
     <ClCompile Include="Source\Component\Internal\CDyFontRenderer.cc" />
     <ClCompile Include="Source\Test\TestCxxopt.cc" />
@@ -195,6 +191,10 @@
     <ClCompile Include="Source\Core\Reflection\RDyBuiltinResources.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoGLShader.cc" />
     <ClCompile Include="Source\Builtin\Abstract\ADyGLShaderResources.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\Deprecated\RenderFontMSDF_Deprecated.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\Deprecated\RenderFontSDF_Deprecated.cc" />
+    <ClCompile Include="Source\Component\Internal\Deprecated\CDyFontRenderer_Deprecated.cc" />
+    <ClCompile Include="Source\Element\Canvas\Deprecated\Text_Deprecated.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -406,13 +406,9 @@
     <ClInclude Include="Include\Dy\Management\Interface\IDyFontContainer.h" />
     <ClInclude Include="Include\Dy\Management\Type\FontCharacter_Deprecated.h" />
     <ClInclude Include="Include\Dy\Management\Type\FontCharacterInfo.h" />
-    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderFontSDF_Deprecated.h" />
-    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderFontMSDF_Deprecated.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderFontArraySDF.h" />
-    <ClInclude Include="Include\Dy\Component\Internal\CDyFontRenderer_Deprecated.h" />
     <ClInclude Include="Include\Dy\Element\RenderableObject.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyFontRenderer.h" />
-    <ClInclude Include="Include\Dy\Element\Canvas\Text_Deprecated.h" />
     <ClInclude Include="Include\Dy\Component\Ctor\PDyFontRenderer.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\Text.h" />
     <ClInclude Include="Include\Dy\Test\TestCxxopt.h" />
@@ -486,6 +482,10 @@
     <ClInclude Include="Include\Dy\Meta\Information\CommonResourceMetaInfo.h" />
     <ClInclude Include="Include\Dy\Meta\Information\GLShaderMetaInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Type\EDyScope.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\Deprecated\RenderFontMSDF_Deprecated.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\Deprecated\RenderFontSDF_Deprecated.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Deprecated\CDyFontRenderer_Deprecated.h" />
+    <ClInclude Include="Include\Dy\Element\Canvas\Deprecated\Text_Deprecated.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

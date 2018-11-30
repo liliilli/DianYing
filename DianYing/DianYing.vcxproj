@@ -232,8 +232,8 @@
     <ClCompile Include="Source\Builtin\ShaderGl\RenderDefaultFont.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderDeferredRendering.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderFontArraySDF.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\RenderFontMSDF_Deprecated.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\RenderFontSDF_Deprecated.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\Deprecated\RenderFontMSDF_Deprecated.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\Deprecated\RenderFontSDF_Deprecated.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderGrid.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderOpaqueStatic.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderPass.cc" />
@@ -249,7 +249,7 @@
     <ClCompile Include="Source\Component\CDyScript.cc" />
     <ClCompile Include="Source\Component\CDyTransform.cc" />
     <ClCompile Include="Source\Component\Internal\CDyFontRenderer.cc" />
-    <ClCompile Include="Source\Component\Internal\CDyFontRenderer_Deprecated.cc" />
+    <ClCompile Include="Source\Component\Internal\Deprecated\CDyFontRenderer_Deprecated.cc" />
     <ClCompile Include="Source\Component\Internal\ScriptState.cc" />
     <ClCompile Include="Source\Core\Component\Information\MaterialInformation.cc" />
     <ClCompile Include="Source\Core\Component\Information\ModelInformation.cc" />
@@ -292,7 +292,7 @@
     <ClCompile Include="Source\Element\Abstract\ADyTransformable.cc" />
     <ClCompile Include="Source\Element\Actor.cc" />
     <ClCompile Include="Source\Element\Canvas\Text.cc" />
-    <ClCompile Include="Source\Element\Canvas\Text_Deprecated.cc" />
+    <ClCompile Include="Source\Element\Canvas\Deprecated\Text_Deprecated.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetBarMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetImageMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Information\ElementLevelMetaInfo.cc" />
@@ -401,9 +401,9 @@
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderDefaultFont.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderDeferredRendering.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderFontArraySDF.h" />
-    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderFontSDF_Deprecated.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\Deprecated\RenderFontSDF_Deprecated.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderGrid.h" />
-    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderFontMSDF_Deprecated.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\Deprecated\RenderFontMSDF_Deprecated.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderOpaqueStatic.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderPass.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderScreenOutput.h" />
@@ -424,7 +424,7 @@
     <ClInclude Include="Include\Dy\Component\Internal\CDyActorScriptCpp.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyBasicGaugeBarRenderer.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyFontRenderer.h" />
-    <ClInclude Include="Include\Dy\Component\Internal\CDyFontRenderer_Deprecated.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Deprecated\CDyFontRenderer_Deprecated.h" />
     <ClInclude Include="Include\Dy\Component\CDyModelFilter.h" />
     <ClInclude Include="Include\Dy\Component\CDyModelRenderer.h" />
     <ClInclude Include="Include\Dy\Component\CDyPhysicsRigidbodyDynamic.h" />
@@ -471,7 +471,7 @@
     <ClInclude Include="Include\Dy\Element\Canvas\UiObjectChildrenable.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\Widget.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\Text.h" />
-    <ClInclude Include="Include\Dy\Element\Canvas\Text_Deprecated.h" />
+    <ClInclude Include="Include\Dy\Element\Canvas\Deprecated\Text_Deprecated.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\CanvasDescriptor.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\GlobalEnums.h" />
     <ClInclude Include="Include\Dy\Helper\System\TypeTraits.h" />

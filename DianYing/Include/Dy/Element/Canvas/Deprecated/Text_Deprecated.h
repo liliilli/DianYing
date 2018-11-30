@@ -18,7 +18,7 @@
 #include <Dy/Helper/Type/DyString.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 #include <Dy/Management/Type/FontContainer_Deprecated.h>
-#include <Dy/Component/Internal/CDyFontRenderer_Deprecated.h>
+#include <Dy/Component/Internal/Deprecated/CDyFontRenderer_Deprecated.h>
 #include <Dy/Element/RenderableObject.h>
 
 //!

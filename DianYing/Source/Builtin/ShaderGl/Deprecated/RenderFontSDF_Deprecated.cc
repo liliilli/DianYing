@@ -13,9 +13,8 @@
 ///
 
 /// Header file
-#include <Dy/Builtin/ShaderGl/RenderFontMSDF_Deprecated.h>
+#include <Dy/Builtin/ShaderGl/Deprecated/RenderFontSDF_Deprecated.h>
 #include <Dy/Core/Component/Internal/ShaderType.h>
-#include <Dy/Builtin/ShaderGl/RenderDefaultFont.h>
 #include <Dy/Management/IO/IODataManager.h>
 #include <Dy/Management/IO/IOResourceManager.h>
 
@@ -48,24 +47,40 @@ MDY_SET_IMMUTABLE_STRING(sFragmentShaderCode, R"dy(
 in VS_OUT { vec2 texCoord; } fs_in;
 
 layout (binding = 0) uniform sampler2D uCharTexture;
-uniform float pxRange;
-uniform vec4  bgColor;
-uniform vec4  fgColor;
+uniform vec4  uBgColor;
+uniform vec4  uFgColor;
+uniform vec4  uEdgeColor;
+uniform bool  uIsUsingEdge;
+uniform bool  uIsUsingBackground;
 
 layout (location = 0) out vec4 gOutput;
 
-float median(float r, float g, float b) {
-    return max(min(r, g), min(max(r, g), b));
-}
+const float uIntUpper  = 0.55f;
+const float uIntLower  = 0.4f;
+const float uEdgeUpper = 0.05f;
+const float uEdgeLimit = 0.00001f;
 
 void main() {
-    vec2 msdfUnit = pxRange/vec2(textureSize(uCharTexture, 0));
-    vec3 samp     = texture(uCharTexture, fs_in.texCoord).rgb;
-    float sigDist = median(samp.r, samp.g, samp.b) - 0.5;
-    sigDist      *= dot(msdfUnit, 0.5/fwidth(fs_in.texCoord));
-    float opacity = clamp(sigDist + 0.5, 0.0, 1.0);
+  float dist    = texture(uCharTexture, fs_in.texCoord).r;
+  float alpha   = 1.0f;
+  vec4  color   = vec4(0);
+  vec4  egColor = vec4(0);
+  vec4  bkColor = vec4(0);
+  if (uIsUsingEdge == true)       { egColor = uEdgeColor; }
+  if (uIsUsingBackground == true) { bkColor = uBgColor; }
 
-    gOutput = mix(bgColor, fgColor, opacity);
+  if (uIntLower < dist)
+  {
+    alpha = smoothstep(uIntLower, uIntUpper, dist);
+    color = uFgColor * alpha + egColor * (1 - alpha);
+  }
+  else
+  {
+    alpha = smoothstep(uEdgeLimit, uEdgeUpper, dist);
+    color = egColor * alpha + bkColor * (1 - alpha);
+  }
+
+  gOutput = color;
 }
 )dy");
 
@@ -78,10 +93,10 @@ void main() {
 namespace dy::builtin
 {
 
-FDyBuiltinShaderGLRenderFontMSDF_Deprecated::FDyBuiltinShaderGLRenderFontMSDF_Deprecated()
+FDyBuiltinShaderGLRenderFontSDF_Deprecated::FDyBuiltinShaderGLRenderFontSDF_Deprecated()
 {
   PDyShaderConstructionDescriptor shaderDesc;
-  shaderDesc.mShaderName = FDyBuiltinShaderGLRenderFontMSDF_Deprecated::sName;
+  shaderDesc.mShaderName = FDyBuiltinShaderGLRenderFontSDF_Deprecated::sName;
   {
     PDyShaderFragmentInformation vs;
     vs.mShaderType = EDyShaderFragmentType::Vertex;
@@ -104,4 +119,4 @@ FDyBuiltinShaderGLRenderFontMSDF_Deprecated::FDyBuiltinShaderGLRenderFontMSDF_De
   MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(shaderDesc.mShaderName));
 }
 
-} /// ::dy::builtin namespace
+} /// ::dy::builtin namesapce
