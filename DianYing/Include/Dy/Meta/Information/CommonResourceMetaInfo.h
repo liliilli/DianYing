@@ -1,4 +1,5 @@
-#include <precompiled.h>
+#ifndef GUARD_DY_META_INFORMATION_COMMONRESOURCEMETAINFO_H
+#define GUARD_DY_META_INFORMATION_COMMONRESOURCEMETAINFO_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -12,17 +13,16 @@
 /// SOFTWARE.
 ///
 
-/// Header file
-#include <Dy/Builtin/Helper/BuiltinInformationDeliver.h>
-#include <Dy/Management/IO/MetaInfoManager.h>
+#include <Dy/Meta/Type/EDyResourceTypes.h>
 
 namespace dy
 {
 
-EDySuccess FDyBuiltinInformationDeliver::ForwardWidgetMetaInformation(const std::string_view& metaString)
+struct PDyCommonResourceMetaInfo
 {
-  auto& manager = MDyMetaInfo::GetInstance();
-  return manager.pfAddWidgetMetaInformation(MSVSTR(metaString));
-}
+  EDyResourceSource mSourceType = EDyResourceSource::Builtin;
+};
 
 } /// ::dy namespace
+
+#endif /// GUARD_DY_META_INFORMATION_COMMONRESOURCEMETAINFO_H

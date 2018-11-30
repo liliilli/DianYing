@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Core/Component/Information/ShaderInformation.h>
 #include <Dy/Core/Component/Resource/ShaderResource.h>
+#include <Dy/Meta/Information/GLShaderMetaInformation.h>
 #include <Dy/Management/LoggingManager.h>
 
 namespace
@@ -32,11 +33,11 @@ std::string_view DyGetShaderFragmentTypeStringFrom(dy::EDyShaderFragmentType typ
 {
   switch (type)
   {
-  case dy::EDyShaderFragmentType::Vertex:                 return "Vertex shader";
-  case dy::EDyShaderFragmentType::TesselationControl:     return "Hull shader";
-  case dy::EDyShaderFragmentType::TesselationEvaluation:  return "Domain shader";
-  case dy::EDyShaderFragmentType::Geometry:               return "Geometry shader";
-  case dy::EDyShaderFragmentType::Pixel:                  return "Pixel shader";
+  case dy::EDyShaderFragmentType::Vertex:  return "Vertex shader";
+  case dy::EDyShaderFragmentType::Hull:    return "Hull shader";
+  case dy::EDyShaderFragmentType::Domain:  return "Domain shader";
+  case dy::EDyShaderFragmentType::Geometry:return "Geometry shader";
+  case dy::EDyShaderFragmentType::Pixel:   return "Pixel shader";
   default: return "Error";
   }
 }
@@ -47,7 +48,8 @@ namespace dy
 {
 
 DDyShaderInformation::DDyShaderInformation(const PDyShaderConstructionDescriptor& shaderConstructionDescriptor) :
-    mShaderInformation{shaderConstructionDescriptor} {
+    mShaderInformation{shaderConstructionDescriptor}
+{
   // Copy or move information from descriptor.
   MDY_LOG_INFO_D(kShaderInformationTemplate, kDyDataInformation, "name", this->mShaderInformation.mShaderName);
 
@@ -55,6 +57,34 @@ DDyShaderInformation::DDyShaderInformation(const PDyShaderConstructionDescriptor
   {
     MDY_LOG_INFO_D(kShaderFragmentTemplate, kDyDataInformation,
                    fragment.mShaderPath, DyGetShaderFragmentTypeStringFrom(fragment.mShaderType).data());
+  }
+}
+
+DDyShaderInformation::DDyShaderInformation(const PDyGLShaderInstanceMetaInfo& shaderMetaInfo)
+{
+  PDyShaderConstructionDescriptor info = {};
+  info.mShaderName = shaderMetaInfo.mSpecifierName;
+  for (int i = 0; i < 6; ++i)
+  {
+    PDyShaderFragmentInformation shader{};
+    shader.mIsEnabledRawLoadShaderCode = shaderMetaInfo.mSourceType == EDyResourceSource::Builtin ? true : false;
+    const auto& p = shaderMetaInfo.GetFragment(static_cast<EDyShaderFragmentType>(i));
+    if (p.mExternalFilePath.empty() == true && p.mBuiltinBuffer.empty() == true) { continue; }
+    shader.mShaderPath    = p.mExternalFilePath;
+    shader.mShaderRawCode = p.mBuiltinBuffer;
+    shader.mShaderType    = static_cast<EDyShaderFragmentType>(i);
+
+    info.mShaderFragments.push_back(shader);
+  }
+
+  // Copy or move information from descriptor.
+  this->mShaderInformation = info;
+  MDY_LOG_INFO_D(kShaderInformationTemplate, kDyDataInformation, "name", this->mShaderInformation.mShaderName);
+
+  for (const auto& fragment : this->mShaderInformation.mShaderFragments)
+  {
+    MDY_LOG_INFO_D(kShaderFragmentTemplate, kDyDataInformation,
+      fragment.mShaderPath, DyGetShaderFragmentTypeStringFrom(fragment.mShaderType).data());
   }
 }
 

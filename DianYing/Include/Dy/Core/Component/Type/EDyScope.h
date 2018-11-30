@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_BUILTIN_HELPER_BUITLININFORMATIONDELIVER_H
-#define GUARD_DY_BUILTIN_HELPER_BUITLININFORMATIONDELIVER_H
+#ifndef GUARD_DY_CORE_RESOURCES_TYPE_EDYSCOPE_H
+#define GUARD_DY_CORE_RESOURCES_TYPE_EDYSCOPE_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -17,21 +17,17 @@ namespace dy
 {
 
 ///
-/// @struct FDyBuiltinInformationDeliver
-/// @brief
+/// @enum   EDyScope
+/// @brief  Specify scope for resources (information and resource).
 ///
-struct FDyBuiltinInformationDeliver final
+enum class EDyScope
 {
-public:
-  ///
-  /// @brief
-  /// @param  metaString
-  /// @return
-  ///
-  static MDY_NODISCARD EDySuccess ForwardWidgetMetaInformation(_MIN_ const std::string_view& metaString);
-
+  Global,
+  Scene,
+  Temporal,
+  UserDefined,
 };
 
 } /// ::dy namespace
 
-#endif /// GUARD_DY_BUILTIN_HELPER_BUITLININFORMATIONDELIVER_H
+#endif /// GUARD_DY_CORE_RESOURCES_TYPE_EDYSCOPE_H

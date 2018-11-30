@@ -23,6 +23,7 @@
 #include <Dy/Core/Component/Information/ModelInformation.h>
 #include <Dy/Core/Component/Information/SoundInformation.h>
 #include <Dy/Helper/ThreadPool.h>
+#include <Dy/Core/Component/Type/EDyScope.h>
 
 namespace dy
 {
@@ -39,7 +40,12 @@ public:
   ///
   /// @brief Create shader information.
   ///
-  EDySuccess CreateShaderInformation(const PDyShaderConstructionDescriptor& shaderDescriptor);
+  EDySuccess CreateShaderInformation_Deprecated(const PDyShaderConstructionDescriptor& shaderDescriptor);
+
+  ///
+  /// @brief Create shader information.
+  ///
+  EDySuccess CreateShaderInformation(_MIN_ const std::string& shaderSpecifierName, _MIN_ EDyScope scope);
 
   ///
   /// @brief Create texture information.

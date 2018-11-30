@@ -14,6 +14,7 @@
 
 /// Header file
 #include <Dy/Management/IO/IODataManager.h>
+#include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Management/LoggingManager.h>
 
 namespace
@@ -59,7 +60,7 @@ EDySuccess MDyIOData::pfRelease()
   return DY_SUCCESS;
 }
 
-EDySuccess MDyIOData::CreateShaderInformation(const PDyShaderConstructionDescriptor& shaderDescriptor)
+EDySuccess MDyIOData::CreateShaderInformation_Deprecated(const PDyShaderConstructionDescriptor& shaderDescriptor)
 {
   ///
   /// @callback CheckIntegrityOfDescriptor
@@ -104,13 +105,13 @@ EDySuccess MDyIOData::CreateShaderInformation(const PDyShaderConstructionDescrip
                                                THeapHash<DDyShaderInformation>& shaderList)
   {
     // Create information space.
-    const auto& shaderName      = shaderDescriptor.mShaderName;
+    const auto& shaderName    = shaderDescriptor.mShaderName;
     auto[it, creationResult]  = shaderList.try_emplace(shaderName, nullptr);
     if (!creationResult)
     {
       // Something is already in or memory oob.
       MDY_LOG_CRITICAL("{} | Unexpected error happened during create memory for shader information {}.",
-                       "MDyIOData::CreateShaderInformation().", shaderName);
+                       "MDyIOData::CreateShaderInformation_Deprecated().", shaderName);
       return DY_FAILURE;
     }
 
@@ -120,7 +121,7 @@ EDySuccess MDyIOData::CreateShaderInformation(const PDyShaderConstructionDescrip
     if (!it->second)
     {
       MDY_LOG_CRITICAL("{} | Unexpected error happened during swapping shader information {}.",
-                       "MDyIOData::CreateShaderInformation().", shaderName);
+                       "MDyIOData::CreateShaderInformation_Deprecated().", shaderName);
       shaderList.erase(shaderName);
       return DY_FAILURE;
     }
@@ -129,17 +130,14 @@ EDySuccess MDyIOData::CreateShaderInformation(const PDyShaderConstructionDescrip
   };
 
   // Integrity test
-  if (CheckIntegerityOfDescriptor(shaderDescriptor) == DY_FAILURE)
-  {
-    return DY_FAILURE;
-  }
+  if (CheckIntegerityOfDescriptor(shaderDescriptor) == DY_FAILURE) { return DY_FAILURE; }
 
   // Find if duplicated name is exist on information list.
   const auto& shaderName = shaderDescriptor.mShaderName;
   if (mShaderInformation.find(shaderName) != mShaderInformation.end())
   {
     MDY_LOG_WARNING_D("{} | {} is already found in mShaderInformation list.",
-                      "MDyIOData::CreateShaderInformation().", shaderName);
+                      "MDyIOData::CreateShaderInformation_Deprecated().", shaderName);
     return DY_FAILURE;
   }
 
@@ -151,6 +149,107 @@ EDySuccess MDyIOData::CreateShaderInformation(const PDyShaderConstructionDescrip
   }
 
   MDY_LOG_CRITICAL("{} | \"{}\" shader information Created.", shaderName);
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyIOData::CreateShaderInformation(const std::string& shaderSpecifierName, MDY_NOTUSED EDyScope scope)
+{
+  ///
+  /// @brief Check compatibility to Dy shader rendering system. \n
+  /// Must have either at least compute shader, or vertex shader.
+  ///
+  static auto CheckValidity = [](_MIN_ const PDyGLShaderInstanceMetaInfo& metaInfo)
+  {
+    if (metaInfo.mSpecifierName.empty() == true)
+    {
+      MDY_LOG_CRITICAL_D(kErrorShaderNameNotSpecified, kDyDataInformation);
+      return DY_FAILURE;
+    }
+
+    if (metaInfo.mSourceType == EDyResourceSource::Builtin)
+    { // If shader meta information is builtin meta info, verify mBuiltinBuffer.
+      if (metaInfo.mIsComputeShader == true)
+      {
+        MDY_ASSERT(
+            metaInfo.GetFragment(EDyShaderFragmentType::Compute).mBuiltinBuffer.empty() == false,
+            "Compute shader must not be empty. Unexpected error occurred.");
+      }
+      else
+      {
+        MDY_ASSERT(
+            metaInfo.GetFragment(EDyShaderFragmentType::Vertex).mBuiltinBuffer.empty() == false,
+            "Vertex shader must not be empty. Unexpected error occurred.");
+      }
+    }
+    else
+    {
+      if (metaInfo.mIsComputeShader == true)
+      { // If shader meta information is external, verify file path.
+        MDY_ASSERT(
+          metaInfo.GetFragment(EDyShaderFragmentType::Compute).mExternalFilePath.empty() == false,
+          "Compute shader must not be specified with empty path. Unexpected error occurred.");
+      }
+      else
+      {
+        MDY_ASSERT(
+          metaInfo.GetFragment(EDyShaderFragmentType::Vertex).mExternalFilePath.empty() == false,
+          "Vertex shader must not be specified with empty path. Unexpected error occurred.");
+      }
+    }
+    return DY_SUCCESS;
+  };
+
+  ///
+  /// @brief Make shader information and bind to `Dy` shader rendering system.
+  ///
+  static auto InsertShaderInformation = [](_MIN_ const PDyGLShaderInstanceMetaInfo& metaInfo,
+                                           _MIO_ THeapHash<DDyShaderInformation>& shaderMap)
+  {
+    // Create information space.
+    const auto& shaderName    = metaInfo.mSpecifierName;
+    auto [it, creationResult] = shaderMap.try_emplace(shaderName, nullptr);
+    if (creationResult == false)
+    { // Something is already in or memory oob.
+      MDY_LOG_CRITICAL("{} | Unexpected error happened during create memory for shader information {}.",
+                       "MDyIOData::CreateShaderInformation_Deprecated().", shaderName);
+      return DY_FAILURE;
+    }
+
+    // Make resource in heap, and insert it to empty memory space.
+    auto shaderInfoSmtPtr = std::make_unique<DDyShaderInformation>(metaInfo);
+    it->second.swap(shaderInfoSmtPtr);
+
+    if (MDY_CHECK_ISEMPTY(it->second))
+    {
+      MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(it->second), "Unexpected error occurred.");
+      MDY_LOG_CRITICAL("{} | Unexpected error happened during swapping shader information {}.",
+                       "MDyIOData::CreateShaderInformation_Deprecated().", shaderName);
+      shaderMap.erase(shaderName);
+      return DY_FAILURE;
+    }
+    return DY_SUCCESS;
+  };
+
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  //! FUNCTIONBODY ∨
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  const auto& metaManager     = MDyMetaInfo::GetInstance();
+  const auto& shaderMetaInfo  = metaManager.GetGLShaderMetaInformation(shaderSpecifierName);
+
+  MDY_ASSERT(CheckValidity(shaderMetaInfo) == DY_SUCCESS, "Validity check must not be failed.");
+
+  // Find if duplicated name is exist on information list.
+  if (DyIsMapContains(this->mShaderInformation, shaderMetaInfo.mSpecifierName) == true)
+  {
+    MDY_LOG_WARNING_D("{} | {} is already found in mShaderInformation list.",
+        "MDyIOData::CreateShaderInformation.", shaderMetaInfo.mSpecifierName);
+    return DY_FAILURE;
+  }
+
+  // Create information space.
+  MDY_CALL_ASSERT_SUCCESS(InsertShaderInformation(shaderMetaInfo, this->mShaderInformation));
+  MDY_LOG_CRITICAL(R"dy("{}" shader information Created.)dy", shaderMetaInfo.mSpecifierName);
   return DY_SUCCESS;
 }
 
