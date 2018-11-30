@@ -14,21 +14,20 @@
 ///
 
 #include <string_view>
+#include <Dy/Builtin/Abstract/ADyGLShaderResource.h>
 
 namespace dy::builtin
 {
 
 ///
 /// @class FDyBuiltinShaderGLRenderDefaultFont
-/// @brief Just instantiate render color geometry shader information and resources.
+/// @brief OpenGL Shader for rendering font without SDF, just default (blurred).
 ///
-class FDyBuiltinShaderGLRenderDefaultFont final
+class FDyBuiltinShaderGLRenderDefaultFont final : public ADyGLShaderResource
 {
+  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBuiltinShaderGLRenderDefaultFont, "dyBtShaderGlDefaultFont")
 public:
   FDyBuiltinShaderGLRenderDefaultFont();
-
-  /// Constant name for creating DDyShaderInformation
-  inline static MDY_SET_IMMUTABLE_STRING(sName, "dyBtShaderGlDefaultFont");
 };
 
 } /// ::dy::builtin namespace

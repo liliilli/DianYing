@@ -13,20 +13,21 @@
 /// SOFTWARE.
 ///
 
+#include <string_view>
+#include <Dy/Builtin/Abstract/ADyGLShaderResource.h>
+
 namespace dy::builtin
 {
 
 ///
 /// @class FDyBuiltinShaderGLRenderUiBasicGaugeBar
-/// @brief Instantiate and create resource for basic shadow rendering.
+/// @brief OpenGL shader program which renders UI basic gauge bar.
 ///
-class FDyBuiltinShaderGLRenderUiBasicGaugeBar final
+class FDyBuiltinShaderGLRenderUiBasicGaugeBar final : public ADyGLShaderResource
 {
+  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBuiltinShaderGLRenderUiBasicGaugeBar, "dyBtShaderGlRenderUiBasicGaugeBar")
 public:
   FDyBuiltinShaderGLRenderUiBasicGaugeBar();
-
-  /// Constant name for creating DDyShaderInformation
-  inline static MDY_SET_IMMUTABLE_STRING(sName, "dyBtShaderGlRenderUiBasicGaugeBar");
 };
 
 } /// ::dy::builtin namespace

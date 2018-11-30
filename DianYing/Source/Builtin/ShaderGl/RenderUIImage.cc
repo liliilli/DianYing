@@ -13,34 +13,48 @@
 ///
 
 /// Header file
-#include <Dy/Builtin/ShaderGl/RenderBasicShadow.h>
+#include <Dy/Builtin/ShaderGl/RenderUIImage.h>
+#include <Dy/Management/IO/IOResourceManager.h>
+#include <Dy/Management/IO/IODataManager.h>
 
 //!
-//! Forward declaration and data
+//! Forward declaration
 //!
 
 namespace
 {
 
 MDY_SET_IMMUTABLE_STRING(sVertexShaderCode, R"dy(
-#version 430
+#version 430 core
 
-layout (location = 0) in vec3 dyPosition;
+layout (location = 0) in vec2 dyPosition;
+layout (location = 1) in vec2 dyTexCoord;
+uniform mat4 uUiProjMatrix;
+uniform mat3 uTransformMatrix;
 
-uniform mat4 uPvLightMatrix;
-uniform mat4 uModelMatrix;
+out VS_OUT { vec2 texCoord; } vsOut;
 
 void main() {
-    gl_Position = uPvLightMatrix * uModelMatrix * vec4(dyPosition, 1.0);
+	gl_Position = vec4((uUiProjMatrix * vec4(dyPosition, 0, 1)).xy, 0, 1);
+  vsOut.texCoord = dyTexCoord;
 }
 )dy");
 
 MDY_SET_IMMUTABLE_STRING(sFragmentShaderCode, R"dy(
-#version 430
-void main() {}
+#version 430 core
+
+uniform vec4 uTintColor;
+layout (binding = 0)  uniform sampler2D uImageTexture;
+layout (location = 0) out vec4 gOutput;
+
+in VS_OUT { vec2 texCoord; } fsIn;
+
+void main() {
+  gOutput = texture(uImageTexture, fsIn.texCoord) * uTintColor;
+}
 )dy");
 
-} /// ::unnamed namespace
+} /// ::unnamed namesapce
 
 //!
 //! Implementation
@@ -49,7 +63,7 @@ void main() {}
 namespace dy::builtin
 {
 
-FDyBuiltinShaderGLRenderBasicShadow::FDyBuiltinShaderGLRenderBasicShadow()
+FDyBuiltinShaderGLRenderUiImage::FDyBuiltinShaderGLRenderUiImage()
 {
   this->mSpecifierName  = sName;
   this->mVertexBuffer   = sVertexShaderCode;

@@ -73,7 +73,7 @@ FDyBuiltinShaderGLRenderGrid::FDyBuiltinShaderGLRenderGrid()
   auto& infoManager = MDyIOData::GetInstance();
   auto& rescManager = MDyIOResource::GetInstance();
 
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation(shaderDesc));
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation_Deprecated(shaderDesc));
   MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(FDyBuiltinShaderGLRenderGrid::sName.data()));
 }
 

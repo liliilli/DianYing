@@ -13,10 +13,6 @@
 ///
 
 #include <Dy/Builtin/ShaderGl/RenderFontArraySDF.h>
-#include <Dy/Core/Component/Internal/ShaderType.h>
-#include <Dy/Builtin/ShaderGl/RenderFontSDF_Deprecated.h>
-#include <Dy/Management/IO/IODataManager.h>
-#include <Dy/Management/IO/IOResourceManager.h>
 
 //!
 //! Forward declaration
@@ -105,28 +101,9 @@ namespace dy::builtin
 
 FDyBuiltinShaderGLRenderFontArraySDF::FDyBuiltinShaderGLRenderFontArraySDF()
 {
-  PDyShaderConstructionDescriptor shaderDesc;
-  shaderDesc.mShaderName = sName;
-  {
-    PDyShaderFragmentInformation vs;
-    vs.mShaderType    = EDyShaderFragmentType::Vertex;
-    vs.mShaderRawCode = sVertexShaderCode;
-    vs.mIsEnabledRawLoadShaderCode = true;
-    shaderDesc.mShaderFragments.emplace_back(vs);
-  }
-  {
-    PDyShaderFragmentInformation fs;
-    fs.mShaderType    = EDyShaderFragmentType::Pixel;
-    fs.mShaderRawCode = sFragmentShaderCode;
-    fs.mIsEnabledRawLoadShaderCode = true;
-    shaderDesc.mShaderFragments.emplace_back(fs);
-  }
-
-  auto& infoManager = MDyIOData::GetInstance();
-  auto& rescManager = MDyIOResource::GetInstance();
-
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation(shaderDesc));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(shaderDesc.mShaderName));
+  this->mSpecifierName  = sName;
+  this->mVertexBuffer   = sVertexShaderCode;
+  this->mPixelBuffer    = sFragmentShaderCode;
 }
 
 } /// ::dy namespace

@@ -52,7 +52,6 @@ FDyBasicShadow::FDyBasicShadow()
 {
   auto& heapManager = MDyIOResource::GetInstance();
 
-  builtin::FDyBuiltinShaderGLRenderBasicShadow();
   this->mDirLightShaderResource = heapManager.GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderBasicShadow::sName));
   this->pCreateFramebufferComponents();
 

@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_BUILTIN_SHADERGL_RENDERCOLORGEOMETRY_H
-#define GUARD_DY_BUILTIN_SHADERGL_RENDERCOLORGEOMETRY_H
+#ifndef GUARD_DY_BUILTIN_SHADRGL_RENDERUIIMAGE_H
+#define GUARD_DY_BUILTIN_SHADRGL_RENDERUIIMAGE_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -20,16 +20,16 @@ namespace dy::builtin
 {
 
 ///
-/// @class FDyBuiltinShaderGLRenderColorGeometry
-/// @brief Just instantiate render color geometry shader information and resources.
+/// @class FDyBuiltinShaderGLRenderUiImage
+/// @brief Instantiate and create resource for UI widget image.
 ///
-class FDyBuiltinShaderGLRenderColorGeometry final : public ADyGLShaderResource
+class FDyBuiltinShaderGLRenderUiImage final : public ADyGLShaderResource
 {
-  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBuiltinShaderGLRenderColorGeometry, "dyBtShaderGlRenderColGeom")
+  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBuiltinShaderGLRenderUiImage, "dyBtShaderGlRenderUiImage")
 public:
-  FDyBuiltinShaderGLRenderColorGeometry();
+  FDyBuiltinShaderGLRenderUiImage();
 };
 
 } /// ::dy::builtin namespace
 
-#endif /// GUARD_DY_BUILTIN_SHADERGL_RENDERCOLORGEOMETRY_H
+#endif /// GUARD_DY_BUILTIN_SHADRGL_RENDERUIIMAGE_H

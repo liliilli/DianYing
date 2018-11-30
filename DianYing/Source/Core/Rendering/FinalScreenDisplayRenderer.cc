@@ -66,8 +66,6 @@ FDyFinalScreenDisplayRenderer::FDyFinalScreenDisplayRenderer()
 
   static auto ProceedShaderSetting = [&]() -> EDySuccess
   {
-    // Make shader
-    builtin::FDyBuiltinShaderGLRenderScreenOutput();
     this->mShaderPtr = heapManager.GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderScreenOutput::sName));
 
     MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mShaderPtr), "FDyFinalScreenDisplayRenderer::mShaderPtr must not be nullptr.");
