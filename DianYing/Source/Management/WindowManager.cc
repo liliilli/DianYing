@@ -94,8 +94,10 @@ void DyInitializeBuiltinResource()
   MDY_CALL_ASSERT_SUCCESS(infoManager.CreateModelInformation(MSVSTR(dy::builtin::FDyBuiltinModelScreenProjectionTriangle::sName), dy::EDyScope::Global));
   MDY_CALL_ASSERT_SUCCESS(infoManager.CreateModelInformation(MSVSTR(dy::builtin::FDyBuiltinModelSphere::sName), dy::EDyScope::Global));
 
-  dy::builtin::FDyBuiltinTextureChecker();
-  dy::builtin::FDyBuiltinTextureErrorBlue();
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateTextureInformation(MSVSTR(dy::builtin::FDyBuiltinTextureChecker::sName), dy::EDyScope::Global));
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateTextureResource(MSVSTR(dy::builtin::FDyBuiltinTextureChecker::sName), dy::EDyScope::Global));
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateTextureInformation(MSVSTR(dy::builtin::FDyBuiltinTextureErrorBlue::sName), dy::EDyScope::Global));
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateTextureResource(MSVSTR(dy::builtin::FDyBuiltinTextureErrorBlue::sName), dy::EDyScope::Global));
 
   MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderPass::sName), dy::EDyScope::Global));
   MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderPass::sName)));

@@ -15,6 +15,7 @@
 
 #include <Dy/Builtin/Interface/IDyResource.h>
 #include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Helper/Type/ColorRGBA32.h>
 #include <Dy/Meta/Information/MetaInfoTexture.h>
 
 namespace dy
@@ -35,6 +36,37 @@ public:
   /// @brief Get meta information that has buffer to texture and properties.
   std::any GetMetaInfo() override final;
 };
+
+template <int TN, int TV>
+MDY_NODISCARD std::vector<TU08> ConvertToTU08VectorList(const std::array<std::array<TU08, TN>, TV>& buffer) noexcept
+{
+  std::vector<TU08> result {};
+  for (int y = 0; y < TV; ++y)
+  {
+    for (int x = 0; x < TN; ++x)
+    {
+      result.emplace_back(buffer[y][x]);
+    }
+  }
+  return std::move(result);
+}
+
+template <int TV>
+MDY_NODISCARD std::vector<TU08> ConvertToTU08VectorList(const std::array<dy::DDyColorRGBA32, TV>& buffer) noexcept
+{
+  std::vector<TU08> result {};
+  result.reserve(TV * 4);
+
+  for (int y = 0; y < TV; ++y)
+  {
+    const dy::DDyColorRGBA32& buf = buffer[y];
+    result.emplace_back(buf.R);
+    result.emplace_back(buf.G);
+    result.emplace_back(buf.B);
+    result.emplace_back(buf.A);
+  }
+  return std::move(result);
+}
 
 } /// ::dy namespace
 

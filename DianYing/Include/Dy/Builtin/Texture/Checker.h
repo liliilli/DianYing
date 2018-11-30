@@ -13,6 +13,8 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Builtin/Abstract/ADyTextureResource.h>
+
 namespace dy::builtin
 {
 
@@ -20,13 +22,9 @@ namespace dy::builtin
 /// @class FDyBuiltinTextureChecker
 /// @brief Checker texture
 ///
-class FDyBuiltinTextureChecker final
+class FDyBuiltinTextureChecker final : public ADyTextureResource
 {
-public:
-  FDyBuiltinTextureChecker();
-
-  /// name for creating DDyModelInformation
-  inline static MDY_SET_IMMUTABLE_STRING(sName, "dyBtTextureChecker");
+  MDY_REGISTER_RESOURCE_TEXTURE(FDyBuiltinTextureChecker, "dyBtTextureChecker")
 };
 
 } /// ::dy::builtin namespace

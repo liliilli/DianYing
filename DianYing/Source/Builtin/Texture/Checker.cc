@@ -14,19 +14,7 @@
 
 /// Header file
 #include <Dy/Builtin/Texture/Checker.h>
-
 #include <Dy/Core/Component/Internal/TextureType.h>
-#include <Dy/Management/IO/IOResourceManager.h>
-
-//!
-//! Local variables
-//!
-
-namespace dy
-{
-constexpr const TU08 sOn = 0b11111111;
-constexpr const TU08 sOf = 0b00000000;
-}
 
 //!
 //! Implementation
@@ -35,29 +23,37 @@ constexpr const TU08 sOf = 0b00000000;
 namespace dy::builtin
 {
 
-FDyBuiltinTextureChecker::FDyBuiltinTextureChecker()
+void FDyBuiltinTextureChecker::ConstructBuffer(_MOUT_ TBufferType& buffer, _MOUT_ PDyTextureInstanceMetaInfo& property) noexcept
 {
-  // @TODO INITIALIZE WITH
-  // 01010101
-  // 10101010
-  // 01010101
-  // 10101010
-  // 01010101
-  // 10101010
-  // 01010101
-  // 10101010
-  PDyTextureConstructionBufferChunkDescriptor desc = {};
-  desc.mTextureSpecifierName       = FDyBuiltinTextureChecker::sName;
-  desc.mTextureType       = EDyTextureStyleType::D2;
-  desc.mTextureMapType    = EDyTextureMapType::Diffuse;
-  desc.mTextureColorType  = EDyImageColorFormatStyle::RGB;
-  desc.mWidth             = 8;
-  desc.mHeight            = 8;
+  property.mSpecifierName             = sName;
+  property.mTextureType               = EDyTextureStyleType::D2;
+  property.mTextureMapType_Deprecated = EDyTextureMapType::Diffuse;
+  property.mTextureColorType    = EDyImageColorFormatStyle::RGB;
+  property.mBuiltinBufferSize.X = 8;
+  property.mBuiltinBufferSize.Y = 8;
+  property.mIsUsingDefaultMipmapGeneration = true;
+  property.mIsEnabledCustomedTextureParameter = true;
+  property.mParameterList = {
+    PDyGlTexParameterInformation\
+    {EDyGlParameterName::TextureMinFilter, EDyGlParameterValue::Nearest},
+    {EDyGlParameterName::TextureMagFilter, EDyGlParameterValue::Nearest},
+    {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::ClampToEdge},
+    {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::ClampToEdge},
+  };
 
-  constexpr std::array<TU08, 3> mOn = {sOn, sOn, sOn};
-  constexpr std::array<TU08, 3> mOf = {sOf, sOf, sOf};
-
-  std::array<std::array<TU08, 3>, 64> infoChunk =
+  // 01010101
+  // 10101010
+  // 01010101
+  // 10101010
+  // 01010101
+  // 10101010
+  // 01010101
+  // 10101010
+  constexpr const TU08 sOn = 0b11111111;
+  constexpr const TU08 sOf = 0b00000000;
+  constexpr const std::array<TU08, 3> mOn = {sOn, sOn, sOn};
+  constexpr const std::array<TU08, 3> mOf = {sOf, sOf, sOf};
+  constexpr const std::array<std::array<TU08, 3>, 64> infoChunk =
   {
     mOf, mOn, mOf, mOn, mOf, mOn, mOf, mOn,
     mOn, mOf, mOn, mOf, mOn, mOf, mOn, mOf,
@@ -68,19 +64,7 @@ FDyBuiltinTextureChecker::FDyBuiltinTextureChecker()
     mOf, mOn, mOf, mOn, mOf, mOn, mOf, mOn,
     mOn, mOf, mOn, mOf, mOn, mOf, mOn, mOf,
   };
-  desc.mBufferPtr = infoChunk.data();
-  desc.mIsUsingDefaultMipmapGeneration = true;
-  // Add 2018-10-26
-  desc.mIsEnabledCustomedTextureParameter = true;
-  desc.mParameterList = {
-    PDyGlTexParameterInformation\
-    {EDyGlParameterName::TextureMinFilter, EDyGlParameterValue::Nearest},
-    {EDyGlParameterName::TextureMagFilter, EDyGlParameterValue::Nearest},
-    {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::ClampToEdge},
-    {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::ClampToEdge},
-  };
-
-  MDY_CALL_ASSERT_SUCCESS(MDyIOResource::GetInstance().CreateTextureResourceWithChunk(desc));
+  buffer = ConvertToTU08VectorList(infoChunk);
 }
 
 } /// ::dy::builtin namespace
