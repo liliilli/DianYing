@@ -257,6 +257,12 @@ const PDyModelInstanceMetaInfo& MDyMetaInfo::GetModelMetaInformation(const std::
   return this->mModelMetaInfo.at(specifier);
 }
 
+const PDyTextureInstanceMetaInfo& MDyMetaInfo::GetTextureMetaInformation(const std::string& specifier) const
+{
+  MDY_ASSERT(this->IsTextureMetaInfoExist(specifier) == true, "Model given specifier name is not exist.");
+  return this->mTextureMetaInfo.at(specifier);
+}
+
 EDySuccess MDyMetaInfo::pReadScriptResourceMetaInformation(_MIN_ const std::string& metaFilePath)
 {
   // Validity Test
@@ -395,6 +401,13 @@ EDySuccess MDyMetaInfo::pfAddModelMetaInfo(_MIN_ const PDyModelInstanceMetaInfo&
 {
   MDY_ASSERT(DyIsMapContains(this->mModelMetaInfo, metaInfo.mSpecifierName) == false, "Duplicated model name is exist.");
   this->mModelMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pfAddTextureMetaInfo(_MIN_ const PDyTextureInstanceMetaInfo& metaInfo)
+{
+  MDY_ASSERT(DyIsMapContains(this->mTextureMetaInfo, metaInfo.mSpecifierName) == false, "Duplicated texture name is exist.");
+  this->mTextureMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
   return DY_SUCCESS;
 }
 

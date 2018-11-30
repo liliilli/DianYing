@@ -16,6 +16,7 @@
 #include <Dy/Core/Reflection/RDyBuiltinResources.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
 #include "Dy/Meta/Information/ModelMetaInformation.h"
+#include "Dy/Meta/Information/MetaInfoTexture.h"
 
 namespace dy::reflect
 {
@@ -47,7 +48,8 @@ void RDyBuiltinResource::BindBuiltinResourcesToMetaManager()
     } break;
     case EDyResourceType::Texture:
     { // Texture
-      MDY_NOT_IMPLEMENTED_ASSERT();
+      auto metaInfo = std::any_cast<PDyTextureInstanceMetaInfo>(function()->GetMetaInfo());
+      MDY_CALL_ASSERT_SUCCESS(metaManager.pfAddTextureMetaInfo(metaInfo));
     } break;
     case EDyResourceType::WidgetMeta:
     { // WidgetMeta
@@ -57,6 +59,8 @@ void RDyBuiltinResource::BindBuiltinResourcesToMetaManager()
     default: MDY_NOT_IMPLEMENTED_ASSERT(); break;
     }
   }
+
+  map.clear();
 }
 
 } /// ::dy::reflect namespace

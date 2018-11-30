@@ -108,7 +108,6 @@
     <ClCompile Include="Source\Management\BindingLua\Entry.cc" />
     <ClCompile Include="Source\Management\BindingLua\BindingComponentType.cc" />
     <ClCompile Include="Source\Core\Rendering\DeferredRenderingMesh.cc" />
-    <ClCompile Include="Source\Meta\Type\TextureParameter.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetCommponDescriptor.cc" />
     <ClCompile Include="Source\Core\Rendering\FinalScreenDisplayRenderer.cc" />
     <ClCompile Include="Source\Core\Rendering\UiBasicRenderer.cc" />
@@ -197,6 +196,9 @@
     <ClCompile Include="Source\Element\Canvas\Deprecated\Text_Deprecated.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoModel.cc" />
     <ClCompile Include="Source\Builtin\Abstract\ADyModelResource.cc" />
+    <ClCompile Include="Source\Meta\Information\MetaInfoTexture.cc" />
+    <ClCompile Include="Source\Meta\Type\EDyTextureParameter.cc" />
+    <ClCompile Include="Source\Builtin\Abstract\ADyTextureResource.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -379,7 +381,6 @@
     <ClInclude Include="Include\Dy\Helper\ContainerHelper.h" />
     <ClInclude Include="Include\Dy\Management\Helper\LuaBindingEntry.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\DeferredRenderingMesh.h" />
-    <ClInclude Include="Include\Dy\Meta\Type\TextureParameter.h" />
     <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetCommonDescriptor.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\FinalScreenDisplayRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\UIBasicRenderer.h" />
@@ -490,6 +491,8 @@
     <ClInclude Include="Include\Dy\Element\Canvas\Deprecated\Text_Deprecated.h" />
     <ClInclude Include="Include\Dy\Meta\Information\ModelMetaInformation.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyModelResource.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoTexture.h" />
+    <ClInclude Include="Include\Dy\Meta\Type\EDyTextureParameter.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

@@ -29,6 +29,10 @@
 //! Forward declaration
 //!
 
+namespace dy
+{
+enum class EDyScope;
+} /// ::dy namespace
 
 //!
 //! Implementation
@@ -57,21 +61,6 @@ public:
   EDySuccess CreateShaderResource(const std::string& shaderName);
 
   ///
-  /// @brief Create texture resource on gpu.
-  /// @param[in] textureName name to create texture, must be same with texture information name.
-  ///
-  [[nodiscard]]
-  EDySuccess CreateTextureResource(const std::string& textureName);
-
-  ///
-  /// @brief Create texture resource on gpu, with PDyTextureConstructionBufferChunkDescriptor.
-  /// @param desc Texture construction buffer chunk descriptor for creating resource instance.
-  /// @return Success flag.
-  ///
-  MDY_NODISCARD
-  EDySuccess CreateTextureResourceWithChunk(_MIN_ const PDyTextureConstructionBufferChunkDescriptor& desc);
-
-  ///
   /// @brief Create material resource on cpu and gpu.
   /// @param[in] materialName name to create material which must be same with material information name.
   /// and material informaiton to be a target should be capable of create all resource related to material.
@@ -94,6 +83,14 @@ public:
   ///
   [[nodiscard]]
   EDySuccess CreateModelResource(const std::string& modelName);
+
+  ///
+  /// @brief Create texture resource on gpu.
+  /// @param specifierName name to create texture, must be same with texture information specifier name. \n
+  /// and Same name texture information must be valid on time.
+  /// @param scope Lifetime scope for resource
+  ///
+  MDY_NODISCARD EDySuccess CreateTextureResource(_MIN_ const std::string& specifierName, _MIN_ const EDyScope scope);
 
   ///
   /// @brief Get valid shader resource instance. If not find, just return nullptr as failure sign.
@@ -124,6 +121,19 @@ public:
   ///
   [[nodiscard]]
   CDySoundResource* GetSoundResource(const std::string& soundName);
+
+  ///
+  /// @brief Create texture resource on gpu.
+  /// @param[in] textureName name to create texture, must be same with texture information name.
+  ///
+  MDY_NODISCARD EDySuccess CreateTextureResource_Deprecated(const std::string& textureName);
+
+  ///
+  /// @brief Create texture resource on gpu, with PDyTextureConstructionBufferChunkDescriptor.
+  /// @param desc Texture construction buffer chunk descriptor for creating resource instance.
+  /// @return Success flag.
+  ///
+  MDY_NODISCARD EDySuccess CreateTextureResourceWithChunk_Deprecated(_MIN_ const PDyTextureConstructionBufferChunkDescriptor& desc);
 
 private:
   THashList<std::unique_ptr<CDyShaderResource>>   mOnBoardShaderLists;

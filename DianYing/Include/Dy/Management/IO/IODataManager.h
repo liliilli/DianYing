@@ -39,11 +39,6 @@ class MDyIOData final : public IDySingleton<MDyIOData>
   MDY_SINGLETON_PROPERTIES(MDyIOData);
 public:
   ///
-  /// @brief Create shader information.
-  ///
-  EDySuccess CreateShaderInformation_Deprecated(const PDyShaderConstructionDescriptor& shaderDescriptor);
-
-  ///
   /// @brief Create shader information with scope. This function must be succeeded.
   /// @param shaderSpecifierName specifier name of GL shader must be valid on runtime.
   /// @param scope Information lifetime scope.
@@ -51,32 +46,23 @@ public:
   MDY_NODISCARD EDySuccess CreateShaderInformation(_MIN_ const std::string& shaderSpecifierName, _MIN_ EDyScope scope);
 
   ///
-  /// @brief Create texture information.
-  ///
-  EDySuccess CreateTextureInformation(const PDyTextureConstructionDescriptor& textureDescriptor);
-
-  ///
-  /// @brief Create material information.
-  ///
-  EDySuccess CreateMaterialInformation(const PDyMaterialConstructionDescriptor& materialDescriptor);
-
-  ///
-  /// @brief Create model information.
-  ///
-  EDySuccess CreateModelInformation_Deprecated(const PDyModelInstanceMetaInfo& modelDescriptor);
-
-  ///
-  /// @brief Create model information, with static code generated model information.
-  /// This function should used carefully, unless general version of CreateModelInformation_Deprecated.
-  ///
-  EDySuccess CreateModelInformation_Deprecated(const PDyModelConstructionVertexDescriptor& modelDescriptor);
-
-  ///
   /// @brief Create model information with scope. This function must be succeeded.
   /// @param modelSpecifierName specifier name of GL shader must be valid on runtime.
   /// @param scope Information lifetime scope.
   ///
   MDY_NODISCARD EDySuccess CreateModelInformation(_MIN_ const std::string& modelSpecifierName, _MIN_ EDyScope scope);
+
+  ///
+  /// @brief Create texture information with scope. This function must be succeeded.
+  /// @param textureSpecifier specifier name of texture must be valid on runtime.
+  /// @param scope Information lifetime scope.
+  ///
+  MDY_NODISCARD EDySuccess CreateTextureInformation(_MIN_ const std::string& textureSpecifier, _MIN_ EDyScope scope);
+
+  ///
+  /// @brief Create material information.
+  ///
+  EDySuccess CreateMaterialInformation(const PDyMaterialConstructionDescriptor& materialDescriptor);
 
   ///
   /// @brief Create sound information,
@@ -154,6 +140,21 @@ public:
   std::optional<std::string> PopulateMaterialInformation(
       const std::string& materialName,
       const PDyMaterialPopulateDescriptor& materialPopulateDescriptor);
+
+  ///
+  /// @brief Create model information.
+  ///
+  EDySuccess CreateModelInformation_Deprecated(const PDyModelInstanceMetaInfo& modelDescriptor);
+
+  /// @brief Create shader information.
+  EDySuccess CreateShaderInformation_Deprecated(const PDyShaderConstructionDescriptor& shaderDescriptor);
+
+  /// @brief Create texture information.
+  EDySuccess CreateTextureInformation_Deprecated(const PDyTextureInstanceMetaInfo& textureDescriptor);
+
+  /// @brief Create model information, with static code generated model information.
+  /// This function should used carefully, unless general version of CreateModelInformation_Deprecated.
+  EDySuccess CreateModelInformation_Deprecated(const PDyModelConstructionVertexDescriptor& modelDescriptor);
 
 private:
   template <typename TInformationType>

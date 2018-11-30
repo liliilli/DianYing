@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Meta/Type/TextureParameter.h>
+#include <Dy/Meta/Type/EDyTextureParameter.h>
 
 //!
 //! Forward declaration
@@ -51,6 +51,36 @@ MDY_NODISCARD bool DyIsHaveValueIn(
 
 namespace dy
 {
+
+void to_json(nlohmann::json& j, const EDyGlParameterName& p)
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+}
+
+void from_json(const nlohmann::json& j, EDyGlParameterName& p)
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+}
+
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyGlParameterValue& p)
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyGlParameterValue& p)
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+}
+
+void to_json(nlohmann::json& j, const PDyGlTexParameterInformation& p)
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+}
+
+void from_json(const nlohmann::json& j, PDyGlTexParameterInformation& p)
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+}
 
 EDySuccess DyCheckTextureParameter(_MIN_ const PDyGlTexParameterInformation& parameter)
 {

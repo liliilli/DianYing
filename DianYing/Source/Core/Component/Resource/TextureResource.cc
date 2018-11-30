@@ -44,58 +44,48 @@ CDyTextureResource::~CDyTextureResource()
   }
 }
 
-EDySuccess CDyTextureResource::pfInitializeTextureResource(const DDyTextureInformation& textureInformation)
+EDySuccess CDyTextureResource::pfInitializeTextureResource(_MIN_ const DDyTextureInformation& textureInformation)
 {
   // Make image binary data buffer.
-  const auto& textureInfo = textureInformation.GetInformation();
+  const auto& textureInfo         = textureInformation.GetInformation();
+  const auto& textureBuffer       = textureInformation.GetBuffer();
+  const auto  textureBufferFormat = textureInformation.GetFormat();
 
-  std::unique_ptr<DDyImageBinaryDataBuffer> dataBuffer = nullptr;
-  if (textureInfo.mIsEnabledAbsolutePath == true)
-  {
-    dataBuffer = std::make_unique<DDyImageBinaryDataBuffer>(textureInfo.mTextureFileAbsolutePath);
-  }
-  else
-  {
-    dataBuffer = std::make_unique<DDyImageBinaryDataBuffer>(textureInfo.mTextureFileLocalPath);
-  }
-
-  if (!dataBuffer->IsBufferCreatedProperly())
-  {
-    return DY_FAILURE;
-  }
-
-  int32_t glImageFormat = GL_NO_ERROR;
-  switch (dataBuffer->GetImageFormat())
+  TI32 glImageFormat = GL_NO_ERROR;
+  switch (textureBufferFormat)
   {
   case EDyImageColorFormatStyle::R:     glImageFormat = GL_RED;   break;
   case EDyImageColorFormatStyle::RG:    glImageFormat = GL_RG;    break;
   case EDyImageColorFormatStyle::RGB:   glImageFormat = GL_RGB;   break;
   case EDyImageColorFormatStyle::RGBA:  glImageFormat = GL_RGBA;  break;
-  default: // Unexpected branch (Error)
-    assert(false);
-    return DY_FAILURE;
+  default: MDY_UNEXPECTED_BRANCH(); return DY_FAILURE;
+  }
+
+  // Forward dataBuffer's retrieved information to data members.
+  this->mTextureName   = textureInfo.mSpecifierName;
+  this->mTextureType   = textureInfo.mTextureType;
+  this->mTextureWidth  = textureInfo.mBuiltinBufferSize.X;
+  switch (textureInfo.mTextureType)
+  {
+  case EDyTextureStyleType::D1: this->mTextureHeight = 1; break;
+  case EDyTextureStyleType::D2: this->mTextureHeight = textureInfo.mBuiltinBufferSize.Y; break;
+  default: MDY_UNEXPECTED_BRANCH();  break;
   }
 
   GLenum glTextureType = GL_NONE;
   // Get GL_TEXTURE_ TYPE from textureInfo.
-  switch (textureInfo.mTextureType)
+  switch (this->mTextureType)
   {
   case EDyTextureStyleType::D1:
     glGenTextures(1, &this->mTextureResourceId);
     glBindTexture(GL_TEXTURE_1D, this->mTextureResourceId);
-    glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA,
-                 dataBuffer->GetImageWidth(), 0,
-                 glImageFormat, GL_UNSIGNED_BYTE,
-                 dataBuffer->GetBufferStartPoint());
+    glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, this->mTextureWidth, 0, glImageFormat, GL_UNSIGNED_BYTE, textureBuffer.data());
     glTextureType = GL_TEXTURE_1D;
     break;
   case EDyTextureStyleType::D2:
     glGenTextures(1, &this->mTextureResourceId);
     glBindTexture(GL_TEXTURE_2D, this->mTextureResourceId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-                 dataBuffer->GetImageWidth(), dataBuffer->GetImageHeight(), 0,
-                 glImageFormat, GL_UNSIGNED_BYTE,
-                 dataBuffer->GetBufferStartPoint());
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, this->mTextureWidth, this->mTextureHeight, 0, glImageFormat, GL_UNSIGNED_BYTE, textureBuffer.data());
     glTextureType = GL_TEXTURE_2D;
     break;
   default: MDY_UNEXPECTED_BRANCH(); return DY_FAILURE;
@@ -106,21 +96,10 @@ EDySuccess CDyTextureResource::pfInitializeTextureResource(const DDyTextureInfor
   // target​ must be GL_TEXTURE_1D, GL_TEXTURE_2D, GL_TEXTURE_3D, GL_TEXTURE_1D_ARRAY, GL_TEXTURE_2D_ARRAY, GL_TEXTURE_CUBE_MAP, or GL_TEXTURE_CUBE_MAP_ARRAY.
   if (textureInfo.mIsUsingDefaultMipmapGeneration == true) { glGenerateMipmap(glTextureType); }
 
-  // Forward dataBuffer's retrieved information to data members.
-  this->mTextureName    = textureInfo.mTextureSpecifierName;
-  this->mTextureType    = textureInfo.mTextureType;
-  this->mTextureWidth   = dataBuffer->GetImageWidth();
-  switch (textureInfo.mTextureType)
-  {
-  case EDyTextureStyleType::D1: this->mTextureHeight  = 1; break;
-  case EDyTextureStyleType::D2: this->mTextureHeight  = dataBuffer->GetImageHeight(); break;
-  default: break;
-  }
-
   // Set texture parameters.
   if (textureInfo.mIsEnabledCustomedTextureParameter == true)
   {
-    MDY_ASSERT(DyCheckTextureParameterList(textureInfo.mParameterList) == DY_SUCCESS, "FFFFFFFF");
+    MDY_ASSERT(DyCheckTextureParameterList(textureInfo.mParameterList) == DY_SUCCESS, "Texture Parameter validation failed.");
 
     // Apply parameter option list to attachment.
     bool isThisAttachmentUsingClampToBorder = false;

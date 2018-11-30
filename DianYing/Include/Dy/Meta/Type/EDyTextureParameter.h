@@ -13,6 +13,8 @@
 /// SOFTWARE.
 ///
 
+#include <nlohmann/json_fwd.hpp>
+
 namespace dy
 {
 
@@ -29,6 +31,9 @@ enum class EDyGlParameterName
 
   NoneError
 };
+
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyGlParameterName& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyGlParameterName& p);
 
 ///
 /// @brief  Get internal plain parameter value from EDyGlParameterName.
@@ -58,6 +63,9 @@ enum class EDyGlParameterValue
   NoneError
 };
 
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyGlParameterValue& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyGlParameterValue& p);
+
 ///
 /// @brief  Get internal plain parameter value from EDyGlParameterValue.
 /// @param  value EDyGlParameterValue
@@ -67,18 +75,23 @@ MDY_NODISCARD GLenum DyGetParameterValueValue(_MIN_ const EDyGlParameterValue va
 
 ///
 /// @struct PDyGlTexParameterInformation
-/// @brief
+/// @brief  OpenGL texture paramater option information container. \n
+/// This type must be default constructible, so I let it have unnecessary default ctor.
 ///
 struct PDyGlTexParameterInformation final
 {
   EDyGlParameterName  mParameterOption = EDyGlParameterName::NoneError;
   EDyGlParameterValue mParameterValue  = EDyGlParameterValue::NoneError;
 
+  PDyGlTexParameterInformation() = default;
   PDyGlTexParameterInformation(_MIN_ EDyGlParameterName name, _MIN_ EDyGlParameterValue value) :
       mParameterOption(name),
       mParameterValue(value)
   { }
 };
+
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyGlTexParameterInformation& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyGlTexParameterInformation& p);
 
 ///
 /// @brief

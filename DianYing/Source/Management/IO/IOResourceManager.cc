@@ -77,14 +77,14 @@ EDySuccess MDyIOResource::CreateShaderResource(const std::string& shaderName)
   return DY_SUCCESS;
 }
 
-EDySuccess MDyIOResource::CreateTextureResource(const std::string& textureName)
+EDySuccess MDyIOResource::CreateTextureResource_Deprecated(const std::string& textureName)
 { // Get information from MDyIOData manager.
   const auto& manInfo   = MDyIOData::GetInstance();
   const DDyTextureInformation* textureInfo = manInfo.GetTextureInformation(textureName);
   if (textureInfo == nullptr)
   {
     MDY_LOG_ERROR("{}::{} | Failed to find texture in information list. | Texture name : {}",
-                  "MDyIOResource", "CreateTextureResource", textureName);
+                  "MDyIOResource", "CreateTextureResource_Deprecated", textureName);
     return DY_FAILURE;
   }
 
@@ -92,7 +92,7 @@ EDySuccess MDyIOResource::CreateTextureResource(const std::string& textureName)
   if (!result)
   {
     MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred. | Texture name : {}",
-                       "MDyIOResource", "CreateTextureResource", textureName);
+                       "MDyIOResource", "CreateTextureResource_Deprecated", textureName);
     return DY_FAILURE;
   }
 
@@ -101,7 +101,7 @@ EDySuccess MDyIOResource::CreateTextureResource(const std::string& textureName)
   if (const auto success = textureResource->pfInitializeTextureResource(*textureInfo); success == DY_FAILURE)
   {
     MDY_LOG_ERROR("{}::{} | Cannot create texture resource properly. | Texture resource name : {}",
-                  "MDyIOResource", "CreateTextureResource", textureName);
+                  "MDyIOResource", "CreateTextureResource_Deprecated", textureName);
     this->mOnBoardTextureLists.erase(textureName);
     return DY_FAILURE;
   }
@@ -110,7 +110,7 @@ EDySuccess MDyIOResource::CreateTextureResource(const std::string& textureName)
   if (!it->second)
   {
     MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred in swapping. | Texture resource name : {}",
-                       "MDyIOResource", "CreateTextureResource", textureName);
+                       "MDyIOResource", "CreateTextureResource_Deprecated", textureName);
     this->mOnBoardTextureLists.erase(textureName);
     return DY_FAILURE;
   }
@@ -120,17 +120,17 @@ EDySuccess MDyIOResource::CreateTextureResource(const std::string& textureName)
   it->second->__pfSetTextureInformationLink (DyMakeNotNull(const_cast<DDyTextureInformation*>(textureInfo)));
 
   MDY_LOG_INFO("{0}::{1} | Create {2} resource. | {2} resource name : {3}",
-               "MDyIOResource", "CreateTextureResource", "Texture", textureName);
+               "MDyIOResource", "CreateTextureResource_Deprecated", "Texture", textureName);
   return DY_SUCCESS;
 }
 
-EDySuccess MDyIOResource::CreateTextureResourceWithChunk(_MIN_ const PDyTextureConstructionBufferChunkDescriptor& desc)
+EDySuccess MDyIOResource::CreateTextureResourceWithChunk_Deprecated(_MIN_ const PDyTextureConstructionBufferChunkDescriptor& desc)
 { // Get information from MDyIOData manager.
   auto [it, result] = this->mOnBoardTextureLists.try_emplace(desc.mTextureSpecifierName, nullptr);
   if (!result)
   {
     MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred. | Texture name : {}",
-                       "MDyIOResource", "CreateTextureResource", desc.mTextureSpecifierName);
+                       "MDyIOResource", "CreateTextureResource_Deprecated", desc.mTextureSpecifierName);
     return DY_FAILURE;
   }
 
@@ -140,7 +140,7 @@ EDySuccess MDyIOResource::CreateTextureResourceWithChunk(_MIN_ const PDyTextureC
       success == DY_FAILURE)
   {
     MDY_LOG_ERROR("{}::{} | Cannot create texture resource properly. | Texture resource name : {}",
-                  "MDyIOResource", "CreateTextureResource", desc.mTextureSpecifierName);
+                  "MDyIOResource", "CreateTextureResource_Deprecated", desc.mTextureSpecifierName);
     this->mOnBoardTextureLists.erase(desc.mTextureSpecifierName);
     return DY_FAILURE;
   }
@@ -149,13 +149,13 @@ EDySuccess MDyIOResource::CreateTextureResourceWithChunk(_MIN_ const PDyTextureC
   if (!it->second)
   {
     MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred in swapping. | Texture resource name : {}",
-                       "MDyIOResource", "CreateTextureResource", desc.mTextureSpecifierName);
+                       "MDyIOResource", "CreateTextureResource_Deprecated", desc.mTextureSpecifierName);
     this->mOnBoardTextureLists.erase(desc.mTextureSpecifierName);
     return DY_FAILURE;
   }
 
   MDY_LOG_INFO("{0}::{1} | Create {2} resource. | {2} resource name : {3}",
-               "MDyIOResource", "CreateTextureResource", "Texture", desc.mTextureSpecifierName);
+               "MDyIOResource", "CreateTextureResource_Deprecated", "Texture", desc.mTextureSpecifierName);
   return DY_SUCCESS;
 }
 
@@ -207,7 +207,7 @@ EDySuccess MDyIOResource::CreateMaterialResource(const std::string& materialName
     const auto* textureResource = this->GetTextureResource(textureName);
     if (textureResource == nullptr)
     {
-      const auto err = this->CreateTextureResource(textureName);
+      const auto err = this->CreateTextureResource_Deprecated(textureName);
       if (err == DY_FAILURE)
       {
         MDY_LOG_CRITICAL_D("{} | Could not create texture resource. | Texture resource name : {}",
@@ -350,6 +350,29 @@ EDySuccess MDyIOResource::CreateModelResource(const std::string& modelName)
 
   MDY_LOG_INFO("{0}::{1} | Create {2} resource. | {2} resource name : {3}",
                "MDyIOResource", "CreateModelResource", "Model", modelName);
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyIOResource::CreateTextureResource(_MIN_ const std::string& specifierName, _MIN_ MDY_NOTUSED const EDyScope scope)
+{
+  const DDyTextureInformation* textureInfo = MDyIOData::GetInstance().GetTextureInformation(specifierName);
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(textureInfo), "Texture information must be valid before resource population.");
+
+  auto [it, isCreated] = this->mOnBoardTextureLists.try_emplace(specifierName, nullptr);
+  MDY_ASSERT(isCreated == true, "Unexpected error occurred.");
+
+  // Create texture resource and insert to empty memory space.
+  std::unique_ptr<CDyTextureResource> textureResource = std::make_unique<CDyTextureResource>();
+  MDY_CALL_ASSERT_SUCCESS(textureResource->pfInitializeTextureResource(*textureInfo));
+
+  it->second.swap(textureResource);
+  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(it->second), "Unexpected error occurred.");
+
+  // At last, setting pointers to each other.
+  textureInfo->__pfLinkTextureResource(it->second.get());
+  it->second->__pfSetTextureInformationLink(DyMakeNotNull(const_cast<DDyTextureInformation*>(textureInfo)));
+
+  MDY_LOG_INFO("{0}::{1} | Create {2} resource. | {2} resource name : {3}", "MDyIOResource", "CreateTextureResource_Deprecated", "Texture", specifierName);
   return DY_SUCCESS;
 }
 

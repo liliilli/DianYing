@@ -15,7 +15,7 @@
 
 #include <Dy/Helper/Type/ColorRGBA.h>
 #include <Dy/Helper/Type/VectorInt2.h>
-#include <Dy/Meta/Type/TextureParameter.h>
+#include <Dy/Meta/Type/EDyTextureParameter.h>
 
 namespace dy
 {
