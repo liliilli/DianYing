@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Core/Reflection/RDyBuiltinResources.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
+#include "Dy/Meta/Information/ModelMetaInformation.h"
 
 namespace dy::reflect
 {
@@ -41,7 +42,8 @@ void RDyBuiltinResource::BindBuiltinResourcesToMetaManager()
     } break;
     case EDyResourceType::Model:
     { // Model
-      MDY_NOT_IMPLEMENTED_ASSERT();
+      auto metaInfo = std::any_cast<PDyModelInstanceMetaInfo>(function()->GetMetaInfo());
+      MDY_CALL_ASSERT_SUCCESS(metaManager.pfAddModelMetaInfo(metaInfo));
     } break;
     case EDyResourceType::Texture:
     { // Texture

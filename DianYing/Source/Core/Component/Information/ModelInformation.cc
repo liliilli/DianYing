@@ -29,6 +29,7 @@
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Helper/ThreadPool.h>
 #include <Dy/Helper/IoHelper.h>
+#include <Dy/Meta/Information/ModelMetaInformation.h>
 
 namespace
 {
@@ -117,51 +118,63 @@ MDY_SET_IMMUTABLE_STRING(kWarnDuplicatedMaterialName,   "{}::{} | Duplicated mat
 namespace dy
 {
 
-DDyModelInformation::DDyModelInformation(const PDyModelConstructionDescriptor& modelConstructionDescriptor)
+DDyModelInformation::DDyModelInformation(const PDyModelInstanceMetaInfo& modelConstructionDescriptor)
 {
-  // Insert name and check name is empty or not.
-  this->mModelName = modelConstructionDescriptor.mModelName;
-  MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "Model name", this->mModelName);
+  if (modelConstructionDescriptor.mSourceType == EDyResourceSource::Builtin)
+  {
+    this->mModelName = modelConstructionDescriptor.mSpecifierName;
+    auto& descriptor = *modelConstructionDescriptor.mPtrBuiltinModelBuffer;
+    for (const auto& submeshInformation : descriptor.mSubmeshConstructionInformations)
+    {
+      this->mSubmeshInformations.emplace_back(submeshInformation);
+    }
+  }
+  else
+  {
+    // Insert name and check name is empty or not.
+    this->mModelName = modelConstructionDescriptor.mSpecifierName;
+    MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "Model name", this->mModelName);
 
-  // Load model information, if failed throw exception outside afterward free scene.
-  const auto& modelPath = modelConstructionDescriptor.mModelPath;
-  MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "Model full path", modelPath);
+    // Load model information, if failed throw exception outside afterward free scene.
+    const auto& modelPath = modelConstructionDescriptor.mExternalModelPath;
+    MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "Model full path", modelPath);
 
-  auto mAssimpImporter = std::make_unique<Assimp::Importer>();
-  const aiScene* assimpModelScene = mAssimpImporter->ReadFile(modelPath.c_str(),
+    auto mAssimpImporter = std::make_unique<Assimp::Importer>();
+    const aiScene* assimpModelScene = mAssimpImporter->ReadFile(modelPath.c_str(),
       aiProcess_Triangulate | aiProcess_OptimizeMeshes | aiProcess_GenNormals);
 
-  if (!assimpModelScene ||
+    if (!assimpModelScene ||
       !assimpModelScene->mRootNode ||
       MDY_BITMASK_FLAG_TRUE(assimpModelScene->mFlags, AI_SCENE_FLAGS_INCOMPLETE))
-  {
-    mAssimpImporter = nullptr;
-    MDY_LOG_CRITICAL_D(kErrorModelFailedToRead, kModelInformation);
-    throw std::runtime_error("Could not load model " + modelConstructionDescriptor.mModelName + ".");
+    {
+      mAssimpImporter = nullptr;
+      MDY_LOG_CRITICAL_D(kErrorModelFailedToRead, kModelInformation);
+      throw std::runtime_error("Could not load model " + modelConstructionDescriptor.mSpecifierName + ".");
+    }
+
+    this->mModelRootPath = modelPath.substr(0, modelPath.find_last_of('/'));
+    this->mGlobalTransform = assimpModelScene->mRootNode->mTransformation;
+
+    if (assimpModelScene->HasAnimations())
+    { // Make animation informations from aiScene.
+      MDY_LOG_DEBUG_D("DDyModelInformation | Model : {} Has animations", this->mModelName);
+      this->pCreateAnimationInformation(*assimpModelScene);
+    }
+
+    // Process all meshes and retrieve material, bone, etc information.
+    pProcessNode(*assimpModelScene, *assimpModelScene->mRootNode);
+
+    // Create nodes instead of aiScene->aiNode* dependency.
+    this->mRootBoneNode.mName = "RootBone";
+    this->pCreateNodeInformation(*assimpModelScene->mRootNode, this->mRootBoneNode);
+
+    // Output model, submesh, and material information to console.
+    MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "Model root path", this->mModelRootPath);
+    this->__pOutputDebugInformationLog();
   }
-
-  this->mModelRootPath                  = modelPath.substr(0, modelPath.find_last_of('/'));
-  this->mGlobalTransform                = assimpModelScene->mRootNode->mTransformation;
-
-  if (assimpModelScene->HasAnimations())
-  { // Make animation informations from aiScene.
-    MDY_LOG_DEBUG_D("DDyModelInformation | Model : {} Has animations", this->mModelName);
-    this->pCreateAnimationInformation(*assimpModelScene);
-  }
-
-  // Process all meshes and retrieve material, bone, etc information.
-  pProcessNode(*assimpModelScene, *assimpModelScene->mRootNode);
-
-  // Create nodes instead of aiScene->aiNode* dependency.
-  this->mRootBoneNode.mName = "RootBone";
-  this->pCreateNodeInformation(*assimpModelScene->mRootNode, this->mRootBoneNode);
-
-  // Output model, submesh, and material information to console.
-  MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "Model root path", this->mModelRootPath);
-  this->__pOutputDebugInformationLog();
 
   bool atmFalse = false;
-  while(!this->mModelInformationLoaded.compare_exchange_weak(atmFalse, true));
+  while (!this->mModelInformationLoaded.compare_exchange_weak(atmFalse, true));
 }
 
 DDyModelInformation::DDyModelInformation(const PDyModelConstructionVertexDescriptor& modelConstructDescriptor)

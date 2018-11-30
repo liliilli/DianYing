@@ -14,6 +14,23 @@
 ///
 
 #include <string_view>
+#include <Dy/Builtin/Abstract/ADyModelResource.h>
+
+#define MDY_REGISTER_RESOURCE_MODEL(__MAType__, __MASpecifierName__) \
+  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(__MAType__, __MASpecifierName__) \
+  private: \
+  static PDyModelConstructionVertexDescriptor& __Get() noexcept \
+  { \
+    static PDyModelConstructionVertexDescriptor instance{}; \
+    return instance; \
+  } \
+  void ConstructBuffer(_MOUT_ PDyModelConstructionVertexDescriptor& buffer) noexcept; \
+  public: \
+    __MAType__() \
+    { \
+      ConstructBuffer(__Get()); \
+      this->mPtrBuffer = &__Get(); \
+    }
 
 namespace dy::builtin
 {
@@ -22,13 +39,9 @@ namespace dy::builtin
 /// @class FDyBuiltinModelBox
 /// @brief Create model box information and resources.
 ///
-class FDyBuiltinModelBox final
+class FDyBuiltinModelBox final : public ADyModelResource
 {
-public:
-  FDyBuiltinModelBox();
-
-  /// name for creating DDyModelInformation
-  inline static MDY_SET_IMMUTABLE_STRING(sName, "dyBtModelBox");
+  MDY_REGISTER_RESOURCE_MODEL(FDyBuiltinModelBox, "dyBtModelBox");
 };
 
 } /// ::dy::builtin namespace

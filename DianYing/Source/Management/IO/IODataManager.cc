@@ -16,6 +16,8 @@
 #include <Dy/Management/IO/IODataManager.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Management/LoggingManager.h>
+#include <Dy/Meta/Information/ModelMetaInformation.h>
+#include <filesystem>
 
 namespace
 {
@@ -386,18 +388,18 @@ EDySuccess MDyIOData::CreateMaterialInformation(const PDyMaterialConstructionDes
   return DY_SUCCESS;
 }
 
-EDySuccess MDyIOData::CreateModelInformation(const PDyModelConstructionDescriptor& modelDescriptor)
+EDySuccess MDyIOData::CreateModelInformation_Deprecated(const PDyModelInstanceMetaInfo& modelDescriptor)
 {
   // Integrity test
-  if (modelDescriptor.mModelName.empty())
+  if (modelDescriptor.mSpecifierName.empty())
   {
-    MDY_LOG_CRITICAL_D(kErrorModelNameEmpty, kDyDataInformation, "CreateModelInformation");
+    MDY_LOG_CRITICAL_D(kErrorModelNameEmpty, kDyDataInformation, "CreateModelInformation_Deprecated");
     throw std::runtime_error("Model name is not specified.");
   }
-  const auto& modelName = modelDescriptor.mModelName;
-  if (modelDescriptor.mModelPath.empty())
+  const auto& modelName = modelDescriptor.mSpecifierName;
+  if (modelDescriptor.mExternalModelPath.empty())
   {
-    MDY_LOG_CRITICAL_D(kErrorModelPathEmpty, kDyDataInformation, "CreateModelInformation", modelName);
+    MDY_LOG_CRITICAL_D(kErrorModelPathEmpty, kDyDataInformation, "CreateModelInformation_Deprecated", modelName);
     throw std::runtime_error("Model path is not specified.");
   }
 
@@ -432,7 +434,7 @@ EDySuccess MDyIOData::CreateModelInformation(const PDyModelConstructionDescripto
   return DY_SUCCESS;
 }
 
-EDySuccess MDyIOData::CreateModelInformation(const PDyModelConstructionVertexDescriptor& modelDescriptor)
+EDySuccess MDyIOData::CreateModelInformation_Deprecated(const PDyModelConstructionVertexDescriptor& modelDescriptor)
 {
   ///
   /// @function CheckIntegerityOfDescriptor
@@ -442,13 +444,13 @@ EDySuccess MDyIOData::CreateModelInformation(const PDyModelConstructionVertexDes
   {
     if (desc.mModelName.empty())
     {
-      MDY_LOG_CRITICAL_D(kErrorModelNameEmpty, kDyDataInformation, "CreateModelInformation");
+      MDY_LOG_CRITICAL_D(kErrorModelNameEmpty, kDyDataInformation, "CreateModelInformation_Deprecated");
       throw std::runtime_error("Model name is not specified.");
     }
     const auto& modelName = desc.mModelName;
     if (desc.mSubmeshConstructionInformations.empty())
     {
-      MDY_LOG_CRITICAL_D(kErrorModelPathEmpty, kDyDataInformation, "CreateModelInformation", modelName);
+      MDY_LOG_CRITICAL_D(kErrorModelPathEmpty, kDyDataInformation, "CreateModelInformation_Deprecated", modelName);
       throw std::runtime_error("Model submesh information list is empty.");
     }
 
@@ -491,6 +493,55 @@ EDySuccess MDyIOData::CreateModelInformation(const PDyModelConstructionVertexDes
     return DY_FAILURE;
   }
 
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyIOData::CreateModelInformation(const std::string& modelSpecifierName, MDY_NOTUSED EDyScope scope)
+{
+  /// @brief Check compatibility of instance into Dy model binding structure.
+  static auto CheckValidity = [](_MIN_ const PDyModelInstanceMetaInfo& metaInfo)
+  {
+    MDY_ASSERT(metaInfo.mSpecifierName.empty() == false, "Model specifier name must be specified.");
+
+    if (metaInfo.mSourceType == EDyResourceSource::Builtin)
+    { // If model meta information is builtin meta info, verify mPtrBuiltinModelBuffer.
+      MDY_ASSERT(MDY_CHECK_ISNOTNULL(metaInfo.mPtrBuiltinModelBuffer), "Model buffer must not be nulled.");
+    }
+    else
+    { // If model meta information is external, verify emptiness of file path and check exist.
+      MDY_ASSERT(metaInfo.mExternalModelPath.empty() == false, "Model external file path must not be empty.");
+      MDY_ASSERT(std::filesystem::exists(metaInfo.mExternalModelPath) == true, "Model file path must be valid.");
+    }
+    return DY_SUCCESS;
+  };
+
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  //! FUNCTIONBODY ∨
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  const auto& metaManager = MDyMetaInfo::GetInstance();
+  const auto& metaInfo    = metaManager.GetModelMetaInformation(modelSpecifierName);
+  MDY_ASSERT(CheckValidity(metaInfo) == DY_SUCCESS, "Validity check must not be failed.");
+
+  decltype(this->mModelInformation)::iterator it;
+  {
+    std::lock_guard<std::mutex> mt(this->mTemporalMutex);
+    if (DyIsMapContains(this->mModelInformation, metaInfo.mSpecifierName) == true)
+    {
+      MDY_LOG_WARNING_D("{} | Resource is already found. Name : {}", "MDyIOData", metaInfo.mSpecifierName);
+      return DY_FAILURE;
+    }
+
+    // Check there is already in the information map, if not, make memory space to insert it.
+    bool creationResult = false;
+    std::tie(it, creationResult) = mModelInformation.try_emplace(metaInfo.mSpecifierName, nullptr);
+    MDY_ASSERT(creationResult == true, "Unexpected error occurred.");
+  }
+
+  // Make resource in heap, and insert it to empty memory space.
+  auto materialInformation = std::make_unique<DDyModelInformation>(metaInfo);
+  it->second.swap(materialInformation);
+  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(it->second), "Unexpected error occurred.");
   return DY_SUCCESS;
 }
 

@@ -13,19 +13,23 @@
 ///
 
 /// Header file
-#include <Dy/Core/Reflection/RDyCppScript.h>
-#include <Dy/Management/IO/MetaInfoManager.h>
+#include <Dy/Builtin/Abstract/ADyModelResource.h>
+#include <Dy/Meta/Information/ModelMetaInformation.h>
 
-namespace dy::reflect
+namespace dy
 {
 
-void __Rfc__AddMetaInformation(_MIN_ const std::string& typeSpecifier, _MIN_ const EDyScriptMode mode)
+std::any ADyModelResource::GetMetaInfo()
 {
-  PDyScriptInstanceMetaInfo metaInfo = {};
-  metaInfo.mScriptType    = EDyScriptType::Cpp;
-  metaInfo.mScriptMode    = mode;
-  metaInfo.mSpecifierName = typeSpecifier;
-  MDY_CALL_ASSERT_SUCCESS(MDyMetaInfo::GetInstance().pfAddScriptMetaInformation(metaInfo));
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mPtrBuffer), "Builtin model buffer must not be nulled.");
+
+  PDyModelInstanceMetaInfo result{};
+  result.mSourceType            = EDyResourceSource::Builtin;
+  result.mSpecifierName    = this->mPtrBuffer->mModelName;
+  result.mPtrBuiltinModelBuffer = this->mPtrBuffer;
+
+  return result;
 }
 
-} /// ::dy::reflect namespace
+
+} /// ::dy namespace

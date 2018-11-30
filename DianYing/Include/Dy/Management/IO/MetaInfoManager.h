@@ -22,7 +22,8 @@
 #include <Dy/Meta/Information/PrefabMetaInformation.h>
 #include <Dy/Helper/ContainerHelper.h>
 #include <Dy/Core/Reflection/RDyBuiltinResources.h>
-#include "Dy/Meta/Information/GLShaderMetaInformation.h"
+#include <Dy/Meta/Information/GLShaderMetaInformation.h>
+#include <Dy/Meta/Information/ModelMetaInformation.h>
 
 namespace dy
 {
@@ -64,12 +65,27 @@ public:
   MDY_NODISCARD const PDyGLShaderInstanceMetaInfo& GetGLShaderMetaInformation(_MIN_ const std::string& specifier) const;
 
   ///
+  /// @brief  Get model instance meta information from container.
+  /// @return Return value is undefined if not found.
+  ///
+  MDY_NODISCARD const PDyModelInstanceMetaInfo& GetModelMetaInformation(_MIN_ const std::string& specifier) const;
+
+  ///
   /// @brief  Check script meta information is exist.
   /// @return Return value is false if not found.
   ///
   FORCEINLINE MDY_NODISCARD bool IsGLShaderMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
   {
     return DyIsMapContains(this->mShaderMetaInfo, specifier);
+  }
+
+  ///
+  /// @brief  Check model meta information is exist.
+  /// @return Return value is false if not found.
+  ///
+  FORCEINLINE MDY_NODISCARD bool IsModelMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
+  {
+    return DyIsMapContains(this->mModelMetaInfo, specifier);
   }
 
   ///
@@ -108,9 +124,10 @@ private:
   MDY_NODISCARD EDySuccess pReadFontResourceMetaInformation(_MIN_ const std::string& metaFilePath);
   MDY_NODISCARD EDySuccess pReadSceneResourceMetaInformation(_MIN_ const std::string& metaFilepath);
 
-  MDY_NODISCARD EDySuccess pfAddWidgetMetaInformation(_MIN_ const std::string& metaInformationString);
-  MDY_NODISCARD EDySuccess pfAddScriptMetaInformation(_MIN_ const PDyScriptInstanceMetaInfo& metaInfo);
-  MDY_NODISCARD EDySuccess pfAddGLShaderMetaInfo(_MIN_ const PDyGLShaderInstanceMetaInfo& metaInfo);
+  MDY_NODISCARD EDySuccess pfAddWidgetMetaInformation (_MIN_ const std::string& metaInformationString);
+  MDY_NODISCARD EDySuccess pfAddScriptMetaInformation (_MIN_ const PDyScriptInstanceMetaInfo& metaInfo);
+  MDY_NODISCARD EDySuccess pfAddGLShaderMetaInfo      (_MIN_ const PDyGLShaderInstanceMetaInfo& metaInfo);
+  MDY_NODISCARD EDySuccess pfAddModelMetaInfo         (_MIN_ const PDyModelInstanceMetaInfo& metaInfo);
 
   /// Level meta information map.
   THashMap<PDyLevelConstructMetaInfo>   mLevelInfoMap   = {};
@@ -120,6 +137,8 @@ private:
   THashMap<PDyMetaFontInformation>      mFontMetaInfo   = {};
   /// GL shader meta information map.
   THashMap<PDyGLShaderInstanceMetaInfo> mShaderMetaInfo = {};
+  /// Model meta information map.
+  THashMap<PDyModelInstanceMetaInfo>    mModelMetaInfo  = {};
 
   //!
   //! Hierarchial meta information containers.

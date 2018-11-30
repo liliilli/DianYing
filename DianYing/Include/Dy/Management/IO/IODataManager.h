@@ -27,8 +27,9 @@
 
 namespace dy
 {
+  struct PDyModelInstanceMetaInfo;
 
-///
+  ///
 /// @class MDyIOData
 /// @brief Manages data information which are needed to create heap instances such as CDy-Resource.
 ///
@@ -43,9 +44,11 @@ public:
   EDySuccess CreateShaderInformation_Deprecated(const PDyShaderConstructionDescriptor& shaderDescriptor);
 
   ///
-  /// @brief Create shader information.
+  /// @brief Create shader information with scope. This function must be succeeded.
+  /// @param shaderSpecifierName specifier name of GL shader must be valid on runtime.
+  /// @param scope Information lifetime scope.
   ///
-  EDySuccess CreateShaderInformation(_MIN_ const std::string& shaderSpecifierName, _MIN_ EDyScope scope);
+  MDY_NODISCARD EDySuccess CreateShaderInformation(_MIN_ const std::string& shaderSpecifierName, _MIN_ EDyScope scope);
 
   ///
   /// @brief Create texture information.
@@ -60,13 +63,20 @@ public:
   ///
   /// @brief Create model information.
   ///
-  EDySuccess CreateModelInformation(const PDyModelConstructionDescriptor& modelDescriptor);
+  EDySuccess CreateModelInformation_Deprecated(const PDyModelInstanceMetaInfo& modelDescriptor);
 
   ///
   /// @brief Create model information, with static code generated model information.
-  /// This function should used carefully, unless general version of CreateModelInformation.
+  /// This function should used carefully, unless general version of CreateModelInformation_Deprecated.
   ///
-  EDySuccess CreateModelInformation(const PDyModelConstructionVertexDescriptor& modelDescriptor);
+  EDySuccess CreateModelInformation_Deprecated(const PDyModelConstructionVertexDescriptor& modelDescriptor);
+
+  ///
+  /// @brief Create model information with scope. This function must be succeeded.
+  /// @param modelSpecifierName specifier name of GL shader must be valid on runtime.
+  /// @param scope Information lifetime scope.
+  ///
+  MDY_NODISCARD EDySuccess CreateModelInformation(_MIN_ const std::string& modelSpecifierName, _MIN_ EDyScope scope);
 
   ///
   /// @brief Create sound information,

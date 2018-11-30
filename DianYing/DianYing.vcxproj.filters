@@ -195,6 +195,8 @@
     <ClCompile Include="Source\Builtin\ShaderGl\Deprecated\RenderFontSDF_Deprecated.cc" />
     <ClCompile Include="Source\Component\Internal\Deprecated\CDyFontRenderer_Deprecated.cc" />
     <ClCompile Include="Source\Element\Canvas\Deprecated\Text_Deprecated.cc" />
+    <ClCompile Include="Source\Meta\Information\MetaInfoModel.cc" />
+    <ClCompile Include="Source\Builtin\Abstract\ADyModelResource.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -486,6 +488,8 @@
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Deprecated\RenderFontSDF_Deprecated.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Deprecated\CDyFontRenderer_Deprecated.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\Deprecated\Text_Deprecated.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\ModelMetaInformation.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyModelResource.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

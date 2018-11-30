@@ -25,26 +25,6 @@ namespace dy
 struct DMoeTempAnimationChannel;
 
 ///
-/// @struct PDyModelConstructionDescriptor
-/// @brief Model information construction descriptor
-///
-struct PDyModelConstructionDescriptor final : public IDyToString
-{
-  std::string     mModelName = "";
-  std::string     mModelPath = "";
-
-  [[nodiscard]]
-  std::string ToString() override final
-  {
-    return fmt::format(
-R"dy(PDyModelConstructionDescriptor
-Model Name : {}
-Model Path : {}
-)dy", this->mModelName, this->mModelPath);
-  };
-};
-
-///
 /// @struct PDyModelConstructionVertexDescriptor
 /// @brief Model information construction descriptor with customized static vertex information.
 ///
