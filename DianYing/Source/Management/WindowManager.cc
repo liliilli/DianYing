@@ -89,10 +89,10 @@ void DyInitializeBuiltinResource()
   auto& infoManager = dy::MDyIOData::GetInstance();
   auto& rescManager = dy::MDyIOResource::GetInstance();
 
-  dy::builtin::FDyBuiltinModelBox();
-  dy::builtin::FDyBuiltinModelPlain();
-  dy::builtin::FDyBuiltinModelSphere();
-  dy::builtin::FDyBuiltinModelScreenProjectionTriangle();
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateModelInformation(MSVSTR(dy::builtin::FDyBuiltinModelBox::sName), dy::EDyScope::Global));
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateModelInformation(MSVSTR(dy::builtin::FDyBuiltinModelPlain::sName), dy::EDyScope::Global));
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateModelInformation(MSVSTR(dy::builtin::FDyBuiltinModelScreenProjectionTriangle::sName), dy::EDyScope::Global));
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateModelInformation(MSVSTR(dy::builtin::FDyBuiltinModelSphere::sName), dy::EDyScope::Global));
 
   dy::builtin::FDyBuiltinTextureChecker();
   dy::builtin::FDyBuiltinTextureErrorBlue();

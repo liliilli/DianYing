@@ -14,13 +14,11 @@
 
 /// Header file
 #include <Dy/Builtin/Model/ScreenProjectionTriangle.h>
-#include <Dy/Core/Component/Internal/ModelType.h>
-#include <Dy/Management/IO/IODataManager.h>
 
 namespace dy::builtin
 {
 
-FDyBuiltinModelScreenProjectionTriangle::FDyBuiltinModelScreenProjectionTriangle()
+void FDyBuiltinModelScreenProjectionTriangle::ConstructBuffer(PDyModelConstructionVertexDescriptor& buffer) noexcept
 {
   PDySubmeshInformationDescriptor submeshDesc;
 
@@ -49,14 +47,8 @@ FDyBuiltinModelScreenProjectionTriangle::FDyBuiltinModelScreenProjectionTriangle
   for (const auto index : indices) { submeshDesc.mIndices.emplace_back(index); }
 
   // Make model information
-  PDyModelConstructionVertexDescriptor modelDesc;
-  {
-    modelDesc.mModelName = FDyBuiltinModelScreenProjectionTriangle::sName;
-    modelDesc.mSubmeshConstructionInformations.emplace_back(submeshDesc);
-  }
-
-  auto& manInfo = MDyIOData::GetInstance();
-  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(modelDesc));
+  buffer.mModelName = FDyBuiltinModelScreenProjectionTriangle::sName;
+  buffer.mSubmeshConstructionInformations.emplace_back(submeshDesc);
 }
 
 } /// ::dy::builtin namespace

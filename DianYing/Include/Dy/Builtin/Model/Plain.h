@@ -14,6 +14,7 @@
 ///
 
 #include <string_view>
+#include <Dy/Builtin/Abstract/ADyModelResource.h>
 
 namespace dy::builtin
 {
@@ -22,13 +23,9 @@ namespace dy::builtin
 /// @class FDyBuiltinModelPlain
 /// @brief Create model plain information and resources.
 ///
-class FDyBuiltinModelPlain final
+class FDyBuiltinModelPlain final : public ADyModelResource
 {
-public:
-  FDyBuiltinModelPlain();
-
-  /// name for creating DDyModelInformation
-  inline static MDY_SET_IMMUTABLE_STRING(sName, "dyBtModelPlain");
+  MDY_REGISTER_RESOURCE_MODEL(FDyBuiltinModelPlain, "dyBtModelPlain");
 };
 
 } /// ::dy::builtin namespace

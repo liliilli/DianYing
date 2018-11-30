@@ -14,6 +14,7 @@
 ///
 
 #include <string_view>
+#include <Dy/Builtin/Abstract/ADyModelResource.h>
 
 namespace dy::builtin
 {
@@ -22,13 +23,9 @@ namespace dy::builtin
 /// @class FDyBuiltinModelScreenProjectionTriangle
 /// @brief Used rendering entire screen once more with only 3 vertices
 ///
-class FDyBuiltinModelScreenProjectionTriangle final
+class FDyBuiltinModelScreenProjectionTriangle final : public ADyModelResource
 {
-public:
-  FDyBuiltinModelScreenProjectionTriangle();
-
-  /// name for creating DDyModelInformation
-  inline static MDY_SET_IMMUTABLE_STRING(sName, "dyBtModelScrProjTri");
+  MDY_REGISTER_RESOURCE_MODEL(FDyBuiltinModelScreenProjectionTriangle, "dyBtModelScrProjTri");
 };
 
 } /// ::dy::builtin namespace

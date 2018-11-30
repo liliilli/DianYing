@@ -14,6 +14,7 @@
 ///
 
 #include <string_view>
+#include <Dy/Builtin/Abstract/ADyModelResource.h>
 
 //!
 //! Forward declaration
@@ -37,13 +38,9 @@ namespace dy::builtin
 /// @class FDyBuiltinModelSphere
 /// @brief Model sphere
 ///
-class FDyBuiltinModelSphere final
+class FDyBuiltinModelSphere final : public ADyModelResource
 {
-public:
-  FDyBuiltinModelSphere();
-
-  /// name for creating DDyModelInformation
-  inline static MDY_SET_IMMUTABLE_STRING(sName, "dyBtModelSphere");
+  MDY_REGISTER_RESOURCE_MODEL(FDyBuiltinModelSphere, "dyBtModelSphere");
 
 private:
   ///
