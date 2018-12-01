@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_BUILTIN_HELPER_BUITLININFORMATIONDELIVER_H
-#define GUARD_DY_BUILTIN_HELPER_BUITLININFORMATIONDELIVER_H
+#include <precompiled.h>
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,25 +12,27 @@
 /// SOFTWARE.
 ///
 
+/// Header file
+#include <Dy/Component/Internal/CDyImageRenderer.h>
+#include <Dy/Builtin/ShaderGl/RenderUIImage.h>
+
 namespace dy
 {
 
-///
-/// @struct FDyBuiltinInformationDeliver
-/// @brief
-///
-struct FDyBuiltinInformationDeliver final
+EDySuccess CDyImageRenderer::Initialize(const PDyImageRendererCtorInformation& descriptor)
 {
-public:
-  ///
-  /// @brief
-  /// @param  metaString
-  /// @return
-  ///
-  static MDY_NODISCARD EDySuccess ForwardWidgetMetaInformation(_MIN_ const std::string_view& metaString);
+  MDY_NOT_IMPLEMENTED_ASSERT();
+  return DY_SUCCESS;
+}
 
-};
+void CDyImageRenderer::Release()
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+}
+
+void CDyImageRenderer::Render()
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+}
 
 } /// ::dy namespace
-
-#endif /// GUARD_DY_BUILTIN_HELPER_BUITLININFORMATIONDELIVER_H

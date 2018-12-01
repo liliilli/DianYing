@@ -14,14 +14,11 @@
 
 /// Header file
 #include <Dy/Builtin/Model/Sphere.h>
-#include <Dy/Core/Component/Internal/ModelType.h>
-#include <Dy/Core/Component/Resource/SubmeshResource.h>
-#include <Dy/Management/IO/IODataManager.h>
 
 namespace dy::builtin
 {
 
-FDyBuiltinModelSphere::FDyBuiltinModelSphere()
+void FDyBuiltinModelSphere::ConstructBuffer(PDyModelConstructionVertexDescriptor& buffer) noexcept
 {
   PDySubmeshInformationDescriptor submeshDesc;
 
@@ -44,14 +41,8 @@ FDyBuiltinModelSphere::FDyBuiltinModelSphere()
   pCreateVertexRecursively(d, a, b, td, ta, tb, level, submeshDesc);
 
   // Make model information
-  PDyModelConstructionVertexDescriptor modelDesc;
-  {
-    modelDesc.mModelName = FDyBuiltinModelSphere::sName;
-    modelDesc.mSubmeshConstructionInformations.emplace_back(submeshDesc);
-  }
-
-  auto& manInfo = MDyIOData::GetInstance();
-  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(modelDesc));
+  buffer.mModelName = FDyBuiltinModelSphere::sName;
+  buffer.mSubmeshConstructionInformations.emplace_back(submeshDesc);
 }
 
 void FDyBuiltinModelSphere::pEmplaceVertex(

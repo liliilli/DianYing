@@ -155,15 +155,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Builtin\Abstract\ADyGLShaderResources.cc" />
+    <ClCompile Include="Source\Builtin\Abstract\ADyModelResource.cc" />
+    <ClCompile Include="Source\Builtin\Abstract\ADyTextureResource.cc" />
     <ClCompile Include="Source\Builtin\Script\DebugUiScriptCpp.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\RenderUiBasicGaugeBar.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\RenderUIImage.cc" />
     <ClCompile Include="Source\Component\Abstract\ADyActorCppScript.cc" />
     <ClCompile Include="Source\Component\Abstract\ADyWidgetCppScript.cc" />
     <ClCompile Include="Source\Component\Internal\CDyActorScriptCpp.cc" />
     <ClCompile Include="Source\Component\Internal\CDyActorScriptLua.cc" />
+    <ClCompile Include="Source\Component\Internal\CDyBasicGaugeBarRenderer.cc" />
+    <ClCompile Include="Source\Component\Internal\CDyImageRenderer.cc" />
     <ClCompile Include="Source\Component\UI\CDyWidgetScriptCpp.cc" />
     <ClCompile Include="Source\Component\UI\CDyWidgetScriptLua.cc" />
+    <ClCompile Include="Source\Core\Reflection\RDyBuiltinResources.cc" />
+    <ClCompile Include="Source\Element\Canvas\FDyBasicGuageBar.cc" />
+    <ClCompile Include="Source\Element\Canvas\FDyImage.cc" />
+    <ClCompile Include="Source\Element\Canvas\UiObject.cc" />
     <ClCompile Include="Source\Element\Canvas\UiObjectChildrenable.cc" />
-    <ClCompile Include="Source\Core\Reflection\RDyCppScript.cc" />
     <ClCompile Include="Source\Element\Canvas\Widget.cc" />
     <ClCompile Include="Source\Element\Descriptor\GlobalEnums.cc" />
     <ClCompile Include="Libraries\glad\src\glad.c">
@@ -213,7 +223,6 @@
     <ClCompile Include="Libraries\msdfgen\core\Vector2.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Source\Builtin\Helper\BuiltinInformationDeliver.cc" />
     <ClCompile Include="Source\Builtin\Material\OpaqueStaticPlain.cc" />
     <ClCompile Include="Source\Builtin\Model\Box.cc" />
     <ClCompile Include="Source\Builtin\Model\Plain.cc" />
@@ -225,8 +234,8 @@
     <ClCompile Include="Source\Builtin\ShaderGl\RenderDefaultFont.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderDeferredRendering.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderFontArraySDF.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\RenderFontMSDF_Deprecated.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\RenderFontSDF_Deprecated.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\Deprecated\RenderFontMSDF_Deprecated.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\Deprecated\RenderFontSDF_Deprecated.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderGrid.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderOpaqueStatic.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderPass.cc" />
@@ -242,7 +251,7 @@
     <ClCompile Include="Source\Component\CDyScript.cc" />
     <ClCompile Include="Source\Component\CDyTransform.cc" />
     <ClCompile Include="Source\Component\Internal\CDyFontRenderer.cc" />
-    <ClCompile Include="Source\Component\Internal\CDyFontRenderer_Deprecated.cc" />
+    <ClCompile Include="Source\Component\Internal\Deprecated\CDyFontRenderer_Deprecated.cc" />
     <ClCompile Include="Source\Component\Internal\ScriptState.cc" />
     <ClCompile Include="Source\Core\Component\Information\MaterialInformation.cc" />
     <ClCompile Include="Source\Core\Component\Information\ModelInformation.cc" />
@@ -285,7 +294,9 @@
     <ClCompile Include="Source\Element\Abstract\ADyTransformable.cc" />
     <ClCompile Include="Source\Element\Actor.cc" />
     <ClCompile Include="Source\Element\Canvas\Text.cc" />
-    <ClCompile Include="Source\Element\Canvas\Text_Deprecated.cc" />
+    <ClCompile Include="Source\Element\Canvas\Deprecated\Text_Deprecated.cc" />
+    <ClCompile Include="Source\Meta\Descriptor\WidgetBarMetaInformation.cc" />
+    <ClCompile Include="Source\Meta\Descriptor\WidgetImageMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Information\ElementLevelMetaInfo.cc" />
     <ClCompile Include="Source\Element\Level.cc" />
     <ClCompile Include="Source\Entry\Entry.cc" />
@@ -352,12 +363,16 @@
     <ClCompile Include="Source\Meta\Information\ComponentMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Information\ElementObjectMetaInfo.cc" />
     <ClCompile Include="Source\Meta\Information\FontMetaInformation.cc" />
+    <ClCompile Include="Source\Meta\Information\MetaInfoGLShader.cc" />
+    <ClCompile Include="Source\Meta\Information\MetaInfoMaterial.cc" />
+    <ClCompile Include="Source\Meta\Information\MetaInfoModel.cc" />
+    <ClCompile Include="Source\Meta\Information\MetaInfoTexture.cc" />
     <ClCompile Include="Source\Meta\Information\PrefabMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Information\ScriptMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Type\EDyComponentTypes.cc" />
     <ClCompile Include="Source\Meta\Type\EDyInput.cc" />
     <ClCompile Include="Source\Meta\Type\EDyWidgetTypes.cc" />
-    <ClCompile Include="Source\Meta\Type\TextureParameter.cc" />
+    <ClCompile Include="Source\Meta\Type\EDyTextureParameter.cc" />
     <ClCompile Include="Source\precompiled.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">Create</PrecompiledHeader>
@@ -374,7 +389,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Dy\Binding\LuaScriptFrame.h" />
-    <ClInclude Include="Include\Dy\Builtin\Helper\BuiltinInformationDeliver.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGLShaderResource.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyMaterialResource.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyModelResource.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyScriptResource.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyTextureResource.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyWidgetMetaResource.h" />
+    <ClInclude Include="Include\Dy\Builtin\Interface\IDyResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Material\OpaqueStaticPlain.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\Box.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\Plain.h" />
@@ -387,12 +408,14 @@
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderDefaultFont.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderDeferredRendering.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderFontArraySDF.h" />
-    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderFontSDF_Deprecated.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\Deprecated\RenderFontSDF_Deprecated.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderGrid.h" />
-    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderFontMSDF_Deprecated.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\Deprecated\RenderFontMSDF_Deprecated.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderOpaqueStatic.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderPass.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderScreenOutput.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderUIBasicGaugeBar.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderUIImage.h" />
     <ClInclude Include="Include\Dy\Builtin\Texture\ErrorBlue.h" />
     <ClInclude Include="Include\Dy\Builtin\Texture\Checker.h" />
     <ClInclude Include="Include\Dy\Builtin\Widget\DebugUiMeta.h" />
@@ -401,11 +424,14 @@
     <ClInclude Include="Include\Dy\Component\Abstract\ADyWidgetCppScript.h" />
     <ClInclude Include="Include\Dy\Component\CDyCamera.h" />
     <ClInclude Include="Include\Dy\Component\CDyDirectionalLight.h" />
+    <ClInclude Include="Include\Dy\Component\Ctor\PDyBarTypeRenderer.h" />
     <ClInclude Include="Include\Dy\Component\Ctor\PDyFontRenderer.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyActorCppScript.h" />
+    <ClInclude Include="Include\Dy\Component\Ctor\PDyImageRenderer.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyActorScriptCpp.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\CDyBasicGaugeBarRenderer.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyFontRenderer.h" />
-    <ClInclude Include="Include\Dy\Component\Internal\CDyFontRenderer_Deprecated.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Deprecated\CDyFontRenderer_Deprecated.h" />
     <ClInclude Include="Include\Dy\Component\CDyModelFilter.h" />
     <ClInclude Include="Include\Dy\Component\CDyModelRenderer.h" />
     <ClInclude Include="Include\Dy\Component\CDyPhysicsRigidbodyDynamic.h" />
@@ -417,6 +443,7 @@
     <ClInclude Include="Include\Dy\Component\Helper\TmpCheckRemoveParams.h" />
     <ClInclude Include="Include\Dy\Component\Interface\IDyInitializeHelper.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyActorScriptLua.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\CDyImageRenderer.h" />
     <ClInclude Include="Include\Dy\Component\Internal\ScriptState.h" />
     <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScript.h" />
     <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScriptCpp.h" />
@@ -428,9 +455,9 @@
     <ClInclude Include="Include\Dy\Core\Component\Information\ShaderInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Information\TextureInformation.h" />
     <ClInclude Include="Include\Dy\Core\Component\Resource\SoundResource.h" />
+    <ClInclude Include="Include\Dy\Core\Component\Type\EDyScope.h" />
     <ClInclude Include="Include\Dy\Core\DyEngine.h" />
-    <ClInclude Include="Include\Dy\Core\Reflection\RDyBuiltinResource.h" />
-    <ClInclude Include="Include\Dy\Core\Reflection\RDyCppScript.h" />
+    <ClInclude Include="Include\Dy\Core\Reflection\RDyBuiltinResources.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\BasicRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\BasicShadow.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\FinalScreenDisplayRenderer.h" />
@@ -445,19 +472,29 @@
     <ClInclude Include="Include\Dy\Element\Abstract\ADyTransformable.h" />
     <ClInclude Include="Include\Dy\Element\Actor.h" />
     <ClInclude Include="Include\Dy\Element\Abstract\ADyNameCounterMap.h" />
+    <ClInclude Include="Include\Dy\Element\Canvas\FDyBasicGaugeBar.h" />
+    <ClInclude Include="Include\Dy\Element\Canvas\FDyImage.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\UiObject.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\UiObjectChildrenable.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\Widget.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\Text.h" />
-    <ClInclude Include="Include\Dy\Element\Canvas\Text_Deprecated.h" />
+    <ClInclude Include="Include\Dy\Element\Canvas\Deprecated\Text_Deprecated.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\CanvasDescriptor.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\GlobalEnums.h" />
+    <ClInclude Include="Include\Dy\Helper\System\TypeTraits.h" />
+    <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetBarMetaInformation.h" />
+    <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetImageMetaInformation.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\CommonResourceMetaInfo.h" />
     <ClInclude Include="Include\Dy\Meta\Information\ElementLevelMetaInfo.h" />
     <ClInclude Include="Include\Dy\Helper\Type\ColorRGB.h" />
     <ClInclude Include="Include\Dy\Helper\Type\ColorRGB24.h" />
     <ClInclude Include="Include\Dy\Meta\Information\ComponentLightMetaInfo.h" />
     <ClInclude Include="Include\Dy\Meta\Information\ComponentMetaInformation.h" />
     <ClInclude Include="Include\Dy\Meta\Information\ElementObjectMetaInfo.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\GLShaderMetaInformation.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoMaterial.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoTexture.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\ModelMetaInformation.h" />
     <ClInclude Include="Include\Dy\Meta\Information\PrefabMetaInformation.h" />
     <ClInclude Include="Include\Dy\Element\Helper\DescriptorComponentHeaderString.h" />
     <ClInclude Include="Include\Dy\Component\Interface\IDyScriptable.h" />
@@ -586,8 +623,9 @@
     <ClInclude Include="Include\Dy\Meta\Type\EDyComponentTypes.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyInput.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyRenderingApi.h" />
+    <ClInclude Include="Include\Dy\Meta\Type\EDyResourceTypes.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyWidgetTypes.h" />
-    <ClInclude Include="Include\Dy\Meta\Type\TextureParameter.h" />
+    <ClInclude Include="Include\Dy\Meta\Type\EDyTextureParameter.h" />
     <ClInclude Include="Include\Dy\Test\TestCxxopt.h" />
     <ClInclude Include="Include\Dy\Test\testLua.h" />
     <ClInclude Include="Include\Dy\Test\TestMacroSetting.h" />

@@ -34,7 +34,7 @@ dy::DDyMatrix4x4 uUiProjMatrix = dy::DDyMatrix4x4{};
 
 constexpr auto stride = sizeof(dy::DDyVector2) * 2;
 GLuint mTextSampleVao = MDY_INITIALIZE_DEFUINT;
-GLuint mTextSampleVbo = MDY_INITIALIZE_DEFUINT;
+GLuint mTestVbo = MDY_INITIALIZE_DEFUINT;
 
 ///
 /// @brief The method gets character quad vertices to be needed for rendering.
@@ -76,7 +76,7 @@ void RenderFontCharacter(_MIN_ const std::array<dy::DDyVector2, 8>& vertices) {
 	// Update content of VBO
   static constexpr TU32 size = sizeof(dy::DDyVector2) * 8;
 
-	glBindBuffer    (GL_ARRAY_BUFFER, mTextSampleVbo);
+	glBindBuffer    (GL_ARRAY_BUFFER, mTestVbo);
   glBufferSubData (GL_ARRAY_BUFFER, 0, size, &vertices[0].X);
 	glBindBuffer    (GL_ARRAY_BUFFER, 0);
 
@@ -98,10 +98,10 @@ EDySuccess CDyFontRenderer::Initialize(const PDyFontRendererCtorInformation& des
   static auto SetTemporalFontArrayBuffer = [&]
   {
     glGenVertexArrays(1, &mTextSampleVao);
-    glGenBuffers(1, &mTextSampleVbo);
+    glGenBuffers(1, &mTestVbo);
 
     glBindVertexArray(mTextSampleVao);
-    glBindBuffer(GL_ARRAY_BUFFER, mTextSampleVbo);
+    glBindBuffer(GL_ARRAY_BUFFER, mTestVbo);
 
     std::array<DDyVector2, 8> value =
     {
@@ -110,7 +110,7 @@ EDySuccess CDyFontRenderer::Initialize(const PDyFontRendererCtorInformation& des
     };
     glBufferData(GL_ARRAY_BUFFER, stride * 4, value.data(), GL_DYNAMIC_DRAW);
 
-    glBindVertexBuffer(0, mTextSampleVbo, 0, stride);
+    glBindVertexBuffer(0, mTestVbo, 0, stride);
 
     glEnableVertexAttribArray(0);
     glVertexAttribFormat(0, 2, GL_FLOAT, GL_FALSE, 0);
@@ -132,10 +132,10 @@ EDySuccess CDyFontRenderer::Initialize(const PDyFontRendererCtorInformation& des
   const auto overallScreenWidth   = settingManager.GetWindowSizeWidth();
   const auto overallScreenHeight  = settingManager.GetWindowSizeHeight();
   uUiProjMatrix = glm::ortho(
-      -static_cast<float>(overallScreenWidth) / 2,
-      static_cast<float>(overallScreenWidth) / 2,
-      -static_cast<float>(overallScreenHeight) / 2,
-      static_cast<float>(overallScreenHeight) / 2,
+      0.f,
+      static_cast<float>(overallScreenWidth),
+      0.f,
+      static_cast<float>(overallScreenHeight),
       0.2f, 10.0f);
 
   SetTemporalFontArrayBuffer();
@@ -180,7 +180,7 @@ void CDyFontRenderer::Render()
   //!
 
   // RENDER!!
-  DDyVector2 renderPosition   = initPos;
+  DDyVector2 renderPosition = initPos;
   for (const TC16& ucs2Char : this->mFontObjectRawPtr->GetText()) {
     // Line feed
     if (ucs2Char == '\n')
@@ -190,22 +190,17 @@ void CDyFontRenderer::Render()
       renderPosition.Y -= 64;
       continue;
     }
-    // If character on font is not exist yet, generate new one.
-    MDY_ASSERT(container.IsCharacterGlyphExist(ucs2Char) == true, "Font container does not support given character code.");
+    if (container.IsCharacterGlyphExist(ucs2Char) == false) { continue; }
 
     // Render texture glyph
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D_ARRAY, container.GetFontTextureArrayId());
 
-    const auto& charInfo = container[ucs2Char];
-    {
-      const auto uChannel = glGetUniformLocation(shaderProgramId, "uChannel");
-      glUniform1i(uChannel, charInfo.mTexCoordInfo.mChannel);
-    }
-    {
-      const auto uMapIndex = glGetUniformLocation(shaderProgramId, "uMapIndex");
-      glUniform1i(uMapIndex, charInfo.mTexCoordInfo.mMapIndex);
-    }
+    const auto& charInfo  = container[ucs2Char];
+    const auto uChannel   = glGetUniformLocation(shaderProgramId, "uChannel");
+    glUniform1i(uChannel, charInfo.mTexCoordInfo.mChannel);
+    const auto uMapIndex  = glGetUniformLocation(shaderProgramId, "uMapIndex");
+    glUniform1i(uMapIndex, charInfo.mTexCoordInfo.mMapIndex);
 
     RenderFontCharacter(GetCharacterVertices(charInfo, renderPosition, fontSize));
     renderPosition.X += static_cast<TI32>(charInfo.mHorizontalAdvance * fontSize / 2);

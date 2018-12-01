@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Element/Canvas/Text_Deprecated.h>
+#include <Dy/Element/Canvas/Deprecated/Text_Deprecated.h>
 #include <Dy/Meta/Descriptor/WidgetTextMetaInformation.h>
 #include <Dy/Management/FontManager.h>
 

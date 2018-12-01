@@ -29,6 +29,7 @@
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Helper/ThreadPool.h>
 #include <Dy/Helper/IoHelper.h>
+#include <Dy/Meta/Information/ModelMetaInformation.h>
 
 namespace
 {
@@ -117,51 +118,63 @@ MDY_SET_IMMUTABLE_STRING(kWarnDuplicatedMaterialName,   "{}::{} | Duplicated mat
 namespace dy
 {
 
-DDyModelInformation::DDyModelInformation(const PDyModelConstructionDescriptor& modelConstructionDescriptor)
+DDyModelInformation::DDyModelInformation(const PDyModelInstanceMetaInfo& modelConstructionDescriptor)
 {
-  // Insert name and check name is empty or not.
-  this->mModelName = modelConstructionDescriptor.mModelName;
-  MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "Model name", this->mModelName);
+  if (modelConstructionDescriptor.mSourceType == EDyResourceSource::Builtin)
+  {
+    this->mModelName = modelConstructionDescriptor.mSpecifierName;
+    auto& descriptor = *modelConstructionDescriptor.mPtrBuiltinModelBuffer;
+    for (const auto& submeshInformation : descriptor.mSubmeshConstructionInformations)
+    {
+      this->mSubmeshInformations.emplace_back(submeshInformation);
+    }
+  }
+  else
+  {
+    // Insert name and check name is empty or not.
+    this->mModelName = modelConstructionDescriptor.mSpecifierName;
+    MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "Model name", this->mModelName);
 
-  // Load model information, if failed throw exception outside afterward free scene.
-  const auto& modelPath = modelConstructionDescriptor.mModelPath;
-  MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "Model full path", modelPath);
+    // Load model information, if failed throw exception outside afterward free scene.
+    const auto& modelPath = modelConstructionDescriptor.mExternalModelPath;
+    MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "Model full path", modelPath);
 
-  auto mAssimpImporter = std::make_unique<Assimp::Importer>();
-  const aiScene* assimpModelScene = mAssimpImporter->ReadFile(modelPath.c_str(),
+    auto mAssimpImporter = std::make_unique<Assimp::Importer>();
+    const aiScene* assimpModelScene = mAssimpImporter->ReadFile(modelPath.c_str(),
       aiProcess_Triangulate | aiProcess_OptimizeMeshes | aiProcess_GenNormals);
 
-  if (!assimpModelScene ||
+    if (!assimpModelScene ||
       !assimpModelScene->mRootNode ||
       MDY_BITMASK_FLAG_TRUE(assimpModelScene->mFlags, AI_SCENE_FLAGS_INCOMPLETE))
-  {
-    mAssimpImporter = nullptr;
-    MDY_LOG_CRITICAL_D(kErrorModelFailedToRead, kModelInformation);
-    throw std::runtime_error("Could not load model " + modelConstructionDescriptor.mModelName + ".");
+    {
+      mAssimpImporter = nullptr;
+      MDY_LOG_CRITICAL_D(kErrorModelFailedToRead, kModelInformation);
+      throw std::runtime_error("Could not load model " + modelConstructionDescriptor.mSpecifierName + ".");
+    }
+
+    this->mModelRootPath = modelPath.substr(0, modelPath.find_last_of('/'));
+    this->mGlobalTransform = assimpModelScene->mRootNode->mTransformation;
+
+    if (assimpModelScene->HasAnimations())
+    { // Make animation informations from aiScene.
+      MDY_LOG_DEBUG_D("DDyModelInformation | Model : {} Has animations", this->mModelName);
+      this->pCreateAnimationInformation(*assimpModelScene);
+    }
+
+    // Process all meshes and retrieve material, bone, etc information.
+    pProcessNode(*assimpModelScene, *assimpModelScene->mRootNode);
+
+    // Create nodes instead of aiScene->aiNode* dependency.
+    this->mRootBoneNode.mName = "RootBone";
+    this->pCreateNodeInformation(*assimpModelScene->mRootNode, this->mRootBoneNode);
+
+    // Output model, submesh, and material information to console.
+    MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "Model root path", this->mModelRootPath);
+    this->__pOutputDebugInformationLog();
   }
-
-  this->mModelRootPath                  = modelPath.substr(0, modelPath.find_last_of('/'));
-  this->mGlobalTransform                = assimpModelScene->mRootNode->mTransformation;
-
-  if (assimpModelScene->HasAnimations())
-  { // Make animation informations from aiScene.
-    MDY_LOG_DEBUG_D("DDyModelInformation | Model : {} Has animations", this->mModelName);
-    this->pCreateAnimationInformation(*assimpModelScene);
-  }
-
-  // Process all meshes and retrieve material, bone, etc information.
-  pProcessNode(*assimpModelScene, *assimpModelScene->mRootNode);
-
-  // Create nodes instead of aiScene->aiNode* dependency.
-  this->mRootBoneNode.mName = "RootBone";
-  this->pCreateNodeInformation(*assimpModelScene->mRootNode, this->mRootBoneNode);
-
-  // Output model, submesh, and material information to console.
-  MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "Model root path", this->mModelRootPath);
-  this->__pOutputDebugInformationLog();
 
   bool atmFalse = false;
-  while(!this->mModelInformationLoaded.compare_exchange_weak(atmFalse, true));
+  while (!this->mModelInformationLoaded.compare_exchange_weak(atmFalse, true));
 }
 
 DDyModelInformation::DDyModelInformation(const PDyModelConstructionVertexDescriptor& modelConstructDescriptor)
@@ -288,13 +301,13 @@ void DDyModelInformation::__pProcessMeshInformation(const aiScene& aiScene, cons
     auto materialDescriptor     = this->__pReadMaterialData(material);
 
     // Create DDySubmeshInformation with material descriptor.
-    meshInformationDescriptor.mMaterialName = materialDescriptor.mMaterialName;
+    meshInformationDescriptor.mMaterialName = materialDescriptor.mSpecifierName;
     this->mSubmeshInformations.emplace_back(meshInformationDescriptor);
 
-    if (const auto it = std::find(MDY_BIND_BEGIN_END(this->mOverallBindedMaterialName), materialDescriptor.mMaterialName);
+    if (const auto it = std::find(MDY_BIND_BEGIN_END(this->mOverallBindedMaterialName), materialDescriptor.mSpecifierName);
         it == this->mOverallBindedMaterialName.end())
     {
-      this->mOverallBindedMaterialName.emplace_back(materialDescriptor.mMaterialName);
+      this->mOverallBindedMaterialName.emplace_back(materialDescriptor.mSpecifierName);
     }
   }
 }
@@ -433,7 +446,7 @@ void DDyModelInformation::__pReadIndiceData(const aiMesh& mesh, PDySubmeshInform
   desc.mIndices.shrink_to_fit();
 }
 
-PDyMaterialConstructionDescriptor DDyModelInformation::__pReadMaterialData(const aiMaterial& material)
+PDyMaterialInstanceMetaInfo DDyModelInformation::__pReadMaterialData(const aiMaterial& material)
 {
   aiString materialName  = {};
   if (const auto ret = material.Get(AI_MATKEY_NAME, materialName); ret == AI_FAILURE)
@@ -442,9 +455,9 @@ PDyMaterialConstructionDescriptor DDyModelInformation::__pReadMaterialData(const
   }
 
   // Get material textures information.
-  PDyMaterialConstructionDescriptor materialDescriptor;
-  materialDescriptor.mIsShaderLazyInitialized = true;
-  materialDescriptor.mMaterialName            = materialName.C_Str();
+  PDyMaterialInstanceMetaInfo materialDescriptor;
+  materialDescriptor.mIsShaderLazyInitialized_Deprecated = true;
+  materialDescriptor.mSpecifierName            = materialName.C_Str();
   std::vector<std::string> textureNames;
 
   if (const auto opDiffuse = __pLoadMaterialTextures(material, EDyTextureMapType::Diffuse); opDiffuse.has_value())
@@ -468,18 +481,18 @@ PDyMaterialConstructionDescriptor DDyModelInformation::__pReadMaterialData(const
     const auto& heightMaps = opHeight.value();
     textureNames.insert(textureNames.end(), heightMaps.begin(), heightMaps.end());
   }
-  materialDescriptor.mTextureNames = textureNames;
+  materialDescriptor.mTextureNames_Deprecated = textureNames;
 
   // Let InformationManager initialize material information instance.
   auto& manInfo = MDyIOData::GetInstance();
-  if (const auto ptr = manInfo.GetMaterialInformation(materialDescriptor.mMaterialName); !ptr)
+  if (const auto ptr = manInfo.GetMaterialInformation(materialDescriptor.mSpecifierName); !ptr)
   {
-    MDY_CALL_ASSERT_SUCCESS(manInfo.CreateMaterialInformation(materialDescriptor));
+    MDY_CALL_ASSERT_SUCCESS(manInfo.CreateMaterialInformation_Deprecated(materialDescriptor));
   }
   else
   {
     MDY_LOG_WARNING_D(kWarnDuplicatedMaterialName, kModelInformation, kFunc__pReadMaterialData,
-                      kFunc__pReadMaterialData, materialDescriptor.mMaterialName);
+                      kFunc__pReadMaterialData, materialDescriptor.mSpecifierName);
   }
 
   return materialDescriptor;
@@ -518,19 +531,19 @@ DDyModelInformation::__pLoadMaterialTextures(const aiMaterial& material, EDyText
     const auto textureName    = DyGetFileNameFromPath(textureLocalPath.C_Str());
     if (dupTexturePath == this->mOverallTextureLocalPaths.end())
     {
-      PDyTextureConstructionDescriptor textureDesc;
+      PDyTextureInstanceMetaInfo textureDesc;
       // Set each texture name to texture file name except for file type like a .png .jpg.
-      textureDesc.mTextureSpecifierName                        = textureName;
-      textureDesc.mTextureFileLocalPath               = textureLocalPath.C_Str();
-      textureDesc.mTextureFileAbsolutePath            = this->mModelRootPath + '/' + textureDesc.mTextureFileLocalPath;
+      textureDesc.mSpecifierName                        = textureName;
+      textureDesc.mExternalFilePath               = textureLocalPath.C_Str();
+      textureDesc.mTextureFileAbsolutePath_Deprecated            = this->mModelRootPath + '/' + textureDesc.mExternalFilePath;
       textureDesc.mTextureType                        = EDyTextureStyleType::D2;
       textureDesc.mIsEnabledCustomedTextureParameter  = false;
-      textureDesc.mIsEnabledAbsolutePath              = true;
+      textureDesc.mIsEnabledAbsolutePath_Deprecated              = true;
       textureDesc.mIsUsingDefaultMipmapGeneration     = true;
-      textureDesc.mTextureMapType                     = type;
+      textureDesc.mTextureMapType_Deprecated                     = type;
 
-      MDY_CALL_ASSERT_SUCCESS(manInfo.CreateTextureInformation(textureDesc));
-      this->mOverallTextureLocalPaths.emplace_back(textureDesc.mTextureFileLocalPath);
+      MDY_CALL_ASSERT_SUCCESS(manInfo.CreateTextureInformation_Deprecated(textureDesc));
+      this->mOverallTextureLocalPaths.emplace_back(textureDesc.mExternalFilePath);
     }
 
     MDY_LOG_DEBUG_D("{}::{} | Texture Name : {}", "DDyModelInformation", "__pLoadMaterialTextures", textureName);

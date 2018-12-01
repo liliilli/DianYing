@@ -14,18 +14,11 @@
 
 /// Header file
 #include <Dy/Builtin/Widget/DebugUiMeta.h>
-#include <Dy/Builtin/Helper/BuiltinInformationDeliver.h>
 
-//!
-//! Implementation
-//!
-
-namespace dy::builtin
+namespace
 {
 
-FDyBuiltinWidgetDebugUiMeta::FDyBuiltinWidgetDebugUiMeta()
-{
-  constexpr const char* widgetMetaString = R"dy(
+MDY_SET_IMMUTABLE_STRING(sBuffer, R"dy(
 {
   "Meta":
   {
@@ -44,25 +37,48 @@ FDyBuiltinWidgetDebugUiMeta::FDyBuiltinWidgetDebugUiMeta()
       "Parent": "",
       "Details":
       {
-        "InitialString": "Hello world!",
-        "InitialPosition": { "X":0, "Y":0 },
-        "InitialColor": 16777215,
-        "InitialAlpha": 1.0,
-        "FontSize": 12,
-        "FontAlignment": "Left",
-        "EdgeSize": 1,
-        "FontSpecifierName": "Arial",
-        "IsBold": true,
-        "IsItalic": false,
-        "IsUsingEdge": true,
-        "IsUsingDefaultFont": true
+        "InitialPosition": { "X":32, "Y":32 },
+        "WidgetSize": { "X": 200, "Y": 100 },
+        "Origin": "Left_Bottom",
+        "InitialString": "", "InitialColor": 16777215, "InitialAlpha": 1.0,
+        "EdgeColor": 0, "FontSize": 12, "FontAlignment": "Left",
+        "FontSpecifierName": "Arial", "IsUsingEdge": true
+      }
+    },
+    {
+      "Name": "BasicBarTest",
+      "Type": "BasicBar",
+      "Parent": "",
+      "Details": {
+        "InitialPosition": { "X": 0, "Y": 32 },
+        "WidgetSize": { "X": 600, "Y": 16 },
+        "Origin": "Center_Bottom",
+        "ForegroundColor": 16776960,
+        "ForegroundAlpha": 1.0,
+        "BackgroundColor": 0,
+        "BackgroundAlpha": 0.85,
+        "Padding": 4,
+        "Min": 0,
+        "Max": 100,
+        "IsUsingBackgroundColor": true
       }
     }
   ]
 }
-)dy";
+)dy");
 
-  MDY_CALL_ASSERT_SUCCESS(FDyBuiltinInformationDeliver::ForwardWidgetMetaInformation(widgetMetaString));
+} /// ::unnamed namespace
+
+//!
+//! Implementation
+//!
+
+namespace dy::builtin
+{
+
+FDyBuiltinWidgetDebugUiMeta::FDyBuiltinWidgetDebugUiMeta()
+{
+  this->mMetaBuffer = sBuffer;
 }
 
 } /// ::dy::builtin namespace

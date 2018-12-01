@@ -19,6 +19,7 @@
 #include <filesystem>
 #include <nlohmann/json.hpp>
 
+#include <Dy/Core/Reflection/RDyBuiltinResources.h>
 #include <Dy/Helper/Pointer.h>
 #include <Dy/Helper/ContainerHelper.h>
 #include <Dy/Helper/Library/HelperJson.h>
@@ -28,6 +29,8 @@
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
 #include <Dy/Meta/Descriptor/WidgetTextMetaInformation.h>
 #include <Dy/Meta/Descriptor/WidgetLayoutMetaInformation.h>
+#include "Dy/Meta/Descriptor/WidgetBarMetaInformation.h"
+#include "Dy/Meta/Descriptor/WidgetImageMetaInformation.h"
 
 //!
 //! Local tranlation unit variables
@@ -134,6 +137,24 @@ std::unique_ptr<dy::PDyMetaWidgetRootDescriptor> DyCreateWidgetMetaInformation(_
           std::make_pair<>(componentType, DyConvertUniquePtrTo<PDyMetaWidgetCommonBaseDesc>(std::move(instance)))
       );
     } break;
+    case EDyWidgetComponentType::BasicGaugeBar:
+    { // Basic gauge bar component. (plain color, without material and any effects).
+      auto instance = PDyMetaWidgetBarDescriptor::CreateMetaInformation(componentInfo);
+      const auto specifierName = instance->mUiObjectSpecifierName;
+      tempWidgetObjectMap.try_emplace(
+          specifierName,
+          std::make_pair(componentType, DyConvertUniquePtrTo<PDyMetaWidgetCommonBaseDesc>(std::move(instance)))
+      );
+    } break;
+    case EDyWidgetComponentType::Image:
+    { // Image component.
+      auto instance = PDyMetaWidgetImageDescriptor::CreateMetaInformation(componentInfo);
+      const auto specifierName = instance->mUiObjectSpecifierName;
+      tempWidgetObjectMap.try_emplace(
+          specifierName,
+          std::make_pair(componentType, DyConvertUniquePtrTo<PDyMetaWidgetCommonBaseDesc>(std::move(instance)))
+      );
+    } break;
     default: MDY_UNEXPECTED_BRANCH(); break;
     }
   }
@@ -177,6 +198,7 @@ namespace dy
 EDySuccess MDyMetaInfo::pfInitialize()
 {
   const auto& metaPath = MDySetting::GetInstance().GetMetaPathSettingInformation();
+  reflect::RDyBuiltinResource::BindBuiltinResourcesToMetaManager();
 
   MDY_CALL_ASSERT_SUCCESS(this->pReadFontResourceMetaInformation  (metaPath.mFontMetaPath));
   MDY_CALL_ASSERT_SUCCESS(this->pReadScriptResourceMetaInformation(metaPath.mScriptMetaPath));
@@ -221,6 +243,30 @@ const PDyMetaWidgetRootDescriptor& MDyMetaInfo::GetWidgetMetaInformation(_MIN_ c
 {
   MDY_ASSERT(DyIsMapContains(this->mWidgetMetaInfo, specifierName) == true, "");
   return *this->mWidgetMetaInfo.at(specifierName);
+}
+
+const PDyGLShaderInstanceMetaInfo& MDyMetaInfo::GetGLShaderMetaInformation(_MIN_ const std::string& specifier) const
+{
+  MDY_ASSERT(this->IsGLShaderMetaInfoExist(specifier) == true, "GLShader given specifier name is not exist.");
+  return this->mShaderMetaInfo.at(specifier);
+}
+
+const PDyModelInstanceMetaInfo& MDyMetaInfo::GetModelMetaInformation(const std::string& specifier) const
+{
+  MDY_ASSERT(this->IsModelMetaInfoExist(specifier) == true, "Model given specifier name is not exist.");
+  return this->mModelMetaInfo.at(specifier);
+}
+
+const PDyTextureInstanceMetaInfo& MDyMetaInfo::GetTextureMetaInformation(const std::string& specifier) const
+{
+  MDY_ASSERT(this->IsTextureMetaInfoExist(specifier) == true, "Texture given specifier name is not exist.");
+  return this->mTextureMetaInfo.at(specifier);
+}
+
+const PDyMaterialInstanceMetaInfo& MDyMetaInfo::GetMaterialMetaInformation(const std::string& specifier) const
+{
+  MDY_ASSERT(this->IsMaterialMetaInfoExist(specifier) == true, "Material given specifier name is not exist.");
+  return this->mMaterialMetaInfo.at(specifier);
 }
 
 EDySuccess MDyMetaInfo::pReadScriptResourceMetaInformation(_MIN_ const std::string& metaFilePath)
@@ -347,6 +393,34 @@ EDySuccess MDyMetaInfo::pfAddScriptMetaInformation(_MIN_ const PDyScriptInstance
 {
   MDY_ASSERT(DyIsMapContains(this->mScriptMetaInfo, metaInfo.mSpecifierName) == false, "Duplicated script name is exist.");
   this->mScriptMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pfAddGLShaderMetaInfo(_MIN_ const PDyGLShaderInstanceMetaInfo& metaInfo)
+{
+  MDY_ASSERT(DyIsMapContains(this->mShaderMetaInfo, metaInfo.mSpecifierName) == false, "Duplicated gl shader name is exist.");
+  this->mShaderMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pfAddModelMetaInfo(_MIN_ const PDyModelInstanceMetaInfo& metaInfo)
+{
+  MDY_ASSERT(DyIsMapContains(this->mModelMetaInfo, metaInfo.mSpecifierName) == false, "Duplicated model name is exist.");
+  this->mModelMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pfAddTextureMetaInfo(_MIN_ const PDyTextureInstanceMetaInfo& metaInfo)
+{
+  MDY_ASSERT(DyIsMapContains(this->mTextureMetaInfo, metaInfo.mSpecifierName) == false, "Duplicated texture name is exist.");
+  this->mTextureMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pfAddMaterialMetaInfo(_MIN_ const PDyMaterialInstanceMetaInfo& metaInfo)
+{
+  MDY_ASSERT(DyIsMapContains(this->mMaterialMetaInfo, metaInfo.mSpecifierName) == false, "Duplicated material name is exist.");
+  this->mMaterialMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
   return DY_SUCCESS;
 }
 

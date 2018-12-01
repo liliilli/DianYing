@@ -14,21 +14,20 @@
 ///
 
 #include <string_view>
+#include <Dy/Builtin/Abstract/ADyGLShaderResource.h>
 
 namespace dy::builtin
 {
 
 ///
 /// @class FDyBuiltinShaderGLRenderDeferredRendering
-/// @brief Just instantiate render color geometry shader information and resources.
+/// @brief OpenGL Shader program which collects from other render pipe and render final screen (scene).
 ///
-class FDyBuiltinShaderGLRenderDeferredRendering final
+class FDyBuiltinShaderGLRenderDeferredRendering final : public ADyGLShaderResource
 {
+  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBuiltinShaderGLRenderDeferredRendering, "dyBtShaderGlDeferred")
 public:
   FDyBuiltinShaderGLRenderDeferredRendering();
-
-  /// Constant name for creating DDyShaderInformation
-  inline static MDY_SET_IMMUTABLE_STRING(sName, "dyBtShaderGlDeferred");
 };
 
 } /// ::dy::builtin namespace

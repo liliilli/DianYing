@@ -1,4 +1,5 @@
-#include <precompiled.h>
+#ifndef GUARD_DY_COMPONENT_CTOR_PDYBARTYPERENDERER_H
+#define GUARD_DY_COMPONENT_CTOR_PDYBARTYPERENDERER_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -12,20 +13,31 @@
 /// SOFTWARE.
 ///
 
-/// Header file
-#include <Dy/Core/Reflection/RDyCppScript.h>
-#include <Dy/Management/IO/MetaInfoManager.h>
+//!
+//! Forward declaration
+//!
 
-namespace dy::reflect
+namespace dy
+{
+class FDyBasicGaugeBar;
+} /// ::dy namespace
+
+//!
+//! Implementation
+//!
+
+namespace dy
 {
 
-void __Rfc__AddMetaInformation(_MIN_ const std::string& typeSpecifier, _MIN_ const EDyScriptMode mode)
+///
+/// @struct PDyBasicGaugeBarRendererCtorInformation
+/// @brief Descriptor for `FDyBasicGaugeBar` widget object.
+///
+struct PDyBasicGaugeBarRendererCtorInformation final
 {
-  PDyScriptInstanceMetaInfo metaInfo = {};
-  metaInfo.mScriptType    = EDyScriptType::Cpp;
-  metaInfo.mScriptMode    = mode;
-  metaInfo.mSpecifierName = typeSpecifier;
-  MDY_CALL_ASSERT_SUCCESS(MDyMetaInfo::GetInstance().pfAddScriptMetaInformation(metaInfo));
-}
+  FDyBasicGaugeBar* mPtrUiObject = nullptr;
+};
 
-} /// ::dy::reflect namespace
+} /// ::dy namespace
+
+#endif /// GUARD_DY_COMPONENT_CTOR_PDYBARTYPERENDERER_H

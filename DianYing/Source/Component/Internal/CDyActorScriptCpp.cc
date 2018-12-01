@@ -14,7 +14,7 @@
 
 #include <Dy/Component/Internal/CDyActorScriptCpp.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
-#include <Dy/Core/Reflection/RDyCppScript.h>
+#include "Dy/Helper/Pointer.h"
 
 namespace dy
 {
@@ -22,11 +22,14 @@ namespace dy
 EDySuccess CDyActorScriptCpp::Initialize(const PDyScriptComponentMetaInfo& descriptor)
 {
   const auto& metaInfo = MDyMetaInfo::GetInstance().GetScriptMetaInformation(descriptor.mDetails.mSpecifierName);
-  MDY_ASSERT(metaInfo.mScriptType == EDyScriptType::Cpp, "Script type is not matched to CDyScriptCpp.");
+  MDY_ASSERT(metaInfo.mScriptType == EDyScriptType::Cpp,    "Script type is not matched to CDyScriptCpp.");
+  MDY_ASSERT(metaInfo.mScriptMode == EDyScriptMode::Actor,  "Given script must be actor script.");
 
-  this->mScriptInstance = DyRefGetActorScriptInstance(metaInfo.mSpecifierName);
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(metaInfo.mBtInstantiationFunction), "Cpp script instantiation function must be not null.");
+  this->mScriptInstance = DyConvertUniquePtrTo<ADyActorCppScript>(metaInfo.mBtInstantiationFunction());
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mScriptInstance), "Script instance could not bound to system.");
+
   this->mScriptInstance->pfSetOutsideReference(*this);
-  MDY_ASSERT(this->mScriptInstance != nullptr, "Script instance could not bound to system.");
 
   return DY_SUCCESS;
 }

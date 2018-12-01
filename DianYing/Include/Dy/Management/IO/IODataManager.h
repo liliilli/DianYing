@@ -23,11 +23,14 @@
 #include <Dy/Core/Component/Information/ModelInformation.h>
 #include <Dy/Core/Component/Information/SoundInformation.h>
 #include <Dy/Helper/ThreadPool.h>
+#include <Dy/Helper/ContainerHelper.h>
+#include <Dy/Core/Component/Type/EDyScope.h>
 
 namespace dy
 {
+  struct PDyModelInstanceMetaInfo;
 
-///
+  ///
 /// @class MDyIOData
 /// @brief Manages data information which are needed to create heap instances such as CDy-Resource.
 ///
@@ -37,42 +40,53 @@ class MDyIOData final : public IDySingleton<MDyIOData>
   MDY_SINGLETON_PROPERTIES(MDyIOData);
 public:
   ///
-  /// @brief Create shader information.
+  /// @brief Create shader information with scope. This function must be succeeded.
+  /// @param shaderSpecifierName specifier name of GL shader must be valid on runtime.
+  /// @param scope Information lifetime scope.
   ///
-  EDySuccess CreateShaderInformation(const PDyShaderConstructionDescriptor& shaderDescriptor);
+  MDY_NODISCARD EDySuccess CreateShaderInformation(_MIN_ const std::string& shaderSpecifierName, _MIN_ EDyScope scope);
 
   ///
-  /// @brief Create texture information.
+  /// @brief Create model information with scope. This function must be succeeded.
+  /// @param modelSpecifierName specifier name of GL shader must be valid on runtime.
+  /// @param scope Information lifetime scope.
   ///
-  EDySuccess CreateTextureInformation(const PDyTextureConstructionDescriptor& textureDescriptor);
+  MDY_NODISCARD EDySuccess CreateModelInformation(_MIN_ const std::string& modelSpecifierName, _MIN_ EDyScope scope);
 
   ///
-  /// @brief Create material information.
+  /// @brief Create texture information with scope. This function must be succeeded.
+  /// @param textureSpecifier specifier name of texture must be valid on runtime.
+  /// @param scope Information lifetime scope.
   ///
-  EDySuccess CreateMaterialInformation(const PDyMaterialConstructionDescriptor& materialDescriptor);
+  MDY_NODISCARD EDySuccess CreateTextureInformation(_MIN_ const std::string& textureSpecifier, _MIN_ EDyScope scope);
 
+  /// @brief Create material information with scope. This function must be succeeded.
+  /// When creating information of material, checks validity texture and shader is exist on meta information.
+  /// @param materialSpecifier specifier name of material must be valid on runtime.
+  /// @param scope Informatino lifetime scope.
   ///
-  /// @brief Create model information.
-  ///
-  EDySuccess CreateModelInformation(const PDyModelConstructionDescriptor& modelDescriptor);
+  MDY_NODISCARD EDySuccess CreateMaterialInformation(_MIN_ const std::string& materialSpecifier, _MIN_ EDyScope scope);
 
-  ///
-  /// @brief Create model information, with static code generated model information.
-  /// This function should used carefully, unless general version of CreateModelInformation.
-  ///
-  EDySuccess CreateModelInformation(const PDyModelConstructionVertexDescriptor& modelDescriptor);
+  /// @brief Check shader is exist now on MDyIOData.
+  MDY_NODISCARD bool IsShaderInformationExist(_MIN_ const std::string& shaderSpecifier) const noexcept
+  {
+    return DyIsMapContains(this->mShaderInformation, shaderSpecifier);
+  }
 
-  ///
+  /// @brief Texture shader is exist now on MDyIOData.
+  MDY_NODISCARD bool IsTextureInformationExist(_MIN_ const std::string& textureSpecifier) const noexcept
+  {
+    return DyIsMapContains(this->mTextureInformation, textureSpecifier);
+  }
+
   /// @brief Create sound information,
-  ///
   EDySuccess CreateSoundInformation(const PDySoundConstructionDescriptor& soundDescriptor);
 
   ///
   /// @brief Get shader information.
   /// @return Valid shader information pointer reference, or nullptr when not found.
   ///
-  [[nodiscard]]
-  const DDyShaderInformation* GetShaderInformation(const std::string& shaderName) const noexcept;
+  MDY_NODISCARD const DDyShaderInformation* GetShaderInformation(const std::string& shaderName) const noexcept;
 
   ///
   /// @brief Get texture information.
@@ -138,6 +152,13 @@ public:
   std::optional<std::string> PopulateMaterialInformation(
       const std::string& materialName,
       const PDyMaterialPopulateDescriptor& materialPopulateDescriptor);
+
+  /// @brief Create shader information.
+  EDySuccess CreateShaderInformation_Deprecated(const PDyShaderConstructionDescriptor& shaderDescriptor);
+  /// @brief Create texture information.
+  EDySuccess CreateTextureInformation_Deprecated(const PDyTextureInstanceMetaInfo& textureDescriptor);
+  /// @brief Create material information.
+  EDySuccess CreateMaterialInformation_Deprecated(const PDyMaterialInstanceMetaInfo& materialDescriptor);
 
 private:
   template <typename TInformationType>

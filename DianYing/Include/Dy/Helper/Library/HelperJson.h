@@ -18,18 +18,35 @@
 #include <Dy/Helper/Type/Vector3.h>
 #include <Dy/Helper/Type/Vector2.h>
 
+//!
+//! Forward declaration
+//!
+
 namespace dy
 {
 
-///
+template <typename TReturnType, typename TParam1>
+MDY_NODISCARD TReturnType DyJsonGetValueFrom(_MIN_ const TParam1& jsonAtlas, _MIN_ const std::string_view& name);
+template <typename TReturnType, typename TParam1>
+MDY_NODISCARD TReturnType DyJsonGetValueFrom(_MIN_ const TParam1& jsonAtlas, _MIN_ const char* name);
+
+template <typename TReturnType, typename TJsonAtlas>
+void DyJsonGetValueFromTo(_MIN_ const TJsonAtlas& jsonAtlas, _MIN_ const std::string_view& key, _MINOUT_ TReturnType& destination);
+template <typename TReturnType, typename TJsonAtlas>
+void DyJsonGetValueFromTo(_MIN_ const TJsonAtlas& jsonAtlas, _MIN_ const char* key, _MINOUT_ TReturnType& destination);
+} /// ::dy namespace
+
+//!
+//! Implementation
+//!
+
+namespace dy
+{
+
 /// @brief Check key is exist in present json instance.
-///
 bool DyIsJsonKeyExist(const nlohmann::json& json, const std::string& key) noexcept;
 
-///
 /// @brief Read json file and return json container. If any error has happened just return nullopt.
-/// @TODO NEED TO WRAPPING VANILLA NLOHMANN::JSON?
-///
 MDY_NODISCARD std::optional<nlohmann::json> DyGetJsonAtlasFromFile(const std::string& filePath) noexcept;
 
 ///
@@ -42,7 +59,12 @@ MDY_NODISCARD std::optional<nlohmann::json> DyGetJsonAtlasFromFile(const std::st
 template <typename TReturnType, typename TParam1>
 MDY_NODISCARD TReturnType DyJsonGetValueFrom(_MIN_ const TParam1& jsonAtlas, _MIN_ const std::string_view& name)
 {
-  return jsonAtlas.at(MSVSTR(name)).template get<TReturnType>();
+  return DyJsonGetValueFrom<TParam1>(jsonAtlas, MSVSTR(name));
+}
+template <typename TReturnType, typename TParam1>
+MDY_NODISCARD TReturnType DyJsonGetValueFrom(_MIN_ const TParam1& jsonAtlas, _MIN_ const char* name)
+{
+  return jsonAtlas.at(name).template get<TReturnType>();
 }
 
 ///
@@ -56,17 +78,21 @@ MDY_NODISCARD TReturnType DyJsonGetValueFrom(_MIN_ const TParam1& jsonAtlas, _MI
 /// @return
 ///
 template <typename TReturnType, typename TJsonAtlas>
-void DyJsonGetValueFromTo(_MIN_ const TJsonAtlas& jsonAtlas,
-                          _MIN_ const std::string_view& key,
-                          _MINOUT_ TReturnType& destination)
+void DyJsonGetValueFromTo(_MIN_ const TJsonAtlas& jsonAtlas, _MIN_ const std::string_view& key, _MINOUT_ TReturnType& destination)
+{
+  DyJsonGetValueFromTo(jsonAtlas, MSVSTR(key), destination);
+}
+
+template <typename TReturnType, typename TJsonAtlas>
+void DyJsonGetValueFromTo(_MIN_ const TJsonAtlas& jsonAtlas, _MIN_ const char* key, _MINOUT_ TReturnType& destination)
 {
   if constexpr (std::is_move_assignable_v<TReturnType> == true)
   {
-    destination = std::move(jsonAtlas.at(MSVSTR(key)).template get<TReturnType>());
+    destination = std::move(jsonAtlas.at(key).template get<TReturnType>());
   }
   else
   {
-    destination = jsonAtlas.at(MSVSTR(key)).template get<TReturnType>();
+    destination = jsonAtlas.at(key).template get<TReturnType>();
   }
 }
 

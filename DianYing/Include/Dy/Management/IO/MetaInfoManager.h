@@ -15,14 +15,17 @@
 
 #include <unordered_map>
 
-#include <Dy/Core/Reflection/RDyCppScript.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
 #include <Dy/Meta/Information/ElementLevelMetaInfo.h>
 #include <Dy/Meta/Information/FontMetaInformation.h>
 #include <Dy/Meta/Information/PrefabMetaInformation.h>
-#include <Dy/Builtin/Helper/BuiltinInformationDeliver.h>
 #include <Dy/Helper/ContainerHelper.h>
+#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Meta/Information/GLShaderMetaInformation.h>
+#include <Dy/Meta/Information/ModelMetaInformation.h>
+#include <Dy/Meta/Information/MetaInfoTexture.h>
+#include <Dy/Meta/Information/MetaInfoMaterial.h>
 
 namespace dy
 {
@@ -48,26 +51,74 @@ public:
   ///
   MDY_NODISCARD const PDyScriptInstanceMetaInfo& GetScriptMetaInformation(_MIN_ const std::string& specifierName) const;
 
-  ///
   /// @brief
-  /// @param  specifierName
-  /// @return
-  ///
   MDY_NODISCARD const PDyPrefabInstanceMetaInfo& GetPrefabMetaInformation(_MIN_ const std::string& specifierName) const;
 
-  ///
   /// @brief
-  /// @param  specifierName
-  /// @return
-  ///
   MDY_NODISCARD const PDyMetaFontInformation& GetFontMetaInformation(_MIN_ const std::string& specifierName) const;
 
-  ///
   /// @brief
-  /// @param  specifierName
-  /// @return
-  ///
   MDY_NODISCARD const PDyMetaWidgetRootDescriptor& GetWidgetMetaInformation(_MIN_ const std::string& specifierName) const;
+
+  ///
+  /// @brief  Get shader instance meta information from container.
+  /// @return Return value is undefined if not found.
+  ///
+  MDY_NODISCARD const PDyGLShaderInstanceMetaInfo& GetGLShaderMetaInformation(_MIN_ const std::string& specifier) const;
+
+  ///
+  /// @brief  Get model instance meta information from container.
+  /// @return Return value is undefined if not found.
+  ///
+  MDY_NODISCARD const PDyModelInstanceMetaInfo& GetModelMetaInformation(_MIN_ const std::string& specifier) const;
+
+  ///
+  /// @brief  Get texture instance meta information from container.
+  /// @return Return value is undefined if not found.
+  ///
+  MDY_NODISCARD const PDyTextureInstanceMetaInfo& GetTextureMetaInformation(_MIN_ const std::string& specifier) const;
+
+  ///
+  /// @brief  Get material instance meta information from container.
+  /// @return Return value is undefined if not found.
+  ///
+  MDY_NODISCARD const PDyMaterialInstanceMetaInfo& GetMaterialMetaInformation(_MIN_ const std::string& specifier) const;
+
+  ///
+  /// @brief  Check script meta information is exist.
+  /// @return Return value is false if not found.
+  ///
+  FORCEINLINE MDY_NODISCARD bool IsGLShaderMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
+  {
+    return DyIsMapContains(this->mShaderMetaInfo, specifier);
+  }
+
+  ///
+  /// @brief  Check model meta information is exist.
+  /// @return Return value is false if not found.
+  ///
+  FORCEINLINE MDY_NODISCARD bool IsModelMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
+  {
+    return DyIsMapContains(this->mModelMetaInfo, specifier);
+  }
+
+  ///
+  /// @brief  Check texture meta information is exist.
+  /// @return Return value is false if not found.
+  ///
+  FORCEINLINE MDY_NODISCARD bool IsTextureMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
+  {
+    return DyIsMapContains(this->mTextureMetaInfo, specifier);
+  }
+
+  ///
+  /// @brief  Check material meta information is exist.
+  /// @return Return value is false if not found.
+  ///
+  FORCEINLINE MDY_NODISCARD bool IsMaterialMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
+  {
+    return DyIsMapContains(this->mMaterialMetaInfo, specifier);
+  }
 
   ///
   /// @brief  Check script meta information is exist.
@@ -99,72 +150,44 @@ public:
   template <typename TType>
   using THashMap = std::unordered_map<std::string, TType>;
 private:
-  ///
-  /// @brief
-  /// @param  metaFilePath
-  ///
   MDY_NODISCARD EDySuccess pReadScriptResourceMetaInformation(_MIN_ const std::string& metaFilePath);
-
-  ///
-  /// @brief
-  /// @param
-  /// @return
-  ///
   MDY_NODISCARD EDySuccess pReadPrefabResourceMetaInformation(_MIN_ const std::string& metaFilePath);
-
-  ///
-  /// @brief
-  /// @param
-  /// @return
-  ///
   MDY_NODISCARD EDySuccess pReadWidgetResourceMetaInformation(_MIN_ const std::string& metaFilePath);
-
-  ///
-  /// @brief
-  /// @param
-  /// @return
-  ///
   MDY_NODISCARD EDySuccess pReadFontResourceMetaInformation(_MIN_ const std::string& metaFilePath);
-
-  ///
-  /// @brief
-  /// @param
-  /// @return
-  ///
   MDY_NODISCARD EDySuccess pReadSceneResourceMetaInformation(_MIN_ const std::string& metaFilepath);
 
-  ///
-  /// @brief
-  /// @param  metaInformationString
-  /// @return
-  ///
-  MDY_NODISCARD EDySuccess pfAddWidgetMetaInformation(_MIN_ const std::string& metaInformationString);
-
-  ///
-  /// @brief
-  /// @param  metaInfo
-  /// @return
-  ///
-  MDY_NODISCARD EDySuccess pfAddScriptMetaInformation(_MIN_ const PDyScriptInstanceMetaInfo& metaInfo);
+  MDY_NODISCARD EDySuccess pfAddWidgetMetaInformation (_MIN_ const std::string& metaInformationString);
+  MDY_NODISCARD EDySuccess pfAddScriptMetaInformation (_MIN_ const PDyScriptInstanceMetaInfo& metaInfo);
+  MDY_NODISCARD EDySuccess pfAddGLShaderMetaInfo      (_MIN_ const PDyGLShaderInstanceMetaInfo& metaInfo);
+  MDY_NODISCARD EDySuccess pfAddModelMetaInfo         (_MIN_ const PDyModelInstanceMetaInfo& metaInfo);
+  MDY_NODISCARD EDySuccess pfAddTextureMetaInfo       (_MIN_ const PDyTextureInstanceMetaInfo& metaInfo);
+  MDY_NODISCARD EDySuccess pfAddMaterialMetaInfo      (_MIN_ const PDyMaterialInstanceMetaInfo& metaInfo);
 
   /// Level meta information map.
-  THashMap<PDyLevelConstructMetaInfo> mLevelInfoMap   = {};
+  THashMap<PDyLevelConstructMetaInfo>   mLevelInfoMap   = {};
   /// Script meta information map.
   THashMap<PDyScriptInstanceMetaInfo>   mScriptMetaInfo = {};
   /// Font meta information map.
   THashMap<PDyMetaFontInformation>      mFontMetaInfo   = {};
+  /// GL shader meta information map.
+  THashMap<PDyGLShaderInstanceMetaInfo> mShaderMetaInfo = {};
+  /// Model meta information map.
+  THashMap<PDyModelInstanceMetaInfo>    mModelMetaInfo  = {};
+  /// Texture meta information map.
+  THashMap<PDyTextureInstanceMetaInfo>  mTextureMetaInfo= {};
+  /// Material meta information map.
+  THashMap<PDyMaterialInstanceMetaInfo> mMaterialMetaInfo = {};
 
   //!
   //! Hierarchial meta information containers.
   //!
 
   /// Prefab meta information map. (Temporary use std::unique_ptr, for reconstructing children tree)
-  THashMap<std::unique_ptr<PDyPrefabInstanceMetaInfo>>    mPrefabMetaInfo = {};
+  THashMap<std::unique_ptr<PDyPrefabInstanceMetaInfo>>   mPrefabMetaInfo = {};
   /// Widget meta information map.
   THashMap<std::unique_ptr<PDyMetaWidgetRootDescriptor>> mWidgetMetaInfo = {};
 
-  friend EDySuccess FDyBuiltinInformationDeliver::ForwardWidgetMetaInformation(_MIN_ const std::string_view& metaString);
-  friend void ::dy::reflect::__Rfc__AddMetaInformation(_MIN_ const std::string&, _MIN_ const EDyScriptMode);
+  friend void ::dy::reflect::RDyBuiltinResource::BindBuiltinResourcesToMetaManager();
 };
 
 } /// ::dy namespace

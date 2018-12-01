@@ -13,18 +13,14 @@
 /// SOFTWARE.
 ///
 
-#include <string_view>
+#include <Dy/Builtin/Abstract/ADyMaterialResource.h>
 
 namespace dy::builtin
 {
 
-class FDyBuiltinMaterialOpaqueStaticPlain final
+class FDyBuiltinMaterialOpaqueStaticPlain final : public ADyMaterialResource
 {
-public:
-  FDyBuiltinMaterialOpaqueStaticPlain();
-
-  /// Constant name for creating DDyShaderInformation
-  inline static MDY_SET_IMMUTABLE_STRING(sName, "dyBtMatOpaqueStaticPlain");
+  MDY_REGISTER_RESOURCE_MATERIAL(FDyBuiltinMaterialOpaqueStaticPlain, "dyBtMatOpaqueStaticPlain")
 };
 
 } /// ::dy::builtin namespace

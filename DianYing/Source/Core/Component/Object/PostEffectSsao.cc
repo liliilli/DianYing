@@ -240,7 +240,7 @@ void FDyPostEffectSsao::pCreateSsaoShaderResource()
       shaderDesc.mShaderFragments.emplace_back(fragmentShaderInfo);
     }
   }
-  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateShaderInformation(shaderDesc));
+  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateShaderInformation_Deprecated(shaderDesc));
   MDY_CALL_ASSERT_SUCCESS(manResc.CreateShaderResource(shaderDesc.mShaderName));
 
   this->mSsaoShaderPtr = manResc.GetShaderResource(shaderDesc.mShaderName);
@@ -284,7 +284,7 @@ void FDyPostEffectSsao::pCreateSsaoBlurShaderResource()
       shaderDesc.mShaderFragments.emplace_back(fragmentShaderInfo);
     }
   }
-  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateShaderInformation(shaderDesc));
+  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateShaderInformation_Deprecated(shaderDesc));
   MDY_CALL_ASSERT_SUCCESS(manResc.CreateShaderResource(shaderDesc.mShaderName));
 
   this->mSsaoBlurShaderPtr = manResc.GetShaderResource(shaderDesc.mShaderName);

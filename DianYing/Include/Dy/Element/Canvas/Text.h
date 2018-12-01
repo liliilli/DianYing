@@ -20,6 +20,7 @@
 #include <Dy/Helper/Type/DyString.h>
 #include <Dy/Management/Type/FontContainer_Deprecated.h>
 #include <Dy/Management/Interface/IDyFontContainer.h>
+#include <Dy/Meta/Type/EDyWidgetTypes.h>
 
 //!
 //! Implementation
@@ -46,6 +47,13 @@ public:
   ///
 	FDyText()           = default;
   virtual ~FDyText()  = default;
+
+  ///
+  /// @brief Align final position of widget from parent information.
+  /// @param parentFinalPosition  Final position of parent.
+  /// @param parentFrameSize      Frame size of parent.
+  ///
+  void AlignFinalPosition(const DDyVector2& parentFinalPosition, const DDyVectorInt2& parentFrameSize) override final;
 
   ///
   /// @brief
@@ -79,7 +87,7 @@ public:
   ///
   MDY_NODISCARD IDyFontContainer& GetFontContainer() const noexcept
   {
-    return *this->mFontContainer;
+    return *this->mPtrFontContainer;
   }
 
   ///
@@ -107,10 +115,10 @@ public:
   MDY_NODISCARD const DDyColorRGBA& GetEdgeColor() const noexcept;
 
   ///
-  /// @brief
-  /// @return
+  /// @brief  Get position to be rendered in UI.
+  /// @return Final rendered posiiton.
   ///
-  MDY_NODISCARD const DDyVectorInt2& GetRenderPosition() const noexcept;
+  MDY_NODISCARD const DDyVector2& GetRenderPosition() const noexcept;
 
   ///
   /// @brief  Check if this text component is using edge rendering feature.
@@ -165,20 +173,20 @@ public:
   void Render() override final;
 
 private:
+  ///
+  EDyOrigin         mOrigin           = EDyOrigin::Center_Center;
   /// Text to display on screen. String must be following UTF-8 encoding.
   DDyString         mTextString       = {""};
   /// Text container instance to display font.
-  IDyFontContainer* mFontContainer    = nullptr;
+  IDyFontContainer* mPtrFontContainer = nullptr;
   /// Font color
-	DDyColorRGBA          mForegroundColor  = DDyColorRGBA::White;
+	DDyColorRGBA      mForegroundColor  = DDyColorRGBA::White;
   /// Font background color
-  DDyColorRGBA          mBackgroundColor  = DDyColorRGBA{0, 0, 0, 0};
+  DDyColorRGBA      mBackgroundColor  = DDyColorRGBA{0, 0, 0, 0};
   /// Font Edge color
-  DDyColorRGBA          mEdgeColor        = DDyColorRGBA::Black;
+  DDyColorRGBA      mEdgeColor        = DDyColorRGBA::Black;
   /// Font size
   TU32              mFontSize         = 16;
-  ///
-  DDyVectorInt2     mPosition         = {};
   ///
   CDyFontRenderer   mRenderer         = {};
 

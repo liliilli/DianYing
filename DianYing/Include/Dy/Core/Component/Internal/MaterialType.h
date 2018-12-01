@@ -14,6 +14,7 @@
 ///
 
 #include <vector>
+#include <nlohmann/json_fwd.hpp>
 #include <Dy/Element/Interface/IDyToString.h>
 #include <Dy/Helper/Pointer.h>
 
@@ -48,33 +49,8 @@ enum class EDyMaterialBlendMode
   Custom,
 };
 
-///
-/// @struct PDyMaterialConstructionDescriptor
-/// @brief Descriptor instance which saves information to create material information.
-///
-struct PDyMaterialConstructionDescriptor final : public IDyToString
-{
-  std::string                           mMaterialName     = "";
-  std::string                           mShaderName       = "";
-  std::vector<std::string>              mTextureNames;
-  EDyMaterialBlendMode                  mBlendMode        = EDyMaterialBlendMode::Opaque;
-  bool                                  mIsShaderLazyInitialized = false;
-
-  ///
-  /// @brief Return information string.
-  ///
-  /// PDyMaterialConstructionDescriptor
-  /// Material Name : ""
-  /// Shader Name : ""
-  /// Texture Name (0) : ""
-  /// ...
-  /// Texture Name (N) : ""
-  /// Blend Mode : ""
-  /// Is shader lazy initialized : False / True
-  ///
-  [[nodiscard]]
-  std::string ToString() override final;
-};
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyMaterialBlendMode& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyMaterialBlendMode& p);
 
 ///
 /// @struct DDyMaterialShaderTuple

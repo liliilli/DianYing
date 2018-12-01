@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Builtin/ShaderGl/RenderFontMSDF_Deprecated.h>
+#include <Dy/Builtin/ShaderGl/Deprecated/RenderFontMSDF_Deprecated.h>
 #include <Dy/Core/Component/Internal/ShaderType.h>
 #include <Dy/Builtin/ShaderGl/RenderDefaultFont.h>
 #include <Dy/Management/IO/IODataManager.h>
@@ -100,7 +100,7 @@ FDyBuiltinShaderGLRenderFontMSDF_Deprecated::FDyBuiltinShaderGLRenderFontMSDF_De
   auto& infoManager = MDyIOData::GetInstance();
   auto& rescManager = MDyIOResource::GetInstance();
 
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation(shaderDesc));
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation_Deprecated(shaderDesc));
   MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(shaderDesc.mShaderName));
 }
 

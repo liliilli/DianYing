@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Core/Component/Internal/TextureType.h>
+#include <Dy/Meta/Information/MetaInfoTexture.h>
 
 //!
 //! Forward declaration
@@ -40,27 +41,37 @@ class DDyTextureInformation final
 {
 public:
   MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(DDyTextureInformation);
-  DDyTextureInformation(const PDyTextureConstructionDescriptor& textureConstructionDescriptor);
+  DDyTextureInformation(const PDyTextureInstanceMetaInfo& textureConstructionDescriptor);
   ~DDyTextureInformation();
 
-  ///
   /// @brief return immutable descriptor information reference.
-  ///
-  [[nodiscard]]
-  FORCEINLINE const PDyTextureConstructionDescriptor& GetInformation() const noexcept
+  FORCEINLINE MDY_NODISCARD const PDyTextureInstanceMetaInfo& GetInformation() const noexcept
   {
     return this->mTextureInformation;
   }
 
-  /// Check if object is being binded to CDyTextureResource instance.
-  [[nodiscard]]
-  FORCEINLINE bool IsBeingBindedToResource() const noexcept
+  /// @brief Check if object is being binded to CDyTextureResource instance.
+  FORCEINLINE MDY_NODISCARD bool IsBeingBindedToResource() const noexcept
   {
     return this->__mLinkedTextureResourcePtr != nullptr;
   }
 
+  /// @brief Get buffer of image.
+  FORCEINLINE MDY_NODISCARD const std::vector<TU08>& GetBuffer() const noexcept
+  {
+    return this->mTextureImageBuffer;
+  }
+
+  /// @brief Get buffer format. (different from mTextureInformation.mTextureColorType)
+  FORCEINLINE MDY_NODISCARD EDyImageColorFormatStyle GetFormat() const noexcept
+  {
+    return this->mImageActualPixelFormat;
+  }
+
 private:
-  PDyTextureConstructionDescriptor mTextureInformation;
+  PDyTextureInstanceMetaInfo mTextureInformation{};
+  std::vector<TU08>          mTextureImageBuffer{};
+  EDyImageColorFormatStyle   mImageActualPixelFormat = EDyImageColorFormatStyle::NoneError;
 
   //!
   //! Resource pointers binding

@@ -459,6 +459,105 @@ private:                                                  \
   private: \
   inline static ::dy::reflect::__Rfc__DerivedRegister<__MAType__> __rfc__Type{#__MAType__}
 
+///
+/// @macro MDY_REGISTER_RESOURCE
+/// @brief Let reflection manager enable to apply reflection to given type.
+/// @param __MAType__ Type for being enabled.
+///
+#define MDY_REGISTER_RESOURCE(__MAType__) \
+  private: \
+  inline static ::dy::reflect::RDyBuiltinResourceRegister<__MAType__> __rfc__register{#__MAType__}
+
+///
+/// @macro MDY_REGISTER_RESOURCE_WITH_SPECIFIER
+/// @brief Let reflection manager enable to apply reflection to given type.
+/// @param __MAType__ Type for being enabled.
+/// @param __MAName__ Specification name to apply.
+///
+#define MDY_REGISTER_RESOURCE_WITH_SPECIFIER(__MAType__, __MAName__) \
+  public: \
+  inline static MDY_SET_IMMUTABLE_STRING(sName, __MAName__); \
+  private: \
+  inline static ::dy::reflect::RDyBuiltinResourceRegister<__MAType__> __rfc__register{sName};
+
+///
+/// @macro MDY_REGISTER_RESOURCE_SCRIPT
+/// @brief Register cpp script source as builtin script resource.
+/// @param __MAType__ Type for being enabled.
+///
+#define MDY_REGISTER_RESOURCE_SCRIPT(__MAType__) \
+  MDY_REGISTER_RESOURCE(__MAType__); \
+private: \
+  std::any GetMetaInfo() override final { return 0; }; \
+public: \
+  class __ConstructionHelper final : public IDyResource \
+  { \
+    using TScriptableFunction = PDyScriptInstanceMetaInfo::TScriptableFunction; \
+    using TFunctionReturn = std::invoke_result_t<TScriptableFunction>; \
+    \
+    template<typename TType> \
+    static TFunctionReturn GetInstance() { return std::make_unique<TType>(); } \
+    using  TSuper = __MAType__; \
+    \
+    inline static auto function = GetInstance<TSuper>; \
+    \
+    std::any GetMetaInfo() override final \
+    { \
+      PDyScriptInstanceMetaInfo metaInfo = {}; \
+      metaInfo.mScriptType = EDyScriptType::Cpp; \
+      if constexpr (IsInheritancedFrom<FDyBuiltinDebugUiScript, ADyWidgetCppScript> == true) \
+            { metaInfo.mScriptMode = EDyScriptMode::Widget; } \
+      else  { metaInfo.mScriptMode = EDyScriptMode::Actor; } \
+      \
+      metaInfo.mSpecifierName = #__MAType__; \
+      metaInfo.mBtInstantiationFunction = function; \
+      return metaInfo; \
+    } \
+  }; \
+private:
+
+#define MDY_REGISTER_RESOURCE_MODEL(__MAType__, __MASpecifierName__) \
+  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(__MAType__, __MASpecifierName__) \
+  private: \
+  static PDyModelConstructionVertexDescriptor& __Get() noexcept \
+  { \
+    static PDyModelConstructionVertexDescriptor instance{}; \
+    return instance; \
+  } \
+  void ConstructBuffer(_MOUT_ PDyModelConstructionVertexDescriptor& buffer) noexcept; \
+  public: \
+  __MAType__() \
+  { \
+    ConstructBuffer(__Get()); \
+    this->mPtrBuffer = &__Get(); \
+  }
+
+#define MDY_REGISTER_RESOURCE_TEXTURE(__MAType__, __MASpecifierName__) \
+  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(__MAType__, __MASpecifierName__) \
+  private: \
+  static TBufferType& __Get() noexcept \
+  { \
+    static TBufferType instance{}; \
+    return instance; \
+  } \
+  void ConstructBuffer(_MOUT_ TBufferType& buffer, _MOUT_ PDyTextureInstanceMetaInfo& property) noexcept; \
+  public: \
+  __MAType__() \
+  { \
+    ConstructBuffer(__Get(), this->mTextureMetaInfo); \
+    this->mPtrBuffer = &__Get(); \
+  }
+
+#define MDY_REGISTER_RESOURCE_MATERIAL(__MAType__, __MASpecifier__) \
+  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(__MAType__, __MASpecifier__) \
+  private: \
+    void ConstructBuffer(_MOUT_ PDyMaterialInstanceMetaInfo& property) noexcept; \
+  public: \
+  __MAType__() \
+  { \
+    ConstructBuffer(this->mMetaInfo); \
+  }
+
 //!
 //! Function type macros.
 //!

@@ -18,7 +18,6 @@
 #include <Dy/Builtin/Texture/Checker.h>
 #include <Dy/Builtin/ShaderGl/RenderOpaqueStatic.h>
 #include <Dy/Core/Component/Internal/MaterialType.h>
-#include <Dy/Management/IO/IODataManager.h>
 
 //!
 //! Implementation
@@ -27,17 +26,14 @@
 namespace dy::builtin
 {
 
-FDyBuiltinMaterialOpaqueStaticPlain::FDyBuiltinMaterialOpaqueStaticPlain()
+void FDyBuiltinMaterialOpaqueStaticPlain::ConstructBuffer(PDyMaterialInstanceMetaInfo& property) noexcept
 {
-  auto& manInfo = MDyIOData::GetInstance();
+  property.mSpecifierName   = FDyBuiltinMaterialOpaqueStaticPlain::sName;
+  property.mShaderSpecifier = FDyBuiltinShaderGLRenderOpaqueStatic::sName;
+  property.mBlendMode       = EDyMaterialBlendMode::Opaque;
 
-  PDyMaterialConstructionDescriptor matDesc;
-  matDesc.mMaterialName = FDyBuiltinMaterialOpaqueStaticPlain::sName;
-  matDesc.mShaderName   = FDyBuiltinShaderGLRenderOpaqueStatic::sName;
-  matDesc.mBlendMode    = EDyMaterialBlendMode::Opaque;
-
-  matDesc.mTextureNames.emplace_back(MSVSTR(FDyBuiltinTextureChecker::sName));
-  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateMaterialInformation(matDesc));
+  property.mTextureNames[0] = MSVSTR(FDyBuiltinTextureChecker::sName);
+  property.mTextureNames_Deprecated.emplace_back(MSVSTR(FDyBuiltinTextureChecker::sName));
 }
 
 } /// ::dy::builtin namespace

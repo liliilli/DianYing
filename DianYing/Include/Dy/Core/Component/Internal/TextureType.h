@@ -16,7 +16,7 @@
 #include <Dy/Helper/Type/ColorRGBA.h>
 #include <Dy/Core/Component/Internal/TextureEnums.h>
 #include <Dy/Helper/Internal/ImageBinaryBuffer.h>
-#include <Dy/Meta/Type/TextureParameter.h>
+#include <Dy/Meta/Type/EDyTextureParameter.h>
 
 namespace dy
 {
@@ -37,24 +37,6 @@ struct PDyTextureConstructionBaseDesc
   bool mIsUsingDefaultMipmapGeneration    = false;
   /// Border color
   DDyColorRGBA mBorderColor           = DDyColorRGBA::Black;
-};
-
-///
-/// @class PDyTextureConstructionDescriptor
-/// @brief Texture construction descriptor.
-///
-struct PDyTextureConstructionDescriptor final : public PDyTextureConstructionBaseDesc
-{
-  ///
-  std::string mTextureFileLocalPath       = MDY_INITIALIZE_EMPTYSTR;
-  ///
-  std::string mTextureFileAbsolutePath    = MDY_INITIALIZE_EMPTYSTR;
-  ///
-  bool        mIsEnabledAbsolutePath      = true;
-  /// Texture is 1D or 2D?
-  EDyTextureStyleType mTextureType        = EDyTextureStyleType::None;
-  /// Map type @TODO NOT USED NOW.
-  EDyTextureMapType   mTextureMapType     = EDyTextureMapType::Custom;
 };
 
 ///

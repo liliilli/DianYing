@@ -31,7 +31,7 @@ enum class EDySearchMode
 
 ///
 /// @class FDyUiObjectChildrenable
-/// @brief Ui object which has chidlren ui object.
+/// @brief Ui object which has children ui object.
 ///
 class FDyUiObjectChildrenable : public FDyUiObject
 {
@@ -41,6 +41,23 @@ class FDyUiObjectChildrenable : public FDyUiObject
 public:
   FDyUiObjectChildrenable() = default;
   virtual ~FDyUiObjectChildrenable() = default;
+
+  ///
+  /// @brief Set central position of widget.
+  /// @param position Position value.
+  ///
+  void SetWidgetCentralPosition(_MIN_ const DDyVector2& position) noexcept override;
+
+  ///
+  /// @brief Set frame size of widget.
+  /// @param size Frame size. Must be full size, not half size.
+  ///
+  void SetWidgetFrameSize(_MIN_ const DDyVectorInt2& size) noexcept override final;
+
+  ///
+  /// @brief Propagate information to children.
+  ///
+  void PropagateInformationToChildren();
 
   ///
   /// @TODO IMPLEMENT THIS & AUTOMATIC SPECIFIER NAME CREATION.
@@ -86,6 +103,8 @@ public:
 private:
   /// @brief Ui object list.
   std::vector<std::unique_ptr<FDyUiObject>> mUiObjectList = {};
+  bool mIsPositionChanged   = false;
+  bool mIsFrameSizeChanged  = false;
 };
 
 } /// ::dy namespace

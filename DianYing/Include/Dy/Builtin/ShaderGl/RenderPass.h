@@ -14,6 +14,7 @@
 ///
 
 #include <string_view>
+#include <Dy/Builtin/Abstract/ADyGLShaderResource.h>
 
 namespace dy::builtin
 {
@@ -22,13 +23,11 @@ namespace dy::builtin
 /// @class FDyBuiltinShaderGLRenderPass
 /// @brief Instantiate rendering pass.
 ///
-class FDyBuiltinShaderGLRenderPass final
+class FDyBuiltinShaderGLRenderPass final : public ADyGLShaderResource
 {
+  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBuiltinShaderGLRenderPass, "dyBtShaderGlRenderPass")
 public:
   FDyBuiltinShaderGLRenderPass();
-
-  /// Constant name for creating DDyShaderInformation
-  inline static MDY_SET_IMMUTABLE_STRING(sName, "dyBtShaderGlRenderPass");
 };
 
 } /// ::dy::builtin namespace

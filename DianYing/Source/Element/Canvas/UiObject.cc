@@ -13,16 +13,30 @@
 ///
 
 /// Header file
-#include <Dy/Builtin/Helper/BuiltinInformationDeliver.h>
-#include <Dy/Management/IO/MetaInfoManager.h>
+#include <Dy/Element/Canvas/UiObject.h>
+#include <Dy/Meta/Type/EDyWidgetTypes.h>
 
 namespace dy
 {
 
-EDySuccess FDyBuiltinInformationDeliver::ForwardWidgetMetaInformation(const std::string_view& metaString)
+void FDyUiObject::SetWidgetCentralPosition(_MIN_ const DDyVector2& position) noexcept
 {
-  auto& manager = MDyMetaInfo::GetInstance();
-  return manager.pfAddWidgetMetaInformation(MSVSTR(metaString));
+  this->mCentralPosition = position;
+}
+
+void FDyUiObject::SetWidgetFrameSize(_MIN_ const DDyVectorInt2& size) noexcept
+{
+  if (size.X > 0 && size.Y > 0) { this->mWidgetSize = size; }
+}
+
+DDyVectorInt2 FDyUiObject::GetFrameSize() const noexcept
+{
+  return this->mWidgetSize;
+}
+
+DDyVector2 FDyUiObject::GetWidgetPosition(const EDyOrigin& origin) const noexcept
+{
+  return DyGetPositionWithOrigin(this->mCentralPosition, this->mWidgetSize, origin);
 }
 
 } /// ::dy namespace

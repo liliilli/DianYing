@@ -38,10 +38,9 @@
 #include <Dy/Helper/Type/DyString.h>
 #include <Dy/Management/Type/FramebufferInformation.h>
 #include <Dy/Management/Rendering/FramebufferManager.h>
-#include <Dy/Builtin/ShaderGl/RenderFontMSDF_Deprecated.h>
+#include <Dy/Builtin/ShaderGl/Deprecated/RenderFontMSDF_Deprecated.h>
 #include <Dy/Helper/Type/Matrix4.h>
 #include <Dy/Management/IO/IOResourceManager.h>
-#include <Dy/Builtin/ShaderGl/RenderFontSDF_Deprecated.h>
 
 #if !defined(FT_FREETYPE_H)
 #define FT_FREETYPE_H

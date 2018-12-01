@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Reflection/RDyBuiltinResource.h>
+#include <Dy/Builtin/Abstract/ADyWidgetMetaResource.h>
 
 namespace dy::builtin
 {
@@ -22,14 +22,11 @@ namespace dy::builtin
 /// @class FDyBuiltinWidgetDebugUiMeta
 /// @brief Instantiate rendering pass.
 ///
-class FDyBuiltinWidgetDebugUiMeta final
+class FDyBuiltinWidgetDebugUiMeta final : public ADyWidgetMetaResource
 {
-  MDY_REFLECT_ENABLE_RESOURCE(FDyBuiltinWidgetDebugUiMeta);
+  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBuiltinWidgetDebugUiMeta, "dyBtWidgetDebugUi")
 public:
   FDyBuiltinWidgetDebugUiMeta();
-
-  /// Constant name for creating DDyShaderInformation
-  inline static MDY_SET_IMMUTABLE_STRING(sName, "dyBtWidgetDebugUi");
 };
 
 

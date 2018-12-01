@@ -14,6 +14,7 @@
 ///
 
 #include <string_view>
+#include <Dy/Builtin/Abstract/ADyModelResource.h>
 
 namespace dy::builtin
 {
@@ -22,13 +23,9 @@ namespace dy::builtin
 /// @class FDyBuiltinModelBox
 /// @brief Create model box information and resources.
 ///
-class FDyBuiltinModelBox final
+class FDyBuiltinModelBox final : public ADyModelResource
 {
-public:
-  FDyBuiltinModelBox();
-
-  /// name for creating DDyModelInformation
-  inline static MDY_SET_IMMUTABLE_STRING(sName, "dyBtModelBox");
+  MDY_REGISTER_RESOURCE_MODEL(FDyBuiltinModelBox, "dyBtModelBox");
 };
 
 } /// ::dy::builtin namespace

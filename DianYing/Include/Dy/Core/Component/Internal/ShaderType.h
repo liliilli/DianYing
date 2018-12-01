@@ -15,6 +15,7 @@
 
 #include <string>
 #include <vector>
+#include <Dy/Meta/Type/EDyResourceTypes.h>
 
 namespace dy
 {
@@ -64,19 +65,6 @@ enum class EDyUniformVariableType
   Texture2D,
   NoneError,
   Texture2DArray
-};
-
-///
-/// @enum EDyShaderFragmentType
-/// @brief Shader fragment type. each fragment values are binded to each shader code prior to linking.
-///
-enum class EDyShaderFragmentType
-{
-  Vertex,
-  TesselationControl,
-  TesselationEvaluation,
-  Geometry,
-  Pixel
 };
 
 ///

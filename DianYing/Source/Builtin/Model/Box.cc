@@ -14,17 +14,13 @@
 
 /// Header file
 #include <Dy/Builtin/Model/Box.h>
-#include <Dy/Core/Component/Internal/ModelType.h>
-#include <Dy/Core/Component/Resource/SubmeshResource.h>
-#include <Dy/Management/IO/IODataManager.h>
 
 namespace dy::builtin
 {
 
-FDyBuiltinModelBox::FDyBuiltinModelBox()
+void FDyBuiltinModelBox::ConstructBuffer(PDyModelConstructionVertexDescriptor& buffer) noexcept
 {
   PDySubmeshInformationDescriptor submeshDesc;
-
   // Make position, normal, texcoord vertex information
   submeshDesc.mVertices.reserve(24);
   {
@@ -149,14 +145,8 @@ FDyBuiltinModelBox::FDyBuiltinModelBox()
   for (const auto index : indices) { submeshDesc.mIndices.emplace_back(index); }
 
   // Make model information
-  PDyModelConstructionVertexDescriptor modelDesc;
-  {
-    modelDesc.mModelName = FDyBuiltinModelBox::sName;
-    modelDesc.mSubmeshConstructionInformations.emplace_back(submeshDesc);
-  }
-
-  auto& manInfo = MDyIOData::GetInstance();
-  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(modelDesc));
+  buffer.mModelName = FDyBuiltinModelBox::sName;
+  buffer.mSubmeshConstructionInformations.emplace_back(submeshDesc);
 }
 
 } /// ::dy::builtin namespace

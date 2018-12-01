@@ -14,14 +14,15 @@
 ///
 
 #include <Dy/Component/Abstract/ADyWidgetCppScript.h>
-#include <Dy/Core/Reflection/RDyCppScript.h>
+#include <Dy/Builtin/Abstract/ADyScriptResource.h>
+#include <Dy/Meta/Information/ScriptMetaInformation.h>
 
 namespace dy
 {
 
-class FDyBuiltinDebugUiScript final : public ADyWidgetCppScript
+class FDyBuiltinDebugUiScript final : public ADyScriptResource, public ADyWidgetCppScript
 {
-  MDY_REFLECT_ENABLE(FDyBuiltinDebugUiScript);
+  MDY_REGISTER_RESOURCE_SCRIPT(FDyBuiltinDebugUiScript);
 public:
   void Initiate() override final;
 

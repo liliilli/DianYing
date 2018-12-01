@@ -31,17 +31,16 @@ PDyMetaWidgetTextDescriptor::CreateMetaInformation(_MIN_ const nlohmann::json& i
     "Parent": "Root",
     "Details":
     {
+      "WidgetSize": { "X": 200, "Y": 100 },
       "InitialString": "Hello world!",
+      "Origin": { "Center-Center" },
       "InitialPosition": { "X":0, "Y":0 },
       "InitialColor": 16777215,
       "InitialAlpha": 1.0,
       "FontSize": 10,
-      "EdgeSize": 1,
+      "EdgeColor": 0,
       "FontSpecifierName": "Arial",
-      "IsBold": true,
-      "IsItalic": false,
       "IsUsingEdge": false,
-      "IsUsingDefaultFont": true
     }
   }
   */
@@ -51,12 +50,8 @@ PDyMetaWidgetTextDescriptor::CreateMetaInformation(_MIN_ const nlohmann::json& i
   static MDY_SET_IMMUTABLE_STRING(sHeader_InitialColor,      "InitialColor");
   static MDY_SET_IMMUTABLE_STRING(sHeader_InitialAlpha,      "InitialAlpha");
   static MDY_SET_IMMUTABLE_STRING(sHeader_FontSize,          "FontSize");
-  static MDY_SET_IMMUTABLE_STRING(sHeader_EdgeSize,          "EdgeSize");
   static MDY_SET_IMMUTABLE_STRING(sHeader_FontSpecifierName, "FontSpecifierName");
-  static MDY_SET_IMMUTABLE_STRING(sHeader_IsBold,            "IsBold");
-  static MDY_SET_IMMUTABLE_STRING(sHeader_IsItalic,          "IsItalic");
   static MDY_SET_IMMUTABLE_STRING(sHeader_IsUsingEdge,       "IsUsingEdge");
-  static MDY_SET_IMMUTABLE_STRING(sHeader_IsUsingDefaultFont,"IsUsingDefaultFont");
 
   using TPDyMWCBD = PDyMetaWidgetCommonBaseDesc;
 
@@ -72,19 +67,21 @@ PDyMetaWidgetTextDescriptor::CreateMetaInformation(_MIN_ const nlohmann::json& i
 
   // Detail (TEXT)
   const auto& detailAtlas = itemAtlas[MSVSTR(TPDyMWCBD::sHeader_Details)];
-  instance->mInitialString    = DDyString{DyJsonGetValueFrom<std::string>(detailAtlas, sHeader_InitialString)};
-  instance->mInitialPosition  = DDyVectorInt2{DyJsonGetValueFrom<DDyVector2>(detailAtlas, sHeader_InitialPosition)};
+  instance->mInitialString      = DDyString{DyJsonGetValueFrom<std::string>(detailAtlas, sHeader_InitialString)};
 
   DDyColorRGBA colorRgb         = DyJsonGetValueFrom<DDyColorRGB24>(detailAtlas, sHeader_InitialColor);
   colorRgb.A                    = DyJsonGetValueFrom<float>(detailAtlas, sHeader_InitialAlpha);
+
   instance->mInitialColor       = colorRgb;
   instance->mFontSize           = DyJsonGetValueFrom<TU32>(detailAtlas, sHeader_FontSize);
-  instance->mEdgeSize           = DyJsonGetValueFrom<TU32>(detailAtlas, sHeader_EdgeSize);
   instance->mFontSpecifierName  = DyJsonGetValueFrom<std::string>(detailAtlas, sHeader_FontSpecifierName);
-  instance->mIsBold             = DyJsonGetValueFrom<bool>(detailAtlas, sHeader_IsBold);
-  instance->mIsItalic           = DyJsonGetValueFrom<bool>(detailAtlas, sHeader_IsItalic);
+  instance->mEdgeColor          = DyJsonGetValueFrom<DDyColorRGB24>(detailAtlas, "EdgeColor");
   instance->mIsUsingEdge        = DyJsonGetValueFrom<bool>(detailAtlas, sHeader_IsUsingEdge);
-  instance->mIsUsingDefaultFont = DyJsonGetValueFrom<bool>(detailAtlas, sHeader_IsUsingDefaultFont);
+
+  instance->mInitialPosition    = DDyVectorInt2{DyJsonGetValueFrom<DDyVector2>(detailAtlas, sHeader_InitialPosition)};
+  instance->mOrigin             = DyJsonGetValueFrom<EDyOrigin>(detailAtlas, "Origin");
+  instance->mWidgetSize         = DyJsonGetValueFrom<DDyVectorInt2>(detailAtlas, "WidgetSize");
+
   return instance;
 }
 

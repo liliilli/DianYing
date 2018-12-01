@@ -15,14 +15,9 @@
 /// Header file
 #include <Dy/Builtin/ShaderGl/RenderPass.h>
 
-#include <Dy/Core/Component/Internal/ShaderType.h>
-#include <Dy/Management/IO/IODataManager.h>
-#include <Dy/Management/IO/IOResourceManager.h>
-
 namespace
 {
 
-[[maybe_unused]]
 constexpr std::string_view vertexShaderCode = R"dy(
 #version 430 core
 
@@ -39,7 +34,6 @@ void main() {
 }
 )dy";
 
-[[maybe_unused]]
 constexpr std::string_view fragmentShaderCode = R"dy(
 #version 430
 
@@ -76,28 +70,9 @@ namespace dy::builtin
 
 FDyBuiltinShaderGLRenderPass::FDyBuiltinShaderGLRenderPass()
 {
-  PDyShaderConstructionDescriptor shaderDesc;
-  shaderDesc.mShaderName = FDyBuiltinShaderGLRenderPass::sName;
-  {
-    PDyShaderFragmentInformation vs;
-    vs.mShaderType = EDyShaderFragmentType::Vertex;
-    vs.mShaderRawCode = vertexShaderCode;
-    vs.mIsEnabledRawLoadShaderCode = true;
-    shaderDesc.mShaderFragments.emplace_back(vs);
-  }
-  {
-    PDyShaderFragmentInformation fs;
-    fs.mShaderType = EDyShaderFragmentType::Pixel;
-    fs.mShaderRawCode = fragmentShaderCode;
-    fs.mIsEnabledRawLoadShaderCode = true;
-    shaderDesc.mShaderFragments.emplace_back(fs);
-  }
-
-  auto& infoManager = MDyIOData::GetInstance();
-  auto& rescManager = MDyIOResource::GetInstance();
-
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation(shaderDesc));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(FDyBuiltinShaderGLRenderPass::sName.data()));
+  this->mSpecifierName  = sName;
+  this->mVertexBuffer   = vertexShaderCode;
+  this->mPixelBuffer    = fragmentShaderCode;
 }
 
 } /// ::dy::builtin namespace

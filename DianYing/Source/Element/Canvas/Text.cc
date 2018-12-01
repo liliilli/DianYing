@@ -16,10 +16,18 @@
 #include <Dy/Element/Canvas/Text.h>
 #include <Dy/Component/Ctor/PDyFontRenderer.h>
 #include <Dy/Meta/Descriptor/WidgetTextMetaInformation.h>
+#include <Dy/Meta/Type/EDyWidgetTypes.h>
 #include <Dy/Management/FontManager.h>
 
 namespace dy
 {
+
+void FDyText::AlignFinalPosition(const DDyVector2& parentFinalPosition, const DDyVectorInt2& parentFrameSize)
+{
+  this->mFinalCentralPosition =
+      DyGetPositionWithOrigin(parentFinalPosition, parentFrameSize, this->mOrigin)
+    + this->GetWidgetPosition(EDyOrigin::Center_Center);
+}
 
 std::string FDyText::ToString()
 {
@@ -28,7 +36,25 @@ std::string FDyText::ToString()
 }
 
 EDySuccess FDyText::Initialize(_MIN_ const PDyMetaWidgetTextDescriptor& objectMetaDesc)
-{ // Set properties.
+{
+  /// @brief Bind font container resource instance pointer to this.
+  /// @TODO IMPLEMENT CHECKING DEFAULT FONT CASE.
+  static auto GetFontResource = [](_MIN_ const std::string& fontSpecifierName) -> IDyFontContainer*
+  {
+    auto& fontManager = MDyFont::GetInstance();
+    if (fontManager.IsFontResourceContainerExist(fontSpecifierName) == false)
+    {
+      MDY_CALL_ASSERT_SUCCESS(fontManager.CreateFontResourceContainer(fontSpecifierName));
+    }
+
+    return fontManager.GetFontResourceContainer(fontSpecifierName);
+  };
+
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  //! FUNCTIONBODY ∨
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  // Set properties.
   this->pSetObjectName(objectMetaDesc.mUiObjectSpecifierName);
 
   this->mTextString             = objectMetaDesc.mInitialString;
@@ -38,15 +64,11 @@ EDySuccess FDyText::Initialize(_MIN_ const PDyMetaWidgetTextDescriptor& objectMe
   this->mIsUsingEdgeRendering   = objectMetaDesc.mIsUsingEdge;
   this->mIsUsingBackgroundColor = objectMetaDesc.mIsUsingBackground;
   this->mFontSize               = objectMetaDesc.mFontSize;
-  this->mPosition               = objectMetaDesc.mInitialPosition;
+  this->mPtrFontContainer       = GetFontResource(objectMetaDesc.mFontSpecifierName);
+  this->mOrigin                 = objectMetaDesc.mOrigin;
 
-  // Bind font container resource instance pointer to this.
-  auto& fontManager = MDyFont::GetInstance();
-  if (fontManager.IsFontResourceContainerExist(objectMetaDesc.mFontSpecifierName) == false)
-  {
-    MDY_CALL_ASSERT_SUCCESS(fontManager.CreateFontResourceContainer(objectMetaDesc.mFontSpecifierName));
-  }
-  this->mFontContainer = fontManager.GetFontResourceContainer(objectMetaDesc.mFontSpecifierName);
+  this->SetWidgetCentralPosition(objectMetaDesc.mInitialPosition);
+  this->SetWidgetFrameSize      (objectMetaDesc.mWidgetSize);
 
   // Initialize FontRenderer.
   PDyFontRendererCtorInformation desc = {};
@@ -90,9 +112,9 @@ const DDyColorRGBA& FDyText::GetForegroundColor() const noexcept
   return this->mForegroundColor;
 }
 
-const DDyVectorInt2& FDyText::GetRenderPosition() const noexcept
+const DDyVector2& FDyText::GetRenderPosition() const noexcept
 {
-  return this->mPosition;
+  return this->mFinalCentralPosition;
 }
 
 //!
@@ -125,6 +147,7 @@ void FDyText::SetColor(const DDyColorRGBA& color)
 void FDyText::Render()
 {
   this->mRenderer.Render();
+
 }
 
 } /// ::dy namespace

@@ -13,20 +13,21 @@
 /// SOFTWARE.
 ///
 
+#include <string_view>
+#include <Dy/Builtin/Abstract/ADyGLShaderResource.h>
+
 namespace dy::builtin
 {
 
 ///
 /// @class FDyBuiltinShaderGLRenderFontArraySDF
-/// @brief Instantiate and create resource for basic shadow rendering.
+/// @brief OpenGL SDF font text (basic) shader program.
 ///
-class FDyBuiltinShaderGLRenderFontArraySDF final
+class FDyBuiltinShaderGLRenderFontArraySDF final : public ADyGLShaderResource
 {
+  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBuiltinShaderGLRenderFontArraySDF, "dyBtShaderGlRenderFontArraySDF")
 public:
   FDyBuiltinShaderGLRenderFontArraySDF();
-
-  /// Constant name for creating DDyShaderInformation
-  inline static MDY_SET_IMMUTABLE_STRING(sName, "dyBtShaderGlRenderFontArraySDF");
 };
 
 } /// ::dy::builtin namespace

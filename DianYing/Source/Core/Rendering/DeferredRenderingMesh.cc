@@ -184,8 +184,6 @@ std::optional<TI32> FDyDeferredRenderingMesh::GetAvailableDirectionalLightIndex(
 EDySuccess FDyDeferredRenderingMesh::pInitializeShaderSetting()
 {
   auto& manResc = MDyIOResource::GetInstance();
-  // Make deferred shader
-  builtin::FDyBuiltinShaderGLRenderDeferredRendering();
   this->mShaderPtr = manResc.GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderDeferredRendering::sName));
 
   MDY_ASSERT(this->mShaderPtr, "FDyDeferredRenderingMesh::mShaderPtr must not be nullptr.");

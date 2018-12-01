@@ -17,17 +17,18 @@
 
 #include <Dy/Core/Component/Internal/TextureType.h>
 #include <Dy/Helper/Type/ColorRGBA32.h>
-#include <Dy/Management/IO/IOResourceManager.h>
 
 //!
 //! Local variables
 //!
 
-namespace dy
+namespace
 {
-constexpr const DDyColorRGBA32 _0 = DDyColorRGBA32(  0,   0, 255);
-constexpr const DDyColorRGBA32 _1 = DDyColorRGBA32(255, 255, 255);
-}
+
+constexpr const dy::DDyColorRGBA32 _0 = dy::DDyColorRGBA32(  0,   0, 255);
+constexpr const dy::DDyColorRGBA32 _1 = dy::DDyColorRGBA32(255, 255, 255);
+
+} /// ::unnamed namespace
 
 //!
 //! Implementation
@@ -36,15 +37,13 @@ constexpr const DDyColorRGBA32 _1 = DDyColorRGBA32(255, 255, 255);
 namespace dy::builtin
 {
 
-FDyBuiltinTextureErrorBlue::FDyBuiltinTextureErrorBlue()
+void FDyBuiltinTextureErrorBlue::ConstructBuffer(_MOUT_ TBufferType& buffer, _MOUT_ PDyTextureInstanceMetaInfo& property) noexcept
 {
-  PDyTextureConstructionBufferChunkDescriptor desc = {};
-  desc.mTextureSpecifierName       = FDyBuiltinTextureErrorBlue::sName;
-  desc.mTextureType       = EDyTextureStyleType::D2;
-  desc.mTextureMapType    = EDyTextureMapType::Diffuse;
-  desc.mTextureColorType  = EDyImageColorFormatStyle::RGBA;
-  desc.mWidth             = 16;
-  desc.mHeight            = 16;
+  property.mSpecifierName     = FDyBuiltinTextureErrorBlue::sName;
+  property.mTextureType       = EDyTextureStyleType::D2;
+  property.mTextureColorType  = EDyImageColorFormatStyle::RGBA;
+  property.mBuiltinBufferSize = DDyVectorInt2{ 16, 16 };
+  property.mTextureMapType_Deprecated = EDyTextureMapType::Diffuse;
 
   std::array<DDyColorRGBA32, 256> infoChunk =
   { //      0          4           8           12
@@ -65,9 +64,8 @@ FDyBuiltinTextureErrorBlue::FDyBuiltinTextureErrorBlue()
     /*   */_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,
     /*   */_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,
   };
-  desc.mBufferPtr = infoChunk.data();
 
-  MDY_CALL_ASSERT_SUCCESS(MDyIOResource::GetInstance().CreateTextureResourceWithChunk(desc));
+  buffer = ConvertToTU08VectorList(infoChunk);
 }
 
 }

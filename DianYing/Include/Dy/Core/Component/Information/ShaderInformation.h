@@ -22,6 +22,7 @@
 
 namespace dy
 {
+struct PDyGLShaderInstanceMetaInfo;
 class CDyShaderResource;
 }
 
@@ -42,6 +43,7 @@ class DDyShaderInformation final
 public:
   MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(DDyShaderInformation);
   DDyShaderInformation(const PDyShaderConstructionDescriptor& shaderConstructionDescriptor);
+  DDyShaderInformation(const PDyGLShaderInstanceMetaInfo& shaderMetaInfo);
   ~DDyShaderInformation();
 
   ///

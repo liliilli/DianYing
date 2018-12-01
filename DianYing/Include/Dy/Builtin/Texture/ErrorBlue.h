@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <string_view>
+#include <Dy/Builtin/Abstract/ADyTextureResource.h>
 
 namespace dy::builtin
 {
@@ -22,12 +22,9 @@ namespace dy::builtin
 /// @class FDyBuiltinTextureErrorBlue
 /// @brief Instantiate error blue builtin texture which set on if texture instantiation is failed.
 ///
-class FDyBuiltinTextureErrorBlue final
+class FDyBuiltinTextureErrorBlue final : public ADyTextureResource
 {
-public:
-  FDyBuiltinTextureErrorBlue();
-  /// name for creating DDyModelInformation
-  inline static MDY_SET_IMMUTABLE_STRING(sName, "dyBtTextureErrorBlue");
+  MDY_REGISTER_RESOURCE_TEXTURE(FDyBuiltinTextureErrorBlue, "dyBtTextureErrorBlue")
 };
 
 } /// ::dy::builtin namespace

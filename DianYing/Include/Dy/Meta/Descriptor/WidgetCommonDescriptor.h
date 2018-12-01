@@ -30,9 +30,14 @@ namespace dy
 enum class EDyWidgetComponentType
 {
   Root,
-  Text,
+
   HorizontalLayout,
   VerticalLayout,
+
+  BasicGaugeBar,
+  Text,
+  Image,
+
   NoneError
 };
 
@@ -97,6 +102,15 @@ struct PDyMetaWidgetRootDescriptor final : public PDyMetaWidgetChildableBaseDesc
 
   inline static MDY_SET_IMMUTABLE_STRING(sHeader_Name,  "Name");
   inline static MDY_SET_IMMUTABLE_STRING(sHeader_Script,"Script");
+};
+
+///
+/// @struct PDyMetaWidgetPositionDescriptor
+/// @brief Position descriptor (initial position, origin, position axis, frame size)
+///
+struct PDyMetaWidgetPositionDescriptor final
+{
+
 };
 
 } /// ::dy namespace
