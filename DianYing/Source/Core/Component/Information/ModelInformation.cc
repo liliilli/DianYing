@@ -301,13 +301,13 @@ void DDyModelInformation::__pProcessMeshInformation(const aiScene& aiScene, cons
     auto materialDescriptor     = this->__pReadMaterialData(material);
 
     // Create DDySubmeshInformation with material descriptor.
-    meshInformationDescriptor.mMaterialName = materialDescriptor.mMaterialName;
+    meshInformationDescriptor.mMaterialName = materialDescriptor.mSpecifierName;
     this->mSubmeshInformations.emplace_back(meshInformationDescriptor);
 
-    if (const auto it = std::find(MDY_BIND_BEGIN_END(this->mOverallBindedMaterialName), materialDescriptor.mMaterialName);
+    if (const auto it = std::find(MDY_BIND_BEGIN_END(this->mOverallBindedMaterialName), materialDescriptor.mSpecifierName);
         it == this->mOverallBindedMaterialName.end())
     {
-      this->mOverallBindedMaterialName.emplace_back(materialDescriptor.mMaterialName);
+      this->mOverallBindedMaterialName.emplace_back(materialDescriptor.mSpecifierName);
     }
   }
 }
@@ -446,7 +446,7 @@ void DDyModelInformation::__pReadIndiceData(const aiMesh& mesh, PDySubmeshInform
   desc.mIndices.shrink_to_fit();
 }
 
-PDyMaterialConstructionDescriptor DDyModelInformation::__pReadMaterialData(const aiMaterial& material)
+PDyMaterialInstanceMetaInfo DDyModelInformation::__pReadMaterialData(const aiMaterial& material)
 {
   aiString materialName  = {};
   if (const auto ret = material.Get(AI_MATKEY_NAME, materialName); ret == AI_FAILURE)
@@ -455,9 +455,9 @@ PDyMaterialConstructionDescriptor DDyModelInformation::__pReadMaterialData(const
   }
 
   // Get material textures information.
-  PDyMaterialConstructionDescriptor materialDescriptor;
-  materialDescriptor.mIsShaderLazyInitialized = true;
-  materialDescriptor.mMaterialName            = materialName.C_Str();
+  PDyMaterialInstanceMetaInfo materialDescriptor;
+  materialDescriptor.mIsShaderLazyInitialized_Deprecated = true;
+  materialDescriptor.mSpecifierName            = materialName.C_Str();
   std::vector<std::string> textureNames;
 
   if (const auto opDiffuse = __pLoadMaterialTextures(material, EDyTextureMapType::Diffuse); opDiffuse.has_value())
@@ -481,18 +481,18 @@ PDyMaterialConstructionDescriptor DDyModelInformation::__pReadMaterialData(const
     const auto& heightMaps = opHeight.value();
     textureNames.insert(textureNames.end(), heightMaps.begin(), heightMaps.end());
   }
-  materialDescriptor.mTextureNames = textureNames;
+  materialDescriptor.mTextureNames_Deprecated = textureNames;
 
   // Let InformationManager initialize material information instance.
   auto& manInfo = MDyIOData::GetInstance();
-  if (const auto ptr = manInfo.GetMaterialInformation(materialDescriptor.mMaterialName); !ptr)
+  if (const auto ptr = manInfo.GetMaterialInformation(materialDescriptor.mSpecifierName); !ptr)
   {
-    MDY_CALL_ASSERT_SUCCESS(manInfo.CreateMaterialInformation(materialDescriptor));
+    MDY_CALL_ASSERT_SUCCESS(manInfo.CreateMaterialInformation_Deprecated(materialDescriptor));
   }
   else
   {
     MDY_LOG_WARNING_D(kWarnDuplicatedMaterialName, kModelInformation, kFunc__pReadMaterialData,
-                      kFunc__pReadMaterialData, materialDescriptor.mMaterialName);
+                      kFunc__pReadMaterialData, materialDescriptor.mSpecifierName);
   }
 
   return materialDescriptor;
@@ -531,19 +531,19 @@ DDyModelInformation::__pLoadMaterialTextures(const aiMaterial& material, EDyText
     const auto textureName    = DyGetFileNameFromPath(textureLocalPath.C_Str());
     if (dupTexturePath == this->mOverallTextureLocalPaths.end())
     {
-      PDyTextureConstructionDescriptor textureDesc;
+      PDyTextureInstanceMetaInfo textureDesc;
       // Set each texture name to texture file name except for file type like a .png .jpg.
-      textureDesc.mTextureSpecifierName                        = textureName;
-      textureDesc.mTextureFileLocalPath               = textureLocalPath.C_Str();
-      textureDesc.mTextureFileAbsolutePath            = this->mModelRootPath + '/' + textureDesc.mTextureFileLocalPath;
+      textureDesc.mSpecifierName                        = textureName;
+      textureDesc.mExternalFilePath               = textureLocalPath.C_Str();
+      textureDesc.mTextureFileAbsolutePath_Deprecated            = this->mModelRootPath + '/' + textureDesc.mExternalFilePath;
       textureDesc.mTextureType                        = EDyTextureStyleType::D2;
       textureDesc.mIsEnabledCustomedTextureParameter  = false;
-      textureDesc.mIsEnabledAbsolutePath              = true;
+      textureDesc.mIsEnabledAbsolutePath_Deprecated              = true;
       textureDesc.mIsUsingDefaultMipmapGeneration     = true;
-      textureDesc.mTextureMapType                     = type;
+      textureDesc.mTextureMapType_Deprecated                     = type;
 
-      MDY_CALL_ASSERT_SUCCESS(manInfo.CreateTextureInformation(textureDesc));
-      this->mOverallTextureLocalPaths.emplace_back(textureDesc.mTextureFileLocalPath);
+      MDY_CALL_ASSERT_SUCCESS(manInfo.CreateTextureInformation_Deprecated(textureDesc));
+      this->mOverallTextureLocalPaths.emplace_back(textureDesc.mExternalFilePath);
     }
 
     MDY_LOG_DEBUG_D("{}::{} | Texture Name : {}", "DDyModelInformation", "__pLoadMaterialTextures", textureName);

@@ -25,7 +25,7 @@ std::any ADyModelResource::GetMetaInfo()
 
   PDyModelInstanceMetaInfo result{};
   result.mSourceType            = EDyResourceSource::Builtin;
-  result.mSpecifierName    = this->mPtrBuffer->mModelName;
+  result.mSpecifierName         = this->mPtrBuffer->mModelName;
   result.mPtrBuiltinModelBuffer = this->mPtrBuffer;
 
   return result;

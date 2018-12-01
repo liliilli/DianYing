@@ -16,6 +16,7 @@
 #include <Dy/Element/Canvas/Widget.h>
 #include <Dy/Meta/Descriptor/WidgetTextMetaInformation.h>
 #include <Dy/Meta/Descriptor/WidgetBarMetaInformation.h>
+#include <Dy/Meta/Descriptor/WidgetImageMetaInformation.h>
 #include <Dy/Meta/Type/EDyWidgetTypes.h>
 #include <Dy/Element/Canvas/Text.h>
 #include <Dy/Element/Canvas/FDyBasicGaugeBar.h>
@@ -24,6 +25,7 @@
 
 #include <Dy/Component/UI/CDyWidgetScriptCpp.h>
 #include <Dy/Component/UI/CDyWidgetScriptLua.h>
+#include <Dy/Element/Canvas/FDyImage.h>
 
 namespace dy
 {
@@ -72,11 +74,15 @@ EDySuccess FDyUiWidget::Initialize(_MIN_ const PDyMetaWidgetRootDescriptor& widg
     default: MDY_UNEXPECTED_BRANCH(); break;
     case EDyWidgetComponentType::BasicGaugeBar:
     {
-      MDY_NOTUSED auto ptr = this->AddUiObject<FDyBasicGaugeBar>(*static_cast<PDyMetaWidgetBarDescriptor*>(objectMetaInfoPtr.get()));
+      this->AddUiObject<FDyBasicGaugeBar>(*static_cast<PDyMetaWidgetBarDescriptor*>(objectMetaInfoPtr.get()));
     } break;
     case EDyWidgetComponentType::Text:
     {
-      MDY_NOTUSED auto ptr = this->AddUiObject<FDyText>(*static_cast<PDyMetaWidgetTextDescriptor*>(objectMetaInfoPtr.get()));
+      this->AddUiObject<FDyText>(*static_cast<PDyMetaWidgetTextDescriptor*>(objectMetaInfoPtr.get()));
+    } break;
+    case EDyWidgetComponentType::Image:
+    {
+      this->AddUiObject<FDyImage>(*static_cast<PDyMetaWidgetImageDescriptor*>(objectMetaInfoPtr.get()));
     } break;
     }
   }

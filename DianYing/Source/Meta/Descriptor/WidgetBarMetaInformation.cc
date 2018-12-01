@@ -53,7 +53,7 @@ PDyMetaWidgetBarDescriptor::CreateMetaInformation(const nlohmann::json& itemAtla
   // Common
   auto instance = std::make_unique<PDyMetaWidgetBarDescriptor>();
   instance->mUiObjectSpecifierName  = DyJsonGetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Name);
-  instance->mComponentType          = EDyWidgetComponentType::Text;
+  instance->mComponentType          = EDyWidgetComponentType::BasicGaugeBar;
   instance->mParentSpecifierName    = DyJsonGetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Parent);
 
   const auto& detailAtlas = itemAtlas[MSVSTR(TPDyMWCBD::sHeader_Details)];

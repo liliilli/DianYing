@@ -20,10 +20,6 @@ namespace dy
 
 EDySuccess FDyBasicGaugeBar::Initialize(const PDyMetaWidgetBarDescriptor& objectMetaDesc)
 {
-  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  //! FUNCTIONBODY ∨
-  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
   // Set properties.
   this->pSetObjectName(objectMetaDesc.mUiObjectSpecifierName);
 

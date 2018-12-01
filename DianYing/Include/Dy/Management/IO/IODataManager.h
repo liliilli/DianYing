@@ -153,15 +153,10 @@ public:
       const std::string& materialName,
       const PDyMaterialPopulateDescriptor& materialPopulateDescriptor);
 
-  /// @brief Create model information.
-  EDySuccess CreateModelInformation_Deprecated(const PDyModelInstanceMetaInfo& modelDescriptor);
   /// @brief Create shader information.
   EDySuccess CreateShaderInformation_Deprecated(const PDyShaderConstructionDescriptor& shaderDescriptor);
   /// @brief Create texture information.
   EDySuccess CreateTextureInformation_Deprecated(const PDyTextureInstanceMetaInfo& textureDescriptor);
-  /// @brief Create model information, with static code generated model information.
-  /// This function should used carefully, unless general version of CreateModelInformation_Deprecated.
-  EDySuccess CreateModelInformation_Deprecated(const PDyModelConstructionVertexDescriptor& modelDescriptor);
   /// @brief Create material information.
   EDySuccess CreateMaterialInformation_Deprecated(const PDyMaterialInstanceMetaInfo& materialDescriptor);
 

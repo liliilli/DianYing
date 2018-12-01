@@ -46,7 +46,21 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyGLShaderInstanceMetaInfo
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyGLShaderInstanceMetaInfo& p)
 {
-  p.mSourceType = EDyResourceSource::External;
+  /*  Template
+   *  "GLShaderSpecifierName":
+      {
+        "SpecifierName": "GLShaderSpecifierName",
+        "Vertex": "FilePath",
+        "Fragment": "FilePath",
+        "Hull": "FilePath",
+        "Domain": "FilePath",
+        "Geometry": "FilePath",
+        "Compute": "FilePath"
+      }
+   */
+
+  p.mSpecifierName  = DyJsonGetValueFrom<std::string>(j, "SpecifierName");
+  p.mSourceType     = EDyResourceSource::External;
   if (DyCheckHeaderIsExist(j, sHeader_Vertex) == DY_SUCCESS)
   {
     p.GetFragment(EDyShaderFragmentType::Vertex).mExternalFilePath = DyJsonGetValueFrom<std::string>(j, sHeader_Vertex);

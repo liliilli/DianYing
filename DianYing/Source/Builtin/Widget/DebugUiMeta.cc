@@ -14,7 +14,6 @@
 
 /// Header file
 #include <Dy/Builtin/Widget/DebugUiMeta.h>
-#include <Dy/Builtin/Helper/BuiltinInformationDeliver.h>
 
 namespace
 {

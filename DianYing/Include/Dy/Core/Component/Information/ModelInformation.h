@@ -17,6 +17,7 @@
 #include <Dy/Core/Component/Information/SubmeshInformation.h>
 #include <Dy/Core/Component/Internal/MaterialType.h>
 #include <Dy/Helper/Pointer.h>
+#include <Dy/Meta/Information/MetaInfoMaterial.h>
 
 //!
 //! Forward declaration
@@ -109,7 +110,7 @@ private:
   /// Read index(element) data, make data, and insert to PDySubmeshInformationDescriptor.
   void __pReadIndiceData(const aiMesh& mesh, PDySubmeshInformationDescriptor& desc);
   /// Read material data and make descriptor.
-  PDyMaterialConstructionDescriptor       __pReadMaterialData(const aiMaterial& material);
+  PDyMaterialInstanceMetaInfo       __pReadMaterialData(const aiMaterial& material);
   /// Read material texture data and insert texture information to manager.
   std::optional<std::vector<std::string>> __pLoadMaterialTextures(const aiMaterial& material, EDyTextureMapType type);
   /// Read node information from aiScene, and create DMoe's node information.

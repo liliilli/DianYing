@@ -15,6 +15,7 @@
 
 #include <nlohmann/json_fwd.hpp>
 #include <Dy/Component/Interface/IDyScriptable.h>
+#include <Dy/Meta/Information/CommonResourceMetaInfo.h>
 
 namespace dy
 {
@@ -64,7 +65,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyScriptReferenceMetaInf
 /// @struct PDyScriptInstanceMetaInfo
 /// @brief  Instance meta information of `CDyScript` base type.
 ///
-struct PDyScriptInstanceMetaInfo
+struct PDyScriptInstanceMetaInfo : public PDyCommonResourceMetaInfo
 {
   EDyScriptType mScriptType    = EDyScriptType::NoneError;
   EDyScriptMode mScriptMode    = EDyScriptMode::NoneError;

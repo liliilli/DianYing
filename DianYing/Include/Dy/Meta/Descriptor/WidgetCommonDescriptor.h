@@ -30,10 +30,14 @@ namespace dy
 enum class EDyWidgetComponentType
 {
   Root,
-  Text,
-  BasicGaugeBar,
+
   HorizontalLayout,
   VerticalLayout,
+
+  BasicGaugeBar,
+  Text,
+  Image,
+
   NoneError
 };
 

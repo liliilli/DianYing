@@ -23,7 +23,7 @@ namespace dy
 
 ///
 /// @class FDyBasicGaugeBar
-/// @brief This class display text on position aligned with FontManager.
+/// @brief This class display gauge bar horizontally with plain colors.
 ///
 class FDyBasicGaugeBar : public FDyUiObject, public IDyInitializeHelper<PDyMetaWidgetBarDescriptor>
 {
@@ -31,12 +31,6 @@ class FDyBasicGaugeBar : public FDyUiObject, public IDyInitializeHelper<PDyMetaW
   MDY_SET_TYPEMATCH_FUNCTION(FDyUiObject, FDyBasicGaugeBar);
   MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(FDyBasicGaugeBar);
 public:
-  ///
-  /// @brief Text component (stand-alone) constructor.
-  /// In initialization time of this class, initial text and position and color set.
-  /// position parameter was based on screen or parent's size where component
-  /// is in hierarchy structrue of parent.
-  ///
   FDyBasicGaugeBar() = default;
   virtual ~FDyBasicGaugeBar() = default;
 
