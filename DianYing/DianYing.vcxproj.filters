@@ -199,6 +199,7 @@
     <ClCompile Include="Source\Meta\Information\MetaInfoTexture.cc" />
     <ClCompile Include="Source\Meta\Type\EDyTextureParameter.cc" />
     <ClCompile Include="Source\Builtin\Abstract\ADyTextureResource.cc" />
+    <ClCompile Include="Source\Meta\Information\MetaInfoMaterial.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -493,6 +494,8 @@
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyModelResource.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoTexture.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyTextureParameter.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyMaterialResource.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoMaterial.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

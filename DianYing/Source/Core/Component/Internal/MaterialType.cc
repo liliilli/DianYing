@@ -14,27 +14,30 @@
 
 #include <Dy/Core/Component/Internal/MaterialType.h>
 #include <Dy/Management/IO/IOResourceManager.h>
+#include <nlohmann/json.hpp>
+
+//!
+//! Implementation
+//!
 
 namespace dy
 {
 
-std::string PDyMaterialConstructionDescriptor::ToString()
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyMaterialBlendMode& p)
 {
-  auto log = fmt::format(
-R"dy(PDyMaterialConstructionDescriptor
-Material Name : {0}
-Shader Name : {1}
-)dy", this->mMaterialName, this->mShaderName);
-
-  for (const auto& textureName : this->mTextureNames)
-  {
-    log += textureName;
-  }
-
-  return log;
+  MDY_NOT_IMPLEMENTED_ASSERT();
 }
 
-DDyMaterialShaderTuple::DDyMaterialShaderTuple(const std::string& shaderName) :
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyMaterialBlendMode& p)
+{
+  const auto enumString = j.get<std::string>();
+  if      (j == "Opaque")       { p = EDyMaterialBlendMode::Opaque; }
+  else if (j == "Translucent")  { p = EDyMaterialBlendMode::Translucent; }
+  else if (j == "Custom")       { p = EDyMaterialBlendMode::Custom; }
+  else                          { MDY_UNEXPECTED_BRANCH(); }
+}
+
+  DDyMaterialShaderTuple::DDyMaterialShaderTuple(const std::string& shaderName) :
     mShaderName(shaderName),
     mValidShaderPointer(MDyIOResource::GetInstance().GetShaderResource(shaderName))
 { }

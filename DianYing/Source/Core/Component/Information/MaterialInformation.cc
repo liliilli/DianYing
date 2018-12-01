@@ -36,12 +36,12 @@ MDY_SET_IMMUTABLE_STRING(kCustom,       "Custom");
 
 namespace dy
 {
-DDyMaterialInformation::DDyMaterialInformation(const PDyMaterialConstructionDescriptor& materialConstructionDescriptor) :
+DDyMaterialInformation::DDyMaterialInformation(const PDyMaterialInstanceMetaInfo& materialConstructionDescriptor) :
     mMaterialInformation{materialConstructionDescriptor}
 {
   // Set and output log for this information descriptor properties.
-  MDY_LOG_INFO_D(kMaterialInformationTemplate, kMaterialInformation, kMaterialName, this->mMaterialInformation.mMaterialName);
-  MDY_LOG_INFO_D(kMaterialInformationTemplate, kMaterialInformation, kShaderName, this->mMaterialInformation.mShaderName);
+  MDY_LOG_INFO_D(kMaterialInformationTemplate, kMaterialInformation, kMaterialName, this->mMaterialInformation.mSpecifierName);
+  MDY_LOG_INFO_D(kMaterialInformationTemplate, kMaterialInformation, kShaderName, this->mMaterialInformation.mShaderSpecifier);
 
   switch (this->mMaterialInformation.mBlendMode)
   {
@@ -52,7 +52,7 @@ DDyMaterialInformation::DDyMaterialInformation(const PDyMaterialConstructionDesc
     {
       MDY_LOG_INFO_D(kMaterialInformationTemplate, kMaterialInformation, kBlendMode, kTranslucent);
       MDY_LOG_ERROR(kMaterialNotSupport, kMaterialInformation,
-                    kMaterialName, this->mMaterialInformation.mMaterialName, kBlendMode, kTranslucent);
+                    kMaterialName, this->mMaterialInformation.mSpecifierName, kBlendMode, kTranslucent);
 
       this->mMaterialInformation.mBlendMode = EDyMaterialBlendMode::Opaque;
     }
@@ -61,7 +61,7 @@ DDyMaterialInformation::DDyMaterialInformation(const PDyMaterialConstructionDesc
     {
       MDY_LOG_INFO_D(kMaterialInformationTemplate, kMaterialInformation, kBlendMode, kCustom);
       MDY_LOG_ERROR(kMaterialNotSupport, kMaterialInformation,
-                    kMaterialName, this->mMaterialInformation.mMaterialName, kBlendMode, kCustom);
+                    kMaterialName, this->mMaterialInformation.mSpecifierName, kBlendMode, kCustom);
 
       this->mMaterialInformation.mBlendMode = EDyMaterialBlendMode::Opaque;
     }
@@ -69,7 +69,7 @@ DDyMaterialInformation::DDyMaterialInformation(const PDyMaterialConstructionDesc
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 
-  for (const auto& textureName : this->mMaterialInformation.mTextureNames)
+  for (const auto& textureName : this->mMaterialInformation.mTextureNames_Deprecated)
   {
     MDY_LOG_INFO_D(kMaterialInformationTemplate, kMaterialInformation, "bind texture name", textureName);
   }
@@ -77,7 +77,7 @@ DDyMaterialInformation::DDyMaterialInformation(const PDyMaterialConstructionDesc
 
 DDyMaterialInformation::~DDyMaterialInformation()
 {
-  MDY_LOG_INFO_D(kMaterialInformationTemplate, kMaterialInformation, kMaterialName, this->mMaterialInformation.mMaterialName);
+  MDY_LOG_INFO_D(kMaterialInformationTemplate, kMaterialInformation, kMaterialName, this->mMaterialInformation.mSpecifierName);
 
   if (__mLinkedMaterialResourcePtr) { __mLinkedMaterialResourcePtr->__pfResetMaterialInformationLink(); }
 }
@@ -102,13 +102,13 @@ DDyMaterialInformation::__pfPopulateMaterialWith(const PDyMaterialPopulateDescri
 {
   MDY_LOG_INFO_D("Populate derived material information {} from {}.",
       desc.mMaterialOverrideName,
-      this->mMaterialInformation.mMaterialName
+      this->mMaterialInformation.mSpecifierName
   );
 
   auto newDesc = this->mMaterialInformation;
   {
-    newDesc.mMaterialName  = desc.mMaterialOverrideName;
-    newDesc.mShaderName    = desc.mOverrideShaderName;
+    newDesc.mSpecifierName  = desc.mMaterialOverrideName;
+    newDesc.mShaderSpecifier    = desc.mOverrideShaderName;
   }
 
   return std::make_unique<DDyMaterialInformation>(newDesc);

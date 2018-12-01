@@ -25,6 +25,7 @@
 #include <Dy/Meta/Information/GLShaderMetaInformation.h>
 #include <Dy/Meta/Information/ModelMetaInformation.h>
 #include <Dy/Meta/Information/MetaInfoTexture.h>
+#include <Dy/Meta/Information/MetaInfoMaterial.h>
 
 namespace dy
 {
@@ -78,6 +79,12 @@ public:
   MDY_NODISCARD const PDyTextureInstanceMetaInfo& GetTextureMetaInformation(_MIN_ const std::string& specifier) const;
 
   ///
+  /// @brief  Get material instance meta information from container.
+  /// @return Return value is undefined if not found.
+  ///
+  MDY_NODISCARD const PDyMaterialInstanceMetaInfo& GetMaterialMetaInformation(_MIN_ const std::string& specifier) const;
+
+  ///
   /// @brief  Check script meta information is exist.
   /// @return Return value is false if not found.
   ///
@@ -102,6 +109,15 @@ public:
   FORCEINLINE MDY_NODISCARD bool IsTextureMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
   {
     return DyIsMapContains(this->mTextureMetaInfo, specifier);
+  }
+
+  ///
+  /// @brief  Check material meta information is exist.
+  /// @return Return value is false if not found.
+  ///
+  FORCEINLINE MDY_NODISCARD bool IsMaterialMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
+  {
+    return DyIsMapContains(this->mMaterialMetaInfo, specifier);
   }
 
   ///
@@ -145,6 +161,7 @@ private:
   MDY_NODISCARD EDySuccess pfAddGLShaderMetaInfo      (_MIN_ const PDyGLShaderInstanceMetaInfo& metaInfo);
   MDY_NODISCARD EDySuccess pfAddModelMetaInfo         (_MIN_ const PDyModelInstanceMetaInfo& metaInfo);
   MDY_NODISCARD EDySuccess pfAddTextureMetaInfo       (_MIN_ const PDyTextureInstanceMetaInfo& metaInfo);
+  MDY_NODISCARD EDySuccess pfAddMaterialMetaInfo      (_MIN_ const PDyMaterialInstanceMetaInfo& metaInfo);
 
   /// Level meta information map.
   THashMap<PDyLevelConstructMetaInfo>   mLevelInfoMap   = {};
@@ -158,6 +175,8 @@ private:
   THashMap<PDyModelInstanceMetaInfo>    mModelMetaInfo  = {};
   /// Texture meta information map.
   THashMap<PDyTextureInstanceMetaInfo>  mTextureMetaInfo= {};
+  /// Material meta information map.
+  THashMap<PDyMaterialInstanceMetaInfo> mMaterialMetaInfo = {};
 
   //!
   //! Hierarchial meta information containers.

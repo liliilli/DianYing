@@ -16,6 +16,7 @@
 #include <Dy/Core/Component/Internal/MaterialType.h>
 #include <Dy/Element/Interface/IDyToString.h>
 #include <Dy/Helper/Pointer.h>
+#include <Dy/Meta/Information/MetaInfoMaterial.h>
 
 //!
 //! Forward declaration
@@ -41,14 +42,14 @@ class DDyMaterialInformation final : public IDyToString
 {
 public:
   MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(DDyMaterialInformation);
-  DDyMaterialInformation(const PDyMaterialConstructionDescriptor& materialConstructionDescriptor);
+  DDyMaterialInformation(const PDyMaterialInstanceMetaInfo& materialConstructionDescriptor);
   ~DDyMaterialInformation();
 
   ///
   /// @brief return immutable descriptor information reference.
   ///
   [[nodiscard]]
-  FORCEINLINE const PDyMaterialConstructionDescriptor& GetInformation() const noexcept
+  FORCEINLINE const PDyMaterialInstanceMetaInfo& GetInformation() const noexcept
   {
     return this->mMaterialInformation;
   }
@@ -83,7 +84,7 @@ private:
   std::unique_ptr<DDyMaterialInformation> __pfPopulateMaterialWith(const PDyMaterialPopulateDescriptor& desc) const noexcept;
 
   /// Information sturcture.
-  PDyMaterialConstructionDescriptor mMaterialInformation;
+  PDyMaterialInstanceMetaInfo mMaterialInformation;
 
   //!
   //! Resource pointers binding

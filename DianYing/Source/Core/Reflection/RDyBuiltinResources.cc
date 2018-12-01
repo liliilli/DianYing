@@ -51,6 +51,11 @@ void RDyBuiltinResource::BindBuiltinResourcesToMetaManager()
       auto metaInfo = std::any_cast<PDyTextureInstanceMetaInfo>(function()->GetMetaInfo());
       MDY_CALL_ASSERT_SUCCESS(metaManager.pfAddTextureMetaInfo(metaInfo));
     } break;
+    case EDyResourceType::Material:
+    { // Material. texture and shader must be specified.
+      auto metaInfo = std::any_cast<PDyMaterialInstanceMetaInfo>(function()->GetMetaInfo());
+      MDY_CALL_ASSERT_SUCCESS(metaManager.pfAddMaterialMetaInfo(metaInfo));
+    } break;
     case EDyResourceType::WidgetMeta:
     { // WidgetMeta
       auto metaInfo = std::any_cast<std::string_view>(function()->GetMetaInfo());

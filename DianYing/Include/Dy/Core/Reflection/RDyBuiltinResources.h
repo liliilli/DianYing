@@ -23,12 +23,13 @@
 namespace dy
 {
 
-enum EDyResourceType
+enum class EDyResourceType
 {
   Script,
   Model,
   GLShader,
   Texture,
+  Material,
   WidgetMeta
 };
 

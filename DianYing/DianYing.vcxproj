@@ -364,6 +364,7 @@
     <ClCompile Include="Source\Meta\Information\ElementObjectMetaInfo.cc" />
     <ClCompile Include="Source\Meta\Information\FontMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoGLShader.cc" />
+    <ClCompile Include="Source\Meta\Information\MetaInfoMaterial.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoModel.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoTexture.cc" />
     <ClCompile Include="Source\Meta\Information\PrefabMetaInformation.cc" />
@@ -389,6 +390,7 @@
   <ItemGroup>
     <ClInclude Include="Include\Dy\Binding\LuaScriptFrame.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGLShaderResource.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyMaterialResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyModelResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyScriptResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyTextureResource.h" />
@@ -490,6 +492,7 @@
     <ClInclude Include="Include\Dy\Meta\Information\ComponentMetaInformation.h" />
     <ClInclude Include="Include\Dy\Meta\Information\ElementObjectMetaInfo.h" />
     <ClInclude Include="Include\Dy\Meta\Information\GLShaderMetaInformation.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoMaterial.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoTexture.h" />
     <ClInclude Include="Include\Dy\Meta\Information\ModelMetaInformation.h" />
     <ClInclude Include="Include\Dy\Meta\Information\PrefabMetaInformation.h" />

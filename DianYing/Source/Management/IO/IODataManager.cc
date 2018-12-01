@@ -163,52 +163,6 @@ EDySuccess MDyIOData::CreateShaderInformation(const std::string& shaderSpecifier
   return DY_SUCCESS;
 }
 
-EDySuccess MDyIOData::CreateMaterialInformation(const PDyMaterialConstructionDescriptor& materialDescriptor)
-{
-  // Integrity test
-  if (materialDescriptor.mMaterialName.empty())
-  {
-    MDY_LOG_CRITICAL_D(kErrorMaterialNameNotSpecified, kDyDataInformation, "CreateMaterialInformation");
-    return DY_FAILURE;
-  }
-  if (!materialDescriptor.mIsShaderLazyInitialized && materialDescriptor.mShaderName.empty())
-  {
-    MDY_LOG_CRITICAL_D(kErrorBindingShaderNameEmpty, kDyDataInformation, "CreateMaterialInformation", materialDescriptor.mMaterialName);
-    return DY_FAILURE;
-  }
-
-  // Check there is duplicated material name is exist in information list.
-  const auto& materialName = materialDescriptor.mMaterialName;
-  if (mMaterialInformation.find(materialName) != mMaterialInformation.end())
-  {
-    MDY_LOG_WARNING_D("{}::{} | {} is already found in mMaterialInformation list.", kDyDataInformation, "CreateMaterialInformation", materialName);
-    return DY_FAILURE;
-  }
-
-  // Check there is already in the information map.
-  auto [it, creationResult] = mMaterialInformation.try_emplace(materialName, nullptr);
-  if (!creationResult)
-  {
-    MDY_LOG_CRITICAL("{}::{} | Unexpected error happened during create memory for material information. | Material name : {}.",
-                     kDyDataInformation, "CreateMaterialInformation", materialName);
-    return DY_FAILURE;
-  }
-
-  // Make resource in heap, and insert it to empty memory space.
-  auto materialInformation = std::make_unique<DDyMaterialInformation>(materialDescriptor);
-  it->second.swap(materialInformation);
-  if (!it->second)
-  {
-    MDY_LOG_CRITICAL("{}::{} | Unexpected error happened during swapping texture information {}.",
-                     kDyDataInformation, "CreateMaterialInformation", materialName);
-    this->mMaterialInformation.erase(materialName);
-    return DY_FAILURE;
-  }
-
-  MDY_LOG_INFO("{}::{} | Create material information. | Material name : {}.", kDyDataInformation, "CreateMaterialInformation", materialName);
-  return DY_SUCCESS;
-}
-
 EDySuccess MDyIOData::CreateModelInformation(const std::string& modelSpecifierName, MDY_NOTUSED EDyScope scope)
 {
   /// @brief Check compatibility of instance into Dy model binding structure.
@@ -301,6 +255,96 @@ EDySuccess MDyIOData::CreateTextureInformation(const std::string& textureSpecifi
   it->second.swap(textureInformation);
   MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(it->second), "Unexpected error occurred.");
   MDY_LOG_CRITICAL("{} | \"{}\" texture information Created.", textureName);
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyIOData::CreateMaterialInformation(_MIN_ const std::string& materialSpecifier, MDY_NOTUSED EDyScope scope)
+{
+  /// @brief Check metarial meta information whether specifier name and shader exists. \n
+  /// Texture list does not have to be not empty. (intentional)
+  static auto CheckValidity = [](_MIN_ const PDyMaterialInstanceMetaInfo& metaInfo)
+  {
+    MDY_ASSERT(metaInfo.mSpecifierName.empty() == false, "Material specifier name must be specified.");
+    MDY_ASSERT(metaInfo.mShaderSpecifier.empty() == false, "Material shader specifier must be specified.");
+
+    const auto& metaManager = MDyMetaInfo::GetInstance();
+    MDY_ASSERT(metaManager.IsGLShaderMetaInfoExist(metaInfo.mShaderSpecifier) == true, "Shader must be valid.");
+
+    for (const auto& textureSpecifier : metaInfo.mTextureNames)
+    {
+      if (textureSpecifier.empty() == true) { continue; }
+      MDY_ASSERT(metaManager.IsTextureMetaInfoExist(textureSpecifier) == true, "Texture must be valid.");
+    }
+    return DY_SUCCESS;
+  };
+
+#ifdef false
+  struct DMaterialInfoDependenciesPtrList final
+  {
+    using TTextureInfoList = std::array<DDyTextureInformation*, 16>;
+
+    DDyShaderInformation* mPtrShaderInfo = MDY_INITIALIZE_NULL;
+    TTextureInfoList      mPtrTextureInfos = {};
+  };
+#endif
+
+  static auto GetDependenciesOfMaterialInfo = [this, scope](_MIN_ const PDyMaterialInstanceMetaInfo& metaInfo)
+  {
+    //DMaterialInfoDependenciesPtrList result{};
+
+    if (this->IsShaderInformationExist(metaInfo.mShaderSpecifier) == false)
+    {
+      MDY_CALL_ASSERT_SUCCESS(this->CreateShaderInformation(metaInfo.mShaderSpecifier, scope));
+    }
+
+    const auto* shaderInfo = this->GetShaderInformation(metaInfo.mShaderSpecifier);
+    MDY_ASSERT(MDY_CHECK_ISNOTNULL(shaderInfo), "Unexpected error occurred.");
+    //result.mPtrShaderInfo = shaderInfo;
+#ifdef false
+    if (shaderInfo->GetScope() < scope) { shaderInfo->SetScope(scope); this->ResumeFromGCCandidate(shaderInfo); }
+#endif
+
+    for (const auto& textureSpecifier : metaInfo.mTextureNames)
+    {
+      if (textureSpecifier.empty() == true) { continue; }
+      if (this->IsTextureInformationExist(textureSpecifier) == false)
+      {
+        MDY_CALL_ASSERT_SUCCESS(this->CreateTextureInformation(textureSpecifier, scope));
+      }
+      const auto* textureInfo = this->GetTextureInformation(textureSpecifier);
+      MDY_ASSERT(MDY_CHECK_ISNOTNULL(textureInfo), "Unexpected error occurred.");
+  #ifdef false
+      if (textureInfo->GetScope() < scope) { textureInfo->SetScope(scope); this->ResumeFromGCCandidate(textureInfo); }
+  #endif
+    }
+  };
+
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  //! FUNCTIONBODY ∨
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  const auto& metaManager = MDyMetaInfo::GetInstance();
+  const auto& metaInfo = metaManager.GetMaterialMetaInformation(materialSpecifier);
+  MDY_ASSERT(CheckValidity(metaInfo) == DY_SUCCESS, "Validity check must not be failed.");
+
+  // Check there is duplicated material name is exist in information list.
+  const auto& materialName = metaInfo.mSpecifierName;
+  if (DyIsMapContains(this->mMaterialInformation, materialName) == true)
+  {
+    MDY_LOG_WARNING_D("{}::{} | {} is already found in mMaterialInformation list.", kDyDataInformation, "CreateMaterialInformation_Deprecated", materialName);
+    return DY_FAILURE;
+  }
+
+  // Check there is already in the information map.
+  auto [it, creationResult] = mMaterialInformation.try_emplace(materialName, nullptr);
+  MDY_ASSERT(creationResult == true, "Unexpected error occurred.");
+
+  // Make resource in heap, and insert it to empty memory space.
+  GetDependenciesOfMaterialInfo(metaInfo);
+  auto materialInformation = std::make_unique<DDyMaterialInformation>(metaInfo);
+  it->second.swap(materialInformation);
+
+  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(it->second), "Unexpected error occurred.");
   return DY_SUCCESS;
 }
 
@@ -911,6 +955,52 @@ EDySuccess MDyIOData::CreateTextureInformation_Deprecated(const PDyTextureInstan
   }
 
   MDY_LOG_CRITICAL("{} | \"{}\" texture information Created.", textureName);
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyIOData::CreateMaterialInformation_Deprecated(const PDyMaterialInstanceMetaInfo& materialDescriptor)
+{
+  // Integrity test
+  if (materialDescriptor.mSpecifierName.empty())
+  {
+    MDY_LOG_CRITICAL_D(kErrorMaterialNameNotSpecified, kDyDataInformation, "CreateMaterialInformation_Deprecated");
+    return DY_FAILURE;
+  }
+  if (!materialDescriptor.mIsShaderLazyInitialized_Deprecated && materialDescriptor.mShaderSpecifier.empty())
+  {
+    MDY_LOG_CRITICAL_D(kErrorBindingShaderNameEmpty, kDyDataInformation, "CreateMaterialInformation_Deprecated", materialDescriptor.mSpecifierName);
+    return DY_FAILURE;
+  }
+
+  // Check there is duplicated material name is exist in information list.
+  const auto& materialName = materialDescriptor.mSpecifierName;
+  if (mMaterialInformation.find(materialName) != mMaterialInformation.end())
+  {
+    MDY_LOG_WARNING_D("{}::{} | {} is already found in mMaterialInformation list.", kDyDataInformation, "CreateMaterialInformation_Deprecated", materialName);
+    return DY_FAILURE;
+  }
+
+  // Check there is already in the information map.
+  auto [it, creationResult] = mMaterialInformation.try_emplace(materialName, nullptr);
+  if (!creationResult)
+  {
+    MDY_LOG_CRITICAL("{}::{} | Unexpected error happened during create memory for material information. | Material name : {}.",
+                     kDyDataInformation, "CreateMaterialInformation_Deprecated", materialName);
+    return DY_FAILURE;
+  }
+
+  // Make resource in heap, and insert it to empty memory space.
+  auto materialInformation = std::make_unique<DDyMaterialInformation>(materialDescriptor);
+  it->second.swap(materialInformation);
+  if (!it->second)
+  {
+    MDY_LOG_CRITICAL("{}::{} | Unexpected error happened during swapping texture information {}.",
+                     kDyDataInformation, "CreateMaterialInformation_Deprecated", materialName);
+    this->mMaterialInformation.erase(materialName);
+    return DY_FAILURE;
+  }
+
+  MDY_LOG_INFO("{}::{} | Create material information. | Material name : {}.", kDyDataInformation, "CreateMaterialInformation_Deprecated", materialName);
   return DY_SUCCESS;
 }
 

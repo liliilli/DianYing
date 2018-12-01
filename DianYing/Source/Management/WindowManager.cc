@@ -121,7 +121,7 @@ void DyInitializeBuiltinResource()
   MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderScreenOutput::sName), dy::EDyScope::Global));
   MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderScreenOutput::sName)));
 
-  dy::builtin::FDyBuiltinMaterialOpaqueStaticPlain();
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateMaterialInformation(MSVSTR(dy::builtin::FDyBuiltinMaterialOpaqueStaticPlain::sName), dy::EDyScope::Global));
 }
 
 } /// unnamed namespace

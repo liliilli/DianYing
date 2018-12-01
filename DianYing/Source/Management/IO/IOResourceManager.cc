@@ -183,26 +183,26 @@ EDySuccess MDyIOResource::CreateMaterialResource(const std::string& materialName
   // If not, create shader in advance but return error code when cannot.
   const auto& materialInformation = materialInfo->GetInformation();
 
-  if (const auto* shaderResource = this->GetShaderResource(materialInformation.mShaderName);
+  if (const auto* shaderResource = this->GetShaderResource(materialInformation.mShaderSpecifier);
       shaderResource == nullptr)
   {
-    if (this->CreateShaderResource(materialInformation.mShaderName) == DY_FAILURE)
+    if (this->CreateShaderResource(materialInformation.mShaderSpecifier) == DY_FAILURE)
     {
       MDY_LOG_CRITICAL_D("{} | Could not create shader resource. | Shader resource name : {}",
-                         "MDyIOResource::CreateMaterialResource", materialInformation.mShaderName);
+                         "MDyIOResource::CreateMaterialResource", materialInformation.mShaderSpecifier);
       return DY_FAILURE;
     }
   }
 
   // Verify texture resource instance also.
-  if (materialInformation.mTextureNames.size() > kTextureCountLimit)
+  if (materialInformation.mTextureNames_Deprecated.size() > kTextureCountLimit)
   {
     MDY_LOG_CRITICAL_D("{} | Texture size must not be bigger than {}. | Material Name : {} | Material texture size : {}",
-                       "MDyIOResource::CreateMaterialResource", kTextureCountLimit, materialName, materialInformation.mTextureNames.size());
+                       "MDyIOResource::CreateMaterialResource", kTextureCountLimit, materialName, materialInformation.mTextureNames_Deprecated.size());
     return DY_FAILURE;
   }
 
-  for (const auto& textureName : materialInformation.mTextureNames)
+  for (const auto& textureName : materialInformation.mTextureNames_Deprecated)
   {
     const auto* textureResource = this->GetTextureResource(textureName);
     if (textureResource == nullptr)
@@ -222,11 +222,11 @@ EDySuccess MDyIOResource::CreateMaterialResource(const std::string& materialName
   //!
   PDyMaterialResourceDescriptor mParamterDescriptor;
   {
-    mParamterDescriptor.mMaterialName   = materialInformation.mMaterialName;
+    mParamterDescriptor.mMaterialName   = materialInformation.mSpecifierName;
     mParamterDescriptor.mBlendMode      = materialInformation.mBlendMode;
-    mParamterDescriptor.mShaderTuple    = DDyMaterialShaderTuple{materialInformation.mShaderName};
+    mParamterDescriptor.mShaderTuple    = DDyMaterialShaderTuple{materialInformation.mShaderSpecifier};
 
-    for (const auto& textureName : materialInformation.mTextureNames)
+    for (const auto& textureName : materialInformation.mTextureNames_Deprecated)
     {
       mParamterDescriptor.mTextureTuples.emplace_back(textureName);
     }
