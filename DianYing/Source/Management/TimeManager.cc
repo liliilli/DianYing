@@ -28,9 +28,13 @@ EDySuccess MDyTime::IsGameFrameTicked() const noexcept
     if (this->mGameElapsedDtFromLastTick < this->mGameTickFragment) { return DY_FAILURE; }
 
     this->mGameElapsedDtFromLastTick -= this->mGameTickFragment;
+    this->mGameTickedFpsCount += 1;
     return DY_SUCCESS;
   }
-  else { return DY_SUCCESS; }
+  else {
+    this->mGameTickedFpsCount += 1;
+    return DY_SUCCESS;
+  }
 }
 
 TI32 MDyTime::GetPresentFpsCountValue() const noexcept

@@ -16,10 +16,11 @@
 #include <Dy/Builtin/Script/DebugUiScriptCpp.h>
 #include <Dy/Management/WindowManager.h>
 #include <Dy/Management/LoggingManager.h>
+#include <Dy/Management/TimeManager.h>
 
 #include <Dy/Element/Canvas/Widget.h>
 #include <Dy/Element/Canvas/Text.h>
-#include "Dy/Element/Canvas/FDyBasicGaugeBar.h"
+#include <Dy/Element/Canvas/FDyBasicGaugeBar.h>
 
 namespace dy
 {
@@ -44,7 +45,8 @@ void FDyBuiltinDebugUiScript::Update(_MIN_ TF32 dt)
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(text), "Unexpected error occurred.");
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(bar),  "Unexpected error occurred.");
 
-  text->SetText(fmt::format("{:.2f} %", usage));
+  auto& time = MDyTime::GetInstance();
+  text->SetText(fmt::format("{:05.2f} %, {:0d} fps", usage, time.GetPresentFpsCountValue()));
   bar->SetPresentValue(usage);
 }
 
