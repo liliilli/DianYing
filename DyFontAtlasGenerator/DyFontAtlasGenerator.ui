@@ -29,7 +29,7 @@
    <enum>Qt::NoContextMenu</enum>
   </property>
   <property name="windowTitle">
-   <string notr="true">DianYing SDF Font Atlas generator</string>
+   <string notr="true">DianYing Font Atlas generator (v2)</string>
   </property>
   <property name="toolTip">
    <string notr="true"/>
@@ -172,7 +172,7 @@
      <item>
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Create Texture Atlas with...</string>
+        <string>Create SDF Texture Atlas with...</string>
        </property>
        <property name="margin">
         <number>0</number>

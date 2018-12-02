@@ -70,7 +70,22 @@ auto sFtLibraryList {std::vector<FT_Library>{}};
 auto sFtFaceList    {std::vector<FT_Face>{}};
 std::atomic<bool> sFtIsInitiailzed {false};
 
-using TSdfType = msdfgen::Bitmap<float>;
+using TSdfType          = msdfgen::Bitmap<float>;
+using TCharMapRangePair = std::pair<uint64_t, uint64_t>;
+
+/*  TEMPLATE
+ *  00......`.......08......`.......
+    [PrevFontPtr   ][NextFontPtr   ]
+    16......`.......24......`.......
+    [PlainInfoLen  ][CompInfoLength]
+    32......`.......48......`.......
+    [PlainImgLength][CompImgLength ]
+    64..............................
+    [Compressed Information Buffer ]
+    64+CompInfoLen..................
+    [Compressed Image Buffer       ]
+    .............................EOF
+ */
 
 ///
 /// @struct DBounds
@@ -204,10 +219,7 @@ void CheckAndChangeBounds(DBounds& bounds)
   }
 };
 
-///
 /// @brief
-/// @param bounds
-///
 DAlignedBBoxInfo AlignSDFBBoxFrame(const DBounds& bounds)
 {
   const auto dims{ msdfgen::Vector2{bounds.r - bounds.l, bounds.t - bounds.b} };
@@ -253,97 +265,92 @@ DDyFontInformation GetFontGeneralInformation(const QString fontPath)
   return result;
 }
 
-///
-/// @brief
-/// @param  ftOutlineFunc
-/// @param  charCode
-/// @param  ftFace
-/// @param  id
-/// @return
-///
-DResult CreateGlyphInformation(const FT_Outline_Funcs& ftOutlineFunc, const FT_ULong charCode, const FT_Face ftFace, int32_t id)
+void Process(std::vector<DResult>& charResultList, const std::vector<FT_ULong>& charMapList, const TCharMapRangePair charRangePair, const FT_Face ftFace)
 {
+  const auto itStart  = charMapList.cbegin() + charRangePair.first;
+  const auto itEnd    = charMapList.cbegin() + charRangePair.second;
+
+  FT_Outline_Funcs ftFunctions = {};
+  ftFunctions.move_to = &dy::ftMoveTo;    ftFunctions.line_to = &dy::ftLineTo;
+  ftFunctions.conic_to = &dy::ftConicTo;  ftFunctions.cubic_to = &dy::ftCubicTo;
+  ftFunctions.shift = 0;                  ftFunctions.delta = 0;
+
+  for (auto charCodeIt = itStart; charCodeIt != itEnd; ++charCodeIt)
   {
-    const FT_Error errorFlag = FT_Load_Char(ftFace, charCode, FT_LOAD_NO_SCALE);
-    Q_ASSERT(errorFlag == 0);
+    const FT_Error loadCharErrorFlag = FT_Load_Char(ftFace, *charCodeIt, FT_LOAD_NO_SCALE);
+    Q_ASSERT(loadCharErrorFlag == 0);
+
+    msdfgen::Shape          shape = {};
+    dy::DDyFreeTypeContext  context = {}; context.mShape = &shape;
+
+    const auto outlineErrorFlag = FT_Outline_Decompose(&ftFace->glyph->outline, &ftFunctions, &context);
+    Q_ASSERT(outlineErrorFlag == 0);
+
+    // Set bounds
+    DBounds bounds{};
+    shape.normalize(); shape.bounds(bounds.l, bounds.b, bounds.r, bounds.t); shape.inverseYAxis = true;
+    CheckAndChangeBounds(bounds);
+
+    // Set translate (non scaled)
+    const auto alignedInfo{ AlignSDFBBoxFrame(bounds) };
+
+    // Generate information
+    msdfgen::edgeColoringSimple(shape, 3.0);
+    auto sdfFloatBuffer{ TSdfType{TEXTURE_SIZE_S, TEXTURE_SIZE_T} };
+    msdfgen::generateSDF(sdfFloatBuffer, shape, alignedInfo.range, alignedInfo.scale, alignedInfo.translate);
+
+    // Realign and scale translate for saving.
+    const auto glyphScale{ static_cast<float>(STANDARD_UNITPEREM) / ftFace->units_per_EM };
+    auto translate{ alignedInfo.translate };
+    translate -= TEXTURE_PXRANGE / alignedInfo.scale;
+    translate *= glyphScale;
+    translate += TEXTURE_PXRANGE / alignedInfo.scale * glyphScale;
+
+    const uint64_t id = static_cast<uint64_t>(std::distance(charMapList.cbegin(), charCodeIt));
+    const auto texCoord = dy::CreateCoordinateInformation(TEXTURE_CANVAS_S, TEXTURE_CANVAS_T, TEXTURE_SIZE_S, TEXTURE_SIZE_T, id);
+
+    // Make json information and return.
+    nlohmann::json jsonWrite;
+    jsonWrite["Size"] = dy::DDyVector2{ float(ftFace->glyph->metrics.width), float(ftFace->glyph->metrics.height) } *glyphScale;
+    jsonWrite["HoriBearing"] = dy::DDyVector2{ float(ftFace->glyph->metrics.horiBearingX), float(ftFace->glyph->metrics.horiBearingY) } *glyphScale;
+    jsonWrite["Scale"] = dy::DDyVector2{ float(alignedInfo.scale.x), float(alignedInfo.scale.y) } / glyphScale;
+    jsonWrite["Translate"] = dy::DDyVector2{ float(translate.x), float(translate.y) } *16;
+    jsonWrite["TexCoordBox"] = texCoord;
+    jsonWrite["HoriAdvance"] = ftFace->glyph->metrics.horiAdvance * glyphScale / 64.0;
+
+    charResultList[id] = DResult{ texCoord, CreateQImageFromSDFBuffer(sdfFloatBuffer), jsonWrite, *charCodeIt};
   }
+};
 
-  auto shape  {msdfgen::Shape{}};
-  auto context{dy::DDyFreeTypeContext{}}; context.mShape = &shape;
-
-  {
-    const auto errorFlag = FT_Outline_Decompose(&ftFace->glyph->outline, &ftOutlineFunc, &context);
-    Q_ASSERT(errorFlag == 0);
-  }
-
-  // Set bounds
-  auto bounds {DBounds{}};
-  shape.normalize();
-  shape.bounds(bounds.l, bounds.b, bounds.r, bounds.t);
-  shape.inverseYAxis = true;
-  CheckAndChangeBounds(bounds);
-  // Set translate (non scaled)
-  const auto alignedInfo {AlignSDFBBoxFrame(bounds)};
-
-  // Generate information
-  msdfgen::edgeColoringSimple(shape, 3.0);
-  auto sdfFloatBuffer {TSdfType{TEXTURE_SIZE_S, TEXTURE_SIZE_T}};
-  msdfgen::generateSDF(sdfFloatBuffer, shape, alignedInfo.range, alignedInfo.scale, alignedInfo.translate);
-
-  // Realign and scale translate for saving.
-  const auto glyphScale { static_cast<float>(STANDARD_UNITPEREM) / ftFace->units_per_EM };
-  auto translate { alignedInfo.translate };
-  translate -= TEXTURE_PXRANGE / alignedInfo.scale;
-  translate *= glyphScale;
-  translate += TEXTURE_PXRANGE / alignedInfo.scale * glyphScale;
-
-  auto texCoord {dy::CreateCoordinateInformation(TEXTURE_CANVAS_S, TEXTURE_CANVAS_T, TEXTURE_SIZE_S, TEXTURE_SIZE_T, id)};
-
-  // Make json information and return.
-  nlohmann::json jsonWrite;
-  jsonWrite["Size"]        = dy::DDyVector2{float(ftFace->glyph->metrics.width), float(ftFace->glyph->metrics.height)} * glyphScale;
-  jsonWrite["HoriBearing"] = dy::DDyVector2{float(ftFace->glyph->metrics.horiBearingX), float(ftFace->glyph->metrics.horiBearingY)} * glyphScale;
-  jsonWrite["Scale"]       = dy::DDyVector2{float(alignedInfo.scale.x), float(alignedInfo.scale.y)} / glyphScale;
-  jsonWrite["Translate"]   = dy::DDyVector2{float(translate.x), float(translate.y)} * 16;
-  jsonWrite["TexCoordBox"] = texCoord;
-  jsonWrite["HoriAdvance"] = ftFace->glyph->metrics.horiAdvance * glyphScale / 64.0;
-
-  return DResult{texCoord, CreateQImageFromSDFBuffer(sdfFloatBuffer), jsonWrite, charCode};
-}
-
-///
-/// @brief
-/// @param information
-/// @param targetCharMap
-///
+/// @brief Create font buffer and export outside by following option.
 void CreateFontBuffer(const DDyFontInformation information,
                       const std::vector<FT_ULong> targetCharMap,
                       const dy::EDyOptionCollections option,
                       DyFontAtlasGenerator& parent)
 {
-  static auto sFtFunctions          {FT_Outline_Funcs{}};
-  static auto sIsFunctionInitialized{false};
-  if (sIsFunctionInitialized == false)
+  /// @brief Insert meta information of specified font.
+  static auto InsertMetaInformationToJson = [&](nlohmann::json& json)
   {
-    sFtFunctions.move_to = &dy::ftMoveTo;
-    sFtFunctions.line_to = &dy::ftLineTo;
-    sFtFunctions.conic_to = &dy::ftConicTo;
-    sFtFunctions.cubic_to = &dy::ftCubicTo;
-    sFtFunctions.shift = 0;
-    sFtFunctions.delta = 0;
+    auto metaInformation{dy::DMeta{}};
+    metaInformation.mFontSpecifierName   = information.fontName;
+    metaInformation.mFontStyleSpecifier  = information.fontStyle;
+    metaInformation.mHoriLinefeed        = sFtFaceList[0]->height;
+    json["Meta"] = metaInformation;
+  };
 
-    sIsFunctionInitialized = true;
-  }
+  /// @brief Calculate range for searching of each thread.
+  static auto CalculateRangeTo = [](uint64_t charMapSize, uint64_t threadCount, std::vector<TCharMapRangePair>& result)
+  {
+    result.reserve(threadCount);
+    for (uint64_t threadId = 0; threadId < threadCount; ++threadId)
+    {
+      const auto begin = threadId * charMapSize / threadCount;
+      const auto end   = (threadId + 1) * charMapSize / threadCount;
+      result.emplace_back(std::make_pair(begin, end));
+    }
+  };
 
-  //!
-  //! Lambda functions
-  //!
-
-  ///
-  /// @brief Store json file and pngs by following options...
-  /// @param
-  /// @param
-  ///
+  /// @brief Store json file and pngs by following options.
   static auto ExportInformations = [&](const nlohmann::json& jsonInstance)
   {
     if (dy::IsHavingFlags(option, dy::EDyOptionCollections::CompressJsonString) == false)
@@ -364,111 +371,55 @@ void CreateFontBuffer(const DDyFontInformation information,
       if (file.open(QIODevice::WriteOnly))
       {
         QDataStream stream(&file);
-        auto buffer{ dy::zlib::CompressString(jsonInstance.dump(2)) };
+        auto buffer{ dy::zlib::CompressString_Deprecated(jsonInstance.dump(2)) };
         stream.writeBytes(buffer.c_str(), buffer.size());
       }
       file.close();
     }
   };
 
-  ///
-  /// @brief
-  /// @param
-  /// @param
-  ///
-
-  //!
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   //! FunctionBody
-  //!
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   // Get concurrent thread number.
-  const auto concurrentThreadNumber {std::thread::hardware_concurrency()};
-  const auto targetCharMapSize      { targetCharMap.size() };
-
-  //
+  const uint32_t concurrentThreadNumber = std::thread::hardware_concurrency();
+  const auto     targetCharMapSize      = static_cast<uint64_t>(targetCharMap.size());
+  // Freetype initialization
   DyResizeFreetypeList(concurrentThreadNumber);
   DyInitializeFreetype();
   DyLoadFontFreetype  (information.fontPath.c_str());
-
-  // Make json information instance for font glyphs.
-  nlohmann::json jsonDescriptor;
-
-  auto metaInformation{dy::DMeta{}};
-  metaInformation.mFontSpecifierName   = information.fontName;
-  metaInformation.mFontStyleSpecifier  = information.fontStyle;
-  metaInformation.mHoriLinefeed        = sFtFaceList[0]->height;
-  jsonDescriptor["Meta"] = metaInformation;
-
+  // Make paint surface of off-screen rendering.
   CPaintSurface paintSurface;
   paintSurface.resize(TEXTURE_CANVAS_S, TEXTURE_CANVAS_T);
   paintSurface.InitializeContext();
   paintSurface.ClearSurface();
+  // Make json information instance for font glyphs.
+  nlohmann::json jsonDescriptor;  InsertMetaInformationToJson(jsonDescriptor);
 
-  auto drawnImageList   {std::vector<QImage>{}};
-  auto charCount        {0};
+  std::vector<DResult>            charResultList(targetCharMapSize);
+  std::vector<TCharMapRangePair>  charRangeList = {};
+  std::vector<QImage>             drawnImageList = {};
+  std::vector<QByteArray>         atlasBufferList = {};
+  std::vector<std::future<void>>  threadResultList = {}; threadResultList.reserve(concurrentThreadNumber);
+  CalculateRangeTo(targetCharMapSize, concurrentThreadNumber, charRangeList);
 
-  //
-  std::vector<std::future<DResult>> threadResultList {};
-  threadResultList.reserve(concurrentThreadNumber);
-
-  const auto remainCharCount        {targetCharMapSize % concurrentThreadNumber};
-  const auto firstIterationMapCount {targetCharMapSize - remainCharCount};
-
-  for (auto i{0u}; i < firstIterationMapCount; i += concurrentThreadNumber)
-  {
-    // Issue task to parallel thread.
-    for (auto j{0u}; j < concurrentThreadNumber; ++j)
-    {
-      auto result = std::async(
-          std::launch::async,
-          CreateGlyphInformation,
-          std::cref(sFtFunctions), targetCharMap[i + j], sFtFaceList[j], charCount + j
-      );
-      threadResultList.emplace_back(std::move(result));
-    }
-
-    // Get result from future list and rendering.
-    for (auto j{0u}; j < concurrentThreadNumber; ++j)
-    {
-      DResult result {threadResultList[j].get()};
-      jsonDescriptor["Characters"][fmt::format("{0}", result.mCharCode)] = result.mItemJsonAtlas;
-
-      // Make QImage from Bitmap<float> and texture from QImage. (RVO guaranted)
-      paintSurface.UpdateBufferInformation(result.mCoordinateBound);
-      paintSurface.CreatePreviousBufferStateTexture();
-      paintSurface.BindTexturePointer(result.mImageBuffer);
-      paintSurface.render();
-
-      //
-      charCount += 1;
-      parent.IncrementProgress();
-
-      if (charCount % TEXTURE_MAPLIMIT == 0)
-      { // Export offscreen texture buffer to png or file information (binary).
-        drawnImageList.emplace_back(paintSurface.GetImageFromGLFBO());
-        paintSurface.ClearSurface();
-      }
-    }
-
-    threadResultList.clear();
-    threadResultList.reserve(concurrentThreadNumber);
-  }
-
-  // Issue task to parallel thread.
-  for (auto j{ 0u }; j < remainCharCount; ++j)
-  {
-    auto result = std::async(
-        std::launch::async,
-        CreateGlyphInformation,
-        std::cref(sFtFunctions), targetCharMap[firstIterationMapCount + j], sFtFaceList[j], charCount + j
+  // Create information.
+  for (auto thread = 0u; thread < concurrentThreadNumber; ++thread)
+  { // Mutli-thread processing.
+    threadResultList.emplace_back(
+        std::async(std::launch::async, Process,
+            std::ref(charResultList), std::cref(targetCharMap), charRangeList[thread], sFtFaceList[thread]
+        )
     );
-    threadResultList.emplace_back(std::move(result));
   }
+  for (auto thread = 0u; thread < concurrentThreadNumber; ++thread) { threadResultList[thread].get(); }
 
-  // Get result from future list and rendering.
-  for (auto j{ 0u }; j < remainCharCount; ++j)
+  // Create texture atlas.
+  for (uint64_t id = 0u; id < targetCharMapSize; ++id)
   {
-    DResult result{ threadResultList[j].get() };
+    // Get result from charRangeList.
+    const auto& result = charResultList[id];
     jsonDescriptor["Characters"][fmt::format("{0}", result.mCharCode)] = result.mItemJsonAtlas;
 
     // Make QImage from Bitmap<float> and texture from QImage. (RVO guaranted)
@@ -477,12 +428,9 @@ void CreateFontBuffer(const DDyFontInformation information,
     paintSurface.BindTexturePointer(result.mImageBuffer);
     paintSurface.render();
 
-    //
-    charCount += 1;
     parent.IncrementProgress();
-
-    if (charCount % TEXTURE_MAPLIMIT == 0)
-    { // Export offscreen texture buffer to png or file information (binary).
+    if ((id + 1) % TEXTURE_MAPLIMIT == 0)
+    { // Export off-screen texture buffer to png or file information (binary).
       drawnImageList.emplace_back(paintSurface.GetImageFromGLFBO());
       paintSurface.ClearSurface();
     }
@@ -492,12 +440,46 @@ void CreateFontBuffer(const DDyFontInformation information,
   drawnImageList.emplace_back(paintSurface.GetImageFromGLFBO());
   paintSurface.ClearSurface();
 
+  const auto drawnImageListSize = static_cast<int>(drawnImageList.size());
+  atlasBufferList.resize(drawnImageListSize);
+  for (auto imageId = 0; imageId < drawnImageListSize; ++imageId)
   {
-    auto i{0};
-    for (const QImage& image : drawnImageList)
+    auto& image = drawnImageList[imageId];
+    image.save(fmt::format("./{}_{}_{}.png", information.fontName, information.fontStyle, imageId).c_str(), "PNG");
+    const QString filename = fmt::format("./{}_{}.dyFntRes", information.fontName, information.fontStyle).c_str();
+
+    const auto width  = image.width();
+    const auto height = image.height();
+    for (auto pxY = 0; pxY < height; ++pxY)
     {
-      i++;
-      image.save(fmt::format("./{}_{}_{}.png", information.fontName, information.fontStyle, i).c_str(), "PNG");
+      for (auto pxX = 0; pxX < width; ++pxX)
+      { // Get color and emplace to buffer.
+        const auto pixelColor = image.pixelColor(pxX, pxY);
+        const auto alpha  = pixelColor.alpha();
+        const auto red    = pixelColor.red();
+        const auto green  = pixelColor.green();
+        const auto blue   = pixelColor.blue();
+        // Insert RGBA32 (8bit each channel) to list.
+        atlasBufferList[imageId].push_back(static_cast<char>(red));
+        atlasBufferList[imageId].push_back(static_cast<char>(green));
+        atlasBufferList[imageId].push_back(static_cast<char>(blue));
+        atlasBufferList[imageId].push_back(static_cast<char>(alpha));
+      }
+    }
+
+    {
+      QFile file(fmt::format("./{}_{}_{}_buffer", information.fontName, information.fontStyle, imageId).c_str());
+      if (file.open(QIODevice::WriteOnly))
+      {
+        QDataStream out(&file);
+        out.writeRawData(atlasBufferList[imageId].data(), atlasBufferList[imageId].size());
+      }
+      file.close();
+    }
+
+    {
+      auto compressedResult   = dy::zlib::CompressString(atlasBufferList[imageId]);
+      auto decompressedResult = dy::zlib::DecompressString(compressedResult);
     }
   }
 
@@ -618,13 +600,12 @@ void DyFontAtlasGenerator::CreateBatchFile()
     sIsMapInitialized = true;
   }
 
-  //!
-  //! FunctionBody∨
-  //!
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  //! FunctionBody
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   // Disable widget for malfunction.
   this->setEnabled(false);
-
   // Calculate chracter glyph map count to retrieve.
   auto maxSize        {int32_t{}};
   auto targetCharMap  {std::vector<FT_ULong>{}};
@@ -674,8 +655,7 @@ void DyFontAtlasGenerator::CreationTaskFinished()
 }
 
 void DyFontAtlasGenerator::ShowAbout()
-{
-  // NOT IMPLEMENTED YET
+{ // NOT IMPLEMENTED YET
   this->mChildAbout = new DyWindowAbout();
   this->mChildAbout->setWindowModality(Qt::WindowModality::ApplicationModal);
   this->mChildAbout->SetParentMainWindow(*this);
@@ -683,8 +663,7 @@ void DyFontAtlasGenerator::ShowAbout()
 }
 
 void DyFontAtlasGenerator::ResumeFocus()
-{
-  // NOT IMPLEMENTED YET
+{ // NOT IMPLEMENTED YET
   delete this->mChildAbout;
   this->mChildAbout = nullptr;
 }

@@ -74,7 +74,7 @@ public:
         DyFontAtlasGeneratorClass->setSizePolicy(sizePolicy);
         DyFontAtlasGeneratorClass->setMinimumSize(QSize(500, 0));
         DyFontAtlasGeneratorClass->setContextMenuPolicy(Qt::NoContextMenu);
-        DyFontAtlasGeneratorClass->setWindowTitle(QStringLiteral("DianYing SDF Font Atlas generator"));
+        DyFontAtlasGeneratorClass->setWindowTitle(QStringLiteral("DianYing Font Atlas generator (v2)"));
 #ifndef QT_NO_TOOLTIP
         DyFontAtlasGeneratorClass->setToolTip(QStringLiteral(""));
 #endif // QT_NO_TOOLTIP
@@ -258,7 +258,7 @@ public:
         AC_About->setText(QApplication::translate("DyFontAtlasGeneratorClass", "About...", nullptr));
         label->setText(QApplication::translate("DyFontAtlasGeneratorClass", "Font       :", nullptr));
         BT_FindFile->setText(QApplication::translate("DyFontAtlasGeneratorClass", "Find", nullptr));
-        label_2->setText(QApplication::translate("DyFontAtlasGeneratorClass", "Create Texture Atlas with...", nullptr));
+        label_2->setText(QApplication::translate("DyFontAtlasGeneratorClass", "Create SDF Texture Atlas with...", nullptr));
         CB_MapEnglish->setText(QApplication::translate("DyFontAtlasGeneratorClass", "English + ASCII", nullptr));
         label_3->setText(QApplication::translate("DyFontAtlasGeneratorClass", "And...", nullptr));
         CB_OptionSeperate->setText(QApplication::translate("DyFontAtlasGeneratorClass", "Export as separated JSON and png files.", nullptr));
