@@ -16,8 +16,8 @@
 #include <queue>
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
-#include <Dy/Core/Component/Object/PostEffectSsao.h>
-#include <Dy/Core/Component/Object/Grid.h>
+#include <Dy/Core/Resource/Object/PostEffectSsao.h>
+#include <Dy/Core/Resource/Object/Grid.h>
 #include <Dy/Core/Rendering/BasicShadow.h>
 #include <Dy/Core/Rendering/BasicRenderer.h>
 #include <Dy/Core/Rendering/DeferredRenderingMesh.h>

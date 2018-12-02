@@ -14,9 +14,9 @@
 
 /// Header file
 #include <Dy/Core/Rendering/BasicShadow.h>
-#include <Dy/Core/Component/MeshRenderer.h>
+#include <Dy/Core/Resource/MeshRenderer.h>
 
-#include <Dy/Core/Component/Resource/SubmeshResource.h>
+#include <Dy/Core/Resource/Resource/SubmeshResource.h>
 #include <Dy/Management/IO/IOResourceManager.h>
 
 #include <Dy/Builtin/ShaderGl/RenderBasicShadow.h>

@@ -15,7 +15,7 @@
 
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 #include <Dy/Component/Ctor/PDyImageRenderer.h>
-#include <Dy/Core/Component/Resource/ShaderResource.h>
+#include <Dy/Core/Resource/Resource/ShaderResource.h>
 
 namespace dy
 {

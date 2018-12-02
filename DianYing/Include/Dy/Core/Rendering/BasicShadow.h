@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Component/Resource/ShaderResource.h>
+#include <Dy/Core/Resource/Resource/ShaderResource.h>
 #include <Dy/Helper/Type/Vector3.h>
 
 //!

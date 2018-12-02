@@ -15,7 +15,7 @@
 
 #include <atomic>
 #include <Dy/Helper/System/Macroes.h>
-#include <Dy/Core/Component/Internal/MaterialType.h>
+#include <Dy/Core/Resource/Internal/MaterialType.h>
 #include <Dy/Management/Interface/IDyWindowDependent.h>
 
 #if (defined(MDY_PLATFORM_FLAG_WINDOWS) == true)

@@ -14,7 +14,7 @@
 ///
 
 #include <nlohmann/json_fwd.hpp>
-#include <Dy/Core/Component/Internal/TextureType.h>
+#include <Dy/Core/Resource/Internal/TextureType.h>
 #include <Dy/Helper/Type/VectorInt2.h>
 #include <Dy/Meta/Information/CommonResourceMetaInfo.h>
 

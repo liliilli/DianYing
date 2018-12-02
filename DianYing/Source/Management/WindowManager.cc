@@ -21,9 +21,9 @@
 #include <imgui/imgui_impl_glfw.h>
 #include <imgui/imgui_impl_opengl3.h>
 
-#include <Dy/Core/Component/Internal/EtcType.h>
-#include <Dy/Core/Component/MeshRenderer.h>
-#include <Dy/Core/Component/Object/Camera.h>
+#include <Dy/Core/Resource/Internal/EtcType.h>
+#include <Dy/Core/Resource/MeshRenderer.h>
+#include <Dy/Core/Resource/Object/Camera.h>
 #include <Dy/Helper/Type/Vector3.h>
 
 #include <Dy/Management/IO/IODataManager.h>

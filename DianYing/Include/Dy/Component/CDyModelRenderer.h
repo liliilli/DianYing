@@ -16,7 +16,7 @@
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 #include <Dy/Helper/Internal/CheckingRule.h>
-#include <Dy/Core/Component/Resource/MaterialResource.h>
+#include <Dy/Core/Resource/Resource/MaterialResource.h>
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
 
 //!

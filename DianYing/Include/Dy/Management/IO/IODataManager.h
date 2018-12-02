@@ -17,14 +17,14 @@
 
 #include <unordered_map>
 
-#include <Dy/Core/Component/Information/MaterialInformation.h>
-#include <Dy/Core/Component/Information/ShaderInformation.h>
-#include <Dy/Core/Component/Information/TextureInformation.h>
-#include <Dy/Core/Component/Information/ModelInformation.h>
-#include <Dy/Core/Component/Information/SoundInformation.h>
+#include <Dy/Core/Resource/Information/MaterialInformation.h>
+#include <Dy/Core/Resource/Information/ShaderInformation.h>
+#include <Dy/Core/Resource/Information/TextureInformation.h>
+#include <Dy/Core/Resource/Information/ModelInformation.h>
+#include <Dy/Core/Resource/Information/SoundInformation.h>
 #include <Dy/Helper/ThreadPool.h>
 #include <Dy/Helper/ContainerHelper.h>
-#include <Dy/Core/Component/Type/EDyScope.h>
+#include <Dy/Core/Resource/Type/EDyScope.h>
 
 namespace dy
 {

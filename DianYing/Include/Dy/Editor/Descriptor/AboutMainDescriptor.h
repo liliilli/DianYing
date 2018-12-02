@@ -14,7 +14,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Component/Internal/MaterialType.h>
+#include <Dy/Core/Resource/Internal/MaterialType.h>
 
 //!
 //! Forward declaration

@@ -22,7 +22,7 @@
 #include <Dy/Management/IO/IODataManager.h>
 #include <Dy/Management/Editor/GuiSetting.h>
 
-#include <Dy/Core/Component/Object/Camera.h>
+#include <Dy/Core/Resource/Object/Camera.h>
 #include <Dy/Component/CDyDirectionalLight.h>
 #include <Dy/Management/Rendering/FramebufferManager.h>
 #include <Dy/Management/Rendering/UniformBufferObjectManager.h>

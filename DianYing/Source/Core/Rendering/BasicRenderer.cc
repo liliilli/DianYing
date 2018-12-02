@@ -16,11 +16,11 @@
 #include <Dy/Core/Rendering/BasicRenderer.h>
 
 #include <Dy/Component/CDyModelRenderer.h>
-#include <Dy/Core/Component/Resource/ShaderResource.h>
-#include <Dy/Core/Component/Resource/SubmeshResource.h>
-#include <Dy/Core/Component/Resource/MaterialResource.h>
-#include <Dy/Core/Component/Resource/TextureResource.h>
-#include <Dy/Core/Component/Internal/TextureEnums.h>
+#include <Dy/Core/Resource/Resource/ShaderResource.h>
+#include <Dy/Core/Resource/Resource/SubmeshResource.h>
+#include <Dy/Core/Resource/Resource/MaterialResource.h>
+#include <Dy/Core/Resource/Resource/TextureResource.h>
+#include <Dy/Core/Resource/Internal/TextureEnums.h>
 #include <Dy/Element/Actor.h>
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Management/SettingManager.h>

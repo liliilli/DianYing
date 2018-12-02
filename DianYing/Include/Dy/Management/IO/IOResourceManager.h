@@ -19,11 +19,11 @@
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 
-#include <Dy/Core/Component/Resource/ShaderResource.h>
-#include <Dy/Core/Component/Resource/TextureResource.h>
-#include <Dy/Core/Component/Resource/MaterialResource.h>
-#include <Dy/Core/Component/Resource/ModelResource.h>
-#include <Dy/Core/Component/Resource/SoundResource.h>
+#include <Dy/Core/Resource/Resource/ShaderResource.h>
+#include <Dy/Core/Resource/Resource/TextureResource.h>
+#include <Dy/Core/Resource/Resource/MaterialResource.h>
+#include <Dy/Core/Resource/Resource/ModelResource.h>
+#include <Dy/Core/Resource/Resource/SoundResource.h>
 
 //!
 //! Forward declaration

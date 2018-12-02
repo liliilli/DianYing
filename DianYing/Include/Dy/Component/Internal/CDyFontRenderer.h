@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Component/Ctor/PDyFontRenderer.h>
-#include <Dy/Core/Component/Resource/ShaderResource.h>
+#include <Dy/Core/Resource/Resource/ShaderResource.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 
 namespace dy
