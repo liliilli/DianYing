@@ -30,7 +30,8 @@ enum class EDyResourceType
   GLShader,
   Texture,
   Material,
-  WidgetMeta
+  WidgetMeta,
+  NoneError
 };
 
 }

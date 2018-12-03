@@ -19,6 +19,20 @@
 namespace dy
 {
 
+void SDyIOConnectionHelper::PopulateResource(
+    _MIN_ const std::string& specifier,
+    _MIN_ EDyResourceType resourceType,
+    _MIN_ EDyResourceStyle resourceStyle,
+    _MIN_ EDyScope scope)
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+}
+
+void SDyIOConnectionHelper::TryGC()
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+}
+
 void SDyIOConnectionHelper::TryStop()
 {
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");

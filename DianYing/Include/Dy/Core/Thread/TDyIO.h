@@ -16,6 +16,7 @@
 #include <future>
 #include <queue>
 #include <Dy/Management/IO/IODataManager.h>
+#include <Dy/Core/Thread/DDyIOTask.h>
 
 //!
 //! Forward declaration
@@ -48,9 +49,22 @@ public:
   void operator()();
 
 private:
+  /// @struct FTaskQueueCmpFunctor
+  /// @brief  IO Task queue comparsion function type.
+  struct FTaskQueueCmpFunctor final
+  {
+    bool operator()(const DDyIOTask& lhs, const DDyIOTask& rhs) const noexcept
+    {
+      return lhs.mTaskPriority < rhs.mTaskPriority;
+    };
+  };
+
+  using TIOTaskQueue = std::priority_queue<DDyIOTask, std::vector<DDyIOTask>, FTaskQueueCmpFunctor>;
+
   /// @brief Stop IO thread task and terminate thread.
   void pfStop();
 
+#ifdef false
   ///
   /// @brief Enqueue valid function pointer or lambda, and member function pointer with any the number of arbitary parameters.
   ///
@@ -65,7 +79,7 @@ private:
     std::future<TFunctionReturnType> taskResult = assignedTask->get_future();
     {
       std::unique_lock<std::mutex> lock(this->mQueueMutex);
-      if (this->mIsStop)
+      if (this->mIsThreadStopped)
       {
         throw std::runtime_error("Enqueue on stopped ThreadPool.");
       }
@@ -76,14 +90,14 @@ private:
     this->mConditionVariable.notify_one();
     return taskResult;
   }
+#endif
 
-  std::vector<std::thread>  mWorkers;
-  std::queue<std::function<void(void)>> mTasks;
   std::mutex                mQueueMutex;
   std::condition_variable   mConditionVariable;
 
-  bool                      mIsStop             = false;
+  TIOTaskQueue              mIOTaskQueue = {};
 
+  bool                      mIsThreadStopped    = false;
   MDyMetaInfo*              mMetaInfoManager    = nullptr;
   MDyIOData*                mIODataManager      = nullptr;
   MDyIOResource*            mIOResourceManager  = nullptr;

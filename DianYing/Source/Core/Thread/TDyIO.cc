@@ -50,8 +50,8 @@ void TDyIO::operator()()
 
     {
       std::unique_lock<std::mutex> lock(this->mQueueMutex);
-      this->mConditionVariable.wait(lock, [this] { return this->mIsStop == true || this->mTasks.empty() == false; });
-      if (this->mIsStop == true && this->mTasks.empty() == true) { return; }
+      this->mConditionVariable.wait(lock, [this] { return this->mIsThreadStopped == true || this->mTasks.empty() == false; });
+      if (this->mIsThreadStopped == true && this->mTasks.empty() == true) { return; }
 
       designatedTask = std::move(this->mTasks.front());
       this->mTasks.pop();
@@ -65,7 +65,7 @@ void TDyIO::pfStop()
 {
   {
     std::lock_guard<std::mutex> lock(this->mQueueMutex);
-    this->mIsStop = true;
+    this->mIsThreadStopped = true;
   }
   this->mConditionVariable.notify_one();
 }
