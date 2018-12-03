@@ -36,7 +36,7 @@ namespace dy
 
 ///
 /// @class DyEngine
-/// @brief
+/// @brief `Dy`(DianYing) Core engine class.
 ///
 class DyEngine final : public IDySingleton<DyEngine>
 {
@@ -57,9 +57,14 @@ private:
   /// @brief Get IO Thread Instance which not be nulled.
   NotNull<TDyIO*> pfGetIOThread();
 
-  /// DO NOT TOUCH THIS!
-  TDyIO*        mIOThreadInstance = nullptr;
-  std::thread   mIOThread;
+  /// @brief Update entry function from engine.
+  void pUpdate(_MIN_ TF32 dt);
+
+  /// @brief Render entry function from engine.
+  void pRender();
+
+  std::unique_ptr<TDyIO>  mIOThreadInstance = nullptr;
+  std::thread             mIOThreadThread;
 
   friend class SDyIOConnectionHelper;
 };

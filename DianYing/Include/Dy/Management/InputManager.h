@@ -131,7 +131,7 @@ private:
 
   bool              mIsMouseMoved         = false;
 
-  friend class MDyWindow;
+  friend class DyEngine;
 };
 
 }

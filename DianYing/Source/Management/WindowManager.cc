@@ -164,71 +164,16 @@ void DyGlCallbackWindowClose(GLFWwindow* window)
 namespace dy
 {
 
-void MDyWindow::Run()
+bool MDyWindow::IsWindowShouldClose() const noexcept
 {
-  auto& timeManager     = MDyTime::GetInstance();
-  auto& settingManager  = MDySetting::GetInstance();
-  auto& sceneManager    = MDyWorld::GetInstance();
-
-  sceneManager.OpenLevel(settingManager.GetInitialSceneInformationName());
-  sceneManager.Update(-1);
-
-  while (!glfwWindowShouldClose(this->mGlfwWindow))
-  {
-    timeManager.pUpdate();
-    if (auto& instance = MDySound::GetInstance(); true) { instance.Update(MDY_INITIALIZE_DEFINT); }
-
-    if (timeManager.IsGameFrameTicked() == DY_SUCCESS)
-    {
-      const auto dt = timeManager.GetGameScaledTickedDeltaTimeValue();
-
-      this->pUpdate(dt);
-      this->pRender();
-    }
-  }
+  return glfwWindowShouldClose(this->mGlfwWindow);
 }
 
-///
-/// @brief Update routine
-///
-void MDyWindow::pUpdate(float dt)
+void MDyWindow::TempSwapBuffers()
 {
-  #if defined(MDY_FLAG_IN_EDITOR)
-    editor::MDyEditorGui::GetInstance().Update(dt);
-  #endif // MDY_FLAG_IN_EDITOR
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mGlfwWindow), "OpenGL Context must not be null when running.");
 
-  //
-  MDyPhysics::GetInstance().Update(dt);
-  //
-  MDyWorld::GetInstance().Update(dt);
-  //
-  MDyInput::GetInstance().pfUpdate(dt);
-  MDyWorld::GetInstance().UpdateObjects(dt);
-  //
-  MDyWorld::GetInstance().RequestDrawCall(dt);
-}
-
-///
-/// @brief Render routine.
-///
-void MDyWindow::pRender()
-{
-  glClearColor(gColor.X, gColor.Y, gColor.Z, 1.0f);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-#ifdef false
-  gRenderer.CallDraw();
-#endif
-
-  glEnable(GL_DEPTH_TEST);
-  MDyRendering::GetInstance().RenderDrawCallQueue();
-  glDisable(GL_DEPTH_TEST);
-
-  #if defined(MDY_FLAG_IN_EDITOR)
-    editor::MDyEditorGui::GetInstance().DrawWindow(0);
-  #endif // MDY_FLAG_IN_EDITOR
-
-  if (glfwWindowShouldClose(this->mGlfwWindow)) { return; }
+  if (this->IsWindowShouldClose() == true) { return; }
   glfwSwapBuffers(this->mGlfwWindow);
   glfwPollEvents();
 }

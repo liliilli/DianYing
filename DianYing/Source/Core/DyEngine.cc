@@ -54,8 +54,8 @@ EDySuccess DyEngine::pfInitialize()
   ///
   static auto InitializeThread = [this]
   {
-    this->mIOThreadInstance = new TDyIO;
-    this->mIOThread = std::thread(&TDyIO::operator(), std::ref(*this->mIOThreadInstance));
+    this->mIOThreadInstance = std::make_unique<TDyIO>();
+    this->mIOThreadThread   = std::thread(&TDyIO::operator(), std::ref(*this->mIOThreadInstance));
   };
 
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -98,8 +98,7 @@ EDySuccess DyEngine::pfRelease()
   {
     SDyIOConnectionHelper::TryStop();
 
-    this->mIOThread.join();
-    delete this->mIOThreadInstance;
+    this->mIOThreadThread.join();
     this->mIOThreadInstance = nullptr;
   };
 
@@ -135,16 +134,74 @@ EDySuccess DyEngine::pfRelease()
 
 void DyEngine::operator()()
 {
-  dy::MDyWindow::GetInstance().Run();
-}
+  static auto& window         = MDyWindow::GetInstance();
+  static auto& timeManager    = MDyTime::GetInstance();
+  static auto& settingManager = MDySetting::GetInstance();
+  static auto& sceneManager   = MDyWorld::GetInstance();
+  static auto& soundManager   = MDySound::GetInstance();
 
-MDyTime& DyEngine::GetTimeManager() { return MDyTime::GetInstance(); }
-MDyWindow& DyEngine::GetWindowManager() { return MDyWindow::GetInstance(); }
+  sceneManager.OpenLevel(settingManager.GetInitialSceneInformationName());
+  sceneManager.Update(-1);
+
+  while (window.IsWindowShouldClose() == false)
+  {
+    timeManager.pUpdate();
+    soundManager.Update(MDY_INITIALIZE_DEFINT);
+
+    if (timeManager.IsGameFrameTicked() == DY_SUCCESS)
+    {
+      const auto dt = timeManager.GetGameScaledTickedDeltaTimeValue();
+
+      this->pUpdate(dt);
+      this->pRender();
+    }
+  };
+}
 
 NotNull<TDyIO*> DyEngine::pfGetIOThread()
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mIOThreadInstance), "IOThread Instance must not be null except for initialization and destruction.");
-  return DyMakeNotNull(this->mIOThreadInstance);
+  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mIOThreadInstance), "IOThread Instance must not be null except for initialization and destruction.");
+  return DyMakeNotNull(this->mIOThreadInstance.get());
 }
+
+void DyEngine::pUpdate(_MIN_ TF32 dt)
+{
+  #if defined(MDY_FLAG_IN_EDITOR)
+    editor::MDyEditorGui::GetInstance().Update(dt);
+  #endif // MDY_FLAG_IN_EDITOR
+
+  //
+  MDyPhysics::GetInstance().Update(dt);
+  //
+  MDyWorld::GetInstance().Update(dt);
+  //
+  MDyInput::GetInstance().pfUpdate(dt);
+  MDyWorld::GetInstance().UpdateObjects(dt);
+  //
+  MDyWorld::GetInstance().RequestDrawCall(dt);
+}
+
+void DyEngine::pRender()
+{
+  glClearColor(0.1f, 0.2f, 0.1f, 1.0f);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+#ifdef false
+  gRenderer.CallDraw();
+#endif
+
+  glEnable(GL_DEPTH_TEST);
+  MDyRendering::GetInstance().RenderDrawCallQueue();
+  glDisable(GL_DEPTH_TEST);
+
+  #if defined(MDY_FLAG_IN_EDITOR)
+    editor::MDyEditorGui::GetInstance().DrawWindow(0);
+  #endif // MDY_FLAG_IN_EDITOR
+
+  this->GetWindowManager().TempSwapBuffers();
+}
+
+MDyTime& DyEngine::GetTimeManager()     { return MDyTime::GetInstance(); }
+MDyWindow& DyEngine::GetWindowManager() { return MDyWindow::GetInstance(); }
 
 } /// ::dy namespace

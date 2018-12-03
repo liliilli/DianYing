@@ -26,10 +26,8 @@ class MDyWindow final : public IDySingleton<MDyWindow>, public MDY_INHERITENCE_W
   MDY_SINGLETON_DERIVED(MDyWindow);
   MDY_SINGLETON_PROPERTIES(MDyWindow);
 public:
-  ///
-  /// @brief Run application.
-  ///
-  void Run();
+  /// @brief Check window is should closed this time.
+  MDY_NODISCARD bool IsWindowShouldClose() const noexcept;
 
   ///
   /// @brief Get glfw window context.
@@ -37,18 +35,15 @@ public:
   ///
   GLFWwindow* GetGlfwWindowContext() const noexcept
   {
-    MDY_ASSERT(this->mGlfwWindow, "GlfwWindow is not initiailized.");
+    MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mGlfwWindow), "GlfwWindow is not initiailized.");
     return this->mGlfwWindow;
   }
 
+  /// @brief TEMPORAL FUNCTION FOR SWAPPING BUFFER.
+  void TempSwapBuffers();
+
 private:
-  ///
-  void pUpdate(float dt);
-
-  ///
-  void pRender();
-
-  GLFWwindow* mGlfwWindow               = nullptr;
+  GLFWwindow* mGlfwWindow = nullptr;
 };
 
 } /// ::dy namespace
