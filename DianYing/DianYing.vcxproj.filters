@@ -200,6 +200,8 @@
     <ClCompile Include="Source\Core\Resource\Resource\SubmeshResource.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\TextureResource.cc" />
     <ClCompile Include="Source\Core\Resource\MeshRenderer.cc" />
+    <ClCompile Include="Source\Management\Internal\MDySynchronization.cc" />
+    <ClCompile Include="Source\Core\Thread\SDyIOConnectionHelper.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -496,6 +498,12 @@
     <ClInclude Include="Include\Dy\Core\Resource\Type\EDyScope.h" />
     <ClInclude Include="Include\Dy\Core\Resource\MeshImporter.h" />
     <ClInclude Include="Include\Dy\Core\Resource\MeshRenderer.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\DDyIOReferenceInstance.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\DDyIOTask.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\EDyIOTask.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\SDyIOConnectionHelper.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\MDySynchronization.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\TDyIOWorker.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

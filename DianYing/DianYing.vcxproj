@@ -170,6 +170,7 @@
     <ClCompile Include="Source\Component\UI\CDyWidgetScriptCpp.cc" />
     <ClCompile Include="Source\Component\UI\CDyWidgetScriptLua.cc" />
     <ClCompile Include="Source\Core\Reflection\RDyBuiltinResources.cc" />
+    <ClCompile Include="Source\Core\Thread\SDyIOConnectionHelper.cc" />
     <ClCompile Include="Source\Element\Canvas\FDyBasicGuageBar.cc" />
     <ClCompile Include="Source\Element\Canvas\FDyImage.cc" />
     <ClCompile Include="Source\Element\Canvas\UiObject.cc" />
@@ -295,6 +296,7 @@
     <ClCompile Include="Source\Element\Actor.cc" />
     <ClCompile Include="Source\Element\Canvas\Text.cc" />
     <ClCompile Include="Source\Element\Canvas\Deprecated\Text_Deprecated.cc" />
+    <ClCompile Include="Source\Management\Internal\MDySynchronization.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetBarMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetImageMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Information\ElementLevelMetaInfo.cc" />
@@ -463,6 +465,11 @@
     <ClInclude Include="Include\Dy\Core\Rendering\FinalScreenDisplayRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Helper\FrameAttachmentString.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\UIBasicRenderer.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\DDyIOReferenceInstance.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\DDyIOTask.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\EDyIOTask.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\TDyIOWorker.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\SDyIOConnectionHelper.h" />
     <ClInclude Include="Include\Dy\Core\Thread\TDyIO.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\Dialog\ProjectCreator.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\Helper\ComponentHelper.h" />
@@ -482,6 +489,7 @@
     <ClInclude Include="Include\Dy\Element\Descriptor\CanvasDescriptor.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\GlobalEnums.h" />
     <ClInclude Include="Include\Dy\Helper\System\TypeTraits.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\MDySynchronization.h" />
     <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetBarMetaInformation.h" />
     <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetImageMetaInformation.h" />
     <ClInclude Include="Include\Dy\Meta\Information\CommonResourceMetaInfo.h" />
