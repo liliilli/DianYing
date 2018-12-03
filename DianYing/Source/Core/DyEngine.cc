@@ -30,9 +30,13 @@
 #include <Dy/Management/FontManager.h>
 #include <Dy/Management/ScriptManager.h>
 #include <Dy/Management/Editor/GuiManager.h>
+#include <Dy/Management/Internal/MDySynchronization.h>
+#include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 
 namespace dy
 {
+
+DyEngine* gEngine = nullptr;
 
 EDySuccess DyEngine::pfInitialize()
 {
@@ -81,6 +85,7 @@ EDySuccess DyEngine::pfInitialize()
   MDY_CALL_ASSERT_SUCCESS(dy::MDyScript::Initialize());
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDyWorld::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDySynchronization::Initialize());
   MDY_LOG_WARNING_D("========== DIANYING MANAGER INITIALIZED ==========");
 
   gEngine = this;
@@ -91,6 +96,8 @@ EDySuccess DyEngine::pfRelease()
 {
   static auto ReleaseThread = [this]
   {
+    SDyIOConnectionHelper::TryStop();
+
     this->mIOThread.join();
     delete this->mIOThreadInstance;
     this->mIOThreadInstance = nullptr;
@@ -103,6 +110,7 @@ EDySuccess DyEngine::pfRelease()
   ReleaseThread();
 
   MDY_LOG_WARNING_D("========== DIANYING MANAGER RELEASED ==========");
+  MDY_CALL_ASSERT_SUCCESS(dy::MDySynchronization::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyWorld::Release());
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDyScript::Release());
@@ -133,5 +141,10 @@ void DyEngine::operator()()
 MDyTime& DyEngine::GetTimeManager() { return MDyTime::GetInstance(); }
 MDyWindow& DyEngine::GetWindowManager() { return MDyWindow::GetInstance(); }
 
+NotNull<TDyIO*> DyEngine::pfGetIOThread()
+{
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mIOThreadInstance), "IOThread Instance must not be null except for initialization and destruction.");
+  return DyMakeNotNull(this->mIOThreadInstance);
+}
 
 } /// ::dy namespace

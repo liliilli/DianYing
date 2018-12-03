@@ -54,12 +54,17 @@ public:
   MDY_NODISCARD MDyWindow&  GetWindowManager();
 
 private:
+  /// @brief Get IO Thread Instance which not be nulled.
+  NotNull<TDyIO*> pfGetIOThread();
+
   /// DO NOT TOUCH THIS!
   TDyIO*        mIOThreadInstance = nullptr;
   std::thread   mIOThread;
+
+  friend class SDyIOConnectionHelper;
 };
 
-inline DyEngine* gEngine = nullptr;
+extern DyEngine* gEngine;
 
 } /// ::dy namespace
 

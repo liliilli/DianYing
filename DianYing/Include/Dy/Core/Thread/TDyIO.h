@@ -24,6 +24,7 @@
 namespace dy
 {
 class MDyMetaInfo;
+class SDyIOConnectionHelper;
 } /// ::dy namespace
 
 //!
@@ -43,9 +44,15 @@ public:
   TDyIO();
   ~TDyIO();
 
+  /// @brief Entry point of Thread IO.
+  void operator()();
+
+private:
+  /// @brief Stop IO thread task and terminate thread.
+  void pfStop();
+
   ///
-  /// @brief Enqueue valid function pointer or lambda, and member function pointer with
-  /// any the number of arbitary parameters.
+  /// @brief Enqueue valid function pointer or lambda, and member function pointer with any the number of arbitary parameters.
   ///
   template <typename TCallable, typename... TArgs>
   auto Enqueue(TCallable&& callable, TArgs&&... args) -> std::future<std::invoke_result_t<TCallable, TArgs...>>
@@ -70,12 +77,6 @@ public:
     return taskResult;
   }
 
-  ///
-  /// @brief Entry point of Thread IO.
-  ///
-  void operator()();
-
-private:
   std::vector<std::thread>  mWorkers;
   std::queue<std::function<void(void)>> mTasks;
   std::mutex                mQueueMutex;
@@ -86,6 +87,8 @@ private:
   MDyMetaInfo*              mMetaInfoManager    = nullptr;
   MDyIOData*                mIODataManager      = nullptr;
   MDyIOResource*            mIOResourceManager  = nullptr;
+
+  friend class SDyIOConnectionHelper;
 };
 
 } /// ::dy namespace

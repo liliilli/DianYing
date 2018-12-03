@@ -51,7 +51,7 @@ void TDyIO::operator()()
     {
       std::unique_lock<std::mutex> lock(this->mQueueMutex);
       this->mConditionVariable.wait(lock, [this] { return this->mIsStop == true || this->mTasks.empty() == false; });
-      if (this->mIsStop && this->mTasks.empty()) return;
+      if (this->mIsStop == true && this->mTasks.empty() == true) { return; }
 
       designatedTask = std::move(this->mTasks.front());
       this->mTasks.pop();
@@ -59,6 +59,15 @@ void TDyIO::operator()()
 
     designatedTask();
   }
+}
+
+void TDyIO::pfStop()
+{
+  {
+    std::lock_guard<std::mutex> lock(this->mQueueMutex);
+    this->mIsStop = true;
+  }
+  this->mConditionVariable.notify_one();
 }
 
 } /// :: dy namesapace
