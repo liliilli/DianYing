@@ -1,8 +1,11 @@
 #include <precompiled.h>
+
 /// Header file
 #include "HelperZlib.h"
-/// Libraries
+#include <cstdlib>
+#include <QByteArray>
 #include <zlib/zlib.h>
+#include <nlohmann/json.hpp>
 
 //!
 //! Forward declaration & local translation unit function
@@ -32,20 +35,21 @@ namespace dy
 namespace zlib
 {
 
-DZlibResult CompressString(const QByteArray& plainBuffer)
+DZlibResult CompressBuffer(const char* plainBuffer, const uint64_t bufferSize)
 {
   // Zlib struct
   auto compressStream{ z_stream{} };
   compressStream.zalloc = Z_NULL;
-  compressStream.zfree  = Z_NULL;
+  compressStream.zfree = Z_NULL;
   compressStream.opaque = Z_NULL;
 
   // set up the input.
-  const auto decompressedLength = static_cast<uint64_t>(plainBuffer.size());
+  const auto decompressedLength = bufferSize;
   compressStream.avail_in = decompressedLength; // WITH TERMINATOR
-  compressStream.next_in = (Bytef*)plainBuffer.data();
+  compressStream.next_in = (Bytef*)plainBuffer;
 
-  std::vector<char> compressedBuffer{ plainBuffer.constBegin(), plainBuffer.constEnd() };
+  std::vector<char> compressedBuffer(bufferSize);
+  memcpy(compressedBuffer.data(), plainBuffer, bufferSize);
   compressStream.avail_out = compressedBuffer.size();
   compressStream.next_out = (Bytef*)compressedBuffer.data();
 
@@ -55,12 +59,27 @@ DZlibResult CompressString(const QByteArray& plainBuffer)
   deflateEnd(&compressStream);
 
   // Clean up empty '\0' sequence from resultCompressedString.
+  const auto compressedLength = static_cast<uint64_t>(compressStream.total_out);
   const auto it = std::find_if_not(compressedBuffer.rbegin(), compressedBuffer.rend(), [](const unsigned char i) { return i == '\0'; });
   const auto distanceFromStart{ -std::distance(compressedBuffer.rend(), it) };
-  compressedBuffer.erase(compressedBuffer.cbegin() + distanceFromStart, compressedBuffer.cend());
+  compressedBuffer.resize(compressedLength);
 
-  const auto compressedLength = static_cast<uint64_t>(compressStream.total_out);
   return DZlibResult{ compressedLength , decompressedLength , compressedBuffer };
+}
+
+DZlibResult CompressBuffer(const QByteArray& plainBuffer)
+{
+  return CompressBuffer(plainBuffer.constData(), plainBuffer.size());
+}
+
+DZlibResult CompressBuffer(const std::string& plainBuffer)
+{
+  return CompressBuffer(plainBuffer.c_str(), plainBuffer.size());
+}
+
+DZlibResult CompressBuffer(const nlohmann::json& plainBuffer)
+{
+  return CompressBuffer(plainBuffer.dump(2));
 }
 
 std::vector<char> DecompressString(const DZlibResult& compressedStructure)

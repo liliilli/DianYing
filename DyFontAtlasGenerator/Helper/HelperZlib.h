@@ -2,6 +2,10 @@
 #define GUARD_DY_HELPER_HELPERZLIB_H
 
 #include <string>
+#include <vector>
+#include <nlohmann/json_fwd.hpp>
+
+class QByteArray;
 
 namespace dy
 {
@@ -26,7 +30,10 @@ struct DZlibResult
 /// @brief  Compress uncompressed plain string to compressed string.
 /// @return compressed string which wrapped by result `DZlibResult` instance.
 ///
-[[nodiscard]] DZlibResult CompressString(const QByteArray& plainBuffer);
+[[nodiscard]] DZlibResult CompressBuffer(const char* plainBuffer, const uint64_t bufferSize);
+[[nodiscard]] DZlibResult CompressBuffer(const QByteArray& plainBuffer);
+[[nodiscard]] DZlibResult CompressBuffer(const std::string& plainBuffer);
+[[nodiscard]] DZlibResult CompressBuffer(const nlohmann::json& plainBuffer);
 
 ///
 /// @brief  Decompress compressed structure which has a `zlib`ed buffer to plain buffer.

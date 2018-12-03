@@ -236,7 +236,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>And...</string>
+     <string>Export option</string>
     </property>
     <property name="margin">
      <number>0</number>
@@ -255,7 +255,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Export as separated JSON and png files.</string>
+     <string>Export as separated information and png files.</string>
     </property>
    </widget>
    <widget class="QPushButton" name="BT_Create">
@@ -285,6 +285,9 @@
     </property>
    </widget>
    <widget class="QCheckBox" name="CB_OptionCompressJson">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>20</x>

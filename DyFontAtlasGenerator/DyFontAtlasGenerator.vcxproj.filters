@@ -185,5 +185,8 @@
     <ClInclude Include="Helper\PaintSurface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Helper\Structure.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

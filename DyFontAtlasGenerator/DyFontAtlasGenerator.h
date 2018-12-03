@@ -73,11 +73,6 @@ signals:
 
 private:
   ///
-  /// @brief Update `BT_Create` button activation state by verifying mCharmapFlag, mOptionFlag.
-  ///
-  void pUpdateBT_CreateActivation();
-
-  ///
   Ui::DyFontAtlasGeneratorClass ui;
   ///
   QFutureWatcher<void>      mFutureWatcher;
