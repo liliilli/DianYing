@@ -13,10 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Builtin/ShaderGl/RenderUIBasicGaugeBar.h>
-#include <Dy/Core/Resource/Internal/ShaderType.h>
-#include <Dy/Management/IO/IODataManager.h>
-#include <Dy/Management/IO/IOResourceManager.h>
+#include <Dy/Builtin/ShaderGl/UI/RenderUIBasicGaugeBar.h>
 
 //!
 //! Forward declaration

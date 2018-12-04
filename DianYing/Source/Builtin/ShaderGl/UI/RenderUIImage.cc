@@ -13,9 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Builtin/ShaderGl/RenderUIImage.h>
-#include <Dy/Management/IO/IOResourceManager.h>
-#include <Dy/Management/IO/IODataManager.h>
+#include <Dy/Builtin/ShaderGl/UI/RenderUIImage.h>
 
 //!
 //! Forward declaration

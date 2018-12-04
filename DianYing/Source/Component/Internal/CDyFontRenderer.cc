@@ -17,7 +17,7 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <Dy/Builtin/ShaderGl/RenderFontArraySDF.h>
+#include <Dy/Builtin/ShaderGl/Font/RenderFontArraySDF.h>
 #include <Dy/Element/Canvas/Text.h>
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/IO/IOResourceManager.h>

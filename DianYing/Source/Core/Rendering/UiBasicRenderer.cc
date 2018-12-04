@@ -15,20 +15,17 @@
 /// Header file
 #include <Dy/Core/Rendering/UIBasicRenderer.h>
 
-#include <Dy/Builtin/ShaderGl/RenderDefaultFont.h>
+#include <Dy/Builtin/ShaderGl/Font/RenderDefaultFont.h>
 #include <Dy/Core/Resource/Resource/ShaderResource.h>
 #include <Dy/Core/Rendering/Helper/FrameAttachmentString.h>
 #include <Dy/Element/Canvas/Text.h>
 #include <Dy/Meta/Descriptor/WidgetTextMetaInformation.h>
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/Rendering/FramebufferManager.h>
-#include <Dy/Management/IO/IOResourceManager.h>
 #include <Dy/Management/FontManager.h>
-#include <Dy/Management/WindowManager.h>
 
 #include <Dy/Element/Canvas/Widget.h>
-#include "Dy/Management/IO/MetaInfoManager.h"
-#include "Dy/Builtin/ShaderGl/RenderFontArraySDF.h"
+#include <Dy/Management/IO/MetaInfoManager.h>
 
 //!
 //! Local translation unit data

@@ -35,7 +35,6 @@
     <ClCompile Include="Source\Editor\Gui\HelpLicenseWindow.cc" />
     <ClCompile Include="Source\Editor\Gui\ViewViewportMain.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderPass.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\RenderGrid.cc" />
     <ClCompile Include="Source\Editor\Gui\LogWindow.cc" />
     <ClCompile Include="Source\Management\Helper\GuiLogStreamSink.cc" />
     <ClCompile Include="Source\Editor\Gui\MainSetting.cc" />
@@ -88,7 +87,6 @@
     <ClCompile Include="Source\Meta\Descriptor\WidgetCommponDescriptor.cc" />
     <ClCompile Include="Source\Core\Rendering\FinalScreenDisplayRenderer.cc" />
     <ClCompile Include="Source\Core\Rendering\UiBasicRenderer.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\RenderDefaultFont.cc" />
     <ClCompile Include="Source\Builtin\Model\ScreenProjectionTriangle.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderScreenOutput.cc" />
     <ClCompile Include="Libraries\msdfgen\core\Bitmap.cpp" />
@@ -109,7 +107,6 @@
     <ClCompile Include="Source\Management\Type\FontResourceContainer.cc" />
     <ClCompile Include="Source\Management\Type\FontCharacter_Deprecated.cc" />
     <ClCompile Include="Source\Management\Type\FontCharacterInfo.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\RenderFontArraySDF.cc" />
     <ClCompile Include="Source\Element\Canvas\Text.cc" />
     <ClCompile Include="Source\Component\Internal\CDyFontRenderer.cc" />
     <ClCompile Include="Source\Management\Type\SettingContainer.cc" />
@@ -157,11 +154,9 @@
     <ClCompile Include="Source\Meta\Descriptor\WidgetBarMetaInformation.cc" />
     <ClCompile Include="Source\Element\Canvas\FDyBasicGuageBar.cc" />
     <ClCompile Include="Source\Component\Internal\CDyBasicGaugeBarRenderer.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\RenderUiBasicGaugeBar.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetImageMetaInformation.cc" />
     <ClCompile Include="Source\Element\Canvas\FDyImage.cc" />
     <ClCompile Include="Source\Component\Internal\CDyImageRenderer.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\RenderUIImage.cc" />
     <ClCompile Include="Source\Core\Reflection\RDyBuiltinResources.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoGLShader.cc" />
     <ClCompile Include="Source\Builtin\Abstract\ADyGLShaderResources.cc" />
@@ -195,7 +190,13 @@
     <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceContainer.cc" />
     <ClCompile Include="Source\Core\Thread\IO\FDyIOGC.cc" />
     <ClCompile Include="Source\Core\Thread\IO\TDYIOWorker.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\RenderDefaultSSAO.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\PostEffect\RenderDefaultSSAOBlurring.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\PostEffect\RenderDefaultSSAO.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\Editor\RenderGrid.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\Font\RenderFontArraySDF.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\UI\RenderUiBasicGaugeBar.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\UI\RenderUIImage.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\Font\RenderDefaultFont.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -251,7 +252,6 @@
     <ClInclude Include="Include\Dy\Helper\Pointer.h" />
     <ClInclude Include="Include\Dy\Management\Interface\IDyThreadHelper.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderPass.h" />
-    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderGrid.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\LogWindow.h" />
     <ClInclude Include="Include\Dy\Management\Helper\GuiLogStreamSink.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\MainSetting.h" />
@@ -355,7 +355,6 @@
     <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetCommonDescriptor.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\FinalScreenDisplayRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\UIBasicRenderer.h" />
-    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderDefaultFont.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\ScreenProjectionTriangle.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderScreenOutput.h" />
     <ClInclude Include="Libraries\msdfgen\core\arithmetics.hpp" />
@@ -379,7 +378,6 @@
     <ClInclude Include="Include\Dy\Management\Interface\IDyFontContainer.h" />
     <ClInclude Include="Include\Dy\Management\Type\FontCharacter_Deprecated.h" />
     <ClInclude Include="Include\Dy\Management\Type\FontCharacterInfo.h" />
-    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderFontArraySDF.h" />
     <ClInclude Include="Include\Dy\Element\RenderableObject.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyFontRenderer.h" />
     <ClInclude Include="Include\Dy\Component\Ctor\PDyFontRenderer.h" />
@@ -437,12 +435,10 @@
     <ClInclude Include="Include\Dy\Element\Canvas\FDyBasicGaugeBar.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyBasicGaugeBarRenderer.h" />
     <ClInclude Include="Include\Dy\Component\Ctor\PDyBarTypeRenderer.h" />
-    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderUIBasicGaugeBar.h" />
     <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetImageMetaInformation.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\FDyImage.h" />
     <ClInclude Include="Include\Dy\Component\Ctor\PDyImageRenderer.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyImageRenderer.h" />
-    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderUIImage.h" />
     <ClInclude Include="Include\Dy\Core\Reflection\RDyBuiltinResources.h" />
     <ClInclude Include="Include\Dy\Helper\System\TypeTraits.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyResourceTypes.h" />
@@ -495,7 +491,13 @@
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOReferenceContainer.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\FDyIOGC.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\Semaphore.h" />
-    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderDefaultSSAO.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\PostEffect\RenderDefaultSSAOBlurring.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\PostEffect\RenderDefaultSSAO.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\Editor\RenderGrid.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\Font\RenderFontArraySDF.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\Font\RenderDefaultFont.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\UI\RenderUIBasicGaugeBar.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\UI\RenderUIImage.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

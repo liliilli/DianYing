@@ -12,7 +12,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/ShaderGl/RenderFontArraySDF.h>
+#include <Dy/Builtin/ShaderGl/Font/RenderFontArraySDF.h>
 
 //!
 //! Forward declaration

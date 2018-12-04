@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Builtin/ShaderGl/RenderDefaultSSAO.h>
+#include <Dy/Builtin/ShaderGl/PostEffect/RenderDefaultSSAO.h>
 
 //!
 //! Forward declaration

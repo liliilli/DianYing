@@ -13,64 +13,46 @@
 ///
 
 /// Header file
-#include <Dy/Builtin/ShaderGl/RenderDefaultFont.h>
-
-//!
-//! Forward declaration
-//!
+#include <Dy/Builtin/ShaderGl/Editor/RenderGrid.h>
 
 namespace
 {
 
 MDY_SET_IMMUTABLE_STRING(sVertexShaderCode, R"dy(
-#version 430 core
+#version 430
 
-layout (location = 0) in vec2 dyPosition;
-layout (location = 1) in vec2 dyTexCoord0;
+layout (location = 0) in vec3 dyPosition;
 
-uniform mat4 uUiProjMatrix;
-
-out VS_OUT { vec2 texCoord; } vs_out;
+uniform mat4 viewMatrix;
+uniform mat4 projectionMatrix;
 
 void main() {
-	gl_Position     = vec4((uUiProjMatrix * vec4(dyPosition, 0, 1)).xy, 0, 1);
-	vs_out.texCoord = dyTexCoord0.xy;
+    gl_Position = projectionMatrix * viewMatrix * vec4(dyPosition, 1.0);
 }
 )dy");
 
 MDY_SET_IMMUTABLE_STRING(sFragmentShaderCode, R"dy(
-#version 430 core
+#version 430
 
-in VS_OUT { vec2 texCoord; } fs_in;
+layout (location = 0) out vec4 outColor;
 
-layout (binding = 0) uniform sampler2D uCharTexture;
-uniform vec4 uTextColor;
+uniform vec4 uColor = vec4(0.2, 0.2, 0.2, 1.0);
 
-layout (location = 0) out vec4 gOutput;
-
-void main()
-{
-  //float alpha = texture(uCharTexture, fs_in.texCoord).r;
-  //if (alpha <= 0.0f) { discard; }
-
-	gOutput = uTextColor * vec4(vec3(1), texture(uCharTexture, fs_in.texCoord).r);
+void main() {
+    outColor = vec4(1);
 }
 )dy");
 
 } /// ::unnamed namespace
 
-//!
-//! Implementation
-//!
-
-namespace dy
+namespace dy::builtin
 {
 
-builtin::FDyBuiltinShaderGLRenderDefaultFont::FDyBuiltinShaderGLRenderDefaultFont()
+FDyBuiltinShaderGLRenderGrid::FDyBuiltinShaderGLRenderGrid()
 {
   this->mSpecifierName  = sName;
   this->mVertexBuffer   = sVertexShaderCode;
   this->mPixelBuffer    = sFragmentShaderCode;
 }
 
-} /// ::dy namespace
+} /// ::dy::builtin namespace

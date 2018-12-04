@@ -14,6 +14,7 @@
 ///
 
 #include <string_view>
+#include <Dy/Builtin/Abstract/ADyGLShaderResource.h>
 
 namespace dy::builtin
 {
@@ -22,13 +23,11 @@ namespace dy::builtin
 /// @class FDyBuiltinShaderGLRenderGrid
 /// @brief Rendering grid shader.
 ///
-class FDyBuiltinShaderGLRenderGrid final
+class FDyBuiltinShaderGLRenderGrid final : public ADyGLShaderResource
 {
+  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBuiltinShaderGLRenderGrid, "dyBtShaderGlRenderGrid")
 public:
   FDyBuiltinShaderGLRenderGrid();
-
-  /// Constant name for creating DDyShaderInformation
-  inline static MDY_SET_IMMUTABLE_STRING(sName, "dyBtShaderGlRenderGrid");
 };
 
 } /// ::dy::builtin namespace

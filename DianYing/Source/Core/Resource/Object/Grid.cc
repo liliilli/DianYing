@@ -19,7 +19,7 @@
 #include <Dy/Management/IO/IODataManager.h>
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Core/Resource/Object/Camera.h>
-#include <Dy/Builtin/ShaderGl/RenderGrid.h>
+#include <Dy/Builtin/ShaderGl/Editor/RenderGrid.h>
 
 namespace dy
 {

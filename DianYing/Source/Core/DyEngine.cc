@@ -44,11 +44,11 @@
 #include <Dy/Builtin/ShaderGl/RenderColorGeometry.h>
 #include <Dy/Builtin/ShaderGl/RenderBasicShadow.h>
 #include <Dy/Builtin/ShaderGl/RenderOpaqueStatic.h>
-#include <Dy/Builtin/ShaderGl/RenderDefaultFont.h>
 #include <Dy/Builtin/ShaderGl/RenderScreenOutput.h>
-#include <Dy/Builtin/ShaderGl/RenderFontArraySDF.h>
-#include <Dy/Builtin/ShaderGl/RenderUIBasicGaugeBar.h>
-#include <Dy/Builtin/ShaderGl/RenderUIImage.h>
+#include <Dy/Builtin/ShaderGl/Font/RenderDefaultFont.h>
+#include <Dy/Builtin/ShaderGl/Font/RenderFontArraySDF.h>
+#include <Dy/Builtin/ShaderGl/UI/RenderUIBasicGaugeBar.h>
+#include <Dy/Builtin/ShaderGl/UI/RenderUIImage.h>
 #include <Dy/Builtin/ShaderGl/RenderDeferredRendering.h>
 #include <Dy/Builtin/ShaderGl/PostEffect/RenderDefaultSSAO.h>
 #include <Dy/Builtin/ShaderGl/PostEffect/RenderDefaultSSAOBlurring.h>
