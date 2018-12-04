@@ -15,7 +15,7 @@
 
 #include <Dy/Core/Resource/Type/EDyScope.h>
 #include <Dy/Core/Reflection/RDyBuiltinResources.h>
-#include <Dy/Core/Thread/EDyIOTask.h>
+#include <Dy/Core/Thread/IO/EDyIOTask.h>
 
 #include <Dy/Helper/Type/Clamp.h>
 

@@ -14,7 +14,7 @@
 ///
 
 #include <atomic>
-#include <Dy/Core/Thread/EDyIOTask.h>
+#include <Dy/Core/Thread/IO/EDyIOTask.h>
 #include <Dy/Core/Reflection/RDyBuiltinResources.h>
 #include <Dy/Core/Resource/Type/EDyScope.h>
 
@@ -49,6 +49,13 @@ struct DDyIOReferenceInstance final
   bool                mIsResourceValid    = false;
   TConditionCallback  mConditionCallback  = nullptr;
   std::vector<DDyIOPtrBoundObject> mPtrBoundObjectList = {};
+
+  DDyIOReferenceInstance() = default;
+  /// @brief Constructor without binding object ptr. \n
+  /// In this case, Reference count would be 0 and nothing.
+  DDyIOReferenceInstance(_MIN_ const std::string& specifier, _MIN_ EDyResourceStyle style, _MIN_ EDyResourceType type, _MIN_ EDyScope scope)
+    : mSpecifierName(specifier), mResourcecStyle(style), mResourceType(type), mScope(scope)
+  {};
 };
 
 } /// ::dy namespace
