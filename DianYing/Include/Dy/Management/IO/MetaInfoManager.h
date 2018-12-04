@@ -121,6 +121,15 @@ public:
   }
 
   ///
+  /// @brief  Check widget meta information is exist.
+  /// @return Return value is false if not found.
+  ///
+  FORCEINLINE MDY_NODISCARD bool IsWidgetMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
+  {
+    return DyIsMapContains(this->mWidgetMetaInfo, specifier);
+  }
+
+  ///
   /// @brief  Check script meta information is exist.
   /// @return If found, return true or false.
   ///

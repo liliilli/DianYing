@@ -60,11 +60,6 @@
     <ClCompile Include="Source\Element\Abstract\ADyTransformable.cc" />
     <ClCompile Include="Source\Management\WorldManager.cc" />
     <ClCompile Include="Source\Element\Abstract\ADyNameCounterMap.cc" />
-    <ClCompile Include="Source\Test\testLuaVariable.cc" />
-    <ClCompile Include="Source\Test\testLuaEntry.cc" />
-    <ClCompile Include="Source\Test\testLuaHelloWorld.cc" />
-    <ClCompile Include="Source\Test\TestLuaFunctions.cc" />
-    <ClCompile Include="Source\Test\TestLuaCpp.cc" />
     <ClCompile Include="Source\Management\Helper\PhysxSimulationCallback.cc" />
     <ClCompile Include="Source\Helper\Type\ThreeStateBool.cc" />
     <ClCompile Include="Source\Element\Abstract\ADyBaseComponent.cc" />
@@ -82,7 +77,6 @@
     <ClCompile Include="Source\Builtin\Texture\ErrorBlue.cc" />
     <ClCompile Include="Source\Helper\Type\DyString.cc" />
     <ClCompile Include="Source\Component\Internal\ScriptState.cc" />
-    <ClCompile Include="Source\Test\TestLuaBindingDy.cc" />
     <ClCompile Include="Source\Management\ScriptManager.cc" />
     <ClCompile Include="Source\Component\CDyDirectionalLight.cc" />
     <ClCompile Include="Source\Core\Rendering\BasicRenderer.cc" />
@@ -97,7 +91,6 @@
     <ClCompile Include="Source\Builtin\ShaderGl\RenderDefaultFont.cc" />
     <ClCompile Include="Source\Builtin\Model\ScreenProjectionTriangle.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderScreenOutput.cc" />
-    <ClCompile Include="Source\Test\TestMSDF.cc" />
     <ClCompile Include="Libraries\msdfgen\core\Bitmap.cpp" />
     <ClCompile Include="Libraries\msdfgen\core\Contour.cpp" />
     <ClCompile Include="Libraries\msdfgen\core\edge-coloring.cpp" />
@@ -119,7 +112,6 @@
     <ClCompile Include="Source\Builtin\ShaderGl\RenderFontArraySDF.cc" />
     <ClCompile Include="Source\Element\Canvas\Text.cc" />
     <ClCompile Include="Source\Component\Internal\CDyFontRenderer.cc" />
-    <ClCompile Include="Source\Test\TestCxxopt.cc" />
     <ClCompile Include="Source\Management\Type\SettingContainer.cc" />
     <ClCompile Include="Source\Helper\Type\VectorInt2.cc" />
     <ClCompile Include="Source\Meta\Type\EDyInput.cc" />
@@ -173,8 +165,6 @@
     <ClCompile Include="Source\Core\Reflection\RDyBuiltinResources.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoGLShader.cc" />
     <ClCompile Include="Source\Builtin\Abstract\ADyGLShaderResources.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\Deprecated\RenderFontMSDF_Deprecated.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\Deprecated\RenderFontSDF_Deprecated.cc" />
     <ClCompile Include="Source\Component\Internal\Deprecated\CDyFontRenderer_Deprecated.cc" />
     <ClCompile Include="Source\Element\Canvas\Deprecated\Text_Deprecated.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoModel.cc" />
@@ -205,6 +195,7 @@
     <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceContainer.cc" />
     <ClCompile Include="Source\Core\Thread\IO\FDyIOGC.cc" />
     <ClCompile Include="Source\Core\Thread\IO\TDYIOWorker.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\RenderDefaultSSAO.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -317,8 +308,6 @@
     <ClInclude Include="Libraries\lua\include\lundump.h" />
     <ClInclude Include="Libraries\lua\include\lvm.h" />
     <ClInclude Include="Libraries\lua\include\lzio.h" />
-    <ClInclude Include="Include\Dy\Test\testLua.h" />
-    <ClInclude Include="Include\Dy\Test\TestMacroSetting.h" />
     <ClInclude Include="Include\Dy\Management\Helper\PhysxSimulationCallback.h" />
     <ClInclude Include="Include\Dy\Helper\Type\ThreeStateBool.h" />
     <ClInclude Include="Include\Dy\Element\Abstract\ADyBaseComponent.h" />
@@ -369,7 +358,6 @@
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderDefaultFont.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\ScreenProjectionTriangle.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderScreenOutput.h" />
-    <ClInclude Include="Include\Dy\Test\TestMSDF.h" />
     <ClInclude Include="Libraries\msdfgen\core\arithmetics.hpp" />
     <ClInclude Include="Libraries\msdfgen\core\Bitmap.h" />
     <ClInclude Include="Libraries\msdfgen\core\Contour.h" />
@@ -396,7 +384,6 @@
     <ClInclude Include="Include\Dy\Component\Internal\CDyFontRenderer.h" />
     <ClInclude Include="Include\Dy\Component\Ctor\PDyFontRenderer.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\Text.h" />
-    <ClInclude Include="Include\Dy\Test\TestCxxopt.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyRenderingApi.h" />
     <ClInclude Include="Include\Dy\Management\Type\SettingContainer.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyInput.h" />
@@ -508,6 +495,7 @@
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOReferenceContainer.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\FDyIOGC.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\Semaphore.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderDefaultSSAO.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

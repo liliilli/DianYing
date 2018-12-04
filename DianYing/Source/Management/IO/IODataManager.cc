@@ -62,7 +62,7 @@ EDySuccess MDyIOData::pfRelease()
   return DY_SUCCESS;
 }
 
-EDySuccess MDyIOData::CreateShaderInformation(const std::string& shaderSpecifierName, MDY_NOTUSED EDyScope scope)
+EDySuccess MDyIOData::CreateShaderInformation_Deprecated(const std::string& shaderSpecifierName, MDY_NOTUSED EDyScope scope)
 {
   ///
   /// @brief Check compatibility to Dy shader rendering system. \n
@@ -153,7 +153,7 @@ EDySuccess MDyIOData::CreateShaderInformation(const std::string& shaderSpecifier
   if (DyIsMapContains(this->mShaderInformation, shaderMetaInfo.mSpecifierName) == true)
   {
     MDY_LOG_WARNING_D("{} | {} is already found in mShaderInformation list.",
-        "MDyIOData::CreateShaderInformation.", shaderMetaInfo.mSpecifierName);
+        "MDyIOData::CreateShaderInformation_Deprecated.", shaderMetaInfo.mSpecifierName);
     return DY_FAILURE;
   }
 
@@ -294,7 +294,7 @@ EDySuccess MDyIOData::CreateMaterialInformation(_MIN_ const std::string& materia
 
     if (this->IsShaderInformationExist(metaInfo.mShaderSpecifier) == false)
     {
-      MDY_CALL_ASSERT_SUCCESS(this->CreateShaderInformation(metaInfo.mShaderSpecifier, scope));
+      MDY_CALL_ASSERT_SUCCESS(this->CreateShaderInformation_Deprecated(metaInfo.mShaderSpecifier, scope));
     }
 
     const auto* shaderInfo = this->GetShaderInformation(metaInfo.mShaderSpecifier);
@@ -670,98 +670,6 @@ const DDySoundInformation* MDyIOData::GetSoundInformation(const std::string& sou
 //!
 //! Deprecated
 //!
-
-EDySuccess MDyIOData::CreateShaderInformation_Deprecated(const PDyShaderConstructionDescriptor& shaderDescriptor)
-{
-  ///
-  /// @callback CheckIntegrityOfDescriptor
-  /// @brief
-  ///
-  static auto CheckIntegerityOfDescriptor = [](const PDyShaderConstructionDescriptor& shaderDescriptor)
-  {
-    if (shaderDescriptor.mShaderName.empty())
-    {
-      MDY_LOG_CRITICAL_D(kErrorShaderNameNotSpecified, kDyDataInformation);
-      return DY_FAILURE;
-    }
-    if (shaderDescriptor.mShaderFragments.empty())
-    {
-      MDY_LOG_CRITICAL_D(kErrorShaderFragmentEmpty, kDyDataInformation);
-      return DY_FAILURE;
-    }
-
-    for (const auto& shaderFragment : shaderDescriptor.mShaderFragments)
-    {
-      if (shaderFragment.mIsEnabledRawLoadShaderCode && shaderFragment.mShaderRawCode.empty())
-      {
-        MDY_LOG_CRITICAL_D(kErrorShaderFramgmentRawCodeEmpty, kDyDataInformation, "CheckIntegerityOfDescriptor");
-        return DY_FAILURE;
-      }
-
-      if (!shaderFragment.mIsEnabledRawLoadShaderCode && shaderFragment.mShaderPath.empty())
-      {
-        MDY_LOG_CRITICAL_D(kErrorShaderFramgmentPathEmpty, kDyDataInformation, "CheckIntegerityOfDescriptor");
-        return DY_FAILURE;
-      }
-    }
-
-    return DY_SUCCESS;
-  };
-
-  ///
-  /// @callback TaskInsertShaderInformation
-  /// @brief
-  ///
-  static auto TaskInsertShaderInformation = [](const PDyShaderConstructionDescriptor& shaderDescriptor,
-                                               THeapHash<DDyShaderInformation>& shaderList)
-  {
-    // Create information space.
-    const auto& shaderName    = shaderDescriptor.mShaderName;
-    auto[it, creationResult]  = shaderList.try_emplace(shaderName, nullptr);
-    if (!creationResult)
-    {
-      // Something is already in or memory oob.
-      MDY_LOG_CRITICAL("{} | Unexpected error happened during create memory for shader information {}.",
-                       "MDyIOData::CreateShaderInformation_Deprecated().", shaderName);
-      return DY_FAILURE;
-    }
-
-    // Make resource in heap, and insert it to empty memory space.
-    auto shaderInformation = std::make_unique<DDyShaderInformation>(shaderDescriptor);
-    it->second.swap(shaderInformation);
-    if (!it->second)
-    {
-      MDY_LOG_CRITICAL("{} | Unexpected error happened during swapping shader information {}.",
-                       "MDyIOData::CreateShaderInformation_Deprecated().", shaderName);
-      shaderList.erase(shaderName);
-      return DY_FAILURE;
-    }
-
-    return DY_SUCCESS;
-  };
-
-  // Integrity test
-  if (CheckIntegerityOfDescriptor(shaderDescriptor) == DY_FAILURE) { return DY_FAILURE; }
-
-  // Find if duplicated name is exist on information list.
-  const auto& shaderName = shaderDescriptor.mShaderName;
-  if (mShaderInformation.find(shaderName) != mShaderInformation.end())
-  {
-    MDY_LOG_WARNING_D("{} | {} is already found in mShaderInformation list.",
-                      "MDyIOData::CreateShaderInformation_Deprecated().", shaderName);
-    return DY_FAILURE;
-  }
-
-  // Create information space.
-  // MDySync::EnqueueIO(TaskInsertShaderInformation, std::ref(shaderDescriptor), std::ref(this->mShaderInformation));
-  if (TaskInsertShaderInformation(shaderDescriptor, this->mShaderInformation) == DY_FAILURE)
-  {
-    return DY_FAILURE;
-  }
-
-  MDY_LOG_CRITICAL("{} | \"{}\" shader information Created.", shaderName);
-  return DY_SUCCESS;
-}
 
 EDySuccess MDyIOData::CreateTextureInformation_Deprecated(const PDyTextureInstanceMetaInfo& textureDescriptor)
 {

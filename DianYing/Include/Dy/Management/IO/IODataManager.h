@@ -44,7 +44,7 @@ public:
   /// @param shaderSpecifierName specifier name of GL shader must be valid on runtime.
   /// @param scope Information lifetime scope.
   ///
-  MDY_NODISCARD EDySuccess CreateShaderInformation(_MIN_ const std::string& shaderSpecifierName, _MIN_ EDyScope scope);
+  MDY_NODISCARD EDySuccess CreateShaderInformation_Deprecated(_MIN_ const std::string& shaderSpecifierName, _MIN_ EDyScope scope);
 
   ///
   /// @brief Create model information with scope. This function must be succeeded.
@@ -153,8 +153,6 @@ public:
       const std::string& materialName,
       const PDyMaterialPopulateDescriptor& materialPopulateDescriptor);
 
-  /// @brief Create shader information.
-  EDySuccess CreateShaderInformation_Deprecated(const PDyShaderConstructionDescriptor& shaderDescriptor);
   /// @brief Create texture information.
   EDySuccess CreateTextureInformation_Deprecated(const PDyTextureInstanceMetaInfo& textureDescriptor);
   /// @brief Create material information.

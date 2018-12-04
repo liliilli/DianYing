@@ -159,6 +159,7 @@
     <ClCompile Include="Source\Builtin\Abstract\ADyModelResource.cc" />
     <ClCompile Include="Source\Builtin\Abstract\ADyTextureResource.cc" />
     <ClCompile Include="Source\Builtin\Script\DebugUiScriptCpp.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\RenderDefaultSSAO.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderUiBasicGaugeBar.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderUIImage.cc" />
     <ClCompile Include="Source\Component\Abstract\ADyActorCppScript.cc" />
@@ -238,8 +239,6 @@
     <ClCompile Include="Source\Builtin\ShaderGl\RenderDefaultFont.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderDeferredRendering.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderFontArraySDF.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\Deprecated\RenderFontMSDF_Deprecated.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\Deprecated\RenderFontSDF_Deprecated.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderGrid.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderOpaqueStatic.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderPass.cc" />
@@ -383,14 +382,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Source\Test\TestCxxopt.cc" />
-    <ClCompile Include="Source\Test\TestLuaBindingDy.cc" />
-    <ClCompile Include="Source\Test\TestLuaCpp.cc" />
-    <ClCompile Include="Source\Test\testLuaEntry.cc" />
-    <ClCompile Include="Source\Test\TestLuaFunctions.cc" />
-    <ClCompile Include="Source\Test\testLuaHelloWorld.cc" />
-    <ClCompile Include="Source\Test\testLuaVariable.cc" />
-    <ClCompile Include="Source\Test\TestMSDF.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Dy\Binding\LuaScriptFrame.h" />
@@ -411,6 +402,7 @@
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderBasicShadow.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderColorGeometry.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderDefaultFont.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderDefaultSSAO.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderDeferredRendering.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderFontArraySDF.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderGrid.h" />
@@ -638,11 +630,7 @@
     <ClInclude Include="Include\Dy\Meta\Type\EDyResourceTypes.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyWidgetTypes.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyTextureParameter.h" />
-    <ClInclude Include="Include\Dy\Test\TestCxxopt.h" />
-    <ClInclude Include="Include\Dy\Test\testLua.h" />
-    <ClInclude Include="Include\Dy\Test\TestMacroSetting.h" />
     <ClInclude Include="Include\Dy\Helper\Constant\StringPipelineUniform.h" />
-    <ClInclude Include="Include\Dy\Test\TestMSDF.h" />
     <ClInclude Include="Include\precompiled.h" />
     <ClInclude Include="Libraries\glad\include\glad\glad.h" />
     <ClInclude Include="Libraries\glad\include\KHR\khrplatform.h" />

@@ -22,6 +22,8 @@
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Core/Resource/Object/Camera.h>
+#include <Dy/Builtin/ShaderGl/PostEffect/RenderDefaultSSAO.h>
+#include <Dy/Builtin/ShaderGl/PostEffect/RenderDefaultSSAOBlurring.h>
 
 namespace
 {
@@ -223,27 +225,7 @@ void FDyPostEffectSsao::pCreateSsaoShaderResource()
   auto& manInfo = MDyIOData::GetInstance();
   auto& manResc = MDyIOResource::GetInstance();
 
-  // Make deferred shader
-  PDyShaderConstructionDescriptor shaderDesc;
-  {
-    shaderDesc.mShaderName = "dyPostEffectSsaoShader";
-    {
-      PDyShaderFragmentInformation vertexShaderInfo;
-      vertexShaderInfo.mShaderType = EDyShaderFragmentType::Vertex;
-      vertexShaderInfo.mShaderPath = "./ShaderResource/Gl/glSsao.vert";
-      shaderDesc.mShaderFragments.emplace_back(vertexShaderInfo);
-    }
-    {
-      PDyShaderFragmentInformation fragmentShaderInfo;
-      fragmentShaderInfo.mShaderType = EDyShaderFragmentType::Pixel;
-      fragmentShaderInfo.mShaderPath = "./ShaderResource/Gl/glSsao.frag";
-      shaderDesc.mShaderFragments.emplace_back(fragmentShaderInfo);
-    }
-  }
-  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateShaderInformation_Deprecated(shaderDesc));
-  MDY_CALL_ASSERT_SUCCESS(manResc.CreateShaderResource(shaderDesc.mShaderName));
-
-  this->mSsaoShaderPtr = manResc.GetShaderResource(shaderDesc.mShaderName);
+  this->mSsaoShaderPtr = manResc.GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderDefaultSSAO::sName));
   MDY_ASSERT(this->mSsaoShaderPtr, "FDyDeferredRenderingMesh::mSsaoShaderPtr must not be nullptr.");
 
   this->mSsaoShaderPtr->UseShader();
@@ -268,26 +250,7 @@ void FDyPostEffectSsao::pCreateSsaoBlurShaderResource()
   auto& manResc = MDyIOResource::GetInstance();
 
   // Make deferred shader
-  PDyShaderConstructionDescriptor shaderDesc;
-  {
-    shaderDesc.mShaderName = "dyPostEffectSsaoBlurShader";
-    {
-      PDyShaderFragmentInformation vertexShaderInfo;
-      vertexShaderInfo.mShaderType = EDyShaderFragmentType::Vertex;
-      vertexShaderInfo.mShaderPath = "./ShaderResource/Gl/glSsaoBoxBlur.vert";
-      shaderDesc.mShaderFragments.emplace_back(vertexShaderInfo);
-    }
-    {
-      PDyShaderFragmentInformation fragmentShaderInfo;
-      fragmentShaderInfo.mShaderType = EDyShaderFragmentType::Pixel;
-      fragmentShaderInfo.mShaderPath = "./ShaderResource/Gl/glSsaoBoxBlur.frag";
-      shaderDesc.mShaderFragments.emplace_back(fragmentShaderInfo);
-    }
-  }
-  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateShaderInformation_Deprecated(shaderDesc));
-  MDY_CALL_ASSERT_SUCCESS(manResc.CreateShaderResource(shaderDesc.mShaderName));
-
-  this->mSsaoBlurShaderPtr = manResc.GetShaderResource(shaderDesc.mShaderName);
+  this->mSsaoBlurShaderPtr = manResc.GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderDefaultSSAOBlurring::sName));
   MDY_ASSERT(this->mSsaoBlurShaderPtr, "FDyDeferredRenderingMesh::mSsaoBlurShaderPtr must not be nullptr.");
 
   this->mSsaoBlurShaderPtr->UseShader();

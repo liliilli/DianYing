@@ -53,28 +53,9 @@ namespace dy::builtin
 
 FDyBuiltinShaderGLRenderGrid::FDyBuiltinShaderGLRenderGrid()
 {
-  PDyShaderConstructionDescriptor shaderDesc;
-  shaderDesc.mShaderName = FDyBuiltinShaderGLRenderGrid::sName;
-  {
-    PDyShaderFragmentInformation vs;
-    vs.mShaderType = EDyShaderFragmentType::Vertex;
-    vs.mShaderRawCode = sVertexShaderCode;
-    vs.mIsEnabledRawLoadShaderCode = true;
-    shaderDesc.mShaderFragments.emplace_back(vs);
-  }
-  {
-    PDyShaderFragmentInformation fs;
-    fs.mShaderType = EDyShaderFragmentType::Pixel;
-    fs.mShaderRawCode = sFragmentShaderCode;
-    fs.mIsEnabledRawLoadShaderCode = true;
-    shaderDesc.mShaderFragments.emplace_back(fs);
-  }
-
-  auto& infoManager = MDyIOData::GetInstance();
-  auto& rescManager = MDyIOResource::GetInstance();
-
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation_Deprecated(shaderDesc));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(FDyBuiltinShaderGLRenderGrid::sName.data()));
+  this->mSpecifierName  = sName;
+  this->mVertexBuffer   = sVertexShaderCode;
+  this->mPixelBuffer    = sFragmentShaderCode;
 }
 
 } /// ::dy::builtin namespace

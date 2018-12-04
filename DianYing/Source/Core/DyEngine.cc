@@ -31,7 +31,97 @@
 #include <Dy/Management/ScriptManager.h>
 #include <Dy/Management/Editor/GuiManager.h>
 #include <Dy/Management/Internal/MDySynchronization.h>
-#include <Dy/Core/Thread/SDyIOConnectionHelper.h>
+#include <Dy/Core/Thread/IO/SDyIOConnectionHelper.h>
+
+#include <Dy/Builtin/Model/Box.h>
+#include <Dy/Builtin/Model/Plain.h>
+#include <Dy/Builtin/Model/Sphere.h>
+#include <Dy/Builtin/Model/ScreenProjectionTriangle.h>
+#include <Dy/Builtin/Texture/Checker.h>
+#include <Dy/Builtin/Texture/ErrorBlue.h>
+#include <Dy/Builtin/Material/OpaqueStaticPlain.h>
+#include <Dy/Builtin/ShaderGl/RenderPass.h>
+#include <Dy/Builtin/ShaderGl/RenderColorGeometry.h>
+#include <Dy/Builtin/ShaderGl/RenderBasicShadow.h>
+#include <Dy/Builtin/ShaderGl/RenderOpaqueStatic.h>
+#include <Dy/Builtin/ShaderGl/RenderDefaultFont.h>
+#include <Dy/Builtin/ShaderGl/RenderScreenOutput.h>
+#include <Dy/Builtin/ShaderGl/RenderFontArraySDF.h>
+#include <Dy/Builtin/ShaderGl/RenderUIBasicGaugeBar.h>
+#include <Dy/Builtin/ShaderGl/RenderUIImage.h>
+#include <Dy/Builtin/ShaderGl/RenderDeferredRendering.h>
+#include <Dy/Builtin/ShaderGl/PostEffect/RenderDefaultSSAO.h>
+#include <Dy/Builtin/ShaderGl/PostEffect/RenderDefaultSSAOBlurring.h>
+#include <Dy/Builtin/Widget/DebugUiMeta.h>
+
+#include <Dy/Core/Thread/IO/SDyIOConnectionHelper.h>
+
+//!
+//! Local function & data (Local translation unit function & data)
+//!
+
+namespace
+{
+
+void DyInitializeBuiltinResource()
+{
+  auto& infoManager = dy::MDyIOData::GetInstance();
+  auto& rescManager = dy::MDyIOResource::GetInstance();
+  using namespace dy::builtin;
+  using namespace dy;
+
+
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateModelInformation(MSVSTR(dy::builtin::FDyBuiltinModelBox::sName), dy::EDyScope::Global));
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateModelInformation(MSVSTR(dy::builtin::FDyBuiltinModelPlain::sName), dy::EDyScope::Global));
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateModelInformation(MSVSTR(dy::builtin::FDyBuiltinModelScreenProjectionTriangle::sName), dy::EDyScope::Global));
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateModelInformation(MSVSTR(dy::builtin::FDyBuiltinModelSphere::sName), dy::EDyScope::Global));
+
+  //SDyIOConnectionHelper::PopulateResource(MSVSTR(FDyBuiltinTextureChecker::sName), EDyResourceType::Texture, EDyResourceStyle::Information, EDyScope::Global);
+  //MDY_CALL_ASSERT_SUCCESS(infoManager.CreateTextureInformation(MSVSTR(dy::builtin::FDyBuiltinTextureChecker::sName), dy::EDyScope::Global));
+  SDyIOConnectionHelper::PopulateResource(MSVSTR(FDyBuiltinTextureChecker::sName), EDyResourceType::Texture, EDyResourceStyle::Resource, EDyScope::Global);
+
+  using namespace std::chrono_literals;
+  std::this_thread::sleep_for(2000ms);
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateTextureResource(MSVSTR(dy::builtin::FDyBuiltinTextureChecker::sName), dy::EDyScope::Global));
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateTextureInformation(MSVSTR(dy::builtin::FDyBuiltinTextureErrorBlue::sName), dy::EDyScope::Global));
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateTextureResource(MSVSTR(dy::builtin::FDyBuiltinTextureErrorBlue::sName), dy::EDyScope::Global));
+
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderPass::sName), dy::EDyScope::Global));
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderPass::sName)));
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderColorGeometry::sName), dy::EDyScope::Global));
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderColorGeometry::sName)));
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderOpaqueStatic::sName), dy::EDyScope::Global));
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderOpaqueStatic::sName)));
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDefaultFont::sName), dy::EDyScope::Global));
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDefaultFont::sName)));
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderFontArraySDF::sName), dy::EDyScope::Global));
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderFontArraySDF::sName)));
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderUiBasicGaugeBar::sName), dy::EDyScope::Global));
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderUiBasicGaugeBar::sName)));
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderUiImage::sName), dy::EDyScope::Global));
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderUiImage::sName)));
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDefaultSSAO::sName), dy::EDyScope::Global));
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDefaultSSAO::sName)));
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDefaultSSAO::sName), dy::EDyScope::Global));
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDefaultSSAO::sName)));
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDefaultSSAOBlurring::sName), dy::EDyScope::Global));
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDefaultSSAOBlurring::sName)));
+
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderBasicShadow::sName), dy::EDyScope::Global));
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderBasicShadow::sName)));
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDeferredRendering::sName), dy::EDyScope::Global));
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDeferredRendering::sName)));
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderScreenOutput::sName), dy::EDyScope::Global));
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderScreenOutput::sName)));
+
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateMaterialInformation(MSVSTR(dy::builtin::FDyBuiltinMaterialOpaqueStaticPlain::sName), dy::EDyScope::Global));
+}
+
+} /// ::unnamed namespace
+
+//!
+//! Implementation
+//!
 
 namespace dy
 {
@@ -62,6 +152,7 @@ EDySuccess DyEngine::pfInitialize()
   //! FUNCTIONBODY ∨
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+  gEngine = this;
   InsertExecuteRuntimeArguments();
   // `MDyLog` must be initialized first because of logging message from each managers.
   MDY_CALL_ASSERT_SUCCESS(dy::MDyLog::Initialize());
@@ -77,6 +168,9 @@ EDySuccess DyEngine::pfInitialize()
   MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyWindow::Initialize());
 
+  // Temporal
+  DyInitializeBuiltinResource();
+
   MDY_CALL_ASSERT_SUCCESS(dy::MDyRendering::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyInput::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDySound::Initialize());
@@ -88,7 +182,6 @@ EDySuccess DyEngine::pfInitialize()
   MDY_CALL_ASSERT_SUCCESS(dy::MDySynchronization::Initialize());
   MDY_LOG_WARNING_D("========== DIANYING MANAGER INITIALIZED ==========");
 
-  gEngine = this;
   return DY_SUCCESS;
 }
 
