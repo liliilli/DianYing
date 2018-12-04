@@ -16,7 +16,7 @@
 #include <Dy/Core/Rendering/UIBasicRenderer.h>
 
 #include <Dy/Builtin/ShaderGl/Font/RenderDefaultFont.h>
-#include <Dy/Core/Resource/Resource/ShaderResource.h>
+#include <Dy/Core/Resource/Resource_Deprecated/ShaderResource_Deprecated.h>
 #include <Dy/Core/Rendering/Helper/FrameAttachmentString.h>
 #include <Dy/Element/Canvas/Text.h>
 #include <Dy/Meta/Descriptor/WidgetTextMetaInformation.h>
@@ -34,7 +34,7 @@
 namespace
 {
 
-dy::CDyShaderResource* sSampleShaderPtr = nullptr;
+dy::CDyShaderResource_Deprecated* sSampleShaderPtr = nullptr;
 
 dy::PDyMetaWidgetTextDescriptor desc{};
 std::unique_ptr<dy::FDyUiWidget> testWidget = nullptr;

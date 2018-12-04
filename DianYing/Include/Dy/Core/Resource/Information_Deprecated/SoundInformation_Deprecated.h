@@ -22,7 +22,7 @@
 
 namespace dy
 {
-class CDySoundResource;
+class CDySoundResource_Deprecated;
 } /// ::dy namespace
 
 //!
@@ -33,15 +33,15 @@ namespace dy
 {
 
 ///
-/// @class DDySoundInformation
+/// @class DDySoundInformation_Deprecated_Deprecated
 /// @brief information class of each sound. (not resource)
 ///
-class DDySoundInformation final
+class DDySoundInformation_Deprecated final
 {
 public:
-  MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(DDySoundInformation);
-  DDySoundInformation(const PDySoundConstructionDescriptor& soundDesc);
-  ~DDySoundInformation();
+  MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(DDySoundInformation_Deprecated);
+  DDySoundInformation_Deprecated(const PDySoundConstructionDescriptor& soundDesc);
+  ~DDySoundInformation_Deprecated();
 
   ///
   /// @brief return sound name to create.
@@ -72,7 +72,7 @@ private:
   //! Resource pointers binding
   //!
 
-  FORCEINLINE void __pfSetSoundResourceLink(NotNull<CDySoundResource*> ptr) const noexcept
+  FORCEINLINE void __pfSetSoundResourceLink(NotNull<CDySoundResource_Deprecated*> ptr) const noexcept
   {
     this->__mLinkedSoundResourcePtr = ptr;
   }
@@ -81,9 +81,9 @@ private:
     this->__mLinkedSoundResourcePtr = nullptr;
   }
 
-  MDY_TRANSIENT CDySoundResource* __mLinkedSoundResourcePtr = nullptr;
+  MDY_TRANSIENT CDySoundResource_Deprecated* __mLinkedSoundResourcePtr = nullptr;
 
-  friend class CDySoundResource;
+  friend class CDySoundResource_Deprecated;
   friend class MDyIOResource;
 };
 

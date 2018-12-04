@@ -13,8 +13,8 @@
 ///
 
 /// Header file
-#include <Dy/Core/Resource/Information/ShaderInformation.h>
-#include <Dy/Core/Resource/Resource/ShaderResource.h>
+#include <Dy/Core/Resource/Information_Deprecated/ShaderInformation_Deprecated.h>
+#include <Dy/Core/Resource/Resource_Deprecated/ShaderResource_Deprecated.h>
 #include <Dy/Meta/Information/GLShaderMetaInformation.h>
 #include <Dy/Management/LoggingManager.h>
 
@@ -24,7 +24,7 @@ namespace
 MDY_SET_IMMUTABLE_STRING(kShaderInformationTemplate,    "{} | Shader information {} : {}");
 MDY_SET_IMMUTABLE_STRING(kShaderFragmentTemplate,       "{} | Shader fragment | Shader file path : {} | Shader fragment type : {}");
 MDY_SET_IMMUTABLE_STRING(kShaderInformationBindTo,      "{} | Shader information binds to {}");
-MDY_SET_IMMUTABLE_STRING(kDyDataInformation,            "DDyShaderInformation");
+MDY_SET_IMMUTABLE_STRING(kDyDataInformation,            "DDyShaderInformation_Deprecated");
 
 ///
 /// @brief Get immutable string by reading EDyShaderFragmentType type.
@@ -47,7 +47,7 @@ std::string_view DyGetShaderFragmentTypeStringFrom(dy::EDyShaderFragmentType typ
 namespace dy
 {
 
-DDyShaderInformation::DDyShaderInformation(const PDyShaderConstructionDescriptor& shaderConstructionDescriptor) :
+DDyShaderInformation_Deprecated::DDyShaderInformation_Deprecated(const PDyShaderConstructionDescriptor& shaderConstructionDescriptor) :
     mShaderInformation{shaderConstructionDescriptor}
 {
   // Copy or move information from descriptor.
@@ -60,7 +60,7 @@ DDyShaderInformation::DDyShaderInformation(const PDyShaderConstructionDescriptor
   }
 }
 
-DDyShaderInformation::DDyShaderInformation(const PDyGLShaderInstanceMetaInfo& shaderMetaInfo)
+DDyShaderInformation_Deprecated::DDyShaderInformation_Deprecated(const PDyGLShaderInstanceMetaInfo& shaderMetaInfo)
 {
   PDyShaderConstructionDescriptor info = {};
   info.mShaderName = shaderMetaInfo.mSpecifierName;
@@ -88,14 +88,14 @@ DDyShaderInformation::DDyShaderInformation(const PDyGLShaderInstanceMetaInfo& sh
   }
 }
 
-DDyShaderInformation::~DDyShaderInformation()
+DDyShaderInformation_Deprecated::~DDyShaderInformation_Deprecated()
 {
-  MDY_LOG_INFO_D(kShaderInformationTemplate, "~DDyShaderInformation", "name", this->mShaderInformation.mShaderName);
+  MDY_LOG_INFO_D(kShaderInformationTemplate, "~DDyShaderInformation_Deprecated", "name", this->mShaderInformation.mShaderName);
 
   if (this->__mLinkedShaderResourcePtr) { this->__mLinkedShaderResourcePtr->__pfResetShaderInformationLink(); }
 }
 
-void DDyShaderInformation::__pfSetShaderResourceLink(NotNull<CDyShaderResource*> ptr) const noexcept
+void DDyShaderInformation_Deprecated::__pfSetShaderResourceLink(NotNull<CDyShaderResource_Deprecated*> ptr) const noexcept
 {
   MDY_LOG_DEBUG_D(kShaderInformationBindTo, "__pfSetShaderResourceLink", reinterpret_cast<std::ptrdiff_t>(ptr.Get()));
   this->__mLinkedShaderResourcePtr = ptr;

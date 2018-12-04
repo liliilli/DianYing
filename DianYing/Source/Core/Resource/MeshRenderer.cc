@@ -16,7 +16,7 @@
 #include <Dy/Core/Resource/MeshRenderer.h>
 
 #include <Dy/Core/Resource/Internal/EtcType.h>
-#include <Dy/Core/Resource/Resource/ModelResource.h>
+#include <Dy/Core/Resource/Resource_Deprecated/ModelResource_Deprecated.h>
 
 #include <Dy/Management/IO/IOResourceManager.h>
 #include <Dy/Management/WorldManager.h>

@@ -13,11 +13,11 @@
 ///
 
 /// Header file
-#include <Dy/Core/Resource/Resource/ShaderResource.h>
+#include <Dy/Core/Resource/Resource_Deprecated/ShaderResource_Deprecated.h>
 
 #include <Dy/Helper/IoHelper.h>
-#include <Dy/Core/Resource/Information/ShaderInformation.h>
-#include <Dy/Core/Resource/Resource/MaterialResource.h>
+#include <Dy/Core/Resource/Information_Deprecated/ShaderInformation_Deprecated.h>
+#include <Dy/Core/Resource/Resource_Deprecated/MaterialResource_Deprecated.h>
 #include <Dy/Management/LoggingManager.h>
 
 
@@ -160,7 +160,7 @@ dy::EDyUniformVariableType DyGlGetUniformVariableTypeFrom(GLenum type) noexcept
 namespace dy
 {
 
-CDyShaderResource::~CDyShaderResource()
+CDyShaderResource_Deprecated::~CDyShaderResource_Deprecated()
 {
   // Release heap resources
   if (this->mShaderProgramId) { glDeleteProgram(this->mShaderProgramId); }
@@ -174,7 +174,7 @@ CDyShaderResource::~CDyShaderResource()
   }
 }
 
-EDySuccess CDyShaderResource::pfInitializeResource(const DDyShaderInformation& shaderInformation)
+EDySuccess CDyShaderResource_Deprecated::pfInitializeResource(const DDyShaderInformation_Deprecated& shaderInformation)
 {
   const auto& information = shaderInformation.GetInformation();
   this->mShaderName = information.mShaderName;
@@ -205,7 +205,7 @@ EDySuccess CDyShaderResource::pfInitializeResource(const DDyShaderInformation& s
   return DY_SUCCESS;
 }
 
-EDySuccess CDyShaderResource::__pInitializeShaderFragments(
+EDySuccess CDyShaderResource_Deprecated::__pInitializeShaderFragments(
     const PDyShaderConstructionDescriptor& shaderConstructionDescriptor,
     std::vector<std::pair<EDyShaderFragmentType, uint32_t>>& shaderFragmentIdList)
 {
@@ -279,7 +279,7 @@ EDySuccess CDyShaderResource::__pInitializeShaderFragments(
   return DY_SUCCESS;
 }
 
-EDySuccess CDyShaderResource::__pInitializeShaderProgram(const std::vector<std::pair<EDyShaderFragmentType, uint32_t>>& shaderFragmentIdList)
+EDySuccess CDyShaderResource_Deprecated::__pInitializeShaderProgram(const std::vector<std::pair<EDyShaderFragmentType, uint32_t>>& shaderFragmentIdList)
 {
   // Create GlShaderProgram, and attach fragments to link them.
   this->mShaderProgramId = glCreateProgram();
@@ -307,7 +307,7 @@ EDySuccess CDyShaderResource::__pInitializeShaderProgram(const std::vector<std::
   return DY_SUCCESS;
 }
 
-EDySuccess CDyShaderResource::__pStoreAttributePropertiesOfProgram() noexcept
+EDySuccess CDyShaderResource_Deprecated::__pStoreAttributePropertiesOfProgram() noexcept
 {
   // GL(native) code
   int32_t activatedAttributeCount = 0;
@@ -334,14 +334,14 @@ EDySuccess CDyShaderResource::__pStoreAttributePropertiesOfProgram() noexcept
     if (storeType == EDyAttributeVariableType::NoneError)
     {
       MDY_LOG_CRITICAL_D("{} | Failed to retrieve attribute information. Shader name : {}, Attribute varaible name : {}",
-                         "CDyShaderResource::__pStoreAttributePropertiesOfProgram", this->mShaderName, attributeName);
+                         "CDyShaderResource_Deprecated::__pStoreAttributePropertiesOfProgram", this->mShaderName, attributeName);
       this->mAttributeVariableLists.clear();
       return DY_FAILURE;
     }
     if (attributeLocation < 0)
     {
       MDY_LOG_CRITICAL_D("{} | Failed to retrieve attribute location. Shader name : {} | Attribute Variable Name : {}",
-                         "CDyShaderResource::__pStoreAttributePropertiesOfProgram", this->mShaderName, attributeLocation);
+                         "CDyShaderResource_Deprecated::__pStoreAttributePropertiesOfProgram", this->mShaderName, attributeLocation);
       this->mAttributeVariableLists.clear();
       return DY_FAILURE;
     }
@@ -364,7 +364,7 @@ EDySuccess CDyShaderResource::__pStoreAttributePropertiesOfProgram() noexcept
   return DY_SUCCESS;
 }
 
-EDySuccess CDyShaderResource::__pStoreConstantUniformPropertiesOfProgram() noexcept
+EDySuccess CDyShaderResource_Deprecated::__pStoreConstantUniformPropertiesOfProgram() noexcept
 {
   // GL(native) code
   int32_t activatedUniformCount = 0;
@@ -392,7 +392,7 @@ EDySuccess CDyShaderResource::__pStoreConstantUniformPropertiesOfProgram() noexc
     if (storeType == EDyUniformVariableType::NoneError)
     {
       MDY_LOG_CRITICAL_D("{} | Failed to retrieve uniform information. Shader name : {}, Uniform variable name : {}",
-                         "CDyShaderResource::__pStoreAttributePropertiesOfProgram", this->mShaderName, uniformName);
+                         "CDyShaderResource_Deprecated::__pStoreAttributePropertiesOfProgram", this->mShaderName, uniformName);
       this->mPlainUniformVariableLists.clear();
       return DY_FAILURE;
     }
@@ -402,7 +402,7 @@ EDySuccess CDyShaderResource::__pStoreConstantUniformPropertiesOfProgram() noexc
       if (MDY_CHECK_ISNULL(uboNameLastPtr))
       {
         MDY_LOG_CRITICAL_D("{} | Failed to retrieve uniform variable location. Shader name : {}, Uniform variable name : {}",
-                           "CDyShaderResource::__pStoreAttributePropertiesOfProgram", this->mShaderName, uniformName);
+                           "CDyShaderResource_Deprecated::__pStoreAttributePropertiesOfProgram", this->mShaderName, uniformName);
         this->mPlainUniformVariableLists.clear();
         return DY_FAILURE;
       }
@@ -428,7 +428,7 @@ EDySuccess CDyShaderResource::__pStoreConstantUniformPropertiesOfProgram() noexc
   return DY_SUCCESS;
 }
 
-EDySuccess CDyShaderResource::__pStoreUniformBufferObjectPropertiesOfProgram() noexcept
+EDySuccess CDyShaderResource_Deprecated::__pStoreUniformBufferObjectPropertiesOfProgram() noexcept
 {
   // GL(native) code
   TI32 activatedUboCount = 0;
@@ -459,26 +459,26 @@ EDySuccess CDyShaderResource::__pStoreUniformBufferObjectPropertiesOfProgram() n
   return DY_SUCCESS;
 }
 
-void CDyShaderResource::__pfSetMaterialResourceLink(CDyMaterialResource* ptr) const noexcept
+void CDyShaderResource_Deprecated::__pfSetMaterialResourceLink(CDyMaterialResource_Deprecated* ptr) const noexcept
 {
   auto [it, result] = this->__mLinkedMaterialResourcePtrs.try_emplace(ptr, ptr);
   if (!result) {
-    MDY_LOG_CRITICAL_D("{} | Unexpected error occurred. | Shader Name : {}", "CDyShaderResource::__pfSetMaterialResourceLink", this->mShaderName);
+    MDY_LOG_CRITICAL_D("{} | Unexpected error occurred. | Shader Name : {}", "CDyShaderResource_Deprecated::__pfSetMaterialResourceLink", this->mShaderName);
     MDY_UNEXPECTED_BRANCH();
   }
 }
 
-void CDyShaderResource::UseShader() noexcept
+void CDyShaderResource_Deprecated::UseShader() noexcept
 {
   glUseProgram(mShaderProgramId);
 }
 
-void CDyShaderResource::UpdateUniformVariables()
+void CDyShaderResource_Deprecated::UpdateUniformVariables()
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
 }
 
-void CDyShaderResource::UnuseShader() noexcept
+void CDyShaderResource_Deprecated::UnuseShader() noexcept
 {
   glUseProgram(0);
 }

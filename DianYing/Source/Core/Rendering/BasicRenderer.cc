@@ -16,10 +16,10 @@
 #include <Dy/Core/Rendering/BasicRenderer.h>
 
 #include <Dy/Component/CDyModelRenderer.h>
-#include <Dy/Core/Resource/Resource/ShaderResource.h>
-#include <Dy/Core/Resource/Resource/SubmeshResource.h>
-#include <Dy/Core/Resource/Resource/MaterialResource.h>
-#include <Dy/Core/Resource/Resource/TextureResource.h>
+#include <Dy/Core/Resource/Resource_Deprecated/ShaderResource_Deprecated.h>
+#include <Dy/Core/Resource/Resource_Deprecated/SubmeshResource_Deprecated.h>
+#include <Dy/Core/Resource/Resource_Deprecated/MaterialResource_Deprecated.h>
+#include <Dy/Core/Resource/Resource_Deprecated/TextureResource_Deprecated.h>
 #include <Dy/Core/Resource/Internal/TextureEnums.h>
 #include <Dy/Element/Actor.h>
 #include <Dy/Management/WorldManager.h>
@@ -210,7 +210,7 @@ void FDyBasicRenderer::pRenderScreen(const CDyModelRenderer& renderer, const CDy
 
   for (TI32 i = 0; i < iterationCount; ++i)
   {
-    auto& material      = const_cast<CDyMaterialResource&>(renderer.GetMaterialResourcePtr(i));
+    auto& material      = const_cast<CDyMaterialResource_Deprecated&>(renderer.GetMaterialResourcePtr(i));
     auto shaderResource = material.GetShaderResource();
     if (shaderResource == nullptr)
     {
@@ -220,7 +220,7 @@ void FDyBasicRenderer::pRenderScreen(const CDyModelRenderer& renderer, const CDy
 
     shaderResource->UseShader();
 
-    const CDySubmeshResource& submesh = renderer.GetSubmeshResourcePtr(i);
+    const CDySubmeshResource_Deprecated& submesh = renderer.GetSubmeshResourcePtr(i);
     glBindVertexArray(submesh.GetVertexArrayId());
 
     const auto modelMatrix = glGetUniformLocation(shaderResource->GetShaderProgramId(), "modelMatrix");

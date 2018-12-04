@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Resource/Information/SubmeshInformation.h>
+#include <Dy/Core/Resource/Information_Deprecated/SubmeshInformation_Deprecated.h>
 
 //!
 //! Implementation
@@ -23,18 +23,18 @@ namespace dy
 {
 
 ///
-/// @class CDySubmeshResource
+/// @class CDySubmeshResource_Deprecated
 /// @brief Submesh resource type which manages submesh resource.
 ///
-class CDySubmeshResource
+class CDySubmeshResource_Deprecated
 {
 public:
-  CDySubmeshResource() = default;
-  CDySubmeshResource(const CDySubmeshResource&)             = delete;
-  CDySubmeshResource(CDySubmeshResource&&)                  = default;
-  CDySubmeshResource& operator=(const CDySubmeshResource&)  = delete;
-  CDySubmeshResource& operator=(CDySubmeshResource&&)       = default;
-  ~CDySubmeshResource();
+  CDySubmeshResource_Deprecated() = default;
+  CDySubmeshResource_Deprecated(const CDySubmeshResource_Deprecated&)             = delete;
+  CDySubmeshResource_Deprecated(CDySubmeshResource_Deprecated&&)                  = default;
+  CDySubmeshResource_Deprecated& operator=(const CDySubmeshResource_Deprecated&)  = delete;
+  CDySubmeshResource_Deprecated& operator=(CDySubmeshResource_Deprecated&&)       = default;
+  ~CDySubmeshResource_Deprecated();
 
   ///
   /// @brief Check whether indice (element) vertexes are binded, so be able to element drawing.
@@ -65,7 +65,7 @@ private:
   /// @brief Initialize mesh resource with valid submesh information instance.
   ///
   [[nodiscard]]
-  EDySuccess pfInitializeSubmeshResource(const DDySubmeshInformation& meshInformation) noexcept;
+  EDySuccess pfInitializeSubmeshResource(const DDySubmeshInformation_Deprecated& meshInformation) noexcept;
 
   DDyGlBufferIdInformation        mBufferIdInformation     = {};
   DDySubmeshFlagInformation       mMeshFlagInformation     = {};

@@ -14,7 +14,7 @@
 ///
 
 #include <queue>
-#include <Dy/Core/Resource/Resource/ShaderResource.h>
+#include <Dy/Core/Resource/Resource_Deprecated/ShaderResource_Deprecated.h>
 
 //!
 //! Forward declaration
@@ -95,7 +95,7 @@ private:
 
   inline static constexpr TI32 sDirectionalLightCount = 5;
 
-  CDyShaderResource*  mShaderPtr      = MDY_INITIALIZE_NULL;
+  CDyShaderResource_Deprecated*  mShaderPtr      = MDY_INITIALIZE_NULL;
 
   /// Attachment information pointer
 

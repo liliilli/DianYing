@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Component/Ctor/PDyFontRenderer.h>
-#include <Dy/Core/Resource/Resource/ShaderResource.h>
+#include <Dy/Core/Resource/Resource_Deprecated/ShaderResource_Deprecated.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 
 namespace dy
@@ -56,7 +56,7 @@ private:
   /// LAZY NOT NULLABLE POINTER RAW PTR;
   FDyText*            mFontObjectRawPtr = MDY_INITIALIZE_NULL;
   ///
-  CDyShaderResource*  mSampleShaderPtr  = nullptr;
+  CDyShaderResource_Deprecated*  mSampleShaderPtr  = nullptr;
 };
 
 } /// ::dy namespace

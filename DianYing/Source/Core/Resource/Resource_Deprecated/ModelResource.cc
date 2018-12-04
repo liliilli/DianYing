@@ -13,12 +13,12 @@
 ///
 
 /// Header file
-#include <Dy/Core/Resource/Resource/ModelResource.h>
+#include <Dy/Core/Resource/Resource_Deprecated/ModelResource_Deprecated.h>
 
 #include <assimp/scene.h>
 
-#include <Dy/Core/Resource/Information/ModelInformation.h>
-#include <Dy/Core/Resource/Resource/SubmeshResource.h>
+#include <Dy/Core/Resource/Information_Deprecated/ModelInformation_Deprecated.h>
+#include <Dy/Core/Resource/Resource_Deprecated/SubmeshResource_Deprecated.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Helper/Type/Quaternion.h>
 
@@ -62,7 +62,7 @@ CDyModelResource::GetModelAnimationTransformMatrixList() const noexcept
   return this->__mLinkedModelInformationPtr->mOverallModelBoneInformations;
 }
 
-void CDyModelResource::pReadNodeHierarchy(float animationElapsedTime, DDyModelInformation& modelInfo,
+void CDyModelResource::pReadNodeHierarchy(float animationElapsedTime, DDyModelInformation_Deprecated& modelInfo,
                                           const DMoeBoneNodeInformation& boneNode, const DDyMatrix4x4& parentTransform)
 {
   using TNodeAnim = NotNull<const DMoeAnimationInformation::DAnimChannel*>;
@@ -229,12 +229,12 @@ void CDyModelResource::pReadNodeHierarchy(float animationElapsedTime, DDyModelIn
   }
 }
 
-EDySuccess CDyModelResource::pInitializeModelResource(const DDyModelInformation& modelInformation)
+EDySuccess CDyModelResource::pInitializeModelResource(const DDyModelInformation_Deprecated& modelInformation)
 {
   const auto& submeshInformations = modelInformation.mSubmeshInformations;
   for (const auto& submeshInformation : submeshInformations)
   {
-    std::unique_ptr<CDySubmeshResource> meshResource = std::make_unique<CDySubmeshResource>();
+    std::unique_ptr<CDySubmeshResource_Deprecated> meshResource = std::make_unique<CDySubmeshResource_Deprecated>();
     if (meshResource->pfInitializeSubmeshResource(submeshInformation) == DY_FAILURE)
     {
       MDY_LOG_ERROR("{} | Failed to create submesh resource. | Model name : {}",

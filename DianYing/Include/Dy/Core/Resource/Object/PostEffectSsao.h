@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Core/Resource/MeshRenderer.h>
-#include <Dy/Core/Resource/Resource/ShaderResource.h>
+#include <Dy/Core/Resource/Resource_Deprecated/ShaderResource_Deprecated.h>
 
 namespace dy
 {
@@ -91,8 +91,8 @@ private:
   TU32                mSsaoBlurColorBuffer    = MDY_INITIALIZE_DEFUINT;
 
   CDyMeshRenderer     mRenderer;
-  CDyShaderResource*  mSsaoShaderPtr          = nullptr;
-  CDyShaderResource*  mSsaoBlurShaderPtr      = nullptr;
+  CDyShaderResource_Deprecated*  mSsaoShaderPtr          = nullptr;
+  CDyShaderResource_Deprecated*  mSsaoBlurShaderPtr      = nullptr;
 };
 
 } /// ::dy namespace

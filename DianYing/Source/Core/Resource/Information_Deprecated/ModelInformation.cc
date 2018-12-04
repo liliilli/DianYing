@@ -15,7 +15,7 @@
 ///
 
 /// Header file
-#include <Dy/Core/Resource/Information/ModelInformation.h>
+#include <Dy/Core/Resource/Information_Deprecated/ModelInformation_Deprecated.h>
 
 #include <future>
 
@@ -23,7 +23,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-#include <Dy/Core/Resource/Resource/ModelResource.h>
+#include <Dy/Core/Resource/Resource_Deprecated/ModelResource_Deprecated.h>
 #include <Dy/Core/Resource/Internal/GeometryType.h>
 #include <Dy/Management/IO/IODataManager.h>
 #include <Dy/Management/LoggingManager.h>
@@ -38,7 +38,7 @@ MDY_SET_IMMUTABLE_STRING(kModelInformationTemplate,     "{} | Model information 
 MDY_SET_IMMUTABLE_STRING(kModelInformationNumbTemplate, "{} | Model information {} No.{} : {}");
 MDY_SET_IMMUTABLE_STRING(kWarnNotHaveMaterial,          "{}::{} | This mesh does not have meterial information.");
 MDY_SET_IMMUTABLE_STRING(kErrorModelFailedToRead,       "{} | Failed to create read model scene.");
-MDY_SET_IMMUTABLE_STRING(kModelInformation,             "DDyModelInformation");
+MDY_SET_IMMUTABLE_STRING(kModelInformation,             "DDyModelInformation_Deprecated");
 MDY_SET_IMMUTABLE_STRING(kFunc__pProcessAssimpMesh,     "__pProcessMeshInformation");
 MDY_SET_IMMUTABLE_STRING(kFunc__pReadMaterialData,      "__pReadMaterialData");
 MDY_SET_IMMUTABLE_STRING(kWarnDuplicatedMaterialName,   "{}::{} | Duplicated material name detected. Material name : {}");
@@ -118,7 +118,7 @@ MDY_SET_IMMUTABLE_STRING(kWarnDuplicatedMaterialName,   "{}::{} | Duplicated mat
 namespace dy
 {
 
-DDyModelInformation::DDyModelInformation(const PDyModelInstanceMetaInfo& modelConstructionDescriptor)
+DDyModelInformation_Deprecated::DDyModelInformation_Deprecated(const PDyModelInstanceMetaInfo& modelConstructionDescriptor)
 {
   if (modelConstructionDescriptor.mSourceType == EDyResourceSource::Builtin)
   {
@@ -158,7 +158,7 @@ DDyModelInformation::DDyModelInformation(const PDyModelInstanceMetaInfo& modelCo
 
     if (assimpModelScene->HasAnimations())
     { // Make animation informations from aiScene.
-      MDY_LOG_DEBUG_D("DDyModelInformation | Model : {} Has animations", this->mModelName);
+      MDY_LOG_DEBUG_D("DDyModelInformation_Deprecated | Model : {} Has animations", this->mModelName);
       this->pCreateAnimationInformation(*assimpModelScene);
     }
 
@@ -179,15 +179,15 @@ DDyModelInformation::DDyModelInformation(const PDyModelInstanceMetaInfo& modelCo
   while (!this->mModelInformationLoaded.compare_exchange_weak(atmFalse, true));
 }
 
-DDyModelInformation::~DDyModelInformation()
+DDyModelInformation_Deprecated::~DDyModelInformation_Deprecated()
 {
-  MDY_LOG_INFO_D(kModelInformationTemplate, "~DDyModelInformation", "name", this->mModelName);
+  MDY_LOG_INFO_D(kModelInformationTemplate, "~DDyModelInformation_Deprecated", "name", this->mModelName);
 
   if (this->__mLinkedModelResourcePtr)      { this->__mLinkedModelResourcePtr->__pfResetModelInformationLink(); }
 }
 
 #ifdef false
-void DDyModelInformation::pCreateAnimationInformation(const aiScene& aiScene)
+void DDyModelInformation_Deprecated::pCreateAnimationInformation(const aiScene& aiScene)
 {
   for (TU32 i = 0; i < aiScene.mNumAnimations; ++i)
   {
@@ -233,7 +233,7 @@ void DDyModelInformation::pCreateAnimationInformation(const aiScene& aiScene)
   }
 }
 
-void DDyModelInformation::pProcessNode(const aiScene& aiScene, const aiNode& aiNode)
+void DDyModelInformation_Deprecated::pProcessNode(const aiScene& aiScene, const aiNode& aiNode)
 {
   MDY_LOG_INFO_D("pProcessNode | Processing a node | Model name : {}", this->mModelName);
 
@@ -248,7 +248,7 @@ void DDyModelInformation::pProcessNode(const aiScene& aiScene, const aiNode& aiN
   }
 }
 
-void DDyModelInformation::__pProcessMeshInformation(const aiScene& aiScene, const aiNode& aiNode, const aiMesh& mesh)
+void DDyModelInformation_Deprecated::__pProcessMeshInformation(const aiScene& aiScene, const aiNode& aiNode, const aiMesh& mesh)
 {
   // Retrieve vertex and indices for element buffer object.
   PDySubmeshInformationDescriptor meshInformationDescriptor = {};
@@ -291,7 +291,7 @@ void DDyModelInformation::__pProcessMeshInformation(const aiScene& aiScene, cons
     const aiMaterial& material  = *aiScene.mMaterials[materialIndex];
     auto materialDescriptor     = this->__pReadMaterialData(material);
 
-    // Create DDySubmeshInformation with material descriptor.
+    // Create DDySubmeshInformation_Deprecated with material descriptor.
     meshInformationDescriptor.mMaterialName = materialDescriptor.mSpecifierName;
     this->mSubmeshInformations.emplace_back(meshInformationDescriptor);
 
@@ -303,7 +303,7 @@ void DDyModelInformation::__pProcessMeshInformation(const aiScene& aiScene, cons
   }
 }
 
-void DDyModelInformation::__pReadVertexData(const aiMesh& mesh, PDySubmeshInformationDescriptor& desc)
+void DDyModelInformation_Deprecated::__pReadVertexData(const aiMesh& mesh, PDySubmeshInformationDescriptor& desc)
 {
   constexpr int32_t mtThresholdSize = 1'000;
   constexpr int32_t mtTaskCount     = 4;
@@ -366,7 +366,7 @@ void DDyModelInformation::__pReadVertexData(const aiMesh& mesh, PDySubmeshInform
   }
 }
 
-void DDyModelInformation::__pReadBoneData(const aiMesh& mesh, PDySubmeshInformationDescriptor& desc)
+void DDyModelInformation_Deprecated::__pReadBoneData(const aiMesh& mesh, PDySubmeshInformationDescriptor& desc)
 {
   ///
   /// @brief Add {boneId, weight} to vacant bone data slot of vertexBoneData.
@@ -423,7 +423,7 @@ void DDyModelInformation::__pReadBoneData(const aiMesh& mesh, PDySubmeshInformat
   }
 }
 
-void DDyModelInformation::__pReadIndiceData(const aiMesh& mesh, PDySubmeshInformationDescriptor& desc)
+void DDyModelInformation_Deprecated::__pReadIndiceData(const aiMesh& mesh, PDySubmeshInformationDescriptor& desc)
 {
   desc.mIndices.reserve(mesh.mNumFaces * 3);
   for (uint32_t i = 0; i < mesh.mNumFaces; ++i)
@@ -437,7 +437,7 @@ void DDyModelInformation::__pReadIndiceData(const aiMesh& mesh, PDySubmeshInform
   desc.mIndices.shrink_to_fit();
 }
 
-PDyMaterialInstanceMetaInfo DDyModelInformation::__pReadMaterialData(const aiMaterial& material)
+PDyMaterialInstanceMetaInfo DDyModelInformation_Deprecated::__pReadMaterialData(const aiMaterial& material)
 {
   aiString materialName  = {};
   if (const auto ret = material.Get(AI_MATKEY_NAME, materialName); ret == AI_FAILURE)
@@ -490,7 +490,7 @@ PDyMaterialInstanceMetaInfo DDyModelInformation::__pReadMaterialData(const aiMat
 }
 
 std::optional<std::vector<std::string>>
-DDyModelInformation::__pLoadMaterialTextures(const aiMaterial& material, EDyTextureMapType type)
+DDyModelInformation_Deprecated::__pLoadMaterialTextures(const aiMaterial& material, EDyTextureMapType type)
 {
   // EDyTextureMapType => aiTextureType
   aiTextureType aiTextureType = aiTextureType_UNKNOWN;
@@ -513,7 +513,7 @@ DDyModelInformation::__pLoadMaterialTextures(const aiMaterial& material, EDyText
     aiString textureLocalPath;
     if (material.GetTexture(aiTextureType, i, &textureLocalPath) != AI_SUCCESS)
     {
-      MDY_LOG_ERROR_D("{} | Failed to read texture information from assimp.", "DDyModelInformation::__pLoadMaterialTextures");
+      MDY_LOG_ERROR_D("{} | Failed to read texture information from assimp.", "DDyModelInformation_Deprecated::__pLoadMaterialTextures");
       return std::nullopt;
     }
 
@@ -537,15 +537,15 @@ DDyModelInformation::__pLoadMaterialTextures(const aiMaterial& material, EDyText
       this->mOverallTextureLocalPaths.emplace_back(textureDesc.mExternalFilePath);
     }
 
-    MDY_LOG_DEBUG_D("{}::{} | Texture Name : {}", "DDyModelInformation", "__pLoadMaterialTextures", textureName);
-    MDY_LOG_DEBUG_D("{}::{} | Map Type : {}",     "DDyModelInformation", "__pLoadMaterialTextures", DyGetDebugStringFromEDyMapType(type).data());
+    MDY_LOG_DEBUG_D("{}::{} | Texture Name : {}", "DDyModelInformation_Deprecated", "__pLoadMaterialTextures", textureName);
+    MDY_LOG_DEBUG_D("{}::{} | Map Type : {}",     "DDyModelInformation_Deprecated", "__pLoadMaterialTextures", DyGetDebugStringFromEDyMapType(type).data());
     textureInformationString.emplace_back(textureName);
   }
 
   return textureInformationString;
 }
 
-void DDyModelInformation::pCreateNodeInformation(const aiNode& aiNode, DMoeBoneNodeInformation& nodeInfo)
+void DDyModelInformation_Deprecated::pCreateNodeInformation(const aiNode& aiNode, DMoeBoneNodeInformation& nodeInfo)
 {
   if (const auto idIt = this->mBoneIdMap.find(aiNode.mName.data); idIt != this->mBoneIdMap.end())
   {
@@ -572,7 +572,7 @@ void DDyModelInformation::pCreateNodeInformation(const aiNode& aiNode, DMoeBoneN
 }
 #endif
 
-void DDyModelInformation::__pOutputDebugInformationLog()
+void DDyModelInformation_Deprecated::__pOutputDebugInformationLog()
 {
 #if defined(_DEBUG) || !defined(NDEBUG)
   for (TU32 i = 0; i < this->mOverallBindedMaterialName.size(); ++i)

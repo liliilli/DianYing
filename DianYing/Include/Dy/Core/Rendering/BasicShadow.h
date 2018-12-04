@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Resource/Resource/ShaderResource.h>
+#include <Dy/Core/Resource/Resource_Deprecated/ShaderResource_Deprecated.h>
 #include <Dy/Helper/Type/Vector3.h>
 
 //!
@@ -104,9 +104,9 @@ private:
   bool                mIsUsingShadowDirectionalLight = false;
 
   ///
-  CDyShaderResource*  mDirLightShaderResource   = MDY_INITIALIZE_NULL;
+  CDyShaderResource_Deprecated*  mDirLightShaderResource   = MDY_INITIALIZE_NULL;
   ///
-  CDyShaderResource*  mPointLightShaderResource = MDY_INITIALIZE_NULL;
+  CDyShaderResource_Deprecated*  mPointLightShaderResource = MDY_INITIALIZE_NULL;
 
   ///
   PDyGlFrameBufferInformation* mShadowFrameBuffer = MDY_INITIALIZE_NULL;

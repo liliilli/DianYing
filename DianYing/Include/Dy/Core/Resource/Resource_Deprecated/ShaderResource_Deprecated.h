@@ -22,8 +22,8 @@
 
 namespace dy
 {
-class   DDyShaderInformation;
-class   CDyMaterialResource;
+class   DDyShaderInformation_Deprecated;
+class   CDyMaterialResource_Deprecated;
 struct  DDyVector2;
 struct  DDyVector3;
 struct  DDyVector4;
@@ -37,20 +37,20 @@ class   DDyMatrix4x4;
 namespace dy {
 
 ///
-/// @class CDyShaderResource
+/// @class CDyShaderResource_Deprecated_Deprecated
 /// @brief Shader resource class which manages shader non-safe heap instance.
 ///
-class CDyShaderResource final
+class CDyShaderResource_Deprecated final
 {
   using TUniformId = int32_t;
   using TUniformStruct = std::tuple<std::string, EDyUniformVariableType, TUniformId>;
 public:
-  CDyShaderResource() = default;
-  CDyShaderResource(const CDyShaderResource&) = delete;
-  CDyShaderResource& operator=(const CDyShaderResource&) = delete;
-  CDyShaderResource(CDyShaderResource&&) = default;
-  CDyShaderResource& operator=(CDyShaderResource&&) = default;
-  ~CDyShaderResource();
+  CDyShaderResource_Deprecated() = default;
+  CDyShaderResource_Deprecated(const CDyShaderResource_Deprecated&) = delete;
+  CDyShaderResource_Deprecated& operator=(const CDyShaderResource_Deprecated&) = delete;
+  CDyShaderResource_Deprecated(CDyShaderResource_Deprecated&&) = default;
+  CDyShaderResource_Deprecated& operator=(CDyShaderResource_Deprecated&&) = default;
+  ~CDyShaderResource_Deprecated();
 
   ///
   /// @brief Turn on shader program.
@@ -197,7 +197,7 @@ private:
   ///
   /// @brief private-friend function, initialize shader resource with information.
   ///
-  MDY_NODISCARD EDySuccess pfInitializeResource(const DDyShaderInformation& shaderInformation);
+  MDY_NODISCARD EDySuccess pfInitializeResource(const DDyShaderInformation_Deprecated& shaderInformation);
 
   /// Initialize shader fragments.
   MDY_NODISCARD EDySuccess __pInitializeShaderFragments(
@@ -236,7 +236,7 @@ private:
   template <typename TType>
   using TBindPtrMap = std::unordered_map<TType*, TType*>;
 
-  FORCEINLINE void __pfSetShaderInformationLink(NotNull<DDyShaderInformation*> ptr) const noexcept
+  FORCEINLINE void __pfSetShaderInformationLink(NotNull<DDyShaderInformation_Deprecated*> ptr) const noexcept
   {
     this->__mLinkedShaderInformationPtr = ptr;
   }
@@ -245,17 +245,17 @@ private:
     this->__mLinkedShaderInformationPtr = nullptr;
   }
 
-              void __pfSetMaterialResourceLink(CDyMaterialResource* ptr) const noexcept;
-  FORCEINLINE void __pfResetMaterialResourceLinking(NotNull<CDyMaterialResource*> ptr) const noexcept
+              void __pfSetMaterialResourceLink(CDyMaterialResource_Deprecated* ptr) const noexcept;
+  FORCEINLINE void __pfResetMaterialResourceLinking(NotNull<CDyMaterialResource_Deprecated*> ptr) const noexcept
   {
     this->__mLinkedMaterialResourcePtrs.erase(ptr);
   }
 
-  MDY_TRANSIENT DDyShaderInformation*             __mLinkedShaderInformationPtr = nullptr;
-  MDY_TRANSIENT TBindPtrMap<CDyMaterialResource>  __mLinkedMaterialResourcePtrs;
+  MDY_TRANSIENT DDyShaderInformation_Deprecated*             __mLinkedShaderInformationPtr = nullptr;
+  MDY_TRANSIENT TBindPtrMap<CDyMaterialResource_Deprecated>  __mLinkedMaterialResourcePtrs;
 
-  friend class DDyShaderInformation;
-  friend class CDyMaterialResource;
+  friend class DDyShaderInformation_Deprecated;
+  friend class CDyMaterialResource_Deprecated;
   friend class MDyIOResource;
 };
 

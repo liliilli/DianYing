@@ -22,9 +22,9 @@
 
 namespace dy
 {
-class DDyMaterialInformation;
-class CDyShaderResource;
-class CDyTextureResource;
+class DDyMaterialInformation_Deprecated;
+class CDyShaderResource_Deprecated;
+class CDyTextureResource_Deprecated;
 } /// ::dy namespace
 
 //!
@@ -35,23 +35,23 @@ namespace dy
 {
 
 ///
-/// @class CDyMaterialResource
+/// @class CDyMaterialResource_Deprecated
 /// @brief Material resource class which manage texture, properties instance (only moveable)
 ///
-class CDyMaterialResource
+class CDyMaterialResource_Deprecated
 {
 public:
-  CDyMaterialResource()  = default;
-  CDyMaterialResource(const CDyMaterialResource&)             = delete;
-  CDyMaterialResource(CDyMaterialResource&&)                  = default;
-  CDyMaterialResource& operator=(const CDyMaterialResource&)  = delete;
-  CDyMaterialResource& operator=(CDyMaterialResource&&)       = default;
-  ~CDyMaterialResource();
+  CDyMaterialResource_Deprecated()  = default;
+  CDyMaterialResource_Deprecated(const CDyMaterialResource_Deprecated&)             = delete;
+  CDyMaterialResource_Deprecated(CDyMaterialResource_Deprecated&&)                  = default;
+  CDyMaterialResource_Deprecated& operator=(const CDyMaterialResource_Deprecated&)  = delete;
+  CDyMaterialResource_Deprecated& operator=(CDyMaterialResource_Deprecated&&)       = default;
+  ~CDyMaterialResource_Deprecated();
 
   ///
   /// @brief Get shader resource ptr which may be nullptr or not be.
   ///
-  NotNull<CDyShaderResource*> GetShaderResource() noexcept;
+  NotNull<CDyShaderResource_Deprecated*> GetShaderResource() noexcept;
 
   ///
   /// @brief Return binded texture resource pointers list.
@@ -93,7 +93,7 @@ private:
   //! Level pointers binding
   //!
 
-  FORCEINLINE void __pfSetMaterialInformationLink(NotNull<DDyMaterialInformation*> ptr) const noexcept
+  FORCEINLINE void __pfSetMaterialInformationLink(NotNull<DDyMaterialInformation_Deprecated*> ptr) const noexcept
   {
     this->__mLinkedMaterialInformationPtr = ptr;
   }
@@ -103,7 +103,7 @@ private:
     this->__mLinkedMaterialInformationPtr = nullptr;
   }
 
-  void __pfResetTextureResourcePtr(NotNull<CDyTextureResource*> ptr) noexcept;
+  void __pfResetTextureResourcePtr(NotNull<CDyTextureResource_Deprecated*> ptr) noexcept;
 
   FORCEINLINE void __pfResetShaderResource() noexcept
   {
@@ -111,11 +111,11 @@ private:
     this->mShaderResource.mValidShaderPointer = nullptr;
   }
 
-  MDY_TRANSIENT DDyMaterialInformation*   __mLinkedMaterialInformationPtr = nullptr;
+  MDY_TRANSIENT DDyMaterialInformation_Deprecated*   __mLinkedMaterialInformationPtr = nullptr;
 
-  friend class CDyTextureResource;
-  friend class CDyShaderResource;
-  friend class DDyMaterialInformation;
+  friend class CDyTextureResource_Deprecated;
+  friend class CDyShaderResource_Deprecated;
+  friend class DDyMaterialInformation_Deprecated;
   friend class MDyIOResource;
 };
 

@@ -24,8 +24,8 @@
 
 namespace dy
 {
-class CDyShaderResource;
-class CDyTextureResource;
+class CDyShaderResource_Deprecated;
+class CDyTextureResource_Deprecated;
 } /// ::dy namespace
 
 //!
@@ -59,7 +59,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyMaterialBlendMode& p);
 struct DDyMaterialShaderTuple final
 {
   std::string                           mShaderName         = "";
-  CDyShaderResource*                    mValidShaderPointer = nullptr;
+  CDyShaderResource_Deprecated*                    mValidShaderPointer = nullptr;
 
   DDyMaterialShaderTuple(const std::string& shaderName);
   DDyMaterialShaderTuple() noexcept = default;;
@@ -72,7 +72,7 @@ struct DDyMaterialShaderTuple final
 struct DDyMaterialTextureTuple final
 {
   std::string                           mTextureName          = "";
-  CDyTextureResource*                   mValidTexturePointer  = nullptr;
+  CDyTextureResource_Deprecated*                   mValidTexturePointer  = nullptr;
 
   DDyMaterialTextureTuple(const std::string& textureName);
 };

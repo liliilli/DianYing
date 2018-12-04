@@ -113,7 +113,7 @@ EDySuccess MDyIOData::CreateShaderInformation_Deprecated(const std::string& shad
   /// @brief Make shader information and bind to `Dy` shader rendering system.
   ///
   static auto InsertShaderInformation = [](_MIN_ const PDyGLShaderInstanceMetaInfo& metaInfo,
-                                           _MIO_ THeapHash<DDyShaderInformation>& shaderMap)
+                                           _MIO_ THeapHash<DDyShaderInformation_Deprecated>& shaderMap)
   {
     // Create information space.
     const auto& shaderName    = metaInfo.mSpecifierName;
@@ -126,7 +126,7 @@ EDySuccess MDyIOData::CreateShaderInformation_Deprecated(const std::string& shad
     }
 
     // Make resource in heap, and insert it to empty memory space.
-    auto shaderInfoSmtPtr = std::make_unique<DDyShaderInformation>(metaInfo);
+    auto shaderInfoSmtPtr = std::make_unique<DDyShaderInformation_Deprecated>(metaInfo);
     it->second.swap(shaderInfoSmtPtr);
 
     if (MDY_CHECK_ISEMPTY(it->second))
@@ -206,7 +206,7 @@ EDySuccess MDyIOData::CreateModelInformation_Deprecated(const std::string& model
   }
 
   // Make resource in heap, and insert it to empty memory space.
-  auto materialInformation = std::make_unique<DDyModelInformation>(metaInfo);
+  auto materialInformation = std::make_unique<DDyModelInformation_Deprecated>(metaInfo);
   it->second.swap(materialInformation);
   MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(it->second), "Unexpected error occurred.");
   return DY_SUCCESS;
@@ -251,7 +251,7 @@ EDySuccess MDyIOData::CreateTextureInformation_Deprecated(const std::string& tex
   MDY_ASSERT(creationResult == true, "Unexpected erorr occurred.");
 
   // Make resource in heap, and insert it to empty memory space.
-  auto textureInformation = std::make_unique<DDyTextureInformation>(metaInfo);
+  auto textureInformation = std::make_unique<DDyTextureInformation_Deprecated>(metaInfo);
   it->second.swap(textureInformation);
   MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(it->second), "Unexpected error occurred.");
   MDY_LOG_CRITICAL("{} | \"{}\" texture information Created.", textureName);
@@ -281,9 +281,9 @@ EDySuccess MDyIOData::CreateMaterialInformation_Deprecated(_MIN_ const std::stri
 #ifdef false
   struct DMaterialInfoDependenciesPtrList final
   {
-    using TTextureInfoList = std::array<DDyTextureInformation*, 16>;
+    using TTextureInfoList = std::array<DDyTextureInformation_Deprecated*, 16>;
 
-    DDyShaderInformation* mPtrShaderInfo = MDY_INITIALIZE_NULL;
+    DDyShaderInformation_Deprecated* mPtrShaderInfo = MDY_INITIALIZE_NULL;
     TTextureInfoList      mPtrTextureInfos = {};
   };
 #endif
@@ -341,7 +341,7 @@ EDySuccess MDyIOData::CreateMaterialInformation_Deprecated(_MIN_ const std::stri
 
   // Make resource in heap, and insert it to empty memory space.
   GetDependenciesOfMaterialInfo(metaInfo);
-  auto materialInformation = std::make_unique<DDyMaterialInformation>(metaInfo);
+  auto materialInformation = std::make_unique<DDyMaterialInformation_Deprecated>(metaInfo);
   it->second.swap(materialInformation);
 
   MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(it->second), "Unexpected error occurred.");
@@ -389,7 +389,7 @@ EDySuccess MDyIOData::CreateSoundInformation(const PDySoundConstructionDescripto
   }
 
   // Make resource in heap, and insert it to empty memory space.
-  auto soundInfo = std::make_unique<DDySoundInformation>(soundDescriptor);
+  auto soundInfo = std::make_unique<DDySoundInformation_Deprecated>(soundDescriptor);
   if (it->second.swap(soundInfo); !it->second)
   {
     MDY_LOG_CRITICAL_D("{} | Unexpected error occured. Name : {}", "MDyIOData", soundName);
@@ -599,7 +599,7 @@ EDySuccess MDyIOData::DeleteSoundInformation(const std::string& soundName, bool 
 //! Get function.
 //!
 
-const DDyShaderInformation* MDyIOData::GetShaderInformation(const std::string& shaderName) const noexcept
+const DDyShaderInformation_Deprecated* MDyIOData::GetShaderInformation(const std::string& shaderName) const noexcept
 {
   const auto iterator = mShaderInformation.find(shaderName);
   if (iterator == mShaderInformation.end())
@@ -612,7 +612,7 @@ const DDyShaderInformation* MDyIOData::GetShaderInformation(const std::string& s
   return iterator->second.get();
 }
 
-const DDyTextureInformation* MDyIOData::GetTextureInformation(const std::string& textureName) const noexcept
+const DDyTextureInformation_Deprecated* MDyIOData::GetTextureInformation(const std::string& textureName) const noexcept
 {
   const auto iterator = mTextureInformation.find(textureName);
   if (iterator == mTextureInformation.end())
@@ -625,7 +625,7 @@ const DDyTextureInformation* MDyIOData::GetTextureInformation(const std::string&
   return iterator->second.get();
 }
 
-const DDyMaterialInformation* MDyIOData::GetMaterialInformation(const std::string& materialName) const noexcept
+const DDyMaterialInformation_Deprecated* MDyIOData::GetMaterialInformation(const std::string& materialName) const noexcept
 {
   const auto iterator = mMaterialInformation.find(materialName);
   if (iterator == mMaterialInformation.end())
@@ -638,7 +638,7 @@ const DDyMaterialInformation* MDyIOData::GetMaterialInformation(const std::strin
   return iterator->second.get();
 }
 
-const DDyModelInformation* MDyIOData::GetModelInformation(const std::string& modelName) const noexcept
+const DDyModelInformation_Deprecated* MDyIOData::GetModelInformation(const std::string& modelName) const noexcept
 {
   std::lock_guard<std::mutex> mt(this->mTemporalMutex);
 
@@ -653,7 +653,7 @@ const DDyModelInformation* MDyIOData::GetModelInformation(const std::string& mod
   return iterator->second.get();
 }
 
-const DDySoundInformation* MDyIOData::GetSoundInformation(const std::string& soundName) const noexcept
+const DDySoundInformation_Deprecated* MDyIOData::GetSoundInformation(const std::string& soundName) const noexcept
 {
   std::lock_guard<std::mutex> mt(this->mTemporalMutex);
 
@@ -710,7 +710,7 @@ EDySuccess MDyIOData::CreateTextureInformation_Deprecated(const PDyTextureInstan
   /// @brief
   ///
   static auto TaskInsertTextureInformation = [](const PDyTextureInstanceMetaInfo& textureDescriptor,
-                                                THeapHash<DDyTextureInformation>& textureMap)
+                                                THeapHash<DDyTextureInformation_Deprecated>& textureMap)
   {
     // Check there is already in the information map.
     const auto& textureName  = textureDescriptor.mSpecifierName;
@@ -723,7 +723,7 @@ EDySuccess MDyIOData::CreateTextureInformation_Deprecated(const PDyTextureInstan
     }
 
     // Make resource in heap, and insert it to empty memory space.
-    auto textureInformation = std::make_unique<DDyTextureInformation>(textureDescriptor);
+    auto textureInformation = std::make_unique<DDyTextureInformation_Deprecated>(textureDescriptor);
     it->second.swap(textureInformation);
     if (!it->second)
     {
@@ -791,7 +791,7 @@ EDySuccess MDyIOData::CreateMaterialInformation_Deprecated(const PDyMaterialInst
   }
 
   // Make resource in heap, and insert it to empty memory space.
-  auto materialInformation = std::make_unique<DDyMaterialInformation>(materialDescriptor);
+  auto materialInformation = std::make_unique<DDyMaterialInformation_Deprecated>(materialDescriptor);
   it->second.swap(materialInformation);
   if (!it->second)
   {

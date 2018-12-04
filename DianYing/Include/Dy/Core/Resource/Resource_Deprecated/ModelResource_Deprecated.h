@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Resource/Resource/SubmeshResource.h>
+#include <Dy/Core/Resource/Resource_Deprecated/SubmeshResource_Deprecated.h>
 #include <Dy/Core/Resource/Internal/MaterialType.h>
 
 //!
@@ -26,7 +26,7 @@ struct aiNode;
 namespace dy
 {
   struct DMoeBoneNodeInformation;
-  class DDyModelInformation;
+  class DDyModelInformation_Deprecated;
 } /// ::dy namespace
 
 //!
@@ -64,7 +64,7 @@ public:
   /// @brief Get valid submesh resource, not modifiable.
   ///
   [[nodiscard]]
-  const std::vector<std::unique_ptr<CDySubmeshResource>>& GetSubmeshResources() const noexcept
+  const std::vector<std::unique_ptr<CDySubmeshResource_Deprecated>>& GetSubmeshResources() const noexcept
   {
     return this->mMeshResource;
   }
@@ -86,15 +86,15 @@ private:
   /// @brief Initialize model resource with model information instance.
   ///
   [[nodiscard]]
-  EDySuccess pInitializeModelResource(const DDyModelInformation& modelInformation);
+  EDySuccess pInitializeModelResource(const DDyModelInformation_Deprecated& modelInformation);
 
   ///
   /// @brief Read node hierarchy
   ///
-  void pReadNodeHierarchy(float animationElapsedTime, DDyModelInformation& modelInfo,
+  void pReadNodeHierarchy(float animationElapsedTime, DDyModelInformation_Deprecated& modelInfo,
       const DMoeBoneNodeInformation& boneNode, const DDyMatrix4x4& parentTransform);
 
-  std::vector<std::unique_ptr<CDySubmeshResource>>  mMeshResource                     = {};
+  std::vector<std::unique_ptr<CDySubmeshResource_Deprecated>>  mMeshResource                     = {};
   bool                                              mIsEnabledModelSkeletalAnimation  = false;
   TI32                                              tempAnimationNumber = 0;
 
@@ -102,7 +102,7 @@ private:
   //! Level pointers binding
   //!
 
-  FORCEINLINE void __pfSetModelInformationLink(NotNull<DDyModelInformation*> ptr) const noexcept
+  FORCEINLINE void __pfSetModelInformationLink(NotNull<DDyModelInformation_Deprecated*> ptr) const noexcept
   {
     this->__mLinkedModelInformationPtr = ptr;
   }
@@ -111,9 +111,9 @@ private:
     this->__mLinkedModelInformationPtr = nullptr;
   }
 
-  MDY_TRANSIENT DDyModelInformation*  __mLinkedModelInformationPtr = nullptr;
+  MDY_TRANSIENT DDyModelInformation_Deprecated*  __mLinkedModelInformationPtr = nullptr;
 
-  friend class DDyModelInformation;
+  friend class DDyModelInformation_Deprecated;
   friend class MDyIOResource;
 };
 

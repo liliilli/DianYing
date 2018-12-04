@@ -16,7 +16,7 @@
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 #include <Dy/Helper/Internal/CheckingRule.h>
-#include <Dy/Core/Resource/Resource/MaterialResource.h>
+#include <Dy/Core/Resource/Resource_Deprecated/MaterialResource_Deprecated.h>
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
 
 //!
@@ -106,14 +106,14 @@ public:
   /// @param  index
   /// @return
   ///
-  const CDyMaterialResource& GetMaterialResourcePtr(_MIN_ const TI32 index) const noexcept;
+  const CDyMaterialResource_Deprecated& GetMaterialResourcePtr(_MIN_ const TI32 index) const noexcept;
 
   ///
   /// @brief
   /// @param  index
   /// @return
   ///
-  const CDySubmeshResource& GetSubmeshResourcePtr(_MIN_ const TI32 index) const noexcept;
+  const CDySubmeshResource_Deprecated& GetSubmeshResourcePtr(_MIN_ const TI32 index) const noexcept;
 
   ///
   /// @brief
@@ -144,7 +144,7 @@ private:
   /// Check flag for create shadow or not.
   bool            mIsEnabledCreateShadow  = false;
   /// @TODO TEMPORAL MAYBE?
-  std::vector<CDyMaterialResource*> mMaterialResourcePtr  = {};
+  std::vector<CDyMaterialResource_Deprecated*> mMaterialResourcePtr  = {};
 
   MDY_SET_TYPEMATCH_FUNCTION(::dy::ADyGeneralBaseComponent, CDyModelRenderer);
   MDY_SET_CRC32_HASH_WITH_TYPE(CDyModelRenderer);

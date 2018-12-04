@@ -13,12 +13,12 @@
 ///
 
 /// Header file
-#include <Dy/Core/Resource/Resource/SubmeshResource.h>
+#include <Dy/Core/Resource/Resource_Deprecated/SubmeshResource_Deprecated.h>
 
 namespace dy
 {
 
-CDySubmeshResource::~CDySubmeshResource()
+CDySubmeshResource_Deprecated::~CDySubmeshResource_Deprecated()
 {
   // Release resources. (OPENGL only)
   if (this->mBufferIdInformation.mEbo > 0)
@@ -35,27 +35,27 @@ CDySubmeshResource::~CDySubmeshResource()
   }
 }
 
-bool CDySubmeshResource::IsEnabledIndices() const noexcept
+bool CDySubmeshResource_Deprecated::IsEnabledIndices() const noexcept
 {
   return !this->mMeshFlagInformation.mIsNotHaveIndices;
 }
 
-int32_t CDySubmeshResource::GetVertexArrayId() const noexcept
+int32_t CDySubmeshResource_Deprecated::GetVertexArrayId() const noexcept
 {
   return this->mBufferIdInformation.mVao;
 }
 
-int32_t CDySubmeshResource::GetVertexCounts() const noexcept
+int32_t CDySubmeshResource_Deprecated::GetVertexCounts() const noexcept
 {
   return this->mMeshFlagInformation.mVertexSize;
 }
 
-int32_t CDySubmeshResource::GetIndicesCounts() const noexcept
+int32_t CDySubmeshResource_Deprecated::GetIndicesCounts() const noexcept
 {
   return this->mMeshFlagInformation.mIndiceCount;
 }
 
-EDySuccess CDySubmeshResource::pfInitializeSubmeshResource(const DDySubmeshInformation& meshInformation) noexcept
+EDySuccess CDySubmeshResource_Deprecated::pfInitializeSubmeshResource(const DDySubmeshInformation_Deprecated& meshInformation) noexcept
 {
   const auto& info      = meshInformation.GetInformation();
 

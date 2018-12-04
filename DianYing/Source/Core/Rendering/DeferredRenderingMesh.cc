@@ -133,7 +133,7 @@ void FDyDeferredRenderingMesh::RenderScreen()
   const auto& submeshList = this->mScreenRenderTrianglePtr->GetSubmeshResources();
   MDY_ASSERT(submeshList.size() == 1, "");
   // Bind vertex array
-  const CDySubmeshResource& mesh = *submeshList[0];
+  const CDySubmeshResource_Deprecated& mesh = *submeshList[0];
 
   // Set
   glBindFramebuffer(GL_FRAMEBUFFER, this->mDyBtFbScrFin->GetFramebufferId());

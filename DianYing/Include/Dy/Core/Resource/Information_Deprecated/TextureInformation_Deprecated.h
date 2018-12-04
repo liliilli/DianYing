@@ -22,7 +22,7 @@
 
 namespace dy
 {
-class CDyTextureResource;
+class CDyTextureResource_Deprecated;
 }
 
 //!
@@ -33,16 +33,16 @@ namespace dy
 {
 
 ///
-/// @class DDyTextureInformation
+/// @class DDyTextureInformation_Deprecated
 /// @brief Texture information class that not serve heap instance
 /// but information to create heap instance.
 ///
-class DDyTextureInformation final
+class DDyTextureInformation_Deprecated final
 {
 public:
-  MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(DDyTextureInformation);
-  DDyTextureInformation(const PDyTextureInstanceMetaInfo& textureConstructionDescriptor);
-  ~DDyTextureInformation();
+  MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(DDyTextureInformation_Deprecated);
+  DDyTextureInformation_Deprecated(const PDyTextureInstanceMetaInfo& textureConstructionDescriptor);
+  ~DDyTextureInformation_Deprecated();
 
   /// @brief return immutable descriptor information reference.
   FORCEINLINE MDY_NODISCARD const PDyTextureInstanceMetaInfo& GetInformation() const noexcept
@@ -50,7 +50,7 @@ public:
     return this->mTextureInformation;
   }
 
-  /// @brief Check if object is being binded to CDyTextureResource instance.
+  /// @brief Check if object is being binded to CDyTextureResource_Deprecated instance.
   FORCEINLINE MDY_NODISCARD bool IsBeingBindedToResource() const noexcept
   {
     return this->__mLinkedTextureResourcePtr != nullptr;
@@ -77,10 +77,10 @@ private:
   //! Resource pointers binding
   //!
 
-  void __pfLinkTextureResource(CDyTextureResource* ptr) const noexcept;
-  MDY_TRANSIENT CDyTextureResource* __mLinkedTextureResourcePtr = nullptr;
+  void __pfLinkTextureResource(CDyTextureResource_Deprecated* ptr) const noexcept;
+  MDY_TRANSIENT CDyTextureResource_Deprecated* __mLinkedTextureResourcePtr = nullptr;
 
-  friend class CDyTextureResource;
+  friend class CDyTextureResource_Deprecated;
   friend class MDyIOResource;
 };
 

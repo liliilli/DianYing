@@ -21,8 +21,8 @@ namespace dy
 {
 struct  PDyRendererConsturctionDescriptor;
 class   CDyModelResource;
-class   CDyMaterialResource;
-class   CDySubmeshResource;
+class   CDyMaterialResource_Deprecated;
+class   CDySubmeshResource_Deprecated;
 } /// ::dy namespace
 
 //!
@@ -63,7 +63,7 @@ public:
 
 private:
   CDyModelResource*                 mModelReferencePtr    = nullptr;
-  std::vector<CDyMaterialResource*> mMaterialResourcePtr  = {};
+  std::vector<CDyMaterialResource_Deprecated*> mMaterialResourcePtr  = {};
 
   ///
   /// @struct DDyBindingInformation
@@ -71,8 +71,8 @@ private:
   ///
   struct DDyBindingInformation final
   {
-    CDySubmeshResource*   mSubmeshResource  = nullptr;
-    CDyMaterialResource*  mMaterialResource = nullptr;
+    CDySubmeshResource_Deprecated*   mSubmeshResource  = nullptr;
+    CDyMaterialResource_Deprecated*  mMaterialResource = nullptr;
   };
 
   std::vector<DDyBindingInformation> mMeshMaterialPtrBindingList = {};

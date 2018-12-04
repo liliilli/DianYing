@@ -75,7 +75,7 @@ private:
 
   bool                sIssEnabledSoundSystem  = false;
 
-  friend class CDySoundResource;
+  friend class CDySoundResource_Deprecated;
 };
 
 } /// ::dy namespace

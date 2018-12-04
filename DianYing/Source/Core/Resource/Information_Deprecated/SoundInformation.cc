@@ -13,18 +13,18 @@
 ///
 
 /// Header file
-#include <Dy/Core/Resource/Information/SoundInformation.h>
+#include <Dy/Core/Resource/Information_Deprecated/SoundInformation_Deprecated.h>
 #include <Dy/Management/LoggingManager.h>
-#include <Dy/Core/Resource/Resource/SoundResource.h>
+#include <Dy/Core/Resource/Resource_Deprecated/SoundResource_Deprecated.h>
 
 namespace dy
 {
 
-DDySoundInformation::DDySoundInformation(const PDySoundConstructionDescriptor& soundDesc) :
+DDySoundInformation_Deprecated::DDySoundInformation_Deprecated(const PDySoundConstructionDescriptor& soundDesc) :
     mDesc { soundDesc }
 { }
 
-DDySoundInformation::~DDySoundInformation()
+DDySoundInformation_Deprecated::~DDySoundInformation_Deprecated()
 {
   if (this->__mLinkedSoundResourcePtr)
   {

@@ -15,8 +15,8 @@
 ///
 
 /// Header file
-#include <Dy/Core/Resource/Information/TextureInformation.h>
-#include <Dy/Core/Resource/Resource/TextureResource.h>
+#include <Dy/Core/Resource/Information_Deprecated/TextureInformation_Deprecated.h>
+#include <Dy/Core/Resource/Resource_Deprecated/TextureResource_Deprecated.h>
 #include <Dy/Management/LoggingManager.h>
 
 namespace
@@ -24,7 +24,7 @@ namespace
 
 MDY_SET_IMMUTABLE_STRING(kTextureInformationTemplate,   "{} | Texture information {} : {}");
 MDY_SET_IMMUTABLE_STRING(kTextureInformationBindTo,     "{} | Texture information binds to {}");
-MDY_SET_IMMUTABLE_STRING(kTextureInformation,           "DDyTextureInformation");
+MDY_SET_IMMUTABLE_STRING(kTextureInformation,           "DDyTextureInformation_Deprecated");
 
 #if defined(NDEBUG) == false
 void DyDebugPrintTextureInformation(_MIN_ const dy::PDyTextureInstanceMetaInfo& textMetaInfo)
@@ -50,7 +50,7 @@ void DyDebugPrintTextureInformation(_MIN_ const dy::PDyTextureInstanceMetaInfo& 
 namespace dy
 {
 
-DDyTextureInformation::DDyTextureInformation(_MIN_ const PDyTextureInstanceMetaInfo& textureConstructionDescriptor) :
+DDyTextureInformation_Deprecated::DDyTextureInformation_Deprecated(_MIN_ const PDyTextureInstanceMetaInfo& textureConstructionDescriptor) :
     mTextureInformation{textureConstructionDescriptor}
 {
 #if defined(NDEBUG) == false
@@ -96,13 +96,13 @@ DDyTextureInformation::DDyTextureInformation(_MIN_ const PDyTextureInstanceMetaI
   }
 }
 
-DDyTextureInformation::~DDyTextureInformation()
+DDyTextureInformation_Deprecated::~DDyTextureInformation_Deprecated()
 {
   MDY_LOG_INFO_D(kTextureInformationTemplate, "~CDyShaderInformation", "name", this->mTextureInformation.mSpecifierName);
   if (this->__mLinkedTextureResourcePtr) { this->__mLinkedTextureResourcePtr->__pfResetTextureInformationLink(); }
 }
 
-void DDyTextureInformation::__pfLinkTextureResource(CDyTextureResource* ptr) const noexcept
+void DDyTextureInformation_Deprecated::__pfLinkTextureResource(CDyTextureResource_Deprecated* ptr) const noexcept
 {
   MDY_LOG_DEBUG_D(kTextureInformationBindTo, "__pfLinkTextureResource", reinterpret_cast<std::ptrdiff_t>(ptr));
   this->__mLinkedTextureResourcePtr = ptr;

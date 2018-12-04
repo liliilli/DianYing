@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Core/Resource/Internal/TextureType.h>
-#include "MaterialResource.h"
+#include "MaterialResource_Deprecated.h"
 
 //!
 //! Forward declaration
@@ -22,8 +22,8 @@
 
 namespace dy
 {
-class DDyTextureInformation;
-class CDyMaterialResource;
+class DDyTextureInformation_Deprecated;
+class CDyMaterialResource_Deprecated;
 }
 
 //!
@@ -34,18 +34,18 @@ namespace dy
 {
 
 ///
-/// @class CDyTextureResource
+/// @class CDyTextureResource_Deprecated
 /// @brief Texture resource type which manages texture heap unsafe resources safely.
 ///
-class CDyTextureResource final
+class CDyTextureResource_Deprecated final
 {
 public:
-  CDyTextureResource() = default;
-  CDyTextureResource(const CDyTextureResource&) = delete;
-  CDyTextureResource(CDyTextureResource&&)      = default;
-  CDyTextureResource& operator=(const CDyTextureResource&)  = delete;
-  CDyTextureResource& operator=(CDyTextureResource&&)       = default;
-  ~CDyTextureResource();
+  CDyTextureResource_Deprecated() = default;
+  CDyTextureResource_Deprecated(const CDyTextureResource_Deprecated&) = delete;
+  CDyTextureResource_Deprecated(CDyTextureResource_Deprecated&&)      = default;
+  CDyTextureResource_Deprecated& operator=(const CDyTextureResource_Deprecated&)  = delete;
+  CDyTextureResource_Deprecated& operator=(CDyTextureResource_Deprecated&&)       = default;
+  ~CDyTextureResource_Deprecated();
 
   ///
   /// @brief Get binded texture resource id.
@@ -85,7 +85,7 @@ private:
   /// @param  textureInformation Valid texture meta information instance.
   /// @return Success flag.
   ///
-  MDY_NODISCARD EDySuccess pfInitializeTextureResource(const DDyTextureInformation& textureInformation);
+  MDY_NODISCARD EDySuccess pfInitializeTextureResource(const DDyTextureInformation_Deprecated& textureInformation);
 
   ///
   /// @brief
@@ -111,7 +111,7 @@ private:
   using TBindPtrMap = std::unordered_map<TType*, TType*>;
 
   ///
-  FORCEINLINE void __pfSetTextureInformationLink(NotNull<DDyTextureInformation*> ptr) const noexcept
+  FORCEINLINE void __pfSetTextureInformationLink(NotNull<DDyTextureInformation_Deprecated*> ptr) const noexcept
   {
     this->__mLinkedTextureInformationPtr = ptr;
   }
@@ -121,18 +121,18 @@ private:
     this->__mLinkedTextureInformationPtr = nullptr;
   }
   ///
-  void __pfSetMaterialResourceLink(NotNull<CDyMaterialResource*> ptr) const noexcept;
+  void __pfSetMaterialResourceLink(NotNull<CDyMaterialResource_Deprecated*> ptr) const noexcept;
   ///
-  FORCEINLINE void __pfResetMaterialResourceLink(NotNull<CDyMaterialResource*> ptr) const noexcept
+  FORCEINLINE void __pfResetMaterialResourceLink(NotNull<CDyMaterialResource_Deprecated*> ptr) const noexcept
   {
     this->__mBindMaterialPtrCounters.erase(ptr);
   }
 
-  MDY_TRANSIENT DDyTextureInformation*           __mLinkedTextureInformationPtr   = nullptr;
-  MDY_TRANSIENT TBindPtrMap<CDyMaterialResource> __mBindMaterialPtrCounters;
+  MDY_TRANSIENT DDyTextureInformation_Deprecated*           __mLinkedTextureInformationPtr   = nullptr;
+  MDY_TRANSIENT TBindPtrMap<CDyMaterialResource_Deprecated> __mBindMaterialPtrCounters;
 
-  friend class DDyTextureInformation;
-  friend class CDyMaterialResource;
+  friend class DDyTextureInformation_Deprecated;
+  friend class CDyMaterialResource_Deprecated;
   friend class MDyIOResource;
 };
 

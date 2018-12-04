@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Core/Resource/Resource/SoundResource.h>
+#include <Dy/Core/Resource/Resource_Deprecated/SoundResource_Deprecated.h>
 
 #include <filesystem>
 #include <fmod.hpp>
@@ -25,7 +25,7 @@
 namespace dy
 {
 
-CDySoundResource::~CDySoundResource()
+CDySoundResource_Deprecated::~CDySoundResource_Deprecated()
 {
   if (this->mSoundResourcePtr)
   {
@@ -34,9 +34,9 @@ CDySoundResource::~CDySoundResource()
   }
 }
 
-EDySuccess CDySoundResource::pfInitializeResource(const DDySoundInformation& soundInfo)
+EDySuccess CDySoundResource_Deprecated::pfInitializeResource(const DDySoundInformation_Deprecated& soundInfo)
 {
-  static auto CheckIntegrity = [](const DDySoundInformation& soundInfo) -> EDySuccess
+  static auto CheckIntegrity = [](const DDySoundInformation_Deprecated& soundInfo) -> EDySuccess
   {
     if (soundInfo.GetSoundName().empty()) return DY_FAILURE;
     if (const auto err = std::filesystem::exists(soundInfo.GetFilePath()); !err) return DY_FAILURE;
@@ -54,7 +54,7 @@ EDySuccess CDySoundResource::pfInitializeResource(const DDySoundInformation& sou
   const auto result = MDySound::GetInstance().pfCreateSoundResource(soundInfo.GetFilePath(), &this->mSoundResourcePtr);
   if (result == DY_FAILURE)
   {
-    MDY_LOG_ERROR("{} | Failed to create sound resource. | Sound Name : {} | Sound Path : {}", "CDySoundResource::pfInitializeResource",
+    MDY_LOG_ERROR("{} | Failed to create sound resource. | Sound Name : {} | Sound Path : {}", "CDySoundResource_Deprecated::pfInitializeResource",
                   soundInfo.GetSoundName(), soundInfo.GetFilePath());
     return DY_FAILURE;
   }

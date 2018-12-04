@@ -24,7 +24,7 @@
 
 namespace dy
 {
-class CDyMaterialResource;
+class CDyMaterialResource_Deprecated;
 } /// ::dy namespace
 
 //!
@@ -35,15 +35,15 @@ namespace dy
 {
 
 ///
-/// @class DDyMaterialInformation
+/// @class DDyMaterialInformation_Deprecated
 /// @brief Information class for material information.
 ///
-class DDyMaterialInformation final : public IDyToString
+class DDyMaterialInformation_Deprecated final : public IDyToString
 {
 public:
-  MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(DDyMaterialInformation);
-  DDyMaterialInformation(const PDyMaterialInstanceMetaInfo& materialConstructionDescriptor);
-  ~DDyMaterialInformation();
+  MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(DDyMaterialInformation_Deprecated);
+  DDyMaterialInformation_Deprecated(const PDyMaterialInstanceMetaInfo& materialConstructionDescriptor);
+  ~DDyMaterialInformation_Deprecated();
 
   ///
   /// @brief return immutable descriptor information reference.
@@ -55,7 +55,7 @@ public:
   }
 
   ///
-  /// @brief Check if object is being binded to CDyMaterialResource instance.
+  /// @brief Check if object is being binded to CDyMaterialResource_Deprecated instance.
   ///
   [[nodiscard]]
   FORCEINLINE bool IsBeingBindedToResource() const noexcept
@@ -81,7 +81,7 @@ private:
   /// @brief Populate independent material reference and move ownership to outside.
   ///
   [[nodiscard]]
-  std::unique_ptr<DDyMaterialInformation> __pfPopulateMaterialWith(const PDyMaterialPopulateDescriptor& desc) const noexcept;
+  std::unique_ptr<DDyMaterialInformation_Deprecated> __pfPopulateMaterialWith(const PDyMaterialPopulateDescriptor& desc) const noexcept;
 
   /// Information sturcture.
   PDyMaterialInstanceMetaInfo mMaterialInformation;
@@ -90,7 +90,7 @@ private:
   //! Resource pointers binding
   //!
 
-  FORCEINLINE void __pfSetMaterialResourceLink(NotNull<CDyMaterialResource*> ptr) const noexcept
+  FORCEINLINE void __pfSetMaterialResourceLink(NotNull<CDyMaterialResource_Deprecated*> ptr) const noexcept
   {
     this->__mLinkedMaterialResourcePtr = ptr;
   }
@@ -99,10 +99,10 @@ private:
     this->__mLinkedMaterialResourcePtr = MDY_INITIALIZE_NULL;
   }
 
-  MDY_TRANSIENT CDyMaterialResource*                      __mLinkedMaterialResourcePtr = MDY_INITIALIZE_NULL;
+  MDY_TRANSIENT CDyMaterialResource_Deprecated*                      __mLinkedMaterialResourcePtr = MDY_INITIALIZE_NULL;
   MDY_TRANSIENT std::unordered_map<std::string, int32_t>  __mPopulatedMaterialIndexMap = {};
 
-  friend class CDyMaterialResource;
+  friend class CDyMaterialResource_Deprecated;
   friend class MDyIOData;
   friend class MDyIOResource;
 };

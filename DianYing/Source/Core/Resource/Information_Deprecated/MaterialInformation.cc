@@ -15,15 +15,15 @@
 ///
 
 /// Header file
-#include <Dy/Core/Resource/Information/MaterialInformation.h>
-#include <Dy/Core/Resource/Resource/MaterialResource.h>
+#include <Dy/Core/Resource/Information_Deprecated/MaterialInformation_Deprecated.h>
+#include <Dy/Core/Resource/Resource_Deprecated/MaterialResource_Deprecated.h>
 #include <Dy/Management/LoggingManager.h>
 
 namespace
 {
 
 MDY_SET_IMMUTABLE_STRING(kMaterialInformationTemplate, "{} | Material information {} : {}");
-MDY_SET_IMMUTABLE_STRING(kMaterialInformation,         "DDyMaterialInformation");
+MDY_SET_IMMUTABLE_STRING(kMaterialInformation,         "DDyMaterialInformation_Deprecated");
 MDY_SET_IMMUTABLE_STRING(kMaterialNotSupport,          "{} | Does Not support now. | {} : {} | {} : {} |");
 MDY_SET_IMMUTABLE_STRING(kBlendMode,    "Blend mode");
 MDY_SET_IMMUTABLE_STRING(kMaterialName, "Material name");
@@ -36,7 +36,7 @@ MDY_SET_IMMUTABLE_STRING(kCustom,       "Custom");
 
 namespace dy
 {
-DDyMaterialInformation::DDyMaterialInformation(const PDyMaterialInstanceMetaInfo& materialConstructionDescriptor) :
+DDyMaterialInformation_Deprecated::DDyMaterialInformation_Deprecated(const PDyMaterialInstanceMetaInfo& materialConstructionDescriptor) :
     mMaterialInformation{materialConstructionDescriptor}
 {
   // Set and output log for this information descriptor properties.
@@ -75,19 +75,19 @@ DDyMaterialInformation::DDyMaterialInformation(const PDyMaterialInstanceMetaInfo
   }
 }
 
-DDyMaterialInformation::~DDyMaterialInformation()
+DDyMaterialInformation_Deprecated::~DDyMaterialInformation_Deprecated()
 {
   MDY_LOG_INFO_D(kMaterialInformationTemplate, kMaterialInformation, kMaterialName, this->mMaterialInformation.mSpecifierName);
 
   if (__mLinkedMaterialResourcePtr) { __mLinkedMaterialResourcePtr->__pfResetMaterialInformationLink(); }
 }
 
-std::string DDyMaterialInformation::ToString()
+std::string DDyMaterialInformation_Deprecated::ToString()
 {
   return this->mMaterialInformation.ToString();
 }
 
-int32_t DDyMaterialInformation::__pfEnrollAndGetNextDerivedMaterialIndex(const std::string& name) const noexcept
+int32_t DDyMaterialInformation_Deprecated::__pfEnrollAndGetNextDerivedMaterialIndex(const std::string& name) const noexcept
 {
   if (auto it = this->__mPopulatedMaterialIndexMap.find(name); it == this->__mPopulatedMaterialIndexMap.end())
   {
@@ -97,8 +97,8 @@ int32_t DDyMaterialInformation::__pfEnrollAndGetNextDerivedMaterialIndex(const s
   else return (++it->second);
 }
 
-std::unique_ptr<DDyMaterialInformation>
-DDyMaterialInformation::__pfPopulateMaterialWith(const PDyMaterialPopulateDescriptor& desc) const noexcept
+std::unique_ptr<DDyMaterialInformation_Deprecated>
+DDyMaterialInformation_Deprecated::__pfPopulateMaterialWith(const PDyMaterialPopulateDescriptor& desc) const noexcept
 {
   MDY_LOG_INFO_D("Populate derived material information {} from {}.",
       desc.mMaterialOverrideName,
@@ -111,7 +111,7 @@ DDyMaterialInformation::__pfPopulateMaterialWith(const PDyMaterialPopulateDescri
     newDesc.mShaderSpecifier    = desc.mOverrideShaderName;
   }
 
-  return std::make_unique<DDyMaterialInformation>(newDesc);
+  return std::make_unique<DDyMaterialInformation_Deprecated>(newDesc);
 }
 
 } /// ::dy namespace

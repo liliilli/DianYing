@@ -15,17 +15,17 @@
 ///
 
 /// Header file
-#include <Dy/Core/Resource/Resource/TextureResource.h>
+#include <Dy/Core/Resource/Resource_Deprecated/TextureResource_Deprecated.h>
 
-#include <Dy/Core/Resource/Resource/MaterialResource.h>
-#include <Dy/Core/Resource/Information/TextureInformation.h>
+#include <Dy/Core/Resource/Resource_Deprecated/MaterialResource_Deprecated.h>
+#include <Dy/Core/Resource/Information_Deprecated/TextureInformation_Deprecated.h>
 #include <Dy/Helper/Internal/ImageBinaryBuffer.h>
 #include <Dy/Management/LoggingManager.h>
 
 namespace dy
 {
 
-CDyTextureResource::~CDyTextureResource()
+CDyTextureResource_Deprecated::~CDyTextureResource_Deprecated()
 {
   // Release heap resources
   if (mTextureResourceId)
@@ -44,7 +44,7 @@ CDyTextureResource::~CDyTextureResource()
   }
 }
 
-EDySuccess CDyTextureResource::pfInitializeTextureResource(_MIN_ const DDyTextureInformation& textureInformation)
+EDySuccess CDyTextureResource_Deprecated::pfInitializeTextureResource(_MIN_ const DDyTextureInformation_Deprecated& textureInformation)
 {
   // Make image binary data buffer.
   const auto& textureInfo         = textureInformation.GetInformation();
@@ -123,7 +123,7 @@ EDySuccess CDyTextureResource::pfInitializeTextureResource(_MIN_ const DDyTextur
   return DY_SUCCESS;
 }
 
-EDySuccess CDyTextureResource::pfInitializeTextureResourceWithChunk(const PDyTextureConstructionBufferChunkDescriptor& descriptor)
+EDySuccess CDyTextureResource_Deprecated::pfInitializeTextureResourceWithChunk(const PDyTextureConstructionBufferChunkDescriptor& descriptor)
 {
   int32_t glImageFormat = GL_NO_ERROR;
   switch (descriptor.mTextureColorType)
@@ -197,7 +197,7 @@ EDySuccess CDyTextureResource::pfInitializeTextureResourceWithChunk(const PDyTex
   return DY_SUCCESS;;
 }
 
-void CDyTextureResource::__pfSetMaterialResourceLink(NotNull<CDyMaterialResource*> ptr) const noexcept
+void CDyTextureResource_Deprecated::__pfSetMaterialResourceLink(NotNull<CDyMaterialResource_Deprecated*> ptr) const noexcept
 {
   if (this->__mBindMaterialPtrCounters.find(ptr) != this->__mBindMaterialPtrCounters.end())
   { // If found, just neglect.
@@ -209,7 +209,7 @@ void CDyTextureResource::__pfSetMaterialResourceLink(NotNull<CDyMaterialResource
   if (result == false)
   {
     MDY_LOG_ERROR("{} | Failed to link material resource. | Model name : {}",
-                  "CDyTextureResource::__pfSetMaterialResourceLink", ptr->GetMaterialName());
+                  "CDyTextureResource_Deprecated::__pfSetMaterialResourceLink", ptr->GetMaterialName());
     MDY_UNEXPECTED_BRANCH();
   }
 }

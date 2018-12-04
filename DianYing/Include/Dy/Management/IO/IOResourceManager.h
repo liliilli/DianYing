@@ -19,11 +19,11 @@
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 
-#include <Dy/Core/Resource/Resource/ShaderResource.h>
-#include <Dy/Core/Resource/Resource/TextureResource.h>
-#include <Dy/Core/Resource/Resource/MaterialResource.h>
-#include <Dy/Core/Resource/Resource/ModelResource.h>
-#include <Dy/Core/Resource/Resource/SoundResource.h>
+#include <Dy/Core/Resource/Resource_Deprecated/ShaderResource_Deprecated.h>
+#include <Dy/Core/Resource/Resource_Deprecated/TextureResource_Deprecated.h>
+#include <Dy/Core/Resource/Resource_Deprecated/MaterialResource_Deprecated.h>
+#include <Dy/Core/Resource/Resource_Deprecated/ModelResource_Deprecated.h>
+#include <Dy/Core/Resource/Resource_Deprecated/SoundResource_Deprecated.h>
 
 //!
 //! Forward declaration
@@ -96,19 +96,19 @@ public:
   /// @brief Get valid shader resource instance. If not find, just return nullptr as failure sign.
   ///
   [[nodiscard]]
-  CDyShaderResource* GetShaderResource(const std::string& shaderName);
+  CDyShaderResource_Deprecated* GetShaderResource(const std::string& shaderName);
 
   ///
   /// @brief Get valid texture resource instance. If not find, just return nullptr as failure sign.
   ///
   [[nodiscard]]
-  CDyTextureResource* GetTextureResource(const std::string& textureName);
+  CDyTextureResource_Deprecated* GetTextureResource(const std::string& textureName);
 
   ///
   /// @brief Get valid material resource instance. If not find, just return nullptr as failure sign.
   ///
   [[nodiscard]]
-  CDyMaterialResource* GetMaterialResource(const std::string& materialName);
+  CDyMaterialResource_Deprecated* GetMaterialResource(const std::string& materialName);
 
   ///
   /// @brief Get valid model resource instance. If not find, just return nullptr as failure sign.
@@ -120,7 +120,7 @@ public:
   /// @brief
   ///
   [[nodiscard]]
-  CDySoundResource* GetSoundResource(const std::string& soundName);
+  CDySoundResource_Deprecated* GetSoundResource(const std::string& soundName);
 
   ///
   /// @brief Create texture resource on gpu.
@@ -136,11 +136,11 @@ public:
   MDY_NODISCARD EDySuccess CreateTextureResourceWithChunk_Deprecated(_MIN_ const PDyTextureConstructionBufferChunkDescriptor& desc);
 
 private:
-  THashList<std::unique_ptr<CDyShaderResource>>   mOnBoardShaderLists;
-  THashList<std::unique_ptr<CDyTextureResource>>  mOnBoardTextureLists;
-  THashList<std::unique_ptr<CDyMaterialResource>> mOnBoardMaterialLists;
+  THashList<std::unique_ptr<CDyShaderResource_Deprecated>>   mOnBoardShaderLists;
+  THashList<std::unique_ptr<CDyTextureResource_Deprecated>>  mOnBoardTextureLists;
+  THashList<std::unique_ptr<CDyMaterialResource_Deprecated>> mOnBoardMaterialLists;
   THashList<std::unique_ptr<CDyModelResource>>    mOnBoardModelLists;
-  THashList<std::unique_ptr<CDySoundResource>>    mOnBoardSoundLists;
+  THashList<std::unique_ptr<CDySoundResource_Deprecated>>    mOnBoardSoundLists;
 };
 
 } /// ::dy namespace

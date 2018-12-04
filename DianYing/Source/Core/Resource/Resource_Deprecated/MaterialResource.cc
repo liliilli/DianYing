@@ -13,16 +13,16 @@
 ///
 
 /// Header file
-#include <Dy/Core/Resource/Resource/MaterialResource.h>
+#include <Dy/Core/Resource/Resource_Deprecated/MaterialResource_Deprecated.h>
 
-#include <Dy/Core/Resource/Resource/ShaderResource.h>
+#include <Dy/Core/Resource/Resource_Deprecated/ShaderResource_Deprecated.h>
 #include <Dy/Management/IO/IODataManager.h>
 #include <Dy/Management/IO/IOResourceManager.h>
 
 namespace dy
 {
 
-EDySuccess CDyMaterialResource::pfInitializeMaterialResource(const PDyMaterialResourceDescriptor& materialInformation)
+EDySuccess CDyMaterialResource_Deprecated::pfInitializeMaterialResource(const PDyMaterialResourceDescriptor& materialInformation)
 {
   // Forward descriptor information to member.
   this->mBlendMode        = materialInformation.mBlendMode;
@@ -43,7 +43,7 @@ EDySuccess CDyMaterialResource::pfInitializeMaterialResource(const PDyMaterialRe
   return DY_SUCCESS;
 }
 
-CDyMaterialResource::~CDyMaterialResource()
+CDyMaterialResource_Deprecated::~CDyMaterialResource_Deprecated()
 {
   // Unbind previous and next level.
   if (this->__mLinkedMaterialInformationPtr)
@@ -63,12 +63,12 @@ CDyMaterialResource::~CDyMaterialResource()
   }
 }
 
-NotNull<CDyShaderResource*> CDyMaterialResource::GetShaderResource() noexcept
+NotNull<CDyShaderResource_Deprecated*> CDyMaterialResource_Deprecated::GetShaderResource() noexcept
 {
   return DyMakeNotNull(this->mShaderResource.mValidShaderPointer);
 }
 
-void CDyMaterialResource::__pfResetTextureResourcePtr(NotNull<CDyTextureResource*> ptr) noexcept
+void CDyMaterialResource_Deprecated::__pfResetTextureResourcePtr(NotNull<CDyTextureResource_Deprecated*> ptr) noexcept
 {
   for (auto& [textureName, texturePtr] : this->mTextureResources)
   {

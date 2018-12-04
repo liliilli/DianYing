@@ -109,13 +109,13 @@ std::optional<TI32> CDyModelRenderer::GetModelSubmeshCount() const noexcept
   return static_cast<TI32>(this->mModelFilter->GetModelReference()->GetSubmeshResources().size());
 }
 
-const CDyMaterialResource& CDyModelRenderer::GetMaterialResourcePtr(_MIN_ const TI32 index) const noexcept
+const CDyMaterialResource_Deprecated& CDyModelRenderer::GetMaterialResourcePtr(_MIN_ const TI32 index) const noexcept
 {
   MDY_ASSERT(index < this->mMaterialResourcePtr.size(), "Index for CDyModelRenderer::mMaterialResourcePtr is out of bound.");
   return *this->mMaterialResourcePtr[index];
 }
 
-const CDySubmeshResource& CDyModelRenderer::GetSubmeshResourcePtr(const TI32 index) const noexcept
+const CDySubmeshResource_Deprecated& CDyModelRenderer::GetSubmeshResourcePtr(const TI32 index) const noexcept
 {
   const auto& submeshResourceList = this->mModelFilter->GetModelReference()->GetSubmeshResources();
 

@@ -17,7 +17,7 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <Dy/Builtin/ShaderGl/RenderUIBasicGaugeBar.h>
+#include <Dy/Builtin/ShaderGl/UI/RenderUIBasicGaugeBar.h>
 #include <Dy/Element/Canvas/FDyBasicGaugeBar.h>
 #include <Dy/Management/IO/IOResourceManager.h>
 #include <Dy/Management/SettingManager.h>

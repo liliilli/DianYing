@@ -24,7 +24,7 @@ namespace dy
 {
 struct PDyBasicGaugeBarRendererCtorInformation;
 class FDyBasicGaugeBar;
-class CDyShaderResource;
+class CDyShaderResource_Deprecated;
 } /// ::dy namespace
 
 //!
@@ -66,7 +66,7 @@ private:
   /// LAZY NOT NULLABLE POINTER RAW PTR;
   FDyBasicGaugeBar*   mPtrBarObject  = MDY_INITIALIZE_NULL;
   ///
-  CDyShaderResource*  mPtrShader      = nullptr;
+  CDyShaderResource_Deprecated*  mPtrShader      = nullptr;
 };
 
 } /// ::dy namespace

@@ -17,11 +17,11 @@
 
 #include <unordered_map>
 
-#include <Dy/Core/Resource/Information/MaterialInformation.h>
-#include <Dy/Core/Resource/Information/ShaderInformation.h>
-#include <Dy/Core/Resource/Information/TextureInformation.h>
-#include <Dy/Core/Resource/Information/ModelInformation.h>
-#include <Dy/Core/Resource/Information/SoundInformation.h>
+#include <Dy/Core/Resource/Information_Deprecated/MaterialInformation_Deprecated.h>
+#include <Dy/Core/Resource/Information_Deprecated/ShaderInformation_Deprecated.h>
+#include <Dy/Core/Resource/Information_Deprecated/TextureInformation_Deprecated.h>
+#include <Dy/Core/Resource/Information_Deprecated/ModelInformation_Deprecated.h>
+#include <Dy/Core/Resource/Information_Deprecated/SoundInformation_Deprecated.h>
 #include <Dy/Helper/ThreadPool.h>
 #include <Dy/Helper/ContainerHelper.h>
 #include <Dy/Core/Resource/Type/EDyScope.h>
@@ -86,33 +86,33 @@ public:
   /// @brief Get shader information.
   /// @return Valid shader information pointer reference, or nullptr when not found.
   ///
-  MDY_NODISCARD const DDyShaderInformation* GetShaderInformation(const std::string& shaderName) const noexcept;
+  MDY_NODISCARD const DDyShaderInformation_Deprecated* GetShaderInformation(const std::string& shaderName) const noexcept;
 
   ///
   /// @brief Get texture information.
   /// @return Valid texture information pointer reference, or nullptr when not found.
   ///
   [[nodiscard]]
-  const DDyTextureInformation* GetTextureInformation(const std::string& textureName) const noexcept;
+  const DDyTextureInformation_Deprecated* GetTextureInformation(const std::string& textureName) const noexcept;
 
   ///
   /// @brief Get material information.
   /// @return Valid material information pointer reference, or nullptr when not found.
   ///
   [[nodiscard]]
-  const DDyMaterialInformation* GetMaterialInformation(const std::string& materialName) const noexcept;
+  const DDyMaterialInformation_Deprecated* GetMaterialInformation(const std::string& materialName) const noexcept;
 
   ///
   /// @brief Get model information.
   /// @return Valid model information poiter reference, or nullptr when not found.
   ///
-  const DDyModelInformation* GetModelInformation(const std::string& modelName) const noexcept;
+  const DDyModelInformation_Deprecated* GetModelInformation(const std::string& modelName) const noexcept;
 
   ///
   /// @brief Get sound information.
   /// @return Valid model information pointer reference, or nullptr when not found.
   ///
-  const DDySoundInformation* GetSoundInformation(const std::string& soundName) const noexcept;
+  const DDySoundInformation_Deprecated* GetSoundInformation(const std::string& soundName) const noexcept;
 
   ///
   /// @brief Destroy shader information. Runtime instances binded to specified shader information
@@ -157,11 +157,11 @@ private:
   template <typename TInformationType>
   using THeapHash = std::unordered_map<std::string, std::unique_ptr<TInformationType>>;
 
-  THeapHash<DDyShaderInformation>    mShaderInformation;
-  THeapHash<DDyTextureInformation>   mTextureInformation;
-  THeapHash<DDyMaterialInformation>  mMaterialInformation;
-  THeapHash<DDyModelInformation>     mModelInformation;
-  THeapHash<DDySoundInformation>     mSoundInformation;
+  THeapHash<DDyShaderInformation_Deprecated>    mShaderInformation;
+  THeapHash<DDyTextureInformation_Deprecated>   mTextureInformation;
+  THeapHash<DDyMaterialInformation_Deprecated>  mMaterialInformation;
+  THeapHash<DDyModelInformation_Deprecated>     mModelInformation;
+  THeapHash<DDySoundInformation_Deprecated>     mSoundInformation;
 
   mutable std::mutex                 mTemporalMutex;
   // @todo not used yet.

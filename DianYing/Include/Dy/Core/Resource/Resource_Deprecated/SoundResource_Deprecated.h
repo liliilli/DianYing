@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Resource/Information/SoundInformation.h>
+#include <Dy/Core/Resource/Information_Deprecated/SoundInformation_Deprecated.h>
 #include <fmod.hpp>
 
 namespace dy
@@ -32,27 +32,27 @@ enum class EDySoundStatus
 };
 
 ///
-/// @class CDySoundResource
+/// @class CDySoundResource_Deprecated
 /// @brief Sound resource type
 ///
 /// @TODO THIS CLASS TYPE IS TEMPORAL.
 ///
-class CDySoundResource final
+class CDySoundResource_Deprecated final
 {
 public:
-  CDySoundResource() = default;
-  CDySoundResource(const CDySoundResource&)             = delete;
-  CDySoundResource(CDySoundResource&&)                  = default;
-  CDySoundResource& operator=(const CDySoundResource&)  = delete;
-  CDySoundResource& operator=(CDySoundResource&&)       = default;
-  ~CDySoundResource();
+  CDySoundResource_Deprecated() = default;
+  CDySoundResource_Deprecated(const CDySoundResource_Deprecated&)             = delete;
+  CDySoundResource_Deprecated(CDySoundResource_Deprecated&&)                  = default;
+  CDySoundResource_Deprecated& operator=(const CDySoundResource_Deprecated&)  = delete;
+  CDySoundResource_Deprecated& operator=(CDySoundResource_Deprecated&&)       = default;
+  ~CDySoundResource_Deprecated();
 
 private:
   ///
   /// @brief Initialize resource with information instance.
   ///
   [[nodiscard]]
-  EDySuccess pfInitializeResource(const DDySoundInformation& modelInformation);
+  EDySuccess pfInitializeResource(const DDySoundInformation_Deprecated& modelInformation);
 
   FMOD::Sound*    mSoundResourcePtr = nullptr;
   FMOD::Channel*  mSoundChannel     = nullptr;
@@ -62,7 +62,7 @@ private:
   //! Level pointers binding
   //!
 
-  FORCEINLINE void __pfSetSoundInformationLink(NotNull<DDySoundInformation*> ptr) const noexcept
+  FORCEINLINE void __pfSetSoundInformationLink(NotNull<DDySoundInformation_Deprecated*> ptr) const noexcept
   {
     this->__mLinkedSoundInformationPtr = ptr;
   }
@@ -71,9 +71,9 @@ private:
     this->__mLinkedSoundInformationPtr = nullptr;
   }
 
-  MDY_TRANSIENT DDySoundInformation*  __mLinkedSoundInformationPtr = nullptr;
+  MDY_TRANSIENT DDySoundInformation_Deprecated*  __mLinkedSoundInformationPtr = nullptr;
 
-  friend class DDySoundInformation;
+  friend class DDySoundInformation_Deprecated;
   friend class MDyIOResource;
 
   // @TODO TEMPORAL

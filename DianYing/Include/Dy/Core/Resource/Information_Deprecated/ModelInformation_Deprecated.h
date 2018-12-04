@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Core/Resource/Internal/ModelType.h>
-#include <Dy/Core/Resource/Information/SubmeshInformation.h>
+#include <Dy/Core/Resource/Information_Deprecated/SubmeshInformation_Deprecated.h>
 #include <Dy/Core/Resource/Internal/MaterialType.h>
 #include <Dy/Helper/Pointer.h>
 #include <Dy/Meta/Information/MetaInfoMaterial.h>
@@ -38,7 +38,7 @@ namespace dy
 struct PDyModelInstanceMetaInfo;
 enum class EDyTextureMapType : unsigned char;
 class CDyModelResource;
-class DDyTextureInformation;
+class DDyTextureInformation_Deprecated;
 } /// ::dy namespace
 
 //!
@@ -49,15 +49,15 @@ namespace dy
 {
 
 ///
-/// @class DDyModelInformation
+/// @class DDyModelInformation_Deprecated
 /// @brief Information class for model information.
 ///
-class DDyModelInformation final
+class DDyModelInformation_Deprecated final
 {
 public:
-  MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(DDyModelInformation);
-  DDyModelInformation(const PDyModelInstanceMetaInfo& modelConstructionDescriptor);
-  ~DDyModelInformation();
+  MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(DDyModelInformation_Deprecated);
+  DDyModelInformation_Deprecated(const PDyModelInstanceMetaInfo& modelConstructionDescriptor);
+  ~DDyModelInformation_Deprecated();
 
   ///
   /// @brief Return material name list which model information have.
@@ -120,7 +120,7 @@ private:
   std::string                             mModelName                      = "";
   std::string                             mModelRootPath                  = "";
 
-  std::vector<DDySubmeshInformation>      mSubmeshInformations            = {};
+  std::vector<DDySubmeshInformation_Deprecated>      mSubmeshInformations            = {};
   std::vector<std::string>                mOverallBindedMaterialName      = {};
   std::vector<std::string>                mOverallTextureLocalPaths       = {};
 

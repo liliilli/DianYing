@@ -20,15 +20,15 @@ namespace dy
 {
 
 ///
-/// @class DDySubmeshInformation
+/// @class DDySubmeshInformation_Deprecated
 /// @brief Store and manage submesh information.
 ///
-class DDySubmeshInformation final
+class DDySubmeshInformation_Deprecated final
 {
 public:
-  MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(DDySubmeshInformation);
-  DDySubmeshInformation(const PDySubmeshInformationDescriptor& meshInformation) : mMeshResourceInformation(meshInformation) {};
-  ~DDySubmeshInformation()                                        = default;
+  MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(DDySubmeshInformation_Deprecated);
+  DDySubmeshInformation_Deprecated(const PDySubmeshInformationDescriptor& meshInformation) : mMeshResourceInformation(meshInformation) {};
+  ~DDySubmeshInformation_Deprecated()                                        = default;
 
   ///
   /// @brief return immutable descriptor information reference.

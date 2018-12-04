@@ -23,7 +23,7 @@
 namespace dy
 {
 struct PDyGLShaderInstanceMetaInfo;
-class CDyShaderResource;
+class CDyShaderResource_Deprecated;
 }
 
 //!
@@ -34,17 +34,17 @@ namespace dy
 {
 
 ///
-/// @class DDyShaderInformation
+/// @class DDyShaderInformation_Deprecated
 /// @brief Shader information class that not serve heap instance
 /// but information to create heap instance.
 ///
-class DDyShaderInformation final
+class DDyShaderInformation_Deprecated final
 {
 public:
-  MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(DDyShaderInformation);
-  DDyShaderInformation(const PDyShaderConstructionDescriptor& shaderConstructionDescriptor);
-  DDyShaderInformation(const PDyGLShaderInstanceMetaInfo& shaderMetaInfo);
-  ~DDyShaderInformation();
+  MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(DDyShaderInformation_Deprecated);
+  DDyShaderInformation_Deprecated(const PDyShaderConstructionDescriptor& shaderConstructionDescriptor);
+  DDyShaderInformation_Deprecated(const PDyGLShaderInstanceMetaInfo& shaderMetaInfo);
+  ~DDyShaderInformation_Deprecated();
 
   ///
   /// @brief return immutable descriptor information reference.
@@ -56,7 +56,7 @@ public:
   }
 
   ///
-  /// @brief Check if object is being binded to CDyTextureResource instance.
+  /// @brief Check if object is being binded to CDyTextureResource_Deprecated instance.
   ///
   [[nodiscard]]
   FORCEINLINE bool IsBeingBindedToResource() const noexcept
@@ -71,15 +71,15 @@ private:
   //! Resource pointers binding
   //!
 
-  void __pfSetShaderResourceLink(NotNull<CDyShaderResource*> ptr) const noexcept;
+  void __pfSetShaderResourceLink(NotNull<CDyShaderResource_Deprecated*> ptr) const noexcept;
   FORCEINLINE void __pfResetShaderResourceLink() const noexcept
   {
     this->__mLinkedShaderResourcePtr = nullptr;
   }
 
-  MDY_TRANSIENT CDyShaderResource* __mLinkedShaderResourcePtr = nullptr;
+  MDY_TRANSIENT CDyShaderResource_Deprecated* __mLinkedShaderResourcePtr = nullptr;
 
-  friend class CDyShaderResource;
+  friend class CDyShaderResource_Deprecated;
   friend class MDyIOResource;
 };
 

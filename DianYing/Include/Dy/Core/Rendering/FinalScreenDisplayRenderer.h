@@ -20,7 +20,7 @@
 namespace dy
 {
 struct  PDyGlAttachmentInformation;
-class   CDyShaderResource;
+class   CDyShaderResource_Deprecated;
 class   CDyModelResource;
 } /// ::dy namespace
 
@@ -58,7 +58,7 @@ private:
   PDyGlAttachmentInformation* mAttachmentPtr_Ui     = MDY_INITIALIZE_NULL;
 
   /// Shader information pointer
-  CDyShaderResource*          mShaderPtr            = MDY_INITIALIZE_NULL;
+  CDyShaderResource_Deprecated*          mShaderPtr            = MDY_INITIALIZE_NULL;
   CDyModelResource*           mScreenRenderTrianglePtr    = MDY_INITIALIZE_NULL;
 };
 

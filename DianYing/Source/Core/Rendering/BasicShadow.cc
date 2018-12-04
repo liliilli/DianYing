@@ -16,7 +16,7 @@
 #include <Dy/Core/Rendering/BasicShadow.h>
 #include <Dy/Core/Resource/MeshRenderer.h>
 
-#include <Dy/Core/Resource/Resource/SubmeshResource.h>
+#include <Dy/Core/Resource/Resource_Deprecated/SubmeshResource_Deprecated.h>
 #include <Dy/Management/IO/IOResourceManager.h>
 
 #include <Dy/Builtin/ShaderGl/RenderBasicShadow.h>
@@ -88,7 +88,7 @@ void FDyBasicShadow::RenderScreen(const CDyModelRenderer& renderer)
 
   for (TI32 i = 0; i < iterationCount; ++i)
   {
-    const CDySubmeshResource& submesh = renderer.GetSubmeshResourcePtr(i);
+    const CDySubmeshResource_Deprecated& submesh = renderer.GetSubmeshResourcePtr(i);
     glBindVertexArray(submesh.GetVertexArrayId());
 
     // Bind shadow camera

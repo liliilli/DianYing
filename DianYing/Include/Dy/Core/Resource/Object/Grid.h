@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Core/Resource/MeshRenderer.h>
-#include <Dy/Core/Resource/Resource/ShaderResource.h>
+#include <Dy/Core/Resource/Resource_Deprecated/ShaderResource_Deprecated.h>
 
 namespace dy
 {
@@ -33,7 +33,7 @@ private:
   GLuint              mVbo        = 0;
 
   CDyMeshRenderer     mRenderer;
-  CDyShaderResource*  mShaderPtr  = nullptr;
+  CDyShaderResource_Deprecated*  mShaderPtr  = nullptr;
 };
 
 } /// ::dy namespace

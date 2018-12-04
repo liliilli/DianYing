@@ -22,7 +22,7 @@ namespace dy
 
 ///
 /// @struct PDyGLShaderInstanceMetaInfo
-/// @brief  Instance meta information of `CDyShaderInformation` `CDyShaderResource` base type.
+/// @brief  Instance meta information of `CDyShaderInformation` `CDyShaderResource_Deprecated` base type.
 ///
 struct PDyGLShaderInstanceMetaInfo : public PDyCommonResourceMetaInfo
 {
