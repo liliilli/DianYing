@@ -28,6 +28,48 @@ enum class EDyScope
   UserDefined,
 };
 
+MDY_NODISCARD inline bool operator>(_MIN_ EDyScope lhs, _MIN_ EDyScope rhs) noexcept
+{
+  switch (lhs)
+  {
+  case EDyScope::Global:
+  {
+    if (rhs != EDyScope::Global)  { return true; }
+    else                          { return false; }
+  }
+  case EDyScope::Scene:
+  {
+    switch (rhs)
+    {
+    case EDyScope::Global:
+    case EDyScope::Scene:       return false;
+    case EDyScope::Temporal:    return true;
+    case EDyScope::UserDefined: return false;
+    }
+  }
+  default: return false;
+  }
+}
+
+MDY_NODISCARD inline bool operator>=(_MIN_ EDyScope lhs, _MIN_ EDyScope rhs) noexcept
+{
+  switch (lhs)
+  {
+  case EDyScope::Global: { return true; }
+  case EDyScope::Scene:
+  {
+    switch (rhs)
+    {
+    case EDyScope::Scene:
+    case EDyScope::Temporal: return true;
+    case EDyScope::Global:
+    case EDyScope::UserDefined: return false;
+    }
+  }
+  default: return lhs == rhs;
+  }
+}
+
 } /// ::dy namespace
 
 #endif /// GUARD_DY_CORE_RESOURCES_TYPE_EDYSCOPE_H
