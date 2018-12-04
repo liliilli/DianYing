@@ -192,6 +192,28 @@
   constexpr std::string_view __MAName__ = __MAString__
 
 ///
+/// @macro MDY_UNEXEPCTED_BRANCH_BUT_RETURN
+///
+#define MDY_UNEXPECTED_BRANCH_BUT_RETURN(__MAExpression__) \
+  MDY_UNEXPECTED_BRANCH(); \
+  return (__MAExpression__)
+
+///
+/// @macro MDY_SYNC_LOCK_GUARD
+/// @brief lock mutex reducing a amount of typing and verbosity.
+///
+#define MDY_SYNC_LOCK_GUARD(__MAMutex__) \
+  std::lock_guard<decltype(__MAMutex__)> lock(__MAMutex__)
+
+///
+/// @macro MDY_SYNC_WAIT_CONDITION
+/// @brief lock mutex and wait condition is satisfied by reducing a amount of typing and verbosity.
+///
+#define MDY_SYNC_WAIT_CONDITION(__MAMutex__, __MAConditionVariable__, __MACondition__) \
+  std::unique_lock<decltype(__MAMutex__)> lock(__MAMutex__); \
+  __MAConditionVariable__.wait(lock, __MACondition__)
+
+///
 /// @macro MDY_UNQMVCAST
 /// @brief Static cast with moving of unique_ptr
 ///
