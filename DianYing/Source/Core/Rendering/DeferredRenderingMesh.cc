@@ -103,7 +103,7 @@ FDyDeferredRenderingMesh::FDyDeferredRenderingMesh()
   //
   if (MDY_CHECK_ISNULL(heapManager.GetModelResource(MSVSTR(builtin::FDyBuiltinModelScreenProjectionTriangle::sName))))
   {
-    MDY_CALL_ASSERT_SUCCESS(heapManager.CreateModelResource(MSVSTR(builtin::FDyBuiltinModelScreenProjectionTriangle::sName)));
+    MDY_CALL_ASSERT_SUCCESS(heapManager.CreateModelResource_Deprecated(MSVSTR(builtin::FDyBuiltinModelScreenProjectionTriangle::sName)));
   }
   this->mScreenRenderTrianglePtr = heapManager.GetModelResource(MSVSTR(builtin::FDyBuiltinModelScreenProjectionTriangle::sName));
 

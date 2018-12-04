@@ -37,7 +37,7 @@ EDySuccess CDyModelRenderer::Initialize(const PDyModelRendererComponentMetaInfo&
   {
     if (auto* materialResourcePtr = resourceManager.GetMaterialResource(materialName); !materialResourcePtr)
     {
-      const auto res = resourceManager.CreateMaterialResource(materialName);
+      const auto res = resourceManager.CreateMaterialResource_Deprecated(materialName);
       if (res == DY_FAILURE) { return DY_FAILURE; }
 
       this->mMaterialResourcePtr.emplace_back(resourceManager.GetMaterialResource(materialName));

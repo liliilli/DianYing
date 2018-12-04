@@ -51,21 +51,21 @@ public:
   /// @param modelSpecifierName specifier name of GL shader must be valid on runtime.
   /// @param scope Information lifetime scope.
   ///
-  MDY_NODISCARD EDySuccess CreateModelInformation(_MIN_ const std::string& modelSpecifierName, _MIN_ EDyScope scope);
+  MDY_NODISCARD EDySuccess CreateModelInformation_Deprecated(_MIN_ const std::string& modelSpecifierName, _MIN_ EDyScope scope);
 
   ///
   /// @brief Create texture information with scope. This function must be succeeded.
   /// @param textureSpecifier specifier name of texture must be valid on runtime.
   /// @param scope Information lifetime scope.
   ///
-  MDY_NODISCARD EDySuccess CreateTextureInformation(_MIN_ const std::string& textureSpecifier, _MIN_ EDyScope scope);
+  MDY_NODISCARD EDySuccess CreateTextureInformation_Deprecated(_MIN_ const std::string& textureSpecifier, _MIN_ EDyScope scope);
 
   /// @brief Create material information with scope. This function must be succeeded.
   /// When creating information of material, checks validity texture and shader is exist on meta information.
   /// @param materialSpecifier specifier name of material must be valid on runtime.
   /// @param scope Informatino lifetime scope.
   ///
-  MDY_NODISCARD EDySuccess CreateMaterialInformation(_MIN_ const std::string& materialSpecifier, _MIN_ EDyScope scope);
+  MDY_NODISCARD EDySuccess CreateMaterialInformation_Deprecated(_MIN_ const std::string& materialSpecifier, _MIN_ EDyScope scope);
 
   /// @brief Check shader is exist now on MDyIOData.
   MDY_NODISCARD bool IsShaderInformationExist(_MIN_ const std::string& shaderSpecifier) const noexcept
@@ -152,11 +152,6 @@ public:
   std::optional<std::string> PopulateMaterialInformation(
       const std::string& materialName,
       const PDyMaterialPopulateDescriptor& materialPopulateDescriptor);
-
-  /// @brief Create texture information.
-  EDySuccess CreateTextureInformation_Deprecated(const PDyTextureInstanceMetaInfo& textureDescriptor);
-  /// @brief Create material information.
-  EDySuccess CreateMaterialInformation_Deprecated(const PDyMaterialInstanceMetaInfo& materialDescriptor);
 
 private:
   template <typename TInformationType>

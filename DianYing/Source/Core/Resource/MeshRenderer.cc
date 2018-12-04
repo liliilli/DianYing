@@ -34,7 +34,7 @@ EDySuccess CDyMeshRenderer::pfInitialize(const PDyRendererConsturctionDescriptor
   // Bind model. If not exists, make model resource using information but not have it, return fail.
   if (const auto modelResourcePtr = resourceManager.GetModelResource(desc.mModelName); !modelResourcePtr)
   {
-    const auto res = resourceManager.CreateModelResource(desc.mModelName);
+    const auto res = resourceManager.CreateModelResource_Deprecated(desc.mModelName);
     if (res == DY_FAILURE) return DY_FAILURE;
 
     this->mModelReferencePtr = resourceManager.GetModelResource(desc.mModelName);
@@ -46,7 +46,7 @@ EDySuccess CDyMeshRenderer::pfInitialize(const PDyRendererConsturctionDescriptor
   {
     if (auto* materialResourcePtr = resourceManager.GetMaterialResource(materialName); !materialResourcePtr)
     {
-      const auto res = resourceManager.CreateMaterialResource(materialName);
+      const auto res = resourceManager.CreateMaterialResource_Deprecated(materialName);
       if (res == DY_FAILURE) { return DY_FAILURE; }
 
       this->mMaterialResourcePtr.emplace_back(resourceManager.GetMaterialResource(materialName));

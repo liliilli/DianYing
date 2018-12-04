@@ -57,7 +57,6 @@ class DDyModelInformation final
 public:
   MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(DDyModelInformation);
   DDyModelInformation(const PDyModelInstanceMetaInfo& modelConstructionDescriptor);
-  DDyModelInformation(const PDyModelConstructionVertexDescriptor& modelConstructDescriptor);
   ~DDyModelInformation();
 
   ///

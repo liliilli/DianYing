@@ -163,7 +163,7 @@ EDySuccess MDyIOData::CreateShaderInformation_Deprecated(const std::string& shad
   return DY_SUCCESS;
 }
 
-EDySuccess MDyIOData::CreateModelInformation(const std::string& modelSpecifierName, MDY_NOTUSED EDyScope scope)
+EDySuccess MDyIOData::CreateModelInformation_Deprecated(const std::string& modelSpecifierName, MDY_NOTUSED EDyScope scope)
 {
   /// @brief Check compatibility of instance into Dy model binding structure.
   static auto CheckValidity = [](_MIN_ const PDyModelInstanceMetaInfo& metaInfo)
@@ -212,7 +212,7 @@ EDySuccess MDyIOData::CreateModelInformation(const std::string& modelSpecifierNa
   return DY_SUCCESS;
 }
 
-EDySuccess MDyIOData::CreateTextureInformation(const std::string& textureSpecifier, MDY_NOTUSED EDyScope scope)
+EDySuccess MDyIOData::CreateTextureInformation_Deprecated(const std::string& textureSpecifier, MDY_NOTUSED EDyScope scope)
 {
   /// @brief Check compatibility of instance into Dy model binding structure.
   static auto CheckValidity = [](_MIN_ const PDyTextureInstanceMetaInfo& metaInfo)
@@ -258,7 +258,7 @@ EDySuccess MDyIOData::CreateTextureInformation(const std::string& textureSpecifi
   return DY_SUCCESS;
 }
 
-EDySuccess MDyIOData::CreateMaterialInformation(_MIN_ const std::string& materialSpecifier, MDY_NOTUSED EDyScope scope)
+EDySuccess MDyIOData::CreateMaterialInformation_Deprecated(_MIN_ const std::string& materialSpecifier, MDY_NOTUSED EDyScope scope)
 {
   /// @brief Check metarial meta information whether specifier name and shader exists. \n
   /// Texture list does not have to be not empty. (intentional)
@@ -309,7 +309,7 @@ EDySuccess MDyIOData::CreateMaterialInformation(_MIN_ const std::string& materia
       if (textureSpecifier.empty() == true) { continue; }
       if (this->IsTextureInformationExist(textureSpecifier) == false)
       {
-        MDY_CALL_ASSERT_SUCCESS(this->CreateTextureInformation(textureSpecifier, scope));
+        MDY_CALL_ASSERT_SUCCESS(this->CreateTextureInformation_Deprecated(textureSpecifier, scope));
       }
       const auto* textureInfo = this->GetTextureInformation(textureSpecifier);
       MDY_ASSERT(MDY_CHECK_ISNOTNULL(textureInfo), "Unexpected error occurred.");
@@ -671,6 +671,7 @@ const DDySoundInformation* MDyIOData::GetSoundInformation(const std::string& sou
 //! Deprecated
 //!
 
+#ifdef false
 EDySuccess MDyIOData::CreateTextureInformation_Deprecated(const PDyTextureInstanceMetaInfo& textureDescriptor)
 {
   ///
@@ -803,5 +804,6 @@ EDySuccess MDyIOData::CreateMaterialInformation_Deprecated(const PDyMaterialInst
   MDY_LOG_INFO("{}::{} | Create material information. | Material name : {}.", kDyDataInformation, "CreateMaterialInformation_Deprecated", materialName);
   return DY_SUCCESS;
 }
+#endif
 
 } /// ::dy namespace

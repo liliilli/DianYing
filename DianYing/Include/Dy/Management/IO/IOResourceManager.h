@@ -58,7 +58,7 @@ public:
   /// @param[in] shaderName name to create shader, must be same with shader information name.
   ///
   [[nodiscard]]
-  EDySuccess CreateShaderResource(const std::string& shaderName);
+  EDySuccess CreateShaderResource_Deprecated(const std::string& shaderName);
 
   ///
   /// @brief Create material resource on cpu and gpu.
@@ -66,14 +66,14 @@ public:
   /// and material informaiton to be a target should be capable of create all resource related to material.
   ///
   [[nodiscard]]
-  EDySuccess CreateMaterialResource(const std::string& materialName);
+  EDySuccess CreateMaterialResource_Deprecated(const std::string& materialName);
 
   ///
   /// @brief Create sound resource on cpu.
   /// @param[in] soundName name to create sound which must be same with sound information name.
   ///
   [[nodiscard]]
-  EDySuccess CreateSoundResource(const std::string& soundName);
+  EDySuccess CreateSoundResource_Deprecated(const std::string& soundName);
 
   ///
   /// @brief Create model resource on cpu and gpu.
@@ -82,7 +82,7 @@ public:
   /// User have to instantiate material information using Info::PopulateMaterialInfo(populateMaterialDescriptor);
   ///
   [[nodiscard]]
-  EDySuccess CreateModelResource(const std::string& modelName);
+  EDySuccess CreateModelResource_Deprecated(const std::string& modelName);
 
   ///
   /// @brief Create texture resource on gpu.
@@ -90,7 +90,7 @@ public:
   /// and Same name texture information must be valid on time.
   /// @param scope Lifetime scope for resource
   ///
-  MDY_NODISCARD EDySuccess CreateTextureResource(_MIN_ const std::string& specifierName, _MIN_ const EDyScope scope);
+  MDY_NODISCARD EDySuccess CreateTextureResource_Deprecated(_MIN_ const std::string& specifierName, _MIN_ const EDyScope scope);
 
   ///
   /// @brief Get valid shader resource instance. If not find, just return nullptr as failure sign.

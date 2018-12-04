@@ -32,7 +32,7 @@ EDySuccess CDyModelFilter::Initialize(const PDyModelFilterComponentMetaInfo& met
   if (const auto modelResourcePtr = resourceManager.GetModelResource(modelSpecfier);
       MDY_CHECK_ISNULL(modelResourcePtr))
   { // If not exists, make model resource using information but not have it, return fail.
-    const auto res = resourceManager.CreateModelResource(modelSpecfier);
+    const auto res = resourceManager.CreateModelResource_Deprecated(modelSpecfier);
     if (res == DY_FAILURE) { return DY_FAILURE; }
 
     this->mModelReferencePtr = resourceManager.GetModelResource(modelSpecfier);

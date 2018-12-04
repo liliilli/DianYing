@@ -57,7 +57,7 @@ FDyFinalScreenDisplayRenderer::FDyFinalScreenDisplayRenderer()
 
     if (MDY_CHECK_ISNULL(heapManager.GetModelResource(MSVSTR(TFDBMSPT::sName))))
     {
-      MDY_CALL_ASSERT_SUCCESS(heapManager.CreateModelResource(MSVSTR(TFDBMSPT::sName)));
+      MDY_CALL_ASSERT_SUCCESS(heapManager.CreateModelResource_Deprecated(MSVSTR(TFDBMSPT::sName)));
     }
     this->mScreenRenderTrianglePtr = heapManager.GetModelResource(MSVSTR(TFDBMSPT::sName));
 

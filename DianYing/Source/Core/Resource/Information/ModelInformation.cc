@@ -131,6 +131,7 @@ DDyModelInformation::DDyModelInformation(const PDyModelInstanceMetaInfo& modelCo
   }
   else
   {
+#ifdef false
     // Insert name and check name is empty or not.
     this->mModelName = modelConstructionDescriptor.mSpecifierName;
     MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "Model name", this->mModelName);
@@ -171,22 +172,11 @@ DDyModelInformation::DDyModelInformation(const PDyModelInstanceMetaInfo& modelCo
     // Output model, submesh, and material information to console.
     MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "Model root path", this->mModelRootPath);
     this->__pOutputDebugInformationLog();
+#endif
   }
 
   bool atmFalse = false;
   while (!this->mModelInformationLoaded.compare_exchange_weak(atmFalse, true));
-}
-
-DDyModelInformation::DDyModelInformation(const PDyModelConstructionVertexDescriptor& modelConstructDescriptor)
-{
-  this->mModelName = modelConstructDescriptor.mModelName;
-  for (const auto& submeshInformation : modelConstructDescriptor.mSubmeshConstructionInformations)
-  {
-    this->mSubmeshInformations.emplace_back(submeshInformation);
-  }
-
-  bool atmFalse = false;
-  while(!this->mModelInformationLoaded.compare_exchange_weak(atmFalse, true));
 }
 
 DDyModelInformation::~DDyModelInformation()
@@ -196,6 +186,7 @@ DDyModelInformation::~DDyModelInformation()
   if (this->__mLinkedModelResourcePtr)      { this->__mLinkedModelResourcePtr->__pfResetModelInformationLink(); }
 }
 
+#ifdef false
 void DDyModelInformation::pCreateAnimationInformation(const aiScene& aiScene)
 {
   for (TU32 i = 0; i < aiScene.mNumAnimations; ++i)
@@ -579,6 +570,7 @@ void DDyModelInformation::pCreateNodeInformation(const aiNode& aiNode, DMoeBoneN
     }
   }
 }
+#endif
 
 void DDyModelInformation::__pOutputDebugInformationLog()
 {

@@ -71,50 +71,50 @@ void DyInitializeBuiltinResource()
   using namespace dy;
 
 
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateModelInformation(MSVSTR(dy::builtin::FDyBuiltinModelBox::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateModelInformation(MSVSTR(dy::builtin::FDyBuiltinModelPlain::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateModelInformation(MSVSTR(dy::builtin::FDyBuiltinModelScreenProjectionTriangle::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateModelInformation(MSVSTR(dy::builtin::FDyBuiltinModelSphere::sName), dy::EDyScope::Global));
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateModelInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinModelBox::sName), dy::EDyScope::Global));
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateModelInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinModelPlain::sName), dy::EDyScope::Global));
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateModelInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinModelScreenProjectionTriangle::sName), dy::EDyScope::Global));
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateModelInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinModelSphere::sName), dy::EDyScope::Global));
 
   //SDyIOConnectionHelper::PopulateResource(MSVSTR(FDyBuiltinTextureChecker::sName), EDyResourceType::Texture, EDyResourceStyle::Information, EDyScope::Global);
-  //MDY_CALL_ASSERT_SUCCESS(infoManager.CreateTextureInformation(MSVSTR(dy::builtin::FDyBuiltinTextureChecker::sName), dy::EDyScope::Global));
+  //MDY_CALL_ASSERT_SUCCESS(infoManager.CreateTextureInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinTextureChecker::sName), dy::EDyScope::Global));
   SDyIOConnectionHelper::PopulateResource(MSVSTR(FDyBuiltinTextureChecker::sName), EDyResourceType::Texture, EDyResourceStyle::Resource, EDyScope::Global);
 
   using namespace std::chrono_literals;
   std::this_thread::sleep_for(2000ms);
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateTextureResource(MSVSTR(dy::builtin::FDyBuiltinTextureChecker::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateTextureInformation(MSVSTR(dy::builtin::FDyBuiltinTextureErrorBlue::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateTextureResource(MSVSTR(dy::builtin::FDyBuiltinTextureErrorBlue::sName), dy::EDyScope::Global));
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateTextureResource_Deprecated(MSVSTR(dy::builtin::FDyBuiltinTextureChecker::sName), dy::EDyScope::Global));
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateTextureInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinTextureErrorBlue::sName), dy::EDyScope::Global));
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateTextureResource_Deprecated(MSVSTR(dy::builtin::FDyBuiltinTextureErrorBlue::sName), dy::EDyScope::Global));
 
   MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderPass::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderPass::sName)));
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderPass::sName)));
   MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderColorGeometry::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderColorGeometry::sName)));
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderColorGeometry::sName)));
   MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderOpaqueStatic::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderOpaqueStatic::sName)));
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderOpaqueStatic::sName)));
   MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDefaultFont::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDefaultFont::sName)));
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDefaultFont::sName)));
   MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderFontArraySDF::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderFontArraySDF::sName)));
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderFontArraySDF::sName)));
   MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderUiBasicGaugeBar::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderUiBasicGaugeBar::sName)));
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderUiBasicGaugeBar::sName)));
   MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderUiImage::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderUiImage::sName)));
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderUiImage::sName)));
   MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDefaultSSAO::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDefaultSSAO::sName)));
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDefaultSSAO::sName)));
   MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDefaultSSAO::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDefaultSSAO::sName)));
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDefaultSSAO::sName)));
   MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDefaultSSAOBlurring::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDefaultSSAOBlurring::sName)));
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDefaultSSAOBlurring::sName)));
 
   MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderBasicShadow::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderBasicShadow::sName)));
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderBasicShadow::sName)));
   MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDeferredRendering::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDeferredRendering::sName)));
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDeferredRendering::sName)));
   MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderScreenOutput::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderScreenOutput::sName)));
+  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderScreenOutput::sName)));
 
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateMaterialInformation(MSVSTR(dy::builtin::FDyBuiltinMaterialOpaqueStaticPlain::sName), dy::EDyScope::Global));
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateMaterialInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinMaterialOpaqueStaticPlain::sName), dy::EDyScope::Global));
 }
 
 } /// ::unnamed namespace
