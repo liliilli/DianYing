@@ -201,7 +201,10 @@
     <ClCompile Include="Source\Core\Resource\Resource\TextureResource.cc" />
     <ClCompile Include="Source\Core\Resource\MeshRenderer.cc" />
     <ClCompile Include="Source\Management\Internal\MDySynchronization.cc" />
-    <ClCompile Include="Source\Core\Thread\SDyIOConnectionHelper.cc" />
+    <ClCompile Include="Source\Core\Thread\IO\SDyIOConnectionHelper.cc" />
+    <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceContainer.cc" />
+    <ClCompile Include="Source\Core\Thread\IO\FDyIOGC.cc" />
+    <ClCompile Include="Source\Core\Thread\IO\TDYIOWorker.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -463,8 +466,6 @@
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyTextureResource.h" />
     <ClInclude Include="Include\Dy\Meta\Information\CommonResourceMetaInfo.h" />
     <ClInclude Include="Include\Dy\Meta\Information\GLShaderMetaInformation.h" />
-    <ClInclude Include="Include\Dy\Builtin\ShaderGl\Deprecated\RenderFontMSDF_Deprecated.h" />
-    <ClInclude Include="Include\Dy\Builtin\ShaderGl\Deprecated\RenderFontSDF_Deprecated.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Deprecated\CDyFontRenderer_Deprecated.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\Deprecated\Text_Deprecated.h" />
     <ClInclude Include="Include\Dy\Meta\Information\ModelMetaInformation.h" />
@@ -498,12 +499,15 @@
     <ClInclude Include="Include\Dy\Core\Resource\Type\EDyScope.h" />
     <ClInclude Include="Include\Dy\Core\Resource\MeshImporter.h" />
     <ClInclude Include="Include\Dy\Core\Resource\MeshRenderer.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\DDyIOReferenceInstance.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\DDyIOTask.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\EDyIOTask.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\SDyIOConnectionHelper.h" />
     <ClInclude Include="Include\Dy\Management\Internal\MDySynchronization.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\TDyIOWorker.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOReferenceInstance.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOTask.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\EDyIOTask.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\SDyIOConnectionHelper.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOReferenceContainer.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\FDyIOGC.h" />
+    <ClInclude Include="Include\Dy\Helper\Internal\Semaphore.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

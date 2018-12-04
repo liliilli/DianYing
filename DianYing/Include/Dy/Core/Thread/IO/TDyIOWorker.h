@@ -13,10 +13,56 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Core/Thread/IO/DDyIOTask.h>
+#include "Dy/Management/IO/MetaInfoManager.h"
+
 namespace dy
 {
 
+///
+/// @class TDyIOWorker
+/// @brief IO Worker sub-thread class type.
+///
+class TDyIOWorker final
+{
+public:
+  TDyIOWorker(const MDyMetaInfo& metaManager) : mMetaManager(metaManager) {};
+  ~TDyIOWorker()  = default;
+  TDyIOWorker(const TDyIOWorker&)             = delete;
+  TDyIOWorker(TDyIOWorker&&)                  = delete;
+  TDyIOWorker& operator=(const TDyIOWorker&)  = delete;
+  TDyIOWorker& operator=(TDyIOWorker&&)       = delete;
 
+  /// @brief Operation of TDYIOWorker.
+  void operator()();
+
+  /// @brief Assign Task to TDYIOWorker.
+  EDySuccess outTryAssign(_MIN_ const DDyIOTask& DDyIOTask);
+
+  /// @brief Try stop this thread type.
+  void outTryStop();
+
+  ///
+  /// @brief DO IO Task.
+  /// @param assignedTask assigned task to proceed.
+  ///
+  void PopulateIOResource(_MIN_ const DDyIOTask& assignedTask);
+
+private:
+  /// @brief Routine
+  void inWork();
+
+  DDyIOTask                 mAssignedTask;
+
+  std::mutex                mTaskMutex;
+  std::condition_variable   mTaskCV;
+
+  std::mutex                mMutexAssigned;
+  bool                      mIsAssigned   = false;
+  bool                      mIsShouldStop = false;
+
+  const MDyMetaInfo&        mMetaManager;
+};
 
 } /// ::dy namespace
 

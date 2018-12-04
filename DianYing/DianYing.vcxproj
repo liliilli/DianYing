@@ -170,7 +170,10 @@
     <ClCompile Include="Source\Component\UI\CDyWidgetScriptCpp.cc" />
     <ClCompile Include="Source\Component\UI\CDyWidgetScriptLua.cc" />
     <ClCompile Include="Source\Core\Reflection\RDyBuiltinResources.cc" />
-    <ClCompile Include="Source\Core\Thread\SDyIOConnectionHelper.cc" />
+    <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceContainer.cc" />
+    <ClCompile Include="Source\Core\Thread\IO\FDyIOGC.cc" />
+    <ClCompile Include="Source\Core\Thread\IO\SDyIOConnectionHelper.cc" />
+    <ClCompile Include="Source\Core\Thread\IO\TDYIOWorker.cc" />
     <ClCompile Include="Source\Element\Canvas\FDyBasicGuageBar.cc" />
     <ClCompile Include="Source\Element\Canvas\FDyImage.cc" />
     <ClCompile Include="Source\Element\Canvas\UiObject.cc" />
@@ -410,9 +413,7 @@
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderDefaultFont.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderDeferredRendering.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderFontArraySDF.h" />
-    <ClInclude Include="Include\Dy\Builtin\ShaderGl\Deprecated\RenderFontSDF_Deprecated.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderGrid.h" />
-    <ClInclude Include="Include\Dy\Builtin\ShaderGl\Deprecated\RenderFontMSDF_Deprecated.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderOpaqueStatic.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderPass.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderScreenOutput.h" />
@@ -465,11 +466,13 @@
     <ClInclude Include="Include\Dy\Core\Rendering\FinalScreenDisplayRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Helper\FrameAttachmentString.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\UIBasicRenderer.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\DDyIOReferenceInstance.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\DDyIOTask.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\EDyIOTask.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOReferenceInstance.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOTask.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOReferenceContainer.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\EDyIOTask.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\FDyIOGC.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\TDyIOWorker.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\SDyIOConnectionHelper.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\SDyIOConnectionHelper.h" />
     <ClInclude Include="Include\Dy\Core\Thread\TDyIO.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\Dialog\ProjectCreator.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\Helper\ComponentHelper.h" />
@@ -488,6 +491,7 @@
     <ClInclude Include="Include\Dy\Element\Canvas\Deprecated\Text_Deprecated.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\CanvasDescriptor.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\GlobalEnums.h" />
+    <ClInclude Include="Include\Dy\Helper\Internal\Semaphore.h" />
     <ClInclude Include="Include\Dy\Helper\System\TypeTraits.h" />
     <ClInclude Include="Include\Dy\Management\Internal\MDySynchronization.h" />
     <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetBarMetaInformation.h" />
