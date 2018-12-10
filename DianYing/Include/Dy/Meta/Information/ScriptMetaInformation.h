@@ -42,6 +42,8 @@ enum class EDyScriptMode
 {
   Widget,
   Actor,
+  LoadingBoot,
+  LoadingGlobal,
   NoneError
 };
 
