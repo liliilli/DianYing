@@ -159,6 +159,7 @@
     <ClCompile Include="Source\Builtin\Abstract\ADyModelResource.cc" />
     <ClCompile Include="Source\Builtin\Abstract\ADyTextureResource.cc" />
     <ClCompile Include="Source\Builtin\Script\DebugUiScriptCpp.cc" />
+    <ClCompile Include="Source\Builtin\Script\DefaultLoadingBootScriptCpp.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\PostEffect\RenderDefaultSSAOBlurring.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\PostEffect\RenderDefaultSSAO.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\UI\RenderUiBasicGaugeBar.cc" />
@@ -173,10 +174,12 @@
     <ClCompile Include="Source\Component\UI\CDyWidgetScriptLua.cc" />
     <ClCompile Include="Source\Core\Reflection\RDyBuiltinResources.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyShaderInformation.cc" />
+    <ClCompile Include="Source\Core\Resource\Information\FDyTextureInformation.cc" />
     <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceContainer.cc" />
     <ClCompile Include="Source\Core\Thread\IO\FDyIOGC.cc" />
-    <ClCompile Include="Source\Core\Thread\IO\SDyIOConnectionHelper.cc" />
+    <ClCompile Include="Source\Core\Thread\SDyIOConnectionHelper.cc" />
     <ClCompile Include="Source\Core\Thread\IO\TDYIOWorker.cc" />
+    <ClCompile Include="Source\Core\Thread\SDyIOWorkerConnHelper.cc" />
     <ClCompile Include="Source\Element\Canvas\FDyBasicGuageBar.cc" />
     <ClCompile Include="Source\Element\Canvas\FDyImage.cc" />
     <ClCompile Include="Source\Element\Canvas\UiObject.cc" />
@@ -388,6 +391,7 @@
   <ItemGroup>
     <ClInclude Include="Include\Dy\Binding\LuaScriptFrame.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGLShaderResource.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyLoadingBootResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyMaterialResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyModelResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyScriptResource.h" />
@@ -401,6 +405,7 @@
     <ClInclude Include="Include\Dy\Builtin\Model\Sphere.h" />
     <ClInclude Include="Include\Dy\Builtin\Object\Light\DirectionalLight.h" />
     <ClInclude Include="Include\Dy\Builtin\Script\DebugUiScriptCpp.h" />
+    <ClInclude Include="Include\Dy\Builtin\Script\DefaultLoadingBootScriptCpp.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\PostEffect\RenderDefaultSSAOBlurring.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderBasicShadow.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderColorGeometry.h" />
@@ -417,6 +422,8 @@
     <ClInclude Include="Include\Dy\Builtin\Texture\ErrorBlue.h" />
     <ClInclude Include="Include\Dy\Builtin\Texture\Checker.h" />
     <ClInclude Include="Include\Dy\Builtin\Widget\DebugUiMeta.h" />
+    <ClInclude Include="Include\Dy\Meta\Type\DDyResourceName.h" />
+    <ClInclude Include="Include\Dy\Component\Abstract\ADyLoadingGlobalScript.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyPhysicsRIgidbody.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyPhysicsShape.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyWidgetCppScript.h" />
@@ -447,6 +454,7 @@
     <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScriptCpp.h" />
     <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScriptLua.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyShaderInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Information\FDyTextureInformation.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information_Deprecated\MaterialInformation_Deprecated.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information_Deprecated\SoundInformation_Deprecated.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information_Deprecated\SubmeshInformation_Deprecated.h" />
@@ -469,7 +477,8 @@
     <ClInclude Include="Include\Dy\Core\Thread\IO\EDyIOTask.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\FDyIOGC.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\TDyIOWorker.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\IO\SDyIOConnectionHelper.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\SDyIOConnectionHelper.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\SDyIOWorkerConnHelper.h" />
     <ClInclude Include="Include\Dy\Core\Thread\TDyIO.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\Dialog\ProjectCreator.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\Helper\ComponentHelper.h" />
@@ -492,6 +501,7 @@
     <ClInclude Include="Include\Dy\Helper\Internal\Semaphore.h" />
     <ClInclude Include="Include\Dy\Helper\System\TypeTraits.h" />
     <ClInclude Include="Include\Dy\Management\Internal\MDySynchronization.h" />
+    <ClInclude Include="Include\Dy\Management\Type\EDyGlobalGameStatus.h" />
     <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetBarMetaInformation.h" />
     <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetImageMetaInformation.h" />
     <ClInclude Include="Include\Dy\Meta\Information\CommonResourceMetaInfo.h" />
@@ -633,6 +643,7 @@
     <ClInclude Include="Include\Dy\Meta\Type\EDyComponentTypes.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyInput.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyRenderingApi.h" />
+    <ClInclude Include="Include\Dy\Meta\Type\EDyResourceType.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyResourceTypes.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyWidgetTypes.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyTextureParameter.h" />

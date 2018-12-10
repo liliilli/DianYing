@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Core/Thread/IO/SDyIOConnectionHelper.h>
+#include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 #include <Dy/Core/DyEngine.h>
 
 namespace dy
@@ -27,7 +27,7 @@ void SDyIOConnectionHelper::PopulateResource(
 {
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
   auto& ioThread = *gEngine->pfGetIOThread();
-  MDY_CALL_ASSERT_SUCCESS(ioThread.TryEnqueueTask(specifier, resourceType, resourceStyle, scope));
+  MDY_CALL_ASSERT_SUCCESS(ioThread.outTryEnqueueTask(specifier, resourceType, resourceStyle, scope));
 }
 
 void SDyIOConnectionHelper::TryGC()
@@ -39,7 +39,7 @@ void SDyIOConnectionHelper::TryStop()
 {
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
   auto& ioThread = *gEngine->pfGetIOThread();
-  ioThread.TryStop();
+  ioThread.outTryStop();
 }
 
 } /// ::dy namespace

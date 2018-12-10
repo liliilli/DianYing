@@ -31,7 +31,7 @@
 #include <Dy/Management/ScriptManager.h>
 #include <Dy/Management/Editor/GuiManager.h>
 #include <Dy/Management/Internal/MDySynchronization.h>
-#include <Dy/Core/Thread/IO/SDyIOConnectionHelper.h>
+#include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 
 #include <Dy/Builtin/Model/Box.h>
 #include <Dy/Builtin/Model/Plain.h>
@@ -54,8 +54,6 @@
 #include <Dy/Builtin/ShaderGl/PostEffect/RenderDefaultSSAOBlurring.h>
 #include <Dy/Builtin/Widget/DebugUiMeta.h>
 
-#include <Dy/Core/Thread/IO/SDyIOConnectionHelper.h>
-
 //!
 //! Local function & data (Local translation unit function & data)
 //!
@@ -77,11 +75,8 @@ void DyInitializeBuiltinResource()
   MDY_CALL_ASSERT_SUCCESS(infoManager.CreateModelInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinModelSphere::sName), dy::EDyScope::Global));
 
   //SDyIOConnectionHelper::PopulateResource(MSVSTR(FDyBuiltinTextureChecker::sName), EDyResourceType::Texture, EDyResourceStyle::Information, EDyScope::Global);
-  //MDY_CALL_ASSERT_SUCCESS(infoManager.CreateTextureInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinTextureChecker::sName), dy::EDyScope::Global));
-  SDyIOConnectionHelper::PopulateResource(MSVSTR(FDyBuiltinTextureChecker::sName), EDyResourceType::Texture, EDyResourceStyle::Resource, EDyScope::Global);
-
-  using namespace std::chrono_literals;
-  std::this_thread::sleep_for(2000ms);
+  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateTextureInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinTextureChecker::sName), dy::EDyScope::Global));
+  //SDyIOConnectionHelper::PopulateResource(MSVSTR(FDyBuiltinTextureChecker::sName), EDyResourceType::Texture, EDyResourceStyle::Resource, EDyScope::Global);
   MDY_CALL_ASSERT_SUCCESS(rescManager.CreateTextureResource_Deprecated(MSVSTR(dy::builtin::FDyBuiltinTextureChecker::sName), dy::EDyScope::Global));
   MDY_CALL_ASSERT_SUCCESS(infoManager.CreateTextureInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinTextureErrorBlue::sName), dy::EDyScope::Global));
   MDY_CALL_ASSERT_SUCCESS(rescManager.CreateTextureResource_Deprecated(MSVSTR(dy::builtin::FDyBuiltinTextureErrorBlue::sName), dy::EDyScope::Global));
@@ -100,8 +95,6 @@ void DyInitializeBuiltinResource()
   MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderUiBasicGaugeBar::sName)));
   MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderUiImage::sName), dy::EDyScope::Global));
   MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderUiImage::sName)));
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDefaultSSAO::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDefaultSSAO::sName)));
   MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDefaultSSAO::sName), dy::EDyScope::Global));
   MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDefaultSSAO::sName)));
   MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDefaultSSAOBlurring::sName), dy::EDyScope::Global));
@@ -139,15 +132,6 @@ EDySuccess DyEngine::pfInitialize()
     settingManager.pSetupExecutableArgumentSettings();
   };
 
-  ///
-  /// @brief Initialize threads.
-  ///
-  static auto InitializeThread = [this]
-  {
-    this->mIOThreadInstance = std::make_unique<TDyIO>();
-    this->mIOThreadThread   = std::thread(&TDyIO::operator(), std::ref(*this->mIOThreadInstance));
-  };
-
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   //! FUNCTIONBODY ∨
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -162,14 +146,13 @@ EDySuccess DyEngine::pfInitialize()
   MDY_CALL_ASSERT_SUCCESS(dy::editor::MDyEditorGui::Initialize());
 #endif
 
-  // IO Manager (THREAD + TASK QUEUE)
-  InitializeThread();
-
   MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyWindow::Initialize());
-
+  MDY_CALL_ASSERT_SUCCESS(MDySynchronization::Initialize());
   // Temporal
   DyInitializeBuiltinResource();
+  this->mSynchronization = &MDySynchronization::GetInstance();
+  this->mSynchronization->RunFrame();
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDyRendering::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyInput::Initialize());
@@ -179,7 +162,6 @@ EDySuccess DyEngine::pfInitialize()
   MDY_CALL_ASSERT_SUCCESS(dy::MDyScript::Initialize());
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDyWorld::Initialize());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDySynchronization::Initialize());
   MDY_LOG_WARNING_D("========== DIANYING MANAGER INITIALIZED ==========");
 
   return DY_SUCCESS;
@@ -187,22 +169,11 @@ EDySuccess DyEngine::pfInitialize()
 
 EDySuccess DyEngine::pfRelease()
 {
-  static auto ReleaseThread = [this]
-  {
-    SDyIOConnectionHelper::TryStop();
-
-    this->mIOThreadThread.join();
-    this->mIOThreadInstance = nullptr;
-  };
-
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   //! FUNCTIONBODY ∨
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  ReleaseThread();
-
   MDY_LOG_WARNING_D("========== DIANYING MANAGER RELEASED ==========");
-  MDY_CALL_ASSERT_SUCCESS(dy::MDySynchronization::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyWorld::Release());
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDyScript::Release());
@@ -211,6 +182,8 @@ EDySuccess DyEngine::pfRelease()
   MDY_CALL_ASSERT_SUCCESS(dy::MDySound::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyInput::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyRendering::Release());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDySynchronization::Release());
+  this->mSynchronization = nullptr;
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDyWindow::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Release());
@@ -253,8 +226,8 @@ void DyEngine::operator()()
 
 NotNull<TDyIO*> DyEngine::pfGetIOThread()
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mIOThreadInstance), "IOThread Instance must not be null except for initialization and destruction.");
-  return DyMakeNotNull(this->mIOThreadInstance.get());
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mSynchronization), "Synchronization manager must be valid.");
+  return this->mSynchronization->pfGetIOThread();
 }
 
 void DyEngine::pUpdate(_MIN_ TF32 dt)

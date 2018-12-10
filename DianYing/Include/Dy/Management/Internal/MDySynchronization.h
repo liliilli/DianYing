@@ -14,6 +14,8 @@
 ///
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
+#include <Dy/Core/Thread/TDyIO.h>
+#include <Dy/Management/Type/EDyGlobalGameStatus.h>
 
 namespace dy
 {
@@ -27,7 +29,26 @@ class MDySynchronization final : public IDySingleton<MDySynchronization>
   MDY_SINGLETON_DERIVED(MDySynchronization);
   MDY_SINGLETON_PROPERTIES(MDySynchronization);
 public:
+  /// @brief Get IO Thread Instance which not be nulled.
+  NotNull<TDyIO*> pfGetIOThread();
 
+  /// @brief Get game's global status.
+  MDY_NODISCARD EDyGlobalGameStatus GetGlobalGameStatus() const noexcept
+  {
+    return this->mStatus;
+  }
+
+  /// @brief Run synchronization phase or operating system.
+  void RunFrame();
+
+private:
+  /// @brief Run booted phase.
+  void pRunFrameBooted();
+
+  std::unique_ptr<TDyIO>  mIOThreadInstance = nullptr;
+  std::thread             mIOThreadThread;
+
+  EDyGlobalGameStatus     mStatus = EDyGlobalGameStatus::Booted;
 };
 
 } /// ::dy namespace

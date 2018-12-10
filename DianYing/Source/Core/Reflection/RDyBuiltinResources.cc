@@ -14,9 +14,9 @@
 
 /// Header file
 #include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Meta/Information/ModelMetaInformation.h>
+#include <Dy/Meta/Information/MetaInfoTexture.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
-#include "Dy/Meta/Information/ModelMetaInformation.h"
-#include "Dy/Meta/Information/MetaInfoTexture.h"
 
 namespace dy::reflect
 {
@@ -66,6 +66,12 @@ void RDyBuiltinResource::BindBuiltinResourcesToMetaManager()
   }
 
   map.clear();
+
+  if (IsBootingMetaInfoScriptExist() == true)
+  {
+    const auto bootScript = DyConvertUniquePtrTo<ADyLoadingBootResource>(GetBootResourceMetaInfo().second());
+    MDY_CALL_ASSERT_SUCCESS(metaManager.pfAddBootResourceSpecifierList(bootScript->GetResourceMetaList()));
+  }
 }
 
 } /// ::dy::reflect namespace

@@ -175,7 +175,6 @@
     <ClCompile Include="Source\Core\Resource\Object\PostEffectSsao.cc" />
     <ClCompile Include="Source\Core\Resource\MeshRenderer.cc" />
     <ClCompile Include="Source\Management\Internal\MDySynchronization.cc" />
-    <ClCompile Include="Source\Core\Thread\IO\SDyIOConnectionHelper.cc" />
     <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceContainer.cc" />
     <ClCompile Include="Source\Core\Thread\IO\FDyIOGC.cc" />
     <ClCompile Include="Source\Core\Thread\IO\TDYIOWorker.cc" />
@@ -198,6 +197,10 @@
     <ClCompile Include="Source\Core\Resource\Resource_Deprecated\SubmeshResource.cc" />
     <ClCompile Include="Source\Core\Resource\Resource_Deprecated\TextureResource.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyShaderInformation.cc" />
+    <ClCompile Include="Source\Core\Resource\Information\FDyTextureInformation.cc" />
+    <ClCompile Include="Source\Core\Thread\SDyIOConnectionHelper.cc" />
+    <ClCompile Include="Source\Core\Thread\SDyIOWorkerConnHelper.cc" />
+    <ClCompile Include="Source\Builtin\Script\DefaultLoadingBootScriptCpp.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -476,7 +479,6 @@
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOReferenceInstance.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOTask.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\EDyIOTask.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\IO\SDyIOConnectionHelper.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOReferenceContainer.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\FDyIOGC.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\Semaphore.h" />
@@ -502,6 +504,15 @@
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyShaderInformation.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\UniqueAny.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOWorkerResult.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Information\FDyTextureInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\SDyIOConnectionHelper.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\SDyIOWorkerConnHelper.h" />
+    <ClInclude Include="Include\Dy\Management\Type\EDyGlobalGameStatus.h" />
+    <ClInclude Include="Include\Dy\Component\Abstract\ADyLoadingGlobalScript.h" />
+    <ClInclude Include="Include\Dy\Builtin\Script\DefaultLoadingBootScriptCpp.h" />
+    <ClInclude Include="Include\Dy\Meta\Type\EDyResourceType.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyLoadingBootResource.h" />
+    <ClInclude Include="Include\Dy\Meta\Type\DDyResourceName.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

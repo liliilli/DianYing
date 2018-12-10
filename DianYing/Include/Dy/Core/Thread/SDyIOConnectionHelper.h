@@ -16,6 +16,7 @@
 #include <string>
 #include <Dy/Core/Thread/IO/EDyIOTask.h>
 #include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include "IO/DDyIOWorkerResult.h"
 
 //!
 //! Forward declaration
@@ -35,7 +36,7 @@ namespace dy
 
 ///
 /// @class SDyIOConnectionHelper
-/// @brief IO Connection helper class for communicating to IOThread.
+/// @brief IO Connection helper class for communicating to IOThread from Logic thread.
 ///
 class SDyIOConnectionHelper final
 {

@@ -40,6 +40,7 @@ public:
   EDyObject         mObjectStyle    = EDyObject::NoneError;
   void*             mPtrBoundObject = nullptr;
   TPriority         mTaskPriority   = 0;
+  bool              mIsResourceDeferred = false;
 };
 
 } /// ::dy namespace

@@ -25,6 +25,7 @@ namespace dy
 {
 class MDyTime;
 class MDyWindow;
+class MDySynchronization;
 } /// ::dy namespace
 
 //!
@@ -63,10 +64,10 @@ private:
   /// @brief Render entry function from engine.
   void pRender();
 
-  std::unique_ptr<TDyIO>  mIOThreadInstance = nullptr;
-  std::thread             mIOThreadThread;
+  MDySynchronization* mSynchronization = nullptr;
 
   friend class SDyIOConnectionHelper;
+  friend class SDyIOWorkerConnHelper;
 };
 
 extern DyEngine* gEngine;

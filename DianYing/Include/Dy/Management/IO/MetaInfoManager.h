@@ -21,11 +21,24 @@
 #include <Dy/Meta/Information/FontMetaInformation.h>
 #include <Dy/Meta/Information/PrefabMetaInformation.h>
 #include <Dy/Helper/ContainerHelper.h>
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
 #include <Dy/Meta/Information/GLShaderMetaInformation.h>
 #include <Dy/Meta/Information/ModelMetaInformation.h>
 #include <Dy/Meta/Information/MetaInfoTexture.h>
 #include <Dy/Meta/Information/MetaInfoMaterial.h>
+#include <Dy/Meta/Type/DDyResourceName.h>
+
+//!
+//! Forward declaration
+//!
+
+namespace dy::reflect
+{
+class RDyBuiltinResource;
+} /// ::dy::reflect namespace
+
+//!
+//! Implementation
+//!
 
 namespace dy
 {
@@ -156,6 +169,12 @@ public:
     return DyIsMapContains(this->mFontMetaInfo, specifierName);
   }
 
+  /// @brief
+  FORCEINLINE MDY_NODISCARD const auto& GetBootResourceSpecifierList() const noexcept
+  {
+    return this->mBootResourceSpecifierList;
+  };
+
   template <typename TType>
   using THashMap = std::unordered_map<std::string, TType>;
 private:
@@ -171,6 +190,7 @@ private:
   MDY_NODISCARD EDySuccess pfAddModelMetaInfo         (_MIN_ const PDyModelInstanceMetaInfo& metaInfo);
   MDY_NODISCARD EDySuccess pfAddTextureMetaInfo       (_MIN_ const PDyTextureInstanceMetaInfo& metaInfo);
   MDY_NODISCARD EDySuccess pfAddMaterialMetaInfo      (_MIN_ const PDyMaterialInstanceMetaInfo& metaInfo);
+  MDY_NODISCARD EDySuccess pfAddBootResourceSpecifierList(_MIN_ const std::vector<DDyResourceName>& list);
 
   /// Level meta information map.
   THashMap<PDyLevelConstructMetaInfo>   mLevelInfoMap   = {};
@@ -187,6 +207,9 @@ private:
   /// Material meta information map.
   THashMap<PDyMaterialInstanceMetaInfo> mMaterialMetaInfo = {};
 
+  /// Resource specifier name list for loading in boot sequence of MDySync.
+  std::vector<DDyResourceName> mBootResourceSpecifierList = {};
+
   //!
   //! Hierarchial meta information containers.
   //!
@@ -196,7 +219,7 @@ private:
   /// Widget meta information map.
   THashMap<std::unique_ptr<PDyMetaWidgetRootDescriptor>> mWidgetMetaInfo = {};
 
-  friend void ::dy::reflect::RDyBuiltinResource::BindBuiltinResourcesToMetaManager();
+  friend class ::dy::reflect::RDyBuiltinResource;
 };
 
 } /// ::dy namespace

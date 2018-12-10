@@ -14,18 +14,73 @@
 
 /// Header file
 #include <Dy/Management/Internal/MDySynchronization.h>
+#include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 
 namespace dy
 {
 
 EDySuccess MDySynchronization::pfInitialize()
 {
+  ///
+  /// @brief Initialize threads.
+  ///
+  static auto InitializeThread = [this]
+  {
+    this->mIOThreadInstance = std::make_unique<TDyIO>();
+    this->mIOThreadThread   = std::thread(&TDyIO::operator(), std::ref(*this->mIOThreadInstance));
+  };
+
+  InitializeThread();
   return DY_SUCCESS;
 }
 
 EDySuccess MDySynchronization::pfRelease()
 {
+  static auto ReleaseThread = [this]
+  {
+    SDyIOConnectionHelper::TryStop();
+
+    this->mIOThreadThread.join();
+    this->mIOThreadInstance = nullptr;
+  };
+
   return DY_SUCCESS;
+}
+
+NotNull<TDyIO*> MDySynchronization::pfGetIOThread()
+{
+  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mIOThreadInstance), "IOThread Instance must not be null except for initialization and destruction.");
+  return DyMakeNotNull(this->mIOThreadInstance.get());
+}
+
+void MDySynchronization::RunFrame()
+{
+  switch (this->mStatus)
+  {
+  case EDyGlobalGameStatus::Booted:
+    this->pRunFrameBooted();
+    break;
+  case EDyGlobalGameStatus::FirstLoading:
+    break;
+  case EDyGlobalGameStatus::Loading:
+    break;
+  case EDyGlobalGameStatus::GameRuntime:
+    break;
+  case EDyGlobalGameStatus::Shutdown:
+    break;
+  case EDyGlobalGameStatus::Ended:
+    break;
+  }
+}
+
+void MDySynchronization::pRunFrameBooted()
+{
+  const auto& metaInfo = MDyMetaInfo::GetInstance();
+  const auto& bootResourceSpecifierList = metaInfo.GetBootResourceSpecifierList();
+
+  MDY_NOT_IMPLEMENTED_ASSERT();
+
+  this->mStatus = EDyGlobalGameStatus::FirstLoading;
 }
 
 } /// ::dy namespace
