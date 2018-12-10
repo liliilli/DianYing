@@ -14,12 +14,18 @@
 
 /// Header file
 #include <Dy/Core/Thread/IO/TDyIOWorker.h>
+#include <Dy/Core/Resource/Information/FDyShaderInformation.h>
+#include <Dy/Core/Resource/Information/FDyTextureInformation.h>
+#include <Dy/Core/Thread/SDyIOConnectionHelper.h>
+#include <Dy/Core/Thread/SDyIOWorkerConnHelper.h>
 
 namespace dy
 {
 
 void TDyIOWorker::operator()()
 {
+  this->mIsAssigned = false;
+  this->mIsShouldStop = false;
   this->inWork();
 }
 
@@ -34,18 +40,26 @@ void TDyIOWorker::inWork()
   {
     {
       MDY_SYNC_WAIT_CONDITION(this->mTaskMutex, this->mTaskCV, CbTaskWaiting);
-
       if (this->mIsShouldStop == true) { return; }
       MDY_ASSERT(this->mIsAssigned == true, "IOWorker's task must be assigned to proceed.");
     }
 
-    // DO SOMETHING
-    this->PopulateIOResource(this->mAssignedTask);
+    // Do process
+    // (result have void* (heap object) as created resource instance,
+    // need to be moved into resultContainer carefully without data race.
+    SDyIOWorkerConnHelper::InsertResult(this->PopulateIOResource(this->mAssignedTask));
+    // 만약에 `Deferred` 가 Checked 되어있다면, `SDyIOConnectionHelper` 을 사용해서 atomic 하게 specifier 을 리스트에 넣어야 함.
+    // 그러면 리스트가 not empty 됨으로써 IO Reinsert 조건이 만족 됨. (IO Reinsert 는 IO IN 의 부수 페이즈임)
+    // Synchronization 매니저에 의한 Sync 과정에서 리스트의 speicfier 에 대해 `Deferred List` 에서 해당하는 `Resource` 태스크를
+    // 꺼내서 상위 우선순위로 Queue 에 넘겨야 함. 이 때 specifier 에 대해 리스트에서 가지고 있지 않은 경우는 없음. 그러면 로직이 X된거임.
 
     { // Change status mutually.
       MDY_SYNC_LOCK_GUARD(this->mMutexAssigned);
       this->mIsAssigned = false;
+      this->mAssignedTask = {};
     }
+    SDyIOWorkerConnHelper::TryNotify();
+    MDY_SLEEP_FOR_ATOMIC_TIME();
   }
 }
 
@@ -54,14 +68,16 @@ EDySuccess TDyIOWorker::outTryAssign(_MIN_ const DDyIOTask& inputTask)
   { // Check assigned flag mutually.
     MDY_SYNC_LOCK_GUARD(this->mMutexAssigned);
     if (this->mIsAssigned == true) { return DY_FAILURE; }
-    this->mIsAssigned = true;
+    // And..
+    {
+      MDY_SYNC_LOCK_GUARD(this->mTaskMutex);
+      this->mAssignedTask = inputTask;
+      this->mIsAssigned = true;
+    }
   }
+  this->mTaskCV.notify_one();
 
-  { // And..
-    MDY_SYNC_LOCK_GUARD(this->mTaskMutex);
-    this->mAssignedTask = inputTask;
-    this->mTaskCV.notify_one();
-  }
+  MDY_SLEEP_FOR_ATOMIC_TIME();
   return DY_SUCCESS;
 }
 
@@ -71,13 +87,56 @@ void TDyIOWorker::outTryStop()
   this->mIsShouldStop = true;
 }
 
-void TDyIOWorker::PopulateIOResource(_MIN_ const DDyIOTask& assignedTask)
+DDyIOWorkerResult TDyIOWorker::PopulateIOResource(_MIN_ const DDyIOTask& assignedTask)
 {
   // 여기서는 IO Information & Resource 컨테이너는 반드시 atomic 해야함.
   // RESOURCE 을 만드는데, 각각의 CDy~~ 을 조정해줄 필요가 있을 듯 함.
+  switch (assignedTask.mResourcecStyle)
+  {
+  case EDyResourceStyle::Information: return this->pPopulateIOResourceInformation(assignedTask);
+  case EDyResourceStyle::Resource:    return this->pPopulateIOResourceResource(assignedTask);
+  default: MDY_UNEXPECTED_BRANCH(); break;
+  }
 
+  MDY_UNEXPECTED_BRANCH_BUT_RETURN(DDyIOWorkerResult{});
+}
 
+DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceInformation(_MIN_ const DDyIOTask& assignedTask)
+{
+  DDyIOWorkerResult result{};
+  result.mResourceType  = assignedTask.mResourceType;
+  result.mResourceStyle = assignedTask.mResourcecStyle;
+
+  const auto& metaInfo = MDyMetaInfo::GetInstance();
+
+  switch (assignedTask.mResourceType)
+  {
+  case EDyResourceType::Model:
+    MDY_NOT_IMPLEMENTED_ASSERT();
+    break;
+  case EDyResourceType::GLShader:
+    result.mSmtPtrResultInstance = new FDyShaderInformation(metaInfo.GetGLShaderMetaInformation(assignedTask.mSpecifierName));
+    break;
+  case EDyResourceType::Texture:
+    result.mSmtPtrResultInstance = new FDyTextureInformation(metaInfo.GetTextureMetaInformation(assignedTask.mSpecifierName));
+    break;
+  case EDyResourceType::Material:
+    MDY_NOT_IMPLEMENTED_ASSERT();
+    break;
+  default: MDY_UNEXPECTED_BRANCH(); break;
+  }
+
+  return result;
+}
+
+DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceResource(_MIN_ const DDyIOTask& assignedTask)
+{
+  DDyIOWorkerResult result{};
+  result.mResourceType  = assignedTask.mResourceType;
+  result.mResourceStyle = assignedTask.mResourcecStyle;
   MDY_NOT_IMPLEMENTED_ASSERT();
+
+  return {};
 }
 
 } /// ::dy namespace

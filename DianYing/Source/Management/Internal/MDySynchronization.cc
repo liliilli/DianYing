@@ -77,7 +77,10 @@ void MDySynchronization::pRunFrameBooted()
 {
   const auto& metaInfo = MDyMetaInfo::GetInstance();
   const auto& bootResourceSpecifierList = metaInfo.GetBootResourceSpecifierList();
+  SDyIOConnectionHelper::PopulateResources(bootResourceSpecifierList, true);
 
+  using namespace std::chrono_literals;
+  std::this_thread::sleep_for(3s);
   MDY_NOT_IMPLEMENTED_ASSERT();
 
   this->mStatus = EDyGlobalGameStatus::FirstLoading;

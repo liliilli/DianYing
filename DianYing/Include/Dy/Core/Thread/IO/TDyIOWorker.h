@@ -14,7 +14,8 @@
 ///
 
 #include <Dy/Core/Thread/IO/DDyIOTask.h>
-#include "Dy/Management/IO/MetaInfoManager.h"
+#include <Dy/Core/Thread/IO/DDyIOWorkerResult.h>
+#include <Dy/Management/IO/MetaInfoManager.h>
 
 namespace dy
 {
@@ -42,13 +43,19 @@ public:
   /// @brief Try stop this thread type.
   void outTryStop();
 
+private:
   ///
   /// @brief DO IO Task.
   /// @param assignedTask assigned task to proceed.
   ///
-  void PopulateIOResource(_MIN_ const DDyIOTask& assignedTask);
+  MDY_NODISCARD DDyIOWorkerResult PopulateIOResource(_MIN_ const DDyIOTask& assignedTask);
 
-private:
+  /// @brief Process Information heap instance creation.
+  MDY_NODISCARD DDyIOWorkerResult pPopulateIOResourceInformation(_MIN_ const DDyIOTask& assignedTask);
+
+  /// @brief Process Resource heap instance creation.
+  MDY_NODISCARD DDyIOWorkerResult pPopulateIOResourceResource(_MIN_ const DDyIOTask& assignedTask);
+
   /// @brief Routine
   void inWork();
 

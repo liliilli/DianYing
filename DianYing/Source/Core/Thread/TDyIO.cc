@@ -151,7 +151,7 @@ EDySuccess TDyIO::outTryEnqueueTask(
     _MIN_ EDyScope scope, _MIN_ bool isDerivedFromResource)
 {
   /// @brief Check RI is exist, so enlarge scope and update properties etc.
-  static auto CheckAndUpdateReferenceInstance = [&, this]() -> bool
+  static auto CheckAndUpdateReferenceInstance = [scope, this](const std::string& specifier, const auto& resourceType, const auto& resourceStyle) -> bool
   {
     if (this->outIsReferenceInstanceExist(specifier, resourceType, resourceStyle) == true)
     {
@@ -177,24 +177,25 @@ EDySuccess TDyIO::outTryEnqueueTask(
     const auto flag   = this->outTryEnqueueTask(specifier, resourceType, EDyResourceStyle::Information, scope, true);
     isShouldDeferred  = flag == DY_SUCCESS ? true : false;
   }
-  if (const auto isExist = CheckAndUpdateReferenceInstance(); isExist == true)
+  if (const auto isExist = CheckAndUpdateReferenceInstance(specifier, resourceType, resourceStyle); isExist == true)
   { // This logic is intentional for insert `Resource` task to deferred task list when `Information` is not set up yet.
     if (isDerivedFromResource == false) { return DY_SUCCESS; }
     else                                { return DY_FAILURE; }
   }
 
   MDY_CALL_ASSERT_SUCCESS(this->outCreateReferenceInstance(specifier, resourceType, resourceStyle, scope));
+
+  // Construct IO Task.
   DDyIOTask task = {};
-  { // Construct IO Task.
-    task.mSpecifierName = specifier;
-    task.mObjectStyle   = EDyObject::Etc_NotBindedYet;
-    task.mPtrBoundObject= nullptr;
-    task.mResourceType  = resourceType;
-    task.mResourcecStyle= resourceStyle;
-    task.mScope         = scope;
-    task.mTaskPriority  = kDefaultPriority;
-    task.mIsResourceDeferred = isDerivedFromResource;
-  }
+  task.mSpecifierName = specifier;
+  task.mObjectStyle   = EDyObject::Etc_NotBindedYet;
+  task.mPtrBoundObject= nullptr;
+  task.mResourceType  = resourceType;
+  task.mResourcecStyle= resourceStyle;
+  task.mScope         = scope;
+  task.mTaskPriority  = kDefaultPriority;
+  task.mIsResourceDeferred = isDerivedFromResource;
+
   if (isShouldDeferred == true)
   { // If `Resource` should be deferred task,
     // Insert deferred task and iterate list that there is something to be reinsert to Queue.

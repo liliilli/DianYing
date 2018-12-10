@@ -54,6 +54,14 @@ public:
 
   /// @brief Try stop IO thread manually. this function is thread-safe to I/O Thread.
   static void TryStop();
+
+  ///
+  /// @brief
+  ///
+  static void PopulateResources(_MIN_ const std::vector<DDyResourceName>& specifierList, _MIN_ bool isWaited = false);
+
+  /// @brief Force bind IO Result list into information.
+  static void ForceBindIOResultList();
 };
 
 } /// ::dy namespace
