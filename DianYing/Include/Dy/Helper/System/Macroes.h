@@ -42,6 +42,11 @@
 //! Global macroes
 //!
 
+/// DONT USE THIS DIRECTLY
+#define MDY_TOKENPASTE(__MAX__, __MAY__) __MAX__ ## __MAY__
+/// USE THIS DIRECTLY FOR CONCATNATION.
+#define MDY_TOKENPASTE2(__MAX__, __MAY__) MDY_TOKENPASTE(__MAX__, __MAY__)
+
 ///
 /// @macro MDY_TO_STRING
 /// @macro Convert __MAString__ to const char* literal.
@@ -199,11 +204,21 @@
   return (__MAExpression__)
 
 ///
+/// @macro MDY_SLEEP_FOR_ATOMIC_TIME
+/// @brief Sleep for atomic time (1 microsecond) for thread scheduling.
+///
+#define MDY_SLEEP_FOR_ATOMIC_TIME() \
+{ \
+  using namespace std::chrono_literals; \
+  std::this_thread::sleep_for(1ms); \
+}
+
+///
 /// @macro MDY_SYNC_LOCK_GUARD
 /// @brief lock mutex reducing a amount of typing and verbosity.
 ///
 #define MDY_SYNC_LOCK_GUARD(__MAMutex__) \
-  std::lock_guard<decltype(__MAMutex__)> lock(__MAMutex__)
+  std::lock_guard<decltype(__MAMutex__)> MDY_TOKENPASTE2(lock, __LINE__)(__MAMutex__)
 
 ///
 /// @macro MDY_SYNC_WAIT_CONDITION
