@@ -51,4 +51,24 @@ void SDyIOConnectionHelper::PopulateResources(_MIN_ const std::vector<DDyResourc
   }
 }
 
+bool SDyIOConnectionHelper::CheckIOResultInCondition() noexcept
+{
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
+  auto& ioThread = *gEngine->pfGetIOThread();
+  return ioThread.outCheckIOResultInCondition();
+}
+
+void SDyIOConnectionHelper::ForceProcessIOInsertPhase()
+{
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
+  auto& ioThread = *gEngine->pfGetIOThread();
+  ioThread.outForceProcessIOInsertPhase();
+}
+
+bool SDyIOConnectionHelper::IsIOThreadSleep()
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+  return false;
+}
+
 } /// ::dy namespace

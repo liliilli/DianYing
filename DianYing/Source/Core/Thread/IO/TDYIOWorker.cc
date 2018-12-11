@@ -106,6 +106,8 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceInformation(_MIN_ const DDyIOT
   DDyIOWorkerResult result{};
   result.mResourceType  = assignedTask.mResourceType;
   result.mResourceStyle = assignedTask.mResourcecStyle;
+  result.mSpecifierName = assignedTask.mSpecifierName;
+  result.mIsHaveDeferredTask = assignedTask.mIsResourceDeferred;
 
   const auto& metaInfo = MDyMetaInfo::GetInstance();
 

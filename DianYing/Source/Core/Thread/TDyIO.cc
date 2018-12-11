@@ -97,13 +97,14 @@ void TDyIO::operator()()
     {
       MDY_SYNC_WAIT_CONDITION(this->mQueueMutex, this->mConditionVariable, CbTaskQueueWaiting);
       if (this->mIsThreadStopped == true && this->mIOTaskQueue.empty() == true) { break; }
-      this->mWorkerSemaphore.Wait();
-
       task = this->mIOTaskQueue.top();
       this->mIOTaskQueue.pop();
     }
 
-    inAssignTaskToWorkers(task, this->mWorkerList);
+    {
+      this->mWorkerSemaphore.Wait();
+      inAssignTaskToWorkers(task, this->mWorkerList);
+    }
   }
 
   this->Release();
@@ -202,7 +203,6 @@ EDySuccess TDyIO::outTryEnqueueTask(
     // Because it does not guarantees this routine would be called prior to finding `Resource`
     // from IO Worker queue afterward creating `Information`. (It will damage performance, but there is no way...)
     this->outInsertDeferredTaskList(task);
-    this->inoutTryUpdateDeferredTaskList();
   }
   else
   { // Just insert task to queue, if anything does not happen.
@@ -261,12 +261,72 @@ bool TDyIO::outIsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN
 
 void TDyIO::outInsertDeferredTaskList(_MIN_ const DDyIOTask& task)
 {
+  MDY_SYNC_LOCK_GUARD(this->mDeferredTaskMutex);
   this->mIODeferredTaskList.emplace_back(task);
 }
 
-void TDyIO::inoutTryUpdateDeferredTaskList()
+void TDyIO::outTryUpdateDeferredTaskList(_MIN_ EDyResourceType type, _MIN_ const std::string& specifier)
 {
+  TDeferredTaskList::value_type result = {};
+  {
+    MDY_SYNC_LOCK_GUARD(this->mDeferredTaskMutex);
+    auto resultIt = std::find_if(MDY_BIND_BEGIN_END(this->mIODeferredTaskList), [=](const TDeferredTaskList::value_type& instance)
+    {
+      return instance.mSpecifierName == specifier
+          && instance.mResourceType == type;
+    });
+    MDY_ASSERT(resultIt != this->mIODeferredTaskList.end(), "IODeferredTaskList given iterator must be found.");
+    result = *resultIt;
+    *resultIt = std::move(this->mIODeferredTaskList.back());
+    this->mIODeferredTaskList.pop_back();
+  }
 
+  result.mTaskPriority = 0xFF;
+
+  {
+    MDY_SYNC_LOCK_GUARD(this->mQueueMutex);
+    if (this->mIsThreadStopped == true) { return; }
+    this->mIOTaskQueue.emplace(result);
+  }
+  this->mConditionVariable.notify_one();
+}
+
+bool TDyIO::outCheckIOResultInCondition() noexcept
+{
+  MDY_SYNC_LOCK_GUARD(this->mResultListMutex);
+  return this->mWorkerResultList.empty() == false;
+}
+
+void TDyIO::outForceProcessIOInsertPhase() noexcept
+{
+  // CRITICAL PERFORMANCE DOWN! MUST BE CALLED IN SYNCHRONIZATION PHASE.
+  MDY_SYNC_LOCK_GUARD(this->mResultListMutex);
+  for (auto& resultItem : this->mWorkerResultList)
+  {
+    if (resultItem.mResourceStyle == EDyResourceStyle::Information)
+    { // If Information, insert result into mIOData.
+      MDY_ASSERT(resultItem.mResourceType != EDyResourceType::NoneError
+              && resultItem.mResourceType != EDyResourceType::Script
+              && resultItem.mResourceType != EDyResourceType::WidgetMeta, "Unexpected error occurred.");
+      mIODataManager->InsertResult(resultItem.mResourceType, resultItem.mSmtPtrResultInstance);
+
+      if (resultItem.mIsHaveDeferredTask == true)
+      { // If need to insert resource task of deferred list into queue, do this.
+        outTryUpdateDeferredTaskList(resultItem.mResourceType, resultItem.mSpecifierName);
+      }
+    }
+    else
+    { // If Resource, insert result into mIOResource.
+      MDY_NOT_IMPLEMENTED_ASSERT();
+    }
+  }
+  this->mWorkerResultList.clear();
+}
+
+bool TDyIO::outIsIOThreadSlept() noexcept
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+  return false;
 }
 
 } /// :: dy namesapace

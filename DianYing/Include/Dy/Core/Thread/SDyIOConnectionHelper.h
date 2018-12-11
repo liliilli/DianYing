@@ -62,6 +62,21 @@ public:
 
   /// @brief Force bind IO Result list into information.
   static void ForceBindIOResultList();
+
+  // @TODO MUST BE PRIVATE
+
+  /// @brief Check IO Result in condition.
+  static MDY_NODISCARD bool CheckIOResultInCondition() noexcept;
+
+  /// @brief Try insert IO Result instance to each information & resource container.
+  /// and let deferred queue insert queue with high priority if specifier and type is matched with result.
+  static void ForceInsertIOResultToContainer();
+
+  /// @brief
+  static void ForceProcessIOInsertPhase();
+
+  /// @brief
+  static MDY_NODISCARD bool IsIOThreadSleep();
 };
 
 } /// ::dy namespace

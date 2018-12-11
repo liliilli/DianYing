@@ -26,8 +26,10 @@ namespace dy
 ///
 struct DDyIOWorkerResult final
 {
+  std::string       mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
   EDyResourceStyle  mResourceStyle  = EDyResourceStyle::NoneError;
   EDyResourceType   mResourceType   = EDyResourceType::NoneError;
+  bool              mIsHaveDeferredTask = false;
   // @TODO NEED TO CHANGE TYPE TO MORE LIABLE TYPE.
   void*             mSmtPtrResultInstance;
 };

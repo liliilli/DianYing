@@ -150,7 +150,26 @@ private:
 
   /// @brief Try update deferred task which can be insered to list insert into queue with more high priority.
   /// This function use mutex, so performance is afraid.
-  void inoutTryUpdateDeferredTaskList();
+  void outTryUpdateDeferredTaskList(_MIN_ EDyResourceType type, _MIN_ const std::string& specifier);
+
+  /// @brief
+  void outForceProcessIOInsertPhase() noexcept;
+
+  //!
+  //! Condition Checking methods
+  //!
+
+  /// @brief Check IO Result list need to be inserted to each container.
+  /// and so, need to be reinsert deferred queue list.
+  MDY_NODISCARD bool outCheckIOResultInCondition() noexcept;
+
+  /// @brief Check IO Thread is slept. \n
+  /// To be satisfied condition, \n
+  /// 1. Task queue & Deferred queue must be empty. \n
+  /// 2. Worker must be slept (not worked). \n
+  /// 3. Result list must be empty. \n\n
+  /// This function do heavy process stopping IO Thread and Worker's process, so do not use frequently.
+  MDY_NODISCARD bool outIsIOThreadSlept() noexcept;
 
   inline static constexpr TI32 kWorkerThreadCount = 2;
   using TWorkerPair = std::pair<std::unique_ptr<TDyIOWorker>, std::thread>;
@@ -166,6 +185,7 @@ private:
 
   std::mutex                mQueueMutex;
   std::condition_variable   mConditionVariable;
+  TIOTaskQueue              mIOTaskQueue = {};
 
   DySemaphore               mWorkerSemaphore{kWorkerThreadCount};
   TWorkerList               mWorkerList{};
@@ -173,12 +193,9 @@ private:
   std::mutex                mResultListMutex;
   TWorkerResultList         mWorkerResultList{};
 
-  TIOTaskQueue              mIOTaskQueue = {};
-  /// @brief always thread-compatible.
-  TDeferredTaskList         mIODeferredTaskList = {};
   /// @brief used to be synchronize with I/O-worker thread and I/O-thread.
   std::mutex                mDeferredTaskMutex;
-  std::vector<std::string>  mIODeferredTaskSpecifierList = {};
+  TDeferredTaskList         mIODeferredTaskList = {};
 
   bool                      mIsThreadStopped    = false;
   MDyMetaInfo*              mMetaInfoManager    = nullptr;

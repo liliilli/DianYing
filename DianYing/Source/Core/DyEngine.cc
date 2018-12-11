@@ -134,6 +134,11 @@ EDySuccess DyEngine::pfInitialize()
   // Temporal
   DyInitializeBuiltinResource();
   this->mSynchronization = &MDySynchronization::GetInstance();
+
+  const auto& metaInfo = MDyMetaInfo::GetInstance();
+  const auto& bootResourceSpecifierList = metaInfo.GetBootResourceSpecifierList();
+  SDyIOConnectionHelper::PopulateResources(bootResourceSpecifierList, true);
+
   this->mSynchronization->RunFrame();
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDyRendering::Initialize());
