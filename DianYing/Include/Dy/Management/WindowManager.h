@@ -29,21 +29,29 @@ public:
   /// @brief Check window is should closed this time.
   MDY_NODISCARD bool IsWindowShouldClose() const noexcept;
 
-  ///
   /// @brief Get glfw window context.
-  /// @todo TEMPORAL FUNCTION.
-  ///
-  GLFWwindow* GetGlfwWindowContext() const noexcept
+  MDY_NODISCARD GLFWwindow* GetGLMainWindow() const noexcept
   {
     MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mGlfwWindow), "GlfwWindow is not initiailized.");
     return this->mGlfwWindow;
+  }
+
+  /// @brief Get glfw worker window context list
+  MDY_NODISCARD const std::array<GLFWwindow*, 2>& GetGLWorkerWindowList() const noexcept
+  {
+    for (const auto& ptrWindow : this->mGlfwWorkerWnds)
+    { // Validation check.
+      MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptrWindow), "GLFWwindow must be valid.");
+    }
+    return this->mGlfwWorkerWnds;
   }
 
   /// @brief TEMPORAL FUNCTION FOR SWAPPING BUFFER.
   void TempSwapBuffers();
 
 private:
-  GLFWwindow* mGlfwWindow = nullptr;
+  GLFWwindow*                 mGlfwWindow     = nullptr;
+  std::array<GLFWwindow*, 2>  mGlfwWorkerWnds = {};
 };
 
 } /// ::dy namespace

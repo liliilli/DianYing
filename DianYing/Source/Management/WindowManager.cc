@@ -29,6 +29,8 @@
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Management/IO/IOResourceManager.h>
+#include "Dy/Core/Rendering/Wrapper/FDyGLWrapper.h"
+#include "Dy/Core/Rendering/Wrapper/PDyGLWindowContextDescriptor.h"
 
 //!
 //! Independent anonymous namespace
@@ -103,9 +105,7 @@ void MDyWindow::TempSwapBuffers()
 #if defined(MDY_PLATFORM_FLAG_WINDOWS)
 EDySuccess MDyWindow::pfInitialize()
 {
-  ///
   /// @brief This function is not implemented yet.
-  ///
   static auto InitializeVulkan = [this]()
   {
     #ifdef false
@@ -121,9 +121,7 @@ EDySuccess MDyWindow::pfInitialize()
     return DY_FAILURE;
   };
 
-  ///
   /// @brief This function is not implemented yet.
-  ///
   static auto InitializeDirectX11 = [this]()
   {
     #ifdef false
@@ -142,42 +140,42 @@ EDySuccess MDyWindow::pfInitialize()
     return DY_FAILURE;
   };
 
-  ///
   /// @brief Initialize OpenGL Context.
   /// This function must be returned `DY_SUCCESS`.
-  ///
   static auto InitializeOpenGL = [this]()
   {
     glfwInit();
-    glfwWindowHint(GLFW_DOUBLEBUFFER, GL_TRUE);
-    glfwWindowHint(GLFW_RESIZABLE,    GL_FALSE);
-    glfwWindowHint(GLFW_FOCUSED,      GL_TRUE);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    const auto& settingManager = MDySetting::GetInstance();
-    this->mGlfwWindow = glfwCreateWindow(
-        settingManager.GetWindowSizeWidth(),
-        settingManager.GetWindowSizeHeight(),
-        "DianYing",
-        nullptr,
-        nullptr);
+    { // Create descriptor.
+      PDyGLWindowContextDescriptor descriptor{};
+      descriptor.mWindowName          = "DianYing";
+      descriptor.mIsWindowResizable   = false;
+      descriptor.mIsWindowVisible     = true;
+      descriptor.mIsWindowShouldFocus = true;
+      descriptor.mIsUsingDefaultDoubleBuffer = true;
 
-    if (this->mGlfwWindow == nullptr)
-    {
-      glfwTerminate();
-      return DY_FAILURE;
+      const auto& settingManager = MDySetting::GetInstance();
+      descriptor.mWindowSize = DDyVectorInt2{
+          settingManager.GetWindowSizeWidth(),
+          settingManager.GetWindowSizeHeight()
+      };
+      this->mGlfwWindow = FDyGLWrapper::CreateGLWindow(descriptor);
+
+      // Create window instance for giving context to I/O worker thread.
+      descriptor.mIsWindowShouldFocus = false;
+      descriptor.mIsWindowVisible     = false;
+      descriptor.mSharingContext      = this->mGlfwWindow;
+      for (auto& ptrWindow : this->mGlfwWorkerWnds) { ptrWindow = FDyGLWrapper::CreateGLWindow(descriptor); }
     }
 
-    {
-      glfwMakeContextCurrent(this->mGlfwWindow);
-      gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
-      glfwSetInputMode(this->mGlfwWindow, GLFW_STICKY_KEYS, GL_FALSE);
+    // Check validity
+    if (this->mGlfwWindow == nullptr) { glfwTerminate(); return DY_FAILURE; }
+    FDyGLWrapper::CreateGLContext(this->mGlfwWindow);
 
-      glfwSetFramebufferSizeCallback(this->mGlfwWindow, &DyGlCallbackFrameBufferSize);
-      glfwSetWindowCloseCallback(this->mGlfwWindow, &DyGlCallbackWindowClose);
-    }
+    gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
+    glfwSetInputMode(this->mGlfwWindow, GLFW_STICKY_KEYS, GL_FALSE);
+    glfwSetFramebufferSizeCallback(this->mGlfwWindow, &DyGlCallbackFrameBufferSize);
+    glfwSetWindowCloseCallback(this->mGlfwWindow, &DyGlCallbackWindowClose);
 
     // If in debug build environment, enable debug output logging.
     #if defined(_DEBUG) || !defined(_NDEBUG)
@@ -185,6 +183,7 @@ EDySuccess MDyWindow::pfInitialize()
       glDebugMessageCallback(DyGlMessageCallback, nullptr);
     #endif
 
+    // Setting rendering.
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -201,20 +200,9 @@ EDySuccess MDyWindow::pfInitialize()
   switch (MDySetting::GetInstance().GetRenderingType())
   {
   default: MDY_UNEXPECTED_BRANCH(); break;
-  case EDyRenderingApi::DirectX12:
-    MDY_LOG_INFO_D("Initialize DirectX12 Context.");
-    MDY_NOT_IMPLEMENTED_ASSERT();
-    break;
-  case EDyRenderingApi::Vulkan:
-    MDY_LOG_INFO_D("Initialize Vulkan Context.");
-    MDY_NOT_IMPLEMENTED_ASSERT();
-    MDY_CALL_ASSERT_SUCCESS(InitializeVulkan());
-    break;
-  case EDyRenderingApi::DirectX11:
-    MDY_LOG_INFO_D("Initialize DirectX11 Context.");
-    MDY_NOT_IMPLEMENTED_ASSERT();
-    MDY_CALL_ASSERT_SUCCESS(InitializeDirectX11());
-    break;
+  case EDyRenderingApi::DirectX12:  MDY_NOT_IMPLEMENTED_ASSERT(); break;
+  case EDyRenderingApi::Vulkan:     MDY_NOT_IMPLEMENTED_ASSERT(); break;
+  case EDyRenderingApi::DirectX11:  MDY_NOT_IMPLEMENTED_ASSERT(); break;
   case EDyRenderingApi::OpenGL:
     MDY_LOG_INFO_D("Initialize OpenGL Context.");
     MDY_CALL_ASSERT_SUCCESS(InitializeOpenGL());
