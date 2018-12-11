@@ -134,6 +134,7 @@ private:
   friend class DDyTextureInformation_Deprecated;
   friend class CDyMaterialResource_Deprecated;
   friend class MDyIOResource;
+  friend class TDyIOWorker;
 };
 
 } /// ::dy namespace

@@ -305,11 +305,12 @@ void TDyIO::outForceProcessIOInsertPhase() noexcept
   MDY_SYNC_LOCK_GUARD(this->mResultListMutex);
   for (auto& resultItem : this->mWorkerResultList)
   {
+    MDY_ASSERT(resultItem.mResourceType != EDyResourceType::NoneError
+            && resultItem.mResourceType != EDyResourceType::Script
+            && resultItem.mResourceType != EDyResourceType::WidgetMeta, "Unexpected error occurred.");
+
     if (resultItem.mResourceStyle == EDyResourceStyle::Information)
     { // If Information, insert result into mIOData.
-      MDY_ASSERT(resultItem.mResourceType != EDyResourceType::NoneError
-              && resultItem.mResourceType != EDyResourceType::Script
-              && resultItem.mResourceType != EDyResourceType::WidgetMeta, "Unexpected error occurred.");
       mIODataManager->InsertResult(resultItem.mResourceType, resultItem.mSmtPtrResultInstance);
 
       if (resultItem.mIsHaveDeferredTask == true)
@@ -319,7 +320,7 @@ void TDyIO::outForceProcessIOInsertPhase() noexcept
     }
     else
     { // If Resource, insert result into mIOResource.
-      MDY_NOT_IMPLEMENTED_ASSERT();
+      mIOResourceManager->InsertResult(resultItem.mResourceType, resultItem.mSmtPtrResultInstance);
     }
   }
   this->mWorkerResultList.clear();

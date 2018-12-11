@@ -17,6 +17,7 @@
 
 #include <Dy/Management/IO/IODataManager.h>
 #include <Dy/Management/LoggingManager.h>
+#include <Dy/Meta/Type/EDyResourceType.h>
 
 namespace
 {
@@ -31,6 +32,29 @@ namespace dy
 //!
 //! Create resource functions.
 //!
+
+void MDyIOResource::InsertResult(_MIN_ EDyResourceType type,_MIN_ void* rawInstance) noexcept
+{
+  switch (type)
+  {
+  case EDyResourceType::GLShader:
+  { // TEMPORAL
+    MDY_SYNC_LOCK_GUARD(this->mTemporalIOInsertDeleteGetMutex);
+    auto ptr = std::unique_ptr<CDyShaderResource_Deprecated>(static_cast<CDyShaderResource_Deprecated*>(rawInstance));
+    this->mOnBoardShaderLists.try_emplace(ptr->mShaderName, std::move(ptr));
+  } break;
+  case EDyResourceType::Texture:
+  { // TEMPORAL
+    MDY_SYNC_LOCK_GUARD(this->mTemporalIOInsertDeleteGetMutex);
+    auto ptr = std::unique_ptr<CDyTextureResource_Deprecated>(static_cast<CDyTextureResource_Deprecated*>(rawInstance));
+    this->mOnBoardTextureLists.try_emplace(ptr->mTextureName, std::move(ptr));
+  } break;
+  case EDyResourceType::Model:
+  case EDyResourceType::Material:
+    MDY_NOT_IMPLEMENTED_ASSERT();
+  default: MDY_UNEXPECTED_BRANCH(); break;
+  }
+}
 
 EDySuccess MDyIOResource::CreateShaderResource_Deprecated(const std::string& shaderName)
 {

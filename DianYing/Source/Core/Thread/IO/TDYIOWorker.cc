@@ -143,6 +143,9 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceResource(_MIN_ const DDyIOTask
   {
   case EDyResourceType::GLShader:
   { // TEMPORARY
+    auto* context = glfwGetCurrentContext();
+    MDY_ASSERT(MDY_CHECK_ISNOTNULL(context), "");
+
     auto instance = new CDyShaderResource_Deprecated();
     const auto i = instance->pfInitializeResource(*infoManager.GetShaderInformation(result.mSpecifierName));
     MDY_ASSERT(i != DY_FAILURE, "");
@@ -150,6 +153,9 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceResource(_MIN_ const DDyIOTask
   } break;
   case EDyResourceType::Texture:
   { // TEMPORARY
+    auto* context = glfwGetCurrentContext();
+    MDY_ASSERT(MDY_CHECK_ISNOTNULL(context), "");
+
     auto instance = new CDyTextureResource_Deprecated();
     const auto i = instance->pfInitializeTextureResource(*infoManager.GetTextureInformation(result.mSpecifierName));
     MDY_ASSERT(i != DY_FAILURE, "");

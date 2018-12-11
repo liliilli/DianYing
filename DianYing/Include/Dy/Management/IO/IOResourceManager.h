@@ -31,6 +31,7 @@
 
 namespace dy
 {
+enum class EDyResourceType;
 enum class EDyScope;
 } /// ::dy namespace
 
@@ -53,6 +54,9 @@ class MDyIOResource final : public dy::IDySingleton<MDyIOResource>
   template <typename TType>
   using THashList = std::unordered_map<std::string, TType>;
 public:
+  /// @brief
+  void InsertResult(_MIN_ EDyResourceType type, _MIN_ void* rawInstance) noexcept;
+
   ///
   /// @brief Create shader resource on cpu and gpu.
   /// @param[in] shaderName name to create shader, must be same with shader information name.
@@ -141,6 +145,8 @@ private:
   THashList<std::unique_ptr<CDyMaterialResource_Deprecated>> mOnBoardMaterialLists;
   THashList<std::unique_ptr<CDyModelResource>>    mOnBoardModelLists;
   THashList<std::unique_ptr<CDySoundResource_Deprecated>>    mOnBoardSoundLists;
+
+  std::mutex mTemporalIOInsertDeleteGetMutex;
 };
 
 } /// ::dy namespace

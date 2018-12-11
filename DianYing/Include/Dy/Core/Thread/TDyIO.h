@@ -189,6 +189,7 @@ private:
 
   DySemaphore               mWorkerSemaphore{kWorkerThreadCount};
   TWorkerList               mWorkerList{};
+  std::atomic<TI32>         mIdleWorkerCounter{kWorkerThreadCount};
 
   std::mutex                mResultListMutex;
   TWorkerResultList         mWorkerResultList{};

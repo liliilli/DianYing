@@ -64,10 +64,16 @@ private:
   /// @brief Render entry function from engine.
   void pRender();
 
+  void pfInitializeIndependentManager();
+  void pfInitializeDependentManager();
+  void pfReleaseDependentManager();
+  void pfReleaseIndependentManager();
+
   MDySynchronization* mSynchronization = nullptr;
 
   friend class SDyIOConnectionHelper;
   friend class SDyIOWorkerConnHelper;
+  friend class MDySynchronization;
 };
 
 extern DyEngine* gEngine;
