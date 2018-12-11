@@ -14,10 +14,13 @@
 
 /// Header file
 #include <Dy/Management/IO/IODataManager.h>
+
+#include <filesystem>
 #include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Meta/Information/ModelMetaInformation.h>
-#include <filesystem>
+#include <Dy/Core/Resource/Information/FDyShaderInformation.h>
+#include "Dy/Core/Resource/Information/FDyTextureInformation.h"
 
 namespace
 {
@@ -54,6 +57,31 @@ EDySuccess MDyIOData::pfInitialize()
 {
   MDY_LOG_INFO_D("{} | MDyIOData::pfInitialize().", "FunctionCall");
   return DY_SUCCESS;
+}
+
+void MDyIOData::InsertResult(_MIN_ EDyResourceType type, _MIN_ void* rawResultInstance) noexcept
+{
+  switch (type)
+  {
+  case EDyResourceType::GLShader:
+  {
+    MDY_SYNC_LOCK_GUARD(this->mTemporalIOInsertDeleteGetMutex);
+    auto ptr = std::unique_ptr<DDyShaderInformation_Deprecated>(static_cast<DDyShaderInformation_Deprecated*>(rawResultInstance));
+    this->mShaderInformation.try_emplace(ptr->GetInformation().mShaderName, std::move(ptr));
+    //MDY_NOT_IMPLEMENTED_ASSERT();
+  } break;
+  case EDyResourceType::Texture:
+  {
+    MDY_SYNC_LOCK_GUARD(this->mTemporalIOInsertDeleteGetMutex);
+    auto ptr = std::unique_ptr<DDyTextureInformation_Deprecated>(static_cast<DDyTextureInformation_Deprecated*>(rawResultInstance));
+    this->mTextureInformation.try_emplace(ptr->GetInformation().mSpecifierName, std::move(ptr));
+    //MDY_NOT_IMPLEMENTED_ASSERT();
+  } break;
+  case EDyResourceType::Model:
+  case EDyResourceType::Material:
+    MDY_NOT_IMPLEMENTED_ASSERT();
+  default: MDY_UNEXPECTED_BRANCH(); break;
+  }
 }
 
 EDySuccess MDyIOData::pfRelease()
@@ -601,6 +629,7 @@ EDySuccess MDyIOData::DeleteSoundInformation(const std::string& soundName, bool 
 
 const DDyShaderInformation_Deprecated* MDyIOData::GetShaderInformation(const std::string& shaderName) const noexcept
 {
+  MDY_SYNC_LOCK_GUARD(this->mTemporalIOInsertDeleteGetMutex);
   const auto iterator = mShaderInformation.find(shaderName);
   if (iterator == mShaderInformation.end())
   {
@@ -614,6 +643,7 @@ const DDyShaderInformation_Deprecated* MDyIOData::GetShaderInformation(const std
 
 const DDyTextureInformation_Deprecated* MDyIOData::GetTextureInformation(const std::string& textureName) const noexcept
 {
+  MDY_SYNC_LOCK_GUARD(this->mTemporalIOInsertDeleteGetMutex);
   const auto iterator = mTextureInformation.find(textureName);
   if (iterator == mTextureInformation.end())
   {
@@ -627,6 +657,7 @@ const DDyTextureInformation_Deprecated* MDyIOData::GetTextureInformation(const s
 
 const DDyMaterialInformation_Deprecated* MDyIOData::GetMaterialInformation(const std::string& materialName) const noexcept
 {
+  MDY_SYNC_LOCK_GUARD(this->mTemporalIOInsertDeleteGetMutex);
   const auto iterator = mMaterialInformation.find(materialName);
   if (iterator == mMaterialInformation.end())
   {
@@ -640,6 +671,7 @@ const DDyMaterialInformation_Deprecated* MDyIOData::GetMaterialInformation(const
 
 const DDyModelInformation_Deprecated* MDyIOData::GetModelInformation(const std::string& modelName) const noexcept
 {
+  MDY_SYNC_LOCK_GUARD(this->mTemporalIOInsertDeleteGetMutex);
   std::lock_guard<std::mutex> mt(this->mTemporalMutex);
 
   const auto iterator = this->mModelInformation.find(modelName);
@@ -655,6 +687,7 @@ const DDyModelInformation_Deprecated* MDyIOData::GetModelInformation(const std::
 
 const DDySoundInformation_Deprecated* MDyIOData::GetSoundInformation(const std::string& soundName) const noexcept
 {
+  MDY_SYNC_LOCK_GUARD(this->mTemporalIOInsertDeleteGetMutex);
   std::lock_guard<std::mutex> mt(this->mTemporalMutex);
 
   const auto iterator = this->mSoundInformation.find(soundName);

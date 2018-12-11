@@ -15,6 +15,9 @@
 /// Header file
 #include <Dy/Management/Internal/MDySynchronization.h>
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
+#include <Dy/Core/DyEngine.h>
+#include <Dy/Management/WorldManager.h>
+#include <Dy/Management/SettingManager.h>
 
 namespace dy
 {
@@ -61,7 +64,15 @@ void MDySynchronization::RunFrame()
     this->pRunFrameBooted();
     break;
   case EDyGlobalGameStatus::FirstLoading:
-    break;
+  {
+    static bool dependentManagerInitialized = false;
+    if (dependentManagerInitialized == false)
+    { //
+      gEngine->pfInitializeDependentManager();
+      dependentManagerInitialized = true;
+    }
+    this->pRunFrameFirstLoading();
+  } break;
   case EDyGlobalGameStatus::Loading:
     break;
   case EDyGlobalGameStatus::GameRuntime:
@@ -75,15 +86,22 @@ void MDySynchronization::RunFrame()
 
 void MDySynchronization::pRunFrameBooted()
 {
-  const auto& metaInfo = MDyMetaInfo::GetInstance();
-  const auto& bootResourceSpecifierList = metaInfo.GetBootResourceSpecifierList();
-  SDyIOConnectionHelper::PopulateResources(bootResourceSpecifierList, true);
+  if (SDyIOConnectionHelper::CheckIOResultInCondition() == true)
+  {
+    SDyIOConnectionHelper::ForceProcessIOInsertPhase();
+    if (SDyIOConnectionHelper::IsIOThreadSleep() == true)
+    {
+      this->mStatus = EDyGlobalGameStatus::FirstLoading;
+    }
+  }
+}
 
-  using namespace std::chrono_literals;
-  std::this_thread::sleep_for(3s);
-  MDY_NOT_IMPLEMENTED_ASSERT();
-
-  this->mStatus = EDyGlobalGameStatus::FirstLoading;
+void MDySynchronization::pRunFrameFirstLoading()
+{
+  static auto& settingManager = MDySetting::GetInstance();
+  static auto& sceneManager   = MDyWorld::GetInstance();
+  sceneManager.OpenLevel(settingManager.GetInitialSceneInformationName());
+  sceneManager.Update(-1);
 }
 
 } /// ::dy namespace

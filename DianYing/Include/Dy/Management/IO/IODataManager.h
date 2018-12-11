@@ -28,9 +28,10 @@
 
 namespace dy
 {
-  struct PDyModelInstanceMetaInfo;
+enum class EDyResourceType;
+struct PDyModelInstanceMetaInfo;
 
-  ///
+///
 /// @class MDyIOData
 /// @brief Manages data information which are needed to create heap instances such as CDy-Resource.
 ///
@@ -39,6 +40,9 @@ class MDyIOData final : public IDySingleton<MDyIOData>
   MDY_SINGLETON_DERIVED(MDyIOData);
   MDY_SINGLETON_PROPERTIES(MDyIOData);
 public:
+  /// @brief Insert result into IO Data.
+  void InsertResult(_MIN_ EDyResourceType type, _MIN_ void* rawResultInstance) noexcept;
+
   ///
   /// @brief Create shader information with scope. This function must be succeeded.
   /// @param shaderSpecifierName specifier name of GL shader must be valid on runtime.
@@ -164,9 +168,7 @@ private:
   THeapHash<DDySoundInformation_Deprecated>     mSoundInformation;
 
   mutable std::mutex                 mTemporalMutex;
-  // @todo not used yet.
-  //mutable dy::FDyThreadPool          mThreadPool {sThreadWorkerCount};
-  //inline static constexpr int32_t    sThreadWorkerCount = 4;
+  mutable std::mutex mTemporalIOInsertDeleteGetMutex;
 };
 
 } /// ::dy namespace

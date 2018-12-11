@@ -18,6 +18,9 @@
 #include <Dy/Core/Resource/Information/FDyTextureInformation.h>
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 #include <Dy/Core/Thread/SDyIOWorkerConnHelper.h>
+#include "Dy/Management/IO/IODataManager.h"
+#include "Dy/Core/Resource/Resource_Deprecated/ShaderResource_Deprecated.h"
+#include "Dy/Core/Resource/Resource_Deprecated/TextureResource_Deprecated.h"
 
 namespace dy
 {
@@ -109,22 +112,17 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceInformation(_MIN_ const DDyIOT
   result.mSpecifierName = assignedTask.mSpecifierName;
   result.mIsHaveDeferredTask = assignedTask.mIsResourceDeferred;
 
-  const auto& metaInfo = MDyMetaInfo::GetInstance();
-
-  switch (assignedTask.mResourceType)
-  {
-  case EDyResourceType::Model:
-    MDY_NOT_IMPLEMENTED_ASSERT();
-    break;
+  switch (result.mResourceType)
+  { // TEMPORARY
   case EDyResourceType::GLShader:
-    result.mSmtPtrResultInstance = new FDyShaderInformation(metaInfo.GetGLShaderMetaInformation(assignedTask.mSpecifierName));
+    result.mSmtPtrResultInstance = new DDyShaderInformation_Deprecated(this->mMetaManager.GetGLShaderMetaInformation(assignedTask.mSpecifierName));
     break;
   case EDyResourceType::Texture:
-    result.mSmtPtrResultInstance = new FDyTextureInformation(metaInfo.GetTextureMetaInformation(assignedTask.mSpecifierName));
+    result.mSmtPtrResultInstance = new DDyTextureInformation_Deprecated(this->mMetaManager.GetTextureMetaInformation(assignedTask.mSpecifierName));
     break;
+  case EDyResourceType::Model:
   case EDyResourceType::Material:
-    MDY_NOT_IMPLEMENTED_ASSERT();
-    break;
+    MDY_NOT_IMPLEMENTED_ASSERT(); break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 
@@ -136,9 +134,34 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceResource(_MIN_ const DDyIOTask
   DDyIOWorkerResult result{};
   result.mResourceType  = assignedTask.mResourceType;
   result.mResourceStyle = assignedTask.mResourcecStyle;
-  MDY_NOT_IMPLEMENTED_ASSERT();
+  result.mSpecifierName = assignedTask.mSpecifierName;
+  result.mIsHaveDeferredTask = false;
 
-  return {};
+  const auto& infoManager = MDyIOData::GetInstance();
+
+  switch (result.mResourceType)
+  {
+  case EDyResourceType::GLShader:
+  { // TEMPORARY
+    auto instance = new CDyShaderResource_Deprecated();
+    const auto i = instance->pfInitializeResource(*infoManager.GetShaderInformation(result.mSpecifierName));
+    MDY_ASSERT(i != DY_FAILURE, "");
+    result.mSmtPtrResultInstance = instance;
+  } break;
+  case EDyResourceType::Texture:
+  { // TEMPORARY
+    auto instance = new CDyTextureResource_Deprecated();
+    const auto i = instance->pfInitializeTextureResource(*infoManager.GetTextureInformation(result.mSpecifierName));
+    MDY_ASSERT(i != DY_FAILURE, "");
+    result.mSmtPtrResultInstance = instance;
+  } break;
+  case EDyResourceType::Model:
+  case EDyResourceType::Material:
+    MDY_NOT_IMPLEMENTED_ASSERT(); break;
+  default: MDY_UNEXPECTED_BRANCH(); break;
+  }
+
+  return result;
 }
 
 } /// ::dy namespace

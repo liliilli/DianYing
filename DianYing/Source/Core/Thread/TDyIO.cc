@@ -94,15 +94,16 @@ void TDyIO::operator()()
   while (true)
   {
     DDyIOTask task;
-    {
+    { // Wait task in the queue, and try pop task when not empty.
       MDY_SYNC_WAIT_CONDITION(this->mQueueMutex, this->mConditionVariable, CbTaskQueueWaiting);
       if (this->mIsThreadStopped == true && this->mIOTaskQueue.empty() == true) { break; }
       task = this->mIOTaskQueue.top();
       this->mIOTaskQueue.pop();
     }
 
-    {
+    { // Wait any worker is idle, if there is idle worker assign task to worker.
       this->mWorkerSemaphore.Wait();
+      this->mIdleWorkerCounter.fetch_sub(1);
       inAssignTaskToWorkers(task, this->mWorkerList);
     }
   }
@@ -119,6 +120,7 @@ void TDyIO::outInsertResult(_MIN_ const DDyIOWorkerResult& result) noexcept
 void TDyIO::outTryNotifyWorkerIsIdle()
 {
   this->mWorkerSemaphore.Notify();
+  this->mIdleWorkerCounter.fetch_add(1);
 }
 
 void TDyIO::outTryStop()
@@ -267,7 +269,7 @@ void TDyIO::outInsertDeferredTaskList(_MIN_ const DDyIOTask& task)
 
 void TDyIO::outTryUpdateDeferredTaskList(_MIN_ EDyResourceType type, _MIN_ const std::string& specifier)
 {
-  TDeferredTaskList::value_type result = {};
+  TDeferredTaskList::value_type result;
   {
     MDY_SYNC_LOCK_GUARD(this->mDeferredTaskMutex);
     auto resultIt = std::find_if(MDY_BIND_BEGIN_END(this->mIODeferredTaskList), [=](const TDeferredTaskList::value_type& instance)
@@ -325,8 +327,14 @@ void TDyIO::outForceProcessIOInsertPhase() noexcept
 
 bool TDyIO::outIsIOThreadSlept() noexcept
 {
-  MDY_NOT_IMPLEMENTED_ASSERT();
-  return false;
+  MDY_SYNC_LOCK_GUARD(this->mQueueMutex);
+  MDY_SYNC_LOCK_GUARD(this->mDeferredTaskMutex);
+  MDY_SYNC_LOCK_GUARD(this->mResultListMutex);
+
+  return this->mIOTaskQueue.empty()
+      && this->mIdleWorkerCounter.load() == this->kWorkerThreadCount
+      && this->mIODeferredTaskList.empty()
+      && this->mWorkerResultList.empty();
 }
 
 } /// :: dy namesapace

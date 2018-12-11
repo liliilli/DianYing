@@ -67,8 +67,9 @@ void SDyIOConnectionHelper::ForceProcessIOInsertPhase()
 
 bool SDyIOConnectionHelper::IsIOThreadSleep()
 {
-  MDY_NOT_IMPLEMENTED_ASSERT();
-  return false;
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
+  auto& ioThread = *gEngine->pfGetIOThread();
+  return ioThread.outIsIOThreadSlept();
 }
 
 } /// ::dy namespace
