@@ -173,6 +173,7 @@
     <ClCompile Include="Source\Component\UI\CDyWidgetScriptCpp.cc" />
     <ClCompile Include="Source\Component\UI\CDyWidgetScriptLua.cc" />
     <ClCompile Include="Source\Core\Reflection\RDyBuiltinResources.cc" />
+    <ClCompile Include="Source\Core\Rendering\Wrapper\FDyGLWrapper.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyShaderInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyTextureInformation.cc" />
     <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceContainer.cc" />
@@ -422,6 +423,8 @@
     <ClInclude Include="Include\Dy\Builtin\Texture\ErrorBlue.h" />
     <ClInclude Include="Include\Dy\Builtin\Texture\Checker.h" />
     <ClInclude Include="Include\Dy\Builtin\Widget\DebugUiMeta.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\FDyGLWrapper.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLWindowContextDescriptor.h" />
     <ClInclude Include="Include\Dy\Meta\Type\DDyResourceName.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyLoadingGlobalScript.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyPhysicsRIgidbody.h" />
