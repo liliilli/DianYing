@@ -58,6 +58,9 @@ private:
   /// @brief Get IO Thread Instance which not be nulled.
   NotNull<TDyIO*> pfGetIOThread();
 
+  /// @brief
+  void pUpdateRuntime(_MIN_ TF32 dt);
+
   /// @brief Update entry function from engine.
   void pUpdate(_MIN_ TF32 dt);
 

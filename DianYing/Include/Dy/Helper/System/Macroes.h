@@ -494,19 +494,19 @@ private:                                                  \
   __MAType__(const __MAType__&)             = delete;   \
   __MAType__& operator=(const __MAType__&)  = delete;   \
   __MAType__(__MAType__&&)                  = default;  \
-  __MAType__& operator=(__MAType__&&)       = default;  \
+  __MAType__& operator=(__MAType__&&)       = default;
 
 #define MDY_ONLY_MOVEABLE_PROPERTIES_CUSTOM(__MAType__) \
   __MAType__(const __MAType__&)             = delete;   \
   __MAType__& operator=(const __MAType__&)  = delete;   \
   __MAType__(__MAType__&&) noexcept;                    \
-  __MAType__& operator=(__MAType__&&) noexcept;         \
+  __MAType__& operator=(__MAType__&&) noexcept;
 
 #define MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(__MAType__)\
   __MAType__(const __MAType__&)             = delete;   \
   __MAType__& operator=(const __MAType__&)  = delete;   \
   __MAType__(__MAType__&&)                  = delete;   \
-  __MAType__& operator=(__MAType__&&)       = delete;   \
+  __MAType__& operator=(__MAType__&&)       = delete;
 
 ///
 /// @macro  MDY_REFLECT_GETINSTANCE_AS
@@ -626,6 +626,13 @@ private:
   { \
     ConstructBuffer(this->mMetaInfo); \
   }
+
+///
+/// @macro MDY_LOADING_RESOURCE_BIND
+/// @brief Bind resource requisition for loading resource.
+///
+#define MDY_LOADING_RESOURCE_BIND(__MAResourceType__, __MAString__) \
+    this->mResourceRequisitionList.emplace_back(__MAResourceType__, __MAString__)
 
 //!
 //! Function type macros.

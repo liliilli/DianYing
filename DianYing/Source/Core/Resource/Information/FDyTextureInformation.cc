@@ -56,10 +56,11 @@ FDyTextureInformation::FDyTextureInformation(_MIN_ const PDyTextureInstanceMetaI
 
     this->mTextureSize.X  = dataBuffer->GetImageWidth();
     this->mTextureSize.Y  = dataBuffer->GetImageHeight();
-    const auto* ptrBuffer = dataBuffer->GetBufferStartPoint();
-    const TU64  byteSize  = this->mTextureSize.X * this->mTextureSize.Y * pixelSize;
 
+    const TU64  byteSize  = this->mTextureSize.X * this->mTextureSize.Y * pixelSize;
     this->mTextureImageBuffer.reserve(byteSize);
+
+    const auto* ptrBuffer = dataBuffer->GetBufferStartPoint();
     for (TU64 byteCount = 0; byteCount < byteSize; ++byteCount)
     {
       this->mTextureImageBuffer.emplace_back(*ptrBuffer);

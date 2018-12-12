@@ -42,7 +42,7 @@ void SDyIOConnectionHelper::TryStop()
   ioThread.outTryStop();
 }
 
-void SDyIOConnectionHelper::PopulateResources(_MIN_ const std::vector<DDyResourceName>& specifierList, _MIN_ bool isWaited)
+void SDyIOConnectionHelper::PopulateResourceList(_MIN_ const std::vector<DDyResourceName>& specifierList, _MIN_ bool isWaited)
 {
   MDY_ASSERT(isWaited == true, "non-wait version not supported.");
   for (const auto& [type, specifier] : specifierList)

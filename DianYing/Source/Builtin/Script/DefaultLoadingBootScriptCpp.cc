@@ -22,29 +22,46 @@
 #include <Dy/Builtin/Model/Sphere.h>
 #include <Dy/Builtin/Model/ScreenProjectionTriangle.h>
 
-#include <Dy/Builtin/ShaderGl/RenderPass.h>
 #include <Dy/Builtin/ShaderGl/RenderColorGeometry.h>
 #include <Dy/Builtin/ShaderGl/RenderBasicShadow.h>
+#include <Dy/Builtin/ShaderGl/RenderDeferredRendering.h>
 #include <Dy/Builtin/ShaderGl/RenderOpaqueStatic.h>
+#include <Dy/Builtin/ShaderGl/RenderPass.h>
 #include <Dy/Builtin/ShaderGl/RenderScreenOutput.h>
 #include <Dy/Builtin/ShaderGl/Font/RenderDefaultFont.h>
 #include <Dy/Builtin/ShaderGl/Font/RenderFontArraySDF.h>
 #include <Dy/Builtin/ShaderGl/UI/RenderUIBasicGaugeBar.h>
 #include <Dy/Builtin/ShaderGl/UI/RenderUIImage.h>
-#include <Dy/Builtin/ShaderGl/RenderDeferredRendering.h>
 #include <Dy/Builtin/ShaderGl/PostEffect/RenderDefaultSSAO.h>
 #include <Dy/Builtin/ShaderGl/PostEffect/RenderDefaultSSAOBlurring.h>
 
-#define MDY_LOADING_RESOURCE_BIND(__MAResourceType__, __MAString__) \
-    this->mResourceRequisitionList.emplace_back(__MAResourceType__, __MAString__)
+#include <Dy/Builtin/Material/OpaqueStaticPlain.h>
 
 namespace dy
 {
 
 FDyDefaultLoadingBootScript::FDyDefaultLoadingBootScript()
 {
-  using namespace dy::builtin;
+  using namespace builtin;
   using namespace dy;
+
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Texture, FDyBuiltinTextureChecker::sName);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Texture, FDyBuiltinTextureErrorBlue::sName);
+
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderBasicShadow::sName);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderColorGeometry::sName);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderDefaultFont::sName);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderDefaultSSAO::sName);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderDefaultSSAOBlurring::sName);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderDeferredRendering::sName);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderFontArraySDF::sName);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderOpaqueStatic::sName);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderPass::sName);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderScreenOutput::sName);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderUiBasicGaugeBar::sName);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderUiImage::sName);
+
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Material, FDyBuiltinMaterialOpaqueStaticPlain::sName);
 
 #ifdef false
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Model, FDyBuiltinModelBox::sName);
@@ -52,20 +69,6 @@ FDyDefaultLoadingBootScript::FDyDefaultLoadingBootScript()
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Model, FDyBuiltinModelScreenProjectionTriangle::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Model, FDyBuiltinModelSphere::sName);
 #endif
-
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Texture, FDyBuiltinTextureChecker::sName);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Texture, FDyBuiltinTextureErrorBlue::sName);
-
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderPass::sName);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderColorGeometry::sName);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderOpaqueStatic::sName);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderDefaultFont::sName);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderFontArraySDF::sName);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderUiBasicGaugeBar::sName);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderUiImage::sName);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderDefaultSSAO::sName);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderDefaultSSAOBlurring::sName);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderDeferredRendering::sName);
 }
 
 } /// ::dy namespace

@@ -39,7 +39,7 @@ public:
   }
 
   /// @brief Run synchronization phase or operating system.
-  void RunFrame();
+  void TrySynchronization();
 
 private:
   /// @brief Run booted phase.

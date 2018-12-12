@@ -56,7 +56,7 @@ NotNull<TDyIO*> MDySynchronization::pfGetIOThread()
   return DyMakeNotNull(this->mIOThreadInstance.get());
 }
 
-void MDySynchronization::RunFrame()
+void MDySynchronization::TrySynchronization()
 {
   switch (this->mStatus)
   {
