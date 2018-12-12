@@ -65,6 +65,7 @@ FDyDefaultLoadingBootScript::FDyDefaultLoadingBootScript()
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderUiImage::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderDefaultSSAO::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderDefaultSSAOBlurring::sName);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderDeferredRendering::sName);
 }
 
 } /// ::dy namespace

@@ -172,6 +172,7 @@ void TDyIO::outMainForceProcessDeferredMainTaskList()
   {
     SDyIOConnectionHelper::InsertResult(outMainProcessTask(task));
   }
+  this->mIOProcessMainTaskList.clear();
 }
 
 DDyIOWorkerResult TDyIO::outMainProcessTask(_MIN_ const DDyIOTask& task)

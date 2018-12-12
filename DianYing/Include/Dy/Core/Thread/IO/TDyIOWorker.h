@@ -64,8 +64,7 @@ private:
   std::mutex                mTaskMutex;
   std::condition_variable   mTaskCV;
 
-  std::mutex                mMutexAssigned;
-  bool                      mIsAssigned   = false;
+  std::atomic<bool>         mIsAssigned   = false;
   bool                      mIsShouldStop = false;
 
   const MDyMetaInfo&        mMetaManager;
