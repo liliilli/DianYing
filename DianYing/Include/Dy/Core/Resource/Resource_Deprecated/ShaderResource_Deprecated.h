@@ -258,6 +258,7 @@ private:
   friend class CDyMaterialResource_Deprecated;
   friend class MDyIOResource;
   friend class TDyIOWorker;
+  friend class TDyIO;
 };
 
 } /// ::dy namespace

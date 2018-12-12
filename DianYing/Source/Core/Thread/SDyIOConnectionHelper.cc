@@ -51,11 +51,32 @@ void SDyIOConnectionHelper::PopulateResources(_MIN_ const std::vector<DDyResourc
   }
 }
 
+void SDyIOConnectionHelper::InsertResult(_MIN_ const DDyIOWorkerResult& result) noexcept
+{
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
+  auto& ioThread = *gEngine->pfGetIOThread();
+  ioThread.outInsertResult(result);
+}
+
 bool SDyIOConnectionHelper::CheckIOResultInCondition() noexcept
 {
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
   auto& ioThread = *gEngine->pfGetIOThread();
   return ioThread.outCheckIOResultInCondition();
+}
+
+bool SDyIOConnectionHelper::IsMainTaskListIsEmpty() noexcept
+{
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
+  auto& ioThread = *gEngine->pfGetIOThread();
+  return ioThread.isoutIsMainTaskListIsEmpty();
+}
+
+void SDyIOConnectionHelper::ForceProcessDeferredMainTaskList()
+{
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
+  auto& ioThread = *gEngine->pfGetIOThread();
+  ioThread.outMainForceProcessDeferredMainTaskList();
 }
 
 void SDyIOConnectionHelper::ForceProcessIOInsertPhase()

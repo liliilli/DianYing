@@ -33,4 +33,11 @@ void SDyIOWorkerConnHelper::TryNotify()
   ioThread.outTryNotifyWorkerIsIdle();
 }
 
+void SDyIOWorkerConnHelper::TryForwardToMainTaskList(_MIN_ const DDyIOTask& task) noexcept
+{
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
+  auto& ioThread = *gEngine->pfGetIOThread();
+  ioThread.outTryNotifyWorkerIsIdle();
+}
+
 } /// ::dy namespace

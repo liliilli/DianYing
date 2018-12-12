@@ -42,13 +42,16 @@ void TDyIOWorker::inWork()
   {
     {
       MDY_SYNC_WAIT_CONDITION(this->mTaskMutex, this->mTaskCV, CbTaskWaiting);
+      MDY_LOG_CRITICAL("WORKER READY Thread {0} Assigned0 : {1}", (std::ptrdiff_t)this, this->mIsAssigned ? 1 : 0);
       if (this->mIsShouldStop == true) { return; }
+      MDY_LOG_CRITICAL("WORKER READY Thread {0} Assigned1 : {1}", (std::ptrdiff_t)this, this->mIsAssigned ? 1 : 0);
       MDY_ASSERT(this->mIsAssigned == true, "IOWorker's task must be assigned to proceed.");
     }
 
     // Do process
     // (result have void* (heap object) as created resource instance,
     // need to be moved into resultContainer carefully without data race.
+    // @TODO NEED TO BE CHECK RESULT IS NOT POPULATED (FORWARD TO MAIN TASK LIST)
     SDyIOWorkerConnHelper::InsertResult(this->PopulateIOResource(this->mAssignedTask));
     // 만약에 `Deferred` 가 Checked 되어있다면, `SDyIOConnectionHelper` 을 사용해서 atomic 하게 specifier 을 리스트에 넣어야 함.
     // 그러면 리스트가 not empty 됨으로써 IO Reinsert 조건이 만족 됨. (IO Reinsert 는 IO IN 의 부수 페이즈임)
@@ -57,7 +60,9 @@ void TDyIOWorker::inWork()
 
     { // Change status mutually.
       MDY_SYNC_LOCK_GUARD(this->mMutexAssigned);
+      MDY_LOG_CRITICAL("WORKER IDLE Thread {0} Assigned0 : {1}", (std::ptrdiff_t)this, this->mIsAssigned ? 1 : 0);
       this->mIsAssigned = false;
+      MDY_LOG_CRITICAL("WORKER IDLE Thread {0} Assigned1 : {1}", (std::ptrdiff_t)this, this->mIsAssigned ? 1 : 0);
       this->mAssignedTask = {};
     }
     SDyIOWorkerConnHelper::TryNotify();
@@ -70,13 +75,16 @@ EDySuccess TDyIOWorker::outTryAssign(_MIN_ const DDyIOTask& inputTask)
   { // Check assigned flag mutually.
     MDY_SYNC_LOCK_GUARD(this->mMutexAssigned);
     if (this->mIsAssigned == true) { return DY_FAILURE; }
+    MDY_LOG_CRITICAL("ASSIGNED FROM OTHER Thread {0} Assigned0 : {1}", (std::ptrdiff_t)this, this->mIsAssigned ? 1 : 0);
     // And..
     {
       MDY_SYNC_LOCK_GUARD(this->mTaskMutex);
       this->mAssignedTask = inputTask;
       this->mIsAssigned = true;
+      MDY_LOG_CRITICAL("ASSIGNED FROM OTHER Thread {0} Assigned1 : {1}", (std::ptrdiff_t)this, this->mIsAssigned ? 1 : 0);
     }
   }
+  MDY_LOG_CRITICAL("ASSIGNED FROM OTHER Thread {0} Assigned2 : {1}", (std::ptrdiff_t)this, this->mIsAssigned ? 1 : 0);
   this->mTaskCV.notify_one();
 
   MDY_SLEEP_FOR_ATOMIC_TIME();
@@ -137,29 +145,15 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceResource(_MIN_ const DDyIOTask
   result.mIsHaveDeferredTask = false;
 
   const auto& infoManager = MDyIOData::GetInstance();
-
   switch (result.mResourceType)
   {
   case EDyResourceType::GLShader:
-  { // TEMPORARY
-#ifdef false
-    auto* context = glfwGetCurrentContext();
-    MDY_ASSERT(MDY_CHECK_ISNOTNULL(context), "");
-
-    auto instance = new CDyShaderResource_Deprecated();
-    const auto i = instance->pfInitializeResource(*infoManager.GetShaderInformation(result.mSpecifierName));
-    MDY_ASSERT(i != DY_FAILURE, "");
-    result.mSmtPtrResultInstance = instance;
-#endif
-    /// https://www.khronos.org/opengl/wiki/OpenGL_Object#Object_Sharing
-    /// Shader can not create from other thread.
-    MDY_NOT_IMPLEMENTED_ASSERT();
+  { // https://www.khronos.org/opengl/wiki/OpenGL_Object#Object_Sharing
+    // Shader can not create from other thread.
+    SDyIOWorkerConnHelper::TryForwardToMainTaskList(assignedTask);
   } break;
   case EDyResourceType::Texture:
   { // TEMPORARY
-    auto* context = glfwGetCurrentContext();
-    MDY_ASSERT(MDY_CHECK_ISNOTNULL(context), "");
-
     auto instance = new CDyTextureResource_Deprecated();
     const auto i = instance->pfInitializeTextureResource(*infoManager.GetTextureInformation(result.mSpecifierName));
     MDY_ASSERT(i != DY_FAILURE, "");

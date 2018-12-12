@@ -84,6 +84,10 @@ private:
   /// This function use mutex. Performance would be afraid.
   bool outTryUpdateDeferredTaskListFromWorker(_MIN_ const std::string& taskSpecifier) noexcept;
 
+  /// @brief
+  ///
+  void outTryForwardToMainTaskList(_MIN_ const DDyIOTask& task) noexcept;
+
   //!
   //! Logic & Render thread side.
   //!
@@ -136,10 +140,12 @@ private:
   MDY_NODISCARD EDySuccess outTryRetrieveReferenceInstanceFromGC(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style);
 
   /// @brief Create reference instance.
-  MDY_NODISCARD EDySuccess outCreateReferenceInstance(
-      _MIN_ const std::string& specifier,
-      _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style,
-      _MIN_ EDyScope scope);
+  MDY_NODISCARD EDySuccess outCreateReferenceInstance(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style, _MIN_ EDyScope scope);
+
+  /// @brief Force Try process deferred task list which must be processed in main thread, \n
+  /// so Insert created resource instance into result instance list for IO GC/IN Phase.
+  void outMainForceProcessDeferredMainTaskList();
+  MDY_NODISCARD static DDyIOWorkerResult outMainProcessTask(_MIN_ const DDyIOTask& task);
 
   /// @brief Insert deferred task list.
   void outInsertDeferredTaskList(_MIN_ const DDyIOTask& task);
@@ -171,6 +177,9 @@ private:
   /// This function do heavy process stopping IO Thread and Worker's process, so do not use frequently.
   MDY_NODISCARD bool outIsIOThreadSlept() noexcept;
 
+  /// @brief Check main task list is empty.
+  MDY_NODISCARD bool isoutIsMainTaskListIsEmpty() const noexcept;
+
   inline static constexpr TI32 kWorkerThreadCount = 2;
   using TWorkerPair = std::pair<std::unique_ptr<TDyIOWorker>, std::thread>;
   using TWorkerList = std::array<TWorkerPair, kWorkerThreadCount>;
@@ -197,6 +206,13 @@ private:
   /// @brief used to be synchronize with I/O-worker thread and I/O-thread.
   std::mutex                mDeferredTaskMutex;
   TDeferredTaskList         mIODeferredTaskList = {};
+
+  /// @brief used to maintain task list to be processed from main
+  /// because sharding context of arbitary resource between threads can not support.
+  std::mutex                mProcessTaskFromMainMutex;
+  /// @brief used to manage task list from mIOTaskQueue, which to be processed in main thread
+  /// prior to IO GC/IN Phase if not empty. This list is atomic between IO Worker and Main thread.
+  TDeferredTaskList         mIOProcessMainTaskList = {};
 
   bool                      mIsThreadStopped    = false;
   MDyMetaInfo*              mMetaInfoManager    = nullptr;

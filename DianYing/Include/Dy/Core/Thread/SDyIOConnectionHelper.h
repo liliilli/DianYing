@@ -60,19 +60,29 @@ public:
   ///
   static void PopulateResources(_MIN_ const std::vector<DDyResourceName>& specifierList, _MIN_ bool isWaited = false);
 
-  /// @brief Force bind IO Result list into information.
-  static void ForceBindIOResultList();
+  /// @brief Insert result instance from IO Worker.
+  static void InsertResult(_MIN_ const DDyIOWorkerResult& result) noexcept;
 
   // @TODO MUST BE PRIVATE
 
   /// @brief Check IO Result in condition.
   static MDY_NODISCARD bool CheckIOResultInCondition() noexcept;
 
+  /// @brief Check Main deferred task list is empty. \n
+  static MDY_NODISCARD bool IsMainTaskListIsEmpty() noexcept;
+
+  /// @brief Force Try process deferred task list which must be processed in main thread, \n
+  /// so Insert created resource instance into result instance list for IO GC/IN Phase.
+  static void ForceProcessDeferredMainTaskList();
+
+#ifdef false
   /// @brief Try insert IO Result instance to each information & resource container.
   /// and let deferred queue insert queue with high priority if specifier and type is matched with result.
   static void ForceInsertIOResultToContainer();
+#endif
 
-  /// @brief
+  /// @brief Force try process IO Insert phase (letter of IO GC/IN phase)
+  /// so let result instance insert into information & resource list, and let deferred task reinsert to task queue of I/O Thread.
   static void ForceProcessIOInsertPhase();
 
   /// @brief

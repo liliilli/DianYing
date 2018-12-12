@@ -19,6 +19,7 @@
 
 namespace dy
 {
+struct DDyIOTask;
 struct DDyIOWorkerResult;
 } /// ::dy namespace
 
@@ -41,6 +42,9 @@ private:
 
   /// @brief Notify from IO.
   static void TryNotify();
+
+  /// @brief Forward task to be processed main thread into `TDyIO::mIOProcessMainTaskList`.
+  static void TryForwardToMainTaskList(_MIN_ const DDyIOTask& task) noexcept;
 
   friend class TDyIOWorker;
 };

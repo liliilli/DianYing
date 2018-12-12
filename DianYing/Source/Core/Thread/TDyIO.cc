@@ -18,6 +18,7 @@
 #include <Dy/Management/IO/IOResourceManager.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Management/WindowManager.h>
+#include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 
 #define MDY_CALL_BUT_NOUSE_RESULT(__MAExpression__) \
   { MDY_NOTUSED const auto _ = __MAExpression__; }
@@ -133,6 +134,12 @@ void TDyIO::outTryNotifyWorkerIsIdle()
   this->mIdleWorkerCounter.fetch_add(1);
 }
 
+void TDyIO::outTryForwardToMainTaskList(_MIN_ const DDyIOTask& task) noexcept
+{
+  MDY_SYNC_LOCK_GUARD(this->mProcessTaskFromMainMutex);
+  this->mIOProcessMainTaskList.emplace_back(task);
+}
+
 void TDyIO::outTryStop()
 {
   {
@@ -156,6 +163,46 @@ EDySuccess TDyIO::outCreateReferenceInstance(
   }
 
   MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
+}
+
+void TDyIO::outMainForceProcessDeferredMainTaskList()
+{
+  MDY_SYNC_LOCK_GUARD(this->mProcessTaskFromMainMutex);
+  for (const auto& task : this->mIOProcessMainTaskList)
+  {
+    SDyIOConnectionHelper::InsertResult(outMainProcessTask(task));
+  }
+}
+
+DDyIOWorkerResult TDyIO::outMainProcessTask(_MIN_ const DDyIOTask& task)
+{
+  DDyIOWorkerResult result{};
+  { // Copy properties to result instance.
+    result.mResourceType        = task.mResourceType;
+    result.mResourceStyle       = task.mResourcecStyle;
+    result.mSpecifierName       = task.mSpecifierName;
+    result.mIsHaveDeferredTask  = task.mIsResourceDeferred;
+  }
+
+  MDY_ASSERT(task.mResourcecStyle == EDyResourceStyle::Resource, "Main deferred task must be resource style.");
+  const auto& infoManager = MDyIOData::GetInstance();
+
+  switch (task.mResourceType) {
+  case EDyResourceType::GLShader:
+  { // Need to move it as independent function.
+    auto instance = new CDyShaderResource_Deprecated();
+    const auto error = instance->pfInitializeResource(*infoManager.GetShaderInformation(result.mSpecifierName));
+    MDY_ASSERT(error != DY_FAILURE, "");
+    result.mSmtPtrResultInstance = instance;
+  } break;
+  case EDyResourceType::Texture:
+  case EDyResourceType::Model:
+  case EDyResourceType::Material:
+    MDY_UNEXPECTED_BRANCH();
+  default: MDY_UNEXPECTED_BRANCH(); break;
+  };
+
+  return result;
 }
 
 EDySuccess TDyIO::outTryEnqueueTask(
@@ -330,6 +377,7 @@ void TDyIO::outForceProcessIOInsertPhase() noexcept
     }
     else
     { // If Resource, insert result into mIOResource.
+      if (resultItem.mSmtPtrResultInstance == nullptr) { continue; }
       mIOResourceManager->InsertResult(resultItem.mResourceType, resultItem.mSmtPtrResultInstance);
     }
   }
@@ -353,6 +401,11 @@ bool TDyIO::outIsIOThreadSlept() noexcept
   using namespace std::chrono_literals;
   std::this_thread::sleep_for(0ms);
   return i;
+}
+
+bool TDyIO::isoutIsMainTaskListIsEmpty() const noexcept
+{
+  return this->mIOProcessMainTaskList.empty();
 }
 
 } /// :: dy namesapace

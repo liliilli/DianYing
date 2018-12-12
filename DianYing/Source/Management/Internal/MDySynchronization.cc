@@ -86,6 +86,11 @@ void MDySynchronization::RunFrame()
 
 void MDySynchronization::pRunFrameBooted()
 {
+  if (SDyIOConnectionHelper::IsMainTaskListIsEmpty() == false)
+  {
+    SDyIOConnectionHelper::ForceProcessDeferredMainTaskList();
+  }
+
   if (SDyIOConnectionHelper::CheckIOResultInCondition() == true)
   {
     SDyIOConnectionHelper::ForceProcessIOInsertPhase();
