@@ -229,6 +229,38 @@
   __MAConditionVariable__.wait(lock, __MACondition__)
 
 ///
+/// @macro MDY_SYNC_WAIT_CONDITION
+/// @brief lock mutex and wait condition is satisfied by reducing a amount of typing and verbosity.
+///
+#define MDY_SYNC_WAIT_CONDITION_FOR(__MAMutex__, __MAConditionVariable__, __MATime__, __MACondition__) \
+  std::unique_lock<decltype(__MAMutex__)> lock(__MAMutex__); \
+  __MAConditionVariable__.wait_for(lock, __MATime__, __MACondition__)
+
+///
+/// @macro MDY_ATOMIC_COMPARE_SWAP_WEAK
+/// @brief Do `compare and swap` to atomic variable weakly.
+///
+#define MDY_ATOMIC_COMPARE_SWAP_WEAK(__MAAtomic__, __MAExpected__, __MASwapValue__) \
+  { \
+    using __type = std::decay_t<decltype(__MAAtomic__)>; \
+    __type::value_type __expect = __MAExpected__; \
+    while (__MAAtomic__.compare_exchange_weak(__expect, __MASwapValue__) == false) \
+      ; \
+  }
+
+///
+/// @macro MDY_ATOMIC_COMPARE_SWAP_STRONG
+/// @brief Do `compare and swap` to atomic variable strongly.
+///
+#define MDY_ATOMIC_COMPARE_SWAP_STRONG(__MAAtomic__, __MAExpected__, __MASwapValue__) \
+  { \
+    using __type = std::decay_t<decltype(__MAAtomic__)>; \
+    __type::value_type __expect = __MAExpected__; \
+    while (__MAAtomic__.compare_exchange_strong(__expect, __MASwapValue__) == false) \
+      ; \
+  }
+
+///
 /// @macro MDY_UNQMVCAST
 /// @brief Static cast with moving of unique_ptr
 ///
