@@ -21,6 +21,8 @@
 #include <Dy/Core/Resource/Information_Deprecated/TextureInformation_Deprecated.h>
 #include <Dy/Helper/Internal/ImageBinaryBuffer.h>
 #include <Dy/Management/LoggingManager.h>
+#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Core/Rendering/Wrapper/PDyGLTextureDescriptor.h>
 
 namespace dy
 {
@@ -46,80 +48,37 @@ CDyTextureResource_Deprecated::~CDyTextureResource_Deprecated()
 
 EDySuccess CDyTextureResource_Deprecated::pfInitializeTextureResource(_MIN_ const DDyTextureInformation_Deprecated& textureInformation)
 {
-  // Make image binary data buffer.
-  const auto& textureInfo         = textureInformation.GetInformation();
-  const auto& textureBuffer       = textureInformation.GetBuffer();
-  const auto  textureBufferFormat = textureInformation.GetFormat();
-
-  TI32 glImageFormat = GL_NO_ERROR;
-  switch (textureBufferFormat)
-  {
-  case EDyImageColorFormatStyle::R:     glImageFormat = GL_RED;   break;
-  case EDyImageColorFormatStyle::RG:    glImageFormat = GL_RG;    break;
-  case EDyImageColorFormatStyle::RGB:   glImageFormat = GL_RGB;   break;
-  case EDyImageColorFormatStyle::RGBA:  glImageFormat = GL_RGBA;  break;
-  default: MDY_UNEXPECTED_BRANCH(); return DY_FAILURE;
-  }
+  const auto& textureInfo     = textureInformation.GetInformation();
+  const auto optGlImageFormat = DyGLGetImageFormatFrom(textureInformation.GetFormat());
+  MDY_ASSERT(optGlImageFormat.has_value() == true, "Image format type must be valid.");
 
   // Forward dataBuffer's retrieved information to data members.
   this->mTextureName   = textureInfo.mSpecifierName;
   this->mTextureType   = textureInfo.mTextureType;
   this->mTextureWidth  = textureInfo.mBuiltinBufferSize.X;
   switch (textureInfo.mTextureType)
-  {
+  { // Align size of texture following texture type.
   case EDyTextureStyleType::D1: this->mTextureHeight = 1; break;
   case EDyTextureStyleType::D2: this->mTextureHeight = textureInfo.mBuiltinBufferSize.Y; break;
-  default: MDY_UNEXPECTED_BRANCH();  break;
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
   }
 
-  GLenum glTextureType = GL_NONE;
-  // Get GL_TEXTURE_ TYPE from textureInfo.
-  switch (this->mTextureType)
-  {
-  case EDyTextureStyleType::D1:
-    glGenTextures(1, &this->mTextureResourceId);
-    glBindTexture(GL_TEXTURE_1D, this->mTextureResourceId);
-    glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, this->mTextureWidth, 0, glImageFormat, GL_UNSIGNED_BYTE, textureBuffer.data());
-    glTextureType = GL_TEXTURE_1D;
-    break;
-  case EDyTextureStyleType::D2:
-    glGenTextures(1, &this->mTextureResourceId);
-    glBindTexture(GL_TEXTURE_2D, this->mTextureResourceId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, this->mTextureWidth, this->mTextureHeight, 0, glImageFormat, GL_UNSIGNED_BYTE, textureBuffer.data());
-    glTextureType = GL_TEXTURE_2D;
-    break;
-  default: MDY_UNEXPECTED_BRANCH(); return DY_FAILURE;
+  PDyGLTextureDescriptor descriptor {};
+  { // Make internal descriptor for creating texture.
+    descriptor.mBorderColor       = textureInfo.mBorderColor;
+    descriptor.mImageFormat       = *optGlImageFormat;
+    descriptor.mIsUsingCustomizedParameter = textureInfo.mIsEnabledCustomedTextureParameter;
+    descriptor.mIsUsingDefaultMipmap = textureInfo.mIsUsingDefaultMipmapGeneration;
+    descriptor.mPtrBuffer         = &textureInformation.GetBuffer();
+    descriptor.mPtrParameterList  = &textureInfo.mParameterList;
+    descriptor.mTextureSize       = DDyVectorInt2{this->mTextureWidth, this->mTextureHeight};
+    descriptor.mType              = textureInfo.mTextureType;
   }
 
-  // Check PDyTextureConstructionBaseDesc::mIsUsingDefaultMipmapGeneration for generating mipmap.
-  // Specifies the target to which the texture whose mimaps to generate is bound.
-  // target​ must be GL_TEXTURE_1D, GL_TEXTURE_2D, GL_TEXTURE_3D, GL_TEXTURE_1D_ARRAY, GL_TEXTURE_2D_ARRAY, GL_TEXTURE_CUBE_MAP, or GL_TEXTURE_CUBE_MAP_ARRAY.
-  if (textureInfo.mIsUsingDefaultMipmapGeneration == true) { glGenerateMipmap(glTextureType); }
-
-  // Set texture parameters.
-  if (textureInfo.mIsEnabledCustomedTextureParameter == true)
-  {
-    MDY_ASSERT(DyCheckTextureParameterList(textureInfo.mParameterList) == DY_SUCCESS, "Texture Parameter validation failed.");
-
-    // Apply parameter option list to attachment.
-    bool isThisAttachmentUsingClampToBorder = false;
-    for (const auto& parameter : textureInfo.mParameterList)
-    { // Check there is ClmapToBorder for border coloring.
-      if (parameter.mParameterValue == EDyGlParameterValue::ClampToBorder) { isThisAttachmentUsingClampToBorder = true; }
-      // Set parameter
-      glTexParameteri(glTextureType,
-          DyGetParameterNameValue(parameter.mParameterOption),
-          DyGetParameterValueValue(parameter.mParameterValue));
-    }
-
-    if (isThisAttachmentUsingClampToBorder == true)
-    { // If isThisAttachmentUsingClampToBorder is true, apply border color to texture.
-      glTexParameterfv(glTextureType, GL_TEXTURE_BORDER_COLOR, textureInfo.mBorderColor.Data());
-    }
-  }
-
-  // Reset to default.
-  glBindTexture(glTextureType, 0);
+  // Create texture from shared context.
+  auto optTextureId = FDyGLWrapper::CreateTexture(descriptor);
+  MDY_ASSERT(optTextureId.has_value() == true, "Texture id creation must be succeeded.");
+  this->mTextureResourceId = *optTextureId;
   return DY_SUCCESS;
 }
 

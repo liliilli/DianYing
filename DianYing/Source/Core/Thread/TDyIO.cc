@@ -17,6 +17,7 @@
 #include <Dy/Management/IO/IODataManager.h>
 #include <Dy/Management/IO/IOResourceManager.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
+#include <Dy/Management/WindowManager.h>
 
 #define MDY_CALL_BUT_NOUSE_RESULT(__MAExpression__) \
   { MDY_NOTUSED const auto _ = __MAExpression__; }
@@ -48,11 +49,16 @@ TDyIO::~TDyIO()
 
 EDySuccess TDyIO::Initialize()
 {
-  // Initialize IOWorkers
-  for (auto& [instance, thread] : this->mWorkerList)
+  // Initialize IOWorkers with context.
+  const auto& windowManager = MDyWindow::GetInstance();
+  const auto& workerWndList = windowManager.GetGLWorkerWindowList();
+  MDY_ASSERT(workerWndList.size() == this->mWorkerList.size(), "WndList and I/O Worker list size must be same.");
+
+  for (auto i = 0u; i < this->mWorkerList.size(); ++i)
   {
+    auto& [instance, thread] = this->mWorkerList[i];
     instance  = std::make_unique<TDyIOWorker>(MDyMetaInfo::GetInstance());
-    thread    = std::thread(&TDyIOWorker::operator(), std::ref(*instance));
+    thread    = std::thread(&TDyIOWorker::operator(), std::ref(*instance), DyMakeNotNull(workerWndList[i]));
   }
 
   return DY_SUCCESS;
@@ -89,6 +95,10 @@ void TDyIO::operator()()
     }
     MDY_UNEXPECTED_BRANCH();
   };
+
+  //!
+  //! FUNCTION BODY
+  //!
 
   MDY_CALL_ASSERT_SUCCESS(this->Initialize());
   while (true)
@@ -328,14 +338,21 @@ void TDyIO::outForceProcessIOInsertPhase() noexcept
 
 bool TDyIO::outIsIOThreadSlept() noexcept
 {
-  MDY_SYNC_LOCK_GUARD(this->mQueueMutex);
-  MDY_SYNC_LOCK_GUARD(this->mDeferredTaskMutex);
-  MDY_SYNC_LOCK_GUARD(this->mResultListMutex);
+  bool i = false;
+  {
+    MDY_SYNC_LOCK_GUARD(this->mQueueMutex);
+    MDY_SYNC_LOCK_GUARD(this->mDeferredTaskMutex);
+    MDY_SYNC_LOCK_GUARD(this->mResultListMutex);
 
-  return this->mIOTaskQueue.empty()
-      && this->mIdleWorkerCounter.load() == this->kWorkerThreadCount
-      && this->mIODeferredTaskList.empty()
-      && this->mWorkerResultList.empty();
+    i = this->mIOTaskQueue.empty()
+        && this->mIdleWorkerCounter.load() == dy::TDyIO::kWorkerThreadCount
+        && this->mIODeferredTaskList.empty()
+        && this->mWorkerResultList.empty();
+  }
+
+  using namespace std::chrono_literals;
+  std::this_thread::sleep_for(0ms);
+  return i;
 }
 
 } /// :: dy namesapace

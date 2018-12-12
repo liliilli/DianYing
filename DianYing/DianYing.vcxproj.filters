@@ -202,6 +202,7 @@
     <ClCompile Include="Source\Core\Thread\SDyIOWorkerConnHelper.cc" />
     <ClCompile Include="Source\Builtin\Script\DefaultLoadingBootScriptCpp.cc" />
     <ClCompile Include="Source\Core\Rendering\Wrapper\FDyGLWrapper.cc" />
+    <ClCompile Include="Source\Core\Resource\Resource\FDyTextureResource.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -516,6 +517,8 @@
     <ClInclude Include="Include\Dy\Meta\Type\DDyResourceName.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\FDyGLWrapper.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLWindowContextDescriptor.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLTextureDescriptor.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyTextureResource.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

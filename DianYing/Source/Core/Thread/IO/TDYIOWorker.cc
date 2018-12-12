@@ -25,10 +25,9 @@
 namespace dy
 {
 
-void TDyIOWorker::operator()()
+void TDyIOWorker::operator()(_MIN_ NotNull<GLFWwindow*> ptrWorkerWnd)
 {
-  this->mIsAssigned = false;
-  this->mIsShouldStop = false;
+  glfwMakeContextCurrent(ptrWorkerWnd);
   this->inWork();
 }
 
@@ -143,6 +142,7 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceResource(_MIN_ const DDyIOTask
   {
   case EDyResourceType::GLShader:
   { // TEMPORARY
+#ifdef false
     auto* context = glfwGetCurrentContext();
     MDY_ASSERT(MDY_CHECK_ISNOTNULL(context), "");
 
@@ -150,6 +150,10 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceResource(_MIN_ const DDyIOTask
     const auto i = instance->pfInitializeResource(*infoManager.GetShaderInformation(result.mSpecifierName));
     MDY_ASSERT(i != DY_FAILURE, "");
     result.mSmtPtrResultInstance = instance;
+#endif
+    /// https://www.khronos.org/opengl/wiki/OpenGL_Object#Object_Sharing
+    /// Shader can not create from other thread.
+    MDY_NOT_IMPLEMENTED_ASSERT();
   } break;
   case EDyResourceType::Texture:
   { // TEMPORARY

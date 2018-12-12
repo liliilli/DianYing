@@ -35,7 +35,7 @@ public:
   TDyIOWorker& operator=(TDyIOWorker&&)       = delete;
 
   /// @brief Operation of TDYIOWorker.
-  void operator()();
+  void operator()(_MIN_ NotNull<GLFWwindow*> ptrWorkerWnd);
 
   /// @brief Assign Task to TDYIOWorker.
   EDySuccess outTryAssign(_MIN_ const DDyIOTask& DDyIOTask);

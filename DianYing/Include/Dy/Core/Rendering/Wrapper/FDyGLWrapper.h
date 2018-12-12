@@ -19,6 +19,7 @@
 
 namespace dy
 {
+struct PDyGLTextureDescriptor;
 struct PDyGLWindowContextDescriptor;
 } /// ::dy namespace
 
@@ -42,10 +43,21 @@ public:
   /// If mSharingContext is valid, created window is shared by mSharingContext. \n
   /// If sharing context deleted but derived window is alive, this occurs undefined behaviour.
   ///
-  static GLFWwindow* CreateGLWindow(_MIN_ const PDyGLWindowContextDescriptor& descriptor);
+  static MDY_NODISCARD GLFWwindow* CreateGLWindow(_MIN_ const PDyGLWindowContextDescriptor& descriptor);
 
   /// @brief Create opengl context.
   static void CreateGLContext(_MIN_ GLFWwindow* window);
+
+  /// @brief Create texture and get texture id. \n
+  /// This function is thread-safe and get performance down.
+  static MDY_NODISCARD std::optional<TU32> CreateTexture(_MIN_ const PDyGLTextureDescriptor& descriptor);
+
+  /// @brief Delete texture if texture id is valid.
+  /// This function is thread-safe and get performance down.
+  static void DeleteTexture(_MIN_ const TU32 validTextureId);
+
+private:
+  static std::mutex mTextureMutex;
 };
 
 } /// ::dy namespace

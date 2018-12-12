@@ -15,9 +15,12 @@
 /// Header file
 #include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLWindowContextDescriptor.h>
+#include <Dy/Core/Rendering/Wrapper/PDyGLTextureDescriptor.h>
 
 namespace dy
 {
+
+std::mutex FDyGLWrapper::mTextureMutex;
 
 GLFWwindow* FDyGLWrapper::CreateGLWindow(_MIN_ const PDyGLWindowContextDescriptor& descriptor)
 {
@@ -49,6 +52,85 @@ GLFWwindow* FDyGLWrapper::CreateGLWindow(_MIN_ const PDyGLWindowContextDescripto
 void FDyGLWrapper::CreateGLContext(_MIN_ GLFWwindow* window)
 {
   glfwMakeContextCurrent(window);
+}
+
+#define MDY_VECTOR_XY(__MAVectorType__) __MAVectorType__.X, __MAVectorType__.Y
+
+std::optional<TU32> FDyGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescriptor& descriptor)
+{
+
+
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  //! FUNCTION BODY ∨
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  // Validation check.
+  MDY_ASSERT(descriptor.mImageFormat != GL_NONE, "Texture Image format must be specified.");
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mPtrBuffer), "Texture Image buffer must not be null.");
+  MDY_ASSERT(descriptor.mTextureSize.X > 0 && descriptor.mTextureSize.Y > 0, "Texture size must be positive value.");
+  MDY_ASSERT(descriptor.mType != EDyTextureStyleType::None, "Texture Image type must be specified.");
+  if (descriptor.mIsUsingCustomizedParameter == true)
+  {
+    MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mPtrParameterList), "Parameter list must not be null.");
+    MDY_ASSERT(DyCheckTextureParameterList(*descriptor.mPtrParameterList) == DY_SUCCESS, "Texture Parameter validation failed.");
+  }
+
+  TU32 mTextureResourceId = MDY_INITIALIZE_DEFUINT;
+  GLenum glTextureType    = GL_NONE;
+  switch (descriptor.mType)
+  {
+  case EDyTextureStyleType::D1: glTextureType = GL_TEXTURE_1D; break;
+  case EDyTextureStyleType::D2: glTextureType = GL_TEXTURE_2D; break;
+  case EDyTextureStyleType::None: MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
+  }
+
+  { // Critical section.
+    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mTextureMutex);
+
+    // Make texture.
+    switch (descriptor.mType)
+    {
+    case EDyTextureStyleType::D1:
+      glGenTextures(1, &mTextureResourceId);
+      glBindTexture(GL_TEXTURE_1D, mTextureResourceId);
+      glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, descriptor.mTextureSize.X, 0, descriptor.mImageFormat, GL_UNSIGNED_BYTE, descriptor.mPtrBuffer->data());
+      break;
+    case EDyTextureStyleType::D2:
+      glGenTextures(1, &mTextureResourceId);
+      glBindTexture(GL_TEXTURE_2D, mTextureResourceId);
+      glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, MDY_VECTOR_XY(descriptor.mTextureSize), descriptor.mImageFormat, GL_UNSIGNED_BYTE, descriptor.mPtrBuffer->data());
+      break;
+    default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
+    }
+
+    // Make mipmap by following option.
+    if (descriptor.mIsUsingDefaultMipmap == true) { glGenerateMipmap(glTextureType); }
+
+    // Set texture parameters.
+    if (descriptor.mIsUsingCustomizedParameter == true)
+    { // Apply parameter option list to attachment.
+      bool isUsingClampToBorder = false;
+      for (const auto& parameter : *descriptor.mPtrParameterList)
+      { // Check there is ClmapToBorder for border coloring and set parameter
+        if (parameter.mParameterValue == EDyGlParameterValue::ClampToBorder) { isUsingClampToBorder = true; }
+        glTexParameteri(glTextureType, DyGetParameterNameValue(parameter.mParameterOption), DyGetParameterValueValue(parameter.mParameterValue));
+      }
+
+      if (isUsingClampToBorder == true)
+      { // If isThisAttachmentUsingClampToBorder is true, apply border color to texture.
+        glTexParameterfv(glTextureType, GL_TEXTURE_BORDER_COLOR, descriptor.mBorderColor.Data());
+      }
+    }
+    glBindTexture(glTextureType, 0);
+  }
+
+  return mTextureResourceId;
+}
+
+void FDyGLWrapper::DeleteTexture(_MIN_ const TU32 validTextureId)
+{
+  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mTextureMutex);
+  glDeleteTextures(1, &validTextureId);
 }
 
 } /// ::dy namespace
