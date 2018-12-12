@@ -25,7 +25,7 @@
 
 #include <Dy/Core/Resource/Resource_Deprecated/ModelResource_Deprecated.h>
 #include <Dy/Core/Resource/Internal/GeometryType.h>
-#include <Dy/Management/IO/IODataManager.h>
+#include <Dy/Management/IO/IODataManager_Deprecated.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Helper/ThreadPool.h>
 #include <Dy/Helper/IoHelper.h>
@@ -475,7 +475,7 @@ PDyMaterialInstanceMetaInfo DDyModelInformation_Deprecated::__pReadMaterialData(
   materialDescriptor.mTextureNames_Deprecated = textureNames;
 
   // Let InformationManager initialize material information instance.
-  auto& manInfo = MDyIOData::GetInstance();
+  auto& manInfo = MDyIOData_Deprecated::GetInstance();
   if (const auto ptr = manInfo.GetMaterialInformation(materialDescriptor.mSpecifierName); !ptr)
   {
     MDY_CALL_ASSERT_SUCCESS(manInfo.CreateMaterialInformation_Deprecated(materialDescriptor));
@@ -504,7 +504,7 @@ DDyModelInformation_Deprecated::__pLoadMaterialTextures(const aiMaterial& materi
   }
 
   // Get Texture Map which is being binded to material (aiMaterial*);
-  auto& manInfo = MDyIOData::GetInstance();
+  auto& manInfo = MDyIOData_Deprecated::GetInstance();
 
   std::vector<std::string> textureInformationString;
   const uint32_t textureMapCount = material.GetTextureCount(aiTextureType);

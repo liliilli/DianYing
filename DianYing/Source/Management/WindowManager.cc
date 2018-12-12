@@ -24,11 +24,9 @@
 #include <Dy/Core/Resource/Object/Camera.h>
 #include <Dy/Helper/Type/Vector3.h>
 
-#include <Dy/Management/IO/IODataManager.h>
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/WorldManager.h>
-#include <Dy/Management/IO/IOResourceManager.h>
 #include "Dy/Core/Rendering/Wrapper/FDyGLWrapper.h"
 #include "Dy/Core/Rendering/Wrapper/PDyGLWindowContextDescriptor.h"
 
@@ -38,8 +36,6 @@
 
 namespace
 {
-
-dy::DDyVector3 gColor {.2f, .3f, .2f};
 
 void GLAPIENTRY DyGlMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {

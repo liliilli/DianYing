@@ -81,7 +81,7 @@ private:
   MDY_TRANSIENT CDyTextureResource_Deprecated* __mLinkedTextureResourcePtr = nullptr;
 
   friend class CDyTextureResource_Deprecated;
-  friend class MDyIOResource;
+  friend class MDyIOResource_Deprecated;
 };
 
 } /// ::dy namespace

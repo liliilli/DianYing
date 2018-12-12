@@ -14,9 +14,6 @@
 
 /// Header file
 #include <Dy/Builtin/ShaderGl/RenderColorGeometry.h>
-#include <Dy/Core/Resource/Internal/ShaderType.h>
-#include <Dy/Management/IO/IODataManager.h>
-#include <Dy/Management/IO/IOResourceManager.h>
 
 //!
 //! Local immutable data

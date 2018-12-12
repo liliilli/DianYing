@@ -17,7 +17,7 @@
 #include <Dy/Core/Rendering/Helper/FrameAttachmentString.h>
 #include <Dy/Management/Rendering/FramebufferManager.h>
 #include <Dy/Management/SettingManager.h>
-#include <Dy/Management/IO/IOResourceManager.h>
+#include <Dy/Management/IO/IOResourceManager_Deprecated.h>
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Builtin/ShaderGl/RenderScreenOutput.h>
 #include <Dy/Builtin/Model/ScreenProjectionTriangle.h>
@@ -28,7 +28,7 @@ namespace dy
 FDyFinalScreenDisplayRenderer::FDyFinalScreenDisplayRenderer()
 {
   auto& framebufferManager  = MDyFramebuffer::GetInstance();
-  auto& heapManager         = MDyIOResource::GetInstance();
+  auto& heapManager         = MDyIOResource_Deprecated::GetInstance();
 
   //!
   //! Lambda function

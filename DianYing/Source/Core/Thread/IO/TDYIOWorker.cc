@@ -18,7 +18,7 @@
 #include <Dy/Core/Resource/Information/FDyTextureInformation.h>
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 #include <Dy/Core/Thread/SDyIOWorkerConnHelper.h>
-#include "Dy/Management/IO/IODataManager.h"
+#include "Dy/Management/IO/IODataManager_Deprecated.h"
 #include "Dy/Core/Resource/Resource_Deprecated/ShaderResource_Deprecated.h"
 #include "Dy/Core/Resource/Resource_Deprecated/TextureResource_Deprecated.h"
 
@@ -134,7 +134,7 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceResource(_MIN_ const DDyIOTask
   result.mSpecifierName = assignedTask.mSpecifierName;
   result.mIsHaveDeferredTask = false;
 
-  const auto& infoManager = MDyIOData::GetInstance();
+  const auto& infoManager = MDyIOData_Deprecated::GetInstance();
   switch (result.mResourceType)
   {
   case EDyResourceType::GLShader:

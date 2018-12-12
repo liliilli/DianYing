@@ -32,13 +32,13 @@ enum class EDyResourceType;
 struct PDyModelInstanceMetaInfo;
 
 ///
-/// @class MDyIOData
+/// @class MDyIOData_Deprecated
 /// @brief Manages data information which are needed to create heap instances such as CDy-Resource.
 ///
-class MDyIOData final : public IDySingleton<MDyIOData>
+class MDyIOData_Deprecated final : public IDySingleton<MDyIOData_Deprecated>
 {
-  MDY_SINGLETON_DERIVED(MDyIOData);
-  MDY_SINGLETON_PROPERTIES(MDyIOData);
+  MDY_SINGLETON_DERIVED(MDyIOData_Deprecated);
+  MDY_SINGLETON_PROPERTIES(MDyIOData_Deprecated);
 public:
   /// @brief Insert result into IO Data.
   void InsertResult(_MIN_ EDyResourceType type, _MIN_ void* rawResultInstance) noexcept;
@@ -71,13 +71,13 @@ public:
   ///
   MDY_NODISCARD EDySuccess CreateMaterialInformation_Deprecated(_MIN_ const std::string& materialSpecifier, _MIN_ EDyScope scope);
 
-  /// @brief Check shader is exist now on MDyIOData.
+  /// @brief Check shader is exist now on MDyIOData_Deprecated.
   MDY_NODISCARD bool IsShaderInformationExist(_MIN_ const std::string& shaderSpecifier) const noexcept
   {
     return DyIsMapContains(this->mShaderInformation, shaderSpecifier);
   }
 
-  /// @brief Texture shader is exist now on MDyIOData.
+  /// @brief Texture shader is exist now on MDyIOData_Deprecated.
   MDY_NODISCARD bool IsTextureInformationExist(_MIN_ const std::string& textureSpecifier) const noexcept
   {
     return DyIsMapContains(this->mTextureInformation, textureSpecifier);

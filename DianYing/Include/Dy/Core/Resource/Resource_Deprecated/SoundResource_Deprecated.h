@@ -74,7 +74,7 @@ private:
   MDY_TRANSIENT DDySoundInformation_Deprecated*  __mLinkedSoundInformationPtr = nullptr;
 
   friend class DDySoundInformation_Deprecated;
-  friend class MDyIOResource;
+  friend class MDyIOResource_Deprecated;
 
   // @TODO TEMPORAL
   friend class MDySound;

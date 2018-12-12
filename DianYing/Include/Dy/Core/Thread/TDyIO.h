@@ -15,7 +15,7 @@
 
 #include <future>
 #include <queue>
-#include <Dy/Management/IO/IODataManager.h>
+#include <Dy/Management/IO/IODataManager_Deprecated.h>
 #include <Dy/Core/Thread/IO/DDyIOTask.h>
 #include <Dy/Core/Thread/IO/DDyIOReferenceContainer.h>
 #include <Dy/Core/Thread/IO/FDyIOGC.h>
@@ -216,8 +216,8 @@ private:
 
   bool                      mIsThreadStopped    = false;
   MDyMetaInfo*              mMetaInfoManager    = nullptr;
-  MDyIOData*                mIODataManager      = nullptr;
-  MDyIOResource*            mIOResourceManager  = nullptr;
+  MDyIOData_Deprecated*                mIODataManager      = nullptr;
+  MDyIOResource_Deprecated*            mIOResourceManager  = nullptr;
 
   friend class SDyIOConnectionHelper;
   friend class SDyIOWorkerConnHelper;

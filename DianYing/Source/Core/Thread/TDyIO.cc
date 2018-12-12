@@ -14,14 +14,18 @@
 
 /// Header file
 #include <Dy/Core/Thread/TDyIO.h>
-#include <Dy/Management/IO/IODataManager.h>
-#include <Dy/Management/IO/IOResourceManager.h>
-#include <Dy/Management/IO/MetaInfoManager.h>
-#include <Dy/Management/WindowManager.h>
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 
+#include <Dy/Management/IO/IODataManager_Deprecated.h>
+#include <Dy/Management/IO/IOResourceManager_Deprecated.h>
+
+#include <Dy/Management/IO/MDyIOData.h>
+#include <Dy/Management/IO/MDyIOResource.h>
+#include <Dy/Management/IO/MetaInfoManager.h>
+#include <Dy/Management/WindowManager.h>
+
 #define MDY_CALL_BUT_NOUSE_RESULT(__MAExpression__) \
-  { MDY_NOTUSED const auto _ = __MAExpression__; }
+  { MDY_NOTUSED const auto MDY_TOKENPASTE2(_, __LINE__) = __MAExpression__; }
 
 namespace dy
 {
@@ -29,16 +33,20 @@ namespace dy
 TDyIO::TDyIO()
 {
   MDY_CALL_ASSERT_SUCCESS(dy::MDyMetaInfo::Initialize());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyIOData::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyIOData_Deprecated::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyIOResource::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyIOData::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyIOResource_Deprecated::Initialize());
 
   this->mMetaInfoManager    = &MDyMetaInfo::GetInstance();
-  this->mIODataManager      = &MDyIOData::GetInstance();
-  this->mIOResourceManager  = &MDyIOResource::GetInstance();
+  this->mIODataManager      = &MDyIOData_Deprecated::GetInstance();
+  this->mIOResourceManager  = &MDyIOResource_Deprecated::GetInstance();
 }
 
 TDyIO::~TDyIO()
 {
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyIOResource_Deprecated::Release());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyIOData_Deprecated::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyIOResource::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyIOData::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyMetaInfo::Release());
@@ -97,9 +105,9 @@ void TDyIO::operator()()
     MDY_UNEXPECTED_BRANCH();
   };
 
-  //!
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   //! FUNCTION BODY
-  //!
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   MDY_CALL_ASSERT_SUCCESS(this->Initialize());
   while (true)
@@ -149,20 +157,14 @@ void TDyIO::outTryStop()
   this->mConditionVariable.notify_one();
 }
 
-EDySuccess TDyIO::outCreateReferenceInstance(
-    _MIN_ const std::string& specifier,
-    _MIN_ EDyResourceType type,
-    _MIN_ EDyResourceStyle style,
-    _MIN_ EDyScope scope)
+EDySuccess TDyIO::outCreateReferenceInstance(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style, _MIN_ EDyScope scope)
 {
   switch (style)
   {
   case EDyResourceStyle::Information: return this->mRIInformationMap.CreateReferenceInstance(specifier, type, style, scope);
   case EDyResourceStyle::Resource:    return this->mRIResourceMap.CreateReferenceInstance(specifier, type, style, scope);
-  default: MDY_UNEXPECTED_BRANCH();   break;
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
   }
-
-  MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
 }
 
 void TDyIO::outMainForceProcessDeferredMainTaskList()
@@ -186,7 +188,7 @@ DDyIOWorkerResult TDyIO::outMainProcessTask(_MIN_ const DDyIOTask& task)
   }
 
   MDY_ASSERT(task.mResourcecStyle == EDyResourceStyle::Resource, "Main deferred task must be resource style.");
-  const auto& infoManager = MDyIOData::GetInstance();
+  const auto& infoManager = MDyIOData_Deprecated::GetInstance();
 
   switch (task.mResourceType) {
   case EDyResourceType::GLShader:
@@ -247,7 +249,7 @@ EDySuccess TDyIO::outTryEnqueueTask(
   MDY_CALL_ASSERT_SUCCESS(this->outCreateReferenceInstance(specifier, resourceType, resourceStyle, scope));
 
   // Construct IO Task.
-  DDyIOTask task = {};
+  DDyIOTask task;
   task.mSpecifierName = specifier;
   task.mObjectStyle   = EDyObject::Etc_NotBindedYet;
   task.mPtrBoundObject= nullptr;
@@ -387,13 +389,13 @@ void TDyIO::outForceProcessIOInsertPhase() noexcept
 
 bool TDyIO::outIsIOThreadSlept() noexcept
 {
-  bool i = false;
+  bool sleptFlag;
   {
     MDY_SYNC_LOCK_GUARD(this->mQueueMutex);
     MDY_SYNC_LOCK_GUARD(this->mDeferredTaskMutex);
     MDY_SYNC_LOCK_GUARD(this->mResultListMutex);
 
-    i = this->mIOTaskQueue.empty()
+    sleptFlag = this->mIOTaskQueue.empty()
         && this->mIdleWorkerCounter.load() == dy::TDyIO::kWorkerThreadCount
         && this->mIODeferredTaskList.empty()
         && this->mWorkerResultList.empty();
@@ -401,7 +403,7 @@ bool TDyIO::outIsIOThreadSlept() noexcept
 
   using namespace std::chrono_literals;
   std::this_thread::sleep_for(0ms);
-  return i;
+  return sleptFlag;
 }
 
 bool TDyIO::isoutIsMainTaskListIsEmpty() const noexcept

@@ -15,8 +15,6 @@
 /// Header file
 #include <Dy/Core/DyEngine.h>
 
-#include <Dy/Management/IO/IODataManager.h>
-#include <Dy/Management/IO/IOResourceManager.h>
 #include <Dy/Management/InputManager.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
@@ -32,34 +30,7 @@
 #include <Dy/Management/Editor/GuiManager.h>
 #include <Dy/Management/Internal/MDySynchronization.h>
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
-
-#include <Dy/Builtin/Texture/Checker.h>
-#include <Dy/Builtin/Texture/ErrorBlue.h>
-#include <Dy/Builtin/Material/OpaqueStaticPlain.h>
-
-#include <Dy/Builtin/Widget/DebugUiMeta.h>
-
-//!
-//! Local function & data (Local translation unit function & data)
-//!
-
-namespace
-{
-
-void DyInitializeBuiltinResource()
-{
-  auto& infoManager = dy::MDyIOData::GetInstance();
-#ifdef false
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateModelInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinModelBox::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateModelInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinModelPlain::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateModelInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinModelScreenProjectionTriangle::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateModelInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinModelSphere::sName), dy::EDyScope::Global));
-
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateMaterialInformation_Deprecated(MSVSTR(dy::builtin::FDyBuiltinMaterialOpaqueStaticPlain::sName), dy::EDyScope::Global));
-#endif
-}
-
-} /// ::unnamed namespace
+//#include <Dy/Builtin/Widget/DebugUiMeta.h>
 
 //!
 //! Implementation
@@ -87,13 +58,10 @@ EDySuccess DyEngine::pfInitialize()
   InsertExecuteRuntimeArguments();
   this->pfInitializeIndependentManager();
 
-   // Temporal
-  DyInitializeBuiltinResource();
-
-  this->mSynchronization = &MDySynchronization::GetInstance();
-  const auto& metaInfo = MDyMetaInfo::GetInstance();
+  this->mSynchronization  = &MDySynchronization::GetInstance();
+  const auto& metaInfo    = MDyMetaInfo::GetInstance();
   const auto& bootResourceSpecifierList = metaInfo.GetBootResourceSpecifierList();
-  SDyIOConnectionHelper::PopulateResources(bootResourceSpecifierList, true);
+  SDyIOConnectionHelper::PopulateResourceList(bootResourceSpecifierList, true);
 
   return DY_SUCCESS;
 }
@@ -119,23 +87,20 @@ void DyEngine::operator()()
 
     if (timeManager.IsGameFrameTicked() == DY_SUCCESS)
     {
-      this->mSynchronization->RunFrame();
+      this->mSynchronization->TrySynchronization();
 
       if (this->mSynchronization->GetGlobalGameStatus() == EDyGlobalGameStatus::GameRuntime)
-      {
-        const auto dt = timeManager.GetGameScaledTickedDeltaTimeValue();
-
-        this->pUpdate(dt);
-        this->pRender();
+      { // Do process
+        this->pUpdateRuntime(timeManager.GetGameScaledTickedDeltaTimeValue());
       }
     }
   };
 }
 
-NotNull<TDyIO*> DyEngine::pfGetIOThread()
+void DyEngine::pUpdateRuntime(_MIN_ TF32 dt)
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mSynchronization), "Synchronization manager must be valid.");
-  return this->mSynchronization->pfGetIOThread();
+  this->pUpdate(dt);
+  this->pRender();
 }
 
 void DyEngine::pUpdate(_MIN_ TF32 dt)
@@ -226,6 +191,12 @@ void DyEngine::pfReleaseDependentManager()
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDySetting::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyLog::Release());
+}
+
+NotNull<TDyIO*> DyEngine::pfGetIOThread()
+{
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mSynchronization), "Synchronization manager must be valid.");
+  return this->mSynchronization->pfGetIOThread();
 }
 
 MDyTime& DyEngine::GetTimeManager()     { return MDyTime::GetInstance(); }

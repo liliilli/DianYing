@@ -14,7 +14,7 @@
 
 /// Header file
 #include <Dy/Component/CDyModelFilter.h>
-#include <Dy/Management/IO/IOResourceManager.h>
+#include <Dy/Management/IO/IOResourceManager_Deprecated.h>
 #include <Dy/Element/Actor.h>
 #include <Dy/Component/CDyModelRenderer.h>
 
@@ -25,7 +25,7 @@ CDyModelFilter::CDyModelFilter(FDyActor& actorReference) : ADyGeneralBaseCompone
 
 EDySuccess CDyModelFilter::Initialize(const PDyModelFilterComponentMetaInfo& metaInfo)
 {
-  auto& resourceManager = MDyIOResource::GetInstance();
+  auto& resourceManager = MDyIOResource_Deprecated::GetInstance();
 
   // Bind model.
   const auto& modelSpecfier = metaInfo.mDetails.mModelSpecifierName;

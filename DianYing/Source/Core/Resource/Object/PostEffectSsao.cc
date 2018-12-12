@@ -15,8 +15,8 @@
 /// Header file
 #include <Dy/Core/Resource/Object/PostEffectSsao.h>
 
-#include <Dy/Management/IO/IODataManager.h>
-#include <Dy/Management/IO/IOResourceManager.h>
+#include <Dy/Management/IO/IODataManager_Deprecated.h>
+#include <Dy/Management/IO/IOResourceManager_Deprecated.h>
 #include <Dy/Management/Rendering/RenderingManager.h>
 #include <Dy/Helper/Math/Random.h>
 #include <Dy/Management/SettingManager.h>
@@ -62,7 +62,7 @@ FDyPostEffectSsao::~FDyPostEffectSsao()
   this->pDeleteFrameBufferComponents();
 
 #ifdef false
-  auto& manResc = MDyIOResource::GetInstance();
+  auto& manResc = MDyIOResource_Deprecated::GetInstance();
 #endif
 }
 
@@ -222,8 +222,8 @@ void FDyPostEffectSsao::pCreateBlurFrameBufferComponent()
 
 void FDyPostEffectSsao::pCreateSsaoShaderResource()
 {
-  auto& manInfo = MDyIOData::GetInstance();
-  auto& manResc = MDyIOResource::GetInstance();
+  auto& manInfo = MDyIOData_Deprecated::GetInstance();
+  auto& manResc = MDyIOResource_Deprecated::GetInstance();
 
   this->mSsaoShaderPtr = manResc.GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderDefaultSSAO::sName));
   MDY_ASSERT(this->mSsaoShaderPtr, "FDyDeferredRenderingMesh::mSsaoShaderPtr must not be nullptr.");
@@ -246,8 +246,8 @@ void FDyPostEffectSsao::pCreateSsaoShaderResource()
 
 void FDyPostEffectSsao::pCreateSsaoBlurShaderResource()
 {
-  auto& manInfo = MDyIOData::GetInstance();
-  auto& manResc = MDyIOResource::GetInstance();
+  auto& manInfo = MDyIOData_Deprecated::GetInstance();
+  auto& manResc = MDyIOResource_Deprecated::GetInstance();
 
   // Make deferred shader
   this->mSsaoBlurShaderPtr = manResc.GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderDefaultSSAOBlurring::sName));

@@ -17,7 +17,7 @@
 
 #include <Dy/Component/CDyModelFilter.h>
 #include <Dy/Element/Actor.h>
-#include <Dy/Management/IO/IOResourceManager.h>
+#include <Dy/Management/IO/IOResourceManager_Deprecated.h>
 #include <Dy/Management/Rendering/RenderingManager.h>
 #include <Dy/Management/WorldManager.h>
 
@@ -32,7 +32,7 @@ EDySuccess CDyModelRenderer::Initialize(const PDyModelRendererComponentMetaInfo&
   this->mIsEnabledCreateShadow = descriptor.mDetails.mIsEnabledCreateShadow;
 
   // Bind material. If not exists, make material resource using information, but return fail.
-  auto& resourceManager = MDyIOResource::GetInstance();
+  auto& resourceManager = MDyIOResource_Deprecated::GetInstance();
   for (const auto& materialName : descriptor.mDetails.mMaterialName)
   {
     if (auto* materialResourcePtr = resourceManager.GetMaterialResource(materialName); !materialResourcePtr)

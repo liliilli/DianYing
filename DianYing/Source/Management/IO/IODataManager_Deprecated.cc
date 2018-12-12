@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Management/IO/IODataManager.h>
+#include <Dy/Management/IO/IODataManager_Deprecated.h>
 
 #include <filesystem>
 #include <Dy/Management/IO/MetaInfoManager.h>
@@ -25,7 +25,7 @@
 namespace
 {
 
-MDY_SET_IMMUTABLE_STRING(kDyDataInformation,            "MDyIOData");
+MDY_SET_IMMUTABLE_STRING(kDyDataInformation,            "MDyIOData_Deprecated");
 
 MDY_SET_IMMUTABLE_STRING(kErrorShaderNameNotSpecified,  "{} | Failed to create shader information. Shader name is not specified.");
 MDY_SET_IMMUTABLE_STRING(kErrorShaderFragmentEmpty,     "{} | Failed to create shader information. Shader fragments are empty.");
@@ -53,13 +53,13 @@ MDY_SET_IMMUTABLE_STRING(kErrorModelPathEmpty,          "{}::{} | Failed to crea
 namespace dy
 {
 
-EDySuccess MDyIOData::pfInitialize()
+EDySuccess MDyIOData_Deprecated::pfInitialize()
 {
-  MDY_LOG_INFO_D("{} | MDyIOData::pfInitialize().", "FunctionCall");
+  MDY_LOG_INFO_D("{} | MDyIOData_Deprecated::pfInitialize().", "FunctionCall");
   return DY_SUCCESS;
 }
 
-void MDyIOData::InsertResult(_MIN_ EDyResourceType type, _MIN_ void* rawResultInstance) noexcept
+void MDyIOData_Deprecated::InsertResult(_MIN_ EDyResourceType type, _MIN_ void* rawResultInstance) noexcept
 {
   switch (type)
   {
@@ -84,13 +84,13 @@ void MDyIOData::InsertResult(_MIN_ EDyResourceType type, _MIN_ void* rawResultIn
   }
 }
 
-EDySuccess MDyIOData::pfRelease()
+EDySuccess MDyIOData_Deprecated::pfRelease()
 {
-  MDY_LOG_INFO_D("{} | MDyIOData::pfRelease().", "FunctionCall");
+  MDY_LOG_INFO_D("{} | MDyIOData_Deprecated::pfRelease().", "FunctionCall");
   return DY_SUCCESS;
 }
 
-EDySuccess MDyIOData::CreateShaderInformation_Deprecated(const std::string& shaderSpecifierName, MDY_NOTUSED EDyScope scope)
+EDySuccess MDyIOData_Deprecated::CreateShaderInformation_Deprecated(const std::string& shaderSpecifierName, MDY_NOTUSED EDyScope scope)
 {
   ///
   /// @brief Check compatibility to Dy shader rendering system. \n
@@ -149,7 +149,7 @@ EDySuccess MDyIOData::CreateShaderInformation_Deprecated(const std::string& shad
     if (creationResult == false)
     { // Something is already in or memory oob.
       MDY_LOG_CRITICAL("{} | Unexpected error happened during create memory for shader information {}.",
-                       "MDyIOData::CreateShaderInformation_Deprecated().", shaderName);
+                       "MDyIOData_Deprecated::CreateShaderInformation_Deprecated().", shaderName);
       return DY_FAILURE;
     }
 
@@ -161,7 +161,7 @@ EDySuccess MDyIOData::CreateShaderInformation_Deprecated(const std::string& shad
     {
       MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(it->second), "Unexpected error occurred.");
       MDY_LOG_CRITICAL("{} | Unexpected error happened during swapping shader information {}.",
-                       "MDyIOData::CreateShaderInformation_Deprecated().", shaderName);
+                       "MDyIOData_Deprecated::CreateShaderInformation_Deprecated().", shaderName);
       shaderMap.erase(shaderName);
       return DY_FAILURE;
     }
@@ -181,7 +181,7 @@ EDySuccess MDyIOData::CreateShaderInformation_Deprecated(const std::string& shad
   if (DyIsMapContains(this->mShaderInformation, shaderMetaInfo.mSpecifierName) == true)
   {
     MDY_LOG_WARNING_D("{} | {} is already found in mShaderInformation list.",
-        "MDyIOData::CreateShaderInformation_Deprecated.", shaderMetaInfo.mSpecifierName);
+        "MDyIOData_Deprecated::CreateShaderInformation_Deprecated.", shaderMetaInfo.mSpecifierName);
     return DY_FAILURE;
   }
 
@@ -191,7 +191,7 @@ EDySuccess MDyIOData::CreateShaderInformation_Deprecated(const std::string& shad
   return DY_SUCCESS;
 }
 
-EDySuccess MDyIOData::CreateModelInformation_Deprecated(const std::string& modelSpecifierName, MDY_NOTUSED EDyScope scope)
+EDySuccess MDyIOData_Deprecated::CreateModelInformation_Deprecated(const std::string& modelSpecifierName, MDY_NOTUSED EDyScope scope)
 {
   /// @brief Check compatibility of instance into Dy model binding structure.
   static auto CheckValidity = [](_MIN_ const PDyModelInstanceMetaInfo& metaInfo)
@@ -223,7 +223,7 @@ EDySuccess MDyIOData::CreateModelInformation_Deprecated(const std::string& model
     std::lock_guard<std::mutex> mt(this->mTemporalMutex);
     if (DyIsMapContains(this->mModelInformation, metaInfo.mSpecifierName) == true)
     {
-      MDY_LOG_WARNING_D("{} | Resource is already found. Name : {}", "MDyIOData", metaInfo.mSpecifierName);
+      MDY_LOG_WARNING_D("{} | Resource is already found. Name : {}", "MDyIOData_Deprecated", metaInfo.mSpecifierName);
       return DY_FAILURE;
     }
 
@@ -240,7 +240,7 @@ EDySuccess MDyIOData::CreateModelInformation_Deprecated(const std::string& model
   return DY_SUCCESS;
 }
 
-EDySuccess MDyIOData::CreateTextureInformation_Deprecated(const std::string& textureSpecifier, MDY_NOTUSED EDyScope scope)
+EDySuccess MDyIOData_Deprecated::CreateTextureInformation_Deprecated(const std::string& textureSpecifier, MDY_NOTUSED EDyScope scope)
 {
   /// @brief Check compatibility of instance into Dy model binding structure.
   static auto CheckValidity = [](_MIN_ const PDyTextureInstanceMetaInfo& metaInfo)
@@ -286,7 +286,7 @@ EDySuccess MDyIOData::CreateTextureInformation_Deprecated(const std::string& tex
   return DY_SUCCESS;
 }
 
-EDySuccess MDyIOData::CreateMaterialInformation_Deprecated(_MIN_ const std::string& materialSpecifier, MDY_NOTUSED EDyScope scope)
+EDySuccess MDyIOData_Deprecated::CreateMaterialInformation_Deprecated(_MIN_ const std::string& materialSpecifier, MDY_NOTUSED EDyScope scope)
 {
   /// @brief Check metarial meta information whether specifier name and shader exists. \n
   /// Texture list does not have to be not empty. (intentional)
@@ -376,7 +376,7 @@ EDySuccess MDyIOData::CreateMaterialInformation_Deprecated(_MIN_ const std::stri
   return DY_SUCCESS;
 }
 
-EDySuccess MDyIOData::CreateSoundInformation(const PDySoundConstructionDescriptor& soundDescriptor)
+EDySuccess MDyIOData_Deprecated::CreateSoundInformation(const PDySoundConstructionDescriptor& soundDescriptor)
 {
   ///
   /// @function CheckIntegerityOfDescriptor
@@ -402,7 +402,7 @@ EDySuccess MDyIOData::CreateSoundInformation(const PDySoundConstructionDescripto
     std::lock_guard<std::mutex> mt(this->mTemporalMutex);
     if (mSoundInformation.find(soundName) != mSoundInformation.end())
     {
-      MDY_LOG_WARNING_D("{} | Resource is already found. Name : {}", "MDyIOData", soundName);
+      MDY_LOG_WARNING_D("{} | Resource is already found. Name : {}", "MDyIOData_Deprecated", soundName);
       return DY_FAILURE;
     }
 
@@ -411,7 +411,7 @@ EDySuccess MDyIOData::CreateSoundInformation(const PDySoundConstructionDescripto
     std::tie(it, creationResult) = mSoundInformation.try_emplace(soundName, nullptr);
     if (!creationResult)
     {
-      MDY_LOG_CRITICAL_D("{} | Failed to create information resource memory space. Name : {}", "MDyIOData", soundName);
+      MDY_LOG_CRITICAL_D("{} | Failed to create information resource memory space. Name : {}", "MDyIOData_Deprecated", soundName);
       return DY_FAILURE;
     }
   }
@@ -420,7 +420,7 @@ EDySuccess MDyIOData::CreateSoundInformation(const PDySoundConstructionDescripto
   auto soundInfo = std::make_unique<DDySoundInformation_Deprecated>(soundDescriptor);
   if (it->second.swap(soundInfo); !it->second)
   {
-    MDY_LOG_CRITICAL_D("{} | Unexpected error occured. Name : {}", "MDyIOData", soundName);
+    MDY_LOG_CRITICAL_D("{} | Unexpected error occured. Name : {}", "MDyIOData_Deprecated", soundName);
     this->mSoundInformation.erase(soundName);
     return DY_FAILURE;
   }
@@ -428,7 +428,7 @@ EDySuccess MDyIOData::CreateSoundInformation(const PDySoundConstructionDescripto
   return DY_SUCCESS;;
 }
 
-std::optional<std::string> MDyIOData::PopulateMaterialInformation(
+std::optional<std::string> MDyIOData_Deprecated::PopulateMaterialInformation(
     const std::string& materialName,
     const PDyMaterialPopulateDescriptor& materialPopulateDescriptor)
 {
@@ -436,7 +436,7 @@ std::optional<std::string> MDyIOData::PopulateMaterialInformation(
   const auto* baseMaterial = GetMaterialInformation(materialName);
   if (baseMaterial == nullptr)
   {
-    MDY_LOG_CRITICAL_D("{} | Failed to getting information of base material. base material name : {}", "MDyIOData::PopulateMaterialInformation", materialName);
+    MDY_LOG_CRITICAL_D("{} | Failed to getting information of base material. base material name : {}", "MDyIOData_Deprecated::PopulateMaterialInformation", materialName);
     return std::nullopt;
   }
 
@@ -456,12 +456,12 @@ std::optional<std::string> MDyIOData::PopulateMaterialInformation(
   {
     if (actualMaterialPopDesc.mMaterialOverrideName.empty())
     {
-      MDY_LOG_ERROR("{} | Empty material override name is prohibitted.", "MDyIOData::PopulateMaterialInformation");
+      MDY_LOG_ERROR("{} | Empty material override name is prohibitted.", "MDyIOData_Deprecated::PopulateMaterialInformation");
       return std::nullopt;
     }
     if (GetMaterialInformation(actualMaterialPopDesc.mMaterialOverrideName))
     {
-      MDY_LOG_ERROR("{} | Override name is already posed by any of material information.", "MDyIOData::PopulateMaterialInformation");
+      MDY_LOG_ERROR("{} | Override name is already posed by any of material information.", "MDyIOData_Deprecated::PopulateMaterialInformation");
       return std::nullopt;
     };
   }
@@ -470,7 +470,7 @@ std::optional<std::string> MDyIOData::PopulateMaterialInformation(
   auto [infoIt, result] = this->mMaterialInformation.try_emplace(actualMaterialPopDesc.mMaterialOverrideName, nullptr);
   if (!result)
   {
-    MDY_LOG_CRITICAL_D("{} | Unexpected error occured.", "MDyIOData::PopulateMaterialInformation");
+    MDY_LOG_CRITICAL_D("{} | Unexpected error occured.", "MDyIOData_Deprecated::PopulateMaterialInformation");
     return std::nullopt;
   }
 
@@ -479,7 +479,7 @@ std::optional<std::string> MDyIOData::PopulateMaterialInformation(
   infoIt->second.swap(populateDerivedSmtPtr);
   if (!infoIt->second)
   {
-    MDY_LOG_CRITICAL_D("{} | Unexpected error occured on swapping.", "MDyIOData::PopulateMaterialInformation");
+    MDY_LOG_CRITICAL_D("{} | Unexpected error occured on swapping.", "MDyIOData_Deprecated::PopulateMaterialInformation");
     return std::nullopt;
   }
 
@@ -492,13 +492,13 @@ std::optional<std::string> MDyIOData::PopulateMaterialInformation(
 //! Delete functions
 //!
 
-EDySuccess MDyIOData::DeleteShaderInformation(const std::string& shaderName, bool isForced)
+EDySuccess MDyIOData_Deprecated::DeleteShaderInformation(const std::string& shaderName, bool isForced)
 {
   const auto iterator = mShaderInformation.find(shaderName);
   if (iterator == mShaderInformation.end())
   {
     MDY_LOG_ERROR_D("{}::{} | Failed to remove shader information. Have not shader information. | {} : {}",
-                    "MDyIOData", "DeleteShaderInformation", "Shader Name", shaderName);
+                    "MDyIOData_Deprecated", "DeleteShaderInformation", "Shader Name", shaderName);
     return DY_FAILURE;
   }
 
@@ -507,7 +507,7 @@ EDySuccess MDyIOData::DeleteShaderInformation(const std::string& shaderName, boo
   if (iterator->second->IsBeingBindedToResource() && !isForced)
   {
     MDY_LOG_ERROR_D("{}::{} | Failed to remove shader information. Must remove resource first. | {} : {}",
-                    "MDyIOData", "DeleteShaderInformation", "Shader lName", shaderName);
+                    "MDyIOData_Deprecated", "DeleteShaderInformation", "Shader lName", shaderName);
     return DY_FAILURE;
   }
 
@@ -516,13 +516,13 @@ EDySuccess MDyIOData::DeleteShaderInformation(const std::string& shaderName, boo
   return DY_SUCCESS;
 }
 
-EDySuccess MDyIOData::DeleteTextureInformation(const std::string& textureName, bool isForced)
+EDySuccess MDyIOData_Deprecated::DeleteTextureInformation(const std::string& textureName, bool isForced)
 {
   const auto iterator = mTextureInformation.find(textureName);
   if (iterator == mTextureInformation.end())
   {
     MDY_LOG_ERROR_D("{}::{} | Failed to remove texture information. Have not texture information. | {} : {}",
-                    "MDyIOData", "DeleteTextureInformation", "Texture Name", textureName);
+                    "MDyIOData_Deprecated", "DeleteTextureInformation", "Texture Name", textureName);
     return DY_FAILURE;
   }
 
@@ -531,7 +531,7 @@ EDySuccess MDyIOData::DeleteTextureInformation(const std::string& textureName, b
   if (iterator->second->IsBeingBindedToResource() && !isForced)
   {
     MDY_LOG_ERROR_D("{}::{} | Failed to remove material information. Must remove resource first. | {} : {}",
-                    "MDyIOData", "DeleteMaterialInformation", "Material lName", textureName);
+                    "MDyIOData_Deprecated", "DeleteMaterialInformation", "Material lName", textureName);
     return DY_FAILURE;
   }
 
@@ -540,13 +540,13 @@ EDySuccess MDyIOData::DeleteTextureInformation(const std::string& textureName, b
   return DY_SUCCESS;
 }
 
-EDySuccess MDyIOData::DeleteMaterialInformation(const std::string& materialName, bool isForced)
+EDySuccess MDyIOData_Deprecated::DeleteMaterialInformation(const std::string& materialName, bool isForced)
 {
   const auto iterator = this->mMaterialInformation.find(materialName);
   if (iterator == this->mMaterialInformation.end())
   {
     MDY_LOG_ERROR_D("{}::{} | Failed to remove material information. Have not material information. | {} : {}",
-                    "MDyIOData", "DeleteMaterialInformation", "Material Name", materialName);
+                    "MDyIOData_Deprecated", "DeleteMaterialInformation", "Material Name", materialName);
     return DY_FAILURE;
   }
 
@@ -555,7 +555,7 @@ EDySuccess MDyIOData::DeleteMaterialInformation(const std::string& materialName,
   if (iterator->second->IsBeingBindedToResource() && !isForced)
   {
     MDY_LOG_ERROR_D("{}::{} | Failed to remove material information. Must remove resource first. | {} : {}",
-                    "MDyIOData", "DeleteMaterialInformation", "Material lName", materialName);
+                    "MDyIOData_Deprecated", "DeleteMaterialInformation", "Material lName", materialName);
     return DY_FAILURE;
   }
 
@@ -564,13 +564,13 @@ EDySuccess MDyIOData::DeleteMaterialInformation(const std::string& materialName,
   return DY_SUCCESS;
 }
 
-EDySuccess MDyIOData::DeleteModelInformation(const std::string& modelName, bool isAllRemoveSubresource, bool isForced)
+EDySuccess MDyIOData_Deprecated::DeleteModelInformation(const std::string& modelName, bool isAllRemoveSubresource, bool isForced)
 {
   const auto iterator = mModelInformation.find(modelName);
   if (iterator == mModelInformation.end())
   {
     MDY_LOG_ERROR_D("{}::{} | Failed to remove model information. Have not model information. | {} : {}",
-                    "MDyIOData", "DeleteModelInformation", "ModelName", modelName);
+                    "MDyIOData_Deprecated", "DeleteModelInformation", "ModelName", modelName);
     return DY_FAILURE;
   }
 
@@ -579,7 +579,7 @@ EDySuccess MDyIOData::DeleteModelInformation(const std::string& modelName, bool 
   if (iterator->second->IsBeingBindedToResource() && !isForced)
   {
     MDY_LOG_ERROR_D("{}::{} | Failed to remove model information. Must remove resource first. | {} : {}",
-                    "MDyIOData", "DeleteModelInformation", "ModelName", modelName);
+                    "MDyIOData_Deprecated", "DeleteModelInformation", "ModelName", modelName);
     return DY_FAILURE;
   }
 
@@ -599,13 +599,13 @@ EDySuccess MDyIOData::DeleteModelInformation(const std::string& modelName, bool 
   return DY_SUCCESS;
 }
 
-EDySuccess MDyIOData::DeleteSoundInformation(const std::string& soundName, bool isForced)
+EDySuccess MDyIOData_Deprecated::DeleteSoundInformation(const std::string& soundName, bool isForced)
 {
   const auto iterator = mSoundInformation.find(soundName);
   if (iterator == mSoundInformation.end())
   {
     MDY_LOG_ERROR_D("{}::{} | Failed to remove sound information. Have not sound information. | {} : {}",
-                    "MDyIOData", "DeleteSoundInformation", "Sound Name", soundName);
+                    "MDyIOData_Deprecated", "DeleteSoundInformation", "Sound Name", soundName);
     return DY_FAILURE;
   }
 
@@ -614,7 +614,7 @@ EDySuccess MDyIOData::DeleteSoundInformation(const std::string& soundName, bool 
   if (iterator->second->IsBeingBindedToResource() && !isForced)
   {
     MDY_LOG_ERROR_D("{}::{} | Failed to remove sound information. Must remove resource first. | {} : {}",
-                    "MDyIOData", "DeleteSoundInformation", "Sound Name", soundName);
+                    "MDyIOData_Deprecated", "DeleteSoundInformation", "Sound Name", soundName);
     return DY_FAILURE;
   }
 
@@ -627,7 +627,7 @@ EDySuccess MDyIOData::DeleteSoundInformation(const std::string& soundName, bool 
 //! Get function.
 //!
 
-const DDyShaderInformation_Deprecated* MDyIOData::GetShaderInformation(const std::string& shaderName) const noexcept
+const DDyShaderInformation_Deprecated* MDyIOData_Deprecated::GetShaderInformation(const std::string& shaderName) const noexcept
 {
   MDY_SYNC_LOCK_GUARD(this->mTemporalIOInsertDeleteGetMutex);
   const auto iterator = mShaderInformation.find(shaderName);
@@ -641,35 +641,35 @@ const DDyShaderInformation_Deprecated* MDyIOData::GetShaderInformation(const std
   return iterator->second.get();
 }
 
-const DDyTextureInformation_Deprecated* MDyIOData::GetTextureInformation(const std::string& textureName) const noexcept
+const DDyTextureInformation_Deprecated* MDyIOData_Deprecated::GetTextureInformation(const std::string& textureName) const noexcept
 {
   MDY_SYNC_LOCK_GUARD(this->mTemporalIOInsertDeleteGetMutex);
   const auto iterator = mTextureInformation.find(textureName);
   if (iterator == mTextureInformation.end())
   {
     MDY_LOG_WARNING("{} | Failed to find texture information. | Texture name : {}",
-                    "MDyIOData::GetTextureInformation", textureName);
+                    "MDyIOData_Deprecated::GetTextureInformation", textureName);
     return nullptr;
   }
 
   return iterator->second.get();
 }
 
-const DDyMaterialInformation_Deprecated* MDyIOData::GetMaterialInformation(const std::string& materialName) const noexcept
+const DDyMaterialInformation_Deprecated* MDyIOData_Deprecated::GetMaterialInformation(const std::string& materialName) const noexcept
 {
   MDY_SYNC_LOCK_GUARD(this->mTemporalIOInsertDeleteGetMutex);
   const auto iterator = mMaterialInformation.find(materialName);
   if (iterator == mMaterialInformation.end())
   {
     MDY_LOG_WARNING("{} | Failed to find material information. | Material name : {}",
-                    "MDyIOData::GetMaterialInformation", materialName);
+                    "MDyIOData_Deprecated::GetMaterialInformation", materialName);
     return nullptr;
   }
 
   return iterator->second.get();
 }
 
-const DDyModelInformation_Deprecated* MDyIOData::GetModelInformation(const std::string& modelName) const noexcept
+const DDyModelInformation_Deprecated* MDyIOData_Deprecated::GetModelInformation(const std::string& modelName) const noexcept
 {
   MDY_SYNC_LOCK_GUARD(this->mTemporalIOInsertDeleteGetMutex);
   std::lock_guard<std::mutex> mt(this->mTemporalMutex);
@@ -678,14 +678,14 @@ const DDyModelInformation_Deprecated* MDyIOData::GetModelInformation(const std::
   if (iterator == this->mModelInformation.end())
   {
     MDY_LOG_WARNING("{} | Failed to find model information. | {} : {}",
-                    "MDyIOData", "Model name", modelName);
+                    "MDyIOData_Deprecated", "Model name", modelName);
     return nullptr;
   }
 
   return iterator->second.get();
 }
 
-const DDySoundInformation_Deprecated* MDyIOData::GetSoundInformation(const std::string& soundName) const noexcept
+const DDySoundInformation_Deprecated* MDyIOData_Deprecated::GetSoundInformation(const std::string& soundName) const noexcept
 {
   MDY_SYNC_LOCK_GUARD(this->mTemporalIOInsertDeleteGetMutex);
   std::lock_guard<std::mutex> mt(this->mTemporalMutex);
@@ -693,7 +693,7 @@ const DDySoundInformation_Deprecated* MDyIOData::GetSoundInformation(const std::
   const auto iterator = this->mSoundInformation.find(soundName);
   if (iterator == this->mSoundInformation.end())
   {
-    MDY_LOG_WARNING("{} | Failed to find model information. | {} : {}", "MDyIOData", "Sound name", soundName);
+    MDY_LOG_WARNING("{} | Failed to find model information. | {} : {}", "MDyIOData_Deprecated", "Sound name", soundName);
     return nullptr;
   }
 
@@ -705,7 +705,7 @@ const DDySoundInformation_Deprecated* MDyIOData::GetSoundInformation(const std::
 //!
 
 #ifdef false
-EDySuccess MDyIOData::CreateTextureInformation_Deprecated(const PDyTextureInstanceMetaInfo& textureDescriptor)
+EDySuccess MDyIOData_Deprecated::CreateTextureInformation_Deprecated(const PDyTextureInstanceMetaInfo& textureDescriptor)
 {
   ///
   /// @function
@@ -792,7 +792,7 @@ EDySuccess MDyIOData::CreateTextureInformation_Deprecated(const PDyTextureInstan
   return DY_SUCCESS;
 }
 
-EDySuccess MDyIOData::CreateMaterialInformation_Deprecated(const PDyMaterialInstanceMetaInfo& materialDescriptor)
+EDySuccess MDyIOData_Deprecated::CreateMaterialInformation_Deprecated(const PDyMaterialInstanceMetaInfo& materialDescriptor)
 {
   // Integrity test
   if (materialDescriptor.mSpecifierName.empty())

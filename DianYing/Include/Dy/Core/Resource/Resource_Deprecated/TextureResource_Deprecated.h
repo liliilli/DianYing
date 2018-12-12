@@ -133,7 +133,7 @@ private:
 
   friend class DDyTextureInformation_Deprecated;
   friend class CDyMaterialResource_Deprecated;
-  friend class MDyIOResource;
+  friend class MDyIOResource_Deprecated;
   friend class TDyIOWorker;
 };
 

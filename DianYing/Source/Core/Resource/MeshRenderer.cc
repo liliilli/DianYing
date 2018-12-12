@@ -18,7 +18,7 @@
 #include <Dy/Core/Resource/Internal/EtcType.h>
 #include <Dy/Core/Resource/Resource_Deprecated/ModelResource_Deprecated.h>
 
-#include <Dy/Management/IO/IOResourceManager.h>
+#include <Dy/Management/IO/IOResourceManager_Deprecated.h>
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Core/Resource/Object/Camera.h>
 #include <Dy/Management/LoggingManager.h>
@@ -29,7 +29,7 @@ namespace dy
 
 EDySuccess CDyMeshRenderer::pfInitialize(const PDyRendererConsturctionDescriptor& desc)
 {
-  auto& resourceManager = MDyIOResource::GetInstance();
+  auto& resourceManager = MDyIOResource_Deprecated::GetInstance();
 
   // Bind model. If not exists, make model resource using information but not have it, return fail.
   if (const auto modelResourcePtr = resourceManager.GetModelResource(desc.mModelName); !modelResourcePtr)

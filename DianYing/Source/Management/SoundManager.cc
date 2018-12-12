@@ -16,7 +16,7 @@
 #include <Dy/Management/SoundManager.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Helper/Pointer.h>
-#include <Dy/Management/IO/IOResourceManager.h>
+#include <Dy/Management/IO/IOResourceManager_Deprecated.h>
 
 //!
 //! Forward declaration
@@ -277,7 +277,7 @@ EDySuccess MDySound::PlaySoundElement(const std::string& soundName) const noexce
     return DY_FAILURE;
   }
 
-  auto soundResource = MDyIOResource::GetInstance().GetSoundResource(soundName);
+  auto soundResource = MDyIOResource_Deprecated::GetInstance().GetSoundResource(soundName);
   if (soundResource == nullptr)
   {
     MDY_LOG_ERROR("Not found sound resource {}", soundName);
@@ -324,7 +324,7 @@ EDySuccess MDySound::PauseSoundElement(const std::string& soundName) const noexc
     return DY_FAILURE;
   }
 
-  auto soundResource = MDyIOResource::GetInstance().GetSoundResource(soundName);
+  auto soundResource = MDyIOResource_Deprecated::GetInstance().GetSoundResource(soundName);
   if (soundResource == nullptr)
   {
     MDY_LOG_ERROR("Not found sound resource {}", soundName);
@@ -353,7 +353,7 @@ EDySuccess MDySound::StopSoundElement(const std::string& soundName) const noexce
     return DY_FAILURE;
   }
 
-  auto soundResource = MDyIOResource::GetInstance().GetSoundResource(soundName);
+  auto soundResource = MDyIOResource_Deprecated::GetInstance().GetSoundResource(soundName);
   if (soundResource == nullptr)
   {
     MDY_LOG_ERROR("Not found sound resource {}", soundName);

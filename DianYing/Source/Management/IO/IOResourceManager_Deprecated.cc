@@ -13,9 +13,9 @@
 ///
 
 /// Header file
-#include <Dy/Management/IO/IOResourceManager.h>
+#include <Dy/Management/IO/IOResourceManager_Deprecated.h>
 
-#include <Dy/Management/IO/IODataManager.h>
+#include <Dy/Management/IO/IODataManager_Deprecated.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Meta/Type/EDyResourceType.h>
 
@@ -33,7 +33,7 @@ namespace dy
 //! Create resource functions.
 //!
 
-void MDyIOResource::InsertResult(_MIN_ EDyResourceType type,_MIN_ void* rawInstance) noexcept
+void MDyIOResource_Deprecated::InsertResult(_MIN_ EDyResourceType type,_MIN_ void* rawInstance) noexcept
 {
   switch (type)
   {
@@ -56,14 +56,14 @@ void MDyIOResource::InsertResult(_MIN_ EDyResourceType type,_MIN_ void* rawInsta
   }
 }
 
-EDySuccess MDyIOResource::CreateShaderResource_Deprecated(const std::string& shaderName)
+EDySuccess MDyIOResource_Deprecated::CreateShaderResource_Deprecated(const std::string& shaderName)
 {
-  // Get information from MDyIOData manager.
-  const auto& manInfo   = MDyIOData::GetInstance();
+  // Get information from MDyIOData_Deprecated manager.
+  const auto& manInfo   = MDyIOData_Deprecated::GetInstance();
   const DDyShaderInformation_Deprecated* shaderInfo = manInfo.GetShaderInformation(shaderName);
   if (shaderInfo == nullptr)
   {
-    MDY_LOG_ERROR("{}::{} | Failed to find shader in information list. | Shader name : {}", "MDyIOResource", "CreateShaderResource_Deprecated", shaderName);
+    MDY_LOG_ERROR("{}::{} | Failed to find shader in information list. | Shader name : {}", "MDyIOResource_Deprecated", "CreateShaderResource_Deprecated", shaderName);
     return DY_FAILURE;
   }
 
@@ -71,7 +71,7 @@ EDySuccess MDyIOResource::CreateShaderResource_Deprecated(const std::string& sha
   auto [it, result] = this->mOnBoardShaderLists.try_emplace(shaderName, nullptr);
   if (!result)
   {
-    MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred. | Shader name : {}", "MDyIOResource", "CreateShaderResource_Deprecated", shaderName);
+    MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred. | Shader name : {}", "MDyIOResource_Deprecated", "CreateShaderResource_Deprecated", shaderName);
     return DY_FAILURE;
   }
 
@@ -79,7 +79,7 @@ EDySuccess MDyIOResource::CreateShaderResource_Deprecated(const std::string& sha
   auto shaderResource = std::make_unique<CDyShaderResource_Deprecated>();
   if (const auto success = shaderResource->pfInitializeResource(*shaderInfo); success == DY_FAILURE)
   {
-    MDY_LOG_ERROR("{}::{} | Cannot create shader resource. | Shader resource name : {}", "MDyIOResource", "CreateShaderResource_Deprecated", shaderName);
+    MDY_LOG_ERROR("{}::{} | Cannot create shader resource. | Shader resource name : {}", "MDyIOResource_Deprecated", "CreateShaderResource_Deprecated", shaderName);
     this->mOnBoardShaderLists.erase(shaderName);
     return DY_FAILURE;
   }
@@ -87,7 +87,7 @@ EDySuccess MDyIOResource::CreateShaderResource_Deprecated(const std::string& sha
   it->second.swap(shaderResource);
   if (!it->second)
   {
-    MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred in swapping. | Shader resource name : {}", "MDyIOResource", "CreateShaderResource_Deprecated", shaderName);
+    MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred in swapping. | Shader resource name : {}", "MDyIOResource_Deprecated", "CreateShaderResource_Deprecated", shaderName);
     this->mOnBoardShaderLists.erase(shaderName);
     return DY_FAILURE;
   }
@@ -97,18 +97,18 @@ EDySuccess MDyIOResource::CreateShaderResource_Deprecated(const std::string& sha
   it->second->__pfSetShaderInformationLink(DyMakeNotNull(const_cast<DDyShaderInformation_Deprecated*>(shaderInfo)));
 
   MDY_LOG_INFO("{0}::{1} | Create {2} resource. | {2} resource name : {3}",
-               "MDyIOResource", "CreateShaderResource_Deprecated", "Shader", shaderName);
+               "MDyIOResource_Deprecated", "CreateShaderResource_Deprecated", "Shader", shaderName);
   return DY_SUCCESS;
 }
 
-EDySuccess MDyIOResource::CreateTextureResource_Deprecated(const std::string& textureName)
-{ // Get information from MDyIOData manager.
-  const auto& manInfo   = MDyIOData::GetInstance();
+EDySuccess MDyIOResource_Deprecated::CreateTextureResource_Deprecated(const std::string& textureName)
+{ // Get information from MDyIOData_Deprecated manager.
+  const auto& manInfo   = MDyIOData_Deprecated::GetInstance();
   const DDyTextureInformation_Deprecated* textureInfo = manInfo.GetTextureInformation(textureName);
   if (textureInfo == nullptr)
   {
     MDY_LOG_ERROR("{}::{} | Failed to find texture in information list. | Texture name : {}",
-                  "MDyIOResource", "CreateTextureResource_Deprecated", textureName);
+                  "MDyIOResource_Deprecated", "CreateTextureResource_Deprecated", textureName);
     return DY_FAILURE;
   }
 
@@ -116,7 +116,7 @@ EDySuccess MDyIOResource::CreateTextureResource_Deprecated(const std::string& te
   if (!result)
   {
     MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred. | Texture name : {}",
-                       "MDyIOResource", "CreateTextureResource_Deprecated", textureName);
+                       "MDyIOResource_Deprecated", "CreateTextureResource_Deprecated", textureName);
     return DY_FAILURE;
   }
 
@@ -125,7 +125,7 @@ EDySuccess MDyIOResource::CreateTextureResource_Deprecated(const std::string& te
   if (const auto success = textureResource->pfInitializeTextureResource(*textureInfo); success == DY_FAILURE)
   {
     MDY_LOG_ERROR("{}::{} | Cannot create texture resource properly. | Texture resource name : {}",
-                  "MDyIOResource", "CreateTextureResource_Deprecated", textureName);
+                  "MDyIOResource_Deprecated", "CreateTextureResource_Deprecated", textureName);
     this->mOnBoardTextureLists.erase(textureName);
     return DY_FAILURE;
   }
@@ -134,7 +134,7 @@ EDySuccess MDyIOResource::CreateTextureResource_Deprecated(const std::string& te
   if (!it->second)
   {
     MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred in swapping. | Texture resource name : {}",
-                       "MDyIOResource", "CreateTextureResource_Deprecated", textureName);
+                       "MDyIOResource_Deprecated", "CreateTextureResource_Deprecated", textureName);
     this->mOnBoardTextureLists.erase(textureName);
     return DY_FAILURE;
   }
@@ -144,17 +144,17 @@ EDySuccess MDyIOResource::CreateTextureResource_Deprecated(const std::string& te
   it->second->__pfSetTextureInformationLink (DyMakeNotNull(const_cast<DDyTextureInformation_Deprecated*>(textureInfo)));
 
   MDY_LOG_INFO("{0}::{1} | Create {2} resource. | {2} resource name : {3}",
-               "MDyIOResource", "CreateTextureResource_Deprecated", "Texture", textureName);
+               "MDyIOResource_Deprecated", "CreateTextureResource_Deprecated", "Texture", textureName);
   return DY_SUCCESS;
 }
 
-EDySuccess MDyIOResource::CreateTextureResourceWithChunk_Deprecated(_MIN_ const PDyTextureConstructionBufferChunkDescriptor& desc)
-{ // Get information from MDyIOData manager.
+EDySuccess MDyIOResource_Deprecated::CreateTextureResourceWithChunk_Deprecated(_MIN_ const PDyTextureConstructionBufferChunkDescriptor& desc)
+{ // Get information from MDyIOData_Deprecated manager.
   auto [it, result] = this->mOnBoardTextureLists.try_emplace(desc.mTextureSpecifierName, nullptr);
   if (!result)
   {
     MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred. | Texture name : {}",
-                       "MDyIOResource", "CreateTextureResource_Deprecated", desc.mTextureSpecifierName);
+                       "MDyIOResource_Deprecated", "CreateTextureResource_Deprecated", desc.mTextureSpecifierName);
     return DY_FAILURE;
   }
 
@@ -164,7 +164,7 @@ EDySuccess MDyIOResource::CreateTextureResourceWithChunk_Deprecated(_MIN_ const 
       success == DY_FAILURE)
   {
     MDY_LOG_ERROR("{}::{} | Cannot create texture resource properly. | Texture resource name : {}",
-                  "MDyIOResource", "CreateTextureResource_Deprecated", desc.mTextureSpecifierName);
+                  "MDyIOResource_Deprecated", "CreateTextureResource_Deprecated", desc.mTextureSpecifierName);
     this->mOnBoardTextureLists.erase(desc.mTextureSpecifierName);
     return DY_FAILURE;
   }
@@ -173,25 +173,25 @@ EDySuccess MDyIOResource::CreateTextureResourceWithChunk_Deprecated(_MIN_ const 
   if (!it->second)
   {
     MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred in swapping. | Texture resource name : {}",
-                       "MDyIOResource", "CreateTextureResource_Deprecated", desc.mTextureSpecifierName);
+                       "MDyIOResource_Deprecated", "CreateTextureResource_Deprecated", desc.mTextureSpecifierName);
     this->mOnBoardTextureLists.erase(desc.mTextureSpecifierName);
     return DY_FAILURE;
   }
 
   MDY_LOG_INFO("{0}::{1} | Create {2} resource. | {2} resource name : {3}",
-               "MDyIOResource", "CreateTextureResource_Deprecated", "Texture", desc.mTextureSpecifierName);
+               "MDyIOResource_Deprecated", "CreateTextureResource_Deprecated", "Texture", desc.mTextureSpecifierName);
   return DY_SUCCESS;
 }
 
-EDySuccess MDyIOResource::CreateMaterialResource_Deprecated(const std::string& materialName)
+EDySuccess MDyIOResource_Deprecated::CreateMaterialResource_Deprecated(const std::string& materialName)
 {
-  // Get information from MDyIOData manager.
-  const auto& manInfo = MDyIOData::GetInstance();
+  // Get information from MDyIOData_Deprecated manager.
+  const auto& manInfo = MDyIOData_Deprecated::GetInstance();
   const DDyMaterialInformation_Deprecated* materialInfo = manInfo.GetMaterialInformation(materialName);
   if (materialInfo == nullptr)
   {
     MDY_LOG_ERROR("{} | Failed to find material in information list. Material name : {}",
-                  "MDyIOResource::CreateMaterialResource_Deprecated", materialName);
+                  "MDyIOResource_Deprecated::CreateMaterialResource_Deprecated", materialName);
     return DY_FAILURE;
   }
 
@@ -199,7 +199,7 @@ EDySuccess MDyIOResource::CreateMaterialResource_Deprecated(const std::string& m
   if (!result)
   {
     MDY_LOG_CRITICAL_D("{} | Unexpected error occurred. Material name : {}",
-                       "MDyIOResource::CreateMaterialResource_Deprecated", materialName);
+                       "MDyIOResource_Deprecated::CreateMaterialResource_Deprecated", materialName);
     return DY_FAILURE;
   }
 
@@ -213,7 +213,7 @@ EDySuccess MDyIOResource::CreateMaterialResource_Deprecated(const std::string& m
     if (this->CreateShaderResource_Deprecated(materialInformation.mShaderSpecifier) == DY_FAILURE)
     {
       MDY_LOG_CRITICAL_D("{} | Could not create shader resource. | Shader resource name : {}",
-                         "MDyIOResource::CreateMaterialResource_Deprecated", materialInformation.mShaderSpecifier);
+                         "MDyIOResource_Deprecated::CreateMaterialResource_Deprecated", materialInformation.mShaderSpecifier);
       return DY_FAILURE;
     }
   }
@@ -222,7 +222,7 @@ EDySuccess MDyIOResource::CreateMaterialResource_Deprecated(const std::string& m
   if (materialInformation.mTextureNames_Deprecated.size() > kTextureCountLimit)
   {
     MDY_LOG_CRITICAL_D("{} | Texture size must not be bigger than {}. | Material Name : {} | Material texture size : {}",
-                       "MDyIOResource::CreateMaterialResource_Deprecated", kTextureCountLimit, materialName, materialInformation.mTextureNames_Deprecated.size());
+                       "MDyIOResource_Deprecated::CreateMaterialResource_Deprecated", kTextureCountLimit, materialName, materialInformation.mTextureNames_Deprecated.size());
     return DY_FAILURE;
   }
 
@@ -235,7 +235,7 @@ EDySuccess MDyIOResource::CreateMaterialResource_Deprecated(const std::string& m
       if (err == DY_FAILURE)
       {
         MDY_LOG_CRITICAL_D("{} | Could not create texture resource. | Texture resource name : {}",
-                           "MDyIOResource::CreateMaterialResource_Deprecated", textureName);
+                           "MDyIOResource_Deprecated::CreateMaterialResource_Deprecated", textureName);
         return DY_FAILURE;
       }
     }
@@ -262,7 +262,7 @@ EDySuccess MDyIOResource::CreateMaterialResource_Deprecated(const std::string& m
       success == DY_FAILURE)
   {
     MDY_LOG_CRITICAL_D("{}::{} | Failed to create material resource in heap. | Material resource name : {}",
-                       "MDyIOResource", "CreateMaterialResource_Deprecated", materialName);
+                       "MDyIOResource_Deprecated", "CreateMaterialResource_Deprecated", materialName);
     this->mOnBoardMaterialLists.erase(materialName);
     return DY_FAILURE;
   }
@@ -271,7 +271,7 @@ EDySuccess MDyIOResource::CreateMaterialResource_Deprecated(const std::string& m
   if (!it->second)
   {
     MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred in swapping. | Material resource name : {}",
-                       "MDyIOResource", "CreateMaterialResource_Deprecated", materialName);
+                       "MDyIOResource_Deprecated", "CreateMaterialResource_Deprecated", materialName);
     this->mOnBoardMaterialLists.erase(materialName);
     return DY_FAILURE;
   }
@@ -281,24 +281,24 @@ EDySuccess MDyIOResource::CreateMaterialResource_Deprecated(const std::string& m
   it->second  ->__pfSetMaterialInformationLink(DyMakeNotNull(const_cast<DDyMaterialInformation_Deprecated*>(materialInfo)));
 
   MDY_LOG_INFO("{0}::{1} | Create {2} resource. | {2} resource name : {3}",
-               "MDyIOResource", "CreateMaterialResource_Deprecated", "Material", materialName);
+               "MDyIOResource_Deprecated", "CreateMaterialResource_Deprecated", "Material", materialName);
   return DY_SUCCESS;
 }
 
-EDySuccess MDyIOResource::CreateSoundResource_Deprecated(const std::string& soundName)
+EDySuccess MDyIOResource_Deprecated::CreateSoundResource_Deprecated(const std::string& soundName)
 {
-  // Get information from MDyIOData manager.
-  const DDySoundInformation_Deprecated* soundInformation = MDyIOData::GetInstance().GetSoundInformation(soundName);
+  // Get information from MDyIOData_Deprecated manager.
+  const DDySoundInformation_Deprecated* soundInformation = MDyIOData_Deprecated::GetInstance().GetSoundInformation(soundName);
   if (soundInformation == nullptr)
   {
-    MDY_LOG_ERROR("{}::{} | Failed to find sound in information list. | Sound name : {}", "MDyIOResource", "CreateSoundResource_Deprecated", soundName);
+    MDY_LOG_ERROR("{}::{} | Failed to find sound in information list. | Sound name : {}", "MDyIOResource_Deprecated", "CreateSoundResource_Deprecated", soundName);
     return DY_FAILURE;
   }
 
   auto [it, result] = this->mOnBoardSoundLists.try_emplace(soundName, nullptr);
   if (!result)
   {
-    MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred. | Sound name : {}", "MDyIOResource", "CreateSoundResource_Deprecated", soundName);
+    MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred. | Sound name : {}", "MDyIOResource_Deprecated", "CreateSoundResource_Deprecated", soundName);
     return DY_FAILURE;
   }
 
@@ -306,7 +306,7 @@ EDySuccess MDyIOResource::CreateSoundResource_Deprecated(const std::string& soun
   auto soundResource = std::make_unique<CDySoundResource_Deprecated>();
   if (const auto success = soundResource->pfInitializeResource(*soundInformation); success == DY_FAILURE)
   {
-    MDY_LOG_ERROR("{}::{} | Cannot create sound resource properly. | Sound resource name : {}", "MDyIOResource", "CreateSoundResource_Deprecated", soundName);
+    MDY_LOG_ERROR("{}::{} | Cannot create sound resource properly. | Sound resource name : {}", "MDyIOResource_Deprecated", "CreateSoundResource_Deprecated", soundName);
 
     this->mOnBoardTextureLists.erase(soundName);
     return DY_FAILURE;
@@ -315,7 +315,7 @@ EDySuccess MDyIOResource::CreateSoundResource_Deprecated(const std::string& soun
   it->second.swap(soundResource);
   if (!it->second)
   {
-    MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred in swapping. | Sound resource name : {}", "MDyIOResource", "CreateSoundResource_Deprecated", soundName);
+    MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred in swapping. | Sound resource name : {}", "MDyIOResource_Deprecated", "CreateSoundResource_Deprecated", soundName);
 
     this->mOnBoardTextureLists.erase(soundName);
     return DY_FAILURE;
@@ -325,19 +325,19 @@ EDySuccess MDyIOResource::CreateSoundResource_Deprecated(const std::string& soun
   soundInformation->__pfSetSoundResourceLink  (DyMakeNotNull(it->second.get()));
   it->second->__pfSetSoundInformationLink     (DyMakeNotNull(const_cast<DDySoundInformation_Deprecated*>(soundInformation)));
 
-  MDY_LOG_INFO("{0}::{1} | Create {2} resource. | {2} resource name : {3}", "MDyIOResource", "CreateSoundResource_Deprecated", "Sound", soundName);
+  MDY_LOG_INFO("{0}::{1} | Create {2} resource. | {2} resource name : {3}", "MDyIOResource_Deprecated", "CreateSoundResource_Deprecated", "Sound", soundName);
   return DY_SUCCESS;
 }
 
-EDySuccess MDyIOResource::CreateModelResource_Deprecated(const std::string& modelName)
+EDySuccess MDyIOResource_Deprecated::CreateModelResource_Deprecated(const std::string& modelName)
 {
-  // Get information from MDyIOData manager.
-  const auto& manInfo   = MDyIOData::GetInstance();
+  // Get information from MDyIOData_Deprecated manager.
+  const auto& manInfo   = MDyIOData_Deprecated::GetInstance();
   const auto* modelInfo = manInfo.GetModelInformation(modelName);
   if (modelInfo == nullptr)
   {
     MDY_LOG_ERROR("{}::{} | Failed to find model in information list. | Model name : {}",
-                  "MDyIOResource", "CreateModelResource_Deprecated", modelName);
+                  "MDyIOResource_Deprecated", "CreateModelResource_Deprecated", modelName);
     return DY_FAILURE;
   }
 
@@ -345,7 +345,7 @@ EDySuccess MDyIOResource::CreateModelResource_Deprecated(const std::string& mode
   if (!result)
   {
     MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred in creating memory space. | Model name : {}",
-                       "MDyIOResource", "CreateModelResource_Deprecated", modelName);
+                       "MDyIOResource_Deprecated", "CreateModelResource_Deprecated", modelName);
     return DY_FAILURE;
   }
 
@@ -354,7 +354,7 @@ EDySuccess MDyIOResource::CreateModelResource_Deprecated(const std::string& mode
   if (const auto success = modelResource->pInitializeModelResource(*modelInfo); success == DY_FAILURE)
   {
     MDY_LOG_ERROR("{}::{} | Cannot create model resource properly. | Model resource name : {}",
-                  "MDyIOResource", "CreateModelResource_Deprecated", modelName);
+                  "MDyIOResource_Deprecated", "CreateModelResource_Deprecated", modelName);
     this->mOnBoardModelLists.erase(modelName);
     return DY_FAILURE;
   }
@@ -363,7 +363,7 @@ EDySuccess MDyIOResource::CreateModelResource_Deprecated(const std::string& mode
   if (!it->second)
   {
     MDY_LOG_CRITICAL_D("{}::{} | Unexpected error occurred in swapping. | Model resource name : {}",
-                       "MDyIOResource", "CreateModelResource_Deprecated", modelName);
+                       "MDyIOResource_Deprecated", "CreateModelResource_Deprecated", modelName);
     this->mOnBoardModelLists.erase(modelName);
     return DY_FAILURE;
   }
@@ -373,13 +373,13 @@ EDySuccess MDyIOResource::CreateModelResource_Deprecated(const std::string& mode
   it->second->__pfSetModelInformationLink(DyMakeNotNull(const_cast<DDyModelInformation_Deprecated*>(modelInfo)));
 
   MDY_LOG_INFO("{0}::{1} | Create {2} resource. | {2} resource name : {3}",
-               "MDyIOResource", "CreateModelResource_Deprecated", "Model", modelName);
+               "MDyIOResource_Deprecated", "CreateModelResource_Deprecated", "Model", modelName);
   return DY_SUCCESS;
 }
 
-EDySuccess MDyIOResource::CreateTextureResource_Deprecated(_MIN_ const std::string& specifierName, _MIN_ MDY_NOTUSED const EDyScope scope)
+EDySuccess MDyIOResource_Deprecated::CreateTextureResource_Deprecated(_MIN_ const std::string& specifierName, _MIN_ MDY_NOTUSED const EDyScope scope)
 {
-  const DDyTextureInformation_Deprecated* textureInfo = MDyIOData::GetInstance().GetTextureInformation(specifierName);
+  const DDyTextureInformation_Deprecated* textureInfo = MDyIOData_Deprecated::GetInstance().GetTextureInformation(specifierName);
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(textureInfo), "Texture information must be valid before resource population.");
 
   auto [it, isCreated] = this->mOnBoardTextureLists.try_emplace(specifierName, nullptr);
@@ -396,7 +396,7 @@ EDySuccess MDyIOResource::CreateTextureResource_Deprecated(_MIN_ const std::stri
   textureInfo->__pfLinkTextureResource(it->second.get());
   it->second->__pfSetTextureInformationLink(DyMakeNotNull(const_cast<DDyTextureInformation_Deprecated*>(textureInfo)));
 
-  MDY_LOG_INFO("{0}::{1} | Create {2} resource. | {2} resource name : {3}", "MDyIOResource", "CreateTextureResource_Deprecated", "Texture", specifierName);
+  MDY_LOG_INFO("{0}::{1} | Create {2} resource. | {2} resource name : {3}", "MDyIOResource_Deprecated", "CreateTextureResource_Deprecated", "Texture", specifierName);
   return DY_SUCCESS;
 }
 
@@ -404,76 +404,76 @@ EDySuccess MDyIOResource::CreateTextureResource_Deprecated(_MIN_ const std::stri
 //! Get resource functions
 //!
 
-CDyShaderResource_Deprecated* MDyIOResource::GetShaderResource(const std::string& shaderName)
+CDyShaderResource_Deprecated* MDyIOResource_Deprecated::GetShaderResource(const std::string& shaderName)
 {
   const auto it = this->mOnBoardShaderLists.find(shaderName);
   if (it == this->mOnBoardShaderLists.end())
   {
     MDY_LOG_WARNING("{0}::{1} | Failed to find {2} resource. | {2} resource name : {3}",
-                    "MDyIOResource", "GetShaderResource", "Shader", shaderName);
+                    "MDyIOResource_Deprecated", "GetShaderResource", "Shader", shaderName);
     return nullptr;
   }
 
   return it->second.get();
 }
 
-CDyTextureResource_Deprecated* MDyIOResource::GetTextureResource(const std::string& textureName)
+CDyTextureResource_Deprecated* MDyIOResource_Deprecated::GetTextureResource(const std::string& textureName)
 {
   const auto it = this->mOnBoardTextureLists.find(textureName);
   if (it == this->mOnBoardTextureLists.end())
   {
     MDY_LOG_WARNING("{0}::{1} | Failed to find {2} resource. | {2} resource name : {3}",
-                    "MDyIOResource", "GetTextureResource", "Texture", textureName);
+                    "MDyIOResource_Deprecated", "GetTextureResource", "Texture", textureName);
     return nullptr;
   }
 
   return it->second.get();
 }
 
-CDyMaterialResource_Deprecated* MDyIOResource::GetMaterialResource(const std::string& materialName)
+CDyMaterialResource_Deprecated* MDyIOResource_Deprecated::GetMaterialResource(const std::string& materialName)
 {
   const auto it = this->mOnBoardMaterialLists.find(materialName);
   if (it == this->mOnBoardMaterialLists.end())
   {
     MDY_LOG_WARNING("{0}::{1} | Failed to find {2} resource. | {2} resource name : {3}",
-                    "MDyIOResource", "GetMaterialResource", "Material", materialName);
+                    "MDyIOResource_Deprecated", "GetMaterialResource", "Material", materialName);
     return nullptr;
   }
 
   return it->second.get();
 }
 
-CDyModelResource* MDyIOResource::GetModelResource(const std::string& modelName)
+CDyModelResource* MDyIOResource_Deprecated::GetModelResource(const std::string& modelName)
 {
   const auto it = this->mOnBoardModelLists.find(modelName);
   if (it == this->mOnBoardModelLists.end())
   {
     MDY_LOG_WARNING("{0}::{1} | Failed to find {2} resource. | {2} resource name : {3}",
-                    "MDyIOResource", "GetModelResource", "Model", modelName);
+                    "MDyIOResource_Deprecated", "GetModelResource", "Model", modelName);
     return nullptr;
   }
 
   return it->second.get();
 }
 
-CDySoundResource_Deprecated* MDyIOResource::GetSoundResource(const std::string& soundName)
+CDySoundResource_Deprecated* MDyIOResource_Deprecated::GetSoundResource(const std::string& soundName)
 {
   const auto it = this->mOnBoardSoundLists.find(soundName);
   if (it == this->mOnBoardSoundLists.end())
   {
-    MDY_LOG_WARNING("{0}::{1} | Failed to find {2} resource. | {2} resource name : {3}", "MDyIOResource", "GetSoundResource", "Sound", soundName);
+    MDY_LOG_WARNING("{0}::{1} | Failed to find {2} resource. | {2} resource name : {3}", "MDyIOResource_Deprecated", "GetSoundResource", "Sound", soundName);
     return nullptr;
   }
 
   return it->second.get();
 }
 
-EDySuccess MDyIOResource::pfInitialize()
+EDySuccess MDyIOResource_Deprecated::pfInitialize()
 {
   return DY_SUCCESS;
 }
 
-EDySuccess MDyIOResource::pfRelease()
+EDySuccess MDyIOResource_Deprecated::pfRelease()
 {
   this->mOnBoardShaderLists.clear();
   this->mOnBoardTextureLists.clear();

@@ -19,7 +19,7 @@
 
 #include <Dy/Builtin/ShaderGl/UI/RenderUIBasicGaugeBar.h>
 #include <Dy/Element/Canvas/FDyBasicGaugeBar.h>
-#include <Dy/Management/IO/IOResourceManager.h>
+#include <Dy/Management/IO/IOResourceManager_Deprecated.h>
 #include <Dy/Management/SettingManager.h>
 #include "Dy/Element/Canvas/Text.h"
 
@@ -103,7 +103,7 @@ EDySuccess CDyBasicGaugeBarRenderer::Initialize(const PDyBasicGaugeBarRendererCt
 
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mPtrUiObject), "descriptor.mPtrUiObject must not be null.");
   this->mPtrBarObject  = descriptor.mPtrUiObject;
-  this->mPtrShader     = MDyIOResource::GetInstance().GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderUiBasicGaugeBar::sName));
+  this->mPtrShader     = MDyIOResource_Deprecated::GetInstance().GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderUiBasicGaugeBar::sName));
 
   // @TODO SAMPLE CODE (TEMPORAL)
   auto& settingManager = MDySetting::GetInstance();

@@ -16,8 +16,8 @@
 #include <Dy/Core/Resource/Resource_Deprecated/MaterialResource_Deprecated.h>
 
 #include <Dy/Core/Resource/Resource_Deprecated/ShaderResource_Deprecated.h>
-#include <Dy/Management/IO/IODataManager.h>
-#include <Dy/Management/IO/IOResourceManager.h>
+#include <Dy/Management/IO/IODataManager_Deprecated.h>
+#include <Dy/Management/IO/IOResourceManager_Deprecated.h>
 
 namespace dy
 {

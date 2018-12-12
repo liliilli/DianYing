@@ -80,7 +80,7 @@ private:
   MDY_TRANSIENT CDyShaderResource_Deprecated* __mLinkedShaderResourcePtr = nullptr;
 
   friend class CDyShaderResource_Deprecated;
-  friend class MDyIOResource;
+  friend class MDyIOResource_Deprecated;
 };
 
 } /// ::dy namespace

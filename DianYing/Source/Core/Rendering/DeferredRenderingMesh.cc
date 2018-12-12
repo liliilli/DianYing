@@ -18,8 +18,8 @@
 #include <Dy/Builtin/ShaderGl/RenderDeferredRendering.h>
 #include <Dy/Core/Rendering/Helper/FrameAttachmentString.h>
 #include <Dy/Component/CDyDirectionalLight.h>
-#include <Dy/Management/IO/IODataManager.h>
-#include <Dy/Management/IO/IOResourceManager.h>
+#include <Dy/Management/IO/IODataManager_Deprecated.h>
+#include <Dy/Management/IO/IOResourceManager_Deprecated.h>
 #include <Dy/Management/Rendering/RenderingManager.h>
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Management/SettingManager.h>
@@ -48,7 +48,7 @@ FDyDeferredRenderingMesh::FDyDeferredRenderingMesh()
 {
   auto& settingManager      = MDySetting::GetInstance();
   auto& framebufferManager  = MDyFramebuffer::GetInstance();
-  auto& heapManager         = MDyIOResource::GetInstance();
+  auto& heapManager         = MDyIOResource_Deprecated::GetInstance();
 
   ///
   /// @function CreateFramebufferAttachmentSetting
@@ -183,7 +183,7 @@ std::optional<TI32> FDyDeferredRenderingMesh::GetAvailableDirectionalLightIndex(
 
 EDySuccess FDyDeferredRenderingMesh::pInitializeShaderSetting()
 {
-  auto& manResc = MDyIOResource::GetInstance();
+  auto& manResc = MDyIOResource_Deprecated::GetInstance();
   this->mShaderPtr = manResc.GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderDeferredRendering::sName));
 
   MDY_ASSERT(this->mShaderPtr, "FDyDeferredRenderingMesh::mShaderPtr must not be nullptr.");

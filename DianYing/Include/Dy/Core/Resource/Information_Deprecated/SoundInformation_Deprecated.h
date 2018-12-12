@@ -84,7 +84,7 @@ private:
   MDY_TRANSIENT CDySoundResource_Deprecated* __mLinkedSoundResourcePtr = nullptr;
 
   friend class CDySoundResource_Deprecated;
-  friend class MDyIOResource;
+  friend class MDyIOResource_Deprecated;
 };
 
 } /// ::dy namespace

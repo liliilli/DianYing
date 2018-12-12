@@ -114,7 +114,7 @@ private:
   MDY_TRANSIENT DDyModelInformation_Deprecated*  __mLinkedModelInformationPtr = nullptr;
 
   friend class DDyModelInformation_Deprecated;
-  friend class MDyIOResource;
+  friend class MDyIOResource_Deprecated;
 };
 
 } /// ::dy namespace
