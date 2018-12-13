@@ -15,13 +15,14 @@
 
 #include <future>
 #include <queue>
-#include <Dy/Management/IO/IODataManager_Deprecated.h>
+#include <Dy/Management/IO/MDyIOData.h>
+#include <Dy/Management/IO/MDyIOResource.h>
 #include <Dy/Core/Thread/IO/DDyIOTask.h>
 #include <Dy/Core/Thread/IO/DDyIOReferenceContainer.h>
 #include <Dy/Core/Thread/IO/FDyIOGC.h>
-#include "Dy/Helper/Internal/Semaphore.h"
-#include "IO/TDyIOWorker.h"
-#include "Dy/Component/Interface/IDyInitializeHelper.h"
+#include <Dy/Helper/Internal/Semaphore.h>
+#include <Dy/COre/Thread/IO/TDyIOWorker.h>
+#include <Dy/Component/Interface/IDyInitializeHelper.h>
 
 //!
 //! Forward declaration
@@ -216,8 +217,8 @@ private:
 
   bool                      mIsThreadStopped    = false;
   MDyMetaInfo*              mMetaInfoManager    = nullptr;
-  MDyIOData_Deprecated*                mIODataManager      = nullptr;
-  MDyIOResource_Deprecated*            mIOResourceManager  = nullptr;
+  MDyIOData*                mIODataManager      = nullptr;
+  MDyIOResource*            mIOResourceManager  = nullptr;
 
   friend class SDyIOConnectionHelper;
   friend class SDyIOWorkerConnHelper;

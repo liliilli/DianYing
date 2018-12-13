@@ -56,7 +56,7 @@ DDyShaderInformation_Deprecated::DDyShaderInformation_Deprecated(const PDyShader
   for (const auto& fragment : this->mShaderInformation.mShaderFragments)
   {
     MDY_LOG_INFO_D(kShaderFragmentTemplate, kDyDataInformation,
-                   fragment.mShaderPath, DyGetShaderFragmentTypeStringFrom(fragment.mShaderType).data());
+                   fragment.mShaderPath_Deprecated, DyGetShaderFragmentTypeStringFrom(fragment.mShaderType).data());
   }
 }
 
@@ -67,11 +67,11 @@ DDyShaderInformation_Deprecated::DDyShaderInformation_Deprecated(const PDyGLShad
   for (int i = 0; i < 6; ++i)
   {
     PDyShaderFragmentInformation shader{};
-    shader.mIsEnabledRawLoadShaderCode = shaderMetaInfo.mSourceType == EDyResourceSource::Builtin ? true : false;
+    shader.mIsEnabledRawLoadShaderCode_Deprecated = shaderMetaInfo.mSourceType == EDyResourceSource::Builtin ? true : false;
     const auto& p = shaderMetaInfo.GetFragment(static_cast<EDyShaderFragmentType>(i));
     if (p.mExternalFilePath.empty() == true && p.mBuiltinBuffer.empty() == true) { continue; }
-    shader.mShaderPath    = p.mExternalFilePath;
-    shader.mShaderRawCode = p.mBuiltinBuffer;
+    shader.mShaderPath_Deprecated    = p.mExternalFilePath;
+    shader.mShaderFragmentCode = p.mBuiltinBuffer;
     shader.mShaderType    = static_cast<EDyShaderFragmentType>(i);
 
     info.mShaderFragments.push_back(shader);
@@ -84,7 +84,7 @@ DDyShaderInformation_Deprecated::DDyShaderInformation_Deprecated(const PDyGLShad
   for (const auto& fragment : this->mShaderInformation.mShaderFragments)
   {
     MDY_LOG_INFO_D(kShaderFragmentTemplate, kDyDataInformation,
-      fragment.mShaderPath, DyGetShaderFragmentTypeStringFrom(fragment.mShaderType).data());
+      fragment.mShaderPath_Deprecated, DyGetShaderFragmentTypeStringFrom(fragment.mShaderType).data());
   }
 }
 

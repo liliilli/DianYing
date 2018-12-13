@@ -18,9 +18,8 @@
 #include <Dy/Core/Resource/Information/FDyTextureInformation.h>
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 #include <Dy/Core/Thread/SDyIOWorkerConnHelper.h>
-#include "Dy/Management/IO/IODataManager_Deprecated.h"
-#include "Dy/Core/Resource/Resource_Deprecated/ShaderResource_Deprecated.h"
-#include "Dy/Core/Resource/Resource_Deprecated/TextureResource_Deprecated.h"
+#include <Dy/Management/IO/MDyIOData.h>
+#include "Dy/Core/Resource/Resource/FDyTextureResource.h"
 
 namespace dy
 {
@@ -112,10 +111,10 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceInformation(_MIN_ const DDyIOT
   switch (result.mResourceType)
   { // TEMPORARY
   case EDyResourceType::GLShader:
-    result.mSmtPtrResultInstance = new DDyShaderInformation_Deprecated(this->mMetaManager.GetGLShaderMetaInformation(assignedTask.mSpecifierName));
+    result.mSmtPtrResultInstance = new FDyShaderInformation(this->mMetaManager.GetGLShaderMetaInformation(assignedTask.mSpecifierName));
     break;
   case EDyResourceType::Texture:
-    result.mSmtPtrResultInstance = new DDyTextureInformation_Deprecated(this->mMetaManager.GetTextureMetaInformation(assignedTask.mSpecifierName));
+    result.mSmtPtrResultInstance = new FDyTextureInformation(this->mMetaManager.GetTextureMetaInformation(assignedTask.mSpecifierName));
     break;
   case EDyResourceType::Model:
   case EDyResourceType::Material:
@@ -134,7 +133,7 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceResource(_MIN_ const DDyIOTask
   result.mSpecifierName = assignedTask.mSpecifierName;
   result.mIsHaveDeferredTask = false;
 
-  const auto& infoManager = MDyIOData_Deprecated::GetInstance();
+  const auto& infoManager = MDyIOData::GetInstance();
   switch (result.mResourceType)
   {
   case EDyResourceType::GLShader:
@@ -143,12 +142,8 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceResource(_MIN_ const DDyIOTask
     SDyIOWorkerConnHelper::TryForwardToMainTaskList(assignedTask);
   } break;
   case EDyResourceType::Texture:
-  { // TEMPORARY
-    auto instance = new CDyTextureResource_Deprecated();
-    const auto i = instance->pfInitializeTextureResource(*infoManager.GetTextureInformation(result.mSpecifierName));
-    MDY_ASSERT(i != DY_FAILURE, "");
-    result.mSmtPtrResultInstance = instance;
-  } break;
+    result.mSmtPtrResultInstance = new FDyTextureResource(*infoManager.GetPtrInformation<EDyResourceType::Texture>(result.mSpecifierName));;
+    break;
   case EDyResourceType::Model:
   case EDyResourceType::Material:
     MDY_NOT_IMPLEMENTED_ASSERT(); break;

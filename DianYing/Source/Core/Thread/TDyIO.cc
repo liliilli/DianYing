@@ -16,9 +16,6 @@
 #include <Dy/Core/Thread/TDyIO.h>
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 
-#include <Dy/Management/IO/IODataManager_Deprecated.h>
-#include <Dy/Management/IO/IOResourceManager_Deprecated.h>
-
 #include <Dy/Management/IO/MDyIOData.h>
 #include <Dy/Management/IO/MDyIOResource.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
@@ -33,20 +30,16 @@ namespace dy
 TDyIO::TDyIO()
 {
   MDY_CALL_ASSERT_SUCCESS(dy::MDyMetaInfo::Initialize());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyIOData_Deprecated::Initialize());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyIOResource::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyIOData::Initialize());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyIOResource_Deprecated::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyIOResource::Initialize());
 
   this->mMetaInfoManager    = &MDyMetaInfo::GetInstance();
-  this->mIODataManager      = &MDyIOData_Deprecated::GetInstance();
-  this->mIOResourceManager  = &MDyIOResource_Deprecated::GetInstance();
+  this->mIODataManager      = &MDyIOData::GetInstance();
+  this->mIOResourceManager  = &MDyIOResource::GetInstance();
 }
 
 TDyIO::~TDyIO()
 {
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyIOResource_Deprecated::Release());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyIOData_Deprecated::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyIOResource::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyIOData::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyMetaInfo::Release());
@@ -188,14 +181,12 @@ DDyIOWorkerResult TDyIO::outMainProcessTask(_MIN_ const DDyIOTask& task)
   }
 
   MDY_ASSERT(task.mResourcecStyle == EDyResourceStyle::Resource, "Main deferred task must be resource style.");
-  const auto& infoManager = MDyIOData_Deprecated::GetInstance();
+  const auto& infoManager = MDyIOData::GetInstance();
 
   switch (task.mResourceType) {
   case EDyResourceType::GLShader:
   { // Need to move it as independent function.
-    auto instance = new CDyShaderResource_Deprecated();
-    const auto error = instance->pfInitializeResource(*infoManager.GetShaderInformation(result.mSpecifierName));
-    MDY_ASSERT(error != DY_FAILURE, "");
+    const auto instance = new FDyShaderResource(*infoManager.GetPtrInformation<EDyResourceType::GLShader>(result.mSpecifierName));
     result.mSmtPtrResultInstance = instance;
   } break;
   case EDyResourceType::Texture:
@@ -301,10 +292,8 @@ bool TDyIO::outIsMetaInformationExist(_MIN_ const std::string& specifier, _MIN_ 
   case EDyResourceType::Texture:    return this->mMetaInfoManager->IsTextureMetaInfoExist(specifier);
   case EDyResourceType::Material:   return this->mMetaInfoManager->IsMaterialMetaInfoExist(specifier);
   case EDyResourceType::WidgetMeta: return this->mMetaInfoManager->IsWidgetMetaInfoExist(specifier);
-  default: MDY_UNEXPECTED_BRANCH(); break;
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
   }
-
-  MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
 }
 
 bool TDyIO::outIsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style)
@@ -315,10 +304,8 @@ bool TDyIO::outIsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN
     return this->mRIInformationMap.IsReferenceInstanceExist(specifier, type);
   case EDyResourceStyle::Resource:
     return this->mRIResourceMap.IsReferenceInstanceExist(specifier, type);
-  default: MDY_UNEXPECTED_BRANCH(); break;
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
   }
-
-  MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
 }
 
 void TDyIO::outInsertDeferredTaskList(_MIN_ const DDyIOTask& task)
@@ -332,11 +319,11 @@ void TDyIO::outTryUpdateDeferredTaskList(_MIN_ EDyResourceType type, _MIN_ const
   TDeferredTaskList::value_type result;
   {
     MDY_SYNC_LOCK_GUARD(this->mDeferredTaskMutex);
-    auto resultIt = std::find_if(MDY_BIND_BEGIN_END(this->mIODeferredTaskList), [=](const TDeferredTaskList::value_type& instance)
+    const auto resultIt = std::find_if(MDY_BIND_BEGIN_END(this->mIODeferredTaskList), [=](const TDeferredTaskList::value_type& instance)
     {
-      return instance.mSpecifierName == specifier
-          && instance.mResourceType == type;
+      return instance.mSpecifierName == specifier && instance.mResourceType == type;
     });
+
     MDY_ASSERT(resultIt != this->mIODeferredTaskList.end(), "IODeferredTaskList given iterator must be found.");
     result = *resultIt;
     *resultIt = std::move(this->mIODeferredTaskList.back());

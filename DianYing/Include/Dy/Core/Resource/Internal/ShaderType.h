@@ -107,13 +107,13 @@ struct DDyUniformBufferObjectInformation final
 ///
 struct PDyShaderFragmentInformation final
 {
-  EDyShaderFragmentType mShaderType                 = EDyShaderFragmentType::Vertex;
-  // I/O Shader fragment file path when mIsEnabledRawLoadShaderCode false (by default)
-  std::string           mShaderPath                 = "";
-  // This must be specified validly as glsl code when mIsEnabledRawLoadShaderCode is true.
-  std::string           mShaderRawCode              = "";
-  // If enabled, loader will load mShaderRawCode, but has nullptr throw assert.
-  bool                  mIsEnabledRawLoadShaderCode = false;
+  EDyShaderFragmentType mShaderType         = EDyShaderFragmentType::Vertex;
+  std::string           mShaderFragmentCode = MDY_INITIALIZE_EMPTYSTR;
+
+  /// @deprecated If enabled, loader will load mShaderFragmentCode, but has nullptr throw assert.
+  bool                  mIsEnabledRawLoadShaderCode_Deprecated = false;
+  /// @deprecated I/O Shader fragment file path when mIsEnabledRawLoadShaderCode_Deprecated false (by default)
+  std::string           mShaderPath_Deprecated      = "";
 };
 
 ///
@@ -122,7 +122,7 @@ struct PDyShaderFragmentInformation final
 ///
 struct PDyShaderConstructionDescriptor final
 {
-  std::string                               mShaderName       = "";
+  std::string                               mShaderName       = MDY_INITIALIZE_EMPTYSTR;
   std::vector<PDyShaderFragmentInformation> mShaderFragments  = {};
 };
 

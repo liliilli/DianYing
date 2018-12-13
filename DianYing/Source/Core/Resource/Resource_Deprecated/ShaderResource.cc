@@ -232,9 +232,9 @@ EDySuccess CDyShaderResource_Deprecated::__pInitializeShaderFragments(
     }
 
     // Read shader fragment code. if something is wrong, revert and release all shader fragments.
-    if (!fragmentInformation.mIsEnabledRawLoadShaderCode)
+    if (!fragmentInformation.mIsEnabledRawLoadShaderCode_Deprecated)
     { // If must read from external shader file, let it do.
-      const auto opShaderFragmentCode = DyReadBinaryFileAll(fragmentInformation.mShaderPath);
+      const auto opShaderFragmentCode = DyReadBinaryFileAll(fragmentInformation.mShaderPath_Deprecated);
       if (!opShaderFragmentCode.has_value())
       {
         // @todo output error message;
@@ -253,7 +253,7 @@ EDySuccess CDyShaderResource_Deprecated::__pInitializeShaderFragments(
     }
     else
     { // If must read from internal string code, let it do.
-      const auto codePtr = fragmentInformation.mShaderRawCode.data();
+      const auto codePtr = fragmentInformation.mShaderFragmentCode.data();
       glShaderSource(shaderFragmentId, 1, &codePtr, nullptr);
       glCompileShader(shaderFragmentId);
     }

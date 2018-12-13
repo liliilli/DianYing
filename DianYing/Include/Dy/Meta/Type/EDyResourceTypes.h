@@ -28,10 +28,6 @@ enum class EDyResourceSource
 };
 
 ///
-/// @enum EDyGLShaderType
-/// @brief
-///
-///
 /// @enum EDyShaderFragmentType
 /// @brief Shader fragment type. each fragment values are binded to each shader code prior to linking.
 ///
@@ -42,8 +38,13 @@ enum class EDyShaderFragmentType
   Domain = 2,
   Geometry = 3,
   Pixel = 4,
-  Compute = 5
+  Compute = 5,
+
+  NoneError = 0xFF
 };
+
+/// @brief Shader fragment container list.
+using TFragmentList = std::vector<std::pair<EDyShaderFragmentType, TU32>>;
 
 } /// ::dy namespace
 
