@@ -15,52 +15,51 @@
 /// Header file
 #include <Dy/Core/Resource/Resource/FDyTextureResource.h>
 #include <Dy/Core/Resource/Information/FDyTextureInformation.h>
+#include <Dy/Core/Rendering/Wrapper/PDyGLTextureDescriptor.h>
+#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
 
 namespace dy
 {
 
 FDyTextureResource::FDyTextureResource(_MIN_ const FDyTextureInformation& information)
 {
-  MDY_NOT_IMPLEMENTED_ASSERT();
-#ifdef false
-  const auto& textureInfo     =
-  const auto optGlImageFormat = DyGLGetImageFormatFrom(textureInformation.GetFormat());
+  const auto optGlImageFormat = DyGLGetImageFormatFrom(information.GetFormat());
   MDY_ASSERT(optGlImageFormat.has_value() == true, "Image format type must be valid.");
 
   // Forward dataBuffer's retrieved information to data members.
-  this->mTextureName   = textureInfo.mSpecifierName;
-  this->mTextureType   = textureInfo.mTextureType;
-  this->mTextureWidth  = textureInfo.mBuiltinBufferSize.X;
-  switch (textureInfo.mTextureType)
+  this->mTextureName   = information.GetSpecifierName();
+  this->mTextureType   = information.GetType();
+  this->mTextureSize   = information.GetSize();
+
+  switch (this->mTextureType)
   { // Align size of texture following texture type.
-  case EDyTextureStyleType::D1: this->mTextureHeight = 1; break;
-  case EDyTextureStyleType::D2: this->mTextureHeight = textureInfo.mBuiltinBufferSize.Y; break;
-  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
+  case EDyTextureStyleType::D1: this->mTextureSize.Y = 1; break;
+  case EDyTextureStyleType::D2: break;
+  default: MDY_UNEXPECTED_BRANCH();
   }
 
   PDyGLTextureDescriptor descriptor {};
   { // Make internal descriptor for creating texture.
-    descriptor.mBorderColor       = textureInfo.mBorderColor;
+    descriptor.mBorderColor       = information.GetBorderColor();
     descriptor.mImageFormat       = *optGlImageFormat;
-    descriptor.mIsUsingCustomizedParameter = textureInfo.mIsEnabledCustomedTextureParameter;
-    descriptor.mIsUsingDefaultMipmap = textureInfo.mIsUsingDefaultMipmapGeneration;
-    descriptor.mPtrBuffer         = &textureInformation.GetBuffer();
-    descriptor.mPtrParameterList  = &textureInfo.mParameterList;
-    descriptor.mTextureSize       = DDyVectorInt2{this->mTextureWidth, this->mTextureHeight};
-    descriptor.mType              = textureInfo.mTextureType;
+    descriptor.mIsUsingCustomizedParameter  = information.IsUsingCustomizedParamater();
+    descriptor.mIsUsingDefaultMipmap        = information.IsUsingDefaultMipmap();
+    descriptor.mPtrBuffer         = &information.GetBuffer();
+    descriptor.mPtrParameterList  = &information.GetParameterList();
+    descriptor.mTextureSize       = this->mTextureSize;
+    descriptor.mType              = this->mTextureType;
   }
 
   // Create texture from shared context.
   auto optTextureId = FDyGLWrapper::CreateTexture(descriptor);
   MDY_ASSERT(optTextureId.has_value() == true, "Texture id creation must be succeeded.");
+
   this->mTextureResourceId = *optTextureId;
-  return DY_SUCCESS
-#endif
 }
 
 FDyTextureResource::~FDyTextureResource()
 {
-  MDY_NOT_IMPLEMENTED_ASSERT();
+  if (this->mTextureResourceId) { glDeleteTextures(1, &mTextureResourceId); }
 }
 
 } /// ::dy namespace

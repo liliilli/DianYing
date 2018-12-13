@@ -1,5 +1,8 @@
 #ifndef GUARD_DY_CORE_RESOURCE_RESOURCE_FDYTEXTURERESOURCE_H
 #define GUARD_DY_CORE_RESOURCE_RESOURCE_FDYTEXTURERESOURCE_H
+#include "Dy/Helper/Type/VectorInt2.h"
+#include "Dy/Core/Resource/Internal/TextureEnums.h"
+
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -39,9 +42,18 @@ public:
   FDyTextureResource(_MIN_ const FDyTextureInformation& information);
   ~FDyTextureResource();
 
+  /// @brief Get specifier name of valid shader resource.
+  MDY_NODISCARD const std::string& GetSpecifierName() const noexcept
+  {
+    return this->mTextureName;
+  }
+
 private:
+  std::string   mTextureName        = MDY_INITIALIZE_EMPTYSTR;
+  DDyVectorInt2 mTextureSize        = {};
+  EDyTextureStyleType mTextureType  = EDyTextureStyleType::None;
 
-
+  TU32          mTextureResourceId  = MDY_INITIALIZE_DEFUINT;
 };
 
 } /// ::dy namespace

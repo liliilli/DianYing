@@ -30,6 +30,12 @@ public:
   FDyTextureInformation(_MIN_ const PDyTextureInstanceMetaInfo& metaInfo);
   ~FDyTextureInformation() = default;
 
+  /// @brief Get shader's specifier name.
+  FORCEINLINE MDY_NODISCARD const std::string& GetSpecifierName() const noexcept
+  {
+    return this->mSpecifierName;
+  }
+
   /// @brief Get buffer of image.
   FORCEINLINE MDY_NODISCARD const std::vector<TU08>& GetBuffer() const noexcept
   {
@@ -42,14 +48,54 @@ public:
     return this->mImageActualPixelFormat;
   }
 
+  /// @brief Get texture's size.
+  FORCEINLINE MDY_NODISCARD const DDyVectorInt2& GetSize() const noexcept
+  {
+    return this->mTextureSize;
+  }
+
+  /// @brief Get texture's type (1d, 2d, etc)
+  FORCEINLINE MDY_NODISCARD EDyTextureStyleType GetType() const noexcept
+  {
+    return this->mTextureType;
+  }
+
+  /// @brief Get Border color of texture.
+  MDY_NODISCARD const DDyColorRGBA& GetBorderColor() const noexcept
+  {
+    return this->mBorderColor;
+  }
+
+  /// @brief
+  MDY_NODISCARD bool IsUsingCustomizedParamater() const noexcept
+  {
+    return this->mIsUsingCustomParams;
+  }
+
+  /// @brief
+  MDY_NODISCARD bool IsUsingDefaultMipmap() const noexcept
+  {
+    return this->mIsUsingDefaultMipmap;
+  }
+
+  /// @brief
+  MDY_NODISCARD const auto& GetParameterList() const noexcept
+  {
+    return this->mParameterOptionList;
+  }
+
 private:
   using TParameterList = PDyTextureInstanceMetaInfo::TParameterList;
 
-  std::vector<TU08>         mTextureImageBuffer = {};
-  DDyVectorInt2             mTextureSize = {};
+  std::string               mSpecifierName          = MDY_INITIALIZE_EMPTYSTR;
+  std::vector<TU08>         mTextureImageBuffer     = {};
+  DDyVectorInt2             mTextureSize            = {};
   EDyImageColorFormatStyle  mImageActualPixelFormat = EDyImageColorFormatStyle::NoneError;
+  EDyTextureStyleType       mTextureType            = EDyTextureStyleType::None;
   DDyColorRGBA              mBorderColor;
   TParameterList            mParameterOptionList;
+  bool                      mIsUsingDefaultMipmap   = false;
+  bool                      mIsUsingCustomParams    = false;
 };
 
 } /// ::dy namespace

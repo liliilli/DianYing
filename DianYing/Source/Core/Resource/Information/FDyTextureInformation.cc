@@ -20,16 +20,13 @@ namespace dy
 
 FDyTextureInformation::FDyTextureInformation(_MIN_ const PDyTextureInstanceMetaInfo& metaInfo)
 {
-#ifdef false
-#if defined(NDEBUG) == false
-  // Print texture debug information.
-  DyDebugPrintTextureInformation(textureConstructionDescriptor);
-#endif
-#endif
-
   // Common
+  this->mSpecifierName        = metaInfo.mSpecifierName;
   this->mBorderColor          = metaInfo.mBorderColor;
   this->mParameterOptionList  = metaInfo.mParameterList;
+  this->mTextureType          = metaInfo.mTextureType;
+  this->mIsUsingDefaultMipmap = metaInfo.mIsUsingDefaultMipmapGeneration;
+  this->mIsUsingCustomParams  = metaInfo.mIsEnabledCustomedTextureParameter;
 
   if (metaInfo.mSourceType == EDyResourceSource::Builtin)
   { // If builtin, just copy buffer to information.
