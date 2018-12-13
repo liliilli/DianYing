@@ -16,6 +16,7 @@
 #include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLWindowContextDescriptor.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLTextureDescriptor.h>
+#include <Dy/Core/Rendering/Wrapper/PDyGLShaderFragmentDescriptor.h>
 
 namespace dy
 {
@@ -131,6 +132,61 @@ void FDyGLWrapper::DeleteTexture(_MIN_ const TU32 validTextureId)
 {
   MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mTextureMutex);
   glDeleteTextures(1, &validTextureId);
+}
+
+std::optional<TU32> FDyGLWrapper::CreateShaderFragment(_MIN_ const PDyGLShaderFragmentDescriptor& descriptor)
+{
+  TU32 shaderFragmentId;
+
+  // Get OpenGL Shader type
+  {
+    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mTextureMutex);
+    switch (descriptor.mType)
+    {
+    case EDyShaderFragmentType::Vertex:   shaderFragmentId = glCreateShader(GL_VERTEX_SHADER);          break;
+    case EDyShaderFragmentType::Hull:     shaderFragmentId = glCreateShader(GL_TESS_CONTROL_SHADER);    break;
+    case EDyShaderFragmentType::Domain:   shaderFragmentId = glCreateShader(GL_TESS_EVALUATION_SHADER); break;
+    case EDyShaderFragmentType::Geometry: shaderFragmentId = glCreateShader(GL_GEOMETRY_SHADER);        break;
+    case EDyShaderFragmentType::Pixel:    shaderFragmentId = glCreateShader(GL_FRAGMENT_SHADER);        break;
+    default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
+    }
+  }
+
+  MDY_ASSERT(shaderFragmentId > 0,                        "Failed to create shader.");
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mPtrBuffer),  "Shader fragment buffer must not be null.");
+
+  {
+    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mTextureMutex);
+    glShaderSource(shaderFragmentId, 1, &descriptor.mPtrBuffer, nullptr);
+    glCompileShader(shaderFragmentId);
+  }
+
+  return shaderFragmentId;
+}
+
+void FDyGLWrapper::DeleteShaderFragment(_MIN_ const TU32 shaderFragmentId)
+{
+  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mTextureMutex);
+  glDeleteShader(shaderFragmentId);
+}
+
+std::optional<TU32> FDyGLWrapper::CreateShaderProgram(_MIN_ const TFragmentList& fragmentList)
+{
+  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mTextureMutex);
+  const TU32 shaderProgramId = glCreateProgram();
+
+  // Create GlShaderProgram, and attach fragments to link them.
+  for (auto& [shaderFragmentType, shaderFragmentId] : fragmentList) { glAttachShader(shaderProgramId, shaderFragmentId); }
+  glLinkProgram(shaderProgramId);
+  for (auto& [shaderFragmentType, shaderFragmentId] : fragmentList) { glDetachShader(shaderProgramId, shaderFragmentId); }
+
+  return shaderProgramId;
+}
+
+void FDyGLWrapper::DeleteShaderProgram(_MIN_ const TU32 shaderProgramId)
+{
+  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mTextureMutex);
+  glDeleteShader(shaderProgramId);
 }
 
 } /// ::dy namespace

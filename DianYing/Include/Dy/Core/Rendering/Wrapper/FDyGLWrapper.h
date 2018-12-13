@@ -13,12 +13,15 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Meta/Type/EDyResourceTypes.h>
+
 //!
 //! Forward declaration
 //!
 
 namespace dy
 {
+struct PDyGLShaderFragmentDescriptor;
 struct PDyGLTextureDescriptor;
 struct PDyGLWindowContextDescriptor;
 } /// ::dy namespace
@@ -55,6 +58,22 @@ public:
   /// @brief Delete texture if texture id is valid.
   /// This function is thread-safe and get performance down.
   static void DeleteTexture(_MIN_ const TU32 validTextureId);
+
+  /// @brief Create shader fragment and get fragment id. \n
+  /// This function is thread-safe and get performance down.
+  static MDY_NODISCARD std::optional<TU32> CreateShaderFragment(_MIN_ const PDyGLShaderFragmentDescriptor& descriptor);
+
+  /// @brief Delete shader fragment with valid shader fragment id. \n
+  /// This function is thread-safe and get performance down.
+  static void DeleteShaderFragment(_MIN_ const TU32 shaderFragmentId);
+
+  /// @brief Create shader program and get shader program id. \n
+  /// This function is thread-safe and get performance down.
+  static MDY_NODISCARD std::optional<TU32> CreateShaderProgram(_MIN_ const TFragmentList& fragmentList);
+
+  /// @brief Delete shader program with valid shader program id.
+  /// This function is thread-safe and get performance down.
+  static void DeleteShaderProgram(_MIN_ const TU32 shaderProgramId);
 
 private:
   static std::mutex mTextureMutex;
