@@ -21,9 +21,11 @@
 
 namespace dy
 {
+struct PDyGLVaoBindDescriptor;
 struct PDyGLShaderFragmentDescriptor;
 struct PDyGLTextureDescriptor;
 struct PDyGLWindowContextDescriptor;
+struct PDyGLBufferDescriptor;
 } /// ::dy namespace
 
 //!
@@ -75,8 +77,28 @@ public:
   /// This function is thread-safe and get performance down.
   static void DeleteShaderProgram(_MIN_ const TU32 shaderProgramId);
 
+  /// @brief Create direct buffer which can be shared between OpenGL contexts. \n
+  /// This function is thread-safe and get performance down.
+  static MDY_NODISCARD std::optional<TU32> CreateBuffer(_MIN_ const PDyGLBufferDescriptor& descriptor);
+
+  /// @brief Delete shader program with valid shader program id.
+  /// This function is thread-safe and get performance down.
+  static void DeleteBuffer(_MIN_ const TU32 directBufferId);
+
+  /// @brief Just create and return created vertex array object id.
+  static MDY_NODISCARD TU32 CreateVertexArrayObject(void);
+
+  /// @brief Bind properties with valid Vertex Array Object Id.
+  static void BindVertexArrayObject(_MIN_ const PDyGLVaoBindDescriptor& descriptor);
+
+  /// @brief Delete Vertex Array Object id.
+  static void DeleteVertexArrayObject(_MIN_ const TU32 vertexArrayObjectId);
+
 private:
   static std::mutex mTextureMutex;
+
+  /// @brief
+  static MDY_NODISCARD const PDyGLVaoBindDescriptor& GetDefaultAttributeFormatDescriptor() noexcept;
 };
 
 } /// ::dy namespace

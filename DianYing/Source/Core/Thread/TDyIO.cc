@@ -20,6 +20,8 @@
 #include <Dy/Management/IO/MDyIOResource.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Management/WindowManager.h>
+#include "Dy/Core/Resource/Resource/FDyModelResource.h"
+#include "Dy/Core/Resource/Internal/FDyModelVBOIntermediate.h"
 
 #define MDY_CALL_BUT_NOUSE_RESULT(__MAExpression__) \
   { MDY_NOTUSED const auto MDY_TOKENPASTE2(_, __LINE__) = __MAExpression__; }
@@ -358,6 +360,10 @@ void TDyIO::outMainForceProcessDeferredMainTaskList()
   this->mIOProcessMainTaskList.clear();
 }
 
+#define MDY_DELETE_RAWHEAP_SAFELY(__MAHeapInstance__) \
+  delete __MAHeapInstance__; \
+  __MAHeapInstance__ = MDY_INITIALIZE_NULL
+
 DDyIOWorkerResult TDyIO::outMainProcessTask(_MIN_ const DDyIOTask& task)
 {
   DDyIOWorkerResult result{};
@@ -379,8 +385,11 @@ DDyIOWorkerResult TDyIO::outMainProcessTask(_MIN_ const DDyIOTask& task)
   } break;
   case EDyResourceType::Texture:
   case EDyResourceType::Model:
-  { // Get intemediate instance from task, and make model resource.
-    MDY_NOT_IMPLEMENTED_ASSERT();
+  { // Get intemediate instance from task, and make model resource. (Information => `Immediate Instance` => Resource)
+    Owner<FDyModelVBOIntermediate*> ptrrawIntermediateInstance = static_cast<FDyModelVBOIntermediate*>(task.mRawInstanceForUsingLater);
+    const auto instance = new FDyModelResource(*ptrrawIntermediateInstance);
+    MDY_DELETE_RAWHEAP_SAFELY(ptrrawIntermediateInstance);
+    result.mSmtPtrResultInstance = instance;
   } break;
   case EDyResourceType::Material:
     MDY_UNEXPECTED_BRANCH();

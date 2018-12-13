@@ -208,6 +208,10 @@
     <ClCompile Include="Source\Management\IO\MDyIOResource.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyModelInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\FDyModelVBOIntermediate.cc" />
+    <ClCompile Include="Source\Core\Resource\Internal\FDyMeshVBOIntermediate.cc" />
+    <ClCompile Include="Source\Core\Resource\Resource\FDyModelResource.cc" />
+    <ClCompile Include="Source\Core\Resource\Resource\FDyMeshResource.cc" />
+    <ClCompile Include="Source\Core\Rendering\Wrapper\FDyGLWrapperSub.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -533,6 +537,9 @@
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyModelResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Internal\FDyModelVBOIntermediate.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyMeshResource.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Internal\FDyMeshVBOIntermediate.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLBufferDescriptor.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLVaoBindDescriptor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

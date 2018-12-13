@@ -17,6 +17,8 @@
 #include <Dy/Core/Rendering/Wrapper/PDyGLWindowContextDescriptor.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLTextureDescriptor.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLShaderFragmentDescriptor.h>
+#include <Dy/Core/Rendering/Wrapper/PDyGLBufferDescriptor.h>
+#include <Dy/Core/Rendering/Wrapper/PDyGLVaoBindDescriptor.h>
 
 namespace dy
 {
@@ -59,12 +61,6 @@ void FDyGLWrapper::CreateGLContext(_MIN_ GLFWwindow* window)
 
 std::optional<TU32> FDyGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescriptor& descriptor)
 {
-
-
-  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  //! FUNCTION BODY ∨
-  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
   // Validation check.
   MDY_ASSERT(descriptor.mImageFormat != GL_NONE, "Texture Image format must be specified.");
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mPtrBuffer), "Texture Image buffer must not be null.");
@@ -187,6 +183,99 @@ void FDyGLWrapper::DeleteShaderProgram(_MIN_ const TU32 shaderProgramId)
 {
   MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mTextureMutex);
   glDeleteShader(shaderProgramId);
+}
+
+#define MDY_GL_NONE 0
+#define MDY_GL_NONE_VAO 0
+
+std::optional<TU32> FDyGLWrapper::CreateBuffer(_MIN_ const PDyGLBufferDescriptor& descriptor)
+{
+  TU32 id = MDY_INITIALIZE_DEFUINT;
+
+  switch (descriptor.mBufferType)
+  {
+  case EDyDirectBufferType::VertexBuffer:
+  { // VBO
+    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mTextureMutex);
+    glGenBuffers(1, &id);
+    glBindBuffer(GL_ARRAY_BUFFER, id);
+    glBufferData(GL_ARRAY_BUFFER, descriptor.mBufferByteSize, descriptor.mPtrBuffer, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, MDY_GL_NONE);
+  } break;
+  case EDyDirectBufferType::ElementBuffer:
+  { // EBO
+    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mTextureMutex);
+    glGenBuffers(1, &id);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, descriptor.mBufferByteSize, descriptor.mPtrBuffer, GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, MDY_GL_NONE);
+  } break;
+  case EDyDirectBufferType::UniformBuffer:
+  case EDyDirectBufferType::TransformFeedback:
+  case EDyDirectBufferType::ShaderStorage:
+    MDY_NOT_IMPLEMENTED_ASSERT();
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
+  }
+
+  return id;
+}
+
+void FDyGLWrapper::DeleteBuffer(_MIN_ const TU32 directBufferId)
+{
+  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mTextureMutex);
+  glDeleteBuffers(1, &directBufferId);
+}
+
+TU32 FDyGLWrapper::CreateVertexArrayObject()
+{
+  TU32 vaoId = MDY_INITIALIZE_DEFUINT;
+  {
+    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mTextureMutex);
+    glGenVertexArrays(1, &vaoId);
+  }
+  return vaoId;
+}
+
+void FDyGLWrapper::BindVertexArrayObject(const PDyGLVaoBindDescriptor& iDescriptor)
+{
+  using EFormatType = PDyGLVaoBindDescriptor::EFormatType;
+
+  if (iDescriptor.mIsUsingDefaultDyAttributeModel == true)
+  {
+    auto descriptor = GetDefaultAttributeFormatDescriptor();
+    descriptor.mVaoId      = iDescriptor.mVaoId;
+    descriptor.mBoundVboId = iDescriptor.mBoundVboId;
+    descriptor.mBoundEboId = iDescriptor.mBoundEboId;
+    BindVertexArrayObject(descriptor);
+    return;
+  }
+
+  const auto size = iDescriptor.mAttributeFormatList.size();
+  { // Critical section.
+    MDY_SYNC_LOCK_GUARD (FDyGLWrapper::mTextureMutex);
+    glBindVertexArray   (iDescriptor.mVaoId);
+    glBindVertexBuffer  (0, iDescriptor.mBoundVboId, iDescriptor.mOffsetByteSize, iDescriptor.mStrideByteSize);
+    if (iDescriptor.mBoundEboId > 0) { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iDescriptor.mBoundEboId); }
+
+    for (auto i = 0u; i < size; ++i)
+    { // Set up vbo attribute formats.
+      const auto&   attributeFormat = iDescriptor.mAttributeFormatList[i];
+      const GLenum  type            = DyGetGLTypeFrom(attributeFormat.mType);
+      const GLenum  isMustNormalized= attributeFormat.mIsMustNormalized == true ? GL_TRUE : GL_FALSE;
+
+      glEnableVertexAttribArray(i);
+      if (type == GL_INT) { glVertexAttribIFormat(i, attributeFormat.mElementCount, type, attributeFormat.mOffsetByteSize); }
+      else                { glVertexAttribFormat(i, attributeFormat.mElementCount, type, isMustNormalized, attributeFormat.mOffsetByteSize); }
+      glVertexAttribBinding(i, 0);
+    }
+    glBindVertexArray(MDY_GL_NONE_VAO);
+  }
+}
+
+void FDyGLWrapper::DeleteVertexArrayObject(_MIN_ const TU32 vertexArrayObjectId)
+{
+  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mTextureMutex);
+  glDeleteVertexArrays(1, &vertexArrayObjectId);
 }
 
 } /// ::dy namespace

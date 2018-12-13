@@ -43,6 +43,9 @@ void MDyIOResource::InsertResult(_MIN_ EDyResourceType type, _MIN_ void* ptrrawI
     this->__mTextureContainer.MoveInsert(ptr->GetSpecifierName(), std::move(ptr));
   } break;
   case EDyResourceType::Model:
+  {
+    MDY_NOT_IMPLEMENTED_ASSERT();
+  } break;
   case EDyResourceType::Material:
     MDY_NOT_IMPLEMENTED_ASSERT();
   default: MDY_UNEXPECTED_BRANCH(); break;
