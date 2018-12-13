@@ -21,7 +21,7 @@ namespace dy
 {
 struct  PDyGlAttachmentInformation;
 class   CDyShaderResource_Deprecated;
-class   CDyModelResource;
+class   CDyModelResource_Deprecated;
 } /// ::dy namespace
 
 //!
@@ -59,7 +59,7 @@ private:
 
   /// Shader information pointer
   CDyShaderResource_Deprecated*          mShaderPtr            = MDY_INITIALIZE_NULL;
-  CDyModelResource*           mScreenRenderTrianglePtr    = MDY_INITIALIZE_NULL;
+  CDyModelResource_Deprecated*           mScreenRenderTrianglePtr    = MDY_INITIALIZE_NULL;
 };
 
 } /// ::dy namespace

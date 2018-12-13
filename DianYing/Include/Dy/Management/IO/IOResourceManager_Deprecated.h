@@ -118,7 +118,7 @@ public:
   /// @brief Get valid model resource instance. If not find, just return nullptr as failure sign.
   ///
   [[nodiscard]]
-  CDyModelResource* GetModelResource(const std::string& modelName);
+  CDyModelResource_Deprecated* GetModelResource(const std::string& modelName);
 
   ///
   /// @brief
@@ -143,7 +143,7 @@ private:
   THashList<std::unique_ptr<CDyShaderResource_Deprecated>>   mOnBoardShaderLists;
   THashList<std::unique_ptr<CDyTextureResource_Deprecated>>  mOnBoardTextureLists;
   THashList<std::unique_ptr<CDyMaterialResource_Deprecated>> mOnBoardMaterialLists;
-  THashList<std::unique_ptr<CDyModelResource>>    mOnBoardModelLists;
+  THashList<std::unique_ptr<CDyModelResource_Deprecated>>    mOnBoardModelLists;
   THashList<std::unique_ptr<CDySoundResource_Deprecated>>    mOnBoardSoundLists;
 
   std::mutex mTemporalIOInsertDeleteGetMutex;

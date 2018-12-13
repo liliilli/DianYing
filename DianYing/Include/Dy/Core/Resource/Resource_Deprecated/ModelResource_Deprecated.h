@@ -37,19 +37,19 @@ namespace dy
 {
 
 ///
-/// @class CDyModelResource
+/// @class CDyModelResource_Deprecated_Deprecated
 /// @brief Model resource instance for storing and managing mesh nonsafe heap resource
 /// and other properties.
 ///
-class CDyModelResource
+class CDyModelResource_Deprecated
 {
 public:
-  CDyModelResource() = default;
-  CDyModelResource(const CDyModelResource&)             = delete;
-  CDyModelResource(CDyModelResource&&)                  = default;
-  CDyModelResource& operator=(const CDyModelResource&)  = delete;
-  CDyModelResource& operator=(CDyModelResource&&)       = default;
-  ~CDyModelResource();
+  CDyModelResource_Deprecated() = default;
+  CDyModelResource_Deprecated(const CDyModelResource_Deprecated&)             = delete;
+  CDyModelResource_Deprecated(CDyModelResource_Deprecated&&)                  = default;
+  CDyModelResource_Deprecated& operator=(const CDyModelResource_Deprecated&)  = delete;
+  CDyModelResource_Deprecated& operator=(CDyModelResource_Deprecated&&)       = default;
+  ~CDyModelResource_Deprecated();
 
   ///
   /// @brief Check this model resource is able to animated.

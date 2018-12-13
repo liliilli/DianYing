@@ -25,7 +25,7 @@ namespace dy
 struct  PDyGlAttachmentInformation;
 struct  DDyUboDirectionalLight;
 struct  PDyGlFrameBufferInformation;
-class   CDyModelResource;
+class   CDyModelResource_Deprecated;
 } /// ::dy namespace
 
 //!
@@ -108,7 +108,7 @@ private:
 
   /// mDyBtFbUiBasic
   PDyGlFrameBufferInformation*  mDyBtFbScrFin               = MDY_INITIALIZE_NULL;
-  CDyModelResource*             mScreenRenderTrianglePtr    = MDY_INITIALIZE_NULL;
+  CDyModelResource_Deprecated*             mScreenRenderTrianglePtr    = MDY_INITIALIZE_NULL;
 
   std::queue<TI32>    mDirLightAvailableList  = {};
 };

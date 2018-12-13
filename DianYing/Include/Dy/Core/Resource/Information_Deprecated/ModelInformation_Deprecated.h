@@ -37,7 +37,7 @@ namespace dy
 {
 struct PDyModelInstanceMetaInfo;
 enum class EDyTextureMapType : unsigned char;
-class CDyModelResource;
+class CDyModelResource_Deprecated;
 class DDyTextureInformation_Deprecated;
 } /// ::dy namespace
 
@@ -78,7 +78,7 @@ public:
   }
 
   ///
-  /// @brief Check if object is being binded to CDyModelResource instance.
+  /// @brief Check if object is being binded to CDyModelResource_Deprecated instance.
   ///
   [[nodiscard]]
   FORCEINLINE bool IsBeingBindedToResource() const noexcept
@@ -138,7 +138,7 @@ private:
   //! Resource pointers binding
   //!
 
-  FORCEINLINE void __pfSetModelResourceLink(NotNull<CDyModelResource*> ptr) const noexcept
+  FORCEINLINE void __pfSetModelResourceLink(NotNull<CDyModelResource_Deprecated*> ptr) const noexcept
   {
     __mLinkedModelResourcePtr = ptr;
   }
@@ -147,9 +147,9 @@ private:
     this->__mLinkedModelResourcePtr = nullptr;
   }
 
-  MDY_TRANSIENT CDyModelResource* __mLinkedModelResourcePtr = nullptr;
+  MDY_TRANSIENT CDyModelResource_Deprecated* __mLinkedModelResourcePtr = nullptr;
 
-  friend class CDyModelResource;
+  friend class CDyModelResource_Deprecated;
   friend class MDyIOResource_Deprecated;
 };
 

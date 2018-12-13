@@ -350,7 +350,7 @@ EDySuccess MDyIOResource_Deprecated::CreateModelResource_Deprecated(const std::s
   }
 
   // Create texture resource and insert to empty memory space.
-  auto modelResource = std::make_unique<CDyModelResource>();
+  auto modelResource = std::make_unique<CDyModelResource_Deprecated>();
   if (const auto success = modelResource->pInitializeModelResource(*modelInfo); success == DY_FAILURE)
   {
     MDY_LOG_ERROR("{}::{} | Cannot create model resource properly. | Model resource name : {}",
@@ -443,7 +443,7 @@ CDyMaterialResource_Deprecated* MDyIOResource_Deprecated::GetMaterialResource(co
   return it->second.get();
 }
 
-CDyModelResource* MDyIOResource_Deprecated::GetModelResource(const std::string& modelName)
+CDyModelResource_Deprecated* MDyIOResource_Deprecated::GetModelResource(const std::string& modelName)
 {
   const auto it = this->mOnBoardModelLists.find(modelName);
   if (it == this->mOnBoardModelLists.end())

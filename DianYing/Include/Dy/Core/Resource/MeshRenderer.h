@@ -20,7 +20,7 @@
 namespace dy
 {
 struct  PDyRendererConsturctionDescriptor;
-class   CDyModelResource;
+class   CDyModelResource_Deprecated;
 class   CDyMaterialResource_Deprecated;
 class   CDySubmeshResource_Deprecated;
 } /// ::dy namespace
@@ -62,7 +62,7 @@ public:
   void CallDraw();
 
 private:
-  CDyModelResource*                 mModelReferencePtr    = nullptr;
+  CDyModelResource_Deprecated*                 mModelReferencePtr    = nullptr;
   std::vector<CDyMaterialResource_Deprecated*> mMaterialResourcePtr  = {};
 
   ///

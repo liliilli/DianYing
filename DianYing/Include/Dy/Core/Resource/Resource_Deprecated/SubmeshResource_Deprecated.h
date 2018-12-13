@@ -70,7 +70,7 @@ private:
   DDyGlBufferIdInformation        mBufferIdInformation     = {};
   DDySubmeshFlagInformation       mMeshFlagInformation     = {};
 
-  friend class CDyModelResource;
+  friend class CDyModelResource_Deprecated;
   friend class FDyModelVBOIntermediate;
 };
 

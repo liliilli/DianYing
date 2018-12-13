@@ -32,14 +32,14 @@ constexpr float defaultTimeDuration = 30.f;
 namespace dy
 {
 
-CDyModelResource::~CDyModelResource()
+CDyModelResource_Deprecated::~CDyModelResource_Deprecated()
 {
   // Release all resource bind to this instance.
   if (this->__mLinkedModelInformationPtr) { this->__mLinkedModelInformationPtr->__pfResetModelResourceLink(); }
   this->mMeshResource.clear();
 }
 
-void CDyModelResource::UpdateBoneAnimationTransformList(float elapsedTime)
+void CDyModelResource_Deprecated::UpdateBoneAnimationTransformList(float elapsedTime)
 {
   // Get bone final transform list from informations's aiScene.
   auto& modelInformation = *this->__mLinkedModelInformationPtr;
@@ -57,12 +57,12 @@ void CDyModelResource::UpdateBoneAnimationTransformList(float elapsedTime)
 }
 
 const std::vector<DDyGeometryBoneInformation>&
-CDyModelResource::GetModelAnimationTransformMatrixList() const noexcept
+CDyModelResource_Deprecated::GetModelAnimationTransformMatrixList() const noexcept
 {
   return this->__mLinkedModelInformationPtr->mOverallModelBoneInformations;
 }
 
-void CDyModelResource::pReadNodeHierarchy(float animationElapsedTime, DDyModelInformation_Deprecated& modelInfo,
+void CDyModelResource_Deprecated::pReadNodeHierarchy(float animationElapsedTime, DDyModelInformation_Deprecated& modelInfo,
                                           const DMoeBoneNodeInformation& boneNode, const DDyMatrix4x4& parentTransform)
 {
   using TNodeAnim = NotNull<const DMoeAnimationInformation::DAnimChannel*>;
@@ -229,7 +229,7 @@ void CDyModelResource::pReadNodeHierarchy(float animationElapsedTime, DDyModelIn
   }
 }
 
-EDySuccess CDyModelResource::pInitializeModelResource(const DDyModelInformation_Deprecated& modelInformation)
+EDySuccess CDyModelResource_Deprecated::pInitializeModelResource(const DDyModelInformation_Deprecated& modelInformation)
 {
   const auto& submeshInformations = modelInformation.mSubmeshInformations;
   for (const auto& submeshInformation : submeshInformations)
@@ -238,7 +238,7 @@ EDySuccess CDyModelResource::pInitializeModelResource(const DDyModelInformation_
     if (meshResource->pfInitializeSubmeshResource(submeshInformation) == DY_FAILURE)
     {
       MDY_LOG_ERROR("{} | Failed to create submesh resource. | Model name : {}",
-                    "CDyModelResource::pInitializeModelResource", modelInformation.mModelName);
+                    "CDyModelResource_Deprecated::pInitializeModelResource", modelInformation.mModelName);
       return DY_FAILURE;
     }
 
@@ -246,7 +246,7 @@ EDySuccess CDyModelResource::pInitializeModelResource(const DDyModelInformation_
     if (submeshInformation.GetInformation().mIsEnabledSkeletalAnimation)
     {
       this->mIsEnabledModelSkeletalAnimation = true;
-      MDY_LOG_DEBUG_D("{} | Model has bone so can be animated. | Model name : {}", "CDyModelResource::pInitializeModelResource", modelInformation.mModelName);
+      MDY_LOG_DEBUG_D("{} | Model has bone so can be animated. | Model name : {}", "CDyModelResource_Deprecated::pInitializeModelResource", modelInformation.mModelName);
     }
   }
   return DY_SUCCESS;

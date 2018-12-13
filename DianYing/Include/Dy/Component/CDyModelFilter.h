@@ -24,7 +24,7 @@
 
 namespace dy
 {
-class CDyModelResource;
+class CDyModelResource_Deprecated;
 class CDyModelRenderer;
 } /// unnamed namespace
 
@@ -69,7 +69,7 @@ public:
   /// @brief  Get model reference ptr.
   /// @return Valid model resource pointer reference.
   ///
-  MDY_NODISCARD FORCEINLINE NotNull<CDyModelResource*> GetModelReference() const noexcept
+  MDY_NODISCARD FORCEINLINE NotNull<CDyModelResource_Deprecated*> GetModelReference() const noexcept
   {
     return DyMakeNotNull(this->mModelReferencePtr);
   }
@@ -112,7 +112,7 @@ private:
   MDY_NODISCARD EDySuccess pTryUnbindingToModelRendererComponent();
 
   /// Valid model rerenfence ptr.
-  MDY_TRANSIENT CDyModelResource* mModelReferencePtr          = MDY_INITIALIZE_NULL;
+  MDY_TRANSIENT CDyModelResource_Deprecated* mModelReferencePtr          = MDY_INITIALIZE_NULL;
   /// CDyModelRendererr reference ptr.
   CDyModelRenderer*               mModelRendererReferencePtr  = MDY_INITIALIZE_NULL;
 
