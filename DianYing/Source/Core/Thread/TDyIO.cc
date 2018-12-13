@@ -160,45 +160,6 @@ EDySuccess TDyIO::outCreateReferenceInstance(_MIN_ const std::string& specifier,
   }
 }
 
-void TDyIO::outMainForceProcessDeferredMainTaskList()
-{
-  MDY_SYNC_LOCK_GUARD(this->mProcessTaskFromMainMutex);
-  for (const auto& task : this->mIOProcessMainTaskList)
-  {
-    SDyIOConnectionHelper::InsertResult(outMainProcessTask(task));
-  }
-  this->mIOProcessMainTaskList.clear();
-}
-
-DDyIOWorkerResult TDyIO::outMainProcessTask(_MIN_ const DDyIOTask& task)
-{
-  DDyIOWorkerResult result{};
-  { // Copy properties to result instance.
-    result.mResourceType        = task.mResourceType;
-    result.mResourceStyle       = task.mResourcecStyle;
-    result.mSpecifierName       = task.mSpecifierName;
-    result.mIsHaveDeferredTask  = task.mIsResourceDeferred;
-  }
-
-  MDY_ASSERT(task.mResourcecStyle == EDyResourceStyle::Resource, "Main deferred task must be resource style.");
-  const auto& infoManager = MDyIOData::GetInstance();
-
-  switch (task.mResourceType) {
-  case EDyResourceType::GLShader:
-  { // Need to move it as independent function.
-    const auto instance = new FDyShaderResource(*infoManager.GetPtrInformation<EDyResourceType::GLShader>(result.mSpecifierName));
-    result.mSmtPtrResultInstance = instance;
-  } break;
-  case EDyResourceType::Texture:
-  case EDyResourceType::Model:
-  case EDyResourceType::Material:
-    MDY_UNEXPECTED_BRANCH();
-  default: MDY_UNEXPECTED_BRANCH(); break;
-  };
-
-  return result;
-}
-
 EDySuccess TDyIO::outTryEnqueueTask(
     _MIN_ const std::string& specifier,
     _MIN_ EDyResourceType resourceType, _MIN_ EDyResourceStyle resourceStyle,
@@ -249,6 +210,13 @@ EDySuccess TDyIO::outTryEnqueueTask(
   task.mScope         = scope;
   task.mTaskPriority  = kDefaultPriority;
   task.mIsResourceDeferred = isDerivedFromResource;
+
+  // If this is model & resource task, change `mResourceType` to `__ModelVBO` as intermediate task.
+  // Because VAO can not be created and shared from other thread not main thread.
+  if (task.mResourceType == EDyResourceType::Model && task.mResourcecStyle == EDyResourceStyle::Resource)
+  {
+    task.mResourceType = EDyResourceType::__ModelVBO;
+  }
 
   if (isShouldDeferred == true)
   { // If `Resource` should be deferred task,
@@ -317,6 +285,8 @@ void TDyIO::outInsertDeferredTaskList(_MIN_ const DDyIOTask& task)
 void TDyIO::outTryUpdateDeferredTaskList(_MIN_ EDyResourceType type, _MIN_ const std::string& specifier)
 {
   TDeferredTaskList::value_type result;
+  if (type == EDyResourceType::Model) { type = EDyResourceType::__ModelVBO; }
+
   {
     MDY_SYNC_LOCK_GUARD(this->mDeferredTaskMutex);
     const auto resultIt = std::find_if(MDY_BIND_BEGIN_END(this->mIODeferredTaskList), [=](const TDeferredTaskList::value_type& instance)
@@ -358,21 +328,71 @@ void TDyIO::outForceProcessIOInsertPhase() noexcept
 
     if (resultItem.mResourceStyle == EDyResourceStyle::Information)
     { // If Information, insert result into mIOData.
-      mIODataManager->InsertResult(resultItem.mResourceType, resultItem.mSmtPtrResultInstance);
+      this->mIODataManager->InsertResult(resultItem.mResourceType, resultItem.mSmtPtrResultInstance);
 
       if (resultItem.mIsHaveDeferredTask == true)
       { // If need to insert resource task of deferred list into queue, do this.
-        outTryUpdateDeferredTaskList(resultItem.mResourceType, resultItem.mSpecifierName);
+        this->outTryUpdateDeferredTaskList(resultItem.mResourceType, resultItem.mSpecifierName);
       }
     }
     else
     { // If Resource, insert result into mIOResource.
       if (resultItem.mSmtPtrResultInstance == nullptr) { continue; }
-      mIOResourceManager->InsertResult(resultItem.mResourceType, resultItem.mSmtPtrResultInstance);
+      this->mIOResourceManager->InsertResult(resultItem.mResourceType, resultItem.mSmtPtrResultInstance);
     }
   }
   this->mWorkerResultList.clear();
 }
+
+//!
+//! Resource populate from main thread.
+//!
+
+void TDyIO::outMainForceProcessDeferredMainTaskList()
+{
+  MDY_SYNC_LOCK_GUARD(this->mProcessTaskFromMainMutex);
+  for (const auto& task : this->mIOProcessMainTaskList)
+  {
+    SDyIOConnectionHelper::InsertResult(outMainProcessTask(task));
+  }
+  this->mIOProcessMainTaskList.clear();
+}
+
+DDyIOWorkerResult TDyIO::outMainProcessTask(_MIN_ const DDyIOTask& task)
+{
+  DDyIOWorkerResult result{};
+  { // Copy properties to result instance.
+    result.mResourceType        = task.mResourceType;
+    result.mResourceStyle       = task.mResourcecStyle;
+    result.mSpecifierName       = task.mSpecifierName;
+    result.mIsHaveDeferredTask  = task.mIsResourceDeferred;
+  }
+
+  MDY_ASSERT(task.mResourcecStyle == EDyResourceStyle::Resource, "Main deferred task must be resource style.");
+  const auto& infoManager = MDyIOData::GetInstance();
+
+  switch (task.mResourceType) {
+  case EDyResourceType::GLShader:
+  { // Need to move it as independent function.
+    const auto instance = new FDyShaderResource(*infoManager.GetPtrInformation<EDyResourceType::GLShader>(result.mSpecifierName));
+    result.mSmtPtrResultInstance = instance;
+  } break;
+  case EDyResourceType::Texture:
+  case EDyResourceType::Model:
+  { // Get intemediate instance from task, and make model resource.
+    MDY_NOT_IMPLEMENTED_ASSERT();
+  } break;
+  case EDyResourceType::Material:
+    MDY_UNEXPECTED_BRANCH();
+  default: MDY_UNEXPECTED_BRANCH(); break;
+  };
+
+  return result;
+}
+
+//!
+//! Condition
+//!
 
 bool TDyIO::outIsIOThreadSlept() noexcept
 {

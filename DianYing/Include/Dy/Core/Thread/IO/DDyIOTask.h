@@ -36,11 +36,12 @@ public:
   EDyResourceStyle  mResourcecStyle = EDyResourceStyle::NoneError;
   EDyResourceType   mResourceType   = EDyResourceType::NoneError;
   EDyScope          mScope          = EDyScope::Global;
-
   EDyObject         mObjectStyle    = EDyObject::NoneError;
-  void*             mPtrBoundObject = nullptr;
   TPriority         mTaskPriority   = 0;
   bool              mIsResourceDeferred = false;
+
+  void*             mPtrBoundObject = nullptr;
+  void*             mRawInstanceForUsingLater = nullptr;
 };
 
 } /// ::dy namespace

@@ -14,6 +14,7 @@
 
 /// Header file
 #include <Dy/Management/IO/MDyIOData.h>
+#include "Dy/Core/Resource/Information/FDyModelInformation.h"
 
 namespace dy
 {
@@ -43,6 +44,10 @@ void MDyIOData::InsertResult(_MIN_ EDyResourceType type, _MIN_ void* ptrrawInsta
     this->__mTextureContainer.MoveInsert(ptr->GetSpecifierName(), std::move(ptr));
   } break;
   case EDyResourceType::Model:
+  {
+    auto ptr = std::unique_ptr<FDyModelInformation>(static_cast<FDyModelInformation*>(ptrrawInstance));
+    this->__mModelContainer.MoveInsert(ptr->GetSpecifierName(), std::move(ptr));
+  } break;
   case EDyResourceType::Material:
     MDY_NOT_IMPLEMENTED_ASSERT();
   default: MDY_UNEXPECTED_BRANCH(); break;

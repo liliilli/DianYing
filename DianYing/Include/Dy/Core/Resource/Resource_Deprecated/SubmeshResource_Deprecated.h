@@ -71,6 +71,7 @@ private:
   DDySubmeshFlagInformation       mMeshFlagInformation     = {};
 
   friend class CDyModelResource;
+  friend class FDyModelVBOIntermediate;
 };
 
 } /// ::dy namespace

@@ -24,6 +24,8 @@ enum class EDyResourceType
   Texture,
   Material,
   WidgetMeta,
+
+  __ModelVBO,
   NoneError
 };
 

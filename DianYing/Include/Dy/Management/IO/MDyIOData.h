@@ -17,6 +17,7 @@
 #include <Dy/Core/Resource/Information/FDyShaderInformation.h>
 #include <Dy/Core/Resource/Information/FDyTextureInformation.h>
 #include <Dy/Meta/Type/EDyResourceType.h>
+#include <Dy/Core/Resource/Information/FDyModelInformation.h>
 
 //!
 //! Forward declaration
@@ -39,6 +40,8 @@ template <>
 struct TDyRscInfo<EDyResourceType::Texture> final { using type = FDyTextureInformation; };
 template <>
 struct TDyRscInfo<EDyResourceType::GLShader> final { using type = FDyShaderInformation; };
+template <>
+struct TDyRscInfo<EDyResourceType::Model> final { using type = FDyModelInformation; };
 
 ///
 /// @class MDyIOData
@@ -52,14 +55,9 @@ public:
   template <EDyResourceType TType>
   MDY_NODISCARD typename TDyRscInfo<TType>::type* GetPtrInformation(_MIN_ const std::string& specifier) noexcept
   {
-    if constexpr (TType == EDyResourceType::GLShader)
-    {
-      return this->__mShaderContainer.TryGetInstancePtr(specifier);
-    }
-    else if constexpr (TType == EDyResourceType::Texture)
-    {
-      return this->__mTextureContainer.TryGetInstancePtr(specifier);
-    }
+    if constexpr (TType == EDyResourceType::GLShader)     { return this->__mShaderContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EDyResourceType::Texture) { return this->__mTextureContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EDyResourceType::Model)   { return this->__mModelContainer.TryGetInstancePtr(specifier); }
     else
     {
       MDY_NOT_IMPLEMENTED_ASSERT();
@@ -70,14 +68,9 @@ public:
   template <EDyResourceType TType>
   MDY_NODISCARD const typename TDyRscInfo<TType>::type* GetPtrInformation(_MIN_ const std::string& specifier) const noexcept
   {
-    if constexpr (TType == EDyResourceType::GLShader)
-    {
-      return this->__mShaderContainer.TryGetInstancePtr(specifier);
-    }
-    else if constexpr (TType == EDyResourceType::Texture)
-    {
-      return this->__mTextureContainer.TryGetInstancePtr(specifier);
-    }
+    if constexpr (TType == EDyResourceType::GLShader)     { return this->__mShaderContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EDyResourceType::Texture) { return this->__mTextureContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EDyResourceType::Model)   { return this->__mModelContainer.TryGetInstancePtr(specifier); }
     else
     {
       MDY_NOT_IMPLEMENTED_ASSERT();
@@ -92,8 +85,9 @@ private:
   template <typename TType>
   using __THashMap = DDyMutexUniqueHashMap<std::string, TType>;
 
-  __THashMap<FDyShaderInformation>  __mShaderContainer = {};
+  __THashMap<FDyShaderInformation>  __mShaderContainer  = {};
   __THashMap<FDyTextureInformation> __mTextureContainer = {};
+  __THashMap<FDyModelInformation>   __mModelContainer   = {};
 
   friend class TDyIO;
 };

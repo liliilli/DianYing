@@ -25,8 +25,7 @@ bool DDyIOReferenceContainer::IsReferenceInstanceExist(_MIN_ const std::string& 
   {
   case EDyResourceType::GLShader: return DyIsMapContains(this->mMapGLShaderReference, specifier);
   case EDyResourceType::Texture:  return DyIsMapContains(this->mMapTextureReference, specifier);
-  case EDyResourceType::Script:
-  case EDyResourceType::Model:
+  case EDyResourceType::Model:    return DyIsMapContains(this->mMapModelReference, specifier);
   case EDyResourceType::Material:
     MDY_NOT_IMPLEMENTED_ASSERT();
     break;
@@ -50,8 +49,11 @@ bool DDyIOReferenceContainer::TryEnlargeResourceScope(_MIN_ EDyScope scope, _MIN
     auto& instance = this->mMapTextureReference[specifier];
     if (scope > instance.mScope) { instance.mScope = scope; }
   } break;
-  case EDyResourceType::Script:
   case EDyResourceType::Model:
+  {
+    auto& instance = this->mMapModelReference[specifier];
+    if (scope > instance.mScope) { instance.mScope = scope; }
+  } break;
   case EDyResourceType::Material:
     MDY_NOT_IMPLEMENTED_ASSERT();
     break;
@@ -77,8 +79,11 @@ EDySuccess DDyIOReferenceContainer::CreateReferenceInstance(
     auto [it, isSuccessful] = this->mMapTextureReference.try_emplace(specifier, specifier, style, type, scope);
     MDY_ASSERT(isSuccessful == true, "RI Container creation must be successful.");
   } break;
-  case EDyResourceType::Script:
   case EDyResourceType::Model:
+  {
+    auto [it, isSuccessful] = this->mMapModelReference.try_emplace(specifier, specifier, style, type, scope);
+    MDY_ASSERT(isSuccessful == true, "RI Container creation must be successful.");
+  } break;
   case EDyResourceType::Material:
     MDY_NOT_IMPLEMENTED_ASSERT();
     break;

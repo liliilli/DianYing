@@ -20,6 +20,8 @@
 #include <Dy/Core/Thread/SDyIOWorkerConnHelper.h>
 #include <Dy/Management/IO/MDyIOData.h>
 #include "Dy/Core/Resource/Resource/FDyTextureResource.h"
+#include "Dy/Core/Resource/Information/FDyModelInformation.h"
+#include "Dy/Core/Resource/Internal/FDyModelVBOIntermediate.h"
 
 namespace dy
 {
@@ -117,6 +119,8 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceInformation(_MIN_ const DDyIOT
     result.mSmtPtrResultInstance = new FDyTextureInformation(this->mMetaManager.GetTextureMetaInformation(assignedTask.mSpecifierName));
     break;
   case EDyResourceType::Model:
+    result.mSmtPtrResultInstance = new FDyModelInformation(this->mMetaManager.GetModelMetaInformation(assignedTask.mSpecifierName));
+    break;
   case EDyResourceType::Material:
     MDY_NOT_IMPLEMENTED_ASSERT(); break;
   default: MDY_UNEXPECTED_BRANCH(); break;
@@ -142,9 +146,16 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceResource(_MIN_ const DDyIOTask
     SDyIOWorkerConnHelper::TryForwardToMainTaskList(assignedTask);
   } break;
   case EDyResourceType::Texture:
-    result.mSmtPtrResultInstance = new FDyTextureResource(*infoManager.GetPtrInformation<EDyResourceType::Texture>(result.mSpecifierName));;
+    result.mSmtPtrResultInstance = new FDyTextureResource(*infoManager.GetPtrInformation<EDyResourceType::Texture>(result.mSpecifierName));
     break;
-  case EDyResourceType::Model:
+  case EDyResourceType::__ModelVBO: // THIS IS NOT ::Model value!
+  { // VBO, EBO can be created from other context, but VAO should be created on main thread which have main context OpenGL,
+    // so after create VBO, EBO and forward it to with task to be processed on main thread.
+    auto task = assignedTask;
+    task.mResourceType = EDyResourceType::Model;
+    task.mRawInstanceForUsingLater = new FDyModelVBOIntermediate(*infoManager.GetPtrInformation<EDyResourceType::Model>(result.mSpecifierName));
+    SDyIOWorkerConnHelper::TryForwardToMainTaskList(task);
+  } break;
   case EDyResourceType::Material:
     MDY_NOT_IMPLEMENTED_ASSERT(); break;
   default: MDY_UNEXPECTED_BRANCH(); break;

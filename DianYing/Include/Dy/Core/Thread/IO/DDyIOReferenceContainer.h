@@ -54,6 +54,7 @@ public:
 private:
   TStringHashMap<DDyIOReferenceInstance> mMapTextureReference   = {};
   TStringHashMap<DDyIOReferenceInstance> mMapGLShaderReference  = {};
+  TStringHashMap<DDyIOReferenceInstance> mMapModelReference     = {};
 };
 
 } /// ::dy namespace
