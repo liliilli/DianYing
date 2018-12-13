@@ -44,7 +44,8 @@ void MDyIOResource::InsertResult(_MIN_ EDyResourceType type, _MIN_ void* ptrrawI
   } break;
   case EDyResourceType::Model:
   {
-    MDY_NOT_IMPLEMENTED_ASSERT();
+    auto ptr = std::unique_ptr<FDyModelResource>(static_cast<FDyModelResource*>(ptrrawInstance));
+    this->__mModelContainer.MoveInsert(ptr->GetSpecifierName(), std::move(ptr));
   } break;
   case EDyResourceType::Material:
     MDY_NOT_IMPLEMENTED_ASSERT();

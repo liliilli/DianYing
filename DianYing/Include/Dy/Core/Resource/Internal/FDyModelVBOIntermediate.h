@@ -46,7 +46,14 @@ public:
     return this->mIntermediateMeshResourceList;
   }
 
+  /// @brief Get specifier name of model resource.
+  MDY_NODISCARD const std::string& GetSpecifierName() const noexcept
+  {
+    return this->mSpecifierName;
+  }
+
 private:
+  std::string mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
   /// Intermediate mesh resources are not bound by VAO yet.
   std::vector<FDyMeshVBOIntermediate> mIntermediateMeshResourceList = {};
 };

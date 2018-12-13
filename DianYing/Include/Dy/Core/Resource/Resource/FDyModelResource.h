@@ -41,8 +41,15 @@ public:
   FDyModelResource(_MINOUT_ FDyModelVBOIntermediate& input);
   ~FDyModelResource();
 
+  /// @brief Get specifier name of model resource.
+  MDY_NODISCARD const std::string& GetSpecifierName() const noexcept
+  {
+    return this->mSpecifierName;
+  }
+
 private:
-  std::vector<FDyMeshResouce> mMeshResource = {};
+  std::string                 mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
+  std::vector<FDyMeshResouce> mMeshResource   = {};
 };
 
 } /// ::dy namespace

@@ -15,6 +15,7 @@
 
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
 #include <Dy/Core/Resource/Resource/FDyTextureResource.h>
+#include <Dy/Core/Resource/Resource/FDyModelResource.h>
 #include <Dy/Helper/Wrapper/DDyMutexUniqueHashMap.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Meta/Type/EDyResourceType.h>
@@ -75,8 +76,9 @@ private:
   template <typename TType>
   using __THashMap = DDyMutexUniqueHashMap<std::string, TType>;
 
-  __THashMap<FDyShaderResource>  __mShaderContainer = {};
-  __THashMap<FDyTextureResource> __mTextureContainer = {};
+  __THashMap<FDyShaderResource>   __mShaderContainer   = {};
+  __THashMap<FDyTextureResource>  __mTextureContainer  = {};
+  __THashMap<FDyModelResource>    __mModelContainer    = {};
 
   friend class TDyIO;
 };

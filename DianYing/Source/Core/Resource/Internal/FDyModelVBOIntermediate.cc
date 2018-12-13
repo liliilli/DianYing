@@ -21,6 +21,8 @@ namespace dy
 
 FDyModelVBOIntermediate::FDyModelVBOIntermediate(_MIN_ const FDyModelInformation& information)
 {
+  this->mSpecifierName = information.GetSpecifierName();
+
   const auto& submeshInformations = information.GetMeshInformationList();
   for (const auto& submeshInformation : submeshInformations)
   {
