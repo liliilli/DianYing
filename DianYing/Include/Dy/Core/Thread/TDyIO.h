@@ -116,6 +116,13 @@ private:
       _MIN_ EDyResourceType resourceType, _MIN_ EDyResourceStyle resourceStyle,
       _MIN_ EDyScope scope, _MIN_ bool isDerivedFromResource = false);
 
+  /// @brief
+  MDY_NODISCARD std::vector<PRIVerificationItem> pMakeDependenciesCheckList(
+      _MIN_ const std::string& iSpecifier,
+      _MIN_ EDyResourceType iResourceType,
+      _MIN_ EDyResourceStyle iResourceStyle,
+      _MIN_ EDyScope iScope);
+
   /// @brief Check RI is exist, so enlarge scope and update properties etc.
   MDY_NODISCARD const std::vector<PRIVerificationItem>
   pCheckAndUpdateReferenceInstance(_MIN_ const std::vector<PRIVerificationItem>& dependencies) noexcept;

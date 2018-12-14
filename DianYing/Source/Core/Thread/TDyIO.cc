@@ -171,82 +171,97 @@ EDySuccess TDyIO::outTryEnqueueTask(
 {
   MDY_ASSERT(this->outIsMetaInformationExist(iSpecifier, iResourceType) == true, "Meta information must be exist.");
 
-  bool isTaskShouldDeferred = false;
-  if (iResourceStyle == EDyResourceStyle::Resource)
-  { // If `Resource` task, find `Information` is set up or Create `Information` task newly.
-    const auto flag       = this->outTryEnqueueTask(iSpecifier, iResourceType, EDyResourceStyle::Information, iScope, true);
-    isTaskShouldDeferred  = (flag == DY_SUCCESS) ? true : false;
-  }
-
-  // Make dependency list.
-  std::vector<PRIVerificationItem> checkList = {};
-  checkList.emplace_back(iSpecifier, iResourceType, iResourceStyle, iScope);
-
-  const auto notFoundRIList = pCheckAndUpdateReferenceInstance(checkList);
-  if (notFoundRIList.empty() == true)
-  { // This logic is intentional for insert `Resource` task to deferred task list when `Information` is not set up yet.
-    if (iIsDerivedFromResource == false) { return DY_SUCCESS; }
-    else                                 { return DY_FAILURE; }
-  }
-
-  MDY_CALL_ASSERT_SUCCESS(this->outCreateReferenceInstance(iSpecifier, iResourceType, iResourceStyle, iScope));
-
-  // Checking if main task type is `Material` which have dependency on `Texture` and `Shader`.
-  // so `Material` task must be deferred with specified condition.
-  if (iResourceType == EDyResourceType::Material)
-  { // Material `Information` needs Texture & Shader `Information`, as with `Resource` needs `Resource`.
-    MDY_NOT_IMPLEMENTED_ASSERT();
-  }
-  else
-  { // Other types need Own type's `Information` style instance.
-    //MDY_NOT_IMPLEMENTED_ASSERT();
-  }
-
-  for (const auto& [specifier, type, style, scope] : notFoundRIList)
-  { // Construct IO Tasks.
-    DDyIOTask task;
-    {
-      task.mSpecifierName = specifier;
-      task.mObjectStyle   = EDyObject::Etc_NotBindedYet;
-      task.mPtrBoundObject= nullptr;
-      task.mResourceType  = type;
-      task.mResourcecStyle= style;
-      task.mScope         = scope;
-      task.mTaskPriority  = kDefaultPriority;
-      task.mIsResourceDeferred = iIsDerivedFromResource;
+  { // Query there is Reference Instance for myself. If found, just return do nothing.
+    std::vector<PRIVerificationItem> itselfRIItem{};
+    itselfRIItem.emplace_back(iSpecifier, iResourceType, iResourceStyle, iScope);
+    if (pCheckAndUpdateReferenceInstance(itselfRIItem).empty() == true)
+    { // This logic is intentional for insert `Resource` task to deferred task list when `Information` is not set up yet.
+      if (iIsDerivedFromResource == false) { return DY_SUCCESS; } else { return DY_FAILURE; }
     }
+  }
 
-    // If this is model & resource task, change `mResourceType` to `__ModelVBO` as intermediate task.
-    // Because VAO can not be created and shared from other thread not main thread.
-    if (task.mResourceType == EDyResourceType::Model && task.mResourcecStyle == EDyResourceStyle::Resource) { task.mResourceType = EDyResourceType::__ModelVBO; }
+  DDyIOTaskDeferred::TConditionList conditionList = {};
+  const auto checkList = this->pMakeDependenciesCheckList(iSpecifier, iResourceType, iResourceStyle, iScope);
+  if (checkList.empty() == false)
+  { // Make dependency list.
+    const auto notFoundRIList = this->pCheckAndUpdateReferenceInstance(checkList);
 
-    if (isTaskShouldDeferred == true)
-    { // If `Resource` should be deferred task,
-      // Insert deferred task and iterate list that there is something to be reinsert to Queue.
-      // Because it does not guarantees this routine would be called prior to finding `Resource`
-      // from IO Worker queue afterward creating `Information`. (It will damage performance, but there is no way...)
-
-      // Make deferred task.
-      // @TODO TEMOPRARY CODE WE NEED TO MAKE CONDITION LIST AS DEPENDENCIES.
-      DDyIOTaskDeferred::TConditionList item = {};
-      item.emplace_back(task.mSpecifierName, task.mResourceType, EDyResourceStyle::Information);
-      DDyIOTaskDeferred deferredTask{task, item};
-
-      // Forward deferred task to list (atomic)
-      this->outInsertDeferredTaskList(deferredTask);
-    }
-    else
-    { // Just insert task to queue, if anything does not happen.
-      { // Critical section.
-        MDY_SYNC_LOCK_GUARD(this->mQueueMutex);
-        if (this->mIsThreadStopped == true) { return DY_FAILURE; }
-        this->mIOTaskQueue.emplace(task);
+    if (notFoundRIList.empty() == false)
+    { // Require dependent resource tasks.
+      for (const auto& [specifier, type, style, scope] : notFoundRIList)
+      {
+        MDY_CALL_BUT_NOUSE_RESULT(outTryEnqueueTask(specifier, type, style, scope, true));
+        conditionList.emplace_back(specifier, type, style);
       }
-      this->mConditionVariable.notify_one();
     }
+  }
+
+  // Require itself own resource task.
+  MDY_CALL_ASSERT_SUCCESS(this->outCreateReferenceInstance(iSpecifier, iResourceType, iResourceStyle, iScope));
+  // Construct IO Tasks.
+  DDyIOTask task;
+  {
+    task.mSpecifierName = iSpecifier;
+    task.mResourceType  = iResourceType;
+    task.mResourcecStyle= iResourceStyle;
+    task.mScope         = iScope;
+    task.mTaskPriority  = kDefaultPriority;
+    task.mIsResourceDeferred = iIsDerivedFromResource;
+    task.mBoundObjectStyle= EDyObject::Etc_NotBindedYet;
+    task.mPtrBoundObject= nullptr;
+  }
+
+  // If this is model & resource task, change `mResourceType` to `__ModelVBO` as intermediate task.
+  // Because VAO can not be created and shared from other thread not main thread.
+  if (task.mResourceType == EDyResourceType::Model && task.mResourcecStyle == EDyResourceStyle::Resource) { task.mResourceType = EDyResourceType::__ModelVBO; }
+
+  // Make deferred task and forward deferred task to list (atomic)
+  if (conditionList.empty() == false) { this->outInsertDeferredTaskList({task, conditionList}); }
+  else
+  {   // Just insert task to queue, if anything does not happen.
+    { // Critical section.
+      MDY_SYNC_LOCK_GUARD(this->mQueueMutex);
+      if (this->mIsThreadStopped == true) { return DY_FAILURE; }
+      this->mIOTaskQueue.emplace(task);
+    }
+    this->mConditionVariable.notify_one();
   }
 
   return DY_SUCCESS;
+}
+
+std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(
+    _MIN_ const std::string& iSpecifier,
+    _MIN_ EDyResourceType iResourceType,
+    _MIN_ EDyResourceStyle iResourceStyle,
+    _MIN_ EDyScope iScope)
+{
+  std::vector<PRIVerificationItem> checkList = {};
+
+  // If resource type is `Material`, bind all dependencies of `Material` to checkList.
+  if (iResourceType == EDyResourceType::Material)
+  {
+    const auto& metaMaterial = this->mMetaInfoManager->GetMaterialMetaInformation(iSpecifier);
+    for (const auto& textureSpecifier : metaMaterial.mTextureNames) {
+      if (textureSpecifier.empty() == true) { break; }
+      checkList.emplace_back(textureSpecifier, EDyResourceType::Texture, iResourceStyle, iScope);
+    }
+    checkList.emplace_back(metaMaterial.mShaderSpecifier, EDyResourceType::GLShader, iResourceStyle, iScope);
+  }
+  else if (iResourceStyle == EDyResourceStyle::Resource)
+  {
+    switch (iResourceType)
+    {
+    case EDyResourceType::Model:
+    case EDyResourceType::GLShader:
+    case EDyResourceType::Texture:
+      checkList.emplace_back(iSpecifier, iResourceType, EDyResourceStyle::Information, iScope);
+      break;
+    default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(checkList);
+    }
+  }
+
+  return checkList;
 }
 
 const std::vector<TDyIO::PRIVerificationItem>
@@ -304,9 +319,15 @@ void TDyIO::outForceProcessIOInsertPhase() noexcept
     if (resultItem.mSmtPtrResultInstance == nullptr) { continue; }
 
     if (resultItem.mResourceStyle == EDyResourceStyle::Information)
-    { this->mIODataManager->InsertResult(resultItem.mResourceType, resultItem.mSmtPtrResultInstance); }
+    {
+      this->mIODataManager->InsertResult(resultItem.mResourceType, resultItem.mSmtPtrResultInstance);
+      MDY_CALL_ASSERT_SUCCESS(this->mRIInformationMap.TryUpdateValidity(resultItem.mResourceType, resultItem.mSpecifierName, true));
+    }
     else
-    { this->mIOResourceManager->InsertResult(resultItem.mResourceType, resultItem.mSmtPtrResultInstance); }
+    {
+      this->mIOResourceManager->InsertResult(resultItem.mResourceType, resultItem.mSmtPtrResultInstance);
+      MDY_CALL_ASSERT_SUCCESS(this->mRIResourceMap.TryUpdateValidity(resultItem.mResourceType, resultItem.mSpecifierName, true));
+    }
 
     // If need to insert resource task of deferred list into queue, do this.
     if (resultItem.mIsHaveDeferredTask == true)
@@ -320,8 +341,6 @@ void TDyIO::outForceProcessIOInsertPhase() noexcept
 
 void TDyIO::pTryUpdateDeferredTaskList(_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ EDyResourceStyle iStyle)
 {
-  if (iType == EDyResourceType::Model) { iType = EDyResourceType::__ModelVBO; }
-
   std::vector<DDyIOTask> reinsertionTasklist = {};
 
   { // Critical Section

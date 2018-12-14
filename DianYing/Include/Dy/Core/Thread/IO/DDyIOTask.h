@@ -36,7 +36,7 @@ public:
   EDyResourceStyle  mResourcecStyle = EDyResourceStyle::NoneError;
   EDyResourceType   mResourceType   = EDyResourceType::NoneError;
   EDyScope          mScope          = EDyScope::Global;
-  EDyObject         mObjectStyle    = EDyObject::NoneError;
+  EDyObject         mBoundObjectStyle    = EDyObject::NoneError;
   TPriority         mTaskPriority   = 0;
   bool              mIsResourceDeferred = false;
 

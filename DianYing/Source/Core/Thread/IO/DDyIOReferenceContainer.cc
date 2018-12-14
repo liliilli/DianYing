@@ -93,4 +93,21 @@ EDySuccess DDyIOReferenceContainer::CreateReferenceInstance(
   return DY_SUCCESS;
 }
 
+EDySuccess DDyIOReferenceContainer::TryUpdateValidity(EDyResourceType type, const std::string& specifier, bool isValid)
+{
+  TStringHashMap<DDyIOReferenceInstance>* map = MDY_INITIALIZE_NULL;
+  switch (type)
+  {
+  case EDyResourceType::Model:    map = &this->mMapModelReference;    break;
+  case EDyResourceType::GLShader: map = &this->mMapGLShaderReference; break;
+  case EDyResourceType::Texture:  map = &this->mMapTextureReference;  break;
+  case EDyResourceType::Material: map = &this->mMapMaterialReference; break;
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
+  }
+
+  auto& instance = (*map)[specifier];
+  if (isValid != instance.mIsResourceValid) { instance.mIsResourceValid = isValid; return DY_SUCCESS; }
+  else                                      { return DY_FAILURE; }
+}
+
 } /// ::dy namespace
