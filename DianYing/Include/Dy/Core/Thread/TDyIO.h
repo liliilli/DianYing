@@ -20,8 +20,9 @@
 #include <Dy/Core/Thread/IO/DDyIOTask.h>
 #include <Dy/Core/Thread/IO/DDyIOReferenceContainer.h>
 #include <Dy/Core/Thread/IO/FDyIOGC.h>
+#include <Dy/Core/Thread/IO/TDyIOWorker.h>
+#include <Dy/Core/Thread/IO/DDyIOTaskDeferred.h>
 #include <Dy/Helper/Internal/Semaphore.h>
-#include <Dy/COre/Thread/IO/TDyIOWorker.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 
 //!
@@ -65,6 +66,19 @@ private:
     };
   };
 
+  /// @struct PRIVerificationItem
+  /// @brief
+  struct PRIVerificationItem final
+  {
+    const std::string&      mSpecifier  = MDY_INITIALIZE_EMPTYSTR;
+    const EDyResourceType   mType       = EDyResourceType::NoneError;
+    const EDyResourceStyle  mStyle      = EDyResourceStyle::NoneError;
+    const EDyScope          mScope      = EDyScope::UserDefined;
+
+    PRIVerificationItem(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style, EDyScope scope) :
+        mSpecifier{specifier}, mType{type}, mStyle{style}, mScope{scope} {};
+  };
+
   /// @brief Initialize TDyIO.
   EDySuccess Initialize() override final;
   /// @brief Release TDyIO.
@@ -102,6 +116,10 @@ private:
       _MIN_ EDyResourceType resourceType, _MIN_ EDyResourceStyle resourceStyle,
       _MIN_ EDyScope scope, _MIN_ bool isDerivedFromResource = false);
 
+  /// @brief Check RI is exist, so enlarge scope and update properties etc.
+  MDY_NODISCARD const std::vector<PRIVerificationItem>
+  pCheckAndUpdateReferenceInstance(_MIN_ const std::vector<PRIVerificationItem>& dependencies) noexcept;
+
   ///
   /// @brief Check specified meta information is exist on meta information.
   /// @param specifier Resource specifier name.
@@ -115,7 +133,7 @@ private:
   /// @param type  Resource type.
   /// @param style Resource style mode.
   ///
-  MDY_NODISCARD bool outIsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style);
+  MDY_NODISCARD bool pIsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style);
 
   ///
   /// @brief Try update scope of given style's specifier RI of resource type. \n
@@ -127,7 +145,7 @@ private:
   /// Level  < Temporal \n
   /// RI's scope will be changed to big range.
   ///
-  void outTryEnlargeResourceScope(
+  void pTryEnlargeResourceScope(
       _MIN_ EDyScope scope,
       _MIN_ const std::string& specifier,
       _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style);
@@ -149,7 +167,7 @@ private:
   MDY_NODISCARD static DDyIOWorkerResult outMainProcessTask(_MIN_ const DDyIOTask& task);
 
   /// @brief Insert deferred task list.
-  void outInsertDeferredTaskList(_MIN_ const DDyIOTask& task);
+  void outInsertDeferredTaskList(_MIN_ const DDyIOTaskDeferred& task);
 
   //!
   //! Common methods (always must use mutex)
@@ -157,7 +175,7 @@ private:
 
   /// @brief Try update deferred task which can be insered to list insert into queue with more high priority.
   /// This function use mutex, so performance is afraid.
-  void outTryUpdateDeferredTaskList(_MIN_ EDyResourceType type, _MIN_ const std::string& specifier);
+  void pTryUpdateDeferredTaskList(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style);
 
   /// @brief
   void outForceProcessIOInsertPhase() noexcept;
@@ -187,7 +205,8 @@ private:
   using TWorkerResultList = std::vector<DDyIOWorkerResult>;
   /// @brief Type for priority task queue.
   using TIOTaskQueue      = std::priority_queue<DDyIOTask, std::vector<DDyIOTask>, FTaskQueueCmpFunctor>;
-  using TDeferredTaskList = std::vector<DDyIOTask>;
+  using TDeferredTaskList = std::vector<DDyIOTaskDeferred>;
+  using TMainTaskList     = std::vector<DDyIOTask>;
 
   DDyIOReferenceContainer   mRIInformationMap = {};
   DDyIOReferenceContainer   mRIResourceMap = {};
@@ -213,7 +232,7 @@ private:
   std::mutex                mProcessTaskFromMainMutex;
   /// @brief used to manage task list from mIOTaskQueue, which to be processed in main thread
   /// prior to IO GC/IN Phase if not empty. This list is atomic between IO Worker and Main thread.
-  TDeferredTaskList         mIOProcessMainTaskList = {};
+  TMainTaskList             mIOProcessMainTaskList = {};
 
   bool                      mIsThreadStopped    = false;
   MDyMetaInfo*              mMetaInfoManager    = nullptr;

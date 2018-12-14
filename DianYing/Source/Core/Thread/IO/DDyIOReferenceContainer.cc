@@ -26,13 +26,9 @@ bool DDyIOReferenceContainer::IsReferenceInstanceExist(_MIN_ const std::string& 
   case EDyResourceType::GLShader: return DyIsMapContains(this->mMapGLShaderReference, specifier);
   case EDyResourceType::Texture:  return DyIsMapContains(this->mMapTextureReference, specifier);
   case EDyResourceType::Model:    return DyIsMapContains(this->mMapModelReference, specifier);
-  case EDyResourceType::Material:
-    MDY_NOT_IMPLEMENTED_ASSERT();
-    break;
-  default: MDY_UNEXPECTED_BRANCH(); break;
+  case EDyResourceType::Material: return DyIsMapContains(this->mMapMaterialReference, specifier);
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
   }
-
-  MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
 }
 
 bool DDyIOReferenceContainer::TryEnlargeResourceScope(_MIN_ EDyScope scope, _MIN_ const std::string& specifier, _MIN_ EDyResourceType type)
@@ -55,12 +51,14 @@ bool DDyIOReferenceContainer::TryEnlargeResourceScope(_MIN_ EDyScope scope, _MIN
     if (scope > instance.mScope) { instance.mScope = scope; }
   } break;
   case EDyResourceType::Material:
-    MDY_NOT_IMPLEMENTED_ASSERT();
-    break;
-  default: MDY_UNEXPECTED_BRANCH(); break;
+  {
+    auto& instance = this->mMapMaterialReference[specifier];
+    if (scope > instance.mScope) { instance.mScope = scope; }
+  } break;
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
   }
 
-  MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
+  return true;
 }
 
 EDySuccess DDyIOReferenceContainer::CreateReferenceInstance(
@@ -85,9 +83,11 @@ EDySuccess DDyIOReferenceContainer::CreateReferenceInstance(
     MDY_ASSERT(isSuccessful == true, "RI Container creation must be successful.");
   } break;
   case EDyResourceType::Material:
-    MDY_NOT_IMPLEMENTED_ASSERT();
-    break;
-  default: MDY_UNEXPECTED_BRANCH(); break;
+  {
+    auto [it, isSuccessful] = this->mMapMaterialReference.try_emplace(specifier, specifier, style, type, scope);
+    MDY_ASSERT(isSuccessful == true, "RI Container creation must be successful.");
+  } break;
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
   }
 
   return DY_SUCCESS;
