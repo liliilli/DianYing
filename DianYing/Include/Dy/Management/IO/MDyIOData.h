@@ -16,8 +16,9 @@
 #include <Dy/Helper/Wrapper/DDyMutexUniqueHashMap.h>
 #include <Dy/Core/Resource/Information/FDyShaderInformation.h>
 #include <Dy/Core/Resource/Information/FDyTextureInformation.h>
-#include <Dy/Meta/Type/EDyResourceType.h>
 #include <Dy/Core/Resource/Information/FDyModelInformation.h>
+#include <Dy/Core/Resource/Information/FDyMaterialInformation.h>
+#include <Dy/Meta/Type/EDyResourceType.h>
 
 //!
 //! Forward declaration
@@ -42,6 +43,8 @@ template <>
 struct TDyRscInfo<EDyResourceType::GLShader> final { using type = FDyShaderInformation; };
 template <>
 struct TDyRscInfo<EDyResourceType::Model> final { using type = FDyModelInformation; };
+template <>
+struct TDyRscInfo<EDyResourceType::Material> final { using type = FDyMaterialInformation; };
 
 ///
 /// @class MDyIOData
@@ -58,11 +61,8 @@ public:
     if constexpr (TType == EDyResourceType::GLShader)     { return this->__mShaderContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::Texture) { return this->__mTextureContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::Model)   { return this->__mModelContainer.TryGetInstancePtr(specifier); }
-    else
-    {
-      MDY_NOT_IMPLEMENTED_ASSERT();
-      return nullptr;
-    }
+    else if constexpr (TType == EDyResourceType::Material){ return this->__mMaterialContainer.TryGetInstancePtr(specifier); }
+    else { MDY_UNEXPECTED_BRANCH_BUT_RETURN(nullptr); }
   }
 
   template <EDyResourceType TType>
@@ -71,11 +71,8 @@ public:
     if constexpr (TType == EDyResourceType::GLShader)     { return this->__mShaderContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::Texture) { return this->__mTextureContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::Model)   { return this->__mModelContainer.TryGetInstancePtr(specifier); }
-    else
-    {
-      MDY_NOT_IMPLEMENTED_ASSERT();
-      return nullptr;
-    }
+    else if constexpr (TType == EDyResourceType::Material){ return this->__mMaterialContainer.TryGetInstancePtr(specifier); }
+    else { MDY_UNEXPECTED_BRANCH_BUT_RETURN(nullptr); }
   }
 
 private:
@@ -85,9 +82,10 @@ private:
   template <typename TType>
   using __THashMap = DDyMutexUniqueHashMap<std::string, TType>;
 
-  __THashMap<FDyShaderInformation>  __mShaderContainer  = {};
-  __THashMap<FDyTextureInformation> __mTextureContainer = {};
-  __THashMap<FDyModelInformation>   __mModelContainer   = {};
+  __THashMap<FDyShaderInformation>  __mShaderContainer    = {};
+  __THashMap<FDyTextureInformation> __mTextureContainer   = {};
+  __THashMap<FDyModelInformation>   __mModelContainer     = {};
+  __THashMap<FDyMaterialInformation>__mMaterialContainer  = {};
 
   friend class TDyIO;
 };

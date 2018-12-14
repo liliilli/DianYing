@@ -49,6 +49,29 @@ namespace dy
 class TDyIO final : public IDyInitializeHelper<void>
 {
 public:
+  /// @struct PRIVerificationItem
+  /// @brief
+  struct PRIVerificationItem final
+  {
+    const std::string&      mSpecifier  = MDY_INITIALIZE_EMPTYSTR;
+    const EDyResourceType   mType       = EDyResourceType::NoneError;
+    const EDyResourceStyle  mStyle      = EDyResourceStyle::NoneError;
+    const EDyScope          mScope      = EDyScope::UserDefined;
+
+    PRIVerificationItem(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style, EDyScope scope) :
+        mSpecifier{specifier}, mType{type}, mStyle{style}, mScope{scope} {};
+  };
+
+  enum class EDyRIStatus : TU08
+  {
+    NotValid,
+    NotBoundYet,
+    Valid,
+  };
+  using TDependencyPair = std::pair<PRIVerificationItem, EDyRIStatus>;
+  using TDependencyList = std::vector<TDependencyPair>;
+
+public:
   TDyIO();
   ~TDyIO();
 
@@ -64,19 +87,6 @@ private:
     {
       return lhs.mTaskPriority < rhs.mTaskPriority;
     };
-  };
-
-  /// @struct PRIVerificationItem
-  /// @brief
-  struct PRIVerificationItem final
-  {
-    const std::string&      mSpecifier  = MDY_INITIALIZE_EMPTYSTR;
-    const EDyResourceType   mType       = EDyResourceType::NoneError;
-    const EDyResourceStyle  mStyle      = EDyResourceStyle::NoneError;
-    const EDyScope          mScope      = EDyScope::UserDefined;
-
-    PRIVerificationItem(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style, EDyScope scope) :
-        mSpecifier{specifier}, mType{type}, mStyle{style}, mScope{scope} {};
   };
 
   /// @brief Initialize TDyIO.
@@ -124,8 +134,14 @@ private:
       _MIN_ EDyScope iScope);
 
   /// @brief Check RI is exist, so enlarge scope and update properties etc.
-  MDY_NODISCARD const std::vector<PRIVerificationItem>
+  MDY_NODISCARD TDependencyList
   pCheckAndUpdateReferenceInstance(_MIN_ const std::vector<PRIVerificationItem>& dependencies) noexcept;
+
+  ///
+  /// @brief Check Reference instance is bounded. (resource is bounded or not).
+  /// If there is not specified instance in contianer, UB might be happened.
+  ///
+  MDY_NODISCARD bool pIsReferenceInstanceBound(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style);
 
   ///
   /// @brief Check specified meta information is exist on meta information.

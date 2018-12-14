@@ -48,7 +48,10 @@ void MDyIOResource::InsertResult(_MIN_ EDyResourceType type, _MIN_ void* ptrrawI
     this->__mModelContainer.MoveInsert(ptr->GetSpecifierName(), std::move(ptr));
   } break;
   case EDyResourceType::Material:
-    MDY_NOT_IMPLEMENTED_ASSERT();
+  {
+    auto ptr = std::unique_ptr<FDyMaterialResource>(static_cast<FDyMaterialResource*>(ptrrawInstance));
+    this->__mMaterialContainer.MoveInsert(ptr->GetSpecifierName(), std::move(ptr));
+  } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 }

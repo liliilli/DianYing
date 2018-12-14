@@ -22,6 +22,8 @@
 #include "Dy/Core/Resource/Resource/FDyTextureResource.h"
 #include "Dy/Core/Resource/Information/FDyModelInformation.h"
 #include "Dy/Core/Resource/Internal/FDyModelVBOIntermediate.h"
+#include "Dy/Core/Resource/Information/FDyMaterialInformation.h"
+#include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
 
 namespace dy
 {
@@ -111,7 +113,7 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceInformation(_MIN_ const DDyIOT
   result.mIsHaveDeferredTask = assignedTask.mIsResourceDeferred;
 
   switch (result.mResourceType)
-  { // TEMPORARY
+  {
   case EDyResourceType::GLShader:
     result.mSmtPtrResultInstance = new FDyShaderInformation(this->mMetaManager.GetGLShaderMetaInformation(assignedTask.mSpecifierName));
     break;
@@ -122,7 +124,8 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceInformation(_MIN_ const DDyIOT
     result.mSmtPtrResultInstance = new FDyModelInformation(this->mMetaManager.GetModelMetaInformation(assignedTask.mSpecifierName));
     break;
   case EDyResourceType::Material:
-    MDY_NOT_IMPLEMENTED_ASSERT(); break;
+    result.mSmtPtrResultInstance = new FDyMaterialInformation(this->mMetaManager.GetMaterialMetaInformation(assignedTask.mSpecifierName));
+    break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 
@@ -146,8 +149,9 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceResource(_MIN_ const DDyIOTask
     SDyIOWorkerConnHelper::TryForwardToMainTaskList(assignedTask);
   } break;
   case EDyResourceType::Texture:
+  { // Texture buffer can be created on another context. (It can be shared)
     result.mSmtPtrResultInstance = new FDyTextureResource(*infoManager.GetPtrInformation<EDyResourceType::Texture>(result.mSpecifierName));
-    break;
+  } break;
   case EDyResourceType::__ModelVBO: // THIS IS NOT ::Model value!
   { // VBO, EBO can be created from other context, but VAO should be created on main thread which have main context OpenGL,
     // so after create VBO, EBO and forward it to with task to be processed on main thread.
@@ -157,7 +161,9 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceResource(_MIN_ const DDyIOTask
     SDyIOWorkerConnHelper::TryForwardToMainTaskList(task);
   } break;
   case EDyResourceType::Material:
-    MDY_NOT_IMPLEMENTED_ASSERT(); break;
+  { // Material resource is just for binding allocated textures and shader instance ptr list.
+    result.mSmtPtrResultInstance = new FDyMaterialResource(*infoManager.GetPtrInformation<EDyResourceType::Material>(result.mSpecifierName));
+  } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 

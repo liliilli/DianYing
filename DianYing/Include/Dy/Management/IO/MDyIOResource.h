@@ -16,6 +16,7 @@
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
 #include <Dy/Core/Resource/Resource/FDyTextureResource.h>
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
+#include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
 #include <Dy/Helper/Wrapper/DDyMutexUniqueHashMap.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Meta/Type/EDyResourceType.h>
@@ -41,6 +42,10 @@ template <>
 struct TDyRscResc<EDyResourceType::Texture> final { using type = FDyTextureResource; };
 template <>
 struct TDyRscResc<EDyResourceType::GLShader> final { using type = FDyShaderResource; };
+template <>
+struct TDyRscResc<EDyResourceType::Model> final { using type = FDyModelResource; };
+template <>
+struct TDyRscResc<EDyResourceType::Material> final { using type = FDyMaterialResource; };
 
 ///
 /// @class MDyIOResource
@@ -54,19 +59,21 @@ public:
   template <EDyResourceType TType>
   MDY_NODISCARD typename TDyRscResc<TType>::type* GetPtrInformation(_MIN_ const std::string& specifier)
   {
-    if constexpr (std::is_same_v<TType, EDyResourceType::GLShader> == true)
-    {
-      return this->__mShaderContainer.TryGetInstancePtr(specifier);
-    }
-    else if constexpr (std::is_same_v<TType, EDyResourceType::Texture> == true)
-    {
-      return this->__mTextureContainer.TryGetInstancePtr(specifier);
-    }
-    else
-    {
-      MDY_NOT_IMPLEMENTED_ASSERT();
-      return nullptr;
-    }
+    if constexpr (TType == EDyResourceType::GLShader)     { return this->__mShaderContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EDyResourceType::Texture) { return this->__mTextureContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EDyResourceType::Model)   { return this->__mModelContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EDyResourceType::Texture) { return this->__mMaterialContainer.TryGetInstancePtr(specifier); }
+    else { MDY_UNEXPECTED_BRANCH_BUT_RETURN(nullptr); }
+  }
+
+  template <EDyResourceType TType>
+  MDY_NODISCARD const typename TDyRscResc<TType>::type* GetPtrInformation(_MIN_ const std::string& specifier) const noexcept
+  {
+    if constexpr (TType == EDyResourceType::GLShader)     { return this->__mShaderContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EDyResourceType::Texture) { return this->__mTextureContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EDyResourceType::Model)   { return this->__mModelContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EDyResourceType::Texture) { return this->__mMaterialContainer.TryGetInstancePtr(specifier); }
+    else { MDY_UNEXPECTED_BRANCH_BUT_RETURN(nullptr); }
   }
 
 private:
@@ -79,6 +86,7 @@ private:
   __THashMap<FDyShaderResource>   __mShaderContainer   = {};
   __THashMap<FDyTextureResource>  __mTextureContainer  = {};
   __THashMap<FDyModelResource>    __mModelContainer    = {};
+  __THashMap<FDyMaterialResource> __mMaterialContainer = {};
 
   friend class TDyIO;
 };

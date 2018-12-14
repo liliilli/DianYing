@@ -61,14 +61,12 @@ FDyDefaultLoadingBootScript::FDyDefaultLoadingBootScript()
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderUiBasicGaugeBar::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderUiImage::sName);
 
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Material, FDyBuiltinMaterialOpaqueStaticPlain::sName);
-
-#ifdef false
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Model, FDyBuiltinModelBox::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Model, FDyBuiltinModelPlain::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Model, FDyBuiltinModelScreenProjectionTriangle::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Model, FDyBuiltinModelSphere::sName);
-#endif
+
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Material, FDyBuiltinMaterialOpaqueStaticPlain::sName);
 }
 
 } /// ::dy namespace

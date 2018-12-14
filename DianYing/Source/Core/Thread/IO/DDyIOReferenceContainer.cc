@@ -19,7 +19,7 @@
 namespace dy
 {
 
-bool DDyIOReferenceContainer::IsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type)
+bool DDyIOReferenceContainer::IsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type) const noexcept
 {
   switch (type)
   {
@@ -27,6 +27,18 @@ bool DDyIOReferenceContainer::IsReferenceInstanceExist(_MIN_ const std::string& 
   case EDyResourceType::Texture:  return DyIsMapContains(this->mMapTextureReference, specifier);
   case EDyResourceType::Model:    return DyIsMapContains(this->mMapModelReference, specifier);
   case EDyResourceType::Material: return DyIsMapContains(this->mMapMaterialReference, specifier);
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
+  }
+}
+
+bool DDyIOReferenceContainer::IsReferenceInstanceBound(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type) const noexcept
+{
+  switch (type)
+  {
+  case EDyResourceType::GLShader: return this->mMapGLShaderReference.at(specifier).mIsResourceValid;
+  case EDyResourceType::Texture:  return this->mMapTextureReference.at(specifier).mIsResourceValid;
+  case EDyResourceType::Model:    return this->mMapModelReference.at(specifier).mIsResourceValid;
+  case EDyResourceType::Material: return this->mMapMaterialReference.at(specifier).mIsResourceValid;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
   }
 }

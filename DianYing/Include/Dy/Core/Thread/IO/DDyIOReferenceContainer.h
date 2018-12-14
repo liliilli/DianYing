@@ -30,7 +30,11 @@ public:
   /// @param specifier Resource specifier name.
   /// @param type  Resource type.
   ///
-  MDY_NODISCARD bool IsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type);
+  MDY_NODISCARD bool IsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type) const noexcept;
+
+  /// @brief Check whether resource's Reference Instance is exist and bound by any heap resource.
+  /// If not exist instance, UB might be occurred.
+  MDY_NODISCARD bool IsReferenceInstanceBound(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type) const noexcept;
 
   ///
   /// @brief Try update scope of given style's specifier RI of resource type. \n

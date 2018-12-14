@@ -212,6 +212,8 @@
     <ClCompile Include="Source\Core\Resource\Resource\FDyModelResource.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\FDyMeshResource.cc" />
     <ClCompile Include="Source\Core\Rendering\Wrapper\FDyGLWrapperSub.cc" />
+    <ClCompile Include="Source\Core\Resource\Information\FDyMaterialInformation.cc" />
+    <ClCompile Include="Source\Core\Resource\Resource\FDyMaterialResource.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -540,6 +542,9 @@
     <ClInclude Include="Include\Dy\Core\Resource\Internal\FDyMeshVBOIntermediate.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLBufferDescriptor.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLVaoBindDescriptor.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Information\FDyMaterialInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyMaterialResource.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOTaskDeferred.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

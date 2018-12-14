@@ -174,10 +174,8 @@ EDySuccess TDyIO::outTryEnqueueTask(
   { // Query there is Reference Instance for myself. If found, just return do nothing.
     std::vector<PRIVerificationItem> itselfRIItem{};
     itselfRIItem.emplace_back(iSpecifier, iResourceType, iResourceStyle, iScope);
-    if (pCheckAndUpdateReferenceInstance(itselfRIItem).empty() == true)
-    { // This logic is intentional for insert `Resource` task to deferred task list when `Information` is not set up yet.
-      if (iIsDerivedFromResource == false) { return DY_SUCCESS; } else { return DY_FAILURE; }
-    }
+    const auto result = this->pCheckAndUpdateReferenceInstance(itselfRIItem);
+    if (result.empty() == true || result.begin()->second != EDyRIStatus::NotValid) { return DY_SUCCESS; }
   }
 
   DDyIOTaskDeferred::TConditionList conditionList = {};
@@ -187,10 +185,12 @@ EDySuccess TDyIO::outTryEnqueueTask(
     const auto notFoundRIList = this->pCheckAndUpdateReferenceInstance(checkList);
 
     if (notFoundRIList.empty() == false)
-    { // Require dependent resource tasks.
-      for (const auto& [specifier, type, style, scope] : notFoundRIList)
-      {
-        MDY_CALL_BUT_NOUSE_RESULT(outTryEnqueueTask(specifier, type, style, scope, true));
+    {
+      for (const auto& [instance, status] : notFoundRIList)
+      { // Require depende resource tasks only if NotValid but RI is exist.
+        const auto& [specifier, type, style, scope] = instance;
+        if (status == EDyRIStatus::NotValid) { MDY_CALL_BUT_NOUSE_RESULT(outTryEnqueueTask(specifier, type, style, scope, true)); }
+
         conditionList.emplace_back(specifier, type, style);
       }
     }
@@ -248,13 +248,13 @@ std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(
     }
     checkList.emplace_back(metaMaterial.mShaderSpecifier, EDyResourceType::GLShader, iResourceStyle, iScope);
   }
-  else if (iResourceStyle == EDyResourceStyle::Resource)
+
+  if (iResourceStyle == EDyResourceStyle::Resource)
   {
     switch (iResourceType)
     {
-    case EDyResourceType::Model:
-    case EDyResourceType::GLShader:
-    case EDyResourceType::Texture:
+    case EDyResourceType::Model:    case EDyResourceType::GLShader:
+    case EDyResourceType::Texture:  case EDyResourceType::Material:
       checkList.emplace_back(iSpecifier, iResourceType, EDyResourceStyle::Information, iScope);
       break;
     default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(checkList);
@@ -264,17 +264,21 @@ std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(
   return checkList;
 }
 
-const std::vector<TDyIO::PRIVerificationItem>
-TDyIO::pCheckAndUpdateReferenceInstance(_MIN_ const std::vector<PRIVerificationItem>& dependencies) noexcept
+TDyIO::TDependencyList TDyIO::pCheckAndUpdateReferenceInstance(_MIN_ const std::vector<PRIVerificationItem>& dependencies) noexcept
 {
-  std::vector<PRIVerificationItem> resultNotFoundList = {};
+  TDependencyList resultNotFoundList = {};
 
   for (const auto& [specifier, type, style, scope] : dependencies)
   { // Find dependencies is on memory (not GCed, and avoid duplicated task queing)
     if (this->pIsReferenceInstanceExist(specifier, type, style) == true)
     {
       this->pTryEnlargeResourceScope(scope, specifier, type, style);
-      continue;
+      if (this->pIsReferenceInstanceBound(specifier, type, style) == true) { continue; }
+      else
+      {
+        resultNotFoundList.emplace_back(PRIVerificationItem{specifier, type, style, scope}, EDyRIStatus::NotBoundYet);
+        continue;
+      }
     }
 
     if (this->mGarbageCollector.IsReferenceInstanceExist(specifier, type, style) == true)
@@ -284,7 +288,7 @@ TDyIO::pCheckAndUpdateReferenceInstance(_MIN_ const std::vector<PRIVerificationI
       continue;
     }
 
-    resultNotFoundList.emplace_back(specifier, type, style, scope);
+    resultNotFoundList.emplace_back(PRIVerificationItem{specifier, type, style, scope}, EDyRIStatus::NotValid);
   }
 
   return resultNotFoundList;
@@ -330,10 +334,7 @@ void TDyIO::outForceProcessIOInsertPhase() noexcept
     }
 
     // If need to insert resource task of deferred list into queue, do this.
-    if (resultItem.mIsHaveDeferredTask == true)
-    {
-      this->pTryUpdateDeferredTaskList(resultItem.mSpecifierName, resultItem.mResourceType, resultItem.mResourceStyle);
-    }
+    this->pTryUpdateDeferredTaskList(resultItem.mSpecifierName, resultItem.mResourceType, resultItem.mResourceStyle);
   }
 
   this->mWorkerResultList.clear();
@@ -437,6 +438,18 @@ bool TDyIO::pIsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ 
     return this->mRIInformationMap.IsReferenceInstanceExist(specifier, type);
   case EDyResourceStyle::Resource:
     return this->mRIResourceMap.IsReferenceInstanceExist(specifier, type);
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
+  }
+}
+
+bool TDyIO::pIsReferenceInstanceBound(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style)
+{
+  switch (style)
+  {
+  case EDyResourceStyle::Information:
+    return this->mRIInformationMap.IsReferenceInstanceBound(specifier, type);
+  case EDyResourceStyle::Resource:
+    return this->mRIResourceMap.IsReferenceInstanceBound(specifier, type);
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
   }
 }
