@@ -315,6 +315,8 @@
     <ClCompile Include="Source\Element\Canvas\Text.cc" />
     <ClCompile Include="Source\Element\Canvas\Deprecated\Text_Deprecated.cc" />
     <ClCompile Include="Source\Management\Internal\MDySynchronization.cc" />
+    <ClCompile Include="Source\Management\IO\IODataManager_Deprecated.cc" />
+    <ClCompile Include="Source\Management\IO\IOResourceManager_Deprecated.cc" />
     <ClCompile Include="Source\Management\IO\MDyIOData.cc" />
     <ClCompile Include="Source\Management\IO\MDyIOResource.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetBarMetaInformation.cc" />
@@ -347,7 +349,6 @@
     <ClCompile Include="Source\Management\BindingLua\BindingComponentType.cc" />
     <ClCompile Include="Source\Management\BindingLua\BindingGlobalType.cc" />
     <ClCompile Include="Source\Management\BindingLua\Entry.cc" />
-    <ClCompile Include="Source\Management\IO\IODataManager_Deprecated.cc" />
     <ClCompile Include="Source\Management\Editor\GuiManager.cc" />
     <ClCompile Include="Source\Management\Editor\GuiSetting.cc" />
     <ClCompile Include="Source\Management\Editor\GuiWindowFactory.cc" />
@@ -356,7 +357,6 @@
     <ClCompile Include="Source\Management\Rendering\UniformBufferObjectManager.cc" />
     <ClCompile Include="Source\Management\IO\MetaInfoManager.cc" />
     <ClCompile Include="Source\Management\FontManager.cc" />
-    <ClCompile Include="Source\Management\IO\IOResourceManager_Deprecated.cc" />
     <ClCompile Include="Source\Management\Helper\GuiLogStreamSink.cc" />
     <ClCompile Include="Source\Management\Helper\PhysXErrorCallback.cc" />
     <ClCompile Include="Source\Management\InputManager.cc" />
@@ -443,15 +443,21 @@
     <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLWindowContextDescriptor.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyMaterialInformation.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyModelInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Information\FDySoundInformation.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Internal\FDyMeshVBOIntermediate.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Internal\FDyModelVBOIntermediate.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyMaterialResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyMeshResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyModelResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyShaderResource.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\FDySoundResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyTextureResource.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\TDyResourceBinder.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\TemplateRescInfoType.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOTaskDeferred.h" />
     <ClInclude Include="Include\Dy\Helper\Wrapper\DDyMutexUniqueHashMap.h" />
+    <ClInclude Include="Include\Dy\Management\IO\IODataManager_Deprecated.h" />
+    <ClInclude Include="Include\Dy\Management\IO\IOResourceManager_Deprecated.h" />
     <ClInclude Include="Include\Dy\Management\IO\MDyIOData.h" />
     <ClInclude Include="Include\Dy\Management\IO\MDyIOResource.h" />
     <ClInclude Include="Include\Dy\Meta\Type\DDyResourceName.h" />
@@ -662,9 +668,7 @@
     <ClInclude Include="Include\Dy\Helper\Type\Vector2.h" />
     <ClInclude Include="Include\Dy\Helper\Type\Vector3.h" />
     <ClInclude Include="Include\Dy\Helper\Type\Vector4.h" />
-    <ClInclude Include="Include\Dy\Management\IO\IOResourceManager_Deprecated.h" />
     <ClInclude Include="Include\Dy\Management\Interface\ISingletonCrtp.h" />
-    <ClInclude Include="Include\Dy\Management\IO\IODataManager_Deprecated.h" />
     <ClInclude Include="Include\Dy\Management\SettingManager.h" />
     <ClInclude Include="Include\Dy\Management\TimeManager.h" />
     <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetCommonDescriptor.h" />

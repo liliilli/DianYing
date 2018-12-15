@@ -17,6 +17,7 @@
 #include <Dy/Core/Resource/Resource/FDyTextureResource.h>
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
 #include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
+#include <Dy/Core/Resource/Type/TemplateRescInfoType.h>
 #include <Dy/Helper/Wrapper/DDyMutexUniqueHashMap.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Meta/Type/EDyResourceType.h>
@@ -37,16 +38,6 @@ enum class EDyResourceType;
 namespace dy
 {
 
-template <EDyResourceType TType> struct TDyRscResc;
-template <>
-struct TDyRscResc<EDyResourceType::Texture> final { using type = FDyTextureResource; };
-template <>
-struct TDyRscResc<EDyResourceType::GLShader> final { using type = FDyShaderResource; };
-template <>
-struct TDyRscResc<EDyResourceType::Model> final { using type = FDyModelResource; };
-template <>
-struct TDyRscResc<EDyResourceType::Material> final { using type = FDyMaterialResource; };
-
 ///
 /// @class MDyIOResource
 /// @brief IO Resource part manager (newly implemented)
@@ -57,7 +48,7 @@ class MDyIOResource final : public IDySingleton<MDyIOResource>
   MDY_SINGLETON_DERIVED(MDyIOResource);
 public:
   template <EDyResourceType TType>
-  MDY_NODISCARD typename TDyRscResc<TType>::type* GetPtrInformation(_MIN_ const std::string& specifier)
+  MDY_NODISCARD typename __TResourceType<TType>::type* GetPtrInformation(_MIN_ const std::string& specifier)
   {
     if constexpr (TType == EDyResourceType::GLShader)     { return this->__mShaderContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::Texture) { return this->__mTextureContainer.TryGetInstancePtr(specifier); }
@@ -67,7 +58,7 @@ public:
   }
 
   template <EDyResourceType TType>
-  MDY_NODISCARD const typename TDyRscResc<TType>::type* GetPtrInformation(_MIN_ const std::string& specifier) const noexcept
+  MDY_NODISCARD const typename __TResourceType<TType>::type* GetPtrInformation(_MIN_ const std::string& specifier) const noexcept
   {
     if constexpr (TType == EDyResourceType::GLShader)     { return this->__mShaderContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::Texture) { return this->__mTextureContainer.TryGetInstancePtr(specifier); }

@@ -201,8 +201,6 @@
     <ClCompile Include="Source\Builtin\Script\DefaultLoadingBootScriptCpp.cc" />
     <ClCompile Include="Source\Core\Rendering\Wrapper\FDyGLWrapper.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\FDyTextureResource.cc" />
-    <ClCompile Include="Source\Management\IO\IODataManager_Deprecated.cc" />
-    <ClCompile Include="Source\Management\IO\IOResourceManager_Deprecated.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\FDyShaderResource.cc" />
     <ClCompile Include="Source\Management\IO\MDyIOData.cc" />
     <ClCompile Include="Source\Management\IO\MDyIOResource.cc" />
@@ -214,6 +212,8 @@
     <ClCompile Include="Source\Core\Rendering\Wrapper\FDyGLWrapperSub.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyMaterialInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\FDyMaterialResource.cc" />
+    <ClCompile Include="Source\Management\IO\IODataManager_Deprecated.cc" />
+    <ClCompile Include="Source\Management\IO\IOResourceManager_Deprecated.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -528,8 +528,6 @@
     <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLWindowContextDescriptor.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLTextureDescriptor.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyTextureResource.h" />
-    <ClInclude Include="Include\Dy\Management\IO\IODataManager_Deprecated.h" />
-    <ClInclude Include="Include\Dy\Management\IO\IOResourceManager_Deprecated.h" />
     <ClInclude Include="Include\Dy\Helper\Wrapper\DDyMutexUniqueHashMap.h" />
     <ClInclude Include="Include\Dy\Management\IO\MDyIOResource.h" />
     <ClInclude Include="Include\Dy\Management\IO\MDyIOData.h" />
@@ -545,6 +543,12 @@
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyMaterialInformation.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyMaterialResource.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOTaskDeferred.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Information\FDySoundInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\FDySoundResource.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\TDyResourceBinder.h" />
+    <ClInclude Include="Include\Dy\Management\IO\IODataManager_Deprecated.h" />
+    <ClInclude Include="Include\Dy\Management\IO\IOResourceManager_Deprecated.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\TemplateRescInfoType.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />
