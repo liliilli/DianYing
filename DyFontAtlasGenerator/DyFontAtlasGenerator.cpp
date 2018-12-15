@@ -50,21 +50,21 @@ static constexpr auto CHANNEL_LIMIT      = 4;
 static constexpr auto TEXTURE_MAPLIMIT   = (TEXTURE_CANVAS_S / TEXTURE_SIZE_S) * (TEXTURE_CANVAS_T / TEXTURE_SIZE_T) * CHANNEL_LIMIT;
 static constexpr auto TEXTURE_PXRANGE    = 12.0;
 
-constexpr auto ENGLISH_UNI20_START = 0x0000;
-constexpr auto ENGLISH_UNI20_END   = 0x007F;
-constexpr auto ENGLISH_UNI20_RANGE = ENGLISH_UNI20_END - ENGLISH_UNI20_START + 1;
+constexpr auto ENGLISH_CHR_START = 0x0000;
+constexpr auto ENGLISH_CHR_END   = 0x007F;
+constexpr auto ENGLISH_CHR_RANGE = GetRangeFrom(ENGLISH_CHR_START, ENGLISH_CHR_END);
 
-constexpr auto HANGUL_UNI20_START = 0xAC00;
-constexpr auto HANGUL_UNI20_END   = 0xD7AF;
-constexpr auto HANGUL_UNI20_RANGE = HANGUL_UNI20_END - HANGUL_UNI20_START + 1;
+constexpr auto HANGUL_CHR_START = 0xAC00;
+constexpr auto HANGUL_CHR_END   = 0xD7AF;
+constexpr auto HANGUL_CHR_RANGE = GetRangeFrom(HANGUL_CHR_START, HANGUL_CHR_END);
 
-constexpr auto JAPANESE_UNI20_KANA_START = 0x3000;
-constexpr auto JAPANESE_UNI20_KANA_END   = 0x30FF;
-constexpr auto JAPANESE_UNI20_KANA_RANGE = JAPANESE_UNI20_KANA_END - JAPANESE_UNI20_KANA_START + 1;
+constexpr auto KANA_CHR_START = 0x3000;
+constexpr auto KANA_CHR_END   = 0x30FF;
+constexpr auto KANA_CHR_RANGE = GetRangeFrom(KANA_CHR_START, KANA_CHR_END);
 
-constexpr auto CJK_UNI20_HANBUN_START0 = 0x4E00;
-constexpr auto CJK_UNI20_HANBUN_END0   = 0x9FFF;
-constexpr auto CJK_UNI20_HANBUN_RANGE0 = GetRangeFrom(CJK_UNI20_HANBUN_START0, CJK_UNI20_HANBUN_END0);
+constexpr auto CJK_CHR_START = 0x4E00;
+constexpr auto CJK_CHR_END   = 0x9FFF;
+constexpr auto CJK_CHR_RANGE = GetRangeFrom(CJK_CHR_START, CJK_CHR_END);
 
 auto sFtLibraryList {std::vector<FT_Library>{}};
 auto sFtFaceList    {std::vector<FT_Face>{}};
@@ -601,18 +601,18 @@ void DyFontAtlasGenerator::UpdateOptionFlag(int value)
 void DyFontAtlasGenerator::CreateBatchFile()
 {
   static auto sIsMapInitialized {false};
-  static auto sEnglishMap       {std::vector<FT_ULong>(ENGLISH_UNI20_RANGE)};
-  static auto sHangulMap        {std::vector<FT_ULong>(HANGUL_UNI20_RANGE)};
-  static auto sKanaMap          {std::vector<FT_ULong>(JAPANESE_UNI20_KANA_RANGE)};
-  static auto sCJKHanbunMap     {std::vector<FT_ULong>(CJK_UNI20_HANBUN_RANGE0)};
+  static auto sEnglishMap       {std::vector<FT_ULong>(ENGLISH_CHR_RANGE)};
+  static auto sHangulMap        {std::vector<FT_ULong>(HANGUL_CHR_RANGE)};
+  static auto sKanaMap          {std::vector<FT_ULong>(KANA_CHR_RANGE)};
+  static auto sCJKHanbunMap     {std::vector<FT_ULong>(CJK_CHR_RANGE)};
 
   // First, initialize map charcode information.
   if (sIsMapInitialized == false)
   {
-    std::generate(sEnglishMap.begin(), sEnglishMap.end(),     [n = ENGLISH_UNI20_START]() mutable { return n++; });
-    std::generate(sHangulMap.begin(), sHangulMap.end(),       [n = HANGUL_UNI20_START]() mutable { return n++; });
-    std::generate(sKanaMap.begin(), sKanaMap.end(),           [n = JAPANESE_UNI20_KANA_START]() mutable { return n++; });
-    std::generate(sCJKHanbunMap.begin(), sCJKHanbunMap.end(), [n = CJK_UNI20_HANBUN_START0]() mutable { return n++; });
+    std::generate(sEnglishMap.begin(), sEnglishMap.end(),     [n = ENGLISH_CHR_START]() mutable { return n++; });
+    std::generate(sHangulMap.begin(), sHangulMap.end(),       [n = HANGUL_CHR_START]() mutable { return n++; });
+    std::generate(sKanaMap.begin(), sKanaMap.end(),           [n = KANA_CHR_START]() mutable { return n++; });
+    std::generate(sCJKHanbunMap.begin(), sCJKHanbunMap.end(), [n = CJK_CHR_START]() mutable { return n++; });
     sIsMapInitialized = true;
   }
 
