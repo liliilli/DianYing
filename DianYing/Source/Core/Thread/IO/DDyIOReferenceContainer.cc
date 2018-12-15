@@ -45,32 +45,36 @@ bool DDyIOReferenceContainer::IsReferenceInstanceBound(_MIN_ const std::string& 
 
 bool DDyIOReferenceContainer::TryEnlargeResourceScope(_MIN_ EDyScope scope, _MIN_ const std::string& specifier, _MIN_ EDyResourceType type)
 {
+  DDyIOReferenceInstance* instance = MDY_INITIALIZE_NULL;
   switch (type)
   {
-  case EDyResourceType::GLShader:
-  {
-    auto& instance = this->mMapGLShaderReference[specifier];
-    if (scope > instance.mScope) { instance.mScope = scope; }
-  } break;
-  case EDyResourceType::Texture:
-  {
-    auto& instance = this->mMapTextureReference[specifier];
-    if (scope > instance.mScope) { instance.mScope = scope; }
-  } break;
-  case EDyResourceType::Model:
-  {
-    auto& instance = this->mMapModelReference[specifier];
-    if (scope > instance.mScope) { instance.mScope = scope; }
-  } break;
-  case EDyResourceType::Material:
-  {
-    auto& instance = this->mMapMaterialReference[specifier];
-    if (scope > instance.mScope) { instance.mScope = scope; }
-  } break;
+  case EDyResourceType::GLShader: { instance = &this->mMapGLShaderReference[specifier]; } break;
+  case EDyResourceType::Texture:  { instance = &this->mMapTextureReference[specifier]; }  break;
+  case EDyResourceType::Model:    { instance = &this->mMapModelReference[specifier]; }    break;
+  case EDyResourceType::Material: { instance = &this->mMapMaterialReference[specifier]; } break;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
   }
 
+  if (scope > instance->mScope) { instance->mScope = scope; }
   return true;
+}
+
+EDySuccess DDyIOReferenceContainer::TryBindBinderToResourceRI(
+    _MIN_ const std::string& iSpecifier,
+    _MIN_ EDyResourceType iType,
+    _MIN_ const __FDyBinderBase* iPtrBinder)
+{
+  if (this->IsReferenceInstanceExist(iSpecifier, iType) == false) { return DY_FAILURE; }
+
+  switch (iType)
+  {
+  case EDyResourceType::Model:    this->mMapModelReference[iSpecifier].AttachBinder(iPtrBinder);    break;
+  case EDyResourceType::GLShader: this->mMapGLShaderReference[iSpecifier].AttachBinder(iPtrBinder); break;
+  case EDyResourceType::Texture:  this->mMapTextureReference[iSpecifier].AttachBinder(iPtrBinder);  break;
+  case EDyResourceType::Material: this->mMapMaterialReference[iSpecifier].AttachBinder(iPtrBinder); break;
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
+  }
+  return DY_SUCCESS;
 }
 
 EDySuccess DDyIOReferenceContainer::CreateReferenceInstance(

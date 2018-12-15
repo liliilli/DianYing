@@ -434,12 +434,15 @@ bool TDyIO::pIsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ 
 {
   switch (style)
   {
-  case EDyResourceStyle::Information:
-    return this->mRIInformationMap.IsReferenceInstanceExist(specifier, type);
-  case EDyResourceStyle::Resource:
-    return this->mRIResourceMap.IsReferenceInstanceExist(specifier, type);
+  case EDyResourceStyle::Information: return this->mRIInformationMap.IsReferenceInstanceExist(specifier, type);
+  case EDyResourceStyle::Resource:    return this->mRIResourceMap.IsReferenceInstanceExist(specifier, type);
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
   }
+}
+
+EDySuccess TDyIO::TryBindBinderToResourceRI(_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder)
+{
+  return this->mRIResourceMap.TryBindBinderToResourceRI(iSpecifier, iType, iPtrBinder);
 }
 
 bool TDyIO::pIsReferenceInstanceBound(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style)

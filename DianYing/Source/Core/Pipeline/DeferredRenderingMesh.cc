@@ -48,7 +48,6 @@ FDyDeferredRenderingMesh::FDyDeferredRenderingMesh()
 {
   auto& settingManager      = MDySetting::GetInstance();
   auto& framebufferManager  = MDyFramebuffer::GetInstance();
-  auto& heapManager         = MDyIOResource_Deprecated::GetInstance();
 
   ///
   /// @function CreateFramebufferAttachmentSetting
@@ -101,13 +100,16 @@ FDyDeferredRenderingMesh::FDyDeferredRenderingMesh()
   //
   this->mDyBtFbScrFin = framebufferManager.GetFrameBufferPointer(MSVSTR(sFrameBuffer_ScreenFinal));
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mDyBtFbScrFin), "Unexpected error.");
+  MDY_NOT_IMPLEMENTED_ASSERT();
 
+#ifdef false
   //
   if (MDY_CHECK_ISNULL(heapManager.GetModelResource(MSVSTR(builtin::FDyBuiltinModelScreenProjectionTriangle::sName))))
   {
     MDY_CALL_ASSERT_SUCCESS(heapManager.CreateModelResource_Deprecated(MSVSTR(builtin::FDyBuiltinModelScreenProjectionTriangle::sName)));
   }
   this->mScreenRenderTrianglePtr = heapManager.GetModelResource(MSVSTR(builtin::FDyBuiltinModelScreenProjectionTriangle::sName));
+#endif
 
   for (TI32 i = 0; i < FDyDeferredRenderingMesh::sDirectionalLightCount; ++i)
   {
@@ -123,7 +125,7 @@ FDyDeferredRenderingMesh::~FDyDeferredRenderingMesh()
 
 void FDyDeferredRenderingMesh::RenderScreen()
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mShaderPtr), "FDyDeferredRenderingMesh::mShaderPtr must not be nullptr.");
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mShaderPtr_Deprecated), "FDyDeferredRenderingMesh::mShaderPtr must not be nullptr.");
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mScreenRenderTrianglePtr), "");
   if (this->mIsAttachmentPtrBinded == false)
   {
@@ -139,11 +141,11 @@ void FDyDeferredRenderingMesh::RenderScreen()
 
   // Set
   glBindFramebuffer(GL_FRAMEBUFFER, this->mDyBtFbScrFin->GetFramebufferId());
-  this->mShaderPtr->UseShader();
+  this->mShaderPtr_Deprecated->UseShader();
   glBindVertexArray(mesh.GetVertexArrayId());
 
   // Bind g-buffers as textures.
-  const auto uShadowPv_Id = glGetUniformLocation(this->mShaderPtr->GetShaderProgramId(), "uShadowPv");
+  const auto uShadowPv_Id = glGetUniformLocation(this->mShaderPtr_Deprecated->GetShaderProgramId(), "uShadowPv");
   glUniformMatrix4fv(uShadowPv_Id, 1, GL_FALSE, &sSamplePvMatrix[0].X);
 
   glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, this->mAttachmentPtr_Unlit->GetAttachmentId());
@@ -155,7 +157,7 @@ void FDyDeferredRenderingMesh::RenderScreen()
 
   // Rewind
   glBindVertexArray(0);
-  this->mShaderPtr->UnuseShader();
+  this->mShaderPtr_Deprecated->UnuseShader();
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -185,19 +187,19 @@ std::optional<TI32> FDyDeferredRenderingMesh::GetAvailableDirectionalLightIndex(
 
 EDySuccess FDyDeferredRenderingMesh::pInitializeShaderSetting()
 {
-  auto& manResc = MDyIOResource_Deprecated::GetInstance();
-  this->mShaderPtr = manResc.GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderDeferredRendering::sName));
+  MDY_NOT_IMPLEMENTED_ASSERT();
+#ifdef false
+  this->mBinderShader.Get()
+  this->mShaderPtr_Deprecated->UseShader();
 
-  MDY_ASSERT(this->mShaderPtr, "FDyDeferredRenderingMesh::mShaderPtr must not be nullptr.");
-  this->mShaderPtr->UseShader();
+  glUniform1i(glGetUniformLocation(this->mShaderPtr_Deprecated->GetShaderProgramId(), "uUnlit"), 0);
+  glUniform1i(glGetUniformLocation(this->mShaderPtr_Deprecated->GetShaderProgramId(), "uNormal"), 1);
+  glUniform1i(glGetUniformLocation(this->mShaderPtr_Deprecated->GetShaderProgramId(), "uSpecular"), 2);
+  glUniform1i(glGetUniformLocation(this->mShaderPtr_Deprecated->GetShaderProgramId(), "uModelPosition"), 3);
+  glUniform1i(glGetUniformLocation(this->mShaderPtr_Deprecated->GetShaderProgramId(), "uShadow"), 4);
 
-  glUniform1i(glGetUniformLocation(this->mShaderPtr->GetShaderProgramId(), "uUnlit"), 0);
-  glUniform1i(glGetUniformLocation(this->mShaderPtr->GetShaderProgramId(), "uNormal"), 1);
-  glUniform1i(glGetUniformLocation(this->mShaderPtr->GetShaderProgramId(), "uSpecular"), 2);
-  glUniform1i(glGetUniformLocation(this->mShaderPtr->GetShaderProgramId(), "uModelPosition"), 3);
-  glUniform1i(glGetUniformLocation(this->mShaderPtr->GetShaderProgramId(), "uShadow"), 4);
-
-  this->mShaderPtr->UnuseShader();
+  this->mShaderPtr_Deprecated->UnuseShader();
+#endif
   return DY_SUCCESS;
 }
 

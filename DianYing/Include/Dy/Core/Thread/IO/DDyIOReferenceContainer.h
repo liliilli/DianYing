@@ -15,6 +15,19 @@
 
 #include <Dy/Core/Thread/IO/DDyIOReferenceInstance.h>
 
+//!
+//! Forward declaration
+//!
+
+namespace dy
+{
+MDY_INTERFACE __FDyBinderBase;
+} /// ::dy namespace
+
+//!
+//! Implementation
+//!
+
 namespace dy
 {
 
@@ -47,6 +60,10 @@ public:
   /// RI's scope will be changed to big range.
   ///
   MDY_NODISCARD bool TryEnlargeResourceScope(_MIN_ EDyScope scope, _MIN_ const std::string& specifier, _MIN_ EDyResourceType type);
+
+  /// @brief Try to bind binder instance to valid resource Reference Instance.
+  /// If not exist, just do nothing and return DY_FAILURE.
+  MDY_NODISCARD EDySuccess TryBindBinderToResourceRI(_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder);
 
   ///
   /// @brief

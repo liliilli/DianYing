@@ -14,22 +14,10 @@
 ///
 
 #include <Dy/Core/Thread/IO/DDyIOTask.h>
-#include <vector>
-#include <algorithm>
-#include <utility>
+#include <Dy/Helper/System/Idioms.h>
 
 namespace dy
 {
-
-/// @brief Vector fast erase.
-template <typename TType, typename TAllocator>
-void DyFastErase(_MINOUT_ std::vector<TType, TAllocator>& iVector, _MIN_ TU32 iIndex)
-{
-  MDY_ASSERT(iIndex < iVector.size(), "Unexpected error occurred.");
-
-  std::swap(iVector[iIndex], iVector.back());
-  iVector.pop_back();
-}
 
 struct DDyIOTaskDeferred final
 {

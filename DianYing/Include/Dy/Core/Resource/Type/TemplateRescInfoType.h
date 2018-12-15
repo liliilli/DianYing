@@ -44,12 +44,14 @@ template <> struct __TDyRscInfo<EDyResourceType::Texture> final { using type = F
 template <> struct __TDyRscInfo<EDyResourceType::GLShader> final { using type = FDyShaderInformation; };
 template <> struct __TDyRscInfo<EDyResourceType::Model> final { using type = FDyModelInformation; };
 template <> struct __TDyRscInfo<EDyResourceType::Material> final { using type = FDyMaterialInformation; };
+template <EDyResourceType TType> using __TDyRscInfo_T = typename __TDyRscInfo<TType>::type;
 
 template <EDyResourceType TType> struct __TResourceType;
 template <> struct __TResourceType<EDyResourceType::Texture> final  { using type = FDyTextureResource; };
 template <> struct __TResourceType<EDyResourceType::GLShader> final { using type = FDyShaderResource; };
 template <> struct __TResourceType<EDyResourceType::Model> final    { using type = FDyModelResource; };
 template <> struct __TResourceType<EDyResourceType::Material> final { using type = FDyMaterialResource; };
+template <EDyResourceType TType> using __TResourceType_T = typename __TResourceType<TType>::type;
 
 } /// ::dy namespace
 

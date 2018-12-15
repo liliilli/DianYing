@@ -33,6 +33,7 @@ namespace dy
 {
 class MDyMetaInfo;
 class SDyIOConnectionHelper;
+MDY_INTERFACE __FDyBinderBase;
 } /// ::dy namespace
 
 //!
@@ -157,6 +158,12 @@ private:
   /// @param style Resource style mode.
   ///
   MDY_NODISCARD bool pIsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style);
+
+  ///
+  /// @brief Try bind binder instance to Resource Reference Instance.
+  /// If not found RI, just return DY_FAILURE.
+  ///
+  MDY_NODISCARD EDySuccess TryBindBinderToResourceRI(_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder);
 
   ///
   /// @brief Try update scope of given style's specifier RI of resource type. \n

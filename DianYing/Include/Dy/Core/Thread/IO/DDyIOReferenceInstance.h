@@ -18,18 +18,21 @@
 #include <Dy/Core/Reflection/RDyBuiltinResources.h>
 #include <Dy/Core/Resource/Type/EDyScope.h>
 
+//!
+//! Forward declaration
+//!
+
 namespace dy
 {
+MDY_INTERFACE __FDyBinderBase;
+} /// ::dy namespace
 
-///
-/// @struct DDyIOPtrBoundObject
-/// @brief Specifies pointer and type of bound object from outside world.
-///
-struct DDyIOPtrBoundObject final
+//!
+//! Implementation
+//!
+
+namespace dy
 {
-  EDyObject mObjectStyle    = EDyObject::NoneError;
-  void*     mPtrBoundObject = nullptr;
-};
 
 ///
 /// @struct DDyIOReferenceInstance
@@ -44,11 +47,12 @@ struct DDyIOReferenceInstance final
   EDyResourceType     mResourceType   = EDyResourceType::NoneError;
   EDyScope            mScope          = EDyScope::Global;
 
-  std::atomic<TU32>   mReferenceCount     = 0;
   bool                mIsNeedToBeGarbageCollected = false;
   bool                mIsResourceValid    = false;
   TConditionCallback  mConditionCallback  = nullptr;
-  std::vector<DDyIOPtrBoundObject> mPtrBoundObjectList = {};
+
+  std::atomic<TU32>   mReferenceCount     = 0;
+  std::vector<const __FDyBinderBase*> mPtrBoundBinderList = {};
 
   DDyIOReferenceInstance() = default;
   /// @brief Constructor without binding object ptr. \n
@@ -56,6 +60,14 @@ struct DDyIOReferenceInstance final
   DDyIOReferenceInstance(_MIN_ const std::string& specifier, _MIN_ EDyResourceStyle style, _MIN_ EDyResourceType type, _MIN_ EDyScope scope)
     : mSpecifierName(specifier), mResourcecStyle(style), mResourceType(type), mScope(scope)
   {};
+
+  /// @brief Bind binder instance pointer address to this RI.
+  /// Be careful of duplicating address pointer.
+  void AttachBinder(_MIN_ const __FDyBinderBase* iPtrBase) noexcept;
+
+  /// @brief Unbind binder instance pointer address from this RI.
+  /// If RI's scope is temporal and valid, GC candidate flag will be set up.
+  void DetachBinder(_MIN_ const __FDyBinderBase* iPtrBase) noexcept;
 };
 
 } /// ::dy namespace

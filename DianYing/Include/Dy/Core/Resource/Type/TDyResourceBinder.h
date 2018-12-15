@@ -14,6 +14,8 @@
 ///
 
 #include <Dy/Meta/Type/EDyResourceType.h>
+#include <Dy/Core/Thread/SDyIOConnectionHelper.h>
+#include <Dy/Core/Resource/Type/FDyBinderBase.h>
 #include <Dy/Core/Resource/Type/TemplateRescInfoType.h>
 
 namespace dy
@@ -25,76 +27,78 @@ enum class EDyLazy : bool
   Yes
 };
 
+/// @struct __TDyBinderBase
+/// @brief Binder base class for each supporting resource type.
 template <EDyResourceType TType>
-struct __TDyBinderBase
+struct __TDyBinderBase : public __FDyBinderBase
 {
 public:
   MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(__TDyBinderBase);
   using TPtrResource      = const typename __TResourceType<TType>::type*;
   using TTryGetReturnType = std::optional<TPtrResource>;
 
-  __TDyBinderBase(_MIN_ const std::string& iSpecifierName) : mSpecifierName{iSpecifierName} {};
-  __TDyBinderBase() {};
-
   /// @brief Release binder instance and detach it from specified Reference Instance.
   virtual ~__TDyBinderBase()
   {
-    if (MDY_CHECK_ISNOTNULL(this->mPtrResource)) { MDY_NOT_IMPLEMENTED_ASSERT(); }
+    if (MDY_CHECK_ISNOTNULL(this->mPtrResource)) { MDY_CALL_ASSERT_SUCCESS(this->pTryDetachResource()); }
   }
 
-  MDY_NODISCARD EDySuccess TryRequireResource() const noexcept
+  /// @brief Check resource is binded to binder handle.
+  MDY_NODISCARD bool IsResourceExist() const noexcept override final
   {
-    MDY_NOT_IMPLEMENTED_ASSERT();
-    return DY_FAILURE;
+    return MDY_CHECK_ISNOTNULL(this->mPtrResource);
   }
 
-  MDY_NODISCARD bool IsResourceExist() const noexcept
-  {
-    MDY_NOT_IMPLEMENTED_ASSERT();
-    return false;
-  }
-
-  MDY_NODISCARD TPtrResource Get() const noexcept
+  /// @brief Get resource pointer which is not nullable.
+  MDY_NODISCARD NotNull<TPtrResource const> Get() const noexcept
   {
     MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mPtrResource), "Resource pointer address must not be null when use it.");
-    return this->mPtrResource;
+    return DyMakeNotNull(this->mPtrResource);
   }
 
 protected:
-  /// @brief Set new specifier name. this function must be called in lazy resource type.
-  void SetSpecifierName(_MIN_ const std::string& iNewSpecifier) noexcept
+  __TDyBinderBase(_MIN_ const std::string& iSpecifierName) : mSpecifierName{iSpecifierName} {};
+  __TDyBinderBase() {};
+
+  /// @brief Require resource.
+  MDY_NODISCARD EDySuccess pTryRequireResource() noexcept
   {
+    MDY_ASSERT(this->mSpecifierName.empty() == false, "Resource specifier name must be valid to require resource.");
+    auto ptrResult = SDyIOConnectionHelper::TryRequireResource<TType>(this->mSpecifierName, this);
+    if (ptrResult.has_value() == false) { return DY_FAILURE; }
+
+    this->mPtrResource = ptrResult.value();
+    return DY_SUCCESS;
+  }
+
+  /// @brief Try detach resource. \n
+  /// If pointer of resource is null (so, not bound to anything), just return DY_FAILURE.
+  /// If detach is succeeded, return DY_SUCCESS. and `mPtrResource` will be nullptr agian.
+  MDY_NODISCARD EDySuccess pTryDetachResource() noexcept
+  {
+    if (MDY_CHECK_ISNULL(this->mPtrResource) == true) { return DY_FAILURE; }
+
+    MDY_NOT_IMPLEMENTED_ASSERT();
+    return DY_SUCCESS;
+  }
+
+  /// @brief Set new specifier name. this function must be called in lazy resource type.
+  void pSetSpecifierName(_MIN_ const std::string& iNewSpecifier) noexcept
+  {
+    MDY_ASSERT(this->mSpecifierName.empty() == false, "Resource specifier name must be valid to require resource.");
     this->mSpecifierName = iNewSpecifier;
   }
 
 private:
-  /// @brief
-  MDY_NODISCARD TTryGetReturnType TryGetResourcePtr() noexcept
+  /// @brief Try update resource pointer of this type with ptr when RI is being valid. \n
+  /// `iPtr` must be convertible to specialized __TDyBinderBase `Type`.
+  void TryUpdateResourcePtr(_MIN_ const void* iPtr) noexcept override final
   {
-    MDY_ASSERT(this->mSpecifierName.empty() == false, "Specifier name must not be empty.");
-
-    if constexpr (TType == EDyResourceType::Model)
-    {
-      MDY_NOT_IMPLEMENTED_ASSERT();
-      return MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
-    }
-    else if constexpr (TType == EDyResourceType::GLShader)
-    {
-      MDY_NOT_IMPLEMENTED_ASSERT();
-      return MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
-    }
-    else if constexpr (TType == EDyResourceType::Material)
-    {
-      MDY_NOT_IMPLEMENTED_ASSERT();
-      return MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
-    }
-    else if constexpr (TType == EDyResourceType::Texture)
-    {
-      MDY_NOT_IMPLEMENTED_ASSERT();
-      return MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
-    }
-    else { MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt); }
+    this->mPtrResource = static_cast<TPtrResource>(iPtr);
   }
+
+  /// @brief Try detach resource pointer of this type with ptr when RI is being GCed.
+  void TryDetachResourcePtr() noexcept override final { this->mPtrResource = nullptr; }
 
   std::string   mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
   TPtrResource  mPtrResource    = MDY_INITIALIZE_NULL;
@@ -102,7 +106,7 @@ private:
 
 ///
 /// @class TDyResourceBinder
-/// @brief
+/// @brief Resource binder class.
 ///
 template <EDyResourceType TType, EDyLazy TIsLazy>
 class TDyResourceBinder;
@@ -121,7 +125,7 @@ public:
 
   TDyResourceBinder(_MIN_ const std::string& specifier) : TSuper{specifier}
   {
-    MDY_NOTUSED auto _ = TSuper::TryRequireResource();
+    MDY_NOTUSED auto _ = TSuper::pTryRequireResource();
   }
   ~TDyResourceBinder() = default;
 };
@@ -141,13 +145,15 @@ private:
   using TSuper = __TDyBinderBase<TType>;
 public:
   MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(TDyResourceBinder);
-
-  TDyResourceBinder() {};
   ~TDyResourceBinder() = default;
 
-  void TryBindResource(_MIN_ const std::string& specifier)
+  /// @brief Try require resource with specifier name in given EDyResourceType.
+  /// If resource is already bound to binder handle, detach it first and newly bind another resource into it.
+  void TryRequireResource(_MIN_ const std::string& specifier)
   {
-
+    TSuper::pSetSpecifierName(specifier);
+    MDY_NOTUSED auto _ = TSuper::pTryDetachResource();
+    TSuper::pTryRequireResource();
   }
 };
 
