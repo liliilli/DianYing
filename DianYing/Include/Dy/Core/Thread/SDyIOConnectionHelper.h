@@ -16,7 +16,6 @@
 #include <string>
 #include <Dy/Core/Thread/IO/EDyIOTask.h>
 #include <Dy/Core/Thread/IO/DDyIOWorkerResult.h>
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
 #include <Dy/Core/Resource/Type/TemplateRescInfoType.h>
 #include <Dy/Core/Resource/Type/FDyBinderBase.h>
 

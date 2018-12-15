@@ -13,6 +13,7 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Helper/Pointer.h>
 #include <Dy/Meta/Type/EDyResourceType.h>
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 #include <Dy/Core/Resource/Type/FDyBinderBase.h>
@@ -43,6 +44,9 @@ public:
     if (MDY_CHECK_ISNOTNULL(this->mPtrResource)) { MDY_CALL_ASSERT_SUCCESS(this->pTryDetachResource()); }
   }
 
+  TPtrResource operator->() noexcept        { return this->mPtrResource; }
+  TPtrResource operator->() const noexcept  { return this->mPtrResource; }
+
   /// @brief Check resource is binded to binder handle.
   MDY_NODISCARD bool IsResourceExist() const noexcept override final
   {
@@ -50,10 +54,10 @@ public:
   }
 
   /// @brief Get resource pointer which is not nullable.
-  MDY_NODISCARD NotNull<TPtrResource const> Get() const noexcept
+  MDY_NODISCARD TPtrResource Get() const noexcept
   {
     MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mPtrResource), "Resource pointer address must not be null when use it.");
-    return DyMakeNotNull(this->mPtrResource);
+    return this->mPtrResource;
   }
 
 protected:
@@ -85,7 +89,6 @@ protected:
   /// @brief Set new specifier name. this function must be called in lazy resource type.
   void pSetSpecifierName(_MIN_ const std::string& iNewSpecifier) noexcept
   {
-    MDY_ASSERT(this->mSpecifierName.empty() == false, "Resource specifier name must be valid to require resource.");
     this->mSpecifierName = iNewSpecifier;
   }
 
@@ -131,7 +134,11 @@ public:
 };
 
 template <EDyResourceType TType>
-using TDyResourceBinderInstant = TDyResourceBinder<TType, EDyLazy::No>;
+using TDyResourceBinderInstant    = TDyResourceBinder<TType, EDyLazy::No>;
+using TDyIResourceBinderShader    = TDyResourceBinderInstant<EDyResourceType::GLShader>;
+using TDyIResourceBinderModel     = TDyResourceBinderInstant<EDyResourceType::Model>;
+using TDyIResourceBinderTexture   = TDyResourceBinderInstant<EDyResourceType::Texture>;
+using TDyIResourceBinderMaterial  = TDyResourceBinderInstant<EDyResourceType::Material>;
 
 ///
 /// @class TDyResourceBinder
@@ -139,12 +146,13 @@ using TDyResourceBinderInstant = TDyResourceBinder<TType, EDyLazy::No>;
 /// User have to require resource manually. but detach is held by automatically. (RAII)
 ///
 template <EDyResourceType TType>
-class TDyResourceBinder<TType, EDyLazy::Yes> final
+class TDyResourceBinder<TType, EDyLazy::Yes> final : public __TDyBinderBase<TType>
 {
 private:
   using TSuper = __TDyBinderBase<TType>;
 public:
   MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(TDyResourceBinder);
+  TDyResourceBinder() = default;
   ~TDyResourceBinder() = default;
 
   /// @brief Try require resource with specifier name in given EDyResourceType.
@@ -152,13 +160,17 @@ public:
   void TryRequireResource(_MIN_ const std::string& specifier)
   {
     TSuper::pSetSpecifierName(specifier);
-    MDY_NOTUSED auto _ = TSuper::pTryDetachResource();
-    TSuper::pTryRequireResource();
+    MDY_NOTUSED auto _1 = TSuper::pTryDetachResource();
+    MDY_NOTUSED auto _2 = TSuper::pTryRequireResource();
   }
 };
 
 template <EDyResourceType TType>
-using TDyResourceBinderLazy = TDyResourceBinder<TType, EDyLazy::No>;
+using TDyResourceBinderLazy = TDyResourceBinder<TType, EDyLazy::Yes>;
+using TDyLResourceBinderShader    = TDyResourceBinderLazy<EDyResourceType::GLShader>;
+using TDyLResourceBinderModel     = TDyResourceBinderLazy<EDyResourceType::Model>;
+using TDyLResourceBinderTexture   = TDyResourceBinderLazy<EDyResourceType::Texture>;
+using TDyLResourceBinderMaterial  = TDyResourceBinderLazy<EDyResourceType::Material>;
 
 } /// ::dy namespace
 

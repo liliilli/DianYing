@@ -51,6 +51,18 @@ public:
     return this->mBlendMode;
   }
 
+  /// @brief
+  MDY_NODISCARD const FDyShaderResource* GetShaderResourcePtr() const noexcept
+  {
+    return this->mPtrShaderResource;
+  }
+
+  /// @brief Return binded texture resource pointers list.
+  MDY_NODISCARD const std::vector<const FDyTextureResource*>& GetBindedTextureResourcePtrList() const noexcept
+  {
+    return this->mPtrTextureRescList;
+  }
+
 private:
   std::string          mSpecifierName    = MDY_INITIALIZE_EMPTYSTR;
   EDyMaterialBlendMode mBlendMode        = EDyMaterialBlendMode::Opaque;

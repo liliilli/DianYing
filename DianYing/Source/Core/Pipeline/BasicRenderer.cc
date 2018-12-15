@@ -16,10 +16,7 @@
 #include <Dy/Core/Rendering/Pipeline/BasicRenderer.h>
 
 #include <Dy/Component/CDyModelRenderer.h>
-#include <Dy/Core/Resource/Resource_Deprecated/ShaderResource_Deprecated.h>
 #include <Dy/Core/Resource/Resource_Deprecated/SubmeshResource_Deprecated.h>
-#include <Dy/Core/Resource/Resource_Deprecated/MaterialResource_Deprecated.h>
-#include <Dy/Core/Resource/Resource_Deprecated/TextureResource_Deprecated.h>
 #include <Dy/Core/Resource/Internal/TextureEnums.h>
 #include <Dy/Element/Actor.h>
 #include <Dy/Management/WorldManager.h>
@@ -29,6 +26,10 @@
 #include <Dy/Management/Rendering/FramebufferManager.h>
 #include <Dy/Management/Rendering/UniformBufferObjectManager.h>
 #include <Dy/Core/Rendering/Helper/FrameAttachmentString.h>
+#include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
+#include <Dy/Core/Resource/Resource/FDyShaderResource.h>
+#include "Dy/Core/Resource/Resource/FDyMeshResource.h"
+#include "Dy/Core/Resource/Resource/FDyTextureResource.h"
 
 //!
 //! Temporary
@@ -210,20 +211,16 @@ void FDyBasicRenderer::pRenderScreen(const CDyModelRenderer& renderer, const CDy
 
   for (TI32 i = 0; i < iterationCount; ++i)
   {
-    auto& material      = const_cast<CDyMaterialResource_Deprecated&>(renderer.GetMaterialResourcePtr(i));
-    auto shaderResource = material.GetShaderResource();
-    if (shaderResource == nullptr)
-    {
-      MDY_LOG_CRITICAL("{} | Shader resource of {} is not binded, Can not render mesh.", "CDyMeshRenderer::Render", material.GetMaterialName());
-      continue;
-    }
+    const auto& material = renderer.GetMaterialResourcePtr(i);
+    auto* ptrShader      = material.GetShaderResourcePtr();
+    MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptrShader), "Shader resource is not binded yet.");
 
-    shaderResource->UseShader();
+    ptrShader->UseShader();
 
-    const CDySubmeshResource_Deprecated& submesh = renderer.GetSubmeshResourcePtr(i);
+    const auto& submesh = renderer.GetSubmeshResourcePtr(i);
     glBindVertexArray(submesh.GetVertexArrayId());
 
-    const auto modelMatrix = glGetUniformLocation(shaderResource->GetShaderProgramId(), "modelMatrix");
+    const auto modelMatrix = glGetUniformLocation(ptrShader->GetShaderProgramId(), "modelMatrix");
     const auto& model = const_cast<FDyActor*>(renderer.GetBindedActor())->GetTransform()->GetTransform();
     glUniformMatrix4fv(modelMatrix, 1, GL_FALSE, &model[0].X);
 
@@ -242,13 +239,13 @@ void FDyBasicRenderer::pRenderScreen(const CDyModelRenderer& renderer, const CDy
 #endif
 
     // Bind textures of one material.
-    const auto& textureResources        = material.GetBindedTextureResources();
+    const auto& textureResources = material.GetBindedTextureResourcePtrList();
     const auto  textureResourceListSize = static_cast<int32_t>(textureResources.size());
     for (int32_t j = 0; j < textureResourceListSize; ++j)
     {
-      glUniform1i(glGetUniformLocation(shaderResource->GetShaderProgramId(), (std::string("uTexture") + std::to_string(j)).c_str()), j);
+      glUniform1i(glGetUniformLocation(ptrShader->GetShaderProgramId(), (std::string("uTexture") + std::to_string(j)).c_str()), j);
 
-      const auto texturePointer = textureResources[j].mValidTexturePointer;
+      const auto* texturePointer = textureResources[j];
       glActiveTexture(GL_TEXTURE0 + j);
       switch (texturePointer->GetTextureType())
       {
@@ -271,7 +268,7 @@ void FDyBasicRenderer::pRenderScreen(const CDyModelRenderer& renderer, const CDy
 
     // Unbind present submesh vertex array object.
     glBindVertexArray(0);
-    shaderResource->UnuseShader();
+    ptrShader->DisuseShader();
   }
 }
 

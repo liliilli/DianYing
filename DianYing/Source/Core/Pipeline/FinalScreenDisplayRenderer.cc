@@ -17,10 +17,8 @@
 #include <Dy/Core/Rendering/Helper/FrameAttachmentString.h>
 #include <Dy/Management/Rendering/FramebufferManager.h>
 #include <Dy/Management/SettingManager.h>
-#include <Dy/Management/IO/IOResourceManager_Deprecated.h>
-#include <Dy/Management/WorldManager.h>
-#include <Dy/Builtin/ShaderGl/RenderScreenOutput.h>
-#include <Dy/Builtin/Model/ScreenProjectionTriangle.h>
+#include <Dy/Core/Resource/Resource/FDyShaderResource.h>
+#include <Dy/Core/Resource/Resource/FDyModelResource.h>
 
 namespace dy
 {
@@ -28,7 +26,6 @@ namespace dy
 FDyFinalScreenDisplayRenderer::FDyFinalScreenDisplayRenderer()
 {
   auto& framebufferManager  = MDyFramebuffer::GetInstance();
-  auto& heapManager         = MDyIOResource_Deprecated::GetInstance();
 
   //!
   //! Lambda function
@@ -50,64 +47,40 @@ FDyFinalScreenDisplayRenderer::FDyFinalScreenDisplayRenderer()
     return DY_SUCCESS;
   };
 
-  static auto ProceedTriangleSetting = [&]() -> EDySuccess
-  {
-    //
-    using TFDBMSPT = builtin::FDyBuiltinModelScreenProjectionTriangle;
-
-    if (MDY_CHECK_ISNULL(heapManager.GetModelResource(MSVSTR(TFDBMSPT::sName))))
-    {
-      MDY_CALL_ASSERT_SUCCESS(heapManager.CreateModelResource_Deprecated(MSVSTR(TFDBMSPT::sName)));
-    }
-    this->mScreenRenderTrianglePtr = heapManager.GetModelResource(MSVSTR(TFDBMSPT::sName));
-
-    return DY_SUCCESS;
-  };
-
-  static auto ProceedShaderSetting = [&]() -> EDySuccess
-  {
-    this->mShaderPtr = heapManager.GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderScreenOutput::sName));
-
-    MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mShaderPtr), "FDyFinalScreenDisplayRenderer::mShaderPtr must not be nullptr.");
-
-    this->mShaderPtr->UseShader();
-    glUniform1i(glGetUniformLocation(this->mShaderPtr->GetShaderProgramId(), "uSceneTexture"), 0);
-    glUniform1i(glGetUniformLocation(this->mShaderPtr->GetShaderProgramId(), "uUiTexture")   , 1);
-    this->mShaderPtr->UnuseShader();
-
-    return DY_SUCCESS;
-  };
-
   //!
   //! FunctionBody ∨
   //!
 
   MDY_CALL_ASSERT_SUCCESS(GetPointerOfAttachmentTextures());
-  MDY_CALL_ASSERT_SUCCESS(ProceedTriangleSetting());
-  MDY_CALL_ASSERT_SUCCESS(ProceedShaderSetting());
+
+  {
+    this->mBinderShader->UseShader();
+    const auto id = this->mBinderShader->GetShaderProgramId();
+    glUniform1i(glGetUniformLocation(id, "uSceneTexture"), 0);
+    glUniform1i(glGetUniformLocation(id, "uUiTexture")   , 1);
+    this->mBinderShader->DisuseShader();
+  }
 }
 
 FDyFinalScreenDisplayRenderer::~FDyFinalScreenDisplayRenderer()
 {
   this->mAttachmentPtr_Scene = nullptr;
   this->mAttachmentPtr_Ui = nullptr;
-  this->mScreenRenderTrianglePtr = nullptr;
-  this->mShaderPtr = nullptr;
 }
 
 void FDyFinalScreenDisplayRenderer::RenderScreen()
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mShaderPtr), "FDyFinalScreenDisplayRenderer::mShaderPtr must not be nullptr.");
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mScreenRenderTrianglePtr), "");
+  if (this->mBinderShader.IsResourceExist() == false
+  ||  this->mBinderTriangle.IsResourceExist() == false) { return; }
 
-  const auto& submeshList = this->mScreenRenderTrianglePtr->GetSubmeshResources();
+  const auto& submeshList = this->mBinderTriangle->GetMeshResourceList();
   MDY_ASSERT(submeshList.size() == 1, "");
   // Bind vertex array
-  const CDySubmeshResource_Deprecated& mesh = *submeshList[0];
 
   // Set
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
-  this->mShaderPtr->UseShader();
+  this->mBinderShader->UseShader();
+  const auto& mesh = submeshList[0];
   glBindVertexArray(mesh.GetVertexArrayId());
 
   // Bind g-buffers as textures and draw.
@@ -117,7 +90,7 @@ void FDyFinalScreenDisplayRenderer::RenderScreen()
 
   // Rewind
   glBindVertexArray(0);
-  this->mShaderPtr->UnuseShader();
+  this->mBinderShader->DisuseShader();
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 

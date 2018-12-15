@@ -15,17 +15,17 @@
 /// Header file
 #include <Dy/Core/Rendering/Pipeline/DeferredRenderingMesh.h>
 
+#include <Dy/Core/Resource/Resource/FDyModelResource.h>
+#include <Dy/Core/Resource/Resource/FDyShaderResource.h>
+
 #include <Dy/Builtin/ShaderGl/RenderDeferredRendering.h>
 #include <Dy/Core/Rendering/Helper/FrameAttachmentString.h>
 #include <Dy/Component/CDyDirectionalLight.h>
-#include <Dy/Management/IO/IODataManager_Deprecated.h>
-#include <Dy/Management/IO/IOResourceManager_Deprecated.h>
 #include <Dy/Management/Rendering/RenderingManager.h>
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/Rendering/FramebufferManager.h>
 #include <Dy/Management/Rendering/UniformBufferObjectManager.h>
-#include <Dy/Builtin/Model/ScreenProjectionTriangle.h>
 #include <glm/gtc/matrix_transform.inl>
 
 //!
@@ -94,27 +94,39 @@ FDyDeferredRenderingMesh::FDyDeferredRenderingMesh()
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   CreateFramebufferAttachmentSetting();
-  MDY_CALL_ASSERT_SUCCESS(this->pInitializeShaderSetting());
-  MDY_CALL_ASSERT_SUCCESS(this->pInitializeUboBuffers());
+  this->pInitializeShaderSetting();
+  this->pInitializeUboBuffers();
 
-  //
+  // @TODO NEED IMPLEMENT NEW RESOURCE BINDING MECHANISM TO FBO ALSO.
   this->mDyBtFbScrFin = framebufferManager.GetFrameBufferPointer(MSVSTR(sFrameBuffer_ScreenFinal));
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mDyBtFbScrFin), "Unexpected error.");
-  MDY_NOT_IMPLEMENTED_ASSERT();
 
-#ifdef false
-  //
-  if (MDY_CHECK_ISNULL(heapManager.GetModelResource(MSVSTR(builtin::FDyBuiltinModelScreenProjectionTriangle::sName))))
-  {
-    MDY_CALL_ASSERT_SUCCESS(heapManager.CreateModelResource_Deprecated(MSVSTR(builtin::FDyBuiltinModelScreenProjectionTriangle::sName)));
-  }
-  this->mScreenRenderTrianglePtr = heapManager.GetModelResource(MSVSTR(builtin::FDyBuiltinModelScreenProjectionTriangle::sName));
-#endif
+  for (TI32 i = 0; i < sDirectionalLightCount; ++i) { this->mDirLightAvailableList.push(i); }
+}
 
-  for (TI32 i = 0; i < FDyDeferredRenderingMesh::sDirectionalLightCount; ++i)
-  {
-    this->mDirLightAvailableList.push(i);
-  }
+void FDyDeferredRenderingMesh::pInitializeShaderSetting()
+{
+  this->mBinderShader->UseShader();
+  //ptr->SetupUniformVariableList();
+  const auto id = this->mBinderShader->GetShaderProgramId();
+  glUniform1i(glGetUniformLocation(id, "uUnlit"), 0);
+  glUniform1i(glGetUniformLocation(id, "uNormal"), 1);
+  glUniform1i(glGetUniformLocation(id, "uSpecular"), 2);
+  glUniform1i(glGetUniformLocation(id, "uModelPosition"), 3);
+  glUniform1i(glGetUniformLocation(id, "uShadow"), 4);
+  this->mBinderShader->DisuseShader();
+}
+
+void FDyDeferredRenderingMesh::pInitializeUboBuffers()
+{
+  auto& uboManager = MDyUniformBufferObject::GetInstance();
+  PDyUboConstructionDescriptor desc = {};
+  desc.mBindingIndex      = 1;
+  desc.mUboSpecifierName  = "dyBtUboDirLight";
+  desc.mBufferDrawType    = EDyBufferDrawType::DynamicDraw;
+  desc.mUboElementSize    = sizeof(DDyUboDirectionalLight);
+  desc.mUboArraySize      = FDyDeferredRenderingMesh::sDirectionalLightCount;
+  MDY_CALL_ASSERT_SUCCESS(uboManager.CreateUboContainer(desc));
 }
 
 FDyDeferredRenderingMesh::~FDyDeferredRenderingMesh()
@@ -125,8 +137,9 @@ FDyDeferredRenderingMesh::~FDyDeferredRenderingMesh()
 
 void FDyDeferredRenderingMesh::RenderScreen()
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mShaderPtr_Deprecated), "FDyDeferredRenderingMesh::mShaderPtr must not be nullptr.");
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mScreenRenderTrianglePtr), "");
+  if (this->mBinderShader.IsResourceExist() == false
+  ||  this->mBinderTriangle.IsResourceExist() == false) { return; }
+
   if (this->mIsAttachmentPtrBinded == false)
   {
     const auto flag = this->pTryGetAttachmentPointers();
@@ -134,18 +147,18 @@ void FDyDeferredRenderingMesh::RenderScreen()
     else                    { return; }
   }
 
-  const auto& submeshList = this->mScreenRenderTrianglePtr->GetSubmeshResources();
+  const auto& submeshList = this->mBinderTriangle->GetMeshResourceList();
   MDY_ASSERT(submeshList.size() == 1, "");
   // Bind vertex array
-  const CDySubmeshResource_Deprecated& mesh = *submeshList[0];
+  const FDyMeshResource& mesh = submeshList[0];
 
   // Set
   glBindFramebuffer(GL_FRAMEBUFFER, this->mDyBtFbScrFin->GetFramebufferId());
-  this->mShaderPtr_Deprecated->UseShader();
+  this->mBinderShader->UseShader();
   glBindVertexArray(mesh.GetVertexArrayId());
 
   // Bind g-buffers as textures.
-  const auto uShadowPv_Id = glGetUniformLocation(this->mShaderPtr_Deprecated->GetShaderProgramId(), "uShadowPv");
+  const auto uShadowPv_Id = glGetUniformLocation(this->mBinderShader->GetShaderProgramId(), "uShadowPv");
   glUniformMatrix4fv(uShadowPv_Id, 1, GL_FALSE, &sSamplePvMatrix[0].X);
 
   glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, this->mAttachmentPtr_Unlit->GetAttachmentId());
@@ -157,7 +170,7 @@ void FDyDeferredRenderingMesh::RenderScreen()
 
   // Rewind
   glBindVertexArray(0);
-  this->mShaderPtr_Deprecated->UnuseShader();
+  this->mBinderShader->DisuseShader();
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -183,37 +196,6 @@ std::optional<TI32> FDyDeferredRenderingMesh::GetAvailableDirectionalLightIndex(
 
     return returnId;
   }
-}
-
-EDySuccess FDyDeferredRenderingMesh::pInitializeShaderSetting()
-{
-  MDY_NOT_IMPLEMENTED_ASSERT();
-#ifdef false
-  this->mBinderShader.Get()
-  this->mShaderPtr_Deprecated->UseShader();
-
-  glUniform1i(glGetUniformLocation(this->mShaderPtr_Deprecated->GetShaderProgramId(), "uUnlit"), 0);
-  glUniform1i(glGetUniformLocation(this->mShaderPtr_Deprecated->GetShaderProgramId(), "uNormal"), 1);
-  glUniform1i(glGetUniformLocation(this->mShaderPtr_Deprecated->GetShaderProgramId(), "uSpecular"), 2);
-  glUniform1i(glGetUniformLocation(this->mShaderPtr_Deprecated->GetShaderProgramId(), "uModelPosition"), 3);
-  glUniform1i(glGetUniformLocation(this->mShaderPtr_Deprecated->GetShaderProgramId(), "uShadow"), 4);
-
-  this->mShaderPtr_Deprecated->UnuseShader();
-#endif
-  return DY_SUCCESS;
-}
-
-EDySuccess FDyDeferredRenderingMesh::pInitializeUboBuffers()
-{
-  auto& uboManager = MDyUniformBufferObject::GetInstance();
-  PDyUboConstructionDescriptor desc = {};
-  desc.mBindingIndex      = 1;
-  desc.mUboSpecifierName  = "dyBtUboDirLight";
-  desc.mBufferDrawType    = EDyBufferDrawType::DynamicDraw;
-  desc.mUboElementSize    = sizeof(DDyUboDirectionalLight);
-  desc.mUboArraySize      = FDyDeferredRenderingMesh::sDirectionalLightCount;
-  MDY_CALL_ASSERT_SUCCESS(uboManager.CreateUboContainer(desc));
-  return DY_SUCCESS;
 }
 
 EDySuccess FDyDeferredRenderingMesh::UpdateDirectionalLightValueToGpu(

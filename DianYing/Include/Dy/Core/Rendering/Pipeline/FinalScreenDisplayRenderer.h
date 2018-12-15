@@ -13,6 +13,8 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
+
 //!
 //! Forward declaration
 //!
@@ -20,8 +22,6 @@
 namespace dy
 {
 struct  PDyGlAttachmentInformation;
-class   CDyShaderResource_Deprecated;
-class   CDyModelResource_Deprecated;
 } /// ::dy namespace
 
 //!
@@ -58,8 +58,8 @@ private:
   PDyGlAttachmentInformation* mAttachmentPtr_Ui     = MDY_INITIALIZE_NULL;
 
   /// Shader information pointer
-  CDyShaderResource_Deprecated*          mShaderPtr            = MDY_INITIALIZE_NULL;
-  CDyModelResource_Deprecated*           mScreenRenderTrianglePtr    = MDY_INITIALIZE_NULL;
+  TDyIResourceBinderShader    mBinderShader   {"dyBtShaderGlScreenOut"};
+  TDyIResourceBinderModel     mBinderTriangle {"dyBtModelScrProjTri"};
 };
 
 } /// ::dy namespace

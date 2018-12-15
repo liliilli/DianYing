@@ -14,7 +14,6 @@
 
 /// Header file
 #include <Dy/Component/CDyModelFilter.h>
-#include <Dy/Management/IO/IOResourceManager_Deprecated.h>
 #include <Dy/Element/Actor.h>
 #include <Dy/Component/CDyModelRenderer.h>
 
@@ -25,22 +24,8 @@ CDyModelFilter::CDyModelFilter(FDyActor& actorReference) : ADyGeneralBaseCompone
 
 EDySuccess CDyModelFilter::Initialize(const PDyModelFilterComponentMetaInfo& metaInfo)
 {
-  auto& resourceManager = MDyIOResource_Deprecated::GetInstance();
-
-  // Bind model.
   const auto& modelSpecfier = metaInfo.mDetails.mModelSpecifierName;
-  if (const auto modelResourcePtr = resourceManager.GetModelResource(modelSpecfier);
-      MDY_CHECK_ISNULL(modelResourcePtr))
-  { // If not exists, make model resource using information but not have it, return fail.
-    const auto res = resourceManager.CreateModelResource_Deprecated(modelSpecfier);
-    if (res == DY_FAILURE) { return DY_FAILURE; }
-
-    this->mModelReferencePtr = resourceManager.GetModelResource(modelSpecfier);
-  }
-  else
-  {
-    this->mModelReferencePtr = modelResourcePtr;
-  }
+  mBinderModel.TryRequireResource(modelSpecfier);
 
   this->Activate();
   return DY_SUCCESS;
@@ -52,8 +37,6 @@ void CDyModelFilter::Release()
   { // Unbind CDyModelFilter from binded CDyModelRenderer.
     this->mModelRendererReferencePtr->UnbindModelFilterReference();
   }
-
-  this->mModelReferencePtr = MDY_INITIALIZE_NULL;
 }
 
 void CDyModelFilter::Activate() noexcept
@@ -61,7 +44,6 @@ void CDyModelFilter::Activate() noexcept
   ADyBaseComponent::Activate();
 
   // Customized body ∨
-
   MDY_NOTUSED auto _ = this->pTryBindingToModelRendererComponent();
 }
 

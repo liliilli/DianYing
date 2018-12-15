@@ -52,6 +52,15 @@ public:
     return this->mSpecifierName;
   }
 
+  /// @brief Get internal shader program id.
+  MDY_NODISCARD TU32 GetShaderProgramId() const noexcept;
+
+  /// @brief Turn on shader program.
+  void UseShader() const noexcept;
+
+  /// @brief Turn off shader program.
+  void DisuseShader() const noexcept;
+
 private:
   /// @brief Create shader fragment list and return.
   MDY_NODISCARD std::optional<TFragmentList> pCreateShaderFragments(_MIN_ const FDyShaderInformation::TShaderFragmentList& vector);

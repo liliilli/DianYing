@@ -47,9 +47,15 @@ public:
     return this->mSpecifierName;
   }
 
+  /// @brief Get valid mesh resource list, not modifiable.
+  MDY_NODISCARD const std::vector<FDyMeshResource>& GetMeshResourceList() const noexcept
+  {
+    return this->mMeshResource;
+  }
+
 private:
   std::string                 mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
-  std::vector<FDyMeshResouce> mMeshResource   = {};
+  std::vector<FDyMeshResource> mMeshResource   = {};
 };
 
 } /// ::dy namespace

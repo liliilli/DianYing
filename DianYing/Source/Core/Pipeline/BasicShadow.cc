@@ -26,6 +26,7 @@
 #include <Dy/Management/Rendering/FramebufferManager.h>
 #include <Dy/Management/Type/FramebufferInformation.h>
 #include <Dy/Element/Actor.h>
+#include <Dy/Core/Resource/Resource/FDyMeshResource.h>
 #include <glm/gtc/matrix_transform.inl>
 
 //!
@@ -88,7 +89,7 @@ void FDyBasicShadow::RenderScreen(const CDyModelRenderer& renderer)
 
   for (TI32 i = 0; i < iterationCount; ++i)
   {
-    const CDySubmeshResource_Deprecated& submesh = renderer.GetSubmeshResourcePtr(i);
+    const auto& submesh = renderer.GetSubmeshResourcePtr(i);
     glBindVertexArray(submesh.GetVertexArrayId());
 
     // Bind shadow camera

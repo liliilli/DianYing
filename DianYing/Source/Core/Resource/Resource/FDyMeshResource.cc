@@ -21,7 +21,7 @@
 namespace dy
 {
 
-FDyMeshResouce::FDyMeshResouce(_MINOUT_ FDyMeshVBOIntermediate& intermediateInstance)
+FDyMeshResource::FDyMeshResource(_MINOUT_ FDyMeshVBOIntermediate& intermediateInstance)
 {
   this->mBufferIdInformation = intermediateInstance.GetBufferIdInfo();
   this->mMeshFlagInformation = intermediateInstance.GetMeshFlagInfo();
@@ -38,9 +38,29 @@ FDyMeshResouce::FDyMeshResouce(_MINOUT_ FDyMeshVBOIntermediate& intermediateInst
   FDyGLWrapper::BindVertexArrayObject(descriptor);
 }
 
-FDyMeshResouce::~FDyMeshResouce()
+FDyMeshResource::~FDyMeshResource()
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
+}
+
+bool FDyMeshResource::IsEnabledIndices() const noexcept
+{
+  return this->mMeshFlagInformation.mIsNotHaveIndices == false;
+}
+
+TU32 FDyMeshResource::GetVertexArrayId() const noexcept
+{
+  return this->mBufferIdInformation.mVao;
+}
+
+TU32 FDyMeshResource::GetVertexCounts() const noexcept
+{
+  return this->mMeshFlagInformation.mVertexSize;
+}
+
+TU32 FDyMeshResource::GetIndicesCounts() const noexcept
+{
+  return this->mMeshFlagInformation.mIndiceCount;
 }
 
 } /// ::dy namespace

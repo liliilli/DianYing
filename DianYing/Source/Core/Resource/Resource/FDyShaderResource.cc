@@ -89,6 +89,22 @@ FDyShaderResource::~FDyShaderResource()
   MDY_NOT_IMPLEMENTED_ASSERT();
 }
 
+TU32 FDyShaderResource::GetShaderProgramId() const noexcept
+{
+  return this->mShaderProgramId;
+}
+
+void FDyShaderResource::UseShader() const noexcept
+{
+  MDY_ASSERT(this->mShaderProgramId > 0, "Shader program must be valid.");
+  glUseProgram(this->mShaderProgramId);
+}
+
+void FDyShaderResource::DisuseShader() const noexcept
+{
+  glUseProgram(0);
+}
+
 std::optional<TFragmentList>
 FDyShaderResource::pCreateShaderFragments(_MIN_ const FDyShaderInformation::TShaderFragmentList& vector)
 {

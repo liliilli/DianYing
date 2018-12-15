@@ -14,7 +14,6 @@
 ///
 
 #include <queue>
-#include <Dy/Core/Resource/Resource_Deprecated/ShaderResource_Deprecated.h>
 #include <Dy/Core/Resource/Type/TDyResourceBinder.h>
 
 //!
@@ -76,17 +75,8 @@ public:
   MDY_NODISCARD EDySuccess UnbindDirectionalLight(_MIN_ const TI32 index);
 
 private:
-  ///
-  /// @brief
-  /// @return
-  ///
-  MDY_NODISCARD EDySuccess pInitializeShaderSetting();
-
-  ///
-  /// @brief
-  /// @return
-  ///
-  MDY_NODISCARD EDySuccess pInitializeUboBuffers();
+  void pInitializeShaderSetting();
+  void pInitializeUboBuffers();
 
   ///
   /// @brief  Try to getting attachment instance pointers from management instance.
@@ -96,11 +86,8 @@ private:
 
   inline static constexpr TI32 sDirectionalLightCount = 5;
 
-  CDyShaderResource_Deprecated*  mShaderPtr_Deprecated      = MDY_INITIALIZE_NULL;
-  CDyModelResource_Deprecated*  mScreenRenderTrianglePtr    = MDY_INITIALIZE_NULL;
-
-  TDyResourceBinderInstant<EDyResourceType::GLShader> mBinderShader   {"dyBtShaderGlDeferred"};
-  TDyResourceBinderInstant<EDyResourceType::Model>    mBinderTriangle {"dyBtModelScrProjTri"};
+  TDyIResourceBinderShader  mBinderShader   {"dyBtShaderGlDeferred"};
+  TDyIResourceBinderModel   mBinderTriangle {"dyBtModelScrProjTri"};
 
   /// Attachment information pointer, mDyBtFbUiBasic
   PDyGlAttachmentInformation* mAttachmentPtr_Unlit          = MDY_INITIALIZE_NULL;

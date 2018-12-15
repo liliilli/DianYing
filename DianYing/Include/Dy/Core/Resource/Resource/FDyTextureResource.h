@@ -48,6 +48,18 @@ public:
     return this->mTextureName;
   }
 
+  /// @brief Get binded texture resource id.
+  MDY_NODISCARD FORCEINLINE TU32 GetTextureId() const noexcept
+  {
+    return this->mTextureResourceId;
+  };
+
+  /// @brief Get texture type value.
+  MDY_NODISCARD FORCEINLINE EDyTextureStyleType GetTextureType() const noexcept
+  {
+    return this->mTextureType;
+  }
+
 private:
   std::string   mTextureName        = MDY_INITIALIZE_EMPTYSTR;
   DDyVectorInt2 mTextureSize        = {};
