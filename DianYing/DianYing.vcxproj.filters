@@ -207,13 +207,12 @@
     <ClCompile Include="Source\Core\Rendering\Wrapper\FDyGLWrapperSub.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyMaterialInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\FDyMaterialResource.cc" />
-    <ClCompile Include="Source\Management\IO\IODataManager_Deprecated.cc" />
-    <ClCompile Include="Source\Management\IO\IOResourceManager_Deprecated.cc" />
     <ClCompile Include="Source\Core\Pipeline\BasicRenderer.cc" />
     <ClCompile Include="Source\Core\Pipeline\BasicShadow.cc" />
     <ClCompile Include="Source\Core\Pipeline\DeferredRenderingMesh.cc" />
     <ClCompile Include="Source\Core\Pipeline\FinalScreenDisplayRenderer.cc" />
     <ClCompile Include="Source\Core\Pipeline\UiBasicRenderer.cc" />
+    <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceInstance.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -541,14 +540,15 @@
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDySoundInformation.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDySoundResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\TDyResourceBinder.h" />
-    <ClInclude Include="Include\Dy\Management\IO\IODataManager_Deprecated.h" />
-    <ClInclude Include="Include\Dy\Management\IO\IOResourceManager_Deprecated.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\TemplateRescInfoType.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\BasicRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\BasicShadow.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\DeferredRenderingMesh.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\FinalScreenDisplayRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\UIBasicRenderer.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\FDyBinderBase.h" />
+    <ClInclude Include="Include\Dy\Helper\System\Idioms.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGLFramebufferResource.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />
