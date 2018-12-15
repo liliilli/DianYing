@@ -13,6 +13,9 @@
 /// SOFTWARE.
 ///
 
+#include <vector>
+#include <Dy/Helper/GlobalType.h>
+
 namespace dy
 {
 

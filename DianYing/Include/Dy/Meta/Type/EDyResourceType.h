@@ -24,6 +24,7 @@ enum class EDyResourceType
   Texture,
   Material,
   WidgetMeta,
+  Sound,
 
   __ModelVBO,
   NoneError

@@ -96,21 +96,20 @@ private:
 
   inline static constexpr TI32 sDirectionalLightCount = 5;
 
-  CDyShaderResource_Deprecated*  mShaderPtr      = MDY_INITIALIZE_NULL;
-  TDyResourceBinderInstant<EDyResourceType::GLShader> mBinderShader {"dyBtModelScrProjTri"};
+  CDyShaderResource_Deprecated*  mShaderPtr_Deprecated      = MDY_INITIALIZE_NULL;
+  CDyModelResource_Deprecated*  mScreenRenderTrianglePtr    = MDY_INITIALIZE_NULL;
 
-  /// Attachment information pointer
+  TDyResourceBinderInstant<EDyResourceType::GLShader> mBinderShader   {"dyBtShaderGlDeferred"};
+  TDyResourceBinderInstant<EDyResourceType::Model>    mBinderTriangle {"dyBtModelScrProjTri"};
 
+  /// Attachment information pointer, mDyBtFbUiBasic
   PDyGlAttachmentInformation* mAttachmentPtr_Unlit          = MDY_INITIALIZE_NULL;
   PDyGlAttachmentInformation* mAttachmentPtr_Normal         = MDY_INITIALIZE_NULL;
   PDyGlAttachmentInformation* mAttachmentPtr_Specular       = MDY_INITIALIZE_NULL;
   PDyGlAttachmentInformation* mAttachmentPtr_ModelPosition  = MDY_INITIALIZE_NULL;
   PDyGlAttachmentInformation* mAttachmentPtr_Shadow         = MDY_INITIALIZE_NULL;
   bool                        mIsAttachmentPtrBinded        = false;
-
-  /// mDyBtFbUiBasic
   PDyGlFrameBufferInformation*  mDyBtFbScrFin               = MDY_INITIALIZE_NULL;
-  CDyModelResource_Deprecated*             mScreenRenderTrianglePtr    = MDY_INITIALIZE_NULL;
 
   std::queue<TI32>    mDirLightAvailableList  = {};
 };
