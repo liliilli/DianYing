@@ -161,9 +161,7 @@
     <ClCompile Include="Source\Meta\Information\MetaInfoMaterial.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\EtcType.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\MaterialType.cc" />
-    <ClCompile Include="Source\Core\Resource\Object\Camera.cc" />
     <ClCompile Include="Source\Core\Resource\Object\Grid.cc" />
-    <ClCompile Include="Source\Core\Resource\Object\PostEffectSsao.cc" />
     <ClCompile Include="Source\Management\Internal\MDySynchronization.cc" />
     <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceContainer.cc" />
     <ClCompile Include="Source\Core\Thread\IO\FDyIOGC.cc" />
@@ -201,6 +199,7 @@
     <ClCompile Include="Source\Core\Pipeline\FinalScreenDisplayRenderer.cc" />
     <ClCompile Include="Source\Core\Pipeline\UiBasicRenderer.cc" />
     <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceInstance.cc" />
+    <ClCompile Include="Source\Core\Pipeline\PostEffectSsao.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -459,9 +458,7 @@
     <ClInclude Include="Include\Dy\Core\Resource\Internal\ShaderType.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Internal\TextureEnums.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Internal\TextureType.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Object\Camera.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Object\Grid.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Object\PostEffectSsao.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\EDyScope.h" />
     <ClInclude Include="Include\Dy\Management\Internal\MDySynchronization.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\TDyIOWorker.h" />
@@ -481,7 +478,6 @@
     <ClInclude Include="Include\Dy\Core\Resource\Information_Deprecated\SoundInformation_Deprecated.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource_Deprecated\SoundResource_Deprecated.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyShaderInformation.h" />
-    <ClInclude Include="Include\Dy\Helper\Internal\UniqueAny.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOWorkerResult.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyTextureInformation.h" />
     <ClInclude Include="Include\Dy\Core\Thread\SDyIOConnectionHelper.h" />
@@ -523,6 +519,7 @@
     <ClInclude Include="Include\Dy\Core\Resource\Type\FDyBinderBase.h" />
     <ClInclude Include="Include\Dy\Helper\System\Idioms.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGLFramebufferResource.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\PostEffectSsao.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

@@ -21,7 +21,6 @@
 #include <imgui/imgui_impl_glfw.h>
 #include <imgui/imgui_impl_opengl3.h>
 
-#include <Dy/Core/Resource/Object/Camera.h>
 #include <Dy/Helper/Type/Vector3.h>
 
 #include <Dy/Management/SettingManager.h>

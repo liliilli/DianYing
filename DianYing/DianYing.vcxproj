@@ -275,11 +275,10 @@
     <ClCompile Include="Source\Core\Resource\Information_Deprecated\SoundInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\EtcType.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\MaterialType.cc" />
-    <ClCompile Include="Source\Core\Resource\Object\Camera.cc" />
     <ClCompile Include="Source\Core\Resource\Object\Grid.cc" />
     <ClCompile Include="Source\Core\DyEngine.cc" />
     <ClCompile Include="Source\Core\Pipeline\DeferredRenderingMesh.cc" />
-    <ClCompile Include="Source\Core\Resource\Object\PostEffectSsao.cc" />
+    <ClCompile Include="Source\Core\Pipeline\PostEffectSsao.cc" />
     <ClCompile Include="Source\Core\Resource\Resource_Deprecated\SoundResource.cc" />
     <ClCompile Include="Source\Core\Pipeline\BasicRenderer.cc" />
     <ClCompile Include="Source\Core\Pipeline\BasicShadow.cc" />
@@ -516,7 +515,6 @@
     <ClInclude Include="Include\Dy\Element\Canvas\Text.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\CanvasDescriptor.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\GlobalEnums.h" />
-    <ClInclude Include="Include\Dy\Helper\Internal\UniqueAny.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\Semaphore.h" />
     <ClInclude Include="Include\Dy\Helper\System\TypeTraits.h" />
     <ClInclude Include="Include\Dy\Management\Internal\MDySynchronization.h" />
@@ -545,11 +543,10 @@
     <ClInclude Include="Include\Dy\Core\Resource\Internal\ShaderType.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Internal\TextureEnums.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Internal\TextureType.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Object\Camera.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Object\Grid.h" />
     <ClInclude Include="Include\Dy\Element\Object.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\DeferredRenderingMesh.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Object\PostEffectSsao.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\PostEffectSsao.h" />
     <ClInclude Include="Include\Dy\Editor\Descriptor\AboutMainDescriptor.h" />
     <ClInclude Include="Include\Dy\Editor\Descriptor\DialogDescriptor.h" />
     <ClInclude Include="Include\Dy\Editor\Descriptor\EmptyDescriptor.h" />

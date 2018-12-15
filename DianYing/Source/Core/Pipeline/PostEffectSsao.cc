@@ -13,13 +13,12 @@
 ///
 
 /// Header file
-#include <Dy/Core/Resource/Object/PostEffectSsao.h>
+#include <Dy/Core/Rendering/Pipeline/PostEffectSsao.h>
 
 #include <Dy/Management/Rendering/RenderingManager.h>
 #include <Dy/Helper/Math/Random.h>
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/WorldManager.h>
-#include <Dy/Core/Resource/Object/Camera.h>
 #include <Dy/Builtin/ShaderGl/PostEffect/RenderDefaultSSAO.h>
 #include <Dy/Builtin/ShaderGl/PostEffect/RenderDefaultSSAOBlurring.h>
 
