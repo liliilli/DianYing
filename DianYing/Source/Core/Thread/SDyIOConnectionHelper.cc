@@ -141,4 +141,30 @@ SDyIOConnectionHelper::pTryRequireResource_Model(_MIN_ const std::string& iSpeci
   return ptr;
 }
 
+std::optional<const __TResourceType_T<EDyResourceType::Texture>*>
+SDyIOConnectionHelper::pTryRequireResource_Texture(_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder)
+{
+  const auto checkFlag = pTryRequireResource(iSpecifier, EDyResourceType::Texture, iPtrBinder);
+  if (checkFlag == DY_FAILURE) { return std::nullopt; }
+
+  // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
+  const auto& ioResourceManager = MDyIOResource::GetInstance();
+  const auto* ptr = ioResourceManager.GetPtrInformation<EDyResourceType::Texture>(iSpecifier);
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
+  return ptr;
+}
+
+std::optional<const __TResourceType_T<EDyResourceType::Material>*>
+SDyIOConnectionHelper::pTryRequireResource_Material(_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder)
+{
+  const auto checkFlag = pTryRequireResource(iSpecifier, EDyResourceType::Material, iPtrBinder);
+  if (checkFlag == DY_FAILURE) { return std::nullopt; }
+
+  // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
+  const auto& ioResourceManager = MDyIOResource::GetInstance();
+  const auto* ptr = ioResourceManager.GetPtrInformation<EDyResourceType::Material>(iSpecifier);
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
+  return ptr;
+}
+
 } /// ::dy namespace

@@ -53,7 +53,7 @@ public:
     if constexpr (TType == EDyResourceType::GLShader)     { return this->__mShaderContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::Texture) { return this->__mTextureContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::Model)   { return this->__mModelContainer.TryGetInstancePtr(specifier); }
-    else if constexpr (TType == EDyResourceType::Texture) { return this->__mMaterialContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EDyResourceType::Material){ return this->__mMaterialContainer.TryGetInstancePtr(specifier); }
     else { MDY_UNEXPECTED_BRANCH_BUT_RETURN(nullptr); }
   }
 
@@ -63,7 +63,7 @@ public:
     if constexpr (TType == EDyResourceType::GLShader)     { return this->__mShaderContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::Texture) { return this->__mTextureContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::Model)   { return this->__mModelContainer.TryGetInstancePtr(specifier); }
-    else if constexpr (TType == EDyResourceType::Texture) { return this->__mMaterialContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EDyResourceType::Material) { return this->__mMaterialContainer.TryGetInstancePtr(specifier); }
     else { MDY_UNEXPECTED_BRANCH_BUT_RETURN(nullptr); }
   }
 

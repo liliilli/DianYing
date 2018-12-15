@@ -13,8 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Resource/MeshRenderer.h>
-#include <Dy/Core/Resource/Resource_Deprecated/ShaderResource_Deprecated.h>
+#include <Dy/Helper/Type/Vector3.h>
 
 namespace dy
 {
@@ -90,9 +89,8 @@ private:
   TU32                mSsaoBlurFrameBufferId  = MDY_INITIALIZE_DEFUINT;
   TU32                mSsaoBlurColorBuffer    = MDY_INITIALIZE_DEFUINT;
 
-  CDyMeshRenderer     mRenderer;
-  CDyShaderResource_Deprecated*  mSsaoShaderPtr          = nullptr;
-  CDyShaderResource_Deprecated*  mSsaoBlurShaderPtr      = nullptr;
+  //CDyShaderResource_Deprecated*  mSsaoShaderPtr          = nullptr;
+  //CDyShaderResource_Deprecated*  mSsaoBlurShaderPtr      = nullptr;
 };
 
 } /// ::dy namespace

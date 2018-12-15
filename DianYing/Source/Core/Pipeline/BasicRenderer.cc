@@ -16,7 +16,6 @@
 #include <Dy/Core/Rendering/Pipeline/BasicRenderer.h>
 
 #include <Dy/Component/CDyModelRenderer.h>
-#include <Dy/Core/Resource/Resource_Deprecated/SubmeshResource_Deprecated.h>
 #include <Dy/Core/Resource/Internal/TextureEnums.h>
 #include <Dy/Element/Actor.h>
 #include <Dy/Management/WorldManager.h>

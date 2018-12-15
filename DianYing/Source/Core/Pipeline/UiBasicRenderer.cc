@@ -16,7 +16,6 @@
 #include <Dy/Core/Rendering/Pipeline/UIBasicRenderer.h>
 
 #include <Dy/Builtin/ShaderGl/Font/RenderDefaultFont.h>
-#include <Dy/Core/Resource/Resource_Deprecated/ShaderResource_Deprecated.h>
 #include <Dy/Core/Rendering/Helper/FrameAttachmentString.h>
 #include <Dy/Element/Canvas/Text.h>
 #include <Dy/Meta/Descriptor/WidgetTextMetaInformation.h>

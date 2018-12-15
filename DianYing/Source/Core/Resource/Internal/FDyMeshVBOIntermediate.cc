@@ -14,7 +14,6 @@
 
 /// Header file
 #include <Dy/Core/Resource/Internal/FDyMeshVBOIntermediate.h>
-#include <Dy/Core/Resource/Information_Deprecated/SubmeshInformation_Deprecated.h>
 #include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLBufferDescriptor.h>
 

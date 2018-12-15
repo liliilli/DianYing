@@ -15,8 +15,6 @@
 /// Header file
 #include <Dy/Core/Resource/Object/PostEffectSsao.h>
 
-#include <Dy/Management/IO/IODataManager_Deprecated.h>
-#include <Dy/Management/IO/IOResourceManager_Deprecated.h>
 #include <Dy/Management/Rendering/RenderingManager.h>
 #include <Dy/Helper/Math/Random.h>
 #include <Dy/Management/SettingManager.h>
@@ -222,10 +220,8 @@ void FDyPostEffectSsao::pCreateBlurFrameBufferComponent()
 
 void FDyPostEffectSsao::pCreateSsaoShaderResource()
 {
-  auto& manInfo = MDyIOData_Deprecated::GetInstance();
-  auto& manResc = MDyIOResource_Deprecated::GetInstance();
-
-  this->mSsaoShaderPtr = manResc.GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderDefaultSSAO::sName));
+#ifdef false
+  //this->mSsaoShaderPtr = manResc.GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderDefaultSSAO::sName));
   MDY_ASSERT(this->mSsaoShaderPtr, "FDyDeferredRenderingMesh::mSsaoShaderPtr must not be nullptr.");
 
   this->mSsaoShaderPtr->UseShader();
@@ -242,20 +238,20 @@ void FDyPostEffectSsao::pCreateSsaoShaderResource()
 
   glUniform3fv(this->mUniformSamples, static_cast<GLsizei>(this->mSsaoKernel.size()), &this->mSsaoKernel[0].X);
   this->mSsaoShaderPtr->UnuseShader();
+#endif
 }
 
 void FDyPostEffectSsao::pCreateSsaoBlurShaderResource()
 {
-  auto& manInfo = MDyIOData_Deprecated::GetInstance();
-  auto& manResc = MDyIOResource_Deprecated::GetInstance();
-
+#ifdef false
   // Make deferred shader
-  this->mSsaoBlurShaderPtr = manResc.GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderDefaultSSAOBlurring::sName));
+  //this->mSsaoBlurShaderPtr = manResc.GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderDefaultSSAOBlurring::sName));
   MDY_ASSERT(this->mSsaoBlurShaderPtr, "FDyDeferredRenderingMesh::mSsaoBlurShaderPtr must not be nullptr.");
 
   this->mSsaoBlurShaderPtr->UseShader();
   glUniform1i(glGetUniformLocation(this->mSsaoBlurShaderPtr->GetShaderProgramId(), "uSsaoInput"), 0);
   this->mSsaoBlurShaderPtr->UnuseShader();
+#endif
 }
 
 void FDyPostEffectSsao::pDeleteFrameBufferComponents()

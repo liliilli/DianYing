@@ -17,7 +17,6 @@
 
 #include <Dy/Component/CDyModelFilter.h>
 #include <Dy/Element/Actor.h>
-#include <Dy/Management/IO/IOResourceManager_Deprecated.h>
 #include <Dy/Management/Rendering/RenderingManager.h>
 #include <Dy/Management/WorldManager.h>
 

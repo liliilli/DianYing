@@ -14,10 +14,6 @@
 
 /// Header file
 #include <Dy/Core/Rendering/Pipeline/BasicShadow.h>
-#include <Dy/Core/Resource/MeshRenderer.h>
-
-#include <Dy/Core/Resource/Resource_Deprecated/SubmeshResource_Deprecated.h>
-#include <Dy/Management/IO/IOResourceManager_Deprecated.h>
 
 #include <Dy/Builtin/ShaderGl/RenderBasicShadow.h>
 #include <Dy/Component/CDyDirectionalLight.h>
@@ -27,6 +23,8 @@
 #include <Dy/Management/Type/FramebufferInformation.h>
 #include <Dy/Element/Actor.h>
 #include <Dy/Core/Resource/Resource/FDyMeshResource.h>
+#include <Dy/Core/Resource/Resource/FDyShaderResource.h>
+
 #include <glm/gtc/matrix_transform.inl>
 
 //!
@@ -51,11 +49,7 @@ namespace dy
 
 FDyBasicShadow::FDyBasicShadow()
 {
-  auto& heapManager = MDyIOResource_Deprecated::GetInstance();
-
-  this->mDirLightShaderResource = heapManager.GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderBasicShadow::sName));
   this->pCreateFramebufferComponents();
-
   // @TODO TEMPORAL
   this->mIsUsingShadowDirectionalLight = true;
 }
@@ -120,7 +114,7 @@ void FDyBasicShadow::RenderScreen(const CDyModelRenderer& renderer)
   }
 
   //
-  this->mDirLightShaderResource->UnuseShader();
+  this->mDirLightShaderResource->DisuseShader();
   glViewport(previousViewport[0], previousViewport[1], previousViewport[2], previousViewport[3]);
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

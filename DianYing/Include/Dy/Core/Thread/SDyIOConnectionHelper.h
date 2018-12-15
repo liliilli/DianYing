@@ -86,8 +86,10 @@ public:
   static MDY_NODISCARD std::optional<const __TResourceType_T<TType>*>
   TryRequireResource(_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder)
   {
-    if constexpr (TType == EDyResourceType::GLShader)   { return pTryRequireResource_GLShader(iSpecifier, iPtrBinder); }
-    else if constexpr (TType == EDyResourceType::Model) { return pTryRequireResource_Model(iSpecifier, iPtrBinder); }
+    if constexpr (TType == EDyResourceType::GLShader)     { return pTryRequireResource_GLShader(iSpecifier, iPtrBinder); }
+    else if constexpr (TType == EDyResourceType::Model)   { return pTryRequireResource_Model(iSpecifier, iPtrBinder); }
+    else if constexpr (TType == EDyResourceType::Texture) { return pTryRequireResource_Texture(iSpecifier, iPtrBinder); }
+    else if constexpr (TType == EDyResourceType::Material){ return pTryRequireResource_Material(iSpecifier, iPtrBinder); }
     else
     {
       MDY_NOT_IMPLEMENTED_ASSERT();
@@ -104,6 +106,12 @@ private:
 
   static MDY_NODISCARD std::optional<const __TResourceType_T<EDyResourceType::Model>*>
   pTryRequireResource_Model(_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
+
+  static MDY_NODISCARD std::optional<const __TResourceType_T<EDyResourceType::Texture>*>
+  pTryRequireResource_Texture(_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
+
+  static MDY_NODISCARD std::optional<const __TResourceType_T<EDyResourceType::Material>*>
+  pTryRequireResource_Material(_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
 };
 
 } /// ::dy namespace

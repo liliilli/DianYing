@@ -13,8 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Resource/MeshRenderer.h>
-#include <Dy/Core/Resource/Resource_Deprecated/ShaderResource_Deprecated.h>
+//#include <Dy/Core/Resource/MeshRenderer.h>
 
 namespace dy
 {
@@ -32,8 +31,8 @@ private:
   GLuint              mVao        = 0;
   GLuint              mVbo        = 0;
 
-  CDyMeshRenderer     mRenderer;
-  CDyShaderResource_Deprecated*  mShaderPtr  = nullptr;
+  //CDyMeshRenderer     mRenderer;
+  //CDyShaderResource_Deprecated*  mShaderPtr  = nullptr;
 };
 
 } /// ::dy namespace

@@ -15,8 +15,6 @@
 /// Header file
 #include <Dy/Core/Resource/Object/Grid.h>
 #include <Dy/Core/Resource/Internal/ShaderType.h>
-#include <Dy/Management/IO/IOResourceManager_Deprecated.h>
-#include <Dy/Management/IO/IODataManager_Deprecated.h>
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Core/Resource/Object/Camera.h>
 #include <Dy/Builtin/ShaderGl/Editor/RenderGrid.h>
@@ -55,11 +53,12 @@ FDyGrid::FDyGrid()
   glBindVertexArray(0);
 
   builtin::FDyBuiltinShaderGLRenderGrid();
-  this->mShaderPtr = MDyIOResource_Deprecated::GetInstance().GetShaderResource(builtin::FDyBuiltinShaderGLRenderGrid::sName.data());
+  //this->mShaderPtr = MDyIOResource_Deprecated::GetInstance().GetShaderResource(builtin::FDyBuiltinShaderGLRenderGrid::sName.data());
 }
 
 void FDyGrid::RenderGrid() noexcept
 {
+#ifdef false
   glDisable(GL_TEXTURE_2D);
   glDisable(GL_BLEND);
 
@@ -83,6 +82,7 @@ void FDyGrid::RenderGrid() noexcept
   this->mShaderPtr->UnuseShader();
 
   glEnable(GL_BLEND);
+#endif
 }
 
 } /// ::dy namespace

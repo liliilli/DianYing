@@ -13,7 +13,6 @@
 ///
 
 #include <Dy/Core/Resource/Internal/MaterialType.h>
-#include <Dy/Management/IO/IOResourceManager_Deprecated.h>
 #include <nlohmann/json.hpp>
 
 //!
@@ -36,15 +35,5 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyMaterialBlendMode& p)
   else if (j == "Custom")       { p = EDyMaterialBlendMode::Custom; }
   else                          { MDY_UNEXPECTED_BRANCH(); }
 }
-
-  DDyMaterialShaderTuple::DDyMaterialShaderTuple(const std::string& shaderName) :
-    mShaderName(shaderName),
-    mValidShaderPointer(MDyIOResource_Deprecated::GetInstance().GetShaderResource(shaderName))
-{ }
-
-DDyMaterialTextureTuple::DDyMaterialTextureTuple(const std::string& textureName) :
-    mTextureName(textureName),
-    mValidTexturePointer(MDyIOResource_Deprecated::GetInstance().GetTextureResource(textureName))
-{ }
 
 } /// ::dy namespace

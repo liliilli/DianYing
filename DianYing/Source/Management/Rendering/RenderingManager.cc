@@ -19,7 +19,6 @@
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Management/SettingManager.h>
 
-#include <Dy/Management/IO/IODataManager_Deprecated.h>
 #include <Dy/Management/Editor/GuiSetting.h>
 
 #include <Dy/Core/Resource/Object/Camera.h>

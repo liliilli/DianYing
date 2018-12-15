@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Resource/Resource_Deprecated/ShaderResource_Deprecated.h>
+#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
 #include <Dy/Helper/Type/Vector3.h>
 
 //!
@@ -102,14 +102,10 @@ private:
 
   /// Flag for checking directional light shadow mapping is being used.
   bool                mIsUsingShadowDirectionalLight = false;
-
-  ///
-  CDyShaderResource_Deprecated*  mDirLightShaderResource   = MDY_INITIALIZE_NULL;
-  ///
-  CDyShaderResource_Deprecated*  mPointLightShaderResource = MDY_INITIALIZE_NULL;
-
   ///
   PDyGlFrameBufferInformation* mShadowFrameBuffer = MDY_INITIALIZE_NULL;
+  ///
+  TDyIResourceBinderShader mDirLightShaderResource{"dyBtShaderGlRenderBscShadow"};
 };
 
 } /// ::dy namespace
