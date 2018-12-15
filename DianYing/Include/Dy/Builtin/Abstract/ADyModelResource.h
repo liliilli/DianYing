@@ -16,7 +16,7 @@
 #include <string_view>
 #include <Dy/Builtin/Interface/IDyResource.h>
 #include <Dy/Core/Reflection/RDyBuiltinResources.h>
-#include <Dy/Core/Component/Internal/ModelType.h>
+#include <Dy/Core/Resource/Internal/ModelType.h>
 
 namespace dy
 {

@@ -216,7 +216,7 @@ EDySuccess MDyMetaInfo::pfRelease()
   return DY_SUCCESS;
 }
 
-const PDyLevelConstructMetaInfo* MDyMetaInfo::GetLevelMetaInformation(const std::string& levelName) const noexcept
+const PDyLevelConstructMetaInfo* MDyMetaInfo::GetLevelMetaInformation(_MIN_ const std::string& levelName) const noexcept
 {
   const auto it = this->mLevelInfoMap.find(levelName);
   if (it == this->mLevelInfoMap.end())  { return nullptr; }
@@ -421,6 +421,12 @@ EDySuccess MDyMetaInfo::pfAddMaterialMetaInfo(_MIN_ const PDyMaterialInstanceMet
 {
   MDY_ASSERT(DyIsMapContains(this->mMaterialMetaInfo, metaInfo.mSpecifierName) == false, "Duplicated material name is exist.");
   this->mMaterialMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pfAddBootResourceSpecifierList(_MIN_ const std::vector<DDyResourceName>& list)
+{
+  this->mBootResourceSpecifierList = list;
   return DY_SUCCESS;
 }
 

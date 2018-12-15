@@ -178,7 +178,7 @@ EDySuccess MDyInput::pfInitialize()
   }
 
   auto& winManager = MDyWindow::GetInstance();
-  this->mTempGlfwWindowPtr = winManager.GetGlfwWindowContext();
+  this->mTempGlfwWindowPtr = winManager.GetGLMainWindow();
 
   glfwSetKeyCallback        (this->mTempGlfwWindowPtr, DyCallbackInputKeyboard);
   glfwSetCursorPosCallback  (this->mTempGlfwWindowPtr, DyCallbackInputMouse);

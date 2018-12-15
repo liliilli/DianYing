@@ -13,7 +13,6 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Element/Object.h>
 #include <Dy/Element/Descriptor/CanvasDescriptor.h>
 #include <Dy/Helper/Type/DyString.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>

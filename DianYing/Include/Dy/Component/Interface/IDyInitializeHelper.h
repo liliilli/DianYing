@@ -38,6 +38,28 @@ MDY_INTERFACE MDY_NO_VTABLE IDyInitializeHelper
   virtual void Release() = 0;
 };
 
+///
+/// @interface IDyInitializeHelper
+/// @brief Initialize helper interface type for non parameter-type.
+///
+template <>
+MDY_INTERFACE MDY_NO_VTABLE IDyInitializeHelper<void>
+{
+  virtual ~IDyInitializeHelper() = default;
+
+  ///
+  /// @brief  Initialize derived class type manually.
+  /// @return If successful, return DY_SUCCESS but DY_FAILURE.
+  ///
+  MDY_NODISCARD virtual EDySuccess Initialize() = 0;
+
+  ///
+  /// @brief Release instance manually.
+  ///
+  virtual void Release() = 0;
+};
+
+
 } /// ::dy namespace
 
 #endif /// GUARD_DY_COMPONENT_INTERFACE_IDYINITILIAZEHELPER_H

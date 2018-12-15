@@ -15,7 +15,7 @@
 
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 #include <Dy/Component/Ctor/PDyImageRenderer.h>
-#include <Dy/Core/Component/Resource/ShaderResource.h>
+#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
 
 namespace dy
 {
@@ -49,9 +49,8 @@ public:
 
 private:
   /// LAZY NOT NULLABLE POINTER RAW PTR;
-  FDyImage*           mPtrBarObject = MDY_INITIALIZE_NULL;
-  /// Shader resource.
-  CDyShaderResource*  mPtrShader    = MDY_INITIALIZE_NULL;
+  FDyImage*                 mPtrBarObject = MDY_INITIALIZE_NULL;
+  TDyLResourceBinderShader  mBinderShader{};
 };
 
 } /// ::dy namespace

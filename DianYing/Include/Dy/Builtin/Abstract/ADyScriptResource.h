@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Builtin/Interface/IDyResource.h>
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Meta/Type/EDyResourceType.h>
 
 namespace dy
 {

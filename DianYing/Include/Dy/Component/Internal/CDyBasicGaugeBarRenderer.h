@@ -15,6 +15,7 @@
 
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 #include <Dy/Component/Ctor/PDyBarTypeRenderer.h>
+#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
 
 //!
 //! Forward declaration
@@ -24,7 +25,6 @@ namespace dy
 {
 struct PDyBasicGaugeBarRendererCtorInformation;
 class FDyBasicGaugeBar;
-class CDyShaderResource;
 } /// ::dy namespace
 
 //!
@@ -49,11 +49,9 @@ public:
   CDyBasicGaugeBarRenderer(CDyBasicGaugeBarRenderer&& instance)            noexcept = default;
   CDyBasicGaugeBarRenderer& operator=(CDyBasicGaugeBarRenderer&& instance) noexcept = default;
 
-  ///
   /// @brief  Initialize with descriptor.
   /// @param  descriptor
   /// @return If successful, return DY_SUCCESS or DY_FAILURE.
-  ///
   MDY_NODISCARD EDySuccess Initialize(const PDyBasicGaugeBarRendererCtorInformation& descriptor) override final;
 
   /// @brief Release resource of component.
@@ -64,9 +62,8 @@ public:
 
 private:
   /// LAZY NOT NULLABLE POINTER RAW PTR;
-  FDyBasicGaugeBar*   mPtrBarObject  = MDY_INITIALIZE_NULL;
-  ///
-  CDyShaderResource*  mPtrShader      = nullptr;
+  FDyBasicGaugeBar*         mPtrBarObject = MDY_INITIALIZE_NULL;
+  TDyLResourceBinderShader  mBinderShader = {};
 };
 
 } /// ::dy namespace

@@ -20,6 +20,7 @@ namespace dy
 
 struct PDyCommonResourceMetaInfo
 {
+  // Resource type for arbitary meta information.
   EDyResourceSource mSourceType = EDyResourceSource::Builtin;
 };
 

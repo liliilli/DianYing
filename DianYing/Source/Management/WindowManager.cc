@@ -21,52 +21,14 @@
 #include <imgui/imgui_impl_glfw.h>
 #include <imgui/imgui_impl_opengl3.h>
 
-#include <Dy/Core/Component/Internal/EtcType.h>
-#include <Dy/Core/Component/MeshRenderer.h>
-#include <Dy/Core/Component/Object/Camera.h>
+#include <Dy/Core/Resource/Object/Camera.h>
 #include <Dy/Helper/Type/Vector3.h>
 
-#include <Dy/Management/IO/IODataManager.h>
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/WorldManager.h>
-#include <Dy/Management/InputManager.h>
-#include <Dy/Management/TimeManager.h>
-#include <Dy/Management/Editor/GuiManager.h>
-#include <Dy/Management/Rendering/RenderingManager.h>
-
-#include <Dy/Builtin/Model/Box.h>
-#include <Dy/Builtin/Model/Plain.h>
-#include <Dy/Builtin/Model/Sphere.h>
-#include <Dy/Builtin/Model/ScreenProjectionTriangle.h>
-#include <Dy/Builtin/Texture/Checker.h>
-#include <Dy/Builtin/Texture/ErrorBlue.h>
-#include <Dy/Builtin/Material/OpaqueStaticPlain.h>
-#include <Dy/Builtin/ShaderGl/RenderPass.h>
-#include <Dy/Builtin/ShaderGl/RenderColorGeometry.h>
-#include <Dy/Builtin/ShaderGl/RenderBasicShadow.h>
-#include <Dy/Builtin/ShaderGl/RenderOpaqueStatic.h>
-#include <Dy/Builtin/ShaderGl/RenderDefaultFont.h>
-#include <Dy/Builtin/ShaderGl/RenderScreenOutput.h>
-
-#include <Dy/Management/IO/IOResourceManager.h>
-#include <Dy/Management/SoundManager.h>
-#include <Dy/Management/PhysicsManager.h>
-#include <Dy/Builtin/Widget/DebugUiMeta.h>
-#include <Dy/Builtin/ShaderGl/RenderFontArraySDF.h>
-#include <Dy/Builtin/ShaderGl/RenderUIBasicGaugeBar.h>
-#include <Dy/Builtin/ShaderGl/RenderUIImage.h>
-#include <Dy/Builtin/ShaderGl/RenderDeferredRendering.h>
-
-///
-/// Undefined proprocessor WIN32 macro "max, min" for preventing misuse.
-///
-#ifdef max
-#undef max
-#endif
-#ifdef min
-#undef min
-#endif
+#include "Dy/Core/Rendering/Wrapper/FDyGLWrapper.h"
+#include "Dy/Core/Rendering/Wrapper/PDyGLWindowContextDescriptor.h"
 
 //!
 //! Independent anonymous namespace
@@ -75,53 +37,11 @@
 namespace
 {
 
-dy::DDyVector3 gColor {.2f, .3f, .2f};
-
 void GLAPIENTRY DyGlMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
   std::fprintf(stderr, "DianYing OpenGL callback : %s type = 0x%x, severity = 0x%x, message = %s\n",
                (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
                type, severity, message);
-}
-
-void DyInitializeBuiltinResource()
-{
-  auto& infoManager = dy::MDyIOData::GetInstance();
-  auto& rescManager = dy::MDyIOResource::GetInstance();
-
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateModelInformation(MSVSTR(dy::builtin::FDyBuiltinModelBox::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateModelInformation(MSVSTR(dy::builtin::FDyBuiltinModelPlain::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateModelInformation(MSVSTR(dy::builtin::FDyBuiltinModelScreenProjectionTriangle::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateModelInformation(MSVSTR(dy::builtin::FDyBuiltinModelSphere::sName), dy::EDyScope::Global));
-
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateTextureInformation(MSVSTR(dy::builtin::FDyBuiltinTextureChecker::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateTextureResource(MSVSTR(dy::builtin::FDyBuiltinTextureChecker::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateTextureInformation(MSVSTR(dy::builtin::FDyBuiltinTextureErrorBlue::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateTextureResource(MSVSTR(dy::builtin::FDyBuiltinTextureErrorBlue::sName), dy::EDyScope::Global));
-
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderPass::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderPass::sName)));
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderColorGeometry::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderColorGeometry::sName)));
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderOpaqueStatic::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderOpaqueStatic::sName)));
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDefaultFont::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDefaultFont::sName)));
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderFontArraySDF::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderFontArraySDF::sName)));
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderUiBasicGaugeBar::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderUiBasicGaugeBar::sName)));
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderUiImage::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderUiImage::sName)));
-
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderBasicShadow::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderBasicShadow::sName)));
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDeferredRendering::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderDeferredRendering::sName)));
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderScreenOutput::sName), dy::EDyScope::Global));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(MSVSTR(dy::builtin::FDyBuiltinShaderGLRenderScreenOutput::sName)));
-
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateMaterialInformation(MSVSTR(dy::builtin::FDyBuiltinMaterialOpaqueStaticPlain::sName), dy::EDyScope::Global));
 }
 
 } /// unnamed namespace
@@ -164,71 +84,16 @@ void DyGlCallbackWindowClose(GLFWwindow* window)
 namespace dy
 {
 
-void MDyWindow::Run()
+bool MDyWindow::IsWindowShouldClose() const noexcept
 {
-  auto& timeManager     = MDyTime::GetInstance();
-  auto& settingManager  = MDySetting::GetInstance();
-  auto& sceneManager    = MDyWorld::GetInstance();
-
-  sceneManager.OpenLevel(settingManager.GetInitialSceneInformationName());
-  sceneManager.Update(-1);
-
-  while (!glfwWindowShouldClose(this->mGlfwWindow))
-  {
-    timeManager.pUpdate();
-    if (auto& instance = MDySound::GetInstance(); true) { instance.Update(MDY_INITIALIZE_DEFINT); }
-
-    if (timeManager.IsGameFrameTicked() == DY_SUCCESS)
-    {
-      const auto dt = timeManager.GetGameScaledTickedDeltaTimeValue();
-
-      this->pUpdate(dt);
-      this->pRender();
-    }
-  }
+  return glfwWindowShouldClose(this->mGlfwWindow);
 }
 
-///
-/// @brief Update routine
-///
-void MDyWindow::pUpdate(float dt)
+void MDyWindow::TempSwapBuffers()
 {
-  #if defined(MDY_FLAG_IN_EDITOR)
-    editor::MDyEditorGui::GetInstance().Update(dt);
-  #endif // MDY_FLAG_IN_EDITOR
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mGlfwWindow), "OpenGL Context must not be null when running.");
 
-  //
-  MDyPhysics::GetInstance().Update(dt);
-  //
-  MDyWorld::GetInstance().Update(dt);
-  //
-  MDyInput::GetInstance().pfUpdate(dt);
-  MDyWorld::GetInstance().UpdateObjects(dt);
-  //
-  MDyWorld::GetInstance().RequestDrawCall(dt);
-}
-
-///
-/// @brief Render routine.
-///
-void MDyWindow::pRender()
-{
-  glClearColor(gColor.X, gColor.Y, gColor.Z, 1.0f);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-#ifdef false
-  gRenderer.CallDraw();
-#endif
-
-  glEnable(GL_DEPTH_TEST);
-  MDyRendering::GetInstance().RenderDrawCallQueue();
-  glDisable(GL_DEPTH_TEST);
-
-  #if defined(MDY_FLAG_IN_EDITOR)
-    editor::MDyEditorGui::GetInstance().DrawWindow(0);
-  #endif // MDY_FLAG_IN_EDITOR
-
-  if (glfwWindowShouldClose(this->mGlfwWindow)) { return; }
+  if (this->IsWindowShouldClose() == true) { return; }
   glfwSwapBuffers(this->mGlfwWindow);
   glfwPollEvents();
 }
@@ -236,9 +101,7 @@ void MDyWindow::pRender()
 #if defined(MDY_PLATFORM_FLAG_WINDOWS)
 EDySuccess MDyWindow::pfInitialize()
 {
-  ///
   /// @brief This function is not implemented yet.
-  ///
   static auto InitializeVulkan = [this]()
   {
     #ifdef false
@@ -254,9 +117,7 @@ EDySuccess MDyWindow::pfInitialize()
     return DY_FAILURE;
   };
 
-  ///
   /// @brief This function is not implemented yet.
-  ///
   static auto InitializeDirectX11 = [this]()
   {
     #ifdef false
@@ -275,42 +136,42 @@ EDySuccess MDyWindow::pfInitialize()
     return DY_FAILURE;
   };
 
-  ///
   /// @brief Initialize OpenGL Context.
   /// This function must be returned `DY_SUCCESS`.
-  ///
   static auto InitializeOpenGL = [this]()
   {
     glfwInit();
-    glfwWindowHint(GLFW_DOUBLEBUFFER, GL_TRUE);
-    glfwWindowHint(GLFW_RESIZABLE,    GL_FALSE);
-    glfwWindowHint(GLFW_FOCUSED,      GL_TRUE);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    const auto& settingManager = MDySetting::GetInstance();
-    this->mGlfwWindow = glfwCreateWindow(
-        settingManager.GetWindowSizeWidth(),
-        settingManager.GetWindowSizeHeight(),
-        "DianYing",
-        nullptr,
-        nullptr);
+    { // Create descriptor.
+      PDyGLWindowContextDescriptor descriptor{};
+      descriptor.mWindowName          = "DianYing";
+      descriptor.mIsWindowResizable   = false;
+      descriptor.mIsWindowVisible     = true;
+      descriptor.mIsWindowShouldFocus = true;
+      descriptor.mIsUsingDefaultDoubleBuffer = true;
 
-    if (this->mGlfwWindow == nullptr)
-    {
-      glfwTerminate();
-      return DY_FAILURE;
+      const auto& settingManager = MDySetting::GetInstance();
+      descriptor.mWindowSize = DDyVectorInt2{
+          settingManager.GetWindowSizeWidth(),
+          settingManager.GetWindowSizeHeight()
+      };
+      this->mGlfwWindow = FDyGLWrapper::CreateGLWindow(descriptor);
+
+      // Create window instance for giving context to I/O worker thread.
+      descriptor.mIsWindowShouldFocus = false;
+      descriptor.mIsWindowVisible     = false;
+      descriptor.mSharingContext      = this->mGlfwWindow;
+      for (auto& ptrWindow : this->mGlfwWorkerWnds) { ptrWindow = FDyGLWrapper::CreateGLWindow(descriptor); }
     }
 
-    {
-      glfwMakeContextCurrent(this->mGlfwWindow);
-      gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
-      glfwSetInputMode(this->mGlfwWindow, GLFW_STICKY_KEYS, GL_FALSE);
+    // Check validity
+    if (this->mGlfwWindow == nullptr) { glfwTerminate(); return DY_FAILURE; }
+    FDyGLWrapper::CreateGLContext(this->mGlfwWindow);
 
-      glfwSetFramebufferSizeCallback(this->mGlfwWindow, &DyGlCallbackFrameBufferSize);
-      glfwSetWindowCloseCallback(this->mGlfwWindow, &DyGlCallbackWindowClose);
-    }
+    gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
+    glfwSetInputMode(this->mGlfwWindow, GLFW_STICKY_KEYS, GL_FALSE);
+    glfwSetFramebufferSizeCallback(this->mGlfwWindow, &DyGlCallbackFrameBufferSize);
+    glfwSetWindowCloseCallback(this->mGlfwWindow, &DyGlCallbackWindowClose);
 
     // If in debug build environment, enable debug output logging.
     #if defined(_DEBUG) || !defined(_NDEBUG)
@@ -318,6 +179,7 @@ EDySuccess MDyWindow::pfInitialize()
       glDebugMessageCallback(DyGlMessageCallback, nullptr);
     #endif
 
+    // Setting rendering.
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -334,20 +196,9 @@ EDySuccess MDyWindow::pfInitialize()
   switch (MDySetting::GetInstance().GetRenderingType())
   {
   default: MDY_UNEXPECTED_BRANCH(); break;
-  case EDyRenderingApi::DirectX12:
-    MDY_LOG_INFO_D("Initialize DirectX12 Context.");
-    MDY_NOT_IMPLEMENTED_ASSERT();
-    break;
-  case EDyRenderingApi::Vulkan:
-    MDY_LOG_INFO_D("Initialize Vulkan Context.");
-    MDY_NOT_IMPLEMENTED_ASSERT();
-    MDY_CALL_ASSERT_SUCCESS(InitializeVulkan());
-    break;
-  case EDyRenderingApi::DirectX11:
-    MDY_LOG_INFO_D("Initialize DirectX11 Context.");
-    MDY_NOT_IMPLEMENTED_ASSERT();
-    MDY_CALL_ASSERT_SUCCESS(InitializeDirectX11());
-    break;
+  case EDyRenderingApi::DirectX12:  MDY_NOT_IMPLEMENTED_ASSERT(); break;
+  case EDyRenderingApi::Vulkan:     MDY_NOT_IMPLEMENTED_ASSERT(); break;
+  case EDyRenderingApi::DirectX11:  MDY_NOT_IMPLEMENTED_ASSERT(); break;
   case EDyRenderingApi::OpenGL:
     MDY_LOG_INFO_D("Initialize OpenGL Context.");
     MDY_CALL_ASSERT_SUCCESS(InitializeOpenGL());
@@ -359,9 +210,6 @@ EDySuccess MDyWindow::pfInitialize()
       ImGui_ImplOpenGL3_Init("#version 430");
       ImGui::StyleColorsDark();
     }
-
-    // Initialize builtin resources
-    DyInitializeBuiltinResource();
     break;
   }
 

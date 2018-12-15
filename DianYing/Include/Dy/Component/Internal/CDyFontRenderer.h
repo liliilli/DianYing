@@ -14,8 +14,8 @@
 ///
 
 #include <Dy/Component/Ctor/PDyFontRenderer.h>
-#include <Dy/Core/Component/Resource/ShaderResource.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
+#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
 
 namespace dy
 {
@@ -55,8 +55,7 @@ public:
 private:
   /// LAZY NOT NULLABLE POINTER RAW PTR;
   FDyText*            mFontObjectRawPtr = MDY_INITIALIZE_NULL;
-  ///
-  CDyShaderResource*  mSampleShaderPtr  = nullptr;
+  TDyLResourceBinderShader mBinderShader{};
 };
 
 } /// ::dy namespace

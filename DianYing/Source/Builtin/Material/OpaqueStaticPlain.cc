@@ -17,7 +17,7 @@
 
 #include <Dy/Builtin/Texture/Checker.h>
 #include <Dy/Builtin/ShaderGl/RenderOpaqueStatic.h>
-#include <Dy/Core/Component/Internal/MaterialType.h>
+#include <Dy/Core/Resource/Internal/MaterialType.h>
 
 //!
 //! Implementation

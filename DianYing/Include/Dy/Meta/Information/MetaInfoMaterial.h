@@ -17,7 +17,7 @@
 #include <Dy/Helper/Type/VectorInt2.h>
 #include <Dy/Meta/Information/CommonResourceMetaInfo.h>
 #include <Dy/Element/Interface/IDyToString.h>
-#include <Dy/Core/Component/Internal/MaterialType.h>
+#include <Dy/Core/Resource/Internal/MaterialType.h>
 
 namespace dy
 {

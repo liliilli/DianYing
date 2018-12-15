@@ -14,7 +14,7 @@
 
 /// Header file
 #include <Dy/Builtin/ShaderGl/Deprecated/RenderFontMSDF_Deprecated.h>
-#include <Dy/Core/Component/Internal/ShaderType.h>
+#include <Dy/Core/Resource/Internal/ShaderType.h>
 #include <Dy/Builtin/ShaderGl/RenderDefaultFont.h>
 #include <Dy/Management/IO/IODataManager.h>
 #include <Dy/Management/IO/IOResourceManager.h>

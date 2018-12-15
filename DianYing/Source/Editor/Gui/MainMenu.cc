@@ -86,7 +86,7 @@ void FDyMainMenu::DrawWindow(float dt) noexcept
       ImGui::Separator();
       if (ImGui::MenuItem("Exit Editor"))
       {
-        const auto ptr = MDyWindow::GetInstance().GetGlfwWindowContext();
+        const auto ptr = MDyWindow::GetInstance().GetGLMainWindow();
         glfwSetKeyCallback(ptr, nullptr);
         glfwSetCursorPosCallback(ptr, nullptr);
         glfwDestroyWindow(ptr);

@@ -38,24 +38,13 @@ uniform   int           uChannelId;
 void main()
 {
   vec4  color = texture(uPreviousTexture, vec2(fs_prevCoord.x, 1 - fs_prevCoord.y));
-  float value = texture(uCharTexture,     fs_texCoord).r;
+  float value = texture(uCharTexture, fs_texCoord).r;
 
-  if      (uChannelId == 0) // R
-  {
-    gl_FragColor = color + vec4(value, 0, 0, 0);
-  }
-  else if (uChannelId == 1) // G
-  {
-    gl_FragColor = color + vec4(0, value, 0, 0);
-  }
-  else if (uChannelId == 2) // B
-  {
-    gl_FragColor = color + vec4(0, 0, value, 0);
-  }
-  else // A
-  {
-    gl_FragColor = color + vec4(0, 0, 0, value);
-  }
+  // Insert character glyph to specified region.
+  if (uChannelId == 0) { gl_FragColor = color + vec4(value, 0, 0, 0); } // R
+  else if (uChannelId == 1) { gl_FragColor = color + vec4(0, value, 0, 0); } // G
+  else if (uChannelId == 2) { gl_FragColor = color + vec4(0, 0, value, 0); } // B
+  else { gl_FragColor = color + vec4(0, 0, 0, value); } // A
 }
 )dy";
 

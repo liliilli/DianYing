@@ -17,10 +17,11 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <Dy/Builtin/ShaderGl/RenderFontArraySDF.h>
+#include <Dy/Builtin/ShaderGl/Font/RenderFontArraySDF.h>
 #include <Dy/Element/Canvas/Text.h>
 #include <Dy/Management/SettingManager.h>
-#include <Dy/Management/IO/IOResourceManager.h>
+#include <Dy/Core/Resource/Resource/FDyShaderResource.h>
+#include <Dy/Helper/Type/Matrix4.h>
 
 //!
 //! Forward declaration & Local translation unit function data.
@@ -125,18 +126,13 @@ EDySuccess CDyFontRenderer::Initialize(const PDyFontRendererCtorInformation& des
 
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mFontComponentPtr), "descriptor.mFontComponentPtr must not be null.");
   this->mFontObjectRawPtr = descriptor.mFontComponentPtr;
-  this->mSampleShaderPtr  = MDyIOResource::GetInstance().GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderFontArraySDF::sName));
+  this->mBinderShader.TryRequireResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderFontArraySDF::sName));
 
   // @TODO SAMPLE CODE (TEMPORAL)
   auto& settingManager            = MDySetting::GetInstance();
   const auto overallScreenWidth   = settingManager.GetWindowSizeWidth();
   const auto overallScreenHeight  = settingManager.GetWindowSizeHeight();
-  uUiProjMatrix = glm::ortho(
-      0.f,
-      static_cast<float>(overallScreenWidth),
-      0.f,
-      static_cast<float>(overallScreenHeight),
-      0.2f, 10.0f);
+  uUiProjMatrix = glm::ortho(0.f, static_cast<float>(overallScreenWidth), 0.f, static_cast<float>(overallScreenHeight), 0.2f, 10.0f);
 
   SetTemporalFontArrayBuffer();
   return DY_SUCCESS;
@@ -149,19 +145,19 @@ void CDyFontRenderer::Release()
 
 void CDyFontRenderer::Render()
 {
-  MDY_ASSERT(this->mSampleShaderPtr != nullptr, "CDyFontRenderer_Deprecated::mSampleShaderPtr must not be nullptr.");
+  if (this->mBinderShader.IsResourceExist() == false) { return; }
 
   glDepthFunc(GL_ALWAYS);
-  this->mSampleShaderPtr->UseShader();
+  this->mBinderShader->UseShader();
   glBindVertexArray(mTextSampleVao);
 
-  const auto shaderid = glGetUniformLocation(this->mSampleShaderPtr->GetShaderProgramId(), "uUiProjMatrix");
-  glUniformMatrix4fv(shaderid, 1, GL_FALSE, &uUiProjMatrix[0].X);
+  const TU32 shaderProgramId  = this->mBinderShader->GetShaderProgramId();
+  const auto projectMatrixId  = glGetUniformLocation(shaderProgramId, "uUiProjMatrix");
+  glUniformMatrix4fv(projectMatrixId, 1, GL_FALSE, &uUiProjMatrix[0].X);
 
   IDyFontContainer& container = this->mFontObjectRawPtr->GetFontContainer();
   const TI32 fontSize         = this->mFontObjectRawPtr->GetFontSize();
   const DDyVector2 initPos    = this->mFontObjectRawPtr->GetRenderPosition();
-  const TU32 shaderProgramId  = this->mSampleShaderPtr->GetShaderProgramId();
 
   const auto fgColorId        = glGetUniformLocation(shaderProgramId, "uFgColor");
   glUniform4fv(fgColorId, 1, &this->mFontObjectRawPtr->GetForegroundColor().R);
@@ -207,7 +203,7 @@ void CDyFontRenderer::Render()
   }
 
   glBindVertexArray(0);
-  this->mSampleShaderPtr->UnuseShader();
+  this->mBinderShader->DisuseShader();
   glDepthFunc(GL_LEQUAL);
 }
 

@@ -32,6 +32,22 @@ enum class EDyImageColorFormatStyle
 };
 
 ///
+/// @brief Get internal GLenum for texture formatting from style.
+/// If errored, just return null value.
+///
+inline static MDY_NODISCARD std::optional<GLenum> DyGLGetImageFormatFrom(_MIN_ EDyImageColorFormatStyle style) noexcept
+{
+  switch (style)
+  {
+  case EDyImageColorFormatStyle::R:     return GL_RED;
+  case EDyImageColorFormatStyle::RG:    return GL_RG;
+  case EDyImageColorFormatStyle::RGB:   return GL_RGB;
+  case EDyImageColorFormatStyle::RGBA:  return GL_RGBA;
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
+  }
+}
+
+///
 /// @class DDyImageBinaryDataBuffer
 /// @brief Image binary buffer that manages binary buffer chunk, automatically released when it's be out of scope.
 ///

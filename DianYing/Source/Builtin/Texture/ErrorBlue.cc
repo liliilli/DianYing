@@ -15,7 +15,7 @@
 /// Header file
 #include <Dy/Builtin/Texture/ErrorBlue.h>
 
-#include <Dy/Core/Component/Internal/TextureType.h>
+#include <Dy/Core/Resource/Internal/TextureType.h>
 #include <Dy/Helper/Type/ColorRGBA32.h>
 
 //!

@@ -18,22 +18,9 @@
 #include <unordered_map>
 
 #include <Dy/Helper/System/TypeTraits.h>
+#include <Dy/Meta/Type/EDyResourceType.h>
 #include <Dy/Builtin/Interface/IDyResource.h>
-
-namespace dy
-{
-
-enum class EDyResourceType
-{
-  Script,
-  Model,
-  GLShader,
-  Texture,
-  Material,
-  WidgetMeta
-};
-
-}
+#include <Dy/Builtin/Abstract/ADyLoadingBootResource.h>
 
 namespace dy::reflect
 {
@@ -49,18 +36,26 @@ public:
   static void BindBuiltinResourcesToMetaManager();
 
 protected:
+  /// @brief Check booting meta information is exist.
+  static bool IsBootingMetaInfoScriptExist() noexcept
+  {
+    return GetBootResourceMetaInfo().second != nullptr;
+  }
+
   static TMapType& GetResourceMapReference()
   {
     static TMapType typeMap;
     return typeMap;
   }
 
-  static std::unique_ptr<IDyResource> CreateInstance(const std::string& typeSpecifier)
-  {
-    auto it = GetResourceMapReference().find(typeSpecifier);
-    if (it == GetResourceMapReference().end()) { return nullptr; };
+  template <typename TType>
+  static void RegisterScriptResource(_MIN_ const std::string& specifier);
 
-    return it->second.second();
+  /// @brief Loading booting resource script meta information
+  static TValueType& GetBootResourceMetaInfo()
+  {
+    static TValueType mLoadingBootingMetaInfoCustomized = {};
+    return mLoadingBootingMetaInfoCustomized;
   }
 };
 
@@ -78,19 +73,26 @@ struct RDyBuiltinResourceRegister final : public RDyBuiltinResource
     static_assert(IsInheritancedFrom<TType, IDyResource> == true, "TType must be IResource derived type.");
     std::string specifier = name.data(); specifier += std::to_string(count);
 
-    if constexpr (TType::value == EDyResourceType::Script)
-    {
-      GetResourceMapReference().try_emplace(specifier, TType::value, &__Rfc__GetInstance<TType::__ConstructionHelper>);
-    }
-    else
-    {
-      GetResourceMapReference().try_emplace(specifier, TType::value, &__Rfc__GetInstance<TType>);
-    }
+    if constexpr (TType::value == EDyResourceType::Script) { this->template RegisterScriptResource<TType>(specifier); }
+    else  { GetResourceMapReference().try_emplace(specifier, TType::value, &__Rfc__GetInstance<TType>); }
 
     count += 1;
     mFlag = true;
   }
 };
+
+template <typename TType>
+void RDyBuiltinResource::RegisterScriptResource(_MIN_ const std::string& specifier)
+{
+  if constexpr (IsBaseClassOf<TType, ADyLoadingBootResource> == true)
+  { // Bind boot resource script to container.
+    GetBootResourceMetaInfo() = std::make_pair(TType::value, &__Rfc__GetInstance<TType>);
+  }
+  else
+  { // Bind general (widget, actor) script to container.
+    GetResourceMapReference().try_emplace(specifier, TType::value, &__Rfc__GetInstance<TType::__ConstructionHelper>);
+  }
+}
 
 } /// ::dy::reflect namespace
 

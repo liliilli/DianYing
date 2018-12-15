@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Component/Internal/MaterialType.h>
+#include <Dy/Core/Resource/Internal/MaterialType.h>
 #include <Dy/Component/CDyScript.h>
 #include <Dy/Component/Internal/CDyActorScriptCpp.h>
 #include <Dy/Component/Internal/CDyActorScriptLua.h>

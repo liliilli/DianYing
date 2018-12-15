@@ -42,6 +42,11 @@
 //! Global macroes
 //!
 
+/// DONT USE THIS DIRECTLY
+#define MDY_TOKENPASTE(__MAX__, __MAY__) __MAX__ ## __MAY__
+/// USE THIS DIRECTLY FOR CONCATNATION.
+#define MDY_TOKENPASTE2(__MAX__, __MAY__) MDY_TOKENPASTE(__MAX__, __MAY__)
+
 ///
 /// @macro MDY_TO_STRING
 /// @macro Convert __MAString__ to const char* literal.
@@ -190,6 +195,70 @@
 ///
 #define MDY_SET_IMMUTABLE_STRING(__MAName__, __MAString__) \
   constexpr std::string_view __MAName__ = __MAString__
+
+///
+/// @macro MDY_UNEXEPCTED_BRANCH_BUT_RETURN
+///
+#define MDY_UNEXPECTED_BRANCH_BUT_RETURN(__MAExpression__) \
+  MDY_UNEXPECTED_BRANCH(); \
+  return (__MAExpression__)
+
+///
+/// @macro MDY_SLEEP_FOR_ATOMIC_TIME
+/// @brief Sleep for atomic time (1 microsecond) for thread scheduling.
+///
+#define MDY_SLEEP_FOR_ATOMIC_TIME() \
+{ \
+  using namespace std::chrono_literals; \
+  std::this_thread::sleep_for(1ms); \
+}
+
+///
+/// @macro MDY_SYNC_LOCK_GUARD
+/// @brief lock mutex reducing a amount of typing and verbosity.
+///
+#define MDY_SYNC_LOCK_GUARD(__MAMutex__) \
+  std::lock_guard<decltype(__MAMutex__)> MDY_TOKENPASTE2(lock, __LINE__)(__MAMutex__)
+
+///
+/// @macro MDY_SYNC_WAIT_CONDITION
+/// @brief lock mutex and wait condition is satisfied by reducing a amount of typing and verbosity.
+///
+#define MDY_SYNC_WAIT_CONDITION(__MAMutex__, __MAConditionVariable__, __MACondition__) \
+  std::unique_lock<decltype(__MAMutex__)> lock(__MAMutex__); \
+  __MAConditionVariable__.wait(lock, __MACondition__)
+
+///
+/// @macro MDY_SYNC_WAIT_CONDITION
+/// @brief lock mutex and wait condition is satisfied by reducing a amount of typing and verbosity.
+///
+#define MDY_SYNC_WAIT_CONDITION_FOR(__MAMutex__, __MAConditionVariable__, __MATime__, __MACondition__) \
+  std::unique_lock<decltype(__MAMutex__)> lock(__MAMutex__); \
+  __MAConditionVariable__.wait_for(lock, __MATime__, __MACondition__)
+
+///
+/// @macro MDY_ATOMIC_COMPARE_SWAP_WEAK
+/// @brief Do `compare and swap` to atomic variable weakly.
+///
+#define MDY_ATOMIC_COMPARE_SWAP_WEAK(__MAAtomic__, __MAExpected__, __MASwapValue__) \
+  { \
+    using __type = std::decay_t<decltype(__MAAtomic__)>; \
+    __type::value_type __expect = __MAExpected__; \
+    while (__MAAtomic__.compare_exchange_weak(__expect, __MASwapValue__) == false) \
+      ; \
+  }
+
+///
+/// @macro MDY_ATOMIC_COMPARE_SWAP_STRONG
+/// @brief Do `compare and swap` to atomic variable strongly.
+///
+#define MDY_ATOMIC_COMPARE_SWAP_STRONG(__MAAtomic__, __MAExpected__, __MASwapValue__) \
+  { \
+    using __type = std::decay_t<decltype(__MAAtomic__)>; \
+    __type::value_type __expect = __MAExpected__; \
+    while (__MAAtomic__.compare_exchange_strong(__expect, __MASwapValue__) == false) \
+      ; \
+  }
 
 ///
 /// @macro MDY_UNQMVCAST
@@ -425,19 +494,19 @@ private:                                                  \
   __MAType__(const __MAType__&)             = delete;   \
   __MAType__& operator=(const __MAType__&)  = delete;   \
   __MAType__(__MAType__&&)                  = default;  \
-  __MAType__& operator=(__MAType__&&)       = default;  \
+  __MAType__& operator=(__MAType__&&)       = default;
 
 #define MDY_ONLY_MOVEABLE_PROPERTIES_CUSTOM(__MAType__) \
   __MAType__(const __MAType__&)             = delete;   \
   __MAType__& operator=(const __MAType__&)  = delete;   \
   __MAType__(__MAType__&&) noexcept;                    \
-  __MAType__& operator=(__MAType__&&) noexcept;         \
+  __MAType__& operator=(__MAType__&&) noexcept;
 
 #define MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(__MAType__)\
   __MAType__(const __MAType__&)             = delete;   \
   __MAType__& operator=(const __MAType__&)  = delete;   \
   __MAType__(__MAType__&&)                  = delete;   \
-  __MAType__& operator=(__MAType__&&)       = delete;   \
+  __MAType__& operator=(__MAType__&&)       = delete;
 
 ///
 /// @macro  MDY_REFLECT_GETINSTANCE_AS
@@ -557,6 +626,13 @@ private:
   { \
     ConstructBuffer(this->mMetaInfo); \
   }
+
+///
+/// @macro MDY_LOADING_RESOURCE_BIND
+/// @brief Bind resource requisition for loading resource.
+///
+#define MDY_LOADING_RESOURCE_BIND(__MAResourceType__, __MAString__) \
+    this->mResourceRequisitionList.emplace_back(__MAResourceType__, __MAString__)
 
 //!
 //! Function type macros.

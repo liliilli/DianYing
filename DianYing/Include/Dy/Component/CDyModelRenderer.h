@@ -13,10 +13,10 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
+#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
+#include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
 #include <Dy/Helper/Internal/CheckingRule.h>
-#include <Dy/Core/Component/Resource/MaterialResource.h>
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
 
 //!
@@ -25,9 +25,9 @@
 
 namespace dy
 {
-
+class FDyMaterialResource;
 class CDyModelFilter;
-
+class FDyMeshResource;
 } /// ::dy namespace
 
 //!
@@ -92,12 +92,12 @@ public:
   ///
   MDY_NODISCARD FORCEINLINE TI32 GetMaterialListCount() const noexcept
   {
-    return static_cast<TI32>(this->mMaterialResourcePtr.size());
+    return this->mBinderMaterialListSize;
   }
 
   ///
   /// @brief  Get the number of submesh of model instance which binded to this component instance.
-  /// @return The number of submesh elements binded to CDyModelRenderer::mModelFilter.
+  /// @return The number of submesh elements binded to CDyModelRenderer::mPtrModelFilterComponent.
   ///
   MDY_NODISCARD std::optional<TI32> GetModelSubmeshCount() const noexcept;
 
@@ -106,14 +106,14 @@ public:
   /// @param  index
   /// @return
   ///
-  const CDyMaterialResource& GetMaterialResourcePtr(_MIN_ const TI32 index) const noexcept;
+  const FDyMaterialResource& GetMaterialResourcePtr(_MIN_ TU32 index) const noexcept;
 
   ///
   /// @brief
   /// @param  index
   /// @return
   ///
-  const CDySubmeshResource& GetSubmeshResourcePtr(_MIN_ const TI32 index) const noexcept;
+  const FDyMeshResource& GetSubmeshResourcePtr(_MIN_ TU32 index) const noexcept;
 
   ///
   /// @brief
@@ -140,17 +140,16 @@ private:
   MDY_NODISCARD EDySuccess pTryUnbindingToModelFilterComponent();
 
   /// Valid model filter pointer reference. If value is nullptr, do not use.
-  CDyModelFilter* mModelFilter            = MDY_INITIALIZE_NULL;
+  CDyModelFilter* mPtrModelFilterComponent  = MDY_INITIALIZE_NULL;
   /// Check flag for create shadow or not.
-  bool            mIsEnabledCreateShadow  = false;
-  /// @TODO TEMPORAL MAYBE?
-  std::vector<CDyMaterialResource*> mMaterialResourcePtr  = {};
+  bool            mIsEnabledCreateShadow    = false;
+
+  std::array<TDyLResourceBinderMaterial, 16> mBinderMaterialList = {};
+  TU32            mBinderMaterialListSize   = MDY_INITIALIZE_DEFUINT;
 
   MDY_SET_TYPEMATCH_FUNCTION(::dy::ADyGeneralBaseComponent, CDyModelRenderer);
   MDY_SET_CRC32_HASH_WITH_TYPE(CDyModelRenderer);
 };
-
-MDY_TEST_FULFILLS_MOVE_ONLY(CDyModelRenderer);
 
 } /// ::dy namespace
 

@@ -14,9 +14,10 @@
 
 /// Header file
 #include <Dy/Management/SoundManager.h>
+
+#include <cstdio>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Helper/Pointer.h>
-#include <Dy/Management/IO/IOResourceManager.h>
 
 //!
 //! Forward declaration
@@ -277,7 +278,9 @@ EDySuccess MDySound::PlaySoundElement(const std::string& soundName) const noexce
     return DY_FAILURE;
   }
 
-  auto soundResource = MDyIOResource::GetInstance().GetSoundResource(soundName);
+  MDY_NOT_IMPLEMENTED_ASSERT();
+#ifdef false
+  auto soundResource = MDyIOResource_Deprecated::GetInstance().GetSoundResource(soundName);
   if (soundResource == nullptr)
   {
     MDY_LOG_ERROR("Not found sound resource {}", soundName);
@@ -312,6 +315,7 @@ EDySuccess MDySound::PlaySoundElement(const std::string& soundName) const noexce
     MDY_LOG_ERROR("Failed to play sound. Because sound resource is not stopped yet.");
     return DY_FAILURE;
   }
+#endif
 
   return DY_SUCCESS;
 }
@@ -324,7 +328,9 @@ EDySuccess MDySound::PauseSoundElement(const std::string& soundName) const noexc
     return DY_FAILURE;
   }
 
-  auto soundResource = MDyIOResource::GetInstance().GetSoundResource(soundName);
+  MDY_NOT_IMPLEMENTED_ASSERT();
+#ifdef false
+  auto soundResource = MDyIOResource_Deprecated::GetInstance().GetSoundResource(soundName);
   if (soundResource == nullptr)
   {
     MDY_LOG_ERROR("Not found sound resource {}", soundName);
@@ -341,6 +347,7 @@ EDySuccess MDySound::PauseSoundElement(const std::string& soundName) const noexc
     MDY_LOG_ERROR("Failed to play sound. Because sound resource is not being played yet.");
     return DY_FAILURE;
   }
+#endif
 
   return DY_SUCCESS;
 }
@@ -353,7 +360,9 @@ EDySuccess MDySound::StopSoundElement(const std::string& soundName) const noexce
     return DY_FAILURE;
   }
 
-  auto soundResource = MDyIOResource::GetInstance().GetSoundResource(soundName);
+  MDY_NOT_IMPLEMENTED_ASSERT();
+#ifdef false
+  auto soundResource = MDyIOResource_Deprecated::GetInstance().GetSoundResource(soundName);
   if (soundResource == nullptr)
   {
     MDY_LOG_ERROR("Not found sound resource {}", soundName);
@@ -365,6 +374,7 @@ EDySuccess MDySound::StopSoundElement(const std::string& soundName) const noexce
     soundResource->mSoundChannel->stop();
     soundResource->mSoundStatus = EDySoundStatus::Stopped;
   }
+#endif
 
   return DY_SUCCESS;
 }

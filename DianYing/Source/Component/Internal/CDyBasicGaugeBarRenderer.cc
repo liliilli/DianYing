@@ -17,11 +17,11 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <Dy/Builtin/ShaderGl/RenderUIBasicGaugeBar.h>
+#include <Dy/Builtin/ShaderGl/UI/RenderUIBasicGaugeBar.h>
+#include <Dy/Core/Resource/Resource/FDyShaderResource.h>
 #include <Dy/Element/Canvas/FDyBasicGaugeBar.h>
-#include <Dy/Management/IO/IOResourceManager.h>
 #include <Dy/Management/SettingManager.h>
-#include "Dy/Element/Canvas/Text.h"
+#include <Dy/Helper/Type/Matrix4.h>
 
 //!
 //! Forward declaration
@@ -103,7 +103,7 @@ EDySuccess CDyBasicGaugeBarRenderer::Initialize(const PDyBasicGaugeBarRendererCt
 
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mPtrUiObject), "descriptor.mPtrUiObject must not be null.");
   this->mPtrBarObject  = descriptor.mPtrUiObject;
-  this->mPtrShader     = MDyIOResource::GetInstance().GetShaderResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderUiBasicGaugeBar::sName));
+  this->mBinderShader.TryRequireResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderUiBasicGaugeBar::sName));
 
   // @TODO SAMPLE CODE (TEMPORAL)
   auto& settingManager = MDySetting::GetInstance();
@@ -127,13 +127,13 @@ void CDyBasicGaugeBarRenderer::Release()
 void CDyBasicGaugeBarRenderer::Render()
 {
   MDY_ASSERT(this->mPtrBarObject != nullptr, "CDyBasicGaugeBarRenderer::mPtrBarObject must not be nullptr.");
-  if (MDY_CHECK_ISNULL(this->mPtrShader)) { return; }
+  if (this->mBinderShader.IsResourceExist() == false) { return; }
 
   glDepthFunc(GL_ALWAYS);
-  this->mPtrShader->UseShader();
+  this->mBinderShader->UseShader();
   glBindVertexArray(mTempVao);
 
-  const TU32 shaderProgramId  = this->mPtrShader->GetShaderProgramId();
+  const TU32 shaderProgramId  = this->mBinderShader->GetShaderProgramId();
   const auto fillColorId      = glGetUniformLocation(shaderProgramId, "uFillColor");
   const auto shaderid         = glGetUniformLocation(shaderProgramId, "uUiProjMatrix");
   glUniformMatrix4fv(shaderid, 1, GL_FALSE, &uUiProjMatrix[0].X);
@@ -153,7 +153,7 @@ void CDyBasicGaugeBarRenderer::Render()
   RenderBar(GetVertexPosition(pos, size, padding, percentage));
 
   glBindVertexArray(0);
-  this->mPtrShader->UnuseShader();
+  this->mBinderShader->DisuseShader();
   glDepthFunc(GL_LEQUAL);
 }
 

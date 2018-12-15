@@ -74,7 +74,7 @@ public:
         DyFontAtlasGeneratorClass->setSizePolicy(sizePolicy);
         DyFontAtlasGeneratorClass->setMinimumSize(QSize(500, 0));
         DyFontAtlasGeneratorClass->setContextMenuPolicy(Qt::NoContextMenu);
-        DyFontAtlasGeneratorClass->setWindowTitle(QStringLiteral("DianYing SDF Font Atlas generator"));
+        DyFontAtlasGeneratorClass->setWindowTitle(QStringLiteral("DianYing Font Atlas generator (v2)"));
 #ifndef QT_NO_TOOLTIP
         DyFontAtlasGeneratorClass->setToolTip(QStringLiteral(""));
 #endif // QT_NO_TOOLTIP
@@ -178,6 +178,7 @@ public:
         CB_MapHangul->setGeometry(QRect(160, 110, 71, 21));
         CB_OptionCompressJson = new QCheckBox(centralWidget);
         CB_OptionCompressJson->setObjectName(QStringLiteral("CB_OptionCompressJson"));
+        CB_OptionCompressJson->setEnabled(false);
         CB_OptionCompressJson->setGeometry(QRect(20, 240, 271, 21));
         CB_MapKana = new QCheckBox(centralWidget);
         CB_MapKana->setObjectName(QStringLiteral("CB_MapKana"));
@@ -258,10 +259,10 @@ public:
         AC_About->setText(QApplication::translate("DyFontAtlasGeneratorClass", "About...", nullptr));
         label->setText(QApplication::translate("DyFontAtlasGeneratorClass", "Font       :", nullptr));
         BT_FindFile->setText(QApplication::translate("DyFontAtlasGeneratorClass", "Find", nullptr));
-        label_2->setText(QApplication::translate("DyFontAtlasGeneratorClass", "Create Texture Atlas with...", nullptr));
+        label_2->setText(QApplication::translate("DyFontAtlasGeneratorClass", "Create SDF Texture Atlas with...", nullptr));
         CB_MapEnglish->setText(QApplication::translate("DyFontAtlasGeneratorClass", "English + ASCII", nullptr));
-        label_3->setText(QApplication::translate("DyFontAtlasGeneratorClass", "And...", nullptr));
-        CB_OptionSeperate->setText(QApplication::translate("DyFontAtlasGeneratorClass", "Export as separated JSON and png files.", nullptr));
+        label_3->setText(QApplication::translate("DyFontAtlasGeneratorClass", "Export option", nullptr));
+        CB_OptionSeperate->setText(QApplication::translate("DyFontAtlasGeneratorClass", "Export as separated information and png files.", nullptr));
         BT_Create->setText(QApplication::translate("DyFontAtlasGeneratorClass", "Create", nullptr));
         CB_MapHangul->setText(QApplication::translate("DyFontAtlasGeneratorClass", "Hangul", nullptr));
         CB_OptionCompressJson->setText(QApplication::translate("DyFontAtlasGeneratorClass", "Compress JSON String (Binary)", nullptr));

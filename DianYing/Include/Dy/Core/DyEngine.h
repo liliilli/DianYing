@@ -25,6 +25,7 @@ namespace dy
 {
 class MDyTime;
 class MDyWindow;
+class MDySynchronization;
 } /// ::dy namespace
 
 //!
@@ -36,7 +37,7 @@ namespace dy
 
 ///
 /// @class DyEngine
-/// @brief
+/// @brief `Dy`(DianYing) Core engine class.
 ///
 class DyEngine final : public IDySingleton<DyEngine>
 {
@@ -54,12 +55,31 @@ public:
   MDY_NODISCARD MDyWindow&  GetWindowManager();
 
 private:
-  /// DO NOT TOUCH THIS!
-  TDyIO*        mIOThreadInstance = nullptr;
-  std::thread   mIOThread;
+  /// @brief Get IO Thread Instance which not be nulled.
+  NotNull<TDyIO*> pfGetIOThread();
+
+  /// @brief
+  void pUpdateRuntime(_MIN_ TF32 dt);
+
+  /// @brief Update entry function from engine.
+  void pUpdate(_MIN_ TF32 dt);
+
+  /// @brief Render entry function from engine.
+  void pRender();
+
+  void pfInitializeIndependentManager();
+  void pfInitializeDependentManager();
+  void pfReleaseDependentManager();
+  void pfReleaseIndependentManager();
+
+  MDySynchronization* mSynchronization = nullptr;
+
+  friend class SDyIOConnectionHelper;
+  friend class SDyIOWorkerConnHelper;
+  friend class MDySynchronization;
 };
 
-inline DyEngine* gEngine = nullptr;
+extern DyEngine* gEngine;
 
 } /// ::dy namespace
 

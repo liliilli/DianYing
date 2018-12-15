@@ -42,7 +42,7 @@ void FDyLevel::Initialize(_MIN_ const PDyLevelConstructMetaInfo& desc)
   /// @brief  Create pawn instance and set fundamental properties.
   /// @param  objectInformation Information to create FDyPawn instance.
   ///
-  static auto pCreateActorInstance = [&](_MIN_ const PDyObjectMetaInfo& objectInformation)
+  static auto pCreateActorInstance = [this](_MIN_ const PDyObjectMetaInfo& objectInformation)
   {
     // Make FDyActor instance.
     auto instancePtr = std::make_unique<FDyActor>();

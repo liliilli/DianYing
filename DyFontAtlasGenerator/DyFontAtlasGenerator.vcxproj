@@ -203,6 +203,7 @@
     </QtMoc>
     <ClInclude Include="Helper\JsonTypeWriterHelper.h" />
     <ClInclude Include="Helper\PaintSurface.h" />
+    <ClInclude Include="Helper\Structure.h" />
     <ClInclude Include="Helper\Vector2.h" />
     <ClInclude Include="Helper\HelperZlib.h" />
     <ClInclude Include="Libraries\msdfgen\core\arithmetics.hpp" />

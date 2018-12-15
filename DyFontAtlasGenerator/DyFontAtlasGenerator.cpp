@@ -17,13 +17,13 @@
 #include <spdlog/fmt/fmt.h>
 #include <nlohmann/json.hpp>
 
-#include "Helper/MsdfgenHelper.h"
-#include "Helper/JsonTypeWriterHelper.h"
-#include "Helper/CoordinateBounds.h"
-#include "Helper/HelperZlib.h"
-
-#include "DyWindowAbout.h"
-#include "Helper/PaintSurface.h"
+#include <Helper/MsdfgenHelper.h>
+#include <Helper/JsonTypeWriterHelper.h>
+#include <Helper/CoordinateBounds.h>
+#include <Helper/HelperZlib.h>
+#include <Helper/PaintSurface.h>
+#include <Helper/Structure.h>
+#include <DyWindowAbout.h>
 
 namespace
 {
@@ -50,27 +50,45 @@ static constexpr auto CHANNEL_LIMIT      = 4;
 static constexpr auto TEXTURE_MAPLIMIT   = (TEXTURE_CANVAS_S / TEXTURE_SIZE_S) * (TEXTURE_CANVAS_T / TEXTURE_SIZE_T) * CHANNEL_LIMIT;
 static constexpr auto TEXTURE_PXRANGE    = 12.0;
 
-constexpr auto ENGLISH_UNI20_START = 0x0000;
-constexpr auto ENGLISH_UNI20_END   = 0x007F;
-constexpr auto ENGLISH_UNI20_RANGE = ENGLISH_UNI20_END - ENGLISH_UNI20_START + 1;
+constexpr auto ENGLISH_CHR_START = 0x0000;
+constexpr auto ENGLISH_CHR_END   = 0x007F;
+constexpr auto ENGLISH_CHR_RANGE = GetRangeFrom(ENGLISH_CHR_START, ENGLISH_CHR_END);
 
-constexpr auto HANGUL_UNI20_START = 0xAC00;
-constexpr auto HANGUL_UNI20_END   = 0xD7AF;
-constexpr auto HANGUL_UNI20_RANGE = HANGUL_UNI20_END - HANGUL_UNI20_START + 1;
+constexpr auto HANGUL_CHR_START = 0xAC00;
+constexpr auto HANGUL_CHR_END   = 0xD7AF;
+constexpr auto HANGUL_CHR_RANGE = GetRangeFrom(HANGUL_CHR_START, HANGUL_CHR_END);
 
-constexpr auto JAPANESE_UNI20_KANA_START = 0x3000;
-constexpr auto JAPANESE_UNI20_KANA_END   = 0x30FF;
-constexpr auto JAPANESE_UNI20_KANA_RANGE = JAPANESE_UNI20_KANA_END - JAPANESE_UNI20_KANA_START + 1;
+constexpr auto KANA_CHR_START = 0x3000;
+constexpr auto KANA_CHR_END   = 0x30FF;
+constexpr auto KANA_CHR_RANGE = GetRangeFrom(KANA_CHR_START, KANA_CHR_END);
 
-constexpr auto CJK_UNI20_HANBUN_START0 = 0x4E00;
-constexpr auto CJK_UNI20_HANBUN_END0   = 0x9FFF;
-constexpr auto CJK_UNI20_HANBUN_RANGE0 = GetRangeFrom(CJK_UNI20_HANBUN_START0, CJK_UNI20_HANBUN_END0);
+constexpr auto CJK_CHR_START = 0x4E00;
+constexpr auto CJK_CHR_END   = 0x9FFF;
+constexpr auto CJK_CHR_RANGE = GetRangeFrom(CJK_CHR_START, CJK_CHR_END);
 
 auto sFtLibraryList {std::vector<FT_Library>{}};
 auto sFtFaceList    {std::vector<FT_Face>{}};
 std::atomic<bool> sFtIsInitiailzed {false};
 
-using TSdfType = msdfgen::Bitmap<float>;
+using TSdfType          = msdfgen::Bitmap<float>;
+using TCharMapRangePair = std::pair<uint64_t, uint64_t>;
+
+[[nodiscard]] bool ExportAsSeparateJsonAndPng (const DDyFontInformation& fontMetaInfo, const nlohmann::json& fontJsonInfo, const std::vector<QImage>& fontImage);
+[[nodiscard]] bool ExportAsIntegratedFile     (const DDyFontInformation& fontMetaInfo, const nlohmann::json& fontJsonInfo, const std::vector<QImage>& fontImage);
+
+/*  TEMPLATE
+ *  00......`.......08......`.......
+    [PrevFontPtr   ][NextFontPtr   ]
+    16......`.......24......`.......
+    [PlainInfoLen  ][CompInfoLength]
+    32......`.......48......`.......
+    [PlainImgLength][CompImgLength ]
+    64..............................
+    [Compressed Information Buffer ]
+    64+CompInfoLen..................
+    [Compressed Image Buffer       ]
+    .............................EOF
+ */
 
 ///
 /// @struct DBounds
@@ -93,7 +111,7 @@ struct DResult final
   dy::DDyCoordinateBounds mCoordinateBound;
   QImage                  mImageBuffer;
   nlohmann::json          mItemJsonAtlas;
-  FT_ULong                mCharCode;
+  FT_ULong                mCharCode{};
 };
 
 ///
@@ -192,10 +210,7 @@ void DyReleaseFreetype() noexcept
   return imageBuffer;
 };
 
-///
-/// @brief Bounds boundary veridity check.
-/// @param bounds Bounds instance
-///
+/// @brief Checks Bounds boundary veridity.
 void CheckAndChangeBounds(DBounds& bounds)
 {
   if (bounds.l >= bounds.r || bounds.b >= bounds.t)
@@ -204,11 +219,8 @@ void CheckAndChangeBounds(DBounds& bounds)
   }
 };
 
-///
 /// @brief
-/// @param bounds
-///
-DAlignedBBoxInfo AlignSDFBBoxFrame(const DBounds& bounds)
+[[nodiscard]] DAlignedBBoxInfo AlignSDFBBoxFrame(const DBounds& bounds)
 {
   const auto dims{ msdfgen::Vector2{bounds.r - bounds.l, bounds.t - bounds.b} };
   auto translate{ msdfgen::Vector2{} };
@@ -235,7 +247,7 @@ DAlignedBBoxInfo AlignSDFBBoxFrame(const DBounds& bounds)
   return DAlignedBBoxInfo{range, scale, translate };
 };
 
-DDyFontInformation GetFontGeneralInformation(const QString fontPath)
+[[nodiscard]] DDyFontInformation GetFontGeneralInformation(const QString fontPath)
 {
   FT_Library sFtLibrary = nullptr;
   FT_Face    sFtFace    = nullptr;
@@ -253,222 +265,132 @@ DDyFontInformation GetFontGeneralInformation(const QString fontPath)
   return result;
 }
 
-///
-/// @brief
-/// @param  ftOutlineFunc
-/// @param  charCode
-/// @param  ftFace
-/// @param  id
-/// @return
-///
-DResult CreateGlyphInformation(const FT_Outline_Funcs& ftOutlineFunc, const FT_ULong charCode, const FT_Face ftFace, int32_t id)
+void Process(std::vector<DResult>& charResultList, const std::vector<FT_ULong>& charMapList, const TCharMapRangePair charRangePair, const FT_Face ftFace)
 {
+  const auto itStart  = charMapList.cbegin() + charRangePair.first;
+  const auto itEnd    = charMapList.cbegin() + charRangePair.second;
+
+  FT_Outline_Funcs ftFunctions = {};
+  ftFunctions.move_to = &dy::ftMoveTo;    ftFunctions.line_to = &dy::ftLineTo;
+  ftFunctions.conic_to = &dy::ftConicTo;  ftFunctions.cubic_to = &dy::ftCubicTo;
+  ftFunctions.shift = 0;                  ftFunctions.delta = 0;
+
+  for (auto charCodeIt = itStart; charCodeIt != itEnd; ++charCodeIt)
   {
-    const FT_Error errorFlag = FT_Load_Char(ftFace, charCode, FT_LOAD_NO_SCALE);
-    Q_ASSERT(errorFlag == 0);
+    const FT_Error loadCharErrorFlag = FT_Load_Char(ftFace, *charCodeIt, FT_LOAD_NO_SCALE);
+    Q_ASSERT(loadCharErrorFlag == 0);
+
+    msdfgen::Shape          shape = {};
+    dy::DDyFreeTypeContext  context = {}; context.mShape = &shape;
+
+    const auto outlineErrorFlag = FT_Outline_Decompose(&ftFace->glyph->outline, &ftFunctions, &context);
+    Q_ASSERT(outlineErrorFlag == 0);
+
+    // Set bounds
+    DBounds bounds{};
+    shape.normalize(); shape.bounds(bounds.l, bounds.b, bounds.r, bounds.t); shape.inverseYAxis = true;
+    CheckAndChangeBounds(bounds);
+
+    // Set translate (non scaled)
+    const auto alignedInfo = AlignSDFBBoxFrame(bounds);
+
+    // Generate information
+    msdfgen::edgeColoringSimple(shape, 3.0);
+    auto sdfFloatBuffer{ TSdfType{TEXTURE_SIZE_S, TEXTURE_SIZE_T} };
+    msdfgen::generateSDF(sdfFloatBuffer, shape, alignedInfo.range, alignedInfo.scale, alignedInfo.translate);
+
+    // Realign and scale translate for saving.
+    const auto glyphScale{ static_cast<float>(STANDARD_UNITPEREM) / ftFace->units_per_EM };
+    auto translate{ alignedInfo.translate };
+    translate -= TEXTURE_PXRANGE / alignedInfo.scale;
+    translate *= glyphScale;
+    translate += TEXTURE_PXRANGE / alignedInfo.scale * glyphScale;
+
+    const uint64_t id = static_cast<uint64_t>(std::distance(charMapList.cbegin(), charCodeIt));
+    const auto texCoord = dy::CreateCoordinateInformation(TEXTURE_CANVAS_S, TEXTURE_CANVAS_T, TEXTURE_SIZE_S, TEXTURE_SIZE_T, id);
+
+    // Make json information and return.
+    nlohmann::json jsonWrite;
+    jsonWrite["Size"] = dy::DDyVector2{ float(ftFace->glyph->metrics.width), float(ftFace->glyph->metrics.height) } *glyphScale;
+    jsonWrite["HoriBearing"] = dy::DDyVector2{ float(ftFace->glyph->metrics.horiBearingX), float(ftFace->glyph->metrics.horiBearingY) } *glyphScale;
+    jsonWrite["Scale"] = dy::DDyVector2{ float(alignedInfo.scale.x), float(alignedInfo.scale.y) } / glyphScale;
+    jsonWrite["Translate"] = dy::DDyVector2{ float(translate.x), float(translate.y) } *16;
+    jsonWrite["TexCoordBox"] = texCoord;
+    jsonWrite["HoriAdvance"] = ftFace->glyph->metrics.horiAdvance * glyphScale / 64.0;
+
+    charResultList[id] = DResult{ texCoord, CreateQImageFromSDFBuffer(sdfFloatBuffer), jsonWrite, *charCodeIt};
   }
+};
 
-  auto shape  {msdfgen::Shape{}};
-  auto context{dy::DDyFreeTypeContext{}}; context.mShape = &shape;
-
-  {
-    const auto errorFlag = FT_Outline_Decompose(&ftFace->glyph->outline, &ftOutlineFunc, &context);
-    Q_ASSERT(errorFlag == 0);
-  }
-
-  // Set bounds
-  auto bounds {DBounds{}};
-  shape.normalize();
-  shape.bounds(bounds.l, bounds.b, bounds.r, bounds.t);
-  shape.inverseYAxis = true;
-  CheckAndChangeBounds(bounds);
-  // Set translate (non scaled)
-  const auto alignedInfo {AlignSDFBBoxFrame(bounds)};
-
-  // Generate information
-  msdfgen::edgeColoringSimple(shape, 3.0);
-  auto sdfFloatBuffer {TSdfType{TEXTURE_SIZE_S, TEXTURE_SIZE_T}};
-  msdfgen::generateSDF(sdfFloatBuffer, shape, alignedInfo.range, alignedInfo.scale, alignedInfo.translate);
-
-  // Realign and scale translate for saving.
-  const auto glyphScale { static_cast<float>(STANDARD_UNITPEREM) / ftFace->units_per_EM };
-  auto translate { alignedInfo.translate };
-  translate -= TEXTURE_PXRANGE / alignedInfo.scale;
-  translate *= glyphScale;
-  translate += TEXTURE_PXRANGE / alignedInfo.scale * glyphScale;
-
-  auto texCoord {dy::CreateCoordinateInformation(TEXTURE_CANVAS_S, TEXTURE_CANVAS_T, TEXTURE_SIZE_S, TEXTURE_SIZE_T, id)};
-
-  // Make json information and return.
-  nlohmann::json jsonWrite;
-  jsonWrite["Size"]        = dy::DDyVector2{float(ftFace->glyph->metrics.width), float(ftFace->glyph->metrics.height)} * glyphScale;
-  jsonWrite["HoriBearing"] = dy::DDyVector2{float(ftFace->glyph->metrics.horiBearingX), float(ftFace->glyph->metrics.horiBearingY)} * glyphScale;
-  jsonWrite["Scale"]       = dy::DDyVector2{float(alignedInfo.scale.x), float(alignedInfo.scale.y)} / glyphScale;
-  jsonWrite["Translate"]   = dy::DDyVector2{float(translate.x), float(translate.y)} * 16;
-  jsonWrite["TexCoordBox"] = texCoord;
-  jsonWrite["HoriAdvance"] = ftFace->glyph->metrics.horiAdvance * glyphScale / 64.0;
-
-  return DResult{texCoord, CreateQImageFromSDFBuffer(sdfFloatBuffer), jsonWrite, charCode};
-}
-
-///
-/// @brief
-/// @param information
-/// @param targetCharMap
-///
+/// @brief Create font buffer and export outside by following option.
 void CreateFontBuffer(const DDyFontInformation information,
                       const std::vector<FT_ULong> targetCharMap,
                       const dy::EDyOptionCollections option,
                       DyFontAtlasGenerator& parent)
 {
-  static auto sFtFunctions          {FT_Outline_Funcs{}};
-  static auto sIsFunctionInitialized{false};
-  if (sIsFunctionInitialized == false)
+  /// @brief Insert meta information of specified font.
+  static auto InsertMetaInformationToJson = [&](nlohmann::json& json)
   {
-    sFtFunctions.move_to = &dy::ftMoveTo;
-    sFtFunctions.line_to = &dy::ftLineTo;
-    sFtFunctions.conic_to = &dy::ftConicTo;
-    sFtFunctions.cubic_to = &dy::ftCubicTo;
-    sFtFunctions.shift = 0;
-    sFtFunctions.delta = 0;
+    auto metaInformation{dy::DMeta{}};
+    metaInformation.mFontSpecifierName   = information.fontName;
+    metaInformation.mFontStyleSpecifier  = information.fontStyle;
+    metaInformation.mHoriLinefeed        = sFtFaceList[0]->height;
+    json["Meta"] = metaInformation;
+  };
 
-    sIsFunctionInitialized = true;
-  }
-
-  //!
-  //! Lambda functions
-  //!
-
-  ///
-  /// @brief Store json file and pngs by following options...
-  /// @param
-  /// @param
-  ///
-  static auto ExportInformations = [&](const nlohmann::json& jsonInstance)
+  /// @brief Calculate range for searching of each thread.
+  static auto CalculateRangeTo = [](uint64_t charMapSize, uint64_t threadCount, std::vector<TCharMapRangePair>& result)
   {
-    if (dy::IsHavingFlags(option, dy::EDyOptionCollections::CompressJsonString) == false)
+    result.reserve(threadCount);
+    for (uint64_t threadId = 0; threadId < threadCount; ++threadId)
     {
-      const QString filename = fmt::format("./{}_{}.json", information.fontName, information.fontStyle).c_str();
-      QFile file {filename};
-      if (file.open(QIODevice::WriteOnly))
-      {
-        QTextStream stream(&file);
-        stream << jsonInstance.dump(2).c_str() << endl;
-      }
-      file.close();
-    }
-    else
-    {
-      const QString filename = fmt::format("./{}_{}.dyFntRes", information.fontName, information.fontStyle).c_str();
-      QFile file(filename);
-      if (file.open(QIODevice::WriteOnly))
-      {
-        QDataStream stream(&file);
-        auto buffer{ dy::zlib::CompressString(jsonInstance.dump(2)) };
-        stream.writeBytes(buffer.c_str(), buffer.size());
-      }
-      file.close();
+      const auto begin = threadId * charMapSize / threadCount;
+      const auto end   = (threadId + 1) * charMapSize / threadCount;
+      result.emplace_back(std::make_pair(begin, end));
     }
   };
 
-  ///
-  /// @brief
-  /// @param
-  /// @param
-  ///
-
-  //!
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   //! FunctionBody
-  //!
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   // Get concurrent thread number.
-  const auto concurrentThreadNumber {std::thread::hardware_concurrency()};
-  const auto targetCharMapSize      { targetCharMap.size() };
-
-  //
+  const uint32_t concurrentThreadNumber = std::thread::hardware_concurrency();
+  const auto     targetCharMapSize      = static_cast<uint64_t>(targetCharMap.size());
+  // Freetype initialization
   DyResizeFreetypeList(concurrentThreadNumber);
   DyInitializeFreetype();
   DyLoadFontFreetype  (information.fontPath.c_str());
-
-  // Make json information instance for font glyphs.
-  nlohmann::json jsonDescriptor;
-
-  auto metaInformation{dy::DMeta{}};
-  metaInformation.mFontSpecifierName   = information.fontName;
-  metaInformation.mFontStyleSpecifier  = information.fontStyle;
-  metaInformation.mHoriLinefeed        = sFtFaceList[0]->height;
-  jsonDescriptor["Meta"] = metaInformation;
-
+  // Make paint surface of off-screen rendering.
   CPaintSurface paintSurface;
   paintSurface.resize(TEXTURE_CANVAS_S, TEXTURE_CANVAS_T);
   paintSurface.InitializeContext();
   paintSurface.ClearSurface();
+  // Make json information instance for font glyphs.
+  nlohmann::json jsonDescriptor;  InsertMetaInformationToJson(jsonDescriptor);
 
-  auto drawnImageList   {std::vector<QImage>{}};
-  auto charCount        {0};
+  std::vector<DResult>            charResultList(targetCharMapSize);
+  std::vector<TCharMapRangePair>  charRangeList = {};
+  std::vector<std::future<void>>  threadResultList = {}; threadResultList.reserve(concurrentThreadNumber);
+  CalculateRangeTo(targetCharMapSize, concurrentThreadNumber, charRangeList);
 
-  //
-  std::vector<std::future<DResult>> threadResultList {};
-  threadResultList.reserve(concurrentThreadNumber);
-
-  const auto remainCharCount        {targetCharMapSize % concurrentThreadNumber};
-  const auto firstIterationMapCount {targetCharMapSize - remainCharCount};
-
-  for (auto i{0u}; i < firstIterationMapCount; i += concurrentThreadNumber)
-  {
-    // Issue task to parallel thread.
-    for (auto j{0u}; j < concurrentThreadNumber; ++j)
-    {
-      auto result = std::async(
-          std::launch::async,
-          CreateGlyphInformation,
-          std::cref(sFtFunctions), targetCharMap[i + j], sFtFaceList[j], charCount + j
-      );
-      threadResultList.emplace_back(std::move(result));
-    }
-
-    // Get result from future list and rendering.
-    for (auto j{0u}; j < concurrentThreadNumber; ++j)
-    {
-      DResult result {threadResultList[j].get()};
-      jsonDescriptor["Characters"][fmt::format("{0}", result.mCharCode)] = result.mItemJsonAtlas;
-
-      // Make QImage from Bitmap<float> and texture from QImage. (RVO guaranted)
-      paintSurface.UpdateBufferInformation(result.mCoordinateBound);
-      paintSurface.CreatePreviousBufferStateTexture();
-      paintSurface.BindTexturePointer(result.mImageBuffer);
-      paintSurface.render();
-
-      //
-      charCount += 1;
-      parent.IncrementProgress();
-
-      if (charCount % TEXTURE_MAPLIMIT == 0)
-      { // Export offscreen texture buffer to png or file information (binary).
-        drawnImageList.emplace_back(paintSurface.GetImageFromGLFBO());
-        paintSurface.ClearSurface();
-      }
-    }
-
-    threadResultList.clear();
-    threadResultList.reserve(concurrentThreadNumber);
-  }
-
-  // Issue task to parallel thread.
-  for (auto j{ 0u }; j < remainCharCount; ++j)
-  {
-    auto result = std::async(
-        std::launch::async,
-        CreateGlyphInformation,
-        std::cref(sFtFunctions), targetCharMap[firstIterationMapCount + j], sFtFaceList[j], charCount + j
+  // Create information.
+  for (auto thread = 0u; thread < concurrentThreadNumber; ++thread)
+  { // Mutli-thread processing.
+    threadResultList.emplace_back(
+        std::async(std::launch::async, Process,
+            std::ref(charResultList), std::cref(targetCharMap), charRangeList[thread], sFtFaceList[thread]
+        )
     );
-    threadResultList.emplace_back(std::move(result));
   }
+  for (auto thread = 0u; thread < concurrentThreadNumber; ++thread) { threadResultList[thread].get(); }
 
-  // Get result from future list and rendering.
-  for (auto j{ 0u }; j < remainCharCount; ++j)
+  // Create texture atlas.
+  std::vector<QImage> drawnImageList {};
+  for (uint64_t id = 0u; id < targetCharMapSize; ++id)
   {
-    DResult result{ threadResultList[j].get() };
+    // Get result from charRangeList.
+    const auto& result = charResultList[id];
     jsonDescriptor["Characters"][fmt::format("{0}", result.mCharCode)] = result.mItemJsonAtlas;
 
     // Make QImage from Bitmap<float> and texture from QImage. (RVO guaranted)
@@ -477,12 +399,9 @@ void CreateFontBuffer(const DDyFontInformation information,
     paintSurface.BindTexturePointer(result.mImageBuffer);
     paintSurface.render();
 
-    //
-    charCount += 1;
     parent.IncrementProgress();
-
-    if (charCount % TEXTURE_MAPLIMIT == 0)
-    { // Export offscreen texture buffer to png or file information (binary).
+    if ((id + 1) % TEXTURE_MAPLIMIT == 0)
+    { // Export off-screen texture buffer to png or file information (binary).
       drawnImageList.emplace_back(paintSurface.GetImageFromGLFBO());
       paintSurface.ClearSurface();
     }
@@ -492,17 +411,111 @@ void CreateFontBuffer(const DDyFontInformation information,
   drawnImageList.emplace_back(paintSurface.GetImageFromGLFBO());
   paintSurface.ClearSurface();
 
+  if (dy::IsHavingFlags(option, dy::EDyOptionCollections::SeparateJsonAndPng) == true)
   {
-    auto i{0};
-    for (const QImage& image : drawnImageList)
-    {
-      i++;
-      image.save(fmt::format("./{}_{}_{}.png", information.fontName, information.fontStyle, i).c_str(), "PNG");
-    }
+    const auto isSuccessful = ExportAsSeparateJsonAndPng(information, jsonDescriptor, drawnImageList);
+    Q_ASSERT(isSuccessful == true);
+  }
+  else
+  {
+    const auto isSuccessful = ExportAsIntegratedFile(information, jsonDescriptor, drawnImageList);
+    Q_ASSERT(isSuccessful == true);
+  }
+  DyReleaseFreetype();
+}
+
+[[nodiscard]] bool ExportAsSeparateJsonAndPng(const DDyFontInformation& fontMetaInfo, const nlohmann::json& fontJsonInfo, const std::vector<QImage>& fontImage)
+{
+  const QString filename = fmt::format("./{}_{}.dyFntRes", fontMetaInfo.fontName, fontMetaInfo.fontStyle).c_str();
+  if (QFile file(filename); file.open(QIODevice::WriteOnly))
+  {
+    const auto compressedJsonResult = dy::zlib::CompressBuffer(fontJsonInfo);
+    QDataStream stream(&file);
+    stream.writeBytes(compressedJsonResult.mCompressedBuffer.data(), compressedJsonResult.mCompressedLength);
+    file.close();
   }
 
-  DyReleaseFreetype();
-  ExportInformations(jsonDescriptor);
+  const auto imageListCount = fontImage.size();
+  for (auto imageId = 0u; imageId < imageListCount; ++imageId)
+  {
+    const auto isSuccessful = fontImage[imageId].save(fmt::format("./{}_{}_{}.png", fontMetaInfo.fontName, fontMetaInfo.fontStyle, imageId).c_str(), "PNG");
+    Q_ASSERT(isSuccessful == true);
+  }
+
+  return true;
+}
+
+[[nodiscard]] bool ExportAsIntegratedFile(const DDyFontInformation& fontMetaInfo, const nlohmann::json& fontJsonInfo, const std::vector<QImage>& fontImage)
+{
+  static auto ConvertToQByteArrayBuffers = [](const std::vector<QImage>& fontImageList)
+  {
+    const auto drawnImageListSize = static_cast<int>(fontImageList.size());
+    std::vector<QByteArray> atlasBufferList(drawnImageListSize);
+    for (auto imageId = 0; imageId < drawnImageListSize; ++imageId)
+    {
+      const auto& image = fontImageList[imageId];
+      const auto width  = image.width();
+      const auto height = image.height();
+      for (auto pxY = 0; pxY < height; ++pxY)
+      {
+        for (auto pxX = 0; pxX < width; ++pxX)
+        { // Get color and emplace to buffer.
+          const auto pixelColor = image.pixelColor(pxX, pxY);
+          const auto alpha  = pixelColor.alpha(); const auto red    = pixelColor.red();
+          const auto green  = pixelColor.green(); const auto blue   = pixelColor.blue();
+          // Insert RGBA32 (8bit each channel) to list.
+          atlasBufferList[imageId].push_back(static_cast<char>(red));
+          atlasBufferList[imageId].push_back(static_cast<char>(green));
+          atlasBufferList[imageId].push_back(static_cast<char>(blue));
+          atlasBufferList[imageId].push_back(static_cast<char>(alpha));
+        }
+      }
+    }
+
+    return atlasBufferList;
+  };
+
+  static auto CompressImageBufferList = [](const std::vector<QByteArray>& imageBufferList)
+  {
+    std::vector<dy::zlib::DZlibResult> resultList(imageBufferList.size());
+    for (auto imageId = 0u; imageId < imageBufferList.size(); ++imageId)
+    {
+      resultList[imageId] = dy::zlib::CompressBuffer(imageBufferList[imageId]);
+    }
+    return resultList;
+  };
+
+  const auto compressedJsonResult       = dy::zlib::CompressBuffer(fontJsonInfo);
+  const auto compressedImageBufferList  = CompressImageBufferList(ConvertToQByteArrayBuffers(fontImage));
+
+  DHeaderStructure header{};
+  header.mPtrPreviousFontAddress  = 0;
+  header.mPtrNextFontAddress      = 0;
+  header.mInformationBufferLength.mPlainBufferLength      = compressedJsonResult.mDecompressedLength;
+  header.mInformationBufferLength.mCompressedBufferLength = compressedJsonResult.mCompressedLength;
+  for (const auto& imageResult : compressedImageBufferList)
+  {
+    DHeaderStructure::DBufferLength length{};
+    length.mPlainBufferLength       = imageResult.mDecompressedLength;
+    length.mCompressedBufferLength  = imageResult.mCompressedLength;
+    header.mImageBufferLength.emplace_back(length);
+  }
+
+  DBufferSerializer serializer{};
+  serializer << header.mPtrPreviousFontAddress << header.mPtrNextFontAddress;
+  serializer << header.mInformationBufferLength;
+  serializer << header.mImageBufferLength;
+  serializer << compressedJsonResult.mCompressedBuffer;
+  for (const auto& imageBufferResult : compressedImageBufferList) { serializer << imageBufferResult.mCompressedBuffer; }
+
+  QFile file(fmt::format("./{}_{}.dyFont", fontMetaInfo.fontName, fontMetaInfo.fontStyle).c_str());
+  if (file.open(QIODevice::WriteOnly))
+  {
+    QDataStream out(&file);
+    out.writeRawData(serializer.mBuffer.data(), serializer.mBuffer.size());
+  }
+  file.close();
+  return true;
 }
 
 } /// unnamed namespace
@@ -520,7 +533,7 @@ DyFontAtlasGenerator::DyFontAtlasGenerator(QWidget *parent) : QMainWindow(parent
   this->statusBar()->hide();
 
   // Set visibility and enablility.
-  ui.BT_Create->setEnabled(false);
+  ui.BT_Create->setEnabled(true);
   ui.PG_Loading->setVisible(false);
 
   // Connect signal and slot.
@@ -535,9 +548,6 @@ DyFontAtlasGenerator::DyFontAtlasGenerator(QWidget *parent) : QMainWindow(parent
   connect(ui.BT_Create,           &QPushButton::clicked,    this, &DyFontAtlasGenerator::CreateBatchFile);
   //connect(ui.AC_About,            &QAction::triggered,      this, &DyFontAtlasGenerator::ShowAbout);
   connect(this, &DyFontAtlasGenerator::SetProgressBarValue, ui.PG_Loading, &QProgressBar::setValue);
-
-  // Call private trivial functions.
-  this->pUpdateBT_CreateActivation();
 }
 
 void DyFontAtlasGenerator::IncrementProgress()
@@ -577,54 +587,41 @@ void DyFontAtlasGenerator::UpdateCharmapFlag(int value)
   if (ui.CB_MapKana->isChecked() == true)     { resultFlag |= dy::EDyCharmapCollections::Kana; }
 
   this->mCharmapFlag = resultFlag;
-  this->pUpdateBT_CreateActivation();
  }
 
 void DyFontAtlasGenerator::UpdateOptionFlag(int value)
 {
   auto resultFlag {dy::EDyOptionCollections::None};
   if (ui.CB_OptionSeperate->isChecked() == true)      { resultFlag |= dy::EDyOptionCollections::SeparateJsonAndPng; }
-  if (ui.CB_OptionCompressJson->isChecked() == true)  { resultFlag |= dy::EDyOptionCollections::CompressJsonString; }
+  if (ui.CB_OptionCompressJson->isChecked() == true)  { resultFlag |= dy::EDyOptionCollections::CompressJsonString_Deprecated; }
 
   this->mOptionFlag = resultFlag;
-  this->pUpdateBT_CreateActivation();
-}
-
-void DyFontAtlasGenerator::pUpdateBT_CreateActivation()
-{
-  const bool resultFlag = false
-    || (dy::IsFlagNotCheckAll(this->mCharmapFlag) == true)
-    || (dy::IsHavingFlags(this->mOptionFlag, dy::EDyOptionCollections::SeparateJsonAndPng) == false);
-
-  if (resultFlag == true)  { ui.BT_Create->setEnabled(false); }
-  else                     { ui.BT_Create->setEnabled(true); }
 }
 
 void DyFontAtlasGenerator::CreateBatchFile()
 {
   static auto sIsMapInitialized {false};
-  static auto sEnglishMap       {std::vector<FT_ULong>(ENGLISH_UNI20_RANGE)};
-  static auto sHangulMap        {std::vector<FT_ULong>(HANGUL_UNI20_RANGE)};
-  static auto sKanaMap          {std::vector<FT_ULong>(JAPANESE_UNI20_KANA_RANGE)};
-  static auto sCJKHanbunMap     {std::vector<FT_ULong>(CJK_UNI20_HANBUN_RANGE0)};
+  static auto sEnglishMap       {std::vector<FT_ULong>(ENGLISH_CHR_RANGE)};
+  static auto sHangulMap        {std::vector<FT_ULong>(HANGUL_CHR_RANGE)};
+  static auto sKanaMap          {std::vector<FT_ULong>(KANA_CHR_RANGE)};
+  static auto sCJKHanbunMap     {std::vector<FT_ULong>(CJK_CHR_RANGE)};
 
   // First, initialize map charcode information.
   if (sIsMapInitialized == false)
   {
-    std::generate(sEnglishMap.begin(), sEnglishMap.end(),     [n = ENGLISH_UNI20_START]() mutable { return n++; });
-    std::generate(sHangulMap.begin(), sHangulMap.end(),       [n = HANGUL_UNI20_START]() mutable { return n++; });
-    std::generate(sKanaMap.begin(), sKanaMap.end(),           [n = JAPANESE_UNI20_KANA_START]() mutable { return n++; });
-    std::generate(sCJKHanbunMap.begin(), sCJKHanbunMap.end(), [n = CJK_UNI20_HANBUN_START0]() mutable { return n++; });
+    std::generate(sEnglishMap.begin(), sEnglishMap.end(),     [n = ENGLISH_CHR_START]() mutable { return n++; });
+    std::generate(sHangulMap.begin(), sHangulMap.end(),       [n = HANGUL_CHR_START]() mutable { return n++; });
+    std::generate(sKanaMap.begin(), sKanaMap.end(),           [n = KANA_CHR_START]() mutable { return n++; });
+    std::generate(sCJKHanbunMap.begin(), sCJKHanbunMap.end(), [n = CJK_CHR_START]() mutable { return n++; });
     sIsMapInitialized = true;
   }
 
-  //!
-  //! FunctionBody∨
-  //!
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  //! FunctionBody
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   // Disable widget for malfunction.
   this->setEnabled(false);
-
   // Calculate chracter glyph map count to retrieve.
   auto maxSize        {int32_t{}};
   auto targetCharMap  {std::vector<FT_ULong>{}};
@@ -674,8 +671,7 @@ void DyFontAtlasGenerator::CreationTaskFinished()
 }
 
 void DyFontAtlasGenerator::ShowAbout()
-{
-  // NOT IMPLEMENTED YET
+{ // NOT IMPLEMENTED YET
   this->mChildAbout = new DyWindowAbout();
   this->mChildAbout->setWindowModality(Qt::WindowModality::ApplicationModal);
   this->mChildAbout->SetParentMainWindow(*this);
@@ -683,8 +679,7 @@ void DyFontAtlasGenerator::ShowAbout()
 }
 
 void DyFontAtlasGenerator::ResumeFocus()
-{
-  // NOT IMPLEMENTED YET
+{ // NOT IMPLEMENTED YET
   delete this->mChildAbout;
   this->mChildAbout = nullptr;
 }

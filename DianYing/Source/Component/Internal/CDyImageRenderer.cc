@@ -14,7 +14,7 @@
 
 /// Header file
 #include <Dy/Component/Internal/CDyImageRenderer.h>
-#include <Dy/Builtin/ShaderGl/RenderUIImage.h>
+#include <Dy/Builtin/ShaderGl/UI/RenderUIImage.h>
 
 namespace dy
 {
