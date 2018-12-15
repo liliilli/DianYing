@@ -15,6 +15,7 @@
 
 #include <queue>
 #include <Dy/Core/Resource/Resource_Deprecated/ShaderResource_Deprecated.h>
+#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
 
 //!
 //! Forward declaration
@@ -96,6 +97,7 @@ private:
   inline static constexpr TI32 sDirectionalLightCount = 5;
 
   CDyShaderResource_Deprecated*  mShaderPtr      = MDY_INITIALIZE_NULL;
+  TDyResourceBinderInstant<EDyResourceType::GLShader> mBinderShader {"dyBtModelScrProjTri"};
 
   /// Attachment information pointer
 

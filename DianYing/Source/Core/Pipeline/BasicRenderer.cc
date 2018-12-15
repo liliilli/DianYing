@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Core/Rendering/BasicRenderer.h>
+#include <Dy/Core/Rendering/Pipeline/BasicRenderer.h>
 
 #include <Dy/Component/CDyModelRenderer.h>
 #include <Dy/Core/Resource/Resource_Deprecated/ShaderResource_Deprecated.h>

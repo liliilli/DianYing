@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Core/Rendering/DeferredRenderingMesh.h>
+#include <Dy/Core/Rendering/Pipeline/DeferredRenderingMesh.h>
 
 #include <Dy/Builtin/ShaderGl/RenderDeferredRendering.h>
 #include <Dy/Core/Rendering/Helper/FrameAttachmentString.h>
@@ -90,7 +90,9 @@ FDyDeferredRenderingMesh::FDyDeferredRenderingMesh()
     MDY_CALL_ASSERT_SUCCESS(framebufferManager.InitializeNewFrameBuffer(framebufferInfo));
   };
 
-  // FunctionBody∨
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  // FunctionBody ∨
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   CreateFramebufferAttachmentSetting();
   MDY_CALL_ASSERT_SUCCESS(this->pInitializeShaderSetting());

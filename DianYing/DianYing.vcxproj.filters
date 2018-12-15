@@ -48,7 +48,6 @@
     <ClCompile Include="Source\Editor\Helper\Win32Helper.cc" />
     <ClCompile Include="Source\Management\SoundManager.cc" />
     <ClCompile Include="Source\Builtin\Object\Light\DirectionalLight.cc" />
-    <ClCompile Include="Source\Core\Rendering\BasicShadow.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderBasicShadow.cc" />
     <ClCompile Include="Source\Management\Helper\PhysXErrorCallback.cc" />
     <ClCompile Include="Source\Management\PhysicsManager.cc" />
@@ -78,15 +77,11 @@
     <ClCompile Include="Source\Component\Internal\ScriptState.cc" />
     <ClCompile Include="Source\Management\ScriptManager.cc" />
     <ClCompile Include="Source\Component\CDyDirectionalLight.cc" />
-    <ClCompile Include="Source\Core\Rendering\BasicRenderer.cc" />
     <ClCompile Include="Source\Management\Type\AttachmentInformation.cc" />
     <ClCompile Include="Source\Management\BindingLua\BindingGlobalType.cc" />
     <ClCompile Include="Source\Management\BindingLua\Entry.cc" />
     <ClCompile Include="Source\Management\BindingLua\BindingComponentType.cc" />
-    <ClCompile Include="Source\Core\Rendering\DeferredRenderingMesh.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetCommponDescriptor.cc" />
-    <ClCompile Include="Source\Core\Rendering\FinalScreenDisplayRenderer.cc" />
-    <ClCompile Include="Source\Core\Rendering\UiBasicRenderer.cc" />
     <ClCompile Include="Source\Builtin\Model\ScreenProjectionTriangle.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderScreenOutput.cc" />
     <ClCompile Include="Libraries\msdfgen\core\Bitmap.cpp" />
@@ -214,6 +209,11 @@
     <ClCompile Include="Source\Core\Resource\Resource\FDyMaterialResource.cc" />
     <ClCompile Include="Source\Management\IO\IODataManager_Deprecated.cc" />
     <ClCompile Include="Source\Management\IO\IOResourceManager_Deprecated.cc" />
+    <ClCompile Include="Source\Core\Pipeline\BasicRenderer.cc" />
+    <ClCompile Include="Source\Core\Pipeline\BasicShadow.cc" />
+    <ClCompile Include="Source\Core\Pipeline\DeferredRenderingMesh.cc" />
+    <ClCompile Include="Source\Core\Pipeline\FinalScreenDisplayRenderer.cc" />
+    <ClCompile Include="Source\Core\Pipeline\UiBasicRenderer.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -289,7 +289,6 @@
     <ClInclude Include="Include\Dy\Editor\Helper\Win32Helper.h" />
     <ClInclude Include="Include\Dy\Management\SoundManager.h" />
     <ClInclude Include="Include\Dy\Builtin\Object\Light\DirectionalLight.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\BasicShadow.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderBasicShadow.h" />
     <ClInclude Include="Include\Dy\Management\Helper\PhysXErrorCallback.h" />
     <ClInclude Include="Include\Dy\Management\PhysicsManager.h" />
@@ -360,7 +359,6 @@
     <ClInclude Include="Include\Dy\Element\Helper\DescriptorComponentHeaderString.h" />
     <ClInclude Include="Include\Dy\Component\CDyDirectionalLight.h" />
     <ClInclude Include="Include\Dy\Helper\Type\Clamp.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\BasicRenderer.h" />
     <ClInclude Include="Include\Dy\Helper\Type\VectorInt2.h" />
     <ClInclude Include="Include\Dy\Management\Type\FramebufferInformation.h" />
     <ClInclude Include="Include\Dy\Management\Type\AttachmentInformation.h" />
@@ -368,10 +366,7 @@
     <ClInclude Include="Include\Dy\Management\Type\UBOInformation.h" />
     <ClInclude Include="Include\Dy\Helper\ContainerHelper.h" />
     <ClInclude Include="Include\Dy\Management\Helper\LuaBindingEntry.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\DeferredRenderingMesh.h" />
     <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetCommonDescriptor.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\FinalScreenDisplayRenderer.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\UIBasicRenderer.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\ScreenProjectionTriangle.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderScreenOutput.h" />
     <ClInclude Include="Libraries\msdfgen\core\arithmetics.hpp" />
@@ -549,6 +544,11 @@
     <ClInclude Include="Include\Dy\Management\IO\IODataManager_Deprecated.h" />
     <ClInclude Include="Include\Dy\Management\IO\IOResourceManager_Deprecated.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\TemplateRescInfoType.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\BasicRenderer.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\BasicShadow.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\DeferredRenderingMesh.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\FinalScreenDisplayRenderer.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\UIBasicRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

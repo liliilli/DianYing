@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Core/Rendering/BasicShadow.h>
+#include <Dy/Core/Rendering/Pipeline/BasicShadow.h>
 #include <Dy/Core/Resource/MeshRenderer.h>
 
 #include <Dy/Core/Resource/Resource_Deprecated/SubmeshResource_Deprecated.h>
