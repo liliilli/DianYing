@@ -354,8 +354,6 @@
     <ClCompile Include="Source\Management\ScriptManager.cc" />
     <ClCompile Include="Source\Management\Type\AttachmentInformation.cc" />
     <ClCompile Include="Source\Management\Type\FontCharacterInfo.cc" />
-    <ClCompile Include="Source\Management\Type\FontCharacter_Deprecated.cc" />
-    <ClCompile Include="Source\Management\Type\FontContainer_Deprecated.cc" />
     <ClCompile Include="Source\Management\Type\FontResourceContainer.cc" />
     <ClCompile Include="Source\Management\Type\KeyActionBindingInformation.cc" />
     <ClCompile Include="Source\Management\Type\KeyAxisBindingInformation.cc" />
@@ -614,8 +612,6 @@
     <ClInclude Include="Include\Dy\Management\Type\EDyIOResourceScope.h" />
     <ClInclude Include="Include\Dy\Management\Type\KeyActionBindingInformation.h" />
     <ClInclude Include="Include\Dy\Management\Type\SettingContainer.h" />
-    <ClInclude Include="Include\Dy\Management\Type\FontCharacter_Deprecated.h" />
-    <ClInclude Include="Include\Dy\Management\Type\FontContainer_Deprecated.h" />
     <ClInclude Include="Include\Dy\Management\Type\FontCharacterInfo.h" />
     <ClInclude Include="Include\Dy\Management\Type\FontResourceContainer.h" />
     <ClInclude Include="Include\Dy\Management\Type\FramebufferInformation.h" />

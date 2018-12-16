@@ -98,9 +98,7 @@
     <ClCompile Include="Libraries\msdfgen\core\SignedDistance.cpp" />
     <ClCompile Include="Libraries\msdfgen\core\Vector2.cpp" />
     <ClCompile Include="Source\Meta\Information\FontMetaInformation.cc" />
-    <ClCompile Include="Source\Management\Type\FontContainer_Deprecated.cc" />
     <ClCompile Include="Source\Management\Type\FontResourceContainer.cc" />
-    <ClCompile Include="Source\Management\Type\FontCharacter_Deprecated.cc" />
     <ClCompile Include="Source\Management\Type\FontCharacterInfo.cc" />
     <ClCompile Include="Source\Element\Canvas\Text.cc" />
     <ClCompile Include="Source\Component\Internal\CDyFontRenderer.cc" />
@@ -372,10 +370,8 @@
     <ClInclude Include="Libraries\msdfgen\core\Vector2.h" />
     <ClInclude Include="Libraries\msdfgen\msdfgen.h" />
     <ClInclude Include="Include\Dy\Meta\Information\FontMetaInformation.h" />
-    <ClInclude Include="Include\Dy\Management\Type\FontContainer_Deprecated.h" />
     <ClInclude Include="Include\Dy\Management\Type\FontResourceContainer.h" />
     <ClInclude Include="Include\Dy\Management\Interface\IDyFontContainer.h" />
-    <ClInclude Include="Include\Dy\Management\Type\FontCharacter_Deprecated.h" />
     <ClInclude Include="Include\Dy\Management\Type\FontCharacterInfo.h" />
     <ClInclude Include="Include\Dy\Element\RenderableObject.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyFontRenderer.h" />

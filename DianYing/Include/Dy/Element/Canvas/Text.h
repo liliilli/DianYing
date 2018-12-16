@@ -18,7 +18,6 @@
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 #include <Dy/Component/Internal/CDyFontRenderer.h>
 #include <Dy/Helper/Type/DyString.h>
-#include <Dy/Management/Type/FontContainer_Deprecated.h>
 #include <Dy/Management/Interface/IDyFontContainer.h>
 #include <Dy/Meta/Type/EDyWidgetTypes.h>
 
