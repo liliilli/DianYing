@@ -26,7 +26,7 @@ namespace dy
 ///
 struct PDyGLTextureDescriptor final
 {
-  EDyTextureStyleType mType               = EDyTextureStyleType::None;
+  EDyTextureStyleType mType               = EDyTextureStyleType::NoneError;
   bool                mIsUsingDefaultMipmap       = false;
   bool                mIsUsingCustomizedParameter = false;
   TI32                mImageFormat        = MDY_INITIALIZE_DEFINT;

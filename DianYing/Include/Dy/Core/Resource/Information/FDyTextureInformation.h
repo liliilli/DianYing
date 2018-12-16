@@ -91,7 +91,7 @@ private:
   std::vector<TU08>         mTextureImageBuffer     = {};
   DDyVectorInt2             mTextureSize            = {};
   EDyImageColorFormatStyle  mImageActualPixelFormat = EDyImageColorFormatStyle::NoneError;
-  EDyTextureStyleType       mTextureType            = EDyTextureStyleType::None;
+  EDyTextureStyleType       mTextureType            = EDyTextureStyleType::NoneError;
   DDyColorRGBA              mBorderColor;
   TParameterList            mParameterOptionList;
   bool                      mIsUsingDefaultMipmap   = false;

@@ -52,7 +52,7 @@ struct PDyTextureConstructionBufferChunkDescriptor final : public PDyTextureCons
   /// Texture height size
   TU32                mHeight                = 1;
   /// Texture type
-  EDyTextureStyleType mTextureType           = EDyTextureStyleType::None;
+  EDyTextureStyleType mTextureType           = EDyTextureStyleType::NoneError;
   /// Map type @TODO NOT USED NOW.
   EDyTextureMapType   mTextureMapType        = EDyTextureMapType::Custom;
   ///

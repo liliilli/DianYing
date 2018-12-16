@@ -42,9 +42,11 @@ enum class EDyTextureMapType : unsigned char
 ///
 enum class EDyTextureStyleType : unsigned char
 {
-  None,
+  NoneError,
   D1,
   D2,
+  D1Array,
+  D2Array,
 };
 
 } /// ::dy namespace
