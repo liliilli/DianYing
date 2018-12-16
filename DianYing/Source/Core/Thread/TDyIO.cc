@@ -238,9 +238,8 @@ std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(
 {
   std::vector<PRIVerificationItem> checkList = {};
 
-  // If resource type is `Material`, bind all dependencies of `Material` to checkList.
   if (iResourceType == EDyResourceType::Material)
-  {
+  { // If resource type is `Material`, bind all dependencies of `Material` to checkList.
     const auto& metaMaterial = this->mMetaInfoManager->GetMaterialMetaInformation(iSpecifier);
     for (const auto& textureSpecifier : metaMaterial.mTextureNames) {
       if (textureSpecifier.empty() == true) { break; }
@@ -249,12 +248,22 @@ std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(
     checkList.emplace_back(metaMaterial.mShaderSpecifier, EDyResourceType::GLShader, iResourceStyle, iScope);
   }
 
+  if (iResourceType == EDyResourceType::GLFrameBuffer)
+  { // If resource type is `FrameBuffer`, bind all dependencies of `FrameBuffer` to checkList.
+    const auto& metaMaterial = this->mMetaInfoManager->GetGlFrameBufferMetaInformation(iSpecifier);
+    for (const auto& [specifier, type] : metaMaterial.mAttachmentList)
+    { // Get dependent attachment specifier list and add.
+      checkList.emplace_back(specifier, EDyResourceType::GLAttachment, iResourceStyle, iScope);
+    }
+  }
+
   if (iResourceStyle == EDyResourceStyle::Resource)
   {
     switch (iResourceType)
     {
     case EDyResourceType::Model:    case EDyResourceType::GLShader:
     case EDyResourceType::Texture:  case EDyResourceType::Material:
+    case EDyResourceType::GLAttachment: case EDyResourceType::GLFrameBuffer:
       checkList.emplace_back(iSpecifier, iResourceType, EDyResourceStyle::Information, iScope);
       break;
     default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(checkList);
@@ -462,12 +471,14 @@ bool TDyIO::outIsMetaInformationExist(_MIN_ const std::string& specifier, _MIN_ 
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mMetaInfoManager), "MetaInformation manager must not be null.");
   switch (type)
   {
-  case EDyResourceType::Script:     return this->mMetaInfoManager->IsScriptMetaInformationExist(specifier);
-  case EDyResourceType::Model:      return this->mMetaInfoManager->IsModelMetaInfoExist(specifier);
-  case EDyResourceType::GLShader:   return this->mMetaInfoManager->IsGLShaderMetaInfoExist(specifier);
-  case EDyResourceType::Texture:    return this->mMetaInfoManager->IsTextureMetaInfoExist(specifier);
-  case EDyResourceType::Material:   return this->mMetaInfoManager->IsMaterialMetaInfoExist(specifier);
-  case EDyResourceType::WidgetMeta: return this->mMetaInfoManager->IsWidgetMetaInfoExist(specifier);
+  case EDyResourceType::Script:         return this->mMetaInfoManager->IsScriptMetaInformationExist(specifier);
+  case EDyResourceType::Model:          return this->mMetaInfoManager->IsModelMetaInfoExist(specifier);
+  case EDyResourceType::GLShader:       return this->mMetaInfoManager->IsGLShaderMetaInfoExist(specifier);
+  case EDyResourceType::Texture:        return this->mMetaInfoManager->IsTextureMetaInfoExist(specifier);
+  case EDyResourceType::Material:       return this->mMetaInfoManager->IsMaterialMetaInfoExist(specifier);
+  case EDyResourceType::WidgetMeta:     return this->mMetaInfoManager->IsWidgetMetaInfoExist(specifier);
+  case EDyResourceType::GLAttachment:   return this->mMetaInfoManager->IsAttachmentMetaInfoExist(specifier);
+  case EDyResourceType::GLFrameBuffer:  return this->mMetaInfoManager->IsFrameBufferMetaInfoExist(specifier);
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
   }
 }

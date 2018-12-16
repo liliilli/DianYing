@@ -269,6 +269,16 @@ const PDyMaterialInstanceMetaInfo& MDyMetaInfo::GetMaterialMetaInformation(const
   return this->mMaterialMetaInfo.at(specifier);
 }
 
+const PDyGlFrameBufferInstanceMetaInfo& MDyMetaInfo::GetGlFrameBufferMetaInformation(_MIN_ const std::string& specifier) const
+{
+  return this->mFrameBufferMetaInfo.at(specifier);
+}
+
+const PDyGlAttachmentInstanceMetaInfo& MDyMetaInfo::GetGLAttachmentMetaInformation(_MIN_ const std::string& specifier) const
+{
+  return this->mAttachmentMetaInfo.at(specifier);
+}
+
 EDySuccess MDyMetaInfo::pReadScriptResourceMetaInformation(_MIN_ const std::string& metaFilePath)
 {
   // Validity Test

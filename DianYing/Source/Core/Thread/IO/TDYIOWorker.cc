@@ -19,10 +19,10 @@
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 #include <Dy/Core/Thread/SDyIOWorkerConnHelper.h>
 #include <Dy/Management/IO/MDyIOData.h>
-#include "Dy/Core/Resource/Resource/FDyTextureResource.h"
-#include "Dy/Core/Resource/Information/FDyModelInformation.h"
-#include "Dy/Core/Resource/Internal/FDyModelVBOIntermediate.h"
-#include "Dy/Core/Resource/Information/FDyMaterialInformation.h"
+#include <Dy/Core/Resource/Resource/FDyTextureResource.h>
+#include <Dy/Core/Resource/Information/FDyModelInformation.h>
+#include <Dy/Core/Resource/Internal/FDyModelVBOIntermediate.h>
+#include <Dy/Core/Resource/Information/FDyMaterialInformation.h>
 #include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
 
 namespace dy
@@ -126,6 +126,12 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceInformation(_MIN_ const DDyIOT
   case EDyResourceType::Material:
     result.mSmtPtrResultInstance = new FDyMaterialInformation(this->mMetaManager.GetMaterialMetaInformation(assignedTask.mSpecifierName));
     break;
+  case EDyResourceType::GLAttachment:
+    MDY_NOT_IMPLEMENTED_ASSERT();
+    break;
+  case EDyResourceType::GLFrameBuffer:
+    MDY_NOT_IMPLEMENTED_ASSERT();
+    break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 
@@ -163,6 +169,14 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceResource(_MIN_ const DDyIOTask
   case EDyResourceType::Material:
   { // Material resource is just for binding allocated textures and shader instance ptr list.
     result.mSmtPtrResultInstance = new FDyMaterialResource(*infoManager.GetPtrInformation<EDyResourceType::Material>(result.mSpecifierName));
+  } break;
+  case EDyResourceType::GLAttachment:
+  {
+    MDY_NOT_IMPLEMENTED_ASSERT();
+  } break;
+  case EDyResourceType::GLFrameBuffer:
+  {
+    MDY_NOT_IMPLEMENTED_ASSERT();
   } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }

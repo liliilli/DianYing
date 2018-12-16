@@ -208,6 +208,10 @@
     <ClCompile Include="Source\Meta\Information\MetaInfoFrameBuffer.cc" />
     <ClCompile Include="Source\Builtin\Abstract\ADyGLFrameBufferResource.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\FDyBtFrameBufferDeferred.cc" />
+    <ClCompile Include="Source\Core\Resource\Information\FDyAttachmentInformation.cc" />
+    <ClCompile Include="Source\Core\Resource\Information\FDyFrameBufferInformation.cc" />
+    <ClCompile Include="Source\Core\Resource\Resource\FDyAttachmentResource.cc" />
+    <ClCompile Include="Source\Core\Resource\Resource\FDyFrameBufferResource.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -536,6 +540,10 @@
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoFrameBuffer.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGLFrameBufferResource.h" />
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\FDyBtFrameBufferDeferred.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Information\FDyAttachmentInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Information\FDyFrameBufferInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyAttachmentResource.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyFrameBufferResource.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />
