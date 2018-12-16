@@ -85,15 +85,13 @@ public:
   }
 
 private:
-  using TParameterList = PDyTextureInstanceMetaInfo::TParameterList;
-
   std::string               mSpecifierName          = MDY_INITIALIZE_EMPTYSTR;
   std::vector<TU08>         mTextureImageBuffer     = {};
   DDyVectorInt2             mTextureSize            = {};
   EDyImageColorFormatStyle  mImageActualPixelFormat = EDyImageColorFormatStyle::NoneError;
   EDyTextureStyleType       mTextureType            = EDyTextureStyleType::NoneError;
   DDyColorRGBA              mBorderColor;
-  TParameterList            mParameterOptionList;
+  TTextureParameterList     mParameterOptionList;
   bool                      mIsUsingDefaultMipmap   = false;
   bool                      mIsUsingCustomParams    = false;
 };

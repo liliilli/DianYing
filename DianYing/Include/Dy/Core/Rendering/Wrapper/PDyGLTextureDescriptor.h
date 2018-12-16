@@ -33,8 +33,8 @@ struct PDyGLTextureDescriptor final
   DDyVectorInt2       mTextureSize        = {};
   DDyColorRGBA        mBorderColor        = {};
 
-  const std::vector<TU08>*                    mPtrBuffer        = MDY_INITIALIZE_NULL;
-  const PDyTextureInstanceMetaInfo::TParameterList* mPtrParameterList = MDY_INITIALIZE_NULL;
+  const std::vector<TU08>*     mPtrBuffer        = MDY_INITIALIZE_NULL;
+  const TTextureParameterList* mPtrParameterList = MDY_INITIALIZE_NULL;
 
   TU32                mOutputTextureId    = MDY_INITIALIZE_DEFUINT;
 };
