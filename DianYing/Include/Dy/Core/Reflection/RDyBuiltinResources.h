@@ -21,6 +21,7 @@
 #include <Dy/Meta/Type/EDyResourceType.h>
 #include <Dy/Builtin/Interface/IDyResource.h>
 #include <Dy/Builtin/Abstract/ADyLoadingBootResource.h>
+#include <Dy/Builtin/Abstract/ADyLoadingGlobalResource.h>
 
 namespace dy::reflect
 {
@@ -57,6 +58,13 @@ protected:
     static TValueType mLoadingBootingMetaInfoCustomized = {};
     return mLoadingBootingMetaInfoCustomized;
   }
+
+  /// @brief Get global resource script meta information list.
+  static std::vector<TValueType>& GetGlobalResourceMetaInfo()
+  {
+    static std::vector<TValueType> mLoadingGlobalMetaInfoCustomizedList = {};
+    return mLoadingGlobalMetaInfoCustomizedList;
+  }
 };
 
 template<typename TType>
@@ -87,6 +95,10 @@ void RDyBuiltinResource::RegisterScriptResource(_MIN_ const std::string& specifi
   if constexpr (IsBaseClassOf<TType, ADyLoadingBootResource> == true)
   { // Bind boot resource script to container.
     GetBootResourceMetaInfo() = std::make_pair(TType::value, &__Rfc__GetInstance<TType>);
+  }
+  else if constexpr (IsBaseClassOf<TType, ADyLoadingGlobalResource> == true)
+  { // Add global loading resource script to container.
+    GetGlobalResourceMetaInfo().emplace_back(TType::value, &__Rfc__GetInstance<TType>);
   }
   else
   { // Bind general (widget, actor) script to container.

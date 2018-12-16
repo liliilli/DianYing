@@ -44,9 +44,12 @@ public:
 private:
   /// @brief Run booted phase.
   void pRunFrameBooted();
-
   /// @brief Run first loading phase.
   void pRunFrameFirstLoading();
+  /// @brief Run loading phase.
+  void pRunFrameLoading();
+  /// @brief Run runtime phase.
+  void pRunFrameGameRuntime();
 
   std::unique_ptr<TDyIO>  mIOThreadInstance = nullptr;
   std::thread             mIOThreadThread;

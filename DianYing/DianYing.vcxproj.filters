@@ -179,7 +179,6 @@
     <ClCompile Include="Source\Core\Resource\Information\FDyTextureInformation.cc" />
     <ClCompile Include="Source\Core\Thread\SDyIOConnectionHelper.cc" />
     <ClCompile Include="Source\Core\Thread\SDyIOWorkerConnHelper.cc" />
-    <ClCompile Include="Source\Builtin\Script\DefaultLoadingBootScriptCpp.cc" />
     <ClCompile Include="Source\Core\Rendering\Wrapper\FDyGLWrapper.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\FDyTextureResource.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\FDyShaderResource.cc" />
@@ -200,6 +199,8 @@
     <ClCompile Include="Source\Core\Pipeline\UiBasicRenderer.cc" />
     <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceInstance.cc" />
     <ClCompile Include="Source\Core\Pipeline\PostEffectSsao.cc" />
+    <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingGlobalScriptCpp.cc" />
+    <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingBootScriptCpp.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -484,7 +485,6 @@
     <ClInclude Include="Include\Dy\Core\Thread\SDyIOWorkerConnHelper.h" />
     <ClInclude Include="Include\Dy\Management\Type\EDyGlobalGameStatus.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyLoadingGlobalScript.h" />
-    <ClInclude Include="Include\Dy\Builtin\Script\DefaultLoadingBootScriptCpp.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyResourceType.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyLoadingBootResource.h" />
     <ClInclude Include="Include\Dy\Meta\Type\DDyResourceName.h" />
@@ -520,6 +520,9 @@
     <ClInclude Include="Include\Dy\Helper\System\Idioms.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGLFramebufferResource.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\PostEffectSsao.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyLoadingGlobalResource.h" />
+    <ClInclude Include="Include\Dy\Builtin\Script\Default\DefaultLoadingGlobalScriptCpp.h" />
+    <ClInclude Include="Include\Dy\Builtin\Script\Default\DefaultLoadingBootScriptCpp.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

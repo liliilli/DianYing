@@ -36,13 +36,9 @@ namespace dy
 
 void FDyLevel::Initialize(_MIN_ const PDyLevelConstructMetaInfo& desc)
 {
-  // Lambda functions
-
-  ///
   /// @brief  Create pawn instance and set fundamental properties.
   /// @param  objectInformation Information to create FDyPawn instance.
-  ///
-  static auto pCreateActorInstance = [this](_MIN_ const PDyObjectMetaInfo& objectInformation)
+  static auto pCreateActorInstance = [](_MIN_ const PDyObjectMetaInfo& objectInformation)
   {
     // Make FDyActor instance.
     auto instancePtr = std::make_unique<FDyActor>();
@@ -54,16 +50,14 @@ void FDyLevel::Initialize(_MIN_ const PDyLevelConstructMetaInfo& desc)
     // Check activation flags and execute sub-routines of each components.
     instancePtr->pUpdateActivateFlagFromParent();
     if (objectInformation.mProperties.mInitialActivated == true) { instancePtr->Activate(); }
-
-    // @TODO TEMPORARY.
-    auto [it, result] = this->mActorMap.try_emplace(instancePtr->GetActorName(), std::move(instancePtr));
-    MDY_ASSERT(result == true, "Unexpected error occured in inserting FDyActor to object map.");
+    return instancePtr;
   };
+
 
   // FunctionBody ∨
 
+
   this->mLevelName            = desc.mMetaCategory.mLevelName;
-  // @TODO REMOVE THIS AS SOON AS IMPLEMENT HASH SAVE
   this->mLevelHashIdentifier  = hash::DyToCrc32Hash(this->mLevelName.c_str());
   this->mLevelBackgroundColor = desc.mMetaCategory.mLevelBackgroundColor;
 
@@ -73,8 +67,13 @@ void FDyLevel::Initialize(_MIN_ const PDyLevelConstructMetaInfo& desc)
     const auto type = objectInformation->mObjectType;
     switch (type)
     {
-    default: MDY_UNEXPECTED_BRANCH();    break;
-    case EDyMetaObjectType::Actor:          pCreateActorInstance(*objectInformation); break;
+    default: MDY_UNEXPECTED_BRANCH(); break;
+    case EDyMetaObjectType::Actor:
+    {
+      auto instancePtr = pCreateActorInstance(*objectInformation);
+      auto [it, result] = this->mActorMap.try_emplace(instancePtr->GetActorName(), std::move(instancePtr));
+      MDY_ASSERT(result == true, "Unexpected error occured in inserting FDyActor to object map.");
+    } break;
     case EDyMetaObjectType::SceneScriptor:  MDY_NOT_IMPLEMENTED_ASSERT(); break;
     case EDyMetaObjectType::Object:         MDY_NOT_IMPLEMENTED_ASSERT(); break;
     }
@@ -107,9 +106,7 @@ void FDyLevel::Release()
 
 void FDyLevel::Update(float dt)
 {
-  if (!this->mInitialized) { return; }
-
-
+  if (this->mInitialized == false) { return; }
 }
 
 std::string FDyLevel::ToString()

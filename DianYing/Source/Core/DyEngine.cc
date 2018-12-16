@@ -122,12 +122,8 @@ void DyEngine::pUpdate(_MIN_ TF32 dt)
 
 void DyEngine::pRender()
 {
-  glClearColor(0.1f, 0.2f, 0.1f, 1.0f);
+  glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-#ifdef false
-  gRenderer.CallDraw();
-#endif
 
   glEnable(GL_DEPTH_TEST);
   MDyRendering::GetInstance().RenderDrawCallQueue();
@@ -164,9 +160,7 @@ void DyEngine::pfInitializeDependentManager()
   MDY_CALL_ASSERT_SUCCESS(dy::MDyFont::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyScript::Initialize());
 
-  MDY_NOT_IMPLEMENTED_ASSERT();
-
-  //MDY_CALL_ASSERT_SUCCESS(dy::MDyWorld::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyWorld::Initialize());
 }
 
 void DyEngine::pfReleaseDependentManager()

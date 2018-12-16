@@ -627,6 +627,20 @@ private:
     ConstructBuffer(this->mMetaInfo); \
   }
 
+/// @macro MDY_REGISTER_BOOT_RESOURCE_LIST
+/// @brief Booting resource registering macro. Boot resource script must be only one.
+#define MDY_REGISTER_BOOT_RESOURCE_LIST(__MASpecifier__) \
+  MDY_REGISTER_RESOURCE(__MASpecifier__); \
+  public: \
+  __MASpecifier__();
+
+/// @macro MDY_REGISTER_GLOBAL_RESOURCE_LIST
+/// @brief Global resource registering macro. Global resource script can be multiple.
+#define MDY_REGISTER_GLOBAL_RESOURCE_LIST(__MASpecifier__) \
+  MDY_REGISTER_RESOURCE(__MASpecifier__); \
+  public: \
+  __MASpecifier__();
+
 ///
 /// @macro MDY_LOADING_RESOURCE_BIND
 /// @brief Bind resource requisition for loading resource.

@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Builtin/Script/DefaultLoadingBootScriptCpp.h>
+#include <Dy/Builtin/Script/Default/DefaultLoadingBootScriptCpp.h>
 #include <Dy/Builtin/Texture/Checker.h>
 #include <Dy/Builtin/Texture/ErrorBlue.h>
 

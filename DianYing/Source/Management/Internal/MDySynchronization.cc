@@ -61,8 +61,9 @@ void MDySynchronization::TrySynchronization()
   switch (this->mStatus)
   {
   case EDyGlobalGameStatus::Booted:
+  {
     this->pRunFrameBooted();
-    break;
+  } break;
   case EDyGlobalGameStatus::FirstLoading:
   {
     static bool dependentManagerInitialized = false;
@@ -74,9 +75,13 @@ void MDySynchronization::TrySynchronization()
     this->pRunFrameFirstLoading();
   } break;
   case EDyGlobalGameStatus::Loading:
-    break;
+  {
+    this->pRunFrameLoading();
+  } break;
   case EDyGlobalGameStatus::GameRuntime:
-    break;
+  {
+    this->pRunFrameGameRuntime();
+  } break;
   case EDyGlobalGameStatus::Shutdown:
     break;
   case EDyGlobalGameStatus::Ended:
@@ -107,6 +112,17 @@ void MDySynchronization::pRunFrameFirstLoading()
   static auto& sceneManager   = MDyWorld::GetInstance();
   sceneManager.OpenLevel(settingManager.GetInitialSceneInformationName());
   sceneManager.Update(-1);
+  this->mStatus = EDyGlobalGameStatus::Loading;
+}
+
+void MDySynchronization::pRunFrameLoading()
+{
+  this->mStatus = EDyGlobalGameStatus::GameRuntime;
+}
+
+void MDySynchronization::pRunFrameGameRuntime()
+{
+
 }
 
 } /// ::dy namespace

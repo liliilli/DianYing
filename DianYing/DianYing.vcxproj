@@ -159,7 +159,8 @@
     <ClCompile Include="Source\Builtin\Abstract\ADyModelResource.cc" />
     <ClCompile Include="Source\Builtin\Abstract\ADyTextureResource.cc" />
     <ClCompile Include="Source\Builtin\Script\DebugUiScriptCpp.cc" />
-    <ClCompile Include="Source\Builtin\Script\DefaultLoadingBootScriptCpp.cc" />
+    <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingBootScriptCpp.cc" />
+    <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingGlobalScriptCpp.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\PostEffect\RenderDefaultSSAOBlurring.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\PostEffect\RenderDefaultSSAO.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\UI\RenderUiBasicGaugeBar.cc" />
@@ -392,6 +393,7 @@
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGLFramebufferResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGLShaderResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyLoadingBootResource.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyLoadingGlobalResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyMaterialResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyModelResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyScriptResource.h" />
@@ -405,7 +407,8 @@
     <ClInclude Include="Include\Dy\Builtin\Model\Sphere.h" />
     <ClInclude Include="Include\Dy\Builtin\Object\Light\DirectionalLight.h" />
     <ClInclude Include="Include\Dy\Builtin\Script\DebugUiScriptCpp.h" />
-    <ClInclude Include="Include\Dy\Builtin\Script\DefaultLoadingBootScriptCpp.h" />
+    <ClInclude Include="Include\Dy\Builtin\Script\Default\DefaultLoadingBootScriptCpp.h" />
+    <ClInclude Include="Include\Dy\Builtin\Script\Default\DefaultLoadingGlobalScriptCpp.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\PostEffect\RenderDefaultSSAOBlurring.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderBasicShadow.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderColorGeometry.h" />

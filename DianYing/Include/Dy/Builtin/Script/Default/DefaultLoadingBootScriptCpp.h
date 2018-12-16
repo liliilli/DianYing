@@ -16,11 +16,6 @@
 #include <Dy/Builtin/Abstract/ADyLoadingBootResource.h>
 #include <Dy/Core/Reflection/RDyBuiltinResources.h>
 
-#define MDY_REGISTER_BOOT_RESOURCE_LIST(__MASpecifier__) \
-  MDY_REGISTER_RESOURCE(__MASpecifier__); \
-  public: \
-  __MASpecifier__();
-
 namespace dy
 {
 
