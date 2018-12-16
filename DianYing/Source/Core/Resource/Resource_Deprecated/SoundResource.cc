@@ -61,7 +61,7 @@ EDySuccess CDySoundResource_Deprecated::pfInitializeResource(const DDySoundInfor
 
 #ifdef false
   // Set ESoundType of created sound resource
-  ESoundType sound_type = ESoundType::None;
+  ESoundType sound_type = ESoundType::NoneError;
   switch (sound_info->GetSoundType()) {
   case ESoundType::BackgroundMusic:
     sound_type = ESoundType::BackgroundMusic;

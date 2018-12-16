@@ -34,7 +34,7 @@ struct PDyTextureInstanceMetaInfo final : public PDyCommonResourceMetaInfo
   /// Texture external file path.
   std::string         mExternalFilePath = MDY_INITIALIZE_EMPTYSTR;
   /// Texture is 1D or 2D?
-  EDyTextureStyleType mTextureType      = EDyTextureStyleType::None;
+  EDyTextureStyleType mTextureType      = EDyTextureStyleType::NoneError;
   /// Border color
   DDyColorRGBA        mBorderColor      = DDyColorRGBA::Black;
   /// as R, RG, RGB, RGBA

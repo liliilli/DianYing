@@ -16,7 +16,6 @@
 #include <Dy/Core/Resource/Object/Grid.h>
 #include <Dy/Core/Resource/Internal/ShaderType.h>
 #include <Dy/Management/WorldManager.h>
-#include <Dy/Core/Resource/Object/Camera.h>
 #include <Dy/Builtin/ShaderGl/Editor/RenderGrid.h>
 
 namespace dy

@@ -21,7 +21,6 @@
 #include <imgui/imgui_impl_glfw.h>
 #include <imgui/imgui_impl_opengl3.h>
 
-#include <Dy/Core/Resource/Object/Camera.h>
 #include <Dy/Helper/Type/Vector3.h>
 
 #include <Dy/Management/SettingManager.h>
@@ -39,9 +38,18 @@ namespace
 
 void GLAPIENTRY DyGlMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
-  std::fprintf(stderr, "DianYing OpenGL callback : %s type = 0x%x, severity = 0x%x, message = %s\n",
-               (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
-               type, severity, message);
+  MDY_LOG_CRITICAL_D(
+      "DianYing OpenGL callback : %s type = 0x%x, severity = 0x%x, message = %s",
+      (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
+      type,
+      severity,
+      message
+  );
+}
+
+void DyGLFWErrorFunction(int errorcode, const char* message)
+{
+  MDY_LOG_CRITICAL_D("GLFW Error occurred. Error code : {}, Message : {}", errorcode, message);
 }
 
 } /// unnamed namespace
@@ -177,12 +185,22 @@ EDySuccess MDyWindow::pfInitialize()
     #if defined(_DEBUG) || !defined(_NDEBUG)
       glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
       glDebugMessageCallback(DyGlMessageCallback, nullptr);
+      GLuint unusedIds = 0;
+      glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, &unusedIds, GL_TRUE);
+      glfwSetErrorCallback(&DyGLFWErrorFunction);
     #endif
 
     // Setting rendering.
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    { // Make initialized screen to black for giving liability to users XD
+      glClear(GL_COLOR_BUFFER_BIT);
+      glClearColor(0.f, 0.f, 0.f, 1.0f);
+      glfwSwapBuffers(this->mGlfwWindow);
+      glfwPollEvents();
+    }
     return DY_SUCCESS;
   };
 

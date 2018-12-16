@@ -159,7 +159,8 @@
     <ClCompile Include="Source\Builtin\Abstract\ADyModelResource.cc" />
     <ClCompile Include="Source\Builtin\Abstract\ADyTextureResource.cc" />
     <ClCompile Include="Source\Builtin\Script\DebugUiScriptCpp.cc" />
-    <ClCompile Include="Source\Builtin\Script\DefaultLoadingBootScriptCpp.cc" />
+    <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingBootScriptCpp.cc" />
+    <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingGlobalScriptCpp.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\PostEffect\RenderDefaultSSAOBlurring.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\PostEffect\RenderDefaultSSAO.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\UI\RenderUiBasicGaugeBar.cc" />
@@ -275,11 +276,10 @@
     <ClCompile Include="Source\Core\Resource\Information_Deprecated\SoundInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\EtcType.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\MaterialType.cc" />
-    <ClCompile Include="Source\Core\Resource\Object\Camera.cc" />
     <ClCompile Include="Source\Core\Resource\Object\Grid.cc" />
     <ClCompile Include="Source\Core\DyEngine.cc" />
     <ClCompile Include="Source\Core\Pipeline\DeferredRenderingMesh.cc" />
-    <ClCompile Include="Source\Core\Resource\Object\PostEffectSsao.cc" />
+    <ClCompile Include="Source\Core\Pipeline\PostEffectSsao.cc" />
     <ClCompile Include="Source\Core\Resource\Resource_Deprecated\SoundResource.cc" />
     <ClCompile Include="Source\Core\Pipeline\BasicRenderer.cc" />
     <ClCompile Include="Source\Core\Pipeline\BasicShadow.cc" />
@@ -354,8 +354,6 @@
     <ClCompile Include="Source\Management\ScriptManager.cc" />
     <ClCompile Include="Source\Management\Type\AttachmentInformation.cc" />
     <ClCompile Include="Source\Management\Type\FontCharacterInfo.cc" />
-    <ClCompile Include="Source\Management\Type\FontCharacter_Deprecated.cc" />
-    <ClCompile Include="Source\Management\Type\FontContainer_Deprecated.cc" />
     <ClCompile Include="Source\Management\Type\FontResourceContainer.cc" />
     <ClCompile Include="Source\Management\Type\KeyActionBindingInformation.cc" />
     <ClCompile Include="Source\Management\Type\KeyAxisBindingInformation.cc" />
@@ -393,6 +391,7 @@
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGLFramebufferResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGLShaderResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyLoadingBootResource.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyLoadingGlobalResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyMaterialResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyModelResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyScriptResource.h" />
@@ -406,7 +405,8 @@
     <ClInclude Include="Include\Dy\Builtin\Model\Sphere.h" />
     <ClInclude Include="Include\Dy\Builtin\Object\Light\DirectionalLight.h" />
     <ClInclude Include="Include\Dy\Builtin\Script\DebugUiScriptCpp.h" />
-    <ClInclude Include="Include\Dy\Builtin\Script\DefaultLoadingBootScriptCpp.h" />
+    <ClInclude Include="Include\Dy\Builtin\Script\Default\DefaultLoadingBootScriptCpp.h" />
+    <ClInclude Include="Include\Dy\Builtin\Script\Default\DefaultLoadingGlobalScriptCpp.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\PostEffect\RenderDefaultSSAOBlurring.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderBasicShadow.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderColorGeometry.h" />
@@ -516,7 +516,6 @@
     <ClInclude Include="Include\Dy\Element\Canvas\Text.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\CanvasDescriptor.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\GlobalEnums.h" />
-    <ClInclude Include="Include\Dy\Helper\Internal\UniqueAny.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\Semaphore.h" />
     <ClInclude Include="Include\Dy\Helper\System\TypeTraits.h" />
     <ClInclude Include="Include\Dy\Management\Internal\MDySynchronization.h" />
@@ -545,11 +544,10 @@
     <ClInclude Include="Include\Dy\Core\Resource\Internal\ShaderType.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Internal\TextureEnums.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Internal\TextureType.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Object\Camera.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Object\Grid.h" />
     <ClInclude Include="Include\Dy\Element\Object.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\DeferredRenderingMesh.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Object\PostEffectSsao.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\PostEffectSsao.h" />
     <ClInclude Include="Include\Dy\Editor\Descriptor\AboutMainDescriptor.h" />
     <ClInclude Include="Include\Dy\Editor\Descriptor\DialogDescriptor.h" />
     <ClInclude Include="Include\Dy\Editor\Descriptor\EmptyDescriptor.h" />
@@ -614,8 +612,6 @@
     <ClInclude Include="Include\Dy\Management\Type\EDyIOResourceScope.h" />
     <ClInclude Include="Include\Dy\Management\Type\KeyActionBindingInformation.h" />
     <ClInclude Include="Include\Dy\Management\Type\SettingContainer.h" />
-    <ClInclude Include="Include\Dy\Management\Type\FontCharacter_Deprecated.h" />
-    <ClInclude Include="Include\Dy\Management\Type\FontContainer_Deprecated.h" />
     <ClInclude Include="Include\Dy\Management\Type\FontCharacterInfo.h" />
     <ClInclude Include="Include\Dy\Management\Type\FontResourceContainer.h" />
     <ClInclude Include="Include\Dy\Management\Type\FramebufferInformation.h" />

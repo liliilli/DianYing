@@ -627,12 +627,35 @@ private:
     ConstructBuffer(this->mMetaInfo); \
   }
 
+/// @macro MDY_REGISTER_BOOT_RESOURCE_LIST
+/// @brief Booting resource registering macro. Boot resource script must be only one.
+#define MDY_REGISTER_BOOT_RESOURCE_LIST(__MASpecifier__) \
+  MDY_REGISTER_RESOURCE(__MASpecifier__); \
+  public: \
+  __MASpecifier__();
+
+/// @macro MDY_REGISTER_GLOBAL_RESOURCE_LIST
+/// @brief Global resource registering macro. Global resource script can be multiple.
+#define MDY_REGISTER_GLOBAL_RESOURCE_LIST(__MASpecifier__) \
+  MDY_REGISTER_RESOURCE(__MASpecifier__); \
+  public: \
+  __MASpecifier__();
+
 ///
 /// @macro MDY_LOADING_RESOURCE_BIND
 /// @brief Bind resource requisition for loading resource.
 ///
 #define MDY_LOADING_RESOURCE_BIND(__MAResourceType__, __MAString__) \
     this->mResourceRequisitionList.emplace_back(__MAResourceType__, __MAString__)
+
+//!
+//! Deserialize macro helper DDyVector, DDyVectorInt, DDyColor types.
+//!
+
+#define MDY_VECTOR_XY(__MAVectorType__)   __MAVectorType__.X, __MAVectorType__.Y
+#define MDY_VECTOR_XYZ(__MAVectorType__)  __MAVectorType__.X, __MAVectorType__.Y, __MAVectorType__.Z
+#define MDY_VECTOR_RGB(__MAVectorType__)  __MAVectorType__.R, __MAVectorType__.G, __MAVectorType__.B
+#define MDY_VECTOR_RGBA(__MAVectorType__) __MAVectorType__.R, __MAVectorType__.G, __MAVectorType__.B, __MAVectorType__.A
 
 //!
 //! Function type macros.

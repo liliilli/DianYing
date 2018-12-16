@@ -30,10 +30,6 @@ EDySuccess MDyFont::pfInitialize()
 
 EDySuccess MDyFont::pfRelease()
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mDefaultFontContainer_Deprecated), "");
-  delete this->mDefaultFontContainer_Deprecated;
-  this->mDefaultFontContainer_Deprecated = nullptr;
-
   return DY_SUCCESS;
 }
 
@@ -76,27 +72,11 @@ EDySuccess MDyFont::CreateFontResourceContainer(const std::string& fontSpecifier
   return DY_SUCCESS;
 }
 
-NotNull<FDyFontContainer_Deprecated*> MDyFont::GetDefaultFontContainer() const noexcept
-{
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mDefaultFontContainer_Deprecated), "");
-  return DyMakeNotNull(this->mDefaultFontContainer_Deprecated);
-}
-
 IDyFontContainer* MDyFont::GetFontResourceContainer(_MIN_ const std::string& specifierName)
 {
   if (this->IsFontResourceContainerExist(specifierName) == false) { return nullptr; }
 
   return this->mFontResourceContainerMap[specifierName].get();
-}
-
-EDySuccess MDyFont::CreateFontContainer_Deprecated(const std::string& fontSpecifierName)
-{
-  if (this->IsFontContainerExist_Deprecated(fontSpecifierName) == true)
-  {
-    MDY_UNEXPECTED_BRANCH(); return DY_FAILURE;
-  }
-
-  return DY_SUCCESS;
 }
 
 } /// ::dy namespace

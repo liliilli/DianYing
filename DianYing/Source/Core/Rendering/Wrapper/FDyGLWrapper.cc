@@ -57,15 +57,13 @@ void FDyGLWrapper::CreateGLContext(_MIN_ GLFWwindow* window)
   glfwMakeContextCurrent(window);
 }
 
-#define MDY_VECTOR_XY(__MAVectorType__) __MAVectorType__.X, __MAVectorType__.Y
-
 std::optional<TU32> FDyGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescriptor& descriptor)
 {
   // Validation check.
   MDY_ASSERT(descriptor.mImageFormat != GL_NONE, "Texture Image format must be specified.");
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mPtrBuffer), "Texture Image buffer must not be null.");
   MDY_ASSERT(descriptor.mTextureSize.X > 0 && descriptor.mTextureSize.Y > 0, "Texture size must be positive value.");
-  MDY_ASSERT(descriptor.mType != EDyTextureStyleType::None, "Texture Image type must be specified.");
+  MDY_ASSERT(descriptor.mType != EDyTextureStyleType::NoneError, "Texture Image type must be specified.");
   if (descriptor.mIsUsingCustomizedParameter == true)
   {
     MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mPtrParameterList), "Parameter list must not be null.");
@@ -78,7 +76,7 @@ std::optional<TU32> FDyGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescript
   {
   case EDyTextureStyleType::D1: glTextureType = GL_TEXTURE_1D; break;
   case EDyTextureStyleType::D2: glTextureType = GL_TEXTURE_2D; break;
-  case EDyTextureStyleType::None: MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
   }
 
   { // Critical section.
@@ -88,15 +86,17 @@ std::optional<TU32> FDyGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescript
     switch (descriptor.mType)
     {
     case EDyTextureStyleType::D1:
+    {
       glGenTextures(1, &mTextureResourceId);
       glBindTexture(GL_TEXTURE_1D, mTextureResourceId);
       glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, descriptor.mTextureSize.X, 0, descriptor.mImageFormat, GL_UNSIGNED_BYTE, descriptor.mPtrBuffer->data());
-      break;
+    } break;
     case EDyTextureStyleType::D2:
+    { // Border parameter must be 0.
       glGenTextures(1, &mTextureResourceId);
       glBindTexture(GL_TEXTURE_2D, mTextureResourceId);
-      glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, MDY_VECTOR_XY(descriptor.mTextureSize), descriptor.mImageFormat, GL_UNSIGNED_BYTE, descriptor.mPtrBuffer->data());
-      break;
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, MDY_VECTOR_XY(descriptor.mTextureSize), 0, descriptor.mImageFormat, GL_UNSIGNED_BYTE, descriptor.mPtrBuffer->data());
+    } break;
     default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
     }
 
@@ -119,6 +119,7 @@ std::optional<TU32> FDyGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescript
       }
     }
     glBindTexture(glTextureType, 0);
+    glFlush();
   }
 
   return mTextureResourceId;
@@ -201,6 +202,7 @@ std::optional<TU32> FDyGLWrapper::CreateBuffer(_MIN_ const PDyGLBufferDescriptor
     glBindBuffer(GL_ARRAY_BUFFER, id);
     glBufferData(GL_ARRAY_BUFFER, descriptor.mBufferByteSize, descriptor.mPtrBuffer, GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, MDY_GL_NONE);
+    glFlush();
   } break;
   case EDyDirectBufferType::ElementBuffer:
   { // EBO
@@ -209,6 +211,7 @@ std::optional<TU32> FDyGLWrapper::CreateBuffer(_MIN_ const PDyGLBufferDescriptor
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, descriptor.mBufferByteSize, descriptor.mPtrBuffer, GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, MDY_GL_NONE);
+    glFlush();
   } break;
   case EDyDirectBufferType::UniformBuffer:
   case EDyDirectBufferType::TransformFeedback:
@@ -254,6 +257,7 @@ void FDyGLWrapper::BindVertexArrayObject(const PDyGLVaoBindDescriptor& iDescript
   { // Critical section.
     MDY_SYNC_LOCK_GUARD (FDyGLWrapper::mTextureMutex);
     glBindVertexArray   (iDescriptor.mVaoId);
+    glBindBuffer(GL_ARRAY_BUFFER, iDescriptor.mBoundVboId);
     glBindVertexBuffer  (0, iDescriptor.mBoundVboId, iDescriptor.mOffsetByteSize, iDescriptor.mStrideByteSize);
     if (iDescriptor.mBoundEboId > 0) { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iDescriptor.mBoundEboId); }
 
@@ -269,6 +273,7 @@ void FDyGLWrapper::BindVertexArrayObject(const PDyGLVaoBindDescriptor& iDescript
       glVertexAttribBinding(i, 0);
     }
     glBindVertexArray(MDY_GL_NONE_VAO);
+    glFlush();
   }
 }
 

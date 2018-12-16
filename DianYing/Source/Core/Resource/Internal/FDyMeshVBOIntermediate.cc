@@ -64,8 +64,15 @@ FDyMeshVBOIntermediate::FDyMeshVBOIntermediate(const PDySubmeshInformationDescri
 FDyMeshVBOIntermediate::~FDyMeshVBOIntermediate()
 {
   // Release resource when properties are not transferred yet.
-  if (this->mBufferIdInformation.mVbo > 0) { FDyGLWrapper::DeleteBuffer(this->mBufferIdInformation.mVbo); }
-  if (this->mBufferIdInformation.mEbo > 0) { FDyGLWrapper::DeleteBuffer(this->mBufferIdInformation.mEbo); }
+  if (this->mBufferIdInformation.mVbo > 0)
+  {
+    FDyGLWrapper::DeleteBuffer(this->mBufferIdInformation.mVbo);
+  }
+
+  if (this->mBufferIdInformation.mEbo > 0)
+  {
+    FDyGLWrapper::DeleteBuffer(this->mBufferIdInformation.mEbo);
+  }
 }
 
 void FDyMeshVBOIntermediate::ResetAllProperties() noexcept

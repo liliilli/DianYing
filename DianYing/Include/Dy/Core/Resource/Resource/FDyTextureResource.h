@@ -63,7 +63,7 @@ public:
 private:
   std::string   mTextureName        = MDY_INITIALIZE_EMPTYSTR;
   DDyVectorInt2 mTextureSize        = {};
-  EDyTextureStyleType mTextureType  = EDyTextureStyleType::None;
+  EDyTextureStyleType mTextureType  = EDyTextureStyleType::NoneError;
 
   TU32          mTextureResourceId  = MDY_INITIALIZE_DEFUINT;
 };
