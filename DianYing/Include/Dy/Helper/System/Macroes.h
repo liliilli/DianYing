@@ -649,6 +649,15 @@ private:
     this->mResourceRequisitionList.emplace_back(__MAResourceType__, __MAString__)
 
 //!
+//! Deserialize macro helper DDyVector, DDyVectorInt, DDyColor types.
+//!
+
+#define MDY_VECTOR_XY(__MAVectorType__)   __MAVectorType__.X, __MAVectorType__.Y
+#define MDY_VECTOR_XYZ(__MAVectorType__)  __MAVectorType__.X, __MAVectorType__.Y, __MAVectorType__.Z
+#define MDY_VECTOR_RGB(__MAVectorType__)  __MAVectorType__.R, __MAVectorType__.G, __MAVectorType__.B
+#define MDY_VECTOR_RGBA(__MAVectorType__) __MAVectorType__.R, __MAVectorType__.G, __MAVectorType__.B, __MAVectorType__.A
+
+//!
 //! Function type macros.
 //!
 
