@@ -155,9 +155,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Builtin\Abstract\ADyGLAttachmentResource.cc" />
+    <ClCompile Include="Source\Builtin\Abstract\ADyGLFrameBufferResource.cc" />
     <ClCompile Include="Source\Builtin\Abstract\ADyGLShaderResources.cc" />
     <ClCompile Include="Source\Builtin\Abstract\ADyModelResource.cc" />
     <ClCompile Include="Source\Builtin\Abstract\ADyTextureResource.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\FDyBtAttachmentNormal.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\FDyBtAttachmentPosition.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\FDyBtAttachmentSpecular.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\FDyBtAttachmentUnlit.cc" />
+    <ClCompile Include="Source\Builtin\FrameBuffer\FDyBtFrameBufferDeferred.cc" />
     <ClCompile Include="Source\Builtin\Script\DebugUiScriptCpp.cc" />
     <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingBootScriptCpp.cc" />
     <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingGlobalScriptCpp.cc" />
@@ -278,13 +285,13 @@
     <ClCompile Include="Source\Core\Resource\Internal\MaterialType.cc" />
     <ClCompile Include="Source\Core\Resource\Object\Grid.cc" />
     <ClCompile Include="Source\Core\DyEngine.cc" />
-    <ClCompile Include="Source\Core\Pipeline\DeferredRenderingMesh.cc" />
-    <ClCompile Include="Source\Core\Pipeline\PostEffectSsao.cc" />
+    <ClCompile Include="Source\Core\Rendering\Pipeline\DeferredRenderingMesh.cc" />
+    <ClCompile Include="Source\Core\Rendering\Pipeline\PostEffectSsao.cc" />
     <ClCompile Include="Source\Core\Resource\Resource_Deprecated\SoundResource.cc" />
-    <ClCompile Include="Source\Core\Pipeline\BasicRenderer.cc" />
-    <ClCompile Include="Source\Core\Pipeline\BasicShadow.cc" />
-    <ClCompile Include="Source\Core\Pipeline\FinalScreenDisplayRenderer.cc" />
-    <ClCompile Include="Source\Core\Pipeline\UiBasicRenderer.cc" />
+    <ClCompile Include="Source\Core\Rendering\Pipeline\BasicRenderer.cc" />
+    <ClCompile Include="Source\Core\Rendering\Pipeline\BasicShadow.cc" />
+    <ClCompile Include="Source\Core\Rendering\Pipeline\FinalScreenDisplayRenderer.cc" />
+    <ClCompile Include="Source\Core\Rendering\Pipeline\UiBasicRenderer.cc" />
     <ClCompile Include="Source\Core\Thread\TDyIO.cc" />
     <ClCompile Include="Source\Editor\Gui\Dialog\ProjectCreator.cc" />
     <ClCompile Include="Source\Editor\Gui\EtcDialog.cc" />
@@ -370,6 +377,8 @@
     <ClCompile Include="Source\Meta\Information\ComponentMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Information\ElementObjectMetaInfo.cc" />
     <ClCompile Include="Source\Meta\Information\FontMetaInformation.cc" />
+    <ClCompile Include="Source\Meta\Information\MetaInfoAttachment.cc" />
+    <ClCompile Include="Source\Meta\Information\MetaInfoFrameBuffer.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoGLShader.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoMaterial.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoModel.cc" />
@@ -388,7 +397,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Dy\Binding\LuaScriptFrame.h" />
-    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGLFramebufferResource.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGLAttachmentResource.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGLFrameBufferResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGLShaderResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyLoadingBootResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyLoadingGlobalResource.h" />
@@ -397,6 +407,11 @@
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyScriptResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyTextureResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyWidgetMetaResource.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\FDyBtAttachmentNormal.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\FDyBtAttachmentPosition.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\FDyBtAttachmentSpecular.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\FDyBtAttachmentUnlit.h" />
+    <ClInclude Include="Include\Dy\Builtin\FrameBuffer\FDyBtFrameBufferDeferred.h" />
     <ClInclude Include="Include\Dy\Builtin\Interface\IDyResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Material\OpaqueStaticPlain.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\Box.h" />
@@ -448,6 +463,8 @@
     <ClInclude Include="Include\Dy\Helper\Wrapper\DDyMutexUniqueHashMap.h" />
     <ClInclude Include="Include\Dy\Management\IO\MDyIOData.h" />
     <ClInclude Include="Include\Dy\Management\IO\MDyIOResource.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoAttachment.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoFrameBuffer.h" />
     <ClInclude Include="Include\Dy\Meta\Type\DDyResourceName.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyLoadingGlobalScript.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyPhysicsRIgidbody.h" />

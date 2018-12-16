@@ -25,7 +25,9 @@
 #include <Dy/Meta/Information/ModelMetaInformation.h>
 #include <Dy/Meta/Information/MetaInfoTexture.h>
 #include <Dy/Meta/Information/MetaInfoMaterial.h>
+#include <Dy/Meta/Information/MetaInfoAttachment.h>
 #include <Dy/Meta/Type/DDyResourceName.h>
+#include "Dy/Meta/Information/MetaInfoFrameBuffer.h"
 
 //!
 //! Forward declaration
@@ -190,6 +192,9 @@ private:
   MDY_NODISCARD EDySuccess pfAddModelMetaInfo         (_MIN_ const PDyModelInstanceMetaInfo& metaInfo);
   MDY_NODISCARD EDySuccess pfAddTextureMetaInfo       (_MIN_ const PDyTextureInstanceMetaInfo& metaInfo);
   MDY_NODISCARD EDySuccess pfAddMaterialMetaInfo      (_MIN_ const PDyMaterialInstanceMetaInfo& metaInfo);
+  MDY_NODISCARD EDySuccess pfAddGLAttachmentMetaInfo  (_MIN_ const PDyGlAttachmentInstanceMetaInfo& metaInfo);
+  MDY_NODISCARD EDySuccess pfAddGLFrameBufferMetaInfo (_MIN_ const PDyGlFrameBufferInstanceMetaInfo& metaInfo);
+
   MDY_NODISCARD EDySuccess pfAddBootResourceSpecifierList(_MIN_ const std::vector<DDyResourceName>& list);
 
   /// Level meta information map.
@@ -206,6 +211,13 @@ private:
   THashMap<PDyTextureInstanceMetaInfo>  mTextureMetaInfo= {};
   /// Material meta information map.
   THashMap<PDyMaterialInstanceMetaInfo> mMaterialMetaInfo = {};
+
+  //! Internal
+
+  /// Attahchment meta information map
+  THashMap<PDyGlAttachmentInstanceMetaInfo>   mAttachmentMetaInfo = {};
+  /// Framebuffer object meta information map
+  THashMap<PDyGlFrameBufferInstanceMetaInfo>  mFrameBufferMetaInfo = {};
 
   /// Resource specifier name list for loading in boot sequence of MDySync.
   std::vector<DDyResourceName> mBootResourceSpecifierList = {};

@@ -424,6 +424,20 @@ EDySuccess MDyMetaInfo::pfAddMaterialMetaInfo(_MIN_ const PDyMaterialInstanceMet
   return DY_SUCCESS;
 }
 
+EDySuccess MDyMetaInfo::pfAddGLAttachmentMetaInfo(_MIN_ const PDyGlAttachmentInstanceMetaInfo& metaInfo)
+{
+  MDY_ASSERT(DyIsMapContains(this->mAttachmentMetaInfo, metaInfo.mSpecifierName) == false, "Duplicated attachment name is exist.");
+  this->mAttachmentMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pfAddGLFrameBufferMetaInfo(const PDyGlFrameBufferInstanceMetaInfo& metaInfo)
+{
+  MDY_ASSERT(DyIsMapContains(this->mFrameBufferMetaInfo, metaInfo.mSpecifierName) == false, "Duplicated framebuffer name is exist.");
+  this->mFrameBufferMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
+  return DY_SUCCESS;
+}
+
 EDySuccess MDyMetaInfo::pfAddBootResourceSpecifierList(_MIN_ const std::vector<DDyResourceName>& list)
 {
   this->mBootResourceSpecifierList = list;

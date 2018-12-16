@@ -14,9 +14,11 @@
 
 /// Header file
 #include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Meta/Information/ModelMetaInformation.h>
 #include <Dy/Meta/Information/MetaInfoTexture.h>
-#include <Dy/Management/IO/MetaInfoManager.h>
+#include <Dy/Meta/Information/MetaInfoAttachment.h>
+#include <Dy/Meta/Information/MetaInfoFrameBuffer.h>
 
 namespace dy::reflect
 {
@@ -55,6 +57,16 @@ void RDyBuiltinResource::BindBuiltinResourcesToMetaManager()
     { // Material. texture and shader must be specified.
       auto metaInfo = std::any_cast<PDyMaterialInstanceMetaInfo>(function()->GetMetaInfo());
       MDY_CALL_ASSERT_SUCCESS(metaManager.pfAddMaterialMetaInfo(metaInfo));
+    } break;
+    case EDyResourceType::GLAttachment:
+    { // OpenGL Attachment (Either Texture or RenderBuffer) for FBO.
+      auto metaInfo = std::any_cast<PDyGlAttachmentInstanceMetaInfo>(function()->GetMetaInfo());
+      MDY_CALL_ASSERT_SUCCESS(metaManager.pfAddGLAttachmentMetaInfo(metaInfo));
+    } break;
+    case EDyResourceType::GLFrameBuffer:
+    { // OpenGL FrameBuffer object.
+      auto metaInfo = std::any_cast<PDyGlFrameBufferInstanceMetaInfo>(function()->GetMetaInfo());
+      MDY_CALL_ASSERT_SUCCESS(metaManager.pfAddGLFrameBufferMetaInfo(metaInfo));
     } break;
     case EDyResourceType::WidgetMeta:
     { // WidgetMeta

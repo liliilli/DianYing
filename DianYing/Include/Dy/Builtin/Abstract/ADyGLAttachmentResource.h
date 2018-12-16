@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_BUILTIN_ABSTRACT_ADYGLFRAMEBUFFERRRESOURCE_H
-#define GUARD_DY_BUILTIN_ABSTRACT_ADYGLFRAMEBUFFERRRESOURCE_H
+#ifndef GUARD_DY_BUILTIN_ABSTRACT_ADYGLATTACHMENTRESOURCE_H
+#define GUARD_DY_BUILTIN_ABSTRACT_ADYGLATTACHMENTRESOURCE_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -14,24 +14,24 @@
 ///
 
 #include <Dy/Builtin/Interface/IDyResource.h>
+#include <Dy/Meta/Information/MetaInfoAttachment.h>
 #include <Dy/Meta/Type/EDyResourceType.h>
-#include <Dy/Meta/Information/MetaInfoFrameBuffer.h>
 
 namespace dy
 {
 
-struct ADyGLFrameBufferResource : public IDyResource
+struct ADyGLAttachmentResource : public IDyResource
 {
 protected:
-  /// Temporary frame buffer object meta info.
-  PDyGlFrameBufferInstanceMetaInfo mMetaInfo{};
+  /// Temporary attachment meta info.
+  PDyGlAttachmentInstanceMetaInfo mAttachmentMetaInfo{};
 public:
-  static constexpr auto value = EDyResourceType::GLFrameBuffer;
+  static constexpr auto value = EDyResourceType::GLAttachment;
 
-  /// @brief Get meta information that has frame buffer meta information.
+  /// @brief Get meta information that has buffer to texture and properties.
   std::any GetMetaInfo() override final;
 };
 
 } /// ::dy namespace
 
-#endif /// GUARD_DY_BUILTIN_ABSTRACT_ADYGLFRAMEBUFFERRRESOURCE_H
+#endif /// GUARD_DY_BUILTIN_ABSTRACT_ADYGLATTACHMENTRESOURCE_H

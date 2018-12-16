@@ -1,37 +1,27 @@
-#ifndef GUARD_DY_META_TYPE_EDYRESOURCETYPE_H
-#define GUARD_DY_META_TYPE_EDYRESOURCETYPE_H
+#include <precompiled.h>
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
 ///
 /// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 /// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-/// FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
+/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 /// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 /// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /// SOFTWARE.
 ///
 
+/// Header file
+#include <Dy/Builtin/Abstract/ADyGLAttachmentResource.h>
+
 namespace dy
 {
 
-enum class EDyResourceType
+std::any ADyGLAttachmentResource::GetMetaInfo()
 {
-  Script,
-  Model,
-  GLShader,
-  GLAttachment,
-  GLFrameBuffer,
-  Texture,
-  Material,
-  WidgetMeta,
-  Sound,
-
-  __ModelVBO,
-  NoneError
-};
+  this->mAttachmentMetaInfo.mSourceType = EDyResourceSource::Builtin;
+  return this->mAttachmentMetaInfo;
+}
 
 } /// ::dy namespace
-
-#endif /// GUARD_DY_META_TYPE_EDYRESOURCETYPE_H

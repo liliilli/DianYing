@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_META_TYPE_EDYRESOURCETYPE_H
-#define GUARD_DY_META_TYPE_EDYRESOURCETYPE_H
+#ifndef GUARD_DY_BUILTIN_ATTACHMENT_FDYBTATTACHMENTSPECULAR_H
+#define GUARD_DY_BUILTIN_ATTACHMENT_FDYBTATTACHMENTSPECULAR_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,25 +13,21 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Builtin/Abstract/ADyGLAttachmentResource.h>
+#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+
 namespace dy
 {
 
-enum class EDyResourceType
+///
+/// @class FDyBtAttachmentSpecular
+/// @brief Specular information attachment
+///
+class FDyBtAttachmentSpecular final : public ADyGLAttachmentResource
 {
-  Script,
-  Model,
-  GLShader,
-  GLAttachment,
-  GLFrameBuffer,
-  Texture,
-  Material,
-  WidgetMeta,
-  Sound,
-
-  __ModelVBO,
-  NoneError
+  MDY_REGISTER_RESOURCE_ATTACHMENT(FDyBtAttachmentSpecular, "dyBtSpecular")
 };
 
 } /// ::dy namespace
 
-#endif /// GUARD_DY_META_TYPE_EDYRESOURCETYPE_H
+#endif /// GUARD_DY_BUILTIN_ATTACHMENT_FDYBTATTACHMENTSPECULAR_H

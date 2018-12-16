@@ -585,6 +585,10 @@ public: \
   }; \
 private:
 
+///
+/// @macro MDY_REGISTER_RESOURCE_MODEL
+/// @brief Register model meta information source.
+///
 #define MDY_REGISTER_RESOURCE_MODEL(__MAType__, __MASpecifierName__) \
   MDY_REGISTER_RESOURCE_WITH_SPECIFIER(__MAType__, __MASpecifierName__) \
   private: \
@@ -601,6 +605,10 @@ private:
     this->mPtrBuffer = &__Get(); \
   }
 
+///
+/// @macro MDY_REGISTER_RESOURCE_TEXTURE
+/// @brief Register texture meta information source.
+///
 #define MDY_REGISTER_RESOURCE_TEXTURE(__MAType__, __MASpecifierName__) \
   MDY_REGISTER_RESOURCE_WITH_SPECIFIER(__MAType__, __MASpecifierName__) \
   private: \
@@ -617,6 +625,10 @@ private:
     this->mPtrBuffer = &__Get(); \
   }
 
+///
+/// @macro MDY_REGISTER_RESOURCE_MATERIAL
+/// @brief Register material meta information source.
+///
 #define MDY_REGISTER_RESOURCE_MATERIAL(__MAType__, __MASpecifier__) \
   MDY_REGISTER_RESOURCE_WITH_SPECIFIER(__MAType__, __MASpecifier__) \
   private: \
@@ -627,15 +639,41 @@ private:
     ConstructBuffer(this->mMetaInfo); \
   }
 
+///
+/// @macro MDY_REGISTER_RESOURCE_ATTACHMENT
+/// @brief Register OpenGL attachment meta information source.
+///
+#define MDY_REGISTER_RESOURCE_ATTACHMENT(__MAType__, __MASpecifierName__) \
+  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(__MAType__, __MASpecifierName__) \
+  private: \
+  void ConstructBuffer(_MOUT_ PDyGlAttachmentInstanceMetaInfo& property) noexcept; \
+  public: \
+  __MAType__() { this->ConstructBuffer(this->mAttachmentMetaInfo); }
+
+///
+/// @macro MDY_REGISTER_RESOURCE_FRAMEBUFFER
+/// @brief Register OpenGL framebuffer meta information source.
+///
+#define MDY_REGISTER_RESOURCE_FRAMEBUFFER(__MAType__, __MASpecifierName__) \
+  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(__MAType__, __MASpecifierName__) \
+  private: \
+  void ConstructBuffer(_MOUT_ PDyGlFrameBufferInstanceMetaInfo& property) noexcept; \
+  public: \
+  __MAType__() { this->ConstructBuffer(this->mMetaInfo); }
+
+///
 /// @macro MDY_REGISTER_BOOT_RESOURCE_LIST
 /// @brief Booting resource registering macro. Boot resource script must be only one.
+///
 #define MDY_REGISTER_BOOT_RESOURCE_LIST(__MASpecifier__) \
   MDY_REGISTER_RESOURCE(__MASpecifier__); \
   public: \
   __MASpecifier__();
 
+///
 /// @macro MDY_REGISTER_GLOBAL_RESOURCE_LIST
 /// @brief Global resource registering macro. Global resource script can be multiple.
+///
 #define MDY_REGISTER_GLOBAL_RESOURCE_LIST(__MASpecifier__) \
   MDY_REGISTER_RESOURCE(__MASpecifier__); \
   public: \
