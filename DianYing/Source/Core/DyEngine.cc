@@ -164,7 +164,9 @@ void DyEngine::pfInitializeDependentManager()
   MDY_CALL_ASSERT_SUCCESS(dy::MDyFont::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyScript::Initialize());
 
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyWorld::Initialize());
+  MDY_NOT_IMPLEMENTED_ASSERT();
+
+  //MDY_CALL_ASSERT_SUCCESS(dy::MDyWorld::Initialize());
 }
 
 void DyEngine::pfReleaseDependentManager()

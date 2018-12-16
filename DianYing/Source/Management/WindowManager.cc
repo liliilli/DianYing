@@ -182,6 +182,13 @@ EDySuccess MDyWindow::pfInitialize()
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    { // Make initialized screen to black for giving liability to users XD
+      glClear(GL_COLOR_BUFFER_BIT);
+      glClearColor(0.f, 0.f, 0.f, 1.0f);
+      glfwSwapBuffers(this->mGlfwWindow);
+      glfwPollEvents();
+    }
     return DY_SUCCESS;
   };
 
