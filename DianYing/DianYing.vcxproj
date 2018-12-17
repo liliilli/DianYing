@@ -465,7 +465,9 @@
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyShaderResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDySoundResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyTextureResource.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\EDyLazy.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\FDyBinderBase.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\TDyInformationBinder.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\TDyResourceBinder.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\TemplateRescInfoType.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOTaskDeferred.h" />

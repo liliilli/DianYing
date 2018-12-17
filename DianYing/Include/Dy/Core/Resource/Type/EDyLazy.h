@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_CORE_RESOURCE_TYPE_FDYBINDERBASE_H
-#define GUARD_DY_CORE_RESOURCE_TYPE_FDYBINDERBASE_H
+#ifndef GUARD_DY_CORE_RESOURCE_TYPE_EDYLAZY_H
+#define GUARD_DY_CORE_RESOURCE_TYPE_EDYLAZY_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -17,16 +17,14 @@ namespace dy
 {
 
 ///
-/// @interface __FDyBinderBase
-/// @brief Using interface for binding resource & information instance. Must use this, not __TDyResourceBinderBase.
-///
-MDY_INTERFACE __FDyBinderBase
+/// @enum EDyLazy
+/// @brief Lazy evaluation flag.
+enum class EDyLazy : bool
 {
-  virtual MDY_NODISCARD bool IsResourceExist() const noexcept = 0;
-  virtual void TryUpdateResourcePtr(_MIN_ const void* ptr) noexcept = 0;
-  virtual void TryDetachResourcePtr() noexcept = 0;
+  No,
+  Yes
 };
 
 } /// ::dy namespace
 
-#endif /// GUARD_DY_CORE_RESOURCE_TYPE_FDYBINDERBASE_H
+#endif /// GUARD_DY_CORE_RESOURCE_TYPE_EDYLAZY_H

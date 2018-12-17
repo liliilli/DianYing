@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_CORE_RESOURCE_TYPE_FDYRESOURCEBINDER_H
-#define GUARD_DY_CORE_RESOURCE_TYPE_FDYRESOURCEBINDER_H
+#ifndef GUARD_DY_CORE_RESOURCE_TYPE_TDYINFORMATIONBINDER_H
+#define GUARD_DY_CORE_RESOURCE_TYPE_TDYINFORMATIONBINDER_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -23,18 +23,18 @@
 namespace dy
 {
 
-/// @struct __TDyResourceBinderBase
-/// @brief Binder base class for each supporting resource type.
+/// @struct __TDyInformationBinderBase
+/// @brief Binder base class for each supporting information resource type.
 template <EDyResourceType TType>
-struct __TDyResourceBinderBase : public __FDyBinderBase
+struct __TDyInformationBinderBase : public __FDyBinderBase
 {
 public:
-  MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(__TDyResourceBinderBase);
-  using TPtrResource      = const typename __TResourceType<TType>::type*;
+  MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(__TDyInformationBinderBase);
+  using TPtrResource      = const typename __TDyRscInfo<TType>::type*;
   using TTryGetReturnType = std::optional<TPtrResource>;
 
   /// @brief Release binder instance and detach it from specified Reference Instance.
-  virtual ~__TDyResourceBinderBase()
+  virtual ~__TDyInformationBinderBase()
   {
     if (MDY_CHECK_ISNOTNULL(this->mPtrResource)) { MDY_CALL_ASSERT_SUCCESS(this->pTryDetachResource()); }
   }
@@ -56,14 +56,14 @@ public:
   }
 
 protected:
-  __TDyResourceBinderBase(_MIN_ const std::string& iSpecifierName) : mSpecifierName{iSpecifierName} {};
-  __TDyResourceBinderBase() {};
+  __TDyInformationBinderBase(_MIN_ const std::string& iSpecifierName) : mSpecifierName{iSpecifierName} {};
+  __TDyInformationBinderBase() {};
 
   /// @brief Require resource.
   MDY_NODISCARD EDySuccess pTryRequireResource() noexcept
   {
     MDY_ASSERT(this->mSpecifierName.empty() == false, "Resource specifier name must be valid to require resource.");
-    auto ptrResult = SDyIOConnectionHelper::TryRequireResource<TType>(this->mSpecifierName, this);
+    auto ptrResult = SDyIOConnectionHelper::TryRequireInformation<TType>(this->mSpecifierName, this);
     if (ptrResult.has_value() == false) { return DY_FAILURE; }
 
     this->mPtrResource = ptrResult.value();
@@ -103,54 +103,54 @@ private:
 };
 
 ///
-/// @class TDyResourceBinder
-/// @brief Resource binder class.
+/// @class TDyInformationBinder
+/// @brief Information resource binder class.
 ///
 template <EDyResourceType TType, EDyLazy TIsLazy>
-class TDyResourceBinder;
+class TDyInformationBinder;
 
 ///
-/// @class TDyResourceBinder
-/// @brief Not lazy version of `TDyResourceBinder`.
+/// @class TDyInformationBinder
+/// @brief Not lazy version of `TDyInformationBinder`.
 ///
 template <EDyResourceType TType>
-class TDyResourceBinder<TType, EDyLazy::No> final : public __TDyResourceBinderBase<TType>
+class TDyInformationBinder<TType, EDyLazy::No> final : public __TDyInformationBinderBase<TType>
 {
 private:
-  using TSuper = __TDyResourceBinderBase<TType>;
+  using TSuper = __TDyInformationBinderBase<TType>;
 public:
-  MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(TDyResourceBinder);
+  MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(TDyInformationBinder);
 
-  TDyResourceBinder(_MIN_ const std::string& specifier) : TSuper{specifier}
+  TDyInformationBinder(_MIN_ const std::string& specifier) : TSuper{specifier}
   {
     MDY_NOTUSED auto _ = TSuper::pTryRequireResource();
   }
-  ~TDyResourceBinder() = default;
+  ~TDyInformationBinder() = default;
 };
 
 template <EDyResourceType TType>
-using TDyResourceBinderInstant    = TDyResourceBinder<TType, EDyLazy::No>;
-using TDyIResourceBinderShader    = TDyResourceBinderInstant<EDyResourceType::GLShader>;
-using TDyIResourceBinderModel     = TDyResourceBinderInstant<EDyResourceType::Model>;
-using TDyIResourceBinderTexture   = TDyResourceBinderInstant<EDyResourceType::Texture>;
-using TDyIResourceBinderMaterial  = TDyResourceBinderInstant<EDyResourceType::Material>;
-using TDyIResourceBinderAttachment  = TDyResourceBinderInstant<EDyResourceType::GLAttachment>;
-using TDyIResourceBinderFrameBuffer = TDyResourceBinderInstant<EDyResourceType::GLFrameBuffer>;
+using TDyInformationBinderInstant    = TDyInformationBinder<TType, EDyLazy::No>;
+using TDyIInformationBinderShader    = TDyInformationBinderInstant<EDyResourceType::GLShader>;
+using TDyIInformationBinderModel     = TDyInformationBinderInstant<EDyResourceType::Model>;
+using TDyIInformationBinderTexture   = TDyInformationBinderInstant<EDyResourceType::Texture>;
+using TDyIInformationBinderMaterial  = TDyInformationBinderInstant<EDyResourceType::Material>;
+using TDyIInformationBinderAttachment  = TDyInformationBinderInstant<EDyResourceType::GLAttachment>;
+using TDyIInformationBinderFrameBuffer = TDyInformationBinderInstant<EDyResourceType::GLFrameBuffer>;
 
 ///
-/// @class TDyResourceBinder
-/// @brief Not lazy version of `TDyResourceBinder`.
+/// @class TDyInformationBinder
+/// @brief Not lazy version of `TDyInformationBinder`.
 /// User have to require resource manually. but detach is held by automatically. (RAII)
 ///
 template <EDyResourceType TType>
-class TDyResourceBinder<TType, EDyLazy::Yes> final : public __TDyResourceBinderBase<TType>
+class TDyInformationBinder<TType, EDyLazy::Yes> final : public __TDyInformationBinderBase<TType>
 {
 private:
-  using TSuper = __TDyResourceBinderBase<TType>;
+  using TSuper = __TDyInformationBinderBase<TType>;
 public:
-  MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(TDyResourceBinder);
-  TDyResourceBinder() = default;
-  ~TDyResourceBinder() = default;
+  MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(TDyInformationBinder);
+  TDyInformationBinder() = default;
+  ~TDyInformationBinder() = default;
 
   /// @brief Try require resource with specifier name in given EDyResourceType.
   /// If resource is already bound to binder handle, detach it first and newly bind another resource into it.
@@ -163,14 +163,14 @@ public:
 };
 
 template <EDyResourceType TType>
-using TDyResourceBinderLazy = TDyResourceBinder<TType, EDyLazy::Yes>;
-using TDyLResourceBinderShader    = TDyResourceBinderLazy<EDyResourceType::GLShader>;
-using TDyLResourceBinderModel     = TDyResourceBinderLazy<EDyResourceType::Model>;
-using TDyLResourceBinderTexture   = TDyResourceBinderLazy<EDyResourceType::Texture>;
-using TDyLResourceBinderMaterial  = TDyResourceBinderLazy<EDyResourceType::Material>;
-using TDyLResourceBinderAttachment  = TDyResourceBinderLazy<EDyResourceType::GLAttachment>;
-using TDyLResourceBinderFrameBuffer = TDyResourceBinderLazy<EDyResourceType::GLFrameBuffer>;
+using TDyInformatinBinderLazy = TDyInformationBinder<TType, EDyLazy::Yes>;
+using TDyLInformatinBinderShader    = TDyInformatinBinderLazy<EDyResourceType::GLShader>;
+using TDyLInformatinBinderModel     = TDyInformatinBinderLazy<EDyResourceType::Model>;
+using TDyLInformatinBinderTexture   = TDyInformatinBinderLazy<EDyResourceType::Texture>;
+using TDyLInformatinBinderMaterial  = TDyInformatinBinderLazy<EDyResourceType::Material>;
+using TDyLInformatinBinderAttachment  = TDyInformatinBinderLazy<EDyResourceType::GLAttachment>;
+using TDyLInformatinBinderFrameBuffer = TDyInformatinBinderLazy<EDyResourceType::GLFrameBuffer>;
 
 } /// ::dy namespace
 
-#endif /// GUARD_DY_CORE_RESOURCE_TYPE_FDYRESOURCEBINDER_H
+#endif /// GUARD_DY_CORE_RESOURCE_TYPE_TDYINFORMATIONBINDER_H
