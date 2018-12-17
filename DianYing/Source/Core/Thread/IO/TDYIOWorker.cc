@@ -18,12 +18,15 @@
 #include <Dy/Core/Resource/Information/FDyTextureInformation.h>
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 #include <Dy/Core/Thread/SDyIOWorkerConnHelper.h>
-#include <Dy/Management/IO/MDyIOData.h>
 #include <Dy/Core/Resource/Resource/FDyTextureResource.h>
 #include <Dy/Core/Resource/Information/FDyModelInformation.h>
 #include <Dy/Core/Resource/Internal/FDyModelVBOIntermediate.h>
 #include <Dy/Core/Resource/Information/FDyMaterialInformation.h>
 #include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
+#include <Dy/Core/Resource/Information/FDyAttachmentInformation.h>
+#include <Dy/Core/Resource/Information/FDyFrameBufferInformation.h>
+#include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
+#include <Dy/Management/IO/MDyIOData.h>
 
 namespace dy
 {
@@ -127,10 +130,10 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceInformation(_MIN_ const DDyIOT
     result.mSmtPtrResultInstance = new FDyMaterialInformation(this->mMetaManager.GetMaterialMetaInformation(assignedTask.mSpecifierName));
     break;
   case EDyResourceType::GLAttachment:
-    MDY_NOT_IMPLEMENTED_ASSERT();
+    result.mSmtPtrResultInstance = new FDyAttachmentInformation(this->mMetaManager.GetGLAttachmentMetaInformation(assignedTask.mSpecifierName));
     break;
   case EDyResourceType::GLFrameBuffer:
-    MDY_NOT_IMPLEMENTED_ASSERT();
+    result.mSmtPtrResultInstance = new FDyFrameBufferInformation(this->mMetaManager.GetGlFrameBufferMetaInformation(assignedTask.mSpecifierName));
     break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
@@ -171,8 +174,8 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceResource(_MIN_ const DDyIOTask
     result.mSmtPtrResultInstance = new FDyMaterialResource(*infoManager.GetPtrInformation<EDyResourceType::Material>(result.mSpecifierName));
   } break;
   case EDyResourceType::GLAttachment:
-  {
-    MDY_NOT_IMPLEMENTED_ASSERT();
+  { // Attachment resource can be created on another context. (It can be shared)
+    result.mSmtPtrResultInstance = new FDyAttachmentResource(*infoManager.GetPtrInformation<EDyResourceType::GLAttachment>(result.mSpecifierName));
   } break;
   case EDyResourceType::GLFrameBuffer:
   {

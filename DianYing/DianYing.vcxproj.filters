@@ -544,6 +544,7 @@
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyFrameBufferInformation.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyAttachmentResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyFrameBufferResource.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLAttachmentDescriptor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

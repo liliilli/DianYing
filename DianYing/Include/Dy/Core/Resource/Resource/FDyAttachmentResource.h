@@ -13,8 +13,38 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Helper/Type/VectorInt2.h>
+
+//!
+//! Forward declaration
+//!
+
 namespace dy
 {
+class FDyAttachmentInformation;
+} /// ::dy namespace
+
+//!
+//! Implementation
+//!
+
+namespace dy
+{
+
+class FDyAttachmentResource final
+{
+public:
+  FDyAttachmentResource(_MIN_ const FDyAttachmentInformation& information);
+  ~FDyAttachmentResource();
+
+  /// @brief Get specifier name of attachment information.
+  MDY_NODISCARD const std::string& GetSpecifierName() const noexcept { return this->mSpecifierName; }
+
+private:
+  std::string mSpecifierName   = MDY_INITIALIZE_EMPTYSTR;
+  TU32        mAttachmentId    = MDY_INITIALIZE_DEFUINT;
+  bool        mIsRenderBuffer  = false;
+};
 
 } /// ::dy namespace
 

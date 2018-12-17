@@ -26,6 +26,7 @@ struct PDyGLShaderFragmentDescriptor;
 struct PDyGLTextureDescriptor;
 struct PDyGLWindowContextDescriptor;
 struct PDyGLBufferDescriptor;
+struct PDyGLAttachmentDescriptor;
 } /// ::dy namespace
 
 //!
@@ -94,8 +95,16 @@ public:
   /// @brief Delete Vertex Array Object id.
   static void DeleteVertexArrayObject(_MIN_ const TU32 vertexArrayObjectId);
 
+  /// @brief Create attachment (texture or renderbuffer) and get texture id. \n
+  /// This function is thread-safe and get performance down.
+  static MDY_NODISCARD std::optional<TU32> CreateAttachment(_MIN_ const PDyGLAttachmentDescriptor& iDescriptor);
+
+  /// @brief Delete attachment (texture or renderbuffer) if texture id is valid.
+  /// This function is thread-safe and get performance down.
+  static MDY_NODISCARD EDySuccess DeleteAttachment(_MIN_ const TU32 attachmentId);
+
 private:
-  static std::mutex mTextureMutex;
+  static std::mutex mGLMutex;
 
   /// @brief
   static MDY_NODISCARD const PDyGLVaoBindDescriptor& GetDefaultAttributeFormatDescriptor() noexcept;

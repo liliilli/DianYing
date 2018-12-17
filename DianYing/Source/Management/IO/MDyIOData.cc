@@ -53,6 +53,16 @@ void MDyIOData::InsertResult(_MIN_ EDyResourceType type, _MIN_ void* ptrrawInsta
     auto ptr = std::unique_ptr<FDyMaterialInformation>(static_cast<FDyMaterialInformation*>(ptrrawInstance));
     this->__mMaterialContainer.MoveInsert(ptr->GetSpecifierName(), std::move(ptr));
   } break;
+  case EDyResourceType::GLAttachment:
+  {
+    auto ptr = std::unique_ptr<FDyAttachmentInformation>(static_cast<FDyAttachmentInformation*>(ptrrawInstance));
+    this->__mAttachmentContainer.MoveInsert(ptr->GetSpecifierName(), std::move(ptr));
+  } break;
+  case EDyResourceType::GLFrameBuffer:
+  {
+    auto ptr = std::unique_ptr<FDyFrameBufferInformation>(static_cast<FDyFrameBufferInformation*>(ptrrawInstance));
+    this->__mFrameBufferContainer.MoveInsert(ptr->GetSpecifierName(), std::move(ptr));
+  } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 }

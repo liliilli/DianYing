@@ -16,6 +16,14 @@
 namespace dy
 {
 
+class FDyFrameBufferResource final
+{
+public:
+
+private:
+
+};
+
 } /// ::dy namespace
 
 #endif /// GUARD_DY_CORE_RESOURCE_INFORMATION_FDYFRAMEBUFFERRESOURCE_H

@@ -27,10 +27,11 @@ namespace dy
 ///
 struct PDyGlAttachmentInstanceMetaInfo final : public PDyCommonResourceMetaInfo
 {
-  std::string           mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
-  TTextureParameterList mParameterList = {};
-  DDyVectorInt2         mAttachmentSize = {};
-  DDyColorRGBA          mBorderColor    = DDyColorRGBA::Black;
+  std::string                   mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
+  TTextureParameterList         mParameterList  = {};
+  DDyVectorInt2                 mAttachmentSize = {};
+  DDyColorRGBA                  mBorderColor    = DDyColorRGBA::Black;
+  EDyRenderBufferInternalFormat mBufferFormat   = EDyRenderBufferInternalFormat::NoneError;
 };
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyGlAttachmentInstanceMetaInfo& p);

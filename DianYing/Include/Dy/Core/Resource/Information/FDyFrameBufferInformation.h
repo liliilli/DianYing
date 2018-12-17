@@ -13,8 +13,41 @@
 /// SOFTWARE.
 ///
 
+//!
+//! Forward declaration
+//!
+
 namespace dy
 {
+struct PDyGlFrameBufferInstanceMetaInfo;
+} /// ::dy namespace
+
+//!
+//! Implementation
+//!
+
+namespace dy
+{
+
+///
+/// @class FDyFrameBufferInformation
+/// @brief FrameBuffer information resource.
+///
+class FDyFrameBufferInformation final
+{
+public:
+  MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(FDyFrameBufferInformation);
+
+  /// @brief Construct framebuffer information.
+  FDyFrameBufferInformation(_MIN_ const PDyGlFrameBufferInstanceMetaInfo& metaInfo);
+  ~FDyFrameBufferInformation() = default;
+
+  /// @brief Get attachment's specifier name.
+  FORCEINLINE MDY_NODISCARD const std::string& GetSpecifierName() const noexcept { return this->mSpecifierName; }
+
+private:
+  std::string mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
+};
 
 } /// ::dy namespace
 

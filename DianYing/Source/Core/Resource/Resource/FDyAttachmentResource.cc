@@ -14,10 +14,32 @@
 
 /// Header file
 #include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
+#include <Dy/Core/Resource/Information/FDyAttachmentInformation.h>
+#include <Dy/Core/Rendering/Wrapper/PDyGLAttachmentDescriptor.h>
+#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
 
 namespace dy
 {
 
+FDyAttachmentResource::FDyAttachmentResource(_MIN_ const FDyAttachmentInformation& iInformation) :
+    mSpecifierName{iInformation.GetSpecifierName()}
+{
+  PDyGLAttachmentDescriptor descriptor;
+  descriptor.mBorderColor   = iInformation.GetBorderColor();
+  descriptor.mBufferSize    = iInformation.GetBufferSize();
+  descriptor.mParameterList = iInformation.GetParameterList();
+  descriptor.mBufferFormat  = iInformation.GetBufferType();
+  if (descriptor.mParameterList.empty() == false) { descriptor.mIsUsingCustomizedParameter = true; }
 
+  const auto optAttachmentId = FDyGLWrapper::CreateAttachment(descriptor);
+  MDY_ASSERT(optAttachmentId.has_value() == true, "Attachment creation must be succeeded.");
+  this->mAttachmentId = optAttachmentId.value();
+}
+
+FDyAttachmentResource::~FDyAttachmentResource()
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+  FDyGLWrapper::DeleteTexture(this->mAttachmentId);
+}
 
 } /// ::dy namespace

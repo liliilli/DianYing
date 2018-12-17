@@ -30,6 +30,7 @@ void FDyBtAttachmentUnlit::ConstructBuffer(_MOUT_ PDyGlAttachmentInstanceMetaInf
     {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::Repeat},
     {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::Repeat},
   };
+  property.mBufferFormat = EDyRenderBufferInternalFormat::RGBA8;
 }
 
 } /// ::dy namespace

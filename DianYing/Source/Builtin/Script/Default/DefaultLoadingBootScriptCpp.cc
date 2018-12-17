@@ -35,6 +35,8 @@
 #include <Dy/Builtin/ShaderGl/PostEffect/RenderDefaultSSAO.h>
 #include <Dy/Builtin/ShaderGl/PostEffect/RenderDefaultSSAOBlurring.h>
 
+#include <Dy/Builtin/FrameBuffer/FDyBtFrameBufferDeferred.h>
+
 #include <Dy/Builtin/Material/OpaqueStaticPlain.h>
 
 namespace dy
@@ -67,6 +69,7 @@ FDyDefaultLoadingBootScript::FDyDefaultLoadingBootScript()
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Model, FDyBuiltinModelSphere::sName);
 
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Material, FDyBuiltinMaterialOpaqueStaticPlain::sName);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, FDyBtFrameBufferDeferred::sName);
 }
 
 } /// ::dy namespace

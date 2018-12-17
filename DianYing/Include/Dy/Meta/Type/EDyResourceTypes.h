@@ -49,6 +49,20 @@ enum class EDyShaderFragmentType
 /// @brief Shader fragment container list.
 using TFragmentList = std::vector<std::pair<EDyShaderFragmentType, TU32>>;
 
+///
+/// @enum  EDyRenderBufferInternalFormat
+/// @brief RenderBuffer internal format.
+///
+enum class EDyRenderBufferInternalFormat : unsigned char
+{
+  RED8,
+  RG8,
+  RGB8,
+  RGBA8,
+  DEPTH32,
+  NoneError = 0xFF
+};
+
 } /// ::dy namespace
 
 #endif /// GUARD_DY_META_TYPE_EDYRESOURCETYPES_H

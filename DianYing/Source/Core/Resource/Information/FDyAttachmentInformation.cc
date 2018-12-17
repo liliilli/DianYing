@@ -14,10 +14,19 @@
 
 /// Header file
 #include <Dy/Core/Resource/Information/FDyAttachmentInformation.h>
+#include <Dy/Meta/Information/MetaInfoAttachment.h>
 
 namespace dy
 {
 
-
+FDyAttachmentInformation::FDyAttachmentInformation(_MIN_ const PDyGlAttachmentInstanceMetaInfo& metaInfo) :
+    mSpecifierName{metaInfo.mSpecifierName},
+    mParameterList{metaInfo.mParameterList},
+    mAttachmentSize{metaInfo.mAttachmentSize},
+    mBorderColor{metaInfo.mBorderColor},
+    mBufferType{metaInfo.mBufferFormat}
+{
+  MDY_ASSERT(this->mSpecifierName.empty() == false, "Attachment specifier name must be specified.");
+}
 
 } /// ::dy namespace

@@ -18,6 +18,9 @@
 namespace dy
 {
 
-
+FDyFrameBufferInformation::FDyFrameBufferInformation(_MIN_ const PDyGlFrameBufferInstanceMetaInfo& metaInfo)
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+}
 
 } /// ::dy namespace

@@ -14,6 +14,7 @@
 
 /// Header file
 #include <Dy/Management/IO/MDyIOResource.h>
+#include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
 
 namespace dy
 {
@@ -51,6 +52,15 @@ void MDyIOResource::InsertResult(_MIN_ EDyResourceType type, _MIN_ void* ptrrawI
   {
     auto ptr = std::unique_ptr<FDyMaterialResource>(static_cast<FDyMaterialResource*>(ptrrawInstance));
     this->__mMaterialContainer.MoveInsert(ptr->GetSpecifierName(), std::move(ptr));
+  } break;
+  case EDyResourceType::GLAttachment:
+  {
+    auto ptr = std::unique_ptr<FDyAttachmentResource>(static_cast<FDyAttachmentResource*>(ptrrawInstance));
+    this->__mAttachmentContainer.MoveInsert(ptr->GetSpecifierName(), std::move(ptr));
+  } break;
+  case EDyResourceType::GLFrameBuffer:
+  {
+    MDY_NOT_IMPLEMENTED_ASSERT();
   } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
