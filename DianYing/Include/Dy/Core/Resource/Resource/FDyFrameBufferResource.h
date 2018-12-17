@@ -13,15 +13,33 @@
 /// SOFTWARE.
 ///
 
+//!
+//! Forward declaration
+//!
+
 namespace dy
 {
+class FDyFrameBufferInformation;
+} /// ::dy namespace
 
+//!
+//! Implementation
+//!
+
+namespace dy
+{
 class FDyFrameBufferResource final
 {
 public:
+  FDyFrameBufferResource(_MIN_ const FDyFrameBufferInformation& iInformation);
+  ~FDyFrameBufferResource();
+
+  /// @brief Get specifier name of framebuffer resource.
+  MDY_NODISCARD const std::string& GetSpecifierName() const noexcept { return this->mSpecifierName; }
 
 private:
-
+  std::string mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
+  TU32        mFrameBufferId = MDY_INITIALIZE_DEFUINT;
 };
 
 } /// ::dy namespace

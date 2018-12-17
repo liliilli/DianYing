@@ -20,6 +20,7 @@
 #include <Dy/Core/Rendering/Wrapper/PDyGLBufferDescriptor.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLVaoBindDescriptor.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLAttachmentDescriptor.h>
+#include <Dy/Core/Rendering/Wrapper/PDyGLFrameBufferDescriptor.h>
 
 namespace dy
 {
@@ -340,11 +341,72 @@ std::optional<TU32> FDyGLWrapper::CreateAttachment(_MIN_ const PDyGLAttachmentDe
   return attachmentId;
 }
 
-EDySuccess FDyGLWrapper::DeleteAttachment(const TU32 attachmentId)
+EDySuccess FDyGLWrapper::DeleteAttachment(_MIN_ const TU32 attachmentId)
 {
   // Delete attachment (only texture attachment now)
+  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
   glDeleteTextures(1, &attachmentId);
   return DY_FAILURE;
+}
+
+std::optional<TU32> FDyGLWrapper::CreateFrameBuffer(_MIN_ const PDyGLFrameBufferDescriptor& iDescriptor)
+{
+  const auto attachmentBindingSize = TU32(iDescriptor.mAttachmentBindingList.size());
+  std::vector<GLenum> attachmentTypeList = {};
+  attachmentTypeList.reserve(attachmentBindingSize);
+
+  TU32 framebufferId = MDY_INITIALIZE_DEFUINT;
+
+  { // Critical Section
+    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
+
+    // Make frame buffer resource and attachment.
+    glGenFramebuffers(1, &framebufferId);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebufferId);
+
+    for (TU32 i = 0; i < attachmentBindingSize; ++i)
+    {
+      const auto [attachmentId, attachmentFormat, isRenderBuffer] = iDescriptor.mAttachmentBindingList[i];
+      if (isRenderBuffer == false)
+      { // If attachment is texture.
+        glBindTexture(GL_TEXTURE_2D, attachmentId);
+        const auto typeValue = DyGetAttachmentTypeValue(attachmentFormat);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, typeValue, GL_TEXTURE_2D, attachmentId, 0);
+        attachmentTypeList.emplace_back(typeValue);
+      }
+      else
+      { // @TODO RENDER BUFFER IS NOT SUPPORTED YET.
+        MDY_NOT_IMPLEMENTED_ASSERT();
+      }
+    }
+
+    // @TODO TEMPORARY! IF USING DEFAULT DEPTH BUFFER, CREATE DEPTH BUFFER ATTACHMENT TASK IN I/O QUEUEING.
+    TU32 depthId = MDY_INITIALIZE_DEFUINT;
+    if (iDescriptor.mIsUsingDefaultDepthBuffer == true)
+    { // Default depth g-buffer
+      glGenRenderbuffers(1, &depthId);
+      glBindRenderbuffer(GL_RENDERBUFFER, depthId);
+      glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, MDY_VECTOR_XY(iDescriptor.mFrameBufferSize));
+      glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthId);
+    }
+
+    // Let framebuffer know that attachmentBuffer's id will be drawn at framebuffer.
+    // @WARNING TODO BE CAREFUL OF INSERTING DEPTH ATTACHMENTS AS COLOR ATTACHMENT!.
+    if (iDescriptor.mIsNotUsingPixelShader == true) { glDrawBuffer(GL_NONE); glReadBuffer(GL_NONE); }
+    else { glDrawBuffers(attachmentBindingSize, attachmentTypeList.data()); }
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glFlush();
+  }
+
+  return framebufferId;
+}
+
+EDySuccess FDyGLWrapper::DeleteFrameBuffer(const TU32 framebufferId)
+{
+  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
+  glDeleteFramebuffers(1, &framebufferId);
+  return DY_SUCCESS;
 }
 
 } /// ::dy namespace

@@ -40,6 +40,12 @@ public:
   /// @brief Get specifier name of attachment information.
   MDY_NODISCARD const std::string& GetSpecifierName() const noexcept { return this->mSpecifierName; }
 
+  /// @brief Get binded attachment resource id.
+  MDY_NODISCARD FORCEINLINE TU32 GetAttachmentId() const noexcept { return this->mAttachmentId; };
+
+  /// @brief Check this attachment resource is render buffer.
+  MDY_NODISCARD bool IsRenderBuffer() const noexcept { return this->mIsRenderBuffer; }
+
 private:
   std::string mSpecifierName   = MDY_INITIALIZE_EMPTYSTR;
   TU32        mAttachmentId    = MDY_INITIALIZE_DEFUINT;

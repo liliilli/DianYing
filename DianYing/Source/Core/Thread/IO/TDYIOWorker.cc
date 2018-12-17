@@ -178,8 +178,8 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceResource(_MIN_ const DDyIOTask
     result.mSmtPtrResultInstance = new FDyAttachmentResource(*infoManager.GetPtrInformation<EDyResourceType::GLAttachment>(result.mSpecifierName));
   } break;
   case EDyResourceType::GLFrameBuffer:
-  {
-    MDY_NOT_IMPLEMENTED_ASSERT();
+  { // Framebuffer object must be created on main thread. so forward it to main deferred list.
+    SDyIOWorkerConnHelper::TryForwardToMainTaskList(assignedTask);
   } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }

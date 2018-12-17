@@ -27,6 +27,7 @@ struct PDyGLTextureDescriptor;
 struct PDyGLWindowContextDescriptor;
 struct PDyGLBufferDescriptor;
 struct PDyGLAttachmentDescriptor;
+struct PDyGLFrameBufferDescriptor;
 } /// ::dy namespace
 
 //!
@@ -102,6 +103,12 @@ public:
   /// @brief Delete attachment (texture or renderbuffer) if texture id is valid.
   /// This function is thread-safe and get performance down.
   static MDY_NODISCARD EDySuccess DeleteAttachment(_MIN_ const TU32 attachmentId);
+
+  /// @brief
+  static MDY_NODISCARD std::optional<TU32> CreateFrameBuffer(_MIN_ const PDyGLFrameBufferDescriptor& iDescriptor);
+
+  /// @brief
+  static MDY_NODISCARD EDySuccess DeleteFrameBuffer(_MIN_ const TU32 framebufferId);
 
 private:
   static std::mutex mGLMutex;

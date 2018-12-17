@@ -14,13 +14,30 @@
 
 /// Header file
 #include <Dy/Core/Resource/Information/FDyFrameBufferInformation.h>
+#include <Dy/Meta/Information/MetaInfoFrameBuffer.h>
+#include <Dy/Management/IO/MDyIOData.h>
 
 namespace dy
 {
 
-FDyFrameBufferInformation::FDyFrameBufferInformation(_MIN_ const PDyGlFrameBufferInstanceMetaInfo& metaInfo)
+FDyFrameBufferInformation::FDyFrameBufferInformation(_MIN_ const PDyGlFrameBufferInstanceMetaInfo& metaInfo) :
+    mSpecifierName{metaInfo.mSpecifierName},
+    mFrameBufferSize{metaInfo.mFrameBufferSize},
+    mIsUsingDefaultDepthBuffer{metaInfo.mIsUsingDefaultDepthBuffer},
+    mIsNotUsingPixelShader{metaInfo.mIsNotUsingPixelShader}
 {
-  MDY_NOT_IMPLEMENTED_ASSERT();
+  // Validiation test.
+
+
+  // @TODO BIND INFORMATION AS TBinder.
+  // Get informations.
+  const auto& ioData = MDyIOData::GetInstance();
+  for (const auto& attachmentInfo : metaInfo.mAttachmentList)
+  {
+    const auto* ptr = ioData.GetPtrInformation<EDyResourceType::GLAttachment>(attachmentInfo.mAttachmentName);
+    MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptr), "Ptr must not be null.");
+    this->mAttachmentInfoList.emplace_back(attachmentInfo, ptr);
+  }
 }
 
 } /// ::dy namespace

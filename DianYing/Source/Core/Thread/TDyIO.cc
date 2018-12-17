@@ -419,7 +419,6 @@ DDyIOWorkerResult TDyIO::outMainProcessTask(_MIN_ const DDyIOTask& task)
     const auto instance = new FDyShaderResource(*infoManager.GetPtrInformation<EDyResourceType::GLShader>(result.mSpecifierName));
     result.mSmtPtrResultInstance = instance;
   } break;
-  case EDyResourceType::Texture:
   case EDyResourceType::Model:
   { // Get intemediate instance from task, and make model resource. (Information => `Immediate Instance` => Resource)
     Owner<FDyModelVBOIntermediate*> ptrrawIntermediateInstance = static_cast<FDyModelVBOIntermediate*>(task.mRawInstanceForUsingLater);
@@ -427,8 +426,11 @@ DDyIOWorkerResult TDyIO::outMainProcessTask(_MIN_ const DDyIOTask& task)
     MDY_DELETE_RAWHEAP_SAFELY(ptrrawIntermediateInstance);
     result.mSmtPtrResultInstance = instance;
   } break;
-  case EDyResourceType::Material:
-    MDY_UNEXPECTED_BRANCH();
+  case EDyResourceType::GLFrameBuffer:
+  { // Only Resource, create fbo with attachment.
+    const auto instance = new FDyFrameBufferResource(*infoManager.GetPtrInformation<EDyResourceType::GLFrameBuffer>(result.mSpecifierName));
+    result.mSmtPtrResultInstance = instance;
+  } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   };
 

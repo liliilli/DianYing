@@ -60,7 +60,8 @@ void MDyIOResource::InsertResult(_MIN_ EDyResourceType type, _MIN_ void* ptrrawI
   } break;
   case EDyResourceType::GLFrameBuffer:
   {
-    MDY_NOT_IMPLEMENTED_ASSERT();
+    auto ptr = std::unique_ptr<FDyFrameBufferResource>(static_cast<FDyFrameBufferResource*>(ptrrawInstance));
+    this->__mFrameBufferContainer.MoveInsert(ptr->GetSpecifierName(), std::move(ptr));
   } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
