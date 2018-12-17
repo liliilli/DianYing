@@ -16,17 +16,6 @@
 #include <Dy/Builtin/Abstract/ADyGLFrameBufferResource.h>
 #include <Dy/Core/Reflection/RDyBuiltinResources.h>
 
-///
-/// @macro MDY_REGISTER_RESOURCE_FRAMEBUFFER
-/// @brief Register OpenGL framebuffer meta information source.
-///
-#define MDY_REGISTER_RESOURCE_FRAMEBUFFER(__MAType__, __MASpecifierName__) \
-  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(__MAType__, __MASpecifierName__) \
-  private: \
-  void ConstructBuffer(_MOUT_ PDyGlFrameBufferInstanceMetaInfo& property) noexcept; \
-  public: \
-  __MAType__() { this->ConstructBuffer(this->mMetaInfo); }
-
 namespace dy
 {
 

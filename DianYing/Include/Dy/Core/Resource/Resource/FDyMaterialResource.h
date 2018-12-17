@@ -36,7 +36,7 @@ namespace dy
 class FDyMaterialResource final
 {
 public:
-  FDyMaterialResource(_MIN_ const FDyMaterialInformation& informatio);
+  FDyMaterialResource(_MIN_ const FDyMaterialInformation& information);
   ~FDyMaterialResource();
 
   /// @brief Get specifier name of material information.
