@@ -13,12 +13,12 @@
 ///
 
 /// Header file
-#include <Dy/Builtin/Attachment/FDyBtAttachmentUnlit.h>
+#include <Dy/Builtin/Attachment/Deferred/FDyBtAttachmentPosition.h>
 
 namespace dy
 {
 
-void FDyBtAttachmentUnlit::ConstructBuffer(_MOUT_ PDyGlAttachmentInstanceMetaInfo& property) noexcept
+void FDyBtAttachmentPosition::ConstructBuffer(_MOUT_ PDyGlAttachmentInstanceMetaInfo& property) noexcept
 {
   property.mSpecifierName  = sName;
   property.mAttachmentSize = DDyVectorInt2{1280, 720};
@@ -27,8 +27,8 @@ void FDyBtAttachmentUnlit::ConstructBuffer(_MOUT_ PDyGlAttachmentInstanceMetaInf
     PDyGlTexParameterInformation\
     {EDyGlParameterName::TextureMinFilter, EDyGlParameterValue::Nearest},
     {EDyGlParameterName::TextureMagFilter, EDyGlParameterValue::Nearest},
-    {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::Repeat},
-    {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::Repeat},
+    {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::ClampToEdge},
+    {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::ClampToEdge},
   };
   property.mBufferFormat = EDyRenderBufferInternalFormat::RGBA8;
 }

@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Builtin/Attachment/FDyBtAttachmentSpecular.h>
+#include <Dy/Builtin/Attachment/Deferred/FDyBtAttachmentSpecular.h>
 
 namespace dy
 {

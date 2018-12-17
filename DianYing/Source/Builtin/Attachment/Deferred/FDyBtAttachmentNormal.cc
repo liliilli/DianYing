@@ -13,12 +13,12 @@
 ///
 
 /// Header file
-#include <Dy/Builtin/Attachment/FDyBtAttachmentPosition.h>
+#include <Dy/Builtin/Attachment/Deferred/FDyBtAttachmentNormal.h>
 
 namespace dy
 {
 
-void FDyBtAttachmentPosition::ConstructBuffer(_MOUT_ PDyGlAttachmentInstanceMetaInfo& property) noexcept
+void FDyBtAttachmentNormal::ConstructBuffer(_MOUT_ PDyGlAttachmentInstanceMetaInfo& property) noexcept
 {
   property.mSpecifierName  = sName;
   property.mAttachmentSize = DDyVectorInt2{1280, 720};
