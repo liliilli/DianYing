@@ -160,11 +160,17 @@
     <ClCompile Include="Source\Builtin\Abstract\ADyGLShaderResources.cc" />
     <ClCompile Include="Source\Builtin\Abstract\ADyModelResource.cc" />
     <ClCompile Include="Source\Builtin\Abstract\ADyTextureResource.cc" />
-    <ClCompile Include="Source\Builtin\Attachment\FDyBtAttachmentNormal.cc" />
-    <ClCompile Include="Source\Builtin\Attachment\FDyBtAttachmentPosition.cc" />
-    <ClCompile Include="Source\Builtin\Attachment\FDyBtAttachmentSpecular.cc" />
-    <ClCompile Include="Source\Builtin\Attachment\FDyBtAttachmentUnlit.cc" />
-    <ClCompile Include="Source\Builtin\FrameBuffer\FDyBtFrameBufferDeferred.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\BasicShadow\BasicShadow.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAttachmentNormal.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAttachmentPosition.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAttachmentSpecular.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAttachmentUnlit.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\SceneIntegration\FDyBtAttOutput.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\UIIntegration\FDyBtAttUiBasic.cc" />
+    <ClCompile Include="Source\Builtin\FrameBuffer\BasicShadow\FDyBtFBBasicShadow.cc" />
+    <ClCompile Include="Source\Builtin\FrameBuffer\Deferred\FDyBtFrameBufferDeferred.cc" />
+    <ClCompile Include="Source\Builtin\FrameBuffer\SceneIntegration\FDyBtFbSceneIntegration.cc" />
+    <ClCompile Include="Source\Builtin\FrameBuffer\UIIntegration\FDyBtFbBasic.cc" />
     <ClCompile Include="Source\Builtin\Script\DebugUiScriptCpp.cc" />
     <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingBootScriptCpp.cc" />
     <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingGlobalScriptCpp.cc" />
@@ -411,11 +417,17 @@
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyScriptResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyTextureResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyWidgetMetaResource.h" />
-    <ClInclude Include="Include\Dy\Builtin\Attachment\FDyBtAttachmentNormal.h" />
-    <ClInclude Include="Include\Dy\Builtin\Attachment\FDyBtAttachmentPosition.h" />
-    <ClInclude Include="Include\Dy\Builtin\Attachment\FDyBtAttachmentSpecular.h" />
-    <ClInclude Include="Include\Dy\Builtin\Attachment\FDyBtAttachmentUnlit.h" />
-    <ClInclude Include="Include\Dy\Builtin\FrameBuffer\FDyBtFrameBufferDeferred.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\BasicShadow\BasicShadow.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAttachmentNormal.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAttachmentPosition.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAttachmentSpecular.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAttachmentUnlit.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\SceneIntegration\FDyBtAttOutput.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\UIIntegration\FDyBtAttUiBasic.h" />
+    <ClInclude Include="Include\Dy\Builtin\FrameBuffer\BasicShadow\FDyBtFBBasicShadow.h" />
+    <ClInclude Include="Include\Dy\Builtin\FrameBuffer\Deferred\FDyBtFrameBufferDeferred.h" />
+    <ClInclude Include="Include\Dy\Builtin\FrameBuffer\SceneIntegration\FDyBtFbSceneIntegration.h" />
+    <ClInclude Include="Include\Dy\Builtin\FrameBuffer\UIIntegration\FDyBtFbUiBasic.h" />
     <ClInclude Include="Include\Dy\Builtin\Interface\IDyResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Material\OpaqueStaticPlain.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\Box.h" />
@@ -743,6 +755,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="cpp.hint" />
     <None Include="TestResource\Lua\player_script.lua" />
     <None Include="TestResource\Lua\test_bindingscript.lua" />
     <None Include="TestResource\Lua\variables.lua">

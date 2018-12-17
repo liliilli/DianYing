@@ -212,6 +212,17 @@
     <ClCompile Include="Source\Core\Resource\Information\FDyFrameBufferInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\FDyAttachmentResource.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\FDyFrameBufferResource.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\BasicShadow\BasicShadow.cc" />
+    <ClCompile Include="Source\Builtin\FrameBuffer\Deferred\FDyBtFrameBufferDeferred.cc" />
+    <ClCompile Include="Source\Builtin\FrameBuffer\BasicShadow\FDyBtFBBasicShadow.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\SceneIntegration\FDyBtAttOutput.cc" />
+    <ClCompile Include="Source\Builtin\FrameBuffer\SceneIntegration\FDyBtFbSceneIntegration.cc" />
+    <ClCompile Include="Source\Builtin\FrameBuffer\UIIntegration\FDyBtFbBasic.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAttachmentNormal.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAttachmentPosition.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAttachmentSpecular.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAttachmentUnlit.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\UIIntegration\FDyBtAttUiBasic.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -548,6 +559,17 @@
     <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLFrameBufferDescriptor.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\EDyLazy.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\TDyInformationBinder.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\BasicShadow\BasicShadow.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAttachmentNormal.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAttachmentPosition.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAttachmentSpecular.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAttachmentUnlit.h" />
+    <ClInclude Include="Include\Dy\Builtin\FrameBuffer\BasicShadow\FDyBtFBBasicShadow.h" />
+    <ClInclude Include="Include\Dy\Builtin\FrameBuffer\Deferred\FDyBtFrameBufferDeferred.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\SceneIntegration\FDyBtAttOutput.h" />
+    <ClInclude Include="Include\Dy\Builtin\FrameBuffer\SceneIntegration\FDyBtFbSceneIntegration.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\UIIntegration\FDyBtAttUiBasic.h" />
+    <ClInclude Include="Include\Dy\Builtin\FrameBuffer\UIIntegration\FDyBtFbUiBasic.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />
@@ -558,5 +580,6 @@
     <None Include="TestResource\Lua\test_bindingscript.lua" />
     <None Include="TestResource\TestScript1.lua" />
     <None Include="TestResource\TestScript2.lua" />
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>
