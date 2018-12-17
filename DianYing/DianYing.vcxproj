@@ -207,6 +207,7 @@
     <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceContainer.cc" />
     <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceInstance.cc" />
     <ClCompile Include="Source\Core\Thread\IO\FDyIOGC.cc" />
+    <ClCompile Include="Source\Core\Thread\SDyIOBindingHelper.cc" />
     <ClCompile Include="Source\Core\Thread\SDyIOConnectionHelper.cc" />
     <ClCompile Include="Source\Core\Thread\IO\TDYIOWorker.cc" />
     <ClCompile Include="Source\Core\Thread\SDyIOWorkerConnHelper.cc" />
@@ -483,6 +484,7 @@
     <ClInclude Include="Include\Dy\Core\Resource\Type\TDyResourceBinder.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\TemplateRescInfoType.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOTaskDeferred.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\SDyIOBindingHelper.h" />
     <ClInclude Include="Include\Dy\Helper\System\Idioms.h" />
     <ClInclude Include="Include\Dy\Helper\Wrapper\DDyMutexUniqueHashMap.h" />
     <ClInclude Include="Include\Dy\Management\IO\MDyIOData.h" />

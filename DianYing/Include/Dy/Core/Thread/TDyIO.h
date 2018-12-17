@@ -271,6 +271,7 @@ private:
 
   friend class SDyIOConnectionHelper;
   friend class SDyIOWorkerConnHelper;
+  friend class SDyIOBindingHelper;
 };
 
 } /// ::dy namespace

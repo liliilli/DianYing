@@ -76,6 +76,7 @@ private:
 
   friend class SDyIOConnectionHelper;
   friend class SDyIOWorkerConnHelper;
+  friend class SDyIOBindingHelper;
   friend class MDySynchronization;
 };
 
