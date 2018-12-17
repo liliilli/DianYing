@@ -79,10 +79,6 @@ Camera0 : 2
     PDyGlAttachmentInformation        attachmentInfo = {};
     PDyGlAttachmentBinderInformation  binderInfo = {};
 
-    framebufferInfo.mFrameBufferName = sFrameBuffer_UiBasic;
-    framebufferInfo.mFrameBufferSize = overallSize;
-    framebufferInfo.mIsUsingDefaultDepthBuffer = true;
-
     // Rendered texture buffer
     attachmentInfo.mAttachmentName = sAttachment_Output;
     attachmentInfo.mAttachmentSize = overallSize;
@@ -94,6 +90,11 @@ Camera0 : 2
       {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::ClampToBorder},
     };
     attachmentInfo.mBorderColor = DDyColorRGBA{ 0, 0, 0, 0 };
+
+    // Make framebuffer object.
+    framebufferInfo.mFrameBufferName = sFrameBuffer_UiBasic;
+    framebufferInfo.mFrameBufferSize = overallSize;
+    framebufferInfo.mIsUsingDefaultDepthBuffer = true;
 
     binderInfo.mAttachmentName = sAttachment_Output;
     binderInfo.mAttachmentType = EDyGlAttachmentType::Color0;

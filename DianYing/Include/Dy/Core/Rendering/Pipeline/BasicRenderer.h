@@ -13,10 +13,8 @@
 /// SOFTWARE.
 ///
 
-#include <array>
 #include <vector>
-#include <Dy/Core/Resource/Internal/MaterialType.h>
-#include "Dy/Core/Resource/Type/TDyResourceBinder.h"
+#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
 
 //!
 //! Forward declaration
