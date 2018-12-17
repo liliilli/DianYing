@@ -139,6 +139,8 @@ using TDyIResourceBinderShader    = TDyResourceBinderInstant<EDyResourceType::GL
 using TDyIResourceBinderModel     = TDyResourceBinderInstant<EDyResourceType::Model>;
 using TDyIResourceBinderTexture   = TDyResourceBinderInstant<EDyResourceType::Texture>;
 using TDyIResourceBinderMaterial  = TDyResourceBinderInstant<EDyResourceType::Material>;
+using TDyIResourceBinderAttachment  = TDyResourceBinderInstant<EDyResourceType::GLAttachment>;
+using TDyIResourceBinderFrameBuffer = TDyResourceBinderInstant<EDyResourceType::GLFrameBuffer>;
 
 ///
 /// @class TDyResourceBinder
@@ -171,6 +173,8 @@ using TDyLResourceBinderShader    = TDyResourceBinderLazy<EDyResourceType::GLSha
 using TDyLResourceBinderModel     = TDyResourceBinderLazy<EDyResourceType::Model>;
 using TDyLResourceBinderTexture   = TDyResourceBinderLazy<EDyResourceType::Texture>;
 using TDyLResourceBinderMaterial  = TDyResourceBinderLazy<EDyResourceType::Material>;
+using TDyLResourceBinderAttachment  = TDyResourceBinderLazy<EDyResourceType::GLAttachment>;
+using TDyLResourceBinderFrameBuffer = TDyResourceBinderLazy<EDyResourceType::GLFrameBuffer>;
 
 } /// ::dy namespace
 

@@ -90,11 +90,9 @@ public:
     else if constexpr (TType == EDyResourceType::Model)   { return pTryRequireResource_Model(iSpecifier, iPtrBinder); }
     else if constexpr (TType == EDyResourceType::Texture) { return pTryRequireResource_Texture(iSpecifier, iPtrBinder); }
     else if constexpr (TType == EDyResourceType::Material){ return pTryRequireResource_Material(iSpecifier, iPtrBinder); }
-    else
-    {
-      MDY_NOT_IMPLEMENTED_ASSERT();
-      return std::nullopt;
-    }
+    else if constexpr (TType == EDyResourceType::GLAttachment)  { return pTryRequireResource_Attachment(iSpecifier, iPtrBinder); }
+    else if constexpr (TType == EDyResourceType::GLFrameBuffer) { return pTryRequireResource_FrameBuffer(iSpecifier, iPtrBinder); }
+    else { MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt); }
   }
 
 private:
@@ -112,6 +110,12 @@ private:
 
   static MDY_NODISCARD std::optional<const __TResourceType_T<EDyResourceType::Material>*>
   pTryRequireResource_Material(_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
+
+  static MDY_NODISCARD std::optional<const __TResourceType_T<EDyResourceType::GLAttachment>*>
+  pTryRequireResource_Attachment(_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
+
+  static MDY_NODISCARD std::optional<const __TResourceType_T<EDyResourceType::GLFrameBuffer>*>
+  pTryRequireResource_FrameBuffer(_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
 };
 
 } /// ::dy namespace

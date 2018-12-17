@@ -29,6 +29,7 @@
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
 #include "Dy/Core/Resource/Resource/FDyMeshResource.h"
 #include "Dy/Core/Resource/Resource/FDyTextureResource.h"
+#include "Dy/Core/Resource/Resource/FDyFrameBufferResource.h"
 
 //!
 //! Temporary
@@ -48,84 +49,6 @@ namespace dy
 
 FDyBasicRenderer::FDyBasicRenderer()
 {
-  auto& settingManager      = MDySetting::GetInstance();
-  auto& framebufferManager  = MDyFramebuffer::GetInstance();
-  const auto overallScreenWidth   = settingManager.GetWindowSizeWidth();
-  const auto overallScreenHeight  = settingManager.GetWindowSizeHeight();
-  const auto overallSize = DDyVectorInt2{overallScreenWidth, overallScreenHeight};
-
-  PDyGlFrameBufferInformation       framebufferInfo = {};
-  PDyGlAttachmentInformation        attachmentInfo  = {};
-  PDyGlAttachmentBinderInformation  binderInfo      = {};
-
-  framebufferInfo.mFrameBufferName = sFrameBuffer_Deferred;
-  framebufferInfo.mFrameBufferSize = overallSize;
-  framebufferInfo.mIsUsingDefaultDepthBuffer = true;
-
-  // Unlit texture buffer
-  attachmentInfo.mAttachmentName = sAttachment_Unlit;
-  attachmentInfo.mAttachmentSize = overallSize;
-  attachmentInfo.mParameterList  = {
-    PDyGlTexParameterInformation\
-    {EDyGlParameterName::TextureMinFilter, EDyGlParameterValue::Nearest},
-    {EDyGlParameterName::TextureMagFilter, EDyGlParameterValue::Nearest},
-    {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::Repeat},
-    {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::Repeat},
-  };
-  binderInfo.mAttachmentName = attachmentInfo.mAttachmentName;
-  binderInfo.mAttachmentType = EDyGlAttachmentType::Color0;
-  framebufferInfo.mAttachmentList.push_back(binderInfo);
-  MDY_CALL_ASSERT_SUCCESS(framebufferManager.SetAttachmentInformation(attachmentInfo));
-
-  // Normal texture buffer
-  attachmentInfo.mAttachmentName = sAttachment_Normal;
-  attachmentInfo.mParameterList  = {
-    PDyGlTexParameterInformation\
-    {EDyGlParameterName::TextureMinFilter, EDyGlParameterValue::Nearest},
-    {EDyGlParameterName::TextureMagFilter, EDyGlParameterValue::Nearest},
-    {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::ClampToEdge},
-    {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::ClampToEdge},
-  };
-  binderInfo.mAttachmentName = attachmentInfo.mAttachmentName;
-  binderInfo.mAttachmentType = EDyGlAttachmentType::Color1;
-  framebufferInfo.mAttachmentList.push_back(binderInfo);
-  MDY_CALL_ASSERT_SUCCESS(framebufferManager.SetAttachmentInformation(attachmentInfo));
-
-  // Specular texture buffer
-  attachmentInfo.mAttachmentName = sAttachment_Specular;
-  attachmentInfo.mParameterList  = {
-    PDyGlTexParameterInformation\
-    {EDyGlParameterName::TextureMinFilter, EDyGlParameterValue::Nearest},
-    {EDyGlParameterName::TextureMagFilter, EDyGlParameterValue::Nearest},
-    {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::Repeat},
-    {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::Repeat},
-  };
-  binderInfo.mAttachmentName = attachmentInfo.mAttachmentName;
-  binderInfo.mAttachmentType = EDyGlAttachmentType::Color2;
-  framebufferInfo.mAttachmentList.push_back(binderInfo);
-  MDY_CALL_ASSERT_SUCCESS(framebufferManager.SetAttachmentInformation(attachmentInfo));
-
-  // Model position texture buffer
-  attachmentInfo.mAttachmentName = sAttachment_ModelPosition;
-  attachmentInfo.mParameterList  = {
-    PDyGlTexParameterInformation\
-    {EDyGlParameterName::TextureMinFilter, EDyGlParameterValue::Nearest},
-    {EDyGlParameterName::TextureMagFilter, EDyGlParameterValue::Nearest},
-    {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::ClampToEdge},
-    {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::ClampToEdge},
-  };
-  binderInfo.mAttachmentName = attachmentInfo.mAttachmentName;
-  binderInfo.mAttachmentType = EDyGlAttachmentType::Color3;
-  framebufferInfo.mAttachmentList.push_back(binderInfo);
-  MDY_CALL_ASSERT_SUCCESS(framebufferManager.SetAttachmentInformation(attachmentInfo));
-
-  // Create framebuffer.
-  MDY_CALL_ASSERT_SUCCESS(framebufferManager.InitializeNewFrameBuffer(framebufferInfo));
-  MDY_LOG_INFO("{}::{} | Geometry buffer created.", "MDyRendering", "pCreateDeferredGeometryBuffers");
-
-  this->mGivenFrameBufferPointer = framebufferManager.GetFrameBufferPointer(MSVSTR(sFrameBuffer_Deferred));
-  MDY_ASSERT(this->mGivenFrameBufferPointer != nullptr, "Unexpected error.");
-
   // Create ubo information for "CameraBlock"
   auto& uboManager = MDyUniformBufferObject::GetInstance();
   PDyUboConstructionDescriptor desc = {};
@@ -142,19 +65,19 @@ FDyBasicRenderer::~FDyBasicRenderer()
   auto& uboManager = MDyUniformBufferObject::GetInstance();
   MDY_CALL_ASSERT_SUCCESS(uboManager.RemoveUboContainer(MSVSTR(sUboCameraBlock)));
 
+#ifdef false
   auto& framebufferManager  = MDyFramebuffer::GetInstance();
   MDY_CALL_ASSERT_SUCCESS(framebufferManager.RemoveFrameBuffer(MSVSTR(sFrameBuffer_Deferred)));
   this->mGivenFrameBufferPointer = nullptr;
+#endif
 
   MDY_LOG_INFO("{}::{} | Geometry buffer released.", "MDyRendering", "pCreateDeferredGeometryBuffers");
 }
 
 void FDyBasicRenderer::RenderScreen(_MIN_ const std::vector<NotNull<CDyModelRenderer*>>& rendererList)
 { // Integrity test
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mGivenFrameBufferPointer), "Unexpected error.");
-
-  // Deferred rendering for opaque objects
-  glBindFramebuffer(GL_FRAMEBUFFER, this->mGivenFrameBufferPointer->GetFramebufferId());
+  if (this->mBinderFrameBuffer.IsResourceExist() == false) { return; }
+  glBindFramebuffer(GL_FRAMEBUFFER, this->mBinderFrameBuffer->GetFrameBufferId());
 
   auto& worldManager     = MDyWorld::GetInstance();
   auto& uboManager       = MDyUniformBufferObject::GetInstance();
@@ -273,10 +196,9 @@ void FDyBasicRenderer::pRenderScreen(const CDyModelRenderer& renderer, const CDy
 
 void FDyBasicRenderer::Clear()
 { // Integrity test
-  if (MDY_CHECK_ISNULL(this->mGivenFrameBufferPointer)) { return; }
+  if (this->mBinderFrameBuffer.IsResourceExist() == false) { return; }
+  glBindFramebuffer(GL_FRAMEBUFFER, this->mBinderFrameBuffer->GetFrameBufferId());
 
-  // Reset overall deferred framebuffer setting
-  glBindFramebuffer(GL_FRAMEBUFFER, this->mGivenFrameBufferPointer->GetFramebufferId());
   glClearColor(0, 0, 0, 0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glBindFramebuffer(GL_FRAMEBUFFER, 0);

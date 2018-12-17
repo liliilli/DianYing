@@ -22,7 +22,8 @@
 namespace dy
 {
 
-FDyFrameBufferResource::FDyFrameBufferResource(const FDyFrameBufferInformation& iInformation)
+FDyFrameBufferResource::FDyFrameBufferResource(const FDyFrameBufferInformation& iInformation) :
+    mSpecifierName{iInformation.GetSpecifierName()}
 {
   PDyGLFrameBufferDescriptor descriptor;
   descriptor.mFrameBufferSize           = iInformation.GetFrameBufferSize();

@@ -37,6 +37,9 @@ public:
   /// @brief Get specifier name of framebuffer resource.
   MDY_NODISCARD const std::string& GetSpecifierName() const noexcept { return this->mSpecifierName; }
 
+  /// @brief Get framebuffer id.
+  MDY_NODISCARD TU32 GetFrameBufferId() const noexcept { return this->mFrameBufferId; }
+
 private:
   std::string mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
   TU32        mFrameBufferId = MDY_INITIALIZE_DEFUINT;

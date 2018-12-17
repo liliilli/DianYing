@@ -104,10 +104,12 @@ public:
   /// This function is thread-safe and get performance down.
   static MDY_NODISCARD EDySuccess DeleteAttachment(_MIN_ const TU32 attachmentId);
 
-  /// @brief
+  /// @brief Create frame buffer. \n
+  /// Creating frame buffer object must be held on main thread context.
   static MDY_NODISCARD std::optional<TU32> CreateFrameBuffer(_MIN_ const PDyGLFrameBufferDescriptor& iDescriptor);
 
-  /// @brief
+  /// @brief Delete frame buffer. \n
+  /// Deleting frame buffer object must be held on main thread context.
   static MDY_NODISCARD EDySuccess DeleteFrameBuffer(_MIN_ const TU32 framebufferId);
 
 private:

@@ -167,4 +167,30 @@ SDyIOConnectionHelper::pTryRequireResource_Material(_MIN_ const std::string& iSp
   return ptr;
 }
 
+std::optional<const __TResourceType_T<EDyResourceType::GLAttachment>*> SDyIOConnectionHelper::
+pTryRequireResource_Attachment(const std::string& iSpecifier, const __FDyBinderBase* iPtrBinder)
+{
+  const auto checkFlag = pTryRequireResource(iSpecifier, EDyResourceType::GLAttachment, iPtrBinder);
+  if (checkFlag == DY_FAILURE) { return std::nullopt; }
+
+  // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
+  const auto& ioResourceManager = MDyIOResource::GetInstance();
+  const auto* ptr = ioResourceManager.GetPtrInformation<EDyResourceType::GLAttachment>(iSpecifier);
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
+  return ptr;;
+}
+
+std::optional<const __TResourceType_T<EDyResourceType::GLFrameBuffer>*> SDyIOConnectionHelper::
+pTryRequireResource_FrameBuffer(const std::string& iSpecifier, const __FDyBinderBase* iPtrBinder)
+{
+  const auto checkFlag = pTryRequireResource(iSpecifier, EDyResourceType::GLFrameBuffer, iPtrBinder);
+  if (checkFlag == DY_FAILURE) { return std::nullopt; }
+
+  // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
+  const auto& ioResourceManager = MDyIOResource::GetInstance();
+  const auto* ptr = ioResourceManager.GetPtrInformation<EDyResourceType::GLFrameBuffer>(iSpecifier);
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
+  return ptr;
+}
+
 } /// ::dy namespace

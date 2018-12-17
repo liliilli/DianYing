@@ -16,6 +16,7 @@
 #include <array>
 #include <vector>
 #include <Dy/Core/Resource/Internal/MaterialType.h>
+#include "Dy/Core/Resource/Type/TDyResourceBinder.h"
 
 //!
 //! Forward declaration
@@ -46,27 +47,18 @@ public:
   FDyBasicRenderer();
   ~FDyBasicRenderer();
 
-  ///
   /// @brief Rendering deferred contexts to default framebuffer.
   /// @param rendererList
-  ///
   void RenderScreen(_MIN_ const std::vector<NotNull<CDyModelRenderer*>>& rendererList);
 
-  ///
   /// @brief Clear properties of given framebuffer.
-  ///
   void Clear();
 
 private:
-  ///
   /// @brief
-  /// @param renderer
-  /// @param validCamera
-  ///
   void pRenderScreen(_MIN_ const CDyModelRenderer& renderer, _MIN_ const CDyCamera& validCamera) noexcept;
 
-  /// PDyGlFrameBufferInformation
-  PDyGlFrameBufferInformation* mGivenFrameBufferPointer = MDY_INITIALIZE_NULL;
+  TDyIResourceBinderFrameBuffer mBinderFrameBuffer{"dyBtBasicRender"};
 
   friend class FDyDeferredRenderingMesh;
 };
