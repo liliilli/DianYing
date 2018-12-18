@@ -81,6 +81,19 @@ SDyIOBindingHelper::MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Attachment
   return ptr;
 }
 
+MDY_NODISCARD std::optional<const __TDyRscInfo_T<EDyResourceType::GLFrameBuffer>*>
+SDyIOBindingHelper::MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_GLFrameBuffer)
+(_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder)
+{
+  if (const auto checkFlag = MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation)(iSpecifier, EDyResourceType::GLFrameBuffer, iPtrBinder);
+      checkFlag == DY_FAILURE) { return std::nullopt; }
+
+  // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
+  const auto* ptr = MDyIOData::GetInstance().GetPtrInformation<EDyResourceType::GLFrameBuffer>(iSpecifier);
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
+  return ptr;
+}
+
 MDY_NODISCARD std::optional<const __TDyRscInfo_T<EDyResourceType::Material>*>
 SDyIOBindingHelper::MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Material)
 (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder)
@@ -90,6 +103,19 @@ SDyIOBindingHelper::MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Material)
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
   const auto* ptr = MDyIOData::GetInstance().GetPtrInformation<EDyResourceType::Material>(iSpecifier);
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
+  return ptr;
+}
+
+MDY_NODISCARD std::optional<const __TDyRscInfo_T<EDyResourceType::Model>*>
+SDyIOBindingHelper::MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Model)
+(_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder)
+{
+  if (const auto checkFlag = MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation)(iSpecifier, EDyResourceType::Model, iPtrBinder);
+      checkFlag == DY_FAILURE) { return std::nullopt; }
+
+  // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
+  const auto* ptr = MDyIOData::GetInstance().GetPtrInformation<EDyResourceType::Model>(iSpecifier);
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
   return ptr;
 }

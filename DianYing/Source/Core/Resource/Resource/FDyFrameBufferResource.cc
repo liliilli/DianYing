@@ -18,12 +18,14 @@
 #include <Dy/Core/Rendering/Wrapper/PDyGLFrameBufferDescriptor.h>
 #include <Dy/Management/IO/MDyIOResource.h>
 #include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Helper/System/Idioms.h>
 
 namespace dy
 {
 
 FDyFrameBufferResource::FDyFrameBufferResource(const FDyFrameBufferInformation& iInformation) :
-    mSpecifierName{iInformation.GetSpecifierName()}
+    mSpecifierName{iInformation.GetSpecifierName()},
+    mBinderFrameBuffer{iInformation.GetSpecifierName()}
 {
   PDyGLFrameBufferDescriptor descriptor;
   descriptor.mFrameBufferSize           = iInformation.GetFrameBufferSize();
@@ -39,6 +41,8 @@ FDyFrameBufferResource::FDyFrameBufferResource(const FDyFrameBufferInformation& 
     const auto& [specifier, attachmentType] = binderInfo;
     const auto* rescPtr = resourceManager.GetPtrInformation<EDyResourceType::GLAttachment>(specifier);
     descriptor.mAttachmentBindingList.emplace_back(rescPtr->GetAttachmentId(), attachmentType, rescPtr->IsRenderBuffer());
+
+    DySafeUniquePtrEmplaceBack(this->mBinderAttachmentList, specifier);
   }
 
   const auto optFrameBufferId = FDyGLWrapper::CreateFrameBuffer(descriptor);

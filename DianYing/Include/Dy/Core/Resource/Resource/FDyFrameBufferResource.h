@@ -13,6 +13,9 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Core/Resource/Type/TDyInformationBinder.h>
+#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
+
 //!
 //! Forward declaration
 //!
@@ -43,6 +46,10 @@ public:
 private:
   std::string mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
   TU32        mFrameBufferId = MDY_INITIALIZE_DEFUINT;
+
+  using TAttachmentBinderList = std::vector<std::unique_ptr<TDyIResourceBinderAttachment>>;
+  TDyIInformationBinderFrameBuffer  mBinderFrameBuffer;
+  TAttachmentBinderList             mBinderAttachmentList = {};
 };
 
 } /// ::dy namespace
