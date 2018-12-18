@@ -43,13 +43,20 @@ MDY_NODISCARD GLenum DyGetAttachmentTypeValue(_MIN_ const EDyGlAttachmentType at
 
 ///
 /// @struct PDyGlAttachmentBinderInformation
-/// @brief
+/// @brief Helper binder type for creating FBO with arbitary attachments.
 ///
 struct PDyGlAttachmentBinderInformation final
 {
   std::string         mAttachmentName = MDY_INITIALIZE_EMPTYSTR;
   EDyGlAttachmentType mAttachmentType = EDyGlAttachmentType::NoneError;
+
+  PDyGlAttachmentBinderInformation() = default;
+  PDyGlAttachmentBinderInformation(_MIN_ const std::string& iSpecifier, _MIN_ EDyGlAttachmentType iType) :
+      mAttachmentName{iSpecifier},
+      mAttachmentType{iType}
+  {};
 };
+using TAttachmentBinderList = std::vector<PDyGlAttachmentBinderInformation>;
 
 ///
 /// @struct PDyGlAttachmentInformation

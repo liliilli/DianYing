@@ -1,7 +1,5 @@
 #ifndef GUARD_DY_CORE_RESOURCE_RESOURCE_FDYMODELRESOURCE_H
 #define GUARD_DY_CORE_RESOURCE_RESOURCE_FDYMODELRESOURCE_H
-#include "FDyMeshResource.h"
-
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -14,6 +12,9 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /// SOFTWARE.
 ///
+
+#include <Dy/Core/Resource/Resource/FDyMeshResource.h>
+#include <Dy/Core/Resource/Type/TDyInformationBinder.h>
 
 //!
 //! Forward declaration
@@ -54,8 +55,9 @@ public:
   }
 
 private:
-  std::string                 mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
-  std::vector<FDyMeshResource> mMeshResource   = {};
+  std::string                   mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
+  TDyIInformationBinderModel    mBinderInformation;
+  std::vector<FDyMeshResource>  mMeshResource   = {};
 };
 
 } /// ::dy namespace

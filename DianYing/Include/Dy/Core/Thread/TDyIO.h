@@ -163,7 +163,15 @@ private:
   /// @brief Try bind binder instance to Resource Reference Instance.
   /// If not found RI, just return DY_FAILURE.
   ///
-  MDY_NODISCARD EDySuccess TryBindBinderToResourceRI(_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder);
+  MDY_NODISCARD EDySuccess TryBindBinderToResourceRI
+  (_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder);
+
+  ///
+  /// @brief Try bind binder instance to Information Reference Instance.
+  /// If not found RI, just return DY_FAILURE.
+  ///
+  MDY_NODISCARD EDySuccess TryBindBinderToInformationRI
+  (_MIN_ const std::string & iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase * iPtrBinder);
 
   ///
   /// @brief Try update scope of given style's specifier RI of resource type. \n
@@ -271,6 +279,7 @@ private:
 
   friend class SDyIOConnectionHelper;
   friend class SDyIOWorkerConnHelper;
+  friend class SDyIOBindingHelper;
 };
 
 } /// ::dy namespace

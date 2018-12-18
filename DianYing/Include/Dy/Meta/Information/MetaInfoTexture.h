@@ -27,8 +27,6 @@ namespace dy
 ///
 struct PDyTextureInstanceMetaInfo final : public PDyCommonResourceMetaInfo
 {
-  using TParameterList = std::vector<PDyGlTexParameterInformation>;
-
   /// Texture specification name.
   std::string         mSpecifierName    = MDY_INITIALIZE_EMPTYSTR;
   /// Texture external file path.
@@ -40,7 +38,7 @@ struct PDyTextureInstanceMetaInfo final : public PDyCommonResourceMetaInfo
   /// as R, RG, RGB, RGBA
   EDyImageColorFormatStyle mTextureColorType = EDyImageColorFormatStyle::NoneError;
   /// Texture parameters
-  TParameterList      mParameterList    = {};
+  TTextureParameterList      mParameterList    = {};
   /// Use default opengl generated mipmap if true.
   bool                mIsUsingDefaultMipmapGeneration     = false;
   /// Use customized texture parameters (PDyTextureConstructionBaseDesc::mParameterList)
@@ -60,9 +58,6 @@ struct PDyTextureInstanceMetaInfo final : public PDyCommonResourceMetaInfo
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyTextureInstanceMetaInfo& p);
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyTextureInstanceMetaInfo& p);
-
-void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyTextureInstanceMetaInfo::TParameterList& p);
-void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyTextureInstanceMetaInfo::TParameterList& p);
 
 } /// ::dy namespace
 

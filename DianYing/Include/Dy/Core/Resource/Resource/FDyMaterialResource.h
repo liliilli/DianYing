@@ -14,6 +14,8 @@
 ///
 
 #include <Dy/Core/Resource/Internal/MaterialType.h>
+#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
+#include <Dy/Core/Resource/Type/TDyInformationBinder.h>
 
 //!
 //! Forward declaration
@@ -36,7 +38,7 @@ namespace dy
 class FDyMaterialResource final
 {
 public:
-  FDyMaterialResource(_MIN_ const FDyMaterialInformation& informatio);
+  FDyMaterialResource(_MIN_ const FDyMaterialInformation& information);
   ~FDyMaterialResource();
 
   /// @brief Get specifier name of material information.
@@ -54,23 +56,22 @@ public:
   /// @brief
   MDY_NODISCARD const FDyShaderResource* GetShaderResourcePtr() const noexcept
   {
-    return this->mPtrShaderResource;
+    return this->mBinderShader.Get();
   }
 
   /// @brief Return binded texture resource pointers list.
-  MDY_NODISCARD const std::vector<const FDyTextureResource*>& GetBindedTextureResourcePtrList() const noexcept
+  MDY_NODISCARD const auto& GetBindedTextureResourcePtrList() const noexcept
   {
-    return this->mPtrTextureRescList;
+    return this->mBinderTextureList;
   }
 
 private:
   std::string          mSpecifierName    = MDY_INITIALIZE_EMPTYSTR;
   EDyMaterialBlendMode mBlendMode        = EDyMaterialBlendMode::Opaque;
 
-  using TPtrTextureInfoList = std::vector<const FDyTextureResource*>;
-
-  TPtrTextureInfoList      mPtrTextureRescList  = {};
-  const FDyShaderResource* mPtrShaderResource   = MDY_INITIALIZE_NULL;
+  TDyIInformationBinderMaterial mBinderMaterial;
+  TDyIResourceBinderShader      mBinderShader;
+  std::vector<std::unique_ptr<TDyIResourceBinderTexture>> mBinderTextureList = {};
 };
 
 } /// ::dy namespace

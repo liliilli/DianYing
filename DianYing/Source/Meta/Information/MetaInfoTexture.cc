@@ -51,23 +51,8 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyTextureInstanceMetaInf
   p.mBorderColor                    = DyJsonGetValueFrom<DDyColorRGB24>(j, "BorderColor");
   p.mTextureColorType               = DyJsonGetValueFrom<EDyImageColorFormatStyle>(j, "ColorType");
 
-  using TParamList = PDyTextureInstanceMetaInfo::TParameterList;
-  p.mParameterList = DyJsonGetValueFrom<TParamList>(j, "Parameters");
+  p.mParameterList = DyJsonGetValueFrom<TTextureParameterList>(j, "Parameters");
   p.mIsEnabledCustomedTextureParameter = DyJsonGetValueFrom<bool>(j, "IsUsingCustomizedTextureParameter");
-}
-
-void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyTextureInstanceMetaInfo::TParameterList& p)
-{
-  MDY_NOT_IMPLEMENTED_ASSERT();
-}
-
-void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyTextureInstanceMetaInfo::TParameterList& p)
-{
-  using TValue = PDyTextureInstanceMetaInfo::TParameterList::value_type;
-  for (const auto& paramContainer : j)
-  {
-    p.emplace_back(paramContainer.get<TValue>());
-  };
 }
 
 } /// ::dy namespace

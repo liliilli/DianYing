@@ -27,6 +27,8 @@ bool DDyIOReferenceContainer::IsReferenceInstanceExist(_MIN_ const std::string& 
   case EDyResourceType::Texture:  return DyIsMapContains(this->mMapTextureReference, specifier);
   case EDyResourceType::Model:    return DyIsMapContains(this->mMapModelReference, specifier);
   case EDyResourceType::Material: return DyIsMapContains(this->mMapMaterialReference, specifier);
+  case EDyResourceType::GLAttachment:   return DyIsMapContains(this->mMapAttachmentReference, specifier);
+  case EDyResourceType::GLFrameBuffer:  return DyIsMapContains(this->mMapFrameBufferReference, specifier);
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
   }
 }
@@ -39,19 +41,23 @@ bool DDyIOReferenceContainer::IsReferenceInstanceBound(_MIN_ const std::string& 
   case EDyResourceType::Texture:  return this->mMapTextureReference.at(specifier).mIsResourceValid;
   case EDyResourceType::Model:    return this->mMapModelReference.at(specifier).mIsResourceValid;
   case EDyResourceType::Material: return this->mMapMaterialReference.at(specifier).mIsResourceValid;
+  case EDyResourceType::GLAttachment:   return this->mMapAttachmentReference.at(specifier).mIsResourceValid;
+  case EDyResourceType::GLFrameBuffer:  return this->mMapFrameBufferReference.at(specifier).mIsResourceValid;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
   }
 }
 
 bool DDyIOReferenceContainer::TryEnlargeResourceScope(_MIN_ EDyScope scope, _MIN_ const std::string& specifier, _MIN_ EDyResourceType type)
 {
-  DDyIOReferenceInstance* instance = MDY_INITIALIZE_NULL;
+  DDyIOReferenceInstance* instance;
   switch (type)
   {
   case EDyResourceType::GLShader: { instance = &this->mMapGLShaderReference[specifier]; } break;
   case EDyResourceType::Texture:  { instance = &this->mMapTextureReference[specifier]; }  break;
   case EDyResourceType::Model:    { instance = &this->mMapModelReference[specifier]; }    break;
   case EDyResourceType::Material: { instance = &this->mMapMaterialReference[specifier]; } break;
+  case EDyResourceType::GLAttachment:   { instance = &this->mMapAttachmentReference[specifier]; } break;;
+  case EDyResourceType::GLFrameBuffer:  { instance = &this->mMapFrameBufferReference[specifier]; } break;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
   }
 
@@ -72,6 +78,8 @@ EDySuccess DDyIOReferenceContainer::TryBindBinderToResourceRI(
   case EDyResourceType::GLShader: this->mMapGLShaderReference[iSpecifier].AttachBinder(iPtrBinder); break;
   case EDyResourceType::Texture:  this->mMapTextureReference[iSpecifier].AttachBinder(iPtrBinder);  break;
   case EDyResourceType::Material: this->mMapMaterialReference[iSpecifier].AttachBinder(iPtrBinder); break;
+  case EDyResourceType::GLAttachment:   this->mMapAttachmentReference[iSpecifier].AttachBinder(iPtrBinder);   break;
+  case EDyResourceType::GLFrameBuffer:  this->mMapFrameBufferReference[iSpecifier].AttachBinder(iPtrBinder);  break;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
   }
   return DY_SUCCESS;
@@ -103,6 +111,16 @@ EDySuccess DDyIOReferenceContainer::CreateReferenceInstance(
     auto [it, isSuccessful] = this->mMapMaterialReference.try_emplace(specifier, specifier, style, type, scope);
     MDY_ASSERT(isSuccessful == true, "RI Container creation must be successful.");
   } break;
+  case EDyResourceType::GLAttachment:
+  {
+    auto [it, isSuccessful] = this->mMapAttachmentReference.try_emplace(specifier, specifier, style, type, scope);
+    MDY_ASSERT(isSuccessful == true, "RI Container creation must be successful.");
+  } break;
+  case EDyResourceType::GLFrameBuffer:
+  {
+    auto [it, isSuccessful] = this->mMapFrameBufferReference.try_emplace(specifier, specifier, style, type, scope);
+    MDY_ASSERT(isSuccessful == true, "RI Container creation must be successful.");
+  } break;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
   }
 
@@ -111,13 +129,15 @@ EDySuccess DDyIOReferenceContainer::CreateReferenceInstance(
 
 EDySuccess DDyIOReferenceContainer::TryUpdateValidity(EDyResourceType type, const std::string& specifier, bool isValid)
 {
-  TStringHashMap<DDyIOReferenceInstance>* map = MDY_INITIALIZE_NULL;
+  TStringHashMap<DDyIOReferenceInstance>* map;
   switch (type)
   {
   case EDyResourceType::Model:    map = &this->mMapModelReference;    break;
   case EDyResourceType::GLShader: map = &this->mMapGLShaderReference; break;
   case EDyResourceType::Texture:  map = &this->mMapTextureReference;  break;
   case EDyResourceType::Material: map = &this->mMapMaterialReference; break;
+  case EDyResourceType::GLAttachment:   map = &this->mMapAttachmentReference;   break;
+  case EDyResourceType::GLFrameBuffer:  map = &this->mMapFrameBufferReference;  break;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
   }
 

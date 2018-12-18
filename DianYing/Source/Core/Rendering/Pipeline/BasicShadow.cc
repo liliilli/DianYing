@@ -15,15 +15,16 @@
 /// Header file
 #include <Dy/Core/Rendering/Pipeline/BasicShadow.h>
 
+#include <Dy/Element/Actor.h>
 #include <Dy/Builtin/ShaderGl/RenderBasicShadow.h>
 #include <Dy/Component/CDyDirectionalLight.h>
 #include <Dy/Component/CDyModelRenderer.h>
 #include <Dy/Core/Rendering/Helper/FrameAttachmentString.h>
 #include <Dy/Management/Rendering/FramebufferManager.h>
 #include <Dy/Management/Type/FramebufferInformation.h>
-#include <Dy/Element/Actor.h>
 #include <Dy/Core/Resource/Resource/FDyMeshResource.h>
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
+#include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
 
 #include <glm/gtc/matrix_transform.inl>
 
@@ -49,21 +50,18 @@ namespace dy
 
 FDyBasicShadow::FDyBasicShadow()
 {
-  this->pCreateFramebufferComponents();
+  MDY_ASSERT(this->mBinderFrameBuffer.IsResourceExist() == true, "Shadow framebuffer must be valid.");
   // @TODO TEMPORAL
   this->mIsUsingShadowDirectionalLight = true;
 }
 
-FDyBasicShadow::~FDyBasicShadow()
-{
-  this->pReleaseFrameBufferComponents();
-}
+FDyBasicShadow::~FDyBasicShadow() { }
 
 void FDyBasicShadow::RenderScreen(const CDyModelRenderer& renderer)
-{ // Integrity test
+{ 
+  // Validation test
   if (this->mIsUsingShadowDirectionalLight == false) { return; }
 
-  // FunctionBody∨
   const auto materialListCount  = renderer.GetMaterialListCount();
   const auto opSubmeshListCount = renderer.GetModelSubmeshCount();
 
@@ -73,7 +71,7 @@ void FDyBasicShadow::RenderScreen(const CDyModelRenderer& renderer)
   glViewport(0, 0, 512, 512);
 
   //
-  glBindFramebuffer(GL_FRAMEBUFFER, this->mShadowFrameBuffer->GetFramebufferId());
+  glBindFramebuffer(GL_FRAMEBUFFER, this->mBinderFrameBuffer->GetFrameBufferId());
   const auto shaderProgramId = mDirLightShaderResource->GetShaderProgramId();
   this->mDirLightShaderResource->UseShader();
 
@@ -122,9 +120,8 @@ void FDyBasicShadow::RenderScreen(const CDyModelRenderer& renderer)
 void FDyBasicShadow::Clear()
 {
   if (this->mIsUsingShadowDirectionalLight == false)  { return; }
-  if (MDY_CHECK_ISNULL(this->mShadowFrameBuffer))     { return; }
 
-  glBindFramebuffer (GL_FRAMEBUFFER, this->mShadowFrameBuffer->GetFramebufferId());
+  glBindFramebuffer (GL_FRAMEBUFFER, this->mBinderFrameBuffer->GetFrameBufferId());
   glClear           (GL_DEPTH_BUFFER_BIT);
   glBindFramebuffer (GL_FRAMEBUFFER, 0);
 }
@@ -149,49 +146,6 @@ TU32 FDyBasicShadow::GetDirectionalLightDepthTextureId() const noexcept
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
   return MDY_INITIALIZE_DEFUINT;
-}
-
-void FDyBasicShadow::pCreateFramebufferComponents()
-{
-  // @TODO TEMPORAL!
-  PDyGlFrameBufferInformation       framebufferInfo = {};
-  PDyGlAttachmentInformation        attachmentInfo  = {};
-  PDyGlAttachmentBinderInformation  binderInfo      = {};
-
-  framebufferInfo.mFrameBufferName            = sFrameBuffer_Shadow;
-  framebufferInfo.mIsUsingDefaultDepthBuffer  = false;
-  framebufferInfo.mIsNotUsingPixelShader      = true;
-
-  // Depth texture buffer
-  attachmentInfo.mAttachmentName = sAttachment_DirectionalBasicShadow;
-  attachmentInfo.mAttachmentSize = DDyVectorInt2{512, 512};
-  attachmentInfo.mParameterList  = {
-      PDyGlTexParameterInformation\
-      {EDyGlParameterName::TextureMinFilter, EDyGlParameterValue::Nearest},
-      {EDyGlParameterName::TextureMagFilter, EDyGlParameterValue::Nearest},
-      {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::ClampToBorder},
-      {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::ClampToBorder},
-  };
-
-  binderInfo.mAttachmentName = attachmentInfo.mAttachmentName;
-  binderInfo.mAttachmentType = EDyGlAttachmentType::Depth;
-  framebufferInfo.mAttachmentList.push_back(binderInfo);
-
-  auto& framebufferManager  = MDyFramebuffer::GetInstance();
-  MDY_CALL_ASSERT_SUCCESS(framebufferManager.SetAttachmentInformation(attachmentInfo));
-
-  // Create framebuffer.
-  MDY_CALL_ASSERT_SUCCESS(framebufferManager.InitializeNewFrameBuffer(framebufferInfo));
-  MDY_LOG_INFO("{}::{} | Geometry buffer created.", "MDyRendering", "pCreateDeferredGeometryBuffers");
-  this->mShadowFrameBuffer = framebufferManager.GetFrameBufferPointer(MSVSTR(sFrameBuffer_Shadow));
-  MDY_ASSERT(this->mShadowFrameBuffer != nullptr, "Unexpected error.");
-}
-
-void FDyBasicShadow::pReleaseFrameBufferComponents()
-{
-  auto& framebufferManager  = MDyFramebuffer::GetInstance();
-  MDY_CALL_ASSERT_SUCCESS(framebufferManager.RemoveFrameBuffer(MSVSTR(sFrameBuffer_Shadow)));
-  this->mShadowFrameBuffer = nullptr;
 }
 
 } /// ::dy namespace

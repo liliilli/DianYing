@@ -17,6 +17,9 @@
 #include <Dy/Core/Resource/Resource/FDyTextureResource.h>
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
 #include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
+#include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
+#include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
+
 #include <Dy/Core/Resource/Type/TemplateRescInfoType.h>
 #include <Dy/Helper/Wrapper/DDyMutexUniqueHashMap.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
@@ -54,6 +57,8 @@ public:
     else if constexpr (TType == EDyResourceType::Texture) { return this->__mTextureContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::Model)   { return this->__mModelContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::Material){ return this->__mMaterialContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EDyResourceType::GLAttachment)  { return this->__mAttachmentContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EDyResourceType::GLFrameBuffer) { return this->__mFrameBufferContainer.TryGetInstancePtr(specifier); }
     else { MDY_UNEXPECTED_BRANCH_BUT_RETURN(nullptr); }
   }
 
@@ -64,6 +69,8 @@ public:
     else if constexpr (TType == EDyResourceType::Texture) { return this->__mTextureContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::Model)   { return this->__mModelContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::Material) { return this->__mMaterialContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EDyResourceType::GLAttachment)  { return this->__mAttachmentContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EDyResourceType::GLFrameBuffer) { return this->__mFrameBufferContainer.TryGetInstancePtr(specifier); }
     else { MDY_UNEXPECTED_BRANCH_BUT_RETURN(nullptr); }
   }
 
@@ -78,6 +85,8 @@ private:
   __THashMap<FDyTextureResource>  __mTextureContainer  = {};
   __THashMap<FDyModelResource>    __mModelContainer    = {};
   __THashMap<FDyMaterialResource> __mMaterialContainer = {};
+  __THashMap<FDyAttachmentResource>   __mAttachmentContainer  = {};
+  __THashMap<FDyFrameBufferResource>  __mFrameBufferContainer = {};
 
   friend class TDyIO;
 };

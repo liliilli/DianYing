@@ -16,8 +16,6 @@
 #include <string>
 #include <Dy/Core/Thread/IO/EDyIOTask.h>
 #include <Dy/Core/Thread/IO/DDyIOWorkerResult.h>
-#include <Dy/Core/Resource/Type/TemplateRescInfoType.h>
-#include <Dy/Core/Resource/Type/FDyBinderBase.h>
 
 //!
 //! Forward declaration
@@ -80,38 +78,6 @@ public:
   /// @brief Check IO Thread is slept. True if only IO Worker are idle,
   /// Queue is empty and Result list also empty.
   static MDY_NODISCARD bool IsIOThreadSleep();
-
-  /// @brief
-  template <EDyResourceType TType>
-  static MDY_NODISCARD std::optional<const __TResourceType_T<TType>*>
-  TryRequireResource(_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder)
-  {
-    if constexpr (TType == EDyResourceType::GLShader)     { return pTryRequireResource_GLShader(iSpecifier, iPtrBinder); }
-    else if constexpr (TType == EDyResourceType::Model)   { return pTryRequireResource_Model(iSpecifier, iPtrBinder); }
-    else if constexpr (TType == EDyResourceType::Texture) { return pTryRequireResource_Texture(iSpecifier, iPtrBinder); }
-    else if constexpr (TType == EDyResourceType::Material){ return pTryRequireResource_Material(iSpecifier, iPtrBinder); }
-    else
-    {
-      MDY_NOT_IMPLEMENTED_ASSERT();
-      return std::nullopt;
-    }
-  }
-
-private:
-  static MDY_NODISCARD EDySuccess
-  pTryRequireResource(_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder);
-
-  static MDY_NODISCARD std::optional<const __TResourceType_T<EDyResourceType::GLShader>*>
-  pTryRequireResource_GLShader(_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
-
-  static MDY_NODISCARD std::optional<const __TResourceType_T<EDyResourceType::Model>*>
-  pTryRequireResource_Model(_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
-
-  static MDY_NODISCARD std::optional<const __TResourceType_T<EDyResourceType::Texture>*>
-  pTryRequireResource_Texture(_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
-
-  static MDY_NODISCARD std::optional<const __TResourceType_T<EDyResourceType::Material>*>
-  pTryRequireResource_Material(_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
 };
 
 } /// ::dy namespace

@@ -20,11 +20,8 @@
 #include <Dy/Management/IO/MDyIOResource.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Management/WindowManager.h>
-#include "Dy/Core/Resource/Resource/FDyModelResource.h"
-#include "Dy/Core/Resource/Internal/FDyModelVBOIntermediate.h"
-
-#define MDY_CALL_BUT_NOUSE_RESULT(__MAExpression__) \
-  { MDY_NOTUSED const auto MDY_TOKENPASTE2(_, __LINE__) = __MAExpression__; }
+#include <Dy/Core/Resource/Resource/FDyModelResource.h>
+#include <Dy/Core/Resource/Internal/FDyModelVBOIntermediate.h>
 
 constexpr TU08 kDefaultPriority = 128;
 
@@ -238,9 +235,8 @@ std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(
 {
   std::vector<PRIVerificationItem> checkList = {};
 
-  // If resource type is `Material`, bind all dependencies of `Material` to checkList.
   if (iResourceType == EDyResourceType::Material)
-  {
+  { // If resource type is `Material`, bind all dependencies of `Material` to checkList.
     const auto& metaMaterial = this->mMetaInfoManager->GetMaterialMetaInformation(iSpecifier);
     for (const auto& textureSpecifier : metaMaterial.mTextureNames) {
       if (textureSpecifier.empty() == true) { break; }
@@ -249,12 +245,27 @@ std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(
     checkList.emplace_back(metaMaterial.mShaderSpecifier, EDyResourceType::GLShader, iResourceStyle, iScope);
   }
 
+  if (iResourceType == EDyResourceType::GLFrameBuffer)
+  { // If resource type is `FrameBuffer`, bind all dependencies of `FrameBuffer` to checkList.
+    const auto& metaInfo = this->mMetaInfoManager->GetGlFrameBufferMetaInformation(iSpecifier);
+    for (const auto& [specifier, type] : metaInfo.mColorAttachmentList)
+    { // Get dependent attachment specifier list and add.
+      checkList.emplace_back(specifier, EDyResourceType::GLAttachment, iResourceStyle, iScope);
+    }
+    if (metaInfo.mIsUsingDepthBuffer == true)
+    { // If framebuffer also use depth buffer, enqueue it. 
+      MDY_ASSERT(metaInfo.mDepthAttachmentSpecifier.empty() == false, "Depth attachment must be specified if use depth buffer.");
+      checkList.emplace_back(metaInfo.mDepthAttachmentSpecifier, EDyResourceType::GLAttachment, iResourceStyle, iScope);
+    }
+  }
+
   if (iResourceStyle == EDyResourceStyle::Resource)
   {
     switch (iResourceType)
     {
     case EDyResourceType::Model:    case EDyResourceType::GLShader:
     case EDyResourceType::Texture:  case EDyResourceType::Material:
+    case EDyResourceType::GLAttachment: case EDyResourceType::GLFrameBuffer:
       checkList.emplace_back(iSpecifier, iResourceType, EDyResourceStyle::Information, iScope);
       break;
     default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(checkList);
@@ -410,7 +421,6 @@ DDyIOWorkerResult TDyIO::outMainProcessTask(_MIN_ const DDyIOTask& task)
     const auto instance = new FDyShaderResource(*infoManager.GetPtrInformation<EDyResourceType::GLShader>(result.mSpecifierName));
     result.mSmtPtrResultInstance = instance;
   } break;
-  case EDyResourceType::Texture:
   case EDyResourceType::Model:
   { // Get intemediate instance from task, and make model resource. (Information => `Immediate Instance` => Resource)
     Owner<FDyModelVBOIntermediate*> ptrrawIntermediateInstance = static_cast<FDyModelVBOIntermediate*>(task.mRawInstanceForUsingLater);
@@ -418,8 +428,11 @@ DDyIOWorkerResult TDyIO::outMainProcessTask(_MIN_ const DDyIOTask& task)
     MDY_DELETE_RAWHEAP_SAFELY(ptrrawIntermediateInstance);
     result.mSmtPtrResultInstance = instance;
   } break;
-  case EDyResourceType::Material:
-    MDY_UNEXPECTED_BRANCH();
+  case EDyResourceType::GLFrameBuffer:
+  { // Only Resource, create fbo with attachment.
+    const auto instance = new FDyFrameBufferResource(*infoManager.GetPtrInformation<EDyResourceType::GLFrameBuffer>(result.mSpecifierName));
+    result.mSmtPtrResultInstance = instance;
+  } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   };
 
@@ -440,9 +453,16 @@ bool TDyIO::pIsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ 
   }
 }
 
-EDySuccess TDyIO::TryBindBinderToResourceRI(_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder)
+EDySuccess TDyIO::TryBindBinderToResourceRI
+(_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder)
 {
   return this->mRIResourceMap.TryBindBinderToResourceRI(iSpecifier, iType, iPtrBinder);
+}
+
+EDySuccess TDyIO::TryBindBinderToInformationRI
+(_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder)
+{
+  return this->mRIInformationMap.TryBindBinderToResourceRI(iSpecifier, iType, iPtrBinder);
 }
 
 bool TDyIO::pIsReferenceInstanceBound(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style)
@@ -462,12 +482,14 @@ bool TDyIO::outIsMetaInformationExist(_MIN_ const std::string& specifier, _MIN_ 
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mMetaInfoManager), "MetaInformation manager must not be null.");
   switch (type)
   {
-  case EDyResourceType::Script:     return this->mMetaInfoManager->IsScriptMetaInformationExist(specifier);
-  case EDyResourceType::Model:      return this->mMetaInfoManager->IsModelMetaInfoExist(specifier);
-  case EDyResourceType::GLShader:   return this->mMetaInfoManager->IsGLShaderMetaInfoExist(specifier);
-  case EDyResourceType::Texture:    return this->mMetaInfoManager->IsTextureMetaInfoExist(specifier);
-  case EDyResourceType::Material:   return this->mMetaInfoManager->IsMaterialMetaInfoExist(specifier);
-  case EDyResourceType::WidgetMeta: return this->mMetaInfoManager->IsWidgetMetaInfoExist(specifier);
+  case EDyResourceType::Script:         return this->mMetaInfoManager->IsScriptMetaInformationExist(specifier);
+  case EDyResourceType::Model:          return this->mMetaInfoManager->IsModelMetaInfoExist(specifier);
+  case EDyResourceType::GLShader:       return this->mMetaInfoManager->IsGLShaderMetaInfoExist(specifier);
+  case EDyResourceType::Texture:        return this->mMetaInfoManager->IsTextureMetaInfoExist(specifier);
+  case EDyResourceType::Material:       return this->mMetaInfoManager->IsMaterialMetaInfoExist(specifier);
+  case EDyResourceType::WidgetMeta:     return this->mMetaInfoManager->IsWidgetMetaInfoExist(specifier);
+  case EDyResourceType::GLAttachment:   return this->mMetaInfoManager->IsAttachmentMetaInfoExist(specifier);
+  case EDyResourceType::GLFrameBuffer:  return this->mMetaInfoManager->IsFrameBufferMetaInfoExist(specifier);
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
   }
 }

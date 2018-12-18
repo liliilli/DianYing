@@ -13,10 +13,24 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Builtin/Interface/IDyResource.h>
+#include <Dy/Meta/Type/EDyResourceType.h>
+#include <Dy/Meta/Information/MetaInfoFrameBuffer.h>
+
 namespace dy
 {
 
+struct ADyGLFrameBufferResource : public IDyResource
+{
+protected:
+  /// Temporary frame buffer object meta info.
+  PDyGlFrameBufferInstanceMetaInfo mMetaInfo{};
+public:
+  static constexpr auto value = EDyResourceType::GLFrameBuffer;
 
+  /// @brief Get meta information that has frame buffer meta information.
+  std::any GetMetaInfo() override final;
+};
 
 } /// ::dy namespace
 

@@ -35,6 +35,11 @@
 #include <Dy/Builtin/ShaderGl/PostEffect/RenderDefaultSSAO.h>
 #include <Dy/Builtin/ShaderGl/PostEffect/RenderDefaultSSAOBlurring.h>
 
+#include <Dy/Builtin/FrameBuffer/Deferred/FDyBtFrameBufferDeferred.h>
+#include <Dy/Builtin/FrameBuffer/BasicShadow/FDyBtFBBasicShadow.h>
+#include <Dy/Builtin/FrameBuffer/SceneIntegration/FDyBtFbSceneIntegration.h>
+#include <Dy/Builtin/FrameBuffer/UIIntegration/FDyBtFbUiBasic.h>
+
 #include <Dy/Builtin/Material/OpaqueStaticPlain.h>
 
 namespace dy
@@ -67,6 +72,11 @@ FDyDefaultLoadingBootScript::FDyDefaultLoadingBootScript()
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Model, FDyBuiltinModelSphere::sName);
 
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Material, FDyBuiltinMaterialOpaqueStaticPlain::sName);
+
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, FDyBtFrameBufferDeferred::sName);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, FDyBtFBBasicShadow::sName);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, FDyBtFbSceneIntegration::sName);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, FDyBtFbUiBasic::sName);
 }
 
 } /// ::dy namespace

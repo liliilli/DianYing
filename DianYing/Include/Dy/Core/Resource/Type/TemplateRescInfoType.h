@@ -25,11 +25,15 @@ class FDyTextureInformation;
 class FDyShaderInformation;
 class FDyModelInformation;
 class FDyMaterialInformation;
+class FDyAttachmentInformation;
+class FDyFrameBufferInformation;
 
 class FDyModelResource;
 class FDyTextureResource;
 class FDyShaderResource;
 class FDyMaterialResource;
+class FDyAttachmentResource;
+class FDyFrameBufferResource;
 } /// ::dy namespace
 
 //!
@@ -44,6 +48,8 @@ template <> struct __TDyRscInfo<EDyResourceType::Texture> final { using type = F
 template <> struct __TDyRscInfo<EDyResourceType::GLShader> final { using type = FDyShaderInformation; };
 template <> struct __TDyRscInfo<EDyResourceType::Model> final { using type = FDyModelInformation; };
 template <> struct __TDyRscInfo<EDyResourceType::Material> final { using type = FDyMaterialInformation; };
+template <> struct __TDyRscInfo<EDyResourceType::GLAttachment> final { using type = FDyAttachmentInformation; };
+template <> struct __TDyRscInfo<EDyResourceType::GLFrameBuffer> final { using type = FDyFrameBufferInformation; };
 template <EDyResourceType TType> using __TDyRscInfo_T = typename __TDyRscInfo<TType>::type;
 
 template <EDyResourceType TType> struct __TResourceType;
@@ -51,6 +57,8 @@ template <> struct __TResourceType<EDyResourceType::Texture> final  { using type
 template <> struct __TResourceType<EDyResourceType::GLShader> final { using type = FDyShaderResource; };
 template <> struct __TResourceType<EDyResourceType::Model> final    { using type = FDyModelResource; };
 template <> struct __TResourceType<EDyResourceType::Material> final { using type = FDyMaterialResource; };
+template <> struct __TResourceType<EDyResourceType::GLAttachment> final { using type = FDyAttachmentResource; };
+template <> struct __TResourceType<EDyResourceType::GLFrameBuffer> final { using type = FDyFrameBufferResource; };
 template <EDyResourceType TType> using __TResourceType_T = typename __TResourceType<TType>::type;
 
 } /// ::dy namespace

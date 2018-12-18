@@ -15,31 +15,26 @@
 
 #include <Dy/Helper/Pointer.h>
 #include <Dy/Meta/Type/EDyResourceType.h>
-#include <Dy/Core/Thread/SDyIOConnectionHelper.h>
+#include <Dy/Core/Thread/SDyIOBindingHelper.h>
+#include <Dy/Core/Resource/Type/EDyLazy.h>
 #include <Dy/Core/Resource/Type/FDyBinderBase.h>
 #include <Dy/Core/Resource/Type/TemplateRescInfoType.h>
 
 namespace dy
 {
 
-enum class EDyLazy : bool
-{
-  No,
-  Yes
-};
-
-/// @struct __TDyBinderBase
+/// @struct __TDyResourceBinderBase
 /// @brief Binder base class for each supporting resource type.
 template <EDyResourceType TType>
-struct __TDyBinderBase : public __FDyBinderBase
+struct __TDyResourceBinderBase : public __FDyBinderBase
 {
 public:
-  MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(__TDyBinderBase);
+  MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(__TDyResourceBinderBase);
   using TPtrResource      = const typename __TResourceType<TType>::type*;
   using TTryGetReturnType = std::optional<TPtrResource>;
 
   /// @brief Release binder instance and detach it from specified Reference Instance.
-  virtual ~__TDyBinderBase()
+  virtual ~__TDyResourceBinderBase()
   {
     if (MDY_CHECK_ISNOTNULL(this->mPtrResource)) { MDY_CALL_ASSERT_SUCCESS(this->pTryDetachResource()); }
   }
@@ -61,14 +56,14 @@ public:
   }
 
 protected:
-  __TDyBinderBase(_MIN_ const std::string& iSpecifierName) : mSpecifierName{iSpecifierName} {};
-  __TDyBinderBase() {};
+  __TDyResourceBinderBase(_MIN_ const std::string& iSpecifierName) : mSpecifierName{iSpecifierName} {};
+  __TDyResourceBinderBase() {};
 
   /// @brief Require resource.
   MDY_NODISCARD EDySuccess pTryRequireResource() noexcept
   {
     MDY_ASSERT(this->mSpecifierName.empty() == false, "Resource specifier name must be valid to require resource.");
-    auto ptrResult = SDyIOConnectionHelper::TryRequireResource<TType>(this->mSpecifierName, this);
+    auto ptrResult = SDyIOBindingHelper::TryRequireResource<TType>(this->mSpecifierName, this);
     if (ptrResult.has_value() == false) { return DY_FAILURE; }
 
     this->mPtrResource = ptrResult.value();
@@ -94,7 +89,7 @@ protected:
 
 private:
   /// @brief Try update resource pointer of this type with ptr when RI is being valid. \n
-  /// `iPtr` must be convertible to specialized __TDyBinderBase `Type`.
+  /// `iPtr` must be convertible to specialized __TDyResourceBinderBase `Type`.
   void TryUpdateResourcePtr(_MIN_ const void* iPtr) noexcept override final
   {
     this->mPtrResource = static_cast<TPtrResource>(iPtr);
@@ -119,10 +114,10 @@ class TDyResourceBinder;
 /// @brief Not lazy version of `TDyResourceBinder`.
 ///
 template <EDyResourceType TType>
-class TDyResourceBinder<TType, EDyLazy::No> final : public __TDyBinderBase<TType>
+class TDyResourceBinder<TType, EDyLazy::No> final : public __TDyResourceBinderBase<TType>
 {
 private:
-  using TSuper = __TDyBinderBase<TType>;
+  using TSuper = __TDyResourceBinderBase<TType>;
 public:
   MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(TDyResourceBinder);
 
@@ -139,6 +134,8 @@ using TDyIResourceBinderShader    = TDyResourceBinderInstant<EDyResourceType::GL
 using TDyIResourceBinderModel     = TDyResourceBinderInstant<EDyResourceType::Model>;
 using TDyIResourceBinderTexture   = TDyResourceBinderInstant<EDyResourceType::Texture>;
 using TDyIResourceBinderMaterial  = TDyResourceBinderInstant<EDyResourceType::Material>;
+using TDyIResourceBinderAttachment  = TDyResourceBinderInstant<EDyResourceType::GLAttachment>;
+using TDyIResourceBinderFrameBuffer = TDyResourceBinderInstant<EDyResourceType::GLFrameBuffer>;
 
 ///
 /// @class TDyResourceBinder
@@ -146,10 +143,10 @@ using TDyIResourceBinderMaterial  = TDyResourceBinderInstant<EDyResourceType::Ma
 /// User have to require resource manually. but detach is held by automatically. (RAII)
 ///
 template <EDyResourceType TType>
-class TDyResourceBinder<TType, EDyLazy::Yes> final : public __TDyBinderBase<TType>
+class TDyResourceBinder<TType, EDyLazy::Yes> final : public __TDyResourceBinderBase<TType>
 {
 private:
-  using TSuper = __TDyBinderBase<TType>;
+  using TSuper = __TDyResourceBinderBase<TType>;
 public:
   MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(TDyResourceBinder);
   TDyResourceBinder() = default;
@@ -171,6 +168,8 @@ using TDyLResourceBinderShader    = TDyResourceBinderLazy<EDyResourceType::GLSha
 using TDyLResourceBinderModel     = TDyResourceBinderLazy<EDyResourceType::Model>;
 using TDyLResourceBinderTexture   = TDyResourceBinderLazy<EDyResourceType::Texture>;
 using TDyLResourceBinderMaterial  = TDyResourceBinderLazy<EDyResourceType::Material>;
+using TDyLResourceBinderAttachment  = TDyResourceBinderLazy<EDyResourceType::GLAttachment>;
+using TDyLResourceBinderFrameBuffer = TDyResourceBinderLazy<EDyResourceType::GLFrameBuffer>;
 
 } /// ::dy namespace
 

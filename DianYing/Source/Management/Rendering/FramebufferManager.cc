@@ -49,12 +49,7 @@ EDySuccess MDyFramebuffer::SetAttachmentInformation(const PDyGlAttachmentInforma
 }
 
 EDySuccess MDyFramebuffer::InitializeNewFrameBuffer(const PDyGlFrameBufferInformation& bufferInfo)
-{ // Lambda functions
-
-
-  // FunctionBody∨
-
-  // Integrity test
+{
   if (this->mValidFramebufferList.find(bufferInfo.mFrameBufferName) != this->mValidFramebufferList.end())
   {
     MDY_ASSERT(false, "bufferInfo.mFrameBufferName must not be duplicated in container's any arbitary framebuffer instance.");

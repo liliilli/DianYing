@@ -14,6 +14,7 @@
 
 /// Header file
 #include <Dy/Meta/Type/EDyTextureParameter.h>
+#include <nlohmann/json.hpp>
 
 //!
 //! Forward declaration
@@ -72,14 +73,27 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyGlParameterValue& p)
   MDY_NOT_IMPLEMENTED_ASSERT();
 }
 
-void to_json(nlohmann::json& j, const PDyGlTexParameterInformation& p)
+void to_json(_MIN_ nlohmann::json& j, _MINOUT_ const PDyGlTexParameterInformation& p)
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
 }
 
-void from_json(const nlohmann::json& j, PDyGlTexParameterInformation& p)
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyGlTexParameterInformation& p)
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
+}
+
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const TTextureParameterList& p)
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ TTextureParameterList& p)
+{
+  for (const auto& paramContainer : j)
+  {
+    p.emplace_back(paramContainer.get<PDyGlTexParameterInformation>());
+  };
 }
 
 EDySuccess DyCheckTextureParameter(_MIN_ const PDyGlTexParameterInformation& parameter)

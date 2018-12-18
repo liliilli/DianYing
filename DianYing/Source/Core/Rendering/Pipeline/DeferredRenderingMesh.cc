@@ -26,6 +26,11 @@
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/Rendering/FramebufferManager.h>
 #include <Dy/Management/Rendering/UniformBufferObjectManager.h>
+
+#include <Dy/Builtin/FrameBuffer/SceneIntegration/FDyBtFbSceneIntegration.h>
+#include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
+#include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
+
 #include <glm/gtc/matrix_transform.inl>
 
 //!
@@ -46,61 +51,10 @@ namespace dy
 
 FDyDeferredRenderingMesh::FDyDeferredRenderingMesh()
 {
-  auto& settingManager      = MDySetting::GetInstance();
-  auto& framebufferManager  = MDyFramebuffer::GetInstance();
-
-  ///
-  /// @function CreateFramebufferAttachmentSetting
-  /// @brief
-  ///
-  static auto CreateFramebufferAttachmentSetting = [&]()
-  {
-    const auto overallScreenWidth = settingManager.GetWindowSizeWidth();
-    const auto overallScreenHeight = settingManager.GetWindowSizeHeight();
-    const auto overallSize = DDyVectorInt2{ overallScreenWidth, overallScreenHeight };
-
-    PDyGlFrameBufferInformation       framebufferInfo = {};
-    PDyGlAttachmentInformation        attachmentInfo = {};
-    PDyGlAttachmentBinderInformation  binderInfo = {};
-
-    framebufferInfo.mFrameBufferName = sFrameBuffer_ScreenFinal;
-    framebufferInfo.mFrameBufferSize = overallSize;
-    framebufferInfo.mIsUsingDefaultDepthBuffer = true;
-
-    // Rendered texture buffer
-    attachmentInfo.mAttachmentName = sAttachment_ScreenFinal_Output;
-    attachmentInfo.mAttachmentSize = overallSize;
-    attachmentInfo.mParameterList  = {
-        PDyGlTexParameterInformation\
-        {EDyGlParameterName::TextureMinFilter, EDyGlParameterValue::Nearest},
-        {EDyGlParameterName::TextureMagFilter, EDyGlParameterValue::Nearest},
-        {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::ClampToBorder},
-        {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::ClampToBorder},
-    };
-    attachmentInfo.mBorderColor = DDyColorRGBA{ 0, 0, 0, 0 };
-
-    binderInfo.mAttachmentName = sAttachment_ScreenFinal_Output;
-    binderInfo.mAttachmentType = EDyGlAttachmentType::Color0;
-    framebufferInfo.mAttachmentList.push_back(binderInfo);
-
-    // Push attachment buffer
-    MDY_CALL_ASSERT_SUCCESS(framebufferManager.SetAttachmentInformation(attachmentInfo));
-    // Create framebuffer.
-    MDY_CALL_ASSERT_SUCCESS(framebufferManager.InitializeNewFrameBuffer(framebufferInfo));
-  };
-
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  // FunctionBody ∨
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  CreateFramebufferAttachmentSetting();
   this->pInitializeShaderSetting();
   this->pInitializeUboBuffers();
 
-  // @TODO NEED IMPLEMENT NEW RESOURCE BINDING MECHANISM TO FBO ALSO.
-  this->mDyBtFbScrFin = framebufferManager.GetFrameBufferPointer(MSVSTR(sFrameBuffer_ScreenFinal));
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mDyBtFbScrFin), "Unexpected error.");
-
+  MDY_ASSERT(this->mBinderFrameBuffer.IsResourceExist() == true, "Framebuffer must be bound.");
   for (TI32 i = 0; i < sDirectionalLightCount; ++i) { this->mDirLightAvailableList.push(i); }
 }
 
@@ -138,22 +92,16 @@ FDyDeferredRenderingMesh::~FDyDeferredRenderingMesh()
 void FDyDeferredRenderingMesh::RenderScreen()
 {
   if (this->mBinderShader.IsResourceExist() == false
-  ||  this->mBinderTriangle.IsResourceExist() == false) { return; }
-
-  if (this->mIsAttachmentPtrBinded == false)
-  {
-    const auto flag = this->pTryGetAttachmentPointers();
-    if (flag == DY_SUCCESS) { this->mIsAttachmentPtrBinded = true; }
-    else                    { return; }
-  }
+  ||  this->mBinderTriangle.IsResourceExist() == false
+  ||  this->mBinderFrameBuffer.IsResourceExist() == false) { return; }
 
   const auto& submeshList = this->mBinderTriangle->GetMeshResourceList();
-  MDY_ASSERT(submeshList.size() == 1, "");
+  MDY_ASSERT(submeshList.size() == 1, "Unexpected error occurred.");
   // Bind vertex array
   const FDyMeshResource& mesh = submeshList[0];
 
   // Set
-  glBindFramebuffer(GL_FRAMEBUFFER, this->mDyBtFbScrFin->GetFramebufferId());
+  glBindFramebuffer(GL_FRAMEBUFFER, this->mBinderFrameBuffer->GetFrameBufferId());
   this->mBinderShader->UseShader();
   glBindVertexArray(mesh.GetVertexArrayId());
 
@@ -161,11 +109,11 @@ void FDyDeferredRenderingMesh::RenderScreen()
   const auto uShadowPv_Id = glGetUniformLocation(this->mBinderShader->GetShaderProgramId(), "uShadowPv");
   glUniformMatrix4fv(uShadowPv_Id, 1, GL_FALSE, &sSamplePvMatrix[0].X);
 
-  glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, this->mAttachmentPtr_Unlit->GetAttachmentId());
-  glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, this->mAttachmentPtr_Normal->GetAttachmentId());
-  glActiveTexture(GL_TEXTURE2); glBindTexture(GL_TEXTURE_2D, this->mAttachmentPtr_Specular->GetAttachmentId());
-  glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, this->mAttachmentPtr_ModelPosition->GetAttachmentId());
-  glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, this->mAttachmentPtr_Shadow->GetAttachmentId());
+  glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, this->mBinderAttUnlit->GetAttachmentId());
+  glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, this->mBinderAttNormal->GetAttachmentId());
+  glActiveTexture(GL_TEXTURE2); glBindTexture(GL_TEXTURE_2D, this->mBinderAttSpecular->GetAttachmentId());
+  glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, this->mBinderAttPosition->GetAttachmentId());
+  glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, this->mBinderAttShadow->GetAttachmentId());
   glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
 
   // Rewind
@@ -176,7 +124,11 @@ void FDyDeferredRenderingMesh::RenderScreen()
 
 void FDyDeferredRenderingMesh::Clear()
 {
-  glBindFramebuffer(GL_FRAMEBUFFER, this->mDyBtFbScrFin->GetFramebufferId());
+  if (this->mBinderShader.IsResourceExist() == false
+  ||  this->mBinderTriangle.IsResourceExist() == false
+  ||  this->mBinderFrameBuffer.IsResourceExist() == false) { return; }
+
+  glBindFramebuffer(GL_FRAMEBUFFER, this->mBinderFrameBuffer->GetFrameBufferId());
   auto& worldManager = MDyWorld::GetInstance();
 
   const auto& backgroundColor = worldManager.GetValidLevelReference().GetBackgroundColor();
@@ -216,43 +168,6 @@ EDySuccess FDyDeferredRenderingMesh::UnbindDirectionalLight(_MIN_ const TI32 ind
   auto& uboManager = MDyUniformBufferObject::GetInstance();
   MDY_CALL_ASSERT_SUCCESS(uboManager.ClearUboContainer("dyBtUboDirLight", UboElementSize * index, UboElementSize));
   return DY_SUCCESS;
-}
-
-
-EDySuccess FDyDeferredRenderingMesh::pTryGetAttachmentPointers()
-{
-  TI32 count = 0;
-
-  auto& framebufferManager = MDyFramebuffer::GetInstance();
-  if (MDY_CHECK_ISNULL(this->mAttachmentPtr_Unlit))
-  {
-    this->mAttachmentPtr_Unlit = framebufferManager.GetAttachmentPointer(sAttachment_Unlit);
-  }
-  if (MDY_CHECK_ISNULL(this->mAttachmentPtr_Normal))
-  {
-    this->mAttachmentPtr_Normal = framebufferManager.GetAttachmentPointer(sAttachment_Normal);
-  }
-  if (MDY_CHECK_ISNULL(this->mAttachmentPtr_Specular))
-  {
-    this->mAttachmentPtr_Specular = framebufferManager.GetAttachmentPointer(sAttachment_Specular);
-  }
-  if (MDY_CHECK_ISNULL(this->mAttachmentPtr_ModelPosition))
-  {
-    this->mAttachmentPtr_ModelPosition = framebufferManager.GetAttachmentPointer(sAttachment_ModelPosition);
-  }
-  if (MDY_CHECK_ISNULL(this->mAttachmentPtr_Shadow))
-  {
-    this->mAttachmentPtr_Shadow = framebufferManager.GetAttachmentPointer(sAttachment_DirectionalBasicShadow);
-  }
-
-  if (MDY_CHECK_ISNOTNULL(this->mAttachmentPtr_Unlit))        { count += 1; }
-  if (MDY_CHECK_ISNOTNULL(this->mAttachmentPtr_Normal))       { count += 1; }
-  if (MDY_CHECK_ISNOTNULL(this->mAttachmentPtr_Specular))     { count += 1; }
-  if (MDY_CHECK_ISNOTNULL(this->mAttachmentPtr_ModelPosition)) { count += 1; }
-  if (MDY_CHECK_ISNOTNULL(this->mAttachmentPtr_Shadow))       { count += 1; }
-
-  if (count == 5) { return DY_SUCCESS; }
-  else            { return DY_FAILURE; }
 }
 
 } /// ::dy namespace

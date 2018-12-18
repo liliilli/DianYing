@@ -21,6 +21,8 @@ enum class EDyResourceType
   Script,
   Model,
   GLShader,
+  GLAttachment,
+  GLFrameBuffer,
   Texture,
   Material,
   WidgetMeta,

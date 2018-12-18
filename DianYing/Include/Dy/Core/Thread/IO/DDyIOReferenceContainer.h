@@ -76,10 +76,12 @@ public:
   MDY_NODISCARD EDySuccess TryUpdateValidity(_MIN_ EDyResourceType type, _MIN_ const std::string& specifier, _MIN_ bool isValid);
 
 private:
-  TStringHashMap<DDyIOReferenceInstance> mMapTextureReference   = {};
-  TStringHashMap<DDyIOReferenceInstance> mMapGLShaderReference  = {};
-  TStringHashMap<DDyIOReferenceInstance> mMapModelReference     = {};
-  TStringHashMap<DDyIOReferenceInstance> mMapMaterialReference  = {};
+  TStringHashMap<DDyIOReferenceInstance> mMapTextureReference     = {};
+  TStringHashMap<DDyIOReferenceInstance> mMapGLShaderReference    = {};
+  TStringHashMap<DDyIOReferenceInstance> mMapModelReference       = {};
+  TStringHashMap<DDyIOReferenceInstance> mMapMaterialReference    = {};
+  TStringHashMap<DDyIOReferenceInstance> mMapAttachmentReference  = {};
+  TStringHashMap<DDyIOReferenceInstance> mMapFrameBufferReference = {};
 };
 
 } /// ::dy namespace

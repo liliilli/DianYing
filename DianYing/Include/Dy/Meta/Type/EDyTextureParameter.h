@@ -93,6 +93,11 @@ struct PDyGlTexParameterInformation final
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyGlTexParameterInformation& p);
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyGlTexParameterInformation& p);
 
+/// @brief Parameter list.
+using TTextureParameterList = std::vector<PDyGlTexParameterInformation>;
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const TTextureParameterList& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ TTextureParameterList& p);
+
 ///
 /// @brief
 /// @param  parameter

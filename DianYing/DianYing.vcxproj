@@ -155,9 +155,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Builtin\Abstract\ADyGLAttachmentResource.cc" />
+    <ClCompile Include="Source\Builtin\Abstract\ADyGLFrameBufferResource.cc" />
     <ClCompile Include="Source\Builtin\Abstract\ADyGLShaderResources.cc" />
     <ClCompile Include="Source\Builtin\Abstract\ADyModelResource.cc" />
     <ClCompile Include="Source\Builtin\Abstract\ADyTextureResource.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\BasicShadow\BasicShadow.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAttachmentNormal.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAttachmentPosition.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAttachmentSpecular.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAttachmentUnlit.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\SceneIntegration\FDyBtAttOutput.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\UIIntegration\FDyBtAttUiBasic.cc" />
+    <ClCompile Include="Source\Builtin\FrameBuffer\BasicShadow\FDyBtFBBasicShadow.cc" />
+    <ClCompile Include="Source\Builtin\FrameBuffer\Deferred\FDyBtFrameBufferDeferred.cc" />
+    <ClCompile Include="Source\Builtin\FrameBuffer\SceneIntegration\FDyBtFbSceneIntegration.cc" />
+    <ClCompile Include="Source\Builtin\FrameBuffer\UIIntegration\FDyBtFbBasic.cc" />
     <ClCompile Include="Source\Builtin\Script\DebugUiScriptCpp.cc" />
     <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingBootScriptCpp.cc" />
     <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingGlobalScriptCpp.cc" />
@@ -176,12 +189,16 @@
     <ClCompile Include="Source\Core\Reflection\RDyBuiltinResources.cc" />
     <ClCompile Include="Source\Core\Rendering\Wrapper\FDyGLWrapper.cc" />
     <ClCompile Include="Source\Core\Rendering\Wrapper\FDyGLWrapperSub.cc" />
+    <ClCompile Include="Source\Core\Resource\Information\FDyAttachmentInformation.cc" />
+    <ClCompile Include="Source\Core\Resource\Information\FDyFrameBufferInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyMaterialInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyModelInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyShaderInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyTextureInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\FDyMeshVBOIntermediate.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\FDyModelVBOIntermediate.cc" />
+    <ClCompile Include="Source\Core\Resource\Resource\FDyAttachmentResource.cc" />
+    <ClCompile Include="Source\Core\Resource\Resource\FDyFrameBufferResource.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\FDyMaterialResource.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\FDyMeshResource.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\FDyModelResource.cc" />
@@ -190,6 +207,8 @@
     <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceContainer.cc" />
     <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceInstance.cc" />
     <ClCompile Include="Source\Core\Thread\IO\FDyIOGC.cc" />
+    <ClCompile Include="Source\Core\Thread\SDyIOBindingHelperInfo.cc" />
+    <ClCompile Include="Source\Core\Thread\SDyIOBindingHelperResc.cc" />
     <ClCompile Include="Source\Core\Thread\SDyIOConnectionHelper.cc" />
     <ClCompile Include="Source\Core\Thread\IO\TDYIOWorker.cc" />
     <ClCompile Include="Source\Core\Thread\SDyIOWorkerConnHelper.cc" />
@@ -278,13 +297,13 @@
     <ClCompile Include="Source\Core\Resource\Internal\MaterialType.cc" />
     <ClCompile Include="Source\Core\Resource\Object\Grid.cc" />
     <ClCompile Include="Source\Core\DyEngine.cc" />
-    <ClCompile Include="Source\Core\Pipeline\DeferredRenderingMesh.cc" />
-    <ClCompile Include="Source\Core\Pipeline\PostEffectSsao.cc" />
+    <ClCompile Include="Source\Core\Rendering\Pipeline\DeferredRenderingMesh.cc" />
+    <ClCompile Include="Source\Core\Rendering\Pipeline\PostEffectSsao.cc" />
     <ClCompile Include="Source\Core\Resource\Resource_Deprecated\SoundResource.cc" />
-    <ClCompile Include="Source\Core\Pipeline\BasicRenderer.cc" />
-    <ClCompile Include="Source\Core\Pipeline\BasicShadow.cc" />
-    <ClCompile Include="Source\Core\Pipeline\FinalScreenDisplayRenderer.cc" />
-    <ClCompile Include="Source\Core\Pipeline\UiBasicRenderer.cc" />
+    <ClCompile Include="Source\Core\Rendering\Pipeline\BasicRenderer.cc" />
+    <ClCompile Include="Source\Core\Rendering\Pipeline\BasicShadow.cc" />
+    <ClCompile Include="Source\Core\Rendering\Pipeline\FinalScreenDisplayRenderer.cc" />
+    <ClCompile Include="Source\Core\Rendering\Pipeline\UiBasicRenderer.cc" />
     <ClCompile Include="Source\Core\Thread\TDyIO.cc" />
     <ClCompile Include="Source\Editor\Gui\Dialog\ProjectCreator.cc" />
     <ClCompile Include="Source\Editor\Gui\EtcDialog.cc" />
@@ -370,6 +389,8 @@
     <ClCompile Include="Source\Meta\Information\ComponentMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Information\ElementObjectMetaInfo.cc" />
     <ClCompile Include="Source\Meta\Information\FontMetaInformation.cc" />
+    <ClCompile Include="Source\Meta\Information\MetaInfoAttachment.cc" />
+    <ClCompile Include="Source\Meta\Information\MetaInfoFrameBuffer.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoGLShader.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoMaterial.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoModel.cc" />
@@ -388,7 +409,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Dy\Binding\LuaScriptFrame.h" />
-    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGLFramebufferResource.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGLAttachmentResource.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGLFrameBufferResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGLShaderResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyLoadingBootResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyLoadingGlobalResource.h" />
@@ -397,6 +419,17 @@
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyScriptResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyTextureResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyWidgetMetaResource.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\BasicShadow\BasicShadow.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAttachmentNormal.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAttachmentPosition.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAttachmentSpecular.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAttachmentUnlit.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\SceneIntegration\FDyBtAttOutput.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\UIIntegration\FDyBtAttUiBasic.h" />
+    <ClInclude Include="Include\Dy\Builtin\FrameBuffer\BasicShadow\FDyBtFBBasicShadow.h" />
+    <ClInclude Include="Include\Dy\Builtin\FrameBuffer\Deferred\FDyBtFrameBufferDeferred.h" />
+    <ClInclude Include="Include\Dy\Builtin\FrameBuffer\SceneIntegration\FDyBtFbSceneIntegration.h" />
+    <ClInclude Include="Include\Dy\Builtin\FrameBuffer\UIIntegration\FDyBtFbUiBasic.h" />
     <ClInclude Include="Include\Dy\Builtin\Interface\IDyResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Material\OpaqueStaticPlain.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\Box.h" />
@@ -424,30 +457,42 @@
     <ClInclude Include="Include\Dy\Builtin\Texture\Checker.h" />
     <ClInclude Include="Include\Dy\Builtin\Widget\DebugUiMeta.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\FDyGLWrapper.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLAttachmentDescriptor.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLBufferDescriptor.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLFrameBufferDescriptor.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLShaderFragmentDescriptor.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLTextureDescriptor.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLVaoBindDescriptor.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLWindowContextDescriptor.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Information\FDyAttachmentInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Information\FDyFrameBufferInformation.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyMaterialInformation.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyModelInformation.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDySoundInformation.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Internal\FDyMeshVBOIntermediate.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Internal\FDyModelVBOIntermediate.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyAttachmentResource.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyFrameBufferResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyMaterialResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyMeshResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyModelResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyShaderResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDySoundResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyTextureResource.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\EDyLazy.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\FDyBinderBase.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\TDyInformationBinder.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\TDyResourceBinder.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\TemplateRescInfoType.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOTaskDeferred.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\SDyIOBindingHelper.h" />
+    <ClInclude Include="Include\Dy\Helper\HelperString.h" />
     <ClInclude Include="Include\Dy\Helper\System\Idioms.h" />
     <ClInclude Include="Include\Dy\Helper\Wrapper\DDyMutexUniqueHashMap.h" />
     <ClInclude Include="Include\Dy\Management\IO\MDyIOData.h" />
     <ClInclude Include="Include\Dy\Management\IO\MDyIOResource.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoAttachment.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoFrameBuffer.h" />
     <ClInclude Include="Include\Dy\Meta\Type\DDyResourceName.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyLoadingGlobalScript.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyPhysicsRIgidbody.h" />
@@ -714,6 +759,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="cpp.hint" />
     <None Include="TestResource\Lua\player_script.lua" />
     <None Include="TestResource\Lua\test_bindingscript.lua" />
     <None Include="TestResource\Lua\variables.lua">

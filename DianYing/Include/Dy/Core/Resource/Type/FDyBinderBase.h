@@ -18,7 +18,7 @@ namespace dy
 
 ///
 /// @interface __FDyBinderBase
-/// @brief Using interface for binding instance. Must use this, not __TDyBinderBase.
+/// @brief Using interface for binding resource & information instance. Must use this, not __TDyResourceBinderBase.
 ///
 MDY_INTERFACE __FDyBinderBase
 {

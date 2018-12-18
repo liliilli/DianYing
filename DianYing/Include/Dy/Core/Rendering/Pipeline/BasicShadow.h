@@ -13,8 +13,8 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
 #include <Dy/Helper/Type/Vector3.h>
+#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
 
 //!
 //! Forward declaration
@@ -24,7 +24,6 @@ namespace dy
 {
 class   CDyModelRenderer;
 class   CDyDirectionalLight;
-struct  PDyGlFrameBufferInformation;
 } /// ::dy namespace
 
 //!
@@ -91,21 +90,11 @@ public:
   }
 
 private:
-  /// Create shading framebuffer component
-  void pCreateFramebufferComponents();
-  /// Release shading framebuffer component
-  void pReleaseFrameBufferComponents();
-
-  //!
-  //! General framebuffer
-  //!
-
   /// Flag for checking directional light shadow mapping is being used.
   bool                mIsUsingShadowDirectionalLight = false;
-  ///
-  PDyGlFrameBufferInformation* mShadowFrameBuffer = MDY_INITIALIZE_NULL;
-  ///
-  TDyIResourceBinderShader mDirLightShaderResource{"dyBtShaderGlRenderBscShadow"};
+
+  TDyIResourceBinderShader       mDirLightShaderResource { "dyBtShaderGlRenderBscShadow" };
+  TDyIResourceBinderFrameBuffer  mBinderFrameBuffer      { "dyBtFbShadow" };
 };
 
 } /// ::dy namespace
