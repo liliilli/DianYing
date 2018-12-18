@@ -22,9 +22,9 @@
 namespace dy
 {
 
-FDyShaderInformation::FDyShaderInformation(_MIN_ const PDyGLShaderInstanceMetaInfo& metaInfo)
+FDyShaderInformation::FDyShaderInformation(_MIN_ const PDyGLShaderInstanceMetaInfo& metaInfo) :
+    mSpecifierName{metaInfo.mSpecifierName}
 {
-  this->mSpecifierName = metaInfo.mSpecifierName;
   for (int i = 0; i < 6; ++i)
   {
     PDyShaderFragmentInformation shader{};

@@ -15,6 +15,7 @@
 
 #include <Dy/Helper/Type/VectorInt2.h>
 #include <Dy/Management/Type/AttachmentInformation.h>
+#include <Dy/Core/Resource/Type/TDyInformationBinder.h>
 
 //!
 //! Forward declaration
@@ -62,7 +63,7 @@ public:
   MDY_NODISCARD bool IsUsingPixelShader() const noexcept { return this->mIsNotUsingPixelShader == false; }
 
 private:
-  using TAttachmentInformation = std::pair<PDyGlAttachmentBinderInformation, const FDyAttachmentInformation*>;
+  using TAttachmentInformation = std::pair<PDyGlAttachmentBinderInformation, std::unique_ptr<TDyIInformationBinderAttachment>>;
   using TAttachmentInfoBinderList = std::vector<TAttachmentInformation>;
 
   std::string               mSpecifierName      = MDY_INITIALIZE_EMPTYSTR;

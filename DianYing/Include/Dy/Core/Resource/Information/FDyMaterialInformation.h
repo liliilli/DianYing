@@ -37,7 +37,7 @@ namespace dy
 class FDyMaterialInformation final
 {
 public:
-  using TPtrTextureInfoList = std::vector<NotNull<const FDyTextureInformation*>>;
+  using TPtrTextureInfoList = std::vector<std::unique_ptr<TDyIInformationBinderTexture>>;
 
   MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(FDyMaterialInformation);
   FDyMaterialInformation(_MIN_ const PDyMaterialInstanceMetaInfo& metaInfo);
@@ -58,21 +58,18 @@ public:
   /// @brief Get const pointer list of texture information (must be valid).
   MDY_NODISCARD const TPtrTextureInfoList& GetPtrTextureInformationList() const noexcept
   {
-    return this->mPtrTextureInfoList;
+    return this->mBinderTextureInfoList;
   }
 
   /// @brief Get const shader information pointer (must be valid)
-  MDY_NODISCARD NotNull<const FDyShaderInformation*> GetPtrShaderInformation() const noexcept
+  MDY_NODISCARD const auto& GetPtrShaderInformation() const noexcept
   {
-    return DyMakeNotNull(this->mPtrShaderInfo);
+    return this->mBinderShaderInfo;
   }
 
 private:
   std::string          mSpecifierName    = MDY_INITIALIZE_EMPTYSTR;
   EDyMaterialBlendMode mBlendMode        = EDyMaterialBlendMode::Opaque;
-
-  TPtrTextureInfoList         mPtrTextureInfoList = {};
-  const FDyShaderInformation* mPtrShaderInfo      = MDY_INITIALIZE_NULL;
 
   TDyLInformatinBinderShader  mBinderShaderInfo = {};
   std::vector<std::unique_ptr<TDyIInformationBinderTexture>> mBinderTextureInfoList = {};

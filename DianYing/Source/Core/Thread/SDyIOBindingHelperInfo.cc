@@ -50,8 +50,7 @@ SDyIOBindingHelper::MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_GLShader)
       checkFlag == DY_FAILURE) { return std::nullopt; }
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
-  const auto& ioData = MDyIOData::GetInstance();
-  const auto* ptr = ioData.GetPtrInformation<EDyResourceType::GLShader>(iSpecifier);
+  const auto* ptr = MDyIOData::GetInstance().GetPtrInformation<EDyResourceType::GLShader>(iSpecifier);
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
   return ptr;
 }
@@ -64,8 +63,7 @@ SDyIOBindingHelper::MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Texture)
       checkFlag == DY_FAILURE) { return std::nullopt; }
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
-  const auto& ioData = MDyIOData::GetInstance();
-  const auto* ptr = ioData.GetPtrInformation<EDyResourceType::Texture>(iSpecifier);
+  const auto* ptr = MDyIOData::GetInstance().GetPtrInformation<EDyResourceType::Texture>(iSpecifier);
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
   return ptr;
 }
@@ -78,8 +76,20 @@ SDyIOBindingHelper::MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Attachment
       checkFlag == DY_FAILURE) { return std::nullopt; }
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
-  const auto& ioData = MDyIOData::GetInstance();
-  const auto* ptr = ioData.GetPtrInformation<EDyResourceType::GLAttachment>(iSpecifier);
+  const auto* ptr = MDyIOData::GetInstance().GetPtrInformation<EDyResourceType::GLAttachment>(iSpecifier);
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
+  return ptr;
+}
+
+MDY_NODISCARD std::optional<const __TDyRscInfo_T<EDyResourceType::Material>*>
+SDyIOBindingHelper::MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Material)
+(_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder)
+{
+  if (const auto checkFlag = MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation)(iSpecifier, EDyResourceType::Material, iPtrBinder);
+      checkFlag == DY_FAILURE) { return std::nullopt; }
+
+  // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
+  const auto* ptr = MDyIOData::GetInstance().GetPtrInformation<EDyResourceType::Material>(iSpecifier);
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
   return ptr;
 }

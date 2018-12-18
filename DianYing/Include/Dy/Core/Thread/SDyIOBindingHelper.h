@@ -83,10 +83,12 @@ private:
   {
     if constexpr (TType == EDyResourceType::GLShader)     
     { return MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_GLShader)(iSpecifier, iPtrBinder); }
-    else if constexpr (TType == EDyResourceType::Texture)     
-    { return MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Texture)(iSpecifier, iPtrBinder); }
     else if constexpr (TType == EDyResourceType::GLAttachment)     
     { return MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Attachment)(iSpecifier, iPtrBinder); }
+    else if constexpr (TType == EDyResourceType::Texture)     
+    { return MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Texture)(iSpecifier, iPtrBinder); }
+    else if constexpr (TType == EDyResourceType::Material)     
+    { return MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Material)(iSpecifier, iPtrBinder); }
     else 
     { MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt); }
   }
@@ -105,6 +107,10 @@ private:
     
   static MDY_NODISCARD std::optional<const __TDyRscInfo_T<EDyResourceType::GLAttachment>*>
   MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Attachment)
+  (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
+
+  static MDY_NODISCARD std::optional<const __TDyRscInfo_T<EDyResourceType::Material>*>
+  MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Material)
   (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
 
   template <EDyResourceType TType>

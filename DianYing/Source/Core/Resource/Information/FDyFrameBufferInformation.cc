@@ -15,7 +15,7 @@
 /// Header file
 #include <Dy/Core/Resource/Information/FDyFrameBufferInformation.h>
 #include <Dy/Meta/Information/MetaInfoFrameBuffer.h>
-#include <Dy/Management/IO/MDyIOData.h>
+#include <Dy/Helper/System/Idioms.h>
 
 namespace dy
 {
@@ -26,17 +26,13 @@ FDyFrameBufferInformation::FDyFrameBufferInformation(_MIN_ const PDyGlFrameBuffe
     mIsUsingDefaultDepthBuffer{metaInfo.mIsUsingDefaultDepthBuffer},
     mIsNotUsingPixelShader{metaInfo.mIsNotUsingPixelShader}
 {
-  // Validiation test.
-
-
-  // @TODO BIND INFORMATION AS TBinder.
-  // Get informations.
-  const auto& ioData = MDyIOData::GetInstance();
   for (const auto& attachmentInfo : metaInfo.mAttachmentList)
   {
-    const auto* ptr = ioData.GetPtrInformation<EDyResourceType::GLAttachment>(attachmentInfo.mAttachmentName);
-    MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptr), "Ptr must not be null.");
-    this->mAttachmentInfoList.emplace_back(attachmentInfo, ptr);
+    using TType = decltype(this->mAttachmentInfoList)::value_type::second_type::element_type;
+    this->mAttachmentInfoList.emplace_back(
+        attachmentInfo, 
+        std::make_unique<TType>(attachmentInfo.mAttachmentName)
+    );
   }
 }
 

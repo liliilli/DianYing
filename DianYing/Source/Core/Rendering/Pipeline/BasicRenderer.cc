@@ -167,7 +167,7 @@ void FDyBasicRenderer::pRenderScreen(const CDyModelRenderer& renderer, const CDy
     {
       glUniform1i(glGetUniformLocation(ptrShader->GetShaderProgramId(), (std::string("uTexture") + std::to_string(j)).c_str()), j);
 
-      const auto* texturePointer = textureResources[j];
+      const auto* texturePointer = textureResources[j]->Get();
       glActiveTexture(GL_TEXTURE0 + j);
       switch (texturePointer->GetTextureType())
       {

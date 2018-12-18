@@ -17,7 +17,6 @@
 #include <Dy/Core/Resource/Information/FDyMaterialInformation.h>
 #include <Dy/Core/Resource/Information/FDyShaderInformation.h>
 #include <Dy/Core/Resource/Information/FDyTextureInformation.h>
-#include <Dy/Management/IO/MDyIOResource.h>
 #include <Dy/Helper/System/Idioms.h>
 
 namespace dy
@@ -29,20 +28,11 @@ FDyMaterialResource::FDyMaterialResource(_MIN_ const FDyMaterialInformation& inf
     mBinderMaterial{mSpecifierName},
     mBinderShader{information.GetPtrShaderInformation()->GetSpecifierName()}
 {
-  const auto& ioResource = MDyIOResource::GetInstance();
-
-  const auto ptrShaderInfo = information.GetPtrShaderInformation();
-  this->mPtrShaderResource = ioResource.GetPtrInformation<EDyResourceType::GLShader>(ptrShaderInfo->GetSpecifierName());
-
   const auto& ptrTextureInfoList = information.GetPtrTextureInformationList();
   for (const auto& ptrTextureInfo : ptrTextureInfoList)
-  {
-    this->mPtrTextureRescList.emplace_back(ioResource.GetPtrInformation<EDyResourceType::Texture>(ptrTextureInfo->GetSpecifierName()));
-  }
-
-  for (const auto& ptrTextureInfo : ptrTextureInfoList)
   { // Bind texture resource of this material.
-    DySafeUniquePtrEmplaceBack(this->mBinderTextureList, ptrTextureInfo->GetSpecifierName());
+    MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(ptrTextureInfo), "Unexpected error occurred.");
+    DySafeUniquePtrEmplaceBack(this->mBinderTextureList, (*ptrTextureInfo)->GetSpecifierName());
   }
 }
 
