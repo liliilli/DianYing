@@ -22,7 +22,8 @@ namespace dy
 {
 
 FDyAttachmentResource::FDyAttachmentResource(_MIN_ const FDyAttachmentInformation& iInformation) :
-    mSpecifierName{iInformation.GetSpecifierName()}
+    mSpecifierName{iInformation.GetSpecifierName()},
+    mInformationBinder{mSpecifierName}
 {
   PDyGLAttachmentDescriptor descriptor;
   descriptor.mBorderColor   = iInformation.GetBorderColor();

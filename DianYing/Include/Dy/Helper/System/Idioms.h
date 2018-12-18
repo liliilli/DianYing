@@ -29,6 +29,24 @@ void DyFastErase(_MINOUT_ std::vector<TType, TAllocator>& iVector, _MIN_ TU32 iI
   iVector.pop_back();
 }
 
+///
+/// @brief 
+/// @param 
+/// @tparam TCtorArgs
+///
+template <typename TType, typename TAllocator, typename... TCtorArgs>
+void DySafeUniquePtrEmplaceBack(
+    _MINOUT_ std::vector<std::unique_ptr<TType>, TAllocator>& list,
+    _MINOUT_ TCtorArgs&&... args)
+{
+  list.emplace_back(nullptr);
+  MDY_ASSERT(list.back() == nullptr, "Unexpected error occurred.");
+
+  auto ptrsmtInstance = std::make_unique<TType>(std::forward<TCtorArgs>(args)...);
+  list.back() = std::move(ptrsmtInstance);
+  MDY_ASSERT(list.back() != nullptr, "Unexpected error occurred.");
+}
+
 }
 
 #endif /// GUARD_DY_HELPER_SYSTEM_IDIOMS_H

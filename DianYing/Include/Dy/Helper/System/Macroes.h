@@ -85,6 +85,13 @@
 #define MDY_NOTUSED [[maybe_unused]]
 
 ///
+/// @macro MDY_CALL_BUT_NOUSE_RESULT
+/// @brief Call expression but not use. result value.
+///
+#define MDY_CALL_BUT_NOUSE_RESULT(__MAExpression__) \
+  { MDY_NOTUSED const auto MDY_TOKENPASTE2(_, __LINE__) = __MAExpression__; }
+
+///
 /// @macro MDY_NOUSE_RTVAL_EXPR
 /// @brief Just neglect return value for calling function which return value is MDY_NODISCARD.
 ///
@@ -694,6 +701,12 @@ private:
 #define MDY_VECTOR_XYZ(__MAVectorType__)  __MAVectorType__.X, __MAVectorType__.Y, __MAVectorType__.Z
 #define MDY_VECTOR_RGB(__MAVectorType__)  __MAVectorType__.R, __MAVectorType__.G, __MAVectorType__.B
 #define MDY_VECTOR_RGBA(__MAVectorType__) __MAVectorType__.R, __MAVectorType__.G, __MAVectorType__.B, __MAVectorType__.A
+
+///
+/// @macro MDY_PRIVATE_FUNC_SPECIFIER
+/// @brief USE THIS JUST ONLY FOR HIDING PRIVATE FUNCTION OR VARIABLES EVEN FOR FRIEND CLASS AND FUNCTIONS.
+///
+#define MDY_PRIVATE_FUNC_SPECIFIER(__MASpecifierName__) MDY_TOKENPASTE2(__, __MASpecifierName__)
 
 //!
 //! Function type macros.

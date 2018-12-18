@@ -14,6 +14,8 @@
 ///
 
 #include <Dy/Core/Resource/Internal/MaterialType.h>
+#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
+#include <Dy/Core/Resource/Type/TDyInformationBinder.h>
 
 //!
 //! Forward declaration
@@ -71,6 +73,10 @@ private:
 
   TPtrTextureInfoList      mPtrTextureRescList  = {};
   const FDyShaderResource* mPtrShaderResource   = MDY_INITIALIZE_NULL;
+
+  TDyIInformationBinderMaterial mBinderMaterial;
+  TDyIResourceBinderShader      mBinderShader;
+  std::vector<std::unique_ptr<TDyIResourceBinderTexture>> mBinderTextureList = {};
 };
 
 } /// ::dy namespace

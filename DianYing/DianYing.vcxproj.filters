@@ -218,7 +218,8 @@
     <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAttachmentSpecular.cc" />
     <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAttachmentUnlit.cc" />
     <ClCompile Include="Source\Builtin\Attachment\UIIntegration\FDyBtAttUiBasic.cc" />
-    <ClCompile Include="Source\Core\Thread\SDyIOBindingHelper.cc" />
+    <ClCompile Include="Source\Core\Thread\SDyIOBindingHelperResc.cc" />
+    <ClCompile Include="Source\Core\Thread\SDyIOBindingHelperInfo.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />

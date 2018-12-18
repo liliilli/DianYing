@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Helper/Type/VectorInt2.h>
+#include <Dy/Core/Resource/Type/TDyInformationBinder.h>
 
 //!
 //! Forward declaration
@@ -50,6 +51,7 @@ private:
   std::string mSpecifierName   = MDY_INITIALIZE_EMPTYSTR;
   TU32        mAttachmentId    = MDY_INITIALIZE_DEFUINT;
   bool        mIsRenderBuffer  = false;
+  TDyIInformationBinderAttachment mInformationBinder;
 };
 
 } /// ::dy namespace

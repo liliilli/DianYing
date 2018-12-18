@@ -1,11 +1,5 @@
 #ifndef GUARD_DY_CORE_RESOURCE_RESOURCE_FDYSHADERRESOURCE_H
 #define GUARD_DY_CORE_RESOURCE_RESOURCE_FDYSHADERRESOURCE_H
-#include "Dy/Meta/Type/EDyResourceTypes.h"
-#include <complex.h>
-#include <vector>
-#include "Dy/Core/Resource/Information/FDyShaderInformation.h"
-#include <complex.h>
-
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -18,6 +12,11 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /// SOFTWARE.
 ///
+
+#include <vector>
+#include <Dy/Meta/Type/EDyResourceTypes.h>
+#include <Dy/Core/Resource/Information/FDyShaderInformation.h>
+#include <Dy/Core/Resource/Type/TDyInformationBinder.h>
 
 //!
 //! Forward declaration
@@ -71,6 +70,8 @@ private:
 
   std::string mSpecifierName    = MDY_INITIALIZE_EMPTYSTR;
   TU32        mShaderProgramId;
+
+  TDyIInformationBinderShader mBinderShader;
 };
 
 } /// ::dy namespace

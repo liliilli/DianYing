@@ -21,7 +21,8 @@
 namespace dy
 {
 
-FDyTextureResource::FDyTextureResource(_MIN_ const FDyTextureInformation& information)
+FDyTextureResource::FDyTextureResource(_MIN_ const FDyTextureInformation& information) :
+    mInformationBinder{information.GetSpecifierName()}
 {
   const auto optGlImageFormat = DyGLGetImageFormatFrom(information.GetFormat());
   MDY_ASSERT(optGlImageFormat.has_value() == true, "Image format type must be valid.");

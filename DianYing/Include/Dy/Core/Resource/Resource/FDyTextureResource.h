@@ -1,8 +1,5 @@
 #ifndef GUARD_DY_CORE_RESOURCE_RESOURCE_FDYTEXTURERESOURCE_H
 #define GUARD_DY_CORE_RESOURCE_RESOURCE_FDYTEXTURERESOURCE_H
-#include "Dy/Helper/Type/VectorInt2.h"
-#include "Dy/Core/Resource/Internal/TextureEnums.h"
-
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -15,6 +12,10 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /// SOFTWARE.
 ///
+
+#include <Dy/Helper/Type/VectorInt2.h>
+#include <Dy/Core/Resource/Internal/TextureEnums.h>
+#include <Dy/Core/Resource/Type/TDyInformationBinder.h>
 
 //!
 //! Forward declaration
@@ -66,6 +67,7 @@ private:
   EDyTextureStyleType mTextureType  = EDyTextureStyleType::NoneError;
 
   TU32          mTextureResourceId  = MDY_INITIALIZE_DEFUINT;
+  TDyIInformationBinderTexture mInformationBinder;
 };
 
 } /// ::dy namespace

@@ -17,12 +17,6 @@
 #include <Dy/Core/Resource/Type/TemplateRescInfoType.h>
 #include <Dy/Core/Resource/Type/FDyBinderBase.h>
 
-///
-/// @macro MDY_PRIVATE_FUNC_SPECIFIER
-/// @brief USE THIS JUST ONLY FOR HIDING PRIVATE FUNCTION OR VARIABLES EVEN FOR FRIEND CLASS AND FUNCTIONS.
-///
-#define MDY_PRIVATE_FUNC_SPECIFIER(__MASpecifierName__) MDY_TOKENPASTE2(__, __MASpecifierName__)
-
 namespace dy
 {
 
@@ -82,10 +76,41 @@ private:
   MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireResource_FrameBuffer)
   (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
 
-
+  /// @brief Use this require resource to another dimension.
+  template <EDyResourceType TType>
+  static MDY_NODISCARD std::optional<const __TDyRscInfo_T<TType>*>
+  TryRequireInformation(_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder)
+  {
+    if constexpr (TType == EDyResourceType::GLShader)     
+    { return MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_GLShader)(iSpecifier, iPtrBinder); }
+    else if constexpr (TType == EDyResourceType::Texture)     
+    { return MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Texture)(iSpecifier, iPtrBinder); }
+    else if constexpr (TType == EDyResourceType::GLAttachment)     
+    { return MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Attachment)(iSpecifier, iPtrBinder); }
+    else 
+    { MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt); }
+  }
   
+  static MDY_NODISCARD EDySuccess
+  MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation)
+  (_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder);
+  
+  static MDY_NODISCARD std::optional<const __TDyRscInfo_T<EDyResourceType::GLShader>*>
+  MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_GLShader)
+  (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
+  
+  static MDY_NODISCARD std::optional<const __TDyRscInfo_T<EDyResourceType::Texture>*>
+  MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Texture)
+  (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
+    
+  static MDY_NODISCARD std::optional<const __TDyRscInfo_T<EDyResourceType::GLAttachment>*>
+  MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Attachment)
+  (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
+
   template <EDyResourceType TType>
   friend struct __TDyResourceBinderBase;
+  template <EDyResourceType TType>
+  friend struct __TDyInformationBinderBase;
 };
 
 } /// ::dy namespace

@@ -16,6 +16,7 @@
 #include <Dy/Core/Resource/Information/FDyMaterialInformation.h>
 #include <Dy/Meta/Information/MetaInfoMaterial.h>
 #include <Dy/Management/IO/MDyIOData.h>
+#include <Dy/Helper/System/Idioms.h>
 
 namespace dy
 {
@@ -31,6 +32,14 @@ FDyMaterialInformation::FDyMaterialInformation(_MIN_ const PDyMaterialInstanceMe
   {
     if (textureSpecifierName.empty() == true) { break; }
     this->mPtrTextureInfoList.emplace_back(ioData.GetPtrInformation<EDyResourceType::Texture>(textureSpecifierName));
+  }
+
+  this->mBinderShaderInfo.TryRequireResource(metaInfo.mShaderSpecifier);
+  MDY_ASSERT(this->mBinderShaderInfo.IsResourceExist() == true, "Unexpected error occurred.");
+  for (const auto& textureSpecifierName : metaInfo.mTextureNames)
+  {
+    if (textureSpecifierName.empty() == true) { break; }
+    DySafeUniquePtrEmplaceBack(this->mBinderTextureInfoList, textureSpecifierName);
   }
 }
 

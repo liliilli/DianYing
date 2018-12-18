@@ -23,9 +23,6 @@
 #include "Dy/Core/Resource/Resource/FDyModelResource.h"
 #include "Dy/Core/Resource/Internal/FDyModelVBOIntermediate.h"
 
-#define MDY_CALL_BUT_NOUSE_RESULT(__MAExpression__) \
-  { MDY_NOTUSED const auto MDY_TOKENPASTE2(_, __LINE__) = __MAExpression__; }
-
 constexpr TU08 kDefaultPriority = 128;
 
 namespace dy
@@ -451,9 +448,16 @@ bool TDyIO::pIsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ 
   }
 }
 
-EDySuccess TDyIO::TryBindBinderToResourceRI(_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder)
+EDySuccess TDyIO::TryBindBinderToResourceRI
+(_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder)
 {
   return this->mRIResourceMap.TryBindBinderToResourceRI(iSpecifier, iType, iPtrBinder);
+}
+
+EDySuccess TDyIO::TryBindBinderToInformationRI
+(_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder)
+{
+  return this->mRIInformationMap.TryBindBinderToResourceRI(iSpecifier, iType, iPtrBinder);
 }
 
 bool TDyIO::pIsReferenceInstanceBound(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style)

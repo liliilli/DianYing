@@ -15,7 +15,7 @@
 
 #include <Dy/Helper/Pointer.h>
 #include <Dy/Meta/Type/EDyResourceType.h>
-#include <Dy/Core/Thread/SDyIOConnectionHelper.h>
+#include <Dy/Core/Thread/SDyIOBindingHelper.h>
 #include <Dy/Core/Resource/Type/EDyLazy.h>
 #include <Dy/Core/Resource/Type/FDyBinderBase.h>
 #include <Dy/Core/Resource/Type/TemplateRescInfoType.h>
@@ -63,7 +63,7 @@ protected:
   MDY_NODISCARD EDySuccess pTryRequireResource() noexcept
   {
     MDY_ASSERT(this->mSpecifierName.empty() == false, "Resource specifier name must be valid to require resource.");
-    auto ptrResult = SDyIOConnectionHelper::TryRequireInformation<TType>(this->mSpecifierName, this);
+    auto ptrResult = SDyIOBindingHelper::TryRequireInformation<TType>(this->mSpecifierName, this);
     if (ptrResult.has_value() == false) { return DY_FAILURE; }
 
     this->mPtrResource = ptrResult.value();

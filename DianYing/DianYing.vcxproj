@@ -207,7 +207,8 @@
     <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceContainer.cc" />
     <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceInstance.cc" />
     <ClCompile Include="Source\Core\Thread\IO\FDyIOGC.cc" />
-    <ClCompile Include="Source\Core\Thread\SDyIOBindingHelper.cc" />
+    <ClCompile Include="Source\Core\Thread\SDyIOBindingHelperInfo.cc" />
+    <ClCompile Include="Source\Core\Thread\SDyIOBindingHelperResc.cc" />
     <ClCompile Include="Source\Core\Thread\SDyIOConnectionHelper.cc" />
     <ClCompile Include="Source\Core\Thread\IO\TDYIOWorker.cc" />
     <ClCompile Include="Source\Core\Thread\SDyIOWorkerConnHelper.cc" />
