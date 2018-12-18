@@ -21,12 +21,11 @@ namespace dy
 
 void FDyBtFBBasicShadow::ConstructBuffer(_MOUT_ PDyGlFrameBufferInstanceMetaInfo& property) noexcept
 {
-  property.mSpecifierName   = sName;
-  property.mFrameBufferSize = DDyVectorInt2{1280, 720};
-  property.mIsUsingDefaultDepthBuffer = false;
-  property.mIsNotUsingPixelShader     = true;
-
-  property.mAttachmentList.emplace_back(MSVSTR(FDyBtAttachmentBasicShadow::sName), EDyGlAttachmentType::Depth);
+  property.mSpecifierName         = sName;
+  property.mFrameBufferSize       = DDyVectorInt2{1280, 720};
+  property.mIsNotUsingPixelShader = true;
+  property.mIsUsingDepthBuffer    = true;
+  property.mDepthAttachmentSpecifier = FDyBtAttachmentBasicShadow::sName;
 }
 
 } /// ::dy namespace

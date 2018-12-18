@@ -47,9 +47,11 @@ private:
   std::string mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
   TU32        mFrameBufferId = MDY_INITIALIZE_DEFUINT;
 
-  using TAttachmentBinderList = std::vector<std::unique_ptr<TDyIResourceBinderAttachment>>;
+  using TAttachmentBinder = std::unique_ptr<TDyIResourceBinderAttachment>;
+  using TAttachmentBinderList = std::vector<TAttachmentBinder>;
   TDyIInformationBinderFrameBuffer  mBinderFrameBuffer;
   TAttachmentBinderList             mBinderAttachmentList = {};
+  TDyLResourceBinderAttachment      mBinderDepthBuffer    = {};
 };
 
 } /// ::dy namespace

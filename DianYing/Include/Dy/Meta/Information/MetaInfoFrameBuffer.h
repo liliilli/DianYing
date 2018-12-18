@@ -27,10 +27,12 @@ namespace dy
 struct PDyGlFrameBufferInstanceMetaInfo final : public PDyCommonResourceMetaInfo
 {
   std::string             mSpecifierName    = MDY_INITIALIZE_EMPTYSTR;
-  TAttachmentBinderList   mAttachmentList   = {};
+  TAttachmentBinderList   mColorAttachmentList   = {};
   DDyVectorInt2           mFrameBufferSize  = {};
-  bool                    mIsUsingDefaultDepthBuffer  = false;
-  bool                    mIsNotUsingPixelShader      = false;
+
+  std::string             mDepthAttachmentSpecifier = MDY_INITIALIZE_EMPTYSTR;
+  bool                    mIsUsingDepthBuffer       = true;
+  bool                    mIsNotUsingPixelShader    = false;
 };
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyGlFrameBufferInstanceMetaInfo& p);

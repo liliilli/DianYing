@@ -21,10 +21,10 @@ namespace dy
 
 void FDyBtFbSceneIntegration::ConstructBuffer(_MOUT_ PDyGlFrameBufferInstanceMetaInfo& property) noexcept
 {
-  property.mSpecifierName   = sName;
-  property.mFrameBufferSize = DDyVectorInt2{1280, 720};
-  property.mIsUsingDefaultDepthBuffer = true;
-  property.mAttachmentList.emplace_back(MSVSTR(FDyBtAttOutput::sName), EDyGlAttachmentType::Color0);
+  property.mSpecifierName       = sName;
+  property.mFrameBufferSize     = DDyVectorInt2{1280, 720};
+  property.mIsUsingDepthBuffer  = true;
+  property.mColorAttachmentList.emplace_back(MSVSTR(FDyBtAttOutput::sName), EDyGlAttachmentType::Color0);
 }
 
 } /// ::dy namespace

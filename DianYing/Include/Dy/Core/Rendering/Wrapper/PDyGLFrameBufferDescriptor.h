@@ -26,7 +26,8 @@ struct PDyGLFrameBufferDescriptor final
 
   DDyVectorInt2           mFrameBufferSize = {};
   TAttachmentBindingList  mAttachmentBindingList = {};
-  bool                    mIsUsingDefaultDepthBuffer = false;
+  TAttachmentBinding      mDepthBufferBinding = {};
+  bool                    mIsUsingDepthBuffer = true;
   bool                    mIsNotUsingPixelShader = false;
 };
 

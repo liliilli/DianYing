@@ -29,20 +29,32 @@ FDyFrameBufferResource::FDyFrameBufferResource(const FDyFrameBufferInformation& 
 {
   PDyGLFrameBufferDescriptor descriptor;
   descriptor.mFrameBufferSize           = iInformation.GetFrameBufferSize();
-  descriptor.mIsUsingDefaultDepthBuffer = iInformation.IsUsingDefaultDepthBuffer();
   descriptor.mIsNotUsingPixelShader     = !iInformation.IsUsingPixelShader();
 
-  const auto& colorAttachmentList = iInformation.GetAttachmentInformationBinderList();
-  /// @TODO TEMPORAL CODE. MUST USE TBINDER(THAT CAN SUPPORT RAII!!) INSTEAD OF THIS.
-  auto& resourceManager = MDyIOResource::GetInstance();
-  for (const auto& [binderInfo, ptrInfo] : colorAttachmentList)
-  {
-    MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptrInfo), "colorAttachment pointer must not be null. (TEMPORAL)");
-    const auto& [specifier, attachmentType] = binderInfo;
-    const auto* rescPtr = resourceManager.GetPtrInformation<EDyResourceType::GLAttachment>(specifier);
-    descriptor.mAttachmentBindingList.emplace_back(rescPtr->GetAttachmentId(), attachmentType, rescPtr->IsRenderBuffer());
+  { // Bind Attachment list.
+    const auto& colorAttachmentList = iInformation.GetAttachmentInformationBinderList();
+    for (const auto& [binderInfo, ptrInfo] : colorAttachmentList)
+    {
+      MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptrInfo), "colorAttachment pointer must not be null. (TEMPORAL)");
+      const auto& [specifier, attachmentType] = binderInfo;
 
-    DySafeUniquePtrEmplaceBack(this->mBinderAttachmentList, specifier);
+      DySafeUniquePtrEmplaceBack(this->mBinderAttachmentList, specifier);
+      MDY_ASSERT(this->mBinderAttachmentList.back()->IsResourceExist() == true, "Resource must be valid.");
+
+      const auto& rescPtr = this->mBinderAttachmentList.back()->Get();
+      descriptor.mAttachmentBindingList.emplace_back(rescPtr->GetAttachmentId(), attachmentType, rescPtr->IsRenderBuffer());
+    }
+  }
+  
+  if (iInformation.IsUsingDepthBuffer() == true)
+  { // If using depth buffer, bind depth buffer also.
+    const auto& [info, binder] = iInformation.GetDepthBufferBinder();
+    this->mBinderDepthBuffer.TryRequireResource(info.mAttachmentName);
+    MDY_ASSERT(this->mBinderDepthBuffer.IsResourceExist() == true, "Resource must be valid.");
+
+    const auto& ptrDepth = this->mBinderDepthBuffer;
+    descriptor.mIsUsingDepthBuffer = true;
+    descriptor.mDepthBufferBinding = std::make_tuple(ptrDepth->GetAttachmentId(), EDyGlAttachmentType::Depth, ptrDepth->IsRenderBuffer());
   }
 
   const auto optFrameBufferId = FDyGLWrapper::CreateFrameBuffer(descriptor);

@@ -75,7 +75,7 @@ FDyBasicRenderer::~FDyBasicRenderer()
 }
 
 void FDyBasicRenderer::RenderScreen(_MIN_ const std::vector<NotNull<CDyModelRenderer*>>& rendererList)
-{ // Integrity test
+{ // Validation test
   if (this->mBinderFrameBuffer.IsResourceExist() == false) { return; }
   glBindFramebuffer(GL_FRAMEBUFFER, this->mBinderFrameBuffer->GetFrameBufferId());
 

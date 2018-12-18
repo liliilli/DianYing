@@ -20,8 +20,8 @@
 #include <Dy/Management/IO/MDyIOResource.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Management/WindowManager.h>
-#include "Dy/Core/Resource/Resource/FDyModelResource.h"
-#include "Dy/Core/Resource/Internal/FDyModelVBOIntermediate.h"
+#include <Dy/Core/Resource/Resource/FDyModelResource.h>
+#include <Dy/Core/Resource/Internal/FDyModelVBOIntermediate.h>
 
 constexpr TU08 kDefaultPriority = 128;
 
@@ -247,10 +247,15 @@ std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(
 
   if (iResourceType == EDyResourceType::GLFrameBuffer)
   { // If resource type is `FrameBuffer`, bind all dependencies of `FrameBuffer` to checkList.
-    const auto& metaMaterial = this->mMetaInfoManager->GetGlFrameBufferMetaInformation(iSpecifier);
-    for (const auto& [specifier, type] : metaMaterial.mAttachmentList)
+    const auto& metaInfo = this->mMetaInfoManager->GetGlFrameBufferMetaInformation(iSpecifier);
+    for (const auto& [specifier, type] : metaInfo.mColorAttachmentList)
     { // Get dependent attachment specifier list and add.
       checkList.emplace_back(specifier, EDyResourceType::GLAttachment, iResourceStyle, iScope);
+    }
+    if (metaInfo.mIsUsingDepthBuffer == true)
+    { // If framebuffer also use depth buffer, enqueue it. 
+      MDY_ASSERT(metaInfo.mDepthAttachmentSpecifier.empty() == false, "Depth attachment must be specified if use depth buffer.");
+      checkList.emplace_back(metaInfo.mDepthAttachmentSpecifier, EDyResourceType::GLAttachment, iResourceStyle, iScope);
     }
   }
 

@@ -57,7 +57,10 @@ public:
   MDY_NODISCARD const auto& GetAttachmentInformationBinderList() const noexcept { return this->mAttachmentInfoList; }
 
   /// @brief Check populated frame buffer is using default depth buffer.
-  MDY_NODISCARD bool IsUsingDefaultDepthBuffer() const noexcept { return this->mIsUsingDefaultDepthBuffer; }
+  MDY_NODISCARD bool IsUsingDepthBuffer() const noexcept { return this->mIsUsingDepthBuffer; }
+
+  /// @brief Get depth information binder instance as reference which is immutable.
+  MDY_NODISCARD const auto& GetDepthBufferBinder() const noexcept { return this->mDepthAttachment; }
 
   /// @brief Check populated frame buffer is using pixel shader.
   MDY_NODISCARD bool IsUsingPixelShader() const noexcept { return this->mIsNotUsingPixelShader == false; }
@@ -71,9 +74,9 @@ private:
   DDyVectorInt2             mFrameBufferSize    = {};
 
   // @TODO NOT USED YET BUT IMPLEMENT FOR COLOR ATTACHMENT BINDING FLAW SO REPLACE EXISTING BOOL FLAG BELOW.
-  TAttachmentInformation    mDepthAttachment    = {};
-  bool                      mIsUsingDefaultDepthBuffer  = false;
-  bool                      mIsNotUsingPixelShader      = false;
+  TAttachmentInformation    mDepthAttachment        = {};
+  bool                      mIsUsingDepthBuffer     = false;
+  bool                      mIsNotUsingPixelShader  = false;
 };
 
 } /// ::dy namespace

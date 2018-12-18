@@ -380,14 +380,24 @@ std::optional<TU32> FDyGLWrapper::CreateFrameBuffer(_MIN_ const PDyGLFrameBuffer
       }
     }
 
-    // @TODO TEMPORARY! IF USING DEFAULT DEPTH BUFFER, CREATE DEPTH BUFFER ATTACHMENT TASK IN I/O QUEUEING.
-    TU32 depthId = MDY_INITIALIZE_DEFUINT;
-    if (iDescriptor.mIsUsingDefaultDepthBuffer == true)
-    { // Default depth g-buffer
-      glGenRenderbuffers(1, &depthId);
-      glBindRenderbuffer(GL_RENDERBUFFER, depthId);
-      glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, MDY_VECTOR_XY(iDescriptor.mFrameBufferSize));
-      glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthId);
+    if (iDescriptor.mIsUsingDepthBuffer == true)
+    { // Bind Depth Buffer
+      const auto [depthId, type, isRenderBuffer] = iDescriptor.mDepthBufferBinding;
+      if (isRenderBuffer == false)
+      {
+        glBindTexture(GL_TEXTURE_2D, depthId);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthId, 0);
+      }
+      else
+      {
+        MDY_NOT_IMPLEMENTED_ASSERT();
+#ifdef false
+        glGenRenderbuffers(1, &depthId);
+        glBindRenderbuffer(GL_RENDERBUFFER, depthId);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, MDY_VECTOR_XY(iDescriptor.mFrameBufferSize));
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthId);
+#endif
+      }
     }
 
     // Let framebuffer know that attachmentBuffer's id will be drawn at framebuffer.

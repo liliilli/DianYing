@@ -29,8 +29,10 @@
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
 #include <Dy/Meta/Descriptor/WidgetTextMetaInformation.h>
 #include <Dy/Meta/Descriptor/WidgetLayoutMetaInformation.h>
-#include "Dy/Meta/Descriptor/WidgetBarMetaInformation.h"
-#include "Dy/Meta/Descriptor/WidgetImageMetaInformation.h"
+#include <Dy/Meta/Descriptor/WidgetBarMetaInformation.h>
+#include <Dy/Meta/Descriptor/WidgetImageMetaInformation.h>
+
+#include <Dy/Helper/HelperString.h>
 
 //!
 //! Local tranlation unit variables
@@ -436,6 +438,13 @@ EDySuccess MDyMetaInfo::pfAddMaterialMetaInfo(_MIN_ const PDyMaterialInstanceMet
 
 EDySuccess MDyMetaInfo::pfAddGLAttachmentMetaInfo(_MIN_ const PDyGlAttachmentInstanceMetaInfo& metaInfo)
 {
+#if defined(_DEBUG) == true
+  MDY_ASSERT(metaInfo.mSpecifierName.empty() != true, "Attachment specifier name must be specifed.");
+  MDY_ASSERT(metaInfo.mBufferFormat != EDyRenderBufferInternalFormat::NoneError, "Attachment format must not none.");
+  MDY_ASSERT(metaInfo.mAttachmentSize.X > 0
+          && metaInfo.mAttachmentSize.Y > 0, "Attachment size must be positive.");
+#endif
+
   MDY_ASSERT(DyIsMapContains(this->mAttachmentMetaInfo, metaInfo.mSpecifierName) == false, "Duplicated attachment name is exist.");
   this->mAttachmentMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
   return DY_SUCCESS;
@@ -443,8 +452,39 @@ EDySuccess MDyMetaInfo::pfAddGLAttachmentMetaInfo(_MIN_ const PDyGlAttachmentIns
 
 EDySuccess MDyMetaInfo::pfAddGLFrameBufferMetaInfo(const PDyGlFrameBufferInstanceMetaInfo& metaInfo)
 {
+#if defined(_DEBUG) == true
+  // Validation test check.
+  MDY_ASSERT(metaInfo.mSpecifierName.empty() != true, "Attachment specifier name must be specifed.");
+  for (const auto& [name, type] : metaInfo.mColorAttachmentList) 
+  { // Check color attachment.
+    MDY_ASSERT(name.empty() == false, "Color attachment specifier name must not be empty.");
+    MDY_ASSERT(type != EDyGlAttachmentType::Depth
+            && type != EDyGlAttachmentType::NoneError, "Color attachment type must be `::ColorX`");
+    MDY_ASSERT(metaInfo.mFrameBufferSize.X > 0
+            && metaInfo.mFrameBufferSize.Y > 0, "Framebuffer size must be positive.");
+  }
+#endif
+
   MDY_ASSERT(DyIsMapContains(this->mFrameBufferMetaInfo, metaInfo.mSpecifierName) == false, "Duplicated framebuffer name is exist.");
-  this->mFrameBufferMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
+  auto [it, isSuccessful] = this->mFrameBufferMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
+  MDY_ASSERT(isSuccessful == true, "Setting up framebuffer meta info must be successful.");
+
+  auto& [specifier, instance] = *it;
+  if (instance.mIsUsingDepthBuffer == true && instance.mDepthAttachmentSpecifier.empty() == true)
+  { // If frame buffer will use depth buffer but not specified anything, just create default framebuffer depth attachment meta info.
+    // and bind it.
+    PDyGlAttachmentInstanceMetaInfo defaultDepthBuffer;
+    {
+      defaultDepthBuffer.mSpecifierName   = fmt::format("{}_D_{}", specifier, DyGetRandomString(5));
+      defaultDepthBuffer.mBufferFormat    = EDyRenderBufferInternalFormat::DEPTH32;
+      defaultDepthBuffer.mSourceType      = EDyResourceSource::Builtin;
+      defaultDepthBuffer.mAttachmentSize  = instance.mFrameBufferSize;
+    }
+    
+    MDY_CALL_ASSERT_SUCCESS(this->pfAddGLAttachmentMetaInfo(defaultDepthBuffer));
+    instance.mDepthAttachmentSpecifier = defaultDepthBuffer.mSpecifierName;
+  }
+
   return DY_SUCCESS;
 }
 
