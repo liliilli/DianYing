@@ -486,6 +486,7 @@
     <ClInclude Include="Include\Dy\Core\Resource\Type\TemplateRescInfoType.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOTaskDeferred.h" />
     <ClInclude Include="Include\Dy\Core\Thread\SDyIOBindingHelper.h" />
+    <ClInclude Include="Include\Dy\Helper\HelperString.h" />
     <ClInclude Include="Include\Dy\Helper\System\Idioms.h" />
     <ClInclude Include="Include\Dy\Helper\Wrapper\DDyMutexUniqueHashMap.h" />
     <ClInclude Include="Include\Dy\Management\IO\MDyIOData.h" />

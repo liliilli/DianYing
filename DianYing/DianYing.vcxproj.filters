@@ -563,6 +563,7 @@
     <ClInclude Include="Include\Dy\Builtin\Attachment\UIIntegration\FDyBtAttUiBasic.h" />
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\UIIntegration\FDyBtFbUiBasic.h" />
     <ClInclude Include="Include\Dy\Core\Thread\SDyIOBindingHelper.h" />
+    <ClInclude Include="Include\Dy\Helper\HelperString.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />
