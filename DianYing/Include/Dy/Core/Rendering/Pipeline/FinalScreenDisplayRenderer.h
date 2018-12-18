@@ -15,19 +15,6 @@
 
 #include <Dy/Core/Resource/Type/TDyResourceBinder.h>
 
-//!
-//! Forward declaration
-//!
-
-namespace dy
-{
-struct  PDyGlAttachmentInformation;
-} /// ::dy namespace
-
-//!
-//! Implementation
-//!
-
 namespace dy
 {
 
@@ -53,13 +40,10 @@ public:
   void Clear();
 
 private:
-  /// Attachment information pointer
-  PDyGlAttachmentInformation* mAttachmentPtr_Scene  = MDY_INITIALIZE_NULL;
-  PDyGlAttachmentInformation* mAttachmentPtr_Ui     = MDY_INITIALIZE_NULL;
-
-  /// Shader information pointer
-  TDyIResourceBinderShader    mBinderShader   {"dyBtShaderGlScreenOut"};
-  TDyIResourceBinderModel     mBinderTriangle {"dyBtModelScrProjTri"};
+  TDyIResourceBinderShader      mBinderShader     {"dyBtShaderGlScreenOut"};
+  TDyIResourceBinderModel       mBinderTriangle   {"dyBtModelScrProjTri"};
+  TDyIResourceBinderAttachment  mBinderAttSceneFinal{ "dyBtAtScrFin_Output" };
+  TDyIResourceBinderAttachment  mBinderAttUIFinal   { "dyBtAtUiBasic_Output" };
 };
 
 } /// ::dy namespace

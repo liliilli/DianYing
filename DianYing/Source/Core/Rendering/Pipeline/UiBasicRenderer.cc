@@ -25,6 +25,7 @@
 
 #include <Dy/Element/Canvas/Widget.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
+#include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
 
 //!
 //! Local translation unit data
@@ -49,6 +50,8 @@ namespace dy
 
 FDyUIBasicRenderer::FDyUIBasicRenderer()
 {
+  MDY_ASSERT(this->mBinderFrameBuffer.IsResourceExist() == true, "UI Framebuffer must be valid.");
+
   auto& settingManager      = MDySetting::GetInstance();
   auto& framebufferManager  = MDyFramebuffer::GetInstance();
   const auto overallScreenWidth   = settingManager.GetWindowSizeWidth();
@@ -74,6 +77,7 @@ Camera0 : 2
   };
 #endif
 
+#ifdef false
   static auto CreateUIGeneralFramebuffer = [&] {
     PDyGlFrameBufferInformation       framebufferInfo = {};
     PDyGlAttachmentInformation        attachmentInfo = {};
@@ -114,19 +118,14 @@ Camera0 : 2
   //!
 
   CreateUIGeneralFramebuffer();
+#endif
 
   // @TODO TEMPORAL
   MDY_CALL_ASSERT_SUCCESS(MDyFont::GetInstance().CreateFontResourceContainer("Arial"));
 }
 
 FDyUIBasicRenderer::~FDyUIBasicRenderer()
-{
-  // Remove framebuffer & attachment resource
-  auto& framebufferManager  = MDyFramebuffer::GetInstance();
-  MDY_CALL_ASSERT_SUCCESS(framebufferManager.RemoveFrameBuffer(MSVSTR(sFrameBuffer_UiBasic)));
-  // Null-lize
-  this->mDyBtFbUiBasic = nullptr;
-}
+{ }
 
 void FDyUIBasicRenderer::RenderScreen()
 {
@@ -138,17 +137,14 @@ void FDyUIBasicRenderer::RenderScreen()
     f = !f;
   }
 
-  glBindFramebuffer(GL_FRAMEBUFFER, this->mDyBtFbUiBasic->GetFramebufferId());
+  glBindFramebuffer(GL_FRAMEBUFFER, this->mBinderFrameBuffer->GetFrameBufferId());
   testWidget->Render();
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void FDyUIBasicRenderer::Clear()
-{ // Integrity test
-  if (MDY_CHECK_ISNULL(this->mDyBtFbUiBasic)) { return; }
-
-  // Reset overall deferred framebuffer setting
-  glBindFramebuffer(GL_FRAMEBUFFER, this->mDyBtFbUiBasic->GetFramebufferId());
+{ 
+  glBindFramebuffer(GL_FRAMEBUFFER, this->mBinderFrameBuffer->GetFrameBufferId());
   glClearColor(0, 0, 0, 0);
   glClear(GL_COLOR_BUFFER_BIT);
   glBindFramebuffer(GL_FRAMEBUFFER, 0);

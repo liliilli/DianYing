@@ -24,7 +24,6 @@ namespace dy
 {
 class   CDyCamera;
 class   CDyModelRenderer;
-struct  PDyGlFrameBufferInformation;
 } /// ::dy namespace
 
 //!

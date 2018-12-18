@@ -20,58 +20,30 @@
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
 
+#include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
+
 namespace dy
 {
 
 FDyFinalScreenDisplayRenderer::FDyFinalScreenDisplayRenderer()
 {
-  auto& framebufferManager  = MDyFramebuffer::GetInstance();
+  MDY_ASSERT(this->mBinderAttSceneFinal.IsResourceExist() == true,  "Scene final output must be valid.");
+  MDY_ASSERT(this->mBinderAttUIFinal.IsResourceExist() == true,     "UI final output must be valid.");
 
-  //!
-  //! Lambda function
-  //!
-
-  static auto GetPointerOfAttachmentTextures = [&]() -> EDySuccess
-  {
-    if (MDY_CHECK_ISNULL(this->mAttachmentPtr_Scene))
-    {
-      this->mAttachmentPtr_Scene = framebufferManager.GetAttachmentPointer(sAttachment_ScreenFinal_Output);
-    }
-    if (MDY_CHECK_ISNULL(this->mAttachmentPtr_Ui))
-    {
-      this->mAttachmentPtr_Ui   = framebufferManager.GetAttachmentPointer(sAttachment_Output);
-    }
-
-    if (MDY_CHECK_ISNULL(this->mAttachmentPtr_Scene)) { return DY_FAILURE; }
-    if (MDY_CHECK_ISNULL(this->mAttachmentPtr_Ui))    { return DY_FAILURE; }
-    return DY_SUCCESS;
-  };
-
-  //!
-  //! FunctionBody ∨
-  //!
-
-  MDY_CALL_ASSERT_SUCCESS(GetPointerOfAttachmentTextures());
-
-  {
-    this->mBinderShader->UseShader();
-    const auto id = this->mBinderShader->GetShaderProgramId();
-    glUniform1i(glGetUniformLocation(id, "uSceneTexture"), 0);
-    glUniform1i(glGetUniformLocation(id, "uUiTexture")   , 1);
-    this->mBinderShader->DisuseShader();
-  }
+  this->mBinderShader->UseShader();
+  const auto id = this->mBinderShader->GetShaderProgramId();
+  glUniform1i(glGetUniformLocation(id, "uSceneTexture"), 0);
+  glUniform1i(glGetUniformLocation(id, "uUiTexture")   , 1);
+  this->mBinderShader->DisuseShader();
 }
 
-FDyFinalScreenDisplayRenderer::~FDyFinalScreenDisplayRenderer()
-{
-  this->mAttachmentPtr_Scene = nullptr;
-  this->mAttachmentPtr_Ui = nullptr;
-}
+FDyFinalScreenDisplayRenderer::~FDyFinalScreenDisplayRenderer() { }
 
 void FDyFinalScreenDisplayRenderer::RenderScreen()
 {
   if (this->mBinderShader.IsResourceExist() == false
-  ||  this->mBinderTriangle.IsResourceExist() == false) { return; }
+  ||  this->mBinderTriangle.IsResourceExist() == false
+  ||  this->mBinderAttSceneFinal.IsResourceExist() == false) { return; }
 
   const auto& submeshList = this->mBinderTriangle->GetMeshResourceList();
   MDY_ASSERT(submeshList.size() == 1, "");
@@ -84,8 +56,8 @@ void FDyFinalScreenDisplayRenderer::RenderScreen()
   glBindVertexArray(mesh.GetVertexArrayId());
 
   // Bind g-buffers as textures and draw.
-  glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, this->mAttachmentPtr_Scene->GetAttachmentId());
-  glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, this->mAttachmentPtr_Ui->GetAttachmentId());
+  glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, this->mBinderAttSceneFinal->GetAttachmentId());
+  glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, this->mBinderAttUIFinal->GetAttachmentId());
   glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
 
   // Rewind

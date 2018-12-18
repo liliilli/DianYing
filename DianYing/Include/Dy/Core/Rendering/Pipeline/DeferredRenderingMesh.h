@@ -22,10 +22,7 @@
 
 namespace dy
 {
-struct  PDyGlAttachmentInformation;
 struct  DDyUboDirectionalLight;
-struct  PDyGlFrameBufferInformation;
-class   CDyModelResource_Deprecated;
 } /// ::dy namespace
 
 //!
@@ -78,25 +75,16 @@ private:
   void pInitializeShaderSetting();
   void pInitializeUboBuffers();
 
-  ///
-  /// @brief  Try to getting attachment instance pointers from management instance.
-  /// @return If successful to getting all attachment pointers, return true.
-  ///
-  MDY_NODISCARD EDySuccess pTryGetAttachmentPointers();
-
   inline static constexpr TI32 sDirectionalLightCount = 5;
 
-  TDyIResourceBinderShader  mBinderShader   {"dyBtShaderGlDeferred"};
-  TDyIResourceBinderModel   mBinderTriangle {"dyBtModelScrProjTri"};
-
-  /// Attachment information pointer, mDyBtFbUiBasic
-  PDyGlAttachmentInformation* mAttachmentPtr_Unlit          = MDY_INITIALIZE_NULL;
-  PDyGlAttachmentInformation* mAttachmentPtr_Normal         = MDY_INITIALIZE_NULL;
-  PDyGlAttachmentInformation* mAttachmentPtr_Specular       = MDY_INITIALIZE_NULL;
-  PDyGlAttachmentInformation* mAttachmentPtr_ModelPosition  = MDY_INITIALIZE_NULL;
-  PDyGlAttachmentInformation* mAttachmentPtr_Shadow         = MDY_INITIALIZE_NULL;
-  bool                        mIsAttachmentPtrBinded        = false;
-  PDyGlFrameBufferInformation*  mDyBtFbScrFin               = MDY_INITIALIZE_NULL;
+  TDyIResourceBinderShader      mBinderShader     { "dyBtShaderGlDeferred" };
+  TDyIResourceBinderModel       mBinderTriangle   { "dyBtModelScrProjTri" };
+  TDyIResourceBinderFrameBuffer mBinderFrameBuffer{ "dyBtFbScrFin" };
+  TDyIResourceBinderAttachment  mBinderAttUnlit   { "dyBtUnlit" };
+  TDyIResourceBinderAttachment  mBinderAttNormal  { "dyBtNormal" };
+  TDyIResourceBinderAttachment  mBinderAttSpecular{ "dyBtSpecular" };
+  TDyIResourceBinderAttachment  mBinderAttPosition{ "dyBtModelPosition" };
+  TDyIResourceBinderAttachment  mBinderAttShadow  { "dyBtAtDirBscShadow" };
 
   std::queue<TI32>    mDirLightAvailableList  = {};
 };

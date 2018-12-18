@@ -13,6 +13,8 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
+
 //!
 //! Forward declaration
 //!
@@ -21,7 +23,6 @@ namespace dy
 {
 class   CDyCamera;
 class   CDyModelRenderer;
-struct  PDyGlFrameBufferInformation;
 } /// ::dy namespace
 
 //!
@@ -38,19 +39,14 @@ public:
   FDyUIBasicRenderer();
   ~FDyUIBasicRenderer();
 
-  ///
   /// @brief Rendering deferred contexts to framebuffer.
-  ///
   void RenderScreen();
 
-  ///
   /// @brief Clear properties of given framebuffer.
-  ///
   void Clear();
 
 private:
-  /// mDyBtFbUiBasic
-  PDyGlFrameBufferInformation* mDyBtFbUiBasic = MDY_INITIALIZE_NULL;
+  TDyIResourceBinderFrameBuffer mBinderFrameBuffer{ "dyBtFbUiBasic" };
 };
 
 } /// ::dy namespace
