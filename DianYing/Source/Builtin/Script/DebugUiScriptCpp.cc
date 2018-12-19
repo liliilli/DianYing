@@ -67,7 +67,6 @@ Camera0 : 2
 
   auto& time = MDyTime::GetInstance();
   auto& inputManager = MDyInput::GetInstance();
-  //text->SetText(fmt::format("{:05.2f} %, {:0d} fps", usage, time.GetPresentFpsCountValue()));
   text->SetText(fmt::format(
       "A0:{:+03.2f}, A1:{:+03.2f}, A2:{:+03.2f}, A3:{:+03.2f}, A4:{:+03.2f}, A5:{:+03.2f}\n"
       "{:05.2f} %, {:0d} fps", 

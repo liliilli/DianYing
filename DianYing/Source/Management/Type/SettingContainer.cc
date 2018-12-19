@@ -16,7 +16,9 @@
 #include <Dy/Management/Type/SettingContainer.h>
 #include <nlohmann/json.hpp>
 #include <nlohmann/adl_serializer.hpp>
+
 #include <Dy/Helper/Library/HelperJson.h>
+#include <Dy/Meta/Type/Input/JsonInputButton.h>
 
 //!
 //! Forward declaration
@@ -58,7 +60,6 @@ MDY_SET_IMMUTABLE_STRING(sKey,    "Key");
 MDY_SET_IMMUTABLE_STRING(sPositive, "+");
 MDY_SET_IMMUTABLE_STRING(sNegative, "-");
 MDY_SET_IMMUTABLE_STRING(sGravity,  "gravity");
-MDY_SET_IMMUTABLE_STRING(sRepeat,   "repeat");
 
 //! DDySettingTag
 
@@ -187,7 +188,6 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingInput::DAxis& p)
   j = nlohmann::json
   {
       {MSVSTR(sGravity),  p.mGravity},
-      {MSVSTR(sRepeat),   p.mIsRepeatable},
   };
 
   if (p.mPositive.empty() == false) { j[MSVSTR(sPositive)] = p.mPositive; }
@@ -203,6 +203,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingInput& p)
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingInput::DAction& p)
 {
   using TKeyListType = DDySettingInput::TKeyListType;
+  
   if (DyIsJsonKeyExist(j, MSVSTR(sKey)) == true) { p.mKey = DyJsonGetValueFrom<TKeyListType>(j, sKey); }
 }
 
@@ -213,8 +214,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingInput::DAxis& p)
   if (DyIsJsonKeyExist(j, MSVSTR(sPositive)) == true) { p.mPositive = DyJsonGetValueFrom<TKeyListType>(j, sPositive); }
   if (DyIsJsonKeyExist(j, MSVSTR(sNegative)) == true) { p.mNegative = DyJsonGetValueFrom<TKeyListType>(j, sNegative); }
 
-  p.mGravity      = DyJsonGetValueFrom<TI32>(j, sGravity);
-  p.mIsRepeatable = DyJsonGetValueFrom<bool>(j, sRepeat);
+  p.mGravity        = DyJsonGetValueFrom<TI32>(j, sGravity);
 }
 
 DDySettingInput::DAction

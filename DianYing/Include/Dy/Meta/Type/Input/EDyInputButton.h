@@ -54,6 +54,7 @@ enum EDyInputButton : unsigned char
 
   NoneError
 };
+
 constexpr std::size_t kEDyInputButtonCount = EDyInputButton::NoneError;
 using EDyButton = EDyInputButton;
 

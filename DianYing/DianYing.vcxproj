@@ -400,9 +400,9 @@
     <ClCompile Include="Source\Meta\Information\PrefabMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Information\ScriptMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Type\EDyComponentTypes.cc" />
-    <ClCompile Include="Source\Meta\Type\EDyInput.cc" />
     <ClCompile Include="Source\Meta\Type\EDyWidgetTypes.cc" />
     <ClCompile Include="Source\Meta\Type\EDyTextureParameter.cc" />
+    <ClCompile Include="Source\Meta\Type\Input\JsonInputButton.cc" />
     <ClCompile Include="Source\precompiled.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">Create</PrecompiledHeader>
@@ -495,7 +495,7 @@
     <ClInclude Include="Include\Dy\Management\IO\MDyIOResource.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyInputButton.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyJoystickAnalog.h" />
-    <ClInclude Include="Include\Dy\Management\Type\Input\EDyInputButton.h" />
+    <ClInclude Include="Include\Dy\Meta\Type\Input\EDyInputButton.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\EDyInputButtonStatus.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoAttachment.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoFrameBuffer.h" />
@@ -649,7 +649,6 @@
     <ClInclude Include="Include\Dy\Management\IO\MetaInfoManager.h" />
     <ClInclude Include="Include\Dy\Management\FontManager.h" />
     <ClInclude Include="Include\Dy\Management\Helper\GuiLogStreamSink.h" />
-    <ClInclude Include="Include\Dy\Management\Helper\InputKeyString.h" />
     <ClInclude Include="Include\Dy\Management\Helper\PhysXErrorCallback.h" />
     <ClInclude Include="Include\Dy\Management\InputManager.h" />
     <ClInclude Include="Include\Dy\Management\Interface\IDyThreadHelper.h" />
@@ -698,13 +697,13 @@
     <ClInclude Include="Include\Dy\Meta\Information\FontMetaInformation.h" />
     <ClInclude Include="Include\Dy\Meta\Information\ScriptMetaInformation.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyComponentTypes.h" />
-    <ClInclude Include="Include\Dy\Meta\Type\EDyInput.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyRenderingApi.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyResourceType.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyResourceTypes.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyWidgetTypes.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyTextureParameter.h" />
     <ClInclude Include="Include\Dy\Helper\Constant\StringPipelineUniform.h" />
+    <ClInclude Include="Include\Dy\Meta\Type\Input\JsonInputButton.h" />
     <ClInclude Include="Include\precompiled.h" />
     <ClInclude Include="Libraries\glad\include\glad\glad.h" />
     <ClInclude Include="Libraries\glad\include\KHR\khrplatform.h" />

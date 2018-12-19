@@ -104,7 +104,6 @@
     <ClCompile Include="Source\Component\Internal\CDyFontRenderer.cc" />
     <ClCompile Include="Source\Management\Type\SettingContainer.cc" />
     <ClCompile Include="Source\Helper\Type\VectorInt2.cc" />
-    <ClCompile Include="Source\Meta\Type\EDyInput.cc" />
     <ClCompile Include="Source\Management\Platform\DDyWindowInformationWindows.cc" />
     <ClCompile Include="Source\Core\Thread\TDyIO.cc" />
     <ClCompile Include="Source\Management\Type\KeyAxisBindingInformation.cc" />
@@ -222,6 +221,7 @@
     <ClCompile Include="Source\Core\Thread\SDyIOBindingHelperInfo.cc" />
     <ClCompile Include="Source\Management\Type\Input\DDyInputButton.cc" />
     <ClCompile Include="Source\Management\Type\Input\DDyJoystickAnalog.cc" />
+    <ClCompile Include="Source\Meta\Type\Input\JsonInputButton.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -250,7 +250,6 @@
     <ClInclude Include="Include\Dy\Management\LoggingManager.h" />
     <ClInclude Include="Include\Dy\Helper\ThreadPool.h" />
     <ClInclude Include="Include\Dy\Management\InputManager.h" />
-    <ClInclude Include="Include\Dy\Management\Helper\InputKeyString.h" />
     <ClInclude Include="Libraries\glad\include\glad\glad.h" />
     <ClInclude Include="Libraries\glad\include\KHR\khrplatform.h" />
     <ClInclude Include="Include\Dy\Helper\GlobalEnumFlags.h" />
@@ -402,7 +401,6 @@
     <ClInclude Include="Include\Dy\Element\Canvas\Text.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyRenderingApi.h" />
     <ClInclude Include="Include\Dy\Management\Type\SettingContainer.h" />
-    <ClInclude Include="Include\Dy\Meta\Type\EDyInput.h" />
     <ClInclude Include="Include\Dy\Management\Type\EDyIOResourceScope.h" />
     <ClInclude Include="Include\Dy\Management\Interface\IDyWindowDependent.h" />
     <ClInclude Include="Include\Dy\Management\Platform\DDyWindowInformationWindows.h" />
@@ -567,9 +565,10 @@
     <ClInclude Include="Include\Dy\Core\Thread\SDyIOBindingHelper.h" />
     <ClInclude Include="Include\Dy\Helper\HelperString.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\EDyInputButtonStatus.h" />
-    <ClInclude Include="Include\Dy\Management\Type\Input\EDyInputButton.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyInputButton.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyJoystickAnalog.h" />
+    <ClInclude Include="Include\Dy\Meta\Type\Input\EDyInputButton.h" />
+    <ClInclude Include="Include\Dy\Meta\Type\Input\JsonInputButton.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

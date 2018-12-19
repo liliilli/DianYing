@@ -16,10 +16,10 @@
 #include <string>
 
 #include <Dy/Helper/Type/Vector2.h>
+#include <Dy/Meta/Type/Input/EDyInputButton.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Management/Type/KeyAxisBindingInformation.h>
 #include <Dy/Management/Type/KeyActionBindingInformation.h>
-#include <Dy/Management/Type/Input/EDyInputButton.h>
 #include <Dy/Management/Type/Input/EDyInputButtonStatus.h>
 #include <Dy/Helper/Type/Clamp.h>
 

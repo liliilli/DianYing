@@ -14,7 +14,6 @@
 ///
 
 #include <Dy/Helper/System/Macroes.h>
-#include <Dy/Management/Type/Input/EDyInputButton.h>
 #include <Dy/Management/Type/Input/EDyInputButtonStatus.h>
 
 namespace dy
