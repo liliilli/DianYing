@@ -19,6 +19,7 @@
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Management/Type/KeyAxisBindingInformation.h>
 #include <Dy/Management/Type/KeyActionBindingInformation.h>
+#include <Dy/Helper/Type/Clamp.h>
 
 namespace dy
 {
@@ -43,21 +44,20 @@ public:
   ///
   MDY_NODISCARD TF32 GetAxisValue(_MIN_ const std::string& axisKeyName) noexcept;
 
-  ///
   /// @brief Return present-frame mouse position.
-  ///
-  FORCEINLINE MDY_NODISCARD const DDyVector2& GetPresentMousePosition() const noexcept
+  MDY_NODISCARD const DDyVector2& GetPresentMousePosition() const noexcept
   {
     return this->mMousePresentPosition;
   }
 
-  ///
   /// @brief Return old-frame mouse position.
-  ///
-  FORCEINLINE MDY_NODISCARD const DDyVector2& GetPresentLastPosition() const noexcept
+  MDY_NODISCARD const DDyVector2& GetPresentLastPosition() const noexcept
   {
     return this->mMouseLastPosition;
   }
+
+  /// @brief Return original value which is not calculated and calibrated at all.
+  MDY_NODISCARD const TF32 GetJoystickStickValue(_MIN_ DDyClamp<TU32, 0, 5> index) const noexcept;
 
   ///
   /// @brief Get whether or not specific axis was pressed.

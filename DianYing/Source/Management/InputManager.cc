@@ -37,7 +37,7 @@ namespace
 constexpr const char err_input_key_not_exist[] = "Key axis is not exist. [Key axis : {}]";
 constexpr TF32 kNegativeValue = -1.0f;
 constexpr TF32 kPositiveValue = +1.0f;
-constexpr TU32 kMaximumStickCount = 5;
+constexpr TU32 kMaximumStickCount = 6;
 
 std::array<dy::DDyInputButton, dy::kEDyInputButtonCount> mInputButtonList = {};
 std::array<dy::DDyJoystickAnalog, kMaximumStickCount> mInputAnalogStickList = {};
@@ -50,7 +50,6 @@ bool              sMousePositionDirty   = false;
 bool              mIsControllerConnected= false;
 
 void DyCallbackCheckJoystickConnection(_MIN_ int joy, _MIN_ int event);
-void DyProcessJoystickCalibration();
 
 ///
 /// @brief
@@ -225,30 +224,11 @@ void DyCallbackCheckJoystickConnection(_MIN_ int joy, _MIN_ int event)
   {
     MDY_LOG_CRITICAL("Joystick {0} Name : {1} Supported.", 0, glfwGetJoystickName(GLFW_JOYSTICK_1));
     mIsControllerConnected = true;
-    DyProcessJoystickCalibration();
   }
   else if (event == GLFW_DISCONNECTED)
   {
     MDY_LOG_CRITICAL("Joystick {0} Disconnected.", 0);
     mIsControllerConnected = false;
-  }
-}
-
-/// 
-/// @brief Process joystick calibration. \n
-/// To do joystick calibration, `mIsControllerConnected` must be true.
-///
-void DyProcessJoystickCalibration()
-{
-  MDY_ASSERT(mIsControllerConnected == true, "Joystick must be connected.");
-
-  int supportingStickCount;
-  const float* stickFirstValueList = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &supportingStickCount);
-
-  const auto stickCount = supportingStickCount < kMaximumStickCount ? supportingStickCount : kMaximumStickCount;
-  for (TU32 i = 0; i < stickCount; ++i)
-  {
-    mInputAnalogStickList[i].SetBasisValue(stickFirstValueList[i]);
   }
 }
 
@@ -304,7 +284,6 @@ EDySuccess MDyInput::pfInitialize()
   { // Check joystick binding manually at first time.
     MDY_LOG_CRITICAL("Joystick {0} Name : {1} Supported.", 0, glfwGetJoystickName(GLFW_JOYSTICK_1));
     mIsControllerConnected = true;
-    DyProcessJoystickCalibration();
   }
 
   return DY_SUCCESS;
@@ -358,6 +337,11 @@ float MDyInput::GetAxisValue(_MIN_ const std::string& axisKeyName) noexcept
 	}
 
   return keyIt->second.mAxisValue;
+}
+
+const TF32 MDyInput::GetJoystickStickValue(_MIN_ DDyClamp<TU32, 0, 5> index) const noexcept
+{
+  return mInputAnalogStickList[index].GetValue();
 }
 
 bool MDyInput::IsAxisPressed(_MIN_ const std::string& axisSpecifierName) noexcept

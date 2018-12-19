@@ -18,31 +18,14 @@
 namespace dy
 {
 
-void DDyJoystickAnalog::SetBasisValue(_MIN_ TF32 iNewBasis) noexcept
-{
-  this->mBasisValue = iNewBasis;
-}
-
-TF32 DDyJoystickAnalog::GetBasisValue() const noexcept
-{
-  return this->mBasisValue;
-}
-
 void DDyJoystickAnalog::Update(_MIN_ TF32 iValue) noexcept
 {
-  this->mOriginalValue  = iValue;
-  this->mBasisValue     = this->mOriginalValue - this->mBasisValue;
+  this->mValue  = iValue;
 }
 
-TF32 DDyJoystickAnalog::GetDeltaValue() const noexcept
+TF32 DDyJoystickAnalog::GetValue() const noexcept
 {
-  return this->mDeltaValue;
+  return this->mValue;
 }
-
-TF32 DDyJoystickAnalog::GetOriginalValue() const noexcept
-{
-  return this->mOriginalValue;
-}
-
 
 } /// ::dy namespace
