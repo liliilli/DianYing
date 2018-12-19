@@ -30,7 +30,7 @@ void FDyBuiltinDebugUiScript::Initiate()
 {
   FDyText* text = this->GetWidgetReference().GetUiObject<FDyText>("DebugTestText");
   auto position = text->GetWidgetPosition(EDyOrigin::Center_Center);
-  position.Y += 48;
+  position.Y += 96;
   text->SetWidgetCentralPosition(position);
   //text->SetFontSize(12);
 }
@@ -42,7 +42,9 @@ void FDyBuiltinDebugUiScript::Start()
 
 void FDyBuiltinDebugUiScript::Update(_MIN_ TF32 dt)
 {
-  const TF32 usage = MDyWindow::GetInstance().GetCpuUsage();
+  auto& windowManager = MDyWindow::GetInstance(); 
+  const TF32 usageCpu = windowManager.GetCpuUsage();
+  const auto usageRam = windowManager.GetRamUsage();
   auto& widgetRef = this->GetWidgetReference();
 
   FDyText* text = widgetRef.GetUiObject<FDyText>("DebugTestText");
@@ -70,16 +72,18 @@ Camera0 : 2
   auto& inputManager = MDyInput::GetInstance();
   text->SetText(fmt::format(
       "A0:{:+03.2f}, A1:{:+03.2f}, A2:{:+03.2f}, A3:{:+03.2f}, A4:{:+03.2f}, A5:{:+03.2f}\n"
-      "{:05.2f} %, {:0d} fps", 
+      "{:05.2f} %, {:0d} fps\n"
+      "Ram Usage : {} Bytes", 
       inputManager.GetJoystickStickValue(0),
       inputManager.GetJoystickStickValue(1),
       inputManager.GetJoystickStickValue(2),
       inputManager.GetJoystickStickValue(3),
       inputManager.GetJoystickStickValue(4),
       inputManager.GetJoystickStickValue(5),
-      usage, time.GetPresentFpsCountValue()
+      usageCpu, time.GetPresentFpsCountValue(),
+      usageRam
   ));
-  bar->SetPresentValue(usage);
+  bar->SetPresentValue(usageCpu);
 }
 
 } /// ::dy namespace

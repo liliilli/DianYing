@@ -54,10 +54,11 @@ public:
   ///
   virtual MDY_NODISCARD EDySuccess RemoveConsoleWindow() = 0;
 
-  ///
   /// @brief Get cpu usage overall percentage. (0 ~ 100%)
-  ///
-  virtual MDY_NODISCARD TF32       GetCpuUsage() = 0;
+  virtual MDY_NODISCARD TF32 GetCpuUsage() = 0;
+
+  /// @brief Get ram usage as byte.
+  virtual MDY_NODISCARD TU64 GetRamUsage() = 0;
 };
 
 } /// ::dy namespace

@@ -14,8 +14,9 @@
 
 /// Header file
 #include <Dy/Management/Platform/DDyWindowInformationWindows.h>
-
 #if (defined(MDY_PLATFORM_FLAG_WINDOWS) == true)
+#include <Psapi.h>
+
 namespace dy
 {
 
@@ -99,6 +100,13 @@ TF32 DDyWindowInformationWindows::GetCpuUsage()
   mLastSysCpu  = sys;
 
   return percent * 100;
+}
+
+TU64 DDyWindowInformationWindows::GetRamUsage()
+{
+  PROCESS_MEMORY_COUNTERS_EX pmc;
+  GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc));
+  return pmc.WorkingSetSize;
 }
 
 } /// ::dy namespace

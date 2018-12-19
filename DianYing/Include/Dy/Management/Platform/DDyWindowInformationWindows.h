@@ -51,10 +51,11 @@ public:
   ///
   MDY_NODISCARD EDySuccess RemoveConsoleWindow() override final;
 
-  ///
   /// @brief Get cpu usage as 0 ~ 100 percent.
-  ///
   MDY_NODISCARD TF32 GetCpuUsage() override final;
+
+  /// @brief Get ram usage as byte.
+  MDY_NODISCARD TU64 GetRamUsage() override final;
 
 protected:
   Owner<FILE*> mFp                      = nullptr;
