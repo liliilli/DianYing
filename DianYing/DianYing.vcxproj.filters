@@ -220,6 +220,7 @@
     <ClCompile Include="Source\Builtin\Attachment\UIIntegration\FDyBtAttUiBasic.cc" />
     <ClCompile Include="Source\Core\Thread\SDyIOBindingHelperResc.cc" />
     <ClCompile Include="Source\Core\Thread\SDyIOBindingHelperInfo.cc" />
+    <ClCompile Include="Source\Management\Type\Input\DDyInputButton.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -564,6 +565,9 @@
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\UIIntegration\FDyBtFbUiBasic.h" />
     <ClInclude Include="Include\Dy\Core\Thread\SDyIOBindingHelper.h" />
     <ClInclude Include="Include\Dy\Helper\HelperString.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Input\EDyInputButtonStatus.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Input\EDyInputButton.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Input\DDyInputButton.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />
