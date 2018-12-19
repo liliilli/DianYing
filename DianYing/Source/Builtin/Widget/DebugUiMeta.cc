@@ -41,7 +41,7 @@ MDY_SET_IMMUTABLE_STRING(sBuffer, R"dy(
         "WidgetSize": { "X": 200, "Y": 100 },
         "Origin": "Left_Bottom",
         "InitialString": "", "InitialColor": 16777215, "InitialAlpha": 1.0,
-        "EdgeColor": 0, "FontSize": 12, "FontAlignment": "Left",
+        "EdgeColor": 0, "FontSize": 10, "FontAlignment": "Left",
         "FontSpecifierName": "Arial", "IsUsingEdge": true
       }
     },
