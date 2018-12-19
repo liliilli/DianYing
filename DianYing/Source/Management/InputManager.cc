@@ -25,6 +25,7 @@
 #include <Dy/Management/Type/Input/EDyInputButtonStatus.h>
 #include <Dy/Management/Type/Input/EDyInputButton.h>
 #include <Dy/Management/Type/Input/DDyInputButton.h>
+#include <Dy/Management/Type/Input/DDyJoystickAnalog.h>
 
 //!
 //! Data
@@ -36,8 +37,10 @@ namespace
 constexpr const char err_input_key_not_exist[] = "Key axis is not exist. [Key axis : {}]";
 constexpr TF32 kNegativeValue = -1.0f;
 constexpr TF32 kPositiveValue = +1.0f;
+constexpr TU32 kMaximumStickCount = 5;
 
 std::array<dy::DDyInputButton, dy::kEDyInputButtonCount> mInputButtonList = {};
+std::array<dy::DDyJoystickAnalog, kMaximumStickCount> mInputAnalogStickList = {};
 
 dy::EDyInputButtonStatus  sPrimaryKeys[349];
 dy::DDyVector2    sMouseLastPosition    = {};
@@ -45,6 +48,9 @@ dy::DDyVector2    sMousePresentPosition = {};
 bool              sIsFirstMouseMovement = true;
 bool              sMousePositionDirty   = false;
 bool              mIsControllerConnected= false;
+
+void DyCallbackCheckJoystickConnection(_MIN_ int joy, _MIN_ int event);
+void DyProcessJoystickCalibration();
 
 ///
 /// @brief
@@ -219,11 +225,30 @@ void DyCallbackCheckJoystickConnection(_MIN_ int joy, _MIN_ int event)
   {
     MDY_LOG_CRITICAL("Joystick {0} Name : {1} Supported.", 0, glfwGetJoystickName(GLFW_JOYSTICK_1));
     mIsControllerConnected = true;
+    DyProcessJoystickCalibration();
   }
   else if (event == GLFW_DISCONNECTED)
   {
     MDY_LOG_CRITICAL("Joystick {0} Disconnected.", 0);
     mIsControllerConnected = false;
+  }
+}
+
+/// 
+/// @brief Process joystick calibration. \n
+/// To do joystick calibration, `mIsControllerConnected` must be true.
+///
+void DyProcessJoystickCalibration()
+{
+  MDY_ASSERT(mIsControllerConnected == true, "Joystick must be connected.");
+
+  int supportingStickCount;
+  const float* stickFirstValueList = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &supportingStickCount);
+
+  const auto stickCount = supportingStickCount < kMaximumStickCount ? supportingStickCount : kMaximumStickCount;
+  for (TU32 i = 0; i < stickCount; ++i)
+  {
+    mInputAnalogStickList[i].SetBasisValue(stickFirstValueList[i]);
   }
 }
 
@@ -279,6 +304,7 @@ EDySuccess MDyInput::pfInitialize()
   { // Check joystick binding manually at first time.
     MDY_LOG_CRITICAL("Joystick {0} Name : {1} Supported.", 0, glfwGetJoystickName(GLFW_JOYSTICK_1));
     mIsControllerConnected = true;
+    DyProcessJoystickCalibration();
   }
 
   return DY_SUCCESS;
@@ -463,17 +489,14 @@ void MDyInput::pfUpdate(_MIN_ TF32 dt) noexcept
 
 void MDyInput::MDY_PRIVATE_FUNC_SPECIFIER(pUpdateJoystickSticks)()
 {
-  // @TODO IMPLEMENT THIS.
-#ifdef false
+  int supportingStickCount;
+  const float* stickValueList = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &supportingStickCount);
+
+  const auto stickCount = supportingStickCount < kMaximumStickCount ? supportingStickCount : kMaximumStickCount;
+  for (TU32 i = 0; i < stickCount; ++i)
   {
-    int count;
-    const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &count);
-    MDY_LOG_ERROR("Joystick 1 Axes...");
-    std::string log;
-    for (int i = 0; i < count; ++i) { log += fmt::format("{0} : {1} |", i, axes[i]); }
-    MDY_LOG_ERROR("{}", log);
+    mInputAnalogStickList[i].Update(stickValueList[i]);
   }
-#endif
 }
 
 void MDyInput::MDY_PRIVATE_FUNC_SPECIFIER(pUpdateJoystickButtons)()
@@ -723,11 +746,10 @@ void MDyInput::MDY_PRIVATE_FUNC_SPECIFIER(pCheckActionStatus)(_MIN_ TF32 dt)
 void MDyInput::MDY_PRIVATE_FUNC_SPECIFIER(pUpdateMouseMovement)(_MIN_ TF32 dt)
 {
   if (sIsFirstMouseMovement == false && sMousePositionDirty == true)
-  { // MOUSE
+  { 
     this->mMousePresentPosition = sMousePresentPosition;
     this->mMouseLastPosition    = sMouseLastPosition;
 
-    //MDY_LOG_DEBUG_D("Mouse position : {}, {}", this->mMousePresentPosition.X, this->mMousePresentPosition.Y);
     this->mIsMouseMoved = true;
     sMousePositionDirty = false;
   }

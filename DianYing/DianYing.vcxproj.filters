@@ -221,6 +221,7 @@
     <ClCompile Include="Source\Core\Thread\SDyIOBindingHelperResc.cc" />
     <ClCompile Include="Source\Core\Thread\SDyIOBindingHelperInfo.cc" />
     <ClCompile Include="Source\Management\Type\Input\DDyInputButton.cc" />
+    <ClCompile Include="Source\Management\Type\Input\DDyJoystickAnalog.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -568,6 +569,7 @@
     <ClInclude Include="Include\Dy\Management\Type\Input\EDyInputButtonStatus.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\EDyInputButton.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyInputButton.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Input\DDyJoystickAnalog.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />
