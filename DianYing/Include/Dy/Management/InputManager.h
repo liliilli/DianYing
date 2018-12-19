@@ -19,6 +19,8 @@
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Management/Type/KeyAxisBindingInformation.h>
 #include <Dy/Management/Type/KeyActionBindingInformation.h>
+#include <Dy/Management/Type/Input/EDyInputButton.h>
+#include <Dy/Management/Type/Input/EDyInputButtonStatus.h>
 #include <Dy/Helper/Type/Clamp.h>
 
 namespace dy
@@ -57,7 +59,11 @@ public:
   }
 
   /// @brief Return original value which is not calculated and calibrated at all.
-  MDY_NODISCARD const TF32 GetJoystickStickValue(_MIN_ DDyClamp<TU32, 0, 5> index) const noexcept;
+  MDY_NODISCARD TF32 GetJoystickStickValue(_MIN_ DDyClamp<TU32, 0, 5> index) const noexcept;
+
+  /// @brief Return button status of supported keyboard, mouse, and joystick button. \n
+  /// button input value must not be `NoneError`.
+  MDY_NODISCARD EDyInputButtonStatus GetButtonStatusValue(_MIN_ EDyButton button) const noexcept;
 
   ///
   /// @brief Get whether or not specific axis was pressed.

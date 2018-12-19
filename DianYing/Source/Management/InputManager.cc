@@ -22,8 +22,6 @@
 #include <Dy/Management/WindowManager.h>
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/Helper/InputKeyString.h>
-#include <Dy/Management/Type/Input/EDyInputButtonStatus.h>
-#include <Dy/Management/Type/Input/EDyInputButton.h>
 #include <Dy/Management/Type/Input/DDyInputButton.h>
 #include <Dy/Management/Type/Input/DDyJoystickAnalog.h>
 
@@ -339,9 +337,15 @@ float MDyInput::GetAxisValue(_MIN_ const std::string& axisKeyName) noexcept
   return keyIt->second.mAxisValue;
 }
 
-const TF32 MDyInput::GetJoystickStickValue(_MIN_ DDyClamp<TU32, 0, 5> index) const noexcept
+TF32 MDyInput::GetJoystickStickValue(_MIN_ DDyClamp<TU32, 0, 5> index) const noexcept
 {
   return mInputAnalogStickList[index].GetValue();
+}
+
+EDyInputButtonStatus MDyInput::GetButtonStatusValue(_MIN_ EDyButton button) const noexcept
+{
+  MDY_ASSERT(button != EDyButton::NoneError, "Button value must not be `NoneErorr`.");
+  return mInputButtonList[button].Get();
 }
 
 bool MDyInput::IsAxisPressed(_MIN_ const std::string& axisSpecifierName) noexcept
