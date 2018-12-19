@@ -34,12 +34,12 @@ namespace
 namespace dy
 {
 
-void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelInstanceMetaInfo& p)
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelInstanceMetaInfo_Deprecated& p)
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
 }
 
-void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo& p)
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo_Deprecated& p)
 {
   /* Template
    * "GLModelSpecifierName":

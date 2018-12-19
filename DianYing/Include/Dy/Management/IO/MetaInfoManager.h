@@ -23,6 +23,7 @@
 #include <Dy/Helper/ContainerHelper.h>
 #include <Dy/Meta/Information/GLShaderMetaInformation.h>
 #include <Dy/Meta/Information/ModelMetaInformation.h>
+#include <Dy/Meta/Information/MetaInfoModel.h>
 #include <Dy/Meta/Information/MetaInfoTexture.h>
 #include <Dy/Meta/Information/MetaInfoMaterial.h>
 #include <Dy/Meta/Information/MetaInfoAttachment.h>
@@ -95,92 +96,73 @@ public:
   ///
   ////
 
-  ///
   /// @brief  Check script meta information is exist.
   /// @return Return value is false if not found.
-  ///
-  FORCEINLINE MDY_NODISCARD bool IsGLShaderMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
-  {
-    return DyIsMapContains(this->mShaderMetaInfo, specifier);
-  }
+  MDY_NODISCARD bool IsGLShaderMetaInfoExist(_MIN_ const std::string& specifier) const noexcept;
 
-  ///
+  /// @brief  Check mesh meta information is exist.
+  /// @return Return value is false if not found.
+  MDY_NODISCARD bool IsMeshMetaInfoExist(_MIN_ const std::string& specifier) const noexcept;
+
   /// @brief  Check model meta information is exist.
   /// @return Return value is false if not found.
-  ///
-  FORCEINLINE MDY_NODISCARD bool IsModelMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
+  MDY_NODISCARD bool IsModelMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
   {
     return DyIsMapContains(this->mModelMetaInfo, specifier);
   }
 
-  ///
   /// @brief  Check texture meta information is exist.
   /// @return Return value is false if not found.
-  ///
-  FORCEINLINE MDY_NODISCARD bool IsTextureMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
+  MDY_NODISCARD bool IsTextureMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
   {
     return DyIsMapContains(this->mTextureMetaInfo, specifier);
   }
 
-  ///
   /// @brief  Check material meta information is exist.
   /// @return Return value is false if not found.
-  ///
-  FORCEINLINE MDY_NODISCARD bool IsMaterialMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
+  MDY_NODISCARD bool IsMaterialMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
   {
     return DyIsMapContains(this->mMaterialMetaInfo, specifier);
   }
 
-  ///
   /// @brief  Check widget meta information is exist.
   /// @return Return value is false if not found.
-  ///
-  FORCEINLINE MDY_NODISCARD bool IsWidgetMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
+  MDY_NODISCARD bool IsWidgetMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
   {
     return DyIsMapContains(this->mWidgetMetaInfo, specifier);
   }
 
-  ///
   /// @brief  Check script meta information is exist.
   /// @return If found, return true or false.
-  ///
-  FORCEINLINE MDY_NODISCARD bool IsScriptMetaInformationExist(_MIN_ const std::string& specifierName) const noexcept
+  MDY_NODISCARD bool IsScriptMetaInformationExist(_MIN_ const std::string& specifierName) const noexcept
   {
     return DyIsMapContains(this->mScriptMetaInfo, specifierName);
   }
 
-  ///
   /// @brief  Check prefab meta information is exist.
   /// @return If found, return true or false.
-  ///
-  FORCEINLINE MDY_NODISCARD bool IsPrefabMetaInformationExist(_MIN_ const std::string& specifierName) const noexcept
+  MDY_NODISCARD bool IsPrefabMetaInformationExist(_MIN_ const std::string& specifierName) const noexcept
   {
     return DyIsMapContains(this->mPrefabMetaInfo, specifierName);
   }
 
-  ///
   /// @brief  Check font meta information is exist.
   /// @return If found, return true or false.
-  ///
-  FORCEINLINE MDY_NODISCARD bool IsFontMetaInformationExist(_MIN_ const std::string& specifierName) const noexcept
+  MDY_NODISCARD bool IsFontMetaInformationExist(_MIN_ const std::string& specifierName) const noexcept
   {
     return DyIsMapContains(this->mFontMetaInfo, specifierName);
   }
 
-  ///
   /// @brief  Check attachment meta information is exist.
   /// @return If found, return true or false.
-  ///
-  FORCEINLINE MDY_NODISCARD bool IsAttachmentMetaInfoExist(_MIN_ const std::string& specifierName) const noexcept
+  MDY_NODISCARD bool IsAttachmentMetaInfoExist(_MIN_ const std::string& specifierName) const noexcept
   {
     return DyIsMapContains(this->mAttachmentMetaInfo, specifierName);
   }
 
-  ///
   /// @brief  Check framebuffer meta information is exist.
   /// @return If found, return true or false.
-  ///
-  FORCEINLINE MDY_NODISCARD bool IsFrameBufferMetaInfoExist(_MIN_ const std::string& speicfierName) const noexcept
+  MDY_NODISCARD bool IsFrameBufferMetaInfoExist(_MIN_ const std::string& speicfierName) const noexcept
   {
     return DyIsMapContains(this->mFrameBufferMetaInfo, speicfierName);
   }

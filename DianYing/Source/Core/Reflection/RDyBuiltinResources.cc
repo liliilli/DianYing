@@ -15,7 +15,7 @@
 /// Header file
 #include <Dy/Core/Reflection/RDyBuiltinResources.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
-#include <Dy/Meta/Information/ModelMetaInformation.h>
+#include <Dy/Meta/Information/MetaInfoModel.h>
 #include <Dy/Meta/Information/MetaInfoTexture.h>
 #include <Dy/Meta/Information/MetaInfoAttachment.h>
 #include <Dy/Meta/Information/MetaInfoFrameBuffer.h>

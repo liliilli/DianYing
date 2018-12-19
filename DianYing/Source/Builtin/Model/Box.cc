@@ -14,139 +14,17 @@
 
 /// Header file
 #include <Dy/Builtin/Model/Box.h>
+#include <Dy/Builtin/Mesh/FDyBtMsBox.h>
 
 namespace dy::builtin
 {
 
-void FDyBuiltinModelBox::ConstructBuffer(PDyModelConstructionVertexDescriptor& buffer) noexcept
+void FDyBuiltinModelBox::ConstructBuffer(PDyModelInstanceMetaInfo& buffer) noexcept
 {
-  PDySubmeshInformationDescriptor_Deprecated submeshDesc;
-  // Make position, normal, texcoord vertex information
-  submeshDesc.mVertices.reserve(24);
-  {
-    DDyVertexInformation vertex;
-
-    // Front and back
-    vertex.mPosition = DDyVector3{ 1,  1,  1 };
-    vertex.mNormal = DDyVector3::FrontZ();
-    vertex.mTexCoords = DDyVector2{ 1, 1 };
-    submeshDesc.mVertices.emplace_back(vertex);
-    vertex.mPosition = DDyVector3{ 1, -1,  1 };
-    vertex.mNormal = DDyVector3::FrontZ();
-    vertex.mTexCoords = DDyVector2{ 1, 0 };
-    submeshDesc.mVertices.emplace_back(vertex);
-    vertex.mPosition = DDyVector3{ -1, -1,  1 };
-    vertex.mNormal = DDyVector3::FrontZ();
-    vertex.mTexCoords = DDyVector2{ 0, 0 };
-    submeshDesc.mVertices.emplace_back(vertex);
-    vertex.mPosition = DDyVector3{ -1,  1,  1 };
-    vertex.mNormal = DDyVector3::FrontZ();
-    vertex.mTexCoords = DDyVector2{ 0, 1 };
-    submeshDesc.mVertices.emplace_back(vertex);
-
-    vertex.mPosition = DDyVector3{ -1,  1, -1 };
-    vertex.mNormal = DDyVector3{ 0,  0, -1 };
-    vertex.mTexCoords = DDyVector2{ 1,  1 };
-    submeshDesc.mVertices.emplace_back(vertex);
-    vertex.mPosition = DDyVector3{ -1, -1, -1 };
-    vertex.mNormal = DDyVector3{ 0,  0, -1 };
-    vertex.mTexCoords = DDyVector2{ 1,  0 };
-    submeshDesc.mVertices.emplace_back(vertex);
-    vertex.mPosition = DDyVector3{ 1, -1, -1 };
-    vertex.mNormal = DDyVector3{ 0,  0, -1 };
-    vertex.mTexCoords = DDyVector2{ 0,  0 };
-    submeshDesc.mVertices.emplace_back(vertex);
-    vertex.mPosition = DDyVector3{ 1,  1, -1 };
-    vertex.mNormal = DDyVector3{ 0,  0, -1 };
-    vertex.mTexCoords = DDyVector2{ 0,  1 };
-    submeshDesc.mVertices.emplace_back(vertex);
-
-    // Up and Down
-    vertex.mPosition = DDyVector3{ 1,  1, -1 };
-    vertex.mNormal = DDyVector3::UpY();
-    vertex.mTexCoords = DDyVector2{ 1, 1 };
-    submeshDesc.mVertices.emplace_back(vertex);
-    vertex.mPosition = DDyVector3{ 1,  1,  1 };
-    vertex.mNormal = DDyVector3::UpY();
-    vertex.mTexCoords = DDyVector2{ 1, 0 };
-    submeshDesc.mVertices.emplace_back(vertex);
-    vertex.mPosition = DDyVector3{ -1,  1,  1 };
-    vertex.mNormal = DDyVector3::UpY();
-    vertex.mTexCoords = DDyVector2{ 0, 0 };
-    submeshDesc.mVertices.emplace_back(vertex);
-    vertex.mPosition = DDyVector3{ -1,  1, -1 };
-    vertex.mNormal = DDyVector3::UpY();
-    vertex.mTexCoords = DDyVector2{ 0, 1 };
-    submeshDesc.mVertices.emplace_back(vertex);
-
-    vertex.mPosition = DDyVector3{ 1, -1,  1 };
-    vertex.mNormal = DDyVector3{ 0, -1,  0 };
-    vertex.mTexCoords = DDyVector2{ 1,  1 };
-    submeshDesc.mVertices.emplace_back(vertex);
-    vertex.mPosition = DDyVector3{ 1, -1, -1 };
-    vertex.mNormal = DDyVector3{ 0, -1,  0 };
-    vertex.mTexCoords = DDyVector2{ 1,  0 };
-    submeshDesc.mVertices.emplace_back(vertex);
-    vertex.mPosition = DDyVector3{ -1, -1, -1 };
-    vertex.mNormal = DDyVector3{ 0, -1,  0 };
-    vertex.mTexCoords = DDyVector2{ 0,  0 };
-    submeshDesc.mVertices.emplace_back(vertex);
-    vertex.mPosition = DDyVector3{ -1, -1,  1 };
-    vertex.mNormal = DDyVector3{ 0, -1,  0 };
-    vertex.mTexCoords = DDyVector2{ 0,  1 };
-    submeshDesc.mVertices.emplace_back(vertex);
-
-    // Left and right
-    vertex.mPosition = DDyVector3{ 1,  1, -1 };
-    vertex.mNormal = DDyVector3::RightX();
-    vertex.mTexCoords = DDyVector2{ 1, 1 };
-    submeshDesc.mVertices.emplace_back(vertex);
-    vertex.mPosition = DDyVector3{ 1, -1, -1 };
-    vertex.mNormal = DDyVector3::RightX();
-    vertex.mTexCoords = DDyVector2{ 1, 0 };
-    submeshDesc.mVertices.emplace_back(vertex);
-    vertex.mPosition = DDyVector3{ 1, -1,  1 };
-    vertex.mNormal = DDyVector3::RightX();
-    vertex.mTexCoords = DDyVector2{ 0, 0 };
-    submeshDesc.mVertices.emplace_back(vertex);
-    vertex.mPosition = DDyVector3{ 1,  1,  1 };
-    vertex.mNormal = DDyVector3::RightX();
-    vertex.mTexCoords = DDyVector2{ 0, 1 };
-    submeshDesc.mVertices.emplace_back(vertex);
-
-    vertex.mPosition = DDyVector3{ -1,  1,  1 };
-    vertex.mNormal = DDyVector3{ -1,  0,  0 };
-    vertex.mTexCoords = DDyVector2{ 1,  1 };
-    submeshDesc.mVertices.emplace_back(vertex);
-    vertex.mPosition = DDyVector3{ -1,  1, -1 };
-    vertex.mNormal = DDyVector3{ -1,  0,  0 };
-    vertex.mTexCoords = DDyVector2{ 1,  0 };
-    submeshDesc.mVertices.emplace_back(vertex);
-    vertex.mPosition = DDyVector3{ -1, -1, -1 };
-    vertex.mNormal = DDyVector3{ -1,  0,  0 };
-    vertex.mTexCoords = DDyVector2{ 0,  0 };
-    submeshDesc.mVertices.emplace_back(vertex);
-    vertex.mPosition = DDyVector3{ -1, -1,  1 };
-    vertex.mNormal = DDyVector3{ -1,  0,  0 };
-    vertex.mTexCoords = DDyVector2{ 0,  1 };
-    submeshDesc.mVertices.emplace_back(vertex);
-  }
-
-  // Make index information
-  submeshDesc.mIndices.reserve(36);
-  std::array<TU32, 36> indices = {
-    0,  3, 1, 1, 3, 2,
-    4,  7, 5, 5, 7, 6,
-    8, 11, 9, 9,11,10,
-    12,15,13,13,15,14,
-    16,19,17,17,19,18,
-    20,23,21,21,23,22
-  };
-  for (const auto index : indices) { submeshDesc.mIndices.emplace_back(index); }
-
-  // Make model information
-  buffer.mModelName = FDyBuiltinModelBox::sName;
-  buffer.mSubmeshConstructionInformations.emplace_back(submeshDesc);
+  buffer.mSourceType          = EDyResourceSource::Builtin;
+  buffer.mSpecifierName       = sName;
+  buffer.mIsUsingBuiltinMesh  = true;
+  buffer.mBuiltinMeshSpecifierList.emplace_back(FDyBtMsBox::sName);
 }
 
 } /// ::dy::builtin namespace

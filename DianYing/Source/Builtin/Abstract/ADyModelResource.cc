@@ -21,14 +21,7 @@ namespace dy
 
 std::any ADyModelResource::GetMetaInfo()
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mPtrBuffer), "Builtin model buffer must not be nulled.");
-
-  PDyModelInstanceMetaInfo result{};
-  result.mSourceType            = EDyResourceSource::Builtin;
-  result.mSpecifierName         = this->mPtrBuffer->mModelName;
-  result.mPtrBuiltinModelBuffer = this->mPtrBuffer;
-
-  return result;
+  return this->mMetaInfo;
 }
 
 

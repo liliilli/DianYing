@@ -281,6 +281,16 @@ const PDyGlAttachmentInstanceMetaInfo& MDyMetaInfo::GetGLAttachmentMetaInformati
   return this->mAttachmentMetaInfo.at(specifier);
 }
 
+bool MDyMetaInfo::IsGLShaderMetaInfoExist(_MIN_ const std::string & specifier) const noexcept
+{
+  return DyIsMapContains(this->mShaderMetaInfo, specifier);
+}
+
+bool MDyMetaInfo::IsMeshMetaInfoExist(_MIN_ const std::string & specifier) const noexcept
+{
+  return DyIsMapContains(this->mBtMeshMetaInfo, specifier);
+}
+
 EDySuccess MDyMetaInfo::pReadScriptResourceMetaInformation(_MIN_ const std::string& metaFilePath)
 {
   // Validity Test

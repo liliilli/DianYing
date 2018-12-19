@@ -28,7 +28,7 @@ struct DMoeTempAnimationChannel;
 /// @struct PDyModelConstructionVertexDescriptor
 /// @brief Model information construction descriptor with customized static vertex information.
 ///
-struct PDyModelConstructionVertexDescriptor final : public IDyToString
+struct PDyModelConstructionVertexDescriptor_Deprecated final : public IDyToString
 {
   std::string                                   mModelName                        = "";
   std::vector<PDySubmeshInformationDescriptor_Deprecated>  mSubmeshConstructionInformations  = {};

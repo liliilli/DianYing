@@ -583,6 +583,7 @@
     <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsUiFontQuad.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyMeshResource.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoBuiltinMesh.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoModel.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

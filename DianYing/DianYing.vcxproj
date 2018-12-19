@@ -509,6 +509,7 @@
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyInputButton.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyJoystickAnalog.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoBuiltinMesh.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoModel.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Input\EDyInputButton.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\EDyInputButtonStatus.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoAttachment.h" />

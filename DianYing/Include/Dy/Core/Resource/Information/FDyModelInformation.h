@@ -21,7 +21,7 @@
 
 namespace dy
 {
-struct PDyModelInstanceMetaInfo;
+struct PDyModelInstanceMetaInfo_Deprecated;
 } /// ::dy namespace
 
 //!
@@ -40,7 +40,7 @@ public:
   MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(FDyModelInformation);
 
   /// @brief Construct model information.
-  FDyModelInformation(_MIN_ const PDyModelInstanceMetaInfo& metaInfo);
+  FDyModelInformation(_MIN_ const PDyModelInstanceMetaInfo_Deprecated& metaInfo);
   ~FDyModelInformation() = default;
 
   /// @brief Get model specifier name.

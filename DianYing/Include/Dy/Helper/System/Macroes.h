@@ -610,18 +610,9 @@ private:
 #define MDY_REGISTER_RESOURCE_MODEL(__MAType__, __MASpecifierName__) \
   MDY_REGISTER_RESOURCE_WITH_SPECIFIER(__MAType__, __MASpecifierName__) \
   private: \
-  static PDyModelConstructionVertexDescriptor& __Get() noexcept \
-  { \
-    static PDyModelConstructionVertexDescriptor instance{}; \
-    return instance; \
-  } \
-  void ConstructBuffer(_MOUT_ PDyModelConstructionVertexDescriptor& buffer) noexcept; \
+  void ConstructBuffer(_MOUT_ PDyModelInstanceMetaInfo& buffer) noexcept; \
   public: \
-  __MAType__() \
-  { \
-    ConstructBuffer(__Get()); \
-    this->mPtrBuffer = &__Get(); \
-  }
+  __MAType__() { ConstructBuffer(this->mMetaInfo); }
 
 ///
 /// @macro MDY_REGISTER_RESOURCE_TEXTURE

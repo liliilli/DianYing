@@ -20,7 +20,7 @@
 namespace dy
 {
 
-FDyModelInformation::FDyModelInformation(_MIN_ const PDyModelInstanceMetaInfo& metaInfo)
+FDyModelInformation::FDyModelInformation(_MIN_ const PDyModelInstanceMetaInfo_Deprecated& metaInfo)
 {
   if (metaInfo.mSourceType == EDyResourceSource::Builtin)
   { // If model is buitlin, just copy & paste.

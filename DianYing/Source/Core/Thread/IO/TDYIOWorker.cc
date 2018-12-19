@@ -123,8 +123,12 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceInformation(_MIN_ const DDyIOT
   case EDyResourceType::Texture:
     result.mSmtPtrResultInstance = new FDyTextureInformation(this->mMetaManager.GetTextureMetaInformation(assignedTask.mSpecifierName));
     break;
+  case EDyResourceType::Mesh:
+    MDY_NOT_IMPLEMENTED_ASSERT();
+    break;
   case EDyResourceType::Model:
-    result.mSmtPtrResultInstance = new FDyModelInformation(this->mMetaManager.GetModelMetaInformation(assignedTask.mSpecifierName));
+    MDY_NOT_IMPLEMENTED_ASSERT();
+    //result.mSmtPtrResultInstance = new FDyModelInformation(this->mMetaManager.GetModelMetaInformation(assignedTask.mSpecifierName));
     break;
   case EDyResourceType::Material:
     result.mSmtPtrResultInstance = new FDyMaterialInformation(this->mMetaManager.GetMaterialMetaInformation(assignedTask.mSpecifierName));
