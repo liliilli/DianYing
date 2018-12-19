@@ -20,7 +20,7 @@
 namespace dy
 {
 
-FDyMeshVBOIntermediate::FDyMeshVBOIntermediate(const PDySubmeshInformationDescriptor& information)
+FDyMeshVBOIntermediate::FDyMeshVBOIntermediate(const PDySubmeshInformationDescriptor_Deprecated& information)
 {
   const auto& info = information;
   { // Set flag and count for mesh geometry information & index count.
@@ -41,7 +41,13 @@ FDyMeshVBOIntermediate::FDyMeshVBOIntermediate(const PDySubmeshInformationDescri
     PDyGLBufferDescriptor descriptor;
     descriptor.mBufferType = EDyDirectBufferType::VertexBuffer;
     descriptor.mPtrBuffer  = &info.mVertices[0];
-    descriptor.mBufferByteSize = sizeof(DDyVertexInformation) * info.mVertices.size();
+    if (information.mIsUsingDefaultBinding == true)
+    { // If using default binding (JUST USING DDYVertexInformation structure...)
+      // Let it do the thing.
+      descriptor.mBufferByteSize = sizeof(DDyVertexInformation) * info.mVertices.size();
+    }
+    else { MDY_NOT_IMPLEMENTED_ASSERT(); }
+    descriptor.mIsUsingDefaultBufferStruction = information.mIsUsingDefaultBinding;
 
     const auto optVboId = FDyGLWrapper::CreateBuffer(descriptor);
     MDY_ASSERT(optVboId.has_value() == true, "VBO creation must be succeeded.");

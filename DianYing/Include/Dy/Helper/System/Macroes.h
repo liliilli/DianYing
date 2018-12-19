@@ -593,6 +593,17 @@ public: \
 private:
 
 ///
+/// @macro MDY_REGISTER_RESOURCE_MESH
+/// @brief Register mesh meta information source.
+///
+#define MDY_REGISTER_RESOURCE_MESH(__MAType__, __MASpecifierName__) \
+  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(__MAType__, __MASpecifierName__) \
+  private: \
+  void ConstructBuffer(_MOUT_ PDyBtMeshInstanceMetaInfo& property) noexcept; \
+  public: \
+  __MAType__() { this->ConstructBuffer(this->mMetaInfo); }
+  
+///
 /// @macro MDY_REGISTER_RESOURCE_MODEL
 /// @brief Register model meta information source.
 ///

@@ -26,8 +26,9 @@
 #include <Dy/Meta/Information/MetaInfoTexture.h>
 #include <Dy/Meta/Information/MetaInfoMaterial.h>
 #include <Dy/Meta/Information/MetaInfoAttachment.h>
+#include <Dy/Meta/Information/MetaInfoFrameBuffer.h>
+#include <Dy/Meta/Information/MetaInfoBuiltinMesh.h>
 #include <Dy/Meta/Type/DDyResourceName.h>
-#include "Dy/Meta/Information/MetaInfoFrameBuffer.h"
 
 //!
 //! Forward declaration
@@ -202,6 +203,7 @@ private:
   MDY_NODISCARD EDySuccess pfAddWidgetMetaInformation (_MIN_ const std::string& metaInformationString);
   MDY_NODISCARD EDySuccess pfAddScriptMetaInformation (_MIN_ const PDyScriptInstanceMetaInfo& metaInfo);
   MDY_NODISCARD EDySuccess pfAddGLShaderMetaInfo      (_MIN_ const PDyGLShaderInstanceMetaInfo& metaInfo);
+  MDY_NODISCARD EDySuccess pfAddBuiltinMeshMetaInfo   (_MIN_ const PDyBtMeshInstanceMetaInfo& metaInfo);
   MDY_NODISCARD EDySuccess pfAddModelMetaInfo         (_MIN_ const PDyModelInstanceMetaInfo& metaInfo);
   MDY_NODISCARD EDySuccess pfAddTextureMetaInfo       (_MIN_ const PDyTextureInstanceMetaInfo& metaInfo);
   MDY_NODISCARD EDySuccess pfAddMaterialMetaInfo      (_MIN_ const PDyMaterialInstanceMetaInfo& metaInfo);
@@ -218,6 +220,8 @@ private:
   THashMap<PDyMetaFontInformation>      mFontMetaInfo   = {};
   /// GL shader meta information map.
   THashMap<PDyGLShaderInstanceMetaInfo> mShaderMetaInfo = {};
+  /// Builtin mesh information map.
+  THashMap<PDyBtMeshInstanceMetaInfo>   mBtMeshMetaInfo = {};
   /// Model meta information map.
   THashMap<PDyModelInstanceMetaInfo>    mModelMetaInfo  = {};
   /// Texture meta information map.

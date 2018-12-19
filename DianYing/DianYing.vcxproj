@@ -158,6 +158,7 @@
     <ClCompile Include="Source\Builtin\Abstract\ADyGLAttachmentResource.cc" />
     <ClCompile Include="Source\Builtin\Abstract\ADyGLFrameBufferResource.cc" />
     <ClCompile Include="Source\Builtin\Abstract\ADyGLShaderResources.cc" />
+    <ClCompile Include="Source\Builtin\Abstract\ADyMeshResource.cc" />
     <ClCompile Include="Source\Builtin\Abstract\ADyModelResource.cc" />
     <ClCompile Include="Source\Builtin\Abstract\ADyTextureResource.cc" />
     <ClCompile Include="Source\Builtin\Attachment\BasicShadow\BasicShadow.cc" />
@@ -171,6 +172,11 @@
     <ClCompile Include="Source\Builtin\FrameBuffer\Deferred\FDyBtFrameBufferDeferred.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\SceneIntegration\FDyBtFbSceneIntegration.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\UIIntegration\FDyBtFbBasic.cc" />
+    <ClCompile Include="Source\Builtin\Mesh\FDyBtMsBox.cc" />
+    <ClCompile Include="Source\Builtin\Mesh\FDyBtMsPlain.cc" />
+    <ClCompile Include="Source\Builtin\Mesh\FDyBtMsScrTriangle.cc" />
+    <ClCompile Include="Source\Builtin\Mesh\FDyBtMsSphere.cc" />
+    <ClCompile Include="Source\Builtin\Mesh\FDyBtMsUiFontQuad.cc" />
     <ClCompile Include="Source\Builtin\Script\DebugUiScriptCpp.cc" />
     <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingBootScriptCpp.cc" />
     <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingGlobalScriptCpp.cc" />
@@ -417,6 +423,7 @@
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyLoadingBootResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyLoadingGlobalResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyMaterialResource.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyMeshResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyModelResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyScriptResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyTextureResource.h" />
@@ -434,10 +441,16 @@
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\UIIntegration\FDyBtFbUiBasic.h" />
     <ClInclude Include="Include\Dy\Builtin\Interface\IDyResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Material\OpaqueStaticPlain.h" />
+    <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsBox.h" />
+    <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsPlain.h" />
+    <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsScrTriangle.h" />
+    <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsSphere.h" />
+    <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsUiFontQuad.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\Box.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\Plain.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\ScreenProjectionTriangle.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\Sphere.h" />
+    <ClInclude Include="Include\Dy\Builtin\Model\UIFontQuad.h" />
     <ClInclude Include="Include\Dy\Builtin\Object\Light\DirectionalLight.h" />
     <ClInclude Include="Include\Dy\Builtin\Script\DebugUiScriptCpp.h" />
     <ClInclude Include="Include\Dy\Builtin\Script\Default\DefaultLoadingBootScriptCpp.h" />
@@ -495,6 +508,7 @@
     <ClInclude Include="Include\Dy\Management\IO\MDyIOResource.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyInputButton.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyJoystickAnalog.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoBuiltinMesh.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Input\EDyInputButton.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\EDyInputButtonStatus.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoAttachment.h" />

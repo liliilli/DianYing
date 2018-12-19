@@ -415,6 +415,19 @@ EDySuccess MDyMetaInfo::pfAddGLShaderMetaInfo(_MIN_ const PDyGLShaderInstanceMet
   return DY_SUCCESS;
 }
 
+EDySuccess MDyMetaInfo::pfAddBuiltinMeshMetaInfo(_MIN_ const PDyBtMeshInstanceMetaInfo& metaInfo)
+{
+#if defined(_DEBUG) == true
+  if (metaInfo.mIsUsingDefaultBinding == false)
+  {
+    MDY_ASSERT(metaInfo.mCustomMeshBuffer.empty() == false, "Builtin mesh must be valid if using customized binding.");
+  }
+#endif
+  MDY_ASSERT(DyIsMapContains(this->mBtMeshMetaInfo, metaInfo.mSpecifierName) == false, "Duplicated Mesh name is exist.");
+  this->mBtMeshMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
+  return DY_SUCCESS;
+}
+
 EDySuccess MDyMetaInfo::pfAddModelMetaInfo(_MIN_ const PDyModelInstanceMetaInfo& metaInfo)
 {
   MDY_ASSERT(DyIsMapContains(this->mModelMetaInfo, metaInfo.mSpecifierName) == false, "Duplicated model name is exist.");

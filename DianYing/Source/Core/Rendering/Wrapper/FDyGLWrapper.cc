@@ -202,7 +202,15 @@ std::optional<TU32> FDyGLWrapper::CreateBuffer(_MIN_ const PDyGLBufferDescriptor
     MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
     glGenBuffers(1, &id);
     glBindBuffer(GL_ARRAY_BUFFER, id);
-    glBufferData(GL_ARRAY_BUFFER, descriptor.mBufferByteSize, descriptor.mPtrBuffer, GL_STATIC_DRAW);
+    if (descriptor.mIsUsingDefaultBufferStruction == true)
+    { // Make buffer space first,
+      glBufferData(GL_ARRAY_BUFFER, descriptor.mBufferByteSize, 0, GL_STATIC_DRAW);
+      // fill out with buffers.
+      auto* ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+      memcpy(ptr, descriptor.mPtrBuffer, descriptor.mBufferByteSize);
+      glUnmapBuffer(GL_ARRAY_BUFFER);
+    }
+    else { MDY_NOT_IMPLEMENTED_ASSERT();  }
     glBindBuffer(GL_ARRAY_BUFFER, MDY_GL_NONE);
     glFlush();
   } break;

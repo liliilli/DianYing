@@ -1,38 +1,32 @@
-#ifndef GUARD_DY_META_TYPE_EDYRESOURCETYPE_H
-#define GUARD_DY_META_TYPE_EDYRESOURCETYPE_H
+#ifndef GUARD_DY_BUILTIN_MESH_FDYBTMSPLAIN_H
+#define GUARD_DY_BUILTIN_MESH_FDYBTMSPLAIN_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
 ///
 /// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 /// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-/// FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
+/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 /// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 /// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /// SOFTWARE.
 ///
 
+#include <Dy/Builtin/Abstract/ADyMeshResource.h>
+
 namespace dy
 {
 
-enum class EDyResourceType
+///
+/// @class FDyBtMsPlain
+/// @brief Create mesh plain information and resources.
+///
+class FDyBtMsPlain final : public ADyMeshResource
 {
-  Script,
-  Mesh,
-  Model,
-  GLShader,
-  GLAttachment,
-  GLFrameBuffer,
-  Texture,
-  Material,
-  WidgetMeta,
-  Sound,
-
-  __ModelVBO,
-  NoneError
+  MDY_REGISTER_RESOURCE_MESH(FDyBtMsPlain, "dyBtMsPlain");
 };
 
 } /// ::dy namespace
 
-#endif /// GUARD_DY_META_TYPE_EDYRESOURCETYPE_H
+#endif /// GUARD_DY_BUILTIN_MESH_FDYBTMSPLAIN_H

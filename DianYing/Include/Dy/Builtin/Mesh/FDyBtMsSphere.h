@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_BUILTIN_MODEL_SPHERE_H
-#define GUARD_DY_BUILTIN_MODEL_SPHERE_H
+#ifndef GUARD_DY_BUILTIN_MESH_FDYBTMSSPHERE_H
+#define GUARD_DY_BUILTIN_MESH_FDYBTMSSPHERE_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,55 +13,32 @@
 /// SOFTWARE.
 ///
 
-#include <string_view>
-#include <Dy/Builtin/Abstract/ADyModelResource.h>
-
-//!
-//! Forward declaration
-//!
+#include <Dy/Builtin/Abstract/ADyMeshResource.h>
 
 namespace dy
 {
-struct PDySubmeshInformationDescriptor_Deprecated;
-struct DDyVector3;
-struct DDyVector2;
-} /// ::dy namespace
-
-//!
-//! Implementation
-//!
-
-namespace dy::builtin
-{
 
 ///
-/// @class FDyBuiltinModelSphere
-/// @brief Model sphere
+/// @class FDyBtMsSphere
+/// @brief Create mesh sphere information and resources.
 ///
-class FDyBuiltinModelSphere final : public ADyModelResource
+class FDyBtMsSphere final : public ADyMeshResource
 {
-  MDY_REGISTER_RESOURCE_MODEL(FDyBuiltinModelSphere, "dyBtModelSphere");
+  MDY_REGISTER_RESOURCE_MESH(FDyBtMsSphere, "dyBtMsSphere");
 
-private:
-  ///
-  /// @brief
-  ///
   void pEmplaceVertex(
       _MIN_ const DDyVector3& normalized_position,
       _MIN_ const DDyVector2&,
-      _MOUT_ PDySubmeshInformationDescriptor_Deprecated& container);
+      _MOUT_ PDyDefaultMeshInformation& container);
 
-  ///
-  /// @brief
-  ///
   void pCreateVertexRecursively(
       _MIN_ const DDyVector3& a, _MIN_ const DDyVector3& b, _MIN_ const DDyVector3& c,
       _MIN_ const DDyVector2& ta, _MIN_ const DDyVector2& tb, _MIN_ const DDyVector2& tc,
       _MIN_ const TI32 level,
-      _MIO_ PDySubmeshInformationDescriptor_Deprecated& container
+      _MIO_ PDyDefaultMeshInformation& container
   );
 };
 
-} /// ::dy::builtin namespace
+} /// ::dy namespace
 
-#endif /// GUARD_DY_BUILTIN_MODEL_SPHERE_H
+#endif /// GUARD_DY_BUILTIN_MESH_FDYBTMSSPHERE_H

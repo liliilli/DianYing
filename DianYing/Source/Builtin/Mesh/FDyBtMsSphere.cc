@@ -13,14 +13,15 @@
 ///
 
 /// Header file
-#include <Dy/Builtin/Model/Sphere.h>
+#include <Dy/Builtin/Mesh/FDyBtMsSphere.h>
 
-namespace dy::builtin
+namespace dy
 {
-
-void FDyBuiltinModelSphere::ConstructBuffer(PDyModelConstructionVertexDescriptor& buffer) noexcept
+  
+void FDyBtMsSphere::ConstructBuffer(_MOUT_ PDyBtMeshInstanceMetaInfo& property) noexcept
 {
-  PDySubmeshInformationDescriptor_Deprecated submeshDesc;
+  property.mSpecifierName = sName;
+  property.mIsUsingDefaultBinding = true;
 
   // Position
   const auto a = DDyVector3{ 0, 1, 0 };
@@ -35,32 +36,29 @@ void FDyBuiltinModelSphere::ConstructBuffer(PDyModelConstructionVertexDescriptor
 
   // Make vertex information
   const TI32 level = 4;
+  auto& submeshDesc = property.mDefaultMeshBuffer;
   pCreateVertexRecursively(a, b, c, ta, tb, tc, level, submeshDesc);
   pCreateVertexRecursively(b, c, d, tb, tc, td, level, submeshDesc);
   pCreateVertexRecursively(c, d, a, tc, td, ta, level, submeshDesc);
   pCreateVertexRecursively(d, a, b, td, ta, tb, level, submeshDesc);
-
-  // Make model information
-  buffer.mModelName = FDyBuiltinModelSphere::sName;
-  buffer.mSubmeshConstructionInformations.emplace_back(submeshDesc);
 }
 
-void FDyBuiltinModelSphere::pEmplaceVertex(
+void FDyBtMsSphere::pEmplaceVertex(
     _MIN_ const DDyVector3& position, _MIN_ const DDyVector2& texcoord,
-    _MOUT_ PDySubmeshInformationDescriptor_Deprecated& container)
+    _MOUT_ PDyDefaultMeshInformation& container)
 {
   DDyVertexInformation vertex;
   vertex.mPosition  = position;
   vertex.mNormal    = position;
   vertex.mTexCoords = texcoord;
-  container.mVertices.emplace_back(vertex);
+  container.mVertexList.emplace_back(vertex);
 }
 
-void FDyBuiltinModelSphere::pCreateVertexRecursively(
+void FDyBtMsSphere::pCreateVertexRecursively(
     _MIN_ const DDyVector3& a, _MIN_ const DDyVector3& b, _MIN_ const DDyVector3& c,
     _MIN_ const DDyVector2& ta, _MIN_ const DDyVector2& tb, _MIN_ const DDyVector2& tc,
     _MIN_ const TI32 level,
-    _MIO_ PDySubmeshInformationDescriptor_Deprecated& container)
+    _MIO_ PDyDefaultMeshInformation& container)
 {
   if (level <= 0)
   {
@@ -83,4 +81,4 @@ void FDyBuiltinModelSphere::pCreateVertexRecursively(
   pCreateVertexRecursively(ab, bc, ca, tab, tbc, tca, level - 1, container);
 }
 
-} /// ::dy::builtin namespace
+} /// ::dy namespace

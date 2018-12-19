@@ -38,7 +38,7 @@ namespace dy
 class FDyMeshVBOIntermediate final
 {
 public:
-  FDyMeshVBOIntermediate(_MIN_ const PDySubmeshInformationDescriptor& information);
+  FDyMeshVBOIntermediate(_MIN_ const PDySubmeshInformationDescriptor_Deprecated& information);
   ~FDyMeshVBOIntermediate();
 
   /// @brief Reset all properties not to use this anymore.

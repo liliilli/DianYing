@@ -222,6 +222,12 @@
     <ClCompile Include="Source\Management\Type\Input\DDyInputButton.cc" />
     <ClCompile Include="Source\Management\Type\Input\DDyJoystickAnalog.cc" />
     <ClCompile Include="Source\Meta\Type\Input\JsonInputButton.cc" />
+    <ClCompile Include="Source\Builtin\Abstract\ADyMeshResource.cc" />
+    <ClCompile Include="Source\Builtin\Mesh\FDyBtMsBox.cc" />
+    <ClCompile Include="Source\Builtin\Mesh\FDyBtMsPlain.cc" />
+    <ClCompile Include="Source\Builtin\Mesh\FDyBtMsScrTriangle.cc" />
+    <ClCompile Include="Source\Builtin\Mesh\FDyBtMsSphere.cc" />
+    <ClCompile Include="Source\Builtin\Mesh\FDyBtMsUiFontQuad.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -569,6 +575,14 @@
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyJoystickAnalog.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Input\EDyInputButton.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Input\JsonInputButton.h" />
+    <ClInclude Include="Include\Dy\Builtin\Model\UIFontQuad.h" />
+    <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsBox.h" />
+    <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsPlain.h" />
+    <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsScrTriangle.h" />
+    <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsSphere.h" />
+    <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsUiFontQuad.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyMeshResource.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoBuiltinMesh.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

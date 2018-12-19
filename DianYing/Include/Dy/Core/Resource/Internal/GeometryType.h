@@ -70,7 +70,7 @@ struct DDyGlBufferIdInformation final
 /// @struct PDySubmeshInformationDescriptor
 /// @brief Submesh information which is releated to mesh properties directly.
 ///
-struct PDySubmeshInformationDescriptor final
+struct PDySubmeshInformationDescriptor_Deprecated final
 {
   std::vector<DDyVertexInformation> mVertices         = {};
   std::vector<int32_t>              mIndices          = {};
@@ -80,6 +80,7 @@ struct PDySubmeshInformationDescriptor final
   DDyMatrix4x4                      mBaseModelMatrix  = DDyMatrix4x4::IdentityMatrix();
 
   bool                              mIsEnabledSkeletalAnimation = false;
+  bool                              mIsUsingDefaultBinding      = true;
 };
 
 ///

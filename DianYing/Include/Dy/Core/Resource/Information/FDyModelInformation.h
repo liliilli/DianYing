@@ -57,7 +57,7 @@ public:
 
 private:
   std::string mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
-  std::vector<PDySubmeshInformationDescriptor> mMeshInformations;
+  std::vector<PDySubmeshInformationDescriptor_Deprecated> mMeshInformations;
 };
 
 } /// ::dy namespace

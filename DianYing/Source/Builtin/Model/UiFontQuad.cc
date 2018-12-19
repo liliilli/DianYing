@@ -13,46 +13,36 @@
 ///
 
 /// Header file
-#include <Dy/Builtin/Model/Plain.h>
+#include <Dy/Builtin/Model/UIFontQuad.h>
 
-namespace dy::builtin
+namespace dy
 {
 
-void FDyBuiltinModelPlain::ConstructBuffer(PDyModelConstructionVertexDescriptor& buffer) noexcept
+void FDyBtMdUIFontQuad::ConstructBuffer(_MOUT_ PDyModelConstructionVertexDescriptor& buffer) noexcept
 {
-  PDySubmeshInformationDescriptor_Deprecated submeshDesc;
+  PDySubmeshInformationDescriptor submeshDesc;
 
+  //DDyVector2{}, DDyVector2{1, 1}, DDyVector2{}, DDyVector2{1, 0},
+  //DDyVector2{}, DDyVector2{0, 0}, DDyVector2{}, DDyVector2{0, 1}
   // Make position, normal, texcoord vertex information
   submeshDesc.mVertices.reserve(4);
   {
     DDyVertexInformation vertex;
+    vertex.mPosition  = DDyVector3{};
 
-    vertex.mPosition = DDyVector3{ 1, 0, 1 };
-    vertex.mNormal = DDyVector3::FrontZ();
-    vertex.mTexCoords = DDyVector2{ 1, 0 };
-    submeshDesc.mVertices.emplace_back(vertex);
-    vertex.mPosition = DDyVector3{ 1, 0, -1 };
-    vertex.mNormal = DDyVector3::FrontZ();
     vertex.mTexCoords = DDyVector2{ 1, 1 };
     submeshDesc.mVertices.emplace_back(vertex);
-    vertex.mPosition = DDyVector3{ -1, 0, -1 };
-    vertex.mNormal = DDyVector3::FrontZ();
-    vertex.mTexCoords = DDyVector2{ 0, 1 };
+    vertex.mTexCoords = DDyVector2{ 1, 0 };
     submeshDesc.mVertices.emplace_back(vertex);
-    vertex.mPosition = DDyVector3{ -1, 0, 1 };
-    vertex.mNormal = DDyVector3::FrontZ();
     vertex.mTexCoords = DDyVector2{ 0, 0 };
+    submeshDesc.mVertices.emplace_back(vertex);
+    vertex.mTexCoords = DDyVector2{ 0, 1 };
     submeshDesc.mVertices.emplace_back(vertex);
   }
 
-  // Make index information
-  submeshDesc.mIndices.reserve(6);
-  std::array<TU32, 6> indices = { 0, 1, 2, 0, 2, 3 };
-  for (const auto index : indices) { submeshDesc.mIndices.emplace_back(index); }
-
   // Make model information
-  buffer.mModelName = FDyBuiltinModelPlain::sName;
+  buffer.mModelName = sName;
   buffer.mSubmeshConstructionInformations.emplace_back(submeshDesc);
 }
 
-} /// ::dy::builtin namespace
+} /// ::dy namespace

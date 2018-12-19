@@ -31,7 +31,7 @@ struct DMoeTempAnimationChannel;
 struct PDyModelConstructionVertexDescriptor final : public IDyToString
 {
   std::string                                   mModelName                        = "";
-  std::vector<PDySubmeshInformationDescriptor>  mSubmeshConstructionInformations  = {};
+  std::vector<PDySubmeshInformationDescriptor_Deprecated>  mSubmeshConstructionInformations  = {};
 
   ///
   [[nodiscard]] std::string ToString() override final

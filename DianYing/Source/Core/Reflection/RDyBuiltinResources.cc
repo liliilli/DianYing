@@ -73,6 +73,11 @@ void RDyBuiltinResource::BindBuiltinResourcesToMetaManager()
       auto metaInfo = std::any_cast<std::string_view>(function()->GetMetaInfo());
       MDY_CALL_ASSERT_SUCCESS(metaManager.pfAddWidgetMetaInformation(MSVSTR(metaInfo)));
     } break;
+    case EDyResourceType::Mesh:
+    { // Mesh
+      auto metaInfo = std::any_cast<PDyBtMeshInstanceMetaInfo>(function()->GetMetaInfo());
+      MDY_CALL_ASSERT_SUCCESS(metaManager.pfAddBuiltinMeshMetaInfo(metaInfo));
+    } break;
     default: MDY_NOT_IMPLEMENTED_ASSERT(); break;
     }
   }

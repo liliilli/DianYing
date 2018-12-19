@@ -13,42 +13,40 @@
 ///
 
 /// Header file
-#include <Dy/Builtin/Model/ScreenProjectionTriangle.h>
+#include <Dy/Builtin/Mesh/FDyBtMsScrTriangle.h>
 
-namespace dy::builtin
+namespace dy
 {
 
-void FDyBuiltinModelScreenProjectionTriangle::ConstructBuffer(PDyModelConstructionVertexDescriptor& buffer) noexcept
+void FDyBtMsScrTriangle::ConstructBuffer(_MOUT_ PDyBtMeshInstanceMetaInfo& property) noexcept
 {
-  PDySubmeshInformationDescriptor_Deprecated submeshDesc;
+  property.mSpecifierName = sName;
+  property.mIsUsingDefaultBinding = true;
 
   // Make position, normal, texcoord vertex information
-  submeshDesc.mVertices.reserve(3);
+  auto& submeshDesc = property.mDefaultMeshBuffer;
+  submeshDesc.mVertexList.reserve(3);
   {
     DDyVertexInformation vertex;
 
     vertex.mPosition  = DDyVector3{ -1, -1, 0 };
     vertex.mNormal    = DDyVector3{ 1 };
     vertex.mTexCoords = DDyVector2{ 0, 0 };
-    submeshDesc.mVertices.emplace_back(vertex);
+    submeshDesc.mVertexList.emplace_back(vertex);
     vertex.mPosition  = DDyVector3{ 3, -1, 0 };
     vertex.mNormal    = DDyVector3{ 1 };
     vertex.mTexCoords = DDyVector2{ 2, 0 };
-    submeshDesc.mVertices.emplace_back(vertex);
+    submeshDesc.mVertexList.emplace_back(vertex);
     vertex.mPosition  = DDyVector3{ -1, 3, 0 };
     vertex.mNormal    = DDyVector3{ 1 };
     vertex.mTexCoords = DDyVector2{ 0, 2 };
-    submeshDesc.mVertices.emplace_back(vertex);
+    submeshDesc.mVertexList.emplace_back(vertex);
   }
 
   // Make index information
-  submeshDesc.mIndices.reserve(3);
+  property.mIndiceBuffer.reserve(3);
   std::array<TU32, 3> indices = { 0, 1, 2 };
-  for (const auto index : indices) { submeshDesc.mIndices.emplace_back(index); }
-
-  // Make model information
-  buffer.mModelName = FDyBuiltinModelScreenProjectionTriangle::sName;
-  buffer.mSubmeshConstructionInformations.emplace_back(submeshDesc);
+  for (const auto index : indices) { property.mIndiceBuffer.emplace_back(index); }
 }
 
-} /// ::dy::builtin namespace
+} /// ::dy namespace
