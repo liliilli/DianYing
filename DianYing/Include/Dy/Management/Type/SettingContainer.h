@@ -18,7 +18,7 @@
 
 #include <Dy/Helper/GlobalType.h>
 #include <Dy/Helper/Type/VectorInt2.h>
-#include <Dy/Meta/Type/EDyInput.h>
+#include <Dy/Meta/Type/Input/EDyInputButton.h>
 
 namespace dy
 {
@@ -90,12 +90,12 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingGameplay::DDyGrap
 ///
 struct DDySettingInput
 {
-  using TKeyListType = std::vector<EDyKeyboard>;
+  using TKeyListType = std::vector<EDyButton>;
 
   struct DAction final
   {
-    std::string               mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
-    std::vector<EDyKeyboard>  mKey            = {};
+    std::string  mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
+    TKeyListType mKey            = {};
 
     ///
     /// @brief  Create `DAxis` with valid json atlas.
@@ -103,18 +103,15 @@ struct DDySettingInput
     /// @param  specifierName `DAxis::mSpecifierName`.
     /// @return If succeeded, just return `DAxis` instance.
     ///
-    static MDY_NODISCARD DAction CreateInstance(
-        _MIN_ const nlohmann::json& json,
-        _MIN_ const std::string& specifierName);
+    static MDY_NODISCARD DAction CreateInstance(_MIN_ const nlohmann::json& json, _MIN_ const std::string& specifierName);
   };
 
   struct DAxis final
   {
-    std::string               mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
-    std::vector<EDyKeyboard>  mPositive       = {};
-    std::vector<EDyKeyboard>  mNegative       = {};
-    TF32                      mGravity        = MDY_INITIALIZE_DEFINT;
-    bool                      mIsRepeatable   = false;
+    std::string  mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
+    TKeyListType mPositive       = {};
+    TKeyListType mNegative       = {};
+    TF32         mGravity        = MDY_INITIALIZE_DEFINT;
 
     ///
     /// @brief  Create `DAxis` with valid json atlas.
@@ -122,9 +119,7 @@ struct DDySettingInput
     /// @param  specifierName `DAxis::mSpecifierName`.
     /// @return If succeeded, just return `DAxis` instance.
     ///
-    static MDY_NODISCARD DAxis CreateInstance(
-        _MIN_ const nlohmann::json& json,
-        _MIN_ const std::string& specifierName);
+    static MDY_NODISCARD DAxis CreateInstance(_MIN_ const nlohmann::json& json, _MIN_ const std::string& specifierName);
   };
 
   using TActionMap  = std::unordered_map<std::string, DAction>;

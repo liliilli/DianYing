@@ -39,8 +39,8 @@ struct DDyActionBindingInformation final
   EDyActionInputStatus  mKeyStatus    = EDyActionInputStatus::Released;
 
   /// container key name must be same as structure's name. (Camel)
-  std::string		                mAxisSpecifierName  = "";
-  std::vector<TI32>             mActionId           = {};
+  std::string		         mAxisSpecifierName  = "";
+  std::vector<EDyButton> mActionId           = {};
 
   ///
   /// @brief Construct axis information from `DAction`.

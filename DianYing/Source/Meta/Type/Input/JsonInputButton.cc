@@ -13,15 +13,30 @@
 ///
 
 /// Header file
-#include <Dy/Management/Type/KeyActionBindingInformation.h>
+#include <Dy/Meta/Type/Input/JsonInputButton.h>
+#include <nlohmann/json.hpp>
 
 namespace dy
 {
 
-DDyActionBindingInformation::DDyActionBindingInformation(const DDySettingInput::DAction& actionInfo)
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyInputButton& p)
 {
-  this->mAxisSpecifierName  = actionInfo.mSpecifierName;
-  this->mActionId           = actionInfo.mKey;
+  MDY_NOT_IMPLEMENTED_ASSERT();
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ EDyInputButton& p)
+{
+  const auto specifier = j.get<std::string>();
+  for (auto i = 0; i < kInputButtonSpecifierList.size(); ++i)
+  {
+    if (specifier == kInputButtonSpecifierList[i])
+    {
+      p = static_cast<EDyInputButton>(i);
+      return;
+    }
+  }
+
+  MDY_UNEXPECTED_BRANCH();
 }
 
 } /// ::dy namespace

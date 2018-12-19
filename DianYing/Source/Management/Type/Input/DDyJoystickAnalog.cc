@@ -13,15 +13,19 @@
 ///
 
 /// Header file
-#include <Dy/Management/Type/KeyActionBindingInformation.h>
+#include <Dy/Management/Type/Input/DDyJoystickAnalog.h>
 
 namespace dy
 {
 
-DDyActionBindingInformation::DDyActionBindingInformation(const DDySettingInput::DAction& actionInfo)
+void DDyJoystickAnalog::Update(_MIN_ TF32 iValue) noexcept
 {
-  this->mAxisSpecifierName  = actionInfo.mSpecifierName;
-  this->mActionId           = actionInfo.mKey;
+  this->mValue  = iValue;
+}
+
+TF32 DDyJoystickAnalog::GetValue() const noexcept
+{
+  return this->mValue;
 }
 
 } /// ::dy namespace

@@ -16,9 +16,12 @@
 #include <string>
 
 #include <Dy/Helper/Type/Vector2.h>
+#include <Dy/Meta/Type/Input/EDyInputButton.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Management/Type/KeyAxisBindingInformation.h>
 #include <Dy/Management/Type/KeyActionBindingInformation.h>
+#include <Dy/Management/Type/Input/EDyInputButtonStatus.h>
+#include <Dy/Helper/Type/Clamp.h>
 
 namespace dy
 {
@@ -43,21 +46,24 @@ public:
   ///
   MDY_NODISCARD TF32 GetAxisValue(_MIN_ const std::string& axisKeyName) noexcept;
 
-  ///
   /// @brief Return present-frame mouse position.
-  ///
-  FORCEINLINE MDY_NODISCARD const DDyVector2& GetPresentMousePosition() const noexcept
+  MDY_NODISCARD const DDyVector2& GetPresentMousePosition() const noexcept
   {
     return this->mMousePresentPosition;
   }
 
-  ///
   /// @brief Return old-frame mouse position.
-  ///
-  FORCEINLINE MDY_NODISCARD const DDyVector2& GetPresentLastPosition() const noexcept
+  MDY_NODISCARD const DDyVector2& GetPresentLastPosition() const noexcept
   {
     return this->mMouseLastPosition;
   }
+
+  /// @brief Return original value which is not calculated and calibrated at all.
+  MDY_NODISCARD TF32 GetJoystickStickValue(_MIN_ DDyClamp<TU32, 0, 5> index) const noexcept;
+
+  /// @brief Return button status of supported keyboard, mouse, and joystick button. \n
+  /// button input value must not be `NoneError`.
+  MDY_NODISCARD EDyInputButtonStatus GetButtonStatusValue(_MIN_ EDyButton button) const noexcept;
 
   ///
   /// @brief Get whether or not specific axis was pressed.
@@ -104,23 +110,31 @@ public:
   ///
   MDY_NODISCARD bool IsActionExist(_MIN_ const std::string& actionSpecifier) const noexcept;
 
-  ///
-  /// @brief check if mouse is moved on present frame, but false when mouse movement is not activated.
-  ///
+  /// @brief Check if mouse is moved on present frame, but false when mouse movement is not activated.
   MDY_NODISCARD bool IsMouseMoved() const noexcept { return this->mIsMouseMoved; }
 
+  /// @brief Check joystick is connected (JOYSTICK 1)
+  MDY_NODISCARD bool IsJoystickConnected() const noexcept;
+
 private:
-  ///
+  void MDY_PRIVATE_FUNC_SPECIFIER(pInitializeAxisNAction)();
+  void MDY_PRIVATE_FUNC_SPECIFIER(pInitializeCallbacks)();
+
   /// @brief Update input polling on present frame with delta time.
   /// This function must be called update phrase.
-  ///
   void pfUpdate(_MIN_ TF32 dt) noexcept;
+
+  void MDY_PRIVATE_FUNC_SPECIFIER(pCheckAxisStatus)(_MIN_ TF32 dt);
+  void MDY_PRIVATE_FUNC_SPECIFIER(pCheckActionStatus)(_MIN_ TF32 dt);
+  void MDY_PRIVATE_FUNC_SPECIFIER(pUpdateMouseMovement)(_MIN_ TF32 dt);
+  void MDY_PRIVATE_FUNC_SPECIFIER(pUpdateJoystickSticks)();
+  void MDY_PRIVATE_FUNC_SPECIFIER(pUpdateJoystickButtons)();
 
   using TAxisMap    = std::unordered_map<std::string, DDyAxisBindingInformation>;
   using TActionMap  = std::unordered_map<std::string, DDyActionBindingInformation>;
 
   // Window handle pointer (temporal)
-  GLFWwindow*       mTempGlfwWindowPtr    = nullptr;;
+  GLFWwindow*       mPtrGlfwWindowContext = nullptr;;
   GLFWcursor*       mGlfwWindowCursorPtr  = nullptr;
 
   TAxisMap          mBindedAxisMap        = {};
@@ -129,7 +143,7 @@ private:
   DDyVector2        mMouseLastPosition    = {};
   DDyVector2        mMousePresentPosition = {};
 
-  bool              mIsMouseMoved         = false;
+  bool              mIsMouseMoved           = false;
 
   friend class DyEngine;
 };

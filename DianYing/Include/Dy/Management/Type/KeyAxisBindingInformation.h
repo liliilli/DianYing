@@ -15,6 +15,7 @@
 
 #include <string>
 #include <Dy/Management/Type/SettingContainer.h>
+#include <Dy/Meta/Type/Input/EDyInputButton.h>
 
 namespace dy
 {
@@ -32,14 +33,9 @@ namespace dy
 ///
 struct DDyAxisBindingInformation final
 {
-  using TNegativeButton = TI32;
-  using TPositiveButton = TI32;
-
-  ///
   /// @enum EDyAxisInputStatus
   /// @brief Indicates key status of keys.
-  ///
-  enum class EDyAxisInputStatus : TI32
+  enum class EDyAxisInputStatus : TU08
   {
     PositivePressed = 1,	    // If positive key is pressed, mKeyStatus will sustain PRESSED.
     NegativePressed = 2,	    // If negative key is pressed, mKeyStatus will sustain PRESSED.
@@ -49,13 +45,12 @@ struct DDyAxisBindingInformation final
     NegativeRepeated = 6
   };
 
-  EDyAxisInputStatus   mKeyStatus          = EDyAxisInputStatus::CommonNeutral;
-  bool			          mIsRepeatKey        = true;
+  EDyAxisInputStatus  mKeyStatus    = EDyAxisInputStatus::CommonNeutral;
 
   /// container key name must be same as structure's name. (Camel)
-  std::string		                mAxisSpecifierName  = "";
-  std::vector<TNegativeButton>  mNegativeButtonId = {};
-  std::vector<TPositiveButton>  mPositiveButtonId = {};
+  std::string		          mAxisSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
+  std::vector<EDyButton>  mNegativeButtonId   = {};
+  std::vector<EDyButton>  mPositiveButtonId   = {};
 
   /// Gravity to drag value down to neutral zone.
   TF32 mGravity                     = 1000.f;

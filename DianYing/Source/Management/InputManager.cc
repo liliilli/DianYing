@@ -15,14 +15,14 @@
 /// Header file
 #include <Dy/Management/InputManager.h>
 
-#include <nlohmann/json.hpp>
-
+#include <Dy/Helper/Library/HelperJson.h>
+#include <Dy/Helper/ContainerHelper.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/TimeManager.h>
 #include <Dy/Management/WindowManager.h>
 #include <Dy/Management/SettingManager.h>
-#include <Dy/Management/Helper/InputKeyString.h>
-#include <Dy/Helper/Library/HelperJson.h>
+#include <Dy/Management/Type/Input/DDyInputButton.h>
+#include <Dy/Management/Type/Input/DDyJoystickAnalog.h>
 
 //!
 //! Data
@@ -31,24 +31,21 @@
 namespace
 {
 
-///
-/// @enum EKeyPrimaryState
-/// @brief Check key primary state only in this file.
-///
-enum class EKeyPrimaryState : char
-{
-  Released  = 0,
-  Pressed   = 1,
-  Repeated  = 2
-};
-
 constexpr const char err_input_key_not_exist[] = "Key axis is not exist. [Key axis : {}]";
+constexpr TF32 kNegativeValue = -1.0f;
+constexpr TF32 kPositiveValue = +1.0f;
+constexpr TU32 kMaximumStickCount = 6;
 
-EKeyPrimaryState  sPrimaryKeys[349];
+std::array<dy::DDyInputButton, dy::kEDyInputButtonCount> mInputButtonList = {};
+std::array<dy::DDyJoystickAnalog, kMaximumStickCount> mInputAnalogStickList = {};
+
 dy::DDyVector2    sMouseLastPosition    = {};
 dy::DDyVector2    sMousePresentPosition = {};
 bool              sIsFirstMouseMovement = true;
 bool              sMousePositionDirty   = false;
+bool              mIsControllerConnected= false;
+
+void DyCallbackCheckJoystickConnection(_MIN_ int joy, _MIN_ int event);
 
 ///
 /// @brief
@@ -65,18 +62,106 @@ bool              sMousePositionDirty   = false;
 ///
 void DyCallbackInputKeyboard(MDY_NOTUSED GLFWwindow* window, _MIN_ int key, MDY_NOTUSED int scancode, _MIN_ int action, MDY_NOTUSED int mod)
 {
-  MDY_LOG_DEBUG_D("Key input : {0}, {1}", key, action);
+  using namespace dy;
+  using TEnum = EDyInputButton;
+  
+  switch (key)
+  {
+  case GLFW_KEY_RIGHT:mInputButtonList[TEnum::Right].Update(action); break;
+  case GLFW_KEY_LEFT: mInputButtonList[TEnum::Left].Update(action); break;
+  case GLFW_KEY_DOWN: mInputButtonList[TEnum::Down].Update(action); break;
+  case GLFW_KEY_UP:   mInputButtonList[TEnum::Up].Update(action); break;
 
-  switch (action) {
-  case GLFW_PRESS:
-    sPrimaryKeys[key] = EKeyPrimaryState::Pressed;
-    break;
-  case GLFW_RELEASE:
-    sPrimaryKeys[key] = EKeyPrimaryState::Released;
-    break;
-  case GLFW_REPEAT:
-    sPrimaryKeys[key] = EKeyPrimaryState::Repeated;
-    break;
+  case GLFW_KEY_A: mInputButtonList[TEnum::A].Update(action); break;
+  case GLFW_KEY_B: mInputButtonList[TEnum::B].Update(action); break;
+  case GLFW_KEY_C: mInputButtonList[TEnum::C].Update(action); break;
+  case GLFW_KEY_D: mInputButtonList[TEnum::D].Update(action); break;
+  case GLFW_KEY_E: mInputButtonList[TEnum::E].Update(action); break;
+  case GLFW_KEY_F: mInputButtonList[TEnum::F].Update(action); break;
+  case GLFW_KEY_G: mInputButtonList[TEnum::G].Update(action); break;
+  case GLFW_KEY_H: mInputButtonList[TEnum::H].Update(action); break;
+  case GLFW_KEY_I: mInputButtonList[TEnum::I].Update(action); break;
+  case GLFW_KEY_J: mInputButtonList[TEnum::J].Update(action); break;
+  case GLFW_KEY_K: mInputButtonList[TEnum::K].Update(action); break;
+  case GLFW_KEY_L: mInputButtonList[TEnum::L].Update(action); break;
+  case GLFW_KEY_M: mInputButtonList[TEnum::M].Update(action); break;
+  case GLFW_KEY_N: mInputButtonList[TEnum::N].Update(action); break;
+  case GLFW_KEY_O: mInputButtonList[TEnum::O].Update(action); break;
+  case GLFW_KEY_P: mInputButtonList[TEnum::P].Update(action); break;
+  case GLFW_KEY_Q: mInputButtonList[TEnum::Q].Update(action); break;
+  case GLFW_KEY_R: mInputButtonList[TEnum::R].Update(action); break;
+  case GLFW_KEY_S: mInputButtonList[TEnum::S].Update(action); break;
+  case GLFW_KEY_T: mInputButtonList[TEnum::T].Update(action); break;
+  case GLFW_KEY_U: mInputButtonList[TEnum::U].Update(action); break;
+  case GLFW_KEY_V: mInputButtonList[TEnum::V].Update(action); break;
+  case GLFW_KEY_X: mInputButtonList[TEnum::X].Update(action); break;
+  case GLFW_KEY_Y: mInputButtonList[TEnum::Y].Update(action); break;
+  case GLFW_KEY_Z: mInputButtonList[TEnum::Z].Update(action); break;
+
+  case GLFW_KEY_0: mInputButtonList[TEnum::Num0].Update(action); break;
+  case GLFW_KEY_1: mInputButtonList[TEnum::Num1].Update(action); break;
+  case GLFW_KEY_2: mInputButtonList[TEnum::Num2].Update(action); break;
+  case GLFW_KEY_3: mInputButtonList[TEnum::Num3].Update(action); break;
+  case GLFW_KEY_4: mInputButtonList[TEnum::Num4].Update(action); break;
+  case GLFW_KEY_5: mInputButtonList[TEnum::Num5].Update(action); break;
+  case GLFW_KEY_6: mInputButtonList[TEnum::Num6].Update(action); break;
+  case GLFW_KEY_7: mInputButtonList[TEnum::Num7].Update(action); break;
+  case GLFW_KEY_8: mInputButtonList[TEnum::Num8].Update(action); break;
+  case GLFW_KEY_9: mInputButtonList[TEnum::Num9].Update(action); break;
+    
+  case GLFW_KEY_KP_0: mInputButtonList[TEnum::NumKp0].Update(action); break;
+  case GLFW_KEY_KP_1: mInputButtonList[TEnum::NumKp1].Update(action); break;
+  case GLFW_KEY_KP_2: mInputButtonList[TEnum::NumKp2].Update(action); break;
+  case GLFW_KEY_KP_3: mInputButtonList[TEnum::NumKp3].Update(action); break;
+  case GLFW_KEY_KP_4: mInputButtonList[TEnum::NumKp4].Update(action); break;
+  case GLFW_KEY_KP_5: mInputButtonList[TEnum::NumKp5].Update(action); break;
+  case GLFW_KEY_KP_6: mInputButtonList[TEnum::NumKp6].Update(action); break;
+  case GLFW_KEY_KP_7: mInputButtonList[TEnum::NumKp7].Update(action); break;
+  case GLFW_KEY_KP_8: mInputButtonList[TEnum::NumKp8].Update(action); break;
+  case GLFW_KEY_KP_9: mInputButtonList[TEnum::NumKp9].Update(action); break;
+
+  case GLFW_KEY_ESCAPE:       mInputButtonList[TEnum::ESCAPE].Update(action); break;
+  case GLFW_KEY_ENTER:        mInputButtonList[TEnum::ENTER].Update(action); break;
+  case GLFW_KEY_SPACE:        mInputButtonList[TEnum::SPACE].Update(action); break;
+  case GLFW_KEY_LEFT_SHIFT:   mInputButtonList[TEnum::LSHIFT].Update(action); break;
+  case GLFW_KEY_LEFT_CONTROL: mInputButtonList[TEnum::LCTRL].Update(action); break;
+  case GLFW_KEY_LEFT_ALT:     mInputButtonList[TEnum::LALT].Update(action); break;
+
+  case GLFW_KEY_INSERT:   mInputButtonList[TEnum::INSERT].Update(action); break;
+  case GLFW_KEY_DELETE:   mInputButtonList[TEnum::DELETE].Update(action); break;
+  case GLFW_KEY_PAGE_UP:  mInputButtonList[TEnum::PAGEUP].Update(action); break;
+  case GLFW_KEY_PAGE_DOWN:mInputButtonList[TEnum::PAGEDOWN].Update(action); break;
+  case GLFW_KEY_HOME:     mInputButtonList[TEnum::HOME].Update(action); break;
+  case GLFW_KEY_END:      mInputButtonList[TEnum::END].Update(action); break;
+
+  case GLFW_KEY_MINUS:          mInputButtonList[TEnum::MINUS].Update(action); break;
+  case GLFW_KEY_EQUAL:          mInputButtonList[TEnum::EQUAL].Update(action); break;
+  case GLFW_KEY_LEFT_BRACKET:   mInputButtonList[TEnum::LBRACKET].Update(action); break;
+  case GLFW_KEY_RIGHT_BRACKET:  mInputButtonList[TEnum::RBRACKET].Update(action); break;
+
+  case GLFW_KEY_SEMICOLON:  mInputButtonList[TEnum::SEMICOLON].Update(action); break;
+  case GLFW_KEY_APOSTROPHE: mInputButtonList[TEnum::APOSTROPHE].Update(action); break;
+  case GLFW_KEY_COMMA:      mInputButtonList[TEnum::COMMA].Update(action); break;
+  case GLFW_KEY_PERIOD:     mInputButtonList[TEnum::PERIOD].Update(action); break;
+
+  case GLFW_KEY_F1:  mInputButtonList[TEnum::F1].Update(action); break;
+  case GLFW_KEY_F2:  mInputButtonList[TEnum::F2].Update(action); break;
+  case GLFW_KEY_F3:  mInputButtonList[TEnum::F3].Update(action); break;
+  case GLFW_KEY_F4:  mInputButtonList[TEnum::F4].Update(action); break;
+  case GLFW_KEY_F5:  mInputButtonList[TEnum::F5].Update(action); break;
+  case GLFW_KEY_F6:  mInputButtonList[TEnum::F6].Update(action); break;
+  case GLFW_KEY_F7:  mInputButtonList[TEnum::F7].Update(action); break;
+  case GLFW_KEY_F8:  mInputButtonList[TEnum::F8].Update(action); break;
+  case GLFW_KEY_F9:  mInputButtonList[TEnum::F9].Update(action); break;
+  case GLFW_KEY_F10: mInputButtonList[TEnum::F10].Update(action); break;
+  case GLFW_KEY_F11: mInputButtonList[TEnum::F11].Update(action); break;
+  case GLFW_KEY_F12: mInputButtonList[TEnum::F12].Update(action); break;
+
+  case GLFW_KEY_CAPS_LOCK:    mInputButtonList[TEnum::CAPSLOCK].Update(action); break;
+  case GLFW_KEY_TAB:          mInputButtonList[TEnum::TAB].Update(action); break;
+  case GLFW_KEY_BACKSPACE:    mInputButtonList[TEnum::BACKSPACE].Update(action); break;
+  case GLFW_KEY_BACKSLASH:    mInputButtonList[TEnum::BACKSLASH].Update(action); break;
+  case GLFW_KEY_GRAVE_ACCENT: mInputButtonList[TEnum::GBACCENT].Update(action); break;
   default: break;
   }
 }
@@ -86,7 +171,7 @@ void DyCallbackInputKeyboard(MDY_NOTUSED GLFWwindow* window, _MIN_ int key, MDY_
 /// @param xPos width position.
 /// @param yPos height position.
 ///
-void DyCallbackInputMouse(MDY_NOTUSED GLFWwindow* window, _MIN_ double xPos, _MIN_ double yPos)
+void DyCallbackMouseMoving(MDY_NOTUSED GLFWwindow* window, _MIN_ double xPos, _MIN_ double yPos)
 {
   if (sIsFirstMouseMovement == true)
   {
@@ -107,22 +192,73 @@ void DyCallbackInputMouse(MDY_NOTUSED GLFWwindow* window, _MIN_ double xPos, _MI
 ///
 /// @brief Polling notification of mouse button trigger input. \n
 /// The action is one of `GLFW_PRESS` or `GLFW_RELEASE`.
-/// @param window
-/// @param button
-/// @param action
-/// @param mods
 /// @link http://www.glfw.org/docs/latest/group__buttons.html
 /// @link http://www.glfw.org/docs/latest/group__mods.html
 ///
-void DyCallbackInputMouseButton(MDY_NOTUSED GLFWwindow* window, _MIN_ int button, _MIN_ int action, MDY_NOTUSED int mods)
+/// @TODO IMPLEMENT MOUSE BUTTON ALSO REPEATED, \n
+/// USING `glfwGetMouseButton(window, button);` and callback.
+///
+void DyCallbackMouseInput(MDY_NOTUSED GLFWwindow* window, _MIN_ int button, _MIN_ int action, MDY_NOTUSED int mods)
 {
-  MDY_LOG_DEBUG_D("Mouse button input : {0}, {1}", button, action);
+  using namespace dy;
+  using TEnum = EDyInputButton;
+
+  switch (button)
+  {
+  case GLFW_MOUSE_BUTTON_1: mInputButtonList[TEnum::Mouse0Lmb].Update(action); break;
+  case GLFW_MOUSE_BUTTON_2: mInputButtonList[TEnum::Mouse1Rmb].Update(action); break;
+  case GLFW_MOUSE_BUTTON_3: mInputButtonList[TEnum::Mouse2Mid].Update(action); break;
+
+  case GLFW_MOUSE_BUTTON_4: mInputButtonList[TEnum::Mouse3].Update(action); break;
+  case GLFW_MOUSE_BUTTON_5: mInputButtonList[TEnum::Mouse4].Update(action); break;
+  case GLFW_MOUSE_BUTTON_6: mInputButtonList[TEnum::Mouse5].Update(action); break;
+  case GLFW_MOUSE_BUTTON_7: mInputButtonList[TEnum::Mouse6].Update(action); break;
+  case GLFW_MOUSE_BUTTON_8: mInputButtonList[TEnum::Mouse7].Update(action); break;
+  default: break;
+  }
 };
 
 ///
+/// @brief Polling notification of mouse scrolling (x, y) input. \n
+/// scrolling value have integer value, (-..., ...), not only just -1, 0, 1. \n
+/// and, polling stopping scrolling does not supported, so need to checking.
+///
+void DyCallbackMouseScroll(MDY_NOTUSED GLFWwindow* window, _MIN_ double xoffset, _MIN_ double yoffset)
+{
+  MDY_LOG_DEBUG_D("Mouse button scrolling : X: {0}, Y: {1}", xoffset, yoffset);
+}
+
+/// 
+/// @brief Check joystick is connected. \n
+/// This function does not poll initial joystick connection status, so
+/// need to be checked first time manually.
+///
+void DyCallbackCheckJoystickConnection(_MIN_ int joy, _MIN_ int event)
+{
+  // Only support joystick 1.
+  if (joy != GLFW_JOYSTICK_1) { return; }
+
+  if (event == GLFW_CONNECTED)
+  {
+    MDY_LOG_CRITICAL("Joystick {0} Name : {1} Supported.", 0, glfwGetJoystickName(GLFW_JOYSTICK_1));
+    mIsControllerConnected = true;
+  }
+  else if (event == GLFW_DISCONNECTED)
+  {
+    MDY_LOG_CRITICAL("Joystick {0} Disconnected.", 0);
+    mIsControllerConnected = false;
+  }
+}
+
+/// @brief Check joystick manually whether joystick is connected.
+MDY_NODISCARD bool DyCheckIsJoystickConnected() noexcept
+{
+  const auto isConnected = glfwJoystickPresent(GLFW_JOYSTICK_1);
+  return isConnected == GLFW_TRUE ? true : false;
+}
+
 /// @brief Apply gravity of each key information, and if key axis value is in range of threshold value,
 /// change key status to neutral status.
-///
 void DyProceedAxisGravity(_MINOUT_ dy::DDyAxisBindingInformation& axisInfo)
 {
 	const auto dt = dy::MDyTime::GetInstance().GetGameScaledTickedDeltaTimeValue();
@@ -159,8 +295,21 @@ namespace dy
 
 EDySuccess MDyInput::pfInitialize()
 {
-  const auto& settingManager = MDySetting::GetInstance();
-  const auto& keyInformation = settingManager.GetInputSettingInformation();
+  this->MDY_PRIVATE_FUNC_SPECIFIER(pInitializeAxisNAction)();
+  this->MDY_PRIVATE_FUNC_SPECIFIER(pInitializeCallbacks)();
+
+  if (DyCheckIsJoystickConnected() == true)
+  { // Check joystick binding manually at first time.
+    MDY_LOG_CRITICAL("Joystick {0} Name : {1} Supported.", 0, glfwGetJoystickName(GLFW_JOYSTICK_1));
+    mIsControllerConnected = true;
+  }
+
+  return DY_SUCCESS;
+}
+
+void MDyInput::MDY_PRIVATE_FUNC_SPECIFIER(pInitializeAxisNAction)()
+{
+   const auto& keyInformation = MDySetting::GetInstance().GetInputSettingInformation();
 
   // AXIS MAP
   for (const auto& [specifierName, info] : keyInformation.mAxisMap)
@@ -169,6 +318,7 @@ EDySuccess MDyInput::pfInitialize()
     auto [_, isSucceeded] = this->mBindedAxisMap.try_emplace(specifierName, info);
     MDY_ASSERT(isSucceeded == true, "");
   }
+
   // ACTION MAP
   for (const auto& [specifierName, info] : keyInformation.mActionMap)
   {
@@ -176,19 +326,17 @@ EDySuccess MDyInput::pfInitialize()
     auto [_, isSucceeded] = this->mBindedActionMap.try_emplace(specifierName, info);
     MDY_ASSERT(isSucceeded == true, "");
   }
+}
 
-  auto& winManager = MDyWindow::GetInstance();
-  this->mTempGlfwWindowPtr = winManager.GetGLMainWindow();
-
-  glfwSetKeyCallback        (this->mTempGlfwWindowPtr, DyCallbackInputKeyboard);
-  glfwSetCursorPosCallback  (this->mTempGlfwWindowPtr, DyCallbackInputMouse);
-  glfwSetMouseButtonCallback(this->mTempGlfwWindowPtr, DyCallbackInputMouseButton);
-
-  glfwSetInputMode(this->mTempGlfwWindowPtr, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-
-  // @todo Implement joystick button and position callback function.
-
-  return DY_SUCCESS;
+void MDyInput::MDY_PRIVATE_FUNC_SPECIFIER(pInitializeCallbacks)()
+{
+  this->mPtrGlfwWindowContext = MDyWindow::GetInstance().GetGLMainWindow();
+  glfwSetKeyCallback        (this->mPtrGlfwWindowContext, DyCallbackInputKeyboard);
+  glfwSetCursorPosCallback  (this->mPtrGlfwWindowContext, DyCallbackMouseMoving);
+  glfwSetMouseButtonCallback(this->mPtrGlfwWindowContext, DyCallbackMouseInput);
+  glfwSetScrollCallback     (this->mPtrGlfwWindowContext, DyCallbackMouseScroll);
+  glfwSetInputMode          (this->mPtrGlfwWindowContext, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+  glfwSetJoystickCallback   (DyCallbackCheckJoystickConnection);
 }
 
 EDySuccess MDyInput::pfRelease()
@@ -209,6 +357,17 @@ float MDyInput::GetAxisValue(_MIN_ const std::string& axisKeyName) noexcept
   return keyIt->second.mAxisValue;
 }
 
+TF32 MDyInput::GetJoystickStickValue(_MIN_ DDyClamp<TU32, 0, 5> index) const noexcept
+{
+  return mInputAnalogStickList[index].GetValue();
+}
+
+EDyInputButtonStatus MDyInput::GetButtonStatusValue(_MIN_ EDyButton button) const noexcept
+{
+  MDY_ASSERT(button != EDyButton::NoneError, "Button value must not be `NoneErorr`.");
+  return mInputButtonList[button].Get();
+}
+
 bool MDyInput::IsAxisPressed(_MIN_ const std::string& axisSpecifierName) noexcept
 {
   // Validity test
@@ -220,27 +379,15 @@ bool MDyInput::IsAxisPressed(_MIN_ const std::string& axisSpecifierName) noexcep
   }
 
   // If key is pressed on following repeated key flag, return true or false.
-  if (DDyAxisBindingInformation& keyInformation = keyIt->second; keyInformation.mIsRepeatKey == false)
+  DDyAxisBindingInformation& keyInformation = keyIt->second; 
+  switch (keyInformation.mKeyStatus)
   {
-    switch (keyInformation.mKeyStatus)
-    {
-    case DDyAxisBindingInformation::EDyAxisInputStatus::PositivePressed:
-    case DDyAxisBindingInformation::EDyAxisInputStatus::NegativePressed:
-      return true;
-    default: return false;
-    }
-  }
-  else
-  {
-    switch (keyInformation.mKeyStatus)
-    {
-    case DDyAxisBindingInformation::EDyAxisInputStatus::PositivePressed:
-    case DDyAxisBindingInformation::EDyAxisInputStatus::NegativePressed:
-    case DDyAxisBindingInformation::EDyAxisInputStatus::PositiveRepeated:
-    case DDyAxisBindingInformation::EDyAxisInputStatus::NegativeRepeated:
-      return true;
-    default: return false;
-    }
+  case DDyAxisBindingInformation::EDyAxisInputStatus::PositivePressed:
+  case DDyAxisBindingInformation::EDyAxisInputStatus::NegativePressed:
+  case DDyAxisBindingInformation::EDyAxisInputStatus::PositiveRepeated:
+  case DDyAxisBindingInformation::EDyAxisInputStatus::NegativeRepeated:
+    return true;
+  default: return false;
   }
 }
 
@@ -284,7 +431,7 @@ bool MDyInput::IsAxisRepeated(_MIN_ const std::string& axisSpecifier) noexcept
 
 bool MDyInput::IsAxisExist(_MIN_ const std::string& axisSpecifierName) const noexcept
 {
-  return this->mBindedAxisMap.find(axisSpecifierName) != this->mBindedAxisMap.end();
+  return DyIsMapContains(this->mBindedAxisMap, axisSpecifierName);
 }
 
 bool MDyInput::IsActionPressed(_MIN_ const std::string& actionSpecifier) const noexcept
@@ -313,24 +460,67 @@ bool MDyInput::IsActionReleased(_MIN_ const std::string& actionSpecifier) const 
   return keyIt->second.mKeyStatus == DDyActionBindingInformation::EDyActionInputStatus::Released;
 }
 
-MDY_NODISCARD bool MDyInput::IsActionExist(_MIN_ const std::string& actionSpecifier) const noexcept
+bool MDyInput::IsActionExist(_MIN_ const std::string& actionSpecifier) const noexcept
 {
-  return this->mBindedActionMap.find(actionSpecifier) != this->mBindedActionMap.end();
+  return DyIsMapContains(this->mBindedActionMap, actionSpecifier);
+}
+
+bool MDyInput::IsJoystickConnected() const noexcept
+{
+  return mIsControllerConnected;
 }
 
 void MDyInput::pfUpdate(_MIN_ TF32 dt) noexcept
 {
-  using EAxisStatus   = DDyAxisBindingInformation::EDyAxisInputStatus;
-  using EActionStatus = DDyActionBindingInformation::EDyActionInputStatus;
-  static constexpr TF32 kNegativeValue = -1.0f;
-  static constexpr TF32 kPositiveValue = +1.0f;
+  this->MDY_PRIVATE_FUNC_SPECIFIER(pUpdateMouseMovement)(dt);
+  if (this->IsJoystickConnected() == true)
+  {
+    this->MDY_PRIVATE_FUNC_SPECIFIER(pUpdateJoystickSticks)();
+    this->MDY_PRIVATE_FUNC_SPECIFIER(pUpdateJoystickButtons)();
+  }
 
-  ///
-  /// @brief
+  this->MDY_PRIVATE_FUNC_SPECIFIER(pCheckAxisStatus)(dt);
+  this->MDY_PRIVATE_FUNC_SPECIFIER(pCheckActionStatus)(dt);
+}
+
+void MDyInput::MDY_PRIVATE_FUNC_SPECIFIER(pUpdateJoystickSticks)()
+{
+  int supportingStickCount;
+  const float* stickValueList = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &supportingStickCount);
+
+  const auto stickCount = supportingStickCount < kMaximumStickCount ? supportingStickCount : kMaximumStickCount;
+  for (TU32 i = 0; i < stickCount; ++i)
+  {
+    mInputAnalogStickList[i].Update(stickValueList[i]);
+  }
+}
+
+void MDyInput::MDY_PRIVATE_FUNC_SPECIFIER(pUpdateJoystickButtons)()
+{
+  using TEnum = EDyInputButton;
+  static constexpr auto dyJoystickBtnCount = TEnum::Joystick17 - TEnum::Joystick0 + 1;
+
+  int buttonCount;
+  const auto* actionList = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &buttonCount);
+  const auto supportedButtonCount = 
+      buttonCount < dyJoystickBtnCount 
+    ? buttonCount 
+    : dyJoystickBtnCount;
+
+  for (int i = 0; i < supportedButtonCount; ++i)
+  {
+    mInputButtonList[TEnum::Joystick0 + i].Update(actionList[i]);
+  }
+}
+
+void MDyInput::MDY_PRIVATE_FUNC_SPECIFIER(pCheckAxisStatus)(_MIN_ TF32 dt)
+{
+  using EAxisStatus   = DDyAxisBindingInformation::EDyAxisInputStatus;
+  
+  /// @brief Check keyboard axis status.
   /// @param axisInfo Axis information
-  ///
   static auto CheckAxisStatus = [](_MINOUT_ DDyAxisBindingInformation& axisInfo,
-                                   _MIN_ EKeyPrimaryState goalState,
+                                   _MIN_ EDyInputButtonStatus goalState,
                                    _MIN_ const bool isNegative,
                                    auto callback)
   {
@@ -338,198 +528,108 @@ void MDyInput::pfUpdate(_MIN_ TF32 dt) noexcept
     {
       for (const auto id : axisInfo.mNegativeButtonId)
       {
-        if (sPrimaryKeys[id] == goalState) { callback(axisInfo); return DY_SUCCESS; }
+      // @TODO NEED TO IMPLEMENT ANALOG VALUE BUTTON (SUCH AS JOYSTICK STICk VALUE)
+        if (mInputButtonList[id].Get() == goalState) { callback(axisInfo); return DY_SUCCESS; }
       }
     }
     else
     {
       for (const auto id : axisInfo.mPositiveButtonId)
       {
-        if (sPrimaryKeys[id] == goalState) { callback(axisInfo); return DY_SUCCESS; }
+      // @TODO NEED TO IMPLEMENT ANALOG VALUE BUTTON (SUCH AS JOYSTICK STICk VALUE)
+        if (mInputButtonList[id].Get() == goalState) { callback(axisInfo); return DY_SUCCESS; }
       }
     }
 
     return DY_FAILURE;
   };
 
-  ///
   /// @brief Process axis update routine when axisInfo status is `Status::CommonNeutral`.
   /// @param axisInfo Axis information
-  ///
   static auto ProcessAxis_CommonNeutral = [](_MINOUT_ DDyAxisBindingInformation& axisInfo)
   { // Negative
-    if (CheckAxisStatus(axisInfo, EKeyPrimaryState::Pressed, true, [](DDyAxisBindingInformation& axis)
+    if (CheckAxisStatus(axisInfo, EDyInputButtonStatus::Pressed, true, [](DDyAxisBindingInformation& axis)
     {
       axis.mAxisValue = kNegativeValue;
       axis.mKeyStatus = EAxisStatus::NegativePressed;
     }) == DY_SUCCESS) { return; }
     // Positive
-    if (CheckAxisStatus(axisInfo, EKeyPrimaryState::Pressed, false, [](DDyAxisBindingInformation& axis)
+    if (CheckAxisStatus(axisInfo, EDyInputButtonStatus::Pressed, false, [](DDyAxisBindingInformation& axis)
     {
       axis.mAxisValue = kPositiveValue;
       axis.mKeyStatus = EAxisStatus::PositivePressed;
     }) == DY_SUCCESS) { return; }
   };
 
-  ///
   /// @brief Process axis update routine when axisInfo status is `Status::NegativePressed`.
   /// @param axisInfo Axis information
-  ///
   static auto ProcessAxis_NegativePressed = [](_MINOUT_ DDyAxisBindingInformation& axisInfo)
   { // Positive
-    if (CheckAxisStatus(axisInfo, EKeyPrimaryState::Pressed, false, [](DDyAxisBindingInformation& axis)
+    if (CheckAxisStatus(axisInfo, EDyInputButtonStatus::Pressed, false, [](DDyAxisBindingInformation& axis)
     {
       axis.mAxisValue = kPositiveValue;
       axis.mKeyStatus = EAxisStatus::PositivePressed;
     }) == DY_SUCCESS) { return; }
     // Negative
-    if (axisInfo.mIsRepeatKey == true)
-    {
-      CheckAxisStatus(axisInfo, EKeyPrimaryState::Repeated, true, [](DDyAxisBindingInformation& axis)
-      {
-        axis.mKeyStatus = EAxisStatus::NegativeRepeated;
-      });
-    }
-    else
-    {
-      CheckAxisStatus(axisInfo, EKeyPrimaryState::Released, true, [](DDyAxisBindingInformation& axis)
-      {
-        axis.mKeyStatus = EAxisStatus::CommonReleased;
-        DyProceedAxisGravity(axis);
-      });
-    }
+    CheckAxisStatus(
+        axisInfo, EDyInputButtonStatus::Repeated, true, 
+        [](DDyAxisBindingInformation& axis) { axis.mKeyStatus = EAxisStatus::NegativeRepeated; }
+    );
   };
 
-  ///
   /// @brief Process axis update routine when axisInfo status is `Status::NegativePressed`.
   /// @param axisInfo Axis information
-  ///
   static auto ProcessAxis_PositivePressed = [](_MINOUT_ DDyAxisBindingInformation& axisInfo)
   { // Negative
-    if (CheckAxisStatus(axisInfo, EKeyPrimaryState::Pressed, true, [](DDyAxisBindingInformation& axis)
+    if (CheckAxisStatus(axisInfo, EDyInputButtonStatus::Pressed, true, [](DDyAxisBindingInformation& axis)
     {
       axis.mAxisValue = kNegativeValue;
       axis.mKeyStatus = EAxisStatus::NegativePressed;
     }) == DY_SUCCESS) { return; }
     // Positive
-    if (axisInfo.mIsRepeatKey == true)
-    {
-      CheckAxisStatus(axisInfo, EKeyPrimaryState::Repeated, false, [](DDyAxisBindingInformation& axis)
-      {
-        axis.mKeyStatus = EAxisStatus::PositiveRepeated;
-      });
-    }
-    else
-    {
-      CheckAxisStatus(axisInfo, EKeyPrimaryState::Released, false, [](DDyAxisBindingInformation& axis)
-      {
-        axis.mKeyStatus = EAxisStatus::CommonReleased;
-        DyProceedAxisGravity(axis);
-      });
-    }
+    CheckAxisStatus(axisInfo, EDyInputButtonStatus::Repeated, false, 
+        [](DDyAxisBindingInformation& axis) { axis.mKeyStatus = EAxisStatus::PositiveRepeated; }
+    );
   };
 
-  ///
   /// @brief Process axis update routine when axisInfo status is `Status::PositiveRepeated`.
   /// @param axisInfo Axis information
-  ///
   static auto ProcessAxis_PositiveRepeated = [](_MINOUT_ DDyAxisBindingInformation& axisInfo)
   { // Negative
-    if (CheckAxisStatus(axisInfo, EKeyPrimaryState::Pressed, true, [](DDyAxisBindingInformation& axis)
+    if (CheckAxisStatus(axisInfo, EDyInputButtonStatus::Pressed, true, [](DDyAxisBindingInformation& axis)
     {
       axis.mAxisValue = kNegativeValue;
       axis.mKeyStatus = EAxisStatus::NegativePressed;
     }) == DY_SUCCESS) { return; }
     // Positive
-    if (CheckAxisStatus(axisInfo, EKeyPrimaryState::Released, false, [](DDyAxisBindingInformation& axis)
+    if (CheckAxisStatus(axisInfo, EDyInputButtonStatus::Released, false, [](DDyAxisBindingInformation& axis)
     {
       axis.mKeyStatus = EAxisStatus::CommonReleased;
       DyProceedAxisGravity(axis);
     }) == DY_SUCCESS) { return; }
   };
 
-  ///
   /// @brief Process axis update routine when axisInfo status is `Status::NegativeRepeated`.
   /// @param axisInfo Axis information
-  ///
   static auto ProcessAxis_NegativeRepeated = [](_MINOUT_ DDyAxisBindingInformation& axisInfo)
   { // Positive
-    if (CheckAxisStatus(axisInfo, EKeyPrimaryState::Pressed, false, [](DDyAxisBindingInformation& axis)
+    if (CheckAxisStatus(axisInfo, EDyInputButtonStatus::Pressed, false, [](DDyAxisBindingInformation& axis)
     {
       axis.mAxisValue = kPositiveValue;
       axis.mKeyStatus = EAxisStatus::PositivePressed;
     }) == DY_SUCCESS) { return; }
     // Negative
-    if (CheckAxisStatus(axisInfo, EKeyPrimaryState::Released, true, [](DDyAxisBindingInformation& axis)
+    if (CheckAxisStatus(axisInfo, EDyInputButtonStatus::Released, true, [](DDyAxisBindingInformation& axis)
     {
       axis.mKeyStatus = EAxisStatus::CommonReleased;
       DyProceedAxisGravity(axis);
     }) == DY_SUCCESS) { return; }
   };
 
-  ///
-  /// @brief
-  /// @param actionInfo action information
-  ///
-  static auto CheckActionStatus = [](_MINOUT_ DDyActionBindingInformation& actionInfo,
-                                     _MIN_ EKeyPrimaryState goalState,
-                                     auto callback)
-  {
-    for (const auto id : actionInfo.mActionId)
-    {
-      if (sPrimaryKeys[id] == goalState) { callback(actionInfo); return DY_SUCCESS; }
-    }
-
-    return DY_FAILURE;
-  };
-
-  ///
-  /// @brief Process action update routine when actionInfo status is `Status::Released`.
-  /// @param actionInfo action information
-  ///
-  static auto ProcessAction_Released = [](_MINOUT_ DDyActionBindingInformation& actionInfo)
-  {
-    CheckActionStatus(actionInfo, EKeyPrimaryState::Released, [](DDyActionBindingInformation& action)
-    {
-      action.mKeyStatus = EActionStatus::Pressed;
-    });
-  };
-
-  ///
-  /// @brief Process action update routine when actionInfo status is `Status::Pressed`.
-  /// @param actionInfo action information
-  ///
-  static auto ProcessAction_Pressed = [](_MINOUT_ DDyActionBindingInformation& actionInfo)
-  {
-    if (CheckActionStatus(actionInfo, EKeyPrimaryState::Released, [](DDyActionBindingInformation& action)
-    {
-      action.mKeyStatus = EActionStatus::Released;
-    }) == DY_SUCCESS) { return; }
-    else
-    {
-      CheckActionStatus(actionInfo, EKeyPrimaryState::Pressed, [](DDyActionBindingInformation& action)
-      {
-        action.mKeyStatus = EActionStatus::Bottled;
-      });
-    }
-  };
-
-  ///
-  /// @brief Process action update routine when actionInfo status is `Status::Bottled`.
-  /// @param actionInfo action information
-  ///
-  static auto ProcessAction_Bottled = [](_MINOUT_ DDyActionBindingInformation& actionInfo)
-  {
-    CheckActionStatus(actionInfo, EKeyPrimaryState::Released, [](DDyActionBindingInformation& action)
-    {
-      action.mKeyStatus = EActionStatus::Released;
-    });
-  };
-
-  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  //! FUNCTIONBODY ∨
-  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  // FUNCTION BODY ∨
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  
   for (auto& [_, axis] : this->mBindedAxisMap)
   { // AXIS
     switch (axis.mKeyStatus)
@@ -545,6 +645,66 @@ void MDyInput::pfUpdate(_MIN_ TF32 dt) noexcept
     case EAxisStatus::NegativeRepeated:  ProcessAxis_NegativeRepeated(axis);  break;
     }
   }
+}
+
+void MDyInput::MDY_PRIVATE_FUNC_SPECIFIER(pCheckActionStatus)(_MIN_ TF32 dt)
+{
+  using EActionStatus = DDyActionBindingInformation::EDyActionInputStatus;
+
+  /// @brief Check action key status.
+  /// @param actionInfo action information
+  static auto CheckActionStatus = [](_MINOUT_ DDyActionBindingInformation& actionInfo,
+                                     _MIN_ EDyInputButtonStatus goalState,
+                                     auto callback)
+  {
+    for (const auto id : actionInfo.mActionId)
+    {
+      if (mInputButtonList[id].Get() == goalState) { callback(actionInfo); return DY_SUCCESS; }
+    }
+
+    return DY_FAILURE;
+  };
+
+  /// @brief Process action update routine when actionInfo status is `Status::Released`.
+  /// @param actionInfo action information
+  static auto ProcessAction_Released = [](_MINOUT_ DDyActionBindingInformation& actionInfo)
+  {
+    CheckActionStatus(actionInfo, EDyInputButtonStatus::Released, [](DDyActionBindingInformation& action)
+    {
+      action.mKeyStatus = EActionStatus::Pressed;
+    });
+  };
+
+  /// @brief Process action update routine when actionInfo status is `Status::Pressed`.
+  /// @param actionInfo action information
+  static auto ProcessAction_Pressed = [](_MINOUT_ DDyActionBindingInformation& actionInfo)
+  {
+    if (CheckActionStatus(actionInfo, EDyInputButtonStatus::Released, [](DDyActionBindingInformation& action)
+    {
+      action.mKeyStatus = EActionStatus::Released;
+    }) == DY_SUCCESS) { return; }
+    else
+    {
+      CheckActionStatus(actionInfo, EDyInputButtonStatus::Pressed, [](DDyActionBindingInformation& action)
+      {
+        action.mKeyStatus = EActionStatus::Bottled;
+      });
+    }
+  };
+
+  /// @brief Process action update routine when actionInfo status is `Status::Bottled`.
+  /// @param actionInfo action information
+  static auto ProcessAction_Bottled = [](_MINOUT_ DDyActionBindingInformation& actionInfo)
+  {
+    CheckActionStatus(actionInfo, EDyInputButtonStatus::Released, [](DDyActionBindingInformation& action)
+    {
+      action.mKeyStatus = EActionStatus::Released;
+    });
+  };
+
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  // FUNCTION BODY ∨
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   for (auto& [_, action] : this->mBindedActionMap)
   { // ACTION
@@ -556,13 +716,15 @@ void MDyInput::pfUpdate(_MIN_ TF32 dt) noexcept
     case EActionStatus::Bottled:  ProcessAction_Bottled(action);   break;
     }
   }
+}
 
+void MDyInput::MDY_PRIVATE_FUNC_SPECIFIER(pUpdateMouseMovement)(_MIN_ TF32 dt)
+{
   if (sIsFirstMouseMovement == false && sMousePositionDirty == true)
-  { // MOUSE
+  { 
     this->mMousePresentPosition = sMousePresentPosition;
     this->mMouseLastPosition    = sMouseLastPosition;
 
-    //MDY_LOG_DEBUG_D("Mouse position : {}, {}", this->mMousePresentPosition.X, this->mMousePresentPosition.Y);
     this->mIsMouseMoved = true;
     sMousePositionDirty = false;
   }

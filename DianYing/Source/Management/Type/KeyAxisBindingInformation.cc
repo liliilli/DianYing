@@ -20,18 +20,10 @@ namespace dy
 
 DDyAxisBindingInformation::DDyAxisBindingInformation(_MIN_ const DDySettingInput::DAxis& axisInfo)
 {
-  this->mIsRepeatKey        = axisInfo.mIsRepeatable;
   this->mAxisSpecifierName  = axisInfo.mSpecifierName;
   this->mGravity            = axisInfo.mGravity;
-
-  for (const auto& keyEnumValue : axisInfo.mPositive)
-  {
-    this->mPositiveButtonId.emplace_back(static_cast<std::underlying_type_t<EDyKeyboard>>(keyEnumValue));
-  }
-  for (const auto& keyEnumValue : axisInfo.mNegative)
-  {
-    this->mNegativeButtonId.emplace_back(static_cast<std::underlying_type_t<EDyKeyboard>>(keyEnumValue));
-  }
+  this->mPositiveButtonId   = axisInfo.mPositive;
+  this->mNegativeButtonId   = axisInfo.mNegative;
 
   MDY_ASSERT(this->mGravity > 0, "Gravity must be bigger than 0.");
 }

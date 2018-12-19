@@ -1,4 +1,5 @@
-#include <precompiled.h>
+#ifndef GUARD_DY_MANAGEMENT_TYPE_INPUT_EDYINPUTBUTTONSTATUS_H
+#define GUARD_DY_MANAGEMENT_TYPE_INPUT_EDYINPUTBUTTONSTATUS_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -12,16 +13,20 @@
 /// SOFTWARE.
 ///
 
-/// Header file
-#include <Dy/Management/Type/KeyActionBindingInformation.h>
-
 namespace dy
 {
 
-DDyActionBindingInformation::DDyActionBindingInformation(const DDySettingInput::DAction& actionInfo)
+///
+/// @enum EKeyPrimaryState
+/// @brief Check key primary state only in this file.
+///
+enum class EDyInputButtonStatus : unsigned char
 {
-  this->mAxisSpecifierName  = actionInfo.mSpecifierName;
-  this->mActionId           = actionInfo.mKey;
-}
+  Released  = 0,
+  Pressed   = 1,
+  Repeated  = 2
+};
 
 } /// ::dy namespace
+
+#endif /// GUARD_DY_MANAGEMENT_TYPE_INPUT_EDYINPUTBUTTONSTATUS_H
