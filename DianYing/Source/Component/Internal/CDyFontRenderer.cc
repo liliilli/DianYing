@@ -183,7 +183,7 @@ void CDyFontRenderer::Render()
     {
       renderPosition.X  = initPos.X;
       //renderPosition.Y -= static_cast<TF32>(container.GetLinefeedHeight(fontSize) * 0.5f);
-      renderPosition.Y -= 64;
+      renderPosition.Y -= 48;
       continue;
     }
     if (container.IsCharacterGlyphExist(ucs2Char) == false) { continue; }

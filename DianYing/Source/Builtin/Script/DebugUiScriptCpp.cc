@@ -30,7 +30,6 @@ void FDyBuiltinDebugUiScript::Initiate()
 {
   FDyText* text = this->GetWidgetReference().GetUiObject<FDyText>("DebugTestText");
   auto position = text->GetWidgetPosition(EDyOrigin::Center_Center);
-  position.Y += 96;
   text->SetWidgetCentralPosition(position);
   //text->SetFontSize(12);
 }
