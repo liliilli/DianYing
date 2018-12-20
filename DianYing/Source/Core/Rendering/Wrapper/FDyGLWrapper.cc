@@ -18,9 +18,10 @@
 #include <Dy/Core/Rendering/Wrapper/PDyGLTextureDescriptor.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLShaderFragmentDescriptor.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLBufferDescriptor.h>
-#include <Dy/Core/Rendering/Wrapper/PDyGLVaoBindDescriptor.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLAttachmentDescriptor.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLFrameBufferDescriptor.h>
+#include <Dy/Core/Rendering/Wrapper/PDyGLVaoBindDescriptor.h>
+#include <Dy/Meta/Type/Mesh/DDyGLVaoBindInformation.h>
 
 namespace dy
 {
@@ -194,6 +195,12 @@ void FDyGLWrapper::DeleteShaderProgram(_MIN_ const TU32 shaderProgramId)
 std::optional<TU32> FDyGLWrapper::CreateBuffer(_MIN_ const PDyGLBufferDescriptor& descriptor)
 {
   TU32 id = MDY_INITIALIZE_DEFUINT;
+  GLenum usage = GL_NONE;
+  switch (descriptor.mBufferUsage)
+  {
+  case EDyMeshUsage::StaticDraw:  usage = GL_STATIC_DRAW;   break;
+  case EDyMeshUsage::DynamicDraw: usage = GL_DYNAMIC_DRAW;  break;
+  }
 
   switch (descriptor.mBufferType)
   {
@@ -202,7 +209,13 @@ std::optional<TU32> FDyGLWrapper::CreateBuffer(_MIN_ const PDyGLBufferDescriptor
     MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
     glGenBuffers(1, &id);
     glBindBuffer(GL_ARRAY_BUFFER, id);
-    glBufferData(GL_ARRAY_BUFFER, descriptor.mBufferByteSize, descriptor.mPtrBuffer, GL_STATIC_DRAW);
+    { // Make buffer space first,
+      glBufferData(GL_ARRAY_BUFFER, descriptor.mBufferByteSize, 0, usage);
+      // fill out with buffers.
+      auto* ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+      memcpy(ptr, descriptor.mPtrBuffer, descriptor.mBufferByteSize);
+      glUnmapBuffer(GL_ARRAY_BUFFER);
+    }
     glBindBuffer(GL_ARRAY_BUFFER, MDY_GL_NONE);
     glFlush();
   } break;
@@ -211,7 +224,7 @@ std::optional<TU32> FDyGLWrapper::CreateBuffer(_MIN_ const PDyGLBufferDescriptor
     MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
     glGenBuffers(1, &id);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, descriptor.mBufferByteSize, descriptor.mPtrBuffer, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, descriptor.mBufferByteSize, descriptor.mPtrBuffer, usage);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, MDY_GL_NONE);
     glFlush();
   } break;
@@ -241,31 +254,32 @@ TU32 FDyGLWrapper::CreateVertexArrayObject()
   return vaoId;
 }
 
-void FDyGLWrapper::BindVertexArrayObject(const PDyGLVaoBindDescriptor& iDescriptor)
+void FDyGLWrapper::BindVertexArrayObject(_MIN_ const PDyGLVaoBindDescriptor& iDescriptor)
 {
-  using EFormatType = PDyGLVaoBindDescriptor::EFormatType;
-
-  if (iDescriptor.mIsUsingDefaultDyAttributeModel == true)
-  {
-    auto descriptor = GetDefaultAttributeFormatDescriptor();
-    descriptor.mVaoId      = iDescriptor.mVaoId;
-    descriptor.mBoundVboId = iDescriptor.mBoundVboId;
-    descriptor.mBoundEboId = iDescriptor.mBoundEboId;
+  if (iDescriptor.mAttributeInfo.mIsUsingDefaultDyAttributeModel == true)
+  { // If descriptor using default attribute structure binding model, retrieve information from another dimesion
+    // and call `BindVertexArrayobject` Function recursively.
+    PDyGLVaoBindDescriptor descriptor;
+    descriptor.mVaoId         = iDescriptor.mVaoId;
+    descriptor.mBoundVboId    = iDescriptor.mBoundVboId;
+    descriptor.mBoundEboId    = iDescriptor.mBoundEboId;
+    descriptor.mAttributeInfo = GetDefaultAttributeFormatDescriptor();
     BindVertexArrayObject(descriptor);
     return;
   }
 
-  const auto size = iDescriptor.mAttributeFormatList.size();
+  const auto& attributeInfo = iDescriptor.mAttributeInfo;
+  const auto attributeCount = attributeInfo.mAttributeFormatList.size();
   { // Critical section.
     MDY_SYNC_LOCK_GUARD (FDyGLWrapper::mGLMutex);
     glBindVertexArray   (iDescriptor.mVaoId);
     glBindBuffer(GL_ARRAY_BUFFER, iDescriptor.mBoundVboId);
-    glBindVertexBuffer  (0, iDescriptor.mBoundVboId, iDescriptor.mOffsetByteSize, iDescriptor.mStrideByteSize);
+    glBindVertexBuffer  (0, iDescriptor.mBoundVboId, attributeInfo.mOffsetByteSize, attributeInfo.mStrideByteSize);
     if (iDescriptor.mBoundEboId > 0) { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iDescriptor.mBoundEboId); }
 
-    for (auto i = 0u; i < size; ++i)
+    for (auto i = 0u; i < attributeCount; ++i)
     { // Set up vbo attribute formats.
-      const auto&   attributeFormat = iDescriptor.mAttributeFormatList[i];
+      const auto&   attributeFormat = attributeInfo.mAttributeFormatList[i];
       const GLenum  type            = DyGetGLTypeFrom(attributeFormat.mType);
       const GLenum  isMustNormalized= attributeFormat.mIsMustNormalized == true ? GL_TRUE : GL_FALSE;
 

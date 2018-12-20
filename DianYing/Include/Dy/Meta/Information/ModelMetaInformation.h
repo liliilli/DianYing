@@ -23,7 +23,7 @@
 
 namespace dy
 {
-struct PDyModelConstructionVertexDescriptor;
+struct PDyModelConstructionVertexDescriptor_Deprecated;
 } /// ::dy namespace
 
 //!
@@ -37,9 +37,9 @@ namespace dy
 /// @struct PDyModelInstanceMetaInfo
 /// @brief Model information construction descriptor
 ///
-struct PDyModelInstanceMetaInfo final : public PDyCommonResourceMetaInfo, public IDyToString
+struct PDyModelInstanceMetaInfo_Deprecated final : public PDyCommonResourceMetaInfo, public IDyToString
 {
-  using TPtrBuffer = PDyModelConstructionVertexDescriptor*;
+  using TPtrBuffer = PDyModelConstructionVertexDescriptor_Deprecated*;
   std::string mSpecifierName     = MDY_INITIALIZE_EMPTYSTR;
   std::string mExternalModelPath      = MDY_INITIALIZE_EMPTYSTR;
   TPtrBuffer  mPtrBuiltinModelBuffer  = MDY_INITIALIZE_NULL;
@@ -50,8 +50,8 @@ struct PDyModelInstanceMetaInfo final : public PDyCommonResourceMetaInfo, public
   }
 };
 
-void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelInstanceMetaInfo& p);
-void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo& p);
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelInstanceMetaInfo_Deprecated& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo_Deprecated& p);
 
 } /// ::dy namespace
 

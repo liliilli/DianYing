@@ -21,6 +21,7 @@
 
 namespace dy
 {
+class FDyMeshInformation;
 class FDyTextureInformation;
 class FDyShaderInformation;
 class FDyModelInformation;
@@ -28,6 +29,7 @@ class FDyMaterialInformation;
 class FDyAttachmentInformation;
 class FDyFrameBufferInformation;
 
+class FDyMeshResource;
 class FDyModelResource;
 class FDyTextureResource;
 class FDyShaderResource;
@@ -46,6 +48,7 @@ namespace dy
 template <EDyResourceType TType> struct __TDyRscInfo;
 template <> struct __TDyRscInfo<EDyResourceType::Texture> final { using type = FDyTextureInformation; };
 template <> struct __TDyRscInfo<EDyResourceType::GLShader> final { using type = FDyShaderInformation; };
+template <> struct __TDyRscInfo<EDyResourceType::Mesh> final { using type = FDyMeshInformation; };
 template <> struct __TDyRscInfo<EDyResourceType::Model> final { using type = FDyModelInformation; };
 template <> struct __TDyRscInfo<EDyResourceType::Material> final { using type = FDyMaterialInformation; };
 template <> struct __TDyRscInfo<EDyResourceType::GLAttachment> final { using type = FDyAttachmentInformation; };
@@ -55,6 +58,7 @@ template <EDyResourceType TType> using __TDyRscInfo_T = typename __TDyRscInfo<TT
 template <EDyResourceType TType> struct __TResourceType;
 template <> struct __TResourceType<EDyResourceType::Texture> final  { using type = FDyTextureResource; };
 template <> struct __TResourceType<EDyResourceType::GLShader> final { using type = FDyShaderResource; };
+template <> struct __TResourceType<EDyResourceType::Mesh> final     { using type = FDyMeshResource; };
 template <> struct __TResourceType<EDyResourceType::Model> final    { using type = FDyModelResource; };
 template <> struct __TResourceType<EDyResourceType::Material> final { using type = FDyMaterialResource; };
 template <> struct __TResourceType<EDyResourceType::GLAttachment> final { using type = FDyAttachmentResource; };

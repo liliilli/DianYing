@@ -129,13 +129,14 @@ public:
 };
 
 template <EDyResourceType TType>
-using TDyInformationBinderInstant    = TDyInformationBinder<TType, EDyLazy::No>;
-using TDyIInformationBinderShader    = TDyInformationBinderInstant<EDyResourceType::GLShader>;
-using TDyIInformationBinderModel     = TDyInformationBinderInstant<EDyResourceType::Model>;
-using TDyIInformationBinderTexture   = TDyInformationBinderInstant<EDyResourceType::Texture>;
-using TDyIInformationBinderMaterial  = TDyInformationBinderInstant<EDyResourceType::Material>;
-using TDyIInformationBinderAttachment  = TDyInformationBinderInstant<EDyResourceType::GLAttachment>;
-using TDyIInformationBinderFrameBuffer = TDyInformationBinderInstant<EDyResourceType::GLFrameBuffer>;
+using TDyInformationBinderInstant       = TDyInformationBinder<TType, EDyLazy::No>;
+using TDyIInformationBinderShader       = TDyInformationBinderInstant<EDyResourceType::GLShader>;
+using TDyIInformationBinderMesh         = TDyInformationBinderInstant<EDyResourceType::Mesh>;
+using TDyIInformationBinderModel        = TDyInformationBinderInstant<EDyResourceType::Model>;
+using TDyIInformationBinderTexture      = TDyInformationBinderInstant<EDyResourceType::Texture>;
+using TDyIInformationBinderMaterial     = TDyInformationBinderInstant<EDyResourceType::Material>;
+using TDyIInformationBinderAttachment   = TDyInformationBinderInstant<EDyResourceType::GLAttachment>;
+using TDyIInformationBinderFrameBuffer  = TDyInformationBinderInstant<EDyResourceType::GLFrameBuffer>;
 
 ///
 /// @class TDyInformationBinder
@@ -165,6 +166,7 @@ public:
 template <EDyResourceType TType>
 using TDyInformatinBinderLazy = TDyInformationBinder<TType, EDyLazy::Yes>;
 using TDyLInformatinBinderShader    = TDyInformatinBinderLazy<EDyResourceType::GLShader>;
+using TDyLInformationBinderMesh     = TDyInformatinBinderLazy<EDyResourceType::Mesh>;
 using TDyLInformatinBinderModel     = TDyInformatinBinderLazy<EDyResourceType::Model>;
 using TDyLInformatinBinderTexture   = TDyInformatinBinderLazy<EDyResourceType::Texture>;
 using TDyLInformatinBinderMaterial  = TDyInformatinBinderLazy<EDyResourceType::Material>;

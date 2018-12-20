@@ -253,6 +253,12 @@ const PDyGLShaderInstanceMetaInfo& MDyMetaInfo::GetGLShaderMetaInformation(_MIN_
   return this->mShaderMetaInfo.at(specifier);
 }
 
+const PDyBtMeshInstanceMetaInfo & MDyMetaInfo::GetBtMeshMetaInformation(_MIN_ const std::string & specifier) const
+{
+  MDY_ASSERT(this->IsMeshMetaInfoExist(specifier) == true, "Bt Mesh given specifier name is not exist.");
+  return this->mBtMeshMetaInfo.at(specifier);
+}
+
 const PDyModelInstanceMetaInfo& MDyMetaInfo::GetModelMetaInformation(const std::string& specifier) const
 {
   MDY_ASSERT(this->IsModelMetaInfoExist(specifier) == true, "Model given specifier name is not exist.");
@@ -279,6 +285,16 @@ const PDyGlFrameBufferInstanceMetaInfo& MDyMetaInfo::GetGlFrameBufferMetaInforma
 const PDyGlAttachmentInstanceMetaInfo& MDyMetaInfo::GetGLAttachmentMetaInformation(_MIN_ const std::string& specifier) const
 {
   return this->mAttachmentMetaInfo.at(specifier);
+}
+
+bool MDyMetaInfo::IsGLShaderMetaInfoExist(_MIN_ const std::string & specifier) const noexcept
+{
+  return DyIsMapContains(this->mShaderMetaInfo, specifier);
+}
+
+bool MDyMetaInfo::IsMeshMetaInfoExist(_MIN_ const std::string & specifier) const noexcept
+{
+  return DyIsMapContains(this->mBtMeshMetaInfo, specifier);
 }
 
 EDySuccess MDyMetaInfo::pReadScriptResourceMetaInformation(_MIN_ const std::string& metaFilePath)
@@ -412,6 +428,19 @@ EDySuccess MDyMetaInfo::pfAddGLShaderMetaInfo(_MIN_ const PDyGLShaderInstanceMet
 {
   MDY_ASSERT(DyIsMapContains(this->mShaderMetaInfo, metaInfo.mSpecifierName) == false, "Duplicated gl shader name is exist.");
   this->mShaderMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pfAddBuiltinMeshMetaInfo(_MIN_ const PDyBtMeshInstanceMetaInfo& metaInfo)
+{
+#if defined(_DEBUG) == true
+  if (metaInfo.mVAOBindingInfo.mIsUsingDefaultDyAttributeModel == false)
+  {
+    MDY_ASSERT(metaInfo.mCustomMeshBuffer.empty() == false, "Builtin mesh must be valid if using customized binding.");
+  }
+#endif
+  MDY_ASSERT(DyIsMapContains(this->mBtMeshMetaInfo, metaInfo.mSpecifierName) == false, "Duplicated Mesh name is exist.");
+  this->mBtMeshMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
   return DY_SUCCESS;
 }
 

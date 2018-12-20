@@ -117,18 +117,18 @@ public:
   MDY_NODISCARD bool IsJoystickConnected() const noexcept;
 
 private:
-  void MDY_PRIVATE_FUNC_SPECIFIER(pInitializeAxisNAction)();
-  void MDY_PRIVATE_FUNC_SPECIFIER(pInitializeCallbacks)();
+  void MDY_PRIVATE_SPECIFIER(pInitializeAxisNAction)();
+  void MDY_PRIVATE_SPECIFIER(pInitializeCallbacks)();
 
   /// @brief Update input polling on present frame with delta time.
   /// This function must be called update phrase.
   void pfUpdate(_MIN_ TF32 dt) noexcept;
 
-  void MDY_PRIVATE_FUNC_SPECIFIER(pCheckAxisStatus)(_MIN_ TF32 dt);
-  void MDY_PRIVATE_FUNC_SPECIFIER(pCheckActionStatus)(_MIN_ TF32 dt);
-  void MDY_PRIVATE_FUNC_SPECIFIER(pUpdateMouseMovement)(_MIN_ TF32 dt);
-  void MDY_PRIVATE_FUNC_SPECIFIER(pUpdateJoystickSticks)();
-  void MDY_PRIVATE_FUNC_SPECIFIER(pUpdateJoystickButtons)();
+  void MDY_PRIVATE_SPECIFIER(pCheckAxisStatus)(_MIN_ TF32 dt);
+  void MDY_PRIVATE_SPECIFIER(pCheckActionStatus)(_MIN_ TF32 dt);
+  void MDY_PRIVATE_SPECIFIER(pUpdateMouseMovement)(_MIN_ TF32 dt);
+  void MDY_PRIVATE_SPECIFIER(pUpdateJoystickSticks)();
+  void MDY_PRIVATE_SPECIFIER(pUpdateJoystickButtons)();
 
   using TAxisMap    = std::unordered_map<std::string, DDyAxisBindingInformation>;
   using TActionMap  = std::unordered_map<std::string, DDyActionBindingInformation>;

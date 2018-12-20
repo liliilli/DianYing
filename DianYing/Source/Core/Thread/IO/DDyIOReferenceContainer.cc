@@ -25,6 +25,7 @@ bool DDyIOReferenceContainer::IsReferenceInstanceExist(_MIN_ const std::string& 
   {
   case EDyResourceType::GLShader: return DyIsMapContains(this->mMapGLShaderReference, specifier);
   case EDyResourceType::Texture:  return DyIsMapContains(this->mMapTextureReference, specifier);
+  case EDyResourceType::Mesh:     return DyIsMapContains(this->mMapMeshReference, specifier);
   case EDyResourceType::Model:    return DyIsMapContains(this->mMapModelReference, specifier);
   case EDyResourceType::Material: return DyIsMapContains(this->mMapMaterialReference, specifier);
   case EDyResourceType::GLAttachment:   return DyIsMapContains(this->mMapAttachmentReference, specifier);
@@ -39,6 +40,7 @@ bool DDyIOReferenceContainer::IsReferenceInstanceBound(_MIN_ const std::string& 
   {
   case EDyResourceType::GLShader: return this->mMapGLShaderReference.at(specifier).mIsResourceValid;
   case EDyResourceType::Texture:  return this->mMapTextureReference.at(specifier).mIsResourceValid;
+  case EDyResourceType::Mesh:     return this->mMapMeshReference.at(specifier).mIsResourceValid;
   case EDyResourceType::Model:    return this->mMapModelReference.at(specifier).mIsResourceValid;
   case EDyResourceType::Material: return this->mMapMaterialReference.at(specifier).mIsResourceValid;
   case EDyResourceType::GLAttachment:   return this->mMapAttachmentReference.at(specifier).mIsResourceValid;
@@ -54,6 +56,7 @@ bool DDyIOReferenceContainer::TryEnlargeResourceScope(_MIN_ EDyScope scope, _MIN
   {
   case EDyResourceType::GLShader: { instance = &this->mMapGLShaderReference[specifier]; } break;
   case EDyResourceType::Texture:  { instance = &this->mMapTextureReference[specifier]; }  break;
+  case EDyResourceType::Mesh:     { instance = &this->mMapMeshReference[specifier]; } break;
   case EDyResourceType::Model:    { instance = &this->mMapModelReference[specifier]; }    break;
   case EDyResourceType::Material: { instance = &this->mMapMaterialReference[specifier]; } break;
   case EDyResourceType::GLAttachment:   { instance = &this->mMapAttachmentReference[specifier]; } break;;
@@ -77,6 +80,7 @@ EDySuccess DDyIOReferenceContainer::TryBindBinderToResourceRI(
   case EDyResourceType::Model:    this->mMapModelReference[iSpecifier].AttachBinder(iPtrBinder);    break;
   case EDyResourceType::GLShader: this->mMapGLShaderReference[iSpecifier].AttachBinder(iPtrBinder); break;
   case EDyResourceType::Texture:  this->mMapTextureReference[iSpecifier].AttachBinder(iPtrBinder);  break;
+  case EDyResourceType::Mesh:     this->mMapMeshReference[iSpecifier].AttachBinder(iPtrBinder); break;
   case EDyResourceType::Material: this->mMapMaterialReference[iSpecifier].AttachBinder(iPtrBinder); break;
   case EDyResourceType::GLAttachment:   this->mMapAttachmentReference[iSpecifier].AttachBinder(iPtrBinder);   break;
   case EDyResourceType::GLFrameBuffer:  this->mMapFrameBufferReference[iSpecifier].AttachBinder(iPtrBinder);  break;
@@ -99,6 +103,11 @@ EDySuccess DDyIOReferenceContainer::CreateReferenceInstance(
   case EDyResourceType::Texture:
   {
     auto [it, isSuccessful] = this->mMapTextureReference.try_emplace(specifier, specifier, style, type, scope);
+    MDY_ASSERT(isSuccessful == true, "RI Container creation must be successful.");
+  } break;
+  case EDyResourceType::Mesh:
+  {
+    auto [it, isSuccessful] = this->mMapMeshReference.try_emplace(specifier, specifier, style, type, scope);
     MDY_ASSERT(isSuccessful == true, "RI Container creation must be successful.");
   } break;
   case EDyResourceType::Model:
@@ -132,6 +141,7 @@ EDySuccess DDyIOReferenceContainer::TryUpdateValidity(EDyResourceType type, cons
   TStringHashMap<DDyIOReferenceInstance>* map;
   switch (type)
   {
+  case EDyResourceType::Mesh:     map = &this->mMapMeshReference;     break;
   case EDyResourceType::Model:    map = &this->mMapModelReference;    break;
   case EDyResourceType::GLShader: map = &this->mMapGLShaderReference; break;
   case EDyResourceType::Texture:  map = &this->mMapTextureReference;  break;

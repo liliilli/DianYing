@@ -52,7 +52,7 @@ void FDyFinalScreenDisplayRenderer::RenderScreen()
   // Set
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   this->mBinderShader->UseShader();
-  const auto& mesh = submeshList[0];
+  const auto& mesh = *submeshList[0]->Get();
   glBindVertexArray(mesh.GetVertexArrayId());
 
   // Bind g-buffers as textures and draw.

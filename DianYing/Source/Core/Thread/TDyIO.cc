@@ -175,10 +175,11 @@ EDySuccess TDyIO::outTryEnqueueTask(
     if (result.empty() == true || result.begin()->second != EDyRIStatus::NotValid) { return DY_SUCCESS; }
   }
 
+  // Make dependency list.
   DDyIOTaskDeferred::TConditionList conditionList = {};
   const auto checkList = this->pMakeDependenciesCheckList(iSpecifier, iResourceType, iResourceStyle, iScope);
   if (checkList.empty() == false)
-  { // Make dependency list.
+  { // And get not-found list from dependency list.
     const auto notFoundRIList = this->pCheckAndUpdateReferenceInstance(checkList);
 
     if (notFoundRIList.empty() == false)
@@ -210,7 +211,8 @@ EDySuccess TDyIO::outTryEnqueueTask(
 
   // If this is model & resource task, change `mResourceType` to `__ModelVBO` as intermediate task.
   // Because VAO can not be created and shared from other thread not main thread.
-  if (task.mResourceType == EDyResourceType::Model && task.mResourcecStyle == EDyResourceStyle::Resource) { task.mResourceType = EDyResourceType::__ModelVBO; }
+  if (task.mResourceType == EDyResourceType::Mesh  
+   && task.mResourcecStyle == EDyResourceStyle::Resource) { task.mResourceType = EDyResourceType::__MeshVBO; }
 
   // Make deferred task and forward deferred task to list (atomic)
   if (conditionList.empty() == false) { this->outInsertDeferredTaskList({task, conditionList}); }
@@ -259,10 +261,27 @@ std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(
     }
   }
 
+  if (iResourceType == EDyResourceType::Model)
+  { // If resource type is `Model` and if using builtin mesh specifier...
+    const auto& metaInfo = this->mMetaInfoManager->GetModelMetaInformation(iSpecifier);
+    if (metaInfo.mIsUsingBuiltinMesh == true)
+    {
+      for (const auto& meshSpecifier : metaInfo.mBuiltinMeshSpecifierList)
+      { // Get dependent attachment specifier list and add.
+        checkList.emplace_back(meshSpecifier, EDyResourceType::Mesh, iResourceStyle, iScope);
+      }
+    }
+    else
+    { // If not, (from external), do nothing because not implemented yet.
+      MDY_NOT_IMPLEMENTED_ASSERT();
+    }
+  }
+
   if (iResourceStyle == EDyResourceStyle::Resource)
   {
     switch (iResourceType)
     {
+    case EDyResourceType::Mesh:
     case EDyResourceType::Model:    case EDyResourceType::GLShader:
     case EDyResourceType::Texture:  case EDyResourceType::Material:
     case EDyResourceType::GLAttachment: case EDyResourceType::GLFrameBuffer:
@@ -421,10 +440,10 @@ DDyIOWorkerResult TDyIO::outMainProcessTask(_MIN_ const DDyIOTask& task)
     const auto instance = new FDyShaderResource(*infoManager.GetPtrInformation<EDyResourceType::GLShader>(result.mSpecifierName));
     result.mSmtPtrResultInstance = instance;
   } break;
-  case EDyResourceType::Model:
-  { // Get intemediate instance from task, and make model resource. (Information => `Immediate Instance` => Resource)
-    Owner<FDyModelVBOIntermediate*> ptrrawIntermediateInstance = static_cast<FDyModelVBOIntermediate*>(task.mRawInstanceForUsingLater);
-    const auto instance = new FDyModelResource(*ptrrawIntermediateInstance);
+  case EDyResourceType::Mesh:
+  { // Get intermediate instance from task, and make mesh resource.
+    Owner<FDyMeshVBOIntermediate*> ptrrawIntermediateInstance = static_cast<FDyMeshVBOIntermediate*>(task.mRawInstanceForUsingLater);
+    const auto instance = new FDyMeshResource(*ptrrawIntermediateInstance);
     MDY_DELETE_RAWHEAP_SAFELY(ptrrawIntermediateInstance);
     result.mSmtPtrResultInstance = instance;
   } break;
@@ -469,10 +488,8 @@ bool TDyIO::pIsReferenceInstanceBound(_MIN_ const std::string& specifier, _MIN_ 
 {
   switch (style)
   {
-  case EDyResourceStyle::Information:
-    return this->mRIInformationMap.IsReferenceInstanceBound(specifier, type);
-  case EDyResourceStyle::Resource:
-    return this->mRIResourceMap.IsReferenceInstanceBound(specifier, type);
+  case EDyResourceStyle::Information: return this->mRIInformationMap.IsReferenceInstanceBound(specifier, type);
+  case EDyResourceStyle::Resource:    return this->mRIResourceMap.IsReferenceInstanceBound(specifier, type);
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
   }
 }
@@ -483,6 +500,7 @@ bool TDyIO::outIsMetaInformationExist(_MIN_ const std::string& specifier, _MIN_ 
   switch (type)
   {
   case EDyResourceType::Script:         return this->mMetaInfoManager->IsScriptMetaInformationExist(specifier);
+  case EDyResourceType::Mesh:           return this->mMetaInfoManager->IsMeshMetaInfoExist(specifier);
   case EDyResourceType::Model:          return this->mMetaInfoManager->IsModelMetaInfoExist(specifier);
   case EDyResourceType::GLShader:       return this->mMetaInfoManager->IsGLShaderMetaInfoExist(specifier);
   case EDyResourceType::Texture:        return this->mMetaInfoManager->IsTextureMetaInfoExist(specifier);

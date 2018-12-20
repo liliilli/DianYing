@@ -593,24 +593,26 @@ public: \
 private:
 
 ///
+/// @macro MDY_REGISTER_RESOURCE_MESH
+/// @brief Register mesh meta information source.
+///
+#define MDY_REGISTER_RESOURCE_MESH(__MAType__, __MASpecifierName__) \
+  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(__MAType__, __MASpecifierName__) \
+  private: \
+  void ConstructBuffer(_MOUT_ PDyBtMeshInstanceMetaInfo& property) noexcept; \
+  public: \
+  __MAType__() { this->ConstructBuffer(this->mMetaInfo); }
+  
+///
 /// @macro MDY_REGISTER_RESOURCE_MODEL
 /// @brief Register model meta information source.
 ///
 #define MDY_REGISTER_RESOURCE_MODEL(__MAType__, __MASpecifierName__) \
   MDY_REGISTER_RESOURCE_WITH_SPECIFIER(__MAType__, __MASpecifierName__) \
   private: \
-  static PDyModelConstructionVertexDescriptor& __Get() noexcept \
-  { \
-    static PDyModelConstructionVertexDescriptor instance{}; \
-    return instance; \
-  } \
-  void ConstructBuffer(_MOUT_ PDyModelConstructionVertexDescriptor& buffer) noexcept; \
+  void ConstructBuffer(_MOUT_ PDyModelInstanceMetaInfo& buffer) noexcept; \
   public: \
-  __MAType__() \
-  { \
-    ConstructBuffer(__Get()); \
-    this->mPtrBuffer = &__Get(); \
-  }
+  __MAType__() { ConstructBuffer(this->mMetaInfo); }
 
 ///
 /// @macro MDY_REGISTER_RESOURCE_TEXTURE
@@ -703,10 +705,10 @@ private:
 #define MDY_VECTOR_RGBA(__MAVectorType__) __MAVectorType__.R, __MAVectorType__.G, __MAVectorType__.B, __MAVectorType__.A
 
 ///
-/// @macro MDY_PRIVATE_FUNC_SPECIFIER
+/// @macro MDY_PRIVATE_SPECIFIER
 /// @brief USE THIS JUST ONLY FOR HIDING PRIVATE FUNCTION OR VARIABLES EVEN FOR FRIEND CLASS AND FUNCTIONS.
 ///
-#define MDY_PRIVATE_FUNC_SPECIFIER(__MASpecifierName__) MDY_TOKENPASTE2(__, __MASpecifierName__)
+#define MDY_PRIVATE_SPECIFIER(__MASpecifierName__) MDY_TOKENPASTE2(__, __MASpecifierName__)
 
 //!
 //! Function type macros.

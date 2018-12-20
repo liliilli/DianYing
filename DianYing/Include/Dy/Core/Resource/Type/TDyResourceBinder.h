@@ -131,6 +131,7 @@ public:
 template <EDyResourceType TType>
 using TDyResourceBinderInstant    = TDyResourceBinder<TType, EDyLazy::No>;
 using TDyIResourceBinderShader    = TDyResourceBinderInstant<EDyResourceType::GLShader>;
+using TDyIResourceBinderMesh      = TDyResourceBinderInstant<EDyResourceType::Mesh>;
 using TDyIResourceBinderModel     = TDyResourceBinderInstant<EDyResourceType::Model>;
 using TDyIResourceBinderTexture   = TDyResourceBinderInstant<EDyResourceType::Texture>;
 using TDyIResourceBinderMaterial  = TDyResourceBinderInstant<EDyResourceType::Material>;
@@ -165,6 +166,7 @@ public:
 template <EDyResourceType TType>
 using TDyResourceBinderLazy = TDyResourceBinder<TType, EDyLazy::Yes>;
 using TDyLResourceBinderShader    = TDyResourceBinderLazy<EDyResourceType::GLShader>;
+using TDyLResourceBinderMesh      = TDyResourceBinderLazy<EDyResourceType::Mesh>;
 using TDyLResourceBinderModel     = TDyResourceBinderLazy<EDyResourceType::Model>;
 using TDyLResourceBinderTexture   = TDyResourceBinderLazy<EDyResourceType::Texture>;
 using TDyLResourceBinderMaterial  = TDyResourceBinderLazy<EDyResourceType::Material>;

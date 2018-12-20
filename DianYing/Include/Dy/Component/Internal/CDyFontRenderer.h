@@ -56,6 +56,7 @@ private:
   /// LAZY NOT NULLABLE POINTER RAW PTR;
   FDyText*            mFontObjectRawPtr = MDY_INITIALIZE_NULL;
   TDyLResourceBinderShader mBinderShader{};
+  TDyLResourceBinderMesh   mBinderFontMesh{};
 };
 
 } /// ::dy namespace

@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Core/Resource/Information/FDyModelInformation.h>
+#include <Dy/Meta/Type/Mesh/DDyGLVaoBindInformation.h>
 
 //!
 //! Forward declaration
@@ -22,6 +23,7 @@
 namespace dy
 {
 class DDySubmeshInformation_Deprecated;
+class FDyMeshInformation;
 } /// ::dy namespace
 
 //!
@@ -38,27 +40,32 @@ namespace dy
 class FDyMeshVBOIntermediate final
 {
 public:
-  FDyMeshVBOIntermediate(_MIN_ const PDySubmeshInformationDescriptor& information);
+  FDyMeshVBOIntermediate(_MIN_ const FDyMeshInformation& information);
   ~FDyMeshVBOIntermediate();
 
   /// @brief Reset all properties not to use this anymore.
   void ResetAllProperties() noexcept;
 
-  /// @brief
-  MDY_NODISCARD const DDyGlBufferIdInformation& GetBufferIdInfo() const noexcept
-  {
-    return this->mBufferIdInformation;
-  }
+  /// @brief Get model specifier name.
+  MDY_NODISCARD const std::string& GetSpecifierName() const noexcept;
+
+  /// @brief Get vertex buffer id information.
+  MDY_NODISCARD const DDyGlBufferIdInformation& GetBufferIdInfo() const noexcept;
+
+  /// @brief Get mesh flag property instance.
+  MDY_NODISCARD const DDySubmeshFlagInformation& GetMeshFlagInfo() const noexcept;
 
   /// @brief
-  MDY_NODISCARD const DDySubmeshFlagInformation& GetMeshFlagInfo() const noexcept
-  {
-    return this->mMeshFlagInformation;
-  }
-
+  MDY_NODISCARD const DDyGLVaoBindInformation& GetVaoBindingInfo() const noexcept;
+    
 private:
-  DDyGlBufferIdInformation  mBufferIdInformation = {};
-  DDySubmeshFlagInformation mMeshFlagInformation = {};
+  void MDY_PRIVATE_SPECIFIER(CreateVertexArrayBuffer)(_MIN_ const FDyMeshInformation& iInformation);
+  void MDY_PRIVATE_SPECIFIER(CreateElementArrayBuffer)(_MIN_ const FDyMeshInformation& iInformation);
+
+  std::string               mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
+  DDyGlBufferIdInformation  mBufferIdInformation  = {};
+  DDySubmeshFlagInformation mMeshFlagInformation  = {};
+  DDyGLVaoBindInformation   mVaoBindAttributeInfo = {};
 };
 
 

@@ -106,7 +106,7 @@ const FDyMaterialResource& CDyModelRenderer::GetMaterialResourcePtr(_MIN_ TU32 i
 const FDyMeshResource& CDyModelRenderer::GetSubmeshResourcePtr(_MIN_ TU32 index) const noexcept
 {
   const auto& submeshResourceList = this->mPtrModelFilterComponent->GetModelReference()->GetMeshResourceList();
-  return submeshResourceList[index];
+  return *submeshResourceList[index]->Get();
 }
 
 void CDyModelRenderer::pPropagateParentActorActivation(const DDy3StateBool& actorBool) noexcept

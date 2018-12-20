@@ -182,7 +182,6 @@
     <ClCompile Include="Source\Management\IO\MDyIOData.cc" />
     <ClCompile Include="Source\Management\IO\MDyIOResource.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyModelInformation.cc" />
-    <ClCompile Include="Source\Core\Resource\Internal\FDyModelVBOIntermediate.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\FDyMeshVBOIntermediate.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\FDyModelResource.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\FDyMeshResource.cc" />
@@ -222,6 +221,14 @@
     <ClCompile Include="Source\Management\Type\Input\DDyInputButton.cc" />
     <ClCompile Include="Source\Management\Type\Input\DDyJoystickAnalog.cc" />
     <ClCompile Include="Source\Meta\Type\Input\JsonInputButton.cc" />
+    <ClCompile Include="Source\Builtin\Abstract\ADyMeshResource.cc" />
+    <ClCompile Include="Source\Builtin\Mesh\FDyBtMsBox.cc" />
+    <ClCompile Include="Source\Builtin\Mesh\FDyBtMsPlain.cc" />
+    <ClCompile Include="Source\Builtin\Mesh\FDyBtMsScrTriangle.cc" />
+    <ClCompile Include="Source\Builtin\Mesh\FDyBtMsSphere.cc" />
+    <ClCompile Include="Source\Builtin\Mesh\FDyBtMsUiFontQuad.cc" />
+    <ClCompile Include="Source\Core\Resource\Information\FDyMeshInformation.cc" />
+    <ClCompile Include="Source\Builtin\Model\UiFontQuad.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -516,11 +523,9 @@
     <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLShaderFragmentDescriptor.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyModelInformation.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyModelResource.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Internal\FDyModelVBOIntermediate.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyMeshResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Internal\FDyMeshVBOIntermediate.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLBufferDescriptor.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLVaoBindDescriptor.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyMaterialInformation.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyMaterialResource.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOTaskDeferred.h" />
@@ -569,6 +574,18 @@
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyJoystickAnalog.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Input\EDyInputButton.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Input\JsonInputButton.h" />
+    <ClInclude Include="Include\Dy\Builtin\Model\UIFontQuad.h" />
+    <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsBox.h" />
+    <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsPlain.h" />
+    <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsScrTriangle.h" />
+    <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsSphere.h" />
+    <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsUiFontQuad.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyMeshResource.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoBuiltinMesh.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoModel.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Information\FDyMeshInformation.h" />
+    <ClInclude Include="Include\Dy\Meta\Type\Mesh\DDyGLVaoBindInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLVaoBindDescriptor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

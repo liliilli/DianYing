@@ -19,6 +19,7 @@ namespace dy
 enum class EDyResourceType
 {
   Script,
+  Mesh,
   Model,
   GLShader,
   GLAttachment,
@@ -28,7 +29,7 @@ enum class EDyResourceType
   WidgetMeta,
   Sound,
 
-  __ModelVBO,
+  __MeshVBO,
   NoneError
 };
 

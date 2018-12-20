@@ -13,6 +13,8 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Meta/Information/MetaInfoBuiltinMesh.h>
+
 namespace dy
 {
 
@@ -40,6 +42,8 @@ struct PDyGLBufferDescriptor final
   EDyDirectBufferType mBufferType     = EDyDirectBufferType::NoneError;
   TU32                mBufferByteSize = MDY_INITIALIZE_DEFUINT;
   const void*         mPtrBuffer      = MDY_INITIALIZE_NULL;
+
+  EDyMeshUsage        mBufferUsage    = EDyMeshUsage::StaticDraw;
 };
 
 } /// ::dy namespace

@@ -15,19 +15,7 @@
 
 #include <Dy/Core/Resource/Resource/FDyMeshResource.h>
 #include <Dy/Core/Resource/Type/TDyInformationBinder.h>
-
-//!
-//! Forward declaration
-//!
-
-namespace dy
-{
-class FDyModelVBOIntermediate;
-} /// ::dy namespace
-
-//!
-//! Implementation
-//!
+#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
 
 namespace dy
 {
@@ -39,8 +27,8 @@ namespace dy
 class FDyModelResource final
 {
 public:
-  FDyModelResource(_MINOUT_ FDyModelVBOIntermediate& input);
-  ~FDyModelResource();
+  FDyModelResource(_MINOUT_ const FDyModelInformation& input);
+  ~FDyModelResource() = default;
 
   /// @brief Get specifier name of model resource.
   MDY_NODISCARD const std::string& GetSpecifierName() const noexcept
@@ -49,7 +37,7 @@ public:
   }
 
   /// @brief Get valid mesh resource list, not modifiable.
-  MDY_NODISCARD const std::vector<FDyMeshResource>& GetMeshResourceList() const noexcept
+  MDY_NODISCARD const auto& GetMeshResourceList() const noexcept
   {
     return this->mMeshResource;
   }
@@ -57,7 +45,7 @@ public:
 private:
   std::string                   mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
   TDyIInformationBinderModel    mBinderInformation;
-  std::vector<FDyMeshResource>  mMeshResource   = {};
+  std::vector<std::unique_ptr<TDyIResourceBinderMesh>> mMeshResource = {};
 };
 
 } /// ::dy namespace

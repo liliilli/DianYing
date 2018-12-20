@@ -98,7 +98,7 @@ void FDyDeferredRenderingMesh::RenderScreen()
   const auto& submeshList = this->mBinderTriangle->GetMeshResourceList();
   MDY_ASSERT(submeshList.size() == 1, "Unexpected error occurred.");
   // Bind vertex array
-  const FDyMeshResource& mesh = submeshList[0];
+  const FDyMeshResource& mesh = *submeshList[0]->Get();
 
   // Set
   glBindFramebuffer(GL_FRAMEBUFFER, this->mBinderFrameBuffer->GetFrameBufferId());

@@ -17,16 +17,19 @@
 #include <Dy/Builtin/Interface/IDyResource.h>
 #include <Dy/Core/Reflection/RDyBuiltinResources.h>
 #include <Dy/Core/Resource/Internal/ModelType.h>
+#include <Dy/Meta/Information/MetaInfoModel.h>
 
 namespace dy
 {
 
 struct ADyModelResource : public IDyResource
 {
+protected:
+  PDyModelInstanceMetaInfo mMetaInfo = {};
+public:
   virtual ~ADyModelResource() = default;
   static constexpr auto value = EDyResourceType::Model;
 
-  PDyModelConstructionVertexDescriptor* mPtrBuffer = MDY_INITIALIZE_NULL;
   /// @brief Return meta info, that has buffer pointer of model.
   std::any GetMetaInfo() override final;
 };

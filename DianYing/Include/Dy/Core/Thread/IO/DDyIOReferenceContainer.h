@@ -78,6 +78,7 @@ public:
 private:
   TStringHashMap<DDyIOReferenceInstance> mMapTextureReference     = {};
   TStringHashMap<DDyIOReferenceInstance> mMapGLShaderReference    = {};
+  TStringHashMap<DDyIOReferenceInstance> mMapMeshReference        = {};
   TStringHashMap<DDyIOReferenceInstance> mMapModelReference       = {};
   TStringHashMap<DDyIOReferenceInstance> mMapMaterialReference    = {};
   TStringHashMap<DDyIOReferenceInstance> mMapAttachmentReference  = {};

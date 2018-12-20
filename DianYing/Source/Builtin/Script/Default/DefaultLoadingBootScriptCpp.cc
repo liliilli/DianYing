@@ -21,6 +21,7 @@
 #include <Dy/Builtin/Model/Plain.h>
 #include <Dy/Builtin/Model/Sphere.h>
 #include <Dy/Builtin/Model/ScreenProjectionTriangle.h>
+#include <Dy/Builtin/Model/UIFontQuad.h>
 
 #include <Dy/Builtin/ShaderGl/RenderColorGeometry.h>
 #include <Dy/Builtin/ShaderGl/RenderBasicShadow.h>
@@ -70,6 +71,7 @@ FDyDefaultLoadingBootScript::FDyDefaultLoadingBootScript()
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Model, FDyBuiltinModelPlain::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Model, FDyBuiltinModelScreenProjectionTriangle::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Model, FDyBuiltinModelSphere::sName);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Model, FDyBtMdUIFontQuad::sName);
 
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Material, FDyBuiltinMaterialOpaqueStaticPlain::sName);
 

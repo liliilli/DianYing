@@ -21,7 +21,8 @@
 namespace dy
 {
 
-FDyMeshResource::FDyMeshResource(_MINOUT_ FDyMeshVBOIntermediate& intermediateInstance)
+FDyMeshResource::FDyMeshResource(_MINOUT_ FDyMeshVBOIntermediate& intermediateInstance) :
+    mSpecifierName{ intermediateInstance.GetSpecifierName() }
 {
   this->mBufferIdInformation = intermediateInstance.GetBufferIdInfo();
   this->mMeshFlagInformation = intermediateInstance.GetMeshFlagInfo();
@@ -31,16 +32,22 @@ FDyMeshResource::FDyMeshResource(_MINOUT_ FDyMeshVBOIntermediate& intermediateIn
   this->mBufferIdInformation.mVao = FDyGLWrapper::CreateVertexArrayObject();
 
   PDyGLVaoBindDescriptor descriptor;
-  descriptor.mVaoId       = this->mBufferIdInformation.mVao;
-  descriptor.mBoundVboId  = this->mBufferIdInformation.mVbo;
-  descriptor.mBoundEboId  = this->mBufferIdInformation.mEbo;
-  descriptor.mIsUsingDefaultDyAttributeModel = true;
+  descriptor.mVaoId         = this->mBufferIdInformation.mVao;
+  descriptor.mBoundVboId    = this->mBufferIdInformation.mVbo;
+  descriptor.mBoundEboId    = this->mBufferIdInformation.mEbo;
+  descriptor.mAttributeInfo = intermediateInstance.GetVaoBindingInfo();
   FDyGLWrapper::BindVertexArrayObject(descriptor);
 }
 
 FDyMeshResource::~FDyMeshResource()
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
+}
+
+const std::string & FDyMeshResource::GetSpecifierName() const noexcept
+{
+  MDY_ASSERT(this->mSpecifierName.empty() == false, "Mesh specifier name must be valid.");
+  return this->mSpecifierName;
 }
 
 bool FDyMeshResource::IsEnabledIndices() const noexcept
@@ -51,6 +58,11 @@ bool FDyMeshResource::IsEnabledIndices() const noexcept
 TU32 FDyMeshResource::GetVertexArrayId() const noexcept
 {
   return this->mBufferIdInformation.mVao;
+}
+
+TU32 FDyMeshResource::GetVertexBufferId() const noexcept
+{
+  return this->mBufferIdInformation.mVbo;
 }
 
 TU32 FDyMeshResource::GetVertexCounts() const noexcept

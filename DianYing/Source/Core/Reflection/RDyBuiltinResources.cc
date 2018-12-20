@@ -15,7 +15,7 @@
 /// Header file
 #include <Dy/Core/Reflection/RDyBuiltinResources.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
-#include <Dy/Meta/Information/ModelMetaInformation.h>
+#include <Dy/Meta/Information/MetaInfoModel.h>
 #include <Dy/Meta/Information/MetaInfoTexture.h>
 #include <Dy/Meta/Information/MetaInfoAttachment.h>
 #include <Dy/Meta/Information/MetaInfoFrameBuffer.h>
@@ -72,6 +72,11 @@ void RDyBuiltinResource::BindBuiltinResourcesToMetaManager()
     { // WidgetMeta
       auto metaInfo = std::any_cast<std::string_view>(function()->GetMetaInfo());
       MDY_CALL_ASSERT_SUCCESS(metaManager.pfAddWidgetMetaInformation(MSVSTR(metaInfo)));
+    } break;
+    case EDyResourceType::Mesh:
+    { // Mesh
+      auto metaInfo = std::any_cast<PDyBtMeshInstanceMetaInfo>(function()->GetMetaInfo());
+      MDY_CALL_ASSERT_SUCCESS(metaManager.pfAddBuiltinMeshMetaInfo(metaInfo));
     } break;
     default: MDY_NOT_IMPLEMENTED_ASSERT(); break;
     }

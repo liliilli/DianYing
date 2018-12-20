@@ -14,19 +14,8 @@
 ///
 
 #include <Dy/Core/Resource/Internal/GeometryType.h>
-
-//!
-//! Forward declaration
-//!
-
-namespace dy
-{
-struct PDyModelInstanceMetaInfo;
-} /// ::dy namespace
-
-//!
-//! Implementation
-//!
+#include <Dy/Meta/Information/MetaInfoModel.h>
+#include <Dy/Core/Resource/Type/TDyInformationBinder.h>
 
 namespace dy
 {
@@ -57,7 +46,7 @@ public:
 
 private:
   std::string mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
-  std::vector<PDySubmeshInformationDescriptor> mMeshInformations;
+  std::vector<std::unique_ptr<TDyIInformationBinderMesh>> mMeshInformations;
 };
 
 } /// ::dy namespace
