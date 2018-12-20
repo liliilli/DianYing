@@ -69,9 +69,10 @@ Camera0 : 2
 
   auto& time = MDyTime::GetInstance();
   auto& inputManager = MDyInput::GetInstance();
+  auto t = time.GetCalendarTime();
   text->SetText(fmt::format(
       "A0:{:+03.2f}, A1:{:+03.2f}, A2:{:+03.2f}, A3:{:+03.2f}, A4:{:+03.2f}, A5:{:+03.2f}\n"
-      "{:05.2f} %, {:0d} fps\n"
+      "{:05.2f} %, {:0d} fps | Time : {:04}-{:02}-{:02} {:02}:{:02}:{:02} VVV\n"
       "Ram Usage : {} Bytes", 
       inputManager.GetJoystickStickValue(0),
       inputManager.GetJoystickStickValue(1),
@@ -80,6 +81,7 @@ Camera0 : 2
       inputManager.GetJoystickStickValue(4),
       inputManager.GetJoystickStickValue(5),
       usageCpu, time.GetPresentFpsCountValue(),
+      t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(),
       usageRam
   ));
   bar->SetPresentValue(usageCpu);
