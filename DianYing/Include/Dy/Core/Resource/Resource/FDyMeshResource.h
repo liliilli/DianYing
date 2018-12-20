@@ -51,6 +51,9 @@ public:
   /// @brief Get VAO id
   MDY_NODISCARD TU32 GetVertexArrayId() const noexcept;
 
+  /// @brief Get Vertex Buffer (VBO) id
+  MDY_NODISCARD TU32 GetVertexBufferId() const noexcept;  
+
   /// @brief Get Vertex's (one patch) all counts. If not exist, just return 0.
   MDY_NODISCARD TU32 GetVertexCounts() const noexcept;
 

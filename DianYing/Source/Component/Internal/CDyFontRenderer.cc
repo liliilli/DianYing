@@ -18,10 +18,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <Dy/Builtin/ShaderGl/Font/RenderFontArraySDF.h>
-#include <Dy/Element/Canvas/Text.h>
-#include <Dy/Management/SettingManager.h>
+#include <Dy/Builtin/Mesh/FDyBtMsUiFontQuad.h>
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
+#include <Dy/Element/Canvas/Text.h>
 #include <Dy/Helper/Type/Matrix4.h>
+#include <Dy/Management/SettingManager.h>
+#include <Dy/Core/Resource/Resource/FDyMeshResource.h>
 
 //!
 //! Forward declaration & Local translation unit function data.
@@ -32,10 +34,6 @@ namespace
 
 /// Sample UI projection code
 dy::DDyMatrix4x4 uUiProjMatrix = dy::DDyMatrix4x4{};
-
-constexpr auto stride = sizeof(dy::DDyVector2) * 2;
-GLuint mTextSampleVao = MDY_INITIALIZE_DEFUINT;
-GLuint mTestVbo = MDY_INITIALIZE_DEFUINT;
 
 ///
 /// @brief The method gets character quad vertices to be needed for rendering.
@@ -73,11 +71,11 @@ GetCharacterVertices(_MIN_ const dy::DDyFontCharacterInfo& ch_info, _MIN_ const 
 ///
 /// @param[in] vertices
 ///
-void RenderFontCharacter(_MIN_ const std::array<dy::DDyVector2, 8>& vertices) {
+void RenderFontCharacter(_MIN_ const std::array<dy::DDyVector2, 8>& vertices, _MIN_ TU32 iVboId) {
 	// Update content of VBO
   static constexpr TU32 size = sizeof(dy::DDyVector2) * 8;
 
-	glBindBuffer    (GL_ARRAY_BUFFER, mTestVbo);
+	glBindBuffer    (GL_ARRAY_BUFFER, iVboId);
   glBufferSubData (GL_ARRAY_BUFFER, 0, size, &vertices[0].X);
 	glBindBuffer    (GL_ARRAY_BUFFER, 0);
 
@@ -96,33 +94,8 @@ namespace dy
 
 EDySuccess CDyFontRenderer::Initialize(const PDyFontRendererCtorInformation& descriptor)
 {
-  static auto SetTemporalFontArrayBuffer = [&]
-  {
-    glGenVertexArrays(1, &mTextSampleVao);
-    glGenBuffers(1, &mTestVbo);
-
-    glBindVertexArray(mTextSampleVao);
-    glBindBuffer(GL_ARRAY_BUFFER, mTestVbo);
-
-    std::array<DDyVector2, 8> value =
-    {
-      DDyVector2{}, DDyVector2{1, 1}, DDyVector2{}, DDyVector2{1, 0},
-      DDyVector2{}, DDyVector2{0, 0}, DDyVector2{}, DDyVector2{0, 1}
-    };
-    glBufferData(GL_ARRAY_BUFFER, stride * 4, value.data(), GL_DYNAMIC_DRAW);
-
-    glBindVertexBuffer(0, mTestVbo, 0, stride);
-
-    glEnableVertexAttribArray(0);
-    glVertexAttribFormat(0, 2, GL_FLOAT, GL_FALSE, 0);
-    glVertexAttribBinding(0, 0);
-
-    glEnableVertexAttribArray(1);
-    glVertexAttribFormat(1, 2, GL_FLOAT, GL_FALSE, 8);
-    glVertexAttribBinding(1, 0);
-
-    glBindVertexArray(0);
-  };
+  this->mBinderFontMesh.TryRequireResource(MSVSTR(FDyBtMsUiFontQuad::sName));
+  MDY_ASSERT(this->mBinderFontMesh.IsResourceExist() == true, "True");
 
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mFontComponentPtr), "descriptor.mFontComponentPtr must not be null.");
   this->mFontObjectRawPtr = descriptor.mFontComponentPtr;
@@ -133,8 +106,6 @@ EDySuccess CDyFontRenderer::Initialize(const PDyFontRendererCtorInformation& des
   const auto overallScreenWidth   = settingManager.GetWindowSizeWidth();
   const auto overallScreenHeight  = settingManager.GetWindowSizeHeight();
   uUiProjMatrix = glm::ortho(0.f, static_cast<float>(overallScreenWidth), 0.f, static_cast<float>(overallScreenHeight), 0.2f, 10.0f);
-
-  SetTemporalFontArrayBuffer();
   return DY_SUCCESS;
 }
 
@@ -149,7 +120,7 @@ void CDyFontRenderer::Render()
 
   glDepthFunc(GL_ALWAYS);
   this->mBinderShader->UseShader();
-  glBindVertexArray(mTextSampleVao);
+  glBindVertexArray(this->mBinderFontMesh->GetVertexArrayId());
 
   const TU32 shaderProgramId  = this->mBinderShader->GetShaderProgramId();
   const auto projectMatrixId  = glGetUniformLocation(shaderProgramId, "uUiProjMatrix");
@@ -198,7 +169,7 @@ void CDyFontRenderer::Render()
     const auto uMapIndex  = glGetUniformLocation(shaderProgramId, "uMapIndex");
     glUniform1i(uMapIndex, charInfo.mTexCoordInfo.mMapIndex);
 
-    RenderFontCharacter(GetCharacterVertices(charInfo, renderPosition, fontSize));
+    RenderFontCharacter(GetCharacterVertices(charInfo, renderPosition, fontSize), this->mBinderFontMesh->GetVertexBufferId());
     renderPosition.X += static_cast<TI32>(charInfo.mHorizontalAdvance * fontSize / 2);
   }
 

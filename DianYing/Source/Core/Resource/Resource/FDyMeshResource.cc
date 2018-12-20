@@ -60,6 +60,11 @@ TU32 FDyMeshResource::GetVertexArrayId() const noexcept
   return this->mBufferIdInformation.mVao;
 }
 
+TU32 FDyMeshResource::GetVertexBufferId() const noexcept
+{
+  return this->mBufferIdInformation.mVbo;
+}
+
 TU32 FDyMeshResource::GetVertexCounts() const noexcept
 {
   return this->mMeshFlagInformation.mVertexSize;
