@@ -14,11 +14,14 @@
 
 /// Header file
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
-#include <Dy/Core/Resource/Internal/FDyModelVBOIntermediate.h>
+#include <Dy/Core/Resource/Information/FDyModelInformation.h>
+#include <Dy/Core/Resource/Information/FDyMeshInformation.h>
+#include <Dy/Helper/System/Idioms.h>
 
 namespace dy
 {
 
+#ifdef false
 FDyModelResource::FDyModelResource(_MINOUT_ FDyModelVBOIntermediate& input) :
     mSpecifierName{input.GetSpecifierName()},
     mBinderInformation{input.GetSpecifierName()}
@@ -30,10 +33,20 @@ FDyModelResource::FDyModelResource(_MINOUT_ FDyModelVBOIntermediate& input) :
 
   for (auto& intermediateMesh : intermediateMeshList) { mMeshResource.emplace_back(intermediateMesh); }
 }
+#endif
 
-FDyModelResource::~FDyModelResource()
+FDyModelResource::FDyModelResource(_MINOUT_ const FDyModelInformation& input) :
+  mSpecifierName{input.GetSpecifierName()},
+  mBinderInformation{input.GetSpecifierName()}
 {
-  this->mMeshResource.clear();
+  for (const auto& meshInformation : input.GetMeshInformationList())
+  {
+    MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(meshInformation), "Unexpected error occurred.");
+    MDY_ASSERT(meshInformation->IsResourceExist() == true, "Unexpected error occurred.");
+
+    DySafeUniquePtrEmplaceBack(this->mMeshResource, meshInformation->Get()->GetSpecifierName());
+    MDY_ASSERT(this->mMeshResource.back()->IsResourceExist() == true, "Unexpected error occurred.");
+  }
 }
 
 } /// ::dy namespace

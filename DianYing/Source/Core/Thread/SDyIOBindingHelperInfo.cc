@@ -107,6 +107,19 @@ SDyIOBindingHelper::MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Material)
   return ptr;
 }
 
+MDY_NODISCARD std::optional<const __TDyRscInfo_T<EDyResourceType::Mesh>*>
+SDyIOBindingHelper::MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Mesh)
+(_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder)
+{
+  if (const auto checkFlag = MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation)(iSpecifier, EDyResourceType::Mesh, iPtrBinder);
+      checkFlag == DY_FAILURE) { return std::nullopt; }
+
+  // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
+  const auto* ptr = MDyIOData::GetInstance().GetPtrInformation<EDyResourceType::Mesh>(iSpecifier);
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
+  return ptr;
+}
+
 MDY_NODISCARD std::optional<const __TDyRscInfo_T<EDyResourceType::Model>*>
 SDyIOBindingHelper::MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Model)
 (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder)

@@ -16,12 +16,15 @@
 #include <Dy/Core/Resource/Information/FDyModelInformation.h>
 #include <Dy/Meta/Information/ModelMetaInformation.h>
 #include <Dy/Core/Resource/Internal/ModelType.h>
+#include <Dy/Helper/System/Idioms.h>
 
 namespace dy
 {
 
+#ifdef false
 FDyModelInformation::FDyModelInformation(_MIN_ const PDyModelInstanceMetaInfo_Deprecated& metaInfo)
 {
+  MDY_UNEXPECTED_BRANCH();
   if (metaInfo.mSourceType == EDyResourceSource::Builtin)
   { // If model is buitlin, just copy & paste.
     this->mSpecifierName  = metaInfo.mSpecifierName;
@@ -34,7 +37,6 @@ FDyModelInformation::FDyModelInformation(_MIN_ const PDyModelInstanceMetaInfo_De
   else
   { // If model is external so should use assimp, parse file.
     MDY_NOT_IMPLEMENTED_ASSERT();
-#ifdef false
     // Insert name and check name is empty or not.
     this->mModelName = modelConstructionDescriptor.mSpecifierName;
     MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "Model name", this->mModelName);
@@ -75,8 +77,21 @@ FDyModelInformation::FDyModelInformation(_MIN_ const PDyModelInstanceMetaInfo_De
     // Output model, submesh, and material information to console.
     MDY_LOG_INFO_D(kModelInformationTemplate, kModelInformation, "Model root path", this->mModelRootPath);
     this->__pOutputDebugInformationLog();
-#endif
   }
+}
+#endif
+
+FDyModelInformation::FDyModelInformation(_MIN_ const PDyModelInstanceMetaInfo& metaInfo) :
+    mSpecifierName{metaInfo.mSpecifierName}
+{
+  if (metaInfo.mIsUsingBuiltinMesh == true)
+  {
+    for (const auto& meshSpecifier : metaInfo.mBuiltinMeshSpecifierList)
+    {
+      DySafeUniquePtrEmplaceBack(this->mMeshInformations, meshSpecifier);
+    }
+  }
+  else { MDY_NOT_IMPLEMENTED_ASSERT();  }
 }
 
 } /// ::dy namespace

@@ -14,19 +14,8 @@
 ///
 
 #include <Dy/Core/Resource/Internal/GeometryType.h>
-
-//!
-//! Forward declaration
-//!
-
-namespace dy
-{
-struct PDyModelInstanceMetaInfo_Deprecated;
-} /// ::dy namespace
-
-//!
-//! Implementation
-//!
+#include <Dy/Meta/Information/MetaInfoModel.h>
+#include <Dy/Core/Resource/Type/TDyInformationBinder.h>
 
 namespace dy
 {
@@ -40,7 +29,7 @@ public:
   MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(FDyModelInformation);
 
   /// @brief Construct model information.
-  FDyModelInformation(_MIN_ const PDyModelInstanceMetaInfo_Deprecated& metaInfo);
+  FDyModelInformation(_MIN_ const PDyModelInstanceMetaInfo& metaInfo);
   ~FDyModelInformation() = default;
 
   /// @brief Get model specifier name.
@@ -57,7 +46,7 @@ public:
 
 private:
   std::string mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
-  std::vector<PDySubmeshInformationDescriptor_Deprecated> mMeshInformations;
+  std::vector<std::unique_ptr<TDyIInformationBinderMesh>> mMeshInformations;
 };
 
 } /// ::dy namespace

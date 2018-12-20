@@ -30,7 +30,6 @@ enum class EDyResourceType
   Sound,
 
   __MeshVBO,
-  __ModelVBO,
   NoneError
 };
 

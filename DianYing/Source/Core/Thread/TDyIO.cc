@@ -211,8 +211,6 @@ EDySuccess TDyIO::outTryEnqueueTask(
 
   // If this is model & resource task, change `mResourceType` to `__ModelVBO` as intermediate task.
   // Because VAO can not be created and shared from other thread not main thread.
-  if (task.mResourceType == EDyResourceType::Model 
-   && task.mResourcecStyle == EDyResourceStyle::Resource) { task.mResourceType = EDyResourceType::__ModelVBO; }
   if (task.mResourceType == EDyResourceType::Mesh  
    && task.mResourcecStyle == EDyResourceStyle::Resource) { task.mResourceType = EDyResourceType::__MeshVBO; }
 
@@ -446,13 +444,6 @@ DDyIOWorkerResult TDyIO::outMainProcessTask(_MIN_ const DDyIOTask& task)
   { // Get intermediate instance from task, and make mesh resource.
     Owner<FDyMeshVBOIntermediate*> ptrrawIntermediateInstance = static_cast<FDyMeshVBOIntermediate*>(task.mRawInstanceForUsingLater);
     const auto instance = new FDyMeshResource(*ptrrawIntermediateInstance);
-    MDY_DELETE_RAWHEAP_SAFELY(ptrrawIntermediateInstance);
-    result.mSmtPtrResultInstance = instance;
-  } break;
-  case EDyResourceType::Model:
-  { // Get intemediate instance from task, and make model resource. (Information => `Immediate Instance` => Resource)
-    Owner<FDyModelVBOIntermediate*> ptrrawIntermediateInstance = static_cast<FDyModelVBOIntermediate*>(task.mRawInstanceForUsingLater);
-    const auto instance = new FDyModelResource(*ptrrawIntermediateInstance);
     MDY_DELETE_RAWHEAP_SAFELY(ptrrawIntermediateInstance);
     result.mSmtPtrResultInstance = instance;
   } break;

@@ -34,6 +34,8 @@ private:
   {
     if constexpr (TType == EDyResourceType::GLShader)     
     { return MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireResource_GLShader)(iSpecifier, iPtrBinder); }
+    else if constexpr (TType == EDyResourceType::Mesh)   
+    { return MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireResource_Mesh)(iSpecifier, iPtrBinder); }
     else if constexpr (TType == EDyResourceType::Model)   
     { return MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireResource_Model)(iSpecifier, iPtrBinder); }
     else if constexpr (TType == EDyResourceType::Texture) 
@@ -54,6 +56,10 @@ private:
 
   static MDY_NODISCARD std::optional<const __TResourceType_T<EDyResourceType::GLShader>*>
   MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireResource_GLShader)
+  (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
+
+  static MDY_NODISCARD std::optional<const __TResourceType_T<EDyResourceType::Mesh>*>
+  MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireResource_Mesh)
   (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
 
   static MDY_NODISCARD std::optional<const __TResourceType_T<EDyResourceType::Model>*>
@@ -91,6 +97,8 @@ private:
     { return MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Texture)(iSpecifier, iPtrBinder); }
     else if constexpr (TType == EDyResourceType::Material)     
     { return MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Material)(iSpecifier, iPtrBinder); }
+    else if constexpr (TType == EDyResourceType::Mesh)
+    { return MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Mesh)(iSpecifier, iPtrBinder); }
     else if constexpr (TType == EDyResourceType::Model)     
     { return MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Model)(iSpecifier, iPtrBinder); }
     else 
@@ -119,6 +127,10 @@ private:
 
   static MDY_NODISCARD std::optional<const __TDyRscInfo_T<EDyResourceType::Material>*>
   MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Material)
+  (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
+
+  static MDY_NODISCARD std::optional<const __TDyRscInfo_T<EDyResourceType::Mesh>*>
+  MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Mesh)
   (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
 
   static MDY_NODISCARD std::optional<const __TDyRscInfo_T<EDyResourceType::Model>*>
