@@ -17,6 +17,7 @@
 #include <Dy/Core/Resource/Information/FDyShaderInformation.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLShaderFragmentDescriptor.h>
 #include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Management/Helper/SDyProfilingHelper.h>
 
 //!
 //! Forward declaration
@@ -83,10 +84,13 @@ FDyShaderResource::FDyShaderResource(_MIN_ const FDyShaderInformation& informati
     //MDY_CALL_ASSERT_SUCCESS(this->pStoreConstantUniformPropertiesOfProgram());
     //MDY_CALL_ASSERT_SUCCESS(this->pStoreUniformBufferObjectPropertiesOfProgram());
   }
+
+  SDyProfilingHelper::IncreaseOnBindShaderCount(1);
 }
 
 FDyShaderResource::~FDyShaderResource()
 {
+  SDyProfilingHelper::DecreaseOnBindShaderCount(1);
   MDY_NOT_IMPLEMENTED_ASSERT();
 }
 

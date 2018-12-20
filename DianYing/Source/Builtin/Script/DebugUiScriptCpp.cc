@@ -22,6 +22,7 @@
 #include <Dy/Element/Canvas/Text.h>
 #include <Dy/Element/Canvas/FDyBasicGaugeBar.h>
 #include <Dy/Management/InputManager.h>
+#include <Dy/Management/Internal/MDyProfiling.h>
 
 namespace dy
 {
@@ -71,17 +72,14 @@ Camera0 : 2
   auto& inputManager = MDyInput::GetInstance();
   auto t = time.GetCalendarTime();
   text->SetText(fmt::format(
-      "A0:{:+03.2f}, A1:{:+03.2f}, A2:{:+03.2f}, A3:{:+03.2f}, A4:{:+03.2f}, A5:{:+03.2f}\n"
-      "{:05.2f} %, {:0d} fps | Time : {:04}-{:02}-{:02} {:02}:{:02}:{:02} VVV\n"
+      "{:05.2f} %, {:0d} fps | Time : {:04}-{:02}-{:02} {:02}:{:02}:{:02}\n"
+      "| Obj : 000 | Tex : {:03} | Shd : {:03} | Vtx : {:03} |\n"
       "Ram Usage : {} Bytes", 
-      inputManager.GetJoystickStickValue(0),
-      inputManager.GetJoystickStickValue(1),
-      inputManager.GetJoystickStickValue(2),
-      inputManager.GetJoystickStickValue(3),
-      inputManager.GetJoystickStickValue(4),
-      inputManager.GetJoystickStickValue(5),
       usageCpu, time.GetPresentFpsCountValue(),
       t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(),
+      MDyProfiling::GetInstance().GetOnBindTextureCount(),
+      MDyProfiling::GetInstance().GetOnBindShaderCount(),
+      MDyProfiling::GetInstance().GetOnBindVertexCount(),
       usageRam
   ));
   bar->SetPresentValue(usageCpu);

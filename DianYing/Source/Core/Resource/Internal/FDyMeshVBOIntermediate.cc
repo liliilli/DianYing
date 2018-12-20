@@ -36,14 +36,12 @@ void FDyMeshVBOIntermediate::MDY_PRIVATE_SPECIFIER(CreateVertexArrayBuffer)(_MIN
   { // Set vertex count.
     if (info.mVAOBindingInfo.mIsUsingDefaultDyAttributeModel == true)
     {
-      constexpr auto s = sizeof(decltype(info.mDefaultMeshBuffer.mVertexList)::value_type::mPosition);
-      const auto vertexSize = static_cast<TU32>(info.mDefaultMeshBuffer.mVertexList.size() * s);
-      this->mMeshFlagInformation.mVertexSize = vertexSize;
+      this->mMeshFlagInformation.mVertexCount = info.mDefaultMeshBuffer.mVertexList.size();
     }
     else
     {
       MDY_ASSERT(info.mVAOBindingInfo.mStrideByteSize > 0, "Stride byte size must be valid.");
-      this->mMeshFlagInformation.mVertexSize = sizeof(TF32) * info.mCustomMeshBuffer.size() / info.mVAOBindingInfo.mStrideByteSize;
+      this->mMeshFlagInformation.mVertexCount = sizeof(TF32) * info.mCustomMeshBuffer.size() / info.mVAOBindingInfo.mStrideByteSize;
     }
   }
 

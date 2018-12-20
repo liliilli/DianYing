@@ -29,6 +29,7 @@
 #include <Dy/Management/ScriptManager.h>
 #include <Dy/Management/Editor/GuiManager.h>
 #include <Dy/Management/Internal/MDySynchronization.h>
+#include <Dy/Management/Internal/MDyProfiling.h>
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 //#include <Dy/Builtin/Widget/DebugUiMeta.h>
 
@@ -140,6 +141,7 @@ void DyEngine::pfInitializeIndependentManager()
 {
   // `MDyLog` must be initialized first because of logging message from each managers.
   MDY_CALL_ASSERT_SUCCESS(dy::MDyLog::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyProfiling::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDySetting::Initialize());
 
 #if defined(MDY_FLAG_IN_EDITOR)
@@ -186,6 +188,7 @@ void DyEngine::pfReleaseDependentManager()
 #endif
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDySetting::Release());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyProfiling::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyLog::Release());
 }
 

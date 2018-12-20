@@ -329,6 +329,8 @@
     <ClCompile Include="Source\Element\Abstract\ADyTransformable.cc" />
     <ClCompile Include="Source\Element\Actor.cc" />
     <ClCompile Include="Source\Element\Canvas\Text.cc" />
+    <ClCompile Include="Source\Management\Helper\SDyProfilingHelper.cc" />
+    <ClCompile Include="Source\Management\Internal\MDyProfiling.cc" />
     <ClCompile Include="Source\Management\Internal\MDySynchronization.cc" />
     <ClCompile Include="Source\Management\IO\MDyIOData.cc" />
     <ClCompile Include="Source\Management\IO\MDyIOResource.cc" />
@@ -504,8 +506,11 @@
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOTaskDeferred.h" />
     <ClInclude Include="Include\Dy\Core\Thread\SDyIOBindingHelper.h" />
     <ClInclude Include="Include\Dy\Helper\HelperString.h" />
+    <ClInclude Include="Include\Dy\Helper\Internal\RWLockAtomic.h" />
     <ClInclude Include="Include\Dy\Helper\System\Idioms.h" />
     <ClInclude Include="Include\Dy\Helper\Wrapper\DDyMutexUniqueHashMap.h" />
+    <ClInclude Include="Include\Dy\Management\Helper\SDyProfilingHelper.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\MDyProfiling.h" />
     <ClInclude Include="Include\Dy\Management\IO\MDyIOData.h" />
     <ClInclude Include="Include\Dy\Management\IO\MDyIOResource.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyInputButton.h" />

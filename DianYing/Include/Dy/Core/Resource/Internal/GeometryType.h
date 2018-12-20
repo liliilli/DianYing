@@ -90,7 +90,7 @@ struct PDySubmeshInformationDescriptor_Deprecated final
 struct DDySubmeshFlagInformation final
 {
   int32_t                         mIndiceCount      = 0;
-  int32_t                         mVertexSize       = 0;
+  int32_t                         mVertexCount      = 0;
   bool                            mIsNotHaveIndices :1;
   bool                            mIsNotHaveTextures:1;
   bool                            mIsEnabledSkeletalAnimation:1;

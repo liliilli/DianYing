@@ -17,6 +17,7 @@
 #include <Dy/Core/Resource/Information/FDyTextureInformation.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLTextureDescriptor.h>
 #include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Management/Helper/SDyProfilingHelper.h>
 
 namespace dy
 {
@@ -54,13 +55,15 @@ FDyTextureResource::FDyTextureResource(_MIN_ const FDyTextureInformation& inform
   // Create texture from shared context.
   auto optTextureId = FDyGLWrapper::CreateTexture(descriptor);
   MDY_ASSERT(optTextureId.has_value() == true, "Texture id creation must be succeeded.");
-
   this->mTextureResourceId = *optTextureId;
+
+  SDyProfilingHelper::IncreaseOnBindTextureCount(1);
 }
 
 FDyTextureResource::~FDyTextureResource()
 {
   if (this->mTextureResourceId) { glDeleteTextures(1, &mTextureResourceId); }
+  SDyProfilingHelper::IncreaseOnBindTextureCount(0);
 }
 
 } /// ::dy namespace
