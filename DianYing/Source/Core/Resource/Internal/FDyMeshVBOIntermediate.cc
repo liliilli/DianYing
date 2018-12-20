@@ -22,53 +22,6 @@
 namespace dy
 {
 
-FDyMeshVBOIntermediate::FDyMeshVBOIntermediate(const PDySubmeshInformationDescriptor_Deprecated& information)
-{
-  const auto& info = information;
-  { // Set flag and count for mesh geometry information & index count.
-    const auto indiceSize = static_cast<int32_t>(information.mIndices.size());
-    if (indiceSize == 0)  { this->mMeshFlagInformation.mIsNotHaveIndices = true; }
-    else                  { this->mMeshFlagInformation.mIndiceCount = indiceSize; }
-  }
-
-  { // Set vertex count.
-    constexpr auto s = sizeof(decltype(info.mVertices)::value_type::mPosition);
-    const auto vertexSize = static_cast<int32_t>(info.mVertices.size() * s);
-    this->mMeshFlagInformation.mVertexSize = vertexSize;
-  }
-
-  // OPENGL create VBO and EBO phrase.
-  // VBO will not be created in this time because we will create VAO at main thread.
-  {
-    PDyGLBufferDescriptor descriptor;
-    descriptor.mBufferType = EDyDirectBufferType::VertexBuffer;
-    descriptor.mPtrBuffer  = &info.mVertices[0];
-    if (information.mIsUsingDefaultBinding == true)
-    { // If using default binding (JUST USING DDYVertexInformation structure...)
-      // Let it do the thing.
-      descriptor.mBufferByteSize = sizeof(DDyVertexInformation) * info.mVertices.size();
-    }
-    else { MDY_NOT_IMPLEMENTED_ASSERT(); }
-    descriptor.mIsUsingDefaultBufferStruction = information.mIsUsingDefaultBinding;
-
-    const auto optVboId = FDyGLWrapper::CreateBuffer(descriptor);
-    MDY_ASSERT(optVboId.has_value() == true, "VBO creation must be succeeded.");
-    this->mBufferIdInformation.mVbo = optVboId.value();
-  }
-
-  if (this->mMeshFlagInformation.mIsNotHaveIndices == false)
-  {
-    PDyGLBufferDescriptor descriptor;
-    descriptor.mBufferType = EDyDirectBufferType::ElementBuffer;
-    descriptor.mPtrBuffer  = &info.mIndices[0];
-    descriptor.mBufferByteSize = sizeof(decltype(info.mIndices)::value_type) * info.mIndices.size();
-
-    const auto optEboId = FDyGLWrapper::CreateBuffer(descriptor);
-    MDY_ASSERT(optEboId.has_value() == true, "VBO creation must be succeeded.");
-    this->mBufferIdInformation.mEbo = optEboId.value();
-  }
-}
-
 FDyMeshVBOIntermediate::FDyMeshVBOIntermediate(_MIN_ const FDyMeshInformation& information) :
     mSpecifierName{information.GetSpecifierName()}
 {
@@ -89,15 +42,19 @@ FDyMeshVBOIntermediate::FDyMeshVBOIntermediate(_MIN_ const FDyMeshInformation& i
   // VBO will not be created in this time because we will create VAO at main thread.
   {
     PDyGLBufferDescriptor descriptor;
-    descriptor.mBufferType = EDyDirectBufferType::VertexBuffer;
-    descriptor.mPtrBuffer  = &info.mDefaultMeshBuffer.mVertexList[0];
-    if (info.mIsUsingDefaultBinding == true)
-    { // If using default binding (JUST USING DDYVertexInformation structure...)
-      // Let it do the thing.
+    descriptor.mBufferType  = EDyDirectBufferType::VertexBuffer;
+    descriptor.mPtrBuffer   = &info.mDefaultMeshBuffer.mVertexList[0];
+    descriptor.mBufferUsage = info.mMeshUsage;
+    descriptor.mIsUsingDefaultBufferStruction = info.mIsUsingDefaultBinding;
+
+    if (descriptor.mIsUsingDefaultBufferStruction == true)
+    { // If using default binding (JUST USING DDYVertexInformation structure...) Let it do the thing.
       descriptor.mBufferByteSize = sizeof(DDyVertexInformation) * info.mDefaultMeshBuffer.mVertexList.size();
     }
-    else { MDY_NOT_IMPLEMENTED_ASSERT(); }
-    descriptor.mIsUsingDefaultBufferStruction = info.mIsUsingDefaultBinding;
+    else 
+    { 
+      MDY_NOT_IMPLEMENTED_ASSERT(); 
+    }
 
     const auto optVboId = FDyGLWrapper::CreateBuffer(descriptor);
     MDY_ASSERT(optVboId.has_value() == true, "VBO creation must be succeeded.");
