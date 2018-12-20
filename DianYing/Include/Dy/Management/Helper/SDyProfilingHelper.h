@@ -32,6 +32,11 @@ public:
   static void IncreaseOnBindVertexCount(_MIN_ TU32 iInput) noexcept;
   /// @brief Decrease on-bind vertex count.
   static void DecreaseOnBindVertexCount(_MIN_ TU32 iInput) noexcept;
+
+  /// @brief Increase on-bind shader count.
+  static void IncreaseOnBindShaderCount(_MIN_ TU32 iInput) noexcept;
+  /// @brief Decrease on-bind shader count.
+  static void DecreaseOnBindShaderCount(_MIN_ TU32 iInput) noexcept;
 };
 
 } /// ::dy namespace

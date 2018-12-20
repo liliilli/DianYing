@@ -26,27 +26,32 @@ class MDyProfiling final : public IDySingleton<MDyProfiling>
   MDY_SINGLETON_DERIVED(MDyProfiling);
   MDY_SINGLETON_PROPERTIES(MDyProfiling);
 public:
-  /// @brief Get texture count on bind `Dy` System. \n
-  /// This function is atomic.
+  /// @brief Get texture count on bind `Dy` System. This function is atomic.
   MDY_NODISCARD TI32 GetOnBindTextureCount() const noexcept;
 
-  /// @brief Get vertex count on bind `Dy` System. \n
-  /// This function is atomic.
+  /// @brief Get vertex count on bind `Dy` System. This function is atomic.
   MDY_NODISCARD TI32 GetOnBindVertexCount() const noexcept;
+
+  /// @brief Get shader count on bind `Dy` System. This function is atomic.
+  MDY_NODISCARD TI32 GetOnBindShaderCount() const noexcept;
 
 private:
   /// @brief Increment & Decrement texture count that texture is on bind `Dy` System. \n
   /// This function is atomic.
   void MDY_PRIVATE_SPECIFIER(AddTextureCount)(TI32 iInput) noexcept;
 
-  /// @brief Increment & Decrement on-bind vertex count of `Dy` System. \n
-  /// This function is atomic.
+  /// @brief Increment & Decrement on-bind vertex count of `Dy` System. This function is atomic.
   void MDY_PRIVATE_SPECIFIER(AddOnBindVertexCount)(TI32 iInput) noexcept;
+
+  /// @brief Increment & Decrement on-bind shader count of `Dy` System. This function is atomic.
+  void MDY_PRIVATE_SPECIFIER(AddOnBindShaderCount)(TI32 iInput) noexcept;
 
   RWLockAtomic<TI32> mOnBindTextureCount  = MDY_INITIALIZE_DEFUINT;
 
   RWLockAtomic<TI32> mOnBindVertexCount   = MDY_INITIALIZE_DEFUINT;
   RWLockAtomic<TI32> mScreenVertexCount   = MDY_INITIALIZE_DEFUINT;
+
+  RWLockAtomic<TI32> mOnBindShaderCount   = MDY_INITIALIZE_DEFUINT;
 
   friend class SDyProfilingHelper;
 };

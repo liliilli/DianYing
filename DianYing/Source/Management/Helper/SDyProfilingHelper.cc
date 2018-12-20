@@ -39,4 +39,14 @@ void SDyProfilingHelper::DecreaseOnBindVertexCount(_MIN_ TU32 iInput) noexcept
   MDyProfiling::GetInstance().MDY_PRIVATE_SPECIFIER(AddOnBindVertexCount)(-static_cast<TI32>(iInput));
 }
 
+void SDyProfilingHelper::IncreaseOnBindShaderCount(_MIN_ TU32 iInput) noexcept
+{
+  MDyProfiling::GetInstance().MDY_PRIVATE_SPECIFIER(AddOnBindShaderCount)(iInput);
+}
+
+void SDyProfilingHelper::DecreaseOnBindShaderCount(_MIN_ TU32 iInput) noexcept
+{
+  MDyProfiling::GetInstance().MDY_PRIVATE_SPECIFIER(AddOnBindShaderCount)(-static_cast<TI32>(iInput));
+}
+
 } /// ::dy namespace
