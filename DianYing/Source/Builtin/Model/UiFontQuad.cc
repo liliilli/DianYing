@@ -14,35 +14,17 @@
 
 /// Header file
 #include <Dy/Builtin/Model/UIFontQuad.h>
+#include <Dy/Builtin/Mesh/FDyBtMsUiFontQuad.h>
 
-namespace dy
+namespace dy::builtin
 {
 
-void FDyBtMdUIFontQuad::ConstructBuffer(_MOUT_ PDyModelConstructionVertexDescriptor& buffer) noexcept
+void FDyBtMdUIFontQuad::ConstructBuffer(_MOUT_ PDyModelInstanceMetaInfo& buffer) noexcept
 {
-  PDySubmeshInformationDescriptor submeshDesc;
-
-  //DDyVector2{}, DDyVector2{1, 1}, DDyVector2{}, DDyVector2{1, 0},
-  //DDyVector2{}, DDyVector2{0, 0}, DDyVector2{}, DDyVector2{0, 1}
-  // Make position, normal, texcoord vertex information
-  submeshDesc.mVertices.reserve(4);
-  {
-    DDyVertexInformation vertex;
-    vertex.mPosition  = DDyVector3{};
-
-    vertex.mTexCoords = DDyVector2{ 1, 1 };
-    submeshDesc.mVertices.emplace_back(vertex);
-    vertex.mTexCoords = DDyVector2{ 1, 0 };
-    submeshDesc.mVertices.emplace_back(vertex);
-    vertex.mTexCoords = DDyVector2{ 0, 0 };
-    submeshDesc.mVertices.emplace_back(vertex);
-    vertex.mTexCoords = DDyVector2{ 0, 1 };
-    submeshDesc.mVertices.emplace_back(vertex);
-  }
-
-  // Make model information
-  buffer.mModelName = sName;
-  buffer.mSubmeshConstructionInformations.emplace_back(submeshDesc);
+  buffer.mSourceType          = EDyResourceSource::Builtin;
+  buffer.mSpecifierName       = sName;
+  buffer.mIsUsingBuiltinMesh  = true;
+  buffer.mBuiltinMeshSpecifierList.emplace_back(FDyBtMsUiFontQuad::sName);
 }
 
-} /// ::dy namespace
+} /// ::dy::builtin namespace

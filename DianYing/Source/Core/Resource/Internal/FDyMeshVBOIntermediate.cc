@@ -30,23 +30,21 @@ FDyMeshVBOIntermediate::FDyMeshVBOIntermediate(_MIN_ const FDyMeshInformation& i
   this->MDY_PRIVATE_SPECIFIER(CreateElementArrayBuffer)(information);
 }
 
-const DDySubmeshFlagInformation & FDyMeshVBOIntermediate::GetMeshFlagInfo() const noexcept
-{
-  return this->mMeshFlagInformation;
-}
-
-const DDyGLVaoBindInformation & FDyMeshVBOIntermediate::GetVaoBindingInfo() const noexcept
-{
-  return this->mVaoBindAttributeInfo;
-}
-
 void FDyMeshVBOIntermediate::MDY_PRIVATE_SPECIFIER(CreateVertexArrayBuffer)(_MIN_ const FDyMeshInformation& iInformation)
 {
   const PDyBtMeshInstanceMetaInfo& info = iInformation.GetMeshInformationList();
   { // Set vertex count.
-    constexpr auto s = sizeof(decltype(info.mDefaultMeshBuffer.mVertexList)::value_type::mPosition);
-    const auto vertexSize = static_cast<TU32>(info.mDefaultMeshBuffer.mVertexList.size() * s);
-    this->mMeshFlagInformation.mVertexSize = vertexSize;
+    if (info.mVAOBindingInfo.mIsUsingDefaultDyAttributeModel == true)
+    {
+      constexpr auto s = sizeof(decltype(info.mDefaultMeshBuffer.mVertexList)::value_type::mPosition);
+      const auto vertexSize = static_cast<TU32>(info.mDefaultMeshBuffer.mVertexList.size() * s);
+      this->mMeshFlagInformation.mVertexSize = vertexSize;
+    }
+    else
+    {
+      MDY_ASSERT(info.mVAOBindingInfo.mStrideByteSize > 0, "Stride byte size must be valid.");
+      this->mMeshFlagInformation.mVertexSize = sizeof(TF32) * info.mCustomMeshBuffer.size() / info.mVAOBindingInfo.mStrideByteSize;
+    }
   }
 
   // OPENGL create VBO and EBO phrase.
@@ -94,18 +92,14 @@ void FDyMeshVBOIntermediate::MDY_PRIVATE_SPECIFIER(CreateElementArrayBuffer)(_MI
   };
 }
 
-FDyMeshVBOIntermediate::~FDyMeshVBOIntermediate()
+const DDySubmeshFlagInformation & FDyMeshVBOIntermediate::GetMeshFlagInfo() const noexcept
 {
-  // Release resource when properties are not transferred yet.
-  if (this->mBufferIdInformation.mVbo > 0)
-  {
-    FDyGLWrapper::DeleteBuffer(this->mBufferIdInformation.mVbo);
-  }
+  return this->mMeshFlagInformation;
+}
 
-  if (this->mBufferIdInformation.mEbo > 0)
-  {
-    FDyGLWrapper::DeleteBuffer(this->mBufferIdInformation.mEbo);
-  }
+const DDyGLVaoBindInformation & FDyMeshVBOIntermediate::GetVaoBindingInfo() const noexcept
+{
+  return this->mVaoBindAttributeInfo;
 }
 
 void FDyMeshVBOIntermediate::ResetAllProperties() noexcept
@@ -123,6 +117,20 @@ const std::string & FDyMeshVBOIntermediate::GetSpecifierName() const noexcept
 const DDyGlBufferIdInformation & FDyMeshVBOIntermediate::GetBufferIdInfo() const noexcept
 {
   return this->mBufferIdInformation;
+}
+
+FDyMeshVBOIntermediate::~FDyMeshVBOIntermediate()
+{
+  // Release resource when properties are not transferred yet.
+  if (this->mBufferIdInformation.mVbo > 0)
+  {
+    FDyGLWrapper::DeleteBuffer(this->mBufferIdInformation.mVbo);
+  }
+
+  if (this->mBufferIdInformation.mEbo > 0)
+  {
+    FDyGLWrapper::DeleteBuffer(this->mBufferIdInformation.mEbo);
+  }
 }
 
 } /// ::dy namespace

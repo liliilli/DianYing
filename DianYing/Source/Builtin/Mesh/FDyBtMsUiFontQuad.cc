@@ -46,7 +46,25 @@ void FDyBtMsUiFontQuad::ConstructBuffer(_MOUT_ PDyBtMeshInstanceMetaInfo& proper
   property.mCustomMeshBuffer.emplace_back(0.f);
   property.mCustomMeshBuffer.emplace_back(1.f);
 
+  /*
+   *glBufferData(GL_ARRAY_BUFFER, stride * 4, value.data(), GL_DYNAMIC_DRAW);
+
+    glBindVertexBuffer(0, mTestVbo, 0, stride);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribFormat(0, 2, GL_FLOAT, GL_FALSE, 0);
+    glVertexAttribBinding(0, 0);
+
+    glEnableVertexAttribArray(1);
+    glVertexAttribFormat(1, 2, GL_FLOAT, GL_FALSE, 8);
+    glVertexAttribBinding(1, 0);
+   */
+
   property.mVAOBindingInfo.mIsUsingDefaultDyAttributeModel = false;
+  property.mVAOBindingInfo.mOffsetByteSize = 0;
+  property.mVAOBindingInfo.mStrideByteSize = sizeof(DDyVector2) * 2;
+  property.mVAOBindingInfo.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Float, false, 2, 0);
+  property.mVAOBindingInfo.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Float, false, 2, 8);
 }
 
 } /// ::dy namespace

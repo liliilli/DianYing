@@ -228,6 +228,7 @@
     <ClCompile Include="Source\Builtin\Mesh\FDyBtMsSphere.cc" />
     <ClCompile Include="Source\Builtin\Mesh\FDyBtMsUiFontQuad.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyMeshInformation.cc" />
+    <ClCompile Include="Source\Builtin\Model\UiFontQuad.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />

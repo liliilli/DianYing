@@ -177,6 +177,7 @@
     <ClCompile Include="Source\Builtin\Mesh\FDyBtMsScrTriangle.cc" />
     <ClCompile Include="Source\Builtin\Mesh\FDyBtMsSphere.cc" />
     <ClCompile Include="Source\Builtin\Mesh\FDyBtMsUiFontQuad.cc" />
+    <ClCompile Include="Source\Builtin\Model\UiFontQuad.cc" />
     <ClCompile Include="Source\Builtin\Script\DebugUiScriptCpp.cc" />
     <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingBootScriptCpp.cc" />
     <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingGlobalScriptCpp.cc" />
