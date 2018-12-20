@@ -719,6 +719,7 @@
     <ClInclude Include="Include\Dy\Meta\Type\EDyTextureParameter.h" />
     <ClInclude Include="Include\Dy\Helper\Constant\StringPipelineUniform.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Input\JsonInputButton.h" />
+    <ClInclude Include="Include\Dy\Meta\Type\Mesh\DDyGLVaoBindInformation.h" />
     <ClInclude Include="Include\precompiled.h" />
     <ClInclude Include="Libraries\glad\include\glad\glad.h" />
     <ClInclude Include="Libraries\glad\include\KHR\khrplatform.h" />

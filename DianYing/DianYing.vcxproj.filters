@@ -525,7 +525,6 @@
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyMeshResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Internal\FDyMeshVBOIntermediate.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLBufferDescriptor.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLVaoBindDescriptor.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyMaterialInformation.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyMaterialResource.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOTaskDeferred.h" />
@@ -584,6 +583,8 @@
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoBuiltinMesh.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoModel.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyMeshInformation.h" />
+    <ClInclude Include="Include\Dy\Meta\Type\Mesh\DDyGLVaoBindInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLVaoBindDescriptor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

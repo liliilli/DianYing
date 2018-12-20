@@ -21,7 +21,6 @@ namespace dy
 void FDyBtMsBox::ConstructBuffer(_MOUT_ PDyBtMeshInstanceMetaInfo& property) noexcept
 {
   property.mSpecifierName = sName;
-  property.mIsUsingDefaultBinding = true;
 
   auto& submeshDesc = property.mDefaultMeshBuffer;
   submeshDesc.mVertexList.reserve(24);

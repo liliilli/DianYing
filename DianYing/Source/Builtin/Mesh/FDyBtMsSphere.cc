@@ -21,7 +21,6 @@ namespace dy
 void FDyBtMsSphere::ConstructBuffer(_MOUT_ PDyBtMeshInstanceMetaInfo& property) noexcept
 {
   property.mSpecifierName = sName;
-  property.mIsUsingDefaultBinding = true;
 
   // Position
   const auto a = DDyVector3{ 0, 1, 0 };

@@ -21,7 +21,6 @@ namespace dy
 void FDyBtMsUiFontQuad::ConstructBuffer(_MOUT_ PDyBtMeshInstanceMetaInfo& property) noexcept
 {
   property.mSpecifierName         = sName;
-  property.mIsUsingDefaultBinding = false;
   property.mMeshUsage             = EDyMeshUsage::DynamicDraw;
 
   // (Position, Texture coord) stride.
@@ -46,6 +45,8 @@ void FDyBtMsUiFontQuad::ConstructBuffer(_MOUT_ PDyBtMeshInstanceMetaInfo& proper
   property.mCustomMeshBuffer.emplace_back(0.f);
   property.mCustomMeshBuffer.emplace_back(0.f);
   property.mCustomMeshBuffer.emplace_back(1.f);
+
+  property.mVAOBindingInfo.mIsUsingDefaultDyAttributeModel = false;
 }
 
 } /// ::dy namespace

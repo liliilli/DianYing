@@ -15,6 +15,7 @@
 
 #include <Dy/Core/Reflection/RDyBuiltinResources.h>
 #include <Dy/Core/Resource/Internal/GeometryType.h>
+#include <Dy/Meta/Type/Mesh/DDyGLVaoBindInformation.h>
 
 namespace dy
 {
@@ -50,8 +51,8 @@ struct PDyBtMeshInstanceMetaInfo final
   std::vector<TF32> mCustomMeshBuffer   = {};
   std::vector<TU32> mIndiceBuffer       = {};
 
-  bool          mIsUsingDefaultBinding  = true;
-  EDyMeshUsage  mMeshUsage              = EDyMeshUsage::StaticDraw;
+  EDyMeshUsage      mMeshUsage          = EDyMeshUsage::StaticDraw;
+  DDyGLVaoBindInformation mVAOBindingInfo;
 };
 
 } /// ::dy namespace

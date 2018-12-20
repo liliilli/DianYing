@@ -44,7 +44,6 @@ struct PDyGLBufferDescriptor final
   const void*         mPtrBuffer      = MDY_INITIALIZE_NULL;
 
   EDyMeshUsage        mBufferUsage    = EDyMeshUsage::StaticDraw;
-  bool                mIsUsingDefaultBufferStruction = false;
 };
 
 } /// ::dy namespace

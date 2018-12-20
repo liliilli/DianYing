@@ -13,6 +13,8 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Meta/Type/Mesh/DDyGLVaoBindInformation.h>
+
 namespace dy
 {
 
@@ -22,49 +24,11 @@ namespace dy
 ///
 struct PDyGLVaoBindDescriptor final
 {
-  enum class EFormatType : TU08
-  {
-    Float,
-    Int,
-    NoneError,
-  };
-
-  struct PAttributeFormat final
-  {
-    const EFormatType mType       = EFormatType::NoneError;
-    const bool  mIsMustNormalized = false;
-    const TU32  mElementCount     = MDY_INITIALIZE_DEFUINT;
-    const TU32  mOffsetByteSize   = MDY_INITIALIZE_DEFUINT;
-
-    PAttributeFormat(_MIN_ EFormatType type, _MIN_ bool isMustNormalized, _MIN_ TU32 elementCount, _MIN_ TU32 offsetByteSize) :
-      mType{type}, mIsMustNormalized{isMustNormalized}, mElementCount{elementCount}, mOffsetByteSize{offsetByteSize}
-    {
-      MDY_ASSERT(mType != EFormatType::NoneError, "Attribute format type must not be ::NullError.");
-      MDY_ASSERT(mElementCount != 0, "Attribute element count must be positive.");
-    }
-  };
-
-  TU32 mVaoId           = MDY_INITIALIZE_DEFUINT;
-  TU32 mBoundVboId      = MDY_INITIALIZE_DEFUINT;
-  TU32 mBoundEboId      = MDY_INITIALIZE_DEFUINT;
-  TU32 mOffsetByteSize  = MDY_INITIALIZE_DEFUINT;
-  TU32 mStrideByteSize  = MDY_INITIALIZE_DEFUINT;
-  bool mIsUsingDefaultDyAttributeModel = false;
-
-  /// If `mIsUsingDefaultDyAttributeModel` is true, `mAttributeFormatList` will be neglected.
-  std::vector<PAttributeFormat> mAttributeFormatList = {};
+  TU32 mVaoId             = MDY_INITIALIZE_DEFUINT;
+  TU32 mBoundVboId        = MDY_INITIALIZE_DEFUINT;
+  TU32 mBoundEboId        = MDY_INITIALIZE_DEFUINT;
+  DDyGLVaoBindInformation mAttributeInfo {};
 };
-
-/// @brief Get internal GLenum value from `EFormatType`.
-inline static MDY_NODISCARD GLenum DyGetGLTypeFrom(_MIN_ PDyGLVaoBindDescriptor::EFormatType type) noexcept
-{
-  switch(type)
-  {
-  case PDyGLVaoBindDescriptor::EFormatType::Float:  return GL_FLOAT;
-  case PDyGLVaoBindDescriptor::EFormatType::Int:    return GL_INT;
-  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(GL_NONE);
-  }
-}
 
 } /// ::dy namespace
 

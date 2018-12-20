@@ -28,6 +28,7 @@ struct PDyGLWindowContextDescriptor;
 struct PDyGLBufferDescriptor;
 struct PDyGLAttachmentDescriptor;
 struct PDyGLFrameBufferDescriptor;
+struct DDyGLVaoBindInformation;
 } /// ::dy namespace
 
 //!
@@ -116,7 +117,7 @@ private:
   static std::mutex mGLMutex;
 
   /// @brief
-  static MDY_NODISCARD const PDyGLVaoBindDescriptor& GetDefaultAttributeFormatDescriptor() noexcept;
+  static MDY_NODISCARD const DDyGLVaoBindInformation& GetDefaultAttributeFormatDescriptor() noexcept;
 };
 
 } /// ::dy namespace

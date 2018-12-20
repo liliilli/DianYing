@@ -434,7 +434,7 @@ EDySuccess MDyMetaInfo::pfAddGLShaderMetaInfo(_MIN_ const PDyGLShaderInstanceMet
 EDySuccess MDyMetaInfo::pfAddBuiltinMeshMetaInfo(_MIN_ const PDyBtMeshInstanceMetaInfo& metaInfo)
 {
 #if defined(_DEBUG) == true
-  if (metaInfo.mIsUsingDefaultBinding == false)
+  if (metaInfo.mVAOBindingInfo.mIsUsingDefaultDyAttributeModel == false)
   {
     MDY_ASSERT(metaInfo.mCustomMeshBuffer.empty() == false, "Builtin mesh must be valid if using customized binding.");
   }

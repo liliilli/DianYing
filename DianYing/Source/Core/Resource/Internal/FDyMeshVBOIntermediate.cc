@@ -23,10 +23,21 @@ namespace dy
 {
 
 FDyMeshVBOIntermediate::FDyMeshVBOIntermediate(_MIN_ const FDyMeshInformation& information) :
-    mSpecifierName{information.GetSpecifierName()}
+    mSpecifierName{information.GetSpecifierName()},
+    mVaoBindAttributeInfo{information.GetMeshInformationList().mVAOBindingInfo}
 {
   this->MDY_PRIVATE_SPECIFIER(CreateVertexArrayBuffer)(information);
   this->MDY_PRIVATE_SPECIFIER(CreateElementArrayBuffer)(information);
+}
+
+const DDySubmeshFlagInformation & FDyMeshVBOIntermediate::GetMeshFlagInfo() const noexcept
+{
+  return this->mMeshFlagInformation;
+}
+
+const DDyGLVaoBindInformation & FDyMeshVBOIntermediate::GetVaoBindingInfo() const noexcept
+{
+  return this->mVaoBindAttributeInfo;
 }
 
 void FDyMeshVBOIntermediate::MDY_PRIVATE_SPECIFIER(CreateVertexArrayBuffer)(_MIN_ const FDyMeshInformation& iInformation)
@@ -44,9 +55,7 @@ void FDyMeshVBOIntermediate::MDY_PRIVATE_SPECIFIER(CreateVertexArrayBuffer)(_MIN
     PDyGLBufferDescriptor descriptor;
     descriptor.mBufferType  = EDyDirectBufferType::VertexBuffer;
     descriptor.mBufferUsage = info.mMeshUsage;
-    descriptor.mIsUsingDefaultBufferStruction = info.mIsUsingDefaultBinding;
-
-    if (descriptor.mIsUsingDefaultBufferStruction == true)
+    if (info.mVAOBindingInfo.mIsUsingDefaultDyAttributeModel == true)
     { // If using default binding (JUST USING DDYVertexInformation structure...) Let it do the thing.
       descriptor.mPtrBuffer       = &info.mDefaultMeshBuffer.mVertexList[0];
       descriptor.mBufferByteSize  = sizeof(DDyVertexInformation) * info.mDefaultMeshBuffer.mVertexList.size();
@@ -109,6 +118,11 @@ const std::string & FDyMeshVBOIntermediate::GetSpecifierName() const noexcept
 {
   MDY_ASSERT(this->mSpecifierName.empty() == false, "Mesh specifier name must be valid.");
   return this->mSpecifierName;
+}
+
+const DDyGlBufferIdInformation & FDyMeshVBOIntermediate::GetBufferIdInfo() const noexcept
+{
+  return this->mBufferIdInformation;
 }
 
 } /// ::dy namespace

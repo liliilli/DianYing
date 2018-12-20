@@ -32,10 +32,10 @@ FDyMeshResource::FDyMeshResource(_MINOUT_ FDyMeshVBOIntermediate& intermediateIn
   this->mBufferIdInformation.mVao = FDyGLWrapper::CreateVertexArrayObject();
 
   PDyGLVaoBindDescriptor descriptor;
-  descriptor.mVaoId       = this->mBufferIdInformation.mVao;
-  descriptor.mBoundVboId  = this->mBufferIdInformation.mVbo;
-  descriptor.mBoundEboId  = this->mBufferIdInformation.mEbo;
-  descriptor.mIsUsingDefaultDyAttributeModel = true;
+  descriptor.mVaoId         = this->mBufferIdInformation.mVao;
+  descriptor.mBoundVboId    = this->mBufferIdInformation.mVbo;
+  descriptor.mBoundEboId    = this->mBufferIdInformation.mEbo;
+  descriptor.mAttributeInfo = intermediateInstance.GetVaoBindingInfo();
   FDyGLWrapper::BindVertexArrayObject(descriptor);
 }
 

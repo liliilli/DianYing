@@ -14,25 +14,26 @@
 
 /// Header file
 #include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
-#include <Dy/Core/Rendering/Wrapper/PDyGLVaoBindDescriptor.h>
+#include <Dy/Meta/Type/Mesh/DDyGLVaoBindInformation.h>
 #include <Dy/Core/Resource/Information/FDyModelInformation.h>
 
 namespace dy
 {
 
-const PDyGLVaoBindDescriptor& FDyGLWrapper::GetDefaultAttributeFormatDescriptor() noexcept
+const DDyGLVaoBindInformation& FDyGLWrapper::GetDefaultAttributeFormatDescriptor() noexcept
 {
-  using EFormatType = PDyGLVaoBindDescriptor::EFormatType;
-  static PDyGLVaoBindDescriptor descriptor;
+  static DDyGLVaoBindInformation descriptor;
   static bool mIsInitialized = false;
   if (mIsInitialized == false)
   {
-    descriptor.mStrideByteSize  = sizeof(DDyVertexInformation);
-    descriptor.mAttributeFormatList.emplace_back(EFormatType::Float, false, 3, offsetof(DDyVertexInformation, mPosition));
-    descriptor.mAttributeFormatList.emplace_back(EFormatType::Float, false, 3, offsetof(DDyVertexInformation, mNormal));
-    descriptor.mAttributeFormatList.emplace_back(EFormatType::Float, false, 2, offsetof(DDyVertexInformation, mTexCoords));
-    descriptor.mAttributeFormatList.emplace_back(EFormatType::Int,   false, 4, offsetof(DDyVertexInformation, mVertexBoneData.mBoneId));
-    descriptor.mAttributeFormatList.emplace_back(EFormatType::Float, false, 4, offsetof(DDyVertexInformation, mVertexBoneData.mWeights));
+    descriptor.mIsUsingDefaultDyAttributeModel = false;
+    descriptor.mOffsetByteSize = 0;
+    descriptor.mStrideByteSize = sizeof(DDyVertexInformation);
+    descriptor.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Float, false, 3, offsetof(DDyVertexInformation, mPosition));
+    descriptor.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Float, false, 3, offsetof(DDyVertexInformation, mNormal));
+    descriptor.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Float, false, 2, offsetof(DDyVertexInformation, mTexCoords));
+    descriptor.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Int,   false, 4, offsetof(DDyVertexInformation, mVertexBoneData.mBoneId));
+    descriptor.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Float, false, 4, offsetof(DDyVertexInformation, mVertexBoneData.mWeights));
     mIsInitialized = true;
   }
 

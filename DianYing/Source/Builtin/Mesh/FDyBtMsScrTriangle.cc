@@ -21,7 +21,6 @@ namespace dy
 void FDyBtMsScrTriangle::ConstructBuffer(_MOUT_ PDyBtMeshInstanceMetaInfo& property) noexcept
 {
   property.mSpecifierName = sName;
-  property.mIsUsingDefaultBinding = true;
 
   // Make position, normal, texcoord vertex information
   auto& submeshDesc = property.mDefaultMeshBuffer;

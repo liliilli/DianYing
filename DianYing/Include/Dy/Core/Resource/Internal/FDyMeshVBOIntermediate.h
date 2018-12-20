@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Core/Resource/Information/FDyModelInformation.h>
+#include <Dy/Meta/Type/Mesh/DDyGLVaoBindInformation.h>
 
 //!
 //! Forward declaration
@@ -49,24 +50,22 @@ public:
   MDY_NODISCARD const std::string& GetSpecifierName() const noexcept;
 
   /// @brief Get vertex buffer id information.
-  MDY_NODISCARD const DDyGlBufferIdInformation& GetBufferIdInfo() const noexcept
-  {
-    return this->mBufferIdInformation;
-  }
+  MDY_NODISCARD const DDyGlBufferIdInformation& GetBufferIdInfo() const noexcept;
 
   /// @brief Get mesh flag property instance.
-  MDY_NODISCARD const DDySubmeshFlagInformation& GetMeshFlagInfo() const noexcept
-  {
-    return this->mMeshFlagInformation;
-  }
+  MDY_NODISCARD const DDySubmeshFlagInformation& GetMeshFlagInfo() const noexcept;
 
+  /// @brief
+  MDY_NODISCARD const DDyGLVaoBindInformation& GetVaoBindingInfo() const noexcept;
+    
 private:
   void MDY_PRIVATE_SPECIFIER(CreateVertexArrayBuffer)(_MIN_ const FDyMeshInformation& iInformation);
   void MDY_PRIVATE_SPECIFIER(CreateElementArrayBuffer)(_MIN_ const FDyMeshInformation& iInformation);
 
   std::string               mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
-  DDyGlBufferIdInformation  mBufferIdInformation = {};
-  DDySubmeshFlagInformation mMeshFlagInformation = {};
+  DDyGlBufferIdInformation  mBufferIdInformation  = {};
+  DDySubmeshFlagInformation mMeshFlagInformation  = {};
+  DDyGLVaoBindInformation   mVaoBindAttributeInfo = {};
 };
 
 
