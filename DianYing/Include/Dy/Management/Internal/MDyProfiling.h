@@ -30,12 +30,23 @@ public:
   /// This function is atomic.
   MDY_NODISCARD TI32 GetOnBindTextureCount() const noexcept;
 
+  /// @brief Get vertex count on bind `Dy` System. \n
+  /// This function is atomic.
+  MDY_NODISCARD TI32 GetOnBindVertexCount() const noexcept;
+
 private:
   /// @brief Increment & Decrement texture count that texture is on bind `Dy` System. \n
   /// This function is atomic.
   void MDY_PRIVATE_SPECIFIER(AddTextureCount)(TI32 iInput) noexcept;
 
-  RWLockAtomic<TI32> mOnBindTextureCount = MDY_INITIALIZE_DEFUINT;
+  /// @brief Increment & Decrement on-bind vertex count of `Dy` System. \n
+  /// This function is atomic.
+  void MDY_PRIVATE_SPECIFIER(AddOnBindVertexCount)(TI32 iInput) noexcept;
+
+  RWLockAtomic<TI32> mOnBindTextureCount  = MDY_INITIALIZE_DEFUINT;
+
+  RWLockAtomic<TI32> mOnBindVertexCount   = MDY_INITIALIZE_DEFUINT;
+  RWLockAtomic<TI32> mScreenVertexCount   = MDY_INITIALIZE_DEFUINT;
 
   friend class SDyProfilingHelper;
 };

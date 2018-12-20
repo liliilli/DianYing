@@ -33,9 +33,19 @@ TI32 MDyProfiling::GetOnBindTextureCount() const noexcept
   return this->mOnBindTextureCount.Get();
 }
 
+TI32 MDyProfiling::GetOnBindVertexCount() const noexcept
+{
+  return this->mOnBindVertexCount.Get();
+}
+
 void MDyProfiling::MDY_PRIVATE_SPECIFIER(AddTextureCount)(_MIN_ TI32 iInput) noexcept
 {
   this->mOnBindTextureCount.Add(iInput);
+}
+
+void MDyProfiling::MDY_PRIVATE_SPECIFIER(AddOnBindVertexCount)(_MIN_ TI32 iInput) noexcept
+{
+  this->mOnBindVertexCount.Add(iInput);
 }
 
 } /// ::dy namespace

@@ -29,4 +29,14 @@ void SDyProfilingHelper::DecreaseOnBindTextureCount(_MIN_ TU32 iInput) noexcept
   MDyProfiling::GetInstance().MDY_PRIVATE_SPECIFIER(AddTextureCount)(-static_cast<TI32>(iInput));
 }
 
+void SDyProfilingHelper::IncreaseOnBindVertexCount(_MIN_ TU32 iInput) noexcept
+{
+  MDyProfiling::GetInstance().MDY_PRIVATE_SPECIFIER(AddOnBindVertexCount)(iInput);
+}
+
+void SDyProfilingHelper::DecreaseOnBindVertexCount(_MIN_ TU32 iInput) noexcept
+{
+  MDyProfiling::GetInstance().MDY_PRIVATE_SPECIFIER(AddOnBindVertexCount)(-static_cast<TI32>(iInput));
+}
+
 } /// ::dy namespace

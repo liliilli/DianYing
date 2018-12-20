@@ -73,11 +73,12 @@ Camera0 : 2
   auto t = time.GetCalendarTime();
   text->SetText(fmt::format(
       "{:05.2f} %, {:0d} fps | Time : {:04}-{:02}-{:02} {:02}:{:02}:{:02}\n"
-      "| Obj : 000 | Tex : {:03} | Shd : 000 | Vtx : 000 |\n"
+      "| Obj : 000 | Tex : {:03} | Shd : 000 | Vtx : {:03} |\n"
       "Ram Usage : {} Bytes", 
       usageCpu, time.GetPresentFpsCountValue(),
       t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(),
       MDyProfiling::GetInstance().GetOnBindTextureCount(),
+      MDyProfiling::GetInstance().GetOnBindVertexCount(),
       usageRam
   ));
   bar->SetPresentValue(usageCpu);

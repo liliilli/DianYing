@@ -36,9 +36,7 @@ void FDyMeshVBOIntermediate::MDY_PRIVATE_SPECIFIER(CreateVertexArrayBuffer)(_MIN
   { // Set vertex count.
     if (info.mVAOBindingInfo.mIsUsingDefaultDyAttributeModel == true)
     {
-      constexpr auto s = sizeof(decltype(info.mDefaultMeshBuffer.mVertexList)::value_type::mPosition);
-      const auto vertexSize = static_cast<TU32>(info.mDefaultMeshBuffer.mVertexList.size() * s);
-      this->mMeshFlagInformation.mVertexSize = vertexSize;
+      this->mMeshFlagInformation.mVertexSize = info.mDefaultMeshBuffer.mVertexList.size();
     }
     else
     {
