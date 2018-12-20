@@ -39,12 +39,12 @@ FDyMeshResource::FDyMeshResource(_MINOUT_ FDyMeshVBOIntermediate& intermediateIn
   descriptor.mAttributeInfo = intermediateInstance.GetVaoBindingInfo();
   FDyGLWrapper::BindVertexArrayObject(descriptor);
 
-  SDyProfilingHelper::IncreaseOnBindVertexCount(this->mMeshFlagInformation.mVertexSize);
+  SDyProfilingHelper::IncreaseOnBindVertexCount(this->mMeshFlagInformation.mVertexCount);
 }
 
 FDyMeshResource::~FDyMeshResource()
 {
-  SDyProfilingHelper::DecreaseOnBindVertexCount(this->mMeshFlagInformation.mVertexSize);
+  SDyProfilingHelper::DecreaseOnBindVertexCount(this->mMeshFlagInformation.mVertexCount);
   MDY_NOT_IMPLEMENTED_ASSERT();
 }
 
@@ -71,7 +71,7 @@ TU32 FDyMeshResource::GetVertexBufferId() const noexcept
 
 TU32 FDyMeshResource::GetVertexCounts() const noexcept
 {
-  return this->mMeshFlagInformation.mVertexSize;
+  return this->mMeshFlagInformation.mVertexCount;
 }
 
 TU32 FDyMeshResource::GetIndicesCounts() const noexcept
