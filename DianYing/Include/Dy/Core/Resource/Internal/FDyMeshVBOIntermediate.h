@@ -48,19 +48,22 @@ public:
   /// @brief Get model specifier name.
   MDY_NODISCARD const std::string& GetSpecifierName() const noexcept;
 
-  /// @brief
+  /// @brief Get vertex buffer id information.
   MDY_NODISCARD const DDyGlBufferIdInformation& GetBufferIdInfo() const noexcept
   {
     return this->mBufferIdInformation;
   }
 
-  /// @brief
+  /// @brief Get mesh flag property instance.
   MDY_NODISCARD const DDySubmeshFlagInformation& GetMeshFlagInfo() const noexcept
   {
     return this->mMeshFlagInformation;
   }
 
 private:
+  void MDY_PRIVATE_SPECIFIER(CreateVertexArrayBuffer)(_MIN_ const FDyMeshInformation& iInformation);
+  void MDY_PRIVATE_SPECIFIER(CreateElementArrayBuffer)(_MIN_ const FDyMeshInformation& iInformation);
+
   std::string               mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
   DDyGlBufferIdInformation  mBufferIdInformation = {};
   DDySubmeshFlagInformation mMeshFlagInformation = {};

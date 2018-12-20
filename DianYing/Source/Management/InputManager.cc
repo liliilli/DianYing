@@ -295,8 +295,8 @@ namespace dy
 
 EDySuccess MDyInput::pfInitialize()
 {
-  this->MDY_PRIVATE_FUNC_SPECIFIER(pInitializeAxisNAction)();
-  this->MDY_PRIVATE_FUNC_SPECIFIER(pInitializeCallbacks)();
+  this->MDY_PRIVATE_SPECIFIER(pInitializeAxisNAction)();
+  this->MDY_PRIVATE_SPECIFIER(pInitializeCallbacks)();
 
   if (DyCheckIsJoystickConnected() == true)
   { // Check joystick binding manually at first time.
@@ -307,7 +307,7 @@ EDySuccess MDyInput::pfInitialize()
   return DY_SUCCESS;
 }
 
-void MDyInput::MDY_PRIVATE_FUNC_SPECIFIER(pInitializeAxisNAction)()
+void MDyInput::MDY_PRIVATE_SPECIFIER(pInitializeAxisNAction)()
 {
    const auto& keyInformation = MDySetting::GetInstance().GetInputSettingInformation();
 
@@ -328,7 +328,7 @@ void MDyInput::MDY_PRIVATE_FUNC_SPECIFIER(pInitializeAxisNAction)()
   }
 }
 
-void MDyInput::MDY_PRIVATE_FUNC_SPECIFIER(pInitializeCallbacks)()
+void MDyInput::MDY_PRIVATE_SPECIFIER(pInitializeCallbacks)()
 {
   this->mPtrGlfwWindowContext = MDyWindow::GetInstance().GetGLMainWindow();
   glfwSetKeyCallback        (this->mPtrGlfwWindowContext, DyCallbackInputKeyboard);
@@ -472,18 +472,18 @@ bool MDyInput::IsJoystickConnected() const noexcept
 
 void MDyInput::pfUpdate(_MIN_ TF32 dt) noexcept
 {
-  this->MDY_PRIVATE_FUNC_SPECIFIER(pUpdateMouseMovement)(dt);
+  this->MDY_PRIVATE_SPECIFIER(pUpdateMouseMovement)(dt);
   if (this->IsJoystickConnected() == true)
   {
-    this->MDY_PRIVATE_FUNC_SPECIFIER(pUpdateJoystickSticks)();
-    this->MDY_PRIVATE_FUNC_SPECIFIER(pUpdateJoystickButtons)();
+    this->MDY_PRIVATE_SPECIFIER(pUpdateJoystickSticks)();
+    this->MDY_PRIVATE_SPECIFIER(pUpdateJoystickButtons)();
   }
 
-  this->MDY_PRIVATE_FUNC_SPECIFIER(pCheckAxisStatus)(dt);
-  this->MDY_PRIVATE_FUNC_SPECIFIER(pCheckActionStatus)(dt);
+  this->MDY_PRIVATE_SPECIFIER(pCheckAxisStatus)(dt);
+  this->MDY_PRIVATE_SPECIFIER(pCheckActionStatus)(dt);
 }
 
-void MDyInput::MDY_PRIVATE_FUNC_SPECIFIER(pUpdateJoystickSticks)()
+void MDyInput::MDY_PRIVATE_SPECIFIER(pUpdateJoystickSticks)()
 {
   int supportingStickCount;
   const float* stickValueList = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &supportingStickCount);
@@ -495,7 +495,7 @@ void MDyInput::MDY_PRIVATE_FUNC_SPECIFIER(pUpdateJoystickSticks)()
   }
 }
 
-void MDyInput::MDY_PRIVATE_FUNC_SPECIFIER(pUpdateJoystickButtons)()
+void MDyInput::MDY_PRIVATE_SPECIFIER(pUpdateJoystickButtons)()
 {
   using TEnum = EDyInputButton;
   static constexpr auto dyJoystickBtnCount = TEnum::Joystick17 - TEnum::Joystick0 + 1;
@@ -513,7 +513,7 @@ void MDyInput::MDY_PRIVATE_FUNC_SPECIFIER(pUpdateJoystickButtons)()
   }
 }
 
-void MDyInput::MDY_PRIVATE_FUNC_SPECIFIER(pCheckAxisStatus)(_MIN_ TF32 dt)
+void MDyInput::MDY_PRIVATE_SPECIFIER(pCheckAxisStatus)(_MIN_ TF32 dt)
 {
   using EAxisStatus   = DDyAxisBindingInformation::EDyAxisInputStatus;
   
@@ -647,7 +647,7 @@ void MDyInput::MDY_PRIVATE_FUNC_SPECIFIER(pCheckAxisStatus)(_MIN_ TF32 dt)
   }
 }
 
-void MDyInput::MDY_PRIVATE_FUNC_SPECIFIER(pCheckActionStatus)(_MIN_ TF32 dt)
+void MDyInput::MDY_PRIVATE_SPECIFIER(pCheckActionStatus)(_MIN_ TF32 dt)
 {
   using EActionStatus = DDyActionBindingInformation::EDyActionInputStatus;
 
@@ -718,7 +718,7 @@ void MDyInput::MDY_PRIVATE_FUNC_SPECIFIER(pCheckActionStatus)(_MIN_ TF32 dt)
   }
 }
 
-void MDyInput::MDY_PRIVATE_FUNC_SPECIFIER(pUpdateMouseMovement)(_MIN_ TF32 dt)
+void MDyInput::MDY_PRIVATE_SPECIFIER(pUpdateMouseMovement)(_MIN_ TF32 dt)
 {
   if (sIsFirstMouseMovement == false && sMousePositionDirty == true)
   { 

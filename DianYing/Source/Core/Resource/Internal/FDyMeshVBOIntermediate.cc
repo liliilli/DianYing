@@ -25,13 +25,13 @@ namespace dy
 FDyMeshVBOIntermediate::FDyMeshVBOIntermediate(_MIN_ const FDyMeshInformation& information) :
     mSpecifierName{information.GetSpecifierName()}
 {
-  const PDyBtMeshInstanceMetaInfo& info = information.GetMeshInformationList();
-  { // Set flag and count for mesh geometry information & index count.
-    const auto indiceSize = static_cast<TU32>(info.mIndiceBuffer.size());
-    if (indiceSize == 0)  { this->mMeshFlagInformation.mIsNotHaveIndices = true; }
-    else                  { this->mMeshFlagInformation.mIndiceCount = indiceSize; }
-  }
+  this->MDY_PRIVATE_SPECIFIER(CreateVertexArrayBuffer)(information);
+  this->MDY_PRIVATE_SPECIFIER(CreateElementArrayBuffer)(information);
+}
 
+void FDyMeshVBOIntermediate::MDY_PRIVATE_SPECIFIER(CreateVertexArrayBuffer)(_MIN_ const FDyMeshInformation& iInformation)
+{
+  const PDyBtMeshInstanceMetaInfo& info = iInformation.GetMeshInformationList();
   { // Set vertex count.
     constexpr auto s = sizeof(decltype(info.mDefaultMeshBuffer.mVertexList)::value_type::mPosition);
     const auto vertexSize = static_cast<TU32>(info.mDefaultMeshBuffer.mVertexList.size() * s);
@@ -43,22 +43,33 @@ FDyMeshVBOIntermediate::FDyMeshVBOIntermediate(_MIN_ const FDyMeshInformation& i
   {
     PDyGLBufferDescriptor descriptor;
     descriptor.mBufferType  = EDyDirectBufferType::VertexBuffer;
-    descriptor.mPtrBuffer   = &info.mDefaultMeshBuffer.mVertexList[0];
     descriptor.mBufferUsage = info.mMeshUsage;
     descriptor.mIsUsingDefaultBufferStruction = info.mIsUsingDefaultBinding;
 
     if (descriptor.mIsUsingDefaultBufferStruction == true)
     { // If using default binding (JUST USING DDYVertexInformation structure...) Let it do the thing.
-      descriptor.mBufferByteSize = sizeof(DDyVertexInformation) * info.mDefaultMeshBuffer.mVertexList.size();
+      descriptor.mPtrBuffer       = &info.mDefaultMeshBuffer.mVertexList[0];
+      descriptor.mBufferByteSize  = sizeof(DDyVertexInformation) * info.mDefaultMeshBuffer.mVertexList.size();
     }
     else 
-    { 
-      MDY_NOT_IMPLEMENTED_ASSERT(); 
+    { // If using customized binding, let it do the thing.
+      descriptor.mPtrBuffer       = info.mCustomMeshBuffer.data();
+      descriptor.mBufferByteSize  = sizeof(TF32) * info.mCustomMeshBuffer.size();
     }
 
     const auto optVboId = FDyGLWrapper::CreateBuffer(descriptor);
     MDY_ASSERT(optVboId.has_value() == true, "VBO creation must be succeeded.");
     this->mBufferIdInformation.mVbo = optVboId.value();
+  }
+}
+
+void FDyMeshVBOIntermediate::MDY_PRIVATE_SPECIFIER(CreateElementArrayBuffer)(_MIN_ const FDyMeshInformation& iInformation)
+{
+  const PDyBtMeshInstanceMetaInfo& info = iInformation.GetMeshInformationList();
+  { // Set flag and count for mesh geometry information & index count.
+    const auto indiceSize = static_cast<TU32>(info.mIndiceBuffer.size());
+    if (indiceSize == 0)  { this->mMeshFlagInformation.mIsNotHaveIndices = true; }
+    else                  { this->mMeshFlagInformation.mIndiceCount = indiceSize; }
   }
 
   if (this->mMeshFlagInformation.mIsNotHaveIndices == false)

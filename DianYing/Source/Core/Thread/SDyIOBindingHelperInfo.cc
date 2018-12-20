@@ -21,7 +21,7 @@ namespace dy
 {
 
 MDY_NODISCARD EDySuccess
-SDyIOBindingHelper::MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation)
+SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryRequireInformation)
 (_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder)
 {
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
@@ -43,10 +43,10 @@ SDyIOBindingHelper::MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation)
 }
 
 MDY_NODISCARD std::optional<const __TDyRscInfo_T<EDyResourceType::GLShader>*>
-SDyIOBindingHelper::MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_GLShader)
+SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryRequireInformation_GLShader)
 (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder)
 {
-  if (const auto checkFlag = MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation)(iSpecifier, EDyResourceType::GLShader, iPtrBinder);
+  if (const auto checkFlag = MDY_PRIVATE_SPECIFIER(pTryRequireInformation)(iSpecifier, EDyResourceType::GLShader, iPtrBinder);
       checkFlag == DY_FAILURE) { return std::nullopt; }
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
@@ -56,10 +56,10 @@ SDyIOBindingHelper::MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_GLShader)
 }
 
 MDY_NODISCARD std::optional<const __TDyRscInfo_T<EDyResourceType::Texture>*>
-SDyIOBindingHelper::MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Texture)
+SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryRequireInformation_Texture)
 (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder)
 {
-  if (const auto checkFlag = MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation)(iSpecifier, EDyResourceType::Texture, iPtrBinder);
+  if (const auto checkFlag = MDY_PRIVATE_SPECIFIER(pTryRequireInformation)(iSpecifier, EDyResourceType::Texture, iPtrBinder);
       checkFlag == DY_FAILURE) { return std::nullopt; }
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
@@ -69,10 +69,10 @@ SDyIOBindingHelper::MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Texture)
 }
 
 MDY_NODISCARD std::optional<const __TDyRscInfo_T<EDyResourceType::GLAttachment>*>
-SDyIOBindingHelper::MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Attachment)
+SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryRequireInformation_Attachment)
 (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder)
 {
-  if (const auto checkFlag = MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation)(iSpecifier, EDyResourceType::GLAttachment, iPtrBinder);
+  if (const auto checkFlag = MDY_PRIVATE_SPECIFIER(pTryRequireInformation)(iSpecifier, EDyResourceType::GLAttachment, iPtrBinder);
       checkFlag == DY_FAILURE) { return std::nullopt; }
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
@@ -82,10 +82,10 @@ SDyIOBindingHelper::MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Attachment
 }
 
 MDY_NODISCARD std::optional<const __TDyRscInfo_T<EDyResourceType::GLFrameBuffer>*>
-SDyIOBindingHelper::MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_GLFrameBuffer)
+SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryRequireInformation_GLFrameBuffer)
 (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder)
 {
-  if (const auto checkFlag = MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation)(iSpecifier, EDyResourceType::GLFrameBuffer, iPtrBinder);
+  if (const auto checkFlag = MDY_PRIVATE_SPECIFIER(pTryRequireInformation)(iSpecifier, EDyResourceType::GLFrameBuffer, iPtrBinder);
       checkFlag == DY_FAILURE) { return std::nullopt; }
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
@@ -95,10 +95,10 @@ SDyIOBindingHelper::MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_GLFrameBuf
 }
 
 MDY_NODISCARD std::optional<const __TDyRscInfo_T<EDyResourceType::Material>*>
-SDyIOBindingHelper::MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Material)
+SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryRequireInformation_Material)
 (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder)
 {
-  if (const auto checkFlag = MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation)(iSpecifier, EDyResourceType::Material, iPtrBinder);
+  if (const auto checkFlag = MDY_PRIVATE_SPECIFIER(pTryRequireInformation)(iSpecifier, EDyResourceType::Material, iPtrBinder);
       checkFlag == DY_FAILURE) { return std::nullopt; }
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
@@ -108,10 +108,10 @@ SDyIOBindingHelper::MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Material)
 }
 
 MDY_NODISCARD std::optional<const __TDyRscInfo_T<EDyResourceType::Mesh>*>
-SDyIOBindingHelper::MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Mesh)
+SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryRequireInformation_Mesh)
 (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder)
 {
-  if (const auto checkFlag = MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation)(iSpecifier, EDyResourceType::Mesh, iPtrBinder);
+  if (const auto checkFlag = MDY_PRIVATE_SPECIFIER(pTryRequireInformation)(iSpecifier, EDyResourceType::Mesh, iPtrBinder);
       checkFlag == DY_FAILURE) { return std::nullopt; }
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
@@ -121,10 +121,10 @@ SDyIOBindingHelper::MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Mesh)
 }
 
 MDY_NODISCARD std::optional<const __TDyRscInfo_T<EDyResourceType::Model>*>
-SDyIOBindingHelper::MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation_Model)
+SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryRequireInformation_Model)
 (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder)
 {
-  if (const auto checkFlag = MDY_PRIVATE_FUNC_SPECIFIER(pTryRequireInformation)(iSpecifier, EDyResourceType::Model, iPtrBinder);
+  if (const auto checkFlag = MDY_PRIVATE_SPECIFIER(pTryRequireInformation)(iSpecifier, EDyResourceType::Model, iPtrBinder);
       checkFlag == DY_FAILURE) { return std::nullopt; }
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
