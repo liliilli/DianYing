@@ -229,6 +229,7 @@
     <ClCompile Include="Source\Builtin\Mesh\FDyBtMsUiFontQuad.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyMeshInformation.cc" />
     <ClCompile Include="Source\Builtin\Model\UiFontQuad.cc" />
+    <ClCompile Include="Source\Management\Type\Time\DDyTimepoint.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -586,6 +587,10 @@
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyMeshInformation.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Mesh\DDyGLVaoBindInformation.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLVaoBindDescriptor.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Time\EDyTimeType.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Time\DDyTimepoint.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Time\EDyTimeDay.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Time\EDyTimeDST.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

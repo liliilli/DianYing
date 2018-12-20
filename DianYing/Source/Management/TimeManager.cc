@@ -59,6 +59,16 @@ TF32 MDyTime::GetGameTimeScaleValue() const noexcept
   return this->mGameTimeScale;
 }
 
+TF32 MDyTime::GetSteadyDeltaTimeValue() const noexcept
+{
+  return this->mSteadyDeltaTime;
+}
+
+TF32 MDyTime::GetSteadyElapsedTimeValue() const noexcept
+{
+  return this->mSteadyElapsedTimeFromStartup;
+}
+
 EDySuccess MDyTime::SetGameTimeScale(_MIN_ const TF32 timeScale) noexcept
 {
   if (timeScale <= 0.f)
@@ -73,6 +83,12 @@ EDySuccess MDyTime::SetGameTimeScale(_MIN_ const TF32 timeScale) noexcept
     MDY_LOG_INFO_D("{} | MDyTime::mGameTimeScale : {}.", "MDyTime::SetGameTimeScale", this->mGameTimeScale);
     return DY_SUCCESS;
   }
+}
+
+MDY_NOTUSED DDyTimepoint MDyTime::GetCalendarTime() const noexcept
+{
+  auto cTime = std::time(nullptr);
+  return DDyTimepoint(*std::localtime(&cTime));
 }
 
 void MDyTime::pUpdate() noexcept

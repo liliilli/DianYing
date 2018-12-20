@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
+#include <Dy/Management/Type/Time/DDyTimepoint.h>
 
 namespace dy
 {
@@ -28,53 +29,31 @@ class MDyTime final : public IDySingleton<MDyTime>
   MDY_SINGLETON_DERIVED(MDyTime);
   MDY_SINGLETON_PROPERTIES(MDyTime);
 public:
-  ///
-  /// @brief  Check that frame is ticked.
+  /// @brief  Check that frame is ticked. \n
   /// If frame is turned to the next frame and everything is ok, return DySuccess or DyFailure.
-  ///
   MDY_NODISCARD EDySuccess IsGameFrameTicked() const noexcept;
 
-  ///
   /// @brief  Return present frame per second.
-  ///
   MDY_NODISCARD TI32 GetPresentFpsCountValue() const noexcept;
 
-  ///
-  /// @brief  Get just delta time.
+  /// @brief  Get just delta time. \n
   /// Format is integer part is seconds, and point part is millisecond region.
-  ///
   /// @return Float value delta time value.
-  ///
   MDY_NODISCARD TF32 GetGameScaledTickedDeltaTimeValue() const noexcept;
 
-  ///
-  /// @brief  Get summed delta time from previous function call.
+  /// @brief  Get summed delta time from previous function call. \n
   /// Format is integer part is seconds, and point part is millisecond region.
-  ///
   /// @return Float value delta time value.
-  ///
   MDY_NODISCARD TF32 GetGameScaledElapsedTimeValue() const noexcept;
 
-  ///
   /// @brief  Get time scale value.
-  ///
   MDY_NODISCARD TF32 GetGameTimeScaleValue() const noexcept;
 
-  ///
   /// @brief  Get steady (not-scaled) delta time value.
-  ///
-  MDY_NODISCARD FORCEINLINE TF32 GetSteadyDeltaTimeValue() const noexcept
-  {
-    return this->mSteadyDeltaTime;
-  }
+  MDY_NODISCARD TF32 GetSteadyDeltaTimeValue() const noexcept;
 
-  ///
   /// @brief Get steady (not-scaled) elapsed time value.
-  ///
-  MDY_NODISCARD FORCEINLINE TF32 GetSteadyElapsedTimeValue() const noexcept
-  {
-    return this->mSteadyElapsedTimeFromStartup;
-  }
+  MDY_NODISCARD TF32 GetSteadyElapsedTimeValue() const noexcept;
 
   ///
   /// @brief Set game time scale. This will affect game logic speed, timer,
@@ -83,15 +62,14 @@ public:
   ///
   MDY_NOTUSED EDySuccess SetGameTimeScale(_MIN_ const TF32 timeScale) noexcept;
 
+  /// @brief Get calendar time.
+  MDY_NOTUSED DDyTimepoint GetCalendarTime() const noexcept;
+
 private:
-  ///
   /// @brief Update game time fragment sequence.
-  ///
   void pUpdate() noexcept;
 
-  ///
   /// @brief set vsync mode.
-  ///
   void pfSetVsync(_MIN_ bool isVsyncEnabled) noexcept;
 
   TF32 mSteadyDeltaTime                 = 0.0f;
