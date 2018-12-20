@@ -42,6 +42,9 @@ public:
   FDyMeshResource(_MINOUT_ FDyMeshVBOIntermediate& intermediateInstance);
   ~FDyMeshResource();
 
+  /// @brief Get mesh specifier name.
+  MDY_NODISCARD const std::string& GetSpecifierName() const noexcept;
+
   /// @brief Check whether indice (element) vertexes are binded, so be able to element drawing.
   MDY_NODISCARD bool IsEnabledIndices() const noexcept;
 
@@ -55,8 +58,9 @@ public:
   MDY_NODISCARD TU32 GetIndicesCounts() const noexcept;
 
 private:
-  DDyGlBufferIdInformation        mBufferIdInformation     = {};
-  DDySubmeshFlagInformation       mMeshFlagInformation     = {};
+  std::string               mSpecifierName        = MDY_INITIALIZE_EMPTYSTR;
+  DDyGlBufferIdInformation  mBufferIdInformation  = {};
+  DDySubmeshFlagInformation mMeshFlagInformation  = {};
 };
 
 } /// ::dy namespace

@@ -21,7 +21,8 @@
 namespace dy
 {
 
-FDyMeshResource::FDyMeshResource(_MINOUT_ FDyMeshVBOIntermediate& intermediateInstance)
+FDyMeshResource::FDyMeshResource(_MINOUT_ FDyMeshVBOIntermediate& intermediateInstance) :
+    mSpecifierName{ intermediateInstance.GetSpecifierName() }
 {
   this->mBufferIdInformation = intermediateInstance.GetBufferIdInfo();
   this->mMeshFlagInformation = intermediateInstance.GetMeshFlagInfo();
@@ -41,6 +42,12 @@ FDyMeshResource::FDyMeshResource(_MINOUT_ FDyMeshVBOIntermediate& intermediateIn
 FDyMeshResource::~FDyMeshResource()
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
+}
+
+const std::string & FDyMeshResource::GetSpecifierName() const noexcept
+{
+  MDY_ASSERT(this->mSpecifierName.empty() == false, "Mesh specifier name must be valid.");
+  return this->mSpecifierName;
 }
 
 bool FDyMeshResource::IsEnabledIndices() const noexcept

@@ -211,7 +211,10 @@ EDySuccess TDyIO::outTryEnqueueTask(
 
   // If this is model & resource task, change `mResourceType` to `__ModelVBO` as intermediate task.
   // Because VAO can not be created and shared from other thread not main thread.
-  if (task.mResourceType == EDyResourceType::Model && task.mResourcecStyle == EDyResourceStyle::Resource) { task.mResourceType = EDyResourceType::__ModelVBO; }
+  if (task.mResourceType == EDyResourceType::Model 
+   && task.mResourcecStyle == EDyResourceStyle::Resource) { task.mResourceType = EDyResourceType::__ModelVBO; }
+  if (task.mResourceType == EDyResourceType::Mesh  
+   && task.mResourcecStyle == EDyResourceStyle::Resource) { task.mResourceType = EDyResourceType::__MeshVBO; }
 
   // Make deferred task and forward deferred task to list (atomic)
   if (conditionList.empty() == false) { this->outInsertDeferredTaskList({task, conditionList}); }
@@ -437,6 +440,13 @@ DDyIOWorkerResult TDyIO::outMainProcessTask(_MIN_ const DDyIOTask& task)
   case EDyResourceType::GLShader:
   { // Need to move it as independent function.
     const auto instance = new FDyShaderResource(*infoManager.GetPtrInformation<EDyResourceType::GLShader>(result.mSpecifierName));
+    result.mSmtPtrResultInstance = instance;
+  } break;
+  case EDyResourceType::Mesh:
+  { // Get intermediate instance from task, and make mesh resource.
+    Owner<FDyMeshVBOIntermediate*> ptrrawIntermediateInstance = static_cast<FDyMeshVBOIntermediate*>(task.mRawInstanceForUsingLater);
+    const auto instance = new FDyMeshResource(*ptrrawIntermediateInstance);
+    MDY_DELETE_RAWHEAP_SAFELY(ptrrawIntermediateInstance);
     result.mSmtPtrResultInstance = instance;
   } break;
   case EDyResourceType::Model:

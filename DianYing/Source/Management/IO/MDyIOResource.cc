@@ -43,6 +43,11 @@ void MDyIOResource::InsertResult(_MIN_ EDyResourceType type, _MIN_ void* ptrrawI
     auto ptr = std::unique_ptr<FDyTextureResource>(static_cast<FDyTextureResource*>(ptrrawInstance));
     this->__mTextureContainer.MoveInsert(ptr->GetSpecifierName(), std::move(ptr));
   } break;
+  case EDyResourceType::Mesh:
+  {
+    auto ptr = std::unique_ptr<FDyMeshResource>(static_cast<FDyMeshResource*>(ptrrawInstance));
+    this->__mMeshContainer.MoveInsert(ptr->GetSpecifierName(), std::move(ptr));
+  } break;
   case EDyResourceType::Model:
   {
     auto ptr = std::unique_ptr<FDyModelResource>(static_cast<FDyModelResource*>(ptrrawInstance));

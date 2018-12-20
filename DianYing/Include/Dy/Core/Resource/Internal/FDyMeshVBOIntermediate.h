@@ -22,6 +22,7 @@
 namespace dy
 {
 class DDySubmeshInformation_Deprecated;
+class FDyMeshInformation;
 } /// ::dy namespace
 
 //!
@@ -39,10 +40,14 @@ class FDyMeshVBOIntermediate final
 {
 public:
   FDyMeshVBOIntermediate(_MIN_ const PDySubmeshInformationDescriptor_Deprecated& information);
+  FDyMeshVBOIntermediate(_MIN_ const FDyMeshInformation& information);
   ~FDyMeshVBOIntermediate();
 
   /// @brief Reset all properties not to use this anymore.
   void ResetAllProperties() noexcept;
+
+  /// @brief Get model specifier name.
+  MDY_NODISCARD const std::string& GetSpecifierName() const noexcept;
 
   /// @brief
   MDY_NODISCARD const DDyGlBufferIdInformation& GetBufferIdInfo() const noexcept
@@ -57,6 +62,7 @@ public:
   }
 
 private:
+  std::string               mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
   DDyGlBufferIdInformation  mBufferIdInformation = {};
   DDySubmeshFlagInformation mMeshFlagInformation = {};
 };

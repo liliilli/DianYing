@@ -124,7 +124,7 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceInformation(_MIN_ const DDyIOT
     result.mSmtPtrResultInstance = new FDyTextureInformation(this->mMetaManager.GetTextureMetaInformation(assignedTask.mSpecifierName));
     break;
   case EDyResourceType::Mesh:
-    MDY_NOT_IMPLEMENTED_ASSERT();
+    result.mSmtPtrResultInstance = new FDyMeshInformation(this->mMetaManager.GetBtMeshMetaInformation(assignedTask.mSpecifierName));
     break;
   case EDyResourceType::Model:
     MDY_NOT_IMPLEMENTED_ASSERT();
@@ -164,6 +164,14 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceResource(_MIN_ const DDyIOTask
   case EDyResourceType::Texture:
   { // Texture buffer can be created on another context. (It can be shared)
     result.mSmtPtrResultInstance = new FDyTextureResource(*infoManager.GetPtrInformation<EDyResourceType::Texture>(result.mSpecifierName));
+  } break;
+  case EDyResourceType::__MeshVBO:
+  { // Builtin mesh not be created on another context... so forward it to main thread.
+    //result.mSmtPtrResultInstance = new FDyMeshResource(*infoManager.GetPtrInformation<EDyResourceType::Mesh>(result.mSpecifierName));
+    auto task = assignedTask;
+    task.mResourceType = EDyResourceType::Mesh;
+    task.mRawInstanceForUsingLater = new FDyMeshVBOIntermediate(*infoManager.GetPtrInformation<EDyResourceType::Mesh>(result.mSpecifierName));
+    SDyIOWorkerConnHelper::TryForwardToMainTaskList(task);
   } break;
   case EDyResourceType::__ModelVBO: // THIS IS NOT ::Model value!
   { // VBO, EBO can be created from other context, but VAO should be created on main thread which have main context OpenGL,

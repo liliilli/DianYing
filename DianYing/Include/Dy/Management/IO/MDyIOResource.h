@@ -15,6 +15,7 @@
 
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
 #include <Dy/Core/Resource/Resource/FDyTextureResource.h>
+#include <Dy/Core/Resource/Resource/FDyMeshResource.h>
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
 #include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
 #include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
@@ -55,6 +56,7 @@ public:
   {
     if constexpr (TType == EDyResourceType::GLShader)     { return this->__mShaderContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::Texture) { return this->__mTextureContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EDyResourceType::Mesh)    { return this->__mMeshContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::Model)   { return this->__mModelContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::Material){ return this->__mMaterialContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::GLAttachment)  { return this->__mAttachmentContainer.TryGetInstancePtr(specifier); }
@@ -67,6 +69,7 @@ public:
   {
     if constexpr (TType == EDyResourceType::GLShader)     { return this->__mShaderContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::Texture) { return this->__mTextureContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EDyResourceType::Mesh)    { return this->__mMeshContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::Model)   { return this->__mModelContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::Material) { return this->__mMaterialContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::GLAttachment)  { return this->__mAttachmentContainer.TryGetInstancePtr(specifier); }
@@ -81,10 +84,11 @@ private:
   template <typename TType>
   using __THashMap = DDyMutexUniqueHashMap<std::string, TType>;
 
-  __THashMap<FDyShaderResource>   __mShaderContainer   = {};
-  __THashMap<FDyTextureResource>  __mTextureContainer  = {};
-  __THashMap<FDyModelResource>    __mModelContainer    = {};
-  __THashMap<FDyMaterialResource> __mMaterialContainer = {};
+  __THashMap<FDyShaderResource>   __mShaderContainer    = {};
+  __THashMap<FDyTextureResource>  __mTextureContainer   = {};
+  __THashMap<FDyMeshResource>     __mMeshContainer      = {};
+  __THashMap<FDyModelResource>    __mModelContainer     = {};
+  __THashMap<FDyMaterialResource> __mMaterialContainer  = {};
   __THashMap<FDyAttachmentResource>   __mAttachmentContainer  = {};
   __THashMap<FDyFrameBufferResource>  __mFrameBufferContainer = {};
 

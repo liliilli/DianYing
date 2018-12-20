@@ -74,6 +74,9 @@ public:
   /// @brief  Get shader instance meta information from container.
   /// @return Return value is undefined if not found.
   MDY_NODISCARD const PDyGLShaderInstanceMetaInfo&  GetGLShaderMetaInformation(_MIN_ const std::string& specifier) const;
+  /// @brief  Get builtin mesh instance meta information from container.
+  /// @return Return value is undefined if not found.
+  MDY_NODISCARD const PDyBtMeshInstanceMetaInfo&     GetBtMeshMetaInformation(_MIN_ const std::string& specifier) const;
   /// @brief  Get model instance meta information from container.
   /// @return Return value is undefined if not found.
   MDY_NODISCARD const PDyModelInstanceMetaInfo&     GetModelMetaInformation(_MIN_ const std::string& specifier) const;

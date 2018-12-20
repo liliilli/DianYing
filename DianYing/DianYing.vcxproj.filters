@@ -228,6 +228,7 @@
     <ClCompile Include="Source\Builtin\Mesh\FDyBtMsScrTriangle.cc" />
     <ClCompile Include="Source\Builtin\Mesh\FDyBtMsSphere.cc" />
     <ClCompile Include="Source\Builtin\Mesh\FDyBtMsUiFontQuad.cc" />
+    <ClCompile Include="Source\Core\Resource\Information\FDyMeshInformation.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -584,6 +585,7 @@
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyMeshResource.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoBuiltinMesh.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoModel.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Information\FDyMeshInformation.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

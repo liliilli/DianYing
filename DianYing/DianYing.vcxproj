@@ -198,6 +198,7 @@
     <ClCompile Include="Source\Core\Resource\Information\FDyAttachmentInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyFrameBufferInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyMaterialInformation.cc" />
+    <ClCompile Include="Source\Core\Resource\Information\FDyMeshInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyModelInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyShaderInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyTextureInformation.cc" />
@@ -482,6 +483,7 @@
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyAttachmentInformation.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyFrameBufferInformation.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyMaterialInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Information\FDyMeshInformation.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyModelInformation.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDySoundInformation.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Internal\FDyMeshVBOIntermediate.h" />

@@ -20,6 +20,7 @@
 #include <Dy/Core/Resource/Information/FDyMaterialInformation.h>
 #include <Dy/Core/Resource/Information/FDyAttachmentInformation.h>
 #include <Dy/Core/Resource/Information/FDyFrameBufferInformation.h>
+#include <Dy/Core/Resource/Information/FDyMeshInformation.h>
 #include <Dy/Core/Resource/Type/TemplateRescInfoType.h>
 #include <Dy/Meta/Type/EDyResourceType.h>
 
@@ -53,6 +54,7 @@ public:
   {
     if constexpr (TType == EDyResourceType::GLShader)     { return this->__mShaderContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::Texture) { return this->__mTextureContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EDyResourceType::Mesh)    { return this->__mMeshContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::Model)   { return this->__mModelContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::Material){ return this->__mMaterialContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::GLAttachment)  { return this->__mAttachmentContainer.TryGetInstancePtr(specifier); }
@@ -65,6 +67,7 @@ public:
   {
     if constexpr (TType == EDyResourceType::GLShader)     { return this->__mShaderContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::Texture) { return this->__mTextureContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EDyResourceType::Mesh)    { return this->__mMeshContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::Model)   { return this->__mModelContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::Material){ return this->__mMaterialContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::GLAttachment)  { return this->__mAttachmentContainer.TryGetInstancePtr(specifier); }
@@ -81,6 +84,7 @@ private:
 
   __THashMap<FDyShaderInformation>  __mShaderContainer    = {};
   __THashMap<FDyTextureInformation> __mTextureContainer   = {};
+  __THashMap<FDyMeshInformation>    __mMeshContainer      = {};
   __THashMap<FDyModelInformation>   __mModelContainer     = {};
   __THashMap<FDyMaterialInformation>__mMaterialContainer  = {};
   __THashMap<FDyAttachmentInformation> __mAttachmentContainer   = {};

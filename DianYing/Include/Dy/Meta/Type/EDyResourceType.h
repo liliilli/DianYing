@@ -29,6 +29,7 @@ enum class EDyResourceType
   WidgetMeta,
   Sound,
 
+  __MeshVBO,
   __ModelVBO,
   NoneError
 };
