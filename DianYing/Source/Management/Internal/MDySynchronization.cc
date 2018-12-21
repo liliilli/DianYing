@@ -110,6 +110,7 @@ void MDySynchronization::pRunFrameFirstLoading()
 {
   static auto& settingManager = MDySetting::GetInstance();
   static auto& sceneManager   = MDyWorld::GetInstance();
+  MDY_CALL_ASSERT_SUCCESS(sceneManager.TryCreateDebugUi());
   sceneManager.OpenLevel(settingManager.GetInitialSceneInformationName());
   sceneManager.Update(-1);
   this->mStatus = EDyGlobalGameStatus::Loading;

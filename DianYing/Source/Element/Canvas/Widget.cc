@@ -78,15 +78,8 @@ EDySuccess FDyUiWidget::Initialize(_MIN_ const PDyMetaWidgetRootDescriptor& widg
   return DY_SUCCESS;
 }
 
-void FDyUiWidget::Release()
-{
-  this->mWidgetScript = nullptr;
-}
+void FDyUiWidget::Release() { this->mWidgetScript = nullptr; }
 
-void FDyUiWidget::Render()
-{
-  MDyScript::GetInstance().UpdateWidget(0.0f);
-  FDyUiObjectChildrenable::Render();
-}
+void FDyUiWidget::Render() { FDyUiObjectChildrenable::Render(); }
 
 } /// ::dy namespace

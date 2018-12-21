@@ -180,6 +180,8 @@ FDyWidgetScriptState* MDyScript::CreateWidgetScript(
 
 void MDyScript::TryMoveInsertWidgetScriptToMainContainer()
 {
+  if (this->mInsertWidgetScriptList.empty() == true) { return; }
+
   for (auto& insertWidgetScript : this->mInsertWidgetScriptList)
   { // `insertWidgetScript` is always not empty.
     this->mWidgetScriptList.emplace_back(std::move(insertWidgetScript));

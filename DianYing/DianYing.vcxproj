@@ -334,6 +334,7 @@
     <ClCompile Include="Source\Management\Helper\SDyProfilingHelper.cc" />
     <ClCompile Include="Source\Management\Internal\MDyProfiling.cc" />
     <ClCompile Include="Source\Management\Internal\MDySynchronization.cc" />
+    <ClCompile Include="Source\Management\Internal\World\FDyWorldUIContainer.cc" />
     <ClCompile Include="Source\Management\IO\MDyIOData.cc" />
     <ClCompile Include="Source\Management\IO\MDyIOResource.cc" />
     <ClCompile Include="Source\Management\Type\Input\DDyInputButton.cc" />

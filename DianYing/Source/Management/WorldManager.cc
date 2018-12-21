@@ -190,6 +190,26 @@ FDyLevel& MDyWorld::GetValidLevelReference() noexcept
   return *this->mLevel;
 }
 
+EDySuccess MDyWorld::TryCreateDebugUi()
+{
+  return this->mUiInstanceContainer.TryCreateDebugUi();
+}
+
+bool MDyWorld::IsDebugUiExist() const noexcept
+{
+  return this->mUiInstanceContainer.IsDebugUiExist();
+}
+
+EDySuccess MDyWorld::TryRemoveDebugUi()
+{
+  return this->mUiInstanceContainer.TryRemoveDebugUi();
+}
+
+void MDyWorld::TryRenderDebugUi()
+{
+  this->mUiInstanceContainer.TryRenderDebugUi();
+}
+
 void MDyWorld::pfBindFocusCamera(_MIN_ CDyLegacyCamera& validCameraPtr) noexcept
 {
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(&validCameraPtr), "validCameraPtr must be valid, not nullptr.");

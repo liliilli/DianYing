@@ -234,6 +234,7 @@
     <ClCompile Include="Source\Management\Helper\SDyProfilingHelper.cc" />
     <ClCompile Include="Source\Component\Internal\Script\FDyWidgetScriptStatus.cc" />
     <ClCompile Include="Source\Component\UI\CDyWidgetScript.cc" />
+    <ClCompile Include="Source\Management\Internal\World\FDyWorldUIContainer.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />

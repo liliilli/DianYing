@@ -110,6 +110,9 @@ void DyEngine::pUpdate(_MIN_ TF32 dt)
     editor::MDyEditorGui::GetInstance().Update(dt);
   #endif // MDY_FLAG_IN_EDITOR
 
+  MDyScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
+  MDyScript::GetInstance().UpdateWidget(dt);
+
   //
   MDyPhysics::GetInstance().Update(dt);
   //

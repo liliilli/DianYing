@@ -14,36 +14,10 @@
 
 /// Header file
 #include <Dy/Core/Rendering/Pipeline/UIBasicRenderer.h>
-
-#include <Dy/Builtin/ShaderGl/Font/RenderDefaultFont.h>
 #include <Dy/Core/Rendering/Helper/FrameAttachmentString.h>
-#include <Dy/Element/Canvas/Text.h>
-#include <Dy/Meta/Descriptor/WidgetTextMetaInformation.h>
-#include <Dy/Management/SettingManager.h>
-#include <Dy/Management/Rendering/FramebufferManager.h>
-#include <Dy/Management/FontManager.h>
-
-#include <Dy/Element/Canvas/Widget.h>
-#include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
-
-//!
-//! Local translation unit data
-//!
-
-namespace
-{
-
-dy::CDyShaderResource_Deprecated* sSampleShaderPtr = nullptr;
-
-dy::PDyMetaWidgetTextDescriptor desc{};
-std::unique_ptr<dy::FDyUiWidget> testWidget = nullptr;
-
-} /// ::unnamed namespace
-
-//!
-//! Implementation
-//!
+#include <Dy/Management/FontManager.h>
+#include <Dy/Management/WorldManager.h>
 
 namespace dy
 {
@@ -61,16 +35,10 @@ FDyUIBasicRenderer::~FDyUIBasicRenderer()
 
 void FDyUIBasicRenderer::RenderScreen()
 {
-  static bool f = false;
-  if (f == false)
-  {
-    testWidget = std::make_unique<FDyUiWidget>();
-    MDY_CALL_ASSERT_SUCCESS(testWidget->Initialize(MDyMetaInfo::GetInstance().GetWidgetMetaInformation("DebugUi")));
-    f = !f;
-  }
-
   glBindFramebuffer(GL_FRAMEBUFFER, this->mBinderFrameBuffer->GetFrameBufferId());
-  testWidget->Render();
+
+  MDyWorld::GetInstance().TryRenderDebugUi();
+
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
