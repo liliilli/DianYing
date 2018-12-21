@@ -128,13 +128,6 @@ public:
   void Render() override final;
 
   ///
-  /// @brief Align final position of widget from parent information.
-  /// @param parentFinalPosition  Final position of parent.
-  /// @param parentFrameSize      Frame size of parent.
-  ///
-  void AlignFinalPosition(const DDyVector2& parentFinalPosition, const DDyVectorInt2& parentFrameSize) override final;
-
-  ///
   /// @brief
   /// @return
   /// @TODO NOT IMPLEMENTED YET
@@ -154,8 +147,6 @@ private:
     MDY_TRANSIENT TF32 mPercentage = 0.0f;
   };
 
-  /// Origin basis to parent.
-  EDyOrigin         mOrigin           = EDyOrigin::Center_Center;
   /// Foreground (bar) color
   DDyColorRGBA      mForegroundColor  = DDyColorRGBA::White;
   /// Bar region background color, `mIsUsingBackgroundColor` must be checked true for using.

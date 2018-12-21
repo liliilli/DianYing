@@ -42,22 +42,23 @@ public:
   FDyUiObjectChildrenable() = default;
   virtual ~FDyUiObjectChildrenable() = default;
 
-  ///
   /// @brief Set central position of widget.
   /// @param position Position value.
-  ///
-  void SetWidgetCentralPosition(_MIN_ const DDyVector2& position) noexcept override;
-
-  ///
+  void SetRelativePosition(_MIN_ const DDyVector2& position) noexcept override final;
   /// @brief Set frame size of widget.
   /// @param size Frame size. Must be full size, not half size.
-  ///
-  void SetWidgetFrameSize(_MIN_ const DDyVectorInt2& size) noexcept override final;
+  void SetFrameSize(_MIN_ const DDyVectorInt2& size) noexcept override final;
+  /// @brief Set origin axis value.
+  void SetOrigin(_MIN_ EDyOrigin iOrigin) noexcept override final;
+  /// @brief Set fibot axis value. 
+  void SetFibot(_MIN_ EDyOrigin iOrigin) noexcept override final;
 
-  ///
-  /// @brief Propagate information to children.
-  ///
-  void PropagateInformationToChildren();
+  /// @brief Set propagation mode.
+  void SetPropagateMode(_MIN_ bool isEnabled, _MIN_ EDySearchMode mode);
+  /// @brief Propagate information to children. If `CheckIsPropagable` is not true, do nothing.
+  void TryPropagatePositionToChildren();
+  /// @brief Check this widget is propagable position to children.
+  MDY_NODISCARD bool CheckIsPropagable() const noexcept;
 
   ///
   /// @TODO IMPLEMENT THIS & AUTOMATIC SPECIFIER NAME CREATION.
@@ -101,10 +102,10 @@ public:
   void Render() override;
 
 private:
-  /// @brief Ui object list.
-  std::vector<std::unique_ptr<FDyUiObject>> mUiObjectList = {};
-  bool mIsPositionChanged   = false;
-  bool mIsFrameSizeChanged  = false;
+  std::vector<std::unique_ptr<FDyUiObject>>             mUiObjectList = {};
+  std::vector<std::unique_ptr<FDyUiObjectChildrenable>> mUiChildrenableObjectList = {};
+
+  bool mIsCanPropagatePosition = false;
 };
 
 } /// ::dy namespace

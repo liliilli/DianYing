@@ -15,28 +15,93 @@
 /// Header file
 #include <Dy/Element/Canvas/UiObject.h>
 #include <Dy/Meta/Type/EDyWidgetTypes.h>
+#include <Dy/Element/Canvas/UiObjectChildrenable.h>
 
 namespace dy
 {
 
-void FDyUiObject::SetWidgetCentralPosition(_MIN_ const DDyVector2& position) noexcept
+void FDyUiObject::SetParentUiObject(_MIN_ FDyUiObjectChildrenable& parent) noexcept
 {
-  this->mCentralPosition = position;
+  this->mPtrParentUiObject = &parent;
+  this->UpdateFinalPosition();
 }
 
-void FDyUiObject::SetWidgetFrameSize(_MIN_ const DDyVectorInt2& size) noexcept
+bool FDyUiObject::CheckIsParentExist() const noexcept
 {
-  if (size.X > 0 && size.Y > 0) { this->mWidgetSize = size; }
+  return MDY_CHECK_ISNOTNULL(this->mPtrParentUiObject);
 }
 
-DDyVectorInt2 FDyUiObject::GetFrameSize() const noexcept
+const FDyUiObjectChildrenable* FDyUiObject::GetPtrParentUiObject() const noexcept
 {
-  return this->mWidgetSize;
+  return this->mPtrParentUiObject;  
 }
 
-DDyVector2 FDyUiObject::GetWidgetPosition(const EDyOrigin& origin) const noexcept
+void FDyUiObject::SetRelativePosition(_MIN_ const DDyVector2& position) noexcept
 {
-  return DyGetPositionWithOrigin(this->mCentralPosition, this->mWidgetSize, origin);
+  this->mCentralRelativePosition = position;
+  this->UpdateFinalPosition();
+}
+
+void FDyUiObject::SetFrameSize(_MIN_ const DDyVectorInt2& size) noexcept
+{
+  if (size.X > 0 && size.Y > 0) { this->mFrameSize = size; }
+  this->UpdateFinalPosition();
+}
+
+const DDyVectorInt2& FDyUiObject::GetFrameSize() const noexcept
+{
+  return this->mFrameSize;
+}
+
+void FDyUiObject::SetOrigin(_MIN_ EDyOrigin iOrigin) noexcept
+{
+  this->mOrigin = iOrigin;
+  this->UpdateFinalPosition();
+}
+
+EDyOrigin FDyUiObject::GetOrigin() const noexcept 
+{
+  return this->mOrigin; 
+}
+
+void FDyUiObject::SetFibot(_MIN_ EDyOrigin iFibot) noexcept
+{
+  this->mFibot = iFibot;
+  this->UpdateFinalPosition();
+}
+
+EDyOrigin FDyUiObject::GetFibot() const noexcept  
+{ 
+  return this->mFibot; 
+}
+
+void FDyUiObject::UpdateFinalPosition()
+{
+  DDyVector2 mParentFinalPosition = {};
+  if (this->CheckIsParentExist() == true)
+  { // If parent is exist, retrieve values.
+    const auto* ptrParent = this->GetPtrParentUiObject();
+    MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptrParent), "Parent must be valid.");
+    mParentFinalPosition   = ptrParent->GetFinalPosition(this->GetOrigin());
+  }
+
+  this->mCentralFinalPosition = mParentFinalPosition + this->GetRelativePosition(this->GetFibot());
+}
+
+const std::string& FDyUiObject::GetUiObjectName() const noexcept
+{
+  MDY_ASSERT(this->pGetObjectName().empty() == false, "Unexpected error occurred.");
+  return this->pGetObjectName();
+}
+
+DDyVector2 FDyUiObject::GetRelativePosition(const EDyOrigin& origin) const noexcept
+{
+  return DyGetPositionWithOrigin(this->mCentralRelativePosition, this->mFrameSize, origin);
+}
+
+DDyVector2 FDyUiObject::GetFinalPosition(const EDyOrigin& origin) const noexcept
+{
+  return DyGetPositionWithOrigin(this->mCentralFinalPosition, this->mFrameSize, origin);
 }
 
 } /// ::dy namespace

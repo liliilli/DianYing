@@ -30,9 +30,9 @@ EDySuccess FDyBasicGaugeBar::Initialize(const PDyMetaWidgetBarDescriptor& object
   this->mValues.mMin            = objectMetaDesc.mMin;
   this->mValues.mMax            = objectMetaDesc.mMax;
 
-  this->SetWidgetCentralPosition(objectMetaDesc.mInitialPosition);
-  this->SetWidgetFrameSize      (objectMetaDesc.mWidgetSize);
-  this->mOrigin                 = objectMetaDesc.mOrigin;
+  this->SetRelativePosition(objectMetaDesc.mInitialPosition);
+  this->SetFrameSize(objectMetaDesc.mWidgetSize);
+  this->SetOrigin(objectMetaDesc.mOrigin);
 
   // Initialize FontRenderer.
   PDyBasicGaugeBarRendererCtorInformation desc = {};
@@ -100,19 +100,12 @@ void FDyBasicGaugeBar::Render()
 
 const DDyVector2& FDyBasicGaugeBar::GetRenderPosition() const noexcept
 {
-  return this->mFinalCentralPosition;
+  return this->mCentralFinalPosition;
 }
 
 const TI32 FDyBasicGaugeBar::GetPadding() const noexcept
 {
   return this->mPadding;
-}
-
-void FDyBasicGaugeBar::AlignFinalPosition(_MIN_ const DDyVector2& parentFinalPosition, _MIN_ const DDyVectorInt2& parentFrameSize)
-{
-  this->mFinalCentralPosition =
-    DyGetPositionWithOrigin(parentFinalPosition, parentFrameSize, this->mOrigin)
-    + this->GetWidgetPosition(EDyOrigin::Center_Center);
 }
 
 std::string FDyBasicGaugeBar::ToString()

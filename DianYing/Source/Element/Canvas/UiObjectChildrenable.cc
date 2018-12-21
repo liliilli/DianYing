@@ -29,37 +29,65 @@ void FDyUiObjectChildrenable::Render()
   }
 }
 
-void FDyUiObjectChildrenable::SetWidgetCentralPosition(const DDyVector2& position) noexcept
+void FDyUiObjectChildrenable::SetRelativePosition(_MIN_ const DDyVector2& position) noexcept
 {
-  FDyUiObject::SetWidgetCentralPosition(position);
-  this->mIsPositionChanged = true;
+  FDyUiObject::SetRelativePosition(position);
+  if (this->CheckIsPropagable() == true) { this->TryPropagatePositionToChildren(); }
 }
 
-void FDyUiObjectChildrenable::SetWidgetFrameSize(const DDyVectorInt2& size) noexcept
+void FDyUiObjectChildrenable::SetFrameSize(_MIN_ const DDyVectorInt2& size) noexcept
 {
-  FDyUiObject::SetWidgetFrameSize(size);
-  this->mIsFrameSizeChanged = true;
+  FDyUiObject::SetFrameSize(size);
+  if (this->CheckIsPropagable() == true) { this->TryPropagatePositionToChildren(); }
 }
 
-void FDyUiObjectChildrenable::PropagateInformationToChildren()
+void FDyUiObjectChildrenable::SetOrigin(_MIN_ EDyOrigin iOrigin) noexcept
 {
-  // Align children's position.
-  if (this->mIsPositionChanged == true || this->mIsFrameSizeChanged == true)
+  FDyUiObject::SetOrigin(iOrigin);
+  if (this->CheckIsPropagable() == true) { this->TryPropagatePositionToChildren(); }
+}
+
+void FDyUiObjectChildrenable::SetFibot(EDyOrigin iOrigin) noexcept
+{
+  FDyUiObject::SetFibot(iOrigin);
+  if (this->CheckIsPropagable() == true) { this->TryPropagatePositionToChildren(); }
+}
+
+bool FDyUiObjectChildrenable::CheckIsPropagable() const noexcept
+{
+  return this->mIsCanPropagatePosition;
+}
+
+void FDyUiObjectChildrenable::SetPropagateMode(_MIN_ bool isEnabled, _MIN_ EDySearchMode mode)
+{
+  this->mIsCanPropagatePosition = isEnabled;
+  if (mode == EDySearchMode::Recursive)
   {
-    for (auto& children : this->mUiObjectList)
+    for (auto& ptrsmtChildrenableObject : this->mUiChildrenableObjectList)
     {
-      if (MDY_CHECK_ISEMPTY(children)) { continue; }
-      children->AlignFinalPosition(this->mFinalCentralPosition, this->GetFrameSize());
+      if (MDY_CHECK_ISEMPTY(ptrsmtChildrenableObject)) { continue; }
+      ptrsmtChildrenableObject->SetPropagateMode(isEnabled, mode);
     }
-
-    // And align Chidlrenable ui object's position using recursion.
-    // @TODO NOT IMPLEMENTD YET.
-    this->mIsFrameSizeChanged = false;
-    this->mIsPositionChanged  = false;
   }
 }
 
-FDyUiObject* FDyUiObjectChildrenable::GetUiObject(const std::string& objectName, EDySearchMode searchMode)
+void FDyUiObjectChildrenable::TryPropagatePositionToChildren()
+{
+  if (this->CheckIsPropagable() == false)   { return; }
+  for (auto& ptrsmtUiReafObject : this->mUiObjectList)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtUiReafObject)) { continue; }
+    ptrsmtUiReafObject->UpdateFinalPosition();
+  }
+
+  for (auto& ptrsmtUiSpawnableObject : this->mUiChildrenableObjectList)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtUiSpawnableObject)) { continue; }
+    ptrsmtUiSpawnableObject->TryPropagatePositionToChildren();
+  }
+}
+
+FDyUiObject* FDyUiObjectChildrenable::GetUiObject(_MIN_ const std::string& objectName, _MIN_ EDySearchMode searchMode)
 {
   if (searchMode == EDySearchMode::Default)
   {

@@ -30,8 +30,8 @@ namespace dy
 void FDyBuiltinDebugUiScript::Initiate()
 {
   FDyText* text = this->GetWidgetReference().GetUiObject<FDyText>("DebugTestText");
-  auto position = text->GetWidgetPosition(EDyOrigin::Center_Center);
-  text->SetWidgetCentralPosition(position);
+  auto position = text->GetRelativePosition(EDyOrigin::Center_Center);
+  text->SetRelativePosition(position);
   //text->SetFontSize(12);
 }
 

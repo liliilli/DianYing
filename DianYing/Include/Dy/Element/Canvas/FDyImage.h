@@ -47,19 +47,7 @@ public:
   ///
   MDY_NODISCARD void Release() override;
 
-  ///
-  ///
-  ///
-  void AlignFinalPosition(const DDyVector2& parentFinalPosition, const DDyVectorInt2& parentFrameSize) override final;
-
-  ///
-  ///
-  ///
   std::string ToString() override final;
-
-  ///
-  ///
-  ///
   void Render() override final;
 
 private:

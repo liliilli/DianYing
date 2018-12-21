@@ -62,8 +62,8 @@ EDySuccess FDyUiWidget::Initialize(_MIN_ const PDyMetaWidgetRootDescriptor& widg
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   // (1) Get position and frame size from meta.
-  this->SetWidgetFrameSize      ({ 1280, 720 });
-  this->SetWidgetCentralPosition({ 640, 360 });
+  this->SetFrameSize      ({ 1280, 720 });
+  this->SetRelativePosition({ 640, 360 });
 
   // (2) Create UI objects.
   for (const auto& [specifier, objectMetaInfoPair] : widgetMetaDesc.mChildComponentList)
@@ -98,7 +98,8 @@ EDySuccess FDyUiWidget::Initialize(_MIN_ const PDyMetaWidgetRootDescriptor& widg
   }
 
   // (4) Propagate position and frame size to children.
-  this->PropagateInformationToChildren();
+  this->SetPropagateMode(true, EDySearchMode::Recursive);
+  this->TryPropagatePositionToChildren();
 
   return DY_SUCCESS;
 }
@@ -106,18 +107,6 @@ EDySuccess FDyUiWidget::Initialize(_MIN_ const PDyMetaWidgetRootDescriptor& widg
 void FDyUiWidget::Release()
 {
   this->mWidgetScript = nullptr;
-}
-
-void FDyUiWidget::SetWidgetCentralPosition(const DDyVector2& position) noexcept
-{
-  FDyUiObjectChildrenable::SetWidgetCentralPosition(position);
-  this->mFinalCentralPosition = this->GetWidgetPosition(EDyOrigin::Center_Center);
-}
-
-void FDyUiWidget::AlignFinalPosition(const DDyVector2& parentFinalPosition, const DDyVectorInt2& parentFrameSize)
-{
-  // Does not called yet!
-  MDY_NOT_IMPLEMENTED_ASSERT();
 }
 
 void FDyUiWidget::Render()

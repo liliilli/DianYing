@@ -44,7 +44,7 @@ struct PDyMetaWidgetBarDescriptor final : public PDyMetaWidgetCommonBaseDesc
   TF32          mMin              = MDY_INITIALIZE_DEFINT;
   /// Max of bar gauge.
   TF32          mMax              = MDY_INITIALIZE_DEFINT;
-  /// Padding from `mWidgetSize` for displaying foreground region.
+  /// Padding from `mFrameSize` for displaying foreground region.
   TI32          mPadding          = MDY_INITIALIZE_DEFINT;
 
   ///

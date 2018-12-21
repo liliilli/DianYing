@@ -16,6 +16,7 @@
 #include <Dy/Element/RenderableObject.h>
 #include <Dy/Helper/Type/Vector2.h>
 #include <Dy/Helper/Type/VectorInt2.h>
+#include <Dy/Meta/Type/EDyWidgetTypes.h>
 
 //!
 //! Forward declaration
@@ -23,7 +24,6 @@
 
 namespace dy
 {
-enum class EDyOrigin;
 class FDyUiObjectChildrenable;
 } /// ::dy namespace
 
@@ -48,64 +48,54 @@ public:
   MDY_SET_TYPEMATCH_FUNCTION(FDyRenderableObject, FDyUiObject);
   MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(FDyUiObject)
 
-  ///
   /// @brief Set pointer of parent ui object which is able to have children.
-  /// @param parent
-  ///
-  void SetParentUiObject(_MIN_ FDyUiObjectChildrenable& parent)
-  {
-    this->mParentUiObject = &parent;
-  }
+  void SetParentUiObject(_MIN_ FDyUiObjectChildrenable& parent) noexcept;
+  /// @brief Check parent is exist on this UI object.
+  MDY_NODISCARD bool CheckIsParentExist() const noexcept;
+  /// @brief Get pointer of parent ui object as pointer.
+  MDY_NODISCARD const FDyUiObjectChildrenable* GetPtrParentUiObject() const noexcept;
 
-  ///
   /// @brief Set central position of widget.
   /// @param position Position value.
-  ///
-  virtual void SetWidgetCentralPosition(_MIN_ const DDyVector2& position) noexcept;
-
-  ///
-  /// @brief  Get widget position following origin anchor input (not final position)
-  /// @param  origin Anchor.
+  virtual void SetRelativePosition(_MIN_ const DDyVector2& position) noexcept;
+  /// @brief Get widget relative position following origin anchor input (not final position)
   /// @return widget position from parent.
-  ///
-  MDY_NODISCARD DDyVector2 GetWidgetPosition(_MIN_ const EDyOrigin& origin) const noexcept;
+  MDY_NODISCARD DDyVector2 GetRelativePosition(_MIN_ const EDyOrigin& origin) const noexcept;
+  /// @brief Get widget final position following origin anchor input (not final position)
+  /// @return widget final position of screen.
+  MDY_NODISCARD DDyVector2 GetFinalPosition(_MIN_ const EDyOrigin& origin) const noexcept;
 
-  ///
   /// @brief Set frame size of widget.
-  /// @param size Frame size. Must be full size, not half size.
-  ///
-  virtual void SetWidgetFrameSize(_MIN_ const DDyVectorInt2& size) noexcept;
+  virtual void SetFrameSize(_MIN_ const DDyVectorInt2& size) noexcept;
+  /// @brief Get frame size of widget.
+  MDY_NODISCARD const DDyVectorInt2& GetFrameSize() const noexcept;
 
-  ///
-  /// @brief  Get frame size of widget.
-  /// @return Frame size of widget.
-  ///
-  MDY_NODISCARD DDyVectorInt2 GetFrameSize() const noexcept;
+  /// @brief Set origin axis value.
+  virtual void SetOrigin(_MIN_ EDyOrigin iOrigin) noexcept;
+  /// @brief Get origin axis to parent. 
+  MDY_NODISCARD EDyOrigin GetOrigin() const noexcept;
 
-  ///
-  /// @brief Align final position of widget from parent information.
-  /// @param parentFinalPosition  Final position of parent.
-  /// @param parentFrameSize      Frame size of parent.
-  ///
-  virtual void AlignFinalPosition(_MIN_ const DDyVector2& parentFinalPosition, _MIN_ const DDyVectorInt2& parentFrameSize) = 0;
+  /// @brief Set fibot axis value. 
+  virtual void SetFibot(_MIN_ EDyOrigin iOrigin) noexcept;
+  /// @brief Get fibot axis to my widget frame size.
+  MDY_NODISCARD EDyOrigin GetFibot() const noexcept;
 
-  ///
+  /// @brief Align final position of widget from parent information. \n
+  /// If parent is not exist, just recalculate with fibot.
+  void UpdateFinalPosition();
+
   /// @brief  Get name of UiObject instance.
-  /// @return UiObject Instance.
-  ///
-  MDY_NODISCARD const std::string& GetUiObjectName() const noexcept
-  {
-    MDY_ASSERT(this->pGetObjectName().empty() == false, "Unexpected error occurred.");
-    return this->pGetObjectName();
-  }
+  MDY_NODISCARD const std::string& GetUiObjectName() const noexcept;
 
 private:
-  FDyUiObjectChildrenable* mParentUiObject        = nullptr;
-  DDyVector2               mCentralPosition       = {};
-  DDyVectorInt2            mWidgetSize            = {};
+  FDyUiObjectChildrenable* mPtrParentUiObject       = MDY_INITIALIZE_NULL;
+  DDyVector2               mCentralRelativePosition = {};
+  DDyVectorInt2            mFrameSize               = {};
 
 protected:
-  DDyVector2               mFinalCentralPosition  = {};
+  DDyVector2  mCentralFinalPosition  = {};
+  EDyOrigin   mOrigin = EDyOrigin::Center_Center;
+  EDyOrigin   mFibot  = EDyOrigin::Center_Center;
 };
 
 } /// ::dy namespace

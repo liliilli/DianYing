@@ -48,19 +48,6 @@ public:
   /// @brief Release widget instance.
   void Release() override final;
 
-  ///
-  /// @brief Set central position of widget.
-  /// @param position Position value.
-  ///
-  void SetWidgetCentralPosition(const DDyVector2& position) noexcept override final;
-
-  ///
-  /// @brief Align final position of widget from parent information.
-  /// @param parentFinalPosition  Final position of parent.
-  /// @param parentFrameSize      Frame size of parent.
-  ///
-  void AlignFinalPosition(const DDyVector2& parentFinalPosition, const DDyVectorInt2& parentFrameSize) override final;
-
   /// @brief Activate FDyUiWidget instance.
   /// @TODO IMPLEMENT THIS
   void Activate() noexcept;

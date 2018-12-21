@@ -27,12 +27,13 @@ namespace dy
 ///
 struct PDyMetaWidgetImageDescriptor final : public PDyMetaWidgetCommonBaseDesc
 {
-  /// Initial position of canvas.
-  DDyVectorInt2 mInitialPosition = {};
   /// Size (px) of text widget (leaf widget).
   DDyVectorInt2 mWidgetSize = {};
+  /// Initial position of canvas.
+  DDyVectorInt2 mInitialPosition = {};
   /// Originable to parent frame (except for list layout)
   EDyOrigin     mOrigin = EDyOrigin::Center_Center;
+
   /// Image specifier name from texture.
   std::string   mImageSpecifierName = {};
   /// Region to display on widget size. \n
@@ -48,7 +49,8 @@ struct PDyMetaWidgetImageDescriptor final : public PDyMetaWidgetCommonBaseDesc
   /// @param itemAtlas valid json atlas instance.
   /// @return If succeeded, return heap instance of PDyMetaWidgetImageDescriptor.
   ///
-  static std::unique_ptr<PDyMetaWidgetImageDescriptor> CreateMetaInformation(_MIN_ const nlohmann::json& itemAtlas);
+  static std::unique_ptr<PDyMetaWidgetImageDescriptor> 
+  CreateMetaInformation(_MIN_ const nlohmann::json& itemAtlas);
 };
 
 } /// ::dy namespace

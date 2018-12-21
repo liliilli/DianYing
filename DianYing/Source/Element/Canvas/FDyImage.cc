@@ -23,13 +23,12 @@ EDySuccess FDyImage::Initialize(const PDyMetaWidgetImageDescriptor& objectMetaDe
 {
   // Set properties.
   this->pSetObjectName(objectMetaDesc.mUiObjectSpecifierName);
+  this->SetRelativePosition(objectMetaDesc.mInitialPosition);
+  this->SetFrameSize(objectMetaDesc.mWidgetSize);
+  this->mOrigin = objectMetaDesc.mOrigin;
 
   this->mTintColor        = objectMetaDesc.mTintColor;
   this->mIsSizeToContent  = objectMetaDesc.mIsSizeToContent;
-
-  this->SetWidgetCentralPosition(objectMetaDesc.mInitialPosition);
-  this->SetWidgetFrameSize(objectMetaDesc.mWidgetSize);
-  this->mOrigin = objectMetaDesc.mOrigin;
 
   PDyImageRendererCtorInformation desc = {};
   desc.mPtrUiObject = this;
@@ -42,13 +41,6 @@ void FDyImage::Release()
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
   this->mRenderer.Release();
-}
-
-void FDyImage::AlignFinalPosition(const DDyVector2& parentFinalPosition, const DDyVectorInt2& parentFrameSize)
-{
-  this->mFinalCentralPosition =
-    DyGetPositionWithOrigin(parentFinalPosition, parentFrameSize, this->mOrigin)
-    + this->GetWidgetPosition(EDyOrigin::Center_Center);
 }
 
 std::string FDyImage::ToString()

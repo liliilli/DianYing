@@ -22,13 +22,6 @@
 namespace dy
 {
 
-void FDyText::AlignFinalPosition(const DDyVector2& parentFinalPosition, const DDyVectorInt2& parentFrameSize)
-{
-  this->mFinalCentralPosition =
-      DyGetPositionWithOrigin(parentFinalPosition, parentFrameSize, this->mOrigin)
-    + this->GetWidgetPosition(EDyOrigin::Center_Center);
-}
-
 std::string FDyText::ToString()
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
@@ -54,8 +47,11 @@ EDySuccess FDyText::Initialize(_MIN_ const PDyMetaWidgetTextDescriptor& objectMe
   //! FUNCTIONBODY ∨
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  // Set properties.
+  // Set Properties.
   this->pSetObjectName(objectMetaDesc.mUiObjectSpecifierName);
+  this->SetRelativePosition(objectMetaDesc.mInitialPosition);
+  this->SetFrameSize(objectMetaDesc.mWidgetSize);
+  this->SetOrigin(objectMetaDesc.mOrigin);
 
   this->mTextString             = objectMetaDesc.mInitialString;
   this->mForegroundColor        = objectMetaDesc.mInitialColor;
@@ -65,23 +61,11 @@ EDySuccess FDyText::Initialize(_MIN_ const PDyMetaWidgetTextDescriptor& objectMe
   this->mIsUsingBackgroundColor = objectMetaDesc.mIsUsingBackground;
   this->mFontSize               = objectMetaDesc.mFontSize;
   this->mPtrFontContainer       = GetFontResource(objectMetaDesc.mFontSpecifierName);
-  this->mOrigin                 = objectMetaDesc.mOrigin;
-
-  this->SetWidgetCentralPosition(objectMetaDesc.mInitialPosition);
-  this->SetWidgetFrameSize      (objectMetaDesc.mWidgetSize);
-
-  // Initialize FontRenderer.
-  PDyFontRendererCtorInformation desc = {};
-  desc.mFontComponentPtr = this;
-  MDY_CALL_ASSERT_SUCCESS(this->mRenderer.Initialize(desc));
 
   return DY_SUCCESS;
 }
 
-void FDyText::Release()
-{
-  this->mRenderer.Release();
-}
+void FDyText::Release() { }
 
 //!
 //! Getter
@@ -114,7 +98,7 @@ const DDyColorRGBA& FDyText::GetForegroundColor() const noexcept
 
 const DDyVector2& FDyText::GetRenderPosition() const noexcept
 {
-  return this->mFinalCentralPosition;
+  return this->mCentralFinalPosition;
 }
 
 //!
