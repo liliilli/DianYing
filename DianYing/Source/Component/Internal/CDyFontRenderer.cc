@@ -22,7 +22,6 @@
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
 #include <Dy/Element/Canvas/Text.h>
 #include <Dy/Helper/Type/Matrix4.h>
-#include <Dy/Management/SettingManager.h>
 #include <Dy/Core/Resource/Resource/FDyMeshResource.h>
 
 //!
@@ -92,26 +91,14 @@ void RenderFontCharacter(_MIN_ const std::array<dy::DDyVector2, 8>& vertices, _M
 namespace dy
 {
 
-EDySuccess CDyFontRenderer::Initialize(const PDyFontRendererCtorInformation& descriptor)
+CDyFontRenderer::CDyFontRenderer(FDyText& iPtrWidget) :
+  mPtrWidget{&iPtrWidget}
 {
   this->mBinderFontMesh.TryRequireResource(MSVSTR(FDyBtMsUiFontQuad::sName));
   MDY_ASSERT(this->mBinderFontMesh.IsResourceExist() == true, "True");
-
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mFontComponentPtr), "descriptor.mFontComponentPtr must not be null.");
-  this->mFontObjectRawPtr = descriptor.mFontComponentPtr;
   this->mBinderShader.TryRequireResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderFontArraySDF::sName));
 
-  // @TODO SAMPLE CODE (TEMPORAL)
-  auto& settingManager            = MDySetting::GetInstance();
-  const auto overallScreenWidth   = settingManager.GetWindowSizeWidth();
-  const auto overallScreenHeight  = settingManager.GetWindowSizeHeight();
-  uUiProjMatrix = glm::ortho(0.f, static_cast<float>(overallScreenWidth), 0.f, static_cast<float>(overallScreenHeight), 0.2f, 10.0f);
-  return DY_SUCCESS;
-}
-
-void CDyFontRenderer::Release()
-{
-  this->mFontObjectRawPtr = nullptr;
+  uUiProjMatrix = glm::ortho(0.f, static_cast<float>(1280), 0.f, static_cast<float>(720), 0.2f, 10.0f);
 }
 
 void CDyFontRenderer::Render()
@@ -126,35 +113,30 @@ void CDyFontRenderer::Render()
   const auto projectMatrixId  = glGetUniformLocation(shaderProgramId, "uUiProjMatrix");
   glUniformMatrix4fv(projectMatrixId, 1, GL_FALSE, &uUiProjMatrix[0].X);
 
-  IDyFontContainer& container = this->mFontObjectRawPtr->GetFontContainer();
-  const TI32 fontSize         = this->mFontObjectRawPtr->GetFontSize();
-  const DDyVector2 initPos    = this->mFontObjectRawPtr->GetRenderPosition();
+  IDyFontContainer& container = this->mPtrWidget->GetFontContainer();
+  const TI32 fontSize         = this->mPtrWidget->GetFontSize();
+  const DDyVector2 initPos    = this->mPtrWidget->GetRenderPosition();
 
-  const auto fgColorId        = glGetUniformLocation(shaderProgramId, "uFgColor");
-  glUniform4fv(fgColorId, 1, &this->mFontObjectRawPtr->GetForegroundColor().R);
-  const auto bgColorId        = glGetUniformLocation(shaderProgramId, "uBgColor");
-  glUniform4fv(bgColorId, 1, &this->mFontObjectRawPtr->GetBackgroundColor().R);
-  const auto edgeColorId      = glGetUniformLocation(shaderProgramId, "uEdgeColor");
-  glUniform4fv(edgeColorId, 1, &this->mFontObjectRawPtr->GetEdgeColor().R);
+  const auto fgColorId   = glGetUniformLocation(shaderProgramId, "uFgColor");
+  glUniform4fv(fgColorId, 1, &this->mPtrWidget->GetForegroundColor().R);
+  const auto bgColorId   = glGetUniformLocation(shaderProgramId, "uBgColor");
+  glUniform4fv(bgColorId, 1, &this->mPtrWidget->GetBackgroundColor().R);
+  const auto edgeColorId = glGetUniformLocation(shaderProgramId, "uEdgeColor");
+  glUniform4fv(edgeColorId, 1, &this->mPtrWidget->GetEdgeColor().R);
 
   const auto uIsUsingEdgeId   = glGetUniformLocation(shaderProgramId, "uIsUsingEdge");
-  glUniform1i(uIsUsingEdgeId, this->mFontObjectRawPtr->CheckIsUsingEdgeRendering());
+  glUniform1i(uIsUsingEdgeId, this->mPtrWidget->CheckIsUsingEdgeRendering());
   const auto uIsUsingBackgroundId = glGetUniformLocation(shaderProgramId, "uIsUsingBackground");
-  glUniform1i(uIsUsingBackgroundId, this->mFontObjectRawPtr->CheckIsUsingBackgroundColor());
-
-  //!
-  //! Temporal code for font rendering!
-  //!
+  glUniform1i(uIsUsingBackgroundId, this->mPtrWidget->CheckIsUsingBackgroundColor());
 
   // RENDER!!
   DDyVector2 renderPosition = initPos;
-  for (const TC16& ucs2Char : this->mFontObjectRawPtr->GetText()) {
-    // Line feed
+  for (const TC16& ucs2Char : this->mPtrWidget->GetText()) {
     if (ucs2Char == '\n')
-    {
+    { // Line feed
       renderPosition.X  = initPos.X;
       //renderPosition.Y -= static_cast<TF32>(container.GetLinefeedHeight(fontSize) * 0.5f);
-      renderPosition.Y -= 48;
+      renderPosition.Y -= 24;
       continue;
     }
     if (container.IsCharacterGlyphExist(ucs2Char) == false) { continue; }

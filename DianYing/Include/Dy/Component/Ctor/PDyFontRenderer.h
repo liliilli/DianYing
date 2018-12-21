@@ -39,15 +39,6 @@ struct PDyFontRendererCtorInformation_Deprecated final
   FDyText_Deprecated* mFontComponentPtr = nullptr;
 };
 
-///
-/// @struct PDyFontRendererCtorInformation
-/// @brief
-///
-struct PDyFontRendererCtorInformation final
-{
-  FDyText* mFontComponentPtr = nullptr;
-};
-
 } /// ::dy namespace
 
 #endif /// GUARD_DY_COMPONENT_CTOR_PDYFONTRENDERER_H

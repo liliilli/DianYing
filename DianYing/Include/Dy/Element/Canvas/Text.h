@@ -44,15 +44,8 @@ public:
   /// position parameter was based on screen or parent's size where component
   /// is in hierarchy structrue of parent.
   ///
-	FDyText()           = default;
+  FDyText() : mRenderer{*this} {};
   virtual ~FDyText()  = default;
-
-  ///
-  /// @brief Align final position of widget from parent information.
-  /// @param parentFinalPosition  Final position of parent.
-  /// @param parentFrameSize      Frame size of parent.
-  ///
-  void AlignFinalPosition(const DDyVector2& parentFinalPosition, const DDyVectorInt2& parentFrameSize) override final;
 
   ///
   /// @brief
@@ -172,8 +165,6 @@ public:
   void Render() override final;
 
 private:
-  ///
-  EDyOrigin         mOrigin           = EDyOrigin::Center_Center;
   /// Text to display on screen. String must be following UTF-8 encoding.
   DDyString         mTextString       = {""};
   /// Text container instance to display font.
@@ -187,7 +178,7 @@ private:
   /// Font size
   TU32              mFontSize         = 16;
   ///
-  CDyFontRenderer   mRenderer         = {};
+  CDyFontRenderer   mRenderer;
 
   ///
   bool mIsTextDirty                   = true;

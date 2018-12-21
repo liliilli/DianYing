@@ -13,50 +13,36 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Component/Ctor/PDyFontRenderer.h>
-#include <Dy/Component/Interface/IDyInitializeHelper.h>
 #include <Dy/Core/Resource/Type/TDyResourceBinder.h>
+#include <Dy/Helper/Type/ColorRGBA.h>
+#include <Dy/Management/Interface/IDyFontContainer.h>
+#include <Dy/Helper/Type/DyString.h>
 
 namespace dy
 {
+
+class FDyText;
 
 ///
 /// @class CDyFontRenderer
 /// @brief
 ///
-class CDyFontRenderer final : public IDyInitializeHelper<PDyFontRendererCtorInformation>
+class CDyFontRenderer final 
 {
 public:
-  CDyFontRenderer()           = default;
-  virtual ~CDyFontRenderer()  = default;
+  CDyFontRenderer(_MIN_ FDyText& iPtrWidget);
+  ~CDyFontRenderer() = default;
 
-  CDyFontRenderer(const CDyFontRenderer&)                                 = delete;
-  CDyFontRenderer& operator=(const CDyFontRenderer&)                      = delete;
-  CDyFontRenderer(CDyFontRenderer&& instance)                   noexcept  = default;
-  CDyFontRenderer& operator=(CDyFontRenderer&& instance)        noexcept  = default;
+  CDyFontRenderer(const CDyFontRenderer&)            = delete;
+  CDyFontRenderer& operator=(const CDyFontRenderer&) = delete;
 
-  ///
-  /// @brief  Initialize with descriptor.
-  /// @param  descriptor
-  /// @return If successful, return DY_SUCCESS or DY_FAILURE.
-  ///
-  MDY_NODISCARD EDySuccess Initialize(const PDyFontRendererCtorInformation& descriptor) override final;
-
-  ///
-  /// @brief Release resource of component.
-  ///
-  void Release() override final;
-
-  ///
   /// @brief
-  ///
   void Render();
 
 private:
-  /// LAZY NOT NULLABLE POINTER RAW PTR;
-  FDyText*            mFontObjectRawPtr = MDY_INITIALIZE_NULL;
-  TDyLResourceBinderShader mBinderShader{};
-  TDyLResourceBinderMesh   mBinderFontMesh{};
+  FDyText*                  mPtrWidget = nullptr; 
+  TDyLResourceBinderShader  mBinderShader{};
+  TDyLResourceBinderMesh    mBinderFontMesh{};
 };
 
 } /// ::dy namespace
