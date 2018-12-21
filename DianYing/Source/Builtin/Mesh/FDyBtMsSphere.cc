@@ -34,7 +34,7 @@ void FDyBtMsSphere::ConstructBuffer(_MOUT_ PDyBtMeshInstanceMetaInfo& property) 
   const auto td = DDyVector2{ -1, -1 };
 
   // Make vertex information
-  const TI32 level = 4;
+  const TI32 level = 3;
   auto& submeshDesc = property.mDefaultMeshBuffer;
   pCreateVertexRecursively(a, b, c, ta, tb, tc, level, submeshDesc);
   pCreateVertexRecursively(b, c, d, tb, tc, td, level, submeshDesc);

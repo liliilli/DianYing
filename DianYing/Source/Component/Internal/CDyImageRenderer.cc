@@ -21,7 +21,6 @@ namespace dy
 
 EDySuccess CDyImageRenderer::Initialize(const PDyImageRendererCtorInformation& descriptor)
 {
-  MDY_NOT_IMPLEMENTED_ASSERT();
   return DY_SUCCESS;
 }
 
