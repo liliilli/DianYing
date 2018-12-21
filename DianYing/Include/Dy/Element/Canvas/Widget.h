@@ -19,7 +19,8 @@
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 #include <Dy/Component/CDyScript.h>
-#include <Dy/Component/UI/CDyWidgetScript.h>
+#include <Dy/Component/UI/CDyWidgetScriptBase.h>
+#include "Dy/Component/UI/CDyWidgetScript.h"
 
 namespace dy
 {
@@ -92,21 +93,17 @@ public:
   /// @brief  Get script component pointer from script list using scriptName to verify.
   /// @return The pointer instance of CDyScript. If not found, return just no value.
   ///
-  MDY_NODISCARD std::optional<CDyWidgetScript*> GetScript() noexcept;
+  MDY_NODISCARD std::optional<CDyWidgetScriptBase*> GetScript() noexcept;
 
 private:
-  ///
-  /// @brief
-  ///
-  void pPropagateActivationFlag() noexcept;
 
   DDy3StateBool                     mActivationFlag = {};
   /// Parent FDyUiWidget raw-pointer data.
   FDyUiWidget*                      mParentFDyUiWidgetRawPtr= MDY_INITIALIZE_NULL;
   /// Component list (randomly) which attached to FDyUiWidget instance (this!)
   TUiObjectMap                      mObjectList     = {};
-  /// Script list (specialized!)
-  std::unique_ptr<CDyWidgetScript>  mWidgetScript   = nullptr;
+  /// @brief 
+  std::unique_ptr<CDyWidgetScript>  mWidgetScript = MDY_INITIALIZE_NULL;
 };
 
 } /// ::dy namespace

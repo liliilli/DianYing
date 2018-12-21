@@ -13,17 +13,14 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Component/Interface/IDyScriptable.h>
-
 //!
 //! Forward declaration
 //!
 
 namespace dy
 {
-
 class FDyUiWidget;
-
+class FDyWidgetScriptState;
 } /// ::dy namespace
 
 //!
@@ -35,45 +32,19 @@ namespace dy
 
 ///
 /// @class CDyWidgetScript
-/// @brief
+/// @brief Widget script component for binding internal script instance.
 ///
-class CDyWidgetScript : public IDyScriptable
+class CDyWidgetScript final
 {
 public:
-  CDyWidgetScript(_MINOUT_ FDyUiWidget& widget) : mBindedWidget(&widget) { }
-
-  ///
-  /// @brief Release derived resources of `CDyScript`.
-  /// This function shadowing derived Release function intentionally.
-  ///
-  void Release()
-  {
-    return this->pScriptRelease();
-  }
-
-  ///
-  /// @brief Get mutable reference of widget.
-  ///
-  MDY_NODISCARD FDyUiWidget& GetWidgetReference() noexcept
-  {
-    MDY_ASSERT(this->mBindedWidget != nullptr, "Unexpected error occurred.");
-    return *this->mBindedWidget;
-  }
-
-protected:
-  /// @brief
-  virtual void pScriptRelease() = 0;
-
-  /// Script name for specification and searching.
-  MDY_TRANSIENT std::string mScriptName   = MDY_INITIALIZE_EMPTYSTR;
-  /// Flag for checking binded script instance.
-  bool                      mIsScriptInstanceBinded = false;
+  CDyWidgetScript(_MIN_ const std::string& iScriptSpecifier, _MINOUT_ FDyUiWidget& iWidget);
+  ~CDyWidgetScript();
 
 private:
-  /// Binded actor raw pointer.
-  FDyUiWidget*              mBindedWidget = MDY_INITIALIZE_NULL;
+  FDyUiWidget*          mPtrWidget        = MDY_INITIALIZE_NULL;
+  FDyWidgetScriptState* mPtrWidgetStatus  = MDY_INITIALIZE_NULL;
 };
 
 } /// ::dy namespace
 
-#endif /// GUARD_DY_COMPONENT_UI_CDYWIDGETSCRIPT_H
+#endif /// GUARD_DY_COMPONENT_UI_CDYWIDGETSCRIPTBASE_H

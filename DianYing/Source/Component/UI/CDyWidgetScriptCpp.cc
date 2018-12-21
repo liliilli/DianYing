@@ -16,14 +16,14 @@
 #include <Dy/Component/UI/CDyWidgetScriptCpp.h>
 
 #include <Dy/Management/IO/MetaInfoManager.h>
-#include "Dy/Helper/Pointer.h"
+#include <Dy/Helper/Pointer.h>
 
 namespace dy
 {
 
-EDySuccess CDyWidgetScriptCpp::Initialize(const PDyScriptComponentMetaInfo& descriptor)
+CDyWidgetScriptCpp::CDyWidgetScriptCpp(_MIN_ FDyUiWidget& widgetReference, _MIN_ const PDyScriptInstanceMetaInfo& metaInfo) :
+    CDyWidgetScriptBase{widgetReference}
 {
-  const auto& metaInfo = MDyMetaInfo::GetInstance().GetScriptMetaInformation(descriptor.mDetails.mSpecifierName);
   MDY_ASSERT(metaInfo.mScriptType == EDyScriptType::Cpp,    "Script type is not matched to CDyWidgetScriptCpp.");
   MDY_ASSERT(metaInfo.mScriptMode == EDyScriptMode::Widget, "Given script must be widget type.");
 
@@ -31,13 +31,8 @@ EDySuccess CDyWidgetScriptCpp::Initialize(const PDyScriptComponentMetaInfo& desc
   this->mScriptInstance = DyConvertUniquePtrTo<ADyWidgetCppScript>(metaInfo.mBtInstantiationFunction());
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mScriptInstance),    "Script instance could not bound to system.");
 
+  this->mScriptName = metaInfo.mSpecifierName;
   this->mScriptInstance->pfSetOutsideReference(*this);
-  return DY_SUCCESS;
-}
-
-void CDyWidgetScriptCpp::Release()
-{
-  this->mScriptInstance = nullptr;
 }
 
 void CDyWidgetScriptCpp::Initiate()

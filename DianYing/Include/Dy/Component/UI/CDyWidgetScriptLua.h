@@ -15,7 +15,7 @@
 
 #include <sol2/sol.hpp>
 
-#include <Dy/Component/UI/CDyWidgetScript.h>
+#include <Dy/Component/UI/CDyWidgetScriptBase.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
 
@@ -26,10 +26,10 @@ namespace dy
 /// @class CDyWidgetScriptLua
 /// @brief Only for lua internal script component.
 ///
-class CDyWidgetScriptLua final : public CDyWidgetScript, public IDyInitializeHelper<PDyScriptComponentMetaInfo>
+class CDyWidgetScriptLua final : public CDyWidgetScriptBase, public IDyInitializeHelper<PDyScriptComponentMetaInfo>
 {
 public:
-  CDyWidgetScriptLua(FDyUiWidget& actorReference) : CDyWidgetScript(actorReference) {};
+  CDyWidgetScriptLua(FDyUiWidget& actorReference) : CDyWidgetScriptBase(actorReference) {};
   virtual ~CDyWidgetScriptLua() = default;
 
   EDySuccess Initialize(const PDyScriptComponentMetaInfo& descriptor) override final;
