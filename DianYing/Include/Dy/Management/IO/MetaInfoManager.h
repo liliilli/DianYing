@@ -114,6 +114,10 @@ public:
   /// @return Return value is false if not found.
   MDY_NODISCARD bool IsMeshMetaInfoExist(_MIN_ const std::string& specifier) const noexcept;
 
+  /// @brief  Check scene meta information is exist.
+  /// @return Return value is false if not found.
+  MDY_NODISCARD bool IsLevelMetaInformation(_MIN_ const std::string& specifier) const noexcept;
+
   /// @brief  Check model meta information is exist.
   /// @return Return value is false if not found.
   MDY_NODISCARD bool IsModelMetaInfoExist(_MIN_ const std::string& specifier) const noexcept

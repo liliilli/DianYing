@@ -305,6 +305,11 @@ bool MDyMetaInfo::IsMeshMetaInfoExist(_MIN_ const std::string & specifier) const
   return DyIsMapContains(this->mBtMeshMetaInfo, specifier);
 }
 
+bool MDyMetaInfo::IsLevelMetaInformation(const std::string& specifier) const noexcept
+{
+  return DyIsMapContains(this->mLevelInfoMap, specifier);
+}
+
 bool MDyMetaInfo::IsLoadingWidgetMetaInfoExist() const noexcept
 {
   return MDY_CHECK_ISNOTEMPTY(this->mLoadingWidgetMetaInfo);

@@ -16,6 +16,7 @@
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
+#include <Dy/Management/SettingManager.h>
 
 namespace dy
 {
@@ -42,32 +43,10 @@ EDySuccess MDyWorld::pfRelease()
 void MDyWorld::Update(_MIN_ float dt)
 {
   // Garbage collect needless "FDyActor"s
-  if (this->mActorGc.empty() == false)
-  {
-    this->mActorGc.clear();
-  }
+  if (this->mActorGc.empty() == false) { this->mActorGc.clear(); }
 
   // GC components.
   this->pGcAcitvatedComponents();
-
-  // Travel next level
-  if (this->mNextLevelName.empty() == false)
-  {
-    if (this->mLevel)
-    { // Let present level do release sequence
-      this->mLevel->Release();
-    }
-
-    auto& instance            = MDyMetaInfo::GetInstance();
-    const auto* levelMetaInfo = instance.GetLevelMetaInformation(this->mNextLevelName);
-
-    this->mLevel = std::make_unique<FDyLevel>();
-    this->mLevel->Initialize(*levelMetaInfo);
-
-    this->mPreviousLevelName  = this->mPresentLevelName;
-    this->mPresentLevelName   = this->mNextLevelName;
-    this->mNextLevelName      = MDY_INITIALIZE_EMPTYSTR;
-  }
 
   // Scene update routine
   if (this->mLevel)
@@ -175,8 +154,34 @@ EDySuccess MDyWorld::OpenLevel(_MIN_ const std::string& levelName)
     return DY_FAILURE;
   }
 
-  this->mNextLevelName = levelName;
+  this->SetLevelTransition(levelName);
   return DY_SUCCESS;
+}
+
+EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(OpenFirstLevel)()
+{
+  this->SetLevelTransition(MDySetting::GetInstance().GetInitialSceneInformationName());
+
+  // Travel next level
+  if (this->mNextLevelName.empty() == true) { return DY_FAILURE; }
+  // Let present level do release sequence
+  if (this->mLevel) { this->mLevel->Release(); }
+
+  auto& instance            = MDyMetaInfo::GetInstance();
+  const auto* levelMetaInfo = instance.GetLevelMetaInformation(this->mNextLevelName);
+
+  this->mLevel = std::make_unique<FDyLevel>();
+  this->mLevel->Initialize(*levelMetaInfo);
+
+  this->mPreviousLevelName  = this->mPresentLevelName;
+  this->mPresentLevelName   = this->mNextLevelName;
+  this->mNextLevelName      = MDY_INITIALIZE_EMPTYSTR;
+  this->mIsNeedTransitNextLevel = false;
+  return DY_SUCCESS;
+
+  //this->MDY_PRIVATE_SPECIFIER(PopulateNextLevelResources)();
+  //this->MDY_PRIVATE_SPECIFIER(BuildNextLevel)();
+  //this->MDY_PRIVATE_SPECIFIER(TransitionToNextLevel)();
 }
 
 bool MDyWorld::IsLevelPresentValid() const noexcept
@@ -228,6 +233,18 @@ EDySuccess MDyWorld::TryRemoveLoadingUi()
 void MDyWorld::MDY_PRIVATE_SPECIFIER(TryRenderLoadingUi)()
 {
   this->mUiInstanceContainer.TryRenderLoadingUi();
+}
+
+void MDyWorld::SetLevelTransition(_MIN_ const std::string& iSpecifier)
+{
+  if (MDyMetaInfo::GetInstance().IsLevelMetaInformation(iSpecifier) == false)
+  {
+    MDY_LOG_ERROR("Failed to transit next level, `{0}`. `{0}` level is not exist.", iSpecifier);
+    return;
+  }
+
+  this->mNextLevelName          = iSpecifier;
+  this->mIsNeedTransitNextLevel = true;
 }
 
 void MDyWorld::pfBindFocusCamera(_MIN_ CDyLegacyCamera& validCameraPtr) noexcept

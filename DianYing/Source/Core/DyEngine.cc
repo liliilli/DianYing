@@ -143,8 +143,7 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(ReflectGameStatusTransition)()
     {
     case EDyGlobalGameStatus::Loading: 
     { // FirstLoading => Loading.
-      //MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(OpenFirstLevel)();
-      MDyWorld::GetInstance().OpenLevel(MDySetting::GetInstance().GetInitialSceneInformationName());
+      MDY_CALL_ASSERT_SUCCESS(MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(OpenFirstLevel)());
     } break;
     default: MDY_UNEXPECTED_BRANCH();
     }
@@ -167,7 +166,11 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(ReflectGameStatusTransition)()
     case EDyGlobalGameStatus::Loading: 
     { MDY_NOT_IMPLEMENTED_ASSERT();
       { // If level change from one to another, do that.
-        MDyWorld::GetInstance().OpenLevel(MDySetting::GetInstance().GetInitialSceneInformationName());
+        //MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(RemoveLevel)();
+        //MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(PopulateNextLevelResources)();
+        //MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(BuildNextLevel)();
+        //MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(TransitionToNextLevel)();
+        //MDyWorld::GetInstance().OpenLevel(MDySetting::GetInstance().GetInitialSceneInformationName());
       }
     } break;
     case EDyGlobalGameStatus::Shutdown: 

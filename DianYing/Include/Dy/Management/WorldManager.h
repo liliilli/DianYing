@@ -175,10 +175,12 @@ public:
 #endif
 
 private:
-  ///
+  /// @brief Set level transition. Flag will be set and all dependent processing will be halted.
+  /// Until level is translated.
+  void SetLevelTransition(_MIN_ const std::string& iSpecifier);
+
   /// @brief This function must be called in MDyWorld::Update() function.
   /// Wipe out deactivated components from activated component lists.
-  ///
   void pGcAcitvatedComponents();
 
   /// Bind valid camera to main camera and let object have focused.
@@ -277,6 +279,8 @@ private:
 
   /// @brief UI Instance container.
   FDyWorldUIContainer mUiInstanceContainer;
+
+  bool mIsNeedTransitNextLevel = false;
 
   friend class CDyLegacyCamera;
   friend class FDyLevel;
