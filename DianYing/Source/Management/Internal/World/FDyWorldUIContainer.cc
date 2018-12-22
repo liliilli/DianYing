@@ -38,9 +38,24 @@ EDySuccess FDyWorldUIContainer::TryRemoveDebugUi()
   return DY_SUCCESS;
 }
 
-bool FDyWorldUIContainer::IsDebugUiExist() const noexcept
+EDySuccess FDyWorldUIContainer::TryCreateLoadingUi()
 {
-  return MDY_CHECK_ISNOTEMPTY(this->mDebugUi);
+  auto& metaManager = MDyMetaInfo::GetInstance();
+  if (metaManager.IsLoadingWidgetMetaInfoExist() == false)
+  {
+    MDY_LOG_WARNING("Loading widget is not exist, loading screen will not be presented.");
+    return DY_FAILURE;
+  }
+
+  this->mLoadingUi = std::make_unique<FDyUiWidget>();
+  MDY_CALL_ASSERT_SUCCESS(this->mLoadingUi->Initialize(*MDyMetaInfo::GetInstance().MDY_PRIVATE_SPECIFIER(TryGetLoadingWidgetMetaLoading)()));
+  return DY_SUCCESS;
+}
+
+EDySuccess FDyWorldUIContainer::TryRemoveLoadingUi()
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+  return DY_SUCCESS;
 }
 
 void FDyWorldUIContainer::TryRenderDebugUi()
@@ -48,5 +63,14 @@ void FDyWorldUIContainer::TryRenderDebugUi()
   if (MDY_CHECK_ISEMPTY(this->mDebugUi)) { return; }
   this->mDebugUi->Render();
 }
+
+void FDyWorldUIContainer::TryRenderLoadingUi()
+{
+  if (MDY_CHECK_ISEMPTY(this->mLoadingUi)) { return; }
+  this->mLoadingUi->Render();
+}
+
+bool FDyWorldUIContainer::IsDebugUiExist() const noexcept { return MDY_CHECK_ISNOTEMPTY(this->mDebugUi); }
+bool FDyWorldUIContainer::IsLoadingUiExist() const noexcept { return MDY_CHECK_ISNOTEMPTY(this->mLoadingUi); }
 
 } /// ::dy namespace

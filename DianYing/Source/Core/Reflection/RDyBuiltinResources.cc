@@ -81,13 +81,24 @@ void RDyBuiltinResource::BindBuiltinResourcesToMetaManager()
     default: MDY_NOT_IMPLEMENTED_ASSERT(); break;
     }
   }
-
   map.clear();
 
   if (IsBootingMetaInfoScriptExist() == true)
-  {
+  { // If boot resource exist, do that.
     const auto bootScript = DyConvertUniquePtrTo<ADyLoadingBootResource>(GetBootResourceMetaInfo().second());
-    MDY_CALL_ASSERT_SUCCESS(metaManager.pfAddBootResourceSpecifierList(bootScript->GetResourceMetaList()));
+    MDY_CALL_ASSERT_SUCCESS(metaManager.MDY_PRIVATE_SPECIFIER(AddBootResourceSpecifierList)(bootScript->GetResourceMetaList()));
+  }
+
+  for (const auto& [type, populateFunc] : GetGlobalResourceMetaInfo())
+  { // If global resource exist, do that.
+    const auto globalScript = DyConvertUniquePtrTo<ADyLoadingGlobalResource>(populateFunc());
+    MDY_CALL_ASSERT_SUCCESS(metaManager.MDY_PRIVATE_SPECIFIER(AddGlobalResourceSpecifierList)(globalScript->GetResourceMetaList()));
+  }
+
+  if (IsLoadingWidgetMetaInfoExist() == true)
+  { // If loading widget is exist, insert it to meta manager.
+    auto metaInfo = std::any_cast<std::string_view>(GetLoadingWidgetResourceMetaInfo().second()->GetMetaInfo());
+    MDY_CALL_ASSERT_SUCCESS(metaManager.MDY_PRIVATE_SPECIFIER(AddLoadingWidgetMetaInformation)(MSVSTR(metaInfo)));
   }
 }
 

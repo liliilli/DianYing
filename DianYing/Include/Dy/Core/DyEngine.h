@@ -23,6 +23,7 @@
 
 namespace dy
 {
+enum class EDyGlobalGameStatus : char;
 class MDyTime;
 class MDyWindow;
 class MDySynchronization;
@@ -60,12 +61,10 @@ private:
 
   /// @brief
   void pUpdateRuntime(_MIN_ TF32 dt);
-
+  /// @brief Render every update from engine.
+  void MDY_PRIVATE_SPECIFIER(Render)(_MIN_ EDyGlobalGameStatus iEngineStatus);
   /// @brief Update entry function from engine.
-  void pUpdate(_MIN_ TF32 dt);
-
-  /// @brief Render entry function from engine.
-  void pRender();
+  void MDY_PRIVATE_SPECIFIER(Update)(_MIN_ EDyGlobalGameStatus iEngineStatus, _MIN_ TF32 dt);
 
   void pfInitializeIndependentManager();
   void pfInitializeDependentManager();

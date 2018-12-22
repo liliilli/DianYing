@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_BUILTIN_WIDGET_DEBUGUIWIDGET_H
-#define GUARD_DY_BUILTIN_WIDGET_DEBUGUIWIDGET_H
+#ifndef GUARD_DY_BUILTIN_WIDGET_FDYBTWDTESTLOADINGUI_H
+#define GUARD_DY_BUILTIN_WIDGET_FDYBTWDTESTLOADINGUI_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,24 +13,24 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyWidgetMetaResource.h>
+#include <Dy/Builtin/Abstract/ADyLoadingWidgetMetaResource.h>
 #include <Dy/Core/Reflection/RDyBuiltinResources.h>
 
 namespace dy::builtin
 {
 
 ///
-/// @class FDyBuiltinWidgetDebugUiMeta
+/// @class FDyBtWdTestLoadingUi
 /// @brief Instantiate rendering pass.
 ///
-class FDyBuiltinWidgetDebugUiMeta final : public ADyWidgetMetaResource
+class FDyBtWdTestLoadingUi final : public ADyLoadingWidgetMetaResource
 {
-  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBuiltinWidgetDebugUiMeta, "dyBtWidgetDebugUi")
+  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBtWdTestLoadingUi, "dyBtWdTestLoadingUi")
 public:
-  FDyBuiltinWidgetDebugUiMeta();
+  FDyBtWdTestLoadingUi();
 };
 
 
 } /// ::dy::builtin namespace
 
-#endif /// GUARD_DY_BUILTIN_WIDGET_DEBUGUIWIDGET_H
+#endif /// GUARD_DY_BUILTIN_WIDGET_FDYBTWDTESTLAODINGUI_H

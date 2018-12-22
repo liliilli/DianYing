@@ -581,7 +581,7 @@ public: \
     { \
       PDyScriptInstanceMetaInfo metaInfo = {}; \
       metaInfo.mScriptType = EDyScriptType::Cpp; \
-      if constexpr (IsInheritancedFrom<FDyBuiltinDebugUiScript, ADyWidgetCppScript> == true) \
+      if constexpr (IsInheritancedFrom<__MAType__, ADyWidgetCppScript> == true) \
             { metaInfo.mScriptMode = EDyScriptMode::Widget; } \
       else  { metaInfo.mScriptMode = EDyScriptMode::Actor; } \
       \

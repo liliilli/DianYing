@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_BUILTIN_ABSTRACT_ADYWIDGETMETARESOURCE_H
-#define GUARD_DY_BUILTIN_ABSTRACT_ADYWIDGETMETARESOURCE_H
+#ifndef GUARD_DY_BUILTIN_ABSTRACT_ADYLOADINGWIDGETMETARESOURCE_H
+#define GUARD_DY_BUILTIN_ABSTRACT_ADYLOADINGWIDGETMETARESOURCE_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,26 +13,17 @@
 /// SOFTWARE.
 ///
 
-#include <string_view>
-#include <Dy/Builtin/Interface/IDyResource.h>
-#include <Dy/Meta/Type/EDyResourceType.h>
+#include <Dy/Builtin/Abstract/ADyWidgetMetaResource.h>
 
 namespace dy
 {
 
-struct ADyWidgetMetaResource : public IDyResource
+struct ADyLoadingWidgetMetaResource : public ADyWidgetMetaResource
 {
-  virtual ~ADyWidgetMetaResource() = default;
+  virtual ~ADyLoadingWidgetMetaResource() = default;
   static constexpr auto value  = EDyResourceType::WidgetMeta;
-  std::string_view mMetaBuffer = "";
-
-  /// @brief Return meta buffer information.
-  std::any GetMetaInfo() override final
-  {
-    return mMetaBuffer;
-  };
 };
 
 } /// ::dy namespace
 
-#endif /// GUARD_DY_BUILTIN_ABSTRACT_ADYWIDGETMETARESOURCE_H
+#endif /// GUARD_DY_BUILTIN_ABSTRACT_ADYLOADINGWIDGETMETARESOURCE_H

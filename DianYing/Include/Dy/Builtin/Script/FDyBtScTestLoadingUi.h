@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_BUILTIN_WIDGET_DEBUGUIWIDGET_H
-#define GUARD_DY_BUILTIN_WIDGET_DEBUGUIWIDGET_H
+#ifndef GUARD_DY_BUILTINSCRIPT_FDYBTSDCTESTLOADINGUI_H
+#define GUARD_DY_BUILTINSCRIPT_FDYBTSDCTESTLOADINGUI_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,24 +13,27 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyWidgetMetaResource.h>
+#include <Dy/Component/Abstract/ADyWidgetCppScript.h>
+#include <Dy/Builtin/Abstract/ADyScriptResource.h>
+#include <Dy/Meta/Information/ScriptMetaInformation.h>
 #include <Dy/Core/Reflection/RDyBuiltinResources.h>
 
 namespace dy::builtin
 {
 
-///
-/// @class FDyBuiltinWidgetDebugUiMeta
-/// @brief Instantiate rendering pass.
-///
-class FDyBuiltinWidgetDebugUiMeta final : public ADyWidgetMetaResource
+class FDyBtScTestLoadingUi final : public ADyScriptResource, public ADyWidgetCppScript
 {
-  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBuiltinWidgetDebugUiMeta, "dyBtWidgetDebugUi")
+  MDY_REGISTER_RESOURCE_SCRIPT(FDyBtScTestLoadingUi);
 public:
-  FDyBuiltinWidgetDebugUiMeta();
-};
+  void Initiate() override final;
 
+  void Start() override final;
+
+  void Update(_MIN_ TF32 dt) override final;
+
+  void Destroy() override final;
+};
 
 } /// ::dy::builtin namespace
 
-#endif /// GUARD_DY_BUILTIN_WIDGET_DEBUGUIWIDGET_H
+#endif /// GUARD_DY_BUILTINSCRIPT_FDYBTSDCTESTLOADINGUI_H

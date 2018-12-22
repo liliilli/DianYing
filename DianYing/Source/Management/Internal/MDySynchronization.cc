@@ -65,13 +65,8 @@ void MDySynchronization::TrySynchronization()
     this->pRunFrameBooted();
   } break;
   case EDyGlobalGameStatus::FirstLoading:
-  {
-    static bool dependentManagerInitialized = false;
-    if (dependentManagerInitialized == false)
-    { //
-      gEngine->pfInitializeDependentManager();
-      dependentManagerInitialized = true;
-    }
+  { 
+    // Syncrhonization
     this->pRunFrameFirstLoading();
   } break;
   case EDyGlobalGameStatus::Loading:
@@ -108,12 +103,12 @@ void MDySynchronization::pRunFrameBooted()
 
 void MDySynchronization::pRunFrameFirstLoading()
 {
-  static auto& settingManager = MDySetting::GetInstance();
-  static auto& sceneManager   = MDyWorld::GetInstance();
-  MDY_CALL_ASSERT_SUCCESS(sceneManager.TryCreateDebugUi());
-  sceneManager.OpenLevel(settingManager.GetInitialSceneInformationName());
-  sceneManager.Update(-1);
-  this->mStatus = EDyGlobalGameStatus::Loading;
+  using TSyncHelper = SDyIOConnectionHelper;
+  if (TSyncHelper::IsMainTaskListIsEmpty() == false)    { TSyncHelper::ForceProcessDeferredMainTaskList(); }
+  if (TSyncHelper::CheckIOResultInCondition() == true)  { TSyncHelper::ForceProcessIOInsertPhase(); }
+
+  // Check whether IO thread working is done, if so change status to `Loading`. 
+    if (TSyncHelper::IsIOThreadSleep() == true) { this->mStatus = EDyGlobalGameStatus::Loading; }
 }
 
 void MDySynchronization::pRunFrameLoading()
@@ -123,7 +118,9 @@ void MDySynchronization::pRunFrameLoading()
 
 void MDySynchronization::pRunFrameGameRuntime()
 {
-
+  using TSyncHelper = SDyIOConnectionHelper;
+  if (TSyncHelper::IsMainTaskListIsEmpty() == false)  { TSyncHelper::ForceProcessDeferredMainTaskList(); }
+  if (TSyncHelper::CheckIOResultInCondition() == true){ TSyncHelper::ForceProcessIOInsertPhase(); }
 }
 
 } /// ::dy namespace

@@ -70,6 +70,9 @@ public:
   ///
   void RenderDrawCallQueue();
 
+  /// @brief Render only loading widget.
+  void MDY_PRIVATE_SPECIFIER(RenderLoading());
+
 private:
   ///
   /// @brief Reset all of rendering framebuffers related to rendering of scene for new frame rendering.

@@ -93,12 +93,11 @@ void MDyRendering::RenderDrawCallQueue()
       this->mShadowRenderer->RenderScreen(*drawInstance);
     }
   }
+  // Clear opaque draw queue list
+  this->mOpaqueDrawCallList.clear();
 
   // (3) Draw transparent call list with OIT.
   // @TODO IMPLEMENT THIS!
-
-  // Clear opaque draw queue list
-  this->mOpaqueDrawCallList.clear();
 
   //!
   //! Post processing effects
@@ -120,13 +119,19 @@ void MDyRendering::RenderDrawCallQueue()
   }
 #endif /// MDY_FLAG_IN_EDITOR
 
-  //!
-  //! Final
-  //!
-
+  // Final
 #if defined(MDY_FLAG_IN_EDITOR) == false
   this->mSceneFinalRenderer->RenderScreen();
 #endif /// MDY_FLAG_IN_EDITOR == false
+
+  if (MDY_CHECK_ISNOTEMPTY(this->mUiBasicRenderer))       { this->mUiBasicRenderer->RenderScreen(); }
+  if (MDY_CHECK_ISNOTEMPTY(this->mFinalDisplayRenderer))  { this->mFinalDisplayRenderer->RenderScreen(); }
+}
+
+void MDyRendering::MDY_PRIVATE_SPECIFIER(RenderLoading)()
+{
+  if (MDY_CHECK_ISNOTEMPTY(this->mUiBasicRenderer))       { this->mUiBasicRenderer->Clear(); }
+  if (MDY_CHECK_ISNOTEMPTY(this->mFinalDisplayRenderer))  { this->mFinalDisplayRenderer->Clear(); }
 
   if (MDY_CHECK_ISNOTEMPTY(this->mUiBasicRenderer))       { this->mUiBasicRenderer->RenderScreen(); }
   if (MDY_CHECK_ISNOTEMPTY(this->mFinalDisplayRenderer))  { this->mFinalDisplayRenderer->RenderScreen(); }

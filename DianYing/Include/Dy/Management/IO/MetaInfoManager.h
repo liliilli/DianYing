@@ -56,10 +56,13 @@ class MDyMetaInfo final : public IDySingleton<MDyMetaInfo>
   MDY_SINGLETON_PROPERTIES(MDyMetaInfo);
   MDY_SINGLETON_DERIVED(MDyMetaInfo);
 public:
-  ///
+  template <typename TType>
+  using THashMap = std::unordered_map<std::string, TType>;
+
+  using TResourceSpecifierList = std::vector<DDyResourceName>;
+
   /// @brief Get level construction descriptor meta information from levelName which is same to actual level instance to be created.
   /// @return Return value is nullable if not found.
-  ///
   const PDyLevelConstructMetaInfo* GetLevelMetaInformation(const std::string& levelName) const noexcept;
 
   /// @brief  Get valid script meta information instance.
@@ -92,6 +95,10 @@ public:
   /// @brief  Get attachment instance meta information from container.
   /// @return Return value is undefined if not found.
   MDY_NODISCARD const PDyGlAttachmentInstanceMetaInfo&  GetGLAttachmentMetaInformation(_MIN_ const std::string& specifier) const;
+
+  /// @brief Get loading widget pointer if exist, or return nullptr (nothing) value
+  MDY_NODISCARD const PDyMetaWidgetRootDescriptor* 
+  MDY_PRIVATE_SPECIFIER(TryGetLoadingWidgetMetaLoading)() const noexcept;
 
   ///
   /// @brief  Check script meta information is exist.
@@ -170,14 +177,18 @@ public:
     return DyIsMapContains(this->mFrameBufferMetaInfo, speicfierName);
   }
 
-  /// @brief
-  FORCEINLINE MDY_NODISCARD const auto& GetBootResourceSpecifierList() const noexcept
-  {
-    return this->mBootResourceSpecifierList;
-  };
+  /// @brief Check loading widget is exist and ready.
+  /// @return If found, return true or false.
+  MDY_NODISCARD bool IsLoadingWidgetMetaInfoExist() const noexcept;
 
-  template <typename TType>
-  using THashMap = std::unordered_map<std::string, TType>;
+  /// @brief Get booting loading resource specifier list. \n
+  /// This function must not be called twice.
+  void MDY_PRIVATE_SPECIFIER(PopulateBootResourceSpecifierList)() const noexcept;
+
+  /// @brief Get global loading resource specifier list. \n
+  /// THis function must not be called twice. 
+  void MDY_PRIVATE_SPECIFIER(PopulateGlobalResourceSpecifierList)() const noexcept;
+
 private:
   MDY_NODISCARD EDySuccess pReadScriptResourceMetaInformation(_MIN_ const std::string& metaFilePath);
   MDY_NODISCARD EDySuccess pReadPrefabResourceMetaInformation(_MIN_ const std::string& metaFilePath);
@@ -194,8 +205,10 @@ private:
   MDY_NODISCARD EDySuccess pfAddMaterialMetaInfo      (_MIN_ const PDyMaterialInstanceMetaInfo& metaInfo);
   MDY_NODISCARD EDySuccess pfAddGLAttachmentMetaInfo  (_MIN_ const PDyGlAttachmentInstanceMetaInfo& metaInfo);
   MDY_NODISCARD EDySuccess pfAddGLFrameBufferMetaInfo (_MIN_ const PDyGlFrameBufferInstanceMetaInfo& metaInfo);
+  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(AddLoadingWidgetMetaInformation)(_MIN_ const std::string& widgetMetaInfo);
 
-  MDY_NODISCARD EDySuccess pfAddBootResourceSpecifierList(_MIN_ const std::vector<DDyResourceName>& list);
+  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(AddBootResourceSpecifierList)(_MIN_ const TResourceSpecifierList& list);
+  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(AddGlobalResourceSpecifierList)(_MIN_ const TResourceSpecifierList& list);
 
   /// Level meta information map.
   THashMap<PDyLevelConstructMetaInfo>   mLevelInfoMap   = {};
@@ -222,7 +235,8 @@ private:
   THashMap<PDyGlFrameBufferInstanceMetaInfo>  mFrameBufferMetaInfo = {};
 
   /// Resource specifier name list for loading in boot sequence of MDySync.
-  std::vector<DDyResourceName> mBootResourceSpecifierList = {};
+  TResourceSpecifierList              mBootResourceSpecifierList    = {};
+  std::vector<TResourceSpecifierList> mGlobalResourceSpecifierList  = {};  
 
   //!
   //! Hierarchial meta information containers.
@@ -232,6 +246,9 @@ private:
   THashMap<std::unique_ptr<PDyPrefabInstanceMetaInfo>>   mPrefabMetaInfo = {};
   /// Widget meta information map.
   THashMap<std::unique_ptr<PDyMetaWidgetRootDescriptor>> mWidgetMetaInfo = {};
+
+  /// Loading widget meta information map.
+  std::unique_ptr<PDyMetaWidgetRootDescriptor> mLoadingWidgetMetaInfo = MDY_INITIALIZE_NULL;
 
   friend class ::dy::reflect::RDyBuiltinResource;
 };
