@@ -297,6 +297,11 @@ bool MDyMetaInfo::IsMeshMetaInfoExist(_MIN_ const std::string & specifier) const
   return DyIsMapContains(this->mBtMeshMetaInfo, specifier);
 }
 
+bool MDyMetaInfo::IsLoadingWidgetMetaInfoExist() const noexcept
+{
+  return MDY_CHECK_ISNOTEMPTY(this->mLoadingWidgetMetaInfo);
+}
+
 EDySuccess MDyMetaInfo::pReadScriptResourceMetaInformation(_MIN_ const std::string& metaFilePath)
 {
   // Validity Test
@@ -407,12 +412,6 @@ EDySuccess MDyMetaInfo::pReadWidgetResourceMetaInformation(_MIN_ const std::stri
   return DY_SUCCESS;
 }
 
-EDySuccess MDyMetaInfo::MDY_PRIVATE_SPECIFIER(AddLoadingWidgetMetaInformation)(_MIN_ const std::string& widgetMetaInfo)
-{
-  MDY_NOT_IMPLEMENTED_ASSERT();
-  return DY_SUCCESS;
-}
-
 EDySuccess MDyMetaInfo::pfAddWidgetMetaInformation(_MIN_ const std::string& metaInformationString)
 {
   nlohmann::json jsonAtlas = nlohmann::json::parse(metaInformationString);
@@ -420,6 +419,16 @@ EDySuccess MDyMetaInfo::pfAddWidgetMetaInformation(_MIN_ const std::string& meta
   MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(rootInstance), "Widget root instance must not be empty.");
 
   this->mWidgetMetaInfo.try_emplace(rootInstance->mWidgetSpecifierName, std::move(rootInstance));
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::MDY_PRIVATE_SPECIFIER(AddLoadingWidgetMetaInformation)(_MIN_ const std::string& widgetMetaInfo)
+{
+  const nlohmann::json jsonAtlas = nlohmann::json::parse(widgetMetaInfo);
+  auto rootInstance = DyCreateWidgetMetaInformation(jsonAtlas);
+  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(rootInstance), "Widget root instance must not be empty.");
+
+  mLoadingWidgetMetaInfo = std::move(rootInstance);
   return DY_SUCCESS;
 }
 

@@ -170,6 +170,10 @@ public:
     return DyIsMapContains(this->mFrameBufferMetaInfo, speicfierName);
   }
 
+  /// @brief Check loading widget is exist and ready.
+  /// @return If found, return true or false.
+  MDY_NODISCARD bool IsLoadingWidgetMetaInfoExist() const noexcept;
+
   /// @brief
   FORCEINLINE MDY_NODISCARD const auto& GetBootResourceSpecifierList() const noexcept
   {
@@ -233,6 +237,9 @@ private:
   THashMap<std::unique_ptr<PDyPrefabInstanceMetaInfo>>   mPrefabMetaInfo = {};
   /// Widget meta information map.
   THashMap<std::unique_ptr<PDyMetaWidgetRootDescriptor>> mWidgetMetaInfo = {};
+
+  /// Loading widget meta information map.
+  std::unique_ptr<PDyMetaWidgetRootDescriptor> mLoadingWidgetMetaInfo = MDY_INITIALIZE_NULL;
 
   friend class ::dy::reflect::RDyBuiltinResource;
 };
