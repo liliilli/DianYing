@@ -15,6 +15,7 @@
 
 #include <Dy/Element/Interface/IDyUpdatable.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
+#include <Dy/Management/Internal/World/FDyWorldUIContainer.h>
 #include <Dy/Element/Level.h>
 
 //!
@@ -37,7 +38,7 @@ namespace dy
 /// @class MDyWorld
 /// @brief Manages scene and helping access each scene's unique properties.
 ///
-class MDyWorld final : public ISingleton<MDyWorld>, public IDyUpdatable
+class MDyWorld final : public IDySingleton<MDyWorld>, public IDyUpdatable
 {
   MDY_SINGLETON_DERIVED(MDyWorld);
   MDY_SINGLETON_PROPERTIES(MDyWorld);
@@ -89,19 +90,34 @@ public:
     return static_cast<TI32>(this->mActivatedOnRenderingCameras.size());
   }
 
-  ///
   /// @brief
   /// @param  index
   /// @return
-  ///
   MDY_NODISCARD std::optional<CDyCamera*> GetFocusedCameraValidReference(_MIN_ const TI32 index) const noexcept;
 
-  ///
   /// @brief  Ask it for opening level with levelName next frame.
   /// @param  levelName valid level meta information name
   /// @return If level is created successfully, return true or false.
-  ///
   EDySuccess OpenLevel(const std::string& levelName);
+
+  /// @brief  Check scene is initialized and valid.
+  /// @return
+  MDY_NODISCARD bool IsLevelPresentValid() const noexcept;
+
+  /// @brief  Get valid level reference.
+  /// @return Valid level reference. when level is not specified, unexpected behaviour.
+  MDY_NODISCARD FDyLevel& GetValidLevelReference() noexcept;
+
+  /// @brief Try create debug ui layout to screen as highest priority. (10xx) \n
+  /// If debug ui is already spawned, just return DY_FAILURE, or DY_SUCCESS
+  MDY_NODISCARD EDySuccess TryCreateDebugUi();
+  /// @brief Check debug Ui is now on exist.
+  MDY_NODISCARD bool IsDebugUiExist() const noexcept;
+  /// @brief Try remove debug ui layout from screen. \n
+  /// If already removed, just return DY_FAILURE
+  MDY_NODISCARD EDySuccess TryRemoveDebugUi();
+  /// @brief Try draw debug ui if exist.
+  void TryRenderDebugUi();
 
 #ifdef false
   ///
@@ -217,9 +233,9 @@ private:
   CDyLegacyCamera*                mValidMainCameraPtr = nullptr;
   std::vector<CDyLegacyCamera*>   mValidSubCameraPtrs = {};
 
-  std::string               mNextLevelName      = MDY_INITILAIZE_EMPTYSTR;
-  std::string               mPresentLevelName   = MDY_INITILAIZE_EMPTYSTR;
-  std::string               mPreviousLevelName  = MDY_INITILAIZE_EMPTYSTR;
+  std::string               mNextLevelName      = MDY_INITIALIZE_EMPTYSTR;
+  std::string               mPresentLevelName   = MDY_INITIALIZE_EMPTYSTR;
+  std::string               mPreviousLevelName  = MDY_INITIALIZE_EMPTYSTR;
 
   /// Present valid level instance.
   std::unique_ptr<FDyLevel> mLevel              = nullptr;
@@ -244,6 +260,9 @@ private:
 
   /// Garbage collection actor instance list.
   std::vector<std::unique_ptr<FDyActor>> mActorGc = {};
+
+  /// @brief UI Instance container.
+  FDyWorldUIContainer mUiInstanceContainer;
 
   friend class CDyLegacyCamera;
   friend class FDyLevel;

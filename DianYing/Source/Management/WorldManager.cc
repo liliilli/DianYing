@@ -15,7 +15,7 @@
 /// Header file
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Management/LoggingManager.h>
-#include <Dy/Management/MetaInfoManager.h>
+#include <Dy/Management/IO/MetaInfoManager.h>
 
 namespace dy
 {
@@ -66,7 +66,7 @@ void MDyWorld::Update(_MIN_ float dt)
 
     this->mPreviousLevelName  = this->mPresentLevelName;
     this->mPresentLevelName   = this->mNextLevelName;
-    this->mNextLevelName      = MDY_INITILAIZE_EMPTYSTR;
+    this->mNextLevelName      = MDY_INITIALIZE_EMPTYSTR;
   }
 
   // Scene update routine
@@ -122,7 +122,7 @@ void MDyWorld::UpdateObjects(_MIN_ float dt)
     for (auto& script : this->mActivatedScripts)
     {
       if (MDY_CHECK_ISNULL(script)) { continue; }
-      script->Update(dt);
+      script->CallScriptFunction(dt);
     }
 
     // CDyModelRenderer update
@@ -139,7 +139,7 @@ void MDyWorld::UpdateObjects(_MIN_ float dt)
       camera->Update(dt);
     }
 
-    //
+    // After update, check
   }
 }
 
@@ -159,7 +159,7 @@ CDyLegacyCamera* MDyWorld::GetMainCameraPtr() const noexcept
 
 std::optional<CDyCamera*> MDyWorld::GetFocusedCameraValidReference(const TI32 index) const noexcept
 {
-  PHITOS_ASSERT(index < this->mActivatedOnRenderingCameras.size(),
+  MDY_ASSERT(index < this->mActivatedOnRenderingCameras.size(),
                 R"dy(Input parameter "index" for "MDyWorld::GetFocusedCameraValidReferenc" must be equal or less than "MDyWorld::mActivatedOnRenderingCameras".)dy");
 
   auto* camera = this->mActivatedOnRenderingCameras[index];
@@ -179,9 +179,40 @@ EDySuccess MDyWorld::OpenLevel(_MIN_ const std::string& levelName)
   return DY_SUCCESS;
 }
 
+bool MDyWorld::IsLevelPresentValid() const noexcept
+{
+  return MDY_CHECK_ISNOTEMPTY(this->mLevel);
+}
+
+FDyLevel& MDyWorld::GetValidLevelReference() noexcept
+{
+  MDY_ASSERT(IsLevelPresentValid() == true, "Level must be valid when retrieving level reference.");
+  return *this->mLevel;
+}
+
+EDySuccess MDyWorld::TryCreateDebugUi()
+{
+  return this->mUiInstanceContainer.TryCreateDebugUi();
+}
+
+bool MDyWorld::IsDebugUiExist() const noexcept
+{
+  return this->mUiInstanceContainer.IsDebugUiExist();
+}
+
+EDySuccess MDyWorld::TryRemoveDebugUi()
+{
+  return this->mUiInstanceContainer.TryRemoveDebugUi();
+}
+
+void MDyWorld::TryRenderDebugUi()
+{
+  this->mUiInstanceContainer.TryRenderDebugUi();
+}
+
 void MDyWorld::pfBindFocusCamera(_MIN_ CDyLegacyCamera& validCameraPtr) noexcept
 {
-  PHITOS_ASSERT(MDY_CHECK_ISNOTNULL(&validCameraPtr), "validCameraPtr must be valid, not nullptr.");
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(&validCameraPtr), "validCameraPtr must be valid, not nullptr.");
   this->mValidMainCameraPtr = &validCameraPtr;
 }
 
@@ -205,7 +236,7 @@ void MDyWorld::pfMoveActorToGc(_MIN_ NotNull<FDyActor*> actorRawPtr) noexcept
 
 void MDyWorld::pfUnenrollActiveScript(_MIN_ TI32 index) noexcept
 {
-  PHITOS_ASSERT(index < this->mActivatedScripts.size(), "index must be smaller than this->mActivatedScripts.size().");
+  MDY_ASSERT(index < this->mActivatedScripts.size(), "index must be smaller than this->mActivatedScripts.size().");
 
   this->mActivatedScripts[index] = MDY_INITIALIZE_NULL;
   this->mErasionScriptCandidateList.emplace_back(index);
@@ -213,7 +244,7 @@ void MDyWorld::pfUnenrollActiveScript(_MIN_ TI32 index) noexcept
 
 void MDyWorld::pfUnenrollActiveModelRenderer(_MIN_ TI32 index) noexcept
 {
-  PHITOS_ASSERT(index < this->mActivatedModelRenderers.size(), "index must be smaller than this->mActivatedModelRenderers.size().");
+  MDY_ASSERT(index < this->mActivatedModelRenderers.size(), "index must be smaller than this->mActivatedModelRenderers.size().");
 
   this->mActivatedModelRenderers[index] = MDY_INITIALIZE_NULL;
   this->mErasionModelRenderersCandidateList.emplace_back(index);
@@ -221,7 +252,7 @@ void MDyWorld::pfUnenrollActiveModelRenderer(_MIN_ TI32 index) noexcept
 
 void MDyWorld::pfUnenrollActiveCamera(_MIO_ TI32& index) noexcept
 {
-  PHITOS_ASSERT(index < this->mActivatedOnRenderingCameras.size(), "index must be smaller than this->mActivatedOnRenderingCameras.size().");
+  MDY_ASSERT(index < this->mActivatedOnRenderingCameras.size(), "index must be smaller than this->mActivatedOnRenderingCameras.size().");
 
   this->mActivatedOnRenderingCameras[index] = MDY_INITIALIZE_NULL;
   this->mErasionCamerasCandidateList.emplace_back(index);

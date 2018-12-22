@@ -47,23 +47,23 @@ void CDyCamera::pPropagateParentActorActivation(_MIN_ const DDy3StateBool& actor
   { MDY_NOTUSED auto _ = pTryDeactivateCameraOperation(); }
 }
 
-EDySuccess CDyCamera::Initialize(_MIN_ const DDyCameraMetaInformation& descriptor)
+EDySuccess CDyCamera::Initialize(_MIN_ const PDyCameraComponentMetaInfo& descriptor)
 {
   // Setting initial properties values.
-  this->mNear                   = descriptor.mNear;
-  this->mFar                    = descriptor.mFar;
-  this->mFieldOfView            = descriptor.mInitialFieldOfView;
-  this->mIsOrthographicCamera   = descriptor.mIsOrthographic;
-  this->mViewportRectXY         = descriptor.mViewportSizeXY;
-  this->mViewportRectWH         = descriptor.mViewportSizeWH;
+  this->mNear                   = descriptor.mDetails.mNear;
+  this->mFar                    = descriptor.mDetails.mFar;
+  this->mFieldOfView            = descriptor.mDetails.mInitialFieldOfView;
+  this->mIsOrthographicCamera   = descriptor.mDetails.mProjectionType == EDyCameraProjectionType::Orthographic;
+  this->mViewportRectXY         = descriptor.mDetails.mViewportSize.mLeftDown;
+  this->mViewportRectWH         = descriptor.mDetails.mViewportSize.mRightUp;
 
   const auto& settingManager    = MDySetting::GetInstance();
   this->mAspect                 = static_cast<float>(settingManager.GetWindowSizeWidth()) / settingManager.GetWindowSizeHeight();
-  this->mIsMustBeFocusedInstantly = descriptor.mIsFocusInstantly;
+  this->mIsMustBeFocusedInstantly = descriptor.mDetails.mIsFocusInstantly;
 
   // @TODO FIX) IMPLEMENT THIS.
   this->mIsEnableMeshUnClipped    = false;
-  this->mIsEnableMeshUnClipped    = descriptor.mIsEnableMeshUnClipped;
+  this->mIsEnableMeshUnClipped    = descriptor.mDetails.mIsEnableMeshUnClipped;
 
   // Set first time flag to false to use second time flag logics.
   if (descriptor.mInitiallyActivated) { this->Activate(); }
@@ -86,8 +86,8 @@ void CDyCamera::Update(_MIN_ float dt)
 
 std::string CDyCamera::ToString()
 {
-  PHITOS_NOT_IMPLEMENTED_ASSERT();
-  return MDY_INITILAIZE_EMPTYSTR;
+  MDY_NOT_IMPLEMENTED_ASSERT();
+  return MDY_INITIALIZE_EMPTYSTR;
 }
 
 void CDyCamera::pUpdateCameraVectors()

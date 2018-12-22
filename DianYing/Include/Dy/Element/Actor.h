@@ -13,16 +13,17 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Component/Internal/MaterialType.h>
+#include <Dy/Core/Resource/Internal/MaterialType.h>
 #include <Dy/Component/CDyScript.h>
+#include <Dy/Component/Internal/CDyActorScriptCpp.h>
+#include <Dy/Component/Internal/CDyActorScriptLua.h>
 #include <Dy/Component/Helper/TmpCheckInitilizeParams.h>
 #include <Dy/Component/Helper/TmpCheckRemoveParams.h>
 #include <Dy/Element/Object.h>
-#include <Dy/Element/Descriptor/LevelDescriptor.h>
 #include <Dy/Element/Abstract/ADyBaseComponent.h>
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
 #include <Dy/Element/Abstract/ADyTransformable.h>
-#include <Dy/Management/MetaInfoManager.h>
+#include <Dy/Management/IO/MetaInfoManager.h>
 
 namespace dy
 {
@@ -46,7 +47,7 @@ public:
   /// @param objectMetaDesc Meta descriptor information instance for FDyActor.
   /// @return Success / Failure flag.
   ///
-  MDY_NODISCARD EDySuccess Initialize(_MIN_ const DDyObjectInformation& objectMetaDesc);
+  MDY_NODISCARD EDySuccess Initialize(_MIN_ const PDyObjectMetaInfo& objectMetaDesc);
 
   ///
   /// @brief Release function (virtual) because Initialize function has different parameter but release does not need any parameter.
@@ -134,7 +135,7 @@ public:
   ///
   MDY_NODISCARD std::string ToString() override
   {
-    return MDY_INITILAIZE_EMPTYSTR;
+    return MDY_INITIALIZE_EMPTYSTR;
   }
 
   ///
@@ -155,31 +156,64 @@ public:
   template<class TComponent, typename... TArgs>
   MDY_NODISCARD NotNull<TComponent*> AddComponent(_MIN_ TArgs&&... args)
   {
+    ///
+    /// @brief Make script component (lua or cpp)
+    ///
+    static auto MakeScriptComponent = [this](const PDyScriptComponentMetaInfo& info)
+    {
+      const auto& instanceInfo = MDyMetaInfo::GetInstance().GetScriptMetaInformation(info.mDetails.mSpecifierName);
+      MDY_ASSERT(instanceInfo.mScriptType != EDyScriptType::NoneError, "");
+
+      std::unique_ptr<CDyScript> component = nullptr;
+      if (instanceInfo.mScriptType == EDyScriptType::Cpp)
+      {
+        auto componentPtr = std::make_unique<CDyActorScriptCpp>(std::ref(*this));
+        MDY_CALL_ASSERT_SUCCESS(componentPtr->Initialize(info));
+        component = std::move(componentPtr);
+      }
+      else
+      {
+        auto componentPtr = std::make_unique<CDyActorScriptLua>(std::ref(*this));
+        MDY_CALL_ASSERT_SUCCESS(componentPtr->Initialize(info));
+        component = std::move(componentPtr);
+      }
+
+      return component;
+    };
+
+    //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    //! FUNCTIONBODY ∨
+    //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
     // Integrity test
     MDY_TEST_IS_BASE_OF(ADyBaseComponent, TComponent);
     DyCheckComponentInitializeFunctionParams<TComponent, TArgs...>();
 
-    // Add and initialize component itself.
-    auto componentPtr = std::make_unique<TComponent>(std::ref(*this));
-    MDY_CALL_ASSERT_SUCCESS(componentPtr->Initialize(std::forward<TArgs>(args)...));
-
     if constexpr (std::is_same_v<CDyScript, TComponent>)
-    { // If component which just added is CDyScript, Call Initiate script first.
-      auto& reference = this->mScriptList.emplace_back(std::move(componentPtr));
-      reference->Initiate();
+    {
+      // Add and initialize component itself.
+      // If component which just added is CDyScript, Call Initiate script first.
+      auto& reference = this->mScriptList.emplace_back(MakeScriptComponent(std::forward<TArgs...>(args)...));
       return DyMakeNotNull(reference.get());
     }
-    else if constexpr (std::is_same_v<CDyTransform, TComponent>)
-    { // If component is not CDyScript but related to ADyBaseTransform (Transform components)
-      PHITOS_ASSERT(MDY_CHECK_ISEMPTY(this->mTransform), "FDyActor::mTransform must be empty when insert transform component.");
-
-      this->mTransform.reset(componentPtr.release());
-      return DyMakeNotNull(this->mTransform.get());
-    }
     else
-    { // Otherwise remain, just return Ptr.
-      auto& reference = this->mComponentList.emplace_back(std::move(componentPtr));
-      return DyMakeNotNull(static_cast<TComponent*>(reference.get()));
+    {
+      // Add and initialize component itself.
+      auto componentPtr = std::make_unique<TComponent>(std::ref(*this));
+      MDY_CALL_ASSERT_SUCCESS(componentPtr->Initialize(std::forward<TArgs>(args)...));
+
+      if constexpr (std::is_same_v<CDyTransform, TComponent>)
+      { // If component is not CDyScript but related to ADyBaseTransform (Transform components)
+        MDY_ASSERT(MDY_CHECK_ISEMPTY(this->mTransform), "FDyActor::mTransform must be empty when insert transform component.");
+
+        this->mTransform.reset(componentPtr.release());
+        return DyMakeNotNull(this->mTransform.get());
+      }
+      else
+      { // Otherwise remain, just return Ptr.
+        auto& reference = this->mComponentList.emplace_back(std::move(componentPtr));
+        return DyMakeNotNull(static_cast<TComponent*>(reference.get()));
+      }
     }
   }
 

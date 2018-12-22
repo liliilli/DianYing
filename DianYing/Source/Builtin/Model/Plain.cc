@@ -14,54 +14,17 @@
 
 /// Header file
 #include <Dy/Builtin/Model/Plain.h>
-#include <Dy/Core/Component/Internal/ModelType.h>
-#include <Dy/Core/Component/Resource/SubmeshResource.h>
-#include <Dy/Management/DataInformationManager.h>
+#include <Dy/Builtin/Mesh/FDyBtMsPlain.h>
 
 namespace dy::builtin
 {
 
-FDyBuiltinModelPlain::FDyBuiltinModelPlain()
+void FDyBuiltinModelPlain::ConstructBuffer(PDyModelInstanceMetaInfo& buffer) noexcept
 {
-  PDySubmeshInformationDescriptor submeshDesc;
-
-  // Make position, normal, texcoord vertex information
-  submeshDesc.mVertices.reserve(4);
-  {
-    DDyVertexInformation vertex;
-
-    vertex.mPosition = DDyVector3{ 1, 0, 1 };
-    vertex.mNormal = DDyVector3::FrontZ();
-    vertex.mTexCoords = DDyVector2{ 1, 0 };
-    submeshDesc.mVertices.emplace_back(vertex);
-    vertex.mPosition = DDyVector3{ 1, 0, -1 };
-    vertex.mNormal = DDyVector3::FrontZ();
-    vertex.mTexCoords = DDyVector2{ 1, 1 };
-    submeshDesc.mVertices.emplace_back(vertex);
-    vertex.mPosition = DDyVector3{ -1, 0, -1 };
-    vertex.mNormal = DDyVector3::FrontZ();
-    vertex.mTexCoords = DDyVector2{ 0, 1 };
-    submeshDesc.mVertices.emplace_back(vertex);
-    vertex.mPosition = DDyVector3{ -1, 0, 1 };
-    vertex.mNormal = DDyVector3::FrontZ();
-    vertex.mTexCoords = DDyVector2{ 0, 0 };
-    submeshDesc.mVertices.emplace_back(vertex);
-  }
-
-  // Make index information
-  submeshDesc.mIndices.reserve(6);
-  std::array<TU32, 6> indices = { 0, 1, 2, 0, 2, 3 };
-  for (const auto index : indices) { submeshDesc.mIndices.emplace_back(index); }
-
-  // Make model information
-  PDyModelConstructionVertexDescriptor modelDesc;
-  {
-    modelDesc.mModelName = FDyBuiltinModelPlain::sName;
-    modelDesc.mSubmeshConstructionInformations.emplace_back(submeshDesc);
-  }
-
-  auto& manInfo = MDyDataInformation::GetInstance();
-  MDY_CALL_ASSERT_SUCCESS(manInfo.CreateModelInformation(modelDesc));
+  buffer.mSourceType          = EDyResourceSource::Builtin;
+  buffer.mSpecifierName       = sName;
+  buffer.mIsUsingBuiltinMesh  = true;
+  buffer.mBuiltinMeshSpecifierList.emplace_back(FDyBtMsPlain::sName);
 }
 
 } /// ::dy::builtin namespace

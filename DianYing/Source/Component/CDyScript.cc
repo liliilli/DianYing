@@ -15,6 +15,11 @@
 /// Header file
 #include <Dy/Component/CDyScript.h>
 #include <Dy/Management/WorldManager.h>
+#include <Dy/Management/ScriptManager.h>
+
+//!
+//! Implementation
+//!
 
 namespace dy
 {
@@ -66,55 +71,14 @@ void CDyScript::pPropagateParentActorActivation(const DDy3StateBool& actorBool) 
   }
 }
 
-void CDyScript::Initiate()
+void CDyScript::CallScriptFunction(_MIN_ const float dt) noexcept
 {
-
-}
-
-void CDyScript::Start()
-{
-
-}
-
-void CDyScript::Update(float dt)
-{
-  MDY_LOG_CRITICAL("{0}::Update()", dt);
-}
-
-void CDyScript::OnEnabled()
-{
-
-}
-
-void CDyScript::OnDisabled()
-{
-
-}
-
-void CDyScript::Destroy()
-{
-
+  this->mScriptState.CallScriptFunction(dt);
 }
 
 std::string CDyScript::ToString()
 {
   return "CDyScript::ToString NOT IMPLEMENTED YET!";
-}
-
-EDySuccess CDyScript::Initialize(const DDyScriptMetaInformation& metaInfo)
-{
-  // @TODO ASSERT THAT SCRIPT COMPONENT IS ACTIVATED EVEN WHEN FIRST TIME.
-  this->mScriptName             = metaInfo.mScriptName;
-  this->mScriptPath             = metaInfo.mScriptPath;
-
-  if (metaInfo.mInitiallyActivated) { this->Activate(); }
-
-  return DY_SUCCESS;
-}
-
-void CDyScript::Release()
-{
-  this->Deactivate();
 }
 
 } /// ::dy namespace

@@ -38,7 +38,7 @@ namespace dy::editor
 /// @class MDyEditorGui
 /// @brief Gui management class for gui editor.
 ///
-class MDyEditorGui : public ISingleton<MDyEditorGui>, public IDyGuiComponentBase
+class MDyEditorGui : public IDySingleton<MDyEditorGui>, public IDyGuiComponentBase
 {
   MDY_SINGLETON_PROPERTIES(MDyEditorGui);
   MDY_SINGLETON_DERIVED(MDyEditorGui);

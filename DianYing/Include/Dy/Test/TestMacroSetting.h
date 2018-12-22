@@ -17,6 +17,6 @@
 /// @macro MDY_FLAG_TEST_ENABLED
 /// @brief Enable library and function test.
 ///
-#define MDY_FLAG_TEST_ENABLED
+//#define MDY_FLAG_TEST_ENABLED
 
 #endif /// GUARD_DY_TEST_TESTMACROSETTING_H

@@ -14,9 +14,6 @@
 
 /// Header file
 #include <Dy/Builtin/ShaderGl/RenderBasicShadow.h>
-#include <Dy/Core/Component/Internal/ShaderType.h>
-#include <Dy/Management/DataInformationManager.h>
-#include <Dy/Management/HeapResourceManager.h>
 
 //!
 //! Forward declaration and data
@@ -31,9 +28,10 @@ MDY_SET_IMMUTABLE_STRING(sVertexShaderCode, R"dy(
 layout (location = 0) in vec3 dyPosition;
 
 uniform mat4 uPvLightMatrix;
+uniform mat4 uModelMatrix;
 
 void main() {
-    gl_Position = uPvLightMatrix * vec4(dyPosition, 1.0);
+    gl_Position = uPvLightMatrix * uModelMatrix * vec4(dyPosition, 1.0);
 }
 )dy");
 
@@ -53,28 +51,9 @@ namespace dy::builtin
 
 FDyBuiltinShaderGLRenderBasicShadow::FDyBuiltinShaderGLRenderBasicShadow()
 {
-  PDyShaderConstructionDescriptor shaderDesc;
-  shaderDesc.mShaderName = sName;
-  {
-    PDyShaderFragmentInformation vs;
-    vs.mShaderType = EDyShaderFragmentType::Vertex;
-    vs.mShaderRawCode = sVertexShaderCode;
-    vs.mIsEnabledRawLoadShaderCode = true;
-    shaderDesc.mShaderFragments.emplace_back(vs);
-  }
-  {
-    PDyShaderFragmentInformation fs;
-    fs.mShaderType = EDyShaderFragmentType::Pixel;
-    fs.mShaderRawCode = sFragmentShaderCode;
-    fs.mIsEnabledRawLoadShaderCode = true;
-    shaderDesc.mShaderFragments.emplace_back(fs);
-  }
-
-  auto& infoManager = MDyDataInformation::GetInstance();
-  auto& rescManager = MDyHeapResource::GetInstance();
-
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation(shaderDesc));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(sName.data()));
+  this->mSpecifierName  = sName;
+  this->mVertexBuffer   = sVertexShaderCode;
+  this->mPixelBuffer    = sFragmentShaderCode;
 }
 
 } /// ::dy::builtin namespace

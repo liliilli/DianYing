@@ -16,7 +16,7 @@
 #include <Dy/Element/Level.h>
 #include <Dy/Helper/HashCompileCrc32.h>
 #include <Dy/Management/WorldManager.h>
-#include <Dy/Management/MetaInfoManager.h>
+#include <Dy/Management/IO/MetaInfoManager.h>
 
 //!
 //! Local translation unit function & data
@@ -34,56 +34,48 @@ namespace
 namespace dy
 {
 
-void FDyLevel::Initialize(_MIN_ const PDyLevelConstructDescriptor& desc)
+void FDyLevel::Initialize(_MIN_ const PDyLevelConstructMetaInfo& desc)
 {
-  ///
   /// @brief  Create pawn instance and set fundamental properties.
   /// @param  objectInformation Information to create FDyPawn instance.
-  ///
-  static auto pCreateActorInstance = [&](_MIN_ const DDyObjectInformation& objectInformation)
+  static auto pCreateActorInstance = [](_MIN_ const PDyObjectMetaInfo& objectInformation)
   {
     // Make FDyActor instance.
     auto instancePtr = std::make_unique<FDyActor>();
     MDY_CALL_ASSERT_SUCCESS(instancePtr->Initialize(objectInformation));
-
-    // @TODO IMPLEMENT PARENT TRANSFORMATION RELOCATION MECHANISM
-    if (objectInformation.mParentHashValue.empty() == false)
-    {
-#ifdef false
-      PHITOS_NOT_IMPLEMENTED_ASSERT();
-      instancePtr->SetParent();
-#endif
-    }
 
     // Update transform to reflect transform information.
     MDY_NOTUSED const auto& _ = instancePtr->GetTransform()->GetTransform();
 
     // Check activation flags and execute sub-routines of each components.
     instancePtr->pUpdateActivateFlagFromParent();
-    if (objectInformation.mInitialActivated) { instancePtr->Activate(); }
-
-    // @TODO TEMPORARY.
-    auto [it, result] = this->mActorMap.try_emplace(instancePtr->GetActorName(), std::move(instancePtr));
-    PHITOS_ASSERT(result == true, "Unexpected error occured in inserting FDyActor to object map.");
+    if (objectInformation.mProperties.mInitialActivated == true) { instancePtr->Activate(); }
+    return instancePtr;
   };
+
 
   // FunctionBody ∨
 
-  this->mLevelName            = desc.mLevelName;
-  // @TODO REMOVE THIS AS SOON AS IMPLEMENT HASH SAVE
+
+  this->mLevelName            = desc.mMetaCategory.mLevelName;
   this->mLevelHashIdentifier  = hash::DyToCrc32Hash(this->mLevelName.c_str());
-  this->mLevelBackgroundColor = desc.mLevelBackgroundColor;
+  this->mLevelBackgroundColor = desc.mMetaCategory.mLevelBackgroundColor;
 
   // Create object, FDyActor
-  for (const auto& objectInformation : desc.mLevelObjectInformations)
+  for (const auto& objectInformation : desc.mLevelObjectMetaInfoList)
   {
-    const auto type = objectInformation.mObjectType;
+    const auto type = objectInformation->mObjectType;
     switch (type)
     {
-    default: PHITOS_UNEXPECTED_BRANCH();    break;
-    case EDyMetaObjectType::Actor:          pCreateActorInstance(objectInformation); break;
-    case EDyMetaObjectType::SceneScriptor:  PHITOS_NOT_IMPLEMENTED_ASSERT(); break;
-    case EDyMetaObjectType::Object:         PHITOS_NOT_IMPLEMENTED_ASSERT(); break;
+    default: MDY_UNEXPECTED_BRANCH(); break;
+    case EDyMetaObjectType::Actor:
+    {
+      auto instancePtr = pCreateActorInstance(*objectInformation);
+      auto [it, result] = this->mActorMap.try_emplace(instancePtr->GetActorName(), std::move(instancePtr));
+      MDY_ASSERT(result == true, "Unexpected error occured in inserting FDyActor to object map.");
+    } break;
+    case EDyMetaObjectType::SceneScriptor:  MDY_NOT_IMPLEMENTED_ASSERT(); break;
+    case EDyMetaObjectType::Object:         MDY_NOT_IMPLEMENTED_ASSERT(); break;
     }
   }
 
@@ -114,15 +106,13 @@ void FDyLevel::Release()
 
 void FDyLevel::Update(float dt)
 {
-  if (!this->mInitialized) { return; }
-
-
+  if (this->mInitialized == false) { return; }
 }
 
 std::string FDyLevel::ToString()
 {
-PHITOS_NOT_IMPLEMENTED_ASSERT();
-return MDY_INITILAIZE_EMPTYSTR;
+MDY_NOT_IMPLEMENTED_ASSERT();
+return MDY_INITIALIZE_EMPTYSTR;
 }
 
 } /// ::dy namespace

@@ -14,23 +14,12 @@
 
 /// Header file
 #include <Dy/Element/Actor.h>
-#include <Dy/Management/MetaInfoManager.h>
+#include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Component/CDyTransform.h>
 #include "Dy/Component/CDyModelFilter.h"
 #include "Dy/Component/CDyModelRenderer.h"
 #include "Dy/Component/CDyCamera.h"
-
-//!
-//! Forward declaration
-//!
-
-namespace dy
-{
-
-///
-DDyTransformMetaInformation sDefaultTransformMetaInformation;
-
-} /// ::dy namespace
+#include "Dy/Component/CDyDirectionalLight.h"
 
 //!
 //! Implementation
@@ -39,55 +28,53 @@ DDyTransformMetaInformation sDefaultTransformMetaInformation;
 namespace dy
 {
 
-EDySuccess FDyActor::Initialize(_MIN_ const DDyObjectInformation& objectMetaDesc)
+EDySuccess FDyActor::Initialize(_MIN_ const PDyObjectMetaInfo& objectMetaDesc)
 {
   bool isTransformCreated = false;
-  this->pSetObjectName(objectMetaDesc.mObjectName);
+  this->pSetObjectName(objectMetaDesc.mSpecifierName);
 
   // Create components
   for (const auto& [type, componentInfo] : objectMetaDesc.mMetaComponentInfo)
   {
     switch (type)
     {
-    default: PHITOS_UNEXPECTED_BRANCH(); break;
+    default: MDY_UNEXPECTED_BRANCH(); break;
     case EDyComponentMetaType::Transform:
     {
-      const auto& desc = std::any_cast<const DDyTransformMetaInformation&>(componentInfo);
+      const auto& desc = std::any_cast<const PDyTransformComponentMetaInfo&>(componentInfo);
       MDY_NOTUSED auto transformComponentPtr = this->AddComponent<CDyTransform>(desc);
-
       isTransformCreated = true;
     } break;
     case EDyComponentMetaType::Script:
     {
-      const auto& desc = std::any_cast<const DDyScriptMetaInformation&>(componentInfo);
+      const auto& desc = std::any_cast<const PDyScriptComponentMetaInfo&>(componentInfo);
       MDY_NOTUSED auto scriptComponentPtr = this->AddComponent<CDyScript>(desc);
     } break;
     case EDyComponentMetaType::DirectionalLight:
     {
-      const auto& desc = std::any_cast<const DDyDirectionalLightMetaInformation&>(componentInfo);
-      (void)desc;
-      //const auto& directionalLight = std::any_cast<const &>(componentInfo);
+      const auto& desc = std::any_cast<const PDyDirLightComponentMetaInfo&>(componentInfo);
+      MDY_NOTUSED auto directionLightComponentPtr = this->AddComponent<CDyDirectionalLight>(desc);
     } break;
     case EDyComponentMetaType::ModelFilter:
     {
-      const auto& desc = std::any_cast<const DDyModelFilterMetaInformation&>(componentInfo);
+      const auto& desc = std::any_cast<const PDyModelFilterComponentMetaInfo&>(componentInfo);
       MDY_NOTUSED auto modelFilterComponentPtr = this->AddComponent<CDyModelFilter>(desc);
     } break;
     case EDyComponentMetaType::ModelRenderer:
     {
-      const auto& desc = std::any_cast<const DDyModelRendererMetaInformation&>(componentInfo);
+      const auto& desc = std::any_cast<const PDyModelRendererComponentMetaInfo&>(componentInfo);
       MDY_NOTUSED auto modelRendererComponentPtr = this->AddComponent<CDyModelRenderer>(desc);
     } break;
     case EDyComponentMetaType::Camera:
     {
-      const auto& desc = std::any_cast<const DDyCameraMetaInformation&>(componentInfo);
+      const auto& desc = std::any_cast<const PDyCameraComponentMetaInfo&>(componentInfo);
       MDY_NOTUSED auto cameraComponentPtr = this->AddComponent<CDyCamera>(desc);
     } break;
     }
   }
 
   // Create CDyEmptyTransform when not having CDyTransform.
-  PHITOS_ASSERT(isTransformCreated == true, "CDyTransform component must be created to all FDyActor.");
+  MDY_ASSERT(isTransformCreated == true, "CDyTransform component must be created to all FDyActor.");
   return DY_SUCCESS;
 }
 
@@ -165,9 +152,9 @@ void FDyActor::SetParentToRootRelocateTransform() noexcept
   MDY_LOG_WARNING("NOT IMPLEMENTED {}", "FDyActor::SetParentToRootRelocateTransform");
 }
 
-std::optional<CDyScript*> FDyActor::GetScriptComponent(const std::string& scriptName) noexcept
+std::optional<CDyScript*> FDyActor::GetScriptComponent(_MIN_ const std::string& scriptName) noexcept
 {
-  PHITOS_ASSERT(scriptName.empty() == false, "scriptName must not be empty at FDyActor::GetScriptComponent()");
+  MDY_ASSERT(scriptName.empty() == false, "scriptName must not be empty at FDyActor::GetScriptComponent()");
 
   using TInstanceType = decltype(this->mScriptList)::value_type;
   const auto it = std::find_if(MDY_BIND_BEGIN_END(this->mScriptList), [&scriptName](const TInstanceType& instance)
@@ -179,9 +166,9 @@ std::optional<CDyScript*> FDyActor::GetScriptComponent(const std::string& script
   else                                { return it->get(); }
 }
 
-EDySuccess FDyActor::RemoveScriptComponent(const std::string& scriptName) noexcept
+EDySuccess FDyActor::RemoveScriptComponent(_MIN_ const std::string& scriptName) noexcept
 {
-  PHITOS_ASSERT(scriptName.empty() == false, "scriptName must not be empty at FDyActor::GetScriptComponent()");
+  MDY_ASSERT(scriptName.empty() == false, "scriptName must not be empty at FDyActor::GetScriptComponent()");
 
   // Find script instance that has scriptName.
   using TInstanceType = decltype(this->mScriptList)::value_type;
@@ -199,7 +186,8 @@ EDySuccess FDyActor::RemoveScriptComponent(const std::string& scriptName) noexce
   else
   {
     // @TODO MOVE DESTROY FUNCTION CALL TO AFTERWARD COMPONENT UPDATE() (BEFORE TRANFORM SYNCHRONIZATION)
-    (*it)->Destroy();
+    // @TODO FUCTION
+    //(*it)->Destroy();
     (*it)->Release();
     this->mScriptList.erase(it);
     return DY_SUCCESS;

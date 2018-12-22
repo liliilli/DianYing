@@ -14,8 +14,10 @@
 ///
 
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
-#include <Dy/Component/Descriptor/ComponentMetaDescriptor.h>
+#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
+#include <Dy/Meta/Information/ComponentMetaInformation.h>
+#include <Dy/Helper/Pointer.h>
 
 //!
 //! Forward decalartion
@@ -23,7 +25,6 @@
 
 namespace dy
 {
-class CDyModelResource;
 class CDyModelRenderer;
 } /// unnamed namespace
 
@@ -38,7 +39,7 @@ namespace dy
 /// @class CDyModelFilter
 /// @brief
 ///
-class CDyModelFilter final : public ADyGeneralBaseComponent, public IDyInitializeHelper<DDyModelFilterMetaInformation>
+class CDyModelFilter final : public ADyGeneralBaseComponent, public IDyInitializeHelper<PDyModelFilterComponentMetaInfo>
 {
 public:
   CDyModelFilter(FDyActor& actorReference);
@@ -49,28 +50,22 @@ public:
   /// @param  metaInfo
   /// @return If successful just return DY_SUCCESS or DY_FAILURE.
   ///
-  MDY_NODISCARD EDySuccess Initialize(_MIN_ const DDyModelFilterMetaInformation& metaInfo) override final;
+  MDY_NODISCARD EDySuccess Initialize(_MIN_ const PDyModelFilterComponentMetaInfo& metaInfo) override final;
 
   ///
   /// @brief  Release component.
   ///
   void Release() override final;
 
-  CDyModelFilter(const CDyModelFilter&)                                 = delete;
-  CDyModelFilter& operator=(const CDyModelFilter&)                      = delete;
-  CDyModelFilter(CDyModelFilter&& instance)                   noexcept  = default;
-  CDyModelFilter& operator=(CDyModelFilter&& instance)        noexcept  = default;
-
+  MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(CDyModelFilter);
   MDY_SET_TYPEMATCH_FUNCTION(::dy::ADyGeneralBaseComponent, CDyModelFilter);
   MDY_SET_CRC32_HASH_WITH_TYPE(CDyModelFilter);
 
-  ///
   /// @brief  Get model reference ptr.
   /// @return Valid model resource pointer reference.
-  ///
-  MDY_NODISCARD FORCEINLINE NotNull<CDyModelResource*> GetModelReference() const noexcept
+  FORCEINLINE MDY_NODISCARD const TDyLResourceBinderModel& GetModelReference() const noexcept
   {
-    return DyMakeNotNull(this->mModelReferencePtr);
+    return this->mBinderModel;
   }
 
   ///
@@ -110,10 +105,10 @@ private:
   ///
   MDY_NODISCARD EDySuccess pTryUnbindingToModelRendererComponent();
 
-  /// Valid model rerenfence ptr.
-  MDY_TRANSIENT CDyModelResource* mModelReferencePtr          = MDY_INITIALIZE_NULL;
+  /// Valid model reference handle.
+  TDyLResourceBinderModel mBinderModel = {};
   /// CDyModelRendererr reference ptr.
-  CDyModelRenderer*               mModelRendererReferencePtr  = MDY_INITIALIZE_NULL;
+  CDyModelRenderer*       mModelRendererReferencePtr  = MDY_INITIALIZE_NULL;
 
   friend class CDyModelRenderer;
 };

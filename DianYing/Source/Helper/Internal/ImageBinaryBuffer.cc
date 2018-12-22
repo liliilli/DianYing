@@ -23,6 +23,7 @@
 #pragma warning(disable:4100 4505)
 #endif
 #include <stb_image.h>
+#include "Dy/Management/LoggingManager.h"
 #if defined(_WIN32)
 #pragma warning(pop)
 #endif
@@ -58,26 +59,21 @@ DDyImageBinaryDataBuffer::DDyImageBinaryDataBuffer(const std::string& imagePath)
 {
   stbi_set_flip_vertically_on_load(true);
 
-  mBufferStartPoint = stbi_load(
-      imagePath.c_str(),
-      &mWidth, &mHeight,
-      &mImageChannel, 0);
-  mImageFormat = GetColorFormat(mImageChannel);
-  if (mImageFormat == EDyImageColorFormatStyle::NoneError)
+  this->mBufferStartPoint = stbi_load(imagePath.c_str(), &this->mWidth, &this->mHeight, &this->mImageChannel, 0);
+  this->mImageFormat      = GetColorFormat(this->mImageChannel);
+  if (this->mImageFormat == EDyImageColorFormatStyle::NoneError)
   {
-    stbi_image_free(mBufferStartPoint);
-#ifdef false
-    stbi_failure_reason();
-#endif
-    mIsBufferCreatedProperly = false;
+    stbi_image_free(this->mBufferStartPoint);
+    MDY_LOG_ERROR("{}", stbi_failure_reason());
+    this->mIsBufferCreatedProperly = false;
   }
-  else if (!mBufferStartPoint)
+  else if (this->mBufferStartPoint == nullptr)
   {
-    mIsBufferCreatedProperly = false;
+    this->mIsBufferCreatedProperly = false;
   }
   else
   {
-    mIsBufferCreatedProperly = true;
+    this->mIsBufferCreatedProperly = true;
   }
 }
 

@@ -17,7 +17,7 @@
 #include <Dy/Editor/Gui/ViewViewportMain.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Editor/Gui/LogWindow.h>
-#include <Dy/Management/RenderingManager.h>
+#include <Dy/Management/Rendering/RenderingManager.h>
 #include <Dy/Management/Editor/GuiSetting.h>
 
 namespace dy::editor

@@ -14,20 +14,53 @@
 ///
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
+#include <Dy/Management/Type/FontResourceContainer.h>
+#include <Dy/Helper/Pointer.h>
 
 namespace dy
 {
 
-class MDyFont final : public ISingleton<MDyFont>
+class MDyFont final : public IDySingleton<MDyFont>
 {
   MDY_SINGLETON_PROPERTIES(MDyFont);
   MDY_SINGLETON_DERIVED(MDyFont);
 public:
+  ///
+  /// @brief  Create font resource container from meta container.
+  /// @param  fontSpecifierName
+  /// @return If succeeded return DY_SUCCESS or DY_FAILURE.
+  ///
+  MDY_NODISCARD EDySuccess CreateFontResourceContainer(_MIN_ const std::string& fontSpecifierName);
 
+  ///
+  /// @brief  Check there is valid font container with name is fontSpecifierName.
+  /// @param  specifierName Font container specifier name.
+  /// @return If found just return true or false.
+  ///
+  FORCEINLINE MDY_NODISCARD bool IsFontResourceContainerExist(_MIN_ const std::string& specifierName)
+  {
+    return this->mFontResourceContainerMap.find(specifierName) != this->mFontResourceContainerMap.end();
+  }
+
+  ///
+  /// @brief  Remove and release resource of valid font container.
+  /// @param  fontSpecifierName
+  /// @return If succeeded to remove valid font container, return DY_SUCCESS or DY_FAILURE.
+  ///
+  MDY_NODISCARD EDySuccess RemoveFontContainer(_MIN_ const std::string& fontSpecifierName);
+
+  ///
+  /// @brief  Get font resource container.
+  /// @param  specifierName Font container speicfier name.
+  /// @return Return default font container reference.
+  ///
+  MDY_NODISCARD IDyFontContainer* GetFontResourceContainer(_MIN_ const std::string& specifierName);
 
 private:
+  using TFontContainerMap = std::unordered_map<std::string, std::unique_ptr<IDyFontContainer>>;
 
-
+  ///
+  TFontContainerMap   mFontResourceContainerMap = {};
 };
 
 } /// ::dy namespace

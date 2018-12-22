@@ -39,8 +39,9 @@ void DyLuaEntryPoint()
   DyLuaFunctionMultipleReturnFromCpp();
   DyLuaFunctionAnyReturn();
   DyLuaCppPlayerScript();
-#endif
   DyLuaCppOwnershipPointerSafely();
+#endif
+  DyLuaBindingDyTest();
 }
 
 } /// ::dy::test namespace

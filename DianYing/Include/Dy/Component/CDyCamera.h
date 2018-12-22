@@ -15,11 +15,27 @@
 
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
-#include <Dy/Component/Descriptor/ComponentMetaDescriptor.h>
 #include <Dy/Helper/Type/Matrix4.h>
+#include <Dy/Meta/Information/ComponentMetaInformation.h>
 
 namespace dy
 {
+
+///
+/// @brief specifier name for ubo "CameraBlock"
+///
+MDY_SET_IMMUTABLE_STRING(sUboCameraBlock, "dyBtUboCameraBlock");
+
+///
+/// @struct DDyUboCameraBlock
+/// @brief  This structure must be aligned by 16 bytes.
+/// @TODO SCRIPT THIS
+///
+struct alignas(16) DDyUboCameraBlock final
+{
+  DDyMatrix4x4 mProjMatrix = {};
+  DDyMatrix4x4 mViewMatrix = {};
+};
 
 ///
 /// @enum   EDyCameraType
@@ -46,7 +62,7 @@ enum class EDyCameraType
 /// @class CDyCamera
 /// @brief New camera component type.
 ///
-class CDyCamera final : public ADyGeneralBaseComponent, public IDyInitializeHelper<DDyCameraMetaInformation>
+class CDyCamera final : public ADyGeneralBaseComponent, public IDyInitializeHelper<PDyCameraComponentMetaInfo>
 {
 public:
   CDyCamera(_MIN_ FDyActor& actorReference) : ADyGeneralBaseComponent(actorReference) {};
@@ -230,7 +246,7 @@ public:
   /// @param  descriptor Descriptor which has a values.
   /// @return If succeeded, return true or false.
   ///
-  MDY_NODISCARD EDySuccess Initialize(_MIN_ const DDyCameraMetaInformation& descriptor) override final;
+  MDY_NODISCARD EDySuccess Initialize(_MIN_ const PDyCameraComponentMetaInfo& descriptor) override final;
 
   ///
   /// @brief  Release component safely.

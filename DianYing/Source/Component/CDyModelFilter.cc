@@ -14,7 +14,6 @@
 
 /// Header file
 #include <Dy/Component/CDyModelFilter.h>
-#include <Dy/Management/HeapResourceManager.h>
 #include <Dy/Element/Actor.h>
 #include <Dy/Component/CDyModelRenderer.h>
 
@@ -23,25 +22,12 @@ namespace dy
 
 CDyModelFilter::CDyModelFilter(FDyActor& actorReference) : ADyGeneralBaseComponent(actorReference) { }
 
-EDySuccess CDyModelFilter::Initialize(const DDyModelFilterMetaInformation& metaInfo)
+EDySuccess CDyModelFilter::Initialize(const PDyModelFilterComponentMetaInfo& metaInfo)
 {
-  auto& resourceManager = MDyHeapResource::GetInstance();
+  const auto& modelSpecfier = metaInfo.mDetails.mModelSpecifierName;
+  mBinderModel.TryRequireResource(modelSpecfier);
 
-  // Bind model.
-  if (const auto modelResourcePtr = resourceManager.GetModelResource(metaInfo.mModelName);
-      MDY_CHECK_ISNULL(modelResourcePtr))
-  { // If not exists, make model resource using information but not have it, return fail.
-    const auto res = resourceManager.CreateModelResource(metaInfo.mModelName);
-    if (res == DY_FAILURE) { return DY_FAILURE; }
-
-    this->mModelReferencePtr = resourceManager.GetModelResource(metaInfo.mModelName);
-  }
-  else
-  {
-    this->mModelReferencePtr = modelResourcePtr;
-  }
-
-  if (metaInfo.mInitiallyActivated) { this->Activate(); }
+  this->Activate();
   return DY_SUCCESS;
 }
 
@@ -51,8 +37,6 @@ void CDyModelFilter::Release()
   { // Unbind CDyModelFilter from binded CDyModelRenderer.
     this->mModelRendererReferencePtr->UnbindModelFilterReference();
   }
-
-  this->mModelReferencePtr = MDY_INITIALIZE_NULL;
 }
 
 void CDyModelFilter::Activate() noexcept
@@ -60,7 +44,6 @@ void CDyModelFilter::Activate() noexcept
   ADyBaseComponent::Activate();
 
   // Customized body ∨
-
   MDY_NOTUSED auto _ = this->pTryBindingToModelRendererComponent();
 }
 
@@ -85,8 +68,8 @@ void CDyModelFilter::pPropagateParentActorActivation(const DDy3StateBool& actorB
 
 std::string CDyModelFilter::ToString()
 {
-  PHITOS_NOT_IMPLEMENTED_ASSERT();
-  return MDY_INITILAIZE_EMPTYSTR;
+  MDY_NOT_IMPLEMENTED_ASSERT();
+  return MDY_INITIALIZE_EMPTYSTR;
 }
 
 EDySuccess CDyModelFilter::pTryBindingToModelRendererComponent()
@@ -102,7 +85,7 @@ EDySuccess CDyModelFilter::pTryBindingToModelRendererComponent()
   CDyModelRenderer& rendererRef = *opRenderer.value();
   if (rendererRef.IsComponentActivated() == false)          { return DY_FAILURE; }
 
-  PHITOS_ASSERT(MDY_CHECK_ISNULL(this->mModelRendererReferencePtr), "CDyModelFilter::mModelRendererReferencePtr must be null when unbinding.");
+  MDY_ASSERT(MDY_CHECK_ISNULL(this->mModelRendererReferencePtr), "CDyModelFilter::mModelRendererReferencePtr must be null when unbinding.");
   rendererRef.BindModelFilterReference(*this);
 
   return DY_SUCCESS;
@@ -114,7 +97,7 @@ EDySuccess CDyModelFilter::pTryUnbindingToModelRendererComponent()
   if (this->mActivateFlag.GetOutput() == true)             { return DY_FAILURE; }
 
   // Check final activation flag and unbind instance from CDyModelRenderer.
-  PHITOS_ASSERT(MDY_CHECK_ISNOTNULL(this->mModelRendererReferencePtr), "CDyModelFilter::mModelRendererReferencePtr must not be null when unbinding.");
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mModelRendererReferencePtr), "CDyModelFilter::mModelRendererReferencePtr must not be null when unbinding.");
   this->mModelRendererReferencePtr->UnbindModelFilterReference();
 
   return DY_SUCCESS;
@@ -122,13 +105,13 @@ EDySuccess CDyModelFilter::pTryUnbindingToModelRendererComponent()
 
 void CDyModelFilter::fBindModelRendererReference(CDyModelRenderer& validReference)
 {
-  PHITOS_ASSERT(MDY_CHECK_ISNULL(this->mModelRendererReferencePtr), "CDyModelFilter::mModelRendererReferencePtr must be null when unbinding.");
+  MDY_ASSERT(MDY_CHECK_ISNULL(this->mModelRendererReferencePtr), "CDyModelFilter::mModelRendererReferencePtr must be null when unbinding.");
   this->mModelRendererReferencePtr = &validReference;
 }
 
 void CDyModelFilter::fUnbindModelRendererReference()
 {
-  PHITOS_ASSERT(MDY_CHECK_ISNOTNULL(this->mModelRendererReferencePtr), "CDyModelFilter::mModelRendererReferencePtr must not be null when unbinding.");
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mModelRendererReferencePtr), "CDyModelFilter::mModelRendererReferencePtr must not be null when unbinding.");
   this->mModelRendererReferencePtr = MDY_INITIALIZE_NULL;
 }
 

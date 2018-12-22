@@ -1,0 +1,176 @@
+#ifndef GUARD_DY_MANAGEMENT_TYPE_SETTINGCONTAINER_H
+#define GUARD_DY_MANAGEMENT_TYPE_SETTINGCONTAINER_H
+///
+/// MIT License
+/// Copyright (c) 2018 Jongmin Yun
+///
+/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+/// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+/// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+/// SOFTWARE.
+///
+
+#include <vector>
+#include <nlohmann/json_fwd.hpp>
+
+#include <Dy/Helper/GlobalType.h>
+#include <Dy/Helper/Type/VectorInt2.h>
+#include <Dy/Meta/Type/Input/EDyInputButton.h>
+
+namespace dy
+{
+
+///
+/// @struct DDySettingDescription
+/// @brief  Setting description able to be serialized.
+///
+struct DDySettingDescription final
+{
+  /// Project name of this project.
+  std::string mProjectName    = MDY_INITIALIZE_EMPTYSTR;
+  /// Window name of this project. if empty, just use MDySetting::mProjectName as window name with version.
+  std::string mWindowName     = MDY_INITIALIZE_EMPTYSTR;
+  /// [High. Mid. Low]
+  TI32 mVersionHigh           = MDY_INITIALIZE_DEFINT;
+  TI32 mVersionMid            = MDY_INITIALIZE_DEFINT;
+  TI32 mVersionLow            = MDY_INITIALIZE_DEFINT;
+  ///
+  std::string mCompanyName    = MDY_INITIALIZE_EMPTYSTR;
+  std::string mHomepage       = MDY_INITIALIZE_EMPTYSTR;
+  std::string mSupportContact = MDY_INITIALIZE_EMPTYSTR;
+};
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingDescription& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingDescription& p);
+
+///
+/// @struct DDySettingGameplay
+/// @brief  Setting gameplay that able to be serialized.
+///
+struct DDySettingGameplay final
+{
+  struct DDyShadow final
+  { /// Global default shadow map size.
+    DDyVectorInt2 mShadowGlobalDefaultMap = {};
+  };
+
+  struct DDyGraphics final
+  {
+    ///
+    bool mIsEnabledDefaultShadow  = false;
+    ///
+    bool mIsEnabledDefaultSsao    = false;
+  };
+
+  /// Initial scene name. (or uuid?)
+  std::string   mInitialSceneSpecifier           = MDY_INITIALIZE_EMPTYSTR;
+  /// Initial game resolution scene.
+  DDyVectorInt2 mInitialResolution      = {};
+  /// Shadow default map resolution or properties.
+  DDyShadow     mShadow                 = {};
+  /// Graphics properties.
+  DDyGraphics   mGraphics               = {};
+};
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingGameplay& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingGameplay& p);
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingGameplay::DDyShadow& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingGameplay::DDyShadow& p);
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingGameplay::DDyGraphics& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingGameplay::DDyGraphics& p);
+
+///
+/// @struct DDySettingInput
+/// @brief
+///
+struct DDySettingInput
+{
+  using TKeyListType = std::vector<EDyButton>;
+
+  struct DAction final
+  {
+    std::string  mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
+    TKeyListType mKey            = {};
+
+    ///
+    /// @brief  Create `DAxis` with valid json atlas.
+    /// @param  json valid json atlas.
+    /// @param  specifierName `DAxis::mSpecifierName`.
+    /// @return If succeeded, just return `DAxis` instance.
+    ///
+    static MDY_NODISCARD DAction CreateInstance(_MIN_ const nlohmann::json& json, _MIN_ const std::string& specifierName);
+  };
+
+  struct DAxis final
+  {
+    std::string  mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
+    TKeyListType mPositive       = {};
+    TKeyListType mNegative       = {};
+    TF32         mGravity        = MDY_INITIALIZE_DEFINT;
+
+    ///
+    /// @brief  Create `DAxis` with valid json atlas.
+    /// @param  json valid json atlas.
+    /// @param  specifierName `DAxis::mSpecifierName`.
+    /// @return If succeeded, just return `DAxis` instance.
+    ///
+    static MDY_NODISCARD DAxis CreateInstance(_MIN_ const nlohmann::json& json, _MIN_ const std::string& specifierName);
+  };
+
+  using TActionMap  = std::unordered_map<std::string, DAction>;
+  using TAxisMap    = std::unordered_map<std::string, DAxis>;
+
+  TActionMap mActionMap = {};
+  TAxisMap   mAxisMap   = {};
+};
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingInput& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingInput& p);
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingInput::DAction& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingInput::DAction& p);
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingInput::DAxis& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingInput::DAxis& p);
+
+///
+/// @struct DDySettingTag
+/// @brief  Setting tag that able to be serialized.
+///
+struct DDySettingTag final
+{
+  using TObjectTagList    = std::vector<std::string>;
+  using TCollisionTagList = std::vector<std::string>;
+
+  TObjectTagList    mObjectTag     = {};
+  TCollisionTagList mCollisionTag  = {};
+};
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingTag& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingTag& p);
+
+///
+/// @struct DDySettingMetaPath
+/// @brief  Setting meta file path that able to be serialized.
+///
+struct DDySettingMetaPath final
+{
+  std::string mSceneMetaPath  = MDY_INITIALIZE_EMPTYSTR;
+  std::string mWidgetMetaPath = MDY_INITIALIZE_EMPTYSTR;
+  std::string mPrefabMetaPath = MDY_INITIALIZE_EMPTYSTR;
+  std::string mFontMetaPath   = MDY_INITIALIZE_EMPTYSTR;
+  std::string mScriptMetaPath = MDY_INITIALIZE_EMPTYSTR;
+};
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingMetaPath& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingMetaPath& p);
+
+} /// ::dy namespace
+
+
+#endif /// GUARD_DY_MANAGEMENT_TYPE_SETTINGCONTAINER_H

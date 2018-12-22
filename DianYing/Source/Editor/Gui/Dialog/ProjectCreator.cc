@@ -1,5 +1,5 @@
 #include <precompiled.h>
-#include "Dy/Core/Component/Internal/MaterialType.h"
+#include "Dy/Core/Resource/Internal/MaterialType.h"
 #if defined(MDY_FLAG_IN_EDITOR)
 ///
 /// MIT License
@@ -108,7 +108,7 @@ enum EDyIntegrityTestFlag
 #if defined(MDY_PLATFORM_FLAG_WINDOWS)
   sprintf_s(solutionPath, solutionPathLen, "%s/%s.dsol", directoryPath, projectName);
 #else
-  PHITOS_NOT_IMPLEMENTED_ASSERT();
+  MDY_NOT_IMPLEMENTED_ASSERT();
 #endif
 
   if (std::filesystem::exists(directoryPath) && std::filesystem::exists(solutionPath))
@@ -176,7 +176,7 @@ void FDyProjectCreator::DrawWindow(float dt) noexcept
         std::wcstombs(directoryPath, unicodeDirectoryPath.c_str(), IM_ARRAYSIZE(directoryPath));
       }
 #else
-      PHITOS_NOT_IMPLEMENTED_ASSERT();
+      MDY_NOT_IMPLEMENTED_ASSERT();
 #endif
     };
 
@@ -259,7 +259,7 @@ void FDyProjectCreator::pCreateNotSupportYetDialogMsg(const NotNull<bool*>& bool
   if (auto [hashVal, ptr] = FDyEditorGuiWindowFactory::CreateGuiComponent<FDyDialog>(desc); ptr)
   {
     auto[it, result] = this->mSubWindows.try_emplace(hashVal, std::move(ptr));
-    if (!result) { PHITOS_UNEXPECTED_BRANCH(); }
+    if (!result) { MDY_UNEXPECTED_BRANCH(); }
   }
 }
 

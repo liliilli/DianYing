@@ -24,7 +24,7 @@ namespace dy
 /// @class MDySound
 /// @brief Sound management class
 ///
-class MDySound final : public ISingleton<MDySound>, public IDyUpdatable
+class MDySound final : public IDySingleton<MDySound>, public IDyUpdatable
 {
   MDY_SINGLETON_PROPERTIES(MDySound);
   MDY_SINGLETON_DERIVED(MDySound);
@@ -75,7 +75,7 @@ private:
 
   bool                sIssEnabledSoundSystem  = false;
 
-  friend class CDySoundResource;
+  friend class CDySoundResource_Deprecated;
 };
 
 } /// ::dy namespace

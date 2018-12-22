@@ -15,14 +15,13 @@
 
 #include <atomic>
 
-#include <Phitos/Dbg/assert.h>
-#include <Dy/Helper/Macroes.h>
+#include <Dy/Helper/System/Macroes.h>
 
 namespace dy
 {
 
 template <typename TType>
-class ISingleton
+class IDySingleton
 {
 public:
   ///
@@ -40,13 +39,13 @@ public:
   ///
   [[nodiscard]] FORCEINLINE EDySuccess static Initialize() noexcept
   {
-    PHITOS_ASSERT(ISingleton<TType>::mIsInitialized == false, "Singleton instance must be initialized only once.");
-    PHITOS_ASSERT(ISingleton<TType>::mIsShutdown    == false, "Singleton instance can not be reinitialized after shutting down.");
+    MDY_ASSERT(IDySingleton<TType>::mIsInitialized == false, "Singleton instance must be initialized only once.");
+    MDY_ASSERT(IDySingleton<TType>::mIsShutdown    == false, "Singleton instance can not be reinitialized after shutting down.");
 
     const auto flag = GetInstance().pfInitialize();
 
     bool oldValue = false;
-    ISingleton<TType>::mIsInitialized.compare_exchange_weak(oldValue, true);
+    IDySingleton<TType>::mIsInitialized.compare_exchange_weak(oldValue, true);
     return flag;
   }
 
@@ -55,13 +54,13 @@ public:
   ///
   [[nodiscard]] FORCEINLINE EDySuccess static Release() noexcept
   {
-    PHITOS_ASSERT(ISingleton<TType>::mIsInitialized == true , "Singleton instance must be initialized before shutting down.");
-    PHITOS_ASSERT(ISingleton<TType>::mIsShutdown    == false, "Singleton instance can not be shutted down again.");
+    MDY_ASSERT(IDySingleton<TType>::mIsInitialized == true , "Singleton instance must be initialized before shutting down.");
+    MDY_ASSERT(IDySingleton<TType>::mIsShutdown    == false, "Singleton instance can not be shutted down again.");
 
     const auto flag = GetInstance().pfRelease();
 
     bool oldValue = false;
-    ISingleton<TType>::mIsShutdown.compare_exchange_weak(oldValue, true);
+    IDySingleton<TType>::mIsShutdown.compare_exchange_weak(oldValue, true);
     return flag;
   }
 
@@ -70,7 +69,7 @@ public:
   ///
   [[nodiscard]] FORCEINLINE bool static IsInitialized() noexcept
   {
-    return ISingleton<TType>::mIsInitialized && !ISingleton<TType>::mIsShutdown;
+    return IDySingleton<TType>::mIsInitialized && !IDySingleton<TType>::mIsShutdown;
   }
 
   ///
@@ -78,16 +77,16 @@ public:
   ///
   [[nodiscard]] FORCEINLINE bool static IsShutdowned() noexcept
   {
-    return ISingleton<TType>::mIsShutdown;
+    return IDySingleton<TType>::mIsShutdown;
   }
 
 protected:
-  ISingleton()                      = default;
-  virtual ~ISingleton()             = default;
+  IDySingleton()                      = default;
+  virtual ~IDySingleton()             = default;
   inline static std::atomic<bool> mIsInitialized = false;
   inline static std::atomic<bool> mIsShutdown    = false;
 
-  MDY_SINGLETON_PROPERTIES(ISingleton);
+  MDY_SINGLETON_PROPERTIES(IDySingleton);
 };
 
 } /// ::dy namespace

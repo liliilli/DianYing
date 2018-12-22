@@ -15,11 +15,10 @@
 
 #include <memory>
 
-#include <Dy/Helper/Type/Color.h>
+#include <Dy/Helper/Type/ColorRGBA.h>
 #include <Dy/Element/Object.h>
 #include <Dy/Element/Actor.h>
 #include <Dy/Element/Abstract/ADyNameCounterMap.h>
-#include <Dy/Element/Descriptor/LevelDescriptor.h>
 #include <Dy/Element/Interface/IDyUpdatable.h>
 
 namespace dy {
@@ -36,13 +35,22 @@ class FDyLevel final : public FDyObject, public IDyUpdatable, public ADyNameCoun
 
 public:
   /// Initialize level context with valid descriptor.
-  void Initialize(_MIN_ const PDyLevelConstructDescriptor& desc);
+  void Initialize(_MIN_ const PDyLevelConstructMetaInfo& desc);
 
   /// Release level by release all subobjects in this level storing information or signalling something.
   void Release();
 
   /// Update level.
   void Update(_MIN_ float dt) override final;
+
+  ///
+  /// @brief  Get background color of this scene.
+  /// @return background color [0, 1] (RGBA)
+  ///
+  FORCEINLINE MDY_NODISCARD const DDyColorRGBA& GetBackgroundColor() const noexcept
+  {
+    return this->mLevelBackgroundColor;
+  }
 
   ///
   /// @brief  Get present level name.
@@ -53,13 +61,22 @@ public:
     return this->mLevelName;
   }
 
+  ///
+  /// @brief  Set background color of this scene.
+  /// @param  backgroundColor New backgrond color value.
+  ///
+  FORCEINLINE void SetBackgroundColor(_MIN_ const DDyColorRGBA& backgroundColor) noexcept
+  {
+    this->mLevelBackgroundColor = backgroundColor;
+  }
+
 private:
   /// Level's name. not modifiable
-  std::string     mLevelName            = MDY_INITILAIZE_EMPTYSTR;
+  std::string     mLevelName            = MDY_INITIALIZE_EMPTYSTR;
   /// Level's hash value for identifying scene in world's array.
   TU32            mLevelHashIdentifier  = MDY_INITIALIZE_DEFUINT;
   /// Scene basic color
-  DDyColor        mLevelBackgroundColor = DDyColor::White;
+  DDyColorRGBA        mLevelBackgroundColor = DDyColorRGBA::White;
   /// Actor list (hierarchial version)
   TActorMap       mActorMap             = {};
   /// Check if level is initialized or released. Level is active when only mInitialized is true.
@@ -92,7 +109,7 @@ public:
         object_final_name,
         nullptr);
     if (!result) {
-      PHITOS_ASSERT(result, "Object did not be made properly.");
+      MDY_ASSERT(result, "Object did not be made properly.");
       return nullptr;
     }
 
@@ -124,7 +141,7 @@ public:
 
     auto [result_pair, result] = m_object_list.try_emplace(object_final_name, nullptr);
     if (!result) {
-      PHITOS_ASSERT(result, "Object did not be made properly.");
+      MDY_ASSERT(result, "Object did not be made properly.");
       return nullptr;
     }
 

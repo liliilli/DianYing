@@ -15,35 +15,19 @@
 /// @todo IMPLEMENT SET OVERALL WINDOW WIDTH, HEIGHT AS CHANGING VIEWPORT OF EACH API FRAMEBUFFER.
 ///
 
+#include <Dy/Helper/Type/VectorInt2.h>
+#include <Dy/Meta/Type/EDyRenderingApi.h>
+#include <Dy/Management/Type/SettingContainer.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 
 namespace dy
 {
 
 ///
-/// @enum EDyRenderingApiType
-/// @brief Rendering API type for rendering scene. Must not be EDyRenderingApiType::NoneError when using.
-///
-enum class EDyRenderingApiType
-{
-  NoneError,
-  Vulkan,
-#if defined(_WIN32)
-  DirectX11,
-  DirectX12,
-#endif
-#if defined(__APPLE__)
-  Metal,
-#else
-  OpenGL,
-#endif
-};
-
-///
 /// @class MDySetting
 /// @brief manages global settings of DianYing renderer application.
 ///
-class MDySetting final : public ISingleton<MDySetting>
+class MDySetting final : public IDySingleton<MDySetting>
 {
   MDY_SINGLETON_DERIVED(MDySetting);
   MDY_SINGLETON_PROPERTIES(MDySetting);
@@ -53,12 +37,12 @@ public:
   /// If Vsync enabled, max frame per seconds are fixed by 60 fps.
   /// If not, frame will be beyond 60 fps along your hardware but jittering may be occured sometimes.
   ///
-  [[nodiscard]] bool IsVSyncEnabled() const noexcept;
+  MDY_NODISCARD bool IsEnabledVSync() const noexcept;
 
   ///
   /// @brief Get enable/disable flag of feature, logging as true/false.
   ///
-  [[nodiscard]] FORCEINLINE bool IsEnabledFeatureLogging() const noexcept
+  MDY_NODISCARD FORCEINLINE bool IsEnabledFeatureLogging() const noexcept
   {
     return this->mIsEnabledLogging;
   }
@@ -67,7 +51,7 @@ public:
   /// @brief Get enable/disable flag of subfeature, logging to console as true/false.
   /// If changed, logging feature must be restarted manually.
   ///
-  [[nodiscard]] FORCEINLINE bool IsEnabledSubFeatureLoggingToConsole() const noexcept
+  MDY_NODISCARD FORCEINLINE bool IsEnabledSubFeatureLoggingToConsole() const noexcept
   {
     return this->mIsEnabledLoggingToConsole;
   }
@@ -76,7 +60,7 @@ public:
   /// @brief Get enable/disable flag of subfeature, logging to file as true/false.
   /// If changed, logging feature must be restarted manually.
   ///
-  [[nodiscard]] FORCEINLINE bool IsEnableSubFeatureLoggingToFile() const noexcept
+  MDY_NODISCARD FORCEINLINE bool IsEnableSubFeatureLoggingToFile() const noexcept
   {
     return this->mIsEnabledLoggingToFile;
   }
@@ -84,7 +68,7 @@ public:
   ///
   /// @brief Get the path of log file.
   ///
-  [[nodiscard]] FORCEINLINE const std::string& GetLogFilePath() const noexcept
+  MDY_NODISCARD FORCEINLINE const std::string& GetLogFilePath() const noexcept
   {
     return this->mLogFilePath;
   }
@@ -92,94 +76,132 @@ public:
   ///
   /// @brief Get rendering type enum of present rendering api.
   ///
-  [[nodiscard]] EDyRenderingApiType GetRenderingType() const noexcept;
+  MDY_NODISCARD EDyRenderingApi GetRenderingType() const noexcept;
 
   ///
   /// @brief Get overall window width size.
   ///
-  [[nodiscard]] FORCEINLINE int32_t GetWindowSizeWidth() const noexcept
+  MDY_NODISCARD FORCEINLINE TI32 GetWindowSizeWidth() const noexcept
   {
-    return this->mWindowSizeWidth;
+    return this->mGamePlay.mInitialResolution.X;
   }
 
   ///
   /// @brief Get overall window height size.
   ///
-  [[nodiscard]] FORCEINLINE int32_t GetWindowSizeHeight() const noexcept
+  MDY_NODISCARD FORCEINLINE TI32 GetWindowSizeHeight() const noexcept
   {
-    return this->mWindowSizeHeight;
+    return this->mGamePlay.mInitialResolution.Y;
   }
 
   ///
-  /// @brief Get initial scene name to create initial scene instance.
+  /// @brief  Get initial scene name to create initial scene instance.
   /// @return PDyLevelConstructDescriptor name. Name is same to populated actual scene instance.
   ///
-  [[nodiscard]] FORCEINLINE const std::string& GetInitialSceneInformationName() const noexcept
+  MDY_NODISCARD FORCEINLINE const std::string& GetInitialSceneInformationName() const noexcept
   {
-    return this->mInitialSceneName;
+    return this->mGamePlay.mInitialSceneSpecifier;
+  }
+
+  ///
+  /// @brief  Get global default shadow map resolution as DDyVector2
+  /// @return DDyVector2 size of default shadow map resolution.
+  ///
+  FORCEINLINE MDY_NODISCARD const DDyVectorInt2& GetGlobalDefaultShadowMapResolution() const noexcept
+  {
+    return this->mGamePlay.mShadow.mShadowGlobalDefaultMap;
+  }
+
+  ///
+  /// @brief Get input setting information, not modifiable.
+  ///
+  MDY_NODISCARD const DDySettingInput& GetInputSettingInformation() const noexcept
+  {
+    return this->mInput;
+  }
+
+  ///
+  /// @brief Get gameplay (graphics etc) setting information, not modifiable.
+  ///
+  MDY_NODISCARD const DDySettingGameplay& GetGameplaySettingInformation() const noexcept
+  {
+    return this->mGamePlay;
+  }
+
+  ///
+  /// @brief Get meta file path setting information, not modifiable.
+  ///
+  MDY_NODISCARD const DDySettingMetaPath& GetMetaPathSettingInformation() const noexcept
+  {
+    return this->mMetaPath;
   }
 
   ///
   /// @brief Enable or disable logging feature.
   /// before enable logging feature, must set console or file sink.
+  /// @param isEnabled
   ///
-  void SetFeatureLogging(bool isEnabled) noexcept;
+  void SetFeatureLogging(_MIN_ bool isEnabled) noexcept;
 
   ///
   /// @brief Enable or disable log output sink console.
+  /// @param isEnabled
   ///
-  void SetSubFeatureLoggingToConsole(bool isEnabled) noexcept;
+  void SetSubFeatureLoggingToConsole(_MIN_ bool isEnabled) noexcept;
 
   ///
   /// @brief Enable or disable log output sink file.
+  /// @param isEnabled
   ///
-  void SetSubFeatureLoggingToFile(bool isEnabled) noexcept;
+  void SetSubFeatureLoggingToFile(_MIN_ bool isEnabled) noexcept;
 
   ///
   /// @brief Set file path for logging. Must be restarted when updated.
+  /// @param path
   ///
-  void SetLogFilePath(const std::string& path) noexcept;
+  void SetLogFilePath(_MIN_ const std::string& path) noexcept;
+
+  ///
+  /// @brief Set global default shadow map resolution.
+  /// @param size
+  ///
+  void SetGlobalDefaultShadowMapResolution(_MIN_ const DDyVector2& size) noexcept;
 
   ///
   /// @brief Set vsync mode.
   /// If vsync mode is off, application will be running by more 60 fps but unstable.
   /// If vsync mode is on, it will be running by your specified fps or 60 fps.
+  /// @param enableVsync
   ///
-  void SetVSyncMode(bool enableVsync) noexcept;
-
-  ///
-  /// @brief Push arguments when executing program.
-  /// This function will not operate after manager initialized.
-  ///
-  void pArgsPushback(const char* argsString);
+  void SetVSyncMode(_MIN_ bool enableVsync) noexcept;
 
 private:
-  EDyRenderingApiType mRenderingType  = EDyRenderingApiType::NoneError;
-  bool mIsRenderingTypeSet            = false;
-  bool mIsEnabledVsync                = true;
+  ///
+  /// @brief Setup executable argument settings.
+  /// This function must be called before initialization.
+  ///
+  void pSetupExecutableArgumentSettings();
 
+  EDyRenderingApi mRenderingType      = EDyRenderingApi::NoneError;
   bool mIsEnabledLogging              = false;
   bool mIsEnabledLoggingToConsole     = false;
   bool mIsEnabledLoggingToFile        = false;
   std::string mLogFilePath            = "./log.txt";
 
-  std::string mProjectName            = MDY_INITILAIZE_EMPTYSTR;
-  std::string mWindowName             = MDY_INITILAIZE_EMPTYSTR;
+  //!
+  //! Serializable setting options.
+  //!
 
-  TI32 mVersionHigh                   = MDY_INITIALIZE_DEFINT;
-  TI32 mVersionMid                    = MDY_INITIALIZE_DEFINT;
-  TI32 mVersionLow                    = MDY_INITIALIZE_DEFINT;
+  DDySettingDescription mDescription  = {};
+  DDySettingGameplay    mGamePlay     = {};
+  DDySettingInput       mInput        = {};
+  DDySettingTag         mTag          = {};
+  DDySettingMetaPath    mMetaPath     = {};
 
-  std::string mCompanyName            = MDY_INITILAIZE_EMPTYSTR;
-  std::string mHomepage               = MDY_INITILAIZE_EMPTYSTR;
-  std::string mSupportContact         = MDY_INITILAIZE_EMPTYSTR;
+  bool mIsEnabledVsync = true;
+  bool mIsInitialized  = false;
 
-  std::string mInitialSceneName       = MDY_INITILAIZE_EMPTYSTR;
-  TI32 mWindowSizeWidth               = MDY_INITIALIZE_DEFINT;
-  TI32 mWindowSizeHeight              = MDY_INITIALIZE_DEFINT;
-
-  std::vector<const char*> mApplicationArgs;
-  bool mIsInitialized                 = false;
+  friend class DyEngine;
 };
 
 } /// ::dy namespace

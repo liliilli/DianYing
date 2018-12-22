@@ -16,7 +16,6 @@
 #include <Dy/Helper/HashCompileCrc32.h>
 #include <Dy/Helper/Type/ThreeStateBool.h>
 #include <Dy/Element/Interface/IDyToString.h>
-#include "Dy/Core/Component/Internal/MaterialType.h"
 
 //!
 //! Forward declaration

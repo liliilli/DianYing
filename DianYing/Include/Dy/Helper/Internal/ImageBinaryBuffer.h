@@ -32,6 +32,22 @@ enum class EDyImageColorFormatStyle
 };
 
 ///
+/// @brief Get internal GLenum for texture formatting from style.
+/// If errored, just return null value.
+///
+inline static MDY_NODISCARD std::optional<GLenum> DyGLGetImageFormatFrom(_MIN_ EDyImageColorFormatStyle style) noexcept
+{
+  switch (style)
+  {
+  case EDyImageColorFormatStyle::R:     return GL_RED;
+  case EDyImageColorFormatStyle::RG:    return GL_RG;
+  case EDyImageColorFormatStyle::RGB:   return GL_RGB;
+  case EDyImageColorFormatStyle::RGBA:  return GL_RGBA;
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
+  }
+}
+
+///
 /// @class DDyImageBinaryDataBuffer
 /// @brief Image binary buffer that manages binary buffer chunk, automatically released when it's be out of scope.
 ///
@@ -49,45 +65,44 @@ public:
   ///
   /// @brief Check if buffer chunk is created properly when construction time.
   ///
-  [[nodiscard]] bool IsBufferCreatedProperly() const noexcept
+  MDY_NODISCARD bool IsBufferCreatedProperly() const noexcept
   {
-    return mIsBufferCreatedProperly;
+    return this->mIsBufferCreatedProperly;
   }
 
   ///
   /// @brief Get image width.
   ///
-  [[nodiscard]] int32_t GetImageWidth() const noexcept
+  MDY_NODISCARD TI32 GetImageWidth() const noexcept
   {
-    return mWidth;
+    return this->mWidth;
   }
 
   ///
   /// @brief Get image height.
   ///
-  [[nodiscard]] int32_t GetImageHeight() const noexcept
+  MDY_NODISCARD TI32 GetImageHeight() const noexcept
   {
-    return mHeight;
+    return this->mHeight;
   }
 
   ///
   /// @brief Get image format value.
   ///
-  [[nodiscard]] EDyImageColorFormatStyle GetImageFormat() const noexcept
+  MDY_NODISCARD EDyImageColorFormatStyle GetImageFormat() const noexcept
   {
-    return mImageFormat;
+    return this->mImageFormat;
   }
 
   ///
   /// @brief Get the start point of binary buffer chunk.
   ///
-  const unsigned char* GetBufferStartPoint() const noexcept
+  MDY_NODISCARD const unsigned char* GetBufferStartPoint() const noexcept
   {
-    return mBufferStartPoint;
+    return this->mBufferStartPoint;
   }
 
 private:
-  std::string mImagePath      = "";
   int32_t     mImageChannel   = MDY_INITIALIZE_DEFINT;
   int32_t     mWidth          = MDY_INITIALIZE_DEFINT;
   int32_t     mHeight         = MDY_INITIALIZE_DEFINT;

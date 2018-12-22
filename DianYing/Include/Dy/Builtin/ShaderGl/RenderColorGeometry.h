@@ -13,6 +13,9 @@
 /// SOFTWARE.
 ///
 
+#include <string_view>
+#include <Dy/Builtin/Abstract/ADyGLShaderResource.h>
+
 namespace dy::builtin
 {
 
@@ -20,13 +23,11 @@ namespace dy::builtin
 /// @class FDyBuiltinShaderGLRenderColorGeometry
 /// @brief Just instantiate render color geometry shader information and resources.
 ///
-class FDyBuiltinShaderGLRenderColorGeometry final
+class FDyBuiltinShaderGLRenderColorGeometry final : public ADyGLShaderResource
 {
+  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBuiltinShaderGLRenderColorGeometry, "dyBtShaderGlRenderColGeom")
 public:
   FDyBuiltinShaderGLRenderColorGeometry();
-
-  /// Constant name for creating DDyShaderInformation
-  inline static MDY_SET_IMMUTABLE_STRING(sName, "dyBtShaderGlRenderColGeom");
 };
 
 } /// ::dy::builtin namespace

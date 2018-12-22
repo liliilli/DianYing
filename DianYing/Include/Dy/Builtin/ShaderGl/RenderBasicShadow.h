@@ -13,20 +13,22 @@
 /// SOFTWARE.
 ///
 
+#include <string_view>
+#include <Dy/Builtin/Abstract/ADyGLShaderResource.h>
+
 namespace dy::builtin
 {
 
 ///
 /// @class FDyBuiltinShaderGLRenderBasicShadow
 /// @brief Instantiate and create resource for basic shadow rendering.
+/// @TODO IMPLEMENT SHADER PROPERLY.
 ///
-class FDyBuiltinShaderGLRenderBasicShadow final
+class FDyBuiltinShaderGLRenderBasicShadow final : public ADyGLShaderResource
 {
+  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBuiltinShaderGLRenderBasicShadow, "dyBtShaderGlRenderBscShadow")
 public:
   FDyBuiltinShaderGLRenderBasicShadow();
-
-  /// Constant name for creating DDyShaderInformation
-  inline static MDY_SET_IMMUTABLE_STRING(sName, "dyBtShaderGlRenderBscShadow");
 };
 
 } /// ::dy::builtin namespace

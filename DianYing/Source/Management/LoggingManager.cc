@@ -11,8 +11,6 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /// SOFTWARE.
 ///
-/// @TODO IMPLEMENT AUTOMATIC CREATION DIRECTORY FOR FILE SINKING.
-///
 
 /// Header file
 #include <Dy/Management/LoggingManager.h>
@@ -22,6 +20,7 @@
 #include <spdlog/sinks/basic_file_sink.h>
 
 #include <Dy/Management/SettingManager.h>
+#include <Dy/Management/WindowManager.h>
 #include <Dy/Management/Helper/GuiLogStreamSink.h>
 
 namespace {
@@ -29,16 +28,17 @@ namespace {
 ///
 /// @brief spdlog internal error callback function.
 ///
-void DyCallbackLoggerError(const std::string& message)
+void DyCallbackLoggerError(_MIN_ const std::string& message)
 {
   std::printf("DianYing internal error : %s\n", message.c_str());
 }
 
 ///
 /// @brief Get spdlog::level enum from abstracted log level EDyLogLevel.
+/// @param level `Dy` Log level value
+/// @return `spdlog` dependent log level.
 ///
-[[nodiscard]]
-spdlog::level::level_enum DyGetLogLevel(dy::EDyLogLevel level) noexcept
+MDY_NODISCARD spdlog::level::level_enum DyGetLogLevel(_MIN_ dy::EDyLogLevel level) noexcept
 {
   switch (level)
   {
@@ -48,7 +48,9 @@ spdlog::level::level_enum DyGetLogLevel(dy::EDyLogLevel level) noexcept
   case dy::EDyLogLevel::Warning:      return spdlog::level::warn;
   case dy::EDyLogLevel::Critical:     return spdlog::level::critical;
   case dy::EDyLogLevel::Error:        return spdlog::level::err;
-  default:                            return spdlog::level::trace;
+  default:
+    MDY_UNEXPECTED_BRANCH();
+    return spdlog::level::off;
   }
 }
 
@@ -61,6 +63,7 @@ EDySuccess MDyLog::pfInitialize()
 {
   MDY_LOG_DEBUG_D("{} | MDyLog::pfInitialize().", "FunctionCall");
   this->pfTurnOn();
+
   return DY_SUCCESS;
 }
 
@@ -69,86 +72,69 @@ EDySuccess MDyLog::pfRelease()
   MDY_LOG_DEBUG_D("{} | MDyLog::pfRelease().", "FunctionCall");
   this->pfTurnOff();
   spdlog::shutdown();
+
   return DY_SUCCESS;
-}
-
-void MDyLog::SetVisibleLevel(EDyLogLevel newLogLevel)
-{
-  this->mLogLevel = newLogLevel;
-
-  const auto& settingManager = MDySetting::GetInstance();
-  if (settingManager.IsEnabledFeatureLogging())
-  {
-    this->mLogger->set_level(DyGetLogLevel(this->mLogLevel));
-  }
-
-  MDY_LOG_DEBUG_D("MDyLog::mLogger level : {}.", DyGetLogLevel(this->mLogLevel));
 }
 
 EDySuccess MDyLog::pfTurnOn()
 {
   MDY_LOG_DEBUG_D("{} | MDyLog::pfTurnOn()", "Function call");
-  if (this->mLogger)
+
+  if (MDY_CHECK_ISNOTEMPTY(this->mLogger))
   {
     MDY_LOG_INFO_D("MDyLog::mLogger already allocated.");
     return DY_SUCCESS;
   }
 
+  // Create sinks for logging.
   const auto& settingManager = MDySetting::GetInstance();
-  if (!settingManager.IsEnableSubFeatureLoggingToFile() &&
-      !settingManager.IsEnabledSubFeatureLoggingToConsole())
+  if (settingManager.IsEnabledFeatureLogging() == false) { return DY_FAILURE; }
+
+  if ( settingManager.IsEnableSubFeatureLoggingToFile()     == false
+    && settingManager.IsEnabledSubFeatureLoggingToConsole() == false)
   {
+  #if defined(_WIN32) && defined(MDY_PLATFORM_FLAG_WINDOWS)
+    this->mSinks.emplace_back(std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>());
+  #else
+    this->mSinks.emplace_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
+  #endif
+  }
+  else
+  {
+    if (settingManager.IsEnabledSubFeatureLoggingToConsole() == true)
+    {
     #if defined(_WIN32) && defined(MDY_PLATFORM_FLAG_WINDOWS)
+      MDY_CALL_ASSERT_SUCCESS(MDyWindow::GetInstance().CreateConsoleWindow());
       this->mSinks.emplace_back(std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>());
     #else
       this->mSinks.emplace_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
     #endif
-  }
-  else
-  {
-    if (settingManager.IsEnabledSubFeatureLoggingToConsole()) {
-      #if defined(_WIN32) && defined(MDY_PLATFORM_FLAG_WINDOWS)
-        this->mSinks.emplace_back(std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>());
-      #else
-        this->mSinks.emplace_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
-      #endif
     }
 
-    // Caution :: To let spdlog create log file to specific path, directories must be created in advance.
-    if (settingManager.IsEnableSubFeatureLoggingToFile()) {
-#ifdef false
-      std::string fileSinkPath;
-      const auto& filePath        = settingManager.GetLogFilePath();
-      const auto slashFirstIndex  = filePath.find_first_of('/');
-      if (slashFirstIndex == std::string::npos)
-      {
-        fileSinkPath += "./" + filePath;
-      }
-      else
-      {
-        const auto slashLastIndex   = filePath.find_last_of('/');
-        if (slashFirstIndex == slashLastIndex)
-        {
-
-        }
-      }
-#endif
+    if (settingManager.IsEnableSubFeatureLoggingToFile() == true)
+    { // Caution :: To let spdlog create log file to specific path, directories must be created in advance.
       this->mSinks.push_back(std::make_shared<spdlog::sinks::basic_file_sink_mt>(settingManager.GetLogFilePath(), false));
     }
   }
 
+  // Also, create gui logging sink.
   this->mSinks.push_back(std::make_shared<TGuiLogStreamSinkMt>());
 
+  // Create logger instance and thread pool for logging.
   spdlog::init_thread_pool(8192, 1);
-  this->mLogger = std::make_shared<spdlog::async_logger>("DianYing", this->mSinks.begin(), this->mSinks.end(), spdlog::thread_pool(), spdlog::async_overflow_policy::overrun_oldest);
+  this->mLogger = std::make_shared<spdlog::async_logger>(
+      "DianYing",
+      this->mSinks.begin(), this->mSinks.end(),
+      spdlog::thread_pool(),
+      spdlog::async_overflow_policy::overrun_oldest);
   this->mLogger->set_level(DyGetLogLevel(this->mLogLevel));
 
   MDY_LOG_DEBUG_D("MDyLog::mLogger level : {}.", DyGetLogLevel(this->mLogLevel));
   MDY_LOG_DEBUG_D("MDyLog::mLogger resource allocated.");
-
   spdlog::register_logger(this->mLogger);
   MDY_LOG_DEBUG_D("MDyLog::mLogger resource registered.");
   spdlog::set_error_handler(DyCallbackLoggerError);
+
   return DY_SUCCESS;
 }
 
@@ -156,10 +142,31 @@ EDySuccess MDyLog::pfTurnOff()
 {
   MDY_LOG_INFO_D("{} | MDyLog::pfTurnOff().", "FunctionCall");
 
+  // Drop all registration of logging sink, instance.
   spdlog::drop_all();
-  this->mLogger.reset();
-  this->mSinks.clear();
+  this->mLogger .reset();
+  this->mSinks  .clear();
+
+  auto& windowManager = MDyWindow::GetInstance();
+  if (windowManager.IsCreatedConsoleWindow() == true)
+  {
+    MDY_CALL_ASSERT_SUCCESS(windowManager.RemoveConsoleWindow());
+  }
   return DY_SUCCESS;
+}
+
+void MDyLog::SetVisibleLevel(_MIN_ EDyLogLevel newLogLevel)
+{
+  this->mLogLevel = newLogLevel;
+
+  if (const auto& settingManager = MDySetting::GetInstance();
+      settingManager.IsEnabledFeatureLogging() == true)
+  {
+    const auto logLevelValue = DyGetLogLevel(this->mLogLevel);
+
+    this->mLogger->set_level(logLevelValue);
+    MDY_LOG_DEBUG_D("MDyLog::mLogger level : {}.", logLevelValue);
+  }
 }
 
 } /// ::dy namespace

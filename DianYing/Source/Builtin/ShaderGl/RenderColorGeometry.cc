@@ -14,9 +14,6 @@
 
 /// Header file
 #include <Dy/Builtin/ShaderGl/RenderColorGeometry.h>
-#include <Dy/Core/Component/Internal/ShaderType.h>
-#include <Dy/Management/DataInformationManager.h>
-#include <Dy/Management/HeapResourceManager.h>
 
 //!
 //! Local immutable data
@@ -62,28 +59,9 @@ namespace dy::builtin
 
 FDyBuiltinShaderGLRenderColorGeometry::FDyBuiltinShaderGLRenderColorGeometry()
 {
-  PDyShaderConstructionDescriptor shaderDesc;
-  shaderDesc.mShaderName = FDyBuiltinShaderGLRenderColorGeometry::sName;
-  {
-    PDyShaderFragmentInformation vs;
-    vs.mShaderType                  = EDyShaderFragmentType::Vertex;
-    vs.mShaderRawCode               = sVertexShaderCode;
-    vs.mIsEnabledRawLoadShaderCode  = true;
-    shaderDesc.mShaderFragments.emplace_back(vs);
-  }
-  {
-    PDyShaderFragmentInformation fs;
-    fs.mShaderType                  = EDyShaderFragmentType::Pixel;
-    fs.mShaderRawCode               = sFragmentShaderCode;
-    fs.mIsEnabledRawLoadShaderCode  = true;
-    shaderDesc.mShaderFragments.emplace_back(fs);
-  }
-
-  auto& infoManager = MDyDataInformation::GetInstance();
-  auto& rescManager = MDyHeapResource::GetInstance();
-
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation(shaderDesc));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(FDyBuiltinShaderGLRenderColorGeometry::sName.data()));
+  this->mSpecifierName  = sName;
+  this->mVertexBuffer   = sVertexShaderCode;
+  this->mPixelBuffer    = sFragmentShaderCode;
 }
 
 } /// ::dy::builtin namespace

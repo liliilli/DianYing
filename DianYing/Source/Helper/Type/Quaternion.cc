@@ -14,7 +14,7 @@
 
 /// Header file
 #include <Dy/Helper/Type/Quaternion.h>
-#include <Phitos/Dbg/assert.h>
+
 
 namespace dy
 {
@@ -89,7 +89,7 @@ void DDyQuaternion::AddRotationAngle(EDyAxis3D axis, float degreeEulerAngle) {
       this->mQuaternion = temp * this->mQuaternion;
     } break;
   default:
-    PHITOS_UNEXPECTED_BRANCH();
+    MDY_UNEXPECTED_BRANCH();
     break;
   }
 }

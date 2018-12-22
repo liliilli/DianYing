@@ -15,6 +15,15 @@
 
 #include <cstdint>
 #include <string>
+#include <unordered_map>
+
+#if defined(max) == true
+#undef max
+#endif
+
+#if defined(min) == true
+#undef min
+#endif
 
 //!
 //! If you want to use real type as double, remove comment "//" to activate macro option.
@@ -51,5 +60,29 @@ TF64;
 #else
 TF32;
 #endif
+
+template <
+    typename TValue,
+    typename THash = std::hash<std::string>,
+    typename TEqualTo = std::equal_to<std::string>,
+    typename TAllocator = std::allocator<std::pair<const std::string, TValue>>
+>
+using TStringHashMap = std::unordered_map<std::string, TValue, THash, TEqualTo, TAllocator>;
+
+template <
+    typename TType,
+    typename = std::enable_if_t<
+        std::is_arithmetic_v<TType>
+    >
+>
+constexpr auto NumericalMax = std::numeric_limits<TType>::max();
+
+template <
+    typename TType,
+    typename = std::enable_if_t<
+        std::is_arithmetic_v<TType>
+    >
+>
+constexpr auto NumericalMin = std::numeric_limits<TType>::lowest();
 
 #endif /// GUARD_DY_GLOBAL_TYPE_H

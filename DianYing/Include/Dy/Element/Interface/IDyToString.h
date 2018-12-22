@@ -25,7 +25,8 @@ namespace dy
 MDY_INTERFACE MDY_NO_VTABLE IDyToString
 {
 public:
-  ///
+    virtual ~IDyToString() = default;
+    ///
   /// @brief Output information as string.
   ///
   [[nodiscard]] virtual std::string ToString() = 0;

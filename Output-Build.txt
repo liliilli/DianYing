@@ -1,0 +1,98 @@
+﻿1>------ Build started: Project: DianYing, Configuration: Debug x64 ------
+1>CDyCamera.cc
+1>CDyDirectionalLight.cc
+1>CDyFontRenderer.cc
+1>CDyFontRenderer_Deprecated.cc
+1>Camera.cc
+1>PostEffectSsao.cc
+1>StaticCoreTrigger.cc
+1>BasicRenderer.cc
+1>DeferredRenderingMesh.cc
+1>FinalScreenDisplayRenderer.cc
+1>UiBasicRenderer.cc
+1>LoggingManager.cc
+1>RenderingManager.cc
+1>SettingManager.cc
+1>WindowManager.cc
+1>SettingContainer.cc
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\detail\conversions\from_json.hpp(362,45): error C2338:  could not find from_json() method in T's namespace
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\detail\conversions\from_json.hpp(362,45): error C2338:         static_assert(sizeof(BasicJsonType) == 0,
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\detail\conversions\from_json.hpp(362,45): error C2338:                                             ^
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\detail\conversions\from_json.hpp(377): message :  see reference to function template instantiation 'void nlohmann::detail::from_json_fn::call<BasicJsonType,T>(const BasicJsonType &,T &,nlohmann::detail::priority_tag<0>) noexcept const' being compiled
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\detail\conversions\from_json.hpp(377): message :         with
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\detail\conversions\from_json.hpp(377): message :         [
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\detail\conversions\from_json.hpp(377): message :             BasicJsonType=nlohmann::basic_json<std::map,std::vector,std::string,bool,int64_t,uint64_t,double,std::allocator,nlohmann::adl_serializer>,
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\detail\conversions\from_json.hpp(377): message :             T=dy::DDyVectorInt2
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\detail\conversions\from_json.hpp(377): message :         ]
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\detail\conversions\from_json.hpp(377): message :         return call(j, val, priority_tag<1> {});
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\adl_serializer.hpp(26): message :  see reference to function template instantiation 'void nlohmann::detail::from_json_fn::operator ()<_Ty,ValueType>(const BasicJsonType &,T &) noexcept const' being compiled
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\adl_serializer.hpp(26): message :         with
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\adl_serializer.hpp(26): message :         [
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\adl_serializer.hpp(26): message :             _Ty=nlohmann::basic_json<std::map,std::vector,std::string,bool,int64_t,uint64_t,double,std::allocator,nlohmann::adl_serializer>,
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\adl_serializer.hpp(26): message :             ValueType=dy::DDyVectorInt2,
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\adl_serializer.hpp(26): message :             BasicJsonType=nlohmann::basic_json<std::map,std::vector,std::string,bool,int64_t,uint64_t,double,std::allocator,nlohmann::adl_serializer>,
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\adl_serializer.hpp(26): message :             T=dy::DDyVectorInt2
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\adl_serializer.hpp(26): message :         ]
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\adl_serializer.hpp(26): message :         ::nlohmann::from_json(std::forward<BasicJsonType>(j), val);
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\json.hpp(2569): message :  see reference to function template instantiation 'void nlohmann::adl_serializer<T,void>::from_json<const nlohmann::basic_json<std::map,std::vector,std::string,bool,int64_t,uint64_t,double,std::allocator,nlohmann::adl_serializer>&,T>(BasicJsonType,ValueType &) noexcept' being compiled
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\json.hpp(2569): message :         with
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\json.hpp(2569): message :         [
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\json.hpp(2569): message :             T=dy::DDyVectorInt2,
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\json.hpp(2569): message :             BasicJsonType=const nlohmann::basic_json<std::map,std::vector,std::string,bool,int64_t,uint64_t,double,std::allocator,nlohmann::adl_serializer> &,
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\json.hpp(2569): message :             ValueType=dy::DDyVectorInt2
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\json.hpp(2569): message :         ]
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\json.hpp(2569): message :     {
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\json.hpp(2579): message :  see reference to function template instantiation 'void nlohmann::adl_serializer<T,void>::from_json<const nlohmann::basic_json<std::map,std::vector,std::string,bool,int64_t,uint64_t,double,std::allocator,nlohmann::adl_serializer>&,T>(BasicJsonType,ValueType &) noexcept' being compiled
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\json.hpp(2579): message :         with
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\json.hpp(2579): message :         [
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\json.hpp(2579): message :             T=dy::DDyVectorInt2,
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\json.hpp(2579): message :             BasicJsonType=const nlohmann::basic_json<std::map,std::vector,std::string,bool,int64_t,uint64_t,double,std::allocator,nlohmann::adl_serializer> &,
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\json.hpp(2579): message :             ValueType=dy::DDyVectorInt2
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\json.hpp(2579): message :         ]
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\json.hpp(2579): message :         JSONSerializer<ValueType>::from_json(*this, ret);
+1>d:\development\dianying\dianying\include\dy\helper\jsonhelper.h(47): message :  see reference to function template instantiation 'ValueType nlohmann::basic_json<std::map,std::vector,std::string,bool,int64_t,uint64_t,double,std::allocator,nlohmann::adl_serializer>::get<TReturnType,dy::DDyVectorInt2,0>(void) noexcept const' being compiled
+1>d:\development\dianying\dianying\include\dy\helper\jsonhelper.h(47): message :         with
+1>d:\development\dianying\dianying\include\dy\helper\jsonhelper.h(47): message :         [
+1>d:\development\dianying\dianying\include\dy\helper\jsonhelper.h(47): message :             ValueType=dy::DDyVectorInt2,
+1>d:\development\dianying\dianying\include\dy\helper\jsonhelper.h(47): message :             TReturnType=dy::DDyVectorInt2
+1>d:\development\dianying\dianying\include\dy\helper\jsonhelper.h(47): message :         ]
+1>d:\development\dianying\dianying\include\dy\helper\jsonhelper.h(47): message :   return jsonAtlas.at(MSVSTR(name)).template get<TReturnType>();
+1>d:\development\dianying\dianying\include\dy\helper\jsonhelper.h(47): message :  see reference to function template instantiation 'ValueType nlohmann::basic_json<std::map,std::vector,std::string,bool,int64_t,uint64_t,double,std::allocator,nlohmann::adl_serializer>::get<TReturnType,dy::DDyVectorInt2,0>(void) noexcept const' being compiled
+1>d:\development\dianying\dianying\include\dy\helper\jsonhelper.h(47): message :         with
+1>d:\development\dianying\dianying\include\dy\helper\jsonhelper.h(47): message :         [
+1>d:\development\dianying\dianying\include\dy\helper\jsonhelper.h(47): message :             ValueType=dy::DDyVectorInt2,
+1>d:\development\dianying\dianying\include\dy\helper\jsonhelper.h(47): message :             TReturnType=dy::DDyVectorInt2
+1>d:\development\dianying\dianying\include\dy\helper\jsonhelper.h(47): message :         ]
+1>d:\development\dianying\dianying\include\dy\helper\jsonhelper.h(47): message :   return jsonAtlas.at(MSVSTR(name)).template get<TReturnType>();
+1>d:\development\dianying\dianying\source\management\type\settingcontainer.cc(100): message :  see reference to function template instantiation 'TReturnType dy::DyGetValue<dy::DDyVectorInt2,nlohmann::json>(const TParam1 &,const std::string_view &)' being compiled
+1>d:\development\dianying\dianying\source\management\type\settingcontainer.cc(100): message :         with
+1>d:\development\dianying\dianying\source\management\type\settingcontainer.cc(100): message :         [
+1>d:\development\dianying\dianying\source\management\type\settingcontainer.cc(100): message :             TReturnType=dy::DDyVectorInt2,
+1>d:\development\dianying\dianying\source\management\type\settingcontainer.cc(100): message :             TParam1=nlohmann::json
+1>d:\development\dianying\dianying\source\management\type\settingcontainer.cc(100): message :         ]
+1>d:\development\dianying\dianying\source\management\type\settingcontainer.cc(100): message :   p.mInitialResolution      = DyGetValue<DDyVectorInt2>       (j, sInitialResolution);
+1>c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.15.26726\include\type_traits(616): message :  see reference to class template instantiation 'std::basic_string_view<char,std::char_traits<char>>' being compiled
+1>c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.15.26726\include\type_traits(616): message : 		: bool_constant<__is_convertible_to(_From, _To)>
+1>c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.15.26726\include\xstring(2124): message :  see reference to class template instantiation 'std::is_convertible<const _StringViewIsh (&),std::basic_string_view<char,std::char_traits<char>>>' being compiled
+1>c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.15.26726\include\xstring(2124): message :         with
+1>c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.15.26726\include\xstring(2124): message :         [
+1>c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.15.26726\include\xstring(2124): message :             _StringViewIsh=char [2]
+1>c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.15.26726\include\xstring(2124): message :         ]
+1>c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.15.26726\include\xstring(2124): message : 			negation<is_convertible<const _StringViewIsh&, const _Elem *>>>>;
+1>c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.15.26726\include\xstring(2122): message :  see reference to variable template 'const bool conjunction_v<std::is_convertible<char const (&)[2],std::basic_string_view<char,std::char_traits<char> > >,std::negation<std::is_convertible<char const (&)[2],char const *> > >' being compiled
+1>c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.15.26726\include\xstring(2122): message : 		using _Is_string_view_ish = enable_if_t<conjunction_v<
+1>c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.15.26726\include\xstring(3774): message :  see reference to alias template instantiation '_Is_string_view_ish<char[2]>' being compiled
+1>c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.15.26726\include\xstring(3774): message : 		class = _Is_string_view_ish<_StringViewIsh>>
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\detail\conversions\from_json.hpp(367,48): error C2039:  'force_msvc_stacktrace': is not a member of 'dy::DDyVectorInt2'
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\detail\conversions\from_json.hpp(367,48): error C2039:         static_assert(sizeof(typename decayed::force_msvc_stacktrace) == 0,
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\detail\conversions\from_json.hpp(367,48): error C2039:                                                ^
+1>d:\development\dianying\dianying\include\dy\helper\type\vectorint2.h(29): message :  see declaration of 'dy::DDyVectorInt2'
+1>d:\development\dianying\dianying\include\dy\helper\type\vectorint2.h(29): message : struct DDyVectorInt2 final {
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\detail\conversions\from_json.hpp(367,1): error C2065:  'force_msvc_stacktrace': undeclared identifier
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\detail\conversions\from_json.hpp(367,1): error C2065:         static_assert(sizeof(typename decayed::force_msvc_stacktrace) == 0,
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\detail\conversions\from_json.hpp(367,1): error C2065: ^
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\detail\conversions\from_json.hpp(367,71): error C2338:  forcing MSVC stacktrace to show which T we're talking about.
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\detail\conversions\from_json.hpp(367,71): error C2338:         static_assert(sizeof(typename decayed::force_msvc_stacktrace) == 0,
+1>d:\development\dianying\dianying\libraries\nlohmann\nlohmann\detail\conversions\from_json.hpp(367,71): error C2338:                                                                       ^
+1>Done building project "DianYing.vcxproj" -- FAILED.
+========== Build: 0 succeeded, 1 failed, 0 up-to-date, 0 skipped ==========
