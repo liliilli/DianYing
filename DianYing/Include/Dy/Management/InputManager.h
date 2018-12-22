@@ -66,50 +66,28 @@ public:
   /// button input value must not be `NoneError`.
   MDY_NODISCARD EDyInputButtonStatus GetButtonStatusValue(_MIN_ EDyButton button) const noexcept;
 
-  ///
   /// @brief Get whether or not specific axis was pressed.
   /// @param[in] axisSpecifier The axis name which axis instance has.
   /// @return boolean value, if specific axis was pressed, return true.
-  ///
   MDY_NODISCARD bool IsAxisPressed(_MIN_ const std::string& axisSpecifier) noexcept;
-
-  ///
+  /// @brief Check if key (action, axis) exist.
+  /// @param axisSpecifier key (action, axis) specifier name.
+  MDY_NODISCARD bool IsAxisExist(_MIN_ const std::string& axisSpecifier) const noexcept;
   /// @brief Get whether or not specific axis was released.
   /// @param[in] axisSpecifier The axis name which axis instance has.
   /// @return boolean value, if specific axis was released, return true.
-  ///
   MDY_NODISCARD bool IsAxisReleased(_MIN_ const std::string& axisSpecifier) noexcept;
 
-  ///
-  /// @brief Get whether or not speicfied axis is being repeated.
-  /// @param axisSpecifier The axis name which axis instance has.
-  /// @return boolean value, if given axis is being repeated return true.
-  ///
-  MDY_NODISCARD bool IsAxisRepeated(_MIN_ const std::string& axisSpecifier) noexcept;
-
-  ///
-  /// @brief Check if key (action, axis) exist.
-  /// @param axisSpecifier key (action, axis) specifier name.
-  ///
-  MDY_NODISCARD bool IsAxisExist(_MIN_ const std::string& axisSpecifier) const noexcept;
-
-  ///
   /// @brief
   /// @param actionSpecifier
-  ///
   MDY_NODISCARD bool IsActionPressed(_MIN_ const std::string& actionSpecifier) const noexcept;
-
-  ///
-  /// @brief
-  /// @param actionSpecifier
-  ///
-  MDY_NODISCARD bool IsActionReleased(_MIN_ const std::string& actionSpecifier) const noexcept;
-
-  ///
   /// @brief Check whether or not specified action is being existed.
   /// @param actionSpecifier The action name which action instance has.
-  ///
   MDY_NODISCARD bool IsActionExist(_MIN_ const std::string& actionSpecifier) const noexcept;
+  /// @brief
+  /// @param actionSpecifier
+  MDY_NODISCARD bool IsActionReleased(_MIN_ const std::string& actionSpecifier) const noexcept;
+
 
   /// @brief Check if mouse is moved on present frame, but false when mouse movement is not activated.
   MDY_NODISCARD bool IsMouseMoved() const noexcept { return this->mIsMouseMoved; }
@@ -186,11 +164,15 @@ private:
 
 ///
 /// @macro MDY_DETACH_CONTROLLER_UI
-/// @brief 
+/// @brief Detach ui script from controller delegate management.
 ///
 #define MDY_DETACH_CONTROLLER_UI() \
   ::dy::MDyInput::GetInstance().MDY_PRIVATE_SPECIFIER(TryDetachContollerUi)(*this);
 
+///
+/// @macro MDY_BIND_INPUT_AXIS
+/// @brief Try register axis input delegate to manager.
+///
 #define MDY_BIND_INPUT_AXIS(__MAAxisSpecifier__, __MAScriptMemberFunctionPtr__) \
   { \
     auto& inputManager = ::dy::MDyInput::GetInstance(); \
@@ -198,6 +180,10 @@ private:
         (*this, std::bind(__MAScriptMemberFunctionPtr__, this, std::placeholders::_1), __MAAxisSpecifier__); \
   }
 
+///
+/// @macro MDY_BIND_INPUT_ACTION
+/// @brief Try register axis input delegate to manager.
+///
 #define MDY_BIND_INPUT_ACTION(__MAAxisSpecifier__, __MACondition__, __MAScriptMemberFunctionPtr__) \
   { \
     auto& inputManager = ::dy::MDyInput::GetInstance(); \

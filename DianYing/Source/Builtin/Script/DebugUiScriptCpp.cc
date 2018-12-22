@@ -23,6 +23,7 @@
 #include <Dy/Element/Canvas/FDyBasicGaugeBar.h>
 #include <Dy/Management/InputManager.h>
 #include <Dy/Management/Internal/MDyProfiling.h>
+#include <Dy/Helper/Math/Math.h>
 
 namespace dy
 {
@@ -91,12 +92,12 @@ Camera0 : 2
 
 void FDyBuiltinDebugUiScript::Bar_MoveLeft(_MIN_ TF32 iXAxis) noexcept
 {
-
+  if (math::IsNearlyZero(iXAxis) == false) { MDY_LOG_CRITICAL("iXAxis : {:.4f}", iXAxis); }
 }
 
 void FDyBuiltinDebugUiScript::Bar_MoveUp(_MIN_ TF32 iYAxis) noexcept
 {
-
+  if (math::IsNearlyZero(iYAxis) == false) { MDY_LOG_CRITICAL("iYAxis : {:.4f}", iYAxis); }
 }
 
 void FDyBuiltinDebugUiScript::EndApplication() noexcept
