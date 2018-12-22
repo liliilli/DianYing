@@ -37,7 +37,11 @@ void FDyUIBasicRenderer::RenderScreen()
 {
   glBindFramebuffer(GL_FRAMEBUFFER, this->mBinderFrameBuffer->GetFrameBufferId());
 
-  MDyWorld::GetInstance().TryRenderDebugUi();
+  {
+    auto& refWorld = MDyWorld::GetInstance();
+    if (refWorld.IsLoadingUiExist() == true)  { refWorld.MDY_PRIVATE_SPECIFIER(TryRenderLoadingUi)(); }
+    if (refWorld.IsDebugUiExist() == true)    { refWorld.MDY_PRIVATE_SPECIFIER(TryRenderDebugUi)(); }
+  }
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

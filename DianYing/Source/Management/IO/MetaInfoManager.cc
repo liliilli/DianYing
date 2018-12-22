@@ -33,6 +33,7 @@
 #include <Dy/Meta/Descriptor/WidgetImageMetaInformation.h>
 
 #include <Dy/Helper/HelperString.h>
+#include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 
 //!
 //! Local tranlation unit variables
@@ -309,6 +310,27 @@ bool MDyMetaInfo::IsLoadingWidgetMetaInfoExist() const noexcept
   return MDY_CHECK_ISNOTEMPTY(this->mLoadingWidgetMetaInfo);
 }
 
+void MDyMetaInfo::MDY_PRIVATE_SPECIFIER(PopulateBootResourceSpecifierList)() const noexcept
+{
+  static bool mIsCalled = false;
+  MDY_ASSERT(mIsCalled == false, "This function must not be called twice.");
+
+  SDyIOConnectionHelper::PopulateResourceList(this->mBootResourceSpecifierList, true);
+  mIsCalled = true;
+}
+
+void MDyMetaInfo::MDY_PRIVATE_SPECIFIER(PopulateGlobalResourceSpecifierList)() const noexcept
+{
+  static bool mIsCalled = false;
+  MDY_ASSERT(mIsCalled == false, "This function must not be called twice.");
+
+  for (const auto& globalResourceSpecifier : this->mGlobalResourceSpecifierList)
+  { // Global resource list consists of many sub-global resource list from each global resource script.
+    SDyIOConnectionHelper::PopulateResourceList(globalResourceSpecifier, true);
+  }
+  mIsCalled = true;
+}
+
 EDySuccess MDyMetaInfo::pReadScriptResourceMetaInformation(_MIN_ const std::string& metaFilePath)
 {
   // Validity Test
@@ -539,12 +561,6 @@ EDySuccess MDyMetaInfo::pfAddGLFrameBufferMetaInfo(const PDyGlFrameBufferInstanc
   return DY_SUCCESS;
 }
 
-EDySuccess MDyMetaInfo::pfAddBootResourceSpecifierList(_MIN_ const std::vector<DDyResourceName>& list)
-{
-  this->mBootResourceSpecifierList = list;
-  return DY_SUCCESS;
-}
-
 EDySuccess MDyMetaInfo::pReadFontResourceMetaInformation(_MIN_ const std::string& metaFilePath)
 { // (1) Validity Test
   const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
@@ -582,6 +598,18 @@ EDySuccess MDyMetaInfo::pReadSceneResourceMetaInformation(_MIN_ const std::strin
     MDY_ASSERT(isSucceeded == true, "Unexpected error occurred.");
   }
 
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::MDY_PRIVATE_SPECIFIER(AddBootResourceSpecifierList)(_MIN_ const TResourceSpecifierList& list)
+{
+  this->mBootResourceSpecifierList = list;
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::MDY_PRIVATE_SPECIFIER(AddGlobalResourceSpecifierList)(_MIN_ const TResourceSpecifierList& list)
+{
+  if (list.empty() == false) { this->mGlobalResourceSpecifierList.emplace_back(list); }
   return DY_SUCCESS;
 }
 

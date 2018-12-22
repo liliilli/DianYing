@@ -104,11 +104,11 @@ void MDySynchronization::pRunFrameBooted()
 void MDySynchronization::pRunFrameFirstLoading()
 {
   using TSyncHelper = SDyIOConnectionHelper;
-  if (TSyncHelper::IsMainTaskListIsEmpty() == false)  { TSyncHelper::ForceProcessDeferredMainTaskList(); }
-  if (TSyncHelper::CheckIOResultInCondition() == true){ TSyncHelper::ForceProcessIOInsertPhase(); }
+  if (TSyncHelper::IsMainTaskListIsEmpty() == false)    { TSyncHelper::ForceProcessDeferredMainTaskList(); }
+  if (TSyncHelper::CheckIOResultInCondition() == true)  { TSyncHelper::ForceProcessIOInsertPhase(); }
 
   // Check whether IO thread working is done, if so change status to `Loading`. 
-  if (TSyncHelper::IsIOThreadSleep() == true) { this->mStatus = EDyGlobalGameStatus::Loading; }
+    if (TSyncHelper::IsIOThreadSleep() == true) { this->mStatus = EDyGlobalGameStatus::Loading; }
 }
 
 void MDySynchronization::pRunFrameLoading()

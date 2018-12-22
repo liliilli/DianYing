@@ -38,13 +38,6 @@ EDySuccess FDyWorldUIContainer::TryRemoveDebugUi()
   return DY_SUCCESS;
 }
 
-
-void FDyWorldUIContainer::TryRenderDebugUi()
-{
-  if (MDY_CHECK_ISEMPTY(this->mDebugUi)) { return; }
-  this->mDebugUi->Render();
-}
-
 EDySuccess FDyWorldUIContainer::TryCreateLoadingUi()
 {
   auto& metaManager = MDyMetaInfo::GetInstance();
@@ -63,6 +56,18 @@ EDySuccess FDyWorldUIContainer::TryRemoveLoadingUi()
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
   return DY_SUCCESS;
+}
+
+void FDyWorldUIContainer::TryRenderDebugUi()
+{
+  if (MDY_CHECK_ISEMPTY(this->mDebugUi)) { return; }
+  this->mDebugUi->Render();
+}
+
+void FDyWorldUIContainer::TryRenderLoadingUi()
+{
+  if (MDY_CHECK_ISEMPTY(this->mLoadingUi)) { return; }
+  this->mLoadingUi->Render();
 }
 
 bool FDyWorldUIContainer::IsDebugUiExist() const noexcept { return MDY_CHECK_ISNOTEMPTY(this->mDebugUi); }

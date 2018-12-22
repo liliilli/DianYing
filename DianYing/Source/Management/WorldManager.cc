@@ -205,7 +205,7 @@ EDySuccess MDyWorld::TryRemoveDebugUi()
   return this->mUiInstanceContainer.TryRemoveDebugUi();
 }
 
-void MDyWorld::TryRenderDebugUi()
+void MDyWorld::MDY_PRIVATE_SPECIFIER(TryRenderDebugUi)()
 {
   this->mUiInstanceContainer.TryRenderDebugUi();
 }
@@ -223,6 +223,11 @@ bool MDyWorld::IsLoadingUiExist() const noexcept
 EDySuccess MDyWorld::TryRemoveLoadingUi()
 {
   return this->mUiInstanceContainer.TryRemoveLoadingUi();
+}
+
+void MDyWorld::MDY_PRIVATE_SPECIFIER(TryRenderLoadingUi)()
+{
+  this->mUiInstanceContainer.TryRenderLoadingUi();
 }
 
 void MDyWorld::pfBindFocusCamera(_MIN_ CDyLegacyCamera& validCameraPtr) noexcept

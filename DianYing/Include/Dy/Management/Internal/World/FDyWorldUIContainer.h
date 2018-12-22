@@ -34,6 +34,7 @@ public:
   /// If already removed, just return DY_FAILURE.
   MDY_NODISCARD EDySuccess  TryRemoveDebugUi();
   /// @brief Try draw debug ui if exist.
+  /// @TODO THIS FUNCTION IS TEMPORARY.
   void TryRenderDebugUi();
 
   /// @brief Try create loading ui layout. \n
@@ -44,6 +45,9 @@ public:
   /// @brief Try remove debug ui layout from screen. \n
   /// If already remove or not exist, return DY_FAILURE.
   MDY_NODISCARD EDySuccess  TryRemoveLoadingUi();
+  /// @brief Try draw loading ui if exist.
+  /// @TODO THIS FUNCTION IS TEMPORARY.
+  void TryRenderLoadingUi();
 
 private:
   std::unique_ptr<FDyUiWidget> mDebugUi   = MDY_INITIALIZE_NULL;

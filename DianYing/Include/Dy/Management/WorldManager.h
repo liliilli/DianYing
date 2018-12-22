@@ -117,7 +117,7 @@ public:
   /// If already removed, just return DY_FAILURE
   MDY_NODISCARD EDySuccess TryRemoveDebugUi();
   /// @brief Try draw debug ui if exist.
-  void TryRenderDebugUi();
+  void MDY_PRIVATE_SPECIFIER(TryRenderDebugUi)();
 
   /// @brief Try create loading ui layout. \n
   /// If Loading UI Widget meta information is not exist, just return DY_FAILURE doing nothing.
@@ -127,6 +127,8 @@ public:
   /// @brief Try remove debug ui layout from screen. \n
   /// If already remove or not exist, return DY_FAILURE.
   MDY_NODISCARD EDySuccess  TryRemoveLoadingUi();
+  /// @brief Try draw loading ui if exist.
+  void MDY_PRIVATE_SPECIFIER(TryRenderLoadingUi)();
 
 #ifdef false
   ///
