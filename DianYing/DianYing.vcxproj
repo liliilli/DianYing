@@ -332,6 +332,7 @@
     <ClCompile Include="Source\Element\Actor.cc" />
     <ClCompile Include="Source\Element\Canvas\Text.cc" />
     <ClCompile Include="Source\Management\Helper\SDyProfilingHelper.cc" />
+    <ClCompile Include="Source\Management\Internal\Input\FDyInputDelegateManager.cc" />
     <ClCompile Include="Source\Management\Internal\MDyProfiling.cc" />
     <ClCompile Include="Source\Management\Internal\MDySynchronization.cc" />
     <ClCompile Include="Source\Management\Internal\World\FDyWorldUIContainer.cc" />
@@ -515,6 +516,7 @@
     <ClInclude Include="Include\Dy\Helper\System\Idioms.h" />
     <ClInclude Include="Include\Dy\Helper\Wrapper\DDyMutexUniqueHashMap.h" />
     <ClInclude Include="Include\Dy\Management\Helper\SDyProfilingHelper.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\Input\FDyInputDelegateManager.h" />
     <ClInclude Include="Include\Dy\Management\Internal\MDyProfiling.h" />
     <ClInclude Include="Include\Dy\Management\Internal\World\FDyWorldUIContainer.h" />
     <ClInclude Include="Include\Dy\Management\IO\MDyIOData.h" />

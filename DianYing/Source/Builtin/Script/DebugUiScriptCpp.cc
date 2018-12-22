@@ -29,10 +29,15 @@ namespace dy
 
 void FDyBuiltinDebugUiScript::Initiate()
 {
-  FDyText* text = this->GetWidgetReference().GetUiObject<FDyText>("DebugTestText");
-  auto position = text->GetRelativePosition(EDyOrigin::Center_Center);
-  text->SetRelativePosition(position);
-  //text->SetFontSize(12);
+  const auto i = MDY_ACQUIRE_CONTROLLER_UI(); // Use this for acquire controller exclusive right for UI.
+  MDY_ASSERT(i == DY_SUCCESS, "Unexpected error occurred.");
+
+  MDY_BIND_INPUT_AXIS("XAxis", &FDyBuiltinDebugUiScript::Bar_MoveLeft);
+  MDY_BIND_INPUT_AXIS("YAxis", &FDyBuiltinDebugUiScript::Bar_MoveUp);
+  MDY_BIND_INPUT_ACTION("Enter", EDyInputActionStatus::Pressed, &FDyBuiltinDebugUiScript::EndApplication);
+
+  this->mTimeManager      = &MDyTime::GetInstance();
+  this->mProfilingManger  = &MDyProfiling::GetInstance();
 }
 
 void FDyBuiltinDebugUiScript::Start()
@@ -68,21 +73,36 @@ Camera0 : 2
   };
 #endif
 
-  auto& time = MDyTime::GetInstance();
-  auto& inputManager = MDyInput::GetInstance();
-  auto t = time.GetCalendarTime();
+  auto t = this->mTimeManager->GetCalendarTime();
   text->SetText(fmt::format(
       "{:05.2f} %, {:0d} fps | Time : {:04}-{:02}-{:02} {:02}:{:02}:{:02}\n"
       "| Obj : 000 | Tex : {:03} | Shd : {:03} | Vtx : {:03} |\n"
       "Ram Usage : {} Bytes", 
-      usageCpu, time.GetPresentFpsCountValue(),
+      usageCpu, this->mTimeManager->GetPresentFpsCountValue(),
       t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(),
-      MDyProfiling::GetInstance().GetOnBindTextureCount(),
-      MDyProfiling::GetInstance().GetOnBindShaderCount(),
-      MDyProfiling::GetInstance().GetOnBindVertexCount(),
+      this->mProfilingManger->GetOnBindTextureCount(),
+      this->mProfilingManger->GetOnBindShaderCount(),
+      this->mProfilingManger->GetOnBindVertexCount(),
       usageRam
   ));
+  //bar->SetRelativePosition(bar->GetRelativePosition(EDyOrigin::Center_Center) + DDyVector2{0, -dt * 16.0f});
   bar->SetPresentValue(usageCpu);
+}
+
+void FDyBuiltinDebugUiScript::Bar_MoveLeft(_MIN_ TF32 iXAxis) noexcept
+{
+
+}
+
+void FDyBuiltinDebugUiScript::Bar_MoveUp(_MIN_ TF32 iYAxis) noexcept
+{
+
+}
+
+void FDyBuiltinDebugUiScript::EndApplication() noexcept
+{
+  MDY_LOG_CRITICAL("Action!");
+  MDY_NOTUSED const auto _ = MDY_DETACH_CONTROLLER_UI(); // Use this for give controller exclusive right to Actor or nothing.
 }
 
 } /// ::dy namespace

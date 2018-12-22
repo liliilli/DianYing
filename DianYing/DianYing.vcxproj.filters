@@ -235,6 +235,7 @@
     <ClCompile Include="Source\Component\Internal\Script\FDyWidgetScriptStatus.cc" />
     <ClCompile Include="Source\Component\UI\CDyWidgetScript.cc" />
     <ClCompile Include="Source\Management\Internal\World\FDyWorldUIContainer.cc" />
+    <ClCompile Include="Source\Management\Internal\Input\FDyInputDelegateManager.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -602,6 +603,7 @@
     <ClInclude Include="Include\Dy\Component\Internal\Script\FDyWidgetScriptStatus.h" />
     <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScriptBase.h" />
     <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScript.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\Input\FDyInputDelegateManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

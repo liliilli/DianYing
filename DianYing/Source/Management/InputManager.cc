@@ -474,13 +474,16 @@ void MDyInput::pfUpdate(_MIN_ TF32 dt) noexcept
 {
   this->MDY_PRIVATE_SPECIFIER(pUpdateMouseMovement)(dt);
   if (this->IsJoystickConnected() == true)
-  {
+  { // If joystick is connected, update values because GLFW 3.2.1 does not have callback for joystick.
     this->MDY_PRIVATE_SPECIFIER(pUpdateJoystickSticks)();
     this->MDY_PRIVATE_SPECIFIER(pUpdateJoystickButtons)();
   }
 
   this->MDY_PRIVATE_SPECIFIER(pCheckAxisStatus)(dt);
   this->MDY_PRIVATE_SPECIFIER(pCheckActionStatus)(dt);
+
+  this->mDelegateManger.CheckDelegateAxis(dt);
+  this->mDelegateManger.CheckDelegateAction(dt);
 }
 
 void MDyInput::MDY_PRIVATE_SPECIFIER(pUpdateJoystickSticks)()
@@ -729,6 +732,59 @@ void MDyInput::MDY_PRIVATE_SPECIFIER(pUpdateMouseMovement)(_MIN_ TF32 dt)
     sMousePositionDirty = false;
   }
   else { this->mIsMouseMoved = false; }
+}
+
+EDySuccess MDyInput::MDY_PRIVATE_SPECIFIER(TryRequireControllerUi)(_MIN_ ADyWidgetCppScript& iRefUiScript) noexcept
+{
+  return this->mDelegateManger.TryRequireControllerUi(iRefUiScript);
+}
+
+EDySuccess MDyInput::MDY_PRIVATE_SPECIFIER(TryDetachContollerUi)(_MIN_ ADyWidgetCppScript& iRefUiScript) noexcept
+{
+  return this->mDelegateManger.TryDetachContollerUi(iRefUiScript);
+}
+
+EDySuccess MDyInput::MDY_PRIVATE_SPECIFIER(TryBindAxisDelegate)(
+    _MIN_ ADyWidgetCppScript& iRefUiScript, 
+    _MIN_ std::function<void(TF32)> iFunction,
+    _MIN_ const std::string& iAxisName)
+{
+  if (this->mDelegateManger.GetPtrUiScriptOnBinding() != &iRefUiScript)
+  { // Check ui is binding to delegate now. If not matched, just return DY_FAILURE with error log.
+    MDY_LOG_ERROR("Failed to binding axis function of UI script. Instance reference did not match.");
+    return DY_FAILURE;
+  }
+
+  if (this->IsAxisExist(iAxisName) == false)
+  { // Check `Axis` is exist. if not, return DY_FAILURE.
+    MDY_LOG_ERROR("Failed to binding axis function of UI script. Axis `{}` does not exist.", iAxisName);
+    return DY_FAILURE;
+  }
+
+  this->mDelegateManger.BindAxisDelegateUi(iFunction, this->mBindedAxisMap.at(iAxisName));
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyInput::MDY_PRIVATE_SPECIFIER(TryBindActionDelegate)(
+    _MIN_ ADyWidgetCppScript& iRefUiScript, 
+    _MIN_ EDyInputActionStatus iCondition,
+    _MIN_ std::function<void()> iFunction,
+    _MIN_ const std::string& iActionName)
+{
+  if (this->mDelegateManger.GetPtrUiScriptOnBinding() != &iRefUiScript)
+  { // Check ui is binding to delegate now. If not matched, just return DY_FAILURE with error log.
+    MDY_LOG_ERROR("Failed to binding action function of UI script. Instance reference did not match.");
+    return DY_FAILURE;
+  }
+
+  if (this->IsActionExist(iActionName) == false)
+  { // Check `Action` is exist. if not, return DY_FAILURE.
+    MDY_LOG_ERROR("Failed to binding action function of UI script. Action `{}` does not exist.", iActionName);
+    return DY_FAILURE;
+  }
+
+  this->mDelegateManger.BindActionDelegateUi(iFunction, iCondition, this->mBindedActionMap.at(iActionName));
+  return DY_SUCCESS;
 }
 
 } /// ::dy namespace

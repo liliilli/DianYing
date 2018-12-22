@@ -49,6 +49,9 @@ struct DDyActionBindingInformation final
   DDyActionBindingInformation(_MIN_ const DDySettingInput::DAction& actionInfo);
 };
 
+/// @brief EDyInputActionStatus.
+using EDyInputActionStatus = DDyActionBindingInformation::EDyActionInputStatus;
+
 } /// ::dy namespace
 
 #endif /// GUARD_DY_MANAGEMENT_TYPE_KEYACTIONBINDINGINFORMATION_H

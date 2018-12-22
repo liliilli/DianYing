@@ -21,6 +21,7 @@
 #include <Dy/Management/Type/KeyAxisBindingInformation.h>
 #include <Dy/Management/Type/KeyActionBindingInformation.h>
 #include <Dy/Management/Type/Input/EDyInputButtonStatus.h>
+#include <Dy/Management/Internal/Input/FDyInputDelegateManager.h>
 #include <Dy/Helper/Type/Clamp.h>
 
 namespace dy
@@ -116,6 +117,31 @@ public:
   /// @brief Check joystick is connected (JOYSTICK 1)
   MDY_NODISCARD bool IsJoystickConnected() const noexcept;
 
+  /// @brief Try require controller exlusive right for UI Widget. \n
+  /// If there is any actor which is using controller delegate, Actor delegate will be neglected. \n
+  /// And if there is same ui script instance reference already, it just do nothing and return DY_FAILURE.
+  /// @TODO IMPLEMENT FOR ADYWIDGETLUASCRIPT
+  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(TryRequireControllerUi)(_MIN_ ADyWidgetCppScript& iRefUiScript) noexcept;
+
+  /// @brief
+  /// @TODO IMPLEMENT FOR ADYWIDGETLUASCRIPT
+  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(TryDetachContollerUi)(_MIN_ ADyWidgetCppScript& iRefUiScript) noexcept;
+
+  /// @brief
+  /// @TODO IMPLEMENT FOR ADYWIDGETLUASCRIPT
+  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(TryBindAxisDelegate)(
+      _MIN_ ADyWidgetCppScript& iRefUiScript, 
+      _MIN_ std::function<void(TF32)> iFunction,
+      _MIN_ const std::string& iAxisName);
+
+  /// @brief
+  /// @TODO IMPLEMENT FOR ADYWIDGETLUASCRIPT
+  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(TryBindActionDelegate)(
+      _MIN_ ADyWidgetCppScript& iRefUiScript, 
+      _MIN_ EDyInputActionStatus iCondition,
+      _MIN_ std::function<void()> iFunction,
+      _MIN_ const std::string& iAxisName);
+
 private:
   void MDY_PRIVATE_SPECIFIER(pInitializeAxisNAction)();
   void MDY_PRIVATE_SPECIFIER(pInitializeCallbacks)();
@@ -126,6 +152,7 @@ private:
 
   void MDY_PRIVATE_SPECIFIER(pCheckAxisStatus)(_MIN_ TF32 dt);
   void MDY_PRIVATE_SPECIFIER(pCheckActionStatus)(_MIN_ TF32 dt);
+
   void MDY_PRIVATE_SPECIFIER(pUpdateMouseMovement)(_MIN_ TF32 dt);
   void MDY_PRIVATE_SPECIFIER(pUpdateJoystickSticks)();
   void MDY_PRIVATE_SPECIFIER(pUpdateJoystickButtons)();
@@ -143,11 +170,41 @@ private:
   DDyVector2        mMouseLastPosition    = {};
   DDyVector2        mMousePresentPosition = {};
 
+  FDyInputDelegateManager mDelegateManger = {};
+
   bool              mIsMouseMoved           = false;
 
   friend class DyEngine;
 };
 
-}
+///
+/// @macro MDY_ACQUIRE_CONTROLLER_UI
+/// @brief Use this for acquire controller exclusive right for UI.
+///
+#define MDY_ACQUIRE_CONTROLLER_UI() \
+  ::dy::MDyInput::GetInstance().MDY_PRIVATE_SPECIFIER(TryRequireControllerUi)(*this);
+
+///
+/// @macro MDY_DETACH_CONTROLLER_UI
+/// @brief 
+///
+#define MDY_DETACH_CONTROLLER_UI() \
+  ::dy::MDyInput::GetInstance().MDY_PRIVATE_SPECIFIER(TryDetachContollerUi)(*this);
+
+#define MDY_BIND_INPUT_AXIS(__MAAxisSpecifier__, __MAScriptMemberFunctionPtr__) \
+  { \
+    auto& inputManager = ::dy::MDyInput::GetInstance(); \
+    MDY_NOTUSED const auto flag = inputManager.MDY_PRIVATE_SPECIFIER(TryBindAxisDelegate) \
+        (*this, std::bind(__MAScriptMemberFunctionPtr__, this, std::placeholders::_1), __MAAxisSpecifier__); \
+  }
+
+#define MDY_BIND_INPUT_ACTION(__MAAxisSpecifier__, __MACondition__, __MAScriptMemberFunctionPtr__) \
+  { \
+    auto& inputManager = ::dy::MDyInput::GetInstance(); \
+    MDY_NOTUSED const auto flag = inputManager.MDY_PRIVATE_SPECIFIER(TryBindActionDelegate) \
+        (*this, __MACondition__, std::bind(__MAScriptMemberFunctionPtr__, this), __MAAxisSpecifier__); \
+  }
+
+} /// ::dy namespace
 
 #endif /// GUARD_DY_MANAGEMENT_INPUT_MANAGER_H

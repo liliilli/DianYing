@@ -33,10 +33,6 @@ namespace dy
 
 EDySuccess FDyUiWidget::Initialize(_MIN_ const PDyMetaWidgetRootDescriptor& widgetMetaDesc)
 {
-  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  //! FUNCTIONBODY ∨
-  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
   // (1) Get position and frame size from meta.
   this->SetFrameSize      ({ 1280, 720 });
   this->SetRelativePosition({ 640, 360 });
