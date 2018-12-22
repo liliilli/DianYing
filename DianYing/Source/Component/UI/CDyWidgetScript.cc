@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Component/UI/CDyWidgetScript.h>
 #include <Dy/Management/ScriptManager.h>
+#include <Dy/Management/InputManager.h>
 
 namespace dy
 {
@@ -26,7 +27,22 @@ CDyWidgetScript::CDyWidgetScript(_MIN_ const std::string& iScriptSpecifier, _MIN
 
 CDyWidgetScript::~CDyWidgetScript()
 {
-  MDY_NOT_IMPLEMENTED_ASSERT();
+  switch (mPtrWidgetStatus->GetScriptType())
+  {
+  case EDyScriptType::Cpp: 
+  { // If Widget type is `Cpp`, do the thing.
+    auto& i = MDyInput::GetInstance();
+
+    // intentional.
+    auto& ref = static_cast<CDyWidgetScriptCpp&>(*mPtrWidgetStatus->MDY_PRIVATE_SPECIFIER(GetPtrInternalWidgetScript)());
+    MDY_NOTUSED const auto _ = i.MDY_PRIVATE_SPECIFIER(TryDetachContollerUi(*ref.MDY_PRIVATE_SPECIFIER(GetScriptInstance())));
+  }
+  case EDyScriptType::Lua: 
+  { // If Widget type is `Lua`, do the thing. but not supported yet.
+    MDY_NOT_IMPLEMENTED_ASSERT();
+  } break;
+  default: MDY_UNEXPECTED_BRANCH(); break;
+  };
 }
 
 } /// ::dy namespace

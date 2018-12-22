@@ -24,9 +24,10 @@ namespace dy
 FDyWidgetScriptState::FDyWidgetScriptState(
     _MIN_ FDyUiWidget& widgetReference, 
     _MIN_ const PDyScriptInstanceMetaInfo& descriptor) :
-    mStatus{EDyScriptState::CalledNothing}
+    mStatus{EDyScriptState::CalledNothing},
+    mType{descriptor.mScriptType}
 {
-  switch (descriptor.mScriptType)
+  switch (this->mType)
   {
   case EDyScriptType::Cpp: 
   { // Cpp
@@ -61,6 +62,18 @@ void FDyWidgetScriptState::CallScriptFunction(_MIN_ float dt) noexcept
     break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
+}
+
+EDyScriptType FDyWidgetScriptState::GetScriptType() const noexcept
+{
+  MDY_ASSERT(this->mType != decltype(this->mType)::NoneError, "Script type must be specified properly.");
+  return this->mType;
+}
+
+CDyWidgetScriptBase* FDyWidgetScriptState::MDY_PRIVATE_SPECIFIER(GetPtrInternalWidgetScript)() const noexcept
+{
+  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance), "Internal script instance must be valid.");
+  return this->mScriptInstance.get();
 }
 
 } /// ::dy namespace

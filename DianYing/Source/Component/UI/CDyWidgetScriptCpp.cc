@@ -33,6 +33,13 @@ CDyWidgetScriptCpp::CDyWidgetScriptCpp(_MIN_ FDyUiWidget& widgetReference, _MIN_
 
   this->mScriptName = metaInfo.mSpecifierName;
   this->mScriptInstance->pfSetOutsideReference(*this);
+  this->mIsScriptInstanceBinded = true;
+}
+
+ADyWidgetCppScript* CDyWidgetScriptCpp::MDY_PRIVATE_SPECIFIER(GetScriptInstance)() const noexcept
+{
+  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance), "Script instance must be valid, not empty.");
+  return this->mScriptInstance.get();
 }
 
 void CDyWidgetScriptCpp::Initiate()

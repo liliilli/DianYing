@@ -33,6 +33,9 @@ public:
 
   void pScriptRelease() override final { return this->Release(); }
 
+  /// @brief  Get `most derived` `low-level` script instance pointer.
+  MDY_NODISCARD ADyWidgetCppScript* MDY_PRIVATE_SPECIFIER(GetScriptInstance)() const noexcept; 
+
 private:
   void Initiate()       override final;
   void Start()          override final;

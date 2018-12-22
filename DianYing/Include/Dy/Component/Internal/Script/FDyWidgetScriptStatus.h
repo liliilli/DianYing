@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Component/Internal/ScriptState.h>
+#include <Dy/Meta/Information/ScriptMetaInformation.h>
 
 //!
 //! Forward declaration
@@ -45,11 +46,19 @@ public:
   /// @brief Call widget script function properly.
   void CallScriptFunction(_MIN_ float dt) noexcept;
 
+  /// @brief Get script type (Cpp, Lua).
+  MDY_NODISCARD EDyScriptType GetScriptType() const noexcept;
+
+  /// @brief Get internal widget script instance (level 2)
+  MDY_NODISCARD CDyWidgetScriptBase* MDY_PRIVATE_SPECIFIER(GetPtrInternalWidgetScript)() const noexcept;
+
 private:
-  /// Widget script pointer instance.
+  /// @brief Widget script pointer instance.
   std::unique_ptr<CDyWidgetScriptBase> mScriptInstance = MDY_INITIALIZE_NULL;
-  /// Status of this widget script.
-  EDyScriptState mStatus = EDyScriptState::NoneError;
+  /// @brief Status of this widget script.
+  EDyScriptState mStatus  = EDyScriptState::NoneError;
+  /// @brief Internal script type of this status instance.
+  EDyScriptType  mType    = EDyScriptType::NoneError;
 };
 
 } /// ::dy namespace
