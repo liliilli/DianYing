@@ -16,7 +16,8 @@
 #include <Dy/Management/ScriptManager.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Element/Actor.h>
-#include "Dy/Management/Helper/LuaBindingEntry.h"
+#include <Dy/Management/Helper/LuaBindingEntry.h>
+#include <Dy/Component/UI/CDyWidgetScriptCpp.h>
 
 //!
 //! Local function & forward declaration
@@ -138,20 +139,63 @@ namespace dy
 EDySuccess MDyScript::pfInitialize()
 {
   this->mLua.open_libraries(sol::lib::base, sol::lib::string, sol::lib::math);
-
   /// Manager binding
   DyBindLuaEntry(this->mLua);
   DyInitializeMDyLog(mLua);
   DyInitilaizeFDyObject(mLua);
   DyInitilaizeFDyActor(mLua);
-
   this->mLua.safe_script(sCDyScriptFrame);
+
+
+
   return DY_SUCCESS;
 }
 
 EDySuccess MDyScript::pfRelease()
 {
   return DY_SUCCESS;
+}
+
+sol::state& MDyScript::GetLuaInstance() noexcept
+{
+  return this->mLua;
+}
+
+FDyWidgetScriptState* MDyScript::CreateWidgetScript(
+    _MIN_ const std::string& iScriptSpecifier, 
+    _MIN_ FDyUiWidget& iRefWidget, 
+    _MIN_ bool iIsAwakened)
+{
+  const auto& instanceInfo = MDyMetaInfo::GetInstance().GetScriptMetaInformation(iScriptSpecifier);
+  MDY_ASSERT(instanceInfo.mScriptType != EDyScriptType::NoneError, "");
+  MDY_ASSERT(iIsAwakened == true, "Unexpected error occurred.");
+
+  auto component = std::make_unique<FDyWidgetScriptState>(iRefWidget, instanceInfo);
+  // CALL `Initiate()`
+  component->CallScriptFunction(0.0f);
+
+  this->mInsertWidgetScriptList.emplace_back(std::move(component));
+  return this->mInsertWidgetScriptList.back().get();
+}
+
+void MDyScript::TryMoveInsertWidgetScriptToMainContainer()
+{
+  if (this->mInsertWidgetScriptList.empty() == true) { return; }
+
+  for (auto& insertWidgetScript : this->mInsertWidgetScriptList)
+  { // `insertWidgetScript` is always not empty.
+    this->mWidgetScriptList.emplace_back(std::move(insertWidgetScript));
+  }
+  this->mInsertWidgetScriptList.clear();
+}
+
+void MDyScript::UpdateWidget(TF32 dt)
+{
+  for (auto& ptrsmtScript : this->mWidgetScriptList)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
+    ptrsmtScript->CallScriptFunction(dt);
+  }
 }
 
 } /// ::dy namespace

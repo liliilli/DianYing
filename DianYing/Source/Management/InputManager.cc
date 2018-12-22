@@ -384,8 +384,6 @@ bool MDyInput::IsAxisPressed(_MIN_ const std::string& axisSpecifierName) noexcep
   {
   case DDyAxisBindingInformation::EDyAxisInputStatus::PositivePressed:
   case DDyAxisBindingInformation::EDyAxisInputStatus::NegativePressed:
-  case DDyAxisBindingInformation::EDyAxisInputStatus::PositiveRepeated:
-  case DDyAxisBindingInformation::EDyAxisInputStatus::NegativeRepeated:
     return true;
   default: return false;
   }
@@ -405,25 +403,6 @@ bool MDyInput::IsAxisReleased(_MIN_ const std::string& axisSpecifierName) noexce
   {
   case DDyAxisBindingInformation::EDyAxisInputStatus::CommonNeutral:
   case DDyAxisBindingInformation::EDyAxisInputStatus::CommonReleased:
-    return true;
-  default: return false;
-  }
-}
-
-bool MDyInput::IsAxisRepeated(_MIN_ const std::string& axisSpecifier) noexcept
-{
-  // Validity test
-  const auto keyIt = this->mBindedAxisMap.find(axisSpecifier);
-  if (keyIt == mBindedAxisMap.end())
-  {
-    MDY_LOG_ERROR_D(err_input_key_not_exist, axisSpecifier);
-		return false;
-  }
-
-  switch (keyIt->second.mKeyStatus)
-  {
-  case DDyAxisBindingInformation::EDyAxisInputStatus::PositiveRepeated:
-  case DDyAxisBindingInformation::EDyAxisInputStatus::NegativeRepeated:
     return true;
   default: return false;
   }
@@ -474,13 +453,16 @@ void MDyInput::pfUpdate(_MIN_ TF32 dt) noexcept
 {
   this->MDY_PRIVATE_SPECIFIER(pUpdateMouseMovement)(dt);
   if (this->IsJoystickConnected() == true)
-  {
+  { // If joystick is connected, update values because GLFW 3.2.1 does not have callback for joystick.
     this->MDY_PRIVATE_SPECIFIER(pUpdateJoystickSticks)();
     this->MDY_PRIVATE_SPECIFIER(pUpdateJoystickButtons)();
   }
 
   this->MDY_PRIVATE_SPECIFIER(pCheckAxisStatus)(dt);
   this->MDY_PRIVATE_SPECIFIER(pCheckActionStatus)(dt);
+
+  this->mDelegateManger.CheckDelegateAxis(dt);
+  this->mDelegateManger.CheckDelegateAction(dt);
 }
 
 void MDyInput::MDY_PRIVATE_SPECIFIER(pUpdateJoystickSticks)()
@@ -494,6 +476,12 @@ void MDyInput::MDY_PRIVATE_SPECIFIER(pUpdateJoystickSticks)()
     mInputAnalogStickList[i].Update(stickValueList[i]);
   }
 }
+
+///
+/// @macro MDY_BIND_CBEGIN_CEND
+/// @brief Help forward iteratable type to bind .begin() and .end() to function.
+///
+#define MDY_BIND_CBEGIN_CEND(__MAIteratorableType__) __MAIteratorableType__.cbegin(), __MAIteratorableType__.cend()
 
 void MDyInput::MDY_PRIVATE_SPECIFIER(pUpdateJoystickButtons)()
 {
@@ -515,115 +503,68 @@ void MDyInput::MDY_PRIVATE_SPECIFIER(pUpdateJoystickButtons)()
 
 void MDyInput::MDY_PRIVATE_SPECIFIER(pCheckAxisStatus)(_MIN_ TF32 dt)
 {
-  using EAxisStatus   = DDyAxisBindingInformation::EDyAxisInputStatus;
-  
-  /// @brief Check keyboard axis status.
-  /// @param axisInfo Axis information
-  static auto CheckAxisStatus = [](_MINOUT_ DDyAxisBindingInformation& axisInfo,
-                                   _MIN_ EDyInputButtonStatus goalState,
-                                   _MIN_ const bool isNegative,
-                                   auto callback)
+  /// @brief Check action key status to find if any one is satisfied goalState condition.
+  /// @param actionInfo action information
+  static auto CheckAxisStatusIfAny = [](_MINOUT_ DDyAxisBindingInformation& axisInfo, _MIN_ bool isPositive, _MIN_ EDyInputButtonStatus goalState)
   {
-    if (isNegative == true)
-    {
-      for (const auto id : axisInfo.mNegativeButtonId)
-      {
-      // @TODO NEED TO IMPLEMENT ANALOG VALUE BUTTON (SUCH AS JOYSTICK STICk VALUE)
-        if (mInputButtonList[id].Get() == goalState) { callback(axisInfo); return DY_SUCCESS; }
-      }
-    }
-    else
-    {
-      for (const auto id : axisInfo.mPositiveButtonId)
-      {
-      // @TODO NEED TO IMPLEMENT ANALOG VALUE BUTTON (SUCH AS JOYSTICK STICk VALUE)
-        if (mInputButtonList[id].Get() == goalState) { callback(axisInfo); return DY_SUCCESS; }
-      }
-    }
+    return std::any_of(
+        MDY_BIND_CBEGIN_CEND((isPositive == true ? axisInfo.mPositiveButtonId : axisInfo.mNegativeButtonId)),
+        [goalState](_MIN_ const auto& id) { return mInputButtonList[id].Get() == goalState; }
+    );
+  };
 
-    return DY_FAILURE;
+  /// @brief Check action key status to find if any one is satisfied goalState condition.
+  /// @param actionInfo action information
+  static auto CheckAxisStatusIfAll = [](_MINOUT_ DDyAxisBindingInformation& axisInfo, _MIN_ bool isPositive, _MIN_ EDyInputButtonStatus goalState)
+  {
+    return std::all_of(
+        MDY_BIND_CBEGIN_CEND((isPositive == true ? axisInfo.mPositiveButtonId : axisInfo.mNegativeButtonId)),
+        [goalState](_MIN_ const auto& id) { return mInputButtonList[id].Get() == goalState; }
+    );
   };
 
   /// @brief Process axis update routine when axisInfo status is `Status::CommonNeutral`.
   /// @param axisInfo Axis information
   static auto ProcessAxis_CommonNeutral = [](_MINOUT_ DDyAxisBindingInformation& axisInfo)
-  { // Negative
-    if (CheckAxisStatus(axisInfo, EDyInputButtonStatus::Pressed, true, [](DDyAxisBindingInformation& axis)
-    {
-      axis.mAxisValue = kNegativeValue;
-      axis.mKeyStatus = EAxisStatus::NegativePressed;
-    }) == DY_SUCCESS) { return; }
-    // Positive
-    if (CheckAxisStatus(axisInfo, EDyInputButtonStatus::Pressed, false, [](DDyAxisBindingInformation& axis)
-    {
-      axis.mAxisValue = kPositiveValue;
-      axis.mKeyStatus = EAxisStatus::PositivePressed;
-    }) == DY_SUCCESS) { return; }
+  {
+    if (CheckAxisStatusIfAny(axisInfo, false, EDyInputButtonStatus::Pressed) == true)
+    { // Negative
+      axisInfo.mAxisValue = kNegativeValue;
+      axisInfo.mKeyStatus = EDyInputAxisStatus::NegativePressed;
+      return;
+    }
+    if (CheckAxisStatusIfAny(axisInfo, true, EDyInputButtonStatus::Pressed) == true)
+    { // Positive
+      axisInfo.mAxisValue = kPositiveValue;
+      axisInfo.mKeyStatus = EDyInputAxisStatus::PositivePressed;
+    }
   };
 
   /// @brief Process axis update routine when axisInfo status is `Status::NegativePressed`.
   /// @param axisInfo Axis information
   static auto ProcessAxis_NegativePressed = [](_MINOUT_ DDyAxisBindingInformation& axisInfo)
-  { // Positive
-    if (CheckAxisStatus(axisInfo, EDyInputButtonStatus::Pressed, false, [](DDyAxisBindingInformation& axis)
-    {
-      axis.mAxisValue = kPositiveValue;
-      axis.mKeyStatus = EAxisStatus::PositivePressed;
-    }) == DY_SUCCESS) { return; }
+  { 
     // Negative
-    CheckAxisStatus(
-        axisInfo, EDyInputButtonStatus::Repeated, true, 
-        [](DDyAxisBindingInformation& axis) { axis.mKeyStatus = EAxisStatus::NegativeRepeated; }
-    );
+    if (CheckAxisStatusIfAll(axisInfo, false, EDyInputButtonStatus::Released) == false) { return; } 
+    if (CheckAxisStatusIfAll(axisInfo, true, EDyInputButtonStatus::Released) == false)
+    { // Positive
+      axisInfo.mAxisValue = kPositiveValue;
+      axisInfo.mKeyStatus = EDyInputAxisStatus::PositivePressed;
+    }
+    else { axisInfo.mKeyStatus = EDyInputAxisStatus::CommonReleased; }
   };
 
   /// @brief Process axis update routine when axisInfo status is `Status::NegativePressed`.
   /// @param axisInfo Axis information
   static auto ProcessAxis_PositivePressed = [](_MINOUT_ DDyAxisBindingInformation& axisInfo)
-  { // Negative
-    if (CheckAxisStatus(axisInfo, EDyInputButtonStatus::Pressed, true, [](DDyAxisBindingInformation& axis)
-    {
-      axis.mAxisValue = kNegativeValue;
-      axis.mKeyStatus = EAxisStatus::NegativePressed;
-    }) == DY_SUCCESS) { return; }
-    // Positive
-    CheckAxisStatus(axisInfo, EDyInputButtonStatus::Repeated, false, 
-        [](DDyAxisBindingInformation& axis) { axis.mKeyStatus = EAxisStatus::PositiveRepeated; }
-    );
-  };
-
-  /// @brief Process axis update routine when axisInfo status is `Status::PositiveRepeated`.
-  /// @param axisInfo Axis information
-  static auto ProcessAxis_PositiveRepeated = [](_MINOUT_ DDyAxisBindingInformation& axisInfo)
-  { // Negative
-    if (CheckAxisStatus(axisInfo, EDyInputButtonStatus::Pressed, true, [](DDyAxisBindingInformation& axis)
-    {
-      axis.mAxisValue = kNegativeValue;
-      axis.mKeyStatus = EAxisStatus::NegativePressed;
-    }) == DY_SUCCESS) { return; }
-    // Positive
-    if (CheckAxisStatus(axisInfo, EDyInputButtonStatus::Released, false, [](DDyAxisBindingInformation& axis)
-    {
-      axis.mKeyStatus = EAxisStatus::CommonReleased;
-      DyProceedAxisGravity(axis);
-    }) == DY_SUCCESS) { return; }
-  };
-
-  /// @brief Process axis update routine when axisInfo status is `Status::NegativeRepeated`.
-  /// @param axisInfo Axis information
-  static auto ProcessAxis_NegativeRepeated = [](_MINOUT_ DDyAxisBindingInformation& axisInfo)
   { // Positive
-    if (CheckAxisStatus(axisInfo, EDyInputButtonStatus::Pressed, false, [](DDyAxisBindingInformation& axis)
-    {
-      axis.mAxisValue = kPositiveValue;
-      axis.mKeyStatus = EAxisStatus::PositivePressed;
-    }) == DY_SUCCESS) { return; }
-    // Negative
-    if (CheckAxisStatus(axisInfo, EDyInputButtonStatus::Released, true, [](DDyAxisBindingInformation& axis)
-    {
-      axis.mKeyStatus = EAxisStatus::CommonReleased;
-      DyProceedAxisGravity(axis);
-    }) == DY_SUCCESS) { return; }
+    if (CheckAxisStatusIfAll(axisInfo, true, EDyInputButtonStatus::Released) == false) { return; }
+    if (CheckAxisStatusIfAll(axisInfo, false, EDyInputButtonStatus::Released) == false)
+    { // Negative
+      axisInfo.mAxisValue = kPositiveValue;
+      axisInfo.mKeyStatus = EDyInputAxisStatus::NegativePressed;
+    }
+    else { axisInfo.mKeyStatus = EDyInputAxisStatus::CommonReleased; }
   };
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -635,71 +576,62 @@ void MDyInput::MDY_PRIVATE_SPECIFIER(pCheckAxisStatus)(_MIN_ TF32 dt)
     switch (axis.mKeyStatus)
     {
     default: MDY_UNEXPECTED_BRANCH(); break;
-    case EAxisStatus::CommonReleased:
+    case EDyInputAxisStatus::CommonReleased:
       DyProceedAxisGravity(axis);
       [[fallthrough]];
-    case EAxisStatus::CommonNeutral:     ProcessAxis_CommonNeutral(axis);     break;
-    case EAxisStatus::NegativePressed:   ProcessAxis_NegativePressed(axis);   break;
-    case EAxisStatus::PositivePressed:   ProcessAxis_PositivePressed(axis);   break;
-    case EAxisStatus::PositiveRepeated:  ProcessAxis_PositiveRepeated(axis);  break;
-    case EAxisStatus::NegativeRepeated:  ProcessAxis_NegativeRepeated(axis);  break;
+    case EDyInputAxisStatus::CommonNeutral:   ProcessAxis_CommonNeutral(axis);   break;
+    case EDyInputAxisStatus::NegativePressed: ProcessAxis_NegativePressed(axis); break;
+    case EDyInputAxisStatus::PositivePressed: ProcessAxis_PositivePressed(axis); break;
     }
   }
 }
 
 void MDyInput::MDY_PRIVATE_SPECIFIER(pCheckActionStatus)(_MIN_ TF32 dt)
 {
-  using EActionStatus = DDyActionBindingInformation::EDyActionInputStatus;
-
-  /// @brief Check action key status.
+  /// @brief Check action key status to find if any one is satisfied goalState condition.
   /// @param actionInfo action information
-  static auto CheckActionStatus = [](_MINOUT_ DDyActionBindingInformation& actionInfo,
-                                     _MIN_ EDyInputButtonStatus goalState,
-                                     auto callback)
+  static auto CheckActionStatusIfAny = [](_MINOUT_ DDyActionBindingInformation& actionInfo, _MIN_ EDyInputButtonStatus goalState)
   {
-    for (const auto id : actionInfo.mActionId)
-    {
-      if (mInputButtonList[id].Get() == goalState) { callback(actionInfo); return DY_SUCCESS; }
-    }
+    return std::any_of(
+        MDY_BIND_CBEGIN_CEND(actionInfo.mActionId),
+        [goalState](_MIN_ const auto& id) { return mInputButtonList[id].Get() == goalState; }
+    );
+  };
 
-    return DY_FAILURE;
+  /// @brief Check action key status to find if any one is satisfied goalState condition.
+  /// @param actionInfo action information
+  static auto CheckActionStatusIfAll = [](_MINOUT_ DDyActionBindingInformation& actionInfo, _MIN_ EDyInputButtonStatus goalState)
+  {
+    return std::all_of(
+        MDY_BIND_CBEGIN_CEND(actionInfo.mActionId),
+        [goalState](_MIN_ const auto& id) { return mInputButtonList[id].Get() == goalState; }
+    );
   };
 
   /// @brief Process action update routine when actionInfo status is `Status::Released`.
   /// @param actionInfo action information
   static auto ProcessAction_Released = [](_MINOUT_ DDyActionBindingInformation& actionInfo)
   {
-    CheckActionStatus(actionInfo, EDyInputButtonStatus::Released, [](DDyActionBindingInformation& action)
-    {
-      action.mKeyStatus = EActionStatus::Pressed;
-    });
+    if (CheckActionStatusIfAny(actionInfo, EDyInputButtonStatus::Pressed) == true) 
+    { actionInfo.mKeyStatus = EDyInputActionStatus::Pressed; }
   };
 
   /// @brief Process action update routine when actionInfo status is `Status::Pressed`.
   /// @param actionInfo action information
   static auto ProcessAction_Pressed = [](_MINOUT_ DDyActionBindingInformation& actionInfo)
   {
-    if (CheckActionStatus(actionInfo, EDyInputButtonStatus::Released, [](DDyActionBindingInformation& action)
-    {
-      action.mKeyStatus = EActionStatus::Released;
-    }) == DY_SUCCESS) { return; }
+    if (CheckActionStatusIfAll(actionInfo, EDyInputButtonStatus::Released) == true) 
+    { actionInfo.mKeyStatus = EDyInputActionStatus::Released; }
     else
-    {
-      CheckActionStatus(actionInfo, EDyInputButtonStatus::Pressed, [](DDyActionBindingInformation& action)
-      {
-        action.mKeyStatus = EActionStatus::Bottled;
-      });
-    }
+    { actionInfo.mKeyStatus = EDyInputActionStatus::Bottled; }
   };
 
   /// @brief Process action update routine when actionInfo status is `Status::Bottled`.
   /// @param actionInfo action information
   static auto ProcessAction_Bottled = [](_MINOUT_ DDyActionBindingInformation& actionInfo)
   {
-    CheckActionStatus(actionInfo, EDyInputButtonStatus::Released, [](DDyActionBindingInformation& action)
-    {
-      action.mKeyStatus = EActionStatus::Released;
-    });
+    if (CheckActionStatusIfAll(actionInfo, EDyInputButtonStatus::Released) == true) 
+    { actionInfo.mKeyStatus = EDyInputActionStatus::Released; }
   };
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -711,9 +643,9 @@ void MDyInput::MDY_PRIVATE_SPECIFIER(pCheckActionStatus)(_MIN_ TF32 dt)
     switch (action.mKeyStatus)
     {
     default: MDY_UNEXPECTED_BRANCH(); break;
-    case EActionStatus::Released: ProcessAction_Released(action);  break;
-    case EActionStatus::Pressed:  ProcessAction_Pressed(action);   break;
-    case EActionStatus::Bottled:  ProcessAction_Bottled(action);   break;
+    case EDyInputActionStatus::Released: ProcessAction_Released(action);  break;
+    case EDyInputActionStatus::Pressed:  ProcessAction_Pressed(action);   break;
+    case EDyInputActionStatus::Bottled:  ProcessAction_Bottled(action);   break;
     }
   }
 }
@@ -729,6 +661,59 @@ void MDyInput::MDY_PRIVATE_SPECIFIER(pUpdateMouseMovement)(_MIN_ TF32 dt)
     sMousePositionDirty = false;
   }
   else { this->mIsMouseMoved = false; }
+}
+
+EDySuccess MDyInput::MDY_PRIVATE_SPECIFIER(TryRequireControllerUi)(_MIN_ ADyWidgetCppScript& iRefUiScript) noexcept
+{
+  return this->mDelegateManger.TryRequireControllerUi(iRefUiScript);
+}
+
+EDySuccess MDyInput::MDY_PRIVATE_SPECIFIER(TryDetachContollerUi)(_MIN_ ADyWidgetCppScript& iRefUiScript) noexcept
+{
+  return this->mDelegateManger.TryDetachContollerUi(iRefUiScript);
+}
+
+EDySuccess MDyInput::MDY_PRIVATE_SPECIFIER(TryBindAxisDelegate)(
+    _MIN_ ADyWidgetCppScript& iRefUiScript, 
+    _MIN_ std::function<void(TF32)> iFunction,
+    _MIN_ const std::string& iAxisName)
+{
+  if (this->mDelegateManger.GetPtrUiScriptOnBinding() != &iRefUiScript)
+  { // Check ui is binding to delegate now. If not matched, just return DY_FAILURE with error log.
+    MDY_LOG_ERROR("Failed to binding axis function of UI script. Instance reference did not match.");
+    return DY_FAILURE;
+  }
+
+  if (this->IsAxisExist(iAxisName) == false)
+  { // Check `Axis` is exist. if not, return DY_FAILURE.
+    MDY_LOG_ERROR("Failed to binding axis function of UI script. Axis `{}` does not exist.", iAxisName);
+    return DY_FAILURE;
+  }
+
+  this->mDelegateManger.BindAxisDelegateUi(iFunction, this->mBindedAxisMap.at(iAxisName));
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyInput::MDY_PRIVATE_SPECIFIER(TryBindActionDelegate)(
+    _MIN_ ADyWidgetCppScript& iRefUiScript, 
+    _MIN_ EDyInputActionStatus iCondition,
+    _MIN_ std::function<void()> iFunction,
+    _MIN_ const std::string& iActionName)
+{
+  if (this->mDelegateManger.GetPtrUiScriptOnBinding() != &iRefUiScript)
+  { // Check ui is binding to delegate now. If not matched, just return DY_FAILURE with error log.
+    MDY_LOG_ERROR("Failed to binding action function of UI script. Instance reference did not match.");
+    return DY_FAILURE;
+  }
+
+  if (this->IsActionExist(iActionName) == false)
+  { // Check `Action` is exist. if not, return DY_FAILURE.
+    MDY_LOG_ERROR("Failed to binding action function of UI script. Action `{}` does not exist.", iActionName);
+    return DY_FAILURE;
+  }
+
+  this->mDelegateManger.BindActionDelegateUi(iFunction, iCondition, this->mBindedActionMap.at(iActionName));
+  return DY_SUCCESS;
 }
 
 } /// ::dy namespace

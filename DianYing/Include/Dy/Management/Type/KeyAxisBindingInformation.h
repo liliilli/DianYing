@@ -41,8 +41,6 @@ struct DDyAxisBindingInformation final
     NegativePressed = 2,	    // If negative key is pressed, mKeyStatus will sustain PRESSED.
     CommonReleased = 3,	      // Changes to CommonReleased when released. constraints of Update.
     CommonNeutral = 4,	      // If released, and within range of mNeutralStatusThresholdValue, NEURTAL.
-    PositiveRepeated = 5,
-    NegativeRepeated = 6
   };
 
   EDyAxisInputStatus  mKeyStatus    = EDyAxisInputStatus::CommonNeutral;
@@ -65,6 +63,8 @@ struct DDyAxisBindingInformation final
   ///
   DDyAxisBindingInformation(_MIN_ const DDySettingInput::DAxis& axisInfo);
 };
+
+using EDyInputAxisStatus = DDyAxisBindingInformation::EDyAxisInputStatus;
 
 } /// ::dy namespace
 

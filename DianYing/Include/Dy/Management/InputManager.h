@@ -21,6 +21,7 @@
 #include <Dy/Management/Type/KeyAxisBindingInformation.h>
 #include <Dy/Management/Type/KeyActionBindingInformation.h>
 #include <Dy/Management/Type/Input/EDyInputButtonStatus.h>
+#include <Dy/Management/Internal/Input/FDyInputDelegateManager.h>
 #include <Dy/Helper/Type/Clamp.h>
 
 namespace dy
@@ -65,56 +66,59 @@ public:
   /// button input value must not be `NoneError`.
   MDY_NODISCARD EDyInputButtonStatus GetButtonStatusValue(_MIN_ EDyButton button) const noexcept;
 
-  ///
   /// @brief Get whether or not specific axis was pressed.
   /// @param[in] axisSpecifier The axis name which axis instance has.
   /// @return boolean value, if specific axis was pressed, return true.
-  ///
   MDY_NODISCARD bool IsAxisPressed(_MIN_ const std::string& axisSpecifier) noexcept;
-
-  ///
+  /// @brief Check if key (action, axis) exist.
+  /// @param axisSpecifier key (action, axis) specifier name.
+  MDY_NODISCARD bool IsAxisExist(_MIN_ const std::string& axisSpecifier) const noexcept;
   /// @brief Get whether or not specific axis was released.
   /// @param[in] axisSpecifier The axis name which axis instance has.
   /// @return boolean value, if specific axis was released, return true.
-  ///
   MDY_NODISCARD bool IsAxisReleased(_MIN_ const std::string& axisSpecifier) noexcept;
 
-  ///
-  /// @brief Get whether or not speicfied axis is being repeated.
-  /// @param axisSpecifier The axis name which axis instance has.
-  /// @return boolean value, if given axis is being repeated return true.
-  ///
-  MDY_NODISCARD bool IsAxisRepeated(_MIN_ const std::string& axisSpecifier) noexcept;
-
-  ///
-  /// @brief Check if key (action, axis) exist.
-  /// @param axisSpecifier key (action, axis) specifier name.
-  ///
-  MDY_NODISCARD bool IsAxisExist(_MIN_ const std::string& axisSpecifier) const noexcept;
-
-  ///
   /// @brief
   /// @param actionSpecifier
-  ///
   MDY_NODISCARD bool IsActionPressed(_MIN_ const std::string& actionSpecifier) const noexcept;
-
-  ///
-  /// @brief
-  /// @param actionSpecifier
-  ///
-  MDY_NODISCARD bool IsActionReleased(_MIN_ const std::string& actionSpecifier) const noexcept;
-
-  ///
   /// @brief Check whether or not specified action is being existed.
   /// @param actionSpecifier The action name which action instance has.
-  ///
   MDY_NODISCARD bool IsActionExist(_MIN_ const std::string& actionSpecifier) const noexcept;
+  /// @brief
+  /// @param actionSpecifier
+  MDY_NODISCARD bool IsActionReleased(_MIN_ const std::string& actionSpecifier) const noexcept;
+
 
   /// @brief Check if mouse is moved on present frame, but false when mouse movement is not activated.
   MDY_NODISCARD bool IsMouseMoved() const noexcept { return this->mIsMouseMoved; }
 
   /// @brief Check joystick is connected (JOYSTICK 1)
   MDY_NODISCARD bool IsJoystickConnected() const noexcept;
+
+  /// @brief Try require controller exlusive right for UI Widget. \n
+  /// If there is any actor which is using controller delegate, Actor delegate will be neglected. \n
+  /// And if there is same ui script instance reference already, it just do nothing and return DY_FAILURE.
+  /// @TODO IMPLEMENT FOR ADYWIDGETLUASCRIPT
+  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(TryRequireControllerUi)(_MIN_ ADyWidgetCppScript& iRefUiScript) noexcept;
+
+  /// @brief
+  /// @TODO IMPLEMENT FOR ADYWIDGETLUASCRIPT
+  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(TryDetachContollerUi)(_MIN_ ADyWidgetCppScript& iRefUiScript) noexcept;
+
+  /// @brief
+  /// @TODO IMPLEMENT FOR ADYWIDGETLUASCRIPT
+  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(TryBindAxisDelegate)(
+      _MIN_ ADyWidgetCppScript& iRefUiScript, 
+      _MIN_ std::function<void(TF32)> iFunction,
+      _MIN_ const std::string& iAxisName);
+
+  /// @brief
+  /// @TODO IMPLEMENT FOR ADYWIDGETLUASCRIPT
+  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(TryBindActionDelegate)(
+      _MIN_ ADyWidgetCppScript& iRefUiScript, 
+      _MIN_ EDyInputActionStatus iCondition,
+      _MIN_ std::function<void()> iFunction,
+      _MIN_ const std::string& iAxisName);
 
 private:
   void MDY_PRIVATE_SPECIFIER(pInitializeAxisNAction)();
@@ -126,6 +130,7 @@ private:
 
   void MDY_PRIVATE_SPECIFIER(pCheckAxisStatus)(_MIN_ TF32 dt);
   void MDY_PRIVATE_SPECIFIER(pCheckActionStatus)(_MIN_ TF32 dt);
+
   void MDY_PRIVATE_SPECIFIER(pUpdateMouseMovement)(_MIN_ TF32 dt);
   void MDY_PRIVATE_SPECIFIER(pUpdateJoystickSticks)();
   void MDY_PRIVATE_SPECIFIER(pUpdateJoystickButtons)();
@@ -143,11 +148,49 @@ private:
   DDyVector2        mMouseLastPosition    = {};
   DDyVector2        mMousePresentPosition = {};
 
+  FDyInputDelegateManager mDelegateManger = {};
+
   bool              mIsMouseMoved           = false;
 
   friend class DyEngine;
 };
 
-}
+///
+/// @macro MDY_ACQUIRE_CONTROLLER_UI
+/// @brief Use this for acquire controller exclusive right for UI.
+///
+#define MDY_ACQUIRE_CONTROLLER_UI() \
+  ::dy::MDyInput::GetInstance().MDY_PRIVATE_SPECIFIER(TryRequireControllerUi)(*this);
+
+///
+/// @macro MDY_DETACH_CONTROLLER_UI
+/// @brief Detach ui script from controller delegate management.
+///
+#define MDY_DETACH_CONTROLLER_UI() \
+  ::dy::MDyInput::GetInstance().MDY_PRIVATE_SPECIFIER(TryDetachContollerUi)(*this);
+
+///
+/// @macro MDY_BIND_INPUT_AXIS
+/// @brief Try register axis input delegate to manager.
+///
+#define MDY_BIND_INPUT_AXIS(__MAAxisSpecifier__, __MAScriptMemberFunctionPtr__) \
+  { \
+    auto& inputManager = ::dy::MDyInput::GetInstance(); \
+    MDY_NOTUSED const auto flag = inputManager.MDY_PRIVATE_SPECIFIER(TryBindAxisDelegate) \
+        (*this, std::bind(__MAScriptMemberFunctionPtr__, this, std::placeholders::_1), __MAAxisSpecifier__); \
+  }
+
+///
+/// @macro MDY_BIND_INPUT_ACTION
+/// @brief Try register axis input delegate to manager.
+///
+#define MDY_BIND_INPUT_ACTION(__MAAxisSpecifier__, __MACondition__, __MAScriptMemberFunctionPtr__) \
+  { \
+    auto& inputManager = ::dy::MDyInput::GetInstance(); \
+    MDY_NOTUSED const auto flag = inputManager.MDY_PRIVATE_SPECIFIER(TryBindActionDelegate) \
+        (*this, __MACondition__, std::bind(__MAScriptMemberFunctionPtr__, this), __MAAxisSpecifier__); \
+  }
+
+} /// ::dy namespace
 
 #endif /// GUARD_DY_MANAGEMENT_INPUT_MANAGER_H

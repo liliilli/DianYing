@@ -232,6 +232,10 @@
     <ClCompile Include="Source\Management\Type\Time\DDyTimepoint.cc" />
     <ClCompile Include="Source\Management\Internal\MDyProfiling.cc" />
     <ClCompile Include="Source\Management\Helper\SDyProfilingHelper.cc" />
+    <ClCompile Include="Source\Component\Internal\Script\FDyWidgetScriptStatus.cc" />
+    <ClCompile Include="Source\Component\UI\CDyWidgetScript.cc" />
+    <ClCompile Include="Source\Management\Internal\World\FDyWorldUIContainer.cc" />
+    <ClCompile Include="Source\Management\Internal\Input\FDyInputDelegateManager.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -446,7 +450,6 @@
     <ClInclude Include="Include\Dy\Meta\Information\ElementObjectMetaInfo.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\Widget.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\UiObject.h" />
-    <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScript.h" />
     <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScriptCpp.h" />
     <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScriptLua.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\UiObjectChildrenable.h" />
@@ -596,6 +599,11 @@
     <ClInclude Include="Include\Dy\Management\Internal\MDyProfiling.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\RWLockAtomic.h" />
     <ClInclude Include="Include\Dy\Management\Helper\SDyProfilingHelper.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\World\FDyWorldUIContainer.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Script\FDyWidgetScriptStatus.h" />
+    <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScriptBase.h" />
+    <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScript.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\Input\FDyInputDelegateManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

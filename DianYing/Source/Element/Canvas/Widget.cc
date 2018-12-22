@@ -26,41 +26,13 @@
 #include <Dy/Component/UI/CDyWidgetScriptCpp.h>
 #include <Dy/Component/UI/CDyWidgetScriptLua.h>
 #include <Dy/Element/Canvas/FDyImage.h>
+#include <Dy/Management/ScriptManager.h>
 
 namespace dy
 {
 
 EDySuccess FDyUiWidget::Initialize(_MIN_ const PDyMetaWidgetRootDescriptor& widgetMetaDesc)
 {
-  ///
-  /// @brief Make widget script component (lua or cpp)
-  ///
-  static auto MakeScriptComponent = [this](const PDyScriptComponentMetaInfo& info)
-  {
-    const auto& instanceInfo = MDyMetaInfo::GetInstance().GetScriptMetaInformation(info.mDetails.mSpecifierName);
-    MDY_ASSERT(instanceInfo.mScriptType != EDyScriptType::NoneError, "");
-
-    std::unique_ptr<CDyWidgetScript> component = nullptr;
-    if (instanceInfo.mScriptType == EDyScriptType::Cpp)
-    {
-      auto componentPtr = std::make_unique<CDyWidgetScriptCpp>(std::ref(*this));
-      MDY_CALL_ASSERT_SUCCESS(componentPtr->Initialize(info));
-      component = std::move(componentPtr);
-    }
-    else
-    {
-      auto componentPtr = std::make_unique<CDyWidgetScriptLua>(std::ref(*this));
-      MDY_CALL_ASSERT_SUCCESS(componentPtr->Initialize(info));
-      component = std::move(componentPtr);
-    }
-
-    return component;
-  };
-
-  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  //! FUNCTIONBODY ∨
-  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
   // (1) Get position and frame size from meta.
   this->SetFrameSize      ({ 1280, 720 });
   this->SetRelativePosition({ 640, 360 });
@@ -92,27 +64,18 @@ EDySuccess FDyUiWidget::Initialize(_MIN_ const PDyMetaWidgetRootDescriptor& widg
   if (const auto& scriptName = widgetMetaDesc.mScriptReference.mDetails.mSpecifierName;
       scriptName.empty() == false)
   {
-    this->mWidgetScript = MakeScriptComponent(widgetMetaDesc.mScriptReference);
-    MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mWidgetScript), "Widget script must be valid in this case.");
-    this->mWidgetScript->Initiate();
+    this->mWidgetScript = std::make_unique<CDyWidgetScript>(scriptName, *this);
+    MDyScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
   }
 
   // (4) Propagate position and frame size to children.
   this->SetPropagateMode(true, EDySearchMode::Recursive);
   this->TryPropagatePositionToChildren();
-
   return DY_SUCCESS;
 }
 
-void FDyUiWidget::Release()
-{
-  this->mWidgetScript = nullptr;
-}
+void FDyUiWidget::Release() { this->mWidgetScript = nullptr; }
 
-void FDyUiWidget::Render()
-{
-  if (this->mWidgetScript) { this->mWidgetScript->Update(0.0f); }
-  FDyUiObjectChildrenable::Render();
-}
+void FDyUiWidget::Render() { FDyUiObjectChildrenable::Render(); }
 
 } /// ::dy namespace

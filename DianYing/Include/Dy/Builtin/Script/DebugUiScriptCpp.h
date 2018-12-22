@@ -20,6 +20,8 @@
 
 namespace dy
 {
+class MDyTime;
+class MDyProfiling;
 
 class FDyBuiltinDebugUiScript final : public ADyScriptResource, public ADyWidgetCppScript
 {
@@ -31,8 +33,13 @@ public:
 
   void Update(_MIN_ TF32 dt) override final;
 
-private:
+  void Bar_MoveLeft(_MIN_ TF32 iXAxis) noexcept;
+  void Bar_MoveUp(_MIN_ TF32 iYAxis) noexcept;
+  void EndApplication() noexcept;
 
+private:
+  MDyTime*      mTimeManager      = nullptr;
+  MDyProfiling* mProfilingManger  = nullptr;
 };
 
 } /// ::dy namespace

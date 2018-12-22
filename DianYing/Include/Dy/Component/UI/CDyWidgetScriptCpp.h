@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Component/UI/CDyWidgetScript.h>
+#include <Dy/Component/UI/CDyWidgetScriptBase.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 #include <Dy/Component/Abstract/ADyWidgetCppScript.h>
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
@@ -25,19 +25,16 @@ namespace dy
 /// @class CDyWidgetScriptCpp
 /// @brief Only for cpp internal widget script component.
 ///
-class CDyWidgetScriptCpp final : public CDyWidgetScript, public IDyInitializeHelper<PDyScriptComponentMetaInfo>
+class CDyWidgetScriptCpp final : public CDyWidgetScriptBase 
 {
 public:
-  CDyWidgetScriptCpp(FDyUiWidget& widgetReference) : CDyWidgetScript(widgetReference) {};
+  CDyWidgetScriptCpp(_MIN_ FDyUiWidget& widgetReference, _MIN_ const PDyScriptInstanceMetaInfo& descriptor); 
   virtual ~CDyWidgetScriptCpp() = default;
 
-  EDySuccess  Initialize(const PDyScriptComponentMetaInfo& descriptor) override final;
-  void        Release() override final;
+  void pScriptRelease() override final { return this->Release(); }
 
-  void pScriptRelease() override final
-  {
-    return this->Release();
-  }
+  /// @brief  Get `most derived` `low-level` script instance pointer.
+  MDY_NODISCARD ADyWidgetCppScript* MDY_PRIVATE_SPECIFIER(GetScriptInstance)() const noexcept; 
 
 private:
   void Initiate()       override final;
