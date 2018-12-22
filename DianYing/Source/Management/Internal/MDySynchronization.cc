@@ -66,12 +66,7 @@ void MDySynchronization::TrySynchronization()
   } break;
   case EDyGlobalGameStatus::FirstLoading:
   {
-    static bool dependentManagerInitialized = false;
-    if (dependentManagerInitialized == false)
-    { //
-      gEngine->pfInitializeDependentManager();
-      dependentManagerInitialized = true;
-    }
+    gEngine->pfInitializeDependentManager();
     this->pRunFrameFirstLoading();
   } break;
   case EDyGlobalGameStatus::Loading:

@@ -86,14 +86,12 @@ void DyEngine::operator()()
     timeManager.pUpdate();
     soundManager.Update(MDY_INITIALIZE_DEFINT);
 
-    if (timeManager.IsGameFrameTicked() == DY_SUCCESS)
-    {
-      this->mSynchronization->TrySynchronization();
+    if (timeManager.IsGameFrameTicked() == DY_FAILURE) { continue; }
 
-      if (this->mSynchronization->GetGlobalGameStatus() == EDyGlobalGameStatus::GameRuntime)
-      { // Do process
-        this->pUpdateRuntime(timeManager.GetGameScaledTickedDeltaTimeValue());
-      }
+    this->mSynchronization->TrySynchronization();
+    if (this->mSynchronization->GetGlobalGameStatus() == EDyGlobalGameStatus::GameRuntime)
+    { // Do process
+      this->pUpdateRuntime(timeManager.GetGameScaledTickedDeltaTimeValue());
     }
   };
 }

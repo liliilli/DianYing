@@ -407,6 +407,12 @@ EDySuccess MDyMetaInfo::pReadWidgetResourceMetaInformation(_MIN_ const std::stri
   return DY_SUCCESS;
 }
 
+EDySuccess MDyMetaInfo::MDY_PRIVATE_SPECIFIER(AddLoadingWidgetMetaInformation)(_MIN_ const std::string& widgetMetaInfo)
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+  return DY_SUCCESS;
+}
+
 EDySuccess MDyMetaInfo::pfAddWidgetMetaInformation(_MIN_ const std::string& metaInformationString)
 {
   nlohmann::json jsonAtlas = nlohmann::json::parse(metaInformationString);

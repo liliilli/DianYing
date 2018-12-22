@@ -181,10 +181,12 @@
     <ClCompile Include="Source\Builtin\Script\DebugUiScriptCpp.cc" />
     <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingBootScriptCpp.cc" />
     <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingGlobalScriptCpp.cc" />
+    <ClCompile Include="Source\Builtin\Script\FDyBtScTestLoadingUi.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\PostEffect\RenderDefaultSSAOBlurring.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\PostEffect\RenderDefaultSSAO.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\UI\RenderUiBasicGaugeBar.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\UI\RenderUIImage.cc" />
+    <ClCompile Include="Source\Builtin\Widget\FDyBtWdTestLoadingUi.cc" />
     <ClCompile Include="Source\Component\Abstract\ADyActorCppScript.cc" />
     <ClCompile Include="Source\Component\Abstract\ADyWidgetCppScript.cc" />
     <ClCompile Include="Source\Component\Internal\CDyActorScriptCpp.cc" />
@@ -430,6 +432,7 @@
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGLShaderResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyLoadingBootResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyLoadingGlobalResource.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyLoadingWidgetMetaResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyMaterialResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyMeshResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyModelResource.h" />
@@ -463,6 +466,7 @@
     <ClInclude Include="Include\Dy\Builtin\Script\DebugUiScriptCpp.h" />
     <ClInclude Include="Include\Dy\Builtin\Script\Default\DefaultLoadingBootScriptCpp.h" />
     <ClInclude Include="Include\Dy\Builtin\Script\Default\DefaultLoadingGlobalScriptCpp.h" />
+    <ClInclude Include="Include\Dy\Builtin\Script\FDyBtScTestLoadingUi.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\PostEffect\RenderDefaultSSAOBlurring.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderBasicShadow.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderColorGeometry.h" />
@@ -479,6 +483,7 @@
     <ClInclude Include="Include\Dy\Builtin\Texture\ErrorBlue.h" />
     <ClInclude Include="Include\Dy\Builtin\Texture\Checker.h" />
     <ClInclude Include="Include\Dy\Builtin\Widget\DebugUiMeta.h" />
+    <ClInclude Include="Include\Dy\Builtin\Widget\FDyBtWdTestLoadingUi.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Script\FDyWidgetScriptStatus.h" />
     <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScript.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\FDyGLWrapper.h" />

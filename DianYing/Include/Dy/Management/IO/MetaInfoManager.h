@@ -194,6 +194,7 @@ private:
   MDY_NODISCARD EDySuccess pfAddMaterialMetaInfo      (_MIN_ const PDyMaterialInstanceMetaInfo& metaInfo);
   MDY_NODISCARD EDySuccess pfAddGLAttachmentMetaInfo  (_MIN_ const PDyGlAttachmentInstanceMetaInfo& metaInfo);
   MDY_NODISCARD EDySuccess pfAddGLFrameBufferMetaInfo (_MIN_ const PDyGlFrameBufferInstanceMetaInfo& metaInfo);
+  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(AddLoadingWidgetMetaInformation)(_MIN_ const std::string& widgetMetaInfo);
 
   MDY_NODISCARD EDySuccess pfAddBootResourceSpecifierList(_MIN_ const std::vector<DDyResourceName>& list);
 

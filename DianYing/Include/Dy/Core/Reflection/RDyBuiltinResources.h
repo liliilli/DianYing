@@ -22,6 +22,7 @@
 #include <Dy/Builtin/Interface/IDyResource.h>
 #include <Dy/Builtin/Abstract/ADyLoadingBootResource.h>
 #include <Dy/Builtin/Abstract/ADyLoadingGlobalResource.h>
+#include <Dy/Builtin/Abstract/ADyLoadingWidgetMetaResource.h>
 
 namespace dy::reflect
 {
@@ -38,19 +39,16 @@ public:
 
 protected:
   /// @brief Check booting meta information is exist.
-  static bool IsBootingMetaInfoScriptExist() noexcept
-  {
-    return GetBootResourceMetaInfo().second != nullptr;
-  }
+  static bool IsBootingMetaInfoScriptExist() noexcept { return MDY_CHECK_ISNOTNULL(GetBootResourceMetaInfo().second); }
+
+  /// @brief Check loading widget resource meta information is exist.
+  static bool IsLoadingWidgetMetaInfoExist() noexcept { return MDY_CHECK_ISNOTNULL(GetLoadingWidgetResourceMetaInfo().second); }
 
   static TMapType& GetResourceMapReference()
   {
     static TMapType typeMap;
     return typeMap;
   }
-
-  template <typename TType>
-  static void RegisterScriptResource(_MIN_ const std::string& specifier);
 
   /// @brief Loading booting resource script meta information
   static TValueType& GetBootResourceMetaInfo()
@@ -65,6 +63,16 @@ protected:
     static std::vector<TValueType> mLoadingGlobalMetaInfoCustomizedList = {};
     return mLoadingGlobalMetaInfoCustomizedList;
   }
+
+  /// @brief Loading widget resource meta information
+  static TValueType& GetLoadingWidgetResourceMetaInfo()
+  {
+    static TValueType mLoadingWidgetResourceMetaInfo = {};
+    return mLoadingWidgetResourceMetaInfo;
+  }
+
+  template <typename TType>
+  static void RegisterScriptResource(_MIN_ const std::string& specifier);
 };
 
 template<typename TType>
@@ -81,8 +89,12 @@ struct RDyBuiltinResourceRegister final : public RDyBuiltinResource
     static_assert(IsInheritancedFrom<TType, IDyResource> == true, "TType must be IResource derived type.");
     std::string specifier = name.data(); specifier += std::to_string(count);
 
-    if constexpr (TType::value == EDyResourceType::Script) { this->template RegisterScriptResource<TType>(specifier); }
-    else  { GetResourceMapReference().try_emplace(specifier, TType::value, &__Rfc__GetInstance<TType>); }
+    if constexpr (TType::value == EDyResourceType::Script) 
+    { this->template RegisterScriptResource<TType>(specifier); }
+    else if constexpr (IsInheritancedFrom<TType, ADyLoadingWidgetMetaResource> == true)
+    { GetLoadingWidgetResourceMetaInfo() = std::make_pair(TType::value, &__Rfc__GetInstance<TType>); }
+    else 
+    { GetResourceMapReference().try_emplace(specifier, TType::value, &__Rfc__GetInstance<TType>); }
 
     count += 1;
     mFlag = true;

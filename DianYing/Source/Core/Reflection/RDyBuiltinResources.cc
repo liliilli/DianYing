@@ -89,6 +89,12 @@ void RDyBuiltinResource::BindBuiltinResourcesToMetaManager()
     const auto bootScript = DyConvertUniquePtrTo<ADyLoadingBootResource>(GetBootResourceMetaInfo().second());
     MDY_CALL_ASSERT_SUCCESS(metaManager.pfAddBootResourceSpecifierList(bootScript->GetResourceMetaList()));
   }
+
+  if (IsLoadingWidgetMetaInfoExist() == true)
+  { // If loading widget is exist, insert it to meta manager.
+    auto metaInfo = std::any_cast<std::string_view>(GetLoadingWidgetResourceMetaInfo().second()->GetMetaInfo());
+    MDY_CALL_ASSERT_SUCCESS(metaManager.MDY_PRIVATE_SPECIFIER(AddLoadingWidgetMetaInformation)(MSVSTR(metaInfo)));
+  }
 }
 
 } /// ::dy::reflect namespace
