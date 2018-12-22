@@ -119,6 +119,15 @@ public:
   /// @brief Try draw debug ui if exist.
   void TryRenderDebugUi();
 
+  /// @brief Try create loading ui layout. \n
+  /// If Loading UI Widget meta information is not exist, just return DY_FAILURE doing nothing.
+  MDY_NODISCARD EDySuccess  TryCreateLoadingUi();
+  /// @brief Check loading ui is now on exist.
+  MDY_NODISCARD bool        IsLoadingUiExist() const noexcept;
+  /// @brief Try remove debug ui layout from screen. \n
+  /// If already remove or not exist, return DY_FAILURE.
+  MDY_NODISCARD EDySuccess  TryRemoveLoadingUi();
+
 #ifdef false
   ///
   /// @brief  Spawn actor into present scene.

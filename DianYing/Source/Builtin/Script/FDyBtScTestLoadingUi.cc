@@ -14,13 +14,14 @@
 
 /// Header file
 #include <Dy/Builtin/Script/FDyBtScTestLoadingUi.h>
+#include <Dy/Management/LoggingManager.h>
 
 namespace dy::builtin
 {
 
 void FDyBtScTestLoadingUi::Initiate()
 {
-
+  MDY_LOG_CRITICAL("FDyBtScTestLoadingUi::Initiate() Loading widget initialized.");
 }
 
 void FDyBtScTestLoadingUi::Start()

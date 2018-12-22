@@ -287,6 +287,13 @@ const PDyGlAttachmentInstanceMetaInfo& MDyMetaInfo::GetGLAttachmentMetaInformati
   return this->mAttachmentMetaInfo.at(specifier);
 }
 
+MDY_NODISCARD const PDyMetaWidgetRootDescriptor* 
+MDyMetaInfo::MDY_PRIVATE_SPECIFIER(TryGetLoadingWidgetMetaLoading)() const noexcept
+{
+  if (this->IsLoadingWidgetMetaInfoExist() == false) { return nullptr; }
+  return this->mLoadingWidgetMetaInfo.get();
+}
+
 bool MDyMetaInfo::IsGLShaderMetaInfoExist(_MIN_ const std::string & specifier) const noexcept
 {
   return DyIsMapContains(this->mShaderMetaInfo, specifier);

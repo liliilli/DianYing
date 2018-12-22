@@ -210,6 +210,21 @@ void MDyWorld::TryRenderDebugUi()
   this->mUiInstanceContainer.TryRenderDebugUi();
 }
 
+EDySuccess MDyWorld::TryCreateLoadingUi()
+{
+  return this->mUiInstanceContainer.TryCreateLoadingUi();
+}
+
+bool MDyWorld::IsLoadingUiExist() const noexcept
+{
+  return this->mUiInstanceContainer.IsLoadingUiExist();
+}
+
+EDySuccess MDyWorld::TryRemoveLoadingUi()
+{
+  return this->mUiInstanceContainer.TryRemoveLoadingUi();
+}
+
 void MDyWorld::pfBindFocusCamera(_MIN_ CDyLegacyCamera& validCameraPtr) noexcept
 {
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(&validCameraPtr), "validCameraPtr must be valid, not nullptr.");

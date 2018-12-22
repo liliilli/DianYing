@@ -60,12 +60,10 @@ private:
 
   /// @brief
   void pUpdateRuntime(_MIN_ TF32 dt);
+  void MDY_PRIVATE_SPECIFIER(Render)();
 
   /// @brief Update entry function from engine.
   void pUpdate(_MIN_ TF32 dt);
-
-  /// @brief Render entry function from engine.
-  void pRender();
 
   void pfInitializeIndependentManager();
   void pfInitializeDependentManager();

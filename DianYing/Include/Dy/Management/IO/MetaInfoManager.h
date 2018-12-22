@@ -93,6 +93,10 @@ public:
   /// @return Return value is undefined if not found.
   MDY_NODISCARD const PDyGlAttachmentInstanceMetaInfo&  GetGLAttachmentMetaInformation(_MIN_ const std::string& specifier) const;
 
+  /// @brief Get loading widget pointer if exist, or return nullptr (nothing) value
+  MDY_NODISCARD const PDyMetaWidgetRootDescriptor* 
+  MDY_PRIVATE_SPECIFIER(TryGetLoadingWidgetMetaLoading)() const noexcept;
+
   ///
   /// @brief  Check script meta information is exist.
   /// @return Return value is false if not found.
