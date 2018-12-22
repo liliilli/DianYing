@@ -100,6 +100,9 @@ public:
   /// @return If level is created successfully, return true or false.
   EDySuccess OpenLevel(const std::string& levelName);
 
+  /// @brief Open first level. This function must be called in first-loading level.
+  EDySuccess MDY_PRIVATE_SPECIFIER(OpenFirstLevel)();
+
   /// @brief  Check scene is initialized and valid.
   /// @return
   MDY_NODISCARD bool IsLevelPresentValid() const noexcept;

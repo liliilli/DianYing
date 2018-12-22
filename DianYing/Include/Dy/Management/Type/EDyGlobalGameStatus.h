@@ -22,6 +22,8 @@ namespace dy
 ///
 enum class EDyGlobalGameStatus : char
 {
+  // Original status.
+  None,
   // Initial status, load loading textures synchronously.
   Booted,
   // After loaded loading resource, load global resources (builtin) and (customized)

@@ -32,12 +32,6 @@ public:
   /// @brief Get IO Thread Instance which not be nulled.
   NotNull<TDyIO*> pfGetIOThread();
 
-  /// @brief Get game's global status.
-  MDY_NODISCARD EDyGlobalGameStatus GetGlobalGameStatus() const noexcept
-  {
-    return this->mStatus;
-  }
-
   /// @brief Run synchronization phase or operating system.
   void TrySynchronization();
 
@@ -53,8 +47,6 @@ private:
 
   std::unique_ptr<TDyIO>  mIOThreadInstance = nullptr;
   std::thread             mIOThreadThread;
-
-  EDyGlobalGameStatus     mStatus = EDyGlobalGameStatus::Booted;
 };
 
 } /// ::dy namespace

@@ -58,29 +58,14 @@ NotNull<TDyIO*> MDySynchronization::pfGetIOThread()
 
 void MDySynchronization::TrySynchronization()
 {
-  switch (this->mStatus)
+  switch (gEngine->GetGlobalGameStatus())
   {
-  case EDyGlobalGameStatus::Booted:
-  {
-    this->pRunFrameBooted();
-  } break;
-  case EDyGlobalGameStatus::FirstLoading:
-  { 
-    // Syncrhonization
-    this->pRunFrameFirstLoading();
-  } break;
-  case EDyGlobalGameStatus::Loading:
-  {
-    this->pRunFrameLoading();
-  } break;
-  case EDyGlobalGameStatus::GameRuntime:
-  {
-    this->pRunFrameGameRuntime();
-  } break;
-  case EDyGlobalGameStatus::Shutdown:
-    break;
-  case EDyGlobalGameStatus::Ended:
-    break;
+  case EDyGlobalGameStatus::Booted:       { this->pRunFrameBooted(); }        break;
+  case EDyGlobalGameStatus::FirstLoading: { this->pRunFrameFirstLoading(); }  break; // Syncrhonization
+  case EDyGlobalGameStatus::Loading:      { this->pRunFrameLoading(); }       break;
+  case EDyGlobalGameStatus::GameRuntime:  { this->pRunFrameGameRuntime(); }   break;
+  case EDyGlobalGameStatus::Shutdown: break;
+  default: /* Do nothing */ break;
   }
 }
 
@@ -96,7 +81,7 @@ void MDySynchronization::pRunFrameBooted()
     SDyIOConnectionHelper::ForceProcessIOInsertPhase();
     if (SDyIOConnectionHelper::IsIOThreadSleep() == true)
     {
-      this->mStatus = EDyGlobalGameStatus::FirstLoading;
+      gEngine->SetNextGameStatus(EDyGlobalGameStatus::FirstLoading);
     }
   }
 }
@@ -108,12 +93,12 @@ void MDySynchronization::pRunFrameFirstLoading()
   if (TSyncHelper::CheckIOResultInCondition() == true)  { TSyncHelper::ForceProcessIOInsertPhase(); }
 
   // Check whether IO thread working is done, if so change status to `Loading`. 
-    if (TSyncHelper::IsIOThreadSleep() == true) { this->mStatus = EDyGlobalGameStatus::Loading; }
+  if (TSyncHelper::IsIOThreadSleep() == true) { gEngine->SetNextGameStatus(EDyGlobalGameStatus::Loading); }
 }
 
 void MDySynchronization::pRunFrameLoading()
 {
-  this->mStatus = EDyGlobalGameStatus::GameRuntime;
+  gEngine->SetNextGameStatus(EDyGlobalGameStatus::GameRuntime);
 }
 
 void MDySynchronization::pRunFrameGameRuntime()
