@@ -98,10 +98,23 @@ public:
   /// @brief  Ask it for opening level with levelName next frame.
   /// @param  levelName valid level meta information name
   /// @return If level is created successfully, return true or false.
-  EDySuccess OpenLevel(const std::string& levelName);
+  MDY_NODISCARD EDySuccess OpenLevel(const std::string& levelName);
 
   /// @brief Open first level. This function must be called in first-loading level.
   EDySuccess MDY_PRIVATE_SPECIFIER(OpenFirstLevel)();
+
+  /// @brief Try Remove level. If level is not exist, just return DY_FAILURE.
+  EDySuccess MDY_PRIVATE_SPECIFIER(RemoveLevel)();
+
+  /// @brief Populate next level resource. If next level specifier is not exist,
+  /// Do nothing and return DY_FAILURE.
+  EDySuccess MDY_PRIVATE_SPECIFIER(PopulateNextLevelResources)();
+
+  /// @brief 
+  void MDY_PRIVATE_SPECIFIER(BuildNextLevel)();
+
+  /// @brief
+  EDySuccess MDY_PRIVATE_SPECIFIER(TransitionToNextLevel)();
 
   /// @brief  Check scene is initialized and valid.
   /// @return

@@ -162,26 +162,49 @@ EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(OpenFirstLevel)()
 {
   this->SetLevelTransition(MDySetting::GetInstance().GetInitialSceneInformationName());
 
-  // Travel next level
-  if (this->mNextLevelName.empty() == true) { return DY_FAILURE; }
   // Let present level do release sequence
-  if (this->mLevel) { this->mLevel->Release(); }
+  this->MDY_PRIVATE_SPECIFIER(RemoveLevel)();
+  this->MDY_PRIVATE_SPECIFIER(PopulateNextLevelResources)();
+  this->MDY_PRIVATE_SPECIFIER(BuildNextLevel)();
+  this->MDY_PRIVATE_SPECIFIER(TransitionToNextLevel)();
 
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(RemoveLevel)()
+{
+  // Let present level do release sequence
+  if (MDY_CHECK_ISEMPTY(this->mLevel)) { return DY_FAILURE; }
+
+  this->mLevel->Release(); 
+  this->mLevel = nullptr;
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(PopulateNextLevelResources)()
+{
+  if (this->mNextLevelName.empty() == true) { return DY_FAILURE; }
+  if (MDyMetaInfo::GetInstance().IsLevelMetaInformation(this->mNextLevelName) == false) { return DY_FAILURE; }
+
+  return DY_SUCCESS;
+}
+
+void MDyWorld::MDY_PRIVATE_SPECIFIER(BuildNextLevel)()
+{
+  this->mLevel = std::make_unique<FDyLevel>();
   auto& instance            = MDyMetaInfo::GetInstance();
   const auto* levelMetaInfo = instance.GetLevelMetaInformation(this->mNextLevelName);
-
-  this->mLevel = std::make_unique<FDyLevel>();
   this->mLevel->Initialize(*levelMetaInfo);
 
   this->mPreviousLevelName  = this->mPresentLevelName;
   this->mPresentLevelName   = this->mNextLevelName;
   this->mNextLevelName      = MDY_INITIALIZE_EMPTYSTR;
   this->mIsNeedTransitNextLevel = false;
-  return DY_SUCCESS;
+}
 
-  //this->MDY_PRIVATE_SPECIFIER(PopulateNextLevelResources)();
-  //this->MDY_PRIVATE_SPECIFIER(BuildNextLevel)();
-  //this->MDY_PRIVATE_SPECIFIER(TransitionToNextLevel)();
+EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(TransitionToNextLevel)()
+{
+  return DY_FAILURE;
 }
 
 bool MDyWorld::IsLevelPresentValid() const noexcept

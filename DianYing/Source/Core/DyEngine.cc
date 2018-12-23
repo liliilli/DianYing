@@ -166,10 +166,10 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(ReflectGameStatusTransition)()
     case EDyGlobalGameStatus::Loading: 
     { MDY_NOT_IMPLEMENTED_ASSERT();
       { // If level change from one to another, do that.
-        //MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(RemoveLevel)();
-        //MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(PopulateNextLevelResources)();
-        //MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(BuildNextLevel)();
-        //MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(TransitionToNextLevel)();
+        MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(RemoveLevel)();
+        MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(PopulateNextLevelResources)();
+        MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(BuildNextLevel)();
+        MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(TransitionToNextLevel)();
         //MDyWorld::GetInstance().OpenLevel(MDySetting::GetInstance().GetInitialSceneInformationName());
       }
     } break;
