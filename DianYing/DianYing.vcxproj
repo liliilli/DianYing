@@ -189,7 +189,7 @@
     <ClCompile Include="Source\Builtin\Widget\FDyBtWdTestLoadingUi.cc" />
     <ClCompile Include="Source\Component\Abstract\ADyActorCppScript.cc" />
     <ClCompile Include="Source\Component\Abstract\ADyWidgetCppScript.cc" />
-    <ClCompile Include="Source\Component\Actor\CDyActorScriptr.cc" />
+    <ClCompile Include="Source\Component\Actor\CDyActorScript.cc" />
     <ClCompile Include="Source\Component\Internal\Actor\FDyActorScriptStatus.cc" />
     <ClCompile Include="Source\Component\Internal\Actor\CDyActorScriptCpp.cc" />
     <ClCompile Include="Source\Component\Internal\Actor\CDyActorScriptLua.cc" />

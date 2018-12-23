@@ -120,6 +120,10 @@ public:
       _MIN_ std::function<void()> iFunction,
       _MIN_ const std::string& iAxisName);
 
+  /// @brief
+  /// @TODO IMPLEMENT FOR ADYACTORLUASCRIPT
+  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(TryDetachContollerActor)(_MIN_ ADyActorCppScript& iRefUiScript) noexcept;
+
 private:
   void MDY_PRIVATE_SPECIFIER(pInitializeAxisNAction)();
   void MDY_PRIVATE_SPECIFIER(pInitializeCallbacks)();

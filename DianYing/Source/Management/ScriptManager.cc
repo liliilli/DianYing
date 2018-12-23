@@ -189,6 +189,20 @@ void MDyScript::TryMoveInsertWidgetScriptToMainContainer()
   this->mInsertWidgetScriptList.clear();
 }
 
+FDyActorScriptState* MDyScript::CreateActorScript(
+    _MIN_ const std::string& iScriptSpecifier, 
+    _MIN_ FDyActor& iRefActor, 
+    _MIN_ bool iIsAwakened)
+{
+  const auto& instanceInfo = MDyMetaInfo::GetInstance().GetScriptMetaInformation(iScriptSpecifier);
+  MDY_ASSERT(instanceInfo.mScriptType != EDyScriptType::NoneError, "");
+  MDY_ASSERT(iIsAwakened == true, "Unexpected error occurred.");
+
+  auto component = std::make_unique<FDyActorScriptState>(iRefActor, instanceInfo);
+  this->mInsertActorScriptList.emplace_back(std::move(component));
+  return this->mInsertActorScriptList.back().get();
+}
+
 void MDyScript::UpdateWidget(TF32 dt)
 {
   for (auto& ptrsmtScript : this->mWidgetScriptList)

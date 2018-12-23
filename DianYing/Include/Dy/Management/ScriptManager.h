@@ -60,6 +60,14 @@ public:
 
   /// @brief
   void TryMoveInsertWidgetScriptToMainContainer();
+  
+  /// @brief Create widget script. \n
+  /// @TODO IMPLEMENT LUA VERSION. 
+  /// @param iScriptSpecifier
+  /// @param iRefActor
+  /// @param iIsAwakened
+  MDY_NODISCARD FDyActorScriptState* 
+  CreateActorScript(_MIN_ const std::string& iScriptSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ bool iIsAwakened);
 
   /// @brief
   void UpdateWidget(_MIN_ TF32 dt);
@@ -75,7 +83,9 @@ private:
   /// Activated CDyScript component list.
   /// this list must not be invalidated when iterating list, but except for unenrolling.
   using TDyActorScriptList = std::vector<std::unique_ptr<FDyActorScriptState>>;
-  TDyActorScriptList  mActivatedScriptList    = {};
+  TDyActorScriptList  mInsertActorScriptList  = {};
+  TDyActorScriptList  mActorScriptList        = {};
+  TDyActorScriptList  mGCedActorScriptList    = {};
 };
 
 } /// ::dy namespace

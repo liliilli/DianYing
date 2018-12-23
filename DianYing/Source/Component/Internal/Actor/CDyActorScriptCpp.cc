@@ -33,6 +33,12 @@ CDyActorScriptCpp::CDyActorScriptCpp(_MIN_ FDyActor& iRefActor, _MIN_ const PDyS
   this->mIsScriptInstanceBinded = true;
 }
 
+ADyActorCppScript* CDyActorScriptCpp::MDY_PRIVATE_SPECIFIER(GetScriptInstance)() const noexcept
+{
+  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance), "Script instance must be valid, not empty.");
+  return this->mScriptInstance.get();
+}
+
 void CDyActorScriptCpp::Initiate()
 {
   MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");

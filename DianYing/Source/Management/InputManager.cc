@@ -716,4 +716,10 @@ EDySuccess MDyInput::MDY_PRIVATE_SPECIFIER(TryBindActionDelegate)(
   return DY_SUCCESS;
 }
 
+EDySuccess MDyInput::MDY_PRIVATE_SPECIFIER(TryDetachContollerActor)(_MIN_ ADyActorCppScript& iRefUiScript) noexcept
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+  return DY_FAILURE;
+}
+
 } /// ::dy namespace

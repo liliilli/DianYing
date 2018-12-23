@@ -38,8 +38,12 @@ namespace dy
 ///
 class CDyActorScriptCpp final : public CDyActorScriptBase
 {
+public:
   CDyActorScriptCpp(_MIN_ FDyActor& actorReference, _MIN_ const PDyScriptInstanceMetaInfo& iDesc);
   virtual ~CDyActorScriptCpp() = default;
+
+  /// @brief  Get `most derived` `low-level` script instance pointer.
+  MDY_NODISCARD ADyActorCppScript* MDY_PRIVATE_SPECIFIER(GetScriptInstance)() const noexcept; 
 
 private:
   void Initiate()       override final;

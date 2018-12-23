@@ -233,11 +233,11 @@
     <ClCompile Include="Source\Builtin\Widget\FDyBtWdTestLoadingUi.cc" />
     <ClCompile Include="Source\Builtin\Script\FDyBtScTestLoadingUi.cc" />
     <ClCompile Include="Source\Component\Internal\Actor\FDyActorScriptStatus.cc" />
-    <ClCompile Include="Source\Component\Actor\CDyActorScriptr.cc" />
     <ClCompile Include="Source\Component\Internal\Actor\CDyActorScriptCpp.cc" />
     <ClCompile Include="Source\Component\Internal\Actor\CDyActorScriptLua.cc" />
     <ClCompile Include="Source\Component\Internal\Widget\CDyWidgetScriptCpp.cc" />
     <ClCompile Include="Source\Component\Internal\Widget\CDyWidgetScriptLua.cc" />
+    <ClCompile Include="Source\Component\Actor\CDyActorScript.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
