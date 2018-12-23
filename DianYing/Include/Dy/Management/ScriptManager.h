@@ -69,8 +69,10 @@ public:
   MDY_NODISCARD FDyActorScriptState* 
   CreateActorScript(_MIN_ const std::string& iScriptSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ bool iIsAwakened);
 
-  /// @brief
-  void UpdateWidget(_MIN_ TF32 dt);
+  /// @brief Update widget script.
+  void UpdateWidgetScript(_MIN_ TF32 dt);
+  /// @brief Update widget script if only script present type is type.
+  void UpdateWidgetScript(_MIN_ TF32 dt, _MIN_ EDyScriptState type);
 
 private:
   sol::state mLua;

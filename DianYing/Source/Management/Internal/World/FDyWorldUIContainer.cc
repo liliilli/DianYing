@@ -16,6 +16,7 @@
 #include <Dy/Management/Internal/World/FDyWorldUIContainer.h>
 #include <Dy/Element/Canvas/Widget.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
+#include <Dy/Management/ScriptManager.h>
 
 namespace dy
 {
@@ -25,6 +26,11 @@ EDySuccess FDyWorldUIContainer::TryCreateDebugUi()
   if (MDY_CHECK_ISNOTEMPTY(this->mDebugUi)) { return DY_FAILURE; }
 
   this->mDebugUi = std::make_unique<FDyUiWidget>(MDyMetaInfo::GetInstance().GetWidgetMetaInformation("DebugUi"));
+
+  // CALL `Initiate()`
+  MDyScript::GetInstance().UpdateWidgetScript(0.0f, EDyScriptState::CalledNothing);
+  MDyScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
+
   this->mDebugUi->SetPropagateMode(true, EDySearchMode::Recursive);
   this->mDebugUi->TryPropagatePositionToChildren();
   return DY_SUCCESS;
@@ -46,6 +52,10 @@ EDySuccess FDyWorldUIContainer::TryCreateLoadingUi()
     MDY_LOG_WARNING("Loading widget is not exist, loading screen will not be presented.");
     return DY_FAILURE;
   }
+
+  // CALL `Initiate()`
+  MDyScript::GetInstance().UpdateWidgetScript(0.0f, EDyScriptState::CalledNothing);
+  MDyScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
 
   this->mLoadingUi = std::make_unique<FDyUiWidget>(*MDyMetaInfo::GetInstance().MDY_PRIVATE_SPECIFIER(TryGetLoadingWidgetMetaLoading)());
   this->mLoadingUi->SetPropagateMode(true, EDySearchMode::Recursive);

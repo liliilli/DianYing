@@ -70,13 +70,16 @@ public:
     this->mLevelBackgroundColor = backgroundColor;
   }
 
+  /// @brief Align position of actors.
+  void MDY_PRIVATE_SPECIFIER(AlignActorsPosition)() noexcept;
+
 private:
   /// Level's name. not modifiable
   std::string     mLevelName            = MDY_INITIALIZE_EMPTYSTR;
   /// Level's hash value for identifying scene in world's array.
   TU32            mLevelHashIdentifier  = MDY_INITIALIZE_DEFUINT;
   /// Level basic color
-  DDyColorRGBA        mLevelBackgroundColor = DDyColorRGBA::White;
+  DDyColorRGBA    mLevelBackgroundColor = DDyColorRGBA::White;
   /// Actor list (hierarchial version)
   TActorMap       mActorMap             = {};
   /// Check if level is initialized or released. Level is active when only mInitialized is true.

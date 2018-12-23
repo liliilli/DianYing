@@ -44,9 +44,6 @@ void FDyLevel::Initialize(_MIN_ const PDyLevelConstructMetaInfo& desc)
     auto instancePtr = std::make_unique<FDyActor>();
     MDY_CALL_ASSERT_SUCCESS(instancePtr->Initialize(objectInformation));
 
-    // Update transform to reflect transform information.
-    MDY_NOTUSED const auto& _ = instancePtr->GetTransform()->GetTransform();
-
     // Check activation flags and execute sub-routines of each components.
     instancePtr->pUpdateActivateFlagFromParent();
     if (objectInformation.mProperties.mInitialActivated == true) { instancePtr->Activate(); }
@@ -104,6 +101,16 @@ void FDyLevel::Release()
 void FDyLevel::Update(float dt)
 {
   if (this->mInitialized == false) { return; }
+}
+
+void FDyLevel::MDY_PRIVATE_SPECIFIER(AlignActorsPosition)() noexcept
+{
+  // Update transform to reflect transform information.
+  for (auto& [specifier, ptrsmtActor] : this->mActorMap)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtActor)) { continue; }
+    MDY_NOTUSED const auto& _ = ptrsmtActor->GetTransform()->GetTransform();
+  }
 }
 
 std::string FDyLevel::ToString()

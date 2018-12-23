@@ -29,11 +29,11 @@ FDyActorScriptState::FDyActorScriptState(_MIN_ FDyActor& iRefActor, _MIN_ const 
   switch (this->mType)
   {
   case EDyScriptType::Cpp: 
-  { // Cpp
+  { 
     this->mScriptInstance = std::make_unique<CDyActorScriptCpp>(iRefActor, descriptor);
   } break;
   case EDyScriptType::Lua: 
-  { // Lua
+  { 
     this->mScriptInstance = std::make_unique<CDyActorScriptLua>(iRefActor, descriptor);
   } break;
   default: MDY_NOT_IMPLEMENTED_ASSERT();
@@ -67,6 +67,11 @@ EDyScriptType FDyActorScriptState::GetScriptType() const noexcept
 {
   MDY_ASSERT(this->mType != decltype(this->mType)::NoneError, "Script type must be specified properly.");
   return this->mType;
+}
+
+EDyScriptState FDyActorScriptState::GetScriptStatus() const noexcept
+{
+  return this->mStatus;
 }
 
 CDyActorScriptBase* FDyActorScriptState::MDY_PRIVATE_SPECIFIER(GetPtrInternalActorScript)() const noexcept

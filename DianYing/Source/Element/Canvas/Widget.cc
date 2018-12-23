@@ -65,7 +65,6 @@ FDyUiWidget::FDyUiWidget(_MIN_ const PDyMetaWidgetRootDescriptor& widgetMetaDesc
       scriptName.empty() == false)
   {
     this->mWidgetScript = std::make_unique<CDyWidgetScript>(scriptName, *this);
-    MDyScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
   }
 }
 

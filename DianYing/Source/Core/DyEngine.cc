@@ -197,12 +197,12 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(Update)(_MIN_ EDyGlobalGameStatus iEngineSt
   case EDyGlobalGameStatus::Loading: 
   {
     MDyScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
-    MDyScript::GetInstance().UpdateWidget(dt);
+    MDyScript::GetInstance().UpdateWidgetScript(dt);
   } break;
   case EDyGlobalGameStatus::GameRuntime: 
   {
     MDyScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
-    MDyScript::GetInstance().UpdateWidget(dt);
+    MDyScript::GetInstance().UpdateWidgetScript(dt);
 
     MDyPhysics::GetInstance().Update(dt);
     MDyInput::GetInstance().pfUpdate(dt);

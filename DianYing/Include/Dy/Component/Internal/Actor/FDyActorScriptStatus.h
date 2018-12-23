@@ -49,6 +49,9 @@ public:
   /// @brief Get script type (Cpp, Lua).
   MDY_NODISCARD EDyScriptType GetScriptType() const noexcept;
 
+  /// @brief Get script present status.
+  MDY_NODISCARD EDyScriptState GetScriptStatus() const noexcept;
+
   /// @brief Get internal widget script instance (level 2)
   MDY_NODISCARD CDyActorScriptBase* MDY_PRIVATE_SPECIFIER(GetPtrInternalActorScript)() const noexcept;
 

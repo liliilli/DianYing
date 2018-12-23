@@ -171,9 +171,6 @@ FDyWidgetScriptState* MDyScript::CreateWidgetScript(
   MDY_ASSERT(iIsAwakened == true, "Unexpected error occurred.");
 
   auto component = std::make_unique<FDyWidgetScriptState>(iRefWidget, instanceInfo);
-  // CALL `Initiate()`
-  component->CallScriptFunction(0.0f);
-
   this->mInsertWidgetScriptList.emplace_back(std::move(component));
   return this->mInsertWidgetScriptList.back().get();
 }
@@ -203,12 +200,27 @@ FDyActorScriptState* MDyScript::CreateActorScript(
   return this->mInsertActorScriptList.back().get();
 }
 
-void MDyScript::UpdateWidget(TF32 dt)
+void MDyScript::UpdateWidgetScript(_MIN_ TF32 dt)
 {
   for (auto& ptrsmtScript : this->mWidgetScriptList)
   {
     if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
     ptrsmtScript->CallScriptFunction(dt);
+  }
+}
+
+void MDyScript::UpdateWidgetScript(_MIN_ TF32 dt, _MIN_ EDyScriptState type)
+{
+  for (auto& ptrsmtScript : this->mInsertWidgetScriptList)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
+    if (ptrsmtScript->GetScriptStatus() == type) { ptrsmtScript->CallScriptFunction(dt); }
+  }
+
+  for (auto& ptrsmtScript : this->mWidgetScriptList)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
+    if (ptrsmtScript->GetScriptStatus() == type) { ptrsmtScript->CallScriptFunction(dt); }
   }
 }
 

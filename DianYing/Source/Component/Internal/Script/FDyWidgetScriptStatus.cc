@@ -70,6 +70,11 @@ EDyScriptType FDyWidgetScriptState::GetScriptType() const noexcept
   return this->mType;
 }
 
+EDyScriptState FDyWidgetScriptState::GetScriptStatus() const noexcept
+{
+  return this->mStatus;
+}
+
 CDyWidgetScriptBase* FDyWidgetScriptState::MDY_PRIVATE_SPECIFIER(GetPtrInternalWidgetScript)() const noexcept
 {
   MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance), "Internal script instance must be valid.");
