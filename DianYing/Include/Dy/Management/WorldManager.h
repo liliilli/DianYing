@@ -45,7 +45,7 @@ class MDyWorld final : public IDySingleton<MDyWorld>, public IDyUpdatable
 public:
   ///
   /// @brief Update scene structures prior to dive in scene objects tree hierarchy.
-  /// Scene transition will be executed maybe.
+  /// Level transition will be executed maybe.
   /// @param dt
   ///
   void Update(_MIN_ float dt) override final;

@@ -99,7 +99,7 @@ public:
   void SetParentRelocateTransform(_MIN_ NotNull<FDyActor*> validParentRawPtr) noexcept;
 
   ///
-  /// @brief Set FDyActor's hierarchial position to Scene's root.
+  /// @brief Set FDyActor's hierarchial position to Level's root.
   /// Transform update will be held automatically.
   ///
   void SetParentAsRoot() noexcept;

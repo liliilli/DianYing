@@ -51,7 +51,7 @@ void MDyWorld::Update(_MIN_ float dt)
   // GC components.
   this->pGcAcitvatedComponents();
 
-  // Scene update routine
+  // Level update routine
   if (this->mLevel)
   {
     this->mLevel->Update(dt);
@@ -197,7 +197,7 @@ EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(PopulateNextLevelResources)()
   // If done, call `build next level` in outside (MDySync).
   SDyIOConnectionHelper::PopulateResourceList(
       levelResourceSet, 
-      EDyScope::Scene,
+      EDyScope::Level,
       []() 
   { 
     auto& mWorld = MDyWorld::GetInstance();
