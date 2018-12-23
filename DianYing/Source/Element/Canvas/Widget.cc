@@ -31,7 +31,7 @@
 namespace dy
 {
 
-EDySuccess FDyUiWidget::Initialize(_MIN_ const PDyMetaWidgetRootDescriptor& widgetMetaDesc)
+FDyUiWidget::FDyUiWidget(_MIN_ const PDyMetaWidgetRootDescriptor& widgetMetaDesc)
 {
   // (1) Get position and frame size from meta.
   this->SetFrameSize      ({ 1280, 720 });
@@ -67,14 +67,7 @@ EDySuccess FDyUiWidget::Initialize(_MIN_ const PDyMetaWidgetRootDescriptor& widg
     this->mWidgetScript = std::make_unique<CDyWidgetScript>(scriptName, *this);
     MDyScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
   }
-
-  // (4) Propagate position and frame size to children.
-  this->SetPropagateMode(true, EDySearchMode::Recursive);
-  this->TryPropagatePositionToChildren();
-  return DY_SUCCESS;
 }
-
-void FDyUiWidget::Release() { this->mWidgetScript = nullptr; }
 
 void FDyUiWidget::Render() { FDyUiObjectChildrenable::Render(); }
 

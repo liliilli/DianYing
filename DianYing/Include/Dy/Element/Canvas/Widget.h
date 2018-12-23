@@ -29,7 +29,7 @@ namespace dy
 /// @class FDyUiWidget
 /// @brief FFF
 ///
-class FDyUiWidget final : public FDyUiObjectChildrenable, public IDyInitializeHelper<PDyMetaWidgetRootDescriptor>
+class FDyUiWidget final : public FDyUiObjectChildrenable 
 {
   using TUiObject       = std::unique_ptr<FDyUiObject>;
 	using TUiObjectMap    = std::unordered_map<std::string, TUiObject>;
@@ -37,17 +37,11 @@ class FDyUiWidget final : public FDyUiObjectChildrenable, public IDyInitializeHe
   MDY_SET_CRC32_HASH_WITH_TYPE(FDyUiWidget);
   MDY_SET_TYPEMATCH_FUNCTION(FDyUiObjectChildrenable, FDyUiWidget);
 public:
-  FDyUiWidget() = default;
-
-  ///
   /// @brief Initialize FDyUiWidget.
   /// @param widgetMetaDesc Meta descriptor information instance for FDyUiWidget.
   /// @return Success / Failure flag.
-  ///
-  EDySuccess Initialize(_MIN_ const PDyMetaWidgetRootDescriptor& widgetMetaDesc) override final;
-
-  /// @brief Release widget instance.
-  void Release() override final;
+  FDyUiWidget(_MIN_ const PDyMetaWidgetRootDescriptor& widgetMetaDesc);
+  virtual ~FDyUiWidget() = default;
 
   /// @brief Activate FDyUiWidget instance.
   /// @TODO IMPLEMENT THIS
