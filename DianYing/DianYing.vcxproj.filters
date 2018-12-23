@@ -61,7 +61,6 @@
     <ClCompile Include="Source\Management\Helper\PhysxSimulationCallback.cc" />
     <ClCompile Include="Source\Helper\Type\ThreeStateBool.cc" />
     <ClCompile Include="Source\Element\Abstract\ADyBaseComponent.cc" />
-    <ClCompile Include="Source\Component\CDyScript.cc" />
     <ClCompile Include="Source\Component\CDyTransform.cc" />
     <ClCompile Include="Source\Component\Abstract\ADyGeneralBaseComponent.cc" />
     <ClCompile Include="Source\Component\CDyModelFilter.cc" />
@@ -74,7 +73,6 @@
     <ClCompile Include="Source\Builtin\Texture\Checker.cc" />
     <ClCompile Include="Source\Builtin\Texture\ErrorBlue.cc" />
     <ClCompile Include="Source\Helper\Type\DyString.cc" />
-    <ClCompile Include="Source\Component\Internal\ScriptState.cc" />
     <ClCompile Include="Source\Management\ScriptManager.cc" />
     <ClCompile Include="Source\Component\CDyDirectionalLight.cc" />
     <ClCompile Include="Source\Management\Type\AttachmentInformation.cc" />
@@ -133,12 +131,8 @@
     <ClCompile Include="Source\Meta\Information\ElementObjectMetaInfo.cc" />
     <ClCompile Include="Source\Builtin\Script\DebugUiScriptCpp.cc" />
     <ClCompile Include="Source\Element\Canvas\Widget.cc" />
-    <ClCompile Include="Source\Component\UI\CDyWidgetScriptCpp.cc" />
-    <ClCompile Include="Source\Component\UI\CDyWidgetScriptLua.cc" />
     <ClCompile Include="Source\Element\Canvas\UiObjectChildrenable.cc" />
     <ClCompile Include="Source\Component\Abstract\ADyWidgetCppScript.cc" />
-    <ClCompile Include="Source\Component\Internal\CDyActorScriptCpp.cc" />
-    <ClCompile Include="Source\Component\Internal\CDyActorScriptLua.cc" />
     <ClCompile Include="Source\Component\Abstract\ADyActorCppScript.cc" />
     <ClCompile Include="Source\Element\Canvas\UiObject.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetBarMetaInformation.cc" />
@@ -238,6 +232,12 @@
     <ClCompile Include="Source\Management\Internal\Input\FDyInputDelegateManager.cc" />
     <ClCompile Include="Source\Builtin\Widget\FDyBtWdTestLoadingUi.cc" />
     <ClCompile Include="Source\Builtin\Script\FDyBtScTestLoadingUi.cc" />
+    <ClCompile Include="Source\Component\Internal\Actor\FDyActorScriptStatus.cc" />
+    <ClCompile Include="Source\Component\Actor\CDyActorScriptr.cc" />
+    <ClCompile Include="Source\Component\Internal\Actor\CDyActorScriptCpp.cc" />
+    <ClCompile Include="Source\Component\Internal\Actor\CDyActorScriptLua.cc" />
+    <ClCompile Include="Source\Component\Internal\Widget\CDyWidgetScriptCpp.cc" />
+    <ClCompile Include="Source\Component\Internal\Widget\CDyWidgetScriptLua.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -351,7 +351,6 @@
     <ClInclude Include="Include\Dy\Helper\Type\ThreeStateBool.h" />
     <ClInclude Include="Include\Dy\Element\Abstract\ADyBaseComponent.h" />
     <ClInclude Include="Include\Dy\Element\Abstract\ADyGeneralBaseComponent.h" />
-    <ClInclude Include="Include\Dy\Component\CDyScript.h" />
     <ClInclude Include="Include\Dy\Component\CDyTransform.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\TmpCheckTypeParams.h" />
     <ClInclude Include="Include\Dy\Component\Helper\TmpCheckInitilizeParams.h" />
@@ -452,14 +451,10 @@
     <ClInclude Include="Include\Dy\Meta\Information\ElementObjectMetaInfo.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\Widget.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\UiObject.h" />
-    <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScriptCpp.h" />
-    <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScriptLua.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\UiObjectChildrenable.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyWidgetCppScript.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyActorCppScript.h" />
     <ClInclude Include="Include\Dy\Component\Interface\IDyScriptable.h" />
-    <ClInclude Include="Include\Dy\Component\Internal\CDyActorScriptCpp.h" />
-    <ClInclude Include="Include\Dy\Component\Internal\CDyActorScriptLua.h" />
     <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetBarMetaInformation.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\FDyBasicGaugeBar.h" />
     <ClInclude Include="Include\Dy\Component\Internal\CDyBasicGaugeBarRenderer.h" />
@@ -603,12 +598,19 @@
     <ClInclude Include="Include\Dy\Management\Helper\SDyProfilingHelper.h" />
     <ClInclude Include="Include\Dy\Management\Internal\World\FDyWorldUIContainer.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Script\FDyWidgetScriptStatus.h" />
-    <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScriptBase.h" />
     <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScript.h" />
     <ClInclude Include="Include\Dy\Management\Internal\Input\FDyInputDelegateManager.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyLoadingWidgetMetaResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Widget\FDyBtWdTestLoadingUi.h" />
     <ClInclude Include="Include\Dy\Builtin\Script\FDyBtScTestLoadingUi.h" />
+    <ClInclude Include="Include\Dy\Component\Actor\CDyActorScript.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Actor\FDyActorScriptStatus.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Actor\CDyActorScriptBase.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Actor\CDyActorScriptCpp.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Actor\CDyActorScriptLua.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Widget\CDyWidgetScriptCpp.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Widget\CDyWidgetScriptLua.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Widget\CDyWidgetScriptBase.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

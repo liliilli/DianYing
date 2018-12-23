@@ -12,7 +12,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Component/Internal/CDyActorScriptLua.h>
+#include <Dy/Component/Internal/Actor/CDyActorScriptLua.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Management/ScriptManager.h>
 #include <Dy/Element/Actor.h>
@@ -46,9 +46,11 @@ MDY_SET_IMMUTABLE_STRING(sFunction_OnDisabled,  "OnDisabled");
 namespace dy
 {
 
-EDySuccess CDyActorScriptLua::Initialize(const PDyScriptComponentMetaInfo& metaInfo)
+CDyActorScriptLua::CDyActorScriptLua(_MIN_ FDyActor& actorReference, _MIN_ const PDyScriptInstanceMetaInfo& iDesc) : 
+    CDyActorScriptBase{actorReference}
 {
-  this->mScriptName = metaInfo.mDetails.mSpecifierName;
+#ifdef false
+  this->mScriptName = iDesc.mSpecifierName;
 
   // (1) Get script meta information.
   auto& metaInfoManager = MDyMetaInfo::GetInstance();
@@ -64,21 +66,9 @@ EDySuccess CDyActorScriptLua::Initialize(const PDyScriptComponentMetaInfo& metaI
   // @TODO RESOLVE THIS (ERROR & EXCEPTION FROM INSIDE)
   this->mScriptInstance["__pDyInitializeWith"](this->mScriptInstance, *this->GetBindedActor());
   this->mIsScriptInstanceBinded = true;
+#endif
 
-  if (metaInfo.mInitiallyActivated == true) { this->Activate(); }
-
-  // Initialize script state instance.
-  PDyScriptStateDescriptor desc;
-  desc.mScriptPtr = this;
-  this->mScriptState.Initialize(desc);
-
-  return DY_SUCCESS;
-}
-
-void CDyActorScriptLua::Release()
-{
-  this->mScriptState.Release();
-  this->Deactivate();
+  //if (metaInfo.mInitiallyActivated == true) { this->Activate(); }
 }
 
 void CDyActorScriptLua::Initiate()

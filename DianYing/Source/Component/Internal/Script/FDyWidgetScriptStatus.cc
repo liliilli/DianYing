@@ -14,9 +14,9 @@
 
 /// Header file
 #include <Dy/Component/Internal/Script/FDyWidgetScriptStatus.h>
-#include <Dy/Component/UI/CDyWidgetScriptBase.h>
+#include <Dy/Component/Internal/Widget/CDyWidgetScriptBase.h>
+#include <Dy/Component/Internal/Widget/CDyWidgetScriptCpp.h>
 #include <Dy/Meta/Information/ScriptMetaInformation.h>
-#include <Dy/Component/UI/CDyWidgetScriptCpp.h>
 
 namespace dy
 {

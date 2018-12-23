@@ -17,7 +17,7 @@
 
 #define SOL_CHECK_ARGUMENT 1
 #include <sol2/sol.hpp>
-#include <Dy/Component/UI/CDyWidgetScriptCpp.h>
+#include <Dy/Component/Internal/Actor/FDyActorScriptStatus.h>
 #include <Dy/Component/Internal/Script/FDyWidgetScriptStatus.h>
 
 //!
@@ -71,6 +71,11 @@ private:
   TDyWidgetScriptList mInsertWidgetScriptList = {};
   TDyWidgetScriptList mWidgetScriptList       = {};
   TDyWidgetScriptList mGCedWidgetScriptList   = {};
+
+  /// Activated CDyScript component list.
+  /// this list must not be invalidated when iterating list, but except for unenrolling.
+  using TDyActorScriptList = std::vector<std::unique_ptr<FDyActorScriptState>>;
+  TDyActorScriptList  mActivatedScriptList    = {};
 };
 
 } /// ::dy namespace

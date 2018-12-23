@@ -14,8 +14,20 @@
 ///
 
 #include <sol2/sol.hpp>
-#include <Dy/Component/CDyScript.h>
-#include <Dy/Component/Interface/IDyInitializeHelper.h>
+#include <Dy/Component/Internal/Actor/CDyActorScriptBase.h>
+
+//!
+//! Forward declaration
+//!
+
+namespace dy
+{ 
+struct PDyScriptInstanceMetaInfo;
+} /// ::dy namespace
+
+//!
+//! Implementation
+//!
 
 namespace dy
 {
@@ -24,21 +36,10 @@ namespace dy
 /// @class CDyActorScriptLua
 /// @brief Only for lua internal script component.
 ///
-class CDyActorScriptLua final : public CDyScript, public IDyInitializeHelper<PDyScriptComponentMetaInfo>
+class CDyActorScriptLua final : public CDyActorScriptBase
 {
-  MDY_SET_TYPEMATCH_FUNCTION(::dy::CDyScript, CDyActorScriptLua);
-  MDY_SET_CRC32_HASH_WITH_TYPE(CDyScriptLua);
-
-  CDyActorScriptLua(FDyActor& actorReference) : CDyScript(actorReference) {};
+  CDyActorScriptLua(_MIN_ FDyActor& actorReference, _MIN_ const PDyScriptInstanceMetaInfo& iDesc);
   virtual ~CDyActorScriptLua() = default;
-
-  EDySuccess Initialize(const PDyScriptComponentMetaInfo& descriptor) override final;
-  void Release() override final;
-
-  void pScriptRelease() override final
-  {
-    return this->Release();
-  }
 
 private:
   void Initiate() override final;

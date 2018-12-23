@@ -66,7 +66,8 @@ void MDyWorld::pGcAcitvatedComponents()
     std::sort(MDY_BIND_BEGIN_END(this->mErasionScriptCandidateList), std::greater<TI32>());
     for (const auto& index : this->mErasionScriptCandidateList)
     { // Remove!
-      this->mActivatedScripts.erase(this->mActivatedScripts.begin() + index);
+      // @TODO CALL SCRIPT MANAGE TO GC.
+      //this->mActivatedScripts.erase(this->mActivatedScripts.begin() + index);
     }
     // Clear!
     this->mErasionScriptCandidateList.clear();
@@ -100,12 +101,15 @@ void MDyWorld::pGcAcitvatedComponents()
 void MDyWorld::UpdateObjects(_MIN_ float dt)
 {
   if (this->mLevel)
-  { // Update(Start, Update, etc...) script carefully.
+  { 
+#ifdef false
+    // Update(Start, Update, etc...) script carefully.
     for (auto& script : this->mActivatedScripts)
     {
       if (MDY_CHECK_ISNULL(script)) { continue; }
       script->CallScriptFunction(dt);
     }
+#endif
 
     // CDyModelRenderer update
     for (auto& modelRenderer : this->mActivatedModelRenderers)
@@ -166,11 +170,9 @@ EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(OpenFirstLevel)()
   this->SetLevelTransition(MDySetting::GetInstance().GetInitialSceneInformationName());
 
   // Let present level do release sequence
+  // Game Status Sequence 12-13.
   this->MDY_PRIVATE_SPECIFIER(RemoveLevel)();
   this->MDY_PRIVATE_SPECIFIER(PopulateNextLevelResources)();
-  //this->MDY_PRIVATE_SPECIFIER(BuildNextLevel)();
-  //this->MDY_PRIVATE_SPECIFIER(TransitionToNextLevel)();
-
   return DY_SUCCESS;
 }
 
@@ -210,7 +212,7 @@ EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(PopulateNextLevelResources)()
 
 void MDyWorld::MDY_PRIVATE_SPECIFIER(BuildNextLevel)()
 {
-  this->mLevel    = std::make_unique<FDyLevel>();
+  this->mLevel = std::make_unique<FDyLevel>();
   const auto* levelMetaInfo = MDyMetaInfo::GetInstance().GetLevelMetaInformation(this->mNextLevelName);
   this->mLevel->Initialize(*levelMetaInfo);
 
@@ -312,14 +314,6 @@ void MDyWorld::pfMoveActorToGc(_MIN_ NotNull<FDyActor*> actorRawPtr) noexcept
   this->mActorGc.emplace_back(std::unique_ptr<FDyActor>(actorRawPtr));
 }
 
-void MDyWorld::pfUnenrollActiveScript(_MIN_ TI32 index) noexcept
-{
-  MDY_ASSERT(index < this->mActivatedScripts.size(), "index must be smaller than this->mActivatedScripts.size().");
-
-  this->mActivatedScripts[index] = MDY_INITIALIZE_NULL;
-  this->mErasionScriptCandidateList.emplace_back(index);
-}
-
 void MDyWorld::pfUnenrollActiveModelRenderer(_MIN_ TI32 index) noexcept
 {
   MDY_ASSERT(index < this->mActivatedModelRenderers.size(), "index must be smaller than this->mActivatedModelRenderers.size().");
@@ -338,11 +332,21 @@ void MDyWorld::pfUnenrollActiveCamera(_MIO_ TI32& index) noexcept
   index = MDY_INITIALIZE_DEFINT;
 }
 
+#ifdef false
+void MDyWorld::pfUnenrollActiveScript(_MIN_ TI32 index) noexcept
+{
+  MDY_ASSERT(index < this->mActivatedScripts.size(), "index must be smaller than this->mActivatedScripts.size().");
+
+  this->mActivatedScripts[index] = MDY_INITIALIZE_NULL;
+  this->mErasionScriptCandidateList.emplace_back(index);
+}
+
 TI32 MDyWorld::pfEnrollActiveScript(_MIN_ const NotNull<CDyScript*>& pawnRawPtr) noexcept
 {
   this->mActivatedScripts.emplace_back(pawnRawPtr);
   return static_cast<TI32>(this->mActivatedScripts.size()) - 1;
 }
+#endif
 
 TI32 MDyWorld::pfEnrollActiveModelRenderer(_MIN_ CDyModelRenderer& validComponent) noexcept
 {

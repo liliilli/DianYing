@@ -15,7 +15,7 @@
 
 #include <sol2/sol.hpp>
 
-#include <Dy/Component/UI/CDyWidgetScriptBase.h>
+#include <Dy/Component/Internal/Widget/CDyWidgetScriptBase.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
 
@@ -33,12 +33,6 @@ public:
   virtual ~CDyWidgetScriptLua() = default;
 
   EDySuccess Initialize(const PDyScriptComponentMetaInfo& descriptor) override final;
-  void Release() override final;
-
-  void pScriptRelease() override final
-  {
-    return this->Release();
-  }
 
 private:
   void Initiate() override final;

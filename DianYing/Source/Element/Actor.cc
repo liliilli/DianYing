@@ -48,7 +48,7 @@ EDySuccess FDyActor::Initialize(_MIN_ const PDyObjectMetaInfo& objectMetaDesc)
     case EDyComponentMetaType::Script:
     {
       const auto& desc = std::any_cast<const PDyScriptComponentMetaInfo&>(componentInfo);
-      MDY_NOTUSED auto scriptComponentPtr = this->AddComponent<CDyScript>(desc);
+      MDY_NOTUSED auto scriptComponentPtr = this->AddComponent<CDyActorScript>(desc);
     } break;
     case EDyComponentMetaType::DirectionalLight:
     {
@@ -152,7 +152,8 @@ void FDyActor::SetParentToRootRelocateTransform() noexcept
   MDY_LOG_WARNING("NOT IMPLEMENTED {}", "FDyActor::SetParentToRootRelocateTransform");
 }
 
-std::optional<CDyScript*> FDyActor::GetScriptComponent(_MIN_ const std::string& scriptName) noexcept
+#ifdef false
+CDyActorScript* FDyActor::GetScriptComponent(_MIN_ const std::string& scriptName) noexcept
 {
   MDY_ASSERT(scriptName.empty() == false, "scriptName must not be empty at FDyActor::GetScriptComponent()");
 
@@ -193,6 +194,7 @@ EDySuccess FDyActor::RemoveScriptComponent(_MIN_ const std::string& scriptName) 
     return DY_SUCCESS;
   }
 }
+#endif
 
 NotNull<CDyTransform*> FDyActor::GetTransform() noexcept
 {

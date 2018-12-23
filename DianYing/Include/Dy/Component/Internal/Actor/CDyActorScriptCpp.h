@@ -13,9 +13,21 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Component/CDyScript.h>
-#include <Dy/Component/Interface/IDyInitializeHelper.h>
 #include <Dy/Component/Abstract/ADyActorCppScript.h>
+#include <Dy/Component/Internal/Actor/CDyActorScriptBase.h>
+
+//!
+//! Forward declaration
+//!
+
+namespace dy
+{ 
+struct PDyScriptInstanceMetaInfo;
+} /// ::dy namespace
+
+//!
+//! Implementation
+//!
 
 namespace dy
 {
@@ -24,26 +36,15 @@ namespace dy
 /// @class CDyActorScriptCpp
 /// @brief Only for cpp internal script component.
 ///
-class CDyActorScriptCpp final : public CDyScript, public IDyInitializeHelper<PDyScriptComponentMetaInfo>
+class CDyActorScriptCpp final : public CDyActorScriptBase
 {
-  MDY_SET_TYPEMATCH_FUNCTION(::dy::CDyScript, CDyActorScriptCpp);
-  MDY_SET_CRC32_HASH_WITH_TYPE(CDyScriptCpp);
-
-  CDyActorScriptCpp(FDyActor& actorReference) : CDyScript(actorReference) {};
+  CDyActorScriptCpp(_MIN_ FDyActor& actorReference, _MIN_ const PDyScriptInstanceMetaInfo& iDesc);
   virtual ~CDyActorScriptCpp() = default;
-
-  EDySuccess Initialize(const PDyScriptComponentMetaInfo& descriptor) override final;
-  void Release() override final;
-
-  void pScriptRelease() override final
-  {
-    return this->Release();
-  }
 
 private:
   void Initiate()       override final;
   void Start()          override final;
-  void Update(float dt) override final;
+  void Update(_MIN_ float dt) override final;
   void OnEnabled()      override final;
   void OnDisabled()     override final;
   void Destroy()        override final;

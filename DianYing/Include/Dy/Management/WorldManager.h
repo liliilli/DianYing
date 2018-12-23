@@ -235,27 +235,16 @@ private:
   ///
   void pfUnenrollActiveCamera(_MIO_ TI32& index) noexcept;
 
-  ///
-  /// @brief  Enroll activated FDyPawn raw pointer instance to list to update.
-  /// @param  pawnRawPtr FDyPawn instance to insert into activated list.
-  /// @return index of pawn raw ptr. Always success.
-  ///
-  MDY_NODISCARD TI32 pfEnrollActiveScript(_MIN_ const NotNull<CDyScript*>& pawnRawPtr) noexcept;
-
-  ///
   /// @brief
   /// @param  validComponent
   /// @return
   /// @TODO SCRIPT THIS!
-  ///
   MDY_NODISCARD TI32 pfEnrollActiveModelRenderer(_MIN_ CDyModelRenderer& validComponent) noexcept;
 
-  ///
   /// @brief
   /// @param  validComponent
   /// @return
   /// @TODO SCRIPT THIS!
-  ///
   MDY_NODISCARD TI32 pfEnrollActiveCamera(_MIN_ CDyCamera& validComponent) noexcept;
 
   /// Main Camera Ptr of present scene.
@@ -269,9 +258,6 @@ private:
   /// Present valid level instance.
   std::unique_ptr<FDyLevel> mLevel              = nullptr;
 
-  /// Activated CDyScript component list.
-  /// this list must not be invalidated when iterating list, but except for unenrolling.
-  std::vector<CDyScript*>   mActivatedScripts           = {};
   /// Erasion (activated) script candidate list. this list must be sorted descendently not to invalidate order.
   std::vector<TI32>         mErasionScriptCandidateList = {};
 

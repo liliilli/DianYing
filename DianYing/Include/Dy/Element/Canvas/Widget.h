@@ -15,15 +15,14 @@
 
 #include <Dy/Element/Canvas/UiObjectChildrenable.h>
 #include <Dy/Element/Canvas/UiObject.h>
-#include <Dy/Helper/Pointer.h>
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
-#include <Dy/Component/Interface/IDyInitializeHelper.h>
-#include <Dy/Component/CDyScript.h>
-#include <Dy/Component/UI/CDyWidgetScriptBase.h>
-#include "Dy/Component/UI/CDyWidgetScript.h"
+#include <Dy/Component/UI/CDyWidgetScript.h>
+#include <Dy/Helper/Type/ThreeStateBool.h>
 
 namespace dy
 {
+
+class CDyWidgetScriptBase;
 
 ///
 /// @class FDyUiWidget
@@ -83,11 +82,9 @@ public:
     return MDY_INITIALIZE_EMPTYSTR;
   }
 
-  ///
   /// @brief  Get script component pointer from script list using scriptName to verify.
   /// @return The pointer instance of CDyScript. If not found, return just no value.
-  ///
-  MDY_NODISCARD std::optional<CDyWidgetScriptBase*> GetScript() noexcept;
+  MDY_NODISCARD CDyWidgetScriptBase* GetScript() noexcept;
 
 private:
 

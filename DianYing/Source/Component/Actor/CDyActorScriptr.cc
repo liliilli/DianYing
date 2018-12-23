@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_INTERNAL_SCRIPTSTATE_H
-#define GUARD_DY_INTERNAL_SCRIPTSTATE_H
+#include <precompiled.h>
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,21 +12,12 @@
 /// SOFTWARE.
 ///
 
+/// Header file
+#include <Dy/Component/Actor/CDyActorScript.h>
+
 namespace dy
 {
 
-///
-/// @enum EDyScriptState
-/// @brief
-///
-enum class EDyScriptState
-{
-  NoneError,
-  CalledNothing,
-  CalledInitiate,
-  CalledUpdate,
-};
+
 
 } /// ::dy namespace
-
-#endif /// GUARD_DY_INTERNAL_SCRIPTSTATE_H

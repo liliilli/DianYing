@@ -13,13 +13,13 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Component/CDyScript.h>
 #include <Dy/Component/CDyTransform.h>
 
 #include <Dy/Helper/Internal/TmpCheckTypeParams.h>
-#include "Dy/Component/CDyModelFilter.h"
-#include "Dy/Component/CDyModelRenderer.h"
-#include "Dy/Component/CDyCamera.h"
+#include <Dy/Component/Actor/CDyActorScript.h>
+#include <Dy/Component/CDyModelFilter.h>
+#include <Dy/Component/CDyModelRenderer.h>
+#include <Dy/Component/CDyCamera.h>
 
 namespace dy
 {
@@ -36,7 +36,7 @@ constexpr void DyCheckComponentInitializeFunctionParams() noexcept
 {
   static_assert(std::is_base_of_v<ADyBaseComponent, TComponentType>, "Failed compile test. TComponentType is not derived type of ADyBaseTransform.");
 
-  if constexpr (std::is_same_v<CDyScript, TComponentType>)
+  if constexpr (std::is_same_v<CDyActorScript, TComponentType>)
   {
     static_assert(MetaTest<const PDyScriptComponentMetaInfo&>::TypeMatched<TArgs...>::template Result<>::value,
                   "Failed compile test. Could not initilaize CDyScript instance.");

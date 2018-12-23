@@ -17,7 +17,7 @@
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Element/Actor.h>
 #include <Dy/Management/Helper/LuaBindingEntry.h>
-#include <Dy/Component/UI/CDyWidgetScriptCpp.h>
+#include <Dy/Component/Internal/Widget/CDyWidgetScriptCpp.h>
 
 //!
 //! Local function & forward declaration

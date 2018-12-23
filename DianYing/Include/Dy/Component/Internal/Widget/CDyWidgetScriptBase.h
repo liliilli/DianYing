@@ -43,13 +43,6 @@ class CDyWidgetScriptBase : public IDyScriptable
 public:
   CDyWidgetScriptBase(_MINOUT_ FDyUiWidget& widget) : mBindedWidget(&widget) { }
 
-  /// @brief Release derived resources of `CDyScript`.
-  /// This function shadowing derived Release function intentionally.
-  void Release()
-  {
-    return this->pScriptRelease();
-  }
-
   /// @brief Get mutable reference of widget.
   MDY_NODISCARD FDyUiWidget& GetWidgetReference() noexcept
   {
@@ -58,9 +51,6 @@ public:
   }
 
 protected:
-  /// @brief
-  virtual void pScriptRelease() = 0;
-
   /// Script name for specification and searching.
   std::string   mScriptName   = MDY_INITIALIZE_EMPTYSTR;
   /// Flag for checking binded script instance.

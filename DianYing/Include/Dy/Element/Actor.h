@@ -14,9 +14,6 @@
 ///
 
 #include <Dy/Core/Resource/Internal/MaterialType.h>
-#include <Dy/Component/CDyScript.h>
-#include <Dy/Component/Internal/CDyActorScriptCpp.h>
-#include <Dy/Component/Internal/CDyActorScriptLua.h>
 #include <Dy/Component/Helper/TmpCheckInitilizeParams.h>
 #include <Dy/Component/Helper/TmpCheckRemoveParams.h>
 #include <Dy/Element/Object.h>
@@ -24,6 +21,7 @@
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
 #include <Dy/Element/Abstract/ADyTransformable.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
+#include <Dy/Component/Actor/CDyActorScript.h>
 
 namespace dy
 {
@@ -35,7 +33,7 @@ namespace dy
 class FDyActor : public FDyObject
 {
   using TComponentList = std::vector<std::unique_ptr<ADyGeneralBaseComponent>>;
-  using TScriptList    = std::vector<std::unique_ptr<CDyScript>>;
+  using TScriptList    = std::vector<std::unique_ptr<CDyActorScript>>;
 
   MDY_SET_CRC32_HASH_WITH_TYPE(FDyActor);
   MDY_SET_TYPEMATCH_FUNCTION(FDyObject, FDyActor);
@@ -125,8 +123,8 @@ public:
   ///
   FORCEINLINE MDY_NODISCARD std::optional<FDyActor*> GetParent() const noexcept
   {
-    if (MDY_CHECK_ISNULL(this->mParentFDyActorRawPtr))  { return std::nullopt; }
-    else                                                { return this->mParentFDyActorRawPtr; }
+    if (MDY_CHECK_ISNULL(this->mParentFDyActorRawPtr)) { return std::nullopt; }
+    else                                               { return this->mParentFDyActorRawPtr; }
   }
 
   ///
@@ -156,40 +154,23 @@ public:
   template<class TComponent, typename... TArgs>
   MDY_NODISCARD NotNull<TComponent*> AddComponent(_MIN_ TArgs&&... args)
   {
-    ///
     /// @brief Make script component (lua or cpp)
-    ///
     static auto MakeScriptComponent = [this](const PDyScriptComponentMetaInfo& info)
     {
-      const auto& instanceInfo = MDyMetaInfo::GetInstance().GetScriptMetaInformation(info.mDetails.mSpecifierName);
+      auto& metaManager = MDyMetaInfo::GetInstance();
+      MDY_ASSERT(metaManager.IsScriptMetaInformationExist(info.mDetails.mSpecifierName) == true, "");
+
+      const auto& instanceInfo = metaManager.GetScriptMetaInformation(info.mDetails.mSpecifierName);
       MDY_ASSERT(instanceInfo.mScriptType != EDyScriptType::NoneError, "");
 
-      std::unique_ptr<CDyScript> component = nullptr;
-      if (instanceInfo.mScriptType == EDyScriptType::Cpp)
-      {
-        auto componentPtr = std::make_unique<CDyActorScriptCpp>(std::ref(*this));
-        MDY_CALL_ASSERT_SUCCESS(componentPtr->Initialize(info));
-        component = std::move(componentPtr);
-      }
-      else
-      {
-        auto componentPtr = std::make_unique<CDyActorScriptLua>(std::ref(*this));
-        MDY_CALL_ASSERT_SUCCESS(componentPtr->Initialize(info));
-        component = std::move(componentPtr);
-      }
-
-      return component;
+      return std::make_unique<CDyActorScript>(*this, info.mDetails.mSpecifierName);
     };
 
-    //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    //! FUNCTIONBODY ∨
-    //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    // Integrity test
+    // Validation test
     MDY_TEST_IS_BASE_OF(ADyBaseComponent, TComponent);
     DyCheckComponentInitializeFunctionParams<TComponent, TArgs...>();
 
-    if constexpr (std::is_same_v<CDyScript, TComponent>)
+    if constexpr (std::is_same_v<CDyActorScript, TComponent>)
     {
       // Add and initialize component itself.
       // If component which just added is CDyScript, Call Initiate script first.
@@ -289,7 +270,7 @@ public:
       this->mComponentList.erase(it);
       return DY_SUCCESS;
     }
-    else if constexpr (std::is_same_v<CDyScript, TComponent>)
+    else if constexpr (std::is_same_v<CDyActorScript, TComponent>)
     {
       // @TODO IMPLEMENT SCRIPT DELETION USING DESCRIPTOR OR SCRIPT NAME.
       return this->RemoveScriptComponent(std::forward<TArgs>(args)...);
@@ -303,7 +284,7 @@ public:
   /// @param  scriptName Script name to verify and get.
   /// @return The pointer instance of CDyScript. If not found, return just no value.
   ///
-  MDY_NODISCARD std::optional<CDyScript*> GetScriptComponent(_MIN_ const std::string& scriptName) noexcept;
+  MDY_NODISCARD CDyActorScript* GetScriptComponent(_MIN_ const std::string& scriptName) noexcept;
 
   ///
   /// @brief  Remove script component manually from script list using scriptName to verify.

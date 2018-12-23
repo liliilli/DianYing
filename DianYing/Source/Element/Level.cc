@@ -53,9 +53,7 @@ void FDyLevel::Initialize(_MIN_ const PDyLevelConstructMetaInfo& desc)
     return instancePtr;
   };
 
-
   // FunctionBody ∨
-
 
   this->mLevelName            = desc.mMetaCategory.mLevelName;
   this->mLevelHashIdentifier  = hash::DyToCrc32Hash(this->mLevelName.c_str());
@@ -64,18 +62,17 @@ void FDyLevel::Initialize(_MIN_ const PDyLevelConstructMetaInfo& desc)
   // Create object, FDyActor
   for (const auto& objectInformation : desc.mLevelObjectMetaInfoList)
   {
-    const auto type = objectInformation->mObjectType;
-    switch (type)
+    switch (objectInformation->mObjectType)
     {
-    default: MDY_UNEXPECTED_BRANCH(); break;
     case EDyMetaObjectType::Actor:
     {
-      auto instancePtr = pCreateActorInstance(*objectInformation);
+      auto instancePtr  = pCreateActorInstance(*objectInformation);
       auto [it, result] = this->mActorMap.try_emplace(instancePtr->GetActorName(), std::move(instancePtr));
       MDY_ASSERT(result == true, "Unexpected error occured in inserting FDyActor to object map.");
     } break;
     case EDyMetaObjectType::SceneScriptor:  MDY_NOT_IMPLEMENTED_ASSERT(); break;
     case EDyMetaObjectType::Object:         MDY_NOT_IMPLEMENTED_ASSERT(); break;
+    default: MDY_UNEXPECTED_BRANCH(); break;
     }
   }
 

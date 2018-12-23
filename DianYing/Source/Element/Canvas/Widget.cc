@@ -23,8 +23,8 @@
 #include <Dy/Management/WindowManager.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
 
-#include <Dy/Component/UI/CDyWidgetScriptCpp.h>
-#include <Dy/Component/UI/CDyWidgetScriptLua.h>
+#include <Dy/Component/Internal/Widget/CDyWidgetScriptCpp.h>
+#include <Dy/Component/Internal/Widget/CDyWidgetScriptLua.h>
 #include <Dy/Element/Canvas/FDyImage.h>
 #include <Dy/Management/ScriptManager.h>
 
