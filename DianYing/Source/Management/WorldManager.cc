@@ -20,6 +20,7 @@
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 #include <Dy/Core/Resource/Type/EDyScope.h>
 #include "Dy/Core/DyEngine.h"
+#include "Dy/Management/ScriptManager.h"
 
 namespace dy
 {
@@ -216,14 +217,17 @@ void MDyWorld::MDY_PRIVATE_SPECIFIER(BuildNextLevel)()
   const auto* levelMetaInfo = MDyMetaInfo::GetInstance().GetLevelMetaInformation(this->mNextLevelName);
   this->mLevel->Initialize(*levelMetaInfo);
 
-  this->mPreviousLevelName  = this->mPresentLevelName;
-  this->mPresentLevelName   = this->mNextLevelName;
-  this->mNextLevelName      = MDY_INITIALIZE_EMPTYSTR;
-  this->mIsNeedTransitNextLevel = false;
+  // Game Status Sequence - 9, 10.
+  MDyScript::GetInstance().UpdateActorScript(0.0f, EDyScriptState::CalledNothing);
+  this->mLevel->MDY_PRIVATE_SPECIFIER(AlignActorsPosition)();
 }
 
 EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(TransitionToNextLevel)()
 {
+  this->mPreviousLevelName  = this->mPresentLevelName;
+  this->mPresentLevelName   = this->mNextLevelName;
+  this->mNextLevelName      = MDY_INITIALIZE_EMPTYSTR;
+  this->mIsNeedTransitNextLevel = false;
   return DY_SUCCESS;
 }
 

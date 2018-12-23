@@ -74,6 +74,11 @@ public:
   /// @brief Update widget script if only script present type is type.
   void UpdateWidgetScript(_MIN_ TF32 dt, _MIN_ EDyScriptState type);
 
+  /// @brief Update actor script.
+  void UpdateActorScript(_MIN_ TF32 dt);
+  /// @brief Update actor script if only script present type is type.
+  void UpdateActorScript(_MIN_ TF32 dt, _MIN_ EDyScriptState type);
+
 private:
   sol::state mLua;
 

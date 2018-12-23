@@ -224,4 +224,28 @@ void MDyScript::UpdateWidgetScript(_MIN_ TF32 dt, _MIN_ EDyScriptState type)
   }
 }
 
+void MDyScript::UpdateActorScript(TF32 dt)
+{
+  for (auto& ptrsmtScript : this->mActorScriptList)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
+    ptrsmtScript->CallScriptFunction(dt);
+  }
+}
+
+void MDyScript::UpdateActorScript(TF32 dt, EDyScriptState type)
+{
+  for (auto& ptrsmtScript : this->mInsertActorScriptList)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
+    if (ptrsmtScript->GetScriptStatus() == type) { ptrsmtScript->CallScriptFunction(dt); }
+  }
+
+  for (auto& ptrsmtScript : this->mActorScriptList)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
+    if (ptrsmtScript->GetScriptStatus() == type) { ptrsmtScript->CallScriptFunction(dt); }
+  }
+}
+
 } /// ::dy namespace

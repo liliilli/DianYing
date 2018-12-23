@@ -49,25 +49,21 @@ namespace dy
 CDyActorScriptLua::CDyActorScriptLua(_MIN_ FDyActor& actorReference, _MIN_ const PDyScriptInstanceMetaInfo& iDesc) : 
     CDyActorScriptBase{actorReference}
 {
-#ifdef false
-  this->mScriptName = iDesc.mSpecifierName;
+  MDY_ASSERT(iDesc.mScriptType == EDyScriptType::Lua,   "Script type is not matched to CDyActorScriptLua.");
+  MDY_ASSERT(iDesc.mScriptMode == EDyScriptMode::Actor, "Given script must be actor type.");
 
-  // (1) Get script meta information.
-  auto& metaInfoManager = MDyMetaInfo::GetInstance();
-  MDY_ASSERT(metaInfoManager.IsScriptMetaInformationExist(this->mScriptName) == true, MSVSTR(sErrorScriptNotFound));
-  const auto& validScriptMetaInfo = metaInfoManager.GetScriptMetaInformation(this->mScriptName);
-
-  // (2) Bind script, but need to check integrity test also.
+    // (2) Bind script, but need to check integrity test also.
   auto& scriptManager   = MDyScript::GetInstance();
   auto& luaInstance     = scriptManager.GetLuaInstance();
 
-  MDY_NOTUSED auto _    = luaInstance.safe_script_file(validScriptMetaInfo.mFilePath);
+  MDY_NOTUSED auto _    = luaInstance.safe_script_file(iDesc.mFilePath);
   this->mScriptInstance = luaInstance[this->mScriptName];
-  // @TODO RESOLVE THIS (ERROR & EXCEPTION FROM INSIDE)
-  this->mScriptInstance["__pDyInitializeWith"](this->mScriptInstance, *this->GetBindedActor());
-  this->mIsScriptInstanceBinded = true;
-#endif
 
+  // @TODO RESOLVE THIS (ERROR & EXCEPTION FROM INSIDE)
+  this->mScriptInstance["__pDyInitializeWith"](this->mScriptInstance, this->GetActorReference());
+
+  this->mScriptName = iDesc.mSpecifierName;
+  this->mIsScriptInstanceBinded = true;
   //if (metaInfo.mInitiallyActivated == true) { this->Activate(); }
 }
 
