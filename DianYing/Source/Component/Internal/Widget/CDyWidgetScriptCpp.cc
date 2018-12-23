@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Component/UI/CDyWidgetScriptCpp.h>
+#include <Dy/Component/Internal/Widget/CDyWidgetScriptCpp.h>
 
 #include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Helper/Pointer.h>

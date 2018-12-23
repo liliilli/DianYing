@@ -44,11 +44,30 @@ public:
   /// If resourceType is `Resource` but failed to find `Information` of populated container,
   /// fist populate `Information` and `Resource` later. \n
   /// If given specifier of resource type could not found in Meta container, causes UB or assertion error in debug mode.
-  static void PopulateResource(_MIN_ const std::string& specifier, _MIN_ EDyResourceType resourceType, _MIN_ EDyResourceStyle resourceStyle, _MIN_ EDyScope scope);
+  static void PopulateResource(
+      _MIN_ const std::string& specifier, 
+      _MIN_ EDyResourceType resourceType, 
+      _MIN_ EDyResourceStyle resourceStyle, 
+      _MIN_ EDyScope scope);
 
   /// @brief Create and populate resource list which have specifier that can be found in meta info container. \n
   /// This function is list version of `PopulateResource` function above.
-  static void PopulateResourceList(_MIN_ const std::vector<DDyResourceName>& specifierList, _MIN_ bool isWaited = false);
+  static void PopulateResourceList(
+      _MIN_ const std::vector<DDyResourceName>& specifierList, 
+      _MIN_ const EDyScope iScope,
+      _MIN_ std::function<void(void)> callback);
+
+  /// @brief Overload version of `PopulateResourceList` above.
+  static void PopulateResourceList(
+      _MIN_ const std::vector<std::vector<DDyResourceName>>& specifierList, 
+      _MIN_ const EDyScope iScope,
+      _MIN_ std::function<void(void)> callback);
+  
+  /// @brief Overload version of `PopulateResourceList` above.
+  static void PopulateResourceList(
+      _MIN_ const TDDyResourceNameSet& iSpecifierSet, 
+      _MIN_ const EDyScope iScope,
+      _MIN_ std::function<void(void)> iCallback);
 
   /// @brief Try resource garbage collection manually. This function may causes time consuming, call this carefully.
   static void TryGC();
@@ -78,6 +97,10 @@ public:
   /// @brief Check IO Thread is slept. True if only IO Worker are idle,
   /// Queue is empty and Result list also empty.
   static MDY_NODISCARD bool IsIOThreadSleep();
+
+  /// @brief Try call callback function when if only Thread I/O is slept.
+  /// If not slept or exist callback function, just return DY_FAILURE.
+  static EDySuccess TryCallSleptCallbackFunction();
 };
 
 } /// ::dy namespace

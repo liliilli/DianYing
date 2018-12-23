@@ -13,38 +13,37 @@
 ///
 
 /// Header file
-#include <Dy/Component/Internal/Script/FDyWidgetScriptStatus.h>
-#include <Dy/Component/Internal/Widget/CDyWidgetScriptBase.h>
-#include <Dy/Component/Internal/Widget/CDyWidgetScriptCpp.h>
+#include <Dy/Component/Internal/Actor/FDyActorScriptStatus.h>
+#include <Dy/Component/Internal/Actor/CDyActorScriptBase.h>
+#include <Dy/Component/Internal/Actor/CDyActorScriptCpp.h>
+#include <Dy/Component/Internal/Actor/CDyActorScriptLua.h>
 #include <Dy/Meta/Information/ScriptMetaInformation.h>
 
 namespace dy
 {
 
-FDyWidgetScriptState::FDyWidgetScriptState(
-    _MIN_ FDyUiWidget& widgetReference, 
-    _MIN_ const PDyScriptInstanceMetaInfo& descriptor) :
-    mStatus{EDyScriptState::CalledNothing},
-    mType{descriptor.mScriptType}
+FDyActorScriptState::FDyActorScriptState(_MIN_ FDyActor& iRefActor, _MIN_ const PDyScriptInstanceMetaInfo& descriptor) :
+    mStatus {EDyScriptState::CalledNothing},
+    mType   {descriptor.mScriptType}
 {
   switch (this->mType)
   {
   case EDyScriptType::Cpp: 
-  { // Cpp
-    this->mScriptInstance = std::make_unique<CDyWidgetScriptCpp>(widgetReference, descriptor);
+  { 
+    this->mScriptInstance = std::make_unique<CDyActorScriptCpp>(iRefActor, descriptor);
   } break;
   case EDyScriptType::Lua: 
-  { // Lua
-    MDY_NOT_IMPLEMENTED_ASSERT();
+  { 
+    this->mScriptInstance = std::make_unique<CDyActorScriptLua>(iRefActor, descriptor);
   } break;
   default: MDY_NOT_IMPLEMENTED_ASSERT();
   }
 }
 
-void FDyWidgetScriptState::CallScriptFunction(_MIN_ float dt) noexcept
+void FDyActorScriptState::CallScriptFunction(_MIN_ TF32 dt) noexcept
 {
   MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance),"Script instace must be activated!");
-  MDY_ASSERT(this->mStatus != EDyScriptState::NoneError, "FDyScriptState must be initialized!");
+  MDY_ASSERT(this->mStatus != EDyScriptState::NoneError, "FDyActorScriptState must be initialized!");
 
   switch (this->mStatus)
   {
@@ -64,24 +63,24 @@ void FDyWidgetScriptState::CallScriptFunction(_MIN_ float dt) noexcept
   }
 }
 
-void FDyWidgetScriptState::MDY_PRIVATE_SPECIFIER(CallDestroyFunctionAnyway)() noexcept
+void FDyActorScriptState::MDY_PRIVATE_SPECIFIER(CallDestroyFunctionAnyway)() noexcept
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance),"Script instace must be activated!");
+  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance), "Script instace must be activated!");
   this->mScriptInstance->Destroy();
 }
 
-EDyScriptType FDyWidgetScriptState::GetScriptType() const noexcept
+EDyScriptType FDyActorScriptState::GetScriptType() const noexcept
 {
   MDY_ASSERT(this->mType != decltype(this->mType)::NoneError, "Script type must be specified properly.");
   return this->mType;
 }
 
-EDyScriptState FDyWidgetScriptState::GetScriptStatus() const noexcept
+EDyScriptState FDyActorScriptState::GetScriptStatus() const noexcept
 {
   return this->mStatus;
 }
 
-CDyWidgetScriptBase* FDyWidgetScriptState::MDY_PRIVATE_SPECIFIER(GetPtrInternalWidgetScript)() const noexcept
+CDyActorScriptBase* FDyActorScriptState::MDY_PRIVATE_SPECIFIER(GetPtrInternalActorScript)() const noexcept
 {
   MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance), "Internal script instance must be valid.");
   return this->mScriptInstance.get();

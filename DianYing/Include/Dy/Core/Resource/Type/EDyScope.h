@@ -23,7 +23,7 @@ namespace dy
 enum class EDyScope
 {
   Global,
-  Scene,
+  Level,
   Temporal,
   UserDefined,
 };
@@ -37,12 +37,12 @@ MDY_NODISCARD inline bool operator>(_MIN_ EDyScope lhs, _MIN_ EDyScope rhs) noex
     if (rhs != EDyScope::Global)  { return true; }
     else                          { return false; }
   }
-  case EDyScope::Scene:
+  case EDyScope::Level:
   {
     switch (rhs)
     {
     case EDyScope::Global:
-    case EDyScope::Scene:       return false;
+    case EDyScope::Level:       return false;
     case EDyScope::Temporal:    return true;
     case EDyScope::UserDefined: return false;
     }
@@ -56,11 +56,11 @@ MDY_NODISCARD inline bool operator>=(_MIN_ EDyScope lhs, _MIN_ EDyScope rhs) noe
   switch (lhs)
   {
   case EDyScope::Global: { return true; }
-  case EDyScope::Scene:
+  case EDyScope::Level:
   {
     switch (rhs)
     {
-    case EDyScope::Scene:
+    case EDyScope::Level:
     case EDyScope::Temporal: return true;
     case EDyScope::Global:
     case EDyScope::UserDefined: return false;

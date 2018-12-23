@@ -13,9 +13,10 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Core/Thread/TDyIO.h>
 #include <Dy/Helper/Pointer.h>
+#include <Dy/Management/Interface/ISingletonCrtp.h>
+#include <Dy/Management/Type/EDyGlobalGameStatus.h>
 
 //!
 //! Forward declaration
@@ -23,7 +24,6 @@
 
 namespace dy
 {
-enum class EDyGlobalGameStatus : char;
 class MDyTime;
 class MDyWindow;
 class MDySynchronization;
@@ -55,23 +55,39 @@ public:
   /// @brief Get window manager reference.
   MDY_NODISCARD MDyWindow&  GetWindowManager();
 
+  /// @brief Get game's global status.
+  MDY_NODISCARD EDyGlobalGameStatus GetGlobalGameStatus() const noexcept;
+
+  /// @brief Set next status.
+  void SetNextGameStatus(_MIN_ EDyGlobalGameStatus iNextStatus) noexcept;
+
 private:
   /// @brief Get IO Thread Instance which not be nulled.
   NotNull<TDyIO*> pfGetIOThread();
 
-  /// @brief
-  void pUpdateRuntime(_MIN_ TF32 dt);
+  /// @brief Reflect game status transition.
+  void MDY_PRIVATE_SPECIFIER(ReflectGameStatusTransition)();
+
   /// @brief Render every update from engine.
   void MDY_PRIVATE_SPECIFIER(Render)(_MIN_ EDyGlobalGameStatus iEngineStatus);
   /// @brief Update entry function from engine.
   void MDY_PRIVATE_SPECIFIER(Update)(_MIN_ EDyGlobalGameStatus iEngineStatus, _MIN_ TF32 dt);
+
+  /// @brief Try update status. if changed, `mIsStatusTransitionDone` be falsed.
+  /// This function must be called at final.
+  void TryUpdateStatus();
 
   void pfInitializeIndependentManager();
   void pfInitializeDependentManager();
   void pfReleaseDependentManager();
   void pfReleaseIndependentManager();
 
-  MDySynchronization* mSynchronization = nullptr;
+  MDySynchronization* mSynchronization      = nullptr;
+
+  EDyGlobalGameStatus mNextStatus           = EDyGlobalGameStatus::Booted;
+  EDyGlobalGameStatus mStatus               = EDyGlobalGameStatus::None;
+  EDyGlobalGameStatus mPrevStatus           = EDyGlobalGameStatus::None;
+  bool                mIsStatusTransitionDone  = false;
 
   friend class SDyIOConnectionHelper;
   friend class SDyIOWorkerConnHelper;

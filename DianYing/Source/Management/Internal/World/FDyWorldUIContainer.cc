@@ -16,6 +16,7 @@
 #include <Dy/Management/Internal/World/FDyWorldUIContainer.h>
 #include <Dy/Element/Canvas/Widget.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
+#include <Dy/Management/ScriptManager.h>
 
 namespace dy
 {
@@ -24,8 +25,14 @@ EDySuccess FDyWorldUIContainer::TryCreateDebugUi()
 {
   if (MDY_CHECK_ISNOTEMPTY(this->mDebugUi)) { return DY_FAILURE; }
 
-  this->mDebugUi = std::make_unique<FDyUiWidget>();
-  MDY_CALL_ASSERT_SUCCESS(mDebugUi->Initialize(MDyMetaInfo::GetInstance().GetWidgetMetaInformation("DebugUi")));
+  this->mDebugUi = std::make_unique<FDyUiWidget>(MDyMetaInfo::GetInstance().GetWidgetMetaInformation("DebugUi"));
+
+  // CALL `Initiate()`
+  MDyScript::GetInstance().UpdateWidgetScript(0.0f, EDyScriptState::CalledNothing);
+  MDyScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
+
+  this->mDebugUi->SetPropagateMode(true, EDySearchMode::Recursive);
+  this->mDebugUi->TryPropagatePositionToChildren();
   return DY_SUCCESS;
 }
 
@@ -33,8 +40,7 @@ EDySuccess FDyWorldUIContainer::TryRemoveDebugUi()
 {
   if (MDY_CHECK_ISEMPTY(this->mDebugUi)) { return DY_FAILURE; }
 
-  this->mDebugUi->Release();
-  this->mDebugUi = MDY_INITIALIZE_NULL;
+  this->mDebugUi = nullptr;
   return DY_SUCCESS;
 }
 
@@ -47,14 +53,21 @@ EDySuccess FDyWorldUIContainer::TryCreateLoadingUi()
     return DY_FAILURE;
   }
 
-  this->mLoadingUi = std::make_unique<FDyUiWidget>();
-  MDY_CALL_ASSERT_SUCCESS(this->mLoadingUi->Initialize(*MDyMetaInfo::GetInstance().MDY_PRIVATE_SPECIFIER(TryGetLoadingWidgetMetaLoading)()));
+  // CALL `Initiate()`
+  MDyScript::GetInstance().UpdateWidgetScript(0.0f, EDyScriptState::CalledNothing);
+  MDyScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
+
+  this->mLoadingUi = std::make_unique<FDyUiWidget>(*MDyMetaInfo::GetInstance().MDY_PRIVATE_SPECIFIER(TryGetLoadingWidgetMetaLoading)());
+  this->mLoadingUi->SetPropagateMode(true, EDySearchMode::Recursive);
+  this->mLoadingUi->TryPropagatePositionToChildren();
   return DY_SUCCESS;
 }
 
 EDySuccess FDyWorldUIContainer::TryRemoveLoadingUi()
 {
-  MDY_NOT_IMPLEMENTED_ASSERT();
+  if (MDY_CHECK_ISEMPTY(this->mLoadingUi)) { return DY_FAILURE; }
+
+  this->mLoadingUi = nullptr;
   return DY_SUCCESS;
 }
 

@@ -140,4 +140,22 @@ SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryRequireResource_FrameBuffer)
   return ptr;
 }
 
+EDySuccess SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryDetachResource)
+(_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder)
+{
+  MDY_ASSERT(iType != EDyResourceType::NoneError, "iType must be valid resource type.");
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
+  auto& ioThread = *gEngine->pfGetIOThread();
+
+  // If binding is failed, it specifies that RI has not been created (Related task queue was not created neither).
+  // So we need populate task queue for resource as temporary.
+  if (ioThread.pIsReferenceInstanceExist(iSpecifier, iType, EDyResourceStyle::Resource) == false)
+  { 
+    MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
+  }
+
+  MDY_CALL_ASSERT_SUCCESS(ioThread.TryDetachBinderFromResourceRI(iSpecifier, iType, iPtrBinder));
+  return DY_SUCCESS;
+}
+
 } /// ::dy namespace

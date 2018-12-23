@@ -50,6 +50,22 @@ TDyIO::~TDyIO()
   this->mMetaInfoManager    = nullptr;
 }
 
+void TDyIO::BindSleepCallbackFunction(_MIN_ std::function<void()> iCbFunc)
+{
+  mCbSleepFunction = nullptr;
+  mCbSleepFunction = iCbFunc;
+}
+
+EDySuccess TDyIO::outTryCallSleptCallbackFunction()
+{
+  if (this->outIsIOThreadSlept() == false)  { return DY_FAILURE; }
+  if (this->mCbSleepFunction == nullptr)    { return DY_FAILURE; }
+
+  this->mCbSleepFunction();
+  this->mCbSleepFunction = nullptr;
+  return DY_SUCCESS;
+}
+
 EDySuccess TDyIO::Initialize()
 {
   // Initialize IOWorkers with context.
@@ -118,6 +134,7 @@ void TDyIO::operator()()
       this->mWorkerSemaphore.Wait();
       this->mIdleWorkerCounter.fetch_sub(1);
       inAssignTaskToWorkers(task, this->mWorkerList);
+      MDY_SLEEP_FOR_ATOMIC_TIME();
     }
   }
 
@@ -199,20 +216,22 @@ EDySuccess TDyIO::outTryEnqueueTask(
   // Construct IO Tasks.
   DDyIOTask task;
   {
-    task.mSpecifierName = iSpecifier;
-    task.mResourceType  = iResourceType;
-    task.mResourcecStyle= iResourceStyle;
-    task.mScope         = iScope;
-    task.mTaskPriority  = kDefaultPriority;
-    task.mIsResourceDeferred = iIsDerivedFromResource;
-    task.mBoundObjectStyle= EDyObject::Etc_NotBindedYet;
-    task.mPtrBoundObject= nullptr;
+    task.mSpecifierName       = iSpecifier;
+    task.mResourceType        = iResourceType;
+    task.mResourcecStyle      = iResourceStyle;
+    task.mScope               = iScope;
+    task.mTaskPriority        = kDefaultPriority;
+    task.mIsResourceDeferred  = iIsDerivedFromResource;
+    task.mBoundObjectStyle    = EDyObject::Etc_NotBindedYet;
+    task.mPtrBoundObject      = nullptr;
   }
 
   // If this is model & resource task, change `mResourceType` to `__ModelVBO` as intermediate task.
   // Because VAO can not be created and shared from other thread not main thread.
-  if (task.mResourceType == EDyResourceType::Mesh  
-   && task.mResourcecStyle == EDyResourceStyle::Resource) { task.mResourceType = EDyResourceType::__MeshVBO; }
+  if (task.mResourceType == EDyResourceType::Mesh && task.mResourcecStyle == EDyResourceStyle::Resource) 
+  { 
+    task.mResourceType = EDyResourceType::__MeshVBO;
+  }
 
   // Make deferred task and forward deferred task to list (atomic)
   if (conditionList.empty() == false) { this->outInsertDeferredTaskList({task, conditionList}); }
@@ -484,6 +503,12 @@ EDySuccess TDyIO::TryBindBinderToInformationRI
   return this->mRIInformationMap.TryBindBinderToResourceRI(iSpecifier, iType, iPtrBinder);
 }
 
+EDySuccess TDyIO::TryDetachBinderFromResourceRI
+(_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder)
+{
+  return this->mRIResourceMap.TryDetachBinderFromResourceRI(iSpecifier, iType, iPtrBinder);
+}
+
 bool TDyIO::pIsReferenceInstanceBound(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style)
 {
   switch (style)
@@ -526,8 +551,7 @@ bool TDyIO::outIsIOThreadSlept() noexcept
         && this->mWorkerResultList.empty();
   }
 
-  using namespace std::chrono_literals;
-  std::this_thread::sleep_for(0ms);
+  MDY_SLEEP_FOR_ATOMIC_TIME();
   return sleptFlag;
 }
 

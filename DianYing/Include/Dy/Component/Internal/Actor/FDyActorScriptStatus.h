@@ -1,5 +1,5 @@
-#ifndef GAURD_DY_COMPONENT_INTERNAL_SCRIPT_FDYWIDGETSCRIPTSTATUS_H
-#define GAURD_DY_COMPONENT_INTERNAL_SCRIPT_FDYWIDGETSCRIPTSTATUS_H
+#ifndef GAURD_DY_COMPONENT_INTERNAL_SCRIPT_FDYACTORSCRIPTSTATUS_H
+#define GAURD_DY_COMPONENT_INTERNAL_SCRIPT_FDYACTORSCRIPTSTATUS_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,9 +13,9 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Component/Internal/ScriptState.h>
 #include <Dy/Meta/Information/ScriptMetaInformation.h>
-#include <Dy/Component/Internal/Widget/CDyWidgetScriptBase.h>
+#include <Dy/Component/Internal/ScriptState.h>
+#include <Dy/Component/Internal/Actor/CDyActorScriptBase.h>
 
 //!
 //! Forward declaration
@@ -23,8 +23,8 @@
 
 namespace dy
 {
-class FDyUiWidget;
-struct PDyScriptInstanceMetaInfo;
+class   FDyActor;
+struct  PDyScriptInstanceMetaInfo;
 } /// ::dy namespace
 
 //!
@@ -35,16 +35,16 @@ namespace dy
 {
 
 ///
-/// @class FDyWidgetScriptState
-/// @brief Status binding type for widget script easing calling functions.
+/// @class FDyActorScriptState
+/// @brief Status binding type for actor script easing calling functions.
 ///
-class FDyWidgetScriptState final
+class FDyActorScriptState final
 {
 public:
-  FDyWidgetScriptState(_MIN_ FDyUiWidget& widgetReference, _MIN_ const PDyScriptInstanceMetaInfo& descriptor); 
+  FDyActorScriptState(_MIN_ FDyActor& iRefActor, _MIN_ const PDyScriptInstanceMetaInfo& descriptor); 
 
-  /// @brief Call widget script function properly.
-  void CallScriptFunction(_MIN_ float dt) noexcept;
+  /// @brief Call actor script function properly.
+  void CallScriptFunction(_MIN_ TF32 dt) noexcept;
 
   /// @brief Call destroy function.
   void MDY_PRIVATE_SPECIFIER(CallDestroyFunctionAnyway)() noexcept;
@@ -56,12 +56,12 @@ public:
   MDY_NODISCARD EDyScriptState GetScriptStatus() const noexcept;
 
   /// @brief Get internal widget script instance (level 2)
-  MDY_NODISCARD CDyWidgetScriptBase* MDY_PRIVATE_SPECIFIER(GetPtrInternalWidgetScript)() const noexcept;
+  MDY_NODISCARD CDyActorScriptBase* MDY_PRIVATE_SPECIFIER(GetPtrInternalActorScript)() const noexcept;
 
 private:
   /// @brief Widget script pointer instance.
-  std::unique_ptr<CDyWidgetScriptBase> mScriptInstance = MDY_INITIALIZE_NULL;
-  /// @brief Status of this widget script.
+  std::unique_ptr<CDyActorScriptBase> mScriptInstance = MDY_INITIALIZE_NULL;
+  /// @brief Status of this actor script.
   EDyScriptState mStatus  = EDyScriptState::NoneError;
   /// @brief Internal script type of this status instance.
   EDyScriptType  mType    = EDyScriptType::NoneError;
@@ -69,4 +69,4 @@ private:
 
 } /// ::dy namespace
 
-#endif /// GAURD_DY_COMPONENT_INTERNAL_SCRIPT_FDYWIDGETSCRIPTSTATUS_H
+#endif /// GAURD_DY_COMPONENT_INTERNAL_SCRIPT_FDYACTORSCRIPTSTATUS_H

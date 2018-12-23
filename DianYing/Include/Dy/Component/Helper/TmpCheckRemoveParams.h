@@ -13,9 +13,8 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Component/CDyScript.h>
 #include <Dy/Component/CDyTransform.h>
-
+#include <Dy/Component/Actor/CDyActorScript.h>
 #include <Dy/Helper/Internal/TmpCheckTypeParams.h>
 
 namespace dy
@@ -34,7 +33,7 @@ constexpr void DyCheckComponentRemoveFunctionParams() noexcept
   static_assert(std::is_base_of_v<ADyBaseComponent, TComponentType>,
                 "Failed compile test. TComponentType is not derived type of ADyBaseTransform.");
 
-  if constexpr (std::is_same_v<CDyScript, TComponentType>)
+  if constexpr (std::is_same_v<CDyActorScript, TComponentType>)
   {
     static_assert(MetaTest<const std::string&>::TypeMatched<TArgs...>::template Result<>::value,
                   "Failed compile test. Could not remove CDyScript instance.");

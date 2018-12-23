@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Core/Thread/IO/DDyIOReferenceInstance.h>
 #include <Dy/Helper/System/Idioms.h>
+#include <Dy/Core/Resource/Type/FDyBinderBase.h>
 
 namespace dy
 {
@@ -22,6 +23,7 @@ namespace dy
 void DDyIOReferenceInstance::AttachBinder(_MIN_ const __FDyBinderBase* iPtrBase) noexcept
 {
   this->mPtrBoundBinderList.emplace_back(iPtrBase);
+
   this->mReferenceCount.fetch_add(1);
 }
 
@@ -35,7 +37,10 @@ void DDyIOReferenceInstance::DetachBinder(const __FDyBinderBase* iPtrBase) noexc
   DyFastErase(this->mPtrBoundBinderList, std::distance(this->mPtrBoundBinderList.begin(), itPtr));
   this->mReferenceCount.fetch_sub(1);
 
-  MDY_NOT_IMPLEMENTED_ASSERT();
+  if (this->mScope == EDyScope::Temporal && this->mReferenceCount.load() == 0)
+  {
+    MDY_NOT_IMPLEMENTED_ASSERT();
+  }
 }
 
 } /// ::dy namespace

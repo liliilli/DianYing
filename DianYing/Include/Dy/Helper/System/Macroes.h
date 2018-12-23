@@ -217,7 +217,7 @@
 #define MDY_SLEEP_FOR_ATOMIC_TIME() \
 { \
   using namespace std::chrono_literals; \
-  std::this_thread::sleep_for(1ms); \
+  std::this_thread::sleep_for(0ms); \
 }
 
 ///
@@ -561,8 +561,8 @@ private:                                                  \
 /// @brief Register cpp script source as builtin script resource.
 /// @param __MAType__ Type for being enabled.
 ///
-#define MDY_REGISTER_RESOURCE_SCRIPT(__MAType__) \
-  MDY_REGISTER_RESOURCE(__MAType__); \
+#define MDY_REGISTER_RESOURCE_SCRIPT(__MAType__, __MASpecifier__) \
+  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(__MAType__, __MASpecifier__); \
 private: \
   std::any GetMetaInfo() override final { return 0; }; \
 public: \
@@ -585,7 +585,7 @@ public: \
             { metaInfo.mScriptMode = EDyScriptMode::Widget; } \
       else  { metaInfo.mScriptMode = EDyScriptMode::Actor; } \
       \
-      metaInfo.mSpecifierName = #__MAType__; \
+      metaInfo.mSpecifierName = __MASpecifier__; \
       metaInfo.mBtInstantiationFunction = function; \
       return metaInfo; \
     } \

@@ -13,21 +13,6 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Component/Interface/IDyInitializeHelper.h>
-
-//!
-//! Forward declaration
-//!
-
-namespace dy
-{
-class CDyScript;
-} /// ::dy namespace
-
-//!
-//! Implementation
-//!
-
 namespace dy
 {
 
@@ -41,41 +26,6 @@ enum class EDyScriptState
   CalledNothing,
   CalledInitiate,
   CalledUpdate,
-};
-
-///
-/// @class PDyScriptStateDescriptor
-/// @brief
-///
-struct PDyScriptStateDescriptor final
-{
-  /// Valid script instance pointer to bind.
-  CDyScript* mScriptPtr = MDY_INITIALIZE_NULL;
-};
-
-///
-/// @class FDyScriptState
-/// @brief
-///
-class FDyScriptState final : public IDyInitializeHelper<PDyScriptStateDescriptor>
-{
-public:
-  ///
-  EDySuccess Initialize(_MIN_ const PDyScriptStateDescriptor& descriptor) override;
-
-  ///
-  void Release() override;
-
-  ///
-  /// @brief
-  ///
-  void CallScriptFunction(_MIN_ const float dt) noexcept;
-
-private:
-  ///
-  CDyScript* mScriptPtr = MDY_INITIALIZE_NULL;
-  ///
-  EDyScriptState mState = EDyScriptState::NoneError;
 };
 
 } /// ::dy namespace

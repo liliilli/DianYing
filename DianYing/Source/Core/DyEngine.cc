@@ -44,19 +44,10 @@ DyEngine* gEngine = nullptr;
 
 EDySuccess DyEngine::pfInitialize()
 {
-  /// @brief Forward runtime arguments to setting manager.
-  static auto InsertExecuteRuntimeArguments = []()
-  {
-    auto& settingManager = MDySetting::GetInstance();
-    settingManager.pSetupExecutableArgumentSettings();
-  };
-
-  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  //! FUNCTIONBODY ∨
-  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
   gEngine = this;
-  InsertExecuteRuntimeArguments();
+  auto& settingManager = MDySetting::GetInstance();
+  settingManager.pSetupExecutableArgumentSettings();
+
   this->pfInitializeIndependentManager();
   this->mSynchronization  = &MDySynchronization::GetInstance();
   return DY_SUCCESS;
@@ -75,82 +66,129 @@ void DyEngine::operator()()
   static auto& window         = MDyWindow::GetInstance();
   static auto& timeManager    = MDyTime::GetInstance();
   static auto& soundManager   = MDySound::GetInstance();
+  //soundManager.Update(MDY_INITIALIZE_DEFINT);
 
   while (window.IsWindowShouldClose() == false)
   {
+    // Try game status transition and pre-housesholds.
+    this->TryUpdateStatus();
+    if (this->mIsStatusTransitionDone == false)
+    {
+      this->MDY_PRIVATE_SPECIFIER(ReflectGameStatusTransition)();
+      this->mIsStatusTransitionDone = true;
+    }
+
+    // Real-time update sequence.
     timeManager.pUpdate();
-    soundManager.Update(MDY_INITIALIZE_DEFINT);
-
     if (timeManager.IsGameFrameTicked() == DY_FAILURE) { continue; }
-
-    const auto engineStatus = this->mSynchronization->GetGlobalGameStatus();
-    switch (engineStatus)
+    switch (this->GetGlobalGameStatus())
     {
     case EDyGlobalGameStatus::Booted: 
     { 
-      static bool mIsInitialized = false;
-      if (mIsInitialized == false)
-      {
-        MDyMetaInfo::GetInstance().MDY_PRIVATE_SPECIFIER(PopulateBootResourceSpecifierList)();
-        mIsInitialized = true;
-      }
       this->mSynchronization->TrySynchronization(); 
     } break;
     case EDyGlobalGameStatus::FirstLoading: 
-    {
-      static bool mIsInitialized = false;
-      if (mIsInitialized == false)
-      { // First time.
-        gEngine->pfInitializeDependentManager();
-        MDY_CALL_ASSERT_SUCCESS   (MDyWorld::GetInstance().TryCreateDebugUi());
-        MDY_CALL_BUT_NOUSE_RESULT (MDyWorld::GetInstance().TryCreateLoadingUi());
-#ifdef false
-        auto& refSettingManager = MDySetting::GetInstance();
-        if (refSettingManager.IsDebugUiVisible() == true)
-        { // If debug ui need to be visible, create debug ui.
-          MDY_CALL_ASSERT_SUCCESS(MDyWorld::GetInstance().TryCreateDebugUi());
-        }
-#endif
-        MDyMetaInfo::GetInstance().MDY_PRIVATE_SPECIFIER(PopulateGlobalResourceSpecifierList)();
-        mIsInitialized = true;
-      }
-      this->mSynchronization->TrySynchronization();
-      this->MDY_PRIVATE_SPECIFIER(Update)(engineStatus, timeManager.GetGameScaledTickedDeltaTimeValue());
-      this->MDY_PRIVATE_SPECIFIER(Render)(engineStatus);
-    } break;
     case EDyGlobalGameStatus::Loading: 
-    { 
-      static bool mIsInitialized = false;
-      if (mIsInitialized == false)
-      {
-        static auto& settingManager = MDySetting::GetInstance();
-        static auto& sceneManager   = MDyWorld::GetInstance();
-        sceneManager.OpenLevel(settingManager.GetInitialSceneInformationName());
-        sceneManager.Update(-1);
-        mIsInitialized = true;
-      }
-      this->mSynchronization->TrySynchronization(); 
-      this->MDY_PRIVATE_SPECIFIER(Update)(engineStatus, timeManager.GetGameScaledTickedDeltaTimeValue());
-      this->MDY_PRIVATE_SPECIFIER(Render)(engineStatus);
-    } break;
     case EDyGlobalGameStatus::GameRuntime: 
-    { // Do process
-      static bool mIsInitialized = false;
-      if (mIsInitialized == false) 
-      { // If not fucking.... fuckfuck
-
-        mIsInitialized = true;
-      }
+    {
       this->mSynchronization->TrySynchronization();
-      this->MDY_PRIVATE_SPECIFIER(Update)(engineStatus, timeManager.GetGameScaledTickedDeltaTimeValue());
-      this->MDY_PRIVATE_SPECIFIER(Render)(engineStatus);
+      this->MDY_PRIVATE_SPECIFIER(Update)(this->mStatus, timeManager.GetGameScaledTickedDeltaTimeValue());
+      this->MDY_PRIVATE_SPECIFIER(Render)(this->mStatus);
     } break;
     case EDyGlobalGameStatus::Shutdown: break;
     case EDyGlobalGameStatus::Ended: break;
     default: MDY_UNEXPECTED_BRANCH(); break;
     }
-
   };
+}
+
+void DyEngine::MDY_PRIVATE_SPECIFIER(ReflectGameStatusTransition)()
+{
+  switch (this->mPrevStatus)
+  {
+  case EDyGlobalGameStatus::None: 
+  {
+    switch (this->mStatus)
+    {
+    case EDyGlobalGameStatus::Booted: // None => Booted.
+      MDyMetaInfo::GetInstance().MDY_PRIVATE_SPECIFIER(PopulateBootResourceSpecifierList)();
+      break;
+    default: MDY_UNEXPECTED_BRANCH();
+    } 
+  } break;
+  case EDyGlobalGameStatus::Booted: 
+  { 
+    switch (this->mStatus)
+    {
+    case EDyGlobalGameStatus::FirstLoading: 
+    { // Booted => FirstLoading.
+      gEngine->pfInitializeDependentManager();
+      MDY_CALL_ASSERT_SUCCESS   (MDyWorld::GetInstance().TryCreateDebugUi());
+      MDY_CALL_BUT_NOUSE_RESULT (MDyWorld::GetInstance().TryCreateLoadingUi());
+#ifdef false
+      auto& refSettingManager = MDySetting::GetInstance();
+      if (refSettingManager.IsDebugUiVisible() == true)
+      { // If debug ui need to be visible, create debug ui.
+        MDY_CALL_ASSERT_SUCCESS(MDyWorld::GetInstance().TryCreateDebugUi());
+      }
+#endif
+      MDyMetaInfo::GetInstance().MDY_PRIVATE_SPECIFIER(PopulateGlobalResourceSpecifierList)();
+    } break;
+    default: MDY_UNEXPECTED_BRANCH();
+    }
+  } break;
+  case EDyGlobalGameStatus::FirstLoading: 
+  { 
+    switch (this->mStatus)
+    {
+    case EDyGlobalGameStatus::Loading: 
+    { // FirstLoading => Loading.
+      MDY_CALL_ASSERT_SUCCESS(MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(OpenFirstLevel)());
+    } break;
+    default: MDY_UNEXPECTED_BRANCH();
+    }
+  } break;
+  case EDyGlobalGameStatus::Loading: 
+  {
+    switch (this->mStatus)
+    {
+    case EDyGlobalGameStatus::GameRuntime: 
+    { // Loading => GameRuntime.
+      MDY_CALL_BUT_NOUSE_RESULT(MDyWorld::GetInstance().TryRemoveLoadingUi());
+      auto& scriptManager = MDyScript::GetInstance(); 
+      if (scriptManager.IsGcedWidgetScriptExist() == true)
+      {
+        scriptManager.CallDestroyGcWidgetScriptAndClear();
+        scriptManager.GcWidgetScriptList();
+      }
+    } break;
+    default: MDY_UNEXPECTED_BRANCH();
+    }
+  } break;
+  case EDyGlobalGameStatus::GameRuntime: 
+  {
+    switch (this->mStatus)
+    {
+    case EDyGlobalGameStatus::Loading: 
+    { MDY_NOT_IMPLEMENTED_ASSERT();
+      { // If level change from one to another, do that.
+        MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(RemoveLevel)();
+        MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(PopulateNextLevelResources)();
+        MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(BuildNextLevel)();
+        MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(TransitionToNextLevel)();
+        //MDyWorld::GetInstance().OpenLevel(MDySetting::GetInstance().GetInitialSceneInformationName());
+      }
+    } break;
+    case EDyGlobalGameStatus::Shutdown: 
+    { MDY_NOT_IMPLEMENTED_ASSERT();
+    } break;
+    default: MDY_UNEXPECTED_BRANCH();
+    }
+  } break;
+  case EDyGlobalGameStatus::Shutdown: break;
+  case EDyGlobalGameStatus::Ended: break;
+  default: ;
+  }
 }
 
 void DyEngine::MDY_PRIVATE_SPECIFIER(Update)(_MIN_ EDyGlobalGameStatus iEngineStatus, _MIN_ TF32 dt)
@@ -165,12 +203,12 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(Update)(_MIN_ EDyGlobalGameStatus iEngineSt
   case EDyGlobalGameStatus::Loading: 
   {
     MDyScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
-    MDyScript::GetInstance().UpdateWidget(dt);
+    MDyScript::GetInstance().UpdateWidgetScript(dt);
   } break;
   case EDyGlobalGameStatus::GameRuntime: 
   {
     MDyScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
-    MDyScript::GetInstance().UpdateWidget(dt);
+    MDyScript::GetInstance().UpdateWidgetScript(dt);
 
     MDyPhysics::GetInstance().Update(dt);
     MDyInput::GetInstance().pfUpdate(dt);
@@ -246,7 +284,7 @@ void DyEngine::pfReleaseDependentManager()
   MDY_CALL_ASSERT_SUCCESS(dy::MDySynchronization::Release());
 }
 
-  void DyEngine::pfReleaseIndependentManager()
+void DyEngine::pfReleaseIndependentManager()
 {
   MDY_CALL_ASSERT_SUCCESS(dy::MDyWindow::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Release());
@@ -268,5 +306,25 @@ NotNull<TDyIO*> DyEngine::pfGetIOThread()
 
 MDyTime& DyEngine::GetTimeManager()     { return MDyTime::GetInstance(); }
 MDyWindow& DyEngine::GetWindowManager() { return MDyWindow::GetInstance(); }
+
+EDyGlobalGameStatus DyEngine::GetGlobalGameStatus() const noexcept
+{
+  return this->mStatus;
+}
+
+void DyEngine::SetNextGameStatus(_MIN_ EDyGlobalGameStatus iNextStatus) noexcept
+{
+  this->mNextStatus = iNextStatus;
+}
+
+void DyEngine::TryUpdateStatus()
+{
+  if (this->mNextStatus != this->mStatus)
+  {
+    this->mPrevStatus = this->mStatus;
+    this->mStatus = this->mNextStatus;
+    this->mIsStatusTransitionDone = false;
+  }
+}
 
 } /// ::dy namespace

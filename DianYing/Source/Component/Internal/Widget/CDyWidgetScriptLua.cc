@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Component/UI/CDyWidgetScriptLua.h>
+#include <Dy/Component/Internal/Widget/CDyWidgetScriptLua.h>
 
 #include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Management/ScriptManager.h>
@@ -77,11 +77,6 @@ EDySuccess CDyWidgetScriptLua::Initialize(const PDyScriptComponentMetaInfo& meta
 #endif
 
   return DY_SUCCESS;
-}
-
-void CDyWidgetScriptLua::Release()
-{
-  MDY_NOT_IMPLEMENTED_ASSERT();
 }
 
 void CDyWidgetScriptLua::Initiate()

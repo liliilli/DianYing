@@ -14,7 +14,7 @@
 
 /// Header file
 #include <Dy/Component/Abstract/ADyWidgetCppScript.h>
-#include <Dy/Component/UI/CDyWidgetScriptCpp.h>
+#include <Dy/Component/Internal/Widget/CDyWidgetScriptCpp.h>
 
 namespace dy
 {

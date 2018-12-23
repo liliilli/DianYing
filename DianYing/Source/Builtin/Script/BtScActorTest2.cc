@@ -13,16 +13,4 @@
 ///
 
 /// Header file
-#include <Dy/Component/Abstract/ADyActorCppScript.h>
-#include <Dy/Component/Internal/Actor/CDyActorScriptCpp.h>
-
-namespace dy
-{
-
-FDyActor& ADyActorCppScript::GetActorReference()
-{
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mOutside), "Unexpected error occurred.");
-  return this->mOutside->GetActorReference();
-}
-
-} /// ::dy namespace
+#include <Dy/Builtin/Script/BtScActorTest2.h>

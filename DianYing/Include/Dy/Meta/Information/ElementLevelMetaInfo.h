@@ -15,10 +15,12 @@
 
 #include <any>
 #include <vector>
+#include <unordered_set>
 #include <nlohmann/json_fwd.hpp>
 
 #include <Dy/Helper/Type/ColorRGBA.h>
 #include <Dy/Helper/Type/ColorRGB24.h>
+#include <Dy/Meta/Type/DDyResourceName.h>
 #include <Dy/Meta/Information/ElementObjectMetaInfo.h>
 
 //!
@@ -53,6 +55,10 @@ struct PDyLevelConstructMetaInfo final
   DMeta               mMetaCategory             = {};
   /// Object meta information
   TObjectMetaInfoList mLevelObjectMetaInfoList  = {};
+
+  /// @brief Get level resource set.
+  /// Duplicated resource speicifer on this level is shrinked into one.
+  TDDyResourceNameSet GetLevelResourceSet() const noexcept;
 };
 
 void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const PDyLevelConstructMetaInfo& p);

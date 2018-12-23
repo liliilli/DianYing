@@ -17,7 +17,7 @@
 
 #define SOL_CHECK_ARGUMENT 1
 #include <sol2/sol.hpp>
-#include <Dy/Component/UI/CDyWidgetScriptCpp.h>
+#include <Dy/Component/Internal/Actor/FDyActorScriptStatus.h>
 #include <Dy/Component/Internal/Script/FDyWidgetScriptStatus.h>
 
 //!
@@ -58,11 +58,37 @@ public:
   MDY_NODISCARD FDyWidgetScriptState* 
   CreateWidgetScript(_MIN_ const std::string& iScriptSpecifier, _MIN_ FDyUiWidget& iRefWidget, _MIN_ bool iIsAwakened);
 
-  /// @brief
-  void TryMoveInsertWidgetScriptToMainContainer();
+  /// @brief Try remove widget script from dy system.
+  /// But, removed widget script does not actually removed instantly, \n
+  /// moved gc list and removed actually on next frame prior to update.
+  EDySuccess TryRemoveWidgetScript(_MIN_ const FDyWidgetScriptState* iPtrWidgetScriptState);
 
   /// @brief
-  void UpdateWidget(_MIN_ TF32 dt);
+  void TryMoveInsertWidgetScriptToMainContainer();
+  
+  /// @brief Create widget script. \n
+  /// @TODO IMPLEMENT LUA VERSION. 
+  /// @param iScriptSpecifier
+  /// @param iRefActor
+  /// @param iIsAwakened
+  MDY_NODISCARD FDyActorScriptState* 
+  CreateActorScript(_MIN_ const std::string& iScriptSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ bool iIsAwakened);
+
+  /// @brief Update widget script.
+  void UpdateWidgetScript(_MIN_ TF32 dt);
+  /// @brief Update widget script if only script present type is type.
+  void UpdateWidgetScript(_MIN_ TF32 dt, _MIN_ EDyScriptState type);
+  /// @brief 
+  MDY_NODISCARD bool IsGcedWidgetScriptExist() const noexcept;
+  /// @brief Call widget script and clear list.
+  void CallDestroyGcWidgetScriptAndClear();
+  /// @brief remove emptied script list.
+  void GcWidgetScriptList();
+
+  /// @brief Update actor script.
+  void UpdateActorScript(_MIN_ TF32 dt);
+  /// @brief Update actor script if only script present type is type.
+  void UpdateActorScript(_MIN_ TF32 dt, _MIN_ EDyScriptState type);
 
 private:
   sol::state mLua;
@@ -71,6 +97,13 @@ private:
   TDyWidgetScriptList mInsertWidgetScriptList = {};
   TDyWidgetScriptList mWidgetScriptList       = {};
   TDyWidgetScriptList mGCedWidgetScriptList   = {};
+
+  /// Activated CDyScript component list.
+  /// this list must not be invalidated when iterating list, but except for unenrolling.
+  using TDyActorScriptList = std::vector<std::unique_ptr<FDyActorScriptState>>;
+  TDyActorScriptList  mInsertActorScriptList  = {};
+  TDyActorScriptList  mActorScriptList        = {};
+  TDyActorScriptList  mGCedActorScriptList    = {};
 };
 
 } /// ::dy namespace

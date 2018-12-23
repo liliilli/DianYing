@@ -13,32 +13,31 @@
 ///
 
 /// Header file
-#include <Dy/Component/UI/CDyWidgetScript.h>
-#include <Dy/Component/Internal/Widget/CDyWidgetScriptCpp.h>
+#include <Dy/Component/Actor/CDyActorScript.h>
 #include <Dy/Management/ScriptManager.h>
 #include <Dy/Management/InputManager.h>
+#include <Dy/Component/Internal/Actor/CDyActorScriptCpp.h>
 
 namespace dy
 {
 
-CDyWidgetScript::CDyWidgetScript(_MIN_ const std::string& iScriptSpecifier, _MINOUT_ FDyUiWidget& iWidget) :
-  mPtrWidget{&iWidget},
-  mPtrWidgetStatus{ MDyScript::GetInstance().CreateWidgetScript(iScriptSpecifier, *mPtrWidget, true) }
+CDyActorScript::CDyActorScript(_MIN_ FDyActor& iActor, _MIN_ const std::string& iScriptSpecifier) :
+  ADyBaseComponent{ iActor },
+  mPtrScriptStatus{ MDyScript::GetInstance().CreateActorScript(iScriptSpecifier, *ADyBaseComponent::GetBindedActor(), true) }
 { }
 
-CDyWidgetScript::~CDyWidgetScript()
+CDyActorScript::~CDyActorScript()
 {
-  switch (mPtrWidgetStatus->GetScriptType())
+  switch (mPtrScriptStatus->GetScriptType())
   {
   case EDyScriptType::Cpp: 
   { // If Widget type is `Cpp`, do the thing.
     auto& i = MDyInput::GetInstance();
 
     // intentional.
-    auto& ref = static_cast<CDyWidgetScriptCpp&>(*mPtrWidgetStatus->MDY_PRIVATE_SPECIFIER(GetPtrInternalWidgetScript)());
-    MDY_NOTUSED const auto _ = i.MDY_PRIVATE_SPECIFIER(TryDetachContollerUi(*ref.MDY_PRIVATE_SPECIFIER(GetScriptInstance())));
-    MDyScript::GetInstance().TryRemoveWidgetScript(mPtrWidgetStatus);
-  } break;
+    auto& ref = static_cast<CDyActorScriptCpp&>(*mPtrScriptStatus->MDY_PRIVATE_SPECIFIER(GetPtrInternalActorScript)());
+    MDY_NOTUSED const auto _ = i.MDY_PRIVATE_SPECIFIER(TryDetachContollerActor)(*ref.MDY_PRIVATE_SPECIFIER(GetScriptInstance()));
+  }
   case EDyScriptType::Lua: 
   { // If Widget type is `Lua`, do the thing. but not supported yet.
     MDY_NOT_IMPLEMENTED_ASSERT();

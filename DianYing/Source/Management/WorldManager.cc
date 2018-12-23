@@ -16,6 +16,11 @@
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
+#include <Dy/Management/SettingManager.h>
+#include <Dy/Core/Thread/SDyIOConnectionHelper.h>
+#include <Dy/Core/Resource/Type/EDyScope.h>
+#include "Dy/Core/DyEngine.h"
+#include "Dy/Management/ScriptManager.h"
 
 namespace dy
 {
@@ -42,34 +47,12 @@ EDySuccess MDyWorld::pfRelease()
 void MDyWorld::Update(_MIN_ float dt)
 {
   // Garbage collect needless "FDyActor"s
-  if (this->mActorGc.empty() == false)
-  {
-    this->mActorGc.clear();
-  }
+  if (this->mActorGc.empty() == false) { this->mActorGc.clear(); }
 
   // GC components.
   this->pGcAcitvatedComponents();
 
-  // Travel next level
-  if (this->mNextLevelName.empty() == false)
-  {
-    if (this->mLevel)
-    { // Let present level do release sequence
-      this->mLevel->Release();
-    }
-
-    auto& instance            = MDyMetaInfo::GetInstance();
-    const auto* levelMetaInfo = instance.GetLevelMetaInformation(this->mNextLevelName);
-
-    this->mLevel = std::make_unique<FDyLevel>();
-    this->mLevel->Initialize(*levelMetaInfo);
-
-    this->mPreviousLevelName  = this->mPresentLevelName;
-    this->mPresentLevelName   = this->mNextLevelName;
-    this->mNextLevelName      = MDY_INITIALIZE_EMPTYSTR;
-  }
-
-  // Scene update routine
+  // Level update routine
   if (this->mLevel)
   {
     this->mLevel->Update(dt);
@@ -84,7 +67,8 @@ void MDyWorld::pGcAcitvatedComponents()
     std::sort(MDY_BIND_BEGIN_END(this->mErasionScriptCandidateList), std::greater<TI32>());
     for (const auto& index : this->mErasionScriptCandidateList)
     { // Remove!
-      this->mActivatedScripts.erase(this->mActivatedScripts.begin() + index);
+      // @TODO CALL SCRIPT MANAGE TO GC.
+      //this->mActivatedScripts.erase(this->mActivatedScripts.begin() + index);
     }
     // Clear!
     this->mErasionScriptCandidateList.clear();
@@ -118,12 +102,15 @@ void MDyWorld::pGcAcitvatedComponents()
 void MDyWorld::UpdateObjects(_MIN_ float dt)
 {
   if (this->mLevel)
-  { // Update(Start, Update, etc...) script carefully.
+  { 
+#ifdef false
+    // Update(Start, Update, etc...) script carefully.
     for (auto& script : this->mActivatedScripts)
     {
       if (MDY_CHECK_ISNULL(script)) { continue; }
       script->CallScriptFunction(dt);
     }
+#endif
 
     // CDyModelRenderer update
     for (auto& modelRenderer : this->mActivatedModelRenderers)
@@ -175,7 +162,88 @@ EDySuccess MDyWorld::OpenLevel(_MIN_ const std::string& levelName)
     return DY_FAILURE;
   }
 
-  this->mNextLevelName = levelName;
+  this->SetLevelTransition(levelName);
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(OpenFirstLevel)()
+{
+  this->SetLevelTransition(MDySetting::GetInstance().GetInitialSceneInformationName());
+
+  // Let present level do release sequence
+  // Game Status Sequence 12-13.
+  this->MDY_PRIVATE_SPECIFIER(RemoveLevel)();
+  this->MDY_PRIVATE_SPECIFIER(PopulateNextLevelResources)();
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(RemoveLevel)()
+{
+  // Let present level do release sequence
+  if (MDY_CHECK_ISEMPTY(this->mLevel)) { return DY_FAILURE; }
+
+  this->mLevel->Release(); 
+  this->mLevel = nullptr;
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(PopulateNextLevelResources)()
+{
+  if (this->mNextLevelName.empty() == true) { return DY_FAILURE; }
+  if (MDyMetaInfo::GetInstance().IsLevelMetaInformation(this->mNextLevelName) == false) { return DY_FAILURE; }
+
+  // Get level meta information, and construct resource list.
+  const auto& levMetaInfo = *MDyMetaInfo::GetInstance().GetLevelMetaInformation(this->mNextLevelName);
+  const TDDyResourceNameSet levelResourceSet = levMetaInfo.GetLevelResourceSet();
+
+  // Populate resource and wait until resource populating is done.
+  // If done, call `build next level` in outside (MDySync). (GSS 12-13)
+  SDyIOConnectionHelper::PopulateResourceList(
+      levelResourceSet, 
+      EDyScope::Level,
+      []() 
+  { 
+    auto& mWorld = MDyWorld::GetInstance();
+    mWorld.MDY_PRIVATE_SPECIFIER(BuildNextLevel)(); 
+    mWorld.MDY_PRIVATE_SPECIFIER(TransitionToNextLevel)();
+    DyEngine::GetInstance().SetNextGameStatus(EDyGlobalGameStatus::GameRuntime);
+  });
+  return DY_SUCCESS;
+}
+
+void MDyWorld::MDY_PRIVATE_SPECIFIER(BuildNextLevel)()
+{
+  // GSS 14
+  MDY_LOG_DEBUG_D("Building Next Level : {}", this->mNextLevelName);
+  this->mLevel = std::make_unique<FDyLevel>();
+  const auto* levelMetaInfo = MDyMetaInfo::GetInstance().GetLevelMetaInformation(this->mNextLevelName);
+  this->mLevel->Initialize(*levelMetaInfo);
+
+  MDY_LOG_DEBUG_D("Dependent manager resetting...");
+
+  // Must reset depedent manager on this.
+
+  MDY_LOG_DEBUG_D("Dependent manager resetting done.");
+}
+
+EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(TransitionToNextLevel)()
+{
+  // GSS 15
+  this->mPreviousLevelName  = this->mPresentLevelName;
+  this->mPresentLevelName   = this->mNextLevelName;
+  this->mNextLevelName      = MDY_INITIALIZE_EMPTYSTR;
+  this->mIsNeedTransitNextLevel = false;
+  MDY_LOG_DEBUG_D("Present  Level Name : {}", this->mPresentLevelName);
+  MDY_LOG_DEBUG_D("Previous Level Name : {}", this->mPreviousLevelName);
+
+  // Need to call initiate funciton maually.
+  MDY_LOG_DEBUG_D("Initiate Actor script : {}", this->mPresentLevelName);
+  MDyScript::GetInstance().UpdateActorScript(0.0f, EDyScriptState::CalledNothing);
+
+  // Need to realign position following actor tree.
+  MDY_LOG_DEBUG_D("Align Position of Actors on level : {}", this->mPresentLevelName);
+  this->mLevel->MDY_PRIVATE_SPECIFIER(AlignActorsPosition)();
+
   return DY_SUCCESS;
 }
 
@@ -230,6 +298,18 @@ void MDyWorld::MDY_PRIVATE_SPECIFIER(TryRenderLoadingUi)()
   this->mUiInstanceContainer.TryRenderLoadingUi();
 }
 
+void MDyWorld::SetLevelTransition(_MIN_ const std::string& iSpecifier)
+{
+  if (MDyMetaInfo::GetInstance().IsLevelMetaInformation(iSpecifier) == false)
+  {
+    MDY_LOG_ERROR("Failed to transit next level, `{0}`. `{0}` level is not exist.", iSpecifier);
+    return;
+  }
+
+  this->mNextLevelName          = iSpecifier;
+  this->mIsNeedTransitNextLevel = true;
+}
+
 void MDyWorld::pfBindFocusCamera(_MIN_ CDyLegacyCamera& validCameraPtr) noexcept
 {
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(&validCameraPtr), "validCameraPtr must be valid, not nullptr.");
@@ -254,14 +334,6 @@ void MDyWorld::pfMoveActorToGc(_MIN_ NotNull<FDyActor*> actorRawPtr) noexcept
   this->mActorGc.emplace_back(std::unique_ptr<FDyActor>(actorRawPtr));
 }
 
-void MDyWorld::pfUnenrollActiveScript(_MIN_ TI32 index) noexcept
-{
-  MDY_ASSERT(index < this->mActivatedScripts.size(), "index must be smaller than this->mActivatedScripts.size().");
-
-  this->mActivatedScripts[index] = MDY_INITIALIZE_NULL;
-  this->mErasionScriptCandidateList.emplace_back(index);
-}
-
 void MDyWorld::pfUnenrollActiveModelRenderer(_MIN_ TI32 index) noexcept
 {
   MDY_ASSERT(index < this->mActivatedModelRenderers.size(), "index must be smaller than this->mActivatedModelRenderers.size().");
@@ -280,11 +352,21 @@ void MDyWorld::pfUnenrollActiveCamera(_MIO_ TI32& index) noexcept
   index = MDY_INITIALIZE_DEFINT;
 }
 
+#ifdef false
+void MDyWorld::pfUnenrollActiveScript(_MIN_ TI32 index) noexcept
+{
+  MDY_ASSERT(index < this->mActivatedScripts.size(), "index must be smaller than this->mActivatedScripts.size().");
+
+  this->mActivatedScripts[index] = MDY_INITIALIZE_NULL;
+  this->mErasionScriptCandidateList.emplace_back(index);
+}
+
 TI32 MDyWorld::pfEnrollActiveScript(_MIN_ const NotNull<CDyScript*>& pawnRawPtr) noexcept
 {
   this->mActivatedScripts.emplace_back(pawnRawPtr);
   return static_cast<TI32>(this->mActivatedScripts.size()) - 1;
 }
+#endif
 
 TI32 MDyWorld::pfEnrollActiveModelRenderer(_MIN_ CDyModelRenderer& validComponent) noexcept
 {

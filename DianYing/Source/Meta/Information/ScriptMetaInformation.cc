@@ -85,13 +85,15 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyScriptInstanceMetaInfo& 
       {MSVSTR(sHeader_Specifier),   p.mSpecifierName},
       {MSVSTR(sHeader_Type),        p.mScriptType},
       {MSVSTR(sHeader_Path),        p.mFilePath},
-      {MSVSTR(sHeader_IsCompressed),p.mIsCompressed},
+      {"Mode", p.mScriptMode},
+      {MSVSTR(sHeader_IsCompressed),p.mIsCompressed}
   };
 }
 
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ PDyScriptInstanceMetaInfo& p)
 {
   p.mSpecifierName  = DyJsonGetValueFrom<std::string>   (j, sHeader_Specifier);
+  p.mScriptMode     = DyJsonGetValueFrom<EDyScriptMode> (j, "Mode");
   p.mScriptType     = DyJsonGetValueFrom<EDyScriptType> (j, sHeader_Type);
   p.mFilePath       = DyJsonGetValueFrom<std::string>   (j, sHeader_Path);
   p.mIsCompressed   = DyJsonGetValueFrom<bool>          (j, sHeader_IsCompressed);

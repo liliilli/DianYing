@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_BUILTINSCRIPT_DEBUGUISCRIPTCPP_H
-#define GUARD_DY_BUILTINSCRIPT_DEBUGUISCRIPTCPP_H
+#ifndef GUARD_DY_BUILTINSCRIPT_TESTACTORCPPSCRIPT2_H
+#define GUARD_DY_BUILTINSCRIPT_TESTACTORCPPSCRIPT2_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,6 +13,7 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Component/Abstract/ADyActorCppScript.h>
 #include <Dy/Component/Abstract/ADyWidgetCppScript.h>
 #include <Dy/Builtin/Abstract/ADyScriptResource.h>
 #include <Dy/Meta/Information/ScriptMetaInformation.h>
@@ -20,28 +21,18 @@
 
 namespace dy
 {
-class MDyTime;
-class MDyProfiling;
 
-class FDyBuiltinDebugUiScript final : public ADyScriptResource, public ADyWidgetCppScript
+class BtScActorTest2 final : public ADyScriptResource, public ADyActorCppScript
 {
-  MDY_REGISTER_RESOURCE_SCRIPT(FDyBuiltinDebugUiScript, "FDyBuiltinDebugUiScript");
+  MDY_REGISTER_RESOURCE_SCRIPT(BtScActorTest2, "TestScript2");
 public:
-  void Initiate() override final;
+  void Initiate() override final {};
 
-  void Start() override final;
+  void Start() override final {};
 
-  void Update(_MIN_ TF32 dt) override final;
-
-  void Bar_MoveLeft(_MIN_ TF32 iXAxis) noexcept;
-  void Bar_MoveUp(_MIN_ TF32 iYAxis) noexcept;
-  void EndApplication() noexcept;
-
-private:
-  MDyTime*      mTimeManager      = nullptr;
-  MDyProfiling* mProfilingManger  = nullptr;
+  void Update(_MIN_ TF32 dt) override final {};
 };
 
 } /// ::dy namespace
 
-#endif /// GUARD_DY_BUILTINSCRIPT_DEBUGUISCRIPTCPP_H
+#endif /// GUARD_DY_BUILTINSCRIPT_TESTACTORCPPSCRIPT2_H

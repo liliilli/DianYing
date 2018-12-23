@@ -12,31 +12,31 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Component/Internal/CDyActorScriptCpp.h>
+#include <Dy/Component/Internal/Actor/CDyActorScriptCpp.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
-#include "Dy/Helper/Pointer.h"
 
 namespace dy
 {
 
-EDySuccess CDyActorScriptCpp::Initialize(const PDyScriptComponentMetaInfo& descriptor)
+CDyActorScriptCpp::CDyActorScriptCpp(_MIN_ FDyActor& iRefActor, _MIN_ const PDyScriptInstanceMetaInfo& iDesc) :
+    CDyActorScriptBase{iRefActor}
 {
-  const auto& metaInfo = MDyMetaInfo::GetInstance().GetScriptMetaInformation(descriptor.mDetails.mSpecifierName);
-  MDY_ASSERT(metaInfo.mScriptType == EDyScriptType::Cpp,    "Script type is not matched to CDyScriptCpp.");
-  MDY_ASSERT(metaInfo.mScriptMode == EDyScriptMode::Actor,  "Given script must be actor script.");
+  MDY_ASSERT(iDesc.mScriptType == EDyScriptType::Cpp,   "Script type is not matched to CDyActorScriptCpp.");
+  MDY_ASSERT(iDesc.mScriptMode == EDyScriptMode::Actor, "Given script must be actor type.");
 
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(metaInfo.mBtInstantiationFunction), "Cpp script instantiation function must be not null.");
-  this->mScriptInstance = DyConvertUniquePtrTo<ADyActorCppScript>(metaInfo.mBtInstantiationFunction());
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mScriptInstance), "Script instance could not bound to system.");
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(iDesc.mBtInstantiationFunction), "Cpp script instantiation function must be not null.");
+  this->mScriptInstance = DyConvertUniquePtrTo<ADyActorCppScript>(iDesc.mBtInstantiationFunction());
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mScriptInstance),    "Script instance could not bound to system.");
 
+  this->mScriptName = iDesc.mSpecifierName;
   this->mScriptInstance->pfSetOutsideReference(*this);
-
-  return DY_SUCCESS;
+  this->mIsScriptInstanceBinded = true;
 }
 
-void CDyActorScriptCpp::Release()
+ADyActorCppScript* CDyActorScriptCpp::MDY_PRIVATE_SPECIFIER(GetScriptInstance)() const noexcept
 {
-  this->mScriptInstance = nullptr;
+  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance), "Script instance must be valid, not empty.");
+  return this->mScriptInstance.get();
 }
 
 void CDyActorScriptCpp::Initiate()

@@ -62,26 +62,6 @@ public:
   ///
   void pPropagateParentActorActivation(const DDy3StateBool& actorBool) noexcept override final;
 
-  //! Script calling sequence.
-  //! 1) WHEN SCRIPT IS DEACTIVATED (any way) => Do nothing!
-  //!
-  //! 2) WHEN SCRIPT IS ACTIVATED (any way)
-  //!
-  //! ~ Time sequence ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  //! Immediately       Update                                    After Update
-  //! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  //!
-  //!       CollisionCallback() >--.   .------<<<------.
-  //!                              |   |               |
-  //! Initiate() --+--> Start() >--+---+--> Update() --'--.--+--> Destroy()
-  //!              |                                      |  |
-  //!              ^                Wait.                 |  ^
-  //!              |                 ||                   |  |
-  //!              '-- OnEnabled() <-++-- OnDisabled() <--'  ^
-  //!                                ||                      |
-  //!                                '+------->>>------------'
-  //!
-
   ///
   /// @brief Call script function following status of CDyScript::mScriptState
   ///

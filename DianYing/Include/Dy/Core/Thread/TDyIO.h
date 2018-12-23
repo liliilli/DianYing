@@ -79,6 +79,15 @@ public:
   /// @brief Entry point of Thread IO.
   void operator()();
 
+  /// @brief Bind sleep callback function.
+  /// This function can be called if only TDyIO Thread is slept. \n
+  /// And callback is called, bound function will be disappeared.
+  void BindSleepCallbackFunction(_MIN_ std::function<void(void)> iCbFunc);
+
+  /// @brief Try call callback function when if only Thread I/O is slept.
+  /// If not slept or exist callback function, just return DY_FAILURE.
+  EDySuccess outTryCallSleptCallbackFunction();
+
 private:
   /// @struct FTaskQueueCmpFunctor
   /// @brief  IO Task queue comparsion function type.
@@ -172,6 +181,13 @@ private:
   ///
   MDY_NODISCARD EDySuccess TryBindBinderToInformationRI
   (_MIN_ const std::string & iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase * iPtrBinder);
+
+  ///
+  /// @brief Try detach binder instance from Resource Reference Instance.
+  /// If nnot found RI< just return DY_FAILURE.
+  ///
+  MDY_NODISCARD EDySuccess TryDetachBinderFromResourceRI
+  (_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder);
 
   ///
   /// @brief Try update scope of given style's specifier RI of resource type. \n
@@ -273,6 +289,8 @@ private:
   TMainTaskList             mIOProcessMainTaskList = {};
 
   bool                      mIsThreadStopped    = false;
+  std::function<void(void)> mCbSleepFunction    = nullptr;
+
   MDyMetaInfo*              mMetaInfoManager    = nullptr;
   MDyIOData*                mIODataManager      = nullptr;
   MDyIOResource*            mIOResourceManager  = nullptr;

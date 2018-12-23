@@ -45,7 +45,7 @@ class MDyWorld final : public IDySingleton<MDyWorld>, public IDyUpdatable
 public:
   ///
   /// @brief Update scene structures prior to dive in scene objects tree hierarchy.
-  /// Scene transition will be executed maybe.
+  /// Level transition will be executed maybe.
   /// @param dt
   ///
   void Update(_MIN_ float dt) override final;
@@ -98,7 +98,23 @@ public:
   /// @brief  Ask it for opening level with levelName next frame.
   /// @param  levelName valid level meta information name
   /// @return If level is created successfully, return true or false.
-  EDySuccess OpenLevel(const std::string& levelName);
+  MDY_NODISCARD EDySuccess OpenLevel(const std::string& levelName);
+
+  /// @brief Open first level. This function must be called in first-loading level.
+  EDySuccess MDY_PRIVATE_SPECIFIER(OpenFirstLevel)();
+
+  /// @brief Try Remove level. If level is not exist, just return DY_FAILURE.
+  EDySuccess MDY_PRIVATE_SPECIFIER(RemoveLevel)();
+
+  /// @brief Populate next level resource. If next level specifier is not exist,
+  /// Do nothing and return DY_FAILURE.
+  EDySuccess MDY_PRIVATE_SPECIFIER(PopulateNextLevelResources)();
+
+  /// @brief 
+  void MDY_PRIVATE_SPECIFIER(BuildNextLevel)();
+
+  /// @brief
+  EDySuccess MDY_PRIVATE_SPECIFIER(TransitionToNextLevel)();
 
   /// @brief  Check scene is initialized and valid.
   /// @return
@@ -172,10 +188,12 @@ public:
 #endif
 
 private:
-  ///
+  /// @brief Set level transition. Flag will be set and all dependent processing will be halted.
+  /// Until level is translated.
+  void SetLevelTransition(_MIN_ const std::string& iSpecifier);
+
   /// @brief This function must be called in MDyWorld::Update() function.
   /// Wipe out deactivated components from activated component lists.
-  ///
   void pGcAcitvatedComponents();
 
   /// Bind valid camera to main camera and let object have focused.
@@ -217,27 +235,16 @@ private:
   ///
   void pfUnenrollActiveCamera(_MIO_ TI32& index) noexcept;
 
-  ///
-  /// @brief  Enroll activated FDyPawn raw pointer instance to list to update.
-  /// @param  pawnRawPtr FDyPawn instance to insert into activated list.
-  /// @return index of pawn raw ptr. Always success.
-  ///
-  MDY_NODISCARD TI32 pfEnrollActiveScript(_MIN_ const NotNull<CDyScript*>& pawnRawPtr) noexcept;
-
-  ///
   /// @brief
   /// @param  validComponent
   /// @return
   /// @TODO SCRIPT THIS!
-  ///
   MDY_NODISCARD TI32 pfEnrollActiveModelRenderer(_MIN_ CDyModelRenderer& validComponent) noexcept;
 
-  ///
   /// @brief
   /// @param  validComponent
   /// @return
   /// @TODO SCRIPT THIS!
-  ///
   MDY_NODISCARD TI32 pfEnrollActiveCamera(_MIN_ CDyCamera& validComponent) noexcept;
 
   /// Main Camera Ptr of present scene.
@@ -251,9 +258,6 @@ private:
   /// Present valid level instance.
   std::unique_ptr<FDyLevel> mLevel              = nullptr;
 
-  /// Activated CDyScript component list.
-  /// this list must not be invalidated when iterating list, but except for unenrolling.
-  std::vector<CDyScript*>   mActivatedScripts           = {};
   /// Erasion (activated) script candidate list. this list must be sorted descendently not to invalidate order.
   std::vector<TI32>         mErasionScriptCandidateList = {};
 
@@ -274,6 +278,8 @@ private:
 
   /// @brief UI Instance container.
   FDyWorldUIContainer mUiInstanceContainer;
+
+  bool mIsNeedTransitNextLevel = false;
 
   friend class CDyLegacyCamera;
   friend class FDyLevel;

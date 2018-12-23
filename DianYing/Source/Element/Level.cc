@@ -44,18 +44,13 @@ void FDyLevel::Initialize(_MIN_ const PDyLevelConstructMetaInfo& desc)
     auto instancePtr = std::make_unique<FDyActor>();
     MDY_CALL_ASSERT_SUCCESS(instancePtr->Initialize(objectInformation));
 
-    // Update transform to reflect transform information.
-    MDY_NOTUSED const auto& _ = instancePtr->GetTransform()->GetTransform();
-
     // Check activation flags and execute sub-routines of each components.
     instancePtr->pUpdateActivateFlagFromParent();
     if (objectInformation.mProperties.mInitialActivated == true) { instancePtr->Activate(); }
     return instancePtr;
   };
 
-
   // FunctionBody ∨
-
 
   this->mLevelName            = desc.mMetaCategory.mLevelName;
   this->mLevelHashIdentifier  = hash::DyToCrc32Hash(this->mLevelName.c_str());
@@ -64,18 +59,17 @@ void FDyLevel::Initialize(_MIN_ const PDyLevelConstructMetaInfo& desc)
   // Create object, FDyActor
   for (const auto& objectInformation : desc.mLevelObjectMetaInfoList)
   {
-    const auto type = objectInformation->mObjectType;
-    switch (type)
+    switch (objectInformation->mObjectType)
     {
-    default: MDY_UNEXPECTED_BRANCH(); break;
     case EDyMetaObjectType::Actor:
     {
-      auto instancePtr = pCreateActorInstance(*objectInformation);
+      auto instancePtr  = pCreateActorInstance(*objectInformation);
       auto [it, result] = this->mActorMap.try_emplace(instancePtr->GetActorName(), std::move(instancePtr));
       MDY_ASSERT(result == true, "Unexpected error occured in inserting FDyActor to object map.");
     } break;
     case EDyMetaObjectType::SceneScriptor:  MDY_NOT_IMPLEMENTED_ASSERT(); break;
     case EDyMetaObjectType::Object:         MDY_NOT_IMPLEMENTED_ASSERT(); break;
+    default: MDY_UNEXPECTED_BRANCH(); break;
     }
   }
 
@@ -107,6 +101,16 @@ void FDyLevel::Release()
 void FDyLevel::Update(float dt)
 {
   if (this->mInitialized == false) { return; }
+}
+
+void FDyLevel::MDY_PRIVATE_SPECIFIER(AlignActorsPosition)() noexcept
+{
+  // Update transform to reflect transform information.
+  for (auto& [specifier, ptrsmtActor] : this->mActorMap)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtActor)) { continue; }
+    MDY_NOTUSED const auto& _ = ptrsmtActor->GetTransform()->GetTransform();
+  }
 }
 
 std::string FDyLevel::ToString()

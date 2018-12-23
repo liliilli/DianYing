@@ -17,7 +17,7 @@
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Element/Actor.h>
 #include <Dy/Management/Helper/LuaBindingEntry.h>
-#include <Dy/Component/UI/CDyWidgetScriptCpp.h>
+#include <Dy/Component/Internal/Widget/CDyWidgetScriptCpp.h>
 
 //!
 //! Local function & forward declaration
@@ -171,11 +171,33 @@ FDyWidgetScriptState* MDyScript::CreateWidgetScript(
   MDY_ASSERT(iIsAwakened == true, "Unexpected error occurred.");
 
   auto component = std::make_unique<FDyWidgetScriptState>(iRefWidget, instanceInfo);
-  // CALL `Initiate()`
-  component->CallScriptFunction(0.0f);
-
   this->mInsertWidgetScriptList.emplace_back(std::move(component));
   return this->mInsertWidgetScriptList.back().get();
+}
+
+EDySuccess MDyScript::TryRemoveWidgetScript(const FDyWidgetScriptState* iPtrWidgetScriptState)
+{
+  for (auto& ptrsmtScript : this->mInsertWidgetScriptList)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
+    if (ptrsmtScript.get() == iPtrWidgetScriptState) 
+    { // If exist, move script to gc list.
+      this->mGCedWidgetScriptList.emplace_back(std::move(ptrsmtScript)); 
+      return DY_SUCCESS;
+    }
+  }
+
+  for (auto& ptrsmtScript : this->mWidgetScriptList)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
+    if (ptrsmtScript.get() == iPtrWidgetScriptState) 
+    { // If exist, move script to gc list.
+      this->mGCedWidgetScriptList.emplace_back(std::move(ptrsmtScript)); 
+      return DY_SUCCESS;
+    }
+  }
+
+  return DY_FAILURE;
 }
 
 void MDyScript::TryMoveInsertWidgetScriptToMainContainer()
@@ -189,12 +211,86 @@ void MDyScript::TryMoveInsertWidgetScriptToMainContainer()
   this->mInsertWidgetScriptList.clear();
 }
 
-void MDyScript::UpdateWidget(TF32 dt)
+FDyActorScriptState* MDyScript::CreateActorScript(
+    _MIN_ const std::string& iScriptSpecifier, 
+    _MIN_ FDyActor& iRefActor, 
+    _MIN_ bool iIsAwakened)
+{
+  const auto& instanceInfo = MDyMetaInfo::GetInstance().GetScriptMetaInformation(iScriptSpecifier);
+  MDY_ASSERT(instanceInfo.mScriptType != EDyScriptType::NoneError, "");
+  MDY_ASSERT(iIsAwakened == true, "Unexpected error occurred.");
+
+  auto component = std::make_unique<FDyActorScriptState>(iRefActor, instanceInfo);
+  this->mInsertActorScriptList.emplace_back(std::move(component));
+  return this->mInsertActorScriptList.back().get();
+}
+
+void MDyScript::UpdateWidgetScript(_MIN_ TF32 dt)
 {
   for (auto& ptrsmtScript : this->mWidgetScriptList)
   {
     if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
     ptrsmtScript->CallScriptFunction(dt);
+  }
+}
+
+void MDyScript::UpdateWidgetScript(_MIN_ TF32 dt, _MIN_ EDyScriptState type)
+{
+  for (auto& ptrsmtScript : this->mInsertWidgetScriptList)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
+    if (ptrsmtScript->GetScriptStatus() == type) { ptrsmtScript->CallScriptFunction(dt); }
+  }
+
+  for (auto& ptrsmtScript : this->mWidgetScriptList)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
+    if (ptrsmtScript->GetScriptStatus() == type) { ptrsmtScript->CallScriptFunction(dt); }
+  }
+}
+
+bool MDyScript::IsGcedWidgetScriptExist() const noexcept
+{
+  return this->mGCedWidgetScriptList.empty() == false;
+}
+
+void MDyScript::CallDestroyGcWidgetScriptAndClear()
+{
+  for (auto& ptrsmtScript : this->mGCedWidgetScriptList)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
+    ptrsmtScript->MDY_PRIVATE_SPECIFIER(CallDestroyFunctionAnyway)();
+  }
+  this->mGCedWidgetScriptList.clear();
+}
+
+void MDyScript::GcWidgetScriptList()
+{
+  this->mInsertWidgetScriptList.erase(std::remove(MDY_BIND_BEGIN_END(this->mInsertWidgetScriptList), nullptr), this->mInsertWidgetScriptList.end());
+  this->mWidgetScriptList.erase(std::remove(MDY_BIND_BEGIN_END(this->mWidgetScriptList), nullptr), this->mWidgetScriptList.end());
+}
+
+void MDyScript::UpdateActorScript(TF32 dt)
+{
+  for (auto& ptrsmtScript : this->mActorScriptList)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
+    ptrsmtScript->CallScriptFunction(dt);
+  }
+}
+
+void MDyScript::UpdateActorScript(TF32 dt, EDyScriptState type)
+{
+  for (auto& ptrsmtScript : this->mInsertActorScriptList)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
+    if (ptrsmtScript->GetScriptStatus() == type) { ptrsmtScript->CallScriptFunction(dt); }
+  }
+
+  for (auto& ptrsmtScript : this->mActorScriptList)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
+    if (ptrsmtScript->GetScriptStatus() == type) { ptrsmtScript->CallScriptFunction(dt); }
   }
 }
 

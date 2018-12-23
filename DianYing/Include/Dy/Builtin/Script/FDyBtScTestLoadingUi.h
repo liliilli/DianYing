@@ -23,7 +23,7 @@ namespace dy::builtin
 
 class FDyBtScTestLoadingUi final : public ADyScriptResource, public ADyWidgetCppScript
 {
-  MDY_REGISTER_RESOURCE_SCRIPT(FDyBtScTestLoadingUi);
+  MDY_REGISTER_RESOURCE_SCRIPT(FDyBtScTestLoadingUi, "FDyBtScTestLoadingUi");
 public:
   void Initiate() override final;
 
