@@ -211,6 +211,17 @@ void MDyScript::TryMoveInsertWidgetScriptToMainContainer()
   this->mInsertWidgetScriptList.clear();
 }
 
+void MDyScript::TryMoveInsertActorScriptToMainContainer()
+{
+  if (this->mInsertActorScriptList.empty() == true) { return; }
+
+  for (auto& actorScript : this->mInsertActorScriptList)
+  { // `actorScript` is always not empty.
+    this->mActorScriptList.emplace_back(std::move(actorScript));
+  }
+  this->mInsertActorScriptList.clear();
+}
+
 FDyActorScriptState* MDyScript::CreateActorScript(
     _MIN_ const std::string& iScriptSpecifier, 
     _MIN_ FDyActor& iRefActor, 

@@ -63,8 +63,10 @@ public:
   /// moved gc list and removed actually on next frame prior to update.
   EDySuccess TryRemoveWidgetScript(_MIN_ const FDyWidgetScriptState* iPtrWidgetScriptState);
 
-  /// @brief
+  /// @brief Try move inserted widget script to main container.
   void TryMoveInsertWidgetScriptToMainContainer();
+  /// @brief Try move inserted actor script to main container.
+  void TryMoveInsertActorScriptToMainContainer();
   
   /// @brief Create widget script. \n
   /// @TODO IMPLEMENT LUA VERSION. 

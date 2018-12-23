@@ -30,7 +30,7 @@ public:
 
   void Start() override final {};
 
-  void Update(_MIN_ TF32 dt) override final {};
+  void Update(_MIN_ TF32 dt) override final;
 };
 
 } /// ::dy namespace

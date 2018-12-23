@@ -154,6 +154,7 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(ReflectGameStatusTransition)()
     {
     case EDyGlobalGameStatus::GameRuntime: 
     { // Loading => GameRuntime.
+      // Remove Loading UI, and detach resource with RAII & Script.
       MDY_CALL_BUT_NOUSE_RESULT(MDyWorld::GetInstance().TryRemoveLoadingUi());
       auto& scriptManager = MDyScript::GetInstance(); 
       if (scriptManager.IsGcedWidgetScriptExist() == true)
@@ -208,7 +209,9 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(Update)(_MIN_ EDyGlobalGameStatus iEngineSt
   case EDyGlobalGameStatus::GameRuntime: 
   {
     MDyScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
+    MDyScript::GetInstance().TryMoveInsertActorScriptToMainContainer();
     MDyScript::GetInstance().UpdateWidgetScript(dt);
+    MDyScript::GetInstance().UpdateActorScript(dt);
 
     MDyPhysics::GetInstance().Update(dt);
     MDyInput::GetInstance().pfUpdate(dt);

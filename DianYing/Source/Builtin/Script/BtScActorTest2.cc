@@ -14,3 +14,15 @@
 
 /// Header file
 #include <Dy/Builtin/Script/BtScActorTest2.h>
+#include "Dy/Element/Actor.h"
+
+void dy::BtScActorTest2::Update(TF32 dt)
+{
+  static TF32 f = 0.0f;
+
+  f += dt;
+
+  auto& refActor = this->GetActorReference();
+  const auto& p  = refActor.GetTransform()->GetLocalPosition();
+  refActor.GetTransform()->SetLocalPosition(DDyVector3{std::sin(f * 0.02f) * 10, p.Y, p.Z});
+}

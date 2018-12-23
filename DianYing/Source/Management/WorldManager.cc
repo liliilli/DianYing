@@ -239,6 +239,7 @@ EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(TransitionToNextLevel)()
   // Need to call initiate funciton maually.
   MDY_LOG_DEBUG_D("Initiate Actor script : {}", this->mPresentLevelName);
   MDyScript::GetInstance().UpdateActorScript(0.0f, EDyScriptState::CalledNothing);
+  MDyScript::GetInstance().TryMoveInsertActorScriptToMainContainer();
 
   // Need to realign position following actor tree.
   MDY_LOG_DEBUG_D("Align Position of Actors on level : {}", this->mPresentLevelName);
