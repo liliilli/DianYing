@@ -178,6 +178,8 @@
     <ClCompile Include="Source\Builtin\Mesh\FDyBtMsSphere.cc" />
     <ClCompile Include="Source\Builtin\Mesh\FDyBtMsUiFontQuad.cc" />
     <ClCompile Include="Source\Builtin\Model\UiFontQuad.cc" />
+    <ClCompile Include="Source\Builtin\Script\BtScActorTest1.cc" />
+    <ClCompile Include="Source\Builtin\Script\BtScActorTest2.cc" />
     <ClCompile Include="Source\Builtin\Script\DebugUiScriptCpp.cc" />
     <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingBootScriptCpp.cc" />
     <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingGlobalScriptCpp.cc" />
@@ -463,10 +465,12 @@
     <ClInclude Include="Include\Dy\Builtin\Model\Sphere.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\UIFontQuad.h" />
     <ClInclude Include="Include\Dy\Builtin\Object\Light\DirectionalLight.h" />
+    <ClInclude Include="Include\Dy\Builtin\Script\BtScActorTest2.h" />
     <ClInclude Include="Include\Dy\Builtin\Script\DebugUiScriptCpp.h" />
     <ClInclude Include="Include\Dy\Builtin\Script\Default\DefaultLoadingBootScriptCpp.h" />
     <ClInclude Include="Include\Dy\Builtin\Script\Default\DefaultLoadingGlobalScriptCpp.h" />
     <ClInclude Include="Include\Dy\Builtin\Script\FDyBtScTestLoadingUi.h" />
+    <ClInclude Include="Include\Dy\Builtin\Script\BtScActorTest1.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\PostEffect\RenderDefaultSSAOBlurring.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderBasicShadow.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderColorGeometry.h" />
@@ -807,6 +811,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
+    <None Include="Project\Meta\_Backup\ScriptMeta.dydatBack" />
     <None Include="TestResource\Lua\player_script.lua" />
     <None Include="TestResource\Lua\test_bindingscript.lua" />
     <None Include="TestResource\Lua\variables.lua">

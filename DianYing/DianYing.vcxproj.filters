@@ -238,6 +238,8 @@
     <ClCompile Include="Source\Component\Internal\Widget\CDyWidgetScriptCpp.cc" />
     <ClCompile Include="Source\Component\Internal\Widget\CDyWidgetScriptLua.cc" />
     <ClCompile Include="Source\Component\Actor\CDyActorScript.cc" />
+    <ClCompile Include="Source\Builtin\Script\BtScActorTest1.cc" />
+    <ClCompile Include="Source\Builtin\Script\BtScActorTest2.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -611,6 +613,8 @@
     <ClInclude Include="Include\Dy\Component\Internal\Widget\CDyWidgetScriptCpp.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Widget\CDyWidgetScriptLua.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Widget\CDyWidgetScriptBase.h" />
+    <ClInclude Include="Include\Dy\Builtin\Script\BtScActorTest1.h" />
+    <ClInclude Include="Include\Dy\Builtin\Script\BtScActorTest2.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />
@@ -622,5 +626,6 @@
     <None Include="TestResource\TestScript1.lua" />
     <None Include="TestResource\TestScript2.lua" />
     <None Include="cpp.hint" />
+    <None Include="Project\Meta\_Backup\ScriptMeta.dydatBack" />
   </ItemGroup>
 </Project>
