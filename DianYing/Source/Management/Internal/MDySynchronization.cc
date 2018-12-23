@@ -79,11 +79,9 @@ void MDySynchronization::pRunFrameBooted()
   if (SDyIOConnectionHelper::CheckIOResultInCondition() == true)
   {
     SDyIOConnectionHelper::ForceProcessIOInsertPhase();
-    if (SDyIOConnectionHelper::IsIOThreadSleep() == true)
-    {
-      gEngine->SetNextGameStatus(EDyGlobalGameStatus::FirstLoading);
-    }
   }
+
+  SDyIOConnectionHelper::TryCallSleptCallbackFunction();
 }
 
 void MDySynchronization::pRunFrameFirstLoading()
@@ -93,7 +91,7 @@ void MDySynchronization::pRunFrameFirstLoading()
   if (TSyncHelper::CheckIOResultInCondition() == true)  { TSyncHelper::ForceProcessIOInsertPhase(); }
 
   // Check whether IO thread working is done, if so change status to `Loading`. 
-  if (TSyncHelper::IsIOThreadSleep() == true) { gEngine->SetNextGameStatus(EDyGlobalGameStatus::Loading); }
+  SDyIOConnectionHelper::TryCallSleptCallbackFunction();
 }
 
 void MDySynchronization::pRunFrameLoading()

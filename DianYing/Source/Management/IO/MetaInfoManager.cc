@@ -34,6 +34,7 @@
 
 #include <Dy/Helper/HelperString.h>
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
+#include <Dy/Core/DyEngine.h>
 
 //!
 //! Local tranlation unit variables
@@ -320,7 +321,10 @@ void MDyMetaInfo::MDY_PRIVATE_SPECIFIER(PopulateBootResourceSpecifierList)() con
   static bool mIsCalled = false;
   MDY_ASSERT(mIsCalled == false, "This function must not be called twice.");
 
-  SDyIOConnectionHelper::PopulateResourceList(this->mBootResourceSpecifierList, true);
+  SDyIOConnectionHelper::PopulateResourceList(
+      this->mBootResourceSpecifierList, 
+      []() { DyEngine::GetInstance().SetNextGameStatus(EDyGlobalGameStatus::FirstLoading); }
+  );
   mIsCalled = true;
 }
 
@@ -329,10 +333,11 @@ void MDyMetaInfo::MDY_PRIVATE_SPECIFIER(PopulateGlobalResourceSpecifierList)() c
   static bool mIsCalled = false;
   MDY_ASSERT(mIsCalled == false, "This function must not be called twice.");
 
-  for (const auto& globalResourceSpecifier : this->mGlobalResourceSpecifierList)
-  { // Global resource list consists of many sub-global resource list from each global resource script.
-    SDyIOConnectionHelper::PopulateResourceList(globalResourceSpecifier, true);
-  }
+  // Global resource list consists of many sub-global resource list from each global resource script.
+  SDyIOConnectionHelper::PopulateResourceList(
+      mGlobalResourceSpecifierList, 
+      []() { DyEngine::GetInstance().SetNextGameStatus(EDyGlobalGameStatus::Loading); }
+  );
   mIsCalled = true;
 }
 

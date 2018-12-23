@@ -79,6 +79,15 @@ public:
   /// @brief Entry point of Thread IO.
   void operator()();
 
+  /// @brief Bind sleep callback function.
+  /// This function can be called if only TDyIO Thread is slept. \n
+  /// And callback is called, bound function will be disappeared.
+  void BindSleepCallbackFunction(_MIN_ std::function<void(void)> iCbFunc);
+
+  /// @brief Try call callback function when if only Thread I/O is slept.
+  /// If not slept or exist callback function, just return DY_FAILURE.
+  EDySuccess outTryCallSleptCallbackFunction();
+
 private:
   /// @struct FTaskQueueCmpFunctor
   /// @brief  IO Task queue comparsion function type.
@@ -273,6 +282,8 @@ private:
   TMainTaskList             mIOProcessMainTaskList = {};
 
   bool                      mIsThreadStopped    = false;
+  std::function<void(void)> mCbSleepFunction    = nullptr;
+
   MDyMetaInfo*              mMetaInfoManager    = nullptr;
   MDyIOData*                mIODataManager      = nullptr;
   MDyIOResource*            mIOResourceManager  = nullptr;
