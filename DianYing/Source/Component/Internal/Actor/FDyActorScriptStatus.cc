@@ -16,12 +16,31 @@
 #include <Dy/Component/Internal/Actor/FDyActorScriptStatus.h>
 #include <Dy/Component/Internal/Actor/CDyActorScriptBase.h>
 #include <Dy/Component/Internal/Actor/CDyActorScriptCpp.h>
+#include <Dy/Component/Internal/Actor/CDyActorScriptLua.h>
 #include <Dy/Meta/Information/ScriptMetaInformation.h>
 
 namespace dy
 {
 
-void FDyActorScriptState::CallScriptFunction(_MIN_ const float dt) noexcept
+FDyActorScriptState::FDyActorScriptState(_MIN_ FDyActor& iRefActor, _MIN_ const PDyScriptInstanceMetaInfo& descriptor) :
+    mStatus {EDyScriptState::CalledNothing},
+    mType   {descriptor.mScriptType}
+{
+  switch (this->mType)
+  {
+  case EDyScriptType::Cpp: 
+  { // Cpp
+    this->mScriptInstance = std::make_unique<CDyActorScriptCpp>(iRefActor, descriptor);
+  } break;
+  case EDyScriptType::Lua: 
+  { // Lua
+    this->mScriptInstance = std::make_unique<CDyActorScriptLua>(iRefActor, descriptor);
+  } break;
+  default: MDY_NOT_IMPLEMENTED_ASSERT();
+  }
+}
+
+void FDyActorScriptState::CallScriptFunction(_MIN_ TF32 dt) noexcept
 {
   MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance),"Script instace must be activated!");
   MDY_ASSERT(this->mStatus != EDyScriptState::NoneError, "FDyActorScriptState must be initialized!");
@@ -42,6 +61,18 @@ void FDyActorScriptState::CallScriptFunction(_MIN_ const float dt) noexcept
     break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
+}
+
+EDyScriptType FDyActorScriptState::GetScriptType() const noexcept
+{
+  MDY_ASSERT(this->mType != decltype(this->mType)::NoneError, "Script type must be specified properly.");
+  return this->mType;
+}
+
+CDyActorScriptBase* FDyActorScriptState::MDY_PRIVATE_SPECIFIER(GetPtrInternalActorScript)() const noexcept
+{
+  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance), "Internal script instance must be valid.");
+  return this->mScriptInstance.get();
 }
 
 } /// ::dy namespace

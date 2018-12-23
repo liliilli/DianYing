@@ -38,6 +38,7 @@ namespace dy
 ///
 class CDyActorScriptLua final : public CDyActorScriptBase
 {
+public:
   CDyActorScriptLua(_MIN_ FDyActor& actorReference, _MIN_ const PDyScriptInstanceMetaInfo& iDesc);
   virtual ~CDyActorScriptLua() = default;
 
