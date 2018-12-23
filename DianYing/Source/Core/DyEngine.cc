@@ -320,6 +320,23 @@ void DyEngine::SetNextGameStatus(_MIN_ EDyGlobalGameStatus iNextStatus) noexcept
   this->mNextStatus = iNextStatus;
 }
 
+EDySuccess DyEngine::TryEndGame() noexcept
+{
+  if (this->MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() == true) 
+  { 
+    MDY_LOG_CRITICAL("Quering game ending is already done.");
+    return DY_FAILURE; 
+  }
+
+  this->mIsGameEndCalled = true;
+  return DY_SUCCESS;
+}
+
+bool DyEngine::MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() const noexcept
+{
+  return this->mIsGameEndCalled;
+}
+
 void DyEngine::TryUpdateStatus()
 {
   if (this->mNextStatus != this->mStatus)
