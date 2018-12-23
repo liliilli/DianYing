@@ -17,6 +17,9 @@
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Management/SettingManager.h>
+#include <Dy/Core/Thread/SDyIOConnectionHelper.h>
+#include <Dy/Core/Resource/Type/EDyScope.h>
+#include "Dy/Core/DyEngine.h"
 
 namespace dy
 {
@@ -165,8 +168,8 @@ EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(OpenFirstLevel)()
   // Let present level do release sequence
   this->MDY_PRIVATE_SPECIFIER(RemoveLevel)();
   this->MDY_PRIVATE_SPECIFIER(PopulateNextLevelResources)();
-  this->MDY_PRIVATE_SPECIFIER(BuildNextLevel)();
-  this->MDY_PRIVATE_SPECIFIER(TransitionToNextLevel)();
+  //this->MDY_PRIVATE_SPECIFIER(BuildNextLevel)();
+  //this->MDY_PRIVATE_SPECIFIER(TransitionToNextLevel)();
 
   return DY_SUCCESS;
 }
@@ -186,14 +189,29 @@ EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(PopulateNextLevelResources)()
   if (this->mNextLevelName.empty() == true) { return DY_FAILURE; }
   if (MDyMetaInfo::GetInstance().IsLevelMetaInformation(this->mNextLevelName) == false) { return DY_FAILURE; }
 
+  // Get level meta information, and construct resource list.
+  const auto& levMetaInfo = *MDyMetaInfo::GetInstance().GetLevelMetaInformation(this->mNextLevelName);
+  const TDDyResourceNameSet levelResourceSet = levMetaInfo.GetLevelResourceSet();
+
+  // Populate resource and wait until resource populating is done.
+  // If done, call `build next level` in outside (MDySync).
+  SDyIOConnectionHelper::PopulateResourceList(
+      levelResourceSet, 
+      EDyScope::Scene,
+      []() 
+  { 
+    auto& mWorld = MDyWorld::GetInstance();
+    mWorld.MDY_PRIVATE_SPECIFIER(BuildNextLevel)(); 
+    mWorld.MDY_PRIVATE_SPECIFIER(TransitionToNextLevel)();
+    DyEngine::GetInstance().SetNextGameStatus(EDyGlobalGameStatus::GameRuntime);
+  });
   return DY_SUCCESS;
 }
 
 void MDyWorld::MDY_PRIVATE_SPECIFIER(BuildNextLevel)()
 {
-  this->mLevel = std::make_unique<FDyLevel>();
-  auto& instance            = MDyMetaInfo::GetInstance();
-  const auto* levelMetaInfo = instance.GetLevelMetaInformation(this->mNextLevelName);
+  this->mLevel    = std::make_unique<FDyLevel>();
+  const auto* levelMetaInfo = MDyMetaInfo::GetInstance().GetLevelMetaInformation(this->mNextLevelName);
   this->mLevel->Initialize(*levelMetaInfo);
 
   this->mPreviousLevelName  = this->mPresentLevelName;
@@ -204,7 +222,7 @@ void MDyWorld::MDY_PRIVATE_SPECIFIER(BuildNextLevel)()
 
 EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(TransitionToNextLevel)()
 {
-  return DY_FAILURE;
+  return DY_SUCCESS;
 }
 
 bool MDyWorld::IsLevelPresentValid() const noexcept

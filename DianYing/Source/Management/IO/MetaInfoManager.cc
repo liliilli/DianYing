@@ -323,6 +323,7 @@ void MDyMetaInfo::MDY_PRIVATE_SPECIFIER(PopulateBootResourceSpecifierList)() con
 
   SDyIOConnectionHelper::PopulateResourceList(
       this->mBootResourceSpecifierList, 
+      EDyScope::Global,
       []() { DyEngine::GetInstance().SetNextGameStatus(EDyGlobalGameStatus::FirstLoading); }
   );
   mIsCalled = true;
@@ -336,6 +337,7 @@ void MDyMetaInfo::MDY_PRIVATE_SPECIFIER(PopulateGlobalResourceSpecifierList)() c
   // Global resource list consists of many sub-global resource list from each global resource script.
   SDyIOConnectionHelper::PopulateResourceList(
       mGlobalResourceSpecifierList, 
+      EDyScope::Global,
       []() { DyEngine::GetInstance().SetNextGameStatus(EDyGlobalGameStatus::Loading); }
   );
   mIsCalled = true;

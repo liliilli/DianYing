@@ -44,11 +44,12 @@ void SDyIOConnectionHelper::TryStop()
 
 void SDyIOConnectionHelper::PopulateResourceList(
     _MIN_ const std::vector<DDyResourceName>& specifierList, 
+    _MIN_ const EDyScope iScope,
     _MIN_ std::function<void(void)> callback)
 {
   for (const auto& [type, specifier] : specifierList)
   {
-    PopulateResource(specifier, type, EDyResourceStyle::Resource, EDyScope::Global);
+    PopulateResource(specifier, type, EDyResourceStyle::Resource, iScope);
   }
 
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
@@ -58,19 +59,35 @@ void SDyIOConnectionHelper::PopulateResourceList(
 
 void SDyIOConnectionHelper::PopulateResourceList(
     _MIN_ const std::vector<std::vector<DDyResourceName>>& specifierList, 
+    _MIN_ const EDyScope iScope,
     _MIN_ std::function<void(void)> callback)
 {
   for (const auto& list : specifierList)
   {
     for (const auto& [type, specifier] : list)
     {
-      PopulateResource(specifier, type, EDyResourceStyle::Resource, EDyScope::Global);
+      PopulateResource(specifier, type, EDyResourceStyle::Resource, iScope);
     }
   }
 
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
   auto& ioThread = *gEngine->pfGetIOThread();
   ioThread.BindSleepCallbackFunction(callback);
+}
+
+void SDyIOConnectionHelper::PopulateResourceList(
+    _MIN_ const TDDyResourceNameSet& iSpecifierSet, 
+    _MIN_ const EDyScope iScope,
+    _MIN_ std::function<void()> iCallback)
+{
+  for (const auto& [type, specifier] : iSpecifierSet)
+  {
+    PopulateResource(specifier, type, EDyResourceStyle::Resource, iScope);
+  }
+
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
+  auto& ioThread = *gEngine->pfGetIOThread();
+  ioThread.BindSleepCallbackFunction(iCallback);
 }
 
 void SDyIOConnectionHelper::InsertResult(_MIN_ const DDyIOWorkerResult& result) noexcept

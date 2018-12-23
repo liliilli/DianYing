@@ -54,12 +54,20 @@ public:
   /// This function is list version of `PopulateResource` function above.
   static void PopulateResourceList(
       _MIN_ const std::vector<DDyResourceName>& specifierList, 
+      _MIN_ const EDyScope iScope,
       _MIN_ std::function<void(void)> callback);
 
   /// @brief Overload version of `PopulateResourceList` above.
   static void PopulateResourceList(
       _MIN_ const std::vector<std::vector<DDyResourceName>>& specifierList, 
+      _MIN_ const EDyScope iScope,
       _MIN_ std::function<void(void)> callback);
+  
+  /// @brief Overload version of `PopulateResourceList` above.
+  static void PopulateResourceList(
+      _MIN_ const TDDyResourceNameSet& iSpecifierSet, 
+      _MIN_ const EDyScope iScope,
+      _MIN_ std::function<void(void)> iCallback);
 
   /// @brief Try resource garbage collection manually. This function may causes time consuming, call this carefully.
   static void TryGC();

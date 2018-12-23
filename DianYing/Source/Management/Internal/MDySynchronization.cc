@@ -96,7 +96,12 @@ void MDySynchronization::pRunFrameFirstLoading()
 
 void MDySynchronization::pRunFrameLoading()
 {
-  gEngine->SetNextGameStatus(EDyGlobalGameStatus::GameRuntime);
+  using TSyncHelper = SDyIOConnectionHelper;
+  if (TSyncHelper::IsMainTaskListIsEmpty() == false)    { TSyncHelper::ForceProcessDeferredMainTaskList(); }
+  if (TSyncHelper::CheckIOResultInCondition() == true)  { TSyncHelper::ForceProcessIOInsertPhase(); }
+
+  // Check whether IO thread working is done, if so change status to `Loading`. 
+  SDyIOConnectionHelper::TryCallSleptCallbackFunction();
 }
 
 void MDySynchronization::pRunFrameGameRuntime()

@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Meta/Type/EDyResourceType.h>
+#include <unordered_set>
 
 namespace dy
 {
@@ -30,6 +31,29 @@ struct DDyResourceName final
   DDyResourceName(_MIN_ EDyResourceType type, _MIN_ const std::string_view& name)
       : mResourceType{type}, mName{MSVSTR(name)} {};
 };
+
+/// @brief operator== overloading for `unordered_set` container.
+inline bool operator==(_MIN_ const DDyResourceName& lhs, _MIN_ const DDyResourceName& rhs) noexcept 
+{
+    return lhs.mName == rhs.mName && lhs.mResourceType == rhs.mResourceType;
+}
+
+/// @struct Hash_DDyResourceName
+/// @brief Hash functor.
+struct Hash_DDyResourceName final
+{
+  std::size_t operator()(DDyResourceName const& s) const noexcept
+  {
+    return std::hash<std::string>{}(
+        fmt::format("{}{}", 
+            static_cast<std::underlying_type_t<decltype(s.mResourceType)>>(s.mResourceType), 
+            s.mName
+        )
+    );
+  }
+};
+
+using TDDyResourceNameSet = std::unordered_set<DDyResourceName, Hash_DDyResourceName>;
 
 } /// ::dy namespace
 
