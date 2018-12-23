@@ -58,6 +58,11 @@ public:
   MDY_NODISCARD FDyWidgetScriptState* 
   CreateWidgetScript(_MIN_ const std::string& iScriptSpecifier, _MIN_ FDyUiWidget& iRefWidget, _MIN_ bool iIsAwakened);
 
+  /// @brief Try remove widget script from dy system.
+  /// But, removed widget script does not actually removed instantly, \n
+  /// moved gc list and removed actually on next frame prior to update.
+  EDySuccess TryRemoveWidgetScript(_MIN_ const FDyWidgetScriptState* iPtrWidgetScriptState);
+
   /// @brief
   void TryMoveInsertWidgetScriptToMainContainer();
   
@@ -73,6 +78,12 @@ public:
   void UpdateWidgetScript(_MIN_ TF32 dt);
   /// @brief Update widget script if only script present type is type.
   void UpdateWidgetScript(_MIN_ TF32 dt, _MIN_ EDyScriptState type);
+  /// @brief 
+  MDY_NODISCARD bool IsGcedWidgetScriptExist() const noexcept;
+  /// @brief Call widget script and clear list.
+  void CallDestroyGcWidgetScriptAndClear();
+  /// @brief remove emptied script list.
+  void GcWidgetScriptList();
 
   /// @brief Update actor script.
   void UpdateActorScript(_MIN_ TF32 dt);

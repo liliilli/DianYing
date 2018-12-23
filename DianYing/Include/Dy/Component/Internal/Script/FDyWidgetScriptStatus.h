@@ -46,6 +46,9 @@ public:
   /// @brief Call widget script function properly.
   void CallScriptFunction(_MIN_ float dt) noexcept;
 
+  /// @brief Call destroy function.
+  void MDY_PRIVATE_SPECIFIER(CallDestroyFunctionAnyway)() noexcept;
+
   /// @brief Get script type (Cpp, Lua).
   MDY_NODISCARD EDyScriptType GetScriptType() const noexcept;
 

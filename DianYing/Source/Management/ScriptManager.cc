@@ -175,6 +175,31 @@ FDyWidgetScriptState* MDyScript::CreateWidgetScript(
   return this->mInsertWidgetScriptList.back().get();
 }
 
+EDySuccess MDyScript::TryRemoveWidgetScript(const FDyWidgetScriptState* iPtrWidgetScriptState)
+{
+  for (auto& ptrsmtScript : this->mInsertWidgetScriptList)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
+    if (ptrsmtScript.get() == iPtrWidgetScriptState) 
+    { // If exist, move script to gc list.
+      this->mGCedWidgetScriptList.emplace_back(std::move(ptrsmtScript)); 
+      return DY_SUCCESS;
+    }
+  }
+
+  for (auto& ptrsmtScript : this->mWidgetScriptList)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
+    if (ptrsmtScript.get() == iPtrWidgetScriptState) 
+    { // If exist, move script to gc list.
+      this->mGCedWidgetScriptList.emplace_back(std::move(ptrsmtScript)); 
+      return DY_SUCCESS;
+    }
+  }
+
+  return DY_FAILURE;
+}
+
 void MDyScript::TryMoveInsertWidgetScriptToMainContainer()
 {
   if (this->mInsertWidgetScriptList.empty() == true) { return; }
@@ -222,6 +247,27 @@ void MDyScript::UpdateWidgetScript(_MIN_ TF32 dt, _MIN_ EDyScriptState type)
     if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
     if (ptrsmtScript->GetScriptStatus() == type) { ptrsmtScript->CallScriptFunction(dt); }
   }
+}
+
+bool MDyScript::IsGcedWidgetScriptExist() const noexcept
+{
+  return this->mGCedWidgetScriptList.empty() == false;
+}
+
+void MDyScript::CallDestroyGcWidgetScriptAndClear()
+{
+  for (auto& ptrsmtScript : this->mGCedWidgetScriptList)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
+    ptrsmtScript->MDY_PRIVATE_SPECIFIER(CallDestroyFunctionAnyway)();
+  }
+  this->mGCedWidgetScriptList.clear();
+}
+
+void MDyScript::GcWidgetScriptList()
+{
+  this->mInsertWidgetScriptList.erase(std::remove(MDY_BIND_BEGIN_END(this->mInsertWidgetScriptList), nullptr), this->mInsertWidgetScriptList.end());
+  this->mWidgetScriptList.erase(std::remove(MDY_BIND_BEGIN_END(this->mWidgetScriptList), nullptr), this->mWidgetScriptList.end());
 }
 
 void MDyScript::UpdateActorScript(TF32 dt)

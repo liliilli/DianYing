@@ -183,6 +183,13 @@ private:
   (_MIN_ const std::string & iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase * iPtrBinder);
 
   ///
+  /// @brief Try detach binder instance from Resource Reference Instance.
+  /// If nnot found RI< just return DY_FAILURE.
+  ///
+  MDY_NODISCARD EDySuccess TryDetachBinderFromResourceRI
+  (_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder);
+
+  ///
   /// @brief Try update scope of given style's specifier RI of resource type. \n
   /// This function is not checking RI(Reference Instance) is exist or not, so when RI is not exist
   /// may will cause UB (Undefined Behaviour).

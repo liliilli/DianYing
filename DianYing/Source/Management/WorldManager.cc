@@ -197,7 +197,7 @@ EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(PopulateNextLevelResources)()
   const TDDyResourceNameSet levelResourceSet = levMetaInfo.GetLevelResourceSet();
 
   // Populate resource and wait until resource populating is done.
-  // If done, call `build next level` in outside (MDySync).
+  // If done, call `build next level` in outside (MDySync). (GSS 12-13)
   SDyIOConnectionHelper::PopulateResourceList(
       levelResourceSet, 
       EDyScope::Level,
@@ -213,21 +213,37 @@ EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(PopulateNextLevelResources)()
 
 void MDyWorld::MDY_PRIVATE_SPECIFIER(BuildNextLevel)()
 {
+  // GSS 14
+  MDY_LOG_DEBUG_D("Building Next Level : {}", this->mNextLevelName);
   this->mLevel = std::make_unique<FDyLevel>();
   const auto* levelMetaInfo = MDyMetaInfo::GetInstance().GetLevelMetaInformation(this->mNextLevelName);
   this->mLevel->Initialize(*levelMetaInfo);
 
-  // Game Status Sequence - 9, 10.
-  MDyScript::GetInstance().UpdateActorScript(0.0f, EDyScriptState::CalledNothing);
-  this->mLevel->MDY_PRIVATE_SPECIFIER(AlignActorsPosition)();
+  MDY_LOG_DEBUG_D("Dependent manager resetting...");
+
+  // Must reset depedent manager on this.
+
+  MDY_LOG_DEBUG_D("Dependent manager resetting done.");
 }
 
 EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(TransitionToNextLevel)()
 {
+  // GSS 15
   this->mPreviousLevelName  = this->mPresentLevelName;
   this->mPresentLevelName   = this->mNextLevelName;
   this->mNextLevelName      = MDY_INITIALIZE_EMPTYSTR;
   this->mIsNeedTransitNextLevel = false;
+  MDY_LOG_DEBUG_D("Present  Level Name : {}", this->mPresentLevelName);
+  MDY_LOG_DEBUG_D("Previous Level Name : {}", this->mPreviousLevelName);
+
+  // Need to call initiate funciton maually.
+  MDY_LOG_DEBUG_D("Initiate Actor script : {}", this->mPresentLevelName);
+  MDyScript::GetInstance().UpdateActorScript(0.0f, EDyScriptState::CalledNothing);
+
+  // Need to realign position following actor tree.
+  MDY_LOG_DEBUG_D("Align Position of Actors on level : {}", this->mPresentLevelName);
+  this->mLevel->MDY_PRIVATE_SPECIFIER(AlignActorsPosition)();
+
   return DY_SUCCESS;
 }
 

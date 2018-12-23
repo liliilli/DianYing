@@ -154,7 +154,13 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(ReflectGameStatusTransition)()
     {
     case EDyGlobalGameStatus::GameRuntime: 
     { // Loading => GameRuntime.
-      MDyWorld::GetInstance().Update(-1);
+      MDY_CALL_BUT_NOUSE_RESULT(MDyWorld::GetInstance().TryRemoveLoadingUi());
+      auto& scriptManager = MDyScript::GetInstance(); 
+      if (scriptManager.IsGcedWidgetScriptExist() == true)
+      {
+        scriptManager.CallDestroyGcWidgetScriptAndClear();
+        scriptManager.GcWidgetScriptList();
+      }
     } break;
     default: MDY_UNEXPECTED_BRANCH();
     }

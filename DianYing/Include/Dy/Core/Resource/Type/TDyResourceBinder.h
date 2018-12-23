@@ -75,9 +75,10 @@ protected:
   /// If detach is succeeded, return DY_SUCCESS. and `mPtrResource` will be nullptr agian.
   MDY_NODISCARD EDySuccess pTryDetachResource() noexcept
   {
-    if (MDY_CHECK_ISNULL(this->mPtrResource) == true) { return DY_FAILURE; }
+    if (MDY_CHECK_ISNULL(this->mPtrResource)) { return DY_FAILURE; }
 
-    MDY_NOT_IMPLEMENTED_ASSERT();
+    MDY_CALL_ASSERT_SUCCESS(SDyIOBindingHelper::TryDetachResource<TType>(this->mSpecifierName, this));
+    this->mPtrResource = nullptr;
     return DY_SUCCESS;
   }
 

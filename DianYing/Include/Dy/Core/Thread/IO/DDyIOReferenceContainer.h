@@ -63,7 +63,17 @@ public:
 
   /// @brief Try to bind binder instance to valid resource Reference Instance.
   /// If not exist, just do nothing and return DY_FAILURE.
-  MDY_NODISCARD EDySuccess TryBindBinderToResourceRI(_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder);
+  MDY_NODISCARD EDySuccess TryBindBinderToResourceRI(
+      _MIN_ const std::string& iSpecifier, 
+      _MIN_ EDyResourceType iType, 
+      _MIN_ const __FDyBinderBase* iPtrBinder);
+
+  /// @brief Try detach binder instance from valid resource Reference Instance.
+  /// If not exist, just do nothing and return DY_FAILURE.
+  MDY_NODISCARD EDySuccess TryDetachBinderFromResourceRI(
+      _MIN_ const std::string& iSpecifier, 
+      _MIN_ EDyResourceType iType, 
+      _MIN_ const __FDyBinderBase* iPtrBinder);
 
   ///
   /// @brief

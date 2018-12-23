@@ -64,6 +64,12 @@ void FDyWidgetScriptState::CallScriptFunction(_MIN_ float dt) noexcept
   }
 }
 
+void FDyWidgetScriptState::MDY_PRIVATE_SPECIFIER(CallDestroyFunctionAnyway)() noexcept
+{
+  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance),"Script instace must be activated!");
+  this->mScriptInstance->Destroy();
+}
+
 EDyScriptType FDyWidgetScriptState::GetScriptType() const noexcept
 {
   MDY_ASSERT(this->mType != decltype(this->mType)::NoneError, "Script type must be specified properly.");

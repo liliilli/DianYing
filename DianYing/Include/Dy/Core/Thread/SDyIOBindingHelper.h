@@ -84,6 +84,18 @@ private:
 
   /// @brief Use this require resource to another dimension.
   template <EDyResourceType TType>
+  static MDY_NODISCARD EDySuccess
+  TryDetachResource(_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder)
+  {
+    return MDY_PRIVATE_SPECIFIER(pTryDetachResource)(iSpecifier, TType, iPtrBinder);
+  }
+
+  static MDY_NODISCARD EDySuccess
+  MDY_PRIVATE_SPECIFIER(pTryDetachResource)
+  (_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder);
+
+  /// @brief Use this require resource to another dimension.
+  template <EDyResourceType TType>
   static MDY_NODISCARD std::optional<const __TDyRscInfo_T<TType>*>
   TryRequireInformation(_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder)
   {
