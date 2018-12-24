@@ -16,6 +16,7 @@
 #include <Dy/Builtin/Script/BtScActorTest2.h>
 #include <Dy/Element/Actor.h>
 #include <Dy/Management/InputManager.h>
+#include <Dy/Core/DyEngine.h>
 
 void dy::BtScActorTest2::Initiate()
 {
@@ -36,5 +37,6 @@ void dy::BtScActorTest2::Update(TF32 dt)
 
 void dy::BtScActorTest2::Test()
 {
-  MDY_LOG_CRITICAL("TestTest!");
+  MDY_LOG_CRITICAL("Game end Test!");
+  MDY_CALL_ASSERT_SUCCESS(gEngine->TryEndGame());
 }

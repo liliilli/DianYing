@@ -96,6 +96,10 @@ public:
   void UpdateActorScript(_MIN_ TF32 dt);
   /// @brief Update actor script if only script present type is type.
   void UpdateActorScript(_MIN_ TF32 dt, _MIN_ EDyScriptState type);
+  /// @brief Check there are gced -candidate actor script instances.
+  MDY_NODISCARD bool IsGcedActorScriptExist() const noexcept;
+  /// @brief Call actor script and clear list.
+  void CallDestroyGcActorScriptAndClear();
 
 private:
   sol::state mLua;

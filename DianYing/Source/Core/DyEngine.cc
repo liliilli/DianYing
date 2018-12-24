@@ -93,7 +93,14 @@ void DyEngine::operator()()
     {
       this->mSynchronization->TrySynchronization();
       this->MDY_PRIVATE_SPECIFIER(Update)(this->mStatus, timeManager.GetGameScaledTickedDeltaTimeValue());
-      this->MDY_PRIVATE_SPECIFIER(Render)(this->mStatus);
+      if (this->MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() == true) 
+      { // If game must be stopped, return but change status to Shutdown (GameRuntime => Shutdown);
+        this->SetNextGameStatus(EDyGlobalGameStatus::Shutdown);
+      }
+      else
+      {
+        this->MDY_PRIVATE_SPECIFIER(Render)(this->mStatus);
+      }
     } break;
     case EDyGlobalGameStatus::Shutdown: break;
     case EDyGlobalGameStatus::Ended: break;
@@ -181,7 +188,8 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(ReflectGameStatusTransition)()
       }
     } break;
     case EDyGlobalGameStatus::Shutdown: 
-    { MDY_NOT_IMPLEMENTED_ASSERT();
+    { 
+      MDY_NOT_IMPLEMENTED_ASSERT();
     } break;
     default: MDY_UNEXPECTED_BRANCH();
     }
@@ -208,13 +216,19 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(Update)(_MIN_ EDyGlobalGameStatus iEngineSt
   } break;
   case EDyGlobalGameStatus::GameRuntime: 
   {
-    MDyScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
     MDyScript::GetInstance().TryMoveInsertActorScriptToMainContainer();
-    MDyScript::GetInstance().UpdateWidgetScript(dt);
+    MDyScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
+
+    MDyInput::GetInstance().pfUpdate(dt);
+    if (this->MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() == true) { return; }
+
     MDyScript::GetInstance().UpdateActorScript(dt);
+    if (this->MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() == true) { return; }
+
+    MDyScript::GetInstance().UpdateWidgetScript(dt);
+    if (this->MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() == true) { return; }
 
     MDyPhysics::GetInstance().Update(dt);
-    MDyInput::GetInstance().pfUpdate(dt);
     MDyWorld::GetInstance().Update(dt);
     MDyWorld::GetInstance().UpdateObjects(dt);
     MDyWorld::GetInstance().RequestDrawCall(dt);
