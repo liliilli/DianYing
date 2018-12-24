@@ -113,32 +113,33 @@ EDySuccess DDyIOReferenceContainer::TryDetachBinderFromResourceRI(
 std::vector<DDyIOReferenceInstance> 
 DDyIOReferenceContainer::GetForwardCandidateRIAsList(_MIN_ EDyScope iScope)
 {
-  static auto ForwardCandidateRIFromList = [&](
-      _MINOUT_ TStringHashMap<DDyIOReferenceInstance>& iContainer, 
-      _MOUT_ std::vector<DDyIOReferenceInstance>& result)
-  {
-    for (auto it = iContainer.begin(); it != iContainer.end();)
-    {
-      auto& [specifier, instance] = *it;
-      if (instance.mScope != iScope) { ++it; continue; }
-      if (instance.mIsResourceValid == true && instance.mPtrBoundBinderList.empty() == true)
-      {
-        result.emplace_back(std::move(instance));
-        it = iContainer.erase(it);
-      }
-      else { ++it; }
-    }
-  };
-
   std::vector<DDyIOReferenceInstance> result;
-  ForwardCandidateRIFromList(mMapTextureReference, result);
-  ForwardCandidateRIFromList(mMapGLShaderReference, result);
-  ForwardCandidateRIFromList(mMapMeshReference, result);
-  ForwardCandidateRIFromList(mMapModelReference, result);
-  ForwardCandidateRIFromList(mMapMaterialReference, result);
-  ForwardCandidateRIFromList(mMapAttachmentReference, result);
-  ForwardCandidateRIFromList(mMapFrameBufferReference, result);
+  this->ForwardCandidateRIFromList(iScope, mMapTextureReference, result);
+  this->ForwardCandidateRIFromList(iScope, mMapGLShaderReference, result);
+  this->ForwardCandidateRIFromList(iScope, mMapMeshReference, result);
+  this->ForwardCandidateRIFromList(iScope, mMapModelReference, result);
+  this->ForwardCandidateRIFromList(iScope, mMapMaterialReference, result);
+  this->ForwardCandidateRIFromList(iScope, mMapAttachmentReference, result);
+  this->ForwardCandidateRIFromList(iScope, mMapFrameBufferReference, result);
   return result;
+}
+
+void DDyIOReferenceContainer::ForwardCandidateRIFromList(
+    _MIN_ EDyScope iScope,
+    _MINOUT_ TStringHashMap<DDyIOReferenceInstance>& iContainer, 
+    _MOUT_ std::vector<DDyIOReferenceInstance>& iResult)
+{
+  for (auto it = iContainer.begin(); it != iContainer.end();)
+  {
+    auto& [specifier, instance] = *it;
+    if (instance.mScope != iScope) { ++it; continue; }
+    if (instance.mIsResourceValid == true && instance.mPtrBoundBinderList.empty() == true)
+    {
+      iResult.emplace_back(std::move(instance));
+      it = iContainer.erase(it);
+    }
+    else { ++it; }
+  }
 }
 
 EDySuccess DDyIOReferenceContainer::CreateReferenceInstance(

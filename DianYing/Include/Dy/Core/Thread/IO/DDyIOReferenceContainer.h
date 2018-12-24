@@ -88,6 +88,12 @@ public:
   MDY_NODISCARD EDySuccess TryUpdateValidity(_MIN_ EDyResourceType type, _MIN_ const std::string& specifier, _MIN_ bool isValid);
 
 private:
+  /// @brief
+  void ForwardCandidateRIFromList(
+      _MIN_ EDyScope iScope,
+      _MINOUT_ TStringHashMap<DDyIOReferenceInstance>& iContainer, 
+      _MOUT_ std::vector<DDyIOReferenceInstance>& iResult);
+
   TStringHashMap<DDyIOReferenceInstance> mMapTextureReference     = {};
   TStringHashMap<DDyIOReferenceInstance> mMapGLShaderReference    = {};
   TStringHashMap<DDyIOReferenceInstance> mMapMeshReference        = {};

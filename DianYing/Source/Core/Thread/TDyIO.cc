@@ -494,6 +494,12 @@ EDySuccess TDyIO::TryDetachBinderFromResourceRI
   return this->mRIResourceMap.TryDetachBinderFromResourceRI(iSpecifier, iType, iPtrBinder);
 }
 
+EDySuccess TDyIO::TryDetachBinderFromInformationRI
+(_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder)
+{
+  return this->mRIInformationMap.TryDetachBinderFromResourceRI(iSpecifier, iType, iPtrBinder);
+}
+
 bool TDyIO::pIsReferenceInstanceBound(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style)
 {
   switch (style)

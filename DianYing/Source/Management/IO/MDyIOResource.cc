@@ -72,4 +72,19 @@ void MDyIOResource::InsertResult(_MIN_ EDyResourceType type, _MIN_ void* ptrrawI
   }
 }
 
+EDySuccess MDyIOResource::MDY_PRIVATE_SPECIFIER(TryRemove)(_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType)
+{
+  switch (iType)
+  {
+  case EDyResourceType::GLShader:     { return this->__mShaderContainer.Remove(iSpecifier); } 
+  case EDyResourceType::Texture:      { return this->__mTextureContainer.Remove(iSpecifier); }
+  case EDyResourceType::Mesh:         { return this->__mMeshContainer.Remove(iSpecifier); } 
+  case EDyResourceType::Model:        { return this->__mModelContainer.Remove(iSpecifier); } 
+  case EDyResourceType::Material:     { return this->__mMaterialContainer.Remove(iSpecifier); } 
+  case EDyResourceType::GLAttachment: { return this->__mAttachmentContainer.Remove(iSpecifier); } 
+  case EDyResourceType::GLFrameBuffer:{ return this->__mFrameBufferContainer.Remove(iSpecifier); } 
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
+  }
+}
+
 } /// ::dy namespace

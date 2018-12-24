@@ -178,8 +178,13 @@ private:
   (_MIN_ const std::string & iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase * iPtrBinder);
 
   /// @brief Try detach binder instance from Resource Reference Instance.
-  /// If nnot found RI< just return DY_FAILURE.
+  /// If nnot found RI, just return DY_FAILURE.
   MDY_NODISCARD EDySuccess TryDetachBinderFromResourceRI
+  (_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder);
+
+  /// @brief Try detach binder instance from Information Reference Instance.
+  /// If nnot found RI, just return DY_FAILURE.
+  MDY_NODISCARD EDySuccess TryDetachBinderFromInformationRI
   (_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder);
 
   ///

@@ -77,7 +77,8 @@ protected:
   {
     if (MDY_CHECK_ISNULL(this->mPtrResource) == true) { return DY_FAILURE; }
 
-    MDY_NOT_IMPLEMENTED_ASSERT();
+    MDY_CALL_ASSERT_SUCCESS(SDyIOBindingHelper::TryDetachInformation<TType>(this->mSpecifierName, this));
+    this->mPtrResource = nullptr;
     return DY_SUCCESS;
   }
 

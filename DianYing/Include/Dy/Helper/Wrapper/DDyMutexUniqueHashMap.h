@@ -93,6 +93,13 @@ public:
     return std::move(smtptrReturnInstance);
   }
 
+  MDY_NODISCARD EDySuccess Remove(_MIN_ const std::string& key) noexcept
+  {
+    std::unique_lock lock{this->mSharedMutex};
+    this->mContainer.erase(key);
+    return DY_SUCCESS;
+  }
+
 private:
   FORCEINLINE void pMoveInsert(_MIN_ const std::string& key, _MINOUT_ std::unique_ptr<TValueType>&& value) noexcept
   {

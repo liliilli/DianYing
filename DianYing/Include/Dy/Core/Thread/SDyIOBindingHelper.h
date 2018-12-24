@@ -141,13 +141,25 @@ private:
   MDY_PRIVATE_SPECIFIER(pTryRequireInformation_Material)
   (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
 
-  static MDY_NODISCARD std::optional<const __TDyRscInfo_T<EDyResourceType::Mesh>*>
+  MDY_NODISCARD static std::optional<const __TDyRscInfo_T<EDyResourceType::Mesh>*>
   MDY_PRIVATE_SPECIFIER(pTryRequireInformation_Mesh)
   (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
 
-  static MDY_NODISCARD std::optional<const __TDyRscInfo_T<EDyResourceType::Model>*>
+  MDY_NODISCARD static std::optional<const __TDyRscInfo_T<EDyResourceType::Model>*>
   MDY_PRIVATE_SPECIFIER(pTryRequireInformation_Model)
   (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
+  
+  /// @brief Use this require resource to another dimension.
+  template <EDyResourceType TType>
+  MDY_NODISCARD static EDySuccess
+  TryDetachInformation(_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder)
+  {
+    return MDY_PRIVATE_SPECIFIER(pTryDetachInformation)(iSpecifier, TType, iPtrBinder);
+  }
+
+  MDY_NODISCARD static EDySuccess
+  MDY_PRIVATE_SPECIFIER(pTryDetachInformation)
+  (_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder);
 
   template <EDyResourceType TType>
   friend struct __TDyResourceBinderBase;
