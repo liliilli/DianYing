@@ -15,6 +15,7 @@
 
 #include <Dy/Core/Reflection/RDyBuiltinResources.h>
 #include <Dy/Core/Thread/IO/EDyIOTask.h>
+#include <Dy/Core/Thread/IO/DDyIOReferenceInstance.h>
 
 namespace dy
 {
@@ -39,9 +40,15 @@ public:
   ///
   MDY_NODISCARD void MoveInstanceFromGC(_MIN_ const std::string& speicifer, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style);
 
+  /// @brief
+  void InsertGcCandidateList(_MIN_ const std::vector<DDyIOReferenceInstance>& iRICandidateList) noexcept;
+
+  /// @brief 
+  EDySuccess TryGarbageCollectCandidateList() noexcept;
+
 private:
-
-
+  /// @brief
+  std::vector<DDyIOReferenceInstance> mRIGarbageCandidateList = {};
 };
 
 } /// ::dy namespace

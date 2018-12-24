@@ -50,22 +50,6 @@ TDyIO::~TDyIO()
   this->mMetaInfoManager    = nullptr;
 }
 
-void TDyIO::BindSleepCallbackFunction(_MIN_ std::function<void()> iCbFunc)
-{
-  mCbSleepFunction = nullptr;
-  mCbSleepFunction = iCbFunc;
-}
-
-EDySuccess TDyIO::outTryCallSleptCallbackFunction()
-{
-  if (this->outIsIOThreadSlept() == false)  { return DY_FAILURE; }
-  if (this->mCbSleepFunction == nullptr)    { return DY_FAILURE; }
-
-  this->mCbSleepFunction();
-  this->mCbSleepFunction = nullptr;
-  return DY_SUCCESS;
-}
-
 EDySuccess TDyIO::Initialize()
 {
   // Initialize IOWorkers with context.
@@ -537,6 +521,12 @@ bool TDyIO::outIsMetaInformationExist(_MIN_ const std::string& specifier, _MIN_ 
   }
 }
 
+void TDyIO::BindSleepCallbackFunction(_MIN_ std::function<void()> iCbFunc)
+{
+  mCbSleepFunction = nullptr;
+  mCbSleepFunction = iCbFunc;
+}
+
 bool TDyIO::outIsIOThreadSlept() noexcept
 {
   bool sleptFlag;
@@ -553,6 +543,38 @@ bool TDyIO::outIsIOThreadSlept() noexcept
 
   MDY_SLEEP_FOR_ATOMIC_TIME();
   return sleptFlag;
+}
+
+EDySuccess TDyIO::outTryCallSleptCallbackFunction()
+{
+  if (this->outIsIOThreadSlept() == false)  { return DY_FAILURE; }
+  if (this->mCbSleepFunction == nullptr)    { return DY_FAILURE; }
+
+  this->mCbSleepFunction();
+  this->mCbSleepFunction = nullptr;
+  return DY_SUCCESS;
+}
+
+void TDyIO::outTryForwardCandidateRIToGCList(_MIN_ EDyScope iScope, _MIN_ EDyResourceStyle iStyle)
+{
+  switch (iStyle)
+  {
+  case EDyResourceStyle::Information: 
+  { // Get GC-Candidate RI instance from list (condition is `mIsResourceValid == true` && `mReferenceCount == 0`.
+    // and reinsert it to gc list.
+    const auto gcCandidateList = this->mRIInformationMap.GetForwardCandidateRIAsList(iScope);
+    this->mGarbageCollector.InsertGcCandidateList(gcCandidateList);
+    this->mGarbageCollector.TryGarbageCollectCandidateList();
+  } break;
+  case EDyResourceStyle::Resource:    
+  { // Get GC-Candidate RI instance from list (condition is `mIsResourceValid == true` && `mReferenceCount == 0`.
+    // and reinsert it to gc list.
+    const auto gcCandidateList = this->mRIResourceMap.GetForwardCandidateRIAsList(iScope);
+    this->mGarbageCollector.InsertGcCandidateList(gcCandidateList);
+    this->mGarbageCollector.TryGarbageCollectCandidateList();
+  } break;
+  default: MDY_UNEXPECTED_BRANCH();
+  }
 }
 
 bool TDyIO::isoutIsMainTaskListIsEmpty() const noexcept

@@ -23,21 +23,18 @@ namespace dy
 void DDyIOReferenceInstance::AttachBinder(_MIN_ const __FDyBinderBase* iPtrBase) noexcept
 {
   this->mPtrBoundBinderList.emplace_back(iPtrBase);
-
-  this->mReferenceCount.fetch_add(1);
 }
 
 void DDyIOReferenceInstance::DetachBinder(const __FDyBinderBase* iPtrBase) noexcept
 {
-  MDY_ASSERT(this->mReferenceCount.load() > 0, "Reference count must be positive value when detach any binder.");
+  MDY_ASSERT(this->mPtrBoundBinderList.empty() == false, "Reference count must be positive value when detach any binder.");
 
   const auto itPtr = std::find(MDY_BIND_BEGIN_END(this->mPtrBoundBinderList), iPtrBase);
   MDY_ASSERT(itPtr != this->mPtrBoundBinderList.end(), "Given binder pointer address must be exist in given RI list.");
 
   DyFastErase(this->mPtrBoundBinderList, std::distance(this->mPtrBoundBinderList.begin(), itPtr));
-  this->mReferenceCount.fetch_sub(1);
 
-  if (this->mScope == EDyScope::Temporal && this->mReferenceCount.load() == 0)
+  if (this->mScope == EDyScope::Temporal && this->mPtrBoundBinderList.empty() == true)
   {
     MDY_NOT_IMPLEMENTED_ASSERT();
   }

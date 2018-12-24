@@ -37,7 +37,7 @@ CDyWidgetScript::~CDyWidgetScript()
     // intentional.
     auto& ref = static_cast<CDyWidgetScriptCpp&>(*mPtrWidgetStatus->MDY_PRIVATE_SPECIFIER(GetPtrInternalWidgetScript)());
     MDY_NOTUSED const auto _ = i.MDY_PRIVATE_SPECIFIER(TryDetachContollerUi(*ref.MDY_PRIVATE_SPECIFIER(GetScriptInstance())));
-    MDyScript::GetInstance().TryRemoveWidgetScript(mPtrWidgetStatus);
+    MDyScript::GetInstance().TryForwardWidgetScriptToGCList(mPtrWidgetStatus);
   } break;
   case EDyScriptType::Lua: 
   { // If Widget type is `Lua`, do the thing. but not supported yet.

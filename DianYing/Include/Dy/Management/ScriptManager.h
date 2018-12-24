@@ -61,12 +61,12 @@ public:
   /// @brief Try remove widget script from dy system.
   /// But, removed widget script does not actually removed instantly, \n
   /// moved gc list and removed actually on next frame prior to update.
-  EDySuccess TryRemoveWidgetScript(_MIN_ const FDyWidgetScriptState* iPtrWidgetScriptState);
+  EDySuccess TryForwardWidgetScriptToGCList(_MIN_ const FDyWidgetScriptState* iPtrWidgetScriptState);
   
   /// @brief Try remove actor script from dy system.
   /// But, removed actor script does not actually removed instantly, \n
   /// moved gc list and removed actually on next frame prior to update.
-  EDySuccess TryRemoveActorScript(_MIN_ const FDyActorScriptState* iPtrWidgetScriptState);
+  EDySuccess TryForwardActorScriptToGCList(_MIN_ const FDyActorScriptState* iPtrWidgetScriptState);
 
   /// @brief Try move inserted widget script to main container.
   void TryMoveInsertWidgetScriptToMainContainer();
@@ -88,9 +88,11 @@ public:
   /// @brief 
   MDY_NODISCARD bool IsGcedWidgetScriptExist() const noexcept;
   /// @brief Call widget script and clear list.
-  void CallDestroyGcWidgetScriptAndClear();
+  void CallDestroyFuncWidgetScriptGCList();
+  /// @brief Clear widget script gc list `mGCedWidgetScriptList` anyway.
+  void ClearWidgetScriptGCList();
   /// @brief remove emptied script list.
-  void GcWidgetScriptList();
+  void RemoveEmptyOnWidgetScriptList();
 
   /// @brief Update actor script.
   void UpdateActorScript(_MIN_ TF32 dt);
@@ -100,6 +102,8 @@ public:
   MDY_NODISCARD bool IsGcedActorScriptExist() const noexcept;
   /// @brief Call actor script and clear list.
   void CallDestroyGcActorScriptAndClear();
+  /// @brief Clear actor script gc list `mGCedActorScriptList` anyway.
+  void ClearActorScriptGCList();
 
 private:
   sol::state mLua;

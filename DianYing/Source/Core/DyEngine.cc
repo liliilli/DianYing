@@ -55,7 +55,6 @@ EDySuccess DyEngine::pfInitialize()
 
 EDySuccess DyEngine::pfRelease()
 {
-  this->pfReleaseDependentManager();
   this->mSynchronization = nullptr;
   this->pfReleaseIndependentManager();
   return DY_SUCCESS;
@@ -102,7 +101,10 @@ void DyEngine::operator()()
         this->MDY_PRIVATE_SPECIFIER(Render)(this->mStatus);
       }
     } break;
-    case EDyGlobalGameStatus::Shutdown: break;
+    case EDyGlobalGameStatus::Shutdown: 
+    { // Just wait I/O Worker thread is slept.
+      this->mSynchronization->TrySynchronization(); 
+    } break;
     case EDyGlobalGameStatus::Ended: break;
     default: MDY_UNEXPECTED_BRANCH(); break;
     }
@@ -165,9 +167,10 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(ReflectGameStatusTransition)()
       MDY_CALL_BUT_NOUSE_RESULT(MDyWorld::GetInstance().TryRemoveLoadingUi());
       auto& scriptManager = MDyScript::GetInstance(); 
       if (scriptManager.IsGcedWidgetScriptExist() == true)
-      {
-        scriptManager.CallDestroyGcWidgetScriptAndClear();
-        scriptManager.GcWidgetScriptList();
+      { // Remove ui script manually.
+        scriptManager.CallDestroyFuncWidgetScriptGCList();
+        scriptManager.ClearWidgetScriptGCList();
+        scriptManager.RemoveEmptyOnWidgetScriptList();
       }
     } break;
     default: MDY_UNEXPECTED_BRANCH();
@@ -178,23 +181,42 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(ReflectGameStatusTransition)()
     switch (this->mStatus)
     {
     case EDyGlobalGameStatus::Loading: 
-    { MDY_NOT_IMPLEMENTED_ASSERT();
-      { // If level change from one to another, do that.
-        MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(RemoveLevel)();
-        MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(PopulateNextLevelResources)();
-        MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(BuildNextLevel)();
-        MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(TransitionToNextLevel)();
-        //MDyWorld::GetInstance().OpenLevel(MDySetting::GetInstance().GetInitialSceneInformationName());
-      }
+    { // GameRuntime => Loading.
+      MDY_NOT_IMPLEMENTED_ASSERT();
+      // If level change from one to another, do that.
+      MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(RemoveLevel)();
+      MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(PopulateNextLevelResources)();
+      MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(BuildNextLevel)();
+      MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(TransitionToNextLevel)();
+      //MDyWorld::GetInstance().OpenLevel(MDySetting::GetInstance().GetInitialSceneInformationName());
     } break;
     case EDyGlobalGameStatus::Shutdown: 
-    { 
-      MDY_NOT_IMPLEMENTED_ASSERT();
+    { // GameRuntime => Shutdown. Just wait IO Thread is slept.
+      if (MDyWorld::GetInstance().IsDebugUiExist() == true)
+      { // If debug ui exist, remove.
+        MDY_CALL_BUT_NOUSE_RESULT(MDyWorld::GetInstance().TryCreateDebugUi());
+      }
+      SDyIOConnectionHelper::PopulateResourceList(
+          std::vector<DDyResourceName>{}, EDyScope::Global, 
+          []() { DyEngine::GetInstance().SetNextGameStatus(EDyGlobalGameStatus::Ended); }
+      );
     } break;
     default: MDY_UNEXPECTED_BRANCH();
     }
   } break;
-  case EDyGlobalGameStatus::Shutdown: break;
+  case EDyGlobalGameStatus::Shutdown:
+  {
+    switch (this->mStatus)
+    {
+    case EDyGlobalGameStatus::Ended: 
+    { // Shutdown => Ended.
+      MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(RemoveLevel)();
+      this->pfReleaseDependentManager();
+
+    } break;
+    default: MDY_UNEXPECTED_BRANCH();
+    }
+  } break;
   case EDyGlobalGameStatus::Ended: break;
   default: ;
   }

@@ -64,7 +64,7 @@ void MDySynchronization::TrySynchronization()
   case EDyGlobalGameStatus::FirstLoading: { this->pRunFrameFirstLoading(); }  break; // Syncrhonization
   case EDyGlobalGameStatus::Loading:      { this->pRunFrameLoading(); }       break;
   case EDyGlobalGameStatus::GameRuntime:  { this->pRunFrameGameRuntime(); }   break;
-  case EDyGlobalGameStatus::Shutdown: break;
+  case EDyGlobalGameStatus::Shutdown:     { this->PRunFrameShutdown(); }      break;
   default: /* Do nothing */ break;
   }
 }
@@ -109,6 +109,12 @@ void MDySynchronization::pRunFrameGameRuntime()
   using TSyncHelper = SDyIOConnectionHelper;
   if (TSyncHelper::IsMainTaskListIsEmpty() == false)  { TSyncHelper::ForceProcessDeferredMainTaskList(); }
   if (TSyncHelper::CheckIOResultInCondition() == true){ TSyncHelper::ForceProcessIOInsertPhase(); }
+}
+
+void MDySynchronization::PRunFrameShutdown()
+{
+  // Check whether IO thread working is done, if so change status to `Loading`. 
+  SDyIOConnectionHelper::TryCallSleptCallbackFunction();
 }
 
 } /// ::dy namespace

@@ -14,6 +14,7 @@
 
 /// Header file
 #include <Dy/Core/Thread/IO/FDyIOGC.h>
+#include <Dy/Management/LoggingManager.h>
 
 namespace dy
 {
@@ -21,6 +22,23 @@ namespace dy
 bool FDyIOGC::IsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style)
 {
   return false;
+}
+
+void FDyIOGC::InsertGcCandidateList(const std::vector<DDyIOReferenceInstance>& iRICandidateList) noexcept
+{
+  this->mRIGarbageCandidateList.insert(this->mRIGarbageCandidateList.end(), MDY_BIND_BEGIN_END(iRICandidateList));
+}
+
+EDySuccess FDyIOGC::TryGarbageCollectCandidateList() noexcept
+{
+  if (this->mRIGarbageCandidateList.empty() == false) { return DY_FAILURE; }
+
+  for (const auto& ri : this->mRIGarbageCandidateList)
+  {
+    MDY_NOT_IMPLEMENTED_ASSERT();
+  }
+  this->mRIGarbageCandidateList.clear();
+  return DY_SUCCESS;
 }
 
 } /// ::dy namespace

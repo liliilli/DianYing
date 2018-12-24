@@ -146,6 +146,10 @@ public:
   /// @brief Try draw loading ui if exist.
   void MDY_PRIVATE_SPECIFIER(TryRenderLoadingUi)();
 
+  /// @brief Try remove actor gc list anyway. \n
+  /// If there is something to do actors in GC list, call something to do prior to this.
+  void MDY_PRIVATE_SPECIFIER(TryRemoveActorGCList)() noexcept;
+
 #ifdef false
   ///
   /// @brief  Spawn actor into present scene.

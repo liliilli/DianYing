@@ -80,8 +80,7 @@ EDySuccess FDyActor::Initialize(_MIN_ const PDyObjectMetaInfo& objectMetaDesc)
 
 EDySuccess FDyActor::Release()
 {
-
-
+  this->mComponentList.clear();
   return DY_SUCCESS;
 }
 
@@ -195,6 +194,11 @@ EDySuccess FDyActor::RemoveScriptComponent(_MIN_ const std::string& scriptName) 
   }
 }
 #endif
+
+void FDyActor::MDY_PRIVATE_SPECIFIER(TryRemoveScriptInstances)() noexcept
+{
+  return this->mScriptList.clear();
+}
 
 NotNull<CDyTransform*> FDyActor::GetTransform() noexcept
 {

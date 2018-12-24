@@ -29,6 +29,7 @@ EDySuccess MDyFont::pfInitialize()
 
 EDySuccess MDyFont::pfRelease()
 {
+  this->mFontResourceContainerMap.clear();
   return DY_SUCCESS;
 }
 

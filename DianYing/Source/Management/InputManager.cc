@@ -341,6 +341,8 @@ void MDyInput::MDY_PRIVATE_SPECIFIER(pInitializeCallbacks)()
 
 EDySuccess MDyInput::pfRelease()
 {
+  this->mBindedActionMap.clear();
+  this->mBindedAxisMap.clear();
   return DY_SUCCESS;
 }
 

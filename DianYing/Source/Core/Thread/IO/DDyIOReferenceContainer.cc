@@ -110,6 +110,37 @@ EDySuccess DDyIOReferenceContainer::TryDetachBinderFromResourceRI(
   return DY_SUCCESS;
 }
 
+std::vector<DDyIOReferenceInstance> 
+DDyIOReferenceContainer::GetForwardCandidateRIAsList(_MIN_ EDyScope iScope)
+{
+  static auto ForwardCandidateRIFromList = [&](
+      _MINOUT_ TStringHashMap<DDyIOReferenceInstance>& iContainer, 
+      _MOUT_ std::vector<DDyIOReferenceInstance>& result)
+  {
+    for (auto it = iContainer.begin(); it != iContainer.end();)
+    {
+      auto& [specifier, instance] = *it;
+      if (instance.mScope != iScope) { ++it; continue; }
+      if (instance.mIsResourceValid == true && instance.mPtrBoundBinderList.empty() == true)
+      {
+        result.emplace_back(std::move(instance));
+        it = iContainer.erase(it);
+      }
+      else { ++it; }
+    }
+  };
+
+  std::vector<DDyIOReferenceInstance> result;
+  ForwardCandidateRIFromList(mMapTextureReference, result);
+  ForwardCandidateRIFromList(mMapGLShaderReference, result);
+  ForwardCandidateRIFromList(mMapMeshReference, result);
+  ForwardCandidateRIFromList(mMapModelReference, result);
+  ForwardCandidateRIFromList(mMapMaterialReference, result);
+  ForwardCandidateRIFromList(mMapAttachmentReference, result);
+  ForwardCandidateRIFromList(mMapFrameBufferReference, result);
+  return result;
+}
+
 EDySuccess DDyIOReferenceContainer::CreateReferenceInstance(
     _MIN_ const std::string& specifier,
     _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style, _MIN_ EDyScope scope)

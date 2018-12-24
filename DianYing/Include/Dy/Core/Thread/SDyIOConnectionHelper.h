@@ -69,8 +69,10 @@ public:
       _MIN_ const EDyScope iScope,
       _MIN_ std::function<void(void)> iCallback);
 
-  /// @brief Try resource garbage collection manually. This function may causes time consuming, call this carefully.
-  static void TryGC();
+  /// @brief Try Garbage collect of Reference Instance with resource as Scope and Style, which
+  /// is only Valid resource but count is 0. \n
+  /// This function may causes time consuming, call this carefully.
+  static void TryGC(_MIN_ EDyScope iScope, _MIN_ EDyResourceStyle iStyle);
 
   /// @brief Try stop IO thread manually. this function is thread-safe to I/O Thread.
   static void TryStop();

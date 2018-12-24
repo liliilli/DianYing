@@ -146,14 +146,16 @@ EDySuccess MDyScript::pfInitialize()
   DyInitilaizeFDyObject(mLua);
   DyInitilaizeFDyActor(mLua);
   this->mLua.safe_script(sCDyScriptFrame);
-
-
-
   return DY_SUCCESS;
 }
 
 EDySuccess MDyScript::pfRelease()
 {
+  // sol::state is RAII, so does release automatically.
+  this->mInsertActorScriptList.clear();
+  this->mInsertWidgetScriptList.clear();
+  this->mGCedActorScriptList.clear();
+  this->mGCedWidgetScriptList.clear();
   return DY_SUCCESS;
 }
 
@@ -190,7 +192,7 @@ FDyActorScriptState* MDyScript::CreateActorScript(
   return this->mInsertActorScriptList.back().get();
 }
 
-EDySuccess MDyScript::TryRemoveWidgetScript(const FDyWidgetScriptState* iPtrWidgetScriptState)
+EDySuccess MDyScript::TryForwardWidgetScriptToGCList(_MIN_ const FDyWidgetScriptState* iPtrWidgetScriptState)
 {
   for (auto& ptrsmtScript : this->mInsertWidgetScriptList)
   {
@@ -215,7 +217,7 @@ EDySuccess MDyScript::TryRemoveWidgetScript(const FDyWidgetScriptState* iPtrWidg
   return DY_FAILURE;
 }
 
-EDySuccess MDyScript::TryRemoveActorScript(_MIN_ const FDyActorScriptState* iPtrActorScriptStatus)
+EDySuccess MDyScript::TryForwardActorScriptToGCList(_MIN_ const FDyActorScriptState* iPtrActorScriptStatus)
 {
   for (auto& ptrsmtScript : this->mInsertActorScriptList)
   {
@@ -297,7 +299,7 @@ bool MDyScript::IsGcedWidgetScriptExist() const noexcept
   return this->mGCedWidgetScriptList.empty() == false;
 }
 
-void MDyScript::CallDestroyGcWidgetScriptAndClear()
+void MDyScript::CallDestroyFuncWidgetScriptGCList()
 {
   for (auto& ptrsmtScript : this->mGCedWidgetScriptList)
   {
@@ -306,10 +308,14 @@ void MDyScript::CallDestroyGcWidgetScriptAndClear()
     // If engine must be stopped and end application, return instantly.
     if (gEngine->MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() == true) { return; }
   }
+}
+
+void MDyScript::ClearWidgetScriptGCList()
+{
   this->mGCedWidgetScriptList.clear();
 }
 
-void MDyScript::GcWidgetScriptList()
+void MDyScript::RemoveEmptyOnWidgetScriptList()
 {
   this->mInsertWidgetScriptList.erase(std::remove(MDY_BIND_BEGIN_END(this->mInsertWidgetScriptList), nullptr), this->mInsertWidgetScriptList.end());
   this->mWidgetScriptList.erase(std::remove(MDY_BIND_BEGIN_END(this->mWidgetScriptList), nullptr), this->mWidgetScriptList.end());
@@ -343,6 +349,11 @@ void MDyScript::UpdateActorScript(TF32 dt, EDyScriptState type)
     // If engine must be stopped and end application, return instantly.
     if (gEngine->MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() == true) { return; }
   }
+}
+
+void MDyScript::ClearActorScriptGCList()
+{
+  this->mGCedActorScriptList.clear();
 }
 
 } /// ::dy namespace

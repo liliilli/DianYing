@@ -58,10 +58,12 @@ EDySuccess MDyRendering::pfInitialize()
 
 EDySuccess MDyRendering::pfRelease()
 {
-  this->mSceneFinalRenderer = MDY_INITIALIZE_NULL;
-  this->mShadowRenderer     = MDY_INITIALIZE_NULL;
-  this->mTempSsaoObject     = MDY_INITIALIZE_NULL;
-  this->mBasicOpaqueRenderer= MDY_INITIALIZE_NULL;
+  this->mSceneFinalRenderer   = MDY_INITIALIZE_NULL;
+  this->mShadowRenderer       = MDY_INITIALIZE_NULL;
+  this->mTempSsaoObject       = MDY_INITIALIZE_NULL;
+  this->mBasicOpaqueRenderer  = MDY_INITIALIZE_NULL;
+  this->mUiBasicRenderer      = MDY_INITIALIZE_NULL;
+  this->mFinalDisplayRenderer = MDY_INITIALIZE_NULL;
 
   // Initialize internal management singleton instance.
   MDY_CALL_ASSERT_SUCCESS(MDyFramebuffer::Release());
