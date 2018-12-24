@@ -38,7 +38,9 @@ void DDyWindowInformationWindows::InitializeDep()
 }
 
 void DDyWindowInformationWindows::ReleaseDep()
-{ }
+{ 
+
+}
 
 EDySuccess DDyWindowInformationWindows::CreateConsoleWindow()
 {

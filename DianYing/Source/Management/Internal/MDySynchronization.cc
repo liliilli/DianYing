@@ -24,29 +24,17 @@ namespace dy
 
 EDySuccess MDySynchronization::pfInitialize()
 {
-  ///
-  /// @brief Initialize threads.
-  ///
-  static auto InitializeThread = [this]
-  {
-    this->mIOThreadInstance = std::make_unique<TDyIO>();
-    this->mIOThreadThread   = std::thread(&TDyIO::operator(), std::ref(*this->mIOThreadInstance));
-  };
-
-  InitializeThread();
+  // Initialize threads.
+  this->mIOThreadInstance = std::make_unique<TDyIO>();
+  this->mIOThreadThread   = std::thread(&TDyIO::operator(), std::ref(*this->mIOThreadInstance));
   return DY_SUCCESS;
 }
 
 EDySuccess MDySynchronization::pfRelease()
 {
-  static auto ReleaseThread = [this]
-  {
-    SDyIOConnectionHelper::TryStop();
-
-    this->mIOThreadThread.join();
-    this->mIOThreadInstance = nullptr;
-  };
-
+  SDyIOConnectionHelper::TryStop();
+  this->mIOThreadThread.join();
+  this->mIOThreadInstance = nullptr;
   return DY_SUCCESS;
 }
 

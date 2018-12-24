@@ -68,17 +68,7 @@ EDySuccess TDyIO::Initialize()
 }
 
 void TDyIO::Release()
-{
-  // Stop and release IOWorkers
-  for (auto& [instance, thread] : this->mWorkerList)
-  {
-    instance->outTryStop();
-    thread.join();
-    instance = nullptr;
-  }
-
-  MDY_NOT_IMPLEMENTED_ASSERT();
-}
+{ }
 
 void TDyIO::operator()()
 {
@@ -109,7 +99,16 @@ void TDyIO::operator()()
     DDyIOTask task;
     { // Wait task in the queue, and try pop task when not empty.
       MDY_SYNC_WAIT_CONDITION(this->mQueueMutex, this->mConditionVariable, CbTaskQueueWaiting);
-      if (this->mIsThreadStopped == true && this->mIOTaskQueue.empty() == true) { break; }
+      if (this->mIsThreadStopped == true && this->mIOTaskQueue.empty() == true) 
+      { 
+        for (auto& [workerInstance, workerThread] : this->mWorkerList)
+        { // Wait all worker thread is terminated.
+          workerInstance->outTryStop();
+          workerThread.join();
+          workerInstance = nullptr;
+        }
+        break; 
+      }
       task = this->mIOTaskQueue.top();
       this->mIOTaskQueue.pop();
     }
@@ -145,11 +144,13 @@ void TDyIO::outTryForwardToMainTaskList(_MIN_ const DDyIOTask& task) noexcept
 
 void TDyIO::outTryStop()
 {
+  MDY_ASSERT(this->outIsIOThreadSlept() == true, "To stop io thread, IO Thread must be slept.");
   {
     MDY_SYNC_LOCK_GUARD(this->mQueueMutex);
     this->mIsThreadStopped = true;
   }
   this->mConditionVariable.notify_one();
+  MDY_SLEEP_FOR_ATOMIC_TIME();
 }
 
 EDySuccess TDyIO::outCreateReferenceInstance(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style, _MIN_ EDyScope scope)

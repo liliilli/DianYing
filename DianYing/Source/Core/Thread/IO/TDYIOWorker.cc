@@ -49,7 +49,10 @@ void TDyIOWorker::inWork()
   {
     {
       MDY_SYNC_WAIT_CONDITION(this->mTaskMutex, this->mTaskCV, CbTaskWaiting);
-      if (this->mIsShouldStop == true)        { return; }
+      if (this->mIsShouldStop == true)
+      { 
+        break; 
+      }
       if (this->mIsAssigned.load() == false)  { continue; }
 
       // Do process
@@ -92,6 +95,8 @@ void TDyIOWorker::outTryStop()
 {
   MDY_SYNC_LOCK_GUARD(this->mTaskMutex);
   this->mIsShouldStop = true;
+  this->mTaskCV.notify_one();
+  MDY_SLEEP_FOR_ATOMIC_TIME();
 }
 
 DDyIOWorkerResult TDyIOWorker::PopulateIOResource(_MIN_ const DDyIOTask& assignedTask)

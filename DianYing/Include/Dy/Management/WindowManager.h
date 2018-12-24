@@ -29,6 +29,10 @@ public:
   /// @brief Check window is should closed this time.
   MDY_NODISCARD bool IsWindowShouldClose() const noexcept;
 
+  /// @brief Terminate window. if terminated already, just return DY_FAILURE. \n
+  /// This function must be called in main thread.
+  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(TerminateWindow)() noexcept;
+
   /// @brief Get glfw window context.
   MDY_NODISCARD GLFWwindow* GetGLMainWindow() const noexcept
   {

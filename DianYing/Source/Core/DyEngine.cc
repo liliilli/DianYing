@@ -77,9 +77,11 @@ void DyEngine::operator()()
       this->mIsStatusTransitionDone = true;
     }
 
-    // Real-time update sequence.
-    timeManager.pUpdate();
-    if (timeManager.IsGameFrameTicked() == DY_FAILURE) { continue; }
+    if (this->mIsGameEndCalled == false)
+    { // Real-time update sequence when `GameEnd call sign` not checked.
+      timeManager.pUpdate();
+      if (timeManager.IsGameFrameTicked() == DY_FAILURE) { continue; }
+    }
     switch (this->GetGlobalGameStatus())
     {
     case EDyGlobalGameStatus::Booted: 
@@ -109,6 +111,8 @@ void DyEngine::operator()()
     default: MDY_UNEXPECTED_BRANCH(); break;
     }
   };
+
+  MDY_LOG_INFO("Game End. bye!");
 }
 
 void DyEngine::MDY_PRIVATE_SPECIFIER(ReflectGameStatusTransition)()
@@ -212,7 +216,7 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(ReflectGameStatusTransition)()
     { // Shutdown => Ended.
       MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(RemoveLevel)();
       this->pfReleaseDependentManager();
-
+      MDY_CALL_ASSERT_SUCCESS(MDyWindow::GetInstance().MDY_PRIVATE_SPECIFIER(TerminateWindow)());
     } break;
     default: MDY_UNEXPECTED_BRANCH();
     }
@@ -320,6 +324,12 @@ void DyEngine::pfReleaseDependentManager()
   MDY_CALL_ASSERT_SUCCESS(dy::MDySound::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyInput::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyRendering::Release());
+
+  SDyIOConnectionHelper::TryGC(EDyScope::Global, EDyResourceStyle::Resource);
+  SDyIOConnectionHelper::TryGC(EDyScope::Global, EDyResourceStyle::Information);
+  SDyIOConnectionHelper::TryGC(EDyScope::Global, EDyResourceStyle::Resource);
+  SDyIOConnectionHelper::TryGC(EDyScope::Global, EDyResourceStyle::Information);
+
   MDY_CALL_ASSERT_SUCCESS(dy::MDySynchronization::Release());
 }
 
