@@ -62,6 +62,11 @@ public:
   /// But, removed widget script does not actually removed instantly, \n
   /// moved gc list and removed actually on next frame prior to update.
   EDySuccess TryRemoveWidgetScript(_MIN_ const FDyWidgetScriptState* iPtrWidgetScriptState);
+  
+  /// @brief Try remove actor script from dy system.
+  /// But, removed actor script does not actually removed instantly, \n
+  /// moved gc list and removed actually on next frame prior to update.
+  EDySuccess TryRemoveActorScript(_MIN_ const FDyActorScriptState* iPtrWidgetScriptState);
 
   /// @brief Try move inserted widget script to main container.
   void TryMoveInsertWidgetScriptToMainContainer();

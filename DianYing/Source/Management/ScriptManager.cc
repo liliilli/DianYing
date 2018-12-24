@@ -200,6 +200,31 @@ EDySuccess MDyScript::TryRemoveWidgetScript(const FDyWidgetScriptState* iPtrWidg
   return DY_FAILURE;
 }
 
+EDySuccess MDyScript::TryRemoveActorScript(_MIN_ const FDyActorScriptState* iPtrActorScriptStatus)
+{
+  for (auto& ptrsmtScript : this->mInsertActorScriptList)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
+    if (ptrsmtScript.get() == iPtrActorScriptStatus) 
+    { // If exist, move script to gc list.
+      this->mGCedActorScriptList.emplace_back(std::move(ptrsmtScript)); 
+      return DY_SUCCESS;
+    }
+  }
+
+  for (auto& ptrsmtScript : this->mActorScriptList)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
+    if (ptrsmtScript.get() == iPtrActorScriptStatus) 
+    { // If exist, move script to gc list.
+      this->mGCedActorScriptList.emplace_back(std::move(ptrsmtScript)); 
+      return DY_SUCCESS;
+    }
+  }
+
+  return DY_FAILURE;
+}
+
 void MDyScript::TryMoveInsertWidgetScriptToMainContainer()
 {
   if (this->mInsertWidgetScriptList.empty() == true) { return; }

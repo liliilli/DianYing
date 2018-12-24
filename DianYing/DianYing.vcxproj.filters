@@ -226,20 +226,20 @@
     <ClCompile Include="Source\Management\Type\Time\DDyTimepoint.cc" />
     <ClCompile Include="Source\Management\Internal\MDyProfiling.cc" />
     <ClCompile Include="Source\Management\Helper\SDyProfilingHelper.cc" />
-    <ClCompile Include="Source\Component\Internal\Script\FDyWidgetScriptStatus.cc" />
     <ClCompile Include="Source\Component\UI\CDyWidgetScript.cc" />
     <ClCompile Include="Source\Management\Internal\World\FDyWorldUIContainer.cc" />
     <ClCompile Include="Source\Management\Internal\Input\FDyInputDelegateManager.cc" />
     <ClCompile Include="Source\Builtin\Widget\FDyBtWdTestLoadingUi.cc" />
     <ClCompile Include="Source\Builtin\Script\FDyBtScTestLoadingUi.cc" />
-    <ClCompile Include="Source\Component\Internal\Actor\FDyActorScriptStatus.cc" />
-    <ClCompile Include="Source\Component\Internal\Actor\CDyActorScriptCpp.cc" />
-    <ClCompile Include="Source\Component\Internal\Actor\CDyActorScriptLua.cc" />
-    <ClCompile Include="Source\Component\Internal\Widget\CDyWidgetScriptCpp.cc" />
-    <ClCompile Include="Source\Component\Internal\Widget\CDyWidgetScriptLua.cc" />
     <ClCompile Include="Source\Component\Actor\CDyActorScript.cc" />
     <ClCompile Include="Source\Builtin\Script\BtScActorTest1.cc" />
     <ClCompile Include="Source\Builtin\Script\BtScActorTest2.cc" />
+    <ClCompile Include="Source\Component\Internal\Script\Widget\CDyWidgetScriptCpp.cc" />
+    <ClCompile Include="Source\Component\Internal\Script\Widget\CDyWidgetScriptLua.cc" />
+    <ClCompile Include="Source\Component\Internal\Script\Widget\FDyWidgetScriptStatus.cc" />
+    <ClCompile Include="Source\Component\Internal\Script\Actor\CDyActorScriptCpp.cc" />
+    <ClCompile Include="Source\Component\Internal\Script\Actor\CDyActorScriptLua.cc" />
+    <ClCompile Include="Source\Component\Internal\Script\Actor\FDyActorScriptStatus.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />

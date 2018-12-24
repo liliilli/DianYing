@@ -30,12 +30,14 @@ namespace dy
 
 void FDyBuiltinDebugUiScript::Initiate()
 {
+#ifdef false
   const auto i = MDY_ACQUIRE_CONTROLLER_UI(); // Use this for acquire controller exclusive right for UI.
   MDY_ASSERT(i == DY_SUCCESS, "Unexpected error occurred.");
 
   MDY_BIND_INPUT_AXIS("XAxis", &FDyBuiltinDebugUiScript::Bar_MoveLeft);
   MDY_BIND_INPUT_AXIS("YAxis", &FDyBuiltinDebugUiScript::Bar_MoveUp);
   MDY_BIND_INPUT_ACTION("Enter", EDyInputActionStatus::Pressed, &FDyBuiltinDebugUiScript::EndApplication);
+#endif
 
   this->mTimeManager      = &MDyTime::GetInstance();
   this->mProfilingManger  = &MDyProfiling::GetInstance();
