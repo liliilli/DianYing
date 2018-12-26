@@ -61,6 +61,11 @@ public:
   /// @brief Set next status.
   void SetNextGameStatus(_MIN_ EDyGlobalGameStatus iNextStatus) noexcept;
 
+  /// @brief Try end game. Duplicated function call is neglected to once.
+  MDY_NOTUSED EDySuccess TryEndGame() noexcept;
+  /// @brief Check game should be ended.
+  MDY_NODISCARD bool MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() const noexcept;
+
 private:
   /// @brief Get IO Thread Instance which not be nulled.
   NotNull<TDyIO*> pfGetIOThread();
@@ -87,7 +92,8 @@ private:
   EDyGlobalGameStatus mNextStatus           = EDyGlobalGameStatus::Booted;
   EDyGlobalGameStatus mStatus               = EDyGlobalGameStatus::None;
   EDyGlobalGameStatus mPrevStatus           = EDyGlobalGameStatus::None;
-  bool                mIsStatusTransitionDone  = false;
+  bool                mIsStatusTransitionDone   = false;
+  bool                mIsGameEndCalled          = false;
 
   friend class SDyIOConnectionHelper;
   friend class SDyIOWorkerConnHelper;

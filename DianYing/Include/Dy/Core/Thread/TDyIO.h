@@ -88,6 +88,11 @@ public:
   /// If not slept or exist callback function, just return DY_FAILURE.
   EDySuccess outTryCallSleptCallbackFunction();
 
+  /// @brief Try Garbage collect of Reference Instance with resource as Scope and Style, which
+  /// is only Valid resource but count is 0. \n
+  /// This function may causes time consuming, call this carefully.
+  void outTryForwardCandidateRIToGCList(_MIN_ EDyScope iScope, _MIN_ EDyResourceStyle iStyle);
+
 private:
   /// @struct FTaskQueueCmpFunctor
   /// @brief  IO Task queue comparsion function type.
@@ -147,46 +152,39 @@ private:
   MDY_NODISCARD TDependencyList
   pCheckAndUpdateReferenceInstance(_MIN_ const std::vector<PRIVerificationItem>& dependencies) noexcept;
 
-  ///
   /// @brief Check Reference instance is bounded. (resource is bounded or not).
   /// If there is not specified instance in contianer, UB might be happened.
-  ///
   MDY_NODISCARD bool pIsReferenceInstanceBound(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style);
 
-  ///
   /// @brief Check specified meta information is exist on meta information.
   /// @param specifier Resource specifier name.
   /// @param type Resource type.
-  ///
   MDY_NODISCARD bool outIsMetaInformationExist(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type);
 
-  ///
   /// @brief Check whether resource's Reference Instance is exist on now as any kind of information.
   /// @param specifier Resource specifier name.
   /// @param type  Resource type.
   /// @param style Resource style mode.
-  ///
   MDY_NODISCARD bool pIsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style);
 
-  ///
   /// @brief Try bind binder instance to Resource Reference Instance.
   /// If not found RI, just return DY_FAILURE.
-  ///
   MDY_NODISCARD EDySuccess TryBindBinderToResourceRI
   (_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder);
 
-  ///
   /// @brief Try bind binder instance to Information Reference Instance.
   /// If not found RI, just return DY_FAILURE.
-  ///
   MDY_NODISCARD EDySuccess TryBindBinderToInformationRI
   (_MIN_ const std::string & iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase * iPtrBinder);
 
-  ///
   /// @brief Try detach binder instance from Resource Reference Instance.
-  /// If nnot found RI< just return DY_FAILURE.
-  ///
+  /// If nnot found RI, just return DY_FAILURE.
   MDY_NODISCARD EDySuccess TryDetachBinderFromResourceRI
+  (_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder);
+
+  /// @brief Try detach binder instance from Information Reference Instance.
+  /// If nnot found RI, just return DY_FAILURE.
+  MDY_NODISCARD EDySuccess TryDetachBinderFromInformationRI
   (_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder);
 
   ///
@@ -231,7 +229,7 @@ private:
   /// This function use mutex, so performance is afraid.
   void pTryUpdateDeferredTaskList(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style);
 
-  /// @brief
+  /// @brief 
   void outForceProcessIOInsertPhase() noexcept;
 
   //!

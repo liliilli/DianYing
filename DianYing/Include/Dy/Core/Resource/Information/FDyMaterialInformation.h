@@ -41,7 +41,7 @@ public:
 
   MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(FDyMaterialInformation);
   FDyMaterialInformation(_MIN_ const PDyMaterialInstanceMetaInfo& metaInfo);
-  ~FDyMaterialInformation();
+  ~FDyMaterialInformation() = default;
 
   /// @brief Get specifier name of material information.
   MDY_NODISCARD const std::string& GetSpecifierName() const noexcept

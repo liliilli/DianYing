@@ -44,6 +44,8 @@ private:
   void pRunFrameLoading();
   /// @brief Run runtime phase.
   void pRunFrameGameRuntime();
+  /// @brief Run shutdown phase.
+  void PRunFrameShutdown();
 
   std::unique_ptr<TDyIO>  mIOThreadInstance = nullptr;
   std::thread             mIOThreadThread;

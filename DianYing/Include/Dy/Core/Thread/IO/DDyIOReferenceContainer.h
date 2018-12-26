@@ -75,9 +75,11 @@ public:
       _MIN_ EDyResourceType iType, 
       _MIN_ const __FDyBinderBase* iPtrBinder);
 
-  ///
-  /// @brief
-  ///
+  /// @brief Get GC-Candidate Reference instance list from container. \n
+  /// Condition-satisfied RI will be removed from container.
+  std::vector<DDyIOReferenceInstance> GetForwardCandidateRIAsList(_MIN_ EDyScope iScope);
+
+  /// @brief 
   MDY_NODISCARD EDySuccess CreateReferenceInstance(
       _MIN_ const std::string& specifier,
       _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style, _MIN_ EDyScope scope);
@@ -86,6 +88,12 @@ public:
   MDY_NODISCARD EDySuccess TryUpdateValidity(_MIN_ EDyResourceType type, _MIN_ const std::string& specifier, _MIN_ bool isValid);
 
 private:
+  /// @brief
+  void ForwardCandidateRIFromList(
+      _MIN_ EDyScope iScope,
+      _MINOUT_ TStringHashMap<DDyIOReferenceInstance>& iContainer, 
+      _MOUT_ std::vector<DDyIOReferenceInstance>& iResult);
+
   TStringHashMap<DDyIOReferenceInstance> mMapTextureReference     = {};
   TStringHashMap<DDyIOReferenceInstance> mMapGLShaderReference    = {};
   TStringHashMap<DDyIOReferenceInstance> mMapMeshReference        = {};

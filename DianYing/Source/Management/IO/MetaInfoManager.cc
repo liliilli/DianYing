@@ -217,6 +217,16 @@ EDySuccess MDyMetaInfo::pfRelease()
 {
   this->mLevelInfoMap.clear();
   this->mScriptMetaInfo.clear();
+  this->mFontMetaInfo.clear();
+  this->mShaderMetaInfo.clear();
+  this->mBtMeshMetaInfo.clear();
+  this->mModelMetaInfo.clear();
+  this->mTextureMetaInfo.clear();
+  this->mMaterialMetaInfo.clear();
+  this->mAttachmentMetaInfo.clear();
+  this->mFrameBufferMetaInfo.clear();
+  this->mBootResourceSpecifierList.clear();
+  this->mGlobalResourceSpecifierList.clear();
   return DY_SUCCESS;
 }
 

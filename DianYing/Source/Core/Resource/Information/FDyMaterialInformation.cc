@@ -34,9 +34,4 @@ FDyMaterialInformation::FDyMaterialInformation(_MIN_ const PDyMaterialInstanceMe
   }
 }
 
-FDyMaterialInformation::~FDyMaterialInformation()
-{
-  MDY_NOT_IMPLEMENTED_ASSERT();
-}
-
 } /// ::dy namespace

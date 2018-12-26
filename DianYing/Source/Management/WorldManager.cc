@@ -34,13 +34,6 @@ EDySuccess MDyWorld::pfInitialize()
 EDySuccess MDyWorld::pfRelease()
 {
   MDY_LOG_INFO_D("{} | MDyWorld::pfRelease().", "FunctionCall");
-  if (this->mLevel)
-  {
-    this->mLevel->Release();
-    this->mLevel = nullptr;
-    this->Update(-1);
-  }
-
   return DY_SUCCESS;
 }
 
@@ -183,7 +176,17 @@ EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(RemoveLevel)()
   if (MDY_CHECK_ISEMPTY(this->mLevel)) { return DY_FAILURE; }
 
   this->mLevel->Release(); 
+
+  // Just remove script instance without `Destroy` function intentionally.
+  MDyScript::GetInstance().ClearWidgetScriptGCList();
+  this->MDY_PRIVATE_SPECIFIER(TryRemoveActorGCList)();
+
+  // And level must be nullptr. and... Remove RI and Resource & Informations with Scope is `Level`.
   this->mLevel = nullptr;
+  this->mActivatedModelRenderers.clear();
+  this->mActivatedOnRenderingCameras.clear();
+  SDyIOConnectionHelper::TryGC(EDyScope::Level, EDyResourceStyle::Resource);
+  SDyIOConnectionHelper::TryGC(EDyScope::Level, EDyResourceStyle::Information);
   return DY_SUCCESS;
 }
 
@@ -239,6 +242,7 @@ EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(TransitionToNextLevel)()
   // Need to call initiate funciton maually.
   MDY_LOG_DEBUG_D("Initiate Actor script : {}", this->mPresentLevelName);
   MDyScript::GetInstance().UpdateActorScript(0.0f, EDyScriptState::CalledNothing);
+  MDyScript::GetInstance().TryMoveInsertActorScriptToMainContainer();
 
   // Need to realign position following actor tree.
   MDY_LOG_DEBUG_D("Align Position of Actors on level : {}", this->mPresentLevelName);
@@ -298,6 +302,11 @@ void MDyWorld::MDY_PRIVATE_SPECIFIER(TryRenderLoadingUi)()
   this->mUiInstanceContainer.TryRenderLoadingUi();
 }
 
+void MDyWorld::MDY_PRIVATE_SPECIFIER(TryRemoveActorGCList)() noexcept
+{
+  this->mActorGc.clear();
+}
+
 void MDyWorld::SetLevelTransition(_MIN_ const std::string& iSpecifier)
 {
   if (MDyMetaInfo::GetInstance().IsLevelMetaInformation(iSpecifier) == false)
@@ -332,6 +341,7 @@ void MDyWorld::pfUnbindCameraFocus()
 void MDyWorld::pfMoveActorToGc(_MIN_ NotNull<FDyActor*> actorRawPtr) noexcept
 {
   this->mActorGc.emplace_back(std::unique_ptr<FDyActor>(actorRawPtr));
+  this->mActorGc.back()->MDY_PRIVATE_SPECIFIER(TryRemoveScriptInstances)();
 }
 
 void MDyWorld::pfUnenrollActiveModelRenderer(_MIN_ TI32 index) noexcept

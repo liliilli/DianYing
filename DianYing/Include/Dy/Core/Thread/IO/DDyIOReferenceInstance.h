@@ -47,11 +47,9 @@ struct DDyIOReferenceInstance final
   EDyResourceType     mResourceType   = EDyResourceType::NoneError;
   EDyScope            mScope          = EDyScope::Global;
 
-  bool                mIsNeedToBeGarbageCollected = false;
   bool                mIsResourceValid    = false;
   TConditionCallback  mConditionCallback  = nullptr;
 
-  std::atomic<TU32>   mReferenceCount     = 0;
   std::vector<const __FDyBinderBase*> mPtrBoundBinderList = {};
 
   DDyIOReferenceInstance() = default;

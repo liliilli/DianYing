@@ -119,10 +119,31 @@ public:
       _MIN_ EDyInputActionStatus iCondition,
       _MIN_ std::function<void()> iFunction,
       _MIN_ const std::string& iAxisName);
+  
+  /// @brief
+  /// @TODO IMPLEMENT FOR ADYACTORLUASCRIPT
+  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(TryBindAxisDelegate)(
+      _MIN_ ADyActorCppScript& iRefUiScript, 
+      _MIN_ std::function<void(TF32)> iFunction,
+      _MIN_ const std::string& iAxisName);
 
   /// @brief
   /// @TODO IMPLEMENT FOR ADYACTORLUASCRIPT
-  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(TryDetachContollerActor)(_MIN_ ADyActorCppScript& iRefUiScript) noexcept;
+  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(TryBindActionDelegate)(
+      _MIN_ ADyActorCppScript& iRefUiScript, 
+      _MIN_ EDyInputActionStatus iCondition,
+      _MIN_ std::function<void()> iFunction,
+      _MIN_ const std::string& iAxisName);
+
+  /// @brief Try require controller exlusive right for Actor. \n
+  /// If there is any actor which is using controller delegate, Actor delegate will be reset and overwritten by this. \n
+  /// And if there is same actor instance reference already, it just do nothing and return DY_FAILURE.
+  /// @TODO IMPLEMENT FOR ADYWIDGETLUASCRIPT
+  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(TryRequireControllerActor)(_MIN_ ADyActorCppScript& iRefActor) noexcept;
+
+  /// @brief
+  /// @TODO IMPLEMENT FOR ADYACTORLUASCRIPT
+  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(TryDetachContollerActor)(_MIN_ ADyActorCppScript& iRefActor) noexcept;
 
 private:
   void MDY_PRIVATE_SPECIFIER(pInitializeAxisNAction)();
@@ -172,6 +193,20 @@ private:
 ///
 #define MDY_DETACH_CONTROLLER_UI() \
   ::dy::MDyInput::GetInstance().MDY_PRIVATE_SPECIFIER(TryDetachContollerUi)(*this);
+
+///
+/// @macro MDY_ACQUIRE_CONTROLLER
+/// @brief Use this for acquire controller exclusive right for Actor.
+///
+#define MDY_ACQUIRE_CONTROLLER() \
+  ::dy::MDyInput::GetInstance().MDY_PRIVATE_SPECIFIER(TryRequireControllerActor)(*this);
+
+///
+/// @macro MDY_DETACH_CONTROLLER
+/// @brief Detach actor script from controller delegate management.
+///
+#define MDY_DETACH_CONTROLLER() \
+  ::dy::MDyInput::GetInstance().MDY_PRIVATE_SPECIFIER(TryDetachContollerActor)(*this);
 
 ///
 /// @macro MDY_BIND_INPUT_AXIS

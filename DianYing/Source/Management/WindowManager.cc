@@ -97,6 +97,16 @@ bool MDyWindow::IsWindowShouldClose() const noexcept
   return glfwWindowShouldClose(this->mGlfwWindow);
 }
 
+EDySuccess MDyWindow::MDY_PRIVATE_SPECIFIER(TerminateWindow)() noexcept
+{
+  bool terminated = false;
+  if (terminated == true) { return DY_FAILURE; }
+
+  terminated = true;
+  glfwSetWindowShouldClose(this->GetGLMainWindow(), GLFW_TRUE);
+  return DY_SUCCESS;
+}
+
 void MDyWindow::TempSwapBuffers()
 {
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mGlfwWindow), "OpenGL Context must not be null when running.");
@@ -251,11 +261,10 @@ EDySuccess MDyWindow::pfRelease()
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
     MDY_LOG_INFO_D("Released ImGui Context.");
-
-    glfwTerminate();
     break;
   }
 
+  glfwTerminate();
   MDY_INHERITENCE_WINDOW_INFORMATION_SUPER::ReleaseDep();
   return DY_SUCCESS;
 }

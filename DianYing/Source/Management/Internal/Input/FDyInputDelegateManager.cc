@@ -19,6 +19,44 @@
 namespace dy
 {
 
+EDySuccess FDyInputDelegateManager::TryRequireControllerActor(_MIN_ ADyActorCppScript& iRefActor) noexcept
+{
+  if (this->mPtrActorScript == &iRefActor) 
+  { 
+    MDY_LOG_WARNING("Controller Actor reference on input delegate and requiring is same. Process is neglected.");
+    return DY_FAILURE; 
+  }
+
+  if (MDY_CHECK_ISNOTNULL(this->mPtrActorScript)) 
+  { // If `mPtrActorScript` is not null, automatically remove delegates.
+    MDY_CALL_ASSERT_SUCCESS(this->TryDetachContollerActor(*this->mPtrActorScript));
+  }
+
+  this->mPtrActorScript = &iRefActor;
+  MDY_LOG_DEBUG_D("Controller UI binding succeeded. ptr : {:x}", std::ptrdiff_t(this->mPtrActorScript));
+  return DY_SUCCESS;
+}
+
+EDySuccess FDyInputDelegateManager::TryDetachContollerActor(_MIN_ ADyActorCppScript& iRefActor) noexcept
+{
+  if (MDY_CHECK_ISNULL(this->mPtrActorScript))
+  {
+    MDY_LOG_WARNING("Failed to detach controller actor. Controller Actor reference on input delegate is not bound anything.");
+    return DY_FAILURE;
+  }
+  if (this->mPtrActorScript != &iRefActor) 
+  { // If `mPtrActorScript` is not null but not matched to inputted reference. 
+    MDY_LOG_WARNING("Failed to detach controller actor. Controller UI reference on input delegate is not bound anything.");
+    return DY_FAILURE;
+  }
+
+  this->mActorActionDelegateList.clear();
+  this->mActorAxisDelegateList.clear();
+  MDY_LOG_DEBUG_D("Controller Actor detachment succeeded. ptr : {:x}", std::ptrdiff_t(this->mPtrActorScript));
+  this->mPtrActorScript = nullptr;
+  return DY_SUCCESS;
+}
+
 EDySuccess FDyInputDelegateManager::TryRequireControllerUi(_MIN_ ADyWidgetCppScript& iRefUiScript) noexcept
 {
   if (this->mPtrUiScript == &iRefUiScript) 
@@ -72,7 +110,22 @@ void FDyInputDelegateManager::BindActionDelegateUi(
   this->mUiActionDelegateList.emplace_back(std::ref(iRefAction), iStatus, iFunction);
 }
 
-  void FDyInputDelegateManager::CheckDelegateAxis(_MIN_ TF32 dt)
+void FDyInputDelegateManager::BindAxisDelegateActor(
+    _MIN_ const TCallbackAxis& iFunction,
+    _MIN_ DDyAxisBindingInformation& iRefAxis)
+{
+  this->mActorAxisDelegateList.emplace_back(std::ref(iRefAxis), iFunction);
+}
+
+void FDyInputDelegateManager::BindActionDelegateActor(
+    _MIN_ const TCallbackAction& iFunction, 
+    _MIN_ EDyInputActionStatus iStatus,
+    _MIN_ DDyActionBindingInformation& iRefAction)
+{
+  this->mActorActionDelegateList.emplace_back(std::ref(iRefAction), iStatus, iFunction);
+}
+
+void FDyInputDelegateManager::CheckDelegateAxis(_MIN_ TF32 dt)
 {
   if (MDY_CHECK_ISNOTNULL(this->mPtrUiScript))
   { // If Ui Script have control exclusive right, do UI controller's delegates.
@@ -84,7 +137,11 @@ void FDyInputDelegateManager::BindActionDelegateUi(
   }
   else if (MDY_CHECK_ISNOTNULL(this->mPtrActorScript))
   { // If not, and actor is being bound to controller, do Actor's or do nothing.
-    MDY_NOT_IMPLEMENTED_ASSERT();
+    for (auto& [axisInstance, function] : this->mActorAxisDelegateList)
+    {
+      function(axisInstance.get().mAxisValue);
+      if (MDY_CHECK_ISNULL(this->mPtrActorScript)) { break; }
+    }
   }
 }
 
@@ -100,13 +157,22 @@ void FDyInputDelegateManager::CheckDelegateAction(_MIN_ TF32 dt)
   }
   else if (MDY_CHECK_ISNOTNULL(this->mPtrActorScript))
   { // If not, and actor is being bound to controller, do Actor's or do nothing.
-    MDY_NOT_IMPLEMENTED_ASSERT();
+    for (auto& [action, condition, function] : this->mActorActionDelegateList)
+    {
+      if (action.get().mKeyStatus == condition) { function(); }
+      if (MDY_CHECK_ISNULL(this->mPtrActorScript)) { break; }
+    }
   }
 }
 
 ADyWidgetCppScript* FDyInputDelegateManager::GetPtrUiScriptOnBinding() const noexcept
 {
   return this->mPtrUiScript;
+}
+
+ADyActorCppScript* FDyInputDelegateManager::GetPtrActorScriptOnBinding() const noexcept
+{
+  return this->mPtrActorScript;
 }
 
 } /// ::dy namespace

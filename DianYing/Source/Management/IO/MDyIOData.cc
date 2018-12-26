@@ -14,7 +14,6 @@
 
 /// Header file
 #include <Dy/Management/IO/MDyIOData.h>
-#include "Dy/Core/Resource/Information/FDyModelInformation.h"
 
 namespace dy
 {
@@ -69,6 +68,21 @@ void MDyIOData::InsertResult(_MIN_ EDyResourceType type, _MIN_ void* ptrrawInsta
     this->__mFrameBufferContainer.MoveInsert(ptr->GetSpecifierName(), std::move(ptr));
   } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
+  }
+}
+
+EDySuccess MDyIOData::MDY_PRIVATE_SPECIFIER(TryRemove)(_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType)
+{
+  switch (iType)
+  {
+  case EDyResourceType::GLShader:     { return this->__mShaderContainer.Remove(iSpecifier); } 
+  case EDyResourceType::Texture:      { return this->__mTextureContainer.Remove(iSpecifier); }
+  case EDyResourceType::Mesh:         { return this->__mMeshContainer.Remove(iSpecifier); } 
+  case EDyResourceType::Model:        { return this->__mModelContainer.Remove(iSpecifier); } 
+  case EDyResourceType::Material:     { return this->__mMaterialContainer.Remove(iSpecifier); } 
+  case EDyResourceType::GLAttachment: { return this->__mAttachmentContainer.Remove(iSpecifier); } 
+  case EDyResourceType::GLFrameBuffer:{ return this->__mFrameBufferContainer.Remove(iSpecifier); } 
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
   }
 }
 

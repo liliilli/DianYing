@@ -37,7 +37,8 @@ CDyActorScript::~CDyActorScript()
     // intentional.
     auto& ref = static_cast<CDyActorScriptCpp&>(*mPtrScriptStatus->MDY_PRIVATE_SPECIFIER(GetPtrInternalActorScript)());
     MDY_NOTUSED const auto _ = i.MDY_PRIVATE_SPECIFIER(TryDetachContollerActor)(*ref.MDY_PRIVATE_SPECIFIER(GetScriptInstance()));
-  }
+    MDyScript::GetInstance().TryForwardActorScriptToGCList(mPtrScriptStatus);
+  } break;
   case EDyScriptType::Lua: 
   { // If Widget type is `Lua`, do the thing. but not supported yet.
     MDY_NOT_IMPLEMENTED_ASSERT();

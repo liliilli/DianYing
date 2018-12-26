@@ -14,9 +14,6 @@
 ///
 
 #include <Dy/Core/Resource/Type/TDyResourceBinder.h>
-#include <Dy/Helper/Type/ColorRGBA.h>
-#include <Dy/Management/Interface/IDyFontContainer.h>
-#include <Dy/Helper/Type/DyString.h>
 
 namespace dy
 {

@@ -32,7 +32,7 @@ namespace dy
 
 ///
 /// @class SDyIOWorkerConnHelper
-/// @brief IO Connection helper class for communicating to IOThread from Logic thread.
+/// @brief IO Connection helper class for communicating to IOThread from IO worker thread.
 ///
 class SDyIOWorkerConnHelper final
 {

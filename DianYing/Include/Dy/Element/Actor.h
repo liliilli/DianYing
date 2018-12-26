@@ -279,6 +279,10 @@ public:
     return DY_FAILURE;
   }
 
+  /// @brief Try remove script instances list. \n
+  /// But this funtion does not remove script instance actually, but just forward script list to GC-list.
+  void MDY_PRIVATE_SPECIFIER(TryRemoveScriptInstances)() noexcept;
+
   ///
   /// @brief  Get script component pointer from script list using scriptName to verify.
   /// @param  scriptName Script name to verify and get.

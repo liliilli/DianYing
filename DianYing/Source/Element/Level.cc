@@ -82,19 +82,12 @@ void FDyLevel::Release()
   MDY_LOG_INFO("{} | Release level context. | Level name : {}", "FDyLevel::Release()", this->mLevelName);
   for (auto& [name, actor] : this->mActorMap)
   {
-    if (!actor) continue;
-    else
-    {
-      const auto flag = actor->Release();
-      if (flag == DY_FAILURE)
-      {
-        MDY_LOG_WARNING("{} | Release function is failed. | Actor name : {}", "FDyLevel::Release", actor->GetActorName());
-      }
-
-      MDyWorld::GetInstance().pfMoveActorToGc(DyMakeNotNull(actor.release()));
-    }
+    if (MDY_CHECK_ISEMPTY(actor)) { continue; }
+    MDyWorld::GetInstance().pfMoveActorToGc(DyMakeNotNull(actor.release()));
   }
 
+  // GCed actor have not to be called GCed script `Destroy` function when Level is released.
+  this->mActorMap.clear();
   this->mInitialized = false;
 }
 

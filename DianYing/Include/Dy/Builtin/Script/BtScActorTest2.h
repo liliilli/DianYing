@@ -26,11 +26,13 @@ class BtScActorTest2 final : public ADyScriptResource, public ADyActorCppScript
 {
   MDY_REGISTER_RESOURCE_SCRIPT(BtScActorTest2, "TestScript2");
 public:
-  void Initiate() override final {};
+  void Initiate() override final;
 
   void Start() override final {};
 
-  void Update(_MIN_ TF32 dt) override final {};
+  void Update(_MIN_ TF32 dt) override final;
+
+  void Test();
 };
 
 } /// ::dy namespace

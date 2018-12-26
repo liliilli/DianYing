@@ -62,7 +62,7 @@ FDyTextureResource::FDyTextureResource(_MIN_ const FDyTextureInformation& inform
 
 FDyTextureResource::~FDyTextureResource()
 {
-  if (this->mTextureResourceId) { glDeleteTextures(1, &mTextureResourceId); }
+  FDyGLWrapper::DeleteTexture(this->mTextureResourceId);
   SDyProfilingHelper::IncreaseOnBindTextureCount(0);
 }
 

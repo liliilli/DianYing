@@ -341,6 +341,8 @@ void MDyInput::MDY_PRIVATE_SPECIFIER(pInitializeCallbacks)()
 
 EDySuccess MDyInput::pfRelease()
 {
+  this->mBindedActionMap.clear();
+  this->mBindedAxisMap.clear();
   return DY_SUCCESS;
 }
 
@@ -716,10 +718,57 @@ EDySuccess MDyInput::MDY_PRIVATE_SPECIFIER(TryBindActionDelegate)(
   return DY_SUCCESS;
 }
 
-EDySuccess MDyInput::MDY_PRIVATE_SPECIFIER(TryDetachContollerActor)(_MIN_ ADyActorCppScript& iRefUiScript) noexcept
+EDySuccess MDyInput::MDY_PRIVATE_SPECIFIER(TryBindAxisDelegate)(
+    _MIN_ ADyActorCppScript& iRefUiScript, 
+    _MIN_ std::function<void(TF32)> iFunction,
+    _MIN_ const std::string& iAxisName)
 {
-  MDY_NOT_IMPLEMENTED_ASSERT();
-  return DY_FAILURE;
+  if (this->mDelegateManger.GetPtrActorScriptOnBinding() != &iRefUiScript)
+  { // Check actor is binding to delegate now. If not matched, just return DY_FAILURE with error log.
+    MDY_LOG_ERROR("Failed to binding axis function of Actor script. Instance reference did not match.");
+    return DY_FAILURE;
+  }
+
+  if (this->IsAxisExist(iAxisName) == false)
+  { // Check `Axis` is exist. if not, return DY_FAILURE.
+    MDY_LOG_ERROR("Failed to binding axis function of Actor script. Axis `{}` does not exist.", iAxisName);
+    return DY_FAILURE;
+  }
+
+  this->mDelegateManger.BindAxisDelegateActor(iFunction, this->mBindedAxisMap.at(iAxisName));
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyInput::MDY_PRIVATE_SPECIFIER(TryBindActionDelegate)(
+    _MIN_ ADyActorCppScript& iRefUiScript, 
+    _MIN_ EDyInputActionStatus iCondition,
+    _MIN_ std::function<void()> iFunction, 
+    _MIN_ const std::string& iActionName)
+{
+  if (this->mDelegateManger.GetPtrActorScriptOnBinding() != &iRefUiScript)
+  { // Check Actor is binding to delegate now. If not matched, just return DY_FAILURE with error log.
+    MDY_LOG_ERROR("Failed to binding action function of Actor script. Instance reference did not match.");
+    return DY_FAILURE;
+  }
+
+  if (this->IsActionExist(iActionName) == false)
+  { // Check `Action` is exist. if not, return DY_FAILURE.
+    MDY_LOG_ERROR("Failed to binding action function of Actor script. Action `{}` does not exist.", iActionName);
+    return DY_FAILURE;
+  }
+
+  this->mDelegateManger.BindActionDelegateActor(iFunction, iCondition, this->mBindedActionMap.at(iActionName));
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyInput::MDY_PRIVATE_SPECIFIER(TryRequireControllerActor)(_MIN_ ADyActorCppScript& iRefActor) noexcept
+{
+  return this->mDelegateManger.TryRequireControllerActor(iRefActor);
+}
+
+EDySuccess MDyInput::MDY_PRIVATE_SPECIFIER(TryDetachContollerActor)(_MIN_ ADyActorCppScript& iRefActor) noexcept
+{
+  return this->mDelegateManger.TryDetachContollerActor(iRefActor);
 }
 
 } /// ::dy namespace

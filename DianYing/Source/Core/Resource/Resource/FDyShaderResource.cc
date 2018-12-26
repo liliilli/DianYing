@@ -91,7 +91,7 @@ FDyShaderResource::FDyShaderResource(_MIN_ const FDyShaderInformation& informati
 FDyShaderResource::~FDyShaderResource()
 {
   SDyProfilingHelper::DecreaseOnBindShaderCount(1);
-  MDY_NOT_IMPLEMENTED_ASSERT();
+  FDyGLWrapper::DeleteShaderProgram(this->mShaderProgramId);
 }
 
 TU32 FDyShaderResource::GetShaderProgramId() const noexcept
@@ -102,12 +102,12 @@ TU32 FDyShaderResource::GetShaderProgramId() const noexcept
 void FDyShaderResource::UseShader() const noexcept
 {
   MDY_ASSERT(this->mShaderProgramId > 0, "Shader program must be valid.");
-  glUseProgram(this->mShaderProgramId);
+  FDyGLWrapper::UseShaderProgram(this->mShaderProgramId);
 }
 
 void FDyShaderResource::DisuseShader() const noexcept
 {
-  glUseProgram(0);
+  FDyGLWrapper::DisuseShaderProgram();
 }
 
 std::optional<TFragmentList>

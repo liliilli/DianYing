@@ -39,8 +39,7 @@ FDyAttachmentResource::FDyAttachmentResource(_MIN_ const FDyAttachmentInformatio
 
 FDyAttachmentResource::~FDyAttachmentResource()
 {
-  MDY_NOT_IMPLEMENTED_ASSERT();
-  FDyGLWrapper::DeleteTexture(this->mAttachmentId);
+  MDY_CALL_ASSERT_SUCCESS(FDyGLWrapper::DeleteAttachment(this->mAttachmentId, this->IsRenderBuffer()));
 }
 
 } /// ::dy namespace

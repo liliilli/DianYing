@@ -50,22 +50,6 @@ TDyIO::~TDyIO()
   this->mMetaInfoManager    = nullptr;
 }
 
-void TDyIO::BindSleepCallbackFunction(_MIN_ std::function<void()> iCbFunc)
-{
-  mCbSleepFunction = nullptr;
-  mCbSleepFunction = iCbFunc;
-}
-
-EDySuccess TDyIO::outTryCallSleptCallbackFunction()
-{
-  if (this->outIsIOThreadSlept() == false)  { return DY_FAILURE; }
-  if (this->mCbSleepFunction == nullptr)    { return DY_FAILURE; }
-
-  this->mCbSleepFunction();
-  this->mCbSleepFunction = nullptr;
-  return DY_SUCCESS;
-}
-
 EDySuccess TDyIO::Initialize()
 {
   // Initialize IOWorkers with context.
@@ -84,17 +68,7 @@ EDySuccess TDyIO::Initialize()
 }
 
 void TDyIO::Release()
-{
-  // Stop and release IOWorkers
-  for (auto& [instance, thread] : this->mWorkerList)
-  {
-    instance->outTryStop();
-    thread.join();
-    instance = nullptr;
-  }
-
-  MDY_NOT_IMPLEMENTED_ASSERT();
-}
+{ }
 
 void TDyIO::operator()()
 {
@@ -125,7 +99,16 @@ void TDyIO::operator()()
     DDyIOTask task;
     { // Wait task in the queue, and try pop task when not empty.
       MDY_SYNC_WAIT_CONDITION(this->mQueueMutex, this->mConditionVariable, CbTaskQueueWaiting);
-      if (this->mIsThreadStopped == true && this->mIOTaskQueue.empty() == true) { break; }
+      if (this->mIsThreadStopped == true && this->mIOTaskQueue.empty() == true) 
+      { 
+        for (auto& [workerInstance, workerThread] : this->mWorkerList)
+        { // Wait all worker thread is terminated.
+          workerInstance->outTryStop();
+          workerThread.join();
+          workerInstance = nullptr;
+        }
+        break; 
+      }
       task = this->mIOTaskQueue.top();
       this->mIOTaskQueue.pop();
     }
@@ -161,11 +144,13 @@ void TDyIO::outTryForwardToMainTaskList(_MIN_ const DDyIOTask& task) noexcept
 
 void TDyIO::outTryStop()
 {
+  MDY_ASSERT(this->outIsIOThreadSlept() == true, "To stop io thread, IO Thread must be slept.");
   {
     MDY_SYNC_LOCK_GUARD(this->mQueueMutex);
     this->mIsThreadStopped = true;
   }
   this->mConditionVariable.notify_one();
+  MDY_SLEEP_FOR_ATOMIC_TIME();
 }
 
 EDySuccess TDyIO::outCreateReferenceInstance(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style, _MIN_ EDyScope scope)
@@ -509,6 +494,12 @@ EDySuccess TDyIO::TryDetachBinderFromResourceRI
   return this->mRIResourceMap.TryDetachBinderFromResourceRI(iSpecifier, iType, iPtrBinder);
 }
 
+EDySuccess TDyIO::TryDetachBinderFromInformationRI
+(_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder)
+{
+  return this->mRIInformationMap.TryDetachBinderFromResourceRI(iSpecifier, iType, iPtrBinder);
+}
+
 bool TDyIO::pIsReferenceInstanceBound(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style)
 {
   switch (style)
@@ -537,6 +528,12 @@ bool TDyIO::outIsMetaInformationExist(_MIN_ const std::string& specifier, _MIN_ 
   }
 }
 
+void TDyIO::BindSleepCallbackFunction(_MIN_ std::function<void()> iCbFunc)
+{
+  mCbSleepFunction = nullptr;
+  mCbSleepFunction = iCbFunc;
+}
+
 bool TDyIO::outIsIOThreadSlept() noexcept
 {
   bool sleptFlag;
@@ -553,6 +550,38 @@ bool TDyIO::outIsIOThreadSlept() noexcept
 
   MDY_SLEEP_FOR_ATOMIC_TIME();
   return sleptFlag;
+}
+
+EDySuccess TDyIO::outTryCallSleptCallbackFunction()
+{
+  if (this->outIsIOThreadSlept() == false)  { return DY_FAILURE; }
+  if (this->mCbSleepFunction == nullptr)    { return DY_FAILURE; }
+
+  this->mCbSleepFunction();
+  this->mCbSleepFunction = nullptr;
+  return DY_SUCCESS;
+}
+
+void TDyIO::outTryForwardCandidateRIToGCList(_MIN_ EDyScope iScope, _MIN_ EDyResourceStyle iStyle)
+{
+  switch (iStyle)
+  {
+  case EDyResourceStyle::Information: 
+  { // Get GC-Candidate RI instance from list (condition is `mIsResourceValid == true` && `mReferenceCount == 0`.
+    // and reinsert it to gc list.
+    const auto gcCandidateList = this->mRIInformationMap.GetForwardCandidateRIAsList(iScope);
+    this->mGarbageCollector.InsertGcCandidateList(gcCandidateList);
+    this->mGarbageCollector.TryGarbageCollectCandidateList();
+  } break;
+  case EDyResourceStyle::Resource:    
+  { // Get GC-Candidate RI instance from list (condition is `mIsResourceValid == true` && `mReferenceCount == 0`.
+    // and reinsert it to gc list.
+    const auto gcCandidateList = this->mRIResourceMap.GetForwardCandidateRIAsList(iScope);
+    this->mGarbageCollector.InsertGcCandidateList(gcCandidateList);
+    this->mGarbageCollector.TryGarbageCollectCandidateList();
+  } break;
+  default: MDY_UNEXPECTED_BRANCH();
+  }
 }
 
 bool TDyIO::isoutIsMainTaskListIsEmpty() const noexcept

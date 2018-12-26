@@ -30,16 +30,18 @@ void SDyIOConnectionHelper::PopulateResource(
   MDY_CALL_ASSERT_SUCCESS(ioThread.outTryEnqueueTask(specifier, resourceType, resourceStyle, scope));
 }
 
-void SDyIOConnectionHelper::TryGC()
-{
-  MDY_NOT_IMPLEMENTED_ASSERT();
-}
-
 void SDyIOConnectionHelper::TryStop()
 {
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
   auto& ioThread = *gEngine->pfGetIOThread();
   ioThread.outTryStop();
+}
+
+void SDyIOConnectionHelper::TryGC(_MIN_ EDyScope iScope, _MIN_ EDyResourceStyle iStyle)
+{
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
+  auto& ioThread = *gEngine->pfGetIOThread();
+  ioThread.outTryForwardCandidateRIToGCList(iScope, iStyle);
 }
 
 void SDyIOConnectionHelper::PopulateResourceList(

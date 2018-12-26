@@ -79,6 +79,10 @@ private:
   /// @brief Insert result from TDyIO (I/O GC-IN Phase)
   void InsertResult(_MIN_ EDyResourceType type, _MIN_ void* ptrrawInstance);
 
+  /// @brief Try remove information instance with iSpecifier name and iType. \n
+  /// If not exist, return DY_FAILURE.
+  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(TryRemove)(_MIN_ const std::string& iSpcifier, _MIN_ EDyResourceType iType);
+
   template <typename TType>
   using __THashMap = DDyMutexUniqueHashMap<std::string, TType>;
 
@@ -91,6 +95,7 @@ private:
   __THashMap<FDyFrameBufferInformation> __mFrameBufferContainer = {};
 
   friend class TDyIO;
+  friend class FDyIOGC;
 };
 
 } /// ::dy namespace
