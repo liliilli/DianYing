@@ -174,15 +174,13 @@ EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(RemoveLevel)()
 {
   // Let present level do release sequence
   if (MDY_CHECK_ISEMPTY(this->mLevel)) { return DY_FAILURE; }
-
-  this->mLevel->Release(); 
+  // And level must be nullptr. and... Remove RI and Resource & Informations with Scope is `Level`.
+  this->mLevel = nullptr;
 
   // Just remove script instance without `Destroy` function intentionally.
   MDyScript::GetInstance().ClearWidgetScriptGCList();
   this->MDY_PRIVATE_SPECIFIER(TryRemoveActorGCList)();
 
-  // And level must be nullptr. and... Remove RI and Resource & Informations with Scope is `Level`.
-  this->mLevel = nullptr;
   this->mActivatedModelRenderers.clear();
   this->mActivatedOnRenderingCameras.clear();
   SDyIOConnectionHelper::TryGC(EDyScope::Level, EDyResourceStyle::Resource);
@@ -218,9 +216,9 @@ void MDyWorld::MDY_PRIVATE_SPECIFIER(BuildNextLevel)()
 {
   // GSS 14
   MDY_LOG_DEBUG_D("Building Next Level : {}", this->mNextLevelName);
-  this->mLevel = std::make_unique<FDyLevel>();
+
   const auto* levelMetaInfo = MDyMetaInfo::GetInstance().GetLevelMetaInformation(this->mNextLevelName);
-  this->mLevel->Initialize(*levelMetaInfo);
+  this->mLevel = std::make_unique<FDyLevel>(*levelMetaInfo);
 
   MDY_LOG_DEBUG_D("Dependent manager resetting...");
 

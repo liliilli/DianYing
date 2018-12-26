@@ -35,40 +35,24 @@ class FDyLevel final : public FDyObject, public IDyUpdatable, public ADyNameCoun
 
 public:
   /// Initialize level context with valid descriptor.
-  void Initialize(_MIN_ const PDyLevelConstructMetaInfo& desc);
-
+  FDyLevel(_MIN_ const PDyLevelConstructMetaInfo& desc);
   /// Release level by release all subobjects in this level storing information or signalling something.
-  void Release();
+  virtual ~FDyLevel();
 
   /// Update level.
   void Update(_MIN_ float dt) override final;
 
-  ///
   /// @brief  Get background color of this scene.
   /// @return background color [0, 1] (RGBA)
-  ///
-  FORCEINLINE MDY_NODISCARD const DDyColorRGBA& GetBackgroundColor() const noexcept
-  {
-    return this->mLevelBackgroundColor;
-  }
+  MDY_NODISCARD const DDyColorRGBA& GetBackgroundColor() const noexcept;
 
-  ///
   /// @brief  Get present level name.
   /// @return Level name.
-  ///
-  MDY_NODISCARD const std::string& GetLevelName() const noexcept
-  {
-    return this->mLevelName;
-  }
+  MDY_NODISCARD const std::string& GetLevelName() const noexcept;
 
-  ///
   /// @brief  Set background color of this scene.
   /// @param  backgroundColor New backgrond color value.
-  ///
-  FORCEINLINE void SetBackgroundColor(_MIN_ const DDyColorRGBA& backgroundColor) noexcept
-  {
-    this->mLevelBackgroundColor = backgroundColor;
-  }
+  void SetBackgroundColor(_MIN_ const DDyColorRGBA& backgroundColor) noexcept;
 
   /// @brief Align position of actors.
   void MDY_PRIVATE_SPECIFIER(AlignActorsPosition)() noexcept;

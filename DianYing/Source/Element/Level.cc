@@ -34,7 +34,7 @@ namespace
 namespace dy
 {
 
-void FDyLevel::Initialize(_MIN_ const PDyLevelConstructMetaInfo& desc)
+FDyLevel::FDyLevel(_MIN_ const PDyLevelConstructMetaInfo& desc)
 {
   /// @brief  Create pawn instance and set fundamental properties.
   /// @param  objectInformation Information to create FDyPawn instance.
@@ -77,7 +77,7 @@ void FDyLevel::Initialize(_MIN_ const PDyLevelConstructMetaInfo& desc)
   this->mInitialized = true;
 }
 
-void FDyLevel::Release()
+FDyLevel::~FDyLevel()
 {
   MDY_LOG_INFO("{} | Release level context. | Level name : {}", "FDyLevel::Release()", this->mLevelName);
   for (auto& [name, actor] : this->mActorMap)
@@ -91,9 +91,24 @@ void FDyLevel::Release()
   this->mInitialized = false;
 }
 
-void FDyLevel::Update(float dt)
+void FDyLevel::Update(_MIN_ float dt)
 {
   if (this->mInitialized == false) { return; }
+}
+
+const DDyColorRGBA& FDyLevel::GetBackgroundColor() const noexcept
+{
+  return this->mLevelBackgroundColor;
+}
+
+const std::string& FDyLevel::GetLevelName() const noexcept
+{
+  return this->mLevelName;
+}
+
+void FDyLevel::SetBackgroundColor(_MIN_ const DDyColorRGBA& backgroundColor) noexcept
+{
+  this->mLevelBackgroundColor = backgroundColor;
 }
 
 void FDyLevel::MDY_PRIVATE_SPECIFIER(AlignActorsPosition)() noexcept

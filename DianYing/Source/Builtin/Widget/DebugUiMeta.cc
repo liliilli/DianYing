@@ -51,7 +51,7 @@ MDY_SET_IMMUTABLE_STRING(sBuffer, R"dy(
       "Parent": "",
       "Details":
       {
-        "InitialPosition": { "X":32, "Y": 32 },
+        "InitialPosition": { "X":32, "Y": 64 },
         "WidgetSize": { "X": 1, "Y": 1 },
         "Origin": "Left_Bottom",
         "InitialString": "", "InitialColor": 16776960, "InitialAlpha": 1.0,

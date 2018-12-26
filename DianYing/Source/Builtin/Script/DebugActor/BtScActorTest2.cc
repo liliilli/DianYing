@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Builtin/Script/BtScActorTest2.h>
+#include <Dy/Builtin/Script/DebugActor/BtScActorTest2.h>
 #include <Dy/Element/Actor.h>
 #include <Dy/Management/InputManager.h>
 #include <Dy/Core/DyEngine.h>

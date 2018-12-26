@@ -232,14 +232,15 @@
     <ClCompile Include="Source\Builtin\Widget\FDyBtWdTestLoadingUi.cc" />
     <ClCompile Include="Source\Builtin\Script\FDyBtScTestLoadingUi.cc" />
     <ClCompile Include="Source\Component\Actor\CDyActorScript.cc" />
-    <ClCompile Include="Source\Builtin\Script\BtScActorTest1.cc" />
-    <ClCompile Include="Source\Builtin\Script\BtScActorTest2.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Widget\CDyWidgetScriptCpp.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Widget\CDyWidgetScriptLua.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Widget\FDyWidgetScriptStatus.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Actor\CDyActorScriptCpp.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Actor\CDyActorScriptLua.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Actor\FDyActorScriptStatus.cc" />
+    <ClCompile Include="Source\Builtin\Script\DebugActor\BtScActorTest1.cc" />
+    <ClCompile Include="Source\Builtin\Script\DebugActor\BtScActorTest2.cc" />
+    <ClCompile Include="Source\Builtin\Script\DebugActor\BtScActorTest3.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -613,8 +614,9 @@
     <ClInclude Include="Include\Dy\Component\Internal\Widget\CDyWidgetScriptCpp.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Widget\CDyWidgetScriptLua.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Widget\CDyWidgetScriptBase.h" />
-    <ClInclude Include="Include\Dy\Builtin\Script\BtScActorTest1.h" />
-    <ClInclude Include="Include\Dy\Builtin\Script\BtScActorTest2.h" />
+    <ClInclude Include="Include\Dy\Builtin\Script\DebugActor\BtScActorTest1.h" />
+    <ClInclude Include="Include\Dy\Builtin\Script\DebugActor\BtScActorTest2.h" />
+    <ClInclude Include="Include\Dy\Builtin\Script\DebugActor\BtScActorTest3.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

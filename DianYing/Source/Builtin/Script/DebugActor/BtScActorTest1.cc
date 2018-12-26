@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Builtin/Script/BtScActorTest1.h>
+#include <Dy/Builtin/Script/DebugActor/BtScActorTest1.h>
 
 namespace dy
 {
