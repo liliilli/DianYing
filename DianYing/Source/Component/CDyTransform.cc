@@ -270,7 +270,7 @@ const DDyMatrix4x4& CDyTransform::GetTransform() const noexcept
 
     this->mFinalRenderingTransform[3][0] = this->mFinalRenderingPosition.X;
     this->mFinalRenderingTransform[3][1] = this->mFinalRenderingPosition.Y;
-    this->mFinalRenderingTransform[3][2] = this->mFinalRenderingPosition.X;
+    this->mFinalRenderingTransform[3][2] = this->mFinalRenderingPosition.Z;
 
     this->mIsModelMatrixDirty = false;
   }
