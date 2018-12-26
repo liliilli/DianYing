@@ -80,6 +80,12 @@ public:
   /// This function is thread-safe and get performance down.
   static void DeleteShaderProgram(_MIN_ const TU32 shaderProgramId);
 
+  /// @brief Use shader program.
+  static void UseShaderProgram(_MIN_ TU32 iShaderProgramId);
+
+  /// @brief Disuse shader program.
+  static void DisuseShaderProgram();
+
   /// @brief Create direct buffer which can be shared between OpenGL contexts. \n
   /// This function is thread-safe and get performance down.
   static MDY_NODISCARD std::optional<TU32> CreateBuffer(_MIN_ const PDyGLBufferDescriptor& descriptor);
@@ -103,7 +109,7 @@ public:
 
   /// @brief Delete attachment (texture or renderbuffer) if texture id is valid.
   /// This function is thread-safe and get performance down.
-  static MDY_NODISCARD EDySuccess DeleteAttachment(_MIN_ const TU32 attachmentId);
+  static MDY_NODISCARD EDySuccess DeleteAttachment(_MIN_ TU32 iAttachmentId, _MIN_ bool iIsRenderBuffer);
 
   /// @brief Create frame buffer. \n
   /// Creating frame buffer object must be held on main thread context.

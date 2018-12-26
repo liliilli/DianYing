@@ -198,7 +198,7 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(ReflectGameStatusTransition)()
     { // GameRuntime => Shutdown. Just wait IO Thread is slept.
       if (MDyWorld::GetInstance().IsDebugUiExist() == true)
       { // If debug ui exist, remove.
-        MDY_CALL_BUT_NOUSE_RESULT(MDyWorld::GetInstance().TryCreateDebugUi());
+        MDY_CALL_BUT_NOUSE_RESULT(MDyWorld::GetInstance().TryRemoveDebugUi());
       }
       SDyIOConnectionHelper::PopulateResourceList(
           std::vector<DDyResourceName>{}, EDyScope::Global, 

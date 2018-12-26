@@ -49,8 +49,8 @@ void FDyBuiltinTextureChecker::ConstructBuffer(_MOUT_ TBufferType& buffer, _MOUT
   // 10101010
   // 01010101
   // 10101010
-  constexpr const TU08 sOn = 0b11111111;
-  constexpr const TU08 sOf = 0b00000000;
+  constexpr const TU08 sOn = 0b00110000;
+  constexpr const TU08 sOf = 0b00000100;
   constexpr const std::array<TU08, 3> mOn = {sOn, sOn, sOn};
   constexpr const std::array<TU08, 3> mOf = {sOf, sOf, sOf};
   constexpr const std::array<std::array<TU08, 3>, 64> infoChunk =

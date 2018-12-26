@@ -186,7 +186,19 @@ std::optional<TU32> FDyGLWrapper::CreateShaderProgram(_MIN_ const TFragmentList&
 void FDyGLWrapper::DeleteShaderProgram(_MIN_ const TU32 shaderProgramId)
 {
   MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
-  glDeleteShader(shaderProgramId);
+  glDeleteProgram(shaderProgramId);
+}
+
+void FDyGLWrapper::UseShaderProgram(_MIN_ TU32 iShaderProgramId)
+{
+  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
+  glUseProgram(iShaderProgramId);
+}
+
+void FDyGLWrapper::DisuseShaderProgram()
+{
+  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
+  glUseProgram(0);
 }
 
 #define MDY_GL_NONE 0
@@ -355,12 +367,20 @@ std::optional<TU32> FDyGLWrapper::CreateAttachment(_MIN_ const PDyGLAttachmentDe
   return attachmentId;
 }
 
-EDySuccess FDyGLWrapper::DeleteAttachment(_MIN_ const TU32 attachmentId)
+EDySuccess FDyGLWrapper::DeleteAttachment(_MIN_ TU32 iAttachmentId, _MIN_ bool iIsRenderBuffer)
 {
   // Delete attachment (only texture attachment now)
-  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
-  glDeleteTextures(1, &attachmentId);
-  return DY_FAILURE;
+  if (iIsRenderBuffer == true) 
+  { 
+    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
+    glDeleteRenderbuffers(1, &iAttachmentId); 
+  }
+  else 
+  { 
+    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
+    glDeleteTextures(1, &iAttachmentId); 
+  }
+  return DY_SUCCESS;
 }
 
 std::optional<TU32> FDyGLWrapper::CreateFrameBuffer(_MIN_ const PDyGLFrameBufferDescriptor& iDescriptor)

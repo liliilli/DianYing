@@ -14,7 +14,6 @@
 
 /// Header file
 #include <Dy/Management/IO/MDyIOData.h>
-#include "Dy/Core/Resource/Information/FDyModelInformation.h"
 
 namespace dy
 {

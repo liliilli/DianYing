@@ -39,7 +39,7 @@ class FDyMaterialResource final
 {
 public:
   FDyMaterialResource(_MIN_ const FDyMaterialInformation& information);
-  ~FDyMaterialResource();
+  ~FDyMaterialResource() = default;
 
   /// @brief Get specifier name of material information.
   MDY_NODISCARD const std::string& GetSpecifierName() const noexcept

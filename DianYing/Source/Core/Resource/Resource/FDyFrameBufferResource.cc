@@ -64,7 +64,6 @@ FDyFrameBufferResource::FDyFrameBufferResource(const FDyFrameBufferInformation& 
 
 FDyFrameBufferResource::~FDyFrameBufferResource()
 {
-  MDY_NOT_IMPLEMENTED_ASSERT();
   MDY_CALL_ASSERT_SUCCESS(FDyGLWrapper::DeleteFrameBuffer(this->mFrameBufferId));
 }
 
