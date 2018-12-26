@@ -325,12 +325,10 @@ void CDyTransform::pUpdateFromParentWorldEulerAngle() const noexcept
   }
   else
   { // If binded actor has a parent.
-    auto parent                         = validActorPtr->GetParent();
-    CDyTransform* parentTransformPtr    = parent.value()->GetTransform();
-
-    if (parentTransformPtr->pfIsToChildRotationUpdate() == true)
+    CDyTransform* ptrParentTransform = validActorPtr->GetParent()->GetTransform();
+    if (ptrParentTransform->pfIsToChildRotationUpdate() == true)
     { // Get updated parent::mToChildWorldEulerAngle vector.
-      this->mFromParentWorldEulerAngle  = parentTransformPtr->pfGetToChildWorldEulerAngle();
+      this->mFromParentWorldEulerAngle  = ptrParentTransform->pfGetToChildWorldEulerAngle();
     }
   }
 
@@ -460,12 +458,10 @@ void CDyTransform::pUpdateFromParentWorldPosition() const noexcept
   }
   else
   { // If binded actor has a parent.
-    auto parent                      = validActorPtr->GetParent();
-    CDyTransform* parentTransformPtr = parent.value()->GetTransform();
-
-    if (parentTransformPtr->pfIsToChildPositionUpdated() == true)
+    CDyTransform* ptrParentTransform = validActorPtr->GetParent()->GetTransform();
+    if (ptrParentTransform->pfIsToChildPositionUpdated() == true)
     { // Get updated parent::mToChildPosition vector.
-      this->mFromParentWorldPosition = parentTransformPtr->pfGetToChildPosition();
+      this->mFromParentWorldPosition = ptrParentTransform->pfGetToChildPosition();
     }
   }
 
@@ -513,12 +509,10 @@ void CDyTransform::pUpdateFromParentWorldScale() const noexcept
   }
   else
   { // If binded actor has a parent.
-    auto parent                      = validActorPtr->GetParent();
-    CDyTransform* parentTransformPtr = parent.value()->GetTransform();
-
-    if (parentTransformPtr->pfIsToChildScaleUpdate() == true)
+    CDyTransform* ptrParentTransform = validActorPtr->GetParent()->GetTransform();
+    if (ptrParentTransform->pfIsToChildScaleUpdate() == true)
     { // Get updated parent::mToChildPosition vector.
-      this->mFromParentWorldScale = parentTransformPtr->pfGetToChildScale();
+      this->mFromParentWorldScale = ptrParentTransform->pfGetToChildScale();
     }
   }
 

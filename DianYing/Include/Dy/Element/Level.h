@@ -29,8 +29,6 @@ namespace dy {
 ///
 class FDyLevel final : public FDyObject, public IDyUpdatable, public ADyNameCounterMap
 {
-  using TActorSmtPtr      = std::unique_ptr<FDyActor>;
-  using TActorMap         = std::unordered_map<std::string, TActorSmtPtr>;
   using TNameCounterMap   = std::unordered_map<std::string, int32_t>;
 
 public:
@@ -59,13 +57,13 @@ public:
 
 private:
   /// Level's name. not modifiable
-  std::string     mLevelName            = MDY_INITIALIZE_EMPTYSTR;
+  std::string         mLevelName            = MDY_INITIALIZE_EMPTYSTR;
   /// Level basic color
-  DDyColorRGBA    mLevelBackgroundColor = DDyColorRGBA::White;
+  DDyColorRGBA        mLevelBackgroundColor = DDyColorRGBA::White;
   /// Actor list (hierarchial version)
-  TActorMap       mActorMap             = {};
+  FDyActor::TActorMap mActorMap             = {};
   /// Check if level is initialized or released. Level is active when only mInitialized is true.
-  bool            mInitialized          = false;
+  bool                mInitialized          = false;
 
 public:
   /// Level information as string.

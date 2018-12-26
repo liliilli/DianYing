@@ -19,6 +19,11 @@
         },
         "ComponentList": [
           {
+            "Type"      : "Script",
+            "Activated" : true,
+            "Details"   : { "Specifier": "TestScript3" }
+          },
+          {
             "Type": "Transform",
             "Details": {
               "LPosition": { "X": 0, "Y": 0, "Z": 0 },
@@ -28,11 +33,6 @@
               "WRotation": { "X": 0, "Y": 0, "Z": 0 },
               "WScale": { "X": 1, "Y": 1, "Z": 1 }
             }
-          },
-          {
-            "Type"      : "Script",
-            "Activated" : true,
-            "Details"   : { "Specifier": "TestScript3" }
           }
         ]
       },
@@ -40,7 +40,7 @@
         "Name"      : "Test",
         "Type"      : "Actor",
         "CommonProperties": {
-          "ParentSpecifierName" : "ParentActor",
+          "ParentSpecifierName" : "",
           "IsInitiallyActivated": true,
           "IsFromPrefab"        : false,
           "PrefabSpecifierName" : ""
@@ -100,7 +100,7 @@
               "LScale"    : { "X": 1, "Y": 1, "Z": 1 },
               "WPosition" : { "X": 0, "Y": 0, "Z": 0 },
               "WRotation" : { "X": 0, "Y": 0, "Z": 0 },
-              "WScale"    : { "X": 1, "Y": 1, "Z": 1 }
+              "WScale"    : { "X": 1, "Y": 2, "Z": 1 }
             }
           },
           {
@@ -177,42 +177,6 @@
               "LRotation" : { "X": 0, "Y": 0, "Z": 0 },
               "LScale"    : { "X": 1, "Y": 1, "Z": 1 },
               "WPosition" : { "X": 0, "Y": -13, "Z": 0 },
-              "WRotation" : { "X": 0, "Y": 0, "Z": 0 },
-              "WScale"    : { "X": 10, "Y": 10, "Z": 10 }
-            }
-          },
-          {
-            "Type"      : "ModelFilter",
-            "Activated" : true,
-            "Details"   : { "ModelName" : "dyBtModelBox" }
-          },
-          {
-            "Type"      : "ModelRenderer",
-            "Activated" : true,
-            "Details"   : {
-              "Shadow"    : true,
-              "Materials" : [ "dyBtMatOpaqueStaticPlain" ]
-            }
-          }
-        ]
-      },
-      {
-        "Name"      : "WallObj",
-        "Type"      : "Actor",
-        "CommonProperties": {
-          "ParentSpecifierName" : "",
-          "IsInitiallyActivated": true,
-          "IsFromPrefab"        : false,
-          "PrefabSpecifierName" : ""
-        },
-        "ComponentList": [
-          {
-            "Type"      : "Transform",
-            "Details"   : {
-              "LPosition" : { "X": 0, "Y": 0, "Z": 0 },
-              "LRotation" : { "X": 0, "Y": 0, "Z": 0 },
-              "LScale"    : { "X": 1, "Y": 1, "Z": 1 },
-              "WPosition" : { "X": 0, "Y": 0, "Z": 20 },
               "WRotation" : { "X": 0, "Y": 0, "Z": 0 },
               "WScale"    : { "X": 10, "Y": 10, "Z": 10 }
             }

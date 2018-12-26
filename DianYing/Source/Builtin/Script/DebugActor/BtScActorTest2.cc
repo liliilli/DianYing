@@ -26,13 +26,14 @@ void dy::BtScActorTest2::Initiate()
 
 void dy::BtScActorTest2::Update(TF32 dt)
 {
-  //static TF32 f = 0.0f;
-  //f += dt;
+  static TF32 f = 0.0f;
+  f += dt;
 
-  //auto& refActor = this->GetActorReference();
-  //const auto& p  = refActor.GetTransform()->GetWorldPosition();
-  //refActor.GetTransform()->SetWorldPosition(DDyVector3{std::sin(f) * 10, p.Y, p.Z});
+  auto& refActor = this->GetActorReference();
+  const auto& p  = refActor.GetTransform()->GetWorldPosition();
+  refActor.GetTransform()->SetWorldPosition(DDyVector3{std::sin(f) * 10, p.Y, std::cos(f) * 10});
 
+#ifdef false
   auto& mInput = MDyInput::GetInstance();
   if (mInput.IsJoystickConnected() == true)
   {
@@ -45,6 +46,7 @@ void dy::BtScActorTest2::Update(TF32 dt)
           5 * mInput.GetJoystickStickValue(1)} * dt;
     refActor.GetTransform()->SetWorldPosition(p);
   }
+#endif
 }
 
 void dy::BtScActorTest2::Test()

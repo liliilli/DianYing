@@ -52,9 +52,11 @@ struct PDyObjectMetaInfo final
 
   /// Dependency information which are varied along with mType.
   TComponentMetaList mMetaComponentInfo;
-  /// Children object meta information.
+  /// `Children object` Meta informations.
   std::vector<std::unique_ptr<PDyObjectMetaInfo>> mChildrenList = {};
 };
+
+using TObjectMetaInfoList = std::vector<std::unique_ptr<PDyObjectMetaInfo>>;
 
 void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const PDyObjectMetaInfo& p);
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyObjectMetaInfo& p);
