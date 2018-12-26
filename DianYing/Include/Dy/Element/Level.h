@@ -60,8 +60,6 @@ public:
 private:
   /// Level's name. not modifiable
   std::string     mLevelName            = MDY_INITIALIZE_EMPTYSTR;
-  /// Level's hash value for identifying scene in world's array.
-  TU32            mLevelHashIdentifier  = MDY_INITIALIZE_DEFUINT;
   /// Level basic color
   DDyColorRGBA    mLevelBackgroundColor = DDyColorRGBA::White;
   /// Actor list (hierarchial version)

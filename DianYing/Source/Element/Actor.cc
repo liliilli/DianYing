@@ -28,7 +28,7 @@
 namespace dy
 {
 
-EDySuccess FDyActor::Initialize(_MIN_ const PDyObjectMetaInfo& objectMetaDesc)
+FDyActor::FDyActor(_MIN_ const PDyObjectMetaInfo& objectMetaDesc)
 {
   bool isTransformCreated = false;
   this->pSetObjectName(objectMetaDesc.mSpecifierName);
@@ -75,13 +75,11 @@ EDySuccess FDyActor::Initialize(_MIN_ const PDyObjectMetaInfo& objectMetaDesc)
 
   // Create CDyEmptyTransform when not having CDyTransform.
   MDY_ASSERT(isTransformCreated == true, "CDyTransform component must be created to all FDyActor.");
-  return DY_SUCCESS;
 }
 
-EDySuccess FDyActor::Release()
+FDyActor::~FDyActor()
 {
   this->mComponentList.clear();
-  return DY_SUCCESS;
 }
 
 void FDyActor::Activate() noexcept

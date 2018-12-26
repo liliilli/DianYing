@@ -9,11 +9,38 @@
     "Object":
     [
       {
-        "Name"      : "Test",
-        "UUID"      : "",
-        "Type"      : "Actor",
+        "Name" : "ParentActor",
+        "Type" : "Actor",
         "CommonProperties": {
           "ParentSpecifierName" : "",
+          "IsInitiallyActivated": true,
+          "IsFromPrefab"        : false,
+          "PrefabSpecifierName" : ""
+        },
+        "ComponentList": [
+          {
+            "Type": "Transform",
+            "Details": {
+              "LPosition": { "X": 0, "Y": 0, "Z": 0 },
+              "LRotation": { "X": 0, "Y": 0, "Z": 0 },
+              "LScale": { "X": 1, "Y": 1, "Z": 1 },
+              "WPosition": { "X": 0, "Y": 0, "Z": 0 },
+              "WRotation": { "X": 0, "Y": 0, "Z": 0 },
+              "WScale": { "X": 1, "Y": 1, "Z": 1 }
+            }
+          },
+          {
+            "Type"      : "Script",
+            "Activated" : true,
+            "Details"   : { "Specifier": "TestScript3" }
+          }
+        ]
+      },
+      {
+        "Name"      : "Test",
+        "Type"      : "Actor",
+        "CommonProperties": {
+          "ParentSpecifierName" : "ParentActor",
           "IsInitiallyActivated": true,
           "IsFromPrefab"        : false,
           "PrefabSpecifierName" : ""
@@ -50,7 +77,6 @@
       },
       {
         "Name"      : "Test2",
-        "UUID"      : "",
         "Type"      : "Actor",
         "CommonProperties": {
           "ParentSpecifierUUID" : "",
@@ -94,15 +120,12 @@
       },
       {
         "Name"      : "DirLight",
-        "UUID"      : "",
         "Type"      : "Actor",
         "CommonProperties": {
-          "ParentSpecifierUUID" : "",
           "ParentSpecifierName" : "",
           "IsInitiallyActivated": true,
           "IsFromPrefab"        : false,
-          "PrefabSpecifierName" : "",
-          "PrefabSpecifierUUID" : ""
+          "PrefabSpecifierName" : ""
         },
         "ComponentList": [
           {
@@ -139,15 +162,12 @@
       },
       {
         "Name"      : "FloorObj",
-        "UUID"      : "",
         "Type"      : "Actor",
         "CommonProperties": {
-          "ParentSpecifierUUID" : "",
           "ParentSpecifierName" : "",
           "IsInitiallyActivated": true,
           "IsFromPrefab"        : false,
-          "PrefabSpecifierName" : "",
-          "PrefabSpecifierUUID" : ""
+          "PrefabSpecifierName" : ""
         },
         "ComponentList": [
           {
@@ -178,15 +198,12 @@
       },
       {
         "Name"      : "WallObj",
-        "UUID"      : "",
         "Type"      : "Actor",
         "CommonProperties": {
-          "ParentSpecifierUUID" : "",
           "ParentSpecifierName" : "",
           "IsInitiallyActivated": true,
           "IsFromPrefab"        : false,
-          "PrefabSpecifierName" : "",
-          "PrefabSpecifierUUID" : ""
+          "PrefabSpecifierName" : ""
         },
         "ComponentList": [
           {

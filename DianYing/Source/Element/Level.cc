@@ -41,8 +41,7 @@ FDyLevel::FDyLevel(_MIN_ const PDyLevelConstructMetaInfo& desc)
   static auto pCreateActorInstance = [](_MIN_ const PDyObjectMetaInfo& objectInformation)
   {
     // Make FDyActor instance.
-    auto instancePtr = std::make_unique<FDyActor>();
-    MDY_CALL_ASSERT_SUCCESS(instancePtr->Initialize(objectInformation));
+    auto instancePtr = std::make_unique<FDyActor>(objectInformation);
 
     // Check activation flags and execute sub-routines of each components.
     instancePtr->pUpdateActivateFlagFromParent();
@@ -53,7 +52,6 @@ FDyLevel::FDyLevel(_MIN_ const PDyLevelConstructMetaInfo& desc)
   // FunctionBody ∨
 
   this->mLevelName            = desc.mMetaCategory.mLevelName;
-  this->mLevelHashIdentifier  = hash::DyToCrc32Hash(this->mLevelName.c_str());
   this->mLevelBackgroundColor = desc.mMetaCategory.mLevelBackgroundColor;
 
   // Create object, FDyActor

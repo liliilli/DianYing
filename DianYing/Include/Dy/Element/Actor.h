@@ -38,20 +38,13 @@ class FDyActor : public FDyObject
   MDY_SET_CRC32_HASH_WITH_TYPE(FDyActor);
   MDY_SET_TYPEMATCH_FUNCTION(FDyObject, FDyActor);
 public:
-  FDyActor() = default;
-
-  ///
   /// @brief Initialize FDyActor.
   /// @param objectMetaDesc Meta descriptor information instance for FDyActor.
-  /// @return Success / Failure flag.
-  ///
-  MDY_NODISCARD EDySuccess Initialize(_MIN_ const PDyObjectMetaInfo& objectMetaDesc);
+  FDyActor(_MIN_ const PDyObjectMetaInfo& objectMetaDesc);
 
-  ///
   /// @brief Release function (virtual) because Initialize function has different parameter but release does not need any parameter.
   /// @return Success flag.
-  ///
-  MDY_NODISCARD virtual EDySuccess Release();
+  virtual ~FDyActor();
 
   ///
   /// @brief Activate FDyActor instance.
