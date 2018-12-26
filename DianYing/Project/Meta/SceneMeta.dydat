@@ -13,12 +13,10 @@
         "UUID"      : "",
         "Type"      : "Actor",
         "CommonProperties": {
-          "ParentSpecifierUUID" : "",
           "ParentSpecifierName" : "",
           "IsInitiallyActivated": true,
           "IsFromPrefab"        : false,
-          "PrefabSpecifierName" : "",
-          "PrefabSpecifierUUID" : ""
+          "PrefabSpecifierName" : ""
         },
         "ComponentList": [
           {
@@ -27,8 +25,8 @@
               "LPosition": { "X": 0, "Y": 0, "Z": 0 },
               "LRotation": { "X": 0, "Y": 0, "Z": 0 },
               "LScale": { "X": 1, "Y": 1, "Z": 1 },
-              "WPosition": { "X": -1, "Y": 0, "Z": 20 },
-              "WRotation": { "X": 0, "Y": 180, "Z": 0 },
+              "WPosition": { "X": 0, "Y": 30, "Z": -30 },
+              "WRotation": { "X": 45, "Y": 0, "Z": 0 },
               "WScale": { "X": 1, "Y": 1, "Z": 1 }
             }
           },
@@ -75,7 +73,7 @@
               "LRotation" : { "X": 0, "Y": 0, "Z": 0 },
               "LScale"    : { "X": 1, "Y": 1, "Z": 1 },
               "WPosition" : { "X": 0, "Y": 0, "Z": 0 },
-              "WRotation" : { "X": 45, "Y": 50, "Z": -70 },
+              "WRotation" : { "X": 0, "Y": 0, "Z": 0 },
               "WScale"    : { "X": 1, "Y": 1, "Z": 1 }
             }
           },
@@ -83,86 +81,6 @@
             "Type"      : "ModelFilter",
             "Activated" : true,
             "Details"   : { "ModelName": "dyBtModelBox" }
-          },
-          {
-            "Type"      : "ModelRenderer",
-            "Activated" : true,
-            "Details"   : {
-              "Shadow"    : true,
-              "Materials" : [ "dyBtMatOpaqueStaticPlain" ]
-            }
-          }
-        ]
-      },
-      {
-        "Name"      : "Test3",
-        "UUID"      : "",
-        "Type"      : "Actor",
-        "CommonProperties": {
-          "ParentSpecifierUUID" : "",
-          "ParentSpecifierName" : "",
-          "IsInitiallyActivated": true,
-          "IsFromPrefab"        : false,
-          "PrefabSpecifierName" : "",
-          "PrefabSpecifierUUID" : ""
-        },
-        "ComponentList": [
-          {
-            "Type"      : "Transform",
-            "Details"   : {
-              "LPosition" : { "X": 0, "Y": 0, "Z": 0 },
-              "LRotation" : { "X": 0, "Y": 0, "Z": 0 },
-              "LScale"    : { "X": 1, "Y": 1, "Z": 1 },
-              "WPosition" : { "X": -4, "Y": 0, "Z": 0 },
-              "WRotation" : { "X": -30, "Y": 20, "Z": 60 },
-              "WScale"    : { "X": 1, "Y": 1, "Z": 1 }
-            }
-          },
-          {
-            "Type"      : "ModelFilter",
-            "Activated" : true,
-            "Details"   : {
-              "ModelName" : "dyBtModelPlain"
-            }
-          },
-          {
-            "Type"      : "ModelRenderer",
-            "Activated" : true,
-            "Details"   : {
-              "Shadow"    : true,
-              "Materials" : [ "dyBtMatOpaqueStaticPlain" ]
-            }
-          }
-        ]
-      },
-      {
-        "Name"      : "Test4",
-        "UUID"      : "",
-        "Type"      : "Actor",
-        "CommonProperties": {
-          "ParentSpecifierUUID" : "",
-          "ParentSpecifierName" : "",
-          "IsInitiallyActivated": true,
-          "IsFromPrefab"        : false,
-          "PrefabSpecifierName" : "",
-          "PrefabSpecifierUUID" : ""
-        },
-        "ComponentList": [
-          {
-            "Type"      : "Transform",
-            "Details"   : {
-              "LPosition" : { "X": 0, "Y": 0, "Z": 0 },
-              "LRotation" : { "X": 0, "Y": 0, "Z": 0 },
-              "LScale"    : { "X": 1, "Y": 1, "Z": 1 },
-              "WPosition" : { "X": 3, "Y": 0, "Z": 0 },
-              "WRotation" : { "X": 0, "Y": 0, "Z": 0 },
-              "WScale"    : { "X": 1, "Y": 1.5, "Z": 1 }
-            }
-          },
-          {
-            "Type"      : "ModelFilter",
-            "Activated" : true,
-            "Details"   : { "ModelName" : "dyBtModelSphere" }
           },
           {
             "Type"      : "ModelRenderer",
@@ -274,10 +192,10 @@
           {
             "Type"      : "Transform",
             "Details"   : {
-              "LPosition" : { "X": 5, "Y": 0, "Z": 0 },
+              "LPosition" : { "X": 0, "Y": 0, "Z": 0 },
               "LRotation" : { "X": 0, "Y": 0, "Z": 0 },
               "LScale"    : { "X": 1, "Y": 1, "Z": 1 },
-              "WPosition" : { "X": 10, "Y": 0, "Z": 0 },
+              "WPosition" : { "X": 0, "Y": 0, "Z": 20 },
               "WRotation" : { "X": 0, "Y": 0, "Z": 0 },
               "WScale"    : { "X": 10, "Y": 10, "Z": 10 }
             }

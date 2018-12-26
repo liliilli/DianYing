@@ -35,22 +35,16 @@ struct PDyObjectMetaInfo final
   {
     ///
     std::string mParentSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
-    ///
-    std::string mParentSpecifierUUID  = MDY_INITIALIZE_EMPTYSTR;
     /// FDyObject is initially activated or not.
     bool        mInitialActivated     = false;
     /// FDyObject is using prefab.
     bool        mIsUsingPrefab        = false;
     /// Prefab specifier name.
     std::string mPrefabSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
-    /// Prefab specifier uuid.
-    std::string mPrefabSpecifierUUID  = MDY_INITIALIZE_EMPTYSTR;
   };
 
   /// Object specifier name
   std::string       mSpecifierName    = MDY_INITIALIZE_EMPTYSTR;
-  /// Object specification uuid.
-  std::string       mUUID            = MDY_INITIALIZE_EMPTYSTR;
   /// Object properties.
   DCommonProperties mProperties       = {};
   /// The type (light, pawn, pp block etc...) of object

@@ -28,7 +28,6 @@ namespace
 //!
 
 MDY_SET_IMMUTABLE_STRING(sHeader_Object_Name,         "Name");
-MDY_SET_IMMUTABLE_STRING(sHeader_Object_UUID,         "UUID");
 MDY_SET_IMMUTABLE_STRING(sHeader_Object_Type,         "Type");
 
 MDY_SET_IMMUTABLE_STRING(sHeader_Object_CommonProp,   "CommonProperties");
@@ -38,11 +37,9 @@ MDY_SET_IMMUTABLE_STRING(sHeader_Object_ComponentList,"ComponentList");
 //! PDyObjectMetaInfo::DCommonProperties
 //!
 
-MDY_SET_IMMUTABLE_STRING(sHeader_Prop_ParentUUID,     "ParentSpecifierUUID");
 MDY_SET_IMMUTABLE_STRING(sHeader_Prop_ParentName,     "ParentSpecifierName");
 MDY_SET_IMMUTABLE_STRING(sHeader_Prop_Activated,      "IsInitiallyActivated");
 MDY_SET_IMMUTABLE_STRING(sHeader_Prop_IsFromPrefab,   "IsFromPrefab");
-MDY_SET_IMMUTABLE_STRING(sHeader_Prop_PrefabUUID,     "PrefabSpecifierUUID");
 MDY_SET_IMMUTABLE_STRING(sHeader_Prop_PrefabName,     "PrefabSpecifierName");
 
 } /// ::dy namespace
@@ -97,7 +94,6 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyObjectMetaInfo& p)
   };
 
   DyJsonGetValueFromTo(j, sHeader_Object_Name,          p.mSpecifierName);
-  DyJsonGetValueFromTo(j, sHeader_Object_UUID,          p.mUUID);
   DyJsonGetValueFromTo(j, sHeader_Object_Type,          p.mObjectType);
   DyJsonGetValueFromTo(j, sHeader_Object_CommonProp,    p.mProperties);
   DyJsonGetValueFromTo(j, sHeader_Object_ComponentList, p.mMetaComponentInfo);
@@ -111,9 +107,7 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyObjectMetaInfo::DCommonP
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyObjectMetaInfo::DCommonProperties& p)
 {
   DyJsonGetValueFromTo(j, sHeader_Prop_ParentName,  p.mParentSpecifierName);
-  DyJsonGetValueFromTo(j, sHeader_Prop_ParentUUID,  p.mParentSpecifierUUID);
   DyJsonGetValueFromTo(j, sHeader_Prop_PrefabName,  p.mPrefabSpecifierName);
-  DyJsonGetValueFromTo(j, sHeader_Prop_PrefabUUID,  p.mPrefabSpecifierUUID);
   DyJsonGetValueFromTo(j, sHeader_Prop_Activated,   p.mInitialActivated);
   DyJsonGetValueFromTo(j, sHeader_Prop_IsFromPrefab,p.mIsUsingPrefab);
 }

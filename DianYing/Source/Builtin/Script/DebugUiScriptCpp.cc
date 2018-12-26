@@ -55,9 +55,10 @@ void FDyBuiltinDebugUiScript::Update(_MIN_ TF32 dt)
   const auto usageRam = windowManager.GetRamUsage();
   auto& widgetRef = this->GetWidgetReference();
 
-  FDyText* text = widgetRef.GetUiObject<FDyText>("DebugTestText");
+  FDyText* infoText     = widgetRef.GetUiObject<FDyText>("DebugTestText");
+  FDyText* joystickText = widgetRef.GetUiObject<FDyText>("JoystickTest");
   FDyBasicGaugeBar* bar = widgetRef.GetUiObject<FDyBasicGaugeBar>("BasicBarTest");
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(text), "Unexpected error occurred.");
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(infoText), "Unexpected error occurred.");
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(bar),  "Unexpected error occurred.");
 
 #ifdef false
@@ -77,7 +78,7 @@ Camera0 : 2
 #endif
 
   auto t = this->mTimeManager->GetCalendarTime();
-  text->SetText(fmt::format(
+  infoText->SetText(fmt::format(
       "{:05.2f} %, {:0d} fps | Time : {:04}-{:02}-{:02} {:02}:{:02}:{:02}\n"
       "| Obj : 000 | Tex : {:03} | Shd : {:03} | Vtx : {:03} |\n"
       "Ram Usage : {} Bytes", 
@@ -90,6 +91,13 @@ Camera0 : 2
   ));
   //bar->SetRelativePosition(bar->GetRelativePosition(EDyOrigin::Center_Center) + DDyVector2{0, -dt * 16.0f});
   bar->SetPresentValue(usageCpu);
+
+  const auto& inputManager = MDyInput::GetInstance();
+  joystickText->SetText(fmt::format(
+      "Analog 01 : X {:05.2} Y {:05.2}",
+      inputManager.GetJoystickStickValue(0),
+      inputManager.GetJoystickStickValue(1)
+  ));
 }
 
 void FDyBuiltinDebugUiScript::Bar_MoveLeft(_MIN_ TF32 iXAxis) noexcept

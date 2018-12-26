@@ -45,6 +45,20 @@ MDY_SET_IMMUTABLE_STRING(sBuffer, R"dy(
         "FontSpecifierName": "Arial", "IsUsingEdge": true
       }
     },
+    {   
+      "Name": "JoystickTest",
+      "Type": "Text",
+      "Parent": "",
+      "Details":
+      {
+        "InitialPosition": { "X":32, "Y": 32 },
+        "WidgetSize": { "X": 1, "Y": 1 },
+        "Origin": "Left_Bottom",
+        "InitialString": "", "InitialColor": 16776960, "InitialAlpha": 1.0,
+        "EdgeColor": 0, "FontSize": 9, "FontAlignment": "Left",
+        "FontSpecifierName": "Arial", "IsUsingEdge": true
+      }
+    },
     {
       "Name": "BasicBarTest",
       "Type": "BasicBar",
