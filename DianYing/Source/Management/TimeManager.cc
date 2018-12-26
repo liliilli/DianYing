@@ -23,18 +23,13 @@ namespace dy
 
 EDySuccess MDyTime::IsGameFrameTicked() const noexcept
 {
-  if (this->__mIsEnabledVsync == true)
-  {
-    if (this->mGameElapsedDtFromLastTick < this->mGameTickFragment) { return DY_FAILURE; }
+  if (this->__mIsEnabledVsync == true
+  &&  this->mGameElapsedDtFromLastTick < this->mGameTickFragment) { return DY_FAILURE; }
 
-    this->mGameElapsedDtFromLastTick = 0;
-    this->mGameTickedFpsCount += 1;
-    return DY_SUCCESS;
-  }
-  else {
-    this->mGameTickedFpsCount += 1;
-    return DY_SUCCESS;
-  }
+  this->mGameElapsedDtThisFrame = this->mGameElapsedDtFromLastTick;
+  this->mGameElapsedDtFromLastTick = 0;
+  this->mGameTickedFpsCount += 1;
+  return DY_SUCCESS;
 }
 
 TI32 MDyTime::GetPresentFpsCountValue() const noexcept
@@ -44,7 +39,7 @@ TI32 MDyTime::GetPresentFpsCountValue() const noexcept
 
 TF32 MDyTime::GetGameScaledTickedDeltaTimeValue() const noexcept
 {
-  const auto dt = this->mGameElapsedDtFromLastTick * this->mGameTimeScale;
+  const auto dt = this->mGameElapsedDtThisFrame * this->mGameTimeScale;
   return dt;
 }
 

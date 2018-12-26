@@ -80,6 +80,7 @@ private:
 
   MDY_TRANSIENT TF32 mGameElapsedTimeFromStartUp= 0.0f;
   MDY_TRANSIENT TF32 mGameElapsedDtFromLastTick = 0.0f;
+  MDY_TRANSIENT TF32 mGameElapsedDtThisFrame    = 0.0f;
   MDY_TRANSIENT TU32 mGameTickedFpsCountOld     = MDY_INITIALIZE_DEFUINT;
   MDY_TRANSIENT TU32 mGameTickedFpsCount        = MDY_INITIALIZE_DEFUINT;
   MDY_TRANSIENT TF32 mGameTickFragment          = MDY_INITIALIZE_DEFINT;

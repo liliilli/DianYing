@@ -31,8 +31,8 @@ void dy::BtScActorTest2::Update(TF32 dt)
   f += dt;
 
   auto& refActor = this->GetActorReference();
-  const auto& p  = refActor.GetTransform()->GetLocalPosition();
-  refActor.GetTransform()->SetLocalPosition(DDyVector3{std::sin(f * 0.02f) * 10, p.Y, p.Z});
+  const auto& p  = refActor.GetTransform()->GetWorldPosition();
+  refActor.GetTransform()->SetWorldPosition(DDyVector3{std::sin(f) * 10, p.Y, p.Z});
 }
 
 void dy::BtScActorTest2::Test()
