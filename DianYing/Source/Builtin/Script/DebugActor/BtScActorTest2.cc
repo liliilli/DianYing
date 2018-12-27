@@ -30,8 +30,9 @@ void dy::BtScActorTest2::Update(TF32 dt)
   f += dt;
 
   auto& refActor = this->GetActorReference();
-  const auto& p  = refActor.GetTransform()->GetWorldPosition();
-  refActor.GetTransform()->SetWorldPosition(DDyVector3{std::sin(f) * 10, p.Y, std::cos(f) * 10});
+  const auto& p  = refActor.GetTransform()->GetRelativeWorldPosition();
+  refActor.GetTransform()->SetRelativeWorldPosition(DDyVector3{std::sin(f) * 10, p.Y, std::cos(f) * 10});
+  refActor.GetTransform()->AddWorldEulerAngle(EDyAxis3D::Z, dt * 90.f);
 
 #ifdef false
   auto& mInput = MDyInput::GetInstance();
@@ -39,12 +40,12 @@ void dy::BtScActorTest2::Update(TF32 dt)
   {
     auto& refActor = this->GetActorReference();
     const auto& p  = 
-        refActor.GetTransform()->GetWorldPosition() 
+        refActor.GetTransform()->GetRelativeWorldPosition() 
       + DDyVector3{
           5 * mInput.GetJoystickStickValue(0),
           0,
           5 * mInput.GetJoystickStickValue(1)} * dt;
-    refActor.GetTransform()->SetWorldPosition(p);
+    refActor.GetTransform()->SetRelativeWorldPosition(p);
   }
 #endif
 }

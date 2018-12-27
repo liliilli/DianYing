@@ -179,9 +179,9 @@ private:
   mutable DDyVector3 m_local_axis_arranged_position;
   /// m_object_space_axis * world_position;
   mutable DDyVector3 m_world_axis_arranged_position;
-  /// (x, y, z) parent position to bring child. mFromParentPositionBasis + mFinalBasisAlignedWorldPosition.
+  /// (x, y, z) parent position to bring child. mFromParentPositionBasis + mWorldRelativeAlignedPosition.
   mutable DDyVector3 m_summed_world_position;
-  /// (x, y, z) final position in hierarchy. mToChildWorldPosition + mFinalBasisAlignedLocalPosition
+  /// (x, y, z) final position in hierarchy. mWorldSumAlignedPosition + mFinalBasisAlignedLocalPosition
   mutable DDyVector3 m_axis_aligned_final_position;
 
   DDyVector3 mLocalEulerAngle;
@@ -209,7 +209,7 @@ private:
   mutable DDyVector3 m_propagated_producted_scale = DDyVector3{ 1.f };
   /// mWorldScale * mFromParentWorldScale
   mutable DDyVector3 m_summed_producted_scale     = DDyVector3{ 1.f };
-  /// mToChildWorldScale * mLocalScale
+  /// mWorldProductScale * mLocalScale
   mutable DDyVector3 m_final_producted_scale      = DDyVector3{ 1.f };
 
   /// World + Parent rotation matrix.

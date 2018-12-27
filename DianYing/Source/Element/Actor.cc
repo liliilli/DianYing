@@ -200,6 +200,19 @@ FDyActor* FDyActor::GetParent() const noexcept
   else                                         { return this->mPtrParentActor; }
 }
 
+bool FDyActor::IsHavingChildrenObject() const noexcept
+{
+  return std::any_of(MDY_BIND_BEGIN_END(this->mChildActorMap), [](const auto& iPair) 
+  {
+    return MDY_CHECK_ISNOTEMPTY(iPair.second);
+  });
+}
+
+FDyActor::TActorMap& FDyActor::GetChildrenContainer() noexcept
+{
+  return this->mChildActorMap;
+}
+
 #ifdef false
 CDyActorScript* FDyActor::GetScriptComponent(_MIN_ const std::string& scriptName) noexcept
 {

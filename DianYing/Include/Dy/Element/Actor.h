@@ -90,6 +90,13 @@ public:
   /// @return If parent is binded and exist, return optional valid pointer but just no value.
   MDY_NODISCARD FDyActor* GetParent() const noexcept;
 
+  /// @brief  Return this actor has children object, empty object will be neglected.
+  /// @return If having children, return true.
+  MDY_NODISCARD bool IsHavingChildrenObject() const noexcept;
+
+  /// @brief Return this actor.
+  MDY_NODISCARD TActorMap& GetChildrenContainer() noexcept;
+
   ///
   /// @brief
   /// @param
