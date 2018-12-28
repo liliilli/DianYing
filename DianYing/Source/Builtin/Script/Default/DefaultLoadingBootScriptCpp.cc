@@ -42,6 +42,7 @@
 #include <Dy/Builtin/FrameBuffer/UIIntegration/FDyBtFbUiBasic.h>
 
 #include <Dy/Builtin/Material/OpaqueStaticPlain.h>
+#include <Dy/Builtin/Mesh/Widget/FDyBtMsUiBarQuad.h>
 
 namespace dy
 {
@@ -72,6 +73,8 @@ FDyDefaultLoadingBootScript::FDyDefaultLoadingBootScript()
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Model, FDyBuiltinModelScreenProjectionTriangle::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Model, FDyBuiltinModelSphere::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Model, FDyBtMdUIFontQuad::sName);
+
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Mesh, FDyBtMsUiBarQuad::sName);
 
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Material, FDyBuiltinMaterialOpaqueStaticPlain::sName);
 

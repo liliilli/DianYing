@@ -21,6 +21,7 @@
 
 namespace dy
 {
+enum class EDyDirectBufferType;
 struct PDyGLVaoBindDescriptor;
 struct PDyGLShaderFragmentDescriptor;
 struct PDyGLTextureDescriptor;
@@ -93,6 +94,11 @@ public:
   /// @brief Delete shader program with valid shader program id.
   /// This function is thread-safe and get performance down.
   static void DeleteBuffer(_MIN_ const TU32 directBufferId);
+
+  /// @brief Map data to arbitary buffer from zero. This function is needed to bind
+  /// related vertex array object prior to function.
+  /// This function thread-safe and might get performance down.
+  static void MapBuffer(_MIN_ EDyDirectBufferType iBufferType, _MIN_ TU32 iBufferId, _MIN_ void* iPtrBuffer, _MIN_ TU32 iBufferSize);
 
   /// @brief Just create and return created vertex array object id.
   static MDY_NODISCARD TU32 CreateVertexArrayObject(void);

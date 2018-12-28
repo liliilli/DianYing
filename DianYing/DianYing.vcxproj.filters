@@ -241,6 +241,8 @@
     <ClCompile Include="Source\Builtin\Script\DebugActor\BtScActorTest1.cc" />
     <ClCompile Include="Source\Builtin\Script\DebugActor\BtScActorTest2.cc" />
     <ClCompile Include="Source\Builtin\Script\DebugActor\BtScActorTest3.cc" />
+    <ClCompile Include="Source\Builtin\Mesh\FDyBtMsUiImgQuad.cc" />
+    <ClCompile Include="Source\Builtin\Mesh\Widget\FDyBtMsUiBarQuad.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -617,6 +619,8 @@
     <ClInclude Include="Include\Dy\Builtin\Script\DebugActor\BtScActorTest1.h" />
     <ClInclude Include="Include\Dy\Builtin\Script\DebugActor\BtScActorTest2.h" />
     <ClInclude Include="Include\Dy\Builtin\Script\DebugActor\BtScActorTest3.h" />
+    <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsUiImgQuad.h" />
+    <ClInclude Include="Include\Dy\Builtin\Mesh\Widget\FDyBtMsUiBarQuad.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

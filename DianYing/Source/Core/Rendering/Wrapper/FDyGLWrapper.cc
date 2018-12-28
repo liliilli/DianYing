@@ -256,6 +256,23 @@ void FDyGLWrapper::DeleteBuffer(_MIN_ const TU32 directBufferId)
   glDeleteBuffers(1, &directBufferId);
 }
 
+void FDyGLWrapper::MapBuffer(EDyDirectBufferType iBufferType, TU32 iBufferId, void* iPtrBuffer, TU32 iBufferSize)
+{
+  switch (iBufferType)
+  {
+  case EDyDirectBufferType::VertexBuffer: 
+  {
+    glBindBuffer(GL_ARRAY_BUFFER, iBufferId);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, iBufferSize, iPtrBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+  } break;
+  case EDyDirectBufferType::ElementBuffer: 
+  {
+  } break;
+  default: MDY_UNEXPECTED_BRANCH(); break;
+  }
+}
+
 TU32 FDyGLWrapper::CreateVertexArrayObject()
 {
   TU32 vaoId = MDY_INITIALIZE_DEFUINT;

@@ -29,19 +29,10 @@ EDySuccess FDyImage::Initialize(const PDyMetaWidgetImageDescriptor& objectMetaDe
 
   this->mTintColor        = objectMetaDesc.mTintColor;
   this->mIsSizeToContent  = objectMetaDesc.mIsSizeToContent;
-
-  PDyImageRendererCtorInformation desc = {};
-  desc.mPtrUiObject = this;
-  MDY_CALL_ASSERT_SUCCESS(this->mRenderer.Initialize(desc));
-
   return DY_SUCCESS;
 }
 
-void FDyImage::Release()
-{
-  MDY_NOT_IMPLEMENTED_ASSERT();
-  this->mRenderer.Release();
-}
+void FDyImage::Release() { }
 
 std::string FDyImage::ToString()
 {

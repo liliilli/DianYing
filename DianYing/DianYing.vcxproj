@@ -177,6 +177,8 @@
     <ClCompile Include="Source\Builtin\Mesh\FDyBtMsScrTriangle.cc" />
     <ClCompile Include="Source\Builtin\Mesh\FDyBtMsSphere.cc" />
     <ClCompile Include="Source\Builtin\Mesh\FDyBtMsUiFontQuad.cc" />
+    <ClCompile Include="Source\Builtin\Mesh\FDyBtMsUiImgQuad.cc" />
+    <ClCompile Include="Source\Builtin\Mesh\Widget\FDyBtMsUiBarQuad.cc" />
     <ClCompile Include="Source\Builtin\Model\UiFontQuad.cc" />
     <ClCompile Include="Source\Builtin\Script\DebugActor\BtScActorTest1.cc" />
     <ClCompile Include="Source\Builtin\Script\DebugActor\BtScActorTest2.cc" />
@@ -460,6 +462,8 @@
     <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsScrTriangle.h" />
     <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsSphere.h" />
     <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsUiFontQuad.h" />
+    <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsUiImgQuad.h" />
+    <ClInclude Include="Include\Dy\Builtin\Mesh\Widget\FDyBtMsUiBarQuad.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\Box.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\Plain.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\ScreenProjectionTriangle.h" />

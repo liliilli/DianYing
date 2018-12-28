@@ -28,10 +28,10 @@ void BtScActorTest3::Update(_MIN_ TF32 dt)
   if (mInput.IsJoystickConnected() == true)
   {
     CDyTransform* refActor = this->GetActorReference().GetTransform();
-    refActor->AddWorldEulerAngle(EDyAxis3D::Y, dt * 45.f * mInput.GetJoystickStickValue(5));
+    refActor->AddWorldEulerAngle(EDyAxis3D::Y, dt * 90.f * mInput.GetJoystickStickValue(2));
 
     const auto xAngleOld = refActor->GetRelativeWorldEulerAngle(EDyAxis3D::X);
-    const DDyClamp<float, 0, 89> xAngleNew = refActor->GetRelativeWorldEulerAngle(EDyAxis3D::X) + 30.f * dt * mInput.GetJoystickStickValue(2);
+    const DDyClamp<float, 0, 89> xAngleNew = refActor->GetRelativeWorldEulerAngle(EDyAxis3D::X) + 60.f * dt * mInput.GetJoystickStickValue(5);
     refActor->AddWorldEulerAngle(EDyAxis3D::X, xAngleNew - xAngleOld);
   }
 }
