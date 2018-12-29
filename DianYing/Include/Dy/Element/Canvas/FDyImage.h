@@ -31,7 +31,7 @@ class FDyImage final : public FDyUiObject, public IDyInitializeHelper<PDyMetaWid
   MDY_SET_TYPEMATCH_FUNCTION(FDyUiObject, FDyImage);
   MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(FDyImage);
 public:
-  FDyImage() = default;
+  FDyImage() : mRenderer{*this} {};
   virtual ~FDyImage() = default;
 
   ///
@@ -50,15 +50,27 @@ public:
   std::string ToString() override final;
   void Render() override final;
 
+  /// @brief Set image name.
+  void SetImageName(_MIN_ const std::string& iName) noexcept;
+  
+  /// @brief Get image name.
+  MDY_NODISCARD const std::string& GetImageName() const noexcept;
+
+  /// @brief Set tint color.
+  void SetTintColor(_MIN_ const DDyColorRGBA& iTintColor) noexcept;
+
+  /// @brief Get tint color.
+  MDY_NODISCARD const DDyColorRGBA& GetTintColor() const noexcept;
+
 private:
-  /// Origin basis to parent.
-  EDyOrigin         mOrigin = EDyOrigin::Center_Center;
   /// Tint color for image rendering (with alpha)
   DDyColorRGBA      mTintColor = DDyColorRGBA::White;
   /// Size to content.
   bool              mIsSizeToContent = false;
+  /// Image name
+  std::string       mImageName = MDY_INITIALIZE_EMPTYSTR;
   /// Renderer for this object.
-  CDyImageRenderer  mRenderer = {};
+  CDyImageRenderer  mRenderer;
 };
 
 } /// ::dy namespace

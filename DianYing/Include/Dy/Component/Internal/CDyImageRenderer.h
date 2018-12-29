@@ -24,10 +24,10 @@ namespace dy
 /// @class CDyImageRenderer
 /// @brief Renderer for basic gauge bar. `FDyImage`.
 ///
-class CDyImageRenderer final : public IDyInitializeHelper<PDyImageRendererCtorInformation>
+class CDyImageRenderer final
 {
 public:
-  CDyImageRenderer() = default;
+  CDyImageRenderer(_MIN_ FDyImage& mRefObject);
   virtual ~CDyImageRenderer() = default;
 
   CDyImageRenderer(const CDyImageRenderer&) = delete;
@@ -35,22 +35,18 @@ public:
   CDyImageRenderer(CDyImageRenderer&& instance)            noexcept = default;
   CDyImageRenderer& operator=(CDyImageRenderer&& instance) noexcept = default;
 
-  ///
-  /// @brief  Initialize with descriptor.
-  /// @return If successful, return DY_SUCCESS or DY_FAILURE.
-  ///
-  MDY_NODISCARD EDySuccess Initialize(_MIN_ const PDyImageRendererCtorInformation& descriptor) override final;
-
-  /// @brief Release resource of component.
-  void Release() override final;
-
   /// @brief Render guage var.
   void Render();
 
+  /// @brief Update image binding.
+  void UpdateImageBinding(_MIN_ const std::string& iName) noexcept;
+
 private:
   /// LAZY NOT NULLABLE POINTER RAW PTR;
-  FDyImage*                 mPtrBarObject = MDY_INITIALIZE_NULL;
+  FDyImage*                 mPtrObject = MDY_INITIALIZE_NULL;
+  TDyLResourceBinderMesh    mBinderQuadMesh{};
   TDyLResourceBinderShader  mBinderShader{};
+  TDyLResourceBinderTexture mBinderImage{};
 };
 
 } /// ::dy namespace
