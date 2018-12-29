@@ -32,7 +32,7 @@ namespace
 {
 
 /// Sample UI projection code
-dy::DDyMatrix4x4 uUiProjMatrix = dy::DDyMatrix4x4{};
+dy::DDyMatrix4x4 uUiProjTempMatrix = dy::DDyMatrix4x4{};
 
 ///
 /// @brief The method gets character quad vertices to be needed for rendering.
@@ -98,7 +98,7 @@ CDyFontRenderer::CDyFontRenderer(FDyText& iPtrWidget) :
   MDY_ASSERT(this->mBinderFontMesh.IsResourceExist() == true, "True");
   this->mBinderShader.TryRequireResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderFontArraySDF::sName));
 
-  uUiProjMatrix = glm::ortho(0.f, static_cast<float>(1280), 0.f, static_cast<float>(720), 0.2f, 10.0f);
+  uUiProjTempMatrix = glm::ortho(0.f, static_cast<float>(1280), 0.f, static_cast<float>(720), 0.2f, 10.0f);
 }
 
 void CDyFontRenderer::Render()
@@ -111,7 +111,7 @@ void CDyFontRenderer::Render()
 
   const TU32 shaderProgramId  = this->mBinderShader->GetShaderProgramId();
   const auto projectMatrixId  = glGetUniformLocation(shaderProgramId, "uUiProjMatrix");
-  glUniformMatrix4fv(projectMatrixId, 1, GL_FALSE, &uUiProjMatrix[0].X);
+  glUniformMatrix4fv(projectMatrixId, 1, GL_FALSE, &uUiProjTempMatrix[0].X);
 
   IDyFontContainer& container = this->mPtrWidget->GetFontContainer();
   const TI32 fontSize         = this->mPtrWidget->GetFontSize();

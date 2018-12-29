@@ -14,6 +14,8 @@
 ///
 
 #include <Dy/Meta/Type/EDyResourceTypes.h>
+#include <Dy/Core/Rendering/Type/EDyDrawType.h>
+#include <Dy/Core/Rendering/Wrapper/PDyGLBufferDescriptor.h>
 
 //!
 //! Forward declaration
@@ -21,7 +23,7 @@
 
 namespace dy
 {
-enum class EDyDirectBufferType;
+enum class EDyDrawType;
 struct PDyGLVaoBindDescriptor;
 struct PDyGLShaderFragmentDescriptor;
 struct PDyGLTextureDescriptor;
@@ -100,6 +102,13 @@ public:
   /// This function thread-safe and might get performance down.
   static void MapBuffer(_MIN_ EDyDirectBufferType iBufferType, _MIN_ TU32 iBufferId, _MIN_ void* iPtrBuffer, _MIN_ TU32 iBufferSize);
 
+  /// @brief Map data to arbitary buffer with start point, input buffer size, and gap of each input target pointer.
+  /// This funciton is needed to bind related vertex array object prior to function.
+  /// This function thread-safe and might get performance down.
+  static void MapBufferExt(
+      _MIN_ EDyDirectBufferType iBufferType, _MIN_ TU32 iBufferId, _MIN_ void* iPtrBuffer, _MIN_ TU32 iBufferSize, 
+      _MIN_ TU32 iItemByteSize, _MIN_ TU32 iGapByteSize, _MIN_ TU32 iStartPoint);
+
   /// @brief Just create and return created vertex array object id.
   static MDY_NODISCARD TU32 CreateVertexArrayObject(void);
 
@@ -124,6 +133,9 @@ public:
   /// @brief Delete frame buffer. \n
   /// Deleting frame buffer object must be held on main thread context.
   static MDY_NODISCARD EDySuccess DeleteFrameBuffer(_MIN_ const TU32 framebufferId);
+
+  /// @brief
+  static void Draw(_MIN_ EDyDrawType iType, _MIN_ bool iIsElement, _MIN_ TU32 iCount);
 
 private:
   static std::mutex mGLMutex;
