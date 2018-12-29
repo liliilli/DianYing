@@ -1,4 +1,5 @@
-#include <precompiled.h>
+#ifndef GUARD_DY_BUILTIN_MESH_FDYBTMSUIIMGQUAD_H
+#define GUARD_DY_BUILTIN_MESH_FDYBTMSUIIMGQUAD_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -12,12 +13,20 @@
 /// SOFTWARE.
 ///
 
-/// Header file
-#include <Dy/Builtin/Script/BtScActorTest1.h>
+#include <Dy/Builtin/Abstract/ADyMeshResource.h>
 
 namespace dy
 {
 
-
+///
+/// @class FDyBtMsUiImageQuad
+/// @brief Create mesh for ui image rendering information and resources.
+///
+class FDyBtMsUiImageQuad final : public ADyMeshResource
+{
+  MDY_REGISTER_RESOURCE_MESH(FDyBtMsUiImageQuad, "dyBtMsUiImageQuad");
+};
 
 } /// ::dy namespace
+
+#endif /// GUARD_DY_BUILTIN_MESH_FDYBTMSUIIMGQUAD_H

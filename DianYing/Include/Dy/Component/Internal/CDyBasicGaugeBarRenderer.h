@@ -63,6 +63,7 @@ public:
 private:
   /// LAZY NOT NULLABLE POINTER RAW PTR;
   FDyBasicGaugeBar*         mPtrBarObject = MDY_INITIALIZE_NULL;
+  TDyLResourceBinderMesh    mBinderBarMesh{};
   TDyLResourceBinderShader  mBinderShader = {};
 };
 

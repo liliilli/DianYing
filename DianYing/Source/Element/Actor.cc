@@ -28,12 +28,13 @@
 namespace dy
 {
 
-EDySuccess FDyActor::Initialize(_MIN_ const PDyObjectMetaInfo& objectMetaDesc)
+FDyActor::FDyActor(_MIN_ const PDyObjectMetaInfo& objectMetaDesc)
 {
+  // (1) Set properties.
   bool isTransformCreated = false;
   this->pSetObjectName(objectMetaDesc.mSpecifierName);
 
-  // Create components
+  // (2) Create components
   for (const auto& [type, componentInfo] : objectMetaDesc.mMetaComponentInfo)
   {
     switch (type)
@@ -73,15 +74,41 @@ EDySuccess FDyActor::Initialize(_MIN_ const PDyObjectMetaInfo& objectMetaDesc)
     }
   }
 
+  // (3) Make children actors.
+  for (const auto& objectInformation : objectMetaDesc.mChildrenList)
+  { // Create object, FDyActor
+    switch (objectInformation->mObjectType)
+    {
+    case EDyMetaObjectType::Actor:
+    { // General object type. Make FDyActor instance.
+      auto instancePtr = std::make_unique<FDyActor>(*objectInformation);
+      // Check activation flags and execute sub-routines of each components.
+      instancePtr->pUpdateActivateFlagFromParent();
+      if (objectInformation->mProperties.mInitialActivated == true) 
+      { 
+        instancePtr->Activate(); 
+      }
+
+      auto [it, result] = this->mChildActorMap.try_emplace(instancePtr->GetActorName(), std::move(instancePtr));
+      MDY_ASSERT(result == true, "Unexpected error occured in inserting FDyActor to object map.");
+
+      // Set child's parent as this.
+      auto& [specifier, ptrsmtChild] = *it;
+      ptrsmtChild->SetParent(*this);
+    } break;
+    case EDyMetaObjectType::SceneScriptor:  MDY_NOT_IMPLEMENTED_ASSERT(); break;
+    case EDyMetaObjectType::Object:         MDY_NOT_IMPLEMENTED_ASSERT(); break;
+    default: MDY_UNEXPECTED_BRANCH(); break;
+    }
+  }
+
   // Create CDyEmptyTransform when not having CDyTransform.
   MDY_ASSERT(isTransformCreated == true, "CDyTransform component must be created to all FDyActor.");
-  return DY_SUCCESS;
 }
 
-EDySuccess FDyActor::Release()
+FDyActor::~FDyActor()
 {
   this->mComponentList.clear();
-  return DY_SUCCESS;
 }
 
 void FDyActor::Activate() noexcept
@@ -98,13 +125,13 @@ void FDyActor::Deactivate() noexcept
 
 void FDyActor::pUpdateActivateFlagFromParent() noexcept
 {
-  if (MDY_CHECK_ISNULL(this->mParentFDyActorRawPtr))
+  if (MDY_CHECK_ISNULL(this->mPtrParentActor))
   {
     this->mActivationFlag.UpdateParent(true);
   }
   else
   {
-    this->mActivationFlag.UpdateParent(this->mParentFDyActorRawPtr->IsActivated());
+    this->mActivationFlag.UpdateParent(this->mPtrParentActor->IsActivated());
   }
 
   this->pPropagateActivationFlag();
@@ -127,28 +154,63 @@ void FDyActor::pPropagateActivationFlag() noexcept
   // @TODO PROPAGATE ACTIVATION FLAG TO SUBACTOR ALSO.
 }
 
-  void FDyActor::SetParent(NotNull<FDyActor*> validParentRawPtr) noexcept
+void FDyActor::SetParent(_MIN_ FDyActor& validParentRawPtr) noexcept
 {
-  mParentFDyActorRawPtr = validParentRawPtr;
-  MDY_LOG_WARNING("NOT IMPLEMENTED {}", "FDyActor::SetParent");
+  this->mPtrParentActor = &validParentRawPtr;
 }
 
 void FDyActor::SetParentRelocateTransform(NotNull<FDyActor*> validParentRawPtr) noexcept
 {
-  this->SetParent(validParentRawPtr);
-  MDY_LOG_WARNING("NOT IMPLEMENTED {}", "FDyActor::SetParentRelocateTransform");
+  MDY_NOT_IMPLEMENTED_ASSERT();
+  this->SetParent(*validParentRawPtr);
 }
 
 void FDyActor::SetParentAsRoot() noexcept
 {
-
-  MDY_LOG_WARNING("NOT IMPLEMENTED {}", "FDyActor::SetParentAsRoot");
+  MDY_NOT_IMPLEMENTED_ASSERT();
+  this->mPtrParentActor = nullptr;
 }
 
 void FDyActor::SetParentToRootRelocateTransform() noexcept
 {
+  MDY_NOT_IMPLEMENTED_ASSERT();
   this->SetParentAsRoot();
-  MDY_LOG_WARNING("NOT IMPLEMENTED {}", "FDyActor::SetParentToRootRelocateTransform");
+}
+
+std::unique_ptr<CDyActorScript> 
+FDyActor::MDY_PRIVATE_SPECIFIER(MakeScriptComponent)(_MIN_ const PDyScriptComponentMetaInfo& info)
+{
+  auto& metaManager = MDyMetaInfo::GetInstance();
+  MDY_ASSERT(metaManager.IsScriptMetaInformationExist(info.mDetails.mSpecifierName) == true, "");
+
+  const auto& instanceInfo = metaManager.GetScriptMetaInformation(info.mDetails.mSpecifierName);
+  MDY_ASSERT(instanceInfo.mScriptType != EDyScriptType::NoneError, "");
+
+  return std::make_unique<CDyActorScript>(*this, info.mDetails.mSpecifierName);
+}
+
+bool FDyActor::IsHaveParent() const noexcept
+{
+  return MDY_CHECK_ISNOTNULL(this->mPtrParentActor);
+}
+
+FDyActor* FDyActor::GetParent() const noexcept
+{
+  if (MDY_CHECK_ISNULL(this->mPtrParentActor)) { return nullptr; }
+  else                                         { return this->mPtrParentActor; }
+}
+
+bool FDyActor::IsHavingChildrenObject() const noexcept
+{
+  return std::any_of(MDY_BIND_BEGIN_END(this->mChildActorMap), [](const auto& iPair) 
+  {
+    return MDY_CHECK_ISNOTEMPTY(iPair.second);
+  });
+}
+
+FDyActor::TActorMap& FDyActor::GetChildrenContainer() noexcept
+{
+  return this->mChildActorMap;
 }
 
 #ifdef false

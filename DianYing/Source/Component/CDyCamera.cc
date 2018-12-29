@@ -98,7 +98,7 @@ void CDyCamera::pUpdateCameraVectors()
   // Also re-calculate the Right and Up vector
   // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
   this->mLookingAtDirection = transform->GetToChildBasis()[2];
-  this->mPosition           = transform->GetFinalPosition();
+  this->mPosition           = transform->GetFinalWorldPosition();
 
   this->mIsViewMatrixDirty        = true;
   this->pUpdateViewMatrix();

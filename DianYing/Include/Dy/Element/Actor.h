@@ -38,20 +38,16 @@ class FDyActor : public FDyObject
   MDY_SET_CRC32_HASH_WITH_TYPE(FDyActor);
   MDY_SET_TYPEMATCH_FUNCTION(FDyObject, FDyActor);
 public:
-  FDyActor() = default;
+  using TActorSmtPtr   = std::unique_ptr<FDyActor>;
+  using TActorMap      = std::unordered_map<std::string, TActorSmtPtr>;
 
-  ///
   /// @brief Initialize FDyActor.
   /// @param objectMetaDesc Meta descriptor information instance for FDyActor.
-  /// @return Success / Failure flag.
-  ///
-  MDY_NODISCARD EDySuccess Initialize(_MIN_ const PDyObjectMetaInfo& objectMetaDesc);
+  FDyActor(_MIN_ const PDyObjectMetaInfo& objectMetaDesc);
 
-  ///
   /// @brief Release function (virtual) because Initialize function has different parameter but release does not need any parameter.
   /// @return Success flag.
-  ///
-  MDY_NODISCARD virtual EDySuccess Release();
+  virtual ~FDyActor();
 
   ///
   /// @brief Activate FDyActor instance.
@@ -72,22 +68,34 @@ public:
     return this->mActivationFlag.GetOutput();
   }
 
-  ///
   /// @brief Get present actor name on runtime.
   /// @return Actor name of this instance.
-  ///
   MDY_NODISCARD const std::string& GetActorName() const noexcept
   {
     return this->pGetObjectName();
   }
 
-  ///
-  /// @brief Set FDyActor's hierarchial position to Parent's children FDyActor.
+  /// @brief Set FDyActor's parent to valid input actor.
+  void SetParent(_MIN_ FDyActor& refParentActor) noexcept;
+
+  /// @brief Set FDyActor's hierarchial position to Level's root.
   /// Transform update will be held automatically.
-  /// @param validParentRawPtr
-  /// @TODO SCRIPT THIS
-  ///
-  void SetParent(_MIN_ NotNull<FDyActor*> validParentRawPtr) noexcept;
+  void SetParentAsRoot() noexcept;
+
+  /// @brief  Check FDyActor has a parent FDyActor.
+  /// @return If it has valid parent, return true but false.
+  MDY_NODISCARD bool IsHaveParent() const noexcept;
+
+  /// @brief  Return valid parent FDyActor pointer instance with wrapping optional.
+  /// @return If parent is binded and exist, return optional valid pointer but just no value.
+  MDY_NODISCARD FDyActor* GetParent() const noexcept;
+
+  /// @brief  Return this actor has children object, empty object will be neglected.
+  /// @return If having children, return true.
+  MDY_NODISCARD bool IsHavingChildrenObject() const noexcept;
+
+  /// @brief Return this actor.
+  MDY_NODISCARD TActorMap& GetChildrenContainer() noexcept;
 
   ///
   /// @brief
@@ -97,35 +105,10 @@ public:
   void SetParentRelocateTransform(_MIN_ NotNull<FDyActor*> validParentRawPtr) noexcept;
 
   ///
-  /// @brief Set FDyActor's hierarchial position to Level's root.
-  /// Transform update will be held automatically.
-  ///
-  void SetParentAsRoot() noexcept;
-
-  ///
   /// @brief
   /// @TODO SCRIPT THIS
   ///
   void SetParentToRootRelocateTransform() noexcept;
-
-  ///
-  /// @brief  Check FDyActor has a parent FDyActor.
-  /// @return If it has valid parent, return true but false.
-  ///
-  FORCEINLINE MDY_NODISCARD bool IsHaveParent() const noexcept
-  {
-    return MDY_CHECK_ISNOTNULL(this->mParentFDyActorRawPtr);
-  }
-
-  ///
-  /// @brief  Return valid parent FDyActor pointer instance with wrapping optional.
-  /// @return If parent is binded and exist, return optional valid pointer but just no value.
-  ///
-  FORCEINLINE MDY_NODISCARD std::optional<FDyActor*> GetParent() const noexcept
-  {
-    if (MDY_CHECK_ISNULL(this->mParentFDyActorRawPtr)) { return std::nullopt; }
-    else                                               { return this->mParentFDyActorRawPtr; }
-  }
 
   ///
   /// @brief Return actor's information
@@ -154,18 +137,6 @@ public:
   template<class TComponent, typename... TArgs>
   MDY_NODISCARD NotNull<TComponent*> AddComponent(_MIN_ TArgs&&... args)
   {
-    /// @brief Make script component (lua or cpp)
-    static auto MakeScriptComponent = [this](const PDyScriptComponentMetaInfo& info)
-    {
-      auto& metaManager = MDyMetaInfo::GetInstance();
-      MDY_ASSERT(metaManager.IsScriptMetaInformationExist(info.mDetails.mSpecifierName) == true, "");
-
-      const auto& instanceInfo = metaManager.GetScriptMetaInformation(info.mDetails.mSpecifierName);
-      MDY_ASSERT(instanceInfo.mScriptType != EDyScriptType::NoneError, "");
-
-      return std::make_unique<CDyActorScript>(*this, info.mDetails.mSpecifierName);
-    };
-
     // Validation test
     MDY_TEST_IS_BASE_OF(ADyBaseComponent, TComponent);
     DyCheckComponentInitializeFunctionParams<TComponent, TArgs...>();
@@ -174,7 +145,9 @@ public:
     {
       // Add and initialize component itself.
       // If component which just added is CDyScript, Call Initiate script first.
-      auto& reference = this->mScriptList.emplace_back(MakeScriptComponent(std::forward<TArgs...>(args)...));
+      auto& reference = this->mScriptList.emplace_back(
+          MDY_PRIVATE_SPECIFIER(MakeScriptComponent)(std::forward<TArgs...>(args)...)
+      );
       return DyMakeNotNull(reference.get());
     }
     else
@@ -198,6 +171,10 @@ public:
     }
   }
 
+  /// @brief Make script component (lua or cpp)
+  MDY_NODISCARD std::unique_ptr<CDyActorScript> 
+  MDY_PRIVATE_SPECIFIER(MakeScriptComponent)(_MIN_ const PDyScriptComponentMetaInfo& info);
+  
   ///
   /// @brief  Return component raw-pointer from general component list (not script)
   /// @tparam TGeneralComponent Component type argument.
@@ -364,15 +341,17 @@ private:
   ///
   void pPropagateActivationFlag() noexcept;
 
-  DDy3StateBool                     mActivationFlag = {};
+  DDy3StateBool                 mActivationFlag = {};
   /// Parent FDyActor raw-pointer data.
-  FDyActor*                         mParentFDyActorRawPtr   = MDY_INITIALIZE_NULL;
+  FDyActor*                     mPtrParentActor = MDY_INITIALIZE_NULL;
   /// Transform component.
-  std::unique_ptr<CDyTransform>     mTransform              = MDY_INITIALIZE_NULL;
+  std::unique_ptr<CDyTransform> mTransform            = MDY_INITIALIZE_NULL;
   /// Component list (randomly) which attached to FDyActor instance (this!)
-  TComponentList                    mComponentList          = {};
+  TComponentList                mComponentList        = {};
   /// Script list (specialized!)
-  TScriptList                       mScriptList             = {};
+  TScriptList                   mScriptList           = {};
+  /// Actor list (hierarchial version)
+  TActorMap                     mChildActorMap        = {};
 };
 
 } /// ::dy namespace

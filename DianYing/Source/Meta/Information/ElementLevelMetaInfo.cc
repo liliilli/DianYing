@@ -77,6 +77,36 @@ void GetLevelResourceFromActor(
   }
 }
 
+void MoveMetaObjectIntoParentRecursively(
+    _MINOUT_ dy::TObjectMetaInfoList& p, 
+    _MIN_ const std::vector<std::string>& parentSpecifierList,
+    _MIN_ const TU32 level,
+    _MINOUT_ dy::TObjectMetaInfoList::value_type& object)
+{
+  for (auto& parentObject : p)
+  { 
+    MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(object), "Unexpected error occurred");
+    if (parentObject == object)           { continue; }
+    if (MDY_CHECK_ISEMPTY(parentObject))  { continue; }
+
+    if (parentObject->mSpecifierName == parentSpecifierList[level])
+    { // 
+      if (parentSpecifierList.size() == level + 1)
+      { // Move it and return.
+        parentObject->mChildrenList.emplace_back(std::move(object));
+        return;
+      }
+      else
+      { // Call function recursively.
+        return MoveMetaObjectIntoParentRecursively(p, parentSpecifierList, level + 1, object);
+      }
+    }
+  }
+
+  MDY_UNEXPECTED_BRANCH();
+  return;
+}
+
 } /// ::unnamed namespace
 
 //!
@@ -142,43 +172,47 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyLevelConstructMetaInfo
   p.mLevelBackgroundColor = DyJsonGetValueFrom<DDyColorRGB24>(j, sHeader_BackgroundColor);
 }
 
-void to_json(nlohmann::json& j, const PDyLevelConstructMetaInfo::TObjectMetaInfoList& p)
+void to_json(nlohmann::json& j, const TObjectMetaInfoList& p)
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
 }
 
-void from_json(const nlohmann::json& j, PDyLevelConstructMetaInfo::TObjectMetaInfoList& p)
+void from_json(const nlohmann::json& j, TObjectMetaInfoList& p)
 {
-  // (1) Make object list.
-  PDyLevelConstructMetaInfo::TObjectMetaInfoList tempList;
+  // (1) Make object list to all object.
   for (auto jsonIt = j.begin(); jsonIt != j.end(); ++jsonIt)
   {
     auto objectMetaInfo = std::make_unique<PDyObjectMetaInfo>(jsonIt.value().get<PDyObjectMetaInfo>());
-    tempList.emplace_back(std::move(objectMetaInfo));
+    p.emplace_back(std::move(objectMetaInfo));
   }
 
   // (2) Make object list tree.
-  // @TODO ONLY USE ParentSpecifierName to specification.
-  for (auto& object : tempList)
+  for (auto& object : p)
   {
     if (MDY_CHECK_ISEMPTY(object))                                { continue; }
-    if (object->mProperties.mParentSpecifierName.empty() == true) { continue; }
+    if (object->mObjectType == EDyMetaObjectType::Actor
+    &&  object->mProperties.mParentSpecifierName.empty() == false)
+    { // If object type is Actor, and have parents specifier name as dec
+      std::vector<std::string> parentSpecifierList = {};
+      std::string::size_type startId = 0;
+      do
+      { // Make parent specifier list. Separation is `.` comma.
+        auto endId = object->mProperties.mParentSpecifierName.find_first_of('.', startId);
+        if (endId != std::string::npos) 
+        { endId = object->mProperties.mParentSpecifierName.length() - startId; }
 
-    const auto parentSpecifierName = object->mProperties.mParentSpecifierName;
-    for (auto& parentObject : tempList)
-    {
-      if (MDY_CHECK_ISEMPTY(parentObject)) { continue; }
-      if (parentObject->mSpecifierName == parentSpecifierName)
-      {
-        parentObject->mChildrenList.emplace_back(std::move(object));
-        break;
+        parentSpecifierList.emplace_back(object->mProperties.mParentSpecifierName.substr(startId, endId));
+        startId = endId;
       }
+      while (startId != std::string::npos);
+
+      // Try move object into any parent's children list.
+      MoveMetaObjectIntoParentRecursively(p, parentSpecifierList, 0, object);
     }
   }
 
   // (3) Realign object meta list.
-  tempList.erase( std::remove( tempList.begin(), tempList.end(), nullptr ), tempList.end() );
-  p = std::move(tempList);
+  p.erase( std::remove( p.begin(), p.end(), nullptr ), p.end() );
 }
 
 } /// ::dy namespace

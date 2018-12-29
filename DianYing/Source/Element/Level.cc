@@ -34,36 +34,26 @@ namespace
 namespace dy
 {
 
-void FDyLevel::Initialize(_MIN_ const PDyLevelConstructMetaInfo& desc)
+FDyLevel::FDyLevel(_MIN_ const PDyLevelConstructMetaInfo& desc)
 {
-  /// @brief  Create pawn instance and set fundamental properties.
-  /// @param  objectInformation Information to create FDyPawn instance.
-  static auto pCreateActorInstance = [](_MIN_ const PDyObjectMetaInfo& objectInformation)
-  {
-    // Make FDyActor instance.
-    auto instancePtr = std::make_unique<FDyActor>();
-    MDY_CALL_ASSERT_SUCCESS(instancePtr->Initialize(objectInformation));
-
-    // Check activation flags and execute sub-routines of each components.
-    instancePtr->pUpdateActivateFlagFromParent();
-    if (objectInformation.mProperties.mInitialActivated == true) { instancePtr->Activate(); }
-    return instancePtr;
-  };
-
-  // FunctionBody ∨
-
   this->mLevelName            = desc.mMetaCategory.mLevelName;
-  this->mLevelHashIdentifier  = hash::DyToCrc32Hash(this->mLevelName.c_str());
   this->mLevelBackgroundColor = desc.mMetaCategory.mLevelBackgroundColor;
 
-  // Create object, FDyActor
   for (const auto& objectInformation : desc.mLevelObjectMetaInfoList)
-  {
+  { // Create object, FDyActor
     switch (objectInformation->mObjectType)
     {
     case EDyMetaObjectType::Actor:
-    {
-      auto instancePtr  = pCreateActorInstance(*objectInformation);
+    { // General object type. Make FDyActor instance.
+      auto instancePtr = std::make_unique<FDyActor>(*objectInformation);
+
+      // Check activation flags and execute sub-routines of each components.
+      instancePtr->pUpdateActivateFlagFromParent();
+      if (objectInformation->mProperties.mInitialActivated == true) 
+      { 
+        instancePtr->Activate(); 
+      }
+
       auto [it, result] = this->mActorMap.try_emplace(instancePtr->GetActorName(), std::move(instancePtr));
       MDY_ASSERT(result == true, "Unexpected error occured in inserting FDyActor to object map.");
     } break;
@@ -77,7 +67,7 @@ void FDyLevel::Initialize(_MIN_ const PDyLevelConstructMetaInfo& desc)
   this->mInitialized = true;
 }
 
-void FDyLevel::Release()
+FDyLevel::~FDyLevel()
 {
   MDY_LOG_INFO("{} | Release level context. | Level name : {}", "FDyLevel::Release()", this->mLevelName);
   for (auto& [name, actor] : this->mActorMap)
@@ -91,9 +81,24 @@ void FDyLevel::Release()
   this->mInitialized = false;
 }
 
-void FDyLevel::Update(float dt)
+void FDyLevel::Update(_MIN_ float dt)
 {
   if (this->mInitialized == false) { return; }
+}
+
+const DDyColorRGBA& FDyLevel::GetBackgroundColor() const noexcept
+{
+  return this->mLevelBackgroundColor;
+}
+
+const std::string& FDyLevel::GetLevelName() const noexcept
+{
+  return this->mLevelName;
+}
+
+void FDyLevel::SetBackgroundColor(_MIN_ const DDyColorRGBA& backgroundColor) noexcept
+{
+  this->mLevelBackgroundColor = backgroundColor;
 }
 
 void FDyLevel::MDY_PRIVATE_SPECIFIER(AlignActorsPosition)() noexcept

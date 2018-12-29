@@ -49,8 +49,6 @@ struct PDyLevelConstructMetaInfo final
     DDyColorRGB24 mLevelBackgroundColor         = {255, 255, 255};
   };
 
-  using TObjectMetaInfoList = std::vector<std::unique_ptr<PDyObjectMetaInfo>>;
-
   /// DMeta scene common information.
   DMeta               mMetaCategory             = {};
   /// Object meta information
@@ -67,8 +65,8 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyLevelConstructMetaInfo
 void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const PDyLevelConstructMetaInfo::DMeta& p);
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyLevelConstructMetaInfo::DMeta& p);
 
-void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const PDyLevelConstructMetaInfo::TObjectMetaInfoList& p);
-void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyLevelConstructMetaInfo::TObjectMetaInfoList& p);
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const TObjectMetaInfoList& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ TObjectMetaInfoList& p);
 
 } /// ::dy namespace
 

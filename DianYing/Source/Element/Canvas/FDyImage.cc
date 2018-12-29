@@ -27,21 +27,13 @@ EDySuccess FDyImage::Initialize(const PDyMetaWidgetImageDescriptor& objectMetaDe
   this->SetFrameSize(objectMetaDesc.mWidgetSize);
   this->mOrigin = objectMetaDesc.mOrigin;
 
-  this->mTintColor        = objectMetaDesc.mTintColor;
   this->mIsSizeToContent  = objectMetaDesc.mIsSizeToContent;
-
-  PDyImageRendererCtorInformation desc = {};
-  desc.mPtrUiObject = this;
-  MDY_CALL_ASSERT_SUCCESS(this->mRenderer.Initialize(desc));
-
+  this->SetTintColor(objectMetaDesc.mTintColor);
+  this->SetImageName(objectMetaDesc.mImageSpecifierName);
   return DY_SUCCESS;
 }
 
-void FDyImage::Release()
-{
-  MDY_NOT_IMPLEMENTED_ASSERT();
-  this->mRenderer.Release();
-}
+void FDyImage::Release() { }
 
 std::string FDyImage::ToString()
 {
@@ -52,6 +44,27 @@ std::string FDyImage::ToString()
 void FDyImage::Render()
 {
   this->mRenderer.Render();
+}
+
+void FDyImage::SetImageName(const std::string& iName) noexcept
+{
+  this->mImageName = iName;
+  this->mRenderer.UpdateImageBinding(this->mImageName);
+}
+
+const std::string& FDyImage::GetImageName() const noexcept
+{
+  return this->mImageName;
+}
+
+void FDyImage::SetTintColor(const DDyColorRGBA& iTintColor) noexcept
+{
+  this->mTintColor = iTintColor;
+}
+
+const DDyColorRGBA& FDyImage::GetTintColor() const noexcept
+{
+  return this->mTintColor;
 }
 
 } /// ::dy namespace

@@ -18,10 +18,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <Dy/Builtin/ShaderGl/UI/RenderUIBasicGaugeBar.h>
+#include <Dy/Builtin/Mesh/Widget/FDyBtMsUiBarQuad.h>
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
 #include <Dy/Element/Canvas/FDyBasicGaugeBar.h>
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Helper/Type/Matrix4.h>
+#include <Dy/Core/Resource/Resource/FDyMeshResource.h>
+#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Core/Rendering/Wrapper/PDyGLBufferDescriptor.h>
 
 //!
 //! Forward declaration
@@ -31,10 +35,7 @@ namespace
 {
 
 /// Sample UI projection code
-dy::DDyMatrix4x4 uUiProjMatrix = dy::DDyMatrix4x4{};
-
-GLuint mTempVao = MDY_INITIALIZE_DEFUINT;
-GLuint mTestVbo = MDY_INITIALIZE_DEFUINT;
+dy::DDyMatrix4x4 uUiProjTempMatrix = dy::DDyMatrix4x4{};
 
 ///
 /// @brief The method gets character quad vertices to be needed for rendering.
@@ -53,24 +54,6 @@ GetVertexPosition(
   return { dy::DDyVector2{ru.X, lb.Y}, ru, dy::DDyVector2{lb.X, ru.Y}, lb };
 }
 
-///
-/// @brief Actual render method.
-/// This method must be called in Render__Side() method.
-///
-/// @param[in] vertices
-///
-void RenderBar(_MIN_ const std::array<dy::DDyVector2, 4>& vertices) {
-  // Update content of VBO
-  static constexpr TU32 size = sizeof(vertices);
-
-  glBindBuffer(GL_ARRAY_BUFFER, mTestVbo);
-  glBufferSubData(GL_ARRAY_BUFFER, 0, size, &vertices[0].X);
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-  // Render
-  glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-}
-
 } /// ::unnamed namespace
 
 //!
@@ -82,75 +65,63 @@ namespace dy
 
 EDySuccess CDyBasicGaugeBarRenderer::Initialize(const PDyBasicGaugeBarRendererCtorInformation& descriptor)
 {
-  static auto SetTestBuffer = [&]
-  {
-    glGenVertexArrays(1, &mTempVao);
-    glGenBuffers(1, &mTestVbo);
-
-    glBindVertexArray(mTempVao);
-    glBindBuffer(GL_ARRAY_BUFFER, mTestVbo);
-
-    std::array<DDyVector2, 4> value = { DDyVector2{}, DDyVector2{}, DDyVector2{}, DDyVector2{} };
-    glBufferData(GL_ARRAY_BUFFER, sizeof(value), value.data(), GL_DYNAMIC_DRAW);
-
-    glBindVertexBuffer(0, mTestVbo, 0, 8);
-
-    glEnableVertexAttribArray(0);
-    glVertexAttribFormat  (0, 2, GL_FLOAT, GL_FALSE, 0);
-    glVertexAttribBinding (0, 0);
-    glBindVertexArray     (0);
-  };
-
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mPtrUiObject), "descriptor.mPtrUiObject must not be null.");
   this->mPtrBarObject  = descriptor.mPtrUiObject;
-  this->mBinderShader.TryRequireResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderUiBasicGaugeBar::sName));
+  this->mBinderShader .TryRequireResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderUiBasicGaugeBar::sName));
+  this->mBinderBarMesh.TryRequireResource(MSVSTR(builtin::FDyBtMsUiBarQuad::sName));
 
   // @TODO SAMPLE CODE (TEMPORAL)
   auto& settingManager = MDySetting::GetInstance();
   const auto overallScreenWidth   = settingManager.GetWindowSizeWidth();
   const auto overallScreenHeight  = settingManager.GetWindowSizeHeight();
-  uUiProjMatrix = glm::ortho(0.f, static_cast<float>(overallScreenWidth), 0.f, static_cast<float>(overallScreenHeight), 0.2f, 10.0f);
+  uUiProjTempMatrix = glm::ortho(0.f, static_cast<float>(overallScreenWidth), 0.f, static_cast<float>(overallScreenHeight), 0.2f, 10.0f);
 
-  SetTestBuffer();
   return DY_SUCCESS;
 }
 
-void CDyBasicGaugeBarRenderer::Release()
-{
-  glDeleteBuffers(1, &mTestVbo);
-  glDeleteVertexArrays(1, &mTempVao);
-  this->mPtrBarObject = nullptr;
-
-  MDY_NOT_IMPLEMENTED_ASSERT();
-}
+void CDyBasicGaugeBarRenderer::Release() { }
 
 void CDyBasicGaugeBarRenderer::Render()
 {
   MDY_ASSERT(this->mPtrBarObject != nullptr, "CDyBasicGaugeBarRenderer::mPtrBarObject must not be nullptr.");
-  if (this->mBinderShader.IsResourceExist() == false) { return; }
+  if (this->mBinderShader.IsResourceExist() == false
+  ||  this->mBinderBarMesh.IsResourceExist() == false) { return; }
 
+#ifdef false
+  this->mBinderShader->TryUpdateUniformVec4("uFillColor", &this->mPtrBarObject->GetBackgroundColor().R);
+  this->mBinderShader->TryUpdateUniformMat4("uUiProjMatrix", &uUiProjTempMatrix[0].X);
+  /* If value is same and not changed, do nothing. */
+  this->mBinderShader->TryUpdateUniform();
+#endif
   glDepthFunc(GL_ALWAYS);
   this->mBinderShader->UseShader();
-  glBindVertexArray(mTempVao);
+  glBindVertexArray(this->mBinderBarMesh->GetVertexArrayId());
 
-  const TU32 shaderProgramId  = this->mBinderShader->GetShaderProgramId();
-  const auto fillColorId      = glGetUniformLocation(shaderProgramId, "uFillColor");
-  const auto shaderid         = glGetUniformLocation(shaderProgramId, "uUiProjMatrix");
-  glUniformMatrix4fv(shaderid, 1, GL_FALSE, &uUiProjMatrix[0].X);
+  const TU32 shaderProgramId = this->mBinderShader->GetShaderProgramId();
+  const auto fillColorId     = glGetUniformLocation(shaderProgramId, "uFillColor");
+  const auto shaderid        = glGetUniformLocation(shaderProgramId, "uUiProjMatrix");
+  glUniformMatrix4fv(shaderid, 1, GL_FALSE, &uUiProjTempMatrix[0].X);
 
-  const DDyVector2 pos        = this->mPtrBarObject->GetRenderPosition();
-  const DDyVectorInt2 size    = this->mPtrBarObject->GetFrameSize();
-  const TI32 padding          = this->mPtrBarObject->GetPadding();
-  const TF32 percentage       = this->mPtrBarObject->GetPercentage();
+  const DDyVector2 pos     = this->mPtrBarObject->GetRenderPosition();
+  const DDyVectorInt2 size = this->mPtrBarObject->GetFrameSize();
+  const TI32 padding       = this->mPtrBarObject->GetPadding();
+  const TF32 percentage    = this->mPtrBarObject->GetPercentage();
+  const auto vboId = this->mBinderBarMesh->GetVertexBufferId();
 
   if (this->mPtrBarObject->CheckIsUsingBackgroundColor() == true)
   {
+    const auto buffer = GetVertexPosition(pos, size);
     glUniform4fv(fillColorId, 1, &this->mPtrBarObject->GetBackgroundColor().R);
-    RenderBar(GetVertexPosition(pos, size));
+    FDyGLWrapper::MapBuffer(EDyDirectBufferType::VertexBuffer, vboId, (void*)buffer.data(), sizeof(buffer));
+    FDyGLWrapper::Draw(EDyDrawType::TriangleFan, false, 4);
   }
 
-  glUniform4fv(fillColorId, 1, &this->mPtrBarObject->GetForegroundColor().R);
-  RenderBar(GetVertexPosition(pos, size, padding, percentage));
+  {
+    const auto buffer = GetVertexPosition(pos, size, padding, percentage);
+    glUniform4fv(fillColorId, 1, &this->mPtrBarObject->GetForegroundColor().R);
+    FDyGLWrapper::MapBuffer(EDyDirectBufferType::VertexBuffer, vboId, (void*)buffer.data(), sizeof(buffer));
+    FDyGLWrapper::Draw(EDyDrawType::TriangleFan, false, 4);
+  }
 
   glBindVertexArray(0);
   this->mBinderShader->DisuseShader();

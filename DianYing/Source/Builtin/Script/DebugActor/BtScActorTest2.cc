@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Builtin/Script/BtScActorTest2.h>
+#include <Dy/Builtin/Script/DebugActor/BtScActorTest2.h>
 #include <Dy/Element/Actor.h>
 #include <Dy/Management/InputManager.h>
 #include <Dy/Core/DyEngine.h>
@@ -26,25 +26,28 @@ void dy::BtScActorTest2::Initiate()
 
 void dy::BtScActorTest2::Update(TF32 dt)
 {
-  //static TF32 f = 0.0f;
-  //f += dt;
+  static TF32 f = 0.0f;
+  f += dt;
 
-  //auto& refActor = this->GetActorReference();
-  //const auto& p  = refActor.GetTransform()->GetWorldPosition();
-  //refActor.GetTransform()->SetWorldPosition(DDyVector3{std::sin(f) * 10, p.Y, p.Z});
+  auto& refActor = this->GetActorReference();
+  const auto& p  = refActor.GetTransform()->GetRelativeWorldPosition();
+  refActor.GetTransform()->SetRelativeWorldPosition(DDyVector3{std::sin(f) * 10, p.Y, std::cos(f) * 10});
+  refActor.GetTransform()->AddWorldEulerAngle(EDyAxis3D::Z, dt * 90.f);
 
+#ifdef false
   auto& mInput = MDyInput::GetInstance();
   if (mInput.IsJoystickConnected() == true)
   {
     auto& refActor = this->GetActorReference();
     const auto& p  = 
-        refActor.GetTransform()->GetWorldPosition() 
+        refActor.GetTransform()->GetRelativeWorldPosition() 
       + DDyVector3{
           5 * mInput.GetJoystickStickValue(0),
           0,
           5 * mInput.GetJoystickStickValue(1)} * dt;
-    refActor.GetTransform()->SetWorldPosition(p);
+    refActor.GetTransform()->SetRelativeWorldPosition(p);
   }
+#endif
 }
 
 void dy::BtScActorTest2::Test()

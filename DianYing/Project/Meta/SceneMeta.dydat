@@ -9,11 +9,38 @@
     "Object":
     [
       {
-        "Name"      : "Test",
-        "UUID"      : "",
-        "Type"      : "Actor",
+        "Name" : "ParentActor",
+        "Type" : "Actor",
         "CommonProperties": {
           "ParentSpecifierName" : "",
+          "IsInitiallyActivated": true,
+          "IsFromPrefab"        : false,
+          "PrefabSpecifierName" : ""
+        },
+        "ComponentList": [
+          {
+            "Type"      : "Script",
+            "Activated" : true,
+            "Details"   : { "Specifier": "TestScript3" }
+          },
+          {
+            "Type": "Transform",
+            "Details": {
+              "LPosition": { "X": 0, "Y": 0, "Z": 0 },
+              "LRotation": { "X": 0, "Y": 0, "Z": 0 },
+              "LScale": { "X": 1, "Y": 1, "Z": 1 },
+              "WPosition": { "X": 0, "Y": 0, "Z": 0 },
+              "WRotation": { "X": 0, "Y": 0, "Z": 0 },
+              "WScale": { "X": 1, "Y": 1, "Z": 1 }
+            }
+          }
+        ]
+      },
+      {
+        "Name"      : "Test",
+        "Type"      : "Actor",
+        "CommonProperties": {
+          "ParentSpecifierName" : "ParentActor",
           "IsInitiallyActivated": true,
           "IsFromPrefab"        : false,
           "PrefabSpecifierName" : ""
@@ -25,8 +52,8 @@
               "LPosition": { "X": 0, "Y": 0, "Z": 0 },
               "LRotation": { "X": 0, "Y": 0, "Z": 0 },
               "LScale": { "X": 1, "Y": 1, "Z": 1 },
-              "WPosition": { "X": 0, "Y": 30, "Z": -30 },
-              "WRotation": { "X": 45, "Y": 0, "Z": 0 },
+              "WPosition": { "X": 0, "Y": 0, "Z": -40 },
+              "WRotation": { "X": 0, "Y": 0, "Z": 0 },
               "WScale": { "X": 1, "Y": 1, "Z": 1 }
             }
           },
@@ -50,15 +77,12 @@
       },
       {
         "Name"      : "Test2",
-        "UUID"      : "",
         "Type"      : "Actor",
         "CommonProperties": {
-          "ParentSpecifierUUID" : "",
           "ParentSpecifierName" : "",
           "IsInitiallyActivated": true,
           "IsFromPrefab"        : false,
-          "PrefabSpecifierName" : "",
-          "PrefabSpecifierUUID" : ""
+          "PrefabSpecifierName" : ""
         },
         "ComponentList": [
           {
@@ -73,6 +97,42 @@
               "LRotation" : { "X": 0, "Y": 0, "Z": 0 },
               "LScale"    : { "X": 1, "Y": 1, "Z": 1 },
               "WPosition" : { "X": 0, "Y": 0, "Z": 0 },
+              "WRotation" : { "X": 0, "Y": 0, "Z": 0 },
+              "WScale"    : { "X": 1, "Y": 2, "Z": 1 }
+            }
+          },
+          {
+            "Type"      : "ModelFilter",
+            "Activated" : true,
+            "Details"   : { "ModelName": "dyBtModelBox" }
+          },
+          {
+            "Type"      : "ModelRenderer",
+            "Activated" : true,
+            "Details"   : {
+              "Shadow"    : true,
+              "Materials" : [ "dyBtMatOpaqueStaticPlain" ]
+            }
+          }
+        ]
+      },
+      {
+        "Name"      : "Test",
+        "Type"      : "Actor",
+        "CommonProperties": {
+          "ParentSpecifierName" : "Test2",
+          "IsInitiallyActivated": true,
+          "IsFromPrefab"        : false,
+          "PrefabSpecifierName" : ""
+        },
+        "ComponentList": [
+          {
+            "Type"      : "Transform",
+            "Details"   : {
+              "LPosition" : { "X": 0, "Y": 0, "Z": 0 },
+              "LRotation" : { "X": 0, "Y": 0, "Z": 0 },
+              "LScale"    : { "X": 1, "Y": 1, "Z": 1 },
+              "WPosition" : { "X": 3, "Y": 0, "Z": 0 },
               "WRotation" : { "X": 0, "Y": 0, "Z": 0 },
               "WScale"    : { "X": 1, "Y": 1, "Z": 1 }
             }
@@ -94,15 +154,12 @@
       },
       {
         "Name"      : "DirLight",
-        "UUID"      : "",
         "Type"      : "Actor",
         "CommonProperties": {
-          "ParentSpecifierUUID" : "",
           "ParentSpecifierName" : "",
           "IsInitiallyActivated": true,
           "IsFromPrefab"        : false,
-          "PrefabSpecifierName" : "",
-          "PrefabSpecifierUUID" : ""
+          "PrefabSpecifierName" : ""
         },
         "ComponentList": [
           {
@@ -139,15 +196,12 @@
       },
       {
         "Name"      : "FloorObj",
-        "UUID"      : "",
         "Type"      : "Actor",
         "CommonProperties": {
-          "ParentSpecifierUUID" : "",
           "ParentSpecifierName" : "",
           "IsInitiallyActivated": true,
           "IsFromPrefab"        : false,
-          "PrefabSpecifierName" : "",
-          "PrefabSpecifierUUID" : ""
+          "PrefabSpecifierName" : ""
         },
         "ComponentList": [
           {
@@ -157,45 +211,6 @@
               "LRotation" : { "X": 0, "Y": 0, "Z": 0 },
               "LScale"    : { "X": 1, "Y": 1, "Z": 1 },
               "WPosition" : { "X": 0, "Y": -13, "Z": 0 },
-              "WRotation" : { "X": 0, "Y": 0, "Z": 0 },
-              "WScale"    : { "X": 10, "Y": 10, "Z": 10 }
-            }
-          },
-          {
-            "Type"      : "ModelFilter",
-            "Activated" : true,
-            "Details"   : { "ModelName" : "dyBtModelBox" }
-          },
-          {
-            "Type"      : "ModelRenderer",
-            "Activated" : true,
-            "Details"   : {
-              "Shadow"    : true,
-              "Materials" : [ "dyBtMatOpaqueStaticPlain" ]
-            }
-          }
-        ]
-      },
-      {
-        "Name"      : "WallObj",
-        "UUID"      : "",
-        "Type"      : "Actor",
-        "CommonProperties": {
-          "ParentSpecifierUUID" : "",
-          "ParentSpecifierName" : "",
-          "IsInitiallyActivated": true,
-          "IsFromPrefab"        : false,
-          "PrefabSpecifierName" : "",
-          "PrefabSpecifierUUID" : ""
-        },
-        "ComponentList": [
-          {
-            "Type"      : "Transform",
-            "Details"   : {
-              "LPosition" : { "X": 0, "Y": 0, "Z": 0 },
-              "LRotation" : { "X": 0, "Y": 0, "Z": 0 },
-              "LScale"    : { "X": 1, "Y": 1, "Z": 1 },
-              "WPosition" : { "X": 0, "Y": 0, "Z": 20 },
               "WRotation" : { "X": 0, "Y": 0, "Z": 0 },
               "WScale"    : { "X": 10, "Y": 10, "Z": 10 }
             }

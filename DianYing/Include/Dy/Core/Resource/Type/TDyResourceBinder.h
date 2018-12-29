@@ -160,7 +160,12 @@ public:
   {
     TSuper::pSetSpecifierName(specifier);
     MDY_NOTUSED auto _1 = TSuper::pTryDetachResource();
-    MDY_NOTUSED auto _2 = TSuper::pTryRequireResource();
+    if (const auto flag = TSuper::pTryRequireResource();
+        flag == DY_FAILURE)
+    {
+      /// @TODO IMEPLEMENT TEMPORAL RESOURCE BINDING. AND WAITING.
+      MDY_UNEXPECTED_BRANCH();
+    }
   }
 };
 

@@ -161,8 +161,6 @@
     <ClCompile Include="Source\Builtin\ShaderGl\PostEffect\RenderDefaultSSAO.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\Editor\RenderGrid.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\Font\RenderFontArraySDF.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\UI\RenderUiBasicGaugeBar.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\UI\RenderUIImage.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\Font\RenderDefaultFont.cc" />
     <ClCompile Include="Source\Core\Resource\Information_Deprecated\SoundInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Resource_Deprecated\SoundResource.cc" />
@@ -232,14 +230,19 @@
     <ClCompile Include="Source\Builtin\Widget\FDyBtWdTestLoadingUi.cc" />
     <ClCompile Include="Source\Builtin\Script\FDyBtScTestLoadingUi.cc" />
     <ClCompile Include="Source\Component\Actor\CDyActorScript.cc" />
-    <ClCompile Include="Source\Builtin\Script\BtScActorTest1.cc" />
-    <ClCompile Include="Source\Builtin\Script\BtScActorTest2.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Widget\CDyWidgetScriptCpp.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Widget\CDyWidgetScriptLua.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Widget\FDyWidgetScriptStatus.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Actor\CDyActorScriptCpp.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Actor\CDyActorScriptLua.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Actor\FDyActorScriptStatus.cc" />
+    <ClCompile Include="Source\Builtin\Script\DebugActor\BtScActorTest1.cc" />
+    <ClCompile Include="Source\Builtin\Script\DebugActor\BtScActorTest2.cc" />
+    <ClCompile Include="Source\Builtin\Script\DebugActor\BtScActorTest3.cc" />
+    <ClCompile Include="Source\Builtin\Mesh\FDyBtMsUiImgQuad.cc" />
+    <ClCompile Include="Source\Builtin\Mesh\Widget\FDyBtMsUiBarQuad.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\Widget\RenderUiBasicGaugeBar.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\Widget\RenderUIImage.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -613,8 +616,12 @@
     <ClInclude Include="Include\Dy\Component\Internal\Widget\CDyWidgetScriptCpp.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Widget\CDyWidgetScriptLua.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Widget\CDyWidgetScriptBase.h" />
-    <ClInclude Include="Include\Dy\Builtin\Script\BtScActorTest1.h" />
-    <ClInclude Include="Include\Dy\Builtin\Script\BtScActorTest2.h" />
+    <ClInclude Include="Include\Dy\Builtin\Script\DebugActor\BtScActorTest1.h" />
+    <ClInclude Include="Include\Dy\Builtin\Script\DebugActor\BtScActorTest2.h" />
+    <ClInclude Include="Include\Dy\Builtin\Script\DebugActor\BtScActorTest3.h" />
+    <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsUiImgQuad.h" />
+    <ClInclude Include="Include\Dy\Builtin\Mesh\Widget\FDyBtMsUiBarQuad.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Type\EDyDrawType.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

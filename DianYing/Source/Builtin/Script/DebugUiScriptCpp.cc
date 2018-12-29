@@ -94,9 +94,10 @@ Camera0 : 2
 
   const auto& inputManager = MDyInput::GetInstance();
   joystickText->SetText(fmt::format(
-      "Analog 01 : X {:05.2} Y {:05.2}",
-      inputManager.GetJoystickStickValue(0),
-      inputManager.GetJoystickStickValue(1)
+      "Analog 01 : X {:05.2f} Y {:05.2f}\n"
+      "Analog 02 : X {:05.2f} Y {:05.2f}",
+      inputManager.GetJoystickStickValue(1), inputManager.GetJoystickStickValue(0),
+      inputManager.GetJoystickStickValue(5), inputManager.GetJoystickStickValue(2)
   ));
 }
 

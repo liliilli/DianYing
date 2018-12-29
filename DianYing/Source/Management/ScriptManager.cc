@@ -114,6 +114,7 @@ void DyInitializeCDyComponents(_MIO_ sol::state& lua)
 ///
 void DyInitilaizeFDyActor(_MIO_ sol::state& lua)
 {
+#ifdef false
   /// Binding lua
   lua.new_usertype<dy::FDyActor>("FDyActor",
       /// Base
@@ -126,6 +127,7 @@ void DyInitilaizeFDyActor(_MIO_ sol::state& lua)
       "IsActivated",  &FDyActor::IsActivated,
       "GetActorName", &FDyActor::GetActorName
   );
+#endif
 }
 
 } /// ::dy namespace

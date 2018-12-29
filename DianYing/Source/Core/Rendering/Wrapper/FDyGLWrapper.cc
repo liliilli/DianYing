@@ -256,6 +256,51 @@ void FDyGLWrapper::DeleteBuffer(_MIN_ const TU32 directBufferId)
   glDeleteBuffers(1, &directBufferId);
 }
 
+void FDyGLWrapper::MapBuffer(EDyDirectBufferType iBufferType, TU32 iBufferId, void* iPtrBuffer, TU32 iBufferSize)
+{
+  GLenum bufferType = GL_NONE;
+  switch (iBufferType)
+  {
+  case EDyDirectBufferType::VertexBuffer:   { bufferType = GL_ARRAY_BUFFER; } break;
+  case EDyDirectBufferType::ElementBuffer:  { bufferType = GL_ELEMENT_ARRAY_BUFFER; } break;
+  default: MDY_UNEXPECTED_BRANCH(); break;
+  }
+
+  {
+    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
+    glBindBuffer(bufferType, iBufferId);
+    glBufferSubData(bufferType, 0, iBufferSize, iPtrBuffer);
+  }
+}
+
+void FDyGLWrapper::MapBufferExt(
+    _MIN_ EDyDirectBufferType iBufferType, _MIN_ TU32 iBufferId, _MIN_ void* iPtrBuffer, _MIN_ TU32 iBufferSize,
+    _MIN_ TU32 iItemByteSize, _MIN_ TU32 iGapByteSize, _MIN_ TU32 iStartPoint)
+{
+  GLenum  bufferType = GL_NONE;
+  char*   ptrInput   = static_cast<char*>(iPtrBuffer);
+  switch (iBufferType)
+  {
+  case EDyDirectBufferType::VertexBuffer:   { bufferType = GL_ARRAY_BUFFER; } break;
+  case EDyDirectBufferType::ElementBuffer:  { bufferType = GL_ELEMENT_ARRAY_BUFFER; } break;
+  default: MDY_UNEXPECTED_BRANCH(); break;
+  }
+
+  { 
+    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
+    glBindBuffer(bufferType, iBufferId);
+    char* ptr = static_cast<char*>(glMapBuffer(bufferType, GL_WRITE_ONLY));
+    ptr += iStartPoint;
+    while (ptrdiff_t(ptrInput) - ptrdiff_t(iPtrBuffer) < iBufferSize)
+    {
+      memcpy(ptr, ptrInput, iItemByteSize);
+      ptr       += iItemByteSize + iGapByteSize;
+      ptrInput  += iItemByteSize;
+    }
+    glUnmapBuffer(bufferType);
+  } 
+}
+
 TU32 FDyGLWrapper::CreateVertexArrayObject()
 {
   TU32 vaoId = MDY_INITIALIZE_DEFUINT;
@@ -451,6 +496,32 @@ EDySuccess FDyGLWrapper::DeleteFrameBuffer(const TU32 framebufferId)
   MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
   glDeleteFramebuffers(1, &framebufferId);
   return DY_SUCCESS;
+}
+
+void FDyGLWrapper::Draw(EDyDrawType iType, bool iIsElement, TU32 iCount)
+{
+  GLenum drawType = GL_POINT;
+  switch (iType)
+  {
+  case EDyDrawType::Point:  drawType = GL_POINT;  break;
+  case EDyDrawType::Line:   drawType = GL_LINE;   break;
+  case EDyDrawType::LineStrip: drawType = GL_LINE_STRIP; break;
+  case EDyDrawType::LineLoop:   drawType = GL_LINE_LOOP; break;
+  case EDyDrawType::Triangle:   drawType = GL_TRIANGLES; break;
+  case EDyDrawType::TriangleStip: drawType = GL_TRIANGLE_STRIP; break;
+  case EDyDrawType::TriangleFan:  drawType = GL_TRIANGLE_FAN;   break;
+  }
+
+  if (iIsElement == true)
+  {
+    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
+    glDrawElements(drawType, iCount, GL_UNSIGNED_INT, nullptr);
+  }
+  else
+  {
+    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
+    glDrawArrays(drawType, 0, iCount);
+  }
 }
 
 } /// ::dy namespace
