@@ -67,30 +67,44 @@ enum class EDyUniformVariableType
   Texture2DArray
 };
 
-///
 /// @struct DDyAttributeVariableInformation
 /// @brief Store attribute variable information.
-/// @todo NOT USED IN PRODUCTION CODE YET.
-///
 struct DDyAttributeVariableInformation final
 {
   std::string               mVariableName     = MDY_INITIALIZE_EMPTYSTR;
-  TI32                      mVariableSlotSize = MDY_INITIALIZE_DEFINT;
+  TU32                      mVariableSlotSize = MDY_INITIALIZE_DEFUINT;
   EDyAttributeVariableType  mVariableType     = EDyAttributeVariableType::NoneError;
-  TI32                      mVariableLocation = MDY_INITIALIZE_DEFINT;
+  TU32                      mVariableLocation = MDY_INITIALIZE_DEFUINT;
+
+  DDyAttributeVariableInformation(
+      _MIN_ const std::string& iSpecifier,
+      _MIN_ const TU32 iSlotSize,
+      _MIN_ const EDyAttributeVariableType iType,
+      _MIN_ const TU32 iLocation) :
+      mVariableName {iSpecifier},
+      mVariableSlotSize { iSlotSize },
+      mVariableType {iType},
+      mVariableLocation {iLocation} {};
 };
 
-///
 /// @struct DDyUniformVariableInformation
 /// @brief Store uniform variable information.
-/// @todo NOT USED IN PRODUCTION CODE YET.
-///
 struct DDyUniformVariableInformation final
 {
   std::string               mVariableName     = MDY_INITIALIZE_EMPTYSTR;
-  TI32                      mVariableSlotSize = MDY_INITIALIZE_DEFINT;
+  TU32                      mVariableSlotSize = MDY_INITIALIZE_DEFUINT;
   EDyUniformVariableType    mVariableType     = EDyUniformVariableType::NoneError;
-  TI32                      mVariableLocation = MDY_INITIALIZE_DEFINT;
+  TU32                      mVariableLocation = MDY_INITIALIZE_DEFUINT;
+
+  DDyUniformVariableInformation(
+      _MIN_ const std::string& iSpecifier,
+      _MIN_ const TU32 iSlotSize,
+      _MIN_ const EDyUniformVariableType iType,
+      _MIN_ const TU32 iLocation) :
+      mVariableName {iSpecifier},
+      mVariableSlotSize { iSlotSize },
+      mVariableType {iType},
+      mVariableLocation {iLocation} {};
 };
 
 ///
@@ -98,7 +112,10 @@ struct DDyUniformVariableInformation final
 ///
 struct DDyUniformBufferObjectInformation final
 {
-  std::string               mUboSpecifierName = MDY_INITIALIZE_EMPTYSTR;
+  std::string mUboSpecifierName = MDY_INITIALIZE_EMPTYSTR;
+
+  DDyUniformBufferObjectInformation(_MIN_ const std::string& iName) :
+      mUboSpecifierName { iName } {};
 };
 
 ///

@@ -16,6 +16,7 @@
 #include <Dy/Meta/Type/EDyResourceTypes.h>
 #include <Dy/Core/Rendering/Type/EDyDrawType.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLBufferDescriptor.h>
+#include <Dy/Core/Resource/Internal/ShaderType.h>
 
 //!
 //! Forward declaration
@@ -132,10 +133,33 @@ public:
 
   /// @brief Delete frame buffer. \n
   /// Deleting frame buffer object must be held on main thread context.
-  static MDY_NODISCARD EDySuccess DeleteFrameBuffer(_MIN_ const TU32 framebufferId);
+  MDY_NODISCARD static EDySuccess DeleteFrameBuffer(_MIN_ const TU32 framebufferId);
+
+  /// @brief Draw command.
+  static void Draw(_MIN_ EDyDrawType iType, _MIN_ bool iIsElement, _MIN_ TU32 iCount);
+
+  /// @brief Query command.
+  /// Shader program id must be valid and query enum also.
+  MDY_NODISCARD static TI32 QueryShaderProgramIV(_MIN_ TU32 iShaderProgramId, _MIN_ GLenum iQueryEnum);
+
+  /// @brief 
+  MDY_NODISCARD static std::optional<std::tuple<std::string, GLsizei, GLint, EDyAttributeVariableType, TU32>>
+  GetShaderProgramAttributeInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iAttrIndex);
+
+  MDY_NODISCARD static std::optional<std::tuple<std::string, GLsizei, GLint, EDyUniformVariableType, TU32>>
+  GetShaderProgramUniformInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iUniformIndex);
+
+  MDY_NODISCARD static std::optional<std::string>
+  GetShaderProgramUniformBlockInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iUniformBlockIndex);
 
   /// @brief
-  static void Draw(_MIN_ EDyDrawType iType, _MIN_ bool iIsElement, _MIN_ TU32 iCount);
+  static void UpdateUniformMatrix4(_MIN_ TU32 iId, _MIN_ const DDyMatrix4x4& iBuffer, _MIN_ bool iTransposed = false);
+
+  /// @brief
+  static void UpdateUniformVector4(_MIN_ TU32 iId, _MIN_ const DDyVector4& iBuffer);
+
+  /// @brief
+  static void UpdateUniformInteger(_MIN_ TU32 iId, _MIN_ const TI32& iBuffer);
 
 private:
   static std::mutex mGLMutex;

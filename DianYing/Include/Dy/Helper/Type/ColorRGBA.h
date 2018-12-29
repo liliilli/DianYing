@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Helper/Type/Vector3.h>
+#include <Dy/Helper/Type/Vector4.h>
 
 namespace dy {
 
@@ -103,6 +104,11 @@ struct DDyColorRGBA final
   operator glm::vec4() const noexcept
   {
     return glm::vec4{this->R, this->G, this->B, this->A};
+  }
+
+  operator DDyVector4() const noexcept
+  {
+    return DDyVector4{this->R, this->G, this->B, this->A};
   }
 
   //!

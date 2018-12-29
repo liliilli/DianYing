@@ -43,4 +43,17 @@ bool DDyVector4::IsAllZero(const DDyVector4& vector) noexcept
   return math::IsAllZero(vector);
 }
 
+bool operator==(_MIN_ const DDyVector4& lhs, _MIN_ const DDyVector4& rhs) noexcept
+{
+  return lhs.X == rhs.X 
+      && lhs.Y == rhs.Y
+      && lhs.Z == rhs.Z
+      && lhs.W == rhs.W;
+}
+
+bool operator!=(_MIN_ const DDyVector4& lhs, _MIN_ const DDyVector4& rhs) noexcept
+{
+  return !(lhs == rhs);
+}
+
 } /// ::dy namespace

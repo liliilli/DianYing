@@ -21,7 +21,66 @@
 #include <Dy/Core/Rendering/Wrapper/PDyGLAttachmentDescriptor.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLFrameBufferDescriptor.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLVaoBindDescriptor.h>
+#include <Dy/Core/Resource/Internal/ShaderType.h>
 #include <Dy/Meta/Type/Mesh/DDyGLVaoBindInformation.h>
+
+//!
+//! Forward declaration
+//! 
+
+namespace
+{
+
+MDY_NODISCARD dy::EDyAttributeVariableType 
+DyGlGetAttributeVariableTypeFrom(_MIN_ GLenum type) noexcept
+{
+  switch (type)
+  {
+  case GL_BOOL:                             return dy::EDyAttributeVariableType::Bool;
+  case GL_FLOAT:      case GL_DOUBLE:       return dy::EDyAttributeVariableType::Float;
+  case GL_FLOAT_VEC2: case GL_DOUBLE_VEC2:  return dy::EDyAttributeVariableType::Vector2;
+  case GL_FLOAT_VEC3: case GL_DOUBLE_VEC3:  return dy::EDyAttributeVariableType::Vector3;
+  case GL_FLOAT_VEC4: case GL_DOUBLE_VEC4:  return dy::EDyAttributeVariableType::Vector4;
+  case GL_FLOAT_MAT2: case GL_DOUBLE_MAT2:  return dy::EDyAttributeVariableType::Matrix2;
+  case GL_FLOAT_MAT3: case GL_DOUBLE_MAT3:  return dy::EDyAttributeVariableType::Matrix3;
+  case GL_FLOAT_MAT4: case GL_DOUBLE_MAT4:  return dy::EDyAttributeVariableType::Matrix4;
+  case GL_INT:                              return dy::EDyAttributeVariableType::Integer;
+  case GL_INT_VEC2:                         return dy::EDyAttributeVariableType::IVec2;
+  case GL_INT_VEC3:                         return dy::EDyAttributeVariableType::IVec3;
+  case GL_INT_VEC4:                         return dy::EDyAttributeVariableType::IVec4;
+  default: return dy::EDyAttributeVariableType::NoneError;
+  }
+}
+
+MDY_NODISCARD dy::EDyUniformVariableType 
+DyGlGetUniformVariableTypeFrom(_MIN_ GLenum type) noexcept
+{
+  switch (type)
+  {
+  case GL_BOOL:                             return dy::EDyUniformVariableType::Bool;
+  case GL_FLOAT:      case GL_DOUBLE:       return dy::EDyUniformVariableType::Float;
+  case GL_FLOAT_VEC2: case GL_DOUBLE_VEC2:  return dy::EDyUniformVariableType::Vector2;
+  case GL_FLOAT_VEC3: case GL_DOUBLE_VEC3:  return dy::EDyUniformVariableType::Vector3;
+  case GL_FLOAT_VEC4: case GL_DOUBLE_VEC4:  return dy::EDyUniformVariableType::Vector4;
+  case GL_FLOAT_MAT2: case GL_DOUBLE_MAT2:  return dy::EDyUniformVariableType::Matrix2;
+  case GL_FLOAT_MAT3: case GL_DOUBLE_MAT3:  return dy::EDyUniformVariableType::Matrix3;
+  case GL_FLOAT_MAT4: case GL_DOUBLE_MAT4:  return dy::EDyUniformVariableType::Matrix4;
+  case GL_INT:                              return dy::EDyUniformVariableType::Integer;
+  case GL_INT_VEC2:                         return dy::EDyUniformVariableType::IVec2;
+  case GL_INT_VEC3:                         return dy::EDyUniformVariableType::IVec3;
+  case GL_INT_VEC4:                         return dy::EDyUniformVariableType::IVec4;
+  case GL_SAMPLER_1D:                       return dy::EDyUniformVariableType::Texture1D;
+  case GL_SAMPLER_2D:                       return dy::EDyUniformVariableType::Texture2D;
+  case GL_SAMPLER_2D_ARRAY:                 return dy::EDyUniformVariableType::Texture2DArray;
+  default: return dy::EDyUniformVariableType::NoneError;
+  }
+}
+
+} /// ::unnamed namespace
+
+//!
+//! Implementation
+//!
 
 namespace dy
 {
@@ -522,6 +581,118 @@ void FDyGLWrapper::Draw(EDyDrawType iType, bool iIsElement, TU32 iCount)
     MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
     glDrawArrays(drawType, 0, iCount);
   }
+}
+
+TI32 FDyGLWrapper::QueryShaderProgramIV(_MIN_ TU32 iShaderProgramId, _MIN_ GLenum iQueryEnum)
+{
+  TI32 result = 0;
+  {
+    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
+    glGetProgramiv(iShaderProgramId, iQueryEnum, &result);
+  }
+  return result;
+}
+
+std::optional<std::tuple<std::string, GLsizei, GLint, EDyAttributeVariableType, TU32>> 
+FDyGLWrapper::GetShaderProgramAttributeInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iAttrIndex)
+{
+  const TI32 attrBufferLength = QueryShaderProgramIV(iShaderProgramId, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH);
+  auto* attributeName = static_cast<char*>(std::calloc(attrBufferLength, sizeof(GLchar)));
+
+  GLsizei attributelength = 0;
+  GLint   attributeSize   = 0;
+  GLenum  attributeType   = GL_NONE;
+  TI32    attrLocation;
+  { // Critical section
+    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
+    glGetActiveAttrib(iShaderProgramId, iAttrIndex, attrBufferLength, &attributelength, &attributeSize, &attributeType, attributeName);
+    attrLocation = glGetAttribLocation(iShaderProgramId, attributeName);
+  }
+
+  MDY_ASSERT(attrLocation != -1, "Attribute location did not find.");
+  const auto type = DyGlGetAttributeVariableTypeFrom(attributeType);
+  MDY_ASSERT(type != EDyAttributeVariableType::NoneError, "Not supported attribute type.");
+
+  const auto result = std::make_tuple(std::string(attributeName), attributelength, attributeSize, type, attrLocation);
+  free(attributeName); attributeName = nullptr;
+  return result;
+}
+
+std::optional<std::tuple<std::string, GLsizei, GLint, EDyUniformVariableType, TU32>>
+FDyGLWrapper::GetShaderProgramUniformInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iUniformIndex)
+{
+  const TI32 uniformBufLength = QueryShaderProgramIV(iShaderProgramId, GL_ACTIVE_UNIFORM_MAX_LENGTH);
+  auto* uniformName = static_cast<char*>(std::calloc(uniformBufLength, sizeof(GLchar)));
+
+  GLsizei uniLength = 0;
+  GLint   uniSize   = 0;
+  GLenum  uniType   = GL_NONE;
+  TI32    uniLocId;
+  { // Critical section
+    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
+    glGetActiveUniform(iShaderProgramId, iUniformIndex, uniformBufLength, &uniLength, &uniSize, &uniType, uniformName);
+    uniLocId = glGetUniformLocation(iShaderProgramId, uniformName);
+  }
+
+  if (uniLocId == -1)
+  { // Uniform location will be -1 when uniform varaible is in ubo.
+    const GLchar* uboNameLastPtr = std::strchr(uniformName, '.');
+    MDY_ASSERT(MDY_CHECK_ISNOTNULL(uboNameLastPtr), "Unsupported uniform value type.");
+    free(uniformName); uniformName = nullptr;
+    return std::nullopt;
+  }
+
+  const auto type = DyGlGetUniformVariableTypeFrom(uniType);
+  MDY_ASSERT(type != EDyUniformVariableType::NoneError, "Not supported uniform type.");
+
+  const auto result = std::make_tuple(std::string(uniformName), uniLength, uniSize, type, uniLocId);
+  free(uniformName); uniformName = nullptr;
+  return result;
+}
+
+std::optional<std::string> 
+FDyGLWrapper::GetShaderProgramUniformBlockInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iUniformBlockIndex)
+{
+  const TI32 uboNameMaxLength = QueryShaderProgramIV(iShaderProgramId, GL_ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH);
+  auto* uniformName = static_cast<char*>(std::calloc(uboNameMaxLength, sizeof(GLchar)));
+
+  GLsizei uniformLength = 0;
+  {
+    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
+    glGetActiveUniformBlockName(iShaderProgramId, iUniformBlockIndex, uboNameMaxLength, &uniformLength, uniformName);
+  }
+  if (uniformLength <= 0) 
+  { 
+    free(uniformName); uniformName = nullptr;
+    return std::nullopt; 
+  }
+
+  const std::string result = uniformName;
+  free(uniformName); uniformName = nullptr;
+  return result;
+}
+
+void FDyGLWrapper::UpdateUniformMatrix4(_MIN_ TU32 iId, _MIN_ const DDyMatrix4x4& iBuffer, _MIN_ bool iTransposed)
+{
+  GLenum transposed = GL_FALSE;
+  if (iTransposed == true) { transposed = GL_TRUE; }
+
+  {
+    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
+    glUniformMatrix4fv(iId, 1, transposed, &iBuffer[0].X);
+  }
+}
+
+void FDyGLWrapper::UpdateUniformVector4(TU32 iId, const DDyVector4& iBuffer)
+{
+  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
+  glUniform4fv(iId, 1, &iBuffer.X);
+}
+
+void FDyGLWrapper::UpdateUniformInteger(TU32 iId, const TI32& iBuffer)
+{
+  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
+  glUniform1i(iId, iBuffer);
 }
 
 } /// ::dy namespace

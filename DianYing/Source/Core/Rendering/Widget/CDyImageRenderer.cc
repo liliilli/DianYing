@@ -57,20 +57,18 @@ CDyImageRenderer::CDyImageRenderer(FDyImage& mRefObject) :
 
 void CDyImageRenderer::Render()
 {
+  using EUniformType = EDyUniformVariableType;
   if (this->mBinderShader.IsResourceExist() == false
   ||  this->mBinderQuadMesh.IsResourceExist() == false
   ||  this->mBinderImage.IsResourceExist() == false) { return; }
 
-  glDepthFunc(GL_ALWAYS);
   this->mBinderShader->UseShader();
+  this->mBinderShader.TryUpdateUniform<EUniformType::Matrix4>("uUiProjMatrix", uUiProjTempMatrix);
+  this->mBinderShader.TryUpdateUniform<EUniformType::Vector4>("uTintColor", this->mPtrObject->GetTintColor());
+  MDY_CALL_BUT_NOUSE_RESULT(this->mBinderShader.TryUpdateUniformList());
+
+  glDepthFunc(GL_ALWAYS);
   glBindVertexArray(this->mBinderQuadMesh->GetVertexArrayId());
-
-  const TU32 shaderProgramId  = this->mBinderShader->GetShaderProgramId();
-  const auto shaderid  = glGetUniformLocation(shaderProgramId, "uUiProjMatrix");
-  const auto tintColor = glGetUniformLocation(shaderProgramId, "uTintColor");
-  glUniformMatrix4fv(shaderid, 1, GL_FALSE, &uUiProjTempMatrix[0].X);
-  glUniform4fv(tintColor, 1, this->mPtrObject->GetTintColor().Data());
-
   // Render texture glyph
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, this->mBinderImage->GetTextureId());
