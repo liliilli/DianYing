@@ -244,6 +244,8 @@
     <ClCompile Include="Source\Core\Rendering\Widget\CDyFontRenderer.cc" />
     <ClCompile Include="Source\Core\Rendering\Widget\CDyImageRenderer.cc" />
     <ClCompile Include="Source\Core\Resource\Type\Shader\ADyUniformContainer.cc" />
+    <ClCompile Include="Source\Core\Resource\Type\Material\ADyUniformHelper.cc" />
+    <ClCompile Include="Source\Core\Resource\Type\Material\TDyMaterialBinder.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -628,6 +630,8 @@
     <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\TDyShaderBinder.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\DDyUniformValue.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\ADyUniformContainer.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\Material\TDyMaterialBinder.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\Material\ADyUniformHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

@@ -18,6 +18,7 @@
 #include <Dy/Core/Resource/Type/EDyLazy.h>
 #include <Dy/Core/Resource/Type/TDyResourceBinderBase.h>
 #include <Dy/Core/Resource/Type/Shader/TDyShaderBinder.h>
+#include <Dy/Core/Resource/Type/Material/TDyMaterialBinder.h>
 
 namespace dy
 {

@@ -222,6 +222,8 @@
     <ClCompile Include="Source\Core\Resource\Resource\FDyModelResource.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\FDyShaderResource.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\FDyTextureResource.cc" />
+    <ClCompile Include="Source\Core\Resource\Type\Material\ADyUniformHelper.cc" />
+    <ClCompile Include="Source\Core\Resource\Type\Material\TDyMaterialBinder.cc" />
     <ClCompile Include="Source\Core\Resource\Type\Shader\ADyUniformContainer.cc" />
     <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceContainer.cc" />
     <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceInstance.cc" />
@@ -526,6 +528,8 @@
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyTextureResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\EDyLazy.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\FDyBinderBase.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\Material\ADyUniformHelper.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\Material\TDyMaterialBinder.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\ADyUniformContainer.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\DDyUniformValue.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\TDyInformationBinder.h" />
