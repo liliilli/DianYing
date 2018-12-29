@@ -103,34 +103,26 @@ CDyFontRenderer::CDyFontRenderer(FDyText& iPtrWidget) :
 
 void CDyFontRenderer::Render()
 {
+  using EUniformType = EDyUniformVariableType;
   if (this->mBinderShader.IsResourceExist() == false) { return; }
 
-  glDepthFunc(GL_ALWAYS);
   this->mBinderShader->UseShader();
-  glBindVertexArray(this->mBinderFontMesh->GetVertexArrayId());
+  this->mBinderShader.TryUpdateUniform<EUniformType::Matrix4>("uUiProjMatrix", uUiProjTempMatrix);
+  this->mBinderShader.TryUpdateUniform<EUniformType::Vector4>("uFgColor", this->mPtrWidget->GetForegroundColor());
+  this->mBinderShader.TryUpdateUniform<EUniformType::Vector4>("uBgColor", this->mPtrWidget->GetBackgroundColor());
+  this->mBinderShader.TryUpdateUniform<EUniformType::Vector4>("uEdgeColor", this->mPtrWidget->GetEdgeColor());
+  this->mBinderShader.TryUpdateUniform<EUniformType::Integer>("uIsUsingEdge", this->mPtrWidget->CheckIsUsingEdgeRendering());
+  this->mBinderShader.TryUpdateUniform<EUniformType::Integer>("uIsUsingBackground", this->mPtrWidget->CheckIsUsingBackgroundColor());
+  MDY_CALL_BUT_NOUSE_RESULT(this->mBinderShader.TryUpdateUniformList());
 
-  const TU32 shaderProgramId  = this->mBinderShader->GetShaderProgramId();
-  const auto projectMatrixId  = glGetUniformLocation(shaderProgramId, "uUiProjMatrix");
-  glUniformMatrix4fv(projectMatrixId, 1, GL_FALSE, &uUiProjTempMatrix[0].X);
+  glDepthFunc(GL_ALWAYS);
+  glBindVertexArray(this->mBinderFontMesh->GetVertexArrayId());
 
   IDyFontContainer& container = this->mPtrWidget->GetFontContainer();
   const TI32 fontSize         = this->mPtrWidget->GetFontSize();
   const DDyVector2 initPos    = this->mPtrWidget->GetRenderPosition();
+  DDyVector2 renderPosition   = initPos;
 
-  const auto fgColorId   = glGetUniformLocation(shaderProgramId, "uFgColor");
-  glUniform4fv(fgColorId, 1, &this->mPtrWidget->GetForegroundColor().R);
-  const auto bgColorId   = glGetUniformLocation(shaderProgramId, "uBgColor");
-  glUniform4fv(bgColorId, 1, &this->mPtrWidget->GetBackgroundColor().R);
-  const auto edgeColorId = glGetUniformLocation(shaderProgramId, "uEdgeColor");
-  glUniform4fv(edgeColorId, 1, &this->mPtrWidget->GetEdgeColor().R);
-
-  const auto uIsUsingEdgeId   = glGetUniformLocation(shaderProgramId, "uIsUsingEdge");
-  glUniform1i(uIsUsingEdgeId, this->mPtrWidget->CheckIsUsingEdgeRendering());
-  const auto uIsUsingBackgroundId = glGetUniformLocation(shaderProgramId, "uIsUsingBackground");
-  glUniform1i(uIsUsingBackgroundId, this->mPtrWidget->CheckIsUsingBackgroundColor());
-
-  // RENDER!!
-  DDyVector2 renderPosition = initPos;
   for (const TC16& ucs2Char : this->mPtrWidget->GetText()) {
     if (ucs2Char == '\n')
     { // Line feed
@@ -146,10 +138,9 @@ void CDyFontRenderer::Render()
     glBindTexture(GL_TEXTURE_2D_ARRAY, container.GetFontTextureArrayId());
 
     const auto& charInfo  = container[ucs2Char];
-    const auto uChannel   = glGetUniformLocation(shaderProgramId, "uChannel");
-    glUniform1i(uChannel, charInfo.mTexCoordInfo.mChannel);
-    const auto uMapIndex  = glGetUniformLocation(shaderProgramId, "uMapIndex");
-    glUniform1i(uMapIndex, charInfo.mTexCoordInfo.mMapIndex);
+    this->mBinderShader.TryUpdateUniform<EUniformType::Integer>("uChannel", charInfo.mTexCoordInfo.mChannel);
+    this->mBinderShader.TryUpdateUniform<EUniformType::Integer>("uMapInex", charInfo.mTexCoordInfo.mMapIndex);
+    MDY_CALL_BUT_NOUSE_RESULT(this->mBinderShader.TryUpdateUniformList());
 
     RenderFontCharacter(GetCharacterVertices(charInfo, renderPosition, fontSize), this->mBinderFontMesh->GetVertexBufferId());
     renderPosition.X += static_cast<TI32>(charInfo.mHorizontalAdvance * fontSize / 2);

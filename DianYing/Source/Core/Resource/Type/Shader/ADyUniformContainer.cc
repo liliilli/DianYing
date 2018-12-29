@@ -72,6 +72,10 @@ EDySuccess MDY_PRIVATE_SPECIFIER(ADyUniformContainer)::TryUpdateUniformList()
 {
   if (this->mIsShaderSetup == false) { return DY_FAILURE; }
   if (this->mUpdatedItemList.empty() == true) { return DY_FAILURE; }
+  
+  // We have to insert all variables into shader when updated, 
+  // because shader is shared by any objects which want to render with it,
+  // but each shader program has only one uniform variable status.
 
   for (auto& [type, ptrItem] : this->mUpdatedItemList)
   {
@@ -107,10 +111,26 @@ EDySuccess MDY_PRIVATE_SPECIFIER(ADyUniformContainer)::TryUpdateUniformList()
       if (item->mId == -1) { continue; }
 
     } break;
+    case EDyUniformVariableType::Integer:
+    {
+      const auto* item = static_cast<TPtrConvert<EDyUniformVariableType::Integer>>(ptrItem);
+      if (item->mId == -1) { continue; }
+      glUniform1i(item->mId, item->mValue);
+    } break;
+    case EDyUniformVariableType::Bool:
+    {
+      const auto* item = static_cast<TPtrConvert<EDyUniformVariableType::Bool>>(ptrItem);
+      if (item->mId == -1) { continue; }
+      glUniform1i(item->mId, TI32(item->mValue));
+    }
     case EDyUniformVariableType::Texture2D: 
     {
       const auto* item = static_cast<TPtrConvert<EDyUniformVariableType::Texture2D>>(ptrItem);
       if (item->mId == -1) { continue; }
+
+    } break;
+    case EDyUniformVariableType::Texture2DArray:
+    {
 
     } break;
     default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);

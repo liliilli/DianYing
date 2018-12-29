@@ -62,19 +62,14 @@ class FDyShaderResource;
       return item; \
     } \
     \
-    MDY_NODISCARD std::pair<TPtrConvert<EDyUniformVariableType::__MATypeSpecifier__>, bool> \
+    MDY_NODISCARD TPtrConvert<EDyUniformVariableType::__MATypeSpecifier__> \
     MDY_UPDATEUNIFORM(__MATypeSpecifier__)( \
         _MIN_ const std::string& iSpecifier, \
         _MIN_ const TValueType<EDyUniformVariableType::__MATypeSpecifier__>& iValue) \
     { \
       auto& item = this->MDY_UNIFORMCONTAINER(__MATypeSpecifier__).at(iSpecifier); \
-      bool isUpdated = false; \
-      if (item->mValue != iValue) \
-      { \
-        item->mValue = iValue; \
-        isUpdated = true; \
-      } \
-      return std::make_pair(item.get(), isUpdated); \
+      item->mValue = iValue; \
+      return item.get(); \
     }
 
 namespace dy
@@ -97,23 +92,26 @@ public:
     if constexpr (TType == EDyUniformVariableType::Matrix4)
     { // If not exist and not created by doing TryConstructDefaultUniformList, just create.
       if (MDY_ISUNIFORMEXIST(Matrix4)(iSpecifier) == false) { MDY_CREATEUNIFORM(Matrix4)(iSpecifier, -1); }
-      const auto& [item, isUpdated] = this->MDY_UPDATEUNIFORM(Matrix4)(iSpecifier, iValue);
-
-      if (isUpdated == true) { this->mUpdatedItemList.emplace_back(std::make_pair(TType, item)); }
+      const auto& item = this->MDY_UPDATEUNIFORM(Matrix4)(iSpecifier, iValue);
+      this->mUpdatedItemList.emplace_back(std::make_pair(TType, item));
     }
     else if constexpr (TType == EDyUniformVariableType::Matrix3)
     { // If not exist and not created by doing TryConstructDefaultUniformList, just create.
       if (MDY_ISUNIFORMEXIST(Matrix3)(iSpecifier) == false) { MDY_CREATEUNIFORM(Matrix3)(iSpecifier, -1); }
-      const auto& [item, isUpdated] = this->MDY_UPDATEUNIFORM(Matrix3)(iSpecifier, iValue);
-
-      if (isUpdated == true) { this->mUpdatedItemList.emplace_back(std::make_pair(TType, item)); }
+      const auto& item = this->MDY_UPDATEUNIFORM(Matrix3)(iSpecifier, iValue);
+      this->mUpdatedItemList.emplace_back(std::make_pair(TType, item));
     }
     else if constexpr (TType == EDyUniformVariableType::Vector4)
-    {
+    { // If not exist and not created by doing TryConstructDefaultUniformList, just create.
       if (MDY_ISUNIFORMEXIST(Vector4)(iSpecifier) == false) { MDY_CREATEUNIFORM(Vector4)(iSpecifier, -1); }
-      const auto& [item, isUpdated] = this->MDY_UPDATEUNIFORM(Vector4)(iSpecifier, iValue);
-
-      if (isUpdated == true) { this->mUpdatedItemList.emplace_back(std::make_pair(TType, item)); }
+      const auto& item = this->MDY_UPDATEUNIFORM(Vector4)(iSpecifier, iValue);
+      this->mUpdatedItemList.emplace_back(std::make_pair(TType, item));
+    }
+    else if constexpr (TType == EDyUniformVariableType::Integer)
+    { // If not exist and not created by doing TryConstructDefaultUniformList, just create.
+      if (MDY_ISUNIFORMEXIST(Integer)(iSpecifier) == false) { MDY_CREATEUNIFORM(Integer)(iSpecifier, -1); }
+      const auto& item = this->MDY_UPDATEUNIFORM(Integer)(iSpecifier, iValue);
+      this->mUpdatedItemList.emplace_back(std::make_pair(TType, item));
     }
   }
 

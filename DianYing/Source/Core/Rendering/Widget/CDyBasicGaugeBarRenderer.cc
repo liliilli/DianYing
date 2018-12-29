@@ -83,29 +83,24 @@ void CDyBasicGaugeBarRenderer::Release() { }
 
 void CDyBasicGaugeBarRenderer::Render()
 {
+  using EUniformType = EDyUniformVariableType;
   MDY_ASSERT(this->mPtrBarObject != nullptr, "CDyBasicGaugeBarRenderer::mPtrBarObject must not be nullptr.");
   if (this->mBinderShader.IsResourceExist() == false
   ||  this->mBinderBarMesh.IsResourceExist() == false) { return; }
 
-#ifdef false
-  this->mBinderShader->TryUpdateUniform<>("uFillColor", &this->mPtrBarObject->GetBackgroundColor().R);
-  this->mBinderShader->TryUpdateUniform<>("uUiProjMatrix", &uUiProjTempMatrix[0].X);
-  /* If value is same and not changed, do nothing. */
-  this->mBinderShader->TryUpdateUniform();
-#endif
-  glDepthFunc(GL_ALWAYS);
   this->mBinderShader->UseShader();
-  glBindVertexArray(this->mBinderBarMesh->GetVertexArrayId());
+  this->mBinderShader.TryUpdateUniform<EUniformType::Matrix4>("uUiProjMatrix", uUiProjTempMatrix);
 
-  this->mBinderShader.TryUpdateUniform<EDyUniformVariableType::Matrix4>("uUiProjMatrix", uUiProjTempMatrix);
+  glDepthFunc(GL_ALWAYS);
+  glBindVertexArray(this->mBinderBarMesh->GetVertexArrayId());
 
   const DDyVector2 pos     = this->mPtrBarObject->GetRenderPosition();
   const DDyVectorInt2 size = this->mPtrBarObject->GetFrameSize();
   const auto vboId = this->mBinderBarMesh->GetVertexBufferId();
 
   if (this->mPtrBarObject->CheckIsUsingBackgroundColor() == true)
-  {
-    this->mBinderShader.TryUpdateUniform<EDyUniformVariableType::Vector4>("uFillColor", this->mPtrBarObject->GetBackgroundColor());
+  { // If backgroud is used, try render.
+    this->mBinderShader.TryUpdateUniform<EUniformType::Vector4>("uFillColor", this->mPtrBarObject->GetBackgroundColor());
     MDY_CALL_BUT_NOUSE_RESULT(this->mBinderShader.TryUpdateUniformList());
 
     const auto buffer = GetVertexPosition(pos, size);
@@ -113,8 +108,8 @@ void CDyBasicGaugeBarRenderer::Render()
     FDyGLWrapper::Draw(EDyDrawType::TriangleFan, false, 4);
   }
 
-  {
-    this->mBinderShader.TryUpdateUniform<EDyUniformVariableType::Vector4>("uFillColor", this->mPtrBarObject->GetForegroundColor());
+  { // Foreground render.
+    this->mBinderShader.TryUpdateUniform<EUniformType::Vector4>("uFillColor", this->mPtrBarObject->GetForegroundColor());
     MDY_CALL_BUT_NOUSE_RESULT(this->mBinderShader.TryUpdateUniformList());
 
     const TI32 padding    = this->mPtrBarObject->GetPadding();
