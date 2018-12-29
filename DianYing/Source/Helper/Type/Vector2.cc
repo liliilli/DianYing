@@ -38,6 +38,17 @@ bool DDyVector2::IsAllZero() const noexcept {
   return math::IsAllZero(*this);
 }
 
+bool operator==(_MIN_ const DDyVector2& lhs, _MIN_ const DDyVector2& rhs) noexcept
+{
+  return lhs.X == rhs.X
+      && lhs.Y == rhs.Y;
+}
+
+bool operator!=(_MIN_ const DDyVector2& lhs, _MIN_ const DDyVector2& rhs) noexcept
+{
+  return !(lhs == rhs);
+}
+
 void to_json(nlohmann::json& j, const DDyVector2& p)
 {
   j = nlohmann::json

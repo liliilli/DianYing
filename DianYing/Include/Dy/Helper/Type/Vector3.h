@@ -376,16 +376,6 @@ struct DDyVector3 final {
   ///
   DDyVector3 MultiplyMatrix(const dy::DDyMatrix3x3& matrix) const noexcept;
 
-  ///
-  /// @brief Compare length of two vectors and return if they are same length.
-  /// @return Equal flag.
-  ///
-  friend bool operator==(const DDyVector3& lhs, const DDyVector3& rhs) noexcept
-  {
-    return math::IsNearlyEqual(lhs.GetSquareLength(), rhs.GetSquareLength(), 0.001f);
-  }
-
-private:
   friend bool operator<(const DDyVector3& lhs, const DDyVector3& rhs) noexcept
   {
     return lhs.GetSquareLength() < rhs.GetSquareLength();
@@ -406,10 +396,12 @@ private:
     return !(lhs < rhs);
   }
 
+  friend bool operator==(_MIN_ const DDyVector3& lhs, _MIN_ const DDyVector3& rhs) noexcept;
+  friend bool operator!=(_MIN_ const DDyVector3& lhs, _MIN_ const DDyVector3& rhs) noexcept;
+
   //!
   //! Static functions
   //!
-public:
 
   ///
   /// @brief Do dot product of (x, y, z) R^3 vector.

@@ -198,8 +198,8 @@
     <ClCompile Include="Source\Component\Internal\Script\Actor\FDyActorScriptStatus.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Actor\CDyActorScriptCpp.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Actor\CDyActorScriptLua.cc" />
-    <ClCompile Include="Source\Component\Internal\CDyBasicGaugeBarRenderer.cc" />
-    <ClCompile Include="Source\Component\Internal\CDyImageRenderer.cc" />
+    <ClCompile Include="Source\Core\Rendering\Widget\CDyBasicGaugeBarRenderer.cc" />
+    <ClCompile Include="Source\Core\Rendering\Widget\CDyImageRenderer.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Widget\FDyWidgetScriptStatus.cc" />
     <ClCompile Include="Source\Component\UI\CDyWidgetScript.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Widget\CDyWidgetScriptCpp.cc" />
@@ -222,6 +222,7 @@
     <ClCompile Include="Source\Core\Resource\Resource\FDyModelResource.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\FDyShaderResource.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\FDyTextureResource.cc" />
+    <ClCompile Include="Source\Core\Resource\Type\Shader\ADyUniformContainer.cc" />
     <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceContainer.cc" />
     <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceInstance.cc" />
     <ClCompile Include="Source\Core\Thread\IO\FDyIOGC.cc" />
@@ -307,7 +308,7 @@
     <ClCompile Include="Source\Component\CDyModelFilter.cc" />
     <ClCompile Include="Source\Component\CDyModelRenderer.cc" />
     <ClCompile Include="Source\Component\CDyTransform.cc" />
-    <ClCompile Include="Source\Component\Internal\CDyFontRenderer.cc" />
+    <ClCompile Include="Source\Core\Rendering\Widget\CDyFontRenderer.cc" />
     <ClCompile Include="Source\Core\Resource\Information_Deprecated\SoundInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\EtcType.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\MaterialType.cc" />
@@ -525,9 +526,14 @@
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyTextureResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\EDyLazy.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\FDyBinderBase.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\ADyUniformContainer.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\DDyUniformValue.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\TDyInformationBinder.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\TDyResourceBinder.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\TDyResourceBinderBase.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\TDyShaderBinder.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\TemplateRescInfoType.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\TemplateUniformType.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOTaskDeferred.h" />
     <ClInclude Include="Include\Dy\Core\Thread\SDyIOBindingHelper.h" />
     <ClInclude Include="Include\Dy\Helper\HelperString.h" />

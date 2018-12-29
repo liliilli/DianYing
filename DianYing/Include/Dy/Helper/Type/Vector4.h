@@ -406,6 +406,9 @@ struct DDyVector4 final
     return *this;
   }
 
+  friend bool operator==(_MIN_ const DDyVector4& lhs, _MIN_ const DDyVector4& rhs) noexcept;
+  friend bool operator!=(_MIN_ const DDyVector4& lhs, _MIN_ const DDyVector4& rhs) noexcept;
+
   ///
   /// @brief Check if this DDyVector4 is all zero or nearly equal to zero.
   ///

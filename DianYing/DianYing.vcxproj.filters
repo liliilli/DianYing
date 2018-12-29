@@ -99,7 +99,6 @@
     <ClCompile Include="Source\Management\Type\FontResourceContainer.cc" />
     <ClCompile Include="Source\Management\Type\FontCharacterInfo.cc" />
     <ClCompile Include="Source\Element\Canvas\Text.cc" />
-    <ClCompile Include="Source\Component\Internal\CDyFontRenderer.cc" />
     <ClCompile Include="Source\Management\Type\SettingContainer.cc" />
     <ClCompile Include="Source\Helper\Type\VectorInt2.cc" />
     <ClCompile Include="Source\Management\Platform\DDyWindowInformationWindows.cc" />
@@ -137,10 +136,8 @@
     <ClCompile Include="Source\Element\Canvas\UiObject.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetBarMetaInformation.cc" />
     <ClCompile Include="Source\Element\Canvas\FDyBasicGuageBar.cc" />
-    <ClCompile Include="Source\Component\Internal\CDyBasicGaugeBarRenderer.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetImageMetaInformation.cc" />
     <ClCompile Include="Source\Element\Canvas\FDyImage.cc" />
-    <ClCompile Include="Source\Component\Internal\CDyImageRenderer.cc" />
     <ClCompile Include="Source\Core\Reflection\RDyBuiltinResources.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoGLShader.cc" />
     <ClCompile Include="Source\Builtin\Abstract\ADyGLShaderResources.cc" />
@@ -243,6 +240,10 @@
     <ClCompile Include="Source\Builtin\Mesh\Widget\FDyBtMsUiBarQuad.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\Widget\RenderUiBasicGaugeBar.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\Widget\RenderUIImage.cc" />
+    <ClCompile Include="Source\Core\Rendering\Widget\CDyBasicGaugeBarRenderer.cc" />
+    <ClCompile Include="Source\Core\Rendering\Widget\CDyFontRenderer.cc" />
+    <ClCompile Include="Source\Core\Rendering\Widget\CDyImageRenderer.cc" />
+    <ClCompile Include="Source\Core\Resource\Type\Shader\ADyUniformContainer.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -622,6 +623,11 @@
     <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsUiImgQuad.h" />
     <ClInclude Include="Include\Dy\Builtin\Mesh\Widget\FDyBtMsUiBarQuad.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Type\EDyDrawType.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\TDyResourceBinderBase.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\TemplateUniformType.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\TDyShaderBinder.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\DDyUniformValue.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\ADyUniformContainer.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

@@ -39,6 +39,18 @@ bool DDyVector3::IsAllZero() const noexcept {
   return math::IsAllZero(*this);
 }
 
+bool operator==(_MIN_ const DDyVector3& lhs, _MIN_ const DDyVector3& rhs) noexcept
+{
+  return lhs.X == rhs.X
+      && lhs.Y == rhs.Y
+      && lhs.Z == rhs.Z;
+}
+
+bool operator!=(_MIN_ const DDyVector3& lhs, _MIN_ const DDyVector3& rhs) noexcept
+{
+  return !(lhs == rhs);
+}
+
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDyVector3& p)
 {
   j = nlohmann::json

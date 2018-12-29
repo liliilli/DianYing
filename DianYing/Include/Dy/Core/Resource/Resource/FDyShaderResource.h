@@ -60,6 +60,12 @@ public:
   /// @brief Turn off shader program.
   void DisuseShader() const noexcept;
 
+  /// @brief Get uniform variable specifier list.
+  MDY_NODISCARD const auto& GetUniformVariableList() const noexcept
+  {
+    return this->mUniformVariableList;
+  }
+
 private:
   /// @brief Create shader fragment list and return.
   MDY_NODISCARD std::optional<TFragmentList> 

@@ -331,18 +331,6 @@ struct DDyVector2 final {
   ///
   DDyVector2 MultiplyMatrix(const dy::DDyMatrix2x2& matrix) const noexcept;
 
-  ///
-  /// @brief Compare length of two vectors and return if they are same length.
-  /// @param[in] lhs
-  /// @param[in] rhs
-  /// @return Equal flag.
-  ///
-  friend bool operator==(const DDyVector2& lhs, const DDyVector2& rhs) noexcept
-  {
-    return math::IsNearlyEqual(lhs.GetSquareLength(), rhs.GetSquareLength(), 0.001f);
-  }
-
-private:
   friend bool operator<(const DDyVector2& lhs, const DDyVector2& rhs) noexcept
   {
     return lhs.GetSquareLength() < rhs.GetSquareLength();
@@ -362,6 +350,9 @@ private:
   {
     return !(lhs < rhs);
   }
+
+  friend bool operator==(_MIN_ const DDyVector2& lhs, _MIN_ const DDyVector2& rhs) noexcept;
+  friend bool operator!=(_MIN_ const DDyVector2& lhs, _MIN_ const DDyVector2& rhs) noexcept;
 
 public:
 

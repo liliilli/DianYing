@@ -225,4 +225,18 @@ DDyMatrix3x3::DDyMatrix3x3(bool)
   mMatrixValue[2][2] = 1;
 }
 
+bool operator==(_MIN_ const DDyMatrix3x3& lhs, _MIN_ const DDyMatrix3x3& rhs) noexcept
+{
+  for (TI32 i = 0; i < 3; ++i)
+  { 
+    if (lhs.mMatrixValue[i] != rhs.mMatrixValue[i]) { return false; }
+  }
+  return true;
+}
+
+bool operator!=(_MIN_ const DDyMatrix3x3& lhs, _MIN_ const DDyMatrix3x3& rhs) noexcept
+{
+  return !(lhs == rhs);
+}
+
 } /// ::dy namespace

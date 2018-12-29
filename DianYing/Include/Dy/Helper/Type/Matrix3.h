@@ -145,6 +145,9 @@ public:
 
   DDyMatrix3x3& operator-=(const DDyMatrix3x3& rhs) noexcept;
 
+  friend bool operator==(_MIN_ const DDyMatrix3x3& lhs, _MIN_ const DDyMatrix3x3& rhs) noexcept;
+  friend bool operator!=(_MIN_ const DDyMatrix3x3& lhs, _MIN_ const DDyMatrix3x3& rhs) noexcept;
+
   ///
   /// @brief
   ///
