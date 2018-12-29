@@ -152,6 +152,15 @@ public:
   MDY_NODISCARD static std::optional<std::string>
   GetShaderProgramUniformBlockInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iUniformBlockIndex);
 
+  /// @brief
+  static void UpdateUniformMatrix4(_MIN_ TU32 iId, _MIN_ const DDyMatrix4x4& iBuffer, _MIN_ bool iTransposed = false);
+
+  /// @brief
+  static void UpdateUniformVector4(_MIN_ TU32 iId, _MIN_ const DDyVector4& iBuffer);
+
+  /// @brief
+  static void UpdateUniformInteger(_MIN_ TU32 iId, _MIN_ const TI32& iBuffer);
+
 private:
   static std::mutex mGLMutex;
 
