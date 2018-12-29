@@ -62,14 +62,28 @@ public:
 
 private:
   /// @brief Create shader fragment list and return.
-  MDY_NODISCARD std::optional<TFragmentList> pCreateShaderFragments(_MIN_ const FDyShaderInformation::TShaderFragmentList& vector);
+  MDY_NODISCARD std::optional<TFragmentList> 
+  pCreateShaderFragments(_MIN_ const FDyShaderInformation::TShaderFragmentList& vector);
   /// @brief Create shader program on gpu and return id when it's succeeded.
-  MDY_NODISCARD std::optional<TU32> pInitializeShaderProgram(_MIN_ const TFragmentList& fragmentList);
+  MDY_NODISCARD std::optional<TU32> 
+  pInitializeShaderProgram(_MIN_ const TFragmentList& fragmentList);
   /// @brief Delete shader fragment list from gpu memory.
   void pDeleteShaderFragments(_MIN_ const TFragmentList& fragmentList);
 
+  void pStoreAttributeProperties() noexcept;
+  void pStoreUniformProperties() noexcept;
+  void pStoreUniformBufferObjectProperties() noexcept;
+
   std::string mSpecifierName    = MDY_INITIALIZE_EMPTYSTR;
   TU32        mShaderProgramId;
+
+    //std::vector<TUniformStruct>                   mUniformVariableContainer;
+  /// Shader attribute variable list  <Name, ByteSize, Type and Id>
+  std::vector<DDyAttributeVariableInformation>  mAttributeVariableList;
+  /// Shader uniform variable list    <Name, ByteSize, Type and Id>
+  std::vector<DDyUniformVariableInformation>    mUniformVariableList;
+  /// Shader uniform buffer object list <Name>
+  std::vector<DDyUniformBufferObjectInformation>mUniformBufferObjectList;
 
   TDyIInformationBinderShader mBinderShader;
 };

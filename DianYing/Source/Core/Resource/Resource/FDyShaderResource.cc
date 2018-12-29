@@ -80,9 +80,9 @@ FDyShaderResource::FDyShaderResource(_MIN_ const FDyShaderInformation& informati
   }
 
   { // Get attribute, uniform, ubo information from shader program.
-    //MDY_CALL_ASSERT_SUCCESS(this->pStoreAttributePropertiesOfProgram());
-    //MDY_CALL_ASSERT_SUCCESS(this->pStoreConstantUniformPropertiesOfProgram());
-    //MDY_CALL_ASSERT_SUCCESS(this->pStoreUniformBufferObjectPropertiesOfProgram());
+    this->pStoreAttributeProperties();
+    this->pStoreUniformProperties();
+    this->pStoreUniformBufferObjectProperties();
   }
 
   SDyProfilingHelper::IncreaseOnBindShaderCount(1);
@@ -170,6 +170,82 @@ void FDyShaderResource::pDeleteShaderFragments(const TFragmentList& fragmentList
   {
     FDyGLWrapper::DeleteShaderFragment(validFragmentId);
   }
+}
+
+void FDyShaderResource::pStoreAttributeProperties() noexcept
+{
+  const TU32 activatedAttrCount = FDyGLWrapper::QueryShaderProgramIV(this->mShaderProgramId, GL_ACTIVE_ATTRIBUTES);
+  this->mAttributeVariableList.reserve(activatedAttrCount);
+
+  // Retrieve attirbute variable information.
+  for (TU32 i = 0; i < activatedAttrCount; ++i)
+  {
+    auto result = FDyGLWrapper::GetShaderProgramAttributeInfo(this->mShaderProgramId, i);
+    MDY_ASSERT(result.has_value() == true, "Unexpected error occurred.");
+
+    auto [specifier, length, size, type, locId] = result.value();
+    if (specifier == "gl_VertexID") { continue; }
+
+    this->mAttributeVariableList.emplace_back(specifier, size, type, locId);
+  }
+
+#if defined(_DEBUG) == true
+  // Output activated attirbute variable information on console and file in debug_mode.
+  for (const auto& variable : this->mAttributeVariableList)
+  {
+    MDY_LOG_DEBUG_D("{} | Shader attribute information | Name : {} | Slotsize : {} | Location : {}",
+                    this->mSpecifierName, variable.mVariableName, variable.mVariableSlotSize, variable.mVariableLocation);
+  }
+#endif
+}
+
+void FDyShaderResource::pStoreUniformProperties() noexcept
+{
+  const TU32 activatedUniformCount = FDyGLWrapper::QueryShaderProgramIV(this->mShaderProgramId, GL_ACTIVE_UNIFORMS);
+  this->mUniformVariableList.reserve(activatedUniformCount);
+
+  // Retrieve uniform variable information.
+  for (TU32 i = 0; i < activatedUniformCount; ++i)
+  { // If process was failed because of uniform variable is UBO, just do next thing.
+    auto result = FDyGLWrapper::GetShaderProgramUniformInfo(this->mShaderProgramId, i);
+    if (result.has_value() == false) { continue; }
+
+    auto [specifier, length, size, type, locId] = result.value();
+    this->mUniformVariableList.emplace_back(specifier, size, type, locId);
+  }
+
+#ifdef false
+  // Output activated attirbute variable information on console and file in debug_mode.
+  for (const auto& variable : this->mPlainUniformVariableLists)
+  {
+    MDY_LOG_DEBUG_D("{} | Shader uniform variable information | Name : {} | Slotsize : {} | Type : {} | Location : {}",
+                    this->mShaderName,
+                    variable.mVariableName, variable.mVariableSlotSize,
+                    DyGetDebugStringOfUniformVariableType(variable.mVariableType).data(), variable.mVariableLocation);
+  }
+#endif
+}
+
+void FDyShaderResource::pStoreUniformBufferObjectProperties() noexcept
+{
+  const TU32 activatedUboCount = FDyGLWrapper::QueryShaderProgramIV(this->mShaderProgramId, GL_ACTIVE_UNIFORM_BLOCKS);
+  this->mUniformBufferObjectList.reserve(activatedUboCount);
+
+  for (TU32 i = 0; i < activatedUboCount; ++i)
+  { // If process was failed, just do next thing.
+    const auto optResult = FDyGLWrapper::GetShaderProgramUniformBlockInfo(this->mShaderProgramId, i);
+    if (optResult.has_value() == false) { continue; }
+
+    this->mUniformBufferObjectList.emplace_back(optResult.value());
+  }
+
+#if defined(_DEBUG) == true
+  // Output activated attirbute variable information on console and file in debug_mode.
+  for (const auto& variable : this->mUniformBufferObjectList)
+  {
+    MDY_LOG_DEBUG_D("{} | Shader UBO information | Buffer name : {}", this->mSpecifierName, variable.mUboSpecifierName);
+  }
+#endif
 }
 
 } /// ::dy namespace
