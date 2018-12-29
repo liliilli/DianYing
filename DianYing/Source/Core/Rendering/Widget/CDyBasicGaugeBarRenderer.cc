@@ -88,8 +88,8 @@ void CDyBasicGaugeBarRenderer::Render()
   ||  this->mBinderBarMesh.IsResourceExist() == false) { return; }
 
 #ifdef false
-  this->mBinderShader->TryUpdateUniformVec4("uFillColor", &this->mPtrBarObject->GetBackgroundColor().R);
-  this->mBinderShader->TryUpdateUniformMat4("uUiProjMatrix", &uUiProjTempMatrix[0].X);
+  this->mBinderShader->TryUpdateUniform<>("uFillColor", &this->mPtrBarObject->GetBackgroundColor().R);
+  this->mBinderShader->TryUpdateUniform<>("uUiProjMatrix", &uUiProjTempMatrix[0].X);
   /* If value is same and not changed, do nothing. */
   this->mBinderShader->TryUpdateUniform();
 #endif
@@ -97,28 +97,29 @@ void CDyBasicGaugeBarRenderer::Render()
   this->mBinderShader->UseShader();
   glBindVertexArray(this->mBinderBarMesh->GetVertexArrayId());
 
-  const TU32 shaderProgramId = this->mBinderShader->GetShaderProgramId();
-  const auto fillColorId     = glGetUniformLocation(shaderProgramId, "uFillColor");
-  const auto shaderid        = glGetUniformLocation(shaderProgramId, "uUiProjMatrix");
-  glUniformMatrix4fv(shaderid, 1, GL_FALSE, &uUiProjTempMatrix[0].X);
+  this->mBinderShader.TryUpdateUniform<EDyUniformVariableType::Matrix4>("uUiProjMatrix", uUiProjTempMatrix);
 
   const DDyVector2 pos     = this->mPtrBarObject->GetRenderPosition();
   const DDyVectorInt2 size = this->mPtrBarObject->GetFrameSize();
-  const TI32 padding       = this->mPtrBarObject->GetPadding();
-  const TF32 percentage    = this->mPtrBarObject->GetPercentage();
   const auto vboId = this->mBinderBarMesh->GetVertexBufferId();
 
   if (this->mPtrBarObject->CheckIsUsingBackgroundColor() == true)
   {
+    this->mBinderShader.TryUpdateUniform<EDyUniformVariableType::Vector4>("uFillColor", this->mPtrBarObject->GetBackgroundColor());
+    MDY_CALL_BUT_NOUSE_RESULT(this->mBinderShader.TryUpdateUniformList());
+
     const auto buffer = GetVertexPosition(pos, size);
-    glUniform4fv(fillColorId, 1, &this->mPtrBarObject->GetBackgroundColor().R);
     FDyGLWrapper::MapBuffer(EDyDirectBufferType::VertexBuffer, vboId, (void*)buffer.data(), sizeof(buffer));
     FDyGLWrapper::Draw(EDyDrawType::TriangleFan, false, 4);
   }
 
   {
-    const auto buffer = GetVertexPosition(pos, size, padding, percentage);
-    glUniform4fv(fillColorId, 1, &this->mPtrBarObject->GetForegroundColor().R);
+    this->mBinderShader.TryUpdateUniform<EDyUniformVariableType::Vector4>("uFillColor", this->mPtrBarObject->GetForegroundColor());
+    MDY_CALL_BUT_NOUSE_RESULT(this->mBinderShader.TryUpdateUniformList());
+
+    const TI32 padding    = this->mPtrBarObject->GetPadding();
+    const TF32 percentage = this->mPtrBarObject->GetPercentage();
+    const auto buffer     = GetVertexPosition(pos, size, padding, percentage);
     FDyGLWrapper::MapBuffer(EDyDirectBufferType::VertexBuffer, vboId, (void*)buffer.data(), sizeof(buffer));
     FDyGLWrapper::Draw(EDyDrawType::TriangleFan, false, 4);
   }
