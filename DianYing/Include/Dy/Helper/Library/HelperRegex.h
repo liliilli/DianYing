@@ -19,7 +19,7 @@ namespace dy
 /// @brief Generate and get parent specifier list. \n
 ///
 MDY_NODISCARD std::vector<std::string> 
-DyRegexCreateObjectParentSpecifierList(_MIN_ const std::string& iParentNameFullList); 
+DyRegexCreateObjectParentSpecifierList(_MIN_ std::string iParentNameFullList); 
 
 } /// ::dy namespace
 

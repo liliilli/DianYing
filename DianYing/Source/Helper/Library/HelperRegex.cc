@@ -19,20 +19,18 @@
 namespace dy
 {
 
-std::vector<std::string> DyRegexCreateObjectParentSpecifierList(_MIN_ const std::string& iParentNameFullList)
+std::vector<std::string> DyRegexCreateObjectParentSpecifierList(_MIN_ std::string iParentNameFullList)
 {
   if (iParentNameFullList.empty() == true) { return {}; }
 
   static const std::regex parentMatchRegex(R"regex((\w+)(?:\.|$))regex");
   std::smatch parentSpecifierMatch;
-  if (std::regex_match(iParentNameFullList, parentSpecifierMatch, parentMatchRegex) == false) { return {}; }
-
   std::vector<std::string> parentSpecifierList {};
-  std::transform(
-      parentSpecifierMatch.cbegin() + 1,
-      parentSpecifierMatch.cend(), 
-      std::back_inserter(parentSpecifierList), 
-      [](const auto& c) -> std::string { return c.str(); });
+  while (std::regex_search(iParentNameFullList, parentSpecifierMatch, parentMatchRegex) == true) 
+  { 
+    parentSpecifierList.emplace_back(parentSpecifierMatch[1].str());
+    iParentNameFullList = parentSpecifierMatch.suffix();
+  }
 
   return parentSpecifierList;
 }
