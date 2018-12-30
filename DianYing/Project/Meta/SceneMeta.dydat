@@ -81,15 +81,10 @@
         "CommonProperties": {
           "ParentSpecifierName" : "",
           "IsInitiallyActivated": true,
-          "IsFromPrefab"        : false,
-          "PrefabSpecifierName" : ""
+          "IsFromPrefab"        : true,
+          "PrefabSpecifierName" : "TestPrefab"
         },
         "ComponentList": [
-          {
-            "Type"      : "Script",
-            "Activated" : true,
-            "Details"   : { "Specifier": "TestScript2" }
-          },
           {
             "Type"      : "Transform",
             "Details"   : {
@@ -99,19 +94,6 @@
               "WPosition" : { "X": 0, "Y": 0, "Z": 0 },
               "WRotation" : { "X": 0, "Y": 0, "Z": 0 },
               "WScale"    : { "X": 1, "Y": 2, "Z": 1 }
-            }
-          },
-          {
-            "Type"      : "ModelFilter",
-            "Activated" : true,
-            "Details"   : { "ModelName": "dyBtModelBox" }
-          },
-          {
-            "Type"      : "ModelRenderer",
-            "Activated" : true,
-            "Details"   : {
-              "Shadow"    : true,
-              "Materials" : [ "dyBtMatOpaqueStaticPlain" ]
             }
           }
         ]
