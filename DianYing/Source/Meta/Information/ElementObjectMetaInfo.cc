@@ -65,7 +65,7 @@ void MoveMetaObjectIntoParentRecursively(
       }
       else
       { // Call function recursively.
-        return MoveMetaObjectIntoParentRecursively(p, parentSpecifierList, level + 1, object);
+        return MoveMetaObjectIntoParentRecursively(parentObject->mChildrenList, parentSpecifierList, level + 1, object);
       }
     }
   }
