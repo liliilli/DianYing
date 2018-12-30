@@ -830,7 +830,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
-    <None Include="Project\Meta\_Backup\ScriptMeta.dydatBack" />
     <None Include="TestResource\Lua\player_script.lua" />
     <None Include="TestResource\Lua\test_bindingscript.lua" />
     <None Include="TestResource\Lua\variables.lua">

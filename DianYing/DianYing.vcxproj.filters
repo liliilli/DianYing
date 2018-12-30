@@ -645,6 +645,5 @@
     <None Include="TestResource\TestScript1.lua" />
     <None Include="TestResource\TestScript2.lua" />
     <None Include="cpp.hint" />
-    <None Include="Project\Meta\_Backup\ScriptMeta.dydatBack" />
   </ItemGroup>
 </Project>

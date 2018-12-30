@@ -33,8 +33,6 @@ struct PDyPrefabInstanceMetaInfo final
   struct DCommonProperties final
   {
     std::string mParentSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
-    /// Flag is initially activated.
-    bool        mIsInitiallyActivated = false;
   };
 
   /// Meta prefab's name.

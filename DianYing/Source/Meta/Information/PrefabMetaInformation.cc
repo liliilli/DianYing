@@ -24,17 +24,7 @@
 namespace
 {
 
-MDY_SET_IMMUTABLE_STRING(sHeader_SpecifierName,     "SpecifierName");
-MDY_SET_IMMUTABLE_STRING(sHeader_CommonProperties,  "CommonProperties");
-MDY_SET_IMMUTABLE_STRING(sHeader_Type,              "Type");
-MDY_SET_IMMUTABLE_STRING(sHeader_ComponentList,     "ComponentList");
-
-//! PDyPrefabInstanceMetaInfo::DCommonProperties
-
 MDY_SET_IMMUTABLE_STRING(sHeader_ParentSpecifierName,   "ParentSpecifierName");
-MDY_SET_IMMUTABLE_STRING(sHeader_IsInitiallyActivated,  "IsInitiallyActivated");
-
-//! PDyPrefabInstanceMetaInfo::TComponentMetaList
 
 } /// ::unnamed namespace
 
@@ -74,7 +64,6 @@ void to_json(nlohmann::json& j, const PDyPrefabInstanceMetaInfo::DCommonProperti
 void from_json(const nlohmann::json& j, PDyPrefabInstanceMetaInfo::DCommonProperties& p)
 {
   DyJsonGetValueFromTo<std::string> (j, sHeader_ParentSpecifierName, p.mParentSpecifierName);
-  DyJsonGetValueFromTo<bool>        (j, sHeader_IsInitiallyActivated, p.mIsInitiallyActivated);
 }
 
 } /// ::dy namespace
