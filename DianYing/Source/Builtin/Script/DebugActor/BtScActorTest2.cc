@@ -27,11 +27,13 @@ void dy::BtScActorTest2::Initiate()
 void dy::BtScActorTest2::Update(TF32 dt)
 {
   static TF32 f = 0.0f;
+  const auto old = DDyVector3{std::cos(f) * 10, 0, std::sin(f) * 10};
   f += dt;
+  auto _new = DDyVector3{std::cos(f) * 10, 0, std::sin(f) * 10};
+  _new -= old;
 
   auto& refActor = this->GetActorReference();
-  const auto& p  = refActor.GetTransform()->GetRelativeWorldPosition();
-  refActor.GetTransform()->SetRelativeWorldPosition(DDyVector3{std::sin(f) * 10, p.Y, std::cos(f) * 10});
+  refActor.GetTransform()->SetRelativeWorldPosition(DDyVector3{std::cos(f) * 10, 0, std::sin(f) * 10});
   refActor.GetTransform()->AddWorldEulerAngle(EDyAxis3D::Z, dt * 90.f);
 
 #ifdef false

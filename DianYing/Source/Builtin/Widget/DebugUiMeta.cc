@@ -82,9 +82,9 @@ MDY_SET_IMMUTABLE_STRING(sBuffer, R"dy(
       "Type": "Image",
       "Parent": "",
       "Details": {
-        "InitialPosition": { "X": 0, "Y": 0 },
-        "WidgetSize": { "X": 200, "Y": 100 },
-        "Origin": "Center_Center",
+        "InitialPosition": { "X": -80, "Y": 80 },
+        "WidgetSize": { "X": 128, "Y": 128 },
+        "Origin": "Right_Bottom",
         "ImageRegion": {
           "LeftDown": { "X": 0.0, "Y": 0.0 },
           "RightUp" : { "X": 1.0, "Y": 1.0 }
