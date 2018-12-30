@@ -13,7 +13,6 @@
 /// SOFTWARE.
 ///
 
-#include <any>
 #include <vector>
 #include <nlohmann/json_fwd.hpp>
 #include <Dy/Element/Descriptor/GlobalEnums.h>
@@ -63,6 +62,9 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyObjectMetaInfo& p);
 
 void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const PDyObjectMetaInfo::DCommonProperties& p);
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyObjectMetaInfo::DCommonProperties& p);
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const TObjectMetaInfoList& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ TObjectMetaInfoList& p);
 
 } /// ::dy namespace
 

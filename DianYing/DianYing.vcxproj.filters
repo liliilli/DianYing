@@ -246,6 +246,7 @@
     <ClCompile Include="Source\Core\Resource\Type\Shader\ADyUniformContainer.cc" />
     <ClCompile Include="Source\Core\Resource\Type\Material\ADyUniformHelper.cc" />
     <ClCompile Include="Source\Core\Resource\Type\Material\TDyMaterialBinder.cc" />
+    <ClCompile Include="Source\Helper\Library\HelperRegex.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -632,6 +633,7 @@
     <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\ADyUniformContainer.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Material\TDyMaterialBinder.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Material\ADyUniformHelper.h" />
+    <ClInclude Include="Include\Dy\Helper\Library\HelperRegex.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

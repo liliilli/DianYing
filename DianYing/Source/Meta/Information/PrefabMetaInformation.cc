@@ -16,8 +16,6 @@
 #include <Dy/Meta/Information/PrefabMetaInformation.h>
 #include <nlohmann/json.hpp>
 #include <Dy/Helper/Library/HelperJson.h>
-#include <Dy/Meta/Information/ScriptMetaInformation.h>
-#include <Dy/Meta/Information/ComponentLightMetaInfo.h>
 
 //!
 //! Forward declaration
@@ -27,7 +25,6 @@ namespace
 {
 
 MDY_SET_IMMUTABLE_STRING(sHeader_SpecifierName,     "SpecifierName");
-MDY_SET_IMMUTABLE_STRING(sHeader_UUID,              "UUID");
 MDY_SET_IMMUTABLE_STRING(sHeader_CommonProperties,  "CommonProperties");
 MDY_SET_IMMUTABLE_STRING(sHeader_Type,              "Type");
 MDY_SET_IMMUTABLE_STRING(sHeader_ComponentList,     "ComponentList");
@@ -35,7 +32,6 @@ MDY_SET_IMMUTABLE_STRING(sHeader_ComponentList,     "ComponentList");
 //! PDyPrefabInstanceMetaInfo::DCommonProperties
 
 MDY_SET_IMMUTABLE_STRING(sHeader_ParentSpecifierName,   "ParentSpecifierName");
-MDY_SET_IMMUTABLE_STRING(sHeader_ParentSpecifierUUID,   "ParentSpecifierUUID");
 MDY_SET_IMMUTABLE_STRING(sHeader_IsInitiallyActivated,  "IsInitiallyActivated");
 
 //! PDyPrefabInstanceMetaInfo::TComponentMetaList
@@ -64,11 +60,10 @@ void from_json(const nlohmann::json& j, PDyPrefabInstanceMetaInfo& p)
 {
   using TDCommonProperties  = PDyPrefabInstanceMetaInfo::DCommonProperties;
 
-  DyJsonGetValueFromTo(j, sHeader_SpecifierName,    p.mSpecifierName);
-  DyJsonGetValueFromTo(j, sHeader_UUID,             p.mUUID);
-  DyJsonGetValueFromTo(j, sHeader_Type,             p.mPrefabType);
-  DyJsonGetValueFromTo(j, sHeader_CommonProperties, p.mCommonProperties);
-  DyJsonGetValueFromTo(j, sHeader_ComponentList,    p.mMetaComponentInfo);
+  DyJsonGetValueFromTo(j, "Name",             p.mSpecifierName);
+  DyJsonGetValueFromTo(j, "Type",             p.mPrefabType);
+  DyJsonGetValueFromTo(j, "CommonProperties", p.mCommonProperties);
+  DyJsonGetValueFromTo(j, "ComponentList",    p.mMetaComponentInfo);
 }
 
 void to_json(nlohmann::json& j, const PDyPrefabInstanceMetaInfo::DCommonProperties& p)
@@ -79,7 +74,6 @@ void to_json(nlohmann::json& j, const PDyPrefabInstanceMetaInfo::DCommonProperti
 void from_json(const nlohmann::json& j, PDyPrefabInstanceMetaInfo::DCommonProperties& p)
 {
   DyJsonGetValueFromTo<std::string> (j, sHeader_ParentSpecifierName, p.mParentSpecifierName);
-  DyJsonGetValueFromTo<std::string> (j, sHeader_ParentSpecifierUUID, p.mParentUUID);
   DyJsonGetValueFromTo<bool>        (j, sHeader_IsInitiallyActivated, p.mIsInitiallyActivated);
 }
 

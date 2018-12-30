@@ -13,14 +13,11 @@
 /// SOFTWARE.
 ///
 
-#include <any>
 #include <vector>
-#include <utility>
 #include <nlohmann/json_fwd.hpp>
 
 #include <Dy/Element/Descriptor/GlobalEnums.h>
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
-#include <Dy/Meta/Type/EDyComponentTypes.h>
 
 namespace dy
 {
@@ -32,30 +29,24 @@ namespace dy
 struct PDyPrefabInstanceMetaInfo final
 {
   using TChildNameList      = std::vector<std::string>;
-  using TChildMetaInfoList  = std::vector<std::unique_ptr<PDyPrefabInstanceMetaInfo>>;
 
   struct DCommonProperties final
   {
     std::string mParentSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
-    std::string mParentUUID           = MDY_INITIALIZE_EMPTYSTR;
     /// Flag is initially activated.
     bool        mIsInitiallyActivated = false;
   };
 
   /// Meta prefab's name.
   std::string         mSpecifierName          = MDY_INITIALIZE_EMPTYSTR;
-  /// Meta UUID
-  std::string         mUUID                   = MDY_INITIALIZE_EMPTYSTR;
   /// The type (light, pawn, pp block etc...) of object
   EDyMetaObjectType   mPrefabType             = EDyMetaObjectType::NoneError;
   ///
   DCommonProperties   mCommonProperties       = {};
   /// Dependency information which are vary along with mType.
-  /// If mType is "EDyFDyObjectType::FdyPawn", must be converted to "PDyScriptComponentMetaInformation".
-  /// If mType is ... not implemented yet!
   TComponentMetaList  mMetaComponentInfo      = {};
-  /// Children list
-  TChildMetaInfoList  mChildrenList           = {};
+  /// Prefab children list
+  std::vector<std::unique_ptr<PDyPrefabInstanceMetaInfo>> mChildrenList = {};
 
   ///
   /// @brief Factory function for PDyPrefabInstanceMetaInfo.
@@ -65,6 +56,8 @@ struct PDyPrefabInstanceMetaInfo final
   static MDY_NODISCARD std::unique_ptr<PDyPrefabInstanceMetaInfo>
   CreateMetaInformation(_MIN_ const nlohmann::json& itemAtlas);
 };
+
+using TPrefabMetaInfoList = std::vector<std::unique_ptr<PDyPrefabInstanceMetaInfo>>;
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyPrefabInstanceMetaInfo& p);
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyPrefabInstanceMetaInfo& p);
