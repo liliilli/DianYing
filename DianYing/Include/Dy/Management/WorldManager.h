@@ -63,25 +63,6 @@ public:
   void RequestDrawCall(_MIN_ float dt);
 
   ///
-  /// @deprecated This function is deprecated since v0.0.1. Use
-  /// @brief  Return main camera ptr.
-  /// @return
-  ///
-  MDY_DEPRECATED("v0.0.1", GetMainCameraPtr, pfEnrollActiveCamera)
-  MDY_NODISCARD CDyLegacyCamera* GetMainCameraPtr() const noexcept;
-
-  ///
-  /// @deprecated This function is deprecated since v0.0.1. Use
-  /// @brief  Check if main camera is binded so be able to focused by scene.
-  /// @return
-  ///
-  MDY_DEPRECATED("v0.0.1", IsMainCameraFocused, None)
-  MDY_NODISCARD FORCEINLINE bool IsMainCameraFocused() const noexcept
-  {
-    return MDY_CHECK_ISNOTNULL(this->mValidMainCameraPtr);
-  }
-
-  ///
   /// @brief
   /// @return
   ///
@@ -90,6 +71,17 @@ public:
     return static_cast<TI32>(this->mActivatedOnRenderingCameras.size());
   }
 
+  /// @brief Get all actors with tag. Tag must be valid. \n
+  /// If iTagSpecifier is empty, this function get all actors which is not specified any tag.
+  MDY_NODISCARD std::vector<NotNull<FDyActor*>>
+  GetAllActorsWithTag(_MIN_ const std::string& iTagSpecifier) const noexcept;
+
+  /// @brief Get all actors with tag. Tag must be valid. \n
+  /// If iTagSpecifier is empty, this function get all actors which is not specified any tag. \n
+  /// and this function search all actor of object tree from root to leaf, so might take some time.
+  MDY_NODISCARD std::vector<NotNull<FDyActor*>>
+  GetAllActorsWithTagRecursive(_MIN_ const std::string& iTagSpecifier) const noexcept;
+  
   /// @brief
   /// @param  index
   /// @return
@@ -199,14 +191,6 @@ private:
   /// @brief This function must be called in MDyWorld::Update() function.
   /// Wipe out deactivated components from activated component lists.
   void pGcAcitvatedComponents();
-
-  /// Bind valid camera to main camera and let object have focused.
-  MDY_DEPRECATED("v0.0.1", pfBindFocusCamera, pfEnrollActiveCamera)
-  void pfBindFocusCamera(_MIN_ CDyLegacyCamera& validCameraPtr) noexcept;
-
-  /// Unbind main camera. this function must not be called manually, but using camera's mechanism.
-  MDY_DEPRECATED("v0.0.1", pfUnbindCameraFocus, pfUnenrollActiveCamera)
-  void pfUnbindCameraFocus();
 
   ///
   /// @brief  Move FDyActor instance to gc.

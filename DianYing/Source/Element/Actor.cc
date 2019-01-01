@@ -193,6 +193,42 @@ void FDyActor::SetParentToRootRelocateTransform() noexcept
   this->SetParentAsRoot();
 }
 
+const std::string& FDyActor::GetActorTag() const noexcept
+{
+  return this->mActorTagSpecifier;
+}
+
+std::vector<NotNull<FDyActor*>> 
+FDyActor::GetAllActorsWithTag(const std::string& iTagSpecifier) const noexcept
+{
+  std::vector<NotNull<FDyActor*>> result;
+  for (const auto& [specifier, ptrsmtActor] : this->mChildActorMap)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtActor)) { continue; }
+    if (ptrsmtActor->GetActorTag() == iTagSpecifier) { result.emplace_back(ptrsmtActor.get()); }
+  }
+
+  return result;
+}
+
+std::vector<NotNull<FDyActor*>> 
+FDyActor::GetAllActorsWithTagRecursive(_MIN_ const std::string& iTagSpecifier) const noexcept
+{
+  std::vector<NotNull<FDyActor*>> result;
+  for (const auto& [specifier, ptrsmtActor] : this->mChildActorMap)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtActor)) { continue; }
+    if (ptrsmtActor->GetActorTag() == iTagSpecifier) { result.emplace_back(ptrsmtActor.get()); }
+    if (ptrsmtActor->IsHavingChildrenObject() == true)
+    {
+      const auto subResult = ptrsmtActor->GetAllActorsWithTagRecursive(iTagSpecifier);
+      result.insert(result.end(), MDY_BIND_BEGIN_END(subResult));
+    }
+  }
+
+  return result;
+}
+
 std::unique_ptr<CDyActorScript> 
 FDyActor::MDY_PRIVATE_SPECIFIER(MakeScriptComponent)(_MIN_ const PDyScriptComponentMetaInfo& info)
 {

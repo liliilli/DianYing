@@ -55,6 +55,17 @@ public:
   /// @brief Align position of actors.
   void MDY_PRIVATE_SPECIFIER(AlignActorsPosition)() noexcept;
 
+  /// @brief  Get valid level reference.
+  /// @return Valid level reference. when level is not specified, unexpected behaviour.
+  MDY_NODISCARD std::vector<NotNull<FDyActor*>> 
+  GetAllActorsWithTag(_MIN_ const std::string& iTagSpecifier) const noexcept;
+
+  /// @brief Get all actors with tag. Tag must be valid. \n
+  /// If iTagSpecifier is empty, this function get all actors which is not specified any tag. \n
+  /// and this function search all actor of object tree from root to leaf, so might take some time.
+  MDY_NODISCARD std::vector<NotNull<FDyActor*>>
+  GetAllActorsWithTagRecursive(_MIN_ const std::string& iTagSpecifier) const noexcept;
+ 
 private:
   /// Level's name. not modifiable
   std::string         mLevelName            = MDY_INITIALIZE_EMPTYSTR;

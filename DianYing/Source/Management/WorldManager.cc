@@ -132,9 +132,20 @@ void MDyWorld::RequestDrawCall(float dt)
   }
 }
 
-CDyLegacyCamera* MDyWorld::GetMainCameraPtr() const noexcept
+std::vector<NotNull<FDyActor*>> 
+MDyWorld::GetAllActorsWithTag(_MIN_ const std::string& iTagSpecifier) const noexcept
 {
-  return this->mValidMainCameraPtr;
+  // If level is not constructed, just return empty list.
+  if (MDY_CHECK_ISEMPTY(this->mLevel)) { return {}; }
+  return this->mLevel->GetAllActorsWithTag(iTagSpecifier);
+}
+
+std::vector<NotNull<FDyActor*>>
+MDyWorld::GetAllActorsWithTagRecursive(_MIN_ const std::string& iTagSpecifier) const noexcept
+{
+  // If level is not constructed, just return empty list.
+  if (MDY_CHECK_ISEMPTY(this->mLevel)) { return {}; }
+  return this->mLevel->GetAllActorsWithTagRecursive(iTagSpecifier);
 }
 
 std::optional<CDyCamera*> MDyWorld::GetFocusedCameraValidReference(const TI32 index) const noexcept
@@ -315,25 +326,6 @@ void MDyWorld::SetLevelTransition(_MIN_ const std::string& iSpecifier)
 
   this->mNextLevelName          = iSpecifier;
   this->mIsNeedTransitNextLevel = true;
-}
-
-void MDyWorld::pfBindFocusCamera(_MIN_ CDyLegacyCamera& validCameraPtr) noexcept
-{
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(&validCameraPtr), "validCameraPtr must be valid, not nullptr.");
-  this->mValidMainCameraPtr = &validCameraPtr;
-}
-
-void MDyWorld::pfUnbindCameraFocus()
-{
-  if (this->mValidMainCameraPtr)
-  {
-    this->mValidMainCameraPtr = nullptr;
-    MDY_LOG_INFO_D("{} | MainCamera pointing unbinded.", "MDyWorld::pfUnbindCameraFocus()");
-  }
-  else
-  {
-    MDY_LOG_WARNING_D("{} | Valid mainCamera pointer does not point anything.", "MDyWorld::pfUnbindCameraFocus()");
-  }
 }
 
 void MDyWorld::pfMoveActorToGc(_MIN_ NotNull<FDyActor*> actorRawPtr) noexcept

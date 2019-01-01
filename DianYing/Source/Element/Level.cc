@@ -81,6 +81,37 @@ FDyLevel::~FDyLevel()
   this->mInitialized = false;
 }
 
+std::vector<NotNull<FDyActor*>> 
+FDyLevel::GetAllActorsWithTag(_MIN_ const std::string& iTagSpecifier) const noexcept
+{
+  std::vector<NotNull<FDyActor*>> result;
+  for (const auto& [specifier, ptrsmtActor] : this->mActorMap)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtActor)) { continue; }
+    if (ptrsmtActor->GetActorTag() == iTagSpecifier) { result.emplace_back(ptrsmtActor.get()); }
+  }
+
+  return result;
+}
+
+std::vector<NotNull<FDyActor*>> 
+FDyLevel::GetAllActorsWithTagRecursive(_MIN_ const std::string& iTagSpecifier) const noexcept
+{
+  std::vector<NotNull<FDyActor*>> result;
+  for (const auto& [specifier, ptrsmtActor] : this->mActorMap)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtActor)) { continue; }
+    if (ptrsmtActor->GetActorTag() == iTagSpecifier) { result.emplace_back(ptrsmtActor.get()); }
+    if (ptrsmtActor->IsHavingChildrenObject() == true)
+    {
+      const auto subResult = ptrsmtActor->GetAllActorsWithTagRecursive(iTagSpecifier);
+      result.insert(result.end(), MDY_BIND_BEGIN_END(subResult));
+    }
+  }
+
+  return result;
+}
+
 void FDyLevel::Update(_MIN_ float dt)
 {
   if (this->mInitialized == false) { return; }
