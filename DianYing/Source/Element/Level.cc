@@ -112,6 +112,41 @@ FDyLevel::GetAllActorsWithTagRecursive(_MIN_ const std::string& iTagSpecifier) c
   return result;
 }
 
+std::vector<NotNull<FDyActor*>> 
+FDyLevel::GetAllActorsWithName(_MIN_ const std::string& iNameSpecifier) const noexcept
+{
+  if (iNameSpecifier.empty() == true)   { return {}; }
+
+  std::vector<NotNull<FDyActor*>> result;
+  for (const auto& [specifier, ptrsmtActor] : this->mActorMap)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtActor)) { continue; }
+    if (ptrsmtActor->GetActorName() == iNameSpecifier) { result.emplace_back(ptrsmtActor.get()); }
+  }
+
+  return result;;
+}
+
+std::vector<NotNull<FDyActor*>> 
+FDyLevel::GetAllActorsWithNameRecursive(_MIN_ const std::string& iNameSpecifier) const noexcept
+{
+  if (iNameSpecifier.empty() == true)   { return {}; }
+
+  std::vector<NotNull<FDyActor*>> result;
+  for (const auto& [specifier, ptrsmtActor] : this->mActorMap)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtActor)) { continue; }
+    if (ptrsmtActor->GetActorName() == iNameSpecifier) { result.emplace_back(ptrsmtActor.get()); }
+    if (ptrsmtActor->IsHavingChildrenObject() == true)
+    {
+      const auto subResult = ptrsmtActor->GetAllActorsWithNameRecursive(iNameSpecifier);
+      result.insert(result.end(), MDY_BIND_BEGIN_END(subResult));
+    }
+  }
+
+  return result;;
+}
+
 void FDyLevel::Update(_MIN_ float dt)
 {
   if (this->mInitialized == false) { return; }

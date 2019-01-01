@@ -148,6 +148,23 @@ MDyWorld::GetAllActorsWithTagRecursive(_MIN_ const std::string& iTagSpecifier) c
   return this->mLevel->GetAllActorsWithTagRecursive(iTagSpecifier);
 }
 
+std::vector<NotNull<FDyActor*>> 
+MDyWorld::GetAllActorsWithName(_MIN_ const std::string& iNameSpecifier) const noexcept
+{
+  // If iNameSpacifier is empyt, just return empyt list.
+  if (iNameSpecifier.empty() == true)   { return {}; }
+  if (MDY_CHECK_ISEMPTY(this->mLevel))  { return {}; }
+  return this->mLevel->GetAllActorsWithName(iNameSpecifier);
+}
+
+std::vector<NotNull<FDyActor*>> 
+MDyWorld::GetAllActorsWithNameRecursive(_MIN_ const std::string& iNameSpecifier) const noexcept
+{
+  if (iNameSpecifier.empty() == true)   { return {}; }
+  if (MDY_CHECK_ISEMPTY(this->mLevel))  { return {}; }
+  return this->mLevel->GetAllActorsWithNameRecursive(iNameSpecifier);
+}
+
 std::optional<CDyCamera*> MDyWorld::GetFocusedCameraValidReference(const TI32 index) const noexcept
 {
   MDY_ASSERT(index < this->mActivatedOnRenderingCameras.size(),

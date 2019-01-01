@@ -142,6 +142,16 @@ public:
   MDY_NODISCARD std::vector<NotNull<FDyActor*>>
   GetAllActorsWithTagRecursive(_MIN_ const std::string& iTagSpecifier) const noexcept;
  
+  /// @brief Get all actors with matched name within only one depth of level object tree. \n
+  /// If iNameSpecifier is empty, just return empty list.
+  MDY_NODISCARD std::vector<NotNull<FDyActor*>>
+  GetAllActorsWithName(_MIN_ const std::string& iNameSpecifier) const noexcept; 
+
+  /// @brief Get all actors with matched name within overall level object tree. \n
+  /// If iNameSpecifier is empty, just return empty list.
+  MDY_NODISCARD std::vector<NotNull<FDyActor*>>
+  GetAllActorsWithNameRecursive(_MIN_ const std::string& iNameSpecifier) const noexcept; 
+  
   ///
   /// @brief  Add component and bind to this object instance.
   /// @tparam TComponent  Component type class argument.
