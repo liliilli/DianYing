@@ -17,6 +17,7 @@
 #include <Dy/Helper/Library/HelperJson.h>
 #include <Dy/Helper/Library/HelperRegex.h>
 #include <Dy/Helper/System/Idioms.h>
+#include <Dy/Management/SettingManager.h>
 
 //!
 //! Forward declaration & local translation unit data
@@ -109,6 +110,9 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyObjectMetaInfo::DCommo
   DyJsonGetValueFromTo(j, sHeader_Prop_IsFromPrefab,p.mIsUsingPrefab);
   DyJsonGetValueFromTo(j, "ObjectTag",              p.mTagSpecifier);
   DyJsonGetValueFromTo(j, "IsOverridePrefabTag",    p.mIsOverridePrefabTag);
+
+  /// Validity Test
+  MDY_CALL_ASSERT_SUCCESS(MDySetting::GetInstance().MDY_PRIVATE_SPECIFIER(CheckObjectTagIsExist)(p.mTagSpecifier));
 }
 
 void to_json(nlohmann::json& j, const TObjectMetaInfoList& p)

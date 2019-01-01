@@ -341,17 +341,19 @@ private:
   ///
   void pPropagateActivationFlag() noexcept;
 
-  DDy3StateBool                 mActivationFlag = {};
+  DDy3StateBool                 mActivationFlag    = {};
   /// Parent FDyActor raw-pointer data.
-  FDyActor*                     mPtrParentActor = MDY_INITIALIZE_NULL;
+  FDyActor*                     mPtrParentActor    = MDY_INITIALIZE_NULL;
   /// Transform component.
-  std::unique_ptr<CDyTransform> mTransform            = MDY_INITIALIZE_NULL;
+  std::unique_ptr<CDyTransform> mTransform         = MDY_INITIALIZE_NULL;
   /// Component list (randomly) which attached to FDyActor instance (this!)
-  TComponentList                mComponentList        = {};
+  TComponentList                mComponentList     = {};
   /// Script list (specialized!)
-  TScriptList                   mScriptList           = {};
+  TScriptList                   mScriptList        = {};
   /// Actor list (hierarchial version)
-  TActorMap                     mChildActorMap        = {};
+  TActorMap                     mChildActorMap     = {};
+  /// @brief Tag specifier 
+  std::string                   mActorTagSpecifier = MDY_INITIALIZE_EMPTYSTR;
 };
 
 } /// ::dy namespace

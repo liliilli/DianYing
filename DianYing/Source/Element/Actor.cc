@@ -34,13 +34,21 @@ FDyActor::FDyActor(_MIN_ const PDyObjectMetaInfo& objectMetaDesc)
   bool isTransformCreated = false;
   this->pSetObjectName(objectMetaDesc.mSpecifierName);
 
+  // (1-1) Insert prefab information if prefab exist.
   auto metaComponentInfo = objectMetaDesc.mMetaComponentInfo;
   if (objectMetaDesc.mProperties.mIsUsingPrefab == true)
-  { // Insert prefab information.
+  { 
     MDY_ASSERT(objectMetaDesc.mProperties.mPrefabSpecifierName.empty() == false, "Unexpected error occurred.");
     const auto& prefab = MDyMetaInfo::GetInstance().GetPrefabMetaInformation(objectMetaDesc.mProperties.mPrefabSpecifierName);
+
     metaComponentInfo.insert(metaComponentInfo.end(), MDY_BIND_BEGIN_END(prefab.mMetaComponentInfo));
+
+    if (objectMetaDesc.mProperties.mIsOverridePrefabTag == true)
+    { this->mActorTagSpecifier = objectMetaDesc.mProperties.mTagSpecifier; }
+    else
+    { this->mActorTagSpecifier = prefab.mCommonProperties.mTagSpecifier; }
   }
+  else { this->mActorTagSpecifier = objectMetaDesc.mProperties.mTagSpecifier; } 
 
   // (2) Create components
   for (const auto& [type, componentInfo] : metaComponentInfo)
