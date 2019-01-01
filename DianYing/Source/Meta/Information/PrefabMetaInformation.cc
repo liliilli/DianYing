@@ -17,21 +17,6 @@
 #include <nlohmann/json.hpp>
 #include <Dy/Helper/Library/HelperJson.h>
 
-//!
-//! Forward declaration
-//!
-
-namespace
-{
-
-MDY_SET_IMMUTABLE_STRING(sHeader_ParentSpecifierName,   "ParentSpecifierName");
-
-} /// ::unnamed namespace
-
-//!
-//! Implementation
-//!
-
 namespace dy
 {
 
@@ -63,7 +48,8 @@ void to_json(nlohmann::json& j, const PDyPrefabInstanceMetaInfo::DCommonProperti
 
 void from_json(const nlohmann::json& j, PDyPrefabInstanceMetaInfo::DCommonProperties& p)
 {
-  DyJsonGetValueFromTo<std::string> (j, sHeader_ParentSpecifierName, p.mParentSpecifierName);
+  DyJsonGetValueFromTo(j, "ParentSpecifierName", p.mParentSpecifierName);
+  DyJsonGetValueFromTo(j, "ObjectTag", p.mTagSpecifier);
 }
 
 } /// ::dy namespace

@@ -15,7 +15,9 @@
           "ParentSpecifierName" : "",
           "IsInitiallyActivated": true,
           "IsFromPrefab"        : false,
-          "PrefabSpecifierName" : ""
+          "PrefabSpecifierName" : "",
+          "ObjectTag": "",
+          "IsOverridePrefabTag" : false
         },
         "ComponentList": [
           {
@@ -43,7 +45,9 @@
           "ParentSpecifierName" : "ParentActor",
           "IsInitiallyActivated": true,
           "IsFromPrefab"        : false,
-          "PrefabSpecifierName" : ""
+          "PrefabSpecifierName" : "",
+          "ObjectTag": "",
+          "IsOverridePrefabTag" : false
         },
         "ComponentList": [
           {
@@ -79,10 +83,12 @@
         "Name"      : "Test2",
         "Type"      : "Actor",
         "CommonProperties": {
-          "ParentSpecifierName" : "",
+          "ParentSpecifierName" : "FloorObj",
           "IsInitiallyActivated": true,
           "IsFromPrefab"        : true,
-          "PrefabSpecifierName" : "TestPrefab"
+          "PrefabSpecifierName" : "TestPrefab",
+          "ObjectTag": "",
+          "IsOverridePrefabTag" : false
         },
         "ComponentList": [
           {
@@ -91,9 +97,9 @@
               "LPosition" : { "X": 0, "Y": 0, "Z": 0 },
               "LRotation" : { "X": 0, "Y": 0, "Z": 0 },
               "LScale"    : { "X": 1, "Y": 1, "Z": 1 },
-              "WPosition" : { "X": 0, "Y": 0, "Z": 0 },
+              "WPosition" : { "X": 0, "Y": 8, "Z": -10 },
               "WRotation" : { "X": 0, "Y": 0, "Z": 0 },
-              "WScale"    : { "X": 1, "Y": 2, "Z": 1 }
+              "WScale"    : { "X": 0.1, "Y": 0.2, "Z": 0.1 }
             }
           }
         ]
@@ -102,10 +108,12 @@
         "Name"      : "Test",
         "Type"      : "Actor",
         "CommonProperties": {
-          "ParentSpecifierName" : "Test2",
+          "ParentSpecifierName" : "FloorObj.Test2",
           "IsInitiallyActivated": true,
           "IsFromPrefab"        : false,
-          "PrefabSpecifierName" : ""
+          "PrefabSpecifierName" : "",
+          "ObjectTag": "",
+          "IsOverridePrefabTag" : false
         },
         "ComponentList": [
           {
@@ -141,7 +149,9 @@
           "ParentSpecifierName" : "",
           "IsInitiallyActivated": true,
           "IsFromPrefab"        : false,
-          "PrefabSpecifierName" : ""
+          "PrefabSpecifierName" : "",
+          "ObjectTag": "",
+          "IsOverridePrefabTag" : false
         },
         "ComponentList": [
           {
@@ -183,7 +193,9 @@
           "ParentSpecifierName" : "",
           "IsInitiallyActivated": true,
           "IsFromPrefab"        : false,
-          "PrefabSpecifierName" : ""
+          "PrefabSpecifierName" : "",
+          "ObjectTag": "",
+          "IsOverridePrefabTag" : false
         },
         "ComponentList": [
           {

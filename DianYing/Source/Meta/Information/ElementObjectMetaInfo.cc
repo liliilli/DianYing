@@ -107,6 +107,8 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyObjectMetaInfo::DCommo
   DyJsonGetValueFromTo(j, sHeader_Prop_PrefabName,  p.mPrefabSpecifierName);
   DyJsonGetValueFromTo(j, sHeader_Prop_Activated,   p.mInitialActivated);
   DyJsonGetValueFromTo(j, sHeader_Prop_IsFromPrefab,p.mIsUsingPrefab);
+  DyJsonGetValueFromTo(j, "ObjectTag",              p.mTagSpecifier);
+  DyJsonGetValueFromTo(j, "IsOverridePrefabTag",    p.mIsOverridePrefabTag);
 }
 
 void to_json(nlohmann::json& j, const TObjectMetaInfoList& p)

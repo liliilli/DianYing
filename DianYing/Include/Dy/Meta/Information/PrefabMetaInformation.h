@@ -32,7 +32,10 @@ struct PDyPrefabInstanceMetaInfo final
 
   struct DCommonProperties final
   {
-    std::string mParentSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
+    /// @brief Parent full specifier name like a A.B.C
+    std::string mParentSpecifierName = MDY_INITIALIZE_EMPTYSTR;
+    /// @brief Prefab object tag.
+    std::string mTagSpecifier = MDY_INITIALIZE_EMPTYSTR;
   };
 
   /// Meta prefab's name.

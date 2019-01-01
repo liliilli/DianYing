@@ -32,14 +32,19 @@ struct PDyObjectMetaInfo final
 
   struct DCommonProperties final
   {
-    ///
+    /// @brief Parent full specifier name like a A.B.C
     std::string mParentSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
-    /// FDyObject is initially activated or not.
-    bool        mInitialActivated     = false;
-    /// FDyObject is using prefab.
-    bool        mIsUsingPrefab        = false;
-    /// Prefab specifier name.
+    /// @brief Prefab specifier name.
     std::string mPrefabSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
+    /// @brief Prefab object tag.
+    std::string mTagSpecifier         = MDY_INITIALIZE_EMPTYSTR;
+    /// @brief FDyObject is initially activated or not.
+    bool        mInitialActivated     = false;
+    /// @brief FDyObject is using prefab.
+    bool        mIsUsingPrefab        = false;
+    /// @brief Is using prefab specified object tag? \n 
+    /// If prefab is not exist, just use specified `TagSpecifier`.
+    bool        mIsOverridePrefabTag  = false;
   };
 
   /// Object specifier name

@@ -6,7 +6,8 @@
       "Name"      : "TestPrefab",
       "Type"      : "Actor",
       "CommonProperties": {
-        "ParentSpecifierName" : ""
+        "ParentSpecifierName" : "",
+        "ObjectTag": ""
       },
       "ComponentList": [
         {
