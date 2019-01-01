@@ -13,26 +13,25 @@
 ///
 
 /// Header file
-#include <Dy/Element/Abstract/ADyNameCounterMap.h>
+#include <Dy/Helper/Internal/FDyNameGenerator.h>
+#include <Dy/Helper/ContainerHelper.h>
 
 namespace dy
 {
 
-ADyNameCounterMap::~ADyNameCounterMap() = default;
-
-std::string ADyNameCounterMap::CreateObjectName(const std::string& name) noexcept
+std::string FDyNameGenerator::TryGetGeneratedName(_MIN_ const std::string& iName) noexcept
 {
-  if (const auto it = mNameCounterMap.find(name); it != mNameCounterMap.end())
+  if (DyIsMapContains(this->mContainer, iName) == false)
   {
-    auto& count = mNameCounterMap[name];
-    count += 1;
-
-    return fmt::format("{0}_{1}", name, count);
+    this->mContainer.try_emplace(iName, 0);
+    return iName;
   }
   else
   {
-    mNameCounterMap[name] = 0;
-    return name;
+    const auto index = this->mContainer[iName];
+    this->mContainer[iName] += 1;
+
+    return fmt::format("{}_{}", iName, index);
   }
 }
 

@@ -20,6 +20,7 @@
 #include "Dy/Component/CDyModelRenderer.h"
 #include "Dy/Component/CDyCamera.h"
 #include "Dy/Component/CDyDirectionalLight.h"
+#include "Dy/Element/Type/PDyActorCreationDescriptor.h"
 
 //!
 //! Implementation
@@ -31,7 +32,6 @@ namespace dy
 FDyActor::FDyActor(_MIN_ const PDyObjectMetaInfo& objectMetaDesc)
 {
   // (1) Set properties.
-  bool isTransformCreated = false;
   this->pSetObjectName(objectMetaDesc.mSpecifierName);
 
   // (1-1) Insert prefab information if prefab exist.
@@ -51,44 +51,7 @@ FDyActor::FDyActor(_MIN_ const PDyObjectMetaInfo& objectMetaDesc)
   else { this->mActorTagSpecifier = objectMetaDesc.mProperties.mTagSpecifier; } 
 
   // (2) Create components
-  for (const auto& [type, componentInfo] : metaComponentInfo)
-  {
-    switch (type)
-    {
-    default: MDY_UNEXPECTED_BRANCH(); break;
-    case EDyComponentMetaType::Transform:
-    {
-      const auto& desc = std::any_cast<const PDyTransformComponentMetaInfo&>(componentInfo);
-      MDY_NOTUSED auto transformComponentPtr = this->AddComponent<CDyTransform>(desc);
-      isTransformCreated = true;
-    } break;
-    case EDyComponentMetaType::Script:
-    {
-      const auto& desc = std::any_cast<const PDyScriptComponentMetaInfo&>(componentInfo);
-      MDY_NOTUSED auto scriptComponentPtr = this->AddComponent<CDyActorScript>(desc);
-    } break;
-    case EDyComponentMetaType::DirectionalLight:
-    {
-      const auto& desc = std::any_cast<const PDyDirLightComponentMetaInfo&>(componentInfo);
-      MDY_NOTUSED auto directionLightComponentPtr = this->AddComponent<CDyDirectionalLight>(desc);
-    } break;
-    case EDyComponentMetaType::ModelFilter:
-    {
-      const auto& desc = std::any_cast<const PDyModelFilterComponentMetaInfo&>(componentInfo);
-      MDY_NOTUSED auto modelFilterComponentPtr = this->AddComponent<CDyModelFilter>(desc);
-    } break;
-    case EDyComponentMetaType::ModelRenderer:
-    {
-      const auto& desc = std::any_cast<const PDyModelRendererComponentMetaInfo&>(componentInfo);
-      MDY_NOTUSED auto modelRendererComponentPtr = this->AddComponent<CDyModelRenderer>(desc);
-    } break;
-    case EDyComponentMetaType::Camera:
-    {
-      const auto& desc = std::any_cast<const PDyCameraComponentMetaInfo&>(componentInfo);
-      MDY_NOTUSED auto cameraComponentPtr = this->AddComponent<CDyCamera>(desc);
-    } break;
-    }
-  }
+  this->MDY_PRIVATE_SPECIFIER(CreateComponentList)(metaComponentInfo);
 
   // (3) Make children actors.
   for (const auto& objectInformation : objectMetaDesc.mChildrenList)
@@ -100,10 +63,7 @@ FDyActor::FDyActor(_MIN_ const PDyObjectMetaInfo& objectMetaDesc)
       auto instancePtr = std::make_unique<FDyActor>(*objectInformation);
       // Check activation flags and execute sub-routines of each components.
       instancePtr->pUpdateActivateFlagFromParent();
-      if (objectInformation->mProperties.mInitialActivated == true) 
-      { 
-        instancePtr->Activate(); 
-      }
+      if (objectInformation->mProperties.mInitialActivated == true) { instancePtr->Activate(); }
 
       auto [it, result] = this->mChildActorMap.try_emplace(instancePtr->GetActorName(), std::move(instancePtr));
       MDY_ASSERT(result == true, "Unexpected error occured in inserting FDyActor to object map.");
@@ -118,8 +78,63 @@ FDyActor::FDyActor(_MIN_ const PDyObjectMetaInfo& objectMetaDesc)
     }
   }
 
-  // Create CDyEmptyTransform when not having CDyTransform.
-  MDY_ASSERT(isTransformCreated == true, "CDyTransform component must be created to all FDyActor.");
+  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mTransform), "CDyTransform component must be created to all FDyActor.");
+}
+
+FDyActor::FDyActor(_MIN_ const PDyActorCreationDescriptor& iDesc)
+{
+  // (1) Set properties.
+  this->pSetObjectName(iDesc.mActorSpecifierName);
+
+  // (1-1) Insert prefab information if prefab exist.
+  TComponentMetaList metaComponentInfo;
+  if (iDesc.mPrefabSpecifierName.empty() == false)
+  { 
+    const auto& prefab = MDyMetaInfo::GetInstance().GetPrefabMetaInformation(iDesc.mPrefabSpecifierName);
+    metaComponentInfo.insert(metaComponentInfo.end(), MDY_BIND_BEGIN_END(prefab.mMetaComponentInfo));
+
+    if (iDesc.mIsOverridePrefabTag == true)
+    { this->mActorTagSpecifier = iDesc.mObjectTag; }
+    else
+    { this->mActorTagSpecifier = prefab.mCommonProperties.mTagSpecifier; }
+  }
+  else { this->mActorTagSpecifier = iDesc.mObjectTag; }
+
+  // (2) Create components
+  this->MDY_PRIVATE_SPECIFIER(CreateComponentList)(metaComponentInfo);
+
+  // (3) Create Transform component using Given transform
+  this->AddComponent<CDyTransform>(iDesc.mTransform);
+  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mTransform), "CDyTransform component must be created to all FDyActor.");
+}
+
+void FDyActor::MDY_PRIVATE_SPECIFIER(CreateComponentList)(const TComponentMetaList& iMetaComponentList)
+{
+  for (const auto& [type, componentInfo] : iMetaComponentList)
+  {
+    switch (type)
+    {
+    default: MDY_UNEXPECTED_BRANCH(); break;
+    case EDyComponentMetaType::Transform:
+      this->AddComponent<CDyTransform>(std::any_cast<const PDyTransformComponentMetaInfo&>(componentInfo));
+      break;
+    case EDyComponentMetaType::Script:
+      this->AddComponent<CDyActorScript>(std::any_cast<const PDyScriptComponentMetaInfo&>(componentInfo));
+      break;
+    case EDyComponentMetaType::DirectionalLight:
+      this->AddComponent<CDyDirectionalLight>(std::any_cast<const PDyDirLightComponentMetaInfo&>(componentInfo));
+      break;
+    case EDyComponentMetaType::ModelFilter:
+      this->AddComponent<CDyModelFilter>(std::any_cast<const PDyModelFilterComponentMetaInfo&>(componentInfo));
+      break;
+    case EDyComponentMetaType::ModelRenderer:
+      this->AddComponent<CDyModelRenderer>(std::any_cast<const PDyModelRendererComponentMetaInfo&>(componentInfo));
+      break;
+    case EDyComponentMetaType::Camera:
+      this->AddComponent<CDyCamera>(std::any_cast<const PDyCameraComponentMetaInfo&>(componentInfo));
+      break;
+    }
+  }
 }
 
 FDyActor::~FDyActor()
@@ -137,6 +152,21 @@ void FDyActor::Deactivate() noexcept
 {
   this->mActivationFlag.UpdateInput(true);
   this->pPropagateActivationFlag();
+}
+
+const std::string& FDyActor::GetActorName() const noexcept
+{
+  return this->pGetObjectName();
+}
+
+std::string FDyActor::MDY_PRIVATE_SPECIFIER(GetFullSpecifierName)() const noexcept
+{
+  if (this->IsHaveParent() == false) { return this->GetActorName(); }
+  else
+  {
+    const auto headFullSpecifierName = this->GetParent()->MDY_PRIVATE_SPECIFIER(GetFullSpecifierName)();
+    return fmt::format("{}.{}", headFullSpecifierName, this->GetActorName());
+  }
 }
 
 void FDyActor::pUpdateActivateFlagFromParent() noexcept

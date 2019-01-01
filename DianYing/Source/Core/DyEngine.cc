@@ -98,10 +98,7 @@ void DyEngine::operator()()
       { // If game must be stopped, return but change status to Shutdown (GameRuntime => Shutdown);
         this->SetNextGameStatus(EDyGlobalGameStatus::Shutdown);
       }
-      else
-      {
-        this->MDY_PRIVATE_SPECIFIER(Render)(this->mStatus);
-      }
+      else { this->MDY_PRIVATE_SPECIFIER(Render)(this->mStatus); }
     } break;
     case EDyGlobalGameStatus::Shutdown: 
     { // Just wait I/O Worker thread is slept.

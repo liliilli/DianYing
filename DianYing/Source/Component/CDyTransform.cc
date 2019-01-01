@@ -33,6 +33,18 @@ EDySuccess CDyTransform::Initialize(const PDyTransformComponentMetaInfo& desc)
   return DY_SUCCESS;
 }
 
+EDySuccess CDyTransform::Initialize(const DDyTransform& desc)
+{
+  this->SetRelativeLocalPosition(desc.mLocalRelPosition);
+  this->SetLocalEulerAngle(desc.mLocalEulerAngle);
+  this->SetLocalScale(desc.mLocalScale);
+
+  this->SetRelativeWorldPosition(desc.mWorldRelPosition);
+  this->SetWorldEulerAngle(desc.mWorldEulerAngle);
+  this->SetWorldScale(desc.mWorldScale);
+  return DY_SUCCESS;
+}
+
 void CDyTransform::Release()
 {
 

@@ -233,6 +233,7 @@
     <ClCompile Include="Source\Core\Thread\SDyIOConnectionHelper.cc" />
     <ClCompile Include="Source\Core\Thread\IO\TDYIOWorker.cc" />
     <ClCompile Include="Source\Core\Thread\SDyIOWorkerConnHelper.cc" />
+    <ClCompile Include="Source\Element\Abstract\Actor\ADyActorBinderContainer.cc" />
     <ClCompile Include="Source\Element\Canvas\FDyBasicGuageBar.cc" />
     <ClCompile Include="Source\Element\Canvas\FDyImage.cc" />
     <ClCompile Include="Source\Element\Canvas\UiObject.cc" />
@@ -337,10 +338,11 @@
     <ClCompile Include="Source\Editor\Gui\ViewWorldOutliner.cc" />
     <ClCompile Include="Source\Editor\Helper\Win32Helper.cc" />
     <ClCompile Include="Source\Element\Abstract\ADyBaseComponent.cc" />
-    <ClCompile Include="Source\Element\Abstract\ADyNameCounterMap.cc" />
     <ClCompile Include="Source\Element\Abstract\ADyTransformable.cc" />
     <ClCompile Include="Source\Element\Actor.cc" />
     <ClCompile Include="Source\Element\Canvas\Text.cc" />
+    <ClCompile Include="Source\Element\Type\DDyActorBinder.cc" />
+    <ClCompile Include="Source\Helper\Internal\FDyNameGenerator.cc" />
     <ClCompile Include="Source\Helper\Library\HelperRegex.cc" />
     <ClCompile Include="Source\Management\Helper\SDyProfilingHelper.cc" />
     <ClCompile Include="Source\Management\Internal\Input\FDyInputDelegateManager.cc" />
@@ -541,8 +543,13 @@
     <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\TemplateUniformType.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOTaskDeferred.h" />
     <ClInclude Include="Include\Dy\Core\Thread\SDyIOBindingHelper.h" />
+    <ClInclude Include="Include\Dy\Element\Abstract\Actor\ADyActorBinderContainer.h" />
+    <ClInclude Include="Include\Dy\Element\Type\DDyActorBinder.h" />
+    <ClInclude Include="Include\Dy\Element\Type\DDyTransform.h" />
+    <ClInclude Include="Include\Dy\Element\Type\PDyActorCreationDescriptor.h" />
     <ClInclude Include="Include\Dy\Helper\HelperString.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\RWLockAtomic.h" />
+    <ClInclude Include="Include\Dy\Helper\Internal\FDyNameGenerator.h" />
     <ClInclude Include="Include\Dy\Helper\System\Idioms.h" />
     <ClInclude Include="Include\Dy\Helper\Library\HelperRegex.h" />
     <ClInclude Include="Include\Dy\Helper\Wrapper\DDyMutexUniqueHashMap.h" />
@@ -584,7 +591,6 @@
     <ClInclude Include="Include\Dy\Component\CDyPhysicsRigidbodyStatic.h" />
     <ClInclude Include="Include\Dy\Component\CDyPhysicsShapeBox.h" />
     <ClInclude Include="Include\Dy\Component\CDyTransform.h" />
-    <ClInclude Include="Include\Dy\Component\Helper\TmpCheckInitilizeParams.h" />
     <ClInclude Include="Include\Dy\Component\Helper\TmpCheckRemoveParams.h" />
     <ClInclude Include="Include\Dy\Component\Interface\IDyInitializeHelper.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Actor\CDyActorScriptLua.h" />
@@ -622,7 +628,6 @@
     <ClInclude Include="Include\Dy\Element\Abstract\ADyGeneralBaseComponent.h" />
     <ClInclude Include="Include\Dy\Element\Abstract\ADyTransformable.h" />
     <ClInclude Include="Include\Dy\Element\Actor.h" />
-    <ClInclude Include="Include\Dy\Element\Abstract\ADyNameCounterMap.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\FDyBasicGaugeBar.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\FDyImage.h" />
     <ClInclude Include="Include\Dy\Element\Canvas\UiObject.h" />

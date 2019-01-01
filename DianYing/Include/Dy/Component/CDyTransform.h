@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
+#include <Dy/Element/Type/DDyTransform.h>
 #include <Dy/Helper/Type/Vector3.h>
 #include <Dy/Helper/Type/MathEnum.h>
 #include <Dy/Helper/Type/Matrix4.h>
@@ -32,7 +33,7 @@ namespace dy
 /// @brief
 /// @TODO SCRIPT THIS
 ///
-class CDyTransform final : public ADyGeneralBaseComponent
+class CDyTransform final : public ADyGeneralBaseComponent, public DDyTransform
 {
 public:
   CDyTransform(FDyActor& actorReference) : ADyGeneralBaseComponent(actorReference) { }
@@ -50,6 +51,7 @@ public:
   /// @TODO SCRIPT THIS
   ///
   MDY_NODISCARD EDySuccess Initialize(_MIN_ const PDyTransformComponentMetaInfo& desc);
+  MDY_NODISCARD EDySuccess Initialize(_MIN_ const DDyTransform& desc);
 
   /// @brief Release component.
   void Release();
@@ -201,15 +203,6 @@ private:
   void MDY_PRIVATE_SPECIFIER(SetWorldScaleOrigin)(_MIN_ const DDyVector3& iParentPrdScale);
 
 private:
-  DDyVector3 mLocalRelPosition  = {0, 0, 0};
-  DDyVector3 mWorldRelPosition  = {0, 0, 0};
-
-  DDyVector3 mLocalEulerAngle   = {0, 0, 0};
-  DDyVector3 mWorldEulerAngle   = {0, 0, 0};
-
-  DDyVector3 mLocalScale        = {1, 1, 1};
-  DDyVector3 mWorldScale        = {1, 1, 1};
-
   MDY_TRANSIENT DDyVector3    mWorldRelativeOriginPosition  = {};
   MDY_TRANSIENT DDyVector3    mLocalRelAlignedPosition = {};
   MDY_TRANSIENT DDyVector3    mWorldRelAlignedPosition = {};

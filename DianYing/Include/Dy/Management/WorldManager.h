@@ -13,9 +13,11 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Element/Interface/IDyUpdatable.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Management/Internal/World/FDyWorldUIContainer.h>
+#include <Dy/Element/Type/DDyActorBinder.h>
+#include <Dy/Element/Type/PDyActorCreationDescriptor.h>
+#include <Dy/Element/Interface/IDyUpdatable.h>
 #include <Dy/Element/Level.h>
 
 //!
@@ -24,7 +26,9 @@
 
 namespace dy
 {
+class CDyModelRenderer;
 class CDyLegacyCamera;
+class CDyCamera;
 } /// ::dy namespace
 
 //!
@@ -43,33 +47,18 @@ class MDyWorld final : public IDySingleton<MDyWorld>, public IDyUpdatable
   MDY_SINGLETON_DERIVED(MDyWorld);
   MDY_SINGLETON_PROPERTIES(MDyWorld);
 public:
-  ///
   /// @brief Update scene structures prior to dive in scene objects tree hierarchy.
   /// Level transition will be executed maybe.
   /// @param dt
-  ///
   void Update(_MIN_ float dt) override final;
 
-  ///
   /// @brief Update valid objects. this function must be called after this->Update().
   /// @param dt Delta time
-  ///
   void UpdateObjects(_MIN_ float dt);
 
-  ///
   /// @brief
   /// @param
-  ///
   void RequestDrawCall(_MIN_ float dt);
-
-  ///
-  /// @brief
-  /// @return
-  ///
-  MDY_NODISCARD FORCEINLINE TI32 GetFocusedCameraCount() const noexcept
-  {
-    return static_cast<TI32>(this->mActivatedOnRenderingCameras.size());
-  }
 
   /// @brief Get all actors with tag. Tag must be valid. \n
   /// If iTagSpecifier is empty, this function get all actors which is not specified any tag.
@@ -91,7 +80,20 @@ public:
   /// If iNameSpecifier is empty, just return empty list.
   MDY_NODISCARD std::vector<NotNull<FDyActor*>>
   GetAllActorsWithNameRecursive(_MIN_ const std::string& iNameSpecifier) const noexcept; 
-  
+
+  /// @brief Create actor.
+  DDyActorBinder CreateActor(
+      _MIN_ const std::string& iActorName, 
+      _MIN_ const std::string& iPrefabName, 
+      _MIN_ const DDyTransform& iSpawnTransform,
+      _MIN_ FDyActor* iPtrParent = MDY_INITIALIZE_NULL,
+      _MIN_ const std::string& iObjectTag = MDY_INITIALIZE_EMPTYSTR,
+      _MIN_ bool iDoSweep = false);
+
+  /// @brief
+  /// @return
+  MDY_NODISCARD TI32 GetFocusedCameraCount() const noexcept;
+
   /// @brief
   /// @param  index
   /// @return
@@ -108,8 +110,7 @@ public:
   /// @brief Try Remove level. If level is not exist, just return DY_FAILURE.
   EDySuccess MDY_PRIVATE_SPECIFIER(RemoveLevel)();
 
-  /// @brief Populate next level resource. If next level specifier is not exist,
-  /// Do nothing and return DY_FAILURE.
+  /// @brief Populate next level resource. If next level specifier is not exist, do nothing and return DY_FAILURE.
   EDySuccess MDY_PRIVATE_SPECIFIER(PopulateNextLevelResources)();
 
   /// @brief 
@@ -148,6 +149,12 @@ public:
   /// @brief Try draw loading ui if exist.
   void MDY_PRIVATE_SPECIFIER(TryRenderLoadingUi)();
 
+  /// @brief
+  MDY_NODISCARD bool CheckCreationActorExist() const noexcept;
+  /// @brief
+  void TryCreateActorsOfCreationActorList() noexcept;
+  /// @brief
+  void CleanCreationActorList() noexcept;
   /// @brief Try remove actor gc list anyway. \n
   /// If there is something to do actors in GC list, call something to do prior to this.
   void MDY_PRIVATE_SPECIFIER(TryRemoveActorGCList)() noexcept;
@@ -271,6 +278,10 @@ private:
   /// Erasion (activated) model renderer list. this list must be sorted descendently not to invalidate order.
   std::vector<TI32>         mErasionCamerasCandidateList  = {};
 
+  /// @brief Action creation descriptor list for present level. \n
+  /// This list must be processed and cleaned each frame prior to update of logic.
+  std::vector<std::unique_ptr<PDyActorCreationDescriptor>> 
+  mActorCreationDescList = {};
   /// Garbage collection actor instance list.
   std::vector<std::unique_ptr<FDyActor>> mActorGc = {};
 

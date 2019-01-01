@@ -18,7 +18,6 @@
 #include <Dy/Helper/Type/ColorRGBA.h>
 #include <Dy/Element/Object.h>
 #include <Dy/Element/Actor.h>
-#include <Dy/Element/Abstract/ADyNameCounterMap.h>
 #include <Dy/Element/Interface/IDyUpdatable.h>
 
 namespace dy {
@@ -27,7 +26,7 @@ namespace dy {
 /// @class FDyLevel
 /// @brief Level class type for managing run-time interactive world space.
 ///
-class FDyLevel final : public FDyObject, public IDyUpdatable, public ADyNameCounterMap
+class FDyLevel final : public FDyObject, public IDyUpdatable, public FDyNameGenerator
 {
   using TNameCounterMap   = std::unordered_map<std::string, int32_t>;
 
@@ -75,6 +74,13 @@ public:
   /// If iNameSpecifier is empty, just return empty list.
   MDY_NODISCARD std::vector<NotNull<FDyActor*>>
   GetAllActorsWithNameRecursive(_MIN_ const std::string& iNameSpecifier) const noexcept; 
+
+  /// @brief Try get actor with given full name, from root to actor.
+  /// If iFullName did not satisfy full name format, just return nullptr.
+  MDY_NODISCARD FDyActor* GetActorWithFullName(_MIN_ const std::string& iFullName) const noexcept;
+
+  /// @brief Create actor instantly in this level.
+  void CreateActorInstantly(_MIN_ const PDyActorCreationDescriptor& descriptor);
   
 private:
   /// Level's name. not modifiable

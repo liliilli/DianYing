@@ -49,10 +49,7 @@ FDyLevel::FDyLevel(_MIN_ const PDyLevelConstructMetaInfo& desc)
 
       // Check activation flags and execute sub-routines of each components.
       instancePtr->pUpdateActivateFlagFromParent();
-      if (objectInformation->mProperties.mInitialActivated == true) 
-      { 
-        instancePtr->Activate(); 
-      }
+      if (objectInformation->mProperties.mInitialActivated == true) { instancePtr->Activate(); }
 
       auto [it, result] = this->mActorMap.try_emplace(instancePtr->GetActorName(), std::move(instancePtr));
       MDY_ASSERT(result == true, "Unexpected error occured in inserting FDyActor to object map.");
@@ -145,6 +142,35 @@ FDyLevel::GetAllActorsWithNameRecursive(_MIN_ const std::string& iNameSpecifier)
   }
 
   return result;;
+}
+
+FDyActor* FDyLevel::GetActorWithFullName(_MIN_ const std::string& iFullName) const noexcept
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+  return nullptr;
+}
+
+void FDyLevel::CreateActorInstantly(_MIN_ const PDyActorCreationDescriptor& descriptor)
+{
+  if (descriptor.mParentFullSpecifierName.empty() == true)
+  {
+    auto instancePtr = std::make_unique<FDyActor>(descriptor);
+
+    // Check activation flags and execute sub-routines of each components.
+    instancePtr->pUpdateActivateFlagFromParent();
+    instancePtr->Activate();
+
+    auto [it, result] = this->mActorMap.try_emplace(instancePtr->GetActorName(), std::move(instancePtr));
+    MDY_ASSERT(result == true, "Unexpected error occured in inserting FDyActor to object map.");
+  }
+  else
+  {
+    auto* ptrParent = this->GetActorWithFullName(descriptor.mParentFullSpecifierName);
+    // If parent is not exist because removed or will be removed on this frame, do nothing and do not create.
+    if (MDY_CHECK_ISNULL(ptrParent)) { return; }
+
+    MDY_NOT_IMPLEMENTED_ASSERT();
+  }
 }
 
 void FDyLevel::Update(_MIN_ float dt)
