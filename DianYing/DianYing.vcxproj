@@ -233,7 +233,6 @@
     <ClCompile Include="Source\Core\Thread\SDyIOConnectionHelper.cc" />
     <ClCompile Include="Source\Core\Thread\IO\TDYIOWorker.cc" />
     <ClCompile Include="Source\Core\Thread\SDyIOWorkerConnHelper.cc" />
-    <ClCompile Include="Source\Element\Abstract\Actor\ADyActorBinderContainer.cc" />
     <ClCompile Include="Source\Element\Canvas\FDyBasicGuageBar.cc" />
     <ClCompile Include="Source\Element\Canvas\FDyImage.cc" />
     <ClCompile Include="Source\Element\Canvas\UiObject.cc" />

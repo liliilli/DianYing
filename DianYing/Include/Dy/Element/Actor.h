@@ -43,31 +43,22 @@ public:
 
   /// @brief Initialize FDyActor.
   /// @param objectMetaDesc Meta descriptor information instance for FDyActor.
-  FDyActor(_MIN_ const PDyObjectMetaInfo& objectMetaDesc);
-  explicit FDyActor(_MIN_ const PDyActorCreationDescriptor& iDesc);
+  FDyActor(_MIN_ const PDyObjectMetaInfo& objectMetaDesc, _MIN_ FDyActor* iPtrParent = nullptr);
+  explicit FDyActor(_MIN_ const PDyActorCreationDescriptor& iDesc, _MIN_ FDyActor* iPtrParent = nullptr);
 
   /// @brief Release function (virtual) because Initialize function has different parameter but release does not need any parameter.
   /// @return Success flag.
   virtual ~FDyActor();
 
-  ///
   /// @brief Activate FDyActor instance.
-  ///
   void Activate() noexcept;
 
-  ///
   /// @brief Deactivate FDyActor instance.
-  ///
   void Deactivate() noexcept;
 
-  ///
   /// @brief  Check FDyActor is activated or not.
   /// @return Check flag for activation checking.
-  ///
-  MDY_NODISCARD FORCEINLINE bool IsActivated() const noexcept
-  {
-    return this->mActivationFlag.GetOutput();
-  }
+  MDY_NODISCARD bool IsActivated() const noexcept;
 
   /// @brief Get present actor name on runtime.
   /// @return Actor name of this instance.

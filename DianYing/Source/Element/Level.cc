@@ -46,11 +46,6 @@ FDyLevel::FDyLevel(_MIN_ const PDyLevelConstructMetaInfo& desc)
     case EDyMetaObjectType::Actor:
     { // General object type. Make FDyActor instance.
       auto instancePtr = std::make_unique<FDyActor>(*objectInformation);
-
-      // Check activation flags and execute sub-routines of each components.
-      instancePtr->pUpdateActivateFlagFromParent();
-      if (objectInformation->mProperties.mInitialActivated == true) { instancePtr->Activate(); }
-
       auto [it, result] = this->mActorMap.try_emplace(instancePtr->GetActorName(), std::move(instancePtr));
       MDY_ASSERT(result == true, "Unexpected error occured in inserting FDyActor to object map.");
     } break;

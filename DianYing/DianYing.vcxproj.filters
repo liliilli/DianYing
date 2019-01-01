@@ -248,7 +248,6 @@
     <ClCompile Include="Source\Helper\Library\HelperRegex.cc" />
     <ClCompile Include="Source\Helper\Internal\FDyNameGenerator.cc" />
     <ClCompile Include="Source\Element\Type\DDyActorBinder.cc" />
-    <ClCompile Include="Source\Element\Abstract\Actor\ADyActorBinderContainer.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />

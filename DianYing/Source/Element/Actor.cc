@@ -29,7 +29,7 @@
 namespace dy
 {
 
-FDyActor::FDyActor(_MIN_ const PDyObjectMetaInfo& objectMetaDesc)
+FDyActor::FDyActor(_MIN_ const PDyObjectMetaInfo& objectMetaDesc, _MIN_ FDyActor* iPtrParent)
 {
   // (1) Set properties.
   this->pSetObjectName(objectMetaDesc.mSpecifierName);
@@ -51,7 +51,12 @@ FDyActor::FDyActor(_MIN_ const PDyObjectMetaInfo& objectMetaDesc)
   else { this->mActorTagSpecifier = objectMetaDesc.mProperties.mTagSpecifier; } 
 
   // (2) Create components
+  // Check activation flags and execute sub-routines of each components.
   this->MDY_PRIVATE_SPECIFIER(CreateComponentList)(metaComponentInfo);
+
+  if (MDY_CHECK_ISNOTNULL(iPtrParent)) { this->SetParent(*iPtrParent); }
+  this->pUpdateActivateFlagFromParent();
+  if (objectMetaDesc.mProperties.mInitialActivated == true) { this->Activate(); }
 
   // (3) Make children actors.
   for (const auto& objectInformation : objectMetaDesc.mChildrenList)
@@ -60,17 +65,10 @@ FDyActor::FDyActor(_MIN_ const PDyObjectMetaInfo& objectMetaDesc)
     {
     case EDyMetaObjectType::Actor:
     { // General object type. Make FDyActor instance.
-      auto instancePtr = std::make_unique<FDyActor>(*objectInformation);
-      // Check activation flags and execute sub-routines of each components.
-      instancePtr->pUpdateActivateFlagFromParent();
-      if (objectInformation->mProperties.mInitialActivated == true) { instancePtr->Activate(); }
+      auto instancePtr = std::make_unique<FDyActor>(*objectInformation, this);
 
       auto [it, result] = this->mChildActorMap.try_emplace(instancePtr->GetActorName(), std::move(instancePtr));
       MDY_ASSERT(result == true, "Unexpected error occured in inserting FDyActor to object map.");
-
-      // Set child's parent as this.
-      auto& [specifier, ptrsmtChild] = *it;
-      ptrsmtChild->SetParent(*this);
     } break;
     case EDyMetaObjectType::SceneScriptor:  MDY_NOT_IMPLEMENTED_ASSERT(); break;
     case EDyMetaObjectType::Object:         MDY_NOT_IMPLEMENTED_ASSERT(); break;
@@ -81,7 +79,7 @@ FDyActor::FDyActor(_MIN_ const PDyObjectMetaInfo& objectMetaDesc)
   MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mTransform), "CDyTransform component must be created to all FDyActor.");
 }
 
-FDyActor::FDyActor(_MIN_ const PDyActorCreationDescriptor& iDesc)
+FDyActor::FDyActor(_MIN_ const PDyActorCreationDescriptor& iDesc, _MIN_ FDyActor* iPtrParent = nullptr)
 {
   // (1) Set properties.
   this->pSetObjectName(iDesc.mActorSpecifierName);
@@ -101,7 +99,12 @@ FDyActor::FDyActor(_MIN_ const PDyActorCreationDescriptor& iDesc)
   else { this->mActorTagSpecifier = iDesc.mObjectTag; }
 
   // (2) Create components
+  // Check activation flags and execute sub-routines of each components.
   this->MDY_PRIVATE_SPECIFIER(CreateComponentList)(metaComponentInfo);
+
+  if (MDY_CHECK_ISNOTNULL(iPtrParent)) { this->SetParent(*iPtrParent); }
+  this->pUpdateActivateFlagFromParent();
+  this->Activate();
 
   // (3) Create Transform component using Given transform
   this->AddComponent<CDyTransform>(iDesc.mTransform);
@@ -152,6 +155,11 @@ void FDyActor::Deactivate() noexcept
 {
   this->mActivationFlag.UpdateInput(true);
   this->pPropagateActivationFlag();
+}
+
+bool FDyActor::IsActivated() const noexcept
+{
+  return this->mActivationFlag.GetOutput();
 }
 
 const std::string& FDyActor::GetActorName() const noexcept
