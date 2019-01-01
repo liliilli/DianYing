@@ -20,9 +20,6 @@
 #include <Dy/Element/Actor.h>
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Management/SettingManager.h>
-#include <Dy/Helper/Type/VectorInt2.h>
-#include <Dy/Management/Type/FramebufferInformation.h>
-#include <Dy/Management/Rendering/FramebufferManager.h>
 #include <Dy/Management/Rendering/UniformBufferObjectManager.h>
 #include <Dy/Core/Rendering/Helper/FrameAttachmentString.h>
 #include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
@@ -30,6 +27,7 @@
 #include "Dy/Core/Resource/Resource/FDyMeshResource.h"
 #include "Dy/Core/Resource/Resource/FDyTextureResource.h"
 #include "Dy/Core/Resource/Resource/FDyFrameBufferResource.h"
+#include <Dy/Component/CDyCamera.h>
 
 //!
 //! Temporary

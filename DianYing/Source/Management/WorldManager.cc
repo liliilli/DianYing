@@ -17,10 +17,12 @@
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Management/SettingManager.h>
+#include <Dy/Management/ScriptManager.h>
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 #include <Dy/Core/Resource/Type/EDyScope.h>
-#include "Dy/Core/DyEngine.h"
-#include "Dy/Management/ScriptManager.h"
+#include <Dy/Core/DyEngine.h>
+#include <Dy/Component/CDyModelRenderer.h>
+#include <Dy/Component/CDyCamera.h>
 
 namespace dy
 {
@@ -163,6 +165,45 @@ MDyWorld::GetAllActorsWithNameRecursive(_MIN_ const std::string& iNameSpecifier)
   if (iNameSpecifier.empty() == true)   { return {}; }
   if (MDY_CHECK_ISEMPTY(this->mLevel))  { return {}; }
   return this->mLevel->GetAllActorsWithNameRecursive(iNameSpecifier);
+}
+
+DDyActorBinder MDyWorld::CreateActor(
+    _MIN_ const std::string& iActorName, 
+    _MIN_ const std::string& iPrefabName,
+    _MIN_ const DDyTransform& iSpawnTransform, 
+    _MIN_ FDyActor* iPtrParent, 
+    _MIN_ const std::string& iObjectTag, 
+    _MIN_ bool iDoSweep)
+{
+  PDyActorCreationDescriptor descriptor = {};
+  descriptor.mActorSpecifierName      = iPtrParent != nullptr ? iPtrParent->TryGetGeneratedName(iActorName) : iActorName;
+  descriptor.mParentFullSpecifierName = 
+      iPtrParent != nullptr 
+    ? iPtrParent->MDY_PRIVATE_SPECIFIER(GetFullSpecifierName)() 
+    : MDY_INITIALIZE_EMPTYSTR;
+  descriptor.mTransform = iSpawnTransform;
+  descriptor.mIsDoSweep = iDoSweep;
+
+  // Check prefab is exist on meta information manager.
+  MDY_ASSERT(MDyMetaInfo::GetInstance().IsPrefabMetaInformationExist(iPrefabName) == true,
+             "Failed to find prefab with specified `iPrefabName`.");
+  descriptor.mPrefabSpecifierName = iPrefabName;
+
+  if (iObjectTag.empty() == false)
+  { // Check tag is exist, when tag is not empty.
+    MDY_CALL_ASSERT_SUCCESS(MDySetting::GetInstance().MDY_PRIVATE_SPECIFIER(CheckObjectTagIsExist)(iObjectTag));
+    descriptor.mObjectTag = iObjectTag;
+  }
+
+  DySafeUniquePtrEmplaceBack(this->mActorCreationDescList, descriptor);
+  DDyActorBinder resultBinder {};
+  resultBinder.MDY_PRIVATE_SPECIFIER(BindDescriptor)(this->mActorCreationDescList.back().get());
+  return resultBinder;
+}
+
+TI32 MDyWorld::GetFocusedCameraCount() const noexcept
+{
+  return static_cast<TI32>(this->mActivatedOnRenderingCameras.size());
 }
 
 std::optional<CDyCamera*> MDyWorld::GetFocusedCameraValidReference(const TI32 index) const noexcept
@@ -326,6 +367,28 @@ EDySuccess MDyWorld::TryRemoveLoadingUi()
 void MDyWorld::MDY_PRIVATE_SPECIFIER(TryRenderLoadingUi)()
 {
   this->mUiInstanceContainer.TryRenderLoadingUi();
+}
+
+bool MDyWorld::CheckCreationActorExist() const noexcept
+{
+  return this->mActorCreationDescList.empty() == false;
+}
+
+void MDyWorld::TryCreateActorsOfCreationActorList() noexcept
+{
+  // Check level is not empty.
+  if (MDY_CHECK_ISEMPTY(this->mLevel)) { return; }
+
+  //
+  for (const auto& ptrsmtDescriptor : this->mActorCreationDescList)
+  {
+    this->mLevel->CreateActorInstantly(*ptrsmtDescriptor);
+  }
+}
+
+void MDyWorld::CleanCreationActorList() noexcept
+{
+  this->mActorCreationDescList.clear();
 }
 
 void MDyWorld::MDY_PRIVATE_SPECIFIER(TryRemoveActorGCList)() noexcept
