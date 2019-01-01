@@ -149,14 +149,16 @@ void FDyLevel::CreateActorInstantly(_MIN_ const PDyActorCreationDescriptor& desc
 {
   if (descriptor.mParentFullSpecifierName.empty() == true)
   {
-    auto instancePtr = std::make_unique<FDyActor>(descriptor);
-
-    // Check activation flags and execute sub-routines of each components.
-    instancePtr->pUpdateActivateFlagFromParent();
-    instancePtr->Activate();
-
+    auto instancePtr  = std::make_unique<FDyActor>(descriptor);
     auto [it, result] = this->mActorMap.try_emplace(instancePtr->GetActorName(), std::move(instancePtr));
     MDY_ASSERT(result == true, "Unexpected error occured in inserting FDyActor to object map.");
+     
+    // Try propagate transform.
+    auto& [specifier, ptrsmtActor] = *it;
+    if (ptrsmtActor->IsHaveParent() == true)
+    {
+      ptrsmtActor->GetParent()->GetTransform()->TryPropagateTransformToChildren();
+    }
   }
   else
   {
@@ -194,7 +196,7 @@ void FDyLevel::MDY_PRIVATE_SPECIFIER(AlignActorsPosition)() noexcept
   for (auto& [specifier, ptrsmtActor] : this->mActorMap)
   {
     if (MDY_CHECK_ISEMPTY(ptrsmtActor)) { continue; }
-    MDY_NOTUSED const auto& _ = ptrsmtActor->GetTransform()->GetTransform();
+    ptrsmtActor->GetTransform()->TryPropagateTransformToChildren();
   }
 }
 

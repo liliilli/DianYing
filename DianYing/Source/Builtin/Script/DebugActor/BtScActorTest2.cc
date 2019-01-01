@@ -33,7 +33,8 @@ void dy::BtScActorTest2::Update(TF32 dt)
   _new -= old;
 
   auto& refActor = this->GetActorReference();
-  refActor.GetTransform()->SetRelativeWorldPosition(DDyVector3{std::cos(f) * 10, 0, std::sin(f) * 10});
+  const auto& pos = refActor.GetTransform()->GetRelativeWorldPosition();
+  refActor.GetTransform()->SetRelativeWorldPosition(DDyVector3{std::cos(f) * 10, pos.Y, std::sin(f) * 10});
   refActor.GetTransform()->AddWorldEulerAngle(EDyAxis3D::Z, dt * 90.f);
 
 #ifdef false

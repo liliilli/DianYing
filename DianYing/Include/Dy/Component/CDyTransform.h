@@ -171,6 +171,15 @@ public:
   ///
   void Update(_MIN_ float dt) override final {};
 
+  /// @brief Try propagate information that is needed by children to update transform properly. \n
+  /// If children is not exist, do nothing.
+  void TryPropagateTransformToChildren();
+
+  void MDY_PRIVATE_SPECIFIER(PropagateTransform)(
+      _MIN_ const DDyVector3& iPosition,
+      _MIN_ const DDyVector3& iAngle,
+      _MIN_ const DDyVector3& iScale);
+
 private:
 
   /// @brief Try update movement basis.

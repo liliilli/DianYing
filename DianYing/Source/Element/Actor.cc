@@ -79,7 +79,7 @@ FDyActor::FDyActor(_MIN_ const PDyObjectMetaInfo& objectMetaDesc, _MIN_ FDyActor
   MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mTransform), "CDyTransform component must be created to all FDyActor.");
 }
 
-FDyActor::FDyActor(_MIN_ const PDyActorCreationDescriptor& iDesc, _MIN_ FDyActor* iPtrParent = nullptr)
+FDyActor::FDyActor(_MIN_ const PDyActorCreationDescriptor& iDesc, _MIN_ FDyActor* iPtrParent)
 {
   // (1) Set properties.
   this->pSetObjectName(iDesc.mActorSpecifierName);

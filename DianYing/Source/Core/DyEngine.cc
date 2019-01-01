@@ -239,6 +239,7 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(Update)(_MIN_ EDyGlobalGameStatus iEngineSt
   } break;
   case EDyGlobalGameStatus::GameRuntime: 
   {
+    MDyScript::GetInstance().UpdateActorScript(0.0f, EDyScriptState::CalledNothing);
     MDyScript::GetInstance().TryMoveInsertActorScriptToMainContainer();
     MDyScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
 
