@@ -33,6 +33,18 @@ EDySuccess CDyTransform::Initialize(const PDyTransformComponentMetaInfo& desc)
   return DY_SUCCESS;
 }
 
+EDySuccess CDyTransform::Initialize(const DDyTransform& desc)
+{
+  this->SetRelativeLocalPosition(desc.mLocalRelPosition);
+  this->SetLocalEulerAngle(desc.mLocalEulerAngle);
+  this->SetLocalScale(desc.mLocalScale);
+
+  this->SetRelativeWorldPosition(desc.mWorldRelPosition);
+  this->SetWorldEulerAngle(desc.mWorldEulerAngle);
+  this->SetWorldScale(desc.mWorldScale);
+  return DY_SUCCESS;
+}
+
 void CDyTransform::Release()
 {
 
@@ -44,29 +56,23 @@ void CDyTransform::Release()
 
 const DDyVector3& CDyTransform::GetRelativeLocalPosition() const noexcept
 {
-  return this->mLocalPosition;
+  return this->mLocalRelPosition;
 }
 
 const DDyVector3& CDyTransform::GetRelativeWorldPosition() const noexcept
 {
-  return this->mWorldPosition;
+  return this->mWorldRelPosition;
 }
 
-const DDyVector3& CDyTransform::GetFinalWorldPosition() const noexcept
+const DDyVector3& CDyTransform::GetFinalWorldPosition() noexcept
 {
-  this->__UpdateFromParentWorldEulerAngle();
-  this->pUpdateFinalRenderingAxis();
-  this->pUpdateFinalRenderingPosition();
-
+  this->MDY_PRIVATE_SPECIFIER(TryUpdateFinalPosition)();
   return this->mFinalRenderingPosition;
 }
 
-const std::array<DDyVector3, 3>& CDyTransform::GetToChildBasis() const noexcept
+const std::array<DDyVector3, 3>& CDyTransform::GetToChildBasis() noexcept
 {
-  this->__UpdateFromParentWorldEulerAngle();
-  this->pUpdateFinalRenderingEulerAngle();
-  this->pUpdateToChildBasisAxis();
-
+  this->MDY_PRIVATE_SPECIFIER(TryUpdateToChildBasis)();
   return this->mToChildBasis;
 }
 
@@ -104,10 +110,9 @@ float CDyTransform::GetRelativeWorldEulerAngle(_MIN_ EDyAxis3D direction) const 
   }
 }
 
-float CDyTransform::GetFinalEulerAngle(_MIN_ EDyAxis3D direction) const noexcept
+float CDyTransform::GetFinalEulerAngle(_MIN_ EDyAxis3D direction) noexcept
 {
-  this->MDY_PRIVATE_SPECIFIER(UpdateFromParentWorldEulerAngle)();
-  this->pUpdateFinalRenderingEulerAngle();
+  this->MDY_PRIVATE_SPECIFIER(TryUpdateFinalWorldRotAngle)();
 
   switch (direction)
   {
@@ -128,11 +133,9 @@ const DDyVector3& CDyTransform::GetWorldScale() const noexcept
   return this->mWorldScale;
 }
 
-const DDyVector3& CDyTransform::GetFinalScale() const noexcept
+const DDyVector3& CDyTransform::GetFinalScale() noexcept
 {
-  this->pUpdateFromParentWorldScale();
-  this->pUpdateFinalRenderingScale();
-
+  this->MDY_PRIVATE_SPECIFIER(UpdateFinalRenderingScale)();
   return this->mFinalRenderingScale;
 }
 
@@ -142,16 +145,17 @@ const DDyVector3& CDyTransform::GetFinalScale() const noexcept
 
 void CDyTransform::SetRelativeLocalPosition(_MIN_ const DDyVector3& localPosition) noexcept
 {
-  this->mLocalPosition            = localPosition;
-  this->mIsLocalPositionAlignDirty= true;
+  this->mLocalRelPosition            = localPosition;
+  this->mIsLocalRelAlignedPosDirty= true;
   this->mIsFinalPositionDirty     = true;
   this->mIsModelMatrixDirty       = true;
 }
 
 void CDyTransform::SetRelativeWorldPosition(_MIN_ const DDyVector3& worldPosition) noexcept
 {
-  this->mWorldPosition            = worldPosition;
+  this->mWorldRelPosition            = worldPosition;
   this->mIsWorldPositionAlignDirty= true;
+  this->mIsWorldRelAlignedPosDirty= true;
   this->mIsWorldSumAlignedPosDirty= true;
   this->mIsFinalPositionDirty     = true;
   this->mIsModelMatrixDirty       = true;
@@ -234,6 +238,7 @@ void CDyTransform::AddWorldEulerAngle(_MIN_ const DDyVector3& eulerAngleValue) n
 {
   this->mWorldEulerAngle += eulerAngleValue;
   this->mIsWorldSumRotationAngleDirty = true;
+  this->mToChildBasisAxisDirty        = true;
   this->mIsFinalRotationAngleDirty    = true;
   this->mIsModelMatrixDirty           = true;
 
@@ -315,18 +320,16 @@ std::string CDyTransform::ToString()
   return MDY_INITIALIZE_EMPTYSTR;
 }
 
-//!
-//! Lazy evaluation phase
-//!
-
-const DDyMatrix4x4& CDyTransform::GetTransform() const noexcept
+const DDyMatrix4x4& CDyTransform::GetTransform() noexcept
 {
   if (this->mIsModelMatrixDirty == true)
   { // Update dependent transform information.
-    if (this->mIsFinalScaleDirty          == true) { this->pUpdateFinalRenderingScale();      }
-    if (this->mIsFinalRotationAngleDirty  == true) { this->pUpdateFinalRenderingEulerAngle(); }
-    if (this->mIsMovementBasisDirty       == true) { this->pUpdateFinalRenderingAxis(); }
-    if (this->mIsFinalPositionDirty       == true) { this->pUpdateFinalRenderingPosition();   }
+    if (this->mIsFinalScaleDirty == true) 
+    { this->MDY_PRIVATE_SPECIFIER(UpdateFinalRenderingScale)(); }
+    if (this->mIsFinalRotationAngleDirty == true) 
+    { this->MDY_PRIVATE_SPECIFIER(TryUpdateFinalWorldRotAngle)(); }
+    if (this->mIsFinalPositionDirty == true) 
+    { this->MDY_PRIVATE_SPECIFIER(TryUpdateFinalPosition)();   }
 
     // Assemble not obsoleted updated value.
     this->mFinalRenderingTransform      = this->mFinalRenderRotationQuaternion.GetRotationMatrix4x4();
@@ -345,19 +348,100 @@ const DDyMatrix4x4& CDyTransform::GetTransform() const noexcept
   return this->mFinalRenderingTransform;
 }
 
-//!
-//! Rotation lazy evaluation
-//!
+void CDyTransform::TryPropagateTransformToChildren()
+{
+  MDY_CALL_BUT_NOUSE_RESULT(this->GetTransform());
+
+  if (auto* validActorPtr = this->GetBindedActor(); validActorPtr->IsHavingChildrenObject() == true)
+  { 
+    // (1) Try update movement basis.
+    this->MDY_PRIVATE_SPECIFIER(TryUpdateMovementBasis)();
+    // (2) Try update relative aligend world position.
+    this->MDY_PRIVATE_SPECIFIER(TryUpdateWorldRelAlignedPos)();
+    // (3) Try update final position without relative local position (aka fwpos wo rlpos)
+    this->MDY_PRIVATE_SPECIFIER(TryUpdateAlignedWorldSumPosition)();
+    // (4) Try update sum of world (without each local) rotation angle.
+    this->MDY_PRIVATE_SPECIFIER(TryUpdateWorldSumRotAngle)();
+    // (5) Try update sum of world (without each local) rotation angle.
+    this->MDY_PRIVATE_SPECIFIER(TryUpdateWorldPrdScale)();
+
+    auto& childrenContainer = validActorPtr->GetChildrenContainer();
+    for (auto& [specifier, ptrsmtObject] : childrenContainer)
+    {
+      if (MDY_CHECK_ISEMPTY(ptrsmtObject)) { continue; }
+      ptrsmtObject->GetTransform()->MDY_PRIVATE_SPECIFIER(PropagateTransform)(
+          this->mWorldSumAlignedPosition,
+          this->mWorldSumEulerAngle,
+          this->mWorldProductScale);
+    }
+  }
+}
+
+void CDyTransform::MDY_PRIVATE_SPECIFIER(PropagateTransform)(
+    _MIN_ const DDyVector3& iPosition,
+    _MIN_ const DDyVector3& iAngle,
+    _MIN_ const DDyVector3& iScale)
+{
+  this->mFromParentWorldEulerAngle = iAngle;
+  this->mWorldRelativeOriginPosition = iPosition;
+  this->mFromParentWorldScale = iScale;
+
+  {
+    this->mIsWorldPrdScaleDirty = true;
+    this->mIsFinalScaleDirty    = true;
+    this->mIsModelMatrixDirty   = true;
+    this->mIsWorldSumAlignedPosDirty  = true;
+    this->mIsFinalPositionDirty       = true;
+    this->mIsModelMatrixDirty         = true;
+    this->mIsWorldSumRotationAngleDirty = true;
+    this->mIsMovementBasisDirty      = true;
+    this->mIsLocalRelAlignedPosDirty = true;
+    this->mIsWorldPositionAlignDirty = true;
+    this->mIsWorldRelAlignedPosDirty = true;
+    this->mIsWorldSumAlignedPosDirty = true;
+    this->mIsFinalPositionDirty      = true;
+    this->mToChildBasisAxisDirty     = true;
+    this->mIsFinalRotationAngleDirty = true;
+    this->mIsModelMatrixDirty        = true;
+  }
+
+  if (auto* validActorPtr = this->GetBindedActor(); validActorPtr->IsHavingChildrenObject() == true)
+  { 
+    // (1) Try update movement basis.
+    this->MDY_PRIVATE_SPECIFIER(TryUpdateMovementBasis)();
+    // (2) Try update relative aligend world position.
+    this->MDY_PRIVATE_SPECIFIER(TryUpdateWorldRelAlignedPos)();
+    // (3) Try update final position without relative local position (aka fwpos wo rlpos)
+    this->MDY_PRIVATE_SPECIFIER(TryUpdateAlignedWorldSumPosition)();
+    // (4) Try update sum of world (without each local) rotation angle.
+    this->MDY_PRIVATE_SPECIFIER(TryUpdateWorldSumRotAngle)();
+    // (5) Try update sum of world (without each local) rotation angle.
+    this->MDY_PRIVATE_SPECIFIER(TryUpdateWorldPrdScale)();
+
+    auto& childrenContainer = validActorPtr->GetChildrenContainer();
+    for (auto& [specifier, ptrsmtObject] : childrenContainer)
+    {
+      if (MDY_CHECK_ISEMPTY(ptrsmtObject)) { continue; }
+      ptrsmtObject->GetTransform()->MDY_PRIVATE_SPECIFIER(PropagateTransform)(
+          this->mWorldSumAlignedPosition,
+          this->mWorldSumEulerAngle,
+          this->mWorldProductScale);
+    }
+  }
+}
 
 void CDyTransform::MDY_PRIVATE_SPECIFIER(TryUpdateMovementBasis)()
 {
   if (this->mIsMovementBasisDirty == false) { return; }
 
-    // Update position movement basis of this FDyActor.
-  const auto& m = this->mFinalPositionBasisMatrix;
-  this->mMovementBasis[0] = DDyVector3{m[0][0], m[0][1], m[0][2]};
-  this->mMovementBasis[1] = DDyVector3{m[1][0], m[1][1], m[1][2]};
-  this->mMovementBasis[2] = DDyVector3{m[2][0], m[2][1], m[2][2]};
+  // Update position movement basis of this FDyActor.
+  this->mPresentPositionBasis = DDyQuaternion(this->mFromParentWorldEulerAngle).GetRotationMatrix3x3();
+  const auto& m = this->mPresentPositionBasis;
+
+  // Update display movement basis.
+  this->mDisplayMovementBasis[0] = DDyVector3{m[0][0], m[0][1], m[0][2]};
+  this->mDisplayMovementBasis[1] = DDyVector3{m[1][0], m[1][1], m[1][2]};
+  this->mDisplayMovementBasis[2] = DDyVector3{m[2][0], m[2][1], m[2][2]};
   
   this->mIsMovementBasisDirty       = false;
   this->mIsWorldRelAlignedPosDirty  = true;
@@ -366,12 +450,23 @@ void CDyTransform::MDY_PRIVATE_SPECIFIER(TryUpdateMovementBasis)()
   this->mIsModelMatrixDirty         = true;
 }
 
+void CDyTransform::MDY_PRIVATE_SPECIFIER(TryUpdateLocalRelAlignedPos)()
+{
+  if (this->mIsLocalRelAlignedPosDirty == false)  { return; }
+  if (this->mIsMovementBasisDirty == true)        { this->MDY_PRIVATE_SPECIFIER(TryUpdateMovementBasis)(); }
+
+  this->mLocalRelAlignedPosition    = this->mPresentPositionBasis.MultiplyVector(this->mLocalRelPosition);
+  this->mIsLocalRelAlignedPosDirty  = false;
+  this->mIsFinalPositionDirty       = true;
+  this->mIsModelMatrixDirty         = true;
+}
+
 void CDyTransform::MDY_PRIVATE_SPECIFIER(TryUpdateWorldRelAlignedPos)()
 {
-  if (this->mIsWorldRelAlignedPosDirty == false) { return; }
+  if (this->mIsWorldRelAlignedPosDirty == false)  { return; }
+  if (this->mIsMovementBasisDirty == true)        { this->MDY_PRIVATE_SPECIFIER(TryUpdateMovementBasis)(); }
 
-  this->mWorldRelativeAlignedPosition = this->mFinalPositionBasisMatrix.MultiplyVector(this->mWorldPosition);
-
+  this->mWorldRelAlignedPosition = this->mPresentPositionBasis.MultiplyVector(this->mWorldRelPosition);
   this->mIsWorldRelAlignedPosDirty = false;
   this->mIsWorldSumAlignedPosDirty = true;
   this->mIsFinalPositionDirty      = true;
@@ -380,15 +475,25 @@ void CDyTransform::MDY_PRIVATE_SPECIFIER(TryUpdateWorldRelAlignedPos)()
 
 void CDyTransform::MDY_PRIVATE_SPECIFIER(TryUpdateAlignedWorldSumPosition)()
 {
-  if (this->mIsWorldSumAlignedPosDirty == false) { return; }
+  if (this->mIsWorldSumAlignedPosDirty == false)  { return; }
+  if (this->mIsWorldRelAlignedPosDirty == true)   { this->MDY_PRIVATE_SPECIFIER(TryUpdateWorldRelAlignedPos)(); }
 
   // Update value.
-  this->mWorldSumAlignedPosition = this->mWorldRelativeOriginPosition + this->mWorldRelativeAlignedPosition;
-
-  // Update flag.
+  this->mWorldSumAlignedPosition    = this->mWorldRelativeOriginPosition + this->mWorldRelAlignedPosition;
   this->mIsWorldSumAlignedPosDirty  = false;
   this->mIsFinalPositionDirty       = true;
   this->mIsModelMatrixDirty         = true;
+}
+
+void CDyTransform::MDY_PRIVATE_SPECIFIER(TryUpdateFinalPosition)()
+{
+  if (this->mIsFinalPositionDirty == false)     { return; }
+  if (this->mIsLocalRelAlignedPosDirty == true) { this->MDY_PRIVATE_SPECIFIER(TryUpdateLocalRelAlignedPos)(); }
+  if (this->mIsWorldSumAlignedPosDirty == true) { this->MDY_PRIVATE_SPECIFIER(TryUpdateAlignedWorldSumPosition)(); }
+
+  this->mFinalRenderingPosition = this->mWorldSumAlignedPosition + this->mLocalRelAlignedPosition;
+  this->mIsFinalPositionDirty   = false;
+  this->mIsModelMatrixDirty     = true;
 }
 
 void CDyTransform::MDY_PRIVATE_SPECIFIER(SetRelativeWorldOrigin)(_MIN_ const DDyVector3& iParentPosition)
@@ -416,10 +521,36 @@ void CDyTransform::MDY_PRIVATE_SPECIFIER(TryUpdateWorldSumRotAngle)()
   if (this->mIsWorldSumRotationAngleDirty == false) { return; }
 
   this->mWorldSumEulerAngle = this->mFromParentWorldEulerAngle + this->mWorldEulerAngle;
-
   this->mIsWorldSumRotationAngleDirty = false;
   this->mIsFinalRotationAngleDirty    = true;
+  this->mToChildBasisAxisDirty        = true;
   this->mIsModelMatrixDirty           = true;
+}
+
+void CDyTransform::MDY_PRIVATE_SPECIFIER(TryUpdateFinalWorldRotAngle)() noexcept
+{
+  if (this->mIsFinalRotationAngleDirty == false)   { return; }
+  if (this->mIsWorldSumRotationAngleDirty == true) { this->MDY_PRIVATE_SPECIFIER(TryUpdateWorldSumRotAngle)(); }
+
+  // Set final rendering angles, and... update quaternion to setup new model matrix.
+  this->mFinalRenderingEulerAngle  = this->mWorldSumEulerAngle + this->mLocalEulerAngle;
+  this->mFinalRenderRotationQuaternion.SetRotationAngle(this->mFinalRenderingEulerAngle);
+
+  this->mIsFinalRotationAngleDirty = false;
+  this->mToChildBasisAxisDirty     = true;
+  this->mIsModelMatrixDirty        = true;
+}
+
+void CDyTransform::MDY_PRIVATE_SPECIFIER(TryUpdateToChildBasis)() noexcept
+{
+  if (this->mToChildBasisAxisDirty == false)    { return; }
+  if (this->mIsFinalRotationAngleDirty == true) { this->MDY_PRIVATE_SPECIFIER(TryUpdateFinalWorldRotAngle)(); }
+
+  const auto m = DDyQuaternion{this->mFinalRenderingEulerAngle}.GetRotationMatrix3x3();
+  this->mToChildBasis[0] = DDyVector3{m[0][0], m[0][1], m[0][2]};
+  this->mToChildBasis[1] = DDyVector3{m[1][0], m[1][1], m[1][2]};
+  this->mToChildBasis[2] = DDyVector3{m[2][0], m[2][1], m[2][2]};
+  this->mToChildBasisAxisDirty = false;
 }
 
 void CDyTransform::MDY_PRIVATE_SPECIFIER(SetRotationAngleOrigin)(_MIN_ const DDyVector3& iParentSumRotAngle)
@@ -428,11 +559,12 @@ void CDyTransform::MDY_PRIVATE_SPECIFIER(SetRotationAngleOrigin)(_MIN_ const DDy
 
   this->mIsWorldSumRotationAngleDirty = true;
   this->mIsMovementBasisDirty      = true;
-  this->mIsLocalPositionAlignDirty = true;
+  this->mIsLocalRelAlignedPosDirty = true;
   this->mIsWorldPositionAlignDirty = true;
   this->mIsWorldRelAlignedPosDirty = true;
   this->mIsWorldSumAlignedPosDirty = true;
   this->mIsFinalPositionDirty      = true;
+  this->mToChildBasisAxisDirty     = true;
   this->mIsFinalRotationAngleDirty = true;
   this->mIsModelMatrixDirty        = true;
 
@@ -450,17 +582,27 @@ void CDyTransform::MDY_PRIVATE_SPECIFIER(SetRotationAngleOrigin)(_MIN_ const DDy
 
 void CDyTransform::MDY_PRIVATE_SPECIFIER(TryUpdateWorldPrdScale)()
 {
-  this->mWorldProductScale = this->mFromParentWorldScale * this->mWorldScale;
-
+  if (this->mIsWorldPrdScaleDirty == false) { return; }
+  
+  this->mWorldProductScale    = this->mFromParentWorldScale * this->mWorldScale;
   this->mIsWorldPrdScaleDirty = false;
   this->mIsFinalScaleDirty    = true;
+  this->mIsModelMatrixDirty   = true;
+}
+
+void CDyTransform::MDY_PRIVATE_SPECIFIER(UpdateFinalRenderingScale)() noexcept
+{
+  if (this->mIsFinalScaleDirty == false)   { return; }
+  if (this->mIsWorldPrdScaleDirty == true) { this->MDY_PRIVATE_SPECIFIER(TryUpdateWorldPrdScale)(); }
+
+  this->mFinalRenderingScale  = this->mWorldProductScale * this->mLocalScale;
+  this->mIsFinalScaleDirty    = false;
   this->mIsModelMatrixDirty   = true;
 }
 
 void CDyTransform::MDY_PRIVATE_SPECIFIER(SetWorldScaleOrigin)(_MIN_ const DDyVector3& iParentPrdScale)
 {
   this->mFromParentWorldScale = iParentPrdScale;
-
   this->mIsWorldPrdScaleDirty = true;
   this->mIsFinalScaleDirty    = true;
   this->mIsModelMatrixDirty   = true;
@@ -477,6 +619,7 @@ void CDyTransform::MDY_PRIVATE_SPECIFIER(SetWorldScaleOrigin)(_MIN_ const DDyVec
   }
 }
 
+#ifdef false
 void CDyTransform::pUpdateFinalRenderingEulerAngle() const noexcept
 {
   if (this->mIsFinalRotationAngleDirty == true)
@@ -493,46 +636,6 @@ void CDyTransform::pUpdateFinalRenderingEulerAngle() const noexcept
   }
 }
 
-void CDyTransform::pUpdateToChildWorldEulerAngle() const noexcept
-{
-  if (this->mIsWorldSumRotationAngleDirty == true)
-  { // Update dependent transform information.
-    this->__UpdateFromParentWorldEulerAngle();
-
-    // Update CDyTransform::mWorldSumEulerAngle
-    this->mWorldSumEulerAngle         = this->mFromParentWorldEulerAngle + this->mWorldEulerAngle;
-
-    this->mIsWorldSumRotationAngleDirty    = false;
-    this->mIsFromChildRotationUpdated     = true;
-    this->mIsFinalRotationAngleDirty      = true;
-    this->mToChildBasisAxisDirty          = true;
-    this->mIsModelMatrixDirty             = true;
-  }
-}
-
-void CDyTransform::__UpdateFromParentWorldEulerAngle() const noexcept
-{
-  auto* validActorPtr = const_cast<FDyActor*>(this->GetBindedActor());
-
-  if (validActorPtr->IsHaveParent() == false)
-  { // If binded actor have not a parent.
-    this->mFromParentWorldEulerAngle  = DDyVector3{0, 0, 0};
-  }
-  else
-  { // If binded actor has a parent.
-    CDyTransform* ptrParentTransform = validActorPtr->GetParent()->GetTransform();
-    if (ptrParentTransform->pfIsToChildRotationUpdate() == true)
-    { // Get updated parent::mWorldSumEulerAngle vector.
-      this->mFromParentWorldEulerAngle  = ptrParentTransform->pfGetToChildWorldEulerAngle();
-    }
-  }
-
-  this->mIsMovementBasisDirty           = true;
-  this->mIsFinalPositionDirty       = true;
-  this->mToChildBasisAxisDirty      = true;
-  this->mIsModelMatrixDirty         = true;
-}
-
 //!
 //! Axis lazy evaluation
 //!
@@ -542,13 +645,13 @@ void CDyTransform::pUpdateFinalRenderingAxis() const noexcept
   if (this->mIsMovementBasisDirty == true)
   { //
     const auto quat = DDyQuaternion(this->mFromParentWorldEulerAngle);
-    this->mFinalPositionBasisMatrix = quat.GetRotationMatrix3x3();
+    this->mPresentPositionBasis = quat.GetRotationMatrix3x3();
 
     // Update position movement basis of this FDyActor.
-    const auto& m                   = this->mFinalPositionBasisMatrix;
-    this->mMovementBasis[0] = DDyVector3{m[0][0], m[0][1], m[0][2]};
-    this->mMovementBasis[1] = DDyVector3{m[1][0], m[1][1], m[1][2]};
-    this->mMovementBasis[2] = DDyVector3{m[2][0], m[2][1], m[2][2]};
+    const auto& m                   = this->mPresentPositionBasis;
+    this->mDisplayMovementBasis[0] = DDyVector3{m[0][0], m[0][1], m[0][2]};
+    this->mDisplayMovementBasis[1] = DDyVector3{m[1][0], m[1][1], m[1][2]};
+    this->mDisplayMovementBasis[2] = DDyVector3{m[2][0], m[2][1], m[2][2]};
 
     this->mIsMovementBasisDirty         = false;
     this->mIsFinalPositionDirty     = true;
@@ -580,12 +683,12 @@ void CDyTransform::pUpdateFinalRenderingPosition() const noexcept
 {
   if (this->mIsFinalPositionDirty == true)
   { // Update dependent transform information.
-    if (this->mIsLocalPositionAlignDirty == true) { this->pUpdateAxisAlignedLocalPosition(); }
+    if (this->mIsLocalRelAlignedPosDirty == true) { this->pUpdateAxisAlignedLocalPosition(); }
     if (this->mIsWorldPositionAlignDirty == true) { this->pUpdateAxisAlignedWorldPosition(); }
     if (this->mIsWorldSumAlignedPosDirty == true)    { this->pUpdateToChildPosition(); }
 
     // Update value.
-    this->mFinalRenderingPosition = this->mWorldSumAlignedPosition + this->mFinalBasisAlignedLocalPosition;
+    this->mFinalRenderingPosition = this->mWorldSumAlignedPosition + this->mLocalRelAlignedPosition;
 
     // Update flag.
     this->mIsFinalPositionDirty   = false;
@@ -595,15 +698,15 @@ void CDyTransform::pUpdateFinalRenderingPosition() const noexcept
 
 void CDyTransform::pUpdateAxisAlignedLocalPosition() const noexcept
 {
-  if (this->mIsLocalPositionAlignDirty == true)
+  if (this->mIsLocalRelAlignedPosDirty == true)
   { // Update dependent transform information.
     if (this->mIsMovementBasisDirty == true) { this->pUpdateFinalRenderingAxis(); }
 
     // Update value.
-    this->mFinalBasisAlignedLocalPosition = this->mFinalPositionBasisMatrix.MultiplyVector(this->mLocalPosition);
+    this->mLocalRelAlignedPosition = this->mPresentPositionBasis.MultiplyVector(this->mLocalRelPosition);
 
     // Update flag.
-    this->mIsLocalPositionAlignDirty  = false;
+    this->mIsLocalRelAlignedPosDirty  = false;
     this->mIsFinalPositionDirty       = true;
     this->mIsModelMatrixDirty         = true;
   }
@@ -616,7 +719,7 @@ void CDyTransform::pUpdateAxisAlignedWorldPosition() const noexcept
     if (this->mIsMovementBasisDirty == true) { this->pUpdateFinalRenderingAxis(); }
 
     // Update value.
-    this->mWorldRelativeAlignedPosition = this->mFinalPositionBasisMatrix.MultiplyVector(this->mWorldPosition);
+    this->mWorldRelAlignedPosition = this->mPresentPositionBasis.MultiplyVector(this->mWorldRelPosition);
 
     // Update flag.
     this->mIsWorldPositionAlignDirty  = false;
@@ -624,135 +727,6 @@ void CDyTransform::pUpdateAxisAlignedWorldPosition() const noexcept
     this->mIsModelMatrixDirty         = true;
   }
 }
-
-void CDyTransform::pUpdateToChildPosition() const noexcept
-{
-  if (this->mIsWorldSumAlignedPosDirty == true)
-  { // Update dependent transform information.
-    this->pUpdateFinalRenderingAxis();
-    this->pUpdateAxisAlignedWorldPosition();
-    this->pUpdateFromParentWorldPosition();
-
-    // Update value.
-    this->mWorldSumAlignedPosition       = this->mWorldRelativeOriginPosition + this->mWorldRelativeAlignedPosition;
-
-    // Update flag.
-    this->mIsWorldSumAlignedPosDirty     = false;
-    this->mIsFromChildPositionUpdated = true;
-    this->mIsFinalPositionDirty       = true;
-    this->mIsModelMatrixDirty         = true;
-  }
-}
-
-void CDyTransform::pUpdateFromParentWorldPosition() const noexcept
-{
-  if (auto* validActorPtr = const_cast<FDyActor*>(this->GetBindedActor());
-      validActorPtr->IsHaveParent() == false)
-  { // If binded actor have not a parent.
-    this->mFromParentWorldEulerAngle = DDyVector3{0, 0, 0};
-  }
-  else
-  { // If binded actor has a parent.
-    CDyTransform* ptrParentTransform = validActorPtr->GetParent()->GetTransform();
-    if (ptrParentTransform->pfIsToChildPositionUpdated() == true)
-    { // Get updated parent::mToChildPosition vector.
-      this->mWorldRelativeOriginPosition = ptrParentTransform->pfGetToChildPosition();
-    }
-  }
-
-  this->mIsFinalPositionDirty       = true;
-  this->mIsModelMatrixDirty         = true;
-}
-
-//!
-//! Scale lazy evaluation
-//!
-
-void CDyTransform::pUpdateFinalRenderingScale() const noexcept
-{
-  if (this->mIsFinalScaleDirty == true)
-  { // Update dependent transform information.
-    if (this->mIsWorldPrdScaleDirty == true) { this->pUpdateToChildWorldScale(); }
-
-    this->mFinalRenderingScale  = this->mWorldProductScale * this->mLocalScale;
-    this->mIsFinalScaleDirty    = false;
-    this->mIsModelMatrixDirty   = true;
-  }
-}
-
-void CDyTransform::pUpdateToChildWorldScale() const noexcept
-{
-  if (this->mIsWorldPrdScaleDirty == true)
-  { // Update dependent transform information.
-    this->pUpdateFromParentWorldScale();
-
-    this->mWorldProductScale = this->mWorldScale * this->mFromParentWorldScale;
-
-    this->mIsWorldPrdScaleDirty = false;
-    this->mIsFromChildScaleUpdated  = true;
-    this->mIsFinalScaleDirty        = true;
-    this->mIsModelMatrixDirty       = true;
-  }
-}
-
-void CDyTransform::pUpdateFromParentWorldScale() const noexcept
-{
-  if (auto* validActorPtr = const_cast<FDyActor*>(this->GetBindedActor());
-      validActorPtr->IsHaveParent() == false)
-  { // If binded actor have not a parent.
-    this->mFromParentWorldScale = DDyVector3{1, 1, 1};
-  }
-  else
-  { // If binded actor has a parent.
-    CDyTransform* ptrParentTransform = validActorPtr->GetParent()->GetTransform();
-    if (ptrParentTransform->pfIsToChildScaleUpdate() == true)
-    { // Get updated parent::mToChildPosition vector.
-      this->mFromParentWorldScale = ptrParentTransform->pfGetToChildScale();
-    }
-  }
-
-  this->mIsFinalScaleDirty          = true;
-  this->mIsModelMatrixDirty         = true;
-}
-
-//!
-//! Friend function
-//!
-
-const DDyVector3& CDyTransform::pfGetToChildPosition() const noexcept
-{
-  if (this->mIsFromChildPositionUpdated == true)
-  { // Update dependent information.
-    if (this->mIsWorldSumAlignedPosDirty == true) { this->pUpdateToChildPosition(); }
-    // Update flag
-    this->mIsFromChildPositionUpdated = false;
-  }
-
-  return this->mWorldSumAlignedPosition;
-}
-
-const DDyVector3& CDyTransform::pfGetToChildWorldEulerAngle() const noexcept
-{
-  if (this->mIsFromChildRotationUpdated == true)
-  { // Update dependent information.
-    if (this->mIsWorldSumRotationAngleDirty == true) { this->pUpdateToChildWorldEulerAngle(); }
-    // Update flag
-    this->mIsFromChildRotationUpdated = false;
-  }
-
-  return this->mWorldSumEulerAngle;
-}
-
-const DDyVector3& CDyTransform::pfGetToChildScale() const noexcept
-{
-  if (this->mIsFromChildScaleUpdated == true)
-  { // Update dependent information.
-    if (this->mIsWorldPrdScaleDirty == true) { this->pUpdateToChildWorldScale(); }
-    // Update flag
-    this->mIsFromChildScaleUpdated = false;
-  }
-
-  return this->mWorldProductScale;
-}
+#endif
 
 } /// ::dy namespace

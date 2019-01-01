@@ -94,6 +94,14 @@ void MDySynchronization::pRunFrameLoading()
 
 void MDySynchronization::pRunFrameGameRuntime()
 {
+  // Level Try create actors.
+  if (auto& world = MDyWorld::GetInstance(); world.CheckCreationActorExist() == true)
+  {
+    world.TryCreateActorsOfCreationActorList();
+    world.CleanCreationActorList();
+  }
+
+  // Synchronization 
   using TSyncHelper = SDyIOConnectionHelper;
   if (TSyncHelper::IsMainTaskListIsEmpty() == false)  { TSyncHelper::ForceProcessDeferredMainTaskList(); }
   if (TSyncHelper::CheckIOResultInCondition() == true){ TSyncHelper::ForceProcessIOInsertPhase(); }

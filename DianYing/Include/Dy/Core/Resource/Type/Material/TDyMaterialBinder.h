@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_CORE_RESOURCE_TYPE_TDYSHADERBINDER_H
-#define GUARD_DY_CORE_RESOURCE_TYPE_TDYSHADERBINDER_H
+#ifndef GUARD_DY_CORE_RESOURCE_TYPE_MATERIAL_TDYMATERIALBINDER_H
+#define GUARD_DY_CORE_RESOURCE_TYPE_MATERIAL_TDYMATERIALBINDER_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,10 +13,11 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Resource/Type/TDyResourceBinderBase.h>
-#include <Dy/Core/Resource/Internal/ShaderType.h>
-#include <Dy/Core/Resource/Type/Shader/TemplateUniformType.h>
-#include <Dy/Core/Resource/Type/Shader/ADyUniformContainer.h>
+#include <Dy/Core/Resource/Type/FDyBinderBase.h>
+#include <Dy/Core/Resource/Type/TemplateRescInfoType.h>
+#include <Dy/Core/Thread/SDyIOBindingHelper.h>
+#include <Dy/Core/Resource/Type/Material/ADyUniformHelper.h>
+#include <Dy/Meta/Type/EDyResourceType.h>
 
 namespace dy
 {
@@ -24,13 +25,14 @@ namespace dy
 /// @struct __TDyResourceBinderBase
 /// @brief Binder base class for each supporting resource type.
 template <>
-struct __TDyResourceBinderBase<EDyResourceType::GLShader> : 
-    public __FDyBinderBase, 
-    public MDY_PRIVATE_SPECIFIER(ADyUniformContainer)
+struct __TDyResourceBinderBase<EDyResourceType::Material> : 
+    public __FDyBinderBase,
+    public ADyUniformHelper
 {
 public:
   MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(__TDyResourceBinderBase);
-  using TPtrResource      = const __TResourceType<EDyResourceType::GLShader>::type*;
+  using TPtrResource      = const __TResourceType<EDyResourceType::Material>::type*;
+  using TUnsafePtrResc    = __TResourceType<EDyResourceType::Material>::type*;
   using TTryGetReturnType = std::optional<TPtrResource>;
 
   /// @brief Release binder instance and detach it from specified Reference Instance.
@@ -47,6 +49,24 @@ public:
 
   /// @brief Get resource pointer which is not nullable.
   MDY_NODISCARD TPtrResource Get() const noexcept;
+
+  template <EDyUniformVariableType TType>
+  void TryUpdateUniform(
+      _MIN_ const std::string& iSpecifier, 
+      _MIN_ const typename MDY_PRIVATE_SPECIFIER(UniformBinder)<TType>::ValueType& iValue)
+  {
+    if (this->IsResourceExist() == true) { return; }
+    this->UpdateUniform(*Get(), iSpecifier, iValue);
+  }
+
+  /// @brief Try update uniform variables. \n
+  /// Do nothing when update list is empty or binding flag is not set up
+  /// by calling MDY_PRIVATE_SPECIFIER(TryConstructDefaultUniformList)().
+  MDY_NODISCARD EDySuccess TryUpdateUniformList()
+  {
+    if (this->IsResourceExist() == true) { return DY_FAILURE; }
+    return this->MDY_PRIVATE_SPECIFIER(TryUpdateUniformList)(*this->mPtrResource);
+  }
 
 protected:
   __TDyResourceBinderBase(_MIN_ const std::string& iSpecifierName) : mSpecifierName{iSpecifierName} {};
@@ -66,61 +86,56 @@ protected:
     this->mSpecifierName = iNewSpecifier;
   }
 
-  /// @brief Process funtion after binding.
-  void Process() noexcept override final
-  {
-    MDY_PRIVATE_SPECIFIER(TryConstructDefaultUniformList)(*this->mPtrResource);
-  }
-
 private:
   /// @brief Try update resource pointer of this type with ptr when RI is being valid. \n
   /// `iPtr` must be convertible to specialized __TDyResourceBinderBase `Type`.
   void TryUpdateResourcePtr(_MIN_ const void* iPtr) noexcept override final
   {
-    this->mPtrResource = static_cast<TPtrResource>(iPtr);
+    // @TODO CODE SMELL.
+    this->mPtrResource = static_cast<TUnsafePtrResc>(const_cast<void*>(iPtr));
   }
 
   /// @brief Try detach resource pointer of this type with ptr when RI is being GCed.
   void TryDetachResourcePtr() noexcept override final { this->mPtrResource = nullptr; }
 
-  std::string         mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
-  TPtrResource        mPtrResource    = MDY_INITIALIZE_NULL;
+  std::string     mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
+  TUnsafePtrResc  mPtrResource    = MDY_INITIALIZE_NULL;
 };
 
 inline bool 
-__TDyResourceBinderBase<EDyResourceType::GLShader>::IsResourceExist() const noexcept
+__TDyResourceBinderBase<EDyResourceType::Material>::IsResourceExist() const noexcept
 {
   return MDY_CHECK_ISNOTNULL(this->mPtrResource);
 }
 
-inline __TDyResourceBinderBase<EDyResourceType::GLShader>::TPtrResource 
-__TDyResourceBinderBase<EDyResourceType::GLShader>::Get() const noexcept
+inline __TDyResourceBinderBase<EDyResourceType::Material>::TPtrResource 
+__TDyResourceBinderBase<EDyResourceType::Material>::Get() const noexcept
 {
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mPtrResource), "Resource pointer address must not be null when use it.");
   return this->mPtrResource;
 }
 
 inline EDySuccess 
-__TDyResourceBinderBase<EDyResourceType::GLShader>::pTryRequireResource() noexcept
+__TDyResourceBinderBase<EDyResourceType::Material>::pTryRequireResource() noexcept
 {
   MDY_ASSERT(this->mSpecifierName.empty() == false, "Resource specifier name must be valid to require resource.");
-  auto ptrResult = SDyIOBindingHelper::TryRequireResource<EDyResourceType::GLShader>(this->mSpecifierName, this);
+  auto ptrResult = SDyIOBindingHelper::TryRequireResource<EDyResourceType::Material>(this->mSpecifierName, this);
   if (ptrResult.has_value() == false) { return DY_FAILURE; }
 
-  this->mPtrResource = ptrResult.value();
+  this->mPtrResource = const_cast<FDyMaterialResource*>(ptrResult.value());
   return DY_SUCCESS;
 }
 
 inline EDySuccess 
-__TDyResourceBinderBase<EDyResourceType::GLShader>::pTryDetachResource() noexcept
+__TDyResourceBinderBase<EDyResourceType::Material>::pTryDetachResource() noexcept
 {
   if (MDY_CHECK_ISNULL(this->mPtrResource)) { return DY_FAILURE; }
 
-  MDY_CALL_ASSERT_SUCCESS(SDyIOBindingHelper::TryDetachResource<EDyResourceType::GLShader>(this->mSpecifierName, this));
+  MDY_CALL_ASSERT_SUCCESS(SDyIOBindingHelper::TryDetachResource<EDyResourceType::Material>(this->mSpecifierName, this));
   this->mPtrResource = nullptr;
   return DY_SUCCESS;
 }
 
 } /// ::dy namespace
 
-#endif /// GUARD_DY_CORE_RESOURCE_TYPE_TDYSHADERBINDER_H
+#endif /// GUARD_DY_CORE_RESOURCE_TYPE_MATERIAL_TDYMATERIALBINDER_H

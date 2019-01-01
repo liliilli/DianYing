@@ -160,6 +160,17 @@ void MDySetting::SetVSyncMode(bool enableVsync) noexcept
   }
 }
 
+EDySuccess MDySetting::MDY_PRIVATE_SPECIFIER(CheckObjectTagIsExist)(_MIN_ const std::string& iSpecifiedTag) const noexcept
+{
+  if (iSpecifiedTag.empty() == true) { return DY_SUCCESS; }
+  for (const auto& tagSpecifier : this->mTag.mObjectTag)
+  {
+    if (tagSpecifier == iSpecifiedTag) { return DY_SUCCESS; }
+  }
+
+  return DY_FAILURE;
+}
+
 void MDySetting::pSetupExecutableArgumentSettings()
 {
   ///

@@ -65,9 +65,6 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyLevelConstructMetaInfo
 void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const PDyLevelConstructMetaInfo::DMeta& p);
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyLevelConstructMetaInfo::DMeta& p);
 
-void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const TObjectMetaInfoList& p);
-void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ TObjectMetaInfoList& p);
-
 } /// ::dy namespace
 
 #endif /// GUARD_DY_ELELMENT_DESCRIPTOR_LEVELDESCRIPTOR_H

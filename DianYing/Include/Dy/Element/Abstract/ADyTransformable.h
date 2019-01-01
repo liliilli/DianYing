@@ -179,9 +179,9 @@ private:
   mutable DDyVector3 m_local_axis_arranged_position;
   /// m_object_space_axis * world_position;
   mutable DDyVector3 m_world_axis_arranged_position;
-  /// (x, y, z) parent position to bring child. mFromParentPositionBasis + mWorldRelativeAlignedPosition.
+  /// (x, y, z) parent position to bring child. mFromParentPositionBasis + mWorldRelAlignedPosition.
   mutable DDyVector3 m_summed_world_position;
-  /// (x, y, z) final position in hierarchy. mWorldSumAlignedPosition + mFinalBasisAlignedLocalPosition
+  /// (x, y, z) final position in hierarchy. mWorldSumAlignedPosition + mLocalRelAlignedPosition
   mutable DDyVector3 m_axis_aligned_final_position;
 
   DDyVector3 mLocalEulerAngle;

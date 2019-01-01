@@ -57,7 +57,6 @@
     <ClCompile Include="Source\Element\Actor.cc" />
     <ClCompile Include="Source\Element\Abstract\ADyTransformable.cc" />
     <ClCompile Include="Source\Management\WorldManager.cc" />
-    <ClCompile Include="Source\Element\Abstract\ADyNameCounterMap.cc" />
     <ClCompile Include="Source\Management\Helper\PhysxSimulationCallback.cc" />
     <ClCompile Include="Source\Helper\Type\ThreeStateBool.cc" />
     <ClCompile Include="Source\Element\Abstract\ADyBaseComponent.cc" />
@@ -244,6 +243,11 @@
     <ClCompile Include="Source\Core\Rendering\Widget\CDyFontRenderer.cc" />
     <ClCompile Include="Source\Core\Rendering\Widget\CDyImageRenderer.cc" />
     <ClCompile Include="Source\Core\Resource\Type\Shader\ADyUniformContainer.cc" />
+    <ClCompile Include="Source\Core\Resource\Type\Material\ADyUniformHelper.cc" />
+    <ClCompile Include="Source\Core\Resource\Type\Material\TDyMaterialBinder.cc" />
+    <ClCompile Include="Source\Helper\Library\HelperRegex.cc" />
+    <ClCompile Include="Source\Helper\Internal\FDyNameGenerator.cc" />
+    <ClCompile Include="Source\Element\Type\DDyActorBinder.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -326,7 +330,6 @@
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderDeferredRendering.h" />
     <ClInclude Include="Include\Dy\Element\Actor.h" />
     <ClInclude Include="Include\Dy\Management\WorldManager.h" />
-    <ClInclude Include="Include\Dy\Element\Abstract\ADyNameCounterMap.h" />
     <ClInclude Include="Libraries\lua\include\lua.hpp" />
     <ClInclude Include="Libraries\lua\include\lua.h" />
     <ClInclude Include="Libraries\lua\include\lapi.h" />
@@ -359,7 +362,6 @@
     <ClInclude Include="Include\Dy\Element\Abstract\ADyGeneralBaseComponent.h" />
     <ClInclude Include="Include\Dy\Component\CDyTransform.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\TmpCheckTypeParams.h" />
-    <ClInclude Include="Include\Dy\Component\Helper\TmpCheckInitilizeParams.h" />
     <ClInclude Include="Include\Dy\Component\Helper\TmpCheckRemoveParams.h" />
     <ClInclude Include="Include\Dy\Component\CDyModelFilter.h" />
     <ClInclude Include="Include\Dy\Component\CDyModelRenderer.h" />
@@ -628,6 +630,14 @@
     <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\TDyShaderBinder.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\DDyUniformValue.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\ADyUniformContainer.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\Material\TDyMaterialBinder.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\Material\ADyUniformHelper.h" />
+    <ClInclude Include="Include\Dy\Helper\Library\HelperRegex.h" />
+    <ClInclude Include="Include\Dy\Helper\Internal\FDyNameGenerator.h" />
+    <ClInclude Include="Include\Dy\Element\Type\DDyTransform.h" />
+    <ClInclude Include="Include\Dy\Element\Type\DDyActorBinder.h" />
+    <ClInclude Include="Include\Dy\Element\Type\PDyActorCreationDescriptor.h" />
+    <ClInclude Include="Include\Dy\Element\Abstract\Actor\ADyActorBinderContainer.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />
@@ -639,6 +649,5 @@
     <None Include="TestResource\TestScript1.lua" />
     <None Include="TestResource\TestScript2.lua" />
     <None Include="cpp.hint" />
-    <None Include="Project\Meta\_Backup\ScriptMeta.dydatBack" />
   </ItemGroup>
 </Project>

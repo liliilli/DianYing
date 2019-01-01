@@ -175,11 +175,15 @@ public:
   ///
   void SetVSyncMode(_MIN_ bool enableVsync) noexcept;
 
+  /// @TODO TEMPORAL FUNCTION
+  MDY_NODISCARD const DDySettingTag& tempGetTagList() const noexcept { return this->mTag; }
+
+  /// @brief Check Specified tag is in object tag list.
+  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(CheckObjectTagIsExist)(_MIN_ const std::string& iSpecifiedTag) const noexcept;
+
 private:
-  ///
   /// @brief Setup executable argument settings.
   /// This function must be called before initialization.
-  ///
   void pSetupExecutableArgumentSettings();
 
   EDyRenderingApi mRenderingType      = EDyRenderingApi::NoneError;

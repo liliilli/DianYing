@@ -23,7 +23,6 @@
 #include <Dy/Helper/Pointer.h>
 #include <Dy/Helper/ContainerHelper.h>
 #include <Dy/Helper/Library/HelperJson.h>
-#include <Dy/Element/Helper/DescriptorComponentHeaderString.h>
 #include <Dy/Management/SettingManager.h>
 
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
@@ -35,6 +34,8 @@
 #include <Dy/Helper/HelperString.h>
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 #include <Dy/Core/DyEngine.h>
+#include <regex>
+#include "Dy/Helper/Library/HelperRegex.h"
 
 //!
 //! Local tranlation unit variables
@@ -188,6 +189,36 @@ std::unique_ptr<dy::PDyMetaWidgetRootDescriptor> DyCreateWidgetMetaInformation(_
   }
 
   return rootInstance;
+}
+
+void MoveMetaPrefabIntoParentRecursively(
+    _MINOUT_ dy::TPrefabMetaInfoList& p, 
+    _MIN_ const std::vector<std::string>& parentSpecifierList,
+    _MIN_ const TU32 level,
+    _MINOUT_ dy::TPrefabMetaInfoList::value_type& object)
+{
+  for (auto& parentObject : p)
+  { 
+    MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(object), "Unexpected error occurred");
+    if (parentObject == object)           { continue; }
+    if (MDY_CHECK_ISEMPTY(parentObject))  { continue; }
+
+    if (parentObject->mSpecifierName == parentSpecifierList[level])
+    { // 
+      if (parentSpecifierList.size() == level + 1)
+      { // Move it and return.
+        parentObject->mChildrenList.emplace_back(std::move(object));
+        return;
+      }
+      else
+      { // Call function recursively.
+        return MoveMetaPrefabIntoParentRecursively(p, parentSpecifierList, level + 1, object);
+      }
+    }
+  }
+
+  MDY_UNEXPECTED_BRANCH();
+  return;
 }
 
 } /// ::unnamed namespace
@@ -381,11 +412,7 @@ EDySuccess MDyMetaInfo::pReadScriptResourceMetaInformation(_MIN_ const std::stri
 
 EDySuccess MDyMetaInfo::pReadPrefabResourceMetaInformation(const std::string& metaFilePath)
 {
-  ///
   /// @brief  Check prefab meta information list.
-  /// @param  atlas Valid json atlas instance.
-  /// @return If succeeded, return DY_SUCCESS an
-  ///
   static auto CheckPrefabMetaCategory = [](_MIN_ const nlohmann::json& atlas) -> EDySuccess
   {
     if (DyCheckHeaderIsExist(atlas, sCategoryMeta) == DY_FAILURE)       { return DY_FAILURE; }
@@ -399,52 +426,39 @@ EDySuccess MDyMetaInfo::pReadPrefabResourceMetaInformation(const std::string& me
 
   // Validity Test
   const std::optional<nlohmann::json> opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
-  MDY_ASSERT(opJsonAtlas.has_value() == true, "Failed to read prefab resource mta information.");
+  MDY_ASSERT(opJsonAtlas.has_value() == true, "Failed to read prefab resource meta information.");
 
-  // Check specified category are exist.
-  const nlohmann::json& jsonAtlas = opJsonAtlas.value();
+  const auto& jsonAtlas = opJsonAtlas.value();
   MDY_CALL_ASSERT_SUCCESS(CheckPrefabMetaCategory(jsonAtlas));
 
   // Make prefab meta information instance sequencially.
   const auto& prefabAtlas = jsonAtlas.at(MSVSTR(sCategoryObjectList));
-  THashMap<PDyPrefabInstanceMetaInfo::TChildNameList> childrenNameMetaList = {};
-
+  TPrefabMetaInfoList prefabObjectList = {};
   for (const auto& prefabInfo : prefabAtlas)
   {
-    auto metaInfoPtr  = PDyPrefabInstanceMetaInfo::CreateMetaInformation(prefabInfo);
-    auto [it, result] = this->mPrefabMetaInfo.try_emplace(metaInfoPtr->mSpecifierName, std::move(metaInfoPtr));
-    MDY_ASSERT(result == true, "Unexpected error occurred.");
+    prefabObjectList.emplace_back(PDyPrefabInstanceMetaInfo::CreateMetaInformation(prefabInfo));
   }
 
-  // Reconstruct list that parent have children recursively. O(N^2)
-  for (auto& [string, metaInfoPtr] : this->mPrefabMetaInfo)
+  // (2) Make object list tree.
+  for (auto& object : prefabObjectList)
   {
-    using TChildNameList      = PDyPrefabInstanceMetaInfo::TChildNameList;
-    using TChildMetaInfoList  = PDyPrefabInstanceMetaInfo::TChildMetaInfoList;
-    // (1) Validity Test
-    if (MDY_CHECK_ISEMPTY(metaInfoPtr))                                   { continue; }
-    if (childrenNameMetaList.find(string) == childrenNameMetaList.end())  { continue; };
-
-    const TChildNameList& childrenNameList = childrenNameMetaList[string];
-    if (childrenNameList.empty()) { continue; }
-
-    // Get children meta information from childrenNameList.
-    for (const auto& childName : childrenNameList)
-    {
-      auto childIt = this->mPrefabMetaInfo.find(childName);
-      if (childIt == this->mPrefabMetaInfo.end()) { MDY_UNEXPECTED_BRANCH(); }
-
-      metaInfoPtr->mChildrenList.emplace_back(std::move(childIt->second));
+    if (MDY_CHECK_ISEMPTY(object)) { continue; }
+    if (object->mPrefabType == EDyMetaObjectType::Actor
+    &&  object->mCommonProperties.mParentSpecifierName.empty() == false)
+    { // If object type is Actor, and have parents specifier name as dec
+      // Try move object into any parent's children list.
+      const auto list = DyRegexCreateObjectParentSpecifierList(object->mCommonProperties.mParentSpecifierName);
+      MoveMetaPrefabIntoParentRecursively(prefabObjectList, list, 0, object);
     }
   }
 
-  // Erase vacant.
-  for (auto it = this->mPrefabMetaInfo.begin(); it != this->mPrefabMetaInfo.end();)
+  // (3) Realign object meta list.
+  for (auto& ptrsmtPrefabObject : prefabObjectList)
   {
-    if (MDY_CHECK_ISEMPTY(it->second))  { it = this->mPrefabMetaInfo.erase(it); }
-    else                                { ++it; }
+    if (MDY_CHECK_ISEMPTY(ptrsmtPrefabObject)) { continue; }
+    const auto name = ptrsmtPrefabObject->mSpecifierName;
+    this->mPrefabMetaInfo.try_emplace(name, std::move(ptrsmtPrefabObject));
   }
-
   return DY_SUCCESS;
 }
 

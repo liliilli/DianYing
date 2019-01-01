@@ -13,9 +13,11 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Element/Interface/IDyUpdatable.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Management/Internal/World/FDyWorldUIContainer.h>
+#include <Dy/Element/Type/DDyActorBinder.h>
+#include <Dy/Element/Type/PDyActorCreationDescriptor.h>
+#include <Dy/Element/Interface/IDyUpdatable.h>
 #include <Dy/Element/Level.h>
 
 //!
@@ -24,7 +26,9 @@
 
 namespace dy
 {
+class CDyModelRenderer;
 class CDyLegacyCamera;
+class CDyCamera;
 } /// ::dy namespace
 
 //!
@@ -43,52 +47,52 @@ class MDyWorld final : public IDySingleton<MDyWorld>, public IDyUpdatable
   MDY_SINGLETON_DERIVED(MDyWorld);
   MDY_SINGLETON_PROPERTIES(MDyWorld);
 public:
-  ///
   /// @brief Update scene structures prior to dive in scene objects tree hierarchy.
   /// Level transition will be executed maybe.
   /// @param dt
-  ///
   void Update(_MIN_ float dt) override final;
 
-  ///
   /// @brief Update valid objects. this function must be called after this->Update().
   /// @param dt Delta time
-  ///
   void UpdateObjects(_MIN_ float dt);
 
-  ///
   /// @brief
   /// @param
-  ///
   void RequestDrawCall(_MIN_ float dt);
 
-  ///
-  /// @deprecated This function is deprecated since v0.0.1. Use
-  /// @brief  Return main camera ptr.
-  /// @return
-  ///
-  MDY_DEPRECATED("v0.0.1", GetMainCameraPtr, pfEnrollActiveCamera)
-  MDY_NODISCARD CDyLegacyCamera* GetMainCameraPtr() const noexcept;
+  /// @brief Get all actors with tag. Tag must be valid. \n
+  /// If iTagSpecifier is empty, this function get all actors which is not specified any tag.
+  MDY_NODISCARD std::vector<NotNull<FDyActor*>>
+  GetAllActorsWithTag(_MIN_ const std::string& iTagSpecifier) const noexcept;
 
-  ///
-  /// @deprecated This function is deprecated since v0.0.1. Use
-  /// @brief  Check if main camera is binded so be able to focused by scene.
-  /// @return
-  ///
-  MDY_DEPRECATED("v0.0.1", IsMainCameraFocused, None)
-  MDY_NODISCARD FORCEINLINE bool IsMainCameraFocused() const noexcept
-  {
-    return MDY_CHECK_ISNOTNULL(this->mValidMainCameraPtr);
-  }
+  /// @brief Get all actors with tag. Tag must be valid. \n
+  /// If iTagSpecifier is empty, this function get all actors which is not specified any tag. \n
+  /// and this function search all actor of object tree from root to leaf, so might take some time.
+  MDY_NODISCARD std::vector<NotNull<FDyActor*>>
+  GetAllActorsWithTagRecursive(_MIN_ const std::string& iTagSpecifier) const noexcept;
 
-  ///
+  /// @brief Get all actors with matched name within only one depth of level object tree. \n
+  /// If iNameSpecifier is empty, just return empty list.
+  MDY_NODISCARD std::vector<NotNull<FDyActor*>>
+  GetAllActorsWithName(_MIN_ const std::string& iNameSpecifier) const noexcept; 
+
+  /// @brief Get all actors with matched name within overall level object tree. \n
+  /// If iNameSpecifier is empty, just return empty list.
+  MDY_NODISCARD std::vector<NotNull<FDyActor*>>
+  GetAllActorsWithNameRecursive(_MIN_ const std::string& iNameSpecifier) const noexcept; 
+
+  /// @brief Create actor.
+  DDyActorBinder CreateActor(
+      _MIN_ const std::string& iActorName, 
+      _MIN_ const std::string& iPrefabName, 
+      _MIN_ const DDyTransform& iSpawnTransform,
+      _MIN_ FDyActor* iPtrParent = MDY_INITIALIZE_NULL,
+      _MIN_ const std::string& iObjectTag = MDY_INITIALIZE_EMPTYSTR,
+      _MIN_ bool iDoSweep = false);
+
   /// @brief
   /// @return
-  ///
-  MDY_NODISCARD FORCEINLINE TI32 GetFocusedCameraCount() const noexcept
-  {
-    return static_cast<TI32>(this->mActivatedOnRenderingCameras.size());
-  }
+  MDY_NODISCARD TI32 GetFocusedCameraCount() const noexcept;
 
   /// @brief
   /// @param  index
@@ -106,8 +110,7 @@ public:
   /// @brief Try Remove level. If level is not exist, just return DY_FAILURE.
   EDySuccess MDY_PRIVATE_SPECIFIER(RemoveLevel)();
 
-  /// @brief Populate next level resource. If next level specifier is not exist,
-  /// Do nothing and return DY_FAILURE.
+  /// @brief Populate next level resource. If next level specifier is not exist, do nothing and return DY_FAILURE.
   EDySuccess MDY_PRIVATE_SPECIFIER(PopulateNextLevelResources)();
 
   /// @brief 
@@ -146,6 +149,12 @@ public:
   /// @brief Try draw loading ui if exist.
   void MDY_PRIVATE_SPECIFIER(TryRenderLoadingUi)();
 
+  /// @brief
+  MDY_NODISCARD bool CheckCreationActorExist() const noexcept;
+  /// @brief
+  void TryCreateActorsOfCreationActorList() noexcept;
+  /// @brief
+  void CleanCreationActorList() noexcept;
   /// @brief Try remove actor gc list anyway. \n
   /// If there is something to do actors in GC list, call something to do prior to this.
   void MDY_PRIVATE_SPECIFIER(TryRemoveActorGCList)() noexcept;
@@ -199,14 +208,6 @@ private:
   /// @brief This function must be called in MDyWorld::Update() function.
   /// Wipe out deactivated components from activated component lists.
   void pGcAcitvatedComponents();
-
-  /// Bind valid camera to main camera and let object have focused.
-  MDY_DEPRECATED("v0.0.1", pfBindFocusCamera, pfEnrollActiveCamera)
-  void pfBindFocusCamera(_MIN_ CDyLegacyCamera& validCameraPtr) noexcept;
-
-  /// Unbind main camera. this function must not be called manually, but using camera's mechanism.
-  MDY_DEPRECATED("v0.0.1", pfUnbindCameraFocus, pfUnenrollActiveCamera)
-  void pfUnbindCameraFocus();
 
   ///
   /// @brief  Move FDyActor instance to gc.
@@ -277,6 +278,10 @@ private:
   /// Erasion (activated) model renderer list. this list must be sorted descendently not to invalidate order.
   std::vector<TI32>         mErasionCamerasCandidateList  = {};
 
+  /// @brief Action creation descriptor list for present level. \n
+  /// This list must be processed and cleaned each frame prior to update of logic.
+  std::vector<std::unique_ptr<PDyActorCreationDescriptor>> 
+  mActorCreationDescList = {};
   /// Garbage collection actor instance list.
   std::vector<std::unique_ptr<FDyActor>> mActorGc = {};
 

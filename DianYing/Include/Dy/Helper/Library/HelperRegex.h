@@ -1,4 +1,5 @@
-#include <precompiled.h>
+#ifndef GUARD_DY_HELPER_SYSTEM_REGEX_H
+#define GUARD_DY_HELPER_SYSTEM_REGEX_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -12,28 +13,14 @@
 /// SOFTWARE.
 ///
 
-/// Header file
-#include <Dy/Element/Abstract/ADyNameCounterMap.h>
-
 namespace dy
 {
 
-ADyNameCounterMap::~ADyNameCounterMap() = default;
-
-std::string ADyNameCounterMap::CreateObjectName(const std::string& name) noexcept
-{
-  if (const auto it = mNameCounterMap.find(name); it != mNameCounterMap.end())
-  {
-    auto& count = mNameCounterMap[name];
-    count += 1;
-
-    return fmt::format("{0}_{1}", name, count);
-  }
-  else
-  {
-    mNameCounterMap[name] = 0;
-    return name;
-  }
-}
+/// @brief Generate and get parent specifier list. \n
+///
+MDY_NODISCARD std::vector<std::string> 
+DyRegexCreateObjectParentSpecifierList(_MIN_ std::string iParentNameFullList); 
 
 } /// ::dy namespace
+
+#endif /// GUARD_DY_HELPER_SYSTEM_REGEX_H

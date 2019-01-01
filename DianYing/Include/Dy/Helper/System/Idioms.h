@@ -29,6 +29,15 @@ void DyFastErase(_MINOUT_ std::vector<TType, TAllocator>& iVector, _MIN_ TU32 iI
   iVector.pop_back();
 }
 
+/// @brief Vector fast erase.
+template <typename TType, typename TAllocator>
+void DyEraseRemove(
+    _MINOUT_ std::vector<TType, TAllocator>& p, 
+    _MIN_ const typename std::vector<TType, TAllocator>::value_type& iValue)
+{
+  p.erase( std::remove( p.begin(), p.end(), iValue ), p.end() );
+}
+
 ///
 /// @brief 
 /// @param 

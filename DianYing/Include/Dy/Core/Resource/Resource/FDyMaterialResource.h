@@ -59,6 +59,11 @@ public:
     return this->mBinderShader.Get();
   }
 
+  /// @brief
+  MDY_NODISCARD auto& GetShaderResourceBinder() noexcept { return this->mBinderShader;
+  }
+
+
   /// @brief Return binded texture resource pointers list.
   MDY_NODISCARD const auto& GetBindedTextureResourcePtrList() const noexcept
   {

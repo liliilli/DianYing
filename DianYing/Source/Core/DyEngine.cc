@@ -98,10 +98,7 @@ void DyEngine::operator()()
       { // If game must be stopped, return but change status to Shutdown (GameRuntime => Shutdown);
         this->SetNextGameStatus(EDyGlobalGameStatus::Shutdown);
       }
-      else
-      {
-        this->MDY_PRIVATE_SPECIFIER(Render)(this->mStatus);
-      }
+      else { this->MDY_PRIVATE_SPECIFIER(Render)(this->mStatus); }
     } break;
     case EDyGlobalGameStatus::Shutdown: 
     { // Just wait I/O Worker thread is slept.
@@ -242,6 +239,7 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(Update)(_MIN_ EDyGlobalGameStatus iEngineSt
   } break;
   case EDyGlobalGameStatus::GameRuntime: 
   {
+    MDyScript::GetInstance().UpdateActorScript(0.0f, EDyScriptState::CalledNothing);
     MDyScript::GetInstance().TryMoveInsertActorScriptToMainContainer();
     MDyScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
 

@@ -18,7 +18,6 @@
 #include <Dy/Helper/Type/ColorRGBA.h>
 #include <Dy/Element/Object.h>
 #include <Dy/Element/Actor.h>
-#include <Dy/Element/Abstract/ADyNameCounterMap.h>
 #include <Dy/Element/Interface/IDyUpdatable.h>
 
 namespace dy {
@@ -27,7 +26,7 @@ namespace dy {
 /// @class FDyLevel
 /// @brief Level class type for managing run-time interactive world space.
 ///
-class FDyLevel final : public FDyObject, public IDyUpdatable, public ADyNameCounterMap
+class FDyLevel final : public FDyObject, public IDyUpdatable, public FDyNameGenerator
 {
   using TNameCounterMap   = std::unordered_map<std::string, int32_t>;
 
@@ -55,6 +54,34 @@ public:
   /// @brief Align position of actors.
   void MDY_PRIVATE_SPECIFIER(AlignActorsPosition)() noexcept;
 
+  /// @brief  Get valid level reference.
+  /// @return Valid level reference. when level is not specified, unexpected behaviour.
+  MDY_NODISCARD std::vector<NotNull<FDyActor*>> 
+  GetAllActorsWithTag(_MIN_ const std::string& iTagSpecifier) const noexcept;
+
+  /// @brief Get all actors with tag. Tag must be valid. \n
+  /// If iTagSpecifier is empty, this function get all actors which is not specified any tag. \n
+  /// and this function search all actor of object tree from root to leaf, so might take some time.
+  MDY_NODISCARD std::vector<NotNull<FDyActor*>>
+  GetAllActorsWithTagRecursive(_MIN_ const std::string& iTagSpecifier) const noexcept;
+ 
+  /// @brief Get all actors with matched name within only one depth of level object tree. \n
+  /// If iNameSpecifier is empty, just return empty list.
+  MDY_NODISCARD std::vector<NotNull<FDyActor*>>
+  GetAllActorsWithName(_MIN_ const std::string& iNameSpecifier) const noexcept; 
+
+  /// @brief Get all actors with matched name within overall level object tree. \n
+  /// If iNameSpecifier is empty, just return empty list.
+  MDY_NODISCARD std::vector<NotNull<FDyActor*>>
+  GetAllActorsWithNameRecursive(_MIN_ const std::string& iNameSpecifier) const noexcept; 
+
+  /// @brief Try get actor with given full name, from root to actor.
+  /// If iFullName did not satisfy full name format, just return nullptr.
+  MDY_NODISCARD FDyActor* GetActorWithFullName(_MIN_ const std::string& iFullName) const noexcept;
+
+  /// @brief Create actor instantly in this level.
+  void CreateActorInstantly(_MIN_ const PDyActorCreationDescriptor& descriptor);
+  
 private:
   /// Level's name. not modifiable
   std::string         mLevelName            = MDY_INITIALIZE_EMPTYSTR;

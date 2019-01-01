@@ -14,14 +14,14 @@
 ///
 
 #include <Dy/Core/Resource/Internal/MaterialType.h>
-#include <Dy/Component/Helper/TmpCheckInitilizeParams.h>
 #include <Dy/Component/Helper/TmpCheckRemoveParams.h>
 #include <Dy/Element/Object.h>
 #include <Dy/Element/Abstract/ADyBaseComponent.h>
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
-#include <Dy/Element/Abstract/ADyTransformable.h>
+#include <Dy/Element/Abstract/Actor/ADyActorBinderContainer.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Component/Actor/CDyActorScript.h>
+#include <Dy/Helper/Internal/FDyNameGenerator.h>
 
 namespace dy
 {
@@ -30,7 +30,7 @@ namespace dy
 /// @class FDyActor
 /// @brief FFF
 ///
-class FDyActor : public FDyObject
+class FDyActor : public FDyObject, public FDyNameGenerator, public ADyActorBinderContainer<FDyActor>
 {
   using TComponentList = std::vector<std::unique_ptr<ADyGeneralBaseComponent>>;
   using TScriptList    = std::vector<std::unique_ptr<CDyActorScript>>;
@@ -43,37 +43,29 @@ public:
 
   /// @brief Initialize FDyActor.
   /// @param objectMetaDesc Meta descriptor information instance for FDyActor.
-  FDyActor(_MIN_ const PDyObjectMetaInfo& objectMetaDesc);
+  FDyActor(_MIN_ const PDyObjectMetaInfo& objectMetaDesc, _MIN_ FDyActor* iPtrParent = nullptr);
+  explicit FDyActor(_MIN_ const PDyActorCreationDescriptor& iDesc, _MIN_ FDyActor* iPtrParent = nullptr);
 
   /// @brief Release function (virtual) because Initialize function has different parameter but release does not need any parameter.
   /// @return Success flag.
   virtual ~FDyActor();
 
-  ///
   /// @brief Activate FDyActor instance.
-  ///
   void Activate() noexcept;
 
-  ///
   /// @brief Deactivate FDyActor instance.
-  ///
   void Deactivate() noexcept;
 
-  ///
   /// @brief  Check FDyActor is activated or not.
   /// @return Check flag for activation checking.
-  ///
-  MDY_NODISCARD FORCEINLINE bool IsActivated() const noexcept
-  {
-    return this->mActivationFlag.GetOutput();
-  }
+  MDY_NODISCARD bool IsActivated() const noexcept;
 
   /// @brief Get present actor name on runtime.
   /// @return Actor name of this instance.
-  MDY_NODISCARD const std::string& GetActorName() const noexcept
-  {
-    return this->pGetObjectName();
-  }
+  MDY_NODISCARD const std::string& GetActorName() const noexcept;
+
+  /// @brief Get full specifier name from this to root like a `This_Name.Head~1.Head~2`
+  MDY_NODISCARD std::string MDY_PRIVATE_SPECIFIER(GetFullSpecifierName)() const noexcept; 
 
   /// @brief Set FDyActor's parent to valid input actor.
   void SetParent(_MIN_ FDyActor& refParentActor) noexcept;
@@ -128,6 +120,30 @@ public:
     return this->mActorType;
   }
 
+  /// @brief Get actor's tag name.
+  MDY_NODISCARD const std::string& GetActorTag() const noexcept;
+
+  /// @brief  Get valid level reference.
+  /// @return Valid level reference. when level is not specified, unexpected behaviour.
+  MDY_NODISCARD std::vector<NotNull<FDyActor*>> 
+  GetAllActorsWithTag(_MIN_ const std::string& iTagSpecifier) const noexcept;
+
+  /// @brief Get all actors with tag. Tag must be valid. \n
+  /// If iTagSpecifier is empty, this function get all actors which is not specified any tag. \n
+  /// and this function search all actor of object tree from root to leaf, so might take some time.
+  MDY_NODISCARD std::vector<NotNull<FDyActor*>>
+  GetAllActorsWithTagRecursive(_MIN_ const std::string& iTagSpecifier) const noexcept;
+ 
+  /// @brief Get all actors with matched name within only one depth of level object tree. \n
+  /// If iNameSpecifier is empty, just return empty list.
+  MDY_NODISCARD std::vector<NotNull<FDyActor*>>
+  GetAllActorsWithName(_MIN_ const std::string& iNameSpecifier) const noexcept; 
+
+  /// @brief Get all actors with matched name within overall level object tree. \n
+  /// If iNameSpecifier is empty, just return empty list.
+  MDY_NODISCARD std::vector<NotNull<FDyActor*>>
+  GetAllActorsWithNameRecursive(_MIN_ const std::string& iNameSpecifier) const noexcept; 
+  
   ///
   /// @brief  Add component and bind to this object instance.
   /// @tparam TComponent  Component type class argument.
@@ -135,19 +151,18 @@ public:
   /// @return Valid component instance pointer.
   ///
   template<class TComponent, typename... TArgs>
-  MDY_NODISCARD NotNull<TComponent*> AddComponent(_MIN_ TArgs&&... args)
+  NotNull<TComponent*> AddComponent(_MIN_ TArgs&&... args)
   {
     // Validation test
     MDY_TEST_IS_BASE_OF(ADyBaseComponent, TComponent);
-    DyCheckComponentInitializeFunctionParams<TComponent, TArgs...>();
+    //DyCheckComponentInitializeFunctionParams<TComponent, TArgs...>();
 
-    if constexpr (std::is_same_v<CDyActorScript, TComponent>)
+    if constexpr (std::is_same_v<CDyActorScript, TComponent> == true)
     {
       // Add and initialize component itself.
       // If component which just added is CDyScript, Call Initiate script first.
-      auto& reference = this->mScriptList.emplace_back(
-          MDY_PRIVATE_SPECIFIER(MakeScriptComponent)(std::forward<TArgs...>(args)...)
-      );
+      auto ptr = MDY_PRIVATE_SPECIFIER(MakeScriptComponent)(std::forward<TArgs...>(args)...);
+      auto& reference = this->mScriptList.emplace_back(std::move(ptr));
       return DyMakeNotNull(reference.get());
     }
     else
@@ -156,11 +171,10 @@ public:
       auto componentPtr = std::make_unique<TComponent>(std::ref(*this));
       MDY_CALL_ASSERT_SUCCESS(componentPtr->Initialize(std::forward<TArgs>(args)...));
 
-      if constexpr (std::is_same_v<CDyTransform, TComponent>)
+      if constexpr (std::is_same_v<CDyTransform, TComponent> == true)
       { // If component is not CDyScript but related to ADyBaseTransform (Transform components)
         MDY_ASSERT(MDY_CHECK_ISEMPTY(this->mTransform), "FDyActor::mTransform must be empty when insert transform component.");
-
-        this->mTransform.reset(componentPtr.release());
+        this->mTransform = std::move(componentPtr);
         return DyMakeNotNull(this->mTransform.get());
       }
       else
@@ -189,7 +203,7 @@ public:
     // from last derived component class to highest base component class.
     for (auto& component : this->mComponentList)
     {
-      if (component->IsTypeMatched(TGeneralComponent::__mHashVal))
+      if (component->IsTypeMatched(TGeneralComponent::__mHashVal) == true)
       {
         return static_cast<TGeneralComponent*>(component.get());
       }
@@ -205,7 +219,7 @@ public:
   /// @return If found, return TGeneralComponent* list but not found, return empty list.
   ///
   template <class TGeneralComponent>
-  MDY_NODISCARD std::vector<NotNull<TGeneralComponent*>> GetGeneralComponents()
+  MDY_NODISCARD std::vector<NotNull<TGeneralComponent*>> GetGeneralComponentList()
   {
     MDY_TEST_IS_BASE_OF(ADyGeneralBaseComponent, TGeneralComponent);
 
@@ -215,7 +229,7 @@ public:
 
     for (auto& component : this->mComponentList)
     {
-      if (component->IsTypeMatched(TGeneralComponent::__mHashVal))
+      if (component->IsTypeMatched(TGeneralComponent::__mHashVal) == true)
       {
         resultList.emplace_back(static_cast<TGeneralComponent*>(component.get()));
       }
@@ -336,22 +350,27 @@ protected:
   MDY_TRANSIENT EDyMetaObjectType   mActorType = EDyMetaObjectType::NoneError;
 
 private:
+  /// @brief
+  void MDY_PRIVATE_SPECIFIER(CreateComponentList)(_MIN_ const TComponentMetaList& iMetaComponentList);
+
   ///
   /// @brief
   ///
   void pPropagateActivationFlag() noexcept;
 
-  DDy3StateBool                 mActivationFlag = {};
+  DDy3StateBool                 mActivationFlag    = {};
   /// Parent FDyActor raw-pointer data.
-  FDyActor*                     mPtrParentActor = MDY_INITIALIZE_NULL;
+  FDyActor*                     mPtrParentActor    = MDY_INITIALIZE_NULL;
   /// Transform component.
-  std::unique_ptr<CDyTransform> mTransform            = MDY_INITIALIZE_NULL;
+  std::unique_ptr<CDyTransform> mTransform         = MDY_INITIALIZE_NULL;
   /// Component list (randomly) which attached to FDyActor instance (this!)
-  TComponentList                mComponentList        = {};
+  TComponentList                mComponentList     = {};
   /// Script list (specialized!)
-  TScriptList                   mScriptList           = {};
+  TScriptList                   mScriptList        = {};
   /// Actor list (hierarchial version)
-  TActorMap                     mChildActorMap        = {};
+  TActorMap                     mChildActorMap     = {};
+  /// @brief Tag specifier 
+  std::string                   mActorTagSpecifier = MDY_INITIALIZE_EMPTYSTR;
 };
 
 } /// ::dy namespace
