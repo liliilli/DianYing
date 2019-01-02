@@ -33,6 +33,9 @@ public:
   void Update(_MIN_ TF32 dt) override final;
 
   void Test();
+
+private:
+  TF32 f = 0.0f;
 };
 
 } /// ::dy namespace

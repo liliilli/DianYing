@@ -201,6 +201,11 @@ DDyActorBinder MDyWorld::CreateActor(
   return resultBinder;
 }
 
+void MDyWorld::DestroyActor(_MIN_ FDyActor& iRefActor)
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+}
+
 TI32 MDyWorld::GetFocusedCameraCount() const noexcept
 {
   return static_cast<TI32>(this->mActivatedOnRenderingCameras.size());

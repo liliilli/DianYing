@@ -53,12 +53,15 @@ public:
   /// @brief Activate FDyActor instance.
   void Activate() noexcept;
 
-  /// @brief Deactivate FDyActor instance.
-  void Deactivate() noexcept;
-
   /// @brief  Check FDyActor is activated or not.
   /// @return Check flag for activation checking.
   MDY_NODISCARD bool IsActivated() const noexcept;
+
+  /// @brief Deactivate FDyActor instance.
+  void Deactivate() noexcept;
+
+  /// @brief Destory self and tree.
+  void DestroySelf();
 
   /// @brief Get present actor name on runtime.
   /// @return Actor name of this instance.
@@ -89,36 +92,13 @@ public:
   /// @brief Return this actor.
   MDY_NODISCARD TActorMap& GetChildrenContainer() noexcept;
 
-  ///
-  /// @brief
-  /// @param
-  /// @TODO SCRIPT THIS
-  ///
-  void SetParentRelocateTransform(_MIN_ NotNull<FDyActor*> validParentRawPtr) noexcept;
-
-  ///
-  /// @brief
-  /// @TODO SCRIPT THIS
-  ///
-  void SetParentToRootRelocateTransform() noexcept;
-
-  ///
   /// @brief Return actor's information
   /// @return information string.
-  ///
-  MDY_NODISCARD std::string ToString() override
-  {
-    return MDY_INITIALIZE_EMPTYSTR;
-  }
+  MDY_NODISCARD std::string ToString() override;
 
-  ///
   /// @brief  Get actual actor type
   /// @return Object type specifier
-  ///
-  MDY_NODISCARD FORCEINLINE EDyMetaObjectType GetActorType() const noexcept
-  {
-    return this->mActorType;
-  }
+  MDY_NODISCARD EDyMetaObjectType GetActorType() const noexcept;
 
   /// @brief Get actor's tag name.
   MDY_NODISCARD const std::string& GetActorTag() const noexcept;

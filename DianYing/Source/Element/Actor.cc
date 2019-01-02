@@ -16,11 +16,12 @@
 #include <Dy/Element/Actor.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Component/CDyTransform.h>
-#include "Dy/Component/CDyModelFilter.h"
-#include "Dy/Component/CDyModelRenderer.h"
-#include "Dy/Component/CDyCamera.h"
-#include "Dy/Component/CDyDirectionalLight.h"
-#include "Dy/Element/Type/PDyActorCreationDescriptor.h"
+#include <Dy/Component/CDyModelFilter.h>
+#include <Dy/Component/CDyModelRenderer.h>
+#include <Dy/Component/CDyCamera.h>
+#include <Dy/Component/CDyDirectionalLight.h>
+#include <Dy/Element/Type/PDyActorCreationDescriptor.h>
+#include <Dy/Management/WorldManager.h>
 
 //!
 //! Implementation
@@ -157,6 +158,11 @@ void FDyActor::Deactivate() noexcept
   this->pPropagateActivationFlag();
 }
 
+void FDyActor::DestroySelf()
+{
+  MDyWorld::GetInstance().DestroyActor(*this);
+}
+
 bool FDyActor::IsActivated() const noexcept
 {
   return this->mActivationFlag.GetOutput();
@@ -213,22 +219,15 @@ void FDyActor::SetParent(_MIN_ FDyActor& validParentRawPtr) noexcept
   this->mPtrParentActor = &validParentRawPtr;
 }
 
-void FDyActor::SetParentRelocateTransform(NotNull<FDyActor*> validParentRawPtr) noexcept
-{
-  MDY_NOT_IMPLEMENTED_ASSERT();
-  this->SetParent(*validParentRawPtr);
-}
-
 void FDyActor::SetParentAsRoot() noexcept
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
   this->mPtrParentActor = nullptr;
 }
 
-void FDyActor::SetParentToRootRelocateTransform() noexcept
+EDyMetaObjectType FDyActor::GetActorType() const noexcept
 {
-  MDY_NOT_IMPLEMENTED_ASSERT();
-  this->SetParentAsRoot();
+  return this->mActorType;
 }
 
 const std::string& FDyActor::GetActorTag() const noexcept
@@ -336,6 +335,11 @@ bool FDyActor::IsHavingChildrenObject() const noexcept
 FDyActor::TActorMap& FDyActor::GetChildrenContainer() noexcept
 {
   return this->mChildActorMap;
+}
+
+std::string FDyActor::ToString()
+{
+  return MDY_INITIALIZE_EMPTYSTR;
 }
 
 #ifdef false

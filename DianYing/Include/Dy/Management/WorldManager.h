@@ -90,6 +90,9 @@ public:
       _MIN_ const std::string& iObjectTag = MDY_INITIALIZE_EMPTYSTR,
       _MIN_ bool iDoSweep = false);
 
+  /// @brief Destroy Actor
+  void DestroyActor(_MINOUT_ FDyActor& iRefActor);
+
   /// @brief
   /// @return
   MDY_NODISCARD TI32 GetFocusedCameraCount() const noexcept;
