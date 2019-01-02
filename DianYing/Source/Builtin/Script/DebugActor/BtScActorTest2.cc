@@ -36,7 +36,7 @@ void dy::BtScActorTest2::Update(TF32 dt)
   refActor.GetTransform()->SetRelativeWorldPosition(DDyVector3{std::cos(f) * 10, pos.Y, std::sin(f) * 10});
   refActor.GetTransform()->AddWorldEulerAngle(EDyAxis3D::Z, dt * 90.f);
 
-  if (f >= 3.0f) { this->GetActorReference().DestroySelf(); }
+  if (f >=  3.0f) { this->GetActorReference().DestroySelf(); }
 
 #ifdef false
   auto& mInput = MDyInput::GetInstance();

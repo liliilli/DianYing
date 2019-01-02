@@ -254,6 +254,9 @@ public:
   /// But this funtion does not remove script instance actually, but just forward script list to GC-list.
   void MDY_PRIVATE_SPECIFIER(TryRemoveScriptInstances)() noexcept;
 
+  /// @brief Try detach dependent components from dy level management system.
+  void MDY_PRIVATE_SPECIFIER(TryDetachDependentComponents)() noexcept;
+
   ///
   /// @brief  Get script component pointer from script list using scriptName to verify.
   /// @param  scriptName Script name to verify and get.

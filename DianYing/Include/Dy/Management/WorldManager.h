@@ -58,7 +58,7 @@ public:
 
   /// @brief
   /// @param
-  void RequestDrawCall(_MIN_ float dt);
+  void RequestDrawCall();
 
   /// @brief Get all actors with tag. Tag must be valid. \n
   /// If iTagSpecifier is empty, this function get all actors which is not specified any tag.
@@ -158,9 +158,14 @@ public:
   void TryCreateActorsOfCreationActorList() noexcept;
   /// @brief
   void CleanCreationActorList() noexcept;
+  /// @brief Check Gc-candidate actor list is not empty and exist something.
+  MDY_NODISCARD bool CheckIsGcActorExist() const noexcept;
   /// @brief Try remove actor gc list anyway. \n
   /// If there is something to do actors in GC list, call something to do prior to this.
   void MDY_PRIVATE_SPECIFIER(TryRemoveActorGCList)() noexcept;
+
+  /// @brief Try detach active model renderer.
+  EDySuccess MDY_PRIVATE_SPECIFIER(TryDetachActiveModelRenderer)(_MIN_ CDyModelRenderer* iPtrRenderer);
 
 #ifdef false
   ///
@@ -286,7 +291,7 @@ private:
   std::vector<std::unique_ptr<PDyActorCreationDescriptor>> 
   mActorCreationDescList = {};
   /// Garbage collection actor instance list.
-  std::vector<std::unique_ptr<FDyActor>> mActorGc = {};
+  std::vector<std::unique_ptr<FDyActor>> mGCedActorList = {};
 
   /// @brief UI Instance container.
   FDyWorldUIContainer mUiInstanceContainer;

@@ -353,6 +353,22 @@ void MDyScript::UpdateActorScript(TF32 dt, EDyScriptState type)
   }
 }
 
+bool MDyScript::IsGcedActorScriptExist() const noexcept
+{
+  return this->mGCedActorScriptList.empty() == false;
+}
+
+void MDyScript::CallDestroyFuncActorScriptGCList()
+{
+  for (auto& ptrsmtScript : this->mGCedActorScriptList)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
+    ptrsmtScript->MDY_PRIVATE_SPECIFIER(CallDestroyFunctionAnyway)();
+    // If engine must be stopped and end application, return instantly.
+    if (gEngine->MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() == true) { return; }
+  }
+}
+
 void MDyScript::ClearActorScriptGCList()
 {
   this->mGCedActorScriptList.clear();

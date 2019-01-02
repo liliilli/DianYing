@@ -87,7 +87,7 @@ public:
   void UpdateWidgetScript(_MIN_ TF32 dt, _MIN_ EDyScriptState type);
   /// @brief 
   MDY_NODISCARD bool IsGcedWidgetScriptExist() const noexcept;
-  /// @brief Call widget script and clear list.
+  /// @brief Call `destroy` GCed widget script 
   void CallDestroyFuncWidgetScriptGCList();
   /// @brief Clear widget script gc list `mGCedWidgetScriptList` anyway.
   void ClearWidgetScriptGCList();
@@ -100,8 +100,8 @@ public:
   void UpdateActorScript(_MIN_ TF32 dt, _MIN_ EDyScriptState type);
   /// @brief Check there are gced -candidate actor script instances.
   MDY_NODISCARD bool IsGcedActorScriptExist() const noexcept;
-  /// @brief Call actor script and clear list.
-  void CallDestroyGcActorScriptAndClear();
+  /// @brief Call `destroy` actor script 
+  void CallDestroyFuncActorScriptGCList();
   /// @brief Clear actor script gc list `mGCedActorScriptList` anyway.
   void ClearActorScriptGCList();
 

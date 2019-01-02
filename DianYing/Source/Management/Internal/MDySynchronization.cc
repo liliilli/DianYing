@@ -18,6 +18,7 @@
 #include <Dy/Core/DyEngine.h>
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Management/SettingManager.h>
+#include <Dy/Management/ScriptManager.h>
 
 namespace dy
 {
@@ -94,11 +95,37 @@ void MDySynchronization::pRunFrameLoading()
 
 void MDySynchronization::pRunFrameGameRuntime()
 {
-  // Level Try create actors.
-  if (auto& world = MDyWorld::GetInstance(); world.CheckCreationActorExist() == true)
+  // Try call script, destroy function when level is alive.
   {
-    world.TryCreateActorsOfCreationActorList();
-    world.CleanCreationActorList();
+    auto& manager = MDyScript::GetInstance();
+    if (manager.IsGcedActorScriptExist() == true)
+    {
+      manager.CallDestroyFuncActorScriptGCList();
+      manager.ClearActorScriptGCList();
+    }
+
+    if (manager.IsGcedWidgetScriptExist() == true)
+    {
+      manager.CallDestroyFuncWidgetScriptGCList();
+      manager.ClearWidgetScriptGCList();
+    }
+  }
+
+  {
+    // Level Try create actors.
+    auto& world = MDyWorld::GetInstance(); 
+    if (world.CheckCreationActorExist() == true)
+    {
+      world.TryCreateActorsOfCreationActorList();
+      world.CleanCreationActorList();
+    }
+    
+    // Remove GC actor list.
+    if (world.CheckIsGcActorExist() == true)
+    {
+      world.MDY_PRIVATE_SPECIFIER(TryRemoveActorGCList)();
+      // Check Resource GC to IO Thread,...
+    }
   }
 
   // Synchronization 

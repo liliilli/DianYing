@@ -255,7 +255,6 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(Update)(_MIN_ EDyGlobalGameStatus iEngineSt
     MDyPhysics::GetInstance().Update(dt);
     MDyWorld::GetInstance().Update(dt);
     MDyWorld::GetInstance().UpdateObjects(dt);
-    MDyWorld::GetInstance().RequestDrawCall(dt);
   } break;
   case EDyGlobalGameStatus::Shutdown: 
     break;
@@ -272,6 +271,7 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(Render)(_MIN_ EDyGlobalGameStatus iEngineSt
     MDyRendering::GetInstance().MDY_PRIVATE_SPECIFIER(RenderLoading)();
     break;
   case EDyGlobalGameStatus::GameRuntime: 
+    MDyWorld::GetInstance().RequestDrawCall();
     MDyRendering::GetInstance().RenderDrawCallQueue();
     break;
   default: MDY_UNEXPECTED_BRANCH(); break;

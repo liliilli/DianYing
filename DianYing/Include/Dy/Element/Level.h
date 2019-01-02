@@ -79,6 +79,9 @@ public:
   /// If iFullName did not satisfy full name format, just return nullptr.
   MDY_NODISCARD FDyActor* GetActorWithFullName(_MIN_ const std::string& iFullName) const noexcept;
 
+  /// @brief Return level actor container.
+  MDY_NODISCARD FDyActor::TActorMap& GetActorContainer() noexcept;
+
   /// @brief Create actor instantly in this level.
   void CreateActorInstantly(_MIN_ const PDyActorCreationDescriptor& descriptor);
   

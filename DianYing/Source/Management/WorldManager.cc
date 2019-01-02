@@ -41,13 +41,6 @@ EDySuccess MDyWorld::pfRelease()
 
 void MDyWorld::Update(_MIN_ float dt)
 {
-  // Garbage collect needless "FDyActor"s
-  if (this->mActorGc.empty() == false) { this->mActorGc.clear(); }
-
-  // GC components.
-  this->pGcAcitvatedComponents();
-
-  // Level update routine
   if (this->mLevel)
   {
     this->mLevel->Update(dt);
@@ -125,11 +118,13 @@ void MDyWorld::UpdateObjects(_MIN_ float dt)
   }
 }
 
-void MDyWorld::RequestDrawCall(float dt)
+void MDyWorld::RequestDrawCall()
 {
   // @TODO IMPLEMENT SW OCCLUSION CULLING (HW?)
+  // Request draw calls (without SW occlusion culling)
   for (auto& modelRenderer : this->mActivatedModelRenderers)
-  { // Request draw calls (without SW occlusion culling)
+  { 
+    // if (modelRenderer->CheckInViewFrustum() == false) { return; }
     modelRenderer->RequestDrawCall();
   }
 }
@@ -203,7 +198,41 @@ DDyActorBinder MDyWorld::CreateActor(
 
 void MDyWorld::DestroyActor(_MIN_ FDyActor& iRefActor)
 {
-  MDY_NOT_IMPLEMENTED_ASSERT();
+  if (iRefActor.IsHaveParent() == true)
+  { // If iRefActor has parent, let parent detach and remove iRefActor from object tree.
+    // and move it to MDyWorld::GC LIST.
+    auto& container = iRefActor.GetParent()->GetChildrenContainer();
+    auto  it = std::find_if(MDY_BIND_BEGIN_END(container), 
+        [ptr = &iRefActor](const std::decay_t<decltype(container)>::value_type& iPair)
+        {
+          return iPair.second.get() == ptr;
+        }
+    );
+    // If not found, (might be requiring duplicated destruction) just do nothing and return.
+    if (it == container.end()) { return; }
+
+    this->mGCedActorList.emplace_back(std::move(it->second));
+    this->mGCedActorList.back()->MDY_PRIVATE_SPECIFIER(TryDetachDependentComponents)();
+    container.erase(it);
+  }
+  else
+  { // If iRefActor has not parent, regard it is on root, and remove iRefActor from level.
+    // and move it to MDYWorld::GC List.
+    MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mLevel), "Unexpected error occurred.");
+    auto& container = this->mLevel->GetActorContainer();
+    auto  it = std::find_if(MDY_BIND_BEGIN_END(container),
+        [ptr = &iRefActor](const std::decay_t<decltype(container)>::value_type& iPair)
+        {
+          return iPair.second.get() == ptr;
+        }
+    );
+    // If not found, (might be requiring duplicated destruction) just do nothing and return.
+    if (it == container.end()) { return; }
+
+    this->mGCedActorList.emplace_back(std::move(it->second));
+    this->mGCedActorList.back()->MDY_PRIVATE_SPECIFIER(TryDetachDependentComponents)();
+    container.erase(it);
+  }
 }
 
 TI32 MDyWorld::GetFocusedCameraCount() const noexcept
@@ -396,9 +425,14 @@ void MDyWorld::CleanCreationActorList() noexcept
   this->mActorCreationDescList.clear();
 }
 
+bool MDyWorld::CheckIsGcActorExist() const noexcept
+{
+  return this->mGCedActorList.empty() == false;
+}
+
 void MDyWorld::MDY_PRIVATE_SPECIFIER(TryRemoveActorGCList)() noexcept
 {
-  this->mActorGc.clear();
+  this->mGCedActorList.clear();
 }
 
 void MDyWorld::SetLevelTransition(_MIN_ const std::string& iSpecifier)
@@ -415,8 +449,8 @@ void MDyWorld::SetLevelTransition(_MIN_ const std::string& iSpecifier)
 
 void MDyWorld::pfMoveActorToGc(_MIN_ NotNull<FDyActor*> actorRawPtr) noexcept
 {
-  this->mActorGc.emplace_back(std::unique_ptr<FDyActor>(actorRawPtr));
-  this->mActorGc.back()->MDY_PRIVATE_SPECIFIER(TryRemoveScriptInstances)();
+  this->mGCedActorList.emplace_back(std::unique_ptr<FDyActor>(actorRawPtr));
+  this->mGCedActorList.back()->MDY_PRIVATE_SPECIFIER(TryRemoveScriptInstances)();
 }
 
 void MDyWorld::pfUnenrollActiveModelRenderer(_MIN_ TI32 index) noexcept
@@ -435,6 +469,17 @@ void MDyWorld::pfUnenrollActiveCamera(_MIO_ TI32& index) noexcept
   this->mErasionCamerasCandidateList.emplace_back(index);
 
   index = MDY_INITIALIZE_DEFINT;
+}
+
+EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(TryDetachActiveModelRenderer)(_MIN_ CDyModelRenderer* iPtrRenderer)
+{
+  auto it = std::find_if(
+      MDY_BIND_BEGIN_END(this->mActivatedModelRenderers), 
+      [iPtrRenderer](_MIN_ const CDyModelRenderer* ptrRenderer) { return iPtrRenderer == ptrRenderer; });
+  if (it == this->mActivatedModelRenderers.end()) { return DY_SUCCESS; }
+
+  DyFastErase(this->mActivatedModelRenderers, std::distance(this->mActivatedModelRenderers.begin(), it));
+  return DY_SUCCESS;
 }
 
 #ifdef false

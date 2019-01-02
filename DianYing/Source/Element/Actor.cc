@@ -391,6 +391,22 @@ void FDyActor::MDY_PRIVATE_SPECIFIER(TryRemoveScriptInstances)() noexcept
   return this->mScriptList.clear();
 }
 
+void FDyActor::MDY_PRIVATE_SPECIFIER(TryDetachDependentComponents)() noexcept
+{
+  this->MDY_PRIVATE_SPECIFIER(TryRemoveScriptInstances)();
+  auto rendererList = this->GetGeneralComponentList<CDyModelRenderer>();
+  for (auto& ptrRenderer : rendererList)
+  { // Try detach renderer from list, if not exist already just do nothing.
+    MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(TryDetachActiveModelRenderer)(ptrRenderer);
+  }
+
+  for (auto& [specifier, ptrsmtChild] : this->mChildActorMap)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtChild)) { return; }
+    ptrsmtChild->MDY_PRIVATE_SPECIFIER(TryDetachDependentComponents)();
+  }
+}
+
 NotNull<CDyTransform*> FDyActor::GetTransform() noexcept
 {
   return DyMakeNotNull(this->mTransform.get());

@@ -145,6 +145,11 @@ FDyActor* FDyLevel::GetActorWithFullName(_MIN_ const std::string& iFullName) con
   return nullptr;
 }
 
+FDyActor::TActorMap& FDyLevel::GetActorContainer() noexcept
+{
+  return this->mActorMap;
+}
+
 void FDyLevel::CreateActorInstantly(_MIN_ const PDyActorCreationDescriptor& descriptor)
 {
   if (descriptor.mParentFullSpecifierName.empty() == true)
