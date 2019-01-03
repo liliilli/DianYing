@@ -341,8 +341,10 @@
     <ClCompile Include="Source\Element\Actor.cc" />
     <ClCompile Include="Source\Element\Canvas\Text.cc" />
     <ClCompile Include="Source\Element\Type\DDyActorBinder.cc" />
+    <ClCompile Include="Source\Element\Type\Timer\FDyTimerItem.cc" />
     <ClCompile Include="Source\Helper\Internal\FDyNameGenerator.cc" />
     <ClCompile Include="Source\Helper\Library\HelperRegex.cc" />
+    <ClCompile Include="Source\Management\GameTimerManager.cc" />
     <ClCompile Include="Source\Management\Helper\SDyProfilingHelper.cc" />
     <ClCompile Include="Source\Management\Internal\Input\FDyInputDelegateManager.cc" />
     <ClCompile Include="Source\Management\Internal\MDyProfiling.cc" />
@@ -546,6 +548,8 @@
     <ClInclude Include="Include\Dy\Element\Type\DDyActorBinder.h" />
     <ClInclude Include="Include\Dy\Element\Type\DDyTransform.h" />
     <ClInclude Include="Include\Dy\Element\Type\PDyActorCreationDescriptor.h" />
+    <ClInclude Include="Include\Dy\Element\Type\Timer\FDyTimerHandle.h" />
+    <ClInclude Include="Include\Dy\Element\Type\Timer\FDyTimerItem.h" />
     <ClInclude Include="Include\Dy\Helper\HelperString.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\RWLockAtomic.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\FDyNameGenerator.h" />
@@ -558,6 +562,7 @@
     <ClInclude Include="Include\Dy\Management\Internal\World\FDyWorldUIContainer.h" />
     <ClInclude Include="Include\Dy\Management\IO\MDyIOData.h" />
     <ClInclude Include="Include\Dy\Management\IO\MDyIOResource.h" />
+    <ClInclude Include="Include\Dy\Management\GameTimerManager.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyInputButton.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyJoystickAnalog.h" />
     <ClInclude Include="Include\Dy\Management\Type\Time\EDyTimeDST.h" />

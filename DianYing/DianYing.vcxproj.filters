@@ -248,6 +248,8 @@
     <ClCompile Include="Source\Helper\Library\HelperRegex.cc" />
     <ClCompile Include="Source\Helper\Internal\FDyNameGenerator.cc" />
     <ClCompile Include="Source\Element\Type\DDyActorBinder.cc" />
+    <ClCompile Include="Source\Management\GameTimerManager.cc" />
+    <ClCompile Include="Source\Element\Type\Timer\FDyTimerItem.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -638,6 +640,9 @@
     <ClInclude Include="Include\Dy\Element\Type\DDyActorBinder.h" />
     <ClInclude Include="Include\Dy\Element\Type\PDyActorCreationDescriptor.h" />
     <ClInclude Include="Include\Dy\Element\Abstract\Actor\ADyActorBinderContainer.h" />
+    <ClInclude Include="Include\Dy\Management\GameTimerManager.h" />
+    <ClInclude Include="Include\Dy\Element\Type\Timer\FDyTimerHandle.h" />
+    <ClInclude Include="Include\Dy\Element\Type\Timer\FDyTimerItem.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\box.hlsl" />

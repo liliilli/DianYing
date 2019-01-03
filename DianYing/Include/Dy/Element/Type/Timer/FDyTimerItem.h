@@ -55,6 +55,9 @@ public:
   /// @brief Update timer item when it is `ETimerStatus::Play`.
   void Update(_MIN_ TF32 iDt) noexcept;
 
+  /// @brief Check this item is deserved to call function.
+  MDY_NODISCARD bool Checked() const noexcept;
+
   /// @brief Call function with `mDeferredCallCount` times.
   /// If `mCallOnlyOnce` is true, just call once and reset call count.
   void CallFunction(_MIN_ bool iCallOnlyOnce = false) noexcept;
