@@ -31,8 +31,43 @@ EDySuccess MDyGameTimer::pfRelease()
   return DY_SUCCESS;
 }
 
+void MDyGameTimer::PauseTimer(_MIN_ FDyTimerHandle& iRefHandler)
+{
+  // Bound is false only when aborted or not exist on list.
+  if (iRefHandler.IsBound() == false) { return; }
+  
+  const auto validId = iRefHandler.MDY_PRIVATE_SPECIFIER(GetIndex)();
+  auto it = std::find_if(
+      MDY_BIND_BEGIN_END(this->mTimerList), 
+      [validId](const decltype(mTimerList)::value_type& iTimerItem) { return iTimerItem.GetIndex() == validId; });
+  MDY_ASSERT(it != this->mTimerList.end(), "Unexpected error occurred.");
+ 
+  if (it->GetTimerStatus() == FDyTimerItem::EStatus::Play) 
+  { 
+    it->SetTimerStatus(FDyTimerItem::EStatus::Paused); 
+  }
+}
+
+void MDyGameTimer::ResumeTimer(FDyTimerHandle& iRefHandler)
+{
+  // Bound is false only when aborted or not exist on list.
+  if (iRefHandler.IsBound() == false) { return; }
+
+  const auto validId = iRefHandler.MDY_PRIVATE_SPECIFIER(GetIndex)();
+  auto it = std::find_if(
+      MDY_BIND_BEGIN_END(this->mTimerList), 
+      [validId](const decltype(mTimerList)::value_type& iTimerItem) { return iTimerItem.GetIndex() == validId; });
+  MDY_ASSERT(it != this->mTimerList.end(), "Unexpected error occurred.");
+   
+  if (it->GetTimerStatus() == FDyTimerItem::EStatus::Paused) 
+  { 
+    it->SetTimerStatus(FDyTimerItem::EStatus::Play); 
+  }
+}
+
 void MDyGameTimer::StopTimer(_MIN_ FDyTimerHandle& iRefHandler)
 {
+  // Bound is false only when aborted or not exist on list.
   if (iRefHandler.IsBound() == false) { return; }
 
   const auto validId = iRefHandler.MDY_PRIVATE_SPECIFIER(GetIndex)();
@@ -57,7 +92,7 @@ void MDyGameTimer::MDY_PRIVATE_SPECIFIER(pSetTimer)(
     this->mTimerList.emplace_back(std::ref(iRefHandler), std::ref(iRefScript), iDelayTime, iTickTime, iIsLooped, iFunction);
   }
   else
-  {
+  { // If handler is bound and exist on list (paused or played)
     const auto oldId = iRefHandler.MDY_PRIVATE_SPECIFIER(GetIndex)();
     auto it = std::find_if(
         MDY_BIND_BEGIN_END(this->mTimerList), 
@@ -80,6 +115,15 @@ void MDyGameTimer::Update(_MIN_ TF32 iDt)
       if (gEngine->MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() == true) { return; }
     }
   }
+}
+
+void MDyGameTimer::MDY_PRIVATE_SPECIFIER(TryGcRemoveAbortedTimerInstance)()
+{
+  if (this->mTimerList.empty() == true) { return; }
+  DyEraseRemoveIf(this->mTimerList, [](const decltype(mTimerList)::value_type& iInstance)
+  {
+    return iInstance.GetTimerStatus() == FDyTimerItem::EStatus::Aborted;
+  });
 }
 
 } /// ::dy namespace

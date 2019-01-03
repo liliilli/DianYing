@@ -33,8 +33,6 @@
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 #include "Dy/Management/GameTimerManager.h"
 
-//#include <Dy/Builtin/Widget/DebugUiMeta.h>
-
 //!
 //! Implementation
 //!
@@ -95,6 +93,8 @@ void DyEngine::operator()()
     case EDyGlobalGameStatus::GameRuntime: 
     {
       this->mSynchronization->TrySynchronization();
+      MDyGameTimer::GetInstance().MDY_PRIVATE_SPECIFIER(TryGcRemoveAbortedTimerInstance)();
+
       this->MDY_PRIVATE_SPECIFIER(Update)(this->mStatus, timeManager.GetGameScaledTickedDeltaTimeValue());
       if (this->MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() == true) 
       { // If game must be stopped, return but change status to Shutdown (GameRuntime => Shutdown);

@@ -50,7 +50,7 @@ public:
       _MIN_ TF32 iDelayTime, 
       _MIN_ bool iIsLooped, 
       _MIN_ std::function<void()> iCbFunction);
-  ~FDyTimerItem() = default;
+  ~FDyTimerItem();
 
   /// @brief Update timer item when it is `ETimerStatus::Play`.
   void Update(_MIN_ TF32 iDt) noexcept;
@@ -61,6 +61,9 @@ public:
   /// @brief Call function with `mDeferredCallCount` times.
   /// If `mCallOnlyOnce` is true, just call once and reset call count.
   void CallFunction(_MIN_ bool iCallOnlyOnce = false) noexcept;
+
+  /// @brief Set status.
+  void SetTimerStatus(_MIN_ EStatus iStatus) noexcept;
 
   /// @brief Get status of this time item.
   MDY_NODISCARD EStatus GetTimerStatus() const noexcept;

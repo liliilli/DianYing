@@ -60,8 +60,17 @@ public:
     this->MDY_PRIVATE_SPECIFIER(pSetTimer)(iRefHandler, static_cast<ADyActorCppScript&>(iRefScript), callback, iTickTime, iIsLooped, iDelayTime);
   }
 
+  /// @brief Pause timer, this function do nothing when Handler is not bound or paused already.
+  void PauseTimer(_MIN_ FDyTimerHandle& iRefHandler);
+
+  /// @brief Resume timer, this function do nothing when Handler is not bound or already played.
+  void ResumeTimer(_MIN_ FDyTimerHandle& iRefHandler);
+
   /// @brief Stop timer.
   void StopTimer(_MIN_ FDyTimerHandle& iRefHandler);
+
+  /// @brief Remove `::Aborted` timer instance list.
+  void MDY_PRIVATE_SPECIFIER(TryGcRemoveAbortedTimerInstance)();
 
 private:
   void MDY_PRIVATE_SPECIFIER(pSetTimer)(
