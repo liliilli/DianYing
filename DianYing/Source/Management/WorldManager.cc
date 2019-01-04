@@ -289,6 +289,9 @@ EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(RemoveLevel)()
   this->mActivatedOnRenderingCameras.clear();
   SDyIOConnectionHelper::TryGC(EDyScope::Level, EDyResourceStyle::Resource);
   SDyIOConnectionHelper::TryGC(EDyScope::Level, EDyResourceStyle::Information);
+
+  // Release physx components which are dependent on physx::PxScene, FDyLevel.
+  MDyPhysics::GetInstance().ReleaseScene();
   return DY_SUCCESS;
 }
 

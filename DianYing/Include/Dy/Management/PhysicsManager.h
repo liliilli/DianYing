@@ -62,7 +62,7 @@ private:
   physx::PxPvd*                 gPvd        = MDY_INITIALIZE_NULL;
   physx::PxFoundation*          gFoundation = MDY_INITIALIZE_NULL;
   physx::PxPhysics*             gPhysicx    = MDY_INITIALIZE_NULL; 
-  physx::PxCpuDispatcher*       gDispatcher = MDY_INITIALIZE_NULL;
+  physx::PxDefaultCpuDispatcher*gDispatcher = MDY_INITIALIZE_NULL;
   physx::PxScene*               gScene      = MDY_INITIALIZE_NULL;
   physx::PxMaterial*            gMaterial   = MDY_INITIALIZE_NULL;
   physx::PxCooking*             mCooking    = MDY_INITIALIZE_NULL;

@@ -328,7 +328,43 @@ void MDyPhysics::InitScene()
 
 void MDyPhysics::ReleaseScene()
 {
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gFoundation),  "PhysX Foundation must be valid.");
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gPhysicx),     "PhysX Physicx must be valid.");
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gScene),       "PhysX Scene must be valid.");
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gDispatcher),  "PhysX Dispatcher must be valid.");
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mCooking),     "PhysX Cooking must be valid.");
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gMaterial),    "PhysX Default material must be valid.");
 
+  {
+    physx::PxSceneWriteLock scopedLock(*this->gScene);
+    // Do something that is relevent to gScene but not direct.
+  }
+
+  this->gScene->release();
+  this->gScene = nullptr;
+
+  this->gDispatcher->release();
+  this->gDispatcher = nullptr;
+  
+  this->gMaterial->release();
+  this->gMaterial = nullptr;
+    
+  this->mCooking->release();
+  this->mCooking = nullptr;
+
+	PxCloseExtensions();
+    
+  this->gPhysicx->release();
+  this->gPhysicx = nullptr;
+
+  if (MDY_CHECK_ISNOTNULL(this->gPvd)) 
+  { // Optional. (visual debugger)
+    this->gPvd->release();
+    this->gPvd = nullptr;
+  }
+
+  this->gFoundation->release();
+  this->gFoundation = nullptr;
 }
 
 void MDyPhysics::onRelease(
