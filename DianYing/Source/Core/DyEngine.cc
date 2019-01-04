@@ -31,7 +31,7 @@
 #include <Dy/Management/Internal/MDySynchronization.h>
 #include <Dy/Management/Internal/MDyProfiling.h>
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
-//#include <Dy/Builtin/Widget/DebugUiMeta.h>
+#include "Dy/Management/GameTimerManager.h"
 
 //!
 //! Implementation
@@ -93,6 +93,8 @@ void DyEngine::operator()()
     case EDyGlobalGameStatus::GameRuntime: 
     {
       this->mSynchronization->TrySynchronization();
+      MDyGameTimer::GetInstance().MDY_PRIVATE_SPECIFIER(TryGcRemoveAbortedTimerInstance)();
+
       this->MDY_PRIVATE_SPECIFIER(Update)(this->mStatus, timeManager.GetGameScaledTickedDeltaTimeValue());
       if (this->MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() == true) 
       { // If game must be stopped, return but change status to Shutdown (GameRuntime => Shutdown);
@@ -245,7 +247,8 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(Update)(_MIN_ EDyGlobalGameStatus iEngineSt
 
     MDyInput::GetInstance().pfUpdate(dt);
     if (this->MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() == true) { return; }
-
+    MDyGameTimer::GetInstance().Update(dt);
+    if (this->MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() == true) { return; }
     MDyScript::GetInstance().UpdateActorScript(dt);
     if (this->MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() == true) { return; }
 
@@ -307,6 +310,7 @@ void DyEngine::pfInitializeDependentManager()
   MDY_CALL_ASSERT_SUCCESS(dy::MDySound::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyPhysics::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyFont::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyGameTimer::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyScript::Initialize());
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDyWorld::Initialize());
@@ -317,6 +321,7 @@ void DyEngine::pfReleaseDependentManager()
   MDY_CALL_ASSERT_SUCCESS(dy::MDyWorld::Release());
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDyScript::Release());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyGameTimer::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyFont::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyPhysics::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDySound::Release());

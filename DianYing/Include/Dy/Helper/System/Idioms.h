@@ -38,6 +38,13 @@ void DyEraseRemove(
   p.erase( std::remove( p.begin(), p.end(), iValue ), p.end() );
 }
 
+/// @brief Vector fast erase.
+template <typename TType, typename TAllocator, typename TFunctor>
+void DyEraseRemoveIf(_MINOUT_ std::vector<TType, TAllocator>& p, _MIN_ TFunctor&& iPredcate)
+{
+  p.erase( std::remove_if( p.begin(), p.end(), iPredcate ), p.end() );
+}
+
 ///
 /// @brief 
 /// @param 

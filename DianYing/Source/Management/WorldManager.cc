@@ -18,6 +18,7 @@
 #include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/ScriptManager.h>
+#include <Dy/Management/PhysicsManager.h>
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 #include <Dy/Core/Resource/Type/EDyScope.h>
 #include <Dy/Core/DyEngine.h>
@@ -288,6 +289,9 @@ EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(RemoveLevel)()
   this->mActivatedOnRenderingCameras.clear();
   SDyIOConnectionHelper::TryGC(EDyScope::Level, EDyResourceStyle::Resource);
   SDyIOConnectionHelper::TryGC(EDyScope::Level, EDyResourceStyle::Information);
+
+  // Release physx components which are dependent on physx::PxScene, FDyLevel.
+  MDyPhysics::GetInstance().ReleaseScene();
   return DY_SUCCESS;
 }
 
@@ -326,6 +330,7 @@ void MDyWorld::MDY_PRIVATE_SPECIFIER(BuildNextLevel)()
   MDY_LOG_DEBUG_D("Dependent manager resetting...");
 
   // Must reset depedent manager on this.
+  MDyPhysics::GetInstance().InitScene();
 
   MDY_LOG_DEBUG_D("Dependent manager resetting done.");
 }

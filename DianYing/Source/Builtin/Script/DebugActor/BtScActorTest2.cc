@@ -24,6 +24,11 @@ void dy::BtScActorTest2::Initiate()
   MDY_BIND_INPUT_ACTION("Enter", EDyInputActionStatus::Pressed, &BtScActorTest2::Test);
 }
 
+void dy::BtScActorTest2::Start()
+{
+  this->GetGameTimerManager().SetTimer(this->mTimerHandle, *this, &BtScActorTest2::CbTimerCallback, 1.0f, false, 0.0f);
+}
+
 void dy::BtScActorTest2::Update(TF32 dt)
 {
   const auto old = DDyVector3{std::cos(f) * 10, 0, std::sin(f) * 10};
@@ -58,4 +63,9 @@ void dy::BtScActorTest2::Test()
 {
   MDY_LOG_CRITICAL("Game end Test!");
   MDY_CALL_ASSERT_SUCCESS(gEngine->TryEndGame());
+}
+
+void dy::BtScActorTest2::CbTimerCallback()
+{
+  MDY_LOG_CRITICAL("{} CbTimerCallback Called!", this->GetActorReference().__GetFullSpecifierName());
 }

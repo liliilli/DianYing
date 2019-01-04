@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Component/Interface/IDyScriptable.h>
+#include <Dy/Helper/Pointer.h>
 
 //!
 //! Forward declaration
@@ -23,6 +24,8 @@ namespace dy
 {
 class FDyActor;
 class CDyActorScriptCpp;
+class MDyGameTimer;
+class FDyTimerHandle;
 } /// ::dy namespace
 
 //!
@@ -39,10 +42,15 @@ namespace dy
 MDY_ABSTRACT ADyActorCppScript : public IDyScriptable
 {
 public:
-  ///
   /// @brief Get widget reference.
-  ///
   MDY_NODISCARD FDyActor& GetActorReference();
+
+  /// @brief Get Game-Timer manager.
+  MDY_NODISCARD MDyGameTimer& GetGameTimerManager() noexcept;
+
+  void MDY_PRIVATE_SPECIFIER(BindPtrTimerHandle)(_MIN_ FDyTimerHandle& iRefTimerHandler);
+  void MDY_PRIVATE_SPECIFIER(DetachPtrTimerHandle)(_MIN_ FDyTimerHandle& iRefTimerHandler);
+  void MDY_PRIVATE_SPECIFIER(AbortAllValidTimerHandler)();
 
 private:
   ///
@@ -55,6 +63,8 @@ private:
   }
 
   CDyActorScriptCpp* mOutside = nullptr;
+
+  std::vector<NotNull<FDyTimerHandle*>> mPtrTimerHandleList = {};
   friend class CDyActorScriptCpp;
 };
 
