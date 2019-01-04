@@ -18,6 +18,8 @@
 #include <Dy/Builtin/Abstract/ADyScriptResource.h>
 #include <Dy/Meta/Information/ScriptMetaInformation.h>
 #include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Management/GameTimerManager.h>
+#include <Dy/Element/Type/Timer/FDyTimerHandle.h>
 
 namespace dy
 {
@@ -28,14 +30,18 @@ class BtScActorTest2 final : public ADyScriptResource, public ADyActorCppScript
 public:
   void Initiate() override final;
 
-  void Start() override final {};
+  void Start() override final;
 
   void Update(_MIN_ TF32 dt) override final;
 
   void Test();
 
+  void CbTimerCallback();
+
 private:
   TF32 f = 0.0f;
+
+  FDyTimerHandle mTimerHandle;
 };
 
 } /// ::dy namespace
