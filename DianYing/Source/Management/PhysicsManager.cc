@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Management/PhysicsManager.h>
 #include <Dy/Helper/Pointer.h>
+#include <Dy/Helper/Type/Vector3.h>
 #include <Dy/Management/LoggingManager.h>
 
 //!
@@ -245,6 +246,113 @@ void MDyPhysics::Update(float dt)
                      quat.x, quat.y, quat.z, quat.w);
   }
 #endif
+}
+
+void MDyPhysics::InitScene()
+{
+  MDY_ASSERT(MDY_CHECK_ISNULL(this->gFoundation), "Foundation is already exist.");
+  MDY_ASSERT(MDY_CHECK_ISNULL(this->gPhysicx), "Physics is already exist.");
+  MDY_ASSERT(MDY_CHECK_ISNULL(this->mCooking), "Cooking is already exist.");
+  MDY_ASSERT(MDY_CHECK_ISNULL(this->gMaterial), "Default material is already exist.");
+
+  this->gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, this->defaultAllocatorCallback, MDY_PRIVATE_SPECIFIER(GetPhysXErrorCallback)());
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gFoundation), "PhysX Foundation must be created successfully.");
+
+  // Get scale from setting manager, but we use defualt value temporary. 
+  physx::PxTolerancesScale temporalScale;
+  // MDySetting::GetInstance().GetGridScale();
+
+  this->gPhysicx = PxCreatePhysics(PX_PHYSICS_VERSION, *this->gFoundation, temporalScale, false, this->gPvd);
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gPhysicx), "PhysX Physics Instance must be created successfully.");
+
+  if (PxInitExtensions(*this->gPhysicx, this->gPvd) == false) { MDY_UNEXPECTED_BRANCH(); }
+
+  physx::PxCookingParams params(temporalScale);
+	params.meshWeldTolerance = 0.001f;
+	params.meshPreprocessParams = physx::PxMeshPreprocessingFlags(physx::PxMeshPreprocessingFlag::eWELD_VERTICES);
+	params.buildGPUData = true; //Enable GRB data being produced in cooking
+  this->mCooking = PxCreateCooking(PX_PHYSICS_VERSION, *this->gFoundation, params);
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mCooking), "PhysX Cooking Instance must be created successfully.");
+
+  this->gPhysicx->registerDeletionListener(*this, physx::PxDeletionEventFlag::eUSER_RELEASE);
+
+  // Setup default material.
+  this->gMaterial = this->gPhysicx->createMaterial(0.5f, 0.5, 1.0f);
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gMaterial), "PhysX Default material must be created.");
+
+  physx::PxSceneDesc tempSceneDesc{this->gPhysicx->getTolerancesScale()};
+  tempSceneDesc.gravity = physx::PxVec3{0.0f, -9.81f, 0.0f};
+
+  if (MDY_CHECK_ISNULL(tempSceneDesc.cpuDispatcher))
+  {
+    this->gDispatcher = physx::PxDefaultCpuDispatcherCreate(1);
+    MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gDispatcher), "PhysX Cpu dispatcher must be created validly.");
+    tempSceneDesc.cpuDispatcher = this->gDispatcher;
+  }
+
+  if (MDY_CHECK_ISNULL(tempSceneDesc.filterShader))
+  {
+    tempSceneDesc.filterShader = this->MDY_PRIVATE_SPECIFIER(GetSampleFilterShader)();
+  }
+
+  // Set scene descriptor flags
+  tempSceneDesc.flags |=  physx::PxSceneFlag::eENABLE_PCM 
+                      |   physx::PxSceneFlag::eENABLE_STABILIZATION
+                      |   physx::PxSceneFlag::eENABLE_ACTIVE_ACTORS
+                      |   physx::PxSceneFlag::eREQUIRE_RW_LOCK;
+
+  tempSceneDesc.sceneQueryUpdateMode = physx::PxSceneQueryUpdateMode::eBUILD_ENABLED_COMMIT_DISABLED;
+	tempSceneDesc.gpuMaxNumPartitions = 8;
+
+  this->gScene = this->gPhysicx->createScene(tempSceneDesc);
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gScene), "PhysX Scene must be created successfully.");
+
+  // Set Scene setting (atomically)
+  {
+    physx::PxSceneWriteLock scopedLock(*this->gScene);
+    auto flags = this->gScene->getFlags();
+    (void)flags;
+
+    this->gScene->setVisualizationParameter(physx::PxVisualizationParameter::eSCALE, 0.0f);
+    this->gScene->setVisualizationParameter(physx::PxVisualizationParameter::eCOLLISION_SHAPES,	1.0f);
+
+    physx::PxPvdSceneClient* pvdClient = this->gScene->getScenePvdClient();
+    if (MDY_CHECK_ISNOTNULL(pvdClient))
+    {
+      pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
+      pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
+      pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
+    }
+  }
+}
+
+void MDyPhysics::ReleaseScene()
+{
+
+}
+
+void MDyPhysics::onRelease(
+    _MIN_ MDY_NOTUSED const physx::PxBase* observed, 
+    _MIN_ MDY_NOTUSED void* userData, 
+    _MIN_ MDY_NOTUSED physx::PxDeletionEventFlag::Enum deletionEvent)
+{
+#ifdef false
+  if(observed->is<physx::PxRigidActor>())
+	{
+		const physx::PxRigidActor* actor = static_cast<const physx::PxRigidActor*>(observed);
+
+		removeRenderActorsFromPhysicsActor(actor);
+
+		std::vector<physx::PxRigidActor*>::iterator actorIter = std::find(mPhysicsActors.begin(), mPhysicsActors.end(), actor);
+		if(actorIter != mPhysicsActors.end()) { mPhysicsActors.erase(actorIter); }
+	}
+#endif
+}
+
+physx::PxErrorCallback& MDyPhysics::MDY_PRIVATE_SPECIFIER(GetPhysXErrorCallback)()
+{
+	static physx::PxDefaultErrorCallback gDefaultErrorCallback;
+	return gDefaultErrorCallback;
 }
 
 } /// ::dy namespace
