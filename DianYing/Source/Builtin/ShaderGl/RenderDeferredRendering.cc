@@ -14,9 +14,6 @@
 
 /// Header file
 #include <Dy/Builtin/ShaderGl/RenderDeferredRendering.h>
-#include <Dy/Core/Component/Internal/ShaderType.h>
-#include <Dy/Management/DataInformationManager.h>
-#include <Dy/Management/HeapResourceManager.h>
 
 //!
 //! Forward declaration
@@ -29,14 +26,14 @@ MDY_SET_IMMUTABLE_STRING(sVertexShaderCode, R"dy(
 #version 430
 
 layout (location = 0) in vec3 dyPosition;
-layout (location = 1) in vec2 dyTexCoord0;
+layout (location = 2) in vec2 dyTexCoord0;
 
 out gl_PerVertex { vec4 gl_Position; };
 out VS_OUT { vec2 texCoord; } vs_out;
 
 void main() {
-	vs_out.texCoord		= dyTexCoord0;
-    gl_Position			= vec4(dyPosition, 1.0);
+	vs_out.texCoord	= dyTexCoord0;
+  gl_Position			= vec4(dyPosition, 1.0);
 }
 )dy");
 
@@ -48,24 +45,63 @@ layout (location = 0) out vec4 outColor;
 
 uniform sampler2D uUnlit;
 uniform sampler2D uNormal;
-uniform sampler2D uSpecular;
-uniform sampler2D uViewPosition;
+uniform sampler2D uSpecular;     // View vector
+uniform sampler2D uModelPosition;
+uniform sampler2D uShadow;
 
-vec3 dirLight		= normalize(vec3(-1, 1, 0));
-vec3 ambientColor	= vec3(1);
+uniform mat4 uShadowPv;
 
-void main() {
+float sBias = 0.02f;
 
-	vec4 normalValue	= (texture(uNormal, fs_in.texCoord) - 0.5f) * 2.0f;
-	vec4 unlitValue		= texture(uUnlit, fs_in.texCoord);
+// binding = 0 is view, project matrix
+// binding = 1 is DirectionalLightBlock uniform block.
+layout(std140, binding = 1) uniform DirectionalLightBlock
+{
+  vec3  mDirection; // World space
+  vec4  mDiffuse;   // Not use alpha value
+  vec4  mSpecular;  // Not use alpha value
+  vec4  mAmbient;   // Not use alpha value
+  float mIntensity; // Intensity
+} uLightDir[5];
 
-	float ambientFactor = 0.1f;
-	float diffuseFactor = max(dot(normalValue.xyz, dirLight), 0.1);
+void main()
+{
+  vec3 resultColor    = vec3(0);
+  vec4 unlitValue	    = texture(uUnlit, fs_in.texCoord);
+  if (unlitValue.a == 0) { discard; }
 
-    outColor = vec4(
-		vec3(1) * diffuseFactor +
-		ambientColor * ambientFactor,
-		1.0f);
+  vec4 normalValue	  = (texture(uNormal, fs_in.texCoord) - 0.5f) * 2.0f;
+  vec4 specularValue  = (texture(uSpecular, fs_in.texCoord) - 0.5f) * 2.0f;
+  vec4 modelPos       = uShadowPv * texture(uModelPosition, fs_in.texCoord);
+  modelPos            = modelPos / modelPos.w;
+  modelPos            = modelPos * 0.5f + 0.5f;
+  float closestDepth  = texture(uShadow, modelPos.xy).r;
+
+  for (int i = 0; i < uLightDir.length; ++i)
+  { // Integrity test
+    if (length(uLightDir[i].mDirection) < 0.001) { continue; }
+
+    // Function body
+    float d_n_dl    = dot(normalValue.xyz, uLightDir[i].mDirection);
+    vec3  s_l_vd    = normalize(uLightDir[i].mDirection + specularValue.xyz);
+    float d_slvd_n  = pow(max(dot(s_l_vd, normalValue.xyz), 0.0f), 32);
+
+    float ambientFactor   = 0.05f;
+    vec3  ambientColor    = ambientFactor * uLightDir[i].mAmbient.rgb;
+
+    float diffuseFactor   = max(d_n_dl, 0.1f) * uLightDir[i].mIntensity;
+    vec3  diffuseColor    = diffuseFactor * uLightDir[i].mDiffuse.rgb;
+
+    float specularFactor  = d_slvd_n * uLightDir[i].mIntensity;
+    vec3  specularColor   = specularFactor * uLightDir[i].mSpecular.rgb;
+
+    float shadingOffset   = 1.f;
+    if (closestDepth < modelPos.z) { shadingOffset = 0.5f; }
+
+    resultColor += (ambientColor + diffuseColor + specularColor) * unlitValue.rgb * shadingOffset;
+  }
+
+  outColor = vec4(resultColor.rgb, 1.0f);
 }
 )dy");
 
@@ -80,28 +116,9 @@ namespace dy::builtin
 
 FDyBuiltinShaderGLRenderDeferredRendering::FDyBuiltinShaderGLRenderDeferredRendering()
 {
-  PDyShaderConstructionDescriptor shaderDesc;
-  shaderDesc.mShaderName = FDyBuiltinShaderGLRenderDeferredRendering::sName;
-  {
-    PDyShaderFragmentInformation vs;
-    vs.mShaderType = EDyShaderFragmentType::Vertex;
-    vs.mShaderRawCode = sVertexShaderCode;
-    vs.mIsEnabledRawLoadShaderCode = true;
-    shaderDesc.mShaderFragments.emplace_back(vs);
-  }
-  {
-    PDyShaderFragmentInformation fs;
-    fs.mShaderType = EDyShaderFragmentType::Pixel;
-    fs.mShaderRawCode = sFragmentShaderCode;
-    fs.mIsEnabledRawLoadShaderCode = true;
-    shaderDesc.mShaderFragments.emplace_back(fs);
-  }
-
-  auto& infoManager = MDyDataInformation::GetInstance();
-  auto& rescManager = MDyHeapResource::GetInstance();
-
-  MDY_CALL_ASSERT_SUCCESS(infoManager.CreateShaderInformation(shaderDesc));
-  MDY_CALL_ASSERT_SUCCESS(rescManager.CreateShaderResource(FDyBuiltinShaderGLRenderDeferredRendering::sName.data()));
+  this->mSpecifierName  = sName;
+  this->mVertexBuffer   = sVertexShaderCode;
+  this->mPixelBuffer    = sFragmentShaderCode;
 }
 
 } /// ::dy::builtin namespace

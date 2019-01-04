@@ -49,6 +49,12 @@ void DyLuaCppDoNotOwnershipPointer();
 void DyLuaCppOwnershipPointerSafely();
 void DyLuaCppSafeNullptr();
 
+//!
+//! Dy Class binding in lua
+//!
+
+void DyLuaBindingDyTest();
+
 /// Entry point of lua testing
 void DyLuaEntryPoint();
 

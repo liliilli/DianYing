@@ -14,104 +14,80 @@
 ///
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
+#include <Dy/Management/Type/Time/DDyTimepoint.h>
 
 namespace dy
 {
 
 ///
 /// @class MDyTime
-/// @brief Time class manages time fragment.
+/// @brief Time class manages time fragment. \n
+/// This management type manages ticking of each frame.
 ///
-class MDyTime final : public ISingleton<MDyTime>
+class MDyTime final : public IDySingleton<MDyTime>
 {
   MDY_SINGLETON_DERIVED(MDyTime);
   MDY_SINGLETON_PROPERTIES(MDyTime);
 public:
-  ///
-  /// @brief Check that frame is ticked.
+  /// @brief  Check that frame is ticked. \n
   /// If frame is turned to the next frame and everything is ok, return DySuccess or DyFailure.
-  ///
-  [[nodiscard]] EDySuccess IsGameFrameTicked() const noexcept;
+  MDY_NODISCARD EDySuccess IsGameFrameTicked() const noexcept;
 
-  ///
-  /// @brief Return present frame per second.
-  ///
-  [[nodiscard]] int32_t GetPresentFpsValue() const noexcept;
+  /// @brief  Return present frame per second.
+  MDY_NODISCARD TI32 GetPresentFpsCountValue() const noexcept;
 
-  ///
-  /// @brief Get just delta time.
+  /// @brief  Get just delta time. \n
   /// Format is integer part is seconds, and point part is millisecond region.
-  ///
   /// @return Float value delta time value.
-  ///
-  [[nodiscard]] float GetGameScaledTickedDeltaTimeValue() const noexcept;
+  MDY_NODISCARD TF32 GetGameScaledTickedDeltaTimeValue() const noexcept;
 
-  ///
-  /// @brief Get summed delta time from previous function call.
+  /// @brief  Get summed delta time from previous function call. \n
   /// Format is integer part is seconds, and point part is millisecond region.
-  ///
   /// @return Float value delta time value.
-  ///
-  [[nodiscard]] float GetGameScaledElapsedTimeValue() const noexcept;
+  MDY_NODISCARD TF32 GetGameScaledElapsedTimeValue() const noexcept;
 
-  ///
-  /// @brief
-  ///
-  [[nodiscard]] float GetGameTimeScaleValue() const noexcept;
+  /// @brief  Get time scale value.
+  MDY_NODISCARD TF32 GetGameTimeScaleValue() const noexcept;
 
-  ///
-  /// @brief Get steady (not-scaled) delta time value.
-  ///
-  [[nodiscard]] FORCEINLINE float GetSteadyDeltaTimeValue() const noexcept
-  {
-    return this->mSteadyDeltaTime;
-  }
+  /// @brief  Get steady (not-scaled) delta time value.
+  MDY_NODISCARD TF32 GetSteadyDeltaTimeValue() const noexcept;
 
-  ///
   /// @brief Get steady (not-scaled) elapsed time value.
-  ///
-  [[nodiscard]] FORCEINLINE float GetSteadyElapsedTimeValue() const noexcept
-  {
-    return this->mSteadyElapsedTime;
-  }
+  MDY_NODISCARD TF32 GetSteadyElapsedTimeValue() const noexcept;
 
   ///
-  /// @brief Set game time scale. This will affect game logic speed, timer, etc related to this
-  /// but actual fps will not changed.
-  ///
+  /// @brief Set game time scale. This will affect game logic speed, timer,
+  /// etc related to this but actual fps will not changed.
   /// timeScale should not be 0, or changed 0.0001f;
   ///
-  [[maybe_unused]] EDySuccess SetGameTimeScale(float timeScale) noexcept;
+  MDY_NOTUSED EDySuccess SetGameTimeScale(_MIN_ const TF32 timeScale) noexcept;
+
+  /// @brief Get calendar time.
+  MDY_NOTUSED DDyTimepoint GetCalendarTime() const noexcept;
 
 private:
-  ///
-  /// @brief Update game time.
-  ///
+  /// @brief Update game time fragment sequence.
   void pUpdate() noexcept;
 
-  ///
   /// @brief set vsync mode.
-  ///
-  void pfSetVsync(bool isVsyncEnabled) noexcept;
+  void pfSetVsync(_MIN_ bool isVsyncEnabled) noexcept;
 
-  float mSteadyDeltaTime              = 0.0f;
-  float mSteadyElapsedTime            = 0.0f;
+  TF32 mSteadyDeltaTime                 = 0.0f;
+  TF32 mSteadyElapsedTimeFromStartup    = 0.0f;
 
-  float mTimeScale                    = 1.0f;
-  mutable float mGameScaledDeltaTime    = 0.0f;
-  mutable float mGameScaledElapsedTime  = 0.0f;
+  TF32 mGameTimeScale                   = 1.0f;
+  TU32 mGameGoalFps                     = 60u;
 
-  mutable float mGameTickElapsedTime  = 0.0f;
-  int32_t       mGameTickedFps        = 0;
-  const int32_t mGameGoalFps          = 60;
-  mutable float mGameTickFragment     = MDY_INITIALIZE_DEFINT;
-
-  MDY_TRANSIENT float __mIsEnabledVsync = false;
-  MDY_TRANSIENT float __mGameGoalFps    = 60;
-  MDY_TRANSIENT float __mGameTimeScale  = 1.0f;
+  MDY_TRANSIENT TF32 mGameElapsedTimeFromStartUp= 0.0f;
+  MDY_TRANSIENT TF32 mGameElapsedDtFromLastTick = 0.0f;
+  MDY_TRANSIENT TF32 mGameElapsedDtThisFrame    = 0.0f;
+  MDY_TRANSIENT TU32 mGameTickedFpsCountOld     = MDY_INITIALIZE_DEFUINT;
+  MDY_TRANSIENT TU32 mGameTickedFpsCount        = MDY_INITIALIZE_DEFUINT;
+  MDY_TRANSIENT TF32 mGameTickFragment          = MDY_INITIALIZE_DEFINT;
+  MDY_TRANSIENT bool __mIsEnabledVsync          = false;
 
   friend class MDySetting;
-  friend class MDyWindow;
+  friend class DyEngine;
 };
 
 } /// ::dy namespace

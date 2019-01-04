@@ -22,7 +22,8 @@ namespace dy
 ///
 MDY_INTERFACE MDY_NO_VTABLE IDyUpdatable
 {
-  virtual void Update(float dt) = 0;
+    virtual ~IDyUpdatable() = default;
+    virtual void Update(float dt) = 0;
 };
 
 } /// ::dy namespace

@@ -27,7 +27,7 @@ namespace dy
 /// @class MDyPhysics
 /// @brief Manages physical simulation, raytracing, sweeping and overlapping etc.
 ///
-class MDyPhysics final : public ISingleton<MDyPhysics>, public IDyUpdatable
+class MDyPhysics final : public IDySingleton<MDyPhysics>, public IDyUpdatable
 {
   MDY_SINGLETON_PROPERTIES(MDyPhysics);
   MDY_SINGLETON_DERIVED(MDyPhysics);

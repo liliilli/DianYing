@@ -407,4 +407,18 @@ DDyMatrix4x4::DDyMatrix4x4(bool)
   this->mMatrixValue[3][3] = 1;
 }
 
+bool operator==(_MIN_ const DDyMatrix4x4& lhs, _MIN_ const DDyMatrix4x4& rhs) noexcept
+{
+  for (TI32 i = 0; i < 4; ++i)
+  { 
+    if (lhs.mMatrixValue[i] != rhs.mMatrixValue[i]) { return false; }
+  }
+  return true;
+}
+
+bool operator!=(_MIN_ const DDyMatrix4x4& lhs, _MIN_ const DDyMatrix4x4& rhs) noexcept
+{
+  return !(lhs == rhs);
+}
+
 } /// ::dy namespace

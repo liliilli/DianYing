@@ -1,0 +1,229 @@
+{
+  "TestScene": {
+    "Meta":
+    {
+      "SpecifierName" : "TestScene",
+      "IsUsingUUIDForSpecification": false,
+      "BackgroundColor" : 3359880
+    },
+    "Object":
+    [
+      {
+        "Name" : "ParentActor",
+        "Type" : "Actor",
+        "CommonProperties": {
+          "ParentSpecifierName" : "",
+          "IsInitiallyActivated": true,
+          "IsFromPrefab"        : false,
+          "PrefabSpecifierName" : "",
+          "ObjectTag": "",
+          "IsOverridePrefabTag" : false
+        },
+        "ComponentList": [
+          {
+            "Type"      : "Script",
+            "Activated" : true,
+            "Details"   : { "Specifier": "TestScript3" }
+          },
+          {
+            "Type": "Transform",
+            "Details": {
+              "LPosition": { "X": 0, "Y": 0, "Z": 0 },
+              "LRotation": { "X": 0, "Y": 0, "Z": 0 },
+              "LScale": { "X": 1, "Y": 1, "Z": 1 },
+              "WPosition": { "X": 0, "Y": 0, "Z": 0 },
+              "WRotation": { "X": 0, "Y": 0, "Z": 0 },
+              "WScale": { "X": 1, "Y": 1, "Z": 1 }
+            }
+          }
+        ]
+      },
+      {
+        "Name"      : "Test",
+        "Type"      : "Actor",
+        "CommonProperties": {
+          "ParentSpecifierName" : "ParentActor",
+          "IsInitiallyActivated": true,
+          "IsFromPrefab"        : false,
+          "PrefabSpecifierName" : "",
+          "ObjectTag": "",
+          "IsOverridePrefabTag" : false
+        },
+        "ComponentList": [
+          {
+            "Type": "Transform",
+            "Details": {
+              "LPosition": { "X": 0, "Y": 0, "Z": 0 },
+              "LRotation": { "X": 0, "Y": 0, "Z": 0 },
+              "LScale": { "X": 1, "Y": 1, "Z": 1 },
+              "WPosition": { "X": 0, "Y": 0, "Z": -40 },
+              "WRotation": { "X": 0, "Y": 0, "Z": 0 },
+              "WScale": { "X": 1, "Y": 1, "Z": 1 }
+            }
+          },
+          {
+            "Type": "Camera",
+            "Activated": true,
+            "Details": {
+              "FieldOfView": 70.0,
+              "Projection": "Perspective",
+              "ClippingNear": 0.3,
+              "ClippingFar": 1000,
+              "ViewportRect": {
+                "LeftDown": { "X": 0, "Y": 0 },
+                "RightUp":  { "X": 1, "Y": 1 }
+              },
+              "IsFocusInstantly": true,
+              "IsMeshUnclipped": false
+            }
+          }
+        ]
+      },
+      {
+        "Name"      : "Test2",
+        "Type"      : "Actor",
+        "CommonProperties": {
+          "ParentSpecifierName" : "FloorObj",
+          "IsInitiallyActivated": true,
+          "IsFromPrefab"        : true,
+          "PrefabSpecifierName" : "TestPrefab",
+          "ObjectTag": "",
+          "IsOverridePrefabTag" : false
+        },
+        "ComponentList": [
+          {
+            "Type"      : "Transform",
+            "Details"   : {
+              "LPosition" : { "X": 0, "Y": 0, "Z": 0 },
+              "LRotation" : { "X": 0, "Y": 0, "Z": 0 },
+              "LScale"    : { "X": 1, "Y": 1, "Z": 1 },
+              "WPosition" : { "X": 0, "Y": 20, "Z": -10 },
+              "WRotation" : { "X": 0, "Y": 0, "Z": 0 },
+              "WScale"    : { "X": 0.1, "Y": 0.2, "Z": 0.1 }
+            }
+          }
+        ]
+      },
+      {
+        "Name"      : "Test",
+        "Type"      : "Actor",
+        "CommonProperties": {
+          "ParentSpecifierName" : "FloorObj.Test2",
+          "IsInitiallyActivated": true,
+          "IsFromPrefab"        : false,
+          "PrefabSpecifierName" : "",
+          "ObjectTag": "",
+          "IsOverridePrefabTag" : false
+        },
+        "ComponentList": [
+          {
+            "Type"      : "Transform",
+            "Details"   : {
+              "LPosition" : { "X": 0, "Y": 0, "Z": 0 },
+              "LRotation" : { "X": 0, "Y": 0, "Z": 0 },
+              "LScale"    : { "X": 1, "Y": 1, "Z": 1 },
+              "WPosition" : { "X": 3, "Y": 0, "Z": 0 },
+              "WRotation" : { "X": 0, "Y": 0, "Z": 0 },
+              "WScale"    : { "X": 1, "Y": 1, "Z": 1 }
+            }
+          },
+          {
+            "Type"      : "ModelFilter",
+            "Activated" : true,
+            "Details"   : { "ModelName": "dyBtModelBox" }
+          },
+          {
+            "Type"      : "ModelRenderer",
+            "Activated" : true,
+            "Details"   : {
+              "Shadow"    : true,
+              "Materials" : [ "dyBtMatOpaqueStaticPlain" ]
+            }
+          }
+        ]
+      },
+      {
+        "Name"      : "DirLight",
+        "Type"      : "Actor",
+        "CommonProperties": {
+          "ParentSpecifierName" : "",
+          "IsInitiallyActivated": true,
+          "IsFromPrefab"        : false,
+          "PrefabSpecifierName" : "",
+          "ObjectTag": "",
+          "IsOverridePrefabTag" : false
+        },
+        "ComponentList": [
+          {
+            "Type"      : "DirectionalLight",
+            "Activated" : true,
+            "Details"   : {
+              "LightDirection"  : { "X": 0, "Y": 1, "Z": 0 },
+              "LightIntensity"  : 3.00,
+              "LightDiffuse"    : 16777215,
+              "LightSpecular"   : 16765536,
+              "LightAmbient"    : 1592739,
+              "ShadowType"      : "Hard",
+              "ShadowStrength"  : 0.5,
+              "ShadowResolution": {"X": 128, "Y": 128},
+              "IsUsingGlobalShadowResolution": false,
+              "ShadowBias"      : 0.02,
+              "ShadowCullingMaskLayer": [ ],
+              "IsCastingLight"  : true,
+              "IsCastingShadow" : false
+            }
+          },
+          {
+            "Type"   : "Transform",
+            "Details": {
+              "LPosition" : { "X": 0, "Y": 0, "Z": 0 },
+              "LRotation" : { "X": 0, "Y": 0, "Z": 0 },
+              "LScale"    : { "X": 1, "Y": 1, "Z": 1 },
+              "WPosition" : { "X": 32, "Y": 32, "Z": 16.00 },
+              "WRotation" : { "X": 60, "Y": 0, "Z": -63.2 },
+              "WScale"    : { "X": 1, "Y": 1, "Z": 1 }
+            }
+          }
+        ]
+      },
+      {
+        "Name"      : "FloorObj",
+        "Type"      : "Actor",
+        "CommonProperties": {
+          "ParentSpecifierName" : "",
+          "IsInitiallyActivated": true,
+          "IsFromPrefab"        : false,
+          "PrefabSpecifierName" : "",
+          "ObjectTag": "",
+          "IsOverridePrefabTag" : false
+        },
+        "ComponentList": [
+          {
+            "Type"      : "Transform",
+            "Details"   : {
+              "LPosition" : { "X": 0, "Y": 0, "Z": 0 },
+              "LRotation" : { "X": 0, "Y": 0, "Z": 0 },
+              "LScale"    : { "X": 1, "Y": 1, "Z": 1 },
+              "WPosition" : { "X": 0, "Y": -13, "Z": 0 },
+              "WRotation" : { "X": 0, "Y": 0, "Z": 0 },
+              "WScale"    : { "X": 10, "Y": 10, "Z": 10 }
+            }
+          },
+          {
+            "Type"      : "ModelFilter",
+            "Activated" : true,
+            "Details"   : { "ModelName" : "dyBtModelBox" }
+          },
+          {
+            "Type"      : "ModelRenderer",
+            "Activated" : true,
+            "Details"   : {
+              "Shadow"    : true,
+              "Materials" : [ "dyBtMatOpaqueStaticPlain" ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

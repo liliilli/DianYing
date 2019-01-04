@@ -15,9 +15,8 @@
 /// Header file
 #include <Dy/Element/Level.h>
 #include <Dy/Helper/HashCompileCrc32.h>
-#include <Dy/Element/Pawn.h>
 #include <Dy/Management/WorldManager.h>
-#include <Dy/Management/MetaInfoManager.h>
+#include <Dy/Management/IO/MetaInfoManager.h>
 
 //!
 //! Local translation unit function & data
@@ -35,73 +34,24 @@ namespace
 namespace dy
 {
 
-void FDyLevel::Initialize(const PDyLevelConstructDescriptor& desc)
+FDyLevel::FDyLevel(_MIN_ const PDyLevelConstructMetaInfo& desc)
 {
-  ///
-  /// @brief  Create pawn instance and set fundamental properties.
-  /// @param  objectInformation Information to create FDyPawn instance.
-  ///
-  static auto pCreatePawn = [&](const DDyObjectInformation& objectInformation)
-  {
-    auto instancePtr = std::make_unique<FDyPawn>();
-    MDY_CALL_ASSERT_SUCCESS(instancePtr->Initialize(objectInformation));
+  this->mLevelName            = desc.mMetaCategory.mLevelName;
+  this->mLevelBackgroundColor = desc.mMetaCategory.mLevelBackgroundColor;
 
-    // @TODO IMPLEMENT PARENT TRANSFORMATION RELOCATION MECHANISM
-    if (objectInformation.mParentMetaIndex != -1)
+  for (const auto& objectInformation : desc.mLevelObjectMetaInfoList)
+  { // Create object, FDyActor
+    switch (objectInformation->mObjectType)
     {
-#ifdef false
-      PHITOS_NOT_IMPLEMENTED_ASSERT();
-      instancePtr->SetParent();
-#endif
-    }
-    else
-    {
-      // Insert created ptr into actor map of this scene. (root)
-      auto[it, result]    = this->mActorMap.try_emplace(objectInformation.mName, std::move(instancePtr));
-
-      // Insert inserted FDyPawn raw pointer instance to script update list.
-      FDyPawn* pawnRawPtr = static_cast<FDyPawn*>(it->second.get());
-      const auto id       = MDyWorld::GetInstance().pfEnrollActivePawn(DyMakeNotNull(pawnRawPtr));
-      pawnRawPtr->pfSetListIndex(id);
-
-      if (!result) { PHITOS_UNEXPECTED_BRANCH(); }
-    }
-  };
-
-  ///
-  /// @brief  Create FDyDirectionalLight instance and set fundamental properties.
-  /// @param  objectInformation Information to create FDyDirectionalLight instance.
-  ///
-  static auto pCreateDirectionalLight = [&](const DDyObjectInformation& objectInformation)
-  {
-    MDY_LOG_CRITICAL("EDyFDyObjectType::FDyDirectionalLight: NOT IMPLEMENTED");
-  };
-
-  // Body
-  this->mLevelName = desc.mLevelName;
-  this->mLevelHashIdentifier  = hash::DyToCrc32Hash(this->mLevelName.c_str());
-  this->mLevelBackgroundColor = desc.mLevelBackgroundColor;
-
-  // Create objects
-  for (const auto& objectInformation : desc.mLevelObjectInformations)
-  {
-    const auto type = objectInformation.mType;
-    switch (type)
-    {
-    case EDyFDyObjectType::FDyPawn:                 pCreatePawn(objectInformation); break;
-    case EDyFDyObjectType::FDyDirectionalLight:     pCreateDirectionalLight(objectInformation); break;
-    case EDyFDyObjectType::FDyPostprocessBlock:
-    case EDyFDyObjectType::FDyPointLight:
-    case EDyFDyObjectType::FDySpotLight:
-    case EDyFDyObjectType::FDyObject:
-    case EDyFDyObjectType::FDySceneScriptableObject:
-    case EDyFDyObjectType::FDyCamera:
-    case EDyFDyObjectType::FDySound:
-    case EDyFDyObjectType::FDySoundListener:
-    case EDyFDyObjectType::Error:
-      MDY_LOG_CRITICAL("NOT IMPLEMENTED");
-      PHITOS_NOT_IMPLEMENTED_ASSERT();
-      break;
+    case EDyMetaObjectType::Actor:
+    { // General object type. Make FDyActor instance.
+      auto instancePtr = std::make_unique<FDyActor>(*objectInformation);
+      auto [it, result] = this->mActorMap.try_emplace(instancePtr->GetActorName(), std::move(instancePtr));
+      MDY_ASSERT(result == true, "Unexpected error occured in inserting FDyActor to object map.");
+    } break;
+    case EDyMetaObjectType::SceneScriptor:  MDY_NOT_IMPLEMENTED_ASSERT(); break;
+    case EDyMetaObjectType::Object:         MDY_NOT_IMPLEMENTED_ASSERT(); break;
+    default: MDY_UNEXPECTED_BRANCH(); break;
     }
   }
 
@@ -109,38 +59,156 @@ void FDyLevel::Initialize(const PDyLevelConstructDescriptor& desc)
   this->mInitialized = true;
 }
 
-void FDyLevel::Release()
+FDyLevel::~FDyLevel()
 {
   MDY_LOG_INFO("{} | Release level context. | Level name : {}", "FDyLevel::Release()", this->mLevelName);
   for (auto& [name, actor] : this->mActorMap)
   {
-    if (!actor) continue;
-    else
-    {
-      const auto flag = actor->Release();
-      if (flag == DY_FAILURE)
-      {
-        MDY_LOG_WARNING("{} | Release function is failed. | Actor name : {}", "FDyLevel::Release", actor->GetActorName());
-      }
-
-      MDyWorld::GetInstance().pfMoveActorToGc(DyMakeNotNull(actor.release()));
-    }
+    if (MDY_CHECK_ISEMPTY(actor)) { continue; }
+    MDyWorld::GetInstance().pfMoveActorToGc(DyMakeNotNull(actor.release()));
   }
 
+  // GCed actor have not to be called GCed script `Destroy` function when Level is released.
+  this->mActorMap.clear();
   this->mInitialized = false;
 }
 
-void FDyLevel::Update(float dt)
+std::vector<NotNull<FDyActor*>> 
+FDyLevel::GetAllActorsWithTag(_MIN_ const std::string& iTagSpecifier) const noexcept
 {
-  if (!this->mInitialized) { return; }
+  std::vector<NotNull<FDyActor*>> result;
+  for (const auto& [specifier, ptrsmtActor] : this->mActorMap)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtActor)) { continue; }
+    if (ptrsmtActor->GetActorTag() == iTagSpecifier) { result.emplace_back(ptrsmtActor.get()); }
+  }
 
+  return result;
+}
 
+std::vector<NotNull<FDyActor*>> 
+FDyLevel::GetAllActorsWithTagRecursive(_MIN_ const std::string& iTagSpecifier) const noexcept
+{
+  std::vector<NotNull<FDyActor*>> result;
+  for (const auto& [specifier, ptrsmtActor] : this->mActorMap)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtActor)) { continue; }
+    if (ptrsmtActor->GetActorTag() == iTagSpecifier) { result.emplace_back(ptrsmtActor.get()); }
+    if (ptrsmtActor->IsHavingChildrenObject() == true)
+    {
+      const auto subResult = ptrsmtActor->GetAllActorsWithTagRecursive(iTagSpecifier);
+      result.insert(result.end(), MDY_BIND_BEGIN_END(subResult));
+    }
+  }
+
+  return result;
+}
+
+std::vector<NotNull<FDyActor*>> 
+FDyLevel::GetAllActorsWithName(_MIN_ const std::string& iNameSpecifier) const noexcept
+{
+  if (iNameSpecifier.empty() == true)   { return {}; }
+
+  std::vector<NotNull<FDyActor*>> result;
+  for (const auto& [specifier, ptrsmtActor] : this->mActorMap)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtActor)) { continue; }
+    if (ptrsmtActor->GetActorName() == iNameSpecifier) { result.emplace_back(ptrsmtActor.get()); }
+  }
+
+  return result;;
+}
+
+std::vector<NotNull<FDyActor*>> 
+FDyLevel::GetAllActorsWithNameRecursive(_MIN_ const std::string& iNameSpecifier) const noexcept
+{
+  if (iNameSpecifier.empty() == true)   { return {}; }
+
+  std::vector<NotNull<FDyActor*>> result;
+  for (const auto& [specifier, ptrsmtActor] : this->mActorMap)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtActor)) { continue; }
+    if (ptrsmtActor->GetActorName() == iNameSpecifier) { result.emplace_back(ptrsmtActor.get()); }
+    if (ptrsmtActor->IsHavingChildrenObject() == true)
+    {
+      const auto subResult = ptrsmtActor->GetAllActorsWithNameRecursive(iNameSpecifier);
+      result.insert(result.end(), MDY_BIND_BEGIN_END(subResult));
+    }
+  }
+
+  return result;;
+}
+
+FDyActor* FDyLevel::GetActorWithFullName(_MIN_ const std::string& iFullName) const noexcept
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+  return nullptr;
+}
+
+FDyActor::TActorMap& FDyLevel::GetActorContainer() noexcept
+{
+  return this->mActorMap;
+}
+
+void FDyLevel::CreateActorInstantly(_MIN_ const PDyActorCreationDescriptor& descriptor)
+{
+  if (descriptor.mParentFullSpecifierName.empty() == true)
+  {
+    auto instancePtr  = std::make_unique<FDyActor>(descriptor);
+    auto [it, result] = this->mActorMap.try_emplace(instancePtr->GetActorName(), std::move(instancePtr));
+    MDY_ASSERT(result == true, "Unexpected error occured in inserting FDyActor to object map.");
+     
+    // Try propagate transform.
+    auto& [specifier, ptrsmtActor] = *it;
+    if (ptrsmtActor->IsHaveParent() == true)
+    {
+      ptrsmtActor->GetParent()->GetTransform()->TryPropagateTransformToChildren();
+    }
+  }
+  else
+  {
+    auto* ptrParent = this->GetActorWithFullName(descriptor.mParentFullSpecifierName);
+    // If parent is not exist because removed or will be removed on this frame, do nothing and do not create.
+    if (MDY_CHECK_ISNULL(ptrParent)) { return; }
+
+    MDY_NOT_IMPLEMENTED_ASSERT();
+  }
+}
+
+void FDyLevel::Update(_MIN_ float dt)
+{
+  if (this->mInitialized == false) { return; }
+}
+
+const DDyColorRGBA& FDyLevel::GetBackgroundColor() const noexcept
+{
+  return this->mLevelBackgroundColor;
+}
+
+const std::string& FDyLevel::GetLevelName() const noexcept
+{
+  return this->mLevelName;
+}
+
+void FDyLevel::SetBackgroundColor(_MIN_ const DDyColorRGBA& backgroundColor) noexcept
+{
+  this->mLevelBackgroundColor = backgroundColor;
+}
+
+void FDyLevel::MDY_PRIVATE_SPECIFIER(AlignActorsPosition)() noexcept
+{
+  // Update transform to reflect transform information.
+  for (auto& [specifier, ptrsmtActor] : this->mActorMap)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtActor)) { continue; }
+    ptrsmtActor->GetTransform()->TryPropagateTransformToChildren();
+  }
 }
 
 std::string FDyLevel::ToString()
 {
-PHITOS_NOT_IMPLEMENTED_ASSERT();
-return MDY_INITILAIZE_EMPTYSTR;
+MDY_NOT_IMPLEMENTED_ASSERT();
+return MDY_INITIALIZE_EMPTYSTR;
 }
 
 } /// ::dy namespace

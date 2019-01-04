@@ -99,6 +99,7 @@ namespace dy
 
 EDySuccess MDyPhysics::pfInitialize()
 {
+#ifdef false
   ///
   /// @function CreateStack
   /// @brief Test function for create stack actors which consist of shape and rigidbody (dynamic)
@@ -201,30 +202,36 @@ EDySuccess MDyPhysics::pfInitialize()
     CreateStack(physx::PxTransform(physx::PxVec3(0, 0, stackZ -= 10.0f)), 10, 2.0f);
   }
   CreateDynamic(physx::PxTransform(physx::PxVec3(0, 40, 100)), physx::PxSphereGeometry(10), physx::PxVec3(0, -50, -100));
+#endif
 
   return DY_SUCCESS;
 }
 
 EDySuccess MDyPhysics::pfRelease()
 {
+#ifdef false
   //physx::PxSceneWriteLock scopedLock(*gScene);
 
   // PhysX release
   this->gScene->release();
   this->gPhysicx->release();
   this->gFoundation->release();
+#endif
 
   return DY_SUCCESS;
 }
 
 void MDyPhysics::Update(float dt)
 {
+#ifdef false
   // PhysX step physics
   if (dt > 0)
   {
     gScene->simulate(dt);
     gScene->fetchResults(true);
   }
+
+#endif
 
   // Print information
 #ifdef false

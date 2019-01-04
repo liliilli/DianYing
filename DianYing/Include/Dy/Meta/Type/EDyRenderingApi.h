@@ -1,0 +1,43 @@
+#ifndef GUARD_DY_META_TYPE_EDYRENDERINGAPI_H
+#define GUARD_DY_META_TYPE_EDYRENDERINGAPI_H
+///
+/// MIT License
+/// Copyright (c) 2018 Jongmin Yun
+///
+/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+/// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+/// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+/// SOFTWARE.
+///
+
+namespace dy
+{
+
+///
+/// @enum EDyRenderingApi
+/// @brief Rendering API type for rendering scene. \n
+/// Must not be EDyRenderingApi::NoneError when using.
+///
+enum class EDyRenderingApi
+{
+  Vulkan,
+#if defined(_WIN32)
+  DirectX11,
+  DirectX12,
+#endif
+#if defined(__APPLE__)
+  Metal,
+#else
+  OpenGL,
+#endif
+  NoneError,
+};
+
+
+
+} /// ::dy namespace
+
+#endif /// GUARD_DY_META_TYPE_EDYRENDERINGAPI_H

@@ -15,11 +15,9 @@
 
 #include <memory>
 
-#include <Dy/Helper/Type/Color.h>
+#include <Dy/Helper/Type/ColorRGBA.h>
 #include <Dy/Element/Object.h>
 #include <Dy/Element/Actor.h>
-#include <Dy/Element/Abstract/ADyNameCounterMap.h>
-#include <Dy/Element/Descriptor/LevelDescriptor.h>
 #include <Dy/Element/Interface/IDyUpdatable.h>
 
 namespace dy {
@@ -28,47 +26,78 @@ namespace dy {
 /// @class FDyLevel
 /// @brief Level class type for managing run-time interactive world space.
 ///
-class FDyLevel final : public FDyObject, public IDyUpdatable, public ADyNameCounterMap
+class FDyLevel final : public FDyObject, public IDyUpdatable, public FDyNameGenerator
 {
-  using TActorSmtPtr = std::unique_ptr<FDyActor>;
-  using TActorMap    = std::unordered_map<std::string, TActorSmtPtr>;
   using TNameCounterMap   = std::unordered_map<std::string, int32_t>;
 
 public:
   /// Initialize level context with valid descriptor.
-  void Initialize(const PDyLevelConstructDescriptor& desc);
-
+  FDyLevel(_MIN_ const PDyLevelConstructMetaInfo& desc);
   /// Release level by release all subobjects in this level storing information or signalling something.
-  void Release();
+  virtual ~FDyLevel();
 
   /// Update level.
-  void Update(float dt) override final;
+  void Update(_MIN_ float dt) override final;
 
-  ///
+  /// @brief  Get background color of this scene.
+  /// @return background color [0, 1] (RGBA)
+  MDY_NODISCARD const DDyColorRGBA& GetBackgroundColor() const noexcept;
+
   /// @brief  Get present level name.
   /// @return Level name.
-  ///
-  [[nodiscard]]
-  const std::string& GetLevelName() const noexcept
-  {
-    return this->mLevelName;
-  }
+  MDY_NODISCARD const std::string& GetLevelName() const noexcept;
 
+  /// @brief  Set background color of this scene.
+  /// @param  backgroundColor New backgrond color value.
+  void SetBackgroundColor(_MIN_ const DDyColorRGBA& backgroundColor) noexcept;
+
+  /// @brief Align position of actors.
+  void MDY_PRIVATE_SPECIFIER(AlignActorsPosition)() noexcept;
+
+  /// @brief  Get valid level reference.
+  /// @return Valid level reference. when level is not specified, unexpected behaviour.
+  MDY_NODISCARD std::vector<NotNull<FDyActor*>> 
+  GetAllActorsWithTag(_MIN_ const std::string& iTagSpecifier) const noexcept;
+
+  /// @brief Get all actors with tag. Tag must be valid. \n
+  /// If iTagSpecifier is empty, this function get all actors which is not specified any tag. \n
+  /// and this function search all actor of object tree from root to leaf, so might take some time.
+  MDY_NODISCARD std::vector<NotNull<FDyActor*>>
+  GetAllActorsWithTagRecursive(_MIN_ const std::string& iTagSpecifier) const noexcept;
+ 
+  /// @brief Get all actors with matched name within only one depth of level object tree. \n
+  /// If iNameSpecifier is empty, just return empty list.
+  MDY_NODISCARD std::vector<NotNull<FDyActor*>>
+  GetAllActorsWithName(_MIN_ const std::string& iNameSpecifier) const noexcept; 
+
+  /// @brief Get all actors with matched name within overall level object tree. \n
+  /// If iNameSpecifier is empty, just return empty list.
+  MDY_NODISCARD std::vector<NotNull<FDyActor*>>
+  GetAllActorsWithNameRecursive(_MIN_ const std::string& iNameSpecifier) const noexcept; 
+
+  /// @brief Try get actor with given full name, from root to actor.
+  /// If iFullName did not satisfy full name format, just return nullptr.
+  MDY_NODISCARD FDyActor* GetActorWithFullName(_MIN_ const std::string& iFullName) const noexcept;
+
+  /// @brief Return level actor container.
+  MDY_NODISCARD FDyActor::TActorMap& GetActorContainer() noexcept;
+
+  /// @brief Create actor instantly in this level.
+  void CreateActorInstantly(_MIN_ const PDyActorCreationDescriptor& descriptor);
+  
 private:
   /// Level's name. not modifiable
-  std::string     mLevelName            = MDY_INITILAIZE_EMPTYSTR;
-  /// Level's hash value for identifying scene in world's array.
-  TU32            mLevelHashIdentifier  = MDY_INITIALIZE_DEFUINT;
-  /// Scene basic color
-  DDyColor        mLevelBackgroundColor = DDyColor::White;
+  std::string         mLevelName            = MDY_INITIALIZE_EMPTYSTR;
+  /// Level basic color
+  DDyColorRGBA        mLevelBackgroundColor = DDyColorRGBA::White;
   /// Actor list (hierarchial version)
-  TActorMap       mActorMap            = {};
+  FDyActor::TActorMap mActorMap             = {};
   /// Check if level is initialized or released. Level is active when only mInitialized is true.
-  bool            mInitialized          = false;
+  bool                mInitialized          = false;
 
 public:
   /// Level information as string.
-  std::string ToString() override final;
+  MDY_NODISCARD std::string ToString() override final;
 
 #ifdef false
   ///
@@ -93,7 +122,7 @@ public:
         object_final_name,
         nullptr);
     if (!result) {
-      PHITOS_ASSERT(result, "Object did not be made properly.");
+      MDY_ASSERT(result, "Object did not be made properly.");
       return nullptr;
     }
 
@@ -125,7 +154,7 @@ public:
 
     auto [result_pair, result] = m_object_list.try_emplace(object_final_name, nullptr);
     if (!result) {
-      PHITOS_ASSERT(result, "Object did not be made properly.");
+      MDY_ASSERT(result, "Object did not be made properly.");
       return nullptr;
     }
 

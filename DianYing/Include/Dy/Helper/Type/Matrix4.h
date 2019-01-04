@@ -140,6 +140,9 @@ public:
 
   DDyMatrix4x4& operator-=(const DDyMatrix4x4& rhs) noexcept;
 
+  friend bool operator==(_MIN_ const DDyMatrix4x4& lhs, _MIN_ const DDyMatrix4x4& rhs) noexcept;
+  friend bool operator!=(_MIN_ const DDyMatrix4x4& lhs, _MIN_ const DDyMatrix4x4& rhs) noexcept;
+
   ///
   /// @brief
   ///

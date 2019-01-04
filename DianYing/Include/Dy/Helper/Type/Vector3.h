@@ -22,6 +22,7 @@
 
 #include <assimp/vector3.h>
 #include <glm/glm.hpp>
+#include <nlohmann/json_fwd.hpp>
 
 #include <Dy/Helper/Type/Vector2.h>
 #include <Dy/Helper/Math/Math.h>
@@ -375,16 +376,6 @@ struct DDyVector3 final {
   ///
   DDyVector3 MultiplyMatrix(const dy::DDyMatrix3x3& matrix) const noexcept;
 
-  ///
-  /// @brief Compare length of two vectors and return if they are same length.
-  /// @return Equal flag.
-  ///
-  friend bool operator==(const DDyVector3& lhs, const DDyVector3& rhs) noexcept
-  {
-    return math::IsNearlyEqual(lhs.GetSquareLength(), rhs.GetSquareLength(), 0.001f);
-  }
-
-private:
   friend bool operator<(const DDyVector3& lhs, const DDyVector3& rhs) noexcept
   {
     return lhs.GetSquareLength() < rhs.GetSquareLength();
@@ -405,10 +396,12 @@ private:
     return !(lhs < rhs);
   }
 
+  friend bool operator==(_MIN_ const DDyVector3& lhs, _MIN_ const DDyVector3& rhs) noexcept;
+  friend bool operator!=(_MIN_ const DDyVector3& lhs, _MIN_ const DDyVector3& rhs) noexcept;
+
   //!
   //! Static functions
   //!
-public:
 
   ///
   /// @brief Do dot product of (x, y, z) R^3 vector.
@@ -504,6 +497,9 @@ public:
   ///
   [[nodiscard]] bool IsAllZero() const noexcept;
 };
+
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDyVector3& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDyVector3& p);
 
 } /// ::dy namespace
 

@@ -20,87 +20,66 @@
 
 #include <cassert>
 
+#ifdef min
+#undef min
+#endif
+#ifdef max
+#undef max
+#endif
+#include <cxxopts.hpp>
+
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/TimeManager.h>
-#include <Dy/Helper/JsonHelper.h>
+#include <Dy/Helper/Library/HelperJson.h>
+
+//!
+//! Local translation unit variables or functions.
+//!
 
 namespace
 {
 
-//!
-//! Local translation unit varaibles
-//!
-
-MDY_SET_IMMUTABLE_STRING(sSettingPathName, "./TestSetting.DDat");
-
 MDY_SET_IMMUTABLE_STRING(sCategoryDescription,  "Description");
 MDY_SET_IMMUTABLE_STRING(sCategoryGameplay,     "Gameplay");
 MDY_SET_IMMUTABLE_STRING(sCategoryInput,        "Input");
-
-MDY_SET_IMMUTABLE_STRING(sProjectName,          "ProjectName");
-MDY_SET_IMMUTABLE_STRING(sWindowName,           "WindowName");
-MDY_SET_IMMUTABLE_STRING(sVersionHigh,          "VersionHigh");
-MDY_SET_IMMUTABLE_STRING(sVersionMid,           "VersionMid");
-MDY_SET_IMMUTABLE_STRING(sVersionLow,           "VersionLow");
-MDY_SET_IMMUTABLE_STRING(sCompanyName,          "CompanyName");
-MDY_SET_IMMUTABLE_STRING(sHomepage,             "Homepage");
-MDY_SET_IMMUTABLE_STRING(sSupportContact,       "SupportContact");
-
-MDY_SET_IMMUTABLE_STRING(sInitialScene,         "InitialScene");
-MDY_SET_IMMUTABLE_STRING(sInitWidth,            "InitWidth");
-MDY_SET_IMMUTABLE_STRING(sInitHeight,           "InitHeight");
-
-//!
-//! Global function
-//!
+MDY_SET_IMMUTABLE_STRING(sCategoryTag,          "Tag");
+MDY_SET_IMMUTABLE_STRING(sCategoryMetaPath,     "MetaPath");
 
 ///
-/// @brief
+/// @brief  Get rendering api type value from argument string.
+/// @param  argString Lowered graphics api argument string if not, just return Error type.
+/// @return Rendering api type value.
 ///
-[[nodiscard]] bool __IsSameCString(const char* lhs, const char* rhs) noexcept
-{
-  return strcmp(lhs, rhs) == 0;
-}
-
-///
-/// @brief
-///
-[[nodiscard]] dy::EDyRenderingApiType __GetRenderingType(const std::vector<const char*>& argsList) noexcept
+MDY_NODISCARD dy::EDyRenderingApi DyGetRenderingApiType(_MIN_ const std::string& argString) noexcept
 {
   /// Temporal structure to bind option string and type.
   struct DItem final
   {
-    const char*         mCString = "";
-    dy::EDyRenderingApiType  mType = dy::EDyRenderingApiType::NoneError;
+    const char*           mCString  = "";
+    dy::EDyRenderingApi   mType     = dy::EDyRenderingApi::NoneError;
 
-    explicit DItem(const char* cString, dy::EDyRenderingApiType type) : mCString(cString), mType(type) {};
+    explicit DItem(const char* cString, dy::EDyRenderingApi type) : mCString(cString), mType(type) {};
   };
 
-#if defined(_WIN32)
-  assert(argsList.size() == 2);
-  const char* optionString = argsList[1];
-#elif defined(__linux__)
-  assert(argsList.size() == 2);
-  const char* optionString = argsList[1];
-#endif
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  //! FUNCTIONBODY ∨
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  const std::vector<DItem> renderingTypeList =
+  static const std::vector<DItem> renderingTypeList =
   {
-    DItem{"vulkan", dy::EDyRenderingApiType::Vulkan},
-    DItem{"opengl", dy::EDyRenderingApiType::OpenGL},
-    DItem{"d3d11", dy::EDyRenderingApiType::DirectX11},
-    DItem{"d3d12", dy::EDyRenderingApiType::DirectX12}
+    DItem{"vulkan", dy::EDyRenderingApi::Vulkan},
+    DItem{"opengl", dy::EDyRenderingApi::OpenGL},
+    DItem{"d3d11",  dy::EDyRenderingApi::DirectX11},
+    DItem{"d3d12",  dy::EDyRenderingApi::DirectX12}
   };
 
+  // Check
   for (const auto& item : renderingTypeList)
   {
-    if (__IsSameCString(optionString, item.mCString))
-    {
-      return item.mType;
-    }
+    if (argString == item.mCString) { return item.mType; }
   }
 
-  return dy::EDyRenderingApiType::NoneError;
+  return dy::EDyRenderingApi::NoneError;
 }
 
 } /// unnamed namespace
@@ -112,13 +91,12 @@ MDY_SET_IMMUTABLE_STRING(sInitHeight,           "InitHeight");
 namespace dy
 {
 
-EDyRenderingApiType MDySetting::GetRenderingType() const noexcept
+EDyRenderingApi MDySetting::GetRenderingType() const noexcept
 {
-  assert(this->mIsInitialized);
   return this->mRenderingType;
 }
 
-void MDySetting::SetFeatureLogging(bool isEnabled) noexcept
+void MDySetting::SetFeatureLogging(_MIN_ bool isEnabled) noexcept
 {
   if (this->mIsEnabledLogging != isEnabled)
   {
@@ -134,21 +112,21 @@ void MDySetting::SetFeatureLogging(bool isEnabled) noexcept
   }
 }
 
-void MDySetting::SetSubFeatureLoggingToConsole(bool isEnabled) noexcept
+void MDySetting::SetSubFeatureLoggingToConsole(_MIN_ bool isEnabled) noexcept
 {
   this->mIsEnabledLoggingToConsole = isEnabled;
   MDY_LOG_INFO_D("{} | Logging Console : {}. Need to be restart logger.", "SubFeature", isEnabled ? "ON" : "OFF");
 }
 
-void MDySetting::SetSubFeatureLoggingToFile(bool isEnabled) noexcept
+void MDySetting::SetSubFeatureLoggingToFile(_MIN_ bool isEnabled) noexcept
 {
   this->mIsEnabledLoggingToFile = isEnabled;
   MDY_LOG_INFO_D("{} | Logging File : {}. Need to be restart logger.", "SubFeature", isEnabled ? "ON" : "OFF");
 }
 
-void MDySetting::SetLogFilePath(const std::string& path) noexcept
+void MDySetting::SetLogFilePath(_MIN_ const std::string& path) noexcept
 {
-  if (path.empty())
+  if (path.empty() == true)
   {
     MDY_LOG_ERROR_D("{} | new log file path is empty. Log file path did not change. Log file path : {}", this->mLogFilePath);
   }
@@ -159,13 +137,13 @@ void MDySetting::SetLogFilePath(const std::string& path) noexcept
   }
 }
 
-void MDySetting::pArgsPushback(const char* argsString)
+void MDySetting::SetGlobalDefaultShadowMapResolution(_MIN_ const DDyVector2& size) noexcept
 {
-  PHITOS_ASSERT(!this->mIsInitialized, "Setting manager must not be initiailized before putting arguments");
-  this->mApplicationArgs.emplace_back(argsString);
+  if (size.X <= 0 || size.Y <= 0) { return; }
+  this->mGamePlay.mShadow.mShadowGlobalDefaultMap = DDyVectorInt2{size};
 }
 
-bool MDySetting::IsVSyncEnabled() const noexcept
+bool MDySetting::IsEnabledVSync() const noexcept
 {
   return this->mIsEnabledVsync;
 }
@@ -182,87 +160,157 @@ void MDySetting::SetVSyncMode(bool enableVsync) noexcept
   }
 }
 
+EDySuccess MDySetting::MDY_PRIVATE_SPECIFIER(CheckObjectTagIsExist)(_MIN_ const std::string& iSpecifiedTag) const noexcept
+{
+  if (iSpecifiedTag.empty() == true) { return DY_SUCCESS; }
+  for (const auto& tagSpecifier : this->mTag.mObjectTag)
+  {
+    if (tagSpecifier == iSpecifiedTag) { return DY_SUCCESS; }
+  }
+
+  return DY_FAILURE;
+}
+
+void MDySetting::pSetupExecutableArgumentSettings()
+{
+  ///
+  /// @brief Setup rendering api type from argument.
+  /// @param result ["graphics"] Option value from parsing library.
+  ///
+  static auto SetupRenderingType = [this](const cxxopts::OptionValue& result)
+  { // Lower api string.
+    std::string graphicsApi = result.as<std::string>();
+    std::transform(graphicsApi.begin(), graphicsApi.end(), graphicsApi.begin(), ::tolower);
+
+    // Get Graphics api string.
+    this->mRenderingType = DyGetRenderingApiType(graphicsApi);
+    MDY_ASSERT(
+        this->mRenderingType != EDyRenderingApi::NoneError,
+        "Rendering api option is not specified properly. Must be \"OpenGL\".");
+  };
+
+  ///
+  /// @brief Setup feature logging to console from argument.
+  /// @param result ["enable_logging_console"] Option value from parsing library.
+  ///
+  static auto SetupLoggingConsoleFeature = [this](const cxxopts::OptionValue& result)
+  {
+    if (result.as<bool>() == true)
+    {
+      this->mIsEnabledLogging           = true;
+      this->mIsEnabledLoggingToConsole  = true;
+    }
+  };
+
+  ///
+  /// @brief Setup feature logging to file from argument.
+  /// @param result ["enable_logging_file"] Option value from parsing library.
+  ///
+  static auto SetupLoggingFileFeature = [this](const cxxopts::OptionValue& result)
+  {
+    if (std::string f = result.as<std::string>(); f.empty() == false)
+    {
+      this->mIsEnabledLogging = true;
+      this->mIsEnabledLoggingToFile = true;
+
+      if (f.find_last_of('.') == std::string::npos) { f += ".txt"; }
+      this->mLogFilePath = f;
+    }
+  };
+
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  //! FUNCTIONBODY ∨
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  MDY_ASSERT(
+      this->mIsInitialized == false,
+      "MDySetting::pSetupExecutableArgumentSettings must be called only before Initialization.");
+
+  cxxopts::Options options("Dy", "Dy game framework");
+  options.add_options()
+      ("g,graphics",                "Enable graphics API with", cxxopts::value<std::string>())
+      ("c,enable_logging_console",  "Enable logging console",   cxxopts::value<bool>())
+      ("f,enable_logging_file",     "Enable logging file to",   cxxopts::value<std::string>())
+  ;
+
+  #if defined(MDY_PLATFORM_FLAG_WINDOWS) && defined(_WIN32)
+    const auto result = options.parse(__argc, __argv);
+  #elif defined(MDY_PLATFORM_FLAG_LINUX) && defined(__linux__)
+    static_assert(false, "Linux does not support now.");
+  #elif defined(MDY_PLATFORM_FLAG_MACOS)
+    static_assert(false, "Macos does not support now.");
+  #endif
+
+  SetupRenderingType        (result["graphics"]);
+  SetupLoggingConsoleFeature(result["enable_logging_console"]);
+  SetupLoggingFileFeature   (result["enable_logging_file"]);
+}
+
 EDySuccess MDySetting::pfInitialize()
 {
   ///
   /// @function InitializeGraphicsApi
-  /// @brief Initialize graphics api.
+  /// @brief Initialize graphics api dependencies.
   ///
   static auto InitializeGraphicsApi = [](MDySetting& manager) -> EDySuccess
-  {
-    for (const auto& args : manager.mApplicationArgs) { MDY_LOG_INFO_D("{} | Arguments : {}", "Feature", args); }
-    MDY_LOG_INFO_D("{} | Logging : {}", "Feature", manager.mIsEnabledLogging ? "ON" : "OFF");
-    MDY_LOG_INFO_D("{} | Logging Console : {}", "SubFeature", manager.mIsEnabledLoggingToConsole ? "ON" : "OFF");
-    MDY_LOG_INFO_D("{} | Logging File : {}", "SubFeature", manager.mIsEnabledLoggingToFile ? "ON" : "OFF");
-    MDY_LOG_INFO_D("{} | Logging File path : {}", "SubFeature", manager.mLogFilePath);
+  { // Set rendering api type.
+    if (manager.GetRenderingType() == EDyRenderingApi::NoneError) { return DY_FAILURE; }
 
-    // Set rendering api type.
-    if (const auto type = __GetRenderingType(manager.mApplicationArgs); type == EDyRenderingApiType::NoneError)
-    {
-      return DY_FAILURE;
-    }
-    else {
-      manager.mRenderingType = type;
-    }
-
-    MDY_LOG_INFO_D("{} | Vsync : {}", "Feature", manager.mIsEnabledVsync ? "ON" : "OFF");
     switch (manager.mRenderingType)
     {
-    case EDyRenderingApiType::Vulkan:     MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "Vulkan");    break;
-    case EDyRenderingApiType::DirectX11:  MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "DirectX11"); break;
-    case EDyRenderingApiType::DirectX12:  MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "DirectX12"); break;
-    case EDyRenderingApiType::OpenGL:     MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "OpenGL");    break;
-    default:                              MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "Unknown");   break;
+    case EDyRenderingApi::Vulkan:
+      MDY_NOT_IMPLEMENTED_ASSERT();
+      MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "Vulkan");
+      break;
+    case EDyRenderingApi::DirectX11:
+      MDY_NOT_IMPLEMENTED_ASSERT();
+      MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "DirectX11");
+      break;
+    case EDyRenderingApi::DirectX12:
+      MDY_NOT_IMPLEMENTED_ASSERT();
+      MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "DirectX12");
+      break;
+    case EDyRenderingApi::OpenGL:
+      MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "OpenGL");
+      break;
+    default:
+      MDY_UNEXPECTED_BRANCH();
+      MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "Unknown");
+      break;
     }
 
     return DY_SUCCESS;
   };
 
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  //! FUNCTIONBODY ∨
+  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
   // Output setting options at debug mode.
-  MDY_LOG_INFO_D("{} | MDySetting::pfInitialize().", "FunctionCall");
+  MDY_LOG_INFO_D("{} | MDySetting::pfInitialize().",          "FunctionCall");
+  MDY_LOG_INFO_D("{} | Logging : {}", "Feature",              this->mIsEnabledLogging ? "ON" : "OFF");
+  MDY_LOG_INFO_D("{} | Logging Console : {}", "SubFeature",   this->mIsEnabledLoggingToConsole ? "ON" : "OFF");
+  MDY_LOG_INFO_D("{} | Logging File : {}", "SubFeature",      this->mIsEnabledLoggingToFile ? "ON" : "OFF");
+  MDY_LOG_INFO_D("{} | Logging File path : {}", "SubFeature", this->mLogFilePath);
+  MDY_LOG_INFO_D("{} | Vsync : {}", "Feature",                this->mIsEnabledVsync ? "ON" : "OFF");
 
-  if (InitializeGraphicsApi(*this) == DY_FAILURE)
-  {
-    return DY_FAILURE;
-  }
+  if (InitializeGraphicsApi(*this) == DY_FAILURE) { return DY_FAILURE; }
 
-  if (const auto opSettingAtlas = DyGetJsonAtlas(sSettingPathName.data());
-      !opSettingAtlas.has_value())
-  {
-    return DY_FAILURE;
-  }
-  else
+  static MDY_SET_IMMUTABLE_STRING(gSettingPathName, "./Project/Meta/Setting.dydat");
+
+  const auto opSettingAtlas = DyGetJsonAtlasFromFile(MSVSTR(gSettingPathName));
+  MDY_ASSERT(opSettingAtlas.has_value() == true, "Failed to open application setting file.");
+
   { // Apply setting to project before everthing starts to working.
     const auto& settingAtlas = opSettingAtlas.value();
-    { // Category[Description]
-      const auto& description = settingAtlas.at(sCategoryDescription.data());
-
-      this->mProjectName  = description.at(sProjectName.data()) .get<std::string>();
-      this->mWindowName   = description.at(sWindowName.data())  .get<std::string>();
-      this->mCompanyName  = description.at(sCompanyName.data()) .get<std::string>();
-      this->mHomepage     = description.at(sHomepage.data())    .get<std::string>();
-      this->mSupportContact = description.at(sSupportContact.data()).get<std::string>();
-
-      this->mVersionHigh  = description.at(sVersionHigh.data()) .get<TI32>();
-      this->mVersionMid   = description.at(sVersionMid.data())  .get<TI32>();
-      this->mVersionLow   = description.at(sVersionLow.data())  .get<TI32>();
-    }
-
-    { // Category[Gameplay]
-      const auto& gameplay = settingAtlas.at(sCategoryGameplay.data());
-
-      this->mInitialSceneName = gameplay.at(sInitialScene.data()) .get<std::string>();
-      this->mWindowSizeWidth  = gameplay.at(sInitWidth.data())    .get<TI32>();
-      this->mWindowSizeHeight = gameplay.at(sInitHeight.data())   .get<TI32>();
-    }
-
-    { // Input[Gameplay]
-      [[maybe_unused]]
-      const auto& input = settingAtlas.at(sCategoryInput.data());
-    }
+    this->mDescription  = DyJsonGetValueFrom<decltype(this->mDescription)>(settingAtlas, sCategoryDescription);
+    this->mGamePlay     = DyJsonGetValueFrom<decltype(this->mGamePlay)>   (settingAtlas, sCategoryGameplay);
+    this->mInput        = DyJsonGetValueFrom<decltype(this->mInput)>      (settingAtlas, sCategoryInput);
+    this->mTag          = DyJsonGetValueFrom<decltype(this->mTag)>        (settingAtlas, sCategoryTag);
+    this->mMetaPath     = DyJsonGetValueFrom<decltype(this->mMetaPath)>   (settingAtlas, sCategoryMetaPath);
   }
 
-  mIsInitialized = true;
+  this->mIsInitialized = true;
   return DY_SUCCESS;
 }
 

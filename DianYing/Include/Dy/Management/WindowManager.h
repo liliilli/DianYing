@@ -13,69 +13,51 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Macroes.h>
+#include <Dy/Helper/System/Macroes.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
-#include <Phitos/Dbg/assert.h>
+
+#include <Dy/Management/Platform/DDyWindowInformationWindows.h>
 
 namespace dy
 {
 
-#if defined(MDY_PLATFORM_FLAG_WINDOWS)
-
-///
-/// @struct DDyWindowInformationWindows
-/// @brief Windows information for windows platform.
-///
-struct DDyWindowInformationWindows
-{
-protected:
-  HWND        mWindowHandle             = nullptr;
-  HDC         mWindowDeviceContext      = nullptr;
-  HGLRC       mWindowGlResourceContext  = nullptr;
-  GLFWwindow* mGlfwWindow               = nullptr;
-};
-
-///
-/// @struct DDyDependentFunctionWindows
-/// @brief Windows specific functions
-///
-struct [[maybe_unused]] DDyDependentFunctionWindows
-{
-
-};
-#endif
-
-class MDyWindow final : public ISingleton<MDyWindow>, MDY_INHERITENCE_WINDOW_INFORMATION_SUPER
+class MDyWindow final : public IDySingleton<MDyWindow>, public MDY_INHERITENCE_WINDOW_INFORMATION_SUPER
 {
   MDY_SINGLETON_DERIVED(MDyWindow);
   MDY_SINGLETON_PROPERTIES(MDyWindow);
 public:
-  ///
-  /// @brief Run application.
-  ///
-  void Run();
+  /// @brief Check window is should closed this time.
+  MDY_NODISCARD bool IsWindowShouldClose() const noexcept;
 
-  ///
+  /// @brief Terminate window. if terminated already, just return DY_FAILURE. \n
+  /// This function must be called in main thread.
+  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(TerminateWindow)() noexcept;
+
   /// @brief Get glfw window context.
-  /// @todo TEMPORAL FUNCTION.
-  ///
-  GLFWwindow* GetGlfwWindowContext() const noexcept
+  MDY_NODISCARD GLFWwindow* GetGLMainWindow() const noexcept
   {
-    PHITOS_ASSERT(this->mGlfwWindow, "GlfwWindow is not initiailized.");
+    MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mGlfwWindow), "GlfwWindow is not initiailized.");
     return this->mGlfwWindow;
   }
 
+  /// @brief Get glfw worker window context list
+  MDY_NODISCARD const std::array<GLFWwindow*, 2>& GetGLWorkerWindowList() const noexcept
+  {
+    for (const auto& ptrWindow : this->mGlfwWorkerWnds)
+    { // Validation check.
+      MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptrWindow), "GLFWwindow must be valid.");
+    }
+    return this->mGlfwWorkerWnds;
+  }
+
+  /// @brief TEMPORAL FUNCTION FOR SWAPPING BUFFER.
+  void TempSwapBuffers();
+
 private:
-  ///
-  void pUpdate(float dt);
-
-  ///
-  void pRender();
-
+  GLFWwindow*                 mGlfwWindow     = nullptr;
+  std::array<GLFWwindow*, 2>  mGlfwWorkerWnds = {};
 };
 
 } /// ::dy namespace
-
-void DyTempInitializeTestResources();
 
 #endif /// GUARD_DY_MANAGEMENT_MANAGER_H

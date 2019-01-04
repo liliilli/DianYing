@@ -43,7 +43,7 @@ enum class EDyLogLevel
 /// @class MDyLog
 /// @brief Manages logging.
 ///
-class MDyLog final : public ISingleton<MDyLog>
+class MDyLog final : public IDySingleton<MDyLog>
 {
   MDY_SINGLETON_DERIVED(MDyLog);
   MDY_SINGLETON_PROPERTIES(MDyLog);
@@ -113,7 +113,7 @@ private:
 //! Debug log macro for just only debug mode
 //!
 
-#if !defined(NDEBUG)
+#if (defined(NDEBUG) == false)
   #define MDY_LOG_TRACE_D(__MAString__, ...) \
   ::dy::MDyLog::GetInstance().PushLog(dy::EDyLogLevel::Trace, __MAString__, __VA_ARGS__)
   #define MDY_LOG_DEBUG_D(__MAString__, ...) \

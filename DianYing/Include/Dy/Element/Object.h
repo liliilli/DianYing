@@ -60,7 +60,7 @@ protected:
   }
 
 private:
-  MDY_TRANSIENT std::string mObjectName = MDY_INITILAIZE_EMPTYSTR;
+  MDY_TRANSIENT std::string mObjectName = MDY_INITIALIZE_EMPTYSTR;
   MDY_SET_CRC32_HASH_WITH_TYPE(FDyObject);
 };
 

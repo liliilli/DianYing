@@ -4,3 +4,12 @@
 [submodule "DianYing/Libraries/spdlog"]
 	path = DianYing/Libraries/spdlog
 	url = https://github.com/gabime/spdlog
+[submodule "DianYing/Libraries/msdfgen"]
+	path = DianYing/Libraries/msdfgen
+	url = https://github.com/Chlumsky/msdfgen
+[submodule "DyFontAtlasGenerator/Libraries/msdfgen"]
+	path = DyFontAtlasGenerator/Libraries/msdfgen
+	url = https://github.com/Chlumsky/msdfgen
+[submodule "DyFontAtlasGenerator/Libraries/spdlog"]
+	path = DyFontAtlasGenerator/Libraries/spdlog
+	url = https://github.com/gabime/spdlog

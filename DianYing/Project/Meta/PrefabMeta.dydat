@@ -1,0 +1,34 @@
+{
+  "Meta": { },
+  "ObjectList":
+  [
+    {
+      "Name"      : "TestPrefab",
+      "Type"      : "Actor",
+      "CommonProperties": {
+        "ParentSpecifierName" : "",
+        "ObjectTag": ""
+      },
+      "ComponentList": [
+        {
+          "Type"      : "Script",
+          "Activated" : true,
+          "Details"   : { "Specifier": "TestScript2" }
+        },
+        {
+          "Type"      : "ModelFilter",
+          "Activated" : true,
+          "Details"   : { "ModelName": "dyBtModelBox" }
+        },
+        {
+          "Type"      : "ModelRenderer",
+          "Activated" : true,
+          "Details"   : {
+            "Shadow"    : true,
+            "Materials" : [ "dyBtMatOpaqueStaticPlain" ]
+          }
+        }
+      ]
+    }
+  ]
+}
