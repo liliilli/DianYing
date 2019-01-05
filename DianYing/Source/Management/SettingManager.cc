@@ -29,7 +29,6 @@
 #endif
 #include <cxxopts.hpp>
 
-#include <DyMacroSetting.h>
 #include <Dy/Helper/Library/HelperJson.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/TimeManager.h>

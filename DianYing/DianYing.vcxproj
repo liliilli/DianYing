@@ -28,7 +28,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -577,7 +577,6 @@
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOTaskDeferred.h" />
     <ClInclude Include="Include\Dy\Core\Thread\SDyIOBindingHelper.h" />
     <ClInclude Include="Include\DyMacroPlatformSetting.h" />
-    <ClInclude Include="Include\DyMacroSetting.h" />
     <ClInclude Include="Include\Dy\Element\Abstract\Actor\ADyActorBinderContainer.h" />
     <ClInclude Include="Include\Dy\Element\Type\DDyActorBinder.h" />
     <ClInclude Include="Include\Dy\Element\Type\DDyTransform.h" />

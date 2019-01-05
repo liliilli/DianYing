@@ -15,7 +15,6 @@
 
 #include <filesystem>
 #include <regex>
-#include <DyMacroSetting.h>
 
 #include <Dy/Core/DyEngine.h>
 #include <Dy/Helper/Library/HelperRegex.h>
