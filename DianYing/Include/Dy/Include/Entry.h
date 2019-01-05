@@ -1,5 +1,5 @@
-#ifndef GUARD_DIANYING_HELPER_DISABLE_WARNING_H
-#define GUARD_DIANYING_HELPER_DISABLE_WARNING_H
+#ifndef GUARD_DY_INCLUDE_ENTRY_H
+#define GUARD_DY_INCLUDE_ENTRY_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,12 +13,13 @@
 /// SOFTWARE.
 ///
 
-#if defined(_WIN32)
-#pragma warning(push)
-#pragma warning(disable:4100 4127 4201 5046 4324)
-#endif
+#include <filesystem>
+#include <regex>
 
-template <typename TType>
-void MaybeNotUsed([[maybe_unused]] const TType&) {};
+#include <Dy/Core/DyEngine.h>
+#include <Dy/Helper/Library/HelperRegex.h>
+#include <Dy/Helper/Library/HelperJson.h>
+#include <Dy/Management/WindowManager.h>
+#include <Dy/Management/SettingManager.h>
 
-#endif ///  GUARD_DIANYING_HELPER_DISABLE_WARNING_H
+#endif /// GUARD_DY_INCLUDE_ENTRY_H

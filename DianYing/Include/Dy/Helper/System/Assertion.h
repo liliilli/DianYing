@@ -37,49 +37,40 @@ namespace dy
 
 #if defined(_DEBUG)
 
-///
 /// @def   PHITOS_SET_RELEASE_FUNCTION
 /// @brief
-///
 #define PHITOS_SET_RELEASE_FUNCTION(__MAFunc__) ::dy::__ReleaseFunction(__MAFunc__, true)
 
-///
 /// @def MDY_ASSERT(__MAExpr__, __MAMessage__)
 /// @brief Do runtime check for __MAExpr__ (Macro Argument Expression) in debug mode,
 /// If expression is false, Assert application with __MAMessage__.
-///
 #define MDY_ASSERT(__MAExpr__, __MAMessage__) \
   ::dy::__EnhancedAssert(#__MAExpr__, __MAExpr__, __FILE__, __LINE__, __MAMessage__)
 
-///
 /// @def MDY_NOT_IMPLEMENTED_ASSERT()
 /// @brief Assert program when statement is called in runtime debug mode.
 /// Programmer which uses this function must use this macro only in not implemen
 /// ted function completely properly.
-///
 #define MDY_NOT_IMPLEMENTED_ASSERT() ::dy::__NotImplementedAssert(__FILE__, __LINE__)
 
-///
 /// @def MDY_UNEXPECTED_BRANCH()
 /// @brief
-///
 #define MDY_UNEXPECTED_BRANCH() ::dy::__UnexpectedBranch(__FILE__, __LINE__)
 
 #else
 
-#define PHITOS_SET_RELEASE_FUNCTION(__MAFunc__) \
-  (void(0))
-
-#define MDY_ASSERT(__MAExpr__, __MAMessage__) \
-  (void(0));
-
-#define MDY_NOT_IMPLEMENTED_ASSERT() \
-  (void(0));
-
-#define MDY_UNEXPECTED_BRANCH() \
-  (void(0));
+#define PHITOS_SET_RELEASE_FUNCTION(__MAFunc__) (void(0))
+#define MDY_ASSERT(__MAExpr__, __MAMessage__) (void(0))
+#define MDY_NOT_IMPLEMENTED_ASSERT() (void(0));
+#define MDY_UNEXPECTED_BRANCH() (void(0))
 
 #endif /// defined(_DEBUG)
+  
+/// @def MDY_ASSERT_FORCE(__MAExpr__, __MAMessage__)
+/// @brief Do runtime check for __MAExpr__ (Macro Argument Expression) in anymode,
+/// If expression is false, Assert application with __MAMessage__.
+#define MDY_ASSERT_FORCE(__MAExpr__, __MAMessage__) \
+  ::dy::__EnhancedAssert(#__MAExpr__, __MAExpr__, __FILE__, __LINE__, __MAMessage__)
 
 /// ---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*
 /// Implementation

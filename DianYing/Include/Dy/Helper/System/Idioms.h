@@ -31,6 +31,16 @@ void DyFastErase(_MINOUT_ std::vector<TType, TAllocator>& iVector, _MIN_ TU32 iI
 
 /// @brief Vector fast erase.
 template <typename TType, typename TAllocator>
+void DyFastErase(
+    _MINOUT_ std::vector<TType, TAllocator>& iVector, 
+    _MIN_ typename std::vector<TType, TAllocator>::iterator& iIndex)
+{
+  if (iIndex == iVector.end()) { return; }
+  DyFastErase(iVector, static_cast<TU32>(std::distance(iVector.begin(), iIndex)));
+}
+
+/// @brief Vector fast erase.
+template <typename TType, typename TAllocator>
 void DyEraseRemove(
     _MINOUT_ std::vector<TType, TAllocator>& p, 
     _MIN_ const typename std::vector<TType, TAllocator>::value_type& iValue)

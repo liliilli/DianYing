@@ -20,8 +20,6 @@
 #include <filesystem>
 #include <nlohmann/json.hpp>
 
-#include <Dy/DyMacroSetting.h>
-
 #include <Dy/Core/Reflection/RDyBuiltinResources.h>
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 #include <Dy/Core/DyEngine.h>
@@ -376,41 +374,25 @@ void MDyMetaInfo::MDY_PRIVATE_SPECIFIER(PopulateGlobalResourceSpecifierList)() c
 
 void MDyMetaInfo::MDY_PRIVATE_SPECIFIER(InitiateMetaInformation)()
 {
-  #if defined(MDY_FLAG_LOAD_COMPRESSED_DATAFILE) == false
-  {
-    const auto& metaPath = MDySetting::GetInstance().GetMetaPathSettingInformation();
-    reflect::RDyBuiltinResource::BindBuiltinResourcesToMetaManager();
+  const auto& metaPath = MDySetting::GetInstance().GetMetaPathSettingInformation();
+  reflect::RDyBuiltinResource::BindBuiltinResourcesToMetaManager();
 
-    MDY_CALL_ASSERT_SUCCESS(this->pReadFontResourceMetaInformation  (metaPath.mFontMetaPath));
-    MDY_CALL_ASSERT_SUCCESS(this->pReadScriptResourceMetaInformation(metaPath.mScriptMetaPath));
-    MDY_CALL_ASSERT_SUCCESS(this->pReadPrefabResourceMetaInformation(metaPath.mPrefabMetaPath));
-    MDY_CALL_ASSERT_SUCCESS(this->pReadWidgetResourceMetaInformation(metaPath.mWidgetMetaPath));
-    MDY_CALL_ASSERT_SUCCESS(this->pReadSceneResourceMetaInformation (metaPath.mSceneMetaPath));
-  }
-  #else
-  { // static_assert(false, "this function can not be called when MDY_FLAG_LOAD_COMPRESSED_DATAFILE is triggered.");
-    MDY_UNEXPECTED_BRANCH();
-  }
-  #endif
+  MDY_CALL_ASSERT_SUCCESS(this->pReadFontResourceMetaInformation  (metaPath.mFontMetaPath));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadScriptResourceMetaInformation(metaPath.mScriptMetaPath));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadPrefabResourceMetaInformation(metaPath.mPrefabMetaPath));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadWidgetResourceMetaInformation(metaPath.mWidgetMetaPath));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadSceneResourceMetaInformation (metaPath.mSceneMetaPath));
 }
 
 void MDyMetaInfo::MDY_PRIVATE_SPECIFIER(InitiateMetaInformationComp)(_MIN_ const nlohmann::json& iJson)
 {
-  #if defined(MDY_FLAG_LOAD_COMPRESSED_DATAFILE) == true
-  {
-    reflect::RDyBuiltinResource::BindBuiltinResourcesToMetaManager();
+  reflect::RDyBuiltinResource::BindBuiltinResourcesToMetaManager();
 
-    MDY_CALL_ASSERT_SUCCESS(this->pReadFontResourceMetaInformation  (iJson["FontContainer"]));
-    MDY_CALL_ASSERT_SUCCESS(this->pReadScriptResourceMetaInformation(iJson["ScriptContainer"]));
-    MDY_CALL_ASSERT_SUCCESS(this->pReadPrefabResourceMetaInformation(iJson["PrefabContainer"]));
-    MDY_CALL_ASSERT_SUCCESS(this->pReadWidgetResourceMetaInformation(iJson["WidgetContainer"]));
-    MDY_CALL_ASSERT_SUCCESS(this->pReadSceneResourceMetaInformation (iJson["LevelContainer"]));
-  }
-  #else
-  { // static_assert(false, "this function can not be called when MDY_FLAG_LOAD_COMPRESSED_DATAFILE is not triggered.");
-    MDY_UNEXPECTED_BRANCH();
-  }
-  #endif
+  MDY_CALL_ASSERT_SUCCESS(this->pReadFontResourceMetaInformation  (iJson["FontContainer"]));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadScriptResourceMetaInformation(iJson["ScriptContainer"]));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadPrefabResourceMetaInformation(iJson["PrefabContainer"]));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadWidgetResourceMetaInformation(iJson["WidgetContainer"]));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadSceneResourceMetaInformation (iJson["LevelContainer"]));
 }
 
 EDySuccess MDyMetaInfo::pReadScriptResourceMetaInformation(_MIN_ const std::string& metaFilePath)

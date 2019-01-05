@@ -36,10 +36,8 @@ class MDySynchronization;
 namespace dy
 {
 
-///
 /// @class DyEngine
 /// @brief `Dy`(DianYing) Core engine class.
-///
 class DyEngine final : public IDySingleton<DyEngine>
 {
   MDY_SINGLETON_PROPERTIES(DyEngine);

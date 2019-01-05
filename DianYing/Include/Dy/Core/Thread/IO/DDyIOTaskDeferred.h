@@ -44,21 +44,10 @@ struct DDyIOTaskDeferred final
       mTask{iTask}, mCondition{iCondition} {};
 
   /// @brief
-  MDY_NODISCARD EDySuccess TryRemoveDependenciesItem(_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType& iType, _MIN_ EDyResourceStyle& iStyle) noexcept
-  {
-    const DConditionItem item{iSpecifier, iType, iStyle};
-
-    for (auto it = this->mCondition.begin(); it != this->mCondition.end(); ++it)
-    {
-      if (*it == item) {
-        const auto index = std::distance(this->mCondition.begin(), it);
-        DyFastErase(this->mCondition, index);
-        return DY_SUCCESS;
-      }
-    }
-
-    return DY_FAILURE;
-  }
+  MDY_NODISCARD EDySuccess TryRemoveDependenciesItem(
+      _MIN_ const std::string& iSpecifier, 
+      _MIN_ EDyResourceType& iType, 
+      _MIN_ EDyResourceStyle& iStyle) noexcept;
 
   /// @brief
   MDY_NODISCARD bool IsSatisfiedReinsertCondition() const noexcept { return mCondition.empty(); }

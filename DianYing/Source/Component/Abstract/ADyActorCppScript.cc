@@ -47,7 +47,7 @@ void ADyActorCppScript::MDY_PRIVATE_SPECIFIER(DetachPtrTimerHandle)(_MIN_ FDyTim
   });
   if (it == this->mPtrTimerHandleList.end()) { return; }
 
-  DyFastErase(this->mPtrTimerHandleList, std::distance(this->mPtrTimerHandleList.begin(), it));
+  DyFastErase(this->mPtrTimerHandleList, it);
 }
 
 void ADyActorCppScript::MDY_PRIVATE_SPECIFIER(AbortAllValidTimerHandler)()

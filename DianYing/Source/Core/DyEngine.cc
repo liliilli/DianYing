@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Core/DyEngine.h>
 
+#include <filesystem>
 #include <Dy/Management/InputManager.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
@@ -32,6 +33,7 @@
 #include <Dy/Management/Internal/MDyProfiling.h>
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 #include "Dy/Management/GameTimerManager.h"
+#include "Dy/Helper/mcs/Functions.h"
 
 //!
 //! Implementation
@@ -45,28 +47,66 @@ DyEngine* gEngine = nullptr;
 EDySuccess DyEngine::pfInitialize()
 {
   gEngine = this;
-  auto& settingManager = MDySetting::GetInstance();
-  settingManager.pSetupExecutableArgumentSettings();
+  MDySetting::GetInstance().pSetupExecutableArgumentSettings();
 
-  this->pfInitializeIndependentManager();
-  this->mSynchronization  = &MDySynchronization::GetInstance();
+  switch (MDySetting::GetInstance().GetApplicationMode())
+  {
+  case EDyAppMode::ModeCompressData: { return DY_SUCCESS; } 
+  case EDyAppMode::LoadSeperatedFile: 
+  /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  /// @macro MDY_FLAG_MODE_POPULATE_COMPRESSED_DATAFILE
+  /// @brief If this flag is set, neither initialization a project nor running game,
+  /// but just bind every resources into compressed files, running procedure monitoring window.
+  ///
+  /// When run project with this, any specified file name is exist, procedure will not take off.
+  /// - Data###.dydat (^Data(\t){3}.dydat$)
+  /// 
+  /// Compressed .dydat file will be detected by application,
+  /// when MDY_FLAG_LOAD_COMPRESSED_DATAFILE is set.
+  ///
+  /// ** SEQUENCE... **
+  /// 1. define MDY_FLAG_MODE_POPULATE_COMPRESSED_DATAFILE.
+  /// 2. M_PATH_PLAIN_PATH_OF_SETTING_JSON string literal must specify the path of "Setting.json"
+  /// 2. build project and run program. Mode chagned to compression mode, wait until procedure finished.
+  /// 3. undefine MDY_FLAG_MODE_POPULATE_COMPRESSED_DATAFILE
+  /// 4. define MDY_FLAG_LOAD_COMPRESSED_DATAFILE, so compressed `Data###.dydat` must be loaded instead of plain json and resources. 
+  /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  case EDyAppMode::LoadCompressedFile: 
+  {
+    this->pfInitializeIndependentManager();
+    this->mSynchronization = &MDySynchronization::GetInstance();
+  } break;
+  }
+
   return DY_SUCCESS;
 }
 
 EDySuccess DyEngine::pfRelease()
 {
-  this->mSynchronization = nullptr;
-  this->pfReleaseIndependentManager();
+  switch (MDySetting::GetInstance().GetApplicationMode())
+  {
+  case EDyAppMode::ModeCompressData: /* Do nothing */ break;
+  case EDyAppMode::LoadSeperatedFile: 
+  case EDyAppMode::LoadCompressedFile: 
+  {
+    this->mSynchronization = nullptr;
+    this->pfReleaseIndependentManager();
+  } break;
+  }
   return DY_SUCCESS;
 }
 
 void DyEngine::operator()()
 {
-  static auto& window         = MDyWindow::GetInstance();
-  static auto& timeManager    = MDyTime::GetInstance();
-  static auto& soundManager   = MDySound::GetInstance();
-  //soundManager.Update(MDY_INITIALIZE_DEFINT);
+  if (const auto& set = MDySetting::GetInstance(); 
+      set.GetApplicationMode() == EDyAppMode::ModeCompressData)
+  { 
+    mcs::Compress(set.MDY_PRIVATE_SPECIFIER(GetEntrySettingFile)());
+    return;
+  }
 
+  static auto& window      = MDyWindow::GetInstance();
+  static auto& timeManager = MDyTime::GetInstance();
   while (window.IsWindowShouldClose() == false)
   {
     // Try game status transition and pre-housesholds.

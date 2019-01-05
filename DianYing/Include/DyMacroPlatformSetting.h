@@ -1,5 +1,5 @@
-#ifndef GUARD_DIANYING_HELPER_DISABLE_WARNING_H
-#define GUARD_DIANYING_HELPER_DISABLE_WARNING_H
+#ifndef GUARD_DY_DYMACROPLATFORMSETTING_H
+#define GUARD_DY_DYMACROPLATFORMSETTING_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,12 +13,12 @@
 /// SOFTWARE.
 ///
 
-#if defined(_WIN32)
-#pragma warning(push)
-#pragma warning(disable:4100 4127 4201 5046 4324)
-#endif
+///
+/// Platform dependent macro
+///
 
-template <typename TType>
-void MaybeNotUsed([[maybe_unused]] const TType&) {};
+#define MDY_PLATFORM_FLAG_WINDOWS
+//#define MDY_PLATFORM_FLAG_LINUX
+//#define MDY_PLATFORM_FLAG_MACOS
 
-#endif ///  GUARD_DIANYING_HELPER_DISABLE_WARNING_H
+#endif /// GUARD_DY_DYMACROPLATFORMSETTING_H

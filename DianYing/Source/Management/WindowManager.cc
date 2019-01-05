@@ -107,6 +107,18 @@ EDySuccess MDyWindow::MDY_PRIVATE_SPECIFIER(TerminateWindow)() noexcept
   return DY_SUCCESS;
 }
 
+const std::array<GLFWwindow*, 2>& MDyWindow::GetGLWorkerWindowList() const noexcept
+{
+#if defined (NDEBUG) == false 
+  for (const auto& ptrWindow : this->mGlfwWorkerWnds)
+  { // Validation check.
+    MaybeNotUsed(ptrWindow);
+    MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptrWindow), "GLFWwindow must be valid.");
+  }
+#endif
+  return this->mGlfwWorkerWnds;
+}
+
 void MDyWindow::TempSwapBuffers()
 {
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mGlfwWindow), "OpenGL Context must not be null when running.");

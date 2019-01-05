@@ -1,5 +1,5 @@
-#ifndef GUARD_DIANYING_HELPER_DISABLE_WARNING_H
-#define GUARD_DIANYING_HELPER_DISABLE_WARNING_H
+#ifndef GUARD_DY_NAMESPACE_HELPER_SYSTEM
+#define GUARD_DY_NAMESPACE_HELPER_SYSTEM
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,12 +13,11 @@
 /// SOFTWARE.
 ///
 
-#if defined(_WIN32)
-#pragma warning(push)
-#pragma warning(disable:4100 4127 4201 5046 4324)
-#endif
+namespace dy::mcs
+{
 
-template <typename TType>
-void MaybeNotUsed([[maybe_unused]] const TType&) {};
+void Compress(_MIN_ const std::filesystem::path& iPath);
 
-#endif ///  GUARD_DIANYING_HELPER_DISABLE_WARNING_H
+} /// ::dy::mcs(mode_compression_setting) namespace
+
+#endif /// GUARD_DY_NAMESPACE_HELPER_SYSTEM

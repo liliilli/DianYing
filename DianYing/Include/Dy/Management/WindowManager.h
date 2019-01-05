@@ -41,14 +41,7 @@ public:
   }
 
   /// @brief Get glfw worker window context list
-  MDY_NODISCARD const std::array<GLFWwindow*, 2>& GetGLWorkerWindowList() const noexcept
-  {
-    for (const auto& ptrWindow : this->mGlfwWorkerWnds)
-    { // Validation check.
-      MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptrWindow), "GLFWwindow must be valid.");
-    }
-    return this->mGlfwWorkerWnds;
-  }
+  MDY_NODISCARD const std::array<GLFWwindow*, 2>& GetGLWorkerWindowList() const noexcept;
 
   /// @brief TEMPORAL FUNCTION FOR SWAPPING BUFFER.
   void TempSwapBuffers();
