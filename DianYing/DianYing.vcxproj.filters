@@ -644,6 +644,7 @@
     <ClInclude Include="Include\Dy\Element\Type\Timer\FDyTimerHandle.h" />
     <ClInclude Include="Include\Dy\Element\Type\Timer\FDyTimerItem.h" />
     <ClInclude Include="Include\Dy\DyMacroSetting.h" />
+    <ClInclude Include="Include\Dy\Helper\System\SDyCompressionFunction.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

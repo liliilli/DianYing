@@ -271,35 +271,46 @@ EDySuccess MDySetting::pfInitialize()
   //! FUNCTIONBODY ∨
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  // Output setting options at debug mode.
-  MDY_LOG_INFO_D("{} | MDySetting::pfInitialize().",          "FunctionCall");
-  MDY_LOG_INFO_D("{} | Logging : {}", "Feature",              this->mIsEnabledLogging ? "ON" : "OFF");
-  MDY_LOG_INFO_D("{} | Logging Console : {}", "SubFeature",   this->mIsEnabledLoggingToConsole ? "ON" : "OFF");
-  MDY_LOG_INFO_D("{} | Logging File : {}", "SubFeature",      this->mIsEnabledLoggingToFile ? "ON" : "OFF");
-  MDY_LOG_INFO_D("{} | Logging File path : {}", "SubFeature", this->mLogFilePath);
-  MDY_LOG_INFO_D("{} | Vsync : {}", "Feature",                this->mIsEnabledVsync ? "ON" : "OFF");
-
-  MDY_CALL_ASSERT_SUCCESS(InitializeGraphicsApi(*this));
-
-  #if defined(MDY_FLAG_LOAD_COMPRESSED_DATAFILE) == false
+  #if defined(MDY_FLAG_MODE_POPULATE_COMPRESSED_DATAFILE) == true
   {
     const auto opSettingAtlas = DyGetJsonAtlasFromFile(M_PATH_PLAIN_PATH_OF_SETTING_JSON);
     MDY_ASSERT(opSettingAtlas.has_value() == true, "Failed to open application setting file.");
-
-    { // Apply setting to project before everthing starts to working.
-      const auto& settingAtlas = opSettingAtlas.value();
-      this->mDescription  = DyJsonGetValueFrom<decltype(this->mDescription)>(settingAtlas, sCategoryDescription);
-      this->mGamePlay     = DyJsonGetValueFrom<decltype(this->mGamePlay)>   (settingAtlas, sCategoryGameplay);
-      this->mInput        = DyJsonGetValueFrom<decltype(this->mInput)>      (settingAtlas, sCategoryInput);
-      this->mTag          = DyJsonGetValueFrom<decltype(this->mTag)>        (settingAtlas, sCategoryTag);
-      this->mDevMetaPath     = DyJsonGetValueFrom<decltype(this->mDevMetaPath)>   (settingAtlas, sCategoryMetaPath);
-    }
+    DyJsonGetValueFromTo(opSettingAtlas.value(), sCategoryMetaPath, this->mDevMetaPath);
   }
   #else
   {
+    // Output setting options at debug mode.
+    MDY_LOG_INFO_D("{} | MDySetting::pfInitialize().",          "FunctionCall");
+    MDY_LOG_INFO_D("{} | Logging : {}", "Feature",              this->mIsEnabledLogging ? "ON" : "OFF");
+    MDY_LOG_INFO_D("{} | Logging Console : {}", "SubFeature",   this->mIsEnabledLoggingToConsole ? "ON" : "OFF");
+    MDY_LOG_INFO_D("{} | Logging File : {}", "SubFeature",      this->mIsEnabledLoggingToFile ? "ON" : "OFF");
+    MDY_LOG_INFO_D("{} | Logging File path : {}", "SubFeature", this->mLogFilePath);
+    MDY_LOG_INFO_D("{} | Vsync : {}", "Feature",                this->mIsEnabledVsync ? "ON" : "OFF");
 
-    MDY_NOT_IMPLEMENTED_ASSERT();
-  }  
+    MDY_CALL_ASSERT_SUCCESS(InitializeGraphicsApi(*this));
+
+     #if defined(MDY_FLAG_LOAD_COMPRESSED_DATAFILE) == false
+    {
+
+      const auto opSettingAtlas = DyGetJsonAtlasFromFile(M_PATH_PLAIN_PATH_OF_SETTING_JSON);
+      MDY_ASSERT(opSettingAtlas.has_value() == true, "Failed to open application setting file.");
+
+      { // Apply setting to project before everthing starts to working.
+        const auto& settingAtlas = opSettingAtlas.value();
+        this->mDescription  = DyJsonGetValueFrom<decltype(this->mDescription)>(settingAtlas, sCategoryDescription);
+        this->mGamePlay     = DyJsonGetValueFrom<decltype(this->mGamePlay)>   (settingAtlas, sCategoryGameplay);
+        this->mInput        = DyJsonGetValueFrom<decltype(this->mInput)>      (settingAtlas, sCategoryInput);
+        this->mTag          = DyJsonGetValueFrom<decltype(this->mTag)>        (settingAtlas, sCategoryTag);
+        this->mDevMetaPath  = DyJsonGetValueFrom<decltype(this->mDevMetaPath)>(settingAtlas, sCategoryMetaPath);
+      }
+    }
+    #else
+    {
+
+      MDY_NOT_IMPLEMENTED_ASSERT();
+    }  
+    #endif
+  }
   #endif
 
   this->mIsInitialized = true;
