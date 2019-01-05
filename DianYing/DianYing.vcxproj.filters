@@ -251,6 +251,7 @@
     <ClCompile Include="Source\Management\GameTimerManager.cc" />
     <ClCompile Include="Source\Element\Type\Timer\FDyTimerItem.cc" />
     <ClCompile Include="Source\Core\Thread\IO\DDyIOTaskDeferred.cc" />
+    <ClCompile Include="Source\Helper\MCS\Functions.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -644,10 +645,11 @@
     <ClInclude Include="Include\Dy\Management\GameTimerManager.h" />
     <ClInclude Include="Include\Dy\Element\Type\Timer\FDyTimerHandle.h" />
     <ClInclude Include="Include\Dy\Element\Type\Timer\FDyTimerItem.h" />
-    <ClInclude Include="Include\Dy\Helper\System\SDyCompressionFunction.h" />
     <ClInclude Include="Include\DyMacroPlatformSetting.h" />
     <ClInclude Include="Include\DyMacroSetting.h" />
     <ClInclude Include="Include\Dy\Include\Entry.h" />
+    <ClInclude Include="Include\Dy\Core\EDyAppMode.h" />
+    <ClInclude Include="Include\Dy\Helper\MCS\Functions.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

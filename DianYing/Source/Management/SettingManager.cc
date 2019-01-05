@@ -99,6 +99,16 @@ EDyRenderingApi MDySetting::GetRenderingType() const noexcept
   return this->mRenderingType;
 }
 
+TI32 MDySetting::GetWindowSizeWidth() const noexcept
+{
+  return this->mGamePlay.mInitialResolution.X;
+}
+
+TI32 MDySetting::GetWindowSizeHeight() const noexcept
+{
+  return this->mGamePlay.mInitialResolution.Y;
+}
+
 void MDySetting::SetFeatureLogging(_MIN_ bool isEnabled) noexcept
 {
   if (this->mIsEnabledLogging != isEnabled)
@@ -151,6 +161,31 @@ bool MDySetting::IsEnabledVSync() const noexcept
   return this->mIsEnabledVsync;
 }
 
+bool MDySetting::IsEnabledFeatureLogging() const noexcept
+{
+  return this->mIsEnabledLogging;
+}
+
+bool MDySetting::IsEnabledSubFeatureLoggingToConsole() const noexcept
+{
+  return this->mIsEnabledLoggingToConsole;
+}
+
+bool MDySetting::IsEnableSubFeatureLoggingToFile() const noexcept
+{
+  return this->mIsEnabledLoggingToFile;
+}
+
+EDyAppMode MDySetting::GetApplicationMode() const noexcept
+{
+  return this->mApplicationMode;
+}
+
+const std::string& MDySetting::GetLogFilePath() const noexcept
+{
+  return this->mLogFilePath;
+}
+
 void MDySetting::SetVSyncMode(bool enableVsync) noexcept
 {
   if (this->mIsEnabledVsync != enableVsync)
@@ -172,6 +207,11 @@ EDySuccess MDySetting::MDY_PRIVATE_SPECIFIER(CheckObjectTagIsExist)(_MIN_ const 
   }
 
   return DY_FAILURE;
+}
+
+const std::string& MDySetting::MDY_PRIVATE_SPECIFIER(GetEntrySettingFile)() const noexcept
+{
+  return this->mEntrySettingPath;
 }
 
 void MDySetting::pSetupExecutableArgumentSettings()
@@ -228,19 +268,58 @@ void MDySetting::pSetupExecutableArgumentSettings()
       ("g,graphics",                "Enable graphics API with", cxxopts::value<std::string>()->default_value(""))
       ("c,enable_logging_console",  "Enable logging console",   cxxopts::value<bool>())
       ("f,enable_logging_file",     "Enable logging file to",   cxxopts::value<std::string>()->default_value(""))
+      // -m and -r can not be existed on same time.
+      // Must specify setting json data path from executable application file.
+      ("m,mode_compression_data", 
+          "Run application as compression data mode.", 
+          cxxopts::value<std::string>()->default_value(""))
+      // If -r is not setup, specified compression file will be loaded.
+      // Must specify setting json data path from executable application file.
+      ("r,run_separated_data",    
+          "Run with seperated data file, must be setting file path.", 
+          cxxopts::value<std::string>()->default_value(""))
   ;
 
   #if defined(MDY_PLATFORM_FLAG_WINDOWS) && defined(_WIN32)
+  {
     const auto result = options.parse(__argc, __argv);
-  #elif defined(MDY_PLATFORM_FLAG_LINUX) && defined(__linux__)
-    static_assert(false, "Linux does not support now.");
-  #elif defined(MDY_PLATFORM_FLAG_MACOS)
-    static_assert(false, "Macos does not support now.");
-  #endif
 
-  SetupRenderingType(result["graphics"]);
-  SetupLoggingConsoleFeature(result["enable_logging_console"]);
-  SetupLoggingFileFeature(result["enable_logging_file"]);
+    SetupRenderingType(result["graphics"]);
+    SetupLoggingConsoleFeature(result["enable_logging_console"]);
+    SetupLoggingFileFeature(result["enable_logging_file"]);
+    { // Mode compression data
+      if (const auto m = result["mode_compression_data"].as<std::string>(); m.empty() == false)
+      {
+        namespace fs = std::filesystem;
+        MDY_ASSERT_FORCE(fs::exists(m) == true, "Compressed data entry setting file is not exist on given path.");
+
+        this->mEntrySettingPath = m;
+        this->mApplicationMode  = EDyAppMode::ModeCompressData;
+      }
+    }
+    { // Run seperated data.
+      if (const auto r = result["run_separated_data"].as<std::string>(); r.empty() == false)
+      {
+        namespace fs = std::filesystem;
+        MDY_ASSERT_FORCE(
+            this->GetApplicationMode() == EDyAppMode::LoadCompressedFile,
+            "Application running mode should not be duplicated by any mode flag.");
+        MDY_ASSERT_FORCE(fs::exists(r) == true, "Compressed data entry setting file is not exist on given path.");
+
+        this->mEntrySettingPath = r;
+        this->mApplicationMode  = EDyAppMode::LoadSeperatedFile;
+      }
+    }
+  }
+  #elif defined(MDY_PLATFORM_FLAG_LINUX) && defined(__linux__)
+  {
+    static_assert(false, "Linux does not support now.");
+  }
+  #elif defined(MDY_PLATFORM_FLAG_MACOS)
+  {
+    static_assert(false, "Macos does not support now.");
+  }
+  #endif
 }
 
 EDySuccess MDySetting::pfInitialize()
@@ -251,15 +330,12 @@ EDySuccess MDySetting::pfInitialize()
   { // Set rendering api type.
     switch (manager.mRenderingType)
     {
-    case EDyRenderingApi::Vulkan:    MDY_NOT_IMPLEMENTED_ASSERT(); break;
-    case EDyRenderingApi::DirectX11: MDY_NOT_IMPLEMENTED_ASSERT(); break;
-    case EDyRenderingApi::DirectX12: MDY_NOT_IMPLEMENTED_ASSERT(); break;
-    case EDyRenderingApi::OpenGL:
-      MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "OpenGL");
-      break;
+    case EDyRenderingApi::Vulkan:     MDY_NOT_IMPLEMENTED_ASSERT(); break;
+    case EDyRenderingApi::DirectX11:  MDY_NOT_IMPLEMENTED_ASSERT(); break;
+    case EDyRenderingApi::DirectX12:  MDY_NOT_IMPLEMENTED_ASSERT(); break;
+    case EDyRenderingApi::OpenGL:     MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "OpenGL"); break;
     default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE); 
     }
-
     return DY_SUCCESS;
   };
 
@@ -267,61 +343,46 @@ EDySuccess MDySetting::pfInitialize()
   //! FUNCTIONBODY ∨
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  #if defined(MDY_FLAG_MODE_POPULATE_COMPRESSED_DATAFILE) == true
+  // Output setting options at debug mode.
+  MDY_LOG_INFO_D("{} | MDySetting::pfInitialize().",          "FunctionCall");
+  MDY_LOG_INFO_D("{} | Logging : {}", "Feature",              this->mIsEnabledLogging ? "ON" : "OFF");
+  MDY_LOG_INFO_D("{} | Logging Console : {}", "SubFeature",   this->mIsEnabledLoggingToConsole ? "ON" : "OFF");
+  MDY_LOG_INFO_D("{} | Logging File : {}", "SubFeature",      this->mIsEnabledLoggingToFile ? "ON" : "OFF");
+  MDY_LOG_INFO_D("{} | Logging File path : {}", "SubFeature", this->mLogFilePath);
+  MDY_LOG_INFO_D("{} | Vsync : {}", "Feature",                this->mIsEnabledVsync ? "ON" : "OFF");
+  MDY_CALL_ASSERT_SUCCESS(InitializeGraphicsApi(*this));
+
+  if (this->mApplicationMode == EDyAppMode::LoadSeperatedFile)
   {
-    const auto opSettingAtlas = DyGetJsonAtlasFromFile(M_PATH_PLAIN_PATH_OF_SETTING_JSON);
+    const auto opSettingAtlas = DyGetJsonAtlasFromFile(this->mEntrySettingPath);
     MDY_ASSERT(opSettingAtlas.has_value() == true, "Failed to open application setting file.");
-    DyJsonGetValueFromTo(opSettingAtlas.value(), sCategoryMetaPath, this->mDevMetaPath);
+    const auto& settingAtlas = opSettingAtlas.value();
+
+    // Apply setting to project before everthing starts to working.
+    DyJsonGetValueFromTo(settingAtlas, sCategoryDescription, this->mDescription);
+    DyJsonGetValueFromTo(settingAtlas, sCategoryGameplay, this->mGamePlay);
+    DyJsonGetValueFromTo(settingAtlas, sCategoryInput, this->mInput);
+    DyJsonGetValueFromTo(settingAtlas, sCategoryTag, this->mTag);
+    DyJsonGetValueFromTo(settingAtlas, sCategoryMetaPath, this->mDevMetaPath);
+    MDyMetaInfo::GetInstance().MDY_PRIVATE_SPECIFIER(InitiateMetaInformation)();
   }
-  #else
+  else if (this->mApplicationMode == EDyAppMode::LoadCompressedFile)
   {
-    // Output setting options at debug mode.
-    MDY_LOG_INFO_D("{} | MDySetting::pfInitialize().",          "FunctionCall");
-    MDY_LOG_INFO_D("{} | Logging : {}", "Feature",              this->mIsEnabledLogging ? "ON" : "OFF");
-    MDY_LOG_INFO_D("{} | Logging Console : {}", "SubFeature",   this->mIsEnabledLoggingToConsole ? "ON" : "OFF");
-    MDY_LOG_INFO_D("{} | Logging File : {}", "SubFeature",      this->mIsEnabledLoggingToFile ? "ON" : "OFF");
-    MDY_LOG_INFO_D("{} | Logging File path : {}", "SubFeature", this->mLogFilePath);
-    MDY_LOG_INFO_D("{} | Vsync : {}", "Feature",                this->mIsEnabledVsync ? "ON" : "OFF");
+    MDY_ASSERT(std::filesystem::exists(this->mEntrySettingPath) == true, "Data file is not exist.");
 
-    MDY_CALL_ASSERT_SUCCESS(InitializeGraphicsApi(*this));
+    const auto opMetaInfo = DyGetJsonAtlasFromFile(this->mEntrySettingPath);
+    MDY_ASSERT(opMetaInfo.has_value() == true, "Failed to open meta data file.");
+    const auto& metaAtlas = opMetaInfo.value();
 
-    #if defined(MDY_FLAG_LOAD_COMPRESSED_DATAFILE) == false
-    {
-      const auto opSettingAtlas = DyGetJsonAtlasFromFile(M_PATH_PLAIN_PATH_OF_SETTING_JSON);
-      MDY_ASSERT(opSettingAtlas.has_value() == true, "Failed to open application setting file.");
-      const auto& settingAtlas = opSettingAtlas.value();
-
-      // Apply setting to project before everthing starts to working.
-      DyJsonGetValueFromTo(settingAtlas, sCategoryDescription, this->mDescription);
-      DyJsonGetValueFromTo(settingAtlas, sCategoryGameplay, this->mGamePlay);
-      DyJsonGetValueFromTo(settingAtlas, sCategoryInput, this->mInput);
-      DyJsonGetValueFromTo(settingAtlas, sCategoryTag, this->mTag);
-      DyJsonGetValueFromTo(settingAtlas, sCategoryMetaPath, this->mDevMetaPath);
-      MDyMetaInfo::GetInstance().MDY_PRIVATE_SPECIFIER(InitiateMetaInformation)();
-    }
-    #else 
-    {
-      namespace fs = std::filesystem;
-      MDY_ASSERT(fs::exists("./data/Data000.dydat") == true, "Data file is not exist.");
-
-      const auto opMetaInfo = DyGetJsonAtlasFromFile("./data/Data000.dydat");
-      MDY_ASSERT(opMetaInfo.has_value() == true, "Failed to open meta data file.");
-      const auto& metaAtlas = opMetaInfo.value();
-
-      {
-        const auto& settingAtlas = metaAtlas["Setting"];
-        // Apply setting to project before everthing starts to working.
-        DyJsonGetValueFromTo(settingAtlas, sCategoryDescription, this->mDescription);
-        DyJsonGetValueFromTo(settingAtlas, sCategoryGameplay, this->mGamePlay);
-        DyJsonGetValueFromTo(settingAtlas, sCategoryInput, this->mInput);
-        DyJsonGetValueFromTo(settingAtlas, sCategoryTag, this->mTag);
-      }
-
-      MDyMetaInfo::GetInstance().MDY_PRIVATE_SPECIFIER(InitiateMetaInformationComp)(metaAtlas);
-    }  
-    #endif
+    // Apply setting to project before everthing starts to working.
+    const auto& settingAtlas = metaAtlas["Setting"];
+    DyJsonGetValueFromTo(settingAtlas, sCategoryDescription, this->mDescription);
+    DyJsonGetValueFromTo(settingAtlas, sCategoryGameplay, this->mGamePlay);
+    DyJsonGetValueFromTo(settingAtlas, sCategoryInput, this->mInput);
+    DyJsonGetValueFromTo(settingAtlas, sCategoryTag, this->mTag);
+    MDyMetaInfo::GetInstance().MDY_PRIVATE_SPECIFIER(InitiateMetaInformationComp)(metaAtlas);
   }
-  #endif
+  else { MDY_UNEXPECTED_BRANCH(); }
 
   this->mIsInitialized = true;
   return DY_SUCCESS;

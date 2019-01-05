@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_INCLUDE_ENTRY_H
-#define GUARD_DY_INCLUDE_ENTRY_H
+#ifndef GUARD_DY_CORE_EDYAPPMODE_H
+#define GUARD_DY_CORE_EDYAPPMODE_H
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,14 +13,18 @@
 /// SOFTWARE.
 ///
 
-#include <filesystem>
-#include <regex>
-#include <DyMacroSetting.h>
+namespace dy
+{
 
-#include <Dy/Core/DyEngine.h>
-#include <Dy/Helper/Library/HelperRegex.h>
-#include <Dy/Helper/Library/HelperJson.h>
-#include <Dy/Management/WindowManager.h>
-#include <Dy/Management/SettingManager.h>
+/// @enum EDyAppMode
+/// @brief
+enum class EDyAppMode
+{
+  LoadSeperatedFile,
+  LoadCompressedFile,
+  ModeCompressData,
+};
 
-#endif /// GUARD_DY_INCLUDE_ENTRY_H
+} /// ::dy namespace
+
+#endif /// GUARD_DY_CORE_EDYAPPMODE_H

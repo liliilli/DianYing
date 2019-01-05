@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_INCLUDE_ENTRY_H
-#define GUARD_DY_INCLUDE_ENTRY_H
+#ifndef GUARD_DY_NAMESPACE_HELPER_SYSTEM
+#define GUARD_DY_NAMESPACE_HELPER_SYSTEM
 ///
 /// MIT License
 /// Copyright (c) 2018 Jongmin Yun
@@ -13,14 +13,11 @@
 /// SOFTWARE.
 ///
 
-#include <filesystem>
-#include <regex>
-#include <DyMacroSetting.h>
+namespace dy::mcs
+{
 
-#include <Dy/Core/DyEngine.h>
-#include <Dy/Helper/Library/HelperRegex.h>
-#include <Dy/Helper/Library/HelperJson.h>
-#include <Dy/Management/WindowManager.h>
-#include <Dy/Management/SettingManager.h>
+void Compress(_MIN_ const std::filesystem::path& iPath);
 
-#endif /// GUARD_DY_INCLUDE_ENTRY_H
+} /// ::dy::mcs(mode_compression_setting) namespace
+
+#endif /// GUARD_DY_NAMESPACE_HELPER_SYSTEM

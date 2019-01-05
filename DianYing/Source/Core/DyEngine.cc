@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Core/DyEngine.h>
 
+#include <filesystem>
 #include <Dy/Management/InputManager.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
@@ -32,6 +33,7 @@
 #include <Dy/Management/Internal/MDyProfiling.h>
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 #include "Dy/Management/GameTimerManager.h"
+#include "Dy/Helper/mcs/Functions.h"
 
 //!
 //! Implementation
@@ -45,28 +47,48 @@ DyEngine* gEngine = nullptr;
 EDySuccess DyEngine::pfInitialize()
 {
   gEngine = this;
-  auto& settingManager = MDySetting::GetInstance();
-  settingManager.pSetupExecutableArgumentSettings();
+  MDySetting::GetInstance().pSetupExecutableArgumentSettings();
 
-  this->pfInitializeIndependentManager();
-  this->mSynchronization = &MDySynchronization::GetInstance();
+  switch (MDySetting::GetInstance().GetApplicationMode())
+  {
+  case EDyAppMode::ModeCompressData: { return DY_SUCCESS; } 
+  case EDyAppMode::LoadSeperatedFile: 
+  case EDyAppMode::LoadCompressedFile: 
+  {
+    this->pfInitializeIndependentManager();
+    this->mSynchronization = &MDySynchronization::GetInstance();
+  } break;
+  }
+
   return DY_SUCCESS;
 }
 
 EDySuccess DyEngine::pfRelease()
 {
-  this->mSynchronization = nullptr;
-  this->pfReleaseIndependentManager();
+  switch (MDySetting::GetInstance().GetApplicationMode())
+  {
+  case EDyAppMode::ModeCompressData: /* Do nothing */ break;
+  case EDyAppMode::LoadSeperatedFile: 
+  case EDyAppMode::LoadCompressedFile: 
+  {
+    this->mSynchronization = nullptr;
+    this->pfReleaseIndependentManager();
+  } break;
+  }
   return DY_SUCCESS;
 }
 
 void DyEngine::operator()()
 {
-  static auto& window         = MDyWindow::GetInstance();
-  static auto& timeManager    = MDyTime::GetInstance();
-  static auto& soundManager   = MDySound::GetInstance();
-  //soundManager.Update(MDY_INITIALIZE_DEFINT);
+  if (const auto& set = MDySetting::GetInstance(); 
+      set.GetApplicationMode() == EDyAppMode::ModeCompressData)
+  { 
+    mcs::Compress(set.MDY_PRIVATE_SPECIFIER(GetEntrySettingFile)());
+    return;
+  }
 
+  static auto& window      = MDyWindow::GetInstance();
+  static auto& timeManager = MDyTime::GetInstance();
   while (window.IsWindowShouldClose() == false)
   {
     // Try game status transition and pre-housesholds.
