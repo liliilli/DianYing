@@ -112,7 +112,7 @@ Line : {3})dy",
 #endif
 
     __ReleaseFunction(nullptr, false);
-    abort();
+    exit(1);
   }
 }
 
@@ -139,7 +139,7 @@ Line : {1}
 #endif
 
   __ReleaseFunction(nullptr, false);
-  abort();
+  exit(1);
 }
 
 ///
@@ -162,7 +162,7 @@ Line : {1}
 
   printf("Unexpected branch not intended.\n" "Source : \t%s, line : %d\n", filePath, line);
   __ReleaseFunction(nullptr, false);
-  abort();
+  exit(1);
 }
 
 } /// ::dy namespace`
