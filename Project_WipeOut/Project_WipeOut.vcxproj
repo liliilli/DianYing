@@ -69,13 +69,24 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(SolutionDir)DianYing\Include;$(IncludePath)</IncludePath>
+    <SourcePath>$(SourcePath)</SourcePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(SolutionDir)DianYing\Include;$(IncludePath)</IncludePath>
+    <SourcePath>$(SourcePath)</SourcePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;C:\TPLibraries\PhysX\pxshared\include;C:\TPLibraries\PhysX\physx\include;$(SolutionDir)DianYing\Libraries\msdfgen;$(SolutionDir)DianYing\Libraries\lua\include;$(SolutionDir)DianYing\Libraries\sol2;$(SolutionDir)DianYing\Libraries\phitos;$(SolutionDir)DianYing\Libraries\nlohmann;$(SolutionDir)DianYing\Libraries\glad\include;$(SolutionDir)DianYing\Libraries\stb;$(SolutionDir)DianYing\Libraries\imgui;$(SolutionDir)DianYing\Libraries\glfw\include;$(SolutionDir)DianYing\Libraries\assimp\assimp\$(Platform);$(SolutionDir)DianYing\Libraries\assimp;$(SolutionDir)DianYing\Libraries\glm;$(SolutionDir)DianYing\Libraries\freetype\include;$(SolutionDir)DianYing\Libraries\spdlog\include;$(SolutionDir)DianYing\Libraries\FX11\inc;$(SolutionDir)DianYing\Libraries\zlib;$(SolutionDir)DianYing\Libraries\cxxopts\include;C:\VulkanSDK\1.1.85.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -108,6 +119,10 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;C:\TPLibraries\PhysX\pxshared\include;C:\TPLibraries\PhysX\physx\include;$(SolutionDir)DianYing\Libraries\msdfgen;$(SolutionDir)DianYing\Libraries\lua\include;$(SolutionDir)DianYing\Libraries\sol2;$(SolutionDir)DianYing\Libraries\phitos;$(SolutionDir)DianYing\Libraries\nlohmann;$(SolutionDir)DianYing\Libraries\glad\include;$(SolutionDir)DianYing\Libraries\stb;$(SolutionDir)DianYing\Libraries\imgui;$(SolutionDir)DianYing\Libraries\glfw\include;$(SolutionDir)DianYing\Libraries\assimp\assimp\$(Platform);$(SolutionDir)DianYing\Libraries\assimp;$(SolutionDir)DianYing\Libraries\glm;$(SolutionDir)DianYing\Libraries\freetype\include;$(SolutionDir)DianYing\Libraries\spdlog\include;$(SolutionDir)DianYing\Libraries\FX11\inc;$(SolutionDir)DianYing\Libraries\zlib;$(SolutionDir)DianYing\Libraries\cxxopts\include;C:\VulkanSDK\1.1.85.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -115,6 +130,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Entry.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
