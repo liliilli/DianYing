@@ -94,7 +94,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>$(ProjectDir)Libraries\physX\lib\$(Configuration);C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\lib;C:\TPLibraries\lua\lib\$(Platform)\$(Configuration);$(ProjectDir)Libraries\assimp\lib\$(Configuration)\$(Platform);$(ProjectDir)Libraries\FX11\bin\$(Platform)\$(Configuration);$(ProjectDir)Libraries\freetype\objs\$(Platform)\$(Configuration) Static;C:\VulkanSDK\1.1.85.0\Lib;C:\TPLibraries\glfw-3.2.1\build\src\Debug;$(ProjectDir)Libraries\zlib\zlib\build\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)Libraries\physX\lib\$(Configuration);C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\lib;$(ProjectDir)Libraries\lua\lib\$(Platform)\$(Configuration);$(ProjectDir)Libraries\assimp\lib\$(Configuration)\$(Platform);$(ProjectDir)Libraries\FX11\bin\$(Platform)\$(Configuration);$(ProjectDir)Libraries\freetype\objs\$(Platform)\$(Configuration) Static;C:\VulkanSDK\1.1.85.0\Lib;C:\TPLibraries\glfw-3.2.1\build\src\Debug;$(ProjectDir)Libraries\zlib\zlib\build\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>PhysX_64.lib;PhysXCommon_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXFoundation_64.lib;zlibstaticd.lib;freetype.lib;lua_build.lib;fmodL64_vc.lib;assimp-vc140-mt.lib;glfw3dll.lib;opengl32.lib;vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;msvcrtd.lib;libcmtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>
@@ -143,15 +143,17 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <AdditionalIncludeDirectories>C:\TPLibraries\PhysX-3.4\PhysX_3.4\Include;$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;C:\VulkanSDK\1.1.82.0\Include;%(AdditionalIncludeDirectories);C:\TPLibraries\PhysX-3.4\PhysX_3.4\Include;C:\TPLibraries\PhysX-3.4\PxShared\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>MDY_FLAG_IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;C:\TPLibraries\PhysX\pxshared\include;C:\TPLibraries\PhysX\physx\include;$(ProjectDir)Libraries\msdfgen;$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDir)Libraries\freetype\include;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;$(ProjectDir)Libraries\zlib;$(ProjectDir)Libraries\cxxopts\include;C:\VulkanSDK\1.1.85.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;__MDY_FLAG_IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4996;4244;4267;4189;4100;4458</DisableSpecificWarnings>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>C:\TPLibraries\lua\lib\$(Platform)\$(Configuration);$(ProjectDir)Libraries\glfw\$(Platform);$(ProjectDir)Libraries\FX11\bin\$(Platform)\$(Configuration);C:\VulkanSDK\1.1.82.0\Lib;$(ProjectDir)Libraries\zlib\zlib\build\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>lua_build.lib;tbb.lib;glfw3.lib;opengl32.lib;vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Libraries\physX\lib\$(Configuration);C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\lib;$(ProjectDir)Libraries\lua\lib\$(Platform)\$(Configuration);$(ProjectDir)Libraries\assimp\lib\$(Configuration)\x64;$(ProjectDir)Libraries\FX11\bin\$(Platform)\$(Configuration);$(ProjectDir)Libraries\glfw\$(Platform);$(ProjectDir)Libraries\zlib\zlib\build\$(Configuration);$(ProjectDir)Libraries\freetype\objs\x64\$(Configuration);C:\VulkanSDK\1.1.85.0\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>PhysX_64.lib;PhysXCommon_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXFoundation_64.lib;zlibstatic.lib;freetype.lib;lua_build.lib;fmodL64_vc.lib;assimp-vc140-mt.lib;glfw3.lib;opengl32.lib;vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -227,6 +229,7 @@
     <ClCompile Include="Source\Core\Resource\Type\Shader\ADyUniformContainer.cc" />
     <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceContainer.cc" />
     <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceInstance.cc" />
+    <ClCompile Include="Source\Core\Thread\IO\DDyIOTaskDeferred.cc" />
     <ClCompile Include="Source\Core\Thread\IO\FDyIOGC.cc" />
     <ClCompile Include="Source\Core\Thread\SDyIOBindingHelperInfo.cc" />
     <ClCompile Include="Source\Core\Thread\SDyIOBindingHelperResc.cc" />
@@ -241,6 +244,7 @@
     <ClCompile Include="Source\Element\Descriptor\GlobalEnums.cc" />
     <ClCompile Include="Libraries\glad\src\glad.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Libraries\imgui\imgui\imgui_demo.cpp" />
     <ClCompile Include="Libraries\imgui\imgui\imgui_draw.cpp" />
@@ -249,42 +253,68 @@
     <ClCompile Include="Libraries\imgui\imgui\imgui.cpp" />
     <ClCompile Include="Libraries\msdfgen\core\Bitmap.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Libraries\msdfgen\core\Contour.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Libraries\msdfgen\core\edge-coloring.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Libraries\msdfgen\core\edge-segments.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Libraries\msdfgen\core\EdgeHolder.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Libraries\msdfgen\core\equation-solver.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Libraries\msdfgen\core\msdfgen.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Libraries\msdfgen\core\render-sdf.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Libraries\msdfgen\core\save-bmp.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Libraries\msdfgen\core\shape-description.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Libraries\msdfgen\core\Shape.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Libraries\msdfgen\core\SignedDistance.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Libraries\msdfgen\core\Vector2.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Source\Builtin\Material\OpaqueStaticPlain.cc" />
     <ClCompile Include="Source\Builtin\Model\Box.cc" />

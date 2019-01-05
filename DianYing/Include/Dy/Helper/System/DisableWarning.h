@@ -18,4 +18,7 @@
 #pragma warning(disable:4100 4127 4201 5046 4324)
 #endif
 
+template <typename TType>
+void MaybeNotUsed([[maybe_unused]] const TType&) {};
+
 #endif ///  GUARD_DIANYING_HELPER_DISABLE_WARNING_H

@@ -250,6 +250,7 @@
     <ClCompile Include="Source\Element\Type\DDyActorBinder.cc" />
     <ClCompile Include="Source\Management\GameTimerManager.cc" />
     <ClCompile Include="Source\Element\Type\Timer\FDyTimerItem.cc" />
+    <ClCompile Include="Source\Core\Thread\IO\DDyIOTaskDeferred.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
