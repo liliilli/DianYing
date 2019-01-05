@@ -19,7 +19,7 @@
 /// 3. undefine MDY_FLAG_MODE_POPULATE_COMPRESSED_DATAFILE
 /// 4. define MDY_FLAG_LOAD_COMPRESSED_DATAFILE, so compressed `Data###.dydat` must be loaded instead of plain json and resources. 
 /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
- #define MDY_FLAG_MODE_POPULATE_COMPRESSED_DATAFILE 
+//#define MDY_FLAG_MODE_POPULATE_COMPRESSED_DATAFILE 
 
 /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /// @macro M_PATH_PLAIN_PATH_OF_SETTING_JSON
@@ -31,6 +31,6 @@
 /// @macro MDY_FLAG_LOAD_COMPRESSED_DATAFILE
 /// @brief
 /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// #define MDY_FLAG_LOAD_COMPRESSED_DATAFILE
+#define MDY_FLAG_LOAD_COMPRESSED_DATAFILE
 
 #endif /// GUARD_DY_DYMACROSETTINGS_H

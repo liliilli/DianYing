@@ -30,10 +30,6 @@ namespace dy
 
 TDyIO::TDyIO()
 {
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyMetaInfo::Initialize());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyIOData::Initialize());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyIOResource::Initialize());
-
   this->mMetaInfoManager    = &MDyMetaInfo::GetInstance();
   this->mIODataManager      = &MDyIOData::GetInstance();
   this->mIOResourceManager  = &MDyIOResource::GetInstance();
@@ -41,10 +37,6 @@ TDyIO::TDyIO()
 
 TDyIO::~TDyIO()
 {
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyIOResource::Release());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyIOData::Release());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyMetaInfo::Release());
-
   this->mIOResourceManager  = nullptr;
   this->mIODataManager      = nullptr;
   this->mMetaInfoManager    = nullptr;

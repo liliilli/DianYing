@@ -19,6 +19,7 @@
 #include <Dy/Management/SettingManager.h>
 
 #include <cassert>
+#include <filesystem>
 
 #ifdef min
 #undef min
@@ -28,10 +29,11 @@
 #endif
 #include <cxxopts.hpp>
 
+#include <Dy/DyMacroSetting.h>
+#include <Dy/Helper/Library/HelperJson.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/TimeManager.h>
-#include <Dy/Helper/Library/HelperJson.h>
-#include <Dy/DyMacroSetting.h>
+#include <Dy/Management/IO/MetaInfoManager.h>
 
 //!
 //! Local translation unit variables or functions.
@@ -289,25 +291,39 @@ EDySuccess MDySetting::pfInitialize()
 
     MDY_CALL_ASSERT_SUCCESS(InitializeGraphicsApi(*this));
 
-     #if defined(MDY_FLAG_LOAD_COMPRESSED_DATAFILE) == false
+    #if defined(MDY_FLAG_LOAD_COMPRESSED_DATAFILE) == false
     {
-
       const auto opSettingAtlas = DyGetJsonAtlasFromFile(M_PATH_PLAIN_PATH_OF_SETTING_JSON);
       MDY_ASSERT(opSettingAtlas.has_value() == true, "Failed to open application setting file.");
+      const auto& settingAtlas = opSettingAtlas.value();
 
-      { // Apply setting to project before everthing starts to working.
-        const auto& settingAtlas = opSettingAtlas.value();
-        this->mDescription  = DyJsonGetValueFrom<decltype(this->mDescription)>(settingAtlas, sCategoryDescription);
-        this->mGamePlay     = DyJsonGetValueFrom<decltype(this->mGamePlay)>   (settingAtlas, sCategoryGameplay);
-        this->mInput        = DyJsonGetValueFrom<decltype(this->mInput)>      (settingAtlas, sCategoryInput);
-        this->mTag          = DyJsonGetValueFrom<decltype(this->mTag)>        (settingAtlas, sCategoryTag);
-        this->mDevMetaPath  = DyJsonGetValueFrom<decltype(this->mDevMetaPath)>(settingAtlas, sCategoryMetaPath);
-      }
+      // Apply setting to project before everthing starts to working.
+      DyJsonGetValueFromTo(settingAtlas, sCategoryDescription, this->mDescription);
+      DyJsonGetValueFromTo(settingAtlas, sCategoryGameplay, this->mGamePlay);
+      DyJsonGetValueFromTo(settingAtlas, sCategoryInput, this->mInput);
+      DyJsonGetValueFromTo(settingAtlas, sCategoryTag, this->mTag);
+      DyJsonGetValueFromTo(settingAtlas, sCategoryMetaPath, this->mDevMetaPath);
+      MDyMetaInfo::GetInstance().MDY_PRIVATE_SPECIFIER(InitiateMetaInformation)();
     }
-    #else
+    #else 
     {
+      namespace fs = std::filesystem;
+      MDY_ASSERT(fs::exists("./data/Data000.dydat") == true, "Data file is not exist.");
 
-      MDY_NOT_IMPLEMENTED_ASSERT();
+      const auto opMetaInfo = DyGetJsonAtlasFromFile("./data/Data000.dydat");
+      MDY_ASSERT(opMetaInfo.has_value() == true, "Failed to open meta data file.");
+      const auto& metaAtlas = opMetaInfo.value();
+
+      {
+        const auto& settingAtlas = metaAtlas["Setting"];
+        // Apply setting to project before everthing starts to working.
+        DyJsonGetValueFromTo(settingAtlas, sCategoryDescription, this->mDescription);
+        DyJsonGetValueFromTo(settingAtlas, sCategoryGameplay, this->mGamePlay);
+        DyJsonGetValueFromTo(settingAtlas, sCategoryInput, this->mInput);
+        DyJsonGetValueFromTo(settingAtlas, sCategoryTag, this->mTag);
+      }
+
+      MDyMetaInfo::GetInstance().MDY_PRIVATE_SPECIFIER(InitiateMetaInformationComp)(metaAtlas);
     }  
     #endif
   }
