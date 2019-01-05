@@ -14,14 +14,7 @@
 ///
 
 #include <Dy/Helper/System/Assertion.h>
-
-//!
-//! Platform dependent macro
-//!
-
-#define MDY_PLATFORM_FLAG_WINDOWS
-//#define MDY_PLATFORM_FLAG_LINUX
-//#define MDY_PLATFORM_FLAG_MACOS
+#include <DyMacroPlatformSetting.h>
 
 ///
 /// Do not touch below!

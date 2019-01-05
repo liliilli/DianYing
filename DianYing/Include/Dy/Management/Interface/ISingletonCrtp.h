@@ -24,20 +24,16 @@ template <typename TType>
 class IDySingleton
 {
 public:
-  ///
   /// @brief Return reference of instance of MDyTime manager.
   /// This function is thread safe.
-  ///
   FORCEINLINE static TType& GetInstance() noexcept
   {
     static TType instance;
     return instance;
   }
 
-  ///
   /// @brief Initialize singleton.
-  ///
-  [[nodiscard]] FORCEINLINE EDySuccess static Initialize() noexcept
+  FORCEINLINE MDY_NODISCARD EDySuccess static Initialize() noexcept
   {
     MDY_ASSERT(IDySingleton<TType>::mIsInitialized == false, "Singleton instance must be initialized only once.");
     MDY_ASSERT(IDySingleton<TType>::mIsShutdown    == false, "Singleton instance can not be reinitialized after shutting down.");
@@ -49,10 +45,8 @@ public:
     return flag;
   }
 
-  ///
   /// @brief Shutdown singleton.
-  ///
-  [[nodiscard]] FORCEINLINE EDySuccess static Release() noexcept
+  FORCEINLINE MDY_NODISCARD EDySuccess static Release() noexcept
   {
     MDY_ASSERT(IDySingleton<TType>::mIsInitialized == true , "Singleton instance must be initialized before shutting down.");
     MDY_ASSERT(IDySingleton<TType>::mIsShutdown    == false, "Singleton instance can not be shutted down again.");
@@ -64,18 +58,14 @@ public:
     return flag;
   }
 
-  ///
   /// @brief Check whether singleton is initialized.
-  ///
-  [[nodiscard]] FORCEINLINE bool static IsInitialized() noexcept
+  FORCEINLINE MDY_NODISCARD bool static IsInitialized() noexcept
   {
     return IDySingleton<TType>::mIsInitialized && !IDySingleton<TType>::mIsShutdown;
   }
 
-  ///
   /// @brief Check whether singleton is shutdowned.
-  ///
-  [[nodiscard]] FORCEINLINE bool static IsShutdowned() noexcept
+  FORCEINLINE MDY_NODISCARD bool static IsShutdowned() noexcept
   {
     return IDySingleton<TType>::mIsShutdown;
   }

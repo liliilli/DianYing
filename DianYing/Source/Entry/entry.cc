@@ -12,14 +12,7 @@
 /// SOFTWARE.
 ///
 
-#include <filesystem>
-#include <regex>
-#include <Dy/Management/WindowManager.h>
-#include <Dy/Core/DyEngine.h>
-#include <Dy/DyMacroSetting.h>
-#include <Dy/Helper/Library/HelperRegex.h>
-#include "Dy/Helper/Library/HelperJson.h"
-#include "Dy/Management/SettingManager.h"
+#include <Dy/Include/Entry.h>
 
 /// @brief Main entry function of WIN32 platforms.
 #if defined(MDY_PLATFORM_FLAG_WINDOWS)

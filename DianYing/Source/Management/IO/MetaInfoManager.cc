@@ -20,7 +20,7 @@
 #include <filesystem>
 #include <nlohmann/json.hpp>
 
-#include <Dy/DyMacroSetting.h>
+#include <DyMacroSetting.h>
 
 #include <Dy/Core/Reflection/RDyBuiltinResources.h>
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>

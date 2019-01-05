@@ -49,7 +49,7 @@ EDySuccess DyEngine::pfInitialize()
   settingManager.pSetupExecutableArgumentSettings();
 
   this->pfInitializeIndependentManager();
-  this->mSynchronization  = &MDySynchronization::GetInstance();
+  this->mSynchronization = &MDySynchronization::GetInstance();
   return DY_SUCCESS;
 }
 

@@ -644,18 +644,14 @@
     <ClInclude Include="Include\Dy\Management\GameTimerManager.h" />
     <ClInclude Include="Include\Dy\Element\Type\Timer\FDyTimerHandle.h" />
     <ClInclude Include="Include\Dy\Element\Type\Timer\FDyTimerItem.h" />
-    <ClInclude Include="Include\Dy\DyMacroSetting.h" />
     <ClInclude Include="Include\Dy\Helper\System\SDyCompressionFunction.h" />
+    <ClInclude Include="Include\DyMacroPlatformSetting.h" />
+    <ClInclude Include="Include\DyMacroSetting.h" />
+    <ClInclude Include="Include\Dy\Include\Entry.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />
     <None Include="TestResource\Lua\player_script.lua" />
     <None Include="TestResource\Lua\test_bindingscript.lua" />
-    <None Include="TestResource\TestScript1.lua" />
-    <None Include="TestResource\TestScript2.lua" />
-    <None Include="cpp.hint" />
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="_Legacy\box.hlsl" />
   </ItemGroup>
 </Project>

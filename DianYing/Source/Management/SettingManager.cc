@@ -29,7 +29,7 @@
 #endif
 #include <cxxopts.hpp>
 
-#include <Dy/DyMacroSetting.h>
+#include <DyMacroSetting.h>
 #include <Dy/Helper/Library/HelperJson.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/TimeManager.h>
@@ -176,10 +176,8 @@ EDySuccess MDySetting::MDY_PRIVATE_SPECIFIER(CheckObjectTagIsExist)(_MIN_ const 
 
 void MDySetting::pSetupExecutableArgumentSettings()
 {
-  ///
   /// @brief Setup rendering api type from argument.
   /// @param result ["graphics"] Option value from parsing library.
-  ///
   static auto SetupRenderingType = [this](const cxxopts::OptionValue& result)
   { // Lower api string.
     std::string graphicsApi = result.as<std::string>();
@@ -192,10 +190,8 @@ void MDySetting::pSetupExecutableArgumentSettings()
         "Rendering api option is not specified properly. Must be \"OpenGL\".");
   };
 
-  ///
   /// @brief Setup feature logging to console from argument.
   /// @param result ["enable_logging_console"] Option value from parsing library.
-  ///
   static auto SetupLoggingConsoleFeature = [this](const cxxopts::OptionValue& result)
   {
     if (result.as<bool>() == true)
@@ -205,10 +201,8 @@ void MDySetting::pSetupExecutableArgumentSettings()
     }
   };
 
-  ///
   /// @brief Setup feature logging to file from argument.
   /// @param result ["enable_logging_file"] Option value from parsing library.
-  ///
   static auto SetupLoggingFileFeature = [this](const cxxopts::OptionValue& result)
   {
     if (std::string f = result.as<std::string>(); f.empty() == false)
@@ -231,9 +225,9 @@ void MDySetting::pSetupExecutableArgumentSettings()
 
   cxxopts::Options options("Dy", "Dy game framework");
   options.add_options()
-      ("g,graphics",                "Enable graphics API with", cxxopts::value<std::string>())
+      ("g,graphics",                "Enable graphics API with", cxxopts::value<std::string>()->default_value(""))
       ("c,enable_logging_console",  "Enable logging console",   cxxopts::value<bool>())
-      ("f,enable_logging_file",     "Enable logging file to",   cxxopts::value<std::string>())
+      ("f,enable_logging_file",     "Enable logging file to",   cxxopts::value<std::string>()->default_value(""))
   ;
 
   #if defined(MDY_PLATFORM_FLAG_WINDOWS) && defined(_WIN32)
@@ -244,9 +238,9 @@ void MDySetting::pSetupExecutableArgumentSettings()
     static_assert(false, "Macos does not support now.");
   #endif
 
-  SetupRenderingType        (result["graphics"]);
+  SetupRenderingType(result["graphics"]);
   SetupLoggingConsoleFeature(result["enable_logging_console"]);
-  SetupLoggingFileFeature   (result["enable_logging_file"]);
+  SetupLoggingFileFeature(result["enable_logging_file"]);
 }
 
 EDySuccess MDySetting::pfInitialize()

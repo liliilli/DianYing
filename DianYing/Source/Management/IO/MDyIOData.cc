@@ -14,6 +14,7 @@
 
 /// Header file
 #include <Dy/Management/IO/MDyIOData.h>
+#include <string>
 
 namespace dy
 {

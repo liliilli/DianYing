@@ -23,6 +23,7 @@
 #include <type_traits>  // for enable_if_t, is_convertible, is_assignable
 
 #include <Dy/Helper/Internal/Contracts.h>
+#include <Dy/Helper/System/Macroes.h>
 
 #if defined(_MSC_VER) && _MSC_VER < 1910
 #pragma push_macro("constexpr")
@@ -40,7 +41,7 @@ namespace dy
 /// @return Converted unique_ptr instance.
 ///
 template <typename TTargetType, typename TSourceType>
-inline MDY_NODISCARD std::unique_ptr<TTargetType> DyConvertUniquePtrTo(_MIN_ std::unique_ptr<TSourceType> instance)
+MDY_NODISCARD inline std::unique_ptr<TTargetType> DyConvertUniquePtrTo(_MIN_ std::unique_ptr<TSourceType> instance)
 {
   static_assert(
       std::is_convertible_v<TSourceType, TTargetType> ||
