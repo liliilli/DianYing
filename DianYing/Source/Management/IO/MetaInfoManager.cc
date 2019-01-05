@@ -16,26 +16,28 @@
 #include <Dy/Management/IO/MetaInfoManager.h>
 
 #include <optional>
+#include <regex>
 #include <filesystem>
 #include <nlohmann/json.hpp>
 
+#include <Dy/DyMacroSetting.h>
+
 #include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Core/Thread/SDyIOConnectionHelper.h>
+#include <Dy/Core/DyEngine.h>
+
 #include <Dy/Helper/Pointer.h>
 #include <Dy/Helper/ContainerHelper.h>
 #include <Dy/Helper/Library/HelperJson.h>
-#include <Dy/Management/SettingManager.h>
+#include <Dy/Helper/HelperString.h>
+#include <Dy/Helper/Library/HelperRegex.h>
 
+#include <Dy/Management/SettingManager.h>
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
 #include <Dy/Meta/Descriptor/WidgetTextMetaInformation.h>
 #include <Dy/Meta/Descriptor/WidgetLayoutMetaInformation.h>
 #include <Dy/Meta/Descriptor/WidgetBarMetaInformation.h>
 #include <Dy/Meta/Descriptor/WidgetImageMetaInformation.h>
-
-#include <Dy/Helper/HelperString.h>
-#include <Dy/Core/Thread/SDyIOConnectionHelper.h>
-#include <Dy/Core/DyEngine.h>
-#include <regex>
-#include "Dy/Helper/Library/HelperRegex.h"
 
 //!
 //! Local tranlation unit variables
@@ -235,11 +237,19 @@ EDySuccess MDyMetaInfo::pfInitialize()
   const auto& metaPath = MDySetting::GetInstance().GetMetaPathSettingInformation();
   reflect::RDyBuiltinResource::BindBuiltinResourcesToMetaManager();
 
-  MDY_CALL_ASSERT_SUCCESS(this->pReadFontResourceMetaInformation  (metaPath.mFontMetaPath));
-  MDY_CALL_ASSERT_SUCCESS(this->pReadScriptResourceMetaInformation(metaPath.mScriptMetaPath));
-  MDY_CALL_ASSERT_SUCCESS(this->pReadPrefabResourceMetaInformation(metaPath.mPrefabMetaPath));
-  MDY_CALL_ASSERT_SUCCESS(this->pReadWidgetResourceMetaInformation(metaPath.mWidgetMetaPath));
-  MDY_CALL_ASSERT_SUCCESS(this->pReadSceneResourceMetaInformation (metaPath.mSceneMetaPath));
+  #if defined(MDY_FLAG_LOAD_COMPRESSED_DATAFILE) == false
+  {
+    MDY_CALL_ASSERT_SUCCESS(this->pReadFontResourceMetaInformation  (metaPath.mFontMetaPath));
+    MDY_CALL_ASSERT_SUCCESS(this->pReadScriptResourceMetaInformation(metaPath.mScriptMetaPath));
+    MDY_CALL_ASSERT_SUCCESS(this->pReadPrefabResourceMetaInformation(metaPath.mPrefabMetaPath));
+    MDY_CALL_ASSERT_SUCCESS(this->pReadWidgetResourceMetaInformation(metaPath.mWidgetMetaPath));
+    MDY_CALL_ASSERT_SUCCESS(this->pReadSceneResourceMetaInformation (metaPath.mSceneMetaPath));
+  }
+  #else
+  {
+    MDY_NOT_IMPLEMENTED_ASSERT();
+  }
+  #endif
 
   return DY_SUCCESS;
 }

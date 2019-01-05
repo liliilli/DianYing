@@ -31,6 +31,7 @@
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/TimeManager.h>
 #include <Dy/Helper/Library/HelperJson.h>
+#include <Dy/DyMacroSetting.h>
 
 //!
 //! Local translation unit variables or functions.
@@ -248,35 +249,19 @@ void MDySetting::pSetupExecutableArgumentSettings()
 
 EDySuccess MDySetting::pfInitialize()
 {
-  ///
   /// @function InitializeGraphicsApi
   /// @brief Initialize graphics api dependencies.
-  ///
   static auto InitializeGraphicsApi = [](MDySetting& manager) -> EDySuccess
   { // Set rendering api type.
-    if (manager.GetRenderingType() == EDyRenderingApi::NoneError) { return DY_FAILURE; }
-
     switch (manager.mRenderingType)
     {
-    case EDyRenderingApi::Vulkan:
-      MDY_NOT_IMPLEMENTED_ASSERT();
-      MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "Vulkan");
-      break;
-    case EDyRenderingApi::DirectX11:
-      MDY_NOT_IMPLEMENTED_ASSERT();
-      MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "DirectX11");
-      break;
-    case EDyRenderingApi::DirectX12:
-      MDY_NOT_IMPLEMENTED_ASSERT();
-      MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "DirectX12");
-      break;
+    case EDyRenderingApi::Vulkan:    MDY_NOT_IMPLEMENTED_ASSERT(); break;
+    case EDyRenderingApi::DirectX11: MDY_NOT_IMPLEMENTED_ASSERT(); break;
+    case EDyRenderingApi::DirectX12: MDY_NOT_IMPLEMENTED_ASSERT(); break;
     case EDyRenderingApi::OpenGL:
       MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "OpenGL");
       break;
-    default:
-      MDY_UNEXPECTED_BRANCH();
-      MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "Unknown");
-      break;
+    default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE); 
     }
 
     return DY_SUCCESS;
@@ -294,21 +279,28 @@ EDySuccess MDySetting::pfInitialize()
   MDY_LOG_INFO_D("{} | Logging File path : {}", "SubFeature", this->mLogFilePath);
   MDY_LOG_INFO_D("{} | Vsync : {}", "Feature",                this->mIsEnabledVsync ? "ON" : "OFF");
 
-  if (InitializeGraphicsApi(*this) == DY_FAILURE) { return DY_FAILURE; }
+  MDY_CALL_ASSERT_SUCCESS(InitializeGraphicsApi(*this));
 
-  static MDY_SET_IMMUTABLE_STRING(gSettingPathName, "./Project/Meta/Setting.dydat");
+  #if defined(MDY_FLAG_LOAD_COMPRESSED_DATAFILE) == false
+  {
+    const auto opSettingAtlas = DyGetJsonAtlasFromFile(M_PATH_PLAIN_PATH_OF_SETTING_JSON);
+    MDY_ASSERT(opSettingAtlas.has_value() == true, "Failed to open application setting file.");
 
-  const auto opSettingAtlas = DyGetJsonAtlasFromFile(MSVSTR(gSettingPathName));
-  MDY_ASSERT(opSettingAtlas.has_value() == true, "Failed to open application setting file.");
-
-  { // Apply setting to project before everthing starts to working.
-    const auto& settingAtlas = opSettingAtlas.value();
-    this->mDescription  = DyJsonGetValueFrom<decltype(this->mDescription)>(settingAtlas, sCategoryDescription);
-    this->mGamePlay     = DyJsonGetValueFrom<decltype(this->mGamePlay)>   (settingAtlas, sCategoryGameplay);
-    this->mInput        = DyJsonGetValueFrom<decltype(this->mInput)>      (settingAtlas, sCategoryInput);
-    this->mTag          = DyJsonGetValueFrom<decltype(this->mTag)>        (settingAtlas, sCategoryTag);
-    this->mMetaPath     = DyJsonGetValueFrom<decltype(this->mMetaPath)>   (settingAtlas, sCategoryMetaPath);
+    { // Apply setting to project before everthing starts to working.
+      const auto& settingAtlas = opSettingAtlas.value();
+      this->mDescription  = DyJsonGetValueFrom<decltype(this->mDescription)>(settingAtlas, sCategoryDescription);
+      this->mGamePlay     = DyJsonGetValueFrom<decltype(this->mGamePlay)>   (settingAtlas, sCategoryGameplay);
+      this->mInput        = DyJsonGetValueFrom<decltype(this->mInput)>      (settingAtlas, sCategoryInput);
+      this->mTag          = DyJsonGetValueFrom<decltype(this->mTag)>        (settingAtlas, sCategoryTag);
+      this->mDevMetaPath     = DyJsonGetValueFrom<decltype(this->mDevMetaPath)>   (settingAtlas, sCategoryMetaPath);
+    }
   }
+  #else
+  {
+
+    MDY_NOT_IMPLEMENTED_ASSERT();
+  }  
+  #endif
 
   this->mIsInitialized = true;
   return DY_SUCCESS;

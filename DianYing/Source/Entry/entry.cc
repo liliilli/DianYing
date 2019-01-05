@@ -14,10 +14,9 @@
 
 #include <Dy/Management/WindowManager.h>
 #include <Dy/Core/DyEngine.h>
+#include <Dy/DyMacroSetting.h>
 
-///
 /// @brief Main entry function of WIN32 platforms.
-///
 #if defined(MDY_PLATFORM_FLAG_WINDOWS)
 namespace
 {
@@ -30,7 +29,7 @@ int       gnCmdShow;
 ///
 /// @brief Turn on memory leak detection feature and console window for logging.
 ///
-EDySuccess DyInitializeWin32Debug()
+EDySuccess MDY_PRIVATE_SPECIFIER(DyInitializeWin32Debug)()
 {
   _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
   _CrtSetReportMode( _CRT_ERROR, _CRTDBG_MODE_DEBUG );
@@ -40,17 +39,15 @@ EDySuccess DyInitializeWin32Debug()
 } /// unname namespace
 
 #if (defined(_DEBUG) == true) || (defined(NDEBUG) == false)
-#define MDY_WIN32_TRY_TURN_ON_DEBUG()   MDY_CALL_ASSERT_SUCCESS(DyInitializeWin32Debug())
+#define MDY_WIN32_TRY_TURN_ON_DEBUG()   MDY_CALL_ASSERT_SUCCESS(MDY_PRIVATE_SPECIFIER(DyInitializeWin32Debug)())
 #define MDY_WIN32_TRY_TURN_OFF_DEBUG()  (void)0
 #else
 #define MDY_WIN32_TRY_TURN_ON_DEBUG()   (void)0
 #define MDY_WIN32_TRY_TURN_OFF_DEBUG()  (void)0
 #endif
 
-///
 /// @brief Main function of win32 / win64 platform.
-///
-int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow)
+int APIENTRY WinMain(_MIN_ HINSTANCE hInstance, _MIN_ HINSTANCE hPrevInstance, _MIN_ LPSTR pCmdLine, _MIN_ int nCmdShow)
 {
   ghInstance      = hInstance;
   ghPrevInstance  = hPrevInstance;
@@ -58,9 +55,18 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLin
   gnCmdShow       = nCmdShow;
 
   MDY_WIN32_TRY_TURN_ON_DEBUG();
-  MDY_CALL_ASSERT_SUCCESS(dy::DyEngine::Initialize());
-  dy::DyEngine::GetInstance()();
-  MDY_CALL_ASSERT_SUCCESS(dy::DyEngine::Release());
+  #if defined(MDY_FLAG_MODE_POPULATE_COMPRESSED_DATAFILE) == false
+  { // If `MDY_FLAG_MODE_POPULATE_COMPRESSED_DATAFILE` is not defined, just run application.
+    MDY_CALL_ASSERT_SUCCESS(dy::DyEngine::Initialize());
+    dy::DyEngine::GetInstance()();
+    MDY_CALL_ASSERT_SUCCESS(dy::DyEngine::Release());
+  }
+  #else
+  { // `MDY_FLAG_MODE_POPULATE_COMPRESSED_DATAFILE` is defined, do not run application 
+    // but compression mode will be operated.
+    MDY_NOT_IMPLEMENTED_ASSERT();
+  }
+  #endif
   MDY_WIN32_TRY_TURN_OFF_DEBUG();
   return 0;
 }
