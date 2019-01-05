@@ -65,6 +65,12 @@ namespace dy
 #define MDY_UNEXPECTED_BRANCH() (void(0))
 
 #endif /// defined(_DEBUG)
+  
+/// @def MDY_ASSERT_FORCE(__MAExpr__, __MAMessage__)
+/// @brief Do runtime check for __MAExpr__ (Macro Argument Expression) in anymode,
+/// If expression is false, Assert application with __MAMessage__.
+#define MDY_ASSERT_FORCE(__MAExpr__, __MAMessage__) \
+  ::dy::__EnhancedAssert(#__MAExpr__, __MAExpr__, __FILE__, __LINE__, __MAMessage__)
 
 /// ---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*
 /// Implementation
