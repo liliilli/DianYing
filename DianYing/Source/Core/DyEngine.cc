@@ -292,6 +292,7 @@ void DyEngine::pfInitializeIndependentManager()
   // `MDyLog` must be initialized first because of logging message from each managers.
   MDY_CALL_ASSERT_SUCCESS(dy::MDyLog::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyProfiling::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyMetaInfo::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDySetting::Initialize());
 
 #if defined(MDY_FLAG_IN_EDITOR)
@@ -300,6 +301,9 @@ void DyEngine::pfInitializeIndependentManager()
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDyTime::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyWindow::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyIOData::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyIOResource::Initialize());
+
   MDY_CALL_ASSERT_SUCCESS(MDySynchronization::Initialize());
 }
 
@@ -334,6 +338,8 @@ void DyEngine::pfReleaseDependentManager()
   SDyIOConnectionHelper::TryGC(EDyScope::Global, EDyResourceStyle::Information);
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDySynchronization::Release());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyIOResource::Release());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyIOData::Release());
 }
 
 void DyEngine::pfReleaseIndependentManager()
@@ -346,6 +352,7 @@ void DyEngine::pfReleaseIndependentManager()
 #endif
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDySetting::Release());
+  MDY_CALL_ASSERT_SUCCESS(dy::MDyMetaInfo::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyProfiling::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyLog::Release());
 }

@@ -16,26 +16,28 @@
 #include <Dy/Management/IO/MetaInfoManager.h>
 
 #include <optional>
+#include <regex>
 #include <filesystem>
 #include <nlohmann/json.hpp>
 
+#include <Dy/DyMacroSetting.h>
+
 #include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Core/Thread/SDyIOConnectionHelper.h>
+#include <Dy/Core/DyEngine.h>
+
 #include <Dy/Helper/Pointer.h>
 #include <Dy/Helper/ContainerHelper.h>
 #include <Dy/Helper/Library/HelperJson.h>
-#include <Dy/Management/SettingManager.h>
+#include <Dy/Helper/HelperString.h>
+#include <Dy/Helper/Library/HelperRegex.h>
 
+#include <Dy/Management/SettingManager.h>
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
 #include <Dy/Meta/Descriptor/WidgetTextMetaInformation.h>
 #include <Dy/Meta/Descriptor/WidgetLayoutMetaInformation.h>
 #include <Dy/Meta/Descriptor/WidgetBarMetaInformation.h>
 #include <Dy/Meta/Descriptor/WidgetImageMetaInformation.h>
-
-#include <Dy/Helper/HelperString.h>
-#include <Dy/Core/Thread/SDyIOConnectionHelper.h>
-#include <Dy/Core/DyEngine.h>
-#include <regex>
-#include "Dy/Helper/Library/HelperRegex.h"
 
 //!
 //! Local tranlation unit variables
@@ -230,19 +232,7 @@ void MoveMetaPrefabIntoParentRecursively(
 namespace dy
 {
 
-EDySuccess MDyMetaInfo::pfInitialize()
-{
-  const auto& metaPath = MDySetting::GetInstance().GetMetaPathSettingInformation();
-  reflect::RDyBuiltinResource::BindBuiltinResourcesToMetaManager();
-
-  MDY_CALL_ASSERT_SUCCESS(this->pReadFontResourceMetaInformation  (metaPath.mFontMetaPath));
-  MDY_CALL_ASSERT_SUCCESS(this->pReadScriptResourceMetaInformation(metaPath.mScriptMetaPath));
-  MDY_CALL_ASSERT_SUCCESS(this->pReadPrefabResourceMetaInformation(metaPath.mPrefabMetaPath));
-  MDY_CALL_ASSERT_SUCCESS(this->pReadWidgetResourceMetaInformation(metaPath.mWidgetMetaPath));
-  MDY_CALL_ASSERT_SUCCESS(this->pReadSceneResourceMetaInformation (metaPath.mSceneMetaPath));
-
-  return DY_SUCCESS;
-}
+EDySuccess MDyMetaInfo::pfInitialize() { return DY_SUCCESS; }
 
 EDySuccess MDyMetaInfo::pfRelease()
 {
@@ -384,6 +374,45 @@ void MDyMetaInfo::MDY_PRIVATE_SPECIFIER(PopulateGlobalResourceSpecifierList)() c
   mIsCalled = true;
 }
 
+void MDyMetaInfo::MDY_PRIVATE_SPECIFIER(InitiateMetaInformation)()
+{
+  #if defined(MDY_FLAG_LOAD_COMPRESSED_DATAFILE) == false
+  {
+    const auto& metaPath = MDySetting::GetInstance().GetMetaPathSettingInformation();
+    reflect::RDyBuiltinResource::BindBuiltinResourcesToMetaManager();
+
+    MDY_CALL_ASSERT_SUCCESS(this->pReadFontResourceMetaInformation  (metaPath.mFontMetaPath));
+    MDY_CALL_ASSERT_SUCCESS(this->pReadScriptResourceMetaInformation(metaPath.mScriptMetaPath));
+    MDY_CALL_ASSERT_SUCCESS(this->pReadPrefabResourceMetaInformation(metaPath.mPrefabMetaPath));
+    MDY_CALL_ASSERT_SUCCESS(this->pReadWidgetResourceMetaInformation(metaPath.mWidgetMetaPath));
+    MDY_CALL_ASSERT_SUCCESS(this->pReadSceneResourceMetaInformation (metaPath.mSceneMetaPath));
+  }
+  #else
+  { // static_assert(false, "this function can not be called when MDY_FLAG_LOAD_COMPRESSED_DATAFILE is triggered.");
+    MDY_UNEXPECTED_BRANCH();
+  }
+  #endif
+}
+
+void MDyMetaInfo::MDY_PRIVATE_SPECIFIER(InitiateMetaInformationComp)(_MIN_ const nlohmann::json& iJson)
+{
+  #if defined(MDY_FLAG_LOAD_COMPRESSED_DATAFILE) == true
+  {
+    reflect::RDyBuiltinResource::BindBuiltinResourcesToMetaManager();
+
+    MDY_CALL_ASSERT_SUCCESS(this->pReadFontResourceMetaInformation  (iJson["FontContainer"]));
+    MDY_CALL_ASSERT_SUCCESS(this->pReadScriptResourceMetaInformation(iJson["ScriptContainer"]));
+    MDY_CALL_ASSERT_SUCCESS(this->pReadPrefabResourceMetaInformation(iJson["PrefabContainer"]));
+    MDY_CALL_ASSERT_SUCCESS(this->pReadWidgetResourceMetaInformation(iJson["WidgetContainer"]));
+    MDY_CALL_ASSERT_SUCCESS(this->pReadSceneResourceMetaInformation (iJson["LevelContainer"]));
+  }
+  #else
+  { // static_assert(false, "this function can not be called when MDY_FLAG_LOAD_COMPRESSED_DATAFILE is not triggered.");
+    MDY_UNEXPECTED_BRANCH();
+  }
+  #endif
+}
+
 EDySuccess MDyMetaInfo::pReadScriptResourceMetaInformation(_MIN_ const std::string& metaFilePath)
 {
   // Validity Test
@@ -412,7 +441,7 @@ EDySuccess MDyMetaInfo::pReadScriptResourceMetaInformation(_MIN_ const std::stri
 
 EDySuccess MDyMetaInfo::pReadPrefabResourceMetaInformation(const std::string& metaFilePath)
 {
-  /// @brief  Check prefab meta information list.
+  /// @brief Check prefab meta information list.
   static auto CheckPrefabMetaCategory = [](_MIN_ const nlohmann::json& atlas) -> EDySuccess
   {
     if (DyCheckHeaderIsExist(atlas, sCategoryMeta) == DY_FAILURE)       { return DY_FAILURE; }
@@ -462,6 +491,46 @@ EDySuccess MDyMetaInfo::pReadPrefabResourceMetaInformation(const std::string& me
   return DY_SUCCESS;
 }
 
+EDySuccess MDyMetaInfo::pReadFontResourceMetaInformation(_MIN_ const std::string& metaFilePath)
+{ // (1) Validity Test
+  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  if (opJsonAtlas.has_value() == false)
+  {
+    MDY_ASSERT(false, "Failed to read font meta information. File is not exist.");
+    return DY_FAILURE;
+  }
+
+  // (2)
+  const nlohmann::json& jsonAtlas = opJsonAtlas.value();
+  for (auto it = jsonAtlas.cbegin(); it != jsonAtlas.cend(); ++it)
+  { // Create font meta information instance from each json atlas.
+    auto [_, isSucceeded] = this->mFontMetaInfo.try_emplace(
+        it.key(),
+        PDyMetaFontInformation::CreateWithJson(it.value())
+    );
+    MDY_ASSERT(isSucceeded == true, "Font meta information creation must be succeeded.");
+  }
+
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pReadSceneResourceMetaInformation(_MIN_ const std::string& metaFilepath)
+{
+  // (1) Validity test
+  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilepath);
+  if (opJsonAtlas.has_value() == false) { return DY_FAILURE; }
+
+  // (2)
+  for (const auto& sceneAtlas : opJsonAtlas.value())
+  {
+    auto desc = sceneAtlas.get<PDyLevelConstructMetaInfo>();
+    auto [it, isSucceeded] = this->mLevelInfoMap.try_emplace(desc.mMetaCategory.mLevelName, std::move(desc));
+    MDY_ASSERT(isSucceeded == true, "Unexpected error occurred.");
+  }
+
+  return DY_SUCCESS;
+}
+
 EDySuccess MDyMetaInfo::pReadWidgetResourceMetaInformation(_MIN_ const std::string& metaFilePath)
 { // (1) Validity Test
   const std::optional<nlohmann::json> opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
@@ -473,6 +542,96 @@ EDySuccess MDyMetaInfo::pReadWidgetResourceMetaInformation(_MIN_ const std::stri
     auto rootInstance = DyCreateWidgetMetaInformation(widgetMeta);
     MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(rootInstance), "Widget root instance must not be empty.");
     this->mWidgetMetaInfo.try_emplace(rootInstance->mWidgetSpecifierName, std::move(rootInstance));
+  }
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pReadScriptResourceMetaInformation(_MIN_ const nlohmann::json& iJson)
+{
+  // Check "List" Category is exist.
+  MDY_ASSERT(DyCheckHeaderIsExist(iJson, sCategoryList) == DY_SUCCESS, "Unexpecte error occurred.");
+
+  const auto& scriptResourceListAtlas = iJson[MSVSTR(sCategoryList)];
+  for (const auto& scriptResource : scriptResourceListAtlas)
+  {
+    auto metaInfo = scriptResource.get<PDyScriptInstanceMetaInfo>();
+
+    // Check Duplicated script specfier integrity
+    MDY_ASSERT(DyIsMapContains(this->mScriptMetaInfo, metaInfo.mSpecifierName) == false, "Duplicated script specifier not permitted.");
+    MDY_ASSERT(std::filesystem::exists(metaInfo.mFilePath), "File not exist.");
+
+    auto [it, isSucceeded] = this->mScriptMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
+    MDY_ASSERT(isSucceeded == true, "Unexpected error occurred.");
+  }
+
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pReadPrefabResourceMetaInformation(_MIN_ const nlohmann::json& iJson)
+{
+  // Make prefab meta information instance sequencially.
+  const auto& jsonAtlas = iJson;
+  const auto& prefabAtlas = jsonAtlas.at(MSVSTR(sCategoryObjectList));
+  TPrefabMetaInfoList prefabObjectList = {};
+  for (const auto& prefabInfo : prefabAtlas)
+  {
+    prefabObjectList.emplace_back(PDyPrefabInstanceMetaInfo::CreateMetaInformation(prefabInfo));
+  }
+
+  // (2) Make object list tree.
+  for (auto& object : prefabObjectList)
+  {
+    if (MDY_CHECK_ISEMPTY(object)) { continue; }
+    if (object->mPrefabType == EDyMetaObjectType::Actor
+    &&  object->mCommonProperties.mParentSpecifierName.empty() == false)
+    { // If object type is Actor, and have parents specifier name as dec
+      // Try move object into any parent's children list.
+      const auto list = DyRegexCreateObjectParentSpecifierList(object->mCommonProperties.mParentSpecifierName);
+      MoveMetaPrefabIntoParentRecursively(prefabObjectList, list, 0, object);
+    }
+  }
+
+  // (3) Realign object meta list.
+  for (auto& ptrsmtPrefabObject : prefabObjectList)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtPrefabObject)) { continue; }
+    const auto name = ptrsmtPrefabObject->mSpecifierName;
+    this->mPrefabMetaInfo.try_emplace(name, std::move(ptrsmtPrefabObject));
+  }
+  return DY_SUCCESS; 
+}
+
+EDySuccess MDyMetaInfo::pReadWidgetResourceMetaInformation(_MIN_ const nlohmann::json& iJson)
+{
+  for (const auto& widgetMeta : iJson)
+  {
+    auto rootInstance = DyCreateWidgetMetaInformation(widgetMeta);
+    MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(rootInstance), "Widget root instance must not be empty.");
+    this->mWidgetMetaInfo.try_emplace(rootInstance->mWidgetSpecifierName, std::move(rootInstance));
+  }
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pReadFontResourceMetaInformation(_MIN_ const nlohmann::json& iJson)
+{
+  for (auto it = iJson.cbegin(); it != iJson.cend(); ++it)
+  { // Create font meta information instance from each json atlas.
+    auto [_, isSucceeded] = this->mFontMetaInfo.try_emplace(
+        it.key(),
+        PDyMetaFontInformation::CreateWithJson(it.value())
+    );
+    MDY_ASSERT(isSucceeded == true, "Font meta information creation must be succeeded.");
+  }
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pReadSceneResourceMetaInformation(_MIN_ const nlohmann::json& iJson)
+{
+  for (const auto& sceneAtlas : iJson)
+  {
+    auto desc = sceneAtlas.get<PDyLevelConstructMetaInfo>();
+    auto [it, isSucceeded] = this->mLevelInfoMap.try_emplace(desc.mMetaCategory.mLevelName, std::move(desc));
+    MDY_ASSERT(isSucceeded == true, "Unexpected error occurred.");
   }
   return DY_SUCCESS;
 }
@@ -592,46 +751,6 @@ EDySuccess MDyMetaInfo::pfAddGLFrameBufferMetaInfo(const PDyGlFrameBufferInstanc
     
     MDY_CALL_ASSERT_SUCCESS(this->pfAddGLAttachmentMetaInfo(defaultDepthBuffer));
     instance.mDepthAttachmentSpecifier = defaultDepthBuffer.mSpecifierName;
-  }
-
-  return DY_SUCCESS;
-}
-
-EDySuccess MDyMetaInfo::pReadFontResourceMetaInformation(_MIN_ const std::string& metaFilePath)
-{ // (1) Validity Test
-  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
-  if (opJsonAtlas.has_value() == false)
-  {
-    MDY_ASSERT(opJsonAtlas.has_value() == true, "Failed to read font meta information. File is not exist.");
-    return DY_FAILURE;
-  }
-
-  // (2)
-  const nlohmann::json& jsonAtlas = opJsonAtlas.value();
-  for (auto it = jsonAtlas.cbegin(); it != jsonAtlas.cend(); ++it)
-  { // Create font meta information instance from each json atlas.
-    auto [_, isSucceeded] = this->mFontMetaInfo.try_emplace(
-        it.key(),
-        PDyMetaFontInformation::CreateWithJson(it.value())
-    );
-    MDY_ASSERT(isSucceeded == true, "Font meta information creation must be succeeded.");
-  }
-
-  return DY_SUCCESS;
-}
-
-EDySuccess MDyMetaInfo::pReadSceneResourceMetaInformation(_MIN_ const std::string& metaFilepath)
-{
-  // (1) Validity test
-  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilepath);
-  if (opJsonAtlas.has_value() == false) { return DY_FAILURE; }
-
-  // (2)
-  for (const auto& sceneAtlas : opJsonAtlas.value())
-  {
-    auto desc = sceneAtlas.get<PDyLevelConstructMetaInfo>();
-    auto [it, isSucceeded] = this->mLevelInfoMap.try_emplace(desc.mMetaCategory.mLevelName, std::move(desc));
-    MDY_ASSERT(isSucceeded == true, "Unexpected error occurred.");
   }
 
   return DY_SUCCESS;

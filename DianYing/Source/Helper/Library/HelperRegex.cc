@@ -35,4 +35,12 @@ std::vector<std::string> DyRegexCreateObjectParentSpecifierList(_MIN_ std::strin
   return parentSpecifierList;
 }
 
+bool DyRegexCheckIsCompressedDataFile(_MIN_ const std::string& iFileName)
+{
+  if (iFileName.empty() == true) { return false; }
+
+  static const std::regex regexPattern(R"regex((Data\d{3}).dydat)regex");
+  return std::regex_match(iFileName, regexPattern);
+}
+
 } /// ::dy namespace

@@ -193,12 +193,21 @@ public:
   /// THis function must not be called twice. 
   void MDY_PRIVATE_SPECIFIER(PopulateGlobalResourceSpecifierList)() const noexcept;
 
+  void MDY_PRIVATE_SPECIFIER(InitiateMetaInformation)();
+  void MDY_PRIVATE_SPECIFIER(InitiateMetaInformationComp)(_MIN_ const nlohmann::json& iJson);
+
 private:
   MDY_NODISCARD EDySuccess pReadScriptResourceMetaInformation(_MIN_ const std::string& metaFilePath);
   MDY_NODISCARD EDySuccess pReadPrefabResourceMetaInformation(_MIN_ const std::string& metaFilePath);
   MDY_NODISCARD EDySuccess pReadWidgetResourceMetaInformation(_MIN_ const std::string& metaFilePath);
-  MDY_NODISCARD EDySuccess pReadFontResourceMetaInformation(_MIN_ const std::string& metaFilePath);
-  MDY_NODISCARD EDySuccess pReadSceneResourceMetaInformation(_MIN_ const std::string& metaFilepath);
+  MDY_NODISCARD EDySuccess pReadFontResourceMetaInformation  (_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadSceneResourceMetaInformation (_MIN_ const std::string& metaFilepath);
+
+  MDY_NODISCARD EDySuccess pReadScriptResourceMetaInformation(_MIN_ const nlohmann::json& iJson);
+  MDY_NODISCARD EDySuccess pReadPrefabResourceMetaInformation(_MIN_ const nlohmann::json& iJson);
+  MDY_NODISCARD EDySuccess pReadWidgetResourceMetaInformation(_MIN_ const nlohmann::json& iJson);
+  MDY_NODISCARD EDySuccess pReadFontResourceMetaInformation  (_MIN_ const nlohmann::json& iJson);
+  MDY_NODISCARD EDySuccess pReadSceneResourceMetaInformation (_MIN_ const nlohmann::json& iJson);
 
   MDY_NODISCARD EDySuccess pfAddWidgetMetaInformation (_MIN_ const std::string& metaInformationString);
   MDY_NODISCARD EDySuccess pfAddScriptMetaInformation (_MIN_ const PDyScriptInstanceMetaInfo& metaInfo);

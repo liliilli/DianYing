@@ -17,9 +17,11 @@ namespace dy
 {
 
 /// @brief Generate and get parent specifier list. \n
-///
 MDY_NODISCARD std::vector<std::string> 
 DyRegexCreateObjectParentSpecifierList(_MIN_ std::string iParentNameFullList); 
+
+/// @brief Check file name is following format `Data###(\d{3}).dydat` file name.
+MDY_NODISCARD bool DyRegexCheckIsCompressedDataFile(_MIN_ const std::string& iFileName);
 
 } /// ::dy namespace
 

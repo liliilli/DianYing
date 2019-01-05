@@ -19,6 +19,7 @@
 #include <Dy/Management/SettingManager.h>
 
 #include <cassert>
+#include <filesystem>
 
 #ifdef min
 #undef min
@@ -28,9 +29,11 @@
 #endif
 #include <cxxopts.hpp>
 
+#include <Dy/DyMacroSetting.h>
+#include <Dy/Helper/Library/HelperJson.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/TimeManager.h>
-#include <Dy/Helper/Library/HelperJson.h>
+#include <Dy/Management/IO/MetaInfoManager.h>
 
 //!
 //! Local translation unit variables or functions.
@@ -248,35 +251,19 @@ void MDySetting::pSetupExecutableArgumentSettings()
 
 EDySuccess MDySetting::pfInitialize()
 {
-  ///
   /// @function InitializeGraphicsApi
   /// @brief Initialize graphics api dependencies.
-  ///
   static auto InitializeGraphicsApi = [](MDySetting& manager) -> EDySuccess
   { // Set rendering api type.
-    if (manager.GetRenderingType() == EDyRenderingApi::NoneError) { return DY_FAILURE; }
-
     switch (manager.mRenderingType)
     {
-    case EDyRenderingApi::Vulkan:
-      MDY_NOT_IMPLEMENTED_ASSERT();
-      MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "Vulkan");
-      break;
-    case EDyRenderingApi::DirectX11:
-      MDY_NOT_IMPLEMENTED_ASSERT();
-      MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "DirectX11");
-      break;
-    case EDyRenderingApi::DirectX12:
-      MDY_NOT_IMPLEMENTED_ASSERT();
-      MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "DirectX12");
-      break;
+    case EDyRenderingApi::Vulkan:    MDY_NOT_IMPLEMENTED_ASSERT(); break;
+    case EDyRenderingApi::DirectX11: MDY_NOT_IMPLEMENTED_ASSERT(); break;
+    case EDyRenderingApi::DirectX12: MDY_NOT_IMPLEMENTED_ASSERT(); break;
     case EDyRenderingApi::OpenGL:
       MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "OpenGL");
       break;
-    default:
-      MDY_UNEXPECTED_BRANCH();
-      MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "Unknown");
-      break;
+    default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE); 
     }
 
     return DY_SUCCESS;
@@ -286,29 +273,61 @@ EDySuccess MDySetting::pfInitialize()
   //! FUNCTIONBODY ∨
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  // Output setting options at debug mode.
-  MDY_LOG_INFO_D("{} | MDySetting::pfInitialize().",          "FunctionCall");
-  MDY_LOG_INFO_D("{} | Logging : {}", "Feature",              this->mIsEnabledLogging ? "ON" : "OFF");
-  MDY_LOG_INFO_D("{} | Logging Console : {}", "SubFeature",   this->mIsEnabledLoggingToConsole ? "ON" : "OFF");
-  MDY_LOG_INFO_D("{} | Logging File : {}", "SubFeature",      this->mIsEnabledLoggingToFile ? "ON" : "OFF");
-  MDY_LOG_INFO_D("{} | Logging File path : {}", "SubFeature", this->mLogFilePath);
-  MDY_LOG_INFO_D("{} | Vsync : {}", "Feature",                this->mIsEnabledVsync ? "ON" : "OFF");
-
-  if (InitializeGraphicsApi(*this) == DY_FAILURE) { return DY_FAILURE; }
-
-  static MDY_SET_IMMUTABLE_STRING(gSettingPathName, "./Project/Meta/Setting.dydat");
-
-  const auto opSettingAtlas = DyGetJsonAtlasFromFile(MSVSTR(gSettingPathName));
-  MDY_ASSERT(opSettingAtlas.has_value() == true, "Failed to open application setting file.");
-
-  { // Apply setting to project before everthing starts to working.
-    const auto& settingAtlas = opSettingAtlas.value();
-    this->mDescription  = DyJsonGetValueFrom<decltype(this->mDescription)>(settingAtlas, sCategoryDescription);
-    this->mGamePlay     = DyJsonGetValueFrom<decltype(this->mGamePlay)>   (settingAtlas, sCategoryGameplay);
-    this->mInput        = DyJsonGetValueFrom<decltype(this->mInput)>      (settingAtlas, sCategoryInput);
-    this->mTag          = DyJsonGetValueFrom<decltype(this->mTag)>        (settingAtlas, sCategoryTag);
-    this->mMetaPath     = DyJsonGetValueFrom<decltype(this->mMetaPath)>   (settingAtlas, sCategoryMetaPath);
+  #if defined(MDY_FLAG_MODE_POPULATE_COMPRESSED_DATAFILE) == true
+  {
+    const auto opSettingAtlas = DyGetJsonAtlasFromFile(M_PATH_PLAIN_PATH_OF_SETTING_JSON);
+    MDY_ASSERT(opSettingAtlas.has_value() == true, "Failed to open application setting file.");
+    DyJsonGetValueFromTo(opSettingAtlas.value(), sCategoryMetaPath, this->mDevMetaPath);
   }
+  #else
+  {
+    // Output setting options at debug mode.
+    MDY_LOG_INFO_D("{} | MDySetting::pfInitialize().",          "FunctionCall");
+    MDY_LOG_INFO_D("{} | Logging : {}", "Feature",              this->mIsEnabledLogging ? "ON" : "OFF");
+    MDY_LOG_INFO_D("{} | Logging Console : {}", "SubFeature",   this->mIsEnabledLoggingToConsole ? "ON" : "OFF");
+    MDY_LOG_INFO_D("{} | Logging File : {}", "SubFeature",      this->mIsEnabledLoggingToFile ? "ON" : "OFF");
+    MDY_LOG_INFO_D("{} | Logging File path : {}", "SubFeature", this->mLogFilePath);
+    MDY_LOG_INFO_D("{} | Vsync : {}", "Feature",                this->mIsEnabledVsync ? "ON" : "OFF");
+
+    MDY_CALL_ASSERT_SUCCESS(InitializeGraphicsApi(*this));
+
+    #if defined(MDY_FLAG_LOAD_COMPRESSED_DATAFILE) == false
+    {
+      const auto opSettingAtlas = DyGetJsonAtlasFromFile(M_PATH_PLAIN_PATH_OF_SETTING_JSON);
+      MDY_ASSERT(opSettingAtlas.has_value() == true, "Failed to open application setting file.");
+      const auto& settingAtlas = opSettingAtlas.value();
+
+      // Apply setting to project before everthing starts to working.
+      DyJsonGetValueFromTo(settingAtlas, sCategoryDescription, this->mDescription);
+      DyJsonGetValueFromTo(settingAtlas, sCategoryGameplay, this->mGamePlay);
+      DyJsonGetValueFromTo(settingAtlas, sCategoryInput, this->mInput);
+      DyJsonGetValueFromTo(settingAtlas, sCategoryTag, this->mTag);
+      DyJsonGetValueFromTo(settingAtlas, sCategoryMetaPath, this->mDevMetaPath);
+      MDyMetaInfo::GetInstance().MDY_PRIVATE_SPECIFIER(InitiateMetaInformation)();
+    }
+    #else 
+    {
+      namespace fs = std::filesystem;
+      MDY_ASSERT(fs::exists("./data/Data000.dydat") == true, "Data file is not exist.");
+
+      const auto opMetaInfo = DyGetJsonAtlasFromFile("./data/Data000.dydat");
+      MDY_ASSERT(opMetaInfo.has_value() == true, "Failed to open meta data file.");
+      const auto& metaAtlas = opMetaInfo.value();
+
+      {
+        const auto& settingAtlas = metaAtlas["Setting"];
+        // Apply setting to project before everthing starts to working.
+        DyJsonGetValueFromTo(settingAtlas, sCategoryDescription, this->mDescription);
+        DyJsonGetValueFromTo(settingAtlas, sCategoryGameplay, this->mGamePlay);
+        DyJsonGetValueFromTo(settingAtlas, sCategoryInput, this->mInput);
+        DyJsonGetValueFromTo(settingAtlas, sCategoryTag, this->mTag);
+      }
+
+      MDyMetaInfo::GetInstance().MDY_PRIVATE_SPECIFIER(InitiateMetaInformationComp)(metaAtlas);
+    }  
+    #endif
+  }
+  #endif
 
   this->mIsInitialized = true;
   return DY_SUCCESS;
