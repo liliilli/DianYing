@@ -224,7 +224,6 @@
     <ClCompile Include="Source\Management\Internal\World\FDyWorldUIContainer.cc" />
     <ClCompile Include="Source\Management\Internal\Input\FDyInputDelegateManager.cc" />
     <ClCompile Include="Source\Builtin\Widget\FDyBtWdTestLoadingUi.cc" />
-    <ClCompile Include="Source\Builtin\Script\FDyBtScTestLoadingUi.cc" />
     <ClCompile Include="Source\Component\Actor\CDyActorScript.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Widget\CDyWidgetScriptCpp.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Widget\CDyWidgetScriptLua.cc" />
@@ -232,9 +231,6 @@
     <ClCompile Include="Source\Component\Internal\Script\Actor\CDyActorScriptCpp.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Actor\CDyActorScriptLua.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Actor\FDyActorScriptStatus.cc" />
-    <ClCompile Include="Source\Builtin\Script\DebugActor\BtScActorTest1.cc" />
-    <ClCompile Include="Source\Builtin\Script\DebugActor\BtScActorTest2.cc" />
-    <ClCompile Include="Source\Builtin\Script\DebugActor\BtScActorTest3.cc" />
     <ClCompile Include="Source\Builtin\Mesh\FDyBtMsUiImgQuad.cc" />
     <ClCompile Include="Source\Builtin\Mesh\Widget\FDyBtMsUiBarQuad.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\Widget\RenderUiBasicGaugeBar.cc" />
@@ -252,6 +248,10 @@
     <ClCompile Include="Source\Element\Type\Timer\FDyTimerItem.cc" />
     <ClCompile Include="Source\Core\Thread\IO\DDyIOTaskDeferred.cc" />
     <ClCompile Include="Source\Helper\MCS\Functions.cc" />
+    <ClCompile Include="data\Script\FDyBtScTestLoadingUi.cc" />
+    <ClCompile Include="data\Script\DebugActor\BtScActorTest1.cc" />
+    <ClCompile Include="data\Script\DebugActor\BtScActorTest2.cc" />
+    <ClCompile Include="data\Script\DebugActor\BtScActorTest3.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -614,7 +614,6 @@
     <ClInclude Include="Include\Dy\Management\Internal\Input\FDyInputDelegateManager.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyLoadingWidgetMetaResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Widget\FDyBtWdTestLoadingUi.h" />
-    <ClInclude Include="Include\Dy\Builtin\Script\FDyBtScTestLoadingUi.h" />
     <ClInclude Include="Include\Dy\Component\Actor\CDyActorScript.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Actor\FDyActorScriptStatus.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Actor\CDyActorScriptBase.h" />
@@ -623,9 +622,6 @@
     <ClInclude Include="Include\Dy\Component\Internal\Widget\CDyWidgetScriptCpp.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Widget\CDyWidgetScriptLua.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Widget\CDyWidgetScriptBase.h" />
-    <ClInclude Include="Include\Dy\Builtin\Script\DebugActor\BtScActorTest1.h" />
-    <ClInclude Include="Include\Dy\Builtin\Script\DebugActor\BtScActorTest2.h" />
-    <ClInclude Include="Include\Dy\Builtin\Script\DebugActor\BtScActorTest3.h" />
     <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsUiImgQuad.h" />
     <ClInclude Include="Include\Dy\Builtin\Mesh\Widget\FDyBtMsUiBarQuad.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Type\EDyDrawType.h" />
@@ -649,6 +645,10 @@
     <ClInclude Include="Include\Dy\Include\Entry.h" />
     <ClInclude Include="Include\Dy\Core\EDyAppMode.h" />
     <ClInclude Include="Include\Dy\Helper\MCS\Functions.h" />
+    <ClInclude Include="data\Script\FDyBtScTestLoadingUi.h" />
+    <ClInclude Include="data\Script\DebugActor\BtScActorTest1.h" />
+    <ClInclude Include="data\Script\DebugActor\BtScActorTest2.h" />
+    <ClInclude Include="data\Script\DebugActor\BtScActorTest3.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

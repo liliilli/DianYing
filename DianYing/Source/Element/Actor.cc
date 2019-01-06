@@ -22,6 +22,7 @@
 #include <Dy/Component/CDyDirectionalLight.h>
 #include <Dy/Element/Type/PDyActorCreationDescriptor.h>
 #include <Dy/Management/WorldManager.h>
+#include "Dy/Management/Helper/SDyProfilingHelper.h"
 
 //!
 //! Implementation
@@ -78,6 +79,7 @@ FDyActor::FDyActor(_MIN_ const PDyObjectMetaInfo& objectMetaDesc, _MIN_ FDyActor
   }
 
   MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mTransform), "CDyTransform component must be created to all FDyActor.");
+  SDyProfilingHelper::IncreaseOnBindActorCount(1);
 }
 
 FDyActor::FDyActor(_MIN_ const PDyActorCreationDescriptor& iDesc, _MIN_ FDyActor* iPtrParent)
@@ -110,6 +112,7 @@ FDyActor::FDyActor(_MIN_ const PDyActorCreationDescriptor& iDesc, _MIN_ FDyActor
   // (3) Create Transform component using Given transform
   this->AddComponent<CDyTransform>(iDesc.mTransform);
   MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mTransform), "CDyTransform component must be created to all FDyActor.");
+  SDyProfilingHelper::IncreaseOnBindActorCount(1);
 }
 
 void FDyActor::MDY_PRIVATE_SPECIFIER(CreateComponentList)(const TComponentMetaList& iMetaComponentList)
@@ -143,6 +146,7 @@ void FDyActor::MDY_PRIVATE_SPECIFIER(CreateComponentList)(const TComponentMetaLi
 
 FDyActor::~FDyActor()
 {
+  SDyProfilingHelper::DecreaseOnBindActorCount(1);
   this->mComponentList.clear();
 }
 

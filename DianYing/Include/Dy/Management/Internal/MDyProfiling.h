@@ -35,16 +35,19 @@ public:
   /// @brief Get shader count on bind `Dy` System. This function is atomic.
   MDY_NODISCARD TI32 GetOnBindShaderCount() const noexcept;
 
+  /// @brief Get total actor count of level on bind `Dy` System. This function is atomic.
+  MDY_NODISCARD TI32 GetOnBindActorCount() const noexcept;
+
 private:
   /// @brief Increment & Decrement texture count that texture is on bind `Dy` System. \n
   /// This function is atomic.
   void MDY_PRIVATE_SPECIFIER(AddTextureCount)(TI32 iInput) noexcept;
-
   /// @brief Increment & Decrement on-bind vertex count of `Dy` System. This function is atomic.
   void MDY_PRIVATE_SPECIFIER(AddOnBindVertexCount)(TI32 iInput) noexcept;
-
   /// @brief Increment & Decrement on-bind shader count of `Dy` System. This function is atomic.
   void MDY_PRIVATE_SPECIFIER(AddOnBindShaderCount)(TI32 iInput) noexcept;
+  /// @brief Increment & Decrement on-bind shader count of `Dy` System. This function is atomic.
+  void MDY_PRIVATE_SPECIFIER(AddOnBindActorCount)(TI32 iInput) noexcept;
 
   RWLockAtomic<TI32> mOnBindTextureCount  = MDY_INITIALIZE_DEFUINT;
 
@@ -52,6 +55,7 @@ private:
   RWLockAtomic<TI32> mScreenVertexCount   = MDY_INITIALIZE_DEFUINT;
 
   RWLockAtomic<TI32> mOnBindShaderCount   = MDY_INITIALIZE_DEFUINT;
+  RWLockAtomic<TI32> mOnBindActorCount    = MDY_INITIALIZE_DEFUINT;
 
   friend class SDyProfilingHelper;
 };

@@ -80,10 +80,11 @@ Camera0 : 2
   auto t = this->mTimeManager->GetCalendarTime();
   infoText->SetText(fmt::format(
       "{:05.2f} %, {:0d} fps | Time : {:04}-{:02}-{:02} {:02}:{:02}:{:02}\n"
-      "| Obj : 000 | Tex : {:03} | Shd : {:03} | Vtx : {:03} |\n"
+      "| Obj : {:03} | Tex : {:03} | Shd : {:03} | Vtx : {:03} |\n"
       "Ram Usage : {} Bytes", 
       usageCpu, this->mTimeManager->GetPresentFpsCountValue(),
       t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(),
+      this->mProfilingManger->GetOnBindActorCount(),
       this->mProfilingManger->GetOnBindTextureCount(),
       this->mProfilingManger->GetOnBindShaderCount(),
       this->mProfilingManger->GetOnBindVertexCount(),

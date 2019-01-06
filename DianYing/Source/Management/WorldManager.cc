@@ -172,7 +172,10 @@ DDyActorBinder MDyWorld::CreateActor(
     _MIN_ bool iDoSweep)
 {
   PDyActorCreationDescriptor descriptor = {};
-  descriptor.mActorSpecifierName      = iPtrParent != nullptr ? iPtrParent->TryGetGeneratedName(iActorName) : iActorName;
+  descriptor.mActorSpecifierName      = 
+      iPtrParent != nullptr 
+    ? iPtrParent->TryGetGeneratedName(iActorName) 
+    : this->mLevel->TryGetGeneratedName(iActorName);
   descriptor.mParentFullSpecifierName = 
       iPtrParent != nullptr 
     ? iPtrParent->MDY_PRIVATE_SPECIFIER(GetFullSpecifierName)() 

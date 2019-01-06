@@ -37,6 +37,16 @@ public:
   static void IncreaseOnBindShaderCount(_MIN_ TU32 iInput) noexcept;
   /// @brief Decrease on-bind shader count.
   static void DecreaseOnBindShaderCount(_MIN_ TU32 iInput) noexcept;
+
+  /// @brief Increase on-bind scene actor count.
+  static void IncreaseOnBindActorCount(_MIN_ TU32 iInput) noexcept;
+  /// @brief Decrease on-bind scene actor count.
+  static void DecreaseOnBindActorCount(_MIN_ TU32 iInput) noexcept;
+
+  /// @brief Increase rendered scene actor count.
+  static void IncreaseRenderedActorCount(_MIN_ TU32 iInput) noexcept;
+  /// @brief Decrease rendered scene actor count.
+  static void DecreaseRenderedActorCount(_MIN_ TU32 iInput) noexcept;
 };
 
 } /// ::dy namespace

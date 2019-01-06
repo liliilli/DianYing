@@ -155,6 +155,7 @@ void FDyLevel::CreateActorInstantly(_MIN_ const PDyActorCreationDescriptor& desc
   if (descriptor.mParentFullSpecifierName.empty() == true)
   {
     auto instancePtr  = std::make_unique<FDyActor>(descriptor);
+    MDY_LOG_CRITICAL("{}", instancePtr->GetActorName());
     auto [it, result] = this->mActorMap.try_emplace(instancePtr->GetActorName(), std::move(instancePtr));
     MDY_ASSERT(result == true, "Unexpected error occured in inserting FDyActor to object map.");
      
