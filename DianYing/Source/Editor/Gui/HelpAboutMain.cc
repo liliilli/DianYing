@@ -2,7 +2,7 @@
 #if defined(MDY_FLAG_IN_EDITOR)
 ///
 /// MIT License
-/// Copyright (c) 2018 Jongmin Yun
+/// Copyright (c) 2018-2019 Jongmin Yun
 ///
 /// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 /// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -58,7 +58,7 @@ void FDyHelpAboutMain::DrawWindow(float dt) noexcept
   {
     ImGui::Begin("About DianYing license...", &this->sHelpAboutLicenseWindow, ImGuiWindowFlags_AlwaysAutoResize);
     ImGui::Text(R"dy(MIT License
-Copyright (c) 2018 Jongmin Yun
+Copyright (c) 2018-2019 Jongmin Yun
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
