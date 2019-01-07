@@ -649,6 +649,8 @@
     <ClInclude Include="data\Script\DebugActor\BtScActorTest1.h" />
     <ClInclude Include="data\Script\DebugActor\BtScActorTest2.h" />
     <ClInclude Include="data\Script\DebugActor\BtScActorTest3.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Camera\DDyFrustumTester.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\Plane.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

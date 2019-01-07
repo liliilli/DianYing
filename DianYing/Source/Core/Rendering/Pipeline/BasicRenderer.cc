@@ -62,14 +62,6 @@ FDyBasicRenderer::~FDyBasicRenderer()
 {
   auto& uboManager = MDyUniformBufferObject::GetInstance();
   MDY_CALL_ASSERT_SUCCESS(uboManager.RemoveUboContainer(MSVSTR(sUboCameraBlock)));
-
-#ifdef false
-  auto& framebufferManager  = MDyFramebuffer::GetInstance();
-  MDY_CALL_ASSERT_SUCCESS(framebufferManager.RemoveFrameBuffer(MSVSTR(sFrameBuffer_Deferred)));
-  this->mGivenFrameBufferPointer = nullptr;
-#endif
-
-  MDY_LOG_INFO("{}::{} | Geometry buffer released.", "MDyRendering", "pCreateDeferredGeometryBuffers");
 }
 
 void FDyBasicRenderer::RenderScreen(_MIN_ const std::vector<NotNull<CDyModelRenderer*>>& rendererList)
@@ -80,6 +72,9 @@ void FDyBasicRenderer::RenderScreen(_MIN_ const std::vector<NotNull<CDyModelRend
   auto& worldManager     = MDyWorld::GetInstance();
   auto& uboManager       = MDyUniformBufferObject::GetInstance();
   const auto cameraCount = worldManager.GetFocusedCameraCount();
+  // @TODO IMPLEMENT SW OCCLUSION CULLING (HW?)
+  // Request draw calls (without SW occlusion culling)
+    // if (modelRenderer->CheckInViewFrustum() == false) { return; }
   for (TI32 cameraId = 0; cameraId < cameraCount; ++cameraId)
   { // Get valid CDyCamera instance pointer address.
     const auto opCamera = worldManager.GetFocusedCameraValidReference(cameraId);
@@ -104,8 +99,9 @@ void FDyBasicRenderer::RenderScreen(_MIN_ const std::vector<NotNull<CDyModelRend
     }
 
     // Set viewport values to camera's properties.
-    const auto viewportRect       = validCameraRawPtr.GetPixelizedViewportRectangle();
+    const auto viewportRect = validCameraRawPtr.GetPixelizedViewportRectangle();
     glViewport(viewportRect[0], viewportRect[1], viewportRect[2], viewportRect[3]);
+
 
     for (const auto& drawInstance : rendererList)
     { // General deferred rendering

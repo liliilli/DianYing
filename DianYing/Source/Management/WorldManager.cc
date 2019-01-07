@@ -121,13 +121,7 @@ void MDyWorld::UpdateObjects(_MIN_ float dt)
 
 void MDyWorld::RequestDrawCall()
 {
-  // @TODO IMPLEMENT SW OCCLUSION CULLING (HW?)
-  // Request draw calls (without SW occlusion culling)
-  for (auto& modelRenderer : this->mActivatedModelRenderers)
-  { 
-    // if (modelRenderer->CheckInViewFrustum() == false) { return; }
-    modelRenderer->RequestDrawCall();
-  }
+  for (auto& modelRenderer : this->mActivatedModelRenderers) { modelRenderer->RequestDrawCall(); }
 }
 
 std::vector<NotNull<FDyActor*>> 
