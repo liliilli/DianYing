@@ -79,7 +79,7 @@ Camera0 : 2
 
   auto t = this->mTimeManager->GetCalendarTime();
   infoText->SetText(fmt::format(
-      "{:05.2f} %, {:0d} fps | Time : {:04}-{:02}-{:02} {:02}:{:02}:{:02}\n"
+      "DEBUG BUILD {:05.2f} %, {:0d} fps | Time : {:04}-{:02}-{:02} {:02}:{:02}:{:02}\n"
       "| Obj : {:03} | Tex : {:03} | Shd : {:03} | Vtx : {:03} |\n"
       "| Ren : {:03} |\n"
       "Ram Usage : {} KB", 

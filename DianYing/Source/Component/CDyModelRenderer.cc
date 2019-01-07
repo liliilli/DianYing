@@ -59,7 +59,6 @@ void CDyModelRenderer::Release()
 void CDyModelRenderer::RequestDrawCall() noexcept
 {
   MDyRendering::GetInstance().PushDrawCallTask(*this);
-  SDyProfilingHelper::AddScreenRenderedActorCount(1);
 }
 
 void CDyModelRenderer::Activate() noexcept

@@ -14,6 +14,12 @@
 ///
 
 #include <array>
+#include <Dy/Helper/Type/Plane.h>
+
+namespace dy
+{
+class DDyMatrix4x4;
+} /// ::dy namespace
 
 namespace dy
 {
@@ -21,12 +27,22 @@ namespace dy
 class DDyFrustumTester final
 {
 public:
-  
+  /// @brief Update frustum.
+  void UpdateFrustum(_MIN_ const DDyMatrix4x4& mProjection, _MIN_ const DDyMatrix4x4& mView);
+
+  /// @brief Check point is in frustum.
+  MDY_NODISCARD bool IsPointInFrustum(_MIN_ const DDyVector3& mPoint) const noexcept;
 
 private:
+  /// @enum EDirection
+  /// @brief Direction enum for helping readability.
+  enum EDirection
+  {
+    DirRight  = 0, DirLeft   = 1, DirBottom = 2,
+    DirTop    = 3, DirBack   = 4, DirFront  = 5
+  };
 
-
-
+  std::array<DDyPlane, 6> mFrustum = {};
 };
 
 } /// ::dy namespace
