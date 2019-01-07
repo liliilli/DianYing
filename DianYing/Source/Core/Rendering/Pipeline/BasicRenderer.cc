@@ -73,9 +73,8 @@ void FDyBasicRenderer::RenderScreen(_MIN_ const std::vector<NotNull<CDyModelRend
   auto& worldManager     = MDyWorld::GetInstance();
   auto& uboManager       = MDyUniformBufferObject::GetInstance();
   const auto cameraCount = worldManager.GetFocusedCameraCount();
-  // @TODO IMPLEMENT SW OCCLUSION CULLING (HW?)
+
   // Request draw calls (without SW occlusion culling)
-    // if (modelRenderer->CheckInViewFrustum() == false) { return; }
   for (TI32 cameraId = 0; cameraId < cameraCount; ++cameraId)
   { // Get valid CDyCamera instance pointer address.
     const auto opCamera = worldManager.GetFocusedCameraValidReference(cameraId);
@@ -103,12 +102,10 @@ void FDyBasicRenderer::RenderScreen(_MIN_ const std::vector<NotNull<CDyModelRend
     const auto viewportRect = validCameraRawPtr.GetPixelizedViewportRectangle();
     glViewport(viewportRect[0], viewportRect[1], viewportRect[2], viewportRect[3]);
 
-
     for (auto& drawInstance : rendererList)
     { // General deferred rendering
       auto& refRenderer    = *drawInstance;
       const auto& worldPos = refRenderer.GetBindedActor()->GetTransform()->GetFinalWorldPosition();
-
       // Check frustum.
       if (validCameraRawPtr.CheckIsPointInFrustum(worldPos) == false) { continue; }
 
