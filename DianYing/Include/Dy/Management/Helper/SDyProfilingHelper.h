@@ -47,6 +47,11 @@ public:
   static void IncreaseRenderedActorCount(_MIN_ TU32 iInput) noexcept;
   /// @brief Decrease rendered scene actor count.
   static void DecreaseRenderedActorCount(_MIN_ TU32 iInput) noexcept;
+
+  /// @brief 
+  static void AddScreenRenderedActorCount(_MIN_ TI32 iInput) noexcept;
+  /// @brief
+  static void ResetFrameDependentCounts() noexcept;
 };
 
 } /// ::dy namespace

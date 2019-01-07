@@ -158,6 +158,36 @@ EDySuccess CDyCamera::pTryDeactivateCameraOperation()
   return DY_SUCCESS;
 }
 
+const DDyMatrix4x4& CDyCamera::GetViewMatrix() const noexcept
+{
+  return this->mViewMatrix;
+}
+
+const DDyMatrix4x4& CDyCamera::GetProjectionMatrix() const noexcept
+{
+  return this->mProjectionMatrix;
+}
+
+bool CDyCamera::IsEnabledMeshUnclipping() const noexcept
+{
+  return this->mIsEnableMeshUnClipped;
+}
+
+TF32 CDyCamera::GetNear() const noexcept
+{
+  return this->mNear;
+}
+
+TF32 CDyCamera::GetFar() const noexcept
+{
+  return this->mFar;
+}
+
+TF32 CDyCamera::GetFieldOfView() const noexcept
+{
+  return this->mFieldOfView;
+}
+
 std::array<TI32, 4> CDyCamera::GetPixelizedViewportRectangle() const noexcept
 {
   const auto& setting                 = MDySetting::GetInstance();

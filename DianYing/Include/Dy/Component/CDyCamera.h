@@ -58,103 +58,62 @@ enum class EDyCameraType
   Orthographic,
 };
 
-///
 /// @class CDyCamera
 /// @brief New camera component type.
-///
 class CDyCamera final : public ADyGeneralBaseComponent, public IDyInitializeHelper<PDyCameraComponentMetaInfo>
 {
 public:
   CDyCamera(_MIN_ FDyActor& actorReference) : ADyGeneralBaseComponent(actorReference) {};
   virtual ~CDyCamera() = default;
 
-  CDyCamera(const CDyCamera&)                                 = delete;
-  CDyCamera& operator=(const CDyCamera&)                      = delete;
-  CDyCamera(CDyCamera&& instance)                   noexcept  = default;
-  CDyCamera& operator=(CDyCamera&& instance)        noexcept  = default;
+  CDyCamera(const CDyCamera&)                          = delete;
+  CDyCamera& operator=(const CDyCamera&)               = delete;
+  CDyCamera(CDyCamera&& instance)            noexcept  = default;
+  CDyCamera& operator=(CDyCamera&& instance) noexcept  = default;
 
   MDY_SET_TYPEMATCH_FUNCTION(::dy::ADyGeneralBaseComponent, CDyCamera);
   MDY_SET_CRC32_HASH_WITH_TYPE(CDyCamera);
 
-  ///
   /// @brief  Get view matrix.
   /// @return Valid immutable view matrix reference.
-  ///
-  MDY_NODISCARD const DDyMatrix4x4& GetViewMatrix() const noexcept
-  {
-    return this->mViewMatrix;
-  }
+  MDY_NODISCARD const DDyMatrix4x4& GetViewMatrix() const noexcept;
 
-  ///
   /// @brief  Get projection matrix
   /// @return Valid immutable projection matirx reference.
-  ///
-  MDY_NODISCARD const DDyMatrix4x4& GetProjectionMatrix() const noexcept
-  {
-    return this->mProjectionMatrix;
-  }
+  MDY_NODISCARD const DDyMatrix4x4& GetProjectionMatrix() const noexcept;
 
-  ///
   /// @brief  Get feature flag about mesh unclipping of this camera component.
   /// @return Feature flag.
-  ///
-  FORCEINLINE MDY_NODISCARD bool IsEnabledMeshUnclipping() const noexcept
-  {
-    return this->mIsEnableMeshUnClipped;
-  }
+  MDY_NODISCARD bool IsEnabledMeshUnclipping() const noexcept;
 
-  ///
   /// @brief  Get near value of camera.
-  /// @return Near value.
-  ///
-  MDY_NODISCARD float GetNear() const noexcept
-  {
-    return this->mNear;
-  }
+  MDY_NODISCARD TF32 GetNear() const noexcept;
 
-  ///
   /// @brief  Get far value of camera.
-  /// @return Far value.
-  ///
-  MDY_NODISCARD float GetFar() const noexcept
-  {
-    return this->mFar;
-  }
+  MDY_NODISCARD TF32 GetFar() const noexcept;
 
-  ///
   /// @brief  Get field of view degree angle value.
   /// @return Field of view degree angle value. (horizontal)
-  ///
-  MDY_NODISCARD float GetFieldOfView() const noexcept
-  {
-    return this->mFieldOfView;
-  }
+  MDY_NODISCARD TF32 GetFieldOfView() const noexcept;
 
-  ///
   /// @brief  Get scale value of xy (start point) of viewport rectangle.
   /// @return Scaled start point of viewport rectangle.
-  ///
   MDY_NODISCARD const DDyVector2& GetViewportRectScaleXy() const noexcept
   {
     return this->mViewportRectXY;
   }
 
-  ///
   /// @brief  Get scale value of wh (start point) of viewport rectangle.
   /// @return Scaled width and height of viewport rectangle.
-  ///
   MDY_NODISCARD const DDyVector2& GetViewportRectScaleWh() const noexcept
   {
     return this->mViewportRectWH;
   }
 
-  ///
   /// @brief  Get (x, y, w, h) pixel value of viewport rectangle along with present resolution size.
   /// @return Pixelized (reflect present game resolution size) (x, y, w, h) integer container for representing viewport rectangle.
-  ///
   MDY_NODISCARD std::array<TI32, 4> GetPixelizedViewportRectangle() const noexcept;
 
-  ///
   /// @brief  Set near value. If successful, return DY_SUCCESS.
   /// But when newNear value is bigger than mFar value, do nothing just return DY_FAILURE.
   /// When update near value, projection matrix will be updated also immediately.
@@ -162,10 +121,8 @@ public:
   ///
   /// @param  newNear New value to update near value.
   /// @return Success flag.
-  ///
   MDY_NODISCARD EDySuccess SetNear(_MIN_ const float newNear) noexcept;
 
-  ///
   /// @brief  Set far value. If successful, return DY_SUCCESS.
   /// But when newFar svalue is smaller than mNear value, do nothing just return DY_FAILURE.
   /// When update near value, projection matrix will be updated also immediately.
@@ -173,10 +130,8 @@ public:
   ///
   /// @param  newFar New value to update far value.
   /// @return Success flag.
-  ///
   MDY_NODISCARD EDySuccess SetFar(_MIN_ const float newFar) noexcept;
 
-  ///
   /// @brief  Set field of view value. If successful, return DY_SUCCESS.
   /// When degreeValue is smaller or equal to 0.f, or bigger than 180.f, do nothing and just return DY_FAILURE.
   /// When update field of view value, projection matrix will be updated also immediately.
@@ -184,49 +139,29 @@ public:
   ///
   /// @param  degreeValue New value to update field of view value.
   /// @return Success flag.
-  ///
   MDY_NODISCARD EDySuccess SetFieldOfView(_MIN_ const float degreeValue) noexcept;
 
-  ///
   /// @brief  Get unscaled viewport value x.
-  /// @param  x
-  ///
   void SetViewportX(_MIN_ const float x) noexcept;
 
-  ///
   /// @brief  Get unscaled viewport value y.
-  /// @param  y
-  ///
   void SetViewportY(_MIN_ const float y) noexcept;
 
-  ///
   /// @brief  Get unscaled viewport value w.
-  /// @param  w
-  ///
   void SetViewportW(_MIN_ const float w) noexcept;
 
-  ///
   /// @brief  Get unscaled viewport value h.
-  /// @param  h
-  ///
   void SetViewportH(_MIN_ const float h) noexcept;
 
-  ///
   /// @brief  Set mesh unclipping feature of this camera component instance.
-  /// @param  flag Feature flag.
-  ///
   void SetFeatureMeshUnclipping(_MIN_ const bool flag) noexcept;
 
-  ///
   /// @brief  Do focusing camera as main camera.
   /// @return If camera component is not binded main cam before Focus(), return true or false.
-  ///
   EDySuccess Focus();
 
-  ///
   /// @brief  remove focusing camera as main camera.
   /// @return If camera component is being binded as main cam before Focus(), return true or false.
-  ///
   EDySuccess Unfocus();
 
   /// @brief  Activate CDyCamera. Final activation value is also dependent on FDyActor activation flag.
@@ -241,29 +176,21 @@ public:
   ///
   void pPropagateParentActorActivation(_MIN_ const DDy3StateBool& actorBool) noexcept override final;
 
-  ///
   /// @brief  Initilaize component property.
   /// @param  descriptor Descriptor which has a values.
   /// @return If succeeded, return true or false.
-  ///
   MDY_NODISCARD EDySuccess Initialize(_MIN_ const PDyCameraComponentMetaInfo& descriptor) override final;
 
-  ///
   /// @brief  Release component safely.
-  ///
   void Release() override final;
 
-  ///
   /// @brief  Update camera properties, like updating view matrix following final position of FDyActor.
   /// @param  dt delta time. Not used.
-  ///
   void Update(_MIN_ MDY_NOTUSED float dt) override final;
 
-  ///
   /// @brief  Return information string of this component.
   /// @return Information string.
   /// @TODO IMPLEMENT THIS, NOT IMPLEMENTED YET.
-  ///
   MDY_NODISCARD std::string ToString() override final;
 
 private:
