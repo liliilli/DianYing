@@ -59,4 +59,14 @@ void SDyProfilingHelper::DecreaseOnBindActorCount(_MIN_ TU32 iInput) noexcept
   MDyProfiling::GetInstance().MDY_PRIVATE_SPECIFIER(AddOnBindActorCount)(-static_cast<TI32>(iInput));
 }
 
+void SDyProfilingHelper::AddScreenRenderedActorCount(TI32 iInput) noexcept
+{
+  MDyProfiling::GetInstance().MDY_PRIVATE_SPECIFIER(AddScreenRenderedActorCount)(iInput);
+}
+
+void SDyProfilingHelper::ResetFrameDependentCounts() noexcept
+{
+  MDyProfiling::GetInstance().MDY_PRIVATE_SPECIFIER(ResetFrameDependentCounts)();
+}
+
 } /// ::dy namespace

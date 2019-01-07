@@ -34,6 +34,7 @@
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 #include "Dy/Management/GameTimerManager.h"
 #include "Dy/Helper/mcs/Functions.h"
+#include "Dy/Management/Helper/SDyProfilingHelper.h"
 
 //!
 //! Implementation
@@ -322,6 +323,9 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(Render)(_MIN_ EDyGlobalGameStatus iEngineSt
     MDyRendering::GetInstance().MDY_PRIVATE_SPECIFIER(RenderLoading)();
     break;
   case EDyGlobalGameStatus::GameRuntime: 
+    // Reset frame dependent profiling count.
+    SDyProfilingHelper::ResetFrameDependentCounts();
+    // Request render call.
     MDyWorld::GetInstance().RequestDrawCall();
     MDyRendering::GetInstance().RenderDrawCallQueue();
     break;

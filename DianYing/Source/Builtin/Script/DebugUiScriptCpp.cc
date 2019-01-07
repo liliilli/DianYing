@@ -81,14 +81,16 @@ Camera0 : 2
   infoText->SetText(fmt::format(
       "{:05.2f} %, {:0d} fps | Time : {:04}-{:02}-{:02} {:02}:{:02}:{:02}\n"
       "| Obj : {:03} | Tex : {:03} | Shd : {:03} | Vtx : {:03} |\n"
-      "Ram Usage : {} Bytes", 
+      "| Ren : {:03} |\n"
+      "Ram Usage : {} KB", 
       usageCpu, this->mTimeManager->GetPresentFpsCountValue(),
       t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(),
       this->mProfilingManger->GetOnBindActorCount(),
       this->mProfilingManger->GetOnBindTextureCount(),
       this->mProfilingManger->GetOnBindShaderCount(),
       this->mProfilingManger->GetOnBindVertexCount(),
-      usageRam
+      this->mProfilingManger->GetScreenRenderedActorCount(),
+      usageRam / 1024
   ));
   //bar->SetRelativePosition(bar->GetRelativePosition(EDyOrigin::Center_Center) + DDyVector2{0, -dt * 16.0f});
   bar->SetPresentValue(usageCpu);

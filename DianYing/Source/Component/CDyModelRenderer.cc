@@ -22,6 +22,7 @@
 
 #include <Dy/Core/Resource/Type/TDyResourceBinder.h>
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
+#include <Dy/Management/Helper/SDyProfilingHelper.h>
 
 namespace dy
 {
@@ -58,6 +59,7 @@ void CDyModelRenderer::Release()
 void CDyModelRenderer::RequestDrawCall() noexcept
 {
   MDyRendering::GetInstance().PushDrawCallTask(*this);
+  SDyProfilingHelper::AddScreenRenderedActorCount(1);
 }
 
 void CDyModelRenderer::Activate() noexcept

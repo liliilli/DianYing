@@ -28,26 +28,33 @@ class MDyProfiling final : public IDySingleton<MDyProfiling>
 public:
   /// @brief Get texture count on bind `Dy` System. This function is atomic.
   MDY_NODISCARD TI32 GetOnBindTextureCount() const noexcept;
-
   /// @brief Get vertex count on bind `Dy` System. This function is atomic.
   MDY_NODISCARD TI32 GetOnBindVertexCount() const noexcept;
-
   /// @brief Get shader count on bind `Dy` System. This function is atomic.
   MDY_NODISCARD TI32 GetOnBindShaderCount() const noexcept;
-
   /// @brief Get total actor count of level on bind `Dy` System. This function is atomic.
   MDY_NODISCARD TI32 GetOnBindActorCount() const noexcept;
+  /// @brief Get screen rendered actour count. This function is not atomic.
+  MDY_NODISCARD TI32 GetScreenRenderedActorCount() const noexcept;
 
 private:
   /// @brief Increment & Decrement texture count that texture is on bind `Dy` System. \n
   /// This function is atomic.
-  void MDY_PRIVATE_SPECIFIER(AddTextureCount)(TI32 iInput) noexcept;
+  void MDY_PRIVATE_SPECIFIER(AddTextureCount)(_MIN_ TI32 iInput) noexcept;
   /// @brief Increment & Decrement on-bind vertex count of `Dy` System. This function is atomic.
-  void MDY_PRIVATE_SPECIFIER(AddOnBindVertexCount)(TI32 iInput) noexcept;
+  void MDY_PRIVATE_SPECIFIER(AddOnBindVertexCount)(_MIN_ TI32 iInput) noexcept;
   /// @brief Increment & Decrement on-bind shader count of `Dy` System. This function is atomic.
-  void MDY_PRIVATE_SPECIFIER(AddOnBindShaderCount)(TI32 iInput) noexcept;
+  void MDY_PRIVATE_SPECIFIER(AddOnBindShaderCount)(_MIN_ TI32 iInput) noexcept;
   /// @brief Increment & Decrement on-bind shader count of `Dy` System. This function is atomic.
-  void MDY_PRIVATE_SPECIFIER(AddOnBindActorCount)(TI32 iInput) noexcept;
+  void MDY_PRIVATE_SPECIFIER(AddOnBindActorCount)(_MIN_ TI32 iInput) noexcept;
+  /// @brief Increment & Decrement `mScreenRenderedActorCount` by iInput.
+  void MDY_PRIVATE_SPECIFIER(AddScreenRenderedActorCount)(_MIN_ TI32 iInput) noexcept;
+
+  /// @brief Reset `mScreenRenderedActorCount` to 0. This function is not atomic.
+  void MDY_PRIVATE_SPECIFIER(ResetScreenRenderedActorCount)() noexcept;
+  /// @brief Reset frame dependent count.
+  /// `mScreenRenderedActorCount` will be reset.
+  void MDY_PRIVATE_SPECIFIER(ResetFrameDependentCounts)() noexcept;
 
   RWLockAtomic<TI32> mOnBindTextureCount  = MDY_INITIALIZE_DEFUINT;
 
@@ -56,6 +63,7 @@ private:
 
   RWLockAtomic<TI32> mOnBindShaderCount   = MDY_INITIALIZE_DEFUINT;
   RWLockAtomic<TI32> mOnBindActorCount    = MDY_INITIALIZE_DEFUINT;
+  TI32               mScreenRenderedActorCount = MDY_INITIALIZE_DEFUINT;
 
   friend class SDyProfilingHelper;
 };
