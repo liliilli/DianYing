@@ -17,6 +17,7 @@
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 #include <Dy/Helper/Type/Matrix4.h>
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
+#include "Internal/Camera/DDyFrustumTester.h"
 
 namespace dy
 {
@@ -83,7 +84,6 @@ public:
   MDY_NODISCARD const DDyMatrix4x4& GetProjectionMatrix() const noexcept;
 
   /// @brief  Get feature flag about mesh unclipping of this camera component.
-  /// @return Feature flag.
   MDY_NODISCARD bool IsEnabledMeshUnclipping() const noexcept;
 
   /// @brief  Get near value of camera.
@@ -92,9 +92,11 @@ public:
   /// @brief  Get far value of camera.
   MDY_NODISCARD TF32 GetFar() const noexcept;
 
-  /// @brief  Get field of view degree angle value.
-  /// @return Field of view degree angle value. (horizontal)
+  /// @brief  Get field of horizontal view degree angle value.
   MDY_NODISCARD TF32 GetFieldOfView() const noexcept;
+
+  /// @brief Check point is in camera frustum.
+  MDY_NODISCARD bool CheckIsPointInFrustum(_MIN_ const DDyVector3& iPoint) const noexcept;
 
   /// @brief  Get scale value of xy (start point) of viewport rectangle.
   /// @return Scaled start point of viewport rectangle.
@@ -170,10 +172,8 @@ public:
   /// @brief  Deactivate CDyCamera. Final activation value is also dependent on FDyActor activation flag.
   void Deactivate() noexcept override final;
 
-  ///
   /// @brief  Propagate CDyActor's 3-state bool output value as component's parent.
   /// @param  actorBool CDyActor's 3-state boolean value.
-  ///
   void pPropagateParentActorActivation(_MIN_ const DDy3StateBool& actorBool) noexcept override final;
 
   /// @brief  Initilaize component property.
@@ -216,13 +216,15 @@ private:
   /// |  ux uy uz  0  ||   0  0  0 -y  | == |  ux uy uz -u*t  |  v(x, y, z) is camera's z-axis normal vector.
   /// |  vx vy vz  0  ||   0  0  0 -z  | == |  vx vy vz -v*t  |  u(x, y, z) is camera's y-axis normal vector.
   /// '-  0  0  0  0 -``-  0  0  0  1 -`    `-  0  0  0    1 -`  We need to translate all object's in view frustum as camera's origin.
-  DDyMatrix4x4    mViewMatrix;
+  DDyMatrix4x4      mViewMatrix;
   /// Projection matrix.
-  DDyMatrix4x4    mProjectionMatrix;
+  DDyMatrix4x4      mProjectionMatrix;
   /// Normalized Lookat direction vector
-  DDyVector3      mLookingAtDirection     = {};
+  DDyVector3        mLookingAtDirection = {};
   /// Camera final posittion
-  DDyVector3      mPosition               = {};
+  DDyVector3        mPosition = {};
+  /// Frustum varaible.
+  DDyFrustumTester  mFrustum  = {};
 
   //! (Camera) -> |Near| >>>>>>>>>>>>>>>|Far|
   //! Ground --------------------------------

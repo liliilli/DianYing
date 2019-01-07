@@ -28,6 +28,7 @@
 #include "Dy/Core/Resource/Resource/FDyTextureResource.h"
 #include "Dy/Core/Resource/Resource/FDyFrameBufferResource.h"
 #include <Dy/Component/CDyCamera.h>
+#include "Dy/Management/Helper/SDyProfilingHelper.h"
 
 //!
 //! Temporary
@@ -103,9 +104,17 @@ void FDyBasicRenderer::RenderScreen(_MIN_ const std::vector<NotNull<CDyModelRend
     glViewport(viewportRect[0], viewportRect[1], viewportRect[2], viewportRect[3]);
 
 
-    for (const auto& drawInstance : rendererList)
+    for (auto& drawInstance : rendererList)
     { // General deferred rendering
-      this->pRenderScreen(*drawInstance, validCameraRawPtr);
+      auto& refRenderer    = *drawInstance;
+      const auto& worldPos = refRenderer.GetBindedActor()->GetTransform()->GetFinalWorldPosition();
+
+      // Check frustum.
+      if (validCameraRawPtr.CheckIsPointInFrustum(worldPos) == false) { continue; }
+
+      const auto& refModelMatrix  = refRenderer.GetBindedActor()->GetTransform()->GetTransform();
+      this->pRenderScreen(refRenderer, refModelMatrix, validCameraRawPtr);
+      SDyProfilingHelper::AddScreenRenderedActorCount(1);
     }
   }
 
@@ -113,7 +122,10 @@ void FDyBasicRenderer::RenderScreen(_MIN_ const std::vector<NotNull<CDyModelRend
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void FDyBasicRenderer::pRenderScreen(const CDyModelRenderer& renderer, const CDyCamera& validCamera) noexcept
+void FDyBasicRenderer::pRenderScreen(
+    _MIN_ const CDyModelRenderer& renderer, 
+    _MIN_ const DDyMatrix4x4& iModelMatrix, 
+    _MIN_ const CDyCamera& validCamera) noexcept
 {
   const auto materialListCount  = renderer.GetMaterialListCount();
   const auto opSubmeshListCount = renderer.GetModelSubmeshCount();
@@ -137,8 +149,7 @@ void FDyBasicRenderer::pRenderScreen(const CDyModelRenderer& renderer, const CDy
     glBindVertexArray(submesh.GetVertexArrayId());
 
     const auto modelMatrix = glGetUniformLocation(ptrShader->GetShaderProgramId(), "modelMatrix");
-    const auto& model = const_cast<FDyActor*>(renderer.GetBindedActor())->GetTransform()->GetTransform();
-    glUniformMatrix4fv(modelMatrix, 1, GL_FALSE, &model[0].X);
+    glUniformMatrix4fv(modelMatrix, 1, GL_FALSE, &iModelMatrix[0].X);
 
     // If skeleton animation is enabled, get bone transform and bind to shader.
 #ifdef false

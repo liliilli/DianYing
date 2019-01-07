@@ -90,10 +90,12 @@ void MDyRendering::RenderDrawCallQueue()
   const auto& information = MDySetting::GetInstance().GetGameplaySettingInformation();
   if (information.mGraphics.mIsEnabledDefaultShadow == true)
   { // Basic shadow (directional light etc)
+#ifdef false
     for (const auto& drawInstance : this->mOpaqueDrawCallList)
     {
       this->mShadowRenderer->RenderScreen(*drawInstance);
     }
+#endif
   }
   // Clear opaque draw queue list
   this->mOpaqueDrawCallList.clear();

@@ -13,6 +13,8 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Helper/Type/Vector3.h>
+
 namespace dy
 {
 
@@ -20,10 +22,26 @@ namespace dy
 /// @brief Plane type.
 struct DDyPlane final
 {
+  enum EStatus
+  {
+    Front,
+    Behind,
+    OnPlane
+  };
+
   TF32 A = 0;
   TF32 B = 0;
   TF32 C = 0;
   TF32 D = 0;
+
+  /// @brief Normalize plane.
+  void Normalize();
+
+  /// @brief Get normal vector.
+  MDY_NODISCARD DDyVector3 GetNormalVector() const noexcept;
+
+  /// @brief Check given point is on plane, on front (pos), on behind (neg).
+  MDY_NODISCARD DDyPlane::EStatus CheckPointStatusOnPlane(_MIN_ const DDyVector3& iPoint) const noexcept;
 };
 
 } /// ::dy namespace

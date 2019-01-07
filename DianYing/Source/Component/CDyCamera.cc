@@ -80,8 +80,22 @@ void CDyCamera::Update(_MIN_ float dt)
 {
   this->pUpdateCameraVectors();
 
-  if (this->mIsViewMatrixDirty)       { this->pUpdateViewMatrix(); }
-  if (this->mIsProjectionMatrixDirty) { this->pUpdateProjectionMatrix(); }
+  bool isNeedToUpdateFrustum = false;
+  if (this->mIsViewMatrixDirty)
+  { 
+    this->pUpdateViewMatrix(); 
+    isNeedToUpdateFrustum = true;
+  }
+  if (this->mIsProjectionMatrixDirty) 
+  { 
+    this->pUpdateProjectionMatrix(); 
+    isNeedToUpdateFrustum = true;
+  }
+
+  if (isNeedToUpdateFrustum == true)
+  { // If we need to update culling frustum, update it.
+    this->mFrustum.UpdateFrustum(this->GetProjectionMatrix(), this->GetViewMatrix());
+  }
 }
 
 std::string CDyCamera::ToString()
@@ -97,11 +111,18 @@ void CDyCamera::pUpdateCameraVectors()
 
   // Also re-calculate the Right and Up vector
   // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
-  this->mLookingAtDirection = transform->GetToChildBasis()[2];
-  this->mPosition           = transform->GetFinalWorldPosition();
-
-  this->mIsViewMatrixDirty        = true;
-  this->pUpdateViewMatrix();
+  if (const auto& lookingDirection = transform->GetToChildBasis()[2];
+      this->mLookingAtDirection != lookingDirection)
+  {
+    this->mLookingAtDirection = lookingDirection;
+    this->mIsViewMatrixDirty  = true;
+  }
+  if (const auto& worldPos = transform->GetFinalWorldPosition();
+      this->mPosition != worldPos)
+  {
+    this->mPosition = transform->GetFinalWorldPosition();
+    this->mIsViewMatrixDirty  = true;
+  }
 }
 
 void CDyCamera::pUpdateViewMatrix()
@@ -142,10 +163,10 @@ EDySuccess CDyCamera::pTryActivateCameraOperation()
   this->pUpdateCameraVectors();
   this->pUpdateViewMatrix();
   this->pUpdateProjectionMatrix();
+  this->mFrustum.UpdateFrustum(this->GetProjectionMatrix(), this->GetViewMatrix());
 
   // If camera must be focused instantly, set it to present focused camera reference ptr of manager.
   if (this->mIsMustBeFocusedInstantly == true) { this->Focus(); }
-
   return DY_SUCCESS;
 }
 
@@ -186,6 +207,11 @@ TF32 CDyCamera::GetFar() const noexcept
 TF32 CDyCamera::GetFieldOfView() const noexcept
 {
   return this->mFieldOfView;
+}
+
+bool CDyCamera::CheckIsPointInFrustum(_MIN_ const DDyVector3& iPoint) const noexcept
+{
+  return this->mFrustum.IsPointInFrustum(iPoint);
 }
 
 std::array<TI32, 4> CDyCamera::GetPixelizedViewportRectangle() const noexcept

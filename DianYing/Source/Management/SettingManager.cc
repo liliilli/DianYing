@@ -370,7 +370,7 @@ EDySuccess MDySetting::pfInitialize()
     MDY_ASSERT(std::filesystem::exists(this->mEntrySettingPath) == true, "Data file is not exist.");
 
     const auto opMetaInfo = DyGetJsonAtlasFromFile(this->mEntrySettingPath);
-    MDY_ASSERT(opMetaInfo.has_value() == true, "Failed to open meta data file.");
+    MDY_ASSERT_FORCE(opMetaInfo.has_value() == true, "Failed to open meta data file.");
     const auto& metaAtlas = opMetaInfo.value();
 
     // Apply setting to project before everthing starts to working.

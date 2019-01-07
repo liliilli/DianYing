@@ -53,7 +53,7 @@ public:
 
 private:
   /// @brief
-  void pRenderScreen(_MIN_ const CDyModelRenderer& renderer, _MIN_ const CDyCamera& validCamera) noexcept;
+  void pRenderScreen(_MIN_ const CDyModelRenderer& renderer, _MIN_ const DDyMatrix4x4& iModelMatrix, _MIN_ const CDyCamera& validCamera) noexcept;
 
   TDyIResourceBinderFrameBuffer mBinderFrameBuffer{"dyBtBasicRender"};
 
