@@ -522,8 +522,16 @@ bool TDyIO::outIsMetaInformationExist(_MIN_ const std::string& specifier, _MIN_ 
 
 void TDyIO::BindSleepCallbackFunction(_MIN_ std::function<void()> iCbFunc)
 {
-  mCbSleepFunction = nullptr;
-  mCbSleepFunction = iCbFunc;
+  if (this->mCbSleepFunction == nullptr)
+  {
+    mCbSleepFunction = nullptr;
+    mCbSleepFunction = iCbFunc;
+  }
+  else
+  {
+    this->mCbNextSleepFunction = nullptr;
+    this->mCbNextSleepFunction = iCbFunc;
+  }
 }
 
 bool TDyIO::outIsIOThreadSlept() noexcept
@@ -551,6 +559,11 @@ EDySuccess TDyIO::outTryCallSleptCallbackFunction()
 
   this->mCbSleepFunction();
   this->mCbSleepFunction = nullptr;
+  if (this->mCbNextSleepFunction != nullptr)
+  {
+    this->mCbSleepFunction = this->mCbNextSleepFunction;
+    this->mCbNextSleepFunction = nullptr;
+  }
   return DY_SUCCESS;
 }
 

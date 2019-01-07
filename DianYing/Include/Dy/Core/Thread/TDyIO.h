@@ -288,6 +288,7 @@ private:
 
   bool                      mIsThreadStopped    = false;
   std::function<void(void)> mCbSleepFunction    = nullptr;
+  std::function<void(void)> mCbNextSleepFunction= nullptr;
 
   MDyMetaInfo*              mMetaInfoManager    = nullptr;
   MDyIOData*                mIODataManager      = nullptr;

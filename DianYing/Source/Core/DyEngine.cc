@@ -136,9 +136,14 @@ void DyEngine::operator()()
       MDyGameTimer::GetInstance().MDY_PRIVATE_SPECIFIER(TryGcRemoveAbortedTimerInstance)();
 
       this->MDY_PRIVATE_SPECIFIER(Update)(this->mStatus, timeManager.GetGameScaledTickedDeltaTimeValue());
-      if (this->MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() == true) 
-      { // If game must be stopped, return but change status to Shutdown (GameRuntime => Shutdown);
-        this->SetNextGameStatus(EDyGlobalGameStatus::Shutdown);
+      if (this->MDY_PRIVATE_SPECIFIER(IsGameNeedToBeTransitted)() == true)
+      { // If something need to be changed.
+        // If game must be stopped, return but change status to Shutdown (GameRuntime => Shutdown);
+        if (this->MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() == true) 
+        { this->SetNextGameStatus(EDyGlobalGameStatus::Shutdown); }
+        // If game level should be changed to new one.
+        if (this->MDY_PRIVATE_SPECIFIER(IsGameNeedTransitLevel)() == true) 
+        { this->SetNextGameStatus(EDyGlobalGameStatus::Loading); }
       }
       else { this->MDY_PRIVATE_SPECIFIER(Render)(this->mStatus); }
     } break;
@@ -193,17 +198,18 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(ReflectGameStatusTransition)()
   { 
     switch (this->mStatus)
     {
+    default: MDY_UNEXPECTED_BRANCH();
     case EDyGlobalGameStatus::Loading: 
     { // FirstLoading => Loading.
       MDY_CALL_ASSERT_SUCCESS(MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(OpenFirstLevel)());
     } break;
-    default: MDY_UNEXPECTED_BRANCH();
     }
   } break;
   case EDyGlobalGameStatus::Loading: 
   {
     switch (this->mStatus)
     {
+    default: MDY_UNEXPECTED_BRANCH();
     case EDyGlobalGameStatus::GameRuntime: 
     { // Loading => GameRuntime.
       // Remove Loading UI, and detach resource with RAII & Script.
@@ -216,22 +222,26 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(ReflectGameStatusTransition)()
         scriptManager.RemoveEmptyOnWidgetScriptList();
       }
     } break;
-    default: MDY_UNEXPECTED_BRANCH();
     }
   } break;
   case EDyGlobalGameStatus::GameRuntime: 
   {
     switch (this->mStatus)
     {
+    default: MDY_UNEXPECTED_BRANCH();
     case EDyGlobalGameStatus::Loading: 
     { // GameRuntime => Loading.
-      MDY_NOT_IMPLEMENTED_ASSERT();
       // If level change from one to another, do that.
       MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(RemoveLevel)();
-      MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(PopulateNextLevelResources)();
-      MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(BuildNextLevel)();
-      MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(TransitionToNextLevel)();
-      //MDyWorld::GetInstance().OpenLevel(MDySetting::GetInstance().GetInitialSceneInformationName());
+      MDY_CALL_BUT_NOUSE_RESULT(MDyWorld::GetInstance().TryCreateLoadingUi());
+
+      SDyIOConnectionHelper::PopulateResourceList(
+          std::vector<DDyResourceName>{}, EDyScope::Global, 
+          []() { 
+            auto& worldManager = MDyWorld::GetInstance();
+            worldManager.MDY_PRIVATE_SPECIFIER(PopulateNextLevelResources)();
+          }
+      );
     } break;
     case EDyGlobalGameStatus::Shutdown: 
     { // GameRuntime => Shutdown. Just wait IO Thread is slept.
@@ -244,7 +254,6 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(ReflectGameStatusTransition)()
           []() { DyEngine::GetInstance().SetNextGameStatus(EDyGlobalGameStatus::Ended); }
       );
     } break;
-    default: MDY_UNEXPECTED_BRANCH();
     }
   } break;
   case EDyGlobalGameStatus::Shutdown:
@@ -286,14 +295,13 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(Update)(_MIN_ EDyGlobalGameStatus iEngineSt
     MDyScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
 
     MDyInput::GetInstance().pfUpdate(dt);
-    if (this->MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() == true) { return; }
+    if (this->MDY_PRIVATE_SPECIFIER(IsGameNeedToBeTransitted)() == true) { return; }
     MDyGameTimer::GetInstance().Update(dt);
-    if (this->MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() == true) { return; }
+    if (this->MDY_PRIVATE_SPECIFIER(IsGameNeedToBeTransitted)() == true) { return; }
     MDyScript::GetInstance().UpdateActorScript(dt);
-    if (this->MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() == true) { return; }
-
+    if (this->MDY_PRIVATE_SPECIFIER(IsGameNeedToBeTransitted)() == true) { return; }
     MDyScript::GetInstance().UpdateWidgetScript(dt);
-    if (this->MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() == true) { return; }
+    if (this->MDY_PRIVATE_SPECIFIER(IsGameNeedToBeTransitted)() == true) { return; }
 
     MDyPhysics::GetInstance().Update(dt);
     MDyWorld::GetInstance().Update(dt);
@@ -431,6 +439,17 @@ EDySuccess DyEngine::TryEndGame() noexcept
 bool DyEngine::MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() const noexcept
 {
   return this->mIsGameEndCalled;
+}
+
+bool DyEngine::MDY_PRIVATE_SPECIFIER(IsGameNeedTransitLevel)() const noexcept
+{
+  return MDyWorld::GetInstance().IsNeedTransitNextLevel();
+}
+
+bool DyEngine::MDY_PRIVATE_SPECIFIER(IsGameNeedToBeTransitted)() const noexcept
+{
+  return this->MDY_PRIVATE_SPECIFIER(IsGameNeedTransitLevel)()
+      || this->MDY_PRIVATE_SPECIFIER(IsGameEndCalled)();
 }
 
 void DyEngine::TryUpdateStatus()

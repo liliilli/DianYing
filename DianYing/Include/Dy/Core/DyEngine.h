@@ -63,6 +63,12 @@ public:
   MDY_NOTUSED EDySuccess TryEndGame() noexcept;
   /// @brief Check game should be ended.
   MDY_NODISCARD bool MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() const noexcept;
+  /// @brief Check game level is discarded and loading new level.
+  MDY_NODISCARD bool MDY_PRIVATE_SPECIFIER(IsGameNeedTransitLevel)() const noexcept;
+  /// @brief Check game status need to be transited. This function returns true when
+  /// 1. IsGameEndCalled() returns true.
+  /// 2. IsGameNeedTransitLevel() returns true.
+  MDY_NODISCARD bool MDY_PRIVATE_SPECIFIER(IsGameNeedToBeTransitted)() const noexcept;
 
 private:
   /// @brief Get IO Thread Instance which not be nulled.

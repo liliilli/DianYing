@@ -266,6 +266,11 @@ EDySuccess MDyWorld::OpenLevel(_MIN_ const std::string& levelName)
   return DY_SUCCESS;
 }
 
+bool MDyWorld::IsNeedTransitNextLevel() const noexcept
+{
+  return this->mIsNeedTransitNextLevel;
+}
+
 EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(OpenFirstLevel)()
 {
   this->SetLevelTransition(MDySetting::GetInstance().GetInitialSceneInformationName());
@@ -280,8 +285,15 @@ EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(OpenFirstLevel)()
 EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(RemoveLevel)()
 {
   // Let present level do release sequence
-  if (MDY_CHECK_ISEMPTY(this->mLevel)) { return DY_FAILURE; }
   // And level must be nullptr. and... Remove RI and Resource & Informations with Scope is `Level`.
+  if (MDY_CHECK_ISEMPTY(this->mLevel)) { return DY_FAILURE; }
+  
+  MDY_LOG_DEBUG_D("Dependent manager resetting...");
+  // Must reset depedent manager on this.
+  MDyPhysics::GetInstance().ReleaseScene();
+  MDY_LOG_DEBUG_D("Dependent manager resetting done.");
+
+  // Release physx components which are dependent on physx::PxScene, FDyLevel.
   this->mLevel = nullptr;
 
   // Just remove script instance without `Destroy` function intentionally.
@@ -292,9 +304,8 @@ EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(RemoveLevel)()
   this->mActivatedOnRenderingCameras.clear();
   SDyIOConnectionHelper::TryGC(EDyScope::Level, EDyResourceStyle::Resource);
   SDyIOConnectionHelper::TryGC(EDyScope::Level, EDyResourceStyle::Information);
-
-  // Release physx components which are dependent on physx::PxScene, FDyLevel.
-  MDyPhysics::GetInstance().ReleaseScene();
+  SDyIOConnectionHelper::TryGC(EDyScope::Level, EDyResourceStyle::Resource);
+  SDyIOConnectionHelper::TryGC(EDyScope::Level, EDyResourceStyle::Information);
   return DY_SUCCESS;
 }
 

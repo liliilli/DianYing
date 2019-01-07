@@ -105,7 +105,9 @@ public:
   /// @brief  Ask it for opening level with levelName next frame.
   /// @param  levelName valid level meta information name
   /// @return If level is created successfully, return true or false.
-  MDY_NODISCARD EDySuccess OpenLevel(const std::string& levelName);
+  EDySuccess OpenLevel(const std::string& levelName);
+  /// @brief Check we must to transit to next level.
+  MDY_NODISCARD bool IsNeedTransitNextLevel() const noexcept;
 
   /// @brief Open first level. This function must be called in first-loading level.
   EDySuccess MDY_PRIVATE_SPECIFIER(OpenFirstLevel)();
