@@ -1,7 +1,7 @@
 #include <precompiled.h>
 ///
 /// MIT License
-/// Copyright (c) 2018 Jongmin Yun
+/// Copyright (c) 2018-2019 Jongmin Yun
 ///
 /// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 /// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
