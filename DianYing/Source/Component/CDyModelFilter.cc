@@ -103,6 +103,16 @@ EDySuccess CDyModelFilter::pTryUnbindingToModelRendererComponent()
   return DY_SUCCESS;
 }
 
+const TDyLResourceBinderModel& CDyModelFilter::GetModelReference() const noexcept
+{
+  return this->mBinderModel;
+}
+
+TDyLResourceBinderModel& CDyModelFilter::GetModelReference() noexcept
+{
+  return this->mBinderModel;
+}
+
 void CDyModelFilter::fBindModelRendererReference(CDyModelRenderer& validReference)
 {
   MDY_ASSERT(MDY_CHECK_ISNULL(this->mModelRendererReferencePtr), "CDyModelFilter::mModelRendererReferencePtr must be null when unbinding.");

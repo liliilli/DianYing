@@ -18,6 +18,8 @@
 #include <Dy/Core/Resource/Information/FDyShaderInformation.h>
 #include <Dy/Core/Resource/Information/FDyTextureInformation.h>
 #include <Dy/Helper/System/Idioms.h>
+#include <Dy/Core/Resource/Resource/FDyTextureResource.h>
+#include "Dy/Core/Rendering/Wrapper/FDyGLWrapper.h"
 
 namespace dy
 {
@@ -34,6 +36,54 @@ FDyMaterialResource::FDyMaterialResource(_MIN_ const FDyMaterialInformation& inf
     MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(ptrTextureInfo), "Unexpected error occurred.");
     DySafeUniquePtrEmplaceBack(this->mBinderTextureList, (*ptrTextureInfo)->GetSpecifierName());
   }
+}
+
+EDySuccess FDyMaterialResource::TryUpdateTextureList() noexcept
+{
+  // Check validation.
+  if (this->mBinderMaterial.IsResourceExist() == false
+  ||  this->mBinderShader.IsResourceExist() == false
+  ||  std::all_of(MDY_BIND_BEGIN_END(this->mBinderTextureList), 
+          [](const decltype(mBinderTextureList)::value_type& item) { 
+              return MDY_CHECK_ISNOTEMPTY(item) && item->IsResourceExist() == true; 
+          }
+      ) == false)
+  {
+    return DY_FAILURE;
+  }
+
+  const auto& textureResources = this->GetBindedTextureResourcePtrList();
+  const auto  textureResourceListSize = static_cast<TI32>(textureResources.size());
+  for (TI32 j = 0; j < textureResourceListSize; ++j)
+  {
+    const auto& textureBinder = (*textureResources[j]);
+    FDyGLWrapper::BindTexture(j, textureBinder->GetTextureType(), textureBinder->GetTextureId());
+  }
+  return DY_SUCCESS;
+}
+
+EDySuccess FDyMaterialResource::TryDetachTextureListFromShader() noexcept
+{
+  // Check validation.
+  if (this->mBinderMaterial.IsResourceExist() == false
+  ||  this->mBinderShader.IsResourceExist() == false
+  ||  std::all_of(MDY_BIND_BEGIN_END(this->mBinderTextureList), 
+          [](const decltype(mBinderTextureList)::value_type& item) { 
+              return MDY_CHECK_ISNOTEMPTY(item) && item->IsResourceExist() == true; 
+          }
+      ) == false)
+  {
+    return DY_FAILURE;
+  }
+
+  const auto& textureResources = this->GetBindedTextureResourcePtrList();
+  const auto  textureResourceListSize = static_cast<TI32>(textureResources.size());
+  for (TI32 j = 0; j < textureResourceListSize; ++j)
+  {
+    const auto& textureBinder = (*textureResources[j]);
+    FDyGLWrapper::UnbindTexture(j, textureBinder->GetTextureType());
+  }
+  return DY_SUCCESS;
 }
 
 } /// ::dy namespace

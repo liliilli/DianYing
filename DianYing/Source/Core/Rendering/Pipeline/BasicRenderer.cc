@@ -29,6 +29,8 @@
 #include "Dy/Core/Resource/Resource/FDyFrameBufferResource.h"
 #include <Dy/Component/CDyCamera.h>
 #include "Dy/Management/Helper/SDyProfilingHelper.h"
+#include "Dy/Core/Resource/Resource/FDyModelResource.h"
+#include "Dy/Core/Rendering/Wrapper/FDyGLWrapper.h"
 
 //!
 //! Temporary
@@ -124,31 +126,25 @@ void FDyBasicRenderer::pRenderScreen(
     _MIN_ const DDyMatrix4x4& iModelMatrix, 
     _MIN_ const CDyCamera& validCamera) noexcept
 {
-  const auto materialListCount  = renderer.GetMaterialListCount();
-  const auto opSubmeshListCount = renderer.GetModelSubmeshCount();
+  // Validation test
+  const auto* ptrModelBinder      = renderer.GetModelResourceBinder();
+  if (MDY_CHECK_ISNULL(ptrModelBinder)) { return; }
 
-  // Integrity test
+  const auto& meshList            = ptrModelBinder->Get()->GetMeshResourceList();
+  const auto  opSubmeshListCount  = renderer.GetModelSubmeshCount();
   if (opSubmeshListCount.has_value() == false) { return; }
 
-  TI32 iterationCount = MDY_INITIALIZE_DEFINT;
-  if (materialListCount < opSubmeshListCount.value()) { iterationCount = materialListCount; }
-  else                                                { iterationCount = opSubmeshListCount.value(); }
-
-  for (TI32 i = 0; i < iterationCount; ++i)
+  for (TI32 i = 0; i < opSubmeshListCount.value(); ++i)
   {
-    const auto& material = renderer.GetMaterialResourcePtr(i);
-    auto* ptrShader      = material.GetShaderResourcePtr();
-    MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptrShader), "Shader resource is not binded yet.");
+    auto& material = const_cast<std::decay_t<decltype(renderer.GetMaterialResourcePtr(i))>&>(renderer.GetMaterialResourcePtr(i));
+    auto& shaderBinder = material.GetShaderResourceBinder();
+    if (shaderBinder.IsResourceExist() == false) { continue; }
 
-    ptrShader->UseShader();
+    shaderBinder->UseShader();
+    shaderBinder.TryUpdateUniform<EDyUniformVariableType::Matrix4>("modelMatrix", iModelMatrix);
+    shaderBinder.TryUpdateUniformList();
+    material.TryUpdateTextureList();
 
-    const auto& submesh = renderer.GetSubmeshResourcePtr(i);
-    glBindVertexArray(submesh.GetVertexArrayId());
-
-    const auto modelMatrix = glGetUniformLocation(ptrShader->GetShaderProgramId(), "modelMatrix");
-    glUniformMatrix4fv(modelMatrix, 1, GL_FALSE, &iModelMatrix[0].X);
-
-    // If skeleton animation is enabled, get bone transform and bind to shader.
 #ifdef false
     const auto boneTransform = glGetUniformLocation(shaderResource->GetShaderProgramId(), "boneTransform");
     if (renderer.mModelReferencePtr && renderer.mModelReferencePtr->IsEnabledModelAnimated())
@@ -162,35 +158,21 @@ void FDyBasicRenderer::pRenderScreen(
     }
 #endif
 
-    // Bind textures of one material.
-    const auto& textureResources = material.GetBindedTextureResourcePtrList();
-    const auto  textureResourceListSize = static_cast<int32_t>(textureResources.size());
-    for (int32_t j = 0; j < textureResourceListSize; ++j)
-    {
-      const auto* texturePointer = textureResources[j]->Get();
-      glActiveTexture(GL_TEXTURE0 + j);
-      switch (texturePointer->GetTextureType())
-      {
-      case EDyTextureStyleType::D1: glBindTexture(GL_TEXTURE_1D, texturePointer->GetTextureId()); break;
-      case EDyTextureStyleType::D2: glBindTexture(GL_TEXTURE_2D, texturePointer->GetTextureId()); break;
-      default: MDY_UNEXPECTED_BRANCH(); break;
-      }
-    }
+    const auto& ptrMesh = *meshList[i];
+    FDyGLWrapper::BindVertexArrayObject(ptrMesh->GetVertexArrayId());
 
-    // Call function call drawing array or element. (not support instancing yet)
-    if (submesh.IsEnabledIndices()) { glDrawElements(GL_TRIANGLES, submesh.GetIndicesCounts(), GL_UNSIGNED_INT, nullptr); }
-    else                            { glDrawArrays(GL_TRIANGLES, 0, submesh.GetVertexCounts()); }
-
-    // Unbind, unset, deactivate settings for this submesh and material.
-    for (TI32 j = 0; j < textureResourceListSize; ++j)
-    {
-      glActiveTexture(GL_TEXTURE0 + j);
-      glBindTexture(GL_TEXTURE_2D, 0);
-    }
+    // Call function call drawing array or element. (not support instancing yet) TODO IMPLEMENT BATCHING SYSTEM.
+    if (ptrMesh->IsEnabledIndices() == true)
+    { FDyGLWrapper::Draw(EDyDrawType::Triangle, true, ptrMesh->GetIndicesCounts()); }
+    else
+    { FDyGLWrapper::Draw(EDyDrawType::Triangle, true, ptrMesh->GetVertexCounts()); }
 
     // Unbind present submesh vertex array object.
-    glBindVertexArray(0);
-    ptrShader->DisuseShader();
+    FDyGLWrapper::UnbindVertexArrayObject();
+
+    // Unbind, unset, deactivate settings for this submesh and material.
+    material.TryDetachTextureListFromShader();
+    shaderBinder->DisuseShader();
   }
 }
 

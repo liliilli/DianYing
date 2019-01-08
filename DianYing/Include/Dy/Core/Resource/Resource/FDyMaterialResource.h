@@ -60,15 +60,21 @@ public:
   }
 
   /// @brief
-  MDY_NODISCARD auto& GetShaderResourceBinder() noexcept { return this->mBinderShader;
-  }
-
+  MDY_NODISCARD auto& GetShaderResourceBinder() noexcept { return this->mBinderShader; }
 
   /// @brief Return binded texture resource pointers list.
   MDY_NODISCARD const auto& GetBindedTextureResourcePtrList() const noexcept
   {
     return this->mBinderTextureList;
   }
+
+  /// @brief Update texture list using shader. \n
+  /// When either texture list or material or shader is not exist, just do nothing but return DY_FAILURE.
+  EDySuccess TryUpdateTextureList() noexcept;
+
+  /// @brief Detach texture list which is bound to present material shader.
+  /// When either texture list or material or shader is not exist, just do nothing but return DY_FAILURE.
+  EDySuccess TryDetachTextureListFromShader() noexcept;
 
 private:
   std::string          mSpecifierName    = MDY_INITIALIZE_EMPTYSTR;

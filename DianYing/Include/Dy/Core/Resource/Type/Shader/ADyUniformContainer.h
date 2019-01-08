@@ -118,7 +118,7 @@ public:
   /// @brief Try update uniform variables. \n
   /// Do nothing when update list is empty or binding flag is not set up
   /// by calling MDY_PRIVATE_SPECIFIER(TryConstructDefaultUniformList)().
-  MDY_NODISCARD EDySuccess TryUpdateUniformList();
+  EDySuccess TryUpdateUniformList();
 
 private:
   template <EDyUniformVariableType TType>
