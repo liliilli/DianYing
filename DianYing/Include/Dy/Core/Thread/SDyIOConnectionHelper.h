@@ -16,6 +16,7 @@
 #include <string>
 #include <Dy/Core/Thread/IO/EDyIOTask.h>
 #include <Dy/Core/Thread/IO/DDyIOWorkerResult.h>
+#include <Dy/Core/Resource/Type/EDyLazy.h>
 
 //!
 //! Forward declaration
@@ -23,7 +24,10 @@
 
 namespace dy
 {
+struct  PDyMaterialInstanceMetaInfo;
 enum class EDyScope;
+template <EDyResourceType TType, EDyLazy TBool>
+class TDyResourceBinder;
 } /// ::dy namespace
 
 //!
@@ -68,6 +72,14 @@ public:
       _MIN_ const TDDyResourceNameSet& iSpecifierSet, 
       _MIN_ const EDyScope iScope,
       _MIN_ std::function<void(void)> iCallback);
+
+  /// @brief Create and populate instant material resource, that is not dependent on any material information.
+  /// but dependent on given texture and shader. \n
+  /// When callback is setup, instant material scope have callback condition, not temporary.
+  static void PopulateInstantMaterialResource(
+      _MIN_ PDyMaterialInstanceMetaInfo& desc, 
+      _MIN_ TDyResourceBinder<EDyResourceType::Material, EDyLazy::Yes>& refMat, 
+      _MIN_ bool(*callback)() = nullptr);
 
   /// @brief Try Garbage collect of Reference Instance with resource as Scope and Style, which
   /// is only Valid resource but count is 0. \n

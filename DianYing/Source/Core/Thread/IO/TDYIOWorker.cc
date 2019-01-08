@@ -184,7 +184,16 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceResource(_MIN_ const DDyIOTask
   } break;
   case EDyResourceType::Material:
   { // Material resource is just for binding allocated textures and shader instance ptr list.
-    result.mSmtPtrResultInstance = new FDyMaterialResource(*infoManager.GetPtrInformation<EDyResourceType::Material>(result.mSpecifierName));
+    if (assignedTask.mRawInstanceForUsingLater.has_value() == true)
+    {
+      const auto& _ = std::any_cast<const PDyMaterialInstanceMetaInfo&>(assignedTask.mRawInstanceForUsingLater);
+      result.mSmtPtrResultInstance = new FDyMaterialResource(_);
+    }
+    else
+    {
+      result.mSmtPtrResultInstance = 
+      new FDyMaterialResource(*infoManager.GetPtrInformation<EDyResourceType::Material>(result.mSpecifierName));
+    }
   } break;
   case EDyResourceType::GLAttachment:
   { // Attachment resource can be created on another context. (It can be shared)

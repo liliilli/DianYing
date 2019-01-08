@@ -41,7 +41,7 @@ public:
   bool              mIsResourceDeferred = false;
 
   void*             mPtrBoundObject = nullptr;
-  void*             mRawInstanceForUsingLater = nullptr;
+  std::any          mRawInstanceForUsingLater;
 };
 
 } /// ::dy namespace

@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Core/Thread/IO/DDyIOReferenceContainer.h>
 #include <Dy/Helper/ContainerHelper.h>
+#include <Dy/Core/Resource/Type/FDyBinderBase.h>
 
 namespace dy
 {
@@ -189,7 +190,11 @@ EDySuccess DDyIOReferenceContainer::CreateReferenceInstance(
   return DY_SUCCESS;
 }
 
-EDySuccess DDyIOReferenceContainer::TryUpdateValidity(EDyResourceType type, const std::string& specifier, bool isValid)
+EDySuccess DDyIOReferenceContainer::TryUpdateValidity(
+    _MIN_ EDyResourceType type, 
+    _MIN_ const std::string& specifier, 
+    _MIN_ bool isValid,
+    _MIN_ void* iPtrInstance)
 {
   TStringHashMap<DDyIOReferenceInstance>* map;
   switch (type)
@@ -205,8 +210,31 @@ EDySuccess DDyIOReferenceContainer::TryUpdateValidity(EDyResourceType type, cons
   }
 
   auto& instance = (*map)[specifier];
-  if (isValid != instance.mIsResourceValid) { instance.mIsResourceValid = isValid; return DY_SUCCESS; }
-  else                                      { return DY_FAILURE; }
+  if (isValid != instance.mIsResourceValid) 
+  { 
+    if (isValid == true)
+    {
+      instance.SetValid(iPtrInstance);
+      // If resource is valid so must forward instance pointer to binder...
+      for (const auto& ptrBinderBase : instance.mPtrBoundBinderList)
+      {
+        if (MDY_CHECK_ISNULL(ptrBinderBase)) { continue; }
+        const_cast<__FDyBinderBase*>(ptrBinderBase)->TryUpdateResourcePtr(instance.mPtrInstance);
+      }
+    }
+    else
+    {
+      instance.SetNotValid();
+      // If resource is not valid, so must detach instance pointer from binders...
+      for (const auto& ptrBinderBase : instance.mPtrBoundBinderList)
+      {
+        if (MDY_CHECK_ISNULL(ptrBinderBase)) { continue; }
+        const_cast<__FDyBinderBase*>(ptrBinderBase)->TryDetachResourcePtr();
+      }
+    }
+    return DY_SUCCESS; 
+  }
+  else { return DY_FAILURE; }
 }
 
 } /// ::dy namespace

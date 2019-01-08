@@ -79,16 +79,22 @@ public:
   /// Condition-satisfied RI will be removed from container.
   std::vector<DDyIOReferenceInstance> GetForwardCandidateRIAsList(_MIN_ EDyScope iScope);
 
-  /// @brief 
+  /// @brief Create new reference instance. `specifier` must not be duplicated given type, style container.
   MDY_NODISCARD EDySuccess CreateReferenceInstance(
       _MIN_ const std::string& specifier,
       _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style, _MIN_ EDyScope scope);
 
-  /// @brief
-  MDY_NODISCARD EDySuccess TryUpdateValidity(_MIN_ EDyResourceType type, _MIN_ const std::string& specifier, _MIN_ bool isValid);
+  /// @brief Try update validity of this reference instance. \n
+  /// If `isValid` is true, `iPtrInstance` must point to something valid, should not be null.
+  MDY_NODISCARD EDySuccess TryUpdateValidity(
+      _MIN_ EDyResourceType type, 
+      _MIN_ const std::string& specifier, 
+      _MIN_ bool isValid,
+      _MIN_ void* iPtrInstance = nullptr);
 
 private:
-  /// @brief
+  /// @brief Forward GCed candidate Reference Instance list to `iResult`.
+  /// Gced candidate must have 0 item of __BinderBase.
   void ForwardCandidateRIFromList(
       _MIN_ EDyScope iScope,
       _MINOUT_ TStringHashMap<DDyIOReferenceInstance>& iContainer, 

@@ -23,6 +23,7 @@
 
 namespace dy
 {
+struct PDyMaterialInstanceMetaInfo;
 class FDyMaterialInformation;
 class FDyTextureResource;
 class FDyShaderResource;
@@ -39,6 +40,7 @@ class FDyMaterialResource final
 {
 public:
   FDyMaterialResource(_MIN_ const FDyMaterialInformation& information);
+  FDyMaterialResource(_MIN_ const PDyMaterialInstanceMetaInfo& iInstanceInfo);
   ~FDyMaterialResource() = default;
 
   /// @brief Get specifier name of material information.
@@ -80,9 +82,11 @@ private:
   std::string          mSpecifierName    = MDY_INITIALIZE_EMPTYSTR;
   EDyMaterialBlendMode mBlendMode        = EDyMaterialBlendMode::Opaque;
 
-  TDyIInformationBinderMaterial mBinderMaterial;
+  TDyLInformatinBinderMaterial  mBinderMaterial;
   TDyIResourceBinderShader      mBinderShader;
   std::vector<std::unique_ptr<TDyIResourceBinderTexture>> mBinderTextureList = {};
+
+  bool mIsInstant = false;
 };
 
 } /// ::dy namespace

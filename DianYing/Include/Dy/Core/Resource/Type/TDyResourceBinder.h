@@ -72,14 +72,11 @@ public:
   void TryRequireResource(_MIN_ const std::string& specifier)
   {
     TSuper::pSetSpecifierName(specifier);
-    MDY_NOTUSED auto _1 = TSuper::pTryDetachResource();
-    if (const auto flag = TSuper::pTryRequireResource();
-        flag == DY_FAILURE)
-    {
-      /// @TODO IMEPLEMENT TEMPORAL RESOURCE BINDING. AND WAITING.
-      MDY_UNEXPECTED_BRANCH();
+    MDY_CALL_BUT_NOUSE_RESULT(TSuper::pTryDetachResource());
+    if (const auto flag = TSuper::pTryRequireResource(); flag == DY_SUCCESS)
+    { 
+      this->Process(); 
     }
-    else { this->Process(); }
   }
 };
 

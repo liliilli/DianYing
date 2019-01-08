@@ -40,4 +40,16 @@ void DDyIOReferenceInstance::DetachBinder(const __FDyBinderBase* iPtrBase) noexc
   }
 }
 
+void DDyIOReferenceInstance::SetValid(_MIN_ void*& iPtrInstance) noexcept
+{
+  this->mIsResourceValid  = true;
+  this->mPtrInstance      = iPtrInstance;
+}
+
+void DDyIOReferenceInstance::SetNotValid() noexcept
+{
+  this->mIsResourceValid  = false;
+  this->mPtrInstance      = nullptr;
+}
+
 } /// ::dy namespace
