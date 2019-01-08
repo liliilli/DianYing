@@ -52,9 +52,15 @@ public:
 
   /// @brief Set image name.
   void SetImageName(_MIN_ const std::string& iName) noexcept;
-  
+
   /// @brief Get image name.
   MDY_NODISCARD const std::string& GetImageName() const noexcept;
+
+  /// @brief Set shader name.
+  void SetShaderSpecifier(_MIN_ const std::string& iSpecifier) noexcept;
+
+  /// @brief Get specified shader name.
+  MDY_NODISCARD const std::string& GetShaderSpecifier() const noexcept;
 
   /// @brief Set tint color.
   void SetTintColor(_MIN_ const DDyColorRGBA& iTintColor) noexcept;
@@ -62,15 +68,21 @@ public:
   /// @brief Get tint color.
   MDY_NODISCARD const DDyColorRGBA& GetTintColor() const noexcept;
 
+  /// @brief Set update renderer flag from inside renderer to this.
+  void MDY_PRIVATE_SPECIFIER(SetUpdateRendererFlag)(_MIN_ bool iIsActivated) noexcept;
+
 private:
   /// Tint color for image rendering (with alpha)
   DDyColorRGBA      mTintColor = DDyColorRGBA::White;
   /// Size to content.
   bool              mIsSizeToContent = false;
-  /// Image name
-  std::string       mImageName = MDY_INITIALIZE_EMPTYSTR;
+  /// Image name list
+  std::string       mImageName  = MDY_INITIALIZE_EMPTYSTR;
+  /// Shader specifier name
+  std::string       mShaderName = MDY_INITIALIZE_EMPTYSTR;
   /// Renderer for this object.
   CDyImageRenderer  mRenderer;
+  bool              mIsUpdateRenderer = false;
 };
 
 } /// ::dy namespace

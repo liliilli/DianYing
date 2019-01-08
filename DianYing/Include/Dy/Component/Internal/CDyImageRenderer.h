@@ -38,15 +38,14 @@ public:
   /// @brief Render guage var.
   void Render();
 
-  /// @brief Update image binding.
-  void UpdateImageBinding(_MIN_ const std::string& iName) noexcept;
+  /// @brief Update shader binding.
+  void UpdateMaterial() noexcept;
 
 private:
   /// LAZY NOT NULLABLE POINTER RAW PTR;
-  FDyImage*                 mPtrObject = MDY_INITIALIZE_NULL;
-  TDyLResourceBinderMesh    mBinderQuadMesh{};
-  TDyLResourceBinderShader  mBinderShader{};
-  TDyLResourceBinderTexture mBinderImage{};
+  FDyImage*                   mPtrObject = MDY_INITIALIZE_NULL;
+  TDyLResourceBinderMesh      mBinderQuadMesh{};
+  TDyLResourceBinderMaterial  mBinderMaterial{};
 };
 
 } /// ::dy namespace
