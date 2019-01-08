@@ -254,6 +254,7 @@
     <ClCompile Include="data\Script\DebugActor\BtScActorTest3.cc" />
     <ClCompile Include="Source\Component\Internal\Camera\DDyFrustumTester.cc" />
     <ClCompile Include="Source\Helper\Type\Plane.cc" />
+    <ClCompile Include="Source\Helper\Library\HelperString.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
