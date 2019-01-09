@@ -33,11 +33,6 @@ void DDyIOReferenceInstance::DetachBinder(const __FDyBinderBase* iPtrBase) noexc
   MDY_ASSERT(itPtr != this->mPtrBoundBinderList.end(), "Given binder pointer address must be exist in given RI list.");
 
   DyFastErase(this->mPtrBoundBinderList, std::distance(this->mPtrBoundBinderList.begin(), itPtr));
-
-  if (this->mScope == EDyScope::Temporal && this->mPtrBoundBinderList.empty() == true)
-  {
-    MDY_NOT_IMPLEMENTED_ASSERT();
-  }
 }
 
 void DDyIOReferenceInstance::SetValid(_MIN_ void*& iPtrInstance) noexcept
@@ -50,6 +45,14 @@ void DDyIOReferenceInstance::SetNotValid() noexcept
 {
   this->mIsResourceValid  = false;
   this->mPtrInstance      = nullptr;
+}
+
+bool DDyIOReferenceInstance::IsNeedToBeGced() const noexcept
+{
+  if (this->mIsResourceValid == true
+  &&  this->mScope == EDyScope::Temporal 
+  &&  this->mPtrBoundBinderList.empty() == true) { return true; }
+  else { return false; }
 }
 
 } /// ::dy namespace

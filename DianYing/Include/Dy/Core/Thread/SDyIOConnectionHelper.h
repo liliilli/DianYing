@@ -24,6 +24,7 @@
 
 namespace dy
 {
+struct DDyIOReferenceInstance;
 struct  PDyMaterialInstanceMetaInfo;
 enum class EDyScope;
 template <EDyResourceType TType, EDyLazy TBool>
@@ -91,6 +92,9 @@ public:
 
   /// @brief Insert result instance from IO Worker.
   static void InsertResult(_MIN_ const DDyIOWorkerResult& result) noexcept;
+
+  /// @brief Insert RI to gcList anyway. Use this carefully.
+  static void InsertGcCandidate(_MIN_ const DDyIOReferenceInstance& iRefRI);
 
   // @TODO MUST BE PRIVATE
 

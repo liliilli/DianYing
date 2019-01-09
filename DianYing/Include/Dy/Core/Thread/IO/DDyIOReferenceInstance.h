@@ -73,6 +73,9 @@ struct DDyIOReferenceInstance final
   void SetValid(_MIN_ void*& iPtrInstance) noexcept;
   /// @brief
   void SetNotValid() noexcept;
+
+  /// @brief Check this RI is need to be gced so moved GC container.
+  MDY_NODISCARD bool IsNeedToBeGced() const noexcept;
 };
 
 } /// ::dy namespace

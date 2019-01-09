@@ -121,6 +121,13 @@ void SDyIOConnectionHelper::InsertResult(_MIN_ const DDyIOWorkerResult& result) 
   ioThread.outInsertResult(result);
 }
 
+void SDyIOConnectionHelper::InsertGcCandidate(const DDyIOReferenceInstance& iRefRI)
+{
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
+  auto& ioThread = *gEngine->pfGetIOThread();
+  ioThread.outInsertGcCandidate(iRefRI);
+}
+
 bool SDyIOConnectionHelper::CheckIOResultInCondition() noexcept
 {
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");

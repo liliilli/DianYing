@@ -26,6 +26,11 @@ bool FDyIOGC::IsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_
   return false;
 }
 
+void FDyIOGC::InsertGcCandidate(DDyIOReferenceInstance iRICandidateList) noexcept
+{
+  this->mRIGarbageCandidateList.emplace_back(std::move(iRICandidateList));
+}
+
 void FDyIOGC::InsertGcCandidateList(const std::vector<DDyIOReferenceInstance>& iRICandidateList) noexcept
 {
   this->mRIGarbageCandidateList.insert(this->mRIGarbageCandidateList.end(), MDY_BIND_BEGIN_END(iRICandidateList));

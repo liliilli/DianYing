@@ -646,6 +646,11 @@ EDySuccess TDyIO::outTryCallSleptCallbackFunction()
   return DY_SUCCESS;
 }
 
+void TDyIO::outInsertGcCandidate(_MIN_ const DDyIOReferenceInstance& iRefRI)
+{
+  this->mGarbageCollector.InsertGcCandidate(iRefRI);
+}
+
 void TDyIO::outTryForwardCandidateRIToGCList(_MIN_ EDyScope iScope, _MIN_ EDyResourceStyle iStyle)
 {
   switch (iStyle)

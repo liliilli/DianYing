@@ -14,8 +14,10 @@
 
 /// Header file
 #include <Dy/Core/Thread/IO/DDyIOReferenceContainer.h>
-#include <Dy/Helper/ContainerHelper.h>
 #include <Dy/Core/Resource/Type/FDyBinderBase.h>
+#include <Dy/Core/Thread/SDyIOConnectionHelper.h>
+#include <Dy/Helper/ContainerHelper.h>
+#include <Dy/Management/LoggingManager.h>
 
 namespace dy
 {
@@ -97,17 +99,27 @@ EDySuccess DDyIOReferenceContainer::TryDetachBinderFromResourceRI(
 {
   if (this->IsReferenceInstanceExist(iSpecifier, iType) == false) { return DY_FAILURE; }
 
+  decltype(mMapModelReference)* ptrRiMap = nullptr;
   switch (iType)
   {
-  case EDyResourceType::Model:    this->mMapModelReference[iSpecifier].DetachBinder(iPtrBinder);    break;
-  case EDyResourceType::GLShader: this->mMapGLShaderReference[iSpecifier].DetachBinder(iPtrBinder); break;
-  case EDyResourceType::Texture:  this->mMapTextureReference[iSpecifier].DetachBinder(iPtrBinder);  break;
-  case EDyResourceType::Mesh:     this->mMapMeshReference[iSpecifier].DetachBinder(iPtrBinder); break;
-  case EDyResourceType::Material: this->mMapMaterialReference[iSpecifier].DetachBinder(iPtrBinder); break;
-  case EDyResourceType::GLAttachment:   this->mMapAttachmentReference[iSpecifier].DetachBinder(iPtrBinder);   break;
-  case EDyResourceType::GLFrameBuffer:  this->mMapFrameBufferReference[iSpecifier].DetachBinder(iPtrBinder);  break;
+  case EDyResourceType::Model:    ptrRiMap = &this->mMapModelReference;     break;
+  case EDyResourceType::GLShader: ptrRiMap = &this->mMapGLShaderReference;  break;
+  case EDyResourceType::Texture:  ptrRiMap = &this->mMapTextureReference;   break;
+  case EDyResourceType::Mesh:     ptrRiMap = &this->mMapMeshReference;      break;
+  case EDyResourceType::Material: ptrRiMap = &this->mMapMaterialReference;  break;
+  case EDyResourceType::GLAttachment:   ptrRiMap = &this->mMapAttachmentReference;  break;
+  case EDyResourceType::GLFrameBuffer:  ptrRiMap = &this->mMapFrameBufferReference; break;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
   }
+
+  (*ptrRiMap)[iSpecifier].DetachBinder(iPtrBinder);
+  if ((*ptrRiMap)[iSpecifier].IsNeedToBeGced() == true)
+  {
+    MDY_LOG_DEBUG_D("Moved Reference Instance to GClist. {}", iSpecifier);
+    SDyIOConnectionHelper::InsertGcCandidate((*ptrRiMap)[iSpecifier]);
+    ptrRiMap->erase(iSpecifier);
+  }
+
   return DY_SUCCESS;
 }
 

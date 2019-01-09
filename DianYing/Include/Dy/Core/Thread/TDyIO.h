@@ -228,6 +228,10 @@ private:
   /// @brief Insert deferred task list.
   void outInsertDeferredTaskList(_MIN_ const DDyIOTaskDeferred& task);
 
+  /// @brief Insert valid const reference of RI into gc list as copied instance of original instance.
+  /// Use this funciton carefully.
+  void outInsertGcCandidate(_MIN_ const DDyIOReferenceInstance& iRefRI);
+
   //!
   //! Common methods (always must use mutex)
   //!

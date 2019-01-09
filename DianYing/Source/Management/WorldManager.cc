@@ -296,6 +296,11 @@ EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(RemoveLevel)()
 
   this->mActivatedModelRenderers.clear();
   this->mActivatedOnRenderingCameras.clear();
+  SDyIOConnectionHelper::TryGC(EDyScope::Temporal, EDyResourceStyle::Resource);
+  SDyIOConnectionHelper::TryGC(EDyScope::Temporal, EDyResourceStyle::Information);
+  SDyIOConnectionHelper::TryGC(EDyScope::Temporal, EDyResourceStyle::Resource);
+  SDyIOConnectionHelper::TryGC(EDyScope::Temporal, EDyResourceStyle::Information);
+
   SDyIOConnectionHelper::TryGC(EDyScope::Level, EDyResourceStyle::Resource);
   SDyIOConnectionHelper::TryGC(EDyScope::Level, EDyResourceStyle::Information);
   SDyIOConnectionHelper::TryGC(EDyScope::Level, EDyResourceStyle::Resource);
