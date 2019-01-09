@@ -37,6 +37,9 @@ CDyWidgetScript::~CDyWidgetScript()
     // intentional.
     auto& ref = static_cast<CDyWidgetScriptCpp&>(*mPtrWidgetStatus->MDY_PRIVATE_SPECIFIER(GetPtrInternalWidgetScript)());
     MDY_NOTUSED const auto _ = i.MDY_PRIVATE_SPECIFIER(TryDetachContollerUi(*ref.MDY_PRIVATE_SPECIFIER(GetScriptInstance())));
+    // Change related Actor timer status to abort for avoiding callback function call.
+    auto& script = *ref.__GetScriptInstance();
+    script.MDY_PRIVATE_SPECIFIER(AbortAllValidTimerHandler)();
     MDyScript::GetInstance().TryForwardWidgetScriptToGCList(mPtrWidgetStatus);
   } break;
   case EDyScriptType::Lua: 

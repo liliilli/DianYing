@@ -14,7 +14,8 @@
 ///
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
-#include <Dy/Element/Type/Timer/FDyTimerItem.h>
+#include <Dy/Element/Type/Timer/FDyActorTimerItem.h>
+#include <Dy/Element/Type/Timer/FDyWidgetTimerItem.h>
 #include <Dy/Helper/System/TypeTraits.h>
 
 //!
@@ -24,6 +25,7 @@
 namespace dy
 {
 class ADyActorCppScript;
+class ADyWidgetCppScript;
 class FDyTimerHandle;
 } /// ::dy namespace
 
@@ -53,23 +55,28 @@ public:
       _MIN_ TF32 iDelayTime = 0.0f)
   {
     static_assert(
-        IsInheritancedFrom<TType, ADyActorCppScript> == true, 
-        "TType is not inheritenced from ADyActorCppScript.");
+        IsInheritancedFrom<TType, ADyActorCppScript> == true
+    ||  IsInheritancedFrom<TType, ADyWidgetCppScript> == true,
+        "TType is not inheritenced from ADyActorCppScript or ADyWidgetCppScript");
 
     auto callback = std::bind(iPtrCallback, &iRefScript);
-    this->MDY_PRIVATE_SPECIFIER(pSetTimer)(iRefHandler, static_cast<ADyActorCppScript&>(iRefScript), callback, iTickTime, iIsLooped, iDelayTime);
+    this->MDY_PRIVATE_SPECIFIER(pSetTimer)(iRefHandler, iRefScript, callback, iTickTime, iIsLooped, iDelayTime);
   }
 
   /// @brief Pause timer, this function do nothing when Handler is not bound or paused already.
-  void PauseTimer(_MIN_ FDyTimerHandle& iRefHandler);
-
+  void PauseActorTimer(_MIN_ FDyTimerHandle& iRefHandler);
   /// @brief Resume timer, this function do nothing when Handler is not bound or already played.
-  void ResumeTimer(_MIN_ FDyTimerHandle& iRefHandler);
+  void ResumeActorTimer(_MIN_ FDyTimerHandle& iRefHandler);
+  /// @brief Stop actor timer.
+  void StopActorTimer(_MIN_ FDyTimerHandle& iRefHandler);
 
-  /// @brief Stop timer.
-  void StopTimer(_MIN_ FDyTimerHandle& iRefHandler);
+  /// @brief Pause timer, this function do nothing when Handler is not bound or paused already.
+  void PauseWidgetTimer(_MIN_ FDyTimerHandle& iRefHandler);
+  /// @brief Resume timer, this function do nothing when Handler is not bound or already played.
+  void ResumeWidgetTimer(_MIN_ FDyTimerHandle& iRefHandler);
+  /// @brief Stop widget timer.
+  void StopWidgetTimer(_MIN_ FDyTimerHandle& iRefHandler);
 
-  /// @brief Remove `::Aborted` timer instance list.
   void MDY_PRIVATE_SPECIFIER(TryGcRemoveAbortedTimerInstance)();
 
 private:
@@ -81,7 +88,21 @@ private:
       _MIN_ bool iIsLooped, 
       _MIN_ TF32 iDelayTime);
 
-  std::vector<FDyTimerItem> mTimerList = {};
+  void MDY_PRIVATE_SPECIFIER(pSetTimer)(
+      _MIN_ FDyTimerHandle& iRefHandler, 
+      _MIN_ ADyWidgetCppScript& iRefScript,
+      _MIN_ std::function<void(void)> iFunction,
+      _MIN_ TF32 iTickTime, 
+      _MIN_ bool iIsLooped, 
+      _MIN_ TF32 iDelayTime);
+
+  /// @brief Remove `::Aborted` actor timer instance list.
+  void pTryGcRemoveAbortedActorTimerInstance();
+  /// @brief Remove `::Aborted` widget timer instance list.
+  void pTryGcRemoveAbortedWidgetTimerInstance();
+
+  std::vector<FDyActorTimerItem>  mActorTimerList   = {};
+  std::vector<FDyWidgetTimerItem> mWidgetTimerList  = {};
 };
 
 } /// ::dy namespace

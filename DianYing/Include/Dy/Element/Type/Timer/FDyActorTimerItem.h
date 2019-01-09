@@ -13,6 +13,8 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Element/Type/Timer/EDyTimerStatus.h>
+
 //!
 //! Forward declaration
 //!
@@ -30,27 +32,20 @@ class ADyActorCppScript;
 namespace dy
 {
 
-/// @class FDyTimerItem
+/// @class FDyActorTimerItem
 /// @brief Internal timer item.
-class FDyTimerItem final
+class FDyActorTimerItem final
 {
 public:
-  enum class EStatus : unsigned char
-  {
-    Play,   //
-    Paused, // 
-    Aborted // Status only will be changed to this when Script is moved to GClist.
-  };
-
   /// Ctor.
-  FDyTimerItem(
+  FDyActorTimerItem(
       _MIN_ FDyTimerHandle& iHandle,
       _MIN_ ADyActorCppScript& iRefScript,
       _MIN_ TF32 iFirstDelay, 
       _MIN_ TF32 iDelayTime, 
       _MIN_ bool iIsLooped, 
       _MIN_ std::function<void()> iCbFunction);
-  ~FDyTimerItem();
+  ~FDyActorTimerItem();
 
   /// @brief Update timer item when it is `ETimerStatus::Play`.
   void Update(_MIN_ TF32 iDt) noexcept;
@@ -63,10 +58,10 @@ public:
   void CallFunction(_MIN_ bool iCallOnlyOnce = false) noexcept;
 
   /// @brief Set status.
-  void SetTimerStatus(_MIN_ EStatus iStatus) noexcept;
+  void SetTimerStatus(_MIN_ EDyTimerStatus iStatus) noexcept;
 
   /// @brief Get status of this time item.
-  MDY_NODISCARD EStatus GetTimerStatus() const noexcept;
+  MDY_NODISCARD EDyTimerStatus GetTimerStatus() const noexcept;
 
   /// @brief Get index.
   MDY_NODISCARD TU32 GetIndex() const noexcept;
@@ -87,10 +82,10 @@ private:
   FDyTimerHandle*     mPtrHandle = nullptr;
   ADyActorCppScript*  mPtrScript = nullptr;
   TU32    mIndex      = 0;
-  EStatus mStatus     = EStatus::Aborted;
   bool    mIsLooped   = false;
   TF32    mFirstDelay = 0.0f;
   TF32    mDelayTime  = 0.0f;
+  EDyTimerStatus mStatus = EDyTimerStatus::Aborted;
 
   TF32    mTimeGoal   = 0.0f;
   TU32    mDeferredCallCount  = 0;

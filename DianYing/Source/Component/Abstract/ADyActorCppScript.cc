@@ -55,9 +55,14 @@ void ADyActorCppScript::MDY_PRIVATE_SPECIFIER(AbortAllValidTimerHandler)()
   auto& timerManager = this->GetGameTimerManager();
   for (auto& ptrTimerHandler : this->mPtrTimerHandleList)
   {
-    timerManager.StopTimer(*ptrTimerHandler);
+    timerManager.StopActorTimer(*ptrTimerHandler);
   }
   this->mPtrTimerHandleList.clear();
+}
+
+void ADyActorCppScript::pfSetOutsideReference(_MIN_ CDyActorScriptCpp& outsideReference) noexcept
+{
+  this->mOutside = &outsideReference;
 }
 
 } /// ::dy namespace
