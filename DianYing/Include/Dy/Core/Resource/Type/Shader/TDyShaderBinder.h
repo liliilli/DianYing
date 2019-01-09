@@ -30,7 +30,7 @@ struct __TDyResourceBinderBase<EDyResourceType::GLShader> :
 {
 public:
   MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(__TDyResourceBinderBase);
-  using TPtrResource      = const __TResourceType<EDyResourceType::GLShader>::type*;
+  using TPtrResource      = __TResourceType<EDyResourceType::GLShader>::type*;
   using TTryGetReturnType = std::optional<TPtrResource>;
 
   /// @brief Release binder instance and detach it from specified Reference Instance.
@@ -39,8 +39,8 @@ public:
     if (MDY_CHECK_ISNOTNULL(this->mPtrResource)) { MDY_CALL_ASSERT_SUCCESS(this->pTryDetachResource()); }
   }
 
-  TPtrResource operator->() noexcept        { return this->mPtrResource; }
-  TPtrResource operator->() const noexcept  { return this->mPtrResource; }
+  TPtrResource operator->() noexcept              { return this->mPtrResource; }
+  const TPtrResource operator->() const noexcept  { return this->mPtrResource; }
 
   /// @brief Check resource is binded to binder handle.
   MDY_NODISCARD bool IsResourceExist() const noexcept override final;
@@ -77,7 +77,7 @@ private:
   /// `iPtr` must be convertible to specialized __TDyResourceBinderBase `Type`.
   void TryUpdateResourcePtr(_MIN_ const void* iPtr) noexcept override final
   {
-    this->mPtrResource = static_cast<TPtrResource>(iPtr);
+    this->mPtrResource = static_cast<TPtrResource>(const_cast<void*>(iPtr));
   }
 
   /// @brief Try detach resource pointer of this type with ptr when RI is being GCed.
@@ -107,7 +107,7 @@ __TDyResourceBinderBase<EDyResourceType::GLShader>::pTryRequireResource() noexce
   auto ptrResult = SDyIOBindingHelper::TryRequireResource<EDyResourceType::GLShader>(this->mSpecifierName, this);
   if (ptrResult.has_value() == false) { return DY_FAILURE; }
 
-  this->mPtrResource = ptrResult.value();
+  this->mPtrResource = const_cast<TPtrResource>(ptrResult.value());
   return DY_SUCCESS;
 }
 

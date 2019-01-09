@@ -28,7 +28,7 @@ struct __TDyResourceBinderBase : public __FDyBinderBase
 {
 public:
   MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(__TDyResourceBinderBase);
-  using TPtrResource      = const typename __TResourceType<TType>::type*;
+  using TPtrResource      = typename __TResourceType<TType>::type*;
   using TTryGetReturnType = std::optional<TPtrResource>;
 
   /// @brief Release binder instance and detach it from specified Reference Instance.
@@ -64,7 +64,7 @@ protected:
     auto ptrResult = SDyIOBindingHelper::TryRequireResource<TType>(this->mSpecifierName, this);
     if (ptrResult.has_value() == false) { return DY_FAILURE; }
 
-    this->mPtrResource = ptrResult.value();
+    this->mPtrResource = const_cast<TPtrResource>(ptrResult.value());
     return DY_SUCCESS;
   }
 
@@ -91,7 +91,7 @@ private:
   /// `iPtr` must be convertible to specialized __TDyResourceBinderBase `Type`.
   void TryUpdateResourcePtr(_MIN_ const void* iPtr) noexcept override final
   {
-    this->mPtrResource = static_cast<TPtrResource>(iPtr);
+    this->mPtrResource = static_cast<TPtrResource>(const_cast<void*>(iPtr));
   }
 
   /// @brief Try detach resource pointer of this type with ptr when RI is being GCed.

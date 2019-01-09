@@ -31,9 +31,8 @@ struct __TDyResourceBinderBase<EDyResourceType::Material> :
 {
 public:
   MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(__TDyResourceBinderBase);
-  using TPtrResource      = const __TResourceType<EDyResourceType::Material>::type*;
   using TUnsafePtrResc    = __TResourceType<EDyResourceType::Material>::type*;
-  using TTryGetReturnType = std::optional<TPtrResource>;
+  using TTryGetReturnType = std::optional<TUnsafePtrResc>;
 
   /// @brief Release binder instance and detach it from specified Reference Instance.
   virtual ~__TDyResourceBinderBase()
@@ -41,14 +40,14 @@ public:
     if (MDY_CHECK_ISNOTNULL(this->mPtrResource)) { MDY_CALL_ASSERT_SUCCESS(this->pTryDetachResource()); }
   }
 
-  TPtrResource operator->() noexcept        { return this->mPtrResource; }
-  TPtrResource operator->() const noexcept  { return this->mPtrResource; }
+  TUnsafePtrResc operator->() noexcept      { return this->mPtrResource; }
+  const TUnsafePtrResc operator->() const noexcept  { return this->mPtrResource; }
 
   /// @brief Check resource is binded to binder handle.
   MDY_NODISCARD bool IsResourceExist() const noexcept override final;
 
   /// @brief Get resource pointer which is not nullable.
-  MDY_NODISCARD TPtrResource Get() const noexcept;
+  MDY_NODISCARD TUnsafePtrResc Get() const noexcept;
 
   template <EDyUniformVariableType TType>
   void TryUpdateUniform(
@@ -108,7 +107,7 @@ __TDyResourceBinderBase<EDyResourceType::Material>::IsResourceExist() const noex
   return MDY_CHECK_ISNOTNULL(this->mPtrResource);
 }
 
-inline __TDyResourceBinderBase<EDyResourceType::Material>::TPtrResource 
+inline __TDyResourceBinderBase<EDyResourceType::Material>::TUnsafePtrResc 
 __TDyResourceBinderBase<EDyResourceType::Material>::Get() const noexcept
 {
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mPtrResource), "Resource pointer address must not be null when use it.");
@@ -122,7 +121,7 @@ __TDyResourceBinderBase<EDyResourceType::Material>::pTryRequireResource() noexce
   auto ptrResult = SDyIOBindingHelper::TryRequireResource<EDyResourceType::Material>(this->mSpecifierName, this);
   if (ptrResult.has_value() == false) { return DY_FAILURE; }
 
-  this->mPtrResource = const_cast<FDyMaterialResource*>(ptrResult.value());
+  this->mPtrResource = const_cast<TUnsafePtrResc>(ptrResult.value());
   return DY_SUCCESS;
 }
 
