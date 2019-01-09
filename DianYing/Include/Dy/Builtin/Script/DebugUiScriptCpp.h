@@ -17,6 +17,7 @@
 #include <Dy/Builtin/Abstract/ADyScriptResource.h>
 #include <Dy/Meta/Information/ScriptMetaInformation.h>
 #include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Element/Type/Timer/FDyTimerHandle.h>
 
 namespace dy
 {
@@ -40,6 +41,12 @@ public:
 private:
   MDyTime*      mTimeManager      = nullptr;
   MDyProfiling* mProfilingManger  = nullptr;
+
+  FDyTimerHandle mTimerHandle;
+  FDyTimerHandle mTimerHandle2;
+
+  void CbMoveBar();
+  void CbChangeImageTexture();
 };
 
 } /// ::dy namespace

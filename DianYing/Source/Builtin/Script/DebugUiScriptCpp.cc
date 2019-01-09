@@ -24,6 +24,9 @@
 #include <Dy/Management/InputManager.h>
 #include <Dy/Management/Internal/MDyProfiling.h>
 #include <Dy/Helper/Math/Math.h>
+#include <Dy/Helper/Math/Random.h>
+#include <Dy/Management/GameTimerManager.h>
+#include "Dy/Element/Canvas/FDyImage.h"
 
 namespace dy
 {
@@ -45,7 +48,8 @@ void FDyBuiltinDebugUiScript::Initiate()
 
 void FDyBuiltinDebugUiScript::Start()
 {
-
+  this->GetGameTimerManager().SetTimer(this->mTimerHandle, *this, &FDyBuiltinDebugUiScript::CbMoveBar, 1.0f, true, 1.0f);
+  this->GetGameTimerManager().SetTimer(this->mTimerHandle2, *this, &FDyBuiltinDebugUiScript::CbChangeImageTexture, 0.8f, true, 0.5f);
 }
 
 void FDyBuiltinDebugUiScript::Update(_MIN_ TF32 dt)
@@ -118,6 +122,31 @@ void FDyBuiltinDebugUiScript::EndApplication() noexcept
 {
   MDY_LOG_CRITICAL("Action!");
   MDY_NOTUSED const auto _ = MDY_DETACH_CONTROLLER_UI(); // Use this for give controller exclusive right to Actor or nothing.
+}
+
+void FDyBuiltinDebugUiScript::CbMoveBar()
+{
+  auto& widgetRef = this->GetWidgetReference();
+  FDyBasicGaugeBar* bar = widgetRef.GetUiObject<FDyBasicGaugeBar>("BasicBarTest");
+  bar->SetRelativePosition(random::RandomVector2Range(random::EDyRandomPolicy::Uniform, 0, 320) - DDyVector2{0, 360});
+}
+
+void FDyBuiltinDebugUiScript::CbChangeImageTexture()
+{
+  static bool flag = false;
+
+  auto& refWidget = this->GetWidgetReference();
+  FDyImage* image = refWidget.GetUiObject<FDyImage>("TestImage");
+  if (flag == false)
+  {
+    image->SetImageName("dyBtTextureErrorBlue");
+    flag = !flag;
+  }
+  else
+  {
+    image->SetImageName("dyBtTextureChecker");
+    flag = !flag;
+  }
 }
 
 } /// ::dy namespace
