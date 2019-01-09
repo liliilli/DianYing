@@ -24,7 +24,8 @@
 
 namespace dy
 {
-enum class EDyDrawType;
+  enum class EDyTextureStyleType : unsigned char;
+  enum class EDyDrawType;
 struct PDyGLVaoBindDescriptor;
 struct PDyGLShaderFragmentDescriptor;
 struct PDyGLTextureDescriptor;
@@ -134,6 +135,18 @@ public:
   /// @brief Delete frame buffer. \n
   /// Deleting frame buffer object must be held on main thread context.
   MDY_NODISCARD static EDySuccess DeleteFrameBuffer(_MIN_ const TU32 framebufferId);
+
+  /// @brief Bind vertex array object.
+  static void BindVertexArrayObject(_MIN_ TU32 iVaoId);
+  /// @brief Unbind vertex array object.
+  static void UnbindVertexArrayObject();
+
+  /// @brief Bind texture to activated shader. Shader must be actiated before use this.
+  static void BindTexture(_MIN_ TU32 activeTextureIndex, _MIN_ EDyTextureStyleType type, _MIN_ TU32 textureId);
+  /// @brief Unbind texture from GL_TEXTURE_XX from activated shader.
+  static void UnbindTexture(TU32 textureIndex, _MIN_ EDyTextureStyleType type);
+  /// @brief Unbind textures of `textureIndexList` from activated shader.
+  static void UnbindTextureList(_MIN_ const std::vector<TU32>& textureIndexList);
 
   /// @brief Draw command.
   static void Draw(_MIN_ EDyDrawType iType, _MIN_ bool iIsElement, _MIN_ TU32 iCount);

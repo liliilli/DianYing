@@ -30,6 +30,8 @@ EDySuccess FDyImage::Initialize(const PDyMetaWidgetImageDescriptor& objectMetaDe
   this->mIsSizeToContent  = objectMetaDesc.mIsSizeToContent;
   this->SetTintColor(objectMetaDesc.mTintColor);
   this->SetImageName(objectMetaDesc.mImageSpecifierName);
+
+  this->MDY_PRIVATE_SPECIFIER(SetUpdateRendererFlag)(true);
   return DY_SUCCESS;
 }
 
@@ -46,10 +48,27 @@ void FDyImage::Render()
   this->mRenderer.Render();
 }
 
-void FDyImage::SetImageName(const std::string& iName) noexcept
+void FDyImage::SetImageName(_MIN_ const std::string& iName) noexcept
 {
-  this->mImageName = iName;
-  this->mRenderer.UpdateImageBinding(this->mImageName);
+  if (this->mImageName != iName)
+  {
+    this->mImageName = iName;
+    if (this->mIsUpdateRenderer == true) { this->mRenderer.UpdateMaterial(); }
+  }
+}
+
+void FDyImage::SetShaderSpecifier(_MIN_ const std::string& iSpecifier) noexcept
+{
+  if (this->mShaderName != iSpecifier)
+  {
+    this->mShaderName = iSpecifier;
+    if (this->mIsUpdateRenderer == true) { this->mRenderer.UpdateMaterial(); }
+  }
+}
+
+const std::string& FDyImage::GetShaderSpecifier() const noexcept
+{
+  return this->mShaderName;
 }
 
 const std::string& FDyImage::GetImageName() const noexcept
@@ -57,7 +76,7 @@ const std::string& FDyImage::GetImageName() const noexcept
   return this->mImageName;
 }
 
-void FDyImage::SetTintColor(const DDyColorRGBA& iTintColor) noexcept
+void FDyImage::SetTintColor(_MIN_ const DDyColorRGBA& iTintColor) noexcept
 {
   this->mTintColor = iTintColor;
 }
@@ -65,6 +84,15 @@ void FDyImage::SetTintColor(const DDyColorRGBA& iTintColor) noexcept
 const DDyColorRGBA& FDyImage::GetTintColor() const noexcept
 {
   return this->mTintColor;
+}
+
+void FDyImage::MDY_PRIVATE_SPECIFIER(SetUpdateRendererFlag)(_MIN_ bool iIsActivated) noexcept
+{
+  if (this->mIsUpdateRenderer != iIsActivated)
+  {
+    this->mIsUpdateRenderer = iIsActivated;
+    if (this->mIsUpdateRenderer == true) { this->mRenderer.UpdateMaterial(); }
+  }
 }
 
 } /// ::dy namespace

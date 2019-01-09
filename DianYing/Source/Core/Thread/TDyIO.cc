@@ -205,7 +205,8 @@ EDySuccess TDyIO::outTryEnqueueTask(
 
   // If this is model & resource task, change `mResourceType` to `__ModelVBO` as intermediate task.
   // Because VAO can not be created and shared from other thread not main thread.
-  if (task.mResourceType == EDyResourceType::Mesh && task.mResourcecStyle == EDyResourceStyle::Resource) 
+  if (task.mResourceType == EDyResourceType::Mesh 
+   && task.mResourcecStyle == EDyResourceStyle::Resource) 
   { 
     task.mResourceType = EDyResourceType::__MeshVBO;
   }
@@ -229,7 +230,7 @@ std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(
     _MIN_ const std::string& iSpecifier,
     _MIN_ EDyResourceType iResourceType,
     _MIN_ EDyResourceStyle iResourceStyle,
-    _MIN_ EDyScope iScope)
+    _MIN_ EDyScope iScope) const
 {
   std::vector<PRIVerificationItem> checkList = {};
 
@@ -290,7 +291,81 @@ std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(
   return checkList;
 }
 
-TDyIO::TDependencyList TDyIO::pCheckAndUpdateReferenceInstance(_MIN_ const std::vector<PRIVerificationItem>& dependencies) noexcept
+EDySuccess TDyIO::InstantPopulateMaterialResource(
+    _MIN_ const PDyMaterialInstanceMetaInfo& iDesc,
+    _MIN_ TDyResourceBinder<EDyResourceType::Material, EDyLazy::Yes>& refMat, 
+    _MIN_ EDyScope iScope, 
+    _MIN_ bool(*callback)())
+{
+  MDY_ASSERT(MDY_CHECK_ISNULL(callback),  "Callback material resource population is not supported yet.");
+  MDY_ASSERT(iScope == EDyScope::Temporal, "Temporary material resource population must be inputted.");
+
+  // If resource type is `Material`, bind all dependencies of `Material` to checkList.
+  std::vector<PRIVerificationItem> checkList = {};
+  { 
+    for (const auto& textureSpecifier : iDesc.mTextureNames) 
+    {
+      if (textureSpecifier.empty() == true) { break; }
+      checkList.emplace_back(textureSpecifier, EDyResourceType::Texture, EDyResourceStyle::Resource, iScope);
+    }
+    checkList.emplace_back(iDesc.mShaderSpecifier, EDyResourceType::GLShader, EDyResourceStyle::Resource, iScope);
+  }
+
+  // If `checkList` is not empty, check dependencies.
+  DDyIOTaskDeferred::TConditionList conditionList = {};
+  if (checkList.empty() == false)
+  { // And get not-found list from dependency list.
+    const auto notFoundRIList = this->pCheckAndUpdateReferenceInstance(checkList);
+    if (notFoundRIList.empty() == false)
+    { 
+      for (const auto& [instance, status] : notFoundRIList)
+      { // Require depende resource tasks only if NotValid but RI is exist.
+        const auto& [specifier, type, style, scope] = instance;
+        if (status == EDyRIStatus::NotValid) 
+        {
+          MDY_CALL_BUT_NOUSE_RESULT(outTryEnqueueTask(specifier, type, style, scope, true)); 
+        }
+
+        conditionList.emplace_back(specifier, type, style);
+      }
+    }
+  }
+
+  // Require itself own resource task.
+  MDY_CALL_ASSERT_SUCCESS(this->outCreateReferenceInstance(
+      iDesc.mSpecifierName, 
+      EDyResourceType::Material, EDyResourceStyle::Resource, iScope));
+
+  // Construct IO Tasks.
+  DDyIOTask task;
+  {
+    task.mSpecifierName       = iDesc.mSpecifierName;
+    task.mResourceType        = EDyResourceType::Material;
+    task.mResourcecStyle      = EDyResourceStyle::Resource;
+    task.mScope               = EDyScope::Temporal;
+    task.mTaskPriority        = 192;
+    task.mIsResourceDeferred  = false;
+    task.mBoundObjectStyle    = EDyObject::Etc_NotBindedYet;
+    task.mPtrBoundObject      = &refMat;
+    task.mRawInstanceForUsingLater = iDesc;
+  }
+
+  // Make deferred task and forward deferred task to list (atomic)
+  if (conditionList.empty() == false) { this->outInsertDeferredTaskList({task, conditionList}); }
+  else
+  {   // Just insert task to queue, if anything does not happen.
+    { // Critical section.
+      MDY_SYNC_LOCK_GUARD(this->mQueueMutex);
+      if (this->mIsThreadStopped == true) { return DY_FAILURE; }
+      this->mIOTaskQueue.emplace(task);
+    }
+    this->mConditionVariable.notify_one();
+  }
+
+  return DY_SUCCESS;
+}
+
+  TDyIO::TDependencyList TDyIO::pCheckAndUpdateReferenceInstance(_MIN_ const std::vector<PRIVerificationItem>& dependencies) noexcept
 {
   TDependencyList resultNotFoundList = {};
 
@@ -351,12 +426,20 @@ void TDyIO::outForceProcessIOInsertPhase() noexcept
     if (resultItem.mResourceStyle == EDyResourceStyle::Information)
     {
       this->mIODataManager->InsertResult(resultItem.mResourceType, resultItem.mSmtPtrResultInstance);
-      MDY_CALL_ASSERT_SUCCESS(this->mRIInformationMap.TryUpdateValidity(resultItem.mResourceType, resultItem.mSpecifierName, true));
+      MDY_CALL_ASSERT_SUCCESS(this->mRIInformationMap.TryUpdateValidity(
+          resultItem.mResourceType, 
+          resultItem.mSpecifierName, 
+          true,
+          resultItem.mSmtPtrResultInstance));
     }
     else
     {
       this->mIOResourceManager->InsertResult(resultItem.mResourceType, resultItem.mSmtPtrResultInstance);
-      MDY_CALL_ASSERT_SUCCESS(this->mRIResourceMap.TryUpdateValidity(resultItem.mResourceType, resultItem.mSpecifierName, true));
+      MDY_CALL_ASSERT_SUCCESS(this->mRIResourceMap.TryUpdateValidity(
+          resultItem.mResourceType, 
+          resultItem.mSpecifierName, 
+          true,
+          resultItem.mSmtPtrResultInstance));
     }
 
     // If need to insert resource task of deferred list into queue, do this.
@@ -413,10 +496,6 @@ void TDyIO::outMainForceProcessDeferredMainTaskList()
   this->mIOProcessMainTaskList.clear();
 }
 
-#define MDY_DELETE_RAWHEAP_SAFELY(__MAHeapInstance__) \
-  delete __MAHeapInstance__; \
-  __MAHeapInstance__ = MDY_INITIALIZE_NULL
-
 DDyIOWorkerResult TDyIO::outMainProcessTask(_MIN_ const DDyIOTask& task)
 {
   DDyIOWorkerResult result{};
@@ -438,7 +517,7 @@ DDyIOWorkerResult TDyIO::outMainProcessTask(_MIN_ const DDyIOTask& task)
   } break;
   case EDyResourceType::Mesh:
   { // Get intermediate instance from task, and make mesh resource.
-    Owner<FDyMeshVBOIntermediate*> ptrrawIntermediateInstance = static_cast<FDyMeshVBOIntermediate*>(task.mRawInstanceForUsingLater);
+    Owner<FDyMeshVBOIntermediate*> ptrrawIntermediateInstance = std::any_cast<FDyMeshVBOIntermediate*>(task.mRawInstanceForUsingLater);
     const auto instance = new FDyMeshResource(*ptrrawIntermediateInstance);
     MDY_DELETE_RAWHEAP_SAFELY(ptrrawIntermediateInstance);
     result.mSmtPtrResultInstance = instance;
@@ -565,6 +644,11 @@ EDySuccess TDyIO::outTryCallSleptCallbackFunction()
     this->mCbNextSleepFunction = nullptr;
   }
   return DY_SUCCESS;
+}
+
+void TDyIO::outInsertGcCandidate(_MIN_ const DDyIOReferenceInstance& iRefRI)
+{
+  this->mGarbageCollector.InsertGcCandidate(iRefRI);
 }
 
 void TDyIO::outTryForwardCandidateRIToGCList(_MIN_ EDyScope iScope, _MIN_ EDyResourceStyle iStyle)

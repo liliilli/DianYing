@@ -23,6 +23,7 @@
 
 namespace dy
 {
+struct PDyMaterialInstanceMetaInfo;
 class FDyMaterialInformation;
 class FDyTextureResource;
 class FDyShaderResource;
@@ -39,6 +40,7 @@ class FDyMaterialResource final
 {
 public:
   FDyMaterialResource(_MIN_ const FDyMaterialInformation& information);
+  FDyMaterialResource(_MIN_ const PDyMaterialInstanceMetaInfo& iInstanceInfo);
   ~FDyMaterialResource() = default;
 
   /// @brief Get specifier name of material information.
@@ -60,9 +62,7 @@ public:
   }
 
   /// @brief
-  MDY_NODISCARD auto& GetShaderResourceBinder() noexcept { return this->mBinderShader;
-  }
-
+  MDY_NODISCARD auto& GetShaderResourceBinder() noexcept { return this->mBinderShader; }
 
   /// @brief Return binded texture resource pointers list.
   MDY_NODISCARD const auto& GetBindedTextureResourcePtrList() const noexcept
@@ -70,13 +70,23 @@ public:
     return this->mBinderTextureList;
   }
 
+  /// @brief Update texture list using shader. \n
+  /// When either texture list or material or shader is not exist, just do nothing but return DY_FAILURE.
+  EDySuccess TryUpdateTextureList() noexcept;
+
+  /// @brief Detach texture list which is bound to present material shader.
+  /// When either texture list or material or shader is not exist, just do nothing but return DY_FAILURE.
+  EDySuccess TryDetachTextureListFromShader() noexcept;
+
 private:
   std::string          mSpecifierName    = MDY_INITIALIZE_EMPTYSTR;
   EDyMaterialBlendMode mBlendMode        = EDyMaterialBlendMode::Opaque;
 
-  TDyIInformationBinderMaterial mBinderMaterial;
+  TDyLInformatinBinderMaterial  mBinderMaterial;
   TDyIResourceBinderShader      mBinderShader;
   std::vector<std::unique_ptr<TDyIResourceBinderTexture>> mBinderTextureList = {};
+
+  bool mIsInstant = false;
 };
 
 } /// ::dy namespace

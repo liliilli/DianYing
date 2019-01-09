@@ -35,7 +35,6 @@ struct PDyMaterialInstanceMetaInfo final : public PDyCommonResourceMetaInfo, pub
   EDyMaterialBlendMode        mBlendMode        = EDyMaterialBlendMode::Opaque;
   TTextureList                mTextureNames{};
 
-  std::vector<std::string>    mTextureNames_Deprecated;
   bool                        mIsShaderLazyInitialized_Deprecated = false;
 
   ///

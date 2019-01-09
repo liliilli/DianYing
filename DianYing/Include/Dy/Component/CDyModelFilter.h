@@ -61,12 +61,12 @@ public:
   MDY_SET_TYPEMATCH_FUNCTION(::dy::ADyGeneralBaseComponent, CDyModelFilter);
   MDY_SET_CRC32_HASH_WITH_TYPE(CDyModelFilter);
 
-  /// @brief  Get model reference ptr.
+  /// @brief Get model reference ptr.
   /// @return Valid model resource pointer reference.
-  FORCEINLINE MDY_NODISCARD const TDyLResourceBinderModel& GetModelReference() const noexcept
-  {
-    return this->mBinderModel;
-  }
+  MDY_NODISCARD const TDyLResourceBinderModel& GetModelReference() const noexcept;
+
+  /// @brief Get model reference ptr.
+  MDY_NODISCARD TDyLResourceBinderModel& GetModelReference() noexcept;
 
   ///
   /// @brief Bind valid CDyModelRenderer pointer from same FDyActor to this component.

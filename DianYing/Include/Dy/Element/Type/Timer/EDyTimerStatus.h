@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_HELPER_HELPERSTRING_H
-#define GUARD_DY_HELPER_HELPERSTRING_H
+#ifndef GUARD_DY_ELEMENT_TYPE_TIMER_EDYTIMERSTATUS_H
+#define GUARD_DY_ELEMENT_TYPE_TIMER_EDYTIMERSTATUS_H
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -13,19 +13,18 @@
 /// SOFTWARE.
 ///
 
-#include <algorithm>
-#include <string>
-#include <random>
-
-#include <Dy/Helper/System/Macroes.h>
-#include <Dy/Helper/GlobalType.h>
-
 namespace dy
 {
 
-/// @brief Get random string wich length count.
-MDY_NODISCARD std::string DyGetRandomString(_MIN_ TU32 length);
+/// @enum   EDyTimerStatus
+/// @brief  TimerStatus of general timer instance.
+enum class EDyTimerStatus : unsigned char
+{
+  Play,   //
+  Paused, // 
+  Aborted // Status only will be changed to this when Script is moved to GClist.
+};
 
-} /// ::dy namesapce
+} /// ::dy namespace
 
-#endif /// GUARD_DY_HELPER_HELPERSTRING_H
+#endif /// GUARD_DY_ELEMENT_TYPE_TIMER_EDYTIMERSTATUS_H

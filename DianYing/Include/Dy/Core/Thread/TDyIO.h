@@ -146,7 +146,14 @@ private:
       _MIN_ const std::string& iSpecifier,
       _MIN_ EDyResourceType iResourceType,
       _MIN_ EDyResourceStyle iResourceStyle,
-      _MIN_ EDyScope iScope);
+      _MIN_ EDyScope iScope) const;
+
+  /// @brief Enqueue IO Populating `instant` material task.
+  MDY_NODISCARD EDySuccess InstantPopulateMaterialResource(
+      _MIN_ const PDyMaterialInstanceMetaInfo& iDesc,
+      _MIN_ TDyResourceBinder<EDyResourceType::Material, EDyLazy::Yes>& refMat, 
+      _MIN_ EDyScope scope,
+      _MIN_ bool(*callback)());
 
   /// @brief Check RI is exist, so enlarge scope and update properties etc.
   MDY_NODISCARD TDependencyList
@@ -220,6 +227,10 @@ private:
 
   /// @brief Insert deferred task list.
   void outInsertDeferredTaskList(_MIN_ const DDyIOTaskDeferred& task);
+
+  /// @brief Insert valid const reference of RI into gc list as copied instance of original instance.
+  /// Use this funciton carefully.
+  void outInsertGcCandidate(_MIN_ const DDyIOReferenceInstance& iRefRI);
 
   //!
   //! Common methods (always must use mutex)

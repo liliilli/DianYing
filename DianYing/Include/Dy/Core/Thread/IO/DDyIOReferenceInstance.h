@@ -49,6 +49,7 @@ struct DDyIOReferenceInstance final
 
   bool                mIsResourceValid    = false;
   TConditionCallback  mConditionCallback  = nullptr;
+  void*               mPtrInstance        = nullptr;               
 
   std::vector<const __FDyBinderBase*> mPtrBoundBinderList = {};
 
@@ -66,6 +67,15 @@ struct DDyIOReferenceInstance final
   /// @brief Unbind binder instance pointer address from this RI.
   /// If RI's scope is temporal and valid, GC candidate flag will be set up.
   void DetachBinder(_MIN_ const __FDyBinderBase* iPtrBase) noexcept;
+
+  /// @brief Set resource valid. `iPtrInstance` must be valid pointer type of each RI type.
+  /// and, `mIsResourceValid` will be true.
+  void SetValid(_MIN_ void*& iPtrInstance) noexcept;
+  /// @brief
+  void SetNotValid() noexcept;
+
+  /// @brief Check this RI is need to be gced so moved GC container.
+  MDY_NODISCARD bool IsNeedToBeGced() const noexcept;
 };
 
 } /// ::dy namespace

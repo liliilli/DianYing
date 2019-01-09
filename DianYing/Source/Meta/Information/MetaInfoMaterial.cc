@@ -35,7 +35,7 @@ Material Name : {0}
 Shader Name : {1}
 )dy", this->mSpecifierName, this->mShaderSpecifier);
 
-  for (const auto& textureName : this->mTextureNames_Deprecated) { log += textureName; }
+  //for (const auto& textureName : this->mTextureNames_Deprecated) { log += textureName; }
   return log;
 }
 

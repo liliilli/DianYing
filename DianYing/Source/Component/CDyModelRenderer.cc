@@ -91,6 +91,11 @@ void CDyModelRenderer::Deactivate() noexcept
   }
 }
 
+TI32 CDyModelRenderer::GetMaterialListCount() const noexcept
+{
+  return this->mBinderMaterialListSize;
+}
+
 std::optional<TI32> CDyModelRenderer::GetModelSubmeshCount() const noexcept
 {
   // If CDyModelFilter is not binded to CDyModelRenderer, just return no value.
@@ -108,6 +113,18 @@ const FDyMeshResource& CDyModelRenderer::GetSubmeshResourcePtr(_MIN_ TU32 index)
 {
   const auto& submeshResourceList = this->mPtrModelFilterComponent->GetModelReference()->GetMeshResourceList();
   return *submeshResourceList[index]->Get();
+}
+
+TDyLResourceBinderModel* CDyModelRenderer::GetModelResourceBinder() noexcept
+{
+  if (MDY_CHECK_ISNULL(this->mPtrModelFilterComponent)) { return nullptr; }
+  return &this->mPtrModelFilterComponent->GetModelReference();
+}
+
+const TDyLResourceBinderModel* CDyModelRenderer::GetModelResourceBinder() const noexcept
+{
+  if (MDY_CHECK_ISNULL(this->mPtrModelFilterComponent)) { return nullptr; }
+  return &this->mPtrModelFilterComponent->GetModelReference();
 }
 
 void CDyModelRenderer::pPropagateParentActorActivation(const DDy3StateBool& actorBool) noexcept

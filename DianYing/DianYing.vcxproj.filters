@@ -220,7 +220,6 @@
     <ClCompile Include="Source\Management\Type\Time\DDyTimepoint.cc" />
     <ClCompile Include="Source\Management\Internal\MDyProfiling.cc" />
     <ClCompile Include="Source\Management\Helper\SDyProfilingHelper.cc" />
-    <ClCompile Include="Source\Component\UI\CDyWidgetScript.cc" />
     <ClCompile Include="Source\Management\Internal\World\FDyWorldUIContainer.cc" />
     <ClCompile Include="Source\Management\Internal\Input\FDyInputDelegateManager.cc" />
     <ClCompile Include="Source\Builtin\Widget\FDyBtWdTestLoadingUi.cc" />
@@ -245,7 +244,6 @@
     <ClCompile Include="Source\Helper\Internal\FDyNameGenerator.cc" />
     <ClCompile Include="Source\Element\Type\DDyActorBinder.cc" />
     <ClCompile Include="Source\Management\GameTimerManager.cc" />
-    <ClCompile Include="Source\Element\Type\Timer\FDyTimerItem.cc" />
     <ClCompile Include="Source\Core\Thread\IO\DDyIOTaskDeferred.cc" />
     <ClCompile Include="Source\Helper\MCS\Functions.cc" />
     <ClCompile Include="data\Script\FDyBtScTestLoadingUi.cc" />
@@ -254,6 +252,10 @@
     <ClCompile Include="data\Script\DebugActor\BtScActorTest3.cc" />
     <ClCompile Include="Source\Component\Internal\Camera\DDyFrustumTester.cc" />
     <ClCompile Include="Source\Helper\Type\Plane.cc" />
+    <ClCompile Include="Source\Helper\Library\HelperString.cc" />
+    <ClCompile Include="Source\Element\Type\Timer\FDyActorTimerItem.cc" />
+    <ClCompile Include="Source\Element\Type\Timer\FDyWidgetTimerItem.cc" />
+    <ClCompile Include="Source\Component\Widget\CDyWidgetScript.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -642,7 +644,6 @@
     <ClInclude Include="Include\Dy\Element\Abstract\Actor\ADyActorBinderContainer.h" />
     <ClInclude Include="Include\Dy\Management\GameTimerManager.h" />
     <ClInclude Include="Include\Dy\Element\Type\Timer\FDyTimerHandle.h" />
-    <ClInclude Include="Include\Dy\Element\Type\Timer\FDyTimerItem.h" />
     <ClInclude Include="Include\DyMacroPlatformSetting.h" />
     <ClInclude Include="Include\Dy\Include\Entry.h" />
     <ClInclude Include="Include\Dy\Core\EDyAppMode.h" />
@@ -653,6 +654,9 @@
     <ClInclude Include="data\Script\DebugActor\BtScActorTest3.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Camera\DDyFrustumTester.h" />
     <ClInclude Include="Include\Dy\Helper\Type\Plane.h" />
+    <ClInclude Include="Include\Dy\Element\Type\Timer\FDyActorTimerItem.h" />
+    <ClInclude Include="Include\Dy\Element\Type\Timer\FDyWidgetTimerItem.h" />
+    <ClInclude Include="Include\Dy\Element\Type\Timer\EDyTimerStatus.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

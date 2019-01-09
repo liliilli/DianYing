@@ -204,7 +204,7 @@
     <ClCompile Include="Source\Core\Rendering\Widget\CDyBasicGaugeBarRenderer.cc" />
     <ClCompile Include="Source\Core\Rendering\Widget\CDyImageRenderer.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Widget\FDyWidgetScriptStatus.cc" />
-    <ClCompile Include="Source\Component\UI\CDyWidgetScript.cc" />
+    <ClCompile Include="Source\Component\Widget\CDyWidgetScript.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Widget\CDyWidgetScriptCpp.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Widget\CDyWidgetScriptLua.cc" />
     <ClCompile Include="Source\Core\Reflection\RDyBuiltinResources.cc" />
@@ -372,9 +372,11 @@
     <ClCompile Include="Source\Element\Actor.cc" />
     <ClCompile Include="Source\Element\Canvas\Text.cc" />
     <ClCompile Include="Source\Element\Type\DDyActorBinder.cc" />
-    <ClCompile Include="Source\Element\Type\Timer\FDyTimerItem.cc" />
+    <ClCompile Include="Source\Element\Type\Timer\FDyActorTimerItem.cc" />
+    <ClCompile Include="Source\Element\Type\Timer\FDyWidgetTimerItem.cc" />
     <ClCompile Include="Source\Helper\Internal\FDyNameGenerator.cc" />
     <ClCompile Include="Source\Helper\Library\HelperRegex.cc" />
+    <ClCompile Include="Source\Helper\Library\HelperString.cc" />
     <ClCompile Include="Source\Helper\MCS\Functions.cc" />
     <ClCompile Include="Source\Helper\Type\Plane.cc" />
     <ClCompile Include="Source\Management\GameTimerManager.cc" />
@@ -584,8 +586,10 @@
     <ClInclude Include="Include\Dy\Element\Type\DDyActorBinder.h" />
     <ClInclude Include="Include\Dy\Element\Type\DDyTransform.h" />
     <ClInclude Include="Include\Dy\Element\Type\PDyActorCreationDescriptor.h" />
+    <ClInclude Include="Include\Dy\Element\Type\Timer\EDyTimerStatus.h" />
     <ClInclude Include="Include\Dy\Element\Type\Timer\FDyTimerHandle.h" />
-    <ClInclude Include="Include\Dy\Element\Type\Timer\FDyTimerItem.h" />
+    <ClInclude Include="Include\Dy\Element\Type\Timer\FDyActorTimerItem.h" />
+    <ClInclude Include="Include\Dy\Element\Type\Timer\FDyWidgetTimerItem.h" />
     <ClInclude Include="Include\Dy\Helper\HelperString.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\RWLockAtomic.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\FDyNameGenerator.h" />

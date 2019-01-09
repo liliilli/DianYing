@@ -550,11 +550,54 @@ std::optional<TU32> FDyGLWrapper::CreateFrameBuffer(_MIN_ const PDyGLFrameBuffer
   return framebufferId;
 }
 
-EDySuccess FDyGLWrapper::DeleteFrameBuffer(const TU32 framebufferId)
+EDySuccess FDyGLWrapper::DeleteFrameBuffer(_MIN_ const TU32 framebufferId)
 {
   MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
   glDeleteFramebuffers(1, &framebufferId);
   return DY_SUCCESS;
+}
+
+void FDyGLWrapper::BindVertexArrayObject(_MIN_ TU32 iVaoId)
+{
+  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
+  glBindVertexArray(iVaoId);
+}
+
+void FDyGLWrapper::UnbindVertexArrayObject()
+{
+  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
+  glBindVertexArray(0);
+}
+
+void FDyGLWrapper::BindTexture(_MIN_ TU32 activeTextureIndex, _MIN_ EDyTextureStyleType type, _MIN_ TU32 textureId)
+{
+  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
+
+  #if defined(NDEBUG) == false 
+  {
+    MDY_ASSERT(glIsTexture(textureId) == GL_TRUE, "given `textureId` is not texture.");
+  }
+  #endif
+
+  glActiveTexture(GL_TEXTURE0 + activeTextureIndex);
+  switch (type)
+  {
+  case EDyTextureStyleType::D1: { glBindTexture(GL_TEXTURE_1D, textureId); } break;
+  case EDyTextureStyleType::D2: { glBindTexture(GL_TEXTURE_2D, textureId); } break;
+  default: MDY_UNEXPECTED_BRANCH(); break;
+  }
+}
+
+void FDyGLWrapper::UnbindTexture(TU32 textureIndex, _MIN_ EDyTextureStyleType type)
+{
+  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
+  glActiveTexture(GL_TEXTURE0 + textureIndex);
+  switch (type)
+  {
+  case EDyTextureStyleType::D1: { glBindTexture(GL_TEXTURE_1D, 0); } break;
+  case EDyTextureStyleType::D2: { glBindTexture(GL_TEXTURE_2D, 0); } break;
+  default: MDY_UNEXPECTED_BRANCH(); break;
+  }
 }
 
 void FDyGLWrapper::Draw(EDyDrawType iType, bool iIsElement, TU32 iCount)

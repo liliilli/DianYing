@@ -147,6 +147,26 @@
     MDY_ASSERT(result == DY_SUCCESS, "Failed to execute expression successfully."); \
   }
 
+/// 
+/// @macro MDY_DELETE_RAWHEAP_SAFELY
+/// @brief Delete raw (not unique_ptr and anything smart pointer) heap (not array) instance.
+///
+#define MDY_DELETE_RAWHEAP_SAFELY(__MAHeapInstance__) \
+  { \
+    delete __MAHeapInstance__; \
+    __MAHeapInstance__ = MDY_INITIALIZE_NULL; \
+  }
+
+/// 
+/// @macro MDY_DELETE_RAWHEAP_ARRAY_SAFELY
+/// @brief Delete raw (not unique_ptr and anything smart pointer) heap array instance.
+///
+#define MDY_DELETE_RAWHEAP_ARRAY_SAFELY(__MAHeapInstance__) \
+  { \
+    delete[] __MAHeapInstance__; \
+    __MAHeapInstance__ = MDY_INITIALIZE_NULL; \
+  }
+
 ///
 /// @macro MDY_U8
 /// @brief

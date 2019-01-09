@@ -52,26 +52,20 @@ public:
   CDyModelRenderer(CDyModelRenderer&& instance)                   noexcept  = default;
   CDyModelRenderer& operator=(CDyModelRenderer&& instance)        noexcept  = default;
 
-  ///
   /// @brief  Initialize with descriptor.
   /// @param  descriptor
   /// @return If successful, return DY_SUCCESS or DY_FAILURE.
-  ///
   MDY_NODISCARD EDySuccess Initialize(const PDyModelRendererComponentMetaInfo& descriptor) override final;
 
   /// Release component.
   void Release() override final;
 
-  ///
   /// @brief Pingpong.
   /// @param validReference
-  ///
   void BindModelFilterReference(CDyModelFilter& validReference);
 
-  ///
   /// @brief Pingpong.
   /// @param
-  ///
   void UnbindModelFilterReference();
 
   /// @brief Update sequence etc.
@@ -86,57 +80,44 @@ public:
   /// @brief Deactivate component.
   void Deactivate() noexcept override final;
 
-  ///
   /// @brief  Get the element count of binded material list.
   /// @return The number of material elements binded to CDyModelRenderer::mMaterialResourcePtr.
-  ///
-  MDY_NODISCARD FORCEINLINE TI32 GetMaterialListCount() const noexcept
-  {
-    return this->mBinderMaterialListSize;
-  }
+  MDY_NODISCARD TI32 GetMaterialListCount() const noexcept;
 
-  ///
   /// @brief  Get the number of submesh of model instance which binded to this component instance.
   /// @return The number of submesh elements binded to CDyModelRenderer::mPtrModelFilterComponent.
-  ///
   MDY_NODISCARD std::optional<TI32> GetModelSubmeshCount() const noexcept;
 
-  ///
   /// @brief
   /// @param  index
   /// @return
-  ///
   const FDyMaterialResource& GetMaterialResourcePtr(_MIN_ TU32 index) const noexcept;
 
-  ///
   /// @brief
   /// @param  index
   /// @return
-  ///
   const FDyMeshResource& GetSubmeshResourcePtr(_MIN_ TU32 index) const noexcept;
+  
+  /// @brief Get model resource binder. If renderer is not binding any Model, just return nullptr.
+  MDY_NODISCARD TDyLResourceBinderModel* GetModelResourceBinder() noexcept;
+ 
+  /// @brief Get model resource binder. If renderer is not binding any Model, just return nullptr.
+  MDY_NODISCARD const TDyLResourceBinderModel* GetModelResourceBinder() const noexcept;
 
-  ///
   /// @brief
   /// @param actorBool
-  ///
   void pPropagateParentActorActivation(const DDy3StateBool& actorBool) noexcept override final;
 
-  ///
   /// @brief
-  ///
   MDY_NODISCARD std::string ToString() override final;
 
 private:
-  ///
   /// @brief
   /// @return
-  ///
   MDY_NODISCARD EDySuccess pTryBindingToModelFilterComponent();
 
-  ///
   /// @brief
   /// @return
-  ///
   MDY_NODISCARD EDySuccess pTryUnbindingToModelFilterComponent();
 
   /// Valid model filter pointer reference. If value is nullptr, do not use.

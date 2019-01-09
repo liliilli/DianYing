@@ -40,7 +40,9 @@ public:
   ///
   MDY_NODISCARD void MoveInstanceFromGC(_MIN_ const std::string& speicifer, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style);
 
-  /// @brief
+  /// @brief Insert RI gc-ed candidate into container.
+  void InsertGcCandidate(_MIN_ DDyIOReferenceInstance iRICandidateList) noexcept;
+  /// @brief Insert RI gc-ed candidate list into container.
   void InsertGcCandidateList(_MIN_ const std::vector<DDyIOReferenceInstance>& iRICandidateList) noexcept;
 
   /// @brief 

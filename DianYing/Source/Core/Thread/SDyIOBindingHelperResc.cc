@@ -36,7 +36,7 @@ SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryRequireResource)
   MDY_CALL_ASSERT_SUCCESS(ioThread.TryBindBinderToResourceRI(iSpecifier, iType, iPtrBinder));
   if (ioThread.pIsReferenceInstanceBound(iSpecifier, iType, EDyResourceStyle::Resource) == false)
   {
-    MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
+    return DY_FAILURE;
   }
 
   return DY_SUCCESS;

@@ -14,7 +14,10 @@
 
 /// Header file
 #include <Dy/Core/Thread/IO/DDyIOReferenceContainer.h>
+#include <Dy/Core/Resource/Type/FDyBinderBase.h>
+#include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 #include <Dy/Helper/ContainerHelper.h>
+#include <Dy/Management/LoggingManager.h>
 
 namespace dy
 {
@@ -96,17 +99,27 @@ EDySuccess DDyIOReferenceContainer::TryDetachBinderFromResourceRI(
 {
   if (this->IsReferenceInstanceExist(iSpecifier, iType) == false) { return DY_FAILURE; }
 
+  decltype(mMapModelReference)* ptrRiMap = nullptr;
   switch (iType)
   {
-  case EDyResourceType::Model:    this->mMapModelReference[iSpecifier].DetachBinder(iPtrBinder);    break;
-  case EDyResourceType::GLShader: this->mMapGLShaderReference[iSpecifier].DetachBinder(iPtrBinder); break;
-  case EDyResourceType::Texture:  this->mMapTextureReference[iSpecifier].DetachBinder(iPtrBinder);  break;
-  case EDyResourceType::Mesh:     this->mMapMeshReference[iSpecifier].DetachBinder(iPtrBinder); break;
-  case EDyResourceType::Material: this->mMapMaterialReference[iSpecifier].DetachBinder(iPtrBinder); break;
-  case EDyResourceType::GLAttachment:   this->mMapAttachmentReference[iSpecifier].DetachBinder(iPtrBinder);   break;
-  case EDyResourceType::GLFrameBuffer:  this->mMapFrameBufferReference[iSpecifier].DetachBinder(iPtrBinder);  break;
+  case EDyResourceType::Model:    ptrRiMap = &this->mMapModelReference;     break;
+  case EDyResourceType::GLShader: ptrRiMap = &this->mMapGLShaderReference;  break;
+  case EDyResourceType::Texture:  ptrRiMap = &this->mMapTextureReference;   break;
+  case EDyResourceType::Mesh:     ptrRiMap = &this->mMapMeshReference;      break;
+  case EDyResourceType::Material: ptrRiMap = &this->mMapMaterialReference;  break;
+  case EDyResourceType::GLAttachment:   ptrRiMap = &this->mMapAttachmentReference;  break;
+  case EDyResourceType::GLFrameBuffer:  ptrRiMap = &this->mMapFrameBufferReference; break;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
   }
+
+  (*ptrRiMap)[iSpecifier].DetachBinder(iPtrBinder);
+  if ((*ptrRiMap)[iSpecifier].IsNeedToBeGced() == true)
+  {
+    MDY_LOG_DEBUG_D("Moved Reference Instance to GClist. {}", iSpecifier);
+    SDyIOConnectionHelper::InsertGcCandidate((*ptrRiMap)[iSpecifier]);
+    ptrRiMap->erase(iSpecifier);
+  }
+
   return DY_SUCCESS;
 }
 
@@ -189,7 +202,11 @@ EDySuccess DDyIOReferenceContainer::CreateReferenceInstance(
   return DY_SUCCESS;
 }
 
-EDySuccess DDyIOReferenceContainer::TryUpdateValidity(EDyResourceType type, const std::string& specifier, bool isValid)
+EDySuccess DDyIOReferenceContainer::TryUpdateValidity(
+    _MIN_ EDyResourceType type, 
+    _MIN_ const std::string& specifier, 
+    _MIN_ bool isValid,
+    _MIN_ void* iPtrInstance)
 {
   TStringHashMap<DDyIOReferenceInstance>* map;
   switch (type)
@@ -205,8 +222,31 @@ EDySuccess DDyIOReferenceContainer::TryUpdateValidity(EDyResourceType type, cons
   }
 
   auto& instance = (*map)[specifier];
-  if (isValid != instance.mIsResourceValid) { instance.mIsResourceValid = isValid; return DY_SUCCESS; }
-  else                                      { return DY_FAILURE; }
+  if (isValid != instance.mIsResourceValid) 
+  { 
+    if (isValid == true)
+    {
+      instance.SetValid(iPtrInstance);
+      // If resource is valid so must forward instance pointer to binder...
+      for (const auto& ptrBinderBase : instance.mPtrBoundBinderList)
+      {
+        if (MDY_CHECK_ISNULL(ptrBinderBase)) { continue; }
+        const_cast<__FDyBinderBase*>(ptrBinderBase)->TryUpdateResourcePtr(instance.mPtrInstance);
+      }
+    }
+    else
+    {
+      instance.SetNotValid();
+      // If resource is not valid, so must detach instance pointer from binders...
+      for (const auto& ptrBinderBase : instance.mPtrBoundBinderList)
+      {
+        if (MDY_CHECK_ISNULL(ptrBinderBase)) { continue; }
+        const_cast<__FDyBinderBase*>(ptrBinderBase)->TryDetachResourcePtr();
+      }
+    }
+    return DY_SUCCESS; 
+  }
+  else { return DY_FAILURE; }
 }
 
 } /// ::dy namespace

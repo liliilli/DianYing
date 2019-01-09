@@ -139,7 +139,7 @@ void CDyFontRenderer::Render()
 
     const auto& charInfo  = container[ucs2Char];
     this->mBinderShader.TryUpdateUniform<EUniformType::Integer>("uChannel", charInfo.mTexCoordInfo.mChannel);
-    this->mBinderShader.TryUpdateUniform<EUniformType::Integer>("uMapInex", charInfo.mTexCoordInfo.mMapIndex);
+    this->mBinderShader.TryUpdateUniform<EUniformType::Integer>("uMapIndex", charInfo.mTexCoordInfo.mMapIndex);
     MDY_CALL_BUT_NOUSE_RESULT(this->mBinderShader.TryUpdateUniformList());
 
     RenderFontCharacter(GetCharacterVertices(charInfo, renderPosition, fontSize), this->mBinderFontMesh->GetVertexBufferId());

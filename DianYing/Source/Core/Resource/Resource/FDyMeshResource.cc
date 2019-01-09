@@ -81,4 +81,12 @@ TU32 FDyMeshResource::GetIndicesCounts() const noexcept
   return this->mMeshFlagInformation.mIndiceCount;
 }
 
+EDySuccess FDyMeshResource::BindVertexArray() const noexcept
+{
+  if (this->mBufferIdInformation.mVao == 0) { return DY_FAILURE; }
+
+  FDyGLWrapper::BindVertexArrayObject(this->mBufferIdInformation.mVao);
+  return DY_SUCCESS;
+}
+
 } /// ::dy namespace

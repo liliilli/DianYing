@@ -60,6 +60,9 @@ public:
   /// @brief Get Indices count. If not exist, just return 0.
   MDY_NODISCARD TU32 GetIndicesCounts() const noexcept;
 
+  /// @brief Bind Vertex Array object. if vao id is 0, return DY_FAILURE with doing nothing. 
+  EDySuccess BindVertexArray() const noexcept;
+
 private:
   std::string               mSpecifierName        = MDY_INITIALIZE_EMPTYSTR;
   DDyGlBufferIdInformation  mBufferIdInformation  = {};

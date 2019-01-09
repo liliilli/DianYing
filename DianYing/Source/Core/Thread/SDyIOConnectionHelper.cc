@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 #include <Dy/Core/DyEngine.h>
+#include <Dy/Helper/HelperString.h>
 
 namespace dy
 {
@@ -92,11 +93,39 @@ void SDyIOConnectionHelper::PopulateResourceList(
   ioThread.BindSleepCallbackFunction(iCallback);
 }
 
+void SDyIOConnectionHelper::PopulateInstantMaterialResource(
+    _MIN_ PDyMaterialInstanceMetaInfo& desc,
+    _MIN_ TDyResourceBinder<EDyResourceType::Material, EDyLazy::Yes>& refMat, 
+    _MIN_ bool(*callback)())
+{
+  static TU32 instantMatId = 0;
+
+  // Specify `scope`.
+  EDyScope scope = EDyScope::Temporal;
+  if (callback != nullptr) { scope = EDyScope::UserDefined; }
+
+  // Set instant specifier name.
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
+  auto& ioThread = *gEngine->pfGetIOThread();
+  desc.mSpecifierName = fmt::format("instant{}{:04}", DyGetRandomString(5), instantMatId++);
+  
+  // Require population instant mateiral resource.
+  MDY_CALL_ASSERT_SUCCESS(ioThread.InstantPopulateMaterialResource(desc, refMat, scope, callback));
+  refMat.TryRequireResource(desc.mSpecifierName);
+}
+
 void SDyIOConnectionHelper::InsertResult(_MIN_ const DDyIOWorkerResult& result) noexcept
 {
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
   auto& ioThread = *gEngine->pfGetIOThread();
   ioThread.outInsertResult(result);
+}
+
+void SDyIOConnectionHelper::InsertGcCandidate(const DDyIOReferenceInstance& iRefRI)
+{
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
+  auto& ioThread = *gEngine->pfGetIOThread();
+  ioThread.outInsertGcCandidate(iRefRI);
 }
 
 bool SDyIOConnectionHelper::CheckIOResultInCondition() noexcept

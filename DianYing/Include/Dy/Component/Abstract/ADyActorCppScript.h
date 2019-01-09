@@ -53,14 +53,9 @@ public:
   void MDY_PRIVATE_SPECIFIER(AbortAllValidTimerHandler)();
 
 private:
-  ///
   /// @brief Set reference to outside world.
   /// @param outsideReference Reference of WidgetScriptCpp instance.
-  ///
-  void pfSetOutsideReference(CDyActorScriptCpp& outsideReference) noexcept
-  {
-    this->mOutside = &outsideReference;
-  }
+  void pfSetOutsideReference(_MIN_ CDyActorScriptCpp& outsideReference) noexcept;
 
   CDyActorScriptCpp* mOutside = nullptr;
 

@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Component/Interface/IDyScriptable.h>
+#include <Dy/Helper/Pointer.h>
 
 //!
 //! Forward declaration
@@ -23,6 +24,8 @@ namespace dy
 {
 class CDyWidgetScriptCpp;
 class FDyUiWidget;
+class FDyTimerHandle;
+class MDyGameTimer;
 } /// ::dy namespace
 
 //!
@@ -35,23 +38,23 @@ namespace dy
 MDY_ABSTRACT ADyWidgetCppScript : public IDyScriptable
 {
 public:
-  ///
   /// @brief Get widget reference.
-  ///
   MDY_NODISCARD FDyUiWidget& GetWidgetReference();
+  
+  /// @brief Get Game-Timer manager.
+  MDY_NODISCARD MDyGameTimer& GetGameTimerManager() noexcept;
 
+  void MDY_PRIVATE_SPECIFIER(BindPtrTimerHandle)(_MIN_ FDyTimerHandle& iRefTimerHandler);
+  void MDY_PRIVATE_SPECIFIER(DetachPtrTimerHandle)(_MIN_ FDyTimerHandle& iRefTimerHandler);
+  void MDY_PRIVATE_SPECIFIER(AbortAllValidTimerHandler)();
 private:
-  ///
   /// @brief Set reference to outside world.
   /// @param outsideReference Reference of WidgetScriptCpp instance.
-  ///
-  void pfSetOutsideReference(CDyWidgetScriptCpp& outsideReference) noexcept
-  {
-    this->mOutside = &outsideReference;
-  }
+  void pfSetOutsideReference(_MIN_ CDyWidgetScriptCpp& outsideReference) noexcept;
 
   CDyWidgetScriptCpp* mOutside = nullptr;
 
+  std::vector<NotNull<FDyTimerHandle*>> mPtrTimerHandleList = {};
   friend class CDyWidgetScriptCpp;
 };
 

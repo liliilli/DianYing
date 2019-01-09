@@ -35,19 +35,29 @@ class TDyResourceBinder;
 /// @brief Not lazy version of `TDyResourceBinder`.
 ///
 template <EDyResourceType TType>
-class TDyResourceBinder<TType, EDyLazy::No> final : public __TDyResourceBinderBase<TType>
+class TDyResourceBinder<TType, EDyLazy::No> final : public 
+  std::conditional_t<TType == EDyResourceType::Material, 
+      __TDyResourceBinderMaterial, 
+      std::conditional_t<TType == EDyResourceType::GLShader,
+          __TDyResourceBinderShader,
+          __TDyResourceBinderBase<TType>
+      >
+  >
 {
 private:
   using TSuper = __TDyResourceBinderBase<TType>;
 public:
   MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(TDyResourceBinder);
 
-  TDyResourceBinder(_MIN_ const std::string& specifier) : TSuper{specifier}
+  TDyResourceBinder(_MIN_ const std::string& specifier) 
   {
-    if (const auto flag = TSuper::pTryRequireResource();
-        flag == DY_FAILURE)
+    if (const auto flag = TSuper::pTryRequireResource(specifier); flag == DY_FAILURE)
     { MDY_NOT_IMPLEMENTED_ASSERT(); }
-    else { this->Process(); }
+    else 
+    { 
+      this->mSpecifierName = specifier;
+      this->Process(); 
+    }
   }
   ~TDyResourceBinder() = default;
 };
@@ -58,7 +68,14 @@ public:
 /// User have to require resource manually. but detach is held by automatically. (RAII)
 ///
 template <EDyResourceType TType>
-class TDyResourceBinder<TType, EDyLazy::Yes> final : public __TDyResourceBinderBase<TType>
+class TDyResourceBinder<TType, EDyLazy::Yes> final : public 
+  std::conditional_t<TType == EDyResourceType::Material, 
+      __TDyResourceBinderMaterial, 
+      std::conditional_t<TType == EDyResourceType::GLShader,
+          __TDyResourceBinderShader,
+          __TDyResourceBinderBase<TType>
+      >
+  >
 {
 private:
   using TSuper = __TDyResourceBinderBase<TType>;
@@ -69,17 +86,17 @@ public:
 
   /// @brief Try require resource with specifier name in given EDyResourceType.
   /// If resource is already bound to binder handle, detach it first and newly bind another resource into it.
-  void TryRequireResource(_MIN_ const std::string& specifier)
+  void TryRequireResource(_MIN_ const std::string& iNewSpecifier)
   {
-    TSuper::pSetSpecifierName(specifier);
-    MDY_NOTUSED auto _1 = TSuper::pTryDetachResource();
-    if (const auto flag = TSuper::pTryRequireResource();
-        flag == DY_FAILURE)
-    {
-      /// @TODO IMEPLEMENT TEMPORAL RESOURCE BINDING. AND WAITING.
-      MDY_UNEXPECTED_BRANCH();
+    // If resource is already exist and bound by something. 
+    // Let it be until new resource is bounded soon.
+    // If flag == DY_FAILURE, iNewSpecifier will be stored as deferred resource specifier.
+    if (const auto flag = TSuper::pTryRequireResource(iNewSpecifier); 
+        flag == DY_SUCCESS) 
+    { 
+      this->mSpecifierName = iNewSpecifier;
+      this->Process(); 
     }
-    else { this->Process(); }
   }
 };
 

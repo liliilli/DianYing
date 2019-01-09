@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Element/Type/Timer/FDyTimerItem.h>
+#include <Dy/Element/Type/Timer/FDyActorTimerItem.h>
 #include <utility>
 #include <Dy/Element/Type/Timer/FDyTimerHandle.h>
 #include <Dy/Component/Abstract/ADyActorCppScript.h>
@@ -22,7 +22,7 @@
 namespace dy
 {
 
-FDyTimerItem::FDyTimerItem(
+FDyActorTimerItem::FDyActorTimerItem(
     _MIN_ FDyTimerHandle& iHandle,
     _MIN_ ADyActorCppScript& iRefScript,
     _MIN_ TF32 iFirstDelay, 
@@ -32,7 +32,7 @@ FDyTimerItem::FDyTimerItem(
     mPtrHandle{&iHandle},
     mPtrScript{&iRefScript},
     mIndex{MDY_PRIVATE_SPECIFIER(sIndex)++},
-    mStatus{EStatus::Play},
+    mStatus{EDyTimerStatus::Play},
     mIsLooped{iIsLooped},
     mFirstDelay{iFirstDelay},
     mDelayTime{iDelayTime},
@@ -43,18 +43,18 @@ FDyTimerItem::FDyTimerItem(
   this->mPtrScript->MDY_PRIVATE_SPECIFIER(BindPtrTimerHandle)(*this->mPtrHandle);
 }
 
-FDyTimerItem::~FDyTimerItem()
+FDyActorTimerItem::~FDyActorTimerItem()
 {
   this->MDY_PRIVATE_SPECIFIER(Abort)();
 }
 
-void FDyTimerItem::MDY_PRIVATE_SPECIFIER(ResetTimerProperties)(
+void FDyActorTimerItem::MDY_PRIVATE_SPECIFIER(ResetTimerProperties)(
     _MIN_ TF32 iFirstDelay, 
     _MIN_ TF32 iDelayTime, 
     _MIN_ bool iIsLooped, 
     _MIN_ std::function<void()> iCbFunction)
 {
-  mStatus     = EStatus::Play;
+  mStatus     = EDyTimerStatus::Play;
   mIsLooped   = iIsLooped;
   mFirstDelay = iFirstDelay;
   mDelayTime  = iDelayTime;
@@ -63,11 +63,11 @@ void FDyTimerItem::MDY_PRIVATE_SPECIFIER(ResetTimerProperties)(
   mCallbackFunction = std::move(iCbFunction);
 }
 
-void FDyTimerItem::MDY_PRIVATE_SPECIFIER(Abort)()
+void FDyActorTimerItem::MDY_PRIVATE_SPECIFIER(Abort)()
 {
   this->mCallbackFunction = nullptr;
   this->mDeferredCallCount = 0;
-  this->mStatus = EStatus::Aborted;
+  this->mStatus = EDyTimerStatus::Aborted;
   if (MDY_CHECK_ISNOTNULL(this->mPtrScript))
   {
     this->mPtrScript->MDY_PRIVATE_SPECIFIER(DetachPtrTimerHandle)(*this->mPtrHandle);
@@ -80,9 +80,9 @@ void FDyTimerItem::MDY_PRIVATE_SPECIFIER(Abort)()
   }
 }
 
-void FDyTimerItem::Update(_MIN_ TF32 iDt) noexcept
+void FDyActorTimerItem::Update(_MIN_ TF32 iDt) noexcept
 {
-  if (this->mStatus != EStatus::Play) { return; }
+  if (this->mStatus != EDyTimerStatus::Play) { return; }
 
   this->mTimeElapsed += iDt;
   if (this->mTimeElapsed >= this->mTimeGoal)
@@ -96,17 +96,17 @@ void FDyTimerItem::Update(_MIN_ TF32 iDt) noexcept
   }
 }
 
-bool FDyTimerItem::Checked() const noexcept
+bool FDyActorTimerItem::Checked() const noexcept
 {
-  return this->mStatus == EStatus::Play
+  return this->mStatus == EDyTimerStatus::Play
       && this->mCallbackFunction != nullptr
       && this->mDeferredCallCount > 0;
 }
 
-void FDyTimerItem::CallFunction(_MIN_ bool iCallOnlyOnce) noexcept
+void FDyActorTimerItem::CallFunction(_MIN_ bool iCallOnlyOnce) noexcept
 {
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mCallbackFunction), "Callback function of timer must be valid.");
-  if (this->mStatus != EStatus::Play) { return; }
+  if (this->mStatus != EDyTimerStatus::Play) { return; }
 
   if (this->mIsLooped == false)
   {
@@ -124,7 +124,7 @@ void FDyTimerItem::CallFunction(_MIN_ bool iCallOnlyOnce) noexcept
     {
       // It's likely to be changed to Abort or Pause due to change status of outside-world.
       // In that case, function call must be stopped.
-      while (this->mDeferredCallCount > 0 && this->mStatus == EStatus::Play)
+      while (this->mDeferredCallCount > 0 && this->mStatus == EDyTimerStatus::Play)
       {
         this->mCallbackFunction();
         this->mDeferredCallCount--;
@@ -136,17 +136,17 @@ void FDyTimerItem::CallFunction(_MIN_ bool iCallOnlyOnce) noexcept
   }
 }
 
-void FDyTimerItem::SetTimerStatus(_MIN_ EStatus iStatus) noexcept
+void FDyActorTimerItem::SetTimerStatus(_MIN_ EDyTimerStatus iStatus) noexcept
 {
   this->mStatus = iStatus;
 }
 
-FDyTimerItem::EStatus FDyTimerItem::GetTimerStatus() const noexcept
+EDyTimerStatus FDyActorTimerItem::GetTimerStatus() const noexcept
 {
   return this->mStatus;
 }
 
-TU32 FDyTimerItem::GetIndex() const noexcept
+TU32 FDyActorTimerItem::GetIndex() const noexcept
 {
   return this->mIndex;
 }
