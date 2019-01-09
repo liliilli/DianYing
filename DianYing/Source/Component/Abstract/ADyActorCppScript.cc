@@ -53,11 +53,10 @@ void ADyActorCppScript::MDY_PRIVATE_SPECIFIER(DetachPtrTimerHandle)(_MIN_ FDyTim
 void ADyActorCppScript::MDY_PRIVATE_SPECIFIER(AbortAllValidTimerHandler)()
 {
   auto& timerManager = this->GetGameTimerManager();
-  for (auto& ptrTimerHandler : this->mPtrTimerHandleList)
-  {
-    timerManager.StopActorTimer(*ptrTimerHandler);
+  while (this->mPtrTimerHandleList.empty() == false)
+  { // timer handle will be removed from list automatically.
+    timerManager.StopActorTimer(*this->mPtrTimerHandleList.front());
   }
-  this->mPtrTimerHandleList.clear();
 }
 
 void ADyActorCppScript::pfSetOutsideReference(_MIN_ CDyActorScriptCpp& outsideReference) noexcept

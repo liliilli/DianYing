@@ -55,11 +55,10 @@ void ADyWidgetCppScript::MDY_PRIVATE_SPECIFIER(AbortAllValidTimerHandler)()
   if (this->mPtrTimerHandleList.empty() == true) { return; }
 
   auto& timerManager = this->GetGameTimerManager();
-  for (auto& ptrTimerHandler : this->mPtrTimerHandleList)
-  {
-    timerManager.StopWidgetTimer(*ptrTimerHandler);
+  while (this->mPtrTimerHandleList.empty() == false)
+  { // timer handle will be removed from list automatically.
+    timerManager.StopWidgetTimer(*this->mPtrTimerHandleList.front());
   }
-  this->mPtrTimerHandleList.clear();
 }
 
 void ADyWidgetCppScript::pfSetOutsideReference(_MIN_ CDyWidgetScriptCpp& outsideReference) noexcept
