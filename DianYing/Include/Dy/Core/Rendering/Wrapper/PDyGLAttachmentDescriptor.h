@@ -33,8 +33,9 @@ struct PDyGLAttachmentDescriptor final
   DDyColorRGBA                  mBorderColor    = {};
   TTextureParameterList         mParameterList  = {};
   bool                          mIsUsingCustomizedParameter = false;
-  EDyRenderBufferInternalFormat mBufferFormat   = EDyRenderBufferInternalFormat::NoneError;
+  EDyGlBufferDataInternalFormat mBufferFormat   = EDyGlBufferDataInternalFormat::NoneError;
   EDyTextureStyleType           mAttachmentType = EDyTextureStyleType::NoneError;
+  TU32                          mSpecifiedMipmapLevel = 1;
 };
 
 } /// ::dy namespace

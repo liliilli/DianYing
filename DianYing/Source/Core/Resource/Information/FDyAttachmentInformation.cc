@@ -24,7 +24,8 @@ FDyAttachmentInformation::FDyAttachmentInformation(_MIN_ const PDyGlAttachmentIn
     mParameterList{metaInfo.mParameterList},
     mAttachmentSize{metaInfo.mAttachmentSize},
     mBorderColor{metaInfo.mBorderColor},
-    mBufferType{metaInfo.mBufferFormat}
+    mBufferType{metaInfo.mBufferFormat},
+    mMipmapLevels{metaInfo.mMipmapLevels}
 {
   MDY_ASSERT(this->mSpecifierName.empty() == false, "Attachment specifier name must be specified.");
 }

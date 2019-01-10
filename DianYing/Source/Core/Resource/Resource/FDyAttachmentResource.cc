@@ -26,12 +26,16 @@ FDyAttachmentResource::FDyAttachmentResource(_MIN_ const FDyAttachmentInformatio
     mInformationBinder{mSpecifierName}
 {
   PDyGLAttachmentDescriptor descriptor;
-  descriptor.mBorderColor   = iInformation.GetBorderColor();
-  descriptor.mBufferSize    = iInformation.GetBufferSize();
-  descriptor.mParameterList = iInformation.GetParameterList();
-  descriptor.mBufferFormat  = iInformation.GetBufferType();
-  descriptor.mAttachmentType= iInformation.GetAttachmentType();
-  if (descriptor.mParameterList.empty() == false) { descriptor.mIsUsingCustomizedParameter = true; }
+  descriptor.mBorderColor           = iInformation.GetBorderColor();
+  descriptor.mBufferSize            = iInformation.GetBufferSize();
+  descriptor.mParameterList         = iInformation.GetParameterList();
+  descriptor.mBufferFormat          = iInformation.GetBufferType();
+  descriptor.mAttachmentType        = iInformation.GetAttachmentType();
+  descriptor.mSpecifiedMipmapLevel  = iInformation.GetMipmapLevel();
+  if (descriptor.mParameterList.empty() == false) 
+  { 
+    descriptor.mIsUsingCustomizedParameter = true; 
+  }
 
   const auto optAttachmentId = FDyGLWrapper::CreateAttachment(descriptor);
   MDY_ASSERT(optAttachmentId.has_value() == true, "Attachment creation must be succeeded.");

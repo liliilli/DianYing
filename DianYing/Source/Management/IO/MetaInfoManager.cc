@@ -690,7 +690,7 @@ EDySuccess MDyMetaInfo::pfAddGLAttachmentMetaInfo(_MIN_ const PDyGlAttachmentIns
 {
 #if defined(_DEBUG) == true
   MDY_ASSERT(metaInfo.mSpecifierName.empty() != true, "Attachment specifier name must be specifed.");
-  MDY_ASSERT(metaInfo.mBufferFormat != EDyRenderBufferInternalFormat::NoneError, "Attachment format must not none.");
+  MDY_ASSERT(metaInfo.mBufferFormat != EDyGlBufferDataInternalFormat::NoneError, "Attachment format must not none.");
   MDY_ASSERT(metaInfo.mAttachmentSize.X > 0
           && metaInfo.mAttachmentSize.Y > 0, "Attachment size must be positive.");
 #endif
@@ -726,7 +726,7 @@ EDySuccess MDyMetaInfo::pfAddGLFrameBufferMetaInfo(const PDyGlFrameBufferInstanc
     PDyGlAttachmentInstanceMetaInfo defaultDepthBuffer;
     {
       defaultDepthBuffer.mSpecifierName   = fmt::format("{}_D_{}", specifier, DyGetRandomString(5));
-      defaultDepthBuffer.mBufferFormat    = EDyRenderBufferInternalFormat::DEPTH32;
+      defaultDepthBuffer.mBufferFormat    = EDyGlBufferDataInternalFormat::DEPTH32;
       defaultDepthBuffer.mSourceType      = EDyResourceSource::Builtin;
       defaultDepthBuffer.mAttachmentSize  = instance.mFrameBufferSize;
     }

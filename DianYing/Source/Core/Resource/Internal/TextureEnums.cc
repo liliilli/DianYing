@@ -31,4 +31,17 @@ GLenum DyGLGetLowTextureType(_MIN_ EDyTextureStyleType iType) noexcept
   }
 }
 
+GLenum DyGlGetLowDataFormatType(_MIN_ EDyGlBufferDataInternalFormat iValue) noexcept
+{
+  switch (iValue)
+  {
+  case EDyGlBufferDataInternalFormat::RED8:   return GL_R8;
+  case EDyGlBufferDataInternalFormat::RG8:    return GL_RG8;
+  case EDyGlBufferDataInternalFormat::RGB8:   return GL_RGB8;
+  case EDyGlBufferDataInternalFormat::RGBA8:  return GL_RGBA8;
+  case EDyGlBufferDataInternalFormat::DEPTH32:return GL_DEPTH_COMPONENT32;
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(GL_NONE);
+  }
+}
+
 } /// ::dy namespace

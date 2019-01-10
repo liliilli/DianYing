@@ -14,6 +14,8 @@
 
 /// Header file
 #include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <thread>
+
 #include <Dy/Core/Rendering/Wrapper/PDyGLWindowContextDescriptor.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLTextureDescriptor.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLShaderFragmentDescriptor.h>
@@ -133,13 +135,7 @@ std::optional<TU32> FDyGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescript
   }
 
   TU32 mTextureResourceId = MDY_INITIALIZE_DEFUINT;
-  GLenum glTextureType    = GL_NONE;
-  switch (descriptor.mType)
-  {
-  case EDyTextureStyleType::D1: glTextureType = GL_TEXTURE_1D; break;
-  case EDyTextureStyleType::D2: glTextureType = GL_TEXTURE_2D; break;
-  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
-  }
+  GLenum glTextureType    = DyGLGetLowTextureType(descriptor.mType);
 
   { // Critical section.
     MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
@@ -419,31 +415,32 @@ std::optional<TU32> FDyGLWrapper::CreateAttachment(_MIN_ const PDyGLAttachmentDe
 {
   // Validation check.
   MDY_ASSERT(iDescriptor.mBufferSize.X > 0 && iDescriptor.mBufferSize.Y > 0, "Buffer size must be positive value.");
-  MDY_ASSERT(iDescriptor.mBufferFormat != EDyRenderBufferInternalFormat::NoneError, "Attachment buffer format must be specified.");
+  MDY_ASSERT(iDescriptor.mBufferFormat != EDyGlBufferDataInternalFormat::NoneError, "Attachment buffer format must be specified.");
   if (iDescriptor.mIsUsingCustomizedParameter == true)
   {
     MDY_ASSERT(DyCheckTextureParameterList(iDescriptor.mParameterList) == DY_SUCCESS, "Attachment Parameter validation failed.");
   }
 
   TU32 attachmentId = MDY_INITIALIZE_DEFUINT;
+  const auto glTextureType    = DyGLGetLowTextureType(iDescriptor.mAttachmentType);
+  const auto glInternalFormat = DyGlGetLowDataFormatType(iDescriptor.mBufferFormat);
 
   { // Create attachment (texture only now)
     MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
     glGenTextures(1, &attachmentId);
-    glBindTexture(GL_TEXTURE_2D, attachmentId);
+    glBindTexture(glTextureType, attachmentId);
 
-    switch (iDescriptor.mBufferFormat)
+    switch (iDescriptor.mAttachmentType)
     {
-    case EDyRenderBufferInternalFormat::RED8:
-    case EDyRenderBufferInternalFormat::RG8:
-    case EDyRenderBufferInternalFormat::RGB8:
+    case EDyTextureStyleType::D2: 
+    {
+      glTexStorage2D(glTextureType, iDescriptor.mSpecifiedMipmapLevel, glInternalFormat, MDY_VECTOR_XY(iDescriptor.mBufferSize));
+    } break;
+    case EDyTextureStyleType::D1:
+    case EDyTextureStyleType::D1Array: 
+    case EDyTextureStyleType::D2Array:
+    case EDyTextureStyleType::D2ShaderArray: 
       MDY_NOT_IMPLEMENTED_ASSERT();
-      MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
-    case EDyRenderBufferInternalFormat::RGBA8:
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, MDY_VECTOR_XY(iDescriptor.mBufferSize), 0, GL_RGBA, GL_FLOAT, nullptr);
-      break;
-    case EDyRenderBufferInternalFormat::DEPTH32:
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, MDY_VECTOR_XY(iDescriptor.mBufferSize), 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
       break;
     default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
     }
@@ -453,14 +450,14 @@ std::optional<TU32> FDyGLWrapper::CreateAttachment(_MIN_ const PDyGLAttachmentDe
     for (const auto& parameter : iDescriptor.mParameterList)
     {
       if (parameter.mParameterValue == EDyGlParameterValue::ClampToBorder) { isThisAttachmentUsingClampToBorder = true; }
-      glTexParameteri(GL_TEXTURE_2D, DyGetParameterNameValue(parameter.mParameterOption), DyGetParameterValueValue(parameter.mParameterValue));
+      glTexParameteri(glTextureType, DyGetParameterNameValue(parameter.mParameterOption), DyGetParameterValueValue(parameter.mParameterValue));
     }
     if (isThisAttachmentUsingClampToBorder == true)
     {
-      glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, iDescriptor.mBorderColor.Data());
+      glTexParameterfv(glTextureType, GL_TEXTURE_BORDER_COLOR, iDescriptor.mBorderColor.Data());
     }
 
-    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindTexture(glTextureType, 0);
     glFlush();
 
     {

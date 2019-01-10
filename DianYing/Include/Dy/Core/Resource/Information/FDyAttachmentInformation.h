@@ -18,6 +18,7 @@
 #include <Dy/Meta/Type/EDyResourceTypes.h>
 #include <Dy/Helper/Type/VectorInt2.h>
 #include <Dy/Helper/Type/ColorRGBA.h>
+#include <Dy/Helper/Type/Clamp.h>
 
 //!
 //! Forward declaration
@@ -66,13 +67,17 @@ public:
   /// @brief Get attachment type for this attachment.
   MDY_NODISCARD const auto& GetAttachmentType() const noexcept { return this->mAttachmentType; }
 
+  /// @brief Get specified mipmap generation level for this attachment.
+  MDY_NODISCARD TU32 GetMipmapLevel() const noexcept { return this->mMipmapLevels; }
+
 private:
   std::string                   mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
   TTextureParameterList         mParameterList  = {};
   DDyVectorInt2                 mAttachmentSize = {};
   DDyColorRGBA                  mBorderColor    = DDyColorRGBA::Black;
-  EDyRenderBufferInternalFormat mBufferType     = EDyRenderBufferInternalFormat::NoneError;
+  EDyGlBufferDataInternalFormat mBufferType     = EDyGlBufferDataInternalFormat::NoneError;
   EDyTextureStyleType           mAttachmentType = EDyTextureStyleType::D2;
+  DDyClamp<TU32, 1, 16>         mMipmapLevels   = 1;
 };
 
 } /// ::dy namespace

@@ -51,6 +51,20 @@ enum class EDyTextureStyleType : unsigned char
 /// @brief Get converted low-level gl texture type from wrapping type.
 MDY_NODISCARD GLenum DyGLGetLowTextureType(_MIN_ EDyTextureStyleType iType) noexcept;
 
+/// @enum  EDyGlBufferDataInternalFormat
+/// @brief RenderBuffer internal format.
+enum class EDyGlBufferDataInternalFormat : unsigned char
+{
+  RED8,
+  RG8,
+  RGB8,
+  RGBA8,
+  DEPTH32,
+  NoneError = 0xFF
+};
+
+MDY_NODISCARD GLenum DyGlGetLowDataFormatType(_MIN_ EDyGlBufferDataInternalFormat iValue) noexcept;
+
 } /// ::dy namespace
 
 #endif /// GUARD_DY_COMPONENT_INTENRAL_TEXTURE_ENUMS_H

@@ -18,6 +18,7 @@
 #include <Dy/Helper/Type/VectorInt2.h>
 #include <Dy/Helper/Type/ColorRGBA.h>
 #include <Dy/Core/Resource/Internal/TextureEnums.h>
+#include <Dy/Helper/Type/Clamp.h>
 
 namespace dy
 {
@@ -32,8 +33,9 @@ struct PDyGlAttachmentInstanceMetaInfo final : public PDyCommonResourceMetaInfo
   TTextureParameterList         mParameterList  = {};
   DDyVectorInt2                 mAttachmentSize = {};
   DDyColorRGBA                  mBorderColor    = DDyColorRGBA::Black;
-  EDyRenderBufferInternalFormat mBufferFormat   = EDyRenderBufferInternalFormat::NoneError;
+  EDyGlBufferDataInternalFormat mBufferFormat   = EDyGlBufferDataInternalFormat::NoneError;
   EDyTextureStyleType           mAttachmentType = EDyTextureStyleType::D2;
+  DDyClamp<TU32, 1, 16>         mMipmapLevels   = 1;
 };
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyGlAttachmentInstanceMetaInfo& p);
