@@ -26,12 +26,49 @@ namespace
 template <TI32 TCount>
 using TTargetList = std::array<dy::EDyGlParameterValue, TCount>;
 
-///
+template <dy::EDyGlParameterName TName> struct TTexParamList;
+template <> struct TTexParamList<dy::EDyGlParameterName::TextureMinFilter> final
+{
+  using _ = dy::EDyGlParameterValue;
+  static constexpr TTargetList<6> mList = 
+  {
+    _::Linear, _::Nearest, 
+    _::LinearMipmapLinear, _::LinearMipmapNearest, 
+    _::LinearMipmapNearest, _::NearestMipmapNearest
+  };
+};
+template <> struct TTexParamList<dy::EDyGlParameterName::TextureMagFilter> final
+{
+  using _ = dy::EDyGlParameterValue;
+  static constexpr TTargetList<2> mList = { _::Linear, _::Nearest };
+};
+template <> struct TTexParamList<dy::EDyGlParameterName::TextureWrappingS> final
+{
+  using _ = dy::EDyGlParameterValue;
+  static constexpr TTargetList<4> mList = 
+  {
+    _::ClampToBorder, _::ClampToEdge, _::Repeat, _::MirroredRepeat
+  };
+};
+template <> struct TTexParamList<dy::EDyGlParameterName::TextureCompareMode> final
+{
+  using _ = dy::EDyGlParameterValue;
+  static constexpr TTargetList<2> mList = { _::CompareRefToTexture, _::CompareNone, };
+};
+template <> struct TTexParamList<dy::EDyGlParameterName::TextureCompareFunc> final
+{
+  using _ = dy::EDyGlParameterValue;
+  static constexpr TTargetList<8> mList = 
+  {
+    _::Greater,     _::GreaterEqual, _::Equal,       _::NotEqual,    
+    _::LessEqual,   _::Less,        _::Always,      _::Never,       
+  };
+};
+
 /// @brief
 /// @param value
 /// @param targetList
 /// @return
-///
 template <TI32 TValue>
 MDY_NODISCARD bool DyIsHaveValueIn(
     _MIN_ const dy::EDyGlParameterValue value,
@@ -98,30 +135,40 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ TTextureParameterList& p)
 
 EDySuccess DyCheckTextureParameter(_MIN_ const PDyGlTexParameterInformation& parameter)
 {
-  static constexpr TTargetList<6> sTextureMinFilter = {
-    EDyGlParameterValue::Linear, EDyGlParameterValue::Nearest,
-    EDyGlParameterValue::LinearMipmapLinear, EDyGlParameterValue::LinearMipmapNearest,
-    EDyGlParameterValue::LinearMipmapNearest, EDyGlParameterValue::NearestMipmapNearest
-  };
-
-  static constexpr TTargetList<2> sTextureMagFilter = {
-    EDyGlParameterValue::Linear, EDyGlParameterValue::Nearest,
-  };
-
-  static constexpr TTargetList<4> sTextureWrappingSTR = {
-    EDyGlParameterValue::ClampToBorder, EDyGlParameterValue::ClampToEdge,
-    EDyGlParameterValue::Repeat, EDyGlParameterValue::MirroredRepeat
-  };
-
+  using TName = EDyGlParameterName;
   switch (parameter.mParameterOption)
   {
-  case EDyGlParameterName::TextureMinFilter:
-    return DyIsHaveValueIn(parameter.mParameterValue, sTextureMinFilter) ? DY_SUCCESS : DY_FAILURE;
-  case EDyGlParameterName::TextureMagFilter:
-    return DyIsHaveValueIn(parameter.mParameterValue, sTextureMagFilter) ? DY_SUCCESS : DY_FAILURE;
-  case EDyGlParameterName::TextureWrappingS:
-  case EDyGlParameterName::TextureWrappingT:
-    return DyIsHaveValueIn(parameter.mParameterValue, sTextureWrappingSTR) ? DY_SUCCESS : DY_FAILURE;
+  case TName::TextureMinFilter:
+  {
+    return DyIsHaveValueIn(
+        parameter.mParameterValue, 
+        TTexParamList<TName::TextureMinFilter>::mList) == true ? DY_SUCCESS : DY_FAILURE;
+  }
+  case TName::TextureMagFilter:
+  {
+    return DyIsHaveValueIn(
+        parameter.mParameterValue, 
+        TTexParamList<TName::TextureMagFilter>::mList) == true ? DY_SUCCESS : DY_FAILURE;
+  }
+  case TName::TextureWrappingS:
+  case TName::TextureWrappingT:
+  {
+    return DyIsHaveValueIn(
+        parameter.mParameterValue, 
+        TTexParamList<TName::TextureWrappingS>::mList) == true ? DY_SUCCESS : DY_FAILURE;
+  }
+  case TName::TextureCompareMode:
+  {
+    return DyIsHaveValueIn(
+        parameter.mParameterValue, 
+        TTexParamList<TName::TextureCompareMode>::mList) == true ? DY_SUCCESS : DY_FAILURE;
+  }
+  case TName::TextureCompareFunc:
+  {
+    return DyIsHaveValueIn(
+        parameter.mParameterValue, 
+        TTexParamList<TName::TextureCompareFunc>::mList) == true ? DY_SUCCESS : DY_FAILURE;
+  }
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
   return DY_FAILURE;

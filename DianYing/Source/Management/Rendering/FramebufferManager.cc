@@ -115,8 +115,8 @@ EDySuccess MDyFramebuffer::InitializeNewFrameBuffer(const PDyGlFrameBufferInform
       if (parameter.mParameterValue == EDyGlParameterValue::ClampToBorder) { isThisAttachmentUsingClampToBorder = true; }
       //
       glTexParameteri(GL_TEXTURE_2D,
-          DyGetParameterNameValue(parameter.mParameterOption),
-          DyGetParameterValueValue(parameter.mParameterValue));
+          DyGetTexParameterNameValue(parameter.mParameterOption),
+          DyGetTexParameterValueValue(parameter.mParameterValue));
     }
 
     // If isThisAttachmentUsingClampToBorder is true, apply border color to texture.

@@ -34,20 +34,22 @@ GLenum DyGetAttachmentTypeValue(_MIN_ const EDyGlAttachmentType attachment) noex
   return GL_COLOR_ATTACHMENT0 + static_cast<TI32>(attachment);
 }
 
-GLenum DyGetParameterNameValue(const EDyGlParameterName attachment) noexcept
+GLenum DyGetTexParameterNameValue(_MIN_ const EDyGlParameterName attachment) noexcept
 {
   switch (attachment)
   {
-  case EDyGlParameterName::TextureMinFilter: return GL_TEXTURE_MIN_FILTER;
-  case EDyGlParameterName::TextureMagFilter: return GL_TEXTURE_MAG_FILTER;
-  case EDyGlParameterName::TextureWrappingS: return GL_TEXTURE_WRAP_S;
-  case EDyGlParameterName::TextureWrappingT: return GL_TEXTURE_WRAP_T;
+  case EDyGlParameterName::TextureMinFilter:    return GL_TEXTURE_MIN_FILTER;
+  case EDyGlParameterName::TextureMagFilter:    return GL_TEXTURE_MAG_FILTER;
+  case EDyGlParameterName::TextureWrappingS:    return GL_TEXTURE_WRAP_S;
+  case EDyGlParameterName::TextureWrappingT:    return GL_TEXTURE_WRAP_T;
+  case EDyGlParameterName::TextureCompareMode:  return GL_TEXTURE_COMPARE_MODE;
+  case EDyGlParameterName::TextureCompareFunc:  return GL_TEXTURE_COMPARE_FUNC;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
   return GL_NONE;
 }
 
-GLenum DyGetParameterValueValue(const EDyGlParameterValue value) noexcept
+GLenum DyGetTexParameterValueValue(_MIN_ const EDyGlParameterValue value) noexcept
 {
   switch (value)
   {
@@ -61,6 +63,18 @@ GLenum DyGetParameterValueValue(const EDyGlParameterValue value) noexcept
   case EDyGlParameterValue::ClampToBorder:        return GL_CLAMP_TO_BORDER;
   case EDyGlParameterValue::Repeat:               return GL_REPEAT;
   case EDyGlParameterValue::MirroredRepeat:       return GL_MIRRORED_REPEAT;
+  // TextureCompareMode
+  case EDyGlParameterValue::CompareRefToTexture:  return GL_COMPARE_REF_TO_TEXTURE;
+  case EDyGlParameterValue::CompareNone:          return GL_NONE;
+  // TextureCompareFunc
+  case EDyGlParameterValue::Greater:              return GL_GREATER;
+  case EDyGlParameterValue::GreaterEqual:         return GL_GEQUAL;
+  case EDyGlParameterValue::Equal:                return GL_EQUAL;
+  case EDyGlParameterValue::NotEqual:             return GL_NOTEQUAL;
+  case EDyGlParameterValue::LessEqual:            return GL_LEQUAL;
+  case EDyGlParameterValue::Less:                 return GL_LESS;
+  case EDyGlParameterValue::Always:               return GL_ALWAYS;
+  case EDyGlParameterValue::Never:                return GL_NEVER;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
   return GL_NONE;

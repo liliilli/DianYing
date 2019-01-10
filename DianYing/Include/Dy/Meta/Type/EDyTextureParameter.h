@@ -28,6 +28,12 @@ enum class EDyGlParameterName
   TextureMagFilter,
   TextureWrappingS,
   TextureWrappingT,
+  // Specifies the texture comparison mode for currently bound depth textures. 
+  // That is, a texture whose internal format is GL_DEPTH_COMPONENT_*
+  TextureCompareMode,
+  // Specifies the comparison operator used 
+  // when GL_TEXTURE_COMPARE_MODE is set to GL_COMPARE_R(REF)_TO_TEXTURE.  
+  TextureCompareFunc,
 
   NoneError
 };
@@ -35,12 +41,10 @@ enum class EDyGlParameterName
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyGlParameterName& p);
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyGlParameterName& p);
 
-///
 /// @brief  Get internal plain parameter value from EDyGlParameterName.
 /// @param  name EDyGlParameterName
 /// @return OpenGL C-plain parameter value.
-///
-MDY_NODISCARD GLenum DyGetParameterNameValue(_MIN_ const EDyGlParameterName name) noexcept;
+MDY_NODISCARD GLenum DyGetTexParameterNameValue(_MIN_ const EDyGlParameterName name) noexcept;
 
 ///
 /// @enum   EDyGlParameterValue
@@ -60,18 +64,28 @@ enum class EDyGlParameterValue
   Repeat,
   MirroredRepeat,
 
+  CompareRefToTexture,  // TextureCompareMode
+  CompareNone,          // TextureCompareMode
+
+  Greater,              // TextureCompareFunc
+  GreaterEqual,         // TextureCompareFunc
+  Equal,                // TextureCompareFunc
+  NotEqual,             // TextureCompareFunc
+  LessEqual,            // TextureCompareFunc
+  Less,                 // TextureCompareFunc
+  Always,               // TextureCompareFunc
+  Never,                // TextureCompareFunc
+
   NoneError
 };
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyGlParameterValue& p);
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyGlParameterValue& p);
 
-///
 /// @brief  Get internal plain parameter value from EDyGlParameterValue.
 /// @param  value EDyGlParameterValue
 /// @return OpenGL C-plain parameter value.
-///
-MDY_NODISCARD GLenum DyGetParameterValueValue(_MIN_ const EDyGlParameterValue value) noexcept;
+MDY_NODISCARD GLenum DyGetTexParameterValueValue(_MIN_ const EDyGlParameterValue value) noexcept;
 
 ///
 /// @struct PDyGlTexParameterInformation
@@ -98,18 +112,12 @@ using TTextureParameterList = std::vector<PDyGlTexParameterInformation>;
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const TTextureParameterList& p);
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ TTextureParameterList& p);
 
-///
-/// @brief
-/// @param  parameter
-/// @return
-///
+/// @brief Check texture parameter item is specified correctly.
+/// @return If succeeded, return DY_SUCCESS otherwise DY_FAILURE.
 MDY_NODISCARD EDySuccess DyCheckTextureParameter(_MIN_ const PDyGlTexParameterInformation& parameter);
 
-///
-/// @brief
-/// @param  parameterList
-/// @return
-///
+/// @brief Check Texture parameter list is specified correctly.
+/// @return If succeeded, return DY_SUCCESS otherwise DY_FAILURE.
 MDY_NODISCARD EDySuccess DyCheckTextureParameterList(_MIN_ const std::vector<PDyGlTexParameterInformation>& parameterList);
 
 } /// ::dy namespace

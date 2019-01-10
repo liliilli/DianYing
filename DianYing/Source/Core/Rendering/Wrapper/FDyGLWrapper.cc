@@ -168,7 +168,7 @@ std::optional<TU32> FDyGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescript
       for (const auto& parameter : *descriptor.mPtrParameterList)
       { // Check there is ClmapToBorder for border coloring and set parameter
         if (parameter.mParameterValue == EDyGlParameterValue::ClampToBorder) { isUsingClampToBorder = true; }
-        glTexParameteri(glTextureType, DyGetParameterNameValue(parameter.mParameterOption), DyGetParameterValueValue(parameter.mParameterValue));
+        glTexParameteri(glTextureType, DyGetTexParameterNameValue(parameter.mParameterOption), DyGetTexParameterValueValue(parameter.mParameterValue));
       }
 
       if (isUsingClampToBorder == true)
@@ -455,7 +455,7 @@ std::optional<TU32> FDyGLWrapper::CreateAttachment(_MIN_ const PDyGLAttachmentDe
     for (const auto& parameter : iDescriptor.mParameterList)
     {
       if (parameter.mParameterValue == EDyGlParameterValue::ClampToBorder) { isThisAttachmentUsingClampToBorder = true; }
-      glTexParameteri(glTextureType, DyGetParameterNameValue(parameter.mParameterOption), DyGetParameterValueValue(parameter.mParameterValue));
+      glTexParameteri(glTextureType, DyGetTexParameterNameValue(parameter.mParameterOption), DyGetTexParameterValueValue(parameter.mParameterValue));
     }
     if (isThisAttachmentUsingClampToBorder == true)
     {
