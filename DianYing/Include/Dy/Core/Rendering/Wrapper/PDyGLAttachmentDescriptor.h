@@ -18,6 +18,7 @@
 #include <Dy/Helper/Type/VectorInt2.h>
 #include <Dy/Meta/Type/EDyTextureParameter.h>
 #include <Dy/Meta/Type/EDyResourceTypes.h>
+#include "Dy/Core/Resource/Information/FDyAttachmentInformation.h"
 
 namespace dy
 {
@@ -33,6 +34,7 @@ struct PDyGLAttachmentDescriptor final
   TTextureParameterList         mParameterList  = {};
   bool                          mIsUsingCustomizedParameter = false;
   EDyRenderBufferInternalFormat mBufferFormat   = EDyRenderBufferInternalFormat::NoneError;
+  EDyTextureStyleType           mAttachmentType = EDyTextureStyleType::NoneError;
 };
 
 } /// ::dy namespace

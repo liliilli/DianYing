@@ -24,8 +24,8 @@
 
 namespace dy
 {
-  enum class EDyTextureStyleType : unsigned char;
-  enum class EDyDrawType;
+enum class EDyTextureStyleType : unsigned char;
+enum class EDyDrawType;
 struct PDyGLVaoBindDescriptor;
 struct PDyGLShaderFragmentDescriptor;
 struct PDyGLTextureDescriptor;

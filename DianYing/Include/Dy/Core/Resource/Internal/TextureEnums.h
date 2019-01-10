@@ -36,10 +36,8 @@ enum class EDyTextureMapType : unsigned char
   Opacity,
 };
 
-///
 /// @enum EDyTextureStyleType
 /// @brief Texture loading type
-///
 enum class EDyTextureStyleType : unsigned char
 {
   NoneError,
@@ -47,7 +45,11 @@ enum class EDyTextureStyleType : unsigned char
   D2,
   D1Array,
   D2Array,
+  D2ShaderArray,
 };
+
+/// @brief Get converted low-level gl texture type from wrapping type.
+MDY_NODISCARD GLenum DyGLGetLowTextureType(_MIN_ EDyTextureStyleType iType) noexcept;
 
 } /// ::dy namespace
 

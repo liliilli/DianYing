@@ -30,6 +30,7 @@ FDyAttachmentResource::FDyAttachmentResource(_MIN_ const FDyAttachmentInformatio
   descriptor.mBufferSize    = iInformation.GetBufferSize();
   descriptor.mParameterList = iInformation.GetParameterList();
   descriptor.mBufferFormat  = iInformation.GetBufferType();
+  descriptor.mAttachmentType= iInformation.GetAttachmentType();
   if (descriptor.mParameterList.empty() == false) { descriptor.mIsUsingCustomizedParameter = true; }
 
   const auto optAttachmentId = FDyGLWrapper::CreateAttachment(descriptor);

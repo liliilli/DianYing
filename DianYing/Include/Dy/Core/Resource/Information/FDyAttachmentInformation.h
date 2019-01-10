@@ -13,10 +13,11 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Core/Resource/Internal/TextureEnums.h>
 #include <Dy/Meta/Type/EDyTextureParameter.h>
+#include <Dy/Meta/Type/EDyResourceTypes.h>
 #include <Dy/Helper/Type/VectorInt2.h>
 #include <Dy/Helper/Type/ColorRGBA.h>
-#include "Dy/Meta/Type/EDyResourceTypes.h"
 
 //!
 //! Forward declaration
@@ -62,12 +63,16 @@ public:
   /// @brief Get buffer type for intenal pixel.
   MDY_NODISCARD const auto& GetBufferType() const noexcept { return this->mBufferType; }
 
+  /// @brief Get attachment type for this attachment.
+  MDY_NODISCARD const auto& GetAttachmentType() const noexcept { return this->mAttachmentType; }
+
 private:
   std::string                   mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
   TTextureParameterList         mParameterList  = {};
   DDyVectorInt2                 mAttachmentSize = {};
   DDyColorRGBA                  mBorderColor    = DDyColorRGBA::Black;
   EDyRenderBufferInternalFormat mBufferType     = EDyRenderBufferInternalFormat::NoneError;
+  EDyTextureStyleType           mAttachmentType = EDyTextureStyleType::D2;
 };
 
 } /// ::dy namespace
