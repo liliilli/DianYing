@@ -36,6 +36,8 @@ struct PDyGlAttachmentInstanceMetaInfo final : public PDyCommonResourceMetaInfo
   EDyGlBufferDataInternalFormat mBufferFormat   = EDyGlBufferDataInternalFormat::NoneError;
   EDyTextureStyleType           mAttachmentType = EDyTextureStyleType::D2;
   DDyClamp<TU32, 1, 16>         mMipmapLevels   = 1;
+  // This variable is only enabled if only mAttachmentType is `Array` type.
+  TU32                          mDepthNumber    = 0;
 };
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyGlAttachmentInstanceMetaInfo& p);

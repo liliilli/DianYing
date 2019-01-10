@@ -32,6 +32,7 @@ FDyAttachmentResource::FDyAttachmentResource(_MIN_ const FDyAttachmentInformatio
   descriptor.mBufferFormat          = iInformation.GetBufferType();
   descriptor.mAttachmentType        = iInformation.GetAttachmentType();
   descriptor.mSpecifiedMipmapLevel  = iInformation.GetMipmapLevel();
+  descriptor.mDepthNumber           = iInformation.GetDepthNumber();
   if (descriptor.mParameterList.empty() == false) 
   { 
     descriptor.mIsUsingCustomizedParameter = true; 

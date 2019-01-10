@@ -45,7 +45,7 @@ enum class EDyTextureStyleType : unsigned char
   D2,
   D1Array,
   D2Array,
-  D2ShaderArray,
+  D2ShadowArray,
 };
 
 /// @brief Get converted low-level gl texture type from wrapping type.

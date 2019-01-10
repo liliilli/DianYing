@@ -423,6 +423,7 @@ std::optional<TU32> FDyGLWrapper::CreateAttachment(_MIN_ const PDyGLAttachmentDe
 
   TU32 attachmentId = MDY_INITIALIZE_DEFUINT;
   const auto glTextureType    = DyGLGetLowTextureType(iDescriptor.mAttachmentType);
+  const auto mipmapLv         = iDescriptor.mSpecifiedMipmapLevel;
   const auto glInternalFormat = DyGlGetLowDataFormatType(iDescriptor.mBufferFormat);
 
   { // Create attachment (texture only now)
@@ -434,14 +435,18 @@ std::optional<TU32> FDyGLWrapper::CreateAttachment(_MIN_ const PDyGLAttachmentDe
     {
     case EDyTextureStyleType::D2: 
     {
-      glTexStorage2D(glTextureType, iDescriptor.mSpecifiedMipmapLevel, glInternalFormat, MDY_VECTOR_XY(iDescriptor.mBufferSize));
+      glTexStorage2D(glTextureType, mipmapLv, glInternalFormat, MDY_VECTOR_XY(iDescriptor.mBufferSize));
     } break;
     case EDyTextureStyleType::D1:
     case EDyTextureStyleType::D1Array: 
+    {
+      glTexStorage2D(glTextureType, mipmapLv, glInternalFormat, iDescriptor.mBufferSize.X, iDescriptor.mDepthNumber);
+    } break;
     case EDyTextureStyleType::D2Array:
-    case EDyTextureStyleType::D2ShaderArray: 
-      MDY_NOT_IMPLEMENTED_ASSERT();
-      break;
+    case EDyTextureStyleType::D2ShadowArray: 
+    {
+      glTexStorage3D(glTextureType, mipmapLv, glInternalFormat, MDY_VECTOR_XY(iDescriptor.mBufferSize), iDescriptor.mDepthNumber);
+    } break;
     default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
     }
 

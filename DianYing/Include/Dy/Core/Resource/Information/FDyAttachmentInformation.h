@@ -70,6 +70,9 @@ public:
   /// @brief Get specified mipmap generation level for this attachment.
   MDY_NODISCARD TU32 GetMipmapLevel() const noexcept { return this->mMipmapLevels; }
 
+  /// @brief Get the number of depth of this attahchment.
+  MDY_NODISCARD TU32 GetDepthNumber() const noexcept { return this->mDepthNumber; }
+
 private:
   std::string                   mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
   TTextureParameterList         mParameterList  = {};
@@ -78,6 +81,8 @@ private:
   EDyGlBufferDataInternalFormat mBufferType     = EDyGlBufferDataInternalFormat::NoneError;
   EDyTextureStyleType           mAttachmentType = EDyTextureStyleType::D2;
   DDyClamp<TU32, 1, 16>         mMipmapLevels   = 1;
+  // This variable is only enabled if only mAttachmentType is `Array` type.
+  TU32                          mDepthNumber    = 0;
 };
 
 } /// ::dy namespace

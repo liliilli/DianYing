@@ -36,6 +36,8 @@ struct PDyGLAttachmentDescriptor final
   EDyGlBufferDataInternalFormat mBufferFormat   = EDyGlBufferDataInternalFormat::NoneError;
   EDyTextureStyleType           mAttachmentType = EDyTextureStyleType::NoneError;
   TU32                          mSpecifiedMipmapLevel = 1;
+  // @brief This variable is only applied into attachment creation when `mAttachmentType` is `Array` only.
+  TU32                          mDepthNumber    = 0;
 };
 
 } /// ::dy namespace
