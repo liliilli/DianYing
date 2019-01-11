@@ -30,7 +30,7 @@ void FDyBtAttachmentBasicShadow::ConstructBuffer(_MOUT_ PDyGlAttachmentInstanceM
     {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::ClampToBorder},
     {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::ClampToBorder},
   };
-  property.mBufferFormat = EDyRenderBufferInternalFormat::DEPTH32;
+  property.mBufferFormat = EDyGlBufferDataInternalFormat::DEPTH32;
 }
 
 } /// ::dy namespace
