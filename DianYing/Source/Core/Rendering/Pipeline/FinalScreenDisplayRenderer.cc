@@ -21,6 +21,7 @@
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
 
 #include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
+#include "Dy/Core/Rendering/Wrapper/FDyGLWrapper.h"
 
 namespace dy
 {
@@ -31,9 +32,7 @@ FDyFinalScreenDisplayRenderer::FDyFinalScreenDisplayRenderer()
   MDY_ASSERT(this->mBinderAttUIFinal.IsResourceExist() == true,     "UI final output must be valid.");
 
   this->mBinderShader->UseShader();
-  const auto id = this->mBinderShader->GetShaderProgramId();
-  glUniform1i(glGetUniformLocation(id, "uSceneTexture"), 0);
-  glUniform1i(glGetUniformLocation(id, "uUiTexture")   , 1);
+  this->mBinderShader.TryUpdateUniformList();
   this->mBinderShader->DisuseShader();
 }
 
@@ -52,10 +51,10 @@ void FDyFinalScreenDisplayRenderer::RenderScreen()
   // Set
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   this->mBinderShader->UseShader();
-  const auto& mesh = *submeshList[0]->Get();
-  glBindVertexArray(mesh.GetVertexArrayId());
+  (*submeshList[0])->BindVertexArray();
 
   // Bind g-buffers as textures and draw.
+
   glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, this->mBinderAttSceneFinal->GetAttachmentId());
   glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, this->mBinderAttUIFinal->GetAttachmentId());
   glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);

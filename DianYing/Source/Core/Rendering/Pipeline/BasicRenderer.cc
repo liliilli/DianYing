@@ -68,57 +68,49 @@ FDyBasicRenderer::~FDyBasicRenderer()
 }
 
 void FDyBasicRenderer::RenderScreen(_MIN_ const std::vector<NotNull<CDyModelRenderer*>>& rendererList)
-{ // Validation test
+{ 
   if (this->mBinderFrameBuffer.IsResourceExist() == false) { return; }
-  glBindFramebuffer(GL_FRAMEBUFFER, this->mBinderFrameBuffer->GetFrameBufferId());
+  this->mBinderFrameBuffer->BindFrameBuffer();
+  // Get valid Main CDyCamera instance pointer address.
+  const auto* ptrCamera = MDyWorld::GetInstance().GetPtrMainLevelCamera();
+  if (MDY_CHECK_ISNULL(ptrCamera)) { return; }
 
-  auto& worldManager     = MDyWorld::GetInstance();
-  auto& uboManager       = MDyUniformBufferObject::GetInstance();
-  const auto cameraCount = worldManager.GetFocusedCameraCount();
+  const auto& validCameraRawPtr = *ptrCamera;
+  // Set viewport values to camera's properties.
+  const auto viewportRect = validCameraRawPtr.GetPixelizedViewportRectangle();
+  glViewport(viewportRect[0], viewportRect[1], viewportRect[2], viewportRect[3]);
 
-  // Request draw calls (without SW occlusion culling)
-  for (TI32 cameraId = 0; cameraId < cameraCount; ++cameraId)
-  { // Get valid CDyCamera instance pointer address.
-    const auto opCamera = worldManager.GetFocusedCameraValidReference(cameraId);
-    if (opCamera.has_value() == false) { continue; }
-
-    const auto& validCameraRawPtr = *opCamera.value();
-    {
-      const auto flag = uboManager.UpdateUboContainer(
-          MSVSTR(sUboCameraBlock),
-          offsetof(DDyUboCameraBlock, mViewMatrix),
-          sizeof(DDyUboCameraBlock::mViewMatrix),
-          &validCameraRawPtr.GetViewMatrix()[0].X);
-      MDY_ASSERT(flag == DY_SUCCESS, "");
-    }
-    {
-      const auto flag = uboManager.UpdateUboContainer(
-          MSVSTR(sUboCameraBlock),
-          offsetof(DDyUboCameraBlock, mProjMatrix),
-          sizeof(DDyUboCameraBlock::mProjMatrix),
-          &validCameraRawPtr.GetProjectionMatrix()[0].X);
-      MDY_ASSERT(flag == DY_SUCCESS, "");
-    }
-
-    // Set viewport values to camera's properties.
-    const auto viewportRect = validCameraRawPtr.GetPixelizedViewportRectangle();
-    glViewport(viewportRect[0], viewportRect[1], viewportRect[2], viewportRect[3]);
-
-    for (auto& drawInstance : rendererList)
-    { // General deferred rendering
-      auto& refRenderer    = *drawInstance;
-      const auto& worldPos = refRenderer.GetBindedActor()->GetTransform()->GetFinalWorldPosition();
-      // Check frustum.
-      if (validCameraRawPtr.CheckIsPointInFrustum(worldPos) == false) { continue; }
-
-      const auto& refModelMatrix  = refRenderer.GetBindedActor()->GetTransform()->GetTransform();
-      this->pRenderScreen(refRenderer, refModelMatrix, validCameraRawPtr);
-      SDyProfilingHelper::AddScreenRenderedActorCount(1);
-    }
+  auto& uboManager = MDyUniformBufferObject::GetInstance();
+  {
+    const auto flag = uboManager.UpdateUboContainer(
+        MSVSTR(sUboCameraBlock),
+        offsetof(DDyUboCameraBlock, mViewMatrix),
+        sizeof(DDyUboCameraBlock::mViewMatrix),
+        &validCameraRawPtr.GetViewMatrix()[0].X);
+    MDY_ASSERT(flag == DY_SUCCESS, "");
+  }
+  {
+    const auto flag = uboManager.UpdateUboContainer(
+        MSVSTR(sUboCameraBlock),
+        offsetof(DDyUboCameraBlock, mProjMatrix),
+        sizeof(DDyUboCameraBlock::mProjMatrix),
+        &validCameraRawPtr.GetProjectionMatrix()[0].X);
+    MDY_ASSERT(flag == DY_SUCCESS, "");
   }
 
-  // Return to default frame buffer.
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  for (auto& drawInstance : rendererList)
+  { // General deferred rendering
+    auto& refRenderer    = *drawInstance;
+    const auto& worldPos = refRenderer.GetBindedActor()->GetTransform()->GetFinalWorldPosition();
+    // Check frustum.
+    if (validCameraRawPtr.CheckIsPointInFrustum(worldPos) == false) { continue; }
+
+    const auto& refModelMatrix = refRenderer.GetBindedActor()->GetTransform()->GetTransform();
+    this->pRenderScreen(refRenderer, refModelMatrix, validCameraRawPtr);
+    SDyProfilingHelper::AddScreenRenderedActorCount(1);
+  }
+
+  this->mBinderFrameBuffer->UnbindFrameBuffer();
 }
 
 void FDyBasicRenderer::pRenderScreen(

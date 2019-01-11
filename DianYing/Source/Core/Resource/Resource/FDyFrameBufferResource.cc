@@ -75,4 +75,17 @@ FDyFrameBufferResource::~FDyFrameBufferResource()
   MDY_CALL_ASSERT_SUCCESS(FDyGLWrapper::DeleteFrameBuffer(this->mFrameBufferId));
 }
 
+EDySuccess FDyFrameBufferResource::BindFrameBuffer() const noexcept
+{
+  if (this->GetFrameBufferId() == 0) { return DY_FAILURE; }
+
+  FDyGLWrapper::BindFrameBufferObject(this->GetFrameBufferId());
+  return DY_SUCCESS;
+}
+
+void FDyFrameBufferResource::UnbindFrameBuffer() const noexcept
+{
+  FDyGLWrapper::UnbindFrameBufferObject();
+}
+
 } /// ::dy namespace

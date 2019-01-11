@@ -43,6 +43,10 @@ public:
   /// @brief Get framebuffer id.
   MDY_NODISCARD TU32 GetFrameBufferId() const noexcept { return this->mFrameBufferId; }
 
+  /// @brid Framebuffer.
+  EDySuccess BindFrameBuffer()   const noexcept;
+  void       UnbindFrameBuffer() const noexcept; 
+
 private:
   std::string mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
   TU32        mFrameBufferId = MDY_INITIALIZE_DEFUINT;

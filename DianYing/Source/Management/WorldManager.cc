@@ -233,15 +233,31 @@ void MDyWorld::DestroyActor(_MIN_ FDyActor& iRefActor)
   }
 }
 
+CDyCamera* MDyWorld::GetPtrMainLevelCamera() const noexcept
+{
+  // @TODO TEMPORARY.
+  if (this->mActivatedOnRenderingCameras.empty() == true) 
+  { 
+    return nullptr; 
+  }
+
+  if (MDY_CHECK_ISNULL(this->mActivatedOnRenderingCameras.front())) 
+  { 
+    return nullptr; 
+  }
+  else { return this->mActivatedOnRenderingCameras.front(); }
+}
+
 TI32 MDyWorld::GetFocusedCameraCount() const noexcept
 {
   return static_cast<TI32>(this->mActivatedOnRenderingCameras.size());
 }
 
-std::optional<CDyCamera*> MDyWorld::GetFocusedCameraValidReference(const TI32 index) const noexcept
+std::optional<CDyCamera*> MDyWorld::GetFocusedCameraValidReference(_MIN_ const TI32 index) const noexcept
 {
-  MDY_ASSERT(index < this->mActivatedOnRenderingCameras.size(),
-                R"dy(Input parameter "index" for "MDyWorld::GetFocusedCameraValidReferenc" must be equal or less than "MDyWorld::mActivatedOnRenderingCameras".)dy");
+  MDY_ASSERT(
+      index < this->mActivatedOnRenderingCameras.size(),
+      R"dy(Input parameter "index" for "MDyWorld::GetFocusedCameraValidReferenc" must be equal or less than "MDyWorld::mActivatedOnRenderingCameras".)dy");
 
   auto* camera = this->mActivatedOnRenderingCameras[index];
   if (MDY_CHECK_ISNULL(camera)) { return std::nullopt; }

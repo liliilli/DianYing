@@ -17,12 +17,12 @@
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Core/Resource/Object/Grid.h>
-#include <Dy/Core/Rendering/Pipeline/BasicShadow.h>
 #include <Dy/Core/Rendering/Pipeline/BasicRenderer.h>
 #include <Dy/Core/Rendering/Pipeline/DeferredRenderingMesh.h>
 #include <Dy/Core/Rendering/Pipeline/FinalScreenDisplayRenderer.h>
 #include <Dy/Core/Rendering/Pipeline/PostEffectSsao.h>
 #include <Dy/Core/Rendering/Pipeline/UIBasicRenderer.h>
+#include <Dy/Core/Rendering/Pipeline/LevelCascadeShadowRenderer.h>
 
 //!
 //! Forward declaration
@@ -130,17 +130,12 @@ private:
 
   ///
   std::unique_ptr<FDyBasicRenderer>               mBasicOpaqueRenderer  = MDY_INITIALIZE_NULL;
-  ///
+  std::unique_ptr<FDyLevelCascadeShadowRenderer>  mCSMRenderer          = MDY_INITIALIZE_NULL; 
   std::unique_ptr<FDyPostEffectSsao>              mTempSsaoObject       = MDY_INITIALIZE_NULL;
-  ///
-  std::unique_ptr<FDyBasicShadow>                 mShadowRenderer       = MDY_INITIALIZE_NULL;
-  ///
   std::unique_ptr<FDyDeferredRenderingMesh>       mSceneFinalRenderer   = MDY_INITIALIZE_NULL;
-  ///
   std::unique_ptr<FDyFinalScreenDisplayRenderer>  mFinalDisplayRenderer = MDY_INITIALIZE_NULL;
-
-  /// UI basic rendrerer (@TODO TEMP!)
   std::unique_ptr<FDyUIBasicRenderer>             mUiBasicRenderer      = MDY_INITIALIZE_NULL;
+
   /// Use basic renderer
   std::vector<NotNull<CDyModelRenderer*>>         mOpaqueDrawCallList   = {};
 

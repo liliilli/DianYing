@@ -93,10 +93,10 @@ public:
   /// @brief Destroy Actor
   void DestroyActor(_MINOUT_ FDyActor& iRefActor);
 
-  /// @brief
-  /// @return
+  /// @brief Get `Focused` and `Main` camera of level.
+  MDY_NODISCARD CDyCamera* GetPtrMainLevelCamera() const noexcept;
+  /// @brief Get binded level camra counts.
   MDY_NODISCARD TI32 GetFocusedCameraCount() const noexcept;
-
   /// @brief
   /// @param  index
   /// @return
@@ -262,10 +262,6 @@ private:
   /// @TODO SCRIPT THIS!
   MDY_NODISCARD TI32 pfEnrollActiveCamera(_MIN_ CDyCamera& validComponent) noexcept;
 
-  /// Main Camera Ptr of present scene.
-  CDyLegacyCamera*                mValidMainCameraPtr = nullptr;
-  std::vector<CDyLegacyCamera*>   mValidSubCameraPtrs = {};
-
   std::string               mNextLevelName      = MDY_INITIALIZE_EMPTYSTR;
   std::string               mPresentLevelName   = MDY_INITIALIZE_EMPTYSTR;
   std::string               mPreviousLevelName  = MDY_INITIALIZE_EMPTYSTR;
@@ -284,9 +280,9 @@ private:
 
   /// Valid camera ptr which to be used rendering sequence.
   /// this list must not be invalidated when interating list, but except for unenrolling.
-  std::vector<CDyCamera*>   mActivatedOnRenderingCameras  = {};
+  std::vector<CDyCamera*>   mActivatedOnRenderingCameras = {};
   /// Erasion (activated) model renderer list. this list must be sorted descendently not to invalidate order.
-  std::vector<TI32>         mErasionCamerasCandidateList  = {};
+  std::vector<TI32>         mErasionCamerasCandidateList = {};
 
   /// @brief Action creation descriptor list for present level. \n
   /// This list must be processed and cleaned each frame prior to update of logic.

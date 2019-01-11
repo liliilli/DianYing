@@ -549,6 +549,11 @@ std::optional<TU32> FDyGLWrapper::CreateFrameBuffer(_MIN_ const PDyGLFrameBuffer
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glFlush();
+
+    {
+      const auto _ = glGetError();
+      MDY_ASSERT(_ == GL_NO_ERROR, "Attachment creation failed.");
+    }
   }
 
   return framebufferId;
@@ -559,6 +564,18 @@ EDySuccess FDyGLWrapper::DeleteFrameBuffer(_MIN_ const TU32 framebufferId)
   MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
   glDeleteFramebuffers(1, &framebufferId);
   return DY_SUCCESS;
+}
+
+void FDyGLWrapper::BindFrameBufferObject(_MIN_ TU32 iFboId)
+{
+  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
+  glBindFramebuffer(GL_FRAMEBUFFER, iFboId);
+}
+
+void FDyGLWrapper::UnbindFrameBufferObject()
+{
+  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void FDyGLWrapper::BindVertexArrayObject(_MIN_ TU32 iVaoId)

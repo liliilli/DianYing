@@ -136,6 +136,11 @@ public:
   /// Deleting frame buffer object must be held on main thread context.
   MDY_NODISCARD static EDySuccess DeleteFrameBuffer(_MIN_ const TU32 framebufferId);
 
+  /// @brief Bind frame buffer object.
+  static void BindFrameBufferObject(_MIN_ TU32 iFboId);
+  /// @brief Unbind frame buffer object.
+  static void UnbindFrameBufferObject();
+
   /// @brief Bind vertex array object.
   static void BindVertexArrayObject(_MIN_ TU32 iVaoId);
   /// @brief Unbind vertex array object.
