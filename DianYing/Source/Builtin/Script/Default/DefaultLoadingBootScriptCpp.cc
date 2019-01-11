@@ -24,7 +24,6 @@
 #include <Dy/Builtin/Model/UIFontQuad.h>
 
 #include <Dy/Builtin/ShaderGl/RenderColorGeometry.h>
-#include <Dy/Builtin/ShaderGl/RenderBasicShadow.h>
 #include <Dy/Builtin/ShaderGl/RenderDeferredRendering.h>
 #include <Dy/Builtin/ShaderGl/RenderOpaqueStatic.h>
 #include <Dy/Builtin/ShaderGl/RenderPass.h>
@@ -35,6 +34,7 @@
 #include <Dy/Builtin/ShaderGl/UI/RenderUIImage.h>
 #include <Dy/Builtin/ShaderGl/PostEffect/RenderDefaultSSAO.h>
 #include <Dy/Builtin/ShaderGl/PostEffect/RenderDefaultSSAOBlurring.h>
+#include <Dy/Builtin/ShaderGl/Level/RenderCSMLightNormal.h>
 
 #include <Dy/Builtin/FrameBuffer/Deferred/FDyBtFrameBufferDeferred.h>
 #include <Dy/Builtin/FrameBuffer/BasicShadow/FDyBtFBBasicShadow.h>
@@ -44,6 +44,7 @@
 #include <Dy/Builtin/Material/OpaqueStaticPlain.h>
 #include <Dy/Builtin/Mesh/Widget/FDyBtMsUiBarQuad.h>
 #include <Dy/Builtin/Mesh/FDyBtMsUiImgQuad.h>
+#include <Dy/Builtin/FrameBuffer/CSM/FDyBtFbCSM.h>
 
 namespace dy
 {
@@ -56,7 +57,6 @@ FDyDefaultLoadingBootScript::FDyDefaultLoadingBootScript()
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Texture, FDyBuiltinTextureChecker::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Texture, FDyBuiltinTextureErrorBlue::sName);
 
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderBasicShadow::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderColorGeometry::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderDefaultFont::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderDefaultSSAO::sName);
@@ -68,6 +68,7 @@ FDyDefaultLoadingBootScript::FDyDefaultLoadingBootScript()
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderScreenOutput::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderUiBasicGaugeBar::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderUiImage::sName);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBtGlslRenderCSMLightNormal::sName);
 
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Model, FDyBuiltinModelBox::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Model, FDyBuiltinModelPlain::sName);
@@ -82,6 +83,7 @@ FDyDefaultLoadingBootScript::FDyDefaultLoadingBootScript()
 
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, FDyBtFrameBufferDeferred::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, FDyBtFBBasicShadow::sName);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, FDyBtFbCSM::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, FDyBtFbSceneIntegration::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, FDyBtFbUiBasic::sName);
 }
