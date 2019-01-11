@@ -67,6 +67,31 @@ FDyBasicRenderer::~FDyBasicRenderer()
   MDY_CALL_ASSERT_SUCCESS(uboManager.RemoveUboContainer(MSVSTR(sUboCameraBlock)));
 }
 
+void FDyBasicRenderer::PreRender()
+{
+  const auto* ptrCamera = MDyWorld::GetInstance().GetPtrMainLevelCamera();
+  if (MDY_CHECK_ISNULL(ptrCamera)) { return; }
+
+  const auto& ptrValidCamera = *ptrCamera;
+  auto& uboManager = MDyUniformBufferObject::GetInstance();
+  {
+    const auto flag = uboManager.UpdateUboContainer(
+        MSVSTR(sUboCameraBlock),
+        offsetof(DDyUboCameraBlock, mViewMatrix),
+        sizeof(DDyUboCameraBlock::mViewMatrix),
+        &ptrValidCamera.GetViewMatrix()[0].X);
+    MDY_ASSERT(flag == DY_SUCCESS, "");
+  }
+  {
+    const auto flag = uboManager.UpdateUboContainer(
+        MSVSTR(sUboCameraBlock),
+        offsetof(DDyUboCameraBlock, mProjMatrix),
+        sizeof(DDyUboCameraBlock::mProjMatrix),
+        &ptrValidCamera.GetProjectionMatrix()[0].X);
+    MDY_ASSERT(flag == DY_SUCCESS, "");
+  }
+}
+
 void FDyBasicRenderer::RenderScreen(_MIN_ const std::vector<NotNull<CDyModelRenderer*>>& rendererList)
 { 
   if (this->mBinderFrameBuffer.IsResourceExist() == false) { return; }
@@ -75,38 +100,12 @@ void FDyBasicRenderer::RenderScreen(_MIN_ const std::vector<NotNull<CDyModelRend
   const auto* ptrCamera = MDyWorld::GetInstance().GetPtrMainLevelCamera();
   if (MDY_CHECK_ISNULL(ptrCamera)) { return; }
 
-  const auto& validCameraRawPtr = *ptrCamera;
-  // Set viewport values to camera's properties.
-  const auto viewportRect = validCameraRawPtr.GetPixelizedViewportRectangle();
-  glViewport(viewportRect[0], viewportRect[1], viewportRect[2], viewportRect[3]);
-
-  auto& uboManager = MDyUniformBufferObject::GetInstance();
-  {
-    const auto flag = uboManager.UpdateUboContainer(
-        MSVSTR(sUboCameraBlock),
-        offsetof(DDyUboCameraBlock, mViewMatrix),
-        sizeof(DDyUboCameraBlock::mViewMatrix),
-        &validCameraRawPtr.GetViewMatrix()[0].X);
-    MDY_ASSERT(flag == DY_SUCCESS, "");
-  }
-  {
-    const auto flag = uboManager.UpdateUboContainer(
-        MSVSTR(sUboCameraBlock),
-        offsetof(DDyUboCameraBlock, mProjMatrix),
-        sizeof(DDyUboCameraBlock::mProjMatrix),
-        &validCameraRawPtr.GetProjectionMatrix()[0].X);
-    MDY_ASSERT(flag == DY_SUCCESS, "");
-  }
-
   for (auto& drawInstance : rendererList)
   { // General deferred rendering
     auto& refRenderer    = *drawInstance;
-    const auto& worldPos = refRenderer.GetBindedActor()->GetTransform()->GetFinalWorldPosition();
-    // Check frustum.
-    if (validCameraRawPtr.CheckIsPointInFrustum(worldPos) == false) { continue; }
 
-    const auto& refModelMatrix = refRenderer.GetBindedActor()->GetTransform()->GetTransform();
-    this->pRenderScreen(refRenderer, refModelMatrix, validCameraRawPtr);
+    const auto& refModelMatrix = drawInstance->GetBindedActor()->GetTransform()->GetTransform();
+    this->pRenderScreen(refRenderer, refModelMatrix, *ptrCamera);
     SDyProfilingHelper::AddScreenRenderedActorCount(1);
   }
 

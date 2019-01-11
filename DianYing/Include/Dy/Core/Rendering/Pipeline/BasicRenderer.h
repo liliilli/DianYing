@@ -44,6 +44,9 @@ public:
   FDyBasicRenderer();
   ~FDyBasicRenderer();
 
+  /// @brief Update Properties of renderer object.
+  void PreRender();
+
   /// @brief Rendering deferred contexts to default framebuffer.
   /// @param rendererList
   void RenderScreen(_MIN_ const std::vector<NotNull<CDyModelRenderer*>>& rendererList);
