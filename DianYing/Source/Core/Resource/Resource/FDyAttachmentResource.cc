@@ -48,4 +48,28 @@ FDyAttachmentResource::~FDyAttachmentResource()
   MDY_CALL_ASSERT_SUCCESS(FDyGLWrapper::DeleteAttachment(this->mAttachmentId, this->IsRenderBuffer()));
 }
 
+const EDyGlBufferDataInternalFormat& FDyAttachmentResource::GetBufferType() const noexcept
+{
+  MDY_ASSERT(this->mInformationBinder.IsResourceExist() == true, "Unexpected error occurred. Information must be valid.");
+  return this->mInformationBinder->GetBufferType();
+}
+
+const EDyTextureStyleType& FDyAttachmentResource::GetAttachmentType() const noexcept
+{
+  MDY_ASSERT(this->mInformationBinder.IsResourceExist() == true, "Unexpected error occurred. Information must be valid.");
+  return this->mInformationBinder->GetAttachmentType();
+}
+
+TU32 FDyAttachmentResource::GetMipmapLevel() const noexcept
+{
+  MDY_ASSERT(this->mInformationBinder.IsResourceExist() == true, "Unexpected error occurred. Information must be valid.");
+  return this->mInformationBinder->GetMipmapLevel();
+}
+
+TU32 FDyAttachmentResource::GetDepthNumber() const noexcept
+{
+  MDY_ASSERT(this->mInformationBinder.IsResourceExist() == true, "Unexpected error occurred. Information must be valid.");
+  return this->mInformationBinder->GetDepthNumber();
+}
+
 } /// ::dy namespace

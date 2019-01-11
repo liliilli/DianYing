@@ -28,10 +28,10 @@ FDyFrameBufferResource::FDyFrameBufferResource(const FDyFrameBufferInformation& 
     mBinderFrameBuffer{iInformation.GetSpecifierName()}
 {
   PDyGLFrameBufferDescriptor descriptor;
-  descriptor.mFrameBufferSize           = iInformation.GetFrameBufferSize();
-  descriptor.mIsNotUsingPixelShader     = !iInformation.IsUsingPixelShader();
+  descriptor.mFrameBufferSize    = iInformation.GetFrameBufferSize();
+  descriptor.mIsUsingPixelShader = iInformation.IsUsingPixelShader();
 
-  { // Bind Attachment list.
+  { // Bind Color attachment list.
     const auto& colorAttachmentList = iInformation.GetAttachmentInformationBinderList();
     for (const auto& [binderInfo, ptrInfo] : colorAttachmentList)
     {
@@ -42,7 +42,11 @@ FDyFrameBufferResource::FDyFrameBufferResource(const FDyFrameBufferInformation& 
       MDY_ASSERT(this->mBinderAttachmentList.back()->IsResourceExist() == true, "Resource must be valid.");
 
       const auto& rescPtr = this->mBinderAttachmentList.back()->Get();
-      descriptor.mAttachmentBindingList.emplace_back(rescPtr->GetAttachmentId(), attachmentType, rescPtr->IsRenderBuffer());
+      descriptor.mAttachmentBindingList.emplace_back(
+          rescPtr->GetAttachmentId(), 
+          rescPtr->GetAttachmentType(), 
+          attachmentType, 
+          rescPtr->IsRenderBuffer());
     }
   }
   
@@ -54,7 +58,11 @@ FDyFrameBufferResource::FDyFrameBufferResource(const FDyFrameBufferInformation& 
 
     const auto& ptrDepth = this->mBinderDepthBuffer;
     descriptor.mIsUsingDepthBuffer = true;
-    descriptor.mDepthBufferBinding = std::make_tuple(ptrDepth->GetAttachmentId(), EDyGlAttachmentType::Depth, ptrDepth->IsRenderBuffer());
+    descriptor.mDepthBufferBinding = std::make_tuple(
+        ptrDepth->GetAttachmentId(), 
+        ptrDepth->GetAttachmentType(), 
+        EDyGlAttachmentType::Depth, 
+        ptrDepth->IsRenderBuffer());
   }
 
   const auto optFrameBufferId = FDyGLWrapper::CreateFrameBuffer(descriptor);

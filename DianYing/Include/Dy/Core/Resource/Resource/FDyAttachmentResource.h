@@ -23,6 +23,8 @@
 namespace dy
 {
 class FDyAttachmentInformation;
+enum class EDyGlBufferDataInternalFormat : unsigned char;
+enum class EDyTextureStyleType : unsigned char;
 } /// ::dy namespace
 
 //!
@@ -46,6 +48,18 @@ public:
 
   /// @brief Check this attachment resource is render buffer.
   MDY_NODISCARD bool IsRenderBuffer() const noexcept { return this->mIsRenderBuffer; }
+  
+  /// @brief Get buffer type for intenal pixel.
+  MDY_NODISCARD const EDyGlBufferDataInternalFormat& GetBufferType() const noexcept;
+
+  /// @brief Get attachment type for this attachment.
+  MDY_NODISCARD const EDyTextureStyleType& GetAttachmentType() const noexcept;
+
+  /// @brief Get specified mipmap generation level for this attachment.
+  MDY_NODISCARD TU32 GetMipmapLevel() const noexcept;
+
+  /// @brief Get the number of depth of this attahchment.
+  MDY_NODISCARD TU32 GetDepthNumber() const noexcept;
 
 private:
   std::string mSpecifierName   = MDY_INITIALIZE_EMPTYSTR;

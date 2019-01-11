@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Management/Type/AttachmentInformation.h>
+#include <Dy/Core/Resource/Internal/TextureEnums.h>
 
 namespace dy
 {
@@ -21,14 +22,14 @@ namespace dy
 struct PDyGLFrameBufferDescriptor final
 {
   using TIsRenderBuffer     = bool;
-  using TAttachmentBinding  = std::tuple<TU32, EDyGlAttachmentType, TIsRenderBuffer>;
+  using TAttachmentBinding  = std::tuple<TU32, EDyTextureStyleType, EDyGlAttachmentType, TIsRenderBuffer>;
   using TAttachmentBindingList = std::vector<TAttachmentBinding>;
 
   DDyVectorInt2           mFrameBufferSize = {};
   TAttachmentBindingList  mAttachmentBindingList = {};
   TAttachmentBinding      mDepthBufferBinding = {};
   bool                    mIsUsingDepthBuffer = true;
-  bool                    mIsNotUsingPixelShader = false;
+  bool                    mIsUsingPixelShader = false;
 };
 
 } /// ::dy namespace

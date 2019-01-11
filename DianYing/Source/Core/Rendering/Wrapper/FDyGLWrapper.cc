@@ -455,7 +455,9 @@ std::optional<TU32> FDyGLWrapper::CreateAttachment(_MIN_ const PDyGLAttachmentDe
     for (const auto& parameter : iDescriptor.mParameterList)
     {
       if (parameter.mParameterValue == EDyGlParameterValue::ClampToBorder) { isThisAttachmentUsingClampToBorder = true; }
-      glTexParameteri(glTextureType, DyGetTexParameterNameValue(parameter.mParameterOption), DyGetTexParameterValueValue(parameter.mParameterValue));
+      glTexParameteri(glTextureType, 
+          DyGetTexParameterNameValue(parameter.mParameterOption), 
+          DyGetTexParameterValueValue(parameter.mParameterValue));
     }
     if (isThisAttachmentUsingClampToBorder == true)
     {
@@ -506,12 +508,12 @@ std::optional<TU32> FDyGLWrapper::CreateFrameBuffer(_MIN_ const PDyGLFrameBuffer
 
     for (TU32 i = 0; i < attachmentBindingSize; ++i)
     {
-      const auto [attachmentId, attachmentFormat, isRenderBuffer] = iDescriptor.mAttachmentBindingList[i];
+      const auto [attachmentId, attachmentType, attachmentFormat, isRenderBuffer] = iDescriptor.mAttachmentBindingList[i];
       if (isRenderBuffer == false)
       { // If attachment is texture.
-        glBindTexture(GL_TEXTURE_2D, attachmentId);
+        glBindTexture(DyGLGetLowTextureType(attachmentType), attachmentId);
         const auto typeValue = DyGetAttachmentTypeValue(attachmentFormat);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, typeValue, GL_TEXTURE_2D, attachmentId, 0);
+        glFramebufferTexture(GL_FRAMEBUFFER, typeValue, attachmentId, 0);
         attachmentTypeList.emplace_back(typeValue);
       }
       else
@@ -522,11 +524,11 @@ std::optional<TU32> FDyGLWrapper::CreateFrameBuffer(_MIN_ const PDyGLFrameBuffer
 
     if (iDescriptor.mIsUsingDepthBuffer == true)
     { // Bind Depth Buffer
-      const auto [depthId, type, isRenderBuffer] = iDescriptor.mDepthBufferBinding;
+      const auto [depthId, attachmentType, attachmentFormat, isRenderBuffer] = iDescriptor.mDepthBufferBinding;
       if (isRenderBuffer == false)
       {
-        glBindTexture(GL_TEXTURE_2D, depthId);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthId, 0);
+        glBindTexture(DyGLGetLowTextureType(attachmentType), depthId);
+        glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthId, 0);
       }
       else
       {
@@ -542,7 +544,7 @@ std::optional<TU32> FDyGLWrapper::CreateFrameBuffer(_MIN_ const PDyGLFrameBuffer
 
     // Let framebuffer know that attachmentBuffer's id will be drawn at framebuffer.
     // @WARNING TODO BE CAREFUL OF INSERTING DEPTH ATTACHMENTS AS COLOR ATTACHMENT!.
-    if (iDescriptor.mIsNotUsingPixelShader == true) { glDrawBuffer(GL_NONE); glReadBuffer(GL_NONE); }
+    if (iDescriptor.mIsUsingPixelShader == false) { glDrawBuffer(GL_NONE); glReadBuffer(GL_NONE); }
     else { glDrawBuffers(attachmentBindingSize, attachmentTypeList.data()); }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
