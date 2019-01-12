@@ -275,9 +275,9 @@ void CDyDirectionalLight::UpdateLightProjectionAndViewports(
         0, 0, 0.5f, 0, 
         0, 0, 0, 1};
     DDyMatrix4x4 lightBias = DDyMatrix4x4{
-        0, 0, 0, 0.5f * scaleFactor.X,
-        0, 0, 0, 0.5f * scaleFactor.Y,
-        0, 0, 0, 0.5f,
+        1, 0, 0, 0.5f * scaleFactor.X,
+        0, 1, 0, 0.5f * scaleFactor.Y,
+        0, 0, 1, 0.5f,
         0, 0, 0, 1};
 
     this->mLightSegmentVPSBMatrices[i] = this->mLightViewMatrix.Multiply(lightProjMatrix).Multiply(lightScale).Multiply(lightBias);
