@@ -21,6 +21,9 @@ namespace dy
 class FDyLevelCSMIntergration final
 {
 public:
+  FDyLevelCSMIntergration();
+  ~FDyLevelCSMIntergration();
+
   /// @brief Check rendering phase is ready.
   MDY_NODISCARD bool IsReady() const noexcept;
   /// @brief Try setup rendering, if failed, return DY_FAILURE.

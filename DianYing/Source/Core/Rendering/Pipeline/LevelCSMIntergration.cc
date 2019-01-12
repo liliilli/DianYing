@@ -22,10 +22,29 @@
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Management/Rendering/RenderingManager.h>
+#include <Dy/Management/Rendering/UniformBufferObjectManager.h>
 #include <Dy/Component/CDyDirectionalLight.h>
 
 namespace dy
 {
+
+FDyLevelCSMIntergration::FDyLevelCSMIntergration()
+{
+  auto& uboManager = MDyUniformBufferObject::GetInstance();
+  PDyUboConstructionDescriptor desc = {};
+  desc.mBindingIndex      = 1;
+  desc.mUboSpecifierName  = "dyBtUboDirLight";
+  desc.mBufferDrawType    = EDyBufferDrawType::DynamicDraw;
+  desc.mUboElementSize    = sizeof(DDyUboDirectionalLight);
+  desc.mUboArraySize      = 1;
+  MDY_CALL_ASSERT_SUCCESS(uboManager.CreateUboContainer(desc))
+}
+
+FDyLevelCSMIntergration::~FDyLevelCSMIntergration()
+{
+  auto& uboManager = MDyUniformBufferObject::GetInstance();
+  MDY_CALL_ASSERT_SUCCESS(uboManager.RemoveUboContainer("dyBtUboDirLight"))
+}
 
 bool FDyLevelCSMIntergration::IsReady() const noexcept
 {
@@ -40,19 +59,18 @@ EDySuccess FDyLevelCSMIntergration::TrySetupRendering()
   if (this->IsReady() == false) { return DY_FAILURE; }
 
   this->Clear();
-
-  {
-    this->mBinderFrameBuffer->BindFrameBuffer();
-    this->mBinderShader->UseShader();
-  }
+  this->mBinderFrameBuffer->BindFrameBuffer();
+  this->mBinderShader->UseShader();
 
   const auto* ptr = MDyRendering::GetInstance().GetPtrMainDirectionalShadow();
   if (MDY_CHECK_ISNOTNULL(ptr)) 
   { 
     // DyConvertToVector
-    //this->mBinderShader.TryUpdateUniform<EDyUniformVariableType::Vector4>("uNormalizedFarPlanes", ptr->GetNormalizedFarPlanes());
+    this->mBinderShader.TryUpdateUniform<EDyUniformVariableType::Vector4>(
+        "uNormalizedFarPlanes", 
+        ptr->GetCSMNormalizedFarPlanes());
     this->mBinderShader.TryUpdateUniform<EDyUniformVariableType::Matrix4Array>(
-        "uLightVPSBMatrix", 
+        "uLightVPSBMatrix[0]", 
         DyConvertToVector<DDyMatrix4x4>(ptr->GetCSMLightSegmentVPSBMatrix()));
   }
 
@@ -60,16 +78,27 @@ EDySuccess FDyLevelCSMIntergration::TrySetupRendering()
   glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, this->mBinderAttNormal->GetAttachmentId());
   glActiveTexture(GL_TEXTURE2); glBindTexture(GL_TEXTURE_2D, this->mBinderAttSpecular->GetAttachmentId());
   glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, this->mBinderAttPosition->GetAttachmentId());
-  glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, this->mBinderAttShadow->GetAttachmentId());
+  glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D_ARRAY, this->mBinderAttShadow->GetAttachmentId());
 
-#ifdef false
-uniform mat4 uLightVPSBMatrix[4];
-uniform vec4 uNormalizedFarPlanes;
-#endif
-      
   // Bind g-buffers as textures.
   this->mBinderShader.TryUpdateUniformList();
-  
+
+  auto* ptrLight = MDyRendering::GetInstance().GetPtrMainDirectionalLight();
+  if (this->mAddrMainLight != reinterpret_cast<ptrdiff_t>(ptrLight))
+  {
+    this->mAddrMainLight = reinterpret_cast<ptrdiff_t>(ptrLight);
+    auto& uboManager = MDyUniformBufferObject::GetInstance();
+    if (this->mAddrMainLight == 0)
+    {
+      DDyUboDirectionalLight light;
+      MDY_CALL_ASSERT_SUCCESS(uboManager.UpdateUboContainer("dyBtUboDirLight", 0, sizeof(DDyUboDirectionalLight), &light));
+    }
+    else
+    {
+      DDyUboDirectionalLight light = ptrLight->GetUboLightInfo();
+      MDY_CALL_ASSERT_SUCCESS(uboManager.UpdateUboContainer("dyBtUboDirLight", 0, sizeof(DDyUboDirectionalLight), &light));
+    }
+  }
   return DY_SUCCESS;
 }
 
