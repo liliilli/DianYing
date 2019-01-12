@@ -17,6 +17,9 @@
 #include <Dy/Builtin/Texture/Checker.h>
 #include <Dy/Builtin/Texture/ErrorBlue.h>
 
+#include <Dy/Builtin/Mesh/Widget/FDyBtMsUiBarQuad.h>
+#include <Dy/Builtin/Mesh/FDyBtMsUiImgQuad.h>
+
 #include <Dy/Builtin/Model/Box.h>
 #include <Dy/Builtin/Model/Plain.h>
 #include <Dy/Builtin/Model/Sphere.h>
@@ -35,17 +38,17 @@
 #include <Dy/Builtin/ShaderGl/PostEffect/RenderDefaultSSAO.h>
 #include <Dy/Builtin/ShaderGl/PostEffect/RenderDefaultSSAOBlurring.h>
 #include <Dy/Builtin/ShaderGl/Level/RenderCSMLightNormal.h>
+#include <Dy/Builtin/ShaderGl/Level/RendIntegrationLevelCSM.h>
+
+#include <Dy/Builtin/Material/OpaqueStaticPlain.h>
+
+#include <Dy/Builtin/Attachment/CSM/FDyBtAtLight.h>
 
 #include <Dy/Builtin/FrameBuffer/Deferred/FDyBtFrameBufferDeferred.h>
 #include <Dy/Builtin/FrameBuffer/BasicShadow/FDyBtFBBasicShadow.h>
 #include <Dy/Builtin/FrameBuffer/SceneIntegration/FDyBtFbSceneIntegration.h>
 #include <Dy/Builtin/FrameBuffer/UIIntegration/FDyBtFbUiBasic.h>
-
-#include <Dy/Builtin/Material/OpaqueStaticPlain.h>
-#include <Dy/Builtin/Mesh/Widget/FDyBtMsUiBarQuad.h>
-#include <Dy/Builtin/Mesh/FDyBtMsUiImgQuad.h>
 #include <Dy/Builtin/FrameBuffer/CSM/FDyBtFbCSM.h>
-#include "Dy/Builtin/Attachment/CSM/FDyBtAtLight.h"
 
 namespace dy
 {
@@ -70,6 +73,7 @@ FDyDefaultLoadingBootScript::FDyDefaultLoadingBootScript()
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderUiBasicGaugeBar::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderUiImage::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBtGlslRenderCSMLightNormal::sName);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBtGlslRenderIntegrationLevelCSM::sName);
 
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBtGlslRenderCSMLightNormal::sName);
 
