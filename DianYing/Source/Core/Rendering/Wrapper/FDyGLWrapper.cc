@@ -750,9 +750,21 @@ FDyGLWrapper::GetShaderProgramUniformInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU3
     return std::nullopt;
   }
 
-  const auto type = DyGlGetUniformVariableTypeFrom(uniType);
+  auto type = DyGlGetUniformVariableTypeFrom(uniType);
   MDY_ASSERT(type != EDyUniformVariableType::NoneError, "Not supported uniform type.");
 
+  // If array type.. 
+  if (std::strchr(uniformName, '[') != nullptr)
+  {
+    switch (type)
+    {
+    case EDyUniformVariableType::Matrix4: { type = EDyUniformVariableType::Matrix4Array; } break;
+    case EDyUniformVariableType::Vector3: { type = EDyUniformVariableType::Vector3Array; } break;
+    default: MDY_NOT_IMPLEMENTED_ASSERT(); break;
+    }
+  }
+
+  // Insert
   const auto result = std::make_tuple(std::string(uniformName), uniLength, uniSize, type, uniLocId);
   free(uniformName); uniformName = nullptr;
   return result;
@@ -788,6 +800,18 @@ void FDyGLWrapper::UpdateUniformMatrix4(_MIN_ TU32 iId, _MIN_ const DDyMatrix4x4
   {
     MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
     glUniformMatrix4fv(iId, 1, transposed, &iBuffer[0].X);
+  }
+}
+
+void FDyGLWrapper::UpdateUniformMatrix4Array(TU32 iId, const std::vector<DDyMatrix4x4>& iBuffer, bool iIransposed)
+{
+  const TU32 size = static_cast<TU32>(iBuffer.size());
+  GLenum transposed = GL_FALSE;
+  if (iIransposed == true) { transposed = GL_TRUE; }
+
+  {
+    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
+    glUniformMatrix4fv(iId, size, transposed, &iBuffer[0][0].X);
   }
 }
 

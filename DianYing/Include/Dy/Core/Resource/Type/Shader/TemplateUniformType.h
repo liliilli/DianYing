@@ -40,6 +40,7 @@ template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::
 template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::Texture1D>      final { using ValueType = TU32; };
 template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::Texture2D>      final { using ValueType = TU32; };
 template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::Texture2DArray> final { using ValueType = TU32; };
+template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::Texture2DShadowArray> final { using ValueType = TU32; };
 
 template <typename TType, std::size_t Amount>
 MDY_NODISCARD std::vector<TType> 

@@ -175,6 +175,8 @@ public:
 
   /// @brief
   static void UpdateUniformMatrix4(_MIN_ TU32 iId, _MIN_ const DDyMatrix4x4& iBuffer, _MIN_ bool iTransposed = false);
+  /// @brief Update uniform matrix4x4 array. Specified shader must be valid and activated.
+  static void UpdateUniformMatrix4Array(_MIN_ TU32 iId, _MIN_ const std::vector<DDyMatrix4x4>& iBuffer, _MIN_ bool iIransposed = false);
   /// @brief
   static void UpdateUniformVector4(_MIN_ TU32 iId, _MIN_ const DDyVector4& iBuffer);
   /// @brief

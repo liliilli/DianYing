@@ -68,6 +68,7 @@ enum class EDyUniformVariableType
   Texture2DShadowArray,
 
   Matrix4Array,
+  Vector3Array,
 };
 
 /// @struct DDyAttributeVariableInformation

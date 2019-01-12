@@ -46,6 +46,7 @@ void MDY_PRIVATE_SPECIFIER(ADyUniformContainer)::MDY_PRIVATE_SPECIFIER(TryClearU
 {
   this->mUpdatedItemList.clear();
   MDY_UNIFORMCONTAINER(Matrix4).clear();
+  MDY_UNIFORMCONTAINER(Matrix4Array).clear();
   MDY_UNIFORMCONTAINER(Matrix3).clear();
   MDY_UNIFORMCONTAINER(Vector4).clear();
   MDY_UNIFORMCONTAINER(Vector3).clear();
@@ -54,6 +55,7 @@ void MDY_PRIVATE_SPECIFIER(ADyUniformContainer)::MDY_PRIVATE_SPECIFIER(TryClearU
   MDY_UNIFORMCONTAINER(Bool).clear();
   MDY_UNIFORMCONTAINER(Texture2D).clear();
   MDY_UNIFORMCONTAINER(Texture2DArray).clear();
+  MDY_UNIFORMCONTAINER(Texture2DShadowArray).clear();
   this->mIsShaderSetup = false;
 }
 
@@ -70,6 +72,8 @@ MDY_PRIVATE_SPECIFIER(TryConstructDefaultUniformList)(const FDyShaderResource& i
     switch (type)
     {
     case EDyUniformVariableType::Matrix4:   { MDY_DOCONSTRUCTUNIFORMLIST(Matrix4, specifier, id); } break;
+    case EDyUniformVariableType::Matrix4Array:   
+    { MDY_DOCONSTRUCTUNIFORMLIST(Matrix4Array, specifier, id); } break;
     case EDyUniformVariableType::Matrix3:   { MDY_DOCONSTRUCTUNIFORMLIST(Matrix3, specifier, id); } break;
     case EDyUniformVariableType::Vector4:   { MDY_DOCONSTRUCTUNIFORMLIST(Vector4, specifier, id); } break;
     case EDyUniformVariableType::Vector3:   { MDY_DOCONSTRUCTUNIFORMLIST(Vector3, specifier, id); } break;
@@ -78,6 +82,7 @@ MDY_PRIVATE_SPECIFIER(TryConstructDefaultUniformList)(const FDyShaderResource& i
     case EDyUniformVariableType::Bool:      { MDY_DOCONSTRUCTUNIFORMLIST(Bool, specifier, id); } break;
     case EDyUniformVariableType::Texture2D:      { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2D, specifier, id); } break;
     case EDyUniformVariableType::Texture2DArray: { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2DArray, specifier, id); } break;
+    case EDyUniformVariableType::Texture2DShadowArray: { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2DShadowArray, specifier, id); } break;
     default: MDY_UNEXPECTED_BRANCH(); break;
     }
   }
@@ -103,6 +108,12 @@ EDySuccess MDY_PRIVATE_SPECIFIER(ADyUniformContainer)::TryUpdateUniformList()
       const auto* item = static_cast<TPtrConvert<EDyUniformVariableType::Matrix4>>(ptrItem);
       if (item->mId == -1) { continue; }
       FDyGLWrapper::UpdateUniformMatrix4(item->mId, item->mValue);
+    } break;
+    case EDyUniformVariableType::Matrix4Array: 
+    {
+      const auto* item = static_cast<TPtrConvert<EDyUniformVariableType::Matrix4Array>>(ptrItem);
+      if (item->mId == -1) { continue; }
+      FDyGLWrapper::UpdateUniformMatrix4Array(item->mId, item->mValue);
     } break;
     case EDyUniformVariableType::Matrix3: 
     {
@@ -148,7 +159,13 @@ EDySuccess MDY_PRIVATE_SPECIFIER(ADyUniformContainer)::TryUpdateUniformList()
     } break;
     case EDyUniformVariableType::Texture2DArray:
     {
-      const auto* item = static_cast<TPtrConvert<EDyUniformVariableType::Texture2D>>(ptrItem);
+      const auto* item = static_cast<TPtrConvert<EDyUniformVariableType::Texture2DArray>>(ptrItem);
+      if (item->mId == -1) { continue; }
+      FDyGLWrapper::UpdateUniformInteger(item->mId, item->mValue);
+    } break;
+    case EDyUniformVariableType::Texture2DShadowArray:
+    {
+      const auto* item = static_cast<TPtrConvert<EDyUniformVariableType::Texture2DShadowArray>>(ptrItem);
       if (item->mId == -1) { continue; }
       FDyGLWrapper::UpdateUniformInteger(item->mId, item->mValue);
     } break;
