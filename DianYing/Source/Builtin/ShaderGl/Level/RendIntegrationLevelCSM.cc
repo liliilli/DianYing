@@ -68,7 +68,7 @@ layout(std140, binding = 1) uniform DirectionalLightBlock
   float mIntensity; // Intensity
 } uLightDir[1];
 
-vec4 layerColor; // DEBUG
+vec4 layerColor = vec4(1.0, 0.5f, 1.0f, 1.0f); // DEBUG
 
 vec4 GetNormal()    { return (texture(uNormal, fs_in.texCoord) - 0.5f) * 2.0f; }
 vec4 GetSpecular()  { return (texture(uSpecular, fs_in.texCoord) - 0.5f) * 2.0f; }
@@ -83,14 +83,13 @@ vec3 ComputeShadowCoords(int iSlice, vec3 iWorldPosition)
 float ComputeShadowCoefficient(vec3 iWorldPosition)
 {
   int slice = 3;
-  layerColor = vec4(1.0, 0.5f, 1.0f, 1.0f);
        if (gl_FragCoord.z < uNormalizedFarPlanes.x) { slice = 0; layerColor = vec4(1.0, 0.5, 0.5, 1.0); }
   else if (gl_FragCoord.z < uNormalizedFarPlanes.y) { slice = 1; layerColor = vec4(0.5, 1.0, 0.5, 1.0); }
   else if (gl_FragCoord.z < uNormalizedFarPlanes.z) { slice = 2; layerColor = vec4(0.5, 0.5, 1.0, 1.0); }
 
   vec4 shadowCoords;
   // Swizzling specific for shadow sampler.
-  shadowCoords.xyz = ComputeShadowCoords(slice, iWorldPosition);
+  shadowCoords.xyw = ComputeShadowCoords(slice, iWorldPosition);
   shadowCoords.w  -= sShadowBias;
   shadowCoords.z   = float(slice);
   
@@ -120,14 +119,14 @@ void main()
     vec3  s_l_vd    = normalize(uLightDir[i].mDirection + specularValue.xyz);
     float d_slvd_n  = pow(max(dot(s_l_vd, normalValue.xyz), 0.0f), 32);
 
-    float ambientFactor   = 0.05f;
-    vec3  ambientColor    = ambientFactor * uLightDir[i].mAmbient.rgb;
+    float ambientFactor  = 0.05f;
+    vec3  ambientColor   = ambientFactor * uLightDir[i].mAmbient.rgb * unlitValue.rgb;
 
-    float diffuseFactor   = max(d_n_dl, 0.1f) * uLightDir[i].mIntensity;
-    vec3  diffuseColor    = diffuseFactor * uLightDir[i].mDiffuse.rgb;
+    float diffuseFactor  = max(d_n_dl, 0.1f) * uLightDir[i].mIntensity;
+    vec3  diffuseColor   = diffuseFactor * uLightDir[i].mDiffuse.rgb * unlitValue.rgb;
 
-    float specularFactor  = d_slvd_n * uLightDir[i].mIntensity;
-    vec3  specularColor   = specularFactor * uLightDir[i].mSpecular.rgb;
+    float specularFactor = d_slvd_n * uLightDir[i].mIntensity;
+    vec3  specularColor  = specularFactor * uLightDir[i].mSpecular.rgb;
 
     resultColor  = ambientColor;
     resultColor += ComputeShadowCoefficient(modelPosition) * (diffuseColor + specularColor) * layerColor.rgb;

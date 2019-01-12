@@ -43,7 +43,7 @@ out VS_OUT
 	vec3 fragColor;
 	vec3 normal;
 	vec2 texCoord;
-	vec4 modelPosition;
+	vec3 modelPosition;
 } vs_out;
 
 void main()
@@ -52,7 +52,7 @@ void main()
   vs_out.fragColor	    = dyNormal * 0.5f + 0.5f;
 	vs_out.normal		      = mat3(modelMatrix) * dyNormal;
 	vs_out.texCoord		    = dyTexCoord0;
-	vs_out.modelPosition  = modelMatrix * vec4(dyPosition, 1.0);
+	vs_out.modelPosition  = (modelMatrix * vec4(dyPosition, 1.0)).xyz;
 }
 
 )dy");
@@ -64,13 +64,13 @@ in VS_OUT {
 	vec3 fragColor;
 	vec3 normal;
 	vec2 texCoord;
-	vec4 modelPosition;
+	vec3 modelPosition;
 } fs_in;
 
 layout (location = 0) out vec4 gUnlit;
 layout (location = 1) out vec4 gNormal;
 layout (location = 2) out vec4 gSpecular;
-layout (location = 3) out vec4 gPosition;
+layout (location = 3) out vec3 gPosition;
 
 uniform sampler2D uTexture0;
 
