@@ -26,6 +26,7 @@
 #include <Dy/Management/Rendering/UniformBufferObjectManager.h>
 #include "Dy/Component/CDyCamera.h"
 #include "Dy/Component/CDyModelRenderer.h"
+#include "Dy/Management/Helper/SDyProfilingHelper.h"
 
 namespace dy
 {
@@ -88,6 +89,7 @@ void MDyRendering::RenderDrawCallQueue()
 
   {
     const auto* ptrCamera = MDyWorld::GetInstance().GetPtrMainLevelCamera();
+
     // If main camera is not exist, do not render level.
     if (MDY_CHECK_ISNOTNULL(ptrCamera))
     {
@@ -96,6 +98,7 @@ void MDyRendering::RenderDrawCallQueue()
         const auto& worldPos = iPtrOpaqueRenderer->GetBindedActor()->GetTransform()->GetFinalWorldPosition();
         return ptrCamera->CheckIsPointInFrustum(worldPos) == false;
       });
+      SDyProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(this->mOpaqueDrawCallList.size()));
 
       // Set viewport values to camera's properties.
       const auto viewportRect = ptrCamera->GetPixelizedViewportRectangle();

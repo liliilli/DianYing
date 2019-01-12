@@ -14,6 +14,7 @@
 
 /// Header file
 #include <Dy/Builtin/Attachment/CSM/FDyBtAtLight.h>
+#include <Dy/Builtin/Constant/CSM.h>
 
 namespace dy::builtin
 {
@@ -21,7 +22,7 @@ namespace dy::builtin
 void FDyBtAtCSMLight::ConstructBuffer(_MOUT_ PDyGlAttachmentInstanceMetaInfo& property) noexcept
 {
   property.mSpecifierName  = sName;
-  property.mAttachmentSize = DDyVectorInt2{2048, 2048};
+  property.mAttachmentSize = DDyVectorInt2{static_cast<TI32>(kCSMAttachmentTextureSize), static_cast<TI32>(kCSMAttachmentTextureSize)};
   property.mParameterList  =
   {
     PDyGlTexParameterInformation\
@@ -32,7 +33,7 @@ void FDyBtAtCSMLight::ConstructBuffer(_MOUT_ PDyGlAttachmentInstanceMetaInfo& pr
   };
   property.mAttachmentType  = EDyTextureStyleType::D2ShadowArray;
   property.mBufferFormat    = EDyGlBufferDataInternalFormat::DEPTH32;
-  property.mDepthNumber     = 4;
+  property.mDepthNumber     = kCSMSegment;
 }
 
 } /// ::dy::builtin namespace

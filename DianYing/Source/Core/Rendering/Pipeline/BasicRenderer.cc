@@ -96,17 +96,15 @@ void FDyBasicRenderer::RenderScreen(_MIN_ const std::vector<NotNull<CDyModelRend
 { 
   if (this->mBinderFrameBuffer.IsResourceExist() == false) { return; }
   this->mBinderFrameBuffer->BindFrameBuffer();
+
   // Get valid Main CDyCamera instance pointer address.
   const auto* ptrCamera = MDyWorld::GetInstance().GetPtrMainLevelCamera();
   if (MDY_CHECK_ISNULL(ptrCamera)) { return; }
 
   for (auto& drawInstance : rendererList)
   { // General deferred rendering
-    auto& refRenderer    = *drawInstance;
-
     const auto& refModelMatrix = drawInstance->GetBindedActor()->GetTransform()->GetTransform();
-    this->pRenderScreen(refRenderer, refModelMatrix, *ptrCamera);
-    SDyProfilingHelper::AddScreenRenderedActorCount(1);
+    this->pRenderScreen(*drawInstance, refModelMatrix, *ptrCamera);
   }
 
   this->mBinderFrameBuffer->UnbindFrameBuffer();

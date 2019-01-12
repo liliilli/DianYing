@@ -51,6 +51,7 @@ struct DDyVector4 final
   explicit DDyVector4(const DDyVector3& value) noexcept : X{value.X}, Y{value.Y}, Z{value.Z}, W{1.0f} {};
   DDyVector4(const float x, const float y, const float z) noexcept : X(x), Y(y), Z(z), W{1.0f} {};
   DDyVector4(const float x, const float y, const float z, const float w) noexcept : X(x), Y(y), Z(z), W{w} {};
+  DDyVector4(const DDyVector3& iXyz, const float w) : X{iXyz.X}, Y{iXyz.Y}, Z{iXyz.Z}, W{w} {};
 
   //!
   //! Constructor and assign operator for dependencies.

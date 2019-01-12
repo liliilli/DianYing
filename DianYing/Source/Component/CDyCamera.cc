@@ -117,8 +117,7 @@ void CDyCamera::pUpdateCameraVectors()
     this->mLookingAtDirection = lookingDirection;
     this->mIsViewMatrixDirty  = true;
   }
-  if (const auto& worldPos = transform->GetFinalWorldPosition();
-      this->mPosition != worldPos)
+  if (const auto& worldPos = transform->GetFinalWorldPosition(); this->mPosition != worldPos)
   {
     this->mPosition = transform->GetFinalWorldPosition();
     this->mIsViewMatrixDirty  = true;
@@ -207,6 +206,11 @@ TF32 CDyCamera::GetFar() const noexcept
 TF32 CDyCamera::GetFieldOfView() const noexcept
 {
   return this->mFieldOfView;
+}
+
+const DDyVector3& CDyCamera::GetPosition() const noexcept
+{
+  return this->mPosition;
 }
 
 bool CDyCamera::CheckIsPointInFrustum(_MIN_ const DDyVector3& iPoint) const noexcept

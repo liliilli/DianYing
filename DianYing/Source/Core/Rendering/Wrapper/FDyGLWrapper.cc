@@ -657,6 +657,12 @@ TI32 FDyGLWrapper::QueryShaderProgramIV(_MIN_ TU32 iShaderProgramId, _MIN_ GLenu
   return result;
 }
 
+void FDyGLWrapper::QueryFloatVector(_MIN_ GLenum iGLLowEnumCommand, _MIN_ TF32* iPtrRawFloatVector)
+{
+  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
+  glGetFloatv(iGLLowEnumCommand, iPtrRawFloatVector);
+}
+
 std::optional<std::tuple<std::string, GLsizei, GLint, EDyAttributeVariableType, TU32>> 
 FDyGLWrapper::GetShaderProgramAttributeInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iAttrIndex)
 {

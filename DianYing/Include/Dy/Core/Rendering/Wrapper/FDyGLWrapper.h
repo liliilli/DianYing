@@ -159,6 +159,8 @@ public:
   /// @brief Query command.
   /// Shader program id must be valid and query enum also.
   MDY_NODISCARD static TI32 QueryShaderProgramIV(_MIN_ TU32 iShaderProgramId, _MIN_ GLenum iQueryEnum);
+  /// @brief Query Float vector command.
+  static void QueryFloatVector(_MIN_ GLenum iGLLowEnumCommand, _MIN_ TF32* iPtrRawFloatVector);
 
   /// @brief 
   MDY_NODISCARD static std::optional<std::tuple<std::string, GLsizei, GLint, EDyAttributeVariableType, TU32>>

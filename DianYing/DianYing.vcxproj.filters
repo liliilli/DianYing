@@ -48,7 +48,6 @@
     <ClCompile Include="Source\Editor\Helper\Win32Helper.cc" />
     <ClCompile Include="Source\Management\SoundManager.cc" />
     <ClCompile Include="Source\Builtin\Object\Light\DirectionalLight.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\RenderBasicShadow.cc" />
     <ClCompile Include="Source\Management\Helper\PhysXErrorCallback.cc" />
     <ClCompile Include="Source\Management\PhysicsManager.cc" />
     <ClCompile Include="Source\Management\FontManager.cc" />
@@ -180,7 +179,6 @@
     <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingGlobalScriptCpp.cc" />
     <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingBootScriptCpp.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\BasicRenderer.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\BasicShadow.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\DeferredRenderingMesh.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\FinalScreenDisplayRenderer.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\PostEffectSsao.cc" />
@@ -256,6 +254,11 @@
     <ClCompile Include="Source\Element\Type\Timer\FDyActorTimerItem.cc" />
     <ClCompile Include="Source\Element\Type\Timer\FDyWidgetTimerItem.cc" />
     <ClCompile Include="Source\Component\Widget\CDyWidgetScript.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\Level\RenderCSMLightNormal.cc" />
+    <ClCompile Include="Source\Builtin\FrameBuffer\CSM\FDyBtFbCSM.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\CSM\FDyBtAtLight.cc" />
+    <ClCompile Include="Source\Core\Resource\Internal\TextureEnums.cc" />
+    <ClCompile Include="Source\Core\Rendering\Pipeline\LevelCascadeShadowRenderer.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -330,7 +333,6 @@
     <ClInclude Include="Include\Dy\Editor\Helper\Win32Helper.h" />
     <ClInclude Include="Include\Dy\Management\SoundManager.h" />
     <ClInclude Include="Include\Dy\Builtin\Object\Light\DirectionalLight.h" />
-    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderBasicShadow.h" />
     <ClInclude Include="Include\Dy\Management\Helper\PhysXErrorCallback.h" />
     <ClInclude Include="Include\Dy\Management\PhysicsManager.h" />
     <ClInclude Include="Include\Dy\Management\FontManager.h" />
@@ -553,7 +555,6 @@
     <ClInclude Include="Include\Dy\Core\Resource\Type\TDyResourceBinder.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\TemplateRescInfoType.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\BasicRenderer.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\BasicShadow.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\DeferredRenderingMesh.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\FinalScreenDisplayRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\UIBasicRenderer.h" />
@@ -657,6 +658,12 @@
     <ClInclude Include="Include\Dy\Element\Type\Timer\FDyActorTimerItem.h" />
     <ClInclude Include="Include\Dy\Element\Type\Timer\FDyWidgetTimerItem.h" />
     <ClInclude Include="Include\Dy\Element\Type\Timer\EDyTimerStatus.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\Level\RenderCSMLightNormal.h" />
+    <ClInclude Include="Include\Dy\Builtin\FrameBuffer\CSM\FDyBtFbCSM.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\CSM\FDyBtAtLight.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\LevelCascadeShadowRenderer.h" />
+    <ClInclude Include="Include\Dy\Builtin\Material\FinalScreenIntegration.h" />
+    <ClInclude Include="Include\Dy\Builtin\Constant\CSM.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

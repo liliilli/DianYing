@@ -95,6 +95,9 @@ public:
   /// @brief  Get field of horizontal view degree angle value.
   MDY_NODISCARD TF32 GetFieldOfView() const noexcept;
 
+  /// @brief  Get camera's world position.
+  MDY_NODISCARD const DDyVector3& GetPosition() const noexcept;
+
   /// @brief Check point is in camera frustum.
   MDY_NODISCARD bool CheckIsPointInFrustum(_MIN_ const DDyVector3& iPoint) const noexcept;
 
@@ -233,7 +236,7 @@ private:
   float mNear                     = 0.1f;
   /// Camera's far value.
   float mFar                      = 1000;
-  /// Camera's field of view (horizontal)
+  /// Camera's field of view (vertical)
   float mFieldOfView              = 0.f;
   /// Camera's aspect (from screen)
   MDY_TRANSIENT float mAspect     = 0.f;
