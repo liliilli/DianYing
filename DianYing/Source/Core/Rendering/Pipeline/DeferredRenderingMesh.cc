@@ -120,11 +120,8 @@ void FDyDeferredRenderingMesh::RenderScreen()
 
 EDySuccess FDyDeferredRenderingMesh::TrySetupRendering()
 {
-  if (this->mBinderShader.IsResourceExist() == false
-  ||  this->mBinderTriangle.IsResourceExist() == false
-  ||  this->mBinderFrameBuffer.IsResourceExist() == false) { return DY_FAILURE; }
+  if (this->IsReady() == false) { return DY_FAILURE; }
 
-  //auto& render    = MDyRendering::GetInstance();
   auto* ptrLight  = MDyRendering::GetInstance().GetPtrMainDirectionalLight();
   if (this->mAddrMainLight != reinterpret_cast<ptrdiff_t>(ptrLight))
   {
@@ -144,11 +141,17 @@ EDySuccess FDyDeferredRenderingMesh::TrySetupRendering()
   return DY_SUCCESS;
 }
 
+bool FDyDeferredRenderingMesh::IsReady() const noexcept
+{
+  return 
+    !(this->mBinderShader.IsResourceExist() == false
+  ||  this->mBinderTriangle.IsResourceExist() == false
+  ||  this->mBinderFrameBuffer.IsResourceExist() == false);
+}
+
 void FDyDeferredRenderingMesh::Clear()
 {
-  if (this->mBinderShader.IsResourceExist() == false
-  ||  this->mBinderTriangle.IsResourceExist() == false
-  ||  this->mBinderFrameBuffer.IsResourceExist() == false) { return; }
+  if (this->IsReady() == false) { return; }
 
   this->mBinderFrameBuffer->BindFrameBuffer();
   auto& worldManager = MDyWorld::GetInstance();
@@ -159,27 +162,5 @@ void FDyDeferredRenderingMesh::Clear()
 
   this->mBinderFrameBuffer->UnbindFrameBuffer();
 }
-
-#ifdef false
-EDySuccess FDyDeferredRenderingMesh::UpdateDirectionalLightValueToGpu(
-    _MIN_ const TI32 index,
-    _MIN_ const DDyUboDirectionalLight& container)
-{ // Integrity check
-  constexpr TI32 UboElementSize = sizeof(DDyUboDirectionalLight);
-
-  auto& uboManager = MDyUniformBufferObject::GetInstance();
-  MDY_CALL_ASSERT_SUCCESS(uboManager.UpdateUboContainer("dyBtUboDirLight", UboElementSize * index, UboElementSize, &container));
-  return DY_SUCCESS;
-}
-
-EDySuccess FDyDeferredRenderingMesh::UnbindDirectionalLight(_MIN_ const TI32 index)
-{ // Integrity check
-  constexpr TI32 UboElementSize = sizeof(DDyUboDirectionalLight);
-
-  auto& uboManager = MDyUniformBufferObject::GetInstance();
-  MDY_CALL_ASSERT_SUCCESS(uboManager.ClearUboContainer("dyBtUboDirLight", UboElementSize * index, UboElementSize));
-  return DY_SUCCESS;
-}
-#endif
 
 } /// ::dy namespace

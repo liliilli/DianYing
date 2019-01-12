@@ -44,6 +44,9 @@ public:
   /// @brief Try setup rendering, if failed, return DY_FAILURE.
   MDY_NODISCARD EDySuccess TrySetupRendering();
 
+  /// @brief Check rendering phase is ready.
+  MDY_NODISCARD bool IsReady() const noexcept;
+
   /// @brief Clear properties of given framebuffer.
   void Clear();
 

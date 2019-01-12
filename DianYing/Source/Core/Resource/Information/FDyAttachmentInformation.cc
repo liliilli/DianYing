@@ -25,6 +25,7 @@ FDyAttachmentInformation::FDyAttachmentInformation(_MIN_ const PDyGlAttachmentIn
     mAttachmentSize{metaInfo.mAttachmentSize},
     mBorderColor{metaInfo.mBorderColor},
     mBufferType{metaInfo.mBufferFormat},
+    mAttachmentType{metaInfo.mAttachmentType},
     mMipmapLevels{metaInfo.mMipmapLevels},
     mDepthNumber{metaInfo.mDepthNumber}
 {

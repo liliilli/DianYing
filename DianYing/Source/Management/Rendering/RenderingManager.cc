@@ -126,7 +126,6 @@ void MDyRendering::RenderDrawCallQueue()
       this->mBasicOpaqueRenderer->RenderScreen(this->mOpaqueDrawCallList);
     }
   }
-
   // Clear opaque draw queue list
   this->mOpaqueDrawCallList.clear();
 
@@ -141,20 +140,10 @@ void MDyRendering::RenderDrawCallQueue()
   // @TODO FIX THIS (SSAO)
   if (false) { this->mTempSsaoObject->RenderScreen(); }
 
-  //!
-  //! Only in editor effects
-  //!
-
-#if defined(MDY_FLAG_IN_EDITOR) == true
-  glBindFramebuffer(GL_FRAMEBUFFER, this->mDeferredFrameBufferId);
-  if (editor::MDyEditorSetting::GetInstance().GetmIsEnabledViewportRenderGrid() && this->mGridEffect)
-  {
-    this->mGridEffect->RenderGrid();
-  }
-#endif /// MDY_FLAG_IN_EDITOR
-
   // Final
-  if (this->mSceneFinalRenderer->TrySetupRendering() == DY_SUCCESS)
+  if (MDY_CHECK_ISNOTEMPTY(this->mSceneFinalRenderer) 
+  &&  this->mSceneFinalRenderer->IsReady() == true 
+  &&  this->mSceneFinalRenderer->TrySetupRendering() == DY_SUCCESS)
   {
     this->mSceneFinalRenderer->RenderScreen();
   }
