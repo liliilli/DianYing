@@ -62,6 +62,7 @@ struct DDyVector4 final
   DDyVector4(const glm::vec2& value) noexcept : X{value.x}, Y{value.y} {}
   DDyVector4(const glm::vec3& value) noexcept : X{value.x}, Y{value.y}, Z{value.z} {}
   DDyVector4(const glm::vec4& value) noexcept : X{value.x}, Y{value.y}, Z{value.z}, W{value.w} {}
+  DDyVector4(const std::array<TF32, 4>& value) noexcept : X{value[0]}, Y{value[1]}, Z{value[2]}, W{value[3]} {}
 
   DDyVector4& operator=(const aiVector2D& value) noexcept
   {

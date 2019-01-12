@@ -13,7 +13,6 @@
 /// SOFTWARE.
 ///
 
-#include <queue>
 #include <Dy/Core/Resource/Type/TDyResourceBinder.h>
 
 //!

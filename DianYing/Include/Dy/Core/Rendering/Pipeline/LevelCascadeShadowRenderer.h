@@ -60,18 +60,11 @@ public:
   MDY_NODISCARD EDySuccess TrySetupRendering();
 
 private:
-  /// @brief Update segments far planes.
-  void UpdateSegmentFarPlanes(_MIN_ const CDyCamera& iPtrCamera);
-
   TDyIResourceBinderShader        mDirLightShaderResource { "dyBtGlslRenderCsmLightNormal" };
   TDyIResourceBinderFrameBuffer   mBinderFrameBuffer      { "dyBtFbCSM" };
 
   static std::array<TF32, 2>      sViewportDims;
   std::ptrdiff_t                  mAddrMainDirectionalShadow = 0;
-
-  std::array<TF32, kCSMSegment>   mFarPlanes;
-  std::array<TF32, kCSMSegment>   mNormalizedFarPlanes;
-  DDyMatrix4x4                    mOldProjectionMatrix; 
 };
 
 } /// ::dy namespace

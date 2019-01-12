@@ -160,11 +160,18 @@ public:
   /// @brief Get projection matrix of light.
   MDY_NODISCARD const DDyMatrix4x4& GetProjectionMatrix() const noexcept;
 
+  /// @brief Update segment far planes.
+  void UpdateSegmentFarPlanes(_MIN_ const CDyCamera& iPtrCamera);
+  /// @brief Get CSM far planes.
+  MDY_NODISCARD const std::array<TF32, kCSMSegment>& GetCSMFarPlanes() const noexcept;
+  /// @brief Get CSM normalized far planes.
+  MDY_NODISCARD const std::array<TF32, kCSMSegment>& GetCSMNormalizedFarPlanes() const noexcept;
+
   /// @brief Update light projection and viewports of CSM.
   void UpdateLightProjectionAndViewports(
       _MIN_ const CDyCamera& iRefCamera, 
-      _MIN_ std::array<TF32, kCSMSegment>& iFarPlanes,
-      _MIN_ std::array<TF32, kCSMSegment>& iNormalizedFarPlanes);
+      _MIN_ const std::array<TF32, kCSMSegment>& iFarPlanes,
+      _MIN_ const std::array<TF32, kCSMSegment>& iNormalizedFarPlanes);
   
   /// @brief Get Cascaded-indexed viewports for shadow map array.
   MDY_NODISCARD const std::array<DDyArea2D, kCSMSegment>& GetCSMIndexedViewports() const noexcept;
@@ -224,12 +231,16 @@ private:
   DDyVector2                mShadowResolution = {};
   /// Shadow culling layer.
   std::vector<std::string>  mShadowCullingLayerList = {};
-  
-  // Find a bounding box of whole camera frustum in light view space.
+ 
+  /// Find a bounding box of whole camera frustum in light view space.
   DDyVector4 minFrustum {NumericalMax<TF32>};
   DDyVector4 maxFrustum {NumericalMin<TF32>};
   std::array<DDyArea2D, kCSMSegment>    mLightViewports;
   std::array<DDyMatrix4x4, kCSMSegment> mLightSegmentVPSBMatrices;
+
+  std::array<TF32, kCSMSegment> mFarPlanes;
+  std::array<TF32, kCSMSegment> mNormalizedFarPlanes;
+  DDyMatrix4x4                  mOldProjectionMatrix; 
     
   DDyMatrix4x4 mLightViewMatrix;
   DDyMatrix4x4 mLightProjMatrix;
