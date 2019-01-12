@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_RENDERING_MESH_H
-#define GUARD_DY_RENDERING_MESH_H
+#ifndef GUARD_DY_CORE_RENDERING_PIPELINE_LEVELCSMINTEGRATION_H
+#define GUARD_DY_CORE_RENDERING_PIPELINE_LEVELCSMINTEGRATION_H
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -15,56 +15,39 @@
 
 #include <Dy/Core/Resource/Type/TDyResourceBinder.h>
 
-//!
-//! Forward declaration
-//!
-
-namespace dy
-{
-struct  DDyUboDirectionalLight;
-} /// ::dy namespace
-
-//!
-//! Implementation
-//!
-
 namespace dy
 {
 
-class FDyDeferredRenderingMesh final
+class FDyLevelCSMIntergration final
 {
 public:
-  FDyDeferredRenderingMesh();
-  ~FDyDeferredRenderingMesh();
-
-  /// @brief Rendering deferred contexts to default framebuffer.
-  void RenderScreen();
-
-  /// @brief Try setup rendering, if failed, return DY_FAILURE.
-  MDY_NODISCARD EDySuccess TrySetupRendering();
+  FDyLevelCSMIntergration();
+  ~FDyLevelCSMIntergration();
 
   /// @brief Check rendering phase is ready.
   MDY_NODISCARD bool IsReady() const noexcept;
-
+  /// @brief Try setup rendering, if failed, return DY_FAILURE.
+  MDY_NODISCARD EDySuccess TrySetupRendering();
+  /// @brief Rendering deferred contexts to default framebuffer.
+  void RenderScreen();
   /// @brief Clear properties of given framebuffer.
   void Clear();
 
 private:
   void pInitializeShaderSetting();
-  void pInitializeUboBuffers();
 
-  TDyIResourceBinderShader      mBinderShader     { "dyBtShaderGlDeferred" };
-  TDyIResourceBinderModel       mBinderTriangle   { "dyBtModelScrProjTri" };
   TDyIResourceBinderFrameBuffer mBinderFrameBuffer{ "dyBtFbScrFin" };
+  TDyIResourceBinderShader      mBinderShader     { "dyBtGlslRenderCsmIntegration" };
+  TDyIResourceBinderModel       mBinderTriangle   { "dyBtModelScrProjTri" };
   TDyIResourceBinderAttachment  mBinderAttUnlit   { "dyBtUnlit" };
   TDyIResourceBinderAttachment  mBinderAttNormal  { "dyBtNormal" };
   TDyIResourceBinderAttachment  mBinderAttSpecular{ "dyBtSpecular" };
   TDyIResourceBinderAttachment  mBinderAttPosition{ "dyBtModelPosition" };
-  TDyIResourceBinderAttachment  mBinderAttShadow  { "dyBtAtDirBscShadow" };
+  TDyIResourceBinderAttachment  mBinderAttShadow  { "dyBtAtCSMLight" };
 
   std::ptrdiff_t mAddrMainLight = 0;
 };
 
 } /// ::dy namespace
 
-#endif /// GUARD_DY_RENDERING_MESH_H
+#endif /// GUARD_DY_CORE_RENDERING_PIPELINE_LEVELCSMINTEGRATION_H

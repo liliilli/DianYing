@@ -23,6 +23,7 @@
 #include <Dy/Core/Rendering/Pipeline/PostEffectSsao.h>
 #include <Dy/Core/Rendering/Pipeline/UIBasicRenderer.h>
 #include <Dy/Core/Rendering/Pipeline/LevelCascadeShadowRenderer.h>
+#include <Dy/Core/Rendering/Pipeline/LevelCSMIntegration.h>
 
 //!
 //! Forward declaration
@@ -97,7 +98,8 @@ private:
   std::unique_ptr<FDyBasicRenderer>               mBasicOpaqueRenderer  = MDY_INITIALIZE_NULL;
   std::unique_ptr<FDyLevelCascadeShadowRenderer>  mCSMRenderer          = MDY_INITIALIZE_NULL; 
   std::unique_ptr<FDyPostEffectSsao>              mTempSsaoObject       = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyDeferredRenderingMesh>       mSceneFinalRenderer   = MDY_INITIALIZE_NULL;
+  //std::unique_ptr<FDyDeferredRenderingMesh>       mSceneFinalRenderer   = MDY_INITIALIZE_NULL;
+  std::unique_ptr<FDyLevelCSMIntergration>        mSceneFinalRenderer   = MDY_INITIALIZE_NULL;
   std::unique_ptr<FDyFinalScreenDisplayRenderer>  mFinalDisplayRenderer = MDY_INITIALIZE_NULL;
   std::unique_ptr<FDyUIBasicRenderer>             mUiBasicRenderer      = MDY_INITIALIZE_NULL;
 

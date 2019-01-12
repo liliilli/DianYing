@@ -70,13 +70,6 @@ void FDyLevelCascadeShadowRenderer::PreRender()
   const auto* ptrCamera = MDyWorld::GetInstance().GetPtrMainLevelCamera();
   if (MDY_CHECK_ISNULL(ptrCamera)) { return; }
 
-  if (const auto& proj = ptrCamera->GetProjectionMatrix(); 
-      this->mOldProjectionMatrix != proj) 
-  { 
-    this->mOldProjectionMatrix = proj;
-    this->UpdateSegmentFarPlanes(*ptrCamera);
-  }
-
   auto* ptrLight  = MDyRendering::GetInstance().GetPtrMainDirectionalShadow();
   if (this->mAddrMainDirectionalShadow != reinterpret_cast<ptrdiff_t>(ptrLight))
   {
@@ -94,32 +87,12 @@ void FDyLevelCascadeShadowRenderer::PreRender()
 
   if (ptrLight != nullptr)
   {
+    ptrLight->UpdateSegmentFarPlanes(*ptrCamera);
     ptrLight->UpdateCSMFrustum(*ptrCamera);
     ptrLight->UpdateProjectionMatrix();
-    ptrLight->UpdateLightProjectionAndViewports(*ptrCamera, this->mFarPlanes, this->mNormalizedFarPlanes);
+    ptrLight->UpdateLightProjectionAndViewports(*ptrCamera, ptrLight->GetCSMFarPlanes(), ptrLight->GetCSMNormalizedFarPlanes());
 
     mProjMatrix = ptrLight->GetProjectionMatrix();
-  }
-}
-
-void FDyLevelCascadeShadowRenderer::UpdateSegmentFarPlanes(_MIN_ const CDyCamera& iPtrCamera)
-{
-  const auto nearPlane  = iPtrCamera.GetNear();
-  const auto farPlane   = iPtrCamera.GetFar();
-  const auto diffPlane  = farPlane - nearPlane;
-  
-  static constexpr TF32 frustumSplitCorrection = 0.8f;
-
-  for (TU32 i = 1; i <= kCSMSegment; ++i)
-  {
-    const TF32 distFactor = static_cast<TF32>(i) / kCSMSegment;
-    const TF32 stdTerm    = nearPlane * pow(farPlane / nearPlane, distFactor);
-    const TF32 corrTerm   = nearPlane + distFactor * diffPlane;
-    const TF32 viewDepth  = frustumSplitCorrection * stdTerm + (1.0f - frustumSplitCorrection) * corrTerm;
-
-    this->mFarPlanes[i - 1] = viewDepth;
-    const auto projectedDepth = this->mOldProjectionMatrix.MultiplyVector({0, 0, -viewDepth, 1});
-    this->mNormalizedFarPlanes[i - 1] = (projectedDepth.Z / projectedDepth.W) * 0.5f + 0.5f;
   }
 }
 

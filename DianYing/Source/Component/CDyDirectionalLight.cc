@@ -187,10 +187,47 @@ const DDyMatrix4x4& CDyDirectionalLight::GetProjectionMatrix() const noexcept
   return this->mLightProjMatrix;
 }
 
+void CDyDirectionalLight::UpdateSegmentFarPlanes(_MIN_ const CDyCamera& iPtrCamera)
+{
+  if (const auto& proj = iPtrCamera.GetProjectionMatrix(); 
+      this->mOldProjectionMatrix == proj) 
+  { return; }
+  else
+  { this->mOldProjectionMatrix = proj; }
+
+  const auto nearPlane  = iPtrCamera.GetNear();
+  const auto farPlane   = iPtrCamera.GetFar();
+  const auto diffPlane  = farPlane - nearPlane;
+  
+  static constexpr TF32 frustumSplitCorrection = 0.8f;
+
+  for (TU32 i = 1; i <= kCSMSegment; ++i)
+  {
+    const TF32 distFactor = static_cast<TF32>(i) / kCSMSegment;
+    const TF32 stdTerm    = nearPlane * pow(farPlane / nearPlane, distFactor);
+    const TF32 corrTerm   = nearPlane + distFactor * diffPlane;
+    const TF32 viewDepth  = frustumSplitCorrection * stdTerm + (1.0f - frustumSplitCorrection) * corrTerm;
+
+    const auto projectedDepth = this->mOldProjectionMatrix.MultiplyVector({0, 0, -viewDepth, 1});
+    this->mFarPlanes[i - 1] = viewDepth;
+    this->mNormalizedFarPlanes[i - 1] = (projectedDepth.Z / projectedDepth.W) * 0.5f + 0.5f;
+  }
+}
+
+const std::array<TF32, kCSMSegment>& CDyDirectionalLight::GetCSMFarPlanes() const noexcept
+{
+  return this->mFarPlanes;
+}
+
+const std::array<TF32, kCSMSegment>& CDyDirectionalLight::GetCSMNormalizedFarPlanes() const noexcept
+{
+  return this->mNormalizedFarPlanes;
+}
+
 void CDyDirectionalLight::UpdateLightProjectionAndViewports(
     _MIN_ const CDyCamera& iRefCamera, 
-    _MIN_ std::array<TF32, kCSMSegment>& iFarPlanes,
-    _MIN_ std::array<TF32, kCSMSegment>& iNormalizedFarPlanes)
+    _MIN_ const std::array<TF32, kCSMSegment>& iFarPlanes,
+    _MIN_ const std::array<TF32, kCSMSegment>& iNormalizedFarPlanes)
 {
    // Find a bounding box of segment in light view space.
   TF32 nearSegmentPlane = 0.0f;
@@ -238,9 +275,9 @@ void CDyDirectionalLight::UpdateLightProjectionAndViewports(
         0, 0, 0.5f, 0, 
         0, 0, 0, 1};
     DDyMatrix4x4 lightBias = DDyMatrix4x4{
-        0, 0, 0, 0.5f * scaleFactor.X,
-        0, 0, 0, 0.5f * scaleFactor.Y,
-        0, 0, 0, 0.5f,
+        1, 0, 0, 0.5f * scaleFactor.X,
+        0, 1, 0, 0.5f * scaleFactor.Y,
+        0, 0, 1, 0.5f,
         0, 0, 0, 1};
 
     this->mLightSegmentVPSBMatrices[i] = this->mLightViewMatrix.Multiply(lightProjMatrix).Multiply(lightScale).Multiply(lightBias);
@@ -251,6 +288,12 @@ void CDyDirectionalLight::UpdateLightProjectionAndViewports(
 const std::array<DDyArea2D, kCSMSegment>& CDyDirectionalLight::GetCSMIndexedViewports() const noexcept
 {
   return this->mLightViewports;
+}
+
+const std::array<DDyMatrix4x4, kCSMSegment>& 
+CDyDirectionalLight::GetCSMLightSegmentVPSBMatrix() const noexcept
+{
+  return this->mLightSegmentVPSBMatrices;
 }
 
 void CDyDirectionalLight::FrustumBoundingBoxLightViewSpace(

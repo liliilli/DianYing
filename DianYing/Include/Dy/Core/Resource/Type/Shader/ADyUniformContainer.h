@@ -95,6 +95,12 @@ public:
       const auto& item = this->MDY_UPDATEUNIFORM(Matrix4)(iSpecifier, iValue);
       this->mUpdatedItemList.emplace_back(std::make_pair(TType, item));
     }
+    else if constexpr (TType == EDyUniformVariableType::Matrix4Array)
+    { // If not exist and not created by doing TryConstructDefaultUniformList, just create.
+      if (MDY_ISUNIFORMEXIST(Matrix4Array)(iSpecifier) == false) { MDY_CREATEUNIFORM(Matrix4Array)(iSpecifier, -1); }
+      const auto& item = this->MDY_UPDATEUNIFORM(Matrix4Array)(iSpecifier, iValue);
+      this->mUpdatedItemList.emplace_back(std::make_pair(TType, item));
+    }
     else if constexpr (TType == EDyUniformVariableType::Matrix3)
     { // If not exist and not created by doing TryConstructDefaultUniformList, just create.
       if (MDY_ISUNIFORMEXIST(Matrix3)(iSpecifier) == false) { MDY_CREATEUNIFORM(Matrix3)(iSpecifier, -1); }
@@ -141,6 +147,8 @@ private:
   MDY_UNIFORM_FUNCTION_CONSTRUCT(Bool);
   MDY_UNIFORM_FUNCTION_CONSTRUCT(Texture2D);
   MDY_UNIFORM_FUNCTION_CONSTRUCT(Texture2DArray);
+  MDY_UNIFORM_FUNCTION_CONSTRUCT(Texture2DShadowArray);
+  MDY_UNIFORM_FUNCTION_CONSTRUCT(Matrix4Array);
   
   TUpdatedItemList  mUpdatedItemList  = {};
   bool              mIsShaderSetup    = false;
