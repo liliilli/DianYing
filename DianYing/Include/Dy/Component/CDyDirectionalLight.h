@@ -91,92 +91,61 @@ public:
   /// @brief Dectivate CDyDirectionalLight. Final activation value is also dependent on FDyActor activation flag.
   void Deactivate() noexcept override final;
 
-  ///
   /// @brief
   /// @param
-  /// @TODO SCRIPT THIS
-  ///
   void pPropagateParentActorActivation(const DDy3StateBool& actorBool) noexcept override final;
 
-  ///
   /// @brief
   /// @return
-  /// @TODO SCRIPT THIS
-  ///
   MDY_NODISCARD std::string ToString() override final;
 
-  ///
   /// @brief
   /// @return Casting light
-  /// @TODO SCRIPT THIS
-  ///
-  FORCEINLINE MDY_NODISCARD bool IsCastingLight() const noexcept { return this->mIsCastingLight; }
+  MDY_NODISCARD bool IsCastingLight() const noexcept { return this->mIsCastingLight; }
 
-  ///
   /// @brief
   /// @return
-  /// @TODO SCRIPT THIS
-  ///
-  FORCEINLINE MDY_NODISCARD bool IsCastingShadow() const noexcept { return this->mIsCastingShadow; }
+  MDY_NODISCARD bool IsCastingShadow() const noexcept { return this->mIsCastingShadow; }
 
-  ///
   /// @brief
   /// @param flag
-  ///
   void SetCastingLightFlag(_MIN_ const bool flag) noexcept;
 
-  ///
   /// @brief
   /// @param flag
-  ///
   void SetCastingShadowFlag(_MIN_ const bool flag) noexcept;
 
-  ///
   /// @brief
   /// @return
-  /// @TODO SCRIPT THIS
-  ///
-  FORCEINLINE MDY_NODISCARD const DDyVector3& GetLightDirection() const noexcept
+  MDY_NODISCARD const DDyVector3& GetLightDirection() const noexcept
   {
     return this->mData.mDirection;
   }
 
-  ///
   /// @brief
   /// @return
-  /// @TODO SCRIPT THIS
-  ///
-  FORCEINLINE MDY_NODISCARD float GetLightIntensity() const noexcept
+  MDY_NODISCARD float GetLightIntensity() const noexcept
   {
     return this->mData.mIntensity;
   }
 
-  ///
   /// @brief
   /// @return
-  /// @TODO SCRIPT THIS
-  ///
-  FORCEINLINE MDY_NODISCARD const DDyColorRGBA& GetLightDiffuseColor() const noexcept
+  MDY_NODISCARD const DDyColorRGBA& GetLightDiffuseColor() const noexcept
   {
     return this->mData.mDiffuse;
   }
 
-  ///
   /// @brief
   /// @param direction
-  /// @TODO SCRIPT THIS
-  ///
   FORCEINLINE void SetLightDirection(_MIN_ const DDyVector3& direction) noexcept
   {
     this->mData.mDirection = direction.Normalize();
     this->mIsNeededUpdateValueToGpu = true;
   }
 
-  ///
   /// @brief
   /// @param intensity
-  /// @TODO SCRIPT THIS
-  ///
   void SetIntensity(_MIN_ const float intensity) noexcept
   {
     if (intensity < 0.f)  { this->mData.mIntensity = 0.001f; }
@@ -184,74 +153,37 @@ public:
     this->mIsNeededUpdateValueToGpu = true;
   }
 
-  ///
   /// @brief
   /// @param color
-  /// @TODO SCRIPT THIS
-  ///
-  FORCEINLINE void SetLightDiffuseColor(_MIN_ const DDyColorRGBA& color) noexcept
+  void SetLightDiffuseColor(_MIN_ const DDyColorRGBA& color) noexcept
   {
     this->mData.mDiffuse = color;
     this->mIsNeededUpdateValueToGpu = true;
   }
 
-  ///
-  /// @brief
-  /// @return If binded to lighting system now, return true.
-  /// @TODO SCRIPT THIS
-  ///
-  FORCEINLINE MDY_NODISCARD bool IsBindedToLightingSystem() const noexcept
-  {
-    return this->mCastingLightUboIndex != MDY_INITIALIZE_DEFINT;
-  }
-
-  ///
-  /// @brief
-  /// @return
-  /// @TODO SCRIPT THIS
-  ///
-  MDY_NODISCARD std::optional<TI32> TryGetBindedIndexValue() const noexcept
-  {
-    if (this->mCastingLightUboIndex == MDY_INITIALIZE_DEFINT) { return std::nullopt; }
-    else                                                      { return this->mCastingLightUboIndex; }
-  }
+  /// @brief Get uniform-buffer-object information of this light.
+  MDY_NODISCARD DDyUboDirectionalLight GetUboLightInfo() const noexcept;
 
 private:
-  ///
   /// @brief Try activate camera operation. \n
   /// If parent is activate and itself activated, update all properties newly.
-  /// @return
-  /// @TODO SCRIPT THIS
-  ///
   MDY_NODISCARD EDySuccess pTryActivateDirectionalLight();
 
-  ///
   /// @brief
   /// @return
-  /// @TODO SCRIPT THIS
-  ///
   MDY_NODISCARD EDySuccess pTryActivateCastingShadow();
 
-  ///
   /// @brief Try deactivate camera operation. \n
   /// If either parent or itself is deactivated, disconnect it with all outside system.
   /// @return
-  /// @TODO SCRIPT THIS
-  ///
   MDY_NODISCARD EDySuccess pTryDeactivateDirectionalLight();
 
-  ///
   /// @brief
   /// @return
-  /// @TODO SCRIPT THIS
-  ///
   MDY_NODISCARD EDySuccess pTryDeactivateCastingShadow();
 
-  ///
   /// @brief
   /// @return
-  /// @TODO SCRIPT THIS
-  ///
   MDY_NODISCARD EDySuccess pTryUpdateDirectionalLight();
 
   /// Data for uniform buffer object. <Direction, Diffuse, Specular, Ambient, Intensity>
@@ -270,8 +202,6 @@ private:
   /// Flag for casting shadow (binding to shadow system)
   MDY_NOTUSED bool          mIsCastingShadow  = false;
 
-  ///
-  TI32        mCastingLightUboIndex = MDY_INITIALIZE_DEFINT;
   ///
   bool        mIsBindedToRenderingManagerAsLighting = false;
   ///

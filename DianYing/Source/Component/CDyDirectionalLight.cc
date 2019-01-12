@@ -142,6 +142,11 @@ void CDyDirectionalLight::SetCastingShadowFlag(const bool flag) noexcept
   else              { MDY_NOTUSED auto _ = pTryDeactivateCastingShadow(); }
 }
 
+DDyUboDirectionalLight CDyDirectionalLight::GetUboLightInfo() const noexcept
+{
+  return this->mData;
+}
+
 EDySuccess CDyDirectionalLight::pTryActivateDirectionalLight()
 {
   if (this->mIsBindedToRenderingManagerAsLighting == true)  { return DY_FAILURE; }
@@ -150,34 +155,7 @@ EDySuccess CDyDirectionalLight::pTryActivateDirectionalLight()
   this->mIsBindedToRenderingManagerAsLighting = true;
 
   // Bind and get a index of UBO array.
-  auto& renderingManager  = MDyRendering::GetInstance();
-  const auto opIndex      = renderingManager.pGetAvailableDirectionalLightIndex(*this);
-  if (opIndex.has_value() == false)
-  {
-    MDY_LOG_WARNING("CDyDirectionalLight::pTryActivateCastingShadow | Failed to issue available directional light index.");
-    return DY_FAILURE;
-  }
-  this->mCastingLightUboIndex = opIndex.value();
-
-  // Update values
-  MDY_NOUSE_RTVAL_EXPR(this->pTryUpdateDirectionalLight());
-
-  return DY_SUCCESS;
-}
-
-EDySuccess CDyDirectionalLight::pTryActivateCastingShadow()
-{
-  if (this->mIsBindedToRenderingManagerAsShadow == true)    { return DY_FAILURE; }
-  if (this->mIsCastingShadow == false)                      { return DY_FAILURE; }
-  if (this->mActivateFlag.IsOutputValueChanged() == false)  { return DY_FAILURE; }
-  this->mIsBindedToRenderingManagerAsShadow = true;
-
-  // Try bind to shadow system.
-  auto& renderingManager = MDyRendering::GetInstance();
-  if (renderingManager.pfIsAvailableDirectionalLightShadow(*this) == false) { return DY_FAILURE; }
-
-  // Update values
-  MDY_CALL_ASSERT_SUCCESS(renderingManager.pfUpdateDirectionalLightShadowToGpu(*this));
+  MDyRendering::GetInstance().MDY_PRIVATE_SPECIFIER(BindMainDirectionalLight)(*this);
   return DY_SUCCESS;
 }
 
@@ -188,11 +166,20 @@ EDySuccess CDyDirectionalLight::pTryDeactivateDirectionalLight()
   if (this->mActivateFlag.IsOutputValueChanged() == false)  { return DY_FAILURE; }
   this->mIsBindedToRenderingManagerAsLighting = false;
 
-  // Unbind from lighting system.
-  auto& renderingManager = MDyRendering::GetInstance();
-  MDY_CALL_ASSERT_SUCCESS(renderingManager.pUnbindDirectionalLight(*this));
-  this->mCastingLightUboIndex = MDY_INITIALIZE_DEFINT;
+  // Try Unbind from lighting system.
+  MDyRendering::GetInstance().MDY_PRIVATE_SPECIFIER(UnbindMainDirectionalLight)(*this);
+  return DY_SUCCESS;
+}
 
+EDySuccess CDyDirectionalLight::pTryActivateCastingShadow()
+{
+  if (this->mIsBindedToRenderingManagerAsShadow == true)    { return DY_FAILURE; }
+  if (this->mIsCastingShadow == false)                      { return DY_FAILURE; }
+  if (this->mActivateFlag.IsOutputValueChanged() == false)  { return DY_FAILURE; }
+  this->mIsBindedToRenderingManagerAsShadow = true;
+
+  // Try bind to lighting system.
+  MDyRendering::GetInstance().MDY_PRIVATE_SPECIFIER(BindMainDirectionalShadow)(*this);
   return DY_SUCCESS;
 }
 
@@ -204,22 +191,13 @@ EDySuccess CDyDirectionalLight::pTryDeactivateCastingShadow()
   this->mIsBindedToRenderingManagerAsShadow = false;
 
   // Unbind from shadow system.
-  auto& renderingManager = MDyRendering::GetInstance();
-  if (renderingManager.pfIsAvailableDirectionalLightShadow(*this) == true) { return DY_FAILURE; }
-
-  MDY_CALL_ASSERT_SUCCESS(renderingManager.pfUnbindDirectionalLightShadowToGpu(*this));
+  MDyRendering::GetInstance().MDY_PRIVATE_SPECIFIER(UnbindMainDirectionalShadow)(*this);
   return DY_SUCCESS;
 }
 
 EDySuccess CDyDirectionalLight::pTryUpdateDirectionalLight()
 {
   if (this->mIsBindedToRenderingManagerAsLighting == false) { return DY_FAILURE; }
-  if (this->mCastingLightUboIndex == MDY_INITIALIZE_DEFINT) { return DY_FAILURE; }
-
-  auto& renderingManager  = MDyRendering::GetInstance();
-  MDY_CALL_ASSERT_SUCCESS( \
-      renderingManager.pUpdateDirectionalLightValueToGpu(this->mCastingLightUboIndex, this->mData));
-
   this->mIsNeededUpdateValueToGpu = false;
   return DY_SUCCESS;
 }

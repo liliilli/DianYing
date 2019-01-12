@@ -72,61 +72,24 @@ public:
 
   /// @brief Render only loading widget.
   void MDY_PRIVATE_SPECIFIER(RenderLoading());
+  
+  /// @brief Get ptr main directional light. If not exist, just return nullptr.
+  MDY_NODISCARD CDyDirectionalLight* GetPtrMainDirectionalLight() const noexcept;
+  /// @brief Private function, bind directional light as main light.
+  void MDY_PRIVATE_SPECIFIER(BindMainDirectionalLight)(_MIN_ CDyDirectionalLight& iRefLight);
+  /// @brief Private function, unbind directional light of main light.
+  EDySuccess MDY_PRIVATE_SPECIFIER(UnbindMainDirectionalLight)(_MIN_ CDyDirectionalLight& iRefLight);
+    
+  /// @brief Private function, bind directional light as main light.
+  void MDY_PRIVATE_SPECIFIER(BindMainDirectionalShadow)(_MIN_ CDyDirectionalLight& iRefLight);
+  /// @brief Private function, unbind directional light of main light.
+  EDySuccess MDY_PRIVATE_SPECIFIER(UnbindMainDirectionalShadow)(_MIN_ CDyDirectionalLight& iRefLight);
 
 private:
   ///
   /// @brief Reset all of rendering framebuffers related to rendering of scene for new frame rendering.
   ///
   void pClearRenderingFramebufferInstances() noexcept;
-
-  ///
-  /// @brief  Issue available directional light index. If not available, just no value.
-  /// @param  Instance
-  /// @return
-  ///
-  MDY_NODISCARD std::optional<TI32> pGetAvailableDirectionalLightIndex(_MIN_ const CDyDirectionalLight&);
-
-  ///
-  /// @brief  Unbind valid directional light component that which is being binded to system.
-  /// @param  component Binded directional light component which has valid index.
-  /// @return If successfully unbinded, return true or false.
-  ///
-  MDY_NODISCARD EDySuccess pUnbindDirectionalLight(_MIN_ const CDyDirectionalLight& component);
-
-  ///
-  /// @brief  Update UBO directional light container value to gpu memory for lighting.
-  /// @param  index     Valid index value which got by using pGetAvaiableDirectionalLightIndex().
-  /// @param  container Uniform buffer object C++ container instance.
-  /// @return If process is succeeded, return true but false when index is oob or container value is not valid.
-  ///
-  MDY_NODISCARD EDySuccess pUpdateDirectionalLightValueToGpu(
-      _MIN_ const TI32 index,
-      _MIN_ const DDyUboDirectionalLight& container);
-
-  ///
-  /// @brief  Check whether or not directional light shadow is available to instance.
-  /// @param  Instance for type trailing
-  /// @return If available, just return true or false.
-  ///
-  MDY_NODISCARD bool pfIsAvailableDirectionalLightShadow(_MIN_ const CDyDirectionalLight&);
-
-  ///
-  /// @brief
-  /// @param
-  /// @return
-  ///
-  MDY_NODISCARD EDySuccess pfUpdateDirectionalLightShadowToGpu(_MIN_ const CDyDirectionalLight& component);
-
-  ///
-  /// @brief
-  /// @param
-  /// @return
-  ///
-  MDY_NODISCARD EDySuccess pfUnbindDirectionalLightShadowToGpu(_MIN_ const CDyDirectionalLight& component);
-
-  //!
-  //! Members
-  //!
 
   ///
   std::unique_ptr<FDyBasicRenderer>               mBasicOpaqueRenderer  = MDY_INITIALIZE_NULL;
@@ -138,6 +101,12 @@ private:
 
   /// Use basic renderer
   std::vector<NotNull<CDyModelRenderer*>>         mOpaqueDrawCallList   = {};
+ 
+  CDyDirectionalLight* mMainDirectionalLight   = nullptr;
+  CDyDirectionalLight* mMainDirectionalShadow  = nullptr;
+
+  inline static constexpr TI32 sDirectionalLightCount = 5;
+  std::queue<TI32>    mDirLightAvailableList  = {};
 
 #if defined(MDY_FLAG_IN_EDITOR)
   std::unique_ptr<FDyGrid>                    mGridEffect           = nullptr;

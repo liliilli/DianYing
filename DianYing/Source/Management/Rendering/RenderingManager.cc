@@ -27,6 +27,7 @@
 #include "Dy/Component/CDyCamera.h"
 #include "Dy/Component/CDyModelRenderer.h"
 #include "Dy/Management/Helper/SDyProfilingHelper.h"
+#include "Dy/Core/Rendering/Wrapper/FDyGLWrapper.h"
 
 namespace dy
 {
@@ -93,30 +94,36 @@ void MDyRendering::RenderDrawCallQueue()
     // If main camera is not exist, do not render level.
     if (MDY_CHECK_ISNOTNULL(ptrCamera))
     {
+      // DO CPU VIEW-FRUSTUM CULLING.
+#ifdef false
       DyEraseRemoveIf(this->mOpaqueDrawCallList, [ptrCamera](auto& iPtrOpaqueRenderer)
       {
         const auto& worldPos = iPtrOpaqueRenderer->GetBindedActor()->GetTransform()->GetFinalWorldPosition();
         return ptrCamera->CheckIsPointInFrustum(worldPos) == false;
       });
+#endif
       SDyProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(this->mOpaqueDrawCallList.size()));
 
-      // Set viewport values to camera's properties.
-      const auto viewportRect = ptrCamera->GetPixelizedViewportRectangle();
-      glViewport(viewportRect[0], viewportRect[1], viewportRect[2], viewportRect[3]);
-
-      // (1) Draw opaque call list. Get valid Main CDyCamera instance pointer address.
-      this->mBasicOpaqueRenderer->PreRender();
-      this->mBasicOpaqueRenderer->RenderScreen(this->mOpaqueDrawCallList);
-
-      // (2) Cascaded Shadow mapping to opaque call list.
+      // (1) Cascaded Shadow mapping to opaque call list.
       if (information.mGraphics.mIsEnabledDefaultShadow == true)
       { 
         // Pre-render update for update Segments.
         this->mCSMRenderer->PreRender();
-        // Render
-        // If passed culling test, do render.
-        //this->mCSMRenderer->RenderScreen(*drawInstance);
+        if (this->mCSMRenderer->TrySetupRendering() == DY_SUCCESS)
+        {
+          this->mCSMRenderer->SetupViewport();
+          for (auto& drawInstance : this->mOpaqueDrawCallList)
+          { // Render
+            this->mCSMRenderer->RenderScreen(*drawInstance);
+          }
+        }
       }
+
+      // Set global viewport values to camera's properties.
+      FDyGLWrapper::SetViewport(ptrCamera->GetPixelizedViewportRectangle());
+      // (2) Draw opaque call list. Get valid Main CDyCamera instance pointer address.
+      this->mBasicOpaqueRenderer->PreRender();
+      this->mBasicOpaqueRenderer->RenderScreen(this->mOpaqueDrawCallList);
     }
   }
 
@@ -147,9 +154,10 @@ void MDyRendering::RenderDrawCallQueue()
 #endif /// MDY_FLAG_IN_EDITOR
 
   // Final
-#if defined(MDY_FLAG_IN_EDITOR) == false
-  this->mSceneFinalRenderer->RenderScreen();
-#endif /// MDY_FLAG_IN_EDITOR == false
+  if (this->mSceneFinalRenderer->TrySetupRendering() == DY_SUCCESS)
+  {
+    this->mSceneFinalRenderer->RenderScreen();
+  }
 
   if (MDY_CHECK_ISNOTEMPTY(this->mUiBasicRenderer))       { this->mUiBasicRenderer->RenderScreen(); }
   if (MDY_CHECK_ISNOTEMPTY(this->mFinalDisplayRenderer))  { this->mFinalDisplayRenderer->RenderScreen(); }
@@ -162,6 +170,11 @@ void MDyRendering::MDY_PRIVATE_SPECIFIER(RenderLoading)()
 
   if (MDY_CHECK_ISNOTEMPTY(this->mUiBasicRenderer))       { this->mUiBasicRenderer->RenderScreen(); }
   if (MDY_CHECK_ISNOTEMPTY(this->mFinalDisplayRenderer))  { this->mFinalDisplayRenderer->RenderScreen(); }
+}
+
+CDyDirectionalLight* MDyRendering::GetPtrMainDirectionalLight() const noexcept
+{
+  return this->mMainDirectionalLight;
 }
 
 void MDyRendering::pClearRenderingFramebufferInstances() noexcept
@@ -184,59 +197,38 @@ void MDyRendering::pClearRenderingFramebufferInstances() noexcept
   if (MDY_CHECK_ISNOTEMPTY(this->mFinalDisplayRenderer))  { this->mFinalDisplayRenderer->Clear(); }
 }
 
-std::optional<TI32> MDyRendering::pGetAvailableDirectionalLightIndex(_MIN_ const CDyDirectionalLight&)
+/// @brief Private function, bind directional light as main light.
+void MDyRendering::MDY_PRIVATE_SPECIFIER(BindMainDirectionalLight)(_MIN_ CDyDirectionalLight& iRefLight)
 {
-  return this->mSceneFinalRenderer->GetAvailableDirectionalLightIndex();
+  this->mMainDirectionalLight = &iRefLight;
 }
 
-EDySuccess MDyRendering::pUnbindDirectionalLight(const CDyDirectionalLight& component)
+/// @brief Private function, unbind directional light of main light.
+EDySuccess MDyRendering::MDY_PRIVATE_SPECIFIER(UnbindMainDirectionalLight)(_MIN_ CDyDirectionalLight& iRefLight)
 {
-  if (component.IsBindedToLightingSystem() == false) { return DY_FAILURE; }
-  return this->mSceneFinalRenderer->UnbindDirectionalLight(component.TryGetBindedIndexValue().value());
-}
-
-EDySuccess MDyRendering::pUpdateDirectionalLightValueToGpu(
-    _MIN_ const TI32 index,
-    _MIN_ const DDyUboDirectionalLight& container)
-{
-  return this->mSceneFinalRenderer->UpdateDirectionalLightValueToGpu(index, container);
-}
-
-bool MDyRendering::pfIsAvailableDirectionalLightShadow(const CDyDirectionalLight&)
-{ // Integrity test
-  const auto& information = MDySetting::GetInstance().GetGameplaySettingInformation();
-  if (information.mGraphics.mIsEnabledDefaultShadow == false)
+  if (this->mMainDirectionalLight == &iRefLight) 
   {
-    MDY_LOG_WARNING("MDyRendering::pfIsAvailableDirectionalLightShadow | Shadow feature is disabled now.");
-    return false;
+    this->mMainDirectionalLight = nullptr;
+    return DY_SUCCESS;
   }
-
-  //MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mShadowRenderer), "Shadow object must be valid if shadow feature is enabled.");
-  return true;
+  else { return DY_FAILURE; }
+}
+  
+/// @brief Private function, bind directional light as main light.
+void MDyRendering::MDY_PRIVATE_SPECIFIER(BindMainDirectionalShadow)(_MIN_ CDyDirectionalLight& iRefLight)
+{
+  this->mMainDirectionalShadow = &iRefLight;
 }
 
-EDySuccess MDyRendering::pfUpdateDirectionalLightShadowToGpu(const CDyDirectionalLight& component)
-{ // Integrity test
-  const auto& information = MDySetting::GetInstance().GetGameplaySettingInformation();
-  if (information.mGraphics.mIsEnabledDefaultShadow == false) { return DY_FAILURE; }
-  //if (MDY_CHECK_ISEMPTY(this->mShadowRenderer))   { return DY_FAILURE; }
-  if (MDY_CHECK_ISEMPTY(this->mSceneFinalRenderer)) { return DY_FAILURE; }
-
-  return DY_SUCCESS;
-}
-
-EDySuccess MDyRendering::pfUnbindDirectionalLightShadowToGpu(const CDyDirectionalLight& component)
-{ // Integrity test
-  const auto& information = MDySetting::GetInstance().GetGameplaySettingInformation();
-  if (information.mGraphics.mIsEnabledDefaultShadow == false) { return DY_FAILURE; }
-  //if (MDY_CHECK_ISEMPTY(this->mShadowRenderer))   { return DY_FAILURE; }
-  if (MDY_CHECK_ISEMPTY(this->mSceneFinalRenderer)) { return DY_FAILURE; }
-
-  // Update values
-  //MDY_NOTUSED
-  //const auto flag1 = this->mShadowRenderer->UnbindDirectionalLightShadowToGpu(component);
-  MDY_NOT_IMPLEMENTED_ASSERT();
-  return DY_SUCCESS;
+/// @brief Private function, unbind directional light of main light.
+EDySuccess MDyRendering::MDY_PRIVATE_SPECIFIER(UnbindMainDirectionalShadow)(_MIN_ CDyDirectionalLight& iRefLight)
+{
+  if (this->mMainDirectionalShadow == &iRefLight) 
+  {
+    this->mMainDirectionalShadow = nullptr;
+    return DY_SUCCESS;
+  }
+  else { return DY_FAILURE; }
 }
 
 } /// ::dy namespace

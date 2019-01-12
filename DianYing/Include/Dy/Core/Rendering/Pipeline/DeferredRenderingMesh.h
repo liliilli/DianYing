@@ -38,44 +38,18 @@ public:
   FDyDeferredRenderingMesh();
   ~FDyDeferredRenderingMesh();
 
-  ///
   /// @brief Rendering deferred contexts to default framebuffer.
-  ///
   void RenderScreen();
 
-  ///
+  /// @brief Try setup rendering, if failed, return DY_FAILURE.
+  MDY_NODISCARD EDySuccess TrySetupRendering();
+
   /// @brief Clear properties of given framebuffer.
-  ///
   void Clear();
-
-  ///
-  /// @brief  Issue available directional light index if not available, just return nullopt;
-  /// @return Directional light index value or nullopt (no value).
-  ///
-  MDY_NODISCARD std::optional<TI32> GetAvailableDirectionalLightIndex() noexcept;
-
-  ///
-  /// @brief  Update FUCKFUCKFUCKFCUFKCUKFUCK
-  /// @param  index
-  /// @param  container
-  /// @return
-  ///
-  MDY_NODISCARD EDySuccess UpdateDirectionalLightValueToGpu(
-      _MIN_ const TI32 index,
-      _MIN_ const DDyUboDirectionalLight& container);
-
-  ///
-  /// @brief
-  /// @param  index
-  /// @return
-  ///
-  MDY_NODISCARD EDySuccess UnbindDirectionalLight(_MIN_ const TI32 index);
 
 private:
   void pInitializeShaderSetting();
   void pInitializeUboBuffers();
-
-  inline static constexpr TI32 sDirectionalLightCount = 5;
 
   TDyIResourceBinderShader      mBinderShader     { "dyBtShaderGlDeferred" };
   TDyIResourceBinderModel       mBinderTriangle   { "dyBtModelScrProjTri" };
@@ -86,7 +60,7 @@ private:
   TDyIResourceBinderAttachment  mBinderAttPosition{ "dyBtModelPosition" };
   TDyIResourceBinderAttachment  mBinderAttShadow  { "dyBtAtDirBscShadow" };
 
-  std::queue<TI32>    mDirLightAvailableList  = {};
+  std::ptrdiff_t mAddrMainLight = 0;
 };
 
 } /// ::dy namespace

@@ -32,6 +32,7 @@
 #include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
 
 #include <glm/gtc/matrix_transform.inl>
+#include "Dy/Core/Rendering/Wrapper/FDyGLWrapper.h"
 
 //!
 //! Forward declaration
@@ -55,7 +56,6 @@ FDyDeferredRenderingMesh::FDyDeferredRenderingMesh()
   this->pInitializeUboBuffers();
 
   MDY_ASSERT(this->mBinderFrameBuffer.IsResourceExist() == true, "Framebuffer must be bound.");
-  for (TI32 i = 0; i < sDirectionalLightCount; ++i) { this->mDirLightAvailableList.push(i); }
 }
 
 void FDyDeferredRenderingMesh::pInitializeShaderSetting()
@@ -79,7 +79,7 @@ void FDyDeferredRenderingMesh::pInitializeUboBuffers()
   desc.mUboSpecifierName  = "dyBtUboDirLight";
   desc.mBufferDrawType    = EDyBufferDrawType::DynamicDraw;
   desc.mUboElementSize    = sizeof(DDyUboDirectionalLight);
-  desc.mUboArraySize      = FDyDeferredRenderingMesh::sDirectionalLightCount;
+  desc.mUboArraySize      = 1;
   MDY_CALL_ASSERT_SUCCESS(uboManager.CreateUboContainer(desc));
 }
 
@@ -97,29 +97,51 @@ void FDyDeferredRenderingMesh::RenderScreen()
 
   const auto& submeshList = this->mBinderTriangle->GetMeshResourceList();
   MDY_ASSERT(submeshList.size() == 1, "Unexpected error occurred.");
-  // Bind vertex array
-  const FDyMeshResource& mesh = *submeshList[0]->Get();
 
-  // Set
-  glBindFramebuffer(GL_FRAMEBUFFER, this->mBinderFrameBuffer->GetFrameBufferId());
+  this->mBinderFrameBuffer->BindFrameBuffer();
   this->mBinderShader->UseShader();
-  glBindVertexArray(mesh.GetVertexArrayId());
+  submeshList[0]->Get()->BindVertexArray();
 
   // Bind g-buffers as textures.
-  const auto uShadowPv_Id = glGetUniformLocation(this->mBinderShader->GetShaderProgramId(), "uShadowPv");
-  glUniformMatrix4fv(uShadowPv_Id, 1, GL_FALSE, &sSamplePvMatrix[0].X);
+  this->mBinderShader.TryUpdateUniform<EDyUniformVariableType::Matrix4>("uShadowPv", sSamplePvMatrix);
+  this->mBinderShader.TryUpdateUniformList();
 
   glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, this->mBinderAttUnlit->GetAttachmentId());
   glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, this->mBinderAttNormal->GetAttachmentId());
   glActiveTexture(GL_TEXTURE2); glBindTexture(GL_TEXTURE_2D, this->mBinderAttSpecular->GetAttachmentId());
   glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, this->mBinderAttPosition->GetAttachmentId());
   glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, this->mBinderAttShadow->GetAttachmentId());
-  glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
+  FDyGLWrapper::Draw(EDyDrawType::Triangle, true, 3);
 
-  // Rewind
-  glBindVertexArray(0);
+  FDyGLWrapper::UnbindVertexArrayObject();
   this->mBinderShader->DisuseShader();
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  this->mBinderFrameBuffer->UnbindFrameBuffer();
+}
+
+EDySuccess FDyDeferredRenderingMesh::TrySetupRendering()
+{
+  if (this->mBinderShader.IsResourceExist() == false
+  ||  this->mBinderTriangle.IsResourceExist() == false
+  ||  this->mBinderFrameBuffer.IsResourceExist() == false) { return DY_FAILURE; }
+
+  //auto& render    = MDyRendering::GetInstance();
+  auto* ptrLight  = MDyRendering::GetInstance().GetPtrMainDirectionalLight();
+  if (this->mAddrMainLight != reinterpret_cast<ptrdiff_t>(ptrLight))
+  {
+    this->mAddrMainLight = reinterpret_cast<ptrdiff_t>(ptrLight);
+    auto& uboManager = MDyUniformBufferObject::GetInstance();
+    if (this->mAddrMainLight == 0)
+    {
+      DDyUboDirectionalLight light;
+      MDY_CALL_ASSERT_SUCCESS(uboManager.UpdateUboContainer("dyBtUboDirLight", 0, sizeof(DDyUboDirectionalLight), &light));
+    }
+    else
+    {
+      DDyUboDirectionalLight light = ptrLight->GetUboLightInfo();
+      MDY_CALL_ASSERT_SUCCESS(uboManager.UpdateUboContainer("dyBtUboDirLight", 0, sizeof(DDyUboDirectionalLight), &light));
+    }
+  }
+  return DY_SUCCESS;
 }
 
 void FDyDeferredRenderingMesh::Clear()
@@ -128,28 +150,17 @@ void FDyDeferredRenderingMesh::Clear()
   ||  this->mBinderTriangle.IsResourceExist() == false
   ||  this->mBinderFrameBuffer.IsResourceExist() == false) { return; }
 
-  glBindFramebuffer(GL_FRAMEBUFFER, this->mBinderFrameBuffer->GetFrameBufferId());
+  this->mBinderFrameBuffer->BindFrameBuffer();
   auto& worldManager = MDyWorld::GetInstance();
 
   const auto& backgroundColor = worldManager.GetValidLevelReference().GetBackgroundColor();
   glClearColor(backgroundColor.R, backgroundColor.G, backgroundColor.B, backgroundColor.A);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  this->mBinderFrameBuffer->UnbindFrameBuffer();
 }
 
-std::optional<TI32> FDyDeferredRenderingMesh::GetAvailableDirectionalLightIndex() noexcept
-{
-  if (this->mDirLightAvailableList.empty() == true) { return std::nullopt; }
-  else
-  {
-    const auto returnId = this->mDirLightAvailableList.front();
-    this->mDirLightAvailableList.pop();
-
-    return returnId;
-  }
-}
-
+#ifdef false
 EDySuccess FDyDeferredRenderingMesh::UpdateDirectionalLightValueToGpu(
     _MIN_ const TI32 index,
     _MIN_ const DDyUboDirectionalLight& container)
@@ -169,5 +180,6 @@ EDySuccess FDyDeferredRenderingMesh::UnbindDirectionalLight(_MIN_ const TI32 ind
   MDY_CALL_ASSERT_SUCCESS(uboManager.ClearUboContainer("dyBtUboDirLight", UboElementSize * index, UboElementSize));
   return DY_SUCCESS;
 }
+#endif
 
 } /// ::dy namespace
