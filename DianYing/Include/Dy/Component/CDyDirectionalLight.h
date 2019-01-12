@@ -17,11 +17,15 @@
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 #include <Dy/Helper/Type/Matrix4.h>
 #include <Dy/Meta/Information/ComponentLightMetaInfo.h>
+#include <Dy/Builtin/Constant/CSM.h>
+
+#define MDY_BYTEPADDING(__Type__) MDY_NOTUSED __Type__ MDY_TOKENPASTE2(____padding, __LINE__)
 
 namespace dy
 {
+  class CDyCamera;
 
-///
+  ///
 /// @struct DDyUboDirectionalLight
 /// @brief  This structure must be aligned by 16 bytes. (for std140 GL standard block layout)
 /// @TODO SCRIPT THIS
@@ -30,7 +34,7 @@ struct alignas(16) DDyUboDirectionalLight final
 {
   /// World space light direction
   DDyVector3  mDirection  = {};
-  MDY_NOTUSED TI32 ____padding;
+  MDY_BYTEPADDING(TI32);
   /// Light tint color
   DDyColorRGBA    mDiffuse    = DDyColorRGBA::White;
   DDyColorRGBA    mSpecular   = DDyColorRGBA::White;
@@ -144,6 +148,27 @@ public:
     this->mIsNeededUpdateValueToGpu = true;
   }
 
+  /// @brief Update view matrix agian.
+  void UpdateLightViewMatrix();
+  /// @brief Get view matrix of light.
+  MDY_NODISCARD const DDyMatrix4x4& GetLightViewMatrix() const noexcept;
+
+  /// @brief
+  void UpdateCSMFrustum(_MIN_ const CDyCamera& iRefCamera);
+  /// @brief Update projection matrix again.
+  void UpdateProjectionMatrix();
+  /// @brief Get projection matrix of light.
+  MDY_NODISCARD const DDyMatrix4x4& GetProjectionMatrix() const noexcept;
+
+  /// @brief Update light projection and viewports of CSM.
+  void UpdateLightProjectionAndViewports(
+      _MIN_ const CDyCamera& iRefCamera, 
+      _MIN_ std::array<TF32, kCSMSegment>& iFarPlanes,
+      _MIN_ std::array<TF32, kCSMSegment>& iNormalizedFarPlanes);
+  
+  /// @brief Get Cascaded-indexed viewports for shadow map array.
+  MDY_NODISCARD const std::array<DDyArea2D, kCSMSegment>& GetCSMIndexedViewports() const noexcept;
+
   /// @brief
   /// @param intensity
   void SetIntensity(_MIN_ const float intensity) noexcept
@@ -168,23 +193,26 @@ private:
   /// @brief Try activate camera operation. \n
   /// If parent is activate and itself activated, update all properties newly.
   MDY_NODISCARD EDySuccess pTryActivateDirectionalLight();
-
   /// @brief
-  /// @return
-  MDY_NODISCARD EDySuccess pTryActivateCastingShadow();
-
+  MDY_NODISCARD EDySuccess pTryUpdateDirectionalLight();
   /// @brief Try deactivate camera operation. \n
   /// If either parent or itself is deactivated, disconnect it with all outside system.
-  /// @return
   MDY_NODISCARD EDySuccess pTryDeactivateDirectionalLight();
 
   /// @brief
   /// @return
-  MDY_NODISCARD EDySuccess pTryDeactivateCastingShadow();
-
+  MDY_NODISCARD EDySuccess pTryActivateCastingShadow();
   /// @brief
   /// @return
-  MDY_NODISCARD EDySuccess pTryUpdateDirectionalLight();
+  MDY_NODISCARD EDySuccess pTryDeactivateCastingShadow();
+
+  /// @brief Update iMin iMax as Bounding box of camera & given near & far.
+  void FrustumBoundingBoxLightViewSpace(
+      _MIN_ TF32 iNear,
+      _MIN_ TF32 iFar,
+      _MIN_ const CDyCamera& iRefCamera, 
+      _MOUT_ DDyVector4& iMin, 
+      _MOUT_ DDyVector4& iMax) const;
 
   /// Data for uniform buffer object. <Direction, Diffuse, Specular, Ambient, Intensity>
   DDyUboDirectionalLight    mData             = {};
@@ -196,6 +224,15 @@ private:
   DDyVector2                mShadowResolution = {};
   /// Shadow culling layer.
   std::vector<std::string>  mShadowCullingLayerList = {};
+  
+  // Find a bounding box of whole camera frustum in light view space.
+  DDyVector4 minFrustum {NumericalMax<TF32>};
+  DDyVector4 maxFrustum {NumericalMin<TF32>};
+  std::array<DDyArea2D, kCSMSegment>    mLightViewports;
+  std::array<DDyMatrix4x4, kCSMSegment> mLightSegmentVPSBMatrices;
+    
+  DDyMatrix4x4 mLightViewMatrix;
+  DDyMatrix4x4 mLightProjMatrix;
 
   /// Flag for casting light (binding to lighting system)
   MDY_NOTUSED bool          mIsCastingLight   = false;

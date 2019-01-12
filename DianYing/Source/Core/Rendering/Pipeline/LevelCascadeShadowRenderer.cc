@@ -41,10 +41,9 @@
 namespace
 {
 
-dy::DDyMatrix4x4 sTestView;
-dy::DDyMatrix4x4 slightProjMatrix;
-
 dy::DDyVector3 kLevelUpDir = dy::DDyVector3{0, 1, 0};
+dy::DDyMatrix4x4 mViewMatrix;
+dy::DDyMatrix4x4 mProjMatrix;
 
 }
 
@@ -82,26 +81,25 @@ void FDyLevelCascadeShadowRenderer::PreRender()
   if (this->mAddrMainDirectionalShadow != reinterpret_cast<ptrdiff_t>(ptrLight))
   {
     this->mAddrMainDirectionalShadow = reinterpret_cast<ptrdiff_t>(ptrLight);
-
     if (this->mAddrMainDirectionalShadow == 0) 
-    { sTestView = DDyMatrix4x4{}; }
-    else 
+    {
+      mViewMatrix = DDyMatrix4x4{};
+    }
+    else
     { 
-      const auto& pos = ptrLight->GetBindedActor()->GetTransform()->GetFinalWorldPosition();
-
-      auto fwd = ptrLight->GetLightDirection();
-      if (fwd == kLevelUpDir) { fwd += DDyVector3{0.01f, 0.01f, 0.01f}; }
-      fwd *= -1.0f;
-
-      const auto eye = pos + fwd;
-      sTestView = glm::lookAt(
-        static_cast<glm::vec3>(pos), 
-        static_cast<glm::vec3>(eye), 
-        static_cast<glm::vec3>(kLevelUpDir)); 
+      ptrLight->UpdateLightViewMatrix(); 
+      mViewMatrix = ptrLight->GetLightViewMatrix(); 
     }
   }
 
-  this->UpdateLightProjectionAndViewports(*ptrCamera);
+  if (ptrLight != nullptr)
+  {
+    ptrLight->UpdateCSMFrustum(*ptrCamera);
+    ptrLight->UpdateProjectionMatrix();
+    ptrLight->UpdateLightProjectionAndViewports(*ptrCamera, this->mFarPlanes, this->mNormalizedFarPlanes);
+
+    mProjMatrix = ptrLight->GetProjectionMatrix();
+  }
 }
 
 void FDyLevelCascadeShadowRenderer::UpdateSegmentFarPlanes(_MIN_ const CDyCamera& iPtrCamera)
@@ -125,132 +123,16 @@ void FDyLevelCascadeShadowRenderer::UpdateSegmentFarPlanes(_MIN_ const CDyCamera
   }
 }
 
-void FDyLevelCascadeShadowRenderer::UpdateLightProjectionAndViewports(_MIN_ const CDyCamera& iRefCamera)
-{
-  // Find a bounding box of whole camera frustum in light view space.
-  DDyVector4 minFrustum {NumericalMax<TF32>};
-  DDyVector4 maxFrustum {NumericalMin<TF32>};
-  this->FrustumBoundingBoxLightViewSpace(iRefCamera.GetNear(), iRefCamera.GetFar(), iRefCamera, minFrustum, maxFrustum);
-  
-  // Update light projection matrix to only cover the area viewable by the camera.
-  slightProjMatrix = glm::ortho(minFrustum.X, maxFrustum.X, minFrustum.Y, maxFrustum.Y, -maxFrustum.Z, -minFrustum.Z);
-  
-  // Find a bounding box of segment in light view space.
-  TF32 nearSegmentPlane = 0.0f;
-  for (TU32 i = 0; i < kCSMSegment; ++i)
-  {
-    DDyVector4 minSegment {NumericalMax<TF32>};
-    DDyVector4 maxSegment {NumericalMin<TF32>};
-    this->FrustumBoundingBoxLightViewSpace(nearSegmentPlane, mFarPlanes[i], iRefCamera, minSegment, maxSegment);
-
-    // Update viewports.
-    const DDyVector2 frustumSize {maxFrustum.X - minFrustum.X, maxFrustum.Y - minFrustum.Y};
-    const TF32 segmentSizeX = maxSegment.X - minSegment.X;
-    const TF32 segmentSizeY = maxSegment.Y - minSegment.Y;
-    const TF32 segmentSize  = std::max(segmentSizeX, segmentSizeY);
-
-    const DDyVector2 offsetBottomLeft {minSegment.X - minFrustum.X, minSegment.Y - minFrustum.Y};
-    const DDyVector2 offsetSegmentSizeRatio   {offsetBottomLeft.X / segmentSize, offsetBottomLeft.Y / segmentSize};
-    const DDyVector2 frustumSegmentSizeRatio  {frustumSize.X / segmentSize, frustumSize.Y / segmentSize};
-
-    DDyVector2 pixelOffsetTopLeft = offsetSegmentSizeRatio * kCSMAttachmentTextureSize;
-    DDyVector2 pixelFrustumSize   = frustumSegmentSizeRatio * kCSMAttachmentTextureSize;
-
-    // Scale factor that helps if frustum size is supposed to be bigger than maximum viewport size.
-    const DDyVector2 scaleFactor{
-        sViewportDims[0] < pixelFrustumSize.X ? sViewportDims[0] / pixelFrustumSize.X : 1.0f,
-        sViewportDims[1] < pixelFrustumSize.Y ? sViewportDims[1] / pixelFrustumSize.Y : 1.0f
-    };
-    pixelOffsetTopLeft  *= scaleFactor;
-    pixelFrustumSize    *= scaleFactor;
-
-    mLightViewports[i].mLeftDown  = pixelOffsetTopLeft * -1;
-    mLightViewports[i].mRightUp   = pixelFrustumSize;
-
-    // Update light view-projection matrices per segments.
-    DDyMatrix4x4 lightProjMatrix = glm::ortho(
-        minSegment.X, 
-        minSegment.X + segmentSize, 
-        minSegment.Y, 
-        minSegment.Y + segmentSize,
-        -maxFrustum.Z,
-        -minFrustum.Z);
-    DDyMatrix4x4 lightScale = DDyMatrix4x4{
-        0.5f * scaleFactor.X, 0, 0, 0,
-        0, 0.5f * scaleFactor.Y, 0, 0,
-        0, 0, 0.5f, 0, 
-        0, 0, 0, 1};
-    DDyMatrix4x4 lightBias = DDyMatrix4x4{
-        0, 0, 0, 0.5f * scaleFactor.X,
-        0, 0, 0, 0.5f * scaleFactor.Y,
-        0, 0, 0, 0.5f,
-        0, 0, 0, 1};
-
-    this->mLightSegmentVPSBMatrices[i] = sTestView.Multiply(lightProjMatrix).Multiply(lightScale).Multiply(lightBias);
-    nearSegmentPlane = this->mNormalizedFarPlanes[i];
-  }
-}
-
-void FDyLevelCascadeShadowRenderer::FrustumBoundingBoxLightViewSpace(
-    _MIN_ TF32 iNear, 
-    _MIN_ TF32 iFar,
-    _MIN_ const CDyCamera& iRefCamera, 
-    _MOUT_ DDyVector4& iMin, 
-    _MOUT_ DDyVector4& iMax) const
-{
-  DDyVector4 minResult {NumericalMax<TF32>};
-  DDyVector4 maxResult {NumericalMin<TF32>};
-
-  const TF32 fov  = math::DegToRadVal<TF32> * iRefCamera.GetFieldOfView();
-  const auto xywh = iRefCamera.GetPixelizedViewportRectangle();
-  const auto pos  = iRefCamera.GetPosition();
-  const TF32 nearHeight = 2.0f * tan(fov) * iNear;
-  const TF32 nearWidth  = nearHeight * xywh[2] / xywh[3];
-  const TF32 farHeight  = 2.0f * tan(fov) * iFar;
-  const TF32 farWidth   = farHeight * xywh[2] / xywh[3];
-  
-  const auto& camViewMatrix = iRefCamera.GetViewMatrix();
-  const auto rightDir = DDyVector3{camViewMatrix[0]};
-  const auto upDir    = DDyVector3{camViewMatrix[1]};
-  const auto forDir   = DDyVector3{camViewMatrix[2]};
-
-  const auto nc = pos + forDir * iNear;
-  const auto fc = pos + forDir * iFar;
-
-  // Vertices in a world space.
-  std::array<DDyVector4, 8> boundingBoxVertices =
-  { //         z    y                             x
-    DDyVector4{nc - (upDir * nearHeight * 0.5f) - (rightDir * nearWidth * 0.5f), 1.0f}, // NBL
-    DDyVector4{nc - (upDir * nearHeight * 0.5f) + (rightDir * nearWidth * 0.5f), 1.0f}, // NBR
-    DDyVector4{nc + (upDir * nearHeight * 0.5f) + (rightDir * nearWidth * 0.5f), 1.0f}, // NTR
-    DDyVector4{nc + (upDir * nearHeight * 0.5f) - (rightDir * nearWidth * 0.5f), 1.0f}, // NTL
-
-    DDyVector4{fc - (upDir * farHeight * 0.5f) - (rightDir * farWidth * 0.5f), 1.0f}, // FBL
-    DDyVector4{fc - (upDir * farHeight * 0.5f) + (rightDir * farWidth * 0.5f), 1.0f}, // FBR
-    DDyVector4{fc + (upDir * farHeight * 0.5f) + (rightDir * farWidth * 0.5f), 1.0f}, // FTR
-    DDyVector4{fc + (upDir * farHeight * 0.5f) - (rightDir * farWidth * 0.5f), 1.0f}, // FTL
-  };
-
-  for (TU32 vertId = 0; vertId < 8; ++vertId)
-  { // Light view space.
-    boundingBoxVertices[vertId] = sTestView.MultiplyVector(boundingBoxVertices[vertId]);
-    // Update bounding box. (at least small point and at most biggest point)
-    for (TU32 i = 0; i < 4; ++i)
-    {
-      minResult[i] = std::min(minResult[i], boundingBoxVertices[vertId][i]);
-      maxResult[i] = std::max(maxResult[i], boundingBoxVertices[vertId][i]);
-    }
-  }
-
-  iMin = minResult;
-  iMax = maxResult;
-}
-
 void FDyLevelCascadeShadowRenderer::SetupViewport()
 {
+  auto* ptrLight  = MDyRendering::GetInstance().GetPtrMainDirectionalShadow();
+  MDY_ASSERT(this->mAddrMainDirectionalShadow == reinterpret_cast<ptrdiff_t>(ptrLight), 
+      "CSM Renderer light handle is not matched to given light.");
+
+  const auto& lightViewports = ptrLight->GetCSMIndexedViewports();
   for (TU32 i = 0; i < kCSMSegment; ++i)
   {
-    FDyGLWrapper::SetViewportIndexed(i, this->mLightViewports[i]);
+    FDyGLWrapper::SetViewportIndexed(i, lightViewports[i]);
   }
 }
 
@@ -282,8 +164,8 @@ EDySuccess FDyLevelCascadeShadowRenderer::TrySetupRendering()
 
   this->mDirLightShaderResource->UseShader();
   this->mDirLightShaderResource.TryUpdateUniform<EDyUniformVariableType::Integer>("uFrustumSegmentCount", static_cast<TI32>(kCSMSegment));
-  this->mDirLightShaderResource.TryUpdateUniform<EDyUniformVariableType::Matrix4>("mProjMatrix", slightProjMatrix);
-  this->mDirLightShaderResource.TryUpdateUniform<EDyUniformVariableType::Matrix4>("mViewMatrix", sTestView);
+  this->mDirLightShaderResource.TryUpdateUniform<EDyUniformVariableType::Matrix4>("mProjMatrix", mProjMatrix);
+  this->mDirLightShaderResource.TryUpdateUniform<EDyUniformVariableType::Matrix4>("mViewMatrix", mViewMatrix);
   this->mDirLightShaderResource.TryUpdateUniformList();
   return DY_SUCCESS;
 }

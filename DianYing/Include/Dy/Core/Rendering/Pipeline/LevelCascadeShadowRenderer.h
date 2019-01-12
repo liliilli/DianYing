@@ -15,7 +15,7 @@
 
 #include <Dy/Core/Resource/Type/TDyResourceBinder.h>
 #include <Dy/Builtin/Constant/CSM.h>
-#include "Dy/Helper/Type/Area2D.h"
+#include <Dy/Helper/Type/Area2D.h>
 
 //!
 //! Forward declaration
@@ -63,15 +63,6 @@ private:
   /// @brief Update segments far planes.
   void UpdateSegmentFarPlanes(_MIN_ const CDyCamera& iPtrCamera);
 
-  /// @brief Update light projection & viewport regions.
-  void UpdateLightProjectionAndViewports(_MIN_ const CDyCamera& iRefCamera);
-  void FrustumBoundingBoxLightViewSpace(
-      _MIN_ TF32 iNear,
-      _MIN_ TF32 iFar,
-      _MIN_ const CDyCamera& iRefCamera, 
-      _MOUT_ DDyVector4& iMin, 
-      _MOUT_ DDyVector4& iMax) const;
-
   TDyIResourceBinderShader        mDirLightShaderResource { "dyBtGlslRenderCsmLightNormal" };
   TDyIResourceBinderFrameBuffer   mBinderFrameBuffer      { "dyBtFbCSM" };
 
@@ -82,8 +73,8 @@ private:
   std::array<TF32, kCSMSegment>   mNormalizedFarPlanes;
   DDyMatrix4x4                    mOldProjectionMatrix; 
 
-  std::array<DDyArea2D, kCSMSegment>    mLightViewports;
-  std::array<DDyMatrix4x4, kCSMSegment> mLightSegmentVPSBMatrices;
+  //std::array<DDyArea2D, kCSMSegment>    mLightViewports;
+  //std::array<DDyMatrix4x4, kCSMSegment> mLightSegmentVPSBMatrices;
 };
 
 } /// ::dy namespace
