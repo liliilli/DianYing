@@ -25,6 +25,7 @@
 #include <Dy/Core/Rendering/Wrapper/PDyGLVaoBindDescriptor.h>
 #include <Dy/Core/Resource/Internal/ShaderType.h>
 #include <Dy/Meta/Type/Mesh/DDyGLVaoBindInformation.h>
+#include "Dy/Helper/Type/Area2D.h"
 
 //!
 //! Forward declaration
@@ -564,6 +565,42 @@ EDySuccess FDyGLWrapper::DeleteFrameBuffer(_MIN_ const TU32 framebufferId)
   MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
   glDeleteFramebuffers(1, &framebufferId);
   return DY_SUCCESS;
+}
+
+void FDyGLWrapper::SetViewport(_MIN_ const std::array<TI32, 4>& iViewportRegion)
+{
+  DDyArea2D area; 
+  area.mLeftDown  = DDyVector2{static_cast<TF32>(iViewportRegion[0]), static_cast<TF32>(iViewportRegion[1])};
+  area.mRightUp   = DDyVector2{static_cast<TF32>(iViewportRegion[2]), static_cast<TF32>(iViewportRegion[3])};
+  FDyGLWrapper::SetViewport(area);
+}
+
+void FDyGLWrapper::SetViewport(_MIN_ const DDyArea2D& iViewportRegion)
+{
+  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
+  glViewport(
+      static_cast<TI32>(iViewportRegion.mLeftDown.X), 
+      static_cast<TI32>(iViewportRegion.mLeftDown.Y), 
+      static_cast<TI32>(iViewportRegion.mRightUp.X), 
+      static_cast<TI32>(iViewportRegion.mRightUp.Y));
+}
+
+void FDyGLWrapper::SetViewportIndexed(_MIN_ TU32 iIndex,_MIN_ const std::array<TI32, 4>& iViewportRegion)
+{
+  DDyArea2D area; 
+  area.mLeftDown  = DDyVector2{static_cast<TF32>(iViewportRegion[0]), static_cast<TF32>(iViewportRegion[1])};
+  area.mRightUp   = DDyVector2{static_cast<TF32>(iViewportRegion[2]), static_cast<TF32>(iViewportRegion[3])};
+  FDyGLWrapper::SetViewportIndexed(iIndex, area);
+}
+
+void FDyGLWrapper::SetViewportIndexed(_MIN_ TU32 iIndex, _MIN_ const DDyArea2D& iViewportRegion)
+{
+  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
+  glViewportIndexedf(iIndex, 
+      iViewportRegion.mLeftDown.X, 
+      iViewportRegion.mLeftDown.Y, 
+      iViewportRegion.mRightUp.X, 
+      iViewportRegion.mRightUp.Y);
 }
 
 void FDyGLWrapper::BindFrameBufferObject(_MIN_ TU32 iFboId)

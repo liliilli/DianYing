@@ -24,7 +24,8 @@
 
 namespace dy
 {
-enum class EDyTextureStyleType : unsigned char;
+  struct DDyArea2D;
+  enum class EDyTextureStyleType : unsigned char;
 enum class EDyDrawType;
 struct PDyGLVaoBindDescriptor;
 struct PDyGLShaderFragmentDescriptor;
@@ -64,7 +65,6 @@ public:
   /// @brief Create texture and get texture id. \n
   /// This function is thread-safe and get performance down.
   static MDY_NODISCARD std::optional<TU32> CreateTexture(_MIN_ const PDyGLTextureDescriptor& descriptor);
-
   /// @brief Delete texture if texture id is valid.
   /// This function is thread-safe and get performance down.
   static void DeleteTexture(_MIN_ const TU32 validTextureId);
@@ -72,7 +72,6 @@ public:
   /// @brief Create shader fragment and get fragment id. \n
   /// This function is thread-safe and get performance down.
   static MDY_NODISCARD std::optional<TU32> CreateShaderFragment(_MIN_ const PDyGLShaderFragmentDescriptor& descriptor);
-
   /// @brief Delete shader fragment with valid shader fragment id. \n
   /// This function is thread-safe and get performance down.
   static void DeleteShaderFragment(_MIN_ const TU32 shaderFragmentId);
@@ -80,21 +79,18 @@ public:
   /// @brief Create shader program and get shader program id. \n
   /// This function is thread-safe and get performance down.
   static MDY_NODISCARD std::optional<TU32> CreateShaderProgram(_MIN_ const TFragmentList& fragmentList);
-
   /// @brief Delete shader program with valid shader program id.
   /// This function is thread-safe and get performance down.
   static void DeleteShaderProgram(_MIN_ const TU32 shaderProgramId);
 
   /// @brief Use shader program.
   static void UseShaderProgram(_MIN_ TU32 iShaderProgramId);
-
   /// @brief Disuse shader program.
   static void DisuseShaderProgram();
 
   /// @brief Create direct buffer which can be shared between OpenGL contexts. \n
   /// This function is thread-safe and get performance down.
   static MDY_NODISCARD std::optional<TU32> CreateBuffer(_MIN_ const PDyGLBufferDescriptor& descriptor);
-
   /// @brief Delete shader program with valid shader program id.
   /// This function is thread-safe and get performance down.
   static void DeleteBuffer(_MIN_ const TU32 directBufferId);
@@ -103,7 +99,6 @@ public:
   /// related vertex array object prior to function.
   /// This function thread-safe and might get performance down.
   static void MapBuffer(_MIN_ EDyDirectBufferType iBufferType, _MIN_ TU32 iBufferId, _MIN_ void* iPtrBuffer, _MIN_ TU32 iBufferSize);
-
   /// @brief Map data to arbitary buffer with start point, input buffer size, and gap of each input target pointer.
   /// This funciton is needed to bind related vertex array object prior to function.
   /// This function thread-safe and might get performance down.
@@ -113,17 +108,14 @@ public:
 
   /// @brief Just create and return created vertex array object id.
   static MDY_NODISCARD TU32 CreateVertexArrayObject(void);
-
   /// @brief Bind properties with valid Vertex Array Object Id.
   static void BindVertexArrayObject(_MIN_ const PDyGLVaoBindDescriptor& descriptor);
-
   /// @brief Delete Vertex Array Object id.
   static void DeleteVertexArrayObject(_MIN_ const TU32 vertexArrayObjectId);
 
   /// @brief Create attachment (texture or renderbuffer) and get texture id. \n
   /// This function is thread-safe and get performance down.
   static MDY_NODISCARD std::optional<TU32> CreateAttachment(_MIN_ const PDyGLAttachmentDescriptor& iDescriptor);
-
   /// @brief Delete attachment (texture or renderbuffer) if texture id is valid.
   /// This function is thread-safe and get performance down.
   static MDY_NODISCARD EDySuccess DeleteAttachment(_MIN_ TU32 iAttachmentId, _MIN_ bool iIsRenderBuffer);
@@ -131,10 +123,20 @@ public:
   /// @brief Create frame buffer. \n
   /// Creating frame buffer object must be held on main thread context.
   static MDY_NODISCARD std::optional<TU32> CreateFrameBuffer(_MIN_ const PDyGLFrameBufferDescriptor& iDescriptor);
-
   /// @brief Delete frame buffer. \n
   /// Deleting frame buffer object must be held on main thread context.
   MDY_NODISCARD static EDySuccess DeleteFrameBuffer(_MIN_ const TU32 framebufferId);
+
+  /// @brief Set global viewport region.
+  /// ...You always need to call glViewport() before starting to draw to a framebuffer with a different size. 
+  /// This is necessary because the viewport is not part of the framebuffer state...
+  static void SetViewport(_MIN_ const std::array<TI32, 4>& iViewportRegion);
+  static void SetViewport(_MIN_ const DDyArea2D& iViewportRegion);
+  /// @brief Set global indexed viewport region. Keep caution to use this, it's different from general `SetViewport`.
+  /// ...You always need to call glViewport() before starting to draw to a framebuffer with a different size. 
+  /// This is necessary because the viewport is not part of the framebuffer state...
+  static void SetViewportIndexed(_MIN_ TU32 iIndex, _MIN_ const std::array<TI32, 4>& iViewportRegion);
+  static void SetViewportIndexed(_MIN_ TU32 iIndex, _MIN_ const DDyArea2D& iViewportRegion);
 
   /// @brief Bind frame buffer object.
   static void BindFrameBufferObject(_MIN_ TU32 iFboId);
@@ -156,8 +158,7 @@ public:
   /// @brief Draw command.
   static void Draw(_MIN_ EDyDrawType iType, _MIN_ bool iIsElement, _MIN_ TU32 iCount);
 
-  /// @brief Query command.
-  /// Shader program id must be valid and query enum also.
+  /// @brief Query command. Shader program id must be valid and query enum also.
   MDY_NODISCARD static TI32 QueryShaderProgramIV(_MIN_ TU32 iShaderProgramId, _MIN_ GLenum iQueryEnum);
   /// @brief Query Float vector command.
   static void QueryFloatVector(_MIN_ GLenum iGLLowEnumCommand, _MIN_ TF32* iPtrRawFloatVector);
@@ -165,19 +166,17 @@ public:
   /// @brief 
   MDY_NODISCARD static std::optional<std::tuple<std::string, GLsizei, GLint, EDyAttributeVariableType, TU32>>
   GetShaderProgramAttributeInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iAttrIndex);
-
+  /// @brief
   MDY_NODISCARD static std::optional<std::tuple<std::string, GLsizei, GLint, EDyUniformVariableType, TU32>>
   GetShaderProgramUniformInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iUniformIndex);
-
+  /// @brief
   MDY_NODISCARD static std::optional<std::string>
   GetShaderProgramUniformBlockInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iUniformBlockIndex);
 
   /// @brief
   static void UpdateUniformMatrix4(_MIN_ TU32 iId, _MIN_ const DDyMatrix4x4& iBuffer, _MIN_ bool iTransposed = false);
-
   /// @brief
   static void UpdateUniformVector4(_MIN_ TU32 iId, _MIN_ const DDyVector4& iBuffer);
-
   /// @brief
   static void UpdateUniformInteger(_MIN_ TU32 iId, _MIN_ const TI32& iBuffer);
 
