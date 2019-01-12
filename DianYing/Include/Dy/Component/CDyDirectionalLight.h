@@ -168,6 +168,8 @@ public:
   
   /// @brief Get Cascaded-indexed viewports for shadow map array.
   MDY_NODISCARD const std::array<DDyArea2D, kCSMSegment>& GetCSMIndexedViewports() const noexcept;
+  /// @brief Get Calculated Cascaded Shadow Mapping VPSB Matrix list.
+  MDY_NODISCARD const std::array<DDyMatrix4x4, kCSMSegment>& GetCSMLightSegmentVPSBMatrix() const noexcept;
 
   /// @brief
   /// @param intensity
@@ -200,10 +202,8 @@ private:
   MDY_NODISCARD EDySuccess pTryDeactivateDirectionalLight();
 
   /// @brief
-  /// @return
   MDY_NODISCARD EDySuccess pTryActivateCastingShadow();
   /// @brief
-  /// @return
   MDY_NODISCARD EDySuccess pTryDeactivateCastingShadow();
 
   /// @brief Update iMin iMax as Bounding box of camera & given near & far.

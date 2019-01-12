@@ -253,6 +253,12 @@ const std::array<DDyArea2D, kCSMSegment>& CDyDirectionalLight::GetCSMIndexedView
   return this->mLightViewports;
 }
 
+const std::array<DDyMatrix4x4, kCSMSegment>& 
+CDyDirectionalLight::GetCSMLightSegmentVPSBMatrix() const noexcept
+{
+  return this->mLightSegmentVPSBMatrices;
+}
+
 void CDyDirectionalLight::FrustumBoundingBoxLightViewSpace(
     _MIN_ TF32 iNear, _MIN_ TF32 iFar, 
     _MIN_ const CDyCamera& iRefCamera,

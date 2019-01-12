@@ -206,6 +206,7 @@
     <ClCompile Include="Source\Component\Internal\Script\Actor\CDyActorScriptCpp.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Actor\CDyActorScriptLua.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\LevelCascadeShadowRenderer.cc" />
+    <ClCompile Include="Source\Core\Rendering\Pipeline\LevelCSMIntergration.cc" />
     <ClCompile Include="Source\Core\Rendering\Widget\CDyBasicGaugeBarRenderer.cc" />
     <ClCompile Include="Source\Core\Rendering\Widget\CDyImageRenderer.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Widget\FDyWidgetScriptStatus.cc" />
@@ -553,6 +554,7 @@
     <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScript.h" />
     <ClInclude Include="Include\Dy\Core\EDyAppMode.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\LevelCascadeShadowRenderer.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\LevelCSMIntegration.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Type\EDyDrawType.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\FDyGLWrapper.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLAttachmentDescriptor.h" />

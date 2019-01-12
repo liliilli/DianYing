@@ -55,6 +55,7 @@ layout (binding = 4) uniform sampler2DArrayShadow uShadow;
 
 uniform mat4 uLightVPSBMatrix[4];
 uniform vec4 uNormalizedFarPlanes;
+
 float sShadowBias = 0.02f;
 
 // binding = 1 is DirectionalLightBlock uniform block.

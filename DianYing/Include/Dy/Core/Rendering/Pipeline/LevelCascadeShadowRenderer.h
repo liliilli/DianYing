@@ -72,9 +72,6 @@ private:
   std::array<TF32, kCSMSegment>   mFarPlanes;
   std::array<TF32, kCSMSegment>   mNormalizedFarPlanes;
   DDyMatrix4x4                    mOldProjectionMatrix; 
-
-  //std::array<DDyArea2D, kCSMSegment>    mLightViewports;
-  //std::array<DDyMatrix4x4, kCSMSegment> mLightSegmentVPSBMatrices;
 };
 
 } /// ::dy namespace

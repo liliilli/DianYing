@@ -260,6 +260,7 @@
     <ClCompile Include="Source\Core\Resource\Internal\TextureEnums.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\LevelCascadeShadowRenderer.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\Level\RendIntegrationLevelCSM.cc" />
+    <ClCompile Include="Source\Core\Rendering\Pipeline\LevelCSMIntergration.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -666,6 +667,7 @@
     <ClInclude Include="Include\Dy\Builtin\Constant\CSM.h" />
     <ClInclude Include="Include\Dy\Builtin\Constant\GeneralLevel.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Level\RendIntegrationLevelCSM.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\LevelCSMIntegration.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

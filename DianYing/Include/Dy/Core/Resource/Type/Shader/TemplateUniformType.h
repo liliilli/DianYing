@@ -13,6 +13,7 @@
 /// SOFTWARE.
 ///
 
+#include <vector>
 #include <Dy/Core/Resource/Internal/ShaderType.h>
 #include <Dy/Helper/Type/Matrix4.h>
 #include <Dy/Helper/Type/VectorInt2.h>
@@ -23,6 +24,8 @@ namespace dy
 template <EDyUniformVariableType TType>
 struct MDY_PRIVATE_SPECIFIER(UniformBinder);
 
+template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::Matrix4Array> final
+{ using ValueType = std::vector<DDyMatrix4x4>; };
 template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::Matrix4> final  { using ValueType = DDyMatrix4x4; };
 template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::Matrix3> final  { using ValueType = DDyMatrix3x3; };
 template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::Vector4> final  { using ValueType = DDyVector4; };
@@ -37,6 +40,13 @@ template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::
 template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::Texture1D>      final { using ValueType = TU32; };
 template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::Texture2D>      final { using ValueType = TU32; };
 template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::Texture2DArray> final { using ValueType = TU32; };
+
+template <typename TType, std::size_t Amount>
+MDY_NODISCARD std::vector<TType> 
+DyConvertToVector(_MIN_ const std::array<TType, Amount>& iInput)
+{
+  return std::vector<TType>{iInput.begin(), iInput.end()};
+}
 
 } /// ::dy namespace
 
