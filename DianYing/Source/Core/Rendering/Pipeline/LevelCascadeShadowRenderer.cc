@@ -21,7 +21,18 @@
 #include <Dy/Management/Rendering/UniformBufferObjectManager.h>
 #include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
-#include "Dy/Core/Rendering/Wrapper/FDyGLWrapper.h"
+#include <Dy/Core/Resource/Resource/FDyShaderResource.h>
+#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Management/Rendering/RenderingManager.h>
+#include "Dy/Component/CDyDirectionalLight.h"
+
+#ifdef near
+#undef near
+#endif
+
+#ifdef far
+#undef far 
+#endif
 
 //!
 //! Forward declaration
@@ -30,8 +41,10 @@
 namespace
 {
 
-dy::DDyMatrix4x4 sTestView = glm::lookAt(glm::vec3(0, 20, 20), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+dy::DDyMatrix4x4 sTestView;
 dy::DDyMatrix4x4 slightProjMatrix;
+
+dy::DDyVector3 kLevelUpDir = dy::DDyVector3{0, 1, 0};
 
 }
 
@@ -65,60 +78,30 @@ void FDyLevelCascadeShadowRenderer::PreRender()
     this->UpdateSegmentFarPlanes(*ptrCamera);
   }
 
+  auto* ptrLight  = MDyRendering::GetInstance().GetPtrMainDirectionalShadow();
+  if (this->mAddrMainDirectionalShadow != reinterpret_cast<ptrdiff_t>(ptrLight))
+  {
+    this->mAddrMainDirectionalShadow = reinterpret_cast<ptrdiff_t>(ptrLight);
+
+    if (this->mAddrMainDirectionalShadow == 0) 
+    { sTestView = DDyMatrix4x4{}; }
+    else 
+    { 
+      const auto& pos = ptrLight->GetBindedActor()->GetTransform()->GetFinalWorldPosition();
+
+      auto fwd = ptrLight->GetLightDirection();
+      if (fwd == kLevelUpDir) { fwd += DDyVector3{0.01f, 0.01f, 0.01f}; }
+      fwd *= -1.0f;
+
+      const auto eye = pos + fwd;
+      sTestView = glm::lookAt(
+        static_cast<glm::vec3>(pos), 
+        static_cast<glm::vec3>(eye), 
+        static_cast<glm::vec3>(kLevelUpDir)); 
+    }
+  }
+
   this->UpdateLightProjectionAndViewports(*ptrCamera);
-  this->SetupSegmentIndexedViewports();
-}
-
-void FDyLevelCascadeShadowRenderer::RenderScreen(_MIN_ CDyModelRenderer& renderer)
-{
-#ifdef false
-  // Validation test
-  if (this->mBinderFrameBuffer.IsResourceExist() == false) { return; }
-  this->mBinderFrameBuffer->BindFrameBuffer();
-
-  auto& worldManager     = MDyWorld::GetInstance();
-  auto& uboManager       = MDyUniformBufferObject::GetInstance();
-  const auto cameraCount = worldManager.GetFocusedCameraCount();
-
-  // Get valid CDyCamera instance pointer address.
-  const auto opCamera = worldManager.GetFocusedCameraValidReference(cameraId);
-  if (opCamera.has_value() == false) { continue; }
-
-  const auto& validCameraRawPtr = *opCamera.value();
-  {
-    const auto flag = uboManager.UpdateUboContainer(
-        MSVSTR(sUboCameraBlock),
-        offsetof(DDyUboCameraBlock, mViewMatrix),
-        sizeof(DDyUboCameraBlock::mViewMatrix),
-        &validCameraRawPtr.GetViewMatrix()[0].X);
-    MDY_ASSERT(flag == DY_SUCCESS, "");
-  }
-  {
-    const auto flag = uboManager.UpdateUboContainer(
-        MSVSTR(sUboCameraBlock),
-        offsetof(DDyUboCameraBlock, mProjMatrix),
-        sizeof(DDyUboCameraBlock::mProjMatrix),
-        &validCameraRawPtr.GetProjectionMatrix()[0].X);
-    MDY_ASSERT(flag == DY_SUCCESS, "");
-  }
-
-  // Set viewport values to camera's properties.
-  const auto viewportRect = validCameraRawPtr.GetPixelizedViewportRectangle();
-  glViewport(viewportRect[0], viewportRect[1], viewportRect[2], viewportRect[3]);
-
-  const auto& worldPos = renderer.GetBindedActor()->GetTransform()->GetFinalWorldPosition();
-  if (validCameraRawPtr.CheckIsPointInFrustum(worldPos) == false) { continue; }
-
-  const auto& refModelMatrix = renderer.GetBindedActor()->GetTransform()->GetTransform();
-
-  // Return to default frame buffer.
-  this->mBinderFrameBuffer->UnbindFrameBuffer();
-#endif
-}
-
-void FDyLevelCascadeShadowRenderer::Clear()
-{
-
 }
 
 void FDyLevelCascadeShadowRenderer::UpdateSegmentFarPlanes(_MIN_ const CDyCamera& iPtrCamera)
@@ -150,7 +133,7 @@ void FDyLevelCascadeShadowRenderer::UpdateLightProjectionAndViewports(_MIN_ cons
   this->FrustumBoundingBoxLightViewSpace(iRefCamera.GetNear(), iRefCamera.GetFar(), iRefCamera, minFrustum, maxFrustum);
   
   // Update light projection matrix to only cover the area viewable by the camera.
-  slightProjMatrix = glm::ortho(minFrustum.X, maxFrustum.X, minFrustum.Y, maxFrustum.Y, 0.0f, minFrustum.Z);
+  slightProjMatrix = glm::ortho(minFrustum.X, maxFrustum.X, minFrustum.Y, maxFrustum.Y, -maxFrustum.Z, -minFrustum.Z);
   
   // Find a bounding box of segment in light view space.
   TF32 nearSegmentPlane = 0.0f;
@@ -190,8 +173,8 @@ void FDyLevelCascadeShadowRenderer::UpdateLightProjectionAndViewports(_MIN_ cons
         minSegment.X + segmentSize, 
         minSegment.Y, 
         minSegment.Y + segmentSize,
-        0.0f,
-        minFrustum.Z);
+        -maxFrustum.Z,
+        -minFrustum.Z);
     DDyMatrix4x4 lightScale = DDyMatrix4x4{
         0.5f * scaleFactor.X, 0, 0, 0,
         0, 0.5f * scaleFactor.Y, 0, 0,
@@ -208,14 +191,6 @@ void FDyLevelCascadeShadowRenderer::UpdateLightProjectionAndViewports(_MIN_ cons
   }
 }
 
-#ifdef near
-#undef near
-#endif
-
-#ifdef far
-#undef far 
-#endif
-
 void FDyLevelCascadeShadowRenderer::FrustumBoundingBoxLightViewSpace(
     _MIN_ TF32 iNear, 
     _MIN_ TF32 iFar,
@@ -229,9 +204,9 @@ void FDyLevelCascadeShadowRenderer::FrustumBoundingBoxLightViewSpace(
   const TF32 fov  = math::DegToRadVal<TF32> * iRefCamera.GetFieldOfView();
   const auto xywh = iRefCamera.GetPixelizedViewportRectangle();
   const auto pos  = iRefCamera.GetPosition();
-  const TF32 nearHeight = 2.0f * tan(fov * 0.5f) * iNear;
+  const TF32 nearHeight = 2.0f * tan(fov) * iNear;
   const TF32 nearWidth  = nearHeight * xywh[2] / xywh[3];
-  const TF32 farHeight  = 2.0f * tan(fov * 0.5f) * iFar;
+  const TF32 farHeight  = 2.0f * tan(fov) * iFar;
   const TF32 farWidth   = farHeight * xywh[2] / xywh[3];
   
   const auto& camViewMatrix = iRefCamera.GetViewMatrix();
@@ -271,9 +246,79 @@ void FDyLevelCascadeShadowRenderer::FrustumBoundingBoxLightViewSpace(
   iMax = maxResult;
 }
 
-void FDyLevelCascadeShadowRenderer::SetupSegmentIndexedViewports()
+void FDyLevelCascadeShadowRenderer::SetupViewport()
 {
+  for (TU32 i = 0; i < kCSMSegment; ++i)
+  {
+    FDyGLWrapper::SetViewportIndexed(i, this->mLightViewports[i]);
+  }
+}
+
+void FDyLevelCascadeShadowRenderer::Clear()
+{
+  if (this->mDirLightShaderResource.IsResourceExist() == false
+  ||  this->mBinderFrameBuffer.IsResourceExist() == false) { return; }
+
+  this->mBinderFrameBuffer->BindFrameBuffer();
+
+  const GLfloat one = 1.0f;
+  glClearBufferfv(GL_DEPTH, 0, &one);
+
+  this->mBinderFrameBuffer->UnbindFrameBuffer();
+}
+
+EDySuccess FDyLevelCascadeShadowRenderer::TrySetupRendering()
+{
+  if (this->mDirLightShaderResource.IsResourceExist() == false
+  ||  this->mBinderFrameBuffer.IsResourceExist() == false) { return DY_FAILURE; }
+
+  glEnable(GL_DEPTH_TEST);
+  glEnable(GL_CULL_FACE);
+  glCullFace(GL_BACK);
   
+  this->mBinderFrameBuffer->BindFrameBuffer();
+  const GLfloat one = 1.0f;
+  glClearBufferfv(GL_DEPTH, 0, &one);
+
+  this->mDirLightShaderResource->UseShader();
+  this->mDirLightShaderResource.TryUpdateUniform<EDyUniformVariableType::Integer>("uFrustumSegmentCount", static_cast<TI32>(kCSMSegment));
+  this->mDirLightShaderResource.TryUpdateUniform<EDyUniformVariableType::Matrix4>("mProjMatrix", slightProjMatrix);
+  this->mDirLightShaderResource.TryUpdateUniform<EDyUniformVariableType::Matrix4>("mViewMatrix", sTestView);
+  this->mDirLightShaderResource.TryUpdateUniformList();
+  return DY_SUCCESS;
+}
+
+void FDyLevelCascadeShadowRenderer::RenderScreen(_MIN_ CDyModelRenderer& renderer)
+{
+  // Validation test
+  const auto* ptrModelBinder = renderer.GetModelResourceBinder();
+  if (MDY_CHECK_ISNULL(ptrModelBinder)) { return; }
+
+  const auto& meshList = (*ptrModelBinder)->GetMeshResourceList();
+  const auto  opSubmeshListCount = renderer.GetModelSubmeshCount();
+  if (opSubmeshListCount.has_value() == false) { return; }
+
+  const auto  meshCount = opSubmeshListCount.value();
+  this->mDirLightShaderResource->UseShader();
+
+  for (TI32 i = 0; i < meshCount; ++i)
+  {
+    const auto& ptrMesh = *meshList[i];
+    const auto& refModelMatrix = renderer.GetBindedActor()->GetTransform()->GetTransform();
+    this->mDirLightShaderResource.TryUpdateUniform<EDyUniformVariableType::Matrix4>("uModelMatrix", refModelMatrix);
+    this->mDirLightShaderResource.TryUpdateUniformList();
+    ptrMesh->BindVertexArray();
+
+    // Call function call drawing array or element. (not support instancing yet) TODO IMPLEMENT BATCHING SYSTEM.
+    if (ptrMesh->IsEnabledIndices() == true)
+    { FDyGLWrapper::Draw(EDyDrawType::Triangle, true, ptrMesh->GetIndicesCounts()); }
+    else
+    { FDyGLWrapper::Draw(EDyDrawType::Triangle, true, ptrMesh->GetVertexCounts()); }
+  }
+
+  // Unbind present submesh vertex array object.
+  FDyGLWrapper::UnbindVertexArrayObject();
+  this->mDirLightShaderResource->DisuseShader();
 }
 
 } /// ::dy namespace

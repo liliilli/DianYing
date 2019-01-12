@@ -27,11 +27,12 @@ MDY_SET_IMMUTABLE_STRING(sVert, R"dy(
 
 layout (location = 0) in vec3 dyPosition;
 
-uniform mat4 uPvLightMatrix;
+uniform mat4 mProjMatrix;
+uniform mat4 mViewMatrix;
 uniform mat4 uModelMatrix;
 
 void main() {
-    gl_Position = uPvLightMatrix * uModelMatrix * vec4(dyPosition, 1.0);
+  gl_Position = mProjMatrix * mViewMatrix * uModelMatrix * vec4(dyPosition, 1.0);
 }
 )dy");
 
@@ -48,7 +49,8 @@ void main(void)
   {
     for (int i = 0; i < gl_in.length(); ++i)
     {
-      gl_Position = gl_in[i].gl_Position;
+      vec4 a = gl_in[i].gl_Position;
+      gl_Position = a;
       gl_ViewportIndex = segment;
       gl_Layer = segment;
       EmitVertex();

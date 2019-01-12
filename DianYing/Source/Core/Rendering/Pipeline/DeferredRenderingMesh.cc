@@ -32,20 +32,7 @@
 #include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
 
 #include <glm/gtc/matrix_transform.inl>
-#include "Dy/Core/Rendering/Wrapper/FDyGLWrapper.h"
-
-//!
-//! Forward declaration
-//!
-
-namespace
-{
-
-dy::DDyMatrix4x4 sSamplePvMatrix =
-    glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, 0.02f, 100.0f) *
-    glm::lookAt(glm::vec3(0, 20, 20), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-
-} /// ::unnamed namespace
+#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
 
 namespace dy
 {
@@ -103,7 +90,6 @@ void FDyDeferredRenderingMesh::RenderScreen()
   submeshList[0]->Get()->BindVertexArray();
 
   // Bind g-buffers as textures.
-  this->mBinderShader.TryUpdateUniform<EDyUniformVariableType::Matrix4>("uShadowPv", sSamplePvMatrix);
   this->mBinderShader.TryUpdateUniformList();
 
   glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, this->mBinderAttUnlit->GetAttachmentId());

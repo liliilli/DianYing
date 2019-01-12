@@ -80,6 +80,8 @@ public:
   /// @brief Private function, unbind directional light of main light.
   EDySuccess MDY_PRIVATE_SPECIFIER(UnbindMainDirectionalLight)(_MIN_ CDyDirectionalLight& iRefLight);
     
+  /// @brief Get ptr main directional shadow. If not exist, just return nullptr.
+  MDY_NODISCARD CDyDirectionalLight* GetPtrMainDirectionalShadow() const noexcept;
   /// @brief Private function, bind directional light as main light.
   void MDY_PRIVATE_SPECIFIER(BindMainDirectionalShadow)(_MIN_ CDyDirectionalLight& iRefLight);
   /// @brief Private function, unbind directional light of main light.

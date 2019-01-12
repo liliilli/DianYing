@@ -50,8 +50,14 @@ public:
   /// @brief Update 
   void PreRender();
 
+  /// @brief Setup indexed viewports of light shadow map segments for writing.
+  void SetupViewport();
+
   /// @brief Clear properties of given framebuffer.
   void Clear();
+
+  /// @brief Try setup rendering, if failed, return DY_FAILURE.
+  MDY_NODISCARD EDySuccess TrySetupRendering();
 
 private:
   /// @brief Update segments far planes.
@@ -66,13 +72,11 @@ private:
       _MOUT_ DDyVector4& iMin, 
       _MOUT_ DDyVector4& iMax) const;
 
-  /// @brief Setup indexed viewports of light shadow map segments for writing.
-  void SetupSegmentIndexedViewports();
-
   TDyIResourceBinderShader        mDirLightShaderResource { "dyBtGlslRenderCsmLightNormal" };
   TDyIResourceBinderFrameBuffer   mBinderFrameBuffer      { "dyBtFbCSM" };
 
   static std::array<TF32, 2>      sViewportDims;
+  std::ptrdiff_t                  mAddrMainDirectionalShadow = 0;
 
   std::array<TF32, kCSMSegment>   mFarPlanes;
   std::array<TF32, kCSMSegment>   mNormalizedFarPlanes;

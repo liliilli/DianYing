@@ -149,7 +149,10 @@ void CDyCamera::pUpdateProjectionMatrix()
                                           static_cast<float>(height) / 2,
                                           this->mNear, this->mFar);
   }
-  else { this->mProjectionMatrix = glm::perspective(this->mFieldOfView, this->mAspect, this->mNear, this->mFar); }
+  else 
+  { 
+    this->mProjectionMatrix = glm::perspective(this->mFieldOfView * math::DegToRadVal<TF32>, this->mAspect, this->mNear, this->mFar); 
+  }
 
   this->mIsProjectionMatrixDirty = false;
 }

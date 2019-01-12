@@ -202,7 +202,12 @@ EDySuccess MDyRendering::MDY_PRIVATE_SPECIFIER(UnbindMainDirectionalLight)(_MIN_
   }
   else { return DY_FAILURE; }
 }
-  
+
+CDyDirectionalLight* MDyRendering::GetPtrMainDirectionalShadow() const noexcept
+{
+  return this->mMainDirectionalShadow;
+}
+
 /// @brief Private function, bind directional light as main light.
 void MDyRendering::MDY_PRIVATE_SPECIFIER(BindMainDirectionalShadow)(_MIN_ CDyDirectionalLight& iRefLight)
 {
