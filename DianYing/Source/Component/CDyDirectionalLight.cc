@@ -200,7 +200,7 @@ void CDyDirectionalLight::UpdateSegmentFarPlanes(_MIN_ const CDyCamera& iPtrCame
   const auto farPlane   = iPtrCamera.GetFar();
   const auto diffPlane  = farPlane - nearPlane;
   
-  static constexpr TF32 frustumSplitCorrection = 0.8f;
+  static constexpr TF32 frustumSplitCorrection = 0.1f;
 
   for (TU32 i = 1; i <= kCSMSegment; ++i)
   {

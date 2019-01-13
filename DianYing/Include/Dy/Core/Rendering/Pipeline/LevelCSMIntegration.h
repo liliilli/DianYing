@@ -44,6 +44,7 @@ private:
   TDyIResourceBinderAttachment  mBinderAttSpecular{ "dyBtSpecular" };
   TDyIResourceBinderAttachment  mBinderAttPosition{ "dyBtModelPosition" };
   TDyIResourceBinderAttachment  mBinderAttShadow  { "dyBtAtCSMLight" };
+  TDyIResourceBinderAttachment  mBinderAttZValue  { "dyBtDefZValue" };
 
   std::ptrdiff_t mAddrMainLight = 0;
 };
