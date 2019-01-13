@@ -22,12 +22,14 @@ void FDyBtFrameBufferDeferred::ConstructBuffer(_MOUT_ PDyGlFrameBufferInstanceMe
 {
   property.mSpecifierName       = "dyBtBasicRender";
   property.mFrameBufferSize     = DDyVectorInt2{1280, 720};
-  property.mIsUsingDepthBuffer  = true;
 
   property.mColorAttachmentList.emplace_back("dyBtUnlit",    EDyGlAttachmentType::Color0);
   property.mColorAttachmentList.emplace_back("dyBtNormal",   EDyGlAttachmentType::Color1);
   property.mColorAttachmentList.emplace_back("dyBtSpecular", EDyGlAttachmentType::Color2);
   property.mColorAttachmentList.emplace_back("dyBtModelPosition", EDyGlAttachmentType::Color3);
+
+  property.mIsUsingDepthBuffer  = true;
+  property.mDepthAttachmentSpecifier = "dyBtDefZValue";
 }
 
 } /// ::dy namespace

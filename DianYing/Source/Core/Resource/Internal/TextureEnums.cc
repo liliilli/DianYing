@@ -24,6 +24,7 @@ GLenum DyGLGetLowTextureType(_MIN_ EDyTextureStyleType iType) noexcept
   {
   case EDyTextureStyleType::D1: return GL_TEXTURE_1D;
   case EDyTextureStyleType::D2: return GL_TEXTURE_2D; 
+  case EDyTextureStyleType::D2Shadow: return GL_TEXTURE_2D;
   case EDyTextureStyleType::D1Array: return GL_TEXTURE_1D_ARRAY;
   case EDyTextureStyleType::D2Array: return GL_TEXTURE_2D_ARRAY;
   case EDyTextureStyleType::D2ShadowArray: return GL_TEXTURE_2D_ARRAY;

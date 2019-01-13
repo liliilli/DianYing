@@ -261,6 +261,7 @@
     <ClCompile Include="Source\Core\Rendering\Pipeline\LevelCascadeShadowRenderer.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\Level\RendIntegrationLevelCSM.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\LevelCSMIntergration.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAtDepthZValue.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -668,6 +669,7 @@
     <ClInclude Include="Include\Dy\Builtin\Constant\GeneralLevel.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Level\RendIntegrationLevelCSM.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\LevelCSMIntegration.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAtDepthZValue.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

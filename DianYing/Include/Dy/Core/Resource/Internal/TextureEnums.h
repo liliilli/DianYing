@@ -45,6 +45,7 @@ enum class EDyTextureStyleType : unsigned char
   D2,
   D1Array,
   D2Array,
+  D2Shadow,
   D2ShadowArray,
 };
 

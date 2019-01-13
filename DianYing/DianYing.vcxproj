@@ -165,6 +165,7 @@
     <ClCompile Include="Source\Builtin\Abstract\ADyTextureResource.cc" />
     <ClCompile Include="Source\Builtin\Attachment\BasicShadow\BasicShadow.cc" />
     <ClCompile Include="Source\Builtin\Attachment\CSM\FDyBtAtLight.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAtDepthZValue.cc" />
     <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAttachmentNormal.cc" />
     <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAttachmentPosition.cc" />
     <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAttachmentSpecular.cc" />
@@ -493,6 +494,7 @@
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyWidgetMetaResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\BasicShadow\BasicShadow.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\CSM\FDyBtAtLight.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAtDepthZValue.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAttachmentNormal.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAttachmentPosition.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAttachmentSpecular.h" />
