@@ -60,6 +60,7 @@ enum class EDyGlBufferDataInternalFormat : unsigned char
   RGB8,
   RGBA8,
   RGB32Float,
+  RGBA32Float,
   DEPTH32,
   NoneError = 0xFF
 };

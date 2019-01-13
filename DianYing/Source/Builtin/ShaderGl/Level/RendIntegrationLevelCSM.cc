@@ -53,10 +53,12 @@ layout (binding = 2) uniform sampler2D uSpecular;      // View vector
 layout (binding = 3) uniform sampler2D uModelPosition; // Use it CSM shadowing.
 layout (binding = 4) uniform sampler2DArrayShadow uShadow;
 
-uniform mat4 uLightVPSBMatrix[4];
-uniform vec4 uNormalizedFarPlanes;
+uniform mat4  uLightVPSBMatrix[4];
+uniform vec4  uNormalizedFarPlanes;
+//uniform float uShadowBias;
+//uniform float uShadowStrength;
 
-float sShadowBias = 0.02f;
+float sShadowBias = 0.002f;
 
 // binding = 1 is DirectionalLightBlock uniform block.
 layout(std140, binding = 1) uniform DirectionalLightBlock
@@ -120,16 +122,16 @@ void main()
     float d_slvd_n  = pow(max(dot(s_l_vd, normalValue.xyz), 0.0f), 32);
 
     float ambientFactor  = 0.05f;
-    vec3  ambientColor   = ambientFactor * uLightDir[i].mAmbient.rgb * unlitValue.rgb;
+    vec3  ambientColor   = ambientFactor * uLightDir[i].mAmbient.rgb;
 
-    float diffuseFactor  = max(d_n_dl, 0.1f) * uLightDir[i].mIntensity;
-    vec3  diffuseColor   = diffuseFactor * uLightDir[i].mDiffuse.rgb * unlitValue.rgb;
+    float diffuseFactor  = max(d_n_dl, 0.1f) * uLightDir[i].mIntensity * 0.1f;
+    vec3  diffuseColor   = diffuseFactor * uLightDir[i].mDiffuse.rgb;
 
-    float specularFactor = d_slvd_n * uLightDir[i].mIntensity;
+    float specularFactor = d_slvd_n * uLightDir[i].mIntensity * 0.2f;
     vec3  specularColor  = specularFactor * uLightDir[i].mSpecular.rgb;
 
     resultColor  = ambientColor;
-    resultColor += ComputeShadowCoefficient(modelPosition) * (diffuseColor + specularColor) * layerColor.rgb;
+    resultColor += ComputeShadowCoefficient(modelPosition) * (diffuseColor) * layerColor.rgb;
   }
 
   outColor = vec4(resultColor, 1.0f);

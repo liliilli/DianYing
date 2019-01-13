@@ -41,7 +41,6 @@
 namespace
 {
 
-dy::DDyVector3 kLevelUpDir = dy::DDyVector3{0, 1, 0};
 dy::DDyMatrix4x4 mViewMatrix;
 dy::DDyMatrix4x4 mProjMatrix;
 

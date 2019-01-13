@@ -123,6 +123,8 @@ void FDyBasicRenderer::pRenderScreen(
   const auto  opSubmeshListCount  = renderer.GetModelSubmeshCount();
   if (opSubmeshListCount.has_value() == false) { return; }
 
+  glDisable(GL_CULL_FACE);
+
   for (TI32 i = 0; i < opSubmeshListCount.value(); ++i)
   {
     auto& material = const_cast<std::decay_t<decltype(renderer.GetMaterialResourcePtr(i))>&>(renderer.GetMaterialResourcePtr(i));

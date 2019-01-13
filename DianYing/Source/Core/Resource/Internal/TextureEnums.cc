@@ -41,6 +41,7 @@ GLenum DyGlGetLowDataFormatType(_MIN_ EDyGlBufferDataInternalFormat iValue) noex
   case EDyGlBufferDataInternalFormat::RGBA8:  return GL_RGBA8;
   case EDyGlBufferDataInternalFormat::DEPTH32:return GL_DEPTH_COMPONENT32;
   case EDyGlBufferDataInternalFormat::RGB32Float: return GL_RGB32F;
+  case EDyGlBufferDataInternalFormat::RGBA32Float:return GL_RGBA32F;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(GL_NONE);
   }
 }

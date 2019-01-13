@@ -17,10 +17,10 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <Dy/Builtin/Constant/GeneralLevel.h>
+#include <Dy/Component/CDyCamera.h>
 #include <Dy/Element/Actor.h>
 #include <Dy/Management/Rendering/RenderingManager.h>
 #include <Dy/Management/SettingManager.h>
-#include "Dy/Component/CDyCamera.h"
 
 namespace dy
 {
@@ -180,6 +180,7 @@ void CDyDirectionalLight::UpdateProjectionMatrix()
       this->minFrustum.X, this->maxFrustum.X, 
       this->minFrustum.Y, this->maxFrustum.Y, 
       -this->maxFrustum.Z, -this->minFrustum.Z);
+      //0.0f, this->minFrustum.Z);
 }
 
 const DDyMatrix4x4& CDyDirectionalLight::GetProjectionMatrix() const noexcept
@@ -262,25 +263,12 @@ void CDyDirectionalLight::UpdateLightProjectionAndViewports(
     mLightViewports[i].mRightUp   = pixelFrustumSize;
 
     // Update light view-projection matrices per segments.
-    DDyMatrix4x4 lightProjMatrix = glm::ortho(
-        minSegment.X, 
-        minSegment.X + segmentSize, 
-        minSegment.Y, 
-        minSegment.Y + segmentSize,
-        -maxFrustum.Z,
-        -minFrustum.Z);
-    DDyMatrix4x4 lightScale = DDyMatrix4x4{
-        0.5f * scaleFactor.X, 0, 0, 0,
-        0, 0.5f * scaleFactor.Y, 0, 0,
-        0, 0, 0.5f, 0, 
-        0, 0, 0, 1};
-    DDyMatrix4x4 lightBias = DDyMatrix4x4{
-        1, 0, 0, 0.5f * scaleFactor.X,
-        0, 1, 0, 0.5f * scaleFactor.Y,
-        0, 0, 1, 0.5f,
-        0, 0, 0, 1};
+    DDyMatrix4x4 lightProjMatrix = glm::ortho(minSegment.X, minSegment.X + segmentSize, minSegment.Y, minSegment.Y + segmentSize, -maxFrustum.Z, -minFrustum.Z);
+    //DDyMatrix4x4 lightProjMatrix = glm::ortho(minSegment.X, minSegment.X + segmentSize, minSegment.Y, minSegment.Y + segmentSize, 0.0f, minFrustum.Z);
+    DDyMatrix4x4 lightScale = DDyMatrix4x4::CreateWithScale(DDyVector3{0.5f * scaleFactor.X, 0.5f * scaleFactor.Y, 0.5f});
+    DDyMatrix4x4 lightBias  = DDyMatrix4x4::CreateWithTranslation(DDyVector3{0.5f * scaleFactor.X, 0.5f * scaleFactor.Y, 0.5f});
 
-    this->mLightSegmentVPSBMatrices[i] = this->mLightViewMatrix.Multiply(lightProjMatrix).Multiply(lightScale).Multiply(lightBias);
+    this->mLightSegmentVPSBMatrices[i] = lightBias.Multiply(lightScale).Multiply(lightProjMatrix).Multiply(this->mLightViewMatrix);
     nearSegmentPlane = iNormalizedFarPlanes[i];
   }
 }
