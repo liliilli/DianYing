@@ -37,8 +37,8 @@ void FDyBuiltinTextureChecker::ConstructBuffer(_MOUT_ TBufferType& buffer, _MOUT
     PDyGlTexParameterInformation\
     {EDyGlParameterName::TextureMinFilter, EDyGlParameterValue::Nearest},
     {EDyGlParameterName::TextureMagFilter, EDyGlParameterValue::Nearest},
-    {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::ClampToEdge},
-    {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::ClampToEdge},
+    {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::Repeat},
+    {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::Repeat},
   };
 
   // 01010101

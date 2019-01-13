@@ -14,13 +14,16 @@
 
 /// Header file
 #include <Dy/Builtin/Script/Default/DefaultLoadingGlobalScriptCpp.h>
+#include <Dy/Builtin/Material/OpaqueStaticPlain.h>
+#include <Dy/Builtin/Material/BtMtCheckerWorldPos.h>
 
 namespace dy
 {
 
-__FDyDefaultLoadingGlobalScript::__FDyDefaultLoadingGlobalScript()
+MDY_PRIVATE_SPECIFIER(FDyDefaultLoadingGlobalScript)::MDY_PRIVATE_SPECIFIER(FDyDefaultLoadingGlobalScript)()
 {
-
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Material, builtin::FDyBuiltinMaterialOpaqueStaticPlain::sName);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Material, builtin::FDyBtMtCheckerWorldPos::sName);
 }
 
 } /// ::dy namespace

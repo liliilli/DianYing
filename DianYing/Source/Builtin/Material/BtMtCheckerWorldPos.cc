@@ -13,10 +13,10 @@
 ///
 
 /// Header file
-#include <Dy/Builtin/Material/OpaqueStaticPlain.h>
+#include <Dy/Builtin/Material/BtMtCheckerWorldPos.h>
 
 #include <Dy/Builtin/Texture/Checker.h>
-#include <Dy/Builtin/ShaderGl/Render/RenderOpaqueStatic.h>
+#include <Dy/Builtin/ShaderGl/Render/BtShUvWorldPos.h>
 #include <Dy/Core/Resource/Internal/MaterialType.h>
 
 //!
@@ -26,13 +26,13 @@
 namespace dy::builtin
 {
 
-void FDyBuiltinMaterialOpaqueStaticPlain::ConstructBuffer(PDyMaterialInstanceMetaInfo& property) noexcept
+void FDyBtMtCheckerWorldPos::ConstructBuffer(PDyMaterialInstanceMetaInfo& property) noexcept
 {
-  property.mSpecifierName   = FDyBuiltinMaterialOpaqueStaticPlain::sName;
-  property.mShaderSpecifier = FDyBuiltinShaderGLRenderOpaqueStatic::sName;
+  property.mSpecifierName   = FDyBtMtCheckerWorldPos::sName;
+  property.mShaderSpecifier = FDyBtShGlUvWorldPos::sName;
   property.mBlendMode       = EDyMaterialBlendMode::Opaque;
 
   property.mTextureNames[0] = MSVSTR(FDyBuiltinTextureChecker::sName);
 }
 
-} /// ::dy::builtin namespace
+} /// ::dy::builtin namespac
