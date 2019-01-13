@@ -37,8 +37,8 @@ void FDyBuiltinTextureChecker::ConstructBuffer(_MOUT_ TBufferType& buffer, _MOUT
     PDyGlTexParameterInformation\
     {EDyGlParameterName::TextureMinFilter, EDyGlParameterValue::Nearest},
     {EDyGlParameterName::TextureMagFilter, EDyGlParameterValue::Nearest},
-    {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::ClampToEdge},
-    {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::ClampToEdge},
+    {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::Repeat},
+    {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::Repeat},
   };
 
   // 01010101
@@ -50,7 +50,7 @@ void FDyBuiltinTextureChecker::ConstructBuffer(_MOUT_ TBufferType& buffer, _MOUT
   // 01010101
   // 10101010
   constexpr const TU08 sOn = 0b00110000;
-  constexpr const TU08 sOf = 0b00000100;
+  constexpr const TU08 sOf = 0b00001100;
   constexpr const std::array<TU08, 3> mOn = {sOn, sOn, sOn};
   constexpr const std::array<TU08, 3> mOf = {sOf, sOf, sOf};
   constexpr const std::array<std::array<TU08, 3>, 64> infoChunk =

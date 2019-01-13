@@ -13,24 +13,25 @@
 ///
 
 /// Header file
-#include <Dy/Builtin/Attachment/Deferred/FDyBtAttachmentPosition.h>
+#include <Dy/Builtin/Attachment/Deferred/FDyBtAtDepthZValue.h>
 
-namespace dy
+namespace dy::builtin
 {
 
-void FDyBtAttachmentPosition::ConstructBuffer(_MOUT_ PDyGlAttachmentInstanceMetaInfo& property) noexcept
+void FDyBtAtDepthZValue::ConstructBuffer(_MOUT_ PDyGlAttachmentInstanceMetaInfo& property) noexcept
 {
   property.mSpecifierName  = sName;
   property.mAttachmentSize = DDyVectorInt2{1280, 720};
   property.mParameterList  =
   {
     PDyGlTexParameterInformation\
-    {EDyGlParameterName::TextureMinFilter, EDyGlParameterValue::Nearest},
-    {EDyGlParameterName::TextureMagFilter, EDyGlParameterValue::Nearest},
-    {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::ClampToEdge},
-    {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::ClampToEdge},
+    {EDyGlParameterName::TextureMinFilter, EDyGlParameterValue::Linear},
+    {EDyGlParameterName::TextureMagFilter, EDyGlParameterValue::Linear}
+    //{EDyGlParameterName::TextureCompareMode, EDyGlParameterValue::CompareRefToTexture},
+    //{EDyGlParameterName::TextureCompareFunc, EDyGlParameterValue::LessEqual},
   };
-  property.mBufferFormat = EDyGlBufferDataInternalFormat::RGBA32Float;
+  property.mAttachmentType = EDyTextureStyleType::D2;
+  property.mBufferFormat   = EDyGlBufferDataInternalFormat::DEPTH32;
 }
 
-} /// ::dy namespace
+} /// ::dy::builtin namespace

@@ -27,8 +27,7 @@
 #include <Dy/Builtin/Model/UIFontQuad.h>
 
 #include <Dy/Builtin/ShaderGl/RenderColorGeometry.h>
-#include <Dy/Builtin/ShaderGl/RenderDeferredRendering.h>
-#include <Dy/Builtin/ShaderGl/RenderOpaqueStatic.h>
+#include <Dy/Builtin/ShaderGl/Render/RenderOpaqueStatic.h>
 #include <Dy/Builtin/ShaderGl/RenderPass.h>
 #include <Dy/Builtin/ShaderGl/RenderScreenOutput.h>
 #include <Dy/Builtin/ShaderGl/Font/RenderDefaultFont.h>
@@ -65,7 +64,6 @@ FDyDefaultLoadingBootScript::FDyDefaultLoadingBootScript()
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderDefaultFont::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderDefaultSSAO::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderDefaultSSAOBlurring::sName);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderDeferredRendering::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderFontArraySDF::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderOpaqueStatic::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderPass::sName);
@@ -85,8 +83,6 @@ FDyDefaultLoadingBootScript::FDyDefaultLoadingBootScript()
 
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Mesh, FDyBtMsUiBarQuad::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Mesh, FDyBtMsUiImageQuad::sName);
-
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Material, FDyBuiltinMaterialOpaqueStaticPlain::sName);
 
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLAttachment, FDyBtAtCSMLight::sName);
 

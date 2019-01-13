@@ -165,6 +165,7 @@
     <ClCompile Include="Source\Builtin\Abstract\ADyTextureResource.cc" />
     <ClCompile Include="Source\Builtin\Attachment\BasicShadow\BasicShadow.cc" />
     <ClCompile Include="Source\Builtin\Attachment\CSM\FDyBtAtLight.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAtDepthZValue.cc" />
     <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAttachmentNormal.cc" />
     <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAttachmentPosition.cc" />
     <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAttachmentSpecular.cc" />
@@ -176,6 +177,7 @@
     <ClCompile Include="Source\Builtin\FrameBuffer\Deferred\FDyBtFrameBufferDeferred.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\SceneIntegration\FDyBtFbSceneIntegration.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\UIIntegration\FDyBtFbBasic.cc" />
+    <ClCompile Include="Source\Builtin\Material\BtMtCheckerWorldPos.cc" />
     <ClCompile Include="Source\Builtin\Mesh\FDyBtMsBox.cc" />
     <ClCompile Include="Source\Builtin\Mesh\FDyBtMsPlain.cc" />
     <ClCompile Include="Source\Builtin\Mesh\FDyBtMsScrTriangle.cc" />
@@ -195,6 +197,7 @@
     <ClCompile Include="Source\Builtin\ShaderGl\Level\RendIntegrationLevelCSM.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\PostEffect\RenderDefaultSSAOBlurring.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\PostEffect\RenderDefaultSSAO.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\Render\BtShUvWorldPos.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\Widget\RenderUiBasicGaugeBar.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\Widget\RenderUIImage.cc" />
     <ClCompile Include="Source\Builtin\Widget\FDyBtWdTestLoadingUi.cc" />
@@ -332,10 +335,9 @@
     <ClCompile Include="Source\Builtin\Object\Light\DirectionalLight.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderColorGeometry.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\Font\RenderDefaultFont.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\RenderDeferredRendering.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\Font\RenderFontArraySDF.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\Editor\RenderGrid.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\RenderOpaqueStatic.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\Render\RenderOpaqueStatic.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderPass.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\RenderScreenOutput.cc" />
     <ClCompile Include="Source\Builtin\Texture\Checker.cc" />
@@ -353,7 +355,6 @@
     <ClCompile Include="Source\Core\Resource\Internal\MaterialType.cc" />
     <ClCompile Include="Source\Core\Resource\Object\Grid.cc" />
     <ClCompile Include="Source\Core\DyEngine.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\DeferredRenderingMesh.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\PostEffectSsao.cc" />
     <ClCompile Include="Source\Core\Resource\Resource_Deprecated\SoundResource.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\BasicRenderer.cc" />
@@ -493,6 +494,7 @@
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyWidgetMetaResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\BasicShadow\BasicShadow.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\CSM\FDyBtAtLight.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAtDepthZValue.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAttachmentNormal.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAttachmentPosition.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAttachmentSpecular.h" />
@@ -507,6 +509,7 @@
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\SceneIntegration\FDyBtFbSceneIntegration.h" />
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\UIIntegration\FDyBtFbUiBasic.h" />
     <ClInclude Include="Include\Dy\Builtin\Interface\IDyResource.h" />
+    <ClInclude Include="Include\Dy\Builtin\Material\BtMtCheckerWorldPos.h" />
     <ClInclude Include="Include\Dy\Builtin\Material\OpaqueStaticPlain.h" />
     <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsBox.h" />
     <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsPlain.h" />
@@ -534,10 +537,10 @@
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderColorGeometry.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Font\RenderDefaultFont.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\PostEffect\RenderDefaultSSAO.h" />
-    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderDeferredRendering.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Font\RenderFontArraySDF.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Editor\RenderGrid.h" />
-    <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderOpaqueStatic.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\Render\BtShUvWorldPos.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\Render\RenderOpaqueStatic.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderPass.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderScreenOutput.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\UI\RenderUIBasicGaugeBar.h" />
@@ -724,7 +727,6 @@
     <ClInclude Include="Include\Dy\Core\Resource\Internal\TextureType.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Object\Grid.h" />
     <ClInclude Include="Include\Dy\Element\Object.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\DeferredRenderingMesh.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\PostEffectSsao.h" />
     <ClInclude Include="Include\Dy\Editor\Descriptor\AboutMainDescriptor.h" />
     <ClInclude Include="Include\Dy\Editor\Descriptor\DialogDescriptor.h" />

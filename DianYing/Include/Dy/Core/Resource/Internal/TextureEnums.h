@@ -45,6 +45,7 @@ enum class EDyTextureStyleType : unsigned char
   D2,
   D1Array,
   D2Array,
+  D2Shadow,
   D2ShadowArray,
 };
 
@@ -60,6 +61,7 @@ enum class EDyGlBufferDataInternalFormat : unsigned char
   RGB8,
   RGBA8,
   RGB32Float,
+  RGBA32Float,
   DEPTH32,
   NoneError = 0xFF
 };
