@@ -30,6 +30,7 @@ FDyFrameBufferResource::FDyFrameBufferResource(const FDyFrameBufferInformation& 
   PDyGLFrameBufferDescriptor descriptor;
   descriptor.mFrameBufferSize    = iInformation.GetFrameBufferSize();
   descriptor.mIsUsingPixelShader = iInformation.IsUsingPixelShader();
+  descriptor.mIsUsingDepthBuffer = iInformation.IsUsingDepthBuffer();
 
   { // Bind Color attachment list.
     const auto& colorAttachmentList = iInformation.GetAttachmentInformationBinderList();
@@ -50,7 +51,7 @@ FDyFrameBufferResource::FDyFrameBufferResource(const FDyFrameBufferInformation& 
     }
   }
   
-  if (iInformation.IsUsingDepthBuffer() == true)
+  if (descriptor.mIsUsingDepthBuffer == true)
   { // If using depth buffer, bind depth buffer also.
     const auto& [info, binder] = iInformation.GetDepthBufferBinder();
     this->mBinderDepthBuffer.TryRequireResource(info.mAttachmentName);

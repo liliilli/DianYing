@@ -43,6 +43,7 @@ enum class EDyTextureStyleType : unsigned char
   NoneError,
   D1,
   D2,
+  D2Rectangle, // There is no power-of-two restriction but can not generate mipmaps. UV must be size-scaled float, not texture coordinate.
   D1Array,
   D2Array,
   D2Shadow,
@@ -60,6 +61,7 @@ enum class EDyGlBufferDataInternalFormat : unsigned char
   RG8,
   RGB8,
   RGBA8,
+  RGBA16Float,
   RGB32Float,
   RGBA32Float,
   DEPTH32,

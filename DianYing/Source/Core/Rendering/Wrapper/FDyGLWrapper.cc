@@ -437,6 +437,7 @@ std::optional<TU32> FDyGLWrapper::CreateAttachment(_MIN_ const PDyGLAttachmentDe
     {
     case EDyTextureStyleType::D2: 
     case EDyTextureStyleType::D2Shadow:
+    case EDyTextureStyleType::D2Rectangle:
     {
       glTexStorage2D(glTextureType, mipmapLv, glInternalFormat, MDY_VECTOR_XY(iDescriptor.mBufferSize));
     } break;
