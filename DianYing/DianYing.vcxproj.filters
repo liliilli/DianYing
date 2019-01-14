@@ -262,6 +262,10 @@
     <ClCompile Include="Source\Builtin\ShaderGl\Render\RenderOpaqueStatic.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\Render\BtShUvWorldPos.cc" />
     <ClCompile Include="Source\Builtin\Material\BtMtCheckerWorldPos.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\Level\BtShOITAccumulation.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITColor.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITWeight.cc" />
+    <ClCompile Include="Source\Builtin\FrameBuffer\WeightBlendOIT\FDyBtFbWeightBlendedOIT.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -670,6 +674,10 @@
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Render\RenderOpaqueStatic.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Render\BtShUvWorldPos.h" />
     <ClInclude Include="Include\Dy\Builtin\Material\BtMtCheckerWorldPos.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\Level\BtShOITAccumulation.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITColor.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITWeight.h" />
+    <ClInclude Include="Include\Dy\Builtin\FrameBuffer\WeightBlendOIT\FDyBtFbWeightBlendedOIT.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

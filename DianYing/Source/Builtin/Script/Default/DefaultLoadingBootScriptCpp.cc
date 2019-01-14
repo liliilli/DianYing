@@ -47,6 +47,7 @@
 #include <Dy/Builtin/FrameBuffer/BasicShadow/FDyBtFBBasicShadow.h>
 #include <Dy/Builtin/FrameBuffer/SceneIntegration/FDyBtFbSceneIntegration.h>
 #include <Dy/Builtin/FrameBuffer/UIIntegration/FDyBtFbUiBasic.h>
+#include <Dy/Builtin/FrameBuffer/WeightBlendOIT/FDyBtFbWeightBlendedOIT.h>
 #include <Dy/Builtin/FrameBuffer/CSM/FDyBtFbCSM.h>
 
 namespace dy
@@ -91,6 +92,7 @@ FDyDefaultLoadingBootScript::FDyDefaultLoadingBootScript()
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, FDyBtFbCSM::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, FDyBtFbSceneIntegration::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, FDyBtFbUiBasic::sName);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, FDyBtFbWeightBlendedOIT::sName);
 }
 
 } /// ::dy namespace

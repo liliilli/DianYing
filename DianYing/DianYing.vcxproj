@@ -172,11 +172,14 @@
     <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAttachmentUnlit.cc" />
     <ClCompile Include="Source\Builtin\Attachment\SceneIntegration\FDyBtAttOutput.cc" />
     <ClCompile Include="Source\Builtin\Attachment\UIIntegration\FDyBtAttUiBasic.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITColor.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITWeight.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\BasicShadow\FDyBtFBBasicShadow.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\CSM\FDyBtFbCSM.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\Deferred\FDyBtFrameBufferDeferred.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\SceneIntegration\FDyBtFbSceneIntegration.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\UIIntegration\FDyBtFbBasic.cc" />
+    <ClCompile Include="Source\Builtin\FrameBuffer\WeightBlendOIT\FDyBtFbWeightBlendedOIT.cc" />
     <ClCompile Include="Source\Builtin\Material\BtMtCheckerWorldPos.cc" />
     <ClCompile Include="Source\Builtin\Mesh\FDyBtMsBox.cc" />
     <ClCompile Include="Source\Builtin\Mesh\FDyBtMsPlain.cc" />
@@ -193,6 +196,7 @@
     <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingBootScriptCpp.cc" />
     <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingGlobalScriptCpp.cc" />
     <ClCompile Include="data\Script\FDyBtScTestLoadingUi.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\Level\BtShOITAccumulation.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\Level\RenderCSMLightNormal.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\Level\RendIntegrationLevelCSM.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\PostEffect\RenderDefaultSSAOBlurring.cc" />
@@ -501,6 +505,8 @@
     <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAttachmentUnlit.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\SceneIntegration\FDyBtAttOutput.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\UIIntegration\FDyBtAttUiBasic.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITColor.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITWeight.h" />
     <ClInclude Include="Include\Dy\Builtin\Constant\CSM.h" />
     <ClInclude Include="Include\Dy\Builtin\Constant\GeneralLevel.h" />
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\BasicShadow\FDyBtFBBasicShadow.h" />
@@ -508,6 +514,7 @@
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\Deferred\FDyBtFrameBufferDeferred.h" />
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\SceneIntegration\FDyBtFbSceneIntegration.h" />
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\UIIntegration\FDyBtFbUiBasic.h" />
+    <ClInclude Include="Include\Dy\Builtin\FrameBuffer\WeightBlendOIT\FDyBtFbWeightBlendedOIT.h" />
     <ClInclude Include="Include\Dy\Builtin\Interface\IDyResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Material\BtMtCheckerWorldPos.h" />
     <ClInclude Include="Include\Dy\Builtin\Material\OpaqueStaticPlain.h" />
@@ -531,6 +538,7 @@
     <ClInclude Include="Include\Dy\Builtin\Script\Default\DefaultLoadingGlobalScriptCpp.h" />
     <ClInclude Include="data\Script\FDyBtScTestLoadingUi.h" />
     <ClInclude Include="data\Script\DebugActor\BtScActorTest1.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\Level\BtShOITAccumulation.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Level\RendIntegrationLevelCSM.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Level\RenderCSMLightNormal.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\PostEffect\RenderDefaultSSAOBlurring.h" />
