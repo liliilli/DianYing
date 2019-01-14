@@ -31,7 +31,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyMaterialBlendMode& p)
 {
   const auto enumString = j.get<std::string>();
   if      (j == "Opaque")       { p = EDyMaterialBlendMode::Opaque; }
-  else if (j == "Translucent")  { p = EDyMaterialBlendMode::Translucent; }
+  else if (j == "Translucent")  { p = EDyMaterialBlendMode::TranslucentOIT; }
   else if (j == "Custom")       { p = EDyMaterialBlendMode::Custom; }
   else                          { MDY_UNEXPECTED_BRANCH(); }
 }

@@ -23,8 +23,6 @@ public:
   [[nodiscard]] virtual bool IsReady() const noexcept = 0;
   /// @brief Try setup rendering, if failed, return DY_FAILURE.
   [[nodiscard]] virtual EDySuccess TrySetupRendering() = 0;
-  /// @brief Rendering deferred contexts to default framebuffer.
-  virtual void RenderScreen() = 0;
   /// @brief Clear properties of given framebuffer.
   virtual void Clear() = 0;
 

@@ -30,22 +30,13 @@ public:
   /// @brief Try setup rendering, if failed, return DY_FAILURE.
   MDY_NODISCARD EDySuccess TrySetupRendering() override final;
   /// @brief Rendering deferred contexts to default framebuffer.
-  void RenderScreen() override final;
+  void RenderScreen();
   /// @brief Clear properties of given framebuffer.
   void Clear() override final;
 
 private:
-  TDyIResourceBinderFrameBuffer mBinderFrameBuffer{ "dyBtFbScrFin" };
-  TDyIResourceBinderShader      mBinderShader     { "dyBtGlslRenderCsmIntegration" };
-  TDyIResourceBinderModel       mBinderTriangle   { "dyBtModelScrProjTri" };
-  TDyIResourceBinderAttachment  mBinderAttUnlit   { "dyBtUnlit" };
-  TDyIResourceBinderAttachment  mBinderAttNormal  { "dyBtNormal" };
-  TDyIResourceBinderAttachment  mBinderAttSpecular{ "dyBtSpecular" };
-  TDyIResourceBinderAttachment  mBinderAttPosition{ "dyBtModelPosition" };
-  TDyIResourceBinderAttachment  mBinderAttShadow  { "dyBtAtCSMLight" };
-  TDyIResourceBinderAttachment  mBinderAttZValue  { "dyBtDefZValue" };
-
-  std::ptrdiff_t mAddrMainLight = 0;
+  TDyIResourceBinderFrameBuffer mBinderFrameBuffer{ "dyBtFbWBOIT" };
+  TDyIResourceBinderShader      mBinderShader     { "dyBtShOITAccumulation" };
 };
 
 

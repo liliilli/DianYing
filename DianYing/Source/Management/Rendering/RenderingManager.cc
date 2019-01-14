@@ -34,23 +34,25 @@ namespace dy
 {
 
 EDySuccess MDyRendering::pfInitialize()
-{ // Initialize framebuffer management singleton instance.
+{ 
+  // Initialize framebuffer management singleton instance.
   MDY_CALL_ASSERT_SUCCESS(MDyFramebuffer::Initialize());
   MDY_CALL_ASSERT_SUCCESS(MDyUniformBufferObject::Initialize());
 
   this->mBasicOpaqueRenderer  = std::make_unique<decltype(this->mBasicOpaqueRenderer)::element_type>();
-  this->mSceneFinalRenderer   = std::make_unique<decltype(this->mSceneFinalRenderer)::element_type>();
+  this->mTranslucentOIT       = std::make_unique<decltype(this->mTranslucentOIT)::element_type>();
   this->mUiBasicRenderer      = std::make_unique<decltype(this->mUiBasicRenderer)::element_type>();
+  this->mLevelFinalRenderer   = std::make_unique<decltype(this->mLevelFinalRenderer)::element_type>();
   this->mFinalDisplayRenderer = std::make_unique<decltype(this->mFinalDisplayRenderer)::element_type>();
 
   const auto& information = MDySetting::GetInstance().GetGameplaySettingInformation();
   if (information.mGraphics.mIsEnabledDefaultShadow == true)
   {
-    this->mCSMRenderer = std::make_unique<decltype(this->mCSMRenderer)::element_type>();
+    this->mCSMRenderer    = std::make_unique<decltype(this->mCSMRenderer)::element_type>();
   }
   if (information.mGraphics.mIsEnabledDefaultSsao == true)
   {
-    this->mTempSsaoObject = std::make_unique<decltype(mTempSsaoObject)::element_type>();
+    this->mSSAOPostEffect = std::make_unique<decltype(mSSAOPostEffect)::element_type>();
   }
 
 #if defined(MDY_FLAG_IN_EDITOR) == true
@@ -63,9 +65,9 @@ EDySuccess MDyRendering::pfInitialize()
 
 EDySuccess MDyRendering::pfRelease()
 {
-  this->mSceneFinalRenderer   = MDY_INITIALIZE_NULL;
+  this->mLevelFinalRenderer   = MDY_INITIALIZE_NULL;
   this->mCSMRenderer          = MDY_INITIALIZE_NULL;
-  this->mTempSsaoObject       = MDY_INITIALIZE_NULL;
+  this->mSSAOPostEffect       = MDY_INITIALIZE_NULL;
   this->mBasicOpaqueRenderer  = MDY_INITIALIZE_NULL;
   this->mUiBasicRenderer      = MDY_INITIALIZE_NULL;
   this->mFinalDisplayRenderer = MDY_INITIALIZE_NULL;
@@ -164,14 +166,14 @@ void MDyRendering::RenderDrawCallQueue()
 
   //if (this->mIsEnabledSsaoRendering)
   // @TODO FIX THIS (SSAO)
-  if (false) { this->mTempSsaoObject->RenderScreen(); }
+  if (false) { this->mSSAOPostEffect->RenderScreen(); }
 
   // Final
-  if (MDY_CHECK_ISNOTEMPTY(this->mSceneFinalRenderer) 
-  &&  this->mSceneFinalRenderer->IsReady() == true 
-  &&  this->mSceneFinalRenderer->TrySetupRendering() == DY_SUCCESS)
+  if (MDY_CHECK_ISNOTEMPTY(this->mLevelFinalRenderer) 
+  &&  this->mLevelFinalRenderer->IsReady() == true 
+  &&  this->mLevelFinalRenderer->TrySetupRendering() == DY_SUCCESS)
   {
-    this->mSceneFinalRenderer->RenderScreen();
+    this->mLevelFinalRenderer->RenderScreen();
   }
 
   if (MDY_CHECK_ISNOTEMPTY(this->mUiBasicRenderer))       { this->mUiBasicRenderer->RenderScreen(); }
@@ -206,7 +208,7 @@ void MDyRendering::pClearRenderingFramebufferInstances() noexcept
 
 #if defined(MDY_FLAG_IN_EDITOR) == false
   // Reset final rendering mesh setting.
-  if (MDY_CHECK_ISNOTEMPTY(this->mSceneFinalRenderer))    { this->mSceneFinalRenderer->Clear(); }
+  if (MDY_CHECK_ISNOTEMPTY(this->mLevelFinalRenderer))    { this->mLevelFinalRenderer->Clear(); }
 #endif
   if (MDY_CHECK_ISNOTEMPTY(this->mUiBasicRenderer))       { this->mUiBasicRenderer->Clear(); }
   if (MDY_CHECK_ISNOTEMPTY(this->mFinalDisplayRenderer))  { this->mFinalDisplayRenderer->Clear(); }

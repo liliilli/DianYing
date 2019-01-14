@@ -46,7 +46,7 @@ uniform mat4 uRotationMatrix;
 
 void main() 
 {
-  gl_Position     = mViewMatrix * uModelMatrix * vec4(dyPosition, 1.0);
+  gl_Position     = uCamera.mViewMatrix * uModelMatrix * vec4(dyPosition, 1.0);
   vs_out.texCoord = dyTexCoord0;
   vs_out.zDiffuse = abs(normalize(uRotationMatrix * vec4(dyNormal, 0.0)).z);
 }

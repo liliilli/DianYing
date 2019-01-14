@@ -16,6 +16,7 @@
 #include <Dy/Builtin/Script/Default/DefaultLoadingGlobalScriptCpp.h>
 #include <Dy/Builtin/Material/OpaqueStaticPlain.h>
 #include <Dy/Builtin/Material/BtMtCheckerWorldPos.h>
+#include <Dy/Builtin/Material/Transparent/StaticTransparentChecker.h>
 
 namespace dy
 {
@@ -24,6 +25,7 @@ MDY_PRIVATE_SPECIFIER(FDyDefaultLoadingGlobalScript)::MDY_PRIVATE_SPECIFIER(FDyD
 {
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Material, builtin::FDyBuiltinMaterialOpaqueStaticPlain::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Material, builtin::FDyBtMtCheckerWorldPos::sName);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Material, builtin::FDyBtStaticTransparentChecker::sName);
 }
 
 } /// ::dy namespace

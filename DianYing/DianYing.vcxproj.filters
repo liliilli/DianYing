@@ -268,6 +268,8 @@
     <ClCompile Include="Source\Builtin\FrameBuffer\WeightBlendOIT\FDyBtFbWeightBlendedOIT.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\Level\BtShOITIntegration.cc" />
     <ClCompile Include="Source\Builtin\Mesh\Plane\FDyBtMsOITTrinagle.cc" />
+    <ClCompile Include="Source\Core\Rendering\Pipeline\LevelOITRenderer.cc" />
+    <ClCompile Include="Source\Builtin\Material\Transparent\StaticTransparentChecker.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -682,6 +684,9 @@
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\WeightBlendOIT\FDyBtFbWeightBlendedOIT.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Level\BtShOITIntegration.h" />
     <ClInclude Include="Include\Dy\Builtin\Mesh\Plane\FDyBtMsOITTriangle.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\LevelOITRenderer.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Interface\IDyRenderer.h" />
+    <ClInclude Include="Include\Dy\Builtin\Material\Transparent\StaticTransparentChecker.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />
