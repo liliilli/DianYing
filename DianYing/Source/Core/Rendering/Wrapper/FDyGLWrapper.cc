@@ -829,4 +829,10 @@ void FDyGLWrapper::UpdateUniformInteger(TU32 iId, const TI32& iBuffer)
   glUniform1i(iId, iBuffer);
 }
 
+void FDyGLWrapper::UpdateUniformFloat(_MIN_ TU32 iId, _MIN_ const TF32& iBuffer)
+{
+  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
+  glUniform1f(iId, iBuffer);
+}
+
 } /// ::dy namespace

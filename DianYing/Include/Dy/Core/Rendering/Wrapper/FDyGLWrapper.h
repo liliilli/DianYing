@@ -181,6 +181,8 @@ public:
   static void UpdateUniformVector4(_MIN_ TU32 iId, _MIN_ const DDyVector4& iBuffer);
   /// @brief
   static void UpdateUniformInteger(_MIN_ TU32 iId, _MIN_ const TI32& iBuffer);
+  /// @brief Update uniform one float value. Specified shader must be valid and activated.
+  static void UpdateUniformFloat(_MIN_ TU32 iId, _MIN_ const TF32& iBuffer);
 
 private:
   static std::mutex mGLMutex;

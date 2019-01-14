@@ -85,14 +85,17 @@ FDyDefaultLoadingBootScript::FDyDefaultLoadingBootScript()
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Mesh, FDyBtMsUiBarQuad::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Mesh, FDyBtMsUiImageQuad::sName);
 
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLAttachment, FDyBtAtCSMLight::sName);
-
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, FDyBtFrameBufferDeferred::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, FDyBtFBBasicShadow::sName);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, FDyBtFbCSM::sName);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, builtin::FDyBtFbCSM::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, FDyBtFbSceneIntegration::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, FDyBtFbUiBasic::sName);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, FDyBtFbWeightBlendedOIT::sName);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, builtin::FDyBtFbWeightBlendedOIT::sName);
+
+  using namespace std::string_view_literals;
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLAttachment,  "dyBtAtWBOITColor"sv);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLAttachment,  "dyBtAtWBOITWeight"sv);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, "dyBtFbWBOIT"sv);
 }
 
 } /// ::dy namespace

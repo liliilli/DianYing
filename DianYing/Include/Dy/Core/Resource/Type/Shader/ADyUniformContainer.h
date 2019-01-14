@@ -119,6 +119,12 @@ public:
       const auto& item = this->MDY_UPDATEUNIFORM(Integer)(iSpecifier, iValue);
       this->mUpdatedItemList.emplace_back(std::make_pair(TType, item));
     }
+    else if constexpr (TType == EDyUniformVariableType::Float)
+    { // If not exist and not created by doing TryConstructDefaultUniformList, just create.
+      if (MDY_ISUNIFORMEXIST(Float)(iSpecifier) == false) { MDY_CREATEUNIFORM(Float)(iSpecifier, -1); }
+      const auto& item = this->MDY_UPDATEUNIFORM(Float)(iSpecifier, iValue);
+      this->mUpdatedItemList.emplace_back(std::make_pair(TType, item));
+    }
   }
 
   /// @brief Try update uniform variables. \n
@@ -144,6 +150,7 @@ private:
   MDY_UNIFORM_FUNCTION_CONSTRUCT(Vector3);
   MDY_UNIFORM_FUNCTION_CONSTRUCT(Vector2);
   MDY_UNIFORM_FUNCTION_CONSTRUCT(Integer);
+  MDY_UNIFORM_FUNCTION_CONSTRUCT(Float);
   MDY_UNIFORM_FUNCTION_CONSTRUCT(Bool);
   MDY_UNIFORM_FUNCTION_CONSTRUCT(Texture2D);
   MDY_UNIFORM_FUNCTION_CONSTRUCT(Texture2DArray);
