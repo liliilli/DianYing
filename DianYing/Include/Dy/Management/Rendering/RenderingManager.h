@@ -57,12 +57,11 @@ class MDyRendering final : public IDySingleton<MDyRendering>
   MDY_SINGLETON_PROPERTIES(MDyRendering);
   MDY_SINGLETON_DERIVED(MDyRendering);
 public:
-  ///
-  /// @brief
-  /// @param rendererInstance
-  /// @TODO SCRIPT THIS!
-  ///
-  void PushDrawCallTask(_MIN_ CDyModelRenderer& rendererInstance);
+  /// @brief Enqueue draw call to mesh with material.
+  void EnqueueDrawMesh(
+      _MIN_ CDyModelRenderer& iRefModelRenderer,
+      _MIN_ const FDyMeshResource& iRefValidMesh, 
+      _MIN_ const FDyMaterialResource& iRefValidMat);
 
   ///
   /// @brief
@@ -101,8 +100,14 @@ private:
   std::unique_ptr<FDyFinalScreenDisplayRenderer>  mFinalDisplayRenderer = MDY_INITIALIZE_NULL;
   std::unique_ptr<FDyUIBasicRenderer>             mUiBasicRenderer      = MDY_INITIALIZE_NULL;
 
-  /// Use basic renderer
-  std::vector<NotNull<CDyModelRenderer*>>         mOpaqueDrawCallList   = {};
+  using TMeshDrawCallItem = std::tuple<
+      NotNull<CDyModelRenderer*>,
+      NotNull<const FDyMeshResource*>, 
+      NotNull<const FDyMaterialResource*>
+  >;
+
+  std::vector<TMeshDrawCallItem> mOpaqueMeshDrawingList         = {};
+  std::vector<TMeshDrawCallItem> mTranslucentMeshDrawingList  = {};
  
   CDyDirectionalLight* mMainDirectionalLight   = nullptr;
   CDyDirectionalLight* mMainDirectionalShadow  = nullptr;

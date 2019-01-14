@@ -28,6 +28,7 @@
 #include "Dy/Component/CDyModelRenderer.h"
 #include "Dy/Management/Helper/SDyProfilingHelper.h"
 #include "Dy/Core/Rendering/Wrapper/FDyGLWrapper.h"
+#include "Dy/Core/Resource/Resource/FDyMaterialResource.h"
 
 namespace dy
 {
@@ -75,9 +76,23 @@ EDySuccess MDyRendering::pfRelease()
   return DY_SUCCESS;
 }
 
-void MDyRendering::PushDrawCallTask(_MIN_ CDyModelRenderer& rendererInstance)
+void MDyRendering::EnqueueDrawMesh(
+    _MIN_ CDyModelRenderer& iRefModelRenderer,
+    _MIN_ const FDyMeshResource& iRefValidMesh, 
+    _MIN_ const FDyMaterialResource& iRefValidMat)
 {
-  this->mOpaqueDrawCallList.emplace_back(DyMakeNotNull(&rendererInstance));
+  switch (iRefValidMat.GetBlendMode())
+  {
+  case EDyMaterialBlendMode::Opaque: 
+  {
+    this->mOpaqueMeshDrawingList.emplace_back(&iRefModelRenderer, &iRefValidMesh, &iRefValidMat);
+  } break;
+  case EDyMaterialBlendMode::TranslucentOIT: 
+  {
+    this->mTranslucentMeshDrawingList.emplace_back(&iRefModelRenderer, &iRefValidMesh, &iRefValidMat);
+  } break;
+  default: MDY_UNEXPECTED_BRANCH(); break;
+  }
 }
 
 void MDyRendering::RenderDrawCallQueue()
@@ -102,7 +117,7 @@ void MDyRendering::RenderDrawCallQueue()
         return ptrCamera->CheckIsPointInFrustum(worldPos) == false;
       });
 #endif
-      SDyProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(this->mOpaqueDrawCallList.size()));
+      SDyProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(this->mOpaqueMeshDrawingList.size()));
 
       // (1) Cascaded Shadow mapping to opaque call list.
       if (information.mGraphics.mIsEnabledDefaultShadow == true)
@@ -112,9 +127,13 @@ void MDyRendering::RenderDrawCallQueue()
         if (this->mCSMRenderer->TrySetupRendering() == DY_SUCCESS)
         {
           this->mCSMRenderer->SetupViewport();
-          for (auto& drawInstance : this->mOpaqueDrawCallList)
+          for (auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] : this->mOpaqueMeshDrawingList)
           { // Render
-            this->mCSMRenderer->RenderScreen(*drawInstance);
+            this->mCSMRenderer->RenderScreen(
+                *iPtrModel, 
+                const_cast<FDyMeshResource&>(*iPtrValidMesh),
+                const_cast<FDyMaterialResource&>(*iPtrValidMat)
+            );
           }
         }
       }
@@ -123,11 +142,18 @@ void MDyRendering::RenderDrawCallQueue()
       FDyGLWrapper::SetViewport(ptrCamera->GetPixelizedViewportRectangle());
       // (2) Draw opaque call list. Get valid Main CDyCamera instance pointer address.
       this->mBasicOpaqueRenderer->PreRender();
-      this->mBasicOpaqueRenderer->RenderScreen(this->mOpaqueDrawCallList);
+      for (auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] : this->mOpaqueMeshDrawingList)
+      { // Render
+        this->mBasicOpaqueRenderer->RenderScreen(
+            *iPtrModel,
+            const_cast<FDyMeshResource&>(*iPtrValidMesh),
+            const_cast<FDyMaterialResource&>(*iPtrValidMat)
+        );
+      }
     }
   }
   // Clear opaque draw queue list
-  this->mOpaqueDrawCallList.clear();
+  this->mOpaqueMeshDrawingList.clear();
 
   // (3) Draw transparent call list with OIT.
   // @TODO IMPLEMENT THIS!
