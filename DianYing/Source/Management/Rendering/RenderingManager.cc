@@ -71,6 +71,7 @@ EDySuccess MDyRendering::pfRelease()
   this->mBasicOpaqueRenderer  = MDY_INITIALIZE_NULL;
   this->mUiBasicRenderer      = MDY_INITIALIZE_NULL;
   this->mFinalDisplayRenderer = MDY_INITIALIZE_NULL;
+  this->mTranslucentOIT       = MDY_INITIALIZE_NULL;
 
   // Initialize internal management singleton instance.
   MDY_CALL_ASSERT_SUCCESS(MDyFramebuffer::Release());
@@ -154,11 +155,25 @@ void MDyRendering::RenderDrawCallQueue()
       }
     }
   }
-  // Clear opaque draw queue list
   this->mOpaqueMeshDrawingList.clear();
 
   // (3) Draw transparent call list with OIT.
-  // @TODO IMPLEMENT THIS!
+  if (this->mTranslucentOIT->TrySetupRendering() == DY_SUCCESS)
+  {
+    for (auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] : this->mTranslucentMeshDrawingList)
+    { // Render
+      this->mTranslucentOIT->RenderScreen(
+          *iPtrModel, 
+          const_cast<FDyMeshResource&>(*iPtrValidMesh),
+          const_cast<FDyMaterialResource&>(*iPtrValidMat)
+      );
+    }
+  }
+  this->mTranslucentMeshDrawingList.clear();
+  /// @TEMPORARY
+  glEnable(GL_DEPTH_TEST);
+  glBlendFunci(0, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  /// @TEMPORARY END
 
   //!
   //! Post processing effects

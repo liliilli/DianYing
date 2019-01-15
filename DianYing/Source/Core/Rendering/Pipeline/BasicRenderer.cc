@@ -136,7 +136,7 @@ void FDyBasicRenderer::RenderScreen(
   if (iRefMesh.IsEnabledIndices() == true)
   { FDyGLWrapper::Draw(EDyDrawType::Triangle, true, iRefMesh.GetIndicesCounts()); }
   else
-  { FDyGLWrapper::Draw(EDyDrawType::Triangle, true, iRefMesh.GetVertexCounts()); }
+  { FDyGLWrapper::Draw(EDyDrawType::Triangle, false, iRefMesh.GetVertexCounts()); }
 
   // Unbind present submesh vertex array object.
   FDyGLWrapper::UnbindVertexArrayObject();

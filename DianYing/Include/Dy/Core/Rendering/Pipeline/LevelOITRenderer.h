@@ -16,6 +16,19 @@
 #include <Dy/Core/Rendering/Interface/IDyRenderer.h>
 #include <Dy/Core/Resource/Type/TDyResourceBinder.h>
 
+//!
+//! Forward declaration
+//!
+
+namespace dy
+{
+class CDyModelRenderer;
+} /// ::dy namespace
+
+//!
+//! Implementation
+//!
+
 namespace dy
 {
 
@@ -30,13 +43,15 @@ public:
   /// @brief Try setup rendering, if failed, return DY_FAILURE.
   MDY_NODISCARD EDySuccess TrySetupRendering() override final;
   /// @brief Rendering deferred contexts to default framebuffer.
-  void RenderScreen();
+  void RenderScreen(
+    _MIN_ CDyModelRenderer& iRefRenderer,
+    _MIN_ FDyMeshResource& iRefMesh, 
+    _MIN_ FDyMaterialResource& iRefMaterial);
   /// @brief Clear properties of given framebuffer.
   void Clear() override final;
 
 private:
   TDyIResourceBinderFrameBuffer mBinderFrameBuffer{ "dyBtFbWBOIT" };
-  TDyIResourceBinderShader      mBinderShader     { "dyBtShOITAccumulation" };
 };
 
 
