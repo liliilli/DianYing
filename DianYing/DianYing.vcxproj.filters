@@ -270,6 +270,7 @@
     <ClCompile Include="Source\Builtin\Mesh\Plane\FDyBtMsOITTrinagle.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\LevelOITRenderer.cc" />
     <ClCompile Include="Source\Builtin\Material\Transparent\StaticTransparentChecker.cc" />
+    <ClCompile Include="Source\Core\Rendering\Pipeline\LevelOITIntegration.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -687,6 +688,7 @@
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\LevelOITRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Interface\IDyRenderer.h" />
     <ClInclude Include="Include\Dy\Builtin\Material\Transparent\StaticTransparentChecker.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\LevelOITIntegration.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

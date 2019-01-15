@@ -66,7 +66,7 @@ void main()
   vec3  background = texture(uTexture2, vs_out.mTexCoordScr).rgb;
 
   outColor.a    = 1.0f;
-  outColor.rgb  = alpha * (1 - beta) + rgb * (beta);
+  outColor.rgb  = alpha * (1 - beta) + background * (beta);
 }
 )dy");
 
