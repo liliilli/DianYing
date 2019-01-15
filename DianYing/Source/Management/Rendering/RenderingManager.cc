@@ -41,6 +41,7 @@ EDySuccess MDyRendering::pfInitialize()
 
   this->mBasicOpaqueRenderer  = std::make_unique<decltype(this->mBasicOpaqueRenderer)::element_type>();
   this->mTranslucentOIT       = std::make_unique<decltype(this->mTranslucentOIT)::element_type>();
+  this->mOITIntegration       = std::make_unique<decltype(this->mOITIntegration)::element_type>();
   this->mUiBasicRenderer      = std::make_unique<decltype(this->mUiBasicRenderer)::element_type>();
   this->mLevelFinalRenderer   = std::make_unique<decltype(this->mLevelFinalRenderer)::element_type>();
   this->mFinalDisplayRenderer = std::make_unique<decltype(this->mFinalDisplayRenderer)::element_type>();
@@ -71,6 +72,7 @@ EDySuccess MDyRendering::pfRelease()
   this->mBasicOpaqueRenderer  = MDY_INITIALIZE_NULL;
   this->mUiBasicRenderer      = MDY_INITIALIZE_NULL;
   this->mFinalDisplayRenderer = MDY_INITIALIZE_NULL;
+  this->mOITIntegration       = MDY_INITIALIZE_NULL;
   this->mTranslucentOIT       = MDY_INITIALIZE_NULL;
 
   // Initialize internal management singleton instance.

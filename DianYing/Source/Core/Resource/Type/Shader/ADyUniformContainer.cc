@@ -56,6 +56,7 @@ void MDY_PRIVATE_SPECIFIER(ADyUniformContainer)::MDY_PRIVATE_SPECIFIER(TryClearU
   MDY_UNIFORMCONTAINER(Float).clear();
   MDY_UNIFORMCONTAINER(Texture2D).clear();
   MDY_UNIFORMCONTAINER(Texture2DArray).clear();
+  MDY_UNIFORMCONTAINER(Texture2DRectangle).clear();
   MDY_UNIFORMCONTAINER(Texture2DShadowArray).clear();
   this->mIsShaderSetup = false;
 }
@@ -82,9 +83,10 @@ MDY_PRIVATE_SPECIFIER(TryConstructDefaultUniformList)(const FDyShaderResource& i
     case EDyUniformVariableType::Integer:   { MDY_DOCONSTRUCTUNIFORMLIST(Integer, specifier, id); } break;
     case EDyUniformVariableType::Bool:      { MDY_DOCONSTRUCTUNIFORMLIST(Bool, specifier, id); } break;
     case EDyUniformVariableType::Float:     { MDY_DOCONSTRUCTUNIFORMLIST(Float, specifier, id); } break;
-    case EDyUniformVariableType::Texture2D:      { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2D, specifier, id); } break;
-    case EDyUniformVariableType::Texture2DArray: { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2DArray, specifier, id); } break;
-    case EDyUniformVariableType::Texture2DShadowArray: { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2DShadowArray, specifier, id); } break;
+    case EDyUniformVariableType::Texture2D:             { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2D, specifier, id); } break;
+    case EDyUniformVariableType::Texture2DArray:        { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2DArray, specifier, id); } break;
+    case EDyUniformVariableType::Texture2DRectangle:    { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2DRectangle, specifier, id); } break;
+    case EDyUniformVariableType::Texture2DShadowArray:  { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2DShadowArray, specifier, id); } break;
     default: MDY_UNEXPECTED_BRANCH(); break;
     }
   }
@@ -168,6 +170,12 @@ EDySuccess MDY_PRIVATE_SPECIFIER(ADyUniformContainer)::TryUpdateUniformList()
     case EDyUniformVariableType::Texture2DArray:
     {
       const auto* item = static_cast<TPtrConvert<EDyUniformVariableType::Texture2DArray>>(ptrItem);
+      if (item->mId == -1) { continue; }
+      FDyGLWrapper::UpdateUniformInteger(item->mId, item->mValue);
+    } break;
+    case EDyUniformVariableType::Texture2DRectangle: 
+    {
+      const auto* item = static_cast<TPtrConvert<EDyUniformVariableType::Texture2DRectangle>>(ptrItem);
       if (item->mId == -1) { continue; }
       FDyGLWrapper::UpdateUniformInteger(item->mId, item->mValue);
     } break;
