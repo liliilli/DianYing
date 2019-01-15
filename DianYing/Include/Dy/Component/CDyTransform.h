@@ -154,6 +154,9 @@ public:
   /// @brief Sets world scaling vector value which have (x, y, z).
   void SetWorldScale(_MIN_ const DDyVector3& xyz_value) noexcept;
 
+  /// @brief Get rotation matrix (4x4)
+  MDY_NODISCARD const DDyMatrix4x4 GetRotationMatrix() noexcept;
+
   /// @brief The method returns Model matrix, M = TRS
   ///
   /// If any value which related to Translate, Rotation, Scaling has been changed,
