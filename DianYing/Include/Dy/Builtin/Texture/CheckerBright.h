@@ -1,4 +1,5 @@
-#include <precompiled.h>
+#ifndef GUARD_DY_BUITLIN_TEXTURE_CHECKER_BRIGHT_H
+#define GUARD_DY_BUITLIN_TEXTURE_CHECKER_BRIGHT_H
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -12,21 +13,18 @@
 /// SOFTWARE.
 ///
 
-/// Header file
-#include <Dy/Builtin/Material/Transparent/StaticTransparentChecker.h>
-#include <Dy/Builtin/ShaderGl/Level/BtShOITAccumulation.h>
-#include <Dy/Builtin/Texture/CheckerBright.h>
+#include <Dy/Builtin/Abstract/ADyTextureResource.h>
 
 namespace dy::builtin
 {
 
-void FDyBtStaticTransparentChecker::ConstructBuffer(PDyMaterialInstanceMetaInfo& property) noexcept
+/// @class FDyBtTexCheckerBright
+/// @brief Checker texture with bright color.
+class FDyBtTexCheckerBright final : public ADyTextureResource
 {
-  property.mSpecifierName   = sName;
-  property.mShaderSpecifier = FDyBtShOITAccumulation::sName;
-  property.mBlendMode       = EDyMaterialBlendMode::TranslucentOIT;
-
-  property.mTextureNames[0] = MSVSTR(FDyBtTexCheckerBright::sName);
-}
+  MDY_REGISTER_RESOURCE_TEXTURE(FDyBtTexCheckerBright, "dyBtTexCheckerBright")
+};
 
 } /// ::dy::builtin namespace
+
+#endif /// GUARD_DY_BUITLIN_TEXTURE_CHECKER_BRIGHT_H

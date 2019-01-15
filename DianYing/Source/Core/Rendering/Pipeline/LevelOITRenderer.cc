@@ -62,7 +62,7 @@ void FDyLevelOITRenderer::RenderScreen(
   shaderBinder->UseShader();
   shaderBinder.TryUpdateUniform<EDyUniformVariableType::Matrix4>("uModelMatrix", ptrModelTransform->GetTransform());
   shaderBinder.TryUpdateUniform<EDyUniformVariableType::Matrix4>("uRotationMatrix", ptrModelTransform->GetRotationMatrix());
-  shaderBinder.TryUpdateUniform<EDyUniformVariableType::Float>("uAlphaOffset", 0.5f);
+  shaderBinder.TryUpdateUniform<EDyUniformVariableType::Float>("uAlphaOffset", 0.75f);
   shaderBinder.TryUpdateUniform<EDyUniformVariableType::Float>("uDepthScale",  0.1f);
   shaderBinder.TryUpdateUniformList();
   iRefMaterial.TryUpdateTextureList();

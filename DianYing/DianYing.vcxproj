@@ -209,6 +209,7 @@
     <ClCompile Include="Source\Builtin\ShaderGl\Render\BtShUvWorldPos.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\Widget\RenderUiBasicGaugeBar.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\Widget\RenderUIImage.cc" />
+    <ClCompile Include="Source\Builtin\Texture\CheckerBright.cc" />
     <ClCompile Include="Source\Builtin\Widget\FDyBtWdTestLoadingUi.cc" />
     <ClCompile Include="Source\Component\Abstract\ADyActorCppScript.cc" />
     <ClCompile Include="Source\Component\Abstract\ADyWidgetCppScript.cc" />
@@ -564,6 +565,7 @@
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderScreenOutput.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\UI\RenderUIBasicGaugeBar.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\UI\RenderUIImage.h" />
+    <ClInclude Include="Include\Dy\Builtin\Texture\CheckerBright.h" />
     <ClInclude Include="Include\Dy\Builtin\Texture\ErrorBlue.h" />
     <ClInclude Include="Include\Dy\Builtin\Texture\Checker.h" />
     <ClInclude Include="Include\Dy\Builtin\Widget\DebugUiMeta.h" />

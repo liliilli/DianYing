@@ -40,19 +40,24 @@ out VS_OUT
   vec2  texCoord; 
   float zDiffuse;
   float wValue;
+  vec3  tempColor;
 } vs_out;
 
 uniform mat4 uModelMatrix;
 uniform mat4 uRotationMatrix;
 
+float rand(float n){ return fract(floor(n * 0.1f) * 43758.5453123); }
+
 void main() 
 {
-  vec4 vec = uCamera.mViewMatrix * uModelMatrix * vec4(dyPosition, 1.0);
+  vec4 mdp = uModelMatrix * vec4(dyPosition, 1.0);
+  vec4 vec = uCamera.mViewMatrix * mdp;
   gl_Position     = uCamera.mProjMatrix * vec;
 
   vs_out.wValue   = vec.w;
   vs_out.texCoord = dyTexCoord0;
   vs_out.zDiffuse = abs(normalize(uRotationMatrix * vec4(dyNormal, 0.0)).z);
+  vs_out.tempColor= vec3(rand(mdp.x), rand(mdp.y), rand(mdp.z));
 }
 )dy");
 
@@ -64,6 +69,7 @@ in VS_OUT
   vec2  texCoord; 
   float zDiffuse;
   float wValue;
+  vec3 tempColor;
 } vs_out;
 
 layout (location = 0) out vec4 outColor;
@@ -76,7 +82,7 @@ layout (binding = 0) uniform sampler2D uUnlit;
 vec4 ShaderFragment()
 {
   vec4 color = texture(uUnlit, vs_out.texCoord);
-  color.rgb *= vs_out.zDiffuse;
+  color.rgb *= vs_out.zDiffuse * vs_out.tempColor;
   color.a   *= uAlphaOffset;
   return color;
 }
