@@ -34,17 +34,30 @@ public:
   void Clear();
 
 private:
-  void pInitializeShaderSetting();
+  ///
+  MDY_NODISCARD EDySuccess pSetupOpaqueCSMIntegration();
+  ///
+  MDY_NODISCARD EDySuccess pSetupTranslucentOITIntegration();
 
-  TDyIResourceBinderFrameBuffer mBinderFrameBuffer{ "dyBtFbScrFin" };
-  TDyIResourceBinderShader      mBinderShader     { "dyBtGlslRenderCsmIntegration" };
+  ///
+  void pRenderCSMIntegration();
+  ///
+  void pRenderOITIntegration();
+
   TDyIResourceBinderModel       mBinderTriangle   { "dyBtModelScrProjTri" };
+
+  TDyIResourceBinderFrameBuffer mBinderFrameBuffer  { "dyBtFbScrFin" };
+  TDyIResourceBinderShader      mBinderOpaqueShader { "dyBtGlslRenderCsmIntegration" };
   TDyIResourceBinderAttachment  mBinderAttUnlit   { "dyBtUnlit" };
   TDyIResourceBinderAttachment  mBinderAttNormal  { "dyBtNormal" };
   TDyIResourceBinderAttachment  mBinderAttSpecular{ "dyBtSpecular" };
   TDyIResourceBinderAttachment  mBinderAttPosition{ "dyBtModelPosition" };
   TDyIResourceBinderAttachment  mBinderAttShadow  { "dyBtAtCSMLight" };
   TDyIResourceBinderAttachment  mBinderAttZValue  { "dyBtDefZValue" };
+
+  TDyIResourceBinderFrameBuffer mBinderFbTranslucent { "dyBtFbIntgLevelTrans" };
+  TDyIResourceBinderShader      mBinderTransShader{ "dyBtShOITIntegration" };
+  TDyIResourceBinderAttachment  mBinderAttOpaque  { "dyBtAtOpaqueOutput" };
   TDyIResourceBinderAttachment  mBinderAttOITColor{ "dyBtAtWBOITColor" };
   TDyIResourceBinderAttachment  mBinderAttOITWeigh{ "dyBtAtWBOITWeight" };
 

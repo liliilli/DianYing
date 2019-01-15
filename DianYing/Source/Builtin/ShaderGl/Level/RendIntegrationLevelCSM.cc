@@ -53,8 +53,6 @@ layout (binding = 2) uniform sampler2D uSpecular;      // View vector
 layout (binding = 3) uniform sampler2D uModelPosition; // Use it CSM shadowing.
 layout (binding = 4) uniform sampler2DArrayShadow uShadow;
 layout (binding = 5) uniform sampler2D uZValue;
-layout (binding = 6) uniform sampler2D uTransColor;   // Color accumulation
-layout (binding = 7) uniform sampler2D uTransWeight;  // Weight accumulation
 
 uniform mat4  uLightVPSBMatrix[4];
 uniform vec4  uNormalizedFarPlanes;
@@ -144,12 +142,8 @@ void main()
 {
   vec3 opaqueColor = GetOpaqueColor();
 
-  vec4  gamma = texture(uTransColor, fs_in.texCoord);
-  float beta  = texture(uTransWeight, fs_in.texCoord).r;
-  vec3  alpha = gamma.rgb / max(gamma.a, 0.00001);
-
   outColor.a    = 1.0f;
-  outColor.rgb  = alpha * (1 - beta) + opaqueColor * (beta);
+  outColor.rgb  = GetOpaqueColor();
 }
 )dy");
 

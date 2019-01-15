@@ -13,18 +13,18 @@
 ///
 
 /// Header file
-#include <Dy/Builtin/FrameBuffer/SceneIntegration/FDyBtFbSceneIntegration.h>
-#include <Dy/Builtin/Attachment/SceneIntegration/FDyBtAttOutput.h>
+#include <Dy/Builtin/FrameBuffer/SceneIntegration/FDyBtFbOpaqueIntegration.h>
+#include <Dy/Builtin/Attachment/SceneIntegration/FDyBtAtOpaqueOutput.h>
 
 namespace dy
 {
 
-void FDyBtFbSceneIntegration::ConstructBuffer(_MOUT_ PDyGlFrameBufferInstanceMetaInfo& property) noexcept
+void FDyBtFbOpaqueIntegration::ConstructBuffer(_MOUT_ PDyGlFrameBufferInstanceMetaInfo& property) noexcept
 {
   property.mSpecifierName       = sName;
   property.mFrameBufferSize     = DDyVectorInt2{1280, 720};
   property.mIsUsingDepthBuffer  = true;
-  property.mColorAttachmentList.emplace_back(MSVSTR(FDyBtAttOutput::sName), EDyGlAttachmentType::Color0);
+  property.mColorAttachmentList.emplace_back(MSVSTR(FDyBtAtOpaqueOutput::sName), EDyGlAttachmentType::Color0);
 }
 
 } /// ::dy namespace
