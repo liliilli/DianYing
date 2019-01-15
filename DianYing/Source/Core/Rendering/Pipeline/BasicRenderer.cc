@@ -102,6 +102,7 @@ void FDyBasicRenderer::RenderScreen(
 { 
   if (this->mBinderFrameBuffer.IsResourceExist() == false) { return; }
   this->mBinderFrameBuffer->BindFrameBuffer();
+  glBlendFunci(1, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   // Get valid Main CDyCamera instance pointer address.
   const auto* ptrCamera = MDyWorld::GetInstance().GetPtrMainLevelCamera();

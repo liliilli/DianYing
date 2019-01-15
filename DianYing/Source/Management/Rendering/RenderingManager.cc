@@ -168,11 +168,15 @@ void MDyRendering::RenderDrawCallQueue()
           const_cast<FDyMaterialResource&>(*iPtrValidMat)
       );
     }
+    SDyProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(this->mTranslucentMeshDrawingList.size()));
+    
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunci(0, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunci(1, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   }
   this->mTranslucentMeshDrawingList.clear();
   /// @TEMPORARY
-  glEnable(GL_DEPTH_TEST);
-  glBlendFunci(0, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   /// @TEMPORARY END
 
   //!
