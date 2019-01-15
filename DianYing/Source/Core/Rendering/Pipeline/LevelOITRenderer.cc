@@ -75,10 +75,8 @@ void FDyLevelOITRenderer::RenderScreen(
   { FDyGLWrapper::Draw(EDyDrawType::Triangle, false, iRefMesh.GetVertexCounts()); }
 
   // Unbind present submesh vertex array object.
-  FDyGLWrapper::UnbindVertexArrayObject();
-
   // Unbind, unset, deactivate settings for this submesh and material.
-  iRefMaterial.TryDetachTextureListFromShader();
+  FDyGLWrapper::UnbindVertexArrayObject();
   shaderBinder->DisuseShader();
   this->mBinderFrameBuffer->UnbindFrameBuffer();
 }

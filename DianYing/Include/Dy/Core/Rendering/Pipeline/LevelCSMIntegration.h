@@ -45,6 +45,8 @@ private:
   TDyIResourceBinderAttachment  mBinderAttPosition{ "dyBtModelPosition" };
   TDyIResourceBinderAttachment  mBinderAttShadow  { "dyBtAtCSMLight" };
   TDyIResourceBinderAttachment  mBinderAttZValue  { "dyBtDefZValue" };
+  TDyIResourceBinderAttachment  mBinderAttOITColor{ "dyBtAtWBOITColor" };
+  TDyIResourceBinderAttachment  mBinderAttOITWeigh{ "dyBtAtWBOITWeight" };
 
   std::ptrdiff_t mAddrMainLight = 0;
 };

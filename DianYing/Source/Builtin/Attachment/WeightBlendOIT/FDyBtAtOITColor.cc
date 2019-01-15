@@ -30,7 +30,7 @@ void FDyBtAtWBOITColor::ConstructBuffer(_MOUT_ PDyGlAttachmentInstanceMetaInfo& 
     {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::ClampToEdge},
     {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::ClampToEdge},
   };
-  property.mAttachmentType  = EDyTextureStyleType::D2Rectangle;
+  property.mAttachmentType  = EDyTextureStyleType::D2;
   property.mBufferFormat    = EDyGlBufferDataInternalFormat::RGBA16Float;
 }
 

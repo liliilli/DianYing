@@ -81,6 +81,9 @@ EDySuccess FDyLevelCSMIntergration::TrySetupRendering()
   glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D_ARRAY, this->mBinderAttShadow->GetAttachmentId());
   glActiveTexture(GL_TEXTURE5); glBindTexture(GL_TEXTURE_2D, this->mBinderAttZValue->GetAttachmentId());
 
+  glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, this->mBinderAttOITColor->GetAttachmentId());
+  glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, this->mBinderAttOITWeigh->GetAttachmentId());
+
   // Bind g-buffers as textures.
   this->mBinderShader.TryUpdateUniformList();
 
