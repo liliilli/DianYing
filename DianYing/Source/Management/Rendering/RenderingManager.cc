@@ -178,13 +178,11 @@ void MDyRendering::RenderDrawCallQueue()
   this->mTranslucentMeshDrawingList.clear();
 
   //! Post processing effects
-#ifdef false
   if (MDY_CHECK_ISNOTEMPTY(this->mSSAOPostEffect)) 
   { 
     if (this->mSSAOPostEffect->TrySetupRendering() == DY_SUCCESS)
     { this->mSSAOPostEffect->RenderScreen(); }
   }
-#endif
 
   // Final
   if (MDY_CHECK_ISNOTEMPTY(this->mLevelFinalRenderer) 

@@ -56,61 +56,25 @@ void FDyPostEffectSsao::RenderScreen()
   
   this->mBinderFbSSAO->BindFrameBuffer();
   this->mBinderShSSAO->UseShader();
-  // Check Textures.
-  glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, this->mBinderAttWorldPos->GetAttachmentId());
-  glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, this->mBinderAttWorldNorm->GetAttachmentId());
+  glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, this->mBinderAttWorldNorm->GetAttachmentId());
+  glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, this->mBinderAttWorldPos->GetAttachmentId());
   glActiveTexture(GL_TEXTURE2); glBindTexture(GL_TEXTURE_2D, this->mBinderTexNoise->GetTextureId());
 
   const auto& submeshList = this->mBinderTriangle->GetMeshResourceList();
   MDY_ASSERT(submeshList.size() == 1, "Unexpected error occurred.");
+
   submeshList[0]->Get()->BindVertexArray();
   FDyGLWrapper::Draw(EDyDrawType::Triangle, true, 3);
+
+  this->mBinderFbSSAOBlur->BindFrameBuffer();
+  this->mBinderShSSAOBlur->UseShader();
+  glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, this->mBinderAttSSAOOpt->GetAttachmentId());
+
+  FDyGLWrapper::Draw(EDyDrawType::Triangle, true, 3);
+
   FDyGLWrapper::UnbindVertexArrayObject();
-  this->mBinderShSSAO->DisuseShader();
-  this->mBinderFbSSAO->UnbindFrameBuffer();
-
-#ifdef false
-  MDY_ASSERT(this->mSsaoShaderPtr,     "FDyPostEffectSsao::mSsaoShaderPtr must not be nullptr.");
-
-  //!
-  //! SSAO rendering
-  //!
-
-  glBindFramebuffer (GL_FRAMEBUFFER, this->mSsaoFrameBufferId);
-  glClear           (GL_COLOR_BUFFER_BIT);
-  this->mSsaoShaderPtr->UseShader();
-  glBindVertexArray (this->mTriangleVao);
-
-  // Bind g-buffers as textures.
-  const auto& renderingManager = MDyRendering::GetInstance();
-  glActiveTexture   (GL_TEXTURE0 + 0); glBindTexture(GL_TEXTURE_2D, renderingManager.mAttachmentBuffers[3]); // ugPosition
-  glActiveTexture   (GL_TEXTURE0 + 1); glBindTexture(GL_TEXTURE_2D, renderingManager.mAttachmentBuffers[1]); // ugNormal
-  glActiveTexture   (GL_TEXTURE0 + 2); glBindTexture(GL_TEXTURE_2D, this->mSsaoNoiseTextureId);              // uTextureNoise
-  glUniformMatrix4fv(this->mUniformProjection, 1, GL_FALSE, &MDyWorld::GetInstance().GetMainCameraPtr()->GetProjectionMatrix()[0].X);
-  glDrawArrays      (GL_TRIANGLES, 0, 3);
-
-  glBindVertexArray (0);
-  this->mSsaoShaderPtr->UnuseShader();
-
-  //!
-  //! SSAO blurring rendering
-  //!
-
-  MDY_ASSERT(this->mSsaoBlurShaderPtr, "FDyPostEffectSsao::mSsaoBlurShaderPtr must not be nullptr.");
-
-  glBindFramebuffer (GL_FRAMEBUFFER, this->mSsaoBlurFrameBufferId);
-  glClear           (GL_COLOR_BUFFER_BIT);
-  this->mSsaoBlurShaderPtr->UseShader();
-  glBindVertexArray (this->mTriangleVao);
-
-  glActiveTexture   (GL_TEXTURE0 + 0); glBindTexture(GL_TEXTURE_2D, this->mSsaoColorBuffer);
-  glDrawArrays      (GL_TRIANGLES, 0, 3);
-
-  glBindVertexArray (0);
-  this->mSsaoBlurShaderPtr->UnuseShader();
-
-  glBindFramebuffer (GL_FRAMEBUFFER, 0);
-#endif
+  this->mBinderShSSAOBlur->DisuseShader();
+  this->mBinderFbSSAOBlur->UnbindFrameBuffer();
 }
 
 bool FDyPostEffectSsao::IsReady() const noexcept
@@ -123,7 +87,7 @@ bool FDyPostEffectSsao::IsReady() const noexcept
   &&  this->mBinderAttSSAOOpt.IsResourceExist() == true
   &&  this->mBinderShSSAO.IsResourceExist() == true
   &&  this->mBinderTexNoise.IsResourceExist() == true
-  &&  this->mBinderTransShader.IsResourceExist() == true
+  &&  this->mBinderShSSAOBlur.IsResourceExist() == true
   &&  this->mBinderTriangle.IsResourceExist() == true;
 }
 
@@ -132,21 +96,15 @@ EDySuccess FDyPostEffectSsao::TrySetupRendering()
   if (this->IsReady() == false) { return DY_FAILURE; }
 
   // SSAO (Opaque -> SSAO output)
-  this->mBinderFbSSAO->BindFrameBuffer();
-  glClearColor(0, 0, 0, 0);
-  glClear(GL_COLOR_BUFFER_BIT);
-  this->mBinderFbSSAO->UnbindFrameBuffer();
-
+  // SSAO Blur (SSAO Output -> SSAO Blurred) does not have to setup.
   this->mBinderShSSAO->UseShader();
   if (this->mIsRayInserted == false)
   {
     this->mBinderShSSAO.TryUpdateUniform<EDyUniformVariableType::Vector3Array>("uRaySamples[0]", this->mRayContainer);
+    this->mBinderShSSAO.TryUpdateUniformList();
     this->mIsRayInserted = true;
   }
-  this->mBinderShSSAO.TryUpdateUniformList();
   this->mBinderShSSAO->DisuseShader();
-
-  // SSAO Blur (SSAO Output -> SSAO Blurred)
 
   return DY_SUCCESS;
 }
@@ -157,58 +115,6 @@ void FDyPostEffectSsao::Clear()
 }
 
 #ifdef false
-void FDyPostEffectSsao::pCreateSsaoFrameBufferComponents()
-{
-  auto& settingManager = MDySetting::GetInstance();
-  const auto overallScreenWidth   = settingManager.GetWindowSizeWidth();
-  const auto overallScreenHeight  = settingManager.GetWindowSizeHeight();
-
-  glGenFramebuffers(1, &this->mSsaoFrameBufferId);
-  glBindFramebuffer(GL_FRAMEBUFFER, this->mSsaoFrameBufferId);
-
-  // Unlit g-buffer
-  glGenTextures   (1, &this->mSsaoColorBuffer);
-  glBindTexture   (GL_TEXTURE_2D, this->mSsaoColorBuffer);
-  glTexImage2D    (GL_TEXTURE_2D, 0, GL_R16F, overallScreenWidth, overallScreenHeight, 0, GL_RED, GL_FLOAT, nullptr);
-  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->mSsaoColorBuffer, 0);
-  if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-  {
-    MDY_UNEXPECTED_BRANCH();
-  }
-
-  const GLenum attachment[] = { GL_COLOR_ATTACHMENT0 };
-  glDrawBuffers(1, attachment);
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-  // Generate sample kernel (64)
-  for (TU32 i = 0; i < 64; ++i)
-  {
-    DDyVector3 randomizedVector = random::RandomVector3Length(1) * (i / 64.0f);
-    this->mSsaoKernel.emplace_back(randomizedVector);
-  }
-
-  // Generate noise texture (4x4)
-  for (TU32 i = 0; i < 16; ++i)
-  {
-    DDyVector3 randomizedNoise = DDyVector3(random::RandomVector2Length(1));
-    this->mSsaoNoise.emplace_back(randomizedNoise);
-  }
-
-  glGenTextures   (1, &this->mSsaoNoiseTextureId);
-  glBindTexture   (GL_TEXTURE_2D, this->mSsaoNoiseTextureId);
-  glTexImage2D    (GL_TEXTURE_2D, 0, GL_RGB32F, 4, 4, 0, GL_RGB, GL_FLOAT, &this->mSsaoNoise[0]);
-  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-  glBindTexture   (GL_TEXTURE_2D, 0);
-}
-
 void FDyPostEffectSsao::pCreateBlurFrameBufferComponent()
 {
   auto& settingManager = MDySetting::GetInstance();

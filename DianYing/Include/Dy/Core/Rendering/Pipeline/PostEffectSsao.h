@@ -44,8 +44,8 @@ private:
   TDyIResourceBinderAttachment  mBinderAttWorldNorm { "dyBtNormal" };
   TDyIResourceBinderTexture     mBinderTexNoise     { "dyBtTexSSAONoiseMap" };
 
-  TDyIResourceBinderFrameBuffer mBinderFbSSAOBlur   { "dyBtFbIntgLevelTrans" };
-  TDyIResourceBinderShader      mBinderTransShader  { "dyBtShOITIntegration" };
+  TDyIResourceBinderFrameBuffer mBinderFbSSAOBlur   { "dyBtFbSSAOBlur" };
+  TDyIResourceBinderShader      mBinderShSSAOBlur   { "dyBtPostEffectSsaoBlur" };
   TDyIResourceBinderAttachment  mBinderAttSSAOOpt   { "dyBtAtSSAOOutput" };
 
   std::vector<DDyVector3> mRayContainer;

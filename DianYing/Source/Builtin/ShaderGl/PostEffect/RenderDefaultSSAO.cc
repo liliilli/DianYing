@@ -39,7 +39,7 @@ void main() {
 MDY_SET_IMMUTABLE_STRING(sFragmentShaderCode, R"dy(
 #version 430 core
 
-layout (location = 0) out float oOcclusion;
+layout (location = 0) out vec4 oOcclusion;
 
 in VS_OUT { vec2 texCoord; } vs_out;
 
@@ -49,15 +49,15 @@ layout(std140, binding = 0) uniform CameraBlock
   uniform mat4 mViewMatrix;
 } uCamera;
 
-layout (binding = 0) uniform sampler2D uModelPosition;
-layout (binding = 1) uniform sampler2D uModelNormal;
+layout (binding = 0) uniform sampler2D uModelNormal;
+layout (binding = 1) uniform sampler2D uModelPosition;
 layout (binding = 2) uniform sampler2D uNoise;
 
 uniform vec3 uRaySamples[64];
 int   uKernelSize	= 64;
-float uRadius	    = 1.5f;
+float uRadius	    = 2.0f;
 float uBias	      = 0.025f;
-vec2  uScreenSize      = vec2(1280, 720);
+vec2  uScreenSize = vec2(1280, 720);
 vec2  sNoiseScale;
 
 vec3 GetViewPosition()  { return (uCamera.mViewMatrix * texture(uModelPosition, vs_out.texCoord)).xyz; }
@@ -110,7 +110,7 @@ void main()
     occlusionIntensity += (sampleViewDepth >= sampleViewPos.z + uBias ? 1.0f : 0.0f) * rangeCheck;
   }
 
-  oOcclusion = 1.0 - (occlusionIntensity / uKernelSize);
+  oOcclusion = vec4(1.0 - (occlusionIntensity / uKernelSize));
 }
 )dy");
 
