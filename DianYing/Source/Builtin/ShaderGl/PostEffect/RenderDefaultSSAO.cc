@@ -55,9 +55,9 @@ layout (binding = 2) uniform sampler2D uNoise;
 
 uniform vec3 uRaySamples[64];
 int   uKernelSize	= 64;
-float uRadius	    = 3.0f;
+float uRadius	    = 2.0f;
 float uBias	      = 0.025f;
-vec2  uScreenSize      = vec2(1280, 720);
+vec2  uScreenSize = vec2(1280, 720);
 vec2  sNoiseScale;
 
 vec3 GetViewPosition()  { return (uCamera.mViewMatrix * texture(uModelPosition, vs_out.texCoord)).xyz; }
