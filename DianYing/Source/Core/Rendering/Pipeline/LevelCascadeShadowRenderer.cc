@@ -25,6 +25,7 @@
 #include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
 #include <Dy/Management/Rendering/RenderingManager.h>
 #include "Dy/Component/CDyDirectionalLight.h"
+#include "Dy/Core/Resource/Resource/FDyMaterialResource.h"
 
 #ifdef near
 #undef near
@@ -142,33 +143,28 @@ EDySuccess FDyLevelCascadeShadowRenderer::TrySetupRendering()
   return DY_SUCCESS;
 }
 
-void FDyLevelCascadeShadowRenderer::RenderScreen(_MIN_ CDyModelRenderer& renderer)
+void FDyLevelCascadeShadowRenderer::RenderScreen(
+    _MIN_ CDyModelRenderer& iRefRenderer,
+    _MIN_ FDyMeshResource& iRefMesh, 
+    _MIN_ FDyMaterialResource& iRefMaterial)
 {
   // Validation test
-  const auto* ptrModelBinder = renderer.GetModelResourceBinder();
+  const auto* ptrModelBinder = iRefRenderer.GetModelResourceBinder();
   if (MDY_CHECK_ISNULL(ptrModelBinder)) { return; }
 
   const auto& meshList = (*ptrModelBinder)->GetMeshResourceList();
-  const auto  opSubmeshListCount = renderer.GetModelSubmeshCount();
-  if (opSubmeshListCount.has_value() == false) { return; }
-
-  const auto  meshCount = opSubmeshListCount.value();
   this->mDirLightShaderResource->UseShader();
 
-  for (TI32 i = 0; i < meshCount; ++i)
-  {
-    const auto& ptrMesh = *meshList[i];
-    const auto& refModelMatrix = renderer.GetBindedActor()->GetTransform()->GetTransform();
-    this->mDirLightShaderResource.TryUpdateUniform<EDyUniformVariableType::Matrix4>("uModelMatrix", refModelMatrix);
-    this->mDirLightShaderResource.TryUpdateUniformList();
-    ptrMesh->BindVertexArray();
+  const auto& refModelMatrix = iRefRenderer.GetBindedActor()->GetTransform()->GetTransform();
+  this->mDirLightShaderResource.TryUpdateUniform<EDyUniformVariableType::Matrix4>("uModelMatrix", refModelMatrix);
+  this->mDirLightShaderResource.TryUpdateUniformList();
+  iRefMesh.BindVertexArray();
 
-    // Call function call drawing array or element. (not support instancing yet) TODO IMPLEMENT BATCHING SYSTEM.
-    if (ptrMesh->IsEnabledIndices() == true)
-    { FDyGLWrapper::Draw(EDyDrawType::Triangle, true, ptrMesh->GetIndicesCounts()); }
-    else
-    { FDyGLWrapper::Draw(EDyDrawType::Triangle, true, ptrMesh->GetVertexCounts()); }
-  }
+  // Call function call drawing array or element. (not support instancing yet) TODO IMPLEMENT BATCHING SYSTEM.
+  if (iRefMesh.IsEnabledIndices() == true)
+  { FDyGLWrapper::Draw(EDyDrawType::Triangle, true, iRefMesh.GetIndicesCounts()); }
+  else
+  { FDyGLWrapper::Draw(EDyDrawType::Triangle, true, iRefMesh.GetVertexCounts()); }
 
   // Unbind present submesh vertex array object.
   FDyGLWrapper::UnbindVertexArrayObject();

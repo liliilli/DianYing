@@ -20,12 +20,12 @@ namespace dy
 {
 
 ///
-/// @class FDyBtFbSceneIntegration
+/// @class FDyBtFbOpaqueIntegration
 /// @brief Basic Shadow framebuffer object descriptor.
 ///
-class FDyBtFbSceneIntegration final : public ADyGLFrameBufferResource
+class FDyBtFbOpaqueIntegration final : public ADyGLFrameBufferResource
 {
-  MDY_REGISTER_RESOURCE_FRAMEBUFFER(FDyBtFbSceneIntegration, "dyBtFbScrFin")
+  MDY_REGISTER_RESOURCE_FRAMEBUFFER(FDyBtFbOpaqueIntegration, "dyBtFbScrFin")
 };
 
 } /// ::dy namespace

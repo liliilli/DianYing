@@ -13,7 +13,6 @@
 /// SOFTWARE.
 ///
 
-#include <string_view>
 #include <Dy/Builtin/Abstract/ADyGLShaderResource.h>
 
 namespace dy::builtin
@@ -25,7 +24,7 @@ namespace dy::builtin
 ///
 class FDyBuiltinShaderGLRenderDefaultSSAO final : public ADyGLShaderResource
 {
-  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBuiltinShaderGLRenderDefaultSSAO, "dyPostEffectSsaoShader")
+  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBuiltinShaderGLRenderDefaultSSAO, "dyBtShSSAO")
 public:
   FDyBuiltinShaderGLRenderDefaultSSAO();
 };

@@ -25,72 +25,92 @@ namespace
 MDY_SET_IMMUTABLE_STRING(sVertexShaderCode, R"dy(
 #version 430 core
 
-// Quad
 layout (location = 0) in vec3 dyPosition;
-layout (location = 1) in vec2 dyTexCoord0;
+layout (location = 2) in vec2 dyTexCoord0;
 
-out gl_PerVertex { vec4 gl_Position; };
 out VS_OUT { vec2 texCoord; } vs_out;
 
 void main() {
-	vs_out.texCoord		= dyTexCoord0;
-    gl_Position			= vec4(dyPosition, 1.0);
+	vs_out.texCoord	= dyTexCoord0;
+  gl_Position	= vec4(dyPosition, 1.0);
 }
 )dy");
 
 MDY_SET_IMMUTABLE_STRING(sFragmentShaderCode, R"dy(
 #version 430 core
 
-layout (location = 0) out float FragColor;
-in VS_OUT { vec2 texCoord; } fsIn;
+layout (location = 0) out float oOcclusion;
 
-uniform sampler2D ugPosition;
-uniform sampler2D ugNormal;
-uniform sampler2D uTextureNoise;
-uniform vec3	  uSamples[64];
-uniform float     uKernelSize	= 64;
-uniform float     uRadius		= 1.5f;
-uniform float     uBias			= 0.025f;
-uniform vec2      uScreenSize   = vec2(1280, 720);
-uniform mat4	  uProjection;
+in VS_OUT { vec2 texCoord; } vs_out;
+
+layout(std140, binding = 0) uniform CameraBlock
+{
+  uniform mat4 mProjMatrix;
+  uniform mat4 mViewMatrix;
+} uCamera;
+
+layout (binding = 0) uniform sampler2D uModelPosition;
+layout (binding = 1) uniform sampler2D uModelNormal;
+layout (binding = 2) uniform sampler2D uNoise;
+
+uniform vec3 uRaySamples[64];
+int   uKernelSize	= 64;
+float uRadius	    = 1.5f;
+float uBias	      = 0.025f;
+vec2  uScreenSize      = vec2(1280, 720);
+vec2  sNoiseScale;
+
+vec3 GetViewPosition()  { return (uCamera.mViewMatrix * texture(uModelPosition, vs_out.texCoord)).xyz; }
+vec3 GetViewNormal()    { return mat3(uCamera.mViewMatrix) * texture(uModelNormal, vs_out.texCoord).xyz; }
+vec3 GetRandomVector()  { return normalize(texture(uNoise, vs_out.texCoord * sNoiseScale)).xyz; }
+
+mat3 GetTangentViewMatrix(vec3 iRandomVec, vec3 iNormal)
+{
+  vec3 tangent    = normalize(iRandomVec - iNormal * dot(iRandomVec, iNormal));
+  vec3 bitangent  = cross(iNormal, tangent);
+  // T, B, N this matrix convert tangent space to view space.
+  return mat3(tangent, bitangent, iNormal);
+}
+
+vec3 GetSampleViewPosition(mat3 iTBN, vec3 iRaySample, vec3 iOriginPos)
+{
+  return iOriginPos + (iTBN * iRaySample) * uRadius;
+}
+
+vec2 GetSampleNDCUV(vec3 iSampleViewPos)
+{
+  vec4 offset = vec4(iSampleViewPos, 1.0);
+  offset      = uCamera.mProjMatrix * offset;
+  offset.xyz /= offset.w;
+  offset.xyz	= offset.xyz * 0.5 + 0.5;
+
+  return offset.xy;
+}
+
+float GetSampleViewDepth(vec2 iSampleUV)
+{
+  return (uCamera.mViewMatrix * texture(uModelPosition, iSampleUV)).z;
+}
 
 void main()
 {
-	const vec2 noiseScale = uScreenSize / 4.0f;
+	sNoiseScale  = uScreenSize / 4.0f;
 
-	// get input for SSAO algorithm
-    vec3 fragPos	=			texture(ugPosition,		fsIn.texCoord).xyz;
-    vec3 normal		= normalize(texture(ugNormal,		fsIn.texCoord).rgb);
-    vec3 randomVec= normalize(texture(uTextureNoise,	fsIn.texCoord * noiseScale).xyz);
+  vec3 viewPos    = GetViewPosition();
+  vec3 normal     = GetViewNormal();
+  vec3 randomVec  = GetRandomVector();
+  mat3 TBN        = GetTangentViewMatrix(randomVec, normal);
 
-    // create TBN change-of-basis matrix: from tangent-space to view-space
-    vec3 tangent	= normalize(randomVec - normal * dot(randomVec, normal));
-    vec3 bitangent= cross(normal, tangent);
-    mat3 TBN		  = mat3(tangent, bitangent, normal);
+  float occlusionIntensity = 0.0f;
+  for (int i = 0; i < uKernelSize; ++i)
+  {
+    vec3 sampleViewPos    = GetSampleViewPosition(TBN, uRaySamples[i], viewPos); // get sample position
+    float sampleViewDepth	= GetSampleViewDepth(GetSampleNDCUV(sampleViewPos));
+    float rangeCheck	    = smoothstep(0.0, 1.0, uRadius / abs(viewPos.z - sampleViewDepth));
+    occlusionIntensity += (sampleViewDepth >= sampleViewPos.z + uBias ? 1.0f : 0.0f) * rangeCheck;
+  }
 
-    // iterate over the sample kernel and calculate occlusion factor
-    float occlusion = 0.0;
-
-    for(int i = 0; i < uKernelSize; ++i)
-    {
-        // get sample position
-        vec3 kernelSample	= TBN * uSamples[i]; // from tangent to view-space
-        kernelSample		= fragPos + kernelSample * uRadius;
-
-        // project sample position (to sample texture) (to get position on screen/texture)
-        // from view to clip-space // perspective divide // transform to range 0.0 - 1.0
-        vec4 offset = vec4(kernelSample, 1.0);
-        offset		= uProjection * offset;
-        offset.xyz /= offset.w;
-        offset.xyz	= offset.xyz * 0.5 + 0.5;
-
-        // get sample depth and range check & accumulate
-        float sampleDepth	= texture(ugPosition, offset.xy).z; // get depth value of kernel sample
-        float rangeCheck	= smoothstep(0.0, 1.0, uRadius / abs(fragPos.z - sampleDepth));
-        occlusion		   += (sampleDepth >= kernelSample.z + uBias ? 1.0 : 0.0) * rangeCheck;
-    }
-
-    FragColor = 1.0 - (occlusion / uKernelSize);
+  oOcclusion = 1.0 - (occlusionIntensity / uKernelSize);
 }
 )dy");
 

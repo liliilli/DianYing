@@ -74,6 +74,7 @@ DyGlGetUniformVariableTypeFrom(_MIN_ GLenum type) noexcept
   case GL_INT_VEC4:                         return dy::EDyUniformVariableType::IVec4;
   case GL_SAMPLER_1D:                       return dy::EDyUniformVariableType::Texture1D;
   case GL_SAMPLER_2D:                       return dy::EDyUniformVariableType::Texture2D;
+  case GL_SAMPLER_2D_RECT:                  return dy::EDyUniformVariableType::Texture2DRectangle;
   case GL_SAMPLER_2D_ARRAY:                 return dy::EDyUniformVariableType::Texture2DArray;
   case GL_SAMPLER_2D_ARRAY_SHADOW:          return dy::EDyUniformVariableType::Texture2DShadowArray;
   default: return dy::EDyUniformVariableType::NoneError;
@@ -149,13 +150,15 @@ std::optional<TU32> FDyGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescript
     {
       glGenTextures(1, &mTextureResourceId);
       glBindTexture(GL_TEXTURE_1D, mTextureResourceId);
-      glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, descriptor.mTextureSize.X, 0, descriptor.mImageFormat, GL_UNSIGNED_BYTE, descriptor.mPtrBuffer->data());
+      glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, descriptor.mTextureSize.X, 0, 
+          descriptor.mImageFormat, descriptor.mImagePixelType, descriptor.mPtrBuffer->data());
     } break;
     case EDyTextureStyleType::D2:
     { // Border parameter must be 0.
       glGenTextures(1, &mTextureResourceId);
       glBindTexture(GL_TEXTURE_2D, mTextureResourceId);
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, MDY_VECTOR_XY(descriptor.mTextureSize), 0, descriptor.mImageFormat, GL_UNSIGNED_BYTE, descriptor.mPtrBuffer->data());
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, MDY_VECTOR_XY(descriptor.mTextureSize), 0, 
+          descriptor.mImageFormat, descriptor.mImagePixelType, descriptor.mPtrBuffer->data());
     } break;
     default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
     }
@@ -180,6 +183,13 @@ std::optional<TU32> FDyGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescript
     }
     glBindTexture(glTextureType, 0);
     glFlush();
+
+#if defined(NDEBUG) == false
+    {
+      const auto _ = glGetError();
+      MDY_ASSERT(_ == GL_NO_ERROR, "Attachment creation failed.");
+    }
+#endif
   }
 
   return mTextureResourceId;
@@ -437,6 +447,7 @@ std::optional<TU32> FDyGLWrapper::CreateAttachment(_MIN_ const PDyGLAttachmentDe
     {
     case EDyTextureStyleType::D2: 
     case EDyTextureStyleType::D2Shadow:
+    case EDyTextureStyleType::D2Rectangle:
     {
       glTexStorage2D(glTextureType, mipmapLv, glInternalFormat, MDY_VECTOR_XY(iDescriptor.mBufferSize));
     } break;
@@ -804,7 +815,7 @@ void FDyGLWrapper::UpdateUniformMatrix4(_MIN_ TU32 iId, _MIN_ const DDyMatrix4x4
   }
 }
 
-void FDyGLWrapper::UpdateUniformMatrix4Array(TU32 iId, const std::vector<DDyMatrix4x4>& iBuffer, bool iIransposed)
+void FDyGLWrapper::UpdateUniformMatrix4Array(_MIN_ TU32 iId, _MIN_ const std::vector<DDyMatrix4x4>& iBuffer, _MIN_ bool iIransposed)
 {
   const TU32 size = static_cast<TU32>(iBuffer.size());
   GLenum transposed = GL_FALSE;
@@ -816,16 +827,31 @@ void FDyGLWrapper::UpdateUniformMatrix4Array(TU32 iId, const std::vector<DDyMatr
   }
 }
 
-void FDyGLWrapper::UpdateUniformVector4(TU32 iId, const DDyVector4& iBuffer)
+void FDyGLWrapper::UpdateUniformVector3Array(_MIN_ TU32 iId, _MIN_ const std::vector<DDyVector3>& iBuffer)
+{
+  const TU32 size = static_cast<TU32>(iBuffer.size());
+  {
+    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
+    glUniform3fv(iId, size, &iBuffer[0].X);
+  }
+}
+
+void FDyGLWrapper::UpdateUniformVector4(_MIN_ TU32 iId, _MIN_ const DDyVector4& iBuffer)
 {
   MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
   glUniform4fv(iId, 1, &iBuffer.X);
 }
 
-void FDyGLWrapper::UpdateUniformInteger(TU32 iId, const TI32& iBuffer)
+void FDyGLWrapper::UpdateUniformInteger(_MIN_ TU32 iId, _MIN_ const TI32& iBuffer)
 {
   MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
   glUniform1i(iId, iBuffer);
+}
+
+void FDyGLWrapper::UpdateUniformFloat(_MIN_ TU32 iId, _MIN_ const TF32& iBuffer)
+{
+  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
+  glUniform1f(iId, iBuffer);
 }
 
 } /// ::dy namespace

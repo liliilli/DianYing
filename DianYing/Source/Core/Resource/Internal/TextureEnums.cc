@@ -24,6 +24,7 @@ GLenum DyGLGetLowTextureType(_MIN_ EDyTextureStyleType iType) noexcept
   {
   case EDyTextureStyleType::D1: return GL_TEXTURE_1D;
   case EDyTextureStyleType::D2: return GL_TEXTURE_2D; 
+  case EDyTextureStyleType::D2Rectangle: return GL_TEXTURE_RECTANGLE;
   case EDyTextureStyleType::D2Shadow: return GL_TEXTURE_2D;
   case EDyTextureStyleType::D1Array: return GL_TEXTURE_1D_ARRAY;
   case EDyTextureStyleType::D2Array: return GL_TEXTURE_2D_ARRAY;
@@ -40,9 +41,10 @@ GLenum DyGlGetLowDataFormatType(_MIN_ EDyGlBufferDataInternalFormat iValue) noex
   case EDyGlBufferDataInternalFormat::RG8:    return GL_RG8;
   case EDyGlBufferDataInternalFormat::RGB8:   return GL_RGB8;
   case EDyGlBufferDataInternalFormat::RGBA8:  return GL_RGBA8;
-  case EDyGlBufferDataInternalFormat::DEPTH32:return GL_DEPTH_COMPONENT32;
+  case EDyGlBufferDataInternalFormat::RGBA16Float: return GL_RGBA16F;
   case EDyGlBufferDataInternalFormat::RGB32Float: return GL_RGB32F;
   case EDyGlBufferDataInternalFormat::RGBA32Float:return GL_RGBA32F;
+  case EDyGlBufferDataInternalFormat::DEPTH32:return GL_DEPTH_COMPONENT32;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(GL_NONE);
   }
 }

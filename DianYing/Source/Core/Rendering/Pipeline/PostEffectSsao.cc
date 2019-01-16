@@ -14,57 +14,61 @@
 
 /// Header file
 #include <Dy/Core/Rendering/Pipeline/PostEffectSsao.h>
+#include <Dy/Builtin/Constant/SSAO.h>
+
+#include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
+#include <Dy/Core/Resource/Resource/FDyShaderResource.h>
+#include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
+#include <Dy/Core/Resource/Resource/FDyModelResource.h>
+#include <Dy/Core/Resource/Resource/FDyTextureResource.h>
 
 #include <Dy/Management/Rendering/RenderingManager.h>
 #include <Dy/Helper/Math/Random.h>
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/WorldManager.h>
-#include <Dy/Builtin/ShaderGl/PostEffect/RenderDefaultSSAO.h>
-#include <Dy/Builtin/ShaderGl/PostEffect/RenderDefaultSSAOBlurring.h>
-
-namespace
-{
-
-struct DDyMeshInfo final
-{
-  dy::DDyVector3 mPosition = {};
-  dy::DDyVector2 mTexCoord = {};
-
-  DDyMeshInfo(const dy::DDyVector3& position, const dy::DDyVector2& texCoord) :
-      mPosition{position}, mTexCoord{texCoord}
-  {};
-};
-
-} /// ::unnamed namespace
+#include "Dy/Core/Rendering/Wrapper/FDyGLWrapper.h"
 
 namespace dy
 {
 
 FDyPostEffectSsao::FDyPostEffectSsao()
 {
-  this->pCreateSsaoFrameBufferComponents();
-  this->pCreateSsaoShaderResource();
+  for (TU32 i = 0; i < kSSAORayCount; ++i)
+  {
+    DDyVector3 sample = DDyVector3{
+        random::RandomFloatRange(-1, 1), 
+        random::RandomFloatRange(-1, 1), 
+        random::RandomFloatRange(0, 1)
+    };
+    sample =  sample.Normalize();
+    sample *= random::RandomFloatRange(0, 1);
 
-  this->pCreateBlurFrameBufferComponent();
-  this->pCreateSsaoBlurShaderResource();
-
-  this->pCreateMesh();
-}
-
-FDyPostEffectSsao::~FDyPostEffectSsao()
-{
-  if (this->mTriangleVbo) glDeleteBuffers(1, &this->mTriangleVbo);
-  if (this->mTriangleVao) glDeleteVertexArrays(1, &this->mTriangleVao);
-
-  this->pDeleteFrameBufferComponents();
-
-#ifdef false
-  auto& manResc = MDyIOResource_Deprecated::GetInstance();
-#endif
+    TF32 scale = static_cast<TF32>(i) / kSSAORayCount;
+    scale = math::Lerp(0.1f, 1.0f, scale * scale);
+    sample *= scale;
+    this->mRayContainer.push_back(sample);
+  }
 }
 
 void FDyPostEffectSsao::RenderScreen()
 {
+  if (this->IsReady() == false) { return; }
+  
+  this->mBinderFbSSAO->BindFrameBuffer();
+  this->mBinderShSSAO->UseShader();
+  // Check Textures.
+  glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, this->mBinderAttWorldPos->GetAttachmentId());
+  glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, this->mBinderAttWorldNorm->GetAttachmentId());
+  glActiveTexture(GL_TEXTURE2); glBindTexture(GL_TEXTURE_2D, this->mBinderTexNoise->GetTextureId());
+
+  const auto& submeshList = this->mBinderTriangle->GetMeshResourceList();
+  MDY_ASSERT(submeshList.size() == 1, "Unexpected error occurred.");
+  submeshList[0]->Get()->BindVertexArray();
+  FDyGLWrapper::Draw(EDyDrawType::Triangle, true, 3);
+  FDyGLWrapper::UnbindVertexArrayObject();
+  this->mBinderShSSAO->DisuseShader();
+  this->mBinderFbSSAO->UnbindFrameBuffer();
+
 #ifdef false
   MDY_ASSERT(this->mSsaoShaderPtr,     "FDyPostEffectSsao::mSsaoShaderPtr must not be nullptr.");
 
@@ -109,34 +113,50 @@ void FDyPostEffectSsao::RenderScreen()
 #endif
 }
 
-void FDyPostEffectSsao::pCreateMesh()
+bool FDyPostEffectSsao::IsReady() const noexcept
 {
-  // Make triangle that can represent context.
-  glGenVertexArrays (1, &this->mTriangleVao);
-  glBindVertexArray (this->mTriangleVao);
-
-  glGenBuffers      (1, &this->mTriangleVbo);
-  glBindBuffer      (GL_ARRAY_BUFFER, this->mTriangleVbo);
-
-  std::vector<DDyMeshInfo> mVertexInformations;
-  mVertexInformations.emplace_back(DDyVector3{-1, -1, 0}, DDyVector2{0, 0});
-  mVertexInformations.emplace_back(DDyVector3{ 3, -1, 0}, DDyVector2{2, 0});
-  mVertexInformations.emplace_back(DDyVector3{-1,  3, 0}, DDyVector2{0, 2});
-  glBufferData      (GL_ARRAY_BUFFER, sizeof(DDyMeshInfo) * 3, &mVertexInformations[0], GL_STATIC_DRAW);
-  glBindVertexBuffer(0, this->mTriangleVbo, 0, sizeof(DDyMeshInfo));
-
-  // DDyMeshInfo.mPosition (DDyVector3)
-  glEnableVertexAttribArray (0);
-  glVertexAttribFormat      (0, 3, GL_FLOAT, GL_FALSE, offsetof(DDyMeshInfo, mPosition));
-  glVertexAttribBinding     (0, 0);
-  // DDyMeshInfo.mTexCoord (DDyVector2)
-  glEnableVertexAttribArray (1);
-  glVertexAttribFormat      (1, 2, GL_FLOAT, GL_FALSE, offsetof(DDyMeshInfo, mTexCoord));
-  glVertexAttribBinding     (1, 0);
-
-  glBindVertexArray(0);
+  return 
+      this->mBinderFbSSAO.IsResourceExist() == true
+  &&  this->mBinderFbSSAOBlur.IsResourceExist() == true
+  &&  this->mBinderAttWorldNorm.IsResourceExist() == true
+  &&  this->mBinderAttWorldPos.IsResourceExist() == true
+  &&  this->mBinderAttSSAOOpt.IsResourceExist() == true
+  &&  this->mBinderShSSAO.IsResourceExist() == true
+  &&  this->mBinderTexNoise.IsResourceExist() == true
+  &&  this->mBinderTransShader.IsResourceExist() == true
+  &&  this->mBinderTriangle.IsResourceExist() == true;
 }
 
+EDySuccess FDyPostEffectSsao::TrySetupRendering()
+{
+  if (this->IsReady() == false) { return DY_FAILURE; }
+
+  // SSAO (Opaque -> SSAO output)
+  this->mBinderFbSSAO->BindFrameBuffer();
+  glClearColor(0, 0, 0, 0);
+  glClear(GL_COLOR_BUFFER_BIT);
+  this->mBinderFbSSAO->UnbindFrameBuffer();
+
+  this->mBinderShSSAO->UseShader();
+  if (this->mIsRayInserted == false)
+  {
+    this->mBinderShSSAO.TryUpdateUniform<EDyUniformVariableType::Vector3Array>("uRaySamples[0]", this->mRayContainer);
+    this->mIsRayInserted = true;
+  }
+  this->mBinderShSSAO.TryUpdateUniformList();
+  this->mBinderShSSAO->DisuseShader();
+
+  // SSAO Blur (SSAO Output -> SSAO Blurred)
+
+  return DY_SUCCESS;
+}
+
+void FDyPostEffectSsao::Clear()
+{
+  if (this->IsReady() == false) { return; }
+}
+
+#ifdef false
 void FDyPostEffectSsao::pCreateSsaoFrameBufferComponents()
 {
   auto& settingManager = MDySetting::GetInstance();
@@ -277,5 +297,6 @@ void FDyPostEffectSsao::pDeleteSsaoBlurShaderResource()
 {
 
 }
+#endif
 
 } /// ::dy namespace

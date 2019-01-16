@@ -113,10 +113,22 @@ public:
       const auto& item = this->MDY_UPDATEUNIFORM(Vector4)(iSpecifier, iValue);
       this->mUpdatedItemList.emplace_back(std::make_pair(TType, item));
     }
+    else if constexpr (TType == EDyUniformVariableType::Vector3Array)
+    { // If not exist and not created by doing TryConstructDefaultUniformList, just create.
+      if (MDY_ISUNIFORMEXIST(Vector3Array)(iSpecifier) == false) { MDY_CREATEUNIFORM(Vector3Array)(iSpecifier, -1); }
+      const auto& item = this->MDY_UPDATEUNIFORM(Vector3Array)(iSpecifier, iValue);
+      this->mUpdatedItemList.emplace_back(std::make_pair(TType, item));
+    }
     else if constexpr (TType == EDyUniformVariableType::Integer)
     { // If not exist and not created by doing TryConstructDefaultUniformList, just create.
       if (MDY_ISUNIFORMEXIST(Integer)(iSpecifier) == false) { MDY_CREATEUNIFORM(Integer)(iSpecifier, -1); }
       const auto& item = this->MDY_UPDATEUNIFORM(Integer)(iSpecifier, iValue);
+      this->mUpdatedItemList.emplace_back(std::make_pair(TType, item));
+    }
+    else if constexpr (TType == EDyUniformVariableType::Float)
+    { // If not exist and not created by doing TryConstructDefaultUniformList, just create.
+      if (MDY_ISUNIFORMEXIST(Float)(iSpecifier) == false) { MDY_CREATEUNIFORM(Float)(iSpecifier, -1); }
+      const auto& item = this->MDY_UPDATEUNIFORM(Float)(iSpecifier, iValue);
       this->mUpdatedItemList.emplace_back(std::make_pair(TType, item));
     }
   }
@@ -144,10 +156,13 @@ private:
   MDY_UNIFORM_FUNCTION_CONSTRUCT(Vector3);
   MDY_UNIFORM_FUNCTION_CONSTRUCT(Vector2);
   MDY_UNIFORM_FUNCTION_CONSTRUCT(Integer);
+  MDY_UNIFORM_FUNCTION_CONSTRUCT(Float);
   MDY_UNIFORM_FUNCTION_CONSTRUCT(Bool);
   MDY_UNIFORM_FUNCTION_CONSTRUCT(Texture2D);
   MDY_UNIFORM_FUNCTION_CONSTRUCT(Texture2DArray);
+  MDY_UNIFORM_FUNCTION_CONSTRUCT(Texture2DRectangle);
   MDY_UNIFORM_FUNCTION_CONSTRUCT(Texture2DShadowArray);
+  MDY_UNIFORM_FUNCTION_CONSTRUCT(Vector3Array);
   MDY_UNIFORM_FUNCTION_CONSTRUCT(Matrix4Array);
   
   TUpdatedItemList  mUpdatedItemList  = {};

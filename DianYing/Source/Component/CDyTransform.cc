@@ -315,6 +315,12 @@ void CDyTransform::SetWorldScale(_MIN_ const DDyVector3& xyz_value) noexcept
   }
 }
 
+const DDyMatrix4x4 CDyTransform::GetRotationMatrix() noexcept
+{
+  MDY_NOUSE_RTVAL_EXPR(this->GetTransform());
+  return this->mFinalRenderRotationQuaternion.GetRotationMatrix4x4();
+}
+
 std::string CDyTransform::ToString()
 {
   return MDY_INITIALIZE_EMPTYSTR;

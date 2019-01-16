@@ -1,4 +1,5 @@
-#include <precompiled.h>
+#ifndef GUARD_DY_BUILTIN_CONSTANT_SSAO_H
+#define GUARD_DY_BUILTIN_CONSTANT_SSAO_H
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -12,19 +13,13 @@
 /// SOFTWARE.
 ///
 
-/// Header file
-#include <Dy/Builtin/FrameBuffer/SceneIntegration/FDyBtFbSceneIntegration.h>
-#include <Dy/Builtin/Attachment/SceneIntegration/FDyBtAttOutput.h>
+#include <Dy/Helper/GlobalType.h>
 
 namespace dy
 {
 
-void FDyBtFbSceneIntegration::ConstructBuffer(_MOUT_ PDyGlFrameBufferInstanceMetaInfo& property) noexcept
-{
-  property.mSpecifierName       = sName;
-  property.mFrameBufferSize     = DDyVectorInt2{1280, 720};
-  property.mIsUsingDepthBuffer  = true;
-  property.mColorAttachmentList.emplace_back(MSVSTR(FDyBtAttOutput::sName), EDyGlAttachmentType::Color0);
-}
+constexpr TU32 kSSAORayCount = 64;
 
 } /// ::dy namespace
+
+#endif /// GUARD_DY_BUILTIN_CONSTANT_SSAO_H

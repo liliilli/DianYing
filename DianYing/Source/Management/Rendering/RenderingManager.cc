@@ -28,28 +28,31 @@
 #include "Dy/Component/CDyModelRenderer.h"
 #include "Dy/Management/Helper/SDyProfilingHelper.h"
 #include "Dy/Core/Rendering/Wrapper/FDyGLWrapper.h"
+#include "Dy/Core/Resource/Resource/FDyMaterialResource.h"
 
 namespace dy
 {
 
 EDySuccess MDyRendering::pfInitialize()
-{ // Initialize framebuffer management singleton instance.
+{ 
+  // Initialize framebuffer management singleton instance.
   MDY_CALL_ASSERT_SUCCESS(MDyFramebuffer::Initialize());
   MDY_CALL_ASSERT_SUCCESS(MDyUniformBufferObject::Initialize());
 
   this->mBasicOpaqueRenderer  = std::make_unique<decltype(this->mBasicOpaqueRenderer)::element_type>();
-  this->mSceneFinalRenderer   = std::make_unique<decltype(this->mSceneFinalRenderer)::element_type>();
+  this->mTranslucentOIT       = std::make_unique<decltype(this->mTranslucentOIT)::element_type>();
   this->mUiBasicRenderer      = std::make_unique<decltype(this->mUiBasicRenderer)::element_type>();
+  this->mLevelFinalRenderer   = std::make_unique<decltype(this->mLevelFinalRenderer)::element_type>();
   this->mFinalDisplayRenderer = std::make_unique<decltype(this->mFinalDisplayRenderer)::element_type>();
 
   const auto& information = MDySetting::GetInstance().GetGameplaySettingInformation();
   if (information.mGraphics.mIsEnabledDefaultShadow == true)
   {
-    this->mCSMRenderer = std::make_unique<decltype(this->mCSMRenderer)::element_type>();
+    this->mCSMRenderer    = std::make_unique<decltype(this->mCSMRenderer)::element_type>();
   }
   if (information.mGraphics.mIsEnabledDefaultSsao == true)
   {
-    this->mTempSsaoObject = std::make_unique<decltype(mTempSsaoObject)::element_type>();
+    this->mSSAOPostEffect = std::make_unique<decltype(mSSAOPostEffect)::element_type>();
   }
 
 #if defined(MDY_FLAG_IN_EDITOR) == true
@@ -62,12 +65,13 @@ EDySuccess MDyRendering::pfInitialize()
 
 EDySuccess MDyRendering::pfRelease()
 {
-  this->mSceneFinalRenderer   = MDY_INITIALIZE_NULL;
+  this->mLevelFinalRenderer   = MDY_INITIALIZE_NULL;
   this->mCSMRenderer          = MDY_INITIALIZE_NULL;
-  this->mTempSsaoObject       = MDY_INITIALIZE_NULL;
+  this->mSSAOPostEffect       = MDY_INITIALIZE_NULL;
   this->mBasicOpaqueRenderer  = MDY_INITIALIZE_NULL;
   this->mUiBasicRenderer      = MDY_INITIALIZE_NULL;
   this->mFinalDisplayRenderer = MDY_INITIALIZE_NULL;
+  this->mTranslucentOIT       = MDY_INITIALIZE_NULL;
 
   // Initialize internal management singleton instance.
   MDY_CALL_ASSERT_SUCCESS(MDyFramebuffer::Release());
@@ -75,9 +79,23 @@ EDySuccess MDyRendering::pfRelease()
   return DY_SUCCESS;
 }
 
-void MDyRendering::PushDrawCallTask(_MIN_ CDyModelRenderer& rendererInstance)
+void MDyRendering::EnqueueDrawMesh(
+    _MIN_ CDyModelRenderer& iRefModelRenderer,
+    _MIN_ const FDyMeshResource& iRefValidMesh, 
+    _MIN_ const FDyMaterialResource& iRefValidMat)
 {
-  this->mOpaqueDrawCallList.emplace_back(DyMakeNotNull(&rendererInstance));
+  switch (iRefValidMat.GetBlendMode())
+  {
+  case EDyMaterialBlendMode::Opaque: 
+  {
+    this->mOpaqueMeshDrawingList.emplace_back(&iRefModelRenderer, &iRefValidMesh, &iRefValidMat);
+  } break;
+  case EDyMaterialBlendMode::TranslucentOIT: 
+  {
+    this->mTranslucentMeshDrawingList.emplace_back(&iRefModelRenderer, &iRefValidMesh, &iRefValidMat);
+  } break;
+  default: MDY_UNEXPECTED_BRANCH(); break;
+  }
 }
 
 void MDyRendering::RenderDrawCallQueue()
@@ -102,7 +120,7 @@ void MDyRendering::RenderDrawCallQueue()
         return ptrCamera->CheckIsPointInFrustum(worldPos) == false;
       });
 #endif
-      SDyProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(this->mOpaqueDrawCallList.size()));
+      SDyProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(this->mOpaqueMeshDrawingList.size()));
 
       // (1) Cascaded Shadow mapping to opaque call list.
       if (information.mGraphics.mIsEnabledDefaultShadow == true)
@@ -112,9 +130,13 @@ void MDyRendering::RenderDrawCallQueue()
         if (this->mCSMRenderer->TrySetupRendering() == DY_SUCCESS)
         {
           this->mCSMRenderer->SetupViewport();
-          for (auto& drawInstance : this->mOpaqueDrawCallList)
+          for (auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] : this->mOpaqueMeshDrawingList)
           { // Render
-            this->mCSMRenderer->RenderScreen(*drawInstance);
+            this->mCSMRenderer->RenderScreen(
+                *iPtrModel, 
+                const_cast<FDyMeshResource&>(*iPtrValidMesh),
+                const_cast<FDyMaterialResource&>(*iPtrValidMat)
+            );
           }
         }
       }
@@ -123,30 +145,52 @@ void MDyRendering::RenderDrawCallQueue()
       FDyGLWrapper::SetViewport(ptrCamera->GetPixelizedViewportRectangle());
       // (2) Draw opaque call list. Get valid Main CDyCamera instance pointer address.
       this->mBasicOpaqueRenderer->PreRender();
-      this->mBasicOpaqueRenderer->RenderScreen(this->mOpaqueDrawCallList);
+      for (auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] : this->mOpaqueMeshDrawingList)
+      { // Render
+        this->mBasicOpaqueRenderer->RenderScreen(
+            *iPtrModel,
+            const_cast<FDyMeshResource&>(*iPtrValidMesh),
+            const_cast<FDyMaterialResource&>(*iPtrValidMat)
+        );
+      }
     }
   }
-  // Clear opaque draw queue list
-  this->mOpaqueDrawCallList.clear();
+  this->mOpaqueMeshDrawingList.clear();
 
   // (3) Draw transparent call list with OIT.
-  // @TODO IMPLEMENT THIS!
+  if (this->mTranslucentOIT->TrySetupRendering() == DY_SUCCESS)
+  {
+    for (auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] : this->mTranslucentMeshDrawingList)
+    { // Render
+      this->mTranslucentOIT->RenderScreen(
+          *iPtrModel, 
+          const_cast<FDyMeshResource&>(*iPtrValidMesh),
+          const_cast<FDyMaterialResource&>(*iPtrValidMat)
+      );
+    }
+    SDyProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(this->mTranslucentMeshDrawingList.size()));
+    
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunci(0, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunci(1, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  }
+  this->mTranslucentMeshDrawingList.clear();
 
-  //!
   //! Post processing effects
-  //!
-
-  //if (this->mIsEnabledSsaoRendering)
-  // @TODO FIX THIS (SSAO)
-  if (false) { this->mTempSsaoObject->RenderScreen(); }
+#ifdef false
+  if (MDY_CHECK_ISNOTEMPTY(this->mSSAOPostEffect)) 
+  { 
+    if (this->mSSAOPostEffect->TrySetupRendering() == DY_SUCCESS)
+    { this->mSSAOPostEffect->RenderScreen(); }
+  }
+#endif
 
   // Final
-  if (MDY_CHECK_ISNOTEMPTY(this->mSceneFinalRenderer) 
-  &&  this->mSceneFinalRenderer->IsReady() == true 
-  &&  this->mSceneFinalRenderer->TrySetupRendering() == DY_SUCCESS)
-  {
-    this->mSceneFinalRenderer->RenderScreen();
-  }
+  if (MDY_CHECK_ISNOTEMPTY(this->mLevelFinalRenderer) 
+  &&  this->mLevelFinalRenderer->IsReady() == true 
+  &&  this->mLevelFinalRenderer->TrySetupRendering() == DY_SUCCESS)
+  { this->mLevelFinalRenderer->RenderScreen(); }
 
   if (MDY_CHECK_ISNOTEMPTY(this->mUiBasicRenderer))       { this->mUiBasicRenderer->RenderScreen(); }
   if (MDY_CHECK_ISNOTEMPTY(this->mFinalDisplayRenderer))  { this->mFinalDisplayRenderer->RenderScreen(); }
@@ -180,7 +224,7 @@ void MDyRendering::pClearRenderingFramebufferInstances() noexcept
 
 #if defined(MDY_FLAG_IN_EDITOR) == false
   // Reset final rendering mesh setting.
-  if (MDY_CHECK_ISNOTEMPTY(this->mSceneFinalRenderer))    { this->mSceneFinalRenderer->Clear(); }
+  if (MDY_CHECK_ISNOTEMPTY(this->mLevelFinalRenderer))    { this->mLevelFinalRenderer->Clear(); }
 #endif
   if (MDY_CHECK_ISNOTEMPTY(this->mUiBasicRenderer))       { this->mUiBasicRenderer->Clear(); }
   if (MDY_CHECK_ISNOTEMPTY(this->mFinalDisplayRenderer))  { this->mFinalDisplayRenderer->Clear(); }

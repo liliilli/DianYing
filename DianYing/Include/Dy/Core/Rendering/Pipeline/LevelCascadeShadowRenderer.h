@@ -43,8 +43,10 @@ public:
   ~FDyLevelCascadeShadowRenderer() = default;
 
   /// @brief Rendering deferred contexts to default framebuffer.
-  /// @param renderer
-  void RenderScreen(_MIN_ CDyModelRenderer& renderer);
+  void RenderScreen(
+      _MIN_ CDyModelRenderer& iRefRenderer,
+      _MIN_ FDyMeshResource& iRefMesh, 
+      _MIN_ FDyMaterialResource& iRefMaterial);
 
   /// @TODO TEMPORARY
   /// @brief Update 

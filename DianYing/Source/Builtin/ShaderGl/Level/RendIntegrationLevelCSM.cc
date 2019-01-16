@@ -100,7 +100,7 @@ float ComputeShadowCoefficient(vec3 iWorldPosition, float iZValue)
   return texture(uShadow, shadowCoords); 
 }
 
-void main()
+vec3 GetOpaqueColor()
 {
   vec3 resultColor    = vec3(0);
   vec4 unlitValue	    = texture(uUnlit, fs_in.texCoord);
@@ -135,8 +135,15 @@ void main()
     resultColor  = ambientColor;
     resultColor += clamp(ComputeShadowCoefficient(modelPosition, GetZValue()), 0.1f, 1.0f) * (diffuseColor);
   }
+  return resultColor;
+}
 
-  outColor = vec4(resultColor, 1.0f);
+void main()
+{
+  vec3 opaqueColor = GetOpaqueColor();
+
+  outColor.a    = 1.0f;
+  outColor.rgb  = GetOpaqueColor();
 }
 )dy");
 

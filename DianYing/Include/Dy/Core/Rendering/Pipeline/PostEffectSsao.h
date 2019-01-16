@@ -13,84 +13,43 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/Vector3.h>
+#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
+#include <Dy/Core/Rendering/Interface/IDyRenderer.h>
 
 namespace dy
 {
 
-class FDyPostEffectSsao final
+class FDyPostEffectSsao final : public IDyRenderer
 {
 public:
   FDyPostEffectSsao();
-  ~FDyPostEffectSsao();
+  virtual ~FDyPostEffectSsao() = default;
 
-  ///
   /// @brief Rendering deferred contexts to default framebuffer.
-  ///
   void RenderScreen();
 
+  bool IsReady() const noexcept override final;
+
+  EDySuccess TrySetupRendering() override final;
+
+  void Clear() override final;
+
 private:
-  ///
-  void pDeleteFrameBufferComponents();
 
-  ///
-  void pDeleteSsaoShaderResource();
+  TDyIResourceBinderModel       mBinderTriangle     { "dyBtModelScrProjTri" };
 
-  ///
-  void pDeleteSsaoBlurShaderResource();
+  TDyIResourceBinderFrameBuffer mBinderFbSSAO       { "dyBtFbSSAO" };
+  TDyIResourceBinderShader      mBinderShSSAO       { "dyBtShSSAO" };
+  TDyIResourceBinderAttachment  mBinderAttWorldPos  { "dyBtModelPosition" };
+  TDyIResourceBinderAttachment  mBinderAttWorldNorm { "dyBtNormal" };
+  TDyIResourceBinderTexture     mBinderTexNoise     { "dyBtTexSSAONoiseMap" };
 
-  ///
-  void pCreateSsaoFrameBufferComponents();
+  TDyIResourceBinderFrameBuffer mBinderFbSSAOBlur   { "dyBtFbIntgLevelTrans" };
+  TDyIResourceBinderShader      mBinderTransShader  { "dyBtShOITIntegration" };
+  TDyIResourceBinderAttachment  mBinderAttSSAOOpt   { "dyBtAtSSAOOutput" };
 
-  ///
-  void pCreateSsaoShaderResource();
-
-  ///
-  void pCreateSsaoBlurShaderResource();
-
-  ///
-  void pCreateMesh();
-
-  ///
-  void pCreateBlurFrameBufferComponent();
-
-  ///
-  void pDeleteBlurFrameBufferComponent();
-
-  //!
-  //! Mesh
-  //!
-
-  TU32                mTriangleVao            = MDY_INITIALIZE_DEFUINT;
-  TU32                mTriangleVbo            = MDY_INITIALIZE_DEFUINT;
-
-  //!
-  //! General framebuffer
-  //!
-
-  TU32                mSsaoFrameBufferId      = MDY_INITIALIZE_DEFUINT;
-  TU32                mSsaoColorBuffer        = MDY_INITIALIZE_DEFUINT;
-
-  std::vector<DDyVector3> mSsaoKernel         = {};
-  std::vector<DDyVector3> mSsaoNoise          = {};
-  TU32                mSsaoNoiseTextureId     = MDY_INITIALIZE_DEFUINT;
-
-  TI32                mUniformSamples         = MDY_INITIALIZE_DEFINT;
-  TI32                mUniformKernelSize      = MDY_INITIALIZE_DEFINT;
-  TI32                mUniformRadius          = MDY_INITIALIZE_DEFINT;
-  TI32                mUniformBias            = MDY_INITIALIZE_DEFINT;
-  TI32                mUniformScreenSize      = MDY_INITIALIZE_DEFINT;
-  TI32                mUniformProjection      = MDY_INITIALIZE_DEFINT;
-
-  //!
-  //! Blurring framebuffer
-  //!
-
-  TU32                mSsaoBlurFrameBufferId  = MDY_INITIALIZE_DEFUINT;
-  TU32                mSsaoBlurColorBuffer    = MDY_INITIALIZE_DEFUINT;
-
-  //CDyShaderResource_Deprecated*  mSsaoShaderPtr          = nullptr;
-  //CDyShaderResource_Deprecated*  mSsaoBlurShaderPtr      = nullptr;
+  std::vector<DDyVector3> mRayContainer;
+  bool mIsRayInserted = false;
 };
 
 } /// ::dy namespace

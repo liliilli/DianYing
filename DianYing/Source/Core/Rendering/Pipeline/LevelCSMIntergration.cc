@@ -50,30 +50,26 @@ bool FDyLevelCSMIntergration::IsReady() const noexcept
 {
   return 
       this->mBinderFrameBuffer.IsResourceExist() == true
-  &&  this->mBinderShader.IsResourceExist() == true
+  &&  this->mBinderOpaqueShader.IsResourceExist() == true
   &&  this->mBinderTriangle.IsResourceExist() == true;
 }
 
 EDySuccess FDyLevelCSMIntergration::TrySetupRendering()
 {
   if (this->IsReady() == false) { return DY_FAILURE; }
+  if (this->pSetupOpaqueCSMIntegration() == DY_FAILURE)       { return DY_FAILURE; }
+  if (this->pSetupTranslucentOITIntegration() == DY_FAILURE)  { return DY_FAILURE; }
 
-  this->Clear();
+  return DY_SUCCESS;
+}
+
+void FDyLevelCSMIntergration::RenderScreen()
+{
+  if (this->IsReady() == false) { return; }
+  
   this->mBinderFrameBuffer->BindFrameBuffer();
-  this->mBinderShader->UseShader();
-
-  const auto* ptr = MDyRendering::GetInstance().GetPtrMainDirectionalShadow();
-  if (MDY_CHECK_ISNOTNULL(ptr)) 
-  { 
-    // DyConvertToVector
-    this->mBinderShader.TryUpdateUniform<EDyUniformVariableType::Vector4>(
-        "uNormalizedFarPlanes", 
-        ptr->GetCSMNormalizedFarPlanes());
-    this->mBinderShader.TryUpdateUniform<EDyUniformVariableType::Matrix4Array>(
-        "uLightVPSBMatrix[0]", 
-        DyConvertToVector<DDyMatrix4x4>(ptr->GetCSMLightSegmentVPSBMatrix()));
-  }
-
+  this->mBinderOpaqueShader->UseShader();
+  // Check Textures.
   glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, this->mBinderAttUnlit->GetAttachmentId());
   glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, this->mBinderAttNormal->GetAttachmentId());
   glActiveTexture(GL_TEXTURE2); glBindTexture(GL_TEXTURE_2D, this->mBinderAttSpecular->GetAttachmentId());
@@ -81,9 +77,46 @@ EDySuccess FDyLevelCSMIntergration::TrySetupRendering()
   glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D_ARRAY, this->mBinderAttShadow->GetAttachmentId());
   glActiveTexture(GL_TEXTURE5); glBindTexture(GL_TEXTURE_2D, this->mBinderAttZValue->GetAttachmentId());
 
-  // Bind g-buffers as textures.
-  this->mBinderShader.TryUpdateUniformList();
+  const auto& submeshList = this->mBinderTriangle->GetMeshResourceList();
+  MDY_ASSERT(submeshList.size() == 1, "Unexpected error occurred.");
+  submeshList[0]->Get()->BindVertexArray();
+  FDyGLWrapper::Draw(EDyDrawType::Triangle, true, 3);
 
+  this->mBinderFbTranslucent->BindFrameBuffer();
+  this->mBinderTransShader->UseShader();
+  glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, this->mBinderAttOpaque->GetAttachmentId());
+  glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, this->mBinderAttOITColor->GetAttachmentId());
+  glActiveTexture(GL_TEXTURE2); glBindTexture(GL_TEXTURE_2D, this->mBinderAttOITWeigh->GetAttachmentId());
+  FDyGLWrapper::Draw(EDyDrawType::Triangle, true, 3);
+
+  this->mBinderTransShader->DisuseShader();
+  this->mBinderFbTranslucent->UnbindFrameBuffer();
+  FDyGLWrapper::UnbindVertexArrayObject();
+}
+
+EDySuccess FDyLevelCSMIntergration::pSetupOpaqueCSMIntegration()
+{
+  this->mBinderFrameBuffer->BindFrameBuffer();
+  const auto& backgroundColor = MDyWorld::GetInstance().GetValidLevelReference().GetBackgroundColor();
+  glClearColor(backgroundColor.R, backgroundColor.G, backgroundColor.B, backgroundColor.A);
+  glClear(GL_COLOR_BUFFER_BIT);
+
+  // Update shader's uniform information.
+  this->mBinderOpaqueShader->UseShader();
+  const auto* ptr = MDyRendering::GetInstance().GetPtrMainDirectionalShadow();
+  if (MDY_CHECK_ISNOTNULL(ptr)) 
+  { 
+    // DyConvertToVector
+    this->mBinderOpaqueShader.TryUpdateUniform<EDyUniformVariableType::Vector4>(
+        "uNormalizedFarPlanes", 
+        ptr->GetCSMNormalizedFarPlanes());
+    this->mBinderOpaqueShader.TryUpdateUniform<EDyUniformVariableType::Matrix4Array>(
+        "uLightVPSBMatrix[0]", 
+        DyConvertToVector<DDyMatrix4x4>(ptr->GetCSMLightSegmentVPSBMatrix()));
+    this->mBinderOpaqueShader.TryUpdateUniformList();
+  }
+
+  // Update directional light property.
   auto* ptrLight = MDyRendering::GetInstance().GetPtrMainDirectionalLight();
   if (this->mAddrMainLight != reinterpret_cast<ptrdiff_t>(ptrLight))
   {
@@ -103,22 +136,16 @@ EDySuccess FDyLevelCSMIntergration::TrySetupRendering()
   return DY_SUCCESS;
 }
 
-void FDyLevelCSMIntergration::RenderScreen()
+EDySuccess FDyLevelCSMIntergration::pSetupTranslucentOITIntegration()
 {
-  if (this->IsReady() == false) { return; }
-  
-  this->mBinderFrameBuffer->BindFrameBuffer();
-  this->mBinderShader->UseShader();
+  this->mBinderFbTranslucent->BindFrameBuffer();
+  glClearColor(0, 0, 0, 0); 
+  glClear(GL_COLOR_BUFFER_BIT);
+  this->mBinderFbTranslucent->UnbindFrameBuffer(); 
 
-  const auto& submeshList = this->mBinderTriangle->GetMeshResourceList();
-  MDY_ASSERT(submeshList.size() == 1, "Unexpected error occurred.");
-  submeshList[0]->Get()->BindVertexArray();
-
-  FDyGLWrapper::Draw(EDyDrawType::Triangle, true, 3);
-
-  FDyGLWrapper::UnbindVertexArrayObject();
-  this->mBinderShader->DisuseShader();
-  this->mBinderFrameBuffer->UnbindFrameBuffer();
+  this->mBinderTransShader->UseShader();
+  this->mBinderTransShader.TryUpdateUniformList();
+  return DY_SUCCESS;
 }
 
 void FDyLevelCSMIntergration::Clear()
@@ -129,7 +156,7 @@ void FDyLevelCSMIntergration::Clear()
 
   const auto& backgroundColor = MDyWorld::GetInstance().GetValidLevelReference().GetBackgroundColor();
   glClearColor(backgroundColor.R, backgroundColor.G, backgroundColor.B, backgroundColor.A);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glClear(GL_COLOR_BUFFER_BIT);
 
   this->mBinderFrameBuffer->UnbindFrameBuffer();
 }

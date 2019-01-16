@@ -26,7 +26,9 @@ FDyTextureResource::FDyTextureResource(_MIN_ const FDyTextureInformation& inform
     mInformationBinder{information.GetSpecifierName()}
 {
   const auto optGlImageFormat = DyGLGetImageFormatFrom(information.GetFormat());
-  MDY_ASSERT(optGlImageFormat.has_value() == true, "Image format type must be valid.");
+  MDY_ASSERT_FORCE(optGlImageFormat.has_value() == true, "Image format type must be valid.");
+  const auto glImagePixelType = DyGlGetImagePixelTypeFrom(information.GetPixelReadType());
+  MDY_ASSERT_FORCE(glImagePixelType != GL_NONE, "Image pixel format must be valid.");
 
   // Forward dataBuffer's retrieved information to data members.
   this->mTextureName   = information.GetSpecifierName();
@@ -44,6 +46,7 @@ FDyTextureResource::FDyTextureResource(_MIN_ const FDyTextureInformation& inform
   { // Make internal descriptor for creating texture.
     descriptor.mBorderColor       = information.GetBorderColor();
     descriptor.mImageFormat       = *optGlImageFormat;
+    descriptor.mImagePixelType    = glImagePixelType; 
     descriptor.mIsUsingCustomizedParameter  = information.IsUsingCustomizedParamater();
     descriptor.mIsUsingDefaultMipmap        = information.IsUsingDefaultMipmap();
     descriptor.mPtrBuffer         = &information.GetBuffer();

@@ -23,6 +23,7 @@
 #include <Dy/Core/Rendering/Pipeline/UIBasicRenderer.h>
 #include <Dy/Core/Rendering/Pipeline/LevelCascadeShadowRenderer.h>
 #include <Dy/Core/Rendering/Pipeline/LevelCSMIntegration.h>
+#include <Dy/Core/Rendering/Pipeline/LevelOITRenderer.h>
 
 //!
 //! Forward declaration
@@ -57,12 +58,11 @@ class MDyRendering final : public IDySingleton<MDyRendering>
   MDY_SINGLETON_PROPERTIES(MDyRendering);
   MDY_SINGLETON_DERIVED(MDyRendering);
 public:
-  ///
-  /// @brief
-  /// @param rendererInstance
-  /// @TODO SCRIPT THIS!
-  ///
-  void PushDrawCallTask(_MIN_ CDyModelRenderer& rendererInstance);
+  /// @brief Enqueue draw call to mesh with material.
+  void EnqueueDrawMesh(
+      _MIN_ CDyModelRenderer& iRefModelRenderer,
+      _MIN_ const FDyMeshResource& iRefValidMesh, 
+      _MIN_ const FDyMaterialResource& iRefValidMat);
 
   ///
   /// @brief
@@ -96,13 +96,20 @@ private:
   ///
   std::unique_ptr<FDyBasicRenderer>               mBasicOpaqueRenderer  = MDY_INITIALIZE_NULL;
   std::unique_ptr<FDyLevelCascadeShadowRenderer>  mCSMRenderer          = MDY_INITIALIZE_NULL; 
-  std::unique_ptr<FDyPostEffectSsao>              mTempSsaoObject       = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyLevelCSMIntergration>        mSceneFinalRenderer   = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyFinalScreenDisplayRenderer>  mFinalDisplayRenderer = MDY_INITIALIZE_NULL;
+  std::unique_ptr<FDyLevelCSMIntergration>        mLevelFinalRenderer   = MDY_INITIALIZE_NULL;
+  std::unique_ptr<FDyLevelOITRenderer>            mTranslucentOIT       = MDY_INITIALIZE_NULL;
+  std::unique_ptr<FDyPostEffectSsao>              mSSAOPostEffect       = MDY_INITIALIZE_NULL;
   std::unique_ptr<FDyUIBasicRenderer>             mUiBasicRenderer      = MDY_INITIALIZE_NULL;
+  std::unique_ptr<FDyFinalScreenDisplayRenderer>  mFinalDisplayRenderer = MDY_INITIALIZE_NULL;
 
-  /// Use basic renderer
-  std::vector<NotNull<CDyModelRenderer*>>         mOpaqueDrawCallList   = {};
+  using TMeshDrawCallItem = std::tuple<
+      NotNull<CDyModelRenderer*>,
+      NotNull<const FDyMeshResource*>, 
+      NotNull<const FDyMaterialResource*>
+  >;
+
+  std::vector<TMeshDrawCallItem> mOpaqueMeshDrawingList         = {};
+  std::vector<TMeshDrawCallItem> mTranslucentMeshDrawingList  = {};
  
   CDyDirectionalLight* mMainDirectionalLight   = nullptr;
   CDyDirectionalLight* mMainDirectionalShadow  = nullptr;

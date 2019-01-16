@@ -48,6 +48,8 @@ public:
     return this->mImageActualPixelFormat;
   }
 
+  MDY_NODISCARD EDyGlImagePixelReadType GetPixelReadType() const noexcept;
+
   /// @brief Get texture's size.
   FORCEINLINE MDY_NODISCARD const DDyVectorInt2& GetSize() const noexcept
   {
@@ -89,6 +91,7 @@ private:
   std::vector<TU08>         mTextureImageBuffer     = {};
   DDyVectorInt2             mTextureSize            = {};
   EDyImageColorFormatStyle  mImageActualPixelFormat = EDyImageColorFormatStyle::NoneError;
+  EDyGlImagePixelReadType   mInternalPixelReadType  = EDyGlImagePixelReadType::NoneError;
   EDyTextureStyleType       mTextureType            = EDyTextureStyleType::NoneError;
   DDyColorRGBA              mBorderColor;
   TTextureParameterList     mParameterOptionList;

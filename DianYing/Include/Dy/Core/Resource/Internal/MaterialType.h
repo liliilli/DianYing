@@ -44,7 +44,7 @@ enum class EDyMaterialBlendMode
   // Material will be forward to deferred rendering (pass 2)
   Opaque,
   // Material will be forward to forwarding rendering afterward deferred rendering (pass 3)
-  Translucent,
+  TranslucentOIT,
   // I dont know but will be used later. (pass x)
   Custom,
 };

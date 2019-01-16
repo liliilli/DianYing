@@ -48,15 +48,15 @@ public:
   void PreRender();
 
   /// @brief Rendering deferred contexts to default framebuffer.
-  /// @param rendererList
-  void RenderScreen(_MIN_ const std::vector<NotNull<CDyModelRenderer*>>& rendererList);
+  void RenderScreen(
+      _MIN_ CDyModelRenderer& iRefRenderer,
+      _MIN_ FDyMeshResource& iRefMesh, 
+      _MIN_ FDyMaterialResource& iRefMaterial);
 
   /// @brief Clear properties of given framebuffer.
   void Clear();
 
 private:
-  /// @brief
-  void pRenderScreen(_MIN_ const CDyModelRenderer& renderer, _MIN_ const DDyMatrix4x4& iModelMatrix, _MIN_ const CDyCamera& validCamera) noexcept;
 
   TDyIResourceBinderFrameBuffer mBinderFrameBuffer{"dyBtBasicRender"};
 

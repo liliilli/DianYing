@@ -24,10 +24,10 @@ namespace dy
 struct ADyTextureResource : public IDyResource
 {
 protected:
-  using TBufferType = std::vector<TU08>;
   /// Temporary texture meta info.
   PDyTextureInstanceMetaInfo mTextureMetaInfo{};
 public:
+  using TBufferType = std::vector<TU08>;
   static constexpr auto value = EDyResourceType::Texture;
 
   /// Buffer pointer to bind using `GetMetaInfo()`.

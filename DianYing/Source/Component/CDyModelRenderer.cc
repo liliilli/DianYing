@@ -58,7 +58,17 @@ void CDyModelRenderer::Release()
 
 void CDyModelRenderer::RequestDrawCall() noexcept
 {
-  MDyRendering::GetInstance().PushDrawCallTask(*this);
+  const auto opMeshCount = this->GetModelSubmeshCount();
+  if (opMeshCount.has_value() == false) { return; }
+
+  const auto meshCount    = opMeshCount.value();
+  auto& renderingMangaer  = MDyRendering::GetInstance();
+  for (TI32 i = 0; i < meshCount; ++i)
+  {
+    const auto& refMeshResc = this->GetSubmeshResourcePtr(i);
+    const auto& refMatResc  = this->GetMaterialResourcePtr(i);
+    renderingMangaer.EnqueueDrawMesh(*this, refMeshResc, refMatResc);
+  }
 }
 
 void CDyModelRenderer::Activate() noexcept
