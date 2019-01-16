@@ -14,49 +14,27 @@
 ///
 
 #include <Dy/Helper/Type/Vector3.h>
+#include <Dy/Core/Rendering/Interface/IDyRenderer.h>
 
 namespace dy
 {
 
-class FDyPostEffectSsao final
+class FDyPostEffectSsao final : public IDyRenderer
 {
 public:
   FDyPostEffectSsao();
   ~FDyPostEffectSsao();
 
-  ///
   /// @brief Rendering deferred contexts to default framebuffer.
-  ///
   void RenderScreen();
 
+  bool IsReady() const noexcept override final;
+
+  EDySuccess TrySetupRendering() override final;
+
+  void Clear() override final;
+
 private:
-  ///
-  void pDeleteFrameBufferComponents();
-
-  ///
-  void pDeleteSsaoShaderResource();
-
-  ///
-  void pDeleteSsaoBlurShaderResource();
-
-  ///
-  void pCreateSsaoFrameBufferComponents();
-
-  ///
-  void pCreateSsaoShaderResource();
-
-  ///
-  void pCreateSsaoBlurShaderResource();
-
-  ///
-  void pCreateMesh();
-
-  ///
-  void pCreateBlurFrameBufferComponent();
-
-  ///
-  void pDeleteBlurFrameBufferComponent();
-
   //!
   //! Mesh
   //!

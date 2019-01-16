@@ -166,6 +166,8 @@
     <ClCompile Include="Source\Builtin\Attachment\BasicShadow\BasicShadow.cc" />
     <ClCompile Include="Source\Builtin\Attachment\CSM\FDyBtAtLight.cc" />
     <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAtDepthZValue.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAtSSAOFinalOutput.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAtSSAOOutput.cc" />
     <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAttachmentNormal.cc" />
     <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAttachmentPosition.cc" />
     <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAttachmentSpecular.cc" />
@@ -177,6 +179,8 @@
     <ClCompile Include="Source\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITWeight.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\BasicShadow\FDyBtFBBasicShadow.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\CSM\FDyBtFbCSM.cc" />
+    <ClCompile Include="Source\Builtin\FrameBuffer\Deferred\FDyBtFbSSAO.cc" />
+    <ClCompile Include="Source\Builtin\FrameBuffer\Deferred\FDyBtFbSSAOBlur.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\Deferred\FDyBtFrameBufferDeferred.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\SceneIntegration\FDyBtFbOpaqueIntegration.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\SceneIntegration\FDyBtFbTransIntegration.cc" />
@@ -210,6 +214,7 @@
     <ClCompile Include="Source\Builtin\ShaderGl\Widget\RenderUiBasicGaugeBar.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\Widget\RenderUIImage.cc" />
     <ClCompile Include="Source\Builtin\Texture\CheckerBright.cc" />
+    <ClCompile Include="Source\Builtin\Texture\SSAONoiseMap.cc" />
     <ClCompile Include="Source\Builtin\Widget\FDyBtWdTestLoadingUi.cc" />
     <ClCompile Include="Source\Component\Abstract\ADyActorCppScript.cc" />
     <ClCompile Include="Source\Component\Abstract\ADyWidgetCppScript.cc" />
@@ -506,6 +511,8 @@
     <ClInclude Include="Include\Dy\Builtin\Attachment\BasicShadow\BasicShadow.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\CSM\FDyBtAtLight.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAtDepthZValue.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAtSSAOFinalOutput.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAtSSAOOutput.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAttachmentNormal.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAttachmentPosition.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAttachmentSpecular.h" />
@@ -568,6 +575,7 @@
     <ClInclude Include="Include\Dy\Builtin\Texture\CheckerBright.h" />
     <ClInclude Include="Include\Dy\Builtin\Texture\ErrorBlue.h" />
     <ClInclude Include="Include\Dy\Builtin\Texture\Checker.h" />
+    <ClInclude Include="Include\Dy\Builtin\Texture\SSAONoiseMap.h" />
     <ClInclude Include="Include\Dy\Builtin\Widget\DebugUiMeta.h" />
     <ClInclude Include="Include\Dy\Builtin\Widget\FDyBtWdTestLoadingUi.h" />
     <ClInclude Include="Include\Dy\Component\Actor\CDyActorScript.h" />
@@ -908,6 +916,8 @@
     <ClInclude Include="Libraries\sol2\sol2\sol.hpp" />
     <ClInclude Include="Libraries\sol2\sol2\sol_forward.hpp" />
     <ClInclude Include="Libraries\stb\stb_image.h" />
+    <ClInclude Include="Include\Dy\Builtin\FrameBuffer\Deferred\FDyBtFbSSAO.h" />
+    <ClInclude Include="Include\Dy\Builtin\FrameBuffer\Deferred\FDyBtFbSSAOBlur.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\player_script.lua" />

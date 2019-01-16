@@ -22,45 +22,17 @@
 #include <Dy/Builtin/ShaderGl/PostEffect/RenderDefaultSSAO.h>
 #include <Dy/Builtin/ShaderGl/PostEffect/RenderDefaultSSAOBlurring.h>
 
-namespace
-{
-
-struct DDyMeshInfo final
-{
-  dy::DDyVector3 mPosition = {};
-  dy::DDyVector2 mTexCoord = {};
-
-  DDyMeshInfo(const dy::DDyVector3& position, const dy::DDyVector2& texCoord) :
-      mPosition{position}, mTexCoord{texCoord}
-  {};
-};
-
-} /// ::unnamed namespace
-
 namespace dy
 {
 
 FDyPostEffectSsao::FDyPostEffectSsao()
 {
-  this->pCreateSsaoFrameBufferComponents();
-  this->pCreateSsaoShaderResource();
 
-  this->pCreateBlurFrameBufferComponent();
-  this->pCreateSsaoBlurShaderResource();
-
-  this->pCreateMesh();
 }
 
 FDyPostEffectSsao::~FDyPostEffectSsao()
 {
-  if (this->mTriangleVbo) glDeleteBuffers(1, &this->mTriangleVbo);
-  if (this->mTriangleVao) glDeleteVertexArrays(1, &this->mTriangleVao);
 
-  this->pDeleteFrameBufferComponents();
-
-#ifdef false
-  auto& manResc = MDyIOResource_Deprecated::GetInstance();
-#endif
 }
 
 void FDyPostEffectSsao::RenderScreen()
@@ -109,34 +81,22 @@ void FDyPostEffectSsao::RenderScreen()
 #endif
 }
 
-void FDyPostEffectSsao::pCreateMesh()
+bool FDyPostEffectSsao::IsReady() const noexcept
 {
-  // Make triangle that can represent context.
-  glGenVertexArrays (1, &this->mTriangleVao);
-  glBindVertexArray (this->mTriangleVao);
-
-  glGenBuffers      (1, &this->mTriangleVbo);
-  glBindBuffer      (GL_ARRAY_BUFFER, this->mTriangleVbo);
-
-  std::vector<DDyMeshInfo> mVertexInformations;
-  mVertexInformations.emplace_back(DDyVector3{-1, -1, 0}, DDyVector2{0, 0});
-  mVertexInformations.emplace_back(DDyVector3{ 3, -1, 0}, DDyVector2{2, 0});
-  mVertexInformations.emplace_back(DDyVector3{-1,  3, 0}, DDyVector2{0, 2});
-  glBufferData      (GL_ARRAY_BUFFER, sizeof(DDyMeshInfo) * 3, &mVertexInformations[0], GL_STATIC_DRAW);
-  glBindVertexBuffer(0, this->mTriangleVbo, 0, sizeof(DDyMeshInfo));
-
-  // DDyMeshInfo.mPosition (DDyVector3)
-  glEnableVertexAttribArray (0);
-  glVertexAttribFormat      (0, 3, GL_FLOAT, GL_FALSE, offsetof(DDyMeshInfo, mPosition));
-  glVertexAttribBinding     (0, 0);
-  // DDyMeshInfo.mTexCoord (DDyVector2)
-  glEnableVertexAttribArray (1);
-  glVertexAttribFormat      (1, 2, GL_FLOAT, GL_FALSE, offsetof(DDyMeshInfo, mTexCoord));
-  glVertexAttribBinding     (1, 0);
-
-  glBindVertexArray(0);
+  return true;
 }
 
+EDySuccess FDyPostEffectSsao::TrySetupRendering()
+{
+  return DY_FAILURE;
+}
+
+void FDyPostEffectSsao::Clear()
+{
+  return;
+}
+
+#ifdef false
 void FDyPostEffectSsao::pCreateSsaoFrameBufferComponents()
 {
   auto& settingManager = MDySetting::GetInstance();
@@ -277,5 +237,6 @@ void FDyPostEffectSsao::pDeleteSsaoBlurShaderResource()
 {
 
 }
+#endif
 
 } /// ::dy namespace

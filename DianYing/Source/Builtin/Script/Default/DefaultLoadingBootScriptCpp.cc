@@ -90,13 +90,15 @@ FDyDefaultLoadingBootScript::FDyDefaultLoadingBootScript()
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Mesh, "dyBtMsScrOITTriangle"sv);
 
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, FDyBtFrameBufferDeferred::sName);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, FDyBtFBBasicShadow::sName);
+  //MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, FDyBtFBBasicShadow::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, builtin::FDyBtFbCSM::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, FDyBtFbUiBasic::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, builtin::FDyBtFbWeightBlendedOIT::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, "dyBtFbWBOIT"sv);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, FDyBtFbOpaqueIntegration::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, "dyBtFbIntgLevelTrans"sv);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, "dyBtFbSSAO"sv);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, "dyBtFbSSAOBlur"sv);
 
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLAttachment,  "dyBtAtOpaqueOutput"sv);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLAttachment,  "dyBtAtWBOITColor"sv);

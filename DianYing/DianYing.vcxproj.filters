@@ -273,6 +273,11 @@
     <ClCompile Include="Source\Builtin\FrameBuffer\SceneIntegration\FDyBtFbOpaqueIntegration.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\Level\BtShOITIntegration.cc" />
     <ClCompile Include="Source\Builtin\Texture\CheckerBright.cc" />
+    <ClCompile Include="Source\Builtin\FrameBuffer\Deferred\FDyBtFbSSAO.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAtSSAOOutput.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAtSSAOFinalOutput.cc" />
+    <ClCompile Include="Source\Builtin\Texture\SSAONoiseMap.cc" />
+    <ClCompile Include="Source\Builtin\FrameBuffer\Deferred\FDyBtFbSSAOBlur.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -693,6 +698,11 @@
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\SceneIntegration\FDyBtFbOpaqueIntegration.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Level\BtShOITIntegration.h" />
     <ClInclude Include="Include\Dy\Builtin\Texture\CheckerBright.h" />
+    <ClInclude Include="Include\Dy\Builtin\FrameBuffer\Deferred\FDyBtFbSSAOBlur.h" />
+    <ClInclude Include="Include\Dy\Builtin\FrameBuffer\Deferred\FDyBtFbSSAO.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAtSSAOOutput.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAtSSAOFinalOutput.h" />
+    <ClInclude Include="Include\Dy\Builtin\Texture\SSAONoiseMap.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />
