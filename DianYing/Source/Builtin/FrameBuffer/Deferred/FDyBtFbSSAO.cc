@@ -24,8 +24,7 @@ void FDyBtFbSSAO::ConstructBuffer(_MOUT_ PDyGlFrameBufferInstanceMetaInfo& prope
   property.mFrameBufferSize = DDyVectorInt2{1280, 720};
   property.mIsUsingDepthBuffer = false;
 
-  property.mColorAttachmentList.emplace_back("dyBtModelPosition", EDyGlAttachmentType::Color0);
-  property.mColorAttachmentList.emplace_back("dyBtNormal", EDyGlAttachmentType::Color1);
+  property.mColorAttachmentList.emplace_back("dyBtAtSSAOOutput", EDyGlAttachmentType::Color0);
 }
 
 } /// ::dy::builtin namespace

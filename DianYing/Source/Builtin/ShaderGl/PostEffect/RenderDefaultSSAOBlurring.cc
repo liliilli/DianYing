@@ -40,7 +40,7 @@ void main() {
 MDY_SET_IMMUTABLE_STRING(sPixelShaderCode, R"dy(
 #version 430 core
 
-layout (location = 0) out float oOutput;
+layout (location = 0) out vec4 oOutput;
 in VS_OUT { vec2 texCoord; } vs_out;
 
 layout (binding = 0) uniform sampler2D uSSAO;
@@ -60,7 +60,7 @@ void main()
     }
   }
 
-  oOutput = result / (4.0 * 4.0);
+  oOutput = vec4(result / (4.0 * 4.0));
 }
 )dy");
 
