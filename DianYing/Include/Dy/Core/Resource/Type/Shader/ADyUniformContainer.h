@@ -156,6 +156,7 @@ private:
   MDY_UNIFORM_FUNCTION_CONSTRUCT(Texture2DArray);
   MDY_UNIFORM_FUNCTION_CONSTRUCT(Texture2DRectangle);
   MDY_UNIFORM_FUNCTION_CONSTRUCT(Texture2DShadowArray);
+  MDY_UNIFORM_FUNCTION_CONSTRUCT(Vector3Array);
   MDY_UNIFORM_FUNCTION_CONSTRUCT(Matrix4Array);
   
   TUpdatedItemList  mUpdatedItemList  = {};

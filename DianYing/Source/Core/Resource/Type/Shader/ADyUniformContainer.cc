@@ -49,6 +49,7 @@ void MDY_PRIVATE_SPECIFIER(ADyUniformContainer)::MDY_PRIVATE_SPECIFIER(TryClearU
   MDY_UNIFORMCONTAINER(Matrix4Array).clear();
   MDY_UNIFORMCONTAINER(Matrix3).clear();
   MDY_UNIFORMCONTAINER(Vector4).clear();
+  MDY_UNIFORMCONTAINER(Vector3Array).clear();
   MDY_UNIFORMCONTAINER(Vector3).clear();
   MDY_UNIFORMCONTAINER(Vector2).clear();
   MDY_UNIFORMCONTAINER(Integer).clear();
@@ -79,6 +80,8 @@ MDY_PRIVATE_SPECIFIER(TryConstructDefaultUniformList)(const FDyShaderResource& i
     case EDyUniformVariableType::Matrix3:   { MDY_DOCONSTRUCTUNIFORMLIST(Matrix3, specifier, id); } break;
     case EDyUniformVariableType::Vector4:   { MDY_DOCONSTRUCTUNIFORMLIST(Vector4, specifier, id); } break;
     case EDyUniformVariableType::Vector3:   { MDY_DOCONSTRUCTUNIFORMLIST(Vector3, specifier, id); } break;
+    case EDyUniformVariableType::Vector3Array:   
+    { MDY_DOCONSTRUCTUNIFORMLIST(Vector3Array, specifier, id); } break;
     case EDyUniformVariableType::Vector2:   { MDY_DOCONSTRUCTUNIFORMLIST(Vector2, specifier, id); } break;
     case EDyUniformVariableType::Integer:   { MDY_DOCONSTRUCTUNIFORMLIST(Integer, specifier, id); } break;
     case EDyUniformVariableType::Bool:      { MDY_DOCONSTRUCTUNIFORMLIST(Bool, specifier, id); } break;
@@ -135,7 +138,12 @@ EDySuccess MDY_PRIVATE_SPECIFIER(ADyUniformContainer)::TryUpdateUniformList()
     {
       const auto* item = static_cast<TPtrConvert<EDyUniformVariableType::Vector3>>(ptrItem);
       if (item->mId == -1) { continue; }
-
+    } break;
+    case EDyUniformVariableType::Vector3Array: 
+    {
+      const auto* item = static_cast<TPtrConvert<EDyUniformVariableType::Vector3Array>>(ptrItem);
+      if (item->mId == -1) { continue; }
+      FDyGLWrapper::UpdateUniformVector3Array(item->mId, item->mValue);
     } break;
     case EDyUniformVariableType::Vector2: 
     {

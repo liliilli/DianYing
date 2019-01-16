@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/Vector3.h>
+#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
 #include <Dy/Core/Rendering/Interface/IDyRenderer.h>
 
 namespace dy
@@ -35,40 +35,17 @@ public:
   void Clear() override final;
 
 private:
-  //!
-  //! Mesh
-  //!
 
-  TU32                mTriangleVao            = MDY_INITIALIZE_DEFUINT;
-  TU32                mTriangleVbo            = MDY_INITIALIZE_DEFUINT;
+  TDyIResourceBinderModel       mBinderTriangle     { "dyBtModelScrProjTri" };
 
-  //!
-  //! General framebuffer
-  //!
+  TDyIResourceBinderFrameBuffer mBinderFbSSAO       { "dyBtFbSSAO" };
+  TDyIResourceBinderShader      mBinderShSSAO       { "dyBtShSSAO" };
+  TDyIResourceBinderAttachment  mBinderAttModelPos  { "dyBtModelPosition" };
+  TDyIResourceBinderAttachment  mBinderAttModelNorm { "dyBtNormal" };
 
-  TU32                mSsaoFrameBufferId      = MDY_INITIALIZE_DEFUINT;
-  TU32                mSsaoColorBuffer        = MDY_INITIALIZE_DEFUINT;
-
-  std::vector<DDyVector3> mSsaoKernel         = {};
-  std::vector<DDyVector3> mSsaoNoise          = {};
-  TU32                mSsaoNoiseTextureId     = MDY_INITIALIZE_DEFUINT;
-
-  TI32                mUniformSamples         = MDY_INITIALIZE_DEFINT;
-  TI32                mUniformKernelSize      = MDY_INITIALIZE_DEFINT;
-  TI32                mUniformRadius          = MDY_INITIALIZE_DEFINT;
-  TI32                mUniformBias            = MDY_INITIALIZE_DEFINT;
-  TI32                mUniformScreenSize      = MDY_INITIALIZE_DEFINT;
-  TI32                mUniformProjection      = MDY_INITIALIZE_DEFINT;
-
-  //!
-  //! Blurring framebuffer
-  //!
-
-  TU32                mSsaoBlurFrameBufferId  = MDY_INITIALIZE_DEFUINT;
-  TU32                mSsaoBlurColorBuffer    = MDY_INITIALIZE_DEFUINT;
-
-  //CDyShaderResource_Deprecated*  mSsaoShaderPtr          = nullptr;
-  //CDyShaderResource_Deprecated*  mSsaoBlurShaderPtr      = nullptr;
+  TDyIResourceBinderFrameBuffer mBinderFbSSAOBlur   { "dyBtFbIntgLevelTrans" };
+  TDyIResourceBinderShader      mBinderTransShader  { "dyBtShOITIntegration" };
+  TDyIResourceBinderAttachment  mBinderAttSSAOOpt   { "dyBtAtSSAOOutput" };
 };
 
 } /// ::dy namespace

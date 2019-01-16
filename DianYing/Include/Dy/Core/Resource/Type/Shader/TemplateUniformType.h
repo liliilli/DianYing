@@ -26,6 +26,9 @@ struct MDY_PRIVATE_SPECIFIER(UniformBinder);
 
 template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::Matrix4Array> final
 { using ValueType = std::vector<DDyMatrix4x4>; };
+template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::Vector3Array> final  
+{ using ValueType = std::vector<DDyVector3>; };
+
 template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::Matrix4> final  { using ValueType = DDyMatrix4x4; };
 template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::Matrix3> final  { using ValueType = DDyMatrix3x3; };
 template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::Vector4> final  { using ValueType = DDyVector4; };
