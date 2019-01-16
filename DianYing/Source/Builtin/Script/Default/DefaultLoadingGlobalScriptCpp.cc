@@ -24,8 +24,6 @@ namespace dy
 
 MDY_PRIVATE_SPECIFIER(FDyDefaultLoadingGlobalScript)::MDY_PRIVATE_SPECIFIER(FDyDefaultLoadingGlobalScript)()
 {
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Texture, builtin::FDyBtTexSSAONoiseMap::sName);
-
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Material, builtin::FDyBuiltinMaterialOpaqueStaticPlain::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Material, builtin::FDyBtMtCheckerWorldPos::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Material, builtin::FDyBtStaticTransparentChecker::sName);

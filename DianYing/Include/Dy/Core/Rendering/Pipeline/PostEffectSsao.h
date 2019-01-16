@@ -23,7 +23,7 @@ class FDyPostEffectSsao final : public IDyRenderer
 {
 public:
   FDyPostEffectSsao();
-  ~FDyPostEffectSsao();
+  virtual ~FDyPostEffectSsao() = default;
 
   /// @brief Rendering deferred contexts to default framebuffer.
   void RenderScreen();
@@ -40,12 +40,16 @@ private:
 
   TDyIResourceBinderFrameBuffer mBinderFbSSAO       { "dyBtFbSSAO" };
   TDyIResourceBinderShader      mBinderShSSAO       { "dyBtShSSAO" };
-  TDyIResourceBinderAttachment  mBinderAttModelPos  { "dyBtModelPosition" };
-  TDyIResourceBinderAttachment  mBinderAttModelNorm { "dyBtNormal" };
+  TDyIResourceBinderAttachment  mBinderAttWorldPos  { "dyBtModelPosition" };
+  TDyIResourceBinderAttachment  mBinderAttWorldNorm { "dyBtNormal" };
+  TDyIResourceBinderTexture     mBinderTexNoise     { "dyBtTexSSAONoiseMap" };
 
   TDyIResourceBinderFrameBuffer mBinderFbSSAOBlur   { "dyBtFbIntgLevelTrans" };
   TDyIResourceBinderShader      mBinderTransShader  { "dyBtShOITIntegration" };
   TDyIResourceBinderAttachment  mBinderAttSSAOOpt   { "dyBtAtSSAOOutput" };
+
+  std::vector<DDyVector3> mRayContainer;
+  bool mIsRayInserted = false;
 };
 
 } /// ::dy namespace

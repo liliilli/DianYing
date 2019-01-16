@@ -113,6 +113,12 @@ public:
       const auto& item = this->MDY_UPDATEUNIFORM(Vector4)(iSpecifier, iValue);
       this->mUpdatedItemList.emplace_back(std::make_pair(TType, item));
     }
+    else if constexpr (TType == EDyUniformVariableType::Vector3Array)
+    { // If not exist and not created by doing TryConstructDefaultUniformList, just create.
+      if (MDY_ISUNIFORMEXIST(Vector3Array)(iSpecifier) == false) { MDY_CREATEUNIFORM(Vector3Array)(iSpecifier, -1); }
+      const auto& item = this->MDY_UPDATEUNIFORM(Vector3Array)(iSpecifier, iValue);
+      this->mUpdatedItemList.emplace_back(std::make_pair(TType, item));
+    }
     else if constexpr (TType == EDyUniformVariableType::Integer)
     { // If not exist and not created by doing TryConstructDefaultUniformList, just create.
       if (MDY_ISUNIFORMEXIST(Integer)(iSpecifier) == false) { MDY_CREATEUNIFORM(Integer)(iSpecifier, -1); }

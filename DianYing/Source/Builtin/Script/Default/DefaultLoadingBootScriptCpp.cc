@@ -49,6 +49,7 @@
 #include <Dy/Builtin/FrameBuffer/UIIntegration/FDyBtFbUiBasic.h>
 #include <Dy/Builtin/FrameBuffer/WeightBlendOIT/FDyBtFbWeightBlendedOIT.h>
 #include <Dy/Builtin/FrameBuffer/CSM/FDyBtFbCSM.h>
+#include "Dy/Builtin/Texture/SSAONoiseMap.h"
 
 namespace dy
 {
@@ -61,6 +62,7 @@ FDyDefaultLoadingBootScript::FDyDefaultLoadingBootScript()
 
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Texture, FDyBuiltinTextureChecker::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Texture, FDyBuiltinTextureErrorBlue::sName);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Texture, builtin::FDyBtTexSSAONoiseMap::sName);
 
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderColorGeometry::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderDefaultFont::sName);

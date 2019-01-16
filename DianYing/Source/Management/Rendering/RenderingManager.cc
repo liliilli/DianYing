@@ -176,16 +176,15 @@ void MDyRendering::RenderDrawCallQueue()
     glBlendFunci(1, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   }
   this->mTranslucentMeshDrawingList.clear();
-  /// @TEMPORARY
-  /// @TEMPORARY END
 
-  //!
   //! Post processing effects
-  //!
-
-  //if (this->mIsEnabledSsaoRendering)
-  // @TODO FIX THIS (SSAO)
-  if (false) { this->mSSAOPostEffect->RenderScreen(); }
+#ifdef false
+  if (MDY_CHECK_ISNOTEMPTY(this->mSSAOPostEffect)) 
+  { 
+    if (this->mSSAOPostEffect->TrySetupRendering() == DY_SUCCESS)
+    { this->mSSAOPostEffect->RenderScreen(); }
+  }
+#endif
 
   // Final
   if (MDY_CHECK_ISNOTEMPTY(this->mLevelFinalRenderer) 
