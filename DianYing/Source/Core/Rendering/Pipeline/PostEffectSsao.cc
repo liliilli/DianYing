@@ -65,27 +65,16 @@ void FDyPostEffectSsao::RenderScreen()
 
   submeshList[0]->Get()->BindVertexArray();
   FDyGLWrapper::Draw(EDyDrawType::Triangle, true, 3);
+
+  this->mBinderFbSSAOBlur->BindFrameBuffer();
+  this->mBinderShSSAOBlur->UseShader();
+  glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, this->mBinderAttSSAOOpt->GetAttachmentId());
+
+  FDyGLWrapper::Draw(EDyDrawType::Triangle, true, 3);
+
   FDyGLWrapper::UnbindVertexArrayObject();
-
-  this->mBinderShSSAO->DisuseShader();
-  this->mBinderFbSSAO->UnbindFrameBuffer();
-
-#ifdef false
-  MDY_ASSERT(this->mSsaoBlurShaderPtr, "FDyPostEffectSsao::mSsaoBlurShaderPtr must not be nullptr.");
-
-  glBindFramebuffer (GL_FRAMEBUFFER, this->mSsaoBlurFrameBufferId);
-  glClear           (GL_COLOR_BUFFER_BIT);
-  this->mSsaoBlurShaderPtr->UseShader();
-  glBindVertexArray (this->mTriangleVao);
-
-  glActiveTexture   (GL_TEXTURE0 + 0); glBindTexture(GL_TEXTURE_2D, this->mSsaoColorBuffer);
-  glDrawArrays      (GL_TRIANGLES, 0, 3);
-
-  glBindVertexArray (0);
-  this->mSsaoBlurShaderPtr->UnuseShader();
-
-  glBindFramebuffer (GL_FRAMEBUFFER, 0);
-#endif
+  this->mBinderShSSAOBlur->DisuseShader();
+  this->mBinderFbSSAOBlur->UnbindFrameBuffer();
 }
 
 bool FDyPostEffectSsao::IsReady() const noexcept
@@ -98,7 +87,7 @@ bool FDyPostEffectSsao::IsReady() const noexcept
   &&  this->mBinderAttSSAOOpt.IsResourceExist() == true
   &&  this->mBinderShSSAO.IsResourceExist() == true
   &&  this->mBinderTexNoise.IsResourceExist() == true
-  &&  this->mBinderTransShader.IsResourceExist() == true
+  &&  this->mBinderShSSAOBlur.IsResourceExist() == true
   &&  this->mBinderTriangle.IsResourceExist() == true;
 }
 
@@ -107,11 +96,7 @@ EDySuccess FDyPostEffectSsao::TrySetupRendering()
   if (this->IsReady() == false) { return DY_FAILURE; }
 
   // SSAO (Opaque -> SSAO output)
-  this->mBinderFbSSAO->BindFrameBuffer();
-  glClearColor(0, 0, 0, 1);
-  glClear(GL_COLOR_BUFFER_BIT);
-  this->mBinderFbSSAO->UnbindFrameBuffer();
-
+  // SSAO Blur (SSAO Output -> SSAO Blurred) does not have to setup.
   this->mBinderShSSAO->UseShader();
   if (this->mIsRayInserted == false)
   {
@@ -120,8 +105,6 @@ EDySuccess FDyPostEffectSsao::TrySetupRendering()
     this->mIsRayInserted = true;
   }
   this->mBinderShSSAO->DisuseShader();
-
-  // SSAO Blur (SSAO Output -> SSAO Blurred)
 
   return DY_SUCCESS;
 }
