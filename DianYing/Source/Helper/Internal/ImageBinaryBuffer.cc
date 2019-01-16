@@ -55,6 +55,28 @@ dy::EDyImageColorFormatStyle GetColorFormat(const int32_t channelsValue) noexcep
 namespace dy
 {
 
+std::optional<GLenum> DyGLGetImageFormatFrom(_MIN_ EDyImageColorFormatStyle style) noexcept
+{
+  switch (style)
+  {
+  case EDyImageColorFormatStyle::R:         return GL_RED;
+  case EDyImageColorFormatStyle::RG:        return GL_RG;
+  case EDyImageColorFormatStyle::RGB:       return GL_RGB;
+  case EDyImageColorFormatStyle::RGBA:      return GL_RGBA;
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
+  }
+}
+
+GLenum DyGlGetImagePixelTypeFrom(_MIN_ EDyGlImagePixelReadType iType) noexcept
+{
+  switch (iType)
+  {
+  case EDyGlImagePixelReadType::UnsignedByte: return GL_UNSIGNED_BYTE;
+  case EDyGlImagePixelReadType::Float:        return GL_FLOAT;
+  default: return GL_NONE;
+  }
+}
+
 DDyImageBinaryDataBuffer::DDyImageBinaryDataBuffer(const std::string& imagePath)
 {
   stbi_set_flip_vertically_on_load(true);

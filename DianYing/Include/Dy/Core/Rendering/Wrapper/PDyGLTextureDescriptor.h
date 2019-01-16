@@ -30,6 +30,7 @@ struct PDyGLTextureDescriptor final
   bool                mIsUsingDefaultMipmap       = false;
   bool                mIsUsingCustomizedParameter = false;
   TI32                mImageFormat        = MDY_INITIALIZE_DEFINT;
+  GLenum              mImagePixelType     = GL_NONE;
   DDyVectorInt2       mTextureSize        = {};
   DDyColorRGBA        mBorderColor        = {};
 

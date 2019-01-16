@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_BUILTIN_SHADERGL_RENDERDEFAULTSSAO_H
-#define GUARD_DY_BUILTIN_SHADERGL_RENDERDEFAULTSSAO_H
+#ifndef GUARD_DY_BUITLIN_TEXTURE_SSAONoiseMap_H
+#define GUARD_DY_BUITLIN_TEXTURE_SSAONoiseMap_H
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -13,22 +13,18 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyGLShaderResource.h>
+#include <Dy/Builtin/Abstract/ADyTextureResource.h>
 
 namespace dy::builtin
 {
 
-///
-/// @class FDyBuiltinShaderGLRenderDefaultSSAO
-/// @brief OpenGL Shader for post-processing SSAO (Screen-space ambient occlusion).
-///
-class FDyBuiltinShaderGLRenderDefaultSSAO final : public ADyGLShaderResource
+/// @class FDyBtTexSSAONoiseMap
+/// @brief Noise texture for SSAO effect.
+class FDyBtTexSSAONoiseMap final : public ADyTextureResource
 {
-  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBuiltinShaderGLRenderDefaultSSAO, "dyPostEffectSsaoShader")
-public:
-  FDyBuiltinShaderGLRenderDefaultSSAO();
+  MDY_REGISTER_RESOURCE_TEXTURE(FDyBtTexSSAONoiseMap, "dyBtTexSSAONoiseMap")
 };
 
 } /// ::dy::builtin namespace
 
-#endif /// GUARD_DY_BUILTIN_SHADERGL_RENDERDEFAULTSSAO_H
+#endif /// GUARD_DY_BUITLIN_TEXTURE_SSAONoiseMap_H

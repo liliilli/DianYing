@@ -27,6 +27,7 @@ FDyTextureInformation::FDyTextureInformation(_MIN_ const PDyTextureInstanceMetaI
   this->mTextureType          = metaInfo.mTextureType;
   this->mIsUsingDefaultMipmap = metaInfo.mIsUsingDefaultMipmapGeneration;
   this->mIsUsingCustomParams  = metaInfo.mIsEnabledCustomedTextureParameter;
+  this->mInternalPixelReadType= metaInfo.mPixelReadType;
 
   if (metaInfo.mSourceType == EDyResourceSource::Builtin)
   { // If builtin, just copy buffer to information.
@@ -64,6 +65,11 @@ FDyTextureInformation::FDyTextureInformation(_MIN_ const PDyTextureInstanceMetaI
       ptrBuffer++;
     }
   }
+}
+
+EDyGlImagePixelReadType FDyTextureInformation::GetPixelReadType() const noexcept
+{
+  return this->mInternalPixelReadType;
 }
 
 } /// ::dy namespace

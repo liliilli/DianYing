@@ -36,9 +36,11 @@ struct PDyTextureInstanceMetaInfo final : public PDyCommonResourceMetaInfo
   /// Border color
   DDyColorRGBA        mBorderColor      = DDyColorRGBA::Black;
   /// as R, RG, RGB, RGBA
-  EDyImageColorFormatStyle mTextureColorType = EDyImageColorFormatStyle::NoneError;
+  EDyImageColorFormatStyle  mTextureColorType = EDyImageColorFormatStyle::NoneError;
+  /// 
+  EDyGlImagePixelReadType   mPixelReadType = EDyGlImagePixelReadType::UnsignedByte;
   /// Texture parameters
-  TTextureParameterList      mParameterList    = {};
+  TTextureParameterList    mParameterList    = {};
   /// Use default opengl generated mipmap if true.
   bool                mIsUsingDefaultMipmapGeneration     = false;
   /// Use customized texture parameters (PDyTextureConstructionBaseDesc::mParameterList)

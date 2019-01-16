@@ -150,13 +150,15 @@ std::optional<TU32> FDyGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescript
     {
       glGenTextures(1, &mTextureResourceId);
       glBindTexture(GL_TEXTURE_1D, mTextureResourceId);
-      glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, descriptor.mTextureSize.X, 0, descriptor.mImageFormat, GL_UNSIGNED_BYTE, descriptor.mPtrBuffer->data());
+      glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, descriptor.mTextureSize.X, 0, 
+          descriptor.mImageFormat, descriptor.mImagePixelType, descriptor.mPtrBuffer->data());
     } break;
     case EDyTextureStyleType::D2:
     { // Border parameter must be 0.
       glGenTextures(1, &mTextureResourceId);
       glBindTexture(GL_TEXTURE_2D, mTextureResourceId);
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, MDY_VECTOR_XY(descriptor.mTextureSize), 0, descriptor.mImageFormat, GL_UNSIGNED_BYTE, descriptor.mPtrBuffer->data());
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, MDY_VECTOR_XY(descriptor.mTextureSize), 0, 
+          descriptor.mImageFormat, descriptor.mImagePixelType, descriptor.mPtrBuffer->data());
     } break;
     default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
     }
@@ -181,6 +183,13 @@ std::optional<TU32> FDyGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescript
     }
     glBindTexture(glTextureType, 0);
     glFlush();
+
+#if defined(NDEBUG) == false
+    {
+      const auto _ = glGetError();
+      MDY_ASSERT(_ == GL_NO_ERROR, "Attachment creation failed.");
+    }
+#endif
   }
 
   return mTextureResourceId;

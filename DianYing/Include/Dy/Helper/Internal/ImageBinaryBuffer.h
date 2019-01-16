@@ -18,34 +18,32 @@
 namespace dy
 {
 
-///
 /// @enum EDyImageColorFormatStyle
 /// @brief Image color format which is a type of each pixel data.
-///
 enum class EDyImageColorFormatStyle
 {
-  NoneError,
-  R,
-  RG,
-  RGB,
-  RGBA
+  NoneError,  // Do not use this.
+  R,          // Red-Green 8bit unsigned.
+  RG,         // Red-Green 8bit unsigned.
+  RGB,        // Red-Green-Blue 8bit unsigned.
+  RGBA        // Red-Green-Blue and alpha 8bit unsigned.
 };
 
-///
 /// @brief Get internal GLenum for texture formatting from style.
 /// If errored, just return null value.
-///
-inline static MDY_NODISCARD std::optional<GLenum> DyGLGetImageFormatFrom(_MIN_ EDyImageColorFormatStyle style) noexcept
+MDY_NODISCARD std::optional<GLenum> DyGLGetImageFormatFrom(_MIN_ EDyImageColorFormatStyle style) noexcept;
+
+/// @enum EDyGlImagePixelReadType
+/// @brief Image reading pixel's type.
+enum class EDyGlImagePixelReadType
 {
-  switch (style)
-  {
-  case EDyImageColorFormatStyle::R:     return GL_RED;
-  case EDyImageColorFormatStyle::RG:    return GL_RG;
-  case EDyImageColorFormatStyle::RGB:   return GL_RGB;
-  case EDyImageColorFormatStyle::RGBA:  return GL_RGBA;
-  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
-  }
-}
+  NoneError,
+  UnsignedByte, // GL_UNSIGNED_BYTE
+  Float,        // GL_FLOAT
+};
+
+/// @brief Get internal image format type.
+MDY_NODISCARD GLenum DyGlGetImagePixelTypeFrom(_MIN_ EDyGlImagePixelReadType iType) noexcept;
 
 ///
 /// @class DDyImageBinaryDataBuffer
