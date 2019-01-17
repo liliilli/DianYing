@@ -186,12 +186,31 @@ public:
   /// @brief Update uniform one float value. Specified shader must be valid and activated.
   static void UpdateUniformFloat(_MIN_ TU32 iId, _MIN_ const TF32& iBuffer);
 
+  struct MDY_PRIVATE_SPECIFIER(OutsideLockguard) final
+  {
+  public:
+    MDY_PRIVATE_SPECIFIER(OutsideLockguard)() = default;
+    ~MDY_PRIVATE_SPECIFIER(OutsideLockguard)() noexcept;
+
+    MDY_PRIVATE_SPECIFIER(OutsideLockguard)(MDY_PRIVATE_SPECIFIER(OutsideLockguard)&& _) noexcept;
+    MDY_PRIVATE_SPECIFIER(OutsideLockguard) operator=(MDY_PRIVATE_SPECIFIER(OutsideLockguard)&&) noexcept = delete;
+
+  private:
+    bool mIsMoved = false;
+  };
+
+  static MDY_PRIVATE_SPECIFIER(OutsideLockguard) MDY_PRIVATE_SPECIFIER(LockMutex)();
+  static void MDY_PRIVATE_SPECIFIER(UnlockMutex)();
+
 private:
   static std::mutex mGLMutex;
+  static std::mutex mGLCriticalSectionMutex;
 
   /// @brief
   static MDY_NODISCARD const DDyGLVaoBindInformation& GetDefaultAttributeFormatDescriptor() noexcept;
 };
+
+#define MDY_GRAPHIC_SET_CRITICALSECITON() const auto MDY_TOKENPASTE2(_, __LINE__) = ::dy::FDyGLWrapper::MDY_PRIVATE_SPECIFIER(LockMutex)()
 
 } /// ::dy namespace
 

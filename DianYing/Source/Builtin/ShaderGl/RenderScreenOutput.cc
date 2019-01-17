@@ -43,13 +43,13 @@ MDY_SET_IMMUTABLE_STRING(sFragmentShaderCode, R"dy(
 in VS_OUT { vec2 texCoord; } fs_in;
 layout (location = 0) out vec4 outColor;
 
-layout (binding = 0) uniform sampler2D uSceneTexture;
-layout (binding = 1) uniform sampler2D uUiTexture;
+layout (binding = 0) uniform sampler2D uTexture0; // uSceneTexture;
+layout (binding = 1) uniform sampler2D uTexture1; // uUiTexture;
 
 void main()
 {
-  const vec4 ui = texture(uUiTexture, fs_in.texCoord);
-  const vec4 sc = texture(uSceneTexture, fs_in.texCoord);
+  const vec4 ui = texture(uTexture1, fs_in.texCoord);
+  const vec4 sc = texture(uTexture0, fs_in.texCoord);
 
   outColor = vec4(
       (vec3(sc.rgb) * (1 - ui.a))

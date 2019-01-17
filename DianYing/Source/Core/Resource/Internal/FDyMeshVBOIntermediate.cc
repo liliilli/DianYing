@@ -62,7 +62,10 @@ void FDyMeshVBOIntermediate::MDY_PRIVATE_SPECIFIER(CreateVertexArrayBuffer)(_MIN
       descriptor.mBufferByteSize  = sizeof(TF32) * info.mCustomMeshBuffer.size();
     }
 
-    const auto optVboId = FDyGLWrapper::CreateBuffer(descriptor);
+    std::optional<TU32> optVboId;
+    { MDY_GRAPHIC_SET_CRITICALSECITON();
+      optVboId = FDyGLWrapper::CreateBuffer(descriptor);
+    }
     MDY_ASSERT(optVboId.has_value() == true, "VBO creation must be succeeded.");
     this->mBufferIdInformation.mVbo = optVboId.value();
   }
@@ -83,8 +86,11 @@ void FDyMeshVBOIntermediate::MDY_PRIVATE_SPECIFIER(CreateElementArrayBuffer)(_MI
     descriptor.mBufferType = EDyDirectBufferType::ElementBuffer;
     descriptor.mPtrBuffer  = &info.mIndiceBuffer[0];
     descriptor.mBufferByteSize = sizeof(decltype(info.mIndiceBuffer)::value_type) * info.mIndiceBuffer.size();
-
-    const auto optEboId = FDyGLWrapper::CreateBuffer(descriptor);
+    
+    std::optional<TU32> optEboId;
+    { MDY_GRAPHIC_SET_CRITICALSECITON();
+      optEboId = FDyGLWrapper::CreateBuffer(descriptor);
+    }
     MDY_ASSERT(optEboId.has_value() == true, "EBO creation must be succeeded.");
     this->mBufferIdInformation.mEbo = optEboId.value();
   };
@@ -122,11 +128,13 @@ FDyMeshVBOIntermediate::~FDyMeshVBOIntermediate()
   // Release resource when properties are not transferred yet.
   if (this->mBufferIdInformation.mVbo > 0)
   {
+    MDY_GRAPHIC_SET_CRITICALSECITON();
     FDyGLWrapper::DeleteBuffer(this->mBufferIdInformation.mVbo);
   }
 
   if (this->mBufferIdInformation.mEbo > 0)
   {
+    MDY_GRAPHIC_SET_CRITICALSECITON();
     FDyGLWrapper::DeleteBuffer(this->mBufferIdInformation.mEbo);
   }
 }

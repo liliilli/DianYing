@@ -49,9 +49,9 @@ layout(std140, binding = 0) uniform CameraBlock
   uniform mat4 mViewMatrix;
 } uCamera;
 
-layout (binding = 0) uniform sampler2D uModelNormal;
-layout (binding = 1) uniform sampler2D uModelPosition;
-layout (binding = 2) uniform sampler2D uNoise;
+layout (binding = 0) uniform sampler2D uTexture0; // uModelNormal;
+layout (binding = 1) uniform sampler2D uTexture1; // uModelPosition;
+layout (binding = 2) uniform sampler2D uTexture2; // uNoise;
 
 uniform vec3 uRaySamples[64];
 int   uKernelSize	= 64;
@@ -60,9 +60,9 @@ float uBias	      = 0.025f;
 vec2  uScreenSize = vec2(1280, 720);
 vec2  sNoiseScale;
 
-vec3 GetViewPosition()  { return (uCamera.mViewMatrix * texture(uModelPosition, vs_out.texCoord)).xyz; }
-vec3 GetViewNormal()    { return mat3(uCamera.mViewMatrix) * texture(uModelNormal, vs_out.texCoord).xyz; }
-vec3 GetRandomVector()  { return normalize(texture(uNoise, vs_out.texCoord * sNoiseScale)).xyz; }
+vec3 GetViewNormal()    { return mat3(uCamera.mViewMatrix) * texture(uTexture0, vs_out.texCoord).xyz; }
+vec3 GetViewPosition()  { return (uCamera.mViewMatrix * texture(uTexture1, vs_out.texCoord)).xyz; }
+vec3 GetRandomVector()  { return normalize(texture(uTexture2, vs_out.texCoord * sNoiseScale)).xyz; }
 
 mat3 GetTangentViewMatrix(vec3 iRandomVec, vec3 iNormal)
 {
@@ -89,7 +89,7 @@ vec2 GetSampleNDCUV(vec3 iSampleViewPos)
 
 float GetSampleViewDepth(vec2 iSampleUV)
 {
-  return (uCamera.mViewMatrix * texture(uModelPosition, iSampleUV)).z;
+  return (uCamera.mViewMatrix * texture(uTexture1, iSampleUV)).z;
 }
 
 void main()

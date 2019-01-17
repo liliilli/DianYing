@@ -30,24 +30,28 @@ FDyMeshResource::FDyMeshResource(_MINOUT_ FDyMeshVBOIntermediate& intermediateIn
   intermediateInstance.ResetAllProperties();
 
   // OPENGL create vao vbo ebo phrase.
-  this->mBufferIdInformation.mVao = FDyGLWrapper::CreateVertexArrayObject();
+  { MDY_GRAPHIC_SET_CRITICALSECITON();
+    this->mBufferIdInformation.mVao = FDyGLWrapper::CreateVertexArrayObject();
 
-  PDyGLVaoBindDescriptor descriptor;
-  descriptor.mVaoId         = this->mBufferIdInformation.mVao;
-  descriptor.mBoundVboId    = this->mBufferIdInformation.mVbo;
-  descriptor.mBoundEboId    = this->mBufferIdInformation.mEbo;
-  descriptor.mAttributeInfo = intermediateInstance.GetVaoBindingInfo();
-  FDyGLWrapper::BindVertexArrayObject(descriptor);
+    PDyGLVaoBindDescriptor descriptor;
+    descriptor.mVaoId         = this->mBufferIdInformation.mVao;
+    descriptor.mBoundVboId    = this->mBufferIdInformation.mVbo;
+    descriptor.mBoundEboId    = this->mBufferIdInformation.mEbo;
+    descriptor.mAttributeInfo = intermediateInstance.GetVaoBindingInfo();
+    FDyGLWrapper::BindVertexArrayObject(descriptor);
+  }
 
   SDyProfilingHelper::IncreaseOnBindVertexCount(this->mMeshFlagInformation.mVertexCount);
 }
 
 FDyMeshResource::~FDyMeshResource()
 {
+  { MDY_GRAPHIC_SET_CRITICALSECITON();
+    FDyGLWrapper::DeleteVertexArrayObject(this->mBufferIdInformation.mVao);
+    if (this->mBufferIdInformation.mEbo > 0) { FDyGLWrapper::DeleteBuffer(this->mBufferIdInformation.mEbo); }
+    if (this->mBufferIdInformation.mVbo > 0) { FDyGLWrapper::DeleteBuffer(this->mBufferIdInformation.mVbo); }
+  }
   SDyProfilingHelper::DecreaseOnBindVertexCount(this->mMeshFlagInformation.mVertexCount);
-  FDyGLWrapper::DeleteVertexArrayObject(this->mBufferIdInformation.mVao);
-  if (this->mBufferIdInformation.mEbo > 0) { FDyGLWrapper::DeleteBuffer(this->mBufferIdInformation.mEbo); }
-  if (this->mBufferIdInformation.mVbo > 0) { FDyGLWrapper::DeleteBuffer(this->mBufferIdInformation.mVbo); }
 }
 
 const std::string& FDyMeshResource::GetSpecifierName() const noexcept

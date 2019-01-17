@@ -68,46 +68,26 @@ FDyShaderResource::FDyShaderResource(_MIN_ const FDyShaderInformation& informati
 {
   this->mSpecifierName = information.GetSpecifierName();
 
+  { MDY_GRAPHIC_SET_CRITICALSECITON();
   { // Create shader program.
-    auto optFragmentList    = this->pCreateShaderFragments(information.GetShaderFragmentList());
-    MDY_ASSERT(optFragmentList.has_value() == true, "OpenGL Shader Fragment compilation failed.");
+      auto optFragmentList    = this->pCreateShaderFragments(information.GetShaderFragmentList());
+      MDY_ASSERT(optFragmentList.has_value() == true, "OpenGL Shader Fragment compilation failed.");
 
-    auto optShaderProgramId = this->pInitializeShaderProgram(optFragmentList.value());
-    MDY_ASSERT(optShaderProgramId.has_value() == true, "OpenGL shader program compilation failed.");
-    this->mShaderProgramId = optShaderProgramId.value();
+      auto optShaderProgramId = this->pInitializeShaderProgram(optFragmentList.value());
+      MDY_ASSERT(optShaderProgramId.has_value() == true, "OpenGL shader program compilation failed.");
+      this->mShaderProgramId = optShaderProgramId.value();
 
-    this->pDeleteShaderFragments(optFragmentList.value());
-  }
+      this->pDeleteShaderFragments(optFragmentList.value());
+    }
 
-  { // Get attribute, uniform, ubo information from shader program.
-    this->pStoreAttributeProperties();
-    this->pStoreUniformProperties();
-    this->pStoreUniformBufferObjectProperties();
+    { // Get attribute, uniform, ubo information from shader program.
+      this->pStoreAttributeProperties();
+      this->pStoreUniformProperties();
+      this->pStoreUniformBufferObjectProperties();
+    }
   }
 
   SDyProfilingHelper::IncreaseOnBindShaderCount(1);
-}
-
-FDyShaderResource::~FDyShaderResource()
-{
-  SDyProfilingHelper::DecreaseOnBindShaderCount(1);
-  FDyGLWrapper::DeleteShaderProgram(this->mShaderProgramId);
-}
-
-TU32 FDyShaderResource::GetShaderProgramId() const noexcept
-{
-  return this->mShaderProgramId;
-}
-
-void FDyShaderResource::UseShader() const noexcept
-{
-  MDY_ASSERT(this->mShaderProgramId > 0, "Shader program must be valid.");
-  FDyGLWrapper::UseShaderProgram(this->mShaderProgramId);
-}
-
-void FDyShaderResource::DisuseShader() const noexcept
-{
-  FDyGLWrapper::DisuseShaderProgram();
 }
 
 std::optional<TFragmentList>
@@ -233,7 +213,7 @@ void FDyShaderResource::pStoreUniformBufferObjectProperties() noexcept
 
   for (TU32 i = 0; i < activatedUboCount; ++i)
   { // If process was failed, just do next thing.
-    const auto optResult = FDyGLWrapper::GetShaderProgramUniformBlockInfo(this->mShaderProgramId, i);
+    std::optional<std::string> optResult = FDyGLWrapper::GetShaderProgramUniformBlockInfo(this->mShaderProgramId, i);
     if (optResult.has_value() == false) { continue; }
 
     this->mUniformBufferObjectList.emplace_back(optResult.value());
@@ -246,6 +226,30 @@ void FDyShaderResource::pStoreUniformBufferObjectProperties() noexcept
     MDY_LOG_DEBUG_D("{} | Shader UBO information | Buffer name : {}", this->mSpecifierName, variable.mUboSpecifierName);
   }
 #endif
+}
+
+FDyShaderResource::~FDyShaderResource()
+{
+  { MDY_GRAPHIC_SET_CRITICALSECITON();
+    FDyGLWrapper::DeleteShaderProgram(this->mShaderProgramId);
+  }
+  SDyProfilingHelper::DecreaseOnBindShaderCount(1);
+}
+
+TU32 FDyShaderResource::GetShaderProgramId() const noexcept
+{
+  return this->mShaderProgramId;
+}
+
+void FDyShaderResource::UseShader() const noexcept
+{
+  MDY_ASSERT(this->mShaderProgramId > 0, "Shader program must be valid.");
+  FDyGLWrapper::UseShaderProgram(this->mShaderProgramId);
+}
+
+void FDyShaderResource::DisuseShader() const noexcept
+{
+  FDyGLWrapper::DisuseShaderProgram();
 }
 
 } /// ::dy namespace
