@@ -44,16 +44,16 @@ in VS_OUT { vec2 texCoord; } fs_in;
 
 layout (location = 0) out vec4 outColor;
 
-layout (binding = 0) uniform sampler2D uOpaque;
-layout (binding = 1) uniform sampler2D uTransColor;  // Color accumulation
-layout (binding = 2) uniform sampler2D uTransWeight;  // Weight accumulation
+layout (binding = 0) uniform sampler2D uTexture0; // Opaque
+layout (binding = 1) uniform sampler2D uTexture1; // Color accumulation
+layout (binding = 2) uniform sampler2D uTexture2; // Weight accumulation
 
-vec3 GetOpaqueRgb() { return texture(uOpaque, fs_in.texCoord).rgb; }
+vec3 GetOpaqueRgb() { return texture(uTexture0, fs_in.texCoord).rgb; }
 
 void main()
 {
-  vec4  gamma = texture(uTransColor, fs_in.texCoord);
-  float beta  = texture(uTransWeight, fs_in.texCoord).r;
+  vec4  gamma = texture(uTexture1, fs_in.texCoord);
+  float beta  = texture(uTexture2, fs_in.texCoord).r;
   vec3  alpha = gamma.rgb / max(gamma.a, 0.00001);
 
   outColor.a    = 1.0f;

@@ -47,13 +47,13 @@ in VS_OUT
 
 layout (location = 0) out vec4 outColor;
 
-layout (binding = 0) uniform sampler2D uUnlit;
-layout (binding = 1) uniform sampler2D uNormal;
-layout (binding = 2) uniform sampler2D uSpecular;      // View vector
-layout (binding = 3) uniform sampler2D uModelPosition; // Use it CSM shadowing.
-layout (binding = 4) uniform sampler2DArrayShadow uShadow;
-layout (binding = 5) uniform sampler2D uZValue;
-layout (binding = 6) uniform sampler2D uSSAO;
+layout (binding = 0) uniform sampler2D uTexture0;       // Unlit
+layout (binding = 1) uniform sampler2D uTexture1;       // Normal
+layout (binding = 2) uniform sampler2D uTexture2;       // View vector
+layout (binding = 3) uniform sampler2D uTexture3;       // Modelposition, Use it CSM shadowing.
+layout (binding = 4) uniform sampler2DArrayShadow uTexture4; // Shadow
+layout (binding = 5) uniform sampler2D uTexture5;       // ZValue
+layout (binding = 6) uniform sampler2D uTexture6;       // SSAO
 
 uniform mat4  uLightVPSBMatrix[4];
 uniform vec4  uNormalizedFarPlanes;
@@ -74,11 +74,11 @@ layout(std140, binding = 1) uniform DirectionalLightBlock
 
 vec4 layerColor = vec4(1.0, 0.5f, 1.0f, 1.0f); // DEBUG
 
-vec4 GetNormal()    { return (texture(uNormal, fs_in.texCoord) - 0.5f) * 2.0f; }
-vec4 GetSpecular()  { return (texture(uSpecular, fs_in.texCoord) - 0.5f) * 2.0f; }
-vec3 GetModelPos()  { return texture(uModelPosition, fs_in.texCoord).xyz; }
-float GetZValue()   { return texture(uZValue, fs_in.texCoord).x; }
-float GetSSAOOffset() { return texture(uSSAO, fs_in.texCoord).x; }
+vec4 GetNormal()    { return (texture(uTexture1, fs_in.texCoord) - 0.5f) * 2.0f; }
+vec4 GetSpecular()  { return (texture(uTexture2, fs_in.texCoord) - 0.5f) * 2.0f; }
+vec3 GetModelPos()  { return texture(uTexture3, fs_in.texCoord).xyz; }
+float GetZValue()   { return texture(uTexture5, fs_in.texCoord).x; }
+float GetSSAOOffset() { return texture(uTexture6, fs_in.texCoord).x; }
 
 vec3 ComputeShadowCoords(int iSlice, vec3 iWorldPosition)
 {
@@ -99,13 +99,13 @@ float ComputeShadowCoefficient(vec3 iWorldPosition, float iZValue)
   shadowCoords.w  -= sShadowBias;
   shadowCoords.z   = float(slice);
   
-  return texture(uShadow, shadowCoords); 
+  return texture(uTexture4, shadowCoords); 
 }
 
 vec3 GetOpaqueColor()
 {
   vec3 resultColor    = vec3(0);
-  vec4 unlitValue	    = texture(uUnlit, fs_in.texCoord);
+  vec4 unlitValue	    = texture(uTexture0, fs_in.texCoord);
   if (unlitValue.a == 0) 
   { // If alpha is zero, discard.
     discard; 
