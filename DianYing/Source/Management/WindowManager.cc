@@ -26,8 +26,8 @@
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/WorldManager.h>
-#include "Dy/Core/Rendering/Wrapper/FDyGLWrapper.h"
-#include "Dy/Core/Rendering/Wrapper/PDyGLWindowContextDescriptor.h"
+#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Core/Rendering/Wrapper/PDyGLWindowContextDescriptor.h>
 
 //!
 //! Independent anonymous namespace
@@ -185,6 +185,7 @@ EDySuccess MDyWindow::pfInitialize()
           settingManager.GetWindowSizeWidth(),
           settingManager.GetWindowSizeHeight()
       };
+
       this->mGlfwWindow = FDyGLWrapper::CreateGLWindow(descriptor);
 
       // Create window instance for giving context to I/O worker thread.

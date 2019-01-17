@@ -24,11 +24,11 @@
 #include <Dy/Component/CDyDirectionalLight.h>
 #include <Dy/Management/Rendering/FramebufferManager.h>
 #include <Dy/Management/Rendering/UniformBufferObjectManager.h>
-#include "Dy/Component/CDyCamera.h"
-#include "Dy/Component/CDyModelRenderer.h"
-#include "Dy/Management/Helper/SDyProfilingHelper.h"
-#include "Dy/Core/Rendering/Wrapper/FDyGLWrapper.h"
-#include "Dy/Core/Resource/Resource/FDyMaterialResource.h"
+#include <Dy/Component/CDyCamera.h>
+#include <Dy/Component/CDyModelRenderer.h>
+#include <Dy/Management/Helper/SDyProfilingHelper.h>
+#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
 
 namespace dy
 {
@@ -142,7 +142,9 @@ void MDyRendering::RenderDrawCallQueue()
       }
 
       // Set global viewport values to camera's properties.
-      FDyGLWrapper::SetViewport(ptrCamera->GetPixelizedViewportRectangle());
+      { MDY_GRAPHIC_SET_CRITICALSECITON();
+        FDyGLWrapper::SetViewport(ptrCamera->GetPixelizedViewportRectangle());
+      }
       // (2) Draw opaque call list. Get valid Main CDyCamera instance pointer address.
       this->mBasicOpaqueRenderer->PreRender();
       for (auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] : this->mOpaqueMeshDrawingList)

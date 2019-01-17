@@ -56,7 +56,10 @@ FDyTextureResource::FDyTextureResource(_MIN_ const FDyTextureInformation& inform
   }
 
   // Create texture from shared context.
-  auto optTextureId = FDyGLWrapper::CreateTexture(descriptor);
+  std::optional<TU32> optTextureId;
+  { MDY_GRAPHIC_SET_CRITICALSECITON();
+    optTextureId = FDyGLWrapper::CreateTexture(descriptor);
+  }
   MDY_ASSERT(optTextureId.has_value() == true, "Texture id creation must be succeeded.");
   this->mTextureResourceId = *optTextureId;
 
@@ -65,7 +68,9 @@ FDyTextureResource::FDyTextureResource(_MIN_ const FDyTextureInformation& inform
 
 FDyTextureResource::~FDyTextureResource()
 {
-  FDyGLWrapper::DeleteTexture(this->mTextureResourceId);
+  { MDY_GRAPHIC_SET_CRITICALSECITON();
+    FDyGLWrapper::DeleteTexture(this->mTextureResourceId);
+  }
   SDyProfilingHelper::IncreaseOnBindTextureCount(0);
 }
 

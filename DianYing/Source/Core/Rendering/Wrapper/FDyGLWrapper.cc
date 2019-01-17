@@ -91,6 +91,7 @@ namespace dy
 {
 
 std::mutex FDyGLWrapper::mGLMutex;
+std::mutex FDyGLWrapper::mGLCriticalSectionMutex;
 
 GLFWwindow* FDyGLWrapper::CreateGLWindow(_MIN_ const PDyGLWindowContextDescriptor& descriptor)
 {
@@ -852,6 +853,32 @@ void FDyGLWrapper::UpdateUniformFloat(_MIN_ TU32 iId, _MIN_ const TF32& iBuffer)
 {
   MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
   glUniform1f(iId, iBuffer);
+}
+
+FDyGLWrapper::__OutsideLockguard::MDY_PRIVATE_SPECIFIER(OutsideLockguard)
+(FDyGLWrapper::MDY_PRIVATE_SPECIFIER(OutsideLockguard)&& iSource) noexcept
+{
+  iSource.mIsMoved = true;
+}
+
+FDyGLWrapper::__OutsideLockguard FDyGLWrapper::__LockMutex()
+{
+  FDyGLWrapper::mGLCriticalSectionMutex.lock();
+  return __OutsideLockguard{};
+}
+
+void FDyGLWrapper::__UnlockMutex()
+{
+  FDyGLWrapper::mGLCriticalSectionMutex.unlock();
+}
+
+FDyGLWrapper::__OutsideLockguard::~MDY_PRIVATE_SPECIFIER(OutsideLockguard)() noexcept
+{
+  if (this->mIsMoved == false)
+  { // Unlock gl critical section when not moved.
+    glFlush();
+    FDyGLWrapper::MDY_PRIVATE_SPECIFIER(UnlockMutex)();
+  }
 }
 
 } /// ::dy namespace

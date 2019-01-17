@@ -38,14 +38,18 @@ FDyAttachmentResource::FDyAttachmentResource(_MIN_ const FDyAttachmentInformatio
     descriptor.mIsUsingCustomizedParameter = true; 
   }
 
-  const auto optAttachmentId = FDyGLWrapper::CreateAttachment(descriptor);
-  MDY_ASSERT(optAttachmentId.has_value() == true, "Attachment creation must be succeeded.");
-  this->mAttachmentId = optAttachmentId.value();
+  { MDY_GRAPHIC_SET_CRITICALSECITON();
+    const auto optAttachmentId = FDyGLWrapper::CreateAttachment(descriptor);
+    MDY_ASSERT(optAttachmentId.has_value() == true, "Attachment creation must be succeeded.");
+    this->mAttachmentId = optAttachmentId.value();
+  }
 }
 
 FDyAttachmentResource::~FDyAttachmentResource()
 {
-  MDY_CALL_ASSERT_SUCCESS(FDyGLWrapper::DeleteAttachment(this->mAttachmentId, this->IsRenderBuffer()));
+  { MDY_GRAPHIC_SET_CRITICALSECITON();
+    MDY_CALL_ASSERT_SUCCESS(FDyGLWrapper::DeleteAttachment(this->mAttachmentId, this->IsRenderBuffer()));
+  }
 }
 
 const EDyGlBufferDataInternalFormat& FDyAttachmentResource::GetBufferType() const noexcept

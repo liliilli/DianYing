@@ -66,14 +66,19 @@ FDyFrameBufferResource::FDyFrameBufferResource(const FDyFrameBufferInformation& 
         ptrDepth->IsRenderBuffer());
   }
 
-  const auto optFrameBufferId = FDyGLWrapper::CreateFrameBuffer(descriptor);
+  std::optional<TU32> optFrameBufferId;
+  { MDY_GRAPHIC_SET_CRITICALSECITON();
+    optFrameBufferId = FDyGLWrapper::CreateFrameBuffer(descriptor);
+  }
   MDY_ASSERT(optFrameBufferId.has_value() == true, "Frame buffer creation must be succeeded.");
   this->mFrameBufferId = optFrameBufferId.value();
 }
 
 FDyFrameBufferResource::~FDyFrameBufferResource()
 {
-  MDY_CALL_ASSERT_SUCCESS(FDyGLWrapper::DeleteFrameBuffer(this->mFrameBufferId));
+  { MDY_GRAPHIC_SET_CRITICALSECITON();
+    MDY_CALL_ASSERT_SUCCESS(FDyGLWrapper::DeleteFrameBuffer(this->mFrameBufferId));
+  }
 }
 
 EDySuccess FDyFrameBufferResource::BindFrameBuffer() const noexcept
