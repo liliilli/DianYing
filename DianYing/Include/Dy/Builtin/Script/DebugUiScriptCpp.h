@@ -14,6 +14,8 @@
 ///
 
 #include <Dy/Component/Abstract/ADyWidgetCppScript.h>
+#include <Dy/Component/Abstract/ADyActorCppScript.h>
+#include <Dy/Component/Abstract/ADyGlobalCppScript.h>
 #include <Dy/Builtin/Abstract/ADyScriptResource.h>
 #include <Dy/Meta/Information/ScriptMetaInformation.h>
 #include <Dy/Core/Reflection/RDyBuiltinResources.h>

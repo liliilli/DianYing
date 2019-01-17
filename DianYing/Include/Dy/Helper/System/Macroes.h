@@ -579,9 +579,9 @@ private:                                                  \
 private: \
   std::any GetMetaInfo() override final { return 0; }; \
 public: \
-  class __ConstructionHelper final : public IDyResource \
+  class __ConstructionHelper final : public ::dy::IDyResource \
   { \
-    using TScriptableFunction = PDyScriptInstanceMetaInfo::TScriptableFunction; \
+    using TScriptableFunction = ::dy::PDyScriptInstanceMetaInfo::TScriptableFunction; \
     using TFunctionReturn = std::invoke_result_t<TScriptableFunction>; \
     \
     template<typename TType> \
@@ -592,11 +592,16 @@ public: \
     \
     std::any GetMetaInfo() override final \
     { \
+      using namespace dy; \
       PDyScriptInstanceMetaInfo metaInfo = {}; \
       metaInfo.mScriptType = EDyScriptType::Cpp; \
       if constexpr (IsInheritancedFrom<__MAType__, ADyWidgetCppScript> == true) \
-            { metaInfo.mScriptMode = EDyScriptMode::Widget; } \
-      else  { metaInfo.mScriptMode = EDyScriptMode::Actor; } \
+      { metaInfo.mScriptMode = EDyScriptMode::Widget; } \
+      else if constexpr (IsInheritancedFrom<__MAType__, ADyActorCppScript> == true) \
+      { metaInfo.mScriptMode = EDyScriptMode::Actor; } \
+      else if constexpr (IsInheritancedFrom<__MAType__, ADyGlobalCppScript> == true) \
+      { metaInfo.mScriptMode = EDyScriptMode::Global; } \
+      else { metaInfo.mScriptMode = EDyScriptMode::NoneError; } \
       \
       metaInfo.mSpecifierName = __MASpecifier__; \
       metaInfo.mBtInstantiationFunction = function; \

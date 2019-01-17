@@ -105,6 +105,11 @@ public:
   /// @brief Clear actor script gc list `mGCedActorScriptList` anyway.
   void ClearActorScriptGCList();
 
+  /// @brief Call global scripts.
+  void CallGlobalScripts();
+  /// @brief Remove global scripts.
+  void RemoveGlobalScripts();
+
 private:
   sol::state mLua;
 
@@ -119,6 +124,8 @@ private:
   TDyActorScriptList  mInsertActorScriptList  = {};
   TDyActorScriptList  mActorScriptList        = {};
   TDyActorScriptList  mGCedActorScriptList    = {};
+
+
 };
 
 } /// ::dy namespace
