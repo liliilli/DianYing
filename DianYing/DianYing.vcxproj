@@ -585,7 +585,6 @@
     <ClInclude Include="Include\Dy\Builtin\Widget\FDyBtWdTestLoadingUi.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyGlobalCppScript.h" />
     <ClInclude Include="Include\Dy\Component\Actor\CDyActorScript.h" />
-    <ClInclude Include="Include\Dy\Component\Global\CDyGlobalScript.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Actor\CDyActorScriptBase.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Actor\FDyActorScriptStatus.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Camera\DDyFrustumTester.h" />

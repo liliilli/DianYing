@@ -707,7 +707,6 @@
     <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAtSSAOFinalOutput.h" />
     <ClInclude Include="Include\Dy\Builtin\Texture\SSAONoiseMap.h" />
     <ClInclude Include="Include\Dy\Builtin\Constant\SSAO.h" />
-    <ClInclude Include="Include\Dy\Component\Global\CDyGlobalScript.h" />
     <ClInclude Include="data\Script\GlobalTestScript.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyGlobalCppScript.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Script\FDyGlobalScriptStatus.h" />

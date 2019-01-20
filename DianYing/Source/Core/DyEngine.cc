@@ -264,6 +264,11 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(ReflectGameStatusTransition)()
     case EDyGlobalGameStatus::Ended: 
     { // Shutdown => Ended.
       MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(RemoveLevel)();
+
+      auto& scriptManager = MDyScript::GetInstance();
+      scriptManager.CallonEndGlobalScriptList();
+      scriptManager.RemoveGlobalScriptInstances();
+
       this->pfReleaseDependentManager();
       MDY_CALL_ASSERT_SUCCESS(MDyWindow::GetInstance().MDY_PRIVATE_SPECIFIER(TerminateWindow)());
     } break;

@@ -36,6 +36,7 @@
 #include <Dy/Meta/Descriptor/WidgetLayoutMetaInformation.h>
 #include <Dy/Meta/Descriptor/WidgetBarMetaInformation.h>
 #include <Dy/Meta/Descriptor/WidgetImageMetaInformation.h>
+#include "Dy/Management/ScriptManager.h"
 
 //!
 //! Local tranlation unit variables
@@ -261,7 +262,13 @@ const PDyScriptInstanceMetaInfo& MDyMetaInfo::GetScriptMetaInformation(_MIN_ con
   return this->mScriptMetaInfo.at(specifierName);
 }
 
-const PDyPrefabInstanceMetaInfo& MDyMetaInfo::GetPrefabMetaInformation(_MIN_ const std::string& specifierName) const
+const std::unordered_map<std::string, PDyScriptInstanceMetaInfo>& 
+MDyMetaInfo::GetRefGlobalScriptMetaInfoContainer() const noexcept
+{
+  return this->mGlobalScriptMetaInfo;
+}
+
+  const PDyPrefabInstanceMetaInfo& MDyMetaInfo::GetPrefabMetaInformation(_MIN_ const std::string& specifierName) const
 {
   MDY_ASSERT(DyIsMapContains(this->mPrefabMetaInfo, specifierName) == true, "");
   return *this->mPrefabMetaInfo.at(specifierName);
@@ -335,9 +342,54 @@ bool MDyMetaInfo::IsMeshMetaInfoExist(_MIN_ const std::string & specifier) const
   return DyIsMapContains(this->mBtMeshMetaInfo, specifier);
 }
 
-bool MDyMetaInfo::IsLevelMetaInformation(const std::string& specifier) const noexcept
+bool MDyMetaInfo::IsLevelMetaInformation(_MIN_ const std::string& specifier) const noexcept
 {
   return DyIsMapContains(this->mLevelInfoMap, specifier);
+}
+
+bool MDyMetaInfo::IsModelMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
+{
+  return DyIsMapContains(this->mModelMetaInfo, specifier);
+}
+
+bool MDyMetaInfo::IsTextureMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
+{
+  return DyIsMapContains(this->mTextureMetaInfo, specifier);
+}
+
+bool MDyMetaInfo::IsMaterialMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
+{
+  return DyIsMapContains(this->mMaterialMetaInfo, specifier);
+}
+
+bool MDyMetaInfo::IsWidgetMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
+{
+  return DyIsMapContains(this->mWidgetMetaInfo, specifier);
+}
+
+bool MDyMetaInfo::IsScriptMetaInformationExist(_MIN_ const std::string& specifierName) const noexcept
+{
+  return DyIsMapContains(this->mScriptMetaInfo, specifierName);
+}
+
+bool MDyMetaInfo::IsPrefabMetaInformationExist(_MIN_ const std::string& specifierName) const noexcept
+{
+  return DyIsMapContains(this->mPrefabMetaInfo, specifierName);
+}
+
+bool MDyMetaInfo::IsFontMetaInformationExist(_MIN_ const std::string& specifierName) const noexcept
+{
+  return DyIsMapContains(this->mFontMetaInfo, specifierName);
+}
+
+bool MDyMetaInfo::IsAttachmentMetaInfoExist(_MIN_ const std::string& specifierName) const noexcept
+{
+  return DyIsMapContains(this->mAttachmentMetaInfo, specifierName);
+}
+
+bool MDyMetaInfo::IsFrameBufferMetaInfoExist(_MIN_ const std::string& speicfierName) const noexcept
+{
+  return DyIsMapContains(this->mFrameBufferMetaInfo, speicfierName);
 }
 
 bool MDyMetaInfo::IsLoadingWidgetMetaInfoExist() const noexcept
@@ -361,13 +413,18 @@ void MDyMetaInfo::MDY_PRIVATE_SPECIFIER(PopulateBootResourceSpecifierList)() con
 void MDyMetaInfo::MDY_PRIVATE_SPECIFIER(PopulateGlobalResourceSpecifierList)() const noexcept
 {
   static bool mIsCalled = false;
-  MDY_ASSERT(mIsCalled == false, "This function must not be called twice.");
+  MDY_ASSERT_FORCE(mIsCalled == false, "This function must not be called twice.");
 
   // Global resource list consists of many sub-global resource list from each global resource script.
-  SDyIOConnectionHelper::PopulateResourceList(
-      mGlobalResourceSpecifierList, 
-      EDyScope::Global,
-      []() { DyEngine::GetInstance().SetNextGameStatus(EDyGlobalGameStatus::Loading); }
+  SDyIOConnectionHelper::PopulateResourceList(mGlobalResourceSpecifierList, EDyScope::Global,
+    [] 
+    { 
+      // Create global scripts.
+      auto& scriptManager = MDyScript::GetInstance();
+      scriptManager.CreateGlobalScriptInstances();
+      scriptManager.CallonStartGlobalScriptList();
+      DyEngine::GetInstance().SetNextGameStatus(EDyGlobalGameStatus::Loading); 
+    }
   );
   mIsCalled = true;
 }
@@ -640,8 +697,21 @@ EDySuccess MDyMetaInfo::MDY_PRIVATE_SPECIFIER(AddLoadingWidgetMetaInformation)(_
 
 EDySuccess MDyMetaInfo::pfAddScriptMetaInformation(_MIN_ const PDyScriptInstanceMetaInfo& metaInfo)
 {
-  MDY_ASSERT(DyIsMapContains(this->mScriptMetaInfo, metaInfo.mSpecifierName) == false, "Duplicated script name is exist.");
-  this->mScriptMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
+  if (metaInfo.mScriptMode == decltype(metaInfo.mScriptMode)::Global)
+  { // If script mode is `Global`, insert it to separated container.
+    MDY_ASSERT_FORCE(
+        DyIsMapContains(this->mGlobalScriptMetaInfo, metaInfo.mSpecifierName) == false, 
+        "Duplicated global script name is exist.");
+    this->mGlobalScriptMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
+  }
+  else
+  {
+    MDY_ASSERT_FORCE(
+        DyIsMapContains(this->mScriptMetaInfo, metaInfo.mSpecifierName) == false, 
+        "Duplicated general script name is exist.");
+    this->mScriptMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
+  }
+
   return DY_SUCCESS;
 }
 
