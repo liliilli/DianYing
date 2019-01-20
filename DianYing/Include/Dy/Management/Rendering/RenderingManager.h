@@ -88,6 +88,7 @@ public:
   EDySuccess MDY_PRIVATE_SPECIFIER(UnbindMainDirectionalShadow)(_MIN_ CDyDirectionalLight& iRefLight);
 
 private:
+
   ///
   /// @brief Reset all of rendering framebuffers related to rendering of scene for new frame rendering.
   ///

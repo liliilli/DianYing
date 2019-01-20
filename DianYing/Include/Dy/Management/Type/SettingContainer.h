@@ -59,9 +59,9 @@ struct DDySettingGameplay final
 
   struct DDyGraphics final
   {
-    ///
+    /// @brief Enable default CSM shading mapping. Have a effect to performance.
     bool mIsEnabledDefaultShadow  = false;
-    ///
+    /// @brief Enable default post-process SSAO occlusion.
     bool mIsEnabledDefaultSsao    = false;
   };
 

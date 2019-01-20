@@ -98,6 +98,34 @@ EDyRenderingApi MDySetting::GetRenderingType() const noexcept
   return this->mRenderingType;
 }
 
+void MDySetting::SetDefaultShadowOption(_MIN_ bool iFlag) noexcept
+{
+  auto& previousFlag = this->mGamePlay.mGraphics.mIsEnabledDefaultShadow;
+  if (iFlag != previousFlag)
+  {
+    previousFlag = iFlag;
+  }
+}
+
+bool MDySetting::IsDefaultShadowOptionActivated() const noexcept
+{
+  return this->mGamePlay.mGraphics.mIsEnabledDefaultShadow;
+}
+
+void MDySetting::SetDefaultSsaoOption(_MIN_ bool iFlag) noexcept
+{
+  auto& previousFlag = this->mGamePlay.mGraphics.mIsEnabledDefaultSsao;
+  if (iFlag != previousFlag)
+  {
+    previousFlag = iFlag;
+  }
+}
+
+bool MDySetting::IsDefaultSsaoOptionActivated() const noexcept
+{
+  return this->mGamePlay.mGraphics.mIsEnabledDefaultSsao;
+}
+
 TI32 MDySetting::GetWindowSizeWidth() const noexcept
 {
   return this->mGamePlay.mInitialResolution.X;
