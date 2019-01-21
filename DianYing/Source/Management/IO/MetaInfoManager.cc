@@ -609,7 +609,15 @@ EDySuccess MDyMetaInfo::pReadMaterialResourceMetaInformation(_MIN_ const std::st
   const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
   MDY_ASSERT_FORCE(opJsonAtlas.has_value() == true, "Failed to read material meta information. File is not exist.");
 
+  // (2) Insert each item.
+  for (const auto& item : opJsonAtlas.value().items())
+  {
+    auto desc = item.value().get<PDyMaterialInstanceMetaInfo>();
+    desc.mSpecifierName = item.key();
 
+    auto [it, isSucceeded] = this->mMaterialMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
+    MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
+  }
 
   return DY_SUCCESS;
 }
