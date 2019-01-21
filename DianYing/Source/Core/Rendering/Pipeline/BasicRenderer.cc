@@ -109,12 +109,16 @@ void FDyBasicRenderer::RenderScreen(
   if (MDY_CHECK_ISNULL(ptrCamera)) { return; }
 
   // General deferred rendering
-  const auto& refModelMatrix = iRefRenderer.GetBindedActor()->GetTransform()->GetTransform();
+  const auto& transform = iRefRenderer.GetBindedActor()->GetTransform();
+  const auto& refModelMatrix    = transform->GetTransform();
+  const auto& refRotationMatrix = transform->GetRotationMatrix();
   auto& shaderBinder = iRefMaterial.GetShaderResourceBinder();
   if (shaderBinder.IsResourceExist() == false) { return; }
 
   shaderBinder->UseShader();
+  shaderBinder.TryUpdateUniform<EDyUniformVariableType::Matrix4>("uModelMatrix", refModelMatrix);
   shaderBinder.TryUpdateUniform<EDyUniformVariableType::Matrix4>("modelMatrix", refModelMatrix);
+  shaderBinder.TryUpdateUniform<EDyUniformVariableType::Matrix3>("uRotationMatrix", DDyMatrix3x3{refModelMatrix});
   shaderBinder.TryUpdateUniformList();
   iRefMaterial.TryUpdateTextureList();
 
