@@ -281,6 +281,7 @@
     <ClCompile Include="data\Script\GlobalTestScript.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Global\CDyGlobalScriptCpp.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Global\FDyGlobalScriptStatus.cc" />
+    <ClCompile Include="Source\Helper\Library\HelperFilesystem.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
