@@ -14,6 +14,7 @@
 ///
 
 #include <string>
+#include <nlohmann/json_fwd.hpp>
 
 namespace dy
 {
@@ -29,6 +30,11 @@ enum class EDyImageColorFormatStyle
   RGBA        // Red-Green-Blue and alpha 8bit unsigned.
 };
 
+/// @brief Serialization function.
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyImageColorFormatStyle& p);
+/// @brief Deerialization function.
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyImageColorFormatStyle& p);
+
 /// @brief Get internal GLenum for texture formatting from style.
 /// If errored, just return null value.
 MDY_NODISCARD std::optional<GLenum> DyGLGetImageFormatFrom(_MIN_ EDyImageColorFormatStyle style) noexcept;
@@ -41,6 +47,11 @@ enum class EDyGlImagePixelReadType
   UnsignedByte, // GL_UNSIGNED_BYTE
   Float,        // GL_FLOAT
 };
+
+/// @brief Serialization function.
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyGlImagePixelReadType& p);
+/// @brief Deerialization function.
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyGlImagePixelReadType& p);
 
 /// @brief Get internal image format type.
 MDY_NODISCARD GLenum DyGlGetImagePixelTypeFrom(_MIN_ EDyGlImagePixelReadType iType) noexcept;

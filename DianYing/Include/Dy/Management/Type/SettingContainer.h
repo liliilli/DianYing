@@ -160,11 +160,18 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingTag& p);
 ///
 struct DDySettingMetaPath final
 {
-  std::string mSceneMetaPath  = MDY_INITIALIZE_EMPTYSTR;
-  std::string mWidgetMetaPath = MDY_INITIALIZE_EMPTYSTR;
-  std::string mPrefabMetaPath = MDY_INITIALIZE_EMPTYSTR;
-  std::string mFontMetaPath   = MDY_INITIALIZE_EMPTYSTR;
-  std::string mScriptMetaPath = MDY_INITIALIZE_EMPTYSTR;
+  // Meta strings
+  std::string mSceneMetaPath    = MDY_INITIALIZE_EMPTYSTR;
+  std::string mWidgetMetaPath   = MDY_INITIALIZE_EMPTYSTR;
+  std::string mPrefabMetaPath   = MDY_INITIALIZE_EMPTYSTR;
+  std::string mScriptMetaPath   = MDY_INITIALIZE_EMPTYSTR;
+
+  // Resources
+  std::string mFontMetaPath     = MDY_INITIALIZE_EMPTYSTR;
+  std::string mModelMetaPath    = MDY_INITIALIZE_EMPTYSTR;
+  std::string mTextureMetaPath  = MDY_INITIALIZE_EMPTYSTR;
+  std::string mGLShaderMetaPath = MDY_INITIALIZE_EMPTYSTR;
+  std::string mMaterialMetaPath = MDY_INITIALIZE_EMPTYSTR;
 };
 
 void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingMetaPath& p);

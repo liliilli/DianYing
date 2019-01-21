@@ -18,12 +18,16 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_NO_FAILURE_STRINGS
 #define STBI_FAILURE_USERMSG
+
 #if defined(_WIN32)
 #pragma warning(push)
 #pragma warning(disable:4100 4505)
 #endif
+
 #include <stb_image.h>
-#include "Dy/Management/LoggingManager.h"
+#include <nlohmann/json.hpp>
+#include <Dy/Management/LoggingManager.h>
+
 #if defined(_WIN32)
 #pragma warning(pop)
 #endif
@@ -55,6 +59,27 @@ dy::EDyImageColorFormatStyle GetColorFormat(const int32_t channelsValue) noexcep
 namespace dy
 {
 
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyImageColorFormatStyle& p)
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyImageColorFormatStyle& p)
+{
+  const auto& deserializedStringValue = j.get_ref<const std::string&>();
+  if (deserializedStringValue == "DEFAULT") 
+  { 
+    p = EDyImageColorFormatStyle::RGBA; 
+    return;
+  }
+
+  if (deserializedStringValue == "R")         { p = EDyImageColorFormatStyle::R; }
+  else if (deserializedStringValue == "RG")   { p = EDyImageColorFormatStyle::RG; }
+  else if (deserializedStringValue == "RGB")  { p = EDyImageColorFormatStyle::RGB; }
+  else if (deserializedStringValue == "RGBA") { p = EDyImageColorFormatStyle::RGBA; }
+  else { MDY_UNEXPECTED_BRANCH(); }
+}
+
 std::optional<GLenum> DyGLGetImageFormatFrom(_MIN_ EDyImageColorFormatStyle style) noexcept
 {
   switch (style)
@@ -65,6 +90,25 @@ std::optional<GLenum> DyGLGetImageFormatFrom(_MIN_ EDyImageColorFormatStyle styl
   case EDyImageColorFormatStyle::RGBA:      return GL_RGBA;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
   }
+}
+
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyGlImagePixelReadType& p)
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyGlImagePixelReadType& p)
+{
+  const auto& deserializedStringValue = j.get_ref<const std::string&>();
+  if (deserializedStringValue == "DEFAULT") 
+  { 
+    p = EDyGlImagePixelReadType::UnsignedByte; 
+    return;
+  }
+
+  if (deserializedStringValue == "UnsignedByte") { p = EDyGlImagePixelReadType::UnsignedByte; }
+  else if (deserializedStringValue == "Float")   { p = EDyGlImagePixelReadType::Float; }
+  else { MDY_UNEXPECTED_BRANCH(); }
 }
 
 GLenum DyGlGetImagePixelTypeFrom(_MIN_ EDyGlImagePixelReadType iType) noexcept

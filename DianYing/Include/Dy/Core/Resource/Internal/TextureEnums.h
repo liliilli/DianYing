@@ -13,6 +13,8 @@
 /// SOFTWARE.
 ///
 
+#include <nlohmann/json_fwd.hpp>
+
 namespace dy
 {
 
@@ -49,6 +51,11 @@ enum class EDyTextureStyleType : unsigned char
   D2Shadow,
   D2ShadowArray,
 };
+
+/// @brief Serialization function.
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyTextureStyleType& p);
+/// @brief Deerialization function.
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyTextureStyleType& p);
 
 /// @brief Get converted low-level gl texture type from wrapping type.
 MDY_NODISCARD GLenum DyGLGetLowTextureType(_MIN_ EDyTextureStyleType iType) noexcept;

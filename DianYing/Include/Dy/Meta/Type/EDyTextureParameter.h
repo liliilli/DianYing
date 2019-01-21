@@ -38,18 +38,22 @@ enum class EDyGlParameterName
   NoneError
 };
 
+/// @brief Serialization function
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyGlParameterName& p);
+/// @brief Deserialization function
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyGlParameterName& p);
+/// @brief Convert plain string value to proper `EDyGlParameterName`. \n
+/// If no value is matched, just return NoneError.
+MDY_NODISCARD EDyGlParameterName 
+DyConvertStringToEDyGlParameterName(_MIN_ const std::string& iString) noexcept;
 
 /// @brief  Get internal plain parameter value from EDyGlParameterName.
 /// @param  name EDyGlParameterName
 /// @return OpenGL C-plain parameter value.
 MDY_NODISCARD GLenum DyGetTexParameterNameValue(_MIN_ const EDyGlParameterName name) noexcept;
 
-///
 /// @enum   EDyGlParameterValue
 /// @brief  Texture parameter value name.
-///
 enum class EDyGlParameterValue
 {
   Nearest,
@@ -82,6 +86,10 @@ enum class EDyGlParameterValue
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyGlParameterValue& p);
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyGlParameterValue& p);
 
+/// @brief Convert plain string value to proper `EDyGlParameterValue`. \n
+/// If no value is matched, just return NoneError.
+MDY_NODISCARD EDyGlParameterValue 
+DyConvertStringToEDyGlParameterValue(_MIN_ const std::string& iString) noexcept;
 /// @brief  Get internal plain parameter value from EDyGlParameterValue.
 /// @param  value EDyGlParameterValue
 /// @return OpenGL C-plain parameter value.

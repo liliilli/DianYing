@@ -71,8 +71,13 @@ MDY_SET_IMMUTABLE_STRING(sCollision,  "Collision");
 MDY_SET_IMMUTABLE_STRING(sHeader_MetaPath_Scene,    "Scene");
 MDY_SET_IMMUTABLE_STRING(sHeader_MetaPath_Widget,   "Widget");
 MDY_SET_IMMUTABLE_STRING(sHeader_MetaPath_Prefab,   "Prefab");
-MDY_SET_IMMUTABLE_STRING(sHeader_MetaPath_Font,     "Font");
 MDY_SET_IMMUTABLE_STRING(sHeader_MetaPath_Script,   "Script");
+
+MDY_SET_IMMUTABLE_STRING(sHeader_MetaPath_Font,     "Font");
+MDY_SET_IMMUTABLE_STRING(sHeader_MetaPath_Model,    "Model");
+MDY_SET_IMMUTABLE_STRING(sHeader_MetaPath_Texture,  "Texture");
+MDY_SET_IMMUTABLE_STRING(sHeader_MetaPath_Material, "Material");
+MDY_SET_IMMUTABLE_STRING(sHeader_MetaPath_Shader,   "Shader");
 
 } /// ::unnamed namespace
 
@@ -257,8 +262,13 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingMetaPath& p)
       {MSVSTR(sHeader_MetaPath_Scene),  p.mSceneMetaPath},
       {MSVSTR(sHeader_MetaPath_Widget), p.mWidgetMetaPath},
       {MSVSTR(sHeader_MetaPath_Prefab), p.mPrefabMetaPath},
-      {MSVSTR(sHeader_MetaPath_Font),   p.mFontMetaPath},
-      {MSVSTR(sHeader_MetaPath_Script), p.mScriptMetaPath}
+      {MSVSTR(sHeader_MetaPath_Script), p.mScriptMetaPath},
+
+      {MSVSTR(sHeader_MetaPath_Font),     p.mFontMetaPath},
+      {MSVSTR(sHeader_MetaPath_Model),    p.mModelMetaPath},
+      {MSVSTR(sHeader_MetaPath_Texture),  p.mTextureMetaPath},
+      {MSVSTR(sHeader_MetaPath_Material), p.mMaterialMetaPath},
+      {MSVSTR(sHeader_MetaPath_Shader),   p.mGLShaderMetaPath},
   };
 }
 
@@ -267,8 +277,13 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingMetaPath& p)
   p.mSceneMetaPath  = DyJsonGetValueFrom<std::string>(j, sHeader_MetaPath_Scene);
   p.mWidgetMetaPath = DyJsonGetValueFrom<std::string>(j, sHeader_MetaPath_Widget);
   p.mPrefabMetaPath = DyJsonGetValueFrom<std::string>(j, sHeader_MetaPath_Prefab);
-  p.mFontMetaPath   = DyJsonGetValueFrom<std::string>(j, sHeader_MetaPath_Font);
   p.mScriptMetaPath = DyJsonGetValueFrom<std::string>(j, sHeader_MetaPath_Script);
+
+  p.mFontMetaPath     = DyJsonGetValueFrom<std::string>(j, sHeader_MetaPath_Font);
+  p.mModelMetaPath    = DyJsonGetValueFrom<std::string>(j, sHeader_MetaPath_Model);
+  p.mTextureMetaPath  = DyJsonGetValueFrom<std::string>(j, sHeader_MetaPath_Texture);
+  p.mGLShaderMetaPath = DyJsonGetValueFrom<std::string>(j, sHeader_MetaPath_Shader);
+  p.mMaterialMetaPath = DyJsonGetValueFrom<std::string>(j, sHeader_MetaPath_Material);
 }
 
 } /// ::dy namespace

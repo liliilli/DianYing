@@ -66,47 +66,55 @@ public:
   const PDyLevelConstructMetaInfo* GetLevelMetaInformation(const std::string& levelName) const noexcept;
 
   /// @brief  Get valid script meta information instance.
-  /// @return valid script meta information instance.
-  MDY_NODISCARD const PDyScriptInstanceMetaInfo&    GetScriptMetaInformation(_MIN_ const std::string& specifierName) const;
+  /// @return valid general script meta information instance.
+  MDY_NODISCARD const PDyScriptInstanceMetaInfo&    
+  GetScriptMetaInformation(_MIN_ const std::string& specifierName) const;
   /// @brief  Get const reference container of global script meta information.
-  MDY_NODISCARD const THashMap<PDyScriptInstanceMetaInfo>& GetRefGlobalScriptMetaInfoContainer() const noexcept;
+  /// @return valid global script meta information instance.
+  MDY_NODISCARD const THashMap<PDyScriptInstanceMetaInfo>& 
+  GetRefGlobalScriptMetaInfoContainer() const noexcept;
   /// @brief  Get prefab meta information instance.
-  MDY_NODISCARD const PDyPrefabInstanceMetaInfo&    GetPrefabMetaInformation(_MIN_ const std::string& specifierName) const;
+  /// @return valid prefab meta information instance.
+  MDY_NODISCARD const PDyPrefabInstanceMetaInfo&    
+  GetPrefabMetaInformation(_MIN_ const std::string& specifierName) const;
   /// @brief
-  MDY_NODISCARD const PDyMetaFontInformation&       GetFontMetaInformation(_MIN_ const std::string& specifierName) const;
+  MDY_NODISCARD const PDyMetaFontInformation&       
+  GetFontMetaInformation(_MIN_ const std::string& specifierName) const;
   /// @brief
-  MDY_NODISCARD const PDyMetaWidgetRootDescriptor&  GetWidgetMetaInformation(_MIN_ const std::string& specifierName) const;
+  MDY_NODISCARD const PDyMetaWidgetRootDescriptor&  
+  GetWidgetMetaInformation(_MIN_ const std::string& specifierName) const;
   /// @brief  Get shader instance meta information from container.
   /// @return Return value is undefined if not found.
-  MDY_NODISCARD const PDyGLShaderInstanceMetaInfo&  GetGLShaderMetaInformation(_MIN_ const std::string& specifier) const;
+  MDY_NODISCARD const PDyGLShaderInstanceMetaInfo&  
+  GetGLShaderMetaInformation(_MIN_ const std::string& specifier) const;
   /// @brief  Get builtin mesh instance meta information from container.
   /// @return Return value is undefined if not found.
-  MDY_NODISCARD const PDyBtMeshInstanceMetaInfo&     GetBtMeshMetaInformation(_MIN_ const std::string& specifier) const;
+  MDY_NODISCARD const PDyBtMeshInstanceMetaInfo&     
+  GetBtMeshMetaInformation(_MIN_ const std::string& specifier) const;
   /// @brief  Get model instance meta information from container.
   /// @return Return value is undefined if not found.
-  MDY_NODISCARD const PDyModelInstanceMetaInfo&     GetModelMetaInformation(_MIN_ const std::string& specifier) const;
+  MDY_NODISCARD const PDyModelInstanceMetaInfo&     
+  GetModelMetaInformation(_MIN_ const std::string& specifier) const;
   /// @brief  Get texture instance meta information from container.
   /// @return Return value is undefined if not found.
-  MDY_NODISCARD const PDyTextureInstanceMetaInfo&   GetTextureMetaInformation(_MIN_ const std::string& specifier) const;
+  MDY_NODISCARD const PDyTextureInstanceMetaInfo&   
+  GetTextureMetaInformation(_MIN_ const std::string& specifier) const;
   /// @brief  Get material instance meta information from container.
   /// @return Return value is undefined if not found.
-  MDY_NODISCARD const PDyMaterialInstanceMetaInfo&  GetMaterialMetaInformation(_MIN_ const std::string& specifier) const;
+  MDY_NODISCARD const PDyMaterialInstanceMetaInfo&  
+  GetMaterialMetaInformation(_MIN_ const std::string& specifier) const;
   /// @brief  Get frame buffer instance meta information from container.
   /// @return Return value is undefined if not found.
-  MDY_NODISCARD const PDyGlFrameBufferInstanceMetaInfo& GetGlFrameBufferMetaInformation(_MIN_ const std::string& specifier) const;
+  MDY_NODISCARD const PDyGlFrameBufferInstanceMetaInfo&
+  GetGlFrameBufferMetaInformation(_MIN_ const std::string& specifier) const;
   /// @brief  Get attachment instance meta information from container.
   /// @return Return value is undefined if not found.
-  MDY_NODISCARD const PDyGlAttachmentInstanceMetaInfo&  GetGLAttachmentMetaInformation(_MIN_ const std::string& specifier) const;
+  MDY_NODISCARD const PDyGlAttachmentInstanceMetaInfo&  
+  GetGLAttachmentMetaInformation(_MIN_ const std::string& specifier) const;
 
   /// @brief Get loading widget pointer if exist, or return nullptr (nothing) value
   MDY_NODISCARD const PDyMetaWidgetRootDescriptor* 
   MDY_PRIVATE_SPECIFIER(TryGetLoadingWidgetMetaLoading)() const noexcept;
-
-  ///
-  /// @brief  Check script meta information is exist.
-  /// @return Return value is false if not found.
-  ///
-  ////
 
   /// @brief  Check script meta information is exist.
   /// @return Return value is false if not found.
@@ -164,8 +172,13 @@ private:
   MDY_NODISCARD EDySuccess pReadScriptResourceMetaInformation(_MIN_ const std::string& metaFilePath);
   MDY_NODISCARD EDySuccess pReadPrefabResourceMetaInformation(_MIN_ const std::string& metaFilePath);
   MDY_NODISCARD EDySuccess pReadWidgetResourceMetaInformation(_MIN_ const std::string& metaFilePath);
-  MDY_NODISCARD EDySuccess pReadFontResourceMetaInformation  (_MIN_ const std::string& metaFilePath);
   MDY_NODISCARD EDySuccess pReadSceneResourceMetaInformation (_MIN_ const std::string& metaFilepath);
+
+  MDY_NODISCARD EDySuccess pReadFontResourceMetaInformation    (_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadModelResourceMetaInformation   (_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadTextureResourceMetaInformation (_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadShaderResourceMetaInformation  (_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadMaterialResourceMetaInformation(_MIN_ const std::string& metaFilePath);
 
   MDY_NODISCARD EDySuccess pReadScriptResourceMetaInformation(_MIN_ const nlohmann::json& iJson);
   MDY_NODISCARD EDySuccess pReadPrefabResourceMetaInformation(_MIN_ const nlohmann::json& iJson);

@@ -16,6 +16,7 @@
 ///
 
 #include <cstdint>
+#include <nlohmann/json_fwd.hpp>
 #include <Dy/Helper/Type/ColorRGBA.h>
 
 namespace dy
@@ -114,6 +115,11 @@ struct alignas(4) DDyColorRGBA32 final
   static const DDyColorRGBA32 White;
   static const DDyColorRGBA32 Yellow;
 };
+
+/// @brief Serialization function.
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDyColorRGBA32& p);
+/// @brief Deerialization function.
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ DDyColorRGBA32& p);
 
 } /// ::dy namespace
 

@@ -14,21 +14,40 @@
 
 /// Header file
 #include <Dy/Core/Resource/Internal/TextureEnums.h>
+#include <nlohmann/json.hpp>
 
 namespace dy
 {
+
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyTextureStyleType& p)
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyTextureStyleType& p)
+{
+  const auto& deserializedStringValue = j.get_ref<const std::string&>();
+  if (deserializedStringValue == "D1")                  { p = EDyTextureStyleType::D1; }
+  else if (deserializedStringValue == "D2")             { p = EDyTextureStyleType::D2; }
+  else if (deserializedStringValue == "D2Rectangle")    { p = EDyTextureStyleType::D2Rectangle; }
+  else if (deserializedStringValue == "D1Array")        { p = EDyTextureStyleType::D1Array; }
+  else if (deserializedStringValue == "D2Array")        { p = EDyTextureStyleType::D2Array; }
+  else if (deserializedStringValue == "D2Shadow")       { p = EDyTextureStyleType::D2Shadow; }
+  else if (deserializedStringValue == "D2ShadowArray")  { p = EDyTextureStyleType::D2ShadowArray; }
+  else { MDY_UNEXPECTED_BRANCH(); }
+}
 
 GLenum DyGLGetLowTextureType(_MIN_ EDyTextureStyleType iType) noexcept
 {
   switch (iType)
   {
-  case EDyTextureStyleType::D1: return GL_TEXTURE_1D;
-  case EDyTextureStyleType::D2: return GL_TEXTURE_2D; 
-  case EDyTextureStyleType::D2Rectangle: return GL_TEXTURE_RECTANGLE;
-  case EDyTextureStyleType::D2Shadow: return GL_TEXTURE_2D;
-  case EDyTextureStyleType::D1Array: return GL_TEXTURE_1D_ARRAY;
-  case EDyTextureStyleType::D2Array: return GL_TEXTURE_2D_ARRAY;
-  case EDyTextureStyleType::D2ShadowArray: return GL_TEXTURE_2D_ARRAY;
+  case EDyTextureStyleType::D1:             return GL_TEXTURE_1D;
+  case EDyTextureStyleType::D2:             return GL_TEXTURE_2D; 
+  case EDyTextureStyleType::D2Rectangle:    return GL_TEXTURE_RECTANGLE;
+  case EDyTextureStyleType::D2Shadow:       return GL_TEXTURE_2D;
+  case EDyTextureStyleType::D1Array:        return GL_TEXTURE_1D_ARRAY;
+  case EDyTextureStyleType::D2Array:        return GL_TEXTURE_2D_ARRAY;
+  case EDyTextureStyleType::D2ShadowArray:  return GL_TEXTURE_2D_ARRAY;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(GL_NONE);
   }
 }

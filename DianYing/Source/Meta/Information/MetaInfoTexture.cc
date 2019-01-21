@@ -43,16 +43,17 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyTextureInstanceMetaInfo&
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyTextureInstanceMetaInfo& p)
 {
-  p.mSourceType = EDyResourceSource::External;
-  DyJsonGetValueFromTo(j, "SpecifierName", p.mSpecifierName);
-  DyJsonGetValueFromTo(j, "FilePath",      p.mExternalFilePath);
-  p.mTextureType                    = DyJsonGetValueFrom<EDyTextureStyleType>(j, "TextureType");
-  p.mIsUsingDefaultMipmapGeneration = DyJsonGetValueFrom<bool>(j, "IsUsingMipmapGeneration");
-  p.mBorderColor                    = DyJsonGetValueFrom<DDyColorRGB24>(j, "BorderColor");
-  p.mTextureColorType               = DyJsonGetValueFrom<EDyImageColorFormatStyle>(j, "ColorType");
+  p.mSourceType                     = EDyResourceSource::External;
+  p.mExternalFilePath               = DyJsonGetValueFrom<std::string>(j, "ExternalPath");
 
-  p.mParameterList = DyJsonGetValueFrom<TTextureParameterList>(j, "Parameters");
-  p.mIsEnabledCustomedTextureParameter = DyJsonGetValueFrom<bool>(j, "IsUsingCustomizedTextureParameter");
+  p.mTextureType                    = DyJsonGetValueFrom<EDyTextureStyleType>(j, "TextureType");
+  p.mTextureColorType               = DyJsonGetValueFrom<EDyImageColorFormatStyle>(j, "TextureColorType");
+  p.mPixelReadType                  = DyJsonGetValueFrom<EDyGlImagePixelReadType>(j, "PixelReadType");
+  p.mParameterList                  = DyJsonGetValueFrom<TTextureParameterList>(j, "TextureParameters");
+  p.mIsEnabledCustomedTextureParameter = DyJsonGetValueFrom<bool>(j, "IsUsingCustomizedParameter");
+
+  p.mIsUsingDefaultMipmapGeneration = DyJsonGetValueFrom<bool>(j, "IsUsingDefaultMipmap");
+  p.mBorderColor                    = DyJsonGetValueFrom<DDyColorRGBA32>(j, "BorderColor");
 }
 
 } /// ::dy namespace
