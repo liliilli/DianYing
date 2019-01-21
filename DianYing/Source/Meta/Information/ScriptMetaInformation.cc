@@ -62,6 +62,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyScriptMode& p)
   const auto typeString = j.get<std::string>();
   if      (typeString == sValue_Widget) { p = EDyScriptMode::Widget; }
   else if (typeString == sValue_Actor)  { p = EDyScriptMode::Actor; }
+  else if (typeString == "Global")      { p = EDyScriptMode::Global; }
   else                                  { MDY_UNEXPECTED_BRANCH(); }
 }
 

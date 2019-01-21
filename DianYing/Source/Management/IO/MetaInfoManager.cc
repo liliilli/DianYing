@@ -36,6 +36,7 @@
 #include <Dy/Meta/Descriptor/WidgetLayoutMetaInformation.h>
 #include <Dy/Meta/Descriptor/WidgetBarMetaInformation.h>
 #include <Dy/Meta/Descriptor/WidgetImageMetaInformation.h>
+#include "Dy/Management/ScriptManager.h"
 
 //!
 //! Local tranlation unit variables
@@ -261,7 +262,13 @@ const PDyScriptInstanceMetaInfo& MDyMetaInfo::GetScriptMetaInformation(_MIN_ con
   return this->mScriptMetaInfo.at(specifierName);
 }
 
-const PDyPrefabInstanceMetaInfo& MDyMetaInfo::GetPrefabMetaInformation(_MIN_ const std::string& specifierName) const
+const std::unordered_map<std::string, PDyScriptInstanceMetaInfo>& 
+MDyMetaInfo::GetRefGlobalScriptMetaInfoContainer() const noexcept
+{
+  return this->mGlobalScriptMetaInfo;
+}
+
+  const PDyPrefabInstanceMetaInfo& MDyMetaInfo::GetPrefabMetaInformation(_MIN_ const std::string& specifierName) const
 {
   MDY_ASSERT(DyIsMapContains(this->mPrefabMetaInfo, specifierName) == true, "");
   return *this->mPrefabMetaInfo.at(specifierName);
@@ -335,9 +342,54 @@ bool MDyMetaInfo::IsMeshMetaInfoExist(_MIN_ const std::string & specifier) const
   return DyIsMapContains(this->mBtMeshMetaInfo, specifier);
 }
 
-bool MDyMetaInfo::IsLevelMetaInformation(const std::string& specifier) const noexcept
+bool MDyMetaInfo::IsLevelMetaInformation(_MIN_ const std::string& specifier) const noexcept
 {
   return DyIsMapContains(this->mLevelInfoMap, specifier);
+}
+
+bool MDyMetaInfo::IsModelMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
+{
+  return DyIsMapContains(this->mModelMetaInfo, specifier);
+}
+
+bool MDyMetaInfo::IsTextureMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
+{
+  return DyIsMapContains(this->mTextureMetaInfo, specifier);
+}
+
+bool MDyMetaInfo::IsMaterialMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
+{
+  return DyIsMapContains(this->mMaterialMetaInfo, specifier);
+}
+
+bool MDyMetaInfo::IsWidgetMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
+{
+  return DyIsMapContains(this->mWidgetMetaInfo, specifier);
+}
+
+bool MDyMetaInfo::IsScriptMetaInformationExist(_MIN_ const std::string& specifierName) const noexcept
+{
+  return DyIsMapContains(this->mScriptMetaInfo, specifierName);
+}
+
+bool MDyMetaInfo::IsPrefabMetaInformationExist(_MIN_ const std::string& specifierName) const noexcept
+{
+  return DyIsMapContains(this->mPrefabMetaInfo, specifierName);
+}
+
+bool MDyMetaInfo::IsFontMetaInformationExist(_MIN_ const std::string& specifierName) const noexcept
+{
+  return DyIsMapContains(this->mFontMetaInfo, specifierName);
+}
+
+bool MDyMetaInfo::IsAttachmentMetaInfoExist(_MIN_ const std::string& specifierName) const noexcept
+{
+  return DyIsMapContains(this->mAttachmentMetaInfo, specifierName);
+}
+
+bool MDyMetaInfo::IsFrameBufferMetaInfoExist(_MIN_ const std::string& speicfierName) const noexcept
+{
+  return DyIsMapContains(this->mFrameBufferMetaInfo, speicfierName);
 }
 
 bool MDyMetaInfo::IsLoadingWidgetMetaInfoExist() const noexcept
@@ -361,13 +413,18 @@ void MDyMetaInfo::MDY_PRIVATE_SPECIFIER(PopulateBootResourceSpecifierList)() con
 void MDyMetaInfo::MDY_PRIVATE_SPECIFIER(PopulateGlobalResourceSpecifierList)() const noexcept
 {
   static bool mIsCalled = false;
-  MDY_ASSERT(mIsCalled == false, "This function must not be called twice.");
+  MDY_ASSERT_FORCE(mIsCalled == false, "This function must not be called twice.");
 
   // Global resource list consists of many sub-global resource list from each global resource script.
-  SDyIOConnectionHelper::PopulateResourceList(
-      mGlobalResourceSpecifierList, 
-      EDyScope::Global,
-      []() { DyEngine::GetInstance().SetNextGameStatus(EDyGlobalGameStatus::Loading); }
+  SDyIOConnectionHelper::PopulateResourceList(mGlobalResourceSpecifierList, EDyScope::Global,
+    [] 
+    { 
+      // Create global scripts.
+      auto& scriptManager = MDyScript::GetInstance();
+      scriptManager.CreateGlobalScriptInstances();
+      scriptManager.CallonStartGlobalScriptList();
+      DyEngine::GetInstance().SetNextGameStatus(EDyGlobalGameStatus::Loading); 
+    }
   );
   mIsCalled = true;
 }
@@ -377,7 +434,12 @@ void MDyMetaInfo::MDY_PRIVATE_SPECIFIER(InitiateMetaInformation)()
   const auto& metaPath = MDySetting::GetInstance().GetMetaPathSettingInformation();
   reflect::RDyBuiltinResource::BindBuiltinResourcesToMetaManager();
 
-  MDY_CALL_ASSERT_SUCCESS(this->pReadFontResourceMetaInformation  (metaPath.mFontMetaPath));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadFontResourceMetaInformation    (metaPath.mFontMetaPath));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadModelResourceMetaInformation   (metaPath.mModelMetaPath));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadTextureResourceMetaInformation (metaPath.mTextureMetaPath));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadShaderResourceMetaInformation  (metaPath.mGLShaderMetaPath));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadMaterialResourceMetaInformation(metaPath.mMaterialMetaPath));
+
   MDY_CALL_ASSERT_SUCCESS(this->pReadScriptResourceMetaInformation(metaPath.mScriptMetaPath));
   MDY_CALL_ASSERT_SUCCESS(this->pReadPrefabResourceMetaInformation(metaPath.mPrefabMetaPath));
   MDY_CALL_ASSERT_SUCCESS(this->pReadWidgetResourceMetaInformation(metaPath.mWidgetMetaPath));
@@ -421,7 +483,7 @@ EDySuccess MDyMetaInfo::pReadScriptResourceMetaInformation(_MIN_ const std::stri
   return DY_SUCCESS;
 }
 
-EDySuccess MDyMetaInfo::pReadPrefabResourceMetaInformation(const std::string& metaFilePath)
+EDySuccess MDyMetaInfo::pReadPrefabResourceMetaInformation(_MIN_ const std::string& metaFilePath)
 {
   /// @brief Check prefab meta information list.
   static auto CheckPrefabMetaCategory = [](_MIN_ const nlohmann::json& atlas) -> EDySuccess
@@ -437,7 +499,7 @@ EDySuccess MDyMetaInfo::pReadPrefabResourceMetaInformation(const std::string& me
 
   // Validity Test
   const std::optional<nlohmann::json> opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
-  MDY_ASSERT(opJsonAtlas.has_value() == true, "Failed to read prefab resource meta information.");
+  MDY_ASSERT_FORCE(opJsonAtlas.has_value() == true, "Failed to read prefab resource meta information.");
 
   const auto& jsonAtlas = opJsonAtlas.value();
   MDY_CALL_ASSERT_SUCCESS(CheckPrefabMetaCategory(jsonAtlas));
@@ -474,15 +536,12 @@ EDySuccess MDyMetaInfo::pReadPrefabResourceMetaInformation(const std::string& me
 }
 
 EDySuccess MDyMetaInfo::pReadFontResourceMetaInformation(_MIN_ const std::string& metaFilePath)
-{ // (1) Validity Test
+{ 
+  // (1) Validity Test
   const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
-  if (opJsonAtlas.has_value() == false)
-  {
-    MDY_ASSERT(false, "Failed to read font meta information. File is not exist.");
-    return DY_FAILURE;
-  }
+  MDY_ASSERT_FORCE(opJsonAtlas.has_value() == true, "Failed to read font meta information. File is not exist.");
 
-  // (2)
+  // (2) Get information from buffer.
   const nlohmann::json& jsonAtlas = opJsonAtlas.value();
   for (auto it = jsonAtlas.cbegin(); it != jsonAtlas.cend(); ++it)
   { // Create font meta information instance from each json atlas.
@@ -490,8 +549,54 @@ EDySuccess MDyMetaInfo::pReadFontResourceMetaInformation(_MIN_ const std::string
         it.key(),
         PDyMetaFontInformation::CreateWithJson(it.value())
     );
-    MDY_ASSERT(isSucceeded == true, "Font meta information creation must be succeeded.");
+    MDY_ASSERT_FORCE(isSucceeded == true, "Font meta information creation must be succeeded.");
   }
+
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pReadModelResourceMetaInformation(_MIN_ const std::string& metaFilePath)
+{
+  // (1) Validity Test
+  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  MDY_ASSERT_FORCE(opJsonAtlas.has_value() == true, "Failed to read model meta information. File is not exist.");
+
+  
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pReadTextureResourceMetaInformation(_MIN_ const std::string& metaFilePath)
+{
+  // (1) Validity Test
+  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  MDY_ASSERT_FORCE(opJsonAtlas.has_value() == true, "Failed to read texture meta information. File is not exist.");
+
+  // (2) Insert each item.
+  for (const auto& sceneAtlas : opJsonAtlas.value().items())
+  {
+    auto desc = sceneAtlas.value().get<decltype(mTextureMetaInfo)::value_type::second_type>();
+    desc.mSpecifierName = sceneAtlas.key();
+    auto [it, isSucceeded] = this->mTextureMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
+    MDY_ASSERT(isSucceeded == true, "Unexpected error occurred.");
+  }
+
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pReadShaderResourceMetaInformation(_MIN_ const std::string& metaFilePath)
+{
+  // (1) Validity Test
+  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  MDY_ASSERT_FORCE(opJsonAtlas.has_value() == true, "Failed to read shader meta information. File is not exist.");
+
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pReadMaterialResourceMetaInformation(_MIN_ const std::string& metaFilePath)
+{
+  // (1) Validity Test
+  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  MDY_ASSERT_FORCE(opJsonAtlas.has_value() == true, "Failed to read material meta information. File is not exist.");
 
   return DY_SUCCESS;
 }
@@ -500,9 +605,9 @@ EDySuccess MDyMetaInfo::pReadSceneResourceMetaInformation(_MIN_ const std::strin
 {
   // (1) Validity test
   const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilepath);
-  if (opJsonAtlas.has_value() == false) { return DY_FAILURE; }
+  MDY_ASSERT_FORCE(opJsonAtlas.has_value() == true, "Failed to read scene meta information. File is not exist.");
 
-  // (2)
+  // (2) Insert each item.
   for (const auto& sceneAtlas : opJsonAtlas.value())
   {
     auto desc = sceneAtlas.get<PDyLevelConstructMetaInfo>();
@@ -640,8 +745,21 @@ EDySuccess MDyMetaInfo::MDY_PRIVATE_SPECIFIER(AddLoadingWidgetMetaInformation)(_
 
 EDySuccess MDyMetaInfo::pfAddScriptMetaInformation(_MIN_ const PDyScriptInstanceMetaInfo& metaInfo)
 {
-  MDY_ASSERT(DyIsMapContains(this->mScriptMetaInfo, metaInfo.mSpecifierName) == false, "Duplicated script name is exist.");
-  this->mScriptMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
+  if (metaInfo.mScriptMode == decltype(metaInfo.mScriptMode)::Global)
+  { // If script mode is `Global`, insert it to separated container.
+    MDY_ASSERT_FORCE(
+        DyIsMapContains(this->mGlobalScriptMetaInfo, metaInfo.mSpecifierName) == false, 
+        "Duplicated global script name is exist.");
+    this->mGlobalScriptMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
+  }
+  else
+  {
+    MDY_ASSERT_FORCE(
+        DyIsMapContains(this->mScriptMetaInfo, metaInfo.mSpecifierName) == false, 
+        "Duplicated general script name is exist.");
+    this->mScriptMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
+  }
+
   return DY_SUCCESS;
 }
 

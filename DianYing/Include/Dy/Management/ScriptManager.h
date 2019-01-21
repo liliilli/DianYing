@@ -19,6 +19,7 @@
 #include <sol2/sol.hpp>
 #include <Dy/Component/Internal/Actor/FDyActorScriptStatus.h>
 #include <Dy/Component/Internal/Script/FDyWidgetScriptStatus.h>
+#include "Dy/Component/Internal/Script/FDyGlobalScriptStatus.h"
 
 //!
 //! Forward declaration
@@ -57,21 +58,12 @@ public:
   /// @param iIsAwakened
   MDY_NODISCARD FDyWidgetScriptState* 
   CreateWidgetScript(_MIN_ const std::string& iScriptSpecifier, _MIN_ FDyUiWidget& iRefWidget, _MIN_ bool iIsAwakened);
-
   /// @brief Try remove widget script from dy system.
   /// But, removed widget script does not actually removed instantly, \n
   /// moved gc list and removed actually on next frame prior to update.
   EDySuccess TryForwardWidgetScriptToGCList(_MIN_ const FDyWidgetScriptState* iPtrWidgetScriptState);
-  
-  /// @brief Try remove actor script from dy system.
-  /// But, removed actor script does not actually removed instantly, \n
-  /// moved gc list and removed actually on next frame prior to update.
-  EDySuccess TryForwardActorScriptToGCList(_MIN_ const FDyActorScriptState* iPtrWidgetScriptState);
-
   /// @brief Try move inserted widget script to main container.
   void TryMoveInsertWidgetScriptToMainContainer();
-  /// @brief Try move inserted actor script to main container.
-  void TryMoveInsertActorScriptToMainContainer();
   
   /// @brief Create widget script. \n
   /// @TODO IMPLEMENT LUA VERSION. 
@@ -80,6 +72,12 @@ public:
   /// @param iIsAwakened
   MDY_NODISCARD FDyActorScriptState* 
   CreateActorScript(_MIN_ const std::string& iScriptSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ bool iIsAwakened);
+  /// @brief Try remove actor script from dy system.
+  /// But, removed actor script does not actually removed instantly, \n
+  /// moved gc list and removed actually on next frame prior to update.
+  EDySuccess TryForwardActorScriptToGCList(_MIN_ const FDyActorScriptState* iPtrWidgetScriptState);
+  /// @brief Try move inserted actor script to main container.
+  void TryMoveInsertActorScriptToMainContainer();
 
   /// @brief Update widget script.
   void UpdateWidgetScript(_MIN_ TF32 dt);
@@ -105,8 +103,22 @@ public:
   /// @brief Clear actor script gc list `mGCedActorScriptList` anyway.
   void ClearActorScriptGCList();
 
+  /// @brief Create global script instance list.
+  /// This function must be called once per application runtime.
+  void CreateGlobalScriptInstances();
+  /// @brief Remove global script instance list.
+  /// This function must be called once per application runtime.
+  void RemoveGlobalScriptInstances();
+  /// @brief Call `onStart` function to all global script.
+  void CallonStartGlobalScriptList();
+  /// @brief Call `onEnd` function to all global script.
+  void CallonEndGlobalScriptList();
+
 private:
   sol::state mLua;
+
+  using TDyGlobalScriptList = std::unordered_map<std::string, std::unique_ptr<FDyGlobalScriptState>>;
+  TDyGlobalScriptList mGlobalScriptContainer;
 
   using TDyWidgetScriptList = std::vector<std::unique_ptr<FDyWidgetScriptState>>;
   TDyWidgetScriptList mInsertWidgetScriptList = {};
@@ -119,6 +131,8 @@ private:
   TDyActorScriptList  mInsertActorScriptList  = {};
   TDyActorScriptList  mActorScriptList        = {};
   TDyActorScriptList  mGCedActorScriptList    = {};
+
+
 };
 
 } /// ::dy namespace

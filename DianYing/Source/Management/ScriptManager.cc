@@ -180,6 +180,39 @@ FDyWidgetScriptState* MDyScript::CreateWidgetScript(
   return this->mInsertWidgetScriptList.back().get();
 }
 
+void MDyScript::CreateGlobalScriptInstances()
+{
+  const auto& metaManager = MDyMetaInfo::GetInstance();
+  const auto& container   = metaManager.GetRefGlobalScriptMetaInfoContainer();
+  for (const auto& [scriptName, scriptMeta] : container)
+  {
+    this->mGlobalScriptContainer.try_emplace(
+        scriptName, 
+        std::make_unique<FDyGlobalScriptState>(scriptMeta));
+  }
+}
+
+void MDyScript::RemoveGlobalScriptInstances()
+{
+  this->mGlobalScriptContainer.clear();
+}
+
+void MDyScript::CallonStartGlobalScriptList()
+{
+  for (const auto& [scriptName, ptrsmtScript] : this->mGlobalScriptContainer)
+  {
+    ptrsmtScript->CallStart();
+  }
+}
+
+void MDyScript::CallonEndGlobalScriptList()
+{
+    for (const auto& [scriptName, ptrsmtScript] : this->mGlobalScriptContainer)
+  {
+    ptrsmtScript->CallEnd();
+  }
+}
+
 FDyActorScriptState* MDyScript::CreateActorScript(
     _MIN_ const std::string& iScriptSpecifier, 
     _MIN_ FDyActor& iRefActor, 

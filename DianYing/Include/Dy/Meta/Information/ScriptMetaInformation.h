@@ -16,7 +16,6 @@
 #include <nlohmann/json_fwd.hpp>
 #include <Dy/Component/Interface/IDyScriptable.h>
 #include <Dy/Meta/Information/CommonResourceMetaInfo.h>
-#include "Dy/Component/Abstract/ADyActorCppScript.h"
 
 namespace dy
 {
@@ -43,6 +42,7 @@ enum class EDyScriptMode
 {
   Widget,
   Actor,
+  Global,
   LoadingBoot,
   LoadingGlobal,
   NoneError

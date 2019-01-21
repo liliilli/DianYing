@@ -157,6 +157,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="data\Script\GlobalTestScript.cc" />
     <ClCompile Include="Source\Builtin\Abstract\ADyGLAttachmentResource.cc" />
     <ClCompile Include="Source\Builtin\Abstract\ADyGLFrameBufferResource.cc" />
     <ClCompile Include="Source\Builtin\Abstract\ADyGLShaderResources.cc" />
@@ -223,6 +224,8 @@
     <ClCompile Include="Source\Component\Internal\Script\Actor\FDyActorScriptStatus.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Actor\CDyActorScriptCpp.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Actor\CDyActorScriptLua.cc" />
+    <ClCompile Include="Source\Component\Internal\Script\Global\CDyGlobalScriptCpp.cc" />
+    <ClCompile Include="Source\Component\Internal\Script\Global\FDyGlobalScriptStatus.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\LevelCascadeShadowRenderer.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\LevelCSMIntergration.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\LevelOITRenderer.cc" />
@@ -397,6 +400,7 @@
     <ClCompile Include="Source\Element\Type\Timer\FDyActorTimerItem.cc" />
     <ClCompile Include="Source\Element\Type\Timer\FDyWidgetTimerItem.cc" />
     <ClCompile Include="Source\Helper\Internal\FDyNameGenerator.cc" />
+    <ClCompile Include="Source\Helper\Library\HelperFilesystem.cc" />
     <ClCompile Include="Source\Helper\Library\HelperRegex.cc" />
     <ClCompile Include="Source\Helper\Library\HelperString.cc" />
     <ClCompile Include="Source\Helper\MCS\Functions.cc" />
@@ -495,6 +499,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="data\Script\GlobalTestScript.h" />
     <ClInclude Include="Include\Dy\Binding\LuaScriptFrame.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGLAttachmentResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGLFrameBufferResource.h" />
@@ -579,10 +584,14 @@
     <ClInclude Include="Include\Dy\Builtin\Texture\SSAONoiseMap.h" />
     <ClInclude Include="Include\Dy\Builtin\Widget\DebugUiMeta.h" />
     <ClInclude Include="Include\Dy\Builtin\Widget\FDyBtWdTestLoadingUi.h" />
+    <ClInclude Include="Include\Dy\Component\Abstract\ADyGlobalCppScript.h" />
     <ClInclude Include="Include\Dy\Component\Actor\CDyActorScript.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Actor\CDyActorScriptBase.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Actor\FDyActorScriptStatus.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Camera\DDyFrustumTester.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Global\CDyGlobalScriptBase.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Global\CDyGlobalScriptCpp.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Script\FDyGlobalScriptStatus.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Script\FDyWidgetScriptStatus.h" />
     <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScript.h" />
     <ClInclude Include="Include\Dy\Core\EDyAppMode.h" />
@@ -640,6 +649,7 @@
     <ClInclude Include="Include\Dy\Helper\HelperString.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\RWLockAtomic.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\FDyNameGenerator.h" />
+    <ClInclude Include="Include\Dy\Helper\Library\HelperFilesystem.h" />
     <ClInclude Include="Include\Dy\Helper\System\Idioms.h" />
     <ClInclude Include="Include\Dy\Helper\Library\HelperRegex.h" />
     <ClInclude Include="Include\Dy\Helper\MCS\Functions.h" />

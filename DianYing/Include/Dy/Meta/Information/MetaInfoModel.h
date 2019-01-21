@@ -31,8 +31,10 @@ struct PDyModelInstanceMetaInfo final : public PDyCommonResourceMetaInfo
   TBuiltinMeshSpecifierList mBuiltinMeshSpecifierList = {};
   bool                      mIsUsingBuiltinMesh       = false;
 
-  [[maybe_unused]] std::string   mExternalModelName  = MDY_INITIALIZE_EMPTYSTR;
+
 };
+
+
 
 } /// ::dy namespace
 

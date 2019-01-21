@@ -38,27 +38,30 @@ public:
 
   /// @brief Get enable/disable flag of feature, logging as true/false.
   MDY_NODISCARD bool IsEnabledFeatureLogging() const noexcept;
-
   /// @brief Get enable/disable flag of subfeature, logging to console as true/false. \n
   /// If changed, logging feature must be restarted manually.
   MDY_NODISCARD bool IsEnabledSubFeatureLoggingToConsole() const noexcept;
-
   /// @brief Get enable/disable flag of subfeature, logging to file as true/false. \n
   /// If changed, logging feature must be restarted manually.
   MDY_NODISCARD bool IsEnableSubFeatureLoggingToFile() const noexcept;
-
-  /// @brief Get application mode.
-  MDY_NODISCARD EDyAppMode GetApplicationMode() const noexcept;
-
   /// @brief Get the path of log file.
   MDY_NODISCARD const std::string& GetLogFilePath() const noexcept;
 
+  /// @brief Get application mode.
+  MDY_NODISCARD EDyAppMode GetApplicationMode() const noexcept;
   /// @brief Get rendering type enum of present rendering api.
   MDY_NODISCARD EDyRenderingApi GetRenderingType() const noexcept;
+  /// @brief Set default shadow option if iFlag is same to previous value, do nothing.
+  void SetDefaultShadowOption(_MIN_ bool iFlag) noexcept;
+  /// @brief Get flag of `default shadow option`.
+  MDY_NODISCARD bool IsDefaultShadowOptionActivated() const noexcept;
+  /// @brief Set default ssao (screen space ambient occlusion) option if iFlag is same to previous value, do nothing.
+  void SetDefaultSsaoOption(_MIN_ bool iFlag) noexcept;
+  /// @brief Get flag of `default ssao option`.
+  MDY_NODISCARD bool IsDefaultSsaoOptionActivated() const noexcept;
 
   /// @brief Get overall window width size.
   MDY_NODISCARD TI32 GetWindowSizeWidth() const noexcept;
-
   /// @brief Get overall window height size.
   MDY_NODISCARD TI32 GetWindowSizeHeight() const noexcept;
 
@@ -120,10 +123,12 @@ public:
   MDY_NODISCARD const DDySettingTag& tempGetTagList() const noexcept { return this->mTag; }
 
   /// @brief Check Specified tag is in object tag list.
-  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(CheckObjectTagIsExist)(_MIN_ const std::string& iSpecifiedTag) const noexcept;
+  MDY_NODISCARD EDySuccess 
+  MDY_PRIVATE_SPECIFIER(CheckObjectTagIsExist)(_MIN_ const std::string& iSpecifiedTag) const noexcept;
 
   /// @brief Get entry setting file path.
-  MDY_NODISCARD const std::string& MDY_PRIVATE_SPECIFIER(GetEntrySettingFile)() const noexcept;
+  MDY_NODISCARD const std::string& 
+  MDY_PRIVATE_SPECIFIER(GetEntrySettingFile)() const noexcept;
 
 private:
   /// @brief Setup executable argument settings.

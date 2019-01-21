@@ -44,15 +44,12 @@ EDySuccess MDyRendering::pfInitialize()
   this->mUiBasicRenderer      = std::make_unique<decltype(this->mUiBasicRenderer)::element_type>();
   this->mLevelFinalRenderer   = std::make_unique<decltype(this->mLevelFinalRenderer)::element_type>();
   this->mFinalDisplayRenderer = std::make_unique<decltype(this->mFinalDisplayRenderer)::element_type>();
+  this->mCSMRenderer          = std::make_unique<decltype(this->mCSMRenderer)::element_type>();
+  this->mSSAOPostEffect       = std::make_unique<decltype(mSSAOPostEffect)::element_type>();
 
   const auto& information = MDySetting::GetInstance().GetGameplaySettingInformation();
-  if (information.mGraphics.mIsEnabledDefaultShadow == true)
-  {
-    this->mCSMRenderer    = std::make_unique<decltype(this->mCSMRenderer)::element_type>();
-  }
   if (information.mGraphics.mIsEnabledDefaultSsao == true)
   {
-    this->mSSAOPostEffect = std::make_unique<decltype(mSSAOPostEffect)::element_type>();
   }
 
 #if defined(MDY_FLAG_IN_EDITOR) == true
@@ -122,9 +119,8 @@ void MDyRendering::RenderDrawCallQueue()
 #endif
       SDyProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(this->mOpaqueMeshDrawingList.size()));
 
-      // (1) Cascaded Shadow mapping to opaque call list.
       if (information.mGraphics.mIsEnabledDefaultShadow == true)
-      { 
+      { // (1) Cascaded Shadow mapping to opaque call list.
         // Pre-render update for update Segments.
         this->mCSMRenderer->PreRender();
         if (this->mCSMRenderer->TrySetupRendering() == DY_SUCCESS)
@@ -140,6 +136,7 @@ void MDyRendering::RenderDrawCallQueue()
           }
         }
       }
+      else { this->mCSMRenderer->Clear(); }
 
       // Set global viewport values to camera's properties.
       { MDY_GRAPHIC_SET_CRITICALSECITON();
@@ -180,11 +177,12 @@ void MDyRendering::RenderDrawCallQueue()
   this->mTranslucentMeshDrawingList.clear();
 
   //! Post processing effects
-  if (MDY_CHECK_ISNOTEMPTY(this->mSSAOPostEffect)) 
+  if (information.mGraphics.mIsEnabledDefaultSsao == true)
   { 
     if (this->mSSAOPostEffect->TrySetupRendering() == DY_SUCCESS)
     { this->mSSAOPostEffect->RenderScreen(); }
   }
+  else { this->mSSAOPostEffect->Clear(); }
 
   // Final
   if (MDY_CHECK_ISNOTEMPTY(this->mLevelFinalRenderer) 

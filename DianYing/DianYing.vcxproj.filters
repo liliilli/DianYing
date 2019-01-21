@@ -278,6 +278,10 @@
     <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAtSSAOFinalOutput.cc" />
     <ClCompile Include="Source\Builtin\Texture\SSAONoiseMap.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\Deferred\FDyBtFbSSAOBlur.cc" />
+    <ClCompile Include="data\Script\GlobalTestScript.cc" />
+    <ClCompile Include="Source\Component\Internal\Script\Global\CDyGlobalScriptCpp.cc" />
+    <ClCompile Include="Source\Component\Internal\Script\Global\FDyGlobalScriptStatus.cc" />
+    <ClCompile Include="Source\Helper\Library\HelperFilesystem.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -704,6 +708,12 @@
     <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAtSSAOFinalOutput.h" />
     <ClInclude Include="Include\Dy\Builtin\Texture\SSAONoiseMap.h" />
     <ClInclude Include="Include\Dy\Builtin\Constant\SSAO.h" />
+    <ClInclude Include="data\Script\GlobalTestScript.h" />
+    <ClInclude Include="Include\Dy\Component\Abstract\ADyGlobalCppScript.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Script\FDyGlobalScriptStatus.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Global\CDyGlobalScriptBase.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Global\CDyGlobalScriptCpp.h" />
+    <ClInclude Include="Include\Dy\Helper\Library\HelperFilesystem.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

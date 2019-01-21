@@ -15,6 +15,7 @@
 
 /// Header file
 #include <Dy/Helper/Type/ColorRGBA32.h>
+#include <nlohmann/json.hpp>
 
 namespace dy {
 
@@ -33,5 +34,18 @@ const DDyColorRGBA32 DDyColorRGBA32::Purple = DDyColorRGBA32{0xAA, 0x00, 0xFF};
 const DDyColorRGBA32 DDyColorRGBA32::Red = DDyColorRGBA32{0xFF, 0x00, 0x00};
 const DDyColorRGBA32 DDyColorRGBA32::White = DDyColorRGBA32{0xFF, 0xFF, 0xFF};
 const DDyColorRGBA32 DDyColorRGBA32::Yellow = DDyColorRGBA32{0xFF, 0xFF, 0x00};
+
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDyColorRGBA32& p)
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ DDyColorRGBA32& p)
+{
+  p.R = j["R"];
+  p.G = j["G"];
+  p.B = j["B"];
+  p.A = j["A"];
+}
 
 } /// ::dy namespace

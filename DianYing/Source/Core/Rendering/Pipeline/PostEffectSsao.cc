@@ -112,6 +112,11 @@ EDySuccess FDyPostEffectSsao::TrySetupRendering()
 void FDyPostEffectSsao::Clear()
 {
   if (this->IsReady() == false) { return; }
+
+  this->mBinderFbSSAOBlur->BindFrameBuffer();
+  const GLfloat one = 1.0f;
+  glClearBufferfv(GL_COLOR, 0, &one);
+  this->mBinderFbSSAOBlur->UnbindFrameBuffer();
 }
 
 } /// ::dy namespace

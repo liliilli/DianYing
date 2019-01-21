@@ -90,14 +90,25 @@ MDY_NODISCARD bool DyIsHaveValueIn(
 namespace dy
 {
 
-void to_json(nlohmann::json& j, const EDyGlParameterName& p)
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyGlParameterName& p)
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
 }
 
-void from_json(const nlohmann::json& j, EDyGlParameterName& p)
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ EDyGlParameterName& p)
 {
-  MDY_NOT_IMPLEMENTED_ASSERT();
+  p = DyConvertStringToEDyGlParameterName(j.get<std::string>());
+}
+
+EDyGlParameterName DyConvertStringToEDyGlParameterName(_MIN_ const std::string& iString) noexcept
+{
+  if (iString == "TextureMinFilter")      { return EDyGlParameterName::TextureMinFilter; }
+  else if (iString == "TextureMagFilter") { return EDyGlParameterName::TextureMagFilter; }
+  else if (iString == "TextureWrappingS") { return EDyGlParameterName::TextureWrappingS; }
+  else if (iString == "TextureWrappingT") { return EDyGlParameterName::TextureWrappingT; }
+  else if (iString == "TextureCompareMode") { return EDyGlParameterName::TextureCompareMode; }
+  else if (iString == "TextureCompareFunc") { return EDyGlParameterName::TextureCompareFunc; }
+  else { MDY_UNEXPECTED_BRANCH_BUT_RETURN(EDyGlParameterName::NoneError); }
 }
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyGlParameterValue& p)
@@ -107,7 +118,36 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyGlParameterValue& p)
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyGlParameterValue& p)
 {
-  MDY_NOT_IMPLEMENTED_ASSERT();
+  p = DyConvertStringToEDyGlParameterValue(j.get<std::string>());
+}
+
+EDyGlParameterValue DyConvertStringToEDyGlParameterValue(_MIN_ const std::string& iString) noexcept
+{
+  if (iString == "Nearest")               { return EDyGlParameterValue::Nearest; }
+  if (iString == "Linear")                { return EDyGlParameterValue::Linear; }
+
+  if (iString == "NearestMipmapNearest")  { return EDyGlParameterValue::NearestMipmapNearest; }
+  if (iString == "LinearMipmapNearest")   { return EDyGlParameterValue::LinearMipmapNearest; }
+  if (iString == "NearestMipmapLinear")   { return EDyGlParameterValue::NearestMipmapLinear; }
+  if (iString == "LinearMipmapLinear")    { return EDyGlParameterValue::LinearMipmapLinear; }
+
+  if (iString == "ClampToEdge")           { return EDyGlParameterValue::ClampToEdge; }
+  if (iString == "ClampToBorder")         { return EDyGlParameterValue::ClampToBorder; }
+  if (iString == "Repeat")                { return EDyGlParameterValue::Repeat; }
+  if (iString == "MirroredRepeat")        { return EDyGlParameterValue::MirroredRepeat; }
+
+  if (iString == "CompareRefToTexture")   { return EDyGlParameterValue::CompareRefToTexture; }
+  if (iString == "CompareNone")           { return EDyGlParameterValue::CompareNone; }
+
+  if (iString == "Greater")               { return EDyGlParameterValue::Greater; }
+  if (iString == "GreaterEqual")          { return EDyGlParameterValue::GreaterEqual; }
+  if (iString == "Equal")                 { return EDyGlParameterValue::Equal; }
+  if (iString == "NotEqual")              { return EDyGlParameterValue::NotEqual; }
+  if (iString == "LessEqual")             { return EDyGlParameterValue::LessEqual; }
+  if (iString == "Less")                  { return EDyGlParameterValue::Less; }
+  if (iString == "Always")                { return EDyGlParameterValue::Always; }
+  if (iString == "Never")                 { return EDyGlParameterValue::Never; }
+  else { MDY_UNEXPECTED_BRANCH_BUT_RETURN(EDyGlParameterValue::NoneError); }
 }
 
 void to_json(_MIN_ nlohmann::json& j, _MINOUT_ const PDyGlTexParameterInformation& p)
@@ -117,7 +157,13 @@ void to_json(_MIN_ nlohmann::json& j, _MINOUT_ const PDyGlTexParameterInformatio
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyGlTexParameterInformation& p)
 {
-  MDY_NOT_IMPLEMENTED_ASSERT();
+  for (auto& value : j.items())
+  { // Must be one item.
+    p.mParameterOption = DyConvertStringToEDyGlParameterName(value.key());
+    p.mParameterValue  = DyConvertStringToEDyGlParameterValue(value.value());
+  }
+
+  MDY_CALL_ASSERT_SUCCESS(DyCheckTextureParameter(p));
 }
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const TTextureParameterList& p)

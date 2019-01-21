@@ -98,6 +98,34 @@ EDyRenderingApi MDySetting::GetRenderingType() const noexcept
   return this->mRenderingType;
 }
 
+void MDySetting::SetDefaultShadowOption(_MIN_ bool iFlag) noexcept
+{
+  auto& previousFlag = this->mGamePlay.mGraphics.mIsEnabledDefaultShadow;
+  if (iFlag != previousFlag)
+  {
+    previousFlag = iFlag;
+  }
+}
+
+bool MDySetting::IsDefaultShadowOptionActivated() const noexcept
+{
+  return this->mGamePlay.mGraphics.mIsEnabledDefaultShadow;
+}
+
+void MDySetting::SetDefaultSsaoOption(_MIN_ bool iFlag) noexcept
+{
+  auto& previousFlag = this->mGamePlay.mGraphics.mIsEnabledDefaultSsao;
+  if (iFlag != previousFlag)
+  {
+    previousFlag = iFlag;
+  }
+}
+
+bool MDySetting::IsDefaultSsaoOptionActivated() const noexcept
+{
+  return this->mGamePlay.mGraphics.mIsEnabledDefaultSsao;
+}
+
 TI32 MDySetting::GetWindowSizeWidth() const noexcept
 {
   return this->mGamePlay.mInitialResolution.X;
@@ -352,7 +380,7 @@ EDySuccess MDySetting::pfInitialize()
   MDY_CALL_ASSERT_SUCCESS(InitializeGraphicsApi(*this));
 
   if (this->mApplicationMode == EDyAppMode::LoadSeperatedFile)
-  {
+  { // If Application loading mode is `Load separated file` like a json, dydat.
     const auto opSettingAtlas = DyGetJsonAtlasFromFile(this->mEntrySettingPath);
     MDY_ASSERT(opSettingAtlas.has_value() == true, "Failed to open application setting file.");
     const auto& settingAtlas = opSettingAtlas.value();
@@ -366,7 +394,7 @@ EDySuccess MDySetting::pfInitialize()
     MDyMetaInfo::GetInstance().MDY_PRIVATE_SPECIFIER(InitiateMetaInformation)();
   }
   else if (this->mApplicationMode == EDyAppMode::LoadCompressedFile)
-  {
+  { // If Application loading mode is `Load compressed file` like a `Data###.dydat`.
     MDY_ASSERT(std::filesystem::exists(this->mEntrySettingPath) == true, "Data file is not exist.");
 
     const auto opMetaInfo = DyGetJsonAtlasFromFile(this->mEntrySettingPath);

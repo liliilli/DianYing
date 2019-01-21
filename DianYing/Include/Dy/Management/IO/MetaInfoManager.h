@@ -66,120 +66,92 @@ public:
   const PDyLevelConstructMetaInfo* GetLevelMetaInformation(const std::string& levelName) const noexcept;
 
   /// @brief  Get valid script meta information instance.
-  /// @return valid script meta information instance.
-  MDY_NODISCARD const PDyScriptInstanceMetaInfo&    GetScriptMetaInformation(_MIN_ const std::string& specifierName) const;
+  /// @return valid general script meta information instance.
+  MDY_NODISCARD const PDyScriptInstanceMetaInfo&    
+  GetScriptMetaInformation(_MIN_ const std::string& specifierName) const;
+  /// @brief  Get const reference container of global script meta information.
+  /// @return valid global script meta information instance.
+  MDY_NODISCARD const THashMap<PDyScriptInstanceMetaInfo>& 
+  GetRefGlobalScriptMetaInfoContainer() const noexcept;
   /// @brief  Get prefab meta information instance.
-  MDY_NODISCARD const PDyPrefabInstanceMetaInfo&    GetPrefabMetaInformation(_MIN_ const std::string& specifierName) const;
+  /// @return valid prefab meta information instance.
+  MDY_NODISCARD const PDyPrefabInstanceMetaInfo&    
+  GetPrefabMetaInformation(_MIN_ const std::string& specifierName) const;
   /// @brief
-  MDY_NODISCARD const PDyMetaFontInformation&       GetFontMetaInformation(_MIN_ const std::string& specifierName) const;
+  MDY_NODISCARD const PDyMetaFontInformation&       
+  GetFontMetaInformation(_MIN_ const std::string& specifierName) const;
   /// @brief
-  MDY_NODISCARD const PDyMetaWidgetRootDescriptor&  GetWidgetMetaInformation(_MIN_ const std::string& specifierName) const;
+  MDY_NODISCARD const PDyMetaWidgetRootDescriptor&  
+  GetWidgetMetaInformation(_MIN_ const std::string& specifierName) const;
   /// @brief  Get shader instance meta information from container.
   /// @return Return value is undefined if not found.
-  MDY_NODISCARD const PDyGLShaderInstanceMetaInfo&  GetGLShaderMetaInformation(_MIN_ const std::string& specifier) const;
+  MDY_NODISCARD const PDyGLShaderInstanceMetaInfo&  
+  GetGLShaderMetaInformation(_MIN_ const std::string& specifier) const;
   /// @brief  Get builtin mesh instance meta information from container.
   /// @return Return value is undefined if not found.
-  MDY_NODISCARD const PDyBtMeshInstanceMetaInfo&     GetBtMeshMetaInformation(_MIN_ const std::string& specifier) const;
+  MDY_NODISCARD const PDyBtMeshInstanceMetaInfo&     
+  GetBtMeshMetaInformation(_MIN_ const std::string& specifier) const;
   /// @brief  Get model instance meta information from container.
   /// @return Return value is undefined if not found.
-  MDY_NODISCARD const PDyModelInstanceMetaInfo&     GetModelMetaInformation(_MIN_ const std::string& specifier) const;
+  MDY_NODISCARD const PDyModelInstanceMetaInfo&     
+  GetModelMetaInformation(_MIN_ const std::string& specifier) const;
   /// @brief  Get texture instance meta information from container.
   /// @return Return value is undefined if not found.
-  MDY_NODISCARD const PDyTextureInstanceMetaInfo&   GetTextureMetaInformation(_MIN_ const std::string& specifier) const;
+  MDY_NODISCARD const PDyTextureInstanceMetaInfo&   
+  GetTextureMetaInformation(_MIN_ const std::string& specifier) const;
   /// @brief  Get material instance meta information from container.
   /// @return Return value is undefined if not found.
-  MDY_NODISCARD const PDyMaterialInstanceMetaInfo&  GetMaterialMetaInformation(_MIN_ const std::string& specifier) const;
+  MDY_NODISCARD const PDyMaterialInstanceMetaInfo&  
+  GetMaterialMetaInformation(_MIN_ const std::string& specifier) const;
   /// @brief  Get frame buffer instance meta information from container.
   /// @return Return value is undefined if not found.
-  MDY_NODISCARD const PDyGlFrameBufferInstanceMetaInfo& GetGlFrameBufferMetaInformation(_MIN_ const std::string& specifier) const;
+  MDY_NODISCARD const PDyGlFrameBufferInstanceMetaInfo&
+  GetGlFrameBufferMetaInformation(_MIN_ const std::string& specifier) const;
   /// @brief  Get attachment instance meta information from container.
   /// @return Return value is undefined if not found.
-  MDY_NODISCARD const PDyGlAttachmentInstanceMetaInfo&  GetGLAttachmentMetaInformation(_MIN_ const std::string& specifier) const;
+  MDY_NODISCARD const PDyGlAttachmentInstanceMetaInfo&  
+  GetGLAttachmentMetaInformation(_MIN_ const std::string& specifier) const;
 
   /// @brief Get loading widget pointer if exist, or return nullptr (nothing) value
   MDY_NODISCARD const PDyMetaWidgetRootDescriptor* 
   MDY_PRIVATE_SPECIFIER(TryGetLoadingWidgetMetaLoading)() const noexcept;
 
-  ///
-  /// @brief  Check script meta information is exist.
-  /// @return Return value is false if not found.
-  ///
-  ////
-
   /// @brief  Check script meta information is exist.
   /// @return Return value is false if not found.
   MDY_NODISCARD bool IsGLShaderMetaInfoExist(_MIN_ const std::string& specifier) const noexcept;
-
   /// @brief  Check mesh meta information is exist.
   /// @return Return value is false if not found.
   MDY_NODISCARD bool IsMeshMetaInfoExist(_MIN_ const std::string& specifier) const noexcept;
-
   /// @brief  Check scene meta information is exist.
   /// @return Return value is false if not found.
   MDY_NODISCARD bool IsLevelMetaInformation(_MIN_ const std::string& specifier) const noexcept;
-
   /// @brief  Check model meta information is exist.
   /// @return Return value is false if not found.
-  MDY_NODISCARD bool IsModelMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
-  {
-    return DyIsMapContains(this->mModelMetaInfo, specifier);
-  }
-
+  MDY_NODISCARD bool IsModelMetaInfoExist(_MIN_ const std::string& specifier) const noexcept;
   /// @brief  Check texture meta information is exist.
   /// @return Return value is false if not found.
-  MDY_NODISCARD bool IsTextureMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
-  {
-    return DyIsMapContains(this->mTextureMetaInfo, specifier);
-  }
-
+  MDY_NODISCARD bool IsTextureMetaInfoExist(_MIN_ const std::string& specifier) const noexcept;
   /// @brief  Check material meta information is exist.
   /// @return Return value is false if not found.
-  MDY_NODISCARD bool IsMaterialMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
-  {
-    return DyIsMapContains(this->mMaterialMetaInfo, specifier);
-  }
-
+  MDY_NODISCARD bool IsMaterialMetaInfoExist(_MIN_ const std::string& specifier) const noexcept;
   /// @brief  Check widget meta information is exist.
   /// @return Return value is false if not found.
-  MDY_NODISCARD bool IsWidgetMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
-  {
-    return DyIsMapContains(this->mWidgetMetaInfo, specifier);
-  }
-
+  MDY_NODISCARD bool IsWidgetMetaInfoExist(_MIN_ const std::string& specifier) const noexcept;
   /// @brief  Check script meta information is exist.
   /// @return If found, return true or false.
-  MDY_NODISCARD bool IsScriptMetaInformationExist(_MIN_ const std::string& specifierName) const noexcept
-  {
-    return DyIsMapContains(this->mScriptMetaInfo, specifierName);
-  }
-
+  MDY_NODISCARD bool IsScriptMetaInformationExist(_MIN_ const std::string& specifierName) const noexcept;
   /// @brief  Check prefab meta information is exist.
   /// @return If found, return true or false.
-  MDY_NODISCARD bool IsPrefabMetaInformationExist(_MIN_ const std::string& specifierName) const noexcept
-  {
-    return DyIsMapContains(this->mPrefabMetaInfo, specifierName);
-  }
-
+  MDY_NODISCARD bool IsPrefabMetaInformationExist(_MIN_ const std::string& specifierName) const noexcept;
   /// @brief  Check font meta information is exist.
   /// @return If found, return true or false.
-  MDY_NODISCARD bool IsFontMetaInformationExist(_MIN_ const std::string& specifierName) const noexcept
-  {
-    return DyIsMapContains(this->mFontMetaInfo, specifierName);
-  }
-
+  MDY_NODISCARD bool IsFontMetaInformationExist(_MIN_ const std::string& specifierName) const noexcept;
   /// @brief  Check attachment meta information is exist.
   /// @return If found, return true or false.
-  MDY_NODISCARD bool IsAttachmentMetaInfoExist(_MIN_ const std::string& specifierName) const noexcept
-  {
-    return DyIsMapContains(this->mAttachmentMetaInfo, specifierName);
-  }
-
+  MDY_NODISCARD bool IsAttachmentMetaInfoExist(_MIN_ const std::string& specifierName) const noexcept;
   /// @brief  Check framebuffer meta information is exist.
   /// @return If found, return true or false.
-  MDY_NODISCARD bool IsFrameBufferMetaInfoExist(_MIN_ const std::string& speicfierName) const noexcept
-  {
-    return DyIsMapContains(this->mFrameBufferMetaInfo, speicfierName);
-  }
+  MDY_NODISCARD bool IsFrameBufferMetaInfoExist(_MIN_ const std::string& speicfierName) const noexcept;
 
   /// @brief Check loading widget is exist and ready.
   /// @return If found, return true or false.
@@ -200,8 +172,13 @@ private:
   MDY_NODISCARD EDySuccess pReadScriptResourceMetaInformation(_MIN_ const std::string& metaFilePath);
   MDY_NODISCARD EDySuccess pReadPrefabResourceMetaInformation(_MIN_ const std::string& metaFilePath);
   MDY_NODISCARD EDySuccess pReadWidgetResourceMetaInformation(_MIN_ const std::string& metaFilePath);
-  MDY_NODISCARD EDySuccess pReadFontResourceMetaInformation  (_MIN_ const std::string& metaFilePath);
   MDY_NODISCARD EDySuccess pReadSceneResourceMetaInformation (_MIN_ const std::string& metaFilepath);
+
+  MDY_NODISCARD EDySuccess pReadFontResourceMetaInformation    (_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadModelResourceMetaInformation   (_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadTextureResourceMetaInformation (_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadShaderResourceMetaInformation  (_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadMaterialResourceMetaInformation(_MIN_ const std::string& metaFilePath);
 
   MDY_NODISCARD EDySuccess pReadScriptResourceMetaInformation(_MIN_ const nlohmann::json& iJson);
   MDY_NODISCARD EDySuccess pReadPrefabResourceMetaInformation(_MIN_ const nlohmann::json& iJson);
@@ -227,6 +204,8 @@ private:
   THashMap<PDyLevelConstructMetaInfo>   mLevelInfoMap   = {};
   /// Script meta information map.
   THashMap<PDyScriptInstanceMetaInfo>   mScriptMetaInfo = {};
+  /// @brief Global script meta information hash-map.
+  THashMap<PDyScriptInstanceMetaInfo>   mGlobalScriptMetaInfo = {};
   /// Font meta information map.
   THashMap<PDyMetaFontInformation>      mFontMetaInfo   = {};
   /// GL shader meta information map.
