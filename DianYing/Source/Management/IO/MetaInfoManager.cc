@@ -572,12 +572,13 @@ EDySuccess MDyMetaInfo::pReadTextureResourceMetaInformation(_MIN_ const std::str
   MDY_ASSERT_FORCE(opJsonAtlas.has_value() == true, "Failed to read texture meta information. File is not exist.");
 
   // (2) Insert each item.
-  for (const auto& sceneAtlas : opJsonAtlas.value().items())
+  for (const auto& item : opJsonAtlas.value().items())
   {
-    auto desc = sceneAtlas.value().get<decltype(mTextureMetaInfo)::value_type::second_type>();
-    desc.mSpecifierName = sceneAtlas.key();
+    auto desc = item.value().get<PDyTextureInstanceMetaInfo>();
+    desc.mSpecifierName = item.key();
+
     auto [it, isSucceeded] = this->mTextureMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
-    MDY_ASSERT(isSucceeded == true, "Unexpected error occurred.");
+    MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
   }
 
   return DY_SUCCESS;
@@ -589,6 +590,16 @@ EDySuccess MDyMetaInfo::pReadShaderResourceMetaInformation(_MIN_ const std::stri
   const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
   MDY_ASSERT_FORCE(opJsonAtlas.has_value() == true, "Failed to read shader meta information. File is not exist.");
 
+  // (2) Insert each item.
+  for (const auto& item : opJsonAtlas.value().items())
+  {
+    auto desc = item.value().get<PDyGLShaderInstanceMetaInfo>();
+    desc.mSpecifierName = item.key();
+
+    auto [it, isSucceeded] = this->mShaderMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
+    MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
+  }
+
   return DY_SUCCESS;
 }
 
@@ -597,6 +608,8 @@ EDySuccess MDyMetaInfo::pReadMaterialResourceMetaInformation(_MIN_ const std::st
   // (1) Validity Test
   const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
   MDY_ASSERT_FORCE(opJsonAtlas.has_value() == true, "Failed to read material meta information. File is not exist.");
+
+
 
   return DY_SUCCESS;
 }

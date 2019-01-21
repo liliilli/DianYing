@@ -14,7 +14,9 @@
 
 /// Header file
 #include <Dy/Meta/Information/GLShaderMetaInformation.h>
-#include <DY/Helper/Library/HelperJson.h>
+#include <nlohmann/json.hpp>
+#include <Dy/Helper/Library/HelperJson.h>
+#include "Dy/Helper/Library/HelperFilesystem.h"
 
 //!
 //! Forward declaration
@@ -46,45 +48,48 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyGLShaderInstanceMetaInfo
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyGLShaderInstanceMetaInfo& p)
 {
-  /*  Template
-   *  "GLShaderSpecifierName":
-      {
-        "SpecifierName": "GLShaderSpecifierName",
-        "Vertex": "FilePath",
-        "Fragment": "FilePath",
-        "Hull": "FilePath",
-        "Domain": "FilePath",
-        "Geometry": "FilePath",
-        "Compute": "FilePath"
-      }
+  /* Template
+   * "Sh_Wall1":
+     {
+       "Fragments":
+       {
+         "Vert": { "ShaderCode": "", "ExternalShaderPath": "" },
+         "Geom": { "ShaderCode": "", "ExternalShaderPath": "" },
+         "Frag": { "ShaderCode": "", "ExternalShaderPath": "" }
+       }
+     }
+   * "Fragments" are "Vert", "Hull", "Domain", "Geom", "Frag", "Comp"
+   * If "Comp" is exist, remove all fragments and just read "Comp" as compute shader.
    */
 
-  p.mSpecifierName  = DyJsonGetValueFrom<std::string>(j, "SpecifierName");
-  p.mSourceType     = EDyResourceSource::External;
-  if (DyCheckHeaderIsExist(j, sHeader_Vertex) == DY_SUCCESS)
+  p.mSourceType = EDyResourceSource::External;
+
+  auto& j_ = const_cast<nlohmann::json&>(j)["Fragments"];
+
+  for (auto it = j_.begin(); it != j_.end(); ++it)
   {
-    p.GetFragment(EDyShaderFragmentType::Vertex).mExternalFilePath = DyJsonGetValueFrom<std::string>(j, sHeader_Vertex);
-  }
-  if (DyCheckHeaderIsExist(j, sHeader_Hull) == DY_SUCCESS)
-  {
-    p.GetFragment(EDyShaderFragmentType::Hull).mExternalFilePath = DyJsonGetValueFrom<std::string>(j, sHeader_Hull);
-  }
-  if (DyCheckHeaderIsExist(j, sHeader_Domain) == DY_SUCCESS)
-  {
-    p.GetFragment(EDyShaderFragmentType::Domain).mExternalFilePath = DyJsonGetValueFrom<std::string>(j, sHeader_Domain);
-  }
-  if (DyCheckHeaderIsExist(j, sHeader_Geometry) == DY_SUCCESS)
-  {
-    p.GetFragment(EDyShaderFragmentType::Geometry).mExternalFilePath = DyJsonGetValueFrom<std::string>(j, sHeader_Geometry);
-  }
-  if (DyCheckHeaderIsExist(j, sHeader_Pixel) == DY_SUCCESS)
-  {
-    p.GetFragment(EDyShaderFragmentType::Pixel).mExternalFilePath = DyJsonGetValueFrom<std::string>(j, sHeader_Pixel);
-  }
-  if (DyCheckHeaderIsExist(j, sHeader_Compute) == DY_SUCCESS)
-  {
-    p.GetFragment(EDyShaderFragmentType::Compute).mExternalFilePath = DyJsonGetValueFrom<std::string>(j, sHeader_Compute);
-    p.mIsComputeShader = true;
+    const auto fragmentType = DyConvertStringToEDyShaderFragmentType(it.key());
+    if (fragmentType == decltype(fragmentType)::Compute)
+    { // If compute shader, turn on the flag.
+      p.mIsComputeShader = true;
+    }
+
+    // Read builtin shader code or external file path of shader fragment.
+    auto&       refFragment = p.GetFragment(fragmentType);
+    const auto& refFragmentItemValue = it.value();
+    const auto  compressedShaderCode = DyJsonGetValueFrom<std::string>(refFragmentItemValue, "ShaderCode");
+    if (compressedShaderCode.empty() == false)
+    { // If builtin shader code is exist, insert it and pass external path.
+      refFragment.mBuiltinBuffer = compressedShaderCode;
+    }
+    else
+    { // If builtin shader code is not exist, read external path.
+      const auto filePath = DyJsonGetValueFrom<std::string>(refFragmentItemValue, "ExternalShaderPath");
+      MDY_ASSERT_FORCE(
+          filePath.empty() == false && DyFsIsFileExist(filePath) == true, 
+          "External shader fragment file path is not valid.");
+      refFragment.mExternalFilePath = filePath;
+    }
   }
 }
 

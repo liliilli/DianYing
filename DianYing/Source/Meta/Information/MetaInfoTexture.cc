@@ -17,6 +17,7 @@
 #include <nlohmann/json.hpp>
 #include <Dy/Helper/Library/HelperJson.h>
 #include <Dy/Helper/Type/ColorRGB24.h>
+#include <Dy/Helper/Library/HelperFilesystem.h>
 
 //!
 //! Forward declaration & local translation unit data
@@ -54,6 +55,12 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyTextureInstanceMetaInf
 
   p.mIsUsingDefaultMipmapGeneration = DyJsonGetValueFrom<bool>(j, "IsUsingDefaultMipmap");
   p.mBorderColor                    = DyJsonGetValueFrom<DDyColorRGBA32>(j, "BorderColor");
+
+  // Validation check.
+  if (p.mExternalFilePath.empty() == false)
+  {
+    MDY_ASSERT_FORCE(DyFsIsFileExist(p.mExternalFilePath) == true, "File path is not valid.");
+  }
 }
 
 } /// ::dy namespace
