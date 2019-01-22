@@ -11,19 +11,11 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /// SOFTWARE.
 ///
-/// This file is inspired by GSL pointer.h file.
-/// @reference https://github.com/Microsoft/GSL/blob/master/include/gsl/pointers
-///
 
-#include "../JuceLibraryCode/JuceHeader.h"
-
-struct GridUpPanel_BriefInformation : public Component
+enum EExportFlags
 {
-  GridUpPanel_BriefInformation() {}
-
-  void paint(Graphics& g) override
-  {
-    g.fillAll(Colours::yellow.withAlpha(0.5f));
-  }
+  Flag_Model    = 0b00000001,
+  Flag_Anim     = 0b00000010,
+  Flag_Skeleton = 0b00000100,
+  Flag_Material = 0b00001000,
 };
-

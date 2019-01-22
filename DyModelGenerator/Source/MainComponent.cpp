@@ -92,7 +92,7 @@ void MainComponent::resized()
     grid.columnGap  = 8_px;
 
     using Track = Grid::TrackInfo;
-    grid.templateRows     = { Track(128_px), Track(1_fr) };
+    grid.templateRows     = { Track(192_px), Track(1_fr) };
     grid.templateColumns  = { Track(1_fr), Track(1_fr) };
 
     grid.autoRows     = Track(1_fr);
@@ -123,9 +123,10 @@ void MainComponent::exitSignalSent()
   auto& modelInstance = Singleton_ModelInstance::GetInstance();
   
   const auto* ptrModelScene = modelInstance.GetPtrModelScene();
-  if (ptrModelScene == nullptr) { return; }
-
-  (void)ptrModelScene;
+  if (ptrModelScene != nullptr) 
+  {
+    this->mUpPanel.ActivateModelEditor();
+  }
 }
 
 StringArray MainComponent::getMenuBarNames()

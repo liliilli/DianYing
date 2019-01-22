@@ -1500,6 +1500,12 @@
     <ClCompile Include="Data_AssimpModelNode.cc">
       <Filter>DyModelGenerator\Source</Filter>
     </ClCompile>
+    <ClCompile Include="GridUp_BriefInformation.cc">
+      <Filter>DyModelGenerator\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ProgressDialog_ExportModel.cc">
+      <Filter>DyModelGenerator\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\MainComponent.h">
@@ -2795,9 +2801,6 @@
     <ClInclude Include="GridRightController.h">
       <Filter>DyModelGenerator\Source</Filter>
     </ClInclude>
-    <ClInclude Include="HeaderBriefInformation.h">
-      <Filter>DyModelGenerator\Source</Filter>
-    </ClInclude>
     <ClInclude Include="HelperPointer.h">
       <Filter>DyModelGenerator\Source</Filter>
     </ClInclude>
@@ -2823,6 +2826,15 @@
       <Filter>DyModelGenerator\Source</Filter>
     </ClInclude>
     <ClInclude Include="Data_AssimpModelNode.h">
+      <Filter>DyModelGenerator\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="GridUp_BriefInformation.h">
+      <Filter>DyModelGenerator\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="ProgressDialog_ExportModel.h">
+      <Filter>DyModelGenerator\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Enum_ExportFlags.h">
       <Filter>DyModelGenerator\Source</Filter>
     </ClInclude>
   </ItemGroup>

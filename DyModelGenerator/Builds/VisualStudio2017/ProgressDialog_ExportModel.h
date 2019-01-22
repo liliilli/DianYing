@@ -13,11 +13,12 @@
 ///
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "Enum_ExportFlags.h"
 
-class ProgressDialog_ReadModel : public ThreadWithProgressWindow
+class ProgressDialog_ExportModel : public ThreadWithProgressWindow
 {
 public:
-  ProgressDialog_ReadModel(const juce::File iFileFd);
+  ProgressDialog_ExportModel(EExportFlags iFlags);
 
   void run() override final;
 
@@ -25,8 +26,5 @@ public:
   void threadComplete(bool userPressedCancel) override final;
 
 private:
-  juce::File mModelFileFd;
-
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProgressDialog_ReadModel)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProgressDialog_ExportModel)
 };
-

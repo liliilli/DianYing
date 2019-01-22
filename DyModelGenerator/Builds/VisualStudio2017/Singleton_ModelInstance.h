@@ -41,7 +41,12 @@ public:
   /// @brief Get root node of model main scene.
   const aiNode* GetPtrRootNodeOfModelScene() const noexcept;
 
+  /// @brief Get model-file full path. If not valid, it just return empty string.
+  const std::string& GetModelFileFullPath() const noexcept;
+
 private:
+  std::string mModelFileFullPath = "";
+
   std::unique_ptr<Assimp::Importer>         mAssimpModerImporter  = nullptr;
   std::vector<NotNull<const aiMesh*>>       mPtrAssimpModelMeshList;
   std::vector<NotNull<const aiMaterial*>>   mPtrAssimpModelMaterialList;

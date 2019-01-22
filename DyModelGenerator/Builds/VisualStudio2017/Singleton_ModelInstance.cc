@@ -63,7 +63,8 @@ EDySuccess Singleton_ModelInstance::ReadModelWithPath(const std::string& iPath)
     for (unsigned i = 0; i < ptrModelScene->mNumTextures; ++i)
     { this->mPtrAssimpModelTextureList.emplace_back(ptrModelScene->mTextures[i]);}
 
-    this->mAssimpModeNode = std::make_unique<Data_AssimpModelNode>(DyMakeNotNull(ptrModelScene->mRootNode));
+    this->mAssimpModeNode    = std::make_unique<Data_AssimpModelNode>(DyMakeNotNull(ptrModelScene->mRootNode));
+    this->mModelFileFullPath = iPath;
     return DY_SUCCESS;
   }
 }
@@ -76,6 +77,7 @@ void Singleton_ModelInstance::ReleaseModel()
   this->mPtrAssimpModelMaterialList.clear();
   this->mPtrAssimpModelTextureList.clear();
   this->mAssimpModeNode = nullptr;
+  this->mModelFileFullPath.clear();
 }
 
 const Assimp::Importer* Singleton_ModelInstance::GetPtrModelImporter() const noexcept
@@ -101,4 +103,9 @@ const aiNode* Singleton_ModelInstance::GetPtrRootNodeOfModelScene() const noexce
   if (this->mAssimpModerImporter == nullptr) { return nullptr; }
   
   return this->mAssimpModerImporter->GetScene()->mRootNode;
+}
+
+const std::string& Singleton_ModelInstance::GetModelFileFullPath() const noexcept
+{
+  return this->mModelFileFullPath;
 }

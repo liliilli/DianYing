@@ -1372,6 +1372,8 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_gui_extra.cpp" />
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_opengl.cpp" />
     <ClCompile Include="Data_AssimpModelNode.cc" />
+    <ClCompile Include="GridUp_BriefInformation.cc" />
+    <ClCompile Include="ProgressDialog_ExportModel.cc" />
     <ClCompile Include="ProgressDIalog_ReadModel.cpp" />
     <ClCompile Include="Singleton_ModelInstance.cc" />
   </ItemGroup>
@@ -1806,15 +1808,17 @@
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h" />
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h" />
     <ClInclude Include="Data_AssimpModelNode.h" />
+    <ClInclude Include="Enum_ExportFlags.h" />
     <ClInclude Include="Global_EnumSuccess.h" />
     <ClInclude Include="HelperConstant.h" />
     <ClInclude Include="GridLeftModelInformation.h" />
     <ClInclude Include="GridRightController.h" />
-    <ClInclude Include="HeaderBriefInformation.h" />
+    <ClInclude Include="GridUp_BriefInformation.h" />
     <ClInclude Include="HelperContracts.h" />
     <ClInclude Include="HelperPointer.h" />
     <ClInclude Include="HelperMacroes.h" />
     <ClInclude Include="Interface_Singleton.h" />
+    <ClInclude Include="ProgressDialog_ExportModel.h" />
     <ClInclude Include="ProgressDialog_ReadModel.h" />
     <ClInclude Include="Singleton_ModelInstance.h" />
   </ItemGroup>

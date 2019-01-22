@@ -14,19 +14,29 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
-class ProgressDialog_ReadModel : public ThreadWithProgressWindow
+struct GridUpPanel_BriefInformation final : 
+    public Component, 
+    public Button::Listener 
 {
 public:
-  ProgressDialog_ReadModel(const juce::File iFileFd);
+  GridUpPanel_BriefInformation();
 
-  void run() override final;
+  void paint(Graphics& g) override final;
 
-  // This method gets called on the message thread once our thread has finished..
-  void threadComplete(bool userPressedCancel) override final;
+  void resized() override final;
+
+  /// @brief activate model editor.
+  void ActivateModelEditor();
+  /// @brief deactivate model editor.
+  void DeactivateModelEditor();
+
+  void buttonClicked(Button* button) override final;
 
 private:
-  juce::File mModelFileFd;
+  Label       mName;
+  TextEditor  mSpecifierEditor;
+  TextButton  mCreateButton;
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProgressDialog_ReadModel)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GridUpPanel_BriefInformation)
 };
 

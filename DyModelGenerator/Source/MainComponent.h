@@ -18,7 +18,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "../Builds/VisualStudio2017/GridLeftModelInformation.h"
 #include "../Builds/VisualStudio2017/GridRightController.h"
-#include "../Builds/VisualStudio2017/HeaderBriefInformation.h"
+#include "../Builds/VisualStudio2017/GridUp_BriefInformation.h"
 
 //==============================================================================
 /*
