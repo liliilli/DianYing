@@ -14,7 +14,7 @@
 /// Header file
 #include "ProgressDialog_ReadModel.h"
 #include "HelperConstant.h"
-#include "HelperAssimp.h"
+#include "Singleton_ModelInstance.h"
 
 ProgressDialog_ReadModel::ProgressDialog_ReadModel(const juce::File iFileFd) :
     ThreadWithProgressWindow("busy doing some important things...", true, true),
@@ -25,33 +25,29 @@ ProgressDialog_ReadModel::ProgressDialog_ReadModel(const juce::File iFileFd) :
 void ProgressDialog_ReadModel::run()
 {
   setProgress(kDialog_SpinningBar); 
-  setStatusMessage(mModelFileFd.getFullPathName() + " opened.");
+  setStatusMessage("Opening " + mModelFileFd.getFullPathName() + "...");
 
-  auto optResult = ReadModel(mModelFileFd.getFullPathName().toStdString());
-  if (optResult.has_value() == false) { return; }
-  if (threadShouldExit() == true)     { return; }
+  auto& modelInstance = Singleton_ModelInstance::GetInstance();
+  const auto errorFlag = modelInstance.ReadModelWithPath(mModelFileFd.getFullPathName().toStdString());
+  if (errorFlag == DY_FAILURE || threadShouldExit() == true)
+  {
+    return;
+  }
 
-  setProgress(kDialog_SpinningBar); 
-  setStatusMessage("Finishing off the last few bits and pieces!");
-  wait(1000);
+  wait(500);
 }
 
 void ProgressDialog_ReadModel::threadComplete(bool userPressedCancel)
 {
-  if (userPressedCancel)
-  {
-    AlertWindow::showMessageBoxAsync(AlertWindow::WarningIcon,
-      "Progress window",
-      "You pressed cancel!");
-  }
-  else
+  if (userPressedCancel == false)
   {
     // thread finished normally..
     AlertWindow::showMessageBoxAsync(AlertWindow::WarningIcon,
       "Progress window",
-      "Thread finished ok!");
+      "Loading model completed.");
   }
 
   // ..and clean up by deleting our thread object..
+  this->signalThreadShouldExit();
   delete this;
 }

@@ -12,17 +12,40 @@
 /// SOFTWARE.
 ///
 
+#include <assimp/Importer.hpp>
 #include "Interface_Singleton.h"
+#include "HelperPointer.h"
+#include "Data_AssimpModelNode.h"
 
-class Singleton_ModelInstance : public Interface_Singleton<Singleton_ModelInstance>
+struct aiNode;
+struct aiMesh;
+struct aiMaterial;
+struct aiAnimation;
+struct aiTexture;
+
+struct Singleton_ModelInstance : public Interface_Singleton<Singleton_ModelInstance>
 {
 public:
   MDY_SINGLETON_PROPERTIES(Singleton_ModelInstance);
   MDY_SINGLETON_DERIVED(Singleton_ModelInstance);
 
+  /// @brief Read model with assimp using full file path.
+  MDY_NODISCARD EDySuccess ReadModelWithPath(const std::string& iPath);
+  /// @brief Release model instance.
+  void ReleaseModel();
 
+  /// @brief Get pointer of model importer instance. If not valid, it just return nullptr;
+  const Assimp::Importer* GetPtrModelImporter() const noexcept;
+  /// @brief Get pointer of model scene, if not valid it just return nullptr.
+  const aiScene* GetPtrModelScene() const noexcept;
+  /// @brief Get root node of model main scene.
+  const aiNode* GetPtrRootNodeOfModelScene() const noexcept;
 
 private:
-
-
+  std::unique_ptr<Assimp::Importer>         mAssimpModerImporter  = nullptr;
+  std::vector<NotNull<const aiMesh*>>       mPtrAssimpModelMeshList;
+  std::vector<NotNull<const aiMaterial*>>   mPtrAssimpModelMaterialList;
+  std::vector<NotNull<const aiAnimation*>>  mPtrAssimpModelAnimList;
+  std::vector<NotNull<const aiTexture*>>    mPtrAssimpModelTextureList;
+  std::unique_ptr<Data_AssimpModelNode>     mAssimpModeNode = nullptr;
 };

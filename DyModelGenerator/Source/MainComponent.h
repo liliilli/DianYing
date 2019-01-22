@@ -28,7 +28,8 @@
 class MainComponent : public Component, 
     public FilenameComponentListener, 
     public MenuBarModel,
-    public ApplicationCommandTarget
+    public ApplicationCommandTarget,
+    public Thread::Listener
 {
 public:
   //==============================================================================
@@ -44,7 +45,9 @@ private:
   // Your private member variables go here...
 
   void filenameComponentChanged (FilenameComponent*) override;
-  
+ 
+  void exitSignalSent() override final;
+
   /// @brief
   FilenameComponent mFileChooser = {
       "Model File", 

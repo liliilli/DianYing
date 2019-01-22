@@ -113,8 +113,19 @@ void MainComponent::resized()
 void MainComponent::filenameComponentChanged(FilenameComponent*)
 {
   auto fileFd = this->mFileChooser.getCurrentFile();
-  (new ProgressDialog_ReadModel(fileFd))->launchThread();
-  //editor->loadContent (fileChooser.getCurrentFile().loadFileAsString());
+  auto ptr = (new ProgressDialog_ReadModel(fileFd));
+  ptr->addListener(this);
+  ptr->launchThread();
+}
+
+void MainComponent::exitSignalSent()
+{
+  auto& modelInstance = Singleton_ModelInstance::GetInstance();
+  
+  const auto* ptrModelScene = modelInstance.GetPtrModelScene();
+  if (ptrModelScene == nullptr) { return; }
+
+  (void)ptrModelScene;
 }
 
 StringArray MainComponent::getMenuBarNames()

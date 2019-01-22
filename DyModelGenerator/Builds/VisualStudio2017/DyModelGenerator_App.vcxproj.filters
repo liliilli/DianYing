@@ -1491,13 +1491,13 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_opengl.cpp">
       <Filter>JUCE Library Code</Filter>
     </ClCompile>
-    <ClCompile Include="HelperAssimp.cpp">
-      <Filter>DyModelGenerator\Source</Filter>
-    </ClCompile>
     <ClCompile Include="ProgressDIalog_ReadModel.cpp">
       <Filter>DyModelGenerator\Source</Filter>
     </ClCompile>
     <ClCompile Include="Singleton_ModelInstance.cc">
+      <Filter>DyModelGenerator\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Data_AssimpModelNode.cc">
       <Filter>DyModelGenerator\Source</Filter>
     </ClCompile>
   </ItemGroup>
@@ -2798,9 +2798,6 @@
     <ClInclude Include="HeaderBriefInformation.h">
       <Filter>DyModelGenerator\Source</Filter>
     </ClInclude>
-    <ClInclude Include="HelperAssimp.h">
-      <Filter>DyModelGenerator\Source</Filter>
-    </ClInclude>
     <ClInclude Include="HelperPointer.h">
       <Filter>DyModelGenerator\Source</Filter>
     </ClInclude>
@@ -2823,6 +2820,9 @@
       <Filter>DyModelGenerator\Source</Filter>
     </ClInclude>
     <ClInclude Include="Singleton_ModelInstance.h">
+      <Filter>DyModelGenerator\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Data_AssimpModelNode.h">
       <Filter>DyModelGenerator\Source</Filter>
     </ClInclude>
   </ItemGroup>

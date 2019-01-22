@@ -1371,7 +1371,7 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_gui_basics.cpp" />
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_gui_extra.cpp" />
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_opengl.cpp" />
-    <ClCompile Include="HelperAssimp.cpp" />
+    <ClCompile Include="Data_AssimpModelNode.cc" />
     <ClCompile Include="ProgressDIalog_ReadModel.cpp" />
     <ClCompile Include="Singleton_ModelInstance.cc" />
   </ItemGroup>
@@ -1805,12 +1805,12 @@
     <ClInclude Include="C:\JUCE\modules\juce_opengl\juce_opengl.h" />
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h" />
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h" />
+    <ClInclude Include="Data_AssimpModelNode.h" />
     <ClInclude Include="Global_EnumSuccess.h" />
     <ClInclude Include="HelperConstant.h" />
     <ClInclude Include="GridLeftModelInformation.h" />
     <ClInclude Include="GridRightController.h" />
     <ClInclude Include="HeaderBriefInformation.h" />
-    <ClInclude Include="HelperAssimp.h" />
     <ClInclude Include="HelperContracts.h" />
     <ClInclude Include="HelperPointer.h" />
     <ClInclude Include="HelperMacroes.h" />
