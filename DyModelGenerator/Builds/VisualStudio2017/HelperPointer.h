@@ -29,9 +29,6 @@
 #define constexpr /*constexpr*/
 #endif /// defined(_MSC_VER) && _MSC_VER < 1910
 
-namespace dy
-{
-
 ///
 /// @brief  Convert unique_ptr to another (inheritenced) unique_ptr instance.
 /// @tparam TTargetType
@@ -192,15 +189,13 @@ NotNull<TType> operator+(const NotNull<TType>&, std::ptrdiff_t)             = de
 template <class TType>
 NotNull<TType> operator+(std::ptrdiff_t, const NotNull<TType>&)             = delete;
 
-} /// namespace dy
-
 namespace std
 {
 
 template <class TType>
-struct hash<dy::NotNull<TType>>
+struct hash<NotNull<TType>>
 {
-  std::size_t operator()(const dy::NotNull<TType>& value) const { return hash<TType>{}(value); }
+  std::size_t operator()(const NotNull<TType>& value) const { return hash<TType>{}(value); }
 };
 
 } /// namespace std

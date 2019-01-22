@@ -16,11 +16,8 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-namespace dy
-{
-
 std::optional<std::pair<std::shared_ptr<Assimp::Importer>, NotNull<const aiScene*>>>
-AssimpReadModel(const std::string& iFilePath)
+ReadModel(const std::string& iFilePath)
 {
   /// Created `aiScene` will be removed automatically when smtptr of Importer ref counting is 0.
   auto ptrsmtImporter = std::make_shared<Assimp::Importer>();
@@ -38,5 +35,3 @@ AssimpReadModel(const std::string& iFilePath)
     return std::make_pair(ptrsmtImporter, DyMakeNotNull(ptrModelScene));
   }
 }
-
-} /// ::dy namespace

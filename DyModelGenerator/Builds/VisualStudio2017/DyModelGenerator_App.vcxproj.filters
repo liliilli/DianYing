@@ -1494,6 +1494,12 @@
     <ClCompile Include="HelperAssimp.cpp">
       <Filter>DyModelGenerator\Source</Filter>
     </ClCompile>
+    <ClCompile Include="ProgressDIalog_ReadModel.cpp">
+      <Filter>DyModelGenerator\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Singleton_ModelInstance.cc">
+      <Filter>DyModelGenerator\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\MainComponent.h">
@@ -2802,6 +2808,21 @@
       <Filter>DyModelGenerator\Source</Filter>
     </ClInclude>
     <ClInclude Include="HelperContracts.h">
+      <Filter>DyModelGenerator\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="HelperConstant.h">
+      <Filter>DyModelGenerator\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Interface_Singleton.h">
+      <Filter>DyModelGenerator\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="HelperMacroes.h">
+      <Filter>DyModelGenerator\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Global_EnumSuccess.h">
+      <Filter>DyModelGenerator\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Singleton_ModelInstance.h">
       <Filter>DyModelGenerator\Source</Filter>
     </ClInclude>
   </ItemGroup>

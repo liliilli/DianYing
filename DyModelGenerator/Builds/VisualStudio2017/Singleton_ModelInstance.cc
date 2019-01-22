@@ -1,4 +1,3 @@
-#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -11,23 +10,16 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /// SOFTWARE.
 ///
-/// This file is inspired by GSL pointer.h file.
-/// @reference https://github.com/Microsoft/GSL/blob/master/include/gsl/pointers
-///
 
-#include "../JuceLibraryCode/JuceHeader.h"
+/// Header file
+#include "Singleton_ModelInstance.h"
 
-class ProgressDialog_ReadModel : public ThreadWithProgressWindow
+EDySuccess Singleton_ModelInstance::pfInitialize()
 {
-public:
-  ProgressDialog_ReadModel(const juce::File iFileFd);
+  return DY_SUCCESS;
+}
 
-  void run() override final;
-
-  // This method gets called on the message thread once our thread has finished..
-  void threadComplete(bool userPressedCancel) override final;
-
-private:
-  juce::File mModelFileFd;
-};
-
+EDySuccess Singleton_ModelInstance::pfRelease()
+{
+  return DY_SUCCESS;
+}

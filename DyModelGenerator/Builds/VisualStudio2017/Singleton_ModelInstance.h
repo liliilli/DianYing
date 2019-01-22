@@ -11,23 +11,18 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /// SOFTWARE.
 ///
-/// This file is inspired by GSL pointer.h file.
-/// @reference https://github.com/Microsoft/GSL/blob/master/include/gsl/pointers
-///
 
-#include "../JuceLibraryCode/JuceHeader.h"
+#include "Interface_Singleton.h"
 
-class ProgressDialog_ReadModel : public ThreadWithProgressWindow
+class Singleton_ModelInstance : public Interface_Singleton<Singleton_ModelInstance>
 {
 public:
-  ProgressDialog_ReadModel(const juce::File iFileFd);
+  MDY_SINGLETON_PROPERTIES(Singleton_ModelInstance);
+  MDY_SINGLETON_DERIVED(Singleton_ModelInstance);
 
-  void run() override final;
 
-  // This method gets called on the message thread once our thread has finished..
-  void threadComplete(bool userPressedCancel) override final;
 
 private:
-  juce::File mModelFileFd;
-};
 
+
+};

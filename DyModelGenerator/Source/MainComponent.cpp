@@ -16,10 +16,14 @@
 
 #include "MainComponent.h"
 #include "../Builds/VisualStudio2017/ProgressDialog_ReadModel.h"
+#include "../Builds/VisualStudio2017/Singleton_ModelInstance.h"
 
 //==============================================================================
 MainComponent::MainComponent()
 {
+  const auto errorFlag = Singleton_ModelInstance::Initialize();
+  jassert(errorFlag == DY_SUCCESS);
+
   // Create a file chooser control to load files into it..
   {
     this->addAndMakeVisible(this->mFileChooser);
@@ -49,6 +53,9 @@ MainComponent::MainComponent()
 MainComponent::~MainComponent()
 {
   this->mFileChooser.removeListener(this);
+
+  const auto errorFlag = Singleton_ModelInstance::Release();
+  jassert(errorFlag == DY_SUCCESS);
 }
 
 //==============================================================================
@@ -105,7 +112,8 @@ void MainComponent::resized()
 
 void MainComponent::filenameComponentChanged(FilenameComponent*)
 {
-  (new ProgressDialog_ReadModel())->launchThread();
+  auto fileFd = this->mFileChooser.getCurrentFile();
+  (new ProgressDialog_ReadModel(fileFd))->launchThread();
   //editor->loadContent (fileChooser.getCurrentFile().loadFileAsString());
 }
 

@@ -11,23 +11,8 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /// SOFTWARE.
 ///
-/// This file is inspired by GSL pointer.h file.
-/// @reference https://github.com/Microsoft/GSL/blob/master/include/gsl/pointers
-///
 
-#include "../JuceLibraryCode/JuceHeader.h"
-
-class ProgressDialog_ReadModel : public ThreadWithProgressWindow
-{
-public:
-  ProgressDialog_ReadModel(const juce::File iFileFd);
-
-  void run() override final;
-
-  // This method gets called on the message thread once our thread has finished..
-  void threadComplete(bool userPressedCancel) override final;
-
-private:
-  juce::File mModelFileFd;
+enum EDySuccess : bool {
+  DY_FAILURE = false,
+  DY_SUCCESS = true
 };
-

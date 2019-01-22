@@ -21,6 +21,6 @@
 #include "HelperPointer.h"
 
 /// @brief Read Model with `iFilePath`.
-[[nodiscard]] std::optional<std::pair<std::shared_ptr<Assimp::Importer>, dy::NotNull<const aiScene*>>>
-AssimpReadModel(const std::string& iFilePath);
+[[nodiscard]] std::optional<std::pair<std::shared_ptr<Assimp::Importer>, NotNull<const aiScene*>>>
+ReadModel(const std::string& iFilePath);
    
