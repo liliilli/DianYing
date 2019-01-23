@@ -1506,6 +1506,26 @@
     <ClCompile Include="ProgressDialog_ExportModel.cc">
       <Filter>DyModelGenerator\Source</Filter>
     </ClCompile>
+    <ClCompile Include="Data_Vector2.cc">
+      <Filter>DyModelGenerator\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Data_Vector3.cc">
+      <Filter>DyModelGenerator\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Data_Vector4.cc">
+      <Filter>DyModelGenerator\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Data_Matrix4.cc">
+      <Filter>DyModelGenerator\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Data_MeshData.cc">
+      <Filter>DyModelGenerator\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\fmt5.3.0\src\format.cc" />
+    <ClCompile Include="Libraries\fmt5.3.0\src\posix.cc" />
+    <ClCompile Include="Helper_JsonLz4.cc">
+      <Filter>DyModelGenerator\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\MainComponent.h">
@@ -2835,6 +2855,27 @@
       <Filter>DyModelGenerator\Source</Filter>
     </ClInclude>
     <ClInclude Include="Enum_ExportFlags.h">
+      <Filter>DyModelGenerator\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Data_MeshData.h">
+      <Filter>DyModelGenerator\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Data_Vector3.h">
+      <Filter>DyModelGenerator\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Data_Vector2.h">
+      <Filter>DyModelGenerator\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Data_Vector4.h">
+      <Filter>DyModelGenerator\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Data_Matrix4.h">
+      <Filter>DyModelGenerator\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Helper_JsonLz4.h">
+      <Filter>DyModelGenerator\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Helper_Filesystem.h">
       <Filter>DyModelGenerator\Source</Filter>
     </ClInclude>
   </ItemGroup>

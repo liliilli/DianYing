@@ -19,13 +19,13 @@ void to_json(nlohmann::json& j, const DDyVertexInformation& p)
 {
   j = nlohmann::json
   {
-    {"Vert", p.mPosition}, 
-    {"Norm", p.mNormal}, 
-    {"Tex0", p.mTexCoords0},
-    {"Tang", p.mTangent},
-    {"Bitn", p.mBitangent},
-    {"Bone", p.mBoneId},
-    {"Weig", p.mWeights}
+    {"ve", p.mPosition}, 
+    {"nm", p.mNormal}, 
+    {"t0", p.mTexCoords0},
+    {"ta", p.mTangent},
+    {"bt", p.mBitangent},
+    {"bo", p.mBoneId},
+    {"wg", p.mWeights}
   };
 }
 
@@ -39,8 +39,8 @@ void to_json(nlohmann::json& j, const DDyGeometryBoneInformation& p)
 {
   j = nlohmann::json
   {
-    {"OffsetMatrix", p.mBoneOffsetMatrix},
-    {"FinalTransform", p.mFinalTransformation}
+    {"ofmt", p.mBoneOffsetMatrix},
+    {"ftmt", p.mFinalTransformation}
   };
 }
 
@@ -54,8 +54,8 @@ void to_json(nlohmann::json& j, const DMesh& p)
 {
   j = nlohmann::json
   {
-    {"VertexList", p.mVertexList}, 
-    {"IndexList", p.mIndexList}, 
+    {"vl", p.mVertexList}, 
+    {"il", p.mIndexList}, 
   };
 }
 

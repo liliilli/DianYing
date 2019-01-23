@@ -16,6 +16,7 @@
 #include "Interface_Singleton.h"
 #include "HelperPointer.h"
 #include "Data_AssimpModelNode.h"
+#include "Data_MeshData.h"
 
 struct aiNode;
 struct aiMesh;
@@ -31,20 +32,30 @@ public:
 
   /// @brief Read model with assimp using full file path.
   MDY_NODISCARD EDySuccess ReadModelWithPath(const std::string& iPath);
+  /// @brief Export mesh with specifier name and mesh index.
+  MDY_NODISCARD EDySuccess ExportModelMesh(const std::string& iSpecifier, unsigned iMeshIndex, bool isCompressed = false);
   /// @brief Release model instance.
   void ReleaseModel();
 
   /// @brief Get pointer of model importer instance. If not valid, it just return nullptr;
-  const Assimp::Importer* GetPtrModelImporter() const noexcept;
+  MDY_NODISCARD const Assimp::Importer* GetPtrModelImporter() const noexcept;
   /// @brief Get pointer of model scene, if not valid it just return nullptr.
-  const aiScene* GetPtrModelScene() const noexcept;
+  MDY_NODISCARD const aiScene* GetPtrModelScene() const noexcept;
   /// @brief Get root node of model main scene.
-  const aiNode* GetPtrRootNodeOfModelScene() const noexcept;
+  MDY_NODISCARD const aiNode* GetPtrRootNodeOfModelScene() const noexcept;
 
   /// @brief Get model-file full path. If not valid, it just return empty string.
-  const std::string& GetModelFileFullPath() const noexcept;
+  MDY_NODISCARD const std::string& GetModelFileFullPath() const noexcept;
+  /// @brief Get the number of model meshes.
+  MDY_NODISCARD unsigned GetNumModelMeshes() const noexcept;
+  /// @brief Get exported mesh specifier name, (iSpecifier + `innate_mesh_name`).
+  MDY_NODISCARD std::string GetExportedMeshSpecifierName(const std::string& iSpecifier, unsigned iMeshIndex);
 
 private:
+  /// @brief Create and return `DyMesh` with iMeshIndex. 
+  /// This function does not check oob of given mesh vector.
+  MDY_NODISCARD DMesh CreateDyMesh(unsigned iMeshIndex);
+
   std::string mModelFileFullPath = "";
 
   std::unique_ptr<Assimp::Importer>         mAssimpModerImporter  = nullptr;

@@ -18,7 +18,7 @@
 class ProgressDialog_ExportModel : public ThreadWithProgressWindow
 {
 public:
-  ProgressDialog_ExportModel(EExportFlags iFlags);
+  ProgressDialog_ExportModel(const std::string& iSpecifierName, EExportFlags iFlags);
 
   void run() override final;
 
@@ -26,5 +26,12 @@ public:
   void threadComplete(bool userPressedCancel) override final;
 
 private:
+  std::string mSpecifierName;
+
+  bool mExportMeshes    = false;
+  bool mExportSkeleton  = false;
+  bool mExportAnimation = false;
+  bool mExportMaterial  = false;
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProgressDialog_ExportModel)
 };

@@ -28,13 +28,11 @@ void ProgressDialog_ReadModel::run()
   setStatusMessage("Opening " + mModelFileFd.getFullPathName() + "...");
 
   auto& modelInstance = Singleton_ModelInstance::GetInstance();
+  modelInstance.ReleaseModel();
   const auto errorFlag = modelInstance.ReadModelWithPath(mModelFileFd.getFullPathName().toStdString());
-  if (errorFlag == DY_FAILURE || threadShouldExit() == true)
-  {
-    return;
-  }
+  if (errorFlag == DY_FAILURE || threadShouldExit() == true) { return; }
 
-  wait(500);
+  wait(100);
 }
 
 void ProgressDialog_ReadModel::threadComplete(bool userPressedCancel)
@@ -42,7 +40,7 @@ void ProgressDialog_ReadModel::threadComplete(bool userPressedCancel)
   if (userPressedCancel == false)
   {
     // thread finished normally..
-    AlertWindow::showMessageBoxAsync(AlertWindow::WarningIcon,
+    AlertWindow::showMessageBoxAsync(AlertWindow::InfoIcon,
       "Progress window",
       "Loading model completed.");
   }

@@ -11,16 +11,5 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /// SOFTWARE.
 ///
-/// This file is inspired by GSL pointer.h file.
-/// @reference https://github.com/Microsoft/GSL/blob/master/include/gsl/pointers
-///
 
-#include <assimp/Importer.hpp>
-#include <optional>
 
-#include "HelperPointer.h"
-
-/// @brief Read Model with `iFilePath`.
-[[nodiscard]] std::optional<std::pair<std::shared_ptr<Assimp::Importer>, NotNull<const aiScene*>>>
-ReadModel(const std::string& iFilePath);
-   

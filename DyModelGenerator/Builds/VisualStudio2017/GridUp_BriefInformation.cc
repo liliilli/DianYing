@@ -89,7 +89,7 @@ void GridUpPanel_BriefInformation::buttonClicked(Button* button)
 {
   if (&this->mCreateButton == button)
   { // If `mCreateButton` is pressed.
-    auto ptr = (new ProgressDialog_ExportModel(EExportFlags::Flag_Model));
+    auto ptr = new ProgressDialog_ExportModel(this->mSpecifierEditor.getText().toStdString(), EExportFlags::Flag_Model);
     ptr->launchThread();
   }
 }

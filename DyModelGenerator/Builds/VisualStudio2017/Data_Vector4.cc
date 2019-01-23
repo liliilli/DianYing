@@ -32,7 +32,10 @@ void to_json(nlohmann::json& j, const DDyVector4& p)
 {
   j = nlohmann::json
   {
-    {"X", p.X}, {"Y", p.Y}, {"Z", p.Z}, {"W", p.W}
+    {"X", static_cast<float>(p.X)}, 
+    {"Y", static_cast<float>(p.Y)}, 
+    {"Z", static_cast<float>(p.Z)}, 
+    {"W", static_cast<float>(p.W)}
   };
 }
 
