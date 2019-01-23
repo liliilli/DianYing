@@ -22,6 +22,8 @@
 #include <Dy/Management/WindowManager.h>
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
 #include <Dy/Core/Resource/Internal/FDyModelVBOIntermediate.h>
+#include <assimp/Importer.hpp>
+#include "Dy/Helper/Library/HelperAssimp.h"
 
 constexpr TU08 kDefaultPriority = 128;
 
@@ -269,7 +271,7 @@ std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(
       }
     }
     else
-    { // If not, (from external), do nothing because not implemented yet.
+    { // If not (from external), it populate meshes and materials following flags.
       MDY_NOT_IMPLEMENTED_ASSERT();
     }
   }

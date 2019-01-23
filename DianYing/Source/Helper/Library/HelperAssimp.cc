@@ -1,3 +1,4 @@
+#include <precompiled.h>
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -12,12 +13,16 @@
 ///
 
 /// Header file
-#include "HelperAssimp.h"
+#include <Dy/Helper/Library/HelperAssimp.h>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <Dy/Management/LoggingManager.h>
+
+namespace dy
+{
 
 std::optional<std::pair<std::shared_ptr<Assimp::Importer>, NotNull<const aiScene*>>>
-ReadModel(const std::string& iFilePath)
+ReadModel(_MIN_ const std::string& iFilePath)
 {
   /// Created `aiScene` will be removed automatically when smtptr of Importer ref counting is 0.
   auto ptrsmtImporter = std::make_shared<Assimp::Importer>();
@@ -26,12 +31,22 @@ ReadModel(const std::string& iFilePath)
       aiProcess_Triangulate 
     | aiProcess_GenNormals
     | aiProcess_GenUVCoords);
-  if (ptrModelScene == nullptr) { return std::nullopt; }
+  if (MDY_CHECK_ISNULL(ptrModelScene))
+  { // If failed to load model, just return no-value so have it processed from outside.
+    MDY_LOG_CRITICAL_D("Failed to read model file, %s.", iFilePath);
+    return std::nullopt;
+  }
   else
   {
     if (ptrModelScene->mRootNode == nullptr 
-    ||  (ptrModelScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) != 0) { return std::nullopt; }
+    ||  MDY_BITMASK_FLAG_TRUE(ptrModelScene->mFlags, AI_SCENE_FLAGS_INCOMPLETE))
+    {
+      MDY_LOG_CRITICAL_D("Failed to read model file, %s.", iFilePath);
+      return std::nullopt;
+    }
 
     return std::make_pair(ptrsmtImporter, DyMakeNotNull(ptrModelScene));
   }
 }
+
+} /// ::dy namespace

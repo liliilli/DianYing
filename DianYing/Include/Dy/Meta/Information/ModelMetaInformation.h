@@ -33,26 +33,6 @@ struct PDyModelConstructionVertexDescriptor_Deprecated;
 namespace dy
 {
 
-///
-/// @struct PDyModelInstanceMetaInfo
-/// @brief Model information construction descriptor
-///
-struct PDyModelInstanceMetaInfo_Deprecated final : public PDyCommonResourceMetaInfo, public IDyToString
-{
-  using TPtrBuffer = PDyModelConstructionVertexDescriptor_Deprecated*;
-  std::string mSpecifierName     = MDY_INITIALIZE_EMPTYSTR;
-  std::string mExternalModelPath      = MDY_INITIALIZE_EMPTYSTR;
-  TPtrBuffer  mPtrBuiltinModelBuffer  = MDY_INITIALIZE_NULL;
-
-  MDY_NODISCARD std::string ToString() override final
-  {
-    return fmt::format(R"dy(PDyModelInstanceMetaInfo\nModel Name : {}\nModel Path : {})dy", this->mSpecifierName, this->mExternalModelPath);
-  }
-};
-
-void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelInstanceMetaInfo_Deprecated& p);
-void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo_Deprecated& p);
-
 } /// ::dy namespace
 
 #endif /// GUARD_DY_META_INFORMATION_MODELMETAINFORMATION_H

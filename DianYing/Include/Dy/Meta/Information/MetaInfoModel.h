@@ -15,6 +15,7 @@
 
 #include <nlohmann/json_fwd.hpp>
 #include <Dy/Meta/Information/CommonResourceMetaInfo.h>
+#include <Dy/Helper/Type/Vector3.h>
 
 namespace dy
 {
@@ -25,16 +26,49 @@ namespace dy
 ///
 struct PDyModelInstanceMetaInfo final : public PDyCommonResourceMetaInfo
 {
+#ifdef false
+  struct DFlags
+  {
+    bool mIsUsingSkeleton = false;
+    bool mIsUsingMaterial = false;
+  };
+  struct DInitialTransform
+  {
+    DDyVector3 mPosition;
+    DDyVector3 mRotation;
+    DDyVector3 mScale;
+  };
+#endif
   using TBuiltinMeshSpecifierList = std::vector<std::string>;
 
   std::string               mSpecifierName            = MDY_INITIALIZE_EMPTYSTR;
   TBuiltinMeshSpecifierList mBuiltinMeshSpecifierList = {};
   bool                      mIsUsingBuiltinMesh       = false;
 
-
+  std::string               mExternalPath       = MDY_INITIALIZE_EMPTYSTR;
+#ifdef false
+  std::string               mSkeletonSpecifier  = MDY_INITIALIZE_EMPTYSTR;
+  DFlags                    mModelFlags {};
+  DInitialTransform         mInitialTransform {};
+#endif
 };
 
+/// @brief Serialization function
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelInstanceMetaInfo& p);
+/// @brief Deserialization function
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo& p);
 
+#ifdef false
+/// @brief Serialization function
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelInstanceMetaInfo::DFlags& p);
+/// @brief Deserialization function
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo::DFlags& p);
+
+/// @brief Serialization function
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelInstanceMetaInfo::DInitialTransform& p);
+/// @brief Deserialization function
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo::DInitialTransform& p);
+#endif
 
 } /// ::dy namespace
 

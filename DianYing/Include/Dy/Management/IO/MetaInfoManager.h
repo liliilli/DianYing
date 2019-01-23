@@ -174,11 +174,11 @@ private:
   MDY_NODISCARD EDySuccess pReadWidgetResourceMetaInformation(_MIN_ const std::string& metaFilePath);
   MDY_NODISCARD EDySuccess pReadSceneResourceMetaInformation (_MIN_ const std::string& metaFilepath);
 
-  MDY_NODISCARD EDySuccess pReadFontResourceMetaInformation    (_MIN_ const std::string& metaFilePath);
-  MDY_NODISCARD EDySuccess pReadModelResourceMetaInformation   (_MIN_ const std::string& metaFilePath);
-  MDY_NODISCARD EDySuccess pReadTextureResourceMetaInformation (_MIN_ const std::string& metaFilePath);
-  MDY_NODISCARD EDySuccess pReadShaderResourceMetaInformation  (_MIN_ const std::string& metaFilePath);
-  MDY_NODISCARD EDySuccess pReadMaterialResourceMetaInformation(_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadFontResourceMetaInformation     (_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadModelMeshResourceMetaInformation(_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadTextureResourceMetaInformation  (_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadShaderResourceMetaInformation   (_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadMaterialResourceMetaInformation (_MIN_ const std::string& metaFilePath);
 
   MDY_NODISCARD EDySuccess pReadScriptResourceMetaInformation(_MIN_ const nlohmann::json& iJson);
   MDY_NODISCARD EDySuccess pReadPrefabResourceMetaInformation(_MIN_ const nlohmann::json& iJson);

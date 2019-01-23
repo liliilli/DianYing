@@ -49,10 +49,7 @@ void TDyIOWorker::inWork()
   {
     {
       MDY_SYNC_WAIT_CONDITION(this->mTaskMutex, this->mTaskCV, CbTaskWaiting);
-      if (this->mIsShouldStop == true)
-      { 
-        break; 
-      }
+      if (this->mIsShouldStop == true) { break; }
       if (this->mIsAssigned.load() == false)  { continue; }
 
       // Do process
