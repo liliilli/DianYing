@@ -18,7 +18,7 @@
 namespace dy::builtin
 {
 
-void FDyBtMsUiBarQuad::ConstructBuffer(_MOUT_ PDyBtMeshInstanceMetaInfo& property) noexcept
+void FDyBtMsUiBarQuad::ConstructBuffer(_MOUT_ PDyMeshInstanceMetaInfo& property) noexcept
 {
   property.mSpecifierName = sName;
   property.mMeshUsage     = EDyMeshUsage::DynamicDraw;

@@ -673,7 +673,7 @@
     <ClInclude Include="Include\Dy\Management\Type\Time\DDyTimepoint.h" />
     <ClInclude Include="Include\Dy\Management\Type\Time\EDyTimeDay.h" />
     <ClInclude Include="Include\Dy\Management\Type\Time\EDyTimeType.h" />
-    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoBuiltinMesh.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoModelMesh.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoModel.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Input\EDyInputButton.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\EDyInputButtonStatus.h" />

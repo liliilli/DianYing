@@ -18,7 +18,7 @@
 namespace dy::builtin
 {
 
-void FDyBtMsScrOITTriangle::ConstructBuffer(_MOUT_ PDyBtMeshInstanceMetaInfo& property) noexcept
+void FDyBtMsScrOITTriangle::ConstructBuffer(_MOUT_ PDyMeshInstanceMetaInfo& property) noexcept
 {
   property.mSpecifierName = sName;
 

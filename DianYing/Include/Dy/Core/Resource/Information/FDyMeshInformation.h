@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Meta/Information/MetaInfoBuiltinMesh.h>
+#include <Dy/Meta/Information/MetaInfoModelMesh.h>
 
 namespace dy
 {
@@ -28,18 +28,18 @@ public:
   MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(FDyMeshInformation);
 
   /// @brief Construct model information.
-  FDyMeshInformation(_MIN_ const PDyBtMeshInstanceMetaInfo& metaInfo);
+  FDyMeshInformation(_MIN_ const PDyMeshInstanceMetaInfo& metaInfo);
   ~FDyMeshInformation() = default;
 
   /// @brief Get model specifier name.
   MDY_NODISCARD const std::string& GetSpecifierName() const noexcept;
 
   /// @brief Get submesh information list.
-  MDY_NODISCARD const PDyBtMeshInstanceMetaInfo& GetMeshInformationList() const noexcept;
+  MDY_NODISCARD const PDyMeshInstanceMetaInfo& GetMeshInformationList() const noexcept;
 
 private:
   std::string mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
-  PDyBtMeshInstanceMetaInfo mProperty;
+  PDyMeshInstanceMetaInfo mProperty;
 };
 
 

@@ -46,6 +46,7 @@ struct PDyModelInstanceMetaInfo final : public PDyCommonResourceMetaInfo
   bool                      mIsUsingBuiltinMesh       = false;
 
   std::string               mExternalPath       = MDY_INITIALIZE_EMPTYSTR;
+  bool                      mIsCompressed       = false;                    
 #ifdef false
   std::string               mSkeletonSpecifier  = MDY_INITIALIZE_EMPTYSTR;
   DFlags                    mModelFlags {};

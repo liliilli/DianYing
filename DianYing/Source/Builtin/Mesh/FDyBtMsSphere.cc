@@ -18,7 +18,7 @@
 namespace dy
 {
   
-void FDyBtMsSphere::ConstructBuffer(_MOUT_ PDyBtMeshInstanceMetaInfo& property) noexcept
+void FDyBtMsSphere::ConstructBuffer(_MOUT_ PDyMeshInstanceMetaInfo& property) noexcept
 {
   property.mSpecifierName = sName;
 

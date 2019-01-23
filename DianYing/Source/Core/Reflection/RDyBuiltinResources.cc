@@ -75,7 +75,7 @@ void RDyBuiltinResource::BindBuiltinResourcesToMetaManager()
     } break;
     case EDyResourceType::Mesh:
     { // Mesh
-      auto metaInfo = std::any_cast<PDyBtMeshInstanceMetaInfo>(function()->GetMetaInfo());
+      auto metaInfo = std::any_cast<PDyMeshInstanceMetaInfo>(function()->GetMetaInfo());
       MDY_CALL_ASSERT_SUCCESS(metaManager.pfAddBuiltinMeshMetaInfo(metaInfo));
     } break;
     default: MDY_NOT_IMPLEMENTED_ASSERT(); break;

@@ -239,7 +239,7 @@ EDySuccess MDyMetaInfo::pfRelease()
   this->mScriptMetaInfo.clear();
   this->mFontMetaInfo.clear();
   this->mShaderMetaInfo.clear();
-  this->mBtMeshMetaInfo.clear();
+  this->mModelMeshMetaInfo.clear();
   this->mModelMetaInfo.clear();
   this->mTextureMetaInfo.clear();
   this->mMaterialMetaInfo.clear();
@@ -291,10 +291,10 @@ const PDyGLShaderInstanceMetaInfo& MDyMetaInfo::GetGLShaderMetaInformation(_MIN_
   return this->mShaderMetaInfo.at(specifier);
 }
 
-const PDyBtMeshInstanceMetaInfo & MDyMetaInfo::GetBtMeshMetaInformation(_MIN_ const std::string & specifier) const
+const PDyMeshInstanceMetaInfo & MDyMetaInfo::GetBtMeshMetaInformation(_MIN_ const std::string & specifier) const
 {
   MDY_ASSERT(this->IsMeshMetaInfoExist(specifier) == true, "Bt Mesh given specifier name is not exist.");
-  return this->mBtMeshMetaInfo.at(specifier);
+  return this->mModelMeshMetaInfo.at(specifier);
 }
 
 const PDyModelInstanceMetaInfo& MDyMetaInfo::GetModelMetaInformation(const std::string& specifier) const
@@ -339,7 +339,7 @@ bool MDyMetaInfo::IsGLShaderMetaInfoExist(_MIN_ const std::string & specifier) c
 
 bool MDyMetaInfo::IsMeshMetaInfoExist(_MIN_ const std::string & specifier) const noexcept
 {
-  return DyIsMapContains(this->mBtMeshMetaInfo, specifier);
+  return DyIsMapContains(this->mModelMeshMetaInfo, specifier);
 }
 
 bool MDyMetaInfo::IsLevelMetaInformation(_MIN_ const std::string& specifier) const noexcept
@@ -800,7 +800,7 @@ EDySuccess MDyMetaInfo::pfAddGLShaderMetaInfo(_MIN_ const PDyGLShaderInstanceMet
   return DY_SUCCESS;
 }
 
-EDySuccess MDyMetaInfo::pfAddBuiltinMeshMetaInfo(_MIN_ const PDyBtMeshInstanceMetaInfo& metaInfo)
+EDySuccess MDyMetaInfo::pfAddBuiltinMeshMetaInfo(_MIN_ const PDyMeshInstanceMetaInfo& metaInfo)
 {
 #if defined(_DEBUG) == true
   if (metaInfo.mVAOBindingInfo.mIsUsingDefaultDyAttributeModel == false)
@@ -808,8 +808,8 @@ EDySuccess MDyMetaInfo::pfAddBuiltinMeshMetaInfo(_MIN_ const PDyBtMeshInstanceMe
     MDY_ASSERT(metaInfo.mCustomMeshBuffer.empty() == false, "Builtin mesh must be valid if using customized binding.");
   }
 #endif
-  MDY_ASSERT(DyIsMapContains(this->mBtMeshMetaInfo, metaInfo.mSpecifierName) == false, "Duplicated Mesh name is exist.");
-  this->mBtMeshMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
+  MDY_ASSERT(DyIsMapContains(this->mModelMeshMetaInfo, metaInfo.mSpecifierName) == false, "Duplicated Mesh name is exist.");
+  this->mModelMeshMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
   return DY_SUCCESS;
 }
 

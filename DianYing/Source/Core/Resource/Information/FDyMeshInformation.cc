@@ -18,7 +18,7 @@
 namespace dy
 {
 
-FDyMeshInformation::FDyMeshInformation(_MIN_ const PDyBtMeshInstanceMetaInfo& metaInfo) :
+FDyMeshInformation::FDyMeshInformation(_MIN_ const PDyMeshInstanceMetaInfo& metaInfo) :
     mSpecifierName{metaInfo.mSpecifierName},
     mProperty{metaInfo}
 { }
@@ -28,7 +28,7 @@ const std::string& FDyMeshInformation::GetSpecifierName() const noexcept
   return this->mSpecifierName;
 }
 
-const PDyBtMeshInstanceMetaInfo& FDyMeshInformation::GetMeshInformationList() const noexcept
+const PDyMeshInstanceMetaInfo& FDyMeshInformation::GetMeshInformationList() const noexcept
 {
   return this->mProperty;
 }

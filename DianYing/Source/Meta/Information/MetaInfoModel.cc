@@ -56,12 +56,14 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo&
 
   /* Template (2019-01-23)
    * "TestModel": {
-   *   "ExternalPath": "..."
+   *   "ExternalPath": "...",
+   *   "IsCompressed": false
    * }
    */
   
   p.mSourceType         = EDyResourceSource::External;
   p.mExternalPath       = DyJsonGetValueFrom<std::string>(j, "ExternalPath");
+  p.mIsCompressed       = DyJsonGetValueFrom<bool>(j, "IsCompressed");
 #ifdef false
   p.mSkeletonSpecifier  = DyJsonGetValueFrom<std::string>(j, "SkeletonName");
   p.mModelFlags         = DyJsonGetValueFrom<PDyModelInstanceMetaInfo::DFlags>(j, "Flags");

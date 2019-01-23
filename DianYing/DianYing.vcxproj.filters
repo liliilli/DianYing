@@ -622,7 +622,6 @@
     <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsSphere.h" />
     <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsUiFontQuad.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyMeshResource.h" />
-    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoBuiltinMesh.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoModel.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyMeshInformation.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Mesh\DDyGLVaoBindInformation.h" />
@@ -718,6 +717,7 @@
     <ClInclude Include="Include\Dy\Helper\Library\HelperFilesystem.h" />
     <ClInclude Include="Include\Dy\Helper\StringSwitch.h" />
     <ClInclude Include="Include\Dy\Helper\Library\HelperAssimp.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoModelMesh.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

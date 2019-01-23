@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Builtin/Interface/IDyResource.h>
-#include <Dy/Meta/Information/MetaInfoBuiltinMesh.h>
+#include <Dy/Meta/Information/MetaInfoModelMesh.h>
 
 namespace dy
 {
@@ -22,7 +22,7 @@ namespace dy
 struct ADyMeshResource : public IDyResource
 {
 protected:
-  PDyBtMeshInstanceMetaInfo mMetaInfo{};
+  PDyMeshInstanceMetaInfo mMetaInfo{};
 public:
   static constexpr auto value = EDyResourceType::Mesh;
 
