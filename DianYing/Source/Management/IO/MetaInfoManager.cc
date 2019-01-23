@@ -435,7 +435,7 @@ void MDyMetaInfo::MDY_PRIVATE_SPECIFIER(InitiateMetaInformation)()
   reflect::RDyBuiltinResource::BindBuiltinResourcesToMetaManager();
 
   MDY_CALL_ASSERT_SUCCESS(this->pReadFontResourceMetaInformation    (metaPath.mFontMetaPath));
-  MDY_CALL_ASSERT_SUCCESS(this->pReadModelMeshResourceMetaInformation   (metaPath.mModelMeshMetaPath));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadModelMeshResourceMetaInformation(metaPath.mModelMeshMetaPath));
   MDY_CALL_ASSERT_SUCCESS(this->pReadTextureResourceMetaInformation (metaPath.mTextureMetaPath));
   MDY_CALL_ASSERT_SUCCESS(this->pReadShaderResourceMetaInformation  (metaPath.mGLShaderMetaPath));
   MDY_CALL_ASSERT_SUCCESS(this->pReadMaterialResourceMetaInformation(metaPath.mMaterialMetaPath));
@@ -564,10 +564,10 @@ EDySuccess MDyMetaInfo::pReadModelMeshResourceMetaInformation(_MIN_ const std::s
   // (2) Get information from buffer.
   for (const auto& item : opJsonAtlas.value().items())
   {
-    auto desc = item.value().get<PDyModelInstanceMetaInfo>();
+    auto desc = item.value().get<PDyMeshInstanceMetaInfo>();
     desc.mSpecifierName = item.key();
 
-    auto [it, isSucceeded] = this->mModelMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
+    auto [it, isSucceeded] = this->mModelMeshMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
     MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
   }
   

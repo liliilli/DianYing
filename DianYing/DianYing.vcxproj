@@ -486,6 +486,7 @@
     <ClCompile Include="Source\Meta\Information\MetaInfoGLShader.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoMaterial.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoModel.cc" />
+    <ClCompile Include="Source\Meta\Information\MetaInfoModelMesh.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoTexture.cc" />
     <ClCompile Include="Source\Meta\Information\PrefabMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Information\ScriptMetaInformation.cc" />

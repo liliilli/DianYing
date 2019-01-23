@@ -284,6 +284,7 @@
     <ClCompile Include="Source\Helper\Library\HelperFilesystem.cc" />
     <ClCompile Include="Source\Meta\Type\EDyResourceTypes.cc" />
     <ClCompile Include="Source\Helper\Library\HelperAssimp.cc" />
+    <ClCompile Include="Source\Meta\Information\MetaInfoModelMesh.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
