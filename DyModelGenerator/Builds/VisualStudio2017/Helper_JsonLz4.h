@@ -31,9 +31,6 @@ struct DCompressedBuffer final
   std::vector<char> mCompressedBuffer;
 };
 
-void to_json(nlohmann::json& j, const DCompressedBuffer& p);
-void from_json(const nlohmann::json& j, DCompressedBuffer& p);
-
 /// @brief 
 MDY_NODISCARD DCompressedBuffer CompressStringBuffer(const std::string& iRawStringBuffer);
 

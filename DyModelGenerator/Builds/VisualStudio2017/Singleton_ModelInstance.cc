@@ -96,23 +96,23 @@ EDySuccess Singleton_ModelInstance::ExportModelMesh(const std::string& iSpecifie
     const fs::path meshPath = fmt::format("{}/{}.{}", directoryPath.string(), iSpecifier, "dyMesh");
     juce::File fdMeshFile {meshPath.string()};
 
-    fdMeshFile.replaceWithData(&buffer.mRawBufferBytes, sizeof(unsigned));
-    fdMeshFile.appendData(&buffer.mCompressedBufferBytes, sizeof(unsigned));
-    const auto flag = fdMeshFile.appendData(buffer.mCompressedBuffer.data(), buffer.mCompressedBufferBytes);
-
-    // If writing file is failed, return with FAILURE flag.
-    if (flag == false) { return DY_FAILURE; }
+    std::FILE* fdFile = fopen(meshPath.string().c_str(), "wb");
+    fwrite(&buffer.mRawBufferBytes, sizeof(unsigned), 1, fdFile);
+    fwrite(&buffer.mCompressedBufferBytes, sizeof(unsigned), 1, fdFile);
+    fwrite(buffer.mCompressedBuffer.data(), sizeof(char), buffer.mCompressedBufferBytes, fdFile);
+    fclose(fdFile);
   }
   else
   {
     const fs::path meshPath = fmt::format("{}/{}.{}", directoryPath.string(), iSpecifier, "json");
 
-    // Write file. `File` is RAII.
-    juce::File fdMeshFile {meshPath.string()};
-    const auto flag = fdMeshFile.replaceWithText(meshSerializedString, true);
-
-    // If writing file is failed, return with FAILURE flag.
-    if (flag == false) { return DY_FAILURE; }
+    // Write file.
+    std::FILE* fdFile = fopen(meshPath.string().c_str(), "w");
+    fwrite(meshSerializedString.c_str(), 
+        sizeof(decltype(meshSerializedString)::value_type), 
+        meshSerializedString.size(), 
+        fdFile);
+    fclose(fdFile);
   }
 
   return DY_SUCCESS;

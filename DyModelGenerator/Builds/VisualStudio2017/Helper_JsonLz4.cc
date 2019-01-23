@@ -17,25 +17,6 @@
 #include <lz4.h>
 #include "juce_core/system/juce_PlatformDefs.h"
 
-void to_json(nlohmann::json& j, const DCompressedBuffer& p)
-{
-  j = nlohmann::json
-  {
-    {"b", p.mRawBufferBytes},
-    {"c", p.mCompressedBufferBytes},
-    {"d", std::string(p.mCompressedBuffer.begin(), p.mCompressedBuffer.end())},
-  };
-}
-
-void from_json(const nlohmann::json& j, DCompressedBuffer& p)
-{
-  p.mRawBufferBytes         = j["b"].get<unsigned>();
-  p.mCompressedBufferBytes  = j["c"].get<unsigned>();
-
-  const auto str = j["d"].get<std::string>();
-  p.mCompressedBuffer = decltype(p.mCompressedBuffer){str.begin(), str.end()};
-}
-
 DCompressedBuffer CompressStringBuffer(const std::string& iRawStringBuffer)
 {
   const auto srcSize                = static_cast<unsigned>(iRawStringBuffer.length());

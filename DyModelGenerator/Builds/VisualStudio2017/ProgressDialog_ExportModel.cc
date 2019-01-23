@@ -40,7 +40,7 @@ void ProgressDialog_ExportModel::run()
       setStatusMessage("Exporting meshes..\n" + meshSpecifierName); 
       
       // Export model mesh on fullpath name.
-      const auto flag = modelInstance.ExportModelMesh(meshSpecifierName, i, true);
+      const auto flag = modelInstance.ExportModelMesh(meshSpecifierName, i, false);
       if (flag == DY_FAILURE)
       { // If failed, just return with failure signal.
         this->signalThreadShouldExit();
