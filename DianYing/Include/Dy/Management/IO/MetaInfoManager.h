@@ -210,10 +210,10 @@ private:
   THashMap<PDyMetaFontInformation>      mFontMetaInfo   = {};
   /// GL shader meta information map.
   THashMap<PDyGLShaderInstanceMetaInfo> mShaderMetaInfo = {};
-  /// Mesh meta information map.
-  THashMap<PDyMeshInstanceMetaInfo>     mModelMeshMetaInfo = {};
   /// Model meta information map.
   THashMap<PDyModelInstanceMetaInfo>    mModelMetaInfo  = {};
+  /// Model Mesh meta information map.
+  THashMap<PDyMeshInstanceMetaInfo>     mModelMeshMetaInfo = {};
   /// Texture meta information map.
   THashMap<PDyTextureInstanceMetaInfo>  mTextureMetaInfo= {};
   /// Material meta information map.

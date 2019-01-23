@@ -32,7 +32,7 @@ FDyMeshVBOIntermediate::FDyMeshVBOIntermediate(_MIN_ const FDyMeshInformation& i
 
 void FDyMeshVBOIntermediate::MDY_PRIVATE_SPECIFIER(CreateVertexArrayBuffer)(_MIN_ const FDyMeshInformation& iInformation)
 {
-  const PDyMeshInstanceMetaInfo& info = iInformation.GetMeshInformationList();
+  const DDyMeshData& info = iInformation.GetMeshInformationList();
   { // Set vertex count.
     if (info.mVAOBindingInfo.mIsUsingDefaultDyAttributeModel == true)
     {
@@ -73,7 +73,7 @@ void FDyMeshVBOIntermediate::MDY_PRIVATE_SPECIFIER(CreateVertexArrayBuffer)(_MIN
 
 void FDyMeshVBOIntermediate::MDY_PRIVATE_SPECIFIER(CreateElementArrayBuffer)(_MIN_ const FDyMeshInformation& iInformation)
 {
-  const PDyMeshInstanceMetaInfo& info = iInformation.GetMeshInformationList();
+  const DDyMeshData& info = iInformation.GetMeshInformationList();
   { // Set flag and count for mesh geometry information & index count.
     const auto indiceSize = static_cast<TU32>(info.mIndiceBuffer.size());
     if (indiceSize == 0)  { this->mMeshFlagInformation.mIsNotHaveIndices = true; }
