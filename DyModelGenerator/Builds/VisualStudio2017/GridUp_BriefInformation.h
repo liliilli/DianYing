@@ -33,9 +33,14 @@ public:
   void buttonClicked(Button* button) override final;
 
 private:
-  Label       mName;
-  TextEditor  mSpecifierEditor;
-  TextButton  mCreateButton;
+  Label         mName;
+  TextEditor    mSpecifierEditor;
+  TextButton    mCreateButton;
+
+  /// @brief If loaded model file has not any bone, weight, this must be deactivated.
+  ToggleButton  mTgBtn_MakeFileWithSkeleton {"Export files with skeleton (bones) information."};
+  /// @brief If this button has checked, exported files are must be compressed with lz4.
+  ToggleButton  mTgBtn_MakeFileWithCompression {"Export compressed files."};
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GridUpPanel_BriefInformation)
 };

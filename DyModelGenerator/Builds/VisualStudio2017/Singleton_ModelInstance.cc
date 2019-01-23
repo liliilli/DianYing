@@ -175,6 +175,45 @@ std::string Singleton_ModelInstance::GetExportedMeshSpecifierName(
   }
 }
 
+bool Singleton_ModelInstance::IsModelHasBones() const noexcept
+{
+  // If model has not been loaded yet, it just return false.
+  if (this->mAssimpModerImporter == nullptr) { return false; }
+
+  // If any meshes have a bone, return true.
+  const auto numMeshes = this->GetNumModelMeshes();
+  for (unsigned i = 0; i < numMeshes; ++i)
+  {
+    if (this->mPtrAssimpModelMeshList[i]->HasBones() == true) 
+    { 
+      return true; 
+    }
+  }
+
+  // If not, return false.
+  return false;
+}
+
+void Singleton_ModelInstance::SetExportFlag(EExportFlags iFlags, bool isActivated)
+{
+  if (isActivated == true)
+  {
+    this->mExportFlags = 
+      static_cast<EExportFlags>(
+          static_cast<std::underlying_type_t<EExportFlags>>(this->mExportFlags)
+        | static_cast<std::underlying_type_t<EExportFlags>>(iFlags)
+      );
+  }
+  else
+  {
+    this->mExportFlags = 
+      static_cast<EExportFlags>(
+          static_cast<std::underlying_type_t<EExportFlags>>(this->mExportFlags)
+        & ~static_cast<std::underlying_type_t<EExportFlags>>(iFlags)
+      );
+  }
+}
+
 DMesh Singleton_ModelInstance::CreateDyMesh(unsigned iMeshIndex)
 {
   const auto& ptrAiMesh = this->mPtrAssimpModelMeshList[iMeshIndex];

@@ -14,8 +14,10 @@
 
 enum EExportFlags
 {
+  Flag_None     = 0b00000000,
   Flag_Model    = 0b00000001,
   Flag_Anim     = 0b00000010,
   Flag_Skeleton = 0b00000100,
   Flag_Material = 0b00001000,
+  Flag_Compress = 0b00010000,
 };

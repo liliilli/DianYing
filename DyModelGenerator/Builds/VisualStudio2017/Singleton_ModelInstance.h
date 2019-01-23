@@ -17,6 +17,7 @@
 #include "HelperPointer.h"
 #include "Data_AssimpModelNode.h"
 #include "Data_MeshData.h"
+#include "Enum_ExportFlags.h"
 
 struct aiNode;
 struct aiMesh;
@@ -51,6 +52,12 @@ public:
   /// @brief Get exported mesh specifier name, (iSpecifier + `innate_mesh_name`).
   MDY_NODISCARD std::string GetExportedMeshSpecifierName(const std::string& iSpecifier, unsigned iMeshIndex);
 
+  /// @brief Check model has a bone. If model has not been loaded yet, it just return false.
+  MDY_NODISCARD bool IsModelHasBones() const noexcept;
+
+  /// @brief Set export flag.
+  void SetExportFlag(EExportFlags iFlags, bool isActivated);
+
 private:
   /// @brief Create and return `DyMesh` with iMeshIndex. 
   /// This function does not check oob of given mesh vector.
@@ -64,4 +71,6 @@ private:
   std::vector<NotNull<const aiAnimation*>>  mPtrAssimpModelAnimList;
   std::vector<NotNull<const aiTexture*>>    mPtrAssimpModelTextureList;
   std::unique_ptr<Data_AssimpModelNode>     mAssimpModeNode = nullptr;
+
+  EExportFlags mExportFlags = EExportFlags::Flag_None;
 };

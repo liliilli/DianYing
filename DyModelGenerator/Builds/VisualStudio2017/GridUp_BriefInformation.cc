@@ -27,6 +27,30 @@ GridUpPanel_BriefInformation::GridUpPanel_BriefInformation()
   this->mName.setText("Model export specifier name", dontSendNotification);
   this->mCreateButton.setButtonText("Export");
 
+  this->addAndMakeVisible(this->mTgBtn_MakeFileWithSkeleton);
+  this->mTgBtn_MakeFileWithSkeleton.setEnabled(false);
+  // Set callback function when `activated` skeleton button has changed state.
+  this->mTgBtn_MakeFileWithSkeleton.onStateChange = [this]
+  {
+    auto& instance = Singleton_ModelInstance::GetInstance();
+
+    if (this->mTgBtn_MakeFileWithSkeleton.getToggleState() == true)
+    { instance.SetExportFlag(Flag_Skeleton, true); }
+    else
+    { instance.SetExportFlag(Flag_Skeleton, false); }
+  };
+
+  this->addAndMakeVisible(this->mTgBtn_MakeFileWithCompression);
+  this->mTgBtn_MakeFileWithSkeleton.onStateChange = [this]
+  {
+    auto& instance = Singleton_ModelInstance::GetInstance();
+
+    if (this->mTgBtn_MakeFileWithSkeleton.getToggleState() == true)
+    { instance.SetExportFlag(Flag_Compress, true); }
+    else
+    { instance.SetExportFlag(Flag_Compress, false); }
+  };
+
   this->DeactivateModelEditor();
 }
 
@@ -46,6 +70,19 @@ void GridUpPanel_BriefInformation::resized()
     const auto editorBound = bounds.removeFromTop(25); 
     this->mSpecifierEditor.setBounds(editorBound);
   }
+
+  bounds.removeFromTop(8);
+
+  // Toggle options.
+  {
+    auto buttonBound = bounds.removeFromTop(25);
+    this->mTgBtn_MakeFileWithCompression.setBounds(buttonBound);
+
+    buttonBound = bounds.removeFromTop(25);
+    this->mTgBtn_MakeFileWithSkeleton.setBounds(buttonBound);
+  }
+
+  // Button
   {
     const auto createButton = bounds.removeFromBottom(32);
     this->mCreateButton.setBounds(createButton);
@@ -73,6 +110,16 @@ void GridUpPanel_BriefInformation::ActivateModelEditor()
 
   this->mCreateButton.setEnabled(true);
   this->mCreateButton.addListener(this);
+
+  if (modelInstance.IsModelHasBones() == true)
+  {
+    this->mTgBtn_MakeFileWithSkeleton.setEnabled(true);
+  }
+  else
+  {
+    this->mTgBtn_MakeFileWithSkeleton.setToggleState(false, NotificationType::sendNotification);
+    this->mTgBtn_MakeFileWithSkeleton.setEnabled(false);
+  }
 }
 
 void GridUpPanel_BriefInformation::DeactivateModelEditor()
@@ -83,6 +130,7 @@ void GridUpPanel_BriefInformation::DeactivateModelEditor()
 
   this->mCreateButton.setEnabled(false);
   this->mCreateButton.removeListener(this);
+  this->mTgBtn_MakeFileWithSkeleton.setEnabled(false);
 }
 
 void GridUpPanel_BriefInformation::buttonClicked(Button* button)

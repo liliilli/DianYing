@@ -92,7 +92,7 @@ void MainComponent::resized()
     grid.columnGap  = 8_px;
 
     using Track = Grid::TrackInfo;
-    grid.templateRows     = { Track(192_px), Track(1_fr) };
+    grid.templateRows     = { Track(256_px), Track(1_fr) };
     grid.templateColumns  = { Track(1_fr), Track(1_fr) };
 
     grid.autoRows     = Track(1_fr);
