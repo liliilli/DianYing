@@ -77,7 +77,7 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelInstanceMetaInfo::D
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo::DMesh& p)
 {
   DyJsonGetValueFromTo(j, "Specifier",  p.mMeshSpecifier);
-  DyJsonGetValueFromTo(j, "Material",   p.mMeshSpecifier);
+  DyJsonGetValueFromTo(j, "Material",   p.mMaterialSpecifier);
 }
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelInstanceMetaInfo::DSkeleton& p)
