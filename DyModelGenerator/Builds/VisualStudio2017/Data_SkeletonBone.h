@@ -19,15 +19,15 @@
 
 struct DSkeletonBone final
 {
-  /// @brief
+  /// @brief Bone specifier name.
   std::string   mSpecifier = "";
-  /// @brief
+  /// @brief parent bone index of this bone within `mExportedSkeleton` list.
   int           mParentSkeletonBoneIndex = -1;
-  /// @brief
+  /// @brief Local trasform of this bone which is relative to parent.
   DDyMatrix4x4  mLocalTransform = DDyMatrix4x4::IdentityMatrix();
-  /// @brief
+  /// @brief Global and calculated transform.
   DDyMatrix4x4  mGlobalTransform = DDyMatrix4x4::IdentityMatrix();
-  /// @brief
+  /// @brief This variable is only used in `mPtrAiNode`.
   const aiNode* mPtrAiNode = nullptr;
 };
 

@@ -54,6 +54,9 @@ void ProgressDialog_ExportModel::run()
     }
   }
 
+  // Common flag.
+  const bool isCompressed = this->mExportFlag & Flag_WithCompress;
+
   // Export model mesh on fullpath name.
   if (this->mExportFlag & Flag_OptionMesh)
   {
@@ -61,9 +64,8 @@ void ProgressDialog_ExportModel::run()
     {
       // Get exported specifier name.
       const auto meshSpecifierName = modelInstance.GetExportedMeshSpecifierName(this->mSpecifierName, i);
-      setStatusMessage("Exporting meshes..\n" + meshSpecifierName); 
+      this->setStatusMessage("Exporting meshes..\n" + meshSpecifierName); 
       
-      const bool isCompressed = this->mExportFlag & Flag_WithCompress;
       const bool withSkeleton = this->mExportFlag & Flag_WithSkeleton;
 
       const auto flag = modelInstance.ExportModelMesh(meshSpecifierName, i, withSkeleton, isCompressed);
@@ -72,6 +74,20 @@ void ProgressDialog_ExportModel::run()
         this->signalThreadShouldExit();
         return;
       }
+    }
+  }
+
+  // Export skeleton on fullpath name.
+  if (this->mExportFlag & Flag_OptionSkeleton)
+  {
+    this->setStatusMessage("Exporting skeleton..\n" + this->mSpecifierName + "_skel");
+    const auto skelSpecifierName = this->mSpecifierName + "_skel";
+
+    const auto flag = modelInstance.ExportModelSkeleton(skelSpecifierName, isCompressed);
+    if (flag == DY_FAILURE)
+    { // If failed, just return with failure signal.
+      this->signalThreadShouldExit();
+      return;
     }
   }
 

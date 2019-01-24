@@ -17,8 +17,13 @@
 
 void to_json(nlohmann::json& j, const DSkeletonBone& p)
 {
-  (void)j;
-  (void)p;
+  j = nlohmann::json
+  {
+    {"Specifier",     p.mSpecifier},
+    {"ParentBoneId",  p.mParentSkeletonBoneIndex},
+    {"LocalTf",       p.mLocalTransform},
+    {"GlobalTf",      p.mGlobalTransform},
+  };
 }
 
 void from_json(const nlohmann::json& j, DSkeletonBone& p)

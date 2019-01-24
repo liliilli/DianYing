@@ -72,30 +72,19 @@ EDySuccess Singleton_ModelInstance::ExportModelMesh(const std::string& iSpecifie
   if (iMeshIndex >= this->GetNumModelMeshes()) { return DY_FAILURE; }
 
   // Make serialized string form mesh instance.
-  const auto mesh = CreateDyMesh(iMeshIndex, withSkeleton);
-
-  nlohmann::json jsonMeshAtlas = mesh;
+  nlohmann::json jsonMeshAtlas    = CreateDyMesh(iMeshIndex, withSkeleton);
   const auto meshSerializedString = jsonMeshAtlas.dump();
   
   // Get a directory path from model file full path.
   namespace fs = std::filesystem;
-  const auto directoryPath  = fs::path{this->mModelFileFullPath}.parent_path();
+  const auto directoryPath = fs::path{this->mModelFileFullPath}.parent_path();
 
   if (isCompressed == true)
   {
     const auto buffer = CompressStringBuffer(meshSerializedString);
-    #ifdef _DEBUG
-    { // Check in debug mode, if raw buffer and decompressed buffer is same.
-      const auto rawBuffer = DecompressLz4Buffer(buffer);
-      jassert(rawBuffer == meshSerializedString);
-    }
-    #endif
-    //const auto byteBuffer = nlohmann::json{buffer}.dump(1);
 
     // Write file. `File` is RAII.
     const fs::path meshPath = fmt::format("{}/{}.{}", directoryPath.string(), iSpecifier, "dyMesh");
-    juce::File fdMeshFile {meshPath.string()};
-
     std::FILE* fdFile = fopen(meshPath.string().c_str(), "wb");
     fwrite(&buffer.mRawBufferBytes, sizeof(unsigned), 1, fdFile);
     fwrite(&buffer.mCompressedBufferBytes, sizeof(unsigned), 1, fdFile);
@@ -108,6 +97,44 @@ EDySuccess Singleton_ModelInstance::ExportModelMesh(const std::string& iSpecifie
 
     // Write file.
     std::FILE* fdFile = fopen(meshPath.string().c_str(), "w");
+    fwrite(meshSerializedString.c_str(), 
+        sizeof(decltype(meshSerializedString)::value_type), 
+        meshSerializedString.size(), 
+        fdFile);
+    fclose(fdFile);
+  }
+
+  return DY_SUCCESS;
+}
+
+EDySuccess Singleton_ModelInstance::ExportModelSkeleton(const std::string& iSpecifier, bool isCompressed)
+{
+  // Make serialized string form mesh instance.
+  nlohmann::json jsonMeshAtlas    = this->mExportedSkeleton;
+  const auto meshSerializedString = jsonMeshAtlas.dump();
+  
+  // Get a directory path from model file full path.
+  namespace fs = std::filesystem;
+  const auto directoryPath = fs::path{this->mModelFileFullPath}.parent_path();
+
+  if (isCompressed == true)
+  {
+    const auto buffer = CompressStringBuffer(meshSerializedString);
+
+    // Write file. `File` is RAII.
+    const fs::path meshPath = fmt::format("{}/{}.{}", directoryPath.string(), iSpecifier, "dySkel");
+    std::FILE* fdFile = fopen(meshPath.string().c_str(), "wb");
+    fwrite(&buffer.mRawBufferBytes, sizeof(unsigned), 1, fdFile);
+    fwrite(&buffer.mCompressedBufferBytes, sizeof(unsigned), 1, fdFile);
+    fwrite(buffer.mCompressedBuffer.data(), sizeof(char), buffer.mCompressedBufferBytes, fdFile);
+    fclose(fdFile);
+  }
+  else
+  {
+    const fs::path skelPath = fmt::format("{}/{}.{}", directoryPath.string(), iSpecifier, "json");
+
+    // Write file.
+    std::FILE* fdFile = fopen(skelPath.string().c_str(), "w");
     fwrite(meshSerializedString.c_str(), 
         sizeof(decltype(meshSerializedString)::value_type), 
         meshSerializedString.size(), 

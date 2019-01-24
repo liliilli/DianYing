@@ -38,6 +38,8 @@ public:
   MDY_NODISCARD EDySuccess ReadModelWithPath(const std::string& iPath);
   /// @brief Export mesh with specifier name and mesh index.
   MDY_NODISCARD EDySuccess ExportModelMesh(const std::string& iSpecifier, unsigned iMeshIndex, bool withSkeleton, bool isCompressed);
+  /// @brief Export skeleton with specifier name and `this->mExportedSkeleton`.
+  MDY_NODISCARD EDySuccess ExportModelSkeleton(const std::string& iSpecifier, bool isCompressed);
   /// @brief Release model instance.
   void ReleaseModel();
 
