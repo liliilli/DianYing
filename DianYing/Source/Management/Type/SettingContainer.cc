@@ -78,6 +78,7 @@ MDY_SET_IMMUTABLE_STRING(sHeader_MetaPath_Texture,  "Texture");
 MDY_SET_IMMUTABLE_STRING(sHeader_MetaPath_Material, "Material");
 MDY_SET_IMMUTABLE_STRING(sHeader_MetaPath_Shader,   "Shader");
 
+MDY_SET_IMMUTABLE_STRING(sHeader_MetaPath_Model,"Model");
 MDY_SET_IMMUTABLE_STRING(sHeader_MetaPath_ModelMesh,"ModelMesh");
 MDY_SET_IMMUTABLE_STRING(sHeader_MetaPath_ModelAnim,"ModelAnim");
 MDY_SET_IMMUTABLE_STRING(sHeader_MetaPath_ModelSkeleton,"ModelSkeleton");
@@ -272,6 +273,7 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingMetaPath& p)
       {MSVSTR(sHeader_MetaPath_Material), p.mMaterialMetaPath},
       {MSVSTR(sHeader_MetaPath_Shader),   p.mGLShaderMetaPath},
 
+      {MSVSTR(sHeader_MetaPath_Model),    p.mModelMetaPath},
       {MSVSTR(sHeader_MetaPath_ModelMesh),p.mModelMeshMetaPath},
       {MSVSTR(sHeader_MetaPath_ModelAnim),p.mModelAnimMetaPath},
       {MSVSTR(sHeader_MetaPath_ModelSkeleton),p.mModelSkeletonMetaPath},
@@ -290,6 +292,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingMetaPath& p)
   p.mGLShaderMetaPath = DyJsonGetValueFrom<std::string>(j, sHeader_MetaPath_Shader);
   p.mMaterialMetaPath = DyJsonGetValueFrom<std::string>(j, sHeader_MetaPath_Material);
 
+  p.mModelMetaPath        = DyJsonGetValueFrom<std::string>(j, sHeader_MetaPath_Model);
   p.mModelMeshMetaPath    = DyJsonGetValueFrom<std::string>(j, sHeader_MetaPath_ModelMesh);
   p.mModelAnimMetaPath    = DyJsonGetValueFrom<std::string>(j, sHeader_MetaPath_ModelAnim);
   p.mModelSkeletonMetaPath= DyJsonGetValueFrom<std::string>(j, sHeader_MetaPath_ModelSkeleton);

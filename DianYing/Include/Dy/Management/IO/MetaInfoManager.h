@@ -175,6 +175,7 @@ private:
   MDY_NODISCARD EDySuccess pReadSceneResourceMetaInformation (_MIN_ const std::string& metaFilepath);
 
   MDY_NODISCARD EDySuccess pReadFontResourceMetaInformation     (_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadModelResourceMetaInformation    (_MIN_ const std::string& metaFilePath);
   MDY_NODISCARD EDySuccess pReadModelMeshResourceMetaInformation(_MIN_ const std::string& metaFilePath);
   MDY_NODISCARD EDySuccess pReadTextureResourceMetaInformation  (_MIN_ const std::string& metaFilePath);
   MDY_NODISCARD EDySuccess pReadShaderResourceMetaInformation   (_MIN_ const std::string& metaFilePath);

@@ -168,6 +168,7 @@ struct DDySettingMetaPath final
 
   // Resources
   std::string mFontMetaPath     = MDY_INITIALIZE_EMPTYSTR;
+  std::string mModelMetaPath    = MDY_INITIALIZE_EMPTYSTR;
   std::string mModelMeshMetaPath= MDY_INITIALIZE_EMPTYSTR;
   std::string mModelAnimMetaPath= MDY_INITIALIZE_EMPTYSTR;
   std::string mModelSkeletonMetaPath = MDY_INITIALIZE_EMPTYSTR;

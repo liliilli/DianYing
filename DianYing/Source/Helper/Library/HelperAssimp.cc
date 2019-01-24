@@ -12,8 +12,8 @@
 /// SOFTWARE.
 ///
 
+#ifdef false
 /// Header file
-#include <Dy/Helper/Library/HelperAssimp.h>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <Dy/Management/LoggingManager.h>
@@ -50,3 +50,4 @@ ReadModel(_MIN_ const std::string& iFilePath)
 }
 
 } /// ::dy namespace
+#endif

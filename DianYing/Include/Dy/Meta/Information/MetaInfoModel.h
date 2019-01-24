@@ -26,32 +26,26 @@ namespace dy
 ///
 struct PDyModelInstanceMetaInfo final : public PDyCommonResourceMetaInfo
 {
-#ifdef false
-  struct DFlags
-  {
-    bool mIsUsingSkeleton = false;
-    bool mIsUsingMaterial = false;
-  };
-  struct DInitialTransform
-  {
-    DDyVector3 mPosition;
-    DDyVector3 mRotation;
-    DDyVector3 mScale;
-  };
-#endif
   using TBuiltinMeshSpecifierList = std::vector<std::string>;
+  struct DMesh final
+  {
+    std::string mMeshSpecifier      = MDY_INITIALIZE_EMPTYSTR;
+    std::string mMaterialSpecifier  = MDY_INITIALIZE_EMPTYSTR;
+  };
+  using TExternalMeshList = std::vector<DMesh>;
+
+  struct DSkeleton final
+  {
+    bool        mIsUsingSkeleton    = false;
+    std::string mSkeletonSpecifier  = MDY_INITIALIZE_EMPTYSTR;
+  };
 
   std::string               mSpecifierName            = MDY_INITIALIZE_EMPTYSTR;
-  TBuiltinMeshSpecifierList mBuiltinMeshSpecifierList = {};
-  bool                      mIsUsingBuiltinMesh       = false;
+  //TBuiltinMeshSpecifierList mBuiltinMeshSpecifierList = {};
+  //bool                      mIsUsingBuiltinMesh       = false;
 
-  std::string               mExternalPath       = MDY_INITIALIZE_EMPTYSTR;
-  bool                      mIsCompressed       = false;                    
-#ifdef false
-  std::string               mSkeletonSpecifier  = MDY_INITIALIZE_EMPTYSTR;
-  DFlags                    mModelFlags {};
-  DInitialTransform         mInitialTransform {};
-#endif
+  TExternalMeshList         mMeshList = {};
+  DSkeleton                 mSkeleton;
 };
 
 /// @brief Serialization function
@@ -59,17 +53,15 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelInstanceMetaInfo& p
 /// @brief Deserialization function
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo& p);
 
-#ifdef false
 /// @brief Serialization function
-void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelInstanceMetaInfo::DFlags& p);
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelInstanceMetaInfo::DMesh& p);
 /// @brief Deserialization function
-void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo::DFlags& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo::DMesh& p);
 
 /// @brief Serialization function
-void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelInstanceMetaInfo::DInitialTransform& p);
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelInstanceMetaInfo::DSkeleton& p);
 /// @brief Deserialization function
-void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo::DInitialTransform& p);
-#endif
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo::DSkeleton& p);
 
 } /// ::dy namespace
 

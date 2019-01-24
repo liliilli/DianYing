@@ -43,17 +43,8 @@ std::optional<nlohmann::json> DyGetJsonAtlasFromFile(const std::string& filePath
   }
 
   nlohmann::json jsonAtlas;
-  try
-  {
-    // parsing input with a syntax error
-    stream >> jsonAtlas;
-  }
-  catch (nlohmann::json::parse_error& e)
-  {
-    // output exception information
-    MDY_LOG_ERROR("message: {}\nException id: {}\nByte position of error: {}", e.what(), e.id, e.byte);
-    MDY_UNEXPECTED_BRANCH();
-  }
+  // parsing input with a syntax error (TO SLOW! replace nlohmann to RapidJSON)
+  stream >> jsonAtlas;
   stream.close();
 
   return jsonAtlas;

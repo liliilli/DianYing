@@ -21,20 +21,6 @@
 namespace dy
 {
 
-#ifdef false
-FDyModelResource::FDyModelResource(_MINOUT_ FDyModelVBOIntermediate& input) :
-    mSpecifierName{input.GetSpecifierName()},
-    mBinderInformation{input.GetSpecifierName()}
-{
-  // Intermediate mesh resource list must be mutable, \n
-  // so to be transfer properties into actual mesh resource by resetting intermediate instance properties.
-  auto& intermediateMeshList = input.GetIntermediateMeshList();
-  this->mMeshResource.reserve(intermediateMeshList.size());
-
-  for (auto& intermediateMesh : intermediateMeshList) { mMeshResource.emplace_back(intermediateMesh); }
-}
-#endif
-
 FDyModelResource::FDyModelResource(_MINOUT_ const FDyModelInformation& input) :
   mSpecifierName{input.GetSpecifierName()},
   mBinderInformation{input.GetSpecifierName()}

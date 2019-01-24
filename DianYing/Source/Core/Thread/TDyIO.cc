@@ -23,7 +23,6 @@
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
 #include <Dy/Core/Resource/Internal/FDyModelVBOIntermediate.h>
 #include <assimp/Importer.hpp>
-#include "Dy/Helper/Library/HelperAssimp.h"
 
 constexpr TU08 kDefaultPriority = 128;
 
