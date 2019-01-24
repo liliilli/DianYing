@@ -1526,6 +1526,9 @@
     <ClCompile Include="Helper_JsonLz4.cc">
       <Filter>DyModelGenerator\Source</Filter>
     </ClCompile>
+    <ClCompile Include="Data_SkeletonBone.cc">
+      <Filter>DyModelGenerator\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\MainComponent.h">
@@ -2876,6 +2879,9 @@
       <Filter>DyModelGenerator\Source</Filter>
     </ClInclude>
     <ClInclude Include="Helper_Filesystem.h">
+      <Filter>DyModelGenerator\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Data_SkeletonBone.h">
       <Filter>DyModelGenerator\Source</Filter>
     </ClInclude>
   </ItemGroup>

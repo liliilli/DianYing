@@ -19,9 +19,9 @@
 
 ProgressDialog_ExportModel::ProgressDialog_ExportModel(const std::string& iSpecifierName, EExportFlags iFlags) :
     ThreadWithProgressWindow("busy doing some important things...", true, true),
-    mSpecifierName{iSpecifierName}
+    mSpecifierName{iSpecifierName},
+    mExportFlag{iFlags}
 {
-  if (iFlags & Flag_Model) { this->mExportMeshes = true; }
 }
 
 void ProgressDialog_ExportModel::run()
@@ -31,7 +31,31 @@ void ProgressDialog_ExportModel::run()
 
   auto& modelInstance = Singleton_ModelInstance::GetInstance();
   const auto numModelMeshes = modelInstance.GetNumModelMeshes();
-  if (this->mExportMeshes == true)
+
+  // If skeleton information should be exported, make skeleton information.
+  if (this->mExportFlag & Flag_WithSkeleton)
+  {
+    setStatusMessage("Making model skeleton information.."); 
+    // If failed to create aiNode map, just return with failure.
+    const auto ptrAiNodeMap = modelInstance.CreatePtrAiNodeMap();
+    if (ptrAiNodeMap.has_value() == false) { this->signalThreadShouldExit(); return; }
+
+    // 
+    const auto ptrBoneStrSet = modelInstance.CreatePtrBoneSpecifierSet(ptrAiNodeMap.value());
+    if (ptrBoneStrSet.has_value() == false) { this->signalThreadShouldExit(); return; }
+
+    // Create model skeleton for getting weight & boneId or exporting skeleton file.
+    const EDySuccess flag = modelInstance.CreateModelSkeleton(ptrAiNodeMap.value(), ptrBoneStrSet.value());
+    if (flag == DY_FAILURE)
+    {
+      modelInstance.RemoveModelSkeleton();
+      this->signalThreadShouldExit();
+      return;
+    }
+  }
+
+  // Export model mesh on fullpath name.
+  if (this->mExportFlag & Flag_OptionMesh)
   {
     for (unsigned i = 0; i < numModelMeshes; ++i)
     {
@@ -39,8 +63,10 @@ void ProgressDialog_ExportModel::run()
       const auto meshSpecifierName = modelInstance.GetExportedMeshSpecifierName(this->mSpecifierName, i);
       setStatusMessage("Exporting meshes..\n" + meshSpecifierName); 
       
-      // Export model mesh on fullpath name.
-      const auto flag = modelInstance.ExportModelMesh(meshSpecifierName, i, false);
+      const bool isCompressed = this->mExportFlag & Flag_WithCompress;
+      const bool withSkeleton = this->mExportFlag & Flag_WithSkeleton;
+
+      const auto flag = modelInstance.ExportModelMesh(meshSpecifierName, i, withSkeleton, isCompressed);
       if (flag == DY_FAILURE)
       { // If failed, just return with failure signal.
         this->signalThreadShouldExit();
@@ -72,7 +98,7 @@ void ProgressDialog_ExportModel::threadComplete(bool userPressedCancel)
   { // If `threadShouldExit` is true, (abnormally)
     AlertWindow::showMessageBoxAsync(AlertWindow::WarningIcon,
       "Progress window",
-      "Canceled Exporting model process.");
+      "Failed Exporting model.");
   }
 
   delete this;

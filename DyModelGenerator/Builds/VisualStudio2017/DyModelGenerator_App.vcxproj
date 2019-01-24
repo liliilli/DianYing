@@ -1384,6 +1384,7 @@
     <ClCompile Include="Data_AssimpModelNode.cc" />
     <ClCompile Include="Data_Matrix4.cc" />
     <ClCompile Include="Data_MeshData.cc" />
+    <ClCompile Include="Data_SkeletonBone.cc" />
     <ClCompile Include="Data_Vector2.cc" />
     <ClCompile Include="Data_Vector3.cc" />
     <ClCompile Include="Data_Vector4.cc" />
@@ -1828,6 +1829,7 @@
     <ClInclude Include="Data_AssimpModelNode.h" />
     <ClInclude Include="Data_Matrix4.h" />
     <ClInclude Include="Data_MeshData.h" />
+    <ClInclude Include="Data_SkeletonBone.h" />
     <ClInclude Include="Data_Vector2.h" />
     <ClInclude Include="Data_Vector3.h" />
     <ClInclude Include="Data_Vector4.h" />

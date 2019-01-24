@@ -1,4 +1,3 @@
-#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -12,15 +11,18 @@
 /// SOFTWARE.
 ///
 
-enum EExportFlags
+/// Header file
+#include "Data_SkeletonBone.h"
+#include <nlohmann/json.hpp>
+
+void to_json(nlohmann::json& j, const DSkeletonBone& p)
 {
-  Flag_None           = 0b00000000,
+  (void)j;
+  (void)p;
+}
 
-  Flag_OptionMesh     = 0b00000001,
-  Flag_OptionAnim     = 0b00000010,
-  Flag_OptionMaterial = 0b00000100,
-  Flag_OptionSkeleton = 0b00001000,
-
-  Flag_WithSkeleton   = 0b00010000,
-  Flag_WithCompress   = 0b00100000,
-};
+void from_json(const nlohmann::json& j, DSkeletonBone& p)
+{
+  (void)j;
+  (void)p;
+}

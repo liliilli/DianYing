@@ -24,6 +24,7 @@ struct DDyVertexInformation final
   DDyVector3          mPosition   = {};
   DDyVector3          mNormal     = {};
   DDyVector2          mTexCoords0 = {};
+  DDyVector2          mTexCoords1 = {};
   // Tangenet and Bitangent if exist.
   DDyVector3          mTangent    = {};
   DDyVector3          mBitangent  = {};

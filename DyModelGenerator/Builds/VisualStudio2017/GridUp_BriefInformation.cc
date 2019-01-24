@@ -35,20 +35,56 @@ GridUpPanel_BriefInformation::GridUpPanel_BriefInformation()
     auto& instance = Singleton_ModelInstance::GetInstance();
 
     if (this->mTgBtn_MakeFileWithSkeleton.getToggleState() == true)
-    { instance.SetExportFlag(Flag_Skeleton, true); }
+    { 
+      instance.SetExportFlag(Flag_WithSkeleton, true); 
+      this->mTgBtn_OptionSkeleton.setEnabled(true);
+    }
     else
-    { instance.SetExportFlag(Flag_Skeleton, false); }
+    { 
+      instance.SetExportFlag(Flag_WithSkeleton, false); 
+
+      // If disabled, skeleton option has been checked, change toggle state disabled.
+      if (this->mTgBtn_OptionSkeleton.getToggleState() == true)
+      {
+        this->mTgBtn_OptionSkeleton.setToggleState(false, NotificationType::sendNotification);
+      }
+      this->mTgBtn_OptionSkeleton.setEnabled(false);
+    }
   };
 
   this->addAndMakeVisible(this->mTgBtn_MakeFileWithCompression);
-  this->mTgBtn_MakeFileWithSkeleton.onStateChange = [this]
+  this->mTgBtn_MakeFileWithCompression.onStateChange = [this]
   {
     auto& instance = Singleton_ModelInstance::GetInstance();
 
-    if (this->mTgBtn_MakeFileWithSkeleton.getToggleState() == true)
-    { instance.SetExportFlag(Flag_Compress, true); }
+    if (this->mTgBtn_MakeFileWithCompression.getToggleState() == true)
+    { instance.SetExportFlag(Flag_WithCompress, true); }
     else
-    { instance.SetExportFlag(Flag_Compress, false); }
+    { instance.SetExportFlag(Flag_WithCompress, false); }
+  };
+
+  this->addAndMakeVisible(this->mTgBtn_OptionMesh);
+  this->mTgBtn_OptionMesh.setEnabled(false);
+  this->mTgBtn_OptionMesh.onStateChange = [this]
+  {
+    auto& instance = Singleton_ModelInstance::GetInstance();
+
+    if (this->mTgBtn_OptionMesh.getToggleState() == true)
+    { instance.SetExportFlag(Flag_OptionMesh, true); }
+    else
+    { instance.SetExportFlag(Flag_OptionMesh, false); }
+  };
+
+  this->addAndMakeVisible(this->mTgBtn_OptionSkeleton);
+  this->mTgBtn_OptionSkeleton.setEnabled(false);
+  this->mTgBtn_OptionSkeleton.onStateChange = [this]
+  {
+    auto& instance = Singleton_ModelInstance::GetInstance();
+
+    if (this->mTgBtn_OptionSkeleton.getToggleState() == true)
+    { instance.SetExportFlag(Flag_OptionSkeleton, true); }
+    else
+    { instance.SetExportFlag(Flag_OptionSkeleton, false); }
   };
 
   this->DeactivateModelEditor();
@@ -80,6 +116,12 @@ void GridUpPanel_BriefInformation::resized()
 
     buttonBound = bounds.removeFromTop(25);
     this->mTgBtn_MakeFileWithSkeleton.setBounds(buttonBound);
+
+    buttonBound = bounds.removeFromTop(25);
+    this->mTgBtn_OptionMesh.setBounds(buttonBound);
+
+    buttonBound = bounds.removeFromTop(25);
+    this->mTgBtn_OptionSkeleton.setBounds(buttonBound);
   }
 
   // Button
@@ -111,6 +153,8 @@ void GridUpPanel_BriefInformation::ActivateModelEditor()
   this->mCreateButton.setEnabled(true);
   this->mCreateButton.addListener(this);
 
+  this->mTgBtn_OptionMesh.setEnabled(true);
+
   if (modelInstance.IsModelHasBones() == true)
   {
     this->mTgBtn_MakeFileWithSkeleton.setEnabled(true);
@@ -130,14 +174,18 @@ void GridUpPanel_BriefInformation::DeactivateModelEditor()
 
   this->mCreateButton.setEnabled(false);
   this->mCreateButton.removeListener(this);
+
   this->mTgBtn_MakeFileWithSkeleton.setEnabled(false);
+  this->mTgBtn_OptionMesh.setEnabled(false);
 }
 
 void GridUpPanel_BriefInformation::buttonClicked(Button* button)
 {
   if (&this->mCreateButton == button)
   { // If `mCreateButton` is pressed.
-    auto ptr = new ProgressDialog_ExportModel(this->mSpecifierEditor.getText().toStdString(), EExportFlags::Flag_Model);
+    const auto& modelInstance = Singleton_ModelInstance::GetInstance();
+
+    auto ptr = new ProgressDialog_ExportModel(this->mSpecifierEditor.getText().toStdString(), modelInstance.GetExportFlags());
     ptr->launchThread();
   }
 }

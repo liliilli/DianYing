@@ -18,6 +18,9 @@
 #include "Data_AssimpModelNode.h"
 #include "Data_MeshData.h"
 #include "Enum_ExportFlags.h"
+#include <optional>
+#include <unordered_set>
+#include "Data_SkeletonBone.h"
 
 struct aiNode;
 struct aiMesh;
@@ -34,7 +37,7 @@ public:
   /// @brief Read model with assimp using full file path.
   MDY_NODISCARD EDySuccess ReadModelWithPath(const std::string& iPath);
   /// @brief Export mesh with specifier name and mesh index.
-  MDY_NODISCARD EDySuccess ExportModelMesh(const std::string& iSpecifier, unsigned iMeshIndex, bool isCompressed = false);
+  MDY_NODISCARD EDySuccess ExportModelMesh(const std::string& iSpecifier, unsigned iMeshIndex, bool withSkeleton, bool isCompressed);
   /// @brief Release model instance.
   void ReleaseModel();
 
@@ -57,11 +60,48 @@ public:
 
   /// @brief Set export flag.
   void SetExportFlag(EExportFlags iFlags, bool isActivated);
+  /// @brief Get export flag.
+  MDY_NODISCARD EExportFlags GetExportFlags() const noexcept;
+
+  using TPtrAiNodeMap = std::unordered_map<std::string, NotNull<const aiNode*>>;
+  /// @brief Make map of pointer of model's aiNode instance.
+  /// If model is not loaded, it just return nullopt.
+  MDY_NODISCARD std::optional<TPtrAiNodeMap> CreatePtrAiNodeMap();
+
+  using TBoneSpecifierSet = std::unordered_set<std::string>;
+  /// @brief
+  MDY_NODISCARD std::optional<TBoneSpecifierSet> 
+  CreatePtrBoneSpecifierSet(const TPtrAiNodeMap& iPtrAiNodeMap) const noexcept;
+
+  /// @brief
+  MDY_NODISCARD EDySuccess 
+  CreateModelSkeleton(const TPtrAiNodeMap& iPtrAiNodeMap, const TBoneSpecifierSet& iBoneSpecifierSet);
+  /// @brief
+  void RemoveModelSkeleton();
 
 private:
+  /// @brief Recursively insert.
+  void RecursiveInsertAiNodeIntoNodeMap(NotNull<const aiNode*> iPtrAiNode, TPtrAiNodeMap& iMap);
+
   /// @brief Create and return `DyMesh` with iMeshIndex. 
   /// This function does not check oob of given mesh vector.
-  MDY_NODISCARD DMesh CreateDyMesh(unsigned iMeshIndex);
+  MDY_NODISCARD DMesh CreateDyMesh(unsigned iMeshIndex, bool withSkleton);
+  /// @brief Create mesh indices and return.
+  MDY_NODISCARD std::vector<unsigned> CreateMeshIndices(NotNull<const aiMesh*> ptrAiMesh); 
+  /// @brief
+  void TryInsertMeshVertex(unsigned iIndex, NotNull<const aiMesh*> iPtrAiMesh, DDyVertexInformation& oResult);
+  void TryInsertMeshNormal(unsigned iIndex, NotNull<const aiMesh*> iPtrAiMesh, DDyVertexInformation& oResult);
+  void TryInsertMeshUV0(unsigned iIndex, NotNull<const aiMesh*> iPtrAiMesh, DDyVertexInformation& oResult);
+  void TryInsertMeshUV1(unsigned iIndex, NotNull<const aiMesh*> iPtrAiMesh, DDyVertexInformation& oResult);
+  void TryInsertMeshTanBt(unsigned iIndex, NotNull<const aiMesh*> iPtrAiMesh, DDyVertexInformation& oResult);
+
+  /// @brief
+  void RecursiveInsertSkeletonBoneIntoList(
+      const NotNull<const aiNode*> iPtrAiNode, 
+      const TBoneSpecifierSet& iRefBoneSpecifierSet, 
+      const DDyMatrix4x4& iRefParentGlobalTransform,
+      const signed int iParentSkeletonBoneId,
+      std::vector<DSkeletonBone>& iSkeletonList);
 
   std::string mModelFileFullPath = "";
 
@@ -73,4 +113,7 @@ private:
   std::unique_ptr<Data_AssimpModelNode>     mAssimpModeNode = nullptr;
 
   EExportFlags mExportFlags = EExportFlags::Flag_None;
+
+  /// @brief Exported name is `Specifier`_`Skeleton`.dySkel or `.json when not compressed.
+  std::vector<DSkeletonBone> mExportedSkeleton;
 };

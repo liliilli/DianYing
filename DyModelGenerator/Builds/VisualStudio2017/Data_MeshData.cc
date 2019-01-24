@@ -22,6 +22,7 @@ void to_json(nlohmann::json& j, const DDyVertexInformation& p)
     {"ve", p.mPosition}, 
     {"nm", p.mNormal}, 
     {"t0", p.mTexCoords0},
+    {"t1", p.mTexCoords1},
     {"ta", p.mTangent},
     {"bt", p.mBitangent},
     {"bo", p.mBoneId},

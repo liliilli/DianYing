@@ -42,6 +42,12 @@ private:
   /// @brief If this button has checked, exported files are must be compressed with lz4.
   ToggleButton  mTgBtn_MakeFileWithCompression {"Export compressed files."};
 
+  /// @brief If this button has checked, Meshes will be exported.
+  ToggleButton  mTgBtn_OptionMesh { "Export meshes." };
+  /// @brief If this button has checked, Skeleton will be exported. \n
+  /// But, `mTgBtn_MakeFileWithSkeleton` must be checked in advance.
+  ToggleButton  mTgBtn_OptionSkeleton { "Export skeleton." };
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GridUpPanel_BriefInformation)
 };
 

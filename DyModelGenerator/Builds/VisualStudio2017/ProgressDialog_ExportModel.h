@@ -26,12 +26,8 @@ public:
   void threadComplete(bool userPressedCancel) override final;
 
 private:
-  std::string mSpecifierName;
-
-  bool mExportMeshes    = false;
-  bool mExportSkeleton  = false;
-  bool mExportAnimation = false;
-  bool mExportMaterial  = false;
+  std::string   mSpecifierName;
+  EExportFlags  mExportFlag;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProgressDialog_ExportModel)
 };

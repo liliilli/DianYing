@@ -67,12 +67,12 @@ EDySuccess Singleton_ModelInstance::ReadModelWithPath(const std::string& iPath)
   return DY_SUCCESS;
 }
 
-EDySuccess Singleton_ModelInstance::ExportModelMesh(const std::string& iSpecifier, unsigned iMeshIndex, bool isCompressed)
+EDySuccess Singleton_ModelInstance::ExportModelMesh(const std::string& iSpecifier, unsigned iMeshIndex, bool withSkeleton, bool isCompressed)
 {
   if (iMeshIndex >= this->GetNumModelMeshes()) { return DY_FAILURE; }
 
   // Make serialized string form mesh instance.
-  const auto mesh = CreateDyMesh(iMeshIndex);
+  const auto mesh = CreateDyMesh(iMeshIndex, withSkeleton);
 
   nlohmann::json jsonMeshAtlas = mesh;
   const auto meshSerializedString = jsonMeshAtlas.dump();
@@ -214,32 +214,141 @@ void Singleton_ModelInstance::SetExportFlag(EExportFlags iFlags, bool isActivate
   }
 }
 
-DMesh Singleton_ModelInstance::CreateDyMesh(unsigned iMeshIndex)
+EExportFlags Singleton_ModelInstance::GetExportFlags() const noexcept
+{
+  return this->mExportFlags;
+}
+
+std::optional<Singleton_ModelInstance::TPtrAiNodeMap> Singleton_ModelInstance::CreatePtrAiNodeMap()
+{
+  // If model is not loaded, it just return nullopt.
+  if (this->mAssimpModerImporter == nullptr) { return std::nullopt; }
+
+  TPtrAiNodeMap resultMap;
+  const aiScene* ptrAiScene = this->mAssimpModerImporter->GetScene();
+
+  const auto* ptrAiNode = ptrAiScene->mRootNode;
+  this->RecursiveInsertAiNodeIntoNodeMap(DyMakeNotNull(ptrAiNode), resultMap);
+
+  return resultMap;
+}
+
+std::optional<Singleton_ModelInstance::TBoneSpecifierSet>
+Singleton_ModelInstance::CreatePtrBoneSpecifierSet(const TPtrAiNodeMap& iPtrAiNodeMap) const noexcept
+{
+  // If model is not loaded, it just return nullopt.
+  if (this->mAssimpModerImporter == nullptr) { return std::nullopt; }
+
+  TBoneSpecifierSet resultBoneSpecifierSet;
+
+  for (unsigned i = 0, numModelMesh = this->GetNumModelMeshes(); i < numModelMesh; ++i)
+  {
+    const auto ptrAiModelMesh = this->mPtrAssimpModelMeshList[i];
+    
+    for (unsigned b = 0, numMeshBone = ptrAiModelMesh->mNumBones; b < numMeshBone; ++b)
+    {
+      const aiBone* ptrAiBone = ptrAiModelMesh->mBones[b];
+      // Find any proper aiNode with aiBone's name, because in assimp, matched aiBone and aiNode has a same name.
+      const auto itPtrAiNode  = iPtrAiNodeMap.find(ptrAiBone->mName.C_Str());
+      if (itPtrAiNode == iPtrAiNodeMap.end()) { continue; }
+
+      const auto [ptrAiNodeSpecifier, ptrAiNodeInstance] = *itPtrAiNode;
+      const aiNode* node = ptrAiNodeInstance.Get();
+
+      while (node != nullptr)
+      {
+        resultBoneSpecifierSet.emplace(node->mName.C_Str());
+        node = node->mParent;
+
+        // Don't chase up until the scene root node.
+        if (node->mParent == nullptr) 
+        { 
+          break; 
+        }
+      }
+    }
+  }
+
+  return resultBoneSpecifierSet;
+}
+
+EDySuccess Singleton_ModelInstance::CreateModelSkeleton(
+    MDY_NOTUSED const TPtrAiNodeMap& iPtrAiNodeMap,
+    const TBoneSpecifierSet& iBoneSpecifierSet)
+{
+  // Get root-node and root-matrix (identity matrix)
+  const aiNode*       rootNode    = this->GetPtrRootNodeOfModelScene();
+  const DDyMatrix4x4  rootMatrix  = {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
+
+  // Make skeleton bone list recursively, traversing each node.
+  // Created skeleton bone list is deterministic.
+  this->RecursiveInsertSkeletonBoneIntoList(
+      DyMakeNotNull(rootNode), iBoneSpecifierSet, 
+      rootMatrix, -1, 
+      this->mExportedSkeleton);
+  return DY_SUCCESS;
+}
+
+void Singleton_ModelInstance::RecursiveInsertSkeletonBoneIntoList(
+    const NotNull<const aiNode*> iPtrAiNode,
+    const TBoneSpecifierSet& iRefBoneSpecifierSet, 
+    const DDyMatrix4x4& iRefParentGlobalTransform,
+    const signed int iParentSkeletonBoneId,
+    std::vector<DSkeletonBone>& iSkeletonList)
+{
+  // Make global transform (parent * this-node) and potential parent index.
+  const DDyMatrix4x4 globalTransform      = iRefParentGlobalTransform.Multiply(iPtrAiNode->mTransformation);
+  const signed int skeletonBoneNodeIndex  = static_cast<signed int>(iSkeletonList.size()) - 1;
+
+  // Remove redundant node(bone) so insert valid and activated node(bone).
+  if (iRefBoneSpecifierSet.find(iPtrAiNode->mName.C_Str()) != iRefBoneSpecifierSet.end())
+  {
+    iSkeletonList.emplace_back(DSkeletonBone{});
+    auto& skeletonInstance = this->mExportedSkeleton.back();
+    skeletonInstance.mPtrAiNode       = iPtrAiNode.Get();
+    skeletonInstance.mSpecifier       = iPtrAiNode->mName.C_Str();
+    skeletonInstance.mLocalTransform  = iPtrAiNode->mTransformation;
+    skeletonInstance.mGlobalTransform = globalTransform;
+    skeletonInstance.mParentSkeletonBoneIndex = iParentSkeletonBoneId;
+  }
+
+  // Recursively request insertion to children.
+  for (unsigned childIndex = 0, numChild = iPtrAiNode->mNumChildren; childIndex < numChild; ++childIndex)
+  {
+    const aiNode* ptrChildNode = iPtrAiNode->mChildren[childIndex];
+    this->RecursiveInsertSkeletonBoneIntoList(
+        DyMakeNotNull(ptrChildNode), iRefBoneSpecifierSet, 
+        globalTransform, skeletonBoneNodeIndex, 
+        iSkeletonList);
+  }
+}
+
+
+void Singleton_ModelInstance::RemoveModelSkeleton()
+{
+  this->mExportedSkeleton.clear();
+}
+
+void Singleton_ModelInstance::RecursiveInsertAiNodeIntoNodeMap(NotNull<const aiNode*> iPtrAiNode, TPtrAiNodeMap& iMap)
+{
+  auto [_, isSucceeeded] = iMap.try_emplace(iPtrAiNode->mName.C_Str(), iPtrAiNode);
+  jassert(isSucceeeded == true);
+
+  for (unsigned i = 0, numChildren = iPtrAiNode->mNumChildren; i < numChildren; ++i)
+  {
+    this->RecursiveInsertAiNodeIntoNodeMap(DyMakeNotNull(iPtrAiNode->mChildren[i]), iMap);
+  }
+}
+
+DMesh Singleton_ModelInstance::CreateDyMesh(unsigned iMeshIndex, bool withSkeleton)
 {
   const auto& ptrAiMesh = this->mPtrAssimpModelMeshList[iMeshIndex];
   DMesh result;
 
-  //!
-  //! Indices
-  //!
-
+  // If mesh has faces, so can create indices from this.
   if (ptrAiMesh->HasFaces() == true)
-  { // If mesh has faces.
-    const auto faceNum = ptrAiMesh->mNumFaces;
-
-    // Because we have triangulate indexes, so have to set up memory space with 3 times.
-    result.mIndexList.reserve(faceNum * 3);
-    for (unsigned i = 0; i < faceNum; ++i)
-    {
-      const auto& ptrFace = ptrAiMesh->mFaces[i];
-      jassert(ptrFace.mNumIndices == 3);
-
-      // Insert face as indices (a, b, c).
-      for (unsigned id = 0; id < 3; ++id)
-      {
-        result.mIndexList.emplace_back(ptrFace.mIndices[id]);
-      }
-    }
+  { 
+    result.mIndexList = CreateMeshIndices(ptrAiMesh);
   }
 
   //!
@@ -256,45 +365,133 @@ DMesh Singleton_ModelInstance::CreateDyMesh(unsigned iMeshIndex)
     { 
       DDyVertexInformation vertexInfo;
       
-      // Vertex
-      for (unsigned v = 0; v < 3; ++v) 
-      { vertexInfo.mPosition[v] = ptrAiMesh->mVertices[i][v]; }
-
-      // Normal
-      if (ptrAiMesh->HasNormals() == true)
-      {
-        for (unsigned n = 0; n < 3; ++n) 
-        { vertexInfo.mNormal[n] = ptrAiMesh->mNormals[i][n]; }
-      }
-
-      // Texcoord0 (u,v)
-      if (ptrAiMesh->HasTextureCoords(0) == true)
-      {
-        jassert(ptrAiMesh->mNumUVComponents[0] == 2);
-        for (unsigned uv = 0; uv < 2; ++uv) 
-        { vertexInfo.mTexCoords0[uv] = ptrAiMesh->mTextureCoords[0][i][uv]; }
-      }
-
-      // Tangent & Bitangent
-      if (ptrAiMesh->HasTangentsAndBitangents() == true)
-      {
-        for (unsigned t = 0; t < 3; ++t)
-        {
-          vertexInfo.mTangent[t]    = ptrAiMesh->mTangents[i][t];
-          vertexInfo.mBitangent[t]  = ptrAiMesh->mBitangents[i][t];
-        }
-      }
-
-      // Bone & Weight
-      if (ptrAiMesh->HasBones() == true)
-      {
-        // @TODO IMPLEMENT BONE EXPORTING
-      }
-
+      this->TryInsertMeshVertex(i, ptrAiMesh, vertexInfo);  // Vertex
+      this->TryInsertMeshNormal(i, ptrAiMesh, vertexInfo);  // Normal
+      this->TryInsertMeshUV0(i, ptrAiMesh, vertexInfo);     // Texcoord0 (u,v)
+      this->TryInsertMeshUV1(i, ptrAiMesh, vertexInfo);     // Texcoord1 (u,v)
+      this->TryInsertMeshTanBt(i, ptrAiMesh, vertexInfo);   // Tangent & Bitangent
       // Insert item to result.
       result.mVertexList.emplace_back(std::move(vertexInfo));
+    }
+
+    // Bone & Weight
+    if (withSkeleton == true && ptrAiMesh->HasBones() == true)
+    {
+      for (auto aiBondIndex = 0u, numBonds = ptrAiMesh->mNumBones; aiBondIndex < numBonds; ++aiBondIndex)
+      {
+        const auto* ptrAiBone = ptrAiMesh->mBones[aiBondIndex];
+
+        // Find appropriate skeleton bone in ExportedSkeleton list using matching name.
+        auto itSkeletonBone = std::find_if(
+            this->mExportedSkeleton.cbegin(), this->mExportedSkeleton.cend(),
+            [ptrAiBone](const DSkeletonBone& iBone) { return iBone.mSpecifier == ptrAiBone->mName.C_Str(); });
+        jassert(itSkeletonBone != this->mExportedSkeleton.cend());
+
+        // Get a proper id list from retrieved skeleton bone instance.
+        const auto indexSkeletonBone = static_cast<unsigned>(std::distance(this->mExportedSkeleton.cbegin(), itSkeletonBone));
+        for (unsigned idWeight = 0, numWeights = ptrAiBone->mNumWeights; idWeight < numWeights; ++idWeight)
+        {
+          // Traverse bone's weight.
+          const auto& ptrWeight = ptrAiBone->mWeights[idWeight];
+          const auto  idVertex  = ptrWeight.mVertexId;
+          const auto  valWeight = ptrWeight.mWeight;
+
+          // Insert each vertex with boneId (of `mExportedSkeleton`) and weights within 4 element list.
+          auto& refVertex = result.mVertexList[idVertex];
+          for (unsigned id = 0; id < 4; ++id)
+          {
+            if (refVertex.mBoneId[id] == -1)
+            {
+              refVertex.mBoneId[id]   = static_cast<float>(indexSkeletonBone);
+              refVertex.mWeights[id]  = valWeight;
+              break;
+            }
+          }
+          //
+        }
+        //
+      }
     }
   }
 
   return result;
 }
+
+std::vector<unsigned> Singleton_ModelInstance::CreateMeshIndices(NotNull<const aiMesh*> ptrAiMesh)
+{
+  const auto faceNum = ptrAiMesh->mNumFaces;
+  std::vector<unsigned> result;
+
+  // Because we have triangulate indexes, so have to set up memory space with 3 times.
+  result.reserve(faceNum * 3);
+  for (unsigned i = 0; i < faceNum; ++i)
+  {
+    const auto& ptrFace = ptrAiMesh->mFaces[i];
+    jassert(ptrFace.mNumIndices == 3);
+
+    // Insert face as indices (a, b, c).
+    for (unsigned id = 0; id < 3; ++id)
+    {
+      result.emplace_back(ptrFace.mIndices[id]);
+    }
+  }
+
+  return result;
+}
+
+void Singleton_ModelInstance::TryInsertMeshVertex(unsigned iIndex, NotNull<const aiMesh*> iPtrAiMesh, DDyVertexInformation& oResult)
+{
+  for (unsigned v = 0; v < 3; ++v)
+  {
+    oResult.mPosition[v] = iPtrAiMesh->mVertices[iIndex][v];
+  }
+
+}
+
+void Singleton_ModelInstance::TryInsertMeshNormal(unsigned iIndex, NotNull<const aiMesh*> iPtrAiMesh, DDyVertexInformation& oResult)
+{
+  if (iPtrAiMesh->HasNormals() == true)
+  {
+    for (unsigned n = 0; n < 3; ++n)
+    {
+      oResult.mNormal[n] = iPtrAiMesh->mNormals[iIndex][n];
+    }
+  }
+}
+
+void Singleton_ModelInstance::TryInsertMeshUV0(unsigned iIndex, NotNull<const aiMesh*> iPtrAiMesh, DDyVertexInformation& oResult)
+{
+  if (iPtrAiMesh->HasTextureCoords(0) == true)
+  {
+    jassert(iPtrAiMesh->mNumUVComponents[0] == 2);
+    for (unsigned uv = 0; uv < 2; ++uv)
+    {
+      oResult.mTexCoords0[uv] = iPtrAiMesh->mTextureCoords[0][iIndex][uv];
+    }
+  }
+}
+
+void Singleton_ModelInstance::TryInsertMeshUV1(unsigned iIndex, NotNull<const aiMesh*> iPtrAiMesh, DDyVertexInformation& oResult)
+{
+  if (iPtrAiMesh->HasTextureCoords(1) == true)
+  {
+    jassert(iPtrAiMesh->mNumUVComponents[1] == 2);
+    for (unsigned uv = 0; uv < 2; ++uv)
+    {
+      oResult.mTexCoords1[uv] = iPtrAiMesh->mTextureCoords[1][iIndex][uv];
+    }
+  }
+}
+
+void Singleton_ModelInstance::TryInsertMeshTanBt(unsigned iIndex, NotNull<const aiMesh*> iPtrAiMesh, DDyVertexInformation& oResult)
+{
+  if (iPtrAiMesh->HasTangentsAndBitangents() == true)
+  {
+    for (unsigned t = 0; t < 3; ++t)
+    {
+      oResult.mTangent[t] = iPtrAiMesh->mTangents[iIndex][t];
+      oResult.mBitangent[t] = iPtrAiMesh->mBitangents[iIndex][t];
+    }
+  }
+}
+
