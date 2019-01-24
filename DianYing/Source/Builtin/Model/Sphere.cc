@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Builtin/Model/Sphere.h>
 #include <Dy/Builtin/Mesh/FDyBtMsSphere.h>
+#include <Dy/Builtin/Material/BtMtCheckerWorldPos.h>
 
 namespace dy::builtin
 {
@@ -23,8 +24,7 @@ void FDyBuiltinModelSphere::ConstructBuffer(PDyModelInstanceMetaInfo& buffer) no
 {
   buffer.mSourceType          = EDyResourceSource::Builtin;
   buffer.mSpecifierName       = sName;
-  buffer.mIsUsingBuiltinMesh  = true;
-  buffer.mBuiltinMeshSpecifierList.emplace_back(FDyBtMsSphere::sName);
+  buffer.mMeshList.emplace_back(MSVSTR(FDyBtMsSphere::sName), MSVSTR(FDyBtMtCheckerWorldPos::sName));
 }
 
 } /// ::dy::builtin namespace

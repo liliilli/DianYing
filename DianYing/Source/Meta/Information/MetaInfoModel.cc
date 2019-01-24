@@ -65,8 +65,8 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo&
    */ 
 
   p.mSourceType = EDyResourceSource::External;
-  p.mMeshList   = j["Mesh"].get<PDyModelInstanceMetaInfo::TExternalMeshList>();
-  p.mSkeleton   = j["Skeleton"].get<PDyModelInstanceMetaInfo::DSkeleton>();
+  DyJsonGetValueFromTo(j, "Mesh",     p.mMeshList);
+  DyJsonGetValueFromTo(j, "Skeleton", p.mSkeleton);
 }
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelInstanceMetaInfo::DMesh& p)

@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Builtin/Model/UIFontQuad.h>
 #include <Dy/Builtin/Mesh/FDyBtMsUiFontQuad.h>
+#include <Dy/Builtin/Material/BtMtCheckerWorldPos.h>
 
 namespace dy::builtin
 {
@@ -23,8 +24,7 @@ void FDyBtMdUIFontQuad::ConstructBuffer(_MOUT_ PDyModelInstanceMetaInfo& buffer)
 {
   buffer.mSourceType          = EDyResourceSource::Builtin;
   buffer.mSpecifierName       = sName;
-  buffer.mIsUsingBuiltinMesh  = true;
-  buffer.mBuiltinMeshSpecifierList.emplace_back(FDyBtMsUiFontQuad::sName);
+  buffer.mMeshList.emplace_back(MSVSTR(FDyBtMsUiFontQuad::sName), MSVSTR(FDyBtMtCheckerWorldPos::sName));
 }
 
 } /// ::dy::builtin namespace
