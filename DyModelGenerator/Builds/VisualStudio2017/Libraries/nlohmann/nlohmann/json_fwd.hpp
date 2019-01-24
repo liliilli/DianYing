@@ -58,7 +58,8 @@ uses the standard template types.
 
 @since version 1.0.0
 */
-using json = basic_json<>;
+//using json = nlohmann::basic_json<>;
+using json = nlohmann::basic_json<std::map, std::vector, std::string, bool, std::int64_t, std::uint64_t, float>;
 }
 
 #endif
