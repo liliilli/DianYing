@@ -34,13 +34,6 @@ EDySuccess CDyModelRenderer::Initialize(const PDyModelRendererComponentMetaInfo&
 {
   this->mIsEnabledCreateShadow = descriptor.mDetails.mIsEnabledCreateShadow;
 
-  // Bind material. If not exists, make material resource using information, but return fail.
-  this->mBinderMaterialListSize = descriptor.mDetails.mMaterialName.size();
-  for (auto index = 0u; index < this->mBinderMaterialListSize; ++index)
-  {
-    this->mBinderMaterialList[index].TryRequireResource(descriptor.mDetails.mMaterialName[index]);
-  }
-
   if (descriptor.mInitiallyActivated) { this->Activate(); }
   return DY_SUCCESS;
 }
@@ -101,11 +94,6 @@ void CDyModelRenderer::Deactivate() noexcept
   }
 }
 
-TI32 CDyModelRenderer::GetMaterialListCount() const noexcept
-{
-  return this->mBinderMaterialListSize;
-}
-
 std::optional<TI32> CDyModelRenderer::GetModelSubmeshCount() const noexcept
 {
   // If CDyModelFilter is not binded to CDyModelRenderer, just return no value.
@@ -113,16 +101,17 @@ std::optional<TI32> CDyModelRenderer::GetModelSubmeshCount() const noexcept
   return static_cast<TI32>(this->mPtrModelFilterComponent->GetModelReference()->GetMeshResourceList().size());
 }
 
-const FDyMaterialResource& CDyModelRenderer::GetMaterialResourcePtr(_MIN_ TU32 index) const noexcept
-{
-  MDY_ASSERT(index < this->mBinderMaterialListSize, "Index for CDyModelRenderer::mMaterialResourcePtr is out of bound.");
-  return *this->mBinderMaterialList[index].Get();
-}
-
 const FDyMeshResource& CDyModelRenderer::GetSubmeshResourcePtr(_MIN_ TU32 index) const noexcept
 {
   const auto& submeshResourceList = this->mPtrModelFilterComponent->GetModelReference()->GetMeshResourceList();
   return *submeshResourceList[index]->Get();
+}
+
+const FDyMaterialResource& CDyModelRenderer::GetMaterialResourcePtr(_MIN_ TU32 index) const noexcept
+{
+  //MDY_ASSERT(index < this->mBinderMaterialListSize, "Index for CDyModelRenderer::mMaterialResourcePtr is out of bound.");
+  const auto& materialResourceList = this->mPtrModelFilterComponent->GetModelReference()->GetMaterialResourceList();
+  return *materialResourceList[index]->Get();
 }
 
 TDyLResourceBinderModel* CDyModelRenderer::GetModelResourceBinder() noexcept

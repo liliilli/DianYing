@@ -222,14 +222,12 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelRendererComponentMe
   j = nlohmann::json
   {
     {MSVSTR(sHeaderShadow),      p.mIsEnabledCreateShadow},
-    {MSVSTR(sHeaderMaterials),   p.mMaterialName},
   };
 }
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelRendererComponentMetaInfo::DDetails& p)
 {
-  DyJsonGetValueFromTo<bool>                    (j, sHeaderShadow,    p.mIsEnabledCreateShadow);
-  DyJsonGetValueFromTo<std::vector<std::string>>(j, sHeaderMaterials, p.mMaterialName);
+  DyJsonGetValueFromTo<bool>(j, sHeaderShadow, p.mIsEnabledCreateShadow);
 }
 
 //!

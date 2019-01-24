@@ -58,19 +58,8 @@ void GetLevelResourceFromActor(
     {
       const auto& desc = std::any_cast<const PDyModelFilterComponentMetaInfo&>(componentInfo);
       if (desc.mDetails.mModelSpecifierName.empty() == true) { break; }
-
+      
       iSet.emplace(EDyResourceType::Model, desc.mDetails.mModelSpecifierName);
-    } break;
-    case EDyComponentMetaType::ModelRenderer:
-    {
-      const auto& desc = std::any_cast<const PDyModelRendererComponentMetaInfo&>(componentInfo);
-      if (desc.mDetails.mMaterialName.empty() == true) { break; }
-
-      for (const auto& materialSpecifier : desc.mDetails.mMaterialName)
-      {
-        if (materialSpecifier.empty() == true) { continue; }
-        iSet.emplace(EDyResourceType::Material, materialSpecifier);
-      }
     } break;
     default: /* Do nothing */ break;
     }

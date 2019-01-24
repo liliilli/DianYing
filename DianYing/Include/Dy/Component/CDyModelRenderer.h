@@ -80,10 +80,6 @@ public:
   /// @brief Deactivate component.
   void Deactivate() noexcept override final;
 
-  /// @brief  Get the element count of binded material list.
-  /// @return The number of material elements binded to CDyModelRenderer::mMaterialResourcePtr.
-  MDY_NODISCARD TI32 GetMaterialListCount() const noexcept;
-
   /// @brief  Get the number of submesh of model instance which binded to this component instance.
   /// @return The number of submesh elements binded to CDyModelRenderer::mPtrModelFilterComponent.
   MDY_NODISCARD std::optional<TI32> GetModelSubmeshCount() const noexcept;
@@ -124,9 +120,6 @@ private:
   CDyModelFilter* mPtrModelFilterComponent  = MDY_INITIALIZE_NULL;
   /// Check flag for create shadow or not.
   bool            mIsEnabledCreateShadow    = false;
-
-  std::array<TDyLResourceBinderMaterial, 16> mBinderMaterialList = {};
-  TU32            mBinderMaterialListSize   = MDY_INITIALIZE_DEFUINT;
 
   MDY_SET_TYPEMATCH_FUNCTION(::dy::ADyGeneralBaseComponent, CDyModelRenderer);
   MDY_SET_CRC32_HASH_WITH_TYPE(CDyModelRenderer);
