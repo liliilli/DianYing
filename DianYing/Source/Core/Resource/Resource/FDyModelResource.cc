@@ -16,6 +16,7 @@
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
 #include <Dy/Core/Resource/Information/FDyModelInformation.h>
 #include <Dy/Core/Resource/Information/FDyMeshInformation.h>
+#include <Dy/Core/Resource/Information/FDyMaterialInformation.h>
 #include <Dy/Helper/System/Idioms.h>
 
 namespace dy
@@ -32,6 +33,14 @@ FDyModelResource::FDyModelResource(_MINOUT_ const FDyModelInformation& input) :
 
     DySafeUniquePtrEmplaceBack(this->mMeshResource, meshInformation->Get()->GetSpecifierName());
     MDY_ASSERT(this->mMeshResource.back()->IsResourceExist() == true, "Unexpected error occurred.");
+  }
+  for (const auto& materialInformation : input.GetMaterialInformationList())
+  {
+    MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(materialInformation), "Unexpected error occurred.");
+    MDY_ASSERT(materialInformation->IsResourceExist() == true, "Unexpected error occurred.");
+
+    DySafeUniquePtrEmplaceBack(this->mMaterialResource, materialInformation->Get()->GetSpecifierName());
+    MDY_ASSERT(this->mMaterialResource.back()->IsResourceExist() == true, "Unexpected error occurred.");
   }
 }
 

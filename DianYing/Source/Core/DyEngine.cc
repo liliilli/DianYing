@@ -393,6 +393,8 @@ void DyEngine::pfReleaseDependentManager()
   SDyIOConnectionHelper::TryGC(EDyScope::Global, EDyResourceStyle::Information);
   SDyIOConnectionHelper::TryGC(EDyScope::Global, EDyResourceStyle::Resource);
   SDyIOConnectionHelper::TryGC(EDyScope::Global, EDyResourceStyle::Information);
+  SDyIOConnectionHelper::TryGC(EDyScope::Global, EDyResourceStyle::Resource);
+  SDyIOConnectionHelper::TryGC(EDyScope::Global, EDyResourceStyle::Information);
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDySynchronization::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyIOResource::Release());

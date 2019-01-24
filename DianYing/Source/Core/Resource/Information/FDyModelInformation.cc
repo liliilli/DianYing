@@ -87,6 +87,7 @@ FDyModelInformation::FDyModelInformation(_MIN_ const PDyModelInstanceMetaInfo& m
   for (const auto& [meshSpecifier, materialSpecifier] : metaInfo.mMeshList)
   {
     DySafeUniquePtrEmplaceBack(this->mMeshInformations, meshSpecifier);
+    DySafeUniquePtrEmplaceBack(this->mMaterialInformations, materialSpecifier);
   }
 }
 
