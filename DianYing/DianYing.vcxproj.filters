@@ -282,6 +282,12 @@
     <ClCompile Include="Source\Component\Internal\Script\Global\CDyGlobalScriptCpp.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Global\FDyGlobalScriptStatus.cc" />
     <ClCompile Include="Source\Helper\Library\HelperFilesystem.cc" />
+    <ClCompile Include="Source\Meta\Type\EDyResourceTypes.cc" />
+    <ClCompile Include="Source\Helper\Library\HelperAssimp.cc" />
+    <ClCompile Include="Source\Meta\Information\MetaInfoModelMesh.cc" />
+    <ClCompile Include="Source\Core\Resource\Type\ModelMesh\DDyMeshCompressedBuffer.cc" />
+    <ClCompile Include="Source\Core\Resource\Type\ModelMesh\DDyModelData.cc" />
+    <ClCompile Include="Source\Core\Resource\Internal\GeometryType.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -620,7 +626,6 @@
     <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsSphere.h" />
     <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsUiFontQuad.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyMeshResource.h" />
-    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoBuiltinMesh.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoModel.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyMeshInformation.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Mesh\DDyGLVaoBindInformation.h" />
@@ -714,6 +719,11 @@
     <ClInclude Include="Include\Dy\Component\Internal\Global\CDyGlobalScriptBase.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Global\CDyGlobalScriptCpp.h" />
     <ClInclude Include="Include\Dy\Helper\Library\HelperFilesystem.h" />
+    <ClInclude Include="Include\Dy\Helper\StringSwitch.h" />
+    <ClInclude Include="Include\Dy\Helper\Library\HelperAssimp.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoModelMesh.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\ModelMesh\DDyMeshCompressedBuffer.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\ModelMesh\DDyMeshData.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

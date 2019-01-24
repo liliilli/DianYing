@@ -42,10 +42,17 @@ public:
     return this->mMeshResource;
   }
 
+  /// @brief Get valid material resource list, not modifiable.
+  MDY_NODISCARD const auto& GetMaterialResourceList() const noexcept
+  {
+    return this->mMaterialResource;
+  }
+
 private:
   std::string                   mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
   TDyIInformationBinderModel    mBinderInformation;
-  std::vector<std::unique_ptr<TDyIResourceBinderMesh>> mMeshResource = {};
+  std::vector<std::unique_ptr<TDyIResourceBinderMesh>>      mMeshResource     = {};
+  std::vector<std::unique_ptr<TDyIResourceBinderMaterial>>  mMaterialResource = {};
 };
 
 } /// ::dy namespace

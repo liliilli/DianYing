@@ -28,7 +28,7 @@
 #include <Dy/Meta/Information/MetaInfoMaterial.h>
 #include <Dy/Meta/Information/MetaInfoAttachment.h>
 #include <Dy/Meta/Information/MetaInfoFrameBuffer.h>
-#include <Dy/Meta/Information/MetaInfoBuiltinMesh.h>
+#include <Dy/Meta/Information/MetaInfoModelMesh.h>
 #include <Dy/Meta/Type/DDyResourceName.h>
 
 //!
@@ -89,7 +89,7 @@ public:
   GetGLShaderMetaInformation(_MIN_ const std::string& specifier) const;
   /// @brief  Get builtin mesh instance meta information from container.
   /// @return Return value is undefined if not found.
-  MDY_NODISCARD const PDyBtMeshInstanceMetaInfo&     
+  MDY_NODISCARD const PDyMeshInstanceMetaInfo&     
   GetBtMeshMetaInformation(_MIN_ const std::string& specifier) const;
   /// @brief  Get model instance meta information from container.
   /// @return Return value is undefined if not found.
@@ -174,11 +174,12 @@ private:
   MDY_NODISCARD EDySuccess pReadWidgetResourceMetaInformation(_MIN_ const std::string& metaFilePath);
   MDY_NODISCARD EDySuccess pReadSceneResourceMetaInformation (_MIN_ const std::string& metaFilepath);
 
-  MDY_NODISCARD EDySuccess pReadFontResourceMetaInformation    (_MIN_ const std::string& metaFilePath);
-  MDY_NODISCARD EDySuccess pReadModelResourceMetaInformation   (_MIN_ const std::string& metaFilePath);
-  MDY_NODISCARD EDySuccess pReadTextureResourceMetaInformation (_MIN_ const std::string& metaFilePath);
-  MDY_NODISCARD EDySuccess pReadShaderResourceMetaInformation  (_MIN_ const std::string& metaFilePath);
-  MDY_NODISCARD EDySuccess pReadMaterialResourceMetaInformation(_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadFontResourceMetaInformation     (_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadModelResourceMetaInformation    (_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadModelMeshResourceMetaInformation(_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadTextureResourceMetaInformation  (_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadShaderResourceMetaInformation   (_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadMaterialResourceMetaInformation (_MIN_ const std::string& metaFilePath);
 
   MDY_NODISCARD EDySuccess pReadScriptResourceMetaInformation(_MIN_ const nlohmann::json& iJson);
   MDY_NODISCARD EDySuccess pReadPrefabResourceMetaInformation(_MIN_ const nlohmann::json& iJson);
@@ -189,7 +190,7 @@ private:
   MDY_NODISCARD EDySuccess pfAddWidgetMetaInformation (_MIN_ const std::string& metaInformationString);
   MDY_NODISCARD EDySuccess pfAddScriptMetaInformation (_MIN_ const PDyScriptInstanceMetaInfo& metaInfo);
   MDY_NODISCARD EDySuccess pfAddGLShaderMetaInfo      (_MIN_ const PDyGLShaderInstanceMetaInfo& metaInfo);
-  MDY_NODISCARD EDySuccess pfAddBuiltinMeshMetaInfo   (_MIN_ const PDyBtMeshInstanceMetaInfo& metaInfo);
+  MDY_NODISCARD EDySuccess pfAddBuiltinMeshMetaInfo   (_MIN_ const PDyMeshInstanceMetaInfo& metaInfo);
   MDY_NODISCARD EDySuccess pfAddModelMetaInfo         (_MIN_ const PDyModelInstanceMetaInfo& metaInfo);
   MDY_NODISCARD EDySuccess pfAddTextureMetaInfo       (_MIN_ const PDyTextureInstanceMetaInfo& metaInfo);
   MDY_NODISCARD EDySuccess pfAddMaterialMetaInfo      (_MIN_ const PDyMaterialInstanceMetaInfo& metaInfo);
@@ -210,10 +211,10 @@ private:
   THashMap<PDyMetaFontInformation>      mFontMetaInfo   = {};
   /// GL shader meta information map.
   THashMap<PDyGLShaderInstanceMetaInfo> mShaderMetaInfo = {};
-  /// Builtin mesh information map.
-  THashMap<PDyBtMeshInstanceMetaInfo>   mBtMeshMetaInfo = {};
   /// Model meta information map.
   THashMap<PDyModelInstanceMetaInfo>    mModelMetaInfo  = {};
+  /// Model Mesh meta information map.
+  THashMap<PDyMeshInstanceMetaInfo>     mModelMeshMetaInfo = {};
   /// Texture meta information map.
   THashMap<PDyTextureInstanceMetaInfo>  mTextureMetaInfo= {};
   /// Material meta information map.

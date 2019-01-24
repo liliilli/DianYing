@@ -16,24 +16,11 @@
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
 #include <Dy/Core/Resource/Information/FDyModelInformation.h>
 #include <Dy/Core/Resource/Information/FDyMeshInformation.h>
+#include <Dy/Core/Resource/Information/FDyMaterialInformation.h>
 #include <Dy/Helper/System/Idioms.h>
 
 namespace dy
 {
-
-#ifdef false
-FDyModelResource::FDyModelResource(_MINOUT_ FDyModelVBOIntermediate& input) :
-    mSpecifierName{input.GetSpecifierName()},
-    mBinderInformation{input.GetSpecifierName()}
-{
-  // Intermediate mesh resource list must be mutable, \n
-  // so to be transfer properties into actual mesh resource by resetting intermediate instance properties.
-  auto& intermediateMeshList = input.GetIntermediateMeshList();
-  this->mMeshResource.reserve(intermediateMeshList.size());
-
-  for (auto& intermediateMesh : intermediateMeshList) { mMeshResource.emplace_back(intermediateMesh); }
-}
-#endif
 
 FDyModelResource::FDyModelResource(_MINOUT_ const FDyModelInformation& input) :
   mSpecifierName{input.GetSpecifierName()},
@@ -46,6 +33,14 @@ FDyModelResource::FDyModelResource(_MINOUT_ const FDyModelInformation& input) :
 
     DySafeUniquePtrEmplaceBack(this->mMeshResource, meshInformation->Get()->GetSpecifierName());
     MDY_ASSERT(this->mMeshResource.back()->IsResourceExist() == true, "Unexpected error occurred.");
+  }
+  for (const auto& materialInformation : input.GetMaterialInformationList())
+  {
+    MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(materialInformation), "Unexpected error occurred.");
+    MDY_ASSERT(materialInformation->IsResourceExist() == true, "Unexpected error occurred.");
+
+    DySafeUniquePtrEmplaceBack(this->mMaterialResource, materialInformation->Get()->GetSpecifierName());
+    MDY_ASSERT(this->mMaterialResource.back()->IsResourceExist() == true, "Unexpected error occurred.");
   }
 }
 

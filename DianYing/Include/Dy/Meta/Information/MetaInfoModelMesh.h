@@ -16,6 +16,8 @@
 #include <Dy/Core/Reflection/RDyBuiltinResources.h>
 #include <Dy/Core/Resource/Internal/GeometryType.h>
 #include <Dy/Meta/Type/Mesh/DDyGLVaoBindInformation.h>
+#include <Dy/Meta/Information/CommonResourceMetaInfo.h>
+#include <nlohmann/json_fwd.hpp>
 
 namespace dy
 {
@@ -29,10 +31,8 @@ struct PDyDefaultMeshInformation final
   std::vector<DDyVertexInformation> mVertexList;
 };
 
-///
 /// @enum EDyMeshUsage
-/// @brief
-///
+/// @brief Specifies usage of given mesh.
 enum class EDyMeshUsage : unsigned char
 {
   StaticDraw,
@@ -40,20 +40,30 @@ enum class EDyMeshUsage : unsigned char
 };
 
 ///
-/// @struct PDyBtMeshInstanceMetaInfo
+/// @struct PDyMeshInstanceMetaInfo
 /// @brief Builtin Mesh meta informtaion instance.
 ///
-struct PDyBtMeshInstanceMetaInfo final
+struct PDyMeshInstanceMetaInfo final : public PDyCommonResourceMetaInfo
 {
   std::string mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
 
+  //! Builtin
   PDyDefaultMeshInformation mDefaultMeshBuffer;
   std::vector<TF32> mCustomMeshBuffer   = {};
   std::vector<TU32> mIndiceBuffer       = {};
 
   EDyMeshUsage      mMeshUsage          = EDyMeshUsage::StaticDraw;
   DDyGLVaoBindInformation mVAOBindingInfo;
+
+  //! External (Follows `PDyDefaultMeshInformation` binding and must StaticDraw.)
+  std::string       mExternalPath       = MDY_INITIALIZE_EMPTYSTR;
+  bool              mIsCompressed       = false;                    
 };
+
+/// @brief Serialization function
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyMeshInstanceMetaInfo& p);
+/// @brief Deserialization function
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMeshInstanceMetaInfo& p);
 
 } /// ::dy namespace
 

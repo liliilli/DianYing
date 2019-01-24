@@ -38,15 +38,22 @@ public:
     return this->mSpecifierName;
   }
 
-  /// @brief Get submesh information list.
+  /// @brief Get binded Mesh information list.
   MDY_NODISCARD const auto& GetMeshInformationList() const noexcept
   {
     return this->mMeshInformations;
   }
 
+  /// @brief Get binded Material information list.
+  MDY_NODISCARD const auto& GetMaterialInformationList() const noexcept
+  {
+    return this->mMaterialInformations;
+  }
+
 private:
   std::string mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
-  std::vector<std::unique_ptr<TDyIInformationBinderMesh>> mMeshInformations;
+  std::vector<std::unique_ptr<TDyIInformationBinderMesh>>     mMeshInformations;
+  std::vector<std::unique_ptr<TDyIInformationBinderMaterial>> mMaterialInformations;
 };
 
 } /// ::dy namespace

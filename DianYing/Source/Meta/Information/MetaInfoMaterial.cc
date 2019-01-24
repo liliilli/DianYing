@@ -47,42 +47,25 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyMaterialInstanceMetaInfo
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaInfo& p)
 {
   /* Template
-   * {
-        "SpecifierName":
-        {
-          "SpecifierName": "Name",
-          "ShaderSpecifier": "ValidShaderName",
-          "BlendMode": "Opaque" / "Transcluent" / "Custom",
-          "TextureList":
-          [
-            "Texture1",
-            "Texture2",
-            "Texture3",
-            // ...
-            "Texture16"
-          ]
-        }
-      }
+   * "M_Wall1": 
+     {
+       "ShaderSpecifier": "Sh_Wall1",
+       "TextureSpecifierList": [ "T_BrickWall1_Diffuse", "T_BrickWall1_Disp", "T_BrickWall1_Normal" ],
+       "BlendMode": "Opaque"
+     }
    */
 
-  DyJsonGetValueFromTo(j, "SpecifierName", p.mSpecifierName);
-  DyJsonGetValueFromTo(j, "ShaderSpecifier", p.mShaderSpecifier);
-  DyJsonGetValueFromTo(j, "BlendMode", p.mBlendMode);
-  DyJsonGetValueFromTo(j, "TextureList", p.mTextureNames);
-}
+  DyJsonGetValueFromTo(j, "ShaderSpecifier",      p.mShaderSpecifier);
+  DyJsonGetValueFromTo(j, "BlendMode",            p.mBlendMode);
 
-void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyMaterialInstanceMetaInfo::TTextureList& p)
-{
-  MDY_NOT_IMPLEMENTED_ASSERT();
-}
+  std::vector<std::string> texList;
+  DyJsonGetValueFromTo(j, "TextureSpecifierList", texList);
 
-void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaInfo::TTextureList& p)
-{
-  auto id = 0;
-  for (const auto& textureItem : j)
+  // nlohmann::json does not support serialization between std::array, 
+  // so we need to convert list to vector, and convert vector to array again.
+  for (TU32 i = 0, size = static_cast<TU32>(texList.size()); i < size; ++i)
   {
-    p[id] = textureItem.get<std::string>();
-    id++;
+    p.mTextureNames[i] = texList[i];
   }
 }
 

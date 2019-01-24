@@ -22,6 +22,7 @@
 #include <Dy/Management/WindowManager.h>
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
 #include <Dy/Core/Resource/Internal/FDyModelVBOIntermediate.h>
+#include <assimp/Importer.hpp>
 
 constexpr TU08 kDefaultPriority = 128;
 
@@ -261,16 +262,10 @@ std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(
   if (iResourceType == EDyResourceType::Model)
   { // If resource type is `Model` and if using builtin mesh specifier...
     const auto& metaInfo = this->mMetaInfoManager->GetModelMetaInformation(iSpecifier);
-    if (metaInfo.mIsUsingBuiltinMesh == true)
-    {
-      for (const auto& meshSpecifier : metaInfo.mBuiltinMeshSpecifierList)
-      { // Get dependent attachment specifier list and add.
-        checkList.emplace_back(meshSpecifier, EDyResourceType::Mesh, iResourceStyle, iScope);
-      }
-    }
-    else
-    { // If not, (from external), do nothing because not implemented yet.
-      MDY_NOT_IMPLEMENTED_ASSERT();
+    for (const auto& [meshSpecifier, materialSpecifier] : metaInfo.mMeshList)
+    { // Get dependent attachment specifier list and add.
+      checkList.emplace_back(meshSpecifier,     EDyResourceType::Mesh,      iResourceStyle, iScope);
+      checkList.emplace_back(materialSpecifier, EDyResourceType::Material,  iResourceStyle, iScope);
     }
   }
 

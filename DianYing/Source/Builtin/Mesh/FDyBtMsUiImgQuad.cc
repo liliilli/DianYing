@@ -18,7 +18,7 @@
 namespace dy
 {
 
-void FDyBtMsUiImageQuad::ConstructBuffer(_MOUT_ PDyBtMeshInstanceMetaInfo& property) noexcept
+void FDyBtMsUiImageQuad::ConstructBuffer(_MOUT_ PDyMeshInstanceMetaInfo& property) noexcept
 {
   property.mSpecifierName = sName;
   property.mMeshUsage     = EDyMeshUsage::DynamicDraw;

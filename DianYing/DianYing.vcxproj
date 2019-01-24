@@ -246,6 +246,7 @@
     <ClCompile Include="Source\Core\Resource\Information\FDyShaderInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyTextureInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\FDyMeshVBOIntermediate.cc" />
+    <ClCompile Include="Source\Core\Resource\Internal\GeometryType.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\TextureEnums.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\FDyAttachmentResource.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\FDyFrameBufferResource.cc" />
@@ -256,6 +257,8 @@
     <ClCompile Include="Source\Core\Resource\Resource\FDyTextureResource.cc" />
     <ClCompile Include="Source\Core\Resource\Type\Material\ADyUniformHelper.cc" />
     <ClCompile Include="Source\Core\Resource\Type\Material\TDyMaterialBinder.cc" />
+    <ClCompile Include="Source\Core\Resource\Type\ModelMesh\DDyMeshCompressedBuffer.cc" />
+    <ClCompile Include="Source\Core\Resource\Type\ModelMesh\DDyModelData.cc" />
     <ClCompile Include="Source\Core\Resource\Type\Shader\ADyUniformContainer.cc" />
     <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceContainer.cc" />
     <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceInstance.cc" />
@@ -400,6 +403,7 @@
     <ClCompile Include="Source\Element\Type\Timer\FDyActorTimerItem.cc" />
     <ClCompile Include="Source\Element\Type\Timer\FDyWidgetTimerItem.cc" />
     <ClCompile Include="Source\Helper\Internal\FDyNameGenerator.cc" />
+    <ClCompile Include="Source\Helper\Library\HelperAssimp.cc" />
     <ClCompile Include="Source\Helper\Library\HelperFilesystem.cc" />
     <ClCompile Include="Source\Helper\Library\HelperRegex.cc" />
     <ClCompile Include="Source\Helper\Library\HelperString.cc" />
@@ -485,10 +489,12 @@
     <ClCompile Include="Source\Meta\Information\MetaInfoGLShader.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoMaterial.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoModel.cc" />
+    <ClCompile Include="Source\Meta\Information\MetaInfoModelMesh.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoTexture.cc" />
     <ClCompile Include="Source\Meta\Information\PrefabMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Information\ScriptMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Type\EDyComponentTypes.cc" />
+    <ClCompile Include="Source\Meta\Type\EDyResourceTypes.cc" />
     <ClCompile Include="Source\Meta\Type\EDyWidgetTypes.cc" />
     <ClCompile Include="Source\Meta\Type\EDyTextureParameter.cc" />
     <ClCompile Include="Source\Meta\Type\Input\JsonInputButton.cc" />
@@ -627,6 +633,8 @@
     <ClInclude Include="Include\Dy\Core\Resource\Type\FDyBinderBase.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Material\ADyUniformHelper.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Material\TDyMaterialBinder.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\ModelMesh\DDyMeshCompressedBuffer.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\ModelMesh\DDyMeshData.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\ADyUniformContainer.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\DDyUniformValue.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\TDyInformationBinder.h" />
@@ -649,7 +657,9 @@
     <ClInclude Include="Include\Dy\Helper\HelperString.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\RWLockAtomic.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\FDyNameGenerator.h" />
+    <ClInclude Include="Include\Dy\Helper\Library\HelperAssimp.h" />
     <ClInclude Include="Include\Dy\Helper\Library\HelperFilesystem.h" />
+    <ClInclude Include="Include\Dy\Helper\StringSwitch.h" />
     <ClInclude Include="Include\Dy\Helper\System\Idioms.h" />
     <ClInclude Include="Include\Dy\Helper\Library\HelperRegex.h" />
     <ClInclude Include="Include\Dy\Helper\MCS\Functions.h" />
@@ -669,7 +679,7 @@
     <ClInclude Include="Include\Dy\Management\Type\Time\DDyTimepoint.h" />
     <ClInclude Include="Include\Dy\Management\Type\Time\EDyTimeDay.h" />
     <ClInclude Include="Include\Dy\Management\Type\Time\EDyTimeType.h" />
-    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoBuiltinMesh.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoModelMesh.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoModel.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Input\EDyInputButton.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\EDyInputButtonStatus.h" />

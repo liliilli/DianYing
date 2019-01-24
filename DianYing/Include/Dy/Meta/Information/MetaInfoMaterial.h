@@ -55,9 +55,6 @@ struct PDyMaterialInstanceMetaInfo final : public PDyCommonResourceMetaInfo, pub
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyMaterialInstanceMetaInfo& p);
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaInfo& p);
 
-void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyMaterialInstanceMetaInfo::TTextureList& p);
-void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaInfo::TTextureList& p);
-
 } /// ::dy namespace
 
 #endif /// GUARD_DY_META_INFORMATION_METAINFOMATERIAL_H

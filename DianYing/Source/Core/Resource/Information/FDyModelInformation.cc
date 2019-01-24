@@ -84,14 +84,11 @@ FDyModelInformation::FDyModelInformation(_MIN_ const PDyModelInstanceMetaInfo_De
 FDyModelInformation::FDyModelInformation(_MIN_ const PDyModelInstanceMetaInfo& metaInfo) :
     mSpecifierName{metaInfo.mSpecifierName}
 {
-  if (metaInfo.mIsUsingBuiltinMesh == true)
+  for (const auto& [meshSpecifier, materialSpecifier] : metaInfo.mMeshList)
   {
-    for (const auto& meshSpecifier : metaInfo.mBuiltinMeshSpecifierList)
-    {
-      DySafeUniquePtrEmplaceBack(this->mMeshInformations, meshSpecifier);
-    }
+    DySafeUniquePtrEmplaceBack(this->mMeshInformations, meshSpecifier);
+    DySafeUniquePtrEmplaceBack(this->mMaterialInformations, materialSpecifier);
   }
-  else { MDY_NOT_IMPLEMENTED_ASSERT();  }
 }
 
 } /// ::dy namespace

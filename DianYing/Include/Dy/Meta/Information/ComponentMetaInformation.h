@@ -124,8 +124,6 @@ struct PDyModelRendererComponentMetaInfo final : public IDyMetaInformation
   {
     /// Create shadow or not.
     bool                      mIsEnabledCreateShadow  = false;
-    /// Material resource name list to apply
-    std::vector<std::string>  mMaterialName           = {};
   };
 
   /// Details

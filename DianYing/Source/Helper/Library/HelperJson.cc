@@ -29,20 +29,21 @@ bool DyIsJsonKeyExist(const nlohmann::json& json, const std::string& key) noexce
 
 std::optional<nlohmann::json> DyGetJsonAtlasFromFile(const std::string& filePath) noexcept
 {
-  if (!std::filesystem::exists(filePath))
+  if (std::filesystem::exists(filePath) == false)
   {
     MDY_LOG_CRITICAL("DyGetJsonAtlasFromFile | File path is not exist so failed to read serialization file. | Path : {}", filePath);
     return std::nullopt;
   }
 
   std::ifstream stream { filePath, std::ios_base::in };
-  if (!stream.good()) {
+  if (stream.bad() == true || stream.fail() == true) {
     MDY_LOG_ERROR("DyGetJsonAtlasFromFile | Unexpected error occurred in reading serializaition file. | Path : {}", filePath);
     stream.close();
     return std::nullopt;
   }
 
   nlohmann::json jsonAtlas;
+  // parsing input with a syntax error (TO SLOW! replace nlohmann to RapidJSON)
   stream >> jsonAtlas;
   stream.close();
 

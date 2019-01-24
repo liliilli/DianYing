@@ -45,6 +45,9 @@ struct DDyVertexInformation final
   DDyVertexBoneData   mVertexBoneData;
 };
 
+/// @brief Deserialization function.
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ DDyVertexInformation& p);
+
 ///
 /// @struct DDyGeometryBoneInformation
 /// @brief bone matrix information structure.

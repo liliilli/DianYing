@@ -28,8 +28,8 @@ struct PDyGLShaderInstanceMetaInfo : public PDyCommonResourceMetaInfo
 {
   struct DFragment final
   {
-    std::string_view  mBuiltinBuffer    = MDY_INITIALIZE_EMPTYSTR;
-    std::string       mExternalFilePath = MDY_INITIALIZE_EMPTYSTR;
+    std::string mBuiltinBuffer    = MDY_INITIALIZE_EMPTYSTR;
+    std::string mExternalFilePath = MDY_INITIALIZE_EMPTYSTR;
   };
 
   std::string               mSpecifierName    = MDY_INITIALIZE_EMPTYSTR;

@@ -125,13 +125,13 @@ vec3 GetOpaqueColor()
     vec3  s_l_vd    = normalize(uLightDir[i].mDirection + specularValue.xyz);
     float d_slvd_n  = pow(max(dot(s_l_vd, normalValue.xyz), 0.0f), 32);
 
-    float ambientFactor  = 0.05f;
+    float ambientFactor  = 0.02f;
     vec3  ambientColor   = ambientFactor * uLightDir[i].mAmbient.rgb * unlitValue.rgb;
 
-    float diffuseFactor  = max(d_n_dl, 0.1f) * uLightDir[i].mIntensity * 0.05f;
+    float diffuseFactor  = max(d_n_dl, 0.1f) * uLightDir[i].mIntensity * 0.03f;
     vec3  diffuseColor   = diffuseFactor * uLightDir[i].mDiffuse.rgb * unlitValue.rgb;
 
-    float specularFactor = d_slvd_n * uLightDir[i].mIntensity * 0.05f;
+    float specularFactor = d_slvd_n * uLightDir[i].mIntensity * 0.03f;
     vec3  specularColor  = specularFactor * uLightDir[i].mSpecular.rgb * unlitValue.rgb;
 
     resultColor  = ambientColor;
