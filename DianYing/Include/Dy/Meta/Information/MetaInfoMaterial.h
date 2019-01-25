@@ -18,9 +18,21 @@
 #include <Dy/Meta/Information/CommonResourceMetaInfo.h>
 #include <Dy/Element/Interface/IDyToString.h>
 #include <Dy/Core/Resource/Internal/MaterialType.h>
+#include <Dy/Core/Resource/Internal/TextureEnums.h>
 
 namespace dy
 {
+
+struct DDyMaterialTextureItem final
+{
+  std::string       mTextureSpecifier = "";
+  EDyTextureMapType mTextureMapType   = EDyTextureMapType::Unknown;
+};
+
+/// @brief Serialization function.
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDyMaterialTextureItem& p);
+/// @brief Deserialization function.
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ DDyMaterialTextureItem& p);
 
 ///
 /// @struct PDyMaterialInstanceMetaInfo
@@ -28,14 +40,12 @@ namespace dy
 ///
 struct PDyMaterialInstanceMetaInfo final : public PDyCommonResourceMetaInfo, public IDyToString
 {
-  using TTextureList = std::array<std::string, 16>;
+  using TTextureList = std::array<DDyMaterialTextureItem, 16>;
 
   std::string                 mSpecifierName    = MDY_INITIALIZE_EMPTYSTR;
   std::string                 mShaderSpecifier  = MDY_INITIALIZE_EMPTYSTR;
   EDyMaterialBlendMode        mBlendMode        = EDyMaterialBlendMode::Opaque;
   TTextureList                mTextureNames{};
-
-  bool                        mIsShaderLazyInitialized_Deprecated = false;
 
   ///
   /// @brief Return information string.

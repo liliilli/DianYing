@@ -55,7 +55,7 @@ struct PDyTextureInstanceMetaInfo final : public PDyCommonResourceMetaInfo
   /// @deprecated NOT USED NOW
   bool        mIsEnabledAbsolutePath_Deprecated = true;
   /// @deprecated NOT USED NOW.
-  EDyTextureMapType   mTextureMapType_Deprecated = EDyTextureMapType::Custom;
+  EDyTextureMapType   mTextureMapType_Deprecated = EDyTextureMapType::Unknown;
 };
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyTextureInstanceMetaInfo& p);

@@ -54,7 +54,7 @@ struct PDyTextureConstructionBufferChunkDescriptor final : public PDyTextureCons
   /// Texture type
   EDyTextureStyleType mTextureType           = EDyTextureStyleType::NoneError;
   /// Map type @TODO NOT USED NOW.
-  EDyTextureMapType   mTextureMapType        = EDyTextureMapType::Custom;
+  EDyTextureMapType   mTextureMapType        = EDyTextureMapType::Unknown;
   ///
   EDyImageColorFormatStyle mTextureColorType = EDyImageColorFormatStyle::NoneError;
 };

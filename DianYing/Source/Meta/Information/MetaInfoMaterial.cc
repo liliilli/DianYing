@@ -16,16 +16,23 @@
 #include <Dy/Meta/Information/MetaInfoMaterial.h>
 #include <Dy/Helper/Library/HelperJson.h>
 
-//!
-//! Forward delcaration
-//!
-
-//!
-//! Implementation
-//!
-
 namespace dy
 {
+  
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDyMaterialTextureItem& p)
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ DDyMaterialTextureItem& p)
+{
+  /* Template
+   * {"Specifier": "T_BrickWall1_Diffuse", "DefaultType": "Unknown"},
+   */
+
+  DyJsonGetValueFromTo(j, "Specifier", p.mTextureSpecifier);
+  p.mTextureMapType = DyJsonGetValueFrom<EDyTextureMapType>(j, "DefaultType");
+}
 
 std::string PDyMaterialInstanceMetaInfo::ToString()
 {
@@ -46,19 +53,24 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyMaterialInstanceMetaInfo
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaInfo& p)
 {
-  /* Template
-   * "M_Wall1": 
-     {
-       "ShaderSpecifier": "Sh_Wall1",
-       "TextureSpecifierList": [ "T_BrickWall1_Diffuse", "T_BrickWall1_Disp", "T_BrickWall1_Normal" ],
-       "BlendMode": "Opaque"
-     }
+  /*  Template
+   *  "M_Wall1": 
+      {
+        "ShaderSpecifier": "Sh_Wall1",
+        "TextureSpecifierList": [ 
+          {"Specifier": "T_BrickWall1_Diffuse", "DefaultType": "Unknown"},
+          {"Specifier": "T_BrickWall1_Normal", "DefaultType": "Unknown"},
+          {"Specifier": "T_BrickWall1_Disp", "DefaultType": "Unknown"}
+        ]
+      },
+      "M_nanosuit_Arm": 
+      { "ShaderSpecifier": "", "ExternalPath": "./data/Material/M_nanosuit_Arm.json", "IsCompressed": false }
    */
 
   DyJsonGetValueFromTo(j, "ShaderSpecifier",      p.mShaderSpecifier);
   DyJsonGetValueFromTo(j, "BlendMode",            p.mBlendMode);
 
-  std::vector<std::string> texList;
+  std::vector<DDyMaterialTextureItem> texList;
   DyJsonGetValueFromTo(j, "TextureSpecifierList", texList);
 
   // nlohmann::json does not support serialization between std::array, 

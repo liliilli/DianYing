@@ -18,25 +18,28 @@
 namespace dy
 {
 
-///
 /// @enum EDyTextureMapType
 /// @brief Texture mapping type
-///
 enum class EDyTextureMapType : unsigned char
 {
-  Custom,
   Diffuse,
   Specular,
   Ambient,
-  Height,
-  Displacement,
   Emissive,
-  LightMap,
+  Height,
   Normal,
-  Reflection,
   Shininess,
   Opacity,
+  Displacement,
+  LightMap,
+  Reflection,
+  Unknown,      // Unknown is used for other mapping type and customized type.
 };
+
+/// @brief Serialization function.
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyTextureMapType& p);
+/// @brief Deerialization function.
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyTextureMapType& p);
 
 /// @enum EDyTextureStyleType
 /// @brief Texture loading type

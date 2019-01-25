@@ -238,9 +238,10 @@ std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(
   if (iResourceType == EDyResourceType::Material)
   { // If resource type is `Material`, bind all dependencies of `Material` to checkList.
     const auto& metaMaterial = this->mMetaInfoManager->GetMaterialMetaInformation(iSpecifier);
-    for (const auto& textureSpecifier : metaMaterial.mTextureNames) {
-      if (textureSpecifier.empty() == true) { break; }
-      checkList.emplace_back(textureSpecifier, EDyResourceType::Texture, iResourceStyle, iScope);
+    for (const auto& bindingTextureItem : metaMaterial.mTextureNames) 
+    {
+      if (bindingTextureItem.mTextureSpecifier.empty() == true) { break; }
+      checkList.emplace_back(bindingTextureItem.mTextureSpecifier, EDyResourceType::Texture, iResourceStyle, iScope);
     }
     checkList.emplace_back(metaMaterial.mShaderSpecifier, EDyResourceType::GLShader, iResourceStyle, iScope);
   }
@@ -248,12 +249,14 @@ std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(
   if (iResourceType == EDyResourceType::GLFrameBuffer)
   { // If resource type is `FrameBuffer`, bind all dependencies of `FrameBuffer` to checkList.
     const auto& metaInfo = this->mMetaInfoManager->GetGlFrameBufferMetaInformation(iSpecifier);
+
+    // Get dependent attachment specifier list and add.
     for (const auto& [specifier, type] : metaInfo.mColorAttachmentList)
-    { // Get dependent attachment specifier list and add.
-      checkList.emplace_back(specifier, EDyResourceType::GLAttachment, iResourceStyle, iScope);
-    }
+    { checkList.emplace_back(specifier, EDyResourceType::GLAttachment, iResourceStyle, iScope); }
+
+    // If framebuffer also use depth buffer, enqueue it. 
     if (metaInfo.mIsUsingDepthBuffer == true)
-    { // If framebuffer also use depth buffer, enqueue it. 
+    { 
       MDY_ASSERT(metaInfo.mDepthAttachmentSpecifier.empty() == false, "Depth attachment must be specified if use depth buffer.");
       checkList.emplace_back(metaInfo.mDepthAttachmentSpecifier, EDyResourceType::GLAttachment, iResourceStyle, iScope);
     }
@@ -298,10 +301,10 @@ EDySuccess TDyIO::InstantPopulateMaterialResource(
   // If resource type is `Material`, bind all dependencies of `Material` to checkList.
   std::vector<PRIVerificationItem> checkList = {};
   { 
-    for (const auto& textureSpecifier : iDesc.mTextureNames) 
+    for (const auto& bindingTextureItem : iDesc.mTextureNames) 
     {
-      if (textureSpecifier.empty() == true) { break; }
-      checkList.emplace_back(textureSpecifier, EDyResourceType::Texture, EDyResourceStyle::Resource, iScope);
+      if (bindingTextureItem.mTextureSpecifier.empty() == true) { break; }
+      checkList.emplace_back(bindingTextureItem.mTextureSpecifier, EDyResourceType::Texture, EDyResourceStyle::Resource, iScope);
     }
     checkList.emplace_back(iDesc.mShaderSpecifier, EDyResourceType::GLShader, EDyResourceStyle::Resource, iScope);
   }
