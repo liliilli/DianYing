@@ -120,6 +120,11 @@ private:
 
   std::string mModelFileFullPath = "";
 
+  /// @brief Try get generated name, when iName is already exist on container, \n
+  /// return with suffix `_ + number`. Otherwise, just return parameter name.
+  MDY_NODISCARD std::string TryGetGeneratedName(const std::string& iName) noexcept;
+  std::unordered_map<std::string, unsigned> mMeshNameContainer;
+
   std::unique_ptr<Assimp::Importer>         mAssimpModerImporter  = nullptr;
   std::vector<NotNull<const aiMesh*>>       mPtrAssimpModelMeshList;
   std::vector<NotNull<const aiMaterial*>>   mPtrAssimpModelMaterialList;

@@ -403,6 +403,7 @@ void Singleton_ModelInstance::ReleaseModel()
   this->mPtrAssimpModelTextureList.clear();
   this->mAssimpModeNode = nullptr;
   this->mModelFileFullPath.clear();
+  this->mMeshNameContainer.clear();
 }
 
 const Assimp::Importer* Singleton_ModelInstance::GetPtrModelImporter() const noexcept
@@ -445,7 +446,23 @@ std::string Singleton_ModelInstance::GetExportedMeshSpecifierName(const std::str
   }
   else
   { // If mesh name is not emtpy, return with `iSpecifier_meshName`.
-    return fmt::format("{0}_{1}", iSpecifier, meshName);
+    return fmt::format("{0}_{1}", iSpecifier, this->TryGetGeneratedName(meshName));
+  }
+}
+
+std::string Singleton_ModelInstance::TryGetGeneratedName(const std::string& iName) noexcept
+{
+  if (this->mMeshNameContainer.find(iName) == this->mMeshNameContainer.end())
+  {
+    this->mMeshNameContainer.try_emplace(iName, 1);
+    return iName;
+  }
+  else
+  {
+    const auto index = this->mMeshNameContainer[iName];
+    this->mMeshNameContainer[iName] += 1;
+
+    return fmt::format("{}_{}", iName, index);
   }
 }
 
