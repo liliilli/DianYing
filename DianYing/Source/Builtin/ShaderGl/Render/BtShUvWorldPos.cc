@@ -66,7 +66,10 @@ layout (location = 3) out vec4 gPosition;
 uniform sampler2D uTexture0;
 
 void main() {
-	gUnlit	  = vec4(texture(uTexture0, fs_in.modelPosition.xz / 25.0f).rgb, 1.0f);
+  vec2 ts = fs_in.modelPosition.xz / 25.0f;
+  ts.y    += fs_in.modelPosition.y / 25.0f;
+
+	gUnlit	  = vec4(texture(uTexture0, ts).rgb, 1.0f);
 	gNormal	  = vec4(normalize(fs_in.normal) * 0.5f + 0.5f, 1.0f);
 	gSpecular = vec4(1, 0, 1, 1);
 	gPosition = fs_in.modelPosition;
