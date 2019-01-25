@@ -98,8 +98,8 @@ inline void to_json(nlohmann::json& j, const EDyTextureMapType& p)
   case EDyTextureMapType::Emissive: serializedValue = "Emissive"; break;
   case EDyTextureMapType::Height:   serializedValue = "Height";   break;
   case EDyTextureMapType::Normal:   serializedValue = "Normal";   break;
-  case EDyTextureMapType::Shininess:  serializedValue = "Shiniess"; break;
-  case EDyTextureMapType::Opacity:    serializedValue = "Opacity";  break;
+  case EDyTextureMapType::Shininess:  serializedValue = "Shininess";  break;
+  case EDyTextureMapType::Opacity:    serializedValue = "Opacity";    break;
   case EDyTextureMapType::Displacement: serializedValue = "Displacement"; break;
   case EDyTextureMapType::LightMap:     serializedValue = "LightMap";     break;
   case EDyTextureMapType::Reflection:   serializedValue = "Reflection";   break;

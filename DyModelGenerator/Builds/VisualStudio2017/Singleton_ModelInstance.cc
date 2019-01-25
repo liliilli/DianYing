@@ -301,8 +301,14 @@ EDySuccess Singleton_ModelInstance::ExportModelMaterials(const std::string& iSpe
 {
   if (iMatIndex >= this->GetNumModelMeshes()) { return DY_FAILURE; }
 
+  auto result = CreateDyMaterial(iMatIndex);
+  // Add each texture specifier with prefix, `iSpecifier`.
+  for (auto& [specifier, type] : result.mTextureSpecifierList)
+  {
+    specifier = fmt::format("{}_{}", iSpecifier, specifier);
+  }
   // Make serialized string form mesh instance.
-  nlohmann::json jsonMatAtlas    = CreateDyMaterial(iMatIndex);
+  nlohmann::json jsonMatAtlas    = result; 
   const auto matSerializedString = jsonMatAtlas.dump();
   
   // Get a directory path from model file full path.
