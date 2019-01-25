@@ -91,6 +91,23 @@ void ProgressDialog_ExportModel::run()
     }
   }
 
+  // Export materials 
+  if (this->mExportFlag & Flag_OptionMaterial)
+  {
+    for (unsigned idMat = 0, numMaterial = modelInstance.GetNumModelMaterials(); idMat < numMaterial; ++idMat)
+    {
+      const auto matSpecifierName = modelInstance.GetExportedMaterialSpecifierName(this->mSpecifierName, idMat);
+      this->setStatusMessage("Exporting material..\n" + matSpecifierName);
+
+      const auto flag = modelInstance.ExportModelMaterials(matSpecifierName, idMat, isCompressed);
+      if (flag == DY_FAILURE)
+      { // If failed, just return with failure signal.
+        this->signalThreadShouldExit();
+        return;
+      }
+    }
+  }
+
   if (threadShouldExit() == true) { return; }
 
   /*

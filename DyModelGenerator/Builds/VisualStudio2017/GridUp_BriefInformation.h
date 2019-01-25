@@ -47,6 +47,8 @@ private:
   /// @brief If this button has checked, Skeleton will be exported. \n
   /// But, `mTgBtn_MakeFileWithSkeleton` must be checked in advance.
   ToggleButton  mTgBtn_OptionSkeleton { "Export skeleton." };
+  /// @brief If this button has checked, Model's material will be exported.
+  ToggleButton  mTgBtn_OptionMaterial { "Export material." };
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GridUpPanel_BriefInformation)
 };

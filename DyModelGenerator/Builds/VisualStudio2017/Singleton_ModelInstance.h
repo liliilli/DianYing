@@ -21,6 +21,7 @@
 #include <optional>
 #include <unordered_set>
 #include "Data_SkeletonBone.h"
+#include "Data_Material.h"
 
 struct aiNode;
 struct aiMesh;
@@ -40,6 +41,8 @@ public:
   MDY_NODISCARD EDySuccess ExportModelMesh(const std::string& iSpecifier, unsigned iMeshIndex, bool withSkeleton, bool isCompressed);
   /// @brief Export skeleton with specifier name and `this->mExportedSkeleton`.
   MDY_NODISCARD EDySuccess ExportModelSkeleton(const std::string& iSpecifier, bool isCompressed);
+  /// @brief Export material with specifier name with material index.
+  MDY_NODISCARD EDySuccess ExportModelMaterials(const std::string& iSpecifier, unsigned iMeshInex, bool isCompressed);
   /// @brief Release model instance.
   void ReleaseModel();
 
@@ -56,6 +59,11 @@ public:
   MDY_NODISCARD unsigned GetNumModelMeshes() const noexcept;
   /// @brief Get exported mesh specifier name, (iSpecifier + `innate_mesh_name`).
   MDY_NODISCARD std::string GetExportedMeshSpecifierName(const std::string& iSpecifier, unsigned iMeshIndex);
+
+  /// @brief Get the number of model materials.
+  MDY_NODISCARD unsigned GetNumModelMaterials() const noexcept;
+  /// @brief Get exported material specifier name, (iSpecifier + `innate_mesh_name`).
+  MDY_NODISCARD std::string GetExportedMaterialSpecifierName(const std::string& iSpecifier, unsigned iMatIndex);
 
   /// @brief Check model has a bone. If model has not been loaded yet, it just return false.
   MDY_NODISCARD bool IsModelHasBones() const noexcept;
@@ -104,6 +112,11 @@ private:
       const DDyMatrix4x4& iRefParentGlobalTransform,
       const signed int iParentSkeletonBoneId,
       std::vector<DSkeletonBone>& iSkeletonList);
+
+  /// @brief Create external material information.
+  MDY_NODISCARD DMaterial CreateDyMaterial(unsigned iMatIndex);
+  /// @brief Try insert found texture specifier into `iRefMaterial`.
+  void TryInsertTextureSpecifier(NotNull<const aiMaterial*> iPtrAiMaterial, aiTextureType iTextureType, DMaterial& iRefMaterial);
 
   std::string mModelFileFullPath = "";
 

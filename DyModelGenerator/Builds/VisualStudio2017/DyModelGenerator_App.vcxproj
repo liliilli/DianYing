@@ -1382,6 +1382,7 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_gui_extra.cpp" />
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_opengl.cpp" />
     <ClCompile Include="Data_AssimpModelNode.cc" />
+    <ClCompile Include="Data_Material.cc" />
     <ClCompile Include="Data_Matrix4.cc" />
     <ClCompile Include="Data_MeshData.cc" />
     <ClCompile Include="Data_SkeletonBone.cc" />
@@ -1827,6 +1828,7 @@
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h" />
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h" />
     <ClInclude Include="Data_AssimpModelNode.h" />
+    <ClInclude Include="Data_Material.h" />
     <ClInclude Include="Data_Matrix4.h" />
     <ClInclude Include="Data_MeshData.h" />
     <ClInclude Include="Data_SkeletonBone.h" />
@@ -1834,6 +1836,7 @@
     <ClInclude Include="Data_Vector3.h" />
     <ClInclude Include="Data_Vector4.h" />
     <ClInclude Include="Enum_ExportFlags.h" />
+    <ClInclude Include="Enum_MaterialType.h" />
     <ClInclude Include="Global_EnumSuccess.h" />
     <ClInclude Include="HelperConstant.h" />
     <ClInclude Include="GridLeftModelInformation.h" />

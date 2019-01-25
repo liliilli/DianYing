@@ -87,6 +87,18 @@ GridUpPanel_BriefInformation::GridUpPanel_BriefInformation()
     { instance.SetExportFlag(Flag_OptionSkeleton, false); }
   };
 
+  this->addAndMakeVisible(this->mTgBtn_OptionMaterial);
+  this->mTgBtn_OptionMaterial.setEnabled(false);
+  this->mTgBtn_OptionMaterial.onStateChange = [this]
+  {
+    auto& instance = Singleton_ModelInstance::GetInstance();
+
+    if (this->mTgBtn_OptionMaterial.getToggleState() == true)
+    { instance.SetExportFlag(Flag_OptionMaterial, true); }
+    else
+    { instance.SetExportFlag(Flag_OptionMaterial, false); }
+  };
+
   this->DeactivateModelEditor();
 }
 
@@ -122,6 +134,9 @@ void GridUpPanel_BriefInformation::resized()
 
     buttonBound = bounds.removeFromTop(25);
     this->mTgBtn_OptionSkeleton.setBounds(buttonBound);
+
+    buttonBound = bounds.removeFromTop(25);
+    this->mTgBtn_OptionMaterial.setBounds(buttonBound);
   }
 
   // Button
@@ -155,6 +170,13 @@ void GridUpPanel_BriefInformation::ActivateModelEditor()
 
   this->mTgBtn_OptionMesh.setEnabled(true);
 
+  // If model has a material, enabled export material button.
+  if (modelInstance.GetNumModelMaterials() > 0)
+  {
+    this->mTgBtn_OptionMaterial.setEnabled(true);
+  }
+
+  // If model has a bone. enable export skeleton and with-skeleton button.
   if (modelInstance.IsModelHasBones() == true)
   {
     this->mTgBtn_MakeFileWithSkeleton.setEnabled(true);
@@ -177,6 +199,8 @@ void GridUpPanel_BriefInformation::DeactivateModelEditor()
 
   this->mTgBtn_MakeFileWithSkeleton.setEnabled(false);
   this->mTgBtn_OptionMesh.setEnabled(false);
+  this->mTgBtn_OptionMaterial.setEnabled(false);
+  this->mTgBtn_OptionSkeleton.setEnabled(false);
 }
 
 void GridUpPanel_BriefInformation::buttonClicked(Button* button)
