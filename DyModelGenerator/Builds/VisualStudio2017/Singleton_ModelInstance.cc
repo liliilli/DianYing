@@ -339,12 +339,6 @@ DMaterial Singleton_ModelInstance::CreateDyMaterial(unsigned iMatIndex)
   const auto& ptrAiMaterial = this->mPtrAssimpModelMaterialList[iMatIndex];
   DMaterial result;
 
-  // Set blend mode.
-  float opacity;
-  ptrAiMaterial->Get(AI_MATKEY_OPACITY, opacity);
-  if (opacity != 1.0f)  { result.mBlendMode = decltype(result.mBlendMode)::TranslucentOIT; }
-  else                  { result.mBlendMode = decltype(result.mBlendMode)::Opaque; }
-
   // Get texture list.
   TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_DIFFUSE, result);
   TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_SPECULAR, result);
@@ -359,6 +353,14 @@ DMaterial Singleton_ModelInstance::CreateDyMaterial(unsigned iMatIndex)
   TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_LIGHTMAP, result);
   TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_REFLECTION, result);
   TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_UNKNOWN, result);
+
+  // Set blend mode when opacity map is applied.
+  result.mBlendMode = decltype(result.mBlendMode)::Opaque;
+  for (const auto& [specifier, type] : result.mTextureSpecifierList)
+  {
+    if (type == EDyTextureMapType::Opacity)
+    { result.mBlendMode = decltype(result.mBlendMode)::TranslucentOIT; }
+  }
 
   return result;
 }
