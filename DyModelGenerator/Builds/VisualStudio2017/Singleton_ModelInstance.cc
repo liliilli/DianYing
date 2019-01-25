@@ -350,6 +350,7 @@ DMaterial Singleton_ModelInstance::CreateDyMaterial(unsigned iMatIndex)
   TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_SPECULAR, result);
   TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_AMBIENT, result);
   TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_EMISSIVE, result);
+  // @TODO [CAUTION] Bump-map(Normal) is loaded as Height-map, when leading .obj file.
   TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_HEIGHT, result);
   TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_NORMALS, result);
   TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_SHININESS, result);
@@ -370,11 +371,14 @@ void Singleton_ModelInstance::TryInsertTextureSpecifier(NotNull<const aiMaterial
     aiString aiPathToTexture;
     const auto returnVal = iPtrAiMaterial->GetTexture(iTextureType, texId, &aiPathToTexture);
     
+    // Get texture specifier name from given file path.
     const std::string pathToTexture = aiPathToTexture.C_Str();
     const auto idTypeSpecifierSep   = pathToTexture.find_last_of('.');
+    const auto idTypeStartSep       = pathToTexture.find_last_of(R"(/\)") + 1;
 
-    const std::string textureSpecifier = pathToTexture.substr(0, idTypeSpecifierSep);
+    const std::string textureSpecifier = pathToTexture.substr(idTypeStartSep, idTypeSpecifierSep - idTypeStartSep);
 
+    // Insert texture meta item.
     DMaterial::DTexture result;
     result.mTextureMapType    = ConvertAiTextureTypeToDyType(iTextureType);
     result.mTextureSpecifier  = textureSpecifier;
