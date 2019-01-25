@@ -42,6 +42,12 @@ FDyModelResource::FDyModelResource(_MINOUT_ const FDyModelInformation& input) :
     DySafeUniquePtrEmplaceBack(this->mMaterialResource, materialInformation->Get()->GetSpecifierName());
     MDY_ASSERT(this->mMaterialResource.back()->IsResourceExist() == true, "Unexpected error occurred.");
   }
+
+  const auto& transform = input.GetInitialTransform();
+  this->mModelInitialTransform
+      .Scale(transform.mScale)
+      .Rotate(transform.mRotation)
+      .Translate(transform.mPosition);
 }
 
 } /// ::dy namespace

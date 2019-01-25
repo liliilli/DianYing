@@ -51,12 +51,20 @@ struct PDyModelInstanceMetaInfo final : public PDyCommonResourceMetaInfo
     std::string mSkeletonSpecifier  = MDY_INITIALIZE_EMPTYSTR;
   };
 
+  struct DTransform final
+  {
+    DDyVector3 mPosition  = DDyVector3{0, 0, 0};
+    DDyVector3 mRotation  = DDyVector3{0, 0, 0};
+    DDyVector3 mScale     = DDyVector3{1, 1, 1};
+  };
+
   std::string               mSpecifierName            = MDY_INITIALIZE_EMPTYSTR;
   //TBuiltinMeshSpecifierList mBuiltinMeshSpecifierList = {};
   //bool                      mIsUsingBuiltinMesh       = false;
 
   TExternalMeshList         mMeshList = {};
   DSkeleton                 mSkeleton;
+  DTransform                mTransform;
 };
 
 /// @brief Serialization function
@@ -73,6 +81,11 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo:
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelInstanceMetaInfo::DSkeleton& p);
 /// @brief Deserialization function
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo::DSkeleton& p);
+
+/// @brief Serialization function
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelInstanceMetaInfo::DTransform& p);
+/// @brief Deserialization function
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo::DTransform& p);
 
 } /// ::dy namespace
 

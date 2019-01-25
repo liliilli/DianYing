@@ -17,6 +17,8 @@
 
 #include <Dy/Helper/Type/Matrix2.h>
 #include <Dy/Helper/Type/Matrix3.h>
+#include <glm/gtc/matrix_transform.hpp>
+#include "Dy/Helper/Type/Quaternion.h"
 
 namespace dy
 {
@@ -394,6 +396,34 @@ DDyMatrix4x4 DDyMatrix4x4::CreateWithTranslation(const DDyVector3& translationPo
     0, 1, 0, translationPoint.Y,
     0, 0, 1, translationPoint.Z,
     0, 0, 0, 1};
+}
+
+DDyMatrix4x4& DDyMatrix4x4::Scale(_MIN_ const DDyVector3& iScaleFactor)
+{
+  const auto mat = glm::scale(static_cast<glm::mat4>(*this), static_cast<glm::vec3>(iScaleFactor));
+  (*this)[0] = mat[0];
+  (*this)[1] = mat[1];
+  (*this)[2] = mat[2];
+  (*this)[3] = mat[3];
+  return *this;
+}
+
+DDyMatrix4x4& DDyMatrix4x4::Rotate(_MIN_ const DDyVector3& iRotationDegreeAngle)
+{
+  const auto mat = this->Multiply(DDyQuaternion(iRotationDegreeAngle).GetRotationMatrix4x4());
+  (*this)[0] = mat[0];
+  (*this)[1] = mat[1];
+  (*this)[2] = mat[2];
+  (*this)[3] = mat[3];
+  return *this;
+}
+
+DDyMatrix4x4& DDyMatrix4x4::Translate(_MIN_ const DDyVector3& iPosition)
+{
+  (*this)[3][0] += iPosition.X;
+  (*this)[3][1] += iPosition.Y;
+  (*this)[3][2] += iPosition.Z;
+  return *this;
 }
 
 DDyMatrix4x4::DDyMatrix4x4(bool)

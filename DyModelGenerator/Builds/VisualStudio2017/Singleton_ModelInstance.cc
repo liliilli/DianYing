@@ -72,8 +72,7 @@ EDySuccess Singleton_ModelInstance::ExportModelMesh(const std::string& iSpecifie
   if (iMeshIndex >= this->GetNumModelMeshes()) { return DY_FAILURE; }
 
   // Make serialized string form mesh instance.
-  nlohmann::json jsonMeshAtlas    = CreateDyMesh(iMeshIndex, withSkeleton);
-  const auto meshSerializedString = jsonMeshAtlas.dump();
+  const auto meshInstance = CreateDyMesh(iMeshIndex, withSkeleton);
   
   // Get a directory path from model file full path.
   namespace fs = std::filesystem;
@@ -81,6 +80,7 @@ EDySuccess Singleton_ModelInstance::ExportModelMesh(const std::string& iSpecifie
 
   if (isCompressed == true)
   {
+#ifdef false
     const auto buffer = CompressStringBuffer(meshSerializedString);
 
     // Write file. `File` is RAII.
@@ -90,14 +90,40 @@ EDySuccess Singleton_ModelInstance::ExportModelMesh(const std::string& iSpecifie
     fwrite(&buffer.mCompressedBufferBytes, sizeof(unsigned), 1, fdFile);
     fwrite(buffer.mCompressedBuffer.data(), sizeof(char), buffer.mCompressedBufferBytes, fdFile);
     fclose(fdFile);
+#endif
   }
   else
   {
-    const fs::path meshPath = fmt::format("{}/{}.{}", directoryPath.string(), iSpecifier, "json");
+    const fs::path meshPath = fmt::format("{}/{}.{}", directoryPath.string(), iSpecifier, "dybMesh");
 
     // Write file.
-    std::FILE* fdFile = fopen(meshPath.string().c_str(), "w");
-    fwrite(meshSerializedString.c_str(), sizeof(decltype(meshSerializedString)::value_type), meshSerializedString.size(), fdFile);
+    std::FILE* fdFile = fopen(meshPath.string().c_str(), "wb");
+    {
+      // Write index count.
+      const auto sz = static_cast<unsigned>(meshInstance.mIndexList.size());
+      fwrite(&sz, sizeof(unsigned), 1, fdFile);
+      // Write index list.
+      for (unsigned i = 0; i < sz; ++i) { fwrite(&meshInstance.mIndexList[i], sizeof(unsigned), 1, fdFile); }
+      // Write header of vertex list.
+    }
+    {
+      // Write vertex count.
+      const auto sz = static_cast<unsigned>(meshInstance.mVertexList.size());
+      fwrite(&sz, sizeof(unsigned), 1, fdFile);
+      // Write vertex list.
+      for (unsigned v = 0; v < sz; ++v)
+      {
+        const auto& vi = meshInstance.mVertexList[v];
+        fwrite(&vi.mPosition[0], sizeof(float), 3, fdFile);   // position.
+        fwrite(&vi.mNormal[0], sizeof(float), 3, fdFile);     // normal.
+        fwrite(&vi.mTexCoords0[0], sizeof(float), 2, fdFile); // uv0.
+        fwrite(&vi.mTexCoords1[0], sizeof(float), 2, fdFile); // uv1.
+        fwrite(&vi.mTangent[0], sizeof(float), 3, fdFile);    // tangent.
+        fwrite(&vi.mBitangent[0], sizeof(float), 3, fdFile);  // bitangent.
+        fwrite(&vi.mBoneId[0], sizeof(float), 4, fdFile);     // boneId.
+        fwrite(&vi.mWeights[0], sizeof(float), 4, fdFile);    // weights.
+      }
+    }
     fclose(fdFile);
   }
 

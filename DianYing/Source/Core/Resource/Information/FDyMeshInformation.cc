@@ -18,6 +18,8 @@
 #include <nlohmann/json.hpp>
 #include <Dy/Core/Resource/Type/ModelMesh/DDyMeshCompressedBuffer.h>
 #include <Dy/Helper/Library/HelperJson.h>
+#include <future>
+#include "Dy/Helper/Library/HelperFilesystem.h"
 
 namespace dy
 {
@@ -32,12 +34,48 @@ FDyMeshInformation::FDyMeshInformation(_MIN_ const PDyMeshInstanceMetaInfo& meta
     if (metaInfo.mIsCompressed == true)
     {
       const auto buffer = DyCreateMeshBufferInfoFromDyMeshFile(metaInfo.mExternalPath);
+      MDY_NOT_IMPLEMENTED_ASSERT();
     }
     else
-    {
-      const auto optMeshJson = DyGetJsonAtlasFromFile(metaInfo.mExternalPath);
-      MDY_ASSERT_FORCE(optMeshJson.has_value() == true, "Failed to load raw mesh information file.");
-      this->mProperty = optMeshJson.value().get<decltype(mProperty)>();
+    { // dybMesh file.
+      /* i(char) icount(unsigned_32bit) ...
+       * v(char) vcount(unsigned_32bit) pos(float3) nrm(float3) uv0(float2) uv1(float2) tan(float3) bit(float3) bone(float4) wgh(float4)...
+       */
+      MDY_ASSERT_FORCE(DyFsIsFileExist(metaInfo.mExternalPath) == true, "Mesh file could not find.");
+
+      std::FILE* fd = fopen(metaInfo.mExternalPath.c_str(), "rb");
+      // Read index list.
+      {
+        unsigned numIndex;
+        fread(&numIndex, sizeof(unsigned), 1, fd);
+        this->mProperty.mIndiceBuffer.resize(numIndex);
+        fread(this->mProperty.mIndiceBuffer.data(), sizeof(TU32), numIndex, fd);
+      }
+      // Read vertex list.
+      {
+        unsigned numVertex;
+        fread(&numVertex, sizeof(unsigned), 1, fd);
+        this->mProperty.mDefaultMeshBuffer.mVertexList.resize(numVertex);
+        for (auto& vi : this->mProperty.mDefaultMeshBuffer.mVertexList)
+        {
+          fread(&vi.mPosition[0], sizeof(float), 3, fd);  // Position
+          fread(&vi.mNormal[0], sizeof(float), 3, fd);    // Normal
+          fread(&vi.mTexCoords[0], sizeof(float), 2, fd); // UV0 (u, v)
+          fseek(fd, sizeof(float) * 16, SEEK_CUR);
+#ifdef false
+          // uv1.
+          for (unsigned i = 0; i < 2; ++i) { fwrite(&vi.mTexCoords1[i], sizeof(float), 1, fd); }
+          // tangent.
+          for (unsigned i = 0; i < 3; ++i) { fwrite(&vi.mTangent[i], sizeof(float), 1, fd); }
+          // bitangent.
+          for (unsigned i = 0; i < 3; ++i) { fwrite(&vi.mBitangent[i], sizeof(float), 1, fd); }
+          // bone (float).
+          for (unsigned i = 0; i < 4; ++i) { fwrite(&vi.mVertexBoneData.mBoneId[i], sizeof(float), 1, fd); }
+          // weight (float).
+          for (unsigned i = 0; i < 4; ++i) { fwrite(&vi.mVertexBoneData.mWeights[i], sizeof(float), 1, fd); }
+#endif
+        }
+      }
     }
   }
   else

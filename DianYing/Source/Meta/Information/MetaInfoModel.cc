@@ -67,6 +67,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo&
   p.mSourceType = EDyResourceSource::External;
   DyJsonGetValueFromTo(j, "Mesh",     p.mMeshList);
   DyJsonGetValueFromTo(j, "Skeleton", p.mSkeleton);
+  DyJsonGetValueFromTo(j, "Transform", p.mTransform);
 }
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelInstanceMetaInfo::DMesh& p)
@@ -89,6 +90,18 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo:
 {
   DyJsonGetValueFromTo(j, "IsUsingSkeleton",    p.mIsUsingSkeleton);
   DyJsonGetValueFromTo(j, "SkeletonSpecifier",  p.mSkeletonSpecifier);
+}
+
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelInstanceMetaInfo::DTransform& p)
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo::DTransform& p)
+{
+  DyJsonGetValueFromTo(j, "Position",   p.mPosition);
+  DyJsonGetValueFromTo(j, "Rotation",   p.mRotation);
+  DyJsonGetValueFromTo(j, "Scale",      p.mScale);
 }
 
 } /// ::dy namespace

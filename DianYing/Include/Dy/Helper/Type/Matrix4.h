@@ -178,6 +178,13 @@ public:
   ///
   static DDyMatrix4x4 CreateWithTranslation(const DDyVector3& translationPoint);
 
+  /// @brief Scale matrix.
+  DDyMatrix4x4& Scale(_MIN_ const DDyVector3& iScaleFactor);
+  /// @brief Rotate matrix.
+  DDyMatrix4x4& Rotate(_MIN_ const DDyVector3& iRotationDegreeAngle);
+  /// @brief Translate matrix.
+  DDyMatrix4x4& Translate(_MIN_ const DDyVector3& iPosition);
+
 private:
   /// Identity matrix constructor
   explicit DDyMatrix4x4(bool);

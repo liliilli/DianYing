@@ -35,19 +35,16 @@ std::optional<nlohmann::json> DyGetJsonAtlasFromFile(const std::string& filePath
     return std::nullopt;
   }
 
-  std::ifstream stream { filePath, std::ios_base::in };
-  if (stream.bad() == true || stream.fail() == true) {
-    MDY_LOG_ERROR("DyGetJsonAtlasFromFile | Unexpected error occurred in reading serializaition file. | Path : {}", filePath);
-    stream.close();
-    return std::nullopt;
-  }
+  std::FILE* fd = fopen(filePath.c_str(), "r");
+  std::fseek(fd, 0, SEEK_END);
+  const auto size = ftell(fd);
+  std::fseek(fd, 0, SEEK_SET);
 
-  nlohmann::json jsonAtlas;
-  // parsing input with a syntax error (TO SLOW! replace nlohmann to RapidJSON)
-  stream >> jsonAtlas;
-  stream.close();
+  std::vector<char> buffer(size);
+  std::fread(buffer.data(), sizeof(char), size, fd);
+  std::fclose(fd);
 
-  return jsonAtlas;
+  return nlohmann::json::parse(buffer);
 }
 
 } /// ::dy namespace
