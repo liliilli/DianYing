@@ -366,6 +366,74 @@ EDySuccess Singleton_ModelInstance::ExportModelMaterials(const std::string& iSpe
   return DY_SUCCESS;
 }
 
+EDySuccess Singleton_ModelInstance::ExportModelAnimation(const std::string& iSpecifier, unsigned iMatIndex, bool isCompressed)
+{
+  if (iMatIndex >= this->GetNumModelAnimations()) { return DY_FAILURE; }
+
+  auto result = CreateDyAnimation(iMatIndex);
+
+  // Get a directory path from model file full path.
+  namespace fs = std::filesystem;
+  const auto directoryPath = fs::path{this->mModelFileFullPath}.parent_path();
+
+  if (isCompressed == true)
+  {
+    std::FILE* fdFile = fopen(iSpecifier.c_str(), "w");
+    fclose(fdFile);
+  }
+  else
+  {
+    const auto ptr = iSpecifier.find_last_of('|');
+    fs::path path;
+    if (ptr != std::string::npos)
+    {
+      const auto specifier = iSpecifier.substr(ptr + 1, std::string::npos);
+      path = fmt::format("{}/MA_{}.{}", directoryPath.string(), specifier, "dyMAnim");
+    }
+    else
+    {
+      path = fmt::format("{}/MA_{}.{}", directoryPath.string(), iSpecifier, "dyMAnim");
+    }
+
+    // Write file.
+    std::FILE* fdFile = fopen(path.string().c_str(), "wb");
+    
+    // Write `mAnimationHeader` of given animation. 
+    fwrite(&result.mAnimationHeader, sizeof(result.mAnimationHeader), 1, fdFile);
+
+    // Write `mAnimationNodeList` of given animation.
+    for (unsigned i = 0, numNode = static_cast<unsigned>(result.mAnimationNodeList.size()); i < numNode; ++i)
+    {
+      const auto& refAnimNode = result.mAnimationNodeList[i];
+      // Write `mExportSkeleton` bone id.
+      fwrite(&refAnimNode.mSkeletonBoneId, sizeof(unsigned), 1, fdFile);
+      // Write position list of refAnimNode.
+      for (unsigned idPos = 0, numPos = static_cast<unsigned>(refAnimNode.mPositionList.size()); idPos < numPos; ++idPos)
+      {
+        const auto& refPos = refAnimNode.mPositionList[idPos];
+        fwrite(&refPos.mStartSecond, sizeof(refPos.mStartSecond), 1, fdFile);
+        fwrite(&refPos.mTranslate[0], sizeof(float), 3, fdFile);
+      }
+      // Write rotation (x, y, z, w) quaternion list of refAnimNode.
+      for (unsigned idRot = 0, numRot = static_cast<unsigned>(refAnimNode.mRotationList.size()); idRot < numRot; ++idRot)
+      {
+        const auto& refPos = refAnimNode.mRotationList[idRot];
+        fwrite(&refPos, sizeof(refPos), 1, fdFile);
+      }
+      // Write scaling list of refAnimNode.
+      for (unsigned idScl = 0, numScl = static_cast<unsigned>(refAnimNode.mScaleList.size()); idScl < numScl; ++idScl)
+      {
+        const auto& refPos = refAnimNode.mPositionList[idScl];
+        fwrite(&refPos.mStartSecond, sizeof(refPos.mStartSecond), 1, fdFile);
+        fwrite(&refPos.mTranslate[0], sizeof(float), 3, fdFile);
+      }
+    }
+    fclose(fdFile);
+  }
+
+  return DY_SUCCESS;
+}
+
 DMaterial Singleton_ModelInstance::CreateDyMaterial(unsigned iMatIndex)
 {
   const auto& ptrAiMaterial = this->mPtrAssimpModelMaterialList[iMatIndex];
@@ -420,6 +488,80 @@ void Singleton_ModelInstance::TryInsertTextureSpecifier(NotNull<const aiMaterial
   }
 }
 
+DDyAnimationSequence Singleton_ModelInstance::CreateDyAnimation(unsigned iAnimIndex)
+{
+  MDY_NOTUSED const auto& ptrAiAnimation = this->mPtrAssimpModelAnimList[iAnimIndex];
+
+  DDyAnimationSequence result;
+
+  // Make header information.
+  {
+    result.mAnimationHeader.mTickPerSecond  = static_cast<float>(ptrAiAnimation->mTicksPerSecond);
+    result.mAnimationHeader.mNumChannels    = ptrAiAnimation->mNumChannels;
+    result.mAnimationHeader.mDurationTicks  = static_cast<float>(ptrAiAnimation->mDuration);
+    result.mAnimationHeader.mDurationSecond = result.mAnimationHeader.mDurationTicks / result.mAnimationHeader.mTickPerSecond;
+    result.mAnimationHeader.mTickSecond     = 1 / result.mAnimationHeader.mTickPerSecond;
+  }
+
+  // Insert each channel (node) 's each pos, rot, scl informations.
+  result.mAnimationNodeList.resize(result.mAnimationHeader.mNumChannels);
+  for (unsigned idCh = 0, numCh = result.mAnimationHeader.mNumChannels; idCh < numCh; ++idCh)
+  {
+    // Get assimp internal channel (anim-node) information instance.
+    const auto& ptrAiChannel = ptrAiAnimation->mChannels[idCh];
+
+    // Find appropriate bone-node from `mExportedSkeleton` instance. Must be found.
+    const auto channelString = ptrAiChannel->mNodeName.C_Str();
+    const auto it = std::find_if(
+        this->mExportedSkeleton.cbegin(), this->mExportedSkeleton.cend(), 
+        [channelString](const DSkeletonBone& iBone) { return iBone.mSpecifier == channelString; });
+    jassert(it != this->mExportedSkeleton.cend());
+
+    // Apply index to given animation node.
+    auto& node = result.mAnimationNodeList[idCh];
+    node.mSkeletonBoneId = static_cast<unsigned>(std::distance(this->mExportedSkeleton.cbegin(), it));
+
+    const auto dt = result.mAnimationHeader.mTickSecond;
+    // Get position, and apply.
+    node.mPositionList.resize(ptrAiChannel->mNumPositionKeys);
+    for (unsigned idPos = 0, numPos = ptrAiChannel->mNumPositionKeys; idPos < numPos; ++idPos)
+    {
+      const auto& ptrAiPos = ptrAiChannel->mPositionKeys[idPos];
+      auto& refPos = node.mPositionList[idPos];
+
+      refPos.mStartSecond = static_cast<float>(ptrAiPos.mTime * dt);
+      refPos.mTranslate   = ptrAiPos.mValue;
+    }
+
+    // Get rotation (quaternion), and apply only x, y, z, w.
+    node.mRotationList.resize(ptrAiChannel->mNumRotationKeys);
+    for (unsigned idRot = 0, numRot = ptrAiChannel->mNumRotationKeys; idRot < numRot; ++idRot)
+    {
+      const auto& ptrAiRot = ptrAiChannel->mRotationKeys[idRot];
+      auto& refRot = node.mRotationList[idRot];
+
+      refRot.mStartSecond  = static_cast<float>(ptrAiRot.mTime * dt);
+      const auto& quaternion = ptrAiRot.mValue;
+      refRot.mW = quaternion.w;
+      refRot.mX = quaternion.x;
+      refRot.mY = quaternion.y;
+      refRot.mZ = quaternion.z;
+    }
+
+    // Get scale and apply.
+    node.mScaleList.resize(ptrAiChannel->mNumScalingKeys);
+    for (unsigned idScl = 0, numScl = ptrAiChannel->mNumScalingKeys; idScl < numScl; ++idScl)
+    {
+      const auto& ptrAiScl = ptrAiChannel->mScalingKeys[idScl];
+      auto& refScl = node.mScaleList[idScl];
+      refScl.mStartSecond = static_cast<float>(ptrAiScl.mTime * dt);
+      refScl.mScale       = ptrAiScl.mValue;
+    }
+  }
+
+  return result;
+}
+
 void Singleton_ModelInstance::ReleaseModel()
 {
   this->mAssimpModerImporter = nullptr;
@@ -428,6 +570,7 @@ void Singleton_ModelInstance::ReleaseModel()
   this->mPtrAssimpModelMaterialList.clear();
   this->mPtrAssimpModelTextureList.clear();
   this->mAssimpModeNode = nullptr;
+  this->mExportedSkeleton.clear();
   this->mModelFileFullPath.clear();
   this->mMeshNameContainer.clear();
 }
@@ -529,6 +672,34 @@ bool Singleton_ModelInstance::IsModelHasBones() const noexcept
 
   // If not, return false.
   return false;
+}
+
+bool Singleton_ModelInstance::IsModelHasAnimations() const noexcept
+{
+  // If model has not been loaded yet, it just return false.
+  if (this->mAssimpModerImporter == nullptr) { return false; }
+
+  return this->GetPtrModelScene()->HasAnimations();
+}
+
+unsigned Singleton_ModelInstance::GetNumModelAnimations() const noexcept
+{
+  return this->GetPtrModelScene()->mNumAnimations;
+}
+
+std::string Singleton_ModelInstance::GetExportedAnimationSpecifierName(const std::string& iSpecifier, unsigned iAnimIndex)
+{
+  const auto ptrAnimation = this->GetPtrModelScene()->mAnimations[iAnimIndex];
+  const auto animName = ptrAnimation->mName;
+
+  if (animName.length == 0)
+  { // If animation name is empty, just create string with inputted `iMeshIndex`.
+    return fmt::format("{0}_{1}", iSpecifier, iAnimIndex);
+  }
+  else
+  { // If animation name is not emtpy, return with `iSpecifier_animName`.
+    return fmt::format("{0}_{1}", iSpecifier, animName.C_Str());
+  }
 }
 
 void Singleton_ModelInstance::SetExportFlag(EExportFlags iFlags, bool isActivated)

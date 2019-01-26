@@ -15,6 +15,7 @@
 #include <array>
 #include "Data_Vector2.h"
 #include "Data_Vector3.h"
+#include <glm/detail/type_vec4.hpp>
 
 /// @struct DDyVector4
 /// @brief Float type 4-element vector struct.
@@ -43,6 +44,7 @@ struct DDyVector4 final
   DDyVector4(const aiVector2D& value) noexcept : X{value.x}, Y{value.y} {}
   DDyVector4(const aiVector3D& value) noexcept : X{value.x}, Y{value.y}, Z{value.z} {}
   DDyVector4(const std::array<float, 4>& value) noexcept : X{value[0]}, Y{value[1]}, Z{value[2]}, W{value[3]} {}
+  DDyVector4(const glm::vec4& value) noexcept : X{value.x}, Y{value.y}, Z{value.z}, W{value.w} {}
 
   DDyVector4& operator=(const aiVector2D& value) noexcept
   {

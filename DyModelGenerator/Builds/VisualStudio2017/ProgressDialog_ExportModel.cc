@@ -108,6 +108,23 @@ void ProgressDialog_ExportModel::run()
     }
   }
 
+  // Export model animation on fullpath name with skeleton information.
+  if (this->mExportFlag & Flag_OptionAnimation)
+  {
+    for (unsigned idAnim = 0, numAnim = modelInstance.GetNumModelAnimations(); idAnim < numAnim; ++idAnim)
+    {
+      const auto animSpecifierName = modelInstance.GetExportedAnimationSpecifierName(this->mSpecifierName, idAnim);
+      this->setStatusMessage("Exporting animation..\n" + animSpecifierName);
+
+      const auto flag = modelInstance.ExportModelAnimation(animSpecifierName, idAnim, isCompressed);
+      if (flag == DY_FAILURE)
+      { // If failed, just return with failure signal.
+        this->signalThreadShouldExit();
+        return;
+      }
+    }
+  }
+
   if (threadShouldExit() == true) { return; }
 
   /*

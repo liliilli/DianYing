@@ -20,7 +20,8 @@ enum EExportFlags
   Flag_OptionAnim     = 0b00000010,
   Flag_OptionMaterial = 0b00000100,
   Flag_OptionSkeleton = 0b00001000,
+  Flag_OptionAnimation= 0b00010000,
 
-  Flag_WithSkeleton   = 0b00010000,
-  Flag_WithCompress   = 0b00100000,
+  Flag_WithSkeleton   = 0b00100000,
+  Flag_WithCompress   = 0b01000000,
 };

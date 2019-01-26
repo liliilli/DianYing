@@ -38,6 +38,10 @@ GridUpPanel_BriefInformation::GridUpPanel_BriefInformation()
     { 
       instance.SetExportFlag(Flag_WithSkeleton, true); 
       this->mTgBtn_OptionSkeleton.setEnabled(true);
+
+      // Check loaded model has a animation.
+      if (instance.IsModelHasAnimations() == true)
+      { this->mTgBtn_OptionAnimation.setEnabled(true); }
     }
     else
     { 
@@ -45,10 +49,12 @@ GridUpPanel_BriefInformation::GridUpPanel_BriefInformation()
 
       // If disabled, skeleton option has been checked, change toggle state disabled.
       if (this->mTgBtn_OptionSkeleton.getToggleState() == true)
-      {
-        this->mTgBtn_OptionSkeleton.setToggleState(false, NotificationType::sendNotification);
-      }
+      { this->mTgBtn_OptionSkeleton.setToggleState(false, NotificationType::sendNotification); }
       this->mTgBtn_OptionSkeleton.setEnabled(false);
+
+      if (this->mTgBtn_OptionAnimation.getToggleState() == true)
+      { this->mTgBtn_OptionAnimation.setToggleState(false, NotificationType::sendNotification); }
+      this->mTgBtn_OptionAnimation.setEnabled(false);
     }
   };
 
@@ -99,6 +105,18 @@ GridUpPanel_BriefInformation::GridUpPanel_BriefInformation()
     { instance.SetExportFlag(Flag_OptionMaterial, false); }
   };
 
+  this->addAndMakeVisible(this->mTgBtn_OptionAnimation);
+  this->mTgBtn_OptionAnimation.setEnabled(false);
+  this->mTgBtn_OptionAnimation.onStateChange = [this]
+  {
+    auto& instance = Singleton_ModelInstance::GetInstance();
+
+    if (this->mTgBtn_OptionAnimation.getToggleState() == true)
+    { instance.SetExportFlag(Flag_OptionAnimation, true); }
+    else
+    { instance.SetExportFlag(Flag_OptionAnimation, false); }
+  };
+
   this->DeactivateModelEditor();
 }
 
@@ -137,6 +155,9 @@ void GridUpPanel_BriefInformation::resized()
 
     buttonBound = bounds.removeFromTop(25);
     this->mTgBtn_OptionMaterial.setBounds(buttonBound);
+
+    buttonBound = bounds.removeFromTop(25);
+    this->mTgBtn_OptionAnimation.setBounds(buttonBound);
   }
 
   // Button
@@ -201,6 +222,7 @@ void GridUpPanel_BriefInformation::DeactivateModelEditor()
   this->mTgBtn_OptionMesh.setEnabled(false);
   this->mTgBtn_OptionMaterial.setEnabled(false);
   this->mTgBtn_OptionSkeleton.setEnabled(false);
+  this->mTgBtn_OptionAnimation.setEnabled(false);
 }
 
 void GridUpPanel_BriefInformation::buttonClicked(Button* button)

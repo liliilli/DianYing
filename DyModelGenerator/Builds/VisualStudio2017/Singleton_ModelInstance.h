@@ -22,6 +22,7 @@
 #include <unordered_set>
 #include "Data_SkeletonBone.h"
 #include "Data_Material.h"
+#include "Data_Animation.h"
 
 struct aiNode;
 struct aiMesh;
@@ -43,6 +44,8 @@ public:
   MDY_NODISCARD EDySuccess ExportModelSkeleton(const std::string& iSpecifier, bool isCompressed);
   /// @brief Export material with specifier name with material index.
   MDY_NODISCARD EDySuccess ExportModelMaterials(const std::string& iSpecifier, unsigned iMeshInex, bool isCompressed);
+  /// @brief Export animation with specifier name and animation index.
+  MDY_NODISCARD EDySuccess ExportModelAnimation(const std::string& iSpecifier, unsigned iMatIndex, bool isCompressed);
   /// @brief Release model instance.
   void ReleaseModel();
 
@@ -59,14 +62,20 @@ public:
   MDY_NODISCARD unsigned GetNumModelMeshes() const noexcept;
   /// @brief Get exported mesh specifier name, (iSpecifier + `innate_mesh_name`).
   MDY_NODISCARD std::string GetExportedMeshSpecifierName(const std::string& iSpecifier, unsigned iMeshIndex);
+  /// @brief Check model has a bone. If model has not been loaded yet, it just return false.
+  MDY_NODISCARD bool IsModelHasBones() const noexcept;
 
   /// @brief Get the number of model materials.
   MDY_NODISCARD unsigned GetNumModelMaterials() const noexcept;
   /// @brief Get exported material specifier name, (iSpecifier + `innate_mesh_name`).
   MDY_NODISCARD std::string GetExportedMaterialSpecifierName(const std::string& iSpecifier, unsigned iMatIndex);
 
-  /// @brief Check model has a bone. If model has not been loaded yet, it just return false.
-  MDY_NODISCARD bool IsModelHasBones() const noexcept;
+  /// @brief Check model has a animation. If model has not been loaded yet, it just return false.
+  MDY_NODISCARD bool IsModelHasAnimations() const noexcept;
+  /// @brief Get the number of model animations.
+  MDY_NODISCARD unsigned GetNumModelAnimations() const noexcept;
+  /// @brief Get exported animation specifier name, (iSpecifier + `innate_animation_name`)
+  MDY_NODISCARD std::string GetExportedAnimationSpecifierName(const std::string& iSpecifier, unsigned iAnimIndex);
 
   /// @brief Set export flag.
   void SetExportFlag(EExportFlags iFlags, bool isActivated);
@@ -117,6 +126,9 @@ private:
   MDY_NODISCARD DMaterial CreateDyMaterial(unsigned iMatIndex);
   /// @brief Try insert found texture specifier into `iRefMaterial`.
   void TryInsertTextureSpecifier(NotNull<const aiMaterial*> iPtrAiMaterial, aiTextureType iTextureType, DMaterial& iRefMaterial);
+
+  /// @brief Create external animation information.
+  MDY_NODISCARD DDyAnimationSequence CreateDyAnimation(unsigned iAnimIndex);
 
   std::string mModelFileFullPath = "";
 
