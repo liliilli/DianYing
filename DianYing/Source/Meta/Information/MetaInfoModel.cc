@@ -16,6 +16,7 @@
 #include <Dy/Meta/Information/MetaInfoModel.h>
 #include <Dy/Helper/Library/HelperJson.h>
 #include <nlohmann/json.hpp>
+#include "Dy/Builtin/Material/BtMtCheckerWorldPos.h"
 
 //!
 //! Forward declaration
@@ -79,6 +80,11 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo:
 {
   DyJsonGetValueFromTo(j, "Specifier",  p.mMeshSpecifier);
   DyJsonGetValueFromTo(j, "Material",   p.mMaterialSpecifier);
+  // 
+  if (p.mMaterialSpecifier.empty() == true)
+  {
+    p.mMaterialSpecifier = MSVSTR(builtin::FDyBtMtCheckerWorldPos::sName);
+  }
 }
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelInstanceMetaInfo::DSkeleton& p)

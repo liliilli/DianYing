@@ -288,6 +288,8 @@
     <ClCompile Include="Source\Core\Resource\Type\ModelMesh\DDyMeshCompressedBuffer.cc" />
     <ClCompile Include="Source\Core\Resource\Type\ModelMesh\DDyModelData.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\GeometryType.cc" />
+    <ClCompile Include="Source\Meta\Information\MetaInfoModelSkeleton.cc" />
+    <ClCompile Include="Source\Meta\Information\MetaInfoModelAnim.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -724,6 +726,8 @@
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoModelMesh.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\ModelMesh\DDyMeshCompressedBuffer.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\ModelMesh\DDyMeshData.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoModelSkeleton.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoModelAnim.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

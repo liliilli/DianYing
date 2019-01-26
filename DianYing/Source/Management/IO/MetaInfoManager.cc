@@ -437,6 +437,8 @@ void MDyMetaInfo::MDY_PRIVATE_SPECIFIER(InitiateMetaInformation)()
   MDY_CALL_ASSERT_SUCCESS(this->pReadFontResourceMetaInformation    (metaPath.mFontMetaPath));
   MDY_CALL_ASSERT_SUCCESS(this->pReadModelMeshResourceMetaInformation(metaPath.mModelMeshMetaPath));
   MDY_CALL_ASSERT_SUCCESS(this->pReadModelResourceMetaInformation   (metaPath.mModelMetaPath));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadModelSkeletonMetaInformation   (metaPath.mModelSkeletonMetaPath));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadModelAnimationMetaInformation  (metaPath.mModelAnimMetaPath));
   MDY_CALL_ASSERT_SUCCESS(this->pReadTextureResourceMetaInformation (metaPath.mTextureMetaPath));
   MDY_CALL_ASSERT_SUCCESS(this->pReadShaderResourceMetaInformation  (metaPath.mGLShaderMetaPath));
   MDY_CALL_ASSERT_SUCCESS(this->pReadMaterialResourceMetaInformation(metaPath.mMaterialMetaPath));
@@ -588,6 +590,44 @@ EDySuccess MDyMetaInfo::pReadModelMeshResourceMetaInformation(_MIN_ const std::s
     desc.mSpecifierName = item.key();
 
     auto [it, isSucceeded] = this->mModelMeshMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
+    MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
+  }
+  
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pReadModelSkeletonMetaInformation(_MIN_ const std::string& metaFilePath)
+{
+  // (1) Validity Test
+  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  MDY_ASSERT_FORCE(opJsonAtlas.has_value() == true, "Failed to read model skeleton information. File is not exist.");
+
+  // (2) Get information from buffer.
+  for (const auto& item : opJsonAtlas.value().items())
+  {
+    auto desc = item.value().get<decltype(mModelSkeletonMetaInfo)::value_type::second_type>();
+    desc.mSpecifierName = item.key();
+
+    auto [it, isSucceeded] = this->mModelSkeletonMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
+    MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
+  }
+  
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pReadModelAnimationMetaInformation(_MIN_ const std::string& metaFilePath)
+{
+  // (1) Validity Test
+  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  MDY_ASSERT_FORCE(opJsonAtlas.has_value() == true, "Failed to read model animation sequence information. File is not exist.");
+
+  // (2) Get information from buffer.
+  for (const auto& item : opJsonAtlas.value().items())
+  {
+    auto desc = item.value().get<decltype(mModelAnimationMetaInfo)::value_type::second_type>();
+    desc.mSpecifierName = item.key();
+
+    auto [it, isSucceeded] = this->mModelAnimationMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
     MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
   }
   

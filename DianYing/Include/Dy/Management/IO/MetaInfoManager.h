@@ -29,6 +29,8 @@
 #include <Dy/Meta/Information/MetaInfoAttachment.h>
 #include <Dy/Meta/Information/MetaInfoFrameBuffer.h>
 #include <Dy/Meta/Information/MetaInfoModelMesh.h>
+#include <Dy/Meta/Information/MetaInfoModelSkeleton.h>
+#include <Dy/Meta/Information/MetaInfoModelAnim.h>
 #include <Dy/Meta/Type/DDyResourceName.h>
 
 //!
@@ -177,6 +179,8 @@ private:
   MDY_NODISCARD EDySuccess pReadFontResourceMetaInformation     (_MIN_ const std::string& metaFilePath);
   MDY_NODISCARD EDySuccess pReadModelResourceMetaInformation    (_MIN_ const std::string& metaFilePath);
   MDY_NODISCARD EDySuccess pReadModelMeshResourceMetaInformation(_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadModelSkeletonMetaInformation    (_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadModelAnimationMetaInformation   (_MIN_ const std::string& metaFilePath);
   MDY_NODISCARD EDySuccess pReadTextureResourceMetaInformation  (_MIN_ const std::string& metaFilePath);
   MDY_NODISCARD EDySuccess pReadShaderResourceMetaInformation   (_MIN_ const std::string& metaFilePath);
   MDY_NODISCARD EDySuccess pReadMaterialResourceMetaInformation (_MIN_ const std::string& metaFilePath);
@@ -215,6 +219,10 @@ private:
   THashMap<PDyModelInstanceMetaInfo>    mModelMetaInfo  = {};
   /// Model Mesh meta information map.
   THashMap<PDyMeshInstanceMetaInfo>     mModelMeshMetaInfo = {};
+  /// Model Skeleton meta information map.
+  THashMap<PDyModelSkelInstanceMetaInfo>mModelSkeletonMetaInfo = {};
+  /// Model Skeleton meta information map.
+  THashMap<PDyModelAnimInstanceMetaInfo>mModelAnimationMetaInfo = {};
   /// Texture meta information map.
   THashMap<PDyTextureInstanceMetaInfo>  mTextureMetaInfo= {};
   /// Material meta information map.
