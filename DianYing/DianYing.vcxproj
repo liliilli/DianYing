@@ -404,6 +404,7 @@
     <ClCompile Include="Source\Element\Actor.cc" />
     <ClCompile Include="Source\Element\Canvas\Text.cc" />
     <ClCompile Include="Source\Element\Type\DDyActorBinder.cc" />
+    <ClCompile Include="Source\Element\Type\FDy3WaySwitcher.cc" />
     <ClCompile Include="Source\Element\Type\Timer\FDyActorTimerItem.cc" />
     <ClCompile Include="Source\Element\Type\Timer\FDyWidgetTimerItem.cc" />
     <ClCompile Include="Source\Helper\Internal\FDyNameGenerator.cc" />
@@ -659,6 +660,7 @@
     <ClInclude Include="Include\Dy\Element\Abstract\Actor\ADyActorBinderContainer.h" />
     <ClInclude Include="Include\Dy\Element\Type\DDyActorBinder.h" />
     <ClInclude Include="Include\Dy\Element\Type\DDyTransform.h" />
+    <ClInclude Include="Include\Dy\Element\Type\FDy3WaySwitcher.h" />
     <ClInclude Include="Include\Dy\Element\Type\PDyActorCreationDescriptor.h" />
     <ClInclude Include="Include\Dy\Element\Type\Timer\EDyTimerStatus.h" />
     <ClInclude Include="Include\Dy\Element\Type\Timer\FDyTimerHandle.h" />

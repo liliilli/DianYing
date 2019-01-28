@@ -51,4 +51,14 @@ CDyActorScript::~CDyActorScript()
   };
 }
 
+void CDyActorScript::TryActivateInstance()
+{
+
+}
+
+void CDyActorScript::TryDeactivateInstance()
+{
+
+}
+
 } /// ::dy namespace

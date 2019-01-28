@@ -80,18 +80,6 @@ public:
   /// @brief Do nothing.
   void Update(float dt) override final {};
 
-  /// @brief Activate CDyModelFilter. Final activation value is also dependent on FDyActor activation flag.
-  void Activate() noexcept override final;
-
-  /// @brief Dectivate CDyModelFilter. Final activation value is also dependent on FDyActor activation flag.
-  void Deactivate() noexcept override final;
-
-  ///
-  /// @brief
-  /// @param
-  ///
-  void pPropagateParentActorActivation(const DDy3StateBool& actorBool) noexcept override final;
-
   ///
   /// @brief  Get information string of CDyModelFilter instance.
   /// @return Information string of CDyModelFilter.
@@ -99,11 +87,15 @@ public:
   MDY_NODISCARD std::string ToString() override final;
 
 private:
-  ///
-  MDY_NODISCARD EDySuccess pTryBindingToModelRendererComponent();
-
-  ///
-  MDY_NODISCARD EDySuccess pTryUnbindingToModelRendererComponent();
+  /// @brief This function must be implemented. 
+  /// This function will be called when `Activate()` or `SetupFlagAsParent` called, 
+  /// and final state boolean value is true from false.
+  void TryActivateInstance() override final;
+  
+  /// @brief This function must be implemented.
+  /// This function will be called when `Deactivate()` or `SetupFlagAsParent(false)` called,
+  /// and final state boolean value is false from true.
+  void TryDeactivateInstance() override final;
 
   /// Valid model reference handle.
   TDyLResourceBinderModel mBinderModel = {};

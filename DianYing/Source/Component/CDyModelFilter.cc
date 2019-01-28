@@ -39,68 +39,29 @@ void CDyModelFilter::Release()
   }
 }
 
-void CDyModelFilter::Activate() noexcept
-{
-  ADyBaseComponent::Activate();
-
-  // Customized body ∨
-  MDY_NOTUSED auto _ = this->pTryBindingToModelRendererComponent();
-}
-
-void CDyModelFilter::Deactivate() noexcept
-{
-  ADyBaseComponent::Deactivate();
-
-  // Customized body ∨
-
-  MDY_NOTUSED auto _ = this->pTryUnbindingToModelRendererComponent();
-}
-
-void CDyModelFilter::pPropagateParentActorActivation(const DDy3StateBool& actorBool) noexcept
-{
-  ADyBaseComponent::pPropagateParentActorActivation(actorBool);
-
-  // Customized body ∨
-
-  { MDY_NOTUSED auto _ = this->pTryBindingToModelRendererComponent(); }
-  { MDY_NOTUSED auto _ = this->pTryUnbindingToModelRendererComponent(); }
-}
-
 std::string CDyModelFilter::ToString()
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
   return MDY_INITIALIZE_EMPTYSTR;
 }
 
-EDySuccess CDyModelFilter::pTryBindingToModelRendererComponent()
+void CDyModelFilter::TryActivateInstance()
 {
-  // Check final activation flag and rebind instance to CDyModelRenderer.
-
-  if (this->mActivateFlag.IsOutputValueChanged() == false)  { return DY_FAILURE; }
-  if (this->mActivateFlag.GetOutput() == false)             { return DY_FAILURE; }
-
   auto opRenderer = this->GetBindedActor()->GetGeneralComponent<CDyModelRenderer>();
-  if (opRenderer.has_value() == false)                      { return DY_FAILURE; }
+  if (opRenderer.has_value() == false) { return; }
 
   CDyModelRenderer& rendererRef = *opRenderer.value();
-  if (rendererRef.IsComponentActivated() == false)          { return DY_FAILURE; }
+  if (rendererRef.IsComponentActivated() == false) { return; }
 
   MDY_ASSERT(MDY_CHECK_ISNULL(this->mModelRendererReferencePtr), "CDyModelFilter::mModelRendererReferencePtr must be null when unbinding.");
   rendererRef.BindModelFilterReference(*this);
-
-  return DY_SUCCESS;
 }
 
-EDySuccess CDyModelFilter::pTryUnbindingToModelRendererComponent()
+void CDyModelFilter::TryDeactivateInstance()
 {
-  if (this->mActivateFlag.IsOutputValueChanged() == false)  { return DY_FAILURE; }
-  if (this->mActivateFlag.GetOutput() == true)             { return DY_FAILURE; }
-
   // Check final activation flag and unbind instance from CDyModelRenderer.
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mModelRendererReferencePtr), "CDyModelFilter::mModelRendererReferencePtr must not be null when unbinding.");
   this->mModelRendererReferencePtr->UnbindModelFilterReference();
-
-  return DY_SUCCESS;
 }
 
 const TDyLResourceBinderModel& CDyModelFilter::GetModelReference() const noexcept

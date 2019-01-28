@@ -89,16 +89,6 @@ public:
   /// @brief Do nothing.
   void Update(float dt) override final;
 
-  /// @brief Activate CDyDirectionalLight. Final activation value is also dependent on FDyActor activation flag.
-  void Activate() noexcept override final;
-
-  /// @brief Dectivate CDyDirectionalLight. Final activation value is also dependent on FDyActor activation flag.
-  void Deactivate() noexcept override final;
-
-  /// @brief
-  /// @param
-  void pPropagateParentActorActivation(const DDy3StateBool& actorBool) noexcept override final;
-
   /// @brief
   /// @return
   MDY_NODISCARD std::string ToString() override final;
@@ -199,6 +189,16 @@ public:
   MDY_NODISCARD DDyUboDirectionalLight GetUboLightInfo() const noexcept;
 
 private:
+  /// @brief This function must be implemented. 
+  /// This function will be called when `Activate()` or `SetupFlagAsParent` called, 
+  /// and final state boolean value is true from false.
+  void TryActivateInstance() override final;
+  
+  /// @brief This function must be implemented.
+  /// This function will be called when `Deactivate()` or `SetupFlagAsParent(false)` called,
+  /// and final state boolean value is false from true.
+  void TryDeactivateInstance() override final;
+
   /// @brief Try activate camera operation. \n
   /// If parent is activate and itself activated, update all properties newly.
   MDY_NODISCARD EDySuccess pTryActivateDirectionalLight();

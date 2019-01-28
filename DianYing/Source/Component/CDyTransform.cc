@@ -436,6 +436,16 @@ void CDyTransform::MDY_PRIVATE_SPECIFIER(PropagateTransform)(
   }
 }
 
+void CDyTransform::TryActivateInstance()
+{
+
+}
+
+void CDyTransform::TryDeactivateInstance()
+{
+
+}
+
 void CDyTransform::MDY_PRIVATE_SPECIFIER(TryUpdateMovementBasis)()
 {
   if (this->mIsMovementBasisDirty == false) { return; }

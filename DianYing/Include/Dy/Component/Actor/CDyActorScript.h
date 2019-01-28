@@ -47,6 +47,16 @@ public:
   MDY_NODISCARD std::string ToString() override final { return ""; }
 
 private:
+  /// @brief This function must be implemented. 
+  /// This function will be called when `Activate()` or `SetupFlagAsParent` called, 
+  /// and final state boolean value is true from false.
+  void TryActivateInstance() override final;
+  
+  /// @brief This function must be implemented.
+  /// This function will be called when `Deactivate()` or `SetupFlagAsParent(false)` called,
+  /// and final state boolean value is false from true.
+  void TryDeactivateInstance() override final;
+
   FDyActorScriptState* mPtrScriptStatus  = MDY_INITIALIZE_NULL;
 };
 

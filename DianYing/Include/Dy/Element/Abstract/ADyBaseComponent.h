@@ -16,6 +16,7 @@
 #include <Dy/Helper/HashCompileCrc32.h>
 #include <Dy/Helper/Type/ThreeStateBool.h>
 #include <Dy/Element/Interface/IDyToString.h>
+#include <Dy/Element/Type/FDy3WaySwitcher.h>
 
 //!
 //! Forward declaration
@@ -37,7 +38,7 @@ namespace dy
 /// @class ADyBaseComponent
 /// @brief Base component type
 ///
-MDY_ABSTRACT ADyBaseComponent : public IDyToString
+MDY_ABSTRACT ADyBaseComponent : public IDyToString, public FDy3WaySwitcher
 {
 public:
   ADyBaseComponent(FDyActor& actorReference);
@@ -49,51 +50,27 @@ public:
 
   virtual ~ADyBaseComponent() = default;
 
-  ///
-  /// @brief Activate component, but component will be operated only when parent, and cursor FDyActor is enabled too.
-  ///
-  virtual void Activate() noexcept;
-
-  ///
-  /// @brief Deactive component.
-  ///
-  virtual void Deactivate() noexcept;
-
-  ///
-  /// @brief  Update parent boolean value from FDyActor 3-state boolean variable.
-  /// @param  actorBool 3-state boolean function from FDyActor.
-  ///
-  virtual void pPropagateParentActorActivation(const DDy3StateBool& actorBool) noexcept;
-
-  ///
   /// @brief  Check component is activated.
   /// @return Check flag whether component is activated or not.
-  ///
   MDY_NODISCARD bool IsComponentActivated() const noexcept;
 
-  ///
   /// @brief  Type match for static casting of instance in runtime
   /// @param  hashVal CRC32 hashValue
   /// @return If type is matched return true but false.
-  ///
-  virtual bool IsTypeMatched(const TU32 hashVal) const noexcept
+  virtual bool IsTypeMatched(_MIN_ const TU32 hashVal) const noexcept
   {
     return ADyBaseComponent::__mHashVal == hashVal;
   }
 
-  ///
   /// @brief  Get binded FDyActor's pointer instance.
   /// @return Binded FDyActor pointer instance.
-  ///
   MDY_NODISCARD FDyActor* GetBindedActor() noexcept
   {
     return this->mBindedActor;
   }
 
-  ///
   /// @brief  Get binded FDyActor's pointer instance.
   /// @return Binded FDyActor pointer instance.
-  ///
   MDY_NODISCARD const FDyActor* GetBindedActor() const noexcept
   {
     return this->mBindedActor;
@@ -102,8 +79,6 @@ public:
 protected:
   /// Transient variable, list id for updating
   MDY_TRANSIENT TI32  mActivatedUpdateListId  = MDY_INITIALIZE_DEFINT;
-  /// Activate flag for operating component.
-  DDy3StateBool       mActivateFlag           = {};
 
 private:
   /// Binded actor raw pointer.

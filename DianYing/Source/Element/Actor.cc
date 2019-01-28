@@ -150,26 +150,9 @@ FDyActor::~FDyActor()
   this->mComponentList.clear();
 }
 
-void FDyActor::Activate() noexcept
-{
-  this->mActivationFlag.UpdateInput(true);
-  this->pPropagateActivationFlag();
-}
-
-void FDyActor::Deactivate() noexcept
-{
-  this->mActivationFlag.UpdateInput(true);
-  this->pPropagateActivationFlag();
-}
-
 void FDyActor::DestroySelf()
 {
   MDyWorld::GetInstance().DestroyActor(*this);
-}
-
-bool FDyActor::IsActivated() const noexcept
-{
-  return this->mActivationFlag.GetOutput();
 }
 
 const std::string& FDyActor::GetActorName() const noexcept
@@ -189,15 +172,23 @@ std::string FDyActor::MDY_PRIVATE_SPECIFIER(GetFullSpecifierName)() const noexce
 
 void FDyActor::pUpdateActivateFlagFromParent() noexcept
 {
+  // If parent actor is not exist, it regards as a root object.
+  // Otherwise, get parent actor flag.
   if (MDY_CHECK_ISNULL(this->mPtrParentActor))
-  {
-    this->mActivationFlag.UpdateParent(true);
-  }
+  { this->SetupFlagAsParent(true); }
   else
-  {
-    this->mActivationFlag.UpdateParent(this->mPtrParentActor->IsActivated());
-  }
+  { this->SetupFlagAsParent(this->mPtrParentActor->IsActivated()); }
 
+  this->pPropagateActivationFlag();
+}
+
+void FDyActor::TryActivateInstance()
+{
+  this->pPropagateActivationFlag();
+}
+
+void FDyActor::TryDeactivateInstance()
+{
   this->pPropagateActivationFlag();
 }
 
@@ -206,13 +197,13 @@ void FDyActor::pPropagateActivationFlag() noexcept
   for (auto& unknownComponent : mComponentList)
   {
     if (MDY_CHECK_ISEMPTY(unknownComponent)) { continue; }
-    unknownComponent->pPropagateParentActorActivation(this->mActivationFlag);
+    unknownComponent->SetupFlagAsParent(this->IsActivated());
   }
 
   for (auto& unknownScript : this->mScriptList)
   {
     if (MDY_CHECK_ISEMPTY(unknownScript)) { continue; }
-    unknownScript->pPropagateParentActorActivation(this->mActivationFlag);
+    unknownScript->SetupFlagAsParent(this->IsActivated());
   }
 
   // @TODO PROPAGATE ACTIVATION FLAG TO SUBACTOR ALSO.
