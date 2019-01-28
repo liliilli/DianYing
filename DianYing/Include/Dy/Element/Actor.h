@@ -26,11 +26,9 @@
 namespace dy
 {
 
-///
 /// @class FDyActor
-/// @brief FFF
-///
-class FDyActor : public FDyObject, public FDyNameGenerator, public ADyActorBinderContainer<FDyActor>
+/// @brief Dy Actor type which consist of almost every object in Level of Dy.
+class FDyActor : public FDyObject, public FDyNameGenerator, public ADyActorBinderContainer<FDyActor>, public FDy3WaySwitcher
 {
   using TComponentList = std::vector<std::unique_ptr<ADyGeneralBaseComponent>>;
   using TScriptList    = std::vector<std::unique_ptr<CDyActorScript>>;
@@ -49,16 +47,6 @@ public:
   /// @brief Release function (virtual) because Initialize function has different parameter but release does not need any parameter.
   /// @return Success flag.
   virtual ~FDyActor();
-
-  /// @brief Activate FDyActor instance.
-  void Activate() noexcept;
-
-  /// @brief  Check FDyActor is activated or not.
-  /// @return Check flag for activation checking.
-  MDY_NODISCARD bool IsActivated() const noexcept;
-
-  /// @brief Deactivate FDyActor instance.
-  void Deactivate() noexcept;
 
   /// @brief Destory self and tree.
   void DestroySelf();
@@ -333,6 +321,11 @@ protected:
   MDY_TRANSIENT EDyMetaObjectType   mActorType = EDyMetaObjectType::NoneError;
 
 private:
+  ///
+  void TryActivateInstance() override final;
+  ///
+  void TryDeactivateInstance() override final;
+  
   /// @brief
   void MDY_PRIVATE_SPECIFIER(CreateComponentList)(_MIN_ const TComponentMetaList& iMetaComponentList);
 
@@ -341,7 +334,6 @@ private:
   ///
   void pPropagateActivationFlag() noexcept;
 
-  DDy3StateBool                 mActivationFlag    = {};
   /// Parent FDyActor raw-pointer data.
   FDyActor*                     mPtrParentActor    = MDY_INITIALIZE_NULL;
   /// Transform component.

@@ -169,16 +169,6 @@ public:
   /// @return If camera component is being binded as main cam before Focus(), return true or false.
   EDySuccess Unfocus();
 
-  /// @brief  Activate CDyCamera. Final activation value is also dependent on FDyActor activation flag.
-  void Activate() noexcept override final;
-
-  /// @brief  Deactivate CDyCamera. Final activation value is also dependent on FDyActor activation flag.
-  void Deactivate() noexcept override final;
-
-  /// @brief  Propagate CDyActor's 3-state bool output value as component's parent.
-  /// @param  actorBool CDyActor's 3-state boolean value.
-  void pPropagateParentActorActivation(_MIN_ const DDy3StateBool& actorBool) noexcept override final;
-
   /// @brief  Initilaize component property.
   /// @param  descriptor Descriptor which has a values.
   /// @return If succeeded, return true or false.
@@ -197,6 +187,14 @@ public:
   MDY_NODISCARD std::string ToString() override final;
 
 private:
+  /// Try activate camera operation.
+  /// If parent is activate and itself activated, update all properties newly.
+  void TryActivateInstance() override final;
+
+  /// Try deactivate camera operation.
+  /// If either parent or itself is deactivated, disconnect it with all outside system.
+  void TryDeactivateInstance() override final;
+
   /// @brief Update camera vectors
   void pUpdateCameraVectors();
 
@@ -205,14 +203,6 @@ private:
 
   /// @brief Update projection matrix.
   void pUpdateProjectionMatrix();
-
-  /// Try activate camera operation.
-  /// If parent is activate and itself activated, update all properties newly.
-  MDY_NODISCARD EDySuccess pTryActivateCameraOperation();
-
-  /// Try deactivate camera operation.
-  /// If either parent or itself is deactivated, disconnect it with all outside system.
-  MDY_NODISCARD EDySuccess pTryDeactivateCameraOperation();
 
   /// View matrix (In OpenGL, final result must be transposed because of matrix must be column-major as ragard to specification.)
   /// .- rx ry rz  0 -..-  0  0  0 -x -.    .- rx ry rz -r*t -.T r(x, y, z) is camera's x-axis normal vector.

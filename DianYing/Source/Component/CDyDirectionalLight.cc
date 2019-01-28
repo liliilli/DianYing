@@ -79,50 +79,6 @@ void CDyDirectionalLight::Update(float dt)
   }
 }
 
-void CDyDirectionalLight::Activate() noexcept
-{
-  ADyBaseComponent::Activate();
-  // Customized body ∨
-
-  if (this->IsCastingLight() == true)
-  {
-    { MDY_NOTUSED auto _ = pTryActivateDirectionalLight(); }
-    { MDY_NOTUSED auto _ = pTryDeactivateDirectionalLight(); }
-  }
-  if (this->IsCastingShadow() == true)
-  {
-    { MDY_NOTUSED auto _ = pTryActivateCastingShadow(); }
-    { MDY_NOTUSED auto _ = pTryDeactivateCastingShadow(); }
-  }
-}
-
-void CDyDirectionalLight::Deactivate() noexcept
-{
-  ADyBaseComponent::Deactivate();
-  // Customized body ∨
-
-  if (this->mIsBindedToRenderingManagerAsLighting == true)
-  {
-    MDY_CALL_ASSERT_SUCCESS(this->pTryDeactivateDirectionalLight());
-    this->mIsBindedToRenderingManagerAsLighting = false;
-  }
-  if (this->mIsBindedToRenderingManagerAsShadow == true)
-  {
-    MDY_CALL_ASSERT_SUCCESS(this->pTryDeactivateCastingShadow());
-    this->mIsBindedToRenderingManagerAsShadow = false;
-  }
-}
-
-void CDyDirectionalLight::pPropagateParentActorActivation(const DDy3StateBool& actorBool) noexcept
-{
-  ADyBaseComponent::pPropagateParentActorActivation(actorBool);
-  // Customized body ∨
-  { MDY_NOTUSED auto _ = pTryActivateDirectionalLight();    }
-  { MDY_NOTUSED auto _ = pTryDeactivateDirectionalLight();  }
-  { MDY_NOTUSED auto _ = pTryActivateCastingShadow();       }
-  { MDY_NOTUSED auto _ = pTryDeactivateCastingShadow();     }
-}
-
 MDY_NODISCARD std::string CDyDirectionalLight::ToString()
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
@@ -349,11 +305,38 @@ DDyUboDirectionalLight CDyDirectionalLight::GetUboLightInfo() const noexcept
   return this->mData;
 }
 
+void CDyDirectionalLight::TryActivateInstance()
+{
+  if (this->IsCastingLight() == true)
+  {
+    { MDY_NOTUSED auto _ = pTryActivateDirectionalLight(); }
+    { MDY_NOTUSED auto _ = pTryDeactivateDirectionalLight(); }
+  }
+  if (this->IsCastingShadow() == true)
+  {
+    { MDY_NOTUSED auto _ = pTryActivateCastingShadow(); }
+    { MDY_NOTUSED auto _ = pTryDeactivateCastingShadow(); }
+  }
+}
+
+void CDyDirectionalLight::TryDeactivateInstance()
+{
+  if (this->mIsBindedToRenderingManagerAsLighting == true)
+  {
+    MDY_CALL_ASSERT_SUCCESS(this->pTryDeactivateDirectionalLight());
+    this->mIsBindedToRenderingManagerAsLighting = false;
+  }
+  if (this->mIsBindedToRenderingManagerAsShadow == true)
+  {
+    MDY_CALL_ASSERT_SUCCESS(this->pTryDeactivateCastingShadow());
+    this->mIsBindedToRenderingManagerAsShadow = false;
+  }
+}
+
 EDySuccess CDyDirectionalLight::pTryActivateDirectionalLight()
 {
   if (this->mIsBindedToRenderingManagerAsLighting == true)  { return DY_FAILURE; }
   if (this->mIsCastingLight == false)                       { return DY_FAILURE; }
-  if (this->mActivateFlag.IsOutputValueChanged() == false)  { return DY_FAILURE; }
   this->mIsBindedToRenderingManagerAsLighting = true;
 
   // Bind and get a index of UBO array.
@@ -365,7 +348,6 @@ EDySuccess CDyDirectionalLight::pTryDeactivateDirectionalLight()
 {
   if (this->mIsBindedToRenderingManagerAsLighting == false) { return DY_FAILURE; }
   if (this->mIsCastingLight == true)                        { return DY_FAILURE; }
-  if (this->mActivateFlag.IsOutputValueChanged() == false)  { return DY_FAILURE; }
   this->mIsBindedToRenderingManagerAsLighting = false;
 
   // Try Unbind from lighting system.
@@ -377,7 +359,6 @@ EDySuccess CDyDirectionalLight::pTryActivateCastingShadow()
 {
   if (this->mIsBindedToRenderingManagerAsShadow == true)    { return DY_FAILURE; }
   if (this->mIsCastingShadow == false)                      { return DY_FAILURE; }
-  if (this->mActivateFlag.IsOutputValueChanged() == false)  { return DY_FAILURE; }
   this->mIsBindedToRenderingManagerAsShadow = true;
 
   // Try bind to lighting system.
@@ -389,13 +370,11 @@ EDySuccess CDyDirectionalLight::pTryDeactivateCastingShadow()
 {
   if (this->mIsBindedToRenderingManagerAsShadow == false)   { return DY_FAILURE; }
   if (this->mIsCastingShadow == true)                       { return DY_FAILURE; }
-  if (this->mActivateFlag.IsOutputValueChanged() == false)  { return DY_FAILURE; }
   this->mIsBindedToRenderingManagerAsShadow = false;
 
   // Unbind from shadow system.
   MDyRendering::GetInstance().MDY_PRIVATE_SPECIFIER(UnbindMainDirectionalShadow)(*this);
   return DY_SUCCESS;
 }
-
 
 } /// ::dy namespace

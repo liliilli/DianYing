@@ -74,12 +74,6 @@ public:
   /// @brief Request MDyWorld to draw this instance.
   void RequestDrawCall() noexcept;
 
-  /// @brief Activate component.
-  void Activate() noexcept override final;
-
-  /// @brief Deactivate component.
-  void Deactivate() noexcept override final;
-
   /// @brief  Get the number of submesh of model instance which binded to this component instance.
   /// @return The number of submesh elements binded to CDyModelRenderer::mPtrModelFilterComponent.
   MDY_NODISCARD std::optional<TI32> GetModelSubmeshCount() const noexcept;
@@ -101,20 +95,11 @@ public:
   MDY_NODISCARD const TDyLResourceBinderModel* GetModelResourceBinder() const noexcept;
 
   /// @brief
-  /// @param actorBool
-  void pPropagateParentActorActivation(const DDy3StateBool& actorBool) noexcept override final;
-
-  /// @brief
   MDY_NODISCARD std::string ToString() override final;
 
 private:
-  /// @brief
-  /// @return
-  MDY_NODISCARD EDySuccess pTryBindingToModelFilterComponent();
-
-  /// @brief
-  /// @return
-  MDY_NODISCARD EDySuccess pTryUnbindingToModelFilterComponent();
+  void TryActivateInstance() override final;
+  void TryDeactivateInstance() override final;
 
   /// Valid model filter pointer reference. If value is nullptr, do not use.
   CDyModelFilter* mPtrModelFilterComponent  = MDY_INITIALIZE_NULL;

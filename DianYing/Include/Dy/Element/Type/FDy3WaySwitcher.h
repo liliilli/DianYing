@@ -37,6 +37,9 @@ public:
   /// @brief Deactivate binded instance.
   void Deactivate();
 
+  /// @brief Check switch is activated finally.
+  MDY_NODISCARD bool IsActivated() const noexcept;
+
   /// @brief Setup parent flag. bounce instance will be activated finally, following by final state boolean value.
   void SetupFlagAsParent(_MIN_ bool iIsActivated);
 

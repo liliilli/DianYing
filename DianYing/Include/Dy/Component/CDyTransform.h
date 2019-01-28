@@ -184,7 +184,11 @@ public:
       _MIN_ const DDyVector3& iScale);
 
 private:
-
+  ///
+  void TryActivateInstance() override final;
+  ///
+  void TryDeactivateInstance() override final;
+  
   /// @brief Try update movement basis.
   void MDY_PRIVATE_SPECIFIER(TryUpdateMovementBasis)();
   /// @brief

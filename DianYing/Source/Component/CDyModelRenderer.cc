@@ -64,36 +64,6 @@ void CDyModelRenderer::RequestDrawCall() noexcept
   }
 }
 
-void CDyModelRenderer::Activate() noexcept
-{
-  ADyBaseComponent::Activate();
-
-  // Customized body ∨
-  MDY_NOTUSED auto _ = this->pTryBindingToModelFilterComponent();
-
-  // Check and rebind script instance to MDyWorld.
-  if (this->mActivateFlag.IsOutputValueChanged() == true && this->mActivateFlag.GetOutput() == true)
-  {
-    const auto activatedIndex     = MDyWorld::GetInstance().pfEnrollActiveModelRenderer(*this);
-    this->mActivatedUpdateListId  = activatedIndex;
-  }
-}
-
-void CDyModelRenderer::Deactivate() noexcept
-{
-  ADyBaseComponent::Deactivate();
-
-  // Customized body ∨
-  MDY_NOTUSED auto _ = this->pTryUnbindingToModelFilterComponent();
-
-  // Check and unbind script instance to MDyWorld.
-  if (this->mActivateFlag.IsOutputValueChanged() == true && this->mActivateFlag.GetOutput() == false)
-  {
-    MDyWorld::GetInstance().pfUnenrollActiveModelRenderer(this->mActivatedUpdateListId);
-    this->mActivatedUpdateListId = MDY_INITIALIZE_DEFINT;
-  }
-}
-
 std::optional<TI32> CDyModelRenderer::GetModelSubmeshCount() const noexcept
 {
   // If CDyModelFilter is not binded to CDyModelRenderer, just return no value.
@@ -126,67 +96,37 @@ const TDyLResourceBinderModel* CDyModelRenderer::GetModelResourceBinder() const 
   return &this->mPtrModelFilterComponent->GetModelReference();
 }
 
-void CDyModelRenderer::pPropagateParentActorActivation(const DDy3StateBool& actorBool) noexcept
-{
-  ADyBaseComponent::pPropagateParentActorActivation(actorBool);
-
-  // Customized body ∨
-  { MDY_NOTUSED auto _ = this->pTryBindingToModelFilterComponent(); }
-  { MDY_NOTUSED auto _ = this->pTryUnbindingToModelFilterComponent(); }
-
-  // Check and rebind script instance to MDyWorld.
-  if (this->mActivateFlag.IsOutputValueChanged() == true)
-  {
-    auto& worldManager = MDyWorld::GetInstance();
-
-    if (this->mActivateFlag.GetOutput() == true)
-    { // Check and rebind script instance to MDyWorld.
-      const auto activatedIndex     = worldManager.pfEnrollActiveModelRenderer(*this);
-      this->mActivatedUpdateListId  = activatedIndex;
-    }
-    else
-    { // Check and unbind script instance to MDyWorld.
-      worldManager.pfUnenrollActiveModelRenderer(this->mActivatedUpdateListId);
-      this->mActivatedUpdateListId = MDY_INITIALIZE_DEFINT;
-    }
-  }
-}
-
 std::string CDyModelRenderer::ToString()
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
   return MDY_INITIALIZE_EMPTYSTR;
 }
 
-EDySuccess CDyModelRenderer::pTryBindingToModelFilterComponent()
+void CDyModelRenderer::TryActivateInstance()
 {
-  // Check final activation flag and rebind instance to CDyModelRenderer.
-
-  if (this->mActivateFlag.IsOutputValueChanged() == false)  { return DY_FAILURE; }
-  if (this->mActivateFlag.GetOutput() == false)             { return DY_FAILURE; }
-
+  // Customized body ∨
   auto opRenderer = this->GetBindedActor()->GetGeneralComponent<CDyModelFilter>();
-  if (opRenderer.has_value() == false)                      { return DY_FAILURE; }
+  if (opRenderer.has_value() == false) { return; }
 
   CDyModelFilter& filterRef = *opRenderer.value();
-  if (filterRef.IsComponentActivated() == false)            { return DY_FAILURE; }
+  if (filterRef.IsComponentActivated() == false) { return; }
 
   MDY_ASSERT(MDY_CHECK_ISNULL(this->mPtrModelFilterComponent), "CDyModelFilter::mModelRendererReferencePtr must be null when unbinding.");
   this->BindModelFilterReference(filterRef);
 
-  return DY_SUCCESS;
+
+  // Check and rebind script instance to MDyWorld.
+  const auto activatedIndex     = MDyWorld::GetInstance().pfEnrollActiveModelRenderer(*this);
+  this->mActivatedUpdateListId  = activatedIndex;
 }
 
-EDySuccess CDyModelRenderer::pTryUnbindingToModelFilterComponent()
+void CDyModelRenderer::TryDeactivateInstance()
 {
-  if (this->mActivateFlag.IsOutputValueChanged() == false)  { return DY_FAILURE; }
-  if (this->mActivateFlag.GetOutput() == true)             { return DY_FAILURE; }
-
-  // Check final activation flag and unbind instance from CDyModelRenderer.
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mPtrModelFilterComponent), "CDyModelFilter::mModelRendererReferencePtr must not be null when unbinding.");
   this->UnbindModelFilterReference();
 
-  return DY_SUCCESS;
+  MDyWorld::GetInstance().pfUnenrollActiveModelRenderer(this->mActivatedUpdateListId);
+  this->mActivatedUpdateListId = MDY_INITIALIZE_DEFINT;
 }
 
 void CDyModelRenderer::BindModelFilterReference(CDyModelFilter& validReference)

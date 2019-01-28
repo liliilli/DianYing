@@ -40,6 +40,11 @@ void FDy3WaySwitcher::Deactivate()
   if (previous != present) { this->TryDeactivateInstance(); }
 }
 
+bool FDy3WaySwitcher::IsActivated() const noexcept
+{
+  return this->mActivateFlag.GetOutput();
+}
+
 void FDy3WaySwitcher::SetupFlagAsParent(_MIN_ bool iIsActivated)
 {
   const auto previous = this->mActivateFlag.GetOutput();
