@@ -28,6 +28,8 @@
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
 #include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
 #include <Dy/Management/IO/MDyIOData.h>
+#include "Dy/Core/Resource/Information/FDyModelSkeletonInformation.h"
+#include "Dy/Core/Resource/Information/FDyModelAnimScrapInformation.h"
 
 namespace dy
 {
@@ -121,25 +123,40 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceInformation(_MIN_ const DDyIOT
   switch (result.mResourceType)
   {
   case EDyResourceType::GLShader:
-    result.mSmtPtrResultInstance = new FDyShaderInformation(this->mMetaManager.GetGLShaderMetaInformation(assignedTask.mSpecifierName));
+    result.mSmtPtrResultInstance = new FDyShaderInformation
+    (this->mMetaManager.GetGLShaderMetaInformation(assignedTask.mSpecifierName));
     break;
   case EDyResourceType::Texture:
-    result.mSmtPtrResultInstance = new FDyTextureInformation(this->mMetaManager.GetTextureMetaInformation(assignedTask.mSpecifierName));
+    result.mSmtPtrResultInstance = new FDyTextureInformation
+    (this->mMetaManager.GetTextureMetaInformation(assignedTask.mSpecifierName));
     break;
   case EDyResourceType::Mesh:
-    result.mSmtPtrResultInstance = new FDyMeshInformation(this->mMetaManager.GetBtMeshMetaInformation(assignedTask.mSpecifierName));
+    result.mSmtPtrResultInstance = new FDyMeshInformation
+    (this->mMetaManager.GetBtMeshMetaInformation(assignedTask.mSpecifierName));
     break;
   case EDyResourceType::Model:
-    result.mSmtPtrResultInstance = new FDyModelInformation(this->mMetaManager.GetModelMetaInformation(assignedTask.mSpecifierName));
+    result.mSmtPtrResultInstance = new FDyModelInformation
+    (this->mMetaManager.GetModelMetaInformation(assignedTask.mSpecifierName));
+    break;
+  case EDyResourceType::Skeleton:
+    result.mSmtPtrResultInstance = new FDyModelSkeletonInformation
+    (this->mMetaManager.GetModelSkeletonMetaInformation(assignedTask.mSpecifierName));
+    break;
+  case EDyResourceType::AnimationScrap:
+    result.mSmtPtrResultInstance = new FDyModelAnimScrapInformation
+    (this->mMetaManager.GetModelAnimScrapMetaInformation(assignedTask.mSpecifierName));
     break;
   case EDyResourceType::Material:
-    result.mSmtPtrResultInstance = new FDyMaterialInformation(this->mMetaManager.GetMaterialMetaInformation(assignedTask.mSpecifierName));
+    result.mSmtPtrResultInstance = new FDyMaterialInformation
+    (this->mMetaManager.GetMaterialMetaInformation(assignedTask.mSpecifierName));
     break;
   case EDyResourceType::GLAttachment:
-    result.mSmtPtrResultInstance = new FDyAttachmentInformation(this->mMetaManager.GetGLAttachmentMetaInformation(assignedTask.mSpecifierName));
+    result.mSmtPtrResultInstance = new FDyAttachmentInformation
+    (this->mMetaManager.GetGLAttachmentMetaInformation(assignedTask.mSpecifierName));
     break;
   case EDyResourceType::GLFrameBuffer:
-    result.mSmtPtrResultInstance = new FDyFrameBufferInformation(this->mMetaManager.GetGlFrameBufferMetaInformation(assignedTask.mSpecifierName));
+    result.mSmtPtrResultInstance = new FDyFrameBufferInformation
+    (this->mMetaManager.GetGlFrameBufferMetaInformation(assignedTask.mSpecifierName));
     break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }

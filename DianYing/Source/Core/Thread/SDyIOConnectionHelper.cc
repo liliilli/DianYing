@@ -69,7 +69,12 @@ void SDyIOConnectionHelper::PopulateResourceList(
   {
     for (const auto& [type, specifier] : list)
     {
-      PopulateResource(specifier, type, EDyResourceStyle::Resource, iScope);
+      // If `type` is AnimationScrap or model skeleton, this must be populated only as `Style::Information`.
+      if (type == EDyResourceType::AnimationScrap
+      ||  type == EDyResourceType::Skeleton)
+      { PopulateResource(specifier, type, EDyResourceStyle::Information, iScope); }
+      else // Other type can be populated with Resource & Information.
+      { PopulateResource(specifier, type, EDyResourceStyle::Resource, iScope); }
     }
   }
 

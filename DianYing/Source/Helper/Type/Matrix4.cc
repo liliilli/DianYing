@@ -15,10 +15,12 @@
 /// Header file
 #include <Dy/Helper/Type/Matrix4.h>
 
+#include <glm/gtc/matrix_transform.hpp>
+#include <nlohmann/json.hpp>
+
 #include <Dy/Helper/Type/Matrix2.h>
 #include <Dy/Helper/Type/Matrix3.h>
-#include <glm/gtc/matrix_transform.hpp>
-#include "Dy/Helper/Type/Quaternion.h"
+#include <Dy/Helper/Type/Quaternion.h>
 
 namespace dy
 {
@@ -449,6 +451,25 @@ bool operator==(_MIN_ const DDyMatrix4x4& lhs, _MIN_ const DDyMatrix4x4& rhs) no
 bool operator!=(_MIN_ const DDyMatrix4x4& lhs, _MIN_ const DDyMatrix4x4& rhs) noexcept
 {
   return !(lhs == rhs);
+}
+
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDyMatrix4x4& p)
+{
+  j = nlohmann::json
+  {
+    {"00", p[0][0]}, {"01", p[0][1]}, {"02", p[0][2]}, {"03", p[0][3]},
+    {"10", p[1][0]}, {"11", p[1][1]}, {"12", p[1][2]}, {"13", p[1][3]},
+    {"20", p[1][0]}, {"21", p[2][1]}, {"22", p[2][2]}, {"23", p[2][3]},
+    {"30", p[1][0]}, {"31", p[3][1]}, {"32", p[3][2]}, {"33", p[3][3]},
+  };
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDyMatrix4x4& p)
+{
+  p[0][0] = j["00"].get<float>(); p[0][1] = j["01"].get<float>(); p[0][2] = j["02"].get<float>(); p[0][3] = j["03"].get<float>();
+  p[1][0] = j["10"].get<float>(); p[1][1] = j["11"].get<float>(); p[1][2] = j["12"].get<float>(); p[1][3] = j["13"].get<float>();
+  p[2][0] = j["20"].get<float>(); p[2][1] = j["21"].get<float>(); p[2][2] = j["22"].get<float>(); p[2][3] = j["23"].get<float>();
+  p[3][0] = j["30"].get<float>(); p[3][1] = j["31"].get<float>(); p[3][2] = j["32"].get<float>(); p[3][3] = j["33"].get<float>();
 }
 
 } /// ::dy namespace

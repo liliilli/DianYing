@@ -25,6 +25,7 @@ class FDyMeshInformation;
 class FDyTextureInformation;
 class FDyShaderInformation;
 class FDyModelInformation;
+class FDyModelSkeletonInformation;
 class FDyMaterialInformation;
 class FDyAttachmentInformation;
 class FDyFrameBufferInformation;
@@ -50,6 +51,7 @@ template <> struct __TDyRscInfo<EDyResourceType::Texture> final { using type = F
 template <> struct __TDyRscInfo<EDyResourceType::GLShader> final { using type = FDyShaderInformation; };
 template <> struct __TDyRscInfo<EDyResourceType::Mesh> final { using type = FDyMeshInformation; };
 template <> struct __TDyRscInfo<EDyResourceType::Model> final { using type = FDyModelInformation; };
+template <> struct __TDyRscInfo<EDyResourceType::Skeleton> final { using type = FDyModelSkeletonInformation; };
 template <> struct __TDyRscInfo<EDyResourceType::Material> final { using type = FDyMaterialInformation; };
 template <> struct __TDyRscInfo<EDyResourceType::GLAttachment> final { using type = FDyAttachmentInformation; };
 template <> struct __TDyRscInfo<EDyResourceType::GLFrameBuffer> final { using type = FDyFrameBufferInformation; };

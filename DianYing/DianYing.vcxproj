@@ -243,7 +243,9 @@
     <ClCompile Include="Source\Core\Resource\Information\FDyFrameBufferInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyMaterialInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyMeshInformation.cc" />
+    <ClCompile Include="Source\Core\Resource\Information\FDyModelAnimScrapInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyModelInformation.cc" />
+    <ClCompile Include="Source\Core\Resource\Information\FDyModelSkeletonInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyShaderInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyTextureInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\FDyMeshVBOIntermediate.cc" />
@@ -260,6 +262,7 @@
     <ClCompile Include="Source\Core\Resource\Type\Material\TDyMaterialBinder.cc" />
     <ClCompile Include="Source\Core\Resource\Type\ModelMesh\DDyMeshCompressedBuffer.cc" />
     <ClCompile Include="Source\Core\Resource\Type\ModelMesh\DDyModelData.cc" />
+    <ClCompile Include="Source\Core\Resource\Type\ModelMesh\DDySkeletonBone.cc" />
     <ClCompile Include="Source\Core\Resource\Type\Shader\ADyUniformContainer.cc" />
     <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceContainer.cc" />
     <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceInstance.cc" />
@@ -621,7 +624,9 @@
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyFrameBufferInformation.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyMaterialInformation.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyMeshInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Information\FDyModelAnimScrapInformation.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyModelInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Information\FDyModelSkeletonInformation.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDySoundInformation.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Internal\FDyMeshVBOIntermediate.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyAttachmentResource.h" />
@@ -636,8 +641,10 @@
     <ClInclude Include="Include\Dy\Core\Resource\Type\FDyBinderBase.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Material\ADyUniformHelper.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Material\TDyMaterialBinder.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\ModelMesh\DDyAnimationSequence.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\ModelMesh\DDyMeshCompressedBuffer.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\ModelMesh\DDyMeshData.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\ModelMesh\DDySkeletonBone.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\ADyUniformContainer.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\DDyUniformValue.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\TDyInformationBinder.h" />

@@ -297,19 +297,31 @@ const PDyMeshInstanceMetaInfo & MDyMetaInfo::GetBtMeshMetaInformation(_MIN_ cons
   return this->mModelMeshMetaInfo.at(specifier);
 }
 
-const PDyModelInstanceMetaInfo& MDyMetaInfo::GetModelMetaInformation(const std::string& specifier) const
+const PDyModelInstanceMetaInfo& MDyMetaInfo::GetModelMetaInformation(_MIN_ const std::string& specifier) const
 {
   MDY_ASSERT(this->IsModelMetaInfoExist(specifier) == true, "Model given specifier name is not exist.");
   return this->mModelMetaInfo.at(specifier);
 }
 
-const PDyTextureInstanceMetaInfo& MDyMetaInfo::GetTextureMetaInformation(const std::string& specifier) const
+const PDyModelSkelInstanceMetaInfo& MDyMetaInfo::GetModelSkeletonMetaInformation(_MIN_ const std::string& specifier) const
+{
+  MDY_ASSERT(this->IsModelSkeletonMetaInfoExist(specifier) == true, "Model skeleton that has given specifier name is not exist.");
+  return this->mModelSkeletonMetaInfo.at(specifier);
+}
+
+const PDyModelAnimInstanceMetaInfo& MDyMetaInfo::GetModelAnimScrapMetaInformation(const std::string& specifier) const
+{
+  MDY_ASSERT(this->IsModelAnimScrapMetaInfoExist(specifier) == true, "Model skeleton that has given specifier name is not exist.");
+  return this->mModelAnimScrapMetaInfo.at(specifier);
+}
+
+const PDyTextureInstanceMetaInfo& MDyMetaInfo::GetTextureMetaInformation(_MIN_ const std::string& specifier) const
 {
   MDY_ASSERT(this->IsTextureMetaInfoExist(specifier) == true, "Texture given specifier name is not exist.");
   return this->mTextureMetaInfo.at(specifier);
 }
 
-const PDyMaterialInstanceMetaInfo& MDyMetaInfo::GetMaterialMetaInformation(const std::string& specifier) const
+const PDyMaterialInstanceMetaInfo& MDyMetaInfo::GetMaterialMetaInformation(_MIN_ const std::string& specifier) const
 {
   MDY_ASSERT(this->IsMaterialMetaInfoExist(specifier) == true, "Material given specifier name is not exist.");
   return this->mMaterialMetaInfo.at(specifier);
@@ -350,6 +362,16 @@ bool MDyMetaInfo::IsLevelMetaInformation(_MIN_ const std::string& specifier) con
 bool MDyMetaInfo::IsModelMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
 {
   return DyIsMapContains(this->mModelMetaInfo, specifier);
+}
+
+bool MDyMetaInfo::IsModelSkeletonMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
+{
+  return DyIsMapContains(this->mModelSkeletonMetaInfo, specifier);
+}
+
+bool MDyMetaInfo::IsModelAnimScrapMetaInfoExist(const std::string& specifier) const noexcept
+{
+  return DyIsMapContains(this->mModelAnimScrapMetaInfo, specifier);
 }
 
 bool MDyMetaInfo::IsTextureMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
@@ -624,10 +646,10 @@ EDySuccess MDyMetaInfo::pReadModelAnimationMetaInformation(_MIN_ const std::stri
   // (2) Get information from buffer.
   for (const auto& item : opJsonAtlas.value().items())
   {
-    auto desc = item.value().get<decltype(mModelAnimationMetaInfo)::value_type::second_type>();
+    auto desc = item.value().get<decltype(mModelAnimScrapMetaInfo)::value_type::second_type>();
     desc.mSpecifierName = item.key();
 
-    auto [it, isSucceeded] = this->mModelAnimationMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
+    auto [it, isSucceeded] = this->mModelAnimScrapMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
     MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
   }
   

@@ -97,6 +97,14 @@ public:
   /// @return Return value is undefined if not found.
   MDY_NODISCARD const PDyModelInstanceMetaInfo&     
   GetModelMetaInformation(_MIN_ const std::string& specifier) const;
+  /// @brief  Get model instance meta information from container.
+  /// @return Return value is undefined if not found.
+  MDY_NODISCARD const PDyModelSkelInstanceMetaInfo&
+  GetModelSkeletonMetaInformation(_MIN_ const std::string& specifier) const;
+  /// @brief  Get model animation scrap meta information from container.
+  /// @return Return value is undefined if not found.
+  MDY_NODISCARD const PDyModelAnimInstanceMetaInfo& 
+  GetModelAnimScrapMetaInformation(_MIN_ const std::string& specifier) const;
   /// @brief  Get texture instance meta information from container.
   /// @return Return value is undefined if not found.
   MDY_NODISCARD const PDyTextureInstanceMetaInfo&   
@@ -130,6 +138,12 @@ public:
   /// @brief  Check model meta information is exist.
   /// @return Return value is false if not found.
   MDY_NODISCARD bool IsModelMetaInfoExist(_MIN_ const std::string& specifier) const noexcept;
+  /// @brief  Check model skeleton meta information is exist.
+  /// @return Return value is false if not found.
+  MDY_NODISCARD bool IsModelSkeletonMetaInfoExist(_MIN_ const std::string& specifier) const noexcept;
+  /// @brief  Check model animation scrap meta information is exist.
+  /// @return Return value is falue if not found.
+  MDY_NODISCARD bool IsModelAnimScrapMetaInfoExist(_MIN_ const std::string& specifier) const noexcept;
   /// @brief  Check texture meta information is exist.
   /// @return Return value is false if not found.
   MDY_NODISCARD bool IsTextureMetaInfoExist(_MIN_ const std::string& specifier) const noexcept;
@@ -222,7 +236,7 @@ private:
   /// Model Skeleton meta information map.
   THashMap<PDyModelSkelInstanceMetaInfo>mModelSkeletonMetaInfo = {};
   /// Model Skeleton meta information map.
-  THashMap<PDyModelAnimInstanceMetaInfo>mModelAnimationMetaInfo = {};
+  THashMap<PDyModelAnimInstanceMetaInfo>mModelAnimScrapMetaInfo = {};
   /// Texture meta information map.
   THashMap<PDyTextureInstanceMetaInfo>  mTextureMetaInfo= {};
   /// Material meta information map.

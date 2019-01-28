@@ -15,9 +15,11 @@
 
 #include <array>
 
+#include <assimp/matrix4x4.h>
+#include <nlohmann/json_fwd.hpp>
+
 #include <Dy/Helper/Type/Matrix3.h>
 #include <Dy/Helper/Type/Vector4.h>
-#include <assimp/matrix4x4.h>
 
 namespace dy
 {
@@ -192,6 +194,9 @@ private:
   /// Column major
   std::array<dy::DDyVector4, 4> mMatrixValue;
 };
+
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDyMatrix4x4& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDyMatrix4x4& p);
 
 } /// ::dy namespace
 
