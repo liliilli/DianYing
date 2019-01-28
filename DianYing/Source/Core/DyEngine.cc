@@ -136,7 +136,13 @@ void DyEngine::operator()()
       this->mSynchronization->TrySynchronization();
       MDyGameTimer::GetInstance().MDY_PRIVATE_SPECIFIER(TryGcRemoveAbortedTimerInstance)();
 
-      this->MDY_PRIVATE_SPECIFIER(Update)(this->mStatus, timeManager.GetGameScaledTickedDeltaTimeValue());
+      // Get delta-time.
+      const auto dt = timeManager.GetGameScaledTickedDeltaTimeValue();
+
+      // Update
+      this->MDY_PRIVATE_SPECIFIER(Update)(this->mStatus, dt);
+
+      // `IsGameNeedToBeTransitted` can only be triggered when in `Update` function.
       if (this->MDY_PRIVATE_SPECIFIER(IsGameNeedToBeTransitted)() == true)
       { // If something need to be changed.
         // If game must be stopped, return but change status to Shutdown (GameRuntime => Shutdown);
@@ -146,7 +152,12 @@ void DyEngine::operator()()
         if (this->MDY_PRIVATE_SPECIFIER(IsGameNeedTransitLevel)() == true) 
         { this->SetNextGameStatus(EDyGlobalGameStatus::Loading); }
       }
-      else { this->MDY_PRIVATE_SPECIFIER(Render)(this->mStatus); }
+      else 
+      { 
+        // This function is internal update function for Dy Engine before rendering.
+        this->MDY_PRIVATE_SPECIFIER(PreRender)(this->mStatus, dt);
+        this->MDY_PRIVATE_SPECIFIER(Render)(this->mStatus); 
+      }
     } break;
     case EDyGlobalGameStatus::Shutdown: 
     { // Just wait I/O Worker thread is slept.
@@ -316,6 +327,18 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(Update)(_MIN_ EDyGlobalGameStatus iEngineSt
   case EDyGlobalGameStatus::Shutdown: 
     break;
   default: MDY_UNEXPECTED_BRANCH(); break;
+  }
+}
+
+void DyEngine::MDY_PRIVATE_SPECIFIER(PreRender)(_MIN_ EDyGlobalGameStatus iEngineStatus, _MIN_ TF32 dt)
+{
+  switch (iEngineStatus)
+  {
+  case EDyGlobalGameStatus::GameRuntime: 
+  {
+
+  } break;
+  default: break;
   }
 }
 
