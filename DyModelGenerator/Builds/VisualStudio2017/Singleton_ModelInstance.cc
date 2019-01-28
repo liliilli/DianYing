@@ -401,12 +401,25 @@ EDySuccess Singleton_ModelInstance::ExportModelAnimation(const std::string& iSpe
     // Write `mAnimationHeader` of given animation. 
     fwrite(&result.mAnimationHeader, sizeof(result.mAnimationHeader), 1, fdFile);
 
+    // Write the number of animation node list.
+    const auto numAnimNode = static_cast<unsigned>(result.mAnimationNodeList.size());
+    fwrite(&numAnimNode, sizeof(unsigned), 1, fdFile);
+
     // Write `mAnimationNodeList` of given animation.
-    for (unsigned i = 0, numNode = static_cast<unsigned>(result.mAnimationNodeList.size()); i < numNode; ++i)
+    for (unsigned i = 0; i < numAnimNode; ++i)
     {
       const auto& refAnimNode = result.mAnimationNodeList[i];
       // Write `mExportSkeleton` bone id.
       fwrite(&refAnimNode.mSkeletonBoneId, sizeof(unsigned), 1, fdFile);
+
+      // Write the number of position, rotation (xyzw) and scale also.
+      const auto numPosition  = static_cast<unsigned>(refAnimNode.mPositionList.size());
+      const auto numRotation  = static_cast<unsigned>(refAnimNode.mRotationList.size());
+      const auto numScale     = static_cast<unsigned>(refAnimNode.mScaleList.size());
+      fwrite(&numPosition, sizeof(unsigned), 1, fdFile);
+      fwrite(&numRotation, sizeof(unsigned), 1, fdFile);
+      fwrite(&numScale, sizeof(unsigned), 1, fdFile);
+
       // Write position list of refAnimNode.
       for (unsigned idPos = 0, numPos = static_cast<unsigned>(refAnimNode.mPositionList.size()); idPos < numPos; ++idPos)
       {
@@ -423,9 +436,9 @@ EDySuccess Singleton_ModelInstance::ExportModelAnimation(const std::string& iSpe
       // Write scaling list of refAnimNode.
       for (unsigned idScl = 0, numScl = static_cast<unsigned>(refAnimNode.mScaleList.size()); idScl < numScl; ++idScl)
       {
-        const auto& refPos = refAnimNode.mPositionList[idScl];
+        const auto& refPos = refAnimNode.mScaleList[idScl];
         fwrite(&refPos.mStartSecond, sizeof(refPos.mStartSecond), 1, fdFile);
-        fwrite(&refPos.mTranslate[0], sizeof(float), 3, fdFile);
+        fwrite(&refPos.mScale[0], sizeof(float), 3, fdFile);
       }
     }
     fclose(fdFile);
