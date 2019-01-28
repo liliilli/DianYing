@@ -278,6 +278,14 @@ std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(
           EDyResourceType::Skeleton, EDyResourceStyle::Information, iScope);
     }
   }
+  else if (iResourceType == EDyResourceType::AnimationScrap)
+  { // If resource type is `AnimationScrap`, `Skeleton` must be populated also.
+    const auto& metaInfo = this->mMetaInfoManager->GetModelAnimScrapMetaInformation(iSpecifier);
+    MDY_ASSERT_FORCE(metaInfo.mSkeletonSpeicfier.empty() == false, "Skeleton specifier of animation scrap must not be empty.");
+
+    // `AnimationScrap` could only be populated as `Information`, so dependent Skeleton also be a `Information`.
+    checkList.emplace_back(metaInfo.mSkeletonSpeicfier, EDyResourceType::Skeleton, iResourceStyle, iScope);
+  }
 
   // Resource common dependencies.
   if (iResourceStyle == EDyResourceStyle::Resource)
@@ -595,13 +603,14 @@ bool TDyIO::outIsMetaInformationExist(_MIN_ const std::string& specifier, _MIN_ 
   case EDyResourceType::Script:         return this->mMetaInfoManager->IsScriptMetaInformationExist(specifier);
   case EDyResourceType::Mesh:           return this->mMetaInfoManager->IsMeshMetaInfoExist(specifier);
   case EDyResourceType::Model:          return this->mMetaInfoManager->IsModelMetaInfoExist(specifier);
+  case EDyResourceType::Skeleton:       return this->mMetaInfoManager->IsModelSkeletonMetaInfoExist(specifier);
+  case EDyResourceType::AnimationScrap: return this->mMetaInfoManager->IsModelAnimScrapMetaInfoExist(specifier);
   case EDyResourceType::GLShader:       return this->mMetaInfoManager->IsGLShaderMetaInfoExist(specifier);
   case EDyResourceType::Texture:        return this->mMetaInfoManager->IsTextureMetaInfoExist(specifier);
   case EDyResourceType::Material:       return this->mMetaInfoManager->IsMaterialMetaInfoExist(specifier);
   case EDyResourceType::WidgetMeta:     return this->mMetaInfoManager->IsWidgetMetaInfoExist(specifier);
   case EDyResourceType::GLAttachment:   return this->mMetaInfoManager->IsAttachmentMetaInfoExist(specifier);
   case EDyResourceType::GLFrameBuffer:  return this->mMetaInfoManager->IsFrameBufferMetaInfoExist(specifier);
-  case EDyResourceType::Skeleton:       return this->mMetaInfoManager->IsModelSkeletonMetaInfoExist(specifier);
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
   }
 }

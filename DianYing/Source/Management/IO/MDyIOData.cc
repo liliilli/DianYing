@@ -58,6 +58,11 @@ void MDyIOData::InsertResult(_MIN_ EDyResourceType type, _MIN_ void* ptrrawInsta
     auto ptr = std::unique_ptr<FDyModelSkeletonInformation>(static_cast<FDyModelSkeletonInformation*>(ptrrawInstance));
     this->__mModelSkeletonContainer.MoveInsert(ptr->GetSpecifierName(), std::move(ptr));
   } break;
+  case EDyResourceType::AnimationScrap:
+  {
+    auto ptr = std::unique_ptr<FDyModelAnimScrapInformation>(static_cast<FDyModelAnimScrapInformation*>(ptrrawInstance));
+    this->__mModelAnimScrapContainer.MoveInsert(ptr->GetSpecifierName(), std::move(ptr));
+  } break;
   case EDyResourceType::Material:
   {
     auto ptr = std::unique_ptr<FDyMaterialInformation>(static_cast<FDyMaterialInformation*>(ptrrawInstance));
@@ -86,6 +91,7 @@ EDySuccess MDyIOData::MDY_PRIVATE_SPECIFIER(TryRemove)(_MIN_ const std::string& 
   case EDyResourceType::Mesh:         { return this->__mMeshContainer.Remove(iSpecifier); } 
   case EDyResourceType::Model:        { return this->__mModelContainer.Remove(iSpecifier); } 
   case EDyResourceType::Material:     { return this->__mMaterialContainer.Remove(iSpecifier); } 
+  case EDyResourceType::AnimationScrap: { return this->__mModelAnimScrapContainer.Remove(iSpecifier); }
   case EDyResourceType::Skeleton:     { return this->__mModelSkeletonContainer.Remove(iSpecifier); }
   case EDyResourceType::GLAttachment: { return this->__mAttachmentContainer.Remove(iSpecifier); } 
   case EDyResourceType::GLFrameBuffer:{ return this->__mFrameBufferContainer.Remove(iSpecifier); } 

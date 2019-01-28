@@ -292,6 +292,7 @@
     <ClCompile Include="Source\Meta\Information\MetaInfoModelAnim.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyModelSkeletonInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Type\ModelMesh\DDySkeletonBone.cc" />
+    <ClCompile Include="Source\Core\Resource\Information\FDyModelAnimScrapInformation.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -733,6 +734,7 @@
     <ClInclude Include="Include\Dy\Core\Resource\Type\ModelMesh\DDySkeletonBone.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\ModelMesh\DDyAnimationSequence.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyModelSkeletonInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Information\FDyModelAnimScrapInformation.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />
