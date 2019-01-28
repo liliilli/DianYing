@@ -728,6 +728,8 @@
     <ClInclude Include="Include\Dy\Core\Resource\Type\ModelMesh\DDyMeshData.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoModelSkeleton.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoModelAnim.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\ModelMesh\DDySkeletonBone.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\ModelMesh\DDyAnimationSequence.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />
