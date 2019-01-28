@@ -18,9 +18,9 @@
 namespace dy
 {
 
-/// @struct DSkeletonBone
-/// @brief 
-struct DSkeletonBone final
+/// @struct DDySkeletonBone
+/// @brief Skeleton bone type.
+struct DDySkeletonBone final
 {
   /// @brief Bone specifier name.
   std::string   mSpecifier = "";
@@ -32,14 +32,13 @@ struct DSkeletonBone final
   DDyMatrix4x4  mGlobalTransform = DDyMatrix4x4::IdentityMatrix();
 };
 
-/// @brief
-using TDyModelSkeleton = std::vector<DSkeletonBone>;
+/// @brief One model skeleton complete type.
+using TDyModelSkeleton = std::vector<DDySkeletonBone>;
 
 /// @brief Serialization function. `mPtrAiNode` will be neglected.
-void to_json(nlohmann::json& j, const DSkeletonBone& p);
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySkeletonBone& p);
 /// @brief Deserialization function.
-void from_json(const nlohmann::json& j, DSkeletonBone& p);
-
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySkeletonBone& p);
 
 } /// ::dy namespace
 

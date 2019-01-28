@@ -28,6 +28,7 @@
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
 #include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
 #include <Dy/Management/IO/MDyIOData.h>
+#include "Dy/Core/Resource/Information/FDyModelSkeletonInformation.h"
 
 namespace dy
 {
@@ -131,6 +132,9 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceInformation(_MIN_ const DDyIOT
     break;
   case EDyResourceType::Model:
     result.mSmtPtrResultInstance = new FDyModelInformation(this->mMetaManager.GetModelMetaInformation(assignedTask.mSpecifierName));
+    break;
+  case EDyResourceType::Skeleton:
+    result.mSmtPtrResultInstance = new FDyModelSkeletonInformation(this->mMetaManager.GetModelSkeletonMetaInformation(assignedTask.mSpecifierName));
     break;
   case EDyResourceType::Material:
     result.mSmtPtrResultInstance = new FDyMaterialInformation(this->mMetaManager.GetMaterialMetaInformation(assignedTask.mSpecifierName));

@@ -33,6 +33,7 @@ bool DDyIOReferenceContainer::IsReferenceInstanceExist(_MIN_ const std::string& 
   case EDyResourceType::Material: return DyIsMapContains(this->mMapMaterialReference, specifier);
   case EDyResourceType::GLAttachment:   return DyIsMapContains(this->mMapAttachmentReference, specifier);
   case EDyResourceType::GLFrameBuffer:  return DyIsMapContains(this->mMapFrameBufferReference, specifier);
+  case EDyResourceType::Skeleton: return DyIsMapContains(this->mMapModelSkeletonReference, specifier);
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
   }
 }
@@ -48,12 +49,14 @@ bool DDyIOReferenceContainer::IsReferenceInstanceBound(_MIN_ const std::string& 
   case EDyResourceType::Material: return this->mMapMaterialReference.at(specifier).mIsResourceValid;
   case EDyResourceType::GLAttachment:   return this->mMapAttachmentReference.at(specifier).mIsResourceValid;
   case EDyResourceType::GLFrameBuffer:  return this->mMapFrameBufferReference.at(specifier).mIsResourceValid;
+  case EDyResourceType::Skeleton:       return this->mMapModelSkeletonReference.at(specifier).mIsResourceValid;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
   }
 }
 
 bool DDyIOReferenceContainer::TryEnlargeResourceScope(_MIN_ EDyScope scope, _MIN_ const std::string& specifier, _MIN_ EDyResourceType type)
 {
+  // Find given resource type instance. Given specifier and type must be valid on list.
   DDyIOReferenceInstance* instance;
   switch (type)
   {
@@ -64,9 +67,11 @@ bool DDyIOReferenceContainer::TryEnlargeResourceScope(_MIN_ EDyScope scope, _MIN
   case EDyResourceType::Material: { instance = &this->mMapMaterialReference[specifier]; } break;
   case EDyResourceType::GLAttachment:   { instance = &this->mMapAttachmentReference[specifier]; } break;;
   case EDyResourceType::GLFrameBuffer:  { instance = &this->mMapFrameBufferReference[specifier]; } break;
+  case EDyResourceType::Skeleton:       { instance = &this->mMapModelSkeletonReference[specifier]; } break;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
   }
 
+  // Compare scope and if previous scope is not larger than given input scope, update it.
   if (scope > instance->mScope) { instance->mScope = scope; }
   return true;
 }
@@ -87,6 +92,7 @@ EDySuccess DDyIOReferenceContainer::TryBindBinderToResourceRI(
   case EDyResourceType::Material: this->mMapMaterialReference[iSpecifier].AttachBinder(iPtrBinder); break;
   case EDyResourceType::GLAttachment:   this->mMapAttachmentReference[iSpecifier].AttachBinder(iPtrBinder);   break;
   case EDyResourceType::GLFrameBuffer:  this->mMapFrameBufferReference[iSpecifier].AttachBinder(iPtrBinder);  break;
+  case EDyResourceType::Skeleton:       this->mMapModelSkeletonReference[iSpecifier].AttachBinder(iPtrBinder);  break;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
   }
   return DY_SUCCESS;
@@ -99,7 +105,7 @@ EDySuccess DDyIOReferenceContainer::TryDetachBinderFromResourceRI(
 {
   if (this->IsReferenceInstanceExist(iSpecifier, iType) == false) { return DY_FAILURE; }
 
-  decltype(mMapModelReference)* ptrRiMap = nullptr;
+  decltype(mMapModelReference)* ptrRiMap;
   switch (iType)
   {
   case EDyResourceType::Model:    ptrRiMap = &this->mMapModelReference;     break;
@@ -109,10 +115,14 @@ EDySuccess DDyIOReferenceContainer::TryDetachBinderFromResourceRI(
   case EDyResourceType::Material: ptrRiMap = &this->mMapMaterialReference;  break;
   case EDyResourceType::GLAttachment:   ptrRiMap = &this->mMapAttachmentReference;  break;
   case EDyResourceType::GLFrameBuffer:  ptrRiMap = &this->mMapFrameBufferReference; break;
+  case EDyResourceType::Skeleton:       ptrRiMap = &this->mMapModelSkeletonReference; break;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
   }
 
+  // Detach binder from given instance.
   (*ptrRiMap)[iSpecifier].DetachBinder(iPtrBinder);
+
+  // If target RI need to be GCed (so should be moved into GCList), move it.
   if ((*ptrRiMap)[iSpecifier].IsNeedToBeGced() == true)
   {
     MDY_LOG_DEBUG_D("Moved Reference Instance to GClist. {}", iSpecifier);
@@ -134,6 +144,7 @@ DDyIOReferenceContainer::GetForwardCandidateRIAsList(_MIN_ EDyScope iScope)
   this->ForwardCandidateRIFromList(iScope, mMapMaterialReference, result);
   this->ForwardCandidateRIFromList(iScope, mMapAttachmentReference, result);
   this->ForwardCandidateRIFromList(iScope, mMapFrameBufferReference, result);
+  this->ForwardCandidateRIFromList(iScope, mMapModelSkeletonReference, result);
   return result;
 }
 
@@ -159,46 +170,23 @@ EDySuccess DDyIOReferenceContainer::CreateReferenceInstance(
     _MIN_ const std::string& specifier,
     _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style, _MIN_ EDyScope scope)
 {
+  TStringHashMap<DDyIOReferenceInstance>* ptrRIHashMap;
+
   switch (type)
   {
-  case EDyResourceType::GLShader:
-  {
-    auto [it, isSuccessful] = this->mMapGLShaderReference.try_emplace(specifier, specifier, style, type, scope);
-    MDY_ASSERT(isSuccessful == true, "RI Container creation must be successful.");
-  } break;
-  case EDyResourceType::Texture:
-  {
-    auto [it, isSuccessful] = this->mMapTextureReference.try_emplace(specifier, specifier, style, type, scope);
-    MDY_ASSERT(isSuccessful == true, "RI Container creation must be successful.");
-  } break;
-  case EDyResourceType::Mesh:
-  {
-    auto [it, isSuccessful] = this->mMapMeshReference.try_emplace(specifier, specifier, style, type, scope);
-    MDY_ASSERT(isSuccessful == true, "RI Container creation must be successful.");
-  } break;
-  case EDyResourceType::Model:
-  {
-    auto [it, isSuccessful] = this->mMapModelReference.try_emplace(specifier, specifier, style, type, scope);
-    MDY_ASSERT(isSuccessful == true, "RI Container creation must be successful.");
-  } break;
-  case EDyResourceType::Material:
-  {
-    auto [it, isSuccessful] = this->mMapMaterialReference.try_emplace(specifier, specifier, style, type, scope);
-    MDY_ASSERT(isSuccessful == true, "RI Container creation must be successful.");
-  } break;
-  case EDyResourceType::GLAttachment:
-  {
-    auto [it, isSuccessful] = this->mMapAttachmentReference.try_emplace(specifier, specifier, style, type, scope);
-    MDY_ASSERT(isSuccessful == true, "RI Container creation must be successful.");
-  } break;
-  case EDyResourceType::GLFrameBuffer:
-  {
-    auto [it, isSuccessful] = this->mMapFrameBufferReference.try_emplace(specifier, specifier, style, type, scope);
-    MDY_ASSERT(isSuccessful == true, "RI Container creation must be successful.");
-  } break;
+  case EDyResourceType::GLShader: { ptrRIHashMap = &this->mMapGLShaderReference; } break;
+  case EDyResourceType::Texture:  { ptrRIHashMap = &this->mMapTextureReference; } break;
+  case EDyResourceType::Mesh:     { ptrRIHashMap = &this->mMapMeshReference; } break;
+  case EDyResourceType::Model:    { ptrRIHashMap = &this->mMapModelReference; } break;
+  case EDyResourceType::Material: { ptrRIHashMap = &this->mMapMaterialReference; } break;
+  case EDyResourceType::GLAttachment:   { ptrRIHashMap = &this->mMapAttachmentReference; } break;
+  case EDyResourceType::GLFrameBuffer:  { ptrRIHashMap = &this->mMapFrameBufferReference; } break;
+  case EDyResourceType::Skeleton:       { ptrRIHashMap = &this->mMapModelSkeletonReference; } break;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
   }
 
+  auto [it, isSuccessful] = ptrRIHashMap->try_emplace(specifier, specifier, style, type, scope);
+  MDY_ASSERT(isSuccessful == true, "RI Container creation must be successful.");
   return DY_SUCCESS;
 }
 
@@ -208,6 +196,7 @@ EDySuccess DDyIOReferenceContainer::TryUpdateValidity(
     _MIN_ bool isValid,
     _MIN_ void* iPtrInstance)
 {
+  // Get pointer of hash-map.
   TStringHashMap<DDyIOReferenceInstance>* map;
   switch (type)
   {
@@ -218,9 +207,11 @@ EDySuccess DDyIOReferenceContainer::TryUpdateValidity(
   case EDyResourceType::Material: map = &this->mMapMaterialReference; break;
   case EDyResourceType::GLAttachment:   map = &this->mMapAttachmentReference;   break;
   case EDyResourceType::GLFrameBuffer:  map = &this->mMapFrameBufferReference;  break;
+  case EDyResourceType::Skeleton:       map = &this->mMapModelSkeletonReference;  break;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
   }
 
+  // Get `not-valid` Reference Instance instance, try to update validity to true to use this from outside world.
   auto& instance = (*map)[specifier];
   if (isValid != instance.mIsResourceValid) 
   { 

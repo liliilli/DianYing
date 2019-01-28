@@ -245,8 +245,7 @@ std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(
     }
     checkList.emplace_back(metaMaterial.mShaderSpecifier, EDyResourceType::GLShader, iResourceStyle, iScope);
   }
-
-  if (iResourceType == EDyResourceType::GLFrameBuffer)
+  else if (iResourceType == EDyResourceType::GLFrameBuffer)
   { // If resource type is `FrameBuffer`, bind all dependencies of `FrameBuffer` to checkList.
     const auto& metaInfo = this->mMetaInfoManager->GetGlFrameBufferMetaInformation(iSpecifier);
 
@@ -261,8 +260,7 @@ std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(
       checkList.emplace_back(metaInfo.mDepthAttachmentSpecifier, EDyResourceType::GLAttachment, iResourceStyle, iScope);
     }
   }
-
-  if (iResourceType == EDyResourceType::Model)
+  else if (iResourceType == EDyResourceType::Model)
   { // If resource type is `Model` and if using builtin mesh specifier...
     const auto& metaInfo = this->mMetaInfoManager->GetModelMetaInformation(iSpecifier);
     for (const auto& [meshSpecifier, materialSpecifier] : metaInfo.mMeshList)
@@ -270,8 +268,18 @@ std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(
       checkList.emplace_back(meshSpecifier,     EDyResourceType::Mesh,      iResourceStyle, iScope);
       checkList.emplace_back(materialSpecifier, EDyResourceType::Material,  iResourceStyle, iScope);
     }
+
+    // If this model will use skeleton, add skeleton (information) also.
+    // Skeleton resource only has `information`.
+    if (metaInfo.mSkeleton.mIsUsingSkeleton == true)
+    {
+      checkList.emplace_back(
+          metaInfo.mSkeleton.mSkeletonSpecifier, 
+          EDyResourceType::Skeleton, EDyResourceStyle::Information, iScope);
+    }
   }
 
+  // Resource common dependencies.
   if (iResourceStyle == EDyResourceStyle::Resource)
   {
     switch (iResourceType)
@@ -593,6 +601,7 @@ bool TDyIO::outIsMetaInformationExist(_MIN_ const std::string& specifier, _MIN_ 
   case EDyResourceType::WidgetMeta:     return this->mMetaInfoManager->IsWidgetMetaInfoExist(specifier);
   case EDyResourceType::GLAttachment:   return this->mMetaInfoManager->IsAttachmentMetaInfoExist(specifier);
   case EDyResourceType::GLFrameBuffer:  return this->mMetaInfoManager->IsFrameBufferMetaInfoExist(specifier);
+  case EDyResourceType::Skeleton:       return this->mMetaInfoManager->IsModelSkeletonMetaInfoExist(specifier);
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
   }
 }

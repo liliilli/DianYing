@@ -297,19 +297,25 @@ const PDyMeshInstanceMetaInfo & MDyMetaInfo::GetBtMeshMetaInformation(_MIN_ cons
   return this->mModelMeshMetaInfo.at(specifier);
 }
 
-const PDyModelInstanceMetaInfo& MDyMetaInfo::GetModelMetaInformation(const std::string& specifier) const
+const PDyModelInstanceMetaInfo& MDyMetaInfo::GetModelMetaInformation(_MIN_ const std::string& specifier) const
 {
   MDY_ASSERT(this->IsModelMetaInfoExist(specifier) == true, "Model given specifier name is not exist.");
   return this->mModelMetaInfo.at(specifier);
 }
 
-const PDyTextureInstanceMetaInfo& MDyMetaInfo::GetTextureMetaInformation(const std::string& specifier) const
+const PDyModelSkelInstanceMetaInfo& MDyMetaInfo::GetModelSkeletonMetaInformation(_MIN_ const std::string& specifier) const
+{
+  MDY_ASSERT(this->IsModelSkeletonMetaInfoExist(specifier) == true, "Model skeleton that has given specifier name is not exist.");
+  return this->mModelSkeletonMetaInfo.at(specifier);
+}
+
+const PDyTextureInstanceMetaInfo& MDyMetaInfo::GetTextureMetaInformation(_MIN_ const std::string& specifier) const
 {
   MDY_ASSERT(this->IsTextureMetaInfoExist(specifier) == true, "Texture given specifier name is not exist.");
   return this->mTextureMetaInfo.at(specifier);
 }
 
-const PDyMaterialInstanceMetaInfo& MDyMetaInfo::GetMaterialMetaInformation(const std::string& specifier) const
+const PDyMaterialInstanceMetaInfo& MDyMetaInfo::GetMaterialMetaInformation(_MIN_ const std::string& specifier) const
 {
   MDY_ASSERT(this->IsMaterialMetaInfoExist(specifier) == true, "Material given specifier name is not exist.");
   return this->mMaterialMetaInfo.at(specifier);
@@ -350,6 +356,11 @@ bool MDyMetaInfo::IsLevelMetaInformation(_MIN_ const std::string& specifier) con
 bool MDyMetaInfo::IsModelMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
 {
   return DyIsMapContains(this->mModelMetaInfo, specifier);
+}
+
+bool MDyMetaInfo::IsModelSkeletonMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
+{
+  return DyIsMapContains(this->mModelSkeletonMetaInfo, specifier);
 }
 
 bool MDyMetaInfo::IsTextureMetaInfoExist(_MIN_ const std::string& specifier) const noexcept

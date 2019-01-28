@@ -28,6 +28,7 @@ enum class EDyResourceType
   Material,
   WidgetMeta,
   Sound,
+  Skeleton,
 
   __MeshVBO,
   NoneError
