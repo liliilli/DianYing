@@ -24,8 +24,9 @@ CDyModelFilter::CDyModelFilter(FDyActor& actorReference) : ADyGeneralBaseCompone
 
 EDySuccess CDyModelFilter::Initialize(const PDyModelFilterComponentMetaInfo& metaInfo)
 {
-  const auto& modelSpecfier = metaInfo.mDetails.mModelSpecifierName;
-  mBinderModel.TryRequireResource(modelSpecfier);
+  // Bind model first.
+  this->mModelSpecifier = metaInfo.mDetails.mModelSpecifierName;
+  this->mBinderModel.TryRequireResource(this->mModelSpecifier);
 
   this->Activate();
   return DY_SUCCESS;

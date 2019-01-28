@@ -29,6 +29,7 @@
 #include <Dy/Management/Helper/SDyProfilingHelper.h>
 #include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
 #include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
+#include <Dy/Management/Internal/Render/FDyModelHandlerManager.h>
 
 namespace dy
 {
@@ -38,6 +39,7 @@ EDySuccess MDyRendering::pfInitialize()
   // Initialize framebuffer management singleton instance.
   MDY_CALL_ASSERT_SUCCESS(MDyFramebuffer::Initialize());
   MDY_CALL_ASSERT_SUCCESS(MDyUniformBufferObject::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(FDyModelHandlerManager::Initialize());
 
   this->mBasicOpaqueRenderer  = std::make_unique<decltype(this->mBasicOpaqueRenderer)::element_type>();
   this->mTranslucentOIT       = std::make_unique<decltype(this->mTranslucentOIT)::element_type>();
@@ -71,6 +73,7 @@ EDySuccess MDyRendering::pfRelease()
   this->mTranslucentOIT       = MDY_INITIALIZE_NULL;
 
   // Initialize internal management singleton instance.
+  MDY_CALL_ASSERT_SUCCESS(FDyModelHandlerManager::Release());
   MDY_CALL_ASSERT_SUCCESS(MDyFramebuffer::Release());
   MDY_CALL_ASSERT_SUCCESS(MDyUniformBufferObject::Release());
   return DY_SUCCESS;

@@ -99,6 +99,8 @@ private:
 
   /// Valid model reference handle.
   TDyLResourceBinderModel mBinderModel = {};
+  /// Model specifier name for activate & deactivating.
+  std::string             mModelSpecifier = MDY_INITIALIZE_EMPTYSTR;
   /// CDyModelRendererr reference ptr.
   CDyModelRenderer*       mModelRendererReferencePtr  = MDY_INITIALIZE_NULL;
 
