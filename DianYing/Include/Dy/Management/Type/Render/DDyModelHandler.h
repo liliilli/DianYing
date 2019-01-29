@@ -25,6 +25,7 @@ namespace dy
 class FDyActor;
 class CDyModelFilter;
 class CDyModelRenderer;
+class CDyModelAnimator;
 class CDyTransform;
 } /// ::dy namespace
 
@@ -46,6 +47,7 @@ public:
   {
     CDyModelFilter*   mPtrCompModelFilter = nullptr;
     CDyModelRenderer* mPtrModelRenderer   = nullptr;
+    CDyModelAnimator* mPtrModelAnimator   = nullptr;
   };
   using TContainer = std::unordered_map<FDyActor*, DActorInfo>;
 
@@ -73,10 +75,14 @@ public:
   EDySuccess BindFilter(_MIN_ FDyActor& iRefActor, _MIN_ CDyModelFilter& iRefFilter);
   /// @brief Bind renderer. If Actor information item is not exist yet, just return DY_FAILURE.
   EDySuccess BindRenderer(_MIN_ FDyActor& iRefActor, _MIN_ CDyModelRenderer& iRefComp);
+  /// @brief Bind animator. If Actor information item is not exist yet, just return DY_FAILURE.
+  EDySuccess BindAnimator(_MIN_ FDyActor& iRefActor, _MIN_ CDyModelAnimator& iRefComp);
   /// @brief Unbind filter.
   EDySuccess UnbindFilter(_MIN_ FDyActor& iRefActor);
   /// @brief Unbind renderer.
   EDySuccess UnbindRenderer(_MIN_ FDyActor& iRefActor);
+  /// @brief Unbind animator.
+  EDySuccess UnbindAnimator(_MIN_ FDyActor& iRefActor);
 
   /// @brief
   MDY_NODISCARD const TContainer& GetActorContainer() const noexcept;
