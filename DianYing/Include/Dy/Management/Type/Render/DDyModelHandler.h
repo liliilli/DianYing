@@ -40,6 +40,15 @@ namespace dy
 struct DDyModelHandler final
 {
 public:
+  /// @struct DActorInfo
+  /// @brief 
+  struct DActorInfo final
+  {
+    CDyModelFilter*   mPtrCompModelFilter = nullptr;
+    CDyModelRenderer* mPtrModelRenderer   = nullptr;
+  };
+  using TContainer = std::unordered_map<FDyActor*, DActorInfo>;
+
   /// @brief
   DDyModelHandler(_MIN_ const std::string& iModelSpecifier);
 
@@ -50,6 +59,8 @@ public:
   MDY_NODISCARD bool IsActorNeedToBeGc(_MIN_ FDyActor& iRefActor) const noexcept;
   /// @brief Check there is no actor information.
   MDY_NODISCARD bool IsEmpty() const noexcept; 
+  /// @brief Check resource binder is actaully valid.
+  MDY_NODISCARD bool IsModelResourceValid() const noexcept;
 
   /// @brief Try create actor binding information instance to container.
   /// If there is already existed one, just return DY_FAILURE.
@@ -67,19 +78,19 @@ public:
   /// @brief Unbind renderer.
   EDySuccess UnbindRenderer(_MIN_ FDyActor& iRefActor);
 
-private:
-  /// @struct DActorInfo
-  /// @brief 
-  struct DActorInfo final
-  {
-    CDyModelFilter*   mPtrCompModelFilter = nullptr;
-    CDyModelRenderer* mPtrModelRenderer   = nullptr;
-  };
+  /// @brief
+  MDY_NODISCARD const TContainer& GetActorContainer() const noexcept;
+  /// @brief
+  MDY_NODISCARD TContainer& GetActorContainer() noexcept;
 
+  /// @brief
+  MDY_NODISCARD const TDyLResourceBinderModel& GetModelBinderReference() const noexcept;
+
+private:
   /// Only specifies one valid model.
-  TDyLResourceBinderModel                   mModelBinder;
+  TDyLResourceBinderModel mModelBinder;
   /// Have pointer of actor and components information.
-  std::unordered_map<FDyActor*, DActorInfo> mActorInformation;
+  TContainer mActorInformation;
 };
 
 } /// ::dy namespace

@@ -30,6 +30,7 @@
 #include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
 #include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
 #include <Dy/Management/Internal/Render/FDyModelHandlerManager.h>
+#include "Dy/Core/Resource/Resource/FDyModelResource.h"
 
 namespace dy
 {
@@ -77,6 +78,51 @@ EDySuccess MDyRendering::pfRelease()
   MDY_CALL_ASSERT_SUCCESS(MDyFramebuffer::Release());
   MDY_CALL_ASSERT_SUCCESS(MDyUniformBufferObject::Release());
   return DY_SUCCESS;
+}
+
+void MDyRendering::SetupDrawModelTaskQueue()
+{
+  auto& handlerManager = FDyModelHandlerManager::GetInstance();
+
+  const auto& modelHandleContainer = handlerManager.GetContainer();
+  for (const auto& [specifier, ptrsmtInstance] : modelHandleContainer)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtInstance)) { continue; }
+    if (ptrsmtInstance->IsModelResourceValid() == false) { continue; }
+
+    // Loop handler's actor information instance.
+    auto& actorContainer = ptrsmtInstance->GetActorContainer();
+    std::vector<NotNull<DDyModelHandler::DActorInfo*>> renderableActorList;
+
+    //
+    for (auto& [_, actorInfo] : actorContainer)
+    {
+      if (actorInfo.mPtrCompModelFilter == nullptr) { continue; }
+      if (actorInfo.mPtrModelRenderer == nullptr) { continue; }
+      renderableActorList.emplace_back(DyMakeNotNull(&actorInfo));
+    }
+  
+    // Get 
+    const auto& refBinder     = ptrsmtInstance->GetModelBinderReference();
+    const FDyModelResource* ptrModelResc = refBinder.Get();
+
+    const auto& bindMeshList = ptrModelResc->GetMeshResourceList();
+    const auto& bindMateList = ptrModelResc->GetMaterialResourceList();
+    const auto  numMeshCount  = static_cast<TU32>(bindMeshList.size());
+
+    // Process
+    for (TU32 i = 0; i < numMeshCount; ++i)
+    {
+      const auto& refMeshResc = *bindMeshList[i]->Get();
+      const auto& refMatResc  = *bindMateList[i]->Get();
+
+      // Insert queue.
+      for (auto& ptrActorInfo : renderableActorList)
+      {
+        this->EnqueueDrawMesh(*ptrActorInfo->mPtrModelRenderer, refMeshResc, refMatResc);
+      }
+    }
+  }
 }
 
 void MDyRendering::EnqueueDrawMesh(

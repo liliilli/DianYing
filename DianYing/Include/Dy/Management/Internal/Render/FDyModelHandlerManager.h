@@ -28,6 +28,13 @@ public:
   MDY_SINGLETON_DERIVED(FDyModelHandlerManager);
   MDY_SINGLETON_PROPERTIES(FDyModelHandlerManager);
 
+  using TContainer = TStringHashMap<std::unique_ptr<DDyModelHandler>>;
+  
+  /// @brief 
+  MDY_NODISCARD TContainer& GetContainer() noexcept;
+  /// @brief 
+  MDY_NODISCARD const TContainer& GetContainer() const noexcept;
+
   /// @brief Check there is bound model in container, using Model specifier name.
   MDY_NODISCARD bool IsBoundModelExist(_MIN_ const std::string& iModelSpecifier) const noexcept;
 
@@ -59,7 +66,7 @@ public:
 
 private:
   /// @brief 
-  TStringHashMap<std::unique_ptr<DDyModelHandler>> mModelHandlerContainer;
+  TContainer mModelHandlerContainer;
 };
 
 } /// ::dy namespace

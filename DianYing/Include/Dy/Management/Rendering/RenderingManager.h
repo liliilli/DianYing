@@ -58,16 +58,17 @@ class MDyRendering final : public IDySingleton<MDyRendering>
   MDY_SINGLETON_PROPERTIES(MDyRendering);
   MDY_SINGLETON_DERIVED(MDyRendering);
 public:
+  /// @brief 
+  /// @TODO LOGIC IS TEMPORARY.
+  void SetupDrawModelTaskQueue();
+
   /// @brief Enqueue draw call to mesh with material.
   void EnqueueDrawMesh(
       _MIN_ CDyModelRenderer& iRefModelRenderer,
       _MIN_ const FDyMeshResource& iRefValidMesh, 
       _MIN_ const FDyMaterialResource& iRefValidMat);
 
-  ///
   /// @brief
-  /// @TODO SCRIPT THIS!
-  ///
   void RenderDrawCallQueue();
 
   /// @brief Render only loading widget.

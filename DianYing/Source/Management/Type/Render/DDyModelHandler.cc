@@ -42,6 +42,11 @@ bool DDyModelHandler::IsEmpty() const noexcept
   return this->mActorInformation.empty();
 }
 
+bool DDyModelHandler::IsModelResourceValid() const noexcept
+{
+  return this->mModelBinder.IsResourceExist();
+}
+
 EDySuccess DDyModelHandler::TryCreateActorBinding(_MIN_ FDyActor& iRefActor)
 {
   // If already exist, just return DY_FAILURE.
@@ -106,6 +111,21 @@ EDySuccess DDyModelHandler::UnbindRenderer(_MIN_ FDyActor& iRefActor)
   auto& item = this->mActorInformation[&iRefActor];
   item.mPtrModelRenderer = nullptr;
   return DY_SUCCESS;
+}
+
+const DDyModelHandler::TContainer& DDyModelHandler::GetActorContainer() const noexcept
+{
+  return this->mActorInformation;
+}
+
+DDyModelHandler::TContainer& DDyModelHandler::GetActorContainer() noexcept
+{
+  return this->mActorInformation;
+}
+
+const TDyLResourceBinderModel& DDyModelHandler::GetModelBinderReference() const noexcept
+{
+  return this->mModelBinder;
 }
 
 } /// ::dy namespace

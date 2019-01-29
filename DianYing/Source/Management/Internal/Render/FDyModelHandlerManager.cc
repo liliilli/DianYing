@@ -31,6 +31,16 @@ EDySuccess FDyModelHandlerManager::pfRelease()
   return DY_SUCCESS;
 }
 
+FDyModelHandlerManager::TContainer& FDyModelHandlerManager::GetContainer() noexcept
+{
+  return this->mModelHandlerContainer;
+}
+
+const FDyModelHandlerManager::TContainer& FDyModelHandlerManager::GetContainer() const noexcept
+{
+  return this->mModelHandlerContainer;
+}
+
 bool FDyModelHandlerManager::IsBoundModelExist(_MIN_ const std::string& iModelSpecifier) const noexcept
 {
   return DyIsMapContains(this->mModelHandlerContainer, iModelSpecifier);
