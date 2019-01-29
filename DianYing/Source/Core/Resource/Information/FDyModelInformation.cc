@@ -30,6 +30,11 @@ FDyModelInformation::FDyModelInformation(_MIN_ const PDyModelInstanceMetaInfo& m
     DySafeUniquePtrEmplaceBack(this->mMeshInformations, meshSpecifier);
     DySafeUniquePtrEmplaceBack(this->mMaterialInformations, materialSpecifier);
   }
+
+  if (metaInfo.mSkeleton.mIsUsingSkeleton == true)
+  {
+    this->mBinderSkeleton.TryRequireResource(metaInfo.mSkeleton.mSkeletonSpecifier);
+  }
 }
 
 } /// ::dy namespace

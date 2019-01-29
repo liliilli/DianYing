@@ -61,7 +61,9 @@ private:
   std::vector<std::unique_ptr<TDyIInformationBinderMesh>>     mMeshInformations;
   std::vector<std::unique_ptr<TDyIInformationBinderMaterial>> mMaterialInformations;
 
-  PDyModelInstanceMetaInfo::DTransform mModelTransform;
+  /// Valid skeleton reference handle.
+  TDyLInformationBinderSkeleton         mBinderSkeleton;
+  PDyModelInstanceMetaInfo::DTransform  mModelTransform;
 };
 
 } /// ::dy namespace
