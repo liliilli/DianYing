@@ -16,6 +16,7 @@
 #include "Data_Vector3.h"
 #include "Data_Vector4.h"
 #include "Data_Matrix4.h"
+#include "Data_VectorInt4.h"
 
 /// @struct DDyVertexInformation
 /// @brief Vertex information (Input assembly unit data)
@@ -29,7 +30,7 @@ struct DDyVertexInformation final
   DDyVector3          mTangent    = {};
   DDyVector3          mBitangent  = {};
   // Below elements are used when skeletal animation is applied.
-  DDyVector4          mBoneId     = {-1, -1, -1, -1};
+  DDyVectorInt4       mBoneId     = {-1, -1, -1, -1};
   DDyVector4          mWeights    = { 0,  0,  0,  0};
 };
 

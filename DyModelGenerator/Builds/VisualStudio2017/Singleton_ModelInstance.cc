@@ -120,8 +120,8 @@ EDySuccess Singleton_ModelInstance::ExportModelMesh(const std::string& iSpecifie
         fwrite(&vi.mTexCoords1[0], sizeof(float), 2, fdFile); // uv1.
         fwrite(&vi.mTangent[0], sizeof(float), 3, fdFile);    // tangent.
         fwrite(&vi.mBitangent[0], sizeof(float), 3, fdFile);  // bitangent.
-        fwrite(&vi.mBoneId[0], sizeof(float), 4, fdFile);     // boneId.
-        fwrite(&vi.mWeights[0], sizeof(float), 4, fdFile);    // weights.
+        fwrite(&vi.mBoneId[0], sizeof(DDyVectorInt4), 1, fdFile); // boneId.
+        fwrite(&vi.mWeights[0], sizeof(DDyVector4), 1, fdFile);   // weights.
       }
     }
     fclose(fdFile);
@@ -178,7 +178,7 @@ DMesh Singleton_ModelInstance::CreateDyMesh(unsigned iMeshIndex, bool withSkelet
         jassert(itSkeletonBone != this->mExportedSkeleton.cend());
 
         // Get a proper id list from retrieved skeleton bone instance.
-        const auto indexSkeletonBone = static_cast<unsigned>(std::distance(this->mExportedSkeleton.cbegin(), itSkeletonBone));
+        const auto indexSkeletonBone = static_cast<signed>(std::distance(this->mExportedSkeleton.cbegin(), itSkeletonBone));
         for (unsigned idWeight = 0, numWeights = ptrAiBone->mNumWeights; idWeight < numWeights; ++idWeight)
         {
           // Traverse bone's weight.
@@ -192,7 +192,7 @@ DMesh Singleton_ModelInstance::CreateDyMesh(unsigned iMeshIndex, bool withSkelet
           {
             if (refVertex.mBoneId[id] == -1)
             {
-              refVertex.mBoneId[id]   = static_cast<float>(indexSkeletonBone);
+              refVertex.mBoneId[id]   = indexSkeletonBone;
               refVertex.mWeights[id]  = valWeight;
               break;
             }

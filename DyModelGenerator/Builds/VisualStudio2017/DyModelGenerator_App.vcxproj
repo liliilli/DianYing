@@ -1838,6 +1838,7 @@
     <ClInclude Include="Data_Vector2.h" />
     <ClInclude Include="Data_Vector3.h" />
     <ClInclude Include="Data_Vector4.h" />
+    <ClInclude Include="Data_VectorInt4.h" />
     <ClInclude Include="Enum_ExportFlags.h" />
     <ClInclude Include="Enum_MaterialType.h" />
     <ClInclude Include="Global_EnumSuccess.h" />
