@@ -28,10 +28,34 @@ public:
   MDY_SINGLETON_DERIVED(FDyModelHandlerManager);
   MDY_SINGLETON_PROPERTIES(FDyModelHandlerManager);
 
-private:
+  /// @brief Check there is bound model in container, using Model specifier name.
+  MDY_NODISCARD bool IsBoundModelExist(_MIN_ const std::string& iModelSpecifier) const noexcept;
+
+  /// @brief Try create handler, 
+  /// given `iModelSpecifier` has a valid Reference Instance from `Resource` with `Model`.
+  /// If not, this function will return DY_FAILURE.
+  /// But If model specifier is exist in meta Information (not instanted), 
+  /// just create and require resource and return DY_SUCCESS anyway.
+  MDY_NODISCARD EDySuccess TryCreateHandler(_MIN_ const std::string& iModelSpecifier) noexcept;
+
+  /// @brief
+  EDySuccess BindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ CDyModelFilter& iFilter);
+  /// @brief
+  EDySuccess UnbindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor);
 
   /// @brief 
-  std::unordered_map<std::string, DDyModelHandler> mModelHandlerContainer;
+  MDY_NODISCARD bool IsActorInfoNeedToBeGc(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor) const noexcept;
+  /// @brief 
+  EDySuccess TryRemoveBoundActor(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor);
+
+  /// @brief This function checks valid `iSpecifier` item has no actor item. so can be deleted safely.
+  MDY_NODISCARD bool IsBoundModelNeedToGc(_MIN_ const std::string& iSpecifier) const noexcept;
+  /// @brief 
+  EDySuccess TryRemoveBoundModel(_MIN_ const std::string& iSpecifier);
+
+private:
+  /// @brief 
+  TStringHashMap<std::unique_ptr<DDyModelHandler>> mModelHandlerContainer;
 };
 
 } /// ::dy namespace

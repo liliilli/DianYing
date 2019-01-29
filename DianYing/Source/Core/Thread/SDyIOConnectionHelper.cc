@@ -119,6 +119,16 @@ void SDyIOConnectionHelper::PopulateInstantMaterialResource(
   refMat.TryRequireResource(desc.mSpecifierName);
 }
 
+bool SDyIOConnectionHelper::IsReferenceInstanceExist(
+    _MIN_ const std::string& iSpecifier, 
+    _MIN_ EDyResourceType iType, 
+    _MIN_ EDyResourceStyle iStyle)
+{
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
+  auto& ioThread = *gEngine->pfGetIOThread();
+  return ioThread.pIsReferenceInstanceExist(iSpecifier, iType, iStyle);
+}
+
 void SDyIOConnectionHelper::InsertResult(_MIN_ const DDyIOWorkerResult& result) noexcept
 {
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");

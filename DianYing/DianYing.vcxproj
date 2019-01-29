@@ -425,6 +425,7 @@
     <ClCompile Include="Source\Management\IO\MDyIOResource.cc" />
     <ClCompile Include="Source\Management\Type\Input\DDyInputButton.cc" />
     <ClCompile Include="Source\Management\Type\Input\DDyJoystickAnalog.cc" />
+    <ClCompile Include="Source\Management\Type\Render\DDyModelHandler.cc" />
     <ClCompile Include="Source\Management\Type\Time\DDyTimepoint.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetBarMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetImageMetaInformation.cc" />

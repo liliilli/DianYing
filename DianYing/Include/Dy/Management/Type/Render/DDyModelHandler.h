@@ -25,6 +25,7 @@ namespace dy
 class FDyActor;
 class CDyModelFilter;
 class CDyModelRenderer;
+class CDyTransform;
 } /// ::dy namespace
 
 //!
@@ -39,14 +40,34 @@ namespace dy
 struct DDyModelHandler final
 {
 public:
+  /// @brief
+  DDyModelHandler(_MIN_ const std::string& iModelSpecifier);
+
+  /// @brief Check there is actor item.
+  MDY_NODISCARD bool IsActorItemExist(_MIN_ FDyActor& iRefActor) const noexcept;
+  /// @brief Check given actor item needs to be GCed.
+  /// This function can not check null-ed instance.
+  MDY_NODISCARD bool IsActorNeedToBeGc(_MIN_ FDyActor& iRefActor) const noexcept;
+  /// @brief Check there is no actor information.
+  MDY_NODISCARD bool IsEmpty() const noexcept; 
+
+  /// @brief Try create actor binding information instance to container.
+  /// If there is already existed one, just return DY_FAILURE.
+  /// This function can not be called independenty
+  EDySuccess TryCreateActorBinding(_MIN_ FDyActor& iRefActor);
+  /// @brief 
+  EDySuccess TryRemoveActorBinding(_MIN_ FDyActor& iRefActor);
   
+  /// @brief Bind filter. If Actor information item is not exist yet, just return DY_FAILURE.
+  EDySuccess BindFilter(_MIN_ FDyActor& iRefActor, _MIN_ CDyModelFilter& iRefFilter);
+  /// @brief Unbind filter.
+  EDySuccess UnbindFilter(_MIN_ FDyActor& iRefActor);
 
 private:
   /// @struct DActorInfo
   /// @brief 
   struct DActorInfo final
   {
-    FDyActor*         mPtrValidActor      = nullptr;
     CDyModelFilter*   mPtrCompModelFilter = nullptr;
     CDyModelRenderer* mPtrModelRenderer   = nullptr;
   };

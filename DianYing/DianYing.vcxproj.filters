@@ -295,6 +295,7 @@
     <ClCompile Include="Source\Core\Resource\Information\FDyModelAnimScrapInformation.cc" />
     <ClCompile Include="Source\Element\Type\FDy3WaySwitcher.cc" />
     <ClCompile Include="Source\Management\Internal\Render\FDyModelHandlerManager.cc" />
+    <ClCompile Include="Source\Management\Type\Render\DDyModelHandler.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
