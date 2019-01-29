@@ -58,22 +58,14 @@ FDyMeshInformation::FDyMeshInformation(_MIN_ const PDyMeshInstanceMetaInfo& meta
         this->mProperty.mDefaultMeshBuffer.mVertexList.resize(numVertex);
         for (auto& vi : this->mProperty.mDefaultMeshBuffer.mVertexList)
         {
-          fread(&vi.mPosition[0], sizeof(float), 3, fd);  // Position
-          fread(&vi.mNormal[0], sizeof(float), 3, fd);    // Normal
-          fread(&vi.mTexCoords[0], sizeof(float), 2, fd); // UV0 (u, v)
-          fseek(fd, sizeof(float) * 16, SEEK_CUR);
-#ifdef false
-          // uv1.
-          for (unsigned i = 0; i < 2; ++i) { fwrite(&vi.mTexCoords1[i], sizeof(float), 1, fd); }
-          // tangent.
-          for (unsigned i = 0; i < 3; ++i) { fwrite(&vi.mTangent[i], sizeof(float), 1, fd); }
-          // bitangent.
-          for (unsigned i = 0; i < 3; ++i) { fwrite(&vi.mBitangent[i], sizeof(float), 1, fd); }
-          // bone (float).
-          for (unsigned i = 0; i < 4; ++i) { fwrite(&vi.mVertexBoneData.mBoneId[i], sizeof(float), 1, fd); }
-          // weight (float).
-          for (unsigned i = 0; i < 4; ++i) { fwrite(&vi.mVertexBoneData.mWeights[i], sizeof(float), 1, fd); }
-#endif
+          fread(&vi.mPosition[0], sizeof(TF32), 3, fd);   // Position
+          fread(&vi.mNormal[0], sizeof(TF32), 3, fd);     // Normal
+          fread(&vi.mTexCoord0[0], sizeof(TF32), 2, fd);  // UV0 (u, v)
+          fread(&vi.mTexCoord1[0], sizeof(TF32), 2, fd);  // UV1 (u, v)
+          fread(&vi.mTangent[0], sizeof(TF32), 3, fd);    // Tangent 
+          fread(&vi.mBitangent[0], sizeof(TF32), 3, fd);  // Bitangent
+          fread(&vi.mBoneId[0], sizeof(TI32), 4, fd);     // BoneID 
+          fread(&vi.mWeights[0], sizeof(TF32), 4, fd);    // Weights
         }
       }
     }

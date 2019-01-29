@@ -49,7 +49,7 @@ void FDyBtMsSphere::pEmplaceVertex(
   DDyVertexInformation vertex;
   vertex.mPosition  = position;
   vertex.mNormal    = position;
-  vertex.mTexCoords = texcoord;
+  vertex.mTexCoord0 = texcoord;
   container.mVertexList.emplace_back(vertex);
 }
 
