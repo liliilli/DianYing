@@ -37,17 +37,6 @@ struct DDyVertexInformation final
 void to_json(nlohmann::json& j, const DDyVertexInformation& p);
 void from_json(const nlohmann::json& j, DDyVertexInformation& p);
 
-/// @struct DDyGeometryBoneInformation
-/// @brief bone matrix information structure.
-struct DDyGeometryBoneInformation final
-{
-  DDyMatrix4x4        mBoneOffsetMatrix     = {};
-  DDyMatrix4x4        mFinalTransformation  = DDyMatrix4x4::IdentityMatrix();
-};
-
-void to_json(nlohmann::json& j, const DDyGeometryBoneInformation& p);
-void from_json(const nlohmann::json& j, DDyGeometryBoneInformation& p);
-
 struct DMesh final
 {
   std::vector<DDyVertexInformation> mVertexList;
