@@ -56,10 +56,6 @@ public:
   /// @param dt Delta time
   void UpdateObjects(_MIN_ float dt);
 
-  /// @brief
-  /// @param
-  void RequestDrawCall();
-
   /// @brief Get all actors with tag. Tag must be valid. \n
   /// If iTagSpecifier is empty, this function get all actors which is not specified any tag.
   MDY_NODISCARD std::vector<NotNull<FDyActor*>>

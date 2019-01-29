@@ -71,9 +71,6 @@ public:
   /// @brief Update sequence etc.
   void Update(float dt) override final {};
 
-  /// @brief Request MDyWorld to draw this instance.
-  void RequestDrawCall() noexcept;
-
   /// @brief  Get the number of submesh of model instance which binded to this component instance.
   /// @return The number of submesh elements binded to CDyModelRenderer::mPtrModelFilterComponent.
   MDY_NODISCARD std::optional<TI32> GetModelSubmeshCount() const noexcept;

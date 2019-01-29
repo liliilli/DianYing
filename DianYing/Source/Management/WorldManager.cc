@@ -119,11 +119,6 @@ void MDyWorld::UpdateObjects(_MIN_ float dt)
   }
 }
 
-void MDyWorld::RequestDrawCall()
-{
-  for (auto& modelRenderer : this->mActivatedModelRenderers) { modelRenderer->RequestDrawCall(); }
-}
-
 std::vector<NotNull<FDyActor*>> 
 MDyWorld::GetAllActorsWithTag(_MIN_ const std::string& iTagSpecifier) const noexcept
 {

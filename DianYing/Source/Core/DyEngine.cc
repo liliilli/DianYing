@@ -356,7 +356,6 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(Render)(_MIN_ EDyGlobalGameStatus iEngineSt
   {
     // Request render call.
     auto& render = MDyRendering::GetInstance();
-    //MDyWorld::GetInstance().RequestDrawCall();
     render.SetupDrawModelTaskQueue();
     render.RenderDrawCallQueue();
   } break;
