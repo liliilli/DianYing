@@ -59,7 +59,7 @@ void CDyModelFilter::Release()
   auto& handleManager = FDyModelHandlerManager::GetInstance();
   if (handleManager.IsBoundModelExist(this->mModelSpecifier) == true)
   {
-    handleManager.UnbindToHandler(this->mModelSpecifier, *this->GetBindedActor());
+    handleManager.UnbindToHandler(this->mModelSpecifier, *this->GetBindedActor(), *this);
     // Check 
     if (handleManager.IsActorInfoNeedToBeGc(this->mModelSpecifier, *this->GetBindedActor()) == true)
     {
@@ -105,6 +105,11 @@ const TDyLResourceBinderModel& CDyModelFilter::GetModelReference() const noexcep
 TDyLResourceBinderModel& CDyModelFilter::GetModelReference() noexcept
 {
   return this->mBinderModel;
+}
+
+const std::string& CDyModelFilter::GetModelSpecifier() const noexcept
+{
+  return this->mModelSpecifier;
 }
 
 void CDyModelFilter::fBindModelRendererReference(CDyModelRenderer& validReference)

@@ -70,19 +70,36 @@ EDySuccess FDyModelHandlerManager::BindToHandler(_MIN_ const std::string& iSpeci
   // Check
   if (this->IsBoundModelExist(iSpecifier) == false) { return DY_FAILURE; }
 
-  // And check.
+  // And check. If actor item is not exist, create actor information instance.
   auto& ptrsmtHandler = this->mModelHandlerContainer[iSpecifier];
   if (ptrsmtHandler->IsActorItemExist(iRefActor) == false)
   {
     ptrsmtHandler->TryCreateActorBinding(iRefActor);
   }
 
-  // Bind filter.
+  // At last, Bind filter.
   ptrsmtHandler->BindFilter(iRefActor, iFilter);
   return DY_SUCCESS;
 }
 
-EDySuccess FDyModelHandlerManager::UnbindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor)
+EDySuccess FDyModelHandlerManager::BindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ CDyModelRenderer& iComponent)
+{
+  // Check
+  if (this->IsBoundModelExist(iSpecifier) == false) { return DY_FAILURE; }
+
+  // And check. If actor item is not exist, create actor information instance.
+  auto& ptrsmtHandler = this->mModelHandlerContainer[iSpecifier];
+  if (ptrsmtHandler->IsActorItemExist(iRefActor) == false)
+  {
+    ptrsmtHandler->TryCreateActorBinding(iRefActor);
+  }
+
+  // At last, Bind filter.
+  ptrsmtHandler->BindRenderer(iRefActor, iComponent);
+  return DY_SUCCESS;
+}
+
+EDySuccess FDyModelHandlerManager::UnbindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ CDyModelFilter&)
 {
   // Check
   if (this->IsBoundModelExist(iSpecifier) == false) { return DY_FAILURE; }
@@ -93,6 +110,20 @@ EDySuccess FDyModelHandlerManager::UnbindToHandler(_MIN_ const std::string& iSpe
 
   // Unbind filter.
   ptrsmtHandler->UnbindFilter(iRefActor);
+  return DY_SUCCESS;
+}
+
+EDySuccess FDyModelHandlerManager::UnbindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ CDyModelRenderer&)
+{
+  // Check
+  if (this->IsBoundModelExist(iSpecifier) == false) { return DY_FAILURE; }
+
+  // And check.
+  auto& ptrsmtHandler = this->mModelHandlerContainer[iSpecifier];
+  if (ptrsmtHandler->IsActorItemExist(iRefActor) == false) { return DY_FAILURE; }
+
+  // Unbind filter.
+  ptrsmtHandler->UnbindRenderer(iRefActor);
   return DY_SUCCESS;
 }
 

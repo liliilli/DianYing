@@ -23,6 +23,7 @@
 #include <Dy/Core/Resource/Type/TDyResourceBinder.h>
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
 #include <Dy/Management/Helper/SDyProfilingHelper.h>
+#include <Dy/Management/Internal/Render/FDyModelHandlerManager.h>
 
 namespace dy
 {
@@ -33,8 +34,11 @@ CDyModelRenderer::CDyModelRenderer(FDyActor& actorReference) : ADyGeneralBaseCom
 EDySuccess CDyModelRenderer::Initialize(const PDyModelRendererComponentMetaInfo& descriptor)
 {
   this->mIsEnabledCreateShadow = descriptor.mDetails.mIsEnabledCreateShadow;
+  if (descriptor.mInitiallyActivated == true) 
+  { 
+    this->Activate(); 
+  }
 
-  if (descriptor.mInitiallyActivated) { this->Activate(); }
   return DY_SUCCESS;
 }
 
@@ -114,7 +118,6 @@ void CDyModelRenderer::TryActivateInstance()
   MDY_ASSERT(MDY_CHECK_ISNULL(this->mPtrModelFilterComponent), "CDyModelFilter::mModelRendererReferencePtr must be null when unbinding.");
   this->BindModelFilterReference(filterRef);
 
-
   // Check and rebind script instance to MDyWorld.
   const auto activatedIndex     = MDyWorld::GetInstance().pfEnrollActiveModelRenderer(*this);
   this->mActivatedUpdateListId  = activatedIndex;
@@ -134,12 +137,47 @@ void CDyModelRenderer::BindModelFilterReference(CDyModelFilter& validReference)
   MDY_ASSERT(MDY_CHECK_ISNULL(this->mPtrModelFilterComponent), "CDyModelRenderer::mPtrModelFilterComponent must be a nullptr when binding.");
   this->mPtrModelFilterComponent = &validReference;
   this->mPtrModelFilterComponent->fBindModelRendererReference(*this);
+
+  // Get model handle manager, and ask for whether model handler is already bound.
+  auto& handleManager       = FDyModelHandlerManager::GetInstance();
+  const auto modelSpecifier = this->mPtrModelFilterComponent->GetModelSpecifier();
+  if (handleManager.IsBoundModelExist(modelSpecifier) == false)
+  {
+    // If not, let manager create handler and bound it,
+    // and let actor bind transform to handler and register specifier as key.
+    MDY_CALL_ASSERT_SUCCESS(handleManager.TryCreateHandler(modelSpecifier));
+  }
+  handleManager.BindToHandler(modelSpecifier, *this->GetBindedActor(), *this);
 }
 
 void CDyModelRenderer::UnbindModelFilterReference()
 {
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mPtrModelFilterComponent), "CDyModelRenderer::mPtrModelFilterComponent must not be a nullptr when binding.");
   this->mPtrModelFilterComponent->fUnbindModelRendererReference();
+
+  // GC renderer ptr to given handler.
+  auto& handleManager       = FDyModelHandlerManager::GetInstance();
+  const auto modelSpecifier = this->mPtrModelFilterComponent->GetModelSpecifier();
+
+  if (handleManager.IsBoundModelExist(modelSpecifier) == true)
+  {
+    // Unbind this component from handler instance.
+    handleManager.UnbindToHandler(modelSpecifier, *this->GetBindedActor(), *this);
+
+    // Check Actor instance need to be removed. 
+    if (handleManager.IsActorInfoNeedToBeGc(modelSpecifier, *this->GetBindedActor()) == true)
+    {
+      MDY_CALL_ASSERT_SUCCESS(handleManager.TryRemoveBoundActor(modelSpecifier, *this->GetBindedActor()));
+
+      // Because handler have been broken immutability, so check Bound model instance need to be gced also.
+      if (handleManager.IsBoundModelNeedToGc(modelSpecifier) == true)
+      {
+        MDY_CALL_ASSERT_SUCCESS(handleManager.TryRemoveBoundModel(modelSpecifier));
+      }
+    }
+  }
+
+  // Null.
   this->mPtrModelFilterComponent = MDY_INITIALIZE_NULL;
 }
 

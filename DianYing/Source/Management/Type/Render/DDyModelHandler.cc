@@ -77,6 +77,17 @@ EDySuccess DDyModelHandler::BindFilter(_MIN_ FDyActor& iRefActor, _MIN_ CDyModel
   return DY_SUCCESS;
 }
 
+EDySuccess DDyModelHandler::BindRenderer(_MIN_ FDyActor& iRefActor, _MIN_ CDyModelRenderer& iRefComp)
+{
+  // If not exist, return DY_FAILURE.
+  if (this->IsActorItemExist(iRefActor) == false) { return DY_FAILURE; }
+
+  // Otherwise, bind filter.
+  auto& item = this->mActorInformation[&iRefActor];
+  item.mPtrModelRenderer = &iRefComp;
+  return DY_SUCCESS;
+}
+
 EDySuccess DDyModelHandler::UnbindFilter(_MIN_ FDyActor& iRefActor)
 {
   // If not exist, return DY_FAILURE.
@@ -84,6 +95,16 @@ EDySuccess DDyModelHandler::UnbindFilter(_MIN_ FDyActor& iRefActor)
 
   auto& item = this->mActorInformation[&iRefActor];
   item.mPtrCompModelFilter = nullptr;
+  return DY_SUCCESS;
+}
+
+EDySuccess DDyModelHandler::UnbindRenderer(_MIN_ FDyActor& iRefActor)
+{
+  // If not exist, return DY_FAILURE.
+  if (this->IsActorItemExist(iRefActor) == false) { return DY_FAILURE; }
+
+  auto& item = this->mActorInformation[&iRefActor];
+  item.mPtrModelRenderer = nullptr;
   return DY_SUCCESS;
 }
 

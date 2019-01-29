@@ -60,8 +60,12 @@ public:
   
   /// @brief Bind filter. If Actor information item is not exist yet, just return DY_FAILURE.
   EDySuccess BindFilter(_MIN_ FDyActor& iRefActor, _MIN_ CDyModelFilter& iRefFilter);
+  /// @brief Bind renderer. If Actor information item is not exist yet, just return DY_FAILURE.
+  EDySuccess BindRenderer(_MIN_ FDyActor& iRefActor, _MIN_ CDyModelRenderer& iRefComp);
   /// @brief Unbind filter.
   EDySuccess UnbindFilter(_MIN_ FDyActor& iRefActor);
+  /// @brief Unbind renderer.
+  EDySuccess UnbindRenderer(_MIN_ FDyActor& iRefActor);
 
 private:
   /// @struct DActorInfo

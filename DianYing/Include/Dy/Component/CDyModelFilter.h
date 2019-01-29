@@ -68,6 +68,9 @@ public:
   /// @brief Get model reference ptr.
   MDY_NODISCARD TDyLResourceBinderModel& GetModelReference() noexcept;
 
+  /// @brief Get model specifier name.
+  MDY_NODISCARD const std::string& GetModelSpecifier() const noexcept;
+
   ///
   /// @brief Bind valid CDyModelRenderer pointer from same FDyActor to this component.
   /// @param validReference valid CDyModelReference instance.
