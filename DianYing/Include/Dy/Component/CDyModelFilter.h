@@ -43,7 +43,7 @@ class CDyModelFilter final : public ADyGeneralBaseComponent, public IDyInitializ
 {
 public:
   CDyModelFilter(FDyActor& actorReference);
-  virtual ~CDyModelFilter() = default;
+  virtual ~CDyModelFilter();
 
   ///
   /// @brief  Initialize component
@@ -67,6 +67,9 @@ public:
 
   /// @brief Get model reference ptr.
   MDY_NODISCARD TDyLResourceBinderModel& GetModelReference() noexcept;
+
+  /// @brief Get model specifier name.
+  MDY_NODISCARD const std::string& GetModelSpecifier() const noexcept;
 
   ///
   /// @brief Bind valid CDyModelRenderer pointer from same FDyActor to this component.
@@ -99,6 +102,8 @@ private:
 
   /// Valid model reference handle.
   TDyLResourceBinderModel mBinderModel = {};
+  /// Model specifier name for activate & deactivating.
+  std::string             mModelSpecifier = MDY_INITIALIZE_EMPTYSTR;
   /// CDyModelRendererr reference ptr.
   CDyModelRenderer*       mModelRendererReferencePtr  = MDY_INITIALIZE_NULL;
 

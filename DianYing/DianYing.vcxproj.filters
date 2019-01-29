@@ -294,6 +294,8 @@
     <ClCompile Include="Source\Core\Resource\Type\ModelMesh\DDySkeletonBone.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyModelAnimScrapInformation.cc" />
     <ClCompile Include="Source\Element\Type\FDy3WaySwitcher.cc" />
+    <ClCompile Include="Source\Management\Internal\Render\FDyModelHandlerManager.cc" />
+    <ClCompile Include="Source\Management\Type\Render\DDyModelHandler.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -737,6 +739,8 @@
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyModelSkeletonInformation.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyModelAnimScrapInformation.h" />
     <ClInclude Include="Include\Dy\Element\Type\FDy3WaySwitcher.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\Render\FDyModelHandlerManager.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Render\DDyModelHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

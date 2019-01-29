@@ -336,7 +336,8 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(PreRender)(_MIN_ EDyGlobalGameStatus iEngin
   {
   case EDyGlobalGameStatus::GameRuntime: 
   {
-
+    // Reset frame dependent profiling count.
+    SDyProfilingHelper::ResetFrameDependentCounts();
   } break;
   default: break;
   }
@@ -348,15 +349,16 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(Render)(_MIN_ EDyGlobalGameStatus iEngineSt
   {
   case EDyGlobalGameStatus::FirstLoading: 
   case EDyGlobalGameStatus::Loading: 
+  {
     MDyRendering::GetInstance().MDY_PRIVATE_SPECIFIER(RenderLoading)();
-    break;
+  } break;
   case EDyGlobalGameStatus::GameRuntime: 
-    // Reset frame dependent profiling count.
-    SDyProfilingHelper::ResetFrameDependentCounts();
+  {
     // Request render call.
-    MDyWorld::GetInstance().RequestDrawCall();
-    MDyRendering::GetInstance().RenderDrawCallQueue();
-    break;
+    auto& render = MDyRendering::GetInstance();
+    render.SetupDrawModelTaskQueue();
+    render.RenderDrawCallQueue();
+  } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 
