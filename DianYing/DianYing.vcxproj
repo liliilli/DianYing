@@ -642,6 +642,7 @@
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyShaderResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDySoundResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyTextureResource.h" />
+    <ClInclude Include="Include\Dy\Component\Type\EDyComponentType.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\EDyLazy.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\FDyBinderBase.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Material\ADyUniformHelper.h" />
@@ -680,6 +681,7 @@
     <ClInclude Include="Include\Dy\Helper\Library\HelperRegex.h" />
     <ClInclude Include="Include\Dy\Helper\MCS\Functions.h" />
     <ClInclude Include="Include\Dy\Helper\Type\Plane.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\VectorInt4.h" />
     <ClInclude Include="Include\Dy\Helper\Wrapper\DDyMutexUniqueHashMap.h" />
     <ClInclude Include="Include\Dy\Include\Entry.h" />
     <ClInclude Include="Include\Dy\Management\Helper\SDyProfilingHelper.h" />

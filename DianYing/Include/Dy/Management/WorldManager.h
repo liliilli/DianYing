@@ -27,6 +27,7 @@
 namespace dy
 {
 class CDyModelRenderer;
+class CDyModelAnimator;
 class CDyLegacyCamera;
 class CDyCamera;
 } /// ::dy namespace
@@ -165,6 +166,11 @@ public:
   /// @brief Try detach active model renderer.
   EDySuccess MDY_PRIVATE_SPECIFIER(TryDetachActiveModelRenderer)(_MIN_ CDyModelRenderer* iPtrRenderer);
 
+  /// @brief Bind (Enroll) active model animator component. This function must be called in `CDyModelAnimator`.
+  void MDY_PRIVATE_SPECIFIER(BindActiveModelAnimator)(_MIN_ CDyModelAnimator& iRefComponent);
+  /// @brief Unbind deactivated model animator component This function must be called in `CDyModelAnimator`.
+  EDySuccess MDY_PRIVATE_SPECIFIER(UnbindActiveModelAnimator)(_MIN_ CDyModelAnimator& iRefComponent);
+
 #ifdef false
   ///
   /// @brief  Spawn actor into present scene.
@@ -279,6 +285,10 @@ private:
   std::vector<CDyCamera*>   mActivatedOnRenderingCameras = {};
   /// Erasion (activated) model renderer list. this list must be sorted descendently not to invalidate order.
   std::vector<TI32>         mErasionCamerasCandidateList = {};
+
+  /// Valid animator ptr which to be used update animation sequence.
+  /// This list is not invalidated because animation updating is not change list order.
+  std::vector<NotNull<CDyModelAnimator*>> mActivatedModelAnimatorPtrs = {};
 
   /// @brief Action creation descriptor list for present level. \n
   /// This list must be processed and cleaned each frame prior to update of logic.

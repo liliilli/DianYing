@@ -45,9 +45,8 @@ MDY_SET_IMMUTABLE_STRING(sHeader_SpecifierName,               "SpecifierName");
 MDY_SET_IMMUTABLE_STRING(sHeader_IsUsingUUIDForSpecification, "IsUsingUUIDForSpecification");
 MDY_SET_IMMUTABLE_STRING(sHeader_BackgroundColor,             "BackgroundColor");
 
-void GetLevelResourceFromActor(
-    _MIN_ const dy::TComponentMetaList& list, 
-    _MINOUT_ dy::TDDyResourceNameSet& iSet)
+/// @brief Set initial level resource from actor component list etc.
+void GetLevelResourceFromActor(_MIN_ const dy::TComponentMetaList& list, _MINOUT_ dy::TDDyResourceNameSet& iSet)
 {
   using namespace dy;
   for (const auto& [type, componentInfo] : list)
@@ -61,6 +60,16 @@ void GetLevelResourceFromActor(
       
       iSet.emplace(EDyResourceType::Model, desc.mDetails.mModelSpecifierName);
     } break;
+    case EDyComponentMetaType::ModelAnimator:
+    {
+      const auto& desc = std::any_cast<const PDyModelAnimatorComponentMetaInfo&>(componentInfo);
+
+      if (desc.mDetails.mSkeletonSpecifier.empty() == false)
+      { iSet.emplace(EDyResourceType::Skeleton, desc.mDetails.mSkeletonSpecifier); }
+
+      if (desc.mDetails.mTempAnimationScrap.empty() == false)
+      { iSet.emplace(EDyResourceType::AnimationScrap, desc.mDetails.mTempAnimationScrap); }
+    }
     default: /* Do nothing */ break;
     }
   }

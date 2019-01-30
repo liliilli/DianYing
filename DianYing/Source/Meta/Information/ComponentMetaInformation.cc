@@ -88,6 +88,9 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ TComponentMetaList& p)
     case EDyComponentMetaType::ModelRenderer:
       p.emplace_back(type, componentAtlas.get<PDyModelRendererComponentMetaInfo>());
       break;
+    case EDyComponentMetaType::ModelAnimator:
+      p.emplace_back(type, componentAtlas.get<PDyModelAnimatorComponentMetaInfo>());
+      break;
     case EDyComponentMetaType::Camera:
       p.emplace_back(type, componentAtlas.get<PDyCameraComponentMetaInfo>());
       break;
@@ -228,6 +231,43 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelRendererComponentMe
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelRendererComponentMetaInfo::DDetails& p)
 {
   DyJsonGetValueFromTo<bool>(j, sHeaderShadow, p.mIsEnabledCreateShadow);
+}
+
+//!
+//! PDyModelAnimatorComponentMetaInfo
+//!
+
+void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelAnimatorComponentMetaInfo& p)
+{
+  j = nlohmann::json
+  {
+    {MSVSTR(sHeader_Type),      p.mType},
+    {MSVSTR(sHeader_Details),   p.mDetails},
+    {MSVSTR(sHeader_Activated), p.mInitiallyActivated},
+  };
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelAnimatorComponentMetaInfo& p)
+{
+  using TDDetails = PDyModelAnimatorComponentMetaInfo::DDetails;
+  DyJsonGetValueFromTo<EDyComponentMetaType>(j, sHeader_Type,       p.mType);
+  DyJsonGetValueFromTo<TDDetails>           (j, sHeader_Details,    p.mDetails);
+  DyJsonGetValueFromTo<bool>                (j, sHeader_Activated,  p.mInitiallyActivated);
+}
+
+void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelAnimatorComponentMetaInfo::DDetails& p)
+{
+  j = nlohmann::json
+  {
+    {"TempAnimation",     p.mTempAnimationScrap},
+    {"SkeletonSpecifier", p.mSkeletonSpecifier},
+  };
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelAnimatorComponentMetaInfo::DDetails& p)
+{
+  DyJsonGetValueFromTo(j, "TempAnimation",      p.mTempAnimationScrap);
+  DyJsonGetValueFromTo(j, "SkeletonSpecifier",  p.mSkeletonSpecifier);
 }
 
 //!

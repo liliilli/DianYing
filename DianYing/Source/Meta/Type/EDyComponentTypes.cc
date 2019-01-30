@@ -15,7 +15,9 @@
 /// Header file
 #include <Dy/Meta/Type/EDyComponentTypes.h>
 #include <nlohmann/json.hpp>
+
 #include <Dy/Element/Helper/DescriptorComponentHeaderString.h>
+#include <Dy/Helper/StringSwitch.h>
 
 //!
 //! Forward declaration & local translation unit.
@@ -32,21 +34,17 @@ namespace
 MDY_NODISCARD dy::EDyComponentMetaType
 DyGetComponentTypeFrom(_MIN_ const std::string& typeString) noexcept
 {
-  static MDY_SET_IMMUTABLE_STRING(sDirectionalLight,  "DirectionalLight");
-  static MDY_SET_IMMUTABLE_STRING(sScript,            "Script");
-  static MDY_SET_IMMUTABLE_STRING(sTransform,         "Transform");
-  static MDY_SET_IMMUTABLE_STRING(sModelFilter,       "ModelFilter");
-  static MDY_SET_IMMUTABLE_STRING(sModelRenderer,     "ModelRenderer");
-  static MDY_SET_IMMUTABLE_STRING(sCamera,            "Camera");
-
-  if (typeString == sScript)           { return dy::EDyComponentMetaType::Script; }
-  if (typeString == sDirectionalLight) { return dy::EDyComponentMetaType::DirectionalLight; }
-  if (typeString == sTransform)        { return dy::EDyComponentMetaType::Transform; }
-  if (typeString == sModelFilter)      { return dy::EDyComponentMetaType::ModelFilter; }
-  if (typeString == sModelRenderer)    { return dy::EDyComponentMetaType::ModelRenderer; }
-  if (typeString == sCamera)           { return dy::EDyComponentMetaType::Camera; }
-  else                                 { MDY_UNEXPECTED_BRANCH(); }
-  return dy::EDyComponentMetaType::NoneError;
+  switch (dy::DyStrSwitchInput(typeString))
+  {
+  case dy::DyStrCase("DirectionalLight"): return dy::EDyComponentMetaType::DirectionalLight; 
+  case dy::DyStrCase("Script"):         return dy::EDyComponentMetaType::Script; 
+  case dy::DyStrCase("Transform"):      return dy::EDyComponentMetaType::Transform; 
+  case dy::DyStrCase("ModelFilter"):    return dy::EDyComponentMetaType::ModelFilter;
+  case dy::DyStrCase("ModelRenderer"):  return dy::EDyComponentMetaType::ModelRenderer; 
+  case dy::DyStrCase("ModelAnimator"):  return dy::EDyComponentMetaType::ModelAnimator;
+  case dy::DyStrCase("Camera"):         return dy::EDyComponentMetaType::Camera;
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(dy::EDyComponentMetaType::NoneError);
+  }
 }
 
 ///

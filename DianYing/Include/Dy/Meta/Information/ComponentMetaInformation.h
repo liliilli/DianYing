@@ -139,6 +139,31 @@ void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const PDyModelRendererCompon
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelRendererComponentMetaInfo::DDetails& p);
 
 ///
+/// @struct PDyModelAnimatorComponentMetaInfo
+/// @brief  Dependency information to CDYModelAnimator component.
+/// (EDyComponentMetaType::ModelAnimator)
+///
+struct PDyModelAnimatorComponentMetaInfo final : public IDyMetaInformation
+{
+  struct DDetails final
+  {
+    std::string mTempAnimationScrap = MDY_INITIALIZE_EMPTYSTR;
+    std::string mSkeletonSpecifier  = MDY_INITIALIZE_EMPTYSTR;
+  };
+
+  /// Details
+  DDetails mDetails = {};
+  /// Component is initially activated or not.
+  bool     mInitiallyActivated = false;
+};
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const PDyModelAnimatorComponentMetaInfo& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelAnimatorComponentMetaInfo& p);
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const PDyModelAnimatorComponentMetaInfo::DDetails& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelAnimatorComponentMetaInfo::DDetails& p);
+
+///
 /// @struct PDyCameraComponentMetaInfo
 /// @brief  Dependency information to CDyCamera (NEW! since 0.0.0~) component.
 ///

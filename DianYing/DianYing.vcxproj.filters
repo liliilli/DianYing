@@ -743,6 +743,8 @@
     <ClInclude Include="Include\Dy\Management\Internal\Render\FDyModelHandlerManager.h" />
     <ClInclude Include="Include\Dy\Management\Type\Render\DDyModelHandler.h" />
     <ClInclude Include="Include\Dy\Component\CDyModelAnimator.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\VectorInt4.h" />
+    <ClInclude Include="Include\Dy\Component\Type\EDyComponentType.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />
