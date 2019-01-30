@@ -30,6 +30,7 @@ MDY_PRIVATE_SPECIFIER(FDyDefaultLoadingGlobalScript)::MDY_PRIVATE_SPECIFIER(FDyD
 
   using namespace std::string_view_literals;
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Material, "M_Wall1"sv);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Material, "M_TestDynamicAnimation"sv);
 }
 
 } /// ::dy namespace

@@ -60,6 +60,9 @@ public:
   /// @brief
   std::string ToString() override final;
 
+  /// @brief Get final transform list.
+  MDY_NODISCARD const std::vector<DDyMatrix4x4>& GetFinalTransformList() const noexcept;
+
 private:
   /// @brief
   void TryActivateInstance() override final;

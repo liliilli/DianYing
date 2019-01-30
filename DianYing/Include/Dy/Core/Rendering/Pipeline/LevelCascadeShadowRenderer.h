@@ -16,6 +16,7 @@
 #include <Dy/Core/Resource/Type/TDyResourceBinder.h>
 #include <Dy/Builtin/Constant/CSM.h>
 #include <Dy/Helper/Type/Area2D.h>
+#include <Dy/Management/Type/Render/DDyModelHandler.h>
 
 //!
 //! Forward declaration
@@ -44,7 +45,7 @@ public:
 
   /// @brief Rendering deferred contexts to default framebuffer.
   void RenderScreen(
-      _MIN_ CDyModelRenderer& iRefRenderer,
+      _MIN_ DDyModelHandler::DActorInfo& iRefRenderer,
       _MIN_ FDyMeshResource& iRefMesh, 
       _MIN_ FDyMaterialResource& iRefMaterial);
 

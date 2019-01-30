@@ -144,18 +144,18 @@ EDySuccess FDyLevelCascadeShadowRenderer::TrySetupRendering()
 }
 
 void FDyLevelCascadeShadowRenderer::RenderScreen(
-    _MIN_ CDyModelRenderer& iRefRenderer,
+    _MIN_ DDyModelHandler::DActorInfo& iRefRenderer,
     _MIN_ FDyMeshResource& iRefMesh, 
     _MIN_ FDyMaterialResource& iRefMaterial)
 {
   // Validation test
-  const auto* ptrModelBinder = iRefRenderer.GetModelResourceBinder();
+  const auto* ptrModelBinder = iRefRenderer.mPtrModelRenderer->GetModelResourceBinder();
   if (MDY_CHECK_ISNULL(ptrModelBinder)) { return; }
 
   const auto& meshList = (*ptrModelBinder)->GetMeshResourceList();
   this->mDirLightShaderResource->UseShader();
 
-  const auto& refModelMatrix = iRefRenderer.GetBindedActor()->GetTransform()->GetTransform();
+  const auto& refModelMatrix = iRefRenderer.mPtrModelRenderer->GetBindedActor()->GetTransform()->GetTransform();
   this->mDirLightShaderResource.TryUpdateUniform<EDyUniformVariableType::Matrix4>("uModelMatrix", refModelMatrix);
   this->mDirLightShaderResource.TryUpdateUniformList();
   iRefMesh.BindVertexArray();

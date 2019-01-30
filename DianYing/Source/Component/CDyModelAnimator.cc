@@ -131,6 +131,11 @@ std::string CDyModelAnimator::ToString()
   return "";
 }
 
+const std::vector<DDyMatrix4x4>& CDyModelAnimator::GetFinalTransformList() const noexcept
+{
+  return this->mStatus.mFinalTransformList;
+}
+
 void CDyModelAnimator::TryActivateInstance()
 {
   // Get model filter component.

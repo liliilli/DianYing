@@ -94,7 +94,7 @@ void MDyRendering::SetupDrawModelTaskQueue()
     auto& actorContainer = ptrsmtInstance->GetActorContainer();
     std::vector<NotNull<DDyModelHandler::DActorInfo*>> renderableActorList;
 
-    //
+    // Insert satisfied render actor information instance.
     for (auto& [_, actorInfo] : actorContainer)
     {
       if (actorInfo.mPtrCompModelFilter == nullptr) { continue; }
@@ -103,12 +103,12 @@ void MDyRendering::SetupDrawModelTaskQueue()
     }
   
     // Get 
-    const auto& refBinder     = ptrsmtInstance->GetModelBinderReference();
+    const auto& refBinder = ptrsmtInstance->GetModelBinderReference();
     const FDyModelResource* ptrModelResc = refBinder.Get();
 
     const auto& bindMeshList = ptrModelResc->GetMeshResourceList();
     const auto& bindMateList = ptrModelResc->GetMaterialResourceList();
-    const auto  numMeshCount  = static_cast<TU32>(bindMeshList.size());
+    const auto  numMeshCount = static_cast<TU32>(bindMeshList.size());
 
     // Process
     for (TU32 i = 0; i < numMeshCount; ++i)
@@ -116,17 +116,17 @@ void MDyRendering::SetupDrawModelTaskQueue()
       const auto& refMeshResc = *bindMeshList[i]->Get();
       const auto& refMatResc  = *bindMateList[i]->Get();
 
-      // Insert queue.
+      // Insert static queue.
       for (auto& ptrActorInfo : renderableActorList)
       {
-        this->EnqueueDrawMesh(*ptrActorInfo->mPtrModelRenderer, refMeshResc, refMatResc);
+        this->EnqueueDrawMesh(*ptrActorInfo, refMeshResc, refMatResc);
       }
     }
   }
 }
 
 void MDyRendering::EnqueueDrawMesh(
-    _MIN_ CDyModelRenderer& iRefModelRenderer,
+    _MIN_ DDyModelHandler::DActorInfo& iRefModelRenderer,
     _MIN_ const FDyMeshResource& iRefValidMesh, 
     _MIN_ const FDyMaterialResource& iRefValidMat)
 {
@@ -211,7 +211,7 @@ void MDyRendering::RenderDrawCallQueue()
     for (auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] : this->mTranslucentMeshDrawingList)
     { // Render
       this->mTranslucentOIT->RenderScreen(
-          *iPtrModel, 
+          *iPtrModel->mPtrModelRenderer, 
           const_cast<FDyMeshResource&>(*iPtrValidMesh),
           const_cast<FDyMaterialResource&>(*iPtrValidMat)
       );

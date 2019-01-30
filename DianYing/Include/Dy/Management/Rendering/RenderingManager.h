@@ -24,6 +24,7 @@
 #include <Dy/Core/Rendering/Pipeline/LevelCascadeShadowRenderer.h>
 #include <Dy/Core/Rendering/Pipeline/LevelCSMIntegration.h>
 #include <Dy/Core/Rendering/Pipeline/LevelOITRenderer.h>
+#include <Dy/Management/Type/Render/DDyModelHandler.h>
 
 //!
 //! Forward declaration
@@ -62,12 +63,6 @@ public:
   /// @TODO LOGIC IS TEMPORARY.
   void SetupDrawModelTaskQueue();
 
-  /// @brief Enqueue draw call to mesh with material.
-  void EnqueueDrawMesh(
-      _MIN_ CDyModelRenderer& iRefModelRenderer,
-      _MIN_ const FDyMeshResource& iRefValidMesh, 
-      _MIN_ const FDyMaterialResource& iRefValidMat);
-
   /// @brief
   void RenderDrawCallQueue();
 
@@ -89,7 +84,12 @@ public:
   EDySuccess MDY_PRIVATE_SPECIFIER(UnbindMainDirectionalShadow)(_MIN_ CDyDirectionalLight& iRefLight);
 
 private:
-
+  /// @brief Enqueue static draw call to mesh with material.
+  void EnqueueDrawMesh(
+      _MIN_ DDyModelHandler::DActorInfo& iRefModelRenderer,
+      _MIN_ const FDyMeshResource& iRefValidMesh, 
+      _MIN_ const FDyMaterialResource& iRefValidMat);
+  
   ///
   /// @brief Reset all of rendering framebuffers related to rendering of scene for new frame rendering.
   ///
@@ -105,14 +105,14 @@ private:
   std::unique_ptr<FDyFinalScreenDisplayRenderer>  mFinalDisplayRenderer = MDY_INITIALIZE_NULL;
 
   using TMeshDrawCallItem = std::tuple<
-      NotNull<CDyModelRenderer*>,
+      NotNull<DDyModelHandler::DActorInfo*>,
       NotNull<const FDyMeshResource*>, 
       NotNull<const FDyMaterialResource*>
   >;
 
-  std::vector<TMeshDrawCallItem> mOpaqueMeshDrawingList         = {};
-  std::vector<TMeshDrawCallItem> mTranslucentMeshDrawingList  = {};
- 
+  std::vector<TMeshDrawCallItem> mOpaqueMeshDrawingList = {};
+  std::vector<TMeshDrawCallItem> mTranslucentMeshDrawingList = {};
+
   CDyDirectionalLight* mMainDirectionalLight   = nullptr;
   CDyDirectionalLight* mMainDirectionalShadow  = nullptr;
 

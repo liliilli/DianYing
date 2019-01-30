@@ -26,7 +26,7 @@ MDY_SET_IMMUTABLE_STRING(sVertexShaderCode, R"dy(
 #version 430
 #import <Input_DefaultVao>;
 #import <Input_UboCamera>;
-uniform mat4 modelMatrix;
+uniform mat4 uModelMatrix;
 
 out gl_PerVertex { vec4 gl_Position; };
 out VS_OUT
@@ -37,9 +37,9 @@ out VS_OUT
 
 void main()
 {
-  gl_Position			      = uCamera.mProjMatrix * uCamera.mViewMatrix * modelMatrix * vec4(dyPosition, 1.0);
-	vs_out.normal		      = mat3(modelMatrix) * dyNormal;
-	vs_out.modelPosition  = (modelMatrix * vec4(dyPosition, 1.0));
+  gl_Position			      = uCamera.mProjMatrix * uCamera.mViewMatrix * uModelMatrix * vec4(dyPosition, 1.0);
+	vs_out.normal		      = mat3(uModelMatrix) * dyNormal;
+	vs_out.modelPosition  = (uModelMatrix * vec4(dyPosition, 1.0));
 }
 )dy");
 

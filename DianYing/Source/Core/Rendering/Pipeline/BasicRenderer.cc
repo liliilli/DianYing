@@ -31,6 +31,7 @@
 #include "Dy/Management/Helper/SDyProfilingHelper.h"
 #include "Dy/Core/Resource/Resource/FDyModelResource.h"
 #include "Dy/Core/Rendering/Wrapper/FDyGLWrapper.h"
+#include "Dy/Component/CDyModelAnimator.h"
 
 //!
 //! Temporary
@@ -96,7 +97,7 @@ void FDyBasicRenderer::PreRender()
 }
 
 void FDyBasicRenderer::RenderScreen(
-    _MIN_ CDyModelRenderer& iRefRenderer,
+    _MIN_ DDyModelHandler::DActorInfo& iRefRenderer,
     _MIN_ FDyMeshResource& iRefMesh, 
     _MIN_ FDyMaterialResource& iRefMaterial)
 { 
@@ -109,7 +110,7 @@ void FDyBasicRenderer::RenderScreen(
   if (MDY_CHECK_ISNULL(ptrCamera)) { return; }
 
   // General deferred rendering
-  const auto& transform = iRefRenderer.GetBindedActor()->GetTransform();
+  const auto& transform = iRefRenderer.mPtrModelRenderer->GetBindedActor()->GetTransform();
   const auto& refModelMatrix    = transform->GetTransform();
   const auto& refRotationMatrix = transform->GetRotationMatrix();
   auto& shaderBinder = iRefMaterial.GetShaderResourceBinder();
@@ -119,21 +120,17 @@ void FDyBasicRenderer::RenderScreen(
   shaderBinder.TryUpdateUniform<EDyUniformVariableType::Matrix4>("uModelMatrix", refModelMatrix);
   shaderBinder.TryUpdateUniform<EDyUniformVariableType::Matrix4>("modelMatrix", refModelMatrix);
   shaderBinder.TryUpdateUniform<EDyUniformVariableType::Matrix3>("uRotationMatrix", DDyMatrix3x3{refModelMatrix});
+
+  // If this model has animator, update uniform.
+  if (iRefRenderer.mPtrModelAnimator != nullptr)
+  {
+    const auto& finalTransformList = iRefRenderer.mPtrModelAnimator->GetFinalTransformList();
+    shaderBinder.TryUpdateUniform<EDyUniformVariableType::Matrix4Array>("mBoneTransform[0]", finalTransformList);
+    shaderBinder.TryUpdateUniform<EDyUniformVariableType::Integer>("mNumBoneTransform", static_cast<TI32>(finalTransformList.size()));
+  }
+
   shaderBinder.TryUpdateUniformList();
   iRefMaterial.TryUpdateTextureList();
-
-#ifdef false
-  const auto boneTransform = glGetUniformLocation(shaderResource->GetShaderProgramId(), "boneTransform");
-  if (renderer.mModelReferencePtr && renderer.mModelReferencePtr->IsEnabledModelAnimated())
-  {
-    const auto& matrixList = renderer.mModelReferencePtr->GetModelAnimationTransformMatrixList();
-    const auto  matrixSize = static_cast<int32_t>(matrixList.size());
-    for (int32_t i = 0; i < matrixSize; ++i)
-    {
-      glUniformMatrix4fv(boneTransform + i, 1, GL_FALSE, &matrixList[i].mFinalTransformation[0].X);
-    }
-  }
-#endif
 
   iRefMesh.BindVertexArray();
 
