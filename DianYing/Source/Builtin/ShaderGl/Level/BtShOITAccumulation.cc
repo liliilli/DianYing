@@ -29,11 +29,7 @@ layout (location = 0) in vec3 dyPosition;
 layout (location = 1) in vec3 dyNormal;
 layout (location = 2) in vec2 dyTexCoord0;
 
-layout(std140, binding = 0) uniform CameraBlock
-{
-  uniform mat4 mProjMatrix;
-  uniform mat4 mViewMatrix;
-} uCamera;
+#import <Input_UboCamera>;
 
 out VS_OUT 
 { 
