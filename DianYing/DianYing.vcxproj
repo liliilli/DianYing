@@ -221,6 +221,7 @@
     <ClCompile Include="Source\Component\Abstract\ADyActorCppScript.cc" />
     <ClCompile Include="Source\Component\Abstract\ADyWidgetCppScript.cc" />
     <ClCompile Include="Source\Component\Actor\CDyActorScript.cc" />
+    <ClCompile Include="Source\Component\CDyModelAnimator.cc" />
     <ClCompile Include="Source\Component\Internal\Camera\DDyFrustumTester.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Actor\FDyActorScriptStatus.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Actor\CDyActorScriptCpp.cc" />
@@ -601,6 +602,7 @@
     <ClInclude Include="Include\Dy\Builtin\Widget\FDyBtWdTestLoadingUi.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyGlobalCppScript.h" />
     <ClInclude Include="Include\Dy\Component\Actor\CDyActorScript.h" />
+    <ClInclude Include="Include\Dy\Component\CDyModelAnimator.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Actor\CDyActorScriptBase.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Actor\FDyActorScriptStatus.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Camera\DDyFrustumTester.h" />
@@ -640,6 +642,7 @@
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyShaderResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDySoundResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyTextureResource.h" />
+    <ClInclude Include="Include\Dy\Component\Type\EDyComponentType.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\EDyLazy.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\FDyBinderBase.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Material\ADyUniformHelper.h" />
@@ -678,6 +681,7 @@
     <ClInclude Include="Include\Dy\Helper\Library\HelperRegex.h" />
     <ClInclude Include="Include\Dy\Helper\MCS\Functions.h" />
     <ClInclude Include="Include\Dy\Helper\Type\Plane.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\VectorInt4.h" />
     <ClInclude Include="Include\Dy\Helper\Wrapper\DDyMutexUniqueHashMap.h" />
     <ClInclude Include="Include\Dy\Include\Entry.h" />
     <ClInclude Include="Include\Dy\Management\Helper\SDyProfilingHelper.h" />

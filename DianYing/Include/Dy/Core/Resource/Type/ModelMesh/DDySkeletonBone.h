@@ -30,6 +30,8 @@ struct DDySkeletonBone final
   DDyMatrix4x4  mLocalTransform = DDyMatrix4x4::IdentityMatrix();
   /// @brief Global and calculated transform.
   DDyMatrix4x4  mGlobalTransform = DDyMatrix4x4::IdentityMatrix();
+  /// @brief Offset matrix of bone.
+  DDyMatrix4x4  mOffsetMatrix = DDyMatrix4x4::IdentityMatrix();
 };
 
 /// @brief One model skeleton complete type.

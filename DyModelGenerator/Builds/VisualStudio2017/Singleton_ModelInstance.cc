@@ -120,8 +120,8 @@ EDySuccess Singleton_ModelInstance::ExportModelMesh(const std::string& iSpecifie
         fwrite(&vi.mTexCoords1[0], sizeof(float), 2, fdFile); // uv1.
         fwrite(&vi.mTangent[0], sizeof(float), 3, fdFile);    // tangent.
         fwrite(&vi.mBitangent[0], sizeof(float), 3, fdFile);  // bitangent.
-        fwrite(&vi.mBoneId[0], sizeof(float), 4, fdFile);     // boneId.
-        fwrite(&vi.mWeights[0], sizeof(float), 4, fdFile);    // weights.
+        fwrite(&vi.mBoneId[0], sizeof(DDyVectorInt4), 1, fdFile); // boneId.
+        fwrite(&vi.mWeights[0], sizeof(DDyVector4), 1, fdFile);   // weights.
       }
     }
     fclose(fdFile);
@@ -178,7 +178,7 @@ DMesh Singleton_ModelInstance::CreateDyMesh(unsigned iMeshIndex, bool withSkelet
         jassert(itSkeletonBone != this->mExportedSkeleton.cend());
 
         // Get a proper id list from retrieved skeleton bone instance.
-        const auto indexSkeletonBone = static_cast<unsigned>(std::distance(this->mExportedSkeleton.cbegin(), itSkeletonBone));
+        const auto indexSkeletonBone = static_cast<signed>(std::distance(this->mExportedSkeleton.cbegin(), itSkeletonBone));
         for (unsigned idWeight = 0, numWeights = ptrAiBone->mNumWeights; idWeight < numWeights; ++idWeight)
         {
           // Traverse bone's weight.
@@ -192,7 +192,7 @@ DMesh Singleton_ModelInstance::CreateDyMesh(unsigned iMeshIndex, bool withSkelet
           {
             if (refVertex.mBoneId[id] == -1)
             {
-              refVertex.mBoneId[id]   = static_cast<float>(indexSkeletonBone);
+              refVertex.mBoneId[id]   = indexSkeletonBone;
               refVertex.mWeights[id]  = valWeight;
               break;
             }
@@ -754,13 +754,13 @@ std::optional<Singleton_ModelInstance::TPtrAiNodeMap> Singleton_ModelInstance::C
   return resultMap;
 }
 
-std::optional<Singleton_ModelInstance::TBoneSpecifierSet>
+std::optional<Singleton_ModelInstance::TBoneSpecifierMap>
 Singleton_ModelInstance::CreatePtrBoneSpecifierSet(const TPtrAiNodeMap& iPtrAiNodeMap) const noexcept
 {
   // If model is not loaded, it just return nullopt.
   if (this->mAssimpModerImporter == nullptr) { return std::nullopt; }
 
-  TBoneSpecifierSet resultBoneSpecifierSet;
+  TBoneSpecifierMap resultBoneSpecifierSet;
 
   for (unsigned i = 0, numModelMesh = this->GetNumModelMeshes(); i < numModelMesh; ++i)
   {
@@ -778,7 +778,10 @@ Singleton_ModelInstance::CreatePtrBoneSpecifierSet(const TPtrAiNodeMap& iPtrAiNo
 
       while (node != nullptr)
       {
-        resultBoneSpecifierSet.emplace(node->mName.C_Str());
+        DBoneSpecifier result;
+        result.mSpecifier     = node->mName.C_Str();
+        result.mOffsetMatrix  = ptrAiBone->mOffsetMatrix;
+        resultBoneSpecifierSet.try_emplace(node->mName.C_Str(), result);
         node = node->mParent;
 
         // Don't chase up until the scene root node.
@@ -795,7 +798,7 @@ Singleton_ModelInstance::CreatePtrBoneSpecifierSet(const TPtrAiNodeMap& iPtrAiNo
 
 EDySuccess Singleton_ModelInstance::CreateModelSkeleton(
     MDY_NOTUSED const TPtrAiNodeMap& iPtrAiNodeMap,
-    const TBoneSpecifierSet& iBoneSpecifierSet)
+    const TBoneSpecifierMap& iBoneSpecifierSet)
 {
   // Get root-node and root-matrix (identity matrix)
   const aiNode*       rootNode    = this->GetPtrRootNodeOfModelScene();
@@ -812,7 +815,7 @@ EDySuccess Singleton_ModelInstance::CreateModelSkeleton(
 
 void Singleton_ModelInstance::RecursiveInsertSkeletonBoneIntoList(
     const NotNull<const aiNode*> iPtrAiNode,
-    const TBoneSpecifierSet& iRefBoneSpecifierSet, 
+    const TBoneSpecifierMap& iRefBoneSpecifierSet, 
     const DDyMatrix4x4& iRefParentGlobalTransform,
     const signed int iParentSkeletonBoneId,
     std::vector<DSkeletonBone>& iSkeletonList)
@@ -822,7 +825,7 @@ void Singleton_ModelInstance::RecursiveInsertSkeletonBoneIntoList(
   const signed int skeletonBoneNodeIndex  = static_cast<signed int>(iSkeletonList.size()) - 1;
 
   // Remove redundant node(bone) so insert valid and activated node(bone).
-  if (iRefBoneSpecifierSet.find(iPtrAiNode->mName.C_Str()) != iRefBoneSpecifierSet.end())
+  if (auto it = iRefBoneSpecifierSet.find(iPtrAiNode->mName.C_Str()); it != iRefBoneSpecifierSet.end())
   {
     iSkeletonList.emplace_back(DSkeletonBone{});
     auto& skeletonInstance = this->mExportedSkeleton.back();
@@ -830,6 +833,7 @@ void Singleton_ModelInstance::RecursiveInsertSkeletonBoneIntoList(
     skeletonInstance.mSpecifier       = iPtrAiNode->mName.C_Str();
     skeletonInstance.mLocalTransform  = iPtrAiNode->mTransformation;
     skeletonInstance.mGlobalTransform = globalTransform;
+    skeletonInstance.mOffsetMatrix    = it->second.mOffsetMatrix;
     skeletonInstance.mParentSkeletonBoneIndex = iParentSkeletonBoneId;
   }
 

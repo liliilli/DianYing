@@ -15,12 +15,13 @@
 
 #include <Dy/Core/Resource/Internal/MaterialType.h>
 #include <Dy/Component/Helper/TmpCheckRemoveParams.h>
+#include <Dy/Component/Actor/CDyActorScript.h>
+#include <Dy/Component/Type/EDyComponentType.h>
 #include <Dy/Element/Object.h>
 #include <Dy/Element/Abstract/ADyBaseComponent.h>
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
 #include <Dy/Element/Abstract/Actor/ADyActorBinderContainer.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
-#include <Dy/Component/Actor/CDyActorScript.h>
 #include <Dy/Helper/Internal/FDyNameGenerator.h>
 
 namespace dy
@@ -30,7 +31,7 @@ namespace dy
 /// @brief Dy Actor type which consist of almost every object in Level of Dy.
 class FDyActor : public FDyObject, public FDyNameGenerator, public ADyActorBinderContainer<FDyActor>, public FDy3WaySwitcher
 {
-  using TComponentList = std::vector<std::unique_ptr<ADyGeneralBaseComponent>>;
+  using TComponentList = std::vector<std::pair<EDyComponentType, std::unique_ptr<ADyGeneralBaseComponent>>>;
   using TScriptList    = std::vector<std::unique_ptr<CDyActorScript>>;
 
   MDY_SET_CRC32_HASH_WITH_TYPE(FDyActor);
@@ -123,8 +124,8 @@ public:
   {
     // Validation test
     MDY_TEST_IS_BASE_OF(ADyBaseComponent, TComponent);
-    //DyCheckComponentInitializeFunctionParams<TComponent, TArgs...>();
 
+    // If component is script, process the other subroutine. 
     if constexpr (std::is_same_v<CDyActorScript, TComponent> == true)
     {
       // Add and initialize component itself.
@@ -139,6 +140,7 @@ public:
       auto componentPtr = std::make_unique<TComponent>(std::ref(*this));
       MDY_CALL_ASSERT_SUCCESS(componentPtr->Initialize(std::forward<TArgs>(args)...));
 
+      // If it is transform, move it to separated space. 
       if constexpr (std::is_same_v<CDyTransform, TComponent> == true)
       { // If component is not CDyScript but related to ADyBaseTransform (Transform components)
         MDY_ASSERT(MDY_CHECK_ISEMPTY(this->mTransform), "FDyActor::mTransform must be empty when insert transform component.");
@@ -147,7 +149,7 @@ public:
       }
       else
       { // Otherwise remain, just return Ptr.
-        auto& reference = this->mComponentList.emplace_back(std::move(componentPtr));
+        auto& [value, reference] = this->mComponentList.emplace_back(std::make_pair(TComponentUnbindingType<TComponent>::Value, std::move(componentPtr)));
         return DyMakeNotNull(static_cast<TComponent*>(reference.get()));
       }
     }
@@ -169,8 +171,9 @@ public:
 
     // Component matching process is using recursion of each component
     // from last derived component class to highest base component class.
-    for (auto& component : this->mComponentList)
+    for (auto& [type, component] : this->mComponentList)
     {
+      if (MDY_CHECK_ISEMPTY(component)) { continue; }
       if (component->IsTypeMatched(TGeneralComponent::__mHashVal) == true)
       {
         return static_cast<TGeneralComponent*>(component.get());
@@ -195,8 +198,9 @@ public:
     // from last derived component class to highest base component class.
     std::vector<NotNull<TGeneralComponent*>> resultList = {};
 
-    for (auto& component : this->mComponentList)
+    for (auto& [type, component] : this->mComponentList)
     {
+      if (MDY_CHECK_ISEMPTY(component)) { continue; }
       if (component->IsTypeMatched(TGeneralComponent::__mHashVal) == true)
       {
         resultList.emplace_back(static_cast<TGeneralComponent*>(component.get()));

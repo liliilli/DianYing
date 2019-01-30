@@ -92,15 +92,6 @@ void MDyWorld::UpdateObjects(_MIN_ float dt)
 {
   if (this->mLevel)
   { 
-#ifdef false
-    // Update(Start, Update, etc...) script carefully.
-    for (auto& script : this->mActivatedScripts)
-    {
-      if (MDY_CHECK_ISNULL(script)) { continue; }
-      script->CallScriptFunction(dt);
-    }
-#endif
-
     // CDyModelRenderer update
     for (auto& modelRenderer : this->mActivatedModelRenderers)
     {
@@ -512,6 +503,28 @@ EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(TryDetachActiveModelRenderer)(_MIN_ C
   if (it == this->mActivatedModelRenderers.end()) { return DY_SUCCESS; }
 
   DyFastErase(this->mActivatedModelRenderers, std::distance(this->mActivatedModelRenderers.begin(), it));
+  return DY_SUCCESS;
+}
+
+void MDyWorld::__BindActiveModelAnimator(_MIN_ CDyModelAnimator& iRefComponent)
+{
+  this->mActivatedModelAnimatorPtrs.emplace_back(DyMakeNotNull(&iRefComponent));
+}
+
+EDySuccess MDyWorld::__UnbindActiveModelAnimator(_MIN_ CDyModelAnimator& iRefComponent)
+{
+  // Check address. component's address is not changed unless actor is destroyed.
+  const auto it = std::find_if(
+      MDY_BIND_BEGIN_END(this->mActivatedModelAnimatorPtrs), 
+      [ptr = &iRefComponent](const auto& ptrValidComponent)
+    {
+      return ptrValidComponent.Get() == ptr;
+    });
+
+  if (it == this->mActivatedModelAnimatorPtrs.end()) { return DY_FAILURE; }
+
+  // Erase pointer of found component.
+  this->mActivatedModelAnimatorPtrs.erase(it);
   return DY_SUCCESS;
 }
 

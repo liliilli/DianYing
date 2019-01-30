@@ -36,21 +36,6 @@ void from_json(const nlohmann::json& j, DDyVertexInformation& p)
   (void)p;
 }
 
-void to_json(nlohmann::json& j, const DDyGeometryBoneInformation& p)
-{
-  j = nlohmann::json
-  {
-    {"ofmt", p.mBoneOffsetMatrix},
-    {"ftmt", p.mFinalTransformation}
-  };
-}
-
-void from_json(const nlohmann::json& j, DDyGeometryBoneInformation& p)
-{
-  (void)j;
-  (void)p;
-}
-
 void to_json(nlohmann::json& j, const DMesh& p)
 {
   j = nlohmann::json

@@ -2902,6 +2902,9 @@
     <ClInclude Include="Data_Quaternion.h">
       <Filter>DyModelGenerator\Source</Filter>
     </ClInclude>
+    <ClInclude Include="Data_VectorInt4.h">
+      <Filter>DyModelGenerator\Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="C:\JUCE\modules\juce_graphics\image_formats\jpglib\changes to libjpeg for JUCE.txt">

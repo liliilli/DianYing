@@ -296,6 +296,7 @@
     <ClCompile Include="Source\Element\Type\FDy3WaySwitcher.cc" />
     <ClCompile Include="Source\Management\Internal\Render\FDyModelHandlerManager.cc" />
     <ClCompile Include="Source\Management\Type\Render\DDyModelHandler.cc" />
+    <ClCompile Include="Source\Component\CDyModelAnimator.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -741,6 +742,9 @@
     <ClInclude Include="Include\Dy\Element\Type\FDy3WaySwitcher.h" />
     <ClInclude Include="Include\Dy\Management\Internal\Render\FDyModelHandlerManager.h" />
     <ClInclude Include="Include\Dy\Management\Type\Render\DDyModelHandler.h" />
+    <ClInclude Include="Include\Dy\Component\CDyModelAnimator.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\VectorInt4.h" />
+    <ClInclude Include="Include\Dy\Component\Type\EDyComponentType.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

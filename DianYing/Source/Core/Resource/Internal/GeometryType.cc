@@ -23,9 +23,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ DDyVertexInformation& p)
 {
   p.mPosition   = j["ve"].get<DDyVector3>();
   p.mNormal     = j["nm"].get<DDyVector3>();
-  p.mTexCoords  = j["t0"].get<DDyVector2>();
-
-  // @TODO WE NEED TO LOAD Tangent, Bitangent and Bond&Weights.
+  p.mTexCoord0  = j["t0"].get<DDyVector2>();
 }
 
 } /// ::dy namespace

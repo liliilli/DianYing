@@ -16,6 +16,19 @@
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Management/Type/Render/DDyModelHandler.h>
 
+//!
+//! Forward declaration
+//!
+
+namespace dy
+{
+class CDyModelAnimator;
+} /// ::dy namespace
+
+//!
+//! Implementation
+//!
+
 namespace dy
 {
 
@@ -50,9 +63,13 @@ public:
   /// @brief
   EDySuccess BindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ CDyModelRenderer& iComponent);
   /// @brief
+  EDySuccess BindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ CDyModelAnimator& iComponent);
+  /// @brief
   EDySuccess UnbindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ CDyModelFilter&);
   /// @brief
   EDySuccess UnbindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ CDyModelRenderer&);
+  /// @brief
+  EDySuccess UnbindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ CDyModelAnimator&);
 
   /// @brief 
   MDY_NODISCARD bool IsActorInfoNeedToBeGc(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor) const noexcept;

@@ -87,14 +87,19 @@ public:
   /// If model is not loaded, it just return nullopt.
   MDY_NODISCARD std::optional<TPtrAiNodeMap> CreatePtrAiNodeMap();
 
-  using TBoneSpecifierSet = std::unordered_set<std::string>;
+  struct DBoneSpecifier
+  {
+    std::string   mSpecifier;
+    DDyMatrix4x4  mOffsetMatrix;
+  };
+  using TBoneSpecifierMap = std::unordered_map<std::string, DBoneSpecifier>;
   /// @brief
-  MDY_NODISCARD std::optional<TBoneSpecifierSet> 
+  MDY_NODISCARD std::optional<TBoneSpecifierMap> 
   CreatePtrBoneSpecifierSet(const TPtrAiNodeMap& iPtrAiNodeMap) const noexcept;
 
   /// @brief
   MDY_NODISCARD EDySuccess 
-  CreateModelSkeleton(const TPtrAiNodeMap& iPtrAiNodeMap, const TBoneSpecifierSet& iBoneSpecifierSet);
+  CreateModelSkeleton(const TPtrAiNodeMap& iPtrAiNodeMap, const TBoneSpecifierMap& iBoneSpecifierSet);
   /// @brief
   void RemoveModelSkeleton();
 
@@ -117,7 +122,7 @@ private:
   /// @brief
   void RecursiveInsertSkeletonBoneIntoList(
       const NotNull<const aiNode*> iPtrAiNode, 
-      const TBoneSpecifierSet& iRefBoneSpecifierSet, 
+      const TBoneSpecifierMap& iRefBoneSpecifierSet, 
       const DDyMatrix4x4& iRefParentGlobalTransform,
       const signed int iParentSkeletonBoneId,
       std::vector<DSkeletonBone>& iSkeletonList);

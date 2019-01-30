@@ -43,7 +43,7 @@ class CDyModelFilter final : public ADyGeneralBaseComponent, public IDyInitializ
 {
 public:
   CDyModelFilter(FDyActor& actorReference);
-  virtual ~CDyModelFilter();
+  virtual ~CDyModelFilter() = default;
 
   ///
   /// @brief  Initialize component

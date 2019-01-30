@@ -133,6 +133,32 @@ SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryRequireInformation_Model)
   return ptr;
 }
 
+MDY_NODISCARD std::optional<const __TDyRscInfo_T<EDyResourceType::Skeleton>*>
+SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryRequireInformation_Skeleton)
+(_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder)
+{
+  if (const auto checkFlag = MDY_PRIVATE_SPECIFIER(pTryRequireInformation)(iSpecifier, EDyResourceType::Skeleton, iPtrBinder);
+      checkFlag == DY_FAILURE) { return std::nullopt; }
+
+  // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
+  const auto* ptr = MDyIOData::GetInstance().GetPtrInformation<EDyResourceType::Skeleton>(iSpecifier);
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
+  return ptr;
+}
+
+std::optional<const __TDyRscInfo_T<EDyResourceType::AnimationScrap>*> 
+SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryRequireInformation_AnimationScrap)
+(_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder)
+{
+  if (const auto checkFlag = MDY_PRIVATE_SPECIFIER(pTryRequireInformation)(iSpecifier, EDyResourceType::AnimationScrap, iPtrBinder);
+      checkFlag == DY_FAILURE) { return std::nullopt; }
+
+  // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
+  const auto* ptr = MDyIOData::GetInstance().GetPtrInformation<EDyResourceType::AnimationScrap>(iSpecifier);
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
+  return ptr;
+}
+
 EDySuccess SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryDetachInformation)
 (_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder)
 {

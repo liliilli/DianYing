@@ -16,6 +16,7 @@
 #include "Data_Vector3.h"
 #include "Data_Vector4.h"
 #include "Data_Matrix4.h"
+#include "Data_VectorInt4.h"
 
 /// @struct DDyVertexInformation
 /// @brief Vertex information (Input assembly unit data)
@@ -29,23 +30,12 @@ struct DDyVertexInformation final
   DDyVector3          mTangent    = {};
   DDyVector3          mBitangent  = {};
   // Below elements are used when skeletal animation is applied.
-  DDyVector4          mBoneId     = {-1, -1, -1, -1};
+  DDyVectorInt4       mBoneId     = {-1, -1, -1, -1};
   DDyVector4          mWeights    = { 0,  0,  0,  0};
 };
 
 void to_json(nlohmann::json& j, const DDyVertexInformation& p);
 void from_json(const nlohmann::json& j, DDyVertexInformation& p);
-
-/// @struct DDyGeometryBoneInformation
-/// @brief bone matrix information structure.
-struct DDyGeometryBoneInformation final
-{
-  DDyMatrix4x4        mBoneOffsetMatrix     = {};
-  DDyMatrix4x4        mFinalTransformation  = DDyMatrix4x4::IdentityMatrix();
-};
-
-void to_json(nlohmann::json& j, const DDyGeometryBoneInformation& p);
-void from_json(const nlohmann::json& j, DDyGeometryBoneInformation& p);
 
 struct DMesh final
 {

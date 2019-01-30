@@ -23,6 +23,7 @@
 #include <Dy/Element/Type/PDyActorCreationDescriptor.h>
 #include <Dy/Management/WorldManager.h>
 #include "Dy/Management/Helper/SDyProfilingHelper.h"
+#include "Dy/Component/CDyModelAnimator.h"
 
 //!
 //! Implementation
@@ -137,6 +138,9 @@ void FDyActor::MDY_PRIVATE_SPECIFIER(CreateComponentList)(const TComponentMetaLi
     case EDyComponentMetaType::ModelRenderer:
       this->AddComponent<CDyModelRenderer>(std::any_cast<const PDyModelRendererComponentMetaInfo&>(componentInfo));
       break;
+    case EDyComponentMetaType::ModelAnimator:
+      this->AddComponent<CDyModelAnimator>(std::any_cast<const PDyModelAnimatorComponentMetaInfo&>(componentInfo));
+      break;
     case EDyComponentMetaType::Camera:
       this->AddComponent<CDyCamera>(std::any_cast<const PDyCameraComponentMetaInfo&>(componentInfo));
       break;
@@ -147,6 +151,29 @@ void FDyActor::MDY_PRIVATE_SPECIFIER(CreateComponentList)(const TComponentMetaLi
 FDyActor::~FDyActor()
 {
   SDyProfilingHelper::DecreaseOnBindActorCount(1);
+  for (auto& [typeVal, ptrsmtComponent] : this->mComponentList)
+  {
+    if (MDY_CHECK_ISEMPTY(ptrsmtComponent)) { continue; }
+
+    using _ = EDyComponentType;
+
+    // ActorScript, Transform does not release in this logic.
+    // We use downcasting intentionally to call Release() function.
+    switch (typeVal)
+    {
+    case EDyComponentType::DirectionalLight: 
+    { static_cast<TComponentBindingType<_::DirectionalLight>::Type&>(*ptrsmtComponent).Release(); } break;
+    case EDyComponentType::Camera:
+    { static_cast<TComponentBindingType<_::Camera>::Type&>(*ptrsmtComponent).Release(); } break;
+    case EDyComponentType::ModelAnimator:
+    { static_cast<TComponentBindingType<_::ModelAnimator>::Type&>(*ptrsmtComponent).Release(); } break;
+    case EDyComponentType::ModelFilter:
+    { static_cast<TComponentBindingType<_::ModelFilter>::Type&>(*ptrsmtComponent).Release(); } break;
+    case EDyComponentType::ModelRenderer:
+    { static_cast<TComponentBindingType<_::ModelRenderer>::Type&>(*ptrsmtComponent).Release(); } break;
+    default: MDY_UNEXPECTED_BRANCH(); break;
+    }
+  }
   this->mComponentList.clear();
 }
 
@@ -194,7 +221,7 @@ void FDyActor::TryDeactivateInstance()
 
 void FDyActor::pPropagateActivationFlag() noexcept
 {
-  for (auto& unknownComponent : mComponentList)
+  for (auto& [type, unknownComponent] : mComponentList)
   {
     if (MDY_CHECK_ISEMPTY(unknownComponent)) { continue; }
     unknownComponent->SetupFlagAsParent(this->IsActivated());

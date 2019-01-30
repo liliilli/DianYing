@@ -28,6 +28,14 @@ void SDyIOConnectionHelper::PopulateResource(
 {
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
   auto& ioThread = *gEngine->pfGetIOThread();
+  
+  // Check resourceType is `Skeleton` and `AnimationScrap` which can not be created as `Resource` but only `Information`.
+  if (resourceType == EDyResourceType::Skeleton
+  ||  resourceType == EDyResourceType::AnimationScrap)
+  {
+    if (resourceStyle == EDyResourceStyle::Resource) { resourceStyle = EDyResourceStyle::Information; }
+  }
+
   MDY_CALL_ASSERT_SUCCESS(ioThread.outTryEnqueueTask(specifier, resourceType, resourceStyle, scope));
 }
 

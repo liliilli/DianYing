@@ -23,6 +23,7 @@ void to_json(nlohmann::json& j, const DSkeletonBone& p)
     {"ParentBoneId",  p.mParentSkeletonBoneIndex},
     {"LocalTf",       p.mLocalTransform},
     {"GlobalTf",      p.mGlobalTransform},
+    {"OffsetMt",      p.mOffsetMatrix},
   };
 }
 

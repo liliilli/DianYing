@@ -32,6 +32,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySkeletonBone& p)
   DyJsonGetValueFromTo(j, "ParentBoneId", p.mParentSkeletonBoneIndex);
   DyJsonGetValueFromTo(j, "LocalTf",  p.mLocalTransform);
   DyJsonGetValueFromTo(j, "GlobalTf", p.mGlobalTransform);
+  DyJsonGetValueFromTo(j, "OffsetMt", p.mOffsetMatrix);
 }
 
 } /// ::dy namespace

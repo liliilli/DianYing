@@ -23,11 +23,6 @@ namespace dy
 
 CDyModelFilter::CDyModelFilter(FDyActor& actorReference) : ADyGeneralBaseComponent(actorReference) { }
 
-CDyModelFilter::~CDyModelFilter()
-{
-  this->Release();
-}
-
 EDySuccess CDyModelFilter::Initialize(const PDyModelFilterComponentMetaInfo& metaInfo)
 {
   // Bind model first.
