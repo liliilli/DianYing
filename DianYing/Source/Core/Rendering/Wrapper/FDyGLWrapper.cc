@@ -829,6 +829,8 @@ void FDyGLWrapper::UpdateUniformMatrix3(_MIN_ TU32 iId, _MIN_ const DDyMatrix3x3
 
 void FDyGLWrapper::UpdateUniformMatrix4Array(_MIN_ TU32 iId, _MIN_ const std::vector<DDyMatrix4x4>& iBuffer, _MIN_ bool iIransposed)
 {
+  if (iBuffer.empty() == true) { return; }
+
   const TU32 size = static_cast<TU32>(iBuffer.size());
   GLenum transposed = GL_FALSE;
   if (iIransposed == true) { transposed = GL_TRUE; }
@@ -841,6 +843,8 @@ void FDyGLWrapper::UpdateUniformMatrix4Array(_MIN_ TU32 iId, _MIN_ const std::ve
 
 void FDyGLWrapper::UpdateUniformVector3Array(_MIN_ TU32 iId, _MIN_ const std::vector<DDyVector3>& iBuffer)
 {
+  if (iBuffer.empty() == true) { return; }
+
   const TU32 size = static_cast<TU32>(iBuffer.size());
   {
     MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
