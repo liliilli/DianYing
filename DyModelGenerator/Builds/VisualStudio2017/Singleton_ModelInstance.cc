@@ -822,7 +822,6 @@ void Singleton_ModelInstance::RecursiveInsertSkeletonBoneIntoList(
 {
   // Make global transform (parent * this-node) and potential parent index.
   const DDyMatrix4x4 globalTransform      = iRefParentGlobalTransform.Multiply(iPtrAiNode->mTransformation);
-  const signed int skeletonBoneNodeIndex  = static_cast<signed int>(iSkeletonList.size()) - 1;
 
   // Remove redundant node(bone) so insert valid and activated node(bone).
   if (auto it = iRefBoneSpecifierSet.find(iPtrAiNode->mName.C_Str()); it != iRefBoneSpecifierSet.end())
@@ -837,6 +836,7 @@ void Singleton_ModelInstance::RecursiveInsertSkeletonBoneIntoList(
     skeletonInstance.mParentSkeletonBoneIndex = iParentSkeletonBoneId;
   }
 
+  const signed int skeletonBoneNodeIndex  = static_cast<signed int>(iSkeletonList.size()) - 1;
   // Recursively request insertion to children.
   for (unsigned childIndex = 0, numChild = iPtrAiNode->mNumChildren; childIndex < numChild; ++childIndex)
   {
