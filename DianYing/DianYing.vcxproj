@@ -414,6 +414,7 @@
     <ClCompile Include="Source\Helper\Library\HelperRegex.cc" />
     <ClCompile Include="Source\Helper\Library\HelperString.cc" />
     <ClCompile Include="Source\Helper\MCS\Functions.cc" />
+    <ClCompile Include="Source\Helper\MCS\GLShaderParser.cc" />
     <ClCompile Include="Source\Helper\Type\Plane.cc" />
     <ClCompile Include="Source\Management\GameTimerManager.cc" />
     <ClCompile Include="Source\Management\Helper\SDyProfilingHelper.cc" />
@@ -676,6 +677,7 @@
     <ClInclude Include="Include\Dy\Helper\Internal\FDyNameGenerator.h" />
     <ClInclude Include="Include\Dy\Helper\Library\HelperAssimp.h" />
     <ClInclude Include="Include\Dy\Helper\Library\HelperFilesystem.h" />
+    <ClInclude Include="Include\Dy\Helper\MCS\GLShaderParser.h" />
     <ClInclude Include="Include\Dy\Helper\StringSwitch.h" />
     <ClInclude Include="Include\Dy\Helper\System\Idioms.h" />
     <ClInclude Include="Include\Dy\Helper\Library\HelperRegex.h" />

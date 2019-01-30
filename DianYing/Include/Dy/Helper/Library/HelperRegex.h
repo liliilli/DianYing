@@ -23,6 +23,10 @@ DyRegexCreateObjectParentSpecifierList(_MIN_ std::string iParentNameFullList);
 /// @brief Check file name is following format `Data###(\d{3}).dydat` file name.
 MDY_NODISCARD bool DyRegexCheckIsCompressedDataFile(_MIN_ const std::string& iFileName);
 
+/// @brief Return regex matched information keyword recursively.
+MDY_NODISCARD std::optional<std::vector<std::string>>
+DyRegexGetMatchedKeyword(_MIN_ std::string iBuffer, _MIN_ const std::string& iRegex);
+
 } /// ::dy namespace
 
 #endif /// GUARD_DY_HELPER_SYSTEM_REGEX_H

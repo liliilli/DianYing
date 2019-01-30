@@ -21,10 +21,14 @@ namespace dy
 
 std::vector<std::string> DyRegexCreateObjectParentSpecifierList(_MIN_ std::string iParentNameFullList)
 {
+  // If buffer is empty, just return empty list.
   if (iParentNameFullList.empty() == true) { return {}; }
 
+  // Set regex instance and match instance for searching & binding result.
   static const std::regex parentMatchRegex(R"regex((\w+)(?:\.|$))regex");
   std::smatch parentSpecifierMatch;
+
+  // Matching & Insertion
   std::vector<std::string> parentSpecifierList {};
   while (std::regex_search(iParentNameFullList, parentSpecifierMatch, parentMatchRegex) == true) 
   { 
@@ -41,6 +45,27 @@ bool DyRegexCheckIsCompressedDataFile(_MIN_ const std::string& iFileName)
 
   static const std::regex regexPattern(R"regex((Data\d{3}).dydat)regex");
   return std::regex_match(iFileName, regexPattern);
+}
+
+std::optional<std::vector<std::string>> 
+DyRegexGetMatchedKeyword(_MIN_ std::string iBuffer, _MIN_ const std::string& iRegex)
+{
+  // If buffer is empty, just return empty list.
+  if (iBuffer.empty() == true) { return {}; }
+
+  // Set regex instance and match instance for searching & binding result.
+  static const std::regex parentMatchRegex(iRegex);
+  std::smatch parentSpecifierMatch;
+
+  // Matching & Insertion
+  std::vector<std::string> result {};
+  while (std::regex_search(iBuffer, parentSpecifierMatch, parentMatchRegex) == true) 
+  { 
+    result.emplace_back(parentSpecifierMatch[1].str());
+    iBuffer = parentSpecifierMatch.suffix();
+  }
+
+  return result;
 }
 
 } /// ::dy namespace

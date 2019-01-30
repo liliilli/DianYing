@@ -18,6 +18,7 @@
 #include <Dy/Core/Rendering/Wrapper/PDyGLShaderFragmentDescriptor.h>
 #include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
 #include <Dy/Management/Helper/SDyProfilingHelper.h>
+#include "Dy/Helper/MCS/GLShaderParser.h"
 
 //!
 //! Forward declaration
