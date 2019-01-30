@@ -115,6 +115,8 @@ private:
     { return MDY_PRIVATE_SPECIFIER(pTryRequireInformation_Model)(iSpecifier, iPtrBinder); }
     else if constexpr (TType == EDyResourceType::Skeleton)
     { return MDY_PRIVATE_SPECIFIER(pTryRequireInformation_Skeleton)(iSpecifier, iPtrBinder); }
+    else if constexpr (TType == EDyResourceType::AnimationScrap)
+    { return MDY_PRIVATE_SPECIFIER(pTryRequireInformation_AnimationScrap)(iSpecifier, iPtrBinder); }
     else 
     { MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt); }
   }
@@ -153,6 +155,10 @@ private:
   
   MDY_NODISCARD static std::optional<const __TDyRscInfo_T<EDyResourceType::Skeleton>*>
   MDY_PRIVATE_SPECIFIER(pTryRequireInformation_Skeleton)
+  (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
+   
+  MDY_NODISCARD static std::optional<const __TDyRscInfo_T<EDyResourceType::AnimationScrap>*>
+  MDY_PRIVATE_SPECIFIER(pTryRequireInformation_AnimationScrap)
   (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
  
   /// @brief Use this require resource to another dimension.

@@ -139,6 +139,7 @@ using TDyIInformationBinderMaterial     = TDyInformationBinderInstant<EDyResourc
 using TDyIInformationBinderAttachment   = TDyInformationBinderInstant<EDyResourceType::GLAttachment>;
 using TDyIInformationBinderFrameBuffer  = TDyInformationBinderInstant<EDyResourceType::GLFrameBuffer>;
 using TDyIInformationBinderSkeleton     = TDyInformationBinderInstant<EDyResourceType::Skeleton>;
+using TDyIInformationBinderAnimScrap    = TDyInformationBinderInstant<EDyResourceType::AnimationScrap>;
 
 ///
 /// @class TDyInformationBinder
@@ -175,6 +176,7 @@ using TDyLInformatinBinderMaterial  = TDyInformatinBinderLazy<EDyResourceType::M
 using TDyLInformatinBinderAttachment  = TDyInformatinBinderLazy<EDyResourceType::GLAttachment>;
 using TDyLInformatinBinderFrameBuffer = TDyInformatinBinderLazy<EDyResourceType::GLFrameBuffer>;
 using TDyLInformationBinderSkeleton   = TDyInformatinBinderLazy<EDyResourceType::Skeleton>;
+using TDyLInformationBinderAnimScrap  = TDyInformatinBinderLazy<EDyResourceType::AnimationScrap>;
 
 } /// ::dy namespace
 

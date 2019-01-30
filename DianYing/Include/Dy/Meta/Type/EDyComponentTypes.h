@@ -32,6 +32,8 @@ enum class EDyComponentMetaType
   ModelFilter,
   // CDyModelRenderer
   ModelRenderer,
+  // CDyModelAnimator
+  ModelAnimator,
   // CDyDirectionalLight
   DirectionalLight,
   // CDyCamera
