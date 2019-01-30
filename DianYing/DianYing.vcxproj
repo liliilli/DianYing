@@ -213,6 +213,7 @@
     <ClCompile Include="Source\Builtin\ShaderGl\PostEffect\RenderDefaultSSAOBlurring.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\PostEffect\RenderDefaultSSAO.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\Render\BtShUvWorldPos.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\Render\RenderOpaqueDynamic.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\Widget\RenderUiBasicGaugeBar.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\Widget\RenderUIImage.cc" />
     <ClCompile Include="Source\Builtin\Texture\CheckerBright.cc" />
@@ -590,6 +591,7 @@
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Font\RenderFontArraySDF.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Editor\RenderGrid.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Render\BtShUvWorldPos.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\Render\RenderOpaqueDynamic.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Render\RenderOpaqueStatic.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderPass.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderScreenOutput.h" />

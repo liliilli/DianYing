@@ -78,6 +78,7 @@ FDyDefaultLoadingBootScript::FDyDefaultLoadingBootScript()
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBtGlslRenderIntegrationLevelCSM::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, "dyBtShOITAccumulation"sv);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, "dyBtShOITIntegration"sv);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, "dyBtShGlOpaqueDynamic"sv);
 
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBtGlslRenderCSMLightNormal::sName);
 

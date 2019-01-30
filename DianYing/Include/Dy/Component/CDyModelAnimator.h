@@ -17,6 +17,7 @@
 #include <Dy/Core/Resource/Type/TDyInformationBinder.h>
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
+#include "Dy/Helper/Type/Matrix4.h"
 
 //!
 //! Forward declaration
@@ -91,6 +92,9 @@ private:
     EDyAnimationScrapMode mScrapMode = EDyAnimationScrapMode::PlayOnce;
     TF32                  mElapsedTime = 0.0f;
     FDyModelAnimScrapInformation* mPtrPresentAnimatorInfo = nullptr; 
+    
+    /// @brief
+    std::vector<DDyMatrix4x4> mFinalTransformList;
   };
 
   /// @brief Status instance.
