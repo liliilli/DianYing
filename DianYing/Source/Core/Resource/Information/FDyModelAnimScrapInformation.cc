@@ -79,4 +79,170 @@ const std::string& FDyModelAnimScrapInformation::GetSpecifierName() const noexce
   return this->mSpecifierName;
 }
 
+DDyVector3 FDyModelAnimScrapInformation::GetInterpolatedScaling(_MIN_ TF32 iElapsedTime, _MIN_ TU32 iBoneIndex, _MIN_ bool iIsLooped) const
+{
+  const auto& refBone = this->mAnimation.mAnimationNodeList[iBoneIndex];
+  
+  // If `isLooped` is true, we need to mod elasped time to new value within range.
+  if (iIsLooped == true)
+  {
+    iElapsedTime = std::fmod(iElapsedTime, this->mAnimation.mAnimationHeader.mDurationSecond);
+  }
+  
+  // Get start point.
+  TU32 idTargetScale = 0;
+  const TU32 num = refBone.mScaleList.size();
+  for (TU32 i = 0; i < num; ++i)
+  {
+    auto& refScale = refBone.mScaleList[i];
+    if (refScale.mStartSecond <= iElapsedTime) { idTargetScale = i; }
+  }
+
+  // If idTargetScale is end of scale list.
+  // [0  ][1  ][2  ].....[N  ]__[0  ]
+  // |<-dt(0) :: v = (dt - 0)/(1 - 0); result = S0 * (1 - v) + S1 * v;
+  //                       |<-dt(N) When Looped
+  //                       L v = (dt - N) / (elapsed_time - N); result = SN * (1 - v) + S0 * v;
+  //                     |<-dt(N) When not looped, just return SN
+  if (const TU32 endId = num - 1; idTargetScale == endId)
+  {
+    if (iIsLooped == false) { return refBone.mScaleList[endId].mScale; }
+    else
+    {
+      auto& refFirstBone = refBone.mScaleList.front();
+      auto& refLastBone  = refBone.mScaleList.back();
+      const auto v = 
+          (iElapsedTime - refLastBone.mStartSecond) 
+        / (this->mAnimation.mAnimationHeader.mDurationSecond - refLastBone.mStartSecond);
+
+      return math::Lerp(refLastBone.mScale, refFirstBone.mScale, v);
+    }
+  }
+  else
+  {
+    auto& refLhs = refBone.mScaleList[idTargetScale];
+    auto& refRhs = refBone.mScaleList[idTargetScale + 1];
+    const auto v = 
+        (iElapsedTime - refLhs.mStartSecond) 
+      / (refRhs.mStartSecond - refLhs.mStartSecond);
+
+    return math::Lerp(refLhs.mScale, refLhs.mScale, v);
+  }
+}
+
+DDyQuaternion FDyModelAnimScrapInformation::GetInterpolatedRotation(_MIN_ TF32 iElapsedTime, _MIN_ TU32 iBoneIndex, _MIN_ bool iIsLooped) const
+{
+  const auto& refBone = this->mAnimation.mAnimationNodeList[iBoneIndex];
+  
+  // If `isLooped` is true, we need to mod elasped time to new value within range.
+  if (iIsLooped == true)
+  {
+    iElapsedTime = std::fmod(iElapsedTime, this->mAnimation.mAnimationHeader.mDurationSecond);
+  }
+  
+  // Get start point.
+  TU32 idTargetScale = 0;
+  const TU32 num = refBone.mRotationList.size();
+  for (TU32 i = 0; i < num; ++i)
+  {
+    auto& refScale = refBone.mRotationList[i];
+    if (refScale.mStartSecond <= iElapsedTime) { idTargetScale = i; }
+  }
+
+  // Do interpolation.
+  // If idTargetScale is end of rotation list.
+  if (const TU32 endId = num - 1; idTargetScale == endId)
+  {
+    if (iIsLooped == false) { return refBone.mScaleList[endId].mScale; }
+    else
+    {
+      auto& refFirstBone = refBone.mRotationList.front();
+      auto& refLastBone  = refBone.mRotationList.back();
+      const auto v = 
+          (iElapsedTime - refLastBone.mStartSecond) 
+        / (this->mAnimation.mAnimationHeader.mDurationSecond - refLastBone.mStartSecond);
+
+      // Get s-interpolated quaternion.
+      const DDyQuaternion left  = {refLastBone.mX, refLastBone.mY, refLastBone.mZ, refLastBone.mW};
+      const DDyQuaternion right = {refFirstBone.mX, refFirstBone.mY, refFirstBone.mZ, refFirstBone.mW};
+      return math::Slerp(left, right, v);
+    }
+  }
+  else
+  {
+    auto& refLhs = refBone.mRotationList[idTargetScale];
+    auto& refRhs = refBone.mRotationList[idTargetScale + 1];
+    const auto v = 
+        (iElapsedTime - refLhs.mStartSecond) 
+      / (refRhs.mStartSecond - refLhs.mStartSecond);
+
+    // Get s-interpolated quaternion.
+    const DDyQuaternion left  = {refLhs.mX, refLhs.mY, refLhs.mZ, refLhs.mW};
+    const DDyQuaternion right = {refRhs.mX, refRhs.mY, refRhs.mZ, refRhs.mW};
+    return math::Slerp(left, right, v);
+  }
+}
+
+DDyVector3 FDyModelAnimScrapInformation::GetInterpolatedPosition(_MIN_ TF32 iElapsedTime, _MIN_ TU32 iBoneIndex, _MIN_ bool iIsLooped) const
+{
+  const auto& refBone = this->mAnimation.mAnimationNodeList[iBoneIndex];
+  
+  // If `isLooped` is true, we need to mod elasped time to new value within range.
+  if (iIsLooped == true)
+  {
+    iElapsedTime = std::fmod(iElapsedTime, this->mAnimation.mAnimationHeader.mDurationSecond);
+  }
+  
+  // Get start point.
+  TU32 idTargetScale = 0;
+  const TU32 num = refBone.mPositionList.size();
+  for (TU32 i = 0; i < num; ++i)
+  {
+    auto& refScale = refBone.mPositionList[i];
+    if (refScale.mStartSecond <= iElapsedTime) { idTargetScale = i; }
+  }
+
+  // If idTargetScale is end of scale list.
+  // [0  ][1  ][2  ].....[N  ]__[0  ]
+  // |<-dt(0) :: v = (dt - 0)/(1 - 0); result = S0 * (1 - v) + S1 * v;
+  //                       |<-dt(N) When Looped
+  //                       L v = (dt - N) / (elapsed_time - N); result = SN * (1 - v) + S0 * v;
+  //                     |<-dt(N) When not looped, just return SN
+  if (const TU32 endId = num - 1; idTargetScale == endId)
+  {
+    if (iIsLooped == false) { return refBone.mPositionList[endId].mTranslate; }
+    else
+    {
+      auto& refFirstBone = refBone.mPositionList.front();
+      auto& refLastBone  = refBone.mPositionList.back();
+      const auto v = 
+          (iElapsedTime - refLastBone.mStartSecond) 
+        / (this->mAnimation.mAnimationHeader.mDurationSecond - refLastBone.mStartSecond);
+
+      return math::Lerp(refLastBone.mTranslate, refFirstBone.mTranslate, v);
+    }
+  }
+  else
+  {
+    auto& refLhs = refBone.mPositionList[idTargetScale];
+    auto& refRhs = refBone.mPositionList[idTargetScale + 1];
+    const auto v = 
+        (iElapsedTime - refLhs.mStartSecond) 
+      / (refRhs.mStartSecond - refLhs.mStartSecond);
+
+    return math::Lerp(refLhs.mTranslate, refLhs.mTranslate, v);
+  }
+}
+
+const decltype(DDyAnimationSequence::mAnimationNodeList)& 
+FDyModelAnimScrapInformation::GetAnimNodeList() const noexcept
+{
+  return this->mAnimation.mAnimationNodeList;
+}
+
+TU32 FDyModelAnimScrapInformation::GetSkeletonBoneId(_MIN_ TU32 iId) const noexcept
+{
+  return this->mAnimation.mAnimationNodeList[iId].mSkeletonBoneId;
+}
+
 } /// ::dy namespace

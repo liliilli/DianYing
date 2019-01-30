@@ -338,6 +338,7 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(PreRender)(_MIN_ EDyGlobalGameStatus iEngin
   {
     // Reset frame dependent profiling count.
     SDyProfilingHelper::ResetFrameDependentCounts();
+    MDyWorld::GetInstance().UpdateAnimator(dt);
   } break;
   default: break;
   }

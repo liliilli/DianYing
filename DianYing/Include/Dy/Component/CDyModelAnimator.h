@@ -55,7 +55,7 @@ public:
   void Release() override final;
 
   /// @brief
-  void Update(_MIN_ float dt) override;
+  void Update(_MIN_ TF32 dt) override;
 
   /// @brief
   std::string ToString() override final;
@@ -63,9 +63,11 @@ public:
 private:
   /// @brief
   void TryActivateInstance() override final;
-
   /// @brief
   void TryDeactivateInstance() override final;
+
+  /// @brief Update final transform of given animation. This function must be called when `Play`.
+  void TryUpdateFinalTransform(_MIN_ TU32 idBone, _MIN_ const DDyMatrix4x4& parentTransform, _MIN_ bool iIsLooped);
 
   /// @enum EDyAnimatorStatus
   /// @brief Blending is not implemented yet.
@@ -73,7 +75,8 @@ private:
   {
     Play,   // Animator is playing something single animation scrap.
     Stop,   // Animator is stopped, so any animator is not played, so last pose is fixed.
-    Pause   // Animator is paused so any animator is not played yet but can be resumed.
+    Pause,  // Animator is paused so any animator is not played yet but can be resumed.
+    Init,   // Animator is initiated. (Default-value)
   };
 
   /// @enum EDyAnimationScrapMode
@@ -88,10 +91,10 @@ private:
   /// @brief
   struct DDyAnimatorStatus final
   {
-    EDyAnimatorStatus     mStatus = EDyAnimatorStatus::Stop;
+    EDyAnimatorStatus     mStatus = EDyAnimatorStatus::Init;
     EDyAnimationScrapMode mScrapMode = EDyAnimationScrapMode::PlayOnce;
     TF32                  mElapsedTime = 0.0f;
-    FDyModelAnimScrapInformation* mPtrPresentAnimatorInfo = nullptr; 
+    const FDyModelAnimScrapInformation* mPtrPresentAnimatorInfo = nullptr; 
     
     /// @brief
     std::vector<DDyMatrix4x4> mFinalTransformList;

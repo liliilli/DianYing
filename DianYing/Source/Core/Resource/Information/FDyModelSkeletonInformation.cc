@@ -42,4 +42,26 @@ const std::string& FDyModelSkeletonInformation::GetSpecifierName() const noexcep
   return this->mSpecifierName;
 }
 
+TU32 FDyModelSkeletonInformation::GetBoneCount() const noexcept
+{
+  return static_cast<TU32>(this->mSkeletonBoneList.size());
+}
+
+const DDySkeletonBone& FDyModelSkeletonInformation::GetRefBone(_MIN_ TU32 iIndex) const noexcept
+{
+  MDY_ASSERT_FORCE(iIndex < this->GetBoneCount(), "Index must be within skeleton bone range.");
+  return this->mSkeletonBoneList[iIndex];
+}
+
+std::vector<TU32> FDyModelSkeletonInformation::GetChildrenBoneIdList(_MIN_ TI32 iIndex) const noexcept
+{
+  std::vector<TU32> childrenIdResult;
+  for (TU32 i = 0, num = static_cast<TU32>(this->mSkeletonBoneList.size()); i < num; ++i)
+  {
+    if (this->mSkeletonBoneList[i].mParentSkeletonBoneIndex == iIndex) { childrenIdResult.emplace_back(i); }
+  }
+
+  return childrenIdResult;
+}
+
 } /// ::dy namespace

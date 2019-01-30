@@ -22,7 +22,9 @@ struct DDyAnimationSequence final
 {
   struct DHeader final
   {
+    // Use this
     float     mDurationSecond = 0.0f;
+    // Internal
     float     mTickSecond     = 0.0f;
     float     mDurationTicks  = 0;
     float     mTickPerSecond  = 0;
@@ -47,7 +49,7 @@ struct DDyAnimationSequence final
     struct DScale final
     {
       float mStartSecond  = 0.0f;  
-      DDyVector3 mScale   = {};
+      DDyVector3 mScale   = {1, 1, 1};
     };
 
     unsigned  mSkeletonBoneId = 0;

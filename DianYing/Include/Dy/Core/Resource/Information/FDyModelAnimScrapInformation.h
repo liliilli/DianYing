@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Core/Resource/Type/ModelMesh/DDyAnimationSequence.h>
+#include <Dy/Helper/Type/Quaternion.h>
 
 //!
 //! Forward declaration
@@ -46,6 +47,23 @@ public:
 
   /// @brief Get model specifier name.
   MDY_NODISCARD const std::string& GetSpecifierName() const noexcept;
+
+  /// @brief Get interpolated scaling value.
+  /// [0  ][1  ][2  ].....[N  ]__[0  ]
+  /// |<-dt(0) :: v = (dt - 0)/(1 - 0); result = S0 * (1 - v) + S1 * v;
+  ///                       |<-dt(N) When Looped
+  ///                       L v = (dt - N) / (elapsed_time - N); result = SN * (1 - v) + S0 * v;
+  ///                     |<-dt(N) When not looped, just return SN;
+  MDY_NODISCARD DDyVector3 GetInterpolatedScaling(_MIN_ TF32 iElapsedTime, _MIN_ TU32 iBoneIndex, _MIN_ bool iIsLooped) const;
+  /// @brief Get interpolated rotation value.
+  MDY_NODISCARD DDyQuaternion GetInterpolatedRotation(_MIN_ TF32 iElapsedTime, _MIN_ TU32 iBoneIndex, _MIN_ bool iIsLooped) const;
+  /// @brief Get interpolated position value.
+  MDY_NODISCARD DDyVector3 GetInterpolatedPosition(_MIN_ TF32 iElapsedTime, _MIN_ TU32 iBoneIndex, _MIN_ bool iIsLooped) const;
+
+  /// @brief Get reference of list of skeleton bone.
+  MDY_NODISCARD const decltype(DDyAnimationSequence::mAnimationNodeList)& GetAnimNodeList() const noexcept;
+  /// @brief Get skeleton bone id.
+  MDY_NODISCARD TU32 GetSkeletonBoneId(_MIN_ TU32 iId) const noexcept;
 
 private:
   std::string           mSpecifierName = MDY_INITIALIZE_EMPTYSTR;

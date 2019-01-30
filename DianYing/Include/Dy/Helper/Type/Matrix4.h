@@ -184,6 +184,8 @@ public:
   DDyMatrix4x4& Scale(_MIN_ const DDyVector3& iScaleFactor);
   /// @brief Rotate matrix.
   DDyMatrix4x4& Rotate(_MIN_ const DDyVector3& iRotationDegreeAngle);
+  /// @brief Rotate matrix.
+  DDyMatrix4x4& Rotate(_MIN_ const DDyQuaternion& iRotationQuaternion);
   /// @brief Translate matrix.
   DDyMatrix4x4& Translate(_MIN_ const DDyVector3& iPosition);
 

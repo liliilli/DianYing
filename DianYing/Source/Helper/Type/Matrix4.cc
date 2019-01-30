@@ -420,6 +420,16 @@ DDyMatrix4x4& DDyMatrix4x4::Rotate(_MIN_ const DDyVector3& iRotationDegreeAngle)
   return *this;
 }
 
+DDyMatrix4x4& DDyMatrix4x4::Rotate(_MIN_ const DDyQuaternion& iRotationQuaternion)
+{
+  const auto mat = this->Multiply(iRotationQuaternion.GetRotationMatrix4x4());
+  (*this)[0] = mat[0];
+  (*this)[1] = mat[1];
+  (*this)[2] = mat[2];
+  (*this)[3] = mat[3];
+  return *this;
+}
+
 DDyMatrix4x4& DDyMatrix4x4::Translate(_MIN_ const DDyVector3& iPosition)
 {
   (*this)[3][0] += iPosition.X;

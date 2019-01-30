@@ -40,6 +40,8 @@ public:
 
   DDyQuaternion(const glm::quat& glmQuat);
   DDyQuaternion& operator=(const glm::quat& glmQuat);
+  
+  DDyQuaternion(_MIN_ TF32 x, _MIN_ TF32 y, _MIN_ TF32 z, _MIN_ TF32 w);
 
   ///
   /// @brief Get rotation matrix (4x4) from quaternion.

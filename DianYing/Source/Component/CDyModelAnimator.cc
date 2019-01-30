@@ -17,7 +17,9 @@
 #include <Dy/Management/Internal/Render/FDyModelHandlerManager.h>
 #include <Dy/Element/Actor.h>
 #include <Dy/Component/CDyModelFilter.h>
-#include "Dy/Management/WorldManager.h"
+#include <Dy/Management/WorldManager.h>
+#include <Dy/Core/Resource/Information/FDyModelAnimScrapInformation.h>
+#include <Dy/Core/Resource/Information/FDyModelSkeletonInformation.h>
 
 namespace dy
 {
@@ -41,8 +43,87 @@ void CDyModelAnimator::Release()
   if (this->IsComponentActivated() == true) { this->Deactivate(); }
 }
 
-void CDyModelAnimator::Update(_MIN_ float dt)
-{ }
+void CDyModelAnimator::Update(_MIN_ TF32 dt)
+{
+  // If given animation is not valid, just return with doing nothing.
+  if (this->mBinderSkeleton.IsResourceExist() == false
+  ||  this->mBinderAnimationScrap.IsResourceExist() == false) { return; }
+
+  // @TODO TEMPORARY CODE.
+  switch (this->mStatus.mStatus)
+  {
+  case EDyAnimatorStatus::Stop: /* Do nothing */ break;
+  case EDyAnimatorStatus::Init: 
+  {
+    this->mStatus.mPtrPresentAnimatorInfo = this->mBinderAnimationScrap.Get();
+    this->mStatus.mElapsedTime = 0;
+    this->mStatus.mScrapMode = EDyAnimationScrapMode::Loop;
+
+    // Assert animation and bone count is same.
+    this->mStatus.mFinalTransformList.resize(this->mBinderSkeleton->GetBoneCount());
+    this->mStatus.mStatus = EDyAnimatorStatus::Play; 
+  } break;
+  case EDyAnimatorStatus::Play: 
+  {
+    this->mStatus.mElapsedTime += dt;
+    const bool isLooped = this->mStatus.mScrapMode == EDyAnimationScrapMode::Loop ? true : false;
+
+    // Skeleton bone and transform, and bone animation channel is same.
+    const DDyMatrix4x4 rootMatrix = DDyMatrix4x4::IdentityMatrix();
+    // Find root animation node.
+    const auto rootBoneIdList = this->mBinderSkeleton->GetChildrenBoneIdList(-1);
+    for (const auto& idBone : rootBoneIdList)
+    {
+      for (TU32 i = 0, num = static_cast<TU32>(this->mBinderAnimationScrap->GetAnimNodeList().size()); i < num; ++i)
+      {
+        // Check matching bone id of anim node and bone id.
+        const auto boneId = this->mStatus.mPtrPresentAnimatorInfo->GetSkeletonBoneId(i);
+        if (boneId != idBone) { continue; }
+
+        // If matched, update transform.
+        this->TryUpdateFinalTransform(i, rootMatrix, isLooped);
+      }
+    }
+  } break;
+  case EDyAnimatorStatus::Pause: break;
+  default: ;
+  }
+}
+
+void CDyModelAnimator::TryUpdateFinalTransform(_MIN_ TU32 idAnimNode, _MIN_ const DDyMatrix4x4& parentTransform, _MIN_ bool iIsLooped)
+{
+  // Get scaling vector. (vector x,y,z can be linearly interpolated)   
+  const auto inpScl = this->mStatus.mPtrPresentAnimatorInfo->GetInterpolatedScaling(
+      this->mStatus.mElapsedTime, idAnimNode, iIsLooped);
+  // Get scaled rotation matrix. (quaternion x,y,z,w must be process slerp as a 4x4 matrix.)
+  const auto inpRot = this->mStatus.mPtrPresentAnimatorInfo->GetInterpolatedRotation(
+      this->mStatus.mElapsedTime, idAnimNode, iIsLooped);
+  // Get position vector. (vector x,y,z can be linearly interpolated)
+  const auto inpPos = this->mStatus.mPtrPresentAnimatorInfo->GetInterpolatedPosition(
+      this->mStatus.mElapsedTime, idAnimNode, iIsLooped);
+
+  // Calculate final transform without offset matrix.
+  DDyMatrix4x4 finalTransform = DDyMatrix4x4{parentTransform}.Scale(inpScl).Rotate(inpRot).Translate(inpPos);
+  const auto& refBone = this->mBinderSkeleton->GetRefBone(idAnimNode);
+  // Set final transform (uniform)
+  const auto boneId = this->mStatus.mPtrPresentAnimatorInfo->GetSkeletonBoneId(idAnimNode);
+  this->mStatus.mFinalTransformList[boneId] = finalTransform.Multiply(refBone.mOffsetMatrix);
+
+  // Loop child bone node.
+  const auto parentBoneIdList = this->mBinderSkeleton->GetChildrenBoneIdList(boneId);
+  for (const auto& idBone : parentBoneIdList)
+  {
+    for (TU32 i = 0, num = static_cast<TU32>(this->mBinderAnimationScrap->GetAnimNodeList().size()); i < num; ++i)
+    {
+      // Check matching bone id of anim node and bone id.
+      const auto parentBoneId = this->mStatus.mPtrPresentAnimatorInfo->GetSkeletonBoneId(i);
+      if (parentBoneId != idBone) { continue; }
+
+      // If matched, update transform.
+      this->TryUpdateFinalTransform(i, finalTransform, iIsLooped);
+    }
+  }
+}
 
 std::string CDyModelAnimator::ToString()
 {

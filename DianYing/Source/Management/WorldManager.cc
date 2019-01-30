@@ -24,6 +24,7 @@
 #include <Dy/Core/DyEngine.h>
 #include <Dy/Component/CDyModelRenderer.h>
 #include <Dy/Component/CDyCamera.h>
+#include "Dy/Component/CDyModelAnimator.h"
 
 namespace dy
 {
@@ -107,6 +108,16 @@ void MDyWorld::UpdateObjects(_MIN_ float dt)
     }
 
     // After update, check
+  }
+}
+
+void MDyWorld::UpdateAnimator(_MIN_ TF32 dt)
+{
+  // Update animation transformation information 
+  // using linear-interpolation of given skeleton and animation.
+  for (auto& ptrCompAnimator : this->mActivatedModelAnimatorPtrs)
+  {
+    ptrCompAnimator->Update(dt);
   }
 }
 

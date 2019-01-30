@@ -56,6 +56,8 @@ public:
   /// @brief Update valid objects. this function must be called after this->Update().
   /// @param dt Delta time
   void UpdateObjects(_MIN_ float dt);
+  /// @brief Update animator component (pre-render phase).
+  void UpdateAnimator(_MIN_ TF32 dt);
 
   /// @brief Get all actors with tag. Tag must be valid. \n
   /// If iTagSpecifier is empty, this function get all actors which is not specified any tag.

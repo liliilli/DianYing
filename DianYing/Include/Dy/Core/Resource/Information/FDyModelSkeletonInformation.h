@@ -47,6 +47,16 @@ public:
   /// @brief Get model specifier name.
   MDY_NODISCARD const std::string& GetSpecifierName() const noexcept;
 
+  /// @brief Get the number of skeleton bone.
+  MDY_NODISCARD TU32 GetBoneCount() const noexcept;
+
+  /// @brief Get const reference of skeleton bone. \n
+  /// If iIndex is out of bound of range, just assert it, so you have to check oob range with `GetBoneCount()`. 
+  MDY_NODISCARD const DDySkeletonBone& GetRefBone(_MIN_ TU32 iIndex) const noexcept;
+
+  /// @brief
+  MDY_NODISCARD std::vector<TU32> GetChildrenBoneIdList(_MIN_ TI32 iIndex) const noexcept;
+
 private:
   std::string       mSpecifierName    = MDY_INITIALIZE_EMPTYSTR;
   TDyModelSkeleton  mSkeletonBoneList = {};
