@@ -47,7 +47,6 @@ public:
   MDY_SET_CRC32_HASH_WITH_TYPE(CDyModelAnimator);
 
   /// @brief  Initialize with descriptor.
-  /// @param  descriptor
   /// @return If successful, return DY_SUCCESS or DY_FAILURE.
   MDY_NODISCARD EDySuccess Initialize(const PDyModelAnimatorComponentMetaInfo& descriptor) override final;
 

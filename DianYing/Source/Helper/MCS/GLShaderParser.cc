@@ -41,9 +41,6 @@ DyStrInQuote(_MIN_ const std::string& iBuffer, _MIN_ const std::string& iNeedle)
   else                      { return it; }
 }
 
-/// @brief Search `iNeedle` word in `iBuffer` begin and end range.
-/// If not found, just return nullopt (no-value).
-
 /// @brief Separate string buffer, the line which is in given `iIterator` is medium output.  
 /// from buffer start and the previous line will be left and from next line to end is right output.
 MDY_NODISCARD std::tuple<std::optional<std::string>, std::optional<std::string>, std::optional<std::string>>
@@ -88,6 +85,8 @@ DySeparateBufferTo3Way(_MIN_ const std::string& iBuffer, _MIN_ const std::string
 namespace 
 {
 
+/// @brief Default vertex array object module.
+/// #import <Input_DefaultVao>;
 MDY_SET_IMMUTABLE_STRING(Buffer_Input_DefaultVao, R"dy(
 layout (location = 0) in vec3 dyPosition;
 layout (location = 1) in vec3 dyNormal;
@@ -99,12 +98,45 @@ layout (location = 6) in ivec4 dyBoneId;
 layout (location = 7) in vec4 dyBoneWeight;
 )dy");
 
+/// @brief Uniform buffer object for focused camera block.
+/// #import <Input_UboCamera>;
 MDY_SET_IMMUTABLE_STRING(Buffer_Input_UboCamera, R"dy(
 layout(std140, binding = 0) uniform CameraBlock
 {
   uniform mat4 mProjMatrix;
   uniform mat4 mViewMatrix;
 } uCamera;
+)dy");
+
+/// @brief Skinned animation input uniform variables.
+/// #import <Input_SkinAnimation>;
+MDY_SET_IMMUTABLE_STRING(Buffer_Input_SkinAnimation, R"dy(
+uniform mat4 mSkelTransform[];
+uniform int  mNumSkelTransform = 0;
+)dy");
+
+/// @brief Default Texture2D input uniform varaibles.
+/// #import <Input_DefaultTexture2D>;
+MDY_SET_IMMUTABLE_STRING(Buffer_Input_DefaultTexture2D, R"dy(
+layout (binding = 0) uniform sampler2D uTexture0;
+layout (binding = 1) uniform sampler2D uTexture1;
+layout (binding = 2) uniform sampler2D uTexture2;
+layout (binding = 3) uniform sampler2D uTexture3;
+layout (binding = 4) uniform sampler2D uTexture4;
+layout (binding = 5) uniform sampler2D uTexture5;
+layout (binding = 6) uniform sampler2D uTexture6;
+layout (binding = 7) uniform sampler2D uTexture7;
+layout (binding = 8) uniform sampler2D uTexture8;
+layout (binding = 9) uniform sampler2D uTexture9;
+)dy");
+
+/// @brief Default opaque stream output module.
+/// #import <Output_OpaqueStream>;
+MDY_SET_IMMUTABLE_STRING(Buffer_Output_OpaqueStream, R"dy(
+layout (location = 0) out vec4 gUnlit;
+layout (location = 1) out vec4 gNormal;
+layout (location = 2) out vec4 gSpecular;
+layout (location = 3) out vec4 gPosition;
 )dy");
 
 } /// ::anonymous namespace
@@ -137,8 +169,11 @@ std::string ParseGLShader(_MIN_ const std::string& iShaderString)
   {
     switch (DyStrSwitchInput(keyword))
     {
-    case DyStrCase("Input_DefaultVao"): exportShaderBuffer += Buffer_Input_DefaultVao; break;
-    case DyStrCase("Input_UboCamera"):  exportShaderBuffer += Buffer_Input_UboCamera; break;
+    case DyStrCase("Input_DefaultVao"):       exportShaderBuffer += Buffer_Input_DefaultVao; break;
+    case DyStrCase("Input_UboCamera"):        exportShaderBuffer += Buffer_Input_UboCamera; break;
+    case DyStrCase("Input_SkinAnimation"):    exportShaderBuffer += Buffer_Input_SkinAnimation; break;
+    case DyStrCase("Input_DefaultTexture2D"): exportShaderBuffer += Buffer_Input_DefaultTexture2D; break;
+    case DyStrCase("Output_OpaqueStream"):    exportShaderBuffer += Buffer_Output_OpaqueStream; break;
     default: MDY_NOT_IMPLEMENTED_ASSERT(); break;
     }
   }

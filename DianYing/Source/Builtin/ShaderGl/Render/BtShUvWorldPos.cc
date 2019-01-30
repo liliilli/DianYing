@@ -24,9 +24,7 @@ namespace
 
 MDY_SET_IMMUTABLE_STRING(sVertexShaderCode, R"dy(
 #version 430
-
-layout (location = 0) in vec3 dyPosition;
-layout (location = 1) in vec3 dyNormal;
+#import <Input_DefaultVao>;
 #import <Input_UboCamera>;
 uniform mat4 modelMatrix;
 
@@ -47,18 +45,13 @@ void main()
 
 MDY_SET_IMMUTABLE_STRING(sFragmentShaderCode, R"dy(
 #version 430
+#import <Input_DefaultTexture2D>;
+#import <Output_OpaqueStream>;
 
 in VS_OUT {
 	vec3 normal;
 	vec4 modelPosition;
 } fs_in;
-
-layout (location = 0) out vec4 gUnlit;
-layout (location = 1) out vec4 gNormal;
-layout (location = 2) out vec4 gSpecular;
-layout (location = 3) out vec4 gPosition;
-
-uniform sampler2D uTexture0;
 
 void main() {
   vec2 ts = fs_in.modelPosition.xz / 25.0f;

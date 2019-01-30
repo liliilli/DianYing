@@ -24,11 +24,7 @@ namespace
 
 MDY_SET_IMMUTABLE_STRING(sVert, R"dy(
 #version 430
-
-layout (location = 0) in vec3 dyPosition;
-layout (location = 1) in vec3 dyNormal;
-layout (location = 2) in vec2 dyTexCoord0;
-
+#import <Input_DefaultVao>;
 #import <Input_UboCamera>;
 
 out VS_OUT 
