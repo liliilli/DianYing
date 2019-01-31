@@ -34,7 +34,8 @@ FDyModelSkeletonInformation::FDyModelSkeletonInformation(_MIN_ const PDyModelSke
   MDY_ASSERT_FORCE(optJsonSkeleton.has_value() == true, "Failed to load skeleton file.");
 
   const auto& jsonSkeleton  = optJsonSkeleton.value();
-  this->mSkeletonBoneList   = jsonSkeleton.get<decltype(mSkeletonBoneList)>();
+  this->mRootInvTransform   = jsonSkeleton["InverseTransform"].get<DDyMatrix4x4>();
+  this->mSkeletonBoneList   = jsonSkeleton["BoneList"].get<decltype(mSkeletonBoneList)>();
 }
 
 const std::string& FDyModelSkeletonInformation::GetSpecifierName() const noexcept
@@ -62,6 +63,11 @@ std::vector<TU32> FDyModelSkeletonInformation::GetChildrenBoneIdList(_MIN_ TI32 
   }
 
   return childrenIdResult;
+}
+
+const DDyMatrix4x4& FDyModelSkeletonInformation::GetRootInverseTransform() const noexcept
+{
+  return this->mRootInvTransform;
 }
 
 } /// ::dy namespace

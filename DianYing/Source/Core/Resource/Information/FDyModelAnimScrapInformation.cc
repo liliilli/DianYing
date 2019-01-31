@@ -72,6 +72,8 @@ FDyModelAnimScrapInformation::FDyModelAnimScrapInformation(_MIN_ const PDyModelA
     }
   }
   std::fclose(fdFile);
+
+  this->mRateScale = metaInfo.mDetails.mRateScale;
 }
 
 const std::string& FDyModelAnimScrapInformation::GetSpecifierName() const noexcept
@@ -92,6 +94,12 @@ DDyVector3 FDyModelAnimScrapInformation::GetInterpolatedScaling(_MIN_ TF32 iElap
   // Get start point.
   TU32 idTargetScale = 0;
   const TU32 num = refBone.mScaleList.size();
+  // If number is only one, just return with it.
+  if (num == 1)
+  {
+    return refBone.mScaleList.front().mScale;
+  }
+  
   for (TU32 i = 0; i < num; ++i)
   {
     auto& refScale = refBone.mScaleList[i];
@@ -143,6 +151,13 @@ DDyQuaternion FDyModelAnimScrapInformation::GetInterpolatedRotation(_MIN_ TF32 i
   // Get start point.
   TU32 idTargetScale = 0;
   const TU32 num = refBone.mRotationList.size();
+  // If number is only one, just return with it.
+  if (num == 1)
+  {
+    const auto& refRot = refBone.mRotationList.front();
+    return DDyQuaternion{refRot.mX, refRot.mY, refRot.mZ, refRot.mW};
+  }
+
   for (TU32 i = 0; i < num; ++i)
   {
     auto& refScale = refBone.mRotationList[i];
@@ -196,6 +211,9 @@ DDyVector3 FDyModelAnimScrapInformation::GetInterpolatedPosition(_MIN_ TF32 iEla
   // Get start point.
   TU32 idTargetScale = 0;
   const TU32 num = refBone.mPositionList.size();
+  // If number is only one, just return with it.
+  if (num == 1) { return refBone.mPositionList.front().mTranslate; }
+
   for (TU32 i = 0; i < num; ++i)
   {
     auto& refScale = refBone.mPositionList[i];
@@ -243,6 +261,11 @@ FDyModelAnimScrapInformation::GetAnimNodeList() const noexcept
 TU32 FDyModelAnimScrapInformation::GetSkeletonBoneId(_MIN_ TU32 iId) const noexcept
 {
   return this->mAnimation.mAnimationNodeList[iId].mSkeletonBoneId;
+}
+
+TF32 FDyModelAnimScrapInformation::GetRateScale() const noexcept
+{
+  return this->mRateScale;
 }
 
 } /// ::dy namespace

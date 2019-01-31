@@ -57,8 +57,12 @@ public:
   /// @brief
   MDY_NODISCARD std::vector<TU32> GetChildrenBoneIdList(_MIN_ TI32 iIndex) const noexcept;
 
+  /// @brief Get inverse transform of root-node.
+  MDY_NODISCARD const DDyMatrix4x4& GetRootInverseTransform() const noexcept;
+
 private:
   std::string       mSpecifierName    = MDY_INITIALIZE_EMPTYSTR;
+  DDyMatrix4x4      mRootInvTransform = {};
   TDyModelSkeleton  mSkeletonBoneList = {};
 };
 

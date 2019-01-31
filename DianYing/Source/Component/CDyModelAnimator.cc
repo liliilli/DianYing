@@ -65,11 +65,11 @@ void CDyModelAnimator::Update(_MIN_ TF32 dt)
   } break;
   case EDyAnimatorStatus::Play: 
   {
-    this->mStatus.mElapsedTime += dt;
+    this->mStatus.mElapsedTime += dt * this->mStatus.mPtrPresentAnimatorInfo->GetRateScale();
     const bool isLooped = this->mStatus.mScrapMode == EDyAnimationScrapMode::Loop ? true : false;
 
     // Skeleton bone and transform, and bone animation channel is same.
-    const DDyMatrix4x4 rootMatrix = DDyMatrix4x4::IdentityMatrix();
+    const DDyMatrix4x4 rootMatrix = this->mBinderSkeleton->GetRootInverseTransform(); 
     // Find root animation node.
     const auto rootBoneIdList = this->mBinderSkeleton->GetChildrenBoneIdList(-1);
     for (const auto& idBone : rootBoneIdList)
@@ -103,21 +103,22 @@ void CDyModelAnimator::TryUpdateFinalTransform(_MIN_ TU32 idAnimNode, _MIN_ cons
       this->mStatus.mElapsedTime, idAnimNode, iIsLooped);
 
   // Calculate final transform without offset matrix.
-  DDyMatrix4x4 finalTransform = DDyMatrix4x4{parentTransform}.Scale(inpScl).Rotate(inpRot).Translate(inpPos);
-  const auto& refBone = this->mBinderSkeleton->GetRefBone(idAnimNode);
+  const DDyMatrix4x4 localTransform = DDyMatrix4x4::CreateWithScale(inpScl).Rotate(inpRot).Translate(inpPos);
+  const DDyMatrix4x4 finalTransform = parentTransform.Multiply(localTransform);
   // Set final transform (uniform)
-  const auto boneId = this->mStatus.mPtrPresentAnimatorInfo->GetSkeletonBoneId(idAnimNode);
+  const auto boneId   = this->mStatus.mPtrPresentAnimatorInfo->GetSkeletonBoneId(idAnimNode);
+  const auto& refBone = this->mBinderSkeleton->GetRefBone(boneId);
   this->mStatus.mFinalTransformList[boneId] = finalTransform.Multiply(refBone.mOffsetMatrix);
 
   // Loop child bone node.
   const auto parentBoneIdList = this->mBinderSkeleton->GetChildrenBoneIdList(boneId);
-  for (const auto& idBone : parentBoneIdList)
+  for (const auto& idChildBone : parentBoneIdList)
   {
     for (TU32 i = 0, num = static_cast<TU32>(this->mBinderAnimationScrap->GetAnimNodeList().size()); i < num; ++i)
     {
       // Check matching bone id of anim node and bone id.
-      const auto parentBoneId = this->mStatus.mPtrPresentAnimatorInfo->GetSkeletonBoneId(i);
-      if (parentBoneId != idBone) { continue; }
+      const auto idGivenChild = this->mStatus.mPtrPresentAnimatorInfo->GetSkeletonBoneId(i);
+      if (idGivenChild != idChildBone) { continue; }
 
       // If matched, update transform.
       this->TryUpdateFinalTransform(i, finalTransform, iIsLooped);

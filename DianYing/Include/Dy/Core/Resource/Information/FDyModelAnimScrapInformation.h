@@ -64,10 +64,13 @@ public:
   MDY_NODISCARD const decltype(DDyAnimationSequence::mAnimationNodeList)& GetAnimNodeList() const noexcept;
   /// @brief Get skeleton bone id.
   MDY_NODISCARD TU32 GetSkeletonBoneId(_MIN_ TU32 iId) const noexcept;
+  /// @brief Get rate scale.
+  MDY_NODISCARD TF32 GetRateScale() const noexcept;
 
 private:
   std::string           mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
   DDyAnimationSequence  mAnimation = {}; 
+  TF32                  mRateScale = 0.0f;
 };
 
 } /// ::dy namespace
