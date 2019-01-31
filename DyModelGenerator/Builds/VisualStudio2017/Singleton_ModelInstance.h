@@ -152,5 +152,6 @@ private:
   EExportFlags mExportFlags = EExportFlags::Flag_None;
 
   /// @brief Exported name is `Specifier`_`Skeleton`.dySkel or `.json when not compressed.
+  DDyMatrix4x4 mSkeletonRootInverseTransform;
   std::vector<DSkeletonBone> mExportedSkeleton;
 };

@@ -288,8 +288,11 @@ void Singleton_ModelInstance::TryInsertMeshTanBt(unsigned iIndex, NotNull<const 
 EDySuccess Singleton_ModelInstance::ExportModelSkeleton(const std::string& iSpecifier, bool isCompressed)
 {
   // Make serialized string form mesh instance.
-  nlohmann::json jsonMeshAtlas    = this->mExportedSkeleton;
-  const auto meshSerializedString = jsonMeshAtlas.dump();
+  nlohmann::json jsonSkelAtlas = nlohmann::json{
+    { "InverseTransform", this->mSkeletonRootInverseTransform },
+    { "BoneList", this->mExportedSkeleton }
+  };
+  const auto skelSerializedString = jsonSkelAtlas.dump();
   
   // Get a directory path from model file full path.
   namespace fs = std::filesystem;
@@ -297,7 +300,7 @@ EDySuccess Singleton_ModelInstance::ExportModelSkeleton(const std::string& iSpec
 
   if (isCompressed == true)
   {
-    const auto buffer = CompressStringBuffer(meshSerializedString);
+    const auto buffer = CompressStringBuffer(skelSerializedString);
 
     // Write file. `File` is RAII.
     const fs::path meshPath = fmt::format("{}/{}.{}", directoryPath.string(), iSpecifier, "dySkel");
@@ -313,9 +316,9 @@ EDySuccess Singleton_ModelInstance::ExportModelSkeleton(const std::string& iSpec
 
     // Write file.
     std::FILE* fdFile = fopen(skelPath.string().c_str(), "w");
-    fwrite(meshSerializedString.c_str(), 
-        sizeof(decltype(meshSerializedString)::value_type), 
-        meshSerializedString.size(), 
+    fwrite(skelSerializedString.c_str(), 
+        sizeof(decltype(skelSerializedString)::value_type), 
+        skelSerializedString.size(), 
         fdFile);
     fclose(fdFile);
   }
@@ -447,60 +450,6 @@ EDySuccess Singleton_ModelInstance::ExportModelAnimation(const std::string& iSpe
   return DY_SUCCESS;
 }
 
-DMaterial Singleton_ModelInstance::CreateDyMaterial(unsigned iMatIndex)
-{
-  const auto& ptrAiMaterial = this->mPtrAssimpModelMaterialList[iMatIndex];
-  DMaterial result;
-
-  // Get texture list.
-  TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_DIFFUSE, result);
-  TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_SPECULAR, result);
-  TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_AMBIENT, result);
-  TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_EMISSIVE, result);
-  // @TODO [CAUTION] Bump-map(Normal) is loaded as Height-map, when leading .obj file.
-  TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_HEIGHT, result);
-  TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_NORMALS, result);
-  TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_SHININESS, result);
-  TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_OPACITY, result);
-  TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_DISPLACEMENT, result);
-  TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_LIGHTMAP, result);
-  TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_REFLECTION, result);
-  TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_UNKNOWN, result);
-
-  // Set blend mode when opacity map is applied.
-  result.mBlendMode = decltype(result.mBlendMode)::Opaque;
-  for (const auto& [specifier, type] : result.mTextureSpecifierList)
-  {
-    if (type == EDyTextureMapType::Opacity)
-    { result.mBlendMode = decltype(result.mBlendMode)::TranslucentOIT; }
-  }
-
-  return result;
-}
-
-void Singleton_ModelInstance::TryInsertTextureSpecifier(NotNull<const aiMaterial*> iPtrAiMaterial, aiTextureType iTextureType, DMaterial& iRefMaterial)
-{
-  for (unsigned texId = 0, numTexture = iPtrAiMaterial->GetTextureCount(iTextureType); 
-       texId < numTexture; ++texId)
-  {
-    aiString aiPathToTexture;
-    const auto returnVal = iPtrAiMaterial->GetTexture(iTextureType, texId, &aiPathToTexture);
-    
-    // Get texture specifier name from given file path.
-    const std::string pathToTexture = aiPathToTexture.C_Str();
-    const auto idTypeSpecifierSep   = pathToTexture.find_last_of('.');
-    const auto idTypeStartSep       = pathToTexture.find_last_of(R"(/\)") + 1;
-
-    const std::string textureSpecifier = pathToTexture.substr(idTypeStartSep, idTypeSpecifierSep - idTypeStartSep);
-
-    // Insert texture meta item.
-    DMaterial::DTexture result;
-    result.mTextureMapType    = ConvertAiTextureTypeToDyType(iTextureType);
-    result.mTextureSpecifier  = textureSpecifier;
-    iRefMaterial.mTextureSpecifierList.emplace_back(result);
-  }
-}
-
 DDyAnimationSequence Singleton_ModelInstance::CreateDyAnimation(unsigned iAnimIndex)
 {
   MDY_NOTUSED const auto& ptrAiAnimation = this->mPtrAssimpModelAnimList[iAnimIndex];
@@ -573,6 +522,61 @@ DDyAnimationSequence Singleton_ModelInstance::CreateDyAnimation(unsigned iAnimIn
   }
 
   return result;
+}
+
+
+DMaterial Singleton_ModelInstance::CreateDyMaterial(unsigned iMatIndex)
+{
+  const auto& ptrAiMaterial = this->mPtrAssimpModelMaterialList[iMatIndex];
+  DMaterial result;
+
+  // Get texture list.
+  TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_DIFFUSE, result);
+  TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_SPECULAR, result);
+  TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_AMBIENT, result);
+  TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_EMISSIVE, result);
+  // @TODO [CAUTION] Bump-map(Normal) is loaded as Height-map, when leading .obj file.
+  TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_HEIGHT, result);
+  TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_NORMALS, result);
+  TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_SHININESS, result);
+  TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_OPACITY, result);
+  TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_DISPLACEMENT, result);
+  TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_LIGHTMAP, result);
+  TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_REFLECTION, result);
+  TryInsertTextureSpecifier(ptrAiMaterial, aiTextureType_UNKNOWN, result);
+
+  // Set blend mode when opacity map is applied.
+  result.mBlendMode = decltype(result.mBlendMode)::Opaque;
+  for (const auto& [specifier, type] : result.mTextureSpecifierList)
+  {
+    if (type == EDyTextureMapType::Opacity)
+    { result.mBlendMode = decltype(result.mBlendMode)::TranslucentOIT; }
+  }
+
+  return result;
+}
+
+void Singleton_ModelInstance::TryInsertTextureSpecifier(NotNull<const aiMaterial*> iPtrAiMaterial, aiTextureType iTextureType, DMaterial& iRefMaterial)
+{
+  for (unsigned texId = 0, numTexture = iPtrAiMaterial->GetTextureCount(iTextureType); 
+       texId < numTexture; ++texId)
+  {
+    aiString aiPathToTexture;
+    const auto returnVal = iPtrAiMaterial->GetTexture(iTextureType, texId, &aiPathToTexture);
+    
+    // Get texture specifier name from given file path.
+    const std::string pathToTexture = aiPathToTexture.C_Str();
+    const auto idTypeSpecifierSep   = pathToTexture.find_last_of('.');
+    const auto idTypeStartSep       = pathToTexture.find_last_of(R"(/\)") + 1;
+
+    const std::string textureSpecifier = pathToTexture.substr(idTypeStartSep, idTypeSpecifierSep - idTypeStartSep);
+
+    // Insert texture meta item.
+    DMaterial::DTexture result;
+    result.mTextureMapType    = ConvertAiTextureTypeToDyType(iTextureType);
+    result.mTextureSpecifier  = textureSpecifier;
+    iRefMaterial.mTextureSpecifierList.emplace_back(result);
+  }
 }
 
 void Singleton_ModelInstance::ReleaseModel()
@@ -754,6 +758,17 @@ std::optional<Singleton_ModelInstance::TPtrAiNodeMap> Singleton_ModelInstance::C
   return resultMap;
 }
 
+void Singleton_ModelInstance::RecursiveInsertAiNodeIntoNodeMap(NotNull<const aiNode*> iPtrAiNode, TPtrAiNodeMap& iMap)
+{
+  auto [_, isSucceeeded] = iMap.try_emplace(iPtrAiNode->mName.C_Str(), iPtrAiNode);
+  jassert(isSucceeeded == true);
+
+  for (unsigned i = 0, numChildren = iPtrAiNode->mNumChildren; i < numChildren; ++i)
+  {
+    this->RecursiveInsertAiNodeIntoNodeMap(DyMakeNotNull(iPtrAiNode->mChildren[i]), iMap);
+  }
+}
+
 std::optional<Singleton_ModelInstance::TBoneSpecifierMap>
 Singleton_ModelInstance::CreatePtrBoneSpecifierSet(const TPtrAiNodeMap& iPtrAiNodeMap) const noexcept
 {
@@ -781,7 +796,14 @@ Singleton_ModelInstance::CreatePtrBoneSpecifierSet(const TPtrAiNodeMap& iPtrAiNo
         DBoneSpecifier result;
         result.mSpecifier     = node->mName.C_Str();
         result.mOffsetMatrix  = ptrAiBone->mOffsetMatrix;
-        resultBoneSpecifierSet.try_emplace(node->mName.C_Str(), result);
+        if (auto it = resultBoneSpecifierSet.find(node->mName.C_Str()); 
+            it != resultBoneSpecifierSet.end())
+        {
+          auto& [specifier, instance] = *it;
+          //jassert(instance.mOffsetMatrix == result.mOffsetMatrix);
+          //instance.mOffsetMatrix = result.mOffsetMatrix;
+        }
+        else { resultBoneSpecifierSet.try_emplace(node->mName.C_Str(), result); }
         node = node->mParent;
 
         // Don't chase up until the scene root node.
@@ -804,6 +826,9 @@ EDySuccess Singleton_ModelInstance::CreateModelSkeleton(
   const aiNode*       rootNode    = this->GetPtrRootNodeOfModelScene();
   const DDyMatrix4x4  rootMatrix  = {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
 
+  auto rootTransform = rootNode->mTransformation;
+  this->mSkeletonRootInverseTransform = rootTransform.Inverse();
+
   // Make skeleton bone list recursively, traversing each node.
   // Created skeleton bone list is deterministic.
   this->RecursiveInsertSkeletonBoneIntoList(
@@ -821,7 +846,7 @@ void Singleton_ModelInstance::RecursiveInsertSkeletonBoneIntoList(
     std::vector<DSkeletonBone>& iSkeletonList)
 {
   // Make global transform (parent * this-node) and potential parent index.
-  const DDyMatrix4x4 globalTransform      = iRefParentGlobalTransform.Multiply(iPtrAiNode->mTransformation);
+  const DDyMatrix4x4 globalTransform = iRefParentGlobalTransform.Multiply(iPtrAiNode->mTransformation);
 
   // Remove redundant node(bone) so insert valid and activated node(bone).
   if (auto it = iRefBoneSpecifierSet.find(iPtrAiNode->mName.C_Str()); it != iRefBoneSpecifierSet.end())
@@ -830,8 +855,8 @@ void Singleton_ModelInstance::RecursiveInsertSkeletonBoneIntoList(
     auto& skeletonInstance = this->mExportedSkeleton.back();
     skeletonInstance.mPtrAiNode       = iPtrAiNode.Get();
     skeletonInstance.mSpecifier       = iPtrAiNode->mName.C_Str();
-    skeletonInstance.mLocalTransform  = iPtrAiNode->mTransformation;
-    skeletonInstance.mGlobalTransform = globalTransform;
+    //skeletonInstance.mLocalTransform  = iPtrAiNode->mTransformation;
+    //skeletonInstance.mGlobalTransform = globalTransform;
     skeletonInstance.mOffsetMatrix    = it->second.mOffsetMatrix;
     skeletonInstance.mParentSkeletonBoneIndex = iParentSkeletonBoneId;
   }
@@ -851,15 +876,4 @@ void Singleton_ModelInstance::RecursiveInsertSkeletonBoneIntoList(
 void Singleton_ModelInstance::RemoveModelSkeleton()
 {
   this->mExportedSkeleton.clear();
-}
-
-void Singleton_ModelInstance::RecursiveInsertAiNodeIntoNodeMap(NotNull<const aiNode*> iPtrAiNode, TPtrAiNodeMap& iMap)
-{
-  auto [_, isSucceeeded] = iMap.try_emplace(iPtrAiNode->mName.C_Str(), iPtrAiNode);
-  jassert(isSucceeeded == true);
-
-  for (unsigned i = 0, numChildren = iPtrAiNode->mNumChildren; i < numChildren; ++i)
-  {
-    this->RecursiveInsertAiNodeIntoNodeMap(DyMakeNotNull(iPtrAiNode->mChildren[i]), iMap);
-  }
 }
