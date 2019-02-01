@@ -62,8 +62,6 @@ public:
 
   /// @brief Get reference of list of skeleton bone.
   MDY_NODISCARD const decltype(DDyAnimationSequence::mAnimationNodeList)& GetAnimNodeList() const noexcept;
-  /// @brief Get skeleton bone id.
-  MDY_NODISCARD TU32 GetSkeletonBoneId(_MIN_ TU32 iId) const noexcept;
   /// @brief Get rate scale.
   MDY_NODISCARD TF32 GetRateScale() const noexcept;
 

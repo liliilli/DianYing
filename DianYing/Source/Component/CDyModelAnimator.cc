@@ -60,7 +60,11 @@ void CDyModelAnimator::Update(_MIN_ TF32 dt)
     this->mStatus.mScrapMode = EDyAnimationScrapMode::Loop;
 
     // Assert animation and bone count is same.
-    this->mStatus.mFinalTransformList.resize(this->mBinderSkeleton->GetBoneCount());
+    this->mStatus.mFinalTransformList.resize(this->mBinderSkeleton->GetInputBoneCount());
+    for (auto& transform : this->mStatus.mFinalTransformList)
+    {
+      transform = DDyMatrix4x4::IdentityMatrix();
+    }
     this->mStatus.mStatus = EDyAnimatorStatus::Play; 
   } break;
   case EDyAnimatorStatus::Play: 
@@ -68,21 +72,11 @@ void CDyModelAnimator::Update(_MIN_ TF32 dt)
     this->mStatus.mElapsedTime += dt * this->mStatus.mPtrPresentAnimatorInfo->GetRateScale();
     const bool isLooped = this->mStatus.mScrapMode == EDyAnimationScrapMode::Loop ? true : false;
 
-    // Skeleton bone and transform, and bone animation channel is same.
-    const DDyMatrix4x4 rootMatrix = this->mBinderSkeleton->GetRootInverseTransform(); 
-    // Find root animation node.
-    const auto rootBoneIdList = this->mBinderSkeleton->GetChildrenBoneIdList(-1);
+    // Skeleton bone and transform, and bone animation channel is same. Find root animation node.
+    const auto rootBoneIdList = this->mBinderSkeleton->GetChildrenNodeIdList(-1);
     for (const auto& idBone : rootBoneIdList)
     {
-      for (TU32 i = 0, num = static_cast<TU32>(this->mBinderAnimationScrap->GetAnimNodeList().size()); i < num; ++i)
-      {
-        // Check matching bone id of anim node and bone id.
-        const auto boneId = this->mStatus.mPtrPresentAnimatorInfo->GetSkeletonBoneId(i);
-        if (boneId != idBone) { continue; }
-
-        // If matched, update transform.
-        this->TryUpdateFinalTransform(i, rootMatrix, isLooped);
-      }
+      this->TryUpdateFinalTransform(idBone, DDyMatrix4x4::IdentityMatrix(), isLooped);
     }
   } break;
   case EDyAnimatorStatus::Pause: break;
@@ -90,39 +84,53 @@ void CDyModelAnimator::Update(_MIN_ TF32 dt)
   }
 }
 
-void CDyModelAnimator::TryUpdateFinalTransform(_MIN_ TU32 idAnimNode, _MIN_ const DDyMatrix4x4& parentTransform, _MIN_ bool iIsLooped)
+void CDyModelAnimator::TryUpdateFinalTransform(_MIN_ TI32 idSkelNode, _MIN_ const DDyMatrix4x4& parentTransform, _MIN_ bool iIsLooped)
 {
-  // Get scaling vector. (vector x,y,z can be linearly interpolated)   
-  const auto inpScl = this->mStatus.mPtrPresentAnimatorInfo->GetInterpolatedScaling(
-      this->mStatus.mElapsedTime, idAnimNode, iIsLooped);
-  // Get scaled rotation matrix. (quaternion x,y,z,w must be process slerp as a 4x4 matrix.)
-  const auto inpRot = this->mStatus.mPtrPresentAnimatorInfo->GetInterpolatedRotation(
-      this->mStatus.mElapsedTime, idAnimNode, iIsLooped);
-  // Get position vector. (vector x,y,z can be linearly interpolated)
-  const auto inpPos = this->mStatus.mPtrPresentAnimatorInfo->GetInterpolatedPosition(
-      this->mStatus.mElapsedTime, idAnimNode, iIsLooped);
+  const auto& animScrap = this->mStatus.mPtrPresentAnimatorInfo->GetAnimNodeList();
+  const auto& refNode = this->mBinderSkeleton->GetRefSkeletonNode(idSkelNode);
+  auto localTransform = refNode.mLocalTransform;
+
+  const auto it = std::find_if(
+      MDY_BIND_BEGIN_END(animScrap), 
+      [idSkelNode](const auto& iNode) { return iNode.mSkeletonNodeIndex == idSkelNode; });
+  if (it != animScrap.end())
+  {
+    const auto animNodeId = std::distance(animScrap.begin(), it);
+
+    // Get scaling vector. (vector x,y,z can be linearly interpolated)   
+    const auto inpScl = this->mStatus.mPtrPresentAnimatorInfo->GetInterpolatedScaling(
+        this->mStatus.mElapsedTime, animNodeId, iIsLooped);
+    // Get scaled rotation matrix. (quaternion x,y,z,w must be process slerp as a 4x4 matrix.)
+    const auto inpRot = this->mStatus.mPtrPresentAnimatorInfo->GetInterpolatedRotation(
+        this->mStatus.mElapsedTime, animNodeId, iIsLooped);
+    // Get position vector. (vector x,y,z can be linearly interpolated)
+    const auto inpPos = this->mStatus.mPtrPresentAnimatorInfo->GetInterpolatedPosition(
+        this->mStatus.mElapsedTime, animNodeId, iIsLooped);
+
+    localTransform = DDyMatrix4x4::CreateWithTranslation(inpPos).Rotate(inpRot).Scale(inpScl);
+  }
 
   // Calculate final transform without offset matrix.
-  const DDyMatrix4x4 localTransform = DDyMatrix4x4::CreateWithScale(inpScl).Rotate(inpRot).Translate(inpPos);
   const DDyMatrix4x4 finalTransform = parentTransform.Multiply(localTransform);
-  // Set final transform (uniform)
-  const auto boneId   = this->mStatus.mPtrPresentAnimatorInfo->GetSkeletonBoneId(idAnimNode);
-  const auto& refBone = this->mBinderSkeleton->GetRefBone(boneId);
-  this->mStatus.mFinalTransformList[boneId] = finalTransform.Multiply(refBone.mOffsetMatrix);
 
-  // Loop child bone node.
-  const auto parentBoneIdList = this->mBinderSkeleton->GetChildrenBoneIdList(boneId);
-  for (const auto& idChildBone : parentBoneIdList)
+  const auto& offsetBoneList = this->mBinderSkeleton->GetOffsetBoneList();
+  const auto itBone = std::find_if(
+      MDY_BIND_BEGIN_END(offsetBoneList), 
+      [idSkelNode](const auto& iNode) { return iNode.mIndexSkeletonNode == idSkelNode; });
+  if (itBone != offsetBoneList.end())
   {
-    for (TU32 i = 0, num = static_cast<TU32>(this->mBinderAnimationScrap->GetAnimNodeList().size()); i < num; ++i)
-    {
-      // Check matching bone id of anim node and bone id.
-      const auto idGivenChild = this->mStatus.mPtrPresentAnimatorInfo->GetSkeletonBoneId(i);
-      if (idGivenChild != idChildBone) { continue; }
+    // Update transform. Set final transform (uniform)
+    const auto id = std::distance(offsetBoneList.begin(), itBone);
+    this->mStatus.mFinalTransformList[id] = 
+        this->mBinderSkeleton->GetRootInverseTransform()
+        .Multiply(finalTransform)
+        .Multiply(itBone->mBoneOffsetMatrix);
+  }
 
-      // If matched, update transform.
-      this->TryUpdateFinalTransform(i, finalTransform, iIsLooped);
-    }
+  const auto rootBoneIdList = this->mBinderSkeleton->GetChildrenNodeIdList(idSkelNode);
+  for (const auto& idBone : rootBoneIdList)
+  {
+    this->TryUpdateFinalTransform(idBone, finalTransform, iIsLooped);
   }
 }
 

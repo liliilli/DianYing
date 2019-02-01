@@ -26,21 +26,42 @@ struct DDySkeletonBone final
   std::string   mSpecifier = "";
   /// @brief parent bone index of this bone within `mExportedSkeleton` list.
   int           mParentSkeletonBoneIndex = -1;
+  /// @brief
+  int           mBoneOffsetId = -1;
   /// @brief Local trasform of this bone which is relative to parent.
   DDyMatrix4x4  mLocalTransform = DDyMatrix4x4::IdentityMatrix();
-  /// @brief Global and calculated transform.
-  DDyMatrix4x4  mGlobalTransform = DDyMatrix4x4::IdentityMatrix();
-  /// @brief Offset matrix of bone.
-  DDyMatrix4x4  mOffsetMatrix = DDyMatrix4x4::IdentityMatrix();
 };
 
-/// @brief One model skeleton complete type.
-using TDyModelSkeleton = std::vector<DDySkeletonBone>;
+struct DDyBoneOffset
+{
+  // @brief
+  std::string   mBoneName = "";
+  // @brief
+  int           mIndexSkeletonNode = -1;
+  /// @brief Offset matrix of bone.
+  DDyMatrix4x4  mBoneOffsetMatrix = DDyMatrix4x4::IdentityMatrix();
+};
+
+struct DDySkeleton final
+{
+  // @brief
+  DDyMatrix4x4                mSkeletonRootInverseTransform;
+  // @brief
+  std::vector<DDySkeletonBone>mExportedSkeleton;
+  // @brief
+  std::vector<DDyBoneOffset>  mBoneOffsetList;
+};
 
 /// @brief Serialization function. `mPtrAiNode` will be neglected.
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySkeletonBone& p);
 /// @brief Deserialization function.
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySkeletonBone& p);
+
+/// @brief Deserialization function.
+void from_json(const nlohmann::json& j, DDyBoneOffset& p);
+
+/// @brief Deserialization function.
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySkeleton& p);
 
 } /// ::dy namespace
 

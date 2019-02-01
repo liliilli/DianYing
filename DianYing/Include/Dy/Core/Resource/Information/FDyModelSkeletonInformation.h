@@ -48,22 +48,32 @@ public:
   MDY_NODISCARD const std::string& GetSpecifierName() const noexcept;
 
   /// @brief Get the number of skeleton bone.
-  MDY_NODISCARD TU32 GetBoneCount() const noexcept;
+  MDY_NODISCARD TU32 GetNodeCount() const noexcept;
+  /// @brief Get the number of offset + transform input bone count.
+  MDY_NODISCARD TU32 GetInputBoneCount() const noexcept;
 
   /// @brief Get const reference of skeleton bone. \n
-  /// If iIndex is out of bound of range, just assert it, so you have to check oob range with `GetBoneCount()`. 
-  MDY_NODISCARD const DDySkeletonBone& GetRefBone(_MIN_ TU32 iIndex) const noexcept;
+  /// If iIndex is out of bound of range, just assert it, so you have to check oob range with `GetNodeCount()`. 
+  MDY_NODISCARD const DDySkeletonBone& GetRefSkeletonNode(_MIN_ TU32 iIndex) const noexcept;
 
   /// @brief
-  MDY_NODISCARD std::vector<TU32> GetChildrenBoneIdList(_MIN_ TI32 iIndex) const noexcept;
+  MDY_NODISCARD std::vector<TU32> GetChildrenNodeIdList(_MIN_ TI32 iIndex) const noexcept;
 
   /// @brief Get inverse transform of root-node.
   MDY_NODISCARD const DDyMatrix4x4& GetRootInverseTransform() const noexcept;
+  /// @brief
+  MDY_NODISCARD const DDyMatrix4x4& GetOffsetMatrixOfBone(_MIN_ TU32 iIndex) const noexcept;
+  /// @brief
+  MDY_NODISCARD const DDySkeletonBone& GetRefSkeletonNodeFromBoneOffsetId(_MIN_ TU32 iIndex) const noexcept;
+  /// @brief
+  MDY_NODISCARD const TI32 GetSkeletonNodeIdFromBoneOffsetId(_MIN_ TU32 iIndex) const noexcept;
+
+  /// @brief
+  MDY_NODISCARD const std::vector<DDyBoneOffset>& GetOffsetBoneList() const noexcept;
 
 private:
   std::string       mSpecifierName    = MDY_INITIALIZE_EMPTYSTR;
-  DDyMatrix4x4      mRootInvTransform = {};
-  TDyModelSkeleton  mSkeletonBoneList = {};
+  DDySkeleton       mSkeletonInfo = {};
 };
 
 } /// ::dy namespace

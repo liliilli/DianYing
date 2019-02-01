@@ -31,8 +31,21 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySkeletonBone& p)
   DyJsonGetValueFromTo(j, "Specifier", p.mSpecifier);
   DyJsonGetValueFromTo(j, "ParentBoneId", p.mParentSkeletonBoneIndex);
   DyJsonGetValueFromTo(j, "LocalTf",  p.mLocalTransform);
-  DyJsonGetValueFromTo(j, "GlobalTf", p.mGlobalTransform);
-  DyJsonGetValueFromTo(j, "OffsetMt", p.mOffsetMatrix);
+  DyJsonGetValueFromTo(j, "BoneOffsetId", p.mBoneOffsetId);
+}
+
+void from_json(const nlohmann::json& j, DDyBoneOffset& p)
+{
+  DyJsonGetValueFromTo(j, "Specifier", p.mBoneName);
+  DyJsonGetValueFromTo(j, "SkeletonNodeId", p.mIndexSkeletonNode);
+  DyJsonGetValueFromTo(j, "OffsetMatrix", p.mBoneOffsetMatrix);
+}
+
+void from_json(const nlohmann::json& j, DDySkeleton& p)
+{
+  DyJsonGetValueFromTo(j, "InverseTransform", p.mSkeletonRootInverseTransform);
+  DyJsonGetValueFromTo(j, "SkeletonNodeList", p.mExportedSkeleton);
+  DyJsonGetValueFromTo(j, "BoneOffsetList", p.mBoneOffsetList);
 }
 
 } /// ::dy namespace

@@ -70,7 +70,7 @@ private:
   void TryDeactivateInstance() override final;
 
   /// @brief Update final transform of given animation. This function must be called when `Play`.
-  void TryUpdateFinalTransform(_MIN_ TU32 idBone, _MIN_ const DDyMatrix4x4& parentTransform, _MIN_ bool iIsLooped);
+  void TryUpdateFinalTransform(_MIN_ TI32 idSkelNode, _MIN_ const DDyMatrix4x4& parentTransform, _MIN_ bool iIsLooped);
 
   /// @enum EDyAnimatorStatus
   /// @brief Blending is not implemented yet.

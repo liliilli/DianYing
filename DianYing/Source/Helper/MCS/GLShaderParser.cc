@@ -114,15 +114,15 @@ mat4 Dy_GetCameraPv() { return uCamera.mProjMatrix * uCamera.mViewMatrix; }
 /// @brief Skinned animation input uniform variables.
 /// #import <Input_SkinAnimation>;
 MDY_SET_IMMUTABLE_STRING(Buffer_Input_SkinAnimation, R"dy(
-#define BONE_MAX_COUNT 128
+#define BONE_MAX_COUNT 144
 uniform mat4 mBoneTransform[BONE_MAX_COUNT];
 uniform int  mNumBoneTransform = 0;
 
 // @brief Requires module <Input_DefaultVao>.
 mat4 Dy_GetBoneTransform()
 {
-  mat4 result = mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
-  if (dyBoneId[0] != -1 && dyBoneId[0] < mNumBoneTransform) { result = mBoneTransform[dyBoneId[0]] * dyBoneWeight[0]; }
+  mat4 result = mat4(0);
+  if (dyBoneId[0] != -1 && dyBoneId[0] < mNumBoneTransform) { result += mBoneTransform[dyBoneId[0]] * dyBoneWeight[0]; }
   if (dyBoneId[1] != -1 && dyBoneId[1] < mNumBoneTransform) { result += mBoneTransform[dyBoneId[1]] * dyBoneWeight[1]; }
   if (dyBoneId[2] != -1 && dyBoneId[2] < mNumBoneTransform) { result += mBoneTransform[dyBoneId[2]] * dyBoneWeight[2]; }
   if (dyBoneId[3] != -1 && dyBoneId[3] < mNumBoneTransform) { result += mBoneTransform[dyBoneId[3]] * dyBoneWeight[3]; }

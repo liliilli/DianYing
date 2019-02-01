@@ -33,9 +33,8 @@ FDyModelSkeletonInformation::FDyModelSkeletonInformation(_MIN_ const PDyModelSke
   const auto optJsonSkeleton = DyGetJsonAtlasFromFile(metaInfo.mExternalPath);
   MDY_ASSERT_FORCE(optJsonSkeleton.has_value() == true, "Failed to load skeleton file.");
 
-  const auto& jsonSkeleton  = optJsonSkeleton.value();
-  this->mRootInvTransform   = jsonSkeleton["InverseTransform"].get<DDyMatrix4x4>();
-  this->mSkeletonBoneList   = jsonSkeleton["BoneList"].get<decltype(mSkeletonBoneList)>();
+  const auto& jsonSkeleton = optJsonSkeleton.value();
+  this->mSkeletonInfo = jsonSkeleton.get<decltype(mSkeletonInfo)>();
 }
 
 const std::string& FDyModelSkeletonInformation::GetSpecifierName() const noexcept
@@ -43,23 +42,28 @@ const std::string& FDyModelSkeletonInformation::GetSpecifierName() const noexcep
   return this->mSpecifierName;
 }
 
-TU32 FDyModelSkeletonInformation::GetBoneCount() const noexcept
+TU32 FDyModelSkeletonInformation::GetNodeCount() const noexcept
 {
-  return static_cast<TU32>(this->mSkeletonBoneList.size());
+  return static_cast<TU32>(this->mSkeletonInfo.mExportedSkeleton.size());
 }
 
-const DDySkeletonBone& FDyModelSkeletonInformation::GetRefBone(_MIN_ TU32 iIndex) const noexcept
+TU32 FDyModelSkeletonInformation::GetInputBoneCount() const noexcept
 {
-  MDY_ASSERT_FORCE(iIndex < this->GetBoneCount(), "Index must be within skeleton bone range.");
-  return this->mSkeletonBoneList[iIndex];
+  return static_cast<TU32>(this->mSkeletonInfo.mBoneOffsetList.size());
 }
 
-std::vector<TU32> FDyModelSkeletonInformation::GetChildrenBoneIdList(_MIN_ TI32 iIndex) const noexcept
+const DDySkeletonBone& FDyModelSkeletonInformation::GetRefSkeletonNode(_MIN_ TU32 iIndex) const noexcept
+{
+  MDY_ASSERT_FORCE(iIndex < this->GetNodeCount(), "Index must be within skeleton bone range.");
+  return this->mSkeletonInfo.mExportedSkeleton[iIndex];
+}
+
+std::vector<TU32> FDyModelSkeletonInformation::GetChildrenNodeIdList(_MIN_ TI32 iIndex) const noexcept
 {
   std::vector<TU32> childrenIdResult;
-  for (TU32 i = 0, num = static_cast<TU32>(this->mSkeletonBoneList.size()); i < num; ++i)
+  for (TU32 i = 0, num = static_cast<TU32>(this->mSkeletonInfo.mExportedSkeleton.size()); i < num; ++i)
   {
-    if (this->mSkeletonBoneList[i].mParentSkeletonBoneIndex == iIndex) { childrenIdResult.emplace_back(i); }
+    if (this->mSkeletonInfo.mExportedSkeleton[i].mParentSkeletonBoneIndex == iIndex) { childrenIdResult.emplace_back(i); }
   }
 
   return childrenIdResult;
@@ -67,7 +71,27 @@ std::vector<TU32> FDyModelSkeletonInformation::GetChildrenBoneIdList(_MIN_ TI32 
 
 const DDyMatrix4x4& FDyModelSkeletonInformation::GetRootInverseTransform() const noexcept
 {
-  return this->mRootInvTransform;
+  return this->mSkeletonInfo.mSkeletonRootInverseTransform;
+}
+
+const DDyMatrix4x4& FDyModelSkeletonInformation::GetOffsetMatrixOfBone(_MIN_ TU32 iIndex) const noexcept
+{
+  return this->mSkeletonInfo.mBoneOffsetList[iIndex].mBoneOffsetMatrix;
+}
+
+const DDySkeletonBone& FDyModelSkeletonInformation::GetRefSkeletonNodeFromBoneOffsetId(_MIN_ TU32 iIndex) const noexcept
+{
+  return this->mSkeletonInfo.mExportedSkeleton[this->mSkeletonInfo.mBoneOffsetList[iIndex].mIndexSkeletonNode];
+}
+
+const TI32 FDyModelSkeletonInformation::GetSkeletonNodeIdFromBoneOffsetId(TU32 iIndex) const noexcept
+{
+  return this->mSkeletonInfo.mBoneOffsetList[iIndex].mIndexSkeletonNode;
+}
+
+const std::vector<DDyBoneOffset>& FDyModelSkeletonInformation::GetOffsetBoneList() const noexcept
+{
+  return this->mSkeletonInfo.mBoneOffsetList;
 }
 
 } /// ::dy namespace

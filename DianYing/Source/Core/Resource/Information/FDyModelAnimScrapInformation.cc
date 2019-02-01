@@ -42,7 +42,7 @@ FDyModelAnimScrapInformation::FDyModelAnimScrapInformation(_MIN_ const PDyModelA
   {
     // Read `mExportSkeleton` bone id.
     auto& refAnimNode = this->mAnimation.mAnimationNodeList[i];
-    std::fread(&refAnimNode.mSkeletonBoneId, sizeof(TU32), 1, fdFile);
+    std::fread(&refAnimNode.mSkeletonNodeIndex, sizeof(TU32), 1, fdFile);
 
     // Get the number of position, rotation (xyzw), and scale channels and resize them.
     TU32 numPosition, numRotation, numScale;
@@ -198,9 +198,9 @@ DDyQuaternion FDyModelAnimScrapInformation::GetInterpolatedRotation(_MIN_ TF32 i
   }
 }
 
-DDyVector3 FDyModelAnimScrapInformation::GetInterpolatedPosition(_MIN_ TF32 iElapsedTime, _MIN_ TU32 iBoneIndex, _MIN_ bool iIsLooped) const
+DDyVector3 FDyModelAnimScrapInformation::GetInterpolatedPosition(_MIN_ TF32 iElapsedTime, _MIN_ TU32 iIdAnimNode, _MIN_ bool iIsLooped) const
 {
-  const auto& refBone = this->mAnimation.mAnimationNodeList[iBoneIndex];
+  const auto& refBone = this->mAnimation.mAnimationNodeList[iIdAnimNode];
   
   // If `isLooped` is true, we need to mod elasped time to new value within range.
   if (iIsLooped == true)
@@ -256,11 +256,6 @@ const decltype(DDyAnimationSequence::mAnimationNodeList)&
 FDyModelAnimScrapInformation::GetAnimNodeList() const noexcept
 {
   return this->mAnimation.mAnimationNodeList;
-}
-
-TU32 FDyModelAnimScrapInformation::GetSkeletonBoneId(_MIN_ TU32 iId) const noexcept
-{
-  return this->mAnimation.mAnimationNodeList[iId].mSkeletonBoneId;
 }
 
 TF32 FDyModelAnimScrapInformation::GetRateScale() const noexcept
