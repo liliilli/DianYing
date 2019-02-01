@@ -19,6 +19,7 @@
 #include <Dy/Helper/GlobalType.h>
 #include <Dy/Helper/Type/VectorInt2.h>
 #include <Dy/Meta/Type/Input/EDyInputButton.h>
+#include "Dy/Helper/Type/Clamp.h"
 
 namespace dy
 {
@@ -153,6 +154,39 @@ struct DDySettingTag final
 
 void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingTag& p);
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingTag& p);
+
+///
+/// @struct DDySettingSound
+/// @brief  Setting sound that able to be serialized.
+///
+struct DDySettingSound final
+{
+  struct DDetail
+  {
+    DDyClamp<TF32, 0, 1> mVolume = 0.0f;
+    bool mMuted = false;
+  };
+  struct DChannelDetail final : public DDetail
+  {
+    std::string mGroupSpecifier = "";
+  };
+
+  /// @brief Master is master channel of sound system.
+  DDetail                         mMaster;
+  /// @brief Group is a collection of channels.
+  TStringHashMap<DDetail>         mGroup;
+  /// @brief Channel is a collection of instant & created sound.
+  TStringHashMap<DChannelDetail>  mChannel;
+};
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingSound& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingSound& p);
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingSound::DDetail& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingSound::DDetail& p);
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingSound::DChannelDetail& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingSound::DChannelDetail& p);
 
 ///
 /// @struct DDySettingMetaPath

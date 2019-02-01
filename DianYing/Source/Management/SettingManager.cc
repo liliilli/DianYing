@@ -407,6 +407,7 @@ EDySuccess MDySetting::pfInitialize()
     DyJsonGetValueFromTo(settingAtlas, sCategoryGameplay, this->mGamePlay);
     DyJsonGetValueFromTo(settingAtlas, sCategoryInput, this->mInput);
     DyJsonGetValueFromTo(settingAtlas, sCategoryTag, this->mTag);
+    DyJsonGetValueFromTo(settingAtlas, "Sound", this->mSound);
     MDyMetaInfo::GetInstance().MDY_PRIVATE_SPECIFIER(InitiateMetaInformationComp)(metaAtlas);
   }
   else { MDY_UNEXPECTED_BRANCH(); }

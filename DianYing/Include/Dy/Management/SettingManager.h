@@ -151,6 +151,7 @@ private:
   DDySettingGameplay    mGamePlay     = {};
   DDySettingInput       mInput        = {};
   DDySettingTag         mTag          = {};
+  DDySettingSound       mSound        = {};
   // @brief ONLY USED WHEN `MDY_FLAG_LOAD_COMPRESSED_DATAFILE` IS NOT DEFINED.
   DDySettingMetaPath    mDevMetaPath  = {};
 
