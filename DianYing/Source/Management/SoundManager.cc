@@ -204,19 +204,6 @@ EDySuccess MDySound::InitializeSoundSystem()
     return DY_FAILURE;
   }
   
-  // Set master channel.
-  if (this->mSoundSystem->getMasterChannelGroup(&this->mMasterChannel) != FMOD_OK)
-  {
-    this->mMasterChannel->release();      this->mMasterChannel = nullptr;
-    this->sBackgroundChannel->release();  this->sBackgroundChannel = nullptr;
-    this->sEffectChannel->release();      this->sEffectChannel = nullptr;
-    this->mSoundSystem->release();        this->mSoundSystem   = nullptr;
-
-    MDY_LOG_CRITICAL(sErrorSystemCreationFailed.data());
-    this->mIsSoundSystemAvailable = false;
-    return DY_FAILURE;
-  }
-
   // Make channel group (not `Dy`'s group).
   // We need separate sub-channel and a channel as a group of `Dy` sound system,
   // to handling more flexibly and do volume ducking.
@@ -233,58 +220,16 @@ EDySuccess MDySound::InitializeSoundSystem()
     MDY_CALL_ASSERT_SUCCESS(instance.Initialize(*this->mSoundSystem, specifier, detail));
   }
 
+  // Make channel sub-channel. (`Dy`'s channel).
   for (const auto& [specifier, detail] : soundInstance.mChannel)
   {
-    //this->mSoundSystem->createChannelGroup(specifier.c_str(), )
+    // 
+    auto [it, isSucceeded] = this->mChannelContainer.try_emplace(specifier, FDySoundChannel{});
+    MDY_ASSERT(isSucceeded == true, "Unexpected error.");
+    // 
+    auto& [_, instance] = *it;
+    MDY_CALL_ASSERT_SUCCESS(instance.Initialize(*this->mSoundSystem, specifier, detail));
   }
-
-  //this->mSoundSystem->createChannelGroup("A", &this->sEffectChannel);
-  //this->mSoundSystem->createChannelGroup("B", &this->sBackgroundChannel);
-  //this->sBackgroundChannel->addGroup(this->sEffectChannel);
-
-#ifdef false
-  if (this->mSoundSystem->createChannelGroup(sChannelEffect, &this->sEffectChannel) != FMOD_OK)
-  {
-    if (this->mSoundSystem != nullptr) { this->mSoundSystem->release(); this->mSoundSystem = nullptr; }
-    this->mIsSoundSystemAvailable = false;
-    MDY_LOG_CRITICAL(sErrorSystemCreationFailed.data());
-    return DY_FAILURE;
-  }
-
-  if (this->mSoundSystem->createChannelGroup(sChannelBackground, &this->sBackgroundChannel) != FMOD_OK)
-  {
-    this->sBackgroundChannel->release();  this->sBackgroundChannel = nullptr;
-    this->sEffectChannel->release();      this->sEffectChannel = nullptr;
-    this->mSoundSystem->release();        this->mSoundSystem   = nullptr;
-
-    MDY_LOG_CRITICAL(sErrorSystemCreationFailed.data());
-    return DY_FAILURE;
-  }
-#endif
-
-#ifdef false
-  if (this->mMasterChannel->addGroup(sEffectChannel) != FMOD_OK)
-  {
-    this->mMasterChannel->release();      this->mMasterChannel = nullptr;
-    this->sBackgroundChannel->release();  this->sBackgroundChannel = nullptr;
-    this->sEffectChannel->release();      this->sEffectChannel = nullptr;
-    this->mSoundSystem->release();        this->mSoundSystem   = nullptr;
-
-    MDY_LOG_CRITICAL(sErrorSystemCreationFailed.data());
-    return DY_FAILURE;
-  }
-
-  if (this->mMasterChannel->addGroup(sBackgroundChannel) != FMOD_OK)
-  {
-    this->mMasterChannel->release();      this->mMasterChannel = nullptr;
-    this->sBackgroundChannel->release();  this->sBackgroundChannel = nullptr;
-    this->sEffectChannel->release();      this->sEffectChannel = nullptr;
-    this->mSoundSystem->release();        this->mSoundSystem   = nullptr;
-
-    MDY_LOG_CRITICAL(sErrorSystemCreationFailed.data());
-    return DY_FAILURE;;
-  }
-#endif
 
   this->mIsSoundSystemAvailable = true;
   return DY_SUCCESS;
@@ -305,22 +250,13 @@ EDySuccess MDySound::ReleaseSoundSystem()
     return DY_FAILURE;
   }
 
+  // Release Channel instance.
+  for (auto& [specifier, channel] : this->mChannelContainer) { MDY_CALL_ASSERT_SUCCESS(channel.Release()); }
+  this->mChannelContainer.clear();
+
+  // Release Group instance.
   for (auto& [specifier, group] : this->mGroupContainer) { MDY_CALL_ASSERT_SUCCESS(group.Release()); }
   this->mGroupContainer.clear();
-
-#ifdef false
-  if (MDY_CHECK_ISNOTNULL(this->sBackgroundChannel))
-  {
-    this->sBackgroundChannel->release(); this->sBackgroundChannel = nullptr;
-  }
-
-  if (this->sEffectChannel)
-  {
-    this->sEffectChannel->release();
-    this->sEffectChannel = nullptr;
-  }
-#endif
-  if (MDY_CHECK_ISNOTNULL(this->mMasterChannel)) { this->mMasterChannel = nullptr; } 
 
   // Release sound.
   if (MDY_CHECK_ISNOTNULL(this->mSoundSystem))
@@ -447,6 +383,14 @@ EDySuccess MDySound::StopSoundElement(const std::string& soundName) const noexce
 #endif
 
   return DY_SUCCESS;
+}
+
+FDySoundGroup& MDySound::MDY_PRIVATE_SPECIFIER(GetGroupChannel)(_MIN_ const std::string& iSpecifier)
+{
+  auto it = this->mGroupContainer.find(iSpecifier);
+  MDY_ASSERT_FORCE(it != this->mGroupContainer.end(), "Unexpected error occurred. Given group channel not found.");
+
+  return it->second;
 }
 
 EDySuccess MDySound::pfCreateSoundResource(const std::string& filePath, FMOD::Sound** soundResourcePtr)

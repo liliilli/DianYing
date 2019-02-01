@@ -16,6 +16,19 @@
 #include <fmod.hpp>
 #include <Dy/Management/Type/SettingContainer.h>
 
+//!
+//! Forward declaration
+//!
+
+namespace dy
+{
+class FDySoundChannel;
+}
+
+//!
+//! Implementation
+//!
+
 namespace dy
 {
 
@@ -38,6 +51,10 @@ public:
   void SetVolume(_MIN_ const DDyClamp<TF32, 0, 1>& iVolume);
   /// @brief Set mute flag.
   void SetMute(_MIN_ bool iMuted);
+
+  /// @brief Set sound channel. 
+  /// After call this, registered channel cannot unregister unless release channel instance.
+  void RegisterChannel(_MIN_ FDySoundChannel& iRefChannel);
   
 private:
   std::string         mInternalSpecifier = "";

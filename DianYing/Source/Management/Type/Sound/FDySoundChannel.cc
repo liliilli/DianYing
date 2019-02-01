@@ -13,23 +13,23 @@
 ///
 
 /// Header file
-#include <Dy/Management/Type/Sound/FDySoundGroup.h>
 #include <Dy/Management/Type/Sound/FDySoundChannel.h>
+#include <Dy/Management/SoundManager.h>
 
 namespace dy
 {
 
-EDySuccess FDySoundGroup::Initialize(_MIN_ FMOD::System& iPtrSystem, _MIN_ const std::string& iGroupName,  _MIN_ const DDySettingSound::DDetail& iDetail)
+EDySuccess FDySoundChannel::Initialize(_MIN_ FMOD::System& iPtrSystem, _MIN_ const std::string& iGroupName,  _MIN_ const DDySettingSound::DChannelDetail& iDetail)
 {
   if (this->mIsInitilaized == true)
   {
-    MDY_LOG_WARNING("Initialized sound group can not be initialized twice.");
+    MDY_LOG_WARNING("Initialized sound channel can not be initialized twice.");
     return DY_FAILURE;
   }
 
   // FMOD only supports one-level channel system (group system), 
-  // So we have add a prefix `G_` into `iGroupName`.
-  this->mInternalSpecifier = fmt::format("G_{}", iGroupName);
+  // So we have add a prefix `C_` into `iGroupName`.
+  this->mInternalSpecifier = fmt::format("C_{}", iGroupName);
   const auto flag = iPtrSystem.createChannelGroup(this->mInternalSpecifier.c_str(), &this->mInternalGroup);
   if (flag != FMOD_OK)
   {
@@ -42,6 +42,7 @@ EDySuccess FDySoundGroup::Initialize(_MIN_ FMOD::System& iPtrSystem, _MIN_ const
   {
     // Set flag. 
     this->mIsInitilaized = true;
+
     // Set initial setting.
     this->SetVolume(iDetail.mVolume);
     this->SetMute(iDetail.mMuted);
@@ -50,21 +51,26 @@ EDySuccess FDySoundGroup::Initialize(_MIN_ FMOD::System& iPtrSystem, _MIN_ const
     FMOD::ChannelGroup* ptrMasterChannel = nullptr;
     iPtrSystem.getMasterChannelGroup(&ptrMasterChannel);
     ptrMasterChannel->addGroup(this->mInternalGroup);
+    
+    // Add this to group channel.
+    auto& soundManager = MDySound::GetInstance();
+    auto& group = soundManager.MDY_PRIVATE_SPECIFIER(GetGroupChannel)(iDetail.mGroupSpecifier);
+    group.RegisterChannel(*this);
 
     return DY_SUCCESS;
   }
 }
 
-EDySuccess FDySoundGroup::Release()
+EDySuccess FDySoundChannel::Release()
 {
   if (this->mIsInitilaized == false)
   {
-    MDY_LOG_WARNING("Initialized sound group can not be released twice.");
+    MDY_LOG_WARNING("Initialized sound channel can not be released twice.");
     return DY_FAILURE;
   }
 
-  // Remove group from master channel 
-  // but added group does not have to unbind registration from master channel.
+  // Remove channel from master channel. 
+  // But added channel does not have to unbind registration from master channel.
   const auto flag = this->mInternalGroup->release();
   MDY_ASSERT_FORCE(flag == FMOD_OK, "FMOD release must be succceded, Unexpected error occurred.");
   this->mInternalGroup = nullptr;
@@ -72,28 +78,25 @@ EDySuccess FDySoundGroup::Release()
   return DY_SUCCESS;
 }
 
-void FDySoundGroup::SetVolume(_MIN_ const DDyClamp<TF32, 0, 1>& iVolume)
+void FDySoundChannel::SetVolume(_MIN_ const DDyClamp<TF32, 0, 1>& iVolume)
 {
-  MDY_ASSERT_FORCE(this->mIsInitilaized == true, "Given sound group must be initialized when use this function.");
+  MDY_ASSERT_FORCE(this->mIsInitilaized == true, "Given sound channel must be initialized when use this function.");
 
   const auto flag = this->mInternalGroup->setVolume(iVolume);
   MDY_ASSERT(flag == FMOD_OK, "Unexpected error occurred.");
 }
 
-void FDySoundGroup::SetMute(_MIN_ bool iMuted)
+void FDySoundChannel::SetMute(_MIN_ bool iMuted)
 {
-  MDY_ASSERT_FORCE(this->mIsInitilaized == true, "Given sound group must be initialized when use this function.");
+  MDY_ASSERT_FORCE(this->mIsInitilaized == true, "Given sound channel must be initialized when use this function.");
 
   const auto flag = this->mInternalGroup->setMute(iMuted);
   MDY_ASSERT(flag == FMOD_OK, "Unexpected error occurred.");
 }
 
-void FDySoundGroup::RegisterChannel(_MIN_ FDySoundChannel& iRefChannel)
+FMOD::ChannelGroup* FDySoundChannel::MDY_PRIVATE_SPECIFIER(GetPtrChannel)() noexcept
 {
-  MDY_ASSERT_FORCE(this->mIsInitilaized == true, "Given sound group must be initialized when use this function.");
-
-  const auto flag = this->mInternalGroup->addGroup(iRefChannel.MDY_PRIVATE_SPECIFIER(GetPtrChannel)());
-  MDY_ASSERT(flag == FMOD_OK, "Unexpected error occurred.");
+  return this->mInternalGroup;
 }
 
 } /// ::dy namespace

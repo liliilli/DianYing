@@ -17,6 +17,7 @@
 #include <fmod.hpp>
 #include <Dy/Element/Interface/IDyUpdatable.h>
 #include <Dy/Management/Type/Sound/FDySoundGroup.h>
+#include <Dy/Management/Type/Sound/FDySoundChannel.h>
 
 namespace dy
 {
@@ -59,6 +60,9 @@ public:
   ///
   EDySuccess StopSoundElement(const std::string& soundName) const noexcept;
 
+  /// @brief Get reference of group channel which have given `iSpecifier` name.
+  FDySoundGroup& MDY_PRIVATE_SPECIFIER(GetGroupChannel)(_MIN_ const std::string& iSpecifier);
+
 private:
   /// @brief Initialize sound system. If already initialized, (without release) just do nothing and return DY_FAILURE.
   EDySuccess InitializeSoundSystem();
@@ -70,18 +74,14 @@ private:
   [[nodiscard]]
   EDySuccess pfCreateSoundResource(const std::string& filePath, FMOD::Sound** soundResourcePtr);
 
-  FMOD::System*       mSoundSystem            = nullptr;
-  MDY_TRANSIENT TU32  mVersion                = MDY_INITIALIZE_DEFUINT;
-  MDY_TRANSIENT TI32  mSoundDriverCount       = MDY_INITIALIZE_DEFINT;
+  FMOD::System*       mSoundSystem      = nullptr;
+  MDY_TRANSIENT TU32  mVersion          = MDY_INITIALIZE_DEFUINT;
+  MDY_TRANSIENT TI32  mSoundDriverCount = MDY_INITIALIZE_DEFINT;
 
-  TStringHashMap<FDySoundGroup> mGroupContainer;
+  TStringHashMap<FDySoundGroup>   mGroupContainer;
+  TStringHashMap<FDySoundChannel> mChannelContainer;
 
-  //TSoundChannelGroup s_channel_group;
-  FMOD::ChannelGroup* mMasterChannel          = nullptr;
-  FMOD::ChannelGroup* sEffectChannel          = nullptr;
-  FMOD::ChannelGroup* sBackgroundChannel      = nullptr;
-
-  bool                mIsSoundSystemAvailable = true;
+  bool mIsSoundSystemAvailable = true;
 
   friend class CDySoundResource_Deprecated;
 };
