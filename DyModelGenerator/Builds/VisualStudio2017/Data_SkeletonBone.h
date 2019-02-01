@@ -22,7 +22,7 @@ struct DSkeletonBone final
   /// @brief Bone specifier name.
   std::string   mSpecifier = "";
   /// @brief parent bone index of this bone within `mExportedSkeleton` list.
-  int           mParentSkeletonBoneIndex = -1;
+  int           mParentSkeletonNodeIndex = -1;
   /// @brief
   int           mBoneOffsetId = -1;
   /// @brief Local trasform of this bone which is relative to parent.
@@ -36,7 +36,7 @@ struct DDyBoneOffset
   // @brief
   std::string   mBoneName = "";
   // @brief
-  int           mIndexSkeletonBone = -1;
+  int           mIndexSkeletonNode = -1;
   /// @brief Offset matrix of bone.
   DDyMatrix4x4  mBoneOffsetMatrix = DDyMatrix4x4::IdentityMatrix();
 };

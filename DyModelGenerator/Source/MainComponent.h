@@ -53,7 +53,7 @@ private:
       "Model File", 
       {}, 
       true, false, false, 
-      "*.obj;*.fbx;*.blend;*.dae;*.collada;", 
+      "*.obj;*.fbx;*.blend;*.dae;*.collada;*.md5mesh", 
       {},
       R"(Choose a model file to process for reading from `Dy` framework.)"
   };

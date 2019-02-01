@@ -47,7 +47,7 @@ struct DDyAnimationSequence final
       DDyVector3 mScale   = {};
     };
 
-    unsigned  mBoneOffsetId = 0;
+    int mSkeletonNodeId = -1;
     std::vector<DTranslate> mPositionList = {};
     std::vector<DRotation>  mRotationList = {};
     std::vector<DScale>     mScaleList    = {};

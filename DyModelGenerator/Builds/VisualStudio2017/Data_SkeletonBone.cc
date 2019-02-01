@@ -20,7 +20,7 @@ void to_json(nlohmann::json& j, const DSkeletonBone& p)
   j = nlohmann::json
   {
     {"Specifier",     p.mSpecifier},
-    {"ParentBoneId",  p.mParentSkeletonBoneIndex},
+    {"ParentBoneId",  p.mParentSkeletonNodeIndex},
     {"LocalTf",       p.mLocalTransform},
     {"BoneOffsetId",  p.mBoneOffsetId}
   };
@@ -37,7 +37,7 @@ void to_json(nlohmann::json& j, const DDyBoneOffset& p)
   j = nlohmann::json
   {
     {"Specifier", p.mBoneName},
-    {"SkeletonNodeId", p.mIndexSkeletonBone},
+    {"SkeletonNodeId", p.mIndexSkeletonNode},
     {"OffsetMatrix", p.mBoneOffsetMatrix},
   };
 }

@@ -39,7 +39,7 @@ EDySuccess Singleton_ModelInstance::ReadModelWithPath(const std::string& iPath)
   this->mAssimpModerImporter = std::make_unique<Assimp::Importer>();
   
   const aiScene* ptrModelScene = this->mAssimpModerImporter->ReadFile(iPath,
-      aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_GenUVCoords);
+      aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_GenUVCoords | aiProcess_JoinIdenticalVertices);
   // Check
   if (ptrModelScene == nullptr
   ||  ptrModelScene->mRootNode == nullptr 
@@ -193,8 +193,8 @@ DMesh Singleton_ModelInstance::CreateDyMesh(unsigned iMeshIndex, bool withSkelet
           {
             if (refVertex.mBoneId[id] == -1)
             {
-              refVertex.mBoneId[id]   = indexSkeletonBone;
-              refVertex.mWeights[id]  = valWeight;
+              refVertex.mBoneId[id]  = indexSkeletonBone;
+              refVertex.mWeights[id] = valWeight;
               break;
             }
           }
@@ -286,44 +286,6 @@ void Singleton_ModelInstance::TryInsertMeshTanBt(unsigned iIndex, NotNull<const 
   }
 }
 
-EDySuccess Singleton_ModelInstance::ExportModelSkeleton(const std::string& iSpecifier, bool isCompressed)
-{
-  // Make serialized string form mesh instance.
-  nlohmann::json jsonSkelAtlas = *this->mSkeleton; 
-  const auto skelSerializedString = jsonSkelAtlas.dump();
-  
-  // Get a directory path from model file full path.
-  namespace fs = std::filesystem;
-  const auto directoryPath = fs::path{this->mModelFileFullPath}.parent_path();
-
-  if (isCompressed == true)
-  {
-    const auto buffer = CompressStringBuffer(skelSerializedString);
-
-    // Write file. `File` is RAII.
-    const fs::path meshPath = fmt::format("{}/{}.{}", directoryPath.string(), iSpecifier, "dySkel");
-    std::FILE* fdFile = fopen(meshPath.string().c_str(), "wb");
-    fwrite(&buffer.mRawBufferBytes, sizeof(unsigned), 1, fdFile);
-    fwrite(&buffer.mCompressedBufferBytes, sizeof(unsigned), 1, fdFile);
-    fwrite(buffer.mCompressedBuffer.data(), sizeof(char), buffer.mCompressedBufferBytes, fdFile);
-    fclose(fdFile);
-  }
-  else
-  {
-    const fs::path skelPath = fmt::format("{}/S_{}.{}", directoryPath.string(), iSpecifier, "json");
-
-    // Write file.
-    std::FILE* fdFile = fopen(skelPath.string().c_str(), "w");
-    fwrite(skelSerializedString.c_str(), 
-        sizeof(decltype(skelSerializedString)::value_type), 
-        skelSerializedString.size(), 
-        fdFile);
-    fclose(fdFile);
-  }
-
-  return DY_SUCCESS;
-}
-
 EDySuccess Singleton_ModelInstance::ExportModelMaterials(const std::string& iSpecifier, unsigned iMatIndex, bool isCompressed)
 {
   if (iMatIndex >= this->GetNumModelMeshes()) { return DY_FAILURE; }
@@ -411,7 +373,7 @@ EDySuccess Singleton_ModelInstance::ExportModelAnimation(const std::string& iSpe
     {
       const auto& refAnimNode = result.mAnimationNodeList[i];
       // Write `mExportSkeleton` bone id.
-      fwrite(&refAnimNode.mBoneOffsetId, sizeof(unsigned), 1, fdFile);
+      fwrite(&refAnimNode.mSkeletonNodeId, sizeof(unsigned), 1, fdFile);
 
       // Write the number of position, rotation (xyzw) and scale also.
       const auto numPosition  = static_cast<unsigned>(refAnimNode.mPositionList.size());
@@ -476,11 +438,11 @@ DDyAnimationSequence Singleton_ModelInstance::CreateDyAnimation(unsigned iAnimIn
         this->mSkeleton->mExportedSkeleton.cbegin(), this->mSkeleton->mExportedSkeleton.cend(), 
         [channelString](const DSkeletonBone& iBone) { return iBone.mSpecifier == channelString; });
     jassert(it != this->mSkeleton->mExportedSkeleton.cend());
-    jassert(it->mBoneOffsetId != -1);
 
     // Apply index to given animation node.
+    // Set skeleton node index to each animation channel node.
     auto& node = result.mAnimationNodeList[idCh];
-    node.mBoneOffsetId = it->mBoneOffsetId; 
+    node.mSkeletonNodeId = static_cast<int>(std::distance(this->mSkeleton->mExportedSkeleton.cbegin(), it));
 
     const auto dt = result.mAnimationHeader.mTickSecond;
     // Get position, and apply.
@@ -742,6 +704,44 @@ EExportFlags Singleton_ModelInstance::GetExportFlags() const noexcept
   return this->mExportFlags;
 }
 
+EDySuccess Singleton_ModelInstance::ExportModelSkeleton(const std::string& iSpecifier, bool isCompressed)
+{
+  // Make serialized string form mesh instance.
+  nlohmann::json jsonSkelAtlas = *this->mSkeleton; 
+  const auto skelSerializedString = jsonSkelAtlas.dump();
+  
+  // Get a directory path from model file full path.
+  namespace fs = std::filesystem;
+  const auto directoryPath = fs::path{this->mModelFileFullPath}.parent_path();
+
+  if (isCompressed == true)
+  {
+    const auto buffer = CompressStringBuffer(skelSerializedString);
+
+    // Write file. `File` is RAII.
+    const fs::path meshPath = fmt::format("{}/{}.{}", directoryPath.string(), iSpecifier, "dySkel");
+    std::FILE* fdFile = fopen(meshPath.string().c_str(), "wb");
+    fwrite(&buffer.mRawBufferBytes, sizeof(unsigned), 1, fdFile);
+    fwrite(&buffer.mCompressedBufferBytes, sizeof(unsigned), 1, fdFile);
+    fwrite(buffer.mCompressedBuffer.data(), sizeof(char), buffer.mCompressedBufferBytes, fdFile);
+    fclose(fdFile);
+  }
+  else
+  {
+    const fs::path skelPath = fmt::format("{}/S_{}.{}", directoryPath.string(), iSpecifier, "json");
+
+    // Write file.
+    std::FILE* fdFile = fopen(skelPath.string().c_str(), "w");
+    fwrite(skelSerializedString.c_str(), 
+        sizeof(decltype(skelSerializedString)::value_type), 
+        skelSerializedString.size(), 
+        fdFile);
+    fclose(fdFile);
+  }
+
+  return DY_SUCCESS;
+}
+
 EDySuccess Singleton_ModelInstance::CreateModelSkeleton()
 {
   // Get root-node and root-matrix (identity matrix)
@@ -773,7 +773,7 @@ void Singleton_ModelInstance::RecursiveInsertSkeletonBoneIntoList(
   skeletonInstance.mPtrAiNode      = iPtrAiNode.Get();
   skeletonInstance.mSpecifier      = iPtrAiNode->mName.C_Str();
   skeletonInstance.mLocalTransform = iPtrAiNode->mTransformation;
-  skeletonInstance.mParentSkeletonBoneIndex = iParentSkeletonBoneId;
+  skeletonInstance.mParentSkeletonNodeIndex = iParentSkeletonBoneId;
 
   const signed int skeletonBoneNodeIndex  = static_cast<signed int>(this->mSkeleton->mExportedSkeleton.size()) - 1;
   // Recursively request insertion to children.
@@ -820,8 +820,8 @@ void Singleton_ModelInstance::CreatePtrBoneSpecifierSet() const noexcept
         //
         if (itSkel != this->mSkeleton->mExportedSkeleton.end())
         { 
-          item.mIndexSkeletonBone = static_cast<signed>(std::distance(this->mSkeleton->mExportedSkeleton.begin(), itSkel)); 
-          itSkel->mBoneOffsetId = static_cast<int>(this->mSkeleton->mBoneOffsetList.size());
+          item.mIndexSkeletonNode = static_cast<signed>(std::distance(this->mSkeleton->mExportedSkeleton.begin(), itSkel)); 
+          itSkel->mBoneOffsetId   = static_cast<int>(this->mSkeleton->mBoneOffsetList.size());
         }
 
         offsetList.emplace_back(item);
