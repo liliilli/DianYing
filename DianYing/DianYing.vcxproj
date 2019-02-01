@@ -429,6 +429,7 @@
     <ClCompile Include="Source\Management\Type\Input\DDyInputButton.cc" />
     <ClCompile Include="Source\Management\Type\Input\DDyJoystickAnalog.cc" />
     <ClCompile Include="Source\Management\Type\Render\DDyModelHandler.cc" />
+    <ClCompile Include="Source\Management\Type\Sound\FDySoundGroup.cc" />
     <ClCompile Include="Source\Management\Type\Time\DDyTimepoint.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetBarMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetImageMetaInformation.cc" />
@@ -699,6 +700,7 @@
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyInputButton.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyJoystickAnalog.h" />
     <ClInclude Include="Include\Dy\Management\Type\Render\DDyModelHandler.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Sound\FDySoundGroup.h" />
     <ClInclude Include="Include\Dy\Management\Type\Time\EDyTimeDST.h" />
     <ClInclude Include="Include\Dy\Management\Type\Time\DDyTimepoint.h" />
     <ClInclude Include="Include\Dy\Management\Type\Time\EDyTimeDay.h" />

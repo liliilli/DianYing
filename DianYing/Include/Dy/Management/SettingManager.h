@@ -130,6 +130,13 @@ public:
   MDY_NODISCARD const std::string& 
   MDY_PRIVATE_SPECIFIER(GetEntrySettingFile)() const noexcept;
 
+  //!
+  //! Sound
+  //!
+
+  /// @brief Get const invariable sound setting instance.
+  MDY_NODISCARD const DDySettingSound& GetSoundSetting() const noexcept; 
+
 private:
   /// @brief Setup executable argument settings.
   /// This function must be called before initialization.

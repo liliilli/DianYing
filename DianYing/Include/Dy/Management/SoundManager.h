@@ -16,6 +16,7 @@
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <fmod.hpp>
 #include <Dy/Element/Interface/IDyUpdatable.h>
+#include <Dy/Management/Type/Sound/FDySoundGroup.h>
 
 namespace dy
 {
@@ -29,6 +30,7 @@ class MDySound final : public IDySingleton<MDySound>, public IDyUpdatable
   MDY_SINGLETON_PROPERTIES(MDySound);
   MDY_SINGLETON_DERIVED(MDySound);
 public:
+  /// @brief Sound system should be ticked once per game update. 
   void Update(float dt) override final;
 
   ///
@@ -36,7 +38,7 @@ public:
   ///
   [[nodiscard]] FORCEINLINE bool IsEnabledSoundSystem() const noexcept
   {
-    return this->sIssEnabledSoundSystem;
+    return this->mIsSoundSystemAvailable;
   }
 
   ///
@@ -58,9 +60,13 @@ public:
   EDySuccess StopSoundElement(const std::string& soundName) const noexcept;
 
 private:
-  ///
+  /// @brief Initialize sound system. If already initialized, (without release) just do nothing and return DY_FAILURE.
+  EDySuccess InitializeSoundSystem();
+  /// @brief Release sound system. If already released, (without initialization) just do nothing and return DY_FAILURE.
+  /// This function is only called in release phase of Dy engine.
+  EDySuccess ReleaseSoundSystem();
+
   /// @brief
-  ///
   [[nodiscard]]
   EDySuccess pfCreateSoundResource(const std::string& filePath, FMOD::Sound** soundResourcePtr);
 
@@ -68,12 +74,14 @@ private:
   MDY_TRANSIENT TU32  mVersion                = MDY_INITIALIZE_DEFUINT;
   MDY_TRANSIENT TI32  mSoundDriverCount       = MDY_INITIALIZE_DEFINT;
 
+  TStringHashMap<FDySoundGroup> mGroupContainer;
+
   //TSoundChannelGroup s_channel_group;
-  FMOD::ChannelGroup* sMasterChannel          = nullptr;
+  FMOD::ChannelGroup* mMasterChannel          = nullptr;
   FMOD::ChannelGroup* sEffectChannel          = nullptr;
   FMOD::ChannelGroup* sBackgroundChannel      = nullptr;
 
-  bool                sIssEnabledSoundSystem  = false;
+  bool                mIsSoundSystemAvailable = true;
 
   friend class CDySoundResource_Deprecated;
 };

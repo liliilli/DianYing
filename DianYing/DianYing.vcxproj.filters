@@ -299,6 +299,7 @@
     <ClCompile Include="Source\Component\CDyModelAnimator.cc" />
     <ClCompile Include="Source\Helper\MCS\GLShaderParser.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\Render\RenderOpaqueDynamic.cc" />
+    <ClCompile Include="Source\Management\Type\Sound\FDySoundGroup.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -749,6 +750,7 @@
     <ClInclude Include="Include\Dy\Component\Type\EDyComponentType.h" />
     <ClInclude Include="Include\Dy\Helper\MCS\GLShaderParser.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Render\RenderOpaqueDynamic.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Sound\FDySoundGroup.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />
