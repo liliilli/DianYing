@@ -23,17 +23,45 @@ struct DSkeletonBone final
   std::string   mSpecifier = "";
   /// @brief parent bone index of this bone within `mExportedSkeleton` list.
   int           mParentSkeletonBoneIndex = -1;
+  /// @brief
+  int           mBoneOffsetId = -1;
   /// @brief Local trasform of this bone which is relative to parent.
   DDyMatrix4x4  mLocalTransform = DDyMatrix4x4::IdentityMatrix();
-  /// @brief Global and calculated transform.
-  DDyMatrix4x4  mGlobalTransform = DDyMatrix4x4::IdentityMatrix();
-  /// @brief Offset matrix of bone.
-  DDyMatrix4x4  mOffsetMatrix = DDyMatrix4x4::IdentityMatrix();
   /// @brief This variable is only used in `mPtrAiNode`.
   const aiNode* mPtrAiNode = nullptr;
+};
+
+struct DDyBoneOffset
+{
+  // @brief
+  std::string   mBoneName = "";
+  // @brief
+  int           mIndexSkeletonBone = -1;
+  /// @brief Offset matrix of bone.
+  DDyMatrix4x4  mBoneOffsetMatrix = DDyMatrix4x4::IdentityMatrix();
+};
+
+struct DDySkeleton final
+{
+  // @brief
+  DDyMatrix4x4                mSkeletonRootInverseTransform;
+  // @brief
+  std::vector<DSkeletonBone>  mExportedSkeleton;
+  // @brief
+  std::vector<DDyBoneOffset>  mBoneOffsetList;
 };
 
 /// @brief Serialization function. `mPtrAiNode` will be neglected.
 void to_json(nlohmann::json& j, const DSkeletonBone& p);
 /// @brief Deserialization function.
 void from_json(const nlohmann::json& j, DSkeletonBone& p);
+
+/// @brief Serialization function. 
+void to_json(nlohmann::json& j, const DDyBoneOffset& p);
+/// @brief Deserialization function.
+void from_json(const nlohmann::json& j, DDyBoneOffset& p);
+
+/// @brief Serialization function. 
+void to_json(nlohmann::json& j, const DDySkeleton& p);
+/// @brief Deserialization function.
+void from_json(const nlohmann::json& j, DDySkeleton& p);

@@ -82,31 +82,14 @@ public:
   /// @brief Get export flag.
   MDY_NODISCARD EExportFlags GetExportFlags() const noexcept;
 
-  using TPtrAiNodeMap = std::unordered_map<std::string, NotNull<const aiNode*>>;
-  /// @brief Make map of pointer of model's aiNode instance.
-  /// If model is not loaded, it just return nullopt.
-  MDY_NODISCARD std::optional<TPtrAiNodeMap> CreatePtrAiNodeMap();
-
-  struct DBoneSpecifier
-  {
-    std::string   mSpecifier;
-    DDyMatrix4x4  mOffsetMatrix;
-  };
-  using TBoneSpecifierMap = std::unordered_map<std::string, DBoneSpecifier>;
   /// @brief
-  MDY_NODISCARD std::optional<TBoneSpecifierMap> 
-  CreatePtrBoneSpecifierSet(const TPtrAiNodeMap& iPtrAiNodeMap) const noexcept;
-
+  MDY_NODISCARD EDySuccess CreateModelSkeleton();
   /// @brief
-  MDY_NODISCARD EDySuccess 
-  CreateModelSkeleton(const TPtrAiNodeMap& iPtrAiNodeMap, const TBoneSpecifierMap& iBoneSpecifierSet);
+  void CreatePtrBoneSpecifierSet() const noexcept;
   /// @brief
   void RemoveModelSkeleton();
 
 private:
-  /// @brief Recursively insert.
-  void RecursiveInsertAiNodeIntoNodeMap(NotNull<const aiNode*> iPtrAiNode, TPtrAiNodeMap& iMap);
-
   /// @brief Create and return `DyMesh` with iMeshIndex. 
   /// This function does not check oob of given mesh vector.
   MDY_NODISCARD DMesh CreateDyMesh(unsigned iMeshIndex, bool withSkleton);
@@ -122,10 +105,7 @@ private:
   /// @brief
   void RecursiveInsertSkeletonBoneIntoList(
       const NotNull<const aiNode*> iPtrAiNode, 
-      const TBoneSpecifierMap& iRefBoneSpecifierSet, 
-      const DDyMatrix4x4& iRefParentGlobalTransform,
-      const signed int iParentSkeletonBoneId,
-      std::vector<DSkeletonBone>& iSkeletonList);
+      const signed int iParentSkeletonBoneId);
 
   /// @brief Create external material information.
   MDY_NODISCARD DMaterial CreateDyMaterial(unsigned iMatIndex);
@@ -152,6 +132,5 @@ private:
   EExportFlags mExportFlags = EExportFlags::Flag_None;
 
   /// @brief Exported name is `Specifier`_`Skeleton`.dySkel or `.json when not compressed.
-  DDyMatrix4x4 mSkeletonRootInverseTransform;
-  std::vector<DSkeletonBone> mExportedSkeleton;
+  std::unique_ptr<DDySkeleton> mSkeleton = nullptr;
 };

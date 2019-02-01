@@ -22,8 +22,7 @@ void to_json(nlohmann::json& j, const DSkeletonBone& p)
     {"Specifier",     p.mSpecifier},
     {"ParentBoneId",  p.mParentSkeletonBoneIndex},
     {"LocalTf",       p.mLocalTransform},
-    {"GlobalTf",      p.mGlobalTransform},
-    {"OffsetMt",      p.mOffsetMatrix},
+    {"BoneOffsetId",  p.mBoneOffsetId}
   };
 }
 
@@ -31,4 +30,24 @@ void from_json(const nlohmann::json& j, DSkeletonBone& p)
 {
   (void)j;
   (void)p;
+}
+
+void to_json(nlohmann::json& j, const DDyBoneOffset& p)
+{
+  j = nlohmann::json
+  {
+    {"Specifier", p.mBoneName},
+    {"SkeletonNodeId", p.mIndexSkeletonBone},
+    {"OffsetMatrix", p.mBoneOffsetMatrix},
+  };
+}
+
+void to_json(nlohmann::json& j, const DDySkeleton& p)
+{
+  j = nlohmann::json
+  {
+    {"InverseTransform", p.mSkeletonRootInverseTransform},
+    {"SkeletonNodeList", p.mExportedSkeleton},
+    {"BoneOffsetList", p.mBoneOffsetList}
+  };
 }

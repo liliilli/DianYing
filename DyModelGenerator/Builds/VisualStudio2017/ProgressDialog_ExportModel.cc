@@ -36,16 +36,9 @@ void ProgressDialog_ExportModel::run()
   if (this->mExportFlag & Flag_WithSkeleton)
   {
     setStatusMessage("Making model skeleton information.."); 
-    // If failed to create aiNode map, just return with failure.
-    const auto ptrAiNodeMap = modelInstance.CreatePtrAiNodeMap();
-    if (ptrAiNodeMap.has_value() == false) { this->signalThreadShouldExit(); return; }
-
-    // 
-    const auto ptrBoneStrSet = modelInstance.CreatePtrBoneSpecifierSet(ptrAiNodeMap.value());
-    if (ptrBoneStrSet.has_value() == false) { this->signalThreadShouldExit(); return; }
 
     // Create model skeleton for getting weight & boneId or exporting skeleton file.
-    const EDySuccess flag = modelInstance.CreateModelSkeleton(ptrAiNodeMap.value(), ptrBoneStrSet.value());
+    const EDySuccess flag = modelInstance.CreateModelSkeleton();
     if (flag == DY_FAILURE)
     {
       modelInstance.RemoveModelSkeleton();
