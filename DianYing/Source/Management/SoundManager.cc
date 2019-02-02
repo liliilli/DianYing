@@ -204,19 +204,6 @@ std::optional<TDyBinderSound2D> MDySound::PlaySound2DLooped(
   return TDyBinderSound2D{*refInstance};
 }
 
-FDySoundChannel* MDySound::GetPtrChannel(_MIN_ const std::string& iSpecifier)
-{
-  // Check validity.
-  if (DyIsMapContains(this->mChannelContainer, iSpecifier) == false)
-  {
-    MDY_LOG_ERROR("Failed to find sound channel, {}.", iSpecifier);
-    return nullptr;
-  }
-
-  // Return pointer of channel.
-  return &this->mChannelContainer.find(iSpecifier)->second;
-}
-
 void MDySound::PlaySound3D(
     _MIN_ const std::string& iSoundSpecifier, 
     _MIN_ const std::string& iSoundChannel,
@@ -234,7 +221,7 @@ void MDySound::PlaySound3D(
     return; 
   }
 
-  // Create `FDyInstantSound2D`.
+  // Create `FDyInstantSound3D`.
   this->mInstantSound3DList.emplace_front(
       std::make_unique<FDyInstantSound3D>(
           iSoundSpecifier, 
@@ -245,10 +232,51 @@ void MDySound::PlaySound3D(
   );
 }
 
+std::optional<TDyBinderSound3D> MDySound::PlaySound3DLooped(
+    _MIN_ const std::string& iSoundSpecifier, 
+    _MIN_ const std::string& iSoundChannel,
+    _MIN_ const DDyVector3& iWorldPosition,
+    _MIN_ const DDyClamp<TF32, 0, 5>& iVolumeMultiplier,
+    _MIN_ const DDyClamp<TF32, 0, 5>& iPitchMultiplier,
+    _MIN_ const TF32 iMinDistance,
+    _MIN_ const TF32 iMaxDistance)
+{
+  // Check error.
+  if (this->IsSoundClipExist(iSoundSpecifier) == false) 
+  { 
+    MDY_LOG_ERROR("Sound clip {} is not found, so Failed to play 2D sound.", iSoundSpecifier);
+    return std::nullopt; 
+  } 
+
+  // Create `FDyInstantSound3D`.
+  auto& refInstance = this->mInstantSound3DList.emplace_front(
+      std::make_unique<FDyInstantSound3D>(
+          iSoundSpecifier, 
+          iSoundChannel, 
+          iWorldPosition, iVolumeMultiplier, iPitchMultiplier, 0.0f, 
+          iMinDistance, iMaxDistance,
+          true)
+  );;
+  return TDyBinderSound3D{*refInstance};
+}
+
 bool MDySound::IsSoundClipExist(_MIN_ const std::string& iSoundSpecifier) const noexcept
 {
   const auto& manager = MDyMetaInfo::GetInstance();
   return manager.IsSoundMetaInfoExist(iSoundSpecifier);
+}
+
+FDySoundChannel* MDySound::GetPtrChannel(_MIN_ const std::string& iSpecifier)
+{
+  // Check validity.
+  if (DyIsMapContains(this->mChannelContainer, iSpecifier) == false)
+  {
+    MDY_LOG_ERROR("Failed to find sound channel, {}.", iSpecifier);
+    return nullptr;
+  }
+
+  // Return pointer of channel.
+  return &this->mChannelContainer.find(iSpecifier)->second;
 }
 
 EDySuccess MDySound::InitializeSoundSystem()
@@ -302,7 +330,8 @@ EDySuccess MDySound::InitializeSoundSystem()
   //! We need to create automatical sound channel 128 channels. This channel is used in internal engine.
   //!
 
-  if (this->mSoundSystem->init(128, FMOD_INIT_NORMAL, nullptr) != FMOD_OK)
+  // We must use RIGHT_HANDED_COORDINATE
+  if (this->mSoundSystem->init(128, FMOD_INIT_NORMAL | FMOD_INIT_3D_RIGHTHANDED, nullptr) != FMOD_OK)
   {
     MDY_LOG_CRITICAL(sErrorSystemCreationFailed.data());
     if (this->mSoundSystem != nullptr) { this->mSoundSystem->release(); this->mSoundSystem = nullptr; }
@@ -310,12 +339,18 @@ EDySuccess MDySound::InitializeSoundSystem()
     return DY_FAILURE;
   }
   
-  // Make channel group (not `Dy`'s group).
-  // We need separate sub-channel and a channel as a group of `Dy` sound system,
-  // to handling more flexibly and do volume ducking.
   const auto& settingManager = MDySetting::GetInstance();
   const auto& soundInstance  = settingManager.GetSoundSetting();
 
+  // Set 3D properties to system.
+  {
+    const auto& setting3D = soundInstance.m3DSetting;
+    this->mSoundSystem->set3DSettings(setting3D.mDopplerOffset, setting3D.mDistanceUnit, setting3D.mAttenuationFactor);
+  }
+
+  // Make channel group (not `Dy`'s group).
+  // We need separate sub-channel and a channel as a group of `Dy` sound system,
+  // to handling more flexibly and do volume ducking.
   for (const auto& [specifier, detail] : soundInstance.mGroup)
   {
     // 

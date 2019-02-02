@@ -21,6 +21,7 @@
 #include <Dy/Management/Type/Sound/FDyInstantSound2D.h>
 #include <Dy/Management/Type/Sound/FDyInstantSound3D.h>
 #include <Dy/Management/Type/Sound/TDyBinderSound2D.h>
+#include <Dy/Management/Type/Sound/TDyBinderSound3D.h>
 
 namespace dy
 {
@@ -68,6 +69,7 @@ public:
     
   inline static constexpr TF32 s3DMinDistance = 0.5f;
   inline static constexpr TF32 s3DMaxDistance = 500.f;
+
   /// @brief Play a sound directly with attenuation. Fire and forget!
   void PlaySound3D(
       _MIN_ const std::string& iSoundSpecifier, 
@@ -76,6 +78,17 @@ public:
       _MIN_ const DDyClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
       _MIN_ const DDyClamp<TF32, 0, 5>& iPitchMultiplier = 1.0f,
       _MIN_ const TF32 iDelay = 0.0f,
+      _MIN_ const TF32 iMinDistance = s3DMinDistance,
+      _MIN_ const TF32 iMaxDistance = s3DMaxDistance);
+  
+  /// @brief Play a sound directly with attenuation, with looped.
+  /// Return `TDyBinderSound3D` to control sound 3d instance.
+  MDY_NODISCARD std::optional<TDyBinderSound3D> PlaySound3DLooped(
+      _MIN_ const std::string& iSoundSpecifier, 
+      _MIN_ const std::string& iSoundChannel,
+      _MIN_ const DDyVector3& iWorldPosition,
+      _MIN_ const DDyClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
+      _MIN_ const DDyClamp<TF32, 0, 5>& iPitchMultiplier = 1.0f,
       _MIN_ const TF32 iMinDistance = s3DMinDistance,
       _MIN_ const TF32 iMaxDistance = s3DMaxDistance);
 

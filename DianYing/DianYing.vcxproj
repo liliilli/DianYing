@@ -435,6 +435,7 @@
     <ClCompile Include="Source\Management\Type\Sound\FDySoundChannel.cc" />
     <ClCompile Include="Source\Management\Type\Sound\FDySoundGroup.cc" />
     <ClCompile Include="Source\Management\Type\Sound\TDyBinderSound2D.cc" />
+    <ClCompile Include="Source\Management\Type\Sound\TDyBinderSound3D.cc" />
     <ClCompile Include="Source\Management\Type\Time\DDyTimepoint.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetBarMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetImageMetaInformation.cc" />
@@ -714,6 +715,7 @@
     <ClInclude Include="Include\Dy\Management\Type\Sound\FDySoundChannel.h" />
     <ClInclude Include="Include\Dy\Management\Type\Sound\FDySoundGroup.h" />
     <ClInclude Include="Include\Dy\Management\Type\Sound\TDyBinderSound2D.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Sound\TDyBinderSound3D.h" />
     <ClInclude Include="Include\Dy\Management\Type\Time\EDyTimeDST.h" />
     <ClInclude Include="Include\Dy\Management\Type\Time\DDyTimepoint.h" />
     <ClInclude Include="Include\Dy\Management\Type\Time\EDyTimeDay.h" />
