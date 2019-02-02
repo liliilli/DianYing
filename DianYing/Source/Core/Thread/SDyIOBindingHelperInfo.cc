@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Core/Thread/SDyIOBindingHelper.h>
 #include <Dy/Core/Thread/IO/EDyIOTask.h>
+#include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 #include <Dy/Core/DyEngine.h>
 
 namespace dy
@@ -30,13 +31,13 @@ SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryRequireInformation)
   if (ioThread.pIsReferenceInstanceExist(iSpecifier, iType, EDyResourceStyle::Information) == false)
   { // If binding is failed, it specifies that RI has not been created (Related task queue was not created neither).
     // So we need populate task queue for resource as temporary.
-    MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
+    SDyIOConnectionHelper::PopulateResource(iSpecifier, iType, EDyResourceStyle::Information, EDyScope::Temporal);
   }
 
   MDY_CALL_ASSERT_SUCCESS(ioThread.TryBindBinderToInformationRI(iSpecifier, iType, iPtrBinder));
   if (ioThread.pIsReferenceInstanceBound(iSpecifier, iType, EDyResourceStyle::Information) == false)
   {
-    MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
+    return DY_FAILURE;
   }
 
   return DY_SUCCESS;
