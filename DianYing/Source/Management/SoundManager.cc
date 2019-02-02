@@ -16,8 +16,10 @@
 #include <Dy/Management/SoundManager.h>
 
 #include <cstdio>
-#include <Dy/Management/LoggingManager.h>
 #include <Dy/Helper/Pointer.h>
+#include <Dy/Management/LoggingManager.h>
+#include <Dy/Management/SettingManager.h>
+#include <Dy/Management/IO/MetaInfoManager.h>
 
 //!
 //! Forward declaration
@@ -32,10 +34,8 @@ inline constexpr const char* sChannelBackground = "opBack";
 MDY_SET_IMMUTABLE_STRING(sErrorSystemCreationFailed,
 R"dy(Failed to create fmod sound system.)dy");
 
-///
 /// @function DyFmodInternalSystemCallback
 /// @brief Internal callback function of fmod library.
-///
 FMOD_RESULT F_CALLBACK DyFmodInternalSystemCallback(
     FMOD_SYSTEM* system,
     FMOD_SYSTEM_CALLBACK_TYPE type,
@@ -142,137 +142,255 @@ namespace dy
 
 EDySuccess MDySound::pfInitialize()
 {
+  this->InitializeSoundSystem();
+  return DY_SUCCESS;
+}
+
+void MDySound::PlaySound2D(
+    _MIN_ const std::string& iSoundSpecifier, 
+    _MIN_ const std::string& iSoundChannel,
+    _MIN_ const DDyClamp<TF32, 0, 5>& iVolumeMultiplier, 
+    _MIN_ const DDyClamp<TF32, 0, 5>& iPitchMultiplier, 
+    _MIN_ const TF32 iDelay)
+{
+  // Check error.
+  if (this->IsSoundClipExist(iSoundSpecifier) == false) 
+  { 
+    MDY_LOG_ERROR("Sound clip {} is not found, so Failed to play 2D sound.", iSoundSpecifier);
+    return; 
+  }
+
+  // Create `FDyInstantSound2D`.
+  this->mInstantSound2DList.emplace_front(
+      std::make_unique<FDyInstantSound2D>(iSoundSpecifier, iSoundChannel, iVolumeMultiplier, iPitchMultiplier, iDelay, false)
+  );
+}
+
+std::unique_ptr<FDyInstantSound2D> MDySound::CreateSound2D(
+    _MIN_ const std::string& iSoundSpecifier,
+    _MIN_ const std::string& iSoundChannel, 
+    _MIN_ const DDyClamp<TF32, 0, 5>& iVolumeMultiplier,
+    _MIN_ const DDyClamp<TF32, 0, 5>& iPitchMultiplier, 
+    _MIN_ const TF32 iDelay)
+{
+  // Check error.
+  if (this->IsSoundClipExist(iSoundSpecifier) == false) 
+  { 
+    MDY_LOG_ERROR("Sound clip {} is not found, so Failed to play 2D sound.", iSoundSpecifier);
+    return nullptr; 
+  }
+
+  // Create `FDyInstantSound2D`.
+  return std::make_unique<FDyInstantSound2D>(iSoundSpecifier, iSoundChannel, iVolumeMultiplier, iPitchMultiplier, iDelay, false);
+}
+
+std::optional<TDyBinderSound2D> MDySound::PlaySound2DLooped(
+    _MIN_ const std::string& iSoundSpecifier, 
+    _MIN_ const std::string& iSoundChannel,
+    _MIN_ const DDyClamp<TF32, 0, 5>& iVolumeMultiplier, 
+    _MIN_ const DDyClamp<TF32, 0, 5>& iPitchMultiplier)
+{
+  // Check error.
+  if (this->IsSoundClipExist(iSoundSpecifier) == false) 
+  { 
+    MDY_LOG_ERROR("Sound clip {} is not found, so Failed to play 2D sound.", iSoundSpecifier);
+    return std::nullopt; 
+  } 
+
+  // Create `FDyInstantSound2D`.
+  auto& refInstance = this->mInstantSound2DList.emplace_front(
+      std::make_unique<FDyInstantSound2D>(iSoundSpecifier, iSoundChannel, iVolumeMultiplier, iPitchMultiplier, 0.0f, true)
+  );
+  return TDyBinderSound2D{*refInstance};
+}
+
+FDySoundChannel* MDySound::GetPtrChannel(_MIN_ const std::string& iSpecifier)
+{
+  // Check validity.
+  if (DyIsMapContains(this->mChannelContainer, iSpecifier) == false)
+  {
+    MDY_LOG_ERROR("Failed to find sound channel, {}.", iSpecifier);
+    return nullptr;
+  }
+
+  // Return pointer of channel.
+  return &this->mChannelContainer.find(iSpecifier)->second;
+}
+
+bool MDySound::IsSoundClipExist(_MIN_ const std::string& iSoundSpecifier) const noexcept
+{
+  const auto& manager = MDyMetaInfo::GetInstance();
+  return manager.IsSoundMetaInfoExist(iSoundSpecifier);
+}
+
+EDySuccess MDySound::InitializeSoundSystem()
+{
+  // Check sound system is available.
+  if (this->mIsSoundSystemAvailable == false)
+  {
+    MDY_LOG_CRITICAL("Sound system is not available.");
+    return DY_FAILURE;
+  }
+
+  // Before calling any FMOD functions it is important to ensure COM is initialized. 
+  // You can achieve this by calling CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED) on each thread 
+  // that will interact with the FMOD API. 
+  // This is balanced with a call to CoUninitialize() when you are completely finished with all calls to FMOD.
+#if defined(_WIN32)
   const auto hr = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
   if (hr != S_OK)
   {
     CoUninitialize();
     return DY_FAILURE;
   }
+#endif
 
-  if (FMOD::System_Create(&this->mSoundSystem) != FMOD_OK)
+  //!
+  //! Check logics.
+  //!
+
+  if (FMOD::System_Create(&this->mSoundSystem) != FMOD_OK
+  ||  this->mSoundSystem->setCallback(DyFmodInternalSystemCallback) != FMOD_OK
+  ||  this->mSoundSystem->getVersion(&this->mVersion) != FMOD_OK 
+  ||  this->mSoundSystem->getNumDrivers(&this->mSoundDriverCount) != FMOD_OK)
   {
-    this->mSoundSystem = nullptr;
     MDY_LOG_CRITICAL(sErrorSystemCreationFailed.data());
+    // Release.
+    if (this->mSoundSystem != nullptr) { this->mSoundSystem->release(); this->mSoundSystem = nullptr; }
+    this->mIsSoundSystemAvailable = false;
+    return DY_FAILURE;
+  }
+  if (this->mVersion < FMOD_VERSION || this->mSoundDriverCount < 0)
+  {
+    MDY_LOG_CRITICAL(sErrorSystemCreationFailed.data());
+    // Release.
+    if (this->mSoundSystem != nullptr) { this->mSoundSystem->release(); this->mSoundSystem = nullptr; }
+    this->mIsSoundSystemAvailable = false;
     return DY_FAILURE;
   }
 
-  if (this->mSoundSystem->setCallback(DyFmodInternalSystemCallback) != FMOD_OK)
+  //!
+  //! Sound system initialization logic.
+  //! We need to create automatical sound channel 128 channels. This channel is used in internal engine.
+  //!
+
+  if (this->mSoundSystem->init(128, FMOD_INIT_NORMAL, nullptr) != FMOD_OK)
   {
     MDY_LOG_CRITICAL(sErrorSystemCreationFailed.data());
+    if (this->mSoundSystem != nullptr) { this->mSoundSystem->release(); this->mSoundSystem = nullptr; }
+    this->mIsSoundSystemAvailable = false;
     return DY_FAILURE;
   }
+  
+  // Make channel group (not `Dy`'s group).
+  // We need separate sub-channel and a channel as a group of `Dy` sound system,
+  // to handling more flexibly and do volume ducking.
+  const auto& settingManager = MDySetting::GetInstance();
+  const auto& soundInstance  = settingManager.GetSoundSetting();
 
-  if (this->mSoundSystem->getVersion(&this->mVersion); this->mVersion < FMOD_VERSION)
+  for (const auto& [specifier, detail] : soundInstance.mGroup)
   {
-    this->mSoundSystem->release();        this->mSoundSystem = nullptr;
-    MDY_LOG_CRITICAL(sErrorSystemCreationFailed.data());
-    return DY_FAILURE;
+    // 
+    auto [it, isSucceeded] = this->mGroupContainer.try_emplace(specifier, FDySoundGroup{});
+    MDY_ASSERT(isSucceeded == true, "Unexpected error.");
+    // 
+    auto& [_, instance] = *it;
+    MDY_CALL_ASSERT_SUCCESS(instance.Initialize(*this->mSoundSystem, specifier, detail));
   }
 
-  if (this->mSoundSystem->getNumDrivers(&this->mSoundDriverCount); this->mSoundDriverCount <= 0)
+  // Make channel sub-channel. (`Dy`'s channel).
+  for (const auto& [specifier, detail] : soundInstance.mChannel)
   {
-    this->mSoundSystem->release();        this->mSoundSystem = nullptr;
-    MDY_LOG_CRITICAL(sErrorSystemCreationFailed.data());
-    return DY_FAILURE;
+    // 
+    auto [it, isSucceeded] = this->mChannelContainer.try_emplace(specifier, FDySoundChannel{});
+    MDY_ASSERT(isSucceeded == true, "Unexpected error.");
+    // 
+    auto& [_, instance] = *it;
+    MDY_CALL_ASSERT_SUCCESS(instance.Initialize(*this->mSoundSystem, specifier, detail));
   }
 
-  if (this->mSoundSystem->init(32, FMOD_INIT_NORMAL, nullptr) != FMOD_OK)
-  {
-    this->mSoundSystem->release();        this->mSoundSystem = nullptr;
-    MDY_LOG_CRITICAL(sErrorSystemCreationFailed.data());
-    return DY_FAILURE;
-  }
-
-  if (this->mSoundSystem->createChannelGroup(sChannelEffect, &this->sEffectChannel) != FMOD_OK)
-  {
-    this->sEffectChannel->release();      this->sEffectChannel = nullptr;
-    this->mSoundSystem->release();        this->mSoundSystem   = nullptr;
-
-    MDY_LOG_CRITICAL(sErrorSystemCreationFailed.data());
-    return DY_FAILURE;
-  }
-
-  if (this->mSoundSystem->createChannelGroup(sChannelBackground, &this->sBackgroundChannel) != FMOD_OK)
-  {
-    this->sBackgroundChannel->release();  this->sBackgroundChannel = nullptr;
-    this->sEffectChannel->release();      this->sEffectChannel = nullptr;
-    this->mSoundSystem->release();        this->mSoundSystem   = nullptr;
-
-    MDY_LOG_CRITICAL(sErrorSystemCreationFailed.data());
-    return DY_FAILURE;
-  }
-
-  if (this->mSoundSystem->getMasterChannelGroup(&sMasterChannel) != FMOD_OK)
-  {
-    this->sMasterChannel->release();      this->sMasterChannel = nullptr;
-    this->sBackgroundChannel->release();  this->sBackgroundChannel = nullptr;
-    this->sEffectChannel->release();      this->sEffectChannel = nullptr;
-    this->mSoundSystem->release();        this->mSoundSystem   = nullptr;
-
-    MDY_LOG_CRITICAL(sErrorSystemCreationFailed.data());
-    return DY_FAILURE;
-  }
-
-  if (this->sMasterChannel->addGroup(sEffectChannel) != FMOD_OK)
-  {
-    this->sMasterChannel->release();      this->sMasterChannel = nullptr;
-    this->sBackgroundChannel->release();  this->sBackgroundChannel = nullptr;
-    this->sEffectChannel->release();      this->sEffectChannel = nullptr;
-    this->mSoundSystem->release();        this->mSoundSystem   = nullptr;
-
-    MDY_LOG_CRITICAL(sErrorSystemCreationFailed.data());
-    return DY_FAILURE;
-  }
-
-  if (this->sMasterChannel->addGroup(sBackgroundChannel) != FMOD_OK)
-  {
-    this->sMasterChannel->release();      this->sMasterChannel = nullptr;
-    this->sBackgroundChannel->release();  this->sBackgroundChannel = nullptr;
-    this->sEffectChannel->release();      this->sEffectChannel = nullptr;
-    this->mSoundSystem->release();        this->mSoundSystem   = nullptr;
-
-    MDY_LOG_CRITICAL(sErrorSystemCreationFailed.data());
-    return DY_FAILURE;;
-  }
-
-  this->sIssEnabledSoundSystem = true;
+  this->mIsSoundSystemAvailable = true;
   return DY_SUCCESS;
 }
 
 EDySuccess MDySound::pfRelease()
 {
-  if (this->sBackgroundChannel)
-  {
-    this->sBackgroundChannel->release();
-    this->sBackgroundChannel = nullptr;
-  }
-  if (this->sEffectChannel)
-  {
-    this->sEffectChannel->release();
-    this->sEffectChannel = nullptr;
-  }
-  if (this->sMasterChannel)
-  {
-    this->sMasterChannel = nullptr;
-  }
-  if (this->mSoundSystem)
-  {
-    this->mSoundSystem->release();
-    this->mSoundSystem = nullptr;
-  }
-
-  this->sIssEnabledSoundSystem = false;
+  // Clear all list.
+  this->mInstantSound2DList.clear();
+  this->ReleaseSoundSystem();
   return DY_SUCCESS;
 }
 
-void MDySound::Update(float dt)
+EDySuccess MDySound::ReleaseSoundSystem()
 {
-  if (this->mSoundSystem) { this->mSoundSystem->update(); }
+  // Check
+  if (this->mIsSoundSystemAvailable == false)
+  {
+    MDY_LOG_CRITICAL("Sound system is already not available, so does not have to release system.");
+    return DY_FAILURE;
+  }
+
+  // Release Channel instance.
+  for (auto& [specifier, channel] : this->mChannelContainer) { MDY_CALL_ASSERT_SUCCESS(channel.Release()); }
+  this->mChannelContainer.clear();
+
+  // Release Group instance.
+  for (auto& [specifier, group] : this->mGroupContainer) { MDY_CALL_ASSERT_SUCCESS(group.Release()); }
+  this->mGroupContainer.clear();
+
+  // Release sound.
+  if (MDY_CHECK_ISNOTNULL(this->mSoundSystem))
+  { this->mSoundSystem->release(); this->mSoundSystem = nullptr; }
+
+  return DY_SUCCESS;
 }
 
+void MDySound::Update(MDY_NOTUSED float dt)
+{
+  // When using FMOD Studio, 
+  // call Studio::System::update, which internally will also update the Low Level system. 
+  // If using Low Level directly, instead call System::update.
+  if (MDY_CHECK_ISNOTNULL(this->mSoundSystem)) 
+  { 
+    this->mSoundSystem->update(); 
+  }
+
+  // Check intant 2D sound instance is valid.
+  for (auto& ptrsmtInstance : this->mInstantSound2DList)
+  {
+    // If instance is not valid, we have to check sound is valid so able to initialize.
+    if (const auto status = ptrsmtInstance->GetStatus(); status == EDySoundStatus::NotValid) 
+    { 
+      ptrsmtInstance->TryInitialize(); 
+    }
+    // Otherwise, we have to check instance is stopped so have to release.
+    else if (status == EDySoundStatus::Stop) { ptrsmtInstance = nullptr; }
+  }
+  // Remove empty 2d instant sound instance item.
+  this->mInstantSound2DList.remove_if([](const auto& ptrsmtInstance) { return ptrsmtInstance == nullptr; });
+}
+
+FDySoundGroup& MDySound::MDY_PRIVATE_SPECIFIER(GetGroupChannel)(_MIN_ const std::string& iSpecifier)
+{
+  auto it = this->mGroupContainer.find(iSpecifier);
+  MDY_ASSERT_FORCE(it != this->mGroupContainer.end(), "Unexpected error occurred. Given group channel not found.");
+
+  return it->second;
+}
+
+FMOD::System& MDySound::MDY_PRIVATE_SPECIFIER(GetSystem)()
+{
+  MDY_ASSERT(
+      this->mIsSoundSystemAvailable == true, 
+      "Failed to getting sound system instance. Sound system must be initialized.");
+
+  return *this->mSoundSystem;
+}
+
+#ifdef false
 EDySuccess MDySound::PlaySoundElement(const std::string& soundName) const noexcept
 {
-  if (!this->sIssEnabledSoundSystem)
+  if (!this->mIsSoundSystemAvailable)
   {
     MDY_LOG_ERROR("Can not use sound system because of initialization error.");
     return DY_FAILURE;
@@ -294,7 +412,7 @@ EDySuccess MDySound::PlaySoundElement(const std::string& soundName) const noexce
     {
     case EDySoundStatus::Stopped:
     {
-      const auto result = this->mSoundSystem->playSound(soundResource->mSoundResourcePtr, this->sMasterChannel, false, &soundResource->mSoundChannel);
+      const auto result = this->mSoundSystem->playSound(soundResource->mSoundResourcePtr, this->mMasterChannel, false, &soundResource->mSoundChannel);
       if (result != FMOD_OK)
       {
         MDY_LOG_ERROR("Failed to play sound. Something error happened. | {} : {}", "Sound name", soundName);
@@ -322,7 +440,7 @@ EDySuccess MDySound::PlaySoundElement(const std::string& soundName) const noexce
 
 EDySuccess MDySound::PauseSoundElement(const std::string& soundName) const noexcept
 {
-  if (!this->sIssEnabledSoundSystem)
+  if (!this->mIsSoundSystemAvailable)
   {
     MDY_LOG_ERROR("Can not use sound system because of initialization error.");
     return DY_FAILURE;
@@ -354,7 +472,7 @@ EDySuccess MDySound::PauseSoundElement(const std::string& soundName) const noexc
 
 EDySuccess MDySound::StopSoundElement(const std::string& soundName) const noexcept
 {
-  if (!this->sIssEnabledSoundSystem)
+  if (!this->mIsSoundSystemAvailable)
   {
     MDY_LOG_ERROR("Can not use sound system because of initialization error.");
     return DY_FAILURE;
@@ -402,5 +520,6 @@ EDySuccess MDySound::pfCreateSoundResource(const std::string& filePath, FMOD::So
 
   return DY_SUCCESS;
 }
+#endif
 
 } /// ::dy namespace

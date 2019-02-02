@@ -13,6 +13,21 @@
 /// SOFTWARE.
 ///
 
+#include <filesystem>
+
+//!
+//! Forward declaration
+//!
+
+namespace dy
+{
+struct PDySoundInstanceMetaInfo;
+} /// ::dy namespace
+
+//!
+//! Implementation
+//!
+
 namespace dy
 {
 
@@ -23,11 +38,19 @@ namespace dy
 class FDySoundInformation final
 {
 public:
+  MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(FDySoundInformation);
+  FDySoundInformation(_MIN_ const PDySoundInstanceMetaInfo& iInput);
+  ~FDySoundInformation() = default;
 
+  /// @brief Get model specifier name.
+  MDY_NODISCARD const std::string& GetSpecifierName() const noexcept;
+
+  /// @brief Get valid path
+  MDY_NODISCARD const std::filesystem::path& GetPath() const noexcept;
 
 private:
-
-
+  const std::string           mSpecifier = MDY_INITIALIZE_EMPTYSTR;
+  const std::filesystem::path mPath; 
 };
 
 } /// ::dy namespace

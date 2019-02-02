@@ -140,6 +140,7 @@ using TDyIInformationBinderAttachment   = TDyInformationBinderInstant<EDyResourc
 using TDyIInformationBinderFrameBuffer  = TDyInformationBinderInstant<EDyResourceType::GLFrameBuffer>;
 using TDyIInformationBinderSkeleton     = TDyInformationBinderInstant<EDyResourceType::Skeleton>;
 using TDyIInformationBinderAnimScrap    = TDyInformationBinderInstant<EDyResourceType::AnimationScrap>;
+using TDyIInformationBinderSound        = TDyInformationBinderInstant<EDyResourceType::Sound>;
 
 ///
 /// @class TDyInformationBinder

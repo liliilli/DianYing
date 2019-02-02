@@ -155,8 +155,6 @@
     <ClCompile Include="Source\Builtin\ShaderGl\Editor\RenderGrid.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\Font\RenderFontArraySDF.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\Font\RenderDefaultFont.cc" />
-    <ClCompile Include="Source\Core\Resource\Information_Deprecated\SoundInformation.cc" />
-    <ClCompile Include="Source\Core\Resource\Resource_Deprecated\SoundResource.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyShaderInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyTextureInformation.cc" />
     <ClCompile Include="Source\Core\Thread\SDyIOConnectionHelper.cc" />
@@ -299,6 +297,14 @@
     <ClCompile Include="Source\Component\CDyModelAnimator.cc" />
     <ClCompile Include="Source\Helper\MCS\GLShaderParser.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\Render\RenderOpaqueDynamic.cc" />
+    <ClCompile Include="Source\Management\Type\Sound\FDySoundGroup.cc" />
+    <ClCompile Include="Source\Management\Type\Sound\FDySoundChannel.cc" />
+    <ClCompile Include="Source\Meta\Information\MetaInfoSound.cc" />
+    <ClCompile Include="Source\Core\Resource\Information\FDySoundInformation.cc" />
+    <ClCompile Include="Source\Management\Type\Sound\FDyInstantSound2D.cc" />
+    <ClCompile Include="Source\Management\Internal\Sound\CallbackChannel.cc" />
+    <ClCompile Include="Source\Management\Type\Sound\ADySoundInstance.cc" />
+    <ClCompile Include="Source\Management\Type\Sound\TDyBinderSound2D.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -559,8 +565,6 @@
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Font\RenderDefaultFont.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\UI\RenderUIBasicGaugeBar.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\UI\RenderUIImage.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Information_Deprecated\SoundInformation_Deprecated.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Resource_Deprecated\SoundResource_Deprecated.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyShaderInformation.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOWorkerResult.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyTextureInformation.h" />
@@ -749,6 +753,14 @@
     <ClInclude Include="Include\Dy\Component\Type\EDyComponentType.h" />
     <ClInclude Include="Include\Dy\Helper\MCS\GLShaderParser.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Render\RenderOpaqueDynamic.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Sound\FDySoundGroup.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Sound\FDySoundChannel.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoSound.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Sound\FDyInstantSound2D.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Sound\EDySoundStatus.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\Sound\CallbackChannel.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Sound\ADySoundInstance.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Sound\TDyBinderSound2D.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

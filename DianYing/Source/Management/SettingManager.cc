@@ -241,6 +241,11 @@ const std::string& MDySetting::MDY_PRIVATE_SPECIFIER(GetEntrySettingFile)() cons
   return this->mEntrySettingPath;
 }
 
+const DDySettingSound& MDySetting::GetSoundSetting() const noexcept
+{
+  return this->mSound;
+}
+
 void MDySetting::pSetupExecutableArgumentSettings()
 {
   /// @brief Setup rendering api type from argument.
@@ -391,6 +396,7 @@ EDySuccess MDySetting::pfInitialize()
     DyJsonGetValueFromTo(settingAtlas, sCategoryInput, this->mInput);
     DyJsonGetValueFromTo(settingAtlas, sCategoryTag, this->mTag);
     DyJsonGetValueFromTo(settingAtlas, sCategoryMetaPath, this->mDevMetaPath);
+    DyJsonGetValueFromTo(settingAtlas, "Sound", this->mSound);
     MDyMetaInfo::GetInstance().MDY_PRIVATE_SPECIFIER(InitiateMetaInformation)();
   }
   else if (this->mApplicationMode == EDyAppMode::LoadCompressedFile)
@@ -407,6 +413,7 @@ EDySuccess MDySetting::pfInitialize()
     DyJsonGetValueFromTo(settingAtlas, sCategoryGameplay, this->mGamePlay);
     DyJsonGetValueFromTo(settingAtlas, sCategoryInput, this->mInput);
     DyJsonGetValueFromTo(settingAtlas, sCategoryTag, this->mTag);
+    DyJsonGetValueFromTo(settingAtlas, "Sound", this->mSound);
     MDyMetaInfo::GetInstance().MDY_PRIVATE_SPECIFIER(InitiateMetaInformationComp)(metaAtlas);
   }
   else { MDY_UNEXPECTED_BRANCH(); }

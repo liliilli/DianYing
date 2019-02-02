@@ -259,6 +259,40 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingTag& p)
   p.mCollisionTag = DyJsonGetValueFrom<DDySettingTag::TCollisionTagList>(j, sCollision);
 }
 
+///
+/// @struct DDySettingSound
+/// @brief  Setting sound that able to be serialized.
+///
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingSound& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingSound& p)
+{
+  DyJsonGetValueFromTo(j, "Master",   p.mMaster);
+  DyJsonGetValueFromTo(j, "Group",    p.mGroup);
+  DyJsonGetValueFromTo(j, "Channel",  p.mChannel);
+}
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingSound::DDetail& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingSound::DDetail& p)
+{
+  DyJsonGetValueFromTo(j, "Muted", p.mMuted);
+  DyJsonGetValueFromTo(j, "Volume", p.mVolume);
+}
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingSound::DChannelDetail& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingSound::DChannelDetail& p)
+{
+  from_json(j, static_cast<DDySettingSound::DDetail&>(p));
+  DyJsonGetValueFromTo(j, "Group", p.mGroupSpecifier);
+
+  MDY_ASSERT_FORCE(p.mGroupSpecifier.empty() == false, "Channel's group must be specified.");
+}
+
+///
+/// @struct DDySettingMetaPath
+/// @brief  Setting meta file path that able to be serialized.
+///
+
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingMetaPath& p)
 {
   j = nlohmann::json
@@ -277,6 +311,8 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingMetaPath& p)
       {MSVSTR(sHeader_MetaPath_ModelMesh),p.mModelMeshMetaPath},
       {MSVSTR(sHeader_MetaPath_ModelAnim),p.mModelAnimMetaPath},
       {MSVSTR(sHeader_MetaPath_ModelSkeleton),p.mModelSkeletonMetaPath},
+
+      {"Sound", p.mSoundMetaPath},
   };
 }
 
@@ -296,6 +332,8 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingMetaPath& p)
   p.mModelMeshMetaPath    = DyJsonGetValueFrom<std::string>(j, sHeader_MetaPath_ModelMesh);
   p.mModelAnimMetaPath    = DyJsonGetValueFrom<std::string>(j, sHeader_MetaPath_ModelAnim);
   p.mModelSkeletonMetaPath= DyJsonGetValueFrom<std::string>(j, sHeader_MetaPath_ModelSkeleton);
+
+  p.mSoundMetaPath = DyJsonGetValueFrom<std::string>(j, "Sound");
 }
 
 } /// ::dy namespace

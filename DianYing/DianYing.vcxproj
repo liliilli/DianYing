@@ -249,6 +249,7 @@
     <ClCompile Include="Source\Core\Resource\Information\FDyModelInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyModelSkeletonInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyShaderInformation.cc" />
+    <ClCompile Include="Source\Core\Resource\Information\FDySoundInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyTextureInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\FDyMeshVBOIntermediate.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\GeometryType.cc" />
@@ -378,13 +379,11 @@
     <ClCompile Include="Source\Component\CDyModelRenderer.cc" />
     <ClCompile Include="Source\Component\CDyTransform.cc" />
     <ClCompile Include="Source\Core\Rendering\Widget\CDyFontRenderer.cc" />
-    <ClCompile Include="Source\Core\Resource\Information_Deprecated\SoundInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\EtcType.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\MaterialType.cc" />
     <ClCompile Include="Source\Core\Resource\Object\Grid.cc" />
     <ClCompile Include="Source\Core\DyEngine.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\PostEffectSsao.cc" />
-    <ClCompile Include="Source\Core\Resource\Resource_Deprecated\SoundResource.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\BasicRenderer.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\FinalScreenDisplayRenderer.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\UiBasicRenderer.cc" />
@@ -423,12 +422,18 @@
     <ClCompile Include="Source\Management\Internal\MDyProfiling.cc" />
     <ClCompile Include="Source\Management\Internal\MDySynchronization.cc" />
     <ClCompile Include="Source\Management\Internal\Render\FDyModelHandlerManager.cc" />
+    <ClCompile Include="Source\Management\Internal\Sound\CallbackChannel.cc" />
     <ClCompile Include="Source\Management\Internal\World\FDyWorldUIContainer.cc" />
     <ClCompile Include="Source\Management\IO\MDyIOData.cc" />
     <ClCompile Include="Source\Management\IO\MDyIOResource.cc" />
     <ClCompile Include="Source\Management\Type\Input\DDyInputButton.cc" />
     <ClCompile Include="Source\Management\Type\Input\DDyJoystickAnalog.cc" />
     <ClCompile Include="Source\Management\Type\Render\DDyModelHandler.cc" />
+    <ClCompile Include="Source\Management\Type\Sound\ADySoundInstance.cc" />
+    <ClCompile Include="Source\Management\Type\Sound\FDyInstantSound2D.cc" />
+    <ClCompile Include="Source\Management\Type\Sound\FDySoundChannel.cc" />
+    <ClCompile Include="Source\Management\Type\Sound\FDySoundGroup.cc" />
+    <ClCompile Include="Source\Management\Type\Sound\TDyBinderSound2D.cc" />
     <ClCompile Include="Source\Management\Type\Time\DDyTimepoint.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetBarMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetImageMetaInformation.cc" />
@@ -502,6 +507,7 @@
     <ClCompile Include="Source\Meta\Information\MetaInfoModelAnim.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoModelMesh.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoModelSkeleton.cc" />
+    <ClCompile Include="Source\Meta\Information\MetaInfoSound.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoTexture.cc" />
     <ClCompile Include="Source\Meta\Information\PrefabMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Information\ScriptMetaInformation.cc" />
@@ -692,6 +698,7 @@
     <ClInclude Include="Include\Dy\Management\Internal\Input\FDyInputDelegateManager.h" />
     <ClInclude Include="Include\Dy\Management\Internal\MDyProfiling.h" />
     <ClInclude Include="Include\Dy\Management\Internal\Render\FDyModelHandlerManager.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\Sound\CallbackChannel.h" />
     <ClInclude Include="Include\Dy\Management\Internal\World\FDyWorldUIContainer.h" />
     <ClInclude Include="Include\Dy\Management\IO\MDyIOData.h" />
     <ClInclude Include="Include\Dy\Management\IO\MDyIOResource.h" />
@@ -699,6 +706,12 @@
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyInputButton.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyJoystickAnalog.h" />
     <ClInclude Include="Include\Dy\Management\Type\Render\DDyModelHandler.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Sound\ADySoundInstance.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Sound\EDySoundStatus.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Sound\FDyInstantSound2D.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Sound\FDySoundChannel.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Sound\FDySoundGroup.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Sound\TDyBinderSound2D.h" />
     <ClInclude Include="Include\Dy\Management\Type\Time\EDyTimeDST.h" />
     <ClInclude Include="Include\Dy\Management\Type\Time\DDyTimepoint.h" />
     <ClInclude Include="Include\Dy\Management\Type\Time\EDyTimeDay.h" />
@@ -707,6 +720,7 @@
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoModelMesh.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoModel.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoModelSkeleton.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoSound.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Input\EDyInputButton.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\EDyInputButtonStatus.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoAttachment.h" />
@@ -741,8 +755,6 @@
     <ClInclude Include="Include\Dy\Component\Internal\Widget\CDyWidgetScriptLua.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyShaderInformation.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyTextureInformation.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Information_Deprecated\SoundInformation_Deprecated.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Resource_Deprecated\SoundResource_Deprecated.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\EDyScope.h" />
     <ClInclude Include="Include\Dy\Core\DyEngine.h" />
     <ClInclude Include="Include\Dy\Core\Reflection\RDyBuiltinResources.h" />

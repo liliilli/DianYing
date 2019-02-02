@@ -130,6 +130,13 @@ public:
   MDY_NODISCARD const std::string& 
   MDY_PRIVATE_SPECIFIER(GetEntrySettingFile)() const noexcept;
 
+  //!
+  //! Sound
+  //!
+
+  /// @brief Get const invariable sound setting instance.
+  MDY_NODISCARD const DDySettingSound& GetSoundSetting() const noexcept; 
+
 private:
   /// @brief Setup executable argument settings.
   /// This function must be called before initialization.
@@ -151,6 +158,7 @@ private:
   DDySettingGameplay    mGamePlay     = {};
   DDySettingInput       mInput        = {};
   DDySettingTag         mTag          = {};
+  DDySettingSound       mSound        = {};
   // @brief ONLY USED WHEN `MDY_FLAG_LOAD_COMPRESSED_DATAFILE` IS NOT DEFINED.
   DDySettingMetaPath    mDevMetaPath  = {};
 

@@ -27,9 +27,10 @@
 #include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
 #include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
+#include <Dy/Core/Resource/Information/FDyModelSkeletonInformation.h>
+#include <Dy/Core/Resource/Information/FDyModelAnimScrapInformation.h>
+#include <Dy/Core/Resource/Information/FDySoundInformation.h>
 #include <Dy/Management/IO/MDyIOData.h>
-#include "Dy/Core/Resource/Information/FDyModelSkeletonInformation.h"
-#include "Dy/Core/Resource/Information/FDyModelAnimScrapInformation.h"
 
 namespace dy
 {
@@ -157,6 +158,10 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceInformation(_MIN_ const DDyIOT
   case EDyResourceType::GLFrameBuffer:
     result.mSmtPtrResultInstance = new FDyFrameBufferInformation
     (this->mMetaManager.GetGlFrameBufferMetaInformation(assignedTask.mSpecifierName));
+    break;
+  case EDyResourceType::Sound:
+    result.mSmtPtrResultInstance = new FDySoundInformation
+    (this->mMetaManager.GetSoundMetaInformation(assignedTask.mSpecifierName));
     break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
