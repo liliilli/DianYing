@@ -422,12 +422,14 @@
     <ClCompile Include="Source\Management\Internal\MDyProfiling.cc" />
     <ClCompile Include="Source\Management\Internal\MDySynchronization.cc" />
     <ClCompile Include="Source\Management\Internal\Render\FDyModelHandlerManager.cc" />
+    <ClCompile Include="Source\Management\Internal\Sound\CallbackChannel.cc" />
     <ClCompile Include="Source\Management\Internal\World\FDyWorldUIContainer.cc" />
     <ClCompile Include="Source\Management\IO\MDyIOData.cc" />
     <ClCompile Include="Source\Management\IO\MDyIOResource.cc" />
     <ClCompile Include="Source\Management\Type\Input\DDyInputButton.cc" />
     <ClCompile Include="Source\Management\Type\Input\DDyJoystickAnalog.cc" />
     <ClCompile Include="Source\Management\Type\Render\DDyModelHandler.cc" />
+    <ClCompile Include="Source\Management\Type\Sound\FDyInstantSound2D.cc" />
     <ClCompile Include="Source\Management\Type\Sound\FDySoundChannel.cc" />
     <ClCompile Include="Source\Management\Type\Sound\FDySoundGroup.cc" />
     <ClCompile Include="Source\Management\Type\Time\DDyTimepoint.cc" />
@@ -694,6 +696,7 @@
     <ClInclude Include="Include\Dy\Management\Internal\Input\FDyInputDelegateManager.h" />
     <ClInclude Include="Include\Dy\Management\Internal\MDyProfiling.h" />
     <ClInclude Include="Include\Dy\Management\Internal\Render\FDyModelHandlerManager.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\Sound\CallbackChannel.h" />
     <ClInclude Include="Include\Dy\Management\Internal\World\FDyWorldUIContainer.h" />
     <ClInclude Include="Include\Dy\Management\IO\MDyIOData.h" />
     <ClInclude Include="Include\Dy\Management\IO\MDyIOResource.h" />
@@ -701,6 +704,8 @@
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyInputButton.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyJoystickAnalog.h" />
     <ClInclude Include="Include\Dy\Management\Type\Render\DDyModelHandler.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Sound\EDySoundStatus.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Sound\FDyInstantSound2D.h" />
     <ClInclude Include="Include\Dy\Management\Type\Sound\FDySoundChannel.h" />
     <ClInclude Include="Include\Dy\Management\Type\Sound\FDySoundGroup.h" />
     <ClInclude Include="Include\Dy\Management\Type\Time\EDyTimeDST.h" />

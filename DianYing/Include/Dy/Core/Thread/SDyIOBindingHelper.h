@@ -29,7 +29,7 @@ class SDyIOBindingHelper final
 private:
   /// @brief Use this require resource to another dimension.
   template <EDyResourceType TType>
-  static MDY_NODISCARD std::optional<const __TResourceType_T<TType>*>
+  MDY_NODISCARD static std::optional<const __TResourceType_T<TType>*>
   TryRequireResource(_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder)
   {
     if constexpr (TType == EDyResourceType::GLShader)     
@@ -50,53 +50,53 @@ private:
     { MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt); }
   }
 
-  static MDY_NODISCARD EDySuccess
+  MDY_NODISCARD static EDySuccess
   MDY_PRIVATE_SPECIFIER(pTryRequireResource)
   (_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder);
 
-  static MDY_NODISCARD std::optional<const __TResourceType_T<EDyResourceType::GLShader>*>
+  MDY_NODISCARD static std::optional<const __TResourceType_T<EDyResourceType::GLShader>*>
   MDY_PRIVATE_SPECIFIER(pTryRequireResource_GLShader)
   (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
 
-  static MDY_NODISCARD std::optional<const __TResourceType_T<EDyResourceType::Mesh>*>
+  MDY_NODISCARD static std::optional<const __TResourceType_T<EDyResourceType::Mesh>*>
   MDY_PRIVATE_SPECIFIER(pTryRequireResource_Mesh)
   (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
 
-  static MDY_NODISCARD std::optional<const __TResourceType_T<EDyResourceType::Model>*>
+  MDY_NODISCARD static std::optional<const __TResourceType_T<EDyResourceType::Model>*>
   MDY_PRIVATE_SPECIFIER(pTryRequireResource_Model)
   (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
 
-  static MDY_NODISCARD std::optional<const __TResourceType_T<EDyResourceType::Texture>*>
+  MDY_NODISCARD static std::optional<const __TResourceType_T<EDyResourceType::Texture>*>
   MDY_PRIVATE_SPECIFIER(pTryRequireResource_Texture)
   (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
 
-  static MDY_NODISCARD std::optional<const __TResourceType_T<EDyResourceType::Material>*>
+  MDY_NODISCARD static std::optional<const __TResourceType_T<EDyResourceType::Material>*>
   MDY_PRIVATE_SPECIFIER(pTryRequireResource_Material)
   (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
 
-  static MDY_NODISCARD std::optional<const __TResourceType_T<EDyResourceType::GLAttachment>*>
+  MDY_NODISCARD static std::optional<const __TResourceType_T<EDyResourceType::GLAttachment>*>
   MDY_PRIVATE_SPECIFIER(pTryRequireResource_Attachment)
   (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
 
-  static MDY_NODISCARD std::optional<const __TResourceType_T<EDyResourceType::GLFrameBuffer>*>
+  MDY_NODISCARD static std::optional<const __TResourceType_T<EDyResourceType::GLFrameBuffer>*>
   MDY_PRIVATE_SPECIFIER(pTryRequireResource_FrameBuffer)
   (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
 
   /// @brief Use this require resource to another dimension.
   template <EDyResourceType TType>
-  static MDY_NODISCARD EDySuccess
+  MDY_NODISCARD static EDySuccess
   TryDetachResource(_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder)
   {
     return MDY_PRIVATE_SPECIFIER(pTryDetachResource)(iSpecifier, TType, iPtrBinder);
   }
 
-  static MDY_NODISCARD EDySuccess
+  MDY_NODISCARD static EDySuccess
   MDY_PRIVATE_SPECIFIER(pTryDetachResource)
   (_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder);
 
   /// @brief Use this require resource to another dimension.
   template <EDyResourceType TType>
-  static MDY_NODISCARD std::optional<const __TDyRscInfo_T<TType>*>
+  MDY_NODISCARD static std::optional<const __TDyRscInfo_T<TType>*>
   TryRequireInformation(_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder)
   {
     if constexpr (TType == EDyResourceType::GLShader)     
@@ -117,31 +117,33 @@ private:
     { return MDY_PRIVATE_SPECIFIER(pTryRequireInformation_Skeleton)(iSpecifier, iPtrBinder); }
     else if constexpr (TType == EDyResourceType::AnimationScrap)
     { return MDY_PRIVATE_SPECIFIER(pTryRequireInformation_AnimationScrap)(iSpecifier, iPtrBinder); }
+    else if constexpr (TType == EDyResourceType::Sound)
+    { return MDY_PRIVATE_SPECIFIER(pTryRequireInformation_Sound)(iSpecifier, iPtrBinder); }
     else 
     { MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt); }
   }
   
-  static MDY_NODISCARD EDySuccess
+  MDY_NODISCARD static EDySuccess
   MDY_PRIVATE_SPECIFIER(pTryRequireInformation)
   (_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder);
   
-  static MDY_NODISCARD std::optional<const __TDyRscInfo_T<EDyResourceType::GLShader>*>
+  MDY_NODISCARD static std::optional<const __TDyRscInfo_T<EDyResourceType::GLShader>*>
   MDY_PRIVATE_SPECIFIER(pTryRequireInformation_GLShader)
   (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
 
-  static MDY_NODISCARD std::optional<const __TDyRscInfo_T<EDyResourceType::GLFrameBuffer>*>
+  MDY_NODISCARD static std::optional<const __TDyRscInfo_T<EDyResourceType::GLFrameBuffer>*>
   MDY_PRIVATE_SPECIFIER(pTryRequireInformation_GLFrameBuffer)
   (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
   
-  static MDY_NODISCARD std::optional<const __TDyRscInfo_T<EDyResourceType::Texture>*>
+  MDY_NODISCARD static std::optional<const __TDyRscInfo_T<EDyResourceType::Texture>*>
   MDY_PRIVATE_SPECIFIER(pTryRequireInformation_Texture)
   (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
     
-  static MDY_NODISCARD std::optional<const __TDyRscInfo_T<EDyResourceType::GLAttachment>*>
+  MDY_NODISCARD static std::optional<const __TDyRscInfo_T<EDyResourceType::GLAttachment>*>
   MDY_PRIVATE_SPECIFIER(pTryRequireInformation_Attachment)
   (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
 
-  static MDY_NODISCARD std::optional<const __TDyRscInfo_T<EDyResourceType::Material>*>
+  MDY_NODISCARD static std::optional<const __TDyRscInfo_T<EDyResourceType::Material>*>
   MDY_PRIVATE_SPECIFIER(pTryRequireInformation_Material)
   (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
 
@@ -159,6 +161,10 @@ private:
    
   MDY_NODISCARD static std::optional<const __TDyRscInfo_T<EDyResourceType::AnimationScrap>*>
   MDY_PRIVATE_SPECIFIER(pTryRequireInformation_AnimationScrap)
+  (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
+    
+  MDY_NODISCARD static std::optional<const __TDyRscInfo_T<EDyResourceType::Sound>*>
+  MDY_PRIVATE_SPECIFIER(pTryRequireInformation_Sound)
   (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder);
  
   /// @brief Use this require resource to another dimension.

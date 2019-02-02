@@ -301,6 +301,8 @@
     <ClCompile Include="Source\Management\Type\Sound\FDySoundChannel.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoSound.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDySoundInformation.cc" />
+    <ClCompile Include="Source\Management\Type\Sound\FDyInstantSound2D.cc" />
+    <ClCompile Include="Source\Management\Internal\Sound\CallbackChannel.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -752,6 +754,9 @@
     <ClInclude Include="Include\Dy\Management\Type\Sound\FDySoundGroup.h" />
     <ClInclude Include="Include\Dy\Management\Type\Sound\FDySoundChannel.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoSound.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Sound\FDyInstantSound2D.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Sound\EDySoundStatus.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\Sound\CallbackChannel.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

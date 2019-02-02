@@ -20,18 +20,6 @@ namespace dy
 {
 
 ///
-/// @enum EDySoundStatus
-/// @brief Sound status enum type
-///
-enum class EDySoundStatus
-{
-  Playing,
-  Paused,
-  Stopped,
-  NoneError
-};
-
-///
 /// @class CDySoundResource_Deprecated
 /// @brief Sound resource type
 ///

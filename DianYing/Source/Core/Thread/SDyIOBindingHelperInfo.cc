@@ -159,6 +159,19 @@ SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryRequireInformation_AnimationScrap)
   return ptr;
 }
 
+std::optional<const __TDyRscInfo_T<EDyResourceType::Sound>*> 
+SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryRequireInformation_Sound)
+(_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder)
+{
+  if (const auto checkFlag = MDY_PRIVATE_SPECIFIER(pTryRequireInformation)(iSpecifier, EDyResourceType::Sound, iPtrBinder);
+      checkFlag == DY_FAILURE) { return std::nullopt; }
+
+  // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
+  const auto* ptr = MDyIOData::GetInstance().GetPtrInformation<EDyResourceType::Sound>(iSpecifier);
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
+  return ptr;
+}
+
 EDySuccess SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryDetachInformation)
 (_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder)
 {
