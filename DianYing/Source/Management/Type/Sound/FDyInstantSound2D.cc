@@ -45,11 +45,6 @@ FDyInstantSound2D::~FDyInstantSound2D()
   }
 }
 
-const EDySoundStatus& FDyInstantSound2D::GetStatus() const noexcept
-{
-  return this->mSoundStatus;
-}
-
 EDySuccess FDyInstantSound2D::TryInitialize()
 {
   // Failure check.
@@ -107,11 +102,6 @@ EDySuccess FDyInstantSound2D::TryInitialize()
   }
 
   return DY_SUCCESS;
-}
-
-void FDyInstantSound2D::MDY_PRIVATE_SPECIFIER(SetStatus)(_MIN_ EDySoundStatus iStatus)
-{
-  this->mSoundStatus = iStatus;
 }
 
 } /// ::dy namespace

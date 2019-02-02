@@ -429,6 +429,7 @@
     <ClCompile Include="Source\Management\Type\Input\DDyInputButton.cc" />
     <ClCompile Include="Source\Management\Type\Input\DDyJoystickAnalog.cc" />
     <ClCompile Include="Source\Management\Type\Render\DDyModelHandler.cc" />
+    <ClCompile Include="Source\Management\Type\Sound\ADySoundInstance.cc" />
     <ClCompile Include="Source\Management\Type\Sound\FDyInstantSound2D.cc" />
     <ClCompile Include="Source\Management\Type\Sound\FDySoundChannel.cc" />
     <ClCompile Include="Source\Management\Type\Sound\FDySoundGroup.cc" />
@@ -704,6 +705,7 @@
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyInputButton.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyJoystickAnalog.h" />
     <ClInclude Include="Include\Dy\Management\Type\Render\DDyModelHandler.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Sound\ADySoundInstance.h" />
     <ClInclude Include="Include\Dy\Management\Type\Sound\EDySoundStatus.h" />
     <ClInclude Include="Include\Dy\Management\Type\Sound\FDyInstantSound2D.h" />
     <ClInclude Include="Include\Dy\Management\Type\Sound\FDySoundChannel.h" />

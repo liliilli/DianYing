@@ -14,31 +14,25 @@
 ///
 
 #include <fmod.hpp>
-#include <Dy/Management/Type/Sound/EDySoundStatus.h>
 #include <Dy/Core/Resource/Type/TDyInformationBinder.h>
+#include <Dy/Management/Type/Sound/ADySoundInstance.h>
 
 namespace dy
 {
 
 /// @class FDyInstantSound2D
 /// @brief Instant 2d sound instance.
-class FDyInstantSound2D final
+class FDyInstantSound2D final : public ADySoundInstance
 {
 public:
   FDyInstantSound2D(
       _MIN_ const std::string& iSoundSpecifier, _MIN_ const std::string& iSoundChannel,
       _MIN_ TF32 iVolumeMultiplier, _MIN_ TF32 iPitchMultiplier, _MIN_ TF32 iDelay);
-  ~FDyInstantSound2D(); 
-
-  /// @brief Get status value of sound instance.
-  MDY_NODISCARD const EDySoundStatus& GetStatus() const noexcept; 
+  virtual ~FDyInstantSound2D(); 
 
   /// @brief Try initialize sound resource, 
   /// Succeeded if only sound resource is bound and status is `NotValid` yet.
   EDySuccess TryInitialize();
-
-  /// @brief
-  void MDY_PRIVATE_SPECIFIER(SetStatus)(_MIN_ EDySoundStatus iStatus);
 
 private:
   TDyIInformationBinderSound mBinderClipResource;
@@ -50,8 +44,6 @@ private:
 
   FMOD::Sound*    mPtrInternalSound   = nullptr;
   FMOD::Channel*  mPtrInternalChannel = nullptr;
-  
-  EDySoundStatus  mSoundStatus = EDySoundStatus::NotValid;
 };
 
 } /// ::dy namespace
