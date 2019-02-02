@@ -155,8 +155,6 @@
     <ClCompile Include="Source\Builtin\ShaderGl\Editor\RenderGrid.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\Font\RenderFontArraySDF.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\Font\RenderDefaultFont.cc" />
-    <ClCompile Include="Source\Core\Resource\Information_Deprecated\SoundInformation.cc" />
-    <ClCompile Include="Source\Core\Resource\Resource_Deprecated\SoundResource.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyShaderInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyTextureInformation.cc" />
     <ClCompile Include="Source\Core\Thread\SDyIOConnectionHelper.cc" />
@@ -563,8 +561,6 @@
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Font\RenderDefaultFont.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\UI\RenderUIBasicGaugeBar.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\UI\RenderUIImage.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Information_Deprecated\SoundInformation_Deprecated.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Resource_Deprecated\SoundResource_Deprecated.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyShaderInformation.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOWorkerResult.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyTextureInformation.h" />

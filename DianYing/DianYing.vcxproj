@@ -379,13 +379,11 @@
     <ClCompile Include="Source\Component\CDyModelRenderer.cc" />
     <ClCompile Include="Source\Component\CDyTransform.cc" />
     <ClCompile Include="Source\Core\Rendering\Widget\CDyFontRenderer.cc" />
-    <ClCompile Include="Source\Core\Resource\Information_Deprecated\SoundInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\EtcType.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\MaterialType.cc" />
     <ClCompile Include="Source\Core\Resource\Object\Grid.cc" />
     <ClCompile Include="Source\Core\DyEngine.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\PostEffectSsao.cc" />
-    <ClCompile Include="Source\Core\Resource\Resource_Deprecated\SoundResource.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\BasicRenderer.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\FinalScreenDisplayRenderer.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\UiBasicRenderer.cc" />
@@ -748,8 +746,6 @@
     <ClInclude Include="Include\Dy\Component\Internal\Widget\CDyWidgetScriptLua.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyShaderInformation.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyTextureInformation.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Information_Deprecated\SoundInformation_Deprecated.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Resource_Deprecated\SoundResource_Deprecated.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\EDyScope.h" />
     <ClInclude Include="Include\Dy\Core\DyEngine.h" />
     <ClInclude Include="Include\Dy\Core\Reflection\RDyBuiltinResources.h" />
