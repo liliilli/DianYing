@@ -19,6 +19,7 @@
 #include <Dy/Management/Type/Sound/FDySoundGroup.h>
 #include <Dy/Management/Type/Sound/FDySoundChannel.h>
 #include <Dy/Management/Type/Sound/FDyInstantSound2D.h>
+#include <Dy/Management/Type/Sound/TDyBinderSound2D.h>
 
 namespace dy
 {
@@ -39,6 +40,7 @@ public:
   MDY_NODISCARD bool IsSoundClipExist(_MIN_ const std::string& iSoundSpecifier) const noexcept;
 
   /// @brief Play a sound directly with no attenuation, perfect for UI Sounds.
+  /// Fire and forget!
   void PlaySound2D(
       _MIN_ const std::string& iSoundSpecifier, 
       _MIN_ const std::string& iSoundChannel,
@@ -47,13 +49,21 @@ public:
       _MIN_ const TF32 iDelay = 0.0f);
   
   /// @brief Create a sound directly with no attenuation, perfect for UI Sounds.
-  /// If failed to create, 
+  /// If failed to create, just return nullptr.
   std::unique_ptr<FDyInstantSound2D> CreateSound2D(
       _MIN_ const std::string& iSoundSpecifier, 
       _MIN_ const std::string& iSoundChannel,
       _MIN_ const DDyClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
       _MIN_ const DDyClamp<TF32, 0, 5>& iPitchMultiplier = 1.0f,
       _MIN_ const TF32 iDelay = 0.0f);
+
+  /// @brief Play a sound directly with no attenuation, with looped.
+  /// Return `TDyBinderSound2D` to control sound2d instance.
+  MDY_NODISCARD std::optional<TDyBinderSound2D> PlaySound2DLooped(
+      _MIN_ const std::string& iSoundSpecifier,
+      _MIN_ const std::string& iSoundChannel,
+      _MIN_ const DDyClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
+      _MIN_ const DDyClamp<TF32, 0, 5>& iPitchMultiplier = 1.0f);
 
   /// @brief Get channel pointer instance.
   MDY_NODISCARD FDySoundChannel* GetPtrChannel(_MIN_ const std::string& iSpecifier);

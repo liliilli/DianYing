@@ -26,13 +26,18 @@ class FDyInstantSound2D final : public ADySoundInstance
 {
 public:
   FDyInstantSound2D(
-      _MIN_ const std::string& iSoundSpecifier, _MIN_ const std::string& iSoundChannel,
-      _MIN_ TF32 iVolumeMultiplier, _MIN_ TF32 iPitchMultiplier, _MIN_ TF32 iDelay);
+      _MIN_ const std::string& iSoundSpecifier, 
+      _MIN_ const std::string& iSoundChannel,
+      _MIN_ TF32 iVolumeMultiplier, _MIN_ TF32 iPitchMultiplier, _MIN_ TF32 iDelay,
+      _MIN_ bool iIsLooped);
   virtual ~FDyInstantSound2D(); 
 
   /// @brief Try initialize sound resource, 
   /// Succeeded if only sound resource is bound and status is `NotValid` yet.
   EDySuccess TryInitialize();
+
+  /// @brief Try stop playing instance.
+  EDySuccess TryStop();
 
 private:
   TDyIInformationBinderSound mBinderClipResource;
@@ -41,6 +46,7 @@ private:
   TF32        mInitVolume;
   TF32        mInitPitch;
   TF32        mInitDelay;
+  bool        mIsLoop;
 
   FMOD::Sound*    mPtrInternalSound   = nullptr;
   FMOD::Channel*  mPtrInternalChannel = nullptr;

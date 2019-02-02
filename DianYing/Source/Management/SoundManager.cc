@@ -162,7 +162,7 @@ void MDySound::PlaySound2D(
 
   // Create `FDyInstantSound2D`.
   this->mInstantSound2DList.emplace_front(
-      std::make_unique<FDyInstantSound2D>(iSoundSpecifier, iSoundChannel, iVolumeMultiplier, iPitchMultiplier, iDelay)
+      std::make_unique<FDyInstantSound2D>(iSoundSpecifier, iSoundChannel, iVolumeMultiplier, iPitchMultiplier, iDelay, false)
   );
 }
 
@@ -181,7 +181,27 @@ std::unique_ptr<FDyInstantSound2D> MDySound::CreateSound2D(
   }
 
   // Create `FDyInstantSound2D`.
-  return std::make_unique<FDyInstantSound2D>(iSoundSpecifier, iSoundChannel, iVolumeMultiplier, iPitchMultiplier, iDelay);
+  return std::make_unique<FDyInstantSound2D>(iSoundSpecifier, iSoundChannel, iVolumeMultiplier, iPitchMultiplier, iDelay, false);
+}
+
+std::optional<TDyBinderSound2D> MDySound::PlaySound2DLooped(
+    _MIN_ const std::string& iSoundSpecifier, 
+    _MIN_ const std::string& iSoundChannel,
+    _MIN_ const DDyClamp<TF32, 0, 5>& iVolumeMultiplier, 
+    _MIN_ const DDyClamp<TF32, 0, 5>& iPitchMultiplier)
+{
+  // Check error.
+  if (this->IsSoundClipExist(iSoundSpecifier) == false) 
+  { 
+    MDY_LOG_ERROR("Sound clip {} is not found, so Failed to play 2D sound.", iSoundSpecifier);
+    return std::nullopt; 
+  } 
+
+  // Create `FDyInstantSound2D`.
+  auto& refInstance = this->mInstantSound2DList.emplace_front(
+      std::make_unique<FDyInstantSound2D>(iSoundSpecifier, iSoundChannel, iVolumeMultiplier, iPitchMultiplier, 0.0f, true)
+  );
+  return TDyBinderSound2D{*refInstance};
 }
 
 FDySoundChannel* MDySound::GetPtrChannel(_MIN_ const std::string& iSpecifier)

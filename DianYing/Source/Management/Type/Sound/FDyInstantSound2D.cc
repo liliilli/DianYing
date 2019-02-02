@@ -24,12 +24,14 @@ namespace dy
 FDyInstantSound2D::FDyInstantSound2D(
     _MIN_ const std::string& iSoundSpecifier, 
     _MIN_ const std::string& iSoundChannel,
-    _MIN_ TF32 iVolumeMultiplier, _MIN_ TF32 iPitchMultiplier, _MIN_ TF32 iDelay) :
+    _MIN_ TF32 iVolumeMultiplier, _MIN_ TF32 iPitchMultiplier, _MIN_ TF32 iDelay,
+    _MIN_ bool iIsLooped) :
     mBinderClipResource{iSoundSpecifier},
     mSoundChannelSpecifier{iSoundChannel},
     mInitVolume{iVolumeMultiplier},
     mInitPitch{iPitchMultiplier},
-    mInitDelay{iDelay}
+    mInitDelay{iDelay},
+    mIsLoop{iIsLooped}
 {
   // First check.
   this->TryInitialize();
@@ -61,7 +63,16 @@ EDySuccess FDyInstantSound2D::TryInitialize()
   // Create sound
   {
     const auto& soundPath = this->mBinderClipResource->GetPath();
-    const auto flag = refSystem.createSound(soundPath.string().c_str(), FMOD_DEFAULT, nullptr, &this->mPtrInternalSound);
+    // If this sound instance should be looped, set customized flag.
+    decltype(FMOD_DEFAULT) soundFlag = FMOD_DEFAULT;
+    if (this->mIsLoop == true)
+    {
+      soundFlag = FMOD_LOOP_NORMAL 
+                | FMOD_2D 
+                | FMOD_3D_WORLDRELATIVE 
+                | FMOD_3D_INVERSEROLLOFF;
+    }
+    const auto flag = refSystem.createSound(soundPath.string().c_str(), soundFlag, nullptr, &this->mPtrInternalSound);
     MDY_ASSERT(flag == FMOD_OK, "Failed to create sound instance.");
   }
 
@@ -101,6 +112,20 @@ EDySuccess FDyInstantSound2D::TryInitialize()
     this->mSoundStatus = EDySoundStatus::Play;
   }
 
+  return DY_SUCCESS;
+}
+
+EDySuccess FDyInstantSound2D::TryStop()
+{
+  if (this->mSoundStatus == EDySoundStatus::NotValid)
+  {
+    MDY_LOG_WARNING("Failed to try stop instant sound 2d. Sound status is either NotValid or Stop.");
+    this->mSoundStatus = EDySoundStatus::Stop;
+    return DY_FAILURE;
+  }
+
+  const auto flag = this->mPtrInternalChannel->stop();
+  MDY_ASSERT(flag == FMOD_OK, "Failed to play sound instance.");
   return DY_SUCCESS;
 }
 
