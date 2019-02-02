@@ -38,8 +38,17 @@ public:
   /// @brief Check sound clip is exist on Dy resource system.
   MDY_NODISCARD bool IsSoundClipExist(_MIN_ const std::string& iSoundSpecifier) const noexcept;
 
-  /// @brief Player a sound directly with no attenuation, perfect for UI Sounds.
+  /// @brief Play a sound directly with no attenuation, perfect for UI Sounds.
   void PlaySound2D(
+      _MIN_ const std::string& iSoundSpecifier, 
+      _MIN_ const std::string& iSoundChannel,
+      _MIN_ const DDyClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
+      _MIN_ const DDyClamp<TF32, 0, 5>& iPitchMultiplier = 1.0f,
+      _MIN_ const TF32 iDelay = 0.0f);
+  
+  /// @brief Create a sound directly with no attenuation, perfect for UI Sounds.
+  /// If failed to create, 
+  std::unique_ptr<FDyInstantSound2D> CreateSound2D(
       _MIN_ const std::string& iSoundSpecifier, 
       _MIN_ const std::string& iSoundChannel,
       _MIN_ const DDyClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,

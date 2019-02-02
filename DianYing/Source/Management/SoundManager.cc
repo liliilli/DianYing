@@ -166,6 +166,24 @@ void MDySound::PlaySound2D(
   );
 }
 
+std::unique_ptr<FDyInstantSound2D> MDySound::CreateSound2D(
+    _MIN_ const std::string& iSoundSpecifier,
+    _MIN_ const std::string& iSoundChannel, 
+    _MIN_ const DDyClamp<TF32, 0, 5>& iVolumeMultiplier,
+    _MIN_ const DDyClamp<TF32, 0, 5>& iPitchMultiplier, 
+    _MIN_ const TF32 iDelay)
+{
+  // Check error.
+  if (this->IsSoundClipExist(iSoundSpecifier) == false) 
+  { 
+    MDY_LOG_ERROR("Sound clip {} is not found, so Failed to play 2D sound.", iSoundSpecifier);
+    return nullptr; 
+  }
+
+  // Create `FDyInstantSound2D`.
+  return std::make_unique<FDyInstantSound2D>(iSoundSpecifier, iSoundChannel, iVolumeMultiplier, iPitchMultiplier, iDelay);
+}
+
 FDySoundChannel* MDySound::GetPtrChannel(_MIN_ const std::string& iSpecifier)
 {
   // Check validity.
