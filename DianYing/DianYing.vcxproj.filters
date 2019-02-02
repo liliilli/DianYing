@@ -305,6 +305,7 @@
     <ClCompile Include="Source\Management\Internal\Sound\CallbackChannel.cc" />
     <ClCompile Include="Source\Management\Type\Sound\ADySoundInstance.cc" />
     <ClCompile Include="Source\Management\Type\Sound\TDyBinderSound2D.cc" />
+    <ClCompile Include="Source\Management\Type\Sound\FDyInstantSound3D.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -761,6 +762,7 @@
     <ClInclude Include="Include\Dy\Management\Internal\Sound\CallbackChannel.h" />
     <ClInclude Include="Include\Dy\Management\Type\Sound\ADySoundInstance.h" />
     <ClInclude Include="Include\Dy\Management\Type\Sound\TDyBinderSound2D.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Sound\FDyInstantSound3D.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

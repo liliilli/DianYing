@@ -19,6 +19,7 @@
 #include <Dy/Management/Type/Sound/FDySoundGroup.h>
 #include <Dy/Management/Type/Sound/FDySoundChannel.h>
 #include <Dy/Management/Type/Sound/FDyInstantSound2D.h>
+#include <Dy/Management/Type/Sound/FDyInstantSound3D.h>
 #include <Dy/Management/Type/Sound/TDyBinderSound2D.h>
 
 namespace dy
@@ -39,18 +40,18 @@ public:
   /// @brief Check sound clip is exist on Dy resource system.
   MDY_NODISCARD bool IsSoundClipExist(_MIN_ const std::string& iSoundSpecifier) const noexcept;
 
-  /// @brief Play a sound directly with no attenuation, perfect for UI Sounds.
-  /// Fire and forget!
-  void PlaySound2D(
+  /// @brief Create a sound directly with no attenuation, perfect for UI Sounds.
+  /// If failed to create, just return nullptr.
+  std::unique_ptr<FDyInstantSound2D> CreateSound2D(
       _MIN_ const std::string& iSoundSpecifier, 
       _MIN_ const std::string& iSoundChannel,
       _MIN_ const DDyClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
       _MIN_ const DDyClamp<TF32, 0, 5>& iPitchMultiplier = 1.0f,
       _MIN_ const TF32 iDelay = 0.0f);
   
-  /// @brief Create a sound directly with no attenuation, perfect for UI Sounds.
-  /// If failed to create, just return nullptr.
-  std::unique_ptr<FDyInstantSound2D> CreateSound2D(
+  /// @brief Play a sound directly with no attenuation, perfect for UI Sounds.
+  /// Fire and forget!
+  void PlaySound2D(
       _MIN_ const std::string& iSoundSpecifier, 
       _MIN_ const std::string& iSoundChannel,
       _MIN_ const DDyClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
@@ -64,6 +65,19 @@ public:
       _MIN_ const std::string& iSoundChannel,
       _MIN_ const DDyClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
       _MIN_ const DDyClamp<TF32, 0, 5>& iPitchMultiplier = 1.0f);
+    
+  inline static constexpr TF32 s3DMinDistance = 0.5f;
+  inline static constexpr TF32 s3DMaxDistance = 500.f;
+  /// @brief Play a sound directly with attenuation. Fire and forget!
+  void PlaySound3D(
+      _MIN_ const std::string& iSoundSpecifier, 
+      _MIN_ const std::string& iSoundChannel,
+      _MIN_ const DDyVector3& iWorldPosition,
+      _MIN_ const DDyClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
+      _MIN_ const DDyClamp<TF32, 0, 5>& iPitchMultiplier = 1.0f,
+      _MIN_ const TF32 iDelay = 0.0f,
+      _MIN_ const TF32 iMinDistance = s3DMinDistance,
+      _MIN_ const TF32 iMaxDistance = s3DMaxDistance);
 
   /// @brief Get channel pointer instance.
   MDY_NODISCARD FDySoundChannel* GetPtrChannel(_MIN_ const std::string& iSpecifier);
@@ -110,6 +124,8 @@ private:
 
   /// @brief Instant 2d sound instance list.
   std::forward_list<std::unique_ptr<FDyInstantSound2D>> mInstantSound2DList;
+  /// @brief Instant 3d sound instance list.
+  std::forward_list<std::unique_ptr<FDyInstantSound3D>> mInstantSound3DList;
 };
 
 } /// ::dy namespace

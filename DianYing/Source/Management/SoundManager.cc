@@ -217,6 +217,34 @@ FDySoundChannel* MDySound::GetPtrChannel(_MIN_ const std::string& iSpecifier)
   return &this->mChannelContainer.find(iSpecifier)->second;
 }
 
+void MDySound::PlaySound3D(
+    _MIN_ const std::string& iSoundSpecifier, 
+    _MIN_ const std::string& iSoundChannel,
+    _MIN_ const DDyVector3& iWorldPosition,
+    _MIN_ const DDyClamp<TF32, 0, 5>& iVolumeMultiplier,
+    _MIN_ const DDyClamp<TF32, 0, 5>& iPitchMultiplier,
+    _MIN_ const TF32 iDelay,
+    _MIN_ const TF32 iMinDistance,
+    _MIN_ const TF32 iMaxDistance)
+{
+  // Check error.
+  if (this->IsSoundClipExist(iSoundSpecifier) == false) 
+  { 
+    MDY_LOG_ERROR("Sound clip {} is not found, so Failed to play 3D sound.", iSoundSpecifier);
+    return; 
+  }
+
+  // Create `FDyInstantSound2D`.
+  this->mInstantSound3DList.emplace_front(
+      std::make_unique<FDyInstantSound3D>(
+          iSoundSpecifier, 
+          iSoundChannel, 
+          iWorldPosition, iVolumeMultiplier, iPitchMultiplier, iDelay, 
+          iMinDistance, iMaxDistance,
+          false)
+  );
+}
+
 bool MDySound::IsSoundClipExist(_MIN_ const std::string& iSoundSpecifier) const noexcept
 {
   const auto& manager = MDyMetaInfo::GetInstance();
@@ -317,6 +345,7 @@ EDySuccess MDySound::pfRelease()
 {
   // Clear all list.
   this->mInstantSound2DList.clear();
+  this->mInstantSound3DList.clear();
   this->ReleaseSoundSystem();
   return DY_SUCCESS;
 }
@@ -368,6 +397,20 @@ void MDySound::Update(MDY_NOTUSED float dt)
   }
   // Remove empty 2d instant sound instance item.
   this->mInstantSound2DList.remove_if([](const auto& ptrsmtInstance) { return ptrsmtInstance == nullptr; });
+
+  // Check intant 3D sound instance is valid.
+  for (auto& ptrsmtInstance : this->mInstantSound3DList)
+  {
+    // If instance is not valid, we have to check sound is valid so able to initialize.
+    if (const auto status = ptrsmtInstance->GetStatus(); status == EDySoundStatus::NotValid) 
+    { 
+      ptrsmtInstance->TryInitialize(); 
+    }
+    // Otherwise, we have to check instance is stopped so have to release.
+    else if (status == EDySoundStatus::Stop) { ptrsmtInstance = nullptr; }
+  }
+  // Remove empty 3d instant sound instance item.
+  this->mInstantSound3DList.remove_if([](const auto& ptrsmtInstance) { return ptrsmtInstance == nullptr; });
 }
 
 FDySoundGroup& MDySound::MDY_PRIVATE_SPECIFIER(GetGroupChannel)(_MIN_ const std::string& iSpecifier)

@@ -431,6 +431,7 @@
     <ClCompile Include="Source\Management\Type\Render\DDyModelHandler.cc" />
     <ClCompile Include="Source\Management\Type\Sound\ADySoundInstance.cc" />
     <ClCompile Include="Source\Management\Type\Sound\FDyInstantSound2D.cc" />
+    <ClCompile Include="Source\Management\Type\Sound\FDyInstantSound3D.cc" />
     <ClCompile Include="Source\Management\Type\Sound\FDySoundChannel.cc" />
     <ClCompile Include="Source\Management\Type\Sound\FDySoundGroup.cc" />
     <ClCompile Include="Source\Management\Type\Sound\TDyBinderSound2D.cc" />
@@ -709,6 +710,7 @@
     <ClInclude Include="Include\Dy\Management\Type\Sound\ADySoundInstance.h" />
     <ClInclude Include="Include\Dy\Management\Type\Sound\EDySoundStatus.h" />
     <ClInclude Include="Include\Dy\Management\Type\Sound\FDyInstantSound2D.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Sound\FDyInstantSound3D.h" />
     <ClInclude Include="Include\Dy\Management\Type\Sound\FDySoundChannel.h" />
     <ClInclude Include="Include\Dy\Management\Type\Sound\FDySoundGroup.h" />
     <ClInclude Include="Include\Dy\Management\Type\Sound\TDyBinderSound2D.h" />
