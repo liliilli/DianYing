@@ -302,6 +302,7 @@
     <ClCompile Include="Source\Management\Type\Sound\FDySoundGroup.cc" />
     <ClCompile Include="Source\Management\Type\Sound\FDySoundChannel.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoSound.cc" />
+    <ClCompile Include="Source\Core\Resource\Information\FDySoundInformation.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />

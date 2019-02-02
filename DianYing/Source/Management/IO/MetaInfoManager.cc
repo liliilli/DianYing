@@ -329,6 +329,11 @@ const PDyGlAttachmentInstanceMetaInfo& MDyMetaInfo::GetGLAttachmentMetaInformati
   return this->mAttachmentMetaInfo.at(specifier);
 }
 
+const PDySoundInstanceMetaInfo& MDyMetaInfo::GetSoundMetaInformation(_MIN_ const std::string& specifier) const
+{
+  return this->mSoundMetaInfo.at(specifier);
+}
+
 MDY_NODISCARD const PDyMetaWidgetRootDescriptor* 
 MDyMetaInfo::MDY_PRIVATE_SPECIFIER(TryGetLoadingWidgetMetaLoading)() const noexcept
 {
@@ -404,6 +409,11 @@ bool MDyMetaInfo::IsAttachmentMetaInfoExist(_MIN_ const std::string& specifierNa
 bool MDyMetaInfo::IsFrameBufferMetaInfoExist(_MIN_ const std::string& speicfierName) const noexcept
 {
   return DyIsMapContains(this->mFrameBufferMetaInfo, speicfierName);
+}
+
+bool MDyMetaInfo::IsSoundMetaInfoExist(_MIN_ const std::string& specifierName) const noexcept
+{
+  return DyIsMapContains(this->mSoundMetaInfo, specifierName);
 }
 
 bool MDyMetaInfo::IsLoadingWidgetMetaInfoExist() const noexcept

@@ -23,6 +23,7 @@
 #include <Dy/Core/Resource/Information/FDyFrameBufferInformation.h>
 #include <Dy/Core/Resource/Information/FDyMeshInformation.h>
 #include <Dy/Core/Resource/Information/FDyModelAnimScrapInformation.h>
+#include <Dy/Core/Resource/Information/FDySoundInformation.h>
 #include <Dy/Core/Resource/Type/TemplateRescInfoType.h>
 #include <Dy/Meta/Type/EDyResourceType.h>
 
@@ -60,6 +61,7 @@ public:
     else if constexpr (TType == EDyResourceType::Model)   { return this->__mModelContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::Skeleton){ return this->__mModelSkeletonContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::Material){ return this->__mMaterialContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EDyResourceType::Sound){ return this->__mSoundContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::GLAttachment)  { return this->__mAttachmentContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::GLFrameBuffer) { return this->__mFrameBufferContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::AnimationScrap){ return this->__mModelAnimScrapContainer.TryGetInstancePtr(specifier); }
@@ -75,6 +77,7 @@ public:
     else if constexpr (TType == EDyResourceType::Model)   { return this->__mModelContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::Skeleton){ return this->__mModelSkeletonContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::Material){ return this->__mMaterialContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EDyResourceType::Sound){ return this->__mSoundContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::GLAttachment)  { return this->__mAttachmentContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::GLFrameBuffer) { return this->__mFrameBufferContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::AnimationScrap){ return this->__mModelAnimScrapContainer.TryGetInstancePtr(specifier); }
@@ -101,6 +104,7 @@ private:
   __THashMap<FDyMaterialInformation>__mMaterialContainer  = {};
   __THashMap<FDyAttachmentInformation> __mAttachmentContainer   = {};
   __THashMap<FDyFrameBufferInformation> __mFrameBufferContainer = {};
+  __THashMap<FDySoundInformation> __mSoundContainer = {};
 
   friend class TDyIO;
   friend class FDyIOGC;

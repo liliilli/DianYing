@@ -611,6 +611,7 @@ bool TDyIO::outIsMetaInformationExist(_MIN_ const std::string& specifier, _MIN_ 
   case EDyResourceType::WidgetMeta:     return this->mMetaInfoManager->IsWidgetMetaInfoExist(specifier);
   case EDyResourceType::GLAttachment:   return this->mMetaInfoManager->IsAttachmentMetaInfoExist(specifier);
   case EDyResourceType::GLFrameBuffer:  return this->mMetaInfoManager->IsFrameBufferMetaInfoExist(specifier);
+  case EDyResourceType::Sound:          return this->mMetaInfoManager->IsSoundMetaInfoExist(specifier);
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
   }
 }

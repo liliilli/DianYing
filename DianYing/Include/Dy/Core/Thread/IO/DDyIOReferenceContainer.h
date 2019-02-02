@@ -109,6 +109,7 @@ private:
   TStringHashMap<DDyIOReferenceInstance> mMapFrameBufferReference = {};
   TStringHashMap<DDyIOReferenceInstance> mMapModelSkeletonReference   = {};
   TStringHashMap<DDyIOReferenceInstance> mMapModelAnimScrapReference  = {};
+  TStringHashMap<DDyIOReferenceInstance> mMapSoundReference           = {};
 };
 
 } /// ::dy namespace

@@ -35,6 +35,7 @@ bool DDyIOReferenceContainer::IsReferenceInstanceExist(_MIN_ const std::string& 
   case EDyResourceType::Material:       return DyIsMapContains(this->mMapMaterialReference, specifier);
   case EDyResourceType::GLAttachment:   return DyIsMapContains(this->mMapAttachmentReference, specifier);
   case EDyResourceType::GLFrameBuffer:  return DyIsMapContains(this->mMapFrameBufferReference, specifier);
+  case EDyResourceType::Sound:          return DyIsMapContains(this->mMapSoundReference, specifier);
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
   }
 }
@@ -52,6 +53,7 @@ bool DDyIOReferenceContainer::IsReferenceInstanceBound(_MIN_ const std::string& 
   case EDyResourceType::Material:       return this->mMapMaterialReference.at(specifier).mIsResourceValid;
   case EDyResourceType::GLAttachment:   return this->mMapAttachmentReference.at(specifier).mIsResourceValid;
   case EDyResourceType::GLFrameBuffer:  return this->mMapFrameBufferReference.at(specifier).mIsResourceValid;
+  case EDyResourceType::Sound:          return this->mMapSoundReference.at(specifier).mIsResourceValid;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
   }
 }
@@ -71,6 +73,7 @@ bool DDyIOReferenceContainer::TryEnlargeResourceScope(_MIN_ EDyScope scope, _MIN
   case EDyResourceType::GLFrameBuffer:  { instance = &this->mMapFrameBufferReference[specifier]; } break;
   case EDyResourceType::Skeleton:       { instance = &this->mMapModelSkeletonReference[specifier]; } break;
   case EDyResourceType::AnimationScrap: { instance = &this->mMapModelAnimScrapReference[specifier]; } break;
+  case EDyResourceType::Sound:          { instance = &this->mMapSoundReference[specifier]; } break; 
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
   }
 
@@ -99,6 +102,7 @@ EDySuccess DDyIOReferenceContainer::TryBindBinderToResourceRI(
   case EDyResourceType::GLFrameBuffer:  this->mMapFrameBufferReference[iSpecifier].AttachBinder(iPtrBinder);      break;
   case EDyResourceType::Skeleton:       this->mMapModelSkeletonReference[iSpecifier].AttachBinder(iPtrBinder);    break;
   case EDyResourceType::AnimationScrap: this->mMapModelAnimScrapReference[iSpecifier].AttachBinder(iPtrBinder);   break;
+  case EDyResourceType::Sound:          this->mMapSoundReference[iSpecifier].AttachBinder(iPtrBinder);   break;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
   }
   return DY_SUCCESS;
@@ -125,6 +129,7 @@ EDySuccess DDyIOReferenceContainer::TryDetachBinderFromResourceRI(
   case EDyResourceType::GLFrameBuffer:  ptrRiMap = &this->mMapFrameBufferReference; break;
   case EDyResourceType::Skeleton:       ptrRiMap = &this->mMapModelSkeletonReference; break;
   case EDyResourceType::AnimationScrap: ptrRiMap = &this->mMapModelAnimScrapReference; break;
+  case EDyResourceType::Sound:          ptrRiMap = &this->mMapSoundReference; break;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
   }
 
@@ -146,15 +151,16 @@ std::vector<DDyIOReferenceInstance>
 DDyIOReferenceContainer::GetForwardCandidateRIAsList(_MIN_ EDyScope iScope)
 {
   std::vector<DDyIOReferenceInstance> result;
-  this->ForwardCandidateRIFromList(iScope, mMapTextureReference, result);
-  this->ForwardCandidateRIFromList(iScope, mMapGLShaderReference, result);
-  this->ForwardCandidateRIFromList(iScope, mMapMeshReference, result);
-  this->ForwardCandidateRIFromList(iScope, mMapModelReference, result);
-  this->ForwardCandidateRIFromList(iScope, mMapMaterialReference, result);
-  this->ForwardCandidateRIFromList(iScope, mMapAttachmentReference, result);
-  this->ForwardCandidateRIFromList(iScope, mMapFrameBufferReference, result);
-  this->ForwardCandidateRIFromList(iScope, mMapModelSkeletonReference, result);
-  this->ForwardCandidateRIFromList(iScope, mMapModelAnimScrapReference, result);
+  this->ForwardCandidateRIFromList(iScope, this->mMapTextureReference, result);
+  this->ForwardCandidateRIFromList(iScope, this->mMapGLShaderReference, result);
+  this->ForwardCandidateRIFromList(iScope, this->mMapMeshReference, result);
+  this->ForwardCandidateRIFromList(iScope, this->mMapModelReference, result);
+  this->ForwardCandidateRIFromList(iScope, this->mMapMaterialReference, result);
+  this->ForwardCandidateRIFromList(iScope, this->mMapAttachmentReference, result);
+  this->ForwardCandidateRIFromList(iScope, this->mMapFrameBufferReference, result);
+  this->ForwardCandidateRIFromList(iScope, this->mMapModelSkeletonReference, result);
+  this->ForwardCandidateRIFromList(iScope, this->mMapModelAnimScrapReference, result);
+  this->ForwardCandidateRIFromList(iScope, this->mMapSoundReference, result);
   return result;
 }
 
@@ -193,6 +199,7 @@ EDySuccess DDyIOReferenceContainer::CreateReferenceInstance(
   case EDyResourceType::GLFrameBuffer:  { ptrRIHashMap = &this->mMapFrameBufferReference; } break;
   case EDyResourceType::Skeleton:       { ptrRIHashMap = &this->mMapModelSkeletonReference; } break;
   case EDyResourceType::AnimationScrap: { ptrRIHashMap = &this->mMapModelAnimScrapReference; } break;
+  case EDyResourceType::Sound:          { ptrRIHashMap = &this->mMapSoundReference; } break;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
   }
 
@@ -220,6 +227,7 @@ EDySuccess DDyIOReferenceContainer::TryUpdateValidity(
   case EDyResourceType::GLFrameBuffer:  map = &this->mMapFrameBufferReference;      break;
   case EDyResourceType::Skeleton:       map = &this->mMapModelSkeletonReference;    break;
   case EDyResourceType::AnimationScrap: map = &this->mMapModelAnimScrapReference;   break;
+  case EDyResourceType::Sound:          map = &this->mMapSoundReference;   break;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
   }
 

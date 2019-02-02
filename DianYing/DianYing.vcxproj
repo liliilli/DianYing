@@ -249,6 +249,7 @@
     <ClCompile Include="Source\Core\Resource\Information\FDyModelInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyModelSkeletonInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyShaderInformation.cc" />
+    <ClCompile Include="Source\Core\Resource\Information\FDySoundInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyTextureInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\FDyMeshVBOIntermediate.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\GeometryType.cc" />

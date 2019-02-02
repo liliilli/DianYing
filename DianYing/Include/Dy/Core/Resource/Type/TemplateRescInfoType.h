@@ -30,6 +30,7 @@ class FDyMaterialInformation;
 class FDyModelAnimScrapInformation;
 class FDyAttachmentInformation;
 class FDyFrameBufferInformation;
+class FDySoundInformation;
 
 class FDyMeshResource;
 class FDyModelResource;
@@ -53,6 +54,7 @@ template <> struct __TDyRscInfo<EDyResourceType::GLShader> final { using type = 
 template <> struct __TDyRscInfo<EDyResourceType::Mesh> final { using type = FDyMeshInformation; };
 template <> struct __TDyRscInfo<EDyResourceType::Model> final { using type = FDyModelInformation; };
 template <> struct __TDyRscInfo<EDyResourceType::Skeleton> final { using type = FDyModelSkeletonInformation; };
+template <> struct __TDyRscInfo<EDyResourceType::Sound> final { using type = FDySoundInformation; };
 template <> struct __TDyRscInfo<EDyResourceType::AnimationScrap> final { using type = FDyModelAnimScrapInformation; };
 template <> struct __TDyRscInfo<EDyResourceType::Material> final { using type = FDyMaterialInformation; };
 template <> struct __TDyRscInfo<EDyResourceType::GLAttachment> final { using type = FDyAttachmentInformation; };
