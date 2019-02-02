@@ -323,6 +323,12 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(Update)(_MIN_ EDyGlobalGameStatus iEngineSt
     MDyPhysics::GetInstance().Update(dt);
     MDyWorld::GetInstance().Update(dt);
     MDyWorld::GetInstance().UpdateObjects(dt);
+
+    auto& soundManager = MDySound::GetInstance();
+    if (soundManager.mIsSoundSystemAvailable == true)
+    {
+      soundManager.Update(dt);
+    }
   } break;
   case EDyGlobalGameStatus::Shutdown: 
     break;

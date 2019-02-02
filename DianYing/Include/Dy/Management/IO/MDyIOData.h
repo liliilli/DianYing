@@ -77,7 +77,7 @@ public:
     else if constexpr (TType == EDyResourceType::Model)   { return this->__mModelContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::Skeleton){ return this->__mModelSkeletonContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::Material){ return this->__mMaterialContainer.TryGetInstancePtr(specifier); }
-    else if constexpr (TType == EDyResourceType::Sound){ return this->__mSoundContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EDyResourceType::Sound)   { return this->__mSoundContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::GLAttachment)  { return this->__mAttachmentContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::GLFrameBuffer) { return this->__mFrameBufferContainer.TryGetInstancePtr(specifier); }
     else if constexpr (TType == EDyResourceType::AnimationScrap){ return this->__mModelAnimScrapContainer.TryGetInstancePtr(specifier); }

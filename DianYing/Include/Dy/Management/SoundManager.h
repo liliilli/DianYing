@@ -35,14 +35,6 @@ public:
   void Update(float dt) override final;
 
   ///
-  /// @brief Check whether sound system is enabled or not.
-  ///
-  [[nodiscard]] FORCEINLINE bool IsEnabledSoundSystem() const noexcept
-  {
-    return this->mIsSoundSystemAvailable;
-  }
-
-  ///
   /// @brief Play sound element
   /// @TODO THIS FUNCTION IS TEMPORARY FUNCTION, SO WHEN IN PRODUCTION CODE HAVE TO PAUSE INDIVIDUAL 'SOUND CUE' INSTNACE AS PARAMETER.
   ///
@@ -63,6 +55,9 @@ public:
   /// @brief Get reference of group channel which have given `iSpecifier` name.
   FDySoundGroup& MDY_PRIVATE_SPECIFIER(GetGroupChannel)(_MIN_ const std::string& iSpecifier);
 
+  /// @brief Check sound system is available.
+  bool mIsSoundSystemAvailable = true;
+
 private:
   /// @brief Initialize sound system. If already initialized, (without release) just do nothing and return DY_FAILURE.
   EDySuccess InitializeSoundSystem();
@@ -80,8 +75,6 @@ private:
 
   TStringHashMap<FDySoundGroup>   mGroupContainer;
   TStringHashMap<FDySoundChannel> mChannelContainer;
-
-  bool mIsSoundSystemAvailable = true;
 
   friend class CDySoundResource_Deprecated;
 };
