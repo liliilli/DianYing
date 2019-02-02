@@ -31,6 +31,7 @@
 #include <Dy/Meta/Information/MetaInfoModelMesh.h>
 #include <Dy/Meta/Information/MetaInfoModelSkeleton.h>
 #include <Dy/Meta/Information/MetaInfoModelAnim.h>
+#include <Dy/Meta/Information/MetaInfoSound.h>
 #include <Dy/Meta/Type/DDyResourceName.h>
 
 //!
@@ -198,6 +199,7 @@ private:
   MDY_NODISCARD EDySuccess pReadTextureResourceMetaInformation  (_MIN_ const std::string& metaFilePath);
   MDY_NODISCARD EDySuccess pReadShaderResourceMetaInformation   (_MIN_ const std::string& metaFilePath);
   MDY_NODISCARD EDySuccess pReadMaterialResourceMetaInformation (_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadSoundResourceMetaInformation    (_MIN_ const std::string& metaFilePath);
 
   MDY_NODISCARD EDySuccess pReadScriptResourceMetaInformation(_MIN_ const nlohmann::json& iJson);
   MDY_NODISCARD EDySuccess pReadPrefabResourceMetaInformation(_MIN_ const nlohmann::json& iJson);
@@ -241,6 +243,8 @@ private:
   THashMap<PDyTextureInstanceMetaInfo>  mTextureMetaInfo= {};
   /// Material meta information map.
   THashMap<PDyMaterialInstanceMetaInfo> mMaterialMetaInfo = {};
+  /// @brief Sound meta information map.
+  THashMap<PDySoundInstanceMetaInfo>    mSoundMetaInfo = {};
 
   //! Internal
 

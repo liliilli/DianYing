@@ -209,6 +209,7 @@ struct DDySettingMetaPath final
   std::string mTextureMetaPath  = MDY_INITIALIZE_EMPTYSTR;
   std::string mGLShaderMetaPath = MDY_INITIALIZE_EMPTYSTR;
   std::string mMaterialMetaPath = MDY_INITIALIZE_EMPTYSTR;
+  std::string mSoundMetaPath    = MDY_INITIALIZE_EMPTYSTR;
 };
 
 void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingMetaPath& p);

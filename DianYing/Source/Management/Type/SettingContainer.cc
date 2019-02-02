@@ -311,6 +311,8 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingMetaPath& p)
       {MSVSTR(sHeader_MetaPath_ModelMesh),p.mModelMeshMetaPath},
       {MSVSTR(sHeader_MetaPath_ModelAnim),p.mModelAnimMetaPath},
       {MSVSTR(sHeader_MetaPath_ModelSkeleton),p.mModelSkeletonMetaPath},
+
+      {"Sound", p.mSoundMetaPath},
   };
 }
 
@@ -330,6 +332,8 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingMetaPath& p)
   p.mModelMeshMetaPath    = DyJsonGetValueFrom<std::string>(j, sHeader_MetaPath_ModelMesh);
   p.mModelAnimMetaPath    = DyJsonGetValueFrom<std::string>(j, sHeader_MetaPath_ModelAnim);
   p.mModelSkeletonMetaPath= DyJsonGetValueFrom<std::string>(j, sHeader_MetaPath_ModelSkeleton);
+
+  p.mSoundMetaPath = DyJsonGetValueFrom<std::string>(j, "Sound");
 }
 
 } /// ::dy namespace

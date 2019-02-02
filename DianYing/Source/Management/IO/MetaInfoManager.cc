@@ -31,12 +31,12 @@
 #include <Dy/Helper/Library/HelperRegex.h>
 
 #include <Dy/Management/SettingManager.h>
+#include <Dy/Management/ScriptManager.h>
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
 #include <Dy/Meta/Descriptor/WidgetTextMetaInformation.h>
 #include <Dy/Meta/Descriptor/WidgetLayoutMetaInformation.h>
 #include <Dy/Meta/Descriptor/WidgetBarMetaInformation.h>
 #include <Dy/Meta/Descriptor/WidgetImageMetaInformation.h>
-#include "Dy/Management/ScriptManager.h"
 
 //!
 //! Local tranlation unit variables
@@ -44,13 +44,6 @@
 
 namespace
 {
-
-//!
-//! Error message template list
-//!
-
-MDY_SET_IMMUTABLE_STRING(sErrorSameName, "MDyMetaInfo::pReadScriptResourceMetaInformation | Same script specifier detected. Unexpected error! | Script Name : {}");
-MDY_SET_IMMUTABLE_STRING(sErrorAmbiguousFlag, "MDyMetaInfo::pReadScriptResourceMetaInformation | Ambiguous flag for using either path or innate code. | Script Name : {}");
 
 //!
 //! Script Meta information header list
@@ -64,7 +57,6 @@ MDY_SET_IMMUTABLE_STRING(sCategoryList,     "List");
 
 MDY_SET_IMMUTABLE_STRING(sCategoryMeta,         "Meta");
 MDY_SET_IMMUTABLE_STRING(sCategoryObjectList,   "ObjectList");
-MDY_SET_IMMUTABLE_STRING(sHeaderType,           "Type");
 
 std::unique_ptr<dy::PDyMetaWidgetRootDescriptor> DyCreateWidgetMetaInformation(_MIN_ const nlohmann::json& jsonAtlas)
 {
@@ -464,6 +456,7 @@ void MDyMetaInfo::MDY_PRIVATE_SPECIFIER(InitiateMetaInformation)()
   MDY_CALL_ASSERT_SUCCESS(this->pReadTextureResourceMetaInformation (metaPath.mTextureMetaPath));
   MDY_CALL_ASSERT_SUCCESS(this->pReadShaderResourceMetaInformation  (metaPath.mGLShaderMetaPath));
   MDY_CALL_ASSERT_SUCCESS(this->pReadMaterialResourceMetaInformation(metaPath.mMaterialMetaPath));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadSoundResourceMetaInformation   (metaPath.mSoundMetaPath));
 
   MDY_CALL_ASSERT_SUCCESS(this->pReadScriptResourceMetaInformation(metaPath.mScriptMetaPath));
   MDY_CALL_ASSERT_SUCCESS(this->pReadPrefabResourceMetaInformation(metaPath.mPrefabMetaPath));
@@ -745,6 +738,24 @@ EDySuccess MDyMetaInfo::pReadWidgetResourceMetaInformation(_MIN_ const std::stri
   return DY_SUCCESS;
 }
 
+EDySuccess MDyMetaInfo::pReadSoundResourceMetaInformation(const std::string& metaFilePath)
+{
+  // Read meta script file.
+  const auto optJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  MDY_ASSERT(optJsonAtlas.has_value() == true, "Must be valid json atlas from file path.");
+
+  // (2) Get information from buffer.
+  for (const auto& item : optJsonAtlas.value().items())
+  {
+    auto desc = item.value().get<decltype(mSoundMetaInfo)::value_type::second_type>();
+    desc.mSpecifierName = item.key();
+
+    auto [it, isSucceeded] = this->mSoundMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
+    MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
+  }
+  return DY_SUCCESS;
+}
+
 EDySuccess MDyMetaInfo::pReadScriptResourceMetaInformation(_MIN_ const nlohmann::json& iJson)
 {
   // Check "List" Category is exist.
@@ -837,7 +848,7 @@ EDySuccess MDyMetaInfo::pReadSceneResourceMetaInformation(_MIN_ const nlohmann::
 
 EDySuccess MDyMetaInfo::pfAddWidgetMetaInformation(_MIN_ const std::string& metaInformationString)
 {
-  nlohmann::json jsonAtlas = nlohmann::json::parse(metaInformationString);
+  const nlohmann::json jsonAtlas = nlohmann::json::parse(metaInformationString);
   auto rootInstance = DyCreateWidgetMetaInformation(jsonAtlas);
   MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(rootInstance), "Widget root instance must not be empty.");
 

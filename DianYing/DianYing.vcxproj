@@ -504,6 +504,7 @@
     <ClCompile Include="Source\Meta\Information\MetaInfoModelAnim.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoModelMesh.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoModelSkeleton.cc" />
+    <ClCompile Include="Source\Meta\Information\MetaInfoSound.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoTexture.cc" />
     <ClCompile Include="Source\Meta\Information\PrefabMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Information\ScriptMetaInformation.cc" />
@@ -711,6 +712,7 @@
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoModelMesh.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoModel.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoModelSkeleton.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoSound.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Input\EDyInputButton.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\EDyInputButtonStatus.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoAttachment.h" />
