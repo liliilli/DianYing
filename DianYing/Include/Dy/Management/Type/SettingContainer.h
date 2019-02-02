@@ -170,7 +170,15 @@ struct DDySettingSound final
   {
     std::string mGroupSpecifier = "";
   };
+  struct D3DSetting final
+  {
+    TF32 mDopplerOffset = 1.0f;
+    TF32 mDistanceUnit  = 1.0f;
+    TF32 mAttenuationFactor = 1.0f;
+  };
 
+  /// @brief Setting properties for 3D sound.
+  D3DSetting                      m3DSetting;
   /// @brief Master is master channel of sound system.
   DDetail                         mMaster;
   /// @brief Group is a collection of channels.
@@ -181,6 +189,9 @@ struct DDySettingSound final
 
 void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingSound& p);
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingSound& p);
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingSound::D3DSetting& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingSound::D3DSetting& p);
 
 void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingSound::DDetail& p);
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingSound::DDetail& p);

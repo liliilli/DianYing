@@ -267,9 +267,18 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingTag& p)
 void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingSound& p);
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingSound& p)
 {
+  DyJsonGetValueFromTo(j, "3D", p.m3DSetting);
   DyJsonGetValueFromTo(j, "Master",   p.mMaster);
   DyJsonGetValueFromTo(j, "Group",    p.mGroup);
   DyJsonGetValueFromTo(j, "Channel",  p.mChannel);
+}
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingSound::D3DSetting& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingSound::D3DSetting& p)
+{
+  DyJsonGetValueFromTo(j, "DopplerOffset", p.mDopplerOffset);
+  DyJsonGetValueFromTo(j, "DistanceUnit", p.mDistanceUnit);
+  DyJsonGetValueFromTo(j, "AttenuationFactor", p.mAttenuationFactor);
 }
 
 void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingSound::DDetail& p);
