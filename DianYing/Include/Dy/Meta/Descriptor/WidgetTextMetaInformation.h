@@ -36,7 +36,7 @@ struct PDyMetaWidgetTextDescriptor final : public PDyMetaWidgetCommonBaseDesc
   EDyOrigin     mOrigin             = EDyOrigin::Center_Center;
 
   /// UCS-2 string
-  DDyString     mInitialString      = MDY_INITIALIZE_EMPTYSTR;
+  DDyString     mInitialString;
   /// InitialColor(rgb) + InitialAlpha(a)
   DDyColorRGBA  mInitialColor       = DDyColorRGBA::White;
   /// Edge color of text. `mIsUsingEdge` must be enabled to use this.

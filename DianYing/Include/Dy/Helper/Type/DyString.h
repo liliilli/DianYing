@@ -25,6 +25,9 @@ class DDyString final
 {
 public:
   DDyString() = default;
+  DDyString(const DDyString&) = default;
+  DDyString& operator=(const DDyString&) = default;
+  ~DDyString();
 
   ///
   /// @brief Make UCS-2 String type from const char* c-char literals at runtime.

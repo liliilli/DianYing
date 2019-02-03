@@ -223,12 +223,14 @@
     <ClCompile Include="Source\Component\Abstract\ADyWidgetCppScript.cc" />
     <ClCompile Include="Source\Component\Actor\CDyActorScript.cc" />
     <ClCompile Include="Source\Component\CDyModelAnimator.cc" />
+    <ClCompile Include="Source\Component\CDySoundSource.cc" />
     <ClCompile Include="Source\Component\Internal\Camera\DDyFrustumTester.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Actor\FDyActorScriptStatus.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Actor\CDyActorScriptCpp.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Actor\CDyActorScriptLua.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Global\CDyGlobalScriptCpp.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Global\FDyGlobalScriptStatus.cc" />
+    <ClCompile Include="Source\Component\Internal\Sound\FDySoundInstance.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\LevelCascadeShadowRenderer.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\LevelCSMIntergration.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\LevelOITRenderer.cc" />
@@ -431,9 +433,11 @@
     <ClCompile Include="Source\Management\Type\Render\DDyModelHandler.cc" />
     <ClCompile Include="Source\Management\Type\Sound\ADySoundInstance.cc" />
     <ClCompile Include="Source\Management\Type\Sound\FDyInstantSound2D.cc" />
+    <ClCompile Include="Source\Management\Type\Sound\FDyInstantSound3D.cc" />
     <ClCompile Include="Source\Management\Type\Sound\FDySoundChannel.cc" />
     <ClCompile Include="Source\Management\Type\Sound\FDySoundGroup.cc" />
     <ClCompile Include="Source\Management\Type\Sound\TDyBinderSound2D.cc" />
+    <ClCompile Include="Source\Management\Type\Sound\TDyBinderSound3D.cc" />
     <ClCompile Include="Source\Management\Type\Time\DDyTimepoint.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetBarMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetImageMetaInformation.cc" />
@@ -611,6 +615,7 @@
     <ClInclude Include="Include\Dy\Builtin\Widget\FDyBtWdTestLoadingUi.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyGlobalCppScript.h" />
     <ClInclude Include="Include\Dy\Component\Actor\CDyActorScript.h" />
+    <ClInclude Include="Include\Dy\Component\CDySoundSource.h" />
     <ClInclude Include="Include\Dy\Component\CDyModelAnimator.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Actor\CDyActorScriptBase.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Actor\FDyActorScriptStatus.h" />
@@ -619,6 +624,7 @@
     <ClInclude Include="Include\Dy\Component\Internal\Global\CDyGlobalScriptCpp.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Script\FDyGlobalScriptStatus.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Script\FDyWidgetScriptStatus.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Sound\FDySoundInstance.h" />
     <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScript.h" />
     <ClInclude Include="Include\Dy\Core\EDyAppMode.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Interface\IDyRenderer.h" />
@@ -709,9 +715,11 @@
     <ClInclude Include="Include\Dy\Management\Type\Sound\ADySoundInstance.h" />
     <ClInclude Include="Include\Dy\Management\Type\Sound\EDySoundStatus.h" />
     <ClInclude Include="Include\Dy\Management\Type\Sound\FDyInstantSound2D.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Sound\FDyInstantSound3D.h" />
     <ClInclude Include="Include\Dy\Management\Type\Sound\FDySoundChannel.h" />
     <ClInclude Include="Include\Dy\Management\Type\Sound\FDySoundGroup.h" />
     <ClInclude Include="Include\Dy\Management\Type\Sound\TDyBinderSound2D.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Sound\TDyBinderSound3D.h" />
     <ClInclude Include="Include\Dy\Management\Type\Time\EDyTimeDST.h" />
     <ClInclude Include="Include\Dy\Management\Type\Time\DDyTimepoint.h" />
     <ClInclude Include="Include\Dy\Management\Type\Time\EDyTimeDay.h" />

@@ -94,6 +94,9 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ TComponentMetaList& p)
     case EDyComponentMetaType::Camera:
       p.emplace_back(type, componentAtlas.get<PDyCameraComponentMetaInfo>());
       break;
+    case EDyComponentMetaType::SoundSource:
+      p.emplace_back(type, componentAtlas.get<PDySoundSourceComponentMetaInfo>());
+      break;
     }
   }
 }
@@ -295,11 +298,16 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyCameraComponentMetaInfo:
 {
   j = nlohmann::json
   {
+    {MSVSTR(sHeaderFieldOfView),      p.mInitialFieldOfView},
+    {MSVSTR(sHeaderProjection),       p.mProjectionType},
+
     {MSVSTR(sHeaderClippingNear),     p.mNear},
     {MSVSTR(sHeaderClippingFar),      p.mFar},
+    {MSVSTR(sHeaderViewportRect),     p.mViewportSize},
+
     {MSVSTR(sHeaderIsFocusInstantly), p.mIsFocusInstantly},
-    {MSVSTR(sHeaderFieldOfView),      p.mInitialFieldOfView},
-    {MSVSTR(sHeaderViewportRect),     p.mViewportSize}
+    {MSVSTR(sHeaderIsMeshUnclipped),  p.mIsEnableMeshUnClipped},
+    {"Is3DListener",                  p.mIs3DListener},
   };
 }
 
@@ -314,6 +322,57 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyCameraComponentMetaInf
 
   DyJsonGetValueFromTo(j, sHeaderIsFocusInstantly,  p.mIsFocusInstantly);
   DyJsonGetValueFromTo(j, sHeaderIsMeshUnclipped,   p.mIsEnableMeshUnClipped);
+  DyJsonGetValueFromTo(j, "Is3DListener",           p.mIs3DListener);
+}
+
+//!
+//! PDySoundSourceComponentMetaInfo
+//!
+
+void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDySoundSourceComponentMetaInfo& p)
+{
+  j = nlohmann::json
+  {
+    {MSVSTR(sHeader_Type),      p.mType},
+    {MSVSTR(sHeader_Details),   p.mDetails},
+    {MSVSTR(sHeader_Activated), p.mInitiallyActivated},
+  };;
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySoundSourceComponentMetaInfo& p)
+{
+  DyJsonGetValueFromTo(j, sHeader_Type,       p.mType);
+  DyJsonGetValueFromTo(j, sHeader_Details,    p.mDetails);
+  DyJsonGetValueFromTo(j, sHeader_Activated,  p.mInitiallyActivated);
+}
+
+void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDySoundSourceComponentMetaInfo::DDetails& p)
+{
+  j = nlohmann::json
+  {
+  };
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySoundSourceComponentMetaInfo::DDetails& p)
+{
+  DyJsonGetValueFromTo(j, "SoundSpecifier", p.mSoundSpecifier);
+
+  DyJsonGetValueFromTo(j, "2DSound",  p.m2DSound);
+  DyJsonGetValueFromTo(j, "Muted",    p.mMuted);
+  DyJsonGetValueFromTo(j, "Looped",   p.mLooped);
+
+  DyJsonGetValueFromTo(j, "VolumeMultiplier", p.mVolumeMultiplier);
+  DyJsonGetValueFromTo(j, "PitchMultiplier",  p.mPitchMultiplier);
+  DyJsonGetValueFromTo(j, "Channel",          p.mChannelSpecifier);
+
+  DyJsonGetValueFromTo(j, "Attenuation", p.mAttenuation);
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySoundSourceComponentMetaInfo::DAttenuation& p)
+{
+  DyJsonGetValueFromTo(j, "Activated", p.mActivated);
+  DyJsonGetValueFromTo(j, "Near", p.mNearDistance);
+  DyJsonGetValueFromTo(j, "Far",  p.mFarDistance);
 }
 
 } /// ::dy namespace

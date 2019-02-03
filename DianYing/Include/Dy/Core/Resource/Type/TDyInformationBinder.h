@@ -60,14 +60,21 @@ protected:
   __TDyInformationBinderBase() {};
 
   /// @brief Require resource.
-  MDY_NODISCARD EDySuccess pTryRequireResource() noexcept
+  MDY_NODISCARD EDySuccess pTryRequireResource(_MIN_ const std::string& iNewSpecifier) noexcept
   {
-    MDY_ASSERT(this->mSpecifierName.empty() == false, "Resource specifier name must be valid to require resource.");
-    auto ptrResult = SDyIOBindingHelper::TryRequireInformation<TType>(this->mSpecifierName, this);
-    if (ptrResult.has_value() == false) { return DY_FAILURE; }
+    MDY_ASSERT(iNewSpecifier.empty() == false, "Resource specifier name must be valid to require resource.");
 
-    this->mPtrResource = ptrResult.value();
-    return DY_SUCCESS;
+    auto ptrResult = SDyIOBindingHelper::TryRequireInformation<TType>(iNewSpecifier, this);
+    if (ptrResult.has_value() == false) 
+    { 
+      this->mDelayedSpecifierName = iNewSpecifier;
+      return DY_FAILURE; 
+    }
+    else
+    {
+      this->mPtrResource = ptrResult.value();
+      return DY_SUCCESS;
+    }
   }
 
   /// @brief Try detach resource. \n
@@ -78,6 +85,7 @@ protected:
     if (MDY_CHECK_ISNULL(this->mPtrResource) == true) { return DY_FAILURE; }
 
     MDY_CALL_ASSERT_SUCCESS(SDyIOBindingHelper::TryDetachInformation<TType>(this->mSpecifierName, this));
+    this->mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
     this->mPtrResource = nullptr;
     return DY_SUCCESS;
   }
@@ -88,18 +96,24 @@ protected:
     this->mSpecifierName = iNewSpecifier;
   }
 
-private:
+protected:
   /// @brief Try update resource pointer of this type with ptr when RI is being valid. \n
   /// `iPtr` must be convertible to specialized __TDyResourceBinderBase `Type`.
   void TryUpdateResourcePtr(_MIN_ const void* iPtr) noexcept override final
   {
-    this->mPtrResource = static_cast<TPtrResource>(iPtr);
+  // If there is something already bound to this instance, detach this from resource.
+    MDY_CALL_BUT_NOUSE_RESULT(this->pTryDetachResource());
+
+    this->mPtrResource = static_cast<TPtrResource>(const_cast<void*>(iPtr));
+    this->mSpecifierName        = this->mDelayedSpecifierName;
+    this->mDelayedSpecifierName = MDY_INITIALIZE_EMPTYSTR;
   }
 
   /// @brief Try detach resource pointer of this type with ptr when RI is being GCed.
   void TryDetachResourcePtr() noexcept override final { this->mPtrResource = nullptr; }
 
   std::string   mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
+  std::string   mDelayedSpecifierName = MDY_INITIALIZE_EMPTYSTR;
   TPtrResource  mPtrResource    = MDY_INITIALIZE_NULL;
 };
 
@@ -124,7 +138,13 @@ public:
 
   TDyInformationBinder(_MIN_ const std::string& specifier) : TSuper{specifier}
   {
-    MDY_NOTUSED auto _ = TSuper::pTryRequireResource();
+    if (const auto flag = TSuper::pTryRequireResource(specifier); flag == DY_FAILURE)
+    { MDY_NOT_IMPLEMENTED_ASSERT(); }
+    else 
+    { 
+      this->mSpecifierName = specifier;
+      this->Process(); 
+    };
   }
   ~TDyInformationBinder() = default;
 };
@@ -159,11 +179,17 @@ public:
 
   /// @brief Try require resource with specifier name in given EDyResourceType.
   /// If resource is already bound to binder handle, detach it first and newly bind another resource into it.
-  void TryRequireResource(_MIN_ const std::string& specifier)
+  void TryRequireResource(_MIN_ const std::string& iNewSpecifier)
   {
-    TSuper::pSetSpecifierName(specifier);
-    MDY_NOTUSED auto _1 = TSuper::pTryDetachResource();
-    MDY_NOTUSED auto _2 = TSuper::pTryRequireResource();
+    // If resource is already exist and bound by something. 
+    // Let it be until new resource is bounded soon.
+    // If flag == DY_FAILURE, iNewSpecifier will be stored as deferred resource specifier.
+    if (const auto flag = TSuper::pTryRequireResource(iNewSpecifier); 
+        flag == DY_SUCCESS) 
+    { 
+      this->mSpecifierName = iNewSpecifier;
+      this->Process(); 
+    }
   }
 };
 
@@ -178,6 +204,7 @@ using TDyLInformatinBinderAttachment  = TDyInformatinBinderLazy<EDyResourceType:
 using TDyLInformatinBinderFrameBuffer = TDyInformatinBinderLazy<EDyResourceType::GLFrameBuffer>;
 using TDyLInformationBinderSkeleton   = TDyInformatinBinderLazy<EDyResourceType::Skeleton>;
 using TDyLInformationBinderAnimScrap  = TDyInformatinBinderLazy<EDyResourceType::AnimationScrap>;
+using TDyLInformationBinderSound      = TDyInformatinBinderLazy<EDyResourceType::Sound>;
 
 } /// ::dy namespace
 

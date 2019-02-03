@@ -40,6 +40,8 @@ EDySuccess CDyCamera::Initialize(_MIN_ const PDyCameraComponentMetaInfo& descrip
   this->mIsEnableMeshUnClipped    = false;
   this->mIsEnableMeshUnClipped    = descriptor.mDetails.mIsEnableMeshUnClipped;
 
+  this->mIsUsing3DListener        = descriptor.mDetails.mIs3DListener;
+
   // Set first time flag to false to use second time flag logics.
   if (descriptor.mInitiallyActivated) { this->Activate(); }
 
@@ -188,6 +190,11 @@ bool CDyCamera::CheckIsPointInFrustum(_MIN_ const DDyVector3& iPoint) const noex
   return this->mFrustum.IsPointInFrustum(iPoint);
 }
 
+bool CDyCamera::IsUsing3DListener() const noexcept
+{
+  return this->mIsUsing3DListener;
+}
+
 std::array<TI32, 4> CDyCamera::GetPixelizedViewportRectangle() const noexcept
 {
   const auto& setting                 = MDySetting::GetInstance();
@@ -263,6 +270,14 @@ void CDyCamera::SetViewportH(const float h) noexcept
 void CDyCamera::SetFeatureMeshUnclipping(const bool flag) noexcept
 {
   this->mIsEnableMeshUnClipped = flag;
+}
+
+void CDyCamera::Set3DListenerActivation(_MIN_ bool iActivated) noexcept
+{
+  if (this->mIsUsing3DListener != iActivated)
+  {
+    this->mIsUsing3DListener = iActivated;
+  }
 }
 
 EDySuccess CDyCamera::Focus()

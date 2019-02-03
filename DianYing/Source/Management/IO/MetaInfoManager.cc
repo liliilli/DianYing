@@ -116,6 +116,7 @@ std::unique_ptr<dy::PDyMetaWidgetRootDescriptor> DyCreateWidgetMetaInformation(_
           specifierName,
           std::make_pair<>(componentType, DyConvertUniquePtrTo<PDyMetaWidgetCommonBaseDesc>(std::move(instance)))
       );
+      instance = nullptr;
     } break;
     case EDyWidgetComponentType::HorizontalLayout:
     { // Horizontal layout component

@@ -24,6 +24,7 @@
 #include <Dy/Management/WorldManager.h>
 #include "Dy/Management/Helper/SDyProfilingHelper.h"
 #include "Dy/Component/CDyModelAnimator.h"
+#include "Dy/Component/CDySoundSource.h"
 
 //!
 //! Implementation
@@ -144,6 +145,9 @@ void FDyActor::MDY_PRIVATE_SPECIFIER(CreateComponentList)(const TComponentMetaLi
     case EDyComponentMetaType::Camera:
       this->AddComponent<CDyCamera>(std::any_cast<const PDyCameraComponentMetaInfo&>(componentInfo));
       break;
+    case EDyComponentMetaType::SoundSource:
+      this->AddComponent<CDySoundSource>(std::any_cast<const PDySoundSourceComponentMetaInfo&>(componentInfo));
+      break;
     }
   }
 }
@@ -171,6 +175,8 @@ FDyActor::~FDyActor()
     { static_cast<TComponentBindingType<_::ModelFilter>::Type&>(*ptrsmtComponent).Release(); } break;
     case EDyComponentType::ModelRenderer:
     { static_cast<TComponentBindingType<_::ModelRenderer>::Type&>(*ptrsmtComponent).Release(); } break;
+    case EDyComponentType::SoundSource:
+    { static_cast<TComponentBindingType<_::SoundSource>::Type&>(*ptrsmtComponent).Release(); } break;
     default: MDY_UNEXPECTED_BRANCH(); break;
     }
   }
