@@ -20,6 +20,7 @@
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
+#include "Dy/Helper/System/Idioms.h"
 
 //!
 //! Forward declaration
@@ -381,6 +382,7 @@ EDySuccess MDySound::pfRelease()
   // Clear all list.
   this->mInstantSound2DList.clear();
   this->mInstantSound3DList.clear();
+  this->mGeneralSoundInstanceList.clear();
   this->ReleaseSoundSystem();
   return DY_SUCCESS;
 }
@@ -414,11 +416,9 @@ void MDySound::Update(MDY_NOTUSED float dt)
   // When using FMOD Studio, 
   // call Studio::System::update, which internally will also update the Low Level system. 
   // If using Low Level directly, instead call System::update.
-  if (MDY_CHECK_ISNOTNULL(this->mSoundSystem)) 
-  { 
-    this->mSoundSystem->update(); 
-  }
+  if (MDY_CHECK_ISNULL(this->mSoundSystem)) { return; }
 
+  //
   // Check intant 2D sound instance is valid.
   for (auto& ptrsmtInstance : this->mInstantSound2DList)
   {
@@ -433,6 +433,7 @@ void MDySound::Update(MDY_NOTUSED float dt)
   // Remove empty 2d instant sound instance item.
   this->mInstantSound2DList.remove_if([](const auto& ptrsmtInstance) { return ptrsmtInstance == nullptr; });
 
+  //
   // Check intant 3D sound instance is valid.
   for (auto& ptrsmtInstance : this->mInstantSound3DList)
   {
@@ -446,6 +447,21 @@ void MDySound::Update(MDY_NOTUSED float dt)
   }
   // Remove empty 3d instant sound instance item.
   this->mInstantSound3DList.remove_if([](const auto& ptrsmtInstance) { return ptrsmtInstance == nullptr; });
+
+  //
+  // Check sound instance is valid.
+  for (auto& ptrsmtInstance : this->mGeneralSoundInstanceList)
+  {
+    // If instance is not valid, we have to check given sound is valid so able to initialize.
+    if (MDY_CHECK_ISEMPTY(ptrsmtInstance)) { continue; }
+    ptrsmtInstance->Update(dt);
+    // If instance must be removed, remove.
+    if (ptrsmtInstance->GetStatus() == EDySoundStatus::Component_Vanished) { ptrsmtInstance = nullptr; }
+  }
+  DyEraseRemove(this->mGeneralSoundInstanceList, nullptr);
+
+  // Update system to make sound.
+  this->mSoundSystem->update(); 
 }
 
 FDySoundGroup& MDySound::MDY_PRIVATE_SPECIFIER(GetGroupChannel)(_MIN_ const std::string& iSpecifier)
@@ -463,6 +479,35 @@ FMOD::System& MDySound::MDY_PRIVATE_SPECIFIER(GetSystem)()
       "Failed to getting sound system instance. Sound system must be initialized.");
 
   return *this->mSoundSystem;
+}
+
+FDySoundInstance* MDySound::MDY_PRIVATE_SPECIFIER(CreateSoundInstance)(
+    _MIN_ const PDySoundSourceComponentMetaInfo& iMetaInfo,
+    _MIN_ FDyActor& iRefActor)
+{
+  PDySoundSourceComponentMetaInfo metaInfo = iMetaInfo;
+
+  // Check validity
+  if (metaInfo.mDetails.mSoundSpecifier.empty() == false)
+  {
+    // If not found given sound specifier, just leave it blank.
+    if (const auto flag = MDyMetaInfo::GetInstance().IsSoundMetaInfoExist(metaInfo.mDetails.mSoundSpecifier);
+        flag == false)
+    { metaInfo.mDetails.mSoundSpecifier.clear(); }
+  }
+  if (metaInfo.mDetails.mChannelSpecifier.empty() == false)
+  {
+    // If not found given channel, just leave it master channel.
+    if (DyIsMapContains(this->mChannelContainer, metaInfo.mDetails.mChannelSpecifier) == false)
+    {
+      metaInfo.mDetails.mChannelSpecifier.clear();
+    }
+  }
+
+  // Insert and get.
+  auto ptrsmtInstance = std::make_unique<FDySoundInstance>(metaInfo, iRefActor);
+  auto& ref = this->mGeneralSoundInstanceList.emplace_back(std::move(ptrsmtInstance));
+  return ref.get();
 }
 
 #ifdef false

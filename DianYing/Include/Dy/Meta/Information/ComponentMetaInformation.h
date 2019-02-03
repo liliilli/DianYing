@@ -18,7 +18,8 @@
 #include <Dy/Helper/Type/Vector3.h>
 #include <Dy/Meta/Type/EDyComponentTypes.h>
 #include <Dy/Meta/Information/ScriptMetaInformation.h>
-#include "Dy/Helper/Type/Area2D.h"
+#include <Dy/Helper/Type/Area2D.h>
+#include <Dy/Helper/Type/Clamp.h>
 
 namespace dy
 {
@@ -210,8 +211,26 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyCameraComponentMetaInf
 struct PDySoundSourceComponentMetaInfo final : public IDyMetaInformation
 {
 public:
+  struct DAttenuation final
+  {
+    bool mActivated = false;
+    DDyClamp<TF32, 0, 1'000'000> mNearDistance  = 0.5f;
+    DDyClamp<TF32, 0, 1'000'000> mFarDistance   = 5000.f;
+  };
+
   struct DDetails final
   {
+    std::string mSoundSpecifier; // Sound specifier.
+
+    bool m2DSound = false; // Check this component is 2d sound or 3d.
+    bool mMuted   = false; // CHeck this component is muted.
+    bool mLooped  = false; // Check this component's sound will be played looped.
+
+    DDyClamp<TF32, 0, 5> mVolumeMultiplier  = 1.0f; // Sound channel's volume multiplication.
+    DDyClamp<TF32, 0, 5> mPitchMultiplier   = 1.0f; // Sound channel's pitch multiplication.
+    std::string mChannelSpecifier; // If blank, this sound just use master channel.
+
+    DAttenuation mAttenuation; // 3D Atteunation properties.
   };
 
   /// Details
@@ -225,6 +244,9 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySoundSourceComponentMe
 
 void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const PDySoundSourceComponentMetaInfo::DDetails& p);
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySoundSourceComponentMetaInfo::DDetails& p);
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const PDySoundSourceComponentMetaInfo::DAttenuation& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySoundSourceComponentMetaInfo::DAttenuation& p);
 
 } /// ::dy namespace
 

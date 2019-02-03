@@ -22,6 +22,21 @@
 #include <Dy/Management/Type/Sound/FDyInstantSound3D.h>
 #include <Dy/Management/Type/Sound/TDyBinderSound2D.h>
 #include <Dy/Management/Type/Sound/TDyBinderSound3D.h>
+#include <Dy/Component/Internal/Sound/FDySoundInstance.h>
+
+//!
+//! Forward declaration
+//!
+
+namespace dy
+{
+struct PDySoundSourceComponentMetaInfo;
+class FDyActor;
+} /// ::dy namespace
+
+//!
+//! Implementation
+//!
 
 namespace dy
 {
@@ -103,6 +118,11 @@ public:
   /// @brief Get reference of internal sound library entry.
   MDY_NODISCARD FMOD::System& MDY_PRIVATE_SPECIFIER(GetSystem)();
 
+  /// @brief Create sound instance for `CDySoundSource`.
+  FDySoundInstance* MDY_PRIVATE_SPECIFIER(CreateSoundInstance)(
+      _MIN_ const PDySoundSourceComponentMetaInfo& iMetaInfo,
+      _MIN_ FDyActor& iRefActor);
+
 private:
   /// @brief Initialize sound system. If already initialized, (without release) just do nothing and return DY_FAILURE.
   EDySuccess InitializeSoundSystem();
@@ -139,6 +159,9 @@ private:
   std::forward_list<std::unique_ptr<FDyInstantSound2D>> mInstantSound2DList;
   /// @brief Instant 3d sound instance list.
   std::forward_list<std::unique_ptr<FDyInstantSound3D>> mInstantSound3DList;
+
+  /// @brief General (CDySoundSource) sound instance list.
+  std::vector<std::unique_ptr<FDySoundInstance>> mGeneralSoundInstanceList;
 };
 
 } /// ::dy namespace

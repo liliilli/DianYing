@@ -14,20 +14,29 @@
 
 /// Header file
 #include <Dy/Component/CDySoundSource.h>
+#include <Dy/Management/SoundManager.h>
 
 namespace dy
 {
 
 EDySuccess CDySoundSource::Initialize(_MIN_ const PDySoundSourceComponentMetaInfo& descriptor)
 {
-  //MDY_UNEXPECTED_BRANCH();
-
   if (descriptor.mInitiallyActivated == true) { this->Activate(); }
-  return DY_FAILURE;
+  // We have to create internal instance anyway. This instance is created & destroyed when only Initialize & Release,
+  // not TryActivateInstance & TryDeactivateInstance function.
+  auto& soundManager = MDySound::GetInstance();
+  // We need reference of actor also, because sound instance with 3D option update position from `Transform`.
+  this->mPtrInternalSoundInstance = soundManager.__CreateSoundInstance(descriptor, *this->GetBindedActor());
+
+  return DY_SUCCESS;
 }
 
 void CDySoundSource::Release()
 {
+  // We have to stop sound anyway and set status Vanished to delete from GC.
+  this->mPtrInternalSoundInstance->StopSound();
+  this->mPtrInternalSoundInstance->__SetStatus(EDySoundStatus::Component_Vanished);
+
   if (this->IsComponentActivated() == true) { this->Deactivate(); }
 }
 

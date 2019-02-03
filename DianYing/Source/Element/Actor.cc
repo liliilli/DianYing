@@ -175,6 +175,8 @@ FDyActor::~FDyActor()
     { static_cast<TComponentBindingType<_::ModelFilter>::Type&>(*ptrsmtComponent).Release(); } break;
     case EDyComponentType::ModelRenderer:
     { static_cast<TComponentBindingType<_::ModelRenderer>::Type&>(*ptrsmtComponent).Release(); } break;
+    case EDyComponentType::SoundSource:
+    { static_cast<TComponentBindingType<_::SoundSource>::Type&>(*ptrsmtComponent).Release(); } break;
     default: MDY_UNEXPECTED_BRANCH(); break;
     }
   }

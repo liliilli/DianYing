@@ -17,6 +17,23 @@
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 #include <Dy/Meta/Information/PrefabMetaInformation.h>
 
+#ifdef PlaySound
+#undef PlaySound
+#endif
+
+//!
+//! Forward declaration
+//!
+
+namespace dy
+{
+class FDySoundInstance;
+} /// ::dy namespace
+
+//!
+//! Implementation
+//!
+
 namespace dy
 {
 
@@ -35,20 +52,27 @@ public:
   /// @brief  Initialize with descriptor.
   /// @return If successful, return DY_SUCCESS or DY_FAILURE.
   MDY_NODISCARD EDySuccess Initialize(_MIN_ const PDySoundSourceComponentMetaInfo& descriptor) override final;
-
   /// @brief Release component.
   void Release() override final;
 
-  /// @brief
+  /// @brief Play sound. If sound is not specified, do nothing but output log.
+  void PlaySound();
+  /// @brief Pause sound. If sound is not specified, already paused or stopped, do nothing.
+  void PauseSound();
+  /// @brief Stop sound. If sound is not specified, or stopped, do nothing.
+  void StopSound();
+
+  /// @brief Update component.
   void Update(_MIN_ TF32 dt) override;
 
-  /// @brief
+  /// @brief Get information of component.
   std::string ToString() override final;
 
 private:
   void TryActivateInstance() override final;
   void TryDeactivateInstance() override final;
 
+  FDySoundInstance* mPtrInternalSoundInstance = nullptr;
 };
 
 } /// ::dy namespace

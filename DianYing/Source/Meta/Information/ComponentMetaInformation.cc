@@ -349,7 +349,24 @@ void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDySoundSourceComponentMe
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySoundSourceComponentMetaInfo::DDetails& p)
 {
+  DyJsonGetValueFromTo(j, "SoundSpecifier", p.mSoundSpecifier);
 
+  DyJsonGetValueFromTo(j, "2DSound",  p.m2DSound);
+  DyJsonGetValueFromTo(j, "Muted",    p.mMuted);
+  DyJsonGetValueFromTo(j, "Looped",   p.mLooped);
+
+  DyJsonGetValueFromTo(j, "VolumeMultiplier", p.mVolumeMultiplier);
+  DyJsonGetValueFromTo(j, "PitchMultiplier",  p.mPitchMultiplier);
+  DyJsonGetValueFromTo(j, "Channel",          p.mChannelSpecifier);
+
+  DyJsonGetValueFromTo(j, "Attenuation", p.mAttenuation);
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySoundSourceComponentMetaInfo::DAttenuation& p)
+{
+  DyJsonGetValueFromTo(j, "Activated", p.mActivated);
+  DyJsonGetValueFromTo(j, "Near", p.mNearDistance);
+  DyJsonGetValueFromTo(j, "Far",  p.mFarDistance);
 }
 
 } /// ::dy namespace

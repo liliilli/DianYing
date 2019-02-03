@@ -230,6 +230,7 @@
     <ClCompile Include="Source\Component\Internal\Script\Actor\CDyActorScriptLua.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Global\CDyGlobalScriptCpp.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Global\FDyGlobalScriptStatus.cc" />
+    <ClCompile Include="Source\Component\Internal\Sound\FDySoundInstance.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\LevelCascadeShadowRenderer.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\LevelCSMIntergration.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\LevelOITRenderer.cc" />
@@ -623,6 +624,7 @@
     <ClInclude Include="Include\Dy\Component\Internal\Global\CDyGlobalScriptCpp.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Script\FDyGlobalScriptStatus.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Script\FDyWidgetScriptStatus.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Sound\FDySoundInstance.h" />
     <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScript.h" />
     <ClInclude Include="Include\Dy\Core\EDyAppMode.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Interface\IDyRenderer.h" />

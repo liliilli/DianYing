@@ -24,6 +24,8 @@ enum class EDySoundStatus
   Play,     // Sound is playing.
   Paused,   // Sound is pausing.
   Stop,     // Sound is end so stopped.
+
+  Component_Vanished // Bound component has vanished so need to be GC. This status is only used in Component-based sound instance.
 };
 
 } /// ::dy namespace
