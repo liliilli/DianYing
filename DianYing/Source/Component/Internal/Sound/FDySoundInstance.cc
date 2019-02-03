@@ -171,6 +171,13 @@ EDySuccess FDySoundInstance::TryInitialize()
 void FDySoundInstance::Update(_MIN_ TF32 dt)
 {
   if (this->GetStatus() == EDySoundStatus::NotValid) { this->TryInitialize(); }
+  if (this->GetStatus() == EDySoundStatus::Play)
+  {
+    if (this->IsMuted() == false && this->Is2DSound() == false)
+    {
+      this->UpdateInternal3DPositionVelocity();
+    };
+  }
 }
 
 void FDySoundInstance::PlaySound()
