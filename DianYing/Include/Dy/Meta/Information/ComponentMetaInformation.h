@@ -203,6 +203,29 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyCameraComponentMetaInf
 void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const PDyCameraComponentMetaInfo::DDetails& p);
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyCameraComponentMetaInfo::DDetails& p);
 
+///
+/// @struct PDySoundSourceComponentMetaInfo
+/// @brief Dependent information to CDySoundSource component.
+///
+struct PDySoundSourceComponentMetaInfo final : public IDyMetaInformation
+{
+public:
+  struct DDetails final
+  {
+  };
+
+  /// Details
+  DDetails    mDetails            = {};
+  /// Component is initially activated or not.
+  bool        mInitiallyActivated = false;
+};
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const PDySoundSourceComponentMetaInfo& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySoundSourceComponentMetaInfo& p);
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const PDySoundSourceComponentMetaInfo::DDetails& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySoundSourceComponentMetaInfo::DDetails& p);
+
 } /// ::dy namespace
 
 #endif /// GUARD_DY_META_INFORMATION_COMPONENTMETAINFORMATION_H

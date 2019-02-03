@@ -22,6 +22,7 @@ class CDyCamera;
 class CDyModelAnimator;
 class CDyModelFilter;
 class CDyModelRenderer;
+class CDySoundSource;
 
 enum class EDyComponentType 
 {
@@ -32,6 +33,7 @@ enum class EDyComponentType
   ModelAnimator,
   ModelFilter,
   ModelRenderer,
+  SoundSource,
 };
 
 template <EDyComponentType TType> 
@@ -48,6 +50,7 @@ template <> struct TComponentBindingType<EDyComponentType::Camera> { using Type 
 template <> struct TComponentBindingType<EDyComponentType::ModelAnimator> { using Type = CDyModelAnimator; };
 template <> struct TComponentBindingType<EDyComponentType::ModelFilter> { using Type = CDyModelFilter; };
 template <> struct TComponentBindingType<EDyComponentType::ModelRenderer> { using Type = CDyModelRenderer; };
+template <> struct TComponentBindingType<EDyComponentType::SoundSource> { using Type = CDySoundSource; };
 
 template <typename TType> 
 struct TComponentUnbindingType;
@@ -59,6 +62,7 @@ template <> struct TComponentUnbindingType<CDyCamera> { static constexpr EDyComp
 template <> struct TComponentUnbindingType<CDyModelAnimator> { static constexpr EDyComponentType Value = EDyComponentType::ModelAnimator; };
 template <> struct TComponentUnbindingType<CDyModelFilter> { static constexpr EDyComponentType Value = EDyComponentType::ModelFilter; };
 template <> struct TComponentUnbindingType<CDyModelRenderer> { static constexpr EDyComponentType Value = EDyComponentType::ModelRenderer; };
+template <> struct TComponentUnbindingType<CDySoundSource> { static constexpr EDyComponentType Value = EDyComponentType::SoundSource; };
 
 } /// ::dy namespace
 

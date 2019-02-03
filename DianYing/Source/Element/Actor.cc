@@ -24,6 +24,7 @@
 #include <Dy/Management/WorldManager.h>
 #include "Dy/Management/Helper/SDyProfilingHelper.h"
 #include "Dy/Component/CDyModelAnimator.h"
+#include "Dy/Component/CDySoundSource.h"
 
 //!
 //! Implementation
@@ -143,6 +144,9 @@ void FDyActor::MDY_PRIVATE_SPECIFIER(CreateComponentList)(const TComponentMetaLi
       break;
     case EDyComponentMetaType::Camera:
       this->AddComponent<CDyCamera>(std::any_cast<const PDyCameraComponentMetaInfo&>(componentInfo));
+      break;
+    case EDyComponentMetaType::SoundSource:
+      this->AddComponent<CDySoundSource>(std::any_cast<const PDySoundSourceComponentMetaInfo&>(componentInfo));
       break;
     }
   }

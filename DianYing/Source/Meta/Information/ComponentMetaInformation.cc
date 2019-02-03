@@ -94,6 +94,9 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ TComponentMetaList& p)
     case EDyComponentMetaType::Camera:
       p.emplace_back(type, componentAtlas.get<PDyCameraComponentMetaInfo>());
       break;
+    case EDyComponentMetaType::SoundSource:
+      p.emplace_back(type, componentAtlas.get<PDySoundSourceComponentMetaInfo>());
+      break;
     }
   }
 }
@@ -314,6 +317,39 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyCameraComponentMetaInf
 
   DyJsonGetValueFromTo(j, sHeaderIsFocusInstantly,  p.mIsFocusInstantly);
   DyJsonGetValueFromTo(j, sHeaderIsMeshUnclipped,   p.mIsEnableMeshUnClipped);
+}
+
+//!
+//! PDySoundSourceComponentMetaInfo
+//!
+
+void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDySoundSourceComponentMetaInfo& p)
+{
+  j = nlohmann::json
+  {
+    {MSVSTR(sHeader_Type),      p.mType},
+    {MSVSTR(sHeader_Details),   p.mDetails},
+    {MSVSTR(sHeader_Activated), p.mInitiallyActivated},
+  };;
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySoundSourceComponentMetaInfo& p)
+{
+  DyJsonGetValueFromTo(j, sHeader_Type,       p.mType);
+  DyJsonGetValueFromTo(j, sHeader_Details,    p.mDetails);
+  DyJsonGetValueFromTo(j, sHeader_Activated,  p.mInitiallyActivated);
+}
+
+void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDySoundSourceComponentMetaInfo::DDetails& p)
+{
+  j = nlohmann::json
+  {
+  };
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySoundSourceComponentMetaInfo::DDetails& p)
+{
+
 }
 
 } /// ::dy namespace

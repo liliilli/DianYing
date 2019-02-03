@@ -43,6 +43,7 @@ DyGetComponentTypeFrom(_MIN_ const std::string& typeString) noexcept
   case dy::DyStrCase("ModelRenderer"):  return dy::EDyComponentMetaType::ModelRenderer; 
   case dy::DyStrCase("ModelAnimator"):  return dy::EDyComponentMetaType::ModelAnimator;
   case dy::DyStrCase("Camera"):         return dy::EDyComponentMetaType::Camera;
+  case dy::DyStrCase("SoundSource"):    return dy::EDyComponentMetaType::SoundSource;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(dy::EDyComponentMetaType::NoneError);
   }
 }
