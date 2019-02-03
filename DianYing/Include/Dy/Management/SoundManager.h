@@ -30,8 +30,10 @@
 
 namespace dy
 {
-struct PDySoundSourceComponentMetaInfo;
+  class CDyCamera;
+  struct PDySoundSourceComponentMetaInfo;
 class FDyActor;
+class CDyTransform;
 } /// ::dy namespace
 
 //!
@@ -114,12 +116,11 @@ public:
   bool mIsSoundSystemAvailable = true;
   
   /// @brief Get reference of group channel which have given `iSpecifier` name.
-  FDySoundGroup& MDY_PRIVATE_SPECIFIER(GetGroupChannel)(_MIN_ const std::string& iSpecifier);
+  MDY_NODISCARD FDySoundGroup& MDY_PRIVATE_SPECIFIER(GetGroupChannel)(_MIN_ const std::string& iSpecifier);
   /// @brief Get reference of internal sound library entry.
   MDY_NODISCARD FMOD::System& MDY_PRIVATE_SPECIFIER(GetSystem)();
-
   /// @brief Create sound instance for `CDySoundSource`.
-  FDySoundInstance* MDY_PRIVATE_SPECIFIER(CreateSoundInstance)(
+  MDY_NODISCARD FDySoundInstance* MDY_PRIVATE_SPECIFIER(CreateSoundInstance)(
       _MIN_ const PDySoundSourceComponentMetaInfo& iMetaInfo,
       _MIN_ FDyActor& iRefActor);
 
@@ -130,23 +131,10 @@ private:
   /// This function is only called in release phase of Dy engine.
   EDySuccess ReleaseSoundSystem();
 
-#ifdef false
-  /// @brief Play sound element
-  /// @TODO THIS FUNCTION IS TEMPORARY FUNCTION, SO WHEN IN PRODUCTION CODE HAVE TO PAUSE INDIVIDUAL 'SOUND CUE' INSTNACE AS PARAMETER.
-  EDySuccess PlaySoundElement(const std::string& soundName) const noexcept;
-
-  /// @brief Pause sound element
-  /// @TODO THIS FUNCTION IS TEMPORARY FUNCTION, SO WHEN IN PRODUCTION CODE HAVE TO PAUSE INDIVIDUAL 'SOUND CUE' INSTNACE AS PARAMETER.
-  EDySuccess PauseSoundElement(const std::string& soundName) const noexcept;
-
-  /// @brief Stop sound element
-  /// @TODO THIS FUNCTION IS TEMPORARY FUNCTION, SO WHEN IN PRODUCTION CODE HAVE TO PAUSE INDIVIDUAL 'SOUND CUE' INSTNACE AS PARAMETER.
-  EDySuccess StopSoundElement(const std::string& soundName) const noexcept;
-
-  /// @brief
-  [[nodiscard]]
-  EDySuccess pfCreateSoundResource(const std::string& filePath, FMOD::Sound** soundResourcePtr);
-#endif
+  /// @brief Set setting of 3D listener.
+  void Set3DListenerSetting(_MIN_ bool iActivated);
+  /// @brief Set actor setting.
+  void Set3DListenerActorSetting(_MIN_ TU32 iId, _MIN_ CDyCamera& iTransform);
 
   FMOD::System*       mSoundSystem      = nullptr;
   MDY_TRANSIENT TU32  mVersion          = MDY_INITIALIZE_DEFUINT;
@@ -159,9 +147,11 @@ private:
   std::forward_list<std::unique_ptr<FDyInstantSound2D>> mInstantSound2DList;
   /// @brief Instant 3d sound instance list.
   std::forward_list<std::unique_ptr<FDyInstantSound3D>> mInstantSound3DList;
-
   /// @brief General (CDySoundSource) sound instance list.
   std::vector<std::unique_ptr<FDySoundInstance>> mGeneralSoundInstanceList;
+
+  /// @brief 
+  bool mIsUsing3DListener = true;
 };
 
 } /// ::dy namespace

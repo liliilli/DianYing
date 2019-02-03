@@ -191,6 +191,8 @@ public:
     bool        mIsFocusInstantly       = false;
     /// Clipped camera will be unclipped.
     bool        mIsEnableMeshUnClipped  = false;
+    /// This camera is 3D sound listener.
+    bool        mIs3DListener = false;
   };
   /// Details
   DDetails    mDetails                = {};
