@@ -16,6 +16,8 @@
 
 /// @brief Main entry function of WIN32 platforms.
 #if defined(MDY_PLATFORM_FLAG_WINDOWS)
+#include <csignal>
+
 namespace
 {
 
@@ -24,6 +26,11 @@ HINSTANCE ghPrevInstance  = nullptr;
 LPSTR     gpCmdLine;
 int       gnCmdShow;
 
+void __SignalHandler(int signal)  
+{  
+  if (signal == SIGABRT) { exit(3); }
+}  
+
 ///
 /// @brief Turn on memory leak detection feature and console window for logging.
 ///
@@ -31,13 +38,17 @@ EDySuccess MDY_PRIVATE_SPECIFIER(DyInitializeWin32Debug)()
 {
   _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
   _CrtSetReportMode( _CRT_ERROR, _CRTDBG_MODE_DEBUG );
+
+  typedef void (*SignalHandlerPointer)(int);  
+  SignalHandlerPointer previousHandler = signal(SIGABRT, __SignalHandler); 
+
   return DY_SUCCESS;
 }
 
 } /// unname namespace
 
 #if (defined(_DEBUG) == true) || (defined(NDEBUG) == false)
-#define MDY_WIN32_TRY_TURN_ON_DEBUG()   MDY_CALL_ASSERT_SUCCESS(MDY_PRIVATE_SPECIFIER(DyInitializeWin32Debug)())
+#define MDY_WIN32_TRY_TURN_ON_DEBUG() MDY_CALL_ASSERT_SUCCESS(MDY_PRIVATE_SPECIFIER(DyInitializeWin32Debug)())
 #define MDY_WIN32_TRY_TURN_OFF_DEBUG()  (void)0
 #else
 #define MDY_WIN32_TRY_TURN_ON_DEBUG()   (void)0
@@ -47,6 +58,7 @@ EDySuccess MDY_PRIVATE_SPECIFIER(DyInitializeWin32Debug)()
 /// @brief Main function of win32 / win64 platform.
 int APIENTRY WinMain(_MIN_ HINSTANCE hInstance, _MIN_ HINSTANCE hPrevInstance, _MIN_ LPSTR pCmdLine, _MIN_ int nCmdShow)
 {
+
   ghInstance      = hInstance;
   ghPrevInstance  = hPrevInstance;
   gpCmdLine       = pCmdLine;
