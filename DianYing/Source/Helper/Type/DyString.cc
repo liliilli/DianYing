@@ -115,12 +115,23 @@ MDY_NODISCARD constexpr TU32 DyGetUtf16LengthFrom(_MIN_ const char* utf8Text) no
 namespace dy
 {
 
+DDyString::~DDyString()
+{
+  this->mString.clear();
+}
+
 DDyString::DDyString(_MIN_ const char* cString) noexcept
 {
   this->pUpdateString(cString);
 }
 
-DDyString::DDyString(_MIN_ const std::string& string) noexcept : DDyString(string.c_str()) { }
+DDyString::DDyString(_MIN_ const std::string& string) noexcept 
+{
+  if (string.empty() == false)
+  {
+    this->pUpdateString(string.c_str());
+  }
+}
 
 void DDyString::SetText(_MIN_ const char* string) noexcept
 {

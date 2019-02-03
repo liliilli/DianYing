@@ -67,7 +67,8 @@ PDyMetaWidgetTextDescriptor::CreateMetaInformation(_MIN_ const nlohmann::json& i
 
   // Detail (TEXT)
   const auto& detailAtlas = itemAtlas[MSVSTR(TPDyMWCBD::sHeader_Details)];
-  instance->mInitialString      = DDyString{DyJsonGetValueFrom<std::string>(detailAtlas, sHeader_InitialString)};
+  const auto string = DyJsonGetValueFrom<std::string>(detailAtlas, sHeader_InitialString);
+  instance->mInitialString      = string;
 
   DDyColorRGBA colorRgb         = DyJsonGetValueFrom<DDyColorRGB24>(detailAtlas, sHeader_InitialColor);
   colorRgb.A                    = DyJsonGetValueFrom<float>(detailAtlas, sHeader_InitialAlpha);
