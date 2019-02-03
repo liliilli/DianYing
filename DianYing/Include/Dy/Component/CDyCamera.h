@@ -101,6 +101,9 @@ public:
   /// @brief Check point is in camera frustum.
   MDY_NODISCARD bool CheckIsPointInFrustum(_MIN_ const DDyVector3& iPoint) const noexcept;
 
+  /// @brief Check this camera is using 3d listener.
+  MDY_NODISCARD bool IsUsing3DListener() const noexcept;
+
   /// @brief  Get scale value of xy (start point) of viewport rectangle.
   /// @return Scaled start point of viewport rectangle.
   MDY_NODISCARD const DDyVector2& GetViewportRectScaleXy() const noexcept
@@ -160,6 +163,9 @@ public:
 
   /// @brief  Set mesh unclipping feature of this camera component instance.
   void SetFeatureMeshUnclipping(_MIN_ const bool flag) noexcept;
+
+  /// @brief Set 3D Listener activation.
+  void Set3DListenerActivation(_MIN_ bool iActivated) noexcept;
 
   /// @brief  Do focusing camera as main camera.
   /// @return If camera component is not binded main cam before Focus(), return true or false.
@@ -257,6 +263,9 @@ private:
   MDY_TRANSIENT bool mIsMustBeFocusedInstantly  = false;
   MDY_TRANSIENT bool mIsViewMatrixDirty         = true;
   MDY_TRANSIENT bool mIsProjectionMatrixDirty   = true;
+
+  /// @brief Using 3D Listener.
+  bool mIsUsing3DListener = false;
 
 #ifdef false
   float mMouseSensitivity         = 0.25f;

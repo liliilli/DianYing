@@ -453,14 +453,21 @@ void MDySound::Update(MDY_NOTUSED float dt)
   // If using Low Level directly, instead call System::update.
   if (MDY_CHECK_ISNULL(this->mSoundSystem)) { return; }
 
-  // If 3D library.
+  // If any `new` `focused camera` is exist on system, and this camera is using 3D Listener, activate or deactivate.
+  // @TODO CODE SMELL, NEED TO REFACTOR CODE.
   auto& worldManager = MDyWorld::GetInstance();
   if (worldManager.GetFocusedCameraCount() > 0)
   {
-    if (this->mIsUsing3DListener == false) { this->Set3DListenerSetting(true); }
-
     auto ptrCamera  = worldManager.GetFocusedCameraValidReference(0);
-    this->Set3DListenerActorSetting(0, *ptrCamera.value());
+    if (ptrCamera.value()->IsUsing3DListener() == true)
+    {
+      if (this->mIsUsing3DListener == false) { this->Set3DListenerSetting(true); }
+      this->Set3DListenerActorSetting(0, *ptrCamera.value());
+    }
+    else
+    {
+      if (this->mIsUsing3DListener == true) { this->Set3DListenerSetting(false); }
+    }
   }
   else { if (this->mIsUsing3DListener == true) { this->Set3DListenerSetting(false); } }
 
