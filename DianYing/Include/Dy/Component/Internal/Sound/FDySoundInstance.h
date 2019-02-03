@@ -87,6 +87,28 @@ public:
   /// @brief CHeck this sound is 2D sound or 3D.
   MDY_NODISCARD bool Is2DSound() const noexcept { return this->m2DSound; }
 
+  /// @brief Set volume. Negative volume will be assigned as 0. The value bigger than 5 is assigned as 5.
+  void SetVolume(_MIN_ TF32 iVolume);
+  /// @brief Get volume.
+  MDY_NODISCARD TF32 GetVolume() const noexcept { return this->mVolumeMultiplier; }
+  /// @brief Set pitch. Negative pitch will be assigned as 0. The pitch bigger than 5 is assigned as 5.
+  void SetPitch(_MIN_ TF32 iPitch);
+  /// @brief Get pitch.
+  MDY_NODISCARD TF32 GetPitch() const noexcept { return this->mPitchMultiplier; }
+
+  /// @brief Set attenuation flag.
+  void SetAttenuation(_MIN_ bool iActivated);
+  /// @brief Set attenuation minumum distance.
+  void SetAttenuationMinDistance(_MIN_ TF32 iDistance);
+  /// @brief Set attenuation maximum distance.
+  void SetAttenuationMaxDistance(_MIN_ TF32 iDistance);
+  /// @brief Check this sound is using attenuation anyway (nonetheless of 2D, 3D)
+  MDY_NODISCARD bool IsUsingAttenuation() const noexcept { return this->mAttenuation.mActivated; }
+  /// @brief Get attenuation minimum distance.
+  MDY_NODISCARD TF32 GetAttenuationMinDistance() const noexcept { return this->mAttenuation.mNearDistance; }
+  /// @brief Get attenuation maximum distance.
+  MDY_NODISCARD TF32 GetAttenuationMaxDistance() const noexcept { return this->mAttenuation.mFarDistance; }
+
 private:
   /// @brief Try initialize sound resource, 
   /// Succeeded if only sound resource is bound and status is `NotValid` yet.

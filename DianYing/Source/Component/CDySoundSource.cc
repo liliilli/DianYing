@@ -100,7 +100,7 @@ const std::string& CDySoundSource::GetSound() const noexcept
   return this->mPtrInternalSoundInstance->GetSoundSpecifier();
 }
 
-void CDySoundSource::SetNewChannel(const std::string& iChannelSpecifier)
+void CDySoundSource::SetNewChannel(_MIN_ const std::string& iChannelSpecifier)
 {
   this->mPtrInternalSoundInstance->SetChannel(iChannelSpecifier);
 }
@@ -110,7 +110,7 @@ const std::string& CDySoundSource::GetSpecifier() const noexcept
   return this->mPtrInternalSoundInstance->GetChannelSpecifier();
 }
 
-void CDySoundSource::SetLoop(bool iLooped)
+void CDySoundSource::SetLoop(_MIN_ bool iLooped)
 {
   this->mPtrInternalSoundInstance->SetLoop(iLooped);
 }
@@ -118,6 +118,26 @@ void CDySoundSource::SetLoop(bool iLooped)
 void CDySoundSource::SetMute(_MIN_ bool iMuted)
 {
   this->mPtrInternalSoundInstance->SetMute(iMuted);
+}
+
+void CDySoundSource::SetVolume(_MIN_ TF32 iVolume)
+{
+  this->mPtrInternalSoundInstance->SetVolume(iVolume);
+}
+
+TF32 CDySoundSource::GetVolume() const noexcept
+{
+  return this->mPtrInternalSoundInstance->GetVolume();
+}
+
+void CDySoundSource::SetPitch(_MIN_ TF32 iPitch)
+{
+  this->mPtrInternalSoundInstance->SetPitch(iPitch);
+}
+
+TF32 CDySoundSource::GetPitch() const noexcept
+{
+  return this->mPtrInternalSoundInstance->GetPitch();
 }
 
 void CDySoundSource::Set2D(_MIN_ bool iActivated)
@@ -131,6 +151,36 @@ void CDySoundSource::Set2D(_MIN_ bool iActivated)
 bool CDySoundSource::Is2DSound() const noexcept
 {
   return this->mPtrInternalSoundInstance->Is2DSound();
+}
+
+void CDySoundSource::SetAttenuation(_MIN_ bool iActivated)
+{
+  this->mPtrInternalSoundInstance->SetAttenuation(iActivated);
+}
+
+bool CDySoundSource::IsUsingAttenuation() const noexcept
+{
+  return this->mPtrInternalSoundInstance->IsUsingAttenuation();
+}
+
+void CDySoundSource::SetAttenuationMinDistance(_MIN_ TF32 iDistance)
+{
+  return this->mPtrInternalSoundInstance->SetAttenuationMinDistance(iDistance);
+}
+
+void CDySoundSource::SetAttenuationMaxDistance(_MIN_ TF32 iDistance)
+{
+  return this->mPtrInternalSoundInstance->SetAttenuationMaxDistance(iDistance);
+}
+
+TF32 CDySoundSource::GetAttenuationMinDistance() const noexcept
+{
+  return this->mPtrInternalSoundInstance->GetAttenuationMinDistance();
+}
+
+TF32 CDySoundSource::GetAttenuationMaxDistance() const noexcept
+{
+  return this->mPtrInternalSoundInstance->GetAttenuationMaxDistance();
 }
 
 void CDySoundSource::Update(_MIN_ TF32 dt) { }

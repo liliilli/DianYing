@@ -230,31 +230,6 @@ void FDySoundInstance::PlaySound()
   }
 }
 
-void FDySoundInstance::UpdateInternalAttenuationProperty()
-{
-  // When `NotValid` and `Stop`, `NotValid` is mPtrInternalSound & mPtrChannel is not valid.
-  // and `Stop` is `mPtrInternalSound` is valid but `mPtrChannel` is not valid.
-  if (const auto flag = this->GetStatus();
-      flag == EDySoundStatus::NotValid 
-  ||  flag == EDySoundStatus::Stop)
-  {
-    return;
-  }
-
-  // Set initial 3D distance to sound.
-  const auto flag = this->mPtrInternalSound->set3DMinMaxDistance(
-      this->mAttenuation.mNearDistance, 
-      this->mAttenuation.mFarDistance);
-  MDY_ASSERT(flag == FMOD_OK, "Failed to create sound instance.");
-
-  // If this instance will use attenuation or not, set 3D level to disable / enable feature.
-  if (this->Is2DSound() == false)
-  {
-    if (this->mAttenuation.mActivated == false) { this->mPtrInternalChannel->set3DLevel(0.0f); }
-    else                                        { this->mPtrInternalChannel->set3DLevel(1.0f); }
-  }
-}
-
 void FDySoundInstance::UpdateInternal3DPositionVelocity()
 {
   // When `NotValid` and `Stop`, `NotValid` is mPtrInternalSound & mPtrChannel is not valid.
@@ -345,6 +320,72 @@ void FDySoundInstance::UpdateInternalLoop()
   ||  flag == EDySoundStatus::Paused)
   {
     this->mPtrInternalChannel->setLoopCount(this->mLooped == true ? -1 : 0);
+  }
+}
+
+void FDySoundInstance::SetVolume(_MIN_ TF32 iVolume)
+{
+  this->mVolumeMultiplier = iVolume;
+
+  if (const auto flag = this->GetStatus(); flag == EDySoundStatus::Play || flag == EDySoundStatus::Paused)
+  {
+    this->mPtrInternalChannel->setVolume(iVolume);
+  }
+}
+
+void FDySoundInstance::SetPitch(_MIN_ TF32 iPitch)
+{
+  this->mPitchMultiplier = iPitch;
+
+  if (const auto flag = this->GetStatus(); flag == EDySoundStatus::Play || flag == EDySoundStatus::Paused)
+  {
+    this->mPtrInternalChannel->setVolume(iPitch);
+  }
+}
+
+void FDySoundInstance::SetAttenuation(_MIN_ bool iActivated)
+{
+  if (this->mAttenuation.mActivated != iActivated)
+  {
+    this->mAttenuation.mActivated = iActivated;
+    this->UpdateInternalAttenuationProperty();
+  }
+}
+
+void FDySoundInstance::SetAttenuationMinDistance(_MIN_ TF32 iDistance)
+{
+  this->mAttenuation.mNearDistance = iDistance;
+  this->UpdateInternalAttenuationProperty();
+}
+
+void FDySoundInstance::SetAttenuationMaxDistance(_MIN_ TF32 iDistance)
+{
+  this->mAttenuation.mFarDistance = iDistance;
+  this->UpdateInternalAttenuationProperty();
+}
+
+void FDySoundInstance::UpdateInternalAttenuationProperty()
+{
+  // When `NotValid` and `Stop`, `NotValid` is mPtrInternalSound & mPtrChannel is not valid.
+  // and `Stop` is `mPtrInternalSound` is valid but `mPtrChannel` is not valid.
+  if (const auto flag = this->GetStatus();
+      flag == EDySoundStatus::NotValid 
+  ||  flag == EDySoundStatus::Stop)
+  {
+    return;
+  }
+
+  // Set initial 3D distance to sound.
+  const auto flag = this->mPtrInternalSound->set3DMinMaxDistance(
+      this->mAttenuation.mNearDistance, 
+      this->mAttenuation.mFarDistance);
+  MDY_ASSERT(flag == FMOD_OK, "Failed to create sound instance.");
+
+  // If this instance will use attenuation or not, set 3D level to disable / enable feature.
+  if (this->Is2DSound() == false)
+  {
+    if (this->mAttenuation.mActivated == false) { this->mPtrInternalChannel->set3DLevel(0.0f); }
+    else                                        { this->mPtrInternalChannel->set3DLevel(1.0f); }
   }
 }
 

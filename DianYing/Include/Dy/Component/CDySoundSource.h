@@ -104,6 +104,7 @@ public:
   void Set2D(_MIN_ bool iActivated);
   /// @brief Check this sound is 2D sound.
   MDY_NODISCARD bool Is2DSound() const noexcept;
+
   /// @brief Set attenuation flag.
   void SetAttenuation(_MIN_ bool iActivated);
   /// @brief Check this sound is using attenuation anyway (nonetheless of 2D, 3D)
