@@ -40,10 +40,100 @@ void CDySoundSource::Release()
   if (this->IsComponentActivated() == true) { this->Deactivate(); }
 }
 
-void CDySoundSource::Update(_MIN_ TF32 dt)
+void CDySoundSource::PlaySound()
 {
-
+  this->mPtrInternalSoundInstance->PlaySound();
 }
+
+void CDySoundSource::PauseSound()
+{
+  this->mPtrInternalSoundInstance->PauseSound();
+}
+
+void CDySoundSource::StopSound()
+{
+  this->mPtrInternalSoundInstance->StopSound();
+}
+
+bool CDySoundSource::IsPlayable() const noexcept
+{
+  const auto flag = this->mPtrInternalSoundInstance->GetStatus();
+
+  // Internal instance is automatically changed to `Stop` status when Resource is bound.
+  return 
+        flag != EDySoundStatus::NotValid
+    &&  flag != EDySoundStatus::Component_Vanished;
+}
+
+bool CDySoundSource::IsPaused() const noexcept
+{
+  return this->mPtrInternalSoundInstance->GetStatus() == EDySoundStatus::Paused;
+}
+
+bool CDySoundSource::IsStopped() const noexcept
+{
+  return this->mPtrInternalSoundInstance->GetStatus() == EDySoundStatus::Stop;
+}
+
+bool CDySoundSource::IsPlaying() const noexcept
+{
+  return this->mPtrInternalSoundInstance->GetStatus() == EDySoundStatus::Play;
+}
+
+bool CDySoundSource::IsMuted() const noexcept
+{
+  return this->mPtrInternalSoundInstance->IsMuted();
+}
+
+bool CDySoundSource::IsLooped() const noexcept
+{
+  return this->mPtrInternalSoundInstance->IsLooped();
+}
+
+void CDySoundSource::SetNewSound(_MIN_ const std::string& iSoundSpecifier)
+{
+  this->mPtrInternalSoundInstance->SetSound(iSoundSpecifier);
+}
+
+const std::string& CDySoundSource::GetSound() const noexcept
+{
+  return this->mPtrInternalSoundInstance->GetSoundSpecifier();
+}
+
+void CDySoundSource::SetNewChannel(const std::string& iChannelSpecifier)
+{
+  this->mPtrInternalSoundInstance->SetChannel(iChannelSpecifier);
+}
+
+const std::string& CDySoundSource::GetSpecifier() const noexcept
+{
+  return this->mPtrInternalSoundInstance->GetChannelSpecifier();
+}
+
+void CDySoundSource::SetLoop(bool iLooped)
+{
+  this->mPtrInternalSoundInstance->SetLoop(iLooped);
+}
+
+void CDySoundSource::SetMute(_MIN_ bool iMuted)
+{
+  this->mPtrInternalSoundInstance->SetMute(iMuted);
+}
+
+void CDySoundSource::Set2D(_MIN_ bool iActivated)
+{
+  if (this->Is2DSound() != iActivated)
+  {
+    this->mPtrInternalSoundInstance->Set2DSound(iActivated);
+  }
+}
+
+bool CDySoundSource::Is2DSound() const noexcept
+{
+  return this->mPtrInternalSoundInstance->Is2DSound();
+}
+
+void CDySoundSource::Update(_MIN_ TF32 dt) { }
 
 std::string CDySoundSource::ToString()
 {

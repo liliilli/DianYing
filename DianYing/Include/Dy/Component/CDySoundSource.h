@@ -62,6 +62,61 @@ public:
   /// @brief Stop sound. If sound is not specified, or stopped, do nothing.
   void StopSound();
 
+  /// @brief Check this sound instance is playable. If resource is attached to internal instance, return true.
+  MDY_NODISCARD bool IsPlayable() const noexcept;
+  /// @brief Check this sound instance is paused now.
+  MDY_NODISCARD bool IsPaused() const noexcept;
+  /// @brief Check this sound instance is stopped.
+  MDY_NODISCARD bool IsStopped() const noexcept;
+  /// @brief Check this sound is playing now.
+  MDY_NODISCARD bool IsPlaying() const noexcept;
+  /// @brief Check this sound is muted.
+  MDY_NODISCARD bool IsMuted() const noexcept;
+  /// @brief Check this sound is looped.
+  MDY_NODISCARD bool IsLooped() const noexcept;
+
+  /// @brief Set new sound specifier into component. 
+  /// If status is not `Stop` and `NotValid`, this function does nothing.
+  void SetNewSound(_MIN_ const std::string& iSoundSpecifier);
+  /// @brief Get sound specifier.
+  MDY_NODISCARD const std::string& GetSound() const noexcept;
+  /// @brief Set new channel specifier into component.
+  /// If staus is not `Stop` and `NotValid`, this function do nothing.
+  void SetNewChannel(_MIN_ const std::string& iChannelSpecifier);
+  /// @brief Get channel specifier.
+  MDY_NODISCARD const std::string& GetSpecifier() const noexcept;
+  /// @brief Set new loop activation.
+  /// If sound is playing when this function is called, and new value is false, play sound to end and update value.
+  void SetLoop(_MIN_ bool iLooped);
+  /// @brief Set mute.
+  void SetMute(_MIN_ bool iMuted);
+
+  /// @brief Set volume. Negative volume will be assigned as 0. The value bigger than 5 is assigned as 5.
+  void SetVolume(_MIN_ TF32 iVolume);
+  /// @brief Get volume.
+  MDY_NODISCARD TF32 GetVolume() const noexcept;
+  /// @brief Set pitch. Negative pitch will be assigned as 0. The pitch bigger than 5 is assigned as 5.
+  void SetPitch(_MIN_ TF32 iPitch);
+  /// @brief Get pitch.
+  MDY_NODISCARD TF32 GetPitch() const noexcept;
+
+  /// @brief Set 2D activation or not. If disabled, this sound will be a 3D sound.
+  void Set2D(_MIN_ bool iActivated);
+  /// @brief Check this sound is 2D sound.
+  MDY_NODISCARD bool Is2DSound() const noexcept;
+  /// @brief Set attenuation flag.
+  void SetAttenuation(_MIN_ bool iActivated);
+  /// @brief Check this sound is using attenuation anyway (nonetheless of 2D, 3D)
+  MDY_NODISCARD bool IsUsingAttenuation() const noexcept;
+  /// @brief Set attenuation minumum distance.
+  void SetAttenuationMinDistance(_MIN_ TF32 iDistance);
+  /// @brief Set attenuation maximum distance.
+  void SetAttenuationMaxDistance(_MIN_ TF32 iDistance);
+  /// @brief Get attenuation minimum distance.
+  MDY_NODISCARD TF32 GetAttenuationMinDistance() const noexcept;
+  /// @brief Get attenuation maximum distance.
+  MDY_NODISCARD TF32 GetAttenuationMaxDistance() const noexcept;
+
   /// @brief Update component.
   void Update(_MIN_ TF32 dt) override;
 

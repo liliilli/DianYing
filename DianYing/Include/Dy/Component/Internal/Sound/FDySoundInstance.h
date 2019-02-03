@@ -52,6 +52,15 @@ public:
   /// @brief Set new sound. If sound instance is playing or paused, sound status will be moved to stop.
   /// If sound is not exist on meta system, do nothing.
   void SetSound(_MIN_ const std::string& iSpecifier);
+  /// @brief Set new channel. If sound instance is playing or paused, sound status will be moved to stop.
+  /// If channel is not exist on meta system, do nothing.
+  void SetChannel(_MIN_ const std::string& iChannelSpecifier);
+  /// @brief Set sound setting newly to 2D or 3D.
+  /// If sound instance is playing or paused, sound status will be moved to stop.
+  void Set2DSound(_MIN_ bool i2DActivated);
+  /// @brief Set new loop activation.
+  /// If sound is playing when this function is called, and new value is false, play sound to end and update value.
+  void SetLoop(_MIN_ bool iLooped);
 
   /// @brief Update instance.
   void Update(_MIN_ TF32 dt);
@@ -63,11 +72,37 @@ public:
   /// @brief Stop sound. If sound is not specified, or stopped, do nothing.
   void StopSound();
 
+  /// @brief Get Sound specifier name.
+  MDY_NODISCARD const std::string& GetSoundSpecifier() const noexcept { return this->mSoundSpecifier; }
+  /// @brief Get Channel specifier name.
+  MDY_NODISCARD const std::string& GetChannelSpecifier() const noexcept { return this->mChannelSpecifier; }
+
+  /// @brief Check this sound is muted.
+  MDY_NODISCARD bool IsMuted() const noexcept;
+  /// @brief Check this sound 
+  void SetMute(_MIN_ bool iMuted) noexcept;
+
+  /// @brief Check this sound is looped.
+  MDY_NODISCARD bool IsLooped() const noexcept { return this->mLooped; }
+  /// @brief CHeck this sound is 2D sound or 3D.
+  MDY_NODISCARD bool Is2DSound() const noexcept { return this->m2DSound; }
+
 private:
   /// @brief Try initialize sound resource, 
   /// Succeeded if only sound resource is bound and status is `NotValid` yet.
   EDySuccess TryInitialize();
- 
+
+  /// @brief Update internal atteunation property. 
+  /// mPtrInternalSound and mPtrInternalChannel must be valid, when call this.
+  void UpdateInternalAttenuationProperty();
+  /// @brief Update internal world-relative position & velocity from actor.
+  /// This function only process logic when 
+  void UpdateInternal3DPositionVelocity();
+  /// @brief Update internal mute function.
+  void UpdateInternalMute();
+  /// @brief Update internal loop function.
+  void UpdateInternalLoop();
+
   /// @brief 
   struct DAttenuation final
   {

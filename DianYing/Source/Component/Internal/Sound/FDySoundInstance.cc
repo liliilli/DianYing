@@ -20,6 +20,7 @@
 #include <Dy/Management/SoundManager.h>
 #include <Dy/Core/Resource/Information/FDySoundInformation.h>
 #include <Dy/Management/Internal/Sound/CallbackChannel.h>
+#include "Dy/Element/Actor.h"
 
 namespace dy
 {
@@ -44,13 +45,7 @@ FDySoundInstance::FDySoundInstance(
   if (this->mSoundSpecifier.empty() == false) { this->SetSound(this->mSoundSpecifier); }
 
   // First try for initializing internal sound resource.
-  if (this->TryInitialize() == DY_SUCCESS)
-  {
-
-  }
-
-  // 
-
+  this->TryInitialize();
 }
 
 FDySoundInstance::~FDySoundInstance()
@@ -69,6 +64,10 @@ FDySoundInstance::~FDySoundInstance()
 
 void FDySoundInstance::SetSound(_MIN_ const std::string& iSpecifier)
 {
+  // If sound is paused or playing...
+  if (const auto status = this->GetStatus(); 
+      status == EDySoundStatus::Paused || status == EDySoundStatus::Play) { this->StopSound(); }
+
   // Check validity.
   const auto& infoManager = MDyMetaInfo::GetInstance();
   if (infoManager.IsSoundMetaInfoExist(iSpecifier) == false)
@@ -77,18 +76,15 @@ void FDySoundInstance::SetSound(_MIN_ const std::string& iSpecifier)
     return;
   }
 
-  // If sound is paused or playing...
-  if (const auto status = this->GetStatus(); status == EDySoundStatus::Paused || status == EDySoundStatus::Play)
-  {
-    this->StopSound();
-  }
-
   // Release internal resource.
   {
-    const auto flag = this->mPtrInternalSound->release();
-    MDY_ASSERT(flag == FMOD_OK, "Failed to play sound instance.");
+    if (this->mPtrInternalSound != nullptr)
+    {
+      const auto flag = this->mPtrInternalSound->release();
+      MDY_ASSERT(flag == FMOD_OK, "Failed to play sound instance.");
+      this->mPtrInternalSound = nullptr;
+    }
     this->mPtrInternalChannel = nullptr;
-    this->mPtrInternalSound   = nullptr;
     this->__SetStatus(EDySoundStatus::NotValid);
   }
 
@@ -97,9 +93,51 @@ void FDySoundInstance::SetSound(_MIN_ const std::string& iSpecifier)
   this->mBinderClipResource.TryRequireResource(this->mSoundSpecifier);
 }
 
-void FDySoundInstance::Update(_MIN_ TF32 dt)
+void FDySoundInstance::SetChannel(_MIN_ const std::string& iChannelSpecifier)
 {
-  if (this->GetStatus() == EDySoundStatus::NotValid) { this->TryInitialize(); }
+  // If sound is paused or playing...
+  if (const auto status = this->GetStatus(); 
+      status == EDySoundStatus::Paused || status == EDySoundStatus::Play) { this->StopSound(); }
+
+  // Check validity.
+  auto& soundManager = MDySound::GetInstance();
+  if (MDY_CHECK_ISNOTNULL(soundManager.GetPtrChannel(iChannelSpecifier)))
+  { this->mChannelSpecifier = iChannelSpecifier; }
+  else 
+  { this->mChannelSpecifier.clear(); }
+
+  // Release internal resource.
+  {
+    if (this->mPtrInternalSound != nullptr)
+    {
+      const auto flag = this->mPtrInternalSound->release();
+      MDY_ASSERT(flag == FMOD_OK, "Failed to play sound instance.");
+      this->mPtrInternalSound = nullptr;
+    }
+    this->mPtrInternalChannel = nullptr;
+    this->__SetStatus(EDySoundStatus::NotValid);
+  }
+}
+
+void FDySoundInstance::Set2DSound(_MIN_ bool i2DActivated)
+{
+  // If sound is paused or playing...
+  if (const auto status = this->GetStatus(); 
+      status == EDySoundStatus::Paused || status == EDySoundStatus::Play) { this->StopSound(); }
+
+  this->m2DSound = i2DActivated;
+
+  // Release internal resource.
+  {
+    if (this->mPtrInternalSound != nullptr)
+    {
+      const auto flag = this->mPtrInternalSound->release();
+      MDY_ASSERT(flag == FMOD_OK, "Failed to play sound instance.");
+      this->mPtrInternalSound = nullptr;
+    }
+    this->mPtrInternalChannel = nullptr;
+    this->__SetStatus(EDySoundStatus::NotValid);
+  }
 }
 
 EDySuccess FDySoundInstance::TryInitialize()
@@ -118,83 +156,189 @@ EDySuccess FDySoundInstance::TryInitialize()
   {
     const auto& soundPath = this->mBinderClipResource->GetPath();
     // If this sound instance should be looped, set customized flag.
-    decltype(FMOD_DEFAULT) soundFlag = FMOD_DEFAULT;
-
-    if (this->mLooped == true) { soundFlag |= FMOD_LOOP_NORMAL; } 
-    else { soundFlag |= FMOD_LOOP_OFF; }
-
-    if (this->m2DSound == true) { soundFlag |= FMOD_2D; } 
-    else { soundFlag |= (FMOD_3D | FMOD_3D_WORLDRELATIVE | FMOD_3D_LINEARROLLOFF); }
+    decltype(FMOD_DEFAULT) soundFlag = FMOD_DEFAULT | FMOD_LOOP_NORMAL;
+    if (this->m2DSound == true) { soundFlag |= FMOD_2D; } else { soundFlag |= (FMOD_3D | FMOD_3D_WORLDRELATIVE | FMOD_3D_LINEARROLLOFF); }
 
     const auto flag = refSystem.createSound(soundPath.string().c_str(), soundFlag, nullptr, &this->mPtrInternalSound);
     MDY_ASSERT(flag == FMOD_OK, "Failed to create sound instance.");
   }
-
-  // Set sound instance properties.
-  // play sound but let it be paused becasue we have to set up some properties. and Add instant channel to group.
-  FMOD::ChannelGroup* ptrInternalChannel = nullptr;
-  if (this->mChannelSpecifier.empty() == false)
-  {
-    auto* ptrChannel = soundManager.GetPtrChannel(this->mChannelSpecifier);
-    ptrInternalChannel = ptrChannel->MDY_PRIVATE_SPECIFIER(GetPtrChannel)();
-  }
-
-  if (MDY_CHECK_ISNULL(ptrInternalChannel))
-  { // If failed to find channel, just play it with master channel.
-    const auto flag = refSystem.playSound(this->mPtrInternalSound, nullptr, true, &this->mPtrInternalChannel);
-    MDY_ASSERT(flag == FMOD_OK, "Failed to set sound instance.");
-  }
-  else
-  {
-    const auto flag = refSystem.playSound(this->mPtrInternalSound, ptrInternalChannel, true, &this->mPtrInternalChannel);
-    MDY_ASSERT(flag == FMOD_OK, "Failed to set sound instance.");
-  }
-
-  // Set initial 3D distance to sound.
-  {
-    const auto flag = this->mPtrInternalSound->set3DMinMaxDistance(
-        this->mAttenuation.mNearDistance, 
-        this->mAttenuation.mFarDistance);
-    MDY_ASSERT(flag == FMOD_OK, "Failed to create sound instance.");
-  }
-
-  // If we use 3D sound, 
-  if (this->m2DSound == false)
-  {
-    // If this instance will use attenuation or not, set 3D level to disable / enable feature.
-    if (this->mAttenuation.mActivated == false) { this->mPtrInternalChannel->set3DLevel(0.0f); }
-    else                                        { this->mPtrInternalChannel->set3DLevel(1.0f); }
-
-    // Set volume and pitch.
-    //const FMOD_VECTOR position = { this->mWorldPosition.X, this->mWorldPosition.Y, this->mWorldPosition.Z };
-    // @TODO TEMPORARY CODE.
-    const FMOD_VECTOR position = { 0, 0, 0 };
-    const FMOD_VECTOR velocity = { 0, 0, 0 };
-    this->mPtrInternalChannel->set3DAttributes(&position, &velocity);
-  }
-
-  // Set volume and pitch. & Set callback and user data.
-  this->mPtrInternalChannel->setVolume(this->mVolumeMultiplier);
-  this->mPtrInternalChannel->setPitch(this->mPitchMultiplier);
-  this->mPtrInternalChannel->setUserData(this);
-  this->mPtrInternalChannel->setCallback(__CallbackSoundChannel);
 
   this->__SetStatus(EDySoundStatus::Stop);
 
   return DY_SUCCESS;
 }
 
-void FDySoundInstance::StopSound()
+void FDySoundInstance::Update(_MIN_ TF32 dt)
 {
-  if (this->mSoundStatus == EDySoundStatus::NotValid)
+  if (this->GetStatus() == EDySoundStatus::NotValid) { this->TryInitialize(); }
+}
+
+void FDySoundInstance::PlaySound()
+{
+  // `mPtrInternalSound` and `mPtrInternalChannel` is valid on now.
+  if (this->mSoundStatus == EDySoundStatus::Paused)
   {
-    MDY_LOG_WARNING("Failed to try stop sound instance. Sound status is either NotValid or Stop.");
-    this->mSoundStatus = EDySoundStatus::Stop;
+    this->mPtrInternalChannel->setPaused(false);
+  }
+  // `mPtrInternalSound` is valid but `mPtrInternalChannel` is not valid.
+  else if (this->mSoundStatus == EDySoundStatus::Stop)
+  {
+    // Initiate (Initialize)
+    auto& soundManager  = MDySound::GetInstance();
+
+    // Set sound instance properties.
+    // play sound but let it be paused becasue we have to set up some properties. and Add instant channel to group.
+    FMOD::ChannelGroup* ptrInternalChannel = nullptr;
+    if (this->mChannelSpecifier.empty() == false)
+    {
+      auto* ptrChannel = soundManager.GetPtrChannel(this->mChannelSpecifier);
+      ptrInternalChannel = ptrChannel->MDY_PRIVATE_SPECIFIER(GetPtrChannel)();
+    }
+
+    auto& refSystem = soundManager.MDY_PRIVATE_SPECIFIER(GetSystem)();
+    if (MDY_CHECK_ISNULL(ptrInternalChannel))
+    { // If failed to find channel, just play it with master channel.
+      const auto flag = refSystem.playSound(this->mPtrInternalSound, nullptr, false, &this->mPtrInternalChannel);
+      MDY_ASSERT(flag == FMOD_OK, "Failed to set sound instance.");
+    }
+    else
+    {
+      const auto flag = refSystem.playSound(this->mPtrInternalSound, ptrInternalChannel, false, &this->mPtrInternalChannel);
+      MDY_ASSERT(flag == FMOD_OK, "Failed to set sound instance.");
+    }
+
+    // Set volume and pitch. & Set callback and user data.
+    this->mPtrInternalChannel->setVolume(this->mVolumeMultiplier);
+    this->mPtrInternalChannel->setPitch(this->mPitchMultiplier);
+    this->mPtrInternalChannel->setUserData(this);
+    this->mPtrInternalChannel->setCallback(__CallbackSoundChannel);
+
+    this->__SetStatus(EDySoundStatus::Play);
+
+    // This function must be after setting status to `Play` `Pause`.
+    this->UpdateInternalAttenuationProperty();
+    this->UpdateInternal3DPositionVelocity();
+    this->UpdateInternalMute();
+    this->UpdateInternalLoop();
+  }
+}
+
+void FDySoundInstance::UpdateInternalAttenuationProperty()
+{
+  // When `NotValid` and `Stop`, `NotValid` is mPtrInternalSound & mPtrChannel is not valid.
+  // and `Stop` is `mPtrInternalSound` is valid but `mPtrChannel` is not valid.
+  if (const auto flag = this->GetStatus();
+      flag == EDySoundStatus::NotValid 
+  ||  flag == EDySoundStatus::Stop)
+  {
     return;
   }
 
-  const auto flag = this->mPtrInternalChannel->stop();
-  MDY_ASSERT(flag == FMOD_OK, "Failed to play sound instance.");
+  // Set initial 3D distance to sound.
+  const auto flag = this->mPtrInternalSound->set3DMinMaxDistance(
+      this->mAttenuation.mNearDistance, 
+      this->mAttenuation.mFarDistance);
+  MDY_ASSERT(flag == FMOD_OK, "Failed to create sound instance.");
+
+  // If this instance will use attenuation or not, set 3D level to disable / enable feature.
+  if (this->Is2DSound() == false)
+  {
+    if (this->mAttenuation.mActivated == false) { this->mPtrInternalChannel->set3DLevel(0.0f); }
+    else                                        { this->mPtrInternalChannel->set3DLevel(1.0f); }
+  }
+}
+
+void FDySoundInstance::UpdateInternal3DPositionVelocity()
+{
+  // When `NotValid` and `Stop`, `NotValid` is mPtrInternalSound & mPtrChannel is not valid.
+  // and `Stop` is `mPtrInternalSound` is valid but `mPtrChannel` is not valid.
+  if (const auto flag = this->GetStatus();
+      flag == EDySoundStatus::NotValid 
+  ||  flag == EDySoundStatus::Stop)
+  {
+    return;
+  }
+
+  // If we use 3D sound, set position & velocity (not supported yet). 
+  if (this->m2DSound == false)
+  {
+    auto& refTransform    = *this->mPtrActor->GetTransform();
+    const auto& position  = refTransform.GetFinalWorldPosition();
+
+    const FMOD_VECTOR newPosition = { position.X, position.Y, position.Z };
+    const FMOD_VECTOR velocity = { 0, 0, 0 };
+    this->mPtrInternalChannel->set3DAttributes(&newPosition, &velocity);
+  }
+}
+
+void FDySoundInstance::PauseSound()
+{
+  // `mPtrInternalSound` and `mPtrInternalChannel` is valid on now.
+  if (this->mSoundStatus == EDySoundStatus::Play)
+  {
+    const auto flag = this->mPtrInternalChannel->setPaused(true);
+    MDY_ASSERT(flag == FMOD_OK, "Failed to pause sound instance.");
+
+    this->__SetStatus(EDySoundStatus::Paused);
+  }
+}
+
+void FDySoundInstance::StopSound()
+{
+  if (this->mSoundStatus == EDySoundStatus::Play
+  ||  this->mSoundStatus == EDySoundStatus::Paused)
+  {
+    const auto flag = this->mPtrInternalChannel->stop();
+    MDY_ASSERT(flag == FMOD_OK, "Failed to play sound instance.");
+    this->mPtrInternalChannel = nullptr;
+
+    this->__SetStatus(EDySoundStatus::Stop);
+  }
+}
+
+bool FDySoundInstance::IsMuted() const noexcept
+{
+  return this->mMuted;
+}
+
+void FDySoundInstance::SetMute(bool iMuted) noexcept
+{
+  if (this->mMuted != iMuted)
+  {
+    this->mMuted = iMuted;
+    // And, we need to update setting when `Play` `Paused` `Stopped`.
+    this->UpdateInternalMute();
+  }
+}
+
+void FDySoundInstance::UpdateInternalMute()
+{
+  if (const auto flag = this->GetStatus(); 
+      flag == EDySoundStatus::Play
+  ||  flag == EDySoundStatus::Paused)
+  {
+    this->mPtrInternalChannel->setMute(this->mMuted);
+  }
+}
+
+void FDySoundInstance::SetLoop(_MIN_ bool iLooped)
+{
+  if (this->mLooped != iLooped)
+  {
+    this->mLooped = iLooped;
+    // And we need to update setting when `Play` `Paused`.
+    this->UpdateInternalLoop();
+  }
+}
+
+void FDySoundInstance::UpdateInternalLoop()
+{
+  if (const auto flag = this->GetStatus(); 
+      flag == EDySoundStatus::Play
+  ||  flag == EDySoundStatus::Paused)
+  {
+    this->mPtrInternalChannel->setLoopCount(this->mLooped == true ? -1 : 0);
+  }
 }
 
 } /// ::dy namespace

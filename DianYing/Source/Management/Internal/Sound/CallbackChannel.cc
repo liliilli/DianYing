@@ -39,7 +39,7 @@ FMOD_RESULT F_CALLBACK __CallbackSoundChannel(
     {
       void* ptrUserData = nullptr;
       channel->getUserData(&ptrUserData);
-      if (ptrData != nullptr) { ptrData = reinterpret_cast<ADySoundInstance*>(ptrUserData); }
+      if (ptrUserData != nullptr) { ptrData = reinterpret_cast<ADySoundInstance*>(ptrUserData); }
     }
     // Change status if sound is end.
     if (ptrData != nullptr) { ptrData->__SetStatus(EDySoundStatus::Stop); }
