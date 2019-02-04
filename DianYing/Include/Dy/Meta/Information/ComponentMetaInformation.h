@@ -20,6 +20,7 @@
 #include <Dy/Meta/Information/ScriptMetaInformation.h>
 #include <Dy/Helper/Type/Area2D.h>
 #include <Dy/Helper/Type/Clamp.h>
+#include "Dy/Management/Type/SettingContainer.h"
 
 namespace dy
 {
@@ -256,30 +257,37 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySoundSourceComponentMe
 ///
 struct PDyRigidbodyComponentMetaInfo final : public IDyMetaInformation
 {
-  /// Check this rigidbody (and collider) simulate physics.
-  bool mIsSimulatePhysics = false;
-  /// Mass of sum of collider.
-  DDyClamp<TF32, 0, 100'000>  mMassInKg = 0.001f;
-  /// Linear damping of rigidbody
-  DDyClamp<TF32, 0, 10'000>   mLinearDamping = 1.0f;
-  /// Angular damping of rigidbody
-  DDyClamp<TF32, 0, 10'000>   mAngularDamping = 1.0f; 
-  /// Enable gravity or not.
-  bool mIsEnableGravity = false;
-  ///
-  bool mLockPositionX = false;
-  bool mLockPositionY = false;
-  bool mLockPositionZ = false;
-  ///
-  bool mLockRotationX = false;
-  bool mLockRotationY = false;
-  bool mLockRotationZ = false;
-  /// Lock preset.
-  std::string mLockPreset = MDY_INITIALIZE_EMPTYSTR;
+  struct DDetails final
+  {
+    /// Check this rigidbody (and collider) simulate physics.
+    bool mIsSimulatePhysics = false;
+    /// Enable gravity or not.
+    bool mIsEnableGravity = false;
+    /// Mass of sum of collider.
+    DDyClamp<TF32, 0, 100'000>  mMassInKg = 0.001f;
+    /// Linear damping of rigidbody
+    DDyClamp<TF32, 0, 10'000>   mLinearDamping = 1.0f;
+    /// Angular damping of rigidbody
+    DDyClamp<TF32, 0, 10'000>   mAngularDamping = 1.0f; 
+    /// Lock psoition axis.
+    DLockPreset::D3DAxis mLockPosition;
+    /// Lock rotation axis.
+    DLockPreset::D3DAxis mLockRotation;
+    /// Lock preset.
+    std::string mLockPreset = MDY_INITIALIZE_EMPTYSTR;
+  };
+ 
+  /// @brief Details
+  DDetails mDetails;
+  /// @brief Component is initially activated or not.
+  bool     mInitiallyActivated = false;
 };
 
 void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const PDyRigidbodyComponentMetaInfo& p);
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyRigidbodyComponentMetaInfo& p);
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const PDyRigidbodyComponentMetaInfo::DDetails& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyRigidbodyComponentMetaInfo::DDetails& p);
 
 } /// ::dy namespace
 

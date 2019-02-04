@@ -97,6 +97,9 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ TComponentMetaList& p)
     case EDyComponentMetaType::SoundSource:
       p.emplace_back(type, componentAtlas.get<PDySoundSourceComponentMetaInfo>());
       break;
+    case EDyComponentMetaType::Rigidbody:
+      p.emplace_back(type, componentAtlas.get<PDyRigidbodyComponentMetaInfo>());
+      break;
     }
   }
 }
@@ -373,6 +376,28 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySoundSourceComponentMe
   DyJsonGetValueFromTo(j, "Activated", p.mActivated);
   DyJsonGetValueFromTo(j, "Near", p.mNearDistance);
   DyJsonGetValueFromTo(j, "Far",  p.mFarDistance);
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyRigidbodyComponentMetaInfo& p)
+{
+  DyJsonGetValueFromTo(j, sHeader_Type,       p.mType);
+  DyJsonGetValueFromTo(j, sHeader_Details,    p.mDetails);
+  DyJsonGetValueFromTo(j, sHeader_Activated,  p.mInitiallyActivated);
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyRigidbodyComponentMetaInfo::DDetails& p)
+{
+  DyJsonGetValueFromTo(j, "IsSimulatePhysics", p.mIsSimulatePhysics);
+  DyJsonGetValueFromTo(j, "IsEnableGravity", p.mIsEnableGravity);
+
+  DyJsonGetValueFromTo(j, "MassInKg", p.mMassInKg);
+  
+  DyJsonGetValueFromTo(j, "LinearDamping", p.mLinearDamping);
+  DyJsonGetValueFromTo(j, "AngularDamping", p.mAngularDamping);
+
+  DyJsonGetValueFromTo(j, "LockPos", p.mLockPosition);
+  DyJsonGetValueFromTo(j, "LockRot", p.mLockPosition);
+  DyJsonGetValueFromTo(j, "LockPreset", p.mLockPreset);
 }
 
 } /// ::dy namespace

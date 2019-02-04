@@ -223,6 +223,7 @@
     <ClCompile Include="Source\Component\Abstract\ADyWidgetCppScript.cc" />
     <ClCompile Include="Source\Component\Actor\CDyActorScript.cc" />
     <ClCompile Include="Source\Component\CDyModelAnimator.cc" />
+    <ClCompile Include="Source\Component\CDyPhysicsRigidbody.cc" />
     <ClCompile Include="Source\Component\CDySoundSource.cc" />
     <ClCompile Include="Source\Component\Internal\Camera\DDyFrustumTester.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Actor\FDyActorScriptStatus.cc" />
@@ -736,7 +737,6 @@
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoFrameBuffer.h" />
     <ClInclude Include="Include\Dy\Meta\Type\DDyResourceName.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyLoadingGlobalScript.h" />
-    <ClInclude Include="Include\Dy\Component\Abstract\ADyPhysicsRIgidbody.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyPhysicsShape.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyWidgetCppScript.h" />
     <ClInclude Include="Include\Dy\Component\CDyCamera.h" />
@@ -750,8 +750,7 @@
     <ClInclude Include="Include\Dy\Component\Internal\CDyFontRenderer.h" />
     <ClInclude Include="Include\Dy\Component\CDyModelFilter.h" />
     <ClInclude Include="Include\Dy\Component\CDyModelRenderer.h" />
-    <ClInclude Include="Include\Dy\Component\CDyPhysicsRigidbodyDynamic.h" />
-    <ClInclude Include="Include\Dy\Component\CDyPhysicsRigidbodyStatic.h" />
+    <ClInclude Include="Include\Dy\Component\CDyPhysicsRigidbody.h" />
     <ClInclude Include="Include\Dy\Component\CDyPhysicsShapeBox.h" />
     <ClInclude Include="Include\Dy\Component\CDyTransform.h" />
     <ClInclude Include="Include\Dy\Component\Helper\TmpCheckRemoveParams.h" />

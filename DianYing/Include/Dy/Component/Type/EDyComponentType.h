@@ -34,6 +34,7 @@ enum class EDyComponentType
   ModelFilter,
   ModelRenderer,
   SoundSource,
+  Rigidbody,
 };
 
 template <EDyComponentType TType> 
@@ -51,6 +52,7 @@ template <> struct TComponentBindingType<EDyComponentType::ModelAnimator> { usin
 template <> struct TComponentBindingType<EDyComponentType::ModelFilter> { using Type = CDyModelFilter; };
 template <> struct TComponentBindingType<EDyComponentType::ModelRenderer> { using Type = CDyModelRenderer; };
 template <> struct TComponentBindingType<EDyComponentType::SoundSource> { using Type = CDySoundSource; };
+template <> struct TComponentBindingType<EDyComponentType::Rigidbody> { using Type = CDyPhysicsRigidbody; };
 
 template <typename TType> 
 struct TComponentUnbindingType;
@@ -63,6 +65,7 @@ template <> struct TComponentUnbindingType<CDyModelAnimator> { static constexpr 
 template <> struct TComponentUnbindingType<CDyModelFilter> { static constexpr EDyComponentType Value = EDyComponentType::ModelFilter; };
 template <> struct TComponentUnbindingType<CDyModelRenderer> { static constexpr EDyComponentType Value = EDyComponentType::ModelRenderer; };
 template <> struct TComponentUnbindingType<CDySoundSource> { static constexpr EDyComponentType Value = EDyComponentType::SoundSource; };
+template <> struct TComponentUnbindingType<CDyPhysicsRigidbody> { static constexpr EDyComponentType Value = EDyComponentType::Rigidbody; };
 
 } /// ::dy namespace
 

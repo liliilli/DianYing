@@ -309,6 +309,7 @@
     <ClCompile Include="Source\Management\Type\Sound\TDyBinderSound3D.cc" />
     <ClCompile Include="Source\Component\CDySoundSource.cc" />
     <ClCompile Include="Source\Component\Internal\Sound\FDySoundInstance.cc" />
+    <ClCompile Include="Source\Component\CDyPhysicsRigidbody.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -426,9 +427,6 @@
     <ClInclude Include="Include\Dy\Component\CDyModelRenderer.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyPhysicsShape.h" />
     <ClInclude Include="Include\Dy\Component\CDyPhysicsShapeBox.h" />
-    <ClInclude Include="Include\Dy\Component\Abstract\ADyPhysicsRIgidbody.h" />
-    <ClInclude Include="Include\Dy\Component\CDyPhysicsRigidbodyDynamic.h" />
-    <ClInclude Include="Include\Dy\Component\CDyPhysicsRigidbodyStatic.h" />
     <ClInclude Include="Include\Dy\Component\Interface\IDyInitializeHelper.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\CheckingRule.h" />
     <ClInclude Include="Include\Dy\Component\CDyCamera.h" />
@@ -770,6 +768,7 @@
     <ClInclude Include="Include\Dy\Component\CDySoundSource.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Sound\FDySoundInstance.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Physics\EDyCollisionFilter.h" />
+    <ClInclude Include="Include\Dy\Component\CDyPhysicsRigidbody.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

@@ -200,6 +200,19 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingSound::DDetail& p
 void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingSound::DChannelDetail& p);
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingSound::DChannelDetail& p);
 
+struct DLockPreset final
+{
+  struct D3DAxis final { bool mX, mY, mZ; };
+  D3DAxis mPosition;
+  D3DAxis mRotation;
+};
+
+void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const DLockPreset& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DLockPreset& p);
+
+void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const DLockPreset::D3DAxis& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DLockPreset::D3DAxis& p);
+
 ///
 /// @struct DDySettingPhysics
 /// @brief Physics setting.
@@ -230,12 +243,7 @@ public:
     // Global restitution (跳ね返す程度)
     TF32 DefaultRestitution = 0.0f;
   };
-  struct DLockPreset final
-  {
-    struct D3DAxis final { bool mX, mY, mZ; };
-    D3DAxis mPosition;
-    D3DAxis mRotation;
-  };
+
   using TLockPreset = std::unordered_map<std::string, DLockPreset>;
 
   DCommon           mCommonProperty = {};
@@ -252,12 +260,6 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingPhysics::DCommon&
 
 void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const EDyCollisionFilter& p);
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ EDyCollisionFilter& p);
-
-void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingPhysics::DLockPreset& p);
-void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingPhysics::DLockPreset& p);
-
-void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingPhysics::DLockPreset::D3DAxis& p);
-void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingPhysics::DLockPreset::D3DAxis& p);
 
 ///
 /// @struct DDySettingMetaPath

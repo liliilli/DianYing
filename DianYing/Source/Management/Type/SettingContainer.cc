@@ -322,13 +322,13 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ EDyCollisionFilter& p)
   p = static_cast<EDyCollisionFilter>(val);
 }
 
-void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingPhysics::DLockPreset& p)
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DLockPreset& p)
 {
   DyJsonGetValueFromTo(j, "Position", p.mPosition);
   DyJsonGetValueFromTo(j, "Rotation", p.mRotation);
 }
 
-void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingPhysics::DLockPreset::D3DAxis& p)
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DLockPreset::D3DAxis& p)
 {
   DyJsonGetValueFromTo(j, "X", p.mX);
   DyJsonGetValueFromTo(j, "Y", p.mY);

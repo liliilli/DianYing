@@ -32,6 +32,7 @@ enum class EDyComponentMetaType
   DirectionalLight, // CDyDirectionalLight
   Camera, // CDyCamera
   SoundSource, // CDySoundSource
+  Rigidbody, // CDyPhysicsRigidbody
 
   // ERROR!
   NoneError

@@ -24,7 +24,7 @@ namespace dy
 class FDyNameGenerator
 {
 public:
-  ~FDyNameGenerator() = default;
+  virtual ~FDyNameGenerator() = default;
 
   /// @brief Try get generated name, when iName is already exist on container, \n
   /// return with suffix `_ + number`. Otherwise, just return parameter name.
