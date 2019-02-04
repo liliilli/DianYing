@@ -25,8 +25,9 @@
 #include <Dy/Management/Helper/SDyProfilingHelper.h>
 #include <Dy/Component/CDyModelAnimator.h>
 #include <Dy/Component/CDySoundSource.h>
-#include <Dy/Component/CDyPhysicsCollider.h>
 #include <Dy/Component/CDyPhysicsColliderSphere.h>
+#include <Dy/Component/CDyPhysicsColliderCapsule.h>
+#include <Dy/Component/CDyPhysicsColliderBox.h>
 
 //!
 //! Implementation
@@ -162,10 +163,10 @@ void FDyActor::MDY_PRIVATE_SPECIFIER(CreateComponentList)(const TComponentMetaLi
       { this->AddComponent<CDyPhysicsColliderSphere>(refMetaInfo);
       } break;
       case EDyColliderType::Capsule: 
-      { MDY_NOT_IMPLEMENTED_ASSERT();
+      { this->AddComponent<CDyPhysicsColliderCapsule>(refMetaInfo);
       } break;
       case EDyColliderType::Box:
-      { MDY_NOT_IMPLEMENTED_ASSERT();
+      { this->AddComponent<CDyPhysicsColliderBox>(refMetaInfo);
       } break;
       default: MDY_UNEXPECTED_BRANCH(); break;
       }
@@ -218,6 +219,10 @@ void FDyActor::ReleaseComponent(_MINOUT_ TComponentList::value_type& iItem)
   { static_cast<TComponentBindingType<_::Rigidbody>::Type&>(*ptrsmtComponent).Release(); } break;
   case EDyComponentType::ColliderSphere:
   { static_cast<TComponentBindingType<_::ColliderSphere>::Type&>(*ptrsmtComponent).Release(); } break;
+  case EDyComponentType::ColliderBox:
+  { static_cast<TComponentBindingType<_::ColliderBox>::Type&>(*ptrsmtComponent).Release(); } break;
+  case EDyComponentType::ColliderCapsule:
+  { static_cast<TComponentBindingType<_::ColliderCapsule>::Type&>(*ptrsmtComponent).Release(); } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 }
