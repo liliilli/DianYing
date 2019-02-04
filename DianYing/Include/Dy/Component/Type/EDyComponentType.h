@@ -24,6 +24,9 @@ class CDyModelFilter;
 class CDyModelRenderer;
 class CDySoundSource;
 class CDyPhysicsCollider;
+class CDyPhysicsColliderSphere;
+class CDyPhysicsColliderBox;
+class CDyPhysicsColliderCapsule;
 
 enum class EDyComponentType 
 {
@@ -36,7 +39,9 @@ enum class EDyComponentType
   ModelRenderer,
   SoundSource,
   Rigidbody,
-  Collider,
+  ColliderSphere,
+  ColliderBox,
+  ColliderCapsule,
 };
 
 template <EDyComponentType TType> 
@@ -55,7 +60,9 @@ template <> struct TComponentBindingType<EDyComponentType::ModelFilter> { using 
 template <> struct TComponentBindingType<EDyComponentType::ModelRenderer> { using Type = CDyModelRenderer; };
 template <> struct TComponentBindingType<EDyComponentType::SoundSource> { using Type = CDySoundSource; };
 template <> struct TComponentBindingType<EDyComponentType::Rigidbody> { using Type = CDyPhysicsRigidbody; };
-template <> struct TComponentBindingType<EDyComponentType::Collider> { using Type = CDyPhysicsCollider; };
+template <> struct TComponentBindingType<EDyComponentType::ColliderSphere> { using Type = CDyPhysicsColliderSphere; };
+template <> struct TComponentBindingType<EDyComponentType::ColliderBox> { using Type = CDyPhysicsColliderBox; };
+template <> struct TComponentBindingType<EDyComponentType::ColliderCapsule> { using Type = CDyPhysicsColliderCapsule; };
 
 template <typename TType> 
 struct TComponentUnbindingType;
@@ -69,7 +76,9 @@ template <> struct TComponentUnbindingType<CDyModelFilter> { static constexpr ED
 template <> struct TComponentUnbindingType<CDyModelRenderer> { static constexpr EDyComponentType Value = EDyComponentType::ModelRenderer; };
 template <> struct TComponentUnbindingType<CDySoundSource> { static constexpr EDyComponentType Value = EDyComponentType::SoundSource; };
 template <> struct TComponentUnbindingType<CDyPhysicsRigidbody> { static constexpr EDyComponentType Value = EDyComponentType::Rigidbody; };
-template <> struct TComponentUnbindingType<CDyPhysicsCollider> { static constexpr EDyComponentType Value = EDyComponentType::Collider; };
+template <> struct TComponentUnbindingType<CDyPhysicsColliderSphere> { static constexpr EDyComponentType Value = EDyComponentType::ColliderSphere; };
+template <> struct TComponentUnbindingType<CDyPhysicsColliderBox> { static constexpr EDyComponentType Value = EDyComponentType::ColliderBox; };
+template <> struct TComponentUnbindingType<CDyPhysicsColliderCapsule> { static constexpr EDyComponentType Value = EDyComponentType::ColliderCapsule; };
 
 } /// ::dy namespace
 

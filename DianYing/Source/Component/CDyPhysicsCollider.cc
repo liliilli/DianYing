@@ -19,23 +19,6 @@
 namespace dy
 {
 
-EDySuccess CDyPhysicsCollider::Initialize(_MIN_ const PDyColliderComponentMetaInfo& desc)
-{
-  if (desc.mInitiallyActivated == true) { this->Activate(); }
-  return DY_SUCCESS;
-}
-
-void CDyPhysicsCollider::Release()
-{
-  if (this->IsComponentActivated() == true) { this->Deactivate(); }
-}
-
-std::string CDyPhysicsCollider::ToString()
-{
-  MDY_NOT_IMPLEMENTED_ASSERT();
-  return "";
-}
-
 bool CDyPhysicsCollider::IsNotifyHitEvent() const noexcept
 {
   return this->mNotifyHitEvent;

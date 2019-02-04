@@ -224,6 +224,9 @@
     <ClCompile Include="Source\Component\Actor\CDyActorScript.cc" />
     <ClCompile Include="Source\Component\CDyModelAnimator.cc" />
     <ClCompile Include="Source\Component\CDyPhysicsCollider.cc" />
+    <ClCompile Include="Source\Component\CDyPhysicsColliderBox.cc" />
+    <ClCompile Include="Source\Component\CDyPhysicsColliderCapsule.cc" />
+    <ClCompile Include="Source\Component\CDyPhysicsColliderSphere.cc" />
     <ClCompile Include="Source\Component\CDyPhysicsRigidbody.cc" />
     <ClCompile Include="Source\Component\CDySoundSource.cc" />
     <ClCompile Include="Source\Component\Internal\Camera\DDyFrustumTester.cc" />
@@ -619,6 +622,9 @@
     <ClInclude Include="Include\Dy\Builtin\Widget\FDyBtWdTestLoadingUi.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyGlobalCppScript.h" />
     <ClInclude Include="Include\Dy\Component\Actor\CDyActorScript.h" />
+    <ClInclude Include="Include\Dy\Component\CDyPhysicsColliderBox.h" />
+    <ClInclude Include="Include\Dy\Component\CDyPhysicsColliderCapsule.h" />
+    <ClInclude Include="Include\Dy\Component\CDyPhysicsColliderSphere.h" />
     <ClInclude Include="Include\Dy\Component\CDySoundSource.h" />
     <ClInclude Include="Include\Dy\Component\CDyModelAnimator.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Actor\CDyActorScriptBase.h" />

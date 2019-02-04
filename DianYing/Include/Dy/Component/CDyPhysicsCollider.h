@@ -24,7 +24,7 @@ namespace dy
 /// @class CDyPhysicsCollider
 /// @brief Collider component of physics simuation.
 ///
-class CDyPhysicsCollider final : public ADyGeneralBaseComponent, public IDyInitializeHelper<PDyColliderComponentMetaInfo>
+class CDyPhysicsCollider : public ADyGeneralBaseComponent, public IDyInitializeHelper<PDyColliderComponentMetaInfo>
 {
 public:
   CDyPhysicsCollider(FDyActor& actorReference) : ADyGeneralBaseComponent(actorReference) {};
@@ -34,16 +34,8 @@ public:
   MDY_SET_TYPEMATCH_FUNCTION(::dy::ADyGeneralBaseComponent, CDyPhysicsCollider)
   MDY_SET_CRC32_HASH_WITH_TYPE(CDyPhysicsCollider);
 
-  /// @brief 
-  MDY_NODISCARD EDySuccess Initialize(_MIN_ const PDyColliderComponentMetaInfo& desc) override final;
-  /// @brief
-  void Release() override final;
-
   /// @brief Update anyway.
   void Update(_MIN_ TF32 dt) override final {};
-
-  /// @brief Get string information of this component.
-  MDY_NODISCARD std::string ToString() override final;
 
   /// @brief Check notify hit event.
   MDY_NODISCARD bool IsNotifyHitEvent() const noexcept; 
@@ -58,9 +50,9 @@ public:
   void MDY_PRIVATE_SPECIFIER(SetRegisterFlag)(_MIN_ bool iFlag) noexcept;
 
   /// @brief Initialize internal (PhysX) resource.
-  virtual void InitializeInternalResource() {}; 
+  virtual void InitializeInternalResource() = 0; 
   /// @brief Release internal (PhysX) resource.
-  virtual void ReleaseInternalResource() {};
+  virtual void ReleaseInternalResource() = 0;
 
 private:
   void TryActivateInstance() override final;
