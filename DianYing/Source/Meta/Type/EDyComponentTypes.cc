@@ -45,6 +45,7 @@ DyGetComponentTypeFrom(_MIN_ const std::string& typeString) noexcept
   case dy::DyStrCase("Camera"):         return dy::EDyComponentMetaType::Camera;
   case dy::DyStrCase("SoundSource"):    return dy::EDyComponentMetaType::SoundSource;
   case dy::DyStrCase("PhysicsRigidbody"): return dy::EDyComponentMetaType::Rigidbody;
+  case dy::DyStrCase("PhysicsCollider"):  return dy::EDyComponentMetaType::Collider;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(dy::EDyComponentMetaType::NoneError);
   }
 }

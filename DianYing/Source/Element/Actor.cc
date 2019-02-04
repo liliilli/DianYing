@@ -22,9 +22,10 @@
 #include <Dy/Component/CDyDirectionalLight.h>
 #include <Dy/Element/Type/PDyActorCreationDescriptor.h>
 #include <Dy/Management/WorldManager.h>
-#include "Dy/Management/Helper/SDyProfilingHelper.h"
-#include "Dy/Component/CDyModelAnimator.h"
-#include "Dy/Component/CDySoundSource.h"
+#include <Dy/Management/Helper/SDyProfilingHelper.h>
+#include <Dy/Component/CDyModelAnimator.h>
+#include <Dy/Component/CDySoundSource.h>
+#include <Dy/Component/CDyPhysicsCollider.h>
 
 //!
 //! Implementation
@@ -151,6 +152,9 @@ void FDyActor::MDY_PRIVATE_SPECIFIER(CreateComponentList)(const TComponentMetaLi
     case EDyComponentMetaType::Rigidbody:
       this->AddComponent<CDyPhysicsRigidbody>(std::any_cast<const PDyRigidbodyComponentMetaInfo&>(componentInfo));
       break;
+    case EDyComponentMetaType::Collider:
+      this->AddComponent<CDyPhysicsCollider>(std::any_cast<const PDyColliderComponentMetaInfo&>(componentInfo));
+      break;
     }
   }
 
@@ -196,6 +200,8 @@ void FDyActor::ReleaseComponent(_MINOUT_ TComponentList::value_type& iItem)
   { static_cast<TComponentBindingType<_::SoundSource>::Type&>(*ptrsmtComponent).Release(); } break;
   case EDyComponentType::Rigidbody:
   { static_cast<TComponentBindingType<_::Rigidbody>::Type&>(*ptrsmtComponent).Release(); } break;
+  case EDyComponentType::Collider:
+  { static_cast<TComponentBindingType<_::Collider>::Type&>(*ptrsmtComponent).Release(); } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 }

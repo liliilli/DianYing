@@ -29,6 +29,9 @@ enum class EDyColliderType
   NoneError
 };
 
+void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const EDyColliderType& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyColliderType& p);
+
 template <EDyColliderType TType> 
 struct TColliderBindingType
 { 

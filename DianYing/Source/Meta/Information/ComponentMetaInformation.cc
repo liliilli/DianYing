@@ -100,6 +100,8 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ TComponentMetaList& p)
     case EDyComponentMetaType::Rigidbody:
       p.emplace_back(type, componentAtlas.get<PDyRigidbodyComponentMetaInfo>());
       break;
+    case EDyComponentMetaType::Collider:
+      p.emplace_back(type, componentAtlas.get<PDyColliderComponentMetaInfo>());
     }
   }
 }
@@ -409,7 +411,26 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyColliderComponentMetaI
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyColliderComponentMetaInfo::DDetails& p)
 {
-  MDY_NOT_IMPLEMENTED_ASSERT();
+  DyJsonGetValueFromTo(j, "IsNotifyEvent", p.mNotifyHitEvent);
+  DyJsonGetValueFromTo(j, "IsOverlapEvent", p.mNotifyOverlapEvent);
+  DyJsonGetValueFromTo(j, "ColliderType", p.mColliderType);
+
+  switch (p.mColliderType)
+  {
+  case EDyColliderType::Sphere: 
+  { p.mColliderDetails = DyJsonGetValueFrom<TColliderBindingType<EDyColliderType::Sphere>::Type>(j, "ColliderDetails");
+  } break;
+  case EDyColliderType::Capsule:
+  { p.mColliderDetails = DyJsonGetValueFrom<TColliderBindingType<EDyColliderType::Capsule>::Type>(j, "ColliderDetails");
+  } break;
+  case EDyColliderType::Box:
+  { p.mColliderDetails = DyJsonGetValueFrom<TColliderBindingType<EDyColliderType::Box>::Type>(j, "ColliderDetails");
+  } break;
+  default: MDY_UNEXPECTED_BRANCH(); break;
+  }
+
+  DyJsonGetValueFromTo(j, "FilterPresetSpecifier", p.mCollisionFilterPresetSpecifier);
+  DyJsonGetValueFromTo(j, "CollisionFilter", p.mCollisionFilter);
 }
 
 } /// ::dy namespace

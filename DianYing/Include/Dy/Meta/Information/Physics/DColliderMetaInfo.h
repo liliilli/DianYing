@@ -28,6 +28,9 @@ struct PDySphereColliderMetaInfo final
   DDyClamp<TF32, 0, 1'000'000> mRadius = 0;
 };
 
+void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDySphereColliderMetaInfo& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySphereColliderMetaInfo& p);
+
 /// @struct PDyCapsulesColliderMetaInfo
 /// @brief Sphere collider meta information.
 /// A PxCapsuleGeometry is centered at the origin. 
@@ -40,6 +43,9 @@ struct PDyCapsulesColliderMetaInfo final
   DDyClamp<TF32, 0, 1'000'000> mRadius = 0;
 };
 
+void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDyCapsulesColliderMetaInfo& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyCapsulesColliderMetaInfo& p);
+
 /// @struct PDyBoxColliderMetaInfo
 /// @brief Box collider meta information.
 /// A PxBoxGeometry has three attributes, the three extents halved: 
@@ -50,6 +56,9 @@ struct PDyBoxColliderMetaInfo final
   // We have to retate quater-sphere to Z-axis because default capsule is forwarding to X-axis.
   DDyVector3 mHalfExtent{};
 };
+
+void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDyBoxColliderMetaInfo& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyBoxColliderMetaInfo& p);
 
 } /// ::dy namespace
 

@@ -223,6 +223,7 @@
     <ClCompile Include="Source\Component\Abstract\ADyWidgetCppScript.cc" />
     <ClCompile Include="Source\Component\Actor\CDyActorScript.cc" />
     <ClCompile Include="Source\Component\CDyModelAnimator.cc" />
+    <ClCompile Include="Source\Component\CDyPhysicsCollider.cc" />
     <ClCompile Include="Source\Component\CDyPhysicsRigidbody.cc" />
     <ClCompile Include="Source\Component\CDySoundSource.cc" />
     <ClCompile Include="Source\Component\Internal\Camera\DDyFrustumTester.cc" />
@@ -514,6 +515,7 @@
     <ClCompile Include="Source\Meta\Information\MetaInfoModelSkeleton.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoSound.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoTexture.cc" />
+    <ClCompile Include="Source\Meta\Information\Physics\DColliderMetaInfo.cc" />
     <ClCompile Include="Source\Meta\Information\PrefabMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Information\ScriptMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Type\EDyComponentTypes.cc" />
@@ -521,6 +523,7 @@
     <ClCompile Include="Source\Meta\Type\EDyWidgetTypes.cc" />
     <ClCompile Include="Source\Meta\Type\EDyTextureParameter.cc" />
     <ClCompile Include="Source\Meta\Type\Input\JsonInputButton.cc" />
+    <ClCompile Include="Source\Meta\Type\Physics\EDyColliderType.cc" />
     <ClCompile Include="Source\precompiled.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">Create</PrecompiledHeader>
@@ -739,7 +742,6 @@
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoFrameBuffer.h" />
     <ClInclude Include="Include\Dy\Meta\Type\DDyResourceName.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyLoadingGlobalScript.h" />
-    <ClInclude Include="Include\Dy\Component\Abstract\ADyPhysicsShape.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyWidgetCppScript.h" />
     <ClInclude Include="Include\Dy\Component\CDyCamera.h" />
     <ClInclude Include="Include\Dy\Component\CDyDirectionalLight.h" />
@@ -753,7 +755,7 @@
     <ClInclude Include="Include\Dy\Component\CDyModelFilter.h" />
     <ClInclude Include="Include\Dy\Component\CDyModelRenderer.h" />
     <ClInclude Include="Include\Dy\Component\CDyPhysicsRigidbody.h" />
-    <ClInclude Include="Include\Dy\Component\CDyPhysicsShapeBox.h" />
+    <ClInclude Include="Include\Dy\Component\CDyPhysicsCollider.h" />
     <ClInclude Include="Include\Dy\Component\CDyTransform.h" />
     <ClInclude Include="Include\Dy\Component\Helper\TmpCheckRemoveParams.h" />
     <ClInclude Include="Include\Dy\Component\Interface\IDyInitializeHelper.h" />

@@ -310,6 +310,9 @@
     <ClCompile Include="Source\Component\CDySoundSource.cc" />
     <ClCompile Include="Source\Component\Internal\Sound\FDySoundInstance.cc" />
     <ClCompile Include="Source\Component\CDyPhysicsRigidbody.cc" />
+    <ClCompile Include="Source\Meta\Information\Physics\DColliderMetaInfo.cc" />
+    <ClCompile Include="Source\Meta\Type\Physics\EDyColliderType.cc" />
+    <ClCompile Include="Source\Component\CDyPhysicsCollider.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -425,8 +428,6 @@
     <ClInclude Include="Include\Dy\Component\Helper\TmpCheckRemoveParams.h" />
     <ClInclude Include="Include\Dy\Component\CDyModelFilter.h" />
     <ClInclude Include="Include\Dy\Component\CDyModelRenderer.h" />
-    <ClInclude Include="Include\Dy\Component\Abstract\ADyPhysicsShape.h" />
-    <ClInclude Include="Include\Dy\Component\CDyPhysicsShapeBox.h" />
     <ClInclude Include="Include\Dy\Component\Interface\IDyInitializeHelper.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\CheckingRule.h" />
     <ClInclude Include="Include\Dy\Component\CDyCamera.h" />
@@ -771,6 +772,7 @@
     <ClInclude Include="Include\Dy\Component\CDyPhysicsRigidbody.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Physics\EDyColliderType.h" />
     <ClInclude Include="Include\Dy\Meta\Information\Physics\DColliderMetaInfo.h" />
+    <ClInclude Include="Include\Dy\Component\CDyPhysicsCollider.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

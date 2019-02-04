@@ -33,6 +33,7 @@ enum class EDyComponentMetaType
   Camera, // CDyCamera
   SoundSource, // CDySoundSource
   Rigidbody, // CDyPhysicsRigidbody
+  Collider, // CDyPhysicsCollider
 
   // ERROR!
   NoneError
