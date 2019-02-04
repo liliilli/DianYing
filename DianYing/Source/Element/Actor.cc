@@ -153,6 +153,13 @@ void FDyActor::MDY_PRIVATE_SPECIFIER(CreateComponentList)(const TComponentMetaLi
       break;
     }
   }
+
+  // If rigidbody is not exist, just create default rigidbody.
+  if (MDY_CHECK_ISNULL(this->mRigidbody))
+  {
+    const PDyRigidbodyComponentMetaInfo defaultMetaInfo{};
+    this->AddComponent<CDyPhysicsRigidbody>(defaultMetaInfo);
+  }
 }
 
 FDyActor::~FDyActor()

@@ -46,22 +46,18 @@ public:
 private:
   /// Check this rigidbody (and collider) simulate physics.
   bool mIsSimulatePhysics = false;
+  /// Enable gravity or not.
+  bool mIsEnableGravity = false;
   /// Mass of sum of collider.
   DDyClamp<TF32, 0, 100'000>  mMassInKg = 0.001f;
   /// Linear damping of rigidbody
   DDyClamp<TF32, 0, 10'000>   mLinearDamping = 1.0f;
   /// Angular damping of rigidbody
   DDyClamp<TF32, 0, 10'000>   mAngularDamping = 1.0f; 
-  /// Enable gravity or not.
-  bool mIsEnableGravity = false;
-  ///
-  bool mLockPositionX = false;
-  bool mLockPositionY = false;
-  bool mLockPositionZ = false;
-  ///
-  bool mLockRotationX = false;
-  bool mLockRotationY = false;
-  bool mLockRotationZ = false;
+  /// Lock position axis.
+  DLockPreset::D3DAxis mLockPosition;
+  /// Lock rotation axis.
+  DLockPreset::D3DAxis mLockRotation;
 
   void TryActivateInstance() override final;
   void TryDeactivateInstance() override final;

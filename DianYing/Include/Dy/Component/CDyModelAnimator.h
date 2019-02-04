@@ -49,7 +49,7 @@ public:
 
   /// @brief  Initialize with descriptor.
   /// @return If successful, return DY_SUCCESS or DY_FAILURE.
-  MDY_NODISCARD EDySuccess Initialize(const PDyModelAnimatorComponentMetaInfo& descriptor) override final;
+  MDY_NODISCARD EDySuccess Initialize(_MIN_ const PDyModelAnimatorComponentMetaInfo& descriptor) override final;
 
   /// @brief Release component.
   void Release() override final;

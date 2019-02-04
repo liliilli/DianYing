@@ -14,25 +14,55 @@
 
 /// Header file
 #include <Dy/Component/CDyPhysicsRigidbody.h>
+#include <Dy/Management/SettingManager.h>
+#include <Dy/Helper/ContainerHelper.h>
 
 namespace dy
 {
 
-CDyPhysicsRigidbody::CDyPhysicsRigidbody(FDyActor& actorReference) : 
-    ADyGeneralBaseComponent{actorReference}
-{
-  MDY_NOT_IMPLEMENTED_ASSERT();
-}
+CDyPhysicsRigidbody::CDyPhysicsRigidbody(FDyActor& actorReference) : ADyGeneralBaseComponent{actorReference}
+{ }
 
 EDySuccess CDyPhysicsRigidbody::Initialize(_MIN_ const PDyRigidbodyComponentMetaInfo& descriptor)
 {
-  MDY_NOT_IMPLEMENTED_ASSERT();
-  return DY_FAILURE;
+  // Copy all values.
+  this->mIsSimulatePhysics  = descriptor.mDetails.mIsSimulatePhysics;
+  this->mIsEnableGravity    = descriptor.mDetails.mIsEnableGravity;
+  this->mAngularDamping     = descriptor.mDetails.mAngularDamping;
+  this->mLinearDamping      = descriptor.mDetails.mLinearDamping;
+  this->mMassInKg           = descriptor.mDetails.mMassInKg;
+  this->mLockPosition       = descriptor.mDetails.mLockPosition;
+  this->mLockRotation       = descriptor.mDetails.mLockRotation;
+
+  // If lockPreset is not empty so get lock axis values from information..
+  const auto& lockPreset = descriptor.mDetails.mLockPreset;
+  if (lockPreset.empty() == false)
+  {
+    const auto& settingManager = MDySetting::GetInstance();
+    const auto& physics = settingManager.GetPhysicsSetting();
+    // If we can not find `lockPreset` lock preset, just let it be.
+    if (DyIsMapContains(physics.mLockPresetContainer, lockPreset) == false)
+    {
+      MDY_LOG_ERROR("Failed to find lock preset item from setting, {}.", lockPreset);
+    }
+    else
+    { // Otherwise, override values.
+      const auto& value = physics.mLockPresetContainer.at(lockPreset);
+      this->mLockPosition = value.mPosition;
+      this->mLockRotation = value.mRotation;
+    }
+  }
+
+  // Component activation check.
+  if (descriptor.mInitiallyActivated == true) { this->Activate(); }
+
+  return DY_SUCCESS;
 }
 
 void CDyPhysicsRigidbody::Release()
 {
-  MDY_NOT_IMPLEMENTED_ASSERT();
+  // Component activation check.
+  if (this->IsComponentActivated() == true) { this->Deactivate(); }
 }
 
 std::string CDyPhysicsRigidbody::ToString()
