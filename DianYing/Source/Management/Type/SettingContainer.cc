@@ -303,6 +303,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingPhysics& p)
   DyJsonGetValueFromTo(j, "Layer",        p.mCollisionTag);
   DyJsonGetValueFromTo(j, "Common",       p.mCommonProperty);
   DyJsonGetValueFromTo(j, "FilterPreset", p.mFilterPresetContainer);
+  DyJsonGetValueFromTo(j, "LockPreset",   p.mLockPresetContainer);
 }
 
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingPhysics::DCommon& p)
@@ -319,6 +320,19 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ EDyCollisionFilter& p)
   const auto val = j.get<TU32>();
   // 0 is block, 1 is overlap, 2 is ignore.
   p = static_cast<EDyCollisionFilter>(val);
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingPhysics::DLockPreset& p)
+{
+  DyJsonGetValueFromTo(j, "Position", p.mPosition);
+  DyJsonGetValueFromTo(j, "Rotation", p.mRotation);
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingPhysics::DLockPreset::D3DAxis& p)
+{
+  DyJsonGetValueFromTo(j, "X", p.mX);
+  DyJsonGetValueFromTo(j, "Y", p.mY);
+  DyJsonGetValueFromTo(j, "Z", p.mZ);
 }
 
 ///

@@ -137,6 +137,13 @@ public:
   /// @brief Get const invariable sound setting instance.
   MDY_NODISCARD const DDySettingSound& GetSoundSetting() const noexcept; 
 
+  //!
+  //! Physics
+  //!
+
+  /// @brief Get const invariant physics setting instance.
+  MDY_NODISCARD const DDySettingPhysics& GetPhysicsSetting() const noexcept;
+
 private:
   /// @brief Setup executable argument settings.
   /// This function must be called before initialization.

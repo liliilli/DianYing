@@ -246,6 +246,11 @@ const DDySettingSound& MDySetting::GetSoundSetting() const noexcept
   return this->mSound;
 }
 
+const DDySettingPhysics& MDySetting::GetPhysicsSetting() const noexcept
+{
+  return this->mPhysics;
+}
+
 void MDySetting::pSetupExecutableArgumentSettings()
 {
   /// @brief Setup rendering api type from argument.

@@ -250,6 +250,37 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySoundSourceComponentMe
 void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const PDySoundSourceComponentMetaInfo::DAttenuation& p);
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySoundSourceComponentMetaInfo::DAttenuation& p);
 
+///
+/// @struct PDyRigidbodyComponentMetaInfo
+/// @brief Dependent information to CDyRididbody (only one or not per one actor) component. 
+///
+struct PDyRigidbodyComponentMetaInfo final : public IDyMetaInformation
+{
+  /// Check this rigidbody (and collider) simulate physics.
+  bool mIsSimulatePhysics = false;
+  /// Mass of sum of collider.
+  DDyClamp<TF32, 0, 100'000>  mMassInKg = 0.001f;
+  /// Linear damping of rigidbody
+  DDyClamp<TF32, 0, 10'000>   mLinearDamping = 1.0f;
+  /// Angular damping of rigidbody
+  DDyClamp<TF32, 0, 10'000>   mAngularDamping = 1.0f; 
+  /// Enable gravity or not.
+  bool mIsEnableGravity = false;
+  ///
+  bool mLockPositionX = false;
+  bool mLockPositionY = false;
+  bool mLockPositionZ = false;
+  ///
+  bool mLockRotationX = false;
+  bool mLockRotationY = false;
+  bool mLockRotationZ = false;
+  /// Lock preset.
+  std::string mLockPreset = MDY_INITIALIZE_EMPTYSTR;
+};
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const PDyRigidbodyComponentMetaInfo& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyRigidbodyComponentMetaInfo& p);
+
 } /// ::dy namespace
 
 #endif /// GUARD_DY_META_INFORMATION_COMPONENTMETAINFORMATION_H
