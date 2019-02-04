@@ -14,6 +14,7 @@
 
 /// Header file
 #include <Dy/Component/CDyPhysicsCollider.h>
+#include <Dy/Element/Actor.h>
 
 namespace dy
 {
@@ -35,14 +36,55 @@ std::string CDyPhysicsCollider::ToString()
   return "";
 }
 
+bool CDyPhysicsCollider::IsNotifyHitEvent() const noexcept
+{
+  return this->mNotifyHitEvent;
+}
+
+bool CDyPhysicsCollider::IsNotifyOverlapEvent() const noexcept
+{
+  return this->mNotifyOverlapEvent;
+}
+
+bool CDyPhysicsCollider::IsRegistered() const noexcept
+{
+  return this->mIsRegistered;
+}
+
+EDyColliderType CDyPhysicsCollider::GetColliderType() const noexcept
+{
+  return this->mColliderType;
+}
+
+void CDyPhysicsCollider::MDY_PRIVATE_SPECIFIER(SetRegisterFlag)(_MIN_ bool iFlag) noexcept
+{
+  this->mIsRegistered = iFlag;
+}
+
 void CDyPhysicsCollider::TryActivateInstance()
 {
+  auto& bindedActor   = *this->GetBindedActor();
+  auto* ptrRigidbody  =  bindedActor.GetRigidbody();
+  if (MDY_CHECK_ISNULL(ptrRigidbody) || ptrRigidbody->IsComponentActivated() == false)
+  {
+    // Look forward to catch signals from rigidbody... (Activated & Created)
+    return;
+  }
 
+  ptrRigidbody->RegisterCollider(*this);
 }
 
 void CDyPhysicsCollider::TryDeactivateInstance()
 {
+  auto& bindedActor   = *this->GetBindedActor();
+  auto* ptrRigidbody  =  bindedActor.GetRigidbody();
+  if (MDY_CHECK_ISNULL(ptrRigidbody) || ptrRigidbody->IsComponentActivated() == false)
+  {
+    // Look forward to catch signals from rigidbody... (Activated & Created)
+    return;
+  }
 
+  ptrRigidbody->UnregisterCollider(*this);
 }
 
 } /// ::dy namespace

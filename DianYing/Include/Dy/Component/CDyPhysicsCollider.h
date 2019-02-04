@@ -22,8 +22,7 @@ namespace dy
 
 ///
 /// @class CDyPhysicsCollider
-/// @brief
-/// @TODO SCRIPT THIS
+/// @brief Collider component of physics simuation.
 ///
 class CDyPhysicsCollider final : public ADyGeneralBaseComponent, public IDyInitializeHelper<PDyColliderComponentMetaInfo>
 {
@@ -46,9 +45,37 @@ public:
   /// @brief Get string information of this component.
   MDY_NODISCARD std::string ToString() override final;
 
+  /// @brief Check notify hit event.
+  MDY_NODISCARD bool IsNotifyHitEvent() const noexcept; 
+  /// @brief Check notify overlap event.
+  MDY_NODISCARD bool IsNotifyOverlapEvent() const noexcept;
+  /// @brief Check this collider is registered into CDyPhysicsRigidbody component.
+  MDY_NODISCARD bool IsRegistered() const noexcept;
+  /// @brief Get collider type of this component.
+  MDY_NODISCARD EDyColliderType GetColliderType() const noexcept;
+
+  /// @brief Set register flag.
+  void MDY_PRIVATE_SPECIFIER(SetRegisterFlag)(_MIN_ bool iFlag) noexcept;
+
+  /// @brief Initialize internal (PhysX) resource.
+  virtual void InitializeInternalResource() {}; 
+  /// @brief Release internal (PhysX) resource.
+  virtual void ReleaseInternalResource() {};
+
 private:
   void TryActivateInstance() override final;
   void TryDeactivateInstance() override final;
+
+  /// If true, this component notify hit event (callback) when target hit.
+  bool mNotifyHitEvent = false;
+  /// If true, this component notify overlap event when target overlapped.
+  bool mNotifyOverlapEvent = false;
+  /// Flag for registration. \n
+  /// When activated & Activate rigidActor component is exist on Actor, this flag must be true.
+  /// Otherwise, this flag must be false.
+  bool mIsRegistered = false; 
+  /// Collider type of this component.
+  EDyColliderType mColliderType = EDyColliderType::NoneError;
 };
 
 } /// ::dy namespace

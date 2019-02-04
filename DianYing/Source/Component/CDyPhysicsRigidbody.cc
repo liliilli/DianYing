@@ -14,8 +14,11 @@
 
 /// Header file
 #include <Dy/Component/CDyPhysicsRigidbody.h>
+#include <Dy/Element/Actor.h>
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Helper/ContainerHelper.h>
+#include <Dy/Helper/System/Idioms.h>
+#include <Dy/Component/CDyPhysicsCollider.h>
 
 namespace dy
 {
@@ -73,12 +76,69 @@ std::string CDyPhysicsRigidbody::ToString()
 
 void CDyPhysicsRigidbody::TryActivateInstance()
 {
-  MDY_NOT_IMPLEMENTED_ASSERT();
+  auto& bindedActor    = *this->GetBindedActor();
+  auto ptrColliderList =  bindedActor.GetGeneralComponentList<CDyPhysicsCollider>();
+
+  // Try insert collider and try populate resource.
+  for (auto& ptrCollider : this->mPtrColliderList)
+  {
+    if (ptrCollider->IsRegistered() == true) { continue; }
+    this->RegisterCollider(*ptrCollider);
+  }
+  
+  // Do something.
 }
 
 void CDyPhysicsRigidbody::TryDeactivateInstance()
 {
-  MDY_NOT_IMPLEMENTED_ASSERT();
+  // Do something.
+  
+
+  // And remove collider registration.
+  while (this->mPtrColliderList.empty() == false)
+  {
+    // Release internal resource & unregister.
+    auto& ptrCollider = this->mPtrColliderList.back();
+    ptrCollider->ReleaseInternalResource();
+    ptrCollider->MDY_PRIVATE_SPECIFIER(SetRegisterFlag)(false);
+
+    // We need to remove from last element because of fast erasion.
+    this->mPtrColliderList.erase(this->mPtrColliderList.end() - 1);
+  }
+}
+
+void CDyPhysicsRigidbody::RegisterCollider(_MIN_ CDyPhysicsCollider& iRefCollider)
+{
+  // Try find duplication.
+  const auto isExist = std::any_of(
+      MDY_BIND_BEGIN_END(this->mPtrColliderList), 
+      [iPtrCollider = &iRefCollider](const auto& ptrCollider) { return ptrCollider == iPtrCollider; });
+  if (isExist == true)
+  {
+    MDY_LOG_WARNING("Collider component may be duplicated.");
+    return;
+  }
+
+  // Insert collider instance.
+  this->mPtrColliderList.emplace_back(DyMakeNotNull(&iRefCollider));
+  // If inserted, call resource population function from collider.
+  iRefCollider.MDY_PRIVATE_SPECIFIER(SetRegisterFlag)(true);
+  iRefCollider.InitializeInternalResource();
+}
+
+void CDyPhysicsRigidbody::UnregisterCollider(_MIN_ CDyPhysicsCollider& iRefCollider)
+{
+  // Try find instance.
+  const auto it = std::find_if(
+      MDY_BIND_BEGIN_END(this->mPtrColliderList),
+      [iPtrCollider = &iRefCollider](const auto& ptrCollider) { return ptrCollider == iPtrCollider; });
+  MDY_ASSERT_FORCE(it != this->mPtrColliderList.end(), "Unexpected error occurred.");
+
+  // If found, release internal resource from collider.
+  it->Get()->ReleaseInternalResource();
+  it->Get()->MDY_PRIVATE_SPECIFIER(SetRegisterFlag)(false);
+  // And remove.
+  DyFastErase(this->mPtrColliderList, it);
 }
 
 } /// ::dy namespace

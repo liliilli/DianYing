@@ -463,9 +463,10 @@ NotNull<CDyTransform*> FDyActor::GetTransform() noexcept
   return DyMakeNotNull(this->mTransform.get());
 }
 
-NotNull<CDyPhysicsRigidbody*> FDyActor::GetRigidbody() noexcept
+CDyPhysicsRigidbody* FDyActor::GetRigidbody() noexcept
 {
-  return DyMakeNotNull(this->mRigidbody.get());
+  if (MDY_CHECK_ISEMPTY(this->mRigidbody))  { return nullptr; } 
+  else        { return DyMakeNotNull(this->mRigidbody.get()); }
 }
 
 } /// ::dy namespace

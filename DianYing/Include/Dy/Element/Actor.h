@@ -282,7 +282,7 @@ public:
 
   /// @brief  Get rigidbody component pointer from FDyActor instance.
   /// @return Valid rigidbody component pointer instance.
-  MDY_NODISCARD NotNull<CDyPhysicsRigidbody*> GetRigidbody() noexcept;
+  MDY_NODISCARD CDyPhysicsRigidbody* GetRigidbody() noexcept;
 
 #ifdef false
   ///

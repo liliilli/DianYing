@@ -16,6 +16,20 @@
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
+#include <Dy/Helper/Pointer.h>
+
+//!
+//! Forward declaration
+//!
+
+namespace dy
+{
+class CDyPhysicsCollider;
+} /// ::dy namesapce
+
+//!
+//! Implementation
+//!
 
 namespace dy
 {
@@ -42,6 +56,14 @@ public:
 
   /// @brief Get string information of this component.
   MDY_NODISCARD std::string ToString() override final;
+  
+  /// @brief Register activated, valid collider component.
+  /// Registered collider will be attached to internal physics system.
+  void RegisterCollider(_MIN_ CDyPhysicsCollider& iRefCollider);
+
+  /// @brief Unregister deactivated, valid collider component.
+  /// Unregistred collider will be detached from internal physics system.
+  void UnregisterCollider(_MIN_ CDyPhysicsCollider& iRefCollider);
 
 private:
   /// Check this rigidbody (and collider) simulate physics.
@@ -61,6 +83,9 @@ private:
 
   void TryActivateInstance() override final;
   void TryDeactivateInstance() override final;
+
+  /// @brief Manages collider list.
+  std::vector<NotNull<CDyPhysicsCollider*>> mPtrColliderList{};
 };
 
 } /// ::dy namespace
