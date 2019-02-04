@@ -264,7 +264,6 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingTag& p)
 /// @brief  Setting sound that able to be serialized.
 ///
 
-void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingSound& p);
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingSound& p)
 {
   DyJsonGetValueFromTo(j, "3D", p.m3DSetting);
@@ -273,7 +272,6 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingSound& p)
   DyJsonGetValueFromTo(j, "Channel",  p.mChannel);
 }
 
-void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingSound::D3DSetting& p);
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingSound::D3DSetting& p)
 {
   DyJsonGetValueFromTo(j, "DopplerOffset", p.mDopplerOffset);
@@ -281,20 +279,46 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingSound::D3DSetting
   DyJsonGetValueFromTo(j, "AttenuationFactor", p.mAttenuationFactor);
 }
 
-void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingSound::DDetail& p);
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingSound::DDetail& p)
 {
   DyJsonGetValueFromTo(j, "Muted", p.mMuted);
   DyJsonGetValueFromTo(j, "Volume", p.mVolume);
 }
 
-void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingSound::DChannelDetail& p);
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingSound::DChannelDetail& p)
 {
   from_json(j, static_cast<DDySettingSound::DDetail&>(p));
   DyJsonGetValueFromTo(j, "Group", p.mGroupSpecifier);
 
   MDY_ASSERT_FORCE(p.mGroupSpecifier.empty() == false, "Channel's group must be specified.");
+}
+
+///
+/// @struct DDySettingPhysics
+/// @brief Physics setting.
+///
+
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingPhysics& p)
+{
+  DyJsonGetValueFromTo(j, "Layer",        p.mCollisionTag);
+  DyJsonGetValueFromTo(j, "Common",       p.mCommonProperty);
+  DyJsonGetValueFromTo(j, "FilterPreset", p.mFilterPresetContainer);
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingPhysics::DCommon& p)
+{
+  DyJsonGetValueFromTo(j, "Gravity",                p.mGravity);
+  DyJsonGetValueFromTo(j, "DefaultStaticFriction",  p.mDefaultStaticFriction);
+  DyJsonGetValueFromTo(j, "DefaultDynamicFriction", p.mDefaultDynamicFriction);
+  DyJsonGetValueFromTo(j, "DefaultRestitution",     p.DefaultRestitution);
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ EDyCollisionFilter& p)
+{
+  // Get integer value from json.
+  const auto val = j.get<TU32>();
+  // 0 is block, 1 is overlap, 2 is ignore.
+  p = static_cast<EDyCollisionFilter>(val);
 }
 
 ///

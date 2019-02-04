@@ -395,8 +395,10 @@ EDySuccess MDySetting::pfInitialize()
     DyJsonGetValueFromTo(settingAtlas, sCategoryGameplay, this->mGamePlay);
     DyJsonGetValueFromTo(settingAtlas, sCategoryInput, this->mInput);
     DyJsonGetValueFromTo(settingAtlas, sCategoryTag, this->mTag);
-    DyJsonGetValueFromTo(settingAtlas, sCategoryMetaPath, this->mDevMetaPath);
     DyJsonGetValueFromTo(settingAtlas, "Sound", this->mSound);
+    DyJsonGetValueFromTo(settingAtlas, "Physics", this->mPhysics);
+
+    DyJsonGetValueFromTo(settingAtlas, sCategoryMetaPath, this->mDevMetaPath);
     MDyMetaInfo::GetInstance().MDY_PRIVATE_SPECIFIER(InitiateMetaInformation)();
   }
   else if (this->mApplicationMode == EDyAppMode::LoadCompressedFile)
@@ -414,6 +416,7 @@ EDySuccess MDySetting::pfInitialize()
     DyJsonGetValueFromTo(settingAtlas, sCategoryInput, this->mInput);
     DyJsonGetValueFromTo(settingAtlas, sCategoryTag, this->mTag);
     DyJsonGetValueFromTo(settingAtlas, "Sound", this->mSound);
+    DyJsonGetValueFromTo(settingAtlas, "Physics", this->mPhysics);
     MDyMetaInfo::GetInstance().MDY_PRIVATE_SPECIFIER(InitiateMetaInformationComp)(metaAtlas);
   }
   else { MDY_UNEXPECTED_BRANCH(); }

@@ -161,6 +161,7 @@ private:
   DDySettingSound       mSound        = {};
   // @brief ONLY USED WHEN `MDY_FLAG_LOAD_COMPRESSED_DATAFILE` IS NOT DEFINED.
   DDySettingMetaPath    mDevMetaPath  = {};
+  DDySettingPhysics     mPhysics      = {};
 
   bool mIsEnabledVsync = true;
   bool mIsInitialized  = false;

@@ -19,7 +19,8 @@
 #include <Dy/Helper/GlobalType.h>
 #include <Dy/Helper/Type/VectorInt2.h>
 #include <Dy/Meta/Type/Input/EDyInputButton.h>
-#include "Dy/Helper/Type/Clamp.h"
+#include <Dy/Meta/Type/Physics/EDyCollisionFilter.h>
+#include <Dy/Helper/Type/Clamp.h>
 
 namespace dy
 {
@@ -104,7 +105,7 @@ struct DDySettingInput
     /// @param  specifierName `DAxis::mSpecifierName`.
     /// @return If succeeded, just return `DAxis` instance.
     ///
-    static MDY_NODISCARD DAction CreateInstance(_MIN_ const nlohmann::json& json, _MIN_ const std::string& specifierName);
+    MDY_NODISCARD static DAction CreateInstance(_MIN_ const nlohmann::json& json, _MIN_ const std::string& specifierName);
   };
 
   struct DAxis final
@@ -120,7 +121,7 @@ struct DDySettingInput
     /// @param  specifierName `DAxis::mSpecifierName`.
     /// @return If succeeded, just return `DAxis` instance.
     ///
-    static MDY_NODISCARD DAxis CreateInstance(_MIN_ const nlohmann::json& json, _MIN_ const std::string& specifierName);
+    MDY_NODISCARD static DAxis CreateInstance(_MIN_ const nlohmann::json& json, _MIN_ const std::string& specifierName);
   };
 
   using TActionMap  = std::unordered_map<std::string, DAction>;
@@ -198,6 +199,51 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingSound::DDetail& p
 
 void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingSound::DChannelDetail& p);
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingSound::DChannelDetail& p);
+
+///
+/// @struct DDySettingPhysics
+/// @brief Physics setting.
+///
+struct DDySettingPhysics final
+{
+public:
+  using TCollisionTagList = std::vector<std::string>;
+  /// @brief Filter list's index is correspond to TCollisionTagList's index. \n
+  /// If readen value is 0, Key layer => Dest layer is blocked. \n
+  /// If readen value is 1, Key layer => Dest layer is overlapped. \n
+  /// If readen value is 2, Key layer => Dest layer is ignored.
+  using TFilterList = std::vector<EDyCollisionFilter>;
+  /// @brief Filter layer response table. \n
+  /// _A_\_B_ Block   Overlap Ignore \n
+  /// Block   Block   Overlap Ignore \n
+  /// Overlap Overlap Overlap Ignore \n
+  /// Ignore  Ignore  Ignore  Ignore
+  using TFilterPreset = std::unordered_map<std::string, TFilterList>;
+  struct DCommon final
+  {
+    // Global gravity
+    TF32 mGravity = 0.0f;
+    // Static collider's friction (摩擦)
+    TF32 mDefaultStaticFriction = 0.0f;
+    // Dynamic collider's friction (動的摩擦)
+    TF32 mDefaultDynamicFriction = 0.0f;
+    // Global restitution (跳ね返す程度)
+    TF32 DefaultRestitution = 0.0f;
+  };
+
+  DCommon           mCommonProperty = {};
+  TCollisionTagList mCollisionTag  = {};
+  TFilterPreset     mFilterPresetContainer = {};
+};
+
+void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingPhysics& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingPhysics& p);
+
+void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingPhysics::DCommon& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingPhysics::DCommon& p);
+
+void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const EDyCollisionFilter& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ EDyCollisionFilter& p);
 
 ///
 /// @struct DDySettingMetaPath

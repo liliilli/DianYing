@@ -769,6 +769,7 @@
     <ClInclude Include="Include\Dy\Management\Type\Sound\TDyBinderSound3D.h" />
     <ClInclude Include="Include\Dy\Component\CDySoundSource.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Sound\FDySoundInstance.h" />
+    <ClInclude Include="Include\Dy\Meta\Type\Physics\EDyCollisionFilter.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

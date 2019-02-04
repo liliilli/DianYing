@@ -711,6 +711,7 @@
     <ClInclude Include="Include\Dy\Management\GameTimerManager.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyInputButton.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyJoystickAnalog.h" />
+    <ClInclude Include="Include\Dy\Meta\Type\Physics\EDyCollisionFilter.h" />
     <ClInclude Include="Include\Dy\Management\Type\Render\DDyModelHandler.h" />
     <ClInclude Include="Include\Dy\Management\Type\Sound\ADySoundInstance.h" />
     <ClInclude Include="Include\Dy\Management\Type\Sound\EDySoundStatus.h" />
