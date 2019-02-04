@@ -14,12 +14,15 @@
 ///
 
 #include <any>
+#include <variant>
 #include <nlohmann/json_fwd.hpp>
 #include <Dy/Helper/Type/Vector3.h>
 #include <Dy/Meta/Type/EDyComponentTypes.h>
 #include <Dy/Meta/Information/ScriptMetaInformation.h>
 #include <Dy/Helper/Type/Area2D.h>
 #include <Dy/Helper/Type/Clamp.h>
+#include <Dy/Management/Type/SettingContainer.h>
+#include <Dy/Meta/Type/Physics/EDyColliderType.h>
 
 namespace dy
 {
@@ -249,6 +252,83 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySoundSourceComponentMe
 
 void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const PDySoundSourceComponentMetaInfo::DAttenuation& p);
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySoundSourceComponentMetaInfo::DAttenuation& p);
+
+///
+/// @struct PDyRigidbodyComponentMetaInfo
+/// @brief Dependent information to CDyRididbody (only one or not per one actor) component. 
+///
+struct PDyRigidbodyComponentMetaInfo final : public IDyMetaInformation
+{
+  struct DDetails final
+  {
+    /// Check this rigidbody (and collider) simulate physics.
+    bool mIsSimulatePhysics = false;
+    /// Enable gravity or not.
+    bool mIsEnableGravity = false;
+    /// Mass of sum of collider.
+    DDyClamp<TF32, 0, 100'000>  mMassInKg = 0.001f;
+    /// Linear damping of rigidbody
+    DDyClamp<TF32, 0, 10'000>   mLinearDamping = 1.0f;
+    /// Angular damping of rigidbody
+    DDyClamp<TF32, 0, 10'000>   mAngularDamping = 1.0f; 
+    /// Lock psoition axis.
+    DLockPreset::D3DAxis mLockPosition{};
+    /// Lock rotation axis.
+    DLockPreset::D3DAxis mLockRotation{};
+    /// Lock preset.
+    std::string mLockPreset = MDY_INITIALIZE_EMPTYSTR;
+  };
+ 
+  /// @brief Details
+  DDetails mDetails;
+  /// @brief Component is initially activated or not.
+  bool     mInitiallyActivated = false;
+};
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const PDyRigidbodyComponentMetaInfo& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyRigidbodyComponentMetaInfo& p);
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const PDyRigidbodyComponentMetaInfo::DDetails& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyRigidbodyComponentMetaInfo::DDetails& p);
+
+///
+/// @struct PDyColliderComponentMetaInfo
+/// @brief Dependent information to CDyCollider (only one or not per one actor) component. 
+/// https://docs.unrealengine.com/portals/0/images/Engine/Physics/Collision/Overview/COL_collideNoEvent_Sphere.png
+///
+struct PDyColliderComponentMetaInfo final : public IDyMetaInformation
+{
+  struct DDetails final
+  {
+    /// If true, this component notify hit event (callback) when target hit.
+    bool mNotifyHitEvent = false;
+    /// If true, this component notify overlap event when target overlapped.
+    bool mNotifyOverlapEvent = false;
+    /// Collider type of this component.
+    EDyColliderType mColliderType = EDyColliderType::NoneError;
+    /// Collider details.
+    std::variant<
+        TColliderBindingType<EDyColliderType::Box>::Type,
+        TColliderBindingType<EDyColliderType::Capsule>::Type,
+        TColliderBindingType<EDyColliderType::Sphere>::Type
+    > mColliderDetails;
+    /// Collision filter specifier. If not empty, load collision filter and override value.
+    std::string mCollisionFilterPresetSpecifier = MDY_INITIALIZE_EMPTYSTR;
+    /// Collision filter. each value of id is correspond to Collision layer list's specifier.
+    std::vector<EDyCollisionFilter> mCollisionFilter;
+  };
+
+  /// @brief Details
+  DDetails mDetails;
+  /// @brief Component is initially activated or not.
+  bool     mInitiallyActivated = false;
+};
+
+void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDyColliderComponentMetaInfo& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyColliderComponentMetaInfo& p);
+
+void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDyColliderComponentMetaInfo::DDetails& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyColliderComponentMetaInfo::DDetails& p);
 
 } /// ::dy namespace
 

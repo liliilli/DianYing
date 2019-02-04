@@ -137,6 +137,13 @@ public:
   /// @brief Get const invariable sound setting instance.
   MDY_NODISCARD const DDySettingSound& GetSoundSetting() const noexcept; 
 
+  //!
+  //! Physics
+  //!
+
+  /// @brief Get const invariant physics setting instance.
+  MDY_NODISCARD const DDySettingPhysics& GetPhysicsSetting() const noexcept;
+
 private:
   /// @brief Setup executable argument settings.
   /// This function must be called before initialization.
@@ -161,6 +168,7 @@ private:
   DDySettingSound       mSound        = {};
   // @brief ONLY USED WHEN `MDY_FLAG_LOAD_COMPRESSED_DATAFILE` IS NOT DEFINED.
   DDySettingMetaPath    mDevMetaPath  = {};
+  DDySettingPhysics     mPhysics      = {};
 
   bool mIsEnabledVsync = true;
   bool mIsInitialized  = false;

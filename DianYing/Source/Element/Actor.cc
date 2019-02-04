@@ -22,9 +22,12 @@
 #include <Dy/Component/CDyDirectionalLight.h>
 #include <Dy/Element/Type/PDyActorCreationDescriptor.h>
 #include <Dy/Management/WorldManager.h>
-#include "Dy/Management/Helper/SDyProfilingHelper.h"
-#include "Dy/Component/CDyModelAnimator.h"
-#include "Dy/Component/CDySoundSource.h"
+#include <Dy/Management/Helper/SDyProfilingHelper.h>
+#include <Dy/Component/CDyModelAnimator.h>
+#include <Dy/Component/CDySoundSource.h>
+#include <Dy/Component/CDyPhysicsColliderSphere.h>
+#include <Dy/Component/CDyPhysicsColliderCapsule.h>
+#include <Dy/Component/CDyPhysicsColliderBox.h>
 
 //!
 //! Implementation
@@ -148,39 +151,80 @@ void FDyActor::MDY_PRIVATE_SPECIFIER(CreateComponentList)(const TComponentMetaLi
     case EDyComponentMetaType::SoundSource:
       this->AddComponent<CDySoundSource>(std::any_cast<const PDySoundSourceComponentMetaInfo&>(componentInfo));
       break;
+    case EDyComponentMetaType::Rigidbody:
+      this->AddComponent<CDyPhysicsRigidbody>(std::any_cast<const PDyRigidbodyComponentMetaInfo&>(componentInfo));
+      break;
+    case EDyComponentMetaType::Collider:
+    {
+      const auto& refMetaInfo = std::any_cast<const PDyColliderComponentMetaInfo&>(componentInfo);
+      switch (refMetaInfo.mDetails.mColliderType)
+      {
+      case EDyColliderType::Sphere: 
+      { this->AddComponent<CDyPhysicsColliderSphere>(refMetaInfo);
+      } break;
+      case EDyColliderType::Capsule: 
+      { this->AddComponent<CDyPhysicsColliderCapsule>(refMetaInfo);
+      } break;
+      case EDyColliderType::Box:
+      { this->AddComponent<CDyPhysicsColliderBox>(refMetaInfo);
+      } break;
+      default: MDY_UNEXPECTED_BRANCH(); break;
+      }
     }
+      break;
+    }
+  }
+
+  // If rigidbody is not exist, just create default rigidbody.
+  if (MDY_CHECK_ISNULL(this->mRigidbody))
+  {
+    const PDyRigidbodyComponentMetaInfo defaultMetaInfo{};
+    this->AddComponent<CDyPhysicsRigidbody>(defaultMetaInfo);
   }
 }
 
 FDyActor::~FDyActor()
 {
   SDyProfilingHelper::DecreaseOnBindActorCount(1);
-  for (auto& [typeVal, ptrsmtComponent] : this->mComponentList)
+  for (auto& item : this->mComponentList)
   {
-    if (MDY_CHECK_ISEMPTY(ptrsmtComponent)) { continue; }
-
-    using _ = EDyComponentType;
-
-    // ActorScript, Transform does not release in this logic.
-    // We use downcasting intentionally to call Release() function.
-    switch (typeVal)
-    {
-    case EDyComponentType::DirectionalLight: 
-    { static_cast<TComponentBindingType<_::DirectionalLight>::Type&>(*ptrsmtComponent).Release(); } break;
-    case EDyComponentType::Camera:
-    { static_cast<TComponentBindingType<_::Camera>::Type&>(*ptrsmtComponent).Release(); } break;
-    case EDyComponentType::ModelAnimator:
-    { static_cast<TComponentBindingType<_::ModelAnimator>::Type&>(*ptrsmtComponent).Release(); } break;
-    case EDyComponentType::ModelFilter:
-    { static_cast<TComponentBindingType<_::ModelFilter>::Type&>(*ptrsmtComponent).Release(); } break;
-    case EDyComponentType::ModelRenderer:
-    { static_cast<TComponentBindingType<_::ModelRenderer>::Type&>(*ptrsmtComponent).Release(); } break;
-    case EDyComponentType::SoundSource:
-    { static_cast<TComponentBindingType<_::SoundSource>::Type&>(*ptrsmtComponent).Release(); } break;
-    default: MDY_UNEXPECTED_BRANCH(); break;
-    }
+    this->ReleaseComponent(item);
   }
   this->mComponentList.clear();
+}
+
+void FDyActor::ReleaseComponent(_MINOUT_ TComponentList::value_type& iItem)
+{
+  auto& [typeVal, ptrsmtComponent] = iItem;
+  if (MDY_CHECK_ISEMPTY(ptrsmtComponent)) { return; }
+
+  using _ = EDyComponentType;
+  // ActorScript, Transform does not release in this logic.
+  // We use downcasting intentionally to call Release() function.
+  switch (typeVal)
+  {
+  case EDyComponentType::DirectionalLight: 
+  { static_cast<TComponentBindingType<_::DirectionalLight>::Type&>(*ptrsmtComponent).Release(); } break;
+  case EDyComponentType::Camera:
+  { static_cast<TComponentBindingType<_::Camera>::Type&>(*ptrsmtComponent).Release(); } break;
+  case EDyComponentType::ModelAnimator:
+  { static_cast<TComponentBindingType<_::ModelAnimator>::Type&>(*ptrsmtComponent).Release(); } break;
+  case EDyComponentType::ModelFilter:
+  { static_cast<TComponentBindingType<_::ModelFilter>::Type&>(*ptrsmtComponent).Release(); } break;
+  case EDyComponentType::ModelRenderer:
+  { static_cast<TComponentBindingType<_::ModelRenderer>::Type&>(*ptrsmtComponent).Release(); } break;
+  case EDyComponentType::SoundSource:
+  { static_cast<TComponentBindingType<_::SoundSource>::Type&>(*ptrsmtComponent).Release(); } break;
+  case EDyComponentType::Rigidbody:
+  { static_cast<TComponentBindingType<_::Rigidbody>::Type&>(*ptrsmtComponent).Release(); } break;
+  case EDyComponentType::ColliderSphere:
+  { static_cast<TComponentBindingType<_::ColliderSphere>::Type&>(*ptrsmtComponent).Release(); } break;
+  case EDyComponentType::ColliderBox:
+  { static_cast<TComponentBindingType<_::ColliderBox>::Type&>(*ptrsmtComponent).Release(); } break;
+  case EDyComponentType::ColliderCapsule:
+  { static_cast<TComponentBindingType<_::ColliderCapsule>::Type&>(*ptrsmtComponent).Release(); } break;
+  default: MDY_UNEXPECTED_BRANCH(); break;
+  }
 }
 
 void FDyActor::DestroySelf()
@@ -438,6 +482,12 @@ void FDyActor::MDY_PRIVATE_SPECIFIER(TryDetachDependentComponents)() noexcept
 NotNull<CDyTransform*> FDyActor::GetTransform() noexcept
 {
   return DyMakeNotNull(this->mTransform.get());
+}
+
+CDyPhysicsRigidbody* FDyActor::GetRigidbody() noexcept
+{
+  if (MDY_CHECK_ISEMPTY(this->mRigidbody))  { return nullptr; } 
+  else        { return DyMakeNotNull(this->mRigidbody.get()); }
 }
 
 } /// ::dy namespace

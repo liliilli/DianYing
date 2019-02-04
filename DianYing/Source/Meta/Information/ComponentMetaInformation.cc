@@ -97,6 +97,11 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ TComponentMetaList& p)
     case EDyComponentMetaType::SoundSource:
       p.emplace_back(type, componentAtlas.get<PDySoundSourceComponentMetaInfo>());
       break;
+    case EDyComponentMetaType::Rigidbody:
+      p.emplace_back(type, componentAtlas.get<PDyRigidbodyComponentMetaInfo>());
+      break;
+    case EDyComponentMetaType::Collider:
+      p.emplace_back(type, componentAtlas.get<PDyColliderComponentMetaInfo>());
     }
   }
 }
@@ -373,6 +378,59 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySoundSourceComponentMe
   DyJsonGetValueFromTo(j, "Activated", p.mActivated);
   DyJsonGetValueFromTo(j, "Near", p.mNearDistance);
   DyJsonGetValueFromTo(j, "Far",  p.mFarDistance);
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyRigidbodyComponentMetaInfo& p)
+{
+  DyJsonGetValueFromTo(j, sHeader_Type,       p.mType);
+  DyJsonGetValueFromTo(j, sHeader_Details,    p.mDetails);
+  DyJsonGetValueFromTo(j, sHeader_Activated,  p.mInitiallyActivated);
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyRigidbodyComponentMetaInfo::DDetails& p)
+{
+  DyJsonGetValueFromTo(j, "IsSimulatePhysics", p.mIsSimulatePhysics);
+  DyJsonGetValueFromTo(j, "IsEnableGravity", p.mIsEnableGravity);
+
+  DyJsonGetValueFromTo(j, "MassInKg", p.mMassInKg);
+  
+  DyJsonGetValueFromTo(j, "LinearDamping", p.mLinearDamping);
+  DyJsonGetValueFromTo(j, "AngularDamping", p.mAngularDamping);
+
+  DyJsonGetValueFromTo(j, "LockPos", p.mLockPosition);
+  DyJsonGetValueFromTo(j, "LockRot", p.mLockPosition);
+  DyJsonGetValueFromTo(j, "LockPreset", p.mLockPreset);
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyColliderComponentMetaInfo& p)
+{
+  DyJsonGetValueFromTo(j, sHeader_Type,       p.mType);
+  DyJsonGetValueFromTo(j, sHeader_Details,    p.mDetails);
+  DyJsonGetValueFromTo(j, sHeader_Activated,  p.mInitiallyActivated);
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyColliderComponentMetaInfo::DDetails& p)
+{
+  DyJsonGetValueFromTo(j, "IsNotifyEvent", p.mNotifyHitEvent);
+  DyJsonGetValueFromTo(j, "IsOverlapEvent", p.mNotifyOverlapEvent);
+  DyJsonGetValueFromTo(j, "ColliderType", p.mColliderType);
+
+  switch (p.mColliderType)
+  {
+  case EDyColliderType::Sphere: 
+  { p.mColliderDetails = DyJsonGetValueFrom<TColliderBindingType<EDyColliderType::Sphere>::Type>(j, "ColliderDetails");
+  } break;
+  case EDyColliderType::Capsule:
+  { p.mColliderDetails = DyJsonGetValueFrom<TColliderBindingType<EDyColliderType::Capsule>::Type>(j, "ColliderDetails");
+  } break;
+  case EDyColliderType::Box:
+  { p.mColliderDetails = DyJsonGetValueFrom<TColliderBindingType<EDyColliderType::Box>::Type>(j, "ColliderDetails");
+  } break;
+  default: MDY_UNEXPECTED_BRANCH(); break;
+  }
+
+  DyJsonGetValueFromTo(j, "FilterPresetSpecifier", p.mCollisionFilterPresetSpecifier);
+  DyJsonGetValueFromTo(j, "CollisionFilter", p.mCollisionFilter);
 }
 
 } /// ::dy namespace
