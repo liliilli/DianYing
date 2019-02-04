@@ -14,6 +14,9 @@
 
 /// Header file
 #include <Dy/Management/PhysicsManager.h>
+
+#include <PxFoundation.h>
+
 #include <Dy/Helper/Pointer.h>
 #include <Dy/Helper/Type/Vector3.h>
 #include <Dy/Management/LoggingManager.h>
@@ -161,26 +164,43 @@ EDySuccess MDyPhysics::pfInitialize()
 
     return dynamic;
   };
+	static physx::PxDefaultErrorCallback gDefaultErrorCallback;
 
-  // FunctionBody ∨
+  this->gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, this->defaultAllocatorCallback, gDefaultErrorCallback);
+  MDY_ASSERT_FORCE(MDY_CHECK_ISNOTNULL(this->gFoundation), "PxCreateFoundation Failed!");
 
-  gFoundation = PxCreateFoundation(PX_FOUNDATION_VERSION, gAllocator, gCallback);
-  gPhysicx = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, physx::PxTolerancesScale(), true, gPvd);
+  this->gPhysicx = PxCreatePhysics(PX_PHYSICS_VERSION, *this->gFoundation, physx::PxTolerancesScale(), true, this->gPvd);
+  MDY_ASSERT_FORCE(MDY_CHECK_ISNOTNULL(this->gPhysicx), "PxCreatePhysics Failed!");
 
-  physx::PxSceneDesc sceneDescriptor { gPhysicx->getTolerancesScale() };
+  physx::PxSceneDesc sceneDescriptor { this->gPhysicx->getTolerancesScale() };
   sceneDescriptor.filterShader              = DyFilterShader;
   sceneDescriptor.simulationEventCallback   = &this->mCallback;
   //sceneDescriptor.flags                    |= physx::PxSceneFlag::eREQUIRE_RW_LOCK;
-  sceneDescriptor.gravity                   = physx::PxVec3{ 0, -9.81f, 0 };
+  //sceneDesc.frictionType = PxFrictionType::eTWO_DIRECTIONAL;
+	//sceneDesc.frictionType = PxFrictionType::eONE_DIRECTIONAL;
+	//sceneDesc.flags |= PxSceneFlag::eENABLE_GPU_DYNAMICS;
+	//sceneDesc.flags |= PxSceneFlag::eENABLE_AVERAGE_POINT;
+	//sceneDesc.flags |= PxSceneFlag::eADAPTIVE_FORCE;
+	sceneDescriptor.flags |= physx::PxSceneFlag::eENABLE_PCM;
+	sceneDescriptor.flags |= physx::PxSceneFlag::eENABLE_STABILIZATION;
+	sceneDescriptor.flags |= physx::PxSceneFlag::eENABLE_ACTIVE_ACTORS;
+	sceneDescriptor.sceneQueryUpdateMode = physx::PxSceneQueryUpdateMode::eBUILD_ENABLED_COMMIT_DISABLED;
+	sceneDescriptor.gpuMaxNumPartitions = 8;
+  sceneDescriptor.gravity = physx::PxVec3{ 0, -9.81f, 0 };
 
-  gDispatcher = physx::PxDefaultCpuDispatcherCreate(2);
-  sceneDescriptor.cpuDispatcher = gDispatcher;
-  sceneDescriptor.filterShader = physx::PxDefaultSimulationFilterShader;
+  if (sceneDescriptor.cpuDispatcher == nullptr)
+  {
+    this->gDispatcher = physx::PxDefaultCpuDispatcherCreate(2);
+    MDY_ASSERT_FORCE(MDY_CHECK_ISNOTNULL(this->gDispatcher), "PxDefaultCpuDispatcherCreate Failed!");
+    sceneDescriptor.cpuDispatcher = this->gDispatcher;
+  }
+  if (sceneDescriptor.filterShader == nullptr)
+  { sceneDescriptor.filterShader = physx::PxDefaultSimulationFilterShader; }
 
-  gScene = gPhysicx->createScene(sceneDescriptor);
-  physx::PxSceneWriteLock scopedLock(*gScene);
+  this->gScene = this->gPhysicx->createScene(sceneDescriptor);
+  physx::PxSceneWriteLock scopedLock(*this->gScene);
 
-  physx::PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
+  physx::PxPvdSceneClient* pvdClient = this->gScene->getScenePvdClient();
   if (pvdClient)
   {
     pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
@@ -188,9 +208,9 @@ EDySuccess MDyPhysics::pfInitialize()
     pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
   }
 
-  gMaterial = gPhysicx->createMaterial(0.5f, 0.5f, 0.6f);
-  physx::PxRigidStatic *groundPlane = PxCreatePlane(*gPhysicx, physx::PxPlane(0, 1, 0, 0), *gMaterial);
-  DySetupFiltering(DyMakeNotNull(groundPlane), EDyTempCollisionLayer::Floor, EDyTempCollisionLayer::Sphere);
+  //gMaterial = gPhysicx->createMaterial(0.5f, 0.5f, 0.6f);
+  //physx::PxRigidStatic *groundPlane = PxCreatePlane(*gPhysicx, physx::PxPlane(0, 1, 0, 0), *gMaterial);
+  //DySetupFiltering(DyMakeNotNull(groundPlane), EDyTempCollisionLayer::Floor, EDyTempCollisionLayer::Sphere);
 
   // @TODO FOR DEBUG, REMOVE THIS AT PRODUCTION CODE
   sDebugActorName.push_back(fmt::format("{}_0", "Floor"));
@@ -204,20 +224,19 @@ EDySuccess MDyPhysics::pfInitialize()
   }
   CreateDynamic(physx::PxTransform(physx::PxVec3(0, 40, 100)), physx::PxSphereGeometry(10), physx::PxVec3(0, -50, -100));
 #endif
-
+  // Do nothing because when initialize level, all resource will be populated.
   return DY_SUCCESS;
 }
 
 EDySuccess MDyPhysics::pfRelease()
 {
-#ifdef false
-  //physx::PxSceneWriteLock scopedLock(*gScene);
-
-  // PhysX release
-  this->gScene->release();
-  this->gPhysicx->release();
-  this->gFoundation->release();
-#endif
+  // This function just check all resource is released.
+  MDY_ASSERT_FORCE(MDY_CHECK_ISNULL(this->gScene), "PhysX scene is not released before release Physics manager.");
+  MDY_ASSERT_FORCE(MDY_CHECK_ISNULL(this->gDispatcher), "PhysX cpu dispatcher is not released before release Physics manager.");
+  MDY_ASSERT_FORCE(MDY_CHECK_ISNULL(this->gPhysicx), "PhysX physics is not released before release Physics manager.");
+  MDY_ASSERT_FORCE(MDY_CHECK_ISNULL(this->gPvd), "PhysX pvd is not released before release Physics manager.");
+  MDY_ASSERT_FORCE(MDY_CHECK_ISNULL(this->mCooking), "PhysX mesh cooker is not released before release Physics manager.");
+  MDY_ASSERT_FORCE(MDY_CHECK_ISNULL(this->gFoundation), "PhysX foundation is not released before release Physics manager.");
 
   return DY_SUCCESS;
 }
