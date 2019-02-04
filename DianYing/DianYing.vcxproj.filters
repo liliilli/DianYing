@@ -769,6 +769,8 @@
     <ClInclude Include="Include\Dy\Component\Internal\Sound\FDySoundInstance.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Physics\EDyCollisionFilter.h" />
     <ClInclude Include="Include\Dy\Component\CDyPhysicsRigidbody.h" />
+    <ClInclude Include="Include\Dy\Meta\Type\Physics\EDyColliderType.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\Physics\DColliderMetaInfo.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

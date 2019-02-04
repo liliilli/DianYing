@@ -400,4 +400,16 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyRigidbodyComponentMeta
   DyJsonGetValueFromTo(j, "LockPreset", p.mLockPreset);
 }
 
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyColliderComponentMetaInfo& p)
+{
+  DyJsonGetValueFromTo(j, sHeader_Type,       p.mType);
+  DyJsonGetValueFromTo(j, sHeader_Details,    p.mDetails);
+  DyJsonGetValueFromTo(j, sHeader_Activated,  p.mInitiallyActivated);
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyColliderComponentMetaInfo::DDetails& p)
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+}
+
 } /// ::dy namespace
