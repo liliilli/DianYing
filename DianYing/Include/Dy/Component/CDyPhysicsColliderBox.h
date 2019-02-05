@@ -42,7 +42,7 @@ public:
   MDY_NODISCARD std::string ToString() override final;
 
   /// @brief Initialize internal (PhysX) resource.
-  void InitializeInternalResource() override final; 
+  void InitializeInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody) override final; 
   /// @brief Release internal (PhysX) resource.
   void ReleaseInternalResource() override final;
 };

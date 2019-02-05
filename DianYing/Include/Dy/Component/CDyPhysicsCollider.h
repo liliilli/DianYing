@@ -17,6 +17,19 @@
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
 
+//!
+//! Forward declaration
+//!
+
+namespace dy
+{
+class CDyPhysicsRigidbody;
+} /// ::dy namespace
+
+//!
+//! Implementation
+//!
+
 namespace dy
 {
 
@@ -50,7 +63,7 @@ public:
   void MDY_PRIVATE_SPECIFIER(SetRegisterFlag)(_MIN_ bool iFlag) noexcept;
 
   /// @brief Initialize internal (PhysX) resource.
-  virtual void InitializeInternalResource() = 0; 
+  virtual void InitializeInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody) = 0; 
   /// @brief Release internal (PhysX) resource.
   virtual void ReleaseInternalResource() = 0;
 

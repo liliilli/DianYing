@@ -35,7 +35,7 @@ std::string CDyPhysicsColliderSphere::ToString()
   return "";
 }
 
-void CDyPhysicsColliderSphere::InitializeInternalResource()
+void CDyPhysicsColliderSphere::InitializeInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody)
 {
 
 }
