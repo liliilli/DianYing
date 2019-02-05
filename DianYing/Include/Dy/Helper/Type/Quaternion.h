@@ -15,6 +15,7 @@
 
 #include <glm/gtc/quaternion.hpp>
 #include <assimp/quaternion.h>
+#include <foundation/PxQuat.h>
 #include <Dy/Helper/Type/MathEnum.h>
 #include <Dy/Helper/Type/Matrix4.h>
 
@@ -89,6 +90,11 @@ public:
 
   ///
   const glm::quat& pGetQuaternion() const noexcept;
+
+  operator physx::PxQuat() const noexcept
+  {
+    return physx::PxQuat{this->mQuaternion.x, this->mQuaternion.y, this->mQuaternion.z, this->mQuaternion.w};
+  }
 
 private:
   glm::quat mQuaternion;
