@@ -289,7 +289,14 @@ void FDyActor::pPropagateActivationFlag() noexcept
     unknownScript->SetupFlagAsParent(this->IsActivated());
   }
 
+  if (this->mRigidbody != nullptr) { this->mRigidbody->SetupFlagAsParent(this->IsActivated()); }
+
   // @TODO PROPAGATE ACTIVATION FLAG TO SUBACTOR ALSO.
+  for (const auto& [specifier, instance] : this->mChildActorMap)
+  {
+    if (MDY_CHECK_ISEMPTY(instance)) { continue; }
+    instance->SetupFlagAsParent(this->IsActivated());
+  }
 }
 
 void FDyActor::SetParent(_MIN_ FDyActor& validParentRawPtr) noexcept

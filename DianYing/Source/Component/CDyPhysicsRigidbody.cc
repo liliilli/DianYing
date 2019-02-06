@@ -71,7 +71,10 @@ EDySuccess CDyPhysicsRigidbody::Initialize(_MIN_ const PDyRigidbodyComponentMeta
   }
 
   // Component activation check.
-  if (descriptor.mInitiallyActivated == true) { this->Activate(); }
+  if (descriptor.mInitiallyActivated == true) 
+  { 
+    this->Activate(); 
+  }
 
   return DY_SUCCESS;
 }
@@ -125,6 +128,7 @@ void CDyPhysicsRigidbody::TryActivateInstance()
   // Try insert collider and try populate resource.
   for (auto& ptrCollider : ptrColliderList)
   {
+    if (ptrCollider->IsComponentActivated() == false) { continue; }
     if (ptrCollider->IsRegistered() == true) { continue; }
     this->RegisterCollider(*ptrCollider);
   }

@@ -19,6 +19,19 @@
 namespace dy
 {
 
+/*
+ *{
+  "Type": "SoundSource",
+  "Activated": true,
+  "Details": {
+    "SoundSpecifier": "",
+    "2DSound": true,
+    "VolumeMultiplier": 1.0, "PitchMultiplier": 1.0,
+    "Channel": "", 
+    "Muted": false, "Looped": false,
+    "Attenuation": { "Activated": true, "Near": 0.5, "Far": 500 }
+  }
+ */
 EDySuccess CDySoundSource::Initialize(_MIN_ const PDySoundSourceComponentMetaInfo& descriptor)
 {
   if (descriptor.mInitiallyActivated == true) { this->Activate(); }
