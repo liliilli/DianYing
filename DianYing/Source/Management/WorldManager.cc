@@ -297,8 +297,6 @@ EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(RemoveLevel)()
   
   // Release physx components which are dependent on physx::PxScene, FDyLevel.
   this->mLevel = nullptr;
-  // Must reset depedent manager on this.
-  MDyPhysics::GetInstance().ReleaseScene();
 
   // Just remove script instance without `Destroy` function intentionally.
   MDyScript::GetInstance().ClearWidgetScriptGCList();
@@ -319,6 +317,9 @@ EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(RemoveLevel)()
   SDyIOConnectionHelper::TryGC(EDyScope::Level, EDyResourceStyle::Information);
   SDyIOConnectionHelper::TryGC(EDyScope::Level, EDyResourceStyle::Resource);
   SDyIOConnectionHelper::TryGC(EDyScope::Level, EDyResourceStyle::Information);
+
+  // Must reset depedent manager on this.
+  MDyPhysics::GetInstance().ReleaseScene();
   return DY_SUCCESS;
 }
 

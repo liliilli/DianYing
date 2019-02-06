@@ -197,6 +197,8 @@ FDyActor::~FDyActor()
     this->ReleaseComponent(item);
   }
   this->mComponentList.clear();
+
+  if (this->mRigidbody != nullptr) { this->mRigidbody->Release(); }
 }
 
 void FDyActor::ReleaseComponent(_MINOUT_ TComponentList::value_type& iItem)
