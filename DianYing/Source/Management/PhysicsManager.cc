@@ -20,6 +20,7 @@
 #include <Dy/Helper/Pointer.h>
 #include <Dy/Helper/Type/Vector3.h>
 #include <Dy/Management/LoggingManager.h>
+#include <Dy/Management/SettingManager.h>
 
 //!
 //! Test
@@ -103,6 +104,42 @@ namespace dy
 
 EDySuccess MDyPhysics::pfInitialize()
 {
+  MDY_ASSERT(MDY_CHECK_ISNULL(this->gFoundation), "Foundation is already exist.");
+  MDY_ASSERT(MDY_CHECK_ISNULL(this->gPhysicx), "Physics is already exist.");
+  MDY_ASSERT(MDY_CHECK_ISNULL(this->mCooking), "Cooking is already exist.");
+  MDY_ASSERT(MDY_CHECK_ISNULL(this->mDefaultMaterial), "Default material is already exist.");
+
+  this->gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, this->defaultAllocatorCallback, MDY_PRIVATE_SPECIFIER(GetPhysXErrorCallback)());
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gFoundation), "PhysX Foundation must be created successfully.");
+
+  // Get scale from setting manager, but we use defualt value temporary. 
+  physx::PxTolerancesScale temporalScale{};
+  // MDySetting::GetInstance().GetGridScale();
+
+  this->gPhysicx = PxCreatePhysics(PX_PHYSICS_VERSION, *this->gFoundation, temporalScale, false, this->gPvd);
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gPhysicx), "PhysX Physics Instance must be created successfully.");
+
+  if (PxInitExtensions(*this->gPhysicx, this->gPvd) == false) { MDY_UNEXPECTED_BRANCH(); }
+
+  physx::PxCookingParams params(temporalScale);
+	params.meshWeldTolerance = 0.001f;
+	params.meshPreprocessParams = physx::PxMeshPreprocessingFlags(physx::PxMeshPreprocessingFlag::eWELD_VERTICES);
+	params.buildGPUData = true; //Enable GRB data being produced in cooking
+  this->mCooking = PxCreateCooking(PX_PHYSICS_VERSION, *this->gFoundation, params);
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mCooking), "PhysX Cooking Instance must be created successfully.");
+
+  this->gPhysicx->registerDeletionListener(*this, physx::PxDeletionEventFlag::eUSER_RELEASE);
+
+  // Setup default material.
+  const auto& defaultSetting = this->GetDefaultSetting();
+  //
+  this->mDefaultMaterial = this->gPhysicx->createMaterial(
+      defaultSetting.mCommonProperty.mDefaultStaticFriction,
+      defaultSetting.mCommonProperty.mDefaultDynamicFriction,
+      defaultSetting.mCommonProperty.mDefaultRestitution);
+  //
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mDefaultMaterial), "PhysX Default material must be created.");
+
 #ifdef false
   ///
   /// @function CreateStack
@@ -112,7 +149,7 @@ EDySuccess MDyPhysics::pfInitialize()
   {
     using namespace physx;
 
-    PxShape *shape = gPhysicx->createShape(PxBoxGeometry(halfExtent, halfExtent, halfExtent), *gMaterial);
+    PxShape *shape = gPhysicx->createShape(PxBoxGeometry(halfExtent, halfExtent, halfExtent), *mDefaultMaterial);
 
     TI32 nmb = 0;
     for (PxU32 i = 0; i < size; i++)
@@ -150,7 +187,7 @@ EDySuccess MDyPhysics::pfInitialize()
   {
     using namespace physx;
 
-    PxRigidDynamic *dynamic = PxCreateDynamic(*gPhysicx, t, geometry, *gMaterial, 10.0f);
+    PxRigidDynamic *dynamic = PxCreateDynamic(*gPhysicx, t, geometry, *mDefaultMaterial, 10.0f);
     dynamic->setAngularDamping(0.5f);
     dynamic->setLinearVelocity(velocity);
     DySetupFiltering(DyMakeNotNull(dynamic), EDyTempCollisionLayer::Sphere, EDyTempCollisionLayer::Stack | EDyTempCollisionLayer::Floor);
@@ -208,8 +245,8 @@ EDySuccess MDyPhysics::pfInitialize()
     pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
   }
 
-  //gMaterial = gPhysicx->createMaterial(0.5f, 0.5f, 0.6f);
-  //physx::PxRigidStatic *groundPlane = PxCreatePlane(*gPhysicx, physx::PxPlane(0, 1, 0, 0), *gMaterial);
+  //mDefaultMaterial = gPhysicx->createMaterial(0.5f, 0.5f, 0.6f);
+  //physx::PxRigidStatic *groundPlane = PxCreatePlane(*gPhysicx, physx::PxPlane(0, 1, 0, 0), *mDefaultMaterial);
   //DySetupFiltering(DyMakeNotNull(groundPlane), EDyTempCollisionLayer::Floor, EDyTempCollisionLayer::Sphere);
 
   // @TODO FOR DEBUG, REMOVE THIS AT PRODUCTION CODE
@@ -230,6 +267,26 @@ EDySuccess MDyPhysics::pfInitialize()
 
 EDySuccess MDyPhysics::pfRelease()
 {
+  this->mDefaultMaterial->release();
+  this->mDefaultMaterial = nullptr;
+    
+  this->mCooking->release();
+  this->mCooking = nullptr;
+
+	PxCloseExtensions();
+    
+  this->gPhysicx->release();
+  this->gPhysicx = nullptr;
+
+  if (MDY_CHECK_ISNOTNULL(this->gPvd)) 
+  { // Optional. (visual debugger)
+    this->gPvd->release();
+    this->gPvd = nullptr;
+  }
+
+  this->gFoundation->release();
+  this->gFoundation = nullptr;
+
   // This function just check all resource is released.
   MDY_ASSERT_FORCE(MDY_CHECK_ISNULL(this->gScene), "PhysX scene is not released before release Physics manager.");
   MDY_ASSERT_FORCE(MDY_CHECK_ISNULL(this->gDispatcher), "PhysX cpu dispatcher is not released before release Physics manager.");
@@ -269,36 +326,6 @@ void MDyPhysics::Update(float dt)
 
 void MDyPhysics::InitScene()
 {
-  MDY_ASSERT(MDY_CHECK_ISNULL(this->gFoundation), "Foundation is already exist.");
-  MDY_ASSERT(MDY_CHECK_ISNULL(this->gPhysicx), "Physics is already exist.");
-  MDY_ASSERT(MDY_CHECK_ISNULL(this->mCooking), "Cooking is already exist.");
-  MDY_ASSERT(MDY_CHECK_ISNULL(this->gMaterial), "Default material is already exist.");
-
-  this->gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, this->defaultAllocatorCallback, MDY_PRIVATE_SPECIFIER(GetPhysXErrorCallback)());
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gFoundation), "PhysX Foundation must be created successfully.");
-
-  // Get scale from setting manager, but we use defualt value temporary. 
-  physx::PxTolerancesScale temporalScale;
-  // MDySetting::GetInstance().GetGridScale();
-
-  this->gPhysicx = PxCreatePhysics(PX_PHYSICS_VERSION, *this->gFoundation, temporalScale, false, this->gPvd);
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gPhysicx), "PhysX Physics Instance must be created successfully.");
-
-  if (PxInitExtensions(*this->gPhysicx, this->gPvd) == false) { MDY_UNEXPECTED_BRANCH(); }
-
-  physx::PxCookingParams params(temporalScale);
-	params.meshWeldTolerance = 0.001f;
-	params.meshPreprocessParams = physx::PxMeshPreprocessingFlags(physx::PxMeshPreprocessingFlag::eWELD_VERTICES);
-	params.buildGPUData = true; //Enable GRB data being produced in cooking
-  this->mCooking = PxCreateCooking(PX_PHYSICS_VERSION, *this->gFoundation, params);
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mCooking), "PhysX Cooking Instance must be created successfully.");
-
-  this->gPhysicx->registerDeletionListener(*this, physx::PxDeletionEventFlag::eUSER_RELEASE);
-
-  // Setup default material.
-  this->gMaterial = this->gPhysicx->createMaterial(0.5f, 0.5, 1.0f);
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gMaterial), "PhysX Default material must be created.");
-
   physx::PxSceneDesc tempSceneDesc{this->gPhysicx->getTolerancesScale()};
   tempSceneDesc.gravity = physx::PxVec3{0.0f, -9.81f, 0.0f};
 
@@ -347,12 +374,8 @@ void MDyPhysics::InitScene()
 
 void MDyPhysics::ReleaseScene()
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gFoundation),  "PhysX Foundation must be valid.");
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gPhysicx),     "PhysX Physicx must be valid.");
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gScene),       "PhysX Scene must be valid.");
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gDispatcher),  "PhysX Dispatcher must be valid.");
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mCooking),     "PhysX Cooking must be valid.");
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gMaterial),    "PhysX Default material must be valid.");
 
   {
     physx::PxSceneWriteLock scopedLock(*this->gScene);
@@ -364,26 +387,16 @@ void MDyPhysics::ReleaseScene()
 
   this->gDispatcher->release();
   this->gDispatcher = nullptr;
-  
-  this->gMaterial->release();
-  this->gMaterial = nullptr;
-    
-  this->mCooking->release();
-  this->mCooking = nullptr;
+}
 
-	PxCloseExtensions();
-    
-  this->gPhysicx->release();
-  this->gPhysicx = nullptr;
+const DDySettingPhysics& MDyPhysics::GetDefaultSetting() const noexcept
+{
+  return MDySetting::GetInstance().GetPhysicsSetting();
+}
 
-  if (MDY_CHECK_ISNOTNULL(this->gPvd)) 
-  { // Optional. (visual debugger)
-    this->gPvd->release();
-    this->gPvd = nullptr;
-  }
-
-  this->gFoundation->release();
-  this->gFoundation = nullptr;
+const physx::PxMaterial& MDyPhysics::GetDefaultPhysicsMaterial() const noexcept
+{
+  return *this->mDefaultMaterial;
 }
 
 void MDyPhysics::onRelease(

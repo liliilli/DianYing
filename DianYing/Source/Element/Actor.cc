@@ -60,6 +60,12 @@ FDyActor::FDyActor(_MIN_ const PDyObjectMetaInfo& objectMetaDesc, _MIN_ FDyActor
   // (2) Create components
   // Check activation flags and execute sub-routines of each components.
   this->MDY_PRIVATE_SPECIFIER(CreateComponentList)(metaComponentInfo);
+  // If transform is not exist, just create default transform.
+  if (MDY_CHECK_ISNULL(this->mTransform))
+  {
+    const PDyTransformComponentMetaInfo defaultTransform{};
+    this->AddComponent<CDyTransform>(defaultTransform);
+  }
 
   if (MDY_CHECK_ISNOTNULL(iPtrParent)) { this->SetParent(*iPtrParent); }
   this->pUpdateActivateFlagFromParent();
@@ -109,13 +115,13 @@ FDyActor::FDyActor(_MIN_ const PDyActorCreationDescriptor& iDesc, _MIN_ FDyActor
   // (2) Create components
   // Check activation flags and execute sub-routines of each components.
   this->MDY_PRIVATE_SPECIFIER(CreateComponentList)(metaComponentInfo);
+  // (3) Create Transform component using Given transform
+  this->AddComponent<CDyTransform>(iDesc.mTransform);
 
   if (MDY_CHECK_ISNOTNULL(iPtrParent)) { this->SetParent(*iPtrParent); }
   this->pUpdateActivateFlagFromParent();
   this->Activate();
 
-  // (3) Create Transform component using Given transform
-  this->AddComponent<CDyTransform>(iDesc.mTransform);
   MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mTransform), "CDyTransform component must be created to all FDyActor.");
   SDyProfilingHelper::IncreaseOnBindActorCount(1);
 }

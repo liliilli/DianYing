@@ -47,6 +47,9 @@ public:
   MDY_SET_TYPEMATCH_FUNCTION(::dy::ADyGeneralBaseComponent, CDyPhysicsCollider)
   MDY_SET_CRC32_HASH_WITH_TYPE(CDyPhysicsCollider);
 
+  /// @brief Initialize component.
+  MDY_NODISCARD EDySuccess Initialize(_MIN_ const PDyColliderComponentMetaInfo& desc) override;
+
   /// @brief Update anyway.
   void Update(_MIN_ TF32 dt) override final {};
 
@@ -71,16 +74,25 @@ private:
   void TryActivateInstance() override final;
   void TryDeactivateInstance() override final;
 
-  /// If true, this component notify hit event (callback) when target hit.
+  /// @brief If true, this component notify hit event (callback) when target hit.
   bool mNotifyHitEvent = false;
-  /// If true, this component notify overlap event when target overlapped.
+  /// @brief If true, this component notify overlap event when target overlapped.
   bool mNotifyOverlapEvent = false;
-  /// Flag for registration. \n
+  /// @brief Flag for registration. \n
   /// When activated & Activate rigidActor component is exist on Actor, this flag must be true.
   /// Otherwise, this flag must be false.
   bool mIsRegistered = false; 
+
+  /// @brief Collision filter preset specifier.
+  std::string mFilterPresetSpecifier = MDY_INITIALIZE_EMPTYSTR;
+  /// @brief Collision filter values.
+  std::vector<EDyCollisionFilter> mFilterValues{};
+
+protected:
   /// Collider type of this component.
   EDyColliderType mColliderType = EDyColliderType::NoneError;
+  ///
+  CDyPhysicsRigidbody* mPtrBoundRigidbody = nullptr;
 };
 
 } /// ::dy namespace

@@ -13,6 +13,8 @@
 /// SOFTWARE.
 ///
 
+#include <PxRigidDynamic.h>
+
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
@@ -65,6 +67,14 @@ public:
   /// Unregistred collider will be detached from internal physics system.
   void UnregisterCollider(_MIN_ CDyPhysicsCollider& iRefCollider);
 
+  /// @brief
+  ///
+  EDySuccess BindShapeToRigidbody(_MIN_ physx::PxShape& iRefShape);
+
+  /// @brief
+  ///
+  EDySuccess UnbindShapeFromRigidbody(_MIN_ physx::PxShape& iRefShape);
+
 private:
   /// Check this rigidbody (and collider) simulate physics.
   bool mIsSimulatePhysics = false;
@@ -86,6 +96,8 @@ private:
 
   /// @brief Manages collider list.
   std::vector<NotNull<CDyPhysicsCollider*>> mPtrColliderList{};
+  /// @brief Internal actor.
+  physx::PxRigidDynamic* mOwnerDynamicActor = nullptr;
 };
 
 } /// ::dy namespace

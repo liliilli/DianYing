@@ -15,9 +15,39 @@
 /// Header file
 #include <Dy/Component/CDyPhysicsCollider.h>
 #include <Dy/Element/Actor.h>
+#include <Dy/Management/PhysicsManager.h>
 
 namespace dy
 {
+
+EDySuccess CDyPhysicsCollider::Initialize(_MIN_ const PDyColliderComponentMetaInfo& desc)
+{
+  this->mNotifyHitEvent     = desc.mDetails.mNotifyHitEvent;
+  this->mNotifyOverlapEvent = desc.mDetails.mNotifyOverlapEvent;
+  this->mColliderType       = desc.mDetails.mColliderType;
+
+  this->mFilterPresetSpecifier = desc.mDetails.mCollisionFilterPresetSpecifier;
+  // If filter preset specifier is not empty (get values from setting)
+  if (this->mFilterPresetSpecifier.empty() == false)
+  {
+    const auto& setting = MDyPhysics::GetInstance().GetDefaultSetting();
+    // Try to getting collision filter preset.
+    if (DyIsMapContains(setting.mFilterPresetContainer, this->mFilterPresetSpecifier) == false)
+    { MDY_LOG_ERROR("Failed to get collision filter preset values, {}", this->mFilterPresetSpecifier); }
+    else
+    {
+      const auto& refValue = setting.mFilterPresetContainer.at(this->mFilterPresetSpecifier);
+      this->mFilterValues = refValue;
+    }
+  }
+  else
+  {
+    // Value. Recommend use preset, than customized values.
+    this->mFilterValues = desc.mDetails.mCollisionFilter;
+  }
+
+  return DY_SUCCESS;
+}
 
 bool CDyPhysicsCollider::IsNotifyHitEvent() const noexcept
 {

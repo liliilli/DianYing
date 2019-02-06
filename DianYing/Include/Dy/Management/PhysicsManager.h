@@ -20,6 +20,19 @@
 #include <Dy/Management/Helper/PhysXErrorCallback.h>
 #include <Dy/Management/Helper/PhysxSimulationCallback.h>
 
+//!
+//! Forward declaration
+//!
+
+namespace dy
+{
+struct DDySettingPhysics;
+} /// ::dy namespace
+
+//!
+//! Implemnetation
+//!
+
 namespace dy
 {
 
@@ -39,6 +52,24 @@ public:
   void InitScene();
   /// @brief Release PhysX All Resource related to scene.
   void ReleaseScene();
+
+  /// @brief Get default setting instance.
+  const DDySettingPhysics& GetDefaultSetting() const noexcept;
+
+  /// @brief Get default physics material instance reference.
+  const physx::PxMaterial& GetDefaultPhysicsMaterial() const noexcept;
+
+  auto& MDY_PRIVATE_SPECIFIER(GetRefInternalSdk)()
+  {
+    MDY_ASSERT_FORCE(MDY_CHECK_ISNOTNULL(this->gPhysicx), "Internal PhysX PxPhysics must be initailized.");
+    return *this->gPhysicx;
+  }
+
+  auto& MDY_PRIVATE_SPECIFIER(GetRefScene)()
+  {
+    MDY_ASSERT_FORCE(MDY_CHECK_ISNOTNULL(this->gScene), "Internal PhysX PxScene must be initailized.");
+    return *this->gScene;
+  }
 
 private:
   /// @brief Override function callback. When object of physx is remove, this function will be called.
@@ -64,7 +95,7 @@ private:
   physx::PxPhysics*             gPhysicx    = MDY_INITIALIZE_NULL; 
   physx::PxDefaultCpuDispatcher*gDispatcher = MDY_INITIALIZE_NULL;
   physx::PxScene*               gScene      = MDY_INITIALIZE_NULL;
-  physx::PxMaterial*            gMaterial   = MDY_INITIALIZE_NULL;
+  physx::PxMaterial*            mDefaultMaterial   = MDY_INITIALIZE_NULL;
   physx::PxCooking*             mCooking    = MDY_INITIALIZE_NULL;
 
   physx::PxReal                 stackZ      = 10.0f;

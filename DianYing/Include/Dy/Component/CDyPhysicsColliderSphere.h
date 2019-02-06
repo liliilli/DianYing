@@ -16,6 +16,19 @@
 #include <Dy/Component/CDyPhysicsCollider.h>
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
 
+//!
+//! Forward declaration
+//!
+
+namespace physx
+{
+class PxShape;
+} /// ::physx namespace
+
+//!
+//! Implementation
+//!
+
 namespace dy
 {
 
@@ -26,7 +39,10 @@ namespace dy
 class CDyPhysicsColliderSphere final : public CDyPhysicsCollider
 {
 public:
-  CDyPhysicsColliderSphere(_MIN_ FDyActor& actorReference) : CDyPhysicsCollider(actorReference) {};
+  CDyPhysicsColliderSphere(_MIN_ FDyActor& actorReference) : CDyPhysicsCollider(actorReference) 
+  { 
+    this->mColliderType = EDyColliderType::Sphere; 
+  };
   virtual ~CDyPhysicsColliderSphere() = default;
       
   MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(CDyPhysicsColliderSphere);
@@ -45,6 +61,15 @@ public:
   void InitializeInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody) override final; 
   /// @brief Release internal (PhysX) resource.
   void ReleaseInternalResource() override final;
+
+  /// @brief
+  MDY_NODISCARD TF32 GetRadius() const noexcept;
+
+private:
+  TF32 mRadius = 0.0f;
+
+  /// @brief Internal shape pointer instance. 
+  physx::PxShape* mPtrInternalShape = nullptr;
 };
 
 } /// ::dy namespace

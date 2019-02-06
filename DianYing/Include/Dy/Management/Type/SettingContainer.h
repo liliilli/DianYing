@@ -241,7 +241,9 @@ public:
     // Dynamic collider's friction (動的摩擦)
     TF32 mDefaultDynamicFriction = 0.0f;
     // Global restitution (跳ね返す程度)
-    TF32 DefaultRestitution = 0.0f;
+    TF32 mDefaultRestitution = 0.0f;
+    // Global default angular damping
+    TF32 mDefaultAngularDamping = 0.0f;
   };
 
   using TLockPreset = std::unordered_map<std::string, DLockPreset>;

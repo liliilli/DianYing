@@ -311,7 +311,8 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingPhysics::DCommon&
   DyJsonGetValueFromTo(j, "Gravity",                p.mGravity);
   DyJsonGetValueFromTo(j, "DefaultStaticFriction",  p.mDefaultStaticFriction);
   DyJsonGetValueFromTo(j, "DefaultDynamicFriction", p.mDefaultDynamicFriction);
-  DyJsonGetValueFromTo(j, "DefaultRestitution",     p.DefaultRestitution);
+  DyJsonGetValueFromTo(j, "DefaultRestitution",     p.mDefaultRestitution);
+  DyJsonGetValueFromTo(j, "DefaultAngularDamping",  p.mDefaultAngularDamping);
 }
 
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ EDyCollisionFilter& p)
