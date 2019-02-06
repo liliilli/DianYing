@@ -68,7 +68,7 @@ public:
   /// @brief Initialize internal (PhysX) resource.
   virtual void InitializeInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody) = 0; 
   /// @brief Release internal (PhysX) resource.
-  virtual void ReleaseInternalResource() = 0;
+  virtual void ReleaseInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody) = 0;
 
 private:
   void TryActivateInstance() override final;
@@ -91,8 +91,6 @@ private:
 protected:
   /// Collider type of this component.
   EDyColliderType mColliderType = EDyColliderType::NoneError;
-  ///
-  CDyPhysicsRigidbody* mPtrBoundRigidbody = nullptr;
 };
 
 } /// ::dy namespace

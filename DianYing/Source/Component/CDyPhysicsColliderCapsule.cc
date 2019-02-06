@@ -40,7 +40,7 @@ void CDyPhysicsColliderCapsule::InitializeInternalResource(_MINOUT_ CDyPhysicsRi
 
 }
 
-void CDyPhysicsColliderCapsule::ReleaseInternalResource()
+void CDyPhysicsColliderCapsule::ReleaseInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody)
 {
 
 }

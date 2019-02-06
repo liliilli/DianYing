@@ -50,8 +50,6 @@ std::string CDyPhysicsColliderSphere::ToString()
 
 void CDyPhysicsColliderSphere::InitializeInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody)
 {
-  MDY_ASSERT_FORCE(MDY_CHECK_ISNULL(this->mPtrBoundRigidbody), "Pointer of bound rigidbody instance must not be valid.");
-
   // PxSphereGeometry is value type.
   const physx::PxSphereGeometry geometry{this->mRadius};
 
@@ -66,18 +64,14 @@ void CDyPhysicsColliderSphere::InitializeInternalResource(_MINOUT_ CDyPhysicsRig
 
   // Apply to iRefRigidbody.
   iRefRigidbody.BindShapeToRigidbody(*this->mPtrInternalShape);
-  this->mPtrBoundRigidbody =&iRefRigidbody;
 }
 
-void CDyPhysicsColliderSphere::ReleaseInternalResource()
+void CDyPhysicsColliderSphere::ReleaseInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody)
 {
-  MDY_ASSERT_FORCE(MDY_CHECK_ISNOTNULL(this->mPtrBoundRigidbody), "Pointer of bound rigidbody instance must be valid.");
-
-  this->mPtrBoundRigidbody->UnbindShapeFromRigidbody(*this->mPtrInternalShape);
+  iRefRigidbody.UnbindShapeFromRigidbody(*this->mPtrInternalShape);
 
   this->mPtrInternalShape->release();
-  this->mPtrInternalShape   = nullptr;
-  this->mPtrBoundRigidbody  = nullptr;
+  this->mPtrInternalShape = nullptr;
 }
 
 TF32 CDyPhysicsColliderSphere::GetRadius() const noexcept

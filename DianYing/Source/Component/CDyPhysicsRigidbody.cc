@@ -162,7 +162,7 @@ void CDyPhysicsRigidbody::TryDeactivateInstance()
   {
     // Release internal resource & unregister.
     auto& ptrCollider = this->mPtrColliderList.back();
-    ptrCollider->ReleaseInternalResource();
+    ptrCollider->ReleaseInternalResource(*this);
     ptrCollider->MDY_PRIVATE_SPECIFIER(SetRegisterFlag)(false);
 
     // We need to remove from last element because of fast erasion.
@@ -188,7 +188,7 @@ void CDyPhysicsRigidbody::UnregisterCollider(_MIN_ CDyPhysicsCollider& iRefColli
   MDY_ASSERT_FORCE(it != this->mPtrColliderList.end(), "Unexpected error occurred.");
 
   // If found, release internal resource from collider.
-  it->Get()->ReleaseInternalResource();
+  it->Get()->ReleaseInternalResource(*this);
   it->Get()->MDY_PRIVATE_SPECIFIER(SetRegisterFlag)(false);
   // And remove.
   DyFastErase(this->mPtrColliderList, it);
