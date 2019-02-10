@@ -149,7 +149,8 @@ private:
   /// This function must be called before initialization.
   void pSetupExecutableArgumentSettings();
 
-  EDyAppMode mApplicationMode         = EDyAppMode::LoadCompressedFile;
+  EDyAppMode mApplicationMode         = EDyAppMode::ModeRuntime;
+  EDyFileLoadingMode mFileLoadingMode = EDyFileLoadingMode::LoadCompressedFile;
   EDyRenderingApi mRenderingType      = EDyRenderingApi::NoneError;
   bool mIsEnabledLogging              = false;
   bool mIsEnabledLoggingToConsole     = false;
