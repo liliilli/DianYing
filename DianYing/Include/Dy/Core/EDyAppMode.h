@@ -23,11 +23,6 @@ enum class EDyAppMode
   ModeCompressData,
   // If -d not setup, just do this that.
   ModeRuntime,
-  // If -d setup, debug mode will be setup.
-  // Specified keyboard key will be setup (F1 ~ F12) and override given game runtime key. 
-  // and, imgui will also be initiated to see informations.
-  // when -d set up, all resources will be loaded like -r flag. and saved as saparated files
-  ModeDebug
 };
 
 /// @enum  EDyFileLoadingMode

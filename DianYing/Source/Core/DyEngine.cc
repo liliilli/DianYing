@@ -15,7 +15,8 @@
 /// Header file
 #include <Dy/Core/DyEngine.h>
 
-#include <filesystem>
+#include <Dy/Core/Thread/SDyIOConnectionHelper.h>
+#include <Dy/Helper/MCS/Functions.h>
 #include <Dy/Management/InputManager.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
@@ -31,10 +32,9 @@
 #include <Dy/Management/Editor/GuiManager.h>
 #include <Dy/Management/Internal/MDySynchronization.h>
 #include <Dy/Management/Internal/MDyProfiling.h>
-#include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 #include "Dy/Management/GameTimerManager.h"
-#include "Dy/Helper/mcs/Functions.h"
 #include "Dy/Management/Helper/SDyProfilingHelper.h"
+#include <Dy/Management/Internal/MDyDebug.h>
 
 //!
 //! Implementation
@@ -58,11 +58,6 @@ EDySuccess DyEngine::pfInitialize()
     this->pfInitializeIndependentManager();
     this->mSynchronization = &MDySynchronization::GetInstance();
   } break;
-  case EDyAppMode::ModeDebug: 
-  {
-    this->pfInitializeIndependentManager();
-    this->mSynchronization = &MDySynchronization::GetInstance();
-  } break;
   }
 
   return DY_SUCCESS;
@@ -74,7 +69,6 @@ EDySuccess DyEngine::pfRelease()
   {
   case EDyAppMode::ModeCompressData: /* Do nothing */ break;
   case EDyAppMode::ModeRuntime: 
-  case EDyAppMode::ModeDebug: 
   {
     this->mSynchronization = nullptr;
     this->pfReleaseIndependentManager();
@@ -90,15 +84,9 @@ void DyEngine::operator()()
     mcs::Compress(set.MDY_PRIVATE_SPECIFIER(GetEntrySettingFile)());
     return;
   }
-  else if (set.GetApplicationMode() == EDyAppMode::ModeDebug)
-  {
-    MDY_NOT_IMPLEMENTED_ASSERT();
-    return;
-  }
 
-  static auto& window      = MDyWindow::GetInstance();
   static auto& timeManager = MDyTime::GetInstance();
-  while (window.IsWindowShouldClose() == false)
+  while (MDyWindow::GetInstance().IsWindowShouldClose() == false)
   {
     // Try game status transition and pre-housesholds.
     this->TryUpdateStatus();
@@ -108,11 +96,13 @@ void DyEngine::operator()()
       this->mIsStatusTransitionDone = true;
     }
 
+    // Real-time update sequence when `GameEnd call sign` not checked.
     if (this->mIsGameEndCalled == false)
-    { // Real-time update sequence when `GameEnd call sign` not checked.
+    { 
       timeManager.pUpdate();
       if (timeManager.IsGameFrameTicked() == DY_FAILURE) { continue; }
     }
+
     switch (this->GetGlobalGameStatus())
     {
     case EDyGlobalGameStatus::Booted: 
@@ -128,7 +118,6 @@ void DyEngine::operator()()
 
       // Get delta-time.
       const auto dt = timeManager.GetGameScaledTickedDeltaTimeValue();
-
       // Update
       this->MDY_PRIVATE_SPECIFIER(Update)(this->mStatus, dt);
 
@@ -181,16 +170,14 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(ReflectGameStatusTransition)()
     {
     case EDyGlobalGameStatus::FirstLoading: 
     { // Booted => FirstLoading.
-      gEngine->pfInitializeDependentManager();
-      MDY_CALL_ASSERT_SUCCESS   (MDyWorld::GetInstance().TryCreateDebugUi());
-      MDY_CALL_BUT_NOUSE_RESULT (MDyWorld::GetInstance().TryCreateLoadingUi());
-#ifdef false
-      auto& refSettingManager = MDySetting::GetInstance();
-      if (refSettingManager.IsDebugUiVisible() == true)
-      { // If debug ui need to be visible, create debug ui.
+      this->pfInitializeDependentManager();
+      if (MDySetting::GetInstance().IsDebugMode() == true)
+      {
+        MDY_CALL_ASSERT_SUCCESS(MDyDebug::Initialize());
         MDY_CALL_ASSERT_SUCCESS(MDyWorld::GetInstance().TryCreateDebugUi());
       }
-#endif
+
+      MDY_CALL_BUT_NOUSE_RESULT (MDyWorld::GetInstance().TryCreateLoadingUi());
       MDyMetaInfo::GetInstance().MDY_PRIVATE_SPECIFIER(PopulateGlobalResourceSpecifierList)();
     } break;
     default: MDY_UNEXPECTED_BRANCH();
@@ -247,10 +234,6 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(ReflectGameStatusTransition)()
     } break;
     case EDyGlobalGameStatus::Shutdown: 
     { // GameRuntime => Shutdown. Just wait IO Thread is slept.
-      if (MDyWorld::GetInstance().IsDebugUiExist() == true)
-      { // If debug ui exist, remove.
-        MDY_CALL_BUT_NOUSE_RESULT(MDyWorld::GetInstance().TryRemoveDebugUi());
-      }
       SDyIOConnectionHelper::PopulateResourceList(
           std::vector<DDyResourceName>{}, EDyScope::Global, 
           []() { DyEngine::GetInstance().SetNextGameStatus(EDyGlobalGameStatus::Ended); }
@@ -269,6 +252,16 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(ReflectGameStatusTransition)()
       auto& scriptManager = MDyScript::GetInstance();
       scriptManager.CallonEndGlobalScriptList();
       scriptManager.RemoveGlobalScriptInstances();
+
+      // If debug mode, try to release debug manager and relevent ui.
+      if (MDySetting::GetInstance().IsDebugMode() == true)
+      {
+        // If debug ui exist, remove.
+        if (MDyWorld::GetInstance().IsDebugUiExist() == true)
+        { MDY_CALL_BUT_NOUSE_RESULT(MDyWorld::GetInstance().TryRemoveDebugUi()); }
+        // 
+        MDY_CALL_ASSERT_SUCCESS(MDyDebug::Release());
+      }
 
       this->pfReleaseDependentManager();
       MDY_CALL_ASSERT_SUCCESS(MDyWindow::GetInstance().MDY_PRIVATE_SPECIFIER(TerminateWindow)());

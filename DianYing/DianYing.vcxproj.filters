@@ -316,6 +316,7 @@
     <ClCompile Include="Source\Component\CDyPhysicsColliderSphere.cc" />
     <ClCompile Include="Source\Component\CDyPhysicsColliderBox.cc" />
     <ClCompile Include="Source\Component\CDyPhysicsColliderCapsule.cc" />
+    <ClCompile Include="Source\Management\Internal\MDyDebug.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -779,6 +780,7 @@
     <ClInclude Include="Include\Dy\Component\CDyPhysicsColliderBox.h" />
     <ClInclude Include="Include\Dy\Component\CDyPhysicsColliderCapsule.h" />
     <ClInclude Include="Include\Dy\Component\CDyPhysicsColliderSphere.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\MDyDebug.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

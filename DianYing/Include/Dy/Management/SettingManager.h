@@ -60,6 +60,9 @@ public:
   /// @brief Get flag of `default ssao option`.
   MDY_NODISCARD bool IsDefaultSsaoOptionActivated() const noexcept;
 
+  /// @brief Check app is debug mode.
+  MDY_NODISCARD bool IsDebugMode() const noexcept;
+
   /// @brief Get overall window width size.
   MDY_NODISCARD TI32 GetWindowSizeWidth() const noexcept;
   /// @brief Get overall window height size.
@@ -171,8 +174,14 @@ private:
   DDySettingMetaPath    mDevMetaPath  = {};
   DDySettingPhysics     mPhysics      = {};
 
-  bool mIsEnabledVsync = true;
-  bool mIsInitialized  = false;
+  bool mIsEnabledVsync  = true;
+  bool mIsInitialized   = false;
+
+  // If -d setup, debug mode will be setup.
+  // Specified keyboard key will be setup (F1 ~ F12) and override given game runtime key. 
+  // and, imgui will also be initiated to see informations.
+  // when -d set up, all resources will be loaded like -r flag. and saved as saparated files
+  bool mIsDebugMode     = false;
 
   friend class DyEngine;
 };

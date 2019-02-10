@@ -126,6 +126,11 @@ bool MDySetting::IsDefaultSsaoOptionActivated() const noexcept
   return this->mGamePlay.mGraphics.mIsEnabledDefaultSsao;
 }
 
+bool MDySetting::IsDebugMode() const noexcept
+{
+  return this->mIsDebugMode;
+}
+
 TI32 MDySetting::GetWindowSizeWidth() const noexcept
 {
   return this->mGamePlay.mInitialResolution.X;
@@ -280,13 +285,7 @@ void MDySetting::pSetupExecutableArgumentSettings()
     }
   };
 
-  static auto SetupDyDebugMode = [this](const cxxopts::OptionValue& result)
-  {
-    if (result.as<bool>() == true)
-    {
-      this->mApplicationMode = EDyAppMode::ModeDebug;
-    }
-  };
+  static auto SetupDyDebugMode = [this](const cxxopts::OptionValue& result) { this->mIsDebugMode = result.as<bool>(); };
 
   /// @brief Setup feature logging to file from argument.
   /// @param result ["enable_logging_file"] Option value from parsing library.

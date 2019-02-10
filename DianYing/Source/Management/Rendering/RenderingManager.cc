@@ -15,6 +15,10 @@
 /// Header file
 #include <Dy/Management/Rendering/RenderingManager.h>
 
+#include <imgui/imgui.h>
+#include <imgui/imgui_impl_glfw.h>
+#include <imgui/imgui_impl_opengl3.h>
+
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Management/SettingManager.h>
@@ -31,6 +35,7 @@
 #include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
 #include <Dy/Management/Internal/Render/FDyModelHandlerManager.h>
 #include "Dy/Core/Resource/Resource/FDyModelResource.h"
+#include "Dy/Management/WindowManager.h"
 
 namespace dy
 {
@@ -50,9 +55,24 @@ EDySuccess MDyRendering::pfInitialize()
   this->mCSMRenderer          = std::make_unique<decltype(this->mCSMRenderer)::element_type>();
   this->mSSAOPostEffect       = std::make_unique<decltype(mSSAOPostEffect)::element_type>();
 
-  const auto& information = MDySetting::GetInstance().GetGameplaySettingInformation();
-  if (information.mGraphics.mIsEnabledDefaultSsao == true)
+  switch (MDySetting::GetInstance().GetRenderingType())
   {
+  case EDyRenderingApi::Vulkan: 
+  case EDyRenderingApi::DirectX11: 
+  case EDyRenderingApi::DirectX12: 
+  { MDY_NOT_IMPLEMENTED_ASSERT();
+  } break;
+  case EDyRenderingApi::OpenGL: 
+  {
+    { // IMGUI Setting
+      IMGUI_CHECKVERSION();
+      ImGui::CreateContext();
+      ImGui_ImplGlfw_InitForOpenGL(MDyWindow::GetInstance().GetGLMainWindow(), true);
+      ImGui_ImplOpenGL3_Init("#version 430");
+      ImGui::StyleColorsDark();
+    }
+  } break;
+  default: MDY_UNEXPECTED_BRANCH(); break;
   }
 
 #if defined(MDY_FLAG_IN_EDITOR) == true
@@ -65,6 +85,23 @@ EDySuccess MDyRendering::pfInitialize()
 
 EDySuccess MDyRendering::pfRelease()
 {
+  switch (MDySetting::GetInstance().GetRenderingType())
+  {
+  case EDyRenderingApi::Vulkan: 
+  case EDyRenderingApi::DirectX11: 
+  case EDyRenderingApi::DirectX12: 
+  { MDY_NOT_IMPLEMENTED_ASSERT();
+  } break;
+  case EDyRenderingApi::OpenGL:
+  {
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+    MDY_LOG_INFO_D("Released ImGui Context.");
+  } break;
+  default: MDY_UNEXPECTED_BRANCH(); break;
+  }
+
   this->mLevelFinalRenderer   = MDY_INITIALIZE_NULL;
   this->mCSMRenderer          = MDY_INITIALIZE_NULL;
   this->mSSAOPostEffect       = MDY_INITIALIZE_NULL;
