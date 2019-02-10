@@ -58,6 +58,10 @@ public:
 
   /// @brief Set next status.
   void SetNextGameStatus(_MIN_ EDyGlobalGameStatus iNextStatus) noexcept;
+  /// @brief Set in-game update pause activation flag.
+  /// @warning DO NOT CALL THIS with `true` IN IN-GAME SCRIPT WITH NO GLOBAL RETRIVATION LOGIC.
+  /// all script & animation & physics will be paused when true, so could not resume in in-game world.
+  void SetInGameUpdateActivation(_MIN_ bool iActivated) noexcept;
 
   /// @brief Try end game. Duplicated function call is neglected to once.
   MDY_NOTUSED EDySuccess TryEndGame() noexcept;
@@ -100,6 +104,10 @@ private:
   EDyGlobalGameStatus mPrevStatus           = EDyGlobalGameStatus::None;
   bool                mIsStatusTransitionDone   = false;
   bool                mIsGameEndCalled          = false;
+  /// @brief If true, update (in-game input, physics, skinned animation etc) will be neglected,
+  /// and in-game resource gc also will be passed.
+  /// If resource manager has been changed, you need to call GC manually.
+  bool                mIsInGameUpdatePassed           = false;
 
   friend class SDyIOConnectionHelper;
   friend class SDyIOWorkerConnHelper;

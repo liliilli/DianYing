@@ -451,7 +451,7 @@ bool MDyInput::IsJoystickConnected() const noexcept
   return mIsControllerConnected;
 }
 
-void MDyInput::pfUpdate(_MIN_ TF32 dt) noexcept
+void MDyInput::pfInGameUpdate(_MIN_ TF32 dt) noexcept
 {
   this->MDY_PRIVATE_SPECIFIER(pUpdateMouseMovement)(dt);
   if (this->IsJoystickConnected() == true)
@@ -465,6 +465,11 @@ void MDyInput::pfUpdate(_MIN_ TF32 dt) noexcept
 
   this->mDelegateManger.CheckDelegateAxis(dt);
   this->mDelegateManger.CheckDelegateAction(dt);
+}
+
+void MDyInput::pfGlobalUpdate(_MIN_ TF32 dt) noexcept
+{
+
 }
 
 void MDyInput::MDY_PRIVATE_SPECIFIER(pUpdateJoystickSticks)()

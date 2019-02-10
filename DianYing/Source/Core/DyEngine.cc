@@ -113,8 +113,11 @@ void DyEngine::operator()()
     case EDyGlobalGameStatus::Loading: 
     case EDyGlobalGameStatus::GameRuntime: 
     {
-      this->mSynchronization->TrySynchronization();
-      MDyGameTimer::GetInstance().MDY_PRIVATE_SPECIFIER(TryGcRemoveAbortedTimerInstance)();
+      if (this->mIsInGameUpdatePassed == false)
+      {
+        this->mSynchronization->TrySynchronization();
+        MDyGameTimer::GetInstance().MDY_PRIVATE_SPECIFIER(TryGcRemoveAbortedTimerInstance)();
+      }
 
       // Get delta-time.
       const auto dt = timeManager.GetGameScaledTickedDeltaTimeValue();
@@ -290,28 +293,34 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(Update)(_MIN_ EDyGlobalGameStatus iEngineSt
   } break;
   case EDyGlobalGameStatus::GameRuntime: 
   {
-    MDyScript::GetInstance().UpdateActorScript(0.0f, EDyScriptState::CalledNothing);
-    MDyScript::GetInstance().TryMoveInsertActorScriptToMainContainer();
-    MDyScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
-
-    MDyInput::GetInstance().pfUpdate(dt);
-    if (this->MDY_PRIVATE_SPECIFIER(IsGameNeedToBeTransitted)() == true) { return; }
-    MDyGameTimer::GetInstance().Update(dt);
-    if (this->MDY_PRIVATE_SPECIFIER(IsGameNeedToBeTransitted)() == true) { return; }
-    MDyScript::GetInstance().UpdateActorScript(dt);
-    if (this->MDY_PRIVATE_SPECIFIER(IsGameNeedToBeTransitted)() == true) { return; }
-    MDyScript::GetInstance().UpdateWidgetScript(dt);
-    if (this->MDY_PRIVATE_SPECIFIER(IsGameNeedToBeTransitted)() == true) { return; }
-
-    MDyPhysics::GetInstance().Update(dt);
-    MDyWorld::GetInstance().Update(dt);
-    MDyWorld::GetInstance().UpdateObjects(dt);
-
-    auto& soundManager = MDySound::GetInstance();
-    if (soundManager.mIsSoundSystemAvailable == true)
+    // If in-game update should not be passed, just update in-game. Otherwise, neglect.
+    if (this->mIsInGameUpdatePassed == false)
     {
-      soundManager.Update(dt);
+      MDyScript::GetInstance().UpdateActorScript(0.0f, EDyScriptState::CalledNothing);
+      MDyScript::GetInstance().TryMoveInsertActorScriptToMainContainer();
+      MDyScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
+
+      MDyInput::GetInstance().pfInGameUpdate(dt);
+      if (this->MDY_PRIVATE_SPECIFIER(IsGameNeedToBeTransitted)() == true) { return; }
+      MDyGameTimer::GetInstance().Update(dt);
+      if (this->MDY_PRIVATE_SPECIFIER(IsGameNeedToBeTransitted)() == true) { return; }
+      MDyScript::GetInstance().UpdateActorScript(dt);
+      if (this->MDY_PRIVATE_SPECIFIER(IsGameNeedToBeTransitted)() == true) { return; }
+      MDyScript::GetInstance().UpdateWidgetScript(dt);
+      if (this->MDY_PRIVATE_SPECIFIER(IsGameNeedToBeTransitted)() == true) { return; }
+      
+      MDyPhysics::GetInstance().Update(dt);
+      MDyWorld::GetInstance().Update(dt);
+      MDyWorld::GetInstance().UpdateObjects(dt);
+
+      auto& soundManager = MDySound::GetInstance();
+      if (soundManager.mIsSoundSystemAvailable == true) { soundManager.Update(dt); }
     }
+    else
+    {
+      MDyInput::GetInstance().pfGlobalUpdate(dt);
+    }
+
   } break;
   case EDyGlobalGameStatus::Shutdown: 
     break;
@@ -327,7 +336,11 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(PreRender)(_MIN_ EDyGlobalGameStatus iEngin
   {
     // Reset frame dependent profiling count.
     SDyProfilingHelper::ResetFrameDependentCounts();
-    MDyWorld::GetInstance().UpdateAnimator(dt);
+
+    if (this->mIsInGameUpdatePassed == false)
+    {
+      MDyWorld::GetInstance().UpdateAnimator(dt);
+    }
   } break;
   default: break;
   }
@@ -448,6 +461,11 @@ EDyGlobalGameStatus DyEngine::GetGlobalGameStatus() const noexcept
 void DyEngine::SetNextGameStatus(_MIN_ EDyGlobalGameStatus iNextStatus) noexcept
 {
   this->mNextStatus = iNextStatus;
+}
+
+void DyEngine::SetInGameUpdateActivation(_MIN_ bool iActivated) noexcept
+{
+  this->mIsInGameUpdatePassed = iActivated;
 }
 
 EDySuccess DyEngine::TryEndGame() noexcept

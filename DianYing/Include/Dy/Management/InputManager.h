@@ -149,9 +149,13 @@ private:
   void MDY_PRIVATE_SPECIFIER(pInitializeAxisNAction)();
   void MDY_PRIVATE_SPECIFIER(pInitializeCallbacks)();
 
-  /// @brief Update input polling on present frame with delta time.
+  /// @brief Update in-game input polling on present frame with delta time.
+  /// This function must be called update phrase when in-game pause is not set.
+  void pfInGameUpdate(_MIN_ TF32 dt) noexcept;
+
+  /// @brief Update global (debug, outside world from in-game) input polling on present frame with delta time.
   /// This function must be called update phrase.
-  void pfUpdate(_MIN_ TF32 dt) noexcept;
+  void pfGlobalUpdate(_MIN_ TF32 dt) noexcept;
 
   void MDY_PRIVATE_SPECIFIER(pCheckAxisStatus)(_MIN_ TF32 dt);
   void MDY_PRIVATE_SPECIFIER(pCheckActionStatus)(_MIN_ TF32 dt);
