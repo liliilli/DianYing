@@ -113,7 +113,7 @@ void DyEngine::operator()()
     case EDyGlobalGameStatus::Loading: 
     case EDyGlobalGameStatus::GameRuntime: 
     {
-      if (this->mIsInGameUpdatePassed == false)
+      if (this->mIsInGameUpdatePaused == false)
       {
         this->mSynchronization->TrySynchronization();
         MDyGameTimer::GetInstance().MDY_PRIVATE_SPECIFIER(TryGcRemoveAbortedTimerInstance)();
@@ -294,13 +294,15 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(Update)(_MIN_ EDyGlobalGameStatus iEngineSt
   case EDyGlobalGameStatus::GameRuntime: 
   {
     // If in-game update should not be passed, just update in-game. Otherwise, neglect.
-    if (this->mIsInGameUpdatePassed == false)
+    if (this->mIsInGameUpdatePaused == false)
     {
       MDyScript::GetInstance().UpdateActorScript(0.0f, EDyScriptState::CalledNothing);
       MDyScript::GetInstance().TryMoveInsertActorScriptToMainContainer();
       MDyScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
 
       MDyInput::GetInstance().pfInGameUpdate(dt);
+      MDyInput::GetInstance().pfGlobalUpdate(dt);
+
       if (this->MDY_PRIVATE_SPECIFIER(IsGameNeedToBeTransitted)() == true) { return; }
       MDyGameTimer::GetInstance().Update(dt);
       if (this->MDY_PRIVATE_SPECIFIER(IsGameNeedToBeTransitted)() == true) { return; }
@@ -337,7 +339,7 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(PreRender)(_MIN_ EDyGlobalGameStatus iEngin
     // Reset frame dependent profiling count.
     SDyProfilingHelper::ResetFrameDependentCounts();
 
-    if (this->mIsInGameUpdatePassed == false)
+    if (this->mIsInGameUpdatePaused == false)
     {
       MDyWorld::GetInstance().UpdateAnimator(dt);
     }
@@ -463,9 +465,14 @@ void DyEngine::SetNextGameStatus(_MIN_ EDyGlobalGameStatus iNextStatus) noexcept
   this->mNextStatus = iNextStatus;
 }
 
-void DyEngine::SetInGameUpdateActivation(_MIN_ bool iActivated) noexcept
+void DyEngine::SetInGameUpdatePause(_MIN_ bool iActivated) noexcept
 {
-  this->mIsInGameUpdatePassed = iActivated;
+  this->mIsInGameUpdatePaused = iActivated;
+}
+
+bool DyEngine::IsInGameUpdatePaused() const noexcept
+{
+  return this->mIsInGameUpdatePaused;
 }
 
 EDySuccess DyEngine::TryEndGame() noexcept

@@ -79,21 +79,19 @@ public:
   MDY_NODISCARD bool IsAxisReleased(_MIN_ const std::string& axisSpecifier) noexcept;
 
   /// @brief
-  /// @param actionSpecifier
   MDY_NODISCARD bool IsActionPressed(_MIN_ const std::string& actionSpecifier) const noexcept;
   /// @brief Check whether or not specified action is being existed.
-  /// @param actionSpecifier The action name which action instance has.
   MDY_NODISCARD bool IsActionExist(_MIN_ const std::string& actionSpecifier) const noexcept;
   /// @brief
-  /// @param actionSpecifier
   MDY_NODISCARD bool IsActionReleased(_MIN_ const std::string& actionSpecifier) const noexcept;
-
 
   /// @brief Check if mouse is moved on present frame, but false when mouse movement is not activated.
   MDY_NODISCARD bool IsMouseMoved() const noexcept { return this->mIsMouseMoved; }
-
   /// @brief Check joystick is connected (JOYSTICK 1)
   MDY_NODISCARD bool IsJoystickConnected() const noexcept;
+  
+  /// @brief Low-level api for checking key is just pressed. Not recommeneded, use `Action` or `Axis` instead.
+  MDY_NODISCARD bool IsKeyPressed(_MIN_ EDyInputButton keyValue) const noexcept;
 
   /// @brief Try require controller exlusive right for UI Widget. \n
   /// If there is any actor which is using controller delegate, Actor delegate will be neglected. \n
