@@ -29,71 +29,62 @@
 namespace
 {
 
-std::vector<dy::NotNull<physx::PxRigidBody*>> sRigidbodies = {};
-
-///
 /// @function DyFilterShader
 /// @brief PhysX Filter shader customized setting function.
-///
 physx::PxFilterFlags DyFilterShader(
-  physx::PxFilterObjectAttributes attributes0, physx::PxFilterData filterData0,
-  physx::PxFilterObjectAttributes attributes1, physx::PxFilterData filterData1,
-  physx::PxPairFlags& pairFlags, const void* constantBlock, physx::PxU32 constantBlockSize)
+  _MIN_ physx::PxFilterObjectAttributes attributes0, _MIN_ physx::PxFilterData filterData0,
+  _MIN_ physx::PxFilterObjectAttributes attributes1, _MIN_ physx::PxFilterData filterData1,
+  _MIN_ physx::PxPairFlags& pairFlags, _MIN_ const void* constantBlock, _MIN_ physx::PxU32 constantBlockSize)
 {
-	// let triggers through
-	if(physx::PxFilterObjectIsTrigger(attributes0) || physx::PxFilterObjectIsTrigger(attributes1))
-	{
-		pairFlags = physx::PxPairFlag::eTRIGGER_DEFAULT;
-		return physx::PxFilterFlag::eDEFAULT;
-	}
+  // If first 24bit (rigidbody specifier id) is same, just neglect a pair of collider.
+  if ((filterData0.word0 & 0xFFFFFF00) == (filterData1.word0 & 0xFFFFFF00))
+  {
+    return physx::PxFilterFlag::eKILL;
+  }
+
+  // Get information from filterData0, filterData1.
+  const auto lhsId = filterData0.word0 & 0x000000FF;
+  const auto rhsId = filterData1.word0 & 0x000000FF;
+  const auto lhsShift = lhsId % 16;
+  const auto rhsShift = rhsId % 16;
+
+  unsigned int lhsFlag = 0;
+  if (lhsId < 16)       { lhsFlag = (filterData0.word1 & (0b11 << (rhsShift * 2))) >> rhsShift * 2; }
+  else if (lhsId < 32)  { lhsFlag = (filterData0.word2 & (0b11 << (rhsShift * 2))) >> rhsShift * 2; }
+  else if (lhsId < 48)  { lhsFlag = (filterData0.word3 & (0b11 << (rhsShift * 2))) >> rhsShift * 2; }
+
+  unsigned int rhsFlag = 0;
+  if (rhsId < 16)       { rhsFlag = (filterData1.word1 & (0b11 << (lhsShift * 2))) >> lhsShift * 2; }
+  else if (rhsId < 32)  { rhsFlag = (filterData1.word2 & (0b11 << (lhsShift * 2))) >> lhsShift * 2; }
+  else if (rhsId < 48)  { rhsFlag = (filterData1.word3 & (0b11 << (lhsShift * 2))) >> lhsShift * 2; }
+
+  // 00 (collision) 01 (overlap) 10 (ignore)
+  // -- 00 01 10
+  // 00 Co Ov Ig
+  // 01 Ov Ov Ig
+  // 10 Ig Ig Ig
+
 	// generate contacts for all that were not filtered above
 	pairFlags = physx::PxPairFlag::eCONTACT_DEFAULT;
 
-	// trigger the contact callback for pairs (A,B) where
-	// the filtermask of A contains the ID of B and vice versa.
-	if((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
-	{
-		pairFlags |= physx::PxPairFlag::eNOTIFY_TOUCH_FOUND;
+  if (lhsFlag == rhsFlag)
+  {
+    if (lhsFlag == 0b00)      { pairFlags = physx::PxPairFlag::eCONTACT_DEFAULT; }
+    else if (lhsFlag == 0b01) { pairFlags = physx::PxPairFlag::eTRIGGER_DEFAULT; }
+    else                      { return physx::PxFilterFlag::eKILL; }
   }
+  else
+  {
+    if (lhsFlag < rhsFlag) { const auto temp = rhsFlag; rhsFlag = lhsFlag; lhsFlag = temp; }
+
+    if (lhsFlag == 0b01)  { pairFlags = physx::PxPairFlag::eTRIGGER_DEFAULT; }
+    else                  { return physx::PxFilterFlag::eKILL; }
+  }
+
 	return physx::PxFilterFlag::eDEFAULT;
 }
 
-///
-/// @enum EDyTempCollisionLayer
-///
-enum EDyTempCollisionLayer
-{
-  Stack  = (1 << 0),
-  Sphere = (1 << 1),
-  Floor  = (1 << 2),
-};
-
-///
-/// @brief Setup filering to PxActor to apply.
-/// @param actor
-/// @param filterGroup
-/// @param filterMask
-///
-void DySetupFiltering(const dy::NotNull<physx::PxRigidActor*>& actor, physx::PxU32 filterGroup, physx::PxU32 filterMask)
-{
-  physx::PxFilterData filterData;
-	filterData.word0  = filterGroup;  // word0 = own ID
-	filterData.word1  = filterMask;	  // word1 = ID mask to filter pairs that trigger a contact callback;
-
-	const physx::PxU32 numShapes = actor->getNbShapes();
-  std::vector<physx::PxShape*> shapes(numShapes);
-  actor->getShapes(&shapes[0], numShapes);
-
-	for(physx::PxU32 i = 0; i < numShapes; i++)
-	{
-	  physx::PxShape* shape = shapes[i];
-		shape->setSimulationFilterData(filterData);
-	}
-}
-
-std::vector<std::string> sDebugActorName;
-
-}
+} /// ::anonymous namespace
 
 //!
 //! Implementation
@@ -298,30 +289,18 @@ EDySuccess MDyPhysics::pfRelease()
   return DY_SUCCESS;
 }
 
-void MDyPhysics::Update(float dt)
+void MDyPhysics::Update(_MIN_ TF32 dt)
 {
-#ifdef false
-  // PhysX step physics
+  if (this->mIsInitialized == false) { return; }
+
   if (dt > 0)
   {
-    gScene->simulate(dt);
-    gScene->fetchResults(true);
+    this->gScene->simulate(dt);
+    this->gScene->fetchResults(true);
+
+    // We need to process callback & update transform information.
+
   }
-
-#endif
-
-  // Print information
-#ifdef false
-  for (const auto& rigidbody : sRigidbodies)
-  {
-    const auto& position = rigidbody->getGlobalPose().p;
-    const auto& quat     = rigidbody->getGlobalPose().q;
-
-    MDY_LOG_CRITICAL("Rigidbody Position : ({}, {}, {}) Quaternion : ({}, {}, {}, {})",
-                     position.x, position.y, position.z,
-                     quat.x, quat.y, quat.z, quat.w);
-  }
-#endif
 }
 
 void MDyPhysics::InitScene()
@@ -349,6 +328,7 @@ void MDyPhysics::InitScene()
 
   tempSceneDesc.sceneQueryUpdateMode = physx::PxSceneQueryUpdateMode::eBUILD_ENABLED_COMMIT_DISABLED;
 	tempSceneDesc.gpuMaxNumPartitions = 8;
+  tempSceneDesc.filterShader = DyFilterShader;
 
   this->gScene = this->gPhysicx->createScene(tempSceneDesc);
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gScene), "PhysX Scene must be created successfully.");
@@ -421,6 +401,50 @@ physx::PxErrorCallback& MDyPhysics::MDY_PRIVATE_SPECIFIER(GetPhysXErrorCallback)
 {
 	static physx::PxDefaultErrorCallback gDefaultErrorCallback;
 	return gDefaultErrorCallback;
+}
+
+void MDyPhysics::onContact(
+    _MIN_ const physx::PxContactPairHeader& pairHeader, 
+    _MIN_ const physx::PxContactPair* pairs,
+    _MIN_ physx::PxU32 nbPairs)
+{
+	for(unsigned i = 0; i < nbPairs; i++)
+	{
+		const physx::PxContactPair& cp = pairs[i];
+
+		if(cp.events & physx::PxPairFlag::eNOTIFY_TOUCH_FOUND)
+		{
+#ifdef false
+			if((pairHeader.actors[0] == mSubmarineActor) || (pairHeader.actors[1] == mSubmarineActor))
+			{
+				PxActor* otherActor = (mSubmarineActor == pairHeader.actors[0]) ? pairHeader.actors[1] : pairHeader.actors[0];			
+				Seamine* mine =  reinterpret_cast<Seamine*>(otherActor->userData);
+				// insert only once
+				if(std::find(mMinesToExplode.begin(), mMinesToExplode.end(), mine) == mMinesToExplode.end())
+					mMinesToExplode.push_back(mine);
+
+				break;
+			}
+#endif
+		}
+	}
+}
+
+void MDyPhysics::onTrigger(_MIN_ physx::PxTriggerPair* pairs, _MIN_ physx::PxU32 count)
+{
+	for(unsigned i = 0; i < count; i++)
+	{
+		// ignore pairs when shapes have been deleted
+		if (pairs[i].flags & (physx::PxTriggerPairFlag::eREMOVED_SHAPE_TRIGGER | physx::PxTriggerPairFlag::eREMOVED_SHAPE_OTHER))
+			continue;
+
+#ifdef false
+		if((pairs[i].otherActor == mSubmarineActor) && (pairs[i].triggerActor == gTreasureActor))
+		{
+			gTreasureFound = true;
+		}
+#endif
+	}
 }
 
 } /// ::dy namespace

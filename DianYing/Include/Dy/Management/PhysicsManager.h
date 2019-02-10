@@ -40,7 +40,7 @@ namespace dy
 /// @class MDyPhysics
 /// @brief Manages physical simulation, raytracing, sweeping and overlapping etc.
 ///
-class MDyPhysics final : public IDySingleton<MDyPhysics>, public IDyUpdatable, public physx::PxDeletionListener
+class MDyPhysics final : public IDySingleton<MDyPhysics>, public IDyUpdatable, public physx::PxDeletionListener, public physx::PxSimulationEventCallback
 {
   MDY_SINGLETON_PROPERTIES(MDyPhysics);
   MDY_SINGLETON_DERIVED(MDyPhysics);
@@ -101,8 +101,13 @@ private:
   physx::PxReal                 stackZ      = 10.0f;
   physx::PxDefaultAllocator     defaultAllocatorCallback;
 
-  // Callback helper class instance.
-  FDyPxSimulationEventCallback  mCallback = {};
+  // Implements PxSimulationEventCallback
+	void onContact(_MIN_ const physx::PxContactPairHeader& pairHeader, _MIN_ const physx::PxContactPair* pairs, _MIN_ physx::PxU32 nbPairs) override final;
+	void onTrigger(_MIN_ physx::PxTriggerPair* pairs, _MIN_ physx::PxU32 count) override final;
+	void onConstraintBreak(physx::PxConstraintInfo*, physx::PxU32) override final {}
+	void onWake(physx::PxActor** , physx::PxU32) override final {}
+	void onSleep(physx::PxActor** , physx::PxU32) override final {}
+	void onAdvance(const physx::PxRigidBody*const*, const physx::PxTransform*, const physx::PxU32) override final {}
 };
 
 } /// ::dy namespace

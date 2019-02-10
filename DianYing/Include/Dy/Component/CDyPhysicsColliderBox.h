@@ -44,6 +44,9 @@ public:
   /// @brief Initialize internal (PhysX) resource.
   void InitializeInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody) override final; 
 
+  /// @brief Get half extent.
+  MDY_NODISCARD const DDyVector3& GetHalfExtent() const noexcept;
+
 private:
   DDyVector3 mHalfExtent;
 };

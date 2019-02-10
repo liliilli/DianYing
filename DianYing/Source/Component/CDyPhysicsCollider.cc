@@ -147,7 +147,7 @@ physx::PxFilterData CDyPhysicsCollider::CreateFilterDataValue(
   const TU08 TagId = static_cast<TU08>(std::distance(defaultSetting.mCollisionTag.begin(), it));
   resultFilterData.word0 |= TagId;
 
-  // Set filter data from word1...
+  // Set filter data from word1... to word3.
   MDY_ASSERT_FORCE(this->mFilterValues.size() <= 48, "Filter value size is not valid. Must be equal or less than 48.");
   const auto valueCount = static_cast<TI32>(this->mFilterValues.size());
   for (TI32 i = 0; i < 16 && i < valueCount; ++i)
