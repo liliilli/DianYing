@@ -15,6 +15,7 @@
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Management/Type/KeyActionBindingInformation.h>
+#include <Dy/Editor/View/MainMenu.h>
 
 namespace dy
 {
@@ -55,6 +56,14 @@ private:
   TActionMap mBindedActionMap = {};
   /// If true, do not check input-key of `mBinededActionMap`.
   bool mIsExternalInputActivated = false;
+
+  //!
+  //! Internal flag.
+  //!
+
+  /// @brief Check `Debug menu` opened.
+  bool mIsDebugMenuOpened = false;
+  std::unique_ptr<editor::FDyEditor_MainMenu> mMainMenu = nullptr;
 };
 
 

@@ -401,7 +401,7 @@
     <ClCompile Include="Source\Editor\Gui\Helper\ComponentHelper.cc" />
     <ClCompile Include="Source\Editor\Gui\HelpLicenseWindow.cc" />
     <ClCompile Include="Source\Editor\Gui\LogWindow.cc" />
-    <ClCompile Include="Source\Editor\Gui\MainMenu.cc" />
+    <ClCompile Include="Source\Editor\View\MainMenu.cc" />
     <ClCompile Include="Source\Editor\Gui\MainSetting.cc" />
     <ClCompile Include="Source\Editor\Gui\ViewDetailView.cc" />
     <ClCompile Include="Source\Editor\Gui\ViewViewportMain.cc" />
@@ -723,6 +723,7 @@
     <ClInclude Include="Include\Dy\Management\GameTimerManager.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyInputButton.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyJoystickAnalog.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Render\EDyModelRenderingMode.h" />
     <ClInclude Include="Include\Dy\Meta\Information\Physics\DColliderMetaInfo.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Physics\EDyColliderType.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Physics\EDyCollisionFilter.h" />
@@ -846,7 +847,7 @@
     <ClInclude Include="Include\Dy\Editor\Gui\HelpAboutMain.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\HelpLicenseWindow.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\LogWindow.h" />
-    <ClInclude Include="Include\Dy\Editor\Gui\MainMenu.h" />
+    <ClInclude Include="Include\Dy\Editor\View\MainMenu.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\MainSetting.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\ViewDetailView.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\ViewViewportMain.h" />

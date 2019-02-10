@@ -1,5 +1,4 @@
 #include <precompiled.h>
-#if defined(MDY_FLAG_IN_EDITOR)
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -14,35 +13,63 @@
 ///
 
 /// Header file
-#include <Dy/Editor/Gui/MainMenu.h>
+#include <Dy/Editor/View/MainMenu.h>
 
 #include <imgui/imgui.h>
-#include <Dy/Editor/Descriptor/DialogDescriptor.h>
-#include <Dy/Editor/Gui/EtcDialog.h>
-#include <Dy/Editor/Gui/HelpAboutMain.h>
-#include <Dy/Editor/Gui/HelpLicenseWindow.h>
-#include <Dy/Editor/Gui/ViewViewportMain.h>
-#include <Dy/Editor/Gui/LogWindow.h>
-#include <Dy/Editor/Gui/MainSetting.h>
-#include <Dy/Management/Editor/GuiSetting.h>
-#include <Dy/Editor/Gui/Dialog/ProjectCreator.h>
 #include <Dy/Management/WindowManager.h>
-#include <Dy/Management/Editor/GuiWindowFactory.h>
+#include <Dy/Management/SettingManager.h>
 
 namespace dy::editor
 {
 
-EDySuccess FDyMainMenu::pfInitialize(const PDyGuiComponentEmptyDescriptor& desc)
+void FDyEditor_MainMenu::Draw(_MIN_ MDY_NOTUSED TF32 dt) noexcept
 {
-  return DY_SUCCESS;
+  ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiSetCond_Once);
+  ImGui::SetNextWindowSize(ImVec2(200, 300), ImGuiSetCond_Once);
+
+  if (ImGui::Begin("Dy Debug Menu", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+  {
+#ifdef false
+    // If check button, activate (floating) check render flag.
+    if (ImGui::Button("Check Render Flag"))
+    {
+
+    }
+#endif
+    {
+      const auto modelRenderingModeFlag = MDySetting::GetInstance().GetRenderingMode();
+      const TI32 originValue  = static_cast<std::underlying_type_t<decltype(modelRenderingModeFlag)>>(modelRenderingModeFlag);
+      TI32 underlyingValue    = originValue;
+      // If value is changed, process then body.
+      if (ImGui::Combo("Model Rendering Mode", &underlyingValue, "Normal\0Wireframe\0\0"))
+      {
+        if (originValue != underlyingValue)
+        {
+          // Do logging process
+          const auto newFlag = static_cast<EDyModelRenderingMode>(underlyingValue);
+          switch (newFlag)
+          {
+          case EDyModelRenderingMode::FillNormal: 
+          { MDY_LOG_INFO("Changed model rendering mode flag to {}.", "Normal");
+          } break;
+          case EDyModelRenderingMode::WireFrame: 
+          { MDY_LOG_INFO("Changed model rendering mode flag to {}.", "Wireframe");
+          } break;
+          }
+
+          // Change value.
+          MDySetting::GetInstance().SetRenderingMode(newFlag);
+        }
+      }
+    }
+
+    // Next item..
+  }
+  ImGui::End();
 }
 
-EDySuccess FDyMainMenu::pfRelease()
-{
-  return DY_SUCCESS;
-}
-
-void FDyMainMenu::DrawWindow(float dt) noexcept
+#ifdef  false
+void FDyEditor_MainMenu::DrawWindow(_MIN_ TF32 dt) noexcept
 {
   if (ImGui::BeginMainMenuBar())
   {
@@ -236,7 +263,7 @@ void FDyMainMenu::DrawWindow(float dt) noexcept
   pRenderSubwindows(dt);
 }
 
-void FDyMainMenu::pCreateNotSupportYetDialogMsg(bool* boolFlag)
+void FDyEditor_MainMenu::pCreateNotSupportYetDialogMsg(bool* boolFlag)
 {
   PDyGuiDialogDescriptor desc;
   desc.mDialogTitle = "Warning!";
@@ -251,7 +278,7 @@ void FDyMainMenu::pCreateNotSupportYetDialogMsg(bool* boolFlag)
   }
 }
 
-void FDyMainMenu::pCreateCreateProjectDalog(NotNull<bool*> boolFlag)
+void FDyEditor_MainMenu::pCreateCreateProjectDalog(NotNull<bool*> boolFlag)
 {
   PDyGuiDialogDescriptor desc;
   desc.mDialogTitle     = "";
@@ -265,7 +292,6 @@ void FDyMainMenu::pCreateCreateProjectDalog(NotNull<bool*> boolFlag)
     if (!result) { MDY_UNEXPECTED_BRANCH(); }
   }
 }
+#endif
 
 } /// ::dy::editor namespace
-
-#endif /// MDY_FLAG_IN_EDITOR

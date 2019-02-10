@@ -14,6 +14,10 @@
 
 /// Header file
 #include <Dy/Management/Internal/MDyDebug.h>
+#include <imgui/imgui.h>
+#include <imgui/imgui_impl_opengl3.h>
+#include <imgui/imgui_impl_glfw.h>
+
 #include <Dy/Management/Type/SettingContainer.h>
 #include <Dy/Management/Type/Input/EDyInputButtonStatus.h>
 #include <Dy/Management/InputManager.h>
@@ -28,7 +32,8 @@ namespace
 
 MDY_SET_IMMUTABLE_STRING(sKeyBinding, R"dy(
 {
-  "PauseInGameUpdate": { "Key": [ "KB_F1" ] }
+  "PauseInGameUpdate": { "Key": [ "KB_F1" ] },
+  "CallDebugMenu": { "Key": [ "KB_F2" ] }
 }
 )dy");
 
@@ -67,6 +72,8 @@ EDySuccess MDyDebug::pfRelease()
 
 EDySuccess MDyDebug::CheckInput(_MIN_ MDY_NOTUSED TF32 dt) noexcept
 {
+  //! We implement logic as a super-class principle.
+
   if (this->mIsExternalInputActivated == false)
   {
     this->pUpdateInputKeys();
@@ -81,7 +88,27 @@ EDySuccess MDyDebug::CheckInput(_MIN_ MDY_NOTUSED TF32 dt) noexcept
     }
 
     // Check F2.
+    if (this->IsActionPressed("CallDebugMenu") == true)
+    {
+      if (this->mIsDebugMenuOpened == false)
+      {
+        gEngine->SetInGameUpdatePause(true);
 
+        // Create debug menu.
+        this->mMainMenu = std::make_unique<editor::FDyEditor_MainMenu>();
+        this->mIsDebugMenuOpened = true;
+      }
+      else
+      {
+        // Release debug menu.
+        this->mIsDebugMenuOpened = false;
+        this->mMainMenu = nullptr;
+
+        gEngine->SetInGameUpdatePause(false);
+      }
+
+      return DY_SUCCESS;
+    }
   }
 
   return DY_FAILURE;
@@ -181,7 +208,20 @@ bool MDyDebug::IsActionReleased(_MIN_ const std::string& iSpecifier) const noexc
 
 void MDyDebug::UpdateAndRender()
 {
-  // DO NOTHING 
+  // Start the Dear ImGui frame
+  ImGui_ImplOpenGL3_NewFrame();
+  ImGui_ImplGlfw_NewFrame();
+  ImGui::NewFrame();
+
+  if (MDY_CHECK_ISNOTEMPTY(this->mMainMenu))
+  {
+    this->mMainMenu->Draw(0);
+  }
+
+  ImGui::Render();
+  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+
 }
 
 } /// ::dy namespace

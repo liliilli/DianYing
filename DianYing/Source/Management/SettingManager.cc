@@ -256,6 +256,16 @@ const DDySettingPhysics& MDySetting::GetPhysicsSetting() const noexcept
   return this->mPhysics;
 }
 
+void MDySetting::SetRenderingMode(_MIN_ EDyModelRenderingMode iNewMode) noexcept
+{
+  this->mModelRenderingMode = iNewMode;
+}
+
+EDyModelRenderingMode MDySetting::GetRenderingMode() const noexcept
+{
+  return this->mModelRenderingMode;
+}
+
 void MDySetting::pSetupExecutableArgumentSettings()
 {
   /// @brief Setup rendering api type from argument.

@@ -67,9 +67,10 @@ EDySuccess MDyRendering::pfInitialize()
     { // IMGUI Setting
       IMGUI_CHECKVERSION();
       ImGui::CreateContext();
+      ImGui::StyleColorsDark();
+
       ImGui_ImplGlfw_InitForOpenGL(MDyWindow::GetInstance().GetGLMainWindow(), true);
       ImGui_ImplOpenGL3_Init("#version 430");
-      ImGui::StyleColorsDark();
     }
   } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
@@ -189,60 +190,48 @@ void MDyRendering::RenderDrawCallQueue()
   // (0) Clear previous frame results of each framebuffers.
   this->pClearRenderingFramebufferInstances();
 
+  // @TODO TEMPORAL. MAKE STACK-BASED GL STATE MACHINE MANAGER.
+  switch (MDySetting::GetInstance().GetRenderingMode())
   {
-    const auto* ptrCamera = MDyWorld::GetInstance().GetPtrMainLevelCamera();
+  case EDyModelRenderingMode::FillNormal: 
+  {
+    MDY_GRAPHIC_SET_CRITICALSECITON();
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  } break;
+  case EDyModelRenderingMode::WireFrame: 
+  {
+    MDY_GRAPHIC_SET_CRITICALSECITON();
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  } break;
+  }
 
-    // If main camera is not exist, do not render level.
-    if (MDY_CHECK_ISNOTNULL(ptrCamera))
-    {
-      // DO CPU VIEW-FRUSTUM CULLING.
+  const auto* ptrCamera = MDyWorld::GetInstance().GetPtrMainLevelCamera();
+  // DO CPU VIEW-FRUSTUM CULLING.
 #ifdef false
-      DyEraseRemoveIf(this->mOpaqueDrawCallList, [ptrCamera](auto& iPtrOpaqueRenderer)
-      {
-        const auto& worldPos = iPtrOpaqueRenderer->GetBindedActor()->GetTransform()->GetFinalWorldPosition();
-        return ptrCamera->CheckIsPointInFrustum(worldPos) == false;
-      });
+  DyEraseRemoveIf(this->mOpaqueDrawCallList, [ptrCamera](auto& iPtrOpaqueRenderer)
+  {
+    const auto& worldPos = iPtrOpaqueRenderer->GetBindedActor()->GetTransform()->GetFinalWorldPosition();
+    return ptrCamera->CheckIsPointInFrustum(worldPos) == false;
+  });
 #endif
-      SDyProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(this->mOpaqueMeshDrawingList.size()));
 
-      if (information.mGraphics.mIsEnabledDefaultShadow == true)
-      { // (1) Cascaded Shadow mapping to opaque call list.
-        // Pre-render update for update Segments.
-        this->mCSMRenderer->PreRender();
-        if (this->mCSMRenderer->TrySetupRendering() == DY_SUCCESS)
-        {
-          this->mCSMRenderer->SetupViewport();
-          for (auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] : this->mOpaqueMeshDrawingList)
-          { // Render
-            this->mCSMRenderer->RenderScreen(
-                *iPtrModel, 
-                const_cast<FDyMeshResource&>(*iPtrValidMesh),
-                const_cast<FDyMaterialResource&>(*iPtrValidMat)
-            );
-          }
-        }
-      }
-      else { this->mCSMRenderer->Clear(); }
-
-      // Set global viewport values to camera's properties.
-      { MDY_GRAPHIC_SET_CRITICALSECITON();
-        FDyGLWrapper::SetViewport(ptrCamera->GetPixelizedViewportRectangle());
-      }
-      // (2) Draw opaque call list. Get valid Main CDyCamera instance pointer address.
-      this->mBasicOpaqueRenderer->PreRender();
-      for (auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] : this->mOpaqueMeshDrawingList)
-      { // Render
-        this->mBasicOpaqueRenderer->RenderScreen(
-            *iPtrModel,
-            const_cast<FDyMeshResource&>(*iPtrValidMesh),
-            const_cast<FDyMaterialResource&>(*iPtrValidMat)
-        );
-      }
+  // If main camera is not exist, do not render level.
+  if (MDY_CHECK_ISNOTNULL(ptrCamera))
+  {
+    SDyProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(this->mOpaqueMeshDrawingList.size()));
+    // (1) Draw opaque call list. Get valid Main CDyCamera instance pointer address.
+    this->mBasicOpaqueRenderer->PreRender();
+    for (auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] : this->mOpaqueMeshDrawingList)
+    { // Render
+      this->mBasicOpaqueRenderer->RenderScreen(
+          *iPtrModel,
+          const_cast<FDyMeshResource&>(*iPtrValidMesh),
+          const_cast<FDyMaterialResource&>(*iPtrValidMat)
+      );
     }
   }
-  this->mOpaqueMeshDrawingList.clear();
 
-  // (3) Draw transparent call list with OIT.
+  // (2) Draw transparent call list with OIT.
   if (this->mTranslucentOIT->TrySetupRendering() == DY_SUCCESS)
   {
     for (auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] : this->mTranslucentMeshDrawingList)
@@ -261,6 +250,42 @@ void MDyRendering::RenderDrawCallQueue()
     glBlendFunci(1, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   }
   this->mTranslucentMeshDrawingList.clear();
+  
+  //!
+  //! Effects ▽
+  //!
+  
+  // @TODO TEMPORARY CODE
+  {
+    MDY_GRAPHIC_SET_CRITICALSECITON();
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  }
+
+
+  // (3) Cascaded Shadow mapping to opaque call list. Pre-render update for update Segments.
+  if (MDY_CHECK_ISNOTNULL(ptrCamera) && information.mGraphics.mIsEnabledDefaultShadow == true)
+  {
+    this->mCSMRenderer->PreRender();
+    if (this->mCSMRenderer->TrySetupRendering() == DY_SUCCESS)
+    {
+      this->mCSMRenderer->SetupViewport();
+      for (auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] : this->mOpaqueMeshDrawingList)
+      { // Render
+        this->mCSMRenderer->RenderScreen(
+            *iPtrModel, 
+            const_cast<FDyMeshResource&>(*iPtrValidMesh),
+            const_cast<FDyMaterialResource&>(*iPtrValidMat)
+        );
+      }
+    }
+  }
+  else { this->mCSMRenderer->Clear(); }
+  this->mOpaqueMeshDrawingList.clear();
+
+  // Set global viewport values to camera's properties.
+  { MDY_GRAPHIC_SET_CRITICALSECITON();
+    FDyGLWrapper::SetViewport(ptrCamera->GetPixelizedViewportRectangle());
+  }
 
   //! Post processing effects
   if (information.mGraphics.mIsEnabledDefaultSsao == true)

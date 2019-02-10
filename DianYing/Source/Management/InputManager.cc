@@ -475,23 +475,7 @@ void MDyInput::pfInGameUpdate(_MIN_ TF32 dt) noexcept
 
 void MDyInput::pfGlobalUpdate(_MIN_ TF32 dt) noexcept
 {
-#ifdef false
-  // If debug mode is enabled, override global key inputs.
-  if (MDySetting::GetInstance().IsDebugMode() == true)
-  {
-    if (this->IsKeyPressed(EDyInputButton::F1) == true)
-    {
-      if (gEngine->IsInGameUpdatePaused() == true)
-      {
-        gEngine->SetInGameUpdatePause(false);
-      }
-      else
-      {
-        gEngine->SetInGameUpdatePause(true);
-      }
-    }
-  }
-#endif
+  // DO NOTHING.
 }
 
 void MDyInput::MDY_PRIVATE_SPECIFIER(pUpdateJoystickSticks)()

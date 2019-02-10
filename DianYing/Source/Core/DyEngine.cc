@@ -373,6 +373,7 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(Render)(_MIN_ EDyGlobalGameStatus iEngineSt
     auto& render = MDyRendering::GetInstance();
     render.SetupDrawModelTaskQueue();
     render.RenderDrawCallQueue();
+
     // If debug mode is enabled, update and render ui item.
     // imgui has unified update & render architecture, so can not separate update and render routine.
     if (MDySetting::GetInstance().IsDebugMode() == true)
@@ -382,10 +383,6 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(Render)(_MIN_ EDyGlobalGameStatus iEngineSt
   } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
-
-  #if defined(MDY_FLAG_IN_EDITOR)
-    editor::MDyEditorGui::GetInstance().DrawWindow(0);
-  #endif // MDY_FLAG_IN_EDITOR
 
   this->GetWindowManager().TempSwapBuffers();
 }

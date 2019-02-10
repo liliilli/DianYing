@@ -15,11 +15,12 @@
 /// @todo IMPLEMENT SET OVERALL WINDOW WIDTH, HEIGHT AS CHANGING VIEWPORT OF EACH API FRAMEBUFFER.
 ///
 
+#include <Dy/Core/EDyAppMode.h>
 #include <Dy/Helper/Type/VectorInt2.h>
 #include <Dy/Meta/Type/EDyRenderingApi.h>
 #include <Dy/Management/Type/SettingContainer.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
-#include "Dy/Core/EDyAppMode.h"
+#include <Dy/Management/Type/Render/EDyModelRenderingMode.h>
 
 namespace dy
 {
@@ -147,6 +148,15 @@ public:
   /// @brief Get const invariant physics setting instance.
   MDY_NODISCARD const DDySettingPhysics& GetPhysicsSetting() const noexcept;
 
+  //!
+  //! Rendering
+  //!
+  
+  /// @brief Set rendering mode.
+  void SetRenderingMode(_MIN_ EDyModelRenderingMode iNewMode) noexcept; 
+  /// @brief Get rendering mode of model.
+  MDY_NODISCARD EDyModelRenderingMode GetRenderingMode() const noexcept;
+
 private:
   /// @brief Setup executable argument settings.
   /// This function must be called before initialization.
@@ -182,6 +192,9 @@ private:
   // and, imgui will also be initiated to see informations.
   // when -d set up, all resources will be loaded like -r flag. and saved as saparated files
   bool mIsDebugMode     = false;
+
+  /// @brief Set model rendering mode.
+  EDyModelRenderingMode mModelRenderingMode = EDyModelRenderingMode::FillNormal;
 
   friend class DyEngine;
 };
