@@ -17,15 +17,6 @@
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
 
 //!
-//! Forward declaration
-//!
-
-namespace physx
-{
-class PxShape;
-} /// ::physx namespace
-
-//!
 //! Implementation
 //!
 
@@ -59,17 +50,12 @@ public:
 
   /// @brief Initialize internal (PhysX) resource.
   void InitializeInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody) override final; 
-  /// @brief Release internal (PhysX) resource.
-  void ReleaseInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody) override final;
 
   /// @brief
   MDY_NODISCARD TF32 GetRadius() const noexcept;
 
 private:
   TF32 mRadius = 0.0f;
-
-  /// @brief Internal shape pointer instance. 
-  physx::PxShape* mPtrInternalShape = nullptr;
 };
 
 } /// ::dy namespace

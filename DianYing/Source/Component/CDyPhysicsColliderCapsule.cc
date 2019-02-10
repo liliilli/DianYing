@@ -20,6 +20,15 @@ namespace dy
   
 EDySuccess CDyPhysicsColliderCapsule::Initialize(_MIN_ const PDyColliderComponentMetaInfo& desc)
 {
+  // Call parent function first.
+  MDY_CALL_ASSERT_SUCCESS(CDyPhysicsCollider::Initialize(desc));
+
+  // Get Sphere reference instance and apply values.
+  const auto refDetail = 
+      std::get<TColliderBindingType<EDyColliderType::Capsule>::Type>(desc.mDetails.mColliderDetails);
+  this->mRadius     = refDetail.mRadius;
+  this->mHalfHeight = refDetail.mHalfHeight;
+
   if (desc.mInitiallyActivated == true) { this->Activate(); }
   return DY_SUCCESS;
 }
@@ -36,11 +45,6 @@ std::string CDyPhysicsColliderCapsule::ToString()
 }
 
 void CDyPhysicsColliderCapsule::InitializeInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody)
-{
-
-}
-
-void CDyPhysicsColliderCapsule::ReleaseInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody)
 {
 
 }

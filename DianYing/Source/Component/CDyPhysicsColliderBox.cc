@@ -20,6 +20,14 @@ namespace dy
 
 EDySuccess CDyPhysicsColliderBox::Initialize(_MIN_ const PDyColliderComponentMetaInfo& desc)
 {
+  // Call parent function first.
+  MDY_CALL_ASSERT_SUCCESS(CDyPhysicsCollider::Initialize(desc));
+
+  // Get Sphere reference instance and apply values.
+  const auto refDetail = 
+      std::get<TColliderBindingType<EDyColliderType::Box>::Type>(desc.mDetails.mColliderDetails);
+  this->mHalfExtent = refDetail.mHalfExtent;
+
   if (desc.mInitiallyActivated == true) { this->Activate(); }
   return DY_SUCCESS;
 }
@@ -36,11 +44,6 @@ std::string CDyPhysicsColliderBox::ToString()
 }
 
 void CDyPhysicsColliderBox::InitializeInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody)
-{
-
-}
-
-void CDyPhysicsColliderBox::ReleaseInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody)
 {
 
 }

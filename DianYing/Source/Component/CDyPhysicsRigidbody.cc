@@ -24,6 +24,8 @@
 namespace dy
 {
 
+TU32 CDyPhysicsRigidbody::sRigidbodyIdCounter = 0;
+
 /*
  * {
      "Type": "PhysicsRigidbody",
@@ -120,11 +122,15 @@ void CDyPhysicsRigidbody::TryActivateInstance()
     this->mOwnerDynamicActor->setRigidBodyFlag(physx::PxRigidBodyFlag::eKINEMATIC, false);
   }
 
-  // Set properties.
-
+  // Set properties, and assign rigidbody specifier id.
+  this->mRigidbodySpecifierId = ++CDyPhysicsRigidbody::sRigidbodyIdCounter;
+  // If `sRigidbodyIdCounter` hit maximum value, just reset to 0.
+  if (CDyPhysicsRigidbody::sRigidbodyIdCounter == static_cast<TU32>(0xFFFFFF) + 1)
+  {
+    CDyPhysicsRigidbody::sRigidbodyIdCounter = 0;
+  }
 
   auto ptrColliderList =  bindedActor.GetGeneralComponentList<CDyPhysicsCollider>();
-
   // Try insert collider and try populate resource.
   for (auto& ptrCollider : ptrColliderList)
   {
@@ -168,6 +174,9 @@ void CDyPhysicsRigidbody::TryDeactivateInstance()
     // We need to remove from last element because of fast erasion.
     this->mPtrColliderList.erase(this->mPtrColliderList.end() - 1);
   }
+
+  // Reset properties.
+  this->mRigidbodySpecifierId = 0;
 
   {
     MDY_PHYSX_WRITE_LOCK();
@@ -218,6 +227,15 @@ EDySuccess CDyPhysicsRigidbody::UnbindShapeFromRigidbody(_MIN_ physx::PxShape& i
 
   this->mOwnerDynamicActor->detachShape(iRefShape);
   return DY_SUCCESS;
+}
+
+std::optional<TU32> CDyPhysicsRigidbody::MDY_PRIVATE_SPECIFIER(GetRigidbodySpecifier)() const noexcept
+{
+  // If deactivated, just return null value.
+  if (MDY_CHECK_ISNULL(this->mOwnerDynamicActor)) { return std::nullopt; }
+
+  // If activated, return as bitset type.
+  return this->mRigidbodySpecifierId;
 }
 
 } /// ::dy namespace

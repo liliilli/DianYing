@@ -14,6 +14,7 @@
 ///
 
 #include <PxRigidDynamic.h>
+#include <bitset>
 
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
@@ -75,8 +76,13 @@ public:
   ///
   EDySuccess UnbindShapeFromRigidbody(_MIN_ physx::PxShape& iRefShape);
 
+  /// @brief Get rigidbody internal specifier value.
+  MDY_NODISCARD std::optional<TU32> 
+  MDY_PRIVATE_SPECIFIER(GetRigidbodySpecifier)() const noexcept;
+
 private:
-  /// Check this rigidbody (and collider) simulate physics.
+  /// Check this rigidbody (and collider) simulate physics. 
+  /// If false, all collider do kinematic.
   bool mIsSimulatePhysics = false;
   /// Enable gravity or not.
   bool mIsEnableGravity = false;
@@ -98,6 +104,12 @@ private:
   std::vector<NotNull<CDyPhysicsCollider*>> mPtrColliderList{};
   /// @brief Internal actor.
   physx::PxRigidDynamic* mOwnerDynamicActor = nullptr;
+
+  /// @brief 24bit rigidbody specifier unique-id value.
+  TU32 mRigidbodySpecifierId : 24;
+
+  /// @brief Counter for rigidbody-id assignment.
+  static TU32 sRigidbodyIdCounter;
 };
 
 } /// ::dy namespace

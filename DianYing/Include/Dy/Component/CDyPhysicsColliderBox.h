@@ -43,8 +43,9 @@ public:
 
   /// @brief Initialize internal (PhysX) resource.
   void InitializeInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody) override final; 
-  /// @brief Release internal (PhysX) resource.
-  void ReleaseInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody) override final;
+
+private:
+  DDyVector3 mHalfExtent;
 };
 
 } /// ::dy namespace

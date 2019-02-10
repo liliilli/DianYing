@@ -46,6 +46,21 @@ EDySuccess CDyPhysicsCollider::Initialize(_MIN_ const PDyColliderComponentMetaIn
     this->mFilterValues = desc.mDetails.mCollisionFilter;
   }
 
+  this->mCollisionTagName = desc.mDetails.mCollisionLayerName;
+  const auto& collisionLayerList = MDyPhysics::GetInstance().GetDefaultSetting();
+
+  // Get collision layer name but if empty, just get first name.
+  if (this->mCollisionTagName.empty() == true)
+  {
+    this->mCollisionTagName = collisionLayerList.mCollisionTag.front();
+  }
+  else
+  {
+    // If we got non-empty string as collision tag (layer), check this is valid.
+    const auto it = std::find(MDY_BIND_BEGIN_END(collisionLayerList.mCollisionTag), this->mCollisionTagName);
+    MDY_ASSERT_FORCE(it != collisionLayerList.mCollisionTag.end(), "Not valid collision tag name.");
+  }
+
   return DY_SUCCESS;
 }
 
@@ -74,6 +89,14 @@ void CDyPhysicsCollider::MDY_PRIVATE_SPECIFIER(SetRegisterFlag)(_MIN_ bool iFlag
   this->mIsRegistered = iFlag;
 }
 
+void CDyPhysicsCollider::ReleaseInternalResource(CDyPhysicsRigidbody& iRefRigidbody)
+{
+  iRefRigidbody.UnbindShapeFromRigidbody(*this->mPtrInternalShape);
+
+  this->mPtrInternalShape->release();
+  this->mPtrInternalShape = nullptr; 
+}
+
 void CDyPhysicsCollider::TryActivateInstance()
 {
   auto& bindedActor   = *this->GetBindedActor();
@@ -98,6 +121,63 @@ void CDyPhysicsCollider::TryDeactivateInstance()
   }
 
   ptrRigidbody->UnregisterCollider(*this);
+}
+
+physx::PxFilterData CDyPhysicsCollider::CreateFilterDataValue(
+    _MIN_ const CDyPhysicsRigidbody& iRigidbody,
+    _MIN_ const std::string& iLayerName, 
+    _MIN_ std::vector<EDyCollisionFilter>& iFilterData)
+{
+  const auto optSpecifier = iRigidbody.MDY_PRIVATE_SPECIFIER(GetRigidbodySpecifier)();
+  MDY_ASSERT_FORCE(optSpecifier.has_value() == true, "Unexpected error occurred. Target rigidbody must be activated and valid.");
+
+  physx::PxFilterData resultFilterData;
+
+  // Set rigidbody specifier id.
+  const auto value24 = optSpecifier.value();
+  resultFilterData.word0  = 0;            // Reset
+  resultFilterData.word0 |= value24 << 8; // [31..8] Rigidbody specifier id.
+
+  // Find layer integer id from iLayerName to [7..0] word0
+  const auto& defaultSetting = MDyPhysics::GetInstance().GetDefaultSetting();
+
+  const auto it = std::find(MDY_BIND_BEGIN_END(defaultSetting.mCollisionTag), iLayerName);
+  MDY_ASSERT(it != defaultSetting.mCollisionTag.end(), "Unexpected error occurred.");
+
+  const TU08 TagId = static_cast<TU08>(std::distance(defaultSetting.mCollisionTag.begin(), it));
+  resultFilterData.word0 |= TagId;
+
+  // Set filter data from word1...
+  MDY_ASSERT_FORCE(this->mFilterValues.size() <= 48, "Filter value size is not valid. Must be equal or less than 48.");
+  const auto valueCount = static_cast<TI32>(this->mFilterValues.size());
+  for (TI32 i = 0; i < 16 && i < valueCount; ++i)
+  {
+    switch (this->mFilterValues[i])
+    {
+    case EDyCollisionFilter::Block:   break; // 00 (Do nothing because value is already initailzed 00.
+    case EDyCollisionFilter::Overlap: { resultFilterData.word1 |= 0b01 << (2 * i); } break; // 01
+    case EDyCollisionFilter::Ignore:  { resultFilterData.word1 |= 0b10 << (2 * i); } break; // 10
+    }
+  }
+  for (TI32 i = 16; i < 32 && i < valueCount; ++i)
+  {
+    switch (this->mFilterValues[i])
+    {
+    case EDyCollisionFilter::Block:   break; // 00 (Do nothing because value is already initailzed 00.
+    case EDyCollisionFilter::Overlap: { resultFilterData.word2 |= 0b01 << (2 * i); } break; // 01
+    case EDyCollisionFilter::Ignore:  { resultFilterData.word2 |= 0b10 << (2 * i); } break; // 10
+    }
+  }  for (TI32 i = 32; i < 48 && i < valueCount; ++i)
+  {
+    switch (this->mFilterValues[i])
+    {
+    case EDyCollisionFilter::Block:   break; // 00 (Do nothing because value is already initailzed 00.
+    case EDyCollisionFilter::Overlap: { resultFilterData.word3 |= 0b01 << (2 * i); } break; // 01
+    case EDyCollisionFilter::Ignore:  { resultFilterData.word3 |= 0b10 << (2 * i); } break; // 10
+    }
+  }
+
+  return resultFilterData;
 }
 
 } /// ::dy namespace

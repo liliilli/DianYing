@@ -43,8 +43,10 @@ public:
 
   /// @brief Initialize internal (PhysX) resource.
   void InitializeInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody) override final;
-  /// @brief Release internal (PhysX) resource.
-  void ReleaseInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody) override final;
+
+private:
+  TF32 mRadius;
+  TF32 mHalfHeight;
 };
 
 } /// ::dy namespace

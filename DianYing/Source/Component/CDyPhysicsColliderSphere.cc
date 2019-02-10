@@ -59,19 +59,15 @@ void CDyPhysicsColliderSphere::InitializeInternalResource(_MINOUT_ CDyPhysicsRig
   this->mPtrInternalShape = physics.createShape(geometry, defaultMaterial);
   MDY_ASSERT_FORCE(MDY_CHECK_ISNOTNULL(this->mPtrInternalShape), "Unexpected error occurred.");
   
-  // Apply Filtering 
-
+  // Make filter value (PxFilterData)
+  const physx::PxFilterData filterData = CreateFilterDataValue(
+      iRefRigidbody, 
+      this->mCollisionTagName, this->mFilterValues);
+  // Apply Collision filter
+  this->mPtrInternalShape->setSimulationFilterData(filterData);
 
   // Apply to iRefRigidbody.
   iRefRigidbody.BindShapeToRigidbody(*this->mPtrInternalShape);
-}
-
-void CDyPhysicsColliderSphere::ReleaseInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody)
-{
-  iRefRigidbody.UnbindShapeFromRigidbody(*this->mPtrInternalShape);
-
-  this->mPtrInternalShape->release();
-  this->mPtrInternalShape = nullptr;
 }
 
 TF32 CDyPhysicsColliderSphere::GetRadius() const noexcept

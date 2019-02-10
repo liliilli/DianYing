@@ -431,6 +431,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyColliderComponentMetaI
 
   DyJsonGetValueFromTo(j, "FilterPresetSpecifier", p.mCollisionFilterPresetSpecifier);
   DyJsonGetValueFromTo(j, "CollisionFilter", p.mCollisionFilter);
+  DyJsonGetValueFromTo(j, "LayerName", p.mCollisionLayerName);
 }
 
 } /// ::dy namespace
