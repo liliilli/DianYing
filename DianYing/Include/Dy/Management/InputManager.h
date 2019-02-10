@@ -143,6 +143,9 @@ public:
   /// @TODO IMPLEMENT FOR ADYACTORLUASCRIPT
   MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(TryDetachContollerActor)(_MIN_ ADyActorCppScript& iRefActor) noexcept;
 
+  /// @brief Get low-level key status value.
+  MDY_NODISCARD EDyInputButtonStatus MDY_PRIVATE_SPECIFIER(GetLowlevelKeyStatus)(_MIN_ EDyButton iId) noexcept;
+
 private:
   void MDY_PRIVATE_SPECIFIER(pInitializeAxisNAction)();
   void MDY_PRIVATE_SPECIFIER(pInitializeCallbacks)();

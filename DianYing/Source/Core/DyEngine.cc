@@ -293,6 +293,20 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(Update)(_MIN_ EDyGlobalGameStatus iEngineSt
   } break;
   case EDyGlobalGameStatus::GameRuntime: 
   {
+    // Check mode is debug mode, if true, poll input of debug first.
+    // and, if return value is DY_FAILURE, try to global update.
+    if (MDySetting::GetInstance().IsDebugMode() == true)
+    {
+      if (MDyDebug::GetInstance().CheckInput(dt) == DY_FAILURE)
+      {
+        MDyInput::GetInstance().pfGlobalUpdate(dt);
+      }
+    }
+    else
+    { // If not debug mode, just poll input key of global.
+      MDyInput::GetInstance().pfGlobalUpdate(dt);
+    }
+
     // If in-game update should not be passed, just update in-game. Otherwise, neglect.
     if (this->mIsInGameUpdatePaused == false)
     {
@@ -301,8 +315,6 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(Update)(_MIN_ EDyGlobalGameStatus iEngineSt
       MDyScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
 
       MDyInput::GetInstance().pfInGameUpdate(dt);
-      MDyInput::GetInstance().pfGlobalUpdate(dt);
-
       if (this->MDY_PRIVATE_SPECIFIER(IsGameNeedToBeTransitted)() == true) { return; }
       MDyGameTimer::GetInstance().Update(dt);
       if (this->MDY_PRIVATE_SPECIFIER(IsGameNeedToBeTransitted)() == true) { return; }
@@ -320,9 +332,7 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(Update)(_MIN_ EDyGlobalGameStatus iEngineSt
     }
     else
     {
-      MDyInput::GetInstance().pfGlobalUpdate(dt);
     }
-
   } break;
   case EDyGlobalGameStatus::Shutdown: 
     break;
@@ -363,6 +373,12 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(Render)(_MIN_ EDyGlobalGameStatus iEngineSt
     auto& render = MDyRendering::GetInstance();
     render.SetupDrawModelTaskQueue();
     render.RenderDrawCallQueue();
+    // If debug mode is enabled, update and render ui item.
+    // imgui has unified update & render architecture, so can not separate update and render routine.
+    if (MDySetting::GetInstance().IsDebugMode() == true)
+    {
+      MDyDebug::GetInstance().UpdateAndRender();
+    }
   } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }

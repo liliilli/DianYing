@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
+#include <Dy/Management/Type/KeyActionBindingInformation.h>
 
 namespace dy
 {
@@ -30,7 +31,30 @@ public:
   MDY_SINGLETON_DERIVED(MDyDebug);
   MDY_SINGLETON_PROPERTIES(MDyDebug);
 
+  /// @brief Update global (debug, outside world from in-game) input polling on present frame with delta time.
+  /// This function must be called update phrase.
+  /// If any key is pressed, return DY_SUCCESS or DY_FAILURE.
+  EDySuccess CheckInput(_MIN_ TF32 dt) noexcept;
 
+  /// @brief Update with dt (from MDyTime) and render ui object.
+  void UpdateAndRender();
+
+private:
+  /// @brief Check action is pressed.
+  MDY_NODISCARD bool IsActionPressed(_MIN_ const std::string& iSpecifier) const noexcept;
+  /// @brief Check action is released.
+  MDY_NODISCARD bool IsActionReleased(_MIN_ const std::string& iSpecifier) const noexcept;
+
+  /// @brief Update input keys
+  void pUpdateInputKeys();
+
+  /// @brief Action map.
+  using TActionMap  = std::unordered_map<std::string, DDyActionBindingInformation>;
+
+  /// Global debug action map
+  TActionMap mBindedActionMap = {};
+  /// If true, do not check input-key of `mBinededActionMap`.
+  bool mIsExternalInputActivated = false;
 };
 
 
