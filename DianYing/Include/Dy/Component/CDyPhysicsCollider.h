@@ -13,9 +13,28 @@
 /// SOFTWARE.
 ///
 
+#include <PxFiltering.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
+
+//!
+//! Forward declaration
+//!
+
+namespace physx
+{
+class PxShape;
+} /// ::physx namespace
+
+namespace dy
+{
+class CDyPhysicsRigidbody;
+} /// ::dy namespace
+
+//!
+//! Implementation
+//!
 
 namespace dy
 {
@@ -34,6 +53,9 @@ public:
   MDY_SET_TYPEMATCH_FUNCTION(::dy::ADyGeneralBaseComponent, CDyPhysicsCollider)
   MDY_SET_CRC32_HASH_WITH_TYPE(CDyPhysicsCollider);
 
+  /// @brief Initialize component.
+  MDY_NODISCARD EDySuccess Initialize(_MIN_ const PDyColliderComponentMetaInfo& desc) override;
+
   /// @brief Update anyway.
   void Update(_MIN_ TF32 dt) override final {};
 
@@ -50,24 +72,42 @@ public:
   void MDY_PRIVATE_SPECIFIER(SetRegisterFlag)(_MIN_ bool iFlag) noexcept;
 
   /// @brief Initialize internal (PhysX) resource.
-  virtual void InitializeInternalResource() = 0; 
+  virtual void InitializeInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody) = 0; 
   /// @brief Release internal (PhysX) resource.
-  virtual void ReleaseInternalResource() = 0;
+  void ReleaseInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody);
 
 private:
   void TryActivateInstance() override final;
   void TryDeactivateInstance() override final;
 
-  /// If true, this component notify hit event (callback) when target hit.
+  /// @brief If true, this component notify hit event (callback) when target hit.
   bool mNotifyHitEvent = false;
-  /// If true, this component notify overlap event when target overlapped.
+  /// @brief If true, this component notify overlap event when target overlapped.
   bool mNotifyOverlapEvent = false;
-  /// Flag for registration. \n
+  /// @brief Flag for registration. \n
   /// When activated & Activate rigidActor component is exist on Actor, this flag must be true.
   /// Otherwise, this flag must be false.
   bool mIsRegistered = false; 
+
+  /// @brief Collision filter preset specifier.
+  std::string mFilterPresetSpecifier = MDY_INITIALIZE_EMPTYSTR;
+
+protected:
+  /// @brief Make filter data. This function does not have side effects.
+  MDY_NODISCARD physx::PxFilterData CreateFilterDataValue(
+      _MIN_ const CDyPhysicsRigidbody& iRigidbody, 
+      _MIN_ const std::string& iLayerName,
+      _MIN_ std::vector<EDyCollisionFilter>& iFilterData);
+
   /// Collider type of this component.
   EDyColliderType mColliderType = EDyColliderType::NoneError;
+  /// @brief Internal shape pointer instance. 
+  physx::PxShape* mPtrInternalShape = nullptr;
+
+  /// @brief Collision filter values.
+  std::vector<EDyCollisionFilter> mFilterValues{};
+  /// @brief Collision spcifier value.
+  std::string mCollisionTagName = MDY_INITIALIZE_EMPTYSTR;
 };
 
 } /// ::dy namespace

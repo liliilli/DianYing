@@ -20,6 +20,7 @@
 #include <Dy/Helper/Pointer.h>
 #include <Dy/Helper/Type/Vector3.h>
 #include <Dy/Management/LoggingManager.h>
+#include <Dy/Management/SettingManager.h>
 
 //!
 //! Test
@@ -28,71 +29,62 @@
 namespace
 {
 
-std::vector<dy::NotNull<physx::PxRigidBody*>> sRigidbodies = {};
-
-///
 /// @function DyFilterShader
 /// @brief PhysX Filter shader customized setting function.
-///
 physx::PxFilterFlags DyFilterShader(
-  physx::PxFilterObjectAttributes attributes0, physx::PxFilterData filterData0,
-  physx::PxFilterObjectAttributes attributes1, physx::PxFilterData filterData1,
-  physx::PxPairFlags& pairFlags, const void* constantBlock, physx::PxU32 constantBlockSize)
+  _MIN_ physx::PxFilterObjectAttributes attributes0, _MIN_ physx::PxFilterData filterData0,
+  _MIN_ physx::PxFilterObjectAttributes attributes1, _MIN_ physx::PxFilterData filterData1,
+  _MIN_ physx::PxPairFlags& pairFlags, _MIN_ const void* constantBlock, _MIN_ physx::PxU32 constantBlockSize)
 {
-	// let triggers through
-	if(physx::PxFilterObjectIsTrigger(attributes0) || physx::PxFilterObjectIsTrigger(attributes1))
-	{
-		pairFlags = physx::PxPairFlag::eTRIGGER_DEFAULT;
-		return physx::PxFilterFlag::eDEFAULT;
-	}
+  // If first 24bit (rigidbody specifier id) is same, just neglect a pair of collider.
+  if ((filterData0.word0 & 0xFFFFFF00) == (filterData1.word0 & 0xFFFFFF00))
+  {
+    return physx::PxFilterFlag::eKILL;
+  }
+
+  // Get information from filterData0, filterData1.
+  const auto lhsId = filterData0.word0 & 0x000000FF;
+  const auto rhsId = filterData1.word0 & 0x000000FF;
+  const auto lhsShift = lhsId % 16;
+  const auto rhsShift = rhsId % 16;
+
+  unsigned int lhsFlag = 0;
+  if (lhsId < 16)       { lhsFlag = (filterData0.word1 & (0b11 << (rhsShift * 2))) >> rhsShift * 2; }
+  else if (lhsId < 32)  { lhsFlag = (filterData0.word2 & (0b11 << (rhsShift * 2))) >> rhsShift * 2; }
+  else if (lhsId < 48)  { lhsFlag = (filterData0.word3 & (0b11 << (rhsShift * 2))) >> rhsShift * 2; }
+
+  unsigned int rhsFlag = 0;
+  if (rhsId < 16)       { rhsFlag = (filterData1.word1 & (0b11 << (lhsShift * 2))) >> lhsShift * 2; }
+  else if (rhsId < 32)  { rhsFlag = (filterData1.word2 & (0b11 << (lhsShift * 2))) >> lhsShift * 2; }
+  else if (rhsId < 48)  { rhsFlag = (filterData1.word3 & (0b11 << (lhsShift * 2))) >> lhsShift * 2; }
+
+  // 00 (collision) 01 (overlap) 10 (ignore)
+  // -- 00 01 10
+  // 00 Co Ov Ig
+  // 01 Ov Ov Ig
+  // 10 Ig Ig Ig
+
 	// generate contacts for all that were not filtered above
 	pairFlags = physx::PxPairFlag::eCONTACT_DEFAULT;
 
-	// trigger the contact callback for pairs (A,B) where
-	// the filtermask of A contains the ID of B and vice versa.
-	if((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
-	{
-		pairFlags |= physx::PxPairFlag::eNOTIFY_TOUCH_FOUND;
+  if (lhsFlag == rhsFlag)
+  {
+    if (lhsFlag == 0b00)      { pairFlags = physx::PxPairFlag::eCONTACT_DEFAULT; }
+    else if (lhsFlag == 0b01) { pairFlags = physx::PxPairFlag::eTRIGGER_DEFAULT; }
+    else                      { return physx::PxFilterFlag::eKILL; }
   }
+  else
+  {
+    if (lhsFlag < rhsFlag) { const auto temp = rhsFlag; rhsFlag = lhsFlag; lhsFlag = temp; }
+
+    if (lhsFlag == 0b01)  { pairFlags = physx::PxPairFlag::eTRIGGER_DEFAULT; }
+    else                  { return physx::PxFilterFlag::eKILL; }
+  }
+
 	return physx::PxFilterFlag::eDEFAULT;
 }
 
-///
-/// @enum EDyTempCollisionLayer
-///
-enum EDyTempCollisionLayer
-{
-  Stack  = (1 << 0),
-  Sphere = (1 << 1),
-  Floor  = (1 << 2),
-};
-
-///
-/// @brief Setup filering to PxActor to apply.
-/// @param actor
-/// @param filterGroup
-/// @param filterMask
-///
-void DySetupFiltering(const dy::NotNull<physx::PxRigidActor*>& actor, physx::PxU32 filterGroup, physx::PxU32 filterMask)
-{
-  physx::PxFilterData filterData;
-	filterData.word0  = filterGroup;  // word0 = own ID
-	filterData.word1  = filterMask;	  // word1 = ID mask to filter pairs that trigger a contact callback;
-
-	const physx::PxU32 numShapes = actor->getNbShapes();
-  std::vector<physx::PxShape*> shapes(numShapes);
-  actor->getShapes(&shapes[0], numShapes);
-
-	for(physx::PxU32 i = 0; i < numShapes; i++)
-	{
-	  physx::PxShape* shape = shapes[i];
-		shape->setSimulationFilterData(filterData);
-	}
-}
-
-std::vector<std::string> sDebugActorName;
-
-}
+} /// ::anonymous namespace
 
 //!
 //! Implementation
@@ -103,6 +95,42 @@ namespace dy
 
 EDySuccess MDyPhysics::pfInitialize()
 {
+  MDY_ASSERT(MDY_CHECK_ISNULL(this->gFoundation), "Foundation is already exist.");
+  MDY_ASSERT(MDY_CHECK_ISNULL(this->gPhysicx), "Physics is already exist.");
+  MDY_ASSERT(MDY_CHECK_ISNULL(this->mCooking), "Cooking is already exist.");
+  MDY_ASSERT(MDY_CHECK_ISNULL(this->mDefaultMaterial), "Default material is already exist.");
+
+  this->gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, this->defaultAllocatorCallback, MDY_PRIVATE_SPECIFIER(GetPhysXErrorCallback)());
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gFoundation), "PhysX Foundation must be created successfully.");
+
+  // Get scale from setting manager, but we use defualt value temporary. 
+  physx::PxTolerancesScale temporalScale{};
+  // MDySetting::GetInstance().GetGridScale();
+
+  this->gPhysicx = PxCreatePhysics(PX_PHYSICS_VERSION, *this->gFoundation, temporalScale, false, this->gPvd);
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gPhysicx), "PhysX Physics Instance must be created successfully.");
+
+  if (PxInitExtensions(*this->gPhysicx, this->gPvd) == false) { MDY_UNEXPECTED_BRANCH(); }
+
+  physx::PxCookingParams params(temporalScale);
+	params.meshWeldTolerance = 0.001f;
+	params.meshPreprocessParams = physx::PxMeshPreprocessingFlags(physx::PxMeshPreprocessingFlag::eWELD_VERTICES);
+	params.buildGPUData = true; //Enable GRB data being produced in cooking
+  this->mCooking = PxCreateCooking(PX_PHYSICS_VERSION, *this->gFoundation, params);
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mCooking), "PhysX Cooking Instance must be created successfully.");
+
+  this->gPhysicx->registerDeletionListener(*this, physx::PxDeletionEventFlag::eUSER_RELEASE);
+
+  // Setup default material.
+  const auto& defaultSetting = this->GetDefaultSetting();
+  //
+  this->mDefaultMaterial = this->gPhysicx->createMaterial(
+      defaultSetting.mCommonProperty.mDefaultStaticFriction,
+      defaultSetting.mCommonProperty.mDefaultDynamicFriction,
+      defaultSetting.mCommonProperty.mDefaultRestitution);
+  //
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mDefaultMaterial), "PhysX Default material must be created.");
+
 #ifdef false
   ///
   /// @function CreateStack
@@ -112,7 +140,7 @@ EDySuccess MDyPhysics::pfInitialize()
   {
     using namespace physx;
 
-    PxShape *shape = gPhysicx->createShape(PxBoxGeometry(halfExtent, halfExtent, halfExtent), *gMaterial);
+    PxShape *shape = gPhysicx->createShape(PxBoxGeometry(halfExtent, halfExtent, halfExtent), *mDefaultMaterial);
 
     TI32 nmb = 0;
     for (PxU32 i = 0; i < size; i++)
@@ -150,7 +178,7 @@ EDySuccess MDyPhysics::pfInitialize()
   {
     using namespace physx;
 
-    PxRigidDynamic *dynamic = PxCreateDynamic(*gPhysicx, t, geometry, *gMaterial, 10.0f);
+    PxRigidDynamic *dynamic = PxCreateDynamic(*gPhysicx, t, geometry, *mDefaultMaterial, 10.0f);
     dynamic->setAngularDamping(0.5f);
     dynamic->setLinearVelocity(velocity);
     DySetupFiltering(DyMakeNotNull(dynamic), EDyTempCollisionLayer::Sphere, EDyTempCollisionLayer::Stack | EDyTempCollisionLayer::Floor);
@@ -208,8 +236,8 @@ EDySuccess MDyPhysics::pfInitialize()
     pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
   }
 
-  //gMaterial = gPhysicx->createMaterial(0.5f, 0.5f, 0.6f);
-  //physx::PxRigidStatic *groundPlane = PxCreatePlane(*gPhysicx, physx::PxPlane(0, 1, 0, 0), *gMaterial);
+  //mDefaultMaterial = gPhysicx->createMaterial(0.5f, 0.5f, 0.6f);
+  //physx::PxRigidStatic *groundPlane = PxCreatePlane(*gPhysicx, physx::PxPlane(0, 1, 0, 0), *mDefaultMaterial);
   //DySetupFiltering(DyMakeNotNull(groundPlane), EDyTempCollisionLayer::Floor, EDyTempCollisionLayer::Sphere);
 
   // @TODO FOR DEBUG, REMOVE THIS AT PRODUCTION CODE
@@ -230,6 +258,26 @@ EDySuccess MDyPhysics::pfInitialize()
 
 EDySuccess MDyPhysics::pfRelease()
 {
+  this->mDefaultMaterial->release();
+  this->mDefaultMaterial = nullptr;
+    
+  this->mCooking->release();
+  this->mCooking = nullptr;
+
+	PxCloseExtensions();
+    
+  this->gPhysicx->release();
+  this->gPhysicx = nullptr;
+
+  if (MDY_CHECK_ISNOTNULL(this->gPvd)) 
+  { // Optional. (visual debugger)
+    this->gPvd->release();
+    this->gPvd = nullptr;
+  }
+
+  this->gFoundation->release();
+  this->gFoundation = nullptr;
+
   // This function just check all resource is released.
   MDY_ASSERT_FORCE(MDY_CHECK_ISNULL(this->gScene), "PhysX scene is not released before release Physics manager.");
   MDY_ASSERT_FORCE(MDY_CHECK_ISNULL(this->gDispatcher), "PhysX cpu dispatcher is not released before release Physics manager.");
@@ -241,64 +289,22 @@ EDySuccess MDyPhysics::pfRelease()
   return DY_SUCCESS;
 }
 
-void MDyPhysics::Update(float dt)
+void MDyPhysics::Update(_MIN_ TF32 dt)
 {
-#ifdef false
-  // PhysX step physics
+  if (this->mIsInitialized == false) { return; }
+
   if (dt > 0)
   {
-    gScene->simulate(dt);
-    gScene->fetchResults(true);
+    this->gScene->simulate(dt);
+    this->gScene->fetchResults(true);
+
+    // We need to process callback & update transform information.
+
   }
-
-#endif
-
-  // Print information
-#ifdef false
-  for (const auto& rigidbody : sRigidbodies)
-  {
-    const auto& position = rigidbody->getGlobalPose().p;
-    const auto& quat     = rigidbody->getGlobalPose().q;
-
-    MDY_LOG_CRITICAL("Rigidbody Position : ({}, {}, {}) Quaternion : ({}, {}, {}, {})",
-                     position.x, position.y, position.z,
-                     quat.x, quat.y, quat.z, quat.w);
-  }
-#endif
 }
 
 void MDyPhysics::InitScene()
 {
-  MDY_ASSERT(MDY_CHECK_ISNULL(this->gFoundation), "Foundation is already exist.");
-  MDY_ASSERT(MDY_CHECK_ISNULL(this->gPhysicx), "Physics is already exist.");
-  MDY_ASSERT(MDY_CHECK_ISNULL(this->mCooking), "Cooking is already exist.");
-  MDY_ASSERT(MDY_CHECK_ISNULL(this->gMaterial), "Default material is already exist.");
-
-  this->gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, this->defaultAllocatorCallback, MDY_PRIVATE_SPECIFIER(GetPhysXErrorCallback)());
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gFoundation), "PhysX Foundation must be created successfully.");
-
-  // Get scale from setting manager, but we use defualt value temporary. 
-  physx::PxTolerancesScale temporalScale;
-  // MDySetting::GetInstance().GetGridScale();
-
-  this->gPhysicx = PxCreatePhysics(PX_PHYSICS_VERSION, *this->gFoundation, temporalScale, false, this->gPvd);
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gPhysicx), "PhysX Physics Instance must be created successfully.");
-
-  if (PxInitExtensions(*this->gPhysicx, this->gPvd) == false) { MDY_UNEXPECTED_BRANCH(); }
-
-  physx::PxCookingParams params(temporalScale);
-	params.meshWeldTolerance = 0.001f;
-	params.meshPreprocessParams = physx::PxMeshPreprocessingFlags(physx::PxMeshPreprocessingFlag::eWELD_VERTICES);
-	params.buildGPUData = true; //Enable GRB data being produced in cooking
-  this->mCooking = PxCreateCooking(PX_PHYSICS_VERSION, *this->gFoundation, params);
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mCooking), "PhysX Cooking Instance must be created successfully.");
-
-  this->gPhysicx->registerDeletionListener(*this, physx::PxDeletionEventFlag::eUSER_RELEASE);
-
-  // Setup default material.
-  this->gMaterial = this->gPhysicx->createMaterial(0.5f, 0.5, 1.0f);
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gMaterial), "PhysX Default material must be created.");
-
   physx::PxSceneDesc tempSceneDesc{this->gPhysicx->getTolerancesScale()};
   tempSceneDesc.gravity = physx::PxVec3{0.0f, -9.81f, 0.0f};
 
@@ -322,6 +328,7 @@ void MDyPhysics::InitScene()
 
   tempSceneDesc.sceneQueryUpdateMode = physx::PxSceneQueryUpdateMode::eBUILD_ENABLED_COMMIT_DISABLED;
 	tempSceneDesc.gpuMaxNumPartitions = 8;
+  tempSceneDesc.filterShader = DyFilterShader;
 
   this->gScene = this->gPhysicx->createScene(tempSceneDesc);
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gScene), "PhysX Scene must be created successfully.");
@@ -347,12 +354,8 @@ void MDyPhysics::InitScene()
 
 void MDyPhysics::ReleaseScene()
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gFoundation),  "PhysX Foundation must be valid.");
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gPhysicx),     "PhysX Physicx must be valid.");
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gScene),       "PhysX Scene must be valid.");
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gDispatcher),  "PhysX Dispatcher must be valid.");
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mCooking),     "PhysX Cooking must be valid.");
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gMaterial),    "PhysX Default material must be valid.");
 
   {
     physx::PxSceneWriteLock scopedLock(*this->gScene);
@@ -364,26 +367,16 @@ void MDyPhysics::ReleaseScene()
 
   this->gDispatcher->release();
   this->gDispatcher = nullptr;
-  
-  this->gMaterial->release();
-  this->gMaterial = nullptr;
-    
-  this->mCooking->release();
-  this->mCooking = nullptr;
+}
 
-	PxCloseExtensions();
-    
-  this->gPhysicx->release();
-  this->gPhysicx = nullptr;
+const DDySettingPhysics& MDyPhysics::GetDefaultSetting() const noexcept
+{
+  return MDySetting::GetInstance().GetPhysicsSetting();
+}
 
-  if (MDY_CHECK_ISNOTNULL(this->gPvd)) 
-  { // Optional. (visual debugger)
-    this->gPvd->release();
-    this->gPvd = nullptr;
-  }
-
-  this->gFoundation->release();
-  this->gFoundation = nullptr;
+const physx::PxMaterial& MDyPhysics::GetDefaultPhysicsMaterial() const noexcept
+{
+  return *this->mDefaultMaterial;
 }
 
 void MDyPhysics::onRelease(
@@ -408,6 +401,50 @@ physx::PxErrorCallback& MDyPhysics::MDY_PRIVATE_SPECIFIER(GetPhysXErrorCallback)
 {
 	static physx::PxDefaultErrorCallback gDefaultErrorCallback;
 	return gDefaultErrorCallback;
+}
+
+void MDyPhysics::onContact(
+    _MIN_ const physx::PxContactPairHeader& pairHeader, 
+    _MIN_ const physx::PxContactPair* pairs,
+    _MIN_ physx::PxU32 nbPairs)
+{
+	for(unsigned i = 0; i < nbPairs; i++)
+	{
+		const physx::PxContactPair& cp = pairs[i];
+
+		if(cp.events & physx::PxPairFlag::eNOTIFY_TOUCH_FOUND)
+		{
+#ifdef false
+			if((pairHeader.actors[0] == mSubmarineActor) || (pairHeader.actors[1] == mSubmarineActor))
+			{
+				PxActor* otherActor = (mSubmarineActor == pairHeader.actors[0]) ? pairHeader.actors[1] : pairHeader.actors[0];			
+				Seamine* mine =  reinterpret_cast<Seamine*>(otherActor->userData);
+				// insert only once
+				if(std::find(mMinesToExplode.begin(), mMinesToExplode.end(), mine) == mMinesToExplode.end())
+					mMinesToExplode.push_back(mine);
+
+				break;
+			}
+#endif
+		}
+	}
+}
+
+void MDyPhysics::onTrigger(_MIN_ physx::PxTriggerPair* pairs, _MIN_ physx::PxU32 count)
+{
+	for(unsigned i = 0; i < count; i++)
+	{
+		// ignore pairs when shapes have been deleted
+		if (pairs[i].flags & (physx::PxTriggerPairFlag::eREMOVED_SHAPE_TRIGGER | physx::PxTriggerPairFlag::eREMOVED_SHAPE_OTHER))
+			continue;
+
+#ifdef false
+		if((pairs[i].otherActor == mSubmarineActor) && (pairs[i].triggerActor == gTreasureActor))
+		{
+			gTreasureFound = true;
+		}
+#endif
+	}
 }
 
 } /// ::dy namespace

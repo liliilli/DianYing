@@ -15,11 +15,24 @@
 /// Header file
 #include <Dy/Component/CDyPhysicsColliderSphere.h>
 
+#include <geometry/PxSphereGeometry.h>
+#include <Dy/Management/PhysicsManager.h>
+#include <Dy/Component/CDyPhysicsRigidbody.h>
+
 namespace dy
 {
 
 EDySuccess CDyPhysicsColliderSphere::Initialize(_MIN_ const PDyColliderComponentMetaInfo& desc)
 {
+  // Call parent function first.
+  MDY_CALL_ASSERT_SUCCESS(CDyPhysicsCollider::Initialize(desc));
+
+  // Get Sphere reference instance and apply values.
+  const PDySphereColliderMetaInfo refSphere = 
+      std::get<TColliderBindingType<EDyColliderType::Sphere>::Type>(desc.mDetails.mColliderDetails);
+  this->mRadius = refSphere.mRadius;
+
+  // Activation.
   if (desc.mInitiallyActivated == true) { this->Activate(); }
   return DY_SUCCESS;
 }
@@ -35,14 +48,31 @@ std::string CDyPhysicsColliderSphere::ToString()
   return "";
 }
 
-void CDyPhysicsColliderSphere::InitializeInternalResource()
+void CDyPhysicsColliderSphere::InitializeInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody)
 {
+  // PxSphereGeometry is value type.
+  const physx::PxSphereGeometry geometry{this->mRadius};
 
+  // Create shape.
+  auto& physics = MDyPhysics::GetInstance().MDY_PRIVATE_SPECIFIER(GetRefInternalSdk)();
+  const auto& defaultMaterial = MDyPhysics::GetInstance().GetDefaultPhysicsMaterial();
+  this->mPtrInternalShape = physics.createShape(geometry, defaultMaterial);
+  MDY_ASSERT_FORCE(MDY_CHECK_ISNOTNULL(this->mPtrInternalShape), "Unexpected error occurred.");
+  
+  // Make filter value (PxFilterData)
+  const physx::PxFilterData filterData = CreateFilterDataValue(
+      iRefRigidbody, 
+      this->mCollisionTagName, this->mFilterValues);
+  // Apply Collision filter
+  this->mPtrInternalShape->setSimulationFilterData(filterData);
+
+  // Apply to iRefRigidbody.
+  iRefRigidbody.BindShapeToRigidbody(*this->mPtrInternalShape);
 }
 
-void CDyPhysicsColliderSphere::ReleaseInternalResource()
+TF32 CDyPhysicsColliderSphere::GetRadius() const noexcept
 {
-
+  return this->mRadius;
 }
 
 } /// ::dy namespace

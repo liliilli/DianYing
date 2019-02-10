@@ -316,6 +316,8 @@ struct PDyColliderComponentMetaInfo final : public IDyMetaInformation
     std::string mCollisionFilterPresetSpecifier = MDY_INITIALIZE_EMPTYSTR;
     /// Collision filter. each value of id is correspond to Collision layer list's specifier.
     std::vector<EDyCollisionFilter> mCollisionFilter;
+    /// Collsiion layer name of collider (PxShape). Must be valid.
+    std::string mCollisionLayerName = MDY_INITIALIZE_EMPTYSTR;
   };
 
   /// @brief Details

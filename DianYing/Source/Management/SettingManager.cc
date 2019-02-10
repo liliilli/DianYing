@@ -262,9 +262,11 @@ void MDySetting::pSetupExecutableArgumentSettings()
 
     // Get Graphics api string.
     this->mRenderingType = DyGetRenderingApiType(graphicsApi);
-    MDY_ASSERT(
-        this->mRenderingType != EDyRenderingApi::NoneError,
-        "Rendering api option is not specified properly. Must be \"OpenGL\".");
+    // If rendering type is none, default value is OpenGL.
+    if (this->mRenderingType == EDyRenderingApi::NoneError)
+    { 
+      this->mRenderingType = EDyRenderingApi::OpenGL; 
+    }
   };
 
   /// @brief Setup feature logging to console from argument.

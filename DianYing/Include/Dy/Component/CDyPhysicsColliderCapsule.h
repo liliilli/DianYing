@@ -42,9 +42,17 @@ public:
   MDY_NODISCARD std::string ToString() override final;
 
   /// @brief Initialize internal (PhysX) resource.
-  void InitializeInternalResource() override final; 
-  /// @brief Release internal (PhysX) resource.
-  void ReleaseInternalResource() override final;
+  void InitializeInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody) override final;
+
+  /// @brief Get hemisphere radius. (half-extent)
+  MDY_NODISCARD TF32 GetRadius() const noexcept;
+
+  /// @brief Get half-height of capsule.
+  MDY_NODISCARD TF32 GetHalfHeight() const noexcept;
+
+private:
+  TF32 mRadius;
+  TF32 mHalfHeight;
 };
 
 } /// ::dy namespace

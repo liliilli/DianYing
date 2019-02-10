@@ -42,9 +42,13 @@ public:
   MDY_NODISCARD std::string ToString() override final;
 
   /// @brief Initialize internal (PhysX) resource.
-  void InitializeInternalResource() override final; 
-  /// @brief Release internal (PhysX) resource.
-  void ReleaseInternalResource() override final;
+  void InitializeInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody) override final; 
+
+  /// @brief Get half extent.
+  MDY_NODISCARD const DDyVector3& GetHalfExtent() const noexcept;
+
+private:
+  DDyVector3 mHalfExtent;
 };
 
 } /// ::dy namespace

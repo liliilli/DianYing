@@ -23,6 +23,7 @@
 #include <assimp/vector3.h>
 #include <glm/glm.hpp>
 #include <nlohmann/json_fwd.hpp>
+#include <foundation/PxVec3.h>
 
 #include <Dy/Helper/Type/Vector2.h>
 #include <Dy/Helper/Math/Math.h>
@@ -133,6 +134,11 @@ struct DDyVector3 final {
   operator aiVector3D() const noexcept
   {
     return aiVector3D{this->X, this->Y, this->Z};
+  }
+
+  operator physx::PxVec3() const noexcept
+  {
+    return physx::PxVec3{this->X, this->Y, this->Z};
   }
 
 #if defined(_WIN32)

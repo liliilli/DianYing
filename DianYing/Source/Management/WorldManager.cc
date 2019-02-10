@@ -295,11 +295,6 @@ EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(RemoveLevel)()
   // And level must be nullptr. and... Remove RI and Resource & Informations with Scope is `Level`.
   if (MDY_CHECK_ISEMPTY(this->mLevel)) { return DY_FAILURE; }
   
-  MDY_LOG_DEBUG_D("Dependent manager resetting...");
-  // Must reset depedent manager on this.
-  MDyPhysics::GetInstance().ReleaseScene();
-  MDY_LOG_DEBUG_D("Dependent manager resetting done.");
-
   // Release physx components which are dependent on physx::PxScene, FDyLevel.
   this->mLevel = nullptr;
 
@@ -322,6 +317,9 @@ EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(RemoveLevel)()
   SDyIOConnectionHelper::TryGC(EDyScope::Level, EDyResourceStyle::Information);
   SDyIOConnectionHelper::TryGC(EDyScope::Level, EDyResourceStyle::Resource);
   SDyIOConnectionHelper::TryGC(EDyScope::Level, EDyResourceStyle::Information);
+
+  // Must reset depedent manager on this.
+  MDyPhysics::GetInstance().ReleaseScene();
   return DY_SUCCESS;
 }
 
@@ -355,14 +353,9 @@ void MDyWorld::MDY_PRIVATE_SPECIFIER(BuildNextLevel)()
   MDY_LOG_DEBUG_D("Building Next Level : {}", this->mNextLevelName);
 
   const auto* levelMetaInfo = MDyMetaInfo::GetInstance().GetLevelMetaInformation(this->mNextLevelName);
-  this->mLevel = std::make_unique<FDyLevel>(*levelMetaInfo);
-
-  MDY_LOG_DEBUG_D("Dependent manager resetting...");
-
   // Must reset depedent manager on this.
   MDyPhysics::GetInstance().InitScene();
-
-  MDY_LOG_DEBUG_D("Dependent manager resetting done.");
+  this->mLevel = std::make_unique<FDyLevel>(*levelMetaInfo);
 }
 
 EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(TransitionToNextLevel)()
