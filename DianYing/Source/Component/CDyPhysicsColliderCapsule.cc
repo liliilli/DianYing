@@ -77,4 +77,9 @@ TF32 CDyPhysicsColliderCapsule::GetHalfHeight() const noexcept
   return this->mHalfHeight;
 }
 
+void CDyPhysicsColliderCapsule::UpdateColliderMesh()
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+}
+
 } /// ::dy namespace

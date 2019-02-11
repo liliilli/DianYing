@@ -15,6 +15,10 @@
 /// Header file
 #include <Dy/Management/Rendering/RenderingManager.h>
 
+#include <imgui/imgui.h>
+#include <imgui/imgui_impl_glfw.h>
+#include <imgui/imgui_impl_opengl3.h>
+
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Management/SettingManager.h>
@@ -31,6 +35,8 @@
 #include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
 #include <Dy/Management/Internal/Render/FDyModelHandlerManager.h>
 #include "Dy/Core/Resource/Resource/FDyModelResource.h"
+#include "Dy/Management/WindowManager.h"
+#include "Dy/Management/PhysicsManager.h"
 
 namespace dy
 {
@@ -49,22 +55,107 @@ EDySuccess MDyRendering::pfInitialize()
   this->mFinalDisplayRenderer = std::make_unique<decltype(this->mFinalDisplayRenderer)::element_type>();
   this->mCSMRenderer          = std::make_unique<decltype(this->mCSMRenderer)::element_type>();
   this->mSSAOPostEffect       = std::make_unique<decltype(mSSAOPostEffect)::element_type>();
+  this->mDebugRenderer        = std::make_unique<decltype(this->mDebugRenderer)::element_type>();
 
-  const auto& information = MDySetting::GetInstance().GetGameplaySettingInformation();
-  if (information.mGraphics.mIsEnabledDefaultSsao == true)
+  switch (MDySetting::GetInstance().GetRenderingType())
   {
+  case EDyRenderingApi::Vulkan: 
+  case EDyRenderingApi::DirectX11: 
+  case EDyRenderingApi::DirectX12: 
+  { MDY_NOT_IMPLEMENTED_ASSERT();
+  } break;
+  case EDyRenderingApi::OpenGL: 
+  {
+    { // IMGUI Setting
+      IMGUI_CHECKVERSION();
+      ImGui::CreateContext();
+      ImGui::StyleColorsDark();
+
+      ImGui_ImplGlfw_InitForOpenGL(MDyWindow::GetInstance().GetGLMainWindow(), true);
+      ImGui_ImplOpenGL3_Init("#version 430");
+    }
+  } break;
+  default: MDY_UNEXPECTED_BRANCH(); break;
   }
 
-#if defined(MDY_FLAG_IN_EDITOR) == true
-  //! Grid rendering setting.
-  this->mGridEffect = std::make_unique<decltype(this->mGridEffect)::element_type>();
-#endif /// MDY_FLAG_IN_EDITOR
+  // 
+  {
+    // Get imgui IO module.
+    ImGuiIO& io = ImGui::GetIO();
+    const auto& windowManager = MDyWindow::GetInstance();
+
+    {
+      std::string japaneseFontName = "";
+      if (windowManager.IsFontExistOnSystem(u8"Arial") == true)  { japaneseFontName = u8"Arial"; }
+      
+      // If font name is found, add font file to imgui. Otherwise, just pass it.
+      if (japaneseFontName.empty() == false)
+      {
+        // Get system font path from manager.
+        const auto optPath = windowManager.GetFontPathOnSystem(japaneseFontName);
+        MDY_ASSERT_FORCE(optPath.has_value() == true, "Unexpected error occurred.");
+        // Create glyphs.
+        io.Fonts->AddFontFromFileTTF(optPath.value().c_str(), 14.0f, nullptr, io.Fonts->GetGlyphRangesDefault());
+      }
+    }
+
+#ifdef false
+    // Check hangul (NanumGothic) font is exist on system.
+    {
+      std::string koreanFontName = MDY_INITIALIZE_EMPTYSTR;
+      if (windowManager.IsFontExistOnSystem(u8"나눔고딕") == true)  { koreanFontName = u8"나눔고딕"; }
+      
+      // If korean font name is found, add font file to imgui. Otherwise, just pass it.
+      if (koreanFontName.empty() == false)
+      {
+        // Get system font path from manager.
+        const auto optPath = windowManager.GetFontPathOnSystem(koreanFontName);
+        MDY_ASSERT_FORCE(optPath.has_value() == true, "Unexpected error occurred.");
+        // Create korean glyphs.
+        io.Fonts->AddFontFromFileTTF(optPath.value().c_str(), 14.0f, nullptr, io.Fonts->GetGlyphRangesKorean());
+      }
+    }
+
+    // Check japanese (meiryo UI) font is exist on system. 
+    {
+      std::string japaneseFontName = "";
+      if (windowManager.IsFontExistOnSystem(u8"Meiryo UI") == true)  { japaneseFontName = u8"Meiryo UI"; }
+      
+      // If font name is found, add font file to imgui. Otherwise, just pass it.
+      if (japaneseFontName.empty() == false)
+      {
+        // Get system font path from manager.
+        const auto optPath = windowManager.GetFontPathOnSystem(japaneseFontName);
+        MDY_ASSERT_FORCE(optPath.has_value() == true, "Unexpected error occurred.");
+        // Create glyphs.
+        io.Fonts->AddFontFromFileTTF(optPath.value().c_str(), 18.0f, nullptr, io.Fonts->GetGlyphRangesJapanese());
+      }
+    }
+#endif
+  }
 
   return DY_SUCCESS;
 }
 
 EDySuccess MDyRendering::pfRelease()
 {
+  switch (MDySetting::GetInstance().GetRenderingType())
+  {
+  case EDyRenderingApi::Vulkan: 
+  case EDyRenderingApi::DirectX11: 
+  case EDyRenderingApi::DirectX12: 
+  { MDY_NOT_IMPLEMENTED_ASSERT();
+  } break;
+  case EDyRenderingApi::OpenGL:
+  {
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+    MDY_LOG_INFO_D("Released ImGui Context.");
+  } break;
+  default: MDY_UNEXPECTED_BRANCH(); break;
+  }
+
   this->mLevelFinalRenderer   = MDY_INITIALIZE_NULL;
   this->mCSMRenderer          = MDY_INITIALIZE_NULL;
   this->mSSAOPostEffect       = MDY_INITIALIZE_NULL;
@@ -72,12 +163,27 @@ EDySuccess MDyRendering::pfRelease()
   this->mUiBasicRenderer      = MDY_INITIALIZE_NULL;
   this->mFinalDisplayRenderer = MDY_INITIALIZE_NULL;
   this->mTranslucentOIT       = MDY_INITIALIZE_NULL;
+  this->mDebugRenderer        = MDY_INITIALIZE_NULL;
 
   // Initialize internal management singleton instance.
   MDY_CALL_ASSERT_SUCCESS(FDyModelHandlerManager::Release());
   MDY_CALL_ASSERT_SUCCESS(MDyFramebuffer::Release());
   MDY_CALL_ASSERT_SUCCESS(MDyUniformBufferObject::Release());
   return DY_SUCCESS;
+}
+
+void MDyRendering::PreRender(_MIN_ TF32 dt)
+{
+  auto& settingManager = MDySetting::GetInstance();
+
+  { // Checking 
+    static bool lock = false;
+    if (const auto flag = settingManager.IsRenderPhysicsCollisionShape(); flag != lock)
+    {
+      this->mDebugRenderer->Clear();
+      lock = flag;
+    }
+  }
 }
 
 void MDyRendering::SetupDrawModelTaskQueue()
@@ -144,7 +250,14 @@ void MDyRendering::EnqueueDrawMesh(
   }
 }
 
-void MDyRendering::RenderDrawCallQueue()
+void MDyRendering::EnqueueDebugDrawCollider(
+    _MIN_ CDyPhysicsCollider& iRefCollider, 
+    _MIN_ const DDyMatrix4x4& iTransformMatrix)
+{
+  this->mDebugColliderDrawingList.emplace_back(std::make_pair(&iRefCollider, iTransformMatrix));
+}
+
+  void MDyRendering::RenderLevelInformation()
 {
   if (MDyWorld::GetInstance().IsLevelPresentValid() == false) { return; }
   const auto& information = MDySetting::GetInstance().GetGameplaySettingInformation();
@@ -152,60 +265,48 @@ void MDyRendering::RenderDrawCallQueue()
   // (0) Clear previous frame results of each framebuffers.
   this->pClearRenderingFramebufferInstances();
 
+  // @TODO TEMPORAL. MAKE STACK-BASED GL STATE MACHINE MANAGER.
+  switch (MDySetting::GetInstance().GetRenderingMode())
   {
-    const auto* ptrCamera = MDyWorld::GetInstance().GetPtrMainLevelCamera();
+  case EDyModelRenderingMode::FillNormal: 
+  {
+    MDY_GRAPHIC_SET_CRITICALSECITON();
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  } break;
+  case EDyModelRenderingMode::WireFrame: 
+  {
+    MDY_GRAPHIC_SET_CRITICALSECITON();
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  } break;
+  }
 
-    // If main camera is not exist, do not render level.
-    if (MDY_CHECK_ISNOTNULL(ptrCamera))
-    {
-      // DO CPU VIEW-FRUSTUM CULLING.
+  const auto* ptrCamera = MDyWorld::GetInstance().GetPtrMainLevelCamera();
+  // DO CPU VIEW-FRUSTUM CULLING.
 #ifdef false
-      DyEraseRemoveIf(this->mOpaqueDrawCallList, [ptrCamera](auto& iPtrOpaqueRenderer)
-      {
-        const auto& worldPos = iPtrOpaqueRenderer->GetBindedActor()->GetTransform()->GetFinalWorldPosition();
-        return ptrCamera->CheckIsPointInFrustum(worldPos) == false;
-      });
+  DyEraseRemoveIf(this->mOpaqueDrawCallList, [ptrCamera](auto& iPtrOpaqueRenderer)
+  {
+    const auto& worldPos = iPtrOpaqueRenderer->GetBindedActor()->GetTransform()->GetFinalWorldPosition();
+    return ptrCamera->CheckIsPointInFrustum(worldPos) == false;
+  });
 #endif
-      SDyProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(this->mOpaqueMeshDrawingList.size()));
 
-      if (information.mGraphics.mIsEnabledDefaultShadow == true)
-      { // (1) Cascaded Shadow mapping to opaque call list.
-        // Pre-render update for update Segments.
-        this->mCSMRenderer->PreRender();
-        if (this->mCSMRenderer->TrySetupRendering() == DY_SUCCESS)
-        {
-          this->mCSMRenderer->SetupViewport();
-          for (auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] : this->mOpaqueMeshDrawingList)
-          { // Render
-            this->mCSMRenderer->RenderScreen(
-                *iPtrModel, 
-                const_cast<FDyMeshResource&>(*iPtrValidMesh),
-                const_cast<FDyMaterialResource&>(*iPtrValidMat)
-            );
-          }
-        }
-      }
-      else { this->mCSMRenderer->Clear(); }
-
-      // Set global viewport values to camera's properties.
-      { MDY_GRAPHIC_SET_CRITICALSECITON();
-        FDyGLWrapper::SetViewport(ptrCamera->GetPixelizedViewportRectangle());
-      }
-      // (2) Draw opaque call list. Get valid Main CDyCamera instance pointer address.
-      this->mBasicOpaqueRenderer->PreRender();
-      for (auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] : this->mOpaqueMeshDrawingList)
-      { // Render
-        this->mBasicOpaqueRenderer->RenderScreen(
-            *iPtrModel,
-            const_cast<FDyMeshResource&>(*iPtrValidMesh),
-            const_cast<FDyMaterialResource&>(*iPtrValidMat)
-        );
-      }
+  // If main camera is not exist, do not render level.
+  if (MDY_CHECK_ISNOTNULL(ptrCamera))
+  {
+    SDyProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(this->mOpaqueMeshDrawingList.size()));
+    // (1) Draw opaque call list. Get valid Main CDyCamera instance pointer address.
+    this->mBasicOpaqueRenderer->PreRender();
+    for (auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] : this->mOpaqueMeshDrawingList)
+    { // Render
+      this->mBasicOpaqueRenderer->RenderScreen(
+          *iPtrModel,
+          const_cast<FDyMeshResource&>(*iPtrValidMesh),
+          const_cast<FDyMaterialResource&>(*iPtrValidMat)
+      );
     }
   }
-  this->mOpaqueMeshDrawingList.clear();
 
-  // (3) Draw transparent call list with OIT.
+  // (2) Draw transparent call list with OIT.
   if (this->mTranslucentOIT->TrySetupRendering() == DY_SUCCESS)
   {
     for (auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] : this->mTranslucentMeshDrawingList)
@@ -224,23 +325,111 @@ void MDyRendering::RenderDrawCallQueue()
     glBlendFunci(1, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   }
   this->mTranslucentMeshDrawingList.clear();
+  
+  //!
+  //! Effects ▽
+  //!
+  
+  // @TODO TEMPORARY CODE
+  {
+    MDY_GRAPHIC_SET_CRITICALSECITON();
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  }
+
+  // (3) Cascaded Shadow mapping to opaque call list. Pre-render update for update Segments.
+  if (MDY_CHECK_ISNOTNULL(ptrCamera) && information.mGraphics.mIsEnabledDefaultShadow == true)
+  {
+    // pre-render update.
+    this->mCSMRenderer->PreRender();
+    if (this->mCSMRenderer->TrySetupRendering() == DY_SUCCESS)
+    {
+      // Cascade shadow mapping use different and mutliple viewport.
+      this->mCSMRenderer->SetupViewport();
+      // Render only opaque mesh list.
+      for (auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] : this->mOpaqueMeshDrawingList)
+      { // Render
+        this->mCSMRenderer->RenderScreen(
+            *iPtrModel, 
+            const_cast<FDyMeshResource&>(*iPtrValidMesh),
+            const_cast<FDyMaterialResource&>(*iPtrValidMat)
+        );
+      }
+    }
+  }
+  else { this->mCSMRenderer->Clear(); }
+  this->mOpaqueMeshDrawingList.clear();
+
+  // Set global viewport values to camera's properties.
+  { MDY_GRAPHIC_SET_CRITICALSECITON();
+    FDyGLWrapper::SetViewport(ptrCamera->GetPixelizedViewportRectangle());
+  }
 
   //! Post processing effects
   if (information.mGraphics.mIsEnabledDefaultSsao == true)
   { 
-    if (this->mSSAOPostEffect->TrySetupRendering() == DY_SUCCESS)
-    { this->mSSAOPostEffect->RenderScreen(); }
+    if (this->mSSAOPostEffect->TrySetupRendering() == DY_SUCCESS) { this->mSSAOPostEffect->RenderScreen(); }
   }
-  else { this->mSSAOPostEffect->Clear(); }
+  else 
+  { 
+    this->mSSAOPostEffect->Clear(); 
+  }
 
-  // Final
+  // Final. Level information without debug information is integrated in one renderbuffer.
   if (MDY_CHECK_ISNOTEMPTY(this->mLevelFinalRenderer) 
   &&  this->mLevelFinalRenderer->IsReady() == true 
   &&  this->mLevelFinalRenderer->TrySetupRendering() == DY_SUCCESS)
-  { this->mLevelFinalRenderer->RenderScreen(); }
+  { 
+    this->mLevelFinalRenderer->RenderScreen(); 
+  }
+}
 
-  if (MDY_CHECK_ISNOTEMPTY(this->mUiBasicRenderer))       { this->mUiBasicRenderer->RenderScreen(); }
-  if (MDY_CHECK_ISNOTEMPTY(this->mFinalDisplayRenderer))  { this->mFinalDisplayRenderer->RenderScreen(); }
+void MDyRendering::RenderDebugInformation()
+{
+  //!
+  //! Debug rendering.
+  //! https://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/guide/Manual/DebugVisualization.html#debugvisualization
+  //!
+
+  const auto* ptrCamera = MDyWorld::GetInstance().GetPtrMainLevelCamera();
+  const auto& setting   = MDySetting::GetInstance();
+
+  // Draw collider shapes. (NOT AABB!)
+  // If main camera is not exist, do not render level.
+  if (MDY_CHECK_ISNOTNULL(ptrCamera) && setting.IsRenderPhysicsCollisionShape() == true)
+  {
+    SDyProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(this->mOpaqueMeshDrawingList.size()));
+    // (1) Draw opaque call list. Get valid Main CDyCamera instance pointer address.
+    if (this->mDebugRenderer->IsReady() == true
+    &&  this->mDebugRenderer->TrySetupRendering() == DY_SUCCESS)
+    {
+      for (auto& [ptrCollider, transformMatrix] : this->mDebugColliderDrawingList)
+      {
+        this->mDebugRenderer->RenderScreen(*ptrCollider, transformMatrix);
+      }
+
+      glEnable(GL_DEPTH_TEST);
+    }
+  }
+
+  this->mDebugColliderDrawingList.clear();
+
+  // Draw collider AABB.
+
+
+}
+
+void MDyRendering::RenderUIInformation()
+{
+  if (MDY_CHECK_ISNOTEMPTY(this->mUiBasicRenderer)) { this->mUiBasicRenderer->RenderScreen(); }
+}
+
+void MDyRendering::Integrate()
+{
+  //!
+  //! Level & Ui integration section.
+  //! ImGUI rendering will be held outside and after this function call.
+  //!
+  if (MDY_CHECK_ISNOTEMPTY(this->mFinalDisplayRenderer)) { this->mFinalDisplayRenderer->RenderScreen(); }
 }
 
 void MDyRendering::MDY_PRIVATE_SPECIFIER(RenderLoading)()

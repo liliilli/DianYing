@@ -15,7 +15,8 @@
 /// Header file
 #include <Dy/Core/DyEngine.h>
 
-#include <filesystem>
+#include <Dy/Core/Thread/SDyIOConnectionHelper.h>
+#include <Dy/Helper/MCS/Functions.h>
 #include <Dy/Management/InputManager.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
@@ -31,10 +32,9 @@
 #include <Dy/Management/Editor/GuiManager.h>
 #include <Dy/Management/Internal/MDySynchronization.h>
 #include <Dy/Management/Internal/MDyProfiling.h>
-#include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 #include "Dy/Management/GameTimerManager.h"
-#include "Dy/Helper/mcs/Functions.h"
 #include "Dy/Management/Helper/SDyProfilingHelper.h"
+#include <Dy/Management/Internal/MDyDebug.h>
 
 //!
 //! Implementation
@@ -53,26 +53,7 @@ EDySuccess DyEngine::pfInitialize()
   switch (MDySetting::GetInstance().GetApplicationMode())
   {
   case EDyAppMode::ModeCompressData: { return DY_SUCCESS; } 
-  case EDyAppMode::LoadSeperatedFile: 
-  /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  /// @macro MDY_FLAG_MODE_POPULATE_COMPRESSED_DATAFILE
-  /// @brief If this flag is set, neither initialization a project nor running game,
-  /// but just bind every resources into compressed files, running procedure monitoring window.
-  ///
-  /// When run project with this, any specified file name is exist, procedure will not take off.
-  /// - Data###.dydat (^Data(\t){3}.dydat$)
-  /// 
-  /// Compressed .dydat file will be detected by application,
-  /// when MDY_FLAG_LOAD_COMPRESSED_DATAFILE is set.
-  ///
-  /// ** SEQUENCE... **
-  /// 1. define MDY_FLAG_MODE_POPULATE_COMPRESSED_DATAFILE.
-  /// 2. M_PATH_PLAIN_PATH_OF_SETTING_JSON string literal must specify the path of "Setting.json"
-  /// 2. build project and run program. Mode chagned to compression mode, wait until procedure finished.
-  /// 3. undefine MDY_FLAG_MODE_POPULATE_COMPRESSED_DATAFILE
-  /// 4. define MDY_FLAG_LOAD_COMPRESSED_DATAFILE, so compressed `Data###.dydat` must be loaded instead of plain json and resources. 
-  /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  case EDyAppMode::LoadCompressedFile: 
+  case EDyAppMode::ModeRuntime: 
   {
     this->pfInitializeIndependentManager();
     this->mSynchronization = &MDySynchronization::GetInstance();
@@ -87,8 +68,7 @@ EDySuccess DyEngine::pfRelease()
   switch (MDySetting::GetInstance().GetApplicationMode())
   {
   case EDyAppMode::ModeCompressData: /* Do nothing */ break;
-  case EDyAppMode::LoadSeperatedFile: 
-  case EDyAppMode::LoadCompressedFile: 
+  case EDyAppMode::ModeRuntime: 
   {
     this->mSynchronization = nullptr;
     this->pfReleaseIndependentManager();
@@ -99,16 +79,14 @@ EDySuccess DyEngine::pfRelease()
 
 void DyEngine::operator()()
 {
-  if (const auto& set = MDySetting::GetInstance(); 
-      set.GetApplicationMode() == EDyAppMode::ModeCompressData)
+  if (const auto& set = MDySetting::GetInstance(); set.GetApplicationMode() == EDyAppMode::ModeCompressData)
   { 
     mcs::Compress(set.MDY_PRIVATE_SPECIFIER(GetEntrySettingFile)());
     return;
   }
 
-  static auto& window      = MDyWindow::GetInstance();
   static auto& timeManager = MDyTime::GetInstance();
-  while (window.IsWindowShouldClose() == false)
+  while (MDyWindow::GetInstance().IsWindowShouldClose() == false)
   {
     // Try game status transition and pre-housesholds.
     this->TryUpdateStatus();
@@ -118,11 +96,13 @@ void DyEngine::operator()()
       this->mIsStatusTransitionDone = true;
     }
 
+    // Real-time update sequence when `GameEnd call sign` not checked.
     if (this->mIsGameEndCalled == false)
-    { // Real-time update sequence when `GameEnd call sign` not checked.
+    { 
       timeManager.pUpdate();
       if (timeManager.IsGameFrameTicked() == DY_FAILURE) { continue; }
     }
+
     switch (this->GetGlobalGameStatus())
     {
     case EDyGlobalGameStatus::Booted: 
@@ -133,12 +113,14 @@ void DyEngine::operator()()
     case EDyGlobalGameStatus::Loading: 
     case EDyGlobalGameStatus::GameRuntime: 
     {
-      this->mSynchronization->TrySynchronization();
-      MDyGameTimer::GetInstance().MDY_PRIVATE_SPECIFIER(TryGcRemoveAbortedTimerInstance)();
+      if (this->mIsInGameUpdatePaused == false)
+      {
+        this->mSynchronization->TrySynchronization();
+        MDyGameTimer::GetInstance().MDY_PRIVATE_SPECIFIER(TryGcRemoveAbortedTimerInstance)();
+      }
 
       // Get delta-time.
       const auto dt = timeManager.GetGameScaledTickedDeltaTimeValue();
-
       // Update
       this->MDY_PRIVATE_SPECIFIER(Update)(this->mStatus, dt);
 
@@ -191,16 +173,14 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(ReflectGameStatusTransition)()
     {
     case EDyGlobalGameStatus::FirstLoading: 
     { // Booted => FirstLoading.
-      gEngine->pfInitializeDependentManager();
-      MDY_CALL_ASSERT_SUCCESS   (MDyWorld::GetInstance().TryCreateDebugUi());
-      MDY_CALL_BUT_NOUSE_RESULT (MDyWorld::GetInstance().TryCreateLoadingUi());
-#ifdef false
-      auto& refSettingManager = MDySetting::GetInstance();
-      if (refSettingManager.IsDebugUiVisible() == true)
-      { // If debug ui need to be visible, create debug ui.
+      this->pfInitializeDependentManager();
+      if (MDySetting::GetInstance().IsDebugMode() == true)
+      {
+        MDY_CALL_ASSERT_SUCCESS(MDyDebug::Initialize());
         MDY_CALL_ASSERT_SUCCESS(MDyWorld::GetInstance().TryCreateDebugUi());
       }
-#endif
+
+      MDY_CALL_BUT_NOUSE_RESULT (MDyWorld::GetInstance().TryCreateLoadingUi());
       MDyMetaInfo::GetInstance().MDY_PRIVATE_SPECIFIER(PopulateGlobalResourceSpecifierList)();
     } break;
     default: MDY_UNEXPECTED_BRANCH();
@@ -257,10 +237,6 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(ReflectGameStatusTransition)()
     } break;
     case EDyGlobalGameStatus::Shutdown: 
     { // GameRuntime => Shutdown. Just wait IO Thread is slept.
-      if (MDyWorld::GetInstance().IsDebugUiExist() == true)
-      { // If debug ui exist, remove.
-        MDY_CALL_BUT_NOUSE_RESULT(MDyWorld::GetInstance().TryRemoveDebugUi());
-      }
       SDyIOConnectionHelper::PopulateResourceList(
           std::vector<DDyResourceName>{}, EDyScope::Global, 
           []() { DyEngine::GetInstance().SetNextGameStatus(EDyGlobalGameStatus::Ended); }
@@ -279,6 +255,16 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(ReflectGameStatusTransition)()
       auto& scriptManager = MDyScript::GetInstance();
       scriptManager.CallonEndGlobalScriptList();
       scriptManager.RemoveGlobalScriptInstances();
+
+      // If debug mode, try to release debug manager and relevent ui.
+      if (MDySetting::GetInstance().IsDebugMode() == true)
+      {
+        // If debug ui exist, remove.
+        if (MDyWorld::GetInstance().IsDebugUiExist() == true)
+        { MDY_CALL_BUT_NOUSE_RESULT(MDyWorld::GetInstance().TryRemoveDebugUi()); }
+        // 
+        MDY_CALL_ASSERT_SUCCESS(MDyDebug::Release());
+      }
 
       this->pfReleaseDependentManager();
       MDY_CALL_ASSERT_SUCCESS(MDyWindow::GetInstance().MDY_PRIVATE_SPECIFIER(TerminateWindow)());
@@ -307,27 +293,44 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(Update)(_MIN_ EDyGlobalGameStatus iEngineSt
   } break;
   case EDyGlobalGameStatus::GameRuntime: 
   {
-    MDyScript::GetInstance().UpdateActorScript(0.0f, EDyScriptState::CalledNothing);
-    MDyScript::GetInstance().TryMoveInsertActorScriptToMainContainer();
-    MDyScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
-
-    MDyInput::GetInstance().pfUpdate(dt);
-    if (this->MDY_PRIVATE_SPECIFIER(IsGameNeedToBeTransitted)() == true) { return; }
-    MDyGameTimer::GetInstance().Update(dt);
-    if (this->MDY_PRIVATE_SPECIFIER(IsGameNeedToBeTransitted)() == true) { return; }
-    MDyScript::GetInstance().UpdateActorScript(dt);
-    if (this->MDY_PRIVATE_SPECIFIER(IsGameNeedToBeTransitted)() == true) { return; }
-    MDyScript::GetInstance().UpdateWidgetScript(dt);
-    if (this->MDY_PRIVATE_SPECIFIER(IsGameNeedToBeTransitted)() == true) { return; }
-
-    MDyPhysics::GetInstance().Update(dt);
-    MDyWorld::GetInstance().Update(dt);
-    MDyWorld::GetInstance().UpdateObjects(dt);
-
-    auto& soundManager = MDySound::GetInstance();
-    if (soundManager.mIsSoundSystemAvailable == true)
+    // Check mode is debug mode, if true, poll input of debug first.
+    // and, if return value is DY_FAILURE, try to global update.
+    if (MDySetting::GetInstance().IsDebugMode() == true)
     {
-      soundManager.Update(dt);
+      if (MDyDebug::GetInstance().CheckInput(dt) == DY_FAILURE)
+      {
+        MDyInput::GetInstance().pfGlobalUpdate(dt);
+      }
+    }
+    else
+    { // If not debug mode, just poll input key of global.
+      MDyInput::GetInstance().pfGlobalUpdate(dt);
+    }
+
+    // If in-game update should not be passed, just update in-game. Otherwise, neglect.
+    if (this->mIsInGameUpdatePaused == false)
+    {
+      MDyScript::GetInstance().UpdateActorScript(0.0f, EDyScriptState::CalledNothing);
+      MDyScript::GetInstance().TryMoveInsertActorScriptToMainContainer();
+      MDyScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
+
+      MDyInput::GetInstance().pfInGameUpdate(dt);
+      if (this->MDY_PRIVATE_SPECIFIER(IsGameNeedToBeTransitted)() == true) { return; }
+      MDyGameTimer::GetInstance().Update(dt);
+      if (this->MDY_PRIVATE_SPECIFIER(IsGameNeedToBeTransitted)() == true) { return; }
+      MDyScript::GetInstance().UpdateActorScript(dt);
+      if (this->MDY_PRIVATE_SPECIFIER(IsGameNeedToBeTransitted)() == true) { return; }
+      MDyScript::GetInstance().UpdateWidgetScript(dt);
+      if (this->MDY_PRIVATE_SPECIFIER(IsGameNeedToBeTransitted)() == true) { return; }
+      
+      MDyWorld::GetInstance().Update(dt);
+      MDyWorld::GetInstance().UpdateObjects(dt);
+
+      auto& soundManager = MDySound::GetInstance();
+      if (soundManager.mIsSoundSystemAvailable == true) { soundManager.Update(dt); }
+    }
+    else
+    {
     }
   } break;
   case EDyGlobalGameStatus::Shutdown: 
@@ -344,7 +347,25 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(PreRender)(_MIN_ EDyGlobalGameStatus iEngin
   {
     // Reset frame dependent profiling count.
     SDyProfilingHelper::ResetFrameDependentCounts();
-    MDyWorld::GetInstance().UpdateAnimator(dt);
+
+    if (this->mIsInGameUpdatePaused == false)
+    {
+      MDyWorld::GetInstance().UpdateAnimator(dt);
+    }
+
+    // Update physics `PxScene` parameter. This function must be called before MDyPhysics::Update(dt).
+    MDyPhysics::GetInstance().UpdateInternalPxSceneParameter();
+    // Update physics collision simulation.
+    MDyPhysics::GetInstance().Update(dt);
+
+    // Debug render queue requisition.
+    if (MDySetting::GetInstance().IsRenderPhysicsCollisionShape() == true)
+    {
+      MDyPhysics::GetInstance().TryEnqueueDebugDrawCall();
+    }
+
+    // Pre-render update of rendering manager.
+    MDyRendering::GetInstance().PreRender(dt);
   } break;
   default: break;
   }
@@ -364,14 +385,20 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(Render)(_MIN_ EDyGlobalGameStatus iEngineSt
     // Request render call.
     auto& render = MDyRendering::GetInstance();
     render.SetupDrawModelTaskQueue();
-    render.RenderDrawCallQueue();
+    render.RenderLevelInformation();
+    render.RenderUIInformation();
+    render.RenderDebugInformation();
+    render.Integrate();
+
+    // If debug mode is enabled, update and render ui item.
+    // imgui has unified update & render architecture, so can not separate update and render routine.
+    if (MDySetting::GetInstance().IsDebugMode() == true)
+    {
+      MDyDebug::GetInstance().UpdateAndRender();
+    }
   } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
-
-  #if defined(MDY_FLAG_IN_EDITOR)
-    editor::MDyEditorGui::GetInstance().DrawWindow(0);
-  #endif // MDY_FLAG_IN_EDITOR
 
   this->GetWindowManager().TempSwapBuffers();
 }
@@ -465,6 +492,16 @@ EDyGlobalGameStatus DyEngine::GetGlobalGameStatus() const noexcept
 void DyEngine::SetNextGameStatus(_MIN_ EDyGlobalGameStatus iNextStatus) noexcept
 {
   this->mNextStatus = iNextStatus;
+}
+
+void DyEngine::SetInGameUpdatePause(_MIN_ bool iActivated) noexcept
+{
+  this->mIsInGameUpdatePaused = iActivated;
+}
+
+bool DyEngine::IsInGameUpdatePaused() const noexcept
+{
+  return this->mIsInGameUpdatePaused;
 }
 
 EDySuccess DyEngine::TryEndGame() noexcept

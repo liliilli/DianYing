@@ -27,7 +27,6 @@
     <ClCompile Include="Source\Helper\IoHelper.cc" />
     <ClCompile Include="Libraries\glad\src\glad.c" />
     <ClCompile Include="Source\Entry\Entry.cc" />
-    <ClCompile Include="Source\Editor\Gui\MainMenu.cc" />
     <ClCompile Include="Source\Management\Editor\GuiManager.cc" />
     <ClCompile Include="Source\Editor\Gui\EtcDialog.cc" />
     <ClCompile Include="Source\Management\Editor\GuiWindowFactory.cc" />
@@ -316,6 +315,13 @@
     <ClCompile Include="Source\Component\CDyPhysicsColliderSphere.cc" />
     <ClCompile Include="Source\Component\CDyPhysicsColliderBox.cc" />
     <ClCompile Include="Source\Component\CDyPhysicsColliderCapsule.cc" />
+    <ClCompile Include="Source\Management\Internal\MDyDebug.cc" />
+    <ClCompile Include="Source\Editor\View\MainMenu.cc" />
+    <ClCompile Include="Source\Builtin\FrameBuffer\Debug\FDyBtFbDebug.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\Debug\FDyBtAtDebug.cc" />
+    <ClCompile Include="Source\Builtin\Mesh\Debug\FDyBtMsDebugSphere.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\Debug\BtShDebugLine.cc" />
+    <ClCompile Include="Source\Core\Rendering\Pipeline\DebugRenderer.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -352,7 +358,6 @@
     <ClInclude Include="Include\Dy\Helper\GlobalType.h" />
     <ClInclude Include="Include\Dy\Editor\Literals\LibraryLicenseString.h" />
     <ClInclude Include="Include\Dy\Editor\Interface\IDyGuiWindowSingletonCrtp.h" />
-    <ClInclude Include="Include\Dy\Editor\Gui\MainMenu.h" />
     <ClInclude Include="Include\Dy\Helper\HashCompileCrc32.h" />
     <ClInclude Include="Include\Dy\Management\Editor\GuiManager.h" />
     <ClInclude Include="Include\Dy\Editor\Interface\IDyGuiComponentBase.h" />
@@ -779,6 +784,14 @@
     <ClInclude Include="Include\Dy\Component\CDyPhysicsColliderBox.h" />
     <ClInclude Include="Include\Dy\Component\CDyPhysicsColliderCapsule.h" />
     <ClInclude Include="Include\Dy\Component\CDyPhysicsColliderSphere.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\MDyDebug.h" />
+    <ClInclude Include="Include\Dy\Editor\View\MainMenu.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Render\EDyModelRenderingMode.h" />
+    <ClInclude Include="Include\Dy\Builtin\FrameBuffer\Debug\FDyBtFbDebug.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\Debug\FDyBtAtDebug.h" />
+    <ClInclude Include="Include\Dy\Builtin\Mesh\Debug\FDyBtMsDebugSphere.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\Debug\BtShDebugLine.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\DebugRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

@@ -75,4 +75,29 @@ TF32 CDyPhysicsColliderSphere::GetRadius() const noexcept
   return this->mRadius;
 }
 
+void CDyPhysicsColliderSphere::UpdateColliderMesh()
+{
+  // First, clear all information.
+  this->mColliderMeshInformation.clear();
+  const TF32 step = math::Pi2<TF32> / (50 - 1);
+
+  // (X, Y, 0)
+  {
+    TF32 angle = 0;
+    for (TU32 i = 0; i < 50; ++i, angle += step)
+    {
+      this->mColliderMeshInformation.emplace_back(this->mRadius * sin(angle), this->mRadius * cos(angle), 0);
+    }
+  }
+
+  // (0, Y, Z)
+  {
+    TF32 angle = 0;
+    for (TU32 i = 0; i < 50; ++i, angle += step)
+    {
+      this->mColliderMeshInformation.emplace_back(0, this->mRadius * cos(angle), this->mRadius * sin(angle));
+    }
+  }
+}
+
 } /// ::dy namespace

@@ -73,4 +73,9 @@ const DDyVector3& CDyPhysicsColliderBox::GetHalfExtent() const noexcept
   return this->mHalfExtent;
 }
 
+void CDyPhysicsColliderBox::UpdateColliderMesh()
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+}
+
 } /// ::dy namespace

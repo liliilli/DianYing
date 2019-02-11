@@ -19,6 +19,7 @@
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Management/Helper/PhysXErrorCallback.h>
 #include <Dy/Management/Helper/PhysxSimulationCallback.h>
+#include <Dy/Helper/Pointer.h>
 
 //!
 //! Forward declaration
@@ -27,6 +28,7 @@
 namespace dy
 {
 struct DDySettingPhysics;
+class CDyPhysicsRigidbody;
 } /// ::dy namespace
 
 //!
@@ -71,6 +73,18 @@ public:
     return *this->gScene;
   }
 
+  /// @brief Update internal PxScene parameter (PxVisualizationParameter)
+  void UpdateInternalPxSceneParameter();
+
+  /// @brief Try enqueue debug line.
+  void TryEnqueueDebugDrawCall();
+
+  /// @brief Register activated rigidbody instance.
+  void MDY_PRIVATE_SPECIFIER(RegisterRigidbody)(_MIN_ CDyPhysicsRigidbody& iRefRigidbody);
+
+  /// @brief Unregister deactivated rigidbody instance.
+  void MDY_PRIVATE_SPECIFIER(UnregisterRigidbody)(_MIN_ CDyPhysicsRigidbody& iRefRigidbody);
+
 private:
   /// @brief Override function callback. When object of physx is remove, this function will be called.
 	void onRelease(
@@ -101,7 +115,11 @@ private:
   physx::PxReal                 stackZ      = 10.0f;
   physx::PxDefaultAllocator     defaultAllocatorCallback;
 
+  /// @brief Activated ptr-rigidbody list.
+  std::vector<NotNull<CDyPhysicsRigidbody*>> mActivatedRigidbodyList {};
+
   // Implements PxSimulationEventCallback
+
 	void onContact(_MIN_ const physx::PxContactPairHeader& pairHeader, _MIN_ const physx::PxContactPair* pairs, _MIN_ physx::PxU32 nbPairs) override final;
 	void onTrigger(_MIN_ physx::PxTriggerPair* pairs, _MIN_ physx::PxU32 count) override final;
 	void onConstraintBreak(physx::PxConstraintInfo*, physx::PxU32) override final {}

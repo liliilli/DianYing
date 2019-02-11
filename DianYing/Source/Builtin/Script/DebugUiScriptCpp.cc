@@ -49,7 +49,7 @@ void FDyBuiltinDebugUiScript::Initiate()
 void FDyBuiltinDebugUiScript::Start()
 {
   this->GetGameTimerManager().SetTimer(this->mTimerHandle, *this, &FDyBuiltinDebugUiScript::CbMoveBar, 1.0f, true, 1.0f);
-  this->GetGameTimerManager().SetTimer(this->mTimerHandle2, *this, &FDyBuiltinDebugUiScript::CbChangeImageTexture, 0.8f, true, 0.5f);
+  //this->GetGameTimerManager().SetTimer(this->mTimerHandle2, *this, &FDyBuiltinDebugUiScript::CbChangeImageTexture, 0.8f, true, 0.5f);
 }
 
 void FDyBuiltinDebugUiScript::Update(_MIN_ TF32 dt)

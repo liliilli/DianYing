@@ -35,7 +35,7 @@ enum class EDyGlobalGameStatus : char
   // If game need to be shutdowned, go to game runtime.
   Shutdown,
   // Game end. just exit application.
-  Ended
+  Ended,
 };
 
 } /// ::dy namespace

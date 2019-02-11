@@ -43,6 +43,16 @@ DDyQuaternion& DDyQuaternion::operator=(const glm::quat& glmQuat)
   return *this;
 }
 
+DDyQuaternion::DDyQuaternion(_MIN_ const physx::PxQuat& pxQuat) :
+  mQuaternion{pxQuat.w, pxQuat.x, pxQuat.y, pxQuat.z}
+{ }
+
+DDyQuaternion& DDyQuaternion::operator=(_MIN_ const physx::PxQuat& pxQuat)
+{
+  this->mQuaternion = glm::quat{pxQuat.w, pxQuat.x, pxQuat.y, pxQuat.z};
+  return *this;
+}
+
 DDyQuaternion::DDyQuaternion(_MIN_ TF32 x, _MIN_ TF32 y, _MIN_ TF32 z, _MIN_ TF32 w) :
   mQuaternion{w, x, y, z}
 { }

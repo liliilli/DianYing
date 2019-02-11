@@ -140,6 +140,7 @@ void CDyPhysicsRigidbody::TryActivateInstance()
   }
   
   // Do something.
+  MDyPhysics::GetInstance().MDY_PRIVATE_SPECIFIER(RegisterRigidbody)(*this);
 }
 
 void CDyPhysicsRigidbody::RegisterCollider(_MIN_ CDyPhysicsCollider& iRefCollider)
@@ -163,6 +164,9 @@ void CDyPhysicsRigidbody::RegisterCollider(_MIN_ CDyPhysicsCollider& iRefCollide
 
 void CDyPhysicsRigidbody::TryDeactivateInstance()
 {
+  // Do something.
+  MDyPhysics::GetInstance().MDY_PRIVATE_SPECIFIER(UnregisterRigidbody)(*this);
+
   // And remove collider registration.
   while (this->mPtrColliderList.empty() == false)
   {
@@ -236,6 +240,11 @@ std::optional<TU32> CDyPhysicsRigidbody::MDY_PRIVATE_SPECIFIER(GetRigidbodySpeci
 
   // If activated, return as bitset type.
   return this->mRigidbodySpecifierId;
+}
+
+physx::PxRigidDynamic& CDyPhysicsRigidbody::MDY_PRIVATE_SPECIFIER(GetRefInternalRigidbody)() noexcept
+{
+  return *this->mOwnerDynamicActor;
 }
 
 } /// ::dy namespace

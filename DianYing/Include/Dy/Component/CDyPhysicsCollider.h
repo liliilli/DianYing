@@ -58,6 +58,10 @@ public:
 
   /// @brief Update anyway.
   void Update(_MIN_ TF32 dt) override final {};
+  /// @brief Update collider mesh information.
+  virtual void UpdateColliderMesh() = 0;
+  /// @brief Get const reference instance of collider mesh.
+  MDY_NODISCARD const std::vector<DDyVector3>& GetColliderMesh() const noexcept;
 
   /// @brief Check notify hit event.
   MDY_NODISCARD bool IsNotifyHitEvent() const noexcept; 
@@ -65,6 +69,8 @@ public:
   MDY_NODISCARD bool IsNotifyOverlapEvent() const noexcept;
   /// @brief Check this collider is registered into CDyPhysicsRigidbody component.
   MDY_NODISCARD bool IsRegistered() const noexcept;
+  /// @brief Check collider need to update internal mesh information.
+  MDY_NODISCARD bool IsNeedToUpdateColliderMesh() const noexcept;
   /// @brief Get collider type of this component.
   MDY_NODISCARD EDyColliderType GetColliderType() const noexcept;
 
@@ -75,6 +81,9 @@ public:
   virtual void InitializeInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody) = 0; 
   /// @brief Release internal (PhysX) resource.
   void ReleaseInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody);
+
+  /// @brief Get internal shape pointer. Returned value does not guarantee not nullity.
+  MDY_NODISCARD physx::PxShape* MDY_PRIVATE_SPECIFIER(GetPtrInternalShape)() const noexcept;
 
 private:
   void TryActivateInstance() override final;
@@ -108,6 +117,10 @@ protected:
   std::vector<EDyCollisionFilter> mFilterValues{};
   /// @brief Collision spcifier value.
   std::string mCollisionTagName = MDY_INITIALIZE_EMPTYSTR;
+  /// @brief Collision mesh information need to be updated.
+  bool mIsCollisionMeshDirty = true;
+  /// @brief Collision mesh information.
+  std::vector<DDyVector3> mColliderMeshInformation; 
 };
 
 } /// ::dy namespace
