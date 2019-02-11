@@ -363,6 +363,9 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(PreRender)(_MIN_ EDyGlobalGameStatus iEngin
     {
       MDyPhysics::GetInstance().TryEnqueueDebugDrawCall();
     }
+
+    // Pre-render update of rendering manager.
+    MDyRendering::GetInstance().PreRender(dt);
   } break;
   default: break;
   }

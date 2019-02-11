@@ -61,6 +61,9 @@ class MDyRendering final : public IDySingleton<MDyRendering>
   MDY_SINGLETON_PROPERTIES(MDyRendering);
   MDY_SINGLETON_DERIVED(MDyRendering);
 public:
+  /// @brief PreRender update functin.
+  void PreRender(_MIN_ TF32 dt);
+
   /// @brief 
   /// @TODO LOGIC IS TEMPORARY.
   void SetupDrawModelTaskQueue();

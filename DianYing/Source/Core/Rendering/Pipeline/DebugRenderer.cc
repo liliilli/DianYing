@@ -48,11 +48,10 @@ void FDyDebugRenderer::Clear()
 {
   if (this->IsReady() == false) { return; }
 
-  glDisable(GL_DEPTH_TEST);
-  
   this->mBinderFrameBuffer->BindFrameBuffer();
   glClearColor(0, 0, 0, 0);
   glClear(GL_COLOR_BUFFER_BIT);
+  this->mBinderFrameBuffer->UnbindFrameBuffer();
 }
 
 void FDyDebugRenderer::RenderScreen(_MIN_ CDyPhysicsCollider& iRefCollider, _MIN_ const DDyMatrix4x4& iTransformMatrix)

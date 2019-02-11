@@ -172,6 +172,20 @@ EDySuccess MDyRendering::pfRelease()
   return DY_SUCCESS;
 }
 
+void MDyRendering::PreRender(_MIN_ TF32 dt)
+{
+  auto& settingManager = MDySetting::GetInstance();
+
+  { // Checking 
+    static bool lock = false;
+    if (const auto flag = settingManager.IsRenderPhysicsCollisionShape(); flag != lock)
+    {
+      this->mDebugRenderer->Clear();
+      lock = flag;
+    }
+  }
+}
+
 void MDyRendering::SetupDrawModelTaskQueue()
 {
   auto& handlerManager = FDyModelHandlerManager::GetInstance();
