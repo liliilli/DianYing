@@ -44,6 +44,7 @@ private:
   TDyIResourceBinderModel       mBinderTriangle   {"dyBtModelScrProjTri"};
   TDyIResourceBinderAttachment  mBinderAttSceneFinal{ "dyBtAtScrFin_Output" };
   TDyIResourceBinderAttachment  mBinderAttUIFinal   { "dyBtAtUiBasic_Output" };
+  TDyIResourceBinderAttachment  mBinderAttDbgFinal  { "dyBtAtDebug" };
 };
 
 } /// ::dy namespace
