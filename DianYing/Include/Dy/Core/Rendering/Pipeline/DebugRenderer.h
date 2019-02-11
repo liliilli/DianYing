@@ -56,6 +56,7 @@ public:
 private:
   TDyIResourceBinderShader      mBinderShader     {"dyBtShDebugLine"};
   TDyIResourceBinderFrameBuffer mBinderFrameBuffer{"dyBtFbDebug"};
+  TDyIResourceBinderMesh        mBinderSphere     {"dyBtMsDebugSphere"};
 };
 
 } /// ::dy namespace

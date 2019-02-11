@@ -377,10 +377,11 @@ void MDyRendering::RenderDebugInformation()
   //!
 
   const auto* ptrCamera = MDyWorld::GetInstance().GetPtrMainLevelCamera();
+  const auto& setting   = MDySetting::GetInstance();
 
   // Draw collider shapes. (NOT AABB!)
   // If main camera is not exist, do not render level.
-  if (MDY_CHECK_ISNOTNULL(ptrCamera))
+  if (MDY_CHECK_ISNOTNULL(ptrCamera) && setting.IsRenderPhysicsCollisionShape() == true)
   {
     SDyProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(this->mOpaqueMeshDrawingList.size()));
     // (1) Draw opaque call list. Get valid Main CDyCamera instance pointer address.
@@ -391,6 +392,8 @@ void MDyRendering::RenderDebugInformation()
       {
         this->mDebugRenderer->RenderScreen(*ptrCollider, transformMatrix);
       }
+
+      glEnable(GL_DEPTH_TEST);
     }
   }
 

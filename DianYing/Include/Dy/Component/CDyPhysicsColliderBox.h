@@ -43,6 +43,8 @@ public:
 
   /// @brief Initialize internal (PhysX) resource.
   void InitializeInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody) override final; 
+  /// @brief Update collider mesh information.
+  void UpdateColliderMesh() override;
 
   /// @brief Get half extent.
   MDY_NODISCARD const DDyVector3& GetHalfExtent() const noexcept;
