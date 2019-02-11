@@ -76,9 +76,16 @@ public:
   ///
   EDySuccess UnbindShapeFromRigidbody(_MIN_ physx::PxShape& iRefShape);
 
+  /// @brief Get binded (registered) activated collider instance list.
+  auto& GetBindedActivatedColliderList() noexcept { return this->mPtrColliderList; }
+
   /// @brief Get rigidbody internal specifier value.
   MDY_NODISCARD std::optional<TU32> 
   MDY_PRIVATE_SPECIFIER(GetRigidbodySpecifier)() const noexcept;
+
+  /// @brief Get reference instance of rigidbody. When call this, `mOwnerDynamicActor` must be valid.
+  MDY_NODISCARD physx::PxRigidDynamic& 
+  MDY_PRIVATE_SPECIFIER(GetRefInternalRigidbody)() noexcept;
 
 private:
   /// Check this rigidbody (and collider) simulate physics. 

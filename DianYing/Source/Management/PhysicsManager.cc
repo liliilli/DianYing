@@ -19,8 +19,12 @@
 
 #include <Dy/Helper/Pointer.h>
 #include <Dy/Helper/Type/Vector3.h>
+#include <Dy/Helper/System/Idioms.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/SettingManager.h>
+#include <Dy/Component/CDyPhysicsRigidbody.h>
+#include "Dy/Component/CDyPhysicsCollider.h"
+#include "Dy/Management/Rendering/RenderingManager.h"
 
 //!
 //! Test
@@ -339,8 +343,9 @@ void MDyPhysics::InitScene()
     auto flags = this->gScene->getFlags();
     (void)flags;
 
-    this->gScene->setVisualizationParameter(physx::PxVisualizationParameter::eSCALE, 0.0f);
-    this->gScene->setVisualizationParameter(physx::PxVisualizationParameter::eCOLLISION_SHAPES,	1.0f);
+    using PxVP = physx::PxVisualizationParameter;
+    this->gScene->setVisualizationParameter(PxVP::eSCALE, 1.0f);
+    this->gScene->setVisualizationParameter(PxVP::eACTOR_AXES, 1.0f);
 
     physx::PxPvdSceneClient* pvdClient = this->gScene->getScenePvdClient();
     if (MDY_CHECK_ISNOTNULL(pvdClient))
@@ -377,6 +382,76 @@ const DDySettingPhysics& MDyPhysics::GetDefaultSetting() const noexcept
 const physx::PxMaterial& MDyPhysics::GetDefaultPhysicsMaterial() const noexcept
 {
   return *this->mDefaultMaterial;
+}
+
+void MDyPhysics::UpdateInternalPxSceneParameter()
+{
+  // If gScene is null, just return to outside and do nothing.
+  if (MDY_CHECK_ISNULL(this->gScene)) { return; }
+
+  static constexpr TF32 enable  = 1.0f;
+  static constexpr TF32 disable = 0.0f;
+  using PxVP = physx::PxVisualizationParameter;
+
+  // Set collision shape.
+  // https://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/apireference/files/structPxVisualizationParameter.html
+  if (MDySetting::GetInstance().IsRenderPhysicsCollisionShape() == true)
+  {
+    if (this->gScene->getVisualizationParameter(PxVP::eCOLLISION_SHAPES) == disable)
+    {
+      this->gScene->setVisualizationParameter(PxVP::eCOLLISION_SHAPES, enable);
+    }
+  }
+  else
+  {
+    if (this->gScene->getVisualizationParameter(PxVP::eCOLLISION_SHAPES) == enable)
+    {
+      this->gScene->setVisualizationParameter(PxVP::eCOLLISION_SHAPES, disable);
+    }
+  }
+}
+
+void MDyPhysics::TryEnqueueDebugDrawCall()
+{
+  // If gScene is null, just return to outside and do nothing.
+  if (MDY_CHECK_ISNULL(this->gScene)) { return; }
+
+  auto& renderingManager = MDyRendering::GetInstance();
+
+  // https://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/guide/Manual/DebugVisualization.html#debugvisualization
+  // https://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/guide/Manual/BestPractices.html
+  for (auto& ptrRigidbody : this->mActivatedRigidbodyList)
+  {
+    auto& internalRigidbody     = ptrRigidbody->MDY_PRIVATE_SPECIFIER(GetRefInternalRigidbody)();
+    const auto globalTransform  = internalRigidbody.getGlobalPose();
+    const auto& colliderList    = ptrRigidbody->GetBindedActivatedColliderList();
+
+    for (auto& ptrCollider : colliderList)
+    {
+      auto* ptrPxShape      = ptrCollider->MDY_PRIVATE_SPECIFIER(GetPtrInternalShape)();
+      const auto localPose  = ptrPxShape->getLocalPose();
+      const auto transformMatrix = DDyMatrix4x4(globalTransform * localPose);
+      // Enqueue draw list.
+      // Iterate `Collider` and insert queue with transform + mesh.
+      renderingManager.EnqueueDebugDrawCollider(*ptrCollider, transformMatrix);
+    }
+  }
+}
+
+void MDyPhysics::MDY_PRIVATE_SPECIFIER(RegisterRigidbody)(_MIN_ CDyPhysicsRigidbody& iRefRigidbody)
+{
+  this->mActivatedRigidbodyList.emplace_back(DyMakeNotNull(&iRefRigidbody));
+}
+
+void MDyPhysics::MDY_PRIVATE_SPECIFIER(UnregisterRigidbody)(_MIN_ CDyPhysicsRigidbody& iRefRigidbody)
+{
+  const auto it = std::find_if(
+      MDY_BIND_BEGIN_END(this->mActivatedRigidbodyList), 
+      [ptrSource = &iRefRigidbody](const auto& ptrTarget) { return ptrTarget.Get() == ptrSource; }
+  );
+  
+  MDY_ASSERT_FORCE(it != this->mActivatedRigidbodyList.end(), "Unexpected error occurred.");
+  DyFastErase(this->mActivatedRigidbodyList, it);
 }
 
 void MDyPhysics::onRelease(

@@ -60,6 +60,8 @@ public:
 
   DDyMatrix4x4(const aiMatrix4x4& aiMatrix) noexcept;
 
+  DDyMatrix4x4(const physx::PxTransform& physxTransform) noexcept;
+
   DDyMatrix4x4& operator=(const glm::mat2& value) noexcept;
 
   DDyMatrix4x4& operator=(const glm::mat3& value) noexcept;

@@ -266,6 +266,16 @@ EDyModelRenderingMode MDySetting::GetRenderingMode() const noexcept
   return this->mModelRenderingMode;
 }
 
+void MDySetting::SetRenderingPhysicsCollisionShape(_MIN_ bool iIsEnabled) noexcept
+{
+  this->mIsRenderPhysicsCollisionShape = iIsEnabled;
+}
+
+bool MDySetting::IsRenderPhysicsCollisionShape() const noexcept
+{
+  return this->mIsRenderPhysicsCollisionShape;
+}
+
 void MDySetting::pSetupExecutableArgumentSettings()
 {
   /// @brief Setup rendering api type from argument.

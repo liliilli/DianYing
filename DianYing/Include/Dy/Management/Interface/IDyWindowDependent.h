@@ -40,25 +40,30 @@ public:
   /// This function will return DY_SUCCESS because of conformity with remove function.
   /// @return If succeeded, return DY_SUCCESS or DY_FAILURE. \n
   ///
-  virtual MDY_NODISCARD EDySuccess CreateConsoleWindow() = 0;
+  MDY_NODISCARD virtual EDySuccess CreateConsoleWindow() = 0;
 
   ///
   /// @brief  Check if console window is created or not.
   /// @return If created anyway, return true or false.
   ///
-  virtual MDY_NODISCARD bool       IsCreatedConsoleWindow() const noexcept = 0;
+  MDY_NODISCARD virtual bool IsCreatedConsoleWindow() const noexcept = 0;
 
   ///
   /// @brief  Remove console window when console window is initiailzed before.
   /// @return If succeeded, return DY_SUCCESS or DY_FAILURE.
   ///
-  virtual MDY_NODISCARD EDySuccess RemoveConsoleWindow() = 0;
+  MDY_NODISCARD virtual EDySuccess RemoveConsoleWindow() = 0;
 
   /// @brief Get cpu usage overall percentage. (0 ~ 100%)
-  virtual MDY_NODISCARD TF32 GetCpuUsage() = 0;
+  MDY_NODISCARD virtual TF32 GetCpuUsage() = 0;
 
   /// @brief Get ram usage as byte.
-  virtual MDY_NODISCARD TU64 GetRamUsage() = 0;
+  MDY_NODISCARD virtual TU64 GetRamUsage() = 0;
+
+  MDY_NODISCARD virtual bool IsFontExistOnSystem(_MIN_ const std::string& iFontKey) const = 0;
+
+  /// @brief Get system font path with iFontKey. If not found, just return null value.
+  MDY_NODISCARD virtual std::optional<std::string> GetFontPathOnSystem(_MIN_ const std::string& iFontKey) const = 0;
 };
 
 } /// ::dy namespace

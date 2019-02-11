@@ -323,7 +323,6 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(Update)(_MIN_ EDyGlobalGameStatus iEngineSt
       MDyScript::GetInstance().UpdateWidgetScript(dt);
       if (this->MDY_PRIVATE_SPECIFIER(IsGameNeedToBeTransitted)() == true) { return; }
       
-      MDyPhysics::GetInstance().Update(dt);
       MDyWorld::GetInstance().Update(dt);
       MDyWorld::GetInstance().UpdateObjects(dt);
 
@@ -353,6 +352,17 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(PreRender)(_MIN_ EDyGlobalGameStatus iEngin
     {
       MDyWorld::GetInstance().UpdateAnimator(dt);
     }
+
+    // Update physics `PxScene` parameter. This function must be called before MDyPhysics::Update(dt).
+    MDyPhysics::GetInstance().UpdateInternalPxSceneParameter();
+    // Update physics collision simulation.
+    MDyPhysics::GetInstance().Update(dt);
+
+    // Debug render queue requisition.
+    if (MDySetting::GetInstance().IsRenderPhysicsCollisionShape() == true)
+    {
+      MDyPhysics::GetInstance().TryEnqueueDebugDrawCall();
+    }
   } break;
   default: break;
   }
@@ -372,7 +382,10 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(Render)(_MIN_ EDyGlobalGameStatus iEngineSt
     // Request render call.
     auto& render = MDyRendering::GetInstance();
     render.SetupDrawModelTaskQueue();
-    render.RenderDrawCallQueue();
+    render.RenderLevelInformation();
+    render.RenderUIInformation();
+    render.RenderDebugInformation();
+    render.Integrate();
 
     // If debug mode is enabled, update and render ui item.
     // imgui has unified update & render architecture, so can not separate update and render routine.

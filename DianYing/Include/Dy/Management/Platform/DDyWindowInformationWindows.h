@@ -57,6 +57,12 @@ public:
   /// @brief Get ram usage as byte.
   MDY_NODISCARD TU64 GetRamUsage() override final;
 
+  /// @brief Check font is installed and exist on given OS.
+  MDY_NODISCARD bool IsFontExistOnSystem(_MIN_ const std::string& iFontKey) const override final;
+
+  /// @brief Get system font path with iFontKey. If not found, just return null value.
+  MDY_NODISCARD std::optional<std::string> GetFontPathOnSystem(_MIN_ const std::string& iFontKey) const override final;
+  
 protected:
   Owner<FILE*> mFp                      = nullptr;
   HWND        mWindowHandle             = nullptr;

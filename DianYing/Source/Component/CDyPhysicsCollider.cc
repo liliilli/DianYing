@@ -69,6 +69,11 @@ bool CDyPhysicsCollider::IsNotifyHitEvent() const noexcept
   return this->mNotifyHitEvent;
 }
 
+physx::PxShape* CDyPhysicsCollider::__GetPtrInternalShape() const noexcept
+{
+  return this->mPtrInternalShape;
+}
+
 bool CDyPhysicsCollider::IsNotifyOverlapEvent() const noexcept
 {
   return this->mNotifyOverlapEvent;

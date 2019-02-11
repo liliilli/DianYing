@@ -76,6 +76,9 @@ public:
   /// @brief Release internal (PhysX) resource.
   void ReleaseInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody);
 
+  /// @brief Get internal shape pointer. Returned value does not guarantee not nullity.
+  MDY_NODISCARD physx::PxShape* MDY_PRIVATE_SPECIFIER(GetPtrInternalShape)() const noexcept;
+
 private:
   void TryActivateInstance() override final;
   void TryDeactivateInstance() override final;

@@ -41,6 +41,9 @@ public:
 
   DDyQuaternion(const glm::quat& glmQuat);
   DDyQuaternion& operator=(const glm::quat& glmQuat);
+
+  DDyQuaternion(const physx::PxQuat& pxQuat);
+  DDyQuaternion& operator=(const physx::PxQuat& pxQuat);
   
   DDyQuaternion(_MIN_ TF32 x, _MIN_ TF32 y, _MIN_ TF32 z, _MIN_ TF32 w);
 
