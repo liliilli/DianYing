@@ -79,7 +79,41 @@ TF32 CDyPhysicsColliderCapsule::GetHalfHeight() const noexcept
 
 void CDyPhysicsColliderCapsule::UpdateColliderMesh()
 {
-  MDY_NOT_IMPLEMENTED_ASSERT();
+  // First, clear all information.
+  this->mColliderMeshInformation.clear();
+  const TF32 step = math::Pi2<TF32> / (50 - 1);
+
+  // (X, Y, 0)
+  {
+    TF32 angle = 0;
+    for (TU32 i = 0; i < 25; ++i)
+    {
+      this->mColliderMeshInformation.emplace_back(this->mRadius * cos(angle), this->mRadius * sin(angle) + this->mHalfHeight, 0);
+      angle += step;
+    }
+
+    for (TU32 i = 0; i < 25; ++i)
+    {
+      this->mColliderMeshInformation.emplace_back(this->mRadius * cos(angle), this->mRadius * sin(angle) - this->mHalfHeight, 0);
+      angle += step;
+    }
+  }
+
+  // (0, Y, Z)
+  {
+    TF32 angle = 0;
+    for (TU32 i = 0; i < 25; ++i)
+    {
+      this->mColliderMeshInformation.emplace_back(0, this->mRadius * sin(angle) + this->mHalfHeight, this->mRadius * cos(angle));
+      angle += step;
+    }
+
+    for (TU32 i = 0; i < 25; ++i)
+    {
+      this->mColliderMeshInformation.emplace_back(0, this->mRadius * sin(angle) - this->mHalfHeight, this->mRadius * cos(angle));
+      angle += step;
+    }
+  }
 }
 
 } /// ::dy namespace

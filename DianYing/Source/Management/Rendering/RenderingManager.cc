@@ -66,6 +66,9 @@ EDySuccess MDyRendering::pfInitialize()
   } break;
   case EDyRenderingApi::OpenGL: 
   {
+    glEnable(GL_PRIMITIVE_RESTART);
+    glPrimitiveRestartIndex(0xFFFFFFFF);
+    
     { // IMGUI Setting
       IMGUI_CHECKVERSION();
       ImGui::CreateContext();
