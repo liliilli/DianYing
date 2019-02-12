@@ -35,8 +35,10 @@ out vec2 screenUv;
 
 void main()
 {
-  gl_Position	= DyGetCameraPV() * vec4(dyPosition, 1.0);
-  texCoord    = dyPosition;
+  gl_Position	= DyGetCameraPV() * vec4(dyPosition * 10000.f, 1.0);
+  gl_Position.z = min(gl_Position.z, gl_Position.w);
+
+  texCoord    = dyPosition * -1.0f;
   screenUv    = (((gl_Position / gl_Position.w) + 1.0f) * 0.5f).xy;
 }
 )dy");
@@ -52,8 +54,8 @@ uniform  sampler2D uTexture1;   // Unlit
 
 void main() 
 { 
-  if (texture(uTexture1, screenUv).a != 0.0f) { discard; }
-  outFragColor =  texture(uTexture0, texCoord);
+  //if (texture(uTexture1, screenUv).a >= 0.2f) { discard; }
+  outFragColor = texture(uTexture0, texCoord);
 }
 )dy");
 

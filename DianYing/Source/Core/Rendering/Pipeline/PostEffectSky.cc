@@ -43,7 +43,7 @@ void FDyPostEffectSky::RenderScreen()
   this->mBinderMeshSkybox->BindVertexArray();
   this->mBinderShdSkybox->UseShader();
 
-  glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, refBinderTexture->GetTextureId());
+  glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_CUBE_MAP, refBinderTexture->GetTextureId());
   glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, this->mBinderAttUnlit->GetAttachmentId());
   this->mBinderShdSkybox.TryUpdateUniformList();
 
