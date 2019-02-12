@@ -23,76 +23,43 @@ namespace dy
 /// @brief Texture information class that not serve heap instance
 /// but information to create heap instance.
 ///
-class FDyTextureInformation final
+class FDyTextureInformation 
 {
 public:
   MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(FDyTextureInformation);
   FDyTextureInformation(_MIN_ const PDyTextureInstanceMetaInfo& metaInfo);
-  ~FDyTextureInformation() = default;
+  virtual ~FDyTextureInformation() = 0;
 
   /// @brief Get shader's specifier name.
-  FORCEINLINE MDY_NODISCARD const std::string& GetSpecifierName() const noexcept
-  {
-    return this->mSpecifierName;
-  }
-
-  /// @brief Get buffer of image.
-  FORCEINLINE MDY_NODISCARD const std::vector<TU08>& GetBuffer() const noexcept
-  {
-    return this->mTextureImageBuffer;
-  }
+  MDY_NODISCARD const std::string& GetSpecifierName() const noexcept;
 
   /// @brief Get buffer format. (different from mTextureInformation.mTextureColorType)
-  FORCEINLINE MDY_NODISCARD EDyImageColorFormatStyle GetFormat() const noexcept
-  {
-    return this->mImageActualPixelFormat;
-  }
+  MDY_NODISCARD EDyImageColorFormatStyle GetFormat() const noexcept;
 
+  /// @brief
   MDY_NODISCARD EDyGlImagePixelReadType GetPixelReadType() const noexcept;
 
-  /// @brief Get texture's size.
-  FORCEINLINE MDY_NODISCARD const DDyVectorInt2& GetSize() const noexcept
-  {
-    return this->mTextureSize;
-  }
-
   /// @brief Get texture's type (1d, 2d, etc)
-  FORCEINLINE MDY_NODISCARD EDyTextureStyleType GetType() const noexcept
-  {
-    return this->mTextureType;
-  }
+  MDY_NODISCARD EDyTextureStyleType GetType() const noexcept;
 
   /// @brief Get Border color of texture.
-  MDY_NODISCARD const DDyColorRGBA& GetBorderColor() const noexcept
-  {
-    return this->mBorderColor;
-  }
+  MDY_NODISCARD const DDyColorRGBA& GetBorderColor() const noexcept;
 
   /// @brief
-  MDY_NODISCARD bool IsUsingCustomizedParamater() const noexcept
-  {
-    return this->mIsUsingCustomParams;
-  }
+  MDY_NODISCARD bool IsUsingCustomizedParamater() const noexcept;
 
   /// @brief
-  MDY_NODISCARD bool IsUsingDefaultMipmap() const noexcept
-  {
-    return this->mIsUsingDefaultMipmap;
-  }
+  MDY_NODISCARD bool IsUsingDefaultMipmap() const noexcept;
 
   /// @brief
-  MDY_NODISCARD const auto& GetParameterList() const noexcept
-  {
-    return this->mParameterOptionList;
-  }
+  MDY_NODISCARD const TTextureParameterList& GetParameterList() const noexcept;
 
-private:
+protected:
+  EDyTextureStyleType       mTextureType            = EDyTextureStyleType::NoneError;
   std::string               mSpecifierName          = MDY_INITIALIZE_EMPTYSTR;
-  std::vector<TU08>         mTextureImageBuffer     = {};
-  DDyVectorInt2             mTextureSize            = {};
+
   EDyImageColorFormatStyle  mImageActualPixelFormat = EDyImageColorFormatStyle::NoneError;
   EDyGlImagePixelReadType   mInternalPixelReadType  = EDyGlImagePixelReadType::NoneError;
-  EDyTextureStyleType       mTextureType            = EDyTextureStyleType::NoneError;
   DDyColorRGBA              mBorderColor;
   TTextureParameterList     mParameterOptionList;
   bool                      mIsUsingDefaultMipmap   = false;

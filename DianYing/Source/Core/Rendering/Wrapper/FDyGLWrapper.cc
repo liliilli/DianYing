@@ -77,7 +77,8 @@ DyGlGetUniformVariableTypeFrom(_MIN_ GLenum type) noexcept
   case GL_SAMPLER_2D_RECT:                  return dy::EDyUniformVariableType::Texture2DRectangle;
   case GL_SAMPLER_2D_ARRAY:                 return dy::EDyUniformVariableType::Texture2DArray;
   case GL_SAMPLER_2D_ARRAY_SHADOW:          return dy::EDyUniformVariableType::Texture2DShadowArray;
-  default: return dy::EDyUniformVariableType::NoneError;
+  case GL_SAMPLER_CUBE:                     return dy::EDyUniformVariableType::Texture2DCubemap;
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(dy::EDyUniformVariableType::NoneError);
   }
 }
 
@@ -139,7 +140,6 @@ std::optional<TU32> FDyGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescript
   }
 
   TU32 mTextureResourceId = MDY_INITIALIZE_DEFUINT;
-  GLenum glTextureType    = DyGLGetLowTextureType(descriptor.mType);
 
   { // Critical section.
     MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
@@ -164,8 +164,17 @@ std::optional<TU32> FDyGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescript
     default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
     }
 
+#if defined(NDEBUG) == false
+    { const auto _ = glGetError(); MDY_ASSERT(_ == GL_NO_ERROR, "Attachment creation failed."); }
+#endif
+
     // Make mipmap by following option.
+    GLenum glTextureType    = DyGLGetLowTextureType(descriptor.mType);
     if (descriptor.mIsUsingDefaultMipmap == true) { glGenerateMipmap(glTextureType); }
+
+#if defined(NDEBUG) == false
+    { const auto _ = glGetError(); MDY_ASSERT(_ == GL_NO_ERROR, "Attachment creation failed."); }
+#endif 
 
     // Set texture parameters.
     if (descriptor.mIsUsingCustomizedParameter == true)
@@ -190,6 +199,85 @@ std::optional<TU32> FDyGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescript
       const auto _ = glGetError();
       MDY_ASSERT(_ == GL_NO_ERROR, "Attachment creation failed.");
     }
+#endif
+  }
+
+  return mTextureResourceId;
+}
+
+std::optional<TU32> FDyGLWrapper::CreateTexture(const PDyGLTextureCubemapDescriptor& descriptor)
+{
+  // Validation check.
+  MDY_ASSERT(descriptor.mImageFormat != GL_NONE, "Texture Image format must be specified.");
+  MDY_ASSERT(descriptor.mType == EDyTextureStyleType::D2Cubemap, "Texture Image type must be D2Cubemap.");
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mTopBuffer),    "Texture Image buffer must not be null.");
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mBottomBuffer), "Texture Image buffer must not be null.");
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mFrontBuffer),  "Texture Image buffer must not be null.");
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mBackBuffer),   "Texture Image buffer must not be null.");
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mRightBuffer),  "Texture Image buffer must not be null.");
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mLeftBuffer),   "Texture Image buffer must not be null.");
+
+  if (descriptor.mIsUsingCustomizedParameter == true)
+  {
+    MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mPtrParameterList), "Parameter list must not be null.");
+    MDY_ASSERT(DyCheckTextureParameterList(*descriptor.mPtrParameterList) == DY_SUCCESS, "Texture Parameter validation failed.");
+  }
+
+  TU32 mTextureResourceId = MDY_INITIALIZE_DEFUINT;
+  { // Critical section.
+    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
+
+    // Make cubemap texture.  
+    glGenTextures(1, &mTextureResourceId);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, mTextureResourceId);
+    //
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA, MDY_VECTOR_XY(descriptor.mTopSize), 0, 
+          descriptor.mImageFormat, descriptor.mImagePixelType, descriptor.mTopBuffer->data());
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA, MDY_VECTOR_XY(descriptor.mBottomSize), 0, 
+          descriptor.mImageFormat, descriptor.mImagePixelType, descriptor.mBottomBuffer->data());
+    //
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, MDY_VECTOR_XY(descriptor.mRightSize), 0, 
+          descriptor.mImageFormat, descriptor.mImagePixelType, descriptor.mRightBuffer->data());
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, MDY_VECTOR_XY(descriptor.mLeftSize), 0, 
+          descriptor.mImageFormat, descriptor.mImagePixelType, descriptor.mLeftBuffer->data());
+    //
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA, MDY_VECTOR_XY(descriptor.mFrontSize), 0, 
+          descriptor.mImageFormat, descriptor.mImagePixelType, descriptor.mFrontBuffer->data());
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA, MDY_VECTOR_XY(descriptor.mBackSize), 0, 
+          descriptor.mImageFormat, descriptor.mImagePixelType, descriptor.mBackBuffer->data());
+
+#if defined(NDEBUG) == false
+    { const auto _ = glGetError(); MDY_ASSERT(_ == GL_NO_ERROR, "Attachment creation failed."); }
+#endif
+
+    // Make mipmap by following option.
+    const GLenum glTextureType = DyGLGetLowTextureType(descriptor.mType);
+    if (descriptor.mIsUsingDefaultMipmap == true) { glGenerateMipmap(glTextureType); }
+
+#if defined(NDEBUG) == false
+    { const auto _ = glGetError(); MDY_ASSERT(_ == GL_NO_ERROR, "Attachment creation failed."); }
+#endif 
+
+    // Set texture parameters.
+    if (descriptor.mIsUsingCustomizedParameter == true)
+    { // Apply parameter option list to attachment.
+      bool isUsingClampToBorder = false;
+      for (const auto& parameter : *descriptor.mPtrParameterList)
+      { // Check there is ClmapToBorder for border coloring and set parameter
+        if (parameter.mParameterValue == EDyGlParameterValue::ClampToBorder) { isUsingClampToBorder = true; }
+        glTexParameteri(glTextureType, DyGetTexParameterNameValue(parameter.mParameterOption), DyGetTexParameterValueValue(parameter.mParameterValue));
+      }
+
+      if (isUsingClampToBorder == true)
+      { // If isThisAttachmentUsingClampToBorder is true, apply border color to texture.
+        glTexParameterfv(glTextureType, GL_TEXTURE_BORDER_COLOR, descriptor.mBorderColor.Data());
+      }
+    }
+    glBindTexture(glTextureType, 0);
+    glFlush();
+
+#if defined(NDEBUG) == false
+    { const auto _ = glGetError(); MDY_ASSERT(_ == GL_NO_ERROR, "Attachment creation failed."); }
 #endif
   }
 

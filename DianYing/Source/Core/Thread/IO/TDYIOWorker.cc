@@ -20,16 +20,19 @@
 #include <Dy/Core/Thread/SDyIOWorkerConnHelper.h>
 #include <Dy/Core/Resource/Information/FDyModelInformation.h>
 #include <Dy/Core/Resource/Internal/FDyModelVBOIntermediate.h>
+#include <Dy/Core/Resource/Information/FDyTextureCubemapInformation.h>
 #include <Dy/Core/Resource/Information/FDyMaterialInformation.h>
 #include <Dy/Core/Resource/Information/FDyAttachmentInformation.h>
 #include <Dy/Core/Resource/Information/FDyFrameBufferInformation.h>
-#include <Dy/Core/Resource/Resource/FDyTextureResource.h>
+#include <Dy/Core/Resource/Resource/FDyTextureGeneralResource.h>
 #include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
 #include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
 #include <Dy/Core/Resource/Information/FDyModelSkeletonInformation.h>
 #include <Dy/Core/Resource/Information/FDyModelAnimScrapInformation.h>
 #include <Dy/Core/Resource/Information/FDySoundInformation.h>
+#include <Dy/Core/Resource/Information/FDyTextureGeneralInformation.h>
+#include <Dy/Core/Resource/Resource/FDyTextureCubemapResource.h>
 #include <Dy/Management/IO/MDyIOData.h>
 
 namespace dy
@@ -128,9 +131,16 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceInformation(_MIN_ const DDyIOT
     (this->mMetaManager.GetGLShaderMetaInformation(assignedTask.mSpecifierName));
     break;
   case EDyResourceType::Texture:
-    result.mSmtPtrResultInstance = new FDyTextureInformation
-    (this->mMetaManager.GetTextureMetaInformation(assignedTask.mSpecifierName));
-    break;
+  { const auto metaInfo = this->mMetaManager.GetTextureMetaInformation(assignedTask.mSpecifierName);
+    if (metaInfo.mTextureType == EDyTextureStyleType::D2Cubemap)
+    { // When cubemap, we should use separated information type.
+      result.mSmtPtrResultInstance = new FDyTextureCubemapInformation(metaInfo);
+    }
+    else
+    {
+      result.mSmtPtrResultInstance = new FDyTextureGeneralInformation(metaInfo);
+    }
+  } break;
   case EDyResourceType::Mesh:
     result.mSmtPtrResultInstance = new FDyMeshInformation
     (this->mMetaManager.GetBtMeshMetaInformation(assignedTask.mSpecifierName));
@@ -187,7 +197,17 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceResource(_MIN_ const DDyIOTask
   } break;
   case EDyResourceType::Texture:
   { // Texture buffer can be created on another context. (It can be shared)
-    result.mSmtPtrResultInstance = new FDyTextureResource(*infoManager.GetPtrInformation<EDyResourceType::Texture>(result.mSpecifierName));
+    const auto* ptr = infoManager.GetPtrInformation<EDyResourceType::Texture>(result.mSpecifierName);
+    if (ptr->GetType() == EDyTextureStyleType::D2Cubemap)
+    {
+      result.mSmtPtrResultInstance = new FDyTextureCubemapResource(
+          static_cast<const FDyTextureCubemapInformation&>(*ptr)); // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
+    }
+    else
+    {
+      result.mSmtPtrResultInstance = new FDyTextureGeneralResource(
+        static_cast<const FDyTextureGeneralInformation&>(*ptr)); // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
+    }
   } break;
   case EDyResourceType::__MeshVBO:
   { // Builtin mesh not be created on another context... so forward it to main thread.

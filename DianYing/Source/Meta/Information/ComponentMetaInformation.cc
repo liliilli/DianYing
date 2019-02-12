@@ -102,6 +102,10 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ TComponentMetaList& p)
       break;
     case EDyComponentMetaType::Collider:
       p.emplace_back(type, componentAtlas.get<PDyColliderComponentMetaInfo>());
+      break;
+    case EDyComponentMetaType::Skybox:
+      p.emplace_back(type, componentAtlas.get<PDySkyboxComponentMetaInfo>());
+      break;
     }
   }
 }
@@ -432,6 +436,25 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyColliderComponentMetaI
   DyJsonGetValueFromTo(j, "FilterPresetSpecifier", p.mCollisionFilterPresetSpecifier);
   DyJsonGetValueFromTo(j, "CollisionFilter", p.mCollisionFilter);
   DyJsonGetValueFromTo(j, "LayerName", p.mCollisionLayerName);
+}
+
+//!
+//! PDySkyboxComponentMetaInfo
+//!
+
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySkyboxComponentMetaInfo& p)
+{
+  DyJsonGetValueFromTo(j, sHeader_Type,       p.mType);
+  DyJsonGetValueFromTo(j, sHeader_Details,    p.mDetails);
+  DyJsonGetValueFromTo(j, sHeader_Activated,  p.mInitiallyActivated);
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySkyboxComponentMetaInfo::DDetails& p)
+{
+  DyJsonGetValueFromTo(j, "Exposure", p.mExposure);
+  DyJsonGetValueFromTo(j, "Rotation", p.mRotation);
+
+  DyJsonGetValueFromTo(j, "CubemapSpecifier", p.mCubemapSpecifier);
 }
 
 } /// ::dy namespace

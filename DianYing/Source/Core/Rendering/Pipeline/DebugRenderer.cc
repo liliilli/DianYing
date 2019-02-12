@@ -77,18 +77,30 @@ void FDyDebugRenderer::RenderScreen(_MIN_ CDyPhysicsCollider& iRefCollider, _MIN
     glBufferSubData (GL_ARRAY_BUFFER, 0, sizeof(DDyVector3) * 100, &iRefCollider.GetColliderMesh()[0].X);
     glBindBuffer    (GL_ARRAY_BUFFER, 0);
 
+    // Render.
     FDyGLWrapper::Draw(EDyDrawType::LineLoop, false, 100);
   } break;
   case EDyColliderType::Capsule: 
-  { MDY_NOT_IMPLEMENTED_ASSERT();
+  { this->mBinderCapsule->BindVertexArray();
+    glBindBuffer    (GL_ARRAY_BUFFER, this->mBinderCapsule->GetVertexBufferId());
+    glBufferSubData (GL_ARRAY_BUFFER, 0, sizeof(DDyVector3) * 100, &iRefCollider.GetColliderMesh()[0].X);
+    glBindBuffer    (GL_ARRAY_BUFFER, 0);
+
+    // Render.
+    FDyGLWrapper::Draw(EDyDrawType::LineLoop, true, 101);
   } break;
   case EDyColliderType::Box: 
-  { MDY_NOT_IMPLEMENTED_ASSERT();
+  { this->mBinderBox->BindVertexArray(); 
+    glBindBuffer    (GL_ARRAY_BUFFER, this->mBinderBox->GetVertexBufferId());
+    glBufferSubData (GL_ARRAY_BUFFER, 0, sizeof(DDyVector3) * 20, &iRefCollider.GetColliderMesh()[0].X);
+    glBindBuffer    (GL_ARRAY_BUFFER, 0);
+
+    // Render.
+    FDyGLWrapper::Draw(EDyDrawType::LineStrip, false, 20);
   } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 
-  // Render.
   
 }
 

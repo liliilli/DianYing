@@ -18,6 +18,7 @@
 #include <Dy/Core/Rendering/Wrapper/PDyGLTextureDescriptor.h>
 #include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
 #include <Dy/Management/Helper/SDyProfilingHelper.h>
+#include "Dy/Core/Resource/Information/FDyTextureGeneralInformation.h"
 
 namespace dy
 {
@@ -25,53 +26,26 @@ namespace dy
 FDyTextureResource::FDyTextureResource(_MIN_ const FDyTextureInformation& information) :
     mInformationBinder{information.GetSpecifierName()}
 {
-  const auto optGlImageFormat = DyGLGetImageFormatFrom(information.GetFormat());
-  MDY_ASSERT_FORCE(optGlImageFormat.has_value() == true, "Image format type must be valid.");
-  const auto glImagePixelType = DyGlGetImagePixelTypeFrom(information.GetPixelReadType());
-  MDY_ASSERT_FORCE(glImagePixelType != GL_NONE, "Image pixel format must be valid.");
-
   // Forward dataBuffer's retrieved information to data members.
   this->mTextureName   = information.GetSpecifierName();
   this->mTextureType   = information.GetType();
-  this->mTextureSize   = information.GetSize();
-
-  switch (this->mTextureType)
-  { // Align size of texture following texture type.
-  case EDyTextureStyleType::D1: this->mTextureSize.Y = 1; break;
-  case EDyTextureStyleType::D2: break;
-  default: MDY_UNEXPECTED_BRANCH();
-  }
-
-  PDyGLTextureDescriptor descriptor {};
-  { // Make internal descriptor for creating texture.
-    descriptor.mBorderColor       = information.GetBorderColor();
-    descriptor.mImageFormat       = *optGlImageFormat;
-    descriptor.mImagePixelType    = glImagePixelType; 
-    descriptor.mIsUsingCustomizedParameter  = information.IsUsingCustomizedParamater();
-    descriptor.mIsUsingDefaultMipmap        = information.IsUsingDefaultMipmap();
-    descriptor.mPtrBuffer         = &information.GetBuffer();
-    descriptor.mPtrParameterList  = &information.GetParameterList();
-    descriptor.mTextureSize       = this->mTextureSize;
-    descriptor.mType              = this->mTextureType;
-  }
-
-  // Create texture from shared context.
-  std::optional<TU32> optTextureId;
-  { MDY_GRAPHIC_SET_CRITICALSECITON();
-    optTextureId = FDyGLWrapper::CreateTexture(descriptor);
-  }
-  MDY_ASSERT(optTextureId.has_value() == true, "Texture id creation must be succeeded.");
-  this->mTextureResourceId = *optTextureId;
-
-  SDyProfilingHelper::IncreaseOnBindTextureCount(1);
 }
 
-FDyTextureResource::~FDyTextureResource()
+FDyTextureResource::~FDyTextureResource() = default;
+
+const std::string& FDyTextureResource::GetSpecifierName() const noexcept
 {
-  { MDY_GRAPHIC_SET_CRITICALSECITON();
-    FDyGLWrapper::DeleteTexture(this->mTextureResourceId);
-  }
-  SDyProfilingHelper::IncreaseOnBindTextureCount(0);
+  return this->mTextureName;
+}
+
+TU32 FDyTextureResource::GetTextureId() const noexcept
+{
+  return this->mTextureResourceId;
+}
+
+EDyTextureStyleType FDyTextureResource::GetTextureType() const noexcept
+{
+  return this->mTextureType;
 }
 
 } /// ::dy namespace
