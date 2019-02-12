@@ -93,6 +93,7 @@ FDyDefaultLoadingBootScript::FDyDefaultLoadingBootScript()
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Mesh, FDyBtMsUiImageQuad::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Mesh, "dyBtMsScrOITTriangle"sv);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Mesh, "dyBtMsDebugSphere"sv);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Mesh, "dyBtMsDebugBox"sv);
 
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, FDyBtFrameBufferDeferred::sName);
   //MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, FDyBtFBBasicShadow::sName);

@@ -83,7 +83,12 @@ void FDyDebugRenderer::RenderScreen(_MIN_ CDyPhysicsCollider& iRefCollider, _MIN
   { MDY_NOT_IMPLEMENTED_ASSERT();
   } break;
   case EDyColliderType::Box: 
-  { MDY_NOT_IMPLEMENTED_ASSERT();
+  { this->mBinderBox->BindVertexArray(); 
+    glBindBuffer    (GL_ARRAY_BUFFER, this->mBinderBox->GetVertexBufferId());
+    glBufferSubData (GL_ARRAY_BUFFER, 0, sizeof(DDyVector3) * 20, &iRefCollider.GetColliderMesh()[0].X);
+    glBindBuffer    (GL_ARRAY_BUFFER, 0);
+
+    FDyGLWrapper::Draw(EDyDrawType::LineStrip, false, 20);
   } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }

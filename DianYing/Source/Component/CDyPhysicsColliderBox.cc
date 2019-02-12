@@ -75,7 +75,52 @@ const DDyVector3& CDyPhysicsColliderBox::GetHalfExtent() const noexcept
 
 void CDyPhysicsColliderBox::UpdateColliderMesh()
 {
-  MDY_NOT_IMPLEMENTED_ASSERT();
+  // First, clear all information.
+  this->mColliderMeshInformation.clear();
+
+  //!     lud-----rud \n
+  //!    /|      /|   \n
+  //! luf-----ruf |   \n
+  //!   | lbd---|-rbd \n
+  //!   |/      |/    \n
+  //! lbf-----rbf
+
+  const auto ruf = DDyVector3{this->mHalfExtent};
+  const auto rud = DDyVector3{this->mHalfExtent.X, this->mHalfExtent.Y, -this->mHalfExtent.Z};
+  const auto lud = DDyVector3{-this->mHalfExtent.X, this->mHalfExtent.Y, -this->mHalfExtent.Z};
+  const auto luf = DDyVector3{-this->mHalfExtent.X, this->mHalfExtent.Y, this->mHalfExtent.Z};
+ 
+  const auto rbf = DDyVector3{this->mHalfExtent.X, -this->mHalfExtent.Y, this->mHalfExtent.Z};
+  const auto rbd = DDyVector3{this->mHalfExtent.X, -this->mHalfExtent.Y, -this->mHalfExtent.Z};
+  const auto lbd = DDyVector3{-this->mHalfExtent.X, -this->mHalfExtent.Y, -this->mHalfExtent.Z};
+  const auto lbf = DDyVector3{-this->mHalfExtent.X, -this->mHalfExtent.Y, this->mHalfExtent.Z};
+
+  // We do not need insert information for up & bottom plane.
+  // Becasuse collider mesh will be drawn by line_strip.
+
+  this->mColliderMeshInformation.emplace_back(luf);
+  this->mColliderMeshInformation.emplace_back(lbf);
+  this->mColliderMeshInformation.emplace_back(rbf);
+  this->mColliderMeshInformation.emplace_back(ruf);
+  this->mColliderMeshInformation.emplace_back(luf);
+
+  this->mColliderMeshInformation.emplace_back(lud);
+  this->mColliderMeshInformation.emplace_back(lbd);
+  this->mColliderMeshInformation.emplace_back(lbf);
+  this->mColliderMeshInformation.emplace_back(luf);
+  this->mColliderMeshInformation.emplace_back(lud);
+
+  this->mColliderMeshInformation.emplace_back(rud);
+  this->mColliderMeshInformation.emplace_back(rbd);
+  this->mColliderMeshInformation.emplace_back(lbd);
+  this->mColliderMeshInformation.emplace_back(lud);
+  this->mColliderMeshInformation.emplace_back(rud);
+
+  this->mColliderMeshInformation.emplace_back(ruf);
+  this->mColliderMeshInformation.emplace_back(rbf);
+  this->mColliderMeshInformation.emplace_back(rbd);
+  this->mColliderMeshInformation.emplace_back(rud);
+  this->mColliderMeshInformation.emplace_back(ruf);
 }
 
 } /// ::dy namespace

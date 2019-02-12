@@ -192,6 +192,7 @@
     <ClCompile Include="Source\Builtin\FrameBuffer\WeightBlendOIT\FDyBtFbWeightBlendedOIT.cc" />
     <ClCompile Include="Source\Builtin\Material\BtMtCheckerWorldPos.cc" />
     <ClCompile Include="Source\Builtin\Material\Transparent\StaticTransparentChecker.cc" />
+    <ClCompile Include="Source\Builtin\Mesh\Debug\FDyBtMsDebugBox.cc" />
     <ClCompile Include="Source\Builtin\Mesh\Debug\FDyBtMsDebugSphere.cc" />
     <ClCompile Include="Source\Builtin\Mesh\FDyBtMsBox.cc" />
     <ClCompile Include="Source\Builtin\Mesh\FDyBtMsPlain.cc" />
@@ -584,6 +585,7 @@
     <ClInclude Include="Include\Dy\Builtin\Material\BtMtCheckerWorldPos.h" />
     <ClInclude Include="Include\Dy\Builtin\Material\OpaqueStaticPlain.h" />
     <ClInclude Include="Include\Dy\Builtin\Material\Transparent\StaticTransparentChecker.h" />
+    <ClInclude Include="Include\Dy\Builtin\Mesh\Debug\FDyBtMsDebugBox.h" />
     <ClInclude Include="Include\Dy\Builtin\Mesh\Debug\FDyBtMsDebugSphere.h" />
     <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsBox.h" />
     <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsPlain.h" />
