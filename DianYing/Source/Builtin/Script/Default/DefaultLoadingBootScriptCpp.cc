@@ -108,6 +108,7 @@ FDyDefaultLoadingBootScript::FDyDefaultLoadingBootScript()
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, "dyBtFbSSAO"sv);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, "dyBtFbSSAOBlur"sv);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, "dyBtFbDebug"sv);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, "dyBtFbSkybox"sv);
 
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLAttachment,  "dyBtAtOpaqueOutput"sv);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLAttachment,  "dyBtAtWBOITColor"sv);

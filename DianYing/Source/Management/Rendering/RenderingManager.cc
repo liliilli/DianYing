@@ -55,6 +55,7 @@ EDySuccess MDyRendering::pfInitialize()
   this->mFinalDisplayRenderer = std::make_unique<decltype(this->mFinalDisplayRenderer)::element_type>();
   this->mCSMRenderer          = std::make_unique<decltype(this->mCSMRenderer)::element_type>();
   this->mSSAOPostEffect       = std::make_unique<decltype(mSSAOPostEffect)::element_type>();
+  this->mSkyPostEffect        = std::make_unique<decltype(this->mSkyPostEffect)::element_type>();
   this->mDebugRenderer        = std::make_unique<decltype(this->mDebugRenderer)::element_type>();
 
   switch (MDySetting::GetInstance().GetRenderingType())
@@ -161,6 +162,7 @@ EDySuccess MDyRendering::pfRelease()
 
   this->mLevelFinalRenderer   = MDY_INITIALIZE_NULL;
   this->mCSMRenderer          = MDY_INITIALIZE_NULL;
+  this->mSkyPostEffect        = MDY_INITIALIZE_NULL;
   this->mSSAOPostEffect       = MDY_INITIALIZE_NULL;
   this->mBasicOpaqueRenderer  = MDY_INITIALIZE_NULL;
   this->mUiBasicRenderer      = MDY_INITIALIZE_NULL;
@@ -187,6 +189,15 @@ void MDyRendering::PreRender(_MIN_ TF32 dt)
       lock = flag;
     }
   }
+
+  // Get skybox pointer from present level.
+  auto& refWorld = MDyWorld::GetInstance();
+  auto optSkybox = refWorld.GetPtrMainLevelSkybox();
+  if (optSkybox.has_value() == true)
+  { // Bind
+    this->mPtrRequiredSkybox = *optSkybox;
+  }
+
 }
 
 void MDyRendering::SetupDrawModelTaskQueue()
@@ -367,23 +378,30 @@ void MDyRendering::EnqueueDebugDrawCollider(
     FDyGLWrapper::SetViewport(ptrCamera->GetPixelizedViewportRectangle());
   }
 
-  //! Post processing effects
+  //! Default Post processing effects
   if (information.mGraphics.mIsEnabledDefaultSsao == true)
   { 
     if (this->mSSAOPostEffect->TrySetupRendering() == DY_SUCCESS) { this->mSSAOPostEffect->RenderScreen(); }
   }
-  else 
-  { 
-    this->mSSAOPostEffect->Clear(); 
+  else { this->mSSAOPostEffect->Clear(); }
+
+  // https://www.khronos.org/opengl/wiki/Cubemap_Texture
+  if (MDY_CHECK_ISNOTNULL(this->mPtrRequiredSkybox)
+  &&  this->mSkyPostEffect->TrySetupRendering() == DY_SUCCESS)
+  {
+    this->mSkyPostEffect->RenderScreen();
   }
 
-  // Final. Level information without debug information is integrated in one renderbuffer.
+  // Final. 
+  // Level information without debug information is integrated in one renderbuffer.
   if (MDY_CHECK_ISNOTEMPTY(this->mLevelFinalRenderer) 
   &&  this->mLevelFinalRenderer->IsReady() == true 
   &&  this->mLevelFinalRenderer->TrySetupRendering() == DY_SUCCESS)
   { 
     this->mLevelFinalRenderer->RenderScreen(); 
   }
+
+
 }
 
 void MDyRendering::RenderDebugInformation()

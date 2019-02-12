@@ -173,6 +173,13 @@ public:
   /// @brief Unbind deactivated model animator component This function must be called in `CDyModelAnimator`.
   EDySuccess MDY_PRIVATE_SPECIFIER(UnbindActiveModelAnimator)(_MIN_ CDyModelAnimator& iRefComponent);
 
+  /// @brief Try get valid pointer instance (not-null) of CDySkybox target to be rendered on renderer.
+  MDY_NODISCARD std::optional<NotNull<CDySkybox*>> GetPtrMainLevelSkybox() const noexcept;
+  /// @brief Bind (Enroll) active skybox component. This function must be called in `CDySkybox`.
+  void MDY_PRIVATE_SPECIFIER(BindActiveSkybox)(_MIN_ CDySkybox& iRefComponent);
+  /// @brief Unbind deactivated skybox component. This function must be called in `CDySkybox`.
+  EDySuccess MDY_PRIVATE_SPECIFIER(UnbindActiveSkybox)(_MIN_ CDySkybox& iRefComponent);
+
 #ifdef false
   ///
   /// @brief  Spawn actor into present scene.
@@ -291,6 +298,9 @@ private:
   /// Valid animator ptr which to be used update animation sequence.
   /// This list is not invalidated because animation updating is not change list order.
   std::vector<NotNull<CDyModelAnimator*>> mActivatedModelAnimatorPtrs = {};
+
+  /// Valid & Activated skybox component pointer list. 
+  std::vector<NotNull<CDySkybox*>> mActivatedSkyboxPtrList {};
 
   /// @brief Action creation descriptor list for present level. \n
   /// This list must be processed and cleaned each frame prior to update of logic.

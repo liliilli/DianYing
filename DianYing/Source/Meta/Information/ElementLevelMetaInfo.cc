@@ -69,7 +69,14 @@ void GetLevelResourceFromActor(_MIN_ const dy::TComponentMetaList& list, _MINOUT
 
       if (desc.mDetails.mTempAnimationScrap.empty() == false)
       { iSet.emplace(EDyResourceType::AnimationScrap, desc.mDetails.mTempAnimationScrap); }
-    }
+    } break;
+    case EDyComponentMetaType::Skybox:
+    {
+      const auto& desc = std::any_cast<const PDySkyboxComponentMetaInfo&>(componentInfo);
+
+      if (desc.mDetails.mCubemapSpecifier.empty() == false)
+      { iSet.emplace(EDyResourceType::Texture, desc.mDetails.mCubemapSpecifier); }
+    } break;
     default: /* Do nothing */ break;
     }
   }

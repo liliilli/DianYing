@@ -31,22 +31,30 @@ mat4 DyGetCameraPV() { return uCamera.mProjMatrix * uCamera.mViewMatrix; }
 
 out gl_PerVertex { vec4 gl_Position; };
 out vec3 texCoord;
+out vec2 screenUv;
 
 void main()
 {
   gl_Position	= DyGetCameraPV() * vec4(dyPosition, 1.0);
   texCoord    = dyPosition;
+  screenUv    = (((gl_Position / gl_Position.w) + 1.0f) * 0.5f).xy;
 }
 )dy");
 
 MDY_SET_IMMUTABLE_STRING(sFragmentShaderCode, R"dy(
 #version 430
-in vec3  texCoord;
-out vec4 outFragColor;
+in vec3   texCoord;
+in vec2   screenUv;
+out vec4  outFragColor;
 
 uniform  samplerCube uTexture0; // Skybox;
+uniform  sampler2D uTexture1;   // Unlit
 
-void main() { outFragColor = texture(uTexture0, texCoord); }
+void main() 
+{ 
+  if (texture(uTexture1, screenUv).a != 0.0f) { discard; }
+  outFragColor =  texture(uTexture0, texCoord);
+}
 )dy");
 
 } /// ::unnamed namespace

@@ -324,6 +324,15 @@
     <ClCompile Include="Source\Core\Rendering\Pipeline\DebugRenderer.cc" />
     <ClCompile Include="Source\Builtin\Mesh\Debug\FDyBtMsDebugBox.cc" />
     <ClCompile Include="Source\Builtin\Mesh\Debug\FDyBtMsDebugCapsule.cc" />
+    <ClCompile Include="Source\Component\CDySkybox.cc" />
+    <ClCompile Include="Source\Core\Resource\Information\FDyTextureGeneralInformation.cc" />
+    <ClCompile Include="Source\Core\Resource\Resource\FDyTextureGeneralResource.cc" />
+    <ClCompile Include="Source\Core\Resource\Information\FDyTextureCubemapInformation.cc" />
+    <ClCompile Include="Source\Core\Resource\Resource\FDyTextureCubemapResource.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\Render\BtShSkyboxDefault.cc" />
+    <ClCompile Include="Source\Builtin\FrameBuffer\Deferred\FDyBtFbSkybox.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAtSkyOutput.cc" />
+    <ClCompile Include="Source\Core\Rendering\Pipeline\PostEffectSky.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -796,6 +805,15 @@
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\DebugRenderer.h" />
     <ClInclude Include="Include\Dy\Builtin\Mesh\Debug\FDyBtMsDebugBox.h" />
     <ClInclude Include="Include\Dy\Builtin\Mesh\Debug\FDyBtMsDebugCapsule.h" />
+    <ClInclude Include="Include\Dy\Component\CDySkybox.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Information\FDyTextureCubemapInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Information\FDyTextureGeneralInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyTextureGeneralResource.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyTextureCubemapResource.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\Render\BtShSkyboxDefault.h" />
+    <ClInclude Include="Include\Dy\Builtin\FrameBuffer\Deferred\FDyBtFbSkybox.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAtSkyOutput.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\PostEffectSky.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />
