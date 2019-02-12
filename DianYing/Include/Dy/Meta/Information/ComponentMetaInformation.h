@@ -332,6 +332,37 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyColliderComponentMetaI
 void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDyColliderComponentMetaInfo::DDetails& p);
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyColliderComponentMetaInfo::DDetails& p);
 
+///
+/// @struct PDySkyboxComponentMetaInfo
+/// @brief Dependent information to CDySkybox.
+///
+struct PDySkyboxComponentMetaInfo final : public IDyMetaInformation
+{
+  struct DDetails final
+  {
+    DDyClamp<TF32, 0, 100> mExposure = 0.0f;
+    TF32 mRotation = 0.0f; // Degree
+
+    std::string mFrontTextureSpecifier  = MDY_INITIALIZE_EMPTYSTR;
+    std::string mBackTextureSpecifier   = MDY_INITIALIZE_EMPTYSTR;
+    std::string mRightTextureSpecifier  = MDY_INITIALIZE_EMPTYSTR;
+    std::string mLeftTextureSpecifier   = MDY_INITIALIZE_EMPTYSTR;
+    std::string mTopTextureSpecifier    = MDY_INITIALIZE_EMPTYSTR;
+    std::string mBottonTextureSpecifier = MDY_INITIALIZE_EMPTYSTR;
+  };
+
+  /// @brief Details
+  DDetails mDetails;
+  /// @brief Component is initially activated or not.
+  bool     mInitiallyActivated = false;
+};
+
+void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDySkyboxComponentMetaInfo& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySkyboxComponentMetaInfo& p);
+
+void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDySkyboxComponentMetaInfo::DDetails& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySkyboxComponentMetaInfo::DDetails& p);
+
 } /// ::dy namespace
 
 #endif /// GUARD_DY_META_INFORMATION_COMPONENTMETAINFORMATION_H
