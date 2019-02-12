@@ -32,6 +32,7 @@
 #include <Dy/Core/Resource/Information/FDySoundInformation.h>
 #include <Dy/Core/Resource/Information/FDyTextureGeneralInformation.h>
 #include <Dy/Management/IO/MDyIOData.h>
+#include "Dy/Core/Resource/Resource/FDyTextureGeneralResource.h"
 
 namespace dy
 {
@@ -196,7 +197,15 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceResource(_MIN_ const DDyIOTask
   } break;
   case EDyResourceType::Texture:
   { // Texture buffer can be created on another context. (It can be shared)
-    result.mSmtPtrResultInstance = new FDyTextureResource(*infoManager.GetPtrInformation<EDyResourceType::Texture>(result.mSpecifierName));
+    const auto* ptr = infoManager.GetPtrInformation<EDyResourceType::Texture>(result.mSpecifierName);
+    if (ptr->GetType() == EDyTextureStyleType::D2Cubemap)
+    {
+      MDY_NOT_IMPLEMENTED_ASSERT();
+    }
+    else
+    {
+      result.mSmtPtrResultInstance = new FDyTextureGeneralResource(static_cast<const FDyTextureGeneralInformation&>(*ptr));
+    }
   } break;
   case EDyResourceType::__MeshVBO:
   { // Builtin mesh not be created on another context... so forward it to main thread.
