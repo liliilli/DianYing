@@ -27,6 +27,7 @@ class CDyPhysicsCollider;
 class CDyPhysicsColliderSphere;
 class CDyPhysicsColliderBox;
 class CDyPhysicsColliderCapsule;
+class CDySkybox;
 
 enum class EDyComponentType 
 {
@@ -42,6 +43,7 @@ enum class EDyComponentType
   ColliderSphere,
   ColliderBox,
   ColliderCapsule,
+  Skybox,
 };
 
 template <EDyComponentType TType> 
@@ -63,6 +65,7 @@ template <> struct TComponentBindingType<EDyComponentType::Rigidbody> { using Ty
 template <> struct TComponentBindingType<EDyComponentType::ColliderSphere> { using Type = CDyPhysicsColliderSphere; };
 template <> struct TComponentBindingType<EDyComponentType::ColliderBox> { using Type = CDyPhysicsColliderBox; };
 template <> struct TComponentBindingType<EDyComponentType::ColliderCapsule> { using Type = CDyPhysicsColliderCapsule; };
+template <> struct TComponentBindingType<EDyComponentType::Skybox> { using Type = CDySkybox; };
 
 template <typename TType> 
 struct TComponentUnbindingType;
@@ -79,6 +82,7 @@ template <> struct TComponentUnbindingType<CDyPhysicsRigidbody> { static constex
 template <> struct TComponentUnbindingType<CDyPhysicsColliderSphere> { static constexpr EDyComponentType Value = EDyComponentType::ColliderSphere; };
 template <> struct TComponentUnbindingType<CDyPhysicsColliderBox> { static constexpr EDyComponentType Value = EDyComponentType::ColliderBox; };
 template <> struct TComponentUnbindingType<CDyPhysicsColliderCapsule> { static constexpr EDyComponentType Value = EDyComponentType::ColliderCapsule; };
+template <> struct TComponentUnbindingType<CDySkybox> { static constexpr EDyComponentType Value = EDyComponentType::Skybox; };
 
 } /// ::dy namespace
 

@@ -338,17 +338,18 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyColliderComponentMetaI
 ///
 struct PDySkyboxComponentMetaInfo final : public IDyMetaInformation
 {
+  /*
+   *{
+      "Type": "Skybox", "Activated": true,
+      "Details": { "Exposure" : 1.0, "Rotation" : 0.0, "CubemapSpecifier": "Skybox_cloudtop_up" }
+    }
+   */
+
   struct DDetails final
   {
-    DDyClamp<TF32, 0, 100> mExposure = 0.0f;
-    TF32 mRotation = 0.0f; // Degree
-
-    std::string mFrontTextureSpecifier  = MDY_INITIALIZE_EMPTYSTR;
-    std::string mBackTextureSpecifier   = MDY_INITIALIZE_EMPTYSTR;
-    std::string mRightTextureSpecifier  = MDY_INITIALIZE_EMPTYSTR;
-    std::string mLeftTextureSpecifier   = MDY_INITIALIZE_EMPTYSTR;
-    std::string mTopTextureSpecifier    = MDY_INITIALIZE_EMPTYSTR;
-    std::string mBottonTextureSpecifier = MDY_INITIALIZE_EMPTYSTR;
+    DDyClamp<TF32, 0, 100>  mExposure = 0.0f;
+    TF32                    mRotation = 0.0f; // Degree
+    std::string             mCubemapSpecifier = MDY_INITIALIZE_EMPTYSTR;
   };
 
   /// @brief Details

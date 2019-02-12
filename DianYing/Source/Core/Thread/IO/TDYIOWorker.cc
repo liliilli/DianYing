@@ -30,6 +30,7 @@
 #include <Dy/Core/Resource/Information/FDyModelSkeletonInformation.h>
 #include <Dy/Core/Resource/Information/FDyModelAnimScrapInformation.h>
 #include <Dy/Core/Resource/Information/FDySoundInformation.h>
+#include <Dy/Core/Resource/Information/FDyTextureGeneralInformation.h>
 #include <Dy/Management/IO/MDyIOData.h>
 
 namespace dy
@@ -128,9 +129,17 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceInformation(_MIN_ const DDyIOT
     (this->mMetaManager.GetGLShaderMetaInformation(assignedTask.mSpecifierName));
     break;
   case EDyResourceType::Texture:
-    result.mSmtPtrResultInstance = new FDyTextureInformation
-    (this->mMetaManager.GetTextureMetaInformation(assignedTask.mSpecifierName));
-    break;
+  { const auto metaInfo = this->mMetaManager.GetTextureMetaInformation(assignedTask.mSpecifierName);
+    if (metaInfo.mTextureType == EDyTextureStyleType::D2Cubemap)
+    {
+
+      MDY_NOT_IMPLEMENTED_ASSERT();
+    }
+    else
+    {
+      result.mSmtPtrResultInstance = new FDyTextureGeneralInformation(metaInfo);
+    }
+  } break;
   case EDyResourceType::Mesh:
     result.mSmtPtrResultInstance = new FDyMeshInformation
     (this->mMetaManager.GetBtMeshMetaInformation(assignedTask.mSpecifierName));

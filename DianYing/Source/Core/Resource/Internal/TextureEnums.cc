@@ -79,6 +79,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyTextureStyleType& p)
   else if (deserializedStringValue == "D2Array")        { p = EDyTextureStyleType::D2Array; }
   else if (deserializedStringValue == "D2Shadow")       { p = EDyTextureStyleType::D2Shadow; }
   else if (deserializedStringValue == "D2ShadowArray")  { p = EDyTextureStyleType::D2ShadowArray; }
+  else if (deserializedStringValue == "D2Cubemap")   { p = EDyTextureStyleType::D2Cubemap; }
   else { MDY_UNEXPECTED_BRANCH(); }
 }
 
@@ -93,6 +94,7 @@ GLenum DyGLGetLowTextureType(_MIN_ EDyTextureStyleType iType) noexcept
   case EDyTextureStyleType::D1Array:        return GL_TEXTURE_1D_ARRAY;
   case EDyTextureStyleType::D2Array:        return GL_TEXTURE_2D_ARRAY;
   case EDyTextureStyleType::D2ShadowArray:  return GL_TEXTURE_2D_ARRAY;
+  case EDyTextureStyleType::D2Cubemap:      return GL_TEXTURE_CUBE_MAP_POSITIVE_Y;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(GL_NONE);
   }
 }

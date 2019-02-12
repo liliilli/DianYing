@@ -139,7 +139,6 @@ std::optional<TU32> FDyGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescript
   }
 
   TU32 mTextureResourceId = MDY_INITIALIZE_DEFUINT;
-  GLenum glTextureType    = DyGLGetLowTextureType(descriptor.mType);
 
   { // Critical section.
     MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
@@ -161,11 +160,29 @@ std::optional<TU32> FDyGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescript
       glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, MDY_VECTOR_XY(descriptor.mTextureSize), 0, 
           descriptor.mImageFormat, descriptor.mImagePixelType, descriptor.mPtrBuffer->data());
     } break;
+#ifdef false
+    case EDyTextureStyleType::D2CubeMapTop:
+    { // Cubemap-top.
+      glGenTextures(1, &mTextureResourceId);
+      glBindTexture(GL_TEXTURE_CUBE_MAP, mTextureResourceId);
+      glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA, MDY_VECTOR_XY(descriptor.mTextureSize), 0, 
+          descriptor.mImageFormat, descriptor.mImagePixelType, descriptor.mPtrBuffer->data());
+    } break;
+#endif
     default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
     }
 
+#if defined(NDEBUG) == false
+    { const auto _ = glGetError(); MDY_ASSERT(_ == GL_NO_ERROR, "Attachment creation failed."); }
+#endif
+
     // Make mipmap by following option.
+    GLenum glTextureType    = DyGLGetLowTextureType(descriptor.mType);
     if (descriptor.mIsUsingDefaultMipmap == true) { glGenerateMipmap(glTextureType); }
+
+#if defined(NDEBUG) == false
+    { const auto _ = glGetError(); MDY_ASSERT(_ == GL_NO_ERROR, "Attachment creation failed."); }
+#endif 
 
     // Set texture parameters.
     if (descriptor.mIsUsingCustomizedParameter == true)
