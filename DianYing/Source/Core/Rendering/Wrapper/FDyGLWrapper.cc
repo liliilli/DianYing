@@ -77,7 +77,8 @@ DyGlGetUniformVariableTypeFrom(_MIN_ GLenum type) noexcept
   case GL_SAMPLER_2D_RECT:                  return dy::EDyUniformVariableType::Texture2DRectangle;
   case GL_SAMPLER_2D_ARRAY:                 return dy::EDyUniformVariableType::Texture2DArray;
   case GL_SAMPLER_2D_ARRAY_SHADOW:          return dy::EDyUniformVariableType::Texture2DShadowArray;
-  default: return dy::EDyUniformVariableType::NoneError;
+  case GL_SAMPLER_CUBE:                     return dy::EDyUniformVariableType::Texture2DCubemap;
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(dy::EDyUniformVariableType::NoneError);
   }
 }
 

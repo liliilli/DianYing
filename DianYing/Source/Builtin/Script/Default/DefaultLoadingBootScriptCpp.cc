@@ -80,6 +80,7 @@ FDyDefaultLoadingBootScript::FDyDefaultLoadingBootScript()
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, "dyBtShOITIntegration"sv);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, "dyBtShGlOpaqueDynamic"sv);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, "dyBtShDebugLine"sv);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, "dyBtShGlSkyboxDefault"sv);
 
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBtGlslRenderCSMLightNormal::sName);
 
