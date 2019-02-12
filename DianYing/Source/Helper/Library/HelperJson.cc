@@ -40,11 +40,20 @@ std::optional<nlohmann::json> DyGetJsonAtlasFromFile(const std::string& filePath
   const auto size = ftell(fd);
   std::fseek(fd, 0, SEEK_SET);
 
-  std::vector<char> buffer(size);
+  std::vector<char> buffer(size + 1);
   std::fread(buffer.data(), sizeof(char), size, fd);
   std::fclose(fd);
 
-  return nlohmann::json::parse(buffer);
+  nlohmann::json json;
+  try 
+  {
+    json = nlohmann::json::parse(buffer);
+  }
+  catch (nlohmann::json::parse_error& e)
+  {
+    MDY_ASSERT_FORCE(false, e.what());
+  }
+  return json;
 }
 
 } /// ::dy namespace
