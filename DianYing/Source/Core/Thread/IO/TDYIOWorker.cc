@@ -20,10 +20,11 @@
 #include <Dy/Core/Thread/SDyIOWorkerConnHelper.h>
 #include <Dy/Core/Resource/Information/FDyModelInformation.h>
 #include <Dy/Core/Resource/Internal/FDyModelVBOIntermediate.h>
+#include <Dy/Core/Resource/Information/FDyTextureCubemapInformation.h>
 #include <Dy/Core/Resource/Information/FDyMaterialInformation.h>
 #include <Dy/Core/Resource/Information/FDyAttachmentInformation.h>
 #include <Dy/Core/Resource/Information/FDyFrameBufferInformation.h>
-#include <Dy/Core/Resource/Resource/FDyTextureResource.h>
+#include <Dy/Core/Resource/Resource/FDyTextureGeneralResource.h>
 #include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
 #include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
@@ -31,8 +32,8 @@
 #include <Dy/Core/Resource/Information/FDyModelAnimScrapInformation.h>
 #include <Dy/Core/Resource/Information/FDySoundInformation.h>
 #include <Dy/Core/Resource/Information/FDyTextureGeneralInformation.h>
+#include <Dy/Core/Resource/Resource/FDyTextureCubemapResource.h>
 #include <Dy/Management/IO/MDyIOData.h>
-#include "Dy/Core/Resource/Resource/FDyTextureGeneralResource.h"
 
 namespace dy
 {
@@ -132,9 +133,8 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceInformation(_MIN_ const DDyIOT
   case EDyResourceType::Texture:
   { const auto metaInfo = this->mMetaManager.GetTextureMetaInformation(assignedTask.mSpecifierName);
     if (metaInfo.mTextureType == EDyTextureStyleType::D2Cubemap)
-    {
-
-      MDY_NOT_IMPLEMENTED_ASSERT();
+    { // When cubemap, we should use separated information type.
+      result.mSmtPtrResultInstance = new FDyTextureCubemapInformation(metaInfo);
     }
     else
     {
@@ -200,11 +200,13 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceResource(_MIN_ const DDyIOTask
     const auto* ptr = infoManager.GetPtrInformation<EDyResourceType::Texture>(result.mSpecifierName);
     if (ptr->GetType() == EDyTextureStyleType::D2Cubemap)
     {
-      MDY_NOT_IMPLEMENTED_ASSERT();
+      result.mSmtPtrResultInstance = new FDyTextureCubemapResource(
+          static_cast<const FDyTextureCubemapInformation&>(*ptr)); // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
     }
     else
     {
-      result.mSmtPtrResultInstance = new FDyTextureGeneralResource(static_cast<const FDyTextureGeneralInformation&>(*ptr));
+      result.mSmtPtrResultInstance = new FDyTextureGeneralResource(
+        static_cast<const FDyTextureGeneralInformation&>(*ptr)); // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
     }
   } break;
   case EDyResourceType::__MeshVBO:
