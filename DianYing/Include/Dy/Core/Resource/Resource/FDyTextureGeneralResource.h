@@ -40,6 +40,9 @@ class FDyTextureGeneralResource final : public FDyTextureResource
 public:
   FDyTextureGeneralResource(_MIN_ const FDyTextureGeneralInformation& information);
   virtual ~FDyTextureGeneralResource();
+
+private:
+  DDyVectorInt2 mTextureSize = {};
 };
 
 } /// ::dy namespace

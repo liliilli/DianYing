@@ -53,8 +53,7 @@ public:
   MDY_NODISCARD EDyTextureStyleType GetTextureType() const noexcept;
 
 protected:
-  std::string   mTextureName = MDY_INITIALIZE_EMPTYSTR;
-  DDyVectorInt2 mTextureSize = {};
+  std::string         mTextureName = MDY_INITIALIZE_EMPTYSTR;
   EDyTextureStyleType mTextureType = EDyTextureStyleType::NoneError;
 
   TU32 mTextureResourceId = MDY_INITIALIZE_DEFUINT;

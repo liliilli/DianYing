@@ -25,33 +25,35 @@ namespace dy
 FDyTextureCubemapResource::FDyTextureCubemapResource(_MIN_ const FDyTextureCubemapInformation& information) :
   FDyTextureResource(static_cast<const FDyTextureInformation&>(information))
 {
-#ifdef false
   const auto& temp = static_cast<const FDyTextureCubemapInformation&>(information);
-  this->mTextureSize = temp.GetSize();
 
   const auto optGlImageFormat = DyGLGetImageFormatFrom(information.GetFormat());
   MDY_ASSERT_FORCE(optGlImageFormat.has_value() == true, "Image format type must be valid.");
   const auto glImagePixelType = DyGlGetImagePixelTypeFrom(information.GetPixelReadType());
   MDY_ASSERT_FORCE(glImagePixelType != GL_NONE, "Image pixel format must be valid.");
 
-  PDyGLTextureDescriptor descriptor {};
+  PDyGLTextureCubemapDescriptor descriptor {};
   { // Make internal descriptor for creating texture.
     descriptor.mBorderColor       = information.GetBorderColor();
     descriptor.mImageFormat       = *optGlImageFormat;
     descriptor.mImagePixelType    = glImagePixelType; 
-    descriptor.mPtrBuffer         = &temp.GetBuffer();
     descriptor.mPtrParameterList  = &temp.GetParameterList();
-    descriptor.mTextureSize       = this->mTextureSize;
     descriptor.mType              = this->mTextureType;
     descriptor.mIsUsingCustomizedParameter = temp.IsUsingCustomizedParamater();
     descriptor.mIsUsingDefaultMipmap       = temp.IsUsingDefaultMipmap();
-  }
-
-  switch (this->mTextureType)
-  { // Align size of texture following texture type.
-  case EDyTextureStyleType::D1: this->mTextureSize.Y = 1; break;
-  default: /* Do nothing */ break;
-  case EDyTextureStyleType::NoneError: MDY_UNEXPECTED_BRANCH();
+    // Cubemap properties.
+    descriptor.mTopBuffer     = &temp.GetBufferOf(EDyCubemapFragment::Top);
+    descriptor.mTopSize       = temp.GetSizeOf(EDyCubemapFragment::Top);
+    descriptor.mBottomBuffer  = &temp.GetBufferOf(EDyCubemapFragment::Bottom);
+    descriptor.mBottomSize    = temp.GetSizeOf(EDyCubemapFragment::Bottom);
+    descriptor.mLeftBuffer    = &temp.GetBufferOf(EDyCubemapFragment::Left);
+    descriptor.mLeftSize      = temp.GetSizeOf(EDyCubemapFragment::Left);
+    descriptor.mRightBuffer   = &temp.GetBufferOf(EDyCubemapFragment::Right);
+    descriptor.mRightSize     = temp.GetSizeOf(EDyCubemapFragment::Right);
+    descriptor.mFrontBuffer   = &temp.GetBufferOf(EDyCubemapFragment::Front);
+    descriptor.mFrontSize     = temp.GetSizeOf(EDyCubemapFragment::Front);
+    descriptor.mBackBuffer    = &temp.GetBufferOf(EDyCubemapFragment::Back);
+    descriptor.mBackSize      = temp.GetSizeOf(EDyCubemapFragment::Back);
   }
 
   // Create texture from shared context.
@@ -63,17 +65,14 @@ FDyTextureCubemapResource::FDyTextureCubemapResource(_MIN_ const FDyTextureCubem
   this->mTextureResourceId = *optTextureId;
 
   SDyProfilingHelper::IncreaseOnBindTextureCount(1);
-#endif
 }
 
 FDyTextureCubemapResource::~FDyTextureCubemapResource()
 {
-#ifdef false
   { MDY_GRAPHIC_SET_CRITICALSECITON();
     FDyGLWrapper::DeleteTexture(this->mTextureResourceId);
   }
-  SDyProfilingHelper::IncreaseOnBindTextureCount(0);
-#endif
+  SDyProfilingHelper::DecreaseOnBindTextureCount(1);
 }
 
 } /// ::dy namespace

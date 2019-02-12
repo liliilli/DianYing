@@ -24,8 +24,9 @@
 
 namespace dy
 {
-  struct DDyArea2D;
-  enum class EDyTextureStyleType : unsigned char;
+struct PDyGLTextureCubemapDescriptor;
+struct DDyArea2D;
+enum class EDyTextureStyleType : unsigned char;
 enum class EDyDrawType;
 struct PDyGLVaoBindDescriptor;
 struct PDyGLShaderFragmentDescriptor;
@@ -64,7 +65,10 @@ public:
 
   /// @brief Create texture and get texture id. \n
   /// This function is thread-safe and get performance down.
-  static MDY_NODISCARD std::optional<TU32> CreateTexture(_MIN_ const PDyGLTextureDescriptor& descriptor);
+  MDY_NODISCARD static std::optional<TU32> CreateTexture(_MIN_ const PDyGLTextureDescriptor& descriptor);
+  /// @brief Create cubemap texture and get cubemap texture id. \n
+  /// This function is thread-safe and get performance down.
+  MDY_NODISCARD static std::optional<TU32> CreateTexture(_MIN_ const PDyGLTextureCubemapDescriptor& descriptor);
   /// @brief Delete texture if texture id is valid.
   /// This function is thread-safe and get performance down.
   static void DeleteTexture(_MIN_ const TU32 validTextureId);

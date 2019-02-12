@@ -94,7 +94,7 @@ GLenum DyGLGetLowTextureType(_MIN_ EDyTextureStyleType iType) noexcept
   case EDyTextureStyleType::D1Array:        return GL_TEXTURE_1D_ARRAY;
   case EDyTextureStyleType::D2Array:        return GL_TEXTURE_2D_ARRAY;
   case EDyTextureStyleType::D2ShadowArray:  return GL_TEXTURE_2D_ARRAY;
-  case EDyTextureStyleType::D2Cubemap:      return GL_TEXTURE_CUBE_MAP_POSITIVE_Y;
+  case EDyTextureStyleType::D2Cubemap:      return GL_TEXTURE_CUBE_MAP;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(GL_NONE);
   }
 }

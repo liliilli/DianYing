@@ -69,7 +69,7 @@ FDyTextureGeneralResource::~FDyTextureGeneralResource()
   { MDY_GRAPHIC_SET_CRITICALSECITON();
     FDyGLWrapper::DeleteTexture(this->mTextureResourceId);
   }
-  SDyProfilingHelper::IncreaseOnBindTextureCount(0);
+  SDyProfilingHelper::DecreaseOnBindTextureCount(1);
 }
 
 } /// ::dy namespace
