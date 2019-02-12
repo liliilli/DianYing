@@ -21,6 +21,22 @@
 namespace dy
 {
 
+/*
+ *{
+    "Type": "PhysicsCollider", "Activated": true,
+    "Details": {
+      "IsNotifyEvent": false, "IsOverlapEvent": false, "ColliderType": "Box",
+      "ColliderDetails": { "HalfExtent": { "X": 10, "Y": 10, "Z": 30 }
+      },
+      "FilterPresetSpecifier": "", "CollisionFilter": [ 0, 0, 0, 0, 0 ], "LayerName": "",
+      "Transform": {
+        "Position": { "X": 0, "Y": 0, "Z": 0 },
+        "Rotation": { "X": 0, "Y": 0, "Z": 0 }
+      }
+    }
+  }
+ */
+
 EDySuccess CDyPhysicsColliderBox::Initialize(_MIN_ const PDyColliderComponentMetaInfo& desc)
 {
   // Call parent function first.

@@ -20,6 +20,21 @@
 
 namespace dy
 {
+
+/*
+ * {
+    "Type": "PhysicsCollider", "Activated": true,
+    "Details": {
+      "IsNotifyEvent": false, "IsOverlapEvent": false, "ColliderType": "Capsule",
+      "ColliderDetails": { "HalfHeight": 30.0, "Radius": 20.0 },
+      "FilterPresetSpecifier": "", "CollisionFilter": [ 0, 0, 0, 0, 0 ], "LayerName": "",
+      "Transform": {
+        "Position": { "X": 0, "Y": 0, "Z": 0 },
+        "Rotation": { "X": 0, "Y": 0, "Z": 0 }
+      }
+    }
+  },
+ */
   
 EDySuccess CDyPhysicsColliderCapsule::Initialize(_MIN_ const PDyColliderComponentMetaInfo& desc)
 {
