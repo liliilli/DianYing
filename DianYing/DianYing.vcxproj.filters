@@ -333,6 +333,7 @@
     <ClCompile Include="Source\Builtin\FrameBuffer\Deferred\FDyBtFbSkybox.cc" />
     <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAtSkyOutput.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\PostEffectSky.cc" />
+    <ClCompile Include="Source\Helper\Type\ColorRGB.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />

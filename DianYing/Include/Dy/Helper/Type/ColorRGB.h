@@ -13,6 +13,7 @@
 /// SOFTWARE.
 ///
 
+#include <nlohmann/json_fwd.hpp>
 #include <Dy/Helper/Type/Clamp.h>
 #include <Dy/Helper/Type/Vector3.h>
 #include <Dy/Helper/Type/ColorRGBA.h>
@@ -106,6 +107,9 @@ struct DDyColorRGB final
   static const DDyColorRGB White;
   static const DDyColorRGB Yellow;
 };
+
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDyColorRGB& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ DDyColorRGB& p);
 
 } /// ::dy namespace
 

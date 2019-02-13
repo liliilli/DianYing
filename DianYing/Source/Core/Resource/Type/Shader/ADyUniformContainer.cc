@@ -140,6 +140,7 @@ EDySuccess MDY_PRIVATE_SPECIFIER(ADyUniformContainer)::TryUpdateUniformList()
     {
       const auto* item = static_cast<TPtrConvert<EDyUniformVariableType::Vector3>>(ptrItem);
       if (item->mId == -1) { continue; }
+      FDyGLWrapper::UpdateUniformVector3(item->mId, item->mValue);
     } break;
     case EDyUniformVariableType::Vector3Array: 
     {
