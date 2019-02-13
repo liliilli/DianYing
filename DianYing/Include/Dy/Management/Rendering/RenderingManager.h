@@ -26,6 +26,7 @@
 #include <Dy/Core/Rendering/Pipeline/LevelOITRenderer.h>
 #include <Dy/Management/Type/Render/DDyModelHandler.h>
 #include <Dy/Core/Rendering/Pipeline/DebugRenderer.h>
+#include <Dy/Core/Rendering/Pipeline/PostEffectSky.h>
 
 //!
 //! Forward declaration
@@ -38,6 +39,7 @@ class   CDyCamera;
 class   CDyModelRenderer;
 class   CDyDirectionalLight;
 class   CDyPhysicsCollider;
+class   CDySkybox;
 } /// ::dy namespace
 
 namespace dy::editor
@@ -118,6 +120,7 @@ private:
   std::unique_ptr<FDyLevelCSMIntergration>        mLevelFinalRenderer   = MDY_INITIALIZE_NULL;
   std::unique_ptr<FDyLevelOITRenderer>            mTranslucentOIT       = MDY_INITIALIZE_NULL;
   std::unique_ptr<FDyPostEffectSsao>              mSSAOPostEffect       = MDY_INITIALIZE_NULL;
+  std::unique_ptr<FDyPostEffectSky>               mSkyPostEffect        = MDY_INITIALIZE_NULL;
   std::unique_ptr<FDyUIBasicRenderer>             mUiBasicRenderer      = MDY_INITIALIZE_NULL;
   std::unique_ptr<FDyFinalScreenDisplayRenderer>  mFinalDisplayRenderer = MDY_INITIALIZE_NULL;
   std::unique_ptr<FDyDebugRenderer>               mDebugRenderer        = MDY_INITIALIZE_NULL;
@@ -137,7 +140,10 @@ private:
   CDyDirectionalLight* mMainDirectionalLight   = nullptr;
   CDyDirectionalLight* mMainDirectionalShadow  = nullptr;
 
-  inline static constexpr TI32 sDirectionalLightCount = 5;
+  /// @brief Required skybox pointer for rendering on present frame.
+  /// If rendered, skybox pointer will be nulled again.
+  CDySkybox* mPtrRequiredSkybox = nullptr;
+
   std::queue<TI32>    mDirLightAvailableList  = {};
 
 #if defined(MDY_FLAG_IN_EDITOR)

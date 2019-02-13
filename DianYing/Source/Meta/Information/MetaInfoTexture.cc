@@ -44,23 +44,44 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyTextureInstanceMetaInfo&
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyTextureInstanceMetaInfo& p)
 {
-  p.mSourceType                     = EDyResourceSource::External;
-  p.mExternalFilePath               = DyJsonGetValueFrom<std::string>(j, "ExternalPath");
+  p.mSourceType  = EDyResourceSource::External;
+  p.mTextureType = DyJsonGetValueFrom<EDyTextureStyleType>(j, "TextureType");
+  
+  // Cubemap need to read 6 textures.
+  if (p.mTextureType == decltype(p.mTextureType)::D2Cubemap)
+  {
+    p.mExternalFilePath = DyJsonGetValueFrom<PDyTextureInstanceMetaInfo::DCubemapFilePath>(j, "ExternalPath");
+  }
+  else
+  { // std::string.
+    p.mExternalFilePath = DyJsonGetValueFrom<std::string>(j, "ExternalPath");
+    MDY_ASSERT_FORCE(DyFsIsFileExist(std::get<std::string>(p.mExternalFilePath)) == true, "File path is not valid.");
+  }
 
-  p.mTextureType                    = DyJsonGetValueFrom<EDyTextureStyleType>(j, "TextureType");
-  p.mTextureColorType               = DyJsonGetValueFrom<EDyImageColorFormatStyle>(j, "TextureColorType");
-  p.mPixelReadType                  = DyJsonGetValueFrom<EDyGlImagePixelReadType>(j, "PixelReadType");
-  p.mParameterList                  = DyJsonGetValueFrom<TTextureParameterList>(j, "TextureParameters");
+  p.mTextureColorType = DyJsonGetValueFrom<EDyImageColorFormatStyle>(j, "TextureColorType");
+  p.mPixelReadType    = DyJsonGetValueFrom<EDyGlImagePixelReadType>(j, "PixelReadType");
+  p.mParameterList    = DyJsonGetValueFrom<TTextureParameterList>(j, "TextureParameters");
   p.mIsEnabledCustomedTextureParameter = DyJsonGetValueFrom<bool>(j, "IsUsingCustomizedParameter");
 
   p.mIsUsingDefaultMipmapGeneration = DyJsonGetValueFrom<bool>(j, "IsUsingDefaultMipmap");
   p.mBorderColor                    = DyJsonGetValueFrom<DDyColorRGBA32>(j, "BorderColor");
+}
 
-  // Validation check.
-  if (p.mExternalFilePath.empty() == false)
-  {
-    MDY_ASSERT_FORCE(DyFsIsFileExist(p.mExternalFilePath) == true, "File path is not valid.");
-  }
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyTextureInstanceMetaInfo::DCubemapFilePath& p)
+{
+  DyJsonGetValueFromTo(j, "Front", p.mFrontPath);
+  DyJsonGetValueFromTo(j, "Back", p.mBackPath);
+  DyJsonGetValueFromTo(j, "Right", p.mRightPath);
+  DyJsonGetValueFromTo(j, "Left", p.mLeftPath);
+  DyJsonGetValueFromTo(j, "Top", p.mTopPath);
+  DyJsonGetValueFromTo(j, "Bottom", p.mBottomPath);
+
+  MDY_ASSERT_FORCE(DyFsIsFileExist(p.mFrontPath) == true, "File path is not exist.");
+  MDY_ASSERT_FORCE(DyFsIsFileExist(p.mBackPath) == true, "File path is not exist.");
+  MDY_ASSERT_FORCE(DyFsIsFileExist(p.mRightPath) == true, "File path is not exist.");
+  MDY_ASSERT_FORCE(DyFsIsFileExist(p.mLeftPath) == true, "File path is not exist.");
+  MDY_ASSERT_FORCE(DyFsIsFileExist(p.mTopPath) == true, "File path is not exist.");
+  MDY_ASSERT_FORCE(DyFsIsFileExist(p.mBottomPath) == true, "File path is not exist.");
 }
 
 } /// ::dy namespace

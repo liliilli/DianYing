@@ -24,7 +24,7 @@
 #include <Dy/Core/DyEngine.h>
 #include <Dy/Component/CDyModelRenderer.h>
 #include <Dy/Component/CDyCamera.h>
-#include "Dy/Component/CDyModelAnimator.h"
+#include <Dy/Component/CDyModelAnimator.h>
 
 namespace dy
 {
@@ -529,6 +529,37 @@ EDySuccess MDyWorld::__UnbindActiveModelAnimator(_MIN_ CDyModelAnimator& iRefCom
 
   // Erase pointer of found component.
   this->mActivatedModelAnimatorPtrs.erase(it);
+  return DY_SUCCESS;
+}
+
+std::optional<NotNull<CDySkybox*>> MDyWorld::GetPtrMainLevelSkybox() const noexcept
+{
+  // If activated skybox instance is not exist, just return null value.
+  if (this->mActivatedSkyboxPtrList.empty() == true) { return std::nullopt; }
+
+  // Otherwise, always get first pointer of CDySkybox.
+  return this->mActivatedSkyboxPtrList.front();
+}
+
+void MDyWorld::__BindActiveSkybox(_MIN_ CDySkybox& iRefComponent)
+{
+  this->mActivatedSkyboxPtrList.emplace_back(DyMakeNotNull(&iRefComponent));
+}
+
+EDySuccess MDyWorld::__UnbindActiveSkybox(_MIN_ CDySkybox& iRefComponent)
+{
+  // Check address. component's address is not changed unless actor is destroyed.
+  const auto it = std::find_if(
+      MDY_BIND_BEGIN_END(this->mActivatedSkyboxPtrList), 
+      [ptr = &iRefComponent](const auto& ptrValidComponent)
+    {
+      return ptrValidComponent.Get() == ptr;
+    });
+
+  if (it == this->mActivatedSkyboxPtrList.end()) { return DY_FAILURE; }
+
+  // Erase pointer of found component.
+  this->mActivatedSkyboxPtrList.erase(it);
   return DY_SUCCESS;
 }
 

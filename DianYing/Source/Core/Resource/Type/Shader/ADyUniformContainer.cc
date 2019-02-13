@@ -59,6 +59,7 @@ void MDY_PRIVATE_SPECIFIER(ADyUniformContainer)::MDY_PRIVATE_SPECIFIER(TryClearU
   MDY_UNIFORMCONTAINER(Texture2DArray).clear();
   MDY_UNIFORMCONTAINER(Texture2DRectangle).clear();
   MDY_UNIFORMCONTAINER(Texture2DShadowArray).clear();
+  MDY_UNIFORMCONTAINER(Texture2DCubemap).clear();
   this->mIsShaderSetup = false;
 }
 
@@ -90,6 +91,7 @@ MDY_PRIVATE_SPECIFIER(TryConstructDefaultUniformList)(const FDyShaderResource& i
     case EDyUniformVariableType::Texture2DArray:        { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2DArray, specifier, id); } break;
     case EDyUniformVariableType::Texture2DRectangle:    { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2DRectangle, specifier, id); } break;
     case EDyUniformVariableType::Texture2DShadowArray:  { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2DShadowArray, specifier, id); } break;
+    case EDyUniformVariableType::Texture2DCubemap:      { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2DCubemap, specifier, id); } break;
     default: MDY_UNEXPECTED_BRANCH(); break;
     }
   }
@@ -138,6 +140,7 @@ EDySuccess MDY_PRIVATE_SPECIFIER(ADyUniformContainer)::TryUpdateUniformList()
     {
       const auto* item = static_cast<TPtrConvert<EDyUniformVariableType::Vector3>>(ptrItem);
       if (item->mId == -1) { continue; }
+      FDyGLWrapper::UpdateUniformVector3(item->mId, item->mValue);
     } break;
     case EDyUniformVariableType::Vector3Array: 
     {
@@ -190,6 +193,12 @@ EDySuccess MDY_PRIVATE_SPECIFIER(ADyUniformContainer)::TryUpdateUniformList()
     case EDyUniformVariableType::Texture2DShadowArray:
     {
       const auto* item = static_cast<TPtrConvert<EDyUniformVariableType::Texture2DShadowArray>>(ptrItem);
+      if (item->mId == -1) { continue; }
+      FDyGLWrapper::UpdateUniformInteger(item->mId, item->mValue);
+    } break;
+    case EDyUniformVariableType::Texture2DCubemap:
+    {
+      const auto* item = static_cast<TPtrConvert<EDyUniformVariableType::Texture2DCubemap>>(ptrItem);
       if (item->mId == -1) { continue; }
       FDyGLWrapper::UpdateUniformInteger(item->mId, item->mValue);
     } break;
