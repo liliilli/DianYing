@@ -105,9 +105,10 @@ struct __DDyCrc32Impl<TCrc>
 template<TI08 ...TBytes>
 using TCrc32 = __DDyCrc32Impl<0xFFFFFFFF, TBytes...>;
 
-///
+/// @brief Crc 32-bit hash value type.
+using THashVal32 = TU32; 
+
 /// @brief Implementation function of crc32.
-///
 constexpr TU32 __DyCrc32Rec(TU32 crc, const char *s) noexcept
 {
   return *s == 0 ?
@@ -118,12 +119,8 @@ constexpr TU32 __DyCrc32Rec(TU32 crc, const char *s) noexcept
       );
 }
 
-///
 /// @brief Do encryption and return crc32 hash value for arbitary string in compile time.
-///
-constexpr TU32 DyToCrc32Hash(const char* s) noexcept {
-  return __DyCrc32Rec(0xFFFFFFFF, s);
-}
+constexpr THashVal32 DyToCrc32Hash(const char* s) noexcept { return __DyCrc32Rec(0xFFFFFFFF, s); }
 
 } /// ::dy::hash namespace
 
