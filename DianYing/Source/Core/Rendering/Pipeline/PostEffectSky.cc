@@ -41,10 +41,15 @@ void FDyPostEffectSky::RenderScreen()
 
   this->mBinderFbSkyRend->BindFrameBuffer();
   this->mBinderMeshSkybox->BindVertexArray();
+
   this->mBinderShdSkybox->UseShader();
+  this->mBinderShdSkybox.TryUpdateUniform<EDyUniformVariableType::Float>("uExposure",       ptrSkyboxTexture->GetExposure());
+  this->mBinderShdSkybox.TryUpdateUniform<EDyUniformVariableType::Float>("uRotationDegree", ptrSkyboxTexture->GetRotationDegree());
+  this->mBinderShdSkybox.TryUpdateUniform<EDyUniformVariableType::Vector3>("uTintColor",    static_cast<DDyVector3>(ptrSkyboxTexture->GetTintColor()));
 
   glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_CUBE_MAP, refBinderTexture->GetTextureId());
   glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, this->mBinderAttUnlit->GetAttachmentId());
+
   this->mBinderShdSkybox.TryUpdateUniformList();
 
   if (this->mBinderMeshSkybox->IsEnabledIndices() == true)

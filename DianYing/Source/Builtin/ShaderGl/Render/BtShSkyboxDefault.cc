@@ -33,12 +33,27 @@ out gl_PerVertex { vec4 gl_Position; };
 out vec3 texCoord;
 out vec2 screenUv;
 
+uniform float uRotationDegree;
+
+float DyDegToRad(float degree) { return degree * 3.1415926535 / 180.0; };
+
 void main()
 {
+  // Make rotation (y) matrix.
+  float yRad = DyDegToRad(uRotationDegree);
+  mat4 rotationMatrix = mat4(
+    vec4(cos(yRad), 0, sin(yRad), 0),
+    vec4(0, 1, 0, 0),
+    vec4(-sin(yRad), 0, cos(yRad), 0),
+    vec4(0, 0, 0, 1)
+  );
+
+  // Set aligned view.
   mat4 alignedViewMatrix = uCamera.mViewMatrix;
   alignedViewMatrix[3] = vec4(0, 0, 0, 1);
-  gl_Position	= uCamera.mProjMatrix * alignedViewMatrix * vec4(dyPosition * 10000.f, 1.0);
-  gl_Position.z = min(gl_Position.z, gl_Position.w);
+  gl_Position	= uCamera.mProjMatrix * alignedViewMatrix * rotationMatrix * vec4(dyPosition * 10000.f, 1.0);
+  gl_Position = gl_Position.xyww;
+//.z = min(gl_Position.z, gl_Position.w);
 
   texCoord    = dyPosition * -1.0f;
   screenUv    = (((gl_Position / gl_Position.w) + 1.0f) * 0.5f).xy;
@@ -51,13 +66,17 @@ in vec3   texCoord;
 in vec2   screenUv;
 out vec4  outFragColor;
 
-uniform  samplerCube uTexture0; // Skybox;
-uniform  sampler2D uTexture1;   // Unlit
+uniform  samplerCube  uTexture0; // Skybox;
+uniform  sampler2D    uTexture1; // Unlit
+uniform  float        uExposure;
+uniform  vec3         uTintColor;
 
 void main() 
 { 
   //if (texture(uTexture1, screenUv).a >= 0.2f) { discard; }
-  outFragColor = texture(uTexture0, texCoord);
+  vec4 color = texture(uTexture0, texCoord);
+  outFragColor.rgb  = color.rgb * uTintColor * uExposure;
+  outFragColor.a    = color.a;
 }
 )dy");
 

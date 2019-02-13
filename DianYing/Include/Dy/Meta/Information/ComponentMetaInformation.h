@@ -23,6 +23,7 @@
 #include <Dy/Helper/Type/Clamp.h>
 #include <Dy/Management/Type/SettingContainer.h>
 #include <Dy/Meta/Type/Physics/EDyColliderType.h>
+#include "Dy/Helper/Type/ColorRGB.h"
 
 namespace dy
 {
@@ -349,6 +350,7 @@ struct PDySkyboxComponentMetaInfo final : public IDyMetaInformation
   {
     DDyClamp<TF32, 0, 100>  mExposure = 0.0f;
     TF32                    mRotation = 0.0f; // Degree
+    DDyColorRGB             mTintColor{1, 1, 1};
     std::string             mCubemapSpecifier = MDY_INITIALIZE_EMPTYSTR;
   };
 

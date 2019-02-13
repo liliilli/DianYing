@@ -33,6 +33,7 @@ EDySuccess CDySkybox::Initialize(_MIN_ const PDySkyboxComponentMetaInfo& descrip
   this->mExposure         = descriptor.mDetails.mExposure;
   this->mRotationDegree   = descriptor.mDetails.mRotation; 
   this->mTextureSpecifier = descriptor.mDetails.mCubemapSpecifier;
+  this->mTintColor        = descriptor.mDetails.mTintColor;
 
   // Activation
   if (descriptor.mInitiallyActivated == true) { this->Activate(); }
@@ -53,6 +54,36 @@ std::string CDySkybox::ToString()
 TDyLResourceBinderTexture& CDySkybox::MDY_PRIVATE_SPECIFIER(GetTextureBinderReference)() noexcept
 {
   return this->mBinderTexture;
+}
+
+void CDySkybox::SetExposure(_MIN_ TF32 iValue) noexcept
+{
+  this->mExposure = iValue;
+}
+
+TF32 CDySkybox::GetExposure() const noexcept
+{
+  return this->mExposure;
+}
+
+void CDySkybox::SetRotationDegree(_MIN_ TF32 iDegree) noexcept
+{
+  this->mRotationDegree = iDegree;
+}
+
+TF32 CDySkybox::GetRotationDegree() const noexcept
+{
+  return this->mRotationDegree;
+}
+
+void CDySkybox::SetTintColor(_MIN_ const DDyColorRGB& iTintColor) noexcept
+{
+  this->mTintColor = iTintColor;
+}
+
+const DDyColorRGB& CDySkybox::GetTintColor() const noexcept
+{
+  return this->mTintColor;
 }
 
 void CDySkybox::TryActivateInstance()

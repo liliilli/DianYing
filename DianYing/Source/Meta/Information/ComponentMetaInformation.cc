@@ -453,6 +453,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySkyboxComponentMetaInf
 {
   DyJsonGetValueFromTo(j, "Exposure", p.mExposure);
   DyJsonGetValueFromTo(j, "Rotation", p.mRotation);
+  DyJsonGetValueFromTo(j, "TintColor", p.mTintColor);
 
   DyJsonGetValueFromTo(j, "CubemapSpecifier", p.mCubemapSpecifier);
 }
