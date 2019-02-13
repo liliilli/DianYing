@@ -35,7 +35,9 @@ out vec2 screenUv;
 
 void main()
 {
-  gl_Position	= DyGetCameraPV() * vec4(dyPosition * 10000.f, 1.0);
+  mat4 alignedViewMatrix = uCamera.mViewMatrix;
+  alignedViewMatrix[3] = vec4(0, 0, 0, 1);
+  gl_Position	= uCamera.mProjMatrix * alignedViewMatrix * vec4(dyPosition * 10000.f, 1.0);
   gl_Position.z = min(gl_Position.z, gl_Position.w);
 
   texCoord    = dyPosition * -1.0f;

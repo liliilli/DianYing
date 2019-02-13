@@ -69,6 +69,7 @@ EDySuccess MDyRendering::pfInitialize()
   {
     glEnable(GL_PRIMITIVE_RESTART);
     glPrimitiveRestartIndex(0xFFFFFFFF);
+    glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
     
     { // IMGUI Setting
       IMGUI_CHECKVERSION();
