@@ -231,14 +231,14 @@ std::optional<TU32> FDyGLWrapper::CreateTexture(const PDyGLTextureCubemapDescrip
     glGenTextures(1, &mTextureResourceId);
     glBindTexture(GL_TEXTURE_CUBE_MAP, mTextureResourceId);
     //
-    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA, MDY_VECTOR_XY(descriptor.mTopSize), 0, 
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA, MDY_VECTOR_XY(descriptor.mTopSize), 0, 
           descriptor.mImageFormat, descriptor.mImagePixelType, descriptor.mTopBuffer->data());
-    glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA, MDY_VECTOR_XY(descriptor.mBottomSize), 0, 
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA, MDY_VECTOR_XY(descriptor.mBottomSize), 0, 
           descriptor.mImageFormat, descriptor.mImagePixelType, descriptor.mBottomBuffer->data());
     //
-    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, MDY_VECTOR_XY(descriptor.mRightSize), 0, 
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, MDY_VECTOR_XY(descriptor.mRightSize), 0, 
           descriptor.mImageFormat, descriptor.mImagePixelType, descriptor.mRightBuffer->data());
-    glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, MDY_VECTOR_XY(descriptor.mLeftSize), 0, 
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, MDY_VECTOR_XY(descriptor.mLeftSize), 0, 
           descriptor.mImageFormat, descriptor.mImagePixelType, descriptor.mLeftBuffer->data());
     //
     glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA, MDY_VECTOR_XY(descriptor.mFrontSize), 0, 
