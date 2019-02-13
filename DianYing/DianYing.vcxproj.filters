@@ -335,6 +335,7 @@
     <ClCompile Include="Source\Core\Rendering\Pipeline\PostEffectSky.cc" />
     <ClCompile Include="Source\Helper\Type\ColorRGB.cc" />
     <ClCompile Include="Source\Core\Reflection\RDyGlobalInstanceManager.cc" />
+    <ClCompile Include="Source\Builtin\GlobalInstance\FDyBtGiDebugStatus.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -819,6 +820,7 @@
     <ClInclude Include="Include\Dy\Core\Reflection\RDyGlobalInstanceManager.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGlobalInstance.h" />
     <ClInclude Include="Include\Dy\Builtin\GlobalInstance\FDyBtGiDebugStatus.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\DDyCompUpdator.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

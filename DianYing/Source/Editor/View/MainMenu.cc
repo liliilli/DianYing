@@ -18,9 +18,16 @@
 #include <imgui/imgui.h>
 #include <Dy/Management/WindowManager.h>
 #include <Dy/Management/SettingManager.h>
+#include <Dy/Core/Reflection/RDyGlobalInstanceManager.h>
+#include <Dy/Builtin/GlobalInstance/FDyBtGiDebugStatus.h>
 
 namespace dy::editor
 {
+
+FDyEditor_MainMenu::FDyEditor_MainMenu()
+{
+  this->mPtrGlobalInstance = MDY_GET_GLOBALINSTANCE(FDyBtGiDebugStatus);
+}
 
 // https://qiita.com/Ushio/items/446d78c881334919e156
 // https://qiita.com/izumin5210/items/26eaed69eea2c4318fcd
@@ -30,8 +37,36 @@ void FDyEditor_MainMenu::Draw(_MIN_ MDY_NOTUSED TF32 dt) noexcept
   ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiSetCond_Once);
   ImGui::SetNextWindowSize(ImVec2(200, 300), ImGuiSetCond_Once);
 
-  if (ImGui::Begin("Dy Debug Menu", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+  if (ImGui::Begin("Dy Debug Menu", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar))
   {
+    // Menu
+    if (ImGui::BeginMenuBar())
+    {
+      // 
+      if (ImGui::BeginMenu("Menu") == true)
+      {
+        ImGui::MenuItem("(dummy menu)", nullptr, false, false);
+        ImGui::Separator();
+        if (ImGui::MenuItem("Export metafiles") == true)
+        {
+          MDY_LOG_CRITICAL("Export metafiles");
+        }
+        ImGui::EndMenu();
+      }
+
+      if (ImGui::BeginMenu("View") == true)
+      {
+        static bool logValue = false;
+        if (ImGui::MenuItem("Log", nullptr, &logValue) == true)
+        {
+          this->mPtrGlobalInstance->mLogFlag = logValue;
+        }
+        ImGui::EndMenu();
+      }
+
+      ImGui::EndMenuBar();
+    }
+
 #ifdef false
     ImGui::Text(u8"Hello world!\n"
       u8"アストラギウス銀河を二分するギルガメスとバララントは、\n"

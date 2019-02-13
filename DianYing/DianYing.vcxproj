@@ -192,6 +192,7 @@
     <ClCompile Include="Source\Builtin\FrameBuffer\SceneIntegration\FDyBtFbTransIntegration.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\UIIntegration\FDyBtFbBasic.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\WeightBlendOIT\FDyBtFbWeightBlendedOIT.cc" />
+    <ClCompile Include="Source\Builtin\GlobalInstance\FDyBtGiDebugStatus.cc" />
     <ClCompile Include="Source\Builtin\Material\BtMtCheckerWorldPos.cc" />
     <ClCompile Include="Source\Builtin\Material\Transparent\StaticTransparentChecker.cc" />
     <ClCompile Include="Source\Builtin\Mesh\Debug\FDyBtMsDebugBox.cc" />
@@ -758,6 +759,7 @@
     <ClInclude Include="Include\Dy\Management\IO\MDyIOData.h" />
     <ClInclude Include="Include\Dy\Management\IO\MDyIOResource.h" />
     <ClInclude Include="Include\Dy\Management\GameTimerManager.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\DDyCompUpdator.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyInputButton.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyJoystickAnalog.h" />
     <ClInclude Include="Include\Dy\Management\Type\Render\EDyModelRenderingMode.h" />

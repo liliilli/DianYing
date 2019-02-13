@@ -15,6 +15,7 @@
 
 #include <Dy/Builtin/Abstract/ADyGlobalInstance.h>
 #include <Dy/Core/Reflection/RDyGlobalInstanceManager.h>
+#include <Dy/Helper/Type/DDyCompUpdator.h>
 
 namespace dy
 {
@@ -22,10 +23,14 @@ namespace dy
 MDY_GLOBALINSTANCE_REGISTER(FDyBtGiDebugStatus)
 class FDyBtGiDebugStatus final : public ADyGlobalInstance
 {
+public:
   MDY_GLOBALINSTANCE_PROPERTY(FDyBtGiDebugStatus)
 
-public:
+protected:
+  static void OnCallbackLogFlag(_MIN_ const bool& iValue);
 
+public:
+  DDyCompUpdator<bool> mLogFlag { false, std::bind(&FDyBtGiDebugStatus::OnCallbackLogFlag, std::placeholders::_1) };
 };
 
 }

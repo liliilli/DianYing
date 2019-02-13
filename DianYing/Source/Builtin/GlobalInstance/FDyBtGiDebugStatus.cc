@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_GUI_MAIN_MENU_H
-#define GUARD_DY_GUI_MAIN_MENU_H
+#include <precompiled.h>
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -13,34 +12,15 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Pointer.h>
-
-//!
-//! Forward declaration
-//!
+#include <Dy/Builtin/GlobalInstance/FDyBtGiDebugStatus.h>
+#include <Dy/Management/LoggingManager.h>
 
 namespace dy
 {
-class FDyBtGiDebugStatus;
+
+void FDyBtGiDebugStatus::OnCallbackLogFlag(_MIN_ const bool& iValue)
+{
+  MDY_LOG_CRITICAL("Value is {}", iValue ? "True" : "False");
 }
 
-//!
-//! Implementation
-//!
-
-namespace dy::editor
-{
-
-class FDyEditor_MainMenu final
-{
-public:
-  FDyEditor_MainMenu();
-  void Draw(_MIN_ TF32 dt) noexcept;
-
-private:
-  FDyBtGiDebugStatus* mPtrGlobalInstance = nullptr;
-};
-
-} /// ::dy::editor namespace
-
-#endif /// GUARD_DY_GUI_MAIN_MENU_H
+} /// ::dy namespace
