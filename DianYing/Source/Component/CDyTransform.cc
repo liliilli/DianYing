@@ -321,6 +321,12 @@ const DDyMatrix4x4 CDyTransform::GetRotationMatrix() noexcept
   return this->mFinalRenderRotationQuaternion.GetRotationMatrix4x4();
 }
 
+const DDyQuaternion& CDyTransform::GetRotationQuaternion() noexcept
+{
+  MDY_NOUSE_RTVAL_EXPR(this->GetTransform());
+  return this->mFinalRenderRotationQuaternion;
+}
+
 std::string CDyTransform::ToString()
 {
   return MDY_INITIALIZE_EMPTYSTR;
@@ -434,6 +440,16 @@ void CDyTransform::MDY_PRIVATE_SPECIFIER(PropagateTransform)(
           this->mWorldProductScale);
     }
   }
+}
+
+void CDyTransform::TryActivateInstance()
+{
+
+}
+
+void CDyTransform::TryDeactivateInstance()
+{
+
 }
 
 void CDyTransform::MDY_PRIVATE_SPECIFIER(TryUpdateMovementBasis)()

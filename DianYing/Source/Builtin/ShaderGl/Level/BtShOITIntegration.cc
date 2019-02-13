@@ -24,9 +24,7 @@ namespace
   
 MDY_SET_IMMUTABLE_STRING(sVert, R"dy(
 #version 430
-
-layout (location = 0) in vec3 dyPosition;
-layout (location = 2) in vec2 dyTexCoord0;
+#import <Input_DefaultVao>;
 
 out gl_PerVertex { vec4 gl_Position; };
 out VS_OUT { vec2 texCoord; } vs_out;
@@ -39,14 +37,15 @@ void main() {
 
 MDY_SET_IMMUTABLE_STRING(sFrag, R"dy(
 #version 430
-
-in VS_OUT { vec2 texCoord; } fs_in;
-
-layout (location = 0) out vec4 outColor;
-
+#import <Input_DefaultTexture2D>;
+/*
 layout (binding = 0) uniform sampler2D uTexture0; // Opaque
 layout (binding = 1) uniform sampler2D uTexture1; // Color accumulation
 layout (binding = 2) uniform sampler2D uTexture2; // Weight accumulation
+ */
+
+in VS_OUT { vec2 texCoord; } fs_in;
+layout (location = 0) out vec4 outColor;
 
 vec3 GetOpaqueRgb() { return texture(uTexture0, fs_in.texCoord).rgb; }
 

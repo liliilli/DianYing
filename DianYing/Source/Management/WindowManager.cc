@@ -243,14 +243,6 @@ EDySuccess MDyWindow::pfInitialize()
   case EDyRenderingApi::OpenGL:
     MDY_LOG_INFO_D("Initialize OpenGL Context.");
     MDY_CALL_ASSERT_SUCCESS(InitializeOpenGL());
-
-    { // IMGUI Setting
-      IMGUI_CHECKVERSION();
-      ImGui::CreateContext();
-      ImGui_ImplGlfw_InitForOpenGL(this->mGlfwWindow, true);
-      ImGui_ImplOpenGL3_Init("#version 430");
-      ImGui::StyleColorsDark();
-    }
     break;
   }
 
@@ -268,16 +260,10 @@ EDySuccess MDyWindow::pfRelease()
   case EDyRenderingApi::DirectX12:  MDY_LOG_INFO_D("Release DirectX12 Context.");  MDY_NOT_IMPLEMENTED_ASSERT(); break;
   case EDyRenderingApi::Vulkan:     MDY_LOG_INFO_D("Release Vulkan Context.");     MDY_NOT_IMPLEMENTED_ASSERT(); break;
   case EDyRenderingApi::OpenGL:
-    MDY_LOG_INFO_D("Release OpenGL Context.");
-
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
-    MDY_LOG_INFO_D("Released ImGui Context.");
+    glfwTerminate();
     break;
   }
 
-  glfwTerminate();
   MDY_INHERITENCE_WINDOW_INFORMATION_SUPER::ReleaseDep();
   return DY_SUCCESS;
 }

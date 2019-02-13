@@ -31,12 +31,12 @@
 #include <Dy/Helper/Library/HelperRegex.h>
 
 #include <Dy/Management/SettingManager.h>
+#include <Dy/Management/ScriptManager.h>
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
 #include <Dy/Meta/Descriptor/WidgetTextMetaInformation.h>
 #include <Dy/Meta/Descriptor/WidgetLayoutMetaInformation.h>
 #include <Dy/Meta/Descriptor/WidgetBarMetaInformation.h>
 #include <Dy/Meta/Descriptor/WidgetImageMetaInformation.h>
-#include "Dy/Management/ScriptManager.h"
 
 //!
 //! Local tranlation unit variables
@@ -44,13 +44,6 @@
 
 namespace
 {
-
-//!
-//! Error message template list
-//!
-
-MDY_SET_IMMUTABLE_STRING(sErrorSameName, "MDyMetaInfo::pReadScriptResourceMetaInformation | Same script specifier detected. Unexpected error! | Script Name : {}");
-MDY_SET_IMMUTABLE_STRING(sErrorAmbiguousFlag, "MDyMetaInfo::pReadScriptResourceMetaInformation | Ambiguous flag for using either path or innate code. | Script Name : {}");
 
 //!
 //! Script Meta information header list
@@ -64,7 +57,6 @@ MDY_SET_IMMUTABLE_STRING(sCategoryList,     "List");
 
 MDY_SET_IMMUTABLE_STRING(sCategoryMeta,         "Meta");
 MDY_SET_IMMUTABLE_STRING(sCategoryObjectList,   "ObjectList");
-MDY_SET_IMMUTABLE_STRING(sHeaderType,           "Type");
 
 std::unique_ptr<dy::PDyMetaWidgetRootDescriptor> DyCreateWidgetMetaInformation(_MIN_ const nlohmann::json& jsonAtlas)
 {
@@ -124,6 +116,7 @@ std::unique_ptr<dy::PDyMetaWidgetRootDescriptor> DyCreateWidgetMetaInformation(_
           specifierName,
           std::make_pair<>(componentType, DyConvertUniquePtrTo<PDyMetaWidgetCommonBaseDesc>(std::move(instance)))
       );
+      instance = nullptr;
     } break;
     case EDyWidgetComponentType::HorizontalLayout:
     { // Horizontal layout component
@@ -239,7 +232,7 @@ EDySuccess MDyMetaInfo::pfRelease()
   this->mScriptMetaInfo.clear();
   this->mFontMetaInfo.clear();
   this->mShaderMetaInfo.clear();
-  this->mBtMeshMetaInfo.clear();
+  this->mModelMeshMetaInfo.clear();
   this->mModelMetaInfo.clear();
   this->mTextureMetaInfo.clear();
   this->mMaterialMetaInfo.clear();
@@ -291,25 +284,37 @@ const PDyGLShaderInstanceMetaInfo& MDyMetaInfo::GetGLShaderMetaInformation(_MIN_
   return this->mShaderMetaInfo.at(specifier);
 }
 
-const PDyBtMeshInstanceMetaInfo & MDyMetaInfo::GetBtMeshMetaInformation(_MIN_ const std::string & specifier) const
+const PDyMeshInstanceMetaInfo & MDyMetaInfo::GetBtMeshMetaInformation(_MIN_ const std::string & specifier) const
 {
   MDY_ASSERT(this->IsMeshMetaInfoExist(specifier) == true, "Bt Mesh given specifier name is not exist.");
-  return this->mBtMeshMetaInfo.at(specifier);
+  return this->mModelMeshMetaInfo.at(specifier);
 }
 
-const PDyModelInstanceMetaInfo& MDyMetaInfo::GetModelMetaInformation(const std::string& specifier) const
+const PDyModelInstanceMetaInfo& MDyMetaInfo::GetModelMetaInformation(_MIN_ const std::string& specifier) const
 {
   MDY_ASSERT(this->IsModelMetaInfoExist(specifier) == true, "Model given specifier name is not exist.");
   return this->mModelMetaInfo.at(specifier);
 }
 
-const PDyTextureInstanceMetaInfo& MDyMetaInfo::GetTextureMetaInformation(const std::string& specifier) const
+const PDyModelSkelInstanceMetaInfo& MDyMetaInfo::GetModelSkeletonMetaInformation(_MIN_ const std::string& specifier) const
+{
+  MDY_ASSERT(this->IsModelSkeletonMetaInfoExist(specifier) == true, "Model skeleton that has given specifier name is not exist.");
+  return this->mModelSkeletonMetaInfo.at(specifier);
+}
+
+const PDyModelAnimInstanceMetaInfo& MDyMetaInfo::GetModelAnimScrapMetaInformation(const std::string& specifier) const
+{
+  MDY_ASSERT(this->IsModelAnimScrapMetaInfoExist(specifier) == true, "Model skeleton that has given specifier name is not exist.");
+  return this->mModelAnimScrapMetaInfo.at(specifier);
+}
+
+const PDyTextureInstanceMetaInfo& MDyMetaInfo::GetTextureMetaInformation(_MIN_ const std::string& specifier) const
 {
   MDY_ASSERT(this->IsTextureMetaInfoExist(specifier) == true, "Texture given specifier name is not exist.");
   return this->mTextureMetaInfo.at(specifier);
 }
 
-const PDyMaterialInstanceMetaInfo& MDyMetaInfo::GetMaterialMetaInformation(const std::string& specifier) const
+const PDyMaterialInstanceMetaInfo& MDyMetaInfo::GetMaterialMetaInformation(_MIN_ const std::string& specifier) const
 {
   MDY_ASSERT(this->IsMaterialMetaInfoExist(specifier) == true, "Material given specifier name is not exist.");
   return this->mMaterialMetaInfo.at(specifier);
@@ -323,6 +328,11 @@ const PDyGlFrameBufferInstanceMetaInfo& MDyMetaInfo::GetGlFrameBufferMetaInforma
 const PDyGlAttachmentInstanceMetaInfo& MDyMetaInfo::GetGLAttachmentMetaInformation(_MIN_ const std::string& specifier) const
 {
   return this->mAttachmentMetaInfo.at(specifier);
+}
+
+const PDySoundInstanceMetaInfo& MDyMetaInfo::GetSoundMetaInformation(_MIN_ const std::string& specifier) const
+{
+  return this->mSoundMetaInfo.at(specifier);
 }
 
 MDY_NODISCARD const PDyMetaWidgetRootDescriptor* 
@@ -339,7 +349,7 @@ bool MDyMetaInfo::IsGLShaderMetaInfoExist(_MIN_ const std::string & specifier) c
 
 bool MDyMetaInfo::IsMeshMetaInfoExist(_MIN_ const std::string & specifier) const noexcept
 {
-  return DyIsMapContains(this->mBtMeshMetaInfo, specifier);
+  return DyIsMapContains(this->mModelMeshMetaInfo, specifier);
 }
 
 bool MDyMetaInfo::IsLevelMetaInformation(_MIN_ const std::string& specifier) const noexcept
@@ -350,6 +360,16 @@ bool MDyMetaInfo::IsLevelMetaInformation(_MIN_ const std::string& specifier) con
 bool MDyMetaInfo::IsModelMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
 {
   return DyIsMapContains(this->mModelMetaInfo, specifier);
+}
+
+bool MDyMetaInfo::IsModelSkeletonMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
+{
+  return DyIsMapContains(this->mModelSkeletonMetaInfo, specifier);
+}
+
+bool MDyMetaInfo::IsModelAnimScrapMetaInfoExist(const std::string& specifier) const noexcept
+{
+  return DyIsMapContains(this->mModelAnimScrapMetaInfo, specifier);
 }
 
 bool MDyMetaInfo::IsTextureMetaInfoExist(_MIN_ const std::string& specifier) const noexcept
@@ -390,6 +410,11 @@ bool MDyMetaInfo::IsAttachmentMetaInfoExist(_MIN_ const std::string& specifierNa
 bool MDyMetaInfo::IsFrameBufferMetaInfoExist(_MIN_ const std::string& speicfierName) const noexcept
 {
   return DyIsMapContains(this->mFrameBufferMetaInfo, speicfierName);
+}
+
+bool MDyMetaInfo::IsSoundMetaInfoExist(_MIN_ const std::string& specifierName) const noexcept
+{
+  return DyIsMapContains(this->mSoundMetaInfo, specifierName);
 }
 
 bool MDyMetaInfo::IsLoadingWidgetMetaInfoExist() const noexcept
@@ -435,10 +460,14 @@ void MDyMetaInfo::MDY_PRIVATE_SPECIFIER(InitiateMetaInformation)()
   reflect::RDyBuiltinResource::BindBuiltinResourcesToMetaManager();
 
   MDY_CALL_ASSERT_SUCCESS(this->pReadFontResourceMetaInformation    (metaPath.mFontMetaPath));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadModelMeshResourceMetaInformation(metaPath.mModelMeshMetaPath));
   MDY_CALL_ASSERT_SUCCESS(this->pReadModelResourceMetaInformation   (metaPath.mModelMetaPath));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadModelSkeletonMetaInformation   (metaPath.mModelSkeletonMetaPath));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadModelAnimationMetaInformation  (metaPath.mModelAnimMetaPath));
   MDY_CALL_ASSERT_SUCCESS(this->pReadTextureResourceMetaInformation (metaPath.mTextureMetaPath));
   MDY_CALL_ASSERT_SUCCESS(this->pReadShaderResourceMetaInformation  (metaPath.mGLShaderMetaPath));
   MDY_CALL_ASSERT_SUCCESS(this->pReadMaterialResourceMetaInformation(metaPath.mMaterialMetaPath));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadSoundResourceMetaInformation   (metaPath.mSoundMetaPath));
 
   MDY_CALL_ASSERT_SUCCESS(this->pReadScriptResourceMetaInformation(metaPath.mScriptMetaPath));
   MDY_CALL_ASSERT_SUCCESS(this->pReadPrefabResourceMetaInformation(metaPath.mPrefabMetaPath));
@@ -559,8 +588,74 @@ EDySuccess MDyMetaInfo::pReadModelResourceMetaInformation(_MIN_ const std::strin
 {
   // (1) Validity Test
   const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  MDY_ASSERT_FORCE(opJsonAtlas.has_value() == true, "Failed to read Model meta information. File is not exist.");
+
+  // (2) Get information from buffer.
+  for (const auto& item : opJsonAtlas.value().items())
+  {
+    auto desc = item.value().get<PDyModelInstanceMetaInfo>();
+    desc.mSpecifierName = item.key();
+
+    auto [it, isSucceeded] = this->mModelMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
+    MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
+  }
+
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pReadModelMeshResourceMetaInformation(_MIN_ const std::string& metaFilePath)
+{
+  // (1) Validity Test
+  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
   MDY_ASSERT_FORCE(opJsonAtlas.has_value() == true, "Failed to read model meta information. File is not exist.");
 
+  // (2) Get information from buffer.
+  for (const auto& item : opJsonAtlas.value().items())
+  {
+    auto desc = item.value().get<PDyMeshInstanceMetaInfo>();
+    desc.mSpecifierName = item.key();
+
+    auto [it, isSucceeded] = this->mModelMeshMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
+    MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
+  }
+  
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pReadModelSkeletonMetaInformation(_MIN_ const std::string& metaFilePath)
+{
+  // (1) Validity Test
+  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  MDY_ASSERT_FORCE(opJsonAtlas.has_value() == true, "Failed to read model skeleton information. File is not exist.");
+
+  // (2) Get information from buffer.
+  for (const auto& item : opJsonAtlas.value().items())
+  {
+    auto desc = item.value().get<decltype(mModelSkeletonMetaInfo)::value_type::second_type>();
+    desc.mSpecifierName = item.key();
+
+    auto [it, isSucceeded] = this->mModelSkeletonMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
+    MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
+  }
+  
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pReadModelAnimationMetaInformation(_MIN_ const std::string& metaFilePath)
+{
+  // (1) Validity Test
+  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  MDY_ASSERT_FORCE(opJsonAtlas.has_value() == true, "Failed to read model animation sequence information. File is not exist.");
+
+  // (2) Get information from buffer.
+  for (const auto& item : opJsonAtlas.value().items())
+  {
+    auto desc = item.value().get<decltype(mModelAnimScrapMetaInfo)::value_type::second_type>();
+    desc.mSpecifierName = item.key();
+
+    auto [it, isSucceeded] = this->mModelAnimScrapMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
+    MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
+  }
   
   return DY_SUCCESS;
 }
@@ -572,12 +667,13 @@ EDySuccess MDyMetaInfo::pReadTextureResourceMetaInformation(_MIN_ const std::str
   MDY_ASSERT_FORCE(opJsonAtlas.has_value() == true, "Failed to read texture meta information. File is not exist.");
 
   // (2) Insert each item.
-  for (const auto& sceneAtlas : opJsonAtlas.value().items())
+  for (const auto& item : opJsonAtlas.value().items())
   {
-    auto desc = sceneAtlas.value().get<decltype(mTextureMetaInfo)::value_type::second_type>();
-    desc.mSpecifierName = sceneAtlas.key();
+    auto desc = item.value().get<PDyTextureInstanceMetaInfo>();
+    desc.mSpecifierName = item.key();
+
     auto [it, isSucceeded] = this->mTextureMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
-    MDY_ASSERT(isSucceeded == true, "Unexpected error occurred.");
+    MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
   }
 
   return DY_SUCCESS;
@@ -589,6 +685,16 @@ EDySuccess MDyMetaInfo::pReadShaderResourceMetaInformation(_MIN_ const std::stri
   const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
   MDY_ASSERT_FORCE(opJsonAtlas.has_value() == true, "Failed to read shader meta information. File is not exist.");
 
+  // (2) Insert each item.
+  for (const auto& item : opJsonAtlas.value().items())
+  {
+    auto desc = item.value().get<PDyGLShaderInstanceMetaInfo>();
+    desc.mSpecifierName = item.key();
+
+    auto [it, isSucceeded] = this->mShaderMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
+    MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
+  }
+
   return DY_SUCCESS;
 }
 
@@ -597,6 +703,16 @@ EDySuccess MDyMetaInfo::pReadMaterialResourceMetaInformation(_MIN_ const std::st
   // (1) Validity Test
   const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
   MDY_ASSERT_FORCE(opJsonAtlas.has_value() == true, "Failed to read material meta information. File is not exist.");
+
+  // (2) Insert each item.
+  for (const auto& item : opJsonAtlas.value().items())
+  {
+    auto desc = item.value().get<PDyMaterialInstanceMetaInfo>();
+    desc.mSpecifierName = item.key();
+
+    auto [it, isSucceeded] = this->mMaterialMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
+    MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
+  }
 
   return DY_SUCCESS;
 }
@@ -629,6 +745,24 @@ EDySuccess MDyMetaInfo::pReadWidgetResourceMetaInformation(_MIN_ const std::stri
     auto rootInstance = DyCreateWidgetMetaInformation(widgetMeta);
     MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(rootInstance), "Widget root instance must not be empty.");
     this->mWidgetMetaInfo.try_emplace(rootInstance->mWidgetSpecifierName, std::move(rootInstance));
+  }
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pReadSoundResourceMetaInformation(const std::string& metaFilePath)
+{
+  // Read meta script file.
+  const auto optJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  MDY_ASSERT(optJsonAtlas.has_value() == true, "Must be valid json atlas from file path.");
+
+  // (2) Get information from buffer.
+  for (const auto& item : optJsonAtlas.value().items())
+  {
+    auto desc = item.value().get<decltype(mSoundMetaInfo)::value_type::second_type>();
+    desc.mSpecifierName = item.key();
+
+    auto [it, isSucceeded] = this->mSoundMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
+    MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
   }
   return DY_SUCCESS;
 }
@@ -725,7 +859,7 @@ EDySuccess MDyMetaInfo::pReadSceneResourceMetaInformation(_MIN_ const nlohmann::
 
 EDySuccess MDyMetaInfo::pfAddWidgetMetaInformation(_MIN_ const std::string& metaInformationString)
 {
-  nlohmann::json jsonAtlas = nlohmann::json::parse(metaInformationString);
+  const nlohmann::json jsonAtlas = nlohmann::json::parse(metaInformationString);
   auto rootInstance = DyCreateWidgetMetaInformation(jsonAtlas);
   MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(rootInstance), "Widget root instance must not be empty.");
 
@@ -770,7 +904,7 @@ EDySuccess MDyMetaInfo::pfAddGLShaderMetaInfo(_MIN_ const PDyGLShaderInstanceMet
   return DY_SUCCESS;
 }
 
-EDySuccess MDyMetaInfo::pfAddBuiltinMeshMetaInfo(_MIN_ const PDyBtMeshInstanceMetaInfo& metaInfo)
+EDySuccess MDyMetaInfo::pfAddBuiltinMeshMetaInfo(_MIN_ const PDyMeshInstanceMetaInfo& metaInfo)
 {
 #if defined(_DEBUG) == true
   if (metaInfo.mVAOBindingInfo.mIsUsingDefaultDyAttributeModel == false)
@@ -778,8 +912,8 @@ EDySuccess MDyMetaInfo::pfAddBuiltinMeshMetaInfo(_MIN_ const PDyBtMeshInstanceMe
     MDY_ASSERT(metaInfo.mCustomMeshBuffer.empty() == false, "Builtin mesh must be valid if using customized binding.");
   }
 #endif
-  MDY_ASSERT(DyIsMapContains(this->mBtMeshMetaInfo, metaInfo.mSpecifierName) == false, "Duplicated Mesh name is exist.");
-  this->mBtMeshMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
+  MDY_ASSERT(DyIsMapContains(this->mModelMeshMetaInfo, metaInfo.mSpecifierName) == false, "Duplicated Mesh name is exist.");
+  this->mModelMeshMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
   return DY_SUCCESS;
 }
 

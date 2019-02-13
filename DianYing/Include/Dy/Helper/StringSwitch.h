@@ -1,0 +1,35 @@
+#ifndef GUARD_DY_HELPER_STRINGSWITCH_H
+#define GUARD_DY_HELPER_STRINGSWITCH_H
+///
+/// MIT License
+/// Copyright (c) 2018-2019 Jongmin Yun
+///
+/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+/// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+/// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+/// SOFTWARE.
+///
+
+#include <Dy/Helper/HashCompileCrc32.h>
+
+namespace dy
+{
+
+/// @brief
+inline TU32 DyStrSwitchInput(_MIN_ const std::string& iInput)
+{
+  return hash::DyToCrc32Hash(iInput.c_str());
+}
+
+/// @brief
+constexpr TU32 DyStrCase(_MIN_ const char* iLiteral)
+{
+  return hash::DyToCrc32Hash(iLiteral);
+}
+
+} /// ::dy namespace
+
+#endif /// GUARD_DY_HELPER_STRINGSWITCH_H

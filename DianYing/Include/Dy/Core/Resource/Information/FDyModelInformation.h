@@ -38,15 +38,32 @@ public:
     return this->mSpecifierName;
   }
 
-  /// @brief Get submesh information list.
+  /// @brief Get binded Mesh information list.
   MDY_NODISCARD const auto& GetMeshInformationList() const noexcept
   {
     return this->mMeshInformations;
   }
 
+  /// @brief Get binded Material information list.
+  MDY_NODISCARD const auto& GetMaterialInformationList() const noexcept
+  {
+    return this->mMaterialInformations;
+  }
+
+  /// @brief Get initial transform of model.
+  MDY_NODISCARD const auto& GetInitialTransform() const noexcept
+  {
+    return this->mModelTransform;
+  }
+
 private:
   std::string mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
-  std::vector<std::unique_ptr<TDyIInformationBinderMesh>> mMeshInformations;
+  std::vector<std::unique_ptr<TDyIInformationBinderMesh>>     mMeshInformations;
+  std::vector<std::unique_ptr<TDyIInformationBinderMaterial>> mMaterialInformations;
+
+  /// Valid skeleton reference handle.
+  TDyLInformationBinderSkeleton         mBinderSkeleton;
+  PDyModelInstanceMetaInfo::DTransform  mModelTransform;
 };
 
 } /// ::dy namespace

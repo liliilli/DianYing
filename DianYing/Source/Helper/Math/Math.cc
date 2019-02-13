@@ -17,10 +17,12 @@
 
 #include <cfenv>
 #include <limits>
+#include <glm/gtc/quaternion.hpp>
 
 #include <Dy/Helper/Type/Vector2.h>
 #include <Dy/Helper/Type/Vector3.h>
 #include <Dy/Helper/Type/Vector4.h>
+#include <Dy/Helper/Type/Quaternion.h>
 
 namespace dy::math {
 
@@ -81,6 +83,11 @@ DDyVector3 Lerp(const DDyVector3& lhs, const DDyVector3& rhs, float offset) noex
 DDyVector4 Lerp(const DDyVector4& lhs, const DDyVector4& rhs, float offset) noexcept
 {
   return lhs * (1 - offset) + rhs * offset;
+}
+
+DDyQuaternion Slerp(const DDyQuaternion& lhs, const DDyQuaternion& rhs, TF32 offset) noexcept
+{
+  return glm::slerp(lhs.pGetQuaternion(), rhs.pGetQuaternion(), offset);
 }
 
 DDyVector2 GetQuadBezierCurvePoint(const DDyVector2& lhs, const DDyVector2& rhs, const DDyVector2& control, float offset)

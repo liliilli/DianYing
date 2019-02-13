@@ -92,7 +92,7 @@ void CDyImageRenderer::UpdateMaterial() noexcept
 {
   PDyMaterialInstanceMetaInfo info{};
   info.mShaderSpecifier = mPtrObject->GetShaderSpecifier();
-  info.mTextureNames[0] = mPtrObject->GetImageName();
+  info.mTextureNames[0] = {mPtrObject->GetImageName(), EDyTextureMapType::Unknown};
   info.mBlendMode       = EDyMaterialBlendMode::Opaque;
   SDyIOConnectionHelper::PopulateInstantMaterialResource(info, this->mBinderMaterial);
 }

@@ -15,6 +15,7 @@
 
 #include <glm/gtc/quaternion.hpp>
 #include <assimp/quaternion.h>
+#include <foundation/PxQuat.h>
 #include <Dy/Helper/Type/MathEnum.h>
 #include <Dy/Helper/Type/Matrix4.h>
 
@@ -40,6 +41,11 @@ public:
 
   DDyQuaternion(const glm::quat& glmQuat);
   DDyQuaternion& operator=(const glm::quat& glmQuat);
+
+  DDyQuaternion(const physx::PxQuat& pxQuat);
+  DDyQuaternion& operator=(const physx::PxQuat& pxQuat);
+  
+  DDyQuaternion(_MIN_ TF32 x, _MIN_ TF32 y, _MIN_ TF32 z, _MIN_ TF32 w);
 
   ///
   /// @brief Get rotation matrix (4x4) from quaternion.
@@ -87,6 +93,11 @@ public:
 
   ///
   const glm::quat& pGetQuaternion() const noexcept;
+
+  operator physx::PxQuat() const noexcept
+  {
+    return physx::PxQuat{this->mQuaternion.x, this->mQuaternion.y, this->mQuaternion.z, this->mQuaternion.w};
+  }
 
 private:
   glm::quat mQuaternion;

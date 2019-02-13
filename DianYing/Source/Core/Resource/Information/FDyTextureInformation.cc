@@ -30,46 +30,51 @@ FDyTextureInformation::FDyTextureInformation(_MIN_ const PDyTextureInstanceMetaI
   this->mInternalPixelReadType= metaInfo.mPixelReadType;
 
   if (metaInfo.mSourceType == EDyResourceSource::Builtin)
-  { // If builtin, just copy buffer to information.
-    this->mTextureImageBuffer     = *metaInfo.mPtrBuiltinBuffer;
+  {
     this->mImageActualPixelFormat = metaInfo.mTextureColorType;
-    this->mTextureSize            = metaInfo.mBuiltinBufferSize;
   }
-  else
-  { // But external, read buffer from file, get width, height and image format and convert raw buffer to buffer type.
-    // Width and Height would be saved into mTextureInformation.
-    const auto dataBuffer = std::make_unique<DDyImageBinaryDataBuffer>(metaInfo.mExternalFilePath);
-    MDY_ASSERT(dataBuffer->IsBufferCreatedProperly() == true, "Texture buffer can not be created properly.");
+}
 
-    TI32 pixelSize = 0;
-    this->mImageActualPixelFormat = dataBuffer->GetImageFormat();
-    switch (this->mImageActualPixelFormat)
-    {
-    case EDyImageColorFormatStyle::R:    pixelSize = 1; break;
-    case EDyImageColorFormatStyle::RG:   pixelSize = 2; break;
-    case EDyImageColorFormatStyle::RGB:  pixelSize = 3; break;
-    case EDyImageColorFormatStyle::RGBA: pixelSize = 4; break;
-    default: MDY_UNEXPECTED_BRANCH();
-    }
+FDyTextureInformation::~FDyTextureInformation() = default;
 
-    this->mTextureSize.X  = dataBuffer->GetImageWidth();
-    this->mTextureSize.Y  = dataBuffer->GetImageHeight();
+const std::string& FDyTextureInformation::GetSpecifierName() const noexcept
+{
+  return this->mSpecifierName;
+}
 
-    const TU64  byteSize  = this->mTextureSize.X * this->mTextureSize.Y * pixelSize;
-    this->mTextureImageBuffer.reserve(byteSize);
-
-    const auto* ptrBuffer = dataBuffer->GetBufferStartPoint();
-    for (TU64 byteCount = 0; byteCount < byteSize; ++byteCount)
-    {
-      this->mTextureImageBuffer.emplace_back(*ptrBuffer);
-      ptrBuffer++;
-    }
-  }
+EDyImageColorFormatStyle FDyTextureInformation::GetFormat() const noexcept
+{
+  return this->mImageActualPixelFormat;
 }
 
 EDyGlImagePixelReadType FDyTextureInformation::GetPixelReadType() const noexcept
 {
   return this->mInternalPixelReadType;
+}
+
+EDyTextureStyleType FDyTextureInformation::GetType() const noexcept
+{
+  return this->mTextureType;
+}
+
+const DDyColorRGBA& FDyTextureInformation::GetBorderColor() const noexcept
+{
+  return this->mBorderColor;
+}
+
+bool FDyTextureInformation::IsUsingCustomizedParamater() const noexcept
+{
+  return this->mIsUsingCustomParams;
+}
+
+bool FDyTextureInformation::IsUsingDefaultMipmap() const noexcept
+{
+  return this->mIsUsingDefaultMipmap;
+}
+
+const TTextureParameterList& FDyTextureInformation::GetParameterList() const noexcept
+{
+  return this->mParameterOptionList;
 }
 
 } /// ::dy namespace

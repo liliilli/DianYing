@@ -32,7 +32,7 @@ void FDyBuiltinMaterialOpaqueStaticPlain::ConstructBuffer(PDyMaterialInstanceMet
   property.mShaderSpecifier = FDyBuiltinShaderGLRenderOpaqueStatic::sName;
   property.mBlendMode       = EDyMaterialBlendMode::Opaque;
 
-  property.mTextureNames[0] = MSVSTR(FDyBuiltinTextureChecker::sName);
+  property.mTextureNames[0] = {MSVSTR(FDyBuiltinTextureChecker::sName), EDyTextureMapType::Unknown};
 }
 
 } /// ::dy::builtin namespace

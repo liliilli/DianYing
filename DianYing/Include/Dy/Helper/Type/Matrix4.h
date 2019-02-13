@@ -15,9 +15,11 @@
 
 #include <array>
 
+#include <assimp/matrix4x4.h>
+#include <nlohmann/json_fwd.hpp>
+
 #include <Dy/Helper/Type/Matrix3.h>
 #include <Dy/Helper/Type/Vector4.h>
-#include <assimp/matrix4x4.h>
 
 namespace dy
 {
@@ -57,6 +59,8 @@ public:
   DDyMatrix4x4(const glm::mat4& glmMatrix) noexcept;
 
   DDyMatrix4x4(const aiMatrix4x4& aiMatrix) noexcept;
+
+  DDyMatrix4x4(const physx::PxTransform& physxTransform) noexcept;
 
   DDyMatrix4x4& operator=(const glm::mat2& value) noexcept;
 
@@ -178,6 +182,15 @@ public:
   ///
   static DDyMatrix4x4 CreateWithTranslation(const DDyVector3& translationPoint);
 
+  /// @brief Scale matrix.
+  DDyMatrix4x4& Scale(_MIN_ const DDyVector3& iScaleFactor);
+  /// @brief Rotate matrix.
+  DDyMatrix4x4& Rotate(_MIN_ const DDyVector3& iRotationDegreeAngle);
+  /// @brief Rotate matrix.
+  DDyMatrix4x4& Rotate(_MIN_ const DDyQuaternion& iRotationQuaternion);
+  /// @brief Translate matrix.
+  DDyMatrix4x4& Translate(_MIN_ const DDyVector3& iPosition);
+
 private:
   /// Identity matrix constructor
   explicit DDyMatrix4x4(bool);
@@ -185,6 +198,9 @@ private:
   /// Column major
   std::array<dy::DDyVector4, 4> mMatrixValue;
 };
+
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDyMatrix4x4& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDyMatrix4x4& p);
 
 } /// ::dy namespace
 

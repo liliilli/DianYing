@@ -24,18 +24,18 @@ namespace dy
 ///
 enum class EDyComponentMetaType
 {
-  // CDyTransform
-  Transform,
-  // CDyScript
-  Script,
-  // CDyModelFilter
-  ModelFilter,
-  // CDyModelRenderer
-  ModelRenderer,
-  // CDyDirectionalLight
-  DirectionalLight,
-  // CDyCamera
-  Camera,
+  Transform,        // CDyTransform
+  Script,           // CDyScript
+  ModelFilter,      // CDyModelFilter
+  ModelRenderer,    // CDyModelRenderer
+  ModelAnimator,    // CDyModelAnimator
+  DirectionalLight, // CDyDirectionalLight
+  Camera,     // CDyCamera
+  SoundSource,// CDySoundSource
+  Rigidbody,  // CDyPhysicsRigidbody
+  Collider,   // CDyPhysicsCollider
+  Skybox,     // CDySkybox
+
   // ERROR!
   NoneError
 };

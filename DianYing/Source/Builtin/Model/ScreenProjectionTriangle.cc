@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Builtin/Model/ScreenProjectionTriangle.h>
 #include <Dy/Builtin/Mesh/FDyBtMsScrTriangle.h>
+#include <Dy/Builtin/Material/BtMtCheckerWorldPos.h>
 
 namespace dy::builtin
 {
@@ -23,8 +24,7 @@ void FDyBuiltinModelScreenProjectionTriangle::ConstructBuffer(PDyModelInstanceMe
 {
   buffer.mSourceType          = EDyResourceSource::Builtin;
   buffer.mSpecifierName       = sName;
-  buffer.mIsUsingBuiltinMesh  = true;
-  buffer.mBuiltinMeshSpecifierList.emplace_back(FDyBtMsScrTriangle::sName);
+  buffer.mMeshList.emplace_back(MSVSTR(FDyBtMsScrTriangle::sName), MSVSTR(FDyBtMtCheckerWorldPos::sName));
 }
 
 } /// ::dy::builtin namespace

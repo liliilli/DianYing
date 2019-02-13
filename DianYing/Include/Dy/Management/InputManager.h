@@ -79,21 +79,19 @@ public:
   MDY_NODISCARD bool IsAxisReleased(_MIN_ const std::string& axisSpecifier) noexcept;
 
   /// @brief
-  /// @param actionSpecifier
   MDY_NODISCARD bool IsActionPressed(_MIN_ const std::string& actionSpecifier) const noexcept;
   /// @brief Check whether or not specified action is being existed.
-  /// @param actionSpecifier The action name which action instance has.
   MDY_NODISCARD bool IsActionExist(_MIN_ const std::string& actionSpecifier) const noexcept;
   /// @brief
-  /// @param actionSpecifier
   MDY_NODISCARD bool IsActionReleased(_MIN_ const std::string& actionSpecifier) const noexcept;
-
 
   /// @brief Check if mouse is moved on present frame, but false when mouse movement is not activated.
   MDY_NODISCARD bool IsMouseMoved() const noexcept { return this->mIsMouseMoved; }
-
   /// @brief Check joystick is connected (JOYSTICK 1)
   MDY_NODISCARD bool IsJoystickConnected() const noexcept;
+  
+  /// @brief Low-level api for checking key is just pressed. Not recommeneded, use `Action` or `Axis` instead.
+  MDY_NODISCARD bool IsKeyPressed(_MIN_ EDyInputButton keyValue) const noexcept;
 
   /// @brief Try require controller exlusive right for UI Widget. \n
   /// If there is any actor which is using controller delegate, Actor delegate will be neglected. \n
@@ -145,13 +143,20 @@ public:
   /// @TODO IMPLEMENT FOR ADYACTORLUASCRIPT
   MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(TryDetachContollerActor)(_MIN_ ADyActorCppScript& iRefActor) noexcept;
 
+  /// @brief Get low-level key status value.
+  MDY_NODISCARD EDyInputButtonStatus MDY_PRIVATE_SPECIFIER(GetLowlevelKeyStatus)(_MIN_ EDyButton iId) noexcept;
+
 private:
   void MDY_PRIVATE_SPECIFIER(pInitializeAxisNAction)();
   void MDY_PRIVATE_SPECIFIER(pInitializeCallbacks)();
 
-  /// @brief Update input polling on present frame with delta time.
+  /// @brief Update in-game input polling on present frame with delta time.
+  /// This function must be called update phrase when in-game pause is not set.
+  void pfInGameUpdate(_MIN_ TF32 dt) noexcept;
+
+  /// @brief Update global (debug, outside world from in-game) input polling on present frame with delta time.
   /// This function must be called update phrase.
-  void pfUpdate(_MIN_ TF32 dt) noexcept;
+  void pfGlobalUpdate(_MIN_ TF32 dt) noexcept;
 
   void MDY_PRIVATE_SPECIFIER(pCheckAxisStatus)(_MIN_ TF32 dt);
   void MDY_PRIVATE_SPECIFIER(pCheckActionStatus)(_MIN_ TF32 dt);

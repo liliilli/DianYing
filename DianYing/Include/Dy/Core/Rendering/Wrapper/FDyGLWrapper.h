@@ -24,8 +24,9 @@
 
 namespace dy
 {
-  struct DDyArea2D;
-  enum class EDyTextureStyleType : unsigned char;
+struct PDyGLTextureCubemapDescriptor;
+struct DDyArea2D;
+enum class EDyTextureStyleType : unsigned char;
 enum class EDyDrawType;
 struct PDyGLVaoBindDescriptor;
 struct PDyGLShaderFragmentDescriptor;
@@ -64,7 +65,10 @@ public:
 
   /// @brief Create texture and get texture id. \n
   /// This function is thread-safe and get performance down.
-  static MDY_NODISCARD std::optional<TU32> CreateTexture(_MIN_ const PDyGLTextureDescriptor& descriptor);
+  MDY_NODISCARD static std::optional<TU32> CreateTexture(_MIN_ const PDyGLTextureDescriptor& descriptor);
+  /// @brief Create cubemap texture and get cubemap texture id. \n
+  /// This function is thread-safe and get performance down.
+  MDY_NODISCARD static std::optional<TU32> CreateTexture(_MIN_ const PDyGLTextureCubemapDescriptor& descriptor);
   /// @brief Delete texture if texture id is valid.
   /// This function is thread-safe and get performance down.
   static void DeleteTexture(_MIN_ const TU32 validTextureId);
@@ -173,14 +177,18 @@ public:
   MDY_NODISCARD static std::optional<std::string>
   GetShaderProgramUniformBlockInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iUniformBlockIndex);
 
-  /// @brief
+  /// @brief Update uniform matrix4x4 item. Specified shader must be valid and activated.
   static void UpdateUniformMatrix4(_MIN_ TU32 iId, _MIN_ const DDyMatrix4x4& iBuffer, _MIN_ bool iTransposed = false);
+  /// @brief Update uniform matrix3x3 item. Specified shader must be valid and activated.
+  static void UpdateUniformMatrix3(_MIN_ TU32 iId, _MIN_ const DDyMatrix3x3& iBuffer, _MIN_ bool iTransposed = false);
   /// @brief Update uniform matrix4x4 array. Specified shader must be valid and activated.
   static void UpdateUniformMatrix4Array(_MIN_ TU32 iId, _MIN_ const std::vector<DDyMatrix4x4>& iBuffer, _MIN_ bool iIransposed = false);
   /// @brief Update uniform vector3 (float) array. Specified shader must be valid and activated.
   static void UpdateUniformVector3Array(_MIN_ TU32 iId, _MIN_ const std::vector<DDyVector3>& iBfuffer);
   /// @brief
   static void UpdateUniformVector4(_MIN_ TU32 iId, _MIN_ const DDyVector4& iBuffer);
+  /// @brief
+  static void UpdateUniformVector3(_MIN_ TU32 iId, _MIN_ const DDyVector3& iBuffer);
   /// @brief
   static void UpdateUniformInteger(_MIN_ TU32 iId, _MIN_ const TI32& iBuffer);
   /// @brief Update uniform one float value. Specified shader must be valid and activated.

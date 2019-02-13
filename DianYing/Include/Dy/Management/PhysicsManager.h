@@ -19,6 +19,21 @@
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Management/Helper/PhysXErrorCallback.h>
 #include <Dy/Management/Helper/PhysxSimulationCallback.h>
+#include <Dy/Helper/Pointer.h>
+
+//!
+//! Forward declaration
+//!
+
+namespace dy
+{
+struct DDySettingPhysics;
+class CDyPhysicsRigidbody;
+} /// ::dy namespace
+
+//!
+//! Implemnetation
+//!
 
 namespace dy
 {
@@ -27,7 +42,7 @@ namespace dy
 /// @class MDyPhysics
 /// @brief Manages physical simulation, raytracing, sweeping and overlapping etc.
 ///
-class MDyPhysics final : public IDySingleton<MDyPhysics>, public IDyUpdatable, public physx::PxDeletionListener
+class MDyPhysics final : public IDySingleton<MDyPhysics>, public IDyUpdatable, public physx::PxDeletionListener, public physx::PxSimulationEventCallback
 {
   MDY_SINGLETON_PROPERTIES(MDyPhysics);
   MDY_SINGLETON_DERIVED(MDyPhysics);
@@ -39,6 +54,36 @@ public:
   void InitScene();
   /// @brief Release PhysX All Resource related to scene.
   void ReleaseScene();
+
+  /// @brief Get default setting instance.
+  const DDySettingPhysics& GetDefaultSetting() const noexcept;
+
+  /// @brief Get default physics material instance reference.
+  const physx::PxMaterial& GetDefaultPhysicsMaterial() const noexcept;
+
+  auto& MDY_PRIVATE_SPECIFIER(GetRefInternalSdk)()
+  {
+    MDY_ASSERT_FORCE(MDY_CHECK_ISNOTNULL(this->gPhysicx), "Internal PhysX PxPhysics must be initailized.");
+    return *this->gPhysicx;
+  }
+
+  auto& MDY_PRIVATE_SPECIFIER(GetRefScene)()
+  {
+    MDY_ASSERT_FORCE(MDY_CHECK_ISNOTNULL(this->gScene), "Internal PhysX PxScene must be initailized.");
+    return *this->gScene;
+  }
+
+  /// @brief Update internal PxScene parameter (PxVisualizationParameter)
+  void UpdateInternalPxSceneParameter();
+
+  /// @brief Try enqueue debug line.
+  void TryEnqueueDebugDrawCall();
+
+  /// @brief Register activated rigidbody instance.
+  void MDY_PRIVATE_SPECIFIER(RegisterRigidbody)(_MIN_ CDyPhysicsRigidbody& iRefRigidbody);
+
+  /// @brief Unregister deactivated rigidbody instance.
+  void MDY_PRIVATE_SPECIFIER(UnregisterRigidbody)(_MIN_ CDyPhysicsRigidbody& iRefRigidbody);
 
 private:
   /// @brief Override function callback. When object of physx is remove, this function will be called.
@@ -64,14 +109,23 @@ private:
   physx::PxPhysics*             gPhysicx    = MDY_INITIALIZE_NULL; 
   physx::PxDefaultCpuDispatcher*gDispatcher = MDY_INITIALIZE_NULL;
   physx::PxScene*               gScene      = MDY_INITIALIZE_NULL;
-  physx::PxMaterial*            gMaterial   = MDY_INITIALIZE_NULL;
+  physx::PxMaterial*            mDefaultMaterial   = MDY_INITIALIZE_NULL;
   physx::PxCooking*             mCooking    = MDY_INITIALIZE_NULL;
 
   physx::PxReal                 stackZ      = 10.0f;
   physx::PxDefaultAllocator     defaultAllocatorCallback;
 
-  // Callback helper class instance.
-  FDyPxSimulationEventCallback  mCallback = {};
+  /// @brief Activated ptr-rigidbody list.
+  std::vector<NotNull<CDyPhysicsRigidbody*>> mActivatedRigidbodyList {};
+
+  // Implements PxSimulationEventCallback
+
+	void onContact(_MIN_ const physx::PxContactPairHeader& pairHeader, _MIN_ const physx::PxContactPair* pairs, _MIN_ physx::PxU32 nbPairs) override final;
+	void onTrigger(_MIN_ physx::PxTriggerPair* pairs, _MIN_ physx::PxU32 count) override final;
+	void onConstraintBreak(physx::PxConstraintInfo*, physx::PxU32) override final {}
+	void onWake(physx::PxActor** , physx::PxU32) override final {}
+	void onSleep(physx::PxActor** , physx::PxU32) override final {}
+	void onAdvance(const physx::PxRigidBody*const*, const physx::PxTransform*, const physx::PxU32) override final {}
 };
 
 } /// ::dy namespace

@@ -18,6 +18,7 @@
 #include <filesystem>
 #include <Dy/Meta/Information/GLShaderMetaInformation.h>
 #include <Dy/Helper/IoHelper.h>
+#include "Dy/Helper/MCS/GLShaderParser.h"
 
 namespace dy
 {
@@ -29,18 +30,25 @@ FDyShaderInformation::FDyShaderInformation(_MIN_ const PDyGLShaderInstanceMetaIn
   {
     PDyShaderFragmentInformation shader{};
     shader.mIsEnabledRawLoadShaderCode_Deprecated = metaInfo.mSourceType == EDyResourceSource::Builtin ? true : false;
+    // Get fragment item chunk.
     const auto& p = metaInfo.GetFragment(static_cast<EDyShaderFragmentType>(i));
+    // If nothing is exist, it regards as a blank so does not need to load something from it.
     if (p.mExternalFilePath.empty() == true && p.mBuiltinBuffer.empty() == true) { continue; }
+
+    // Otherwise, it regards as a fragment of shader so load it.
     if (p.mExternalFilePath.empty() == false)
     {
       MDY_ASSERT(std::filesystem::exists(p.mExternalFilePath) == true, "OpenGL Shader external file path exist but not valid.");
       auto ptrBuffer = DyReadBinaryFileAll(p.mExternalFilePath);
       MDY_ASSERT(ptrBuffer.has_value() == true, "Unexpected error occurred while reading file.");
-      shader.mShaderFragmentCode = ptrBuffer.value().data();
+
+      // Parse shader code, and save buffer to chunk.
+      shader.mShaderFragmentCode = mcs::ParseGLShader(ptrBuffer.value().data());
     }
     else
     {
-      shader.mShaderFragmentCode = p.mBuiltinBuffer;
+      // Parse shader code, and save buffer to chunk.
+      shader.mShaderFragmentCode = mcs::ParseGLShader(p.mBuiltinBuffer);
     }
 
     shader.mShaderType    = static_cast<EDyShaderFragmentType>(i);

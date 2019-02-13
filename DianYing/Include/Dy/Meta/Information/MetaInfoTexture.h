@@ -17,6 +17,7 @@
 #include <Dy/Core/Resource/Internal/TextureType.h>
 #include <Dy/Helper/Type/VectorInt2.h>
 #include <Dy/Meta/Information/CommonResourceMetaInfo.h>
+#include <variant>
 
 namespace dy
 {
@@ -27,14 +28,25 @@ namespace dy
 ///
 struct PDyTextureInstanceMetaInfo final : public PDyCommonResourceMetaInfo
 {
+  struct DCubemapFilePath 
+  {
+    std::string mTopPath    = MDY_INITIALIZE_EMPTYSTR;
+    std::string mBottomPath = MDY_INITIALIZE_EMPTYSTR;
+    std::string mFrontPath  = MDY_INITIALIZE_EMPTYSTR;
+    std::string mBackPath   = MDY_INITIALIZE_EMPTYSTR;
+    std::string mRightPath  = MDY_INITIALIZE_EMPTYSTR;
+    std::string mLeftPath   = MDY_INITIALIZE_EMPTYSTR;
+  };
+
   /// Texture specification name.
   std::string         mSpecifierName    = MDY_INITIALIZE_EMPTYSTR;
   /// Texture external file path.
-  std::string         mExternalFilePath = MDY_INITIALIZE_EMPTYSTR;
+  /// DCubemapFilePath only applied when `mTextureType` is EDyTextureStyleType::D2Cubemap;
+  std::variant<std::string, DCubemapFilePath> mExternalFilePath = MDY_INITIALIZE_EMPTYSTR;
   /// Texture is 1D or 2D?
-  EDyTextureStyleType mTextureType      = EDyTextureStyleType::NoneError;
+  EDyTextureStyleType mTextureType = EDyTextureStyleType::NoneError;
   /// Border color
-  DDyColorRGBA        mBorderColor      = DDyColorRGBA::Black;
+  DDyColorRGBA        mBorderColor = DDyColorRGBA::Black;
   /// as R, RG, RGB, RGBA
   EDyImageColorFormatStyle  mTextureColorType = EDyImageColorFormatStyle::NoneError;
   /// 
@@ -55,11 +67,14 @@ struct PDyTextureInstanceMetaInfo final : public PDyCommonResourceMetaInfo
   /// @deprecated NOT USED NOW
   bool        mIsEnabledAbsolutePath_Deprecated = true;
   /// @deprecated NOT USED NOW.
-  EDyTextureMapType   mTextureMapType_Deprecated = EDyTextureMapType::Custom;
+  EDyTextureMapType   mTextureMapType_Deprecated = EDyTextureMapType::Unknown;
 };
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyTextureInstanceMetaInfo& p);
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyTextureInstanceMetaInfo& p);
+
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyTextureInstanceMetaInfo::DCubemapFilePath& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyTextureInstanceMetaInfo::DCubemapFilePath& p);
 
 } /// ::dy namespace
 

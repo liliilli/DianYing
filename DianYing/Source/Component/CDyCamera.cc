@@ -22,31 +22,6 @@
 namespace dy
 {
 
-void CDyCamera::Activate() noexcept
-{
-  ADyGeneralBaseComponent::Activate();
-
-  // FunctionBody ∨
-  MDY_NOTUSED auto _ = pTryActivateCameraOperation();
-}
-
-void CDyCamera::Deactivate() noexcept
-{
-  ADyGeneralBaseComponent::Deactivate();
-
-  // FunctionBody ∨
-  MDY_NOTUSED auto _ = pTryDeactivateCameraOperation();
-}
-
-void CDyCamera::pPropagateParentActorActivation(_MIN_ const DDy3StateBool& actorBool) noexcept
-{
-  ADyGeneralBaseComponent::pPropagateParentActorActivation(actorBool);
-
-  // FunctionBody ∨
-  { MDY_NOTUSED auto _ = pTryActivateCameraOperation();   }
-  { MDY_NOTUSED auto _ = pTryDeactivateCameraOperation(); }
-}
-
 EDySuccess CDyCamera::Initialize(_MIN_ const PDyCameraComponentMetaInfo& descriptor)
 {
   // Setting initial properties values.
@@ -64,6 +39,8 @@ EDySuccess CDyCamera::Initialize(_MIN_ const PDyCameraComponentMetaInfo& descrip
   // @TODO FIX) IMPLEMENT THIS.
   this->mIsEnableMeshUnClipped    = false;
   this->mIsEnableMeshUnClipped    = descriptor.mDetails.mIsEnableMeshUnClipped;
+
+  this->mIsUsing3DListener        = descriptor.mDetails.mIs3DListener;
 
   // Set first time flag to false to use second time flag logics.
   if (descriptor.mInitiallyActivated) { this->Activate(); }
@@ -157,11 +134,8 @@ void CDyCamera::pUpdateProjectionMatrix()
   this->mIsProjectionMatrixDirty = false;
 }
 
-EDySuccess CDyCamera::pTryActivateCameraOperation()
+void CDyCamera::TryActivateInstance()
 {
-  if (this->mActivateFlag.IsOutputValueChanged() == false)  { return DY_FAILURE; }
-  if (this->mActivateFlag.GetOutput() == false)             { return DY_FAILURE; }
-
   this->pUpdateCameraVectors();
   this->pUpdateViewMatrix();
   this->pUpdateProjectionMatrix();
@@ -169,16 +143,11 @@ EDySuccess CDyCamera::pTryActivateCameraOperation()
 
   // If camera must be focused instantly, set it to present focused camera reference ptr of manager.
   if (this->mIsMustBeFocusedInstantly == true) { this->Focus(); }
-  return DY_SUCCESS;
 }
 
-EDySuccess CDyCamera::pTryDeactivateCameraOperation()
+void CDyCamera::TryDeactivateInstance()
 {
-  if (this->mActivateFlag.IsOutputValueChanged() == false)  { return DY_FAILURE; }
-  if (this->mActivateFlag.GetOutput() == true)             { return DY_FAILURE; }
-
   if (this->mIsFocused == true) { this->Unfocus(); }
-  return DY_SUCCESS;
 }
 
 const DDyMatrix4x4& CDyCamera::GetViewMatrix() const noexcept
@@ -219,6 +188,11 @@ const DDyVector3& CDyCamera::GetPosition() const noexcept
 bool CDyCamera::CheckIsPointInFrustum(_MIN_ const DDyVector3& iPoint) const noexcept
 {
   return this->mFrustum.IsPointInFrustum(iPoint);
+}
+
+bool CDyCamera::IsUsing3DListener() const noexcept
+{
+  return this->mIsUsing3DListener;
 }
 
 std::array<TI32, 4> CDyCamera::GetPixelizedViewportRectangle() const noexcept
@@ -296,6 +270,14 @@ void CDyCamera::SetViewportH(const float h) noexcept
 void CDyCamera::SetFeatureMeshUnclipping(const bool flag) noexcept
 {
   this->mIsEnableMeshUnClipped = flag;
+}
+
+void CDyCamera::Set3DListenerActivation(_MIN_ bool iActivated) noexcept
+{
+  if (this->mIsUsing3DListener != iActivated)
+  {
+    this->mIsUsing3DListener = iActivated;
+  }
 }
 
 EDySuccess CDyCamera::Focus()

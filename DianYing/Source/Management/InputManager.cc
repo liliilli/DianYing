@@ -23,6 +23,7 @@
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/Type/Input/DDyInputButton.h>
 #include <Dy/Management/Type/Input/DDyJoystickAnalog.h>
+#include <Dy/Core/DyEngine.h>
 
 //!
 //! Data
@@ -451,7 +452,12 @@ bool MDyInput::IsJoystickConnected() const noexcept
   return mIsControllerConnected;
 }
 
-void MDyInput::pfUpdate(_MIN_ TF32 dt) noexcept
+bool MDyInput::IsKeyPressed(_MIN_ EDyInputButton keyValue) const noexcept
+{
+  return mInputButtonList[keyValue].Get() == EDyInputButtonStatus::Pressed; 
+}
+
+void MDyInput::pfInGameUpdate(_MIN_ TF32 dt) noexcept
 {
   this->MDY_PRIVATE_SPECIFIER(pUpdateMouseMovement)(dt);
   if (this->IsJoystickConnected() == true)
@@ -467,6 +473,11 @@ void MDyInput::pfUpdate(_MIN_ TF32 dt) noexcept
   this->mDelegateManger.CheckDelegateAction(dt);
 }
 
+void MDyInput::pfGlobalUpdate(_MIN_ TF32 dt) noexcept
+{
+  // DO NOTHING.
+}
+
 void MDyInput::MDY_PRIVATE_SPECIFIER(pUpdateJoystickSticks)()
 {
   int supportingStickCount;
@@ -478,12 +489,6 @@ void MDyInput::MDY_PRIVATE_SPECIFIER(pUpdateJoystickSticks)()
     mInputAnalogStickList[i].Update(stickValueList[i]);
   }
 }
-
-///
-/// @macro MDY_BIND_CBEGIN_CEND
-/// @brief Help forward iteratable type to bind .begin() and .end() to function.
-///
-#define MDY_BIND_CBEGIN_CEND(__MAIteratorableType__) __MAIteratorableType__.cbegin(), __MAIteratorableType__.cend()
 
 void MDyInput::MDY_PRIVATE_SPECIFIER(pUpdateJoystickButtons)()
 {
@@ -769,6 +774,11 @@ EDySuccess MDyInput::MDY_PRIVATE_SPECIFIER(TryRequireControllerActor)(_MIN_ ADyA
 EDySuccess MDyInput::MDY_PRIVATE_SPECIFIER(TryDetachContollerActor)(_MIN_ ADyActorCppScript& iRefActor) noexcept
 {
   return this->mDelegateManger.TryDetachContollerActor(iRefActor);
+}
+
+EDyInputButtonStatus MDyInput::MDY_PRIVATE_SPECIFIER(GetLowlevelKeyStatus)(_MIN_ EDyButton iId) noexcept
+{
+  return mInputButtonList[iId].Get();
 }
 
 } /// ::dy namespace

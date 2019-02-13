@@ -15,8 +15,13 @@
 /// Header file
 #include <Dy/Helper/Type/Matrix4.h>
 
+#include <glm/gtc/matrix_transform.hpp>
+#include <foundation/PxTransform.h>
+#include <nlohmann/json.hpp>
+
 #include <Dy/Helper/Type/Matrix2.h>
 #include <Dy/Helper/Type/Matrix3.h>
+#include <Dy/Helper/Type/Quaternion.h>
 
 namespace dy
 {
@@ -67,6 +72,18 @@ DDyMatrix4x4::DDyMatrix4x4(const aiMatrix4x4& aiMatrix) noexcept
   this->mMatrixValue[1][3] = aiMatrix.d2;
   this->mMatrixValue[2][3] = aiMatrix.d3;
   this->mMatrixValue[3][3] = aiMatrix.d4;
+}
+
+DDyMatrix4x4::DDyMatrix4x4(_MIN_ const physx::PxTransform& physxTransform) noexcept
+{
+  const auto quatMatrix = DDyQuaternion{physxTransform.q}.GetRotationMatrix4x4();
+  this->mMatrixValue[0] = quatMatrix[0];
+  this->mMatrixValue[1] = quatMatrix[1];
+  this->mMatrixValue[2] = quatMatrix[2];
+  this->mMatrixValue[3] = quatMatrix[3];
+  this->mMatrixValue[3][0] += physxTransform.p.x;
+  this->mMatrixValue[3][1] += physxTransform.p.y;
+  this->mMatrixValue[3][2] += physxTransform.p.z;
 }
 
 DDyMatrix4x4& DDyMatrix4x4::operator=(const glm::mat2& value) noexcept
@@ -396,6 +413,44 @@ DDyMatrix4x4 DDyMatrix4x4::CreateWithTranslation(const DDyVector3& translationPo
     0, 0, 0, 1};
 }
 
+DDyMatrix4x4& DDyMatrix4x4::Scale(_MIN_ const DDyVector3& iScaleFactor)
+{
+  const auto mat = glm::scale(static_cast<glm::mat4>(*this), static_cast<glm::vec3>(iScaleFactor));
+  (*this)[0] = mat[0];
+  (*this)[1] = mat[1];
+  (*this)[2] = mat[2];
+  (*this)[3] = mat[3];
+  return *this;
+}
+
+DDyMatrix4x4& DDyMatrix4x4::Rotate(_MIN_ const DDyVector3& iRotationDegreeAngle)
+{
+  const auto mat = this->Multiply(DDyQuaternion(iRotationDegreeAngle).GetRotationMatrix4x4());
+  (*this)[0] = mat[0];
+  (*this)[1] = mat[1];
+  (*this)[2] = mat[2];
+  (*this)[3] = mat[3];
+  return *this;
+}
+
+DDyMatrix4x4& DDyMatrix4x4::Rotate(_MIN_ const DDyQuaternion& iRotationQuaternion)
+{
+  const auto mat = this->Multiply(iRotationQuaternion.GetRotationMatrix4x4());
+  (*this)[0] = mat[0];
+  (*this)[1] = mat[1];
+  (*this)[2] = mat[2];
+  (*this)[3] = mat[3];
+  return *this;
+}
+
+DDyMatrix4x4& DDyMatrix4x4::Translate(_MIN_ const DDyVector3& iPosition)
+{
+  (*this)[3][0] += iPosition.X;
+  (*this)[3][1] += iPosition.Y;
+  (*this)[3][2] += iPosition.Z;
+  return *this;
+}
+
 DDyMatrix4x4::DDyMatrix4x4(bool)
 {
   this->mMatrixValue[0][0] = 1;
@@ -419,6 +474,25 @@ bool operator==(_MIN_ const DDyMatrix4x4& lhs, _MIN_ const DDyMatrix4x4& rhs) no
 bool operator!=(_MIN_ const DDyMatrix4x4& lhs, _MIN_ const DDyMatrix4x4& rhs) noexcept
 {
   return !(lhs == rhs);
+}
+
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDyMatrix4x4& p)
+{
+  j = nlohmann::json
+  {
+    {"00", p[0][0]}, {"01", p[0][1]}, {"02", p[0][2]}, {"03", p[0][3]},
+    {"10", p[1][0]}, {"11", p[1][1]}, {"12", p[1][2]}, {"13", p[1][3]},
+    {"20", p[1][0]}, {"21", p[2][1]}, {"22", p[2][2]}, {"23", p[2][3]},
+    {"30", p[1][0]}, {"31", p[3][1]}, {"32", p[3][2]}, {"33", p[3][3]},
+  };
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDyMatrix4x4& p)
+{
+  p[0][0] = j["00"].get<float>(); p[0][1] = j["01"].get<float>(); p[0][2] = j["02"].get<float>(); p[0][3] = j["03"].get<float>();
+  p[1][0] = j["10"].get<float>(); p[1][1] = j["11"].get<float>(); p[1][2] = j["12"].get<float>(); p[1][3] = j["13"].get<float>();
+  p[2][0] = j["20"].get<float>(); p[2][1] = j["21"].get<float>(); p[2][2] = j["22"].get<float>(); p[2][3] = j["23"].get<float>();
+  p[3][0] = j["30"].get<float>(); p[3][1] = j["31"].get<float>(); p[3][2] = j["32"].get<float>(); p[3][3] = j["33"].get<float>();
 }
 
 } /// ::dy namespace

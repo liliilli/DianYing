@@ -18,6 +18,7 @@
 
 #include <Dy/Helper/Type/Vector4.h>
 #include <Dy/Helper/Type/Matrix4.h>
+#include <Dy/Helper/Type/VectorInt4.h>
 
 namespace dy
 {
@@ -28,8 +29,6 @@ namespace dy
 ///
 struct DDyVertexBoneData final
 {
-  std::array<TI32, 4> mBoneId     = {-1, -1, -1, -1};
-  DDyVector4          mWeights    = { 0,  0,  0,  0};
 };
 
 ///
@@ -40,10 +39,17 @@ struct DDyVertexInformation final
 {
   DDyVector3          mPosition   = {};
   DDyVector3          mNormal     = {};
-  DDyVector2          mTexCoords  = {};
+  DDyVector2          mTexCoord0  = {};
+  DDyVector2          mTexCoord1  = {};
+  DDyVector3          mTangent    = {};
+  DDyVector3          mBitangent  = {};
   // Below elements are used when skeletal animation is applied.
-  DDyVertexBoneData   mVertexBoneData;
+  DDyVectorInt4       mBoneId     = {-1, -1, -1, -1};
+  DDyVector4          mWeights    = { 0,  0,  0,  0};
 };
+
+/// @brief Deserialization function.
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ DDyVertexInformation& p);
 
 ///
 /// @struct DDyGeometryBoneInformation

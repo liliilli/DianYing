@@ -101,6 +101,9 @@ public:
   /// @brief Check point is in camera frustum.
   MDY_NODISCARD bool CheckIsPointInFrustum(_MIN_ const DDyVector3& iPoint) const noexcept;
 
+  /// @brief Check this camera is using 3d listener.
+  MDY_NODISCARD bool IsUsing3DListener() const noexcept;
+
   /// @brief  Get scale value of xy (start point) of viewport rectangle.
   /// @return Scaled start point of viewport rectangle.
   MDY_NODISCARD const DDyVector2& GetViewportRectScaleXy() const noexcept
@@ -161,6 +164,9 @@ public:
   /// @brief  Set mesh unclipping feature of this camera component instance.
   void SetFeatureMeshUnclipping(_MIN_ const bool flag) noexcept;
 
+  /// @brief Set 3D Listener activation.
+  void Set3DListenerActivation(_MIN_ bool iActivated) noexcept;
+
   /// @brief  Do focusing camera as main camera.
   /// @return If camera component is not binded main cam before Focus(), return true or false.
   EDySuccess Focus();
@@ -168,16 +174,6 @@ public:
   /// @brief  remove focusing camera as main camera.
   /// @return If camera component is being binded as main cam before Focus(), return true or false.
   EDySuccess Unfocus();
-
-  /// @brief  Activate CDyCamera. Final activation value is also dependent on FDyActor activation flag.
-  void Activate() noexcept override final;
-
-  /// @brief  Deactivate CDyCamera. Final activation value is also dependent on FDyActor activation flag.
-  void Deactivate() noexcept override final;
-
-  /// @brief  Propagate CDyActor's 3-state bool output value as component's parent.
-  /// @param  actorBool CDyActor's 3-state boolean value.
-  void pPropagateParentActorActivation(_MIN_ const DDy3StateBool& actorBool) noexcept override final;
 
   /// @brief  Initilaize component property.
   /// @param  descriptor Descriptor which has a values.
@@ -197,6 +193,14 @@ public:
   MDY_NODISCARD std::string ToString() override final;
 
 private:
+  /// Try activate camera operation.
+  /// If parent is activate and itself activated, update all properties newly.
+  void TryActivateInstance() override final;
+
+  /// Try deactivate camera operation.
+  /// If either parent or itself is deactivated, disconnect it with all outside system.
+  void TryDeactivateInstance() override final;
+
   /// @brief Update camera vectors
   void pUpdateCameraVectors();
 
@@ -205,14 +209,6 @@ private:
 
   /// @brief Update projection matrix.
   void pUpdateProjectionMatrix();
-
-  /// Try activate camera operation.
-  /// If parent is activate and itself activated, update all properties newly.
-  MDY_NODISCARD EDySuccess pTryActivateCameraOperation();
-
-  /// Try deactivate camera operation.
-  /// If either parent or itself is deactivated, disconnect it with all outside system.
-  MDY_NODISCARD EDySuccess pTryDeactivateCameraOperation();
 
   /// View matrix (In OpenGL, final result must be transposed because of matrix must be column-major as ragard to specification.)
   /// .- rx ry rz  0 -..-  0  0  0 -x -.    .- rx ry rz -r*t -.T r(x, y, z) is camera's x-axis normal vector.
@@ -267,6 +263,9 @@ private:
   MDY_TRANSIENT bool mIsMustBeFocusedInstantly  = false;
   MDY_TRANSIENT bool mIsViewMatrixDirty         = true;
   MDY_TRANSIENT bool mIsProjectionMatrixDirty   = true;
+
+  /// @brief Using 3D Listener.
+  bool mIsUsing3DListener = false;
 
 #ifdef false
   float mMouseSensitivity         = 0.25f;

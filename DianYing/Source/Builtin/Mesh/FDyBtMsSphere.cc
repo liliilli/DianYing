@@ -18,7 +18,7 @@
 namespace dy
 {
   
-void FDyBtMsSphere::ConstructBuffer(_MOUT_ PDyBtMeshInstanceMetaInfo& property) noexcept
+void FDyBtMsSphere::ConstructBuffer(_MOUT_ PDyMeshInstanceMetaInfo& property) noexcept
 {
   property.mSpecifierName = sName;
 
@@ -26,7 +26,7 @@ void FDyBtMsSphere::ConstructBuffer(_MOUT_ PDyBtMeshInstanceMetaInfo& property) 
   const auto a = DDyVector3{ 0, 1, 0 };
   const auto b = DDyVector3{ 0, 0, 1 };
   const auto c = DDyVector3{ 1, 0, 0 };
-  const auto d = DDyVector3{-1,-1,-1 }.Normalize();
+  const auto d = DDyVector3{ -1, -1, -1 }.Normalize();
   // Texture Coordination
   const auto ta = DDyVector2{ 1, 1 };
   const auto tb = DDyVector2{ 0, 1 };
@@ -34,7 +34,7 @@ void FDyBtMsSphere::ConstructBuffer(_MOUT_ PDyBtMeshInstanceMetaInfo& property) 
   const auto td = DDyVector2{ -1, -1 };
 
   // Make vertex information
-  const TI32 level = 3;
+  const TI32 level = 4;
   auto& submeshDesc = property.mDefaultMeshBuffer;
   pCreateVertexRecursively(a, b, c, ta, tb, tc, level, submeshDesc);
   pCreateVertexRecursively(b, c, d, tb, tc, td, level, submeshDesc);
@@ -49,7 +49,7 @@ void FDyBtMsSphere::pEmplaceVertex(
   DDyVertexInformation vertex;
   vertex.mPosition  = position;
   vertex.mNormal    = position;
-  vertex.mTexCoords = texcoord;
+  vertex.mTexCoord0 = texcoord;
   container.mVertexList.emplace_back(vertex);
 }
 

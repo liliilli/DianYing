@@ -27,6 +27,7 @@
 namespace dy
 {
 class CDyModelRenderer;
+class CDyModelAnimator;
 class CDyLegacyCamera;
 class CDyCamera;
 } /// ::dy namespace
@@ -55,10 +56,8 @@ public:
   /// @brief Update valid objects. this function must be called after this->Update().
   /// @param dt Delta time
   void UpdateObjects(_MIN_ float dt);
-
-  /// @brief
-  /// @param
-  void RequestDrawCall();
+  /// @brief Update animator component (pre-render phase).
+  void UpdateAnimator(_MIN_ TF32 dt);
 
   /// @brief Get all actors with tag. Tag must be valid. \n
   /// If iTagSpecifier is empty, this function get all actors which is not specified any tag.
@@ -168,6 +167,18 @@ public:
 
   /// @brief Try detach active model renderer.
   EDySuccess MDY_PRIVATE_SPECIFIER(TryDetachActiveModelRenderer)(_MIN_ CDyModelRenderer* iPtrRenderer);
+
+  /// @brief Bind (Enroll) active model animator component. This function must be called in `CDyModelAnimator`.
+  void MDY_PRIVATE_SPECIFIER(BindActiveModelAnimator)(_MIN_ CDyModelAnimator& iRefComponent);
+  /// @brief Unbind deactivated model animator component This function must be called in `CDyModelAnimator`.
+  EDySuccess MDY_PRIVATE_SPECIFIER(UnbindActiveModelAnimator)(_MIN_ CDyModelAnimator& iRefComponent);
+
+  /// @brief Try get valid pointer instance (not-null) of CDySkybox target to be rendered on renderer.
+  MDY_NODISCARD std::optional<NotNull<CDySkybox*>> GetPtrMainLevelSkybox() const noexcept;
+  /// @brief Bind (Enroll) active skybox component. This function must be called in `CDySkybox`.
+  void MDY_PRIVATE_SPECIFIER(BindActiveSkybox)(_MIN_ CDySkybox& iRefComponent);
+  /// @brief Unbind deactivated skybox component. This function must be called in `CDySkybox`.
+  EDySuccess MDY_PRIVATE_SPECIFIER(UnbindActiveSkybox)(_MIN_ CDySkybox& iRefComponent);
 
 #ifdef false
   ///
@@ -283,6 +294,13 @@ private:
   std::vector<CDyCamera*>   mActivatedOnRenderingCameras = {};
   /// Erasion (activated) model renderer list. this list must be sorted descendently not to invalidate order.
   std::vector<TI32>         mErasionCamerasCandidateList = {};
+
+  /// Valid animator ptr which to be used update animation sequence.
+  /// This list is not invalidated because animation updating is not change list order.
+  std::vector<NotNull<CDyModelAnimator*>> mActivatedModelAnimatorPtrs = {};
+
+  /// Valid & Activated skybox component pointer list. 
+  std::vector<NotNull<CDySkybox*>> mActivatedSkyboxPtrList {};
 
   /// @brief Action creation descriptor list for present level. \n
   /// This list must be processed and cleaned each frame prior to update of logic.

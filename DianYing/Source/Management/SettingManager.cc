@@ -126,6 +126,11 @@ bool MDySetting::IsDefaultSsaoOptionActivated() const noexcept
   return this->mGamePlay.mGraphics.mIsEnabledDefaultSsao;
 }
 
+bool MDySetting::IsDebugMode() const noexcept
+{
+  return this->mIsDebugMode;
+}
+
 TI32 MDySetting::GetWindowSizeWidth() const noexcept
 {
   return this->mGamePlay.mInitialResolution.X;
@@ -241,6 +246,36 @@ const std::string& MDySetting::MDY_PRIVATE_SPECIFIER(GetEntrySettingFile)() cons
   return this->mEntrySettingPath;
 }
 
+const DDySettingSound& MDySetting::GetSoundSetting() const noexcept
+{
+  return this->mSound;
+}
+
+const DDySettingPhysics& MDySetting::GetPhysicsSetting() const noexcept
+{
+  return this->mPhysics;
+}
+
+void MDySetting::SetRenderingMode(_MIN_ EDyModelRenderingMode iNewMode) noexcept
+{
+  this->mModelRenderingMode = iNewMode;
+}
+
+EDyModelRenderingMode MDySetting::GetRenderingMode() const noexcept
+{
+  return this->mModelRenderingMode;
+}
+
+void MDySetting::SetRenderingPhysicsCollisionShape(_MIN_ bool iIsEnabled) noexcept
+{
+  this->mIsRenderPhysicsCollisionShape = iIsEnabled;
+}
+
+bool MDySetting::IsRenderPhysicsCollisionShape() const noexcept
+{
+  return this->mIsRenderPhysicsCollisionShape;
+}
+
 void MDySetting::pSetupExecutableArgumentSettings()
 {
   /// @brief Setup rendering api type from argument.
@@ -252,9 +287,11 @@ void MDySetting::pSetupExecutableArgumentSettings()
 
     // Get Graphics api string.
     this->mRenderingType = DyGetRenderingApiType(graphicsApi);
-    MDY_ASSERT(
-        this->mRenderingType != EDyRenderingApi::NoneError,
-        "Rendering api option is not specified properly. Must be \"OpenGL\".");
+    // If rendering type is none, default value is OpenGL.
+    if (this->mRenderingType == EDyRenderingApi::NoneError)
+    { 
+      this->mRenderingType = EDyRenderingApi::OpenGL; 
+    }
   };
 
   /// @brief Setup feature logging to console from argument.
@@ -267,6 +304,8 @@ void MDySetting::pSetupExecutableArgumentSettings()
       this->mIsEnabledLoggingToConsole  = true;
     }
   };
+
+  static auto SetupDyDebugMode = [this](const cxxopts::OptionValue& result) { this->mIsDebugMode = result.as<bool>(); };
 
   /// @brief Setup feature logging to file from argument.
   /// @param result ["enable_logging_file"] Option value from parsing library.
@@ -305,6 +344,15 @@ void MDySetting::pSetupExecutableArgumentSettings()
       ("r,run_separated_data",    
           "Run with seperated data file, must be setting file path.", 
           cxxopts::value<std::string>()->default_value(""))
+      // If -d setup, debug mode will be setup.
+      // Specified keyboard key will be setup (F1 ~ F12) and override given game runtime key. 
+      // and, imgui will also be initiated to see informations.
+      // when -d set up, all resources will be loaded like -r flag. and saved as saparated files.
+      /// @WARNING IMGUI does not follow any design-patterns like a MVC, MVP, MVVM, prism...
+      /// IMGUI is just for intermediate gui rendering.
+      ("d,debug",
+          "Debug mode. User can make game resources with debug mode or can see informations.",
+          cxxopts::value<bool>())
   ;
 
   #if defined(MDY_PLATFORM_FLAG_WINDOWS) && defined(_WIN32)
@@ -312,8 +360,10 @@ void MDySetting::pSetupExecutableArgumentSettings()
     const auto result = options.parse(__argc, __argv);
 
     SetupRenderingType(result["graphics"]);
+    
     SetupLoggingConsoleFeature(result["enable_logging_console"]);
     SetupLoggingFileFeature(result["enable_logging_file"]);
+
     { // Mode compression data
       if (const auto m = result["mode_compression_data"].as<std::string>(); m.empty() == false)
       {
@@ -329,14 +379,17 @@ void MDySetting::pSetupExecutableArgumentSettings()
       {
         namespace fs = std::filesystem;
         MDY_ASSERT_FORCE(
-            this->GetApplicationMode() == EDyAppMode::LoadCompressedFile,
+            this->mFileLoadingMode == EDyFileLoadingMode::LoadCompressedFile,
             "Application running mode should not be duplicated by any mode flag.");
         MDY_ASSERT_FORCE(fs::exists(r) == true, "Compressed data entry setting file is not exist on given path.");
 
         this->mEntrySettingPath = r;
-        this->mApplicationMode  = EDyAppMode::LoadSeperatedFile;
+        this->mFileLoadingMode  = EDyFileLoadingMode::LoadSeperatedFile;
       }
     }
+
+    // Check debug mode must be enabled.
+    SetupDyDebugMode(result["debug"]);
   }
   #elif defined(MDY_PLATFORM_FLAG_LINUX) && defined(__linux__)
   {
@@ -379,7 +432,7 @@ EDySuccess MDySetting::pfInitialize()
   MDY_LOG_INFO_D("{} | Vsync : {}", "Feature",                this->mIsEnabledVsync ? "ON" : "OFF");
   MDY_CALL_ASSERT_SUCCESS(InitializeGraphicsApi(*this));
 
-  if (this->mApplicationMode == EDyAppMode::LoadSeperatedFile)
+  if (this->mFileLoadingMode == EDyFileLoadingMode::LoadSeperatedFile) 
   { // If Application loading mode is `Load separated file` like a json, dydat.
     const auto opSettingAtlas = DyGetJsonAtlasFromFile(this->mEntrySettingPath);
     MDY_ASSERT(opSettingAtlas.has_value() == true, "Failed to open application setting file.");
@@ -390,10 +443,13 @@ EDySuccess MDySetting::pfInitialize()
     DyJsonGetValueFromTo(settingAtlas, sCategoryGameplay, this->mGamePlay);
     DyJsonGetValueFromTo(settingAtlas, sCategoryInput, this->mInput);
     DyJsonGetValueFromTo(settingAtlas, sCategoryTag, this->mTag);
+    DyJsonGetValueFromTo(settingAtlas, "Sound", this->mSound);
+    DyJsonGetValueFromTo(settingAtlas, "Physics", this->mPhysics);
+
     DyJsonGetValueFromTo(settingAtlas, sCategoryMetaPath, this->mDevMetaPath);
     MDyMetaInfo::GetInstance().MDY_PRIVATE_SPECIFIER(InitiateMetaInformation)();
   }
-  else if (this->mApplicationMode == EDyAppMode::LoadCompressedFile)
+  else if (this->mFileLoadingMode == EDyFileLoadingMode::LoadCompressedFile)
   { // If Application loading mode is `Load compressed file` like a `Data###.dydat`.
     MDY_ASSERT(std::filesystem::exists(this->mEntrySettingPath) == true, "Data file is not exist.");
 
@@ -407,6 +463,8 @@ EDySuccess MDySetting::pfInitialize()
     DyJsonGetValueFromTo(settingAtlas, sCategoryGameplay, this->mGamePlay);
     DyJsonGetValueFromTo(settingAtlas, sCategoryInput, this->mInput);
     DyJsonGetValueFromTo(settingAtlas, sCategoryTag, this->mTag);
+    DyJsonGetValueFromTo(settingAtlas, "Sound", this->mSound);
+    DyJsonGetValueFromTo(settingAtlas, "Physics", this->mPhysics);
     MDyMetaInfo::GetInstance().MDY_PRIVATE_SPECIFIER(InitiateMetaInformationComp)(metaAtlas);
   }
   else { MDY_UNEXPECTED_BRANCH(); }

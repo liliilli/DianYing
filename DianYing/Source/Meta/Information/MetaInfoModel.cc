@@ -13,8 +13,10 @@
 ///
 
 /// Header file
-#include <Dy/Meta/Information/ModelMetaInformation.h>
+#include <Dy/Meta/Information/MetaInfoModel.h>
 #include <Dy/Helper/Library/HelperJson.h>
+#include <nlohmann/json.hpp>
+#include "Dy/Builtin/Material/BtMtCheckerWorldPos.h"
 
 //!
 //! Forward declaration
@@ -34,24 +36,78 @@ namespace
 namespace dy
 {
 
-void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelInstanceMetaInfo_Deprecated& p)
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelInstanceMetaInfo& p)
+{
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo& p)
+{
+  /* Template (2019-01-24)
+   *{
+      "Nanosuit":
+      {
+        "Mesh": 
+        [
+          { "Specifier": "nanosuit_Arms", "Material": "dyBtMtCheckerWorldPos" },
+          { "Specifier": "nanosuit_Body", "Material": "dyBtMtCheckerWorldPos" },
+          { "Specifier": "nanosuit_Hands", "Material": "dyBtMtCheckerWorldPos" },
+          { "Specifier": "nanosuit_Helmet", "Material": "dyBtMtCheckerWorldPos" },
+          { "Specifier": "nanosuit_Legs", "Material": "dyBtMtCheckerWorldPos" },
+          { "Specifier": "nanosuit_Lights", "Material": "dyBtMtCheckerWorldPos" },
+          { "Specifier": "nanosuit_Visor", "Material": "dyBtMtCheckerWorldPos" }
+        ],
+        "Skeleton":
+        {
+          "IsUsingSkeleton": false,
+          "SkeletonSpecifier": ""
+        }
+      }
+    }
+   */ 
+
+  p.mSourceType = EDyResourceSource::External;
+  DyJsonGetValueFromTo(j, "Mesh",     p.mMeshList);
+  DyJsonGetValueFromTo(j, "Skeleton", p.mSkeleton);
+  DyJsonGetValueFromTo(j, "Transform", p.mTransform);
+}
+
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelInstanceMetaInfo::DMesh& p)
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
 }
 
-void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo_Deprecated& p)
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo::DMesh& p)
 {
-  /* Template
-   * "GLModelSpecifierName":
-     {
-       "SpecifierName": "Name",
-       "ModelPath": "C:/Path"
-     }
-   */
+  DyJsonGetValueFromTo(j, "Specifier",  p.mMeshSpecifier);
+  DyJsonGetValueFromTo(j, "Material",   p.mMaterialSpecifier);
+  // 
+  if (p.mMaterialSpecifier.empty() == true)
+  {
+    p.mMaterialSpecifier = MSVSTR(builtin::FDyBtMtCheckerWorldPos::sName);
+  }
+}
 
-  p.mSourceType = EDyResourceSource::External;
-  p.mSpecifierName = DyJsonGetValueFrom<std::string>(j, "SpecifierName");
-  p.mExternalModelPath  = DyJsonGetValueFrom<std::string>(j, "ModelPath");
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelInstanceMetaInfo::DSkeleton& p)
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo::DSkeleton& p)
+{
+  DyJsonGetValueFromTo(j, "IsUsingSkeleton",    p.mIsUsingSkeleton);
+  DyJsonGetValueFromTo(j, "SkeletonSpecifier",  p.mSkeletonSpecifier);
+}
+
+void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelInstanceMetaInfo::DTransform& p)
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+}
+
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo::DTransform& p)
+{
+  DyJsonGetValueFromTo(j, "Position",   p.mPosition);
+  DyJsonGetValueFromTo(j, "Rotation",   p.mRotation);
+  DyJsonGetValueFromTo(j, "Scale",      p.mScale);
 }
 
 } /// ::dy namespace

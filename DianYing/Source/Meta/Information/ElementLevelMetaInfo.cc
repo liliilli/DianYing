@@ -45,9 +45,8 @@ MDY_SET_IMMUTABLE_STRING(sHeader_SpecifierName,               "SpecifierName");
 MDY_SET_IMMUTABLE_STRING(sHeader_IsUsingUUIDForSpecification, "IsUsingUUIDForSpecification");
 MDY_SET_IMMUTABLE_STRING(sHeader_BackgroundColor,             "BackgroundColor");
 
-void GetLevelResourceFromActor(
-    _MIN_ const dy::TComponentMetaList& list, 
-    _MINOUT_ dy::TDDyResourceNameSet& iSet)
+/// @brief Set initial level resource from actor component list etc.
+void GetLevelResourceFromActor(_MIN_ const dy::TComponentMetaList& list, _MINOUT_ dy::TDDyResourceNameSet& iSet)
 {
   using namespace dy;
   for (const auto& [type, componentInfo] : list)
@@ -58,19 +57,25 @@ void GetLevelResourceFromActor(
     {
       const auto& desc = std::any_cast<const PDyModelFilterComponentMetaInfo&>(componentInfo);
       if (desc.mDetails.mModelSpecifierName.empty() == true) { break; }
-
+      
       iSet.emplace(EDyResourceType::Model, desc.mDetails.mModelSpecifierName);
     } break;
-    case EDyComponentMetaType::ModelRenderer:
+    case EDyComponentMetaType::ModelAnimator:
     {
-      const auto& desc = std::any_cast<const PDyModelRendererComponentMetaInfo&>(componentInfo);
-      if (desc.mDetails.mMaterialName.empty() == true) { break; }
+      const auto& desc = std::any_cast<const PDyModelAnimatorComponentMetaInfo&>(componentInfo);
 
-      for (const auto& materialSpecifier : desc.mDetails.mMaterialName)
-      {
-        if (materialSpecifier.empty() == true) { continue; }
-        iSet.emplace(EDyResourceType::Material, materialSpecifier);
-      }
+      if (desc.mDetails.mSkeletonSpecifier.empty() == false)
+      { iSet.emplace(EDyResourceType::Skeleton, desc.mDetails.mSkeletonSpecifier); }
+
+      if (desc.mDetails.mTempAnimationScrap.empty() == false)
+      { iSet.emplace(EDyResourceType::AnimationScrap, desc.mDetails.mTempAnimationScrap); }
+    } break;
+    case EDyComponentMetaType::Skybox:
+    {
+      const auto& desc = std::any_cast<const PDySkyboxComponentMetaInfo&>(componentInfo);
+
+      if (desc.mDetails.mCubemapSpecifier.empty() == false)
+      { iSet.emplace(EDyResourceType::Texture, desc.mDetails.mCubemapSpecifier); }
     } break;
     default: /* Do nothing */ break;
     }

@@ -82,6 +82,12 @@ public:
       _MIN_ TDyResourceBinder<EDyResourceType::Material, EDyLazy::Yes>& refMat, 
       _MIN_ bool(*callback)() = nullptr);
 
+  /// @brief Check Reference Instance (RI) which has a given type, style and specifier name is exist.
+  static bool IsReferenceInstanceExist(
+      _MIN_ const std::string& iSpecifier,
+      _MIN_ EDyResourceType iType,
+      _MIN_ EDyResourceStyle iStyle);
+
   /// @brief Try Garbage collect of Reference Instance with resource as Scope and Style, which
   /// is only Valid resource but count is 0. \n
   /// This function may causes time consuming, call this carefully.

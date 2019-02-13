@@ -28,7 +28,10 @@
 #include <Dy/Meta/Information/MetaInfoMaterial.h>
 #include <Dy/Meta/Information/MetaInfoAttachment.h>
 #include <Dy/Meta/Information/MetaInfoFrameBuffer.h>
-#include <Dy/Meta/Information/MetaInfoBuiltinMesh.h>
+#include <Dy/Meta/Information/MetaInfoModelMesh.h>
+#include <Dy/Meta/Information/MetaInfoModelSkeleton.h>
+#include <Dy/Meta/Information/MetaInfoModelAnim.h>
+#include <Dy/Meta/Information/MetaInfoSound.h>
 #include <Dy/Meta/Type/DDyResourceName.h>
 
 //!
@@ -89,12 +92,20 @@ public:
   GetGLShaderMetaInformation(_MIN_ const std::string& specifier) const;
   /// @brief  Get builtin mesh instance meta information from container.
   /// @return Return value is undefined if not found.
-  MDY_NODISCARD const PDyBtMeshInstanceMetaInfo&     
+  MDY_NODISCARD const PDyMeshInstanceMetaInfo&     
   GetBtMeshMetaInformation(_MIN_ const std::string& specifier) const;
   /// @brief  Get model instance meta information from container.
   /// @return Return value is undefined if not found.
   MDY_NODISCARD const PDyModelInstanceMetaInfo&     
   GetModelMetaInformation(_MIN_ const std::string& specifier) const;
+  /// @brief  Get model instance meta information from container.
+  /// @return Return value is undefined if not found.
+  MDY_NODISCARD const PDyModelSkelInstanceMetaInfo&
+  GetModelSkeletonMetaInformation(_MIN_ const std::string& specifier) const;
+  /// @brief  Get model animation scrap meta information from container.
+  /// @return Return value is undefined if not found.
+  MDY_NODISCARD const PDyModelAnimInstanceMetaInfo& 
+  GetModelAnimScrapMetaInformation(_MIN_ const std::string& specifier) const;
   /// @brief  Get texture instance meta information from container.
   /// @return Return value is undefined if not found.
   MDY_NODISCARD const PDyTextureInstanceMetaInfo&   
@@ -103,7 +114,7 @@ public:
   /// @return Return value is undefined if not found.
   MDY_NODISCARD const PDyMaterialInstanceMetaInfo&  
   GetMaterialMetaInformation(_MIN_ const std::string& specifier) const;
-  /// @brief  Get frame buffer instance meta information from container.
+  /// @brief  Get framebuffer instance meta information from container.
   /// @return Return value is undefined if not found.
   MDY_NODISCARD const PDyGlFrameBufferInstanceMetaInfo&
   GetGlFrameBufferMetaInformation(_MIN_ const std::string& specifier) const;
@@ -111,6 +122,10 @@ public:
   /// @return Return value is undefined if not found.
   MDY_NODISCARD const PDyGlAttachmentInstanceMetaInfo&  
   GetGLAttachmentMetaInformation(_MIN_ const std::string& specifier) const;
+  /// @brief  Get sound instance meta information from container.
+  /// @return Return value is undefined if not found.
+  MDY_NODISCARD const PDySoundInstanceMetaInfo&
+  GetSoundMetaInformation(_MIN_ const std::string& specifier) const;
 
   /// @brief Get loading widget pointer if exist, or return nullptr (nothing) value
   MDY_NODISCARD const PDyMetaWidgetRootDescriptor* 
@@ -128,6 +143,12 @@ public:
   /// @brief  Check model meta information is exist.
   /// @return Return value is false if not found.
   MDY_NODISCARD bool IsModelMetaInfoExist(_MIN_ const std::string& specifier) const noexcept;
+  /// @brief  Check model skeleton meta information is exist.
+  /// @return Return value is false if not found.
+  MDY_NODISCARD bool IsModelSkeletonMetaInfoExist(_MIN_ const std::string& specifier) const noexcept;
+  /// @brief  Check model animation scrap meta information is exist.
+  /// @return Return value is falue if not found.
+  MDY_NODISCARD bool IsModelAnimScrapMetaInfoExist(_MIN_ const std::string& specifier) const noexcept;
   /// @brief  Check texture meta information is exist.
   /// @return Return value is false if not found.
   MDY_NODISCARD bool IsTextureMetaInfoExist(_MIN_ const std::string& specifier) const noexcept;
@@ -152,6 +173,9 @@ public:
   /// @brief  Check framebuffer meta information is exist.
   /// @return If found, return true or false.
   MDY_NODISCARD bool IsFrameBufferMetaInfoExist(_MIN_ const std::string& speicfierName) const noexcept;
+  /// @brief  Check sound meta information is exist.
+  /// @return If found, return true or false.
+  MDY_NODISCARD bool IsSoundMetaInfoExist(_MIN_ const std::string& specifierName) const noexcept;
 
   /// @brief Check loading widget is exist and ready.
   /// @return If found, return true or false.
@@ -174,11 +198,15 @@ private:
   MDY_NODISCARD EDySuccess pReadWidgetResourceMetaInformation(_MIN_ const std::string& metaFilePath);
   MDY_NODISCARD EDySuccess pReadSceneResourceMetaInformation (_MIN_ const std::string& metaFilepath);
 
-  MDY_NODISCARD EDySuccess pReadFontResourceMetaInformation    (_MIN_ const std::string& metaFilePath);
-  MDY_NODISCARD EDySuccess pReadModelResourceMetaInformation   (_MIN_ const std::string& metaFilePath);
-  MDY_NODISCARD EDySuccess pReadTextureResourceMetaInformation (_MIN_ const std::string& metaFilePath);
-  MDY_NODISCARD EDySuccess pReadShaderResourceMetaInformation  (_MIN_ const std::string& metaFilePath);
-  MDY_NODISCARD EDySuccess pReadMaterialResourceMetaInformation(_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadFontResourceMetaInformation     (_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadModelResourceMetaInformation    (_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadModelMeshResourceMetaInformation(_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadModelSkeletonMetaInformation    (_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadModelAnimationMetaInformation   (_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadTextureResourceMetaInformation  (_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadShaderResourceMetaInformation   (_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadMaterialResourceMetaInformation (_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadSoundResourceMetaInformation    (_MIN_ const std::string& metaFilePath);
 
   MDY_NODISCARD EDySuccess pReadScriptResourceMetaInformation(_MIN_ const nlohmann::json& iJson);
   MDY_NODISCARD EDySuccess pReadPrefabResourceMetaInformation(_MIN_ const nlohmann::json& iJson);
@@ -189,7 +217,7 @@ private:
   MDY_NODISCARD EDySuccess pfAddWidgetMetaInformation (_MIN_ const std::string& metaInformationString);
   MDY_NODISCARD EDySuccess pfAddScriptMetaInformation (_MIN_ const PDyScriptInstanceMetaInfo& metaInfo);
   MDY_NODISCARD EDySuccess pfAddGLShaderMetaInfo      (_MIN_ const PDyGLShaderInstanceMetaInfo& metaInfo);
-  MDY_NODISCARD EDySuccess pfAddBuiltinMeshMetaInfo   (_MIN_ const PDyBtMeshInstanceMetaInfo& metaInfo);
+  MDY_NODISCARD EDySuccess pfAddBuiltinMeshMetaInfo   (_MIN_ const PDyMeshInstanceMetaInfo& metaInfo);
   MDY_NODISCARD EDySuccess pfAddModelMetaInfo         (_MIN_ const PDyModelInstanceMetaInfo& metaInfo);
   MDY_NODISCARD EDySuccess pfAddTextureMetaInfo       (_MIN_ const PDyTextureInstanceMetaInfo& metaInfo);
   MDY_NODISCARD EDySuccess pfAddMaterialMetaInfo      (_MIN_ const PDyMaterialInstanceMetaInfo& metaInfo);
@@ -210,14 +238,20 @@ private:
   THashMap<PDyMetaFontInformation>      mFontMetaInfo   = {};
   /// GL shader meta information map.
   THashMap<PDyGLShaderInstanceMetaInfo> mShaderMetaInfo = {};
-  /// Builtin mesh information map.
-  THashMap<PDyBtMeshInstanceMetaInfo>   mBtMeshMetaInfo = {};
   /// Model meta information map.
   THashMap<PDyModelInstanceMetaInfo>    mModelMetaInfo  = {};
+  /// Model Mesh meta information map.
+  THashMap<PDyMeshInstanceMetaInfo>     mModelMeshMetaInfo = {};
+  /// Model Skeleton meta information map.
+  THashMap<PDyModelSkelInstanceMetaInfo>mModelSkeletonMetaInfo = {};
+  /// Model Skeleton meta information map.
+  THashMap<PDyModelAnimInstanceMetaInfo>mModelAnimScrapMetaInfo = {};
   /// Texture meta information map.
   THashMap<PDyTextureInstanceMetaInfo>  mTextureMetaInfo= {};
   /// Material meta information map.
   THashMap<PDyMaterialInstanceMetaInfo> mMaterialMetaInfo = {};
+  /// @brief Sound meta information map.
+  THashMap<PDySoundInstanceMetaInfo>    mSoundMetaInfo = {};
 
   //! Internal
 

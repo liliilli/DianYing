@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Meta/Information/MetaInfoBuiltinMesh.h>
+#include <Dy/Meta/Information/MetaInfoModelMesh.h>
 
 namespace dy
 {

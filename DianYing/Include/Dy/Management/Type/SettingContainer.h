@@ -19,6 +19,8 @@
 #include <Dy/Helper/GlobalType.h>
 #include <Dy/Helper/Type/VectorInt2.h>
 #include <Dy/Meta/Type/Input/EDyInputButton.h>
+#include <Dy/Meta/Type/Physics/EDyCollisionFilter.h>
+#include <Dy/Helper/Type/Clamp.h>
 
 namespace dy
 {
@@ -103,7 +105,7 @@ struct DDySettingInput
     /// @param  specifierName `DAxis::mSpecifierName`.
     /// @return If succeeded, just return `DAxis` instance.
     ///
-    static MDY_NODISCARD DAction CreateInstance(_MIN_ const nlohmann::json& json, _MIN_ const std::string& specifierName);
+    MDY_NODISCARD static DAction CreateInstance(_MIN_ const nlohmann::json& json, _MIN_ const std::string& specifierName);
   };
 
   struct DAxis final
@@ -119,7 +121,7 @@ struct DDySettingInput
     /// @param  specifierName `DAxis::mSpecifierName`.
     /// @return If succeeded, just return `DAxis` instance.
     ///
-    static MDY_NODISCARD DAxis CreateInstance(_MIN_ const nlohmann::json& json, _MIN_ const std::string& specifierName);
+    MDY_NODISCARD static DAxis CreateInstance(_MIN_ const nlohmann::json& json, _MIN_ const std::string& specifierName);
   };
 
   using TActionMap  = std::unordered_map<std::string, DAction>;
@@ -155,6 +157,113 @@ void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingTag& p);
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingTag& p);
 
 ///
+/// @struct DDySettingSound
+/// @brief  Setting sound that able to be serialized.
+///
+struct DDySettingSound final
+{
+  struct DDetail
+  {
+    DDyClamp<TF32, 0, 1> mVolume = 0.0f;
+    bool mMuted = false;
+  };
+  struct DChannelDetail final : public DDetail
+  {
+    std::string mGroupSpecifier = "";
+  };
+  struct D3DSetting final
+  {
+    TF32 mDopplerOffset = 1.0f;
+    TF32 mDistanceUnit  = 1.0f;
+    TF32 mAttenuationFactor = 1.0f;
+  };
+
+  /// @brief Setting properties for 3D sound.
+  D3DSetting                      m3DSetting;
+  /// @brief Master is master channel of sound system.
+  DDetail                         mMaster;
+  /// @brief Group is a collection of channels.
+  TStringHashMap<DDetail>         mGroup;
+  /// @brief Channel is a collection of instant & created sound.
+  TStringHashMap<DChannelDetail>  mChannel;
+};
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingSound& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingSound& p);
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingSound::D3DSetting& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingSound::D3DSetting& p);
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingSound::DDetail& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingSound::DDetail& p);
+
+void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingSound::DChannelDetail& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingSound::DChannelDetail& p);
+
+struct DLockPreset final
+{
+  struct D3DAxis final { bool mX, mY, mZ; };
+  D3DAxis mPosition;
+  D3DAxis mRotation;
+};
+
+void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const DLockPreset& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DLockPreset& p);
+
+void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const DLockPreset::D3DAxis& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DLockPreset::D3DAxis& p);
+
+///
+/// @struct DDySettingPhysics
+/// @brief Physics setting.
+///
+struct DDySettingPhysics final
+{
+public:
+  using TCollisionTagList = std::vector<std::string>;
+  /// @brief Filter list's index is correspond to TCollisionTagList's index. \n
+  /// If readen value is 0, Key layer => Dest layer is blocked. \n
+  /// If readen value is 1, Key layer => Dest layer is overlapped. \n
+  /// If readen value is 2, Key layer => Dest layer is ignored.
+  using TFilterList = std::vector<EDyCollisionFilter>;
+  /// @brief Filter layer response table. \n
+  /// _A_\_B_ Block   Overlap Ignore \n
+  /// Block   Block   Overlap Ignore \n
+  /// Overlap Overlap Overlap Ignore \n
+  /// Ignore  Ignore  Ignore  Ignore
+  using TFilterPreset = std::unordered_map<std::string, TFilterList>;
+  struct DCommon final
+  {
+    // Global gravity
+    TF32 mGravity = 0.0f;
+    // Static collider's friction (摩擦)
+    TF32 mDefaultStaticFriction = 0.0f;
+    // Dynamic collider's friction (動的摩擦)
+    TF32 mDefaultDynamicFriction = 0.0f;
+    // Global restitution (跳ね返す程度)
+    TF32 mDefaultRestitution = 0.0f;
+    // Global default angular damping
+    TF32 mDefaultAngularDamping = 0.0f;
+  };
+
+  using TLockPreset = std::unordered_map<std::string, DLockPreset>;
+
+  DCommon           mCommonProperty = {};
+  TCollisionTagList mCollisionTag  = {};
+  TFilterPreset     mFilterPresetContainer = {};
+  TLockPreset       mLockPresetContainer = {};
+};
+
+void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingPhysics& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingPhysics& p);
+
+void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingPhysics::DCommon& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingPhysics::DCommon& p);
+
+void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const EDyCollisionFilter& p);
+void from_json(_MIN_ const nlohmann::json& j, _MOUT_ EDyCollisionFilter& p);
+
+///
 /// @struct DDySettingMetaPath
 /// @brief  Setting meta file path that able to be serialized.
 ///
@@ -169,9 +278,13 @@ struct DDySettingMetaPath final
   // Resources
   std::string mFontMetaPath     = MDY_INITIALIZE_EMPTYSTR;
   std::string mModelMetaPath    = MDY_INITIALIZE_EMPTYSTR;
+  std::string mModelMeshMetaPath= MDY_INITIALIZE_EMPTYSTR;
+  std::string mModelAnimMetaPath= MDY_INITIALIZE_EMPTYSTR;
+  std::string mModelSkeletonMetaPath = MDY_INITIALIZE_EMPTYSTR;
   std::string mTextureMetaPath  = MDY_INITIALIZE_EMPTYSTR;
   std::string mGLShaderMetaPath = MDY_INITIALIZE_EMPTYSTR;
   std::string mMaterialMetaPath = MDY_INITIALIZE_EMPTYSTR;
+  std::string mSoundMetaPath    = MDY_INITIALIZE_EMPTYSTR;
 };
 
 void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingMetaPath& p);

@@ -18,7 +18,7 @@
 namespace dy
 {
 
-void FDyBtMsScrTriangle::ConstructBuffer(_MOUT_ PDyBtMeshInstanceMetaInfo& property) noexcept
+void FDyBtMsScrTriangle::ConstructBuffer(_MOUT_ PDyMeshInstanceMetaInfo& property) noexcept
 {
   property.mSpecifierName = sName;
 
@@ -30,15 +30,15 @@ void FDyBtMsScrTriangle::ConstructBuffer(_MOUT_ PDyBtMeshInstanceMetaInfo& prope
 
     vertex.mPosition  = DDyVector3{ -1, -1, 0 };
     vertex.mNormal    = DDyVector3{ 1 };
-    vertex.mTexCoords = DDyVector2{ 0, 0 };
+    vertex.mTexCoord0 = DDyVector2{ 0, 0 };
     submeshDesc.mVertexList.emplace_back(vertex);
     vertex.mPosition  = DDyVector3{ 3, -1, 0 };
     vertex.mNormal    = DDyVector3{ 1 };
-    vertex.mTexCoords = DDyVector2{ 2, 0 };
+    vertex.mTexCoord0 = DDyVector2{ 2, 0 };
     submeshDesc.mVertexList.emplace_back(vertex);
     vertex.mPosition  = DDyVector3{ -1, 3, 0 };
     vertex.mNormal    = DDyVector3{ 1 };
-    vertex.mTexCoords = DDyVector2{ 0, 2 };
+    vertex.mTexCoord0 = DDyVector2{ 0, 2 };
     submeshDesc.mVertexList.emplace_back(vertex);
   }
 

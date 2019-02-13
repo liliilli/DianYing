@@ -21,6 +21,7 @@
 
 namespace dy
 {
+class DDyQuaternion;
 struct DDyVector2;
 struct DDyVector3;
 struct DDyVector4;
@@ -143,6 +144,9 @@ template <typename TType>
 /// @brief Do linear interpolation with DDyVector4 type.
 ///
 [[nodiscard]] DDyVector4 Lerp(const DDyVector4& lhs, const DDyVector4& rhs, float offset) noexcept;
+
+/// @brief Do sphere-linear interpolation with DDyQuaternion.
+MDY_NODISCARD DDyQuaternion Slerp(_MIN_ const DDyQuaternion& lhs, _MIN_ const DDyQuaternion& rhs, _MIN_ TF32 offset) noexcept;
 
 ///
 /// @brief Get result point through quadratic bezier curve calculation.

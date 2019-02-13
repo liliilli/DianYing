@@ -71,19 +71,6 @@ public:
   /// @brief Update sequence etc.
   void Update(float dt) override final {};
 
-  /// @brief Request MDyWorld to draw this instance.
-  void RequestDrawCall() noexcept;
-
-  /// @brief Activate component.
-  void Activate() noexcept override final;
-
-  /// @brief Deactivate component.
-  void Deactivate() noexcept override final;
-
-  /// @brief  Get the element count of binded material list.
-  /// @return The number of material elements binded to CDyModelRenderer::mMaterialResourcePtr.
-  MDY_NODISCARD TI32 GetMaterialListCount() const noexcept;
-
   /// @brief  Get the number of submesh of model instance which binded to this component instance.
   /// @return The number of submesh elements binded to CDyModelRenderer::mPtrModelFilterComponent.
   MDY_NODISCARD std::optional<TI32> GetModelSubmeshCount() const noexcept;
@@ -105,28 +92,16 @@ public:
   MDY_NODISCARD const TDyLResourceBinderModel* GetModelResourceBinder() const noexcept;
 
   /// @brief
-  /// @param actorBool
-  void pPropagateParentActorActivation(const DDy3StateBool& actorBool) noexcept override final;
-
-  /// @brief
   MDY_NODISCARD std::string ToString() override final;
 
 private:
-  /// @brief
-  /// @return
-  MDY_NODISCARD EDySuccess pTryBindingToModelFilterComponent();
-
-  /// @brief
-  /// @return
-  MDY_NODISCARD EDySuccess pTryUnbindingToModelFilterComponent();
+  void TryActivateInstance() override final;
+  void TryDeactivateInstance() override final;
 
   /// Valid model filter pointer reference. If value is nullptr, do not use.
   CDyModelFilter* mPtrModelFilterComponent  = MDY_INITIALIZE_NULL;
   /// Check flag for create shadow or not.
   bool            mIsEnabledCreateShadow    = false;
-
-  std::array<TDyLResourceBinderMaterial, 16> mBinderMaterialList = {};
-  TU32            mBinderMaterialListSize   = MDY_INITIALIZE_DEFUINT;
 
   MDY_SET_TYPEMATCH_FUNCTION(::dy::ADyGeneralBaseComponent, CDyModelRenderer);
   MDY_SET_CRC32_HASH_WITH_TYPE(CDyModelRenderer);

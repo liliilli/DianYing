@@ -24,6 +24,7 @@
 #include <Dy/Core/DyEngine.h>
 #include <Dy/Component/CDyModelRenderer.h>
 #include <Dy/Component/CDyCamera.h>
+#include <Dy/Component/CDyModelAnimator.h>
 
 namespace dy
 {
@@ -92,15 +93,6 @@ void MDyWorld::UpdateObjects(_MIN_ float dt)
 {
   if (this->mLevel)
   { 
-#ifdef false
-    // Update(Start, Update, etc...) script carefully.
-    for (auto& script : this->mActivatedScripts)
-    {
-      if (MDY_CHECK_ISNULL(script)) { continue; }
-      script->CallScriptFunction(dt);
-    }
-#endif
-
     // CDyModelRenderer update
     for (auto& modelRenderer : this->mActivatedModelRenderers)
     {
@@ -119,9 +111,14 @@ void MDyWorld::UpdateObjects(_MIN_ float dt)
   }
 }
 
-void MDyWorld::RequestDrawCall()
+void MDyWorld::UpdateAnimator(_MIN_ TF32 dt)
 {
-  for (auto& modelRenderer : this->mActivatedModelRenderers) { modelRenderer->RequestDrawCall(); }
+  // Update animation transformation information 
+  // using linear-interpolation of given skeleton and animation.
+  for (auto& ptrCompAnimator : this->mActivatedModelAnimatorPtrs)
+  {
+    ptrCompAnimator->Update(dt);
+  }
 }
 
 std::vector<NotNull<FDyActor*>> 
@@ -298,11 +295,6 @@ EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(RemoveLevel)()
   // And level must be nullptr. and... Remove RI and Resource & Informations with Scope is `Level`.
   if (MDY_CHECK_ISEMPTY(this->mLevel)) { return DY_FAILURE; }
   
-  MDY_LOG_DEBUG_D("Dependent manager resetting...");
-  // Must reset depedent manager on this.
-  MDyPhysics::GetInstance().ReleaseScene();
-  MDY_LOG_DEBUG_D("Dependent manager resetting done.");
-
   // Release physx components which are dependent on physx::PxScene, FDyLevel.
   this->mLevel = nullptr;
 
@@ -316,11 +308,18 @@ EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(RemoveLevel)()
   SDyIOConnectionHelper::TryGC(EDyScope::Temporal, EDyResourceStyle::Information);
   SDyIOConnectionHelper::TryGC(EDyScope::Temporal, EDyResourceStyle::Resource);
   SDyIOConnectionHelper::TryGC(EDyScope::Temporal, EDyResourceStyle::Information);
+  SDyIOConnectionHelper::TryGC(EDyScope::Temporal, EDyResourceStyle::Resource);
+  SDyIOConnectionHelper::TryGC(EDyScope::Temporal, EDyResourceStyle::Information);
 
   SDyIOConnectionHelper::TryGC(EDyScope::Level, EDyResourceStyle::Resource);
   SDyIOConnectionHelper::TryGC(EDyScope::Level, EDyResourceStyle::Information);
   SDyIOConnectionHelper::TryGC(EDyScope::Level, EDyResourceStyle::Resource);
   SDyIOConnectionHelper::TryGC(EDyScope::Level, EDyResourceStyle::Information);
+  SDyIOConnectionHelper::TryGC(EDyScope::Level, EDyResourceStyle::Resource);
+  SDyIOConnectionHelper::TryGC(EDyScope::Level, EDyResourceStyle::Information);
+
+  // Must reset depedent manager on this.
+  MDyPhysics::GetInstance().ReleaseScene();
   return DY_SUCCESS;
 }
 
@@ -354,14 +353,9 @@ void MDyWorld::MDY_PRIVATE_SPECIFIER(BuildNextLevel)()
   MDY_LOG_DEBUG_D("Building Next Level : {}", this->mNextLevelName);
 
   const auto* levelMetaInfo = MDyMetaInfo::GetInstance().GetLevelMetaInformation(this->mNextLevelName);
-  this->mLevel = std::make_unique<FDyLevel>(*levelMetaInfo);
-
-  MDY_LOG_DEBUG_D("Dependent manager resetting...");
-
   // Must reset depedent manager on this.
   MDyPhysics::GetInstance().InitScene();
-
-  MDY_LOG_DEBUG_D("Dependent manager resetting done.");
+  this->mLevel = std::make_unique<FDyLevel>(*levelMetaInfo);
 }
 
 EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(TransitionToNextLevel)()
@@ -513,6 +507,59 @@ EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(TryDetachActiveModelRenderer)(_MIN_ C
   if (it == this->mActivatedModelRenderers.end()) { return DY_SUCCESS; }
 
   DyFastErase(this->mActivatedModelRenderers, std::distance(this->mActivatedModelRenderers.begin(), it));
+  return DY_SUCCESS;
+}
+
+void MDyWorld::__BindActiveModelAnimator(_MIN_ CDyModelAnimator& iRefComponent)
+{
+  this->mActivatedModelAnimatorPtrs.emplace_back(DyMakeNotNull(&iRefComponent));
+}
+
+EDySuccess MDyWorld::__UnbindActiveModelAnimator(_MIN_ CDyModelAnimator& iRefComponent)
+{
+  // Check address. component's address is not changed unless actor is destroyed.
+  const auto it = std::find_if(
+      MDY_BIND_BEGIN_END(this->mActivatedModelAnimatorPtrs), 
+      [ptr = &iRefComponent](const auto& ptrValidComponent)
+    {
+      return ptrValidComponent.Get() == ptr;
+    });
+
+  if (it == this->mActivatedModelAnimatorPtrs.end()) { return DY_FAILURE; }
+
+  // Erase pointer of found component.
+  this->mActivatedModelAnimatorPtrs.erase(it);
+  return DY_SUCCESS;
+}
+
+std::optional<NotNull<CDySkybox*>> MDyWorld::GetPtrMainLevelSkybox() const noexcept
+{
+  // If activated skybox instance is not exist, just return null value.
+  if (this->mActivatedSkyboxPtrList.empty() == true) { return std::nullopt; }
+
+  // Otherwise, always get first pointer of CDySkybox.
+  return this->mActivatedSkyboxPtrList.front();
+}
+
+void MDyWorld::__BindActiveSkybox(_MIN_ CDySkybox& iRefComponent)
+{
+  this->mActivatedSkyboxPtrList.emplace_back(DyMakeNotNull(&iRefComponent));
+}
+
+EDySuccess MDyWorld::__UnbindActiveSkybox(_MIN_ CDySkybox& iRefComponent)
+{
+  // Check address. component's address is not changed unless actor is destroyed.
+  const auto it = std::find_if(
+      MDY_BIND_BEGIN_END(this->mActivatedSkyboxPtrList), 
+      [ptr = &iRefComponent](const auto& ptrValidComponent)
+    {
+      return ptrValidComponent.Get() == ptr;
+    });
+
+  if (it == this->mActivatedSkyboxPtrList.end()) { return DY_FAILURE; }
+
+  // Erase pointer of found component.
+  this->mActivatedSkyboxPtrList.erase(it);
   return DY_SUCCESS;
 }
 

@@ -29,24 +29,31 @@ bool DyIsJsonKeyExist(const nlohmann::json& json, const std::string& key) noexce
 
 std::optional<nlohmann::json> DyGetJsonAtlasFromFile(const std::string& filePath) noexcept
 {
-  if (!std::filesystem::exists(filePath))
+  if (std::filesystem::exists(filePath) == false)
   {
     MDY_LOG_CRITICAL("DyGetJsonAtlasFromFile | File path is not exist so failed to read serialization file. | Path : {}", filePath);
     return std::nullopt;
   }
 
-  std::ifstream stream { filePath, std::ios_base::in };
-  if (!stream.good()) {
-    MDY_LOG_ERROR("DyGetJsonAtlasFromFile | Unexpected error occurred in reading serializaition file. | Path : {}", filePath);
-    stream.close();
-    return std::nullopt;
+  std::FILE* fd = fopen(filePath.c_str(), "r");
+  std::fseek(fd, 0, SEEK_END);
+  const auto size = ftell(fd);
+  std::fseek(fd, 0, SEEK_SET);
+
+  std::vector<char> buffer(size + 1);
+  std::fread(buffer.data(), sizeof(char), size, fd);
+  std::fclose(fd);
+
+  nlohmann::json json;
+  try 
+  {
+    json = nlohmann::json::parse(buffer);
   }
-
-  nlohmann::json jsonAtlas;
-  stream >> jsonAtlas;
-  stream.close();
-
-  return jsonAtlas;
+  catch (nlohmann::json::parse_error& e)
+  {
+    MDY_ASSERT_FORCE(false, e.what());
+  }
+  return json;
 }
 
 } /// ::dy namespace

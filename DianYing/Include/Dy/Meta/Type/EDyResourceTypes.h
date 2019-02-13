@@ -19,10 +19,8 @@
 namespace dy
 {
 
-///
 /// @enum EDyResourceSource
 /// @brief Source type of resource.
-///
 enum class EDyResourceSource
 { // This resource is builtin resource (internal).
   Builtin,
@@ -30,10 +28,8 @@ enum class EDyResourceSource
   External,
 };
 
-///
 /// @enum EDyShaderFragmentType
 /// @brief Shader fragment type. each fragment values are binded to each shader code prior to linking.
-///
 enum class EDyShaderFragmentType
 {
   Vertex = 0,
@@ -45,6 +41,11 @@ enum class EDyShaderFragmentType
 
   NoneError = 0xFF
 };
+
+/// @brief Convert plain string value to proper `EDyShaderFragmentType` value.
+/// If no value is matched to values, just return NoneError and assert error.
+MDY_NODISCARD EDyShaderFragmentType
+DyConvertStringToEDyShaderFragmentType(_MIN_ const std::string& iString) noexcept;
 
 /// @brief Shader fragment container list.
 using TFragmentList = std::vector<std::pair<EDyShaderFragmentType, TU32>>;

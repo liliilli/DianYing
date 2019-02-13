@@ -16,6 +16,7 @@
 #include <Dy/Component/CDyModelFilter.h>
 #include <Dy/Element/Actor.h>
 #include <Dy/Component/CDyModelRenderer.h>
+#include <Dy/Management/Internal/Render/FDyModelHandlerManager.h>
 
 namespace dy
 {
@@ -24,8 +25,19 @@ CDyModelFilter::CDyModelFilter(FDyActor& actorReference) : ADyGeneralBaseCompone
 
 EDySuccess CDyModelFilter::Initialize(const PDyModelFilterComponentMetaInfo& metaInfo)
 {
-  const auto& modelSpecfier = metaInfo.mDetails.mModelSpecifierName;
-  mBinderModel.TryRequireResource(modelSpecfier);
+  // Bind model first.
+  this->mModelSpecifier = metaInfo.mDetails.mModelSpecifierName;
+  this->mBinderModel.TryRequireResource(this->mModelSpecifier);
+
+  // Get model handle manager, and ask for whether model handler is already bound.
+  auto& handleManager = FDyModelHandlerManager::GetInstance();
+  if (handleManager.IsBoundModelExist(this->mModelSpecifier) == false)
+  {
+    // If not, let manager create handler and bound it,
+    // and let actor bind transform to handler and register specifier as key.
+    MDY_CALL_ASSERT_SUCCESS(handleManager.TryCreateHandler(this->mModelSpecifier));
+  }
+  handleManager.BindToHandler(this->mModelSpecifier, *this->GetBindedActor(), *this);
 
   this->Activate();
   return DY_SUCCESS;
@@ -37,33 +49,22 @@ void CDyModelFilter::Release()
   { // Unbind CDyModelFilter from binded CDyModelRenderer.
     this->mModelRendererReferencePtr->UnbindModelFilterReference();
   }
-}
 
-void CDyModelFilter::Activate() noexcept
-{
-  ADyBaseComponent::Activate();
-
-  // Customized body ∨
-  MDY_NOTUSED auto _ = this->pTryBindingToModelRendererComponent();
-}
-
-void CDyModelFilter::Deactivate() noexcept
-{
-  ADyBaseComponent::Deactivate();
-
-  // Customized body ∨
-
-  MDY_NOTUSED auto _ = this->pTryUnbindingToModelRendererComponent();
-}
-
-void CDyModelFilter::pPropagateParentActorActivation(const DDy3StateBool& actorBool) noexcept
-{
-  ADyBaseComponent::pPropagateParentActorActivation(actorBool);
-
-  // Customized body ∨
-
-  { MDY_NOTUSED auto _ = this->pTryBindingToModelRendererComponent(); }
-  { MDY_NOTUSED auto _ = this->pTryUnbindingToModelRendererComponent(); }
+  // GC
+  auto& handleManager = FDyModelHandlerManager::GetInstance();
+  if (handleManager.IsBoundModelExist(this->mModelSpecifier) == true)
+  {
+    handleManager.UnbindToHandler(this->mModelSpecifier, *this->GetBindedActor(), *this);
+    // Check 
+    if (handleManager.IsActorInfoNeedToBeGc(this->mModelSpecifier, *this->GetBindedActor()) == true)
+    {
+      MDY_CALL_ASSERT_SUCCESS(handleManager.TryRemoveBoundActor(this->mModelSpecifier, *this->GetBindedActor()));
+      if (handleManager.IsBoundModelNeedToGc(this->mModelSpecifier) == true)
+      {
+        MDY_CALL_ASSERT_SUCCESS(handleManager.TryRemoveBoundModel(this->mModelSpecifier));
+      }
+    }
+  }
 }
 
 std::string CDyModelFilter::ToString()
@@ -72,35 +73,23 @@ std::string CDyModelFilter::ToString()
   return MDY_INITIALIZE_EMPTYSTR;
 }
 
-EDySuccess CDyModelFilter::pTryBindingToModelRendererComponent()
+void CDyModelFilter::TryActivateInstance()
 {
-  // Check final activation flag and rebind instance to CDyModelRenderer.
-
-  if (this->mActivateFlag.IsOutputValueChanged() == false)  { return DY_FAILURE; }
-  if (this->mActivateFlag.GetOutput() == false)             { return DY_FAILURE; }
-
   auto opRenderer = this->GetBindedActor()->GetGeneralComponent<CDyModelRenderer>();
-  if (opRenderer.has_value() == false)                      { return DY_FAILURE; }
+  if (opRenderer.has_value() == false) { return; }
 
   CDyModelRenderer& rendererRef = *opRenderer.value();
-  if (rendererRef.IsComponentActivated() == false)          { return DY_FAILURE; }
+  if (rendererRef.IsComponentActivated() == false) { return; }
 
   MDY_ASSERT(MDY_CHECK_ISNULL(this->mModelRendererReferencePtr), "CDyModelFilter::mModelRendererReferencePtr must be null when unbinding.");
   rendererRef.BindModelFilterReference(*this);
-
-  return DY_SUCCESS;
 }
 
-EDySuccess CDyModelFilter::pTryUnbindingToModelRendererComponent()
+void CDyModelFilter::TryDeactivateInstance()
 {
-  if (this->mActivateFlag.IsOutputValueChanged() == false)  { return DY_FAILURE; }
-  if (this->mActivateFlag.GetOutput() == true)             { return DY_FAILURE; }
-
   // Check final activation flag and unbind instance from CDyModelRenderer.
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mModelRendererReferencePtr), "CDyModelFilter::mModelRendererReferencePtr must not be null when unbinding.");
   this->mModelRendererReferencePtr->UnbindModelFilterReference();
-
-  return DY_SUCCESS;
 }
 
 const TDyLResourceBinderModel& CDyModelFilter::GetModelReference() const noexcept
@@ -111,6 +100,11 @@ const TDyLResourceBinderModel& CDyModelFilter::GetModelReference() const noexcep
 TDyLResourceBinderModel& CDyModelFilter::GetModelReference() noexcept
 {
   return this->mBinderModel;
+}
+
+const std::string& CDyModelFilter::GetModelSpecifier() const noexcept
+{
+  return this->mModelSpecifier;
 }
 
 void CDyModelFilter::fBindModelRendererReference(CDyModelRenderer& validReference)

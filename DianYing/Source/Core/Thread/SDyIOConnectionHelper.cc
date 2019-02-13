@@ -28,6 +28,14 @@ void SDyIOConnectionHelper::PopulateResource(
 {
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
   auto& ioThread = *gEngine->pfGetIOThread();
+  
+  // Check resourceType is `Skeleton` and `AnimationScrap` which can not be created as `Resource` but only `Information`.
+  if (resourceType == EDyResourceType::Skeleton
+  ||  resourceType == EDyResourceType::AnimationScrap)
+  {
+    if (resourceStyle == EDyResourceStyle::Resource) { resourceStyle = EDyResourceStyle::Information; }
+  }
+
   MDY_CALL_ASSERT_SUCCESS(ioThread.outTryEnqueueTask(specifier, resourceType, resourceStyle, scope));
 }
 
@@ -69,7 +77,13 @@ void SDyIOConnectionHelper::PopulateResourceList(
   {
     for (const auto& [type, specifier] : list)
     {
-      PopulateResource(specifier, type, EDyResourceStyle::Resource, iScope);
+      // If `type` is AnimationScrap or model skeleton, this must be populated only as `Style::Information`.
+      if (type == EDyResourceType::AnimationScrap
+      ||  type == EDyResourceType::Skeleton
+      ||  type == EDyResourceType::Sound)
+      { PopulateResource(specifier, type, EDyResourceStyle::Information, iScope); }
+      else // Other type can be populated with Resource & Information.
+      { PopulateResource(specifier, type, EDyResourceStyle::Resource, iScope); }
     }
   }
 
@@ -112,6 +126,16 @@ void SDyIOConnectionHelper::PopulateInstantMaterialResource(
   // Require population instant mateiral resource.
   MDY_CALL_ASSERT_SUCCESS(ioThread.InstantPopulateMaterialResource(desc, refMat, scope, callback));
   refMat.TryRequireResource(desc.mSpecifierName);
+}
+
+bool SDyIOConnectionHelper::IsReferenceInstanceExist(
+    _MIN_ const std::string& iSpecifier, 
+    _MIN_ EDyResourceType iType, 
+    _MIN_ EDyResourceStyle iStyle)
+{
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
+  auto& ioThread = *gEngine->pfGetIOThread();
+  return ioThread.pIsReferenceInstanceExist(iSpecifier, iType, iStyle);
 }
 
 void SDyIOConnectionHelper::InsertResult(_MIN_ const DDyIOWorkerResult& result) noexcept

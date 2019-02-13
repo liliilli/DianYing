@@ -22,11 +22,9 @@ ADyBaseComponent::ADyBaseComponent(FDyActor& actorReference) : mBindedActor(&act
 { }
 
 ADyBaseComponent::ADyBaseComponent(ADyBaseComponent&& instance) noexcept :
-    mActivateFlag(instance.mActivateFlag),
     mBindedActor(instance.mBindedActor),
     mActivatedUpdateListId(instance.mActivatedUpdateListId)
 {
-  instance.mActivateFlag          = DDy3StateBool{};
   instance.mBindedActor           = nullptr;
   instance.mActivatedUpdateListId = MDY_INITIALIZE_DEFINT;
 }
@@ -36,36 +34,19 @@ ADyBaseComponent& ADyBaseComponent::operator=(ADyBaseComponent&& instance) noexc
   if (this == &instance) { return *this; }
 
   // Move instance properties.
-  this->mActivateFlag             = instance.mActivateFlag;
   this->mBindedActor              = instance.mBindedActor;
   this->mActivatedUpdateListId    = instance.mActivatedUpdateListId;
 
   // Reset moved instance's properties.
-  instance.mActivateFlag          = DDy3StateBool{};
   instance.mBindedActor           = nullptr;
   instance.mActivatedUpdateListId = MDY_INITIALIZE_DEFINT;
 
   return *this;
 }
 
-void ADyBaseComponent::Activate() noexcept
-{
-  this->mActivateFlag.UpdateInput(true);
-}
-
-void ADyBaseComponent::Deactivate() noexcept
-{
-  this->mActivateFlag.UpdateInput(false);
-}
-
-void ADyBaseComponent::pPropagateParentActorActivation(const DDy3StateBool& actorBool) noexcept
-{
-  this->mActivateFlag.UpdateParent(actorBool.GetOutput());
-}
-
 bool ADyBaseComponent::IsComponentActivated() const noexcept
 {
-  return this->mActivateFlag.GetOutput();
+  return this->IsActivated();
 }
 
 } /// ::dy namespace

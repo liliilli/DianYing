@@ -14,25 +14,25 @@
 ///
 
 #include <Dy/Core/Resource/Internal/MaterialType.h>
+#include <Dy/Component/CDyPhysicsRigidbody.h>
 #include <Dy/Component/Helper/TmpCheckRemoveParams.h>
+#include <Dy/Component/Actor/CDyActorScript.h>
+#include <Dy/Component/Type/EDyComponentType.h>
 #include <Dy/Element/Object.h>
 #include <Dy/Element/Abstract/ADyBaseComponent.h>
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
 #include <Dy/Element/Abstract/Actor/ADyActorBinderContainer.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
-#include <Dy/Component/Actor/CDyActorScript.h>
 #include <Dy/Helper/Internal/FDyNameGenerator.h>
 
 namespace dy
 {
 
-///
 /// @class FDyActor
-/// @brief FFF
-///
-class FDyActor : public FDyObject, public FDyNameGenerator, public ADyActorBinderContainer<FDyActor>
+/// @brief Dy Actor type which consist of almost every object in Level of Dy.
+class FDyActor : public FDyObject, public FDyNameGenerator, public ADyActorBinderContainer<FDyActor>, public FDy3WaySwitcher
 {
-  using TComponentList = std::vector<std::unique_ptr<ADyGeneralBaseComponent>>;
+  using TComponentList = std::vector<std::pair<EDyComponentType, std::unique_ptr<ADyGeneralBaseComponent>>>;
   using TScriptList    = std::vector<std::unique_ptr<CDyActorScript>>;
 
   MDY_SET_CRC32_HASH_WITH_TYPE(FDyActor);
@@ -49,16 +49,6 @@ public:
   /// @brief Release function (virtual) because Initialize function has different parameter but release does not need any parameter.
   /// @return Success flag.
   virtual ~FDyActor();
-
-  /// @brief Activate FDyActor instance.
-  void Activate() noexcept;
-
-  /// @brief  Check FDyActor is activated or not.
-  /// @return Check flag for activation checking.
-  MDY_NODISCARD bool IsActivated() const noexcept;
-
-  /// @brief Deactivate FDyActor instance.
-  void Deactivate() noexcept;
 
   /// @brief Destory self and tree.
   void DestroySelf();
@@ -135,8 +125,8 @@ public:
   {
     // Validation test
     MDY_TEST_IS_BASE_OF(ADyBaseComponent, TComponent);
-    //DyCheckComponentInitializeFunctionParams<TComponent, TArgs...>();
 
+    // If component is script, process the other subroutine. 
     if constexpr (std::is_same_v<CDyActorScript, TComponent> == true)
     {
       // Add and initialize component itself.
@@ -151,15 +141,22 @@ public:
       auto componentPtr = std::make_unique<TComponent>(std::ref(*this));
       MDY_CALL_ASSERT_SUCCESS(componentPtr->Initialize(std::forward<TArgs>(args)...));
 
+      // If it is transform, move it to separated space. 
       if constexpr (std::is_same_v<CDyTransform, TComponent> == true)
       { // If component is not CDyScript but related to ADyBaseTransform (Transform components)
-        MDY_ASSERT(MDY_CHECK_ISEMPTY(this->mTransform), "FDyActor::mTransform must be empty when insert transform component.");
+        MDY_ASSERT_FORCE(MDY_CHECK_ISEMPTY(this->mTransform), "FDyActor::mTransform must be empty when insert transform component.");
         this->mTransform = std::move(componentPtr);
         return DyMakeNotNull(this->mTransform.get());
       }
+      else if constexpr (IsSameClass<TComponent, CDyPhysicsRigidbody> == true)
+      { // If component is CDyPhysicsRigidbody...
+        MDY_ASSERT_FORCE(MDY_CHECK_ISEMPTY(this->mRigidbody), "FDyActor::mRigidbody must be empty when insert rigidbody component.");
+        this->mRigidbody = std::move(componentPtr);
+        return DyMakeNotNull(this->mRigidbody.get());
+      }
       else
       { // Otherwise remain, just return Ptr.
-        auto& reference = this->mComponentList.emplace_back(std::move(componentPtr));
+        auto& [value, reference] = this->mComponentList.emplace_back(std::make_pair(TComponentUnbindingType<TComponent>::Value, std::move(componentPtr)));
         return DyMakeNotNull(static_cast<TComponent*>(reference.get()));
       }
     }
@@ -181,8 +178,9 @@ public:
 
     // Component matching process is using recursion of each component
     // from last derived component class to highest base component class.
-    for (auto& component : this->mComponentList)
+    for (auto& [type, component] : this->mComponentList)
     {
+      if (MDY_CHECK_ISEMPTY(component)) { continue; }
       if (component->IsTypeMatched(TGeneralComponent::__mHashVal) == true)
       {
         return static_cast<TGeneralComponent*>(component.get());
@@ -207,8 +205,9 @@ public:
     // from last derived component class to highest base component class.
     std::vector<NotNull<TGeneralComponent*>> resultList = {};
 
-    for (auto& component : this->mComponentList)
+    for (auto& [type, component] : this->mComponentList)
     {
+      if (MDY_CHECK_ISEMPTY(component)) { continue; }
       if (component->IsTypeMatched(TGeneralComponent::__mHashVal) == true)
       {
         resultList.emplace_back(static_cast<TGeneralComponent*>(component.get()));
@@ -217,6 +216,11 @@ public:
 
     return resultList;
   }
+
+private:
+  /// @brief Helper function for release component.
+  void ReleaseComponent(_MINOUT_ TComponentList::value_type& iItem);
+public:
 
   ///
   /// @brief  Remove component.
@@ -238,6 +242,7 @@ public:
       );
 
       if (it == this->mComponentList.end()) { return DY_FAILURE; }
+      this->ReleaseComponent(*it);
       this->mComponentList.erase(it);
       return DY_SUCCESS;
     }
@@ -271,11 +276,13 @@ public:
   ///
   MDY_NODISCARD EDySuccess RemoveScriptComponent(_MIN_ const std::string& scriptName) noexcept;
 
-  ///
   /// @brief  Get tranform component pointer from FDyActor instance.
   /// @return Valid transform pointer instance.
-  ///
   MDY_NODISCARD NotNull<CDyTransform*> GetTransform() noexcept;
+
+  /// @brief  Get rigidbody component pointer from FDyActor instance.
+  /// @return Valid rigidbody component pointer instance.
+  MDY_NODISCARD CDyPhysicsRigidbody* GetRigidbody() noexcept;
 
 #ifdef false
   ///
@@ -333,19 +340,20 @@ protected:
   MDY_TRANSIENT EDyMetaObjectType   mActorType = EDyMetaObjectType::NoneError;
 
 private:
+  void TryActivateInstance() override final;
+  void TryDeactivateInstance() override final;
+  
   /// @brief
   void MDY_PRIVATE_SPECIFIER(CreateComponentList)(_MIN_ const TComponentMetaList& iMetaComponentList);
-
-  ///
   /// @brief
-  ///
   void pPropagateActivationFlag() noexcept;
 
-  DDy3StateBool                 mActivationFlag    = {};
   /// Parent FDyActor raw-pointer data.
   FDyActor*                     mPtrParentActor    = MDY_INITIALIZE_NULL;
   /// Transform component.
   std::unique_ptr<CDyTransform> mTransform         = MDY_INITIALIZE_NULL;
+  /// Rigidbody component.
+  std::unique_ptr<CDyPhysicsRigidbody> mRigidbody  = MDY_INITIALIZE_NULL;
   /// Component list (randomly) which attached to FDyActor instance (this!)
   TComponentList                mComponentList     = {};
   /// Script list (specialized!)

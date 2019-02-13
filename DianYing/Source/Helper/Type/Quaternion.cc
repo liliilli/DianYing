@@ -43,11 +43,27 @@ DDyQuaternion& DDyQuaternion::operator=(const glm::quat& glmQuat)
   return *this;
 }
 
-DDyMatrix4x4 DDyQuaternion::GetRotationMatrix4x4() const noexcept {
+DDyQuaternion::DDyQuaternion(_MIN_ const physx::PxQuat& pxQuat) :
+  mQuaternion{pxQuat.w, pxQuat.x, pxQuat.y, pxQuat.z}
+{ }
+
+DDyQuaternion& DDyQuaternion::operator=(_MIN_ const physx::PxQuat& pxQuat)
+{
+  this->mQuaternion = glm::quat{pxQuat.w, pxQuat.x, pxQuat.y, pxQuat.z};
+  return *this;
+}
+
+DDyQuaternion::DDyQuaternion(_MIN_ TF32 x, _MIN_ TF32 y, _MIN_ TF32 z, _MIN_ TF32 w) :
+  mQuaternion{w, x, y, z}
+{ }
+
+DDyMatrix4x4 DDyQuaternion::GetRotationMatrix4x4() const noexcept 
+{
   return glm::mat4_cast(this->mQuaternion);
 }
 
-DDyMatrix3x3 DDyQuaternion::GetRotationMatrix3x3() const noexcept {
+DDyMatrix3x3 DDyQuaternion::GetRotationMatrix3x3() const noexcept 
+{
   return glm::mat3_cast(this->mQuaternion);
 }
 

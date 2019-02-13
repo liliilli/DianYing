@@ -45,10 +45,10 @@ FDyMaterialResource::FDyMaterialResource(_MIN_ const PDyMaterialInstanceMetaInfo
     mBlendMode{iInstanceInfo.mBlendMode},
     mBinderShader{iInstanceInfo.mShaderSpecifier}
 {
-  for (const auto& textureSpecifier : iInstanceInfo.mTextureNames)
+  for (const auto& bindingTextureItem : iInstanceInfo.mTextureNames)
   { // Bind texture resource of this material.
-    if (textureSpecifier.empty() == true) { continue; }
-    DySafeUniquePtrEmplaceBack(this->mBinderTextureList, textureSpecifier);
+    if (bindingTextureItem.mTextureSpecifier.empty() == true) { continue; }
+    DySafeUniquePtrEmplaceBack(this->mBinderTextureList, bindingTextureItem.mTextureSpecifier);
   }
   this->mIsInstant = true;
 }

@@ -38,20 +38,17 @@ void main() {
 
 MDY_SET_IMMUTABLE_STRING(sFragmentShaderCode, R"dy(
 #version 430 core
+#import <Input_UboCamera>;
+#import <Input_DefaultTexture2D>;
+/*
+layout (binding = 0) uniform sampler2D uTexture0; // uModelNormal;
+layout (binding = 1) uniform sampler2D uTexture1; // uModelPosition;
+layout (binding = 2) uniform sampler2D uTexture2; // uNoise;
+ */
 
 layout (location = 0) out vec4 oOcclusion;
 
 in VS_OUT { vec2 texCoord; } vs_out;
-
-layout(std140, binding = 0) uniform CameraBlock
-{
-  uniform mat4 mProjMatrix;
-  uniform mat4 mViewMatrix;
-} uCamera;
-
-layout (binding = 0) uniform sampler2D uTexture0; // uModelNormal;
-layout (binding = 1) uniform sampler2D uTexture1; // uModelPosition;
-layout (binding = 2) uniform sampler2D uTexture2; // uNoise;
 
 uniform vec3 uRaySamples[64];
 int   uKernelSize	= 64;

@@ -14,15 +14,21 @@
 
 /// Header file
 #include <Dy/Element/Actor.h>
+#include <Dy/Element/Type/PDyActorCreationDescriptor.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
+#include <Dy/Management/WorldManager.h>
+#include <Dy/Management/Helper/SDyProfilingHelper.h>
 #include <Dy/Component/CDyTransform.h>
 #include <Dy/Component/CDyModelFilter.h>
 #include <Dy/Component/CDyModelRenderer.h>
 #include <Dy/Component/CDyCamera.h>
 #include <Dy/Component/CDyDirectionalLight.h>
-#include <Dy/Element/Type/PDyActorCreationDescriptor.h>
-#include <Dy/Management/WorldManager.h>
-#include "Dy/Management/Helper/SDyProfilingHelper.h"
+#include <Dy/Component/CDyModelAnimator.h>
+#include <Dy/Component/CDySoundSource.h>
+#include <Dy/Component/CDyPhysicsColliderSphere.h>
+#include <Dy/Component/CDyPhysicsColliderCapsule.h>
+#include <Dy/Component/CDyPhysicsColliderBox.h>
+#include <Dy/Component/CDySkybox.h>
 
 //!
 //! Implementation
@@ -55,6 +61,12 @@ FDyActor::FDyActor(_MIN_ const PDyObjectMetaInfo& objectMetaDesc, _MIN_ FDyActor
   // (2) Create components
   // Check activation flags and execute sub-routines of each components.
   this->MDY_PRIVATE_SPECIFIER(CreateComponentList)(metaComponentInfo);
+  // If transform is not exist, just create default transform.
+  if (MDY_CHECK_ISNULL(this->mTransform))
+  {
+    const PDyTransformComponentMetaInfo defaultTransform{};
+    this->AddComponent<CDyTransform>(defaultTransform);
+  }
 
   if (MDY_CHECK_ISNOTNULL(iPtrParent)) { this->SetParent(*iPtrParent); }
   this->pUpdateActivateFlagFromParent();
@@ -104,13 +116,13 @@ FDyActor::FDyActor(_MIN_ const PDyActorCreationDescriptor& iDesc, _MIN_ FDyActor
   // (2) Create components
   // Check activation flags and execute sub-routines of each components.
   this->MDY_PRIVATE_SPECIFIER(CreateComponentList)(metaComponentInfo);
+  // (3) Create Transform component using Given transform
+  this->AddComponent<CDyTransform>(iDesc.mTransform);
 
   if (MDY_CHECK_ISNOTNULL(iPtrParent)) { this->SetParent(*iPtrParent); }
   this->pUpdateActivateFlagFromParent();
   this->Activate();
 
-  // (3) Create Transform component using Given transform
-  this->AddComponent<CDyTransform>(iDesc.mTransform);
   MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mTransform), "CDyTransform component must be created to all FDyActor.");
   SDyProfilingHelper::IncreaseOnBindActorCount(1);
 }
@@ -137,39 +149,101 @@ void FDyActor::MDY_PRIVATE_SPECIFIER(CreateComponentList)(const TComponentMetaLi
     case EDyComponentMetaType::ModelRenderer:
       this->AddComponent<CDyModelRenderer>(std::any_cast<const PDyModelRendererComponentMetaInfo&>(componentInfo));
       break;
+    case EDyComponentMetaType::ModelAnimator:
+      this->AddComponent<CDyModelAnimator>(std::any_cast<const PDyModelAnimatorComponentMetaInfo&>(componentInfo));
+      break;
     case EDyComponentMetaType::Camera:
       this->AddComponent<CDyCamera>(std::any_cast<const PDyCameraComponentMetaInfo&>(componentInfo));
       break;
+    case EDyComponentMetaType::SoundSource:
+      this->AddComponent<CDySoundSource>(std::any_cast<const PDySoundSourceComponentMetaInfo&>(componentInfo));
+      break;
+    case EDyComponentMetaType::Rigidbody:
+      this->AddComponent<CDyPhysicsRigidbody>(std::any_cast<const PDyRigidbodyComponentMetaInfo&>(componentInfo));
+      break;
+    case EDyComponentMetaType::Skybox:
+      this->AddComponent<CDySkybox>(std::any_cast<const PDySkyboxComponentMetaInfo&>(componentInfo));
+      break;
+    case EDyComponentMetaType::Collider:
+    {
+      const auto& refMetaInfo = std::any_cast<const PDyColliderComponentMetaInfo&>(componentInfo);
+      switch (refMetaInfo.mDetails.mColliderType)
+      {
+      case EDyColliderType::Sphere: 
+      { this->AddComponent<CDyPhysicsColliderSphere>(refMetaInfo);
+      } break;
+      case EDyColliderType::Capsule: 
+      { this->AddComponent<CDyPhysicsColliderCapsule>(refMetaInfo);
+      } break;
+      case EDyColliderType::Box:
+      { this->AddComponent<CDyPhysicsColliderBox>(refMetaInfo);
+      } break;
+      default: MDY_UNEXPECTED_BRANCH(); break;
+      }
     }
+      break;
+    }
+  }
+
+  // If rigidbody is not exist, just create default rigidbody.
+  if (MDY_CHECK_ISNULL(this->mRigidbody))
+  {
+    const PDyRigidbodyComponentMetaInfo defaultMetaInfo{};
+    this->AddComponent<CDyPhysicsRigidbody>(defaultMetaInfo);
   }
 }
 
 FDyActor::~FDyActor()
 {
   SDyProfilingHelper::DecreaseOnBindActorCount(1);
+  for (auto& item : this->mComponentList)
+  {
+    this->ReleaseComponent(item);
+  }
   this->mComponentList.clear();
+
+  if (this->mRigidbody != nullptr) { this->mRigidbody->Release(); }
 }
 
-void FDyActor::Activate() noexcept
+void FDyActor::ReleaseComponent(_MINOUT_ TComponentList::value_type& iItem)
 {
-  this->mActivationFlag.UpdateInput(true);
-  this->pPropagateActivationFlag();
-}
+  auto& [typeVal, ptrsmtComponent] = iItem;
+  if (MDY_CHECK_ISEMPTY(ptrsmtComponent)) { return; }
 
-void FDyActor::Deactivate() noexcept
-{
-  this->mActivationFlag.UpdateInput(true);
-  this->pPropagateActivationFlag();
+  using _ = EDyComponentType;
+  // ActorScript, Transform does not release in this logic.
+  // We use downcasting intentionally to call Release() function.
+  switch (typeVal)
+  {
+  case EDyComponentType::DirectionalLight: 
+  { static_cast<TComponentBindingType<_::DirectionalLight>::Type&>(*ptrsmtComponent).Release(); } break;
+  case EDyComponentType::Camera:
+  { static_cast<TComponentBindingType<_::Camera>::Type&>(*ptrsmtComponent).Release(); } break;
+  case EDyComponentType::ModelAnimator:
+  { static_cast<TComponentBindingType<_::ModelAnimator>::Type&>(*ptrsmtComponent).Release(); } break;
+  case EDyComponentType::ModelFilter:
+  { static_cast<TComponentBindingType<_::ModelFilter>::Type&>(*ptrsmtComponent).Release(); } break;
+  case EDyComponentType::ModelRenderer:
+  { static_cast<TComponentBindingType<_::ModelRenderer>::Type&>(*ptrsmtComponent).Release(); } break;
+  case EDyComponentType::SoundSource:
+  { static_cast<TComponentBindingType<_::SoundSource>::Type&>(*ptrsmtComponent).Release(); } break;
+  case EDyComponentType::Rigidbody:
+  { static_cast<TComponentBindingType<_::Rigidbody>::Type&>(*ptrsmtComponent).Release(); } break;
+  case EDyComponentType::ColliderSphere:
+  { static_cast<TComponentBindingType<_::ColliderSphere>::Type&>(*ptrsmtComponent).Release(); } break;
+  case EDyComponentType::ColliderBox:
+  { static_cast<TComponentBindingType<_::ColliderBox>::Type&>(*ptrsmtComponent).Release(); } break;
+  case EDyComponentType::ColliderCapsule:
+  { static_cast<TComponentBindingType<_::ColliderCapsule>::Type&>(*ptrsmtComponent).Release(); } break;
+  case EDyComponentType::Skybox:
+  { static_cast<TComponentBindingType<_::Skybox>::Type&>(*ptrsmtComponent).Release(); } break;
+  default: MDY_UNEXPECTED_BRANCH(); break;
+  }
 }
 
 void FDyActor::DestroySelf()
 {
   MDyWorld::GetInstance().DestroyActor(*this);
-}
-
-bool FDyActor::IsActivated() const noexcept
-{
-  return this->mActivationFlag.GetOutput();
 }
 
 const std::string& FDyActor::GetActorName() const noexcept
@@ -189,33 +263,48 @@ std::string FDyActor::MDY_PRIVATE_SPECIFIER(GetFullSpecifierName)() const noexce
 
 void FDyActor::pUpdateActivateFlagFromParent() noexcept
 {
+  // If parent actor is not exist, it regards as a root object.
+  // Otherwise, get parent actor flag.
   if (MDY_CHECK_ISNULL(this->mPtrParentActor))
-  {
-    this->mActivationFlag.UpdateParent(true);
-  }
+  { this->SetupFlagAsParent(true); }
   else
-  {
-    this->mActivationFlag.UpdateParent(this->mPtrParentActor->IsActivated());
-  }
+  { this->SetupFlagAsParent(this->mPtrParentActor->IsActivated()); }
 
+  this->pPropagateActivationFlag();
+}
+
+void FDyActor::TryActivateInstance()
+{
+  this->pPropagateActivationFlag();
+}
+
+void FDyActor::TryDeactivateInstance()
+{
   this->pPropagateActivationFlag();
 }
 
 void FDyActor::pPropagateActivationFlag() noexcept
 {
-  for (auto& unknownComponent : mComponentList)
+  for (auto& [type, unknownComponent] : mComponentList)
   {
     if (MDY_CHECK_ISEMPTY(unknownComponent)) { continue; }
-    unknownComponent->pPropagateParentActorActivation(this->mActivationFlag);
+    unknownComponent->SetupFlagAsParent(this->IsActivated());
   }
 
   for (auto& unknownScript : this->mScriptList)
   {
     if (MDY_CHECK_ISEMPTY(unknownScript)) { continue; }
-    unknownScript->pPropagateParentActorActivation(this->mActivationFlag);
+    unknownScript->SetupFlagAsParent(this->IsActivated());
   }
 
+  if (this->mRigidbody != nullptr) { this->mRigidbody->SetupFlagAsParent(this->IsActivated()); }
+
   // @TODO PROPAGATE ACTIVATION FLAG TO SUBACTOR ALSO.
+  for (const auto& [specifier, instance] : this->mChildActorMap)
+  {
+    if (MDY_CHECK_ISEMPTY(instance)) { continue; }
+    instance->SetupFlagAsParent(this->IsActivated());
+  }
 }
 
 void FDyActor::SetParent(_MIN_ FDyActor& validParentRawPtr) noexcept
@@ -414,6 +503,12 @@ void FDyActor::MDY_PRIVATE_SPECIFIER(TryDetachDependentComponents)() noexcept
 NotNull<CDyTransform*> FDyActor::GetTransform() noexcept
 {
   return DyMakeNotNull(this->mTransform.get());
+}
+
+CDyPhysicsRigidbody* FDyActor::GetRigidbody() noexcept
+{
+  if (MDY_CHECK_ISEMPTY(this->mRigidbody))  { return nullptr; } 
+  else        { return DyMakeNotNull(this->mRigidbody.get()); }
 }
 
 } /// ::dy namespace
