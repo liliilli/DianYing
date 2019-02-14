@@ -404,6 +404,8 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyRigidbodyComponentMeta
   DyJsonGetValueFromTo(j, "LockPos", p.mLockPosition);
   DyJsonGetValueFromTo(j, "LockRot", p.mLockPosition);
   DyJsonGetValueFromTo(j, "LockPreset", p.mLockPreset);
+
+  DyJsonGetValueFromTo(j, "Type", p.mType);
 }
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyColliderComponentMetaInfo& p)
@@ -453,6 +455,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySkyboxComponentMetaInf
 {
   DyJsonGetValueFromTo(j, "Exposure", p.mExposure);
   DyJsonGetValueFromTo(j, "Rotation", p.mRotation);
+  DyJsonGetValueFromTo(j, "TintColor", p.mTintColor);
 
   DyJsonGetValueFromTo(j, "CubemapSpecifier", p.mCubemapSpecifier);
 }

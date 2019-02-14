@@ -15,13 +15,24 @@
 /// Header file
 #include <Dy/Editor/View/MainMenu.h>
 
+#include <filesystem>
 #include <imgui/imgui.h>
+#include <imgui/imgui_internal.h>
+
 #include <Dy/Management/WindowManager.h>
 #include <Dy/Management/SettingManager.h>
+#include <Dy/Core/Reflection/RDyGlobalInstanceManager.h>
+#include <Dy/Builtin/GlobalInstance/FDyBtGiDebugStatus.h>
+#include <Dy/Helper/MCS/Functions.h>
 
 namespace dy::editor
 {
 
+FDyEditor_MainMenu::FDyEditor_MainMenu()
+{
+  this->mPtrGlobalInstance = MDY_GET_GLOBALINSTANCE(FDyBtGiDebugStatus);
+}
+  
 // https://qiita.com/Ushio/items/446d78c881334919e156
 // https://qiita.com/izumin5210/items/26eaed69eea2c4318fcd
 // https://qiita.com/ousttrue/items/ae7c8d5715adffc5b1fa
@@ -30,8 +41,54 @@ void FDyEditor_MainMenu::Draw(_MIN_ MDY_NOTUSED TF32 dt) noexcept
   ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiSetCond_Once);
   ImGui::SetNextWindowSize(ImVec2(200, 300), ImGuiSetCond_Once);
 
-  if (ImGui::Begin("Dy Debug Menu", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+  if (ImGui::Begin("Dy Debug Menu", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar))
   {
+    // Menu
+    if (ImGui::BeginMenuBar())
+    {
+      // 
+      if (ImGui::BeginMenu("Menu") == true)
+      {
+        ImGui::MenuItem("(dummy menu)", nullptr, false, false);
+        ImGui::Separator();
+
+        // We need to push item flag to display modal dialog window.
+        // https://github.com/ocornut/imgui/issues/2200
+        // https://github.com/ocornut/imgui/issues/249
+        ImGui::PushItemFlag(ImGuiItemFlags_SelectableDontClosePopup, true);
+        if (ImGui::MenuItem("Export metafiles..") == true) 
+        { 
+          ImGui::OpenPopup("Export?"); 
+        }
+        ImGui::PopItemFlag();
+        // Pop-up.
+        if (ImGui::BeginPopupModal("Export?", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+          ImGui::Text(u8"Exporting project setting files...\n\n");
+          ImGui::Separator();
+
+          // Export files with override option.
+          mcs::Compress(MDySetting::GetInstance().__GetEntrySettingFile(), true);
+          // Create overaly dialogue window.
+
+          // End
+          ImGui::CloseCurrentPopup();
+          ImGui::EndPopup();
+        }
+
+        ImGui::EndMenu();
+      }
+
+      if (ImGui::BeginMenu("View") == true)
+      {
+        static bool logValue = false;
+        if (ImGui::MenuItem("Log", nullptr, &logValue) == true) { this->mPtrGlobalInstance->mLogFlag = logValue; }
+        ImGui::EndMenu();
+      }
+
+      ImGui::EndMenuBar();
+    }
+
 #ifdef false
     ImGui::Text(u8"Hello world!\n"
       u8"アストラギウス銀河を二分するギルガメスとバララントは、\n"

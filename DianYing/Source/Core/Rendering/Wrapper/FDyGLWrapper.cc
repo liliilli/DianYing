@@ -946,6 +946,12 @@ void FDyGLWrapper::UpdateUniformVector4(_MIN_ TU32 iId, _MIN_ const DDyVector4& 
   glUniform4fv(iId, 1, &iBuffer.X);
 }
 
+void FDyGLWrapper::UpdateUniformVector3(_MIN_ TU32 iId, _MIN_ const DDyVector3& iBuffer)
+{
+  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
+  glUniform3fv(iId, 1, &iBuffer.X);
+}
+
 void FDyGLWrapper::UpdateUniformInteger(_MIN_ TU32 iId, _MIN_ const TI32& iBuffer)
 {
   MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);

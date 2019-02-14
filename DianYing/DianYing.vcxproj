@@ -192,6 +192,7 @@
     <ClCompile Include="Source\Builtin\FrameBuffer\SceneIntegration\FDyBtFbTransIntegration.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\UIIntegration\FDyBtFbBasic.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\WeightBlendOIT\FDyBtFbWeightBlendedOIT.cc" />
+    <ClCompile Include="Source\Builtin\GlobalInstance\FDyBtGiDebugStatus.cc" />
     <ClCompile Include="Source\Builtin\Material\BtMtCheckerWorldPos.cc" />
     <ClCompile Include="Source\Builtin\Material\Transparent\StaticTransparentChecker.cc" />
     <ClCompile Include="Source\Builtin\Mesh\Debug\FDyBtMsDebugBox.cc" />
@@ -246,6 +247,7 @@
     <ClCompile Include="Source\Component\Internal\Script\Global\CDyGlobalScriptCpp.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Global\FDyGlobalScriptStatus.cc" />
     <ClCompile Include="Source\Component\Internal\Sound\FDySoundInstance.cc" />
+    <ClCompile Include="Source\Core\Reflection\RDyGlobalInstanceManager.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\DebugRenderer.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\LevelCascadeShadowRenderer.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\LevelCSMIntergration.cc" />
@@ -438,6 +440,7 @@
     <ClCompile Include="Source\Helper\Library\HelperString.cc" />
     <ClCompile Include="Source\Helper\MCS\Functions.cc" />
     <ClCompile Include="Source\Helper\MCS\GLShaderParser.cc" />
+    <ClCompile Include="Source\Helper\Type\ColorRGB.cc" />
     <ClCompile Include="Source\Helper\Type\Plane.cc" />
     <ClCompile Include="Source\Management\GameTimerManager.cc" />
     <ClCompile Include="Source\Management\Helper\SDyProfilingHelper.cc" />
@@ -544,6 +547,7 @@
     <ClCompile Include="Source\Meta\Type\EDyTextureParameter.cc" />
     <ClCompile Include="Source\Meta\Type\Input\JsonInputButton.cc" />
     <ClCompile Include="Source\Meta\Type\Physics\EDyColliderType.cc" />
+    <ClCompile Include="Source\Meta\Type\Physics\EDyRigidbodyType.cc" />
     <ClCompile Include="Source\precompiled.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">Create</PrecompiledHeader>
@@ -555,6 +559,7 @@
     <ClInclude Include="Include\Dy\Binding\LuaScriptFrame.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGLAttachmentResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGLFrameBufferResource.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGlobalInstance.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGLShaderResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyLoadingBootResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyLoadingGlobalResource.h" />
@@ -593,6 +598,7 @@
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\SceneIntegration\FDyBtFbTransIntegration.h" />
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\UIIntegration\FDyBtFbUiBasic.h" />
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\WeightBlendOIT\FDyBtFbWeightBlendedOIT.h" />
+    <ClInclude Include="Include\Dy\Builtin\GlobalInstance\FDyBtGiDebugStatus.h" />
     <ClInclude Include="Include\Dy\Builtin\Interface\IDyResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Material\BtMtCheckerWorldPos.h" />
     <ClInclude Include="Include\Dy\Builtin\Material\OpaqueStaticPlain.h" />
@@ -664,6 +670,7 @@
     <ClInclude Include="Include\Dy\Component\Internal\Sound\FDySoundInstance.h" />
     <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScript.h" />
     <ClInclude Include="Include\Dy\Core\EDyAppMode.h" />
+    <ClInclude Include="Include\Dy\Core\Reflection\RDyGlobalInstanceManager.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Interface\IDyRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\DebugRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\LevelCascadeShadowRenderer.h" />
@@ -753,6 +760,7 @@
     <ClInclude Include="Include\Dy\Management\IO\MDyIOData.h" />
     <ClInclude Include="Include\Dy\Management\IO\MDyIOResource.h" />
     <ClInclude Include="Include\Dy\Management\GameTimerManager.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\DDyCompUpdator.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyInputButton.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyJoystickAnalog.h" />
     <ClInclude Include="Include\Dy\Management\Type\Render\EDyModelRenderingMode.h" />
@@ -977,6 +985,7 @@
     <ClInclude Include="Include\Dy\Helper\Constant\StringPipelineUniform.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Input\JsonInputButton.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Mesh\DDyGLVaoBindInformation.h" />
+    <ClInclude Include="Include\Dy\Meta\Type\Physics\EDyRigidbodyType.h" />
     <ClInclude Include="Include\precompiled.h" />
     <ClInclude Include="Libraries\glad\include\glad\glad.h" />
     <ClInclude Include="Libraries\glad\include\KHR\khrplatform.h" />

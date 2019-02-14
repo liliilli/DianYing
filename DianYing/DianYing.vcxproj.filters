@@ -333,6 +333,10 @@
     <ClCompile Include="Source\Builtin\FrameBuffer\Deferred\FDyBtFbSkybox.cc" />
     <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAtSkyOutput.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\PostEffectSky.cc" />
+    <ClCompile Include="Source\Helper\Type\ColorRGB.cc" />
+    <ClCompile Include="Source\Core\Reflection\RDyGlobalInstanceManager.cc" />
+    <ClCompile Include="Source\Builtin\GlobalInstance\FDyBtGiDebugStatus.cc" />
+    <ClCompile Include="Source\Meta\Type\Physics\EDyRigidbodyType.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -814,6 +818,11 @@
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\Deferred\FDyBtFbSkybox.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAtSkyOutput.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\PostEffectSky.h" />
+    <ClInclude Include="Include\Dy\Core\Reflection\RDyGlobalInstanceManager.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGlobalInstance.h" />
+    <ClInclude Include="Include\Dy\Builtin\GlobalInstance\FDyBtGiDebugStatus.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\DDyCompUpdator.h" />
+    <ClInclude Include="Include\Dy\Meta\Type\Physics\EDyRigidbodyType.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

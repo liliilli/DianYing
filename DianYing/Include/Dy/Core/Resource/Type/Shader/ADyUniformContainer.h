@@ -107,6 +107,12 @@ public:
       const auto& item = this->MDY_UPDATEUNIFORM(Matrix3)(iSpecifier, iValue);
       this->mUpdatedItemList.emplace_back(std::make_pair(TType, item));
     }
+    else if constexpr (TType == EDyUniformVariableType::Vector3)
+    { // If not exist and not created by doing TryConstructDefaultUniformList, just create.
+      if (MDY_ISUNIFORMEXIST(Vector3)(iSpecifier) == false) { MDY_CREATEUNIFORM(Vector3)(iSpecifier, -1); }
+      const auto& item = this->MDY_UPDATEUNIFORM(Vector3)(iSpecifier, iValue);
+      this->mUpdatedItemList.emplace_back(std::make_pair(TType, item));
+    }
     else if constexpr (TType == EDyUniformVariableType::Vector4)
     { // If not exist and not created by doing TryConstructDefaultUniformList, just create.
       if (MDY_ISUNIFORMEXIST(Vector4)(iSpecifier) == false) { MDY_CREATEUNIFORM(Vector4)(iSpecifier, -1); }

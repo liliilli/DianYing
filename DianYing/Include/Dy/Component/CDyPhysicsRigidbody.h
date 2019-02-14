@@ -49,6 +49,17 @@ public:
   MDY_SET_TYPEMATCH_FUNCTION(::dy::ADyGeneralBaseComponent, CDyPhysicsRigidbody)
   MDY_SET_CRC32_HASH_WITH_TYPE(CDyPhysicsRigidbody);
 
+  /// @brief Set rigidbody type. But this component should be deactivated when calling this function,
+  /// because internal physics system.
+  EDySuccess SetRigidbodyType(_MIN_ EDyRigidbodyType type) noexcept;
+  /// @brief get rigidbody type of this component.
+  MDY_NODISCARD EDyRigidbodyType GetRigidbodyType() const noexcept;
+
+  /// @brief Set gravity. If component is activated and type is Dynamic, reflect gravity setting.
+  void SetGravity(_MIN_ bool iNewValue) noexcept;
+  /// @brief Get gravity activation value.
+  MDY_NODISCARD bool GetGravity() const noexcept;
+
   /// @brief Initialize component.
   MDY_NODISCARD EDySuccess Initialize(_MIN_ const PDyRigidbodyComponentMetaInfo& descriptor) override;
   /// @brief Release component.
@@ -70,7 +81,7 @@ public:
 
   /// @brief
   ///
-  EDySuccess BindShapeToRigidbody(_MIN_ physx::PxShape& iRefShape);
+  EDySuccess BindShapeToRigidbody(_MIN_ CDyPhysicsCollider& iRefShape);
 
   /// @brief
   ///
@@ -83,11 +94,14 @@ public:
   MDY_NODISCARD std::optional<TU32> 
   MDY_PRIVATE_SPECIFIER(GetRigidbodySpecifier)() const noexcept;
 
-  /// @brief Get reference instance of rigidbody. When call this, `mOwnerDynamicActor` must be valid.
-  MDY_NODISCARD physx::PxRigidDynamic& 
+  /// @brief Get reference instance of rigidbody. When call this, `mOwnerInternalActor` must be valid.
+  MDY_NODISCARD physx::PxRigidActor& 
   MDY_PRIVATE_SPECIFIER(GetRefInternalRigidbody)() noexcept;
 
 private:
+  /// @brief Update gravity setting when actor is dynamic and valid.
+  void pUpdateSettingGravity(_MIN_ const bool& iNewValue);
+
   /// Check this rigidbody (and collider) simulate physics. 
   /// If false, all collider do kinematic.
   bool mIsSimulatePhysics = false;
@@ -100,17 +114,23 @@ private:
   /// Angular damping of rigidbody
   DDyClamp<TF32, 0, 10'000>   mAngularDamping = 1.0f; 
   /// Lock position axis.
-  DLockPreset::D3DAxis mLockPosition;
+  DLockPreset::D3DAxis mLockPosition{};
   /// Lock rotation axis.
-  DLockPreset::D3DAxis mLockRotation;
+  DLockPreset::D3DAxis mLockRotation{};
+  /// Type
+  /// If `static`, does not move and fixed.
+  /// If `kinematic`..
+  EDyRigidbodyType mType = EDyRigidbodyType::Static;
 
   void TryActivateInstance() override final;
+  void pActivateDynamicNKinematicActor();
+  void pActivateStaticActor();
   void TryDeactivateInstance() override final;
 
   /// @brief Manages collider list.
   std::vector<NotNull<CDyPhysicsCollider*>> mPtrColliderList{};
   /// @brief Internal actor.
-  physx::PxRigidDynamic* mOwnerDynamicActor = nullptr;
+  physx::PxRigidActor* mOwnerInternalActor = nullptr;
 
   /// @brief 24bit rigidbody specifier unique-id value.
   TU32 mRigidbodySpecifierId : 24;

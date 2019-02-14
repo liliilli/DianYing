@@ -15,13 +15,30 @@
 
 #include <Dy/Helper/Pointer.h>
 
+//!
+//! Forward declaration
+//!
+
+namespace dy
+{
+class FDyBtGiDebugStatus;
+}
+
+//!
+//! Implementation
+//!
+
 namespace dy::editor
 {
 
 class FDyEditor_MainMenu final
 {
 public:
+  FDyEditor_MainMenu();
   void Draw(_MIN_ TF32 dt) noexcept;
+
+private:
+  FDyBtGiDebugStatus* mPtrGlobalInstance = nullptr;
 };
 
 } /// ::dy::editor namespace

@@ -62,6 +62,21 @@ public:
   /// @brief Private function. Get reference of texture binder.
   MDY_NODISCARD TDyLResourceBinderTexture& MDY_PRIVATE_SPECIFIER(GetTextureBinderReference)() noexcept;
 
+  /// @brief Set exposure value. If value is out of range from 0 to 10, input value will be aligned.
+  void SetExposure(_MIN_ TF32 iValue) noexcept;
+  /// @brief Get exposure value. 
+  MDY_NODISCARD TF32 GetExposure() const noexcept;
+
+  /// @brief Set rotation degrees of y-axis.
+  void SetRotationDegree(_MIN_ TF32 iDegree) noexcept;
+  /// @brief Get rotation degrees of y-axis.
+  MDY_NODISCARD TF32 GetRotationDegree() const noexcept;
+
+  /// @brief
+  void SetTintColor(_MIN_ const DDyColorRGB& iTintColor) noexcept;
+  /// @brief
+  MDY_NODISCARD const DDyColorRGB& GetTintColor() const noexcept;
+
 private:
   void TryActivateInstance() override final;
   void TryDeactivateInstance() override final;
@@ -70,6 +85,7 @@ private:
 
   std::string           mTextureSpecifier = MDY_INITIALIZE_EMPTYSTR;
   DDyClamp<TF32, 0, 10> mExposure         = 0.0f;
+  DDyColorRGB           mTintColor        = {};
   TF32                  mRotationDegree   = 0.0f;
 
   MDY_SET_TYPEMATCH_FUNCTION(::dy::ADyGeneralBaseComponent, CDySkybox);

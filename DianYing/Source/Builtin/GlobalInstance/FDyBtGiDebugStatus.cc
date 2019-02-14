@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_NAMESPACE_HELPER_SYSTEM
-#define GUARD_DY_NAMESPACE_HELPER_SYSTEM
+#include <precompiled.h>
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -13,11 +12,15 @@
 /// SOFTWARE.
 ///
 
-namespace dy::mcs
+#include <Dy/Builtin/GlobalInstance/FDyBtGiDebugStatus.h>
+#include <Dy/Management/LoggingManager.h>
+
+namespace dy
 {
 
-void Compress(_MIN_ const std::filesystem::path& iPath, _MIN_ bool iOverride = false);
+void FDyBtGiDebugStatus::OnCallbackLogFlag(_MIN_ const bool& iValue)
+{
+  MDY_LOG_CRITICAL("Value is {}", iValue ? "True" : "False");
+}
 
-} /// ::dy::mcs(mode_compression_setting) namespace
-
-#endif /// GUARD_DY_NAMESPACE_HELPER_SYSTEM
+} /// ::dy namespace

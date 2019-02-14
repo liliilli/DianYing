@@ -334,11 +334,13 @@ void MDySetting::pSetupExecutableArgumentSettings()
       ("g,graphics",                "Enable graphics API with", cxxopts::value<std::string>()->default_value(""))
       ("c,enable_logging_console",  "Enable logging console",   cxxopts::value<bool>())
       ("f,enable_logging_file",     "Enable logging file to",   cxxopts::value<std::string>()->default_value(""))
+#ifdef false
       // -m and -r can not be existed on same time.
       // Must specify setting json data path from executable application file.
       ("m,mode_compression_data", 
           "Run application as compression data mode.", 
           cxxopts::value<std::string>()->default_value(""))
+#endif
       // If -r is not setup, specified compression file will be loaded.
       // Must specify setting json data path from executable application file.
       ("r,run_separated_data",    
@@ -364,16 +366,6 @@ void MDySetting::pSetupExecutableArgumentSettings()
     SetupLoggingConsoleFeature(result["enable_logging_console"]);
     SetupLoggingFileFeature(result["enable_logging_file"]);
 
-    { // Mode compression data
-      if (const auto m = result["mode_compression_data"].as<std::string>(); m.empty() == false)
-      {
-        namespace fs = std::filesystem;
-        MDY_ASSERT_FORCE(fs::exists(m) == true, "Compressed data entry setting file is not exist on given path.");
-
-        this->mEntrySettingPath = m;
-        this->mApplicationMode  = EDyAppMode::ModeCompressData;
-      }
-    }
     { // Run seperated data.
       if (const auto r = result["run_separated_data"].as<std::string>(); r.empty() == false)
       {

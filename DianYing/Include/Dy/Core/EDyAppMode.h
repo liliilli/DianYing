@@ -16,11 +16,10 @@
 namespace dy
 {
 
-/// @enum EDyAppMode
-/// @brief
+/// @enum  EDyAppMode
+/// @brief Global application mode.
 enum class EDyAppMode
 {
-  ModeCompressData,
   // If -d not setup, just do this that.
   ModeRuntime,
 };

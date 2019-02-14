@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_NAMESPACE_HELPER_SYSTEM
-#define GUARD_DY_NAMESPACE_HELPER_SYSTEM
+#include <precompiled.h>
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -13,11 +12,18 @@
 /// SOFTWARE.
 ///
 
-namespace dy::mcs
+/// Header file
+#include <Dy/Helper/Type/ColorRGB.h>
+#include <Dy/Helper/Library/HelperJson.h>
+
+namespace dy
 {
 
-void Compress(_MIN_ const std::filesystem::path& iPath, _MIN_ bool iOverride = false);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ DDyColorRGB& p)
+{
+  DyJsonGetValueFromTo(j, "R", p.R);
+  DyJsonGetValueFromTo(j, "G", p.G);
+  DyJsonGetValueFromTo(j, "B", p.B);
+}
 
-} /// ::dy::mcs(mode_compression_setting) namespace
-
-#endif /// GUARD_DY_NAMESPACE_HELPER_SYSTEM
+} /// ::dy namespace
