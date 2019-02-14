@@ -32,8 +32,8 @@
 #include <Dy/Management/Editor/GuiManager.h>
 #include <Dy/Management/Internal/MDySynchronization.h>
 #include <Dy/Management/Internal/MDyProfiling.h>
-#include "Dy/Management/GameTimerManager.h"
-#include "Dy/Management/Helper/SDyProfilingHelper.h"
+#include <Dy/Management/GameTimerManager.h>
+#include <Dy/Management/Helper/SDyProfilingHelper.h>
 #include <Dy/Management/Internal/MDyDebug.h>
 
 //!
@@ -52,7 +52,6 @@ EDySuccess DyEngine::pfInitialize()
 
   switch (MDySetting::GetInstance().GetApplicationMode())
   {
-  case EDyAppMode::ModeCompressData: { return DY_SUCCESS; } 
   case EDyAppMode::ModeRuntime: 
   {
     this->pfInitializeIndependentManager();
@@ -67,7 +66,6 @@ EDySuccess DyEngine::pfRelease()
 {
   switch (MDySetting::GetInstance().GetApplicationMode())
   {
-  case EDyAppMode::ModeCompressData: /* Do nothing */ break;
   case EDyAppMode::ModeRuntime: 
   {
     this->mSynchronization = nullptr;
@@ -79,12 +77,6 @@ EDySuccess DyEngine::pfRelease()
 
 void DyEngine::operator()()
 {
-  if (const auto& set = MDySetting::GetInstance(); set.GetApplicationMode() == EDyAppMode::ModeCompressData)
-  { 
-    mcs::Compress(set.MDY_PRIVATE_SPECIFIER(GetEntrySettingFile)());
-    return;
-  }
-
   static auto& timeManager = MDyTime::GetInstance();
   while (MDyWindow::GetInstance().IsWindowShouldClose() == false)
   {

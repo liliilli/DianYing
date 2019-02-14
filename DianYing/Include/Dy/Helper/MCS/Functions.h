@@ -16,7 +16,7 @@
 namespace dy::mcs
 {
 
-void Compress(_MIN_ const std::filesystem::path& iPath);
+void Compress(_MIN_ const std::filesystem::path& iPath, _MIN_ bool iOverride = false);
 
 } /// ::dy::mcs(mode_compression_setting) namespace
 
