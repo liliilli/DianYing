@@ -404,6 +404,8 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyRigidbodyComponentMeta
   DyJsonGetValueFromTo(j, "LockPos", p.mLockPosition);
   DyJsonGetValueFromTo(j, "LockRot", p.mLockPosition);
   DyJsonGetValueFromTo(j, "LockPreset", p.mLockPreset);
+
+  DyJsonGetValueFromTo(j, "Type", p.mType);
 }
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyColliderComponentMetaInfo& p)

@@ -547,6 +547,7 @@
     <ClCompile Include="Source\Meta\Type\EDyTextureParameter.cc" />
     <ClCompile Include="Source\Meta\Type\Input\JsonInputButton.cc" />
     <ClCompile Include="Source\Meta\Type\Physics\EDyColliderType.cc" />
+    <ClCompile Include="Source\Meta\Type\Physics\EDyRigidbodyType.cc" />
     <ClCompile Include="Source\precompiled.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">Create</PrecompiledHeader>
@@ -984,6 +985,7 @@
     <ClInclude Include="Include\Dy\Helper\Constant\StringPipelineUniform.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Input\JsonInputButton.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Mesh\DDyGLVaoBindInformation.h" />
+    <ClInclude Include="Include\Dy\Meta\Type\Physics\EDyRigidbodyType.h" />
     <ClInclude Include="Include\precompiled.h" />
     <ClInclude Include="Libraries\glad\include\glad\glad.h" />
     <ClInclude Include="Libraries\glad\include\KHR\khrplatform.h" />

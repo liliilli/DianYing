@@ -339,16 +339,15 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(PreRender)(_MIN_ EDyGlobalGameStatus iEngin
   {
     // Reset frame dependent profiling count.
     SDyProfilingHelper::ResetFrameDependentCounts();
+    // Update physics `PxScene` parameter. This function must be called before MDyPhysics::Update(dt).
+    MDyPhysics::GetInstance().UpdateInternalPxSceneParameter();
 
     if (this->mIsInGameUpdatePaused == false)
     {
       MDyWorld::GetInstance().UpdateAnimator(dt);
+      // Update physics collision simulation.
+      MDyPhysics::GetInstance().Update(dt);
     }
-
-    // Update physics `PxScene` parameter. This function must be called before MDyPhysics::Update(dt).
-    MDyPhysics::GetInstance().UpdateInternalPxSceneParameter();
-    // Update physics collision simulation.
-    MDyPhysics::GetInstance().Update(dt);
 
     // Debug render queue requisition.
     if (MDySetting::GetInstance().IsRenderPhysicsCollisionShape() == true)

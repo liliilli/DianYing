@@ -49,6 +49,17 @@ public:
   MDY_SET_TYPEMATCH_FUNCTION(::dy::ADyGeneralBaseComponent, CDyPhysicsRigidbody)
   MDY_SET_CRC32_HASH_WITH_TYPE(CDyPhysicsRigidbody);
 
+  /// @brief Set rigidbody type. But this component should be deactivated when calling this function,
+  /// because internal physics system.
+  EDySuccess SetRigidbodyType(_MIN_ EDyRigidbodyType type) noexcept;
+  /// @brief get rigidbody type of this component.
+  MDY_NODISCARD EDyRigidbodyType GetRigidbodyType() const noexcept;
+
+  /// @brief
+  void SetGravity(_MIN_ bool iNewValue) noexcept;
+  /// @brief 
+  MDY_NODISCARD bool GetGravity() const noexcept;
+
   /// @brief Initialize component.
   MDY_NODISCARD EDySuccess Initialize(_MIN_ const PDyRigidbodyComponentMetaInfo& descriptor) override;
   /// @brief Release component.
@@ -88,6 +99,9 @@ public:
   MDY_PRIVATE_SPECIFIER(GetRefInternalRigidbody)() noexcept;
 
 private:
+  /// @brief Update gravity setting when actor is dynamic and valid.
+  void pUpdateSettingGravity(_MIN_ const bool& iNewValue);
+
   /// Check this rigidbody (and collider) simulate physics. 
   /// If false, all collider do kinematic.
   bool mIsSimulatePhysics = false;
@@ -103,6 +117,10 @@ private:
   DLockPreset::D3DAxis mLockPosition;
   /// Lock rotation axis.
   DLockPreset::D3DAxis mLockRotation;
+  /// Type
+  /// If `static`, does not move and fixed.
+  /// If `kinematic`..
+  EDyRigidbodyType mType = EDyRigidbodyType::Static;
 
   void TryActivateInstance() override final;
   void TryDeactivateInstance() override final;

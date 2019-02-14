@@ -441,6 +441,11 @@ void MDyPhysics::TryEnqueueDebugDrawCall()
 void MDyPhysics::MDY_PRIVATE_SPECIFIER(RegisterRigidbody)(_MIN_ CDyPhysicsRigidbody& iRefRigidbody)
 {
   this->mActivatedRigidbodyList.emplace_back(DyMakeNotNull(&iRefRigidbody));
+  
+  auto ptrRigidbodyComponent = this->mActivatedRigidbodyList.back();
+
+  MDY_ASSERT_FORCE(this->gScene != nullptr, "Physics scene must be valid.");
+  this->gScene->addActor(ptrRigidbodyComponent->__GetRefInternalRigidbody());
 }
 
 void MDyPhysics::MDY_PRIVATE_SPECIFIER(UnregisterRigidbody)(_MIN_ CDyPhysicsRigidbody& iRefRigidbody)
@@ -451,6 +456,8 @@ void MDyPhysics::MDY_PRIVATE_SPECIFIER(UnregisterRigidbody)(_MIN_ CDyPhysicsRigi
   );
   
   MDY_ASSERT_FORCE(it != this->mActivatedRigidbodyList.end(), "Unexpected error occurred.");
+
+  this->gScene->removeActor(it->Get()->__GetRefInternalRigidbody());
   DyFastErase(this->mActivatedRigidbodyList, it);
 }
 

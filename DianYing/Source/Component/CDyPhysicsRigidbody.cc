@@ -42,6 +42,34 @@ TU32 CDyPhysicsRigidbody::sRigidbodyIdCounter = 0;
 CDyPhysicsRigidbody::CDyPhysicsRigidbody(FDyActor& actorReference) : ADyGeneralBaseComponent{actorReference}
 { }
 
+EDySuccess CDyPhysicsRigidbody::SetRigidbodyType(_MIN_ EDyRigidbodyType type) noexcept
+{
+  // Check this component is activated.
+  if (this->IsComponentActivated() == true) { return DY_FAILURE; }
+
+  if (this->mType != type) { this->mType = type; }
+  return DY_SUCCESS;
+}
+
+EDyRigidbodyType CDyPhysicsRigidbody::GetRigidbodyType() const noexcept
+{
+  return this->mType;
+}
+
+void CDyPhysicsRigidbody::SetGravity(_MIN_ bool iNewValue) noexcept
+{
+  if (this->mIsEnableGravity != iNewValue)
+  {
+    this->mIsEnableGravity = iNewValue;
+    this->pUpdateSettingGravity(this->mIsEnableGravity);
+  }
+}
+
+bool CDyPhysicsRigidbody::GetGravity() const noexcept
+{
+  return this->mIsEnableGravity;
+}
+
 EDySuccess CDyPhysicsRigidbody::Initialize(_MIN_ const PDyRigidbodyComponentMetaInfo& descriptor)
 {
   // Copy all values.
@@ -52,6 +80,7 @@ EDySuccess CDyPhysicsRigidbody::Initialize(_MIN_ const PDyRigidbodyComponentMeta
   this->mMassInKg           = descriptor.mDetails.mMassInKg;
   this->mLockPosition       = descriptor.mDetails.mLockPosition;
   this->mLockRotation       = descriptor.mDetails.mLockRotation;
+  this->mType               = descriptor.mDetails.mType;
 
   // If lockPreset is not empty so get lock axis values from information..
   const auto& lockPreset = descriptor.mDetails.mLockPreset;
@@ -120,6 +149,7 @@ void CDyPhysicsRigidbody::TryActivateInstance()
     this->mOwnerDynamicActor->setAngularDamping(defaultSetting.mCommonProperty.mDefaultAngularDamping);
     // Disable default kinematic mode, so mOwnerDynamicActor has a dynamic mode.
     this->mOwnerDynamicActor->setRigidBodyFlag(physx::PxRigidBodyFlag::eKINEMATIC, false);
+    this->pUpdateSettingGravity(this->mIsEnableGravity);
   }
 
   // Set properties, and assign rigidbody specifier id.
@@ -245,6 +275,14 @@ std::optional<TU32> CDyPhysicsRigidbody::MDY_PRIVATE_SPECIFIER(GetRigidbodySpeci
 physx::PxRigidDynamic& CDyPhysicsRigidbody::MDY_PRIVATE_SPECIFIER(GetRefInternalRigidbody)() noexcept
 {
   return *this->mOwnerDynamicActor;
+}
+
+void CDyPhysicsRigidbody::pUpdateSettingGravity(_MIN_ const bool& iNewValue)
+{
+  if (this->mOwnerDynamicActor == nullptr)      { return; }
+  if (this->mType != EDyRigidbodyType::Dynamic) { return; }
+
+  this->mOwnerDynamicActor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, !iNewValue);
 }
 
 } /// ::dy namespace

@@ -336,6 +336,7 @@
     <ClCompile Include="Source\Helper\Type\ColorRGB.cc" />
     <ClCompile Include="Source\Core\Reflection\RDyGlobalInstanceManager.cc" />
     <ClCompile Include="Source\Builtin\GlobalInstance\FDyBtGiDebugStatus.cc" />
+    <ClCompile Include="Source\Meta\Type\Physics\EDyRigidbodyType.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -821,6 +822,7 @@
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGlobalInstance.h" />
     <ClInclude Include="Include\Dy\Builtin\GlobalInstance\FDyBtGiDebugStatus.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DDyCompUpdator.h" />
+    <ClInclude Include="Include\Dy\Meta\Type\Physics\EDyRigidbodyType.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />
