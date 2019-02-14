@@ -81,7 +81,7 @@ void CDyPhysicsColliderBox::InitializeInternalResource(_MINOUT_ CDyPhysicsRigidb
   this->mPtrInternalShape->setSimulationFilterData(filterData);
 
   // Apply to iRefRigidbody.
-  iRefRigidbody.BindShapeToRigidbody(*this->mPtrInternalShape);
+  iRefRigidbody.BindShapeToRigidbody(*this);
 }
 
 const DDyVector3& CDyPhysicsColliderBox::GetHalfExtent() const noexcept

@@ -79,7 +79,7 @@ void CDyPhysicsColliderCapsule::InitializeInternalResource(_MINOUT_ CDyPhysicsRi
   this->mPtrInternalShape->setSimulationFilterData(filterData);
 
   // Apply to iRefRigidbody.
-  iRefRigidbody.BindShapeToRigidbody(*this->mPtrInternalShape);
+  iRefRigidbody.BindShapeToRigidbody(*this);
 }
 
 TF32 CDyPhysicsColliderCapsule::GetRadius() const noexcept

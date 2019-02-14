@@ -84,6 +84,8 @@ public:
 
   /// @brief Get internal shape pointer. Returned value does not guarantee not nullity.
   MDY_NODISCARD physx::PxShape* MDY_PRIVATE_SPECIFIER(GetPtrInternalShape)() const noexcept;
+  /// @brief Internal filter data.
+  physx::PxFilterData mInternalFilterData{};
 
 private:
   void TryActivateInstance() override final;

@@ -55,9 +55,9 @@ public:
   /// @brief get rigidbody type of this component.
   MDY_NODISCARD EDyRigidbodyType GetRigidbodyType() const noexcept;
 
-  /// @brief
+  /// @brief Set gravity. If component is activated and type is Dynamic, reflect gravity setting.
   void SetGravity(_MIN_ bool iNewValue) noexcept;
-  /// @brief 
+  /// @brief Get gravity activation value.
   MDY_NODISCARD bool GetGravity() const noexcept;
 
   /// @brief Initialize component.
@@ -81,7 +81,7 @@ public:
 
   /// @brief
   ///
-  EDySuccess BindShapeToRigidbody(_MIN_ physx::PxShape& iRefShape);
+  EDySuccess BindShapeToRigidbody(_MIN_ CDyPhysicsCollider& iRefShape);
 
   /// @brief
   ///
@@ -94,8 +94,8 @@ public:
   MDY_NODISCARD std::optional<TU32> 
   MDY_PRIVATE_SPECIFIER(GetRigidbodySpecifier)() const noexcept;
 
-  /// @brief Get reference instance of rigidbody. When call this, `mOwnerDynamicActor` must be valid.
-  MDY_NODISCARD physx::PxRigidDynamic& 
+  /// @brief Get reference instance of rigidbody. When call this, `mOwnerInternalActor` must be valid.
+  MDY_NODISCARD physx::PxRigidActor& 
   MDY_PRIVATE_SPECIFIER(GetRefInternalRigidbody)() noexcept;
 
 private:
@@ -114,21 +114,23 @@ private:
   /// Angular damping of rigidbody
   DDyClamp<TF32, 0, 10'000>   mAngularDamping = 1.0f; 
   /// Lock position axis.
-  DLockPreset::D3DAxis mLockPosition;
+  DLockPreset::D3DAxis mLockPosition{};
   /// Lock rotation axis.
-  DLockPreset::D3DAxis mLockRotation;
+  DLockPreset::D3DAxis mLockRotation{};
   /// Type
   /// If `static`, does not move and fixed.
   /// If `kinematic`..
   EDyRigidbodyType mType = EDyRigidbodyType::Static;
 
   void TryActivateInstance() override final;
+  void pActivateDynamicNKinematicActor();
+  void pActivateStaticActor();
   void TryDeactivateInstance() override final;
 
   /// @brief Manages collider list.
   std::vector<NotNull<CDyPhysicsCollider*>> mPtrColliderList{};
   /// @brief Internal actor.
-  physx::PxRigidDynamic* mOwnerDynamicActor = nullptr;
+  physx::PxRigidActor* mOwnerInternalActor = nullptr;
 
   /// @brief 24bit rigidbody specifier unique-id value.
   TU32 mRigidbodySpecifierId : 24;
