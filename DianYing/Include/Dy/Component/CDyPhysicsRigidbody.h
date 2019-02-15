@@ -29,6 +29,7 @@
 
 namespace dy
 {
+struct DDyCollisionIssueItem;
 class CDyPhysicsCollider;
 } /// ::dy namesapce
 
@@ -67,6 +68,8 @@ public:
   /// @brief Release component.
   void Release() override final;
 
+  /// @brief Call collision callback.
+  void CallCollisionCallback(_MIN_ EDyCollisionCbType iType, _MIN_ DDyCollisionIssueItem& iItem);
   /// @brief Update anyway.
   void Update(_MIN_ TF32 dt) override final {};
 

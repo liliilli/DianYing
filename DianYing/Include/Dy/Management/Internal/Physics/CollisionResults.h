@@ -13,6 +13,8 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Helper/Type/Vector3.h>
+
 namespace dy
 {
 
@@ -20,14 +22,8 @@ namespace dy
 /// @brief Hit result instance for collision callback handling (just hit).
 struct FDyHitResult final
 {
-
-};
-
-/// @struct FDyOverlapResult
-/// @brief Overlap result instance for collision callback handling (enter & end).
-struct FDyOverlapResult final
-{
-
+  /// @brief specifies contact position between two physics shapes.
+  DDyVector3 mContactPosition{};
 };
 
 } /// ::dy namespace

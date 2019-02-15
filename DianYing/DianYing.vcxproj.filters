@@ -831,6 +831,7 @@
     <ClInclude Include="Include\Dy\Component\Interface\Physics\IDyonColliderBaseDelegator.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Physics\DDyCollisionCallbackItem.h" />
     <ClInclude Include="Include\Dy\Component\Type\Physics\EDyCollisionCbType.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Physics\DDyCollisionIssueItem.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

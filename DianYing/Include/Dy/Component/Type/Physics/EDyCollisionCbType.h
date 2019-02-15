@@ -13,7 +13,19 @@
 /// SOFTWARE.
 ///
 
+//!
+//! Forward declaration
+//!
 
+namespace dy
+{
+struct TSignatureCollisionHit;
+struct TSignatureCollisionOverlap;
+}
+
+//!
+//! Implementation
+//!
 
 namespace dy
 {

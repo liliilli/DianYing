@@ -48,9 +48,8 @@ struct TSignatureCollisionHit final : public ISignatureCollisionDelegate
   template <typename TType, typename = std::enable_if_t<IsInheritancedFrom<TType, ADyActorCppScript>, bool>>
   using RawType = void(TType::*)(
       CDyPhysicsCollider* iSelfComponent, FDyActor& iRefActor, 
-      CDyPhysicsCollider* iOtherCollider, FDyActor& iRefOtherActor, 
-      DDyVector3 iHitPosition, FDyHitResult& result);
-  using WrapType = void(CDyPhysicsCollider*, FDyActor&, CDyPhysicsCollider*, FDyActor&, DDyVector3, FDyHitResult&);
+      CDyPhysicsCollider* iOtherCollider, FDyActor& iRefOtherActor, FDyHitResult& result);
+  using WrapType = void(CDyPhysicsCollider*, FDyActor&, CDyPhysicsCollider*, FDyActor&, FDyHitResult&);
 };
 
 struct TSignatureCollisionOverlap final : public ISignatureCollisionDelegate
@@ -58,9 +57,8 @@ struct TSignatureCollisionOverlap final : public ISignatureCollisionDelegate
   template <typename TType, typename = std::enable_if_t<IsInheritancedFrom<TType, ADyActorCppScript>, bool>>
   using RawType = void(TType::*)(
       CDyPhysicsCollider* iSelfComponent, FDyActor& iRefActor, 
-      CDyPhysicsCollider* iOtherCollider, FDyActor& iRefOtherActor, 
-      DDyVector3 iHitPosition, FDyOverlapResult& result);
-  using WrapType = void(CDyPhysicsCollider*, FDyActor&, CDyPhysicsCollider*, FDyActor&, DDyVector3, FDyOverlapResult&);
+      CDyPhysicsCollider* iOtherCollider, FDyActor& iRefOtherActor, FDyHitResult& result);
+  using WrapType = void(CDyPhysicsCollider*, FDyActor&, CDyPhysicsCollider*, FDyActor&, FDyHitResult&);
 };
 
 } /// ::dy namespace

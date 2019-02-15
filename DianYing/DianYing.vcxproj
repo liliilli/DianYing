@@ -771,6 +771,7 @@
     <ClInclude Include="Include\Dy\Helper\Type\DDyCompUpdator.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyInputButton.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyJoystickAnalog.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Physics\DDyCollisionIssueItem.h" />
     <ClInclude Include="Include\Dy\Management\Type\Render\EDyModelRenderingMode.h" />
     <ClInclude Include="Include\Dy\Meta\Information\Physics\DColliderMetaInfo.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Physics\EDyColliderType.h" />

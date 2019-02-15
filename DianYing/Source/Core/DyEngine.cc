@@ -293,10 +293,15 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(Update)(_MIN_ EDyGlobalGameStatus iEngineSt
       {
         MDyInput::GetInstance().pfGlobalUpdate(dt);
       }
+      if (this->mIsInGameUpdatePaused == false)
+      {
+        MDyPhysics::GetInstance().CallCallbackIssueOnce();
+      }
     }
     else
     { // If not debug mode, just poll input key of global.
       MDyInput::GetInstance().pfGlobalUpdate(dt);
+      MDyPhysics::GetInstance().CallCallbackIssueOnce();
     }
 
     // If in-game update should not be passed, just update in-game. Otherwise, neglect.

@@ -25,6 +25,7 @@
 #include <Dy/Component/CDyPhysicsRigidbody.h>
 #include "Dy/Component/CDyPhysicsCollider.h"
 #include "Dy/Management/Rendering/RenderingManager.h"
+#include "Dy/Element/Actor.h"
 
 //!
 //! Test
@@ -318,6 +319,22 @@ void MDyPhysics::Update(_MIN_ TF32 dt)
   }
 }
 
+void MDyPhysics::CallCallbackIssueOnce()
+{
+  while (this->mCollisionCallbackIssueQueue.empty() == false)
+  {
+    auto& refIssue = this->mCollisionCallbackIssueQueue.front();
+    //
+    auto* ptrSelfRigidbody = refIssue.mPtrSelfActor->GetRigidbody();
+    MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptrSelfRigidbody), "Unexpected error occurred.");
+
+    ptrSelfRigidbody->CallCollisionCallback(refIssue.mType, refIssue);
+    //
+    this->mCollisionCallbackIssueQueue.pop();
+  }
+  // List will be cleard automatically.
+}
+
 void MDyPhysics::InitScene()
 {
   physx::PxSceneDesc tempSceneDesc{this->gPhysicx->getTolerancesScale()};
@@ -512,36 +529,94 @@ void MDyPhysics::onContact(
 	for(unsigned i = 0; i < nbPairs; i++)
 	{
 		const physx::PxContactPair& cp = pairs[i];
-    
+
+    // Get contact information of a pair of shape.
+    physx::PxContactPairPoint contactPointBuffer[1];
+    cp.extractContacts(contactPointBuffer, 1);
+    auto& internalBuffer = contactPointBuffer[0];
+
     if (cp.flags.isSet(physx::PxContactPairFlag::eREMOVED_SHAPE_0) == false
     &&  cp.flags.isSet(physx::PxContactPairFlag::eREMOVED_SHAPE_1) == false)
     {
       const auto* shape0 = cp.shapes[0]; MDY_ASSERT_FORCE(shape0 != nullptr, "Test failed.");
       const auto* shape1 = cp.shapes[1]; MDY_ASSERT_FORCE(shape1 != nullptr, "Test failed.");
 
+      // Get collider components.
+      auto* ptrCollider0 = static_cast<CDyPhysicsCollider*>(shape0->userData);
+      MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptrCollider0), "Unexpected error occurred.");
+      auto* ptrCollider1 = static_cast<CDyPhysicsCollider*>(shape1->userData);
+      MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptrCollider1), "Unexpected error occurred.");
+
       const auto filterFlag0 = shape0->getSimulationFilterData();
       const auto filterFlag1 = shape1->getSimulationFilterData();
+      
+      // Make FDyHitResult
+      FDyHitResult result;
+      result.mContactPosition = internalBuffer.position;
 
       // We do not process when `ignored` status because `ignored` status will be killed by physx internal system logic.
+      using ECbType = EDyCollisionCbType;
       auto [lhsFlag, rhsFlag] = GetFilterResult(filterFlag0, filterFlag1);
       if (lhsFlag == rhsFlag)
       {
-        // When hit
-        if (lhsFlag == 0b00) { MDY_LOG_CRITICAL("Hit!"); }
-        // When trigger.
+        if (lhsFlag == 0b00) 
+        { // When hit..
+          this->pTryEnqueueCollisionIssue(ECbType::OnHit, cp.events, ptrCollider0, ptrCollider1, result);
+        }
         else if (lhsFlag == 0b01) 
-        { 
-          if (cp.events & physx::PxPairFlag::eNOTIFY_TOUCH_FOUND)     { MDY_LOG_CRITICAL("Trigger Found!"); }
-          else if (cp.events & physx::PxPairFlag::eNOTIFY_TOUCH_LOST) { MDY_LOG_CRITICAL("Trigger Lost!"); }
+        { // When trigger.
+          if (cp.events & physx::PxPairFlag::eNOTIFY_TOUCH_FOUND) 
+          { this->pTryEnqueueCollisionIssue(ECbType::OnOverlapBegin, cp.events, ptrCollider0, ptrCollider1, result); }
+          else if (cp.events & physx::PxPairFlag::eNOTIFY_TOUCH_LOST) 
+          { this->pTryEnqueueCollisionIssue(ECbType::OnOverlapEnd, cp.events, ptrCollider0, ptrCollider1, result); }
         }
       }
       else 
-      {
-        if (cp.events & physx::PxPairFlag::eNOTIFY_TOUCH_FOUND)     { MDY_LOG_CRITICAL("Trigger Found!"); }
-        else if (cp.events & physx::PxPairFlag::eNOTIFY_TOUCH_LOST) { MDY_LOG_CRITICAL("Trigger Lost!"); }
+      { // When table point is on fivot-point. [1x1, 2x2, 3x3...]
+        if (cp.events & physx::PxPairFlag::eNOTIFY_TOUCH_FOUND) 
+        { this->pTryEnqueueCollisionIssue(ECbType::OnOverlapBegin, cp.events, ptrCollider0, ptrCollider1, result); }
+        else if (cp.events & physx::PxPairFlag::eNOTIFY_TOUCH_LOST) 
+        { this->pTryEnqueueCollisionIssue(ECbType::OnOverlapEnd, cp.events, ptrCollider0, ptrCollider1, result); }
       }
     }
 	}
+}
+
+void MDyPhysics::pTryEnqueueCollisionIssue(
+    _MIN_ EDyCollisionCbType iHitType,
+    MDY_NOTUSED physx::PxPairFlags iInternalFlag, 
+    _MIN_ CDyPhysicsCollider* i0,
+    _MIN_ CDyPhysicsCollider* i1, 
+    _MIN_ const FDyHitResult& iHitResult)
+{
+  // Make Collision issue item to be accessed when calling collision callback function.
+  DDyCollisionIssueItem item;
+  item.mType      = iHitType;
+  item.mHitResult = iHitResult;
+
+  // Check flags.
+  bool (CDyPhysicsCollider::*ConditionFunction)() const = nullptr;
+  switch (iHitType)
+  {
+  case EDyCollisionCbType::OnHit: 
+    ConditionFunction = &CDyPhysicsCollider::IsNotifyHitEvent; break;
+  case EDyCollisionCbType::OnOverlapBegin: 
+  case EDyCollisionCbType::OnOverlapEnd: 
+    ConditionFunction = &CDyPhysicsCollider::IsNotifyOverlapEvent; break;
+  }
+
+  if ((i0->*ConditionFunction)() == true)
+  {
+    item.mPtrSelfCollider   = i0; item.mPtrSelfActor  = i0->GetBindedActor();
+    item.mPtrOtherCollider  = i1; item.mPtrOtherActor = i1->GetBindedActor();
+    this->mCollisionCallbackIssueQueue.push(item);
+  }
+  if ((i1->*ConditionFunction)() == true)
+  {
+    item.mPtrSelfCollider   = i1; item.mPtrSelfActor  = i1->GetBindedActor();
+    item.mPtrOtherCollider  = i0; item.mPtrOtherActor = i0->GetBindedActor();
+    this->mCollisionCallbackIssueQueue.push(item);
+  }
 }
 
 } /// ::dy namespace

@@ -13,12 +13,14 @@
 /// SOFTWARE.
 ///
 
+#include <queue>
 #include <PxPhysicsAPI.h>
 
 #include <Dy/Element/Interface/IDyUpdatable.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Management/Helper/PhysXErrorCallback.h>
 #include <Dy/Management/Helper/PhysxSimulationCallback.h>
+#include <Dy/Management/Type/Physics/DDyCollisionIssueItem.h>
 #include <Dy/Helper/Pointer.h>
 
 //!
@@ -47,8 +49,11 @@ class MDyPhysics final : public IDySingleton<MDyPhysics>, public IDyUpdatable, p
   MDY_SINGLETON_PROPERTIES(MDyPhysics);
   MDY_SINGLETON_DERIVED(MDyPhysics);
 public:
-  /// Update physical simulation
+  /// @brief Update physical simulation
   void Update(float dt) override final;
+  /// @brief Call callback function when not empty and satisfies given condition.
+  /// After calling all function, callback list will be cleared.
+  void CallCallbackIssueOnce();
 
   /// @brief Init PhysX All resource related to scene.
   void InitScene();
@@ -116,7 +121,20 @@ private:
   physx::PxDefaultAllocator     defaultAllocatorCallback;
 
   /// @brief Activated ptr-rigidbody list.
-  std::vector<NotNull<CDyPhysicsRigidbody*>> mActivatedRigidbodyList {};
+  std::vector<NotNull<CDyPhysicsRigidbody*>>  mActivatedRigidbodyList {};
+  
+  /// @brief Call this function instead of `pEnqueueCollisionIssue`.
+  /// Enqueue collision issue item to `mCollisionCallbackIssueQueue`.
+  /// In enqueueing collision issue item, does not check there is any callback item given type,
+  /// and not-nullity of given collider & actor variable.
+  void pTryEnqueueCollisionIssue(
+      _MIN_ EDyCollisionCbType iHitType,
+      _MIN_ physx::PxPairFlags iInternalFlag, 
+      _MIN_ CDyPhysicsCollider* i0, 
+      _MIN_ CDyPhysicsCollider* i1, 
+      _MIN_ const FDyHitResult& iHitResult);
+  /// @brief Collision callback issue queue. This list must be cleared before other-script update phase.
+  std::queue<DDyCollisionIssueItem>           mCollisionCallbackIssueQueue{};
 
   // Implements PxSimulationEventCallback
 

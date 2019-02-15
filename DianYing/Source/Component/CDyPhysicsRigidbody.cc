@@ -120,6 +120,37 @@ void CDyPhysicsRigidbody::Release()
   this->mCallbackContainer.onOverlapEnd   .RemoveAll();
 }
 
+void CDyPhysicsRigidbody::CallCollisionCallback(_MIN_ EDyCollisionCbType iType, _MIN_ DDyCollisionIssueItem& iItem)
+{
+  switch (iType)
+  {
+  case EDyCollisionCbType::OnHit: 
+  { // OnHit.
+    for (auto& item : this->mCallbackContainer.onHit.GetBoundCallbackList())
+    {
+      if (item.mIsCallable == false) { continue; }
+      item.mCallbackFunction(iItem.mPtrSelfCollider, *iItem.mPtrSelfActor, iItem.mPtrOtherCollider, *iItem.mPtrOtherActor, iItem.mHitResult);      
+    }
+  } break;
+  case EDyCollisionCbType::OnOverlapBegin: 
+  { // OnOverlapBegin.
+    for (auto& item : this->mCallbackContainer.onOverlapBegin.GetBoundCallbackList())
+    {
+      if (item.mIsCallable == false) { continue; }
+      item.mCallbackFunction(iItem.mPtrSelfCollider, *iItem.mPtrSelfActor, iItem.mPtrOtherCollider, *iItem.mPtrOtherActor, iItem.mHitResult);      
+    }
+  } break;
+  case EDyCollisionCbType::OnOverlapEnd: 
+  { // OnOverlapEnd.
+    for (auto& item : this->mCallbackContainer.onOverlapEnd.GetBoundCallbackList())
+    {
+      if (item.mIsCallable == false) { continue; }
+      item.mCallbackFunction(iItem.mPtrSelfCollider, *iItem.mPtrSelfActor, iItem.mPtrOtherCollider, *iItem.mPtrOtherActor, iItem.mHitResult);      
+    }
+  } break;
+  }
+}
+
 std::string CDyPhysicsRigidbody::ToString()
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
@@ -296,7 +327,10 @@ EDySuccess CDyPhysicsRigidbody::BindShapeToRigidbody(_MIN_ CDyPhysicsCollider& i
   // Create new shape (with default materia) and set pose.
   auto* newShape = physx::PxRigidActorExt::createExclusiveShape(*this->mOwnerInternalActor,  geometryHolder.any(), mat);
   MDY_ASSERT_FORCE(newShape != nullptr, "Unexpected error occurred.");
+  // CAUTION(!) settin filter data must be hald afterward createExclusiveShape.
   newShape->setSimulationFilterData(iRefShape.mInternalFilterData);
+  // Set user data for handling collision callback, and etc.
+  newShape->userData = &iRefShape;
 
   return DY_SUCCESS;
 }

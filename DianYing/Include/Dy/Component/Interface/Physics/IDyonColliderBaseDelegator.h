@@ -64,7 +64,7 @@ public:
     const void* addr = (void*&)iPredicate;
 
     // Make function first.
-    this->mBoundCallbackList.emplace_back(std::bind(iPredicate, &iRefController, _1, _2, _3, _4, _5, _6), addr, iRefController);
+    this->mBoundCallbackList.emplace_back(std::bind(iPredicate, &iRefController, _1, _2, _3, _4, _5), addr, iRefController);
     // Bind back() to script instance.
     return &this->mBoundCallbackList.back();
   }
@@ -109,6 +109,9 @@ public:
   /// @brief
   void RemoveAll();
 
+  /// @brief Get bound callback list.
+  std::vector<DDyCollisionCallbackItem<TPredicate>>& GetBoundCallbackList();
+
 protected:
   /// @brief Bound callback list.
   std::vector<DDyCollisionCallbackItem<TPredicate>> mBoundCallbackList; 
@@ -126,6 +129,12 @@ void IDyonColliderBaseDelegator<TPredicate>::RemoveAll()
     MDY_ASSERT(flag == DY_SUCCESS, "Unexpected error occurred.");
   }
   this->mBoundCallbackList.clear();
+}
+
+template <typename TPredicate>
+std::vector<DDyCollisionCallbackItem<TPredicate>>& IDyonColliderBaseDelegator<TPredicate>::GetBoundCallbackList()
+{
+  return this->mBoundCallbackList;
 }
 
 } /// ::dy namespace
