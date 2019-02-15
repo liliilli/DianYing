@@ -121,11 +121,13 @@ private:
   // Implements PxSimulationEventCallback
 
 	void onContact(_MIN_ const physx::PxContactPairHeader& pairHeader, _MIN_ const physx::PxContactPair* pairs, _MIN_ physx::PxU32 nbPairs) override final;
-	void onTrigger(_MIN_ physx::PxTriggerPair* pairs, _MIN_ physx::PxU32 count) override final;
 	void onConstraintBreak(physx::PxConstraintInfo*, physx::PxU32) override final {}
 	void onWake(physx::PxActor** , physx::PxU32) override final {}
 	void onSleep(physx::PxActor** , physx::PxU32) override final {}
 	void onAdvance(const physx::PxRigidBody*const*, const physx::PxTransform*, const physx::PxU32) override final {}
+  
+  // Garbage Bin
+	void onTrigger(MDY_NOTUSED physx::PxTriggerPair* pairs, MDY_NOTUSED physx::PxU32 count) override final {  /* We do not use onTrigger on Dy. */ }
 };
 
 } /// ::dy namespace

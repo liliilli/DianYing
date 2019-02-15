@@ -33,6 +33,30 @@
 namespace
 {
 
+static const auto dyFlagTrigger = physx::PxPairFlag::eTRIGGER_DEFAULT;
+static const auto dyFlagHit     = physx::PxPairFlag::eNOTIFY_TOUCH_FOUND | physx::PxPairFlag::eCONTACT_DEFAULT;
+
+[[nodiscard]] std::pair<TU08, TU08> 
+GetFilterResult(_MIN_ const physx::PxFilterData& data0, _MIN_ const physx::PxFilterData& data1)
+{
+  const auto lhsId = data0.word0 & 0x000000FF;
+  const auto rhsId = data1.word0 & 0x000000FF;
+  const auto lhsShift = lhsId % 16;
+  const auto rhsShift = rhsId % 16;
+
+  TU08 lhsFlag = 0;
+  if (lhsId < 16)       { lhsFlag = (data0.word1 & (0b11 << (rhsShift * 2))) >> rhsShift * 2; }
+  else if (lhsId < 32)  { lhsFlag = (data0.word2 & (0b11 << (rhsShift * 2))) >> rhsShift * 2; }
+  else if (lhsId < 48)  { lhsFlag = (data0.word3 & (0b11 << (rhsShift * 2))) >> rhsShift * 2; }
+
+  TU08 rhsFlag = 0;
+  if (rhsId < 16)       { rhsFlag = (data1.word1 & (0b11 << (lhsShift * 2))) >> lhsShift * 2; }
+  else if (rhsId < 32)  { rhsFlag = (data1.word2 & (0b11 << (lhsShift * 2))) >> lhsShift * 2; }
+  else if (rhsId < 48)  { rhsFlag = (data1.word3 & (0b11 << (lhsShift * 2))) >> lhsShift * 2; }
+
+  return {lhsFlag, rhsFlag};
+}
+
 /// @function DyFilterShader
 /// @brief PhysX Filter shader customized setting function.
 physx::PxFilterFlags DyFilterShader(
@@ -47,20 +71,7 @@ physx::PxFilterFlags DyFilterShader(
   }
 
   // Get information from filterData0, filterData1.
-  const auto lhsId = filterData0.word0 & 0x000000FF;
-  const auto rhsId = filterData1.word0 & 0x000000FF;
-  const auto lhsShift = lhsId % 16;
-  const auto rhsShift = rhsId % 16;
-
-  unsigned int lhsFlag = 0;
-  if (lhsId < 16)       { lhsFlag = (filterData0.word1 & (0b11 << (rhsShift * 2))) >> rhsShift * 2; }
-  else if (lhsId < 32)  { lhsFlag = (filterData0.word2 & (0b11 << (rhsShift * 2))) >> rhsShift * 2; }
-  else if (lhsId < 48)  { lhsFlag = (filterData0.word3 & (0b11 << (rhsShift * 2))) >> rhsShift * 2; }
-
-  unsigned int rhsFlag = 0;
-  if (rhsId < 16)       { rhsFlag = (filterData1.word1 & (0b11 << (lhsShift * 2))) >> lhsShift * 2; }
-  else if (rhsId < 32)  { rhsFlag = (filterData1.word2 & (0b11 << (lhsShift * 2))) >> lhsShift * 2; }
-  else if (rhsId < 48)  { rhsFlag = (filterData1.word3 & (0b11 << (lhsShift * 2))) >> lhsShift * 2; }
+  auto [lhsFlag, rhsFlag] = GetFilterResult(filterData0, filterData1);
 
   // 00 (collision) 01 (overlap) 10 (ignore)
   // -- 00 01 10
@@ -73,15 +84,15 @@ physx::PxFilterFlags DyFilterShader(
 
   if (lhsFlag == rhsFlag)
   {
-    if (lhsFlag == 0b00)      { pairFlags = physx::PxPairFlag::eCONTACT_DEFAULT; }
-    else if (lhsFlag == 0b01) { pairFlags = physx::PxPairFlag::eTRIGGER_DEFAULT; }
+    if (lhsFlag == 0b00)      { pairFlags = dyFlagHit; }
+    else if (lhsFlag == 0b01) { pairFlags = dyFlagTrigger; }
     else                      { return physx::PxFilterFlag::eKILL; }
   }
   else
   {
     if (lhsFlag < rhsFlag) { const auto temp = rhsFlag; rhsFlag = lhsFlag; lhsFlag = temp; }
 
-    if (lhsFlag == 0b01)  { pairFlags = physx::PxPairFlag::eTRIGGER_DEFAULT; }
+    if (lhsFlag == 0b01)  { pairFlags = dyFlagTrigger; }
     else                  { return physx::PxFilterFlag::eKILL; }
   }
 
@@ -346,6 +357,7 @@ void MDyPhysics::InitScene()
     using PxVP = physx::PxVisualizationParameter;
     this->gScene->setVisualizationParameter(PxVP::eSCALE, 1.0f);
     this->gScene->setVisualizationParameter(PxVP::eACTOR_AXES, 1.0f);
+    this->gScene->setSimulationEventCallback(this);
 
     physx::PxPvdSceneClient* pvdClient = this->gScene->getScenePvdClient();
     if (MDY_CHECK_ISNOTNULL(pvdClient))
@@ -490,42 +502,45 @@ void MDyPhysics::onContact(
     _MIN_ const physx::PxContactPair* pairs,
     _MIN_ physx::PxU32 nbPairs)
 {
+	// Check actors are not destroyed
+	if(pairHeader.flags & (physx::PxContactPairHeaderFlag::eREMOVED_ACTOR_0 | physx::PxContactPairHeaderFlag::eREMOVED_ACTOR_1) )
+	{
+		MDY_LOG_ERROR("onContact(): Actors have been deleted!");
+		return;
+	}
+
 	for(unsigned i = 0; i < nbPairs; i++)
 	{
 		const physx::PxContactPair& cp = pairs[i];
+    
+    if (cp.flags.isSet(physx::PxContactPairFlag::eREMOVED_SHAPE_0) == false
+    &&  cp.flags.isSet(physx::PxContactPairFlag::eREMOVED_SHAPE_1) == false)
+    {
+      const auto* shape0 = cp.shapes[0]; MDY_ASSERT_FORCE(shape0 != nullptr, "Test failed.");
+      const auto* shape1 = cp.shapes[1]; MDY_ASSERT_FORCE(shape1 != nullptr, "Test failed.");
 
-		if(cp.events & physx::PxPairFlag::eNOTIFY_TOUCH_FOUND)
-		{
-#ifdef false
-			if((pairHeader.actors[0] == mSubmarineActor) || (pairHeader.actors[1] == mSubmarineActor))
-			{
-				PxActor* otherActor = (mSubmarineActor == pairHeader.actors[0]) ? pairHeader.actors[1] : pairHeader.actors[0];			
-				Seamine* mine =  reinterpret_cast<Seamine*>(otherActor->userData);
-				// insert only once
-				if(std::find(mMinesToExplode.begin(), mMinesToExplode.end(), mine) == mMinesToExplode.end())
-					mMinesToExplode.push_back(mine);
+      const auto filterFlag0 = shape0->getSimulationFilterData();
+      const auto filterFlag1 = shape1->getSimulationFilterData();
 
-				break;
-			}
-#endif
-		}
-	}
-}
-
-void MDyPhysics::onTrigger(_MIN_ physx::PxTriggerPair* pairs, _MIN_ physx::PxU32 count)
-{
-	for(unsigned i = 0; i < count; i++)
-	{
-		// ignore pairs when shapes have been deleted
-		if (pairs[i].flags & (physx::PxTriggerPairFlag::eREMOVED_SHAPE_TRIGGER | physx::PxTriggerPairFlag::eREMOVED_SHAPE_OTHER))
-			continue;
-
-#ifdef false
-		if((pairs[i].otherActor == mSubmarineActor) && (pairs[i].triggerActor == gTreasureActor))
-		{
-			gTreasureFound = true;
-		}
-#endif
+      // We do not process when `ignored` status because `ignored` status will be killed by physx internal system logic.
+      auto [lhsFlag, rhsFlag] = GetFilterResult(filterFlag0, filterFlag1);
+      if (lhsFlag == rhsFlag)
+      {
+        // When hit
+        if (lhsFlag == 0b00) { MDY_LOG_CRITICAL("Hit!"); }
+        // When trigger.
+        else if (lhsFlag == 0b01) 
+        { 
+          if (cp.events & physx::PxPairFlag::eNOTIFY_TOUCH_FOUND)     { MDY_LOG_CRITICAL("Trigger Found!"); }
+          else if (cp.events & physx::PxPairFlag::eNOTIFY_TOUCH_LOST) { MDY_LOG_CRITICAL("Trigger Lost!"); }
+        }
+      }
+      else 
+      {
+        if (cp.events & physx::PxPairFlag::eNOTIFY_TOUCH_FOUND)     { MDY_LOG_CRITICAL("Trigger Found!"); }
+        else if (cp.events & physx::PxPairFlag::eNOTIFY_TOUCH_LOST) { MDY_LOG_CRITICAL("Trigger Lost!"); }
+      }
+    }
 	}
 }
 
