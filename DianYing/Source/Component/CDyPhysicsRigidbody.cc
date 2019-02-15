@@ -115,7 +115,9 @@ void CDyPhysicsRigidbody::Release()
   // Component activation check.
   if (this->IsComponentActivated() == true) { this->Deactivate(); }
   // Clear all collision callback.
-  this->mCallbackContainer.onHit.RemoveAll();
+  this->mCallbackContainer.onHit          .RemoveAll();
+  this->mCallbackContainer.onOverlapBegin .RemoveAll();
+  this->mCallbackContainer.onOverlapEnd   .RemoveAll();
 }
 
 std::string CDyPhysicsRigidbody::ToString()
@@ -312,13 +314,9 @@ EDySuccess CDyPhysicsRigidbody::RemoveCollisionCallback(_MIN_ EDyCollisionCbType
 {
   switch (iType)
   {
-  case EDyCollisionCbType::OnHit: return this->mCallbackContainer.onHit.RemoveCallback(iId);
-  case EDyCollisionCbType::OnOverlapBegin: 
-    MDY_NOT_IMPLEMENTED_ASSERT();
-    break;
-  case EDyCollisionCbType::OnOverlapEnd: 
-    MDY_NOT_IMPLEMENTED_ASSERT();
-    break;
+  case EDyCollisionCbType::OnHit:           return this->mCallbackContainer.onHit.RemoveCallback(iId);
+  case EDyCollisionCbType::OnOverlapBegin:  return this->mCallbackContainer.onOverlapBegin.RemoveCallback(iId);
+  case EDyCollisionCbType::OnOverlapEnd:    return this->mCallbackContainer.onOverlapEnd.RemoveCallback(iId); 
   }
   return DY_FAILURE;
 }

@@ -34,19 +34,29 @@ namespace dy
 {
 
 /// @class FDyonHitDelegatorContainer
-/// @brief
+/// @brief `onHit` collisino function delegator container.
 class FDyonHitDelegatorContainer final : public IDyonColliderBaseDelegator<TSignatureCollisionHit>
 {
 public:
   virtual ~FDyonHitDelegatorContainer() = default;
 };
 
+/// @class FDyonOverlapDelegatorContainer
+/// @brief `onOverlapBegin` and `onOverlapEnd` collision function delegator container.
+class FDyonOverlapDelegatorContainer final : public IDyonColliderBaseDelegator<TSignatureCollisionOverlap>
+{
+public:
+  virtual ~FDyonOverlapDelegatorContainer() = default;
+};
+
 /// @class FDyCollisionSignatureContainer
-/// @brief 
+/// @brief Overall collision signature managing container.
 class FDyCollisionSignatureContainer final
 {
 public:
-  FDyonHitDelegatorContainer onHit;
+  FDyonHitDelegatorContainer      onHit;
+  FDyonOverlapDelegatorContainer  onOverlapBegin;
+  FDyonOverlapDelegatorContainer  onOverlapEnd;
 };
 
 } /// ::dy namespace

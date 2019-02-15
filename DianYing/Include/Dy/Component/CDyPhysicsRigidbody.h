@@ -102,15 +102,27 @@ public:
       // Try insert 
       auto* ptrItem = this->mCallbackContainer.onHit.AddCallback(iRefScript, iRawFunction);
       if (ptrItem == nullptr) { return DY_FAILURE; } 
-      
       // Try bind item (unique-id specifically) into Script.
       iRefScript.MDY_PRIVATE_SPECIFIER(BindCollisionCbHandle)(*this, TCbType, (void*&)iRawFunction);
       return DY_SUCCESS;
     }
-    else 
+    else if constexpr (TCbType == EDyCollisionCbType::OnOverlapBegin) 
     {
-      static_assert(false, "");
-      return DY_FAILURE;
+      // Try insert 
+      auto* ptrItem = this->mCallbackContainer.onOverlapBegin.AddCallback(iRefScript, iRawFunction);
+      if (ptrItem == nullptr) { return DY_FAILURE; } 
+      // Try bind item (unique-id specifically) into Script.
+      iRefScript.MDY_PRIVATE_SPECIFIER(BindCollisionCbHandle)(*this, TCbType, (void*&)iRawFunction);
+      return DY_SUCCESS;
+    }
+    else if constexpr (TCbType == EDyCollisionCbType::OnOverlapEnd)
+    {
+      // Try insert 
+      auto* ptrItem = this->mCallbackContainer.onOverlapEnd.AddCallback(iRefScript, iRawFunction);
+      if (ptrItem == nullptr) { return DY_FAILURE; } 
+      // Try bind item (unique-id specifically) into Script.
+      iRefScript.MDY_PRIVATE_SPECIFIER(BindCollisionCbHandle)(*this, TCbType, (void*&)iRawFunction);
+      return DY_SUCCESS;
     }
   }
   /// @brief Remove collision callback. \n
