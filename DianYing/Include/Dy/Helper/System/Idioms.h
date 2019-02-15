@@ -55,6 +55,13 @@ void DyEraseRemoveIf(_MINOUT_ std::vector<TType, TAllocator>& p, _MIN_ TFunctor&
   p.erase( std::remove_if( p.begin(), p.end(), iPredcate ), p.end() );
 }
 
+/// @brief Vector fast erase.
+template <typename TType, typename TAllocator, typename TFunctor>
+MDY_NODISCARD bool Contains(_MINOUT_ std::vector<TType, TAllocator>& p, _MIN_ TFunctor&& iPredcate)
+{
+  return std::any_of(p.begin(), p.end(), iPredcate);
+}
+
 ///
 /// @brief 
 /// @param 
