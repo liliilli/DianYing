@@ -114,6 +114,8 @@ void CDyPhysicsRigidbody::Release()
 {
   // Component activation check.
   if (this->IsComponentActivated() == true) { this->Deactivate(); }
+  // Clear all collision callback.
+  this->mCallbackContainer.onHit.RemoveAll();
 }
 
 std::string CDyPhysicsRigidbody::ToString()
@@ -304,6 +306,21 @@ EDySuccess CDyPhysicsRigidbody::UnbindShapeFromRigidbody(_MIN_ physx::PxShape& i
 
   this->mOwnerInternalActor->detachShape(iRefShape);
   return DY_SUCCESS;
+}
+
+EDySuccess CDyPhysicsRigidbody::RemoveCollisionCallback(_MIN_ EDyCollisionCbType iType, _MIN_ const void* iId)
+{
+  switch (iType)
+  {
+  case EDyCollisionCbType::OnHit: return this->mCallbackContainer.onHit.RemoveCallback(iId);
+  case EDyCollisionCbType::OnOverlapBegin: 
+    MDY_NOT_IMPLEMENTED_ASSERT();
+    break;
+  case EDyCollisionCbType::OnOverlapEnd: 
+    MDY_NOT_IMPLEMENTED_ASSERT();
+    break;
+  }
+  return DY_FAILURE;
 }
 
 std::optional<TU32> CDyPhysicsRigidbody::MDY_PRIVATE_SPECIFIER(GetRigidbodySpecifier)() const noexcept

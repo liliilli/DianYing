@@ -158,6 +158,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="data\Script\DebugActor\BtScCollisionTest1.cc" />
     <ClCompile Include="data\Script\GlobalTestScript.cc" />
     <ClCompile Include="Source\Builtin\Abstract\ADyGLAttachmentResource.cc" />
     <ClCompile Include="Source\Builtin\Abstract\ADyGLFrameBufferResource.cc" />
@@ -555,6 +556,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="data\Script\DebugActor\BtScCollisionTest1.h" />
     <ClInclude Include="data\Script\GlobalTestScript.h" />
     <ClInclude Include="Include\Dy\Binding\LuaScriptFrame.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGLAttachmentResource.h" />
@@ -660,14 +662,19 @@
     <ClInclude Include="Include\Dy\Component\CDySkybox.h" />
     <ClInclude Include="Include\Dy\Component\CDySoundSource.h" />
     <ClInclude Include="Include\Dy\Component\CDyModelAnimator.h" />
+    <ClInclude Include="Include\Dy\Component\Interface\Physics\IDyonColliderBaseDelegator.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Actor\CDyActorScriptBase.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Actor\FDyActorScriptStatus.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Camera\DDyFrustumTester.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Global\CDyGlobalScriptBase.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Global\CDyGlobalScriptCpp.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Physics\CallbackSpecifier.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Physics\DDyCollisionCallbackItem.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Physics\FDyCollisionSignatureContainer.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Script\FDyGlobalScriptStatus.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Script\FDyWidgetScriptStatus.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Sound\FDySoundInstance.h" />
+    <ClInclude Include="Include\Dy\Component\Type\Physics\EDyCollisionCbType.h" />
     <ClInclude Include="Include\Dy\Component\UI\CDyWidgetScript.h" />
     <ClInclude Include="Include\Dy\Core\EDyAppMode.h" />
     <ClInclude Include="Include\Dy\Core\Reflection\RDyGlobalInstanceManager.h" />
@@ -754,6 +761,7 @@
     <ClInclude Include="Include\Dy\Management\Internal\Input\FDyInputDelegateManager.h" />
     <ClInclude Include="Include\Dy\Management\Internal\MDyDebug.h" />
     <ClInclude Include="Include\Dy\Management\Internal\MDyProfiling.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\Physics\CollisionResults.h" />
     <ClInclude Include="Include\Dy\Management\Internal\Render\FDyModelHandlerManager.h" />
     <ClInclude Include="Include\Dy\Management\Internal\Sound\CallbackChannel.h" />
     <ClInclude Include="Include\Dy\Management\Internal\World\FDyWorldUIContainer.h" />

@@ -337,6 +337,7 @@
     <ClCompile Include="Source\Core\Reflection\RDyGlobalInstanceManager.cc" />
     <ClCompile Include="Source\Builtin\GlobalInstance\FDyBtGiDebugStatus.cc" />
     <ClCompile Include="Source\Meta\Type\Physics\EDyRigidbodyType.cc" />
+    <ClCompile Include="data\Script\DebugActor\BtScCollisionTest1.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -823,6 +824,13 @@
     <ClInclude Include="Include\Dy\Builtin\GlobalInstance\FDyBtGiDebugStatus.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DDyCompUpdator.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Physics\EDyRigidbodyType.h" />
+    <ClInclude Include="data\Script\DebugActor\BtScCollisionTest1.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Physics\CallbackSpecifier.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\Physics\CollisionResults.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Physics\FDyCollisionSignatureContainer.h" />
+    <ClInclude Include="Include\Dy\Component\Interface\Physics\IDyonColliderBaseDelegator.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Physics\DDyCollisionCallbackItem.h" />
+    <ClInclude Include="Include\Dy\Component\Type\Physics\EDyCollisionCbType.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

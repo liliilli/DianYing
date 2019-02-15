@@ -17,9 +17,11 @@
 #include <bitset>
 
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
+#include <Dy/Component/Internal/Physics/FDyCollisionSignatureContainer.h>
+#include <Dy/Component/Type/Physics/EDyCollisionCbType.h>
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
-#include <Dy/Meta/Information/ComponentMetaInformation.h>
 #include <Dy/Helper/Pointer.h>
+#include <Dy/Meta/Information/ComponentMetaInformation.h>
 
 //!
 //! Forward declaration
@@ -87,6 +89,34 @@ public:
   ///
   EDySuccess UnbindShapeFromRigidbody(_MIN_ physx::PxShape& iRefShape);
 
+  /// @brief Add collision callback. \n 
+  /// If given type, there is already collision callback of iRawFunction, do nothing just return DY_FAILURE.
+  template <EDyCollisionCbType TCbType, typename TScriptType>
+  EDySuccess AddCollisionCallback(
+      _MIN_ TScriptType& iRefScript, 
+      _MIN_ typename TCollisionCbTypeSignature<TCbType>::Type::template RawType<TScriptType> iRawFunction)
+  {
+    static_assert(IsInheritancedFrom<TScriptType, ADyActorCppScript> == true, "TScriptType must be inheritenced from ADyActorCppScript.");
+    if constexpr (TCbType == EDyCollisionCbType::OnHit)
+    {
+      // Try insert 
+      auto* ptrItem = this->mCallbackContainer.onHit.AddCallback(iRefScript, iRawFunction);
+      if (ptrItem == nullptr) { return DY_FAILURE; } 
+      
+      // Try bind item (unique-id specifically) into Script.
+      iRefScript.MDY_PRIVATE_SPECIFIER(BindCollisionCbHandle)(*this, TCbType, (void*&)iRawFunction);
+      return DY_SUCCESS;
+    }
+    else 
+    {
+      static_assert(false, "");
+      return DY_FAILURE;
+    }
+  }
+  /// @brief Remove collision callback. \n
+  /// If not found matched collision callback item given type, just return DY_FAILURE.
+  EDySuccess RemoveCollisionCallback(_MIN_ EDyCollisionCbType iType, _MIN_ const void* iId);
+
   /// @brief Get binded (registered) activated collider instance list.
   auto& GetBindedActivatedColliderList() noexcept { return this->mPtrColliderList; }
 
@@ -131,6 +161,9 @@ private:
   std::vector<NotNull<CDyPhysicsCollider*>> mPtrColliderList{};
   /// @brief Internal actor.
   physx::PxRigidActor* mOwnerInternalActor = nullptr;
+  
+  /// @brief Callback container for collision handling.
+  FDyCollisionSignatureContainer mCallbackContainer;
 
   /// @brief 24bit rigidbody specifier unique-id value.
   TU32 mRigidbodySpecifierId : 24;
