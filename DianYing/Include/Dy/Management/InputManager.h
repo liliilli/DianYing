@@ -97,22 +97,22 @@ public:
   /// If there is any actor which is using controller delegate, Actor delegate will be neglected. \n
   /// And if there is same ui script instance reference already, it just do nothing and return DY_FAILURE.
   /// @TODO IMPLEMENT FOR ADYWIDGETLUASCRIPT
-  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(TryRequireControllerUi)(_MIN_ ADyWidgetCppScript& iRefUiScript) noexcept;
+  MDY_NODISCARD EDySuccess MDY_PRIVATE(TryRequireControllerUi)(_MIN_ ADyWidgetCppScript& iRefUiScript) noexcept;
 
   /// @brief
   /// @TODO IMPLEMENT FOR ADYWIDGETLUASCRIPT
-  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(TryDetachContollerUi)(_MIN_ ADyWidgetCppScript& iRefUiScript) noexcept;
+  MDY_NODISCARD EDySuccess MDY_PRIVATE(TryDetachContollerUi)(_MIN_ ADyWidgetCppScript& iRefUiScript) noexcept;
 
   /// @brief
   /// @TODO IMPLEMENT FOR ADYWIDGETLUASCRIPT
-  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(TryBindAxisDelegate)(
+  MDY_NODISCARD EDySuccess MDY_PRIVATE(TryBindAxisDelegate)(
       _MIN_ ADyWidgetCppScript& iRefUiScript, 
       _MIN_ std::function<void(TF32)> iFunction,
       _MIN_ const std::string& iAxisName);
 
   /// @brief
   /// @TODO IMPLEMENT FOR ADYWIDGETLUASCRIPT
-  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(TryBindActionDelegate)(
+  MDY_NODISCARD EDySuccess MDY_PRIVATE(TryBindActionDelegate)(
       _MIN_ ADyWidgetCppScript& iRefUiScript, 
       _MIN_ EDyInputActionStatus iCondition,
       _MIN_ std::function<void()> iFunction,
@@ -120,14 +120,14 @@ public:
   
   /// @brief
   /// @TODO IMPLEMENT FOR ADYACTORLUASCRIPT
-  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(TryBindAxisDelegate)(
+  MDY_NODISCARD EDySuccess MDY_PRIVATE(TryBindAxisDelegate)(
       _MIN_ ADyActorCppScript& iRefUiScript, 
       _MIN_ std::function<void(TF32)> iFunction,
       _MIN_ const std::string& iAxisName);
 
   /// @brief
   /// @TODO IMPLEMENT FOR ADYACTORLUASCRIPT
-  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(TryBindActionDelegate)(
+  MDY_NODISCARD EDySuccess MDY_PRIVATE(TryBindActionDelegate)(
       _MIN_ ADyActorCppScript& iRefUiScript, 
       _MIN_ EDyInputActionStatus iCondition,
       _MIN_ std::function<void()> iFunction,
@@ -137,18 +137,18 @@ public:
   /// If there is any actor which is using controller delegate, Actor delegate will be reset and overwritten by this. \n
   /// And if there is same actor instance reference already, it just do nothing and return DY_FAILURE.
   /// @TODO IMPLEMENT FOR ADYWIDGETLUASCRIPT
-  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(TryRequireControllerActor)(_MIN_ ADyActorCppScript& iRefActor) noexcept;
+  MDY_NODISCARD EDySuccess MDY_PRIVATE(TryRequireControllerActor)(_MIN_ ADyActorCppScript& iRefActor) noexcept;
 
   /// @brief
   /// @TODO IMPLEMENT FOR ADYACTORLUASCRIPT
-  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(TryDetachContollerActor)(_MIN_ ADyActorCppScript& iRefActor) noexcept;
+  MDY_NODISCARD EDySuccess MDY_PRIVATE(TryDetachContollerActor)(_MIN_ ADyActorCppScript& iRefActor) noexcept;
 
   /// @brief Get low-level key status value.
-  MDY_NODISCARD EDyInputButtonStatus MDY_PRIVATE_SPECIFIER(GetLowlevelKeyStatus)(_MIN_ EDyButton iId) noexcept;
+  MDY_NODISCARD EDyInputButtonStatus MDY_PRIVATE(GetLowlevelKeyStatus)(_MIN_ EDyButton iId) noexcept;
 
 private:
-  void MDY_PRIVATE_SPECIFIER(pInitializeAxisNAction)();
-  void MDY_PRIVATE_SPECIFIER(pInitializeCallbacks)();
+  void MDY_PRIVATE(pInitializeAxisNAction)();
+  void MDY_PRIVATE(pInitializeCallbacks)();
 
   /// @brief Update in-game input polling on present frame with delta time.
   /// This function must be called update phrase when in-game pause is not set.
@@ -158,12 +158,12 @@ private:
   /// This function must be called update phrase.
   void pfGlobalUpdate(_MIN_ TF32 dt) noexcept;
 
-  void MDY_PRIVATE_SPECIFIER(pCheckAxisStatus)(_MIN_ TF32 dt);
-  void MDY_PRIVATE_SPECIFIER(pCheckActionStatus)(_MIN_ TF32 dt);
+  void MDY_PRIVATE(pCheckAxisStatus)(_MIN_ TF32 dt);
+  void MDY_PRIVATE(pCheckActionStatus)(_MIN_ TF32 dt);
 
-  void MDY_PRIVATE_SPECIFIER(pUpdateMouseMovement)(_MIN_ TF32 dt);
-  void MDY_PRIVATE_SPECIFIER(pUpdateJoystickSticks)();
-  void MDY_PRIVATE_SPECIFIER(pUpdateJoystickButtons)();
+  void MDY_PRIVATE(pUpdateMouseMovement)(_MIN_ TF32 dt);
+  void MDY_PRIVATE(pUpdateJoystickSticks)();
+  void MDY_PRIVATE(pUpdateJoystickButtons)();
 
   using TAxisMap    = std::unordered_map<std::string, DDyAxisBindingInformation>;
   using TActionMap  = std::unordered_map<std::string, DDyActionBindingInformation>;
@@ -190,28 +190,28 @@ private:
 /// @brief Use this for acquire controller exclusive right for UI.
 ///
 #define MDY_ACQUIRE_CONTROLLER_UI() \
-  ::dy::MDyInput::GetInstance().MDY_PRIVATE_SPECIFIER(TryRequireControllerUi)(*this);
+  ::dy::MDyInput::GetInstance().MDY_PRIVATE(TryRequireControllerUi)(*this);
 
 ///
 /// @macro MDY_DETACH_CONTROLLER_UI
 /// @brief Detach ui script from controller delegate management.
 ///
 #define MDY_DETACH_CONTROLLER_UI() \
-  ::dy::MDyInput::GetInstance().MDY_PRIVATE_SPECIFIER(TryDetachContollerUi)(*this);
+  ::dy::MDyInput::GetInstance().MDY_PRIVATE(TryDetachContollerUi)(*this);
 
 ///
 /// @macro MDY_ACQUIRE_CONTROLLER
 /// @brief Use this for acquire controller exclusive right for Actor.
 ///
 #define MDY_ACQUIRE_CONTROLLER() \
-  ::dy::MDyInput::GetInstance().MDY_PRIVATE_SPECIFIER(TryRequireControllerActor)(*this);
+  ::dy::MDyInput::GetInstance().MDY_PRIVATE(TryRequireControllerActor)(*this);
 
 ///
 /// @macro MDY_DETACH_CONTROLLER
 /// @brief Detach actor script from controller delegate management.
 ///
 #define MDY_DETACH_CONTROLLER() \
-  ::dy::MDyInput::GetInstance().MDY_PRIVATE_SPECIFIER(TryDetachContollerActor)(*this);
+  ::dy::MDyInput::GetInstance().MDY_PRIVATE(TryDetachContollerActor)(*this);
 
 ///
 /// @macro MDY_BIND_INPUT_AXIS
@@ -220,7 +220,7 @@ private:
 #define MDY_BIND_INPUT_AXIS(__MAAxisSpecifier__, __MAScriptMemberFunctionPtr__) \
   { \
     auto& inputManager = ::dy::MDyInput::GetInstance(); \
-    MDY_NOTUSED const auto flag = inputManager.MDY_PRIVATE_SPECIFIER(TryBindAxisDelegate) \
+    MDY_NOTUSED const auto flag = inputManager.MDY_PRIVATE(TryBindAxisDelegate) \
         (*this, std::bind(__MAScriptMemberFunctionPtr__, this, std::placeholders::_1), __MAAxisSpecifier__); \
   }
 
@@ -231,7 +231,7 @@ private:
 #define MDY_BIND_INPUT_ACTION(__MAAxisSpecifier__, __MACondition__, __MAScriptMemberFunctionPtr__) \
   { \
     auto& inputManager = ::dy::MDyInput::GetInstance(); \
-    MDY_NOTUSED const auto flag = inputManager.MDY_PRIVATE_SPECIFIER(TryBindActionDelegate) \
+    MDY_NOTUSED const auto flag = inputManager.MDY_PRIVATE(TryBindActionDelegate) \
         (*this, __MACondition__, std::bind(__MAScriptMemberFunctionPtr__, this), __MAAxisSpecifier__); \
   }
 

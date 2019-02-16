@@ -116,11 +116,11 @@ public:
   bool mIsSoundSystemAvailable = true;
   
   /// @brief Get reference of group channel which have given `iSpecifier` name.
-  MDY_NODISCARD FDySoundGroup& MDY_PRIVATE_SPECIFIER(GetGroupChannel)(_MIN_ const std::string& iSpecifier);
+  MDY_NODISCARD FDySoundGroup& MDY_PRIVATE(GetGroupChannel)(_MIN_ const std::string& iSpecifier);
   /// @brief Get reference of internal sound library entry.
-  MDY_NODISCARD FMOD::System& MDY_PRIVATE_SPECIFIER(GetSystem)();
+  MDY_NODISCARD FMOD::System& MDY_PRIVATE(GetSystem)();
   /// @brief Create sound instance for `CDySoundSource`.
-  MDY_NODISCARD FDySoundInstance* MDY_PRIVATE_SPECIFIER(CreateSoundInstance)(
+  MDY_NODISCARD FDySoundInstance* MDY_PRIVATE(CreateSoundInstance)(
       _MIN_ const PDySoundSourceComponentMetaInfo& iMetaInfo,
       _MIN_ FDyActor& iRefActor);
 

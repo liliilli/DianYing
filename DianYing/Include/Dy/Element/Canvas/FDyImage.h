@@ -69,7 +69,7 @@ public:
   MDY_NODISCARD const DDyColorRGBA& GetTintColor() const noexcept;
 
   /// @brief Set update renderer flag from inside renderer to this.
-  void MDY_PRIVATE_SPECIFIER(SetUpdateRendererFlag)(_MIN_ bool iIsActivated) noexcept;
+  void MDY_PRIVATE(SetUpdateRendererFlag)(_MIN_ bool iIsActivated) noexcept;
 
 private:
   /// Tint color for image rendering (with alpha)

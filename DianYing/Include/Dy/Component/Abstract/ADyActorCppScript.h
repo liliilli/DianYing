@@ -50,13 +50,13 @@ public:
   /// @brief Get Game-Timer manager.
   MDY_NODISCARD MDyGameTimer& GetGameTimerManager() noexcept;
 
-  void MDY_PRIVATE_SPECIFIER(BindPtrTimerHandle)(_MIN_ FDyTimerHandle& iRefTimerHandler);
-  void MDY_PRIVATE_SPECIFIER(DetachPtrTimerHandle)(_MIN_ FDyTimerHandle& iRefTimerHandler);
-  void MDY_PRIVATE_SPECIFIER(AbortAllValidTimerHandler)();
+  void MDY_PRIVATE(BindPtrTimerHandle)(_MIN_ FDyTimerHandle& iRefTimerHandler);
+  void MDY_PRIVATE(DetachPtrTimerHandle)(_MIN_ FDyTimerHandle& iRefTimerHandler);
+  void MDY_PRIVATE(AbortAllValidTimerHandler)();
 
-  void MDY_PRIVATE_SPECIFIER(BindCollisionCbHandle)(_MIN_ CDyPhysicsRigidbody& iRefRigidbody, _MIN_ EDyCollisionCbType iType, _MIN_ const void* iUniqueId);
-  EDySuccess MDY_PRIVATE_SPECIFIER(DetachCollisionCbHandle)(_MIN_ const void * iSpecificationId);
-  void MDY_PRIVATE_SPECIFIER(AbortAllCollisionCallback)();
+  void MDY_PRIVATE(BindCollisionCbHandle)(_MIN_ CDyPhysicsRigidbody& iRefRigidbody, _MIN_ EDyCollisionCbType iType, _MIN_ const void* iUniqueId);
+  EDySuccess MDY_PRIVATE(DetachCollisionCbHandle)(_MIN_ const void * iSpecificationId);
+  void MDY_PRIVATE(AbortAllCollisionCallback)();
 
 private:
   /// @brief Set reference to outside world.

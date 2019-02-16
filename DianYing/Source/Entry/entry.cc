@@ -34,7 +34,7 @@ void __SignalHandler(int signal)
 ///
 /// @brief Turn on memory leak detection feature and console window for logging.
 ///
-EDySuccess MDY_PRIVATE_SPECIFIER(DyInitializeWin32Debug)()
+EDySuccess MDY_PRIVATE(DyInitializeWin32Debug)()
 {
   _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
   _CrtSetReportMode( _CRT_ERROR, _CRTDBG_MODE_DEBUG );
@@ -48,7 +48,7 @@ EDySuccess MDY_PRIVATE_SPECIFIER(DyInitializeWin32Debug)()
 } /// unname namespace
 
 #if (defined(_DEBUG) == true) || (defined(NDEBUG) == false)
-#define MDY_WIN32_TRY_TURN_ON_DEBUG() MDY_CALL_ASSERT_SUCCESS(MDY_PRIVATE_SPECIFIER(DyInitializeWin32Debug)())
+#define MDY_WIN32_TRY_TURN_ON_DEBUG() MDY_CALL_ASSERT_SUCCESS(MDY_PRIVATE(DyInitializeWin32Debug)())
 #define MDY_WIN32_TRY_TURN_OFF_DEBUG()  (void)0
 #else
 #define MDY_WIN32_TRY_TURN_ON_DEBUG()   (void)0

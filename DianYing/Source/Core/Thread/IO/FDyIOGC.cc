@@ -50,11 +50,11 @@ EDySuccess FDyIOGC::TryGarbageCollectCandidateList() noexcept
     {
     case EDyResourceStyle::Information: 
     { // Try remove informaiton instance. This function call must be succeeded.
-      MDY_CALL_ASSERT_SUCCESS(MDyIOData::GetInstance().MDY_PRIVATE_SPECIFIER(TryRemove)(name, type));
+      MDY_CALL_ASSERT_SUCCESS(MDyIOData::GetInstance().MDY_PRIVATE(TryRemove)(name, type));
     } break;
     case EDyResourceStyle::Resource: 
     { // Try remove resource instance. This funtion call must be succeeded.
-      MDY_CALL_ASSERT_SUCCESS(MDyIOResource::GetInstance().MDY_PRIVATE_SPECIFIER(TryRemove)(name, type));
+      MDY_CALL_ASSERT_SUCCESS(MDyIOResource::GetInstance().MDY_PRIVATE(TryRemove)(name, type));
     } break;
     default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
     }

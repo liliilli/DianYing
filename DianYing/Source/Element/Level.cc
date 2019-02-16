@@ -195,7 +195,7 @@ void FDyLevel::SetBackgroundColor(_MIN_ const DDyColorRGBA& backgroundColor) noe
   this->mLevelBackgroundColor = backgroundColor;
 }
 
-void FDyLevel::MDY_PRIVATE_SPECIFIER(AlignActorsPosition)() noexcept
+void FDyLevel::MDY_PRIVATE(AlignActorsPosition)() noexcept
 {
   // Update transform to reflect transform information.
   for (auto& [specifier, ptrsmtActor] : this->mActorMap)

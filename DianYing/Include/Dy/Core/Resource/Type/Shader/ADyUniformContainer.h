@@ -15,7 +15,6 @@
 
 #include <Dy/Core/Resource/Internal/ShaderType.h>
 #include <Dy/Core/Resource/Type/Shader/TemplateUniformType.h>
-#include <Dy/Core/Resource/Type/Shader/DDyUniformValue.h>
 #include <Dy/Helper/ContainerHelper.h>
 #include <Dy/Helper/System/Idioms.h>
 #include <Dy/Core/Resource/Internal/Uniform/IDyUniformValueBase.h>
@@ -49,7 +48,7 @@ public:
   template <EDyUniformVariableType TType>
   void TryUpdateUniform(
       _MIN_ const std::string& iSpecifier, 
-      _MIN_ const typename MDY_PRIVATE_SPECIFIER(UniformBinder)<TType>::ValueType& iValue)
+      _MIN_ const typename MDY_PRIVATE(UniformBinder)<TType>::ValueType& iValue)
   {
     auto it = this->mUniformMap.find(iSpecifier);
     if (it == this->mUniformMap.end())
@@ -75,12 +74,11 @@ public:
 
   /// @brief Try update uniform variables. \n
   /// Do nothing when update list is empty or binding flag is not set up
-  /// by calling MDY_PRIVATE_SPECIFIER(TryConstructDefaultUniformList)().
+  /// by calling MDY_PRIVATE(TryConstructDefaultUniformList)().
   EDySuccess TryUpdateUniformList();
 
 private:
-  template <EDyUniformVariableType TType> using TValueType = typename MDY_PRIVATE_SPECIFIER(UniformBinder)<TType>::ValueType;
-  template <EDyUniformVariableType TType> using TPtrConvert = DDyUniformValue<TType>*;
+  template <EDyUniformVariableType TType> using TValueType = typename MDY_PRIVATE(UniformBinder)<TType>::ValueType;
 
   using TUniformMap       = std::unordered_map<std::string, std::unique_ptr<IDyUniformValueBase>>;
   using TUpdatedItemList  = std::vector<IDyUniformValueBase*>;

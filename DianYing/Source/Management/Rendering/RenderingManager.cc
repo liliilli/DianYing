@@ -454,7 +454,7 @@ void MDyRendering::Integrate()
   if (MDY_CHECK_ISNOTEMPTY(this->mFinalDisplayRenderer)) { this->mFinalDisplayRenderer->RenderScreen(); }
 }
 
-void MDyRendering::MDY_PRIVATE_SPECIFIER(RenderLoading)()
+void MDyRendering::MDY_PRIVATE(RenderLoading)()
 {
   if (MDY_CHECK_ISNOTEMPTY(this->mUiBasicRenderer))       { this->mUiBasicRenderer->Clear(); }
   if (MDY_CHECK_ISNOTEMPTY(this->mFinalDisplayRenderer))  { this->mFinalDisplayRenderer->Clear(); }
@@ -489,13 +489,13 @@ void MDyRendering::pClearRenderingFramebufferInstances() noexcept
 }
 
 /// @brief Private function, bind directional light as main light.
-void MDyRendering::MDY_PRIVATE_SPECIFIER(BindMainDirectionalLight)(_MIN_ CDyDirectionalLight& iRefLight)
+void MDyRendering::MDY_PRIVATE(BindMainDirectionalLight)(_MIN_ CDyDirectionalLight& iRefLight)
 {
   this->mMainDirectionalLight = &iRefLight;
 }
 
 /// @brief Private function, unbind directional light of main light.
-EDySuccess MDyRendering::MDY_PRIVATE_SPECIFIER(UnbindMainDirectionalLight)(_MIN_ CDyDirectionalLight& iRefLight)
+EDySuccess MDyRendering::MDY_PRIVATE(UnbindMainDirectionalLight)(_MIN_ CDyDirectionalLight& iRefLight)
 {
   if (this->mMainDirectionalLight == &iRefLight) 
   {
@@ -511,13 +511,13 @@ CDyDirectionalLight* MDyRendering::GetPtrMainDirectionalShadow() const noexcept
 }
 
 /// @brief Private function, bind directional light as main light.
-void MDyRendering::MDY_PRIVATE_SPECIFIER(BindMainDirectionalShadow)(_MIN_ CDyDirectionalLight& iRefLight)
+void MDyRendering::MDY_PRIVATE(BindMainDirectionalShadow)(_MIN_ CDyDirectionalLight& iRefLight)
 {
   this->mMainDirectionalShadow = &iRefLight;
 }
 
 /// @brief Private function, unbind directional light of main light.
-EDySuccess MDyRendering::MDY_PRIVATE_SPECIFIER(UnbindMainDirectionalShadow)(_MIN_ CDyDirectionalLight& iRefLight)
+EDySuccess MDyRendering::MDY_PRIVATE(UnbindMainDirectionalShadow)(_MIN_ CDyDirectionalLight& iRefLight)
 {
   if (this->mMainDirectionalShadow == &iRefLight) 
   {

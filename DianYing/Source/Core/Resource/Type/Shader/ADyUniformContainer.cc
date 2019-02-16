@@ -44,7 +44,7 @@
 namespace dy
 {
 
-void MDY_PRIVATE_SPECIFIER(ADyUniformContainer)::__TryClearUniformList()
+void MDY_PRIVATE(ADyUniformContainer)::__TryClearUniformList()
 {
   this->mUniformMap.clear();
   this->mUpdatedItemList.clear();
@@ -53,7 +53,7 @@ void MDY_PRIVATE_SPECIFIER(ADyUniformContainer)::__TryClearUniformList()
 
 #define MDY_NOUSEVAR MDY_TOKENPASTE2(_, __LINE__)
 
-void MDY_PRIVATE_SPECIFIER(ADyUniformContainer)::__TryConstructDefaultUniformList(const FDyShaderResource& iResc)
+void MDY_PRIVATE(ADyUniformContainer)::__TryConstructDefaultUniformList(const FDyShaderResource& iResc)
 {
   const auto& uniformList = iResc.GetUniformVariableList();
   static std::regex textureRegex{"uTexture\\d+(_\\w*)?"};
@@ -87,7 +87,7 @@ void MDY_PRIVATE_SPECIFIER(ADyUniformContainer)::__TryConstructDefaultUniformLis
   this->mIsShaderSetuped = true;
 }
 
-EDySuccess MDY_PRIVATE_SPECIFIER(ADyUniformContainer)::TryUpdateUniformList()
+EDySuccess MDY_PRIVATE(ADyUniformContainer)::TryUpdateUniformList()
 {
   if (this->mIsShaderSetuped == false) { return DY_FAILURE; }
   if (this->mUpdatedItemList.empty() == true) { return DY_FAILURE; }

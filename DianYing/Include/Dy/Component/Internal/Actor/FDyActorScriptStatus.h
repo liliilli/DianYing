@@ -47,7 +47,7 @@ public:
   void CallScriptFunction(_MIN_ TF32 dt) noexcept;
 
   /// @brief Call destroy function.
-  void MDY_PRIVATE_SPECIFIER(CallDestroyFunctionAnyway)() noexcept;
+  void MDY_PRIVATE(CallDestroyFunctionAnyway)() noexcept;
 
   /// @brief Get script type (Cpp, Lua).
   MDY_NODISCARD EDyScriptType GetScriptType() const noexcept;
@@ -56,7 +56,7 @@ public:
   MDY_NODISCARD EDyScriptState GetScriptStatus() const noexcept;
 
   /// @brief Get internal widget script instance (level 2)
-  MDY_NODISCARD CDyActorScriptBase* MDY_PRIVATE_SPECIFIER(GetPtrInternalActorScript)() const noexcept;
+  MDY_NODISCARD CDyActorScriptBase* MDY_PRIVATE(GetPtrInternalActorScript)() const noexcept;
 
 private:
   /// @brief Widget script pointer instance.

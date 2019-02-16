@@ -296,8 +296,8 @@ namespace dy
 
 EDySuccess MDyInput::pfInitialize()
 {
-  this->MDY_PRIVATE_SPECIFIER(pInitializeAxisNAction)();
-  this->MDY_PRIVATE_SPECIFIER(pInitializeCallbacks)();
+  this->MDY_PRIVATE(pInitializeAxisNAction)();
+  this->MDY_PRIVATE(pInitializeCallbacks)();
 
   if (DyCheckIsJoystickConnected() == true)
   { // Check joystick binding manually at first time.
@@ -308,7 +308,7 @@ EDySuccess MDyInput::pfInitialize()
   return DY_SUCCESS;
 }
 
-void MDyInput::MDY_PRIVATE_SPECIFIER(pInitializeAxisNAction)()
+void MDyInput::MDY_PRIVATE(pInitializeAxisNAction)()
 {
    const auto& keyInformation = MDySetting::GetInstance().GetInputSettingInformation();
 
@@ -329,7 +329,7 @@ void MDyInput::MDY_PRIVATE_SPECIFIER(pInitializeAxisNAction)()
   }
 }
 
-void MDyInput::MDY_PRIVATE_SPECIFIER(pInitializeCallbacks)()
+void MDyInput::MDY_PRIVATE(pInitializeCallbacks)()
 {
   this->mPtrGlfwWindowContext = MDyWindow::GetInstance().GetGLMainWindow();
   glfwSetKeyCallback        (this->mPtrGlfwWindowContext, DyCallbackInputKeyboard);
@@ -459,15 +459,15 @@ bool MDyInput::IsKeyPressed(_MIN_ EDyInputButton keyValue) const noexcept
 
 void MDyInput::pfInGameUpdate(_MIN_ TF32 dt) noexcept
 {
-  this->MDY_PRIVATE_SPECIFIER(pUpdateMouseMovement)(dt);
+  this->MDY_PRIVATE(pUpdateMouseMovement)(dt);
   if (this->IsJoystickConnected() == true)
   { // If joystick is connected, update values because GLFW 3.2.1 does not have callback for joystick.
-    this->MDY_PRIVATE_SPECIFIER(pUpdateJoystickSticks)();
-    this->MDY_PRIVATE_SPECIFIER(pUpdateJoystickButtons)();
+    this->MDY_PRIVATE(pUpdateJoystickSticks)();
+    this->MDY_PRIVATE(pUpdateJoystickButtons)();
   }
 
-  this->MDY_PRIVATE_SPECIFIER(pCheckAxisStatus)(dt);
-  this->MDY_PRIVATE_SPECIFIER(pCheckActionStatus)(dt);
+  this->MDY_PRIVATE(pCheckAxisStatus)(dt);
+  this->MDY_PRIVATE(pCheckActionStatus)(dt);
 
   this->mDelegateManger.CheckDelegateAxis(dt);
   this->mDelegateManger.CheckDelegateAction(dt);
@@ -478,7 +478,7 @@ void MDyInput::pfGlobalUpdate(_MIN_ TF32 dt) noexcept
   // DO NOTHING.
 }
 
-void MDyInput::MDY_PRIVATE_SPECIFIER(pUpdateJoystickSticks)()
+void MDyInput::MDY_PRIVATE(pUpdateJoystickSticks)()
 {
   int supportingStickCount;
   const float* stickValueList = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &supportingStickCount);
@@ -490,7 +490,7 @@ void MDyInput::MDY_PRIVATE_SPECIFIER(pUpdateJoystickSticks)()
   }
 }
 
-void MDyInput::MDY_PRIVATE_SPECIFIER(pUpdateJoystickButtons)()
+void MDyInput::MDY_PRIVATE(pUpdateJoystickButtons)()
 {
   using TEnum = EDyInputButton;
   static constexpr auto dyJoystickBtnCount = TEnum::Joystick17 - TEnum::Joystick0 + 1;
@@ -508,7 +508,7 @@ void MDyInput::MDY_PRIVATE_SPECIFIER(pUpdateJoystickButtons)()
   }
 }
 
-void MDyInput::MDY_PRIVATE_SPECIFIER(pCheckAxisStatus)(_MIN_ TF32 dt)
+void MDyInput::MDY_PRIVATE(pCheckAxisStatus)(_MIN_ TF32 dt)
 {
   /// @brief Check action key status to find if any one is satisfied goalState condition.
   /// @param actionInfo action information
@@ -593,7 +593,7 @@ void MDyInput::MDY_PRIVATE_SPECIFIER(pCheckAxisStatus)(_MIN_ TF32 dt)
   }
 }
 
-void MDyInput::MDY_PRIVATE_SPECIFIER(pCheckActionStatus)(_MIN_ TF32 dt)
+void MDyInput::MDY_PRIVATE(pCheckActionStatus)(_MIN_ TF32 dt)
 {
   /// @brief Check action key status to find if any one is satisfied goalState condition.
   /// @param actionInfo action information
@@ -657,7 +657,7 @@ void MDyInput::MDY_PRIVATE_SPECIFIER(pCheckActionStatus)(_MIN_ TF32 dt)
   }
 }
 
-void MDyInput::MDY_PRIVATE_SPECIFIER(pUpdateMouseMovement)(_MIN_ TF32 dt)
+void MDyInput::MDY_PRIVATE(pUpdateMouseMovement)(_MIN_ TF32 dt)
 {
   if (sIsFirstMouseMovement == false && sMousePositionDirty == true)
   { 
@@ -670,17 +670,17 @@ void MDyInput::MDY_PRIVATE_SPECIFIER(pUpdateMouseMovement)(_MIN_ TF32 dt)
   else { this->mIsMouseMoved = false; }
 }
 
-EDySuccess MDyInput::MDY_PRIVATE_SPECIFIER(TryRequireControllerUi)(_MIN_ ADyWidgetCppScript& iRefUiScript) noexcept
+EDySuccess MDyInput::MDY_PRIVATE(TryRequireControllerUi)(_MIN_ ADyWidgetCppScript& iRefUiScript) noexcept
 {
   return this->mDelegateManger.TryRequireControllerUi(iRefUiScript);
 }
 
-EDySuccess MDyInput::MDY_PRIVATE_SPECIFIER(TryDetachContollerUi)(_MIN_ ADyWidgetCppScript& iRefUiScript) noexcept
+EDySuccess MDyInput::MDY_PRIVATE(TryDetachContollerUi)(_MIN_ ADyWidgetCppScript& iRefUiScript) noexcept
 {
   return this->mDelegateManger.TryDetachContollerUi(iRefUiScript);
 }
 
-EDySuccess MDyInput::MDY_PRIVATE_SPECIFIER(TryBindAxisDelegate)(
+EDySuccess MDyInput::MDY_PRIVATE(TryBindAxisDelegate)(
     _MIN_ ADyWidgetCppScript& iRefUiScript, 
     _MIN_ std::function<void(TF32)> iFunction,
     _MIN_ const std::string& iAxisName)
@@ -701,7 +701,7 @@ EDySuccess MDyInput::MDY_PRIVATE_SPECIFIER(TryBindAxisDelegate)(
   return DY_SUCCESS;
 }
 
-EDySuccess MDyInput::MDY_PRIVATE_SPECIFIER(TryBindActionDelegate)(
+EDySuccess MDyInput::MDY_PRIVATE(TryBindActionDelegate)(
     _MIN_ ADyWidgetCppScript& iRefUiScript, 
     _MIN_ EDyInputActionStatus iCondition,
     _MIN_ std::function<void()> iFunction,
@@ -723,7 +723,7 @@ EDySuccess MDyInput::MDY_PRIVATE_SPECIFIER(TryBindActionDelegate)(
   return DY_SUCCESS;
 }
 
-EDySuccess MDyInput::MDY_PRIVATE_SPECIFIER(TryBindAxisDelegate)(
+EDySuccess MDyInput::MDY_PRIVATE(TryBindAxisDelegate)(
     _MIN_ ADyActorCppScript& iRefUiScript, 
     _MIN_ std::function<void(TF32)> iFunction,
     _MIN_ const std::string& iAxisName)
@@ -744,7 +744,7 @@ EDySuccess MDyInput::MDY_PRIVATE_SPECIFIER(TryBindAxisDelegate)(
   return DY_SUCCESS;
 }
 
-EDySuccess MDyInput::MDY_PRIVATE_SPECIFIER(TryBindActionDelegate)(
+EDySuccess MDyInput::MDY_PRIVATE(TryBindActionDelegate)(
     _MIN_ ADyActorCppScript& iRefUiScript, 
     _MIN_ EDyInputActionStatus iCondition,
     _MIN_ std::function<void()> iFunction, 
@@ -766,17 +766,17 @@ EDySuccess MDyInput::MDY_PRIVATE_SPECIFIER(TryBindActionDelegate)(
   return DY_SUCCESS;
 }
 
-EDySuccess MDyInput::MDY_PRIVATE_SPECIFIER(TryRequireControllerActor)(_MIN_ ADyActorCppScript& iRefActor) noexcept
+EDySuccess MDyInput::MDY_PRIVATE(TryRequireControllerActor)(_MIN_ ADyActorCppScript& iRefActor) noexcept
 {
   return this->mDelegateManger.TryRequireControllerActor(iRefActor);
 }
 
-EDySuccess MDyInput::MDY_PRIVATE_SPECIFIER(TryDetachContollerActor)(_MIN_ ADyActorCppScript& iRefActor) noexcept
+EDySuccess MDyInput::MDY_PRIVATE(TryDetachContollerActor)(_MIN_ ADyActorCppScript& iRefActor) noexcept
 {
   return this->mDelegateManger.TryDetachContollerActor(iRefActor);
 }
 
-EDyInputButtonStatus MDyInput::MDY_PRIVATE_SPECIFIER(GetLowlevelKeyStatus)(_MIN_ EDyButton iId) noexcept
+EDyInputButtonStatus MDyInput::MDY_PRIVATE(GetLowlevelKeyStatus)(_MIN_ EDyButton iId) noexcept
 {
   return mInputButtonList[iId].Get();
 }

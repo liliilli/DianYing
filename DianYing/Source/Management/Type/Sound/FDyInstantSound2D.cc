@@ -58,7 +58,7 @@ EDySuccess FDyInstantSound2D::TryInitialize()
 
   // Initiate (Initialize)
   auto& soundManager = MDySound::GetInstance();
-  auto& refSystem = soundManager.MDY_PRIVATE_SPECIFIER(GetSystem)();
+  auto& refSystem = soundManager.MDY_PRIVATE(GetSystem)();
 
   // Create sound
   {
@@ -92,7 +92,7 @@ EDySuccess FDyInstantSound2D::TryInitialize()
     {
       const auto flag = refSystem.playSound(
           this->mPtrInternalSound, 
-          ptrChannel->MDY_PRIVATE_SPECIFIER(GetPtrChannel)(), 
+          ptrChannel->MDY_PRIVATE(GetPtrChannel)(), 
           true, &this->mPtrInternalChannel);
       MDY_ASSERT(flag == FMOD_OK, "Failed to play sound instance.");
     }

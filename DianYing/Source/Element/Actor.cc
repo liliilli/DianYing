@@ -60,7 +60,7 @@ FDyActor::FDyActor(_MIN_ const PDyObjectMetaInfo& objectMetaDesc, _MIN_ FDyActor
 
   // (2) Create components
   // Check activation flags and execute sub-routines of each components.
-  this->MDY_PRIVATE_SPECIFIER(CreateComponentList)(metaComponentInfo);
+  this->MDY_PRIVATE(CreateComponentList)(metaComponentInfo);
   // If transform is not exist, just create default transform.
   if (MDY_CHECK_ISNULL(this->mTransform))
   {
@@ -115,7 +115,7 @@ FDyActor::FDyActor(_MIN_ const PDyActorCreationDescriptor& iDesc, _MIN_ FDyActor
 
   // (2) Create components
   // Check activation flags and execute sub-routines of each components.
-  this->MDY_PRIVATE_SPECIFIER(CreateComponentList)(metaComponentInfo);
+  this->MDY_PRIVATE(CreateComponentList)(metaComponentInfo);
   // (3) Create Transform component using Given transform
   this->AddComponent<CDyTransform>(iDesc.mTransform);
 
@@ -127,7 +127,7 @@ FDyActor::FDyActor(_MIN_ const PDyActorCreationDescriptor& iDesc, _MIN_ FDyActor
   SDyProfilingHelper::IncreaseOnBindActorCount(1);
 }
 
-void FDyActor::MDY_PRIVATE_SPECIFIER(CreateComponentList)(const TComponentMetaList& iMetaComponentList)
+void FDyActor::MDY_PRIVATE(CreateComponentList)(const TComponentMetaList& iMetaComponentList)
 {
   for (const auto& [type, componentInfo] : iMetaComponentList)
   {
@@ -251,12 +251,12 @@ const std::string& FDyActor::GetActorName() const noexcept
   return this->pGetObjectName();
 }
 
-std::string FDyActor::MDY_PRIVATE_SPECIFIER(GetFullSpecifierName)() const noexcept
+std::string FDyActor::MDY_PRIVATE(GetFullSpecifierName)() const noexcept
 {
   if (this->IsHaveParent() == false) { return this->GetActorName(); }
   else
   {
-    const auto headFullSpecifierName = this->GetParent()->MDY_PRIVATE_SPECIFIER(GetFullSpecifierName)();
+    const auto headFullSpecifierName = this->GetParent()->MDY_PRIVATE(GetFullSpecifierName)();
     return fmt::format("{}.{}", headFullSpecifierName, this->GetActorName());
   }
 }
@@ -395,7 +395,7 @@ FDyActor::GetAllActorsWithNameRecursive(_MIN_ const std::string& iNameSpecifier)
 }
 
 std::unique_ptr<CDyActorScript> 
-FDyActor::MDY_PRIVATE_SPECIFIER(MakeScriptComponent)(_MIN_ const PDyScriptComponentMetaInfo& info)
+FDyActor::MDY_PRIVATE(MakeScriptComponent)(_MIN_ const PDyScriptComponentMetaInfo& info)
 {
   auto& metaManager = MDyMetaInfo::GetInstance();
   MDY_ASSERT(metaManager.IsScriptMetaInformationExist(info.mDetails.mSpecifierName) == true, "");
@@ -479,24 +479,24 @@ EDySuccess FDyActor::RemoveScriptComponent(_MIN_ const std::string& scriptName) 
 }
 #endif
 
-void FDyActor::MDY_PRIVATE_SPECIFIER(TryRemoveScriptInstances)() noexcept
+void FDyActor::MDY_PRIVATE(TryRemoveScriptInstances)() noexcept
 {
   return this->mScriptList.clear();
 }
 
-void FDyActor::MDY_PRIVATE_SPECIFIER(TryDetachDependentComponents)() noexcept
+void FDyActor::MDY_PRIVATE(TryDetachDependentComponents)() noexcept
 {
-  this->MDY_PRIVATE_SPECIFIER(TryRemoveScriptInstances)();
+  this->MDY_PRIVATE(TryRemoveScriptInstances)();
   auto rendererList = this->GetGeneralComponentList<CDyModelRenderer>();
   for (auto& ptrRenderer : rendererList)
   { // Try detach renderer from list, if not exist already just do nothing.
-    MDyWorld::GetInstance().MDY_PRIVATE_SPECIFIER(TryDetachActiveModelRenderer)(ptrRenderer);
+    MDyWorld::GetInstance().MDY_PRIVATE(TryDetachActiveModelRenderer)(ptrRenderer);
   }
 
   for (auto& [specifier, ptrsmtChild] : this->mChildActorMap)
   {
     if (MDY_CHECK_ISEMPTY(ptrsmtChild)) { return; }
-    ptrsmtChild->MDY_PRIVATE_SPECIFIER(TryDetachDependentComponents)();
+    ptrsmtChild->MDY_PRIVATE(TryDetachDependentComponents)();
   }
 }
 

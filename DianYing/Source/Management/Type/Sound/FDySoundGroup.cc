@@ -92,7 +92,7 @@ void FDySoundGroup::RegisterChannel(_MIN_ FDySoundChannel& iRefChannel)
 {
   MDY_ASSERT_FORCE(this->mIsInitilaized == true, "Given sound group must be initialized when use this function.");
 
-  const auto flag = this->mInternalGroup->addGroup(iRefChannel.MDY_PRIVATE_SPECIFIER(GetPtrChannel)());
+  const auto flag = this->mInternalGroup->addGroup(iRefChannel.MDY_PRIVATE(GetPtrChannel)());
   MDY_ASSERT(flag == FMOD_OK, "Unexpected error occurred.");
 }
 

@@ -169,7 +169,7 @@ DDyActorBinder MDyWorld::CreateActor(
     : this->mLevel->TryGetGeneratedName(iActorName);
   descriptor.mParentFullSpecifierName = 
       iPtrParent != nullptr 
-    ? iPtrParent->MDY_PRIVATE_SPECIFIER(GetFullSpecifierName)() 
+    ? iPtrParent->MDY_PRIVATE(GetFullSpecifierName)() 
     : MDY_INITIALIZE_EMPTYSTR;
   descriptor.mTransform = iSpawnTransform;
   descriptor.mIsDoSweep = iDoSweep;
@@ -181,13 +181,13 @@ DDyActorBinder MDyWorld::CreateActor(
 
   if (iObjectTag.empty() == false)
   { // Check tag is exist, when tag is not empty.
-    MDY_CALL_ASSERT_SUCCESS(MDySetting::GetInstance().MDY_PRIVATE_SPECIFIER(CheckObjectTagIsExist)(iObjectTag));
+    MDY_CALL_ASSERT_SUCCESS(MDySetting::GetInstance().MDY_PRIVATE(CheckObjectTagIsExist)(iObjectTag));
     descriptor.mObjectTag = iObjectTag;
   }
 
   DySafeUniquePtrEmplaceBack(this->mActorCreationDescList, descriptor);
   DDyActorBinder resultBinder {};
-  resultBinder.MDY_PRIVATE_SPECIFIER(BindDescriptor)(this->mActorCreationDescList.back().get());
+  resultBinder.MDY_PRIVATE(BindDescriptor)(this->mActorCreationDescList.back().get());
   return resultBinder;
 }
 
@@ -207,7 +207,7 @@ void MDyWorld::DestroyActor(_MIN_ FDyActor& iRefActor)
     if (it == container.end()) { return; }
 
     this->mGCedActorList.emplace_back(std::move(it->second));
-    this->mGCedActorList.back()->MDY_PRIVATE_SPECIFIER(TryDetachDependentComponents)();
+    this->mGCedActorList.back()->MDY_PRIVATE(TryDetachDependentComponents)();
     container.erase(it);
   }
   else
@@ -225,7 +225,7 @@ void MDyWorld::DestroyActor(_MIN_ FDyActor& iRefActor)
     if (it == container.end()) { return; }
 
     this->mGCedActorList.emplace_back(std::move(it->second));
-    this->mGCedActorList.back()->MDY_PRIVATE_SPECIFIER(TryDetachDependentComponents)();
+    this->mGCedActorList.back()->MDY_PRIVATE(TryDetachDependentComponents)();
     container.erase(it);
   }
 }
@@ -278,18 +278,18 @@ bool MDyWorld::IsNeedTransitNextLevel() const noexcept
   return this->mIsNeedTransitNextLevel;
 }
 
-EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(OpenFirstLevel)()
+EDySuccess MDyWorld::MDY_PRIVATE(OpenFirstLevel)()
 {
   this->SetLevelTransition(MDySetting::GetInstance().GetInitialSceneInformationName());
 
   // Let present level do release sequence
   // Game Status Sequence 12-13.
-  this->MDY_PRIVATE_SPECIFIER(RemoveLevel)();
-  this->MDY_PRIVATE_SPECIFIER(PopulateNextLevelResources)();
+  this->MDY_PRIVATE(RemoveLevel)();
+  this->MDY_PRIVATE(PopulateNextLevelResources)();
   return DY_SUCCESS;
 }
 
-EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(RemoveLevel)()
+EDySuccess MDyWorld::MDY_PRIVATE(RemoveLevel)()
 {
   // Let present level do release sequence
   // And level must be nullptr. and... Remove RI and Resource & Informations with Scope is `Level`.
@@ -300,7 +300,7 @@ EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(RemoveLevel)()
 
   // Just remove script instance without `Destroy` function intentionally.
   MDyScript::GetInstance().ClearWidgetScriptGCList();
-  this->MDY_PRIVATE_SPECIFIER(TryRemoveActorGCList)();
+  this->MDY_PRIVATE(TryRemoveActorGCList)();
 
   this->mActivatedModelRenderers.clear();
   this->mActivatedOnRenderingCameras.clear();
@@ -323,7 +323,7 @@ EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(RemoveLevel)()
   return DY_SUCCESS;
 }
 
-EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(PopulateNextLevelResources)()
+EDySuccess MDyWorld::MDY_PRIVATE(PopulateNextLevelResources)()
 {
   if (this->mNextLevelName.empty() == true) { return DY_FAILURE; }
   if (MDyMetaInfo::GetInstance().IsLevelMetaInformation(this->mNextLevelName) == false) { return DY_FAILURE; }
@@ -340,14 +340,14 @@ EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(PopulateNextLevelResources)()
       []() 
   { 
     auto& mWorld = MDyWorld::GetInstance();
-    mWorld.MDY_PRIVATE_SPECIFIER(BuildNextLevel)(); 
-    mWorld.MDY_PRIVATE_SPECIFIER(TransitionToNextLevel)();
+    mWorld.MDY_PRIVATE(BuildNextLevel)(); 
+    mWorld.MDY_PRIVATE(TransitionToNextLevel)();
     DyEngine::GetInstance().SetNextGameStatus(EDyGlobalGameStatus::GameRuntime);
   });
   return DY_SUCCESS;
 }
 
-void MDyWorld::MDY_PRIVATE_SPECIFIER(BuildNextLevel)()
+void MDyWorld::MDY_PRIVATE(BuildNextLevel)()
 {
   // GSS 14
   MDY_LOG_DEBUG_D("Building Next Level : {}", this->mNextLevelName);
@@ -358,7 +358,7 @@ void MDyWorld::MDY_PRIVATE_SPECIFIER(BuildNextLevel)()
   this->mLevel = std::make_unique<FDyLevel>(*levelMetaInfo);
 }
 
-EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(TransitionToNextLevel)()
+EDySuccess MDyWorld::MDY_PRIVATE(TransitionToNextLevel)()
 {
   // GSS 15
   this->mPreviousLevelName  = this->mPresentLevelName;
@@ -375,7 +375,7 @@ EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(TransitionToNextLevel)()
 
   // Need to realign position following actor tree.
   MDY_LOG_DEBUG_D("Align Position of Actors on level : {}", this->mPresentLevelName);
-  this->mLevel->MDY_PRIVATE_SPECIFIER(AlignActorsPosition)();
+  this->mLevel->MDY_PRIVATE(AlignActorsPosition)();
 
   return DY_SUCCESS;
 }
@@ -406,7 +406,7 @@ EDySuccess MDyWorld::TryRemoveDebugUi()
   return this->mUiInstanceContainer.TryRemoveDebugUi();
 }
 
-void MDyWorld::MDY_PRIVATE_SPECIFIER(TryRenderDebugUi)()
+void MDyWorld::MDY_PRIVATE(TryRenderDebugUi)()
 {
   this->mUiInstanceContainer.TryRenderDebugUi();
 }
@@ -426,7 +426,7 @@ EDySuccess MDyWorld::TryRemoveLoadingUi()
   return this->mUiInstanceContainer.TryRemoveLoadingUi();
 }
 
-void MDyWorld::MDY_PRIVATE_SPECIFIER(TryRenderLoadingUi)()
+void MDyWorld::MDY_PRIVATE(TryRenderLoadingUi)()
 {
   this->mUiInstanceContainer.TryRenderLoadingUi();
 }
@@ -458,7 +458,7 @@ bool MDyWorld::CheckIsGcActorExist() const noexcept
   return this->mGCedActorList.empty() == false;
 }
 
-void MDyWorld::MDY_PRIVATE_SPECIFIER(TryRemoveActorGCList)() noexcept
+void MDyWorld::MDY_PRIVATE(TryRemoveActorGCList)() noexcept
 {
   this->mGCedActorList.clear();
 }
@@ -478,7 +478,7 @@ void MDyWorld::SetLevelTransition(_MIN_ const std::string& iSpecifier)
 void MDyWorld::pfMoveActorToGc(_MIN_ NotNull<FDyActor*> actorRawPtr) noexcept
 {
   this->mGCedActorList.emplace_back(std::unique_ptr<FDyActor>(actorRawPtr));
-  this->mGCedActorList.back()->MDY_PRIVATE_SPECIFIER(TryRemoveScriptInstances)();
+  this->mGCedActorList.back()->MDY_PRIVATE(TryRemoveScriptInstances)();
 }
 
 void MDyWorld::pfUnenrollActiveModelRenderer(_MIN_ TI32 index) noexcept
@@ -499,7 +499,7 @@ void MDyWorld::pfUnenrollActiveCamera(_MIO_ TI32& index) noexcept
   index = MDY_INITIALIZE_DEFINT;
 }
 
-EDySuccess MDyWorld::MDY_PRIVATE_SPECIFIER(TryDetachActiveModelRenderer)(_MIN_ CDyModelRenderer* iPtrRenderer)
+EDySuccess MDyWorld::MDY_PRIVATE(TryDetachActiveModelRenderer)(_MIN_ CDyModelRenderer* iPtrRenderer)
 {
   auto it = std::find_if(
       MDY_BIND_BEGIN_END(this->mActivatedModelRenderers), 

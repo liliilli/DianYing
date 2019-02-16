@@ -23,7 +23,7 @@ const EDySoundStatus& ADySoundInstance::GetStatus() const noexcept
   return this->mSoundStatus;
 }
 
-void ADySoundInstance::MDY_PRIVATE_SPECIFIER(SetStatus)(_MIN_ EDySoundStatus iStatus)
+void ADySoundInstance::MDY_PRIVATE(SetStatus)(_MIN_ EDySoundStatus iStatus)
 {
   this->mSoundStatus = iStatus;
 }

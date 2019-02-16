@@ -185,46 +185,46 @@ public:
   /// If children is not exist, do nothing.
   void TryPropagateTransformToChildren();
 
-  void MDY_PRIVATE_SPECIFIER(PropagateTransform)(
+  void MDY_PRIVATE(PropagateTransform)(
       _MIN_ const DDyVector3& iPosition,
       _MIN_ const DDyVector3& iAngle,
       _MIN_ const DDyVector3& iScale);
   /// @brief Set transform with physx::PxTransform.
   /// When set, degree x, y, z rotation value will be not valid. 
-  void MDY_PRIVATE_SPECIFIER(SetPxTransform)(_MIN_ const physx::PxTransform& iTransform);
+  void MDY_PRIVATE(SetPxTransform)(_MIN_ const physx::PxTransform& iTransform);
 
 private:
   void TryActivateInstance() override final   { /* Do nothing */ };
   void TryDeactivateInstance() override final { /* Do nothing */ };
   
   /// @brief Try update movement basis.
-  void MDY_PRIVATE_SPECIFIER(TryUpdateMovementBasis)();
+  void MDY_PRIVATE(TryUpdateMovementBasis)();
   /// @brief
-  void MDY_PRIVATE_SPECIFIER(TryUpdateLocalRelAlignedPos)();
+  void MDY_PRIVATE(TryUpdateLocalRelAlignedPos)();
   /// @brief
-  void MDY_PRIVATE_SPECIFIER(TryUpdateWorldRelAlignedPos)();
+  void MDY_PRIVATE(TryUpdateWorldRelAlignedPos)();
   /// @brief 
-  void MDY_PRIVATE_SPECIFIER(TryUpdateAlignedWorldSumPosition)();
+  void MDY_PRIVATE(TryUpdateAlignedWorldSumPosition)();
   /// @brief
-  void MDY_PRIVATE_SPECIFIER(TryUpdateFinalPosition)();
+  void MDY_PRIVATE(TryUpdateFinalPosition)();
   /// @brief
-  void MDY_PRIVATE_SPECIFIER(SetRelativeWorldOrigin)(_MIN_ const DDyVector3& iParentPosition);
+  void MDY_PRIVATE(SetRelativeWorldOrigin)(_MIN_ const DDyVector3& iParentPosition);
 
   /// @brief Try update sum of world (without each local) rotation angle.
-  void MDY_PRIVATE_SPECIFIER(TryUpdateWorldSumRotAngle)();
+  void MDY_PRIVATE(TryUpdateWorldSumRotAngle)();
   /// @brief
-  void MDY_PRIVATE_SPECIFIER(TryUpdateFinalWorldRotAngle)() noexcept;
+  void MDY_PRIVATE(TryUpdateFinalWorldRotAngle)() noexcept;
   /// @brief
-  void MDY_PRIVATE_SPECIFIER(TryUpdateToChildBasis)() noexcept;
+  void MDY_PRIVATE(TryUpdateToChildBasis)() noexcept;
   /// @brief 
-  void MDY_PRIVATE_SPECIFIER(SetRotationAngleOrigin)(_MIN_ const DDyVector3& iParentSumRotAngle);
+  void MDY_PRIVATE(SetRotationAngleOrigin)(_MIN_ const DDyVector3& iParentSumRotAngle);
 
   /// @brief
-  void MDY_PRIVATE_SPECIFIER(TryUpdateWorldPrdScale)();
+  void MDY_PRIVATE(TryUpdateWorldPrdScale)();
   /// @brief
-  void MDY_PRIVATE_SPECIFIER(UpdateFinalRenderingScale)() noexcept;
+  void MDY_PRIVATE(UpdateFinalRenderingScale)() noexcept;
   /// @brief
-  void MDY_PRIVATE_SPECIFIER(SetWorldScaleOrigin)(_MIN_ const DDyVector3& iParentPrdScale);
+  void MDY_PRIVATE(SetWorldScaleOrigin)(_MIN_ const DDyVector3& iParentPrdScale);
 
 private:
   MDY_TRANSIENT DDyVector3    mWorldRelativeOriginPosition  = {};

@@ -109,7 +109,7 @@ const DDyArea3D& CDyPhysicsCollider::GetBound() const noexcept
   return this->mAABBBound;
 }
 
-void CDyPhysicsCollider::MDY_PRIVATE_SPECIFIER(SetRegisterFlag)(_MIN_ bool iFlag) noexcept
+void CDyPhysicsCollider::MDY_PRIVATE(SetRegisterFlag)(_MIN_ bool iFlag) noexcept
 {
   this->mIsRegistered = iFlag;
 }
@@ -153,7 +153,7 @@ physx::PxFilterData CDyPhysicsCollider::CreateFilterDataValue(
     _MIN_ const std::string& iLayerName, 
     _MIN_ std::vector<EDyCollisionFilter>& iFilterData)
 {
-  const auto optSpecifier = iRigidbody.MDY_PRIVATE_SPECIFIER(GetRigidbodySpecifier)();
+  const auto optSpecifier = iRigidbody.MDY_PRIVATE(GetRigidbodySpecifier)();
   MDY_ASSERT_FORCE(optSpecifier.has_value() == true, "Unexpected error occurred. Target rigidbody must be activated and valid.");
 
   physx::PxFilterData resultFilterData;

@@ -54,7 +54,7 @@ EDySuccess FDySoundChannel::Initialize(_MIN_ FMOD::System& iPtrSystem, _MIN_ con
     
     // Add this to group channel.
     auto& soundManager = MDySound::GetInstance();
-    auto& group = soundManager.MDY_PRIVATE_SPECIFIER(GetGroupChannel)(iDetail.mGroupSpecifier);
+    auto& group = soundManager.MDY_PRIVATE(GetGroupChannel)(iDetail.mGroupSpecifier);
     group.RegisterChannel(*this);
 
     return DY_SUCCESS;
@@ -94,7 +94,7 @@ void FDySoundChannel::SetMute(_MIN_ bool iMuted)
   MDY_ASSERT(flag == FMOD_OK, "Unexpected error occurred.");
 }
 
-FMOD::ChannelGroup* FDySoundChannel::MDY_PRIVATE_SPECIFIER(GetPtrChannel)() noexcept
+FMOD::ChannelGroup* FDySoundChannel::MDY_PRIVATE(GetPtrChannel)() noexcept
 {
   return this->mInternalGroup;
 }

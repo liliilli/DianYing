@@ -43,7 +43,7 @@ public:
   virtual ~CDyActorScriptCpp() = default;
 
   /// @brief  Get `most derived` `low-level` script instance pointer.
-  MDY_NODISCARD ADyActorCppScript* MDY_PRIVATE_SPECIFIER(GetScriptInstance)() const noexcept; 
+  MDY_NODISCARD ADyActorCppScript* MDY_PRIVATE(GetScriptInstance)() const noexcept; 
 
 private:
   void Initiate()       override final;

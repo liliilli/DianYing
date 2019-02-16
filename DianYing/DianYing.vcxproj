@@ -726,7 +726,6 @@
     <ClInclude Include="Include\Dy\Core\Resource\Type\ModelMesh\DDyMeshData.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\ModelMesh\DDySkeletonBone.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\ADyUniformContainer.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\DDyUniformValue.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\TDyInformationBinder.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\TDyResourceBinder.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\TDyResourceBinderBase.h" />

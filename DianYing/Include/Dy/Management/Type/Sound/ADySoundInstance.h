@@ -27,7 +27,7 @@ public:
   /// @brief Get status value of sound instance.
   MDY_NODISCARD const EDySoundStatus& GetStatus() const noexcept; 
   /// @brief private-function. Set status in internal logic.
-  void MDY_PRIVATE_SPECIFIER(SetStatus)(_MIN_ EDySoundStatus iStatus);
+  void MDY_PRIVATE(SetStatus)(_MIN_ EDySoundStatus iStatus);
 
 protected:
   EDySoundStatus mSoundStatus = EDySoundStatus::NotValid;

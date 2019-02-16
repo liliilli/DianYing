@@ -60,7 +60,7 @@ public:
         "TType is not inheritenced from ADyActorCppScript or ADyWidgetCppScript");
 
     auto callback = std::bind(iPtrCallback, &iRefScript);
-    this->MDY_PRIVATE_SPECIFIER(pSetTimer)(iRefHandler, iRefScript, callback, iTickTime, iIsLooped, iDelayTime);
+    this->MDY_PRIVATE(pSetTimer)(iRefHandler, iRefScript, callback, iTickTime, iIsLooped, iDelayTime);
   }
 
   /// @brief Pause timer, this function do nothing when Handler is not bound or paused already.
@@ -77,10 +77,10 @@ public:
   /// @brief Stop widget timer.
   void StopWidgetTimer(_MIN_ FDyTimerHandle& iRefHandler);
 
-  void MDY_PRIVATE_SPECIFIER(TryGcRemoveAbortedTimerInstance)();
+  void MDY_PRIVATE(TryGcRemoveAbortedTimerInstance)();
 
 private:
-  void MDY_PRIVATE_SPECIFIER(pSetTimer)(
+  void MDY_PRIVATE(pSetTimer)(
       _MIN_ FDyTimerHandle& iRefHandler, 
       _MIN_ ADyActorCppScript& iRefScript,
       _MIN_ std::function<void(void)> iFunction,
@@ -88,7 +88,7 @@ private:
       _MIN_ bool iIsLooped, 
       _MIN_ TF32 iDelayTime);
 
-  void MDY_PRIVATE_SPECIFIER(pSetTimer)(
+  void MDY_PRIVATE(pSetTimer)(
       _MIN_ FDyTimerHandle& iRefHandler, 
       _MIN_ ADyWidgetCppScript& iRefScript,
       _MIN_ std::function<void(void)> iFunction,

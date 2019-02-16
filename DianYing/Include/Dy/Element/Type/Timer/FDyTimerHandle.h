@@ -23,21 +23,21 @@ public:
   MDY_NODISCARD bool IsBound() const noexcept { return this->mIsBound; }
 
   /// @brief Set index.
-  void MDY_PRIVATE_SPECIFIER(SetBinding)(_MIN_ TU32 iIndex) noexcept 
+  void MDY_PRIVATE(SetBinding)(_MIN_ TU32 iIndex) noexcept 
   { 
     this->mIndex   = iIndex; 
     this->mIsBound = true;
   }
 
   /// @brief Unbind handle from TimerManager.
-  void MDY_PRIVATE_SPECIFIER(Unbind)() 
+  void MDY_PRIVATE(Unbind)() 
   { 
     this->mIndex = 0; 
     this->mIsBound = false; 
   }
 
   /// @brief Get index.
-  MDY_NODISCARD TU32 MDY_PRIVATE_SPECIFIER(GetIndex)() const noexcept { return this->mIndex; }
+  MDY_NODISCARD TU32 MDY_PRIVATE(GetIndex)() const noexcept { return this->mIndex; }
 
 private:
   TU32 mIndex   = 0;

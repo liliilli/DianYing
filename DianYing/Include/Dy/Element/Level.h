@@ -52,7 +52,7 @@ public:
   void SetBackgroundColor(_MIN_ const DDyColorRGBA& backgroundColor) noexcept;
 
   /// @brief Align position of actors.
-  void MDY_PRIVATE_SPECIFIER(AlignActorsPosition)() noexcept;
+  void MDY_PRIVATE(AlignActorsPosition)() noexcept;
 
   /// @brief  Get valid level reference.
   /// @return Valid level reference. when level is not specified, unexpected behaviour.

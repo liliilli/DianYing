@@ -26,8 +26,8 @@ DDyTimepoint::DDyTimepoint(_MIN_ tm input) :
   mMinute{static_cast<TU16>(input.tm_min)},
   mSecond{static_cast<TU16>(input.tm_sec)},
   mDaysFrom{static_cast<TU16>(input.tm_yday)},
-  mDayType{MDY_PRIVATE_SPECIFIER(DyConverTmDayToDyType)(input.tm_wday)},
-  mIsDst{MDY_PRIVATE_SPECIFIER(DyConverTmDstToDyType)(input.tm_isdst)}
+  mDayType{MDY_PRIVATE(DyConverTmDayToDyType)(input.tm_wday)},
+  mIsDst{MDY_PRIVATE(DyConverTmDstToDyType)(input.tm_isdst)}
 { }
 
 } /// ::dy namespace

@@ -53,7 +53,7 @@ void from_json(const nlohmann::json& j, PDyPrefabInstanceMetaInfo::DCommonProper
   DyJsonGetValueFromTo(j, "ObjectTag", p.mTagSpecifier);
 
   /// Validity Test
-  MDY_CALL_ASSERT_SUCCESS(MDySetting::GetInstance().MDY_PRIVATE_SPECIFIER(CheckObjectTagIsExist)(p.mTagSpecifier));
+  MDY_CALL_ASSERT_SUCCESS(MDySetting::GetInstance().MDY_PRIVATE(CheckObjectTagIsExist)(p.mTagSpecifier));
 }
 
 } /// ::dy namespace

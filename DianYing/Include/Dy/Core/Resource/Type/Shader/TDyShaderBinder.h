@@ -25,7 +25,7 @@ namespace dy
 /// @brief Binder base class for each supporting resource type.
 struct __TDyResourceBinderShader : 
     public __TDyResourceBinderBase<EDyResourceType::GLShader>, 
-    public MDY_PRIVATE_SPECIFIER(ADyUniformContainer)
+    public MDY_PRIVATE(ADyUniformContainer)
 {
 public:
   MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(__TDyResourceBinderShader);
@@ -36,7 +36,7 @@ public:
   void Process() noexcept override
   {
     __TryClearUniformList();
-    MDY_PRIVATE_SPECIFIER(TryConstructDefaultUniformList)(*this->mPtrResource);
+    MDY_PRIVATE(TryConstructDefaultUniformList)(*this->mPtrResource);
   }
 };
 

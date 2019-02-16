@@ -230,7 +230,7 @@ void MDySetting::SetVSyncMode(bool enableVsync) noexcept
   }
 }
 
-EDySuccess MDySetting::MDY_PRIVATE_SPECIFIER(CheckObjectTagIsExist)(_MIN_ const std::string& iSpecifiedTag) const noexcept
+EDySuccess MDySetting::MDY_PRIVATE(CheckObjectTagIsExist)(_MIN_ const std::string& iSpecifiedTag) const noexcept
 {
   if (iSpecifiedTag.empty() == true) { return DY_SUCCESS; }
   for (const auto& tagSpecifier : this->mTag.mObjectTag)
@@ -241,7 +241,7 @@ EDySuccess MDySetting::MDY_PRIVATE_SPECIFIER(CheckObjectTagIsExist)(_MIN_ const 
   return DY_FAILURE;
 }
 
-const std::string& MDySetting::MDY_PRIVATE_SPECIFIER(GetEntrySettingFile)() const noexcept
+const std::string& MDySetting::MDY_PRIVATE(GetEntrySettingFile)() const noexcept
 {
   return this->mEntrySettingPath;
 }
@@ -439,7 +439,7 @@ EDySuccess MDySetting::pfInitialize()
     DyJsonGetValueFromTo(settingAtlas, "Physics", this->mPhysics);
 
     DyJsonGetValueFromTo(settingAtlas, sCategoryMetaPath, this->mDevMetaPath);
-    MDyMetaInfo::GetInstance().MDY_PRIVATE_SPECIFIER(InitiateMetaInformation)();
+    MDyMetaInfo::GetInstance().MDY_PRIVATE(InitiateMetaInformation)();
   }
   else if (this->mFileLoadingMode == EDyFileLoadingMode::LoadCompressedFile)
   { // If Application loading mode is `Load compressed file` like a `Data###.dydat`.
@@ -457,7 +457,7 @@ EDySuccess MDySetting::pfInitialize()
     DyJsonGetValueFromTo(settingAtlas, sCategoryTag, this->mTag);
     DyJsonGetValueFromTo(settingAtlas, "Sound", this->mSound);
     DyJsonGetValueFromTo(settingAtlas, "Physics", this->mPhysics);
-    MDyMetaInfo::GetInstance().MDY_PRIVATE_SPECIFIER(InitiateMetaInformationComp)(metaAtlas);
+    MDyMetaInfo::GetInstance().MDY_PRIVATE(InitiateMetaInformationComp)(metaAtlas);
   }
   else { MDY_UNEXPECTED_BRANCH(); }
 

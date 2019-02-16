@@ -31,7 +31,7 @@ EDySuccess FDyImage::Initialize(const PDyMetaWidgetImageDescriptor& objectMetaDe
   this->SetTintColor(objectMetaDesc.mTintColor);
   this->SetImageName(objectMetaDesc.mImageSpecifierName);
 
-  this->MDY_PRIVATE_SPECIFIER(SetUpdateRendererFlag)(true);
+  this->MDY_PRIVATE(SetUpdateRendererFlag)(true);
   return DY_SUCCESS;
 }
 
@@ -86,7 +86,7 @@ const DDyColorRGBA& FDyImage::GetTintColor() const noexcept
   return this->mTintColor;
 }
 
-void FDyImage::MDY_PRIVATE_SPECIFIER(SetUpdateRendererFlag)(_MIN_ bool iIsActivated) noexcept
+void FDyImage::MDY_PRIVATE(SetUpdateRendererFlag)(_MIN_ bool iIsActivated) noexcept
 {
   if (this->mIsUpdateRenderer != iIsActivated)
   {

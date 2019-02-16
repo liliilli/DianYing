@@ -112,7 +112,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyObjectMetaInfo::DCommo
   DyJsonGetValueFromTo(j, "IsOverridePrefabTag",    p.mIsOverridePrefabTag);
 
   /// Validity Test
-  MDY_CALL_ASSERT_SUCCESS(MDySetting::GetInstance().MDY_PRIVATE_SPECIFIER(CheckObjectTagIsExist)(p.mTagSpecifier));
+  MDY_CALL_ASSERT_SUCCESS(MDySetting::GetInstance().MDY_PRIVATE(CheckObjectTagIsExist)(p.mTagSpecifier));
 }
 
 void to_json(nlohmann::json& j, const TObjectMetaInfoList& p)

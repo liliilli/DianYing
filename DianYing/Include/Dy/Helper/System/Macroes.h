@@ -729,10 +729,10 @@ private:
 #define MDY_VECTOR_RGBA(__MAVectorType__) __MAVectorType__.R, __MAVectorType__.G, __MAVectorType__.B, __MAVectorType__.A
 
 ///
-/// @macro MDY_PRIVATE_SPECIFIER
+/// @macro MDY_PRIVATE
 /// @brief USE THIS JUST ONLY FOR HIDING PRIVATE FUNCTION OR VARIABLES EVEN FOR FRIEND CLASS AND FUNCTIONS.
 ///
-#define MDY_PRIVATE_SPECIFIER(__MASpecifierName__) MDY_TOKENPASTE2(__, __MASpecifierName__)
+#define MDY_PRIVATE(__MASpecifierName__) MDY_TOKENPASTE2(__, __MASpecifierName__)
 
 //!
 //! Function type macros.

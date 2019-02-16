@@ -83,7 +83,7 @@ private:
 
   /// @brief Try remove information instance with iSpecifier name and iType. \n
   /// If not exist, return DY_FAILURE.
-  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(TryRemove)(_MIN_ const std::string& iSpcifier, _MIN_ EDyResourceType iType);
+  MDY_NODISCARD EDySuccess MDY_PRIVATE(TryRemove)(_MIN_ const std::string& iSpcifier, _MIN_ EDyResourceType iType);
 
   template <typename TType>
   using __THashMap = DDyMutexUniqueHashMap<std::string, TType>;

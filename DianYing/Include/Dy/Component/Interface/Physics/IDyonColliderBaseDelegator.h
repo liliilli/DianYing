@@ -125,7 +125,7 @@ void IDyonColliderBaseDelegator<TPredicate>::RemoveAll()
 {
   for (auto& item : this->mBoundCallbackList)
   {
-    const auto flag = item.mPtrController->MDY_PRIVATE_SPECIFIER(DetachCollisionCbHandle)(item.mSpecificationId);
+    const auto flag = item.mPtrController->MDY_PRIVATE(DetachCollisionCbHandle)(item.mSpecificationId);
     MDY_ASSERT(flag == DY_SUCCESS, "Unexpected error occurred.");
   }
   this->mBoundCallbackList.clear();

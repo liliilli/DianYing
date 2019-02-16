@@ -109,19 +109,19 @@ public:
   MDY_NODISCARD bool IsNeedTransitNextLevel() const noexcept;
 
   /// @brief Open first level. This function must be called in first-loading level.
-  EDySuccess MDY_PRIVATE_SPECIFIER(OpenFirstLevel)();
+  EDySuccess MDY_PRIVATE(OpenFirstLevel)();
 
   /// @brief Try Remove level. If level is not exist, just return DY_FAILURE.
-  EDySuccess MDY_PRIVATE_SPECIFIER(RemoveLevel)();
+  EDySuccess MDY_PRIVATE(RemoveLevel)();
 
   /// @brief Populate next level resource. If next level specifier is not exist, do nothing and return DY_FAILURE.
-  EDySuccess MDY_PRIVATE_SPECIFIER(PopulateNextLevelResources)();
+  EDySuccess MDY_PRIVATE(PopulateNextLevelResources)();
 
   /// @brief 
-  void MDY_PRIVATE_SPECIFIER(BuildNextLevel)();
+  void MDY_PRIVATE(BuildNextLevel)();
 
   /// @brief
-  EDySuccess MDY_PRIVATE_SPECIFIER(TransitionToNextLevel)();
+  EDySuccess MDY_PRIVATE(TransitionToNextLevel)();
 
   /// @brief  Check scene is initialized and valid.
   /// @return
@@ -140,7 +140,7 @@ public:
   /// If already removed, just return DY_FAILURE
   MDY_NODISCARD EDySuccess TryRemoveDebugUi();
   /// @brief Try draw debug ui if exist.
-  void MDY_PRIVATE_SPECIFIER(TryRenderDebugUi)();
+  void MDY_PRIVATE(TryRenderDebugUi)();
 
   /// @brief Try create loading ui layout. \n
   /// If Loading UI Widget meta information is not exist, just return DY_FAILURE doing nothing.
@@ -151,7 +151,7 @@ public:
   /// If already remove or not exist, return DY_FAILURE.
   MDY_NODISCARD EDySuccess  TryRemoveLoadingUi();
   /// @brief Try draw loading ui if exist.
-  void MDY_PRIVATE_SPECIFIER(TryRenderLoadingUi)();
+  void MDY_PRIVATE(TryRenderLoadingUi)();
 
   /// @brief
   MDY_NODISCARD bool CheckCreationActorExist() const noexcept;
@@ -163,22 +163,22 @@ public:
   MDY_NODISCARD bool CheckIsGcActorExist() const noexcept;
   /// @brief Try remove actor gc list anyway. \n
   /// If there is something to do actors in GC list, call something to do prior to this.
-  void MDY_PRIVATE_SPECIFIER(TryRemoveActorGCList)() noexcept;
+  void MDY_PRIVATE(TryRemoveActorGCList)() noexcept;
 
   /// @brief Try detach active model renderer.
-  EDySuccess MDY_PRIVATE_SPECIFIER(TryDetachActiveModelRenderer)(_MIN_ CDyModelRenderer* iPtrRenderer);
+  EDySuccess MDY_PRIVATE(TryDetachActiveModelRenderer)(_MIN_ CDyModelRenderer* iPtrRenderer);
 
   /// @brief Bind (Enroll) active model animator component. This function must be called in `CDyModelAnimator`.
-  void MDY_PRIVATE_SPECIFIER(BindActiveModelAnimator)(_MIN_ CDyModelAnimator& iRefComponent);
+  void MDY_PRIVATE(BindActiveModelAnimator)(_MIN_ CDyModelAnimator& iRefComponent);
   /// @brief Unbind deactivated model animator component This function must be called in `CDyModelAnimator`.
-  EDySuccess MDY_PRIVATE_SPECIFIER(UnbindActiveModelAnimator)(_MIN_ CDyModelAnimator& iRefComponent);
+  EDySuccess MDY_PRIVATE(UnbindActiveModelAnimator)(_MIN_ CDyModelAnimator& iRefComponent);
 
   /// @brief Try get valid pointer instance (not-null) of CDySkybox target to be rendered on renderer.
   MDY_NODISCARD std::optional<NotNull<CDySkybox*>> GetPtrMainLevelSkybox() const noexcept;
   /// @brief Bind (Enroll) active skybox component. This function must be called in `CDySkybox`.
-  void MDY_PRIVATE_SPECIFIER(BindActiveSkybox)(_MIN_ CDySkybox& iRefComponent);
+  void MDY_PRIVATE(BindActiveSkybox)(_MIN_ CDySkybox& iRefComponent);
   /// @brief Unbind deactivated skybox component. This function must be called in `CDySkybox`.
-  EDySuccess MDY_PRIVATE_SPECIFIER(UnbindActiveSkybox)(_MIN_ CDySkybox& iRefComponent);
+  EDySuccess MDY_PRIVATE(UnbindActiveSkybox)(_MIN_ CDySkybox& iRefComponent);
 
 #ifdef false
   ///

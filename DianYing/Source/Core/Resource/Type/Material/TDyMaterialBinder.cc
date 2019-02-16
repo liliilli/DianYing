@@ -21,7 +21,7 @@ namespace dy
 EDySuccess __TDyResourceBinderMaterial::TryUpdateUniformList()
 {
   if (this->IsResourceExist() == true) { return DY_FAILURE; }
-  return this->MDY_PRIVATE_SPECIFIER(TryUpdateUniformList)(*this->mPtrResource);
+  return this->MDY_PRIVATE(TryUpdateUniformList)(*this->mPtrResource);
 }
 
 } /// ::dy namespace

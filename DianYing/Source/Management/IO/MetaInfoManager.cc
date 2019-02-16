@@ -336,7 +336,7 @@ const PDySoundInstanceMetaInfo& MDyMetaInfo::GetSoundMetaInformation(_MIN_ const
 }
 
 MDY_NODISCARD const PDyMetaWidgetRootDescriptor* 
-MDyMetaInfo::MDY_PRIVATE_SPECIFIER(TryGetLoadingWidgetMetaLoading)() const noexcept
+MDyMetaInfo::MDY_PRIVATE(TryGetLoadingWidgetMetaLoading)() const noexcept
 {
   if (this->IsLoadingWidgetMetaInfoExist() == false) { return nullptr; }
   return this->mLoadingWidgetMetaInfo.get();
@@ -422,7 +422,7 @@ bool MDyMetaInfo::IsLoadingWidgetMetaInfoExist() const noexcept
   return MDY_CHECK_ISNOTEMPTY(this->mLoadingWidgetMetaInfo);
 }
 
-void MDyMetaInfo::MDY_PRIVATE_SPECIFIER(PopulateBootResourceSpecifierList)() const noexcept
+void MDyMetaInfo::MDY_PRIVATE(PopulateBootResourceSpecifierList)() const noexcept
 {
   static bool mIsCalled = false;
   MDY_ASSERT(mIsCalled == false, "This function must not be called twice.");
@@ -435,7 +435,7 @@ void MDyMetaInfo::MDY_PRIVATE_SPECIFIER(PopulateBootResourceSpecifierList)() con
   mIsCalled = true;
 }
 
-void MDyMetaInfo::MDY_PRIVATE_SPECIFIER(PopulateGlobalResourceSpecifierList)() const noexcept
+void MDyMetaInfo::MDY_PRIVATE(PopulateGlobalResourceSpecifierList)() const noexcept
 {
   static bool mIsCalled = false;
   MDY_ASSERT_FORCE(mIsCalled == false, "This function must not be called twice.");
@@ -454,7 +454,7 @@ void MDyMetaInfo::MDY_PRIVATE_SPECIFIER(PopulateGlobalResourceSpecifierList)() c
   mIsCalled = true;
 }
 
-void MDyMetaInfo::MDY_PRIVATE_SPECIFIER(InitiateMetaInformation)()
+void MDyMetaInfo::MDY_PRIVATE(InitiateMetaInformation)()
 {
   const auto& metaPath = MDySetting::GetInstance().GetMetaPathSettingInformation();
   reflect::RDyBuiltinResource::BindBuiltinResourcesToMetaManager();
@@ -475,7 +475,7 @@ void MDyMetaInfo::MDY_PRIVATE_SPECIFIER(InitiateMetaInformation)()
   MDY_CALL_ASSERT_SUCCESS(this->pReadLevelResourceMetaInformation (metaPath.mSceneMetaPath));
 }
 
-void MDyMetaInfo::MDY_PRIVATE_SPECIFIER(InitiateMetaInformationComp)(_MIN_ const nlohmann::json& iJson)
+void MDyMetaInfo::MDY_PRIVATE(InitiateMetaInformationComp)(_MIN_ const nlohmann::json& iJson)
 {
   reflect::RDyBuiltinResource::BindBuiltinResourcesToMetaManager();
 
@@ -836,7 +836,7 @@ EDySuccess MDyMetaInfo::pfAddWidgetMetaInformation(_MIN_ const std::string& meta
   return DY_SUCCESS;
 }
 
-EDySuccess MDyMetaInfo::MDY_PRIVATE_SPECIFIER(AddLoadingWidgetMetaInformation)(_MIN_ const std::string& widgetMetaInfo)
+EDySuccess MDyMetaInfo::MDY_PRIVATE(AddLoadingWidgetMetaInformation)(_MIN_ const std::string& widgetMetaInfo)
 {
   const nlohmann::json jsonAtlas = nlohmann::json::parse(widgetMetaInfo);
   auto rootInstance = DyCreateWidgetMetaInformation(jsonAtlas);
@@ -959,13 +959,13 @@ EDySuccess MDyMetaInfo::pfAddGLFrameBufferMetaInfo(const PDyGlFrameBufferInstanc
   return DY_SUCCESS;
 }
 
-EDySuccess MDyMetaInfo::MDY_PRIVATE_SPECIFIER(AddBootResourceSpecifierList)(_MIN_ const TResourceSpecifierList& list)
+EDySuccess MDyMetaInfo::MDY_PRIVATE(AddBootResourceSpecifierList)(_MIN_ const TResourceSpecifierList& list)
 {
   this->mBootResourceSpecifierList = list;
   return DY_SUCCESS;
 }
 
-EDySuccess MDyMetaInfo::MDY_PRIVATE_SPECIFIER(AddGlobalResourceSpecifierList)(_MIN_ const TResourceSpecifierList& list)
+EDySuccess MDyMetaInfo::MDY_PRIVATE(AddGlobalResourceSpecifierList)(_MIN_ const TResourceSpecifierList& list)
 {
   if (list.empty() == false) { this->mGlobalResourceSpecifierList.emplace_back(list); }
   return DY_SUCCESS;

@@ -67,13 +67,13 @@ public:
   /// @brief Get default physics material instance reference.
   const physx::PxMaterial& GetDefaultPhysicsMaterial() const noexcept;
 
-  auto& MDY_PRIVATE_SPECIFIER(GetRefInternalSdk)()
+  auto& MDY_PRIVATE(GetRefInternalSdk)()
   {
     MDY_ASSERT_FORCE(MDY_CHECK_ISNOTNULL(this->gPhysicx), "Internal PhysX PxPhysics must be initailized.");
     return *this->gPhysicx;
   }
 
-  auto& MDY_PRIVATE_SPECIFIER(GetRefScene)()
+  auto& MDY_PRIVATE(GetRefScene)()
   {
     MDY_ASSERT_FORCE(MDY_CHECK_ISNOTNULL(this->gScene), "Internal PhysX PxScene must be initailized.");
     return *this->gScene;
@@ -86,10 +86,10 @@ public:
   void TryEnqueueDebugDrawCall();
 
   /// @brief Register activated rigidbody instance.
-  void MDY_PRIVATE_SPECIFIER(RegisterRigidbody)(_MIN_ CDyPhysicsRigidbody& iRefRigidbody);
+  void MDY_PRIVATE(RegisterRigidbody)(_MIN_ CDyPhysicsRigidbody& iRefRigidbody);
 
   /// @brief Unregister deactivated rigidbody instance.
-  void MDY_PRIVATE_SPECIFIER(UnregisterRigidbody)(_MIN_ CDyPhysicsRigidbody& iRefRigidbody);
+  void MDY_PRIVATE(UnregisterRigidbody)(_MIN_ CDyPhysicsRigidbody& iRefRigidbody);
 
 private:
   /// @brief Override function callback. When object of physx is remove, this function will be called.
@@ -99,11 +99,11 @@ private:
       _MIN_ MDY_NOTUSED physx::PxDeletionEventFlag::Enum deletionEvent) override final;
 
   /// @brief Get PhyX error callback function instance.
-  static physx::PxErrorCallback& MDY_PRIVATE_SPECIFIER(GetPhysXErrorCallback)();
+  static physx::PxErrorCallback& MDY_PRIVATE(GetPhysXErrorCallback)();
 
   /// @brief
   MDY_NODISCARD FORCEINLINE physx::PxSimulationFilterShader 
-  MDY_PRIVATE_SPECIFIER(GetSampleFilterShader)()
+  MDY_PRIVATE(GetSampleFilterShader)()
   {
     return physx::PxDefaultSimulationFilterShader;
   }

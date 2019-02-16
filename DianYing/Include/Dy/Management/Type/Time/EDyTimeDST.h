@@ -27,7 +27,7 @@ enum class EDyTimeDST : char
   NotAvailable,
 };
 
-inline EDyTimeDST MDY_PRIVATE_SPECIFIER(DyConverTmDstToDyType)(_MIN_ TI32 iInput) noexcept
+inline EDyTimeDST MDY_PRIVATE(DyConverTmDstToDyType)(_MIN_ TI32 iInput) noexcept
 {
   if (iInput == 0)      { return EDyTimeDST::NotUsing; }
   else if (iInput > 0)  { return EDyTimeDST::Using; }

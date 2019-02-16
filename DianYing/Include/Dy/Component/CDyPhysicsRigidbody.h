@@ -106,7 +106,7 @@ public:
       auto* ptrItem = this->mCallbackContainer.onHit.AddCallback(iRefScript, iRawFunction);
       if (ptrItem == nullptr) { return DY_FAILURE; } 
       // Try bind item (unique-id specifically) into Script.
-      iRefScript.MDY_PRIVATE_SPECIFIER(BindCollisionCbHandle)(*this, TCbType, (void*&)iRawFunction);
+      iRefScript.MDY_PRIVATE(BindCollisionCbHandle)(*this, TCbType, (void*&)iRawFunction);
       return DY_SUCCESS;
     }
     else if constexpr (TCbType == EDyCollisionCbType::OnOverlapBegin) 
@@ -115,7 +115,7 @@ public:
       auto* ptrItem = this->mCallbackContainer.onOverlapBegin.AddCallback(iRefScript, iRawFunction);
       if (ptrItem == nullptr) { return DY_FAILURE; } 
       // Try bind item (unique-id specifically) into Script.
-      iRefScript.MDY_PRIVATE_SPECIFIER(BindCollisionCbHandle)(*this, TCbType, (void*&)iRawFunction);
+      iRefScript.MDY_PRIVATE(BindCollisionCbHandle)(*this, TCbType, (void*&)iRawFunction);
       return DY_SUCCESS;
     }
     else if constexpr (TCbType == EDyCollisionCbType::OnOverlapEnd)
@@ -124,7 +124,7 @@ public:
       auto* ptrItem = this->mCallbackContainer.onOverlapEnd.AddCallback(iRefScript, iRawFunction);
       if (ptrItem == nullptr) { return DY_FAILURE; } 
       // Try bind item (unique-id specifically) into Script.
-      iRefScript.MDY_PRIVATE_SPECIFIER(BindCollisionCbHandle)(*this, TCbType, (void*&)iRawFunction);
+      iRefScript.MDY_PRIVATE(BindCollisionCbHandle)(*this, TCbType, (void*&)iRawFunction);
       return DY_SUCCESS;
     }
   }
@@ -137,11 +137,11 @@ public:
 
   /// @brief Get rigidbody internal specifier value.
   MDY_NODISCARD std::optional<TU32> 
-  MDY_PRIVATE_SPECIFIER(GetRigidbodySpecifier)() const noexcept;
+  MDY_PRIVATE(GetRigidbodySpecifier)() const noexcept;
 
   /// @brief Get reference instance of rigidbody. When call this, `mOwnerInternalActor` must be valid.
   MDY_NODISCARD physx::PxRigidActor& 
-  MDY_PRIVATE_SPECIFIER(GetRefInternalRigidbody)() noexcept;
+  MDY_PRIVATE(GetRefInternalRigidbody)() noexcept;
 
 private:
   /// @brief Update gravity setting when actor is dynamic and valid.

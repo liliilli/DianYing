@@ -59,8 +59,8 @@ public:
   MDY_NODISCARD const DDyGLVaoBindInformation& GetVaoBindingInfo() const noexcept;
     
 private:
-  void MDY_PRIVATE_SPECIFIER(CreateVertexArrayBuffer)(_MIN_ const FDyMeshInformation& iInformation);
-  void MDY_PRIVATE_SPECIFIER(CreateElementArrayBuffer)(_MIN_ const FDyMeshInformation& iInformation);
+  void MDY_PRIVATE(CreateVertexArrayBuffer)(_MIN_ const FDyMeshInformation& iInformation);
+  void MDY_PRIVATE(CreateElementArrayBuffer)(_MIN_ const FDyMeshInformation& iInformation);
 
   std::string               mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
   DDyGlBufferIdInformation  mBufferIdInformation  = {};

@@ -32,12 +32,12 @@ MDyGameTimer& ADyWidgetCppScript::GetGameTimerManager() noexcept
   return MDyGameTimer::GetInstance();
 }
 
-void ADyWidgetCppScript::MDY_PRIVATE_SPECIFIER(BindPtrTimerHandle)(_MIN_ FDyTimerHandle& iRefTimerHandler)
+void ADyWidgetCppScript::MDY_PRIVATE(BindPtrTimerHandle)(_MIN_ FDyTimerHandle& iRefTimerHandler)
 {
   this->mPtrTimerHandleList.emplace_back(&iRefTimerHandler);
 }
 
-void ADyWidgetCppScript::MDY_PRIVATE_SPECIFIER(DetachPtrTimerHandle)(_MIN_ FDyTimerHandle& iRefTimerHandler)
+void ADyWidgetCppScript::MDY_PRIVATE(DetachPtrTimerHandle)(_MIN_ FDyTimerHandle& iRefTimerHandler)
 {
   auto it = std::find_if(
       MDY_BIND_BEGIN_END(this->mPtrTimerHandleList), 
@@ -50,7 +50,7 @@ void ADyWidgetCppScript::MDY_PRIVATE_SPECIFIER(DetachPtrTimerHandle)(_MIN_ FDyTi
   DyFastErase(this->mPtrTimerHandleList, it);
 }
 
-void ADyWidgetCppScript::MDY_PRIVATE_SPECIFIER(AbortAllValidTimerHandler)()
+void ADyWidgetCppScript::MDY_PRIVATE(AbortAllValidTimerHandler)()
 {
   if (this->mPtrTimerHandleList.empty() == true) { return; }
 

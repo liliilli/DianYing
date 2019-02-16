@@ -53,39 +53,39 @@ TI32 MDyProfiling::GetScreenRenderedActorCount() const noexcept
   return this->mScreenRenderedActorCount;
 }
 
-void MDyProfiling::MDY_PRIVATE_SPECIFIER(AddTextureCount)(_MIN_ TI32 iInput) noexcept
+void MDyProfiling::MDY_PRIVATE(AddTextureCount)(_MIN_ TI32 iInput) noexcept
 {
   this->mOnBindTextureCount.Add(iInput);
 }
 
-void MDyProfiling::MDY_PRIVATE_SPECIFIER(AddOnBindVertexCount)(_MIN_ TI32 iInput) noexcept
+void MDyProfiling::MDY_PRIVATE(AddOnBindVertexCount)(_MIN_ TI32 iInput) noexcept
 {
   this->mOnBindVertexCount.Add(iInput);
 }
 
-void MDyProfiling::MDY_PRIVATE_SPECIFIER(AddOnBindShaderCount)(_MIN_ TI32 iInput) noexcept
+void MDyProfiling::MDY_PRIVATE(AddOnBindShaderCount)(_MIN_ TI32 iInput) noexcept
 {
   this->mOnBindShaderCount.Add(iInput);
 }
 
-void MDyProfiling::MDY_PRIVATE_SPECIFIER(AddOnBindActorCount)(_MIN_ TI32 iInput) noexcept
+void MDyProfiling::MDY_PRIVATE(AddOnBindActorCount)(_MIN_ TI32 iInput) noexcept
 {
   this->mOnBindActorCount.Add(iInput);
 }
 
-void MDyProfiling::MDY_PRIVATE_SPECIFIER(AddScreenRenderedActorCount)(_MIN_ TI32 iInput) noexcept
+void MDyProfiling::MDY_PRIVATE(AddScreenRenderedActorCount)(_MIN_ TI32 iInput) noexcept
 {
   this->mScreenRenderedActorCount += iInput;
 }
 
-void MDyProfiling::MDY_PRIVATE_SPECIFIER(ResetScreenRenderedActorCount)() noexcept
+void MDyProfiling::MDY_PRIVATE(ResetScreenRenderedActorCount)() noexcept
 {
   this->mScreenRenderedActorCount = 0;
 }
 
-void MDyProfiling::MDY_PRIVATE_SPECIFIER(ResetFrameDependentCounts)() noexcept
+void MDyProfiling::MDY_PRIVATE(ResetFrameDependentCounts)() noexcept
 {
-  this->MDY_PRIVATE_SPECIFIER(ResetScreenRenderedActorCount)();
+  this->MDY_PRIVATE(ResetScreenRenderedActorCount)();
 }
 
 } /// ::dy namespace
