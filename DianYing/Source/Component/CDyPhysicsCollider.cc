@@ -64,6 +64,11 @@ EDySuccess CDyPhysicsCollider::Initialize(_MIN_ const PDyColliderComponentMetaIn
   return DY_SUCCESS;
 }
 
+void CDyPhysicsCollider::UpdateBound(_MIN_ const DDyArea3D& iArea)
+{
+  this->mAABBBound = iArea;
+}
+
 const std::vector<DDyVector3>& CDyPhysicsCollider::GetColliderMesh() const noexcept
 {
   return this->mColliderMeshInformation;
@@ -97,6 +102,11 @@ bool CDyPhysicsCollider::IsNeedToUpdateColliderMesh() const noexcept
 EDyColliderType CDyPhysicsCollider::GetColliderType() const noexcept
 {
   return this->mColliderType;
+}
+
+const DDyArea3D& CDyPhysicsCollider::GetBound() const noexcept
+{
+  return this->mAABBBound;
 }
 
 void CDyPhysicsCollider::MDY_PRIVATE_SPECIFIER(SetRegisterFlag)(_MIN_ bool iFlag) noexcept

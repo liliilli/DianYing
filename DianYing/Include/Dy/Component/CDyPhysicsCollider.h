@@ -17,6 +17,7 @@
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
+#include "Dy/Helper/Type/Area3D.h"
 
 //!
 //! Forward declaration
@@ -60,6 +61,8 @@ public:
   void Update(_MIN_ TF32 dt) override final {};
   /// @brief Update collider mesh information.
   virtual void UpdateColliderMesh() = 0;
+  /// @brief Update AABB bound.
+  void UpdateBound(_MIN_ const DDyArea3D& iArea);
   /// @brief Get const reference instance of collider mesh.
   MDY_NODISCARD const std::vector<DDyVector3>& GetColliderMesh() const noexcept;
 
@@ -73,6 +76,8 @@ public:
   MDY_NODISCARD bool IsNeedToUpdateColliderMesh() const noexcept;
   /// @brief Get collider type of this component.
   MDY_NODISCARD EDyColliderType GetColliderType() const noexcept;
+  /// @brief Get bound of collider.
+  MDY_NODISCARD const DDyArea3D& GetBound() const noexcept;
 
   /// @brief Set register flag.
   void MDY_PRIVATE_SPECIFIER(SetRegisterFlag)(_MIN_ bool iFlag) noexcept;
@@ -123,6 +128,8 @@ protected:
   bool mIsCollisionMeshDirty = true;
   /// @brief Collision mesh information.
   std::vector<DDyVector3> mColliderMeshInformation; 
+  /// @brief AABB bound information.
+  DDyArea3D mAABBBound;
 };
 
 } /// ::dy namespace

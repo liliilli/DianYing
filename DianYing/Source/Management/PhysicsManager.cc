@@ -340,10 +340,11 @@ void MDyPhysics::UpdateRenderObjectTransform(MDY_NOTUSED _MIN_ TF32 dt)
       auto ptrTransformComp   = ptrRigidbodyComp->GetBindedActor()->GetTransform();
       ptrTransformComp->MDY_PRIVATE_SPECIFIER(SetPxTransform)(pxTransform);
 
-#ifdef false // World bound for AABB Rendering.
-      physx::PxShapeExt::getWorldBounds()
-      refRigidActor->
-#endif
+      // Set AABB (Axis-aligned bounding box) bound to each collider.
+      const auto pxBound = physx::PxShapeExt::getWorldBounds(*shape, refRigidActor);
+      auto* ptrCollider = static_cast<CDyPhysicsCollider*>(shape->userData);
+      MDY_ASSERT(ptrCollider != nullptr, "Unexpected error occurred.");
+      ptrCollider->UpdateBound(pxBound);
     }
   }
 }
