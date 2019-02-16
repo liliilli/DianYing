@@ -111,8 +111,8 @@ void CDyFontRenderer::Render()
   this->mBinderShader.TryUpdateUniform<EUniformType::Vector4>("uFgColor", this->mPtrWidget->GetForegroundColor());
   this->mBinderShader.TryUpdateUniform<EUniformType::Vector4>("uBgColor", this->mPtrWidget->GetBackgroundColor());
   this->mBinderShader.TryUpdateUniform<EUniformType::Vector4>("uEdgeColor", this->mPtrWidget->GetEdgeColor());
-  this->mBinderShader.TryUpdateUniform<EUniformType::Integer>("uIsUsingEdge", this->mPtrWidget->CheckIsUsingEdgeRendering());
-  this->mBinderShader.TryUpdateUniform<EUniformType::Integer>("uIsUsingBackground", this->mPtrWidget->CheckIsUsingBackgroundColor());
+  this->mBinderShader.TryUpdateUniform<EUniformType::Bool>("uIsUsingEdge", this->mPtrWidget->CheckIsUsingEdgeRendering());
+  this->mBinderShader.TryUpdateUniform<EUniformType::Bool>("uIsUsingBackground", this->mPtrWidget->CheckIsUsingBackgroundColor());
   MDY_CALL_BUT_NOUSE_RESULT(this->mBinderShader.TryUpdateUniformList());
 
   glDepthFunc(GL_ALWAYS);
