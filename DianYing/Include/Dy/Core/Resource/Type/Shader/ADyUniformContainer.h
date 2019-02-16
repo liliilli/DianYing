@@ -75,7 +75,7 @@ class FDyShaderResource;
 namespace dy
 {
 
-class MDY_PRIVATE_SPECIFIER(ADyUniformContainer)
+class __ADyUniformContainer
 {
 public:
   /// @brief Try clear uniform list.

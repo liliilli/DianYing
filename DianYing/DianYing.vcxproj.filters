@@ -834,6 +834,8 @@
     <ClInclude Include="Include\Dy\Component\Type\Physics\EDyCollisionCbType.h" />
     <ClInclude Include="Include\Dy\Management\Type\Physics\DDyCollisionIssueItem.h" />
     <ClInclude Include="Include\Dy\Helper\Type\Area3D.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Internal\Uniform\IDyUniformValueBase.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Type\Uniform\UniformValueTypes.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />
