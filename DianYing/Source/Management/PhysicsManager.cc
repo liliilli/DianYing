@@ -319,6 +319,35 @@ void MDyPhysics::Update(_MIN_ TF32 dt)
   }
 }
 
+void MDyPhysics::UpdateRenderObjectTransform(MDY_NOTUSED _MIN_ TF32 dt)
+{
+  // Lock
+  physx::PxSceneWriteLock scopedLock(*this->gScene); 
+
+  // Iterate activated CDyPhysicsRigidbodies.
+  for (auto& ptrRigidbodyComp : this->mActivatedRigidbodyList)
+  {
+    auto& refRigidActor     = ptrRigidbodyComp->MDY_PRIVATE_SPECIFIER(GetRefInternalRigidbody)();
+    const auto numberShape  = refRigidActor.getNbShapes();
+    for (TU32 i = 0; i < numberShape; ++i)
+    {
+      physx::PxShape* shape = nullptr;
+      MDY_NOTUSED const TU32 n = refRigidActor.getShapes(&shape, 1, i);
+      MDY_ASSERT(n == 1, "Unexpected error occurred.");
+
+      // Get transform and copy physics pose to graphics pose.
+      const auto pxTransform  = physx::PxShapeExt::getGlobalPose(*shape, refRigidActor);
+      auto ptrTransformComp   = ptrRigidbodyComp->GetBindedActor()->GetTransform();
+      ptrTransformComp->MDY_PRIVATE_SPECIFIER(SetPxTransform)(pxTransform);
+
+#ifdef false // World bound for AABB Rendering.
+      physx::PxShapeExt::getWorldBounds()
+      refRigidActor->
+#endif
+    }
+  }
+}
+
 void MDyPhysics::CallCallbackIssueOnce()
 {
   while (this->mCollisionCallbackIssueQueue.empty() == false)

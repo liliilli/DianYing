@@ -95,6 +95,7 @@ void DyEngine::operator()()
       if (timeManager.IsGameFrameTicked() == DY_FAILURE) { continue; }
     }
 
+    // one frame sync, update, render.
     switch (this->GetGlobalGameStatus())
     {
     case EDyGlobalGameStatus::Booted: 
@@ -271,10 +272,6 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(ReflectGameStatusTransition)()
 
 void DyEngine::MDY_PRIVATE_SPECIFIER(Update)(_MIN_ EDyGlobalGameStatus iEngineStatus, _MIN_ TF32 dt)
 {
-  #if defined(MDY_FLAG_IN_EDITOR)
-    editor::MDyEditorGui::GetInstance().Update(dt);
-  #endif // MDY_FLAG_IN_EDITOR
-
   switch (iEngineStatus)
   {
   case EDyGlobalGameStatus::FirstLoading: 
@@ -295,12 +292,20 @@ void DyEngine::MDY_PRIVATE_SPECIFIER(Update)(_MIN_ EDyGlobalGameStatus iEngineSt
       }
       if (this->mIsInGameUpdatePaused == false)
       {
+        // Physics pre-update time.
+        // Must get transform from PhysX and rebind transform to render transform.
+        MDyPhysics::GetInstance().UpdateRenderObjectTransform(dt);
+        // And call callback collision functions once.
         MDyPhysics::GetInstance().CallCallbackIssueOnce();
       }
     }
     else
     { // If not debug mode, just poll input key of global.
       MDyInput::GetInstance().pfGlobalUpdate(dt);
+      // Physics pre-update time.
+      // Must get transform from PhysX and rebind transform to render transform.
+      MDyPhysics::GetInstance().UpdateRenderObjectTransform(dt);
+      // And call callback collision functions once.
       MDyPhysics::GetInstance().CallCallbackIssueOnce();
     }
 

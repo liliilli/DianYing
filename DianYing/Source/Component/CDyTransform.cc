@@ -145,15 +145,24 @@ const DDyVector3& CDyTransform::GetFinalScale() noexcept
 
 void CDyTransform::SetRelativeLocalPosition(_MIN_ const DDyVector3& localPosition) noexcept
 {
-  this->mLocalRelPosition            = localPosition;
+  this->mLocalRelPosition         = localPosition;
   this->mIsLocalRelAlignedPosDirty= true;
   this->mIsFinalPositionDirty     = true;
   this->mIsModelMatrixDirty       = true;
 }
 
+void CDyTransform::SetRelativeLocalPositionWithFinalWorldPosition(const DDyVector3& finalPosition)
+{
+  // Position.
+  this->mLocalRelAlignedPosition    = finalPosition - this->mWorldRelAlignedPosition;
+  this->mLocalRelPosition           = this->mPresentPositionBasis.Inverse().MultiplyVector(this->mLocalRelAlignedPosition);
+  this->mIsFinalPositionDirty       = true;
+  this->mIsModelMatrixDirty         = true;
+}
+
 void CDyTransform::SetRelativeWorldPosition(_MIN_ const DDyVector3& worldPosition) noexcept
 {
-  this->mWorldRelPosition            = worldPosition;
+  this->mWorldRelPosition         = worldPosition;
   this->mIsWorldPositionAlignDirty= true;
   this->mIsWorldRelAlignedPosDirty= true;
   this->mIsWorldSumAlignedPosDirty= true;
@@ -219,6 +228,38 @@ void CDyTransform::AddRelativeWorldPosition(_MIN_ EDyAxis3D axis, _MIN_ TF32 val
 void CDyTransform::SetLocalEulerAngle(_MIN_ const DDyVector3& eulerAngleValue) noexcept
 {
   this->AddLocalEulerAngle(eulerAngleValue - this->GetRelativeLocalEulerAngle());
+}
+
+void CDyTransform::SetLocalEulerAngleWithQuaternion(_MIN_ const DDyQuaternion& iQuat)
+{
+  DDyVector3 radianAngle{};
+
+  // roll (x-axis rotation)
+  const TF64 sinrCosp = +2.0 * (iQuat.W() * iQuat.X() + iQuat.Y() * iQuat.Z());
+  const TF64 cosrCosp = +1.0 - 2.0 * (iQuat.X() * iQuat.X() + iQuat.Y() * iQuat.Y());
+	radianAngle.X = atan2(sinrCosp, cosrCosp);
+
+	// pitch (y-axis rotation)
+	const TF64 sinp = +2.0 * (iQuat.W() * iQuat.Y() - iQuat.Z() * iQuat.X());
+	if (fabs(sinp) >= 1)
+  { // use 90 degrees if out of range
+    radianAngle.Y = copysign(math::Pi<TF32> / 2, sinp); 
+  }
+	else { radianAngle.Y = asin(sinp); }
+
+	// yaw (z-axis rotation)
+	const TF64 sinyCosp = +2.0 * (iQuat.W() * iQuat.Z() + iQuat.X() * iQuat.Y());
+	const TF64 cosyCosp = +1.0 - 2.0 * (iQuat.Y() * iQuat.Y() + iQuat.Z() * iQuat.Z());  
+	radianAngle.Z = atan2(sinyCosp, cosyCosp);
+
+  // Make radian to degree.
+  radianAngle *= math::RadToDegVal<TF32>;
+
+  // Set local.
+  this->mLocalEulerAngle = radianAngle - this->mWorldSumEulerAngle;
+  this->mIsFinalRotationAngleDirty = true;
+  this->mToChildBasisAxisDirty     = true;
+  this->mIsModelMatrixDirty        = true;
 }
 
 void CDyTransform::SetWorldEulerAngle(_MIN_ const DDyVector3& eulerAngleValue) noexcept
@@ -442,14 +483,10 @@ void CDyTransform::MDY_PRIVATE_SPECIFIER(PropagateTransform)(
   }
 }
 
-void CDyTransform::TryActivateInstance()
+void CDyTransform::MDY_PRIVATE_SPECIFIER(SetPxTransform)(_MIN_ const physx::PxTransform& iTransform)
 {
-
-}
-
-void CDyTransform::TryDeactivateInstance()
-{
-
+  this->SetRelativeLocalPositionWithFinalWorldPosition(iTransform.p);
+  this->SetLocalEulerAngleWithQuaternion(iTransform.q);
 }
 
 void CDyTransform::MDY_PRIVATE_SPECIFIER(TryUpdateMovementBasis)()

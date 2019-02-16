@@ -104,9 +104,11 @@ public:
   /// @brief  Return final producted scale value vector.
   MDY_NODISCARD const DDyVector3& GetFinalScale() noexcept;
 
-  /// @brief Sets local position.
+  /// @brief Set local position.
   /// @param[in] localPosition local position to set on.
   void SetRelativeLocalPosition(_MIN_ const DDyVector3& localPosition) noexcept;
+  /// @brief Set local position with final world position. 
+  void SetRelativeLocalPositionWithFinalWorldPosition(_MIN_ const DDyVector3& finalPosition);
 
 	/// @brief Set world position.
 	/// @param[in] worldPosition Winal position in Screen space and from parent' object.
@@ -129,6 +131,8 @@ public:
   /// input value is negative, axis rotates counter-clockwise.
   /// @param[in] eulerAngleValue Euler angle value to set on.
   void SetLocalEulerAngle(_MIN_ const DDyVector3& eulerAngleValue) noexcept;
+  /// @brief Set local euler angle with quaternion.
+  void SetLocalEulerAngleWithQuaternion(_MIN_ const DDyQuaternion& iQuat);
 
   /// @brief The method adds world rotation angle values.
   /// When input value is positive, axis rotates clockwise.
@@ -185,12 +189,13 @@ public:
       _MIN_ const DDyVector3& iPosition,
       _MIN_ const DDyVector3& iAngle,
       _MIN_ const DDyVector3& iScale);
+  /// @brief Set transform with physx::PxTransform.
+  /// When set, degree x, y, z rotation value will be not valid. 
+  void MDY_PRIVATE_SPECIFIER(SetPxTransform)(_MIN_ const physx::PxTransform& iTransform);
 
 private:
-  ///
-  void TryActivateInstance() override final;
-  ///
-  void TryDeactivateInstance() override final;
+  void TryActivateInstance() override final   { /* Do nothing */ };
+  void TryDeactivateInstance() override final { /* Do nothing */ };
   
   /// @brief Try update movement basis.
   void MDY_PRIVATE_SPECIFIER(TryUpdateMovementBasis)();
