@@ -299,6 +299,11 @@ template <typename TValueType, int32_t TSize, typename = std::enable_if_t<std::i
 ///
 [[nodiscard]] double ConvertDegreeToRadian(double degree) noexcept;
 
+/// @brief Convert quaternion to radian degree.
+[[nodiscard]] DDyVector3 ConvertQuaternionToRadianEuler(_MIN_ const DDyQuaternion& iQuat);
+/// @brief Convert quaterion w,x,y,z to radian degree.
+[[nodiscard]] DDyVector3 ConvertQuaternionToRadianEuler(_MIN_ TF32 w, _MIN_ TF32 x, _MIN_ TF32 y, _MIN_ TF32 z);
+
 } /// ::dy::math namespace
 
 #endif /// GUARD_DY_HELPER_MATH_MATH_H

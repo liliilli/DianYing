@@ -181,4 +181,34 @@ double ConvertDegreeToRadian(double degree) noexcept
   return GetClampedRotationRadianAngle(degree * DegToRadVal<double>);
 }
 
+DDyVector3 ConvertQuaternionToRadianEuler(_MIN_ const DDyQuaternion& iQuat)
+{
+  return ConvertQuaternionToRadianEuler(iQuat.W(), iQuat.X(), iQuat.Y(), iQuat.Z());
+}
+
+DDyVector3 ConvertQuaternionToRadianEuler(_MIN_ TF32 w, _MIN_ TF32 x, _MIN_ TF32 y, _MIN_ TF32 z)
+{
+  DDyVector3 radianAngle{};
+
+  // roll (x-axis rotation)
+  const TF64 sinrCosp = +2.0 * (w * x + y * z);
+  const TF64 cosrCosp = +1.0 - 2.0 * (x * x + y * y);
+	radianAngle.X = atan2(sinrCosp, cosrCosp);
+
+	// pitch (y-axis rotation)
+	const TF64 sinp = +2.0 * (w * y - z * x);
+	if (fabs(sinp) >= 1)
+  { // use 90 degrees if out of range
+    radianAngle.Y = copysign(math::Pi<TF32> / 2, sinp); 
+  }
+	else { radianAngle.Y = asin(sinp); }
+
+	// yaw (z-axis rotation)
+	const TF64 sinyCosp = +2.0 * (w * z + x * y);
+	const TF64 cosyCosp = +1.0 - 2.0 * (y * y + z * z);  
+	radianAngle.Z = atan2(sinyCosp, cosyCosp);
+
+  return radianAngle;
+}
+
 } /// ::dy::math namespace
