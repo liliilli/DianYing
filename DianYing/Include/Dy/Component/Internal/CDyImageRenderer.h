@@ -43,9 +43,9 @@ public:
 
 private:
   /// LAZY NOT NULLABLE POINTER RAW PTR;
-  FDyImage*                   mPtrObject = MDY_INITIALIZE_NULL;
-  TDyResourceBinderMesh      mBinderQuadMesh{};
-  TDyResourceBinderMaterial  mBinderMaterial{};
+  FDyImage*             mPtrObject = MDY_INITIALIZE_NULL;
+  TDyResourceBinderMesh mBinderQuadMesh{};
+  std::unique_ptr<IDyRenderableBinder> mBinderRenderable = nullptr; 
 };
 
 } /// ::dy namespace

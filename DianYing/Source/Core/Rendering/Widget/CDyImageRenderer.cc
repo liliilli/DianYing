@@ -53,6 +53,9 @@ dy::DDyMatrix4x4 uUiProjTempMatrix = dy::DDyMatrix4x4{};
 CDyImageRenderer::CDyImageRenderer(FDyImage& mRefObject) : 
     mPtrObject{&mRefObject}
 {
+  // @TODO Temporary
+  this->mBinderRenderable = std::make_unique<TDyResourceBinderMaterial>();
+
   this->mBinderQuadMesh.TryRequireResource(MSVSTR(FDyBtMsUiImageQuad::sName));
   this->mPtrObject->SetShaderSpecifier(MSVSTR(builtin::FDyBuiltinShaderGLRenderUiImage::sName));
   uUiProjTempMatrix = glm::ortho(0.f, static_cast<float>(1280), 0.f, static_cast<float>(720), 0.2f, 10.0f);
@@ -60,11 +63,18 @@ CDyImageRenderer::CDyImageRenderer(FDyImage& mRefObject) :
 
 void CDyImageRenderer::Render()
 {
+  if (this->mBinderRenderable->mRenderType != EDyResourceType::Material)
+  {
+    return;
+  }
+
+  auto& temp = static_cast<TDyResourceBinderMaterial&>(*this->mBinderRenderable);
+
   using EUniformType = EDyUniformVariableType;
-  if (this->mBinderMaterial.IsResourceExist() == false
+  if (temp.IsResourceExist() == false
   ||  this->mBinderQuadMesh.IsResourceExist() == false) { return; }
 
-  auto& sourceBinder = this->mBinderMaterial->GetShaderResourceBinder();
+  auto& sourceBinder = temp->GetShaderResourceBinder();
   sourceBinder->UseShader();
   sourceBinder.TryUpdateUniform<EUniformType::Matrix4>("uUiProjMatrix", uUiProjTempMatrix);
   sourceBinder.TryUpdateUniform<EUniformType::Vector4>("uTintColor", this->mPtrObject->GetTintColor());
@@ -72,7 +82,7 @@ void CDyImageRenderer::Render()
 
   glDepthFunc(GL_ALWAYS);
   this->mBinderQuadMesh->BindVertexArray();
-  this->mBinderMaterial->TryUpdateTextureList();
+  temp->TryUpdateTextureList();
 
   const auto buffer = GetVertexPosition(this->mPtrObject->GetFinalPosition(EDyOrigin::Center_Center), this->mPtrObject->GetFrameSize());
   FDyGLWrapper::MapBufferExt(
@@ -90,11 +100,16 @@ void CDyImageRenderer::Render()
 
 void CDyImageRenderer::UpdateMaterial() noexcept
 {
+  if (this->mBinderRenderable->mRenderType != EDyResourceType::Material)
+  {
+    return;
+  }  
+
   PDyMaterialInstanceMetaInfo info{};
   info.mShaderSpecifier = mPtrObject->GetShaderSpecifier();
   info.mTextureNames[0] = {mPtrObject->GetImageName(), EDyTextureMapType::Unknown};
   info.mBlendMode       = EDyMaterialBlendMode::Opaque;
-  SDyIOConnectionHelper::PopulateInstantMaterialResource(info, this->mBinderMaterial);
+  SDyIOConnectionHelper::PopulateInstantMaterialResource(info, static_cast<TDyResourceBinderMaterial&>(*this->mBinderRenderable));
 }
 
 } /// ::dy namespace
