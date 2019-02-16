@@ -338,6 +338,7 @@
     <ClCompile Include="Source\Builtin\GlobalInstance\FDyBtGiDebugStatus.cc" />
     <ClCompile Include="Source\Meta\Type\Physics\EDyRigidbodyType.cc" />
     <ClCompile Include="data\Script\DebugActor\BtScCollisionTest1.cc" />
+    <ClCompile Include="Source\Helper\Type\Area3D.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -832,6 +833,7 @@
     <ClInclude Include="Include\Dy\Component\Internal\Physics\DDyCollisionCallbackItem.h" />
     <ClInclude Include="Include\Dy\Component\Type\Physics\EDyCollisionCbType.h" />
     <ClInclude Include="Include\Dy\Management\Type\Physics\DDyCollisionIssueItem.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\Area3D.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

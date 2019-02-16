@@ -145,15 +145,24 @@ const DDyVector3& CDyTransform::GetFinalScale() noexcept
 
 void CDyTransform::SetRelativeLocalPosition(_MIN_ const DDyVector3& localPosition) noexcept
 {
-  this->mLocalRelPosition            = localPosition;
+  this->mLocalRelPosition         = localPosition;
   this->mIsLocalRelAlignedPosDirty= true;
   this->mIsFinalPositionDirty     = true;
   this->mIsModelMatrixDirty       = true;
 }
 
+void CDyTransform::SetRelativeLocalPositionWithFinalWorldPosition(const DDyVector3& finalPosition)
+{
+  // Position.
+  this->mLocalRelAlignedPosition    = finalPosition - this->mWorldRelAlignedPosition;
+  this->mLocalRelPosition           = this->mPresentPositionBasis.Inverse().MultiplyVector(this->mLocalRelAlignedPosition);
+  this->mIsFinalPositionDirty       = true;
+  this->mIsModelMatrixDirty         = true;
+}
+
 void CDyTransform::SetRelativeWorldPosition(_MIN_ const DDyVector3& worldPosition) noexcept
 {
-  this->mWorldRelPosition            = worldPosition;
+  this->mWorldRelPosition         = worldPosition;
   this->mIsWorldPositionAlignDirty= true;
   this->mIsWorldRelAlignedPosDirty= true;
   this->mIsWorldSumAlignedPosDirty= true;
@@ -219,6 +228,17 @@ void CDyTransform::AddRelativeWorldPosition(_MIN_ EDyAxis3D axis, _MIN_ TF32 val
 void CDyTransform::SetLocalEulerAngle(_MIN_ const DDyVector3& eulerAngleValue) noexcept
 {
   this->AddLocalEulerAngle(eulerAngleValue - this->GetRelativeLocalEulerAngle());
+}
+
+void CDyTransform::SetLocalEulerAngleWithQuaternion(_MIN_ const DDyQuaternion& iQuat)
+{
+  const auto angle = math::ConvertQuaternionToRadianEuler(iQuat) * math::RadToDegVal<TF32>;
+
+  // Set local.
+  this->mLocalEulerAngle = angle - this->mWorldSumEulerAngle;
+  this->mIsFinalRotationAngleDirty = true;
+  this->mToChildBasisAxisDirty     = true;
+  this->mIsModelMatrixDirty        = true;
 }
 
 void CDyTransform::SetWorldEulerAngle(_MIN_ const DDyVector3& eulerAngleValue) noexcept
@@ -442,14 +462,19 @@ void CDyTransform::MDY_PRIVATE_SPECIFIER(PropagateTransform)(
   }
 }
 
-void CDyTransform::TryActivateInstance()
+void CDyTransform::MDY_PRIVATE_SPECIFIER(SetPxTransform)(_MIN_ const physx::PxTransform& iTransform)
 {
+  this->SetRelativeLocalPositionWithFinalWorldPosition(iTransform.p);
 
-}
+  // Set local.
+  const auto angle = 
+      math::ConvertQuaternionToRadianEuler(iTransform.q.w, iTransform.q.x, iTransform.q.y, iTransform.q.z) 
+    * math::RadToDegVal<TF32>;
 
-void CDyTransform::TryDeactivateInstance()
-{
-
+  this->mLocalEulerAngle = angle - this->mWorldSumEulerAngle;
+  this->mIsFinalRotationAngleDirty = true;
+  this->mToChildBasisAxisDirty     = true;
+  this->mIsModelMatrixDirty        = true;
 }
 
 void CDyTransform::MDY_PRIVATE_SPECIFIER(TryUpdateMovementBasis)()

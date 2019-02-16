@@ -99,6 +99,11 @@ public:
     return physx::PxQuat{this->mQuaternion.x, this->mQuaternion.y, this->mQuaternion.z, this->mQuaternion.w};
   }
 
+  MDY_NODISCARD TF32 W() const noexcept { return this->mQuaternion.w; }
+  MDY_NODISCARD TF32 X() const noexcept { return this->mQuaternion.x; }
+  MDY_NODISCARD TF32 Y() const noexcept { return this->mQuaternion.y; }
+  MDY_NODISCARD TF32 Z() const noexcept { return this->mQuaternion.z; }
+
 private:
   glm::quat mQuaternion;
 };

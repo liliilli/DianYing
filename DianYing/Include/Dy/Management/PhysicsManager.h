@@ -49,11 +49,13 @@ class MDyPhysics final : public IDySingleton<MDyPhysics>, public IDyUpdatable, p
   MDY_SINGLETON_PROPERTIES(MDyPhysics);
   MDY_SINGLETON_DERIVED(MDyPhysics);
 public:
-  /// @brief Update physical simulation
-  void Update(float dt) override final;
+  /// @brief Update render object transform.
+  void UpdateRenderObjectTransform(_MIN_ TF32 dt);
   /// @brief Call callback function when not empty and satisfies given condition.
   /// After calling all function, callback list will be cleared.
   void CallCallbackIssueOnce();
+  /// @brief Update physical simulation
+  void Update(float dt) override final;
 
   /// @brief Init PhysX All resource related to scene.
   void InitScene();
@@ -62,7 +64,6 @@ public:
 
   /// @brief Get default setting instance.
   const DDySettingPhysics& GetDefaultSetting() const noexcept;
-
   /// @brief Get default physics material instance reference.
   const physx::PxMaterial& GetDefaultPhysicsMaterial() const noexcept;
 

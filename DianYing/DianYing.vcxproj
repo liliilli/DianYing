@@ -441,6 +441,7 @@
     <ClCompile Include="Source\Helper\Library\HelperString.cc" />
     <ClCompile Include="Source\Helper\MCS\Functions.cc" />
     <ClCompile Include="Source\Helper\MCS\GLShaderParser.cc" />
+    <ClCompile Include="Source\Helper\Type\Area3D.cc" />
     <ClCompile Include="Source\Helper\Type\ColorRGB.cc" />
     <ClCompile Include="Source\Helper\Type\Plane.cc" />
     <ClCompile Include="Source\Management\GameTimerManager.cc" />
@@ -753,6 +754,7 @@
     <ClInclude Include="Include\Dy\Helper\System\Idioms.h" />
     <ClInclude Include="Include\Dy\Helper\Library\HelperRegex.h" />
     <ClInclude Include="Include\Dy\Helper\MCS\Functions.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\Area3D.h" />
     <ClInclude Include="Include\Dy\Helper\Type\Plane.h" />
     <ClInclude Include="Include\Dy\Helper\Type\VectorInt4.h" />
     <ClInclude Include="Include\Dy\Helper\Wrapper\DDyMutexUniqueHashMap.h" />
