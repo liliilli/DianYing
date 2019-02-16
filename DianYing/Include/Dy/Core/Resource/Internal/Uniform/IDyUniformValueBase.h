@@ -29,7 +29,7 @@ struct IDyUniformValueBase
   EDyUniformVariableType  mType = EDyUniformVariableType::NoneError;
 };
 
-IDyUniformValueBase::~IDyUniformValueBase() = default;
+  inline IDyUniformValueBase::~IDyUniformValueBase() = default;
 
 } /// ::dy namespace
 

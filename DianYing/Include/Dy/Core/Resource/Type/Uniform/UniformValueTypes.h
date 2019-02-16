@@ -25,6 +25,7 @@ class FDyUniformValue final : public IDyUniformValueBase
 protected:
   using TValueType = typename __UniformBinder<TType>::ValueType;
 public:
+  FDyUniformValue(TI32 iId) : IDyUniformValueBase{iId, TType} {};
   FDyUniformValue(TI32 iId, const TValueType& iValue) : IDyUniformValueBase{iId, TType}, mValue{iValue} {};
   MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(FDyUniformValue);
   virtual ~FDyUniformValue() = default;

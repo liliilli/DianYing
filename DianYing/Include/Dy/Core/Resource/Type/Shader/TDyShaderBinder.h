@@ -35,6 +35,7 @@ public:
   /// @brief Process funtion after binding.
   void Process() noexcept override
   {
+    __TryClearUniformList();
     MDY_PRIVATE_SPECIFIER(TryConstructDefaultUniformList)(*this->mPtrResource);
   }
 };
