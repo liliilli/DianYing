@@ -232,31 +232,10 @@ void CDyTransform::SetLocalEulerAngle(_MIN_ const DDyVector3& eulerAngleValue) n
 
 void CDyTransform::SetLocalEulerAngleWithQuaternion(_MIN_ const DDyQuaternion& iQuat)
 {
-  DDyVector3 radianAngle{};
-
-  // roll (x-axis rotation)
-  const TF64 sinrCosp = +2.0 * (iQuat.W() * iQuat.X() + iQuat.Y() * iQuat.Z());
-  const TF64 cosrCosp = +1.0 - 2.0 * (iQuat.X() * iQuat.X() + iQuat.Y() * iQuat.Y());
-	radianAngle.X = atan2(sinrCosp, cosrCosp);
-
-	// pitch (y-axis rotation)
-	const TF64 sinp = +2.0 * (iQuat.W() * iQuat.Y() - iQuat.Z() * iQuat.X());
-	if (fabs(sinp) >= 1)
-  { // use 90 degrees if out of range
-    radianAngle.Y = copysign(math::Pi<TF32> / 2, sinp); 
-  }
-	else { radianAngle.Y = asin(sinp); }
-
-	// yaw (z-axis rotation)
-	const TF64 sinyCosp = +2.0 * (iQuat.W() * iQuat.Z() + iQuat.X() * iQuat.Y());
-	const TF64 cosyCosp = +1.0 - 2.0 * (iQuat.Y() * iQuat.Y() + iQuat.Z() * iQuat.Z());  
-	radianAngle.Z = atan2(sinyCosp, cosyCosp);
-
-  // Make radian to degree.
-  radianAngle *= math::RadToDegVal<TF32>;
+  const auto angle = math::ConvertQuaternionToRadianEuler(iQuat) * math::RadToDegVal<TF32>;
 
   // Set local.
-  this->mLocalEulerAngle = radianAngle - this->mWorldSumEulerAngle;
+  this->mLocalEulerAngle = angle - this->mWorldSumEulerAngle;
   this->mIsFinalRotationAngleDirty = true;
   this->mToChildBasisAxisDirty     = true;
   this->mIsModelMatrixDirty        = true;
@@ -486,7 +465,16 @@ void CDyTransform::MDY_PRIVATE_SPECIFIER(PropagateTransform)(
 void CDyTransform::MDY_PRIVATE_SPECIFIER(SetPxTransform)(_MIN_ const physx::PxTransform& iTransform)
 {
   this->SetRelativeLocalPositionWithFinalWorldPosition(iTransform.p);
-  this->SetLocalEulerAngleWithQuaternion(iTransform.q);
+
+  // Set local.
+  const auto angle = 
+      math::ConvertQuaternionToRadianEuler(iTransform.q.w, iTransform.q.x, iTransform.q.y, iTransform.q.z) 
+    * math::RadToDegVal<TF32>;
+
+  this->mLocalEulerAngle = angle - this->mWorldSumEulerAngle;
+  this->mIsFinalRotationAngleDirty = true;
+  this->mToChildBasisAxisDirty     = true;
+  this->mIsModelMatrixDirty        = true;
 }
 
 void CDyTransform::MDY_PRIVATE_SPECIFIER(TryUpdateMovementBasis)()
