@@ -51,7 +51,7 @@ std::string CDySkybox::ToString()
   return "";
 }
 
-TDyLResourceBinderTexture& CDySkybox::MDY_PRIVATE(GetTextureBinderReference)() noexcept
+TDyResourceBinderTexture& CDySkybox::MDY_PRIVATE(GetTextureBinderReference)() noexcept
 {
   return this->mBinderTexture;
 }

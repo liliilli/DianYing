@@ -58,11 +58,11 @@ public:
 
 private:
   std::string mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
-  std::vector<std::unique_ptr<TDyLInformationBinderMesh>>     mMeshInformations;
-  std::vector<std::unique_ptr<TDyLInformationBinderMaterial>> mMaterialInformations;
+  std::vector<std::unique_ptr<TDyInformationBinderMesh>>     mMeshInformations;
+  std::vector<std::unique_ptr<TDyInformationBinderMaterial>> mMaterialInformations;
 
   /// Valid skeleton reference handle.
-  TDyLInformationBinderSkeleton         mBinderSkeleton;
+  TDyInformationBinderSkeleton         mBinderSkeleton;
   PDyModelInstanceMetaInfo::DTransform  mModelTransform;
 };
 

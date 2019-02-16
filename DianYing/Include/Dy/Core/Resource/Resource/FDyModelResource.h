@@ -50,9 +50,9 @@ public:
 
 private:
   std::string                   mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
-  TDyLInformationBinderModel    mBinderInformation;
-  std::vector<std::unique_ptr<TDyLResourceBinderMesh>>      mMeshResource     = {};
-  std::vector<std::unique_ptr<TDyLResourceBinderMaterial>>  mMaterialResource = {};
+  TDyInformationBinderModel    mBinderInformation;
+  std::vector<std::unique_ptr<TDyResourceBinderMesh>>      mMeshResource     = {};
+  std::vector<std::unique_ptr<TDyResourceBinderMaterial>>  mMaterialResource = {};
 
   DDyMatrix4x4 mModelInitialTransform = DDyMatrix4x4::IdentityMatrix();
 };

@@ -27,6 +27,7 @@
 #include <Dy/Management/Type/Render/DDyModelHandler.h>
 #include <Dy/Core/Rendering/Pipeline/DebugRenderer.h>
 #include <Dy/Core/Rendering/Pipeline/PostEffectSky.h>
+#include <Dy/Helper/Pointer.h>
 
 //!
 //! Forward declaration

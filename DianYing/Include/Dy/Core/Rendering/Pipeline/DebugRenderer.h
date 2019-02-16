@@ -54,11 +54,11 @@ public:
   EDySuccess TrySetupRendering() override final;
 
 private:
-  TDyLResourceBinderShader      mBinderShader     {"dyBtShDebugLine"};
-  TDyLResourceBinderFrameBuffer mBinderFrameBuffer{"dyBtFbDebug"};
-  TDyLResourceBinderMesh        mBinderSphere     {"dyBtMsDebugSphere"};
-  TDyLResourceBinderMesh        mBinderBox        {"dyBtMsDebugBox"};
-  TDyLResourceBinderMesh        mBinderCapsule    {"dyBtMsDebugCapsule"};
+  TDyResourceBinderShader      mBinderShader     {"dyBtShDebugLine"};
+  TDyResourceBinderFrameBuffer mBinderFrameBuffer{"dyBtFbDebug"};
+  TDyResourceBinderMesh        mBinderSphere     {"dyBtMsDebugSphere"};
+  TDyResourceBinderMesh        mBinderBox        {"dyBtMsDebugBox"};
+  TDyResourceBinderMesh        mBinderCapsule    {"dyBtMsDebugCapsule"};
 };
 
 } /// ::dy namespace

@@ -86,10 +86,10 @@ public:
   const FDyMeshResource& GetSubmeshResourcePtr(_MIN_ TU32 index) const noexcept;
   
   /// @brief Get model resource binder. If renderer is not binding any Model, just return nullptr.
-  MDY_NODISCARD TDyLResourceBinderModel* GetModelResourceBinder() noexcept;
+  MDY_NODISCARD TDyResourceBinderModel* GetModelResourceBinder() noexcept;
  
   /// @brief Get model resource binder. If renderer is not binding any Model, just return nullptr.
-  MDY_NODISCARD const TDyLResourceBinderModel* GetModelResourceBinder() const noexcept;
+  MDY_NODISCARD const TDyResourceBinderModel* GetModelResourceBinder() const noexcept;
 
   /// @brief
   MDY_NODISCARD std::string ToString() override final;

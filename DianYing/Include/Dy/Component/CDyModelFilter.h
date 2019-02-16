@@ -63,10 +63,10 @@ public:
 
   /// @brief Get model reference ptr.
   /// @return Valid model resource pointer reference.
-  MDY_NODISCARD const TDyLResourceBinderModel& GetModelReference() const noexcept;
+  MDY_NODISCARD const TDyResourceBinderModel& GetModelReference() const noexcept;
 
   /// @brief Get model reference ptr.
-  MDY_NODISCARD TDyLResourceBinderModel& GetModelReference() noexcept;
+  MDY_NODISCARD TDyResourceBinderModel& GetModelReference() noexcept;
 
   /// @brief Get model specifier name.
   MDY_NODISCARD const std::string& GetModelSpecifier() const noexcept;
@@ -101,7 +101,7 @@ private:
   void TryDeactivateInstance() override final;
 
   /// Valid model reference handle.
-  TDyLResourceBinderModel mBinderModel = {};
+  TDyResourceBinderModel mBinderModel = {};
   /// Model specifier name for activate & deactivating.
   std::string             mModelSpecifier = MDY_INITIALIZE_EMPTYSTR;
   /// CDyModelRendererr reference ptr.

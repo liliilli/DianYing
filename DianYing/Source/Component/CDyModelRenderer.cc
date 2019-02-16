@@ -73,13 +73,13 @@ const FDyMaterialResource& CDyModelRenderer::GetMaterialResourcePtr(_MIN_ TU32 i
   return *materialResourceList[index]->Get();
 }
 
-TDyLResourceBinderModel* CDyModelRenderer::GetModelResourceBinder() noexcept
+TDyResourceBinderModel* CDyModelRenderer::GetModelResourceBinder() noexcept
 {
   if (MDY_CHECK_ISNULL(this->mPtrModelFilterComponent)) { return nullptr; }
   return &this->mPtrModelFilterComponent->GetModelReference();
 }
 
-const TDyLResourceBinderModel* CDyModelRenderer::GetModelResourceBinder() const noexcept
+const TDyResourceBinderModel* CDyModelRenderer::GetModelResourceBinder() const noexcept
 {
   if (MDY_CHECK_ISNULL(this->mPtrModelFilterComponent)) { return nullptr; }
   return &this->mPtrModelFilterComponent->GetModelReference();

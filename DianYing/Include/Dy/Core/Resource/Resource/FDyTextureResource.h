@@ -57,7 +57,7 @@ protected:
   EDyTextureStyleType mTextureType = EDyTextureStyleType::NoneError;
 
   TU32 mTextureResourceId = MDY_INITIALIZE_DEFUINT;
-  TDyLInformationBinderTexture mInformationBinder;
+  TDyInformationBinderTexture mInformationBinder;
 };
 
 } /// ::dy namespace

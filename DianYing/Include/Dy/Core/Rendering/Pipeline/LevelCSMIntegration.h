@@ -44,24 +44,24 @@ private:
   ///
   void pRenderOITIntegration();
 
-  TDyLResourceBinderModel       mBinderTriangle   { "dyBtModelScrProjTri" };
+  TDyResourceBinderModel       mBinderTriangle   { "dyBtModelScrProjTri" };
 
-  TDyLResourceBinderFrameBuffer mBinderFrameBuffer  { "dyBtFbScrFin" };
-  TDyLResourceBinderShader      mBinderOpaqueShader { "dyBtGlslRenderCsmIntegration" };
-  TDyLResourceBinderAttachment  mBinderAttUnlit   { "dyBtUnlit" };
-  TDyLResourceBinderAttachment  mBinderAttNormal  { "dyBtNormal" };
-  TDyLResourceBinderAttachment  mBinderAttSpecular{ "dyBtSpecular" };
-  TDyLResourceBinderAttachment  mBinderAttPosition{ "dyBtModelPosition" };
-  TDyLResourceBinderAttachment  mBinderAttShadow  { "dyBtAtCSMLight" };
-  TDyLResourceBinderAttachment  mBinderAttZValue  { "dyBtDefZValue" };
-  TDyLResourceBinderAttachment  mBinderAttSSAO    { "dyBtAtSSAOOutputFinal" };
-  TDyLResourceBinderAttachment  mBinderAttSky     { "dyBtAtSkyOutput" };
+  TDyResourceBinderFrameBuffer mBinderFrameBuffer  { "dyBtFbScrFin" };
+  TDyResourceBinderShader      mBinderOpaqueShader { "dyBtGlslRenderCsmIntegration" };
+  TDyResourceBinderAttachment  mBinderAttUnlit   { "dyBtUnlit" };
+  TDyResourceBinderAttachment  mBinderAttNormal  { "dyBtNormal" };
+  TDyResourceBinderAttachment  mBinderAttSpecular{ "dyBtSpecular" };
+  TDyResourceBinderAttachment  mBinderAttPosition{ "dyBtModelPosition" };
+  TDyResourceBinderAttachment  mBinderAttShadow  { "dyBtAtCSMLight" };
+  TDyResourceBinderAttachment  mBinderAttZValue  { "dyBtDefZValue" };
+  TDyResourceBinderAttachment  mBinderAttSSAO    { "dyBtAtSSAOOutputFinal" };
+  TDyResourceBinderAttachment  mBinderAttSky     { "dyBtAtSkyOutput" };
 
-  TDyLResourceBinderFrameBuffer mBinderFbTranslucent { "dyBtFbIntgLevelTrans" };
-  TDyLResourceBinderShader      mBinderTransShader{ "dyBtShOITIntegration" };
-  TDyLResourceBinderAttachment  mBinderAttOpaque  { "dyBtAtOpaqueOutput" };
-  TDyLResourceBinderAttachment  mBinderAttOITColor{ "dyBtAtWBOITColor" };
-  TDyLResourceBinderAttachment  mBinderAttOITWeigh{ "dyBtAtWBOITWeight" };
+  TDyResourceBinderFrameBuffer mBinderFbTranslucent { "dyBtFbIntgLevelTrans" };
+  TDyResourceBinderShader      mBinderTransShader{ "dyBtShOITIntegration" };
+  TDyResourceBinderAttachment  mBinderAttOpaque  { "dyBtAtOpaqueOutput" };
+  TDyResourceBinderAttachment  mBinderAttOITColor{ "dyBtAtWBOITColor" };
+  TDyResourceBinderAttachment  mBinderAttOITWeigh{ "dyBtAtWBOITWeight" };
 
   std::ptrdiff_t mAddrMainLight = 0;
 };

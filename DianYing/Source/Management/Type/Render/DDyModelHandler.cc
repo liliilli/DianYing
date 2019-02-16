@@ -144,7 +144,7 @@ DDyModelHandler::TContainer& DDyModelHandler::GetActorContainer() noexcept
   return this->mActorInformation;
 }
 
-const TDyLResourceBinderModel& DDyModelHandler::GetModelBinderReference() const noexcept
+const TDyResourceBinderModel& DDyModelHandler::GetModelBinderReference() const noexcept
 {
   return this->mModelBinder;
 }

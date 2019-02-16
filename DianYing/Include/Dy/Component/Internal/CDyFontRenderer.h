@@ -38,8 +38,8 @@ public:
 
 private:
   FDyText*                  mPtrWidget = nullptr; 
-  TDyLResourceBinderShader  mBinderShader{};
-  TDyLResourceBinderMesh    mBinderFontMesh{};
+  TDyResourceBinderShader  mBinderShader{};
+  TDyResourceBinderMesh    mBinderFontMesh{};
 };
 
 } /// ::dy namespace

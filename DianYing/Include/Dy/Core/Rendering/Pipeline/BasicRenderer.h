@@ -59,7 +59,7 @@ public:
 
 private:
 
-  TDyLResourceBinderFrameBuffer mBinderFrameBuffer{"dyBtBasicRender"};
+  TDyResourceBinderFrameBuffer mBinderFrameBuffer{"dyBtBasicRender"};
 
   friend class FDyDeferredRenderingMesh;
 };

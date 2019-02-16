@@ -51,7 +51,7 @@ public:
   void Clear() override final;
 
 private:
-  TDyLResourceBinderFrameBuffer mBinderFrameBuffer{ "dyBtFbWBOIT" };
+  TDyResourceBinderFrameBuffer mBinderFrameBuffer{ "dyBtFbWBOIT" };
 };
 
 } /// ::dy namespace

@@ -40,11 +40,11 @@ public:
   void Clear();
 
 private:
-  TDyLResourceBinderShader      mBinderShader     {"dyBtShaderGlScreenOut"};
-  TDyLResourceBinderModel       mBinderTriangle   {"dyBtModelScrProjTri"};
-  TDyLResourceBinderAttachment  mBinderAttSceneFinal{ "dyBtAtScrFin_Output" };
-  TDyLResourceBinderAttachment  mBinderAttUIFinal   { "dyBtAtUiBasic_Output" };
-  TDyLResourceBinderAttachment  mBinderAttDbgFinal  { "dyBtAtDebug" };
+  TDyResourceBinderShader      mBinderShader     {"dyBtShaderGlScreenOut"};
+  TDyResourceBinderModel       mBinderTriangle   {"dyBtModelScrProjTri"};
+  TDyResourceBinderAttachment  mBinderAttSceneFinal{ "dyBtAtScrFin_Output" };
+  TDyResourceBinderAttachment  mBinderAttUIFinal   { "dyBtAtUiBasic_Output" };
+  TDyResourceBinderAttachment  mBinderAttDbgFinal  { "dyBtAtDebug" };
 };
 
 } /// ::dy namespace

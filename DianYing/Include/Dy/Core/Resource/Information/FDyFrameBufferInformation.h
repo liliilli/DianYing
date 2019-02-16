@@ -66,7 +66,7 @@ public:
   MDY_NODISCARD bool IsUsingPixelShader() const noexcept { return this->mIsNotUsingPixelShader == false; }
 
 private:
-  using TAttachmentInformation = std::pair<PDyGlAttachmentBinderInformation, std::unique_ptr<TDyLInformationBinderAttachment>>;
+  using TAttachmentInformation = std::pair<PDyGlAttachmentBinderInformation, std::unique_ptr<TDyInformationBinderAttachment>>;
   using TAttachmentInfoBinderList = std::vector<TAttachmentInformation>;
 
   std::string               mSpecifierName      = MDY_INITIALIZE_EMPTYSTR;

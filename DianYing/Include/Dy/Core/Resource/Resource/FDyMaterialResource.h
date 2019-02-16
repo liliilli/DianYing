@@ -82,9 +82,9 @@ private:
   std::string          mSpecifierName    = MDY_INITIALIZE_EMPTYSTR;
   EDyMaterialBlendMode mBlendMode        = EDyMaterialBlendMode::Opaque;
 
-  TDyLInformationBinderMaterial mBinderMaterial;
-  TDyLResourceBinderShader      mBinderShader;
-  std::vector<std::unique_ptr<TDyLResourceBinderTexture>> mBinderTextureList = {};
+  TDyInformationBinderMaterial mBinderMaterial;
+  TDyResourceBinderShader      mBinderShader;
+  std::vector<std::unique_ptr<TDyResourceBinderTexture>> mBinderTextureList = {};
 
   bool mIsInstant = false;
 };
