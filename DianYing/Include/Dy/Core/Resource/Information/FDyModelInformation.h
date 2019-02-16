@@ -58,8 +58,8 @@ public:
 
 private:
   std::string mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
-  std::vector<std::unique_ptr<TDyIInformationBinderMesh>>     mMeshInformations;
-  std::vector<std::unique_ptr<TDyIInformationBinderMaterial>> mMaterialInformations;
+  std::vector<std::unique_ptr<TDyLInformationBinderMesh>>     mMeshInformations;
+  std::vector<std::unique_ptr<TDyLInformationBinderMaterial>> mMaterialInformations;
 
   /// Valid skeleton reference handle.
   TDyLInformationBinderSkeleton         mBinderSkeleton;

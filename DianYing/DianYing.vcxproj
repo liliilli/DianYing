@@ -704,6 +704,7 @@
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDySoundInformation.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyTextureCubemapInformation.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyTextureGeneralInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Interface\IDyRenderableBinder.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Internal\FDyMeshVBOIntermediate.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Internal\Uniform\IDyUniformValueBase.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyAttachmentResource.h" />

@@ -109,7 +109,7 @@ void SDyIOConnectionHelper::PopulateResourceList(
 
 void SDyIOConnectionHelper::PopulateInstantMaterialResource(
     _MIN_ PDyMaterialInstanceMetaInfo& desc,
-    _MIN_ TDyResourceBinder<EDyResourceType::Material, EDyLazy::Yes>& refMat, 
+    _MIN_ TDyResourceBinder<EDyResourceType::Material>& refMat, 
     _MIN_ bool(*callback)())
 {
   static TU32 instantMatId = 0;

@@ -39,13 +39,13 @@ public:
 
 private:
   // Output
-  TDyIResourceBinderFrameBuffer mBinderFbSkyRend    { "dyBtFbSkybox" };
+  TDyLResourceBinderFrameBuffer mBinderFbSkyRend    { "dyBtFbSkybox" };
   // Shader
-  TDyIResourceBinderShader      mBinderShdSkybox    { "dyBtShGlSkyboxDefault" };
+  TDyLResourceBinderShader      mBinderShdSkybox    { "dyBtShGlSkyboxDefault" };
   // Mesh for skybox
-  TDyIResourceBinderMesh        mBinderMeshSkybox   { "dyBtMsBox" };
+  TDyLResourceBinderMesh        mBinderMeshSkybox   { "dyBtMsBox" };
   // uTexture1 (Source)
-  TDyIResourceBinderAttachment  mBinderAttUnlit     { "dyBtUnlit" };
+  TDyLResourceBinderAttachment  mBinderAttUnlit     { "dyBtUnlit" };
 };
 
 } /// ::dy namespace

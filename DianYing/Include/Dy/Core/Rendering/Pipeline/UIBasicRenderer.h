@@ -46,7 +46,7 @@ public:
   void Clear();
 
 private:
-  TDyIResourceBinderFrameBuffer mBinderFrameBuffer{ "dyBtFbUiBasic" };
+  TDyLResourceBinderFrameBuffer mBinderFrameBuffer{ "dyBtFbUiBasic" };
 };
 
 } /// ::dy namespace

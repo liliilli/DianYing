@@ -27,8 +27,7 @@ namespace dy
 struct DDyIOReferenceInstance;
 struct  PDyMaterialInstanceMetaInfo;
 enum class EDyScope;
-template <EDyResourceType TType, EDyLazy TBool>
-class TDyResourceBinder;
+template <EDyResourceType TType> class TDyResourceBinder;
 } /// ::dy namespace
 
 //!
@@ -79,7 +78,7 @@ public:
   /// When callback is setup, instant material scope have callback condition, not temporary.
   static void PopulateInstantMaterialResource(
       _MIN_ PDyMaterialInstanceMetaInfo& desc, 
-      _MIN_ TDyResourceBinder<EDyResourceType::Material, EDyLazy::Yes>& refMat, 
+      _MIN_ TDyResourceBinder<EDyResourceType::Material>& refMat, 
       _MIN_ bool(*callback)() = nullptr);
 
   /// @brief Check Reference Instance (RI) which has a given type, style and specifier name is exist.
@@ -105,10 +104,10 @@ public:
   // @TODO MUST BE PRIVATE
 
   /// @brief Check IO Result in condition.
-  static MDY_NODISCARD bool CheckIOResultInCondition() noexcept;
+  MDY_NODISCARD static bool CheckIOResultInCondition() noexcept;
 
   /// @brief Check Main deferred task list is empty. \n
-  static MDY_NODISCARD bool IsMainTaskListIsEmpty() noexcept;
+  MDY_NODISCARD static bool IsMainTaskListIsEmpty() noexcept;
 
   /// @brief Force Try process deferred task list which must be processed in main thread, \n
   /// so Insert created resource instance into result instance list for IO GC/IN Phase.
@@ -120,7 +119,7 @@ public:
 
   /// @brief Check IO Thread is slept. True if only IO Worker are idle,
   /// Queue is empty and Result list also empty.
-  static MDY_NODISCARD bool IsIOThreadSleep();
+  MDY_NODISCARD static bool IsIOThreadSleep();
 
   /// @brief Try call callback function when if only Thread I/O is slept.
   /// If not slept or exist callback function, just return DY_FAILURE.

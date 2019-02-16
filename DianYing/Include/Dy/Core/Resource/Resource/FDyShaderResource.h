@@ -91,7 +91,7 @@ private:
   /// Shader uniform buffer object list <Name>
   std::vector<DDyUniformBufferObjectInformation>mUniformBufferObjectList;
 
-  TDyIInformationBinderShader mBinderShader;
+  TDyLInformationBinderShader mBinderShader;
 };
 
 } /// ::dy namespace

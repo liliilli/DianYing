@@ -14,8 +14,6 @@
 ///
 
 #include <Dy/Core/Resource/Type/TDyResourceBinderBase.h>
-#include <Dy/Core/Resource/Internal/ShaderType.h>
-#include <Dy/Core/Resource/Type/Shader/TemplateUniformType.h>
 #include <Dy/Core/Resource/Type/Shader/ADyUniformContainer.h>
 
 namespace dy

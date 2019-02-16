@@ -39,7 +39,7 @@ FDyFrameBufferInformation::FDyFrameBufferInformation(_MIN_ const PDyGlFrameBuffe
   { // If use depth buffer, also bind information.
     this->mDepthAttachment = std::make_pair(
         PDyGlAttachmentBinderInformation{ metaInfo.mDepthAttachmentSpecifier, EDyGlAttachmentType::Depth },
-        std::make_unique<TDyIInformationBinderAttachment>(metaInfo.mDepthAttachmentSpecifier)
+        std::make_unique<TDyLInformationBinderAttachment>(metaInfo.mDepthAttachmentSpecifier)
     );
   }
 }

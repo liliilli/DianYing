@@ -307,7 +307,7 @@ std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(
 
 EDySuccess TDyIO::InstantPopulateMaterialResource(
     _MIN_ const PDyMaterialInstanceMetaInfo& iDesc,
-    _MIN_ TDyResourceBinder<EDyResourceType::Material, EDyLazy::Yes>& refMat, 
+    _MIN_ TDyResourceBinder<EDyResourceType::Material>& refMat, 
     _MIN_ EDyScope iScope, 
     _MIN_ bool(*callback)())
 {

@@ -63,8 +63,8 @@ public:
   MDY_NODISCARD EDySuccess TrySetupRendering();
 
 private:
-  TDyIResourceBinderShader        mDirLightShaderResource { "dyBtGlslRenderCsmLightNormal" };
-  TDyIResourceBinderFrameBuffer   mBinderFrameBuffer      { "dyBtFbCSM" };
+  TDyLResourceBinderShader        mDirLightShaderResource { "dyBtGlslRenderCsmLightNormal" };
+  TDyLResourceBinderFrameBuffer   mBinderFrameBuffer      { "dyBtFbCSM" };
 
   static std::array<TF32, 2>      sViewportDims;
   std::ptrdiff_t                  mAddrMainDirectionalShadow = 0;

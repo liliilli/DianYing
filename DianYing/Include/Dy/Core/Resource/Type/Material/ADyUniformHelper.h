@@ -57,7 +57,7 @@ protected:
   
   /// @brief Try update uniform list of valid mateiral instance.
   MDY_NODISCARD EDySuccess 
-  MDY_PRIVATE(TryUpdateUniformList)(_MIN_ FDyMaterialResource& iRefMateiral);
+  __TryUpdateUniformList(_MIN_ FDyMaterialResource& iRefMateiral);
 };
 
 } /// ::dy namespace
