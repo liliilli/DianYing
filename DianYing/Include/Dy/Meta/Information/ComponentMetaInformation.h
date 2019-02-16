@@ -17,12 +17,14 @@
 #include <variant>
 #include <nlohmann/json_fwd.hpp>
 #include <Dy/Helper/Type/Vector3.h>
-#include <Dy/Meta/Type/EDyComponentTypes.h>
 #include <Dy/Meta/Information/ScriptMetaInformation.h>
+#include <Dy/Meta/Type/EDyComponentTypes.h>
+#include <Dy/Meta/Type/Physics/EDyColliderType.h>
+#include <Dy/Meta/Type/Physics/EDyRigidbodyType.h>
 #include <Dy/Helper/Type/Area2D.h>
 #include <Dy/Helper/Type/Clamp.h>
+#include <Dy/Helper/Type/ColorRGB.h>
 #include <Dy/Management/Type/SettingContainer.h>
-#include <Dy/Meta/Type/Physics/EDyColliderType.h>
 
 namespace dy
 {
@@ -265,6 +267,8 @@ struct PDyRigidbodyComponentMetaInfo final : public IDyMetaInformation
     bool mIsSimulatePhysics = false;
     /// Enable gravity or not.
     bool mIsEnableGravity = false;
+    /// If `Static`, gravity will be neglected and only 
+    EDyRigidbodyType mType = EDyRigidbodyType::Static;
     /// Mass of sum of collider.
     DDyClamp<TF32, 0, 100'000>  mMassInKg = 0.001f;
     /// Linear damping of rigidbody
@@ -331,6 +335,39 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyColliderComponentMetaI
 
 void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDyColliderComponentMetaInfo::DDetails& p);
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyColliderComponentMetaInfo::DDetails& p);
+
+///
+/// @struct PDySkyboxComponentMetaInfo
+/// @brief Dependent information to CDySkybox.
+///
+struct PDySkyboxComponentMetaInfo final : public IDyMetaInformation
+{
+  /*
+   *{
+      "Type": "Skybox", "Activated": true,
+      "Details": { "Exposure" : 1.0, "Rotation" : 0.0, "CubemapSpecifier": "Skybox_cloudtop_up" }
+    }
+   */
+
+  struct DDetails final
+  {
+    DDyClamp<TF32, 0, 100>  mExposure = 0.0f;
+    TF32                    mRotation = 0.0f; // Degree
+    DDyColorRGB             mTintColor{1, 1, 1};
+    std::string             mCubemapSpecifier = MDY_INITIALIZE_EMPTYSTR;
+  };
+
+  /// @brief Details
+  DDetails mDetails;
+  /// @brief Component is initially activated or not.
+  bool     mInitiallyActivated = false;
+};
+
+void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDySkyboxComponentMetaInfo& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySkyboxComponentMetaInfo& p);
+
+void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDySkyboxComponentMetaInfo::DDetails& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySkyboxComponentMetaInfo::DDetails& p);
 
 } /// ::dy namespace
 

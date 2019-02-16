@@ -196,7 +196,7 @@ private:
   MDY_NODISCARD EDySuccess pReadScriptResourceMetaInformation(_MIN_ const std::string& metaFilePath);
   MDY_NODISCARD EDySuccess pReadPrefabResourceMetaInformation(_MIN_ const std::string& metaFilePath);
   MDY_NODISCARD EDySuccess pReadWidgetResourceMetaInformation(_MIN_ const std::string& metaFilePath);
-  MDY_NODISCARD EDySuccess pReadSceneResourceMetaInformation (_MIN_ const std::string& metaFilepath);
+  MDY_NODISCARD EDySuccess pReadLevelResourceMetaInformation (_MIN_ const std::string& metaFilepath);
 
   MDY_NODISCARD EDySuccess pReadFontResourceMetaInformation     (_MIN_ const std::string& metaFilePath);
   MDY_NODISCARD EDySuccess pReadModelResourceMetaInformation    (_MIN_ const std::string& metaFilePath);
@@ -208,11 +208,19 @@ private:
   MDY_NODISCARD EDySuccess pReadMaterialResourceMetaInformation (_MIN_ const std::string& metaFilePath);
   MDY_NODISCARD EDySuccess pReadSoundResourceMetaInformation    (_MIN_ const std::string& metaFilePath);
 
-  MDY_NODISCARD EDySuccess pReadScriptResourceMetaInformation(_MIN_ const nlohmann::json& iJson);
-  MDY_NODISCARD EDySuccess pReadPrefabResourceMetaInformation(_MIN_ const nlohmann::json& iJson);
-  MDY_NODISCARD EDySuccess pReadWidgetResourceMetaInformation(_MIN_ const nlohmann::json& iJson);
-  MDY_NODISCARD EDySuccess pReadFontResourceMetaInformation  (_MIN_ const nlohmann::json& iJson);
-  MDY_NODISCARD EDySuccess pReadSceneResourceMetaInformation (_MIN_ const nlohmann::json& iJson);
+  MDY_NODISCARD EDySuccess pReadScriptMetaAtlas(_MIN_ const nlohmann::json& iJson);
+  MDY_NODISCARD EDySuccess pReadPrefabMetaAtlas(_MIN_ const nlohmann::json& iJson);
+  MDY_NODISCARD EDySuccess pReadWidgetMetaAtlas(_MIN_ const nlohmann::json& iJson);
+  MDY_NODISCARD EDySuccess pReadFontMetaAtlas  (_MIN_ const nlohmann::json& iJson);
+  MDY_NODISCARD EDySuccess pReadLevelMetaAtlas (_MIN_ const nlohmann::json& iJson);
+  MDY_NODISCARD EDySuccess pReadShaderMetaAtlas(_MIN_ const nlohmann::json& iJson);
+  MDY_NODISCARD EDySuccess pReadSoundMetaAtlas    (_MIN_ const nlohmann::json& iJson);
+  MDY_NODISCARD EDySuccess pReadTextureMetaAtlas  (_MIN_ const nlohmann::json& iJson);
+  MDY_NODISCARD EDySuccess pReadMaterialMetaAtlas (_MIN_ const nlohmann::json& iJson);
+  MDY_NODISCARD EDySuccess pReadModelAnimMetaAtlas(_MIN_ const nlohmann::json& iJson);
+  MDY_NODISCARD EDySuccess pReadModelMeshMetaAtlas(_MIN_ const nlohmann::json& iJson);
+  MDY_NODISCARD EDySuccess pReadModelSkelMetaAtlas(_MIN_ const nlohmann::json& iJson);
+  MDY_NODISCARD EDySuccess pReadModelMetaAtlas    (_MIN_ const nlohmann::json& iJson);
 
   MDY_NODISCARD EDySuccess pfAddWidgetMetaInformation (_MIN_ const std::string& metaInformationString);
   MDY_NODISCARD EDySuccess pfAddScriptMetaInformation (_MIN_ const PDyScriptInstanceMetaInfo& metaInfo);

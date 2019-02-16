@@ -64,9 +64,19 @@ EDySuccess CDyPhysicsCollider::Initialize(_MIN_ const PDyColliderComponentMetaIn
   return DY_SUCCESS;
 }
 
+const std::vector<DDyVector3>& CDyPhysicsCollider::GetColliderMesh() const noexcept
+{
+  return this->mColliderMeshInformation;
+}
+
 bool CDyPhysicsCollider::IsNotifyHitEvent() const noexcept
 {
   return this->mNotifyHitEvent;
+}
+
+physx::PxShape* CDyPhysicsCollider::__GetPtrInternalShape() const noexcept
+{
+  return this->mPtrInternalShape;
 }
 
 bool CDyPhysicsCollider::IsNotifyOverlapEvent() const noexcept
@@ -77,6 +87,11 @@ bool CDyPhysicsCollider::IsNotifyOverlapEvent() const noexcept
 bool CDyPhysicsCollider::IsRegistered() const noexcept
 {
   return this->mIsRegistered;
+}
+
+bool CDyPhysicsCollider::IsNeedToUpdateColliderMesh() const noexcept
+{
+  return this->mIsCollisionMeshDirty;
 }
 
 EDyColliderType CDyPhysicsCollider::GetColliderType() const noexcept

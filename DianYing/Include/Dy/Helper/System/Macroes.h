@@ -210,6 +210,12 @@
 #define MDY_BIND_BEGIN_END(__MAIteratorableType__) __MAIteratorableType__.begin(), __MAIteratorableType__.end()
 
 ///
+/// @macro MDY_BIND_CBEGIN_CEND
+/// @brief Help forward iteratable type to bind .begin() and .end() to function.
+///
+#define MDY_BIND_CBEGIN_CEND(__MAIteratorableType__) __MAIteratorableType__.cbegin(), __MAIteratorableType__.cend()
+
+///
 /// @macro MDY_SET_IMMUTABLE_STRING
 /// @brief Set immutable compile string_view variable __MAName__ with __MAString__.
 ///

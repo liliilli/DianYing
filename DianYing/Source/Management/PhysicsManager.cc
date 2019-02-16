@@ -19,8 +19,13 @@
 
 #include <Dy/Helper/Pointer.h>
 #include <Dy/Helper/Type/Vector3.h>
+#include <Dy/Helper/System/Idioms.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/SettingManager.h>
+#include <Dy/Component/CDyPhysicsRigidbody.h>
+#include "Dy/Component/CDyPhysicsCollider.h"
+#include "Dy/Management/Rendering/RenderingManager.h"
+#include "Dy/Element/Actor.h"
 
 //!
 //! Test
@@ -28,6 +33,30 @@
 
 namespace
 {
+
+static const auto dyFlagTrigger = physx::PxPairFlag::eTRIGGER_DEFAULT;
+static const auto dyFlagHit     = physx::PxPairFlag::eNOTIFY_TOUCH_FOUND | physx::PxPairFlag::eCONTACT_DEFAULT;
+
+[[nodiscard]] std::pair<TU08, TU08> 
+GetFilterResult(_MIN_ const physx::PxFilterData& data0, _MIN_ const physx::PxFilterData& data1)
+{
+  const auto lhsId = data0.word0 & 0x000000FF;
+  const auto rhsId = data1.word0 & 0x000000FF;
+  const auto lhsShift = lhsId % 16;
+  const auto rhsShift = rhsId % 16;
+
+  TU08 lhsFlag = 0;
+  if (lhsId < 16)       { lhsFlag = (data0.word1 & (0b11 << (rhsShift * 2))) >> rhsShift * 2; }
+  else if (lhsId < 32)  { lhsFlag = (data0.word2 & (0b11 << (rhsShift * 2))) >> rhsShift * 2; }
+  else if (lhsId < 48)  { lhsFlag = (data0.word3 & (0b11 << (rhsShift * 2))) >> rhsShift * 2; }
+
+  TU08 rhsFlag = 0;
+  if (rhsId < 16)       { rhsFlag = (data1.word1 & (0b11 << (lhsShift * 2))) >> lhsShift * 2; }
+  else if (rhsId < 32)  { rhsFlag = (data1.word2 & (0b11 << (lhsShift * 2))) >> lhsShift * 2; }
+  else if (rhsId < 48)  { rhsFlag = (data1.word3 & (0b11 << (lhsShift * 2))) >> lhsShift * 2; }
+
+  return {lhsFlag, rhsFlag};
+}
 
 /// @function DyFilterShader
 /// @brief PhysX Filter shader customized setting function.
@@ -43,20 +72,7 @@ physx::PxFilterFlags DyFilterShader(
   }
 
   // Get information from filterData0, filterData1.
-  const auto lhsId = filterData0.word0 & 0x000000FF;
-  const auto rhsId = filterData1.word0 & 0x000000FF;
-  const auto lhsShift = lhsId % 16;
-  const auto rhsShift = rhsId % 16;
-
-  unsigned int lhsFlag = 0;
-  if (lhsId < 16)       { lhsFlag = (filterData0.word1 & (0b11 << (rhsShift * 2))) >> rhsShift * 2; }
-  else if (lhsId < 32)  { lhsFlag = (filterData0.word2 & (0b11 << (rhsShift * 2))) >> rhsShift * 2; }
-  else if (lhsId < 48)  { lhsFlag = (filterData0.word3 & (0b11 << (rhsShift * 2))) >> rhsShift * 2; }
-
-  unsigned int rhsFlag = 0;
-  if (rhsId < 16)       { rhsFlag = (filterData1.word1 & (0b11 << (lhsShift * 2))) >> lhsShift * 2; }
-  else if (rhsId < 32)  { rhsFlag = (filterData1.word2 & (0b11 << (lhsShift * 2))) >> lhsShift * 2; }
-  else if (rhsId < 48)  { rhsFlag = (filterData1.word3 & (0b11 << (lhsShift * 2))) >> lhsShift * 2; }
+  auto [lhsFlag, rhsFlag] = GetFilterResult(filterData0, filterData1);
 
   // 00 (collision) 01 (overlap) 10 (ignore)
   // -- 00 01 10
@@ -69,15 +85,15 @@ physx::PxFilterFlags DyFilterShader(
 
   if (lhsFlag == rhsFlag)
   {
-    if (lhsFlag == 0b00)      { pairFlags = physx::PxPairFlag::eCONTACT_DEFAULT; }
-    else if (lhsFlag == 0b01) { pairFlags = physx::PxPairFlag::eTRIGGER_DEFAULT; }
+    if (lhsFlag == 0b00)      { pairFlags = dyFlagHit; }
+    else if (lhsFlag == 0b01) { pairFlags = dyFlagTrigger; }
     else                      { return physx::PxFilterFlag::eKILL; }
   }
   else
   {
     if (lhsFlag < rhsFlag) { const auto temp = rhsFlag; rhsFlag = lhsFlag; lhsFlag = temp; }
 
-    if (lhsFlag == 0b01)  { pairFlags = physx::PxPairFlag::eTRIGGER_DEFAULT; }
+    if (lhsFlag == 0b01)  { pairFlags = dyFlagTrigger; }
     else                  { return physx::PxFilterFlag::eKILL; }
   }
 
@@ -303,6 +319,22 @@ void MDyPhysics::Update(_MIN_ TF32 dt)
   }
 }
 
+void MDyPhysics::CallCallbackIssueOnce()
+{
+  while (this->mCollisionCallbackIssueQueue.empty() == false)
+  {
+    auto& refIssue = this->mCollisionCallbackIssueQueue.front();
+    //
+    auto* ptrSelfRigidbody = refIssue.mPtrSelfActor->GetRigidbody();
+    MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptrSelfRigidbody), "Unexpected error occurred.");
+
+    ptrSelfRigidbody->CallCollisionCallback(refIssue.mType, refIssue);
+    //
+    this->mCollisionCallbackIssueQueue.pop();
+  }
+  // List will be cleard automatically.
+}
+
 void MDyPhysics::InitScene()
 {
   physx::PxSceneDesc tempSceneDesc{this->gPhysicx->getTolerancesScale()};
@@ -339,8 +371,10 @@ void MDyPhysics::InitScene()
     auto flags = this->gScene->getFlags();
     (void)flags;
 
-    this->gScene->setVisualizationParameter(physx::PxVisualizationParameter::eSCALE, 0.0f);
-    this->gScene->setVisualizationParameter(physx::PxVisualizationParameter::eCOLLISION_SHAPES,	1.0f);
+    using PxVP = physx::PxVisualizationParameter;
+    this->gScene->setVisualizationParameter(PxVP::eSCALE, 1.0f);
+    this->gScene->setVisualizationParameter(PxVP::eACTOR_AXES, 1.0f);
+    this->gScene->setSimulationEventCallback(this);
 
     physx::PxPvdSceneClient* pvdClient = this->gScene->getScenePvdClient();
     if (MDY_CHECK_ISNOTNULL(pvdClient))
@@ -379,6 +413,83 @@ const physx::PxMaterial& MDyPhysics::GetDefaultPhysicsMaterial() const noexcept
   return *this->mDefaultMaterial;
 }
 
+void MDyPhysics::UpdateInternalPxSceneParameter()
+{
+  // If gScene is null, just return to outside and do nothing.
+  if (MDY_CHECK_ISNULL(this->gScene)) { return; }
+
+  static constexpr TF32 enable  = 1.0f;
+  static constexpr TF32 disable = 0.0f;
+  using PxVP = physx::PxVisualizationParameter;
+
+  // Set collision shape.
+  // https://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/apireference/files/structPxVisualizationParameter.html
+  if (MDySetting::GetInstance().IsRenderPhysicsCollisionShape() == true)
+  {
+    if (this->gScene->getVisualizationParameter(PxVP::eCOLLISION_SHAPES) == disable)
+    {
+      this->gScene->setVisualizationParameter(PxVP::eCOLLISION_SHAPES, enable);
+    }
+  }
+  else
+  {
+    if (this->gScene->getVisualizationParameter(PxVP::eCOLLISION_SHAPES) == enable)
+    {
+      this->gScene->setVisualizationParameter(PxVP::eCOLLISION_SHAPES, disable);
+    }
+  }
+}
+
+void MDyPhysics::TryEnqueueDebugDrawCall()
+{
+  // If gScene is null, just return to outside and do nothing.
+  if (MDY_CHECK_ISNULL(this->gScene)) { return; }
+
+  auto& renderingManager = MDyRendering::GetInstance();
+
+  // https://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/guide/Manual/DebugVisualization.html#debugvisualization
+  // https://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/guide/Manual/BestPractices.html
+  for (auto& ptrRigidbody : this->mActivatedRigidbodyList)
+  {
+    auto& internalRigidbody     = ptrRigidbody->MDY_PRIVATE_SPECIFIER(GetRefInternalRigidbody)();
+    const auto globalTransform  = internalRigidbody.getGlobalPose();
+    const auto& colliderList    = ptrRigidbody->GetBindedActivatedColliderList();
+
+    for (auto& ptrCollider : colliderList)
+    {
+      auto* ptrPxShape      = ptrCollider->MDY_PRIVATE_SPECIFIER(GetPtrInternalShape)();
+      const auto localPose  = ptrPxShape->getLocalPose();
+      const auto transformMatrix = DDyMatrix4x4(globalTransform * localPose);
+      // Enqueue draw list.
+      // Iterate `Collider` and insert queue with transform + mesh.
+      renderingManager.EnqueueDebugDrawCollider(*ptrCollider, transformMatrix);
+    }
+  }
+}
+
+void MDyPhysics::MDY_PRIVATE_SPECIFIER(RegisterRigidbody)(_MIN_ CDyPhysicsRigidbody& iRefRigidbody)
+{
+  this->mActivatedRigidbodyList.emplace_back(DyMakeNotNull(&iRefRigidbody));
+  
+  auto ptrRigidbodyComponent = this->mActivatedRigidbodyList.back();
+
+  MDY_ASSERT_FORCE(this->gScene != nullptr, "Physics scene must be valid.");
+  this->gScene->addActor(ptrRigidbodyComponent->__GetRefInternalRigidbody());
+}
+
+void MDyPhysics::MDY_PRIVATE_SPECIFIER(UnregisterRigidbody)(_MIN_ CDyPhysicsRigidbody& iRefRigidbody)
+{
+  const auto it = std::find_if(
+      MDY_BIND_BEGIN_END(this->mActivatedRigidbodyList), 
+      [ptrSource = &iRefRigidbody](const auto& ptrTarget) { return ptrTarget.Get() == ptrSource; }
+  );
+  
+  MDY_ASSERT_FORCE(it != this->mActivatedRigidbodyList.end(), "Unexpected error occurred.");
+
+  this->gScene->removeActor(it->Get()->__GetRefInternalRigidbody());
+  DyFastErase(this->mActivatedRigidbodyList, it);
+}
+
 void MDyPhysics::onRelease(
     _MIN_ MDY_NOTUSED const physx::PxBase* observed, 
     _MIN_ MDY_NOTUSED void* userData, 
@@ -408,43 +519,104 @@ void MDyPhysics::onContact(
     _MIN_ const physx::PxContactPair* pairs,
     _MIN_ physx::PxU32 nbPairs)
 {
+	// Check actors are not destroyed
+	if(pairHeader.flags & (physx::PxContactPairHeaderFlag::eREMOVED_ACTOR_0 | physx::PxContactPairHeaderFlag::eREMOVED_ACTOR_1) )
+	{
+		MDY_LOG_ERROR("onContact(): Actors have been deleted!");
+		return;
+	}
+
 	for(unsigned i = 0; i < nbPairs; i++)
 	{
 		const physx::PxContactPair& cp = pairs[i];
 
-		if(cp.events & physx::PxPairFlag::eNOTIFY_TOUCH_FOUND)
-		{
-#ifdef false
-			if((pairHeader.actors[0] == mSubmarineActor) || (pairHeader.actors[1] == mSubmarineActor))
-			{
-				PxActor* otherActor = (mSubmarineActor == pairHeader.actors[0]) ? pairHeader.actors[1] : pairHeader.actors[0];			
-				Seamine* mine =  reinterpret_cast<Seamine*>(otherActor->userData);
-				// insert only once
-				if(std::find(mMinesToExplode.begin(), mMinesToExplode.end(), mine) == mMinesToExplode.end())
-					mMinesToExplode.push_back(mine);
+    // Get contact information of a pair of shape.
+    physx::PxContactPairPoint contactPointBuffer[1];
+    cp.extractContacts(contactPointBuffer, 1);
+    auto& internalBuffer = contactPointBuffer[0];
 
-				break;
-			}
-#endif
-		}
+    if (cp.flags.isSet(physx::PxContactPairFlag::eREMOVED_SHAPE_0) == false
+    &&  cp.flags.isSet(physx::PxContactPairFlag::eREMOVED_SHAPE_1) == false)
+    {
+      const auto* shape0 = cp.shapes[0]; MDY_ASSERT_FORCE(shape0 != nullptr, "Test failed.");
+      const auto* shape1 = cp.shapes[1]; MDY_ASSERT_FORCE(shape1 != nullptr, "Test failed.");
+
+      // Get collider components.
+      auto* ptrCollider0 = static_cast<CDyPhysicsCollider*>(shape0->userData);
+      MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptrCollider0), "Unexpected error occurred.");
+      auto* ptrCollider1 = static_cast<CDyPhysicsCollider*>(shape1->userData);
+      MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptrCollider1), "Unexpected error occurred.");
+
+      const auto filterFlag0 = shape0->getSimulationFilterData();
+      const auto filterFlag1 = shape1->getSimulationFilterData();
+      
+      // Make FDyHitResult
+      FDyHitResult result;
+      result.mContactPosition = internalBuffer.position;
+
+      // We do not process when `ignored` status because `ignored` status will be killed by physx internal system logic.
+      using ECbType = EDyCollisionCbType;
+      auto [lhsFlag, rhsFlag] = GetFilterResult(filterFlag0, filterFlag1);
+      if (lhsFlag == rhsFlag)
+      {
+        if (lhsFlag == 0b00) 
+        { // When hit..
+          this->pTryEnqueueCollisionIssue(ECbType::OnHit, cp.events, ptrCollider0, ptrCollider1, result);
+        }
+        else if (lhsFlag == 0b01) 
+        { // When trigger.
+          if (cp.events & physx::PxPairFlag::eNOTIFY_TOUCH_FOUND) 
+          { this->pTryEnqueueCollisionIssue(ECbType::OnOverlapBegin, cp.events, ptrCollider0, ptrCollider1, result); }
+          else if (cp.events & physx::PxPairFlag::eNOTIFY_TOUCH_LOST) 
+          { this->pTryEnqueueCollisionIssue(ECbType::OnOverlapEnd, cp.events, ptrCollider0, ptrCollider1, result); }
+        }
+      }
+      else 
+      { // When table point is on fivot-point. [1x1, 2x2, 3x3...]
+        if (cp.events & physx::PxPairFlag::eNOTIFY_TOUCH_FOUND) 
+        { this->pTryEnqueueCollisionIssue(ECbType::OnOverlapBegin, cp.events, ptrCollider0, ptrCollider1, result); }
+        else if (cp.events & physx::PxPairFlag::eNOTIFY_TOUCH_LOST) 
+        { this->pTryEnqueueCollisionIssue(ECbType::OnOverlapEnd, cp.events, ptrCollider0, ptrCollider1, result); }
+      }
+    }
 	}
 }
 
-void MDyPhysics::onTrigger(_MIN_ physx::PxTriggerPair* pairs, _MIN_ physx::PxU32 count)
+void MDyPhysics::pTryEnqueueCollisionIssue(
+    _MIN_ EDyCollisionCbType iHitType,
+    MDY_NOTUSED physx::PxPairFlags iInternalFlag, 
+    _MIN_ CDyPhysicsCollider* i0,
+    _MIN_ CDyPhysicsCollider* i1, 
+    _MIN_ const FDyHitResult& iHitResult)
 {
-	for(unsigned i = 0; i < count; i++)
-	{
-		// ignore pairs when shapes have been deleted
-		if (pairs[i].flags & (physx::PxTriggerPairFlag::eREMOVED_SHAPE_TRIGGER | physx::PxTriggerPairFlag::eREMOVED_SHAPE_OTHER))
-			continue;
+  // Make Collision issue item to be accessed when calling collision callback function.
+  DDyCollisionIssueItem item;
+  item.mType      = iHitType;
+  item.mHitResult = iHitResult;
 
-#ifdef false
-		if((pairs[i].otherActor == mSubmarineActor) && (pairs[i].triggerActor == gTreasureActor))
-		{
-			gTreasureFound = true;
-		}
-#endif
-	}
+  // Check flags.
+  bool (CDyPhysicsCollider::*ConditionFunction)() const = nullptr;
+  switch (iHitType)
+  {
+  case EDyCollisionCbType::OnHit: 
+    ConditionFunction = &CDyPhysicsCollider::IsNotifyHitEvent; break;
+  case EDyCollisionCbType::OnOverlapBegin: 
+  case EDyCollisionCbType::OnOverlapEnd: 
+    ConditionFunction = &CDyPhysicsCollider::IsNotifyOverlapEvent; break;
+  }
+
+  if ((i0->*ConditionFunction)() == true)
+  {
+    item.mPtrSelfCollider   = i0; item.mPtrSelfActor  = i0->GetBindedActor();
+    item.mPtrOtherCollider  = i1; item.mPtrOtherActor = i1->GetBindedActor();
+    this->mCollisionCallbackIssueQueue.push(item);
+  }
+  if ((i1->*ConditionFunction)() == true)
+  {
+    item.mPtrSelfCollider   = i1; item.mPtrSelfActor  = i1->GetBindedActor();
+    item.mPtrOtherCollider  = i0; item.mPtrOtherActor = i0->GetBindedActor();
+    this->mCollisionCallbackIssueQueue.push(item);
+  }
 }
 
 } /// ::dy namespace

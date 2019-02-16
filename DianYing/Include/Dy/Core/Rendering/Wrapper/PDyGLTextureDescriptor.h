@@ -20,24 +20,51 @@
 namespace dy
 {
 
-///
-/// @struct PDyGLTextureDescriptor
-/// @brief Descriptor instance for creating texture context of opengl.
-///
-struct PDyGLTextureDescriptor final
+/// @struct PDyGLTextureBase
+/// @brief Base descriptor type of `PDyGLTextureDescriptor` and `PDyGLTextureCubemapDescriptor`.
+struct PDyGLTextureBase
 {
-  EDyTextureStyleType mType               = EDyTextureStyleType::NoneError;
+  virtual ~PDyGLTextureBase() = 0;
+
+  EDyTextureStyleType mType = EDyTextureStyleType::NoneError;
   bool                mIsUsingDefaultMipmap       = false;
   bool                mIsUsingCustomizedParameter = false;
-  TI32                mImageFormat        = MDY_INITIALIZE_DEFINT;
-  GLenum              mImagePixelType     = GL_NONE;
-  DDyVectorInt2       mTextureSize        = {};
-  DDyColorRGBA        mBorderColor        = {};
+  TI32                mImageFormat    = MDY_INITIALIZE_DEFINT;
+  GLenum              mImagePixelType = GL_NONE;
+  DDyColorRGBA        mBorderColor    = {};
 
-  const std::vector<TU08>*     mPtrBuffer        = MDY_INITIALIZE_NULL;
   const TTextureParameterList* mPtrParameterList = MDY_INITIALIZE_NULL;
+  TU32                mOutputTextureId = MDY_INITIALIZE_DEFUINT;
 
-  TU32                mOutputTextureId    = MDY_INITIALIZE_DEFUINT;
+  using TPtrBuffer = const std::vector<TU08>*;
+};
+inline PDyGLTextureBase::~PDyGLTextureBase() = default;
+
+/// @struct PDyGLTextureDescriptor
+/// @brief Descriptor instance for creating texture context of opengl.
+struct PDyGLTextureDescriptor final : public PDyGLTextureBase
+{
+  TPtrBuffer    mPtrBuffer    = MDY_INITIALIZE_NULL;
+  DDyVectorInt2 mTextureSize  = {};
+};
+
+/// @struct PDyGLTextureCubemapDescriptor
+/// @brief Descriptor instance for creating `cubemap` texture context of opengl.
+struct PDyGLTextureCubemapDescriptor final : public PDyGLTextureBase
+{
+  TPtrBuffer    mTopBuffer    = MDY_INITIALIZE_NULL;
+  TPtrBuffer    mBottomBuffer = MDY_INITIALIZE_NULL;
+  TPtrBuffer    mLeftBuffer   = MDY_INITIALIZE_NULL;
+  TPtrBuffer    mRightBuffer  = MDY_INITIALIZE_NULL;
+  TPtrBuffer    mFrontBuffer  = MDY_INITIALIZE_NULL;
+  TPtrBuffer    mBackBuffer   = MDY_INITIALIZE_NULL;
+
+  DDyVectorInt2 mTopSize    = {};
+  DDyVectorInt2 mBottomSize = {};
+  DDyVectorInt2 mLeftSize   = {};
+  DDyVectorInt2 mRightSize  = {};
+  DDyVectorInt2 mFrontSize  = {};
+  DDyVectorInt2 mBackSize   = {};
 };
 
 } /// ::dy namespace

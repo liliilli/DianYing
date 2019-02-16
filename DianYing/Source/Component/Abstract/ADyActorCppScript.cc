@@ -17,6 +17,7 @@
 #include <Dy/Component/Internal/Actor/CDyActorScriptCpp.h>
 #include <Dy/Management/GameTimerManager.h>
 #include <Dy/Helper/System/Idioms.h>
+#include <Dy/Component/CDyPhysicsRigidbody.h>
 
 namespace dy
 {
@@ -56,6 +57,43 @@ void ADyActorCppScript::MDY_PRIVATE_SPECIFIER(AbortAllValidTimerHandler)()
   while (this->mPtrTimerHandleList.empty() == false)
   { // timer handle will be removed from list automatically.
     timerManager.StopActorTimer(*this->mPtrTimerHandleList.front());
+  }
+}
+
+void ADyActorCppScript::MDY_PRIVATE_SPECIFIER(BindCollisionCbHandle)(
+    _MIN_ CDyPhysicsRigidbody& iRefRigidbody, 
+    _MIN_ EDyCollisionCbType iType,
+    _MIN_ const void* iUniqueId)
+{
+  this->mCollisionCbHandleList.emplace_back(&iRefRigidbody, iType, iUniqueId);
+}
+
+EDySuccess ADyActorCppScript::MDY_PRIVATE_SPECIFIER(DetachCollisionCbHandle)(_MIN_ const void* iSpecificationId)
+{
+  auto lambda = [iSpecificationId](const auto& handle) { auto& [_1, _2, id] = handle; return id == iSpecificationId; };
+  
+  // Contains.
+  if (Contains(this->mCollisionCbHandleList, lambda) == false) { return DY_FAILURE; }
+
+  // Find and remove.
+  const auto it = std::find_if(MDY_BIND_BEGIN_END(this->mCollisionCbHandleList), lambda);
+  MDY_ASSERT(it != this->mCollisionCbHandleList.end(), "Unexpected error occurred.");
+
+  DyFastErase(this->mCollisionCbHandleList, it);
+  return DY_SUCCESS;
+}
+
+void ADyActorCppScript::MDY_PRIVATE_SPECIFIER(AbortAllCollisionCallback)()
+{
+  while (this->mCollisionCbHandleList.empty() == false)
+  {
+    // Get last element of list because it is fast.
+    auto& [rigidbody, type, id] = this->mCollisionCbHandleList.back();
+    // 
+    const auto flag = rigidbody->RemoveCollisionCallback(type, id);
+    MDY_ASSERT_FORCE(flag == DY_SUCCESS, "");
+
+    this->mCollisionCbHandleList.erase(this->mCollisionCbHandleList.cbegin() + (this->mCollisionCbHandleList.size() - 1));
   }
 }
 

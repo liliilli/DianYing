@@ -37,36 +37,26 @@ namespace dy
 /// @class FDyTextureResource
 /// @brief Texture resource class that serve heap instance.
 ///
-class FDyTextureResource final
+class FDyTextureResource 
 {
 public:
   FDyTextureResource(_MIN_ const FDyTextureInformation& information);
-  ~FDyTextureResource();
+  virtual ~FDyTextureResource() = 0;
 
   /// @brief Get specifier name of valid shader resource.
-  MDY_NODISCARD const std::string& GetSpecifierName() const noexcept
-  {
-    return this->mTextureName;
-  }
+  MDY_NODISCARD const std::string& GetSpecifierName() const noexcept;
 
   /// @brief Get binded texture resource id.
-  MDY_NODISCARD FORCEINLINE TU32 GetTextureId() const noexcept
-  {
-    return this->mTextureResourceId;
-  };
+  MDY_NODISCARD TU32 GetTextureId() const noexcept;
 
   /// @brief Get texture type value.
-  MDY_NODISCARD FORCEINLINE EDyTextureStyleType GetTextureType() const noexcept
-  {
-    return this->mTextureType;
-  }
+  MDY_NODISCARD EDyTextureStyleType GetTextureType() const noexcept;
 
-private:
-  std::string   mTextureName        = MDY_INITIALIZE_EMPTYSTR;
-  DDyVectorInt2 mTextureSize        = {};
-  EDyTextureStyleType mTextureType  = EDyTextureStyleType::NoneError;
+protected:
+  std::string         mTextureName = MDY_INITIALIZE_EMPTYSTR;
+  EDyTextureStyleType mTextureType = EDyTextureStyleType::NoneError;
 
-  TU32          mTextureResourceId  = MDY_INITIALIZE_DEFUINT;
+  TU32 mTextureResourceId = MDY_INITIALIZE_DEFUINT;
   TDyIInformationBinderTexture mInformationBinder;
 };
 

@@ -472,18 +472,28 @@ void MDyMetaInfo::MDY_PRIVATE_SPECIFIER(InitiateMetaInformation)()
   MDY_CALL_ASSERT_SUCCESS(this->pReadScriptResourceMetaInformation(metaPath.mScriptMetaPath));
   MDY_CALL_ASSERT_SUCCESS(this->pReadPrefabResourceMetaInformation(metaPath.mPrefabMetaPath));
   MDY_CALL_ASSERT_SUCCESS(this->pReadWidgetResourceMetaInformation(metaPath.mWidgetMetaPath));
-  MDY_CALL_ASSERT_SUCCESS(this->pReadSceneResourceMetaInformation (metaPath.mSceneMetaPath));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadLevelResourceMetaInformation (metaPath.mSceneMetaPath));
 }
 
 void MDyMetaInfo::MDY_PRIVATE_SPECIFIER(InitiateMetaInformationComp)(_MIN_ const nlohmann::json& iJson)
 {
   reflect::RDyBuiltinResource::BindBuiltinResourcesToMetaManager();
 
-  MDY_CALL_ASSERT_SUCCESS(this->pReadFontResourceMetaInformation  (iJson["FontContainer"]));
-  MDY_CALL_ASSERT_SUCCESS(this->pReadScriptResourceMetaInformation(iJson["ScriptContainer"]));
-  MDY_CALL_ASSERT_SUCCESS(this->pReadPrefabResourceMetaInformation(iJson["PrefabContainer"]));
-  MDY_CALL_ASSERT_SUCCESS(this->pReadWidgetResourceMetaInformation(iJson["WidgetContainer"]));
-  MDY_CALL_ASSERT_SUCCESS(this->pReadSceneResourceMetaInformation (iJson["LevelContainer"]));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadFontMetaAtlas(iJson["Font"]));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadShaderMetaAtlas(iJson["Shader"]));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadSoundMetaAtlas(iJson["Sound"]));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadTextureMetaAtlas(iJson["Texture"]));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadMaterialMetaAtlas(iJson["Material"]));
+
+  MDY_CALL_ASSERT_SUCCESS(this->pReadModelAnimMetaAtlas(iJson["ModelAnim"]));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadModelMeshMetaAtlas(iJson["ModelMesh"]));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadModelSkelMetaAtlas(iJson["ModelSkel"]));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadModelMetaAtlas(iJson["Model"]));
+
+  MDY_CALL_ASSERT_SUCCESS(this->pReadPrefabMetaAtlas(iJson["Prefab"]));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadScriptMetaAtlas(iJson["Script"]));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadWidgetMetaAtlas(iJson["Widget"]));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadLevelMetaAtlas (iJson["Level"]));
 }
 
 EDySuccess MDyMetaInfo::pReadScriptResourceMetaInformation(_MIN_ const std::string& metaFilePath)
@@ -494,22 +504,7 @@ EDySuccess MDyMetaInfo::pReadScriptResourceMetaInformation(_MIN_ const std::stri
 
   // Check "List" Category is exist.
   const nlohmann::json& jsonAtlas = opJsonAtlas.value();
-  MDY_ASSERT(DyCheckHeaderIsExist(jsonAtlas, sCategoryList) == DY_SUCCESS, "Unexpecte error occurred.");
-
-  const auto& scriptResourceListAtlas = jsonAtlas.at(MSVSTR(sCategoryList));
-  for (const auto& scriptResource : scriptResourceListAtlas)
-  {
-    auto metaInfo = scriptResource.get<PDyScriptInstanceMetaInfo>();
-
-    // Check Duplicated script specfier integrity
-    MDY_ASSERT(DyIsMapContains(this->mScriptMetaInfo, metaInfo.mSpecifierName) == false, "Duplicated script specifier not permitted.");
-    MDY_ASSERT(std::filesystem::exists(metaInfo.mFilePath), "File not exist.");
-
-    auto [it, isSucceeded] = this->mScriptMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
-    MDY_ASSERT(isSucceeded == true, "Unexpected error occurred.");
-  }
-
-  return DY_SUCCESS;
+  return this->pReadScriptMetaAtlas(jsonAtlas);
 }
 
 EDySuccess MDyMetaInfo::pReadPrefabResourceMetaInformation(_MIN_ const std::string& metaFilePath)
@@ -533,35 +528,7 @@ EDySuccess MDyMetaInfo::pReadPrefabResourceMetaInformation(_MIN_ const std::stri
   const auto& jsonAtlas = opJsonAtlas.value();
   MDY_CALL_ASSERT_SUCCESS(CheckPrefabMetaCategory(jsonAtlas));
 
-  // Make prefab meta information instance sequencially.
-  const auto& prefabAtlas = jsonAtlas.at(MSVSTR(sCategoryObjectList));
-  TPrefabMetaInfoList prefabObjectList = {};
-  for (const auto& prefabInfo : prefabAtlas)
-  {
-    prefabObjectList.emplace_back(PDyPrefabInstanceMetaInfo::CreateMetaInformation(prefabInfo));
-  }
-
-  // (2) Make object list tree.
-  for (auto& object : prefabObjectList)
-  {
-    if (MDY_CHECK_ISEMPTY(object)) { continue; }
-    if (object->mPrefabType == EDyMetaObjectType::Actor
-    &&  object->mCommonProperties.mParentSpecifierName.empty() == false)
-    { // If object type is Actor, and have parents specifier name as dec
-      // Try move object into any parent's children list.
-      const auto list = DyRegexCreateObjectParentSpecifierList(object->mCommonProperties.mParentSpecifierName);
-      MoveMetaPrefabIntoParentRecursively(prefabObjectList, list, 0, object);
-    }
-  }
-
-  // (3) Realign object meta list.
-  for (auto& ptrsmtPrefabObject : prefabObjectList)
-  {
-    if (MDY_CHECK_ISEMPTY(ptrsmtPrefabObject)) { continue; }
-    const auto name = ptrsmtPrefabObject->mSpecifierName;
-    this->mPrefabMetaInfo.try_emplace(name, std::move(ptrsmtPrefabObject));
-  }
-  return DY_SUCCESS;
+  return this->pReadPrefabMetaAtlas(jsonAtlas);
 }
 
 EDySuccess MDyMetaInfo::pReadFontResourceMetaInformation(_MIN_ const std::string& metaFilePath)
@@ -569,19 +536,8 @@ EDySuccess MDyMetaInfo::pReadFontResourceMetaInformation(_MIN_ const std::string
   // (1) Validity Test
   const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
   MDY_ASSERT_FORCE(opJsonAtlas.has_value() == true, "Failed to read font meta information. File is not exist.");
-
   // (2) Get information from buffer.
-  const nlohmann::json& jsonAtlas = opJsonAtlas.value();
-  for (auto it = jsonAtlas.cbegin(); it != jsonAtlas.cend(); ++it)
-  { // Create font meta information instance from each json atlas.
-    auto [_, isSucceeded] = this->mFontMetaInfo.try_emplace(
-        it.key(),
-        PDyMetaFontInformation::CreateWithJson(it.value())
-    );
-    MDY_ASSERT_FORCE(isSucceeded == true, "Font meta information creation must be succeeded.");
-  }
-
-  return DY_SUCCESS;
+  return this->pReadFontMetaAtlas(opJsonAtlas.value());
 }
 
 EDySuccess MDyMetaInfo::pReadModelResourceMetaInformation(_MIN_ const std::string& metaFilePath)
@@ -591,16 +547,7 @@ EDySuccess MDyMetaInfo::pReadModelResourceMetaInformation(_MIN_ const std::strin
   MDY_ASSERT_FORCE(opJsonAtlas.has_value() == true, "Failed to read Model meta information. File is not exist.");
 
   // (2) Get information from buffer.
-  for (const auto& item : opJsonAtlas.value().items())
-  {
-    auto desc = item.value().get<PDyModelInstanceMetaInfo>();
-    desc.mSpecifierName = item.key();
-
-    auto [it, isSucceeded] = this->mModelMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
-    MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
-  }
-
-  return DY_SUCCESS;
+  return this->pReadModelMetaAtlas(opJsonAtlas.value());
 }
 
 EDySuccess MDyMetaInfo::pReadModelMeshResourceMetaInformation(_MIN_ const std::string& metaFilePath)
@@ -610,16 +557,7 @@ EDySuccess MDyMetaInfo::pReadModelMeshResourceMetaInformation(_MIN_ const std::s
   MDY_ASSERT_FORCE(opJsonAtlas.has_value() == true, "Failed to read model meta information. File is not exist.");
 
   // (2) Get information from buffer.
-  for (const auto& item : opJsonAtlas.value().items())
-  {
-    auto desc = item.value().get<PDyMeshInstanceMetaInfo>();
-    desc.mSpecifierName = item.key();
-
-    auto [it, isSucceeded] = this->mModelMeshMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
-    MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
-  }
-  
-  return DY_SUCCESS;
+  return this->pReadModelMeshMetaAtlas(opJsonAtlas.value());
 }
 
 EDySuccess MDyMetaInfo::pReadModelSkeletonMetaInformation(_MIN_ const std::string& metaFilePath)
@@ -629,16 +567,7 @@ EDySuccess MDyMetaInfo::pReadModelSkeletonMetaInformation(_MIN_ const std::strin
   MDY_ASSERT_FORCE(opJsonAtlas.has_value() == true, "Failed to read model skeleton information. File is not exist.");
 
   // (2) Get information from buffer.
-  for (const auto& item : opJsonAtlas.value().items())
-  {
-    auto desc = item.value().get<decltype(mModelSkeletonMetaInfo)::value_type::second_type>();
-    desc.mSpecifierName = item.key();
-
-    auto [it, isSucceeded] = this->mModelSkeletonMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
-    MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
-  }
-  
-  return DY_SUCCESS;
+  return this->pReadModelSkelMetaAtlas(opJsonAtlas.value());
 }
 
 EDySuccess MDyMetaInfo::pReadModelAnimationMetaInformation(_MIN_ const std::string& metaFilePath)
@@ -648,16 +577,7 @@ EDySuccess MDyMetaInfo::pReadModelAnimationMetaInformation(_MIN_ const std::stri
   MDY_ASSERT_FORCE(opJsonAtlas.has_value() == true, "Failed to read model animation sequence information. File is not exist.");
 
   // (2) Get information from buffer.
-  for (const auto& item : opJsonAtlas.value().items())
-  {
-    auto desc = item.value().get<decltype(mModelAnimScrapMetaInfo)::value_type::second_type>();
-    desc.mSpecifierName = item.key();
-
-    auto [it, isSucceeded] = this->mModelAnimScrapMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
-    MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
-  }
-  
-  return DY_SUCCESS;
+  return this->pReadModelAnimMetaAtlas(opJsonAtlas.value());
 }
 
 EDySuccess MDyMetaInfo::pReadTextureResourceMetaInformation(_MIN_ const std::string& metaFilePath)
@@ -667,16 +587,7 @@ EDySuccess MDyMetaInfo::pReadTextureResourceMetaInformation(_MIN_ const std::str
   MDY_ASSERT_FORCE(opJsonAtlas.has_value() == true, "Failed to read texture meta information. File is not exist.");
 
   // (2) Insert each item.
-  for (const auto& item : opJsonAtlas.value().items())
-  {
-    auto desc = item.value().get<PDyTextureInstanceMetaInfo>();
-    desc.mSpecifierName = item.key();
-
-    auto [it, isSucceeded] = this->mTextureMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
-    MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
-  }
-
-  return DY_SUCCESS;
+  return this->pReadTextureMetaAtlas(opJsonAtlas.value());
 }
 
 EDySuccess MDyMetaInfo::pReadShaderResourceMetaInformation(_MIN_ const std::string& metaFilePath)
@@ -684,18 +595,8 @@ EDySuccess MDyMetaInfo::pReadShaderResourceMetaInformation(_MIN_ const std::stri
   // (1) Validity Test
   const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
   MDY_ASSERT_FORCE(opJsonAtlas.has_value() == true, "Failed to read shader meta information. File is not exist.");
-
   // (2) Insert each item.
-  for (const auto& item : opJsonAtlas.value().items())
-  {
-    auto desc = item.value().get<PDyGLShaderInstanceMetaInfo>();
-    desc.mSpecifierName = item.key();
-
-    auto [it, isSucceeded] = this->mShaderMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
-    MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
-  }
-
-  return DY_SUCCESS;
+  return this->pReadShaderMetaAtlas(opJsonAtlas.value());
 }
 
 EDySuccess MDyMetaInfo::pReadMaterialResourceMetaInformation(_MIN_ const std::string& metaFilePath)
@@ -703,71 +604,35 @@ EDySuccess MDyMetaInfo::pReadMaterialResourceMetaInformation(_MIN_ const std::st
   // (1) Validity Test
   const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
   MDY_ASSERT_FORCE(opJsonAtlas.has_value() == true, "Failed to read material meta information. File is not exist.");
-
   // (2) Insert each item.
-  for (const auto& item : opJsonAtlas.value().items())
-  {
-    auto desc = item.value().get<PDyMaterialInstanceMetaInfo>();
-    desc.mSpecifierName = item.key();
-
-    auto [it, isSucceeded] = this->mMaterialMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
-    MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
-  }
-
-  return DY_SUCCESS;
+  return this->pReadMaterialMetaAtlas(opJsonAtlas.value());
 }
 
-EDySuccess MDyMetaInfo::pReadSceneResourceMetaInformation(_MIN_ const std::string& metaFilepath)
+EDySuccess MDyMetaInfo::pReadLevelResourceMetaInformation(_MIN_ const std::string& metaFilepath)
 {
-  // (1) Validity test
   const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilepath);
   MDY_ASSERT_FORCE(opJsonAtlas.has_value() == true, "Failed to read scene meta information. File is not exist.");
 
-  // (2) Insert each item.
-  for (const auto& sceneAtlas : opJsonAtlas.value())
-  {
-    auto desc = sceneAtlas.get<PDyLevelConstructMetaInfo>();
-    auto [it, isSucceeded] = this->mLevelInfoMap.try_emplace(desc.mMetaCategory.mLevelName, std::move(desc));
-    MDY_ASSERT(isSucceeded == true, "Unexpected error occurred.");
-  }
-
-  return DY_SUCCESS;
+  return this->pReadLevelMetaAtlas(opJsonAtlas.value());
 }
 
 EDySuccess MDyMetaInfo::pReadWidgetResourceMetaInformation(_MIN_ const std::string& metaFilePath)
-{ // (1) Validity Test
+{ 
   const std::optional<nlohmann::json> opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
   MDY_ASSERT(opJsonAtlas.has_value() == true, "Must be valid json atlas from file path.");
 
-  auto& listAtlas = opJsonAtlas.value();
-  for (const auto& widgetMeta : listAtlas)
-  {
-    auto rootInstance = DyCreateWidgetMetaInformation(widgetMeta);
-    MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(rootInstance), "Widget root instance must not be empty.");
-    this->mWidgetMetaInfo.try_emplace(rootInstance->mWidgetSpecifierName, std::move(rootInstance));
-  }
-  return DY_SUCCESS;
+  return this->pReadWidgetMetaAtlas(opJsonAtlas.value());
 }
 
 EDySuccess MDyMetaInfo::pReadSoundResourceMetaInformation(const std::string& metaFilePath)
 {
-  // Read meta script file.
   const auto optJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
   MDY_ASSERT(optJsonAtlas.has_value() == true, "Must be valid json atlas from file path.");
 
-  // (2) Get information from buffer.
-  for (const auto& item : optJsonAtlas.value().items())
-  {
-    auto desc = item.value().get<decltype(mSoundMetaInfo)::value_type::second_type>();
-    desc.mSpecifierName = item.key();
-
-    auto [it, isSucceeded] = this->mSoundMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
-    MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
-  }
-  return DY_SUCCESS;
+  return this->pReadSoundMetaAtlas(optJsonAtlas.value());
 }
 
-EDySuccess MDyMetaInfo::pReadScriptResourceMetaInformation(_MIN_ const nlohmann::json& iJson)
+EDySuccess MDyMetaInfo::pReadScriptMetaAtlas(_MIN_ const nlohmann::json& iJson)
 {
   // Check "List" Category is exist.
   MDY_ASSERT(DyCheckHeaderIsExist(iJson, sCategoryList) == DY_SUCCESS, "Unexpecte error occurred.");
@@ -788,11 +653,11 @@ EDySuccess MDyMetaInfo::pReadScriptResourceMetaInformation(_MIN_ const nlohmann:
   return DY_SUCCESS;
 }
 
-EDySuccess MDyMetaInfo::pReadPrefabResourceMetaInformation(_MIN_ const nlohmann::json& iJson)
+EDySuccess MDyMetaInfo::pReadPrefabMetaAtlas(_MIN_ const nlohmann::json& iJson)
 {
   // Make prefab meta information instance sequencially.
-  const auto& jsonAtlas = iJson;
-  const auto& prefabAtlas = jsonAtlas.at(MSVSTR(sCategoryObjectList));
+  const auto& prefabAtlas = iJson.at(MSVSTR(sCategoryObjectList));
+
   TPrefabMetaInfoList prefabObjectList = {};
   for (const auto& prefabInfo : prefabAtlas)
   {
@@ -822,7 +687,7 @@ EDySuccess MDyMetaInfo::pReadPrefabResourceMetaInformation(_MIN_ const nlohmann:
   return DY_SUCCESS; 
 }
 
-EDySuccess MDyMetaInfo::pReadWidgetResourceMetaInformation(_MIN_ const nlohmann::json& iJson)
+EDySuccess MDyMetaInfo::pReadWidgetMetaAtlas(_MIN_ const nlohmann::json& iJson)
 {
   for (const auto& widgetMeta : iJson)
   {
@@ -833,7 +698,7 @@ EDySuccess MDyMetaInfo::pReadWidgetResourceMetaInformation(_MIN_ const nlohmann:
   return DY_SUCCESS;
 }
 
-EDySuccess MDyMetaInfo::pReadFontResourceMetaInformation(_MIN_ const nlohmann::json& iJson)
+EDySuccess MDyMetaInfo::pReadFontMetaAtlas(_MIN_ const nlohmann::json& iJson)
 {
   for (auto it = iJson.cbegin(); it != iJson.cend(); ++it)
   { // Create font meta information instance from each json atlas.
@@ -841,18 +706,122 @@ EDySuccess MDyMetaInfo::pReadFontResourceMetaInformation(_MIN_ const nlohmann::j
         it.key(),
         PDyMetaFontInformation::CreateWithJson(it.value())
     );
-    MDY_ASSERT(isSucceeded == true, "Font meta information creation must be succeeded.");
+    MDY_ASSERT_FORCE(isSucceeded == true, "Font meta information creation must be succeeded.");
   }
   return DY_SUCCESS;
 }
 
-EDySuccess MDyMetaInfo::pReadSceneResourceMetaInformation(_MIN_ const nlohmann::json& iJson)
+EDySuccess MDyMetaInfo::pReadLevelMetaAtlas(_MIN_ const nlohmann::json& iJson)
 {
   for (const auto& sceneAtlas : iJson)
   {
     auto desc = sceneAtlas.get<PDyLevelConstructMetaInfo>();
     auto [it, isSucceeded] = this->mLevelInfoMap.try_emplace(desc.mMetaCategory.mLevelName, std::move(desc));
     MDY_ASSERT(isSucceeded == true, "Unexpected error occurred.");
+  }
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pReadShaderMetaAtlas(_MIN_ const nlohmann::json& iJson)
+{
+  for (const auto& item : iJson.items())
+  {
+    auto desc = item.value().get<PDyGLShaderInstanceMetaInfo>();
+    desc.mSpecifierName = item.key();
+
+    auto [it, isSucceeded] = this->mShaderMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
+    MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
+  }
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pReadSoundMetaAtlas(_MIN_ const nlohmann::json& iJson)
+{
+  for (const auto& item : iJson.items())
+  {
+    auto desc = item.value().get<decltype(mSoundMetaInfo)::value_type::second_type>();
+    desc.mSpecifierName = item.key();
+
+    auto [it, isSucceeded] = this->mSoundMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
+    MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
+  }
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pReadTextureMetaAtlas(_MIN_ const nlohmann::json& iJson)
+{
+  for (const auto& item : iJson.items())
+  {
+    auto desc = item.value().get<PDyTextureInstanceMetaInfo>();
+    desc.mSpecifierName = item.key();
+
+    auto [it, isSucceeded] = this->mTextureMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
+    MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
+  }
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pReadMaterialMetaAtlas(_MIN_ const nlohmann::json& iJson)
+{
+  for (const auto& item : iJson.items())
+  {
+    auto desc = item.value().get<PDyMaterialInstanceMetaInfo>();
+    desc.mSpecifierName = item.key();
+
+    auto [it, isSucceeded] = this->mMaterialMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
+    MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
+  }
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pReadModelAnimMetaAtlas(_MIN_ const nlohmann::json& iJson)
+{
+  for (const auto& item : iJson.items())
+  {
+    auto desc = item.value().get<decltype(mModelAnimScrapMetaInfo)::value_type::second_type>();
+    desc.mSpecifierName = item.key();
+
+    auto [it, isSucceeded] = this->mModelAnimScrapMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
+    MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
+  }
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pReadModelMeshMetaAtlas(_MIN_ const nlohmann::json& iJson)
+{
+  for (const auto& item : iJson.items())
+  {
+    auto desc = item.value().get<PDyMeshInstanceMetaInfo>();
+    desc.mSpecifierName = item.key();
+
+    auto [it, isSucceeded] = this->mModelMeshMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
+    MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
+  }
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pReadModelSkelMetaAtlas(_MIN_ const nlohmann::json& iJson)
+{
+  for (const auto& item : iJson.items())
+  {
+    auto desc = item.value().get<decltype(mModelSkeletonMetaInfo)::value_type::second_type>();
+    desc.mSpecifierName = item.key();
+
+    auto [it, isSucceeded] = this->mModelSkeletonMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
+    MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
+  }
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pReadModelMetaAtlas(_MIN_ const nlohmann::json& iJson)
+{
+  for (const auto& item : iJson.items())
+  {
+    auto desc = item.value().get<PDyModelInstanceMetaInfo>();
+    desc.mSpecifierName = item.key();
+
+    auto [it, isSucceeded] = this->mModelMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
+    MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
   }
   return DY_SUCCESS;
 }

@@ -70,6 +70,7 @@ enum class EDyUniformVariableType
   Matrix4Array,
   Vector3Array,
   Texture2DRectangle, // Could not create mipmap from this, and texel retriving uv is texuture's width and height.
+  Texture2DCubemap,   // GL_SAMPLER_CUBE (samplerCube)
 };
 
 /// @struct DDyAttributeVariableInformation

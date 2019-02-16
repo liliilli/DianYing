@@ -126,6 +126,11 @@ bool MDySetting::IsDefaultSsaoOptionActivated() const noexcept
   return this->mGamePlay.mGraphics.mIsEnabledDefaultSsao;
 }
 
+bool MDySetting::IsDebugMode() const noexcept
+{
+  return this->mIsDebugMode;
+}
+
 TI32 MDySetting::GetWindowSizeWidth() const noexcept
 {
   return this->mGamePlay.mInitialResolution.X;
@@ -251,6 +256,26 @@ const DDySettingPhysics& MDySetting::GetPhysicsSetting() const noexcept
   return this->mPhysics;
 }
 
+void MDySetting::SetRenderingMode(_MIN_ EDyModelRenderingMode iNewMode) noexcept
+{
+  this->mModelRenderingMode = iNewMode;
+}
+
+EDyModelRenderingMode MDySetting::GetRenderingMode() const noexcept
+{
+  return this->mModelRenderingMode;
+}
+
+void MDySetting::SetRenderingPhysicsCollisionShape(_MIN_ bool iIsEnabled) noexcept
+{
+  this->mIsRenderPhysicsCollisionShape = iIsEnabled;
+}
+
+bool MDySetting::IsRenderPhysicsCollisionShape() const noexcept
+{
+  return this->mIsRenderPhysicsCollisionShape;
+}
+
 void MDySetting::pSetupExecutableArgumentSettings()
 {
   /// @brief Setup rendering api type from argument.
@@ -280,6 +305,8 @@ void MDySetting::pSetupExecutableArgumentSettings()
     }
   };
 
+  static auto SetupDyDebugMode = [this](const cxxopts::OptionValue& result) { this->mIsDebugMode = result.as<bool>(); };
+
   /// @brief Setup feature logging to file from argument.
   /// @param result ["enable_logging_file"] Option value from parsing library.
   static auto SetupLoggingFileFeature = [this](const cxxopts::OptionValue& result)
@@ -307,16 +334,27 @@ void MDySetting::pSetupExecutableArgumentSettings()
       ("g,graphics",                "Enable graphics API with", cxxopts::value<std::string>()->default_value(""))
       ("c,enable_logging_console",  "Enable logging console",   cxxopts::value<bool>())
       ("f,enable_logging_file",     "Enable logging file to",   cxxopts::value<std::string>()->default_value(""))
+#ifdef false
       // -m and -r can not be existed on same time.
       // Must specify setting json data path from executable application file.
       ("m,mode_compression_data", 
           "Run application as compression data mode.", 
           cxxopts::value<std::string>()->default_value(""))
+#endif
       // If -r is not setup, specified compression file will be loaded.
       // Must specify setting json data path from executable application file.
       ("r,run_separated_data",    
           "Run with seperated data file, must be setting file path.", 
           cxxopts::value<std::string>()->default_value(""))
+      // If -d setup, debug mode will be setup.
+      // Specified keyboard key will be setup (F1 ~ F12) and override given game runtime key. 
+      // and, imgui will also be initiated to see informations.
+      // when -d set up, all resources will be loaded like -r flag. and saved as saparated files.
+      /// @WARNING IMGUI does not follow any design-patterns like a MVC, MVP, MVVM, prism...
+      /// IMGUI is just for intermediate gui rendering.
+      ("d,debug",
+          "Debug mode. User can make game resources with debug mode or can see informations.",
+          cxxopts::value<bool>())
   ;
 
   #if defined(MDY_PLATFORM_FLAG_WINDOWS) && defined(_WIN32)
@@ -324,31 +362,26 @@ void MDySetting::pSetupExecutableArgumentSettings()
     const auto result = options.parse(__argc, __argv);
 
     SetupRenderingType(result["graphics"]);
+    
     SetupLoggingConsoleFeature(result["enable_logging_console"]);
     SetupLoggingFileFeature(result["enable_logging_file"]);
-    { // Mode compression data
-      if (const auto m = result["mode_compression_data"].as<std::string>(); m.empty() == false)
-      {
-        namespace fs = std::filesystem;
-        MDY_ASSERT_FORCE(fs::exists(m) == true, "Compressed data entry setting file is not exist on given path.");
 
-        this->mEntrySettingPath = m;
-        this->mApplicationMode  = EDyAppMode::ModeCompressData;
-      }
-    }
     { // Run seperated data.
       if (const auto r = result["run_separated_data"].as<std::string>(); r.empty() == false)
       {
         namespace fs = std::filesystem;
         MDY_ASSERT_FORCE(
-            this->GetApplicationMode() == EDyAppMode::LoadCompressedFile,
+            this->mFileLoadingMode == EDyFileLoadingMode::LoadCompressedFile,
             "Application running mode should not be duplicated by any mode flag.");
         MDY_ASSERT_FORCE(fs::exists(r) == true, "Compressed data entry setting file is not exist on given path.");
 
         this->mEntrySettingPath = r;
-        this->mApplicationMode  = EDyAppMode::LoadSeperatedFile;
+        this->mFileLoadingMode  = EDyFileLoadingMode::LoadSeperatedFile;
       }
     }
+
+    // Check debug mode must be enabled.
+    SetupDyDebugMode(result["debug"]);
   }
   #elif defined(MDY_PLATFORM_FLAG_LINUX) && defined(__linux__)
   {
@@ -391,7 +424,7 @@ EDySuccess MDySetting::pfInitialize()
   MDY_LOG_INFO_D("{} | Vsync : {}", "Feature",                this->mIsEnabledVsync ? "ON" : "OFF");
   MDY_CALL_ASSERT_SUCCESS(InitializeGraphicsApi(*this));
 
-  if (this->mApplicationMode == EDyAppMode::LoadSeperatedFile)
+  if (this->mFileLoadingMode == EDyFileLoadingMode::LoadSeperatedFile) 
   { // If Application loading mode is `Load separated file` like a json, dydat.
     const auto opSettingAtlas = DyGetJsonAtlasFromFile(this->mEntrySettingPath);
     MDY_ASSERT(opSettingAtlas.has_value() == true, "Failed to open application setting file.");
@@ -408,7 +441,7 @@ EDySuccess MDySetting::pfInitialize()
     DyJsonGetValueFromTo(settingAtlas, sCategoryMetaPath, this->mDevMetaPath);
     MDyMetaInfo::GetInstance().MDY_PRIVATE_SPECIFIER(InitiateMetaInformation)();
   }
-  else if (this->mApplicationMode == EDyAppMode::LoadCompressedFile)
+  else if (this->mFileLoadingMode == EDyFileLoadingMode::LoadCompressedFile)
   { // If Application loading mode is `Load compressed file` like a `Data###.dydat`.
     MDY_ASSERT(std::filesystem::exists(this->mEntrySettingPath) == true, "Data file is not exist.");
 

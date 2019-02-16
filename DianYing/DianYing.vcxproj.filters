@@ -27,7 +27,6 @@
     <ClCompile Include="Source\Helper\IoHelper.cc" />
     <ClCompile Include="Libraries\glad\src\glad.c" />
     <ClCompile Include="Source\Entry\Entry.cc" />
-    <ClCompile Include="Source\Editor\Gui\MainMenu.cc" />
     <ClCompile Include="Source\Management\Editor\GuiManager.cc" />
     <ClCompile Include="Source\Editor\Gui\EtcDialog.cc" />
     <ClCompile Include="Source\Management\Editor\GuiWindowFactory.cc" />
@@ -316,6 +315,29 @@
     <ClCompile Include="Source\Component\CDyPhysicsColliderSphere.cc" />
     <ClCompile Include="Source\Component\CDyPhysicsColliderBox.cc" />
     <ClCompile Include="Source\Component\CDyPhysicsColliderCapsule.cc" />
+    <ClCompile Include="Source\Management\Internal\MDyDebug.cc" />
+    <ClCompile Include="Source\Editor\View\MainMenu.cc" />
+    <ClCompile Include="Source\Builtin\FrameBuffer\Debug\FDyBtFbDebug.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\Debug\FDyBtAtDebug.cc" />
+    <ClCompile Include="Source\Builtin\Mesh\Debug\FDyBtMsDebugSphere.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\Debug\BtShDebugLine.cc" />
+    <ClCompile Include="Source\Core\Rendering\Pipeline\DebugRenderer.cc" />
+    <ClCompile Include="Source\Builtin\Mesh\Debug\FDyBtMsDebugBox.cc" />
+    <ClCompile Include="Source\Builtin\Mesh\Debug\FDyBtMsDebugCapsule.cc" />
+    <ClCompile Include="Source\Component\CDySkybox.cc" />
+    <ClCompile Include="Source\Core\Resource\Information\FDyTextureGeneralInformation.cc" />
+    <ClCompile Include="Source\Core\Resource\Resource\FDyTextureGeneralResource.cc" />
+    <ClCompile Include="Source\Core\Resource\Information\FDyTextureCubemapInformation.cc" />
+    <ClCompile Include="Source\Core\Resource\Resource\FDyTextureCubemapResource.cc" />
+    <ClCompile Include="Source\Builtin\ShaderGl\Render\BtShSkyboxDefault.cc" />
+    <ClCompile Include="Source\Builtin\FrameBuffer\Deferred\FDyBtFbSkybox.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAtSkyOutput.cc" />
+    <ClCompile Include="Source\Core\Rendering\Pipeline\PostEffectSky.cc" />
+    <ClCompile Include="Source\Helper\Type\ColorRGB.cc" />
+    <ClCompile Include="Source\Core\Reflection\RDyGlobalInstanceManager.cc" />
+    <ClCompile Include="Source\Builtin\GlobalInstance\FDyBtGiDebugStatus.cc" />
+    <ClCompile Include="Source\Meta\Type\Physics\EDyRigidbodyType.cc" />
+    <ClCompile Include="data\Script\DebugActor\BtScCollisionTest1.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -352,7 +374,6 @@
     <ClInclude Include="Include\Dy\Helper\GlobalType.h" />
     <ClInclude Include="Include\Dy\Editor\Literals\LibraryLicenseString.h" />
     <ClInclude Include="Include\Dy\Editor\Interface\IDyGuiWindowSingletonCrtp.h" />
-    <ClInclude Include="Include\Dy\Editor\Gui\MainMenu.h" />
     <ClInclude Include="Include\Dy\Helper\HashCompileCrc32.h" />
     <ClInclude Include="Include\Dy\Management\Editor\GuiManager.h" />
     <ClInclude Include="Include\Dy\Editor\Interface\IDyGuiComponentBase.h" />
@@ -779,6 +800,38 @@
     <ClInclude Include="Include\Dy\Component\CDyPhysicsColliderBox.h" />
     <ClInclude Include="Include\Dy\Component\CDyPhysicsColliderCapsule.h" />
     <ClInclude Include="Include\Dy\Component\CDyPhysicsColliderSphere.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\MDyDebug.h" />
+    <ClInclude Include="Include\Dy\Editor\View\MainMenu.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Render\EDyModelRenderingMode.h" />
+    <ClInclude Include="Include\Dy\Builtin\FrameBuffer\Debug\FDyBtFbDebug.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\Debug\FDyBtAtDebug.h" />
+    <ClInclude Include="Include\Dy\Builtin\Mesh\Debug\FDyBtMsDebugSphere.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\Debug\BtShDebugLine.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\DebugRenderer.h" />
+    <ClInclude Include="Include\Dy\Builtin\Mesh\Debug\FDyBtMsDebugBox.h" />
+    <ClInclude Include="Include\Dy\Builtin\Mesh\Debug\FDyBtMsDebugCapsule.h" />
+    <ClInclude Include="Include\Dy\Component\CDySkybox.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Information\FDyTextureCubemapInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Information\FDyTextureGeneralInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyTextureGeneralResource.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyTextureCubemapResource.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\Render\BtShSkyboxDefault.h" />
+    <ClInclude Include="Include\Dy\Builtin\FrameBuffer\Deferred\FDyBtFbSkybox.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAtSkyOutput.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\PostEffectSky.h" />
+    <ClInclude Include="Include\Dy\Core\Reflection\RDyGlobalInstanceManager.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGlobalInstance.h" />
+    <ClInclude Include="Include\Dy\Builtin\GlobalInstance\FDyBtGiDebugStatus.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\DDyCompUpdator.h" />
+    <ClInclude Include="Include\Dy\Meta\Type\Physics\EDyRigidbodyType.h" />
+    <ClInclude Include="data\Script\DebugActor\BtScCollisionTest1.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Physics\CallbackSpecifier.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\Physics\CollisionResults.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Physics\FDyCollisionSignatureContainer.h" />
+    <ClInclude Include="Include\Dy\Component\Interface\Physics\IDyonColliderBaseDelegator.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Physics\DDyCollisionCallbackItem.h" />
+    <ClInclude Include="Include\Dy\Component\Type\Physics\EDyCollisionCbType.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Physics\DDyCollisionIssueItem.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

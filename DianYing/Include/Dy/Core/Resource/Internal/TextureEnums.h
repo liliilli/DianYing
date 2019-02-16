@@ -53,6 +53,7 @@ enum class EDyTextureStyleType : unsigned char
   D2Array,
   D2Shadow,
   D2ShadowArray,
+  D2Cubemap   // D2Cubemap
 };
 
 /// @brief Serialization function.

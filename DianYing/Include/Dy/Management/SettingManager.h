@@ -15,11 +15,12 @@
 /// @todo IMPLEMENT SET OVERALL WINDOW WIDTH, HEIGHT AS CHANGING VIEWPORT OF EACH API FRAMEBUFFER.
 ///
 
+#include <Dy/Core/EDyAppMode.h>
 #include <Dy/Helper/Type/VectorInt2.h>
 #include <Dy/Meta/Type/EDyRenderingApi.h>
 #include <Dy/Management/Type/SettingContainer.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
-#include "Dy/Core/EDyAppMode.h"
+#include <Dy/Management/Type/Render/EDyModelRenderingMode.h>
 
 namespace dy
 {
@@ -59,6 +60,9 @@ public:
   void SetDefaultSsaoOption(_MIN_ bool iFlag) noexcept;
   /// @brief Get flag of `default ssao option`.
   MDY_NODISCARD bool IsDefaultSsaoOptionActivated() const noexcept;
+
+  /// @brief Check app is debug mode.
+  MDY_NODISCARD bool IsDebugMode() const noexcept;
 
   /// @brief Get overall window width size.
   MDY_NODISCARD TI32 GetWindowSizeWidth() const noexcept;
@@ -144,12 +148,27 @@ public:
   /// @brief Get const invariant physics setting instance.
   MDY_NODISCARD const DDySettingPhysics& GetPhysicsSetting() const noexcept;
 
+  //!
+  //! Rendering
+  //!
+  
+  /// @brief Set rendering mode.
+  void SetRenderingMode(_MIN_ EDyModelRenderingMode iNewMode) noexcept; 
+  /// @brief Get rendering mode of model.
+  MDY_NODISCARD EDyModelRenderingMode GetRenderingMode() const noexcept;
+
+  /// @brief Set rendering physics collision shape mode.
+  void SetRenderingPhysicsCollisionShape(_MIN_ bool iIsEnabled) noexcept;
+  /// @brief Check `Physics Collision Shape` rendering is enabled.
+  MDY_NODISCARD bool IsRenderPhysicsCollisionShape() const noexcept;
+
 private:
   /// @brief Setup executable argument settings.
   /// This function must be called before initialization.
   void pSetupExecutableArgumentSettings();
 
-  EDyAppMode mApplicationMode         = EDyAppMode::LoadCompressedFile;
+  EDyAppMode mApplicationMode         = EDyAppMode::ModeRuntime;
+  EDyFileLoadingMode mFileLoadingMode = EDyFileLoadingMode::LoadCompressedFile;
   EDyRenderingApi mRenderingType      = EDyRenderingApi::NoneError;
   bool mIsEnabledLogging              = false;
   bool mIsEnabledLoggingToConsole     = false;
@@ -166,12 +185,23 @@ private:
   DDySettingInput       mInput        = {};
   DDySettingTag         mTag          = {};
   DDySettingSound       mSound        = {};
-  // @brief ONLY USED WHEN `MDY_FLAG_LOAD_COMPRESSED_DATAFILE` IS NOT DEFINED.
+  /// @brief ONLY USED WHEN `MDY_FLAG_LOAD_COMPRESSED_DATAFILE` IS NOT DEFINED.
   DDySettingMetaPath    mDevMetaPath  = {};
   DDySettingPhysics     mPhysics      = {};
 
-  bool mIsEnabledVsync = true;
-  bool mIsInitialized  = false;
+  bool mIsEnabledVsync  = true;
+  bool mIsInitialized   = false;
+
+  /// If -d setup, debug mode will be setup.
+  /// Specified keyboard key will be setup (F1 ~ F12) and override given game runtime key. 
+  /// and, imgui will also be initiated to see informations.
+  /// when -d set up, all resources will be loaded like -r flag. and saved as saparated files
+  bool mIsDebugMode     = false;
+
+  /// @brief Set model rendering mode.
+  EDyModelRenderingMode mModelRenderingMode = EDyModelRenderingMode::FillNormal;
+  /// @brief If true, rendering manager should draw physics collision shape.
+  bool mIsRenderPhysicsCollisionShape = false;
 
   friend class DyEngine;
 };

@@ -20,6 +20,21 @@
 
 namespace dy
 {
+
+/*
+ * {
+    "Type": "PhysicsCollider", "Activated": true,
+    "Details": {
+      "IsNotifyEvent": false, "IsOverlapEvent": false, "ColliderType": "Capsule",
+      "ColliderDetails": { "HalfHeight": 30.0, "Radius": 20.0 },
+      "FilterPresetSpecifier": "", "CollisionFilter": [ 0, 0, 0, 0, 0 ], "LayerName": "",
+      "Transform": {
+        "Position": { "X": 0, "Y": 0, "Z": 0 },
+        "Rotation": { "X": 0, "Y": 0, "Z": 0 }
+      }
+    }
+  },
+ */
   
 EDySuccess CDyPhysicsColliderCapsule::Initialize(_MIN_ const PDyColliderComponentMetaInfo& desc)
 {
@@ -64,7 +79,7 @@ void CDyPhysicsColliderCapsule::InitializeInternalResource(_MINOUT_ CDyPhysicsRi
   this->mPtrInternalShape->setSimulationFilterData(filterData);
 
   // Apply to iRefRigidbody.
-  iRefRigidbody.BindShapeToRigidbody(*this->mPtrInternalShape);
+  iRefRigidbody.BindShapeToRigidbody(*this);
 }
 
 TF32 CDyPhysicsColliderCapsule::GetRadius() const noexcept
@@ -75,6 +90,45 @@ TF32 CDyPhysicsColliderCapsule::GetRadius() const noexcept
 TF32 CDyPhysicsColliderCapsule::GetHalfHeight() const noexcept
 {
   return this->mHalfHeight;
+}
+
+void CDyPhysicsColliderCapsule::UpdateColliderMesh()
+{
+  // First, clear all information.
+  this->mColliderMeshInformation.clear();
+  const TF32 step = math::Pi2<TF32> / (50 - 1);
+
+  // (X, Y, 0)
+  {
+    TF32 angle = 0;
+    for (TU32 i = 0; i < 25; ++i)
+    {
+      this->mColliderMeshInformation.emplace_back(this->mRadius * cos(angle), this->mRadius * sin(angle) + this->mHalfHeight, 0);
+      angle += step;
+    }
+
+    for (TU32 i = 0; i < 25; ++i)
+    {
+      this->mColliderMeshInformation.emplace_back(this->mRadius * cos(angle), this->mRadius * sin(angle) - this->mHalfHeight, 0);
+      angle += step;
+    }
+  }
+
+  // (0, Y, Z)
+  {
+    TF32 angle = 0;
+    for (TU32 i = 0; i < 25; ++i)
+    {
+      this->mColliderMeshInformation.emplace_back(0, this->mRadius * sin(angle) + this->mHalfHeight, this->mRadius * cos(angle));
+      angle += step;
+    }
+
+    for (TU32 i = 0; i < 25; ++i)
+    {
+      this->mColliderMeshInformation.emplace_back(0, this->mRadius * sin(angle) - this->mHalfHeight, this->mRadius * cos(angle));
+      angle += step;
+    }
+  }
 }
 
 } /// ::dy namespace

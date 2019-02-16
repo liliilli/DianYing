@@ -77,6 +77,7 @@ void FDyLevelCSMIntergration::RenderScreen()
   glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D_ARRAY, this->mBinderAttShadow->GetAttachmentId());
   glActiveTexture(GL_TEXTURE5); glBindTexture(GL_TEXTURE_2D, this->mBinderAttZValue->GetAttachmentId());
   glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, this->mBinderAttSSAO->GetAttachmentId());
+  glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, this->mBinderAttSky->GetAttachmentId());
 
   const auto& submeshList = this->mBinderTriangle->GetMeshResourceList();
   MDY_ASSERT(submeshList.size() == 1, "Unexpected error occurred.");

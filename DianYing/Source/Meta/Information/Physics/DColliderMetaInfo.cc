@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Meta/Information/Physics/DColliderMetaInfo.h>
 #include <Dy/Helper/Library/HelperJson.h>
+#include <nlohmann/json.hpp>
 
 namespace dy
 {
@@ -26,12 +27,13 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySphereColliderMetaInfo
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyCapsulesColliderMetaInfo& p)
 {
-  MDY_NOT_IMPLEMENTED_ASSERT();
+  DyJsonGetValueFromTo(j, "HalfHeight", p.mHalfHeight);
+  DyJsonGetValueFromTo(j, "Radius", p.mRadius);
 }
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyBoxColliderMetaInfo& p)
 {
-  MDY_NOT_IMPLEMENTED_ASSERT();
+  DyJsonGetValueFromTo(j, "HalfExtent", p.mHalfExtent);
 }
 
 } /// ::dy namespace

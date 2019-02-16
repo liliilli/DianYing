@@ -42,6 +42,34 @@ TU32 CDyPhysicsRigidbody::sRigidbodyIdCounter = 0;
 CDyPhysicsRigidbody::CDyPhysicsRigidbody(FDyActor& actorReference) : ADyGeneralBaseComponent{actorReference}
 { }
 
+EDySuccess CDyPhysicsRigidbody::SetRigidbodyType(_MIN_ EDyRigidbodyType type) noexcept
+{
+  // Check this component is activated.
+  if (this->IsComponentActivated() == true) { return DY_FAILURE; }
+
+  if (this->mType != type) { this->mType = type; }
+  return DY_SUCCESS;
+}
+
+EDyRigidbodyType CDyPhysicsRigidbody::GetRigidbodyType() const noexcept
+{
+  return this->mType;
+}
+
+void CDyPhysicsRigidbody::SetGravity(_MIN_ bool iNewValue) noexcept
+{
+  if (this->mIsEnableGravity != iNewValue)
+  {
+    this->mIsEnableGravity = iNewValue;
+    this->pUpdateSettingGravity(this->mIsEnableGravity);
+  }
+}
+
+bool CDyPhysicsRigidbody::GetGravity() const noexcept
+{
+  return this->mIsEnableGravity;
+}
+
 EDySuccess CDyPhysicsRigidbody::Initialize(_MIN_ const PDyRigidbodyComponentMetaInfo& descriptor)
 {
   // Copy all values.
@@ -52,6 +80,7 @@ EDySuccess CDyPhysicsRigidbody::Initialize(_MIN_ const PDyRigidbodyComponentMeta
   this->mMassInKg           = descriptor.mDetails.mMassInKg;
   this->mLockPosition       = descriptor.mDetails.mLockPosition;
   this->mLockRotation       = descriptor.mDetails.mLockRotation;
+  this->mType               = descriptor.mDetails.mType;
 
   // If lockPreset is not empty so get lock axis values from information..
   const auto& lockPreset = descriptor.mDetails.mLockPreset;
@@ -85,6 +114,41 @@ void CDyPhysicsRigidbody::Release()
 {
   // Component activation check.
   if (this->IsComponentActivated() == true) { this->Deactivate(); }
+  // Clear all collision callback.
+  this->mCallbackContainer.onHit          .RemoveAll();
+  this->mCallbackContainer.onOverlapBegin .RemoveAll();
+  this->mCallbackContainer.onOverlapEnd   .RemoveAll();
+}
+
+void CDyPhysicsRigidbody::CallCollisionCallback(_MIN_ EDyCollisionCbType iType, _MIN_ DDyCollisionIssueItem& iItem)
+{
+  switch (iType)
+  {
+  case EDyCollisionCbType::OnHit: 
+  { // OnHit.
+    for (auto& item : this->mCallbackContainer.onHit.GetBoundCallbackList())
+    {
+      if (item.mIsCallable == false) { continue; }
+      item.mCallbackFunction(iItem.mPtrSelfCollider, *iItem.mPtrSelfActor, iItem.mPtrOtherCollider, *iItem.mPtrOtherActor, iItem.mHitResult);      
+    }
+  } break;
+  case EDyCollisionCbType::OnOverlapBegin: 
+  { // OnOverlapBegin.
+    for (auto& item : this->mCallbackContainer.onOverlapBegin.GetBoundCallbackList())
+    {
+      if (item.mIsCallable == false) { continue; }
+      item.mCallbackFunction(iItem.mPtrSelfCollider, *iItem.mPtrSelfActor, iItem.mPtrOtherCollider, *iItem.mPtrOtherActor, iItem.mHitResult);      
+    }
+  } break;
+  case EDyCollisionCbType::OnOverlapEnd: 
+  { // OnOverlapEnd.
+    for (auto& item : this->mCallbackContainer.onOverlapEnd.GetBoundCallbackList())
+    {
+      if (item.mIsCallable == false) { continue; }
+      item.mCallbackFunction(iItem.mPtrSelfCollider, *iItem.mPtrSelfActor, iItem.mPtrOtherCollider, *iItem.mPtrOtherActor, iItem.mHitResult);      
+    }
+  } break;
+  }
 }
 
 std::string CDyPhysicsRigidbody::ToString()
@@ -98,28 +162,16 @@ std::string CDyPhysicsRigidbody::ToString()
 
 void CDyPhysicsRigidbody::TryActivateInstance()
 {
-  auto& bindedActor    = *this->GetBindedActor();
-  // Update transform.
-  MDY_NOUSE_RTVAL_EXPR(bindedActor.GetTransform()->GetTransform());
-  const auto& worldPos = bindedActor.GetTransform()->GetFinalWorldPosition();
-  const auto& worldRot = bindedActor.GetTransform()->GetRotationQuaternion();
-
-  // Initialize internal resource.
-  auto& refPhysics = MDyPhysics::GetInstance();
-  auto& refSdk = refPhysics.MDY_PRIVATE_SPECIFIER(GetRefInternalSdk)();
-
+  auto& bindedActor = *this->GetBindedActor();
+  switch (this->mType)
   {
-    MDY_PHYSX_WRITE_LOCK();
-    MDY_ASSERT_FORCE(MDY_CHECK_ISNULL(this->mOwnerDynamicActor), "Internal rigidbody actor must be null.");
-
-    // Create RigidDynamic instance.
-    this->mOwnerDynamicActor = refSdk.createRigidDynamic(physx::PxTransform(worldPos, worldRot));
-    this->mOwnerDynamicActor->setActorFlag(physx::PxActorFlag::eVISUALIZATION, true);
-
-    const auto& defaultSetting = refPhysics.GetDefaultSetting();
-    this->mOwnerDynamicActor->setAngularDamping(defaultSetting.mCommonProperty.mDefaultAngularDamping);
-    // Disable default kinematic mode, so mOwnerDynamicActor has a dynamic mode.
-    this->mOwnerDynamicActor->setRigidBodyFlag(physx::PxRigidBodyFlag::eKINEMATIC, false);
+  case EDyRigidbodyType::Static: 
+  { this->pActivateStaticActor();
+  } break;
+  case EDyRigidbodyType::Kinematic: 
+  case EDyRigidbodyType::Dynamic: 
+  { this->pActivateDynamicNKinematicActor();
+  } break;
   }
 
   // Set properties, and assign rigidbody specifier id.
@@ -140,6 +192,64 @@ void CDyPhysicsRigidbody::TryActivateInstance()
   }
   
   // Do something.
+  MDyPhysics::GetInstance().MDY_PRIVATE_SPECIFIER(RegisterRigidbody)(*this);
+}
+
+void CDyPhysicsRigidbody::pActivateDynamicNKinematicActor()
+{
+  auto& bindedActor    = *this->GetBindedActor();
+  // Update transform.
+  MDY_NOUSE_RTVAL_EXPR(bindedActor.GetTransform()->GetTransform());
+  const auto& worldPos = bindedActor.GetTransform()->GetFinalWorldPosition();
+  const auto& worldRot = bindedActor.GetTransform()->GetRotationQuaternion();
+
+  // Initialize internal resource.
+  auto& refPhysics = MDyPhysics::GetInstance();
+  auto& refSdk = refPhysics.MDY_PRIVATE_SPECIFIER(GetRefInternalSdk)();
+  const auto& defaultSetting = refPhysics.GetDefaultSetting();
+
+  {
+    MDY_PHYSX_WRITE_LOCK();
+    MDY_ASSERT_FORCE(MDY_CHECK_ISNULL(this->mOwnerInternalActor), "Internal rigidbody actor must be null.");
+
+    // Create RigidDynamic instance.
+    this->mOwnerInternalActor = refSdk.createRigidDynamic(physx::PxTransform(worldPos, worldRot));
+    this->mOwnerInternalActor->setActorFlag(physx::PxActorFlag::eVISUALIZATION, true);
+
+    auto& dynamicActor = static_cast<physx::PxRigidDynamic&>(*this->mOwnerInternalActor);
+    // Set damping.
+    dynamicActor.setAngularDamping(defaultSetting.mCommonProperty.mDefaultAngularDamping);
+    // Disable default kinematic mode, so mOwnerInternalActor has a dynamic mode.
+    if (this->mType == EDyRigidbodyType::Dynamic)
+    { dynamicActor.setRigidBodyFlag(physx::PxRigidBodyFlag::eKINEMATIC, false); }
+    else
+    { dynamicActor.setRigidBodyFlag(physx::PxRigidBodyFlag::eKINEMATIC, true); }
+    // Set gravity.
+    this->pUpdateSettingGravity(this->mIsEnableGravity);
+  }
+}
+
+void CDyPhysicsRigidbody::pActivateStaticActor()
+{
+  auto& bindedActor = *this->GetBindedActor();
+  // Update transform.
+  MDY_NOUSE_RTVAL_EXPR(bindedActor.GetTransform()->GetTransform());
+  const auto& worldPos = bindedActor.GetTransform()->GetFinalWorldPosition();
+  const auto& worldRot = bindedActor.GetTransform()->GetRotationQuaternion();
+
+  // Initialize internal resource.
+  auto& refPhysics = MDyPhysics::GetInstance();
+  auto& refSdk = refPhysics.MDY_PRIVATE_SPECIFIER(GetRefInternalSdk)();
+  const auto& defaultSetting = refPhysics.GetDefaultSetting();
+
+  {
+    MDY_PHYSX_WRITE_LOCK();
+    MDY_ASSERT_FORCE(MDY_CHECK_ISNULL(this->mOwnerInternalActor), "Internal rigidbody actor must be null.");
+
+    // Create RigidDynamic instance.
+    this->mOwnerInternalActor = refSdk.createRigidStatic(physx::PxTransform(worldPos, worldRot));
+    this->mOwnerInternalActor->setActorFlag(physx::PxActorFlag::eVISUALIZATION, true);
+  }
 }
 
 void CDyPhysicsRigidbody::RegisterCollider(_MIN_ CDyPhysicsCollider& iRefCollider)
@@ -163,6 +273,9 @@ void CDyPhysicsRigidbody::RegisterCollider(_MIN_ CDyPhysicsCollider& iRefCollide
 
 void CDyPhysicsRigidbody::TryDeactivateInstance()
 {
+  // Do something.
+  MDyPhysics::GetInstance().MDY_PRIVATE_SPECIFIER(UnregisterRigidbody)(*this);
+
   // And remove collider registration.
   while (this->mPtrColliderList.empty() == false)
   {
@@ -180,11 +293,11 @@ void CDyPhysicsRigidbody::TryDeactivateInstance()
 
   {
     MDY_PHYSX_WRITE_LOCK();
-    MDY_ASSERT_FORCE(MDY_CHECK_ISNOTNULL(this->mOwnerDynamicActor), "Internal rigidbody actor must be valid.");
-    MDY_ASSERT_FORCE(this->mOwnerDynamicActor->isReleasable() == true, "Internal rigidbody actor is not releasable.");
+    MDY_ASSERT_FORCE(MDY_CHECK_ISNOTNULL(this->mOwnerInternalActor), "Internal rigidbody actor must be valid.");
+    MDY_ASSERT_FORCE(this->mOwnerInternalActor->isReleasable() == true, "Internal rigidbody actor is not releasable.");
 
-    this->mOwnerDynamicActor->release();
-    this->mOwnerDynamicActor = nullptr;
+    this->mOwnerInternalActor->release();
+    this->mOwnerInternalActor = nullptr;
   }
 }
 
@@ -203,19 +316,21 @@ void CDyPhysicsRigidbody::UnregisterCollider(_MIN_ CDyPhysicsCollider& iRefColli
   DyFastErase(this->mPtrColliderList, it);
 }
 
-EDySuccess CDyPhysicsRigidbody::BindShapeToRigidbody(_MIN_ physx::PxShape& iRefShape)
+EDySuccess CDyPhysicsRigidbody::BindShapeToRigidbody(_MIN_ CDyPhysicsCollider& iRefShape)
 {
   if (this->IsComponentActivated() == false)      { return DY_FAILURE; }
-  if (MDY_CHECK_ISNULL(this->mOwnerDynamicActor)) { return DY_FAILURE; }
+  if (MDY_CHECK_ISNULL(this->mOwnerInternalActor)) { return DY_FAILURE; }
 
   const auto& mat = MDyPhysics::GetInstance().GetDefaultPhysicsMaterial();
 
-  const auto geometryType   = iRefShape.getGeometryType();
-  const auto geometryHolder = iRefShape.getGeometry();
-
+  const auto geometryHolder = iRefShape.__GetPtrInternalShape()->getGeometry();
   // Create new shape (with default materia) and set pose.
-  auto* newShape = physx::PxRigidActorExt::createExclusiveShape(*this->mOwnerDynamicActor,  geometryHolder.any(), mat);
+  auto* newShape = physx::PxRigidActorExt::createExclusiveShape(*this->mOwnerInternalActor,  geometryHolder.any(), mat);
   MDY_ASSERT_FORCE(newShape != nullptr, "Unexpected error occurred.");
+  // CAUTION(!) settin filter data must be hald afterward createExclusiveShape.
+  newShape->setSimulationFilterData(iRefShape.mInternalFilterData);
+  // Set user data for handling collision callback, and etc.
+  newShape->userData = &iRefShape;
 
   return DY_SUCCESS;
 }
@@ -223,19 +338,43 @@ EDySuccess CDyPhysicsRigidbody::BindShapeToRigidbody(_MIN_ physx::PxShape& iRefS
 EDySuccess CDyPhysicsRigidbody::UnbindShapeFromRigidbody(_MIN_ physx::PxShape& iRefShape)
 {
   if (this->IsComponentActivated() == false)      { return DY_FAILURE; }
-  if (MDY_CHECK_ISNULL(this->mOwnerDynamicActor)) { return DY_FAILURE; }
+  if (MDY_CHECK_ISNULL(this->mOwnerInternalActor)) { return DY_FAILURE; }
 
-  this->mOwnerDynamicActor->detachShape(iRefShape);
+  this->mOwnerInternalActor->detachShape(iRefShape);
   return DY_SUCCESS;
+}
+
+EDySuccess CDyPhysicsRigidbody::RemoveCollisionCallback(_MIN_ EDyCollisionCbType iType, _MIN_ const void* iId)
+{
+  switch (iType)
+  {
+  case EDyCollisionCbType::OnHit:           return this->mCallbackContainer.onHit.RemoveCallback(iId);
+  case EDyCollisionCbType::OnOverlapBegin:  return this->mCallbackContainer.onOverlapBegin.RemoveCallback(iId);
+  case EDyCollisionCbType::OnOverlapEnd:    return this->mCallbackContainer.onOverlapEnd.RemoveCallback(iId); 
+  }
+  return DY_FAILURE;
 }
 
 std::optional<TU32> CDyPhysicsRigidbody::MDY_PRIVATE_SPECIFIER(GetRigidbodySpecifier)() const noexcept
 {
   // If deactivated, just return null value.
-  if (MDY_CHECK_ISNULL(this->mOwnerDynamicActor)) { return std::nullopt; }
+  if (MDY_CHECK_ISNULL(this->mOwnerInternalActor)) { return std::nullopt; }
 
   // If activated, return as bitset type.
   return this->mRigidbodySpecifierId;
+}
+
+physx::PxRigidActor& CDyPhysicsRigidbody::MDY_PRIVATE_SPECIFIER(GetRefInternalRigidbody)() noexcept
+{
+  return *this->mOwnerInternalActor;
+}
+
+void CDyPhysicsRigidbody::pUpdateSettingGravity(_MIN_ const bool& iNewValue)
+{
+  if (this->mOwnerInternalActor == nullptr)      { return; }
+  if (this->mType != EDyRigidbodyType::Dynamic) { return; }
+
+  this->mOwnerInternalActor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, !iNewValue);
 }
 
 } /// ::dy namespace

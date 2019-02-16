@@ -45,16 +45,19 @@ layout (location = 0) out vec4 outColor;
 
 layout (binding = 0) uniform sampler2D uTexture0; // uSceneTexture;
 layout (binding = 1) uniform sampler2D uTexture1; // uUiTexture;
+layout (binding = 2) uniform sampler2D uTexture2; // uDebugTexture;
 
 void main()
 {
-  const vec4 ui = texture(uTexture1, fs_in.texCoord);
   const vec4 sc = texture(uTexture0, fs_in.texCoord);
+  const vec4 ui = texture(uTexture1, fs_in.texCoord);
+  const vec4 db = texture(uTexture2, fs_in.texCoord);
 
   outColor = vec4(
       (vec3(sc.rgb) * (1 - ui.a))
     + (vec3(ui.rgb) * (ui.a)),
     1.0f);
+  if (db.a == 1.0f) { outColor = db; }
 }
 )dy");
 

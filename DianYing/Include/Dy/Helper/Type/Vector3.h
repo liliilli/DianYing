@@ -55,6 +55,7 @@ struct DDyVector3 final {
   DDyVector3(const aiVector3D& value) noexcept : X{value.x}, Y{value.y}, Z{value.z} {}
   DDyVector3(const glm::vec2& value)  noexcept : X{value.x}, Y{value.y} {};
   DDyVector3(const glm::vec3& value)  noexcept : X{value.x}, Y{value.y}, Z{value.z} {};
+  DDyVector3(const physx::PxVec3& value) noexcept : X{value.x}, Y{value.y}, Z{value.z} {};
 
   DDyVector3& operator=(const aiVector2D& value) noexcept
   {
@@ -81,6 +82,14 @@ struct DDyVector3 final {
   }
 
   DDyVector3& operator=(const glm::vec3& value) noexcept
+  {
+    this->X = value.x;
+    this->Y = value.y;
+    this->Z = value.z;
+    return *this;
+  }
+
+  DDyVector3& operator=(const physx::PxVec3& value) noexcept
   {
     this->X = value.x;
     this->Y = value.y;

@@ -25,6 +25,8 @@
 #include <Dy/Core/Rendering/Pipeline/LevelCSMIntegration.h>
 #include <Dy/Core/Rendering/Pipeline/LevelOITRenderer.h>
 #include <Dy/Management/Type/Render/DDyModelHandler.h>
+#include <Dy/Core/Rendering/Pipeline/DebugRenderer.h>
+#include <Dy/Core/Rendering/Pipeline/PostEffectSky.h>
 
 //!
 //! Forward declaration
@@ -36,6 +38,8 @@ struct  DDyUboDirectionalLight;
 class   CDyCamera;
 class   CDyModelRenderer;
 class   CDyDirectionalLight;
+class   CDyPhysicsCollider;
+class   CDySkybox;
 } /// ::dy namespace
 
 namespace dy::editor
@@ -59,12 +63,22 @@ class MDyRendering final : public IDySingleton<MDyRendering>
   MDY_SINGLETON_PROPERTIES(MDyRendering);
   MDY_SINGLETON_DERIVED(MDyRendering);
 public:
+  /// @brief PreRender update functin.
+  void PreRender(_MIN_ TF32 dt);
+
   /// @brief 
   /// @TODO LOGIC IS TEMPORARY.
   void SetupDrawModelTaskQueue();
 
-  /// @brief
-  void RenderDrawCallQueue();
+  /// @brief Render level information.
+  void RenderLevelInformation();
+  /// @brief Render level debug information. This function must be called in render phase.
+  /// @reference https://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/guide/Manual/DebugVisualization.html#debugvisualization
+  void RenderDebugInformation();
+  /// @brief Render UI information.
+  void RenderUIInformation();
+  /// @brief Integrate Level information + Debug Information + UI Information.
+  void Integrate();
 
   /// @brief Render only loading widget.
   void MDY_PRIVATE_SPECIFIER(RenderLoading());
@@ -89,6 +103,11 @@ private:
       _MIN_ DDyModelHandler::DActorInfo& iRefModelRenderer,
       _MIN_ const FDyMeshResource& iRefValidMesh, 
       _MIN_ const FDyMaterialResource& iRefValidMat);
+
+  /// @brief Enqueue debug collider draw call.
+  void EnqueueDebugDrawCollider(
+      _MIN_ CDyPhysicsCollider& iRefCollider, 
+      _MIN_ const DDyMatrix4x4& iTransformMatrix);
   
   ///
   /// @brief Reset all of rendering framebuffers related to rendering of scene for new frame rendering.
@@ -101,8 +120,10 @@ private:
   std::unique_ptr<FDyLevelCSMIntergration>        mLevelFinalRenderer   = MDY_INITIALIZE_NULL;
   std::unique_ptr<FDyLevelOITRenderer>            mTranslucentOIT       = MDY_INITIALIZE_NULL;
   std::unique_ptr<FDyPostEffectSsao>              mSSAOPostEffect       = MDY_INITIALIZE_NULL;
+  std::unique_ptr<FDyPostEffectSky>               mSkyPostEffect        = MDY_INITIALIZE_NULL;
   std::unique_ptr<FDyUIBasicRenderer>             mUiBasicRenderer      = MDY_INITIALIZE_NULL;
   std::unique_ptr<FDyFinalScreenDisplayRenderer>  mFinalDisplayRenderer = MDY_INITIALIZE_NULL;
+  std::unique_ptr<FDyDebugRenderer>               mDebugRenderer        = MDY_INITIALIZE_NULL;
 
   using TMeshDrawCallItem = std::tuple<
       NotNull<DDyModelHandler::DActorInfo*>,
@@ -110,13 +131,19 @@ private:
       NotNull<const FDyMaterialResource*>
   >;
 
+  using TDrawColliderItem = std::pair<NotNull<CDyPhysicsCollider*>, DDyMatrix4x4>; 
+
   std::vector<TMeshDrawCallItem> mOpaqueMeshDrawingList = {};
   std::vector<TMeshDrawCallItem> mTranslucentMeshDrawingList = {};
+  std::vector<TDrawColliderItem> mDebugColliderDrawingList = {};
 
   CDyDirectionalLight* mMainDirectionalLight   = nullptr;
   CDyDirectionalLight* mMainDirectionalShadow  = nullptr;
 
-  inline static constexpr TI32 sDirectionalLightCount = 5;
+  /// @brief Required skybox pointer for rendering on present frame.
+  /// If rendered, skybox pointer will be nulled again.
+  CDySkybox* mPtrRequiredSkybox = nullptr;
+
   std::queue<TI32>    mDirLightAvailableList  = {};
 
 #if defined(MDY_FLAG_IN_EDITOR)
@@ -127,6 +154,8 @@ private:
   friend class FDyDeferredRenderingMesh;
   friend class FDyPostEffectSsao;
   friend class editor::FDyMainViewport;
+
+  friend class MDyPhysics;
 };
 
 } /// ::dy namespace

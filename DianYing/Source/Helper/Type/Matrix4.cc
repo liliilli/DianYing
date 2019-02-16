@@ -16,6 +16,7 @@
 #include <Dy/Helper/Type/Matrix4.h>
 
 #include <glm/gtc/matrix_transform.hpp>
+#include <foundation/PxTransform.h>
 #include <nlohmann/json.hpp>
 
 #include <Dy/Helper/Type/Matrix2.h>
@@ -71,6 +72,18 @@ DDyMatrix4x4::DDyMatrix4x4(const aiMatrix4x4& aiMatrix) noexcept
   this->mMatrixValue[1][3] = aiMatrix.d2;
   this->mMatrixValue[2][3] = aiMatrix.d3;
   this->mMatrixValue[3][3] = aiMatrix.d4;
+}
+
+DDyMatrix4x4::DDyMatrix4x4(_MIN_ const physx::PxTransform& physxTransform) noexcept
+{
+  const auto quatMatrix = DDyQuaternion{physxTransform.q}.GetRotationMatrix4x4();
+  this->mMatrixValue[0] = quatMatrix[0];
+  this->mMatrixValue[1] = quatMatrix[1];
+  this->mMatrixValue[2] = quatMatrix[2];
+  this->mMatrixValue[3] = quatMatrix[3];
+  this->mMatrixValue[3][0] += physxTransform.p.x;
+  this->mMatrixValue[3][1] += physxTransform.p.y;
+  this->mMatrixValue[3][2] += physxTransform.p.z;
 }
 
 DDyMatrix4x4& DDyMatrix4x4::operator=(const glm::mat2& value) noexcept

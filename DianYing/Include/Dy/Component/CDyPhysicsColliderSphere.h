@@ -50,6 +50,8 @@ public:
 
   /// @brief Initialize internal (PhysX) resource.
   void InitializeInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody) override final; 
+  /// @brief Update collider mesh information.
+  void UpdateColliderMesh() override;
 
   /// @brief
   MDY_NODISCARD TF32 GetRadius() const noexcept;

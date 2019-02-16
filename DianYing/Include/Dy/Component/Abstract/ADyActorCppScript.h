@@ -22,6 +22,8 @@
 
 namespace dy
 {
+enum class EDyCollisionCbType;
+class CDyPhysicsRigidbody;
 class FDyActor;
 class CDyActorScriptCpp;
 class MDyGameTimer;
@@ -52,14 +54,24 @@ public:
   void MDY_PRIVATE_SPECIFIER(DetachPtrTimerHandle)(_MIN_ FDyTimerHandle& iRefTimerHandler);
   void MDY_PRIVATE_SPECIFIER(AbortAllValidTimerHandler)();
 
+  void MDY_PRIVATE_SPECIFIER(BindCollisionCbHandle)(_MIN_ CDyPhysicsRigidbody& iRefRigidbody, _MIN_ EDyCollisionCbType iType, _MIN_ const void* iUniqueId);
+  EDySuccess MDY_PRIVATE_SPECIFIER(DetachCollisionCbHandle)(_MIN_ const void * iSpecificationId);
+  void MDY_PRIVATE_SPECIFIER(AbortAllCollisionCallback)();
+
 private:
   /// @brief Set reference to outside world.
   /// @param outsideReference Reference of WidgetScriptCpp instance.
   void pfSetOutsideReference(_MIN_ CDyActorScriptCpp& outsideReference) noexcept;
 
+  /// @brief
   CDyActorScriptCpp* mOutside = nullptr;
-
+  /// @brief
   std::vector<NotNull<FDyTimerHandle*>> mPtrTimerHandleList = {};
+
+  using TCollisionCbHandle = std::tuple<CDyPhysicsRigidbody*, EDyCollisionCbType, const void*>;
+  /// @brief Collision handle list. 
+  std::vector<TCollisionCbHandle> mCollisionCbHandleList = {};
+
   friend class CDyActorScriptCpp;
 };
 

@@ -30,6 +30,7 @@ FDyFinalScreenDisplayRenderer::FDyFinalScreenDisplayRenderer()
 {
   MDY_ASSERT(this->mBinderAttSceneFinal.IsResourceExist() == true,  "Scene final output must be valid.");
   MDY_ASSERT(this->mBinderAttUIFinal.IsResourceExist() == true,     "UI final output must be valid.");
+  MDY_ASSERT(this->mBinderAttDbgFinal.IsResourceExist() == true,    "Debug final output must be valid.");
 
   this->mBinderShader->UseShader();
   this->mBinderShader.TryUpdateUniformList();
@@ -57,6 +58,7 @@ void FDyFinalScreenDisplayRenderer::RenderScreen()
 
   glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, this->mBinderAttSceneFinal->GetAttachmentId());
   glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, this->mBinderAttUIFinal->GetAttachmentId());
+  glActiveTexture(GL_TEXTURE2); glBindTexture(GL_TEXTURE_2D, this->mBinderAttDbgFinal->GetAttachmentId());
   glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
 
   // Rewind

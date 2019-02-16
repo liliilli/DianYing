@@ -14,20 +14,21 @@
 
 /// Header file
 #include <Dy/Element/Actor.h>
+#include <Dy/Element/Type/PDyActorCreationDescriptor.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
+#include <Dy/Management/WorldManager.h>
+#include <Dy/Management/Helper/SDyProfilingHelper.h>
 #include <Dy/Component/CDyTransform.h>
 #include <Dy/Component/CDyModelFilter.h>
 #include <Dy/Component/CDyModelRenderer.h>
 #include <Dy/Component/CDyCamera.h>
 #include <Dy/Component/CDyDirectionalLight.h>
-#include <Dy/Element/Type/PDyActorCreationDescriptor.h>
-#include <Dy/Management/WorldManager.h>
-#include <Dy/Management/Helper/SDyProfilingHelper.h>
 #include <Dy/Component/CDyModelAnimator.h>
 #include <Dy/Component/CDySoundSource.h>
 #include <Dy/Component/CDyPhysicsColliderSphere.h>
 #include <Dy/Component/CDyPhysicsColliderCapsule.h>
 #include <Dy/Component/CDyPhysicsColliderBox.h>
+#include <Dy/Component/CDySkybox.h>
 
 //!
 //! Implementation
@@ -160,6 +161,9 @@ void FDyActor::MDY_PRIVATE_SPECIFIER(CreateComponentList)(const TComponentMetaLi
     case EDyComponentMetaType::Rigidbody:
       this->AddComponent<CDyPhysicsRigidbody>(std::any_cast<const PDyRigidbodyComponentMetaInfo&>(componentInfo));
       break;
+    case EDyComponentMetaType::Skybox:
+      this->AddComponent<CDySkybox>(std::any_cast<const PDySkyboxComponentMetaInfo&>(componentInfo));
+      break;
     case EDyComponentMetaType::Collider:
     {
       const auto& refMetaInfo = std::any_cast<const PDyColliderComponentMetaInfo&>(componentInfo);
@@ -231,6 +235,8 @@ void FDyActor::ReleaseComponent(_MINOUT_ TComponentList::value_type& iItem)
   { static_cast<TComponentBindingType<_::ColliderBox>::Type&>(*ptrsmtComponent).Release(); } break;
   case EDyComponentType::ColliderCapsule:
   { static_cast<TComponentBindingType<_::ColliderCapsule>::Type&>(*ptrsmtComponent).Release(); } break;
+  case EDyComponentType::Skybox:
+  { static_cast<TComponentBindingType<_::Skybox>::Type&>(*ptrsmtComponent).Release(); } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 }

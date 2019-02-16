@@ -54,6 +54,7 @@ layout (binding = 3) uniform sampler2D uTexture3;       // Modelposition, Use it
 layout (binding = 4) uniform sampler2DArrayShadow uTexture4; // Shadow
 layout (binding = 5) uniform sampler2D uTexture5;       // ZValue
 layout (binding = 6) uniform sampler2D uTexture6;       // SSAO
+layout (binding = 7) uniform sampler2D uTexture7;       // Sky
 
 uniform mat4  uLightVPSBMatrix[4];
 uniform vec4  uNormalizedFarPlanes;
@@ -108,7 +109,8 @@ vec3 GetOpaqueColor()
   vec4 unlitValue	    = texture(uTexture0, fs_in.texCoord);
   if (unlitValue.a == 0) 
   { // If alpha is zero, discard.
-    discard; 
+    vec4 sky = texture(uTexture7, fs_in.texCoord);
+    if (sky.a == 0) { discard; } else { return sky.rgb; }
   }
 
   vec4 normalValue	  = GetNormal(); 
@@ -145,7 +147,7 @@ void main()
   vec3 opaqueColor = GetOpaqueColor();
 
   outColor.a    = 1.0f;
-  outColor.rgb  = GetOpaqueColor() * GetSSAOOffset();
+  outColor.rgb  = opaqueColor * GetSSAOOffset();
 }
 )dy");
 
