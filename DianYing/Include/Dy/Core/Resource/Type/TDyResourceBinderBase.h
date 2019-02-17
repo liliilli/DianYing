@@ -103,6 +103,7 @@ EDySuccess __TDyResourceBinderBase<TType>::pTryRequireResource
   }
   else
   {
+    const auto noError = this->pTryDetachResource();
     this->mPtrResource = const_cast<TPtrResource>(ptrResult.value());
     return DY_SUCCESS;
   }
@@ -111,11 +112,10 @@ EDySuccess __TDyResourceBinderBase<TType>::pTryRequireResource
 template <EDyResourceType TType>
 EDySuccess __TDyResourceBinderBase<TType>::pTryDetachResource() noexcept
 {
-  if (MDY_CHECK_ISNULL(this->mPtrResource)) 
-  { 
-    return DY_FAILURE; 
-  }
+  // Checking 
+  if (MDY_CHECK_ISNULL(this->mPtrResource)) { return DY_FAILURE; }
 
+  // Detach
   MDY_CALL_ASSERT_SUCCESS(SDyIOBindingHelper::TryDetachResource<TType>(this->mSpecifierName, this));
   this->mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
   this->mPtrResource    = nullptr;
