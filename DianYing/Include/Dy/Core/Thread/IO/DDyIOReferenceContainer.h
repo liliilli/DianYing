@@ -83,6 +83,9 @@ public:
   MDY_NODISCARD EDySuccess CreateReferenceInstance(
       _MIN_ const std::string& specifier,
       _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style, _MIN_ EDyScope scope);
+  
+  /// @brief Move old Reference Instance.
+  MDY_NODISCARD EDySuccess MoveReferenceInstance(_MINOUT_ DDyIOReferenceInstance&& iRi);
 
   /// @brief Try update validity of this reference instance. \n
   /// If `isValid` is true, `iPtrInstance` must point to something valid, should not be null.

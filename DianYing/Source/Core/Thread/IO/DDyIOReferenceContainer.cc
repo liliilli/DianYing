@@ -208,6 +208,29 @@ EDySuccess DDyIOReferenceContainer::CreateReferenceInstance(
   return DY_SUCCESS;
 }
 
+EDySuccess DDyIOReferenceContainer::MoveReferenceInstance(_MINOUT_ DDyIOReferenceInstance&& iRi)
+{
+  TStringHashMap<DDyIOReferenceInstance>* ptrRIHashMap = nullptr;
+  switch (iRi.mResourceType)
+  {
+  case EDyResourceType::GLShader: { ptrRIHashMap = &this->mMapGLShaderReference; } break;
+  case EDyResourceType::Texture:  { ptrRIHashMap = &this->mMapTextureReference; } break;
+  case EDyResourceType::Mesh:     { ptrRIHashMap = &this->mMapMeshReference; } break;
+  case EDyResourceType::Model:    { ptrRIHashMap = &this->mMapModelReference; } break;
+  case EDyResourceType::Material: { ptrRIHashMap = &this->mMapMaterialReference; } break;
+  case EDyResourceType::GLAttachment:   { ptrRIHashMap = &this->mMapAttachmentReference; } break;
+  case EDyResourceType::GLFrameBuffer:  { ptrRIHashMap = &this->mMapFrameBufferReference; } break;
+  case EDyResourceType::Skeleton:       { ptrRIHashMap = &this->mMapModelSkeletonReference; } break;
+  case EDyResourceType::AnimationScrap: { ptrRIHashMap = &this->mMapModelAnimScrapReference; } break;
+  case EDyResourceType::Sound:          { ptrRIHashMap = &this->mMapSoundReference; } break;
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
+  }
+
+  auto [it, isSuccessful] = ptrRIHashMap->try_emplace(iRi.mSpecifierName, std::move(iRi));
+  MDY_ASSERT(isSuccessful == true, "RI Container creation must be successful.");
+  return DY_SUCCESS;
+}
+
 EDySuccess DDyIOReferenceContainer::TryUpdateValidity(
     _MIN_ EDyResourceType type, 
     _MIN_ const std::string& specifier, 

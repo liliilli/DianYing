@@ -30,7 +30,7 @@ SDyIOBindingHelper::MDY_PRIVATE(pTryRequireResource)
   if (ioThread.pIsReferenceInstanceExist(iSpecifier, iType, EDyResourceStyle::Resource) == false)
   { // If binding is failed, it specifies that RI has not been created (Related task queue was not created neither).
     // So we need populate task queue for resource as temporary.
-    MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
+    MDY_NOUSE_RTVAL_EXPR(ioThread.outTryEnqueueTask(iSpecifier, iType, EDyResourceStyle::Resource, EDyScope::Temporal));
   }
 
   MDY_CALL_ASSERT_SUCCESS(ioThread.TryBindBinderToResourceRI(iSpecifier, iType, iPtrBinder));

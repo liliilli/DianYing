@@ -72,6 +72,7 @@ protected:
     }
     else
     {
+      const auto noError = this->pTryDetachResource();
       this->mPtrResource = ptrResult.value();
       return DY_SUCCESS;
     }
