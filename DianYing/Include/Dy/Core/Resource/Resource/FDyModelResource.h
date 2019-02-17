@@ -48,6 +48,13 @@ public:
     return this->mMaterialResource;
   }
 
+  /// @brief Get count of valid material.
+  MDY_NODISCARD TU32 GetNumberOfMaterial() const noexcept;
+
+  /// @brief Get pointer of material binder. If given index is out of bound of material list,
+  /// Just return nullptr.
+  MDY_NODISCARD TDyResourceBinderMaterial* GetMaterialBinder(_MIN_ TU32 iIndex) noexcept;
+
 private:
   std::string                   mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
   TDyInformationBinderModel    mBinderInformation;

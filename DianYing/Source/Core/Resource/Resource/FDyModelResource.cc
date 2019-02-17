@@ -50,4 +50,17 @@ FDyModelResource::FDyModelResource(_MINOUT_ const FDyModelInformation& input) :
       .Translate(transform.mPosition);
 }
 
+TU32 FDyModelResource::GetNumberOfMaterial() const noexcept
+{
+  return this->mMaterialResource.size();
+}
+
+TDyResourceBinderMaterial* FDyModelResource::GetMaterialBinder(_MIN_ TU32 iIndex) noexcept
+{
+  // Check bound
+  if (iIndex >= this->mMaterialResource.size()) { return nullptr; }
+
+  return this->mMaterialResource[iIndex].get();
+}
+
 } /// ::dy namespace

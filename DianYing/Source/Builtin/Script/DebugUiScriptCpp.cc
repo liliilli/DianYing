@@ -27,6 +27,8 @@
 #include <Dy/Helper/Math/Random.h>
 #include <Dy/Management/GameTimerManager.h>
 #include "Dy/Element/Canvas/FDyImage.h"
+#include "Dy/Core/Resource/Resource/FDyMaterialResource.h"
+#include "Dy/Core/Resource/Resource/FDyShaderResource.h"
 
 namespace dy
 {
