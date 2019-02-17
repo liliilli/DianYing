@@ -384,7 +384,15 @@ TDyIO::TDependencyList TDyIO::pCheckAndUpdateReferenceInstance(_MIN_ const std::
   TDependencyList resultNotFoundList = {};
 
   for (const auto& [specifier, type, style, scope] : dependencies)
-  { // Find dependencies is on memory (not GCed, and avoid duplicated task queing)
+  { 
+    // Find if reference instance is on garbage collector.
+    if (this->mGarbageCollector.IsReferenceInstanceExist(specifier, type, style) == true)
+    {
+      MDY_CALL_ASSERT_SUCCESS(this->outTryRetrieveReferenceInstanceFromGC(specifier, type, style));
+      continue;
+    }
+
+    // Find dependencies is on memory (not GCed, and avoid duplicated task queing)
     if (this->pIsReferenceInstanceExist(specifier, type, style) == true)
     {
       // Try enlarge scope of RI. RI scope is large following by Global > Level > Temporal.
@@ -397,13 +405,6 @@ TDyIO::TDependencyList TDyIO::pCheckAndUpdateReferenceInstance(_MIN_ const std::
       continue;
     }
 
-    // Find if reference instance is on garbage collector.
-    if (this->mGarbageCollector.IsReferenceInstanceExist(specifier, type, style) == true)
-    {
-      MDY_CALL_ASSERT_SUCCESS(this->outTryRetrieveReferenceInstanceFromGC(specifier, type, style));
-      continue;
-    }
-
     resultNotFoundList.emplace_back(PRIVerificationItem{specifier, type, style, scope}, EDyRIStatus::NotValid);
   }
 
@@ -412,7 +413,12 @@ TDyIO::TDependencyList TDyIO::pCheckAndUpdateReferenceInstance(_MIN_ const std::
 
 void TDyIO::pTryEnlargeResourceScope(_MIN_ EDyScope scope, _MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style)
 {
-  // @TODO IMPELEMNT THIS
+  switch (style)
+  {
+  case EDyResourceStyle::Information: this->mRIInformationMap.TryEnlargeResourceScope(scope, specifier, type);  break;
+  case EDyResourceStyle::Resource:    this->mRIResourceMap.TryEnlargeResourceScope(scope, specifier, type);     break;
+  default: MDY_UNEXPECTED_BRANCH();
+  }
 }
 
 EDySuccess TDyIO::outTryRetrieveReferenceInstanceFromGC(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style)

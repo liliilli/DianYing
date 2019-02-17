@@ -59,7 +59,7 @@ public:
   /// Level  < Temporal \n
   /// RI's scope will be changed to big range.
   ///
-  MDY_NODISCARD bool TryEnlargeResourceScope(_MIN_ EDyScope scope, _MIN_ const std::string& specifier, _MIN_ EDyResourceType type);
+  bool TryEnlargeResourceScope(_MIN_ EDyScope scope, _MIN_ const std::string& specifier, _MIN_ EDyResourceType type);
 
   /// @brief Try to bind binder instance to valid resource Reference Instance.
   /// If not exist, just do nothing and return DY_FAILURE.
