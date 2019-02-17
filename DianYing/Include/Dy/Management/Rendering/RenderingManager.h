@@ -98,6 +98,9 @@ public:
   /// @brief Private function, unbind directional light of main light.
   EDySuccess MDY_PRIVATE(UnbindMainDirectionalShadow)(_MIN_ CDyDirectionalLight& iRefLight);
 
+  /// @brief Get General (Default) ui projection matrix.
+  const DDyMatrix4x4& GetGeneralUiProjectionMatrix() const noexcept;
+
 private:
   /// @brief Enqueue static draw call to mesh with material.
   void EnqueueDrawMesh(
@@ -145,7 +148,8 @@ private:
   /// If rendered, skybox pointer will be nulled again.
   CDySkybox* mPtrRequiredSkybox = nullptr;
 
-  std::queue<TI32>    mDirLightAvailableList  = {};
+  std::queue<TI32>  mDirLightAvailableList      = {};
+  DDyMatrix4x4      mUiGeneralProjectionMatrix  = {};
 
 #if defined(MDY_FLAG_IN_EDITOR)
   std::unique_ptr<FDyGrid>                    mGridEffect           = nullptr;

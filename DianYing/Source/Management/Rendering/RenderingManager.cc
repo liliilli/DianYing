@@ -139,6 +139,12 @@ EDySuccess MDyRendering::pfInitialize()
 #endif
   }
 
+  //! Set common properties.
+  auto& refSetting  = MDySetting::GetInstance();
+  const auto width  = refSetting.GetWindowSizeWidth();
+  const auto height = refSetting.GetWindowSizeHeight();
+  this->mUiGeneralProjectionMatrix = DDyMatrix4x4::OrthoProjection(0.f, TF32(width), 0.f, TF32(height), -1.f, 100.0f);
+
   return DY_SUCCESS;
 }
 
@@ -525,6 +531,11 @@ EDySuccess MDyRendering::MDY_PRIVATE(UnbindMainDirectionalShadow)(_MIN_ CDyDirec
     return DY_SUCCESS;
   }
   else { return DY_FAILURE; }
+}
+
+const DDyMatrix4x4& MDyRendering::GetGeneralUiProjectionMatrix() const noexcept
+{
+  return this->mUiGeneralProjectionMatrix;
 }
 
 } /// ::dy namespace

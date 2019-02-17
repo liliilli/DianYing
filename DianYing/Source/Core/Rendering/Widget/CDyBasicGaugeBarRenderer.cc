@@ -15,17 +15,15 @@
 /// Header file
 #include <Dy/Component/Internal/CDyBasicGaugeBarRenderer.h>
 
-#include <glm/gtc/matrix_transform.hpp>
-
 #include <Dy/Builtin/ShaderGl/UI/RenderUIBasicGaugeBar.h>
 #include <Dy/Builtin/Mesh/Widget/FDyBtMsUiBarQuad.h>
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
 #include <Dy/Element/Canvas/FDyBasicGaugeBar.h>
 #include <Dy/Management/SettingManager.h>
-#include <Dy/Helper/Type/Matrix4.h>
 #include <Dy/Core/Resource/Resource/FDyMeshResource.h>
 #include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLBufferDescriptor.h>
+#include <Dy/Management/Rendering/RenderingManager.h>
 
 //!
 //! Forward declaration
@@ -33,9 +31,6 @@
 
 namespace
 {
-
-/// Sample UI projection code
-dy::DDyMatrix4x4 uUiProjTempMatrix = dy::DDyMatrix4x4{};
 
 ///
 /// @brief The method gets character quad vertices to be needed for rendering.
@@ -70,12 +65,6 @@ EDySuccess CDyBasicGaugeBarRenderer::Initialize(const PDyBasicGaugeBarRendererCt
   this->mBinderShader .TryRequireResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderUiBasicGaugeBar::sName));
   this->mBinderBarMesh.TryRequireResource(MSVSTR(builtin::FDyBtMsUiBarQuad::sName));
 
-  // @TODO SAMPLE CODE (TEMPORAL)
-  auto& settingManager = MDySetting::GetInstance();
-  const auto overallScreenWidth   = settingManager.GetWindowSizeWidth();
-  const auto overallScreenHeight  = settingManager.GetWindowSizeHeight();
-  uUiProjTempMatrix = glm::ortho(0.f, static_cast<float>(overallScreenWidth), 0.f, static_cast<float>(overallScreenHeight), 0.2f, 10.0f);
-
   return DY_SUCCESS;
 }
 
@@ -89,7 +78,7 @@ void CDyBasicGaugeBarRenderer::Render()
   ||  this->mBinderBarMesh.IsResourceExist() == false) { return; }
 
   this->mBinderShader->UseShader();
-  this->mBinderShader.TryUpdateUniform<EUniformType::Matrix4>("uUiProjMatrix", uUiProjTempMatrix);
+  this->mBinderShader.TryUpdateUniform<EUniformType::Matrix4>("uUiProjMatrix", MDyRendering::GetInstance().GetGeneralUiProjectionMatrix());
 
   glDepthFunc(GL_ALWAYS);
   glBindVertexArray(this->mBinderBarMesh->GetVertexArrayId());
