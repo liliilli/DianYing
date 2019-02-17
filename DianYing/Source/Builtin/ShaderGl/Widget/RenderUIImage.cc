@@ -28,7 +28,6 @@ MDY_SET_IMMUTABLE_STRING(sVertexShaderCode, R"dy(
 layout (location = 0) in vec2 dyPosition;
 layout (location = 1) in vec2 dyTexCoord;
 uniform mat4 uUiProjMatrix;
-uniform mat3 uTransformMatrix;
 
 out VS_OUT { vec2 texCoord; } vsOut;
 

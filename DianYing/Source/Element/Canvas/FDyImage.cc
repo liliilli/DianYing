@@ -65,7 +65,10 @@ void FDyImage::SetRenderableImageName(_MIN_ const std::string& iName, _MIN_ bool
     }
 
     this->mImageName = iName; this->mIsMaterial = true;
-    MDY_NOT_IMPLEMENTED_ASSERT();
+    if (this->mIsUpdateRenderer == true)
+    {
+      this->mRenderer.UpdateRenderableTarget(); 
+    }
   }
   else
   {

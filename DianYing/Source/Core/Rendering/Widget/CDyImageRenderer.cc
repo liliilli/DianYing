@@ -118,6 +118,16 @@ void CDyImageRenderer::Render()
   }
 }
 
+/*
+ * OLD CODE
+#ifdef false
+  PDyMaterialInstanceMetaInfo info{};
+  info.mShaderSpecifier = mDefaultImageShader->GetSpecifierName();
+  info.mTextureNames[0] = {mPtrObject->GetRenderableImageName().first, EDyTextureMapType::Unknown};
+  info.mBlendMode       = EDyMaterialBlendMode::Opaque;
+  SDyIOConnectionHelper::PopulateInstantMaterialResource(info, static_cast<TDyResourceBinderMaterial&>(*this->mBinderRenderable));
+#endif
+ */
 void CDyImageRenderer::UpdateRenderableTarget() noexcept
 {
   const auto& [specifier, isMaterial] = this->mPtrObject->GetRenderableImageName();
@@ -147,14 +157,6 @@ void CDyImageRenderer::UpdateRenderableTarget() noexcept
       this->mBinderRenderable = std::make_unique<TDyResourceBinderTexture>(specifier);
     }
   }
-
-#ifdef false
-  PDyMaterialInstanceMetaInfo info{};
-  info.mShaderSpecifier = mDefaultImageShader->GetSpecifierName();
-  info.mTextureNames[0] = {mPtrObject->GetRenderableImageName().first, EDyTextureMapType::Unknown};
-  info.mBlendMode       = EDyMaterialBlendMode::Opaque;
-  SDyIOConnectionHelper::PopulateInstantMaterialResource(info, static_cast<TDyResourceBinderMaterial&>(*this->mBinderRenderable));
-#endif
 }
 
 } /// ::dy namespace

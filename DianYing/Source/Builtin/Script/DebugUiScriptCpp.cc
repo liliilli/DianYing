@@ -106,6 +106,11 @@ Camera0 : 2
       inputManager.GetJoystickStickValue(1), inputManager.GetJoystickStickValue(0),
       inputManager.GetJoystickStickValue(5), inputManager.GetJoystickStickValue(2)
   ));
+
+  if (this->flag == false) // Is material
+  {
+    
+  }
 }
 
 void FDyBuiltinDebugUiScript::Bar_MoveLeft(_MIN_ TF32 iXAxis) noexcept
@@ -133,18 +138,16 @@ void FDyBuiltinDebugUiScript::CbMoveBar()
 
 void FDyBuiltinDebugUiScript::CbChangeImageTexture()
 {
-  static bool flag = false;
-
   auto& refWidget = this->GetWidgetReference();
   FDyImage* image = refWidget.GetUiObject<FDyImage>("TestImage");
   if (flag == false)
   {
-    image->SetRenderableImageName("T_BrickWall1_Diffuse");
+    image->SetRenderableImageName("T_BrickWall1_Diffuse", false);
     flag = !flag;
   }
   else
   {
-    image->SetRenderableImageName("dyBtTextureChecker");
+    image->SetRenderableImageName("TestUiImageMat190217", true);
     flag = !flag;
   }
 }
