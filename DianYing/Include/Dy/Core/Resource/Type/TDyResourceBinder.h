@@ -27,9 +27,9 @@ namespace dy
 /// User have to require resource manually. but detach is held by automatically. (RAII)
 template <EDyResourceType TType>
 class TDyResourceBinder final : public 
-  std::conditional_t<TType == EDyResourceType::Material, __TDyResourceBinderMaterial, 
-      std::conditional_t<TType == EDyResourceType::GLShader, __TDyResourceBinderShader,
-          __TDyResourceBinderBase<TType> > >
+    std::conditional_t<TType == EDyResourceType::GLShader, 
+    __TDyResourceBinderShader,        // Then 
+    __TDyResourceBinderBase<TType> >  // Else
 {
 private:
   using TSuper = __TDyResourceBinderBase<TType>;
