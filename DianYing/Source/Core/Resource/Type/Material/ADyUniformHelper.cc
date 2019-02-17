@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Core/Resource/Type/Material/ADyUniformHelper.h>
 #include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
+#include <Dy/Core/Resource/Resource/FDyShaderResource.h>
 
 namespace dy
 {
@@ -25,7 +26,7 @@ void ADyUniformHelper::UpdateUniform(
     _MIN_ const MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Matrix4>::ValueType& iValue)
 {
   auto& shaderBinder = iRefMaterial.GetShaderResourceBinder();
-  shaderBinder.TryUpdateUniform<EDyUniformVariableType::Matrix4>(iSpecifier, iValue);
+  shaderBinder->TryUpdateUniform<EDyUniformVariableType::Matrix4>(iSpecifier, iValue);
 }
 
 void ADyUniformHelper::UpdateUniform(
@@ -34,7 +35,7 @@ void ADyUniformHelper::UpdateUniform(
     _MIN_ const __UniformBinder<TEnum::Matrix4Array>::ValueType& iValue)
 {
   auto& shaderBinder = iRefMaterial.GetShaderResourceBinder();
-  shaderBinder.TryUpdateUniform<EDyUniformVariableType::Matrix4Array>(iSpecifier, iValue);
+  shaderBinder->TryUpdateUniform<EDyUniformVariableType::Matrix4Array>(iSpecifier, iValue);
 }
 
 void ADyUniformHelper::UpdateUniform(
@@ -43,7 +44,7 @@ void ADyUniformHelper::UpdateUniform(
     _MIN_ const MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Matrix3>::ValueType& iValue)
 {
   auto& shaderBinder = iRefMaterial.GetShaderResourceBinder();
-  shaderBinder.TryUpdateUniform<EDyUniformVariableType::Matrix3>(iSpecifier, iValue);
+  shaderBinder->TryUpdateUniform<EDyUniformVariableType::Matrix3>(iSpecifier, iValue);
 }
 
 void ADyUniformHelper::UpdateUniform(
@@ -52,7 +53,7 @@ void ADyUniformHelper::UpdateUniform(
     _MIN_ const MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Vector4>::ValueType& iValue)
 {
   auto& shaderBinder = iRefMaterial.GetShaderResourceBinder();
-  shaderBinder.TryUpdateUniform<EDyUniformVariableType::Vector4>(iSpecifier, iValue);
+  shaderBinder->TryUpdateUniform<EDyUniformVariableType::Vector4>(iSpecifier, iValue);
 };
 
 void ADyUniformHelper::UpdateUniform(
@@ -61,7 +62,7 @@ void ADyUniformHelper::UpdateUniform(
     _MIN_ const __UniformBinder<TEnum::Vector3>::ValueType& iValue)
 {
   auto& shaderBinder = iRefMaterial.GetShaderResourceBinder();
-  shaderBinder.TryUpdateUniform<EDyUniformVariableType::Vector3>(iSpecifier, iValue);
+  shaderBinder->TryUpdateUniform<EDyUniformVariableType::Vector3>(iSpecifier, iValue);
 }
 
 void ADyUniformHelper::UpdateUniform(
@@ -70,7 +71,7 @@ void ADyUniformHelper::UpdateUniform(
     _MIN_ const __UniformBinder<TEnum::Vector3Array>::ValueType& iValue)
 {
   auto& shaderBinder = iRefMaterial.GetShaderResourceBinder();
-  shaderBinder.TryUpdateUniform<EDyUniformVariableType::Vector3Array>(iSpecifier, iValue);
+  shaderBinder->TryUpdateUniform<EDyUniformVariableType::Vector3Array>(iSpecifier, iValue);
 }
 
 void ADyUniformHelper::UpdateUniform(
@@ -79,7 +80,7 @@ void ADyUniformHelper::UpdateUniform(
     _MIN_ const __UniformBinder<TEnum::Vector2>::ValueType& iValue)
 {
   auto& shaderBinder = iRefMaterial.GetShaderResourceBinder();
-  shaderBinder.TryUpdateUniform<EDyUniformVariableType::Vector2>(iSpecifier, iValue);
+  shaderBinder->TryUpdateUniform<EDyUniformVariableType::Vector2>(iSpecifier, iValue);
 }
 
 void ADyUniformHelper::UpdateUniform(
@@ -88,7 +89,7 @@ void ADyUniformHelper::UpdateUniform(
     _MIN_ const MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Integer>::ValueType& iValue)
 {
   auto& shaderBinder = iRefMaterial.GetShaderResourceBinder();
-  shaderBinder.TryUpdateUniform<EDyUniformVariableType::Integer>(iSpecifier, iValue);
+  shaderBinder->TryUpdateUniform<EDyUniformVariableType::Integer>(iSpecifier, iValue);
 }
 
 void ADyUniformHelper::UpdateUniform(
@@ -97,7 +98,7 @@ void ADyUniformHelper::UpdateUniform(
     _MIN_ const __UniformBinder<TEnum::Float>::ValueType& iValue)
 {
   auto& shaderBinder = iRefMaterial.GetShaderResourceBinder();
-  shaderBinder.TryUpdateUniform<EDyUniformVariableType::Float>(iSpecifier, iValue);
+  shaderBinder->TryUpdateUniform<EDyUniformVariableType::Float>(iSpecifier, iValue);
 }
 
 void ADyUniformHelper::UpdateUniform(
@@ -106,13 +107,13 @@ void ADyUniformHelper::UpdateUniform(
     _MIN_ const __UniformBinder<TEnum::Bool>::ValueType& iValue)
 {
   auto& shaderBinder = iRefMaterial.GetShaderResourceBinder();
-  shaderBinder.TryUpdateUniform<EDyUniformVariableType::Bool>(iSpecifier, iValue);
+  shaderBinder->TryUpdateUniform<EDyUniformVariableType::Bool>(iSpecifier, iValue);
 }
 
 EDySuccess ADyUniformHelper::MDY_PRIVATE(TryUpdateUniformList)(_MIN_ FDyMaterialResource& iRefMateiral)
 {
   auto& shaderBinder = iRefMateiral.GetShaderResourceBinder();
-  return shaderBinder.TryUpdateUniformList();
+  return shaderBinder->TryUpdateUniformList();
 };
 
 } /// ::dy namespace

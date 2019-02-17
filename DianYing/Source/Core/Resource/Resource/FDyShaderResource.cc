@@ -69,6 +69,7 @@ FDyShaderResource::FDyShaderResource(_MIN_ const FDyShaderInformation& informati
 {
   this->mSpecifierName = information.GetSpecifierName();
 
+  // Section.
   { MDY_GRAPHIC_SET_CRITICALSECITON();
   { // Create shader program.
       auto optFragmentList    = this->pCreateShaderFragments(information.GetShaderFragmentList());
@@ -88,6 +89,11 @@ FDyShaderResource::FDyShaderResource(_MIN_ const FDyShaderInformation& informati
     }
   }
 
+  // Setup common uniform value list.
+  this->MDY_PRIVATE(TryClearUniformList)();
+  this->MDY_PRIVATE(TryConstructDefaultUniformList)(*this);
+
+  // Profiling.
   SDyProfilingHelper::IncreaseOnBindShaderCount(1);
 }
 

@@ -100,13 +100,13 @@ void CDyFontRenderer::Render()
   if (this->mBinderShader.IsResourceExist() == false) { return; }
 
   this->mBinderShader->UseShader();
-  this->mBinderShader.TryUpdateUniform<EUniformType::Matrix4>("uUiProjMatrix", MDyRendering::GetInstance().GetGeneralUiProjectionMatrix());
-  this->mBinderShader.TryUpdateUniform<EUniformType::Vector4>("uFgColor", this->mPtrWidget->GetForegroundColor());
-  this->mBinderShader.TryUpdateUniform<EUniformType::Vector4>("uBgColor", this->mPtrWidget->GetBackgroundColor());
-  this->mBinderShader.TryUpdateUniform<EUniformType::Vector4>("uEdgeColor", this->mPtrWidget->GetEdgeColor());
-  this->mBinderShader.TryUpdateUniform<EUniformType::Bool>("uIsUsingEdge", this->mPtrWidget->CheckIsUsingEdgeRendering());
-  this->mBinderShader.TryUpdateUniform<EUniformType::Bool>("uIsUsingBackground", this->mPtrWidget->CheckIsUsingBackgroundColor());
-  MDY_CALL_BUT_NOUSE_RESULT(this->mBinderShader.TryUpdateUniformList());
+  this->mBinderShader->TryUpdateUniform<EUniformType::Matrix4>("uUiProjMatrix", MDyRendering::GetInstance().GetGeneralUiProjectionMatrix());
+  this->mBinderShader->TryUpdateUniform<EUniformType::Vector4>("uFgColor", this->mPtrWidget->GetForegroundColor());
+  this->mBinderShader->TryUpdateUniform<EUniformType::Vector4>("uBgColor", this->mPtrWidget->GetBackgroundColor());
+  this->mBinderShader->TryUpdateUniform<EUniformType::Vector4>("uEdgeColor", this->mPtrWidget->GetEdgeColor());
+  this->mBinderShader->TryUpdateUniform<EUniformType::Bool>("uIsUsingEdge", this->mPtrWidget->CheckIsUsingEdgeRendering());
+  this->mBinderShader->TryUpdateUniform<EUniformType::Bool>("uIsUsingBackground", this->mPtrWidget->CheckIsUsingBackgroundColor());
+  MDY_CALL_BUT_NOUSE_RESULT(this->mBinderShader->TryUpdateUniformList());
 
   glDepthFunc(GL_ALWAYS);
   glBindVertexArray(this->mBinderFontMesh->GetVertexArrayId());
@@ -131,9 +131,9 @@ void CDyFontRenderer::Render()
     glBindTexture(GL_TEXTURE_2D_ARRAY, container.GetFontTextureArrayId());
 
     const auto& charInfo  = container[ucs2Char];
-    this->mBinderShader.TryUpdateUniform<EUniformType::Integer>("uChannel", charInfo.mTexCoordInfo.mChannel);
-    this->mBinderShader.TryUpdateUniform<EUniformType::Integer>("uMapIndex", charInfo.mTexCoordInfo.mMapIndex);
-    MDY_CALL_BUT_NOUSE_RESULT(this->mBinderShader.TryUpdateUniformList());
+    this->mBinderShader->TryUpdateUniform<EUniformType::Integer>("uChannel", charInfo.mTexCoordInfo.mChannel);
+    this->mBinderShader->TryUpdateUniform<EUniformType::Integer>("uMapIndex", charInfo.mTexCoordInfo.mMapIndex);
+    MDY_CALL_BUT_NOUSE_RESULT(this->mBinderShader->TryUpdateUniformList());
 
     RenderFontCharacter(GetCharacterVertices(charInfo, renderPosition, fontSize), this->mBinderFontMesh->GetVertexBufferId());
     renderPosition.X += static_cast<TI32>(charInfo.mHorizontalAdvance * fontSize / 2);

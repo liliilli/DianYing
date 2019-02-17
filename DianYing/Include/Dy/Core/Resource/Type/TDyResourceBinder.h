@@ -15,7 +15,6 @@
 
 #include <Dy/Meta/Type/EDyResourceType.h>
 #include <Dy/Core/Resource/Type/TDyResourceBinderBase.h>
-#include <Dy/Core/Resource/Type/Shader/TDyShaderBinder.h>
 #include <Dy/Core/Resource/Type/Material/TDyMaterialBinder.h>
 #include <Dy/Core/Resource/Interface/IDyRenderableBinder.h>
 
@@ -26,10 +25,7 @@ namespace dy
 /// @brief Not lazy version of `TDyResourceBinder`.
 /// User have to require resource manually. but detach is held by automatically. (RAII)
 template <EDyResourceType TType>
-class TDyResourceBinder final : public 
-    std::conditional_t<TType == EDyResourceType::GLShader, 
-    __TDyResourceBinderShader,        // Then 
-    __TDyResourceBinderBase<TType> >  // Else
+class TDyResourceBinder final : public __TDyResourceBinderBase<TType>
 {
 private:
   using TSuper = __TDyResourceBinderBase<TType>;

@@ -109,13 +109,13 @@ EDySuccess FDyLevelCSMIntergration::pSetupOpaqueCSMIntegration()
   if (MDY_CHECK_ISNOTNULL(ptr)) 
   { 
     // DyConvertToVector
-    this->mBinderOpaqueShader.TryUpdateUniform<EDyUniformVariableType::Vector4>(
+    this->mBinderOpaqueShader->TryUpdateUniform<EDyUniformVariableType::Vector4>(
         "uNormalizedFarPlanes", 
         ptr->GetCSMNormalizedFarPlanes());
-    this->mBinderOpaqueShader.TryUpdateUniform<EDyUniformVariableType::Matrix4Array>(
+    this->mBinderOpaqueShader->TryUpdateUniform<EDyUniformVariableType::Matrix4Array>(
         "uLightVPSBMatrix[0]", 
         DyConvertToVector<DDyMatrix4x4>(ptr->GetCSMLightSegmentVPSBMatrix()));
-    this->mBinderOpaqueShader.TryUpdateUniformList();
+    this->mBinderOpaqueShader->TryUpdateUniformList();
   }
 
   // Update directional light property.
@@ -146,7 +146,7 @@ EDySuccess FDyLevelCSMIntergration::pSetupTranslucentOITIntegration()
   this->mBinderFbTranslucent->UnbindFrameBuffer(); 
 
   this->mBinderTransShader->UseShader();
-  this->mBinderTransShader.TryUpdateUniformList();
+  this->mBinderTransShader->TryUpdateUniformList();
   return DY_SUCCESS;
 }
 

@@ -78,7 +78,7 @@ void CDyBasicGaugeBarRenderer::Render()
   ||  this->mBinderBarMesh.IsResourceExist() == false) { return; }
 
   this->mBinderShader->UseShader();
-  this->mBinderShader.TryUpdateUniform<EUniformType::Matrix4>("uUiProjMatrix", MDyRendering::GetInstance().GetGeneralUiProjectionMatrix());
+  this->mBinderShader->TryUpdateUniform<EUniformType::Matrix4>("uUiProjMatrix", MDyRendering::GetInstance().GetGeneralUiProjectionMatrix());
 
   glDepthFunc(GL_ALWAYS);
   glBindVertexArray(this->mBinderBarMesh->GetVertexArrayId());
@@ -89,8 +89,8 @@ void CDyBasicGaugeBarRenderer::Render()
 
   if (this->mPtrBarObject->CheckIsUsingBackgroundColor() == true)
   { // If backgroud is used, try render.
-    this->mBinderShader.TryUpdateUniform<EUniformType::Vector4>("uFillColor", this->mPtrBarObject->GetBackgroundColor());
-    MDY_CALL_BUT_NOUSE_RESULT(this->mBinderShader.TryUpdateUniformList());
+    this->mBinderShader->TryUpdateUniform<EUniformType::Vector4>("uFillColor", this->mPtrBarObject->GetBackgroundColor());
+    MDY_CALL_BUT_NOUSE_RESULT(this->mBinderShader->TryUpdateUniformList());
 
     const auto buffer = GetVertexPosition(pos, size);
     FDyGLWrapper::MapBuffer(EDyDirectBufferType::VertexBuffer, vboId, (void*)buffer.data(), sizeof(buffer));
@@ -98,8 +98,8 @@ void CDyBasicGaugeBarRenderer::Render()
   }
 
   { // Foreground render.
-    this->mBinderShader.TryUpdateUniform<EUniformType::Vector4>("uFillColor", this->mPtrBarObject->GetForegroundColor());
-    MDY_CALL_BUT_NOUSE_RESULT(this->mBinderShader.TryUpdateUniformList());
+    this->mBinderShader->TryUpdateUniform<EUniformType::Vector4>("uFillColor", this->mPtrBarObject->GetForegroundColor());
+    MDY_CALL_BUT_NOUSE_RESULT(this->mBinderShader->TryUpdateUniformList());
 
     const TI32 padding    = this->mPtrBarObject->GetPadding();
     const TF32 percentage = this->mPtrBarObject->GetPercentage();

@@ -64,12 +64,12 @@ void CDyImageRenderer::Render()
 
     // Set shader.
     mDefaultImageShader->UseShader();
-    mDefaultImageShader.TryUpdateUniform<EUniformType::Matrix4>("uUiProjMatrix", MDyRendering::GetInstance().GetGeneralUiProjectionMatrix());
-    mDefaultImageShader.TryUpdateUniform<EUniformType::Vector4>("uTintColor", this->mPtrObject->GetTintColor());
+    mDefaultImageShader->TryUpdateUniform<EUniformType::Matrix4>("uUiProjMatrix", MDyRendering::GetInstance().GetGeneralUiProjectionMatrix());
+    mDefaultImageShader->TryUpdateUniform<EUniformType::Vector4>("uTintColor", this->mPtrObject->GetTintColor());
 
-    MDY_ASSERT(this-> mDefaultImageShader.GetAvailableTextureCount() == 1, "Unexpected error occurred.");
-    mDefaultImageShader.TryInsertTextureRequisition(0, refTexture->GetTextureId());
-    mDefaultImageShader.TryUpdateUniformList();
+    MDY_ASSERT(this->mDefaultImageShader->GetAvailableTextureCount() == 1, "Unexpected error occurred.");
+    mDefaultImageShader->TryInsertTextureRequisition(0, refTexture->GetTextureId());
+    mDefaultImageShader->TryUpdateUniformList();
 
     // Render
     glDepthFunc(GL_ALWAYS);
@@ -95,9 +95,9 @@ void CDyImageRenderer::Render()
 
     auto& refMatShader = refMaterial->GetShaderResourceBinder();
     refMatShader->UseShader();
-    refMatShader.TryUpdateUniform<EUniformType::Matrix4>("uUiProjMatrix", MDyRendering::GetInstance().GetGeneralUiProjectionMatrix());
-    refMatShader.TryUpdateUniform<EUniformType::Vector4>("uTintColor", this->mPtrObject->GetTintColor());
-    refMatShader.TryUpdateUniformList();
+    refMatShader->TryUpdateUniform<EUniformType::Matrix4>("uUiProjMatrix", MDyRendering::GetInstance().GetGeneralUiProjectionMatrix());
+    refMatShader->TryUpdateUniform<EUniformType::Vector4>("uTintColor", this->mPtrObject->GetTintColor());
+    refMatShader->TryUpdateUniformList();
 
     glDepthFunc(GL_ALWAYS);
     this->mBinderQuadMesh->BindVertexArray();

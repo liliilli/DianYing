@@ -730,7 +730,6 @@
     <ClInclude Include="Include\Dy\Core\Resource\Type\TDyInformationBinder.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\TDyResourceBinder.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\TDyResourceBinderBase.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\TDyShaderBinder.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\TemplateRescInfoType.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\TemplateUniformType.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Uniform\UniformValueTypes.h" />

@@ -45,7 +45,7 @@
 namespace dy
 {
 
-void MDY_PRIVATE(ADyUniformContainer)::__TryClearUniformList()
+void ADyUniformContainer::__TryClearUniformList()
 {
   this->mUniformMap.clear();
   this->mUpdatedItemList.clear();
@@ -56,7 +56,7 @@ void MDY_PRIVATE(ADyUniformContainer)::__TryClearUniformList()
 
 #define MDY_NOUSEVAR MDY_TOKENPASTE2(_, __LINE__)
 
-void MDY_PRIVATE(ADyUniformContainer)::__TryConstructDefaultUniformList(const FDyShaderResource& iResc)
+void ADyUniformContainer::__TryConstructDefaultUniformList(const FDyShaderResource& iResc)
 {
   const auto& uniformList = iResc.GetUniformVariableList();
   static std::regex textureRegex{"uTexture\\d+(_\\w*)?"};
@@ -92,7 +92,7 @@ void MDY_PRIVATE(ADyUniformContainer)::__TryConstructDefaultUniformList(const FD
   this->mIsShaderSetuped = true;
 }
 
-EDySuccess __ADyUniformContainer::TryInsertTextureRequisition(_MIN_ TU32 insertId, _MIN_ TU32 textureId)
+EDySuccess ADyUniformContainer::TryInsertTextureRequisition(_MIN_ TU32 insertId, _MIN_ TU32 textureId)
 {
   // Check
   if (insertId >= this->GetAvailableTextureCount()) 
@@ -116,7 +116,7 @@ EDySuccess __ADyUniformContainer::TryInsertTextureRequisition(_MIN_ TU32 insertI
   return DY_SUCCESS;
 }
 
-EDySuccess MDY_PRIVATE(ADyUniformContainer)::TryUpdateUniformList()
+EDySuccess ADyUniformContainer::TryUpdateUniformList()
 {
   using TEnum = EDyUniformVariableType;
   if (this->mIsShaderSetuped == false) { return DY_FAILURE; }
@@ -238,7 +238,7 @@ ADYUNIFORMCONTAINER_TRYUPDATEUNIFORMLIST_RETURN:
   return DY_SUCCESS;
 }
 
-TU32 __ADyUniformContainer::GetAvailableTextureCount() const noexcept
+TU32 ADyUniformContainer::GetAvailableTextureCount() const noexcept
 {
   return this->mAvailableTextureCount;
 }

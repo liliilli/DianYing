@@ -13,11 +13,11 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Resource/Internal/ShaderType.h>
-#include <Dy/Core/Resource/Type/Shader/TemplateUniformType.h>
 #include <Dy/Helper/ContainerHelper.h>
 #include <Dy/Helper/System/Idioms.h>
+#include <Dy/Core/Resource/Internal/ShaderType.h>
 #include <Dy/Core/Resource/Internal/Uniform/IDyUniformValueBase.h>
+#include <Dy/Core/Resource/Type/Shader/TemplateUniformType.h>
 #include <Dy/Core/Resource/Type/Uniform/UniformValueTypes.h>
 
 //!
@@ -36,9 +36,11 @@ class FDyShaderResource;
 namespace dy
 {
 
-class __ADyUniformContainer
+class ADyUniformContainer
 {
 public:
+  virtual ~ADyUniformContainer() = 0;
+
   /// @brief Try clear uniform list.
   void __TryClearUniformList();
   /// @brief Try construct default uniform variable list.
@@ -115,6 +117,8 @@ private:
   bool              mIsShaderSetuped = false;
   TU32              mAvailableTextureCount = 0;
 };
+
+inline ADyUniformContainer::~ADyUniformContainer() = default;
 
 } /// ::dy namespace
 

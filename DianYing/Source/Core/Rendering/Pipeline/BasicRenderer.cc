@@ -117,19 +117,19 @@ void FDyBasicRenderer::RenderScreen(
   if (shaderBinder.IsResourceExist() == false) { return; }
 
   shaderBinder->UseShader();
-  shaderBinder.TryUpdateUniform<EDyUniformVariableType::Matrix4>("uModelMatrix", refModelMatrix);
-  shaderBinder.TryUpdateUniform<EDyUniformVariableType::Matrix4>("modelMatrix", refModelMatrix);
-  shaderBinder.TryUpdateUniform<EDyUniformVariableType::Matrix3>("uRotationMatrix", DDyMatrix3x3{refModelMatrix});
+  shaderBinder->TryUpdateUniform<EDyUniformVariableType::Matrix4>("uModelMatrix", refModelMatrix);
+  shaderBinder->TryUpdateUniform<EDyUniformVariableType::Matrix4>("modelMatrix", refModelMatrix);
+  shaderBinder->TryUpdateUniform<EDyUniformVariableType::Matrix3>("uRotationMatrix", DDyMatrix3x3{refModelMatrix});
 
   // If this model has animator, update uniform.
   if (iRefRenderer.mPtrModelAnimator != nullptr)
   {
     const auto& finalTransformList = iRefRenderer.mPtrModelAnimator->GetFinalTransformList();
-    shaderBinder.TryUpdateUniform<EDyUniformVariableType::Matrix4Array>("mBoneTransform[0]", finalTransformList);
-    shaderBinder.TryUpdateUniform<EDyUniformVariableType::Integer>("mNumBoneTransform", static_cast<TI32>(finalTransformList.size()));
+    shaderBinder->TryUpdateUniform<EDyUniformVariableType::Matrix4Array>("mBoneTransform[0]", finalTransformList);
+    shaderBinder->TryUpdateUniform<EDyUniformVariableType::Integer>("mNumBoneTransform", static_cast<TI32>(finalTransformList.size()));
   }
 
-  shaderBinder.TryUpdateUniformList();
+  shaderBinder->TryUpdateUniformList();
   iRefMaterial.TryUpdateTextureList();
 
   iRefMesh.BindVertexArray();
