@@ -41,6 +41,9 @@ public:
   /// @brief Update shader binding.
   void UpdateRenderableTarget() noexcept;
 
+  /// @brief Get using mateiral pointer. If using texture, just return nullptr;
+  MDY_NODISCARD TDyResourceBinderMaterial* GetUsingMaterial();
+
 private:
   /// LAZY NOT NULLABLE POINTER RAW PTR;
   FDyImage*               mPtrObject = MDY_INITIALIZE_NULL;

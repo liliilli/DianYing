@@ -159,4 +159,17 @@ void CDyImageRenderer::UpdateRenderableTarget() noexcept
   }
 }
 
+TDyResourceBinderMaterial* CDyImageRenderer::GetUsingMaterial()
+{
+  // Check
+  if (this->mBinderRenderable == nullptr
+  ||  this->mBinderRenderable->mRenderType != EDyResourceType::Material)
+  {
+    return nullptr;
+  }
+
+  // Return
+  return &static_cast<TDyResourceBinderMaterial&>(*this->mBinderRenderable);
+}
+
 } /// ::dy namespace

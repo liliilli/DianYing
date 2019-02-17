@@ -107,6 +107,15 @@ bool FDyImage::IsUsingMaterial() const noexcept
   return this->mIsMaterial;
 }
 
+TDyResourceBinderMaterial* FDyImage::GetUsingMaterial()
+{
+  // Check
+  if (this->IsUsingMaterial() == false) { return nullptr; }
+
+  // Get from internal object.
+  return this->mRenderer.GetUsingMaterial();
+}
+
 void FDyImage::MDY_PRIVATE(SetUpdateRendererFlag)(_MIN_ bool iIsActivated) noexcept
 {
   if (this->mIsUpdateRenderer != iIsActivated)

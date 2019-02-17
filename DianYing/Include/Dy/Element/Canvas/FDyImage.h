@@ -56,6 +56,8 @@ public:
   MDY_NODISCARD std::pair<const std::string&, bool> GetRenderableImageName() const noexcept;
   /// @brief Check this image using material.
   MDY_NODISCARD bool IsUsingMaterial() const noexcept;
+  /// @brief Try get using material. If image use texture, just return nullptr.
+  MDY_NODISCARD TDyResourceBinderMaterial* GetUsingMaterial();
 
   /// @brief Set tint color.
   void SetTintColor(_MIN_ const DDyColorRGBA& iTintColor) noexcept;
