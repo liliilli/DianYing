@@ -39,7 +39,8 @@
     auto [it2, MDY_NOUSEVAR] = this->mUniformMap.try_emplace(__MASpecifier__, std::move(instance)); \
     auto& [MDY_NOUSEVAR##_2, smtptrInstance] = *it2; \
     /* Insert default to update list. */ \
-    this->mUpdatedItemList.emplace_back(smtptrInstance.get());
+    this->mUpdatedItemList.emplace_back(smtptrInstance.get()); \
+    this->mAvailableTextureCount++;
 
 namespace dy
 {
@@ -48,7 +49,9 @@ void MDY_PRIVATE(ADyUniformContainer)::__TryClearUniformList()
 {
   this->mUniformMap.clear();
   this->mUpdatedItemList.clear();
+  this->mUpdatedTextureList.clear();
   this->mIsShaderSetuped = false;
+  this->mAvailableTextureCount = 0;
 }
 
 #define MDY_NOUSEVAR MDY_TOKENPASTE2(_, __LINE__)
@@ -75,6 +78,7 @@ void MDY_PRIVATE(ADyUniformContainer)::__TryConstructDefaultUniformList(const FD
     case TEnum::Integer:       { MDY_DOCONSTRUCTUNIFORMLIST(Integer, specifier, id); } break;
     case TEnum::Bool:          { MDY_DOCONSTRUCTUNIFORMLIST(Bool, specifier, id); } break;
     case TEnum::Float:         { MDY_DOCONSTRUCTUNIFORMLIST(Float, specifier, id); } break;
+    case TEnum::Texture1D:             { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture1D, specifier, id); } break;
     case TEnum::Texture2D:             { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2D, specifier, id); } break;
     case TEnum::Texture2DArray:        { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2DArray, specifier, id); } break;
     case TEnum::Texture2DRectangle:    { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2DRectangle, specifier, id); } break;
@@ -84,19 +88,44 @@ void MDY_PRIVATE(ADyUniformContainer)::__TryConstructDefaultUniformList(const FD
     }
   }
   
+  this->mUpdatedTextureList.reserve(this->mAvailableTextureCount);
   this->mIsShaderSetuped = true;
+}
+
+EDySuccess __ADyUniformContainer::TryInsertTextureRequisition(_MIN_ TU32 insertId, _MIN_ TU32 textureId)
+{
+  // Check
+  if (insertId >= this->GetAvailableTextureCount()) 
+  { 
+    MDY_LOG_ERROR("Failed to binding texture to given shader because not available insertId. {}", insertId);
+    return DY_FAILURE; 
+  }
+
+  // Find
+  using TEnum = EDyUniformVariableType;
+  static std::array<TEnum, 6> textureTypes = {
+      TEnum::Texture1D, TEnum::Texture2D, TEnum::Texture2DArray, 
+      TEnum::Texture2DCubemap, TEnum::Texture2DRectangle, TEnum::Texture2DShadowArray};
+  for (auto& [specifier, item] : this->mUniformMap)
+  {
+    if (Contains(textureTypes, item->mType) == false) { continue; }
+    // Insert.
+    this->mUpdatedTextureList.emplace_back(insertId, item->mType, textureId);
+  }
+
+  return DY_SUCCESS;
 }
 
 EDySuccess MDY_PRIVATE(ADyUniformContainer)::TryUpdateUniformList()
 {
+  using TEnum = EDyUniformVariableType;
   if (this->mIsShaderSetuped == false) { return DY_FAILURE; }
-  if (this->mUpdatedItemList.empty() == true) { return DY_FAILURE; }
   
   // We have to insert all variables into shader when updated, 
   // because shader is shared by any objects which want to render with it,
   // but each shader program has only one uniform variable status.
+  if (this->mUpdatedItemList.empty() == true) { goto ADYUNIFORMCONTAINER_TRYUPDATEUNIFORMLIST_TEXTURE; }
 
-  using TEnum = EDyUniformVariableType;
   for (auto& ptrItem : this->mUpdatedItemList)
   {
     switch (ptrItem->mType)
@@ -141,6 +170,10 @@ EDySuccess MDY_PRIVATE(ADyUniformContainer)::TryUpdateUniformList()
     { const auto* item = static_cast<FDyUniformValue<TEnum::Bool>*>(ptrItem);
       FDyGLWrapper::UpdateUniformInteger(item->mId, item->mValue);
     } break;
+    case EDyUniformVariableType::Texture1D: 
+    { const auto* item = static_cast<FDyUniformValue<TEnum::Texture1D>*>(ptrItem);
+      FDyGLWrapper::UpdateUniformInteger(item->mId, item->mValue);
+    } break;
     case EDyUniformVariableType::Texture2D: 
     { const auto* item = static_cast<FDyUniformValue<TEnum::Texture2D>*>(ptrItem);
       FDyGLWrapper::UpdateUniformInteger(item->mId, item->mValue);
@@ -165,7 +198,49 @@ EDySuccess MDY_PRIVATE(ADyUniformContainer)::TryUpdateUniformList()
     }
   }
   this->mUpdatedItemList.clear();
+
+ADYUNIFORMCONTAINER_TRYUPDATEUNIFORMLIST_TEXTURE:
+  // Update texture also
+  if (this->mUpdatedTextureList.empty() == true) { goto ADYUNIFORMCONTAINER_TRYUPDATEUNIFORMLIST_RETURN; };
+
+  static const constexpr std::array<std::pair<TEnum, GLenum>, 6> textureTypes = {
+    std::pair(TEnum::Texture1D, GL_TEXTURE_1D), 
+    std::pair(TEnum::Texture2D, GL_TEXTURE_2D), 
+    std::pair(TEnum::Texture2DArray, GL_TEXTURE_2D_ARRAY), 
+    std::pair(TEnum::Texture2DCubemap, GL_TEXTURE_CUBE_MAP), 
+    std::pair(TEnum::Texture2DRectangle, GL_TEXTURE_RECTANGLE), 
+    std::pair(TEnum::Texture2DShadowArray, GL_TEXTURE_2D_ARRAY)
+  };
+
+  // Bind texture.
+  for (const auto& [insertId, type, textureId] : this->mUpdatedTextureList)
+  {
+    // Find appropriate texture type enum value.
+    GLenum internalTextureType = GL_NONE;
+    for (auto& [itemType, enumValue] : textureTypes)
+    {
+      if (itemType == type) { internalTextureType = enumValue; break; }
+    }
+    MDY_ASSERT_FORCE(internalTextureType != GL_NONE, "Failed to find texture type.");
+
+    {
+      // Critical section?
+      glActiveTexture(GL_TEXTURE0 + insertId);
+      glBindTexture(internalTextureType, textureId);
+    }
+  }
+
+  // Clear list.
+  this->mUpdatedTextureList.clear();
+  this->mUpdatedTextureList.reserve(this->mAvailableTextureCount);
+
+ADYUNIFORMCONTAINER_TRYUPDATEUNIFORMLIST_RETURN:
   return DY_SUCCESS;
+}
+
+TU32 __ADyUniformContainer::GetAvailableTextureCount() const noexcept
+{
+  return this->mAvailableTextureCount;
 }
 
 } /// ::dy namespace
