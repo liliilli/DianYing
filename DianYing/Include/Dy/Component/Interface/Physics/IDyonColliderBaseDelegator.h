@@ -90,7 +90,7 @@ public:
     const void* addr = (void*&)iPredicate;
 
     auto lambda = [addr](const auto& item) { return item.mSpecificationId == addr; };
-    if (Contains(this->mBoundCallbackList, lambda) == false) { return DY_FAILURE; }
+    if (ContainsIf(this->mBoundCallbackList, lambda) == false) { return DY_FAILURE; }
 
     DyEraseRemoveIf(this->mBoundCallbackList, lambda);
     return DY_SUCCESS;
@@ -100,7 +100,7 @@ public:
   EDySuccess RemoveCallback(_MIN_ const void* iId)
   {
     auto lambda = [iId](const auto& item) { return item.mSpecificationId == iId; };
-    if (Contains(this->mBoundCallbackList, lambda) == false) { return DY_FAILURE; }
+    if (ContainsIf(this->mBoundCallbackList, lambda) == false) { return DY_FAILURE; }
 
     DyEraseRemoveIf(this->mBoundCallbackList, lambda);
     return DY_SUCCESS;

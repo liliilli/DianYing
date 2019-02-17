@@ -55,11 +55,34 @@ void DyEraseRemoveIf(_MINOUT_ std::vector<TType, TAllocator>& p, _MIN_ TFunctor&
   p.erase( std::remove_if( p.begin(), p.end(), iPredcate ), p.end() );
 }
 
-/// @brief Vector fast erase.
+/// @brief Vector contains.
 template <typename TType, typename TAllocator, typename TFunctor>
-MDY_NODISCARD bool Contains(_MINOUT_ std::vector<TType, TAllocator>& p, _MIN_ TFunctor&& iPredcate)
+MDY_NODISCARD bool ContainsIf(_MIN_ const std::vector<TType, TAllocator>& p, _MIN_ TFunctor&& iPredcate)
 {
   return std::any_of(p.begin(), p.end(), iPredcate);
+}
+
+/// @brief Vector contains.
+template <typename TType, typename TAllocator>
+MDY_NODISCARD bool Contains(_MIN_ const std::vector<TType, TAllocator>& p, _MIN_ const TType& target)
+{
+  for (const auto& item : p) { if (item == target) { return true; } }
+  return false;
+}
+
+/// @brief Array contains.
+template <typename TType, std::size_t TAmount, typename TFunctor>
+MDY_NODISCARD bool ContainsIf(_MIN_ const std::array<TType, TAmount>& p, _MIN_ TFunctor&& iPredicate)
+{
+  return std::any_of(MDY_BIND_CBEGIN_CEND(p), iPredicate);
+}
+
+/// @brief Array contains.
+template <typename TType, std::size_t TAmount>
+MDY_NODISCARD bool Contains(_MIN_ const std::array<TType, TAmount>& p, _MIN_ const TType& target)
+{
+  for (const auto& item : p) { if (item == target) { return true; } }
+  return false;
 }
 
 ///

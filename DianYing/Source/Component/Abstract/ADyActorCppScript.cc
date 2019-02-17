@@ -73,7 +73,7 @@ EDySuccess ADyActorCppScript::MDY_PRIVATE(DetachCollisionCbHandle)(_MIN_ const v
   auto lambda = [iSpecificationId](const auto& handle) { auto& [_1, _2, id] = handle; return id == iSpecificationId; };
   
   // Contains.
-  if (Contains(this->mCollisionCbHandleList, lambda) == false) { return DY_FAILURE; }
+  if (ContainsIf(this->mCollisionCbHandleList, lambda) == false) { return DY_FAILURE; }
 
   // Find and remove.
   const auto it = std::find_if(MDY_BIND_BEGIN_END(this->mCollisionCbHandleList), lambda);
