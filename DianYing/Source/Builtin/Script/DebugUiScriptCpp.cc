@@ -109,7 +109,14 @@ Camera0 : 2
 
   if (this->flag == false) // Is material
   {
-    
+    static TF32 elapsed = 0;
+    elapsed += dt;
+
+    auto* ptrImage = this->GetWidgetReference().GetUiObject<FDyImage>("TestImage");;
+    if (auto* ptrMat = ptrImage->GetUsingMaterial(); ptrMat != nullptr && ptrMat->IsResourceExist() == true)
+    {
+      ptrMat->TryUpdateUniform<EDyUniformVariableType::Float>("uThreshold", (sinf(elapsed * 3) + 1.0f) * 0.5f);
+    }
   }
 }
 
