@@ -139,12 +139,12 @@ void FDyBuiltinDebugUiScript::CbChangeImageTexture()
   FDyImage* image = refWidget.GetUiObject<FDyImage>("TestImage");
   if (flag == false)
   {
-    image->SetImageName("T_BrickWall1_Diffuse");
+    image->SetRenderableImageName("T_BrickWall1_Diffuse");
     flag = !flag;
   }
   else
   {
-    image->SetImageName("dyBtTextureChecker");
+    image->SetRenderableImageName("dyBtTextureChecker");
     flag = !flag;
   }
 }

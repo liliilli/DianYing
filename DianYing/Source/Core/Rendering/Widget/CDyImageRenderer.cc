@@ -66,11 +66,10 @@ void CDyImageRenderer::Render()
     mDefaultImageShader->UseShader();
     mDefaultImageShader.TryUpdateUniform<EUniformType::Matrix4>("uUiProjMatrix", MDyRendering::GetInstance().GetGeneralUiProjectionMatrix());
     mDefaultImageShader.TryUpdateUniform<EUniformType::Vector4>("uTintColor", this->mPtrObject->GetTintColor());
-    mDefaultImageShader.TryUpdateUniformList();
 
-    // Set texture. @TODO TEMPORARY
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, refTexture->GetTextureId());
+    MDY_ASSERT(this-> mDefaultImageShader.GetAvailableTextureCount() == 1, "Unexpected error occurred.");
+    mDefaultImageShader.TryInsertTextureRequisition(0, refTexture->GetTextureId());
+    mDefaultImageShader.TryUpdateUniformList();
 
     // Render
     glDepthFunc(GL_ALWAYS);
@@ -91,17 +90,18 @@ void CDyImageRenderer::Render()
   }
   else if (type == EDyResourceType::Material)
   {
-    auto& temp = static_cast<TDyResourceBinderMaterial&>(*this->mBinderRenderable);  // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
-    if (temp.IsResourceExist() == false || this->mBinderQuadMesh.IsResourceExist() == false) { return; }
+    auto& refMaterial = static_cast<TDyResourceBinderMaterial&>(*this->mBinderRenderable);  // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
+    if (refMaterial.IsResourceExist() == false || this->mBinderQuadMesh.IsResourceExist() == false) { return; }
 
-    mDefaultImageShader->UseShader();
-    mDefaultImageShader.TryUpdateUniform<EUniformType::Matrix4>("uUiProjMatrix", MDyRendering::GetInstance().GetGeneralUiProjectionMatrix());
-    mDefaultImageShader.TryUpdateUniform<EUniformType::Vector4>("uTintColor", this->mPtrObject->GetTintColor());
-    mDefaultImageShader.TryUpdateUniformList();
+    auto& refMatShader = refMaterial->GetShaderResourceBinder();
+    refMatShader->UseShader();
+    refMatShader.TryUpdateUniform<EUniformType::Matrix4>("uUiProjMatrix", MDyRendering::GetInstance().GetGeneralUiProjectionMatrix());
+    refMatShader.TryUpdateUniform<EUniformType::Vector4>("uTintColor", this->mPtrObject->GetTintColor());
+    refMatShader.TryUpdateUniformList();
 
     glDepthFunc(GL_ALWAYS);
     this->mBinderQuadMesh->BindVertexArray();
-    temp->TryUpdateTextureList();
+    refMaterial->TryUpdateTextureList();
 
     const auto buffer = GetVertexPosition(this->mPtrObject->GetFinalPosition(EDyOrigin::Center_Center), this->mPtrObject->GetFrameSize());
     FDyGLWrapper::MapBufferExt(
@@ -113,7 +113,7 @@ void CDyImageRenderer::Render()
     FDyGLWrapper::Draw(EDyDrawType::TriangleFan, false, 4);
 
     FDyGLWrapper::UnbindVertexArrayObject();
-    mDefaultImageShader->DisuseShader();
+    refMatShader->DisuseShader();
     glDepthFunc(GL_LEQUAL);
   }
 }
