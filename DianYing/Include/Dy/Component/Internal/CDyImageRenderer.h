@@ -39,12 +39,13 @@ public:
   void Render();
 
   /// @brief Update shader binding.
-  void UpdateMaterial() noexcept;
+  void UpdateRenderableTarget() noexcept;
 
 private:
   /// LAZY NOT NULLABLE POINTER RAW PTR;
-  FDyImage*             mPtrObject = MDY_INITIALIZE_NULL;
-  TDyResourceBinderMesh mBinderQuadMesh{};
+  FDyImage*               mPtrObject = MDY_INITIALIZE_NULL;
+  TDyResourceBinderMesh   mBinderQuadMesh{};
+  TDyResourceBinderShader mDefaultImageShader{"dyBtShaderGlRenderUiImage"};
   std::unique_ptr<IDyRenderableBinder> mBinderRenderable = nullptr; 
 };
 

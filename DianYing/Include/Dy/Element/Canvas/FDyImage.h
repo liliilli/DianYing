@@ -50,23 +50,18 @@ public:
   std::string ToString() override final;
   void Render() override final;
 
-  /// @brief Set image name.
-  void SetImageName(_MIN_ const std::string& iName) noexcept;
-
-  /// @brief Get image name.
-  MDY_NODISCARD const std::string& GetImageName() const noexcept;
-
-  /// @brief Set shader name.
-  void SetShaderSpecifier(_MIN_ const std::string& iSpecifier) noexcept;
-
-  /// @brief Get specified shader name.
-  MDY_NODISCARD const std::string& GetShaderSpecifier() const noexcept;
+  /// @brief Set image name. ( texture or materal for UI using )
+  void SetRenderableImageName(_MIN_ const std::string& iName, _MIN_ bool iIsMaterial = false) noexcept;
+  /// @brief Get image name with material using flag.
+  MDY_NODISCARD std::pair<const std::string&, bool> GetRenderableImageName() const noexcept;
+  /// @brief Check this image using material.
+  MDY_NODISCARD bool IsUsingMaterial() const noexcept;
 
   /// @brief Set tint color.
   void SetTintColor(_MIN_ const DDyColorRGBA& iTintColor) noexcept;
-
   /// @brief Get tint color.
   MDY_NODISCARD const DDyColorRGBA& GetTintColor() const noexcept;
+
 
   /// @brief Set update renderer flag from inside renderer to this.
   void MDY_PRIVATE(SetUpdateRendererFlag)(_MIN_ bool iIsActivated) noexcept;
@@ -78,8 +73,7 @@ private:
   bool              mIsSizeToContent = false;
   /// Image name list
   std::string       mImageName  = MDY_INITIALIZE_EMPTYSTR;
-  /// Shader specifier name
-  std::string       mShaderName = MDY_INITIALIZE_EMPTYSTR;
+  bool              mIsMaterial = false;
   /// Renderer for this object.
   CDyImageRenderer  mRenderer;
   bool              mIsUpdateRenderer = false;
