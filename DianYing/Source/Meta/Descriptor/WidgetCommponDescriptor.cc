@@ -59,10 +59,11 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ EDyWidgetComponentType& p)
 std::unique_ptr<PDyMetaWidgetRootDescriptor>
 PDyMetaWidgetRootDescriptor::CreateMetaInformation(_MIN_ const nlohmann::json& itemAtlas)
 {
-  // Common
   auto instance = std::make_unique<PDyMetaWidgetRootDescriptor>();
-  instance->mWidgetSpecifierName = DyJsonGetValueFrom<std::string>(itemAtlas, PDyMetaWidgetRootDescriptor::sHeader_Name);
-  instance->mScriptReference     = DyJsonGetValueFrom<PDyScriptComponentMetaInfo>(itemAtlas, PDyMetaWidgetRootDescriptor::sHeader_Script);
+
+  DyJsonGetValueFromTo(itemAtlas, sHeader_Name,   instance->mWidgetSpecifierName);
+  DyJsonGetValueFromTo(itemAtlas, "ZOrder",       instance->mZOrder);
+  DyJsonGetValueFromTo(itemAtlas, sHeader_Script, instance->mScriptReference);
 
   return instance;
 }

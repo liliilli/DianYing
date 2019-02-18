@@ -25,20 +25,15 @@ namespace
 MDY_SET_IMMUTABLE_STRING(sBuffer, R"dy(
 {
   "Meta":
-  {
-    "Name": "dyBtWdTestLoadingUi",
+  { "Name": "dyBtWdTestLoadingUi", "ZOrder" : 100,
     "Script": {
-      "Type"      : "Script",
-      "Activated" : true,
-      "Details"   : { "Specifier": "FDyBtScTestLoadingUi" }
+      "Type" : "Script", "Activated" : true,
+      "Details" : { "Specifier": "FDyBtScTestLoadingUi" }
     }
   },
   "ObjectList":
   [
-    {
-      "Name": "LoadingText",
-      "Type": "Text",
-      "Parent": "",
+    { "Name": "LoadingText", "Type": "Text", "Parent": "", "ZOrder" : 0,
       "Details":
       {
         "InitialPosition": { "X":0, "Y": 0 },

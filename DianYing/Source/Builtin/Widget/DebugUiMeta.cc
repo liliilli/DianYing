@@ -22,16 +22,15 @@ MDY_SET_IMMUTABLE_STRING(sBuffer, R"dy(
 {
   "Meta":
   {
-    "Name": "DebugUi",
+    "Name": "DebugUi", "ZOrder" : 101,
     "Script": {
-      "Type"      : "Script",
-      "Activated" : true,
-      "Details"   : { "Specifier": "FDyBuiltinDebugUiScript" }
+      "Type" : "Script", "Activated" : true,
+      "Details" : { "Specifier": "FDyBuiltinDebugUiScript" }
     }
   },
   "ObjectList":
   [
-    { "Name": "DebugTestText", "Type": "Text", "Parent": "",
+    { "Name": "DebugTestText", "Type": "Text", "Parent": "", "ZOrder": 0,
       "Details":
       { "InitialPosition": { "X":32, "Y": -64 },
         "WidgetSize": { "X": 1, "Y": 1 },
@@ -41,7 +40,7 @@ MDY_SET_IMMUTABLE_STRING(sBuffer, R"dy(
         "FontSpecifierName": "Arial", "IsUsingEdge": true
       }
     },
-    { "Name": "JoystickTest", "Type": "Text", "Parent": "",
+    { "Name": "JoystickTest", "Type": "Text", "Parent": "", "ZOrder": 0,
       "Details":
       { "InitialPosition": { "X":32, "Y": 64 },
         "WidgetSize": { "X": 1, "Y": 1 },
@@ -51,7 +50,7 @@ MDY_SET_IMMUTABLE_STRING(sBuffer, R"dy(
         "FontSpecifierName": "Arial", "IsUsingEdge": true
       }
     },
-    { "Name": "BasicBarTest", "Type": "BasicBar", "Parent": "",
+    { "Name": "BasicBarTest", "Type": "BasicBar", "Parent": "", "ZOrder": 0,
       "Details": {
         "InitialPosition": { "X": 0, "Y": -32 },
         "WidgetSize": { "X": 320, "Y": 8 },
@@ -62,7 +61,7 @@ MDY_SET_IMMUTABLE_STRING(sBuffer, R"dy(
         "IsUsingBackgroundColor": true
       }
     },
-    { "Name": "TestImage", "Type": "Image", "Parent": "",
+    { "Name": "TestImage", "Type": "Image", "Parent": "", "ZOrder": 0,
       "Details": {
         "InitialPosition": { "X": -80, "Y": 80 },
         "WidgetSize": { "X": 128, "Y": 128 },
