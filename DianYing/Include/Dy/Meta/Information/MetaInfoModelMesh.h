@@ -35,8 +35,9 @@ struct PDyDefaultMeshInformation final
 /// @brief Specifies usage of given mesh.
 enum class EDyMeshUsage : unsigned char
 {
-  StaticDraw,
-  DynamicDraw,
+  StaticDraw,   // Static draw, can not modified set value.
+  DynamicDraw,  // Dynamic draw, The data store contents will be modified repeatedly and used many times.
+  StreamDraw    // The data store contents will be modified once and used at most a few times.
 };
 
 ///

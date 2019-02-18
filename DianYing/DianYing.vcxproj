@@ -91,7 +91,7 @@
       <DisableSpecificWarnings>4996;4244;4267;4189;4100;4458</DisableSpecificWarnings>
       <PreprocessorDefinitions>__MDY_FLAG_IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalOptions>/Bt+ /d2cgsummary %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Bt+ %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -203,8 +203,8 @@
     <ClCompile Include="Source\Builtin\Mesh\FDyBtMsPlain.cc" />
     <ClCompile Include="Source\Builtin\Mesh\FDyBtMsScrTriangle.cc" />
     <ClCompile Include="Source\Builtin\Mesh\FDyBtMsSphere.cc" />
-    <ClCompile Include="Source\Builtin\Mesh\FDyBtMsUiFontQuad.cc" />
-    <ClCompile Include="Source\Builtin\Mesh\FDyBtMsUiImgQuad.cc" />
+    <ClCompile Include="Source\Builtin\Mesh\Widget\FDyBtMsUiFontQuad.cc" />
+    <ClCompile Include="Source\Builtin\Mesh\Widget\FDyBtMsUiImgQuad.cc" />
     <ClCompile Include="Source\Builtin\Mesh\Plane\FDyBtMsOITTrinagle.cc" />
     <ClCompile Include="Source\Builtin\Mesh\Widget\FDyBtMsUiBarQuad.cc" />
     <ClCompile Include="Source\Builtin\Model\UiFontQuad.cc" />
