@@ -40,8 +40,11 @@ namespace
 /// @return Character glyph render vertices information.
 /// @see https://www.freetype.org/freetype2/docs/tutorial/step2.html
 ///
-MDY_NODISCARD std::array<dy::DDyVector2, 8>
-GetCharacterVertices(_MIN_ const dy::DDyFontCharacterInfo& ch_info, _MIN_ const dy::DDyVector2& position, _MIN_ const TI32 fontSize)
+MDY_NODISCARD std::array<dy::DDyVector2, 12>
+GetCharacterVertices(
+    _MIN_ const dy::DDyFontCharacterInfo& ch_info, 
+    _MIN_ const dy::DDyVector2& position, 
+    _MIN_ const TI32 fontSize)
 {
   const TF32 scale        = fontSize / 64.0f;
   const auto charPos      = position - (ch_info.mTranslate * scale);
@@ -53,20 +56,24 @@ GetCharacterVertices(_MIN_ const dy::DDyFontCharacterInfo& ch_info, _MIN_ const 
   const auto& texLd = ch_info.mTexCoordInfo.mLeftDown;
   const auto& texRu = ch_info.mTexCoordInfo.mRightUp;
 
+  const auto chanMap = dy::DDyVector2{
+      static_cast<TF32>(ch_info.mTexCoordInfo.mChannel), 
+      static_cast<TF32>(ch_info.mTexCoordInfo.mMapIndex)};
+
   return {
-    dy::DDyVector2{r, b}, dy::DDyVector2{texRu.X, texLd.Y},
-    dy::DDyVector2{r, t}, dy::DDyVector2{texRu.X, texRu.Y},
-    dy::DDyVector2{l, t}, dy::DDyVector2{texLd.X, texRu.Y},
-    dy::DDyVector2{l, b}, dy::DDyVector2{texLd.X, texLd.Y} };
+    dy::DDyVector2{r, b}, dy::DDyVector2{texRu.X, texLd.Y}, chanMap,
+    dy::DDyVector2{r, t}, dy::DDyVector2{texRu.X, texRu.Y}, chanMap,
+    dy::DDyVector2{l, t}, dy::DDyVector2{texLd.X, texRu.Y}, chanMap,
+    dy::DDyVector2{l, b}, dy::DDyVector2{texLd.X, texLd.Y}, chanMap };
 }
 
-MDY_NODISCARD std::vector<std::array<dy::DDyVector2, 8>> 
+MDY_NODISCARD std::vector<std::array<dy::DDyVector2, 12>> 
 GetCharacterVertices(
     dy::IDyFontContainer& container, 
     const std::vector<std::pair<TC16, dy::DDyVector2>>& lineList, 
     TI32 fontSize)
 {
-   std::vector<std::array<dy::DDyVector2, 8>> result;
+   std::vector<std::array<dy::DDyVector2, 12>> result;
    result.reserve(lineList.size());
    for (const auto& [charCode, position] : lineList)
    {
@@ -92,6 +99,20 @@ CDyFontRenderer::CDyFontRenderer(FDyText& iPtrWidget) :
   this->mBinderShader.TryRequireResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderFontArraySDF::sName));
 }
 
+#ifdef false
+    glVertexBindingDivisor(0, 1);
+    // https://forums.khronos.org/showthread.php/81978
+    glEnableVertexAttribArray(0);
+    glVertexBindingDivisor(0, 1);
+    glEnableVertexAttribArray(1);
+    glVertexBindingDivisor(1, 1);
+    glEnableVertexAttribArray(2);
+    glVertexBindingDivisor(2, 1);
+
+    glBindBuffer(GL_ARRAY_BUFFER, this->mBinderFontMesh->GetVertexBufferId());
+    glBindVertexBuffer(0, this->mBinderFontMesh->GetVertexBufferId(), 0, sizeof(DDyVector2) * 2);
+    VertexAttribDivisor // DO NOT USE IN CASE OF THiS.
+#endif
 void CDyFontRenderer::Render()
 {
   using EUniformType = EDyUniformVariableType;
@@ -114,10 +135,9 @@ void CDyFontRenderer::Render()
 
   // Char code, x position.
   using TLineCharCodeList = std::vector<std::pair<TC16, DDyVector2>>;
-  std::vector<TLineCharCodeList> lineCharCodeList = {};
+  TLineCharCodeList lineCharCodeList = {}; lineCharCodeList.reserve(string.GetLength());
   
   // Make list.
-  TLineCharCodeList lineList;
   for (const TC16& ucs2Char : string)
   {
     if (ucs2Char != '\n')
@@ -125,7 +145,7 @@ void CDyFontRenderer::Render()
       const auto& charInfo = container[ucs2Char];
       if (container.IsCharacterGlyphExist(ucs2Char) == false) { continue; }
       // Insert
-      lineList.emplace_back(std::pair(ucs2Char, DDyVector2{renderPosition.X, renderPosition.Y}));
+      lineCharCodeList.emplace_back(std::pair(ucs2Char, DDyVector2{renderPosition.X, renderPosition.Y}));
       // Relocate next position.
       renderPosition.X += static_cast<TI32>(charInfo.mHorizontalAdvance * fontSize / 2);
     }
@@ -133,62 +153,40 @@ void CDyFontRenderer::Render()
     {
       renderPosition.X = initPos.X; renderPosition.Y -= 24;
       //renderPosition.Y -= static_cast<TF32>(container.GetLinefeedHeight(fontSize) * 0.5f);
-      lineCharCodeList.emplace_back(lineList);
-      lineList.clear();
     }
-  }
-  // Final line check...
-  if (lineList.empty() == false)
-  {
-    lineCharCodeList.emplace_back(lineList);
-    lineList.clear();
   }
 
   // Render
-  for (const auto& lineInformation : lineCharCodeList)
+  using TBuffer = std::array<DDyVector2, 12>;
+  const std::vector<TBuffer> buffer = GetCharacterVertices(container, lineCharCodeList, fontSize);
+  std::vector<TU32> indices = {};
+  for (TU32 i = 0, num = static_cast<TU32>(buffer.size()); i < num; ++i)
   {
-    // Set uniform (TEMPORARY)
-    const auto& charInfo = container[lineInformation.front().first];
-    this->mBinderShader->TryUpdateUniform<EUniformType::Integer>("uChannel", charInfo.mTexCoordInfo.mChannel);
-    this->mBinderShader->TryUpdateUniform<EUniformType::Integer>("uMapIndex", charInfo.mTexCoordInfo.mMapIndex);
+    indices.emplace_back(i * 4 + 0);
+    indices.emplace_back(i * 4 + 1);
+    indices.emplace_back(i * 4 + 2);
+    indices.emplace_back(i * 4 + 3);
+    // Separator
+    indices.emplace_back(0xFFFFFFFF);
+  }
 
-    using TBuffer = std::array<DDyVector2, 8>;
-    const std::vector<TBuffer> buffer = GetCharacterVertices(container, lineInformation, fontSize);
+  { MDY_GRAPHIC_SET_CRITICALSECITON();
+    glDepthFunc(GL_ALWAYS);
 
-    { MDY_GRAPHIC_SET_CRITICALSECITON();
-      glDepthFunc(GL_ALWAYS);
+    this->mBinderShader->UseShader();
+    this->mBinderFontMesh->BindVertexArray();
 
-      this->mBinderShader->UseShader();
-      this->mBinderFontMesh->BindVertexArray();
+    this->mBinderShader->TryUpdateUniformList();
+    glBindBuffer(GL_ARRAY_BUFFER, this->mBinderFontMesh->GetVertexBufferId());
+    glBufferData(GL_ARRAY_BUFFER, buffer.size() * sizeof(TBuffer), buffer.data()->data(), GL_DYNAMIC_DRAW);
+    // Render texture glyph
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D_ARRAY, container.GetFontTextureArrayId());
 
-      this->mBinderShader->TryUpdateUniformList();
-      glBindBuffer(GL_ARRAY_BUFFER, this->mBinderFontMesh->GetVertexBufferId());
-      glBufferData(GL_ARRAY_BUFFER, buffer.size() * sizeof(TBuffer), buffer.data()->data(), GL_DYNAMIC_DRAW);
-
-      glEnableVertexAttribArray(0);
-      glVertexBindingDivisor(0, 1);
-      glEnableVertexAttribArray(1);
-      glVertexBindingDivisor(1, 1);
-
-#ifdef false
-      glBindBuffer(GL_ARRAY_BUFFER, this->mBinderFontMesh->GetVertexBufferId());
-      glBindVertexBuffer(0, this->mBinderFontMesh->GetVertexBufferId(), 0, sizeof(DDyVector2) * 2);
-      glVertexAttribFormat(0, 2, GL_FLOAT, GL_FALSE, 0);
-      VertexAttribDivisor // DO NOT USE IN CASE OF THiS.
-
-      glVertexAttribFormat(1, 2, GL_FLOAT, GL_FALSE, 8);
-
-
-      //glDrawArrays(GL_TRIANGLE_FAN, 0, 4);  
-      glBindVertexArray(0);
-      glDepthFunc(GL_LEQUAL);
-#endif
-      // Render texture glyph
-      glActiveTexture(GL_TEXTURE0);
-      glBindTexture(GL_TEXTURE_2D_ARRAY, container.GetFontTextureArrayId());
-      glDrawArraysInstanced(GL_TRIANGLE_FAN, 0, 4, buffer.size());  
-      this->mBinderShader->DisuseShader();
-    }
+    //const auto numInstance = static_cast<TU32>(buffer.size());
+    glDrawElements(GL_TRIANGLE_FAN, indices.size(), GL_UNSIGNED_INT, indices.data());
+    this->mBinderShader->DisuseShader();
+    glDepthFunc(GL_LEQUAL);
   }
 }
 

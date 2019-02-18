@@ -450,9 +450,9 @@ void FDyGLWrapper::BindVertexArrayObject(_MIN_ const PDyGLVaoBindDescriptor& iDe
   const auto& attributeInfo = iDescriptor.mAttributeInfo;
   const auto attributeCount = attributeInfo.mAttributeFormatList.size();
 
-  glBindVertexArray   (iDescriptor.mVaoId);
+  glBindVertexArray(iDescriptor.mVaoId);
   glBindBuffer(GL_ARRAY_BUFFER, iDescriptor.mBoundVboId);
-  glBindVertexBuffer  (0, iDescriptor.mBoundVboId, attributeInfo.mOffsetByteSize, attributeInfo.mStrideByteSize);
+  glBindVertexBuffer(0, iDescriptor.mBoundVboId, attributeInfo.mOffsetByteSize, attributeInfo.mStrideByteSize);
   if (iDescriptor.mBoundEboId > 0) { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iDescriptor.mBoundEboId); }
 
   for (auto i = 0u; i < attributeCount; ++i)
@@ -462,8 +462,16 @@ void FDyGLWrapper::BindVertexArrayObject(_MIN_ const PDyGLVaoBindDescriptor& iDe
     const GLenum  isMustNormalized= attributeFormat.mIsMustNormalized == true ? GL_TRUE : GL_FALSE;
 
     glEnableVertexAttribArray(i);
-    if (type == GL_INT) { glVertexAttribIFormat(i, attributeFormat.mElementCount, type, attributeFormat.mOffsetByteSize); }
-    else                { glVertexAttribFormat(i, attributeFormat.mElementCount, type, isMustNormalized, attributeFormat.mOffsetByteSize); }
+    if (type == GL_INT) 
+    { 
+      glVertexAttribIFormat(i, attributeFormat.mElementCount, type, 
+          attributeFormat.mOffsetByteSize); 
+    }
+    else 
+    { 
+      glVertexAttribFormat(i, attributeFormat.mElementCount, type, isMustNormalized, 
+          attributeFormat.mOffsetByteSize); 
+    }
     glVertexAttribBinding(i, 0);
   }
   glBindVertexArray(MDY_GL_NONE_VAO);
