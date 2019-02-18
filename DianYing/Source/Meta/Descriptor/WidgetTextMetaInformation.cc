@@ -40,6 +40,7 @@ PDyMetaWidgetTextDescriptor::CreateMetaInformation(_MIN_ const nlohmann::json& i
       "FontSize": 10,
       "EdgeColor": 0,
       "FontSpecifierName": "Arial",
+      "Alignment": "Left" // "Center" // "Right",
       "IsUsingEdge": false,
     }
   }
@@ -82,6 +83,7 @@ PDyMetaWidgetTextDescriptor::CreateMetaInformation(_MIN_ const nlohmann::json& i
   instance->mInitialPosition    = DDyVectorInt2{DyJsonGetValueFrom<DDyVector2>(detailAtlas, sHeader_InitialPosition)};
   instance->mOrigin             = DyJsonGetValueFrom<EDyOrigin>(detailAtlas, "Origin");
   instance->mWidgetSize         = DyJsonGetValueFrom<DDyVectorInt2>(detailAtlas, "WidgetSize");
+  DyJsonGetValueFromTo(detailAtlas, "Alignment", instance->mAlignment);
 
   return instance;
 }

@@ -136,32 +136,80 @@ void CDyFontRenderer::Render()
   const DDyVector2 initPos    = this->mPtrWidget->GetRenderPosition();
   DDyVector2 renderPosition   = initPos;
 
-  // Char code, x position.
   using TLineCharCodeList = std::vector<std::pair<TC16, DDyVector2>>;
-  TLineCharCodeList lineCharCodeList = {}; lineCharCodeList.reserve(string.GetLength());
-  
-  // Make list.
-  for (const TC16& ucs2Char : string)
-  {
-    if (ucs2Char != '\n')
-    { 
-      const auto& charInfo = container[ucs2Char];
-      if (container.IsCharacterGlyphExist(ucs2Char) == false) { continue; }
-      // Insert
-      lineCharCodeList.emplace_back(std::pair(ucs2Char, DDyVector2{renderPosition.X, renderPosition.Y}));
-      // Relocate next position.
-      renderPosition.X += static_cast<TI32>(charInfo.mHorizontalAdvance * fontSize / 2);
-    }
-    else
+  std::vector<TLineCharCodeList>  charCodeList{};
+  std::vector<TI32>               lineActualWidthList{};
+
+  { // Make char-code list with calculating lineActualWidth of each line..
+    TLineCharCodeList lineCharCodeList{};
+    TI32              lineActualWidth = 0;
+    for (const TC16& ucs2Char : string)
     {
-      renderPosition.X = initPos.X; renderPosition.Y -= 24;
-      //renderPosition.Y -= static_cast<TF32>(container.GetLinefeedHeight(fontSize) * 0.5f);
+      if (ucs2Char != '\n')
+      { 
+        const auto& charInfo = container[ucs2Char];
+        if (container.IsCharacterGlyphExist(ucs2Char) == false) { continue; }
+        // Insert and relocate next position.
+        lineCharCodeList.emplace_back(std::pair(ucs2Char, DDyVector2{renderPosition.X, renderPosition.Y}));
+        // Calculate width.
+        const auto calculatedWidth = static_cast<TI32>(charInfo.mHorizontalAdvance * fontSize / 2);
+        renderPosition.X += calculatedWidth;
+        lineActualWidth  += calculatedWidth;
+      }
+      else 
+      { // If line feed is exist.
+        charCodeList.emplace_back(lineCharCodeList);
+        lineActualWidthList.emplace_back(lineActualWidth);
+        lineCharCodeList.clear();
+        lineActualWidth = 0;
+        // Realign.
+        renderPosition.X = initPos.X; renderPosition.Y -= fontSize * 2.5f;
+        //renderPosition.Y -= static_cast<TF32>(container.GetLinefeedHeight(fontSize) * 0.5f);
+      }
     }
+    // and add final string if exist.
+    if (lineCharCodeList.empty() == false)
+    {
+      charCodeList.emplace_back(lineCharCodeList);
+      lineActualWidthList.emplace_back(lineActualWidth);
+      lineCharCodeList.clear();
+    }
+  }
+ 
+  // Check alignment value, and get alignment pixel using actual width of text line.
+  switch (this->mPtrWidget->GetAlignment())
+  {
+  case EDyHorizontalAlignment::Left: /* Do nothing */ break;
+  case EDyHorizontalAlignment::Center: 
+  { // We need to subtract half calculated width (advances?)
+    for (TU32 lineId = 0, lineNum = charCodeList.size(); lineId < lineNum; ++lineId)
+    {
+      const auto offsetWidth = lineActualWidthList[lineId] / 2;
+      for (auto& [charCode, position] : charCodeList[lineId]) { position.X -= offsetWidth; }
+    }
+  } break;
+  case EDyHorizontalAlignment::Right: 
+  { // We need to subtract full caculated width.
+    for (TU32 lineId = 0, lineNum = charCodeList.size(); lineId < lineNum; ++lineId)
+    {
+      const auto offsetWidth = lineActualWidthList[lineId];
+      for (auto& [charCode, position] : charCodeList[lineId]) { position.X -= offsetWidth; }
+    }
+  } break;
+  }
+  
+  // Set actual charcode list for rendering with calculated rendering position.
+  TLineCharCodeList actualCharCodeList = {}; 
+  actualCharCodeList.reserve(string.GetLength());
+  // Insertion
+  for (const auto& listItem : charCodeList)
+  {
+    actualCharCodeList.insert(actualCharCodeList.end(), MDY_BIND_BEGIN_END(listItem));
   }
 
   // Render
   using TBuffer = std::array<DDyVector2, 12>;
-  const std::vector<TBuffer> buffer = GetCharacterVertices(container, lineCharCodeList, fontSize);
+  const std::vector<TBuffer> buffer = GetCharacterVertices(container, actualCharCodeList, fontSize);
   std::vector<TU32> indices = {};
   for (TU32 i = 0, num = static_cast<TU32>(buffer.size()); i < num; ++i)
   {

@@ -34,6 +34,7 @@ namespace dy
 FDyUiWidget::FDyUiWidget(_MIN_ const PDyMetaWidgetRootDescriptor& widgetMetaDesc)
 {
   // (1) Get position and frame size from meta.
+  // @TODO TEMPORARY CODE
   this->SetFrameSize      ({ 1280, 720 });
   this->SetRelativePosition({ 640, 360 });
 

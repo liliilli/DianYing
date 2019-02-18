@@ -31,56 +31,38 @@ MDY_SET_IMMUTABLE_STRING(sBuffer, R"dy(
   },
   "ObjectList":
   [
-    {
-      "Name": "DebugTestText",
-      "Type": "Text",
-      "Parent": "",
+    { "Name": "DebugTestText", "Type": "Text", "Parent": "",
       "Details":
-      {
-        "InitialPosition": { "X":32, "Y": -64 },
+      { "InitialPosition": { "X":32, "Y": -64 },
         "WidgetSize": { "X": 1, "Y": 1 },
         "Origin": "Left_Top",
         "InitialString": "", "InitialColor": 16777215, "InitialAlpha": 1.0,
-        "EdgeColor": 0, "FontSize": 9, "FontAlignment": "Left",
+        "EdgeColor": 0, "FontSize": 9, "Alignment": "Left",
         "FontSpecifierName": "Arial", "IsUsingEdge": true
       }
     },
-    {   
-      "Name": "JoystickTest",
-      "Type": "Text",
-      "Parent": "",
+    { "Name": "JoystickTest", "Type": "Text", "Parent": "",
       "Details":
-      {
-        "InitialPosition": { "X":32, "Y": 64 },
+      { "InitialPosition": { "X":32, "Y": 64 },
         "WidgetSize": { "X": 1, "Y": 1 },
         "Origin": "Left_Bottom",
         "InitialString": "", "InitialColor": 16776960, "InitialAlpha": 1.0,
-        "EdgeColor": 0, "FontSize": 9, "FontAlignment": "Left",
+        "EdgeColor": 0, "FontSize": 9, "Alignment": "Left",
         "FontSpecifierName": "Arial", "IsUsingEdge": true
       }
     },
-    {
-      "Name": "BasicBarTest",
-      "Type": "BasicBar",
-      "Parent": "",
+    { "Name": "BasicBarTest", "Type": "BasicBar", "Parent": "",
       "Details": {
         "InitialPosition": { "X": 0, "Y": -32 },
         "WidgetSize": { "X": 320, "Y": 8 },
         "Origin": "Center_Top",
-        "ForegroundColor": 16776960,
-        "ForegroundAlpha": 1.0,
-        "BackgroundColor": 0,
-        "BackgroundAlpha": 0.85,
-        "Padding": 2,
-        "Min": 0,
-        "Max": 100,
+        "ForegroundColor": 16776960, "ForegroundAlpha": 1.0,
+        "BackgroundColor": 0, "BackgroundAlpha": 0.85,
+        "Padding": 2, "Min": 0, "Max": 100,
         "IsUsingBackgroundColor": true
       }
     },
-    {
-      "Name": "TestImage",
-      "Type": "Image",
-      "Parent": "",
+    { "Name": "TestImage", "Type": "Image", "Parent": "",
       "Details": {
         "InitialPosition": { "X": -80, "Y": 80 },
         "WidgetSize": { "X": 128, "Y": 128 },
