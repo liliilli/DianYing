@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Element/Canvas/FDyImage.h>
 #include <Dy/Component/Ctor/PDyImageRenderer.h>
+#include <Dy/Management/IO/MetaInfoManager.h>
 
 namespace dy
 {
@@ -29,9 +30,9 @@ EDySuccess FDyImage::Initialize(const PDyMetaWidgetImageDescriptor& objectMetaDe
 
   this->mIsSizeToContent  = objectMetaDesc.mIsSizeToContent;
   this->SetTintColor(objectMetaDesc.mTintColor);
-  this->SetImageName(objectMetaDesc.mImageSpecifierName);
+  this->SetRenderableImageName(objectMetaDesc.mImageSpecifierName);
 
-  this->MDY_PRIVATE_SPECIFIER(SetUpdateRendererFlag)(true);
+  this->MDY_PRIVATE(SetUpdateRendererFlag)(true);
   return DY_SUCCESS;
 }
 
@@ -48,32 +49,47 @@ void FDyImage::Render()
   this->mRenderer.Render();
 }
 
-void FDyImage::SetImageName(_MIN_ const std::string& iName) noexcept
+void FDyImage::SetRenderableImageName(_MIN_ const std::string& iName, _MIN_ bool iIsMaterial) noexcept
 {
-  if (this->mImageName != iName)
+  // Check vailidty.
+  if (this->mImageName == iName && this->mIsMaterial != iIsMaterial) { return; }
+
+  auto& refMetaInfo = MDyMetaInfo::GetInstance();
+  if (iIsMaterial == true)
   {
-    this->mImageName = iName;
-    if (this->mIsUpdateRenderer == true) { this->mRenderer.UpdateMaterial(); }
+    // Check
+    if (refMetaInfo.IsMaterialMetaInfoExist(iName) == false)
+    {
+      MDY_LOG_ERROR("Failed to set image name, name : {}, material : {}", iName, iIsMaterial);
+      return;
+    }
+
+    this->mImageName = iName; this->mIsMaterial = true;
+    if (this->mIsUpdateRenderer == true)
+    {
+      this->mRenderer.UpdateRenderableTarget(); 
+    }
+  }
+  else
+  {
+    // Check
+    if (refMetaInfo.IsTextureMetaInfoExist(iName) == false)
+    {
+      MDY_LOG_ERROR("Failed to set image name, name : {}, material : {}", iName, iIsMaterial);
+      return;
+    }
+
+    this->mImageName = iName; this->mIsMaterial = false;
+    if (this->mIsUpdateRenderer == true) 
+    { 
+      this->mRenderer.UpdateRenderableTarget(); 
+    }
   }
 }
 
-void FDyImage::SetShaderSpecifier(_MIN_ const std::string& iSpecifier) noexcept
+std::pair<const std::string&, bool> FDyImage::GetRenderableImageName() const noexcept
 {
-  if (this->mShaderName != iSpecifier)
-  {
-    this->mShaderName = iSpecifier;
-    if (this->mIsUpdateRenderer == true) { this->mRenderer.UpdateMaterial(); }
-  }
-}
-
-const std::string& FDyImage::GetShaderSpecifier() const noexcept
-{
-  return this->mShaderName;
-}
-
-const std::string& FDyImage::GetImageName() const noexcept
-{
-  return this->mImageName;
+  return {this->mImageName, this->mIsMaterial};
 }
 
 void FDyImage::SetTintColor(_MIN_ const DDyColorRGBA& iTintColor) noexcept
@@ -86,12 +102,26 @@ const DDyColorRGBA& FDyImage::GetTintColor() const noexcept
   return this->mTintColor;
 }
 
-void FDyImage::MDY_PRIVATE_SPECIFIER(SetUpdateRendererFlag)(_MIN_ bool iIsActivated) noexcept
+bool FDyImage::IsUsingMaterial() const noexcept
+{
+  return this->mIsMaterial;
+}
+
+TDyResourceBinderMaterial* FDyImage::GetUsingMaterial()
+{
+  // Check
+  if (this->IsUsingMaterial() == false) { return nullptr; }
+
+  // Get from internal object.
+  return this->mRenderer.GetUsingMaterial();
+}
+
+void FDyImage::MDY_PRIVATE(SetUpdateRendererFlag)(_MIN_ bool iIsActivated) noexcept
 {
   if (this->mIsUpdateRenderer != iIsActivated)
   {
     this->mIsUpdateRenderer = iIsActivated;
-    if (this->mIsUpdateRenderer == true) { this->mRenderer.UpdateMaterial(); }
+    if (this->mIsUpdateRenderer == true) { this->mRenderer.UpdateRenderableTarget(); }
   }
 }
 

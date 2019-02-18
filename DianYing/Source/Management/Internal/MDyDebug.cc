@@ -123,7 +123,7 @@ void MDyDebug::pUpdateInputKeys()
     return std::any_of(
         MDY_BIND_CBEGIN_CEND(actionInfo.mActionId),
         [goalState](_MIN_ const auto& id) 
-        { return MDyInput::GetInstance().MDY_PRIVATE_SPECIFIER(GetLowlevelKeyStatus(id)) == goalState; }
+        { return MDyInput::GetInstance().MDY_PRIVATE(GetLowlevelKeyStatus(id)) == goalState; }
     );
   };
 
@@ -134,7 +134,7 @@ void MDyDebug::pUpdateInputKeys()
     return std::all_of(
         MDY_BIND_CBEGIN_CEND(actionInfo.mActionId),
         [goalState](_MIN_ const auto& id) 
-        { return MDyInput::GetInstance().MDY_PRIVATE_SPECIFIER(GetLowlevelKeyStatus(id)) == goalState; }
+        { return MDyInput::GetInstance().MDY_PRIVATE(GetLowlevelKeyStatus(id)) == goalState; }
     );
   };
 

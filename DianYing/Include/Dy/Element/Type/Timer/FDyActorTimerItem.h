@@ -67,17 +67,17 @@ public:
   MDY_NODISCARD TU32 GetIndex() const noexcept;
 
   /// @brief Reset timer, retaining index and binding status. but change `mStatus` to `Play`.
-  void MDY_PRIVATE_SPECIFIER(ResetTimerProperties)(
+  void MDY_PRIVATE(ResetTimerProperties)(
       _MIN_ TF32 iFirstDelay, 
       _MIN_ TF32 iDelayTime, 
       _MIN_ bool iIsLooped, 
       _MIN_ std::function<void()> iCbFunction);
 
   /// @brief Abort timer item.
-  void MDY_PRIVATE_SPECIFIER(Abort)();
+  void MDY_PRIVATE(Abort)();
 
 private:
-  inline static TU32 MDY_PRIVATE_SPECIFIER(sIndex) = 0;
+  inline static TU32 MDY_PRIVATE(sIndex) = 0;
 
   FDyTimerHandle*     mPtrHandle = nullptr;
   ADyActorCppScript*  mPtrScript = nullptr;

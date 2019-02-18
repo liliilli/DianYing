@@ -36,15 +36,17 @@ public:
   template <EDyUniformVariableType TType>
   void TryUpdateUniform(
       _MIN_ const std::string& iSpecifier, 
-      _MIN_ const typename MDY_PRIVATE_SPECIFIER(UniformBinder)<TType>::ValueType& iValue)
+      _MIN_ const typename MDY_PRIVATE(UniformBinder)<TType>::ValueType& iValue)
   {
-    if (this->IsResourceExist() == true) { return; }
+    // Check
+    if (this->IsResourceExist() == false) { return; }
+    // Insert
     this->UpdateUniform(*Get(), iSpecifier, iValue);
   }
 
   /// @brief Try update uniform variables. \n
   /// Do nothing when update list is empty or binding flag is not set up
-  /// by calling MDY_PRIVATE_SPECIFIER(TryConstructDefaultUniformList)().
+  /// by calling MDY_PRIVATE(TryConstructDefaultUniformList)().
   MDY_NODISCARD EDySuccess TryUpdateUniformList();
 };
 

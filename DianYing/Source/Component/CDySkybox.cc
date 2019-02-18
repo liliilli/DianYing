@@ -51,7 +51,7 @@ std::string CDySkybox::ToString()
   return "";
 }
 
-TDyLResourceBinderTexture& CDySkybox::MDY_PRIVATE_SPECIFIER(GetTextureBinderReference)() noexcept
+TDyResourceBinderTexture& CDySkybox::MDY_PRIVATE(GetTextureBinderReference)() noexcept
 {
   return this->mBinderTexture;
 }
@@ -105,14 +105,14 @@ void CDySkybox::TryActivateInstance()
 
   // And attach to world's activated skybox component list.
   auto& worldManager = MDyWorld::GetInstance();
-  worldManager.MDY_PRIVATE_SPECIFIER(BindActiveSkybox)(*this);
+  worldManager.MDY_PRIVATE(BindActiveSkybox)(*this);
 }
 
 void CDySkybox::TryDeactivateInstance()
 {
   // Detach from world's activated skybox component list.
   auto& worldManager = MDyWorld::GetInstance();
-  const auto flag = worldManager.MDY_PRIVATE_SPECIFIER(UnbindActiveSkybox)(*this);
+  const auto flag = worldManager.MDY_PRIVATE(UnbindActiveSkybox)(*this);
   // Procedure must be succeeded.
   MDY_ASSERT_FORCE(flag == DY_SUCCESS, "Unexpected error occurred.");
 }

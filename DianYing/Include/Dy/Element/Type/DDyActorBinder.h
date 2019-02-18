@@ -44,11 +44,11 @@ public:
   FDyActor*       operator->() noexcept       { return this->mPtrActor; }
   const FDyActor* operator->() const noexcept { return this->mPtrActor; }
 
-  void MDY_PRIVATE_SPECIFIER(BindDescriptor)(_MIN_ PDyActorCreationDescriptor* mPtrDesc) noexcept;
-  void MDY_PRIVATE_SPECIFIER(DetachDescriptor)(PDyActorCreationDescriptor*) noexcept;
+  void MDY_PRIVATE(BindDescriptor)(_MIN_ PDyActorCreationDescriptor* mPtrDesc) noexcept;
+  void MDY_PRIVATE(DetachDescriptor)(PDyActorCreationDescriptor*) noexcept;
 
-  void MDY_PRIVATE_SPECIFIER(BindDescriptor)(_MIN_ FDyActor* mPtrDesc) noexcept;
-  void MDY_PRIVATE_SPECIFIER(DetachDescriptor)(FDyActor*) noexcept;
+  void MDY_PRIVATE(BindDescriptor)(_MIN_ FDyActor* mPtrDesc) noexcept;
+  void MDY_PRIVATE(DetachDescriptor)(FDyActor*) noexcept;
 
 private:
   FDyActor* mPtrActor = nullptr;

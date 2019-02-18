@@ -31,7 +31,7 @@ FDyWidgetTimerItem::FDyWidgetTimerItem(
     _MIN_ std::function<void()> iCbFunction) :
     mPtrHandle{&iHandle},
     mPtrScript{&iRefScript},
-    mIndex{MDY_PRIVATE_SPECIFIER(sIndex)++},
+    mIndex{MDY_PRIVATE(sIndex)++},
     mStatus{EDyTimerStatus::Play},
     mIsLooped{iIsLooped},
     mFirstDelay{iFirstDelay},
@@ -39,16 +39,16 @@ FDyWidgetTimerItem::FDyWidgetTimerItem(
     mTimeGoal{mFirstDelay + mDelayTime},
     mCallbackFunction{std::move(iCbFunction)}
 { 
-  this->mPtrHandle->MDY_PRIVATE_SPECIFIER(SetBinding)(mIndex);
-  this->mPtrScript->MDY_PRIVATE_SPECIFIER(BindPtrTimerHandle)(*this->mPtrHandle);
+  this->mPtrHandle->MDY_PRIVATE(SetBinding)(mIndex);
+  this->mPtrScript->MDY_PRIVATE(BindPtrTimerHandle)(*this->mPtrHandle);
 }
 
 FDyWidgetTimerItem::~FDyWidgetTimerItem()
 {
-  this->MDY_PRIVATE_SPECIFIER(Abort)();
+  this->MDY_PRIVATE(Abort)();
 }
 
-void FDyWidgetTimerItem::MDY_PRIVATE_SPECIFIER(ResetTimerProperties)(
+void FDyWidgetTimerItem::MDY_PRIVATE(ResetTimerProperties)(
     _MIN_ TF32 iFirstDelay, 
     _MIN_ TF32 iDelayTime, 
     _MIN_ bool iIsLooped, 
@@ -63,19 +63,19 @@ void FDyWidgetTimerItem::MDY_PRIVATE_SPECIFIER(ResetTimerProperties)(
   mCallbackFunction = std::move(iCbFunction);
 }
 
-void FDyWidgetTimerItem::MDY_PRIVATE_SPECIFIER(Abort)()
+void FDyWidgetTimerItem::MDY_PRIVATE(Abort)()
 {
   this->mCallbackFunction = nullptr;
   this->mDeferredCallCount = 0;
   this->mStatus = EDyTimerStatus::Aborted;
   if (MDY_CHECK_ISNOTNULL(this->mPtrScript))
   {
-    this->mPtrScript->MDY_PRIVATE_SPECIFIER(DetachPtrTimerHandle)(*this->mPtrHandle);
+    this->mPtrScript->MDY_PRIVATE(DetachPtrTimerHandle)(*this->mPtrHandle);
     this->mPtrScript = nullptr;
   }
   if (MDY_CHECK_ISNOTNULL(this->mPtrHandle))
   {
-    this->mPtrHandle->MDY_PRIVATE_SPECIFIER(Unbind)();
+    this->mPtrHandle->MDY_PRIVATE(Unbind)();
     this->mPtrHandle = nullptr;
   }
 }
@@ -111,7 +111,7 @@ void FDyWidgetTimerItem::CallFunction(_MIN_ bool iCallOnlyOnce) noexcept
   if (this->mIsLooped == false)
   {
     this->mCallbackFunction();
-    this->MDY_PRIVATE_SPECIFIER(Abort)();
+    this->MDY_PRIVATE(Abort)();
   }
   else
   {
@@ -130,7 +130,7 @@ void FDyWidgetTimerItem::CallFunction(_MIN_ bool iCallOnlyOnce) noexcept
         this->mDeferredCallCount--;
         
         // Check game end signal is called.
-        if (gEngine->MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() == true) { return; }
+        if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
       }
     }
   }

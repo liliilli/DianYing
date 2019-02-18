@@ -306,7 +306,7 @@ void MDyScript::UpdateWidgetScript(_MIN_ TF32 dt)
     if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
     ptrsmtScript->CallScriptFunction(dt);
     // If engine must be stopped and end application, return instantly.
-    if (gEngine->MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() == true) { return; }
+    if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
   }
 }
 
@@ -317,7 +317,7 @@ void MDyScript::UpdateWidgetScript(_MIN_ TF32 dt, _MIN_ EDyScriptState type)
     if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
     if (ptrsmtScript->GetScriptStatus() == type) { ptrsmtScript->CallScriptFunction(dt); }
     // If engine must be stopped and end application, return instantly.
-    if (gEngine->MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() == true) { return; }
+    if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
   }
 
   for (auto& ptrsmtScript : this->mWidgetScriptList)
@@ -325,7 +325,7 @@ void MDyScript::UpdateWidgetScript(_MIN_ TF32 dt, _MIN_ EDyScriptState type)
     if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
     if (ptrsmtScript->GetScriptStatus() == type) { ptrsmtScript->CallScriptFunction(dt); }
     // If engine must be stopped and end application, return instantly.
-    if (gEngine->MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() == true) { return; }
+    if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
   }
 }
 
@@ -339,9 +339,9 @@ void MDyScript::CallDestroyFuncWidgetScriptGCList()
   for (auto& ptrsmtScript : this->mGCedWidgetScriptList)
   {
     if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
-    ptrsmtScript->MDY_PRIVATE_SPECIFIER(CallDestroyFunctionAnyway)();
+    ptrsmtScript->MDY_PRIVATE(CallDestroyFunctionAnyway)();
     // If engine must be stopped and end application, return instantly.
-    if (gEngine->MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() == true) { return; }
+    if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
   }
 }
 
@@ -363,7 +363,7 @@ void MDyScript::UpdateActorScript(TF32 dt)
     if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
     ptrsmtScript->CallScriptFunction(dt);
     // If engine must be stopped and end application, return instantly.
-    if (gEngine->MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() == true) { return; }
+    if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
   }
 }
 
@@ -374,7 +374,7 @@ void MDyScript::UpdateActorScript(TF32 dt, EDyScriptState type)
     if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
     if (ptrsmtScript->GetScriptStatus() == type) { ptrsmtScript->CallScriptFunction(dt); }
     // If engine must be stopped and end application, return instantly.
-    if (gEngine->MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() == true) { return; }
+    if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
   }
 
   for (auto& ptrsmtScript : this->mActorScriptList)
@@ -382,7 +382,7 @@ void MDyScript::UpdateActorScript(TF32 dt, EDyScriptState type)
     if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
     if (ptrsmtScript->GetScriptStatus() == type) { ptrsmtScript->CallScriptFunction(dt); }
     // If engine must be stopped and end application, return instantly.
-    if (gEngine->MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() == true) { return; }
+    if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
   }
 }
 
@@ -396,9 +396,9 @@ void MDyScript::CallDestroyFuncActorScriptGCList()
   for (auto& ptrsmtScript : this->mGCedActorScriptList)
   {
     if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
-    ptrsmtScript->MDY_PRIVATE_SPECIFIER(CallDestroyFunctionAnyway)();
+    ptrsmtScript->MDY_PRIVATE(CallDestroyFunctionAnyway)();
     // If engine must be stopped and end application, return instantly.
-    if (gEngine->MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() == true) { return; }
+    if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
   }
 }
 

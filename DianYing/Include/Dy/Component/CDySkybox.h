@@ -60,7 +60,7 @@ public:
   MDY_NODISCARD std::string ToString() override final;
 
   /// @brief Private function. Get reference of texture binder.
-  MDY_NODISCARD TDyLResourceBinderTexture& MDY_PRIVATE_SPECIFIER(GetTextureBinderReference)() noexcept;
+  MDY_NODISCARD TDyResourceBinderTexture& MDY_PRIVATE(GetTextureBinderReference)() noexcept;
 
   /// @brief Set exposure value. If value is out of range from 0 to 10, input value will be aligned.
   void SetExposure(_MIN_ TF32 iValue) noexcept;
@@ -81,7 +81,7 @@ private:
   void TryActivateInstance() override final;
   void TryDeactivateInstance() override final;
 
-  TDyLResourceBinderTexture mBinderTexture;
+  TDyResourceBinderTexture mBinderTexture;
 
   std::string           mTextureSpecifier = MDY_INITIALIZE_EMPTYSTR;
   DDyClamp<TF32, 0, 10> mExposure         = 0.0f;

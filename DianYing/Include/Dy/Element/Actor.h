@@ -58,7 +58,7 @@ public:
   MDY_NODISCARD const std::string& GetActorName() const noexcept;
 
   /// @brief Get full specifier name from this to root like a `This_Name.Head~1.Head~2`
-  MDY_NODISCARD std::string MDY_PRIVATE_SPECIFIER(GetFullSpecifierName)() const noexcept; 
+  MDY_NODISCARD std::string MDY_PRIVATE(GetFullSpecifierName)() const noexcept; 
 
   /// @brief Set FDyActor's parent to valid input actor.
   void SetParent(_MIN_ FDyActor& refParentActor) noexcept;
@@ -131,7 +131,7 @@ public:
     {
       // Add and initialize component itself.
       // If component which just added is CDyScript, Call Initiate script first.
-      auto ptr = MDY_PRIVATE_SPECIFIER(MakeScriptComponent)(std::forward<TArgs...>(args)...);
+      auto ptr = MDY_PRIVATE(MakeScriptComponent)(std::forward<TArgs...>(args)...);
       auto& reference = this->mScriptList.emplace_back(std::move(ptr));
       return DyMakeNotNull(reference.get());
     }
@@ -164,7 +164,7 @@ public:
 
   /// @brief Make script component (lua or cpp)
   MDY_NODISCARD std::unique_ptr<CDyActorScript> 
-  MDY_PRIVATE_SPECIFIER(MakeScriptComponent)(_MIN_ const PDyScriptComponentMetaInfo& info);
+  MDY_PRIVATE(MakeScriptComponent)(_MIN_ const PDyScriptComponentMetaInfo& info);
   
   ///
   /// @brief  Return component raw-pointer from general component list (not script)
@@ -257,10 +257,10 @@ public:
 
   /// @brief Try remove script instances list. \n
   /// But this funtion does not remove script instance actually, but just forward script list to GC-list.
-  void MDY_PRIVATE_SPECIFIER(TryRemoveScriptInstances)() noexcept;
+  void MDY_PRIVATE(TryRemoveScriptInstances)() noexcept;
 
   /// @brief Try detach dependent components from dy level management system.
-  void MDY_PRIVATE_SPECIFIER(TryDetachDependentComponents)() noexcept;
+  void MDY_PRIVATE(TryDetachDependentComponents)() noexcept;
 
   ///
   /// @brief  Get script component pointer from script list using scriptName to verify.
@@ -344,7 +344,7 @@ private:
   void TryDeactivateInstance() override final;
   
   /// @brief
-  void MDY_PRIVATE_SPECIFIER(CreateComponentList)(_MIN_ const TComponentMetaList& iMetaComponentList);
+  void MDY_PRIVATE(CreateComponentList)(_MIN_ const TComponentMetaList& iMetaComponentList);
   /// @brief
   void pPropagateActivationFlag() noexcept;
 

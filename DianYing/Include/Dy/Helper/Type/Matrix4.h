@@ -21,6 +21,13 @@
 #include <Dy/Helper/Type/Matrix3.h>
 #include <Dy/Helper/Type/Vector4.h>
 
+#ifdef near
+#undef near
+#endif
+#ifdef far
+#undef far
+#endif
+
 namespace dy
 {
 
@@ -147,40 +154,33 @@ public:
   friend bool operator==(_MIN_ const DDyMatrix4x4& lhs, _MIN_ const DDyMatrix4x4& rhs) noexcept;
   friend bool operator!=(_MIN_ const DDyMatrix4x4& lhs, _MIN_ const DDyMatrix4x4& rhs) noexcept;
 
-  ///
   /// @brief
-  ///
   DDyMatrix4x4 Transpose() const noexcept;
 
-  ///
   /// @brief
-  ///
   DDyMatrix4x4 Multiply(const DDyMatrix4x4& rhs) const noexcept;
 
-  ///
   /// @brief
-  ///
   DDyVector4 MultiplyVector(const DDyVector4& rhs) const noexcept;
 
-  ///
   /// @brief
-  ///
   DDyMatrix4x4 Inverse() const;
 
-  ///
   /// @brief
-  ///
   static DDyMatrix4x4 IdentityMatrix() noexcept;
 
-  ///
   /// @brief
-  ///
   static DDyMatrix4x4 CreateWithScale(const DDyVector3& scaleVector);
 
-  ///
   /// @brief
-  ///
   static DDyMatrix4x4 CreateWithTranslation(const DDyVector3& translationPoint);
+
+  /// @brief Get orthographic projection of OpenGL. \n
+  /// [ 2/(r-l)    0       0    -(r+l)/(r-l) ] \n
+  /// [   0     2/(t-b)    0    -(t+b)/(t-b) ] \n
+  /// [   0        0   -2/(f-n) -(f+n)/(f-n) ] \n
+  /// [   0        0       0          1      ]
+  static DDyMatrix4x4 OrthoProjection(_MIN_ TF32 left, _MIN_ TF32 right, _MIN_ TF32 bottom, _MIN_ TF32 top, _MIN_ TF32 near, _MIN_ TF32 far);
 
   /// @brief Scale matrix.
   DDyMatrix4x4& Scale(_MIN_ const DDyVector3& iScaleFactor);

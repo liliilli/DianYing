@@ -21,7 +21,7 @@ namespace dy
 {
 
 MDY_NODISCARD EDySuccess
-SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryRequireResource)
+SDyIOBindingHelper::MDY_PRIVATE(pTryRequireResource)
 (_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder)
 {
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
@@ -30,7 +30,7 @@ SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryRequireResource)
   if (ioThread.pIsReferenceInstanceExist(iSpecifier, iType, EDyResourceStyle::Resource) == false)
   { // If binding is failed, it specifies that RI has not been created (Related task queue was not created neither).
     // So we need populate task queue for resource as temporary.
-    MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
+    MDY_NOUSE_RTVAL_EXPR(ioThread.outTryEnqueueTask(iSpecifier, iType, EDyResourceStyle::Resource, EDyScope::Temporal));
   }
 
   MDY_CALL_ASSERT_SUCCESS(ioThread.TryBindBinderToResourceRI(iSpecifier, iType, iPtrBinder));
@@ -43,7 +43,7 @@ SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryRequireResource)
 }
 
 std::optional<const __TResourceType<EDyResourceType::GLShader>::type*>
-SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryRequireResource_GLShader)
+SDyIOBindingHelper::MDY_PRIVATE(pTryRequireResource_GLShader)
 (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder)
 {
   const auto checkFlag = __pTryRequireResource(iSpecifier, EDyResourceType::GLShader, iPtrBinder);
@@ -57,7 +57,7 @@ SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryRequireResource_GLShader)
 }
 
 MDY_NODISCARD std::optional<const __TResourceType_T<EDyResourceType::Mesh>*>
-SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryRequireResource_Mesh)
+SDyIOBindingHelper::MDY_PRIVATE(pTryRequireResource_Mesh)
 (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder)
 {
   const auto checkFlag = __pTryRequireResource(iSpecifier, EDyResourceType::Mesh, iPtrBinder);
@@ -71,7 +71,7 @@ SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryRequireResource_Mesh)
 }
 
 std::optional<const __TResourceType_T<EDyResourceType::Model>*>
-SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryRequireResource_Model)
+SDyIOBindingHelper::MDY_PRIVATE(pTryRequireResource_Model)
 (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder)
 {
   const auto checkFlag = __pTryRequireResource(iSpecifier, EDyResourceType::Model, iPtrBinder);
@@ -85,7 +85,7 @@ SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryRequireResource_Model)
 }
 
 std::optional<const __TResourceType_T<EDyResourceType::Texture>*>
-SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryRequireResource_Texture)
+SDyIOBindingHelper::MDY_PRIVATE(pTryRequireResource_Texture)
 (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder)
 {
   const auto checkFlag = __pTryRequireResource(iSpecifier, EDyResourceType::Texture, iPtrBinder);
@@ -99,7 +99,7 @@ SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryRequireResource_Texture)
 }
 
 std::optional<const __TResourceType_T<EDyResourceType::Material>*>
-SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryRequireResource_Material)
+SDyIOBindingHelper::MDY_PRIVATE(pTryRequireResource_Material)
 (_MIN_ const std::string& iSpecifier, _MIN_ const __FDyBinderBase* iPtrBinder)
 {
   const auto checkFlag = __pTryRequireResource(iSpecifier, EDyResourceType::Material, iPtrBinder);
@@ -113,7 +113,7 @@ SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryRequireResource_Material)
 }
 
 std::optional<const __TResourceType_T<EDyResourceType::GLAttachment>*> 
-SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryRequireResource_Attachment)
+SDyIOBindingHelper::MDY_PRIVATE(pTryRequireResource_Attachment)
 (const std::string& iSpecifier, const __FDyBinderBase* iPtrBinder)
 {
   const auto checkFlag = __pTryRequireResource(iSpecifier, EDyResourceType::GLAttachment, iPtrBinder);
@@ -127,7 +127,7 @@ SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryRequireResource_Attachment)
 }
 
 std::optional<const __TResourceType_T<EDyResourceType::GLFrameBuffer>*> 
-SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryRequireResource_FrameBuffer)
+SDyIOBindingHelper::MDY_PRIVATE(pTryRequireResource_FrameBuffer)
 (const std::string& iSpecifier, const __FDyBinderBase* iPtrBinder)
 {
   const auto checkFlag = __pTryRequireResource(iSpecifier, EDyResourceType::GLFrameBuffer, iPtrBinder);
@@ -140,7 +140,7 @@ SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryRequireResource_FrameBuffer)
   return ptr;
 }
 
-EDySuccess SDyIOBindingHelper::MDY_PRIVATE_SPECIFIER(pTryDetachResource)
+EDySuccess SDyIOBindingHelper::MDY_PRIVATE(pTryDetachResource)
 (_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder)
 {
   MDY_ASSERT(iType != EDyResourceType::NoneError, "iType must be valid resource type.");

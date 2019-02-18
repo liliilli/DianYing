@@ -22,7 +22,7 @@
 namespace dy
 {
 
-MDY_PRIVATE_SPECIFIER(FDyDefaultLoadingGlobalScript)::MDY_PRIVATE_SPECIFIER(FDyDefaultLoadingGlobalScript)()
+MDY_PRIVATE(FDyDefaultLoadingGlobalScript)::MDY_PRIVATE(FDyDefaultLoadingGlobalScript)()
 {
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Material, builtin::FDyBuiltinMaterialOpaqueStaticPlain::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Material, builtin::FDyBtMtCheckerWorldPos::sName);

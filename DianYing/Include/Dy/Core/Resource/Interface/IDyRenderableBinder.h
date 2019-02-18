@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_MANAGEMENT_TYPE_TIME_EDYTIMEDAY_H
-#define GUARD_DY_MANAGEMENT_TYPE_TIME_EDYTIMEDAY_H
+#ifndef GUARD_DY_CORE_RESOURCE_INTERFACE_IDyRenderableBinder_H
+#define GUARD_DY_CORE_RESOURCE_INTERFACE_IDyRenderableBinder_H
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -13,30 +13,24 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Meta/Type/EDyResourceType.h>
+
 namespace dy
 {
 
-///
-/// @enum EDyTimeDay
-/// @brief Time day (sunday ~ saturday) type 
-///
-enum class EDyTimeDay : char
+/// @struct IDyRenderableBinder
+/// @brief  Renderable binder.
+struct IDyRenderableBinder
 {
-  Sunday    = 0,
-  Monday    = 1,
-  Tuesday   = 2,
-  Wednesday = 3,
-  Thursday  = 4,
-  Friday    = 5,
-  Saturday  = 6
+public:
+  IDyRenderableBinder(EDyResourceType type) : mRenderType{type} {};
+  virtual ~IDyRenderableBinder() = 0;
+
+  EDyResourceType mRenderType = EDyResourceType::NoneError;
 };
 
-inline EDyTimeDay MDY_PRIVATE(DyConverTmDayToDyType)(_MIN_ TI32 iInput) noexcept
-{
-  MDY_ASSERT(iInput >= 0 && iInput <= 6, "iInput is not valid value.");
-  return static_cast<EDyTimeDay>(iInput);
-}
+inline IDyRenderableBinder::~IDyRenderableBinder() = default;
 
 } /// ::dy namespace
 
-#endif /// GUARD_DY_MANAGEMENT_TYPE_TIME_EDYTIMEDAY_H
+#endif /// GUARD_DY_CORE_RESOURCE_INTERFACE_IDyRenderableBinder_H

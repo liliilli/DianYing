@@ -27,6 +27,8 @@
 #include <Dy/Helper/Math/Random.h>
 #include <Dy/Management/GameTimerManager.h>
 #include "Dy/Element/Canvas/FDyImage.h"
+#include "Dy/Core/Resource/Resource/FDyMaterialResource.h"
+#include "Dy/Core/Resource/Resource/FDyShaderResource.h"
 
 namespace dy
 {
@@ -49,7 +51,7 @@ void FDyBuiltinDebugUiScript::Initiate()
 void FDyBuiltinDebugUiScript::Start()
 {
   this->GetGameTimerManager().SetTimer(this->mTimerHandle, *this, &FDyBuiltinDebugUiScript::CbMoveBar, 1.0f, true, 1.0f);
-  //this->GetGameTimerManager().SetTimer(this->mTimerHandle2, *this, &FDyBuiltinDebugUiScript::CbChangeImageTexture, 0.8f, true, 0.5f);
+  this->GetGameTimerManager().SetTimer(this->mTimerHandle2, *this, &FDyBuiltinDebugUiScript::CbChangeImageTexture, 0.8f, true, 0.5f);
 }
 
 void FDyBuiltinDebugUiScript::Update(_MIN_ TF32 dt)
@@ -106,6 +108,18 @@ Camera0 : 2
       inputManager.GetJoystickStickValue(1), inputManager.GetJoystickStickValue(0),
       inputManager.GetJoystickStickValue(5), inputManager.GetJoystickStickValue(2)
   ));
+
+  if (this->flag == false) // Is material
+  {
+    static TF32 elapsed = 0;
+    elapsed += dt;
+
+    auto* ptrImage = this->GetWidgetReference().GetUiObject<FDyImage>("TestImage");;
+    if (auto* ptrMat = ptrImage->GetUsingMaterial(); ptrMat != nullptr && ptrMat->IsResourceExist() == true)
+    {
+      ptrMat->TryUpdateUniform<EDyUniformVariableType::Float>("uThreshold", (sinf(elapsed * 3) + 1.0f) * 0.5f);
+    }
+  }
 }
 
 void FDyBuiltinDebugUiScript::Bar_MoveLeft(_MIN_ TF32 iXAxis) noexcept
@@ -133,18 +147,16 @@ void FDyBuiltinDebugUiScript::CbMoveBar()
 
 void FDyBuiltinDebugUiScript::CbChangeImageTexture()
 {
-  static bool flag = false;
-
   auto& refWidget = this->GetWidgetReference();
   FDyImage* image = refWidget.GetUiObject<FDyImage>("TestImage");
   if (flag == false)
   {
-    image->SetImageName("dyBtTextureErrorBlue");
+    image->SetRenderableImageName("T_BrickWall1_Diffuse", false);
     flag = !flag;
   }
   else
   {
-    image->SetImageName("dyBtTextureChecker");
+    image->SetRenderableImageName("TestUiImageMat190217", true);
     flag = !flag;
   }
 }

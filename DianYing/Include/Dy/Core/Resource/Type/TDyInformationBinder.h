@@ -72,6 +72,7 @@ protected:
     }
     else
     {
+      const auto noError = this->pTryDetachResource();
       this->mPtrResource = ptrResult.value();
       return DY_SUCCESS;
     }
@@ -117,65 +118,19 @@ protected:
   TPtrResource  mPtrResource    = MDY_INITIALIZE_NULL;
 };
 
-///
-/// @class TDyInformationBinder
-/// @brief Information resource binder class.
-///
-template <EDyResourceType TType, EDyLazy TIsLazy>
-class TDyInformationBinder;
-
-///
-/// @class TDyInformationBinder
-/// @brief Not lazy version of `TDyInformationBinder`.
-///
-template <EDyResourceType TType>
-class TDyInformationBinder<TType, EDyLazy::No> final : public __TDyInformationBinderBase<TType>
-{
-private:
-  using TSuper = __TDyInformationBinderBase<TType>;
-public:
-  MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(TDyInformationBinder);
-
-  TDyInformationBinder(_MIN_ const std::string& specifier) : TSuper{specifier}
-  {
-    if (const auto flag = TSuper::pTryRequireResource(specifier); flag == DY_FAILURE)
-    { MDY_NOT_IMPLEMENTED_ASSERT(); }
-    else 
-    { 
-      this->mSpecifierName = specifier;
-      this->Process(); 
-    };
-  }
-  ~TDyInformationBinder() = default;
-};
-
-template <EDyResourceType TType>
-using TDyInformationBinderInstant       = TDyInformationBinder<TType, EDyLazy::No>;
-using TDyIInformationBinderShader       = TDyInformationBinderInstant<EDyResourceType::GLShader>;
-using TDyIInformationBinderMesh         = TDyInformationBinderInstant<EDyResourceType::Mesh>;
-using TDyIInformationBinderModel        = TDyInformationBinderInstant<EDyResourceType::Model>;
-using TDyIInformationBinderTexture      = TDyInformationBinderInstant<EDyResourceType::Texture>;
-using TDyIInformationBinderMaterial     = TDyInformationBinderInstant<EDyResourceType::Material>;
-using TDyIInformationBinderAttachment   = TDyInformationBinderInstant<EDyResourceType::GLAttachment>;
-using TDyIInformationBinderFrameBuffer  = TDyInformationBinderInstant<EDyResourceType::GLFrameBuffer>;
-using TDyIInformationBinderSkeleton     = TDyInformationBinderInstant<EDyResourceType::Skeleton>;
-using TDyIInformationBinderAnimScrap    = TDyInformationBinderInstant<EDyResourceType::AnimationScrap>;
-using TDyIInformationBinderSound        = TDyInformationBinderInstant<EDyResourceType::Sound>;
-
-///
 /// @class TDyInformationBinder
 /// @brief Not lazy version of `TDyInformationBinder`.
 /// User have to require resource manually. but detach is held by automatically. (RAII)
-///
 template <EDyResourceType TType>
-class TDyInformationBinder<TType, EDyLazy::Yes> final : public __TDyInformationBinderBase<TType>
+class TDyInformationBinder final : public __TDyInformationBinderBase<TType>
 {
 private:
   using TSuper = __TDyInformationBinderBase<TType>;
 public:
   MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(TDyInformationBinder);
+  TDyInformationBinder(_MIN_ const std::string& iNewSpecifier) : TSuper{iNewSpecifier} { TryRequireResource(iNewSpecifier); }
   TDyInformationBinder() = default;
-  ~TDyInformationBinder() = default;
+  virtual ~TDyInformationBinder() = default;
 
   /// @brief Try require resource with specifier name in given EDyResourceType.
   /// If resource is already bound to binder handle, detach it first and newly bind another resource into it.
@@ -184,8 +139,7 @@ public:
     // If resource is already exist and bound by something. 
     // Let it be until new resource is bounded soon.
     // If flag == DY_FAILURE, iNewSpecifier will be stored as deferred resource specifier.
-    if (const auto flag = TSuper::pTryRequireResource(iNewSpecifier); 
-        flag == DY_SUCCESS) 
+    if (const auto flag = TSuper::pTryRequireResource(iNewSpecifier); flag == DY_SUCCESS) 
     { 
       this->mSpecifierName = iNewSpecifier;
       this->Process(); 
@@ -193,18 +147,16 @@ public:
   }
 };
 
-template <EDyResourceType TType>
-using TDyInformatinBinderLazy = TDyInformationBinder<TType, EDyLazy::Yes>;
-using TDyLInformatinBinderShader    = TDyInformatinBinderLazy<EDyResourceType::GLShader>;
-using TDyLInformationBinderMesh     = TDyInformatinBinderLazy<EDyResourceType::Mesh>;
-using TDyLInformatinBinderModel     = TDyInformatinBinderLazy<EDyResourceType::Model>;
-using TDyLInformatinBinderTexture   = TDyInformatinBinderLazy<EDyResourceType::Texture>;
-using TDyLInformatinBinderMaterial  = TDyInformatinBinderLazy<EDyResourceType::Material>;
-using TDyLInformatinBinderAttachment  = TDyInformatinBinderLazy<EDyResourceType::GLAttachment>;
-using TDyLInformatinBinderFrameBuffer = TDyInformatinBinderLazy<EDyResourceType::GLFrameBuffer>;
-using TDyLInformationBinderSkeleton   = TDyInformatinBinderLazy<EDyResourceType::Skeleton>;
-using TDyLInformationBinderAnimScrap  = TDyInformatinBinderLazy<EDyResourceType::AnimationScrap>;
-using TDyLInformationBinderSound      = TDyInformatinBinderLazy<EDyResourceType::Sound>;
+using TDyInformationBinderShader     = TDyInformationBinder<EDyResourceType::GLShader>;
+using TDyInformationBinderMesh       = TDyInformationBinder<EDyResourceType::Mesh>;
+using TDyInformationBinderModel      = TDyInformationBinder<EDyResourceType::Model>;
+using TDyInformationBinderTexture    = TDyInformationBinder<EDyResourceType::Texture>;
+using TDyInformationBinderMaterial   = TDyInformationBinder<EDyResourceType::Material>;
+using TDyInformationBinderAttachment = TDyInformationBinder<EDyResourceType::GLAttachment>;
+using TDyInformationBinderFrameBuffer= TDyInformationBinder<EDyResourceType::GLFrameBuffer>;
+using TDyInformationBinderSkeleton   = TDyInformationBinder<EDyResourceType::Skeleton>;
+using TDyInformationBinderAnimScrap  = TDyInformationBinder<EDyResourceType::AnimationScrap>;
+using TDyInformationBinderSound      = TDyInformationBinder<EDyResourceType::Sound>;
 
 } /// ::dy namespace
 

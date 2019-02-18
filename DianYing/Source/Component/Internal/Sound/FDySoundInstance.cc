@@ -150,7 +150,7 @@ EDySuccess FDySoundInstance::TryInitialize()
 
   // Initiate (Initialize)
   auto& soundManager = MDySound::GetInstance();
-  auto& refSystem = soundManager.MDY_PRIVATE_SPECIFIER(GetSystem)();
+  auto& refSystem = soundManager.MDY_PRIVATE(GetSystem)();
 
   // Create sound
   {
@@ -199,10 +199,10 @@ void FDySoundInstance::PlaySound()
     if (this->mChannelSpecifier.empty() == false)
     {
       auto* ptrChannel = soundManager.GetPtrChannel(this->mChannelSpecifier);
-      ptrInternalChannel = ptrChannel->MDY_PRIVATE_SPECIFIER(GetPtrChannel)();
+      ptrInternalChannel = ptrChannel->MDY_PRIVATE(GetPtrChannel)();
     }
 
-    auto& refSystem = soundManager.MDY_PRIVATE_SPECIFIER(GetSystem)();
+    auto& refSystem = soundManager.MDY_PRIVATE(GetSystem)();
     if (MDY_CHECK_ISNULL(ptrInternalChannel))
     { // If failed to find channel, just play it with master channel.
       const auto flag = refSystem.playSound(this->mPtrInternalSound, nullptr, false, &this->mPtrInternalChannel);

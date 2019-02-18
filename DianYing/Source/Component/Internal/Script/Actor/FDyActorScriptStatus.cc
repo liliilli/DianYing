@@ -63,7 +63,7 @@ void FDyActorScriptState::CallScriptFunction(_MIN_ TF32 dt) noexcept
   }
 }
 
-void FDyActorScriptState::MDY_PRIVATE_SPECIFIER(CallDestroyFunctionAnyway)() noexcept
+void FDyActorScriptState::MDY_PRIVATE(CallDestroyFunctionAnyway)() noexcept
 {
   MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance), "Script instace must be activated!");
   this->mScriptInstance->Destroy();
@@ -80,7 +80,7 @@ EDyScriptState FDyActorScriptState::GetScriptStatus() const noexcept
   return this->mStatus;
 }
 
-CDyActorScriptBase* FDyActorScriptState::MDY_PRIVATE_SPECIFIER(GetPtrInternalActorScript)() const noexcept
+CDyActorScriptBase* FDyActorScriptState::MDY_PRIVATE(GetPtrInternalActorScript)() const noexcept
 {
   MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance), "Internal script instance must be valid.");
   return this->mScriptInstance.get();

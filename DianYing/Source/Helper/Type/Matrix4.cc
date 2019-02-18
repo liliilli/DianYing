@@ -413,6 +413,11 @@ DDyMatrix4x4 DDyMatrix4x4::CreateWithTranslation(const DDyVector3& translationPo
     0, 0, 0, 1};
 }
 
+DDyMatrix4x4 DDyMatrix4x4::OrthoProjection(TF32 left, TF32 right, TF32 bottom, TF32 top, TF32 near, TF32 far)
+{
+  return glm::ortho(left, right, bottom, top, near, far);
+}
+
 DDyMatrix4x4& DDyMatrix4x4::Scale(_MIN_ const DDyVector3& iScaleFactor)
 {
   const auto mat = glm::scale(static_cast<glm::mat4>(*this), static_cast<glm::vec3>(iScaleFactor));

@@ -44,9 +44,9 @@ public:
   /// @brief Get Game-Timer manager.
   MDY_NODISCARD MDyGameTimer& GetGameTimerManager() noexcept;
 
-  void MDY_PRIVATE_SPECIFIER(BindPtrTimerHandle)(_MIN_ FDyTimerHandle& iRefTimerHandler);
-  void MDY_PRIVATE_SPECIFIER(DetachPtrTimerHandle)(_MIN_ FDyTimerHandle& iRefTimerHandler);
-  void MDY_PRIVATE_SPECIFIER(AbortAllValidTimerHandler)();
+  void MDY_PRIVATE(BindPtrTimerHandle)(_MIN_ FDyTimerHandle& iRefTimerHandler);
+  void MDY_PRIVATE(DetachPtrTimerHandle)(_MIN_ FDyTimerHandle& iRefTimerHandler);
+  void MDY_PRIVATE(AbortAllValidTimerHandler)();
 private:
   /// @brief Set reference to outside world.
   /// @param outsideReference Reference of WidgetScriptCpp instance.

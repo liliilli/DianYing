@@ -17,6 +17,7 @@
 #include <Dy/Meta/Type/EDyResourceTypes.h>
 #include <Dy/Core/Resource/Information/FDyShaderInformation.h>
 #include <Dy/Core/Resource/Type/TDyInformationBinder.h>
+#include <Dy/Core/Resource/Type/Shader/ADyUniformContainer.h>
 
 //!
 //! Forward declaration
@@ -38,7 +39,7 @@ namespace dy
 /// @class FDyShaderResource
 /// @brief Shader resource class that serve heap instance.
 ///
-class FDyShaderResource final
+class FDyShaderResource final : public ADyUniformContainer
 {
 public:
   /// @warning input parameter must be atomic!
@@ -91,7 +92,7 @@ private:
   /// Shader uniform buffer object list <Name>
   std::vector<DDyUniformBufferObjectInformation>mUniformBufferObjectList;
 
-  TDyIInformationBinderShader mBinderShader;
+  TDyInformationBinderShader mBinderShader;
 };
 
 } /// ::dy namespace

@@ -151,7 +151,7 @@ private:
   /// @brief Enqueue IO Populating `instant` material task.
   MDY_NODISCARD EDySuccess InstantPopulateMaterialResource(
       _MIN_ const PDyMaterialInstanceMetaInfo& iDesc,
-      _MIN_ TDyResourceBinder<EDyResourceType::Material, EDyLazy::Yes>& refMat, 
+      _MIN_ TDyResourceBinder<EDyResourceType::Material>& refMat, 
       _MIN_ EDyScope scope,
       _MIN_ bool(*callback)());
 

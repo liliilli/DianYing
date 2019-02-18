@@ -35,10 +35,8 @@ public:
   ///
   MDY_NODISCARD bool IsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style);
 
-  ///
-  /// @brief
-  ///
-  MDY_NODISCARD void MoveInstanceFromGC(_MIN_ const std::string& speicifer, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style);
+  /// @brief Move instance from gc list as return value.
+  MDY_NODISCARD std::optional<DDyIOReferenceInstance> MoveInstanceFromGC(_MIN_ const std::string& speicifer, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style);
 
   /// @brief Insert RI gc-ed candidate into container.
   void InsertGcCandidate(_MIN_ DDyIOReferenceInstance iRICandidateList) noexcept;

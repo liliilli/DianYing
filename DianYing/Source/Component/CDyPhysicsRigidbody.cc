@@ -158,7 +158,7 @@ std::string CDyPhysicsRigidbody::ToString()
 }
 
 #define MDY_PHYSX_WRITE_LOCK() \
-  ::physx::PxSceneWriteLock lock(::dy::MDyPhysics::GetInstance().MDY_PRIVATE_SPECIFIER(GetRefScene)())
+  ::physx::PxSceneWriteLock lock(::dy::MDyPhysics::GetInstance().MDY_PRIVATE(GetRefScene)())
 
 void CDyPhysicsRigidbody::TryActivateInstance()
 {
@@ -192,7 +192,7 @@ void CDyPhysicsRigidbody::TryActivateInstance()
   }
   
   // Do something.
-  MDyPhysics::GetInstance().MDY_PRIVATE_SPECIFIER(RegisterRigidbody)(*this);
+  MDyPhysics::GetInstance().MDY_PRIVATE(RegisterRigidbody)(*this);
 }
 
 void CDyPhysicsRigidbody::pActivateDynamicNKinematicActor()
@@ -205,7 +205,7 @@ void CDyPhysicsRigidbody::pActivateDynamicNKinematicActor()
 
   // Initialize internal resource.
   auto& refPhysics = MDyPhysics::GetInstance();
-  auto& refSdk = refPhysics.MDY_PRIVATE_SPECIFIER(GetRefInternalSdk)();
+  auto& refSdk = refPhysics.MDY_PRIVATE(GetRefInternalSdk)();
   const auto& defaultSetting = refPhysics.GetDefaultSetting();
 
   {
@@ -239,7 +239,7 @@ void CDyPhysicsRigidbody::pActivateStaticActor()
 
   // Initialize internal resource.
   auto& refPhysics = MDyPhysics::GetInstance();
-  auto& refSdk = refPhysics.MDY_PRIVATE_SPECIFIER(GetRefInternalSdk)();
+  auto& refSdk = refPhysics.MDY_PRIVATE(GetRefInternalSdk)();
   const auto& defaultSetting = refPhysics.GetDefaultSetting();
 
   {
@@ -267,14 +267,14 @@ void CDyPhysicsRigidbody::RegisterCollider(_MIN_ CDyPhysicsCollider& iRefCollide
   // Insert collider instance.
   this->mPtrColliderList.emplace_back(DyMakeNotNull(&iRefCollider));
   // If inserted, call resource population function from collider.
-  iRefCollider.MDY_PRIVATE_SPECIFIER(SetRegisterFlag)(true);
+  iRefCollider.MDY_PRIVATE(SetRegisterFlag)(true);
   iRefCollider.InitializeInternalResource(*this);
 }
 
 void CDyPhysicsRigidbody::TryDeactivateInstance()
 {
   // Do something.
-  MDyPhysics::GetInstance().MDY_PRIVATE_SPECIFIER(UnregisterRigidbody)(*this);
+  MDyPhysics::GetInstance().MDY_PRIVATE(UnregisterRigidbody)(*this);
 
   // And remove collider registration.
   while (this->mPtrColliderList.empty() == false)
@@ -282,7 +282,7 @@ void CDyPhysicsRigidbody::TryDeactivateInstance()
     // Release internal resource & unregister.
     auto& ptrCollider = this->mPtrColliderList.back();
     ptrCollider->ReleaseInternalResource(*this);
-    ptrCollider->MDY_PRIVATE_SPECIFIER(SetRegisterFlag)(false);
+    ptrCollider->MDY_PRIVATE(SetRegisterFlag)(false);
 
     // We need to remove from last element because of fast erasion.
     this->mPtrColliderList.erase(this->mPtrColliderList.end() - 1);
@@ -311,7 +311,7 @@ void CDyPhysicsRigidbody::UnregisterCollider(_MIN_ CDyPhysicsCollider& iRefColli
 
   // If found, release internal resource from collider.
   it->Get()->ReleaseInternalResource(*this);
-  it->Get()->MDY_PRIVATE_SPECIFIER(SetRegisterFlag)(false);
+  it->Get()->MDY_PRIVATE(SetRegisterFlag)(false);
   // And remove.
   DyFastErase(this->mPtrColliderList, it);
 }
@@ -355,7 +355,7 @@ EDySuccess CDyPhysicsRigidbody::RemoveCollisionCallback(_MIN_ EDyCollisionCbType
   return DY_FAILURE;
 }
 
-std::optional<TU32> CDyPhysicsRigidbody::MDY_PRIVATE_SPECIFIER(GetRigidbodySpecifier)() const noexcept
+std::optional<TU32> CDyPhysicsRigidbody::MDY_PRIVATE(GetRigidbodySpecifier)() const noexcept
 {
   // If deactivated, just return null value.
   if (MDY_CHECK_ISNULL(this->mOwnerInternalActor)) { return std::nullopt; }
@@ -364,7 +364,7 @@ std::optional<TU32> CDyPhysicsRigidbody::MDY_PRIVATE_SPECIFIER(GetRigidbodySpeci
   return this->mRigidbodySpecifierId;
 }
 
-physx::PxRigidActor& CDyPhysicsRigidbody::MDY_PRIVATE_SPECIFIER(GetRefInternalRigidbody)() noexcept
+physx::PxRigidActor& CDyPhysicsRigidbody::MDY_PRIVATE(GetRefInternalRigidbody)() noexcept
 {
   return *this->mOwnerInternalActor;
 }

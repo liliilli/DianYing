@@ -36,7 +36,7 @@ CDyWidgetScriptCpp::CDyWidgetScriptCpp(_MIN_ FDyUiWidget& widgetReference, _MIN_
   this->mIsScriptInstanceBinded = true;
 }
 
-ADyWidgetCppScript* CDyWidgetScriptCpp::MDY_PRIVATE_SPECIFIER(GetScriptInstance)() const noexcept
+ADyWidgetCppScript* CDyWidgetScriptCpp::MDY_PRIVATE(GetScriptInstance)() const noexcept
 {
   MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance), "Script instance must be valid, not empty.");
   return this->mScriptInstance.get();

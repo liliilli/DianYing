@@ -517,7 +517,7 @@ void MDySound::Update(MDY_NOTUSED float dt)
   this->mSoundSystem->update(); 
 }
 
-FDySoundGroup& MDySound::MDY_PRIVATE_SPECIFIER(GetGroupChannel)(_MIN_ const std::string& iSpecifier)
+FDySoundGroup& MDySound::MDY_PRIVATE(GetGroupChannel)(_MIN_ const std::string& iSpecifier)
 {
   auto it = this->mGroupContainer.find(iSpecifier);
   MDY_ASSERT_FORCE(it != this->mGroupContainer.end(), "Unexpected error occurred. Given group channel not found.");
@@ -525,7 +525,7 @@ FDySoundGroup& MDySound::MDY_PRIVATE_SPECIFIER(GetGroupChannel)(_MIN_ const std:
   return it->second;
 }
 
-FMOD::System& MDySound::MDY_PRIVATE_SPECIFIER(GetSystem)()
+FMOD::System& MDySound::MDY_PRIVATE(GetSystem)()
 {
   MDY_ASSERT(
       this->mIsSoundSystemAvailable == true, 
@@ -534,7 +534,7 @@ FMOD::System& MDySound::MDY_PRIVATE_SPECIFIER(GetSystem)()
   return *this->mSoundSystem;
 }
 
-FDySoundInstance* MDySound::MDY_PRIVATE_SPECIFIER(CreateSoundInstance)(
+FDySoundInstance* MDySound::MDY_PRIVATE(CreateSoundInstance)(
     _MIN_ const PDySoundSourceComponentMetaInfo& iMetaInfo,
     _MIN_ FDyActor& iRefActor)
 {

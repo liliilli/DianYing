@@ -33,12 +33,12 @@ MDyGameTimer& ADyActorCppScript::GetGameTimerManager() noexcept
   return MDyGameTimer::GetInstance();
 }
 
-void ADyActorCppScript::MDY_PRIVATE_SPECIFIER(BindPtrTimerHandle)(_MIN_ FDyTimerHandle& iRefTimerHandler)
+void ADyActorCppScript::MDY_PRIVATE(BindPtrTimerHandle)(_MIN_ FDyTimerHandle& iRefTimerHandler)
 {
   this->mPtrTimerHandleList.emplace_back(&iRefTimerHandler);
 }
 
-void ADyActorCppScript::MDY_PRIVATE_SPECIFIER(DetachPtrTimerHandle)(_MIN_ FDyTimerHandle& iRefTimerHandler)
+void ADyActorCppScript::MDY_PRIVATE(DetachPtrTimerHandle)(_MIN_ FDyTimerHandle& iRefTimerHandler)
 {
   auto it = std::find_if(
       MDY_BIND_BEGIN_END(this->mPtrTimerHandleList), 
@@ -51,7 +51,7 @@ void ADyActorCppScript::MDY_PRIVATE_SPECIFIER(DetachPtrTimerHandle)(_MIN_ FDyTim
   DyFastErase(this->mPtrTimerHandleList, it);
 }
 
-void ADyActorCppScript::MDY_PRIVATE_SPECIFIER(AbortAllValidTimerHandler)()
+void ADyActorCppScript::MDY_PRIVATE(AbortAllValidTimerHandler)()
 {
   auto& timerManager = this->GetGameTimerManager();
   while (this->mPtrTimerHandleList.empty() == false)
@@ -60,7 +60,7 @@ void ADyActorCppScript::MDY_PRIVATE_SPECIFIER(AbortAllValidTimerHandler)()
   }
 }
 
-void ADyActorCppScript::MDY_PRIVATE_SPECIFIER(BindCollisionCbHandle)(
+void ADyActorCppScript::MDY_PRIVATE(BindCollisionCbHandle)(
     _MIN_ CDyPhysicsRigidbody& iRefRigidbody, 
     _MIN_ EDyCollisionCbType iType,
     _MIN_ const void* iUniqueId)
@@ -68,12 +68,12 @@ void ADyActorCppScript::MDY_PRIVATE_SPECIFIER(BindCollisionCbHandle)(
   this->mCollisionCbHandleList.emplace_back(&iRefRigidbody, iType, iUniqueId);
 }
 
-EDySuccess ADyActorCppScript::MDY_PRIVATE_SPECIFIER(DetachCollisionCbHandle)(_MIN_ const void* iSpecificationId)
+EDySuccess ADyActorCppScript::MDY_PRIVATE(DetachCollisionCbHandle)(_MIN_ const void* iSpecificationId)
 {
   auto lambda = [iSpecificationId](const auto& handle) { auto& [_1, _2, id] = handle; return id == iSpecificationId; };
   
   // Contains.
-  if (Contains(this->mCollisionCbHandleList, lambda) == false) { return DY_FAILURE; }
+  if (ContainsIf(this->mCollisionCbHandleList, lambda) == false) { return DY_FAILURE; }
 
   // Find and remove.
   const auto it = std::find_if(MDY_BIND_BEGIN_END(this->mCollisionCbHandleList), lambda);
@@ -83,7 +83,7 @@ EDySuccess ADyActorCppScript::MDY_PRIVATE_SPECIFIER(DetachCollisionCbHandle)(_MI
   return DY_SUCCESS;
 }
 
-void ADyActorCppScript::MDY_PRIVATE_SPECIFIER(AbortAllCollisionCallback)()
+void ADyActorCppScript::MDY_PRIVATE(AbortAllCollisionCallback)()
 {
   while (this->mCollisionCbHandleList.empty() == false)
   {

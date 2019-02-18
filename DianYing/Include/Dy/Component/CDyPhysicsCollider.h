@@ -80,7 +80,7 @@ public:
   MDY_NODISCARD const DDyArea3D& GetBound() const noexcept;
 
   /// @brief Set register flag.
-  void MDY_PRIVATE_SPECIFIER(SetRegisterFlag)(_MIN_ bool iFlag) noexcept;
+  void MDY_PRIVATE(SetRegisterFlag)(_MIN_ bool iFlag) noexcept;
 
   /// @brief Initialize internal (PhysX) resource.
   virtual void InitializeInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody) = 0; 
@@ -88,7 +88,7 @@ public:
   void ReleaseInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody);
 
   /// @brief Get internal shape pointer. Returned value does not guarantee not nullity.
-  MDY_NODISCARD physx::PxShape* MDY_PRIVATE_SPECIFIER(GetPtrInternalShape)() const noexcept;
+  MDY_NODISCARD physx::PxShape* MDY_PRIVATE(GetPtrInternalShape)() const noexcept;
   /// @brief Internal filter data.
   physx::PxFilterData mInternalFilterData{};
 

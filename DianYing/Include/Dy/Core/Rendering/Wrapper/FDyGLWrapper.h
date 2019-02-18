@@ -194,21 +194,21 @@ public:
   /// @brief Update uniform one float value. Specified shader must be valid and activated.
   static void UpdateUniformFloat(_MIN_ TU32 iId, _MIN_ const TF32& iBuffer);
 
-  struct MDY_PRIVATE_SPECIFIER(OutsideLockguard) final
+  struct MDY_PRIVATE(OutsideLockguard) final
   {
   public:
-    MDY_PRIVATE_SPECIFIER(OutsideLockguard)() = default;
-    ~MDY_PRIVATE_SPECIFIER(OutsideLockguard)() noexcept;
+    MDY_PRIVATE(OutsideLockguard)() = default;
+    ~MDY_PRIVATE(OutsideLockguard)() noexcept;
 
-    MDY_PRIVATE_SPECIFIER(OutsideLockguard)(MDY_PRIVATE_SPECIFIER(OutsideLockguard)&& _) noexcept;
-    MDY_PRIVATE_SPECIFIER(OutsideLockguard) operator=(MDY_PRIVATE_SPECIFIER(OutsideLockguard)&&) noexcept = delete;
+    MDY_PRIVATE(OutsideLockguard)(MDY_PRIVATE(OutsideLockguard)&& _) noexcept;
+    MDY_PRIVATE(OutsideLockguard) operator=(MDY_PRIVATE(OutsideLockguard)&&) noexcept = delete;
 
   private:
     bool mIsMoved = false;
   };
 
-  static MDY_PRIVATE_SPECIFIER(OutsideLockguard) MDY_PRIVATE_SPECIFIER(LockMutex)();
-  static void MDY_PRIVATE_SPECIFIER(UnlockMutex)();
+  static MDY_PRIVATE(OutsideLockguard) MDY_PRIVATE(LockMutex)();
+  static void MDY_PRIVATE(UnlockMutex)();
 
 private:
   static std::mutex mGLMutex;
@@ -218,7 +218,7 @@ private:
   static MDY_NODISCARD const DDyGLVaoBindInformation& GetDefaultAttributeFormatDescriptor() noexcept;
 };
 
-#define MDY_GRAPHIC_SET_CRITICALSECITON() const auto MDY_TOKENPASTE2(_, __LINE__) = ::dy::FDyGLWrapper::MDY_PRIVATE_SPECIFIER(LockMutex)()
+#define MDY_GRAPHIC_SET_CRITICALSECITON() const auto MDY_TOKENPASTE2(_, __LINE__) = ::dy::FDyGLWrapper::MDY_PRIVATE(LockMutex)()
 
 } /// ::dy namespace
 

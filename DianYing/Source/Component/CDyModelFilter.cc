@@ -92,12 +92,12 @@ void CDyModelFilter::TryDeactivateInstance()
   this->mModelRendererReferencePtr->UnbindModelFilterReference();
 }
 
-const TDyLResourceBinderModel& CDyModelFilter::GetModelReference() const noexcept
+const TDyResourceBinderModel& CDyModelFilter::GetModelReference() const noexcept
 {
   return this->mBinderModel;
 }
 
-TDyLResourceBinderModel& CDyModelFilter::GetModelReference() noexcept
+TDyResourceBinderModel& CDyModelFilter::GetModelReference() noexcept
 {
   return this->mBinderModel;
 }

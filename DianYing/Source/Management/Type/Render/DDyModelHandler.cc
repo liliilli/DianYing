@@ -14,6 +14,7 @@
 
 /// Header file
 #include <Dy/Management/Type/Render/DDyModelHandler.h>
+#include <Dy/Helper/ContainerHelper.h>
 
 namespace dy
 {
@@ -144,7 +145,7 @@ DDyModelHandler::TContainer& DDyModelHandler::GetActorContainer() noexcept
   return this->mActorInformation;
 }
 
-const TDyLResourceBinderModel& DDyModelHandler::GetModelBinderReference() const noexcept
+const TDyResourceBinderModel& DDyModelHandler::GetModelBinderReference() const noexcept
 {
   return this->mModelBinder;
 }

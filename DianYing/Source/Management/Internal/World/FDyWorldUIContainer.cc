@@ -57,7 +57,7 @@ EDySuccess FDyWorldUIContainer::TryCreateLoadingUi()
   MDyScript::GetInstance().UpdateWidgetScript(0.0f, EDyScriptState::CalledNothing);
   MDyScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
 
-  this->mLoadingUi = std::make_unique<FDyUiWidget>(*MDyMetaInfo::GetInstance().MDY_PRIVATE_SPECIFIER(TryGetLoadingWidgetMetaLoading)());
+  this->mLoadingUi = std::make_unique<FDyUiWidget>(*MDyMetaInfo::GetInstance().MDY_PRIVATE(TryGetLoadingWidgetMetaLoading)());
   this->mLoadingUi->SetPropagateMode(true, EDySearchMode::Recursive);
   this->mLoadingUi->TryPropagatePositionToChildren();
   return DY_SUCCESS;

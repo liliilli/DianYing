@@ -100,8 +100,8 @@ EDySuccess FDyPostEffectSsao::TrySetupRendering()
   this->mBinderShSSAO->UseShader();
   if (this->mIsRayInserted == false)
   {
-    this->mBinderShSSAO.TryUpdateUniform<EDyUniformVariableType::Vector3Array>("uRaySamples[0]", this->mRayContainer);
-    this->mBinderShSSAO.TryUpdateUniformList();
+    this->mBinderShSSAO->TryUpdateUniform<EDyUniformVariableType::Vector3Array>("uRaySamples[0]", this->mRayContainer);
+    this->mBinderShSSAO->TryUpdateUniformList();
     this->mIsRayInserted = true;
   }
   this->mBinderShSSAO->DisuseShader();

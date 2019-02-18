@@ -48,11 +48,18 @@ public:
     return this->mMaterialResource;
   }
 
+  /// @brief Get count of valid material.
+  MDY_NODISCARD TU32 GetNumberOfMaterial() const noexcept;
+
+  /// @brief Get pointer of material binder. If given index is out of bound of material list,
+  /// Just return nullptr.
+  MDY_NODISCARD TDyResourceBinderMaterial* GetMaterialBinder(_MIN_ TU32 iIndex) noexcept;
+
 private:
   std::string                   mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
-  TDyIInformationBinderModel    mBinderInformation;
-  std::vector<std::unique_ptr<TDyIResourceBinderMesh>>      mMeshResource     = {};
-  std::vector<std::unique_ptr<TDyIResourceBinderMaterial>>  mMaterialResource = {};
+  TDyInformationBinderModel    mBinderInformation;
+  std::vector<std::unique_ptr<TDyResourceBinderMesh>>      mMeshResource     = {};
+  std::vector<std::unique_ptr<TDyResourceBinderMaterial>>  mMaterialResource = {};
 
   DDyMatrix4x4 mModelInitialTransform = DDyMatrix4x4::IdentityMatrix();
 };

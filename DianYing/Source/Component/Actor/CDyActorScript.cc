@@ -35,14 +35,14 @@ CDyActorScript::~CDyActorScript()
     auto& i = MDyInput::GetInstance();
 
     // intentional.
-    auto& ref = static_cast<CDyActorScriptCpp&>(*mPtrScriptStatus->MDY_PRIVATE_SPECIFIER(GetPtrInternalActorScript)());
+    auto& ref = static_cast<CDyActorScriptCpp&>(*mPtrScriptStatus->MDY_PRIVATE(GetPtrInternalActorScript)());
 
     auto& script = *ref.__GetScriptInstance();
     // Detach controller from this.
-    MDY_NOTUSED const auto _ = i.MDY_PRIVATE_SPECIFIER(TryDetachContollerActor)(script);
+    MDY_NOTUSED const auto _ = i.MDY_PRIVATE(TryDetachContollerActor)(script);
     // Change related Actor timer status to abort for avoiding callback function call.
-    script.MDY_PRIVATE_SPECIFIER(AbortAllValidTimerHandler)();
-    script.MDY_PRIVATE_SPECIFIER(AbortAllCollisionCallback)();
+    script.MDY_PRIVATE(AbortAllValidTimerHandler)();
+    script.MDY_PRIVATE(AbortAllCollisionCallback)();
 
     MDyScript::GetInstance().TryForwardActorScriptToGCList(mPtrScriptStatus);
   } break;

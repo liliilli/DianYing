@@ -68,27 +68,27 @@ public:
   /// @brief Try end game. Duplicated function call is neglected to once.
   MDY_NOTUSED EDySuccess TryEndGame() noexcept;
   /// @brief Check game should be ended.
-  MDY_NODISCARD bool MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() const noexcept;
+  MDY_NODISCARD bool MDY_PRIVATE(IsGameEndCalled)() const noexcept;
   /// @brief Check game level is discarded and loading new level.
-  MDY_NODISCARD bool MDY_PRIVATE_SPECIFIER(IsGameNeedTransitLevel)() const noexcept;
+  MDY_NODISCARD bool MDY_PRIVATE(IsGameNeedTransitLevel)() const noexcept;
   /// @brief Check game status need to be transited. This function returns true when
   /// 1. IsGameEndCalled() returns true.
   /// 2. IsGameNeedTransitLevel() returns true.
-  MDY_NODISCARD bool MDY_PRIVATE_SPECIFIER(IsGameNeedToBeTransitted)() const noexcept;
+  MDY_NODISCARD bool MDY_PRIVATE(IsGameNeedToBeTransitted)() const noexcept;
 
 private:
   /// @brief Get IO Thread Instance which not be nulled.
   NotNull<TDyIO*> pfGetIOThread();
 
   /// @brief Reflect game status transition.
-  void MDY_PRIVATE_SPECIFIER(ReflectGameStatusTransition)();
+  void MDY_PRIVATE(ReflectGameStatusTransition)();
 
   /// @brief Render every update from engine.
-  void MDY_PRIVATE_SPECIFIER(Render)(_MIN_ EDyGlobalGameStatus iEngineStatus);
+  void MDY_PRIVATE(Render)(_MIN_ EDyGlobalGameStatus iEngineStatus);
   /// @brief Update entry function from engine.
-  void MDY_PRIVATE_SPECIFIER(Update)(_MIN_ EDyGlobalGameStatus iEngineStatus, _MIN_ TF32 dt);
+  void MDY_PRIVATE(Update)(_MIN_ EDyGlobalGameStatus iEngineStatus, _MIN_ TF32 dt);
   /// @brief Update sequence before render phase.
-  void MDY_PRIVATE_SPECIFIER(PreRender)(_MIN_ EDyGlobalGameStatus iEngineStatus, _MIN_ TF32 dt);
+  void MDY_PRIVATE(PreRender)(_MIN_ EDyGlobalGameStatus iEngineStatus, _MIN_ TF32 dt);
 
   /// @brief Try update status. if changed, `mIsStatusTransitionDone` be falsed.
   /// This function must be called at final.

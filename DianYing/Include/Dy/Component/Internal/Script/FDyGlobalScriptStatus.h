@@ -48,7 +48,7 @@ public:
   /// @brief Get script type (Cpp, Lua).
   MDY_NODISCARD EDyScriptType GetScriptType() const noexcept;
   /// @brief Get internal widget script instance (level 2)
-  MDY_NODISCARD CDyGlobalScriptBase* MDY_PRIVATE_SPECIFIER(GetPtrInternalGlobalScript)() const noexcept;
+  MDY_NODISCARD CDyGlobalScriptBase* MDY_PRIVATE(GetPtrInternalGlobalScript)() const noexcept;
 
 private:
   /// @brief Widget script pointer instance.

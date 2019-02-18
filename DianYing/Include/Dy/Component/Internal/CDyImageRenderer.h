@@ -39,13 +39,17 @@ public:
   void Render();
 
   /// @brief Update shader binding.
-  void UpdateMaterial() noexcept;
+  void UpdateRenderableTarget() noexcept;
+
+  /// @brief Get using mateiral pointer. If using texture, just return nullptr;
+  MDY_NODISCARD TDyResourceBinderMaterial* GetUsingMaterial();
 
 private:
   /// LAZY NOT NULLABLE POINTER RAW PTR;
-  FDyImage*                   mPtrObject = MDY_INITIALIZE_NULL;
-  TDyLResourceBinderMesh      mBinderQuadMesh{};
-  TDyLResourceBinderMaterial  mBinderMaterial{};
+  FDyImage*               mPtrObject = MDY_INITIALIZE_NULL;
+  TDyResourceBinderMesh   mBinderQuadMesh{};
+  TDyResourceBinderShader mDefaultImageShader{"dyBtShaderGlRenderUiImage"};
+  std::unique_ptr<IDyRenderableBinder> mBinderRenderable = nullptr; 
 };
 
 } /// ::dy namespace

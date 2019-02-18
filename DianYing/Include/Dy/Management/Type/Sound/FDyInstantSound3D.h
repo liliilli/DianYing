@@ -43,7 +43,7 @@ public:
   EDySuccess TryStop();
 
 private:
-  TDyIInformationBinderSound mBinderClipResource;
+  TDyInformationBinderSound mBinderClipResource;
   /// @brief For lazy initialization of sound resource.
   std::string mSoundChannelSpecifier = "";
   DDyVector3  mWorldPosition;

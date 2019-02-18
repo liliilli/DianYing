@@ -40,7 +40,7 @@ public:
   void SetMute(_MIN_ bool iMuted);
 
   /// @brief Get the pointer of internal channel group.
-  MDY_NODISCARD FMOD::ChannelGroup* MDY_PRIVATE_SPECIFIER(GetPtrChannel)() noexcept;
+  MDY_NODISCARD FMOD::ChannelGroup* MDY_PRIVATE(GetPtrChannel)() noexcept;
   
 private:
   std::string         mInternalSpecifier  = "";

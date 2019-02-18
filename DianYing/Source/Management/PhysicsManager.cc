@@ -116,7 +116,7 @@ EDySuccess MDyPhysics::pfInitialize()
   MDY_ASSERT(MDY_CHECK_ISNULL(this->mCooking), "Cooking is already exist.");
   MDY_ASSERT(MDY_CHECK_ISNULL(this->mDefaultMaterial), "Default material is already exist.");
 
-  this->gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, this->defaultAllocatorCallback, MDY_PRIVATE_SPECIFIER(GetPhysXErrorCallback)());
+  this->gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, this->defaultAllocatorCallback, MDY_PRIVATE(GetPhysXErrorCallback)());
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gFoundation), "PhysX Foundation must be created successfully.");
 
   // Get scale from setting manager, but we use defualt value temporary. 
@@ -327,7 +327,7 @@ void MDyPhysics::UpdateRenderObjectTransform(MDY_NOTUSED _MIN_ TF32 dt)
   // Iterate activated CDyPhysicsRigidbodies.
   for (auto& ptrRigidbodyComp : this->mActivatedRigidbodyList)
   {
-    auto& refRigidActor     = ptrRigidbodyComp->MDY_PRIVATE_SPECIFIER(GetRefInternalRigidbody)();
+    auto& refRigidActor     = ptrRigidbodyComp->MDY_PRIVATE(GetRefInternalRigidbody)();
     const auto numberShape  = refRigidActor.getNbShapes();
     for (TU32 i = 0; i < numberShape; ++i)
     {
@@ -338,7 +338,7 @@ void MDyPhysics::UpdateRenderObjectTransform(MDY_NOTUSED _MIN_ TF32 dt)
       // Get transform and copy physics pose to graphics pose.
       const auto pxTransform  = physx::PxShapeExt::getGlobalPose(*shape, refRigidActor);
       auto ptrTransformComp   = ptrRigidbodyComp->GetBindedActor()->GetTransform();
-      ptrTransformComp->MDY_PRIVATE_SPECIFIER(SetPxTransform)(pxTransform);
+      ptrTransformComp->MDY_PRIVATE(SetPxTransform)(pxTransform);
 
       // Set AABB (Axis-aligned bounding box) bound to each collider.
       const auto pxBound = physx::PxShapeExt::getWorldBounds(*shape, refRigidActor);
@@ -379,7 +379,7 @@ void MDyPhysics::InitScene()
 
   if (MDY_CHECK_ISNULL(tempSceneDesc.filterShader))
   {
-    tempSceneDesc.filterShader = this->MDY_PRIVATE_SPECIFIER(GetSampleFilterShader)();
+    tempSceneDesc.filterShader = this->MDY_PRIVATE(GetSampleFilterShader)();
   }
 
   // Set scene descriptor flags
@@ -481,13 +481,13 @@ void MDyPhysics::TryEnqueueDebugDrawCall()
   // https://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/guide/Manual/BestPractices.html
   for (auto& ptrRigidbody : this->mActivatedRigidbodyList)
   {
-    auto& internalRigidbody     = ptrRigidbody->MDY_PRIVATE_SPECIFIER(GetRefInternalRigidbody)();
+    auto& internalRigidbody     = ptrRigidbody->MDY_PRIVATE(GetRefInternalRigidbody)();
     const auto globalTransform  = internalRigidbody.getGlobalPose();
     const auto& colliderList    = ptrRigidbody->GetBindedActivatedColliderList();
 
     for (auto& ptrCollider : colliderList)
     {
-      auto* ptrPxShape      = ptrCollider->MDY_PRIVATE_SPECIFIER(GetPtrInternalShape)();
+      auto* ptrPxShape      = ptrCollider->MDY_PRIVATE(GetPtrInternalShape)();
       const auto localPose  = ptrPxShape->getLocalPose();
       const auto transformMatrix = DDyMatrix4x4(globalTransform * localPose);
       // Enqueue draw list.
@@ -497,7 +497,7 @@ void MDyPhysics::TryEnqueueDebugDrawCall()
   }
 }
 
-void MDyPhysics::MDY_PRIVATE_SPECIFIER(RegisterRigidbody)(_MIN_ CDyPhysicsRigidbody& iRefRigidbody)
+void MDyPhysics::MDY_PRIVATE(RegisterRigidbody)(_MIN_ CDyPhysicsRigidbody& iRefRigidbody)
 {
   this->mActivatedRigidbodyList.emplace_back(DyMakeNotNull(&iRefRigidbody));
   
@@ -507,7 +507,7 @@ void MDyPhysics::MDY_PRIVATE_SPECIFIER(RegisterRigidbody)(_MIN_ CDyPhysicsRigidb
   this->gScene->addActor(ptrRigidbodyComponent->__GetRefInternalRigidbody());
 }
 
-void MDyPhysics::MDY_PRIVATE_SPECIFIER(UnregisterRigidbody)(_MIN_ CDyPhysicsRigidbody& iRefRigidbody)
+void MDyPhysics::MDY_PRIVATE(UnregisterRigidbody)(_MIN_ CDyPhysicsRigidbody& iRefRigidbody)
 {
   const auto it = std::find_if(
       MDY_BIND_BEGIN_END(this->mActivatedRigidbodyList), 
@@ -538,7 +538,7 @@ void MDyPhysics::onRelease(
 #endif
 }
 
-physx::PxErrorCallback& MDyPhysics::MDY_PRIVATE_SPECIFIER(GetPhysXErrorCallback)()
+physx::PxErrorCallback& MDyPhysics::MDY_PRIVATE(GetPhysXErrorCallback)()
 {
 	static physx::PxDefaultErrorCallback gDefaultErrorCallback;
 	return gDefaultErrorCallback;

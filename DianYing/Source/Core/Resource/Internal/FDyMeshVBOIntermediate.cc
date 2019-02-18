@@ -26,11 +26,11 @@ FDyMeshVBOIntermediate::FDyMeshVBOIntermediate(_MIN_ const FDyMeshInformation& i
     mSpecifierName{information.GetSpecifierName()},
     mVaoBindAttributeInfo{information.GetMeshInformationList().mVAOBindingInfo}
 {
-  this->MDY_PRIVATE_SPECIFIER(CreateVertexArrayBuffer)(information);
-  this->MDY_PRIVATE_SPECIFIER(CreateElementArrayBuffer)(information);
+  this->MDY_PRIVATE(CreateVertexArrayBuffer)(information);
+  this->MDY_PRIVATE(CreateElementArrayBuffer)(information);
 }
 
-void FDyMeshVBOIntermediate::MDY_PRIVATE_SPECIFIER(CreateVertexArrayBuffer)(_MIN_ const FDyMeshInformation& iInformation)
+void FDyMeshVBOIntermediate::MDY_PRIVATE(CreateVertexArrayBuffer)(_MIN_ const FDyMeshInformation& iInformation)
 {
   const DDyMeshData& info = iInformation.GetMeshInformationList();
   { // Set vertex count.
@@ -71,7 +71,7 @@ void FDyMeshVBOIntermediate::MDY_PRIVATE_SPECIFIER(CreateVertexArrayBuffer)(_MIN
   }
 }
 
-void FDyMeshVBOIntermediate::MDY_PRIVATE_SPECIFIER(CreateElementArrayBuffer)(_MIN_ const FDyMeshInformation& iInformation)
+void FDyMeshVBOIntermediate::MDY_PRIVATE(CreateElementArrayBuffer)(_MIN_ const FDyMeshInformation& iInformation)
 {
   const DDyMeshData& info = iInformation.GetMeshInformationList();
   { // Set flag and count for mesh geometry information & index count.

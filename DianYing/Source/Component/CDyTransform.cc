@@ -66,13 +66,13 @@ const DDyVector3& CDyTransform::GetRelativeWorldPosition() const noexcept
 
 const DDyVector3& CDyTransform::GetFinalWorldPosition() noexcept
 {
-  this->MDY_PRIVATE_SPECIFIER(TryUpdateFinalPosition)();
+  this->MDY_PRIVATE(TryUpdateFinalPosition)();
   return this->mFinalRenderingPosition;
 }
 
 const std::array<DDyVector3, 3>& CDyTransform::GetToChildBasis() noexcept
 {
-  this->MDY_PRIVATE_SPECIFIER(TryUpdateToChildBasis)();
+  this->MDY_PRIVATE(TryUpdateToChildBasis)();
   return this->mToChildBasis;
 }
 
@@ -112,7 +112,7 @@ float CDyTransform::GetRelativeWorldEulerAngle(_MIN_ EDyAxis3D direction) const 
 
 float CDyTransform::GetFinalEulerAngle(_MIN_ EDyAxis3D direction) noexcept
 {
-  this->MDY_PRIVATE_SPECIFIER(TryUpdateFinalWorldRotAngle)();
+  this->MDY_PRIVATE(TryUpdateFinalWorldRotAngle)();
 
   switch (direction)
   {
@@ -135,7 +135,7 @@ const DDyVector3& CDyTransform::GetWorldScale() const noexcept
 
 const DDyVector3& CDyTransform::GetFinalScale() noexcept
 {
-  this->MDY_PRIVATE_SPECIFIER(UpdateFinalRenderingScale)();
+  this->MDY_PRIVATE(UpdateFinalRenderingScale)();
   return this->mFinalRenderingScale;
 }
 
@@ -173,18 +173,18 @@ void CDyTransform::SetRelativeWorldPosition(_MIN_ const DDyVector3& worldPositio
   if (validActorPtr->IsHavingChildrenObject() == true)
   { 
     // (1) Try update movement basis.
-    this->MDY_PRIVATE_SPECIFIER(TryUpdateMovementBasis)();
+    this->MDY_PRIVATE(TryUpdateMovementBasis)();
     // (2) Try update relative aligend world position.
-    this->MDY_PRIVATE_SPECIFIER(TryUpdateWorldRelAlignedPos)();
+    this->MDY_PRIVATE(TryUpdateWorldRelAlignedPos)();
     // (3) Try update final position without relative local position (aka fwpos wo rlpos)
-    this->MDY_PRIVATE_SPECIFIER(TryUpdateAlignedWorldSumPosition)();
+    this->MDY_PRIVATE(TryUpdateAlignedWorldSumPosition)();
 
     // (4) Try update `fwpos wo rlpos` into children's transform.
     auto& childrenContainer = validActorPtr->GetChildrenContainer();
     for (auto& [specifier, ptrsmtObject] : childrenContainer)
     {
       if (MDY_CHECK_ISEMPTY(ptrsmtObject)) { continue; }
-      ptrsmtObject->GetTransform()->MDY_PRIVATE_SPECIFIER(SetRelativeWorldOrigin(this->mWorldSumAlignedPosition));
+      ptrsmtObject->GetTransform()->MDY_PRIVATE(SetRelativeWorldOrigin(this->mWorldSumAlignedPosition));
     }
   }
 }
@@ -266,14 +266,14 @@ void CDyTransform::AddWorldEulerAngle(_MIN_ const DDyVector3& eulerAngleValue) n
   if (validActorPtr->IsHavingChildrenObject() == true)
   { 
     // (1) Try update sum of world (without each local) rotation angle.
-    this->MDY_PRIVATE_SPECIFIER(TryUpdateWorldSumRotAngle)();
+    this->MDY_PRIVATE(TryUpdateWorldSumRotAngle)();
 
     // (2) Try update `mFromParentWorldEulerAngle` into children's transform.
     auto& childrenContainer = validActorPtr->GetChildrenContainer();
     for (auto& [specifier, ptrsmtObject] : childrenContainer)
     {
       if (MDY_CHECK_ISEMPTY(ptrsmtObject)) { continue; }
-      ptrsmtObject->GetTransform()->MDY_PRIVATE_SPECIFIER(SetRotationAngleOrigin(this->mWorldSumEulerAngle));
+      ptrsmtObject->GetTransform()->MDY_PRIVATE(SetRotationAngleOrigin(this->mWorldSumEulerAngle));
     }
   }
 }
@@ -323,14 +323,14 @@ void CDyTransform::SetWorldScale(_MIN_ const DDyVector3& xyz_value) noexcept
   if (auto* validActorPtr = this->GetBindedActor(); validActorPtr->IsHavingChildrenObject() == true)
   { 
     // (1) Try update product of world (without each local) scale.
-    this->MDY_PRIVATE_SPECIFIER(TryUpdateWorldPrdScale)();
+    this->MDY_PRIVATE(TryUpdateWorldPrdScale)();
 
     // (2) Try update `mFromParentWorldScale` into children's transform.
     auto& childrenContainer = validActorPtr->GetChildrenContainer();
     for (auto& [specifier, ptrsmtObject] : childrenContainer)
     {
       if (MDY_CHECK_ISEMPTY(ptrsmtObject)) { continue; }
-      ptrsmtObject->GetTransform()->MDY_PRIVATE_SPECIFIER(SetWorldScaleOrigin(this->mWorldProductScale));
+      ptrsmtObject->GetTransform()->MDY_PRIVATE(SetWorldScaleOrigin(this->mWorldProductScale));
     }
   }
 }
@@ -357,11 +357,11 @@ const DDyMatrix4x4& CDyTransform::GetTransform() noexcept
   if (this->mIsModelMatrixDirty == true)
   { // Update dependent transform information.
     if (this->mIsFinalScaleDirty == true) 
-    { this->MDY_PRIVATE_SPECIFIER(UpdateFinalRenderingScale)(); }
+    { this->MDY_PRIVATE(UpdateFinalRenderingScale)(); }
     if (this->mIsFinalRotationAngleDirty == true) 
-    { this->MDY_PRIVATE_SPECIFIER(TryUpdateFinalWorldRotAngle)(); }
+    { this->MDY_PRIVATE(TryUpdateFinalWorldRotAngle)(); }
     if (this->mIsFinalPositionDirty == true) 
-    { this->MDY_PRIVATE_SPECIFIER(TryUpdateFinalPosition)();   }
+    { this->MDY_PRIVATE(TryUpdateFinalPosition)();   }
 
     // Assemble not obsoleted updated value.
     this->mFinalRenderingTransform      = this->mFinalRenderRotationQuaternion.GetRotationMatrix4x4();
@@ -387,21 +387,21 @@ void CDyTransform::TryPropagateTransformToChildren()
   if (auto* validActorPtr = this->GetBindedActor(); validActorPtr->IsHavingChildrenObject() == true)
   { 
     // (1) Try update movement basis.
-    this->MDY_PRIVATE_SPECIFIER(TryUpdateMovementBasis)();
+    this->MDY_PRIVATE(TryUpdateMovementBasis)();
     // (2) Try update relative aligend world position.
-    this->MDY_PRIVATE_SPECIFIER(TryUpdateWorldRelAlignedPos)();
+    this->MDY_PRIVATE(TryUpdateWorldRelAlignedPos)();
     // (3) Try update final position without relative local position (aka fwpos wo rlpos)
-    this->MDY_PRIVATE_SPECIFIER(TryUpdateAlignedWorldSumPosition)();
+    this->MDY_PRIVATE(TryUpdateAlignedWorldSumPosition)();
     // (4) Try update sum of world (without each local) rotation angle.
-    this->MDY_PRIVATE_SPECIFIER(TryUpdateWorldSumRotAngle)();
+    this->MDY_PRIVATE(TryUpdateWorldSumRotAngle)();
     // (5) Try update sum of world (without each local) rotation angle.
-    this->MDY_PRIVATE_SPECIFIER(TryUpdateWorldPrdScale)();
+    this->MDY_PRIVATE(TryUpdateWorldPrdScale)();
 
     auto& childrenContainer = validActorPtr->GetChildrenContainer();
     for (auto& [specifier, ptrsmtObject] : childrenContainer)
     {
       if (MDY_CHECK_ISEMPTY(ptrsmtObject)) { continue; }
-      ptrsmtObject->GetTransform()->MDY_PRIVATE_SPECIFIER(PropagateTransform)(
+      ptrsmtObject->GetTransform()->MDY_PRIVATE(PropagateTransform)(
           this->mWorldSumAlignedPosition,
           this->mWorldSumEulerAngle,
           this->mWorldProductScale);
@@ -409,7 +409,7 @@ void CDyTransform::TryPropagateTransformToChildren()
   }
 }
 
-void CDyTransform::MDY_PRIVATE_SPECIFIER(PropagateTransform)(
+void CDyTransform::MDY_PRIVATE(PropagateTransform)(
     _MIN_ const DDyVector3& iPosition,
     _MIN_ const DDyVector3& iAngle,
     _MIN_ const DDyVector3& iScale)
@@ -440,21 +440,21 @@ void CDyTransform::MDY_PRIVATE_SPECIFIER(PropagateTransform)(
   if (auto* validActorPtr = this->GetBindedActor(); validActorPtr->IsHavingChildrenObject() == true)
   { 
     // (1) Try update movement basis.
-    this->MDY_PRIVATE_SPECIFIER(TryUpdateMovementBasis)();
+    this->MDY_PRIVATE(TryUpdateMovementBasis)();
     // (2) Try update relative aligend world position.
-    this->MDY_PRIVATE_SPECIFIER(TryUpdateWorldRelAlignedPos)();
+    this->MDY_PRIVATE(TryUpdateWorldRelAlignedPos)();
     // (3) Try update final position without relative local position (aka fwpos wo rlpos)
-    this->MDY_PRIVATE_SPECIFIER(TryUpdateAlignedWorldSumPosition)();
+    this->MDY_PRIVATE(TryUpdateAlignedWorldSumPosition)();
     // (4) Try update sum of world (without each local) rotation angle.
-    this->MDY_PRIVATE_SPECIFIER(TryUpdateWorldSumRotAngle)();
+    this->MDY_PRIVATE(TryUpdateWorldSumRotAngle)();
     // (5) Try update sum of world (without each local) rotation angle.
-    this->MDY_PRIVATE_SPECIFIER(TryUpdateWorldPrdScale)();
+    this->MDY_PRIVATE(TryUpdateWorldPrdScale)();
 
     auto& childrenContainer = validActorPtr->GetChildrenContainer();
     for (auto& [specifier, ptrsmtObject] : childrenContainer)
     {
       if (MDY_CHECK_ISEMPTY(ptrsmtObject)) { continue; }
-      ptrsmtObject->GetTransform()->MDY_PRIVATE_SPECIFIER(PropagateTransform)(
+      ptrsmtObject->GetTransform()->MDY_PRIVATE(PropagateTransform)(
           this->mWorldSumAlignedPosition,
           this->mWorldSumEulerAngle,
           this->mWorldProductScale);
@@ -462,7 +462,7 @@ void CDyTransform::MDY_PRIVATE_SPECIFIER(PropagateTransform)(
   }
 }
 
-void CDyTransform::MDY_PRIVATE_SPECIFIER(SetPxTransform)(_MIN_ const physx::PxTransform& iTransform)
+void CDyTransform::MDY_PRIVATE(SetPxTransform)(_MIN_ const physx::PxTransform& iTransform)
 {
   this->SetRelativeLocalPositionWithFinalWorldPosition(iTransform.p);
 
@@ -477,7 +477,7 @@ void CDyTransform::MDY_PRIVATE_SPECIFIER(SetPxTransform)(_MIN_ const physx::PxTr
   this->mIsModelMatrixDirty        = true;
 }
 
-void CDyTransform::MDY_PRIVATE_SPECIFIER(TryUpdateMovementBasis)()
+void CDyTransform::MDY_PRIVATE(TryUpdateMovementBasis)()
 {
   if (this->mIsMovementBasisDirty == false) { return; }
 
@@ -497,10 +497,10 @@ void CDyTransform::MDY_PRIVATE_SPECIFIER(TryUpdateMovementBasis)()
   this->mIsModelMatrixDirty         = true;
 }
 
-void CDyTransform::MDY_PRIVATE_SPECIFIER(TryUpdateLocalRelAlignedPos)()
+void CDyTransform::MDY_PRIVATE(TryUpdateLocalRelAlignedPos)()
 {
   if (this->mIsLocalRelAlignedPosDirty == false)  { return; }
-  if (this->mIsMovementBasisDirty == true)        { this->MDY_PRIVATE_SPECIFIER(TryUpdateMovementBasis)(); }
+  if (this->mIsMovementBasisDirty == true)        { this->MDY_PRIVATE(TryUpdateMovementBasis)(); }
 
   this->mLocalRelAlignedPosition    = this->mPresentPositionBasis.MultiplyVector(this->mLocalRelPosition);
   this->mIsLocalRelAlignedPosDirty  = false;
@@ -508,10 +508,10 @@ void CDyTransform::MDY_PRIVATE_SPECIFIER(TryUpdateLocalRelAlignedPos)()
   this->mIsModelMatrixDirty         = true;
 }
 
-void CDyTransform::MDY_PRIVATE_SPECIFIER(TryUpdateWorldRelAlignedPos)()
+void CDyTransform::MDY_PRIVATE(TryUpdateWorldRelAlignedPos)()
 {
   if (this->mIsWorldRelAlignedPosDirty == false)  { return; }
-  if (this->mIsMovementBasisDirty == true)        { this->MDY_PRIVATE_SPECIFIER(TryUpdateMovementBasis)(); }
+  if (this->mIsMovementBasisDirty == true)        { this->MDY_PRIVATE(TryUpdateMovementBasis)(); }
 
   this->mWorldRelAlignedPosition = this->mPresentPositionBasis.MultiplyVector(this->mWorldRelPosition);
   this->mIsWorldRelAlignedPosDirty = false;
@@ -520,10 +520,10 @@ void CDyTransform::MDY_PRIVATE_SPECIFIER(TryUpdateWorldRelAlignedPos)()
   this->mIsModelMatrixDirty        = true;
 }
 
-void CDyTransform::MDY_PRIVATE_SPECIFIER(TryUpdateAlignedWorldSumPosition)()
+void CDyTransform::MDY_PRIVATE(TryUpdateAlignedWorldSumPosition)()
 {
   if (this->mIsWorldSumAlignedPosDirty == false)  { return; }
-  if (this->mIsWorldRelAlignedPosDirty == true)   { this->MDY_PRIVATE_SPECIFIER(TryUpdateWorldRelAlignedPos)(); }
+  if (this->mIsWorldRelAlignedPosDirty == true)   { this->MDY_PRIVATE(TryUpdateWorldRelAlignedPos)(); }
 
   // Update value.
   this->mWorldSumAlignedPosition    = this->mWorldRelativeOriginPosition + this->mWorldRelAlignedPosition;
@@ -532,18 +532,18 @@ void CDyTransform::MDY_PRIVATE_SPECIFIER(TryUpdateAlignedWorldSumPosition)()
   this->mIsModelMatrixDirty         = true;
 }
 
-void CDyTransform::MDY_PRIVATE_SPECIFIER(TryUpdateFinalPosition)()
+void CDyTransform::MDY_PRIVATE(TryUpdateFinalPosition)()
 {
   if (this->mIsFinalPositionDirty == false)     { return; }
-  if (this->mIsLocalRelAlignedPosDirty == true) { this->MDY_PRIVATE_SPECIFIER(TryUpdateLocalRelAlignedPos)(); }
-  if (this->mIsWorldSumAlignedPosDirty == true) { this->MDY_PRIVATE_SPECIFIER(TryUpdateAlignedWorldSumPosition)(); }
+  if (this->mIsLocalRelAlignedPosDirty == true) { this->MDY_PRIVATE(TryUpdateLocalRelAlignedPos)(); }
+  if (this->mIsWorldSumAlignedPosDirty == true) { this->MDY_PRIVATE(TryUpdateAlignedWorldSumPosition)(); }
 
   this->mFinalRenderingPosition = this->mWorldSumAlignedPosition + this->mLocalRelAlignedPosition;
   this->mIsFinalPositionDirty   = false;
   this->mIsModelMatrixDirty     = true;
 }
 
-void CDyTransform::MDY_PRIVATE_SPECIFIER(SetRelativeWorldOrigin)(_MIN_ const DDyVector3& iParentPosition)
+void CDyTransform::MDY_PRIVATE(SetRelativeWorldOrigin)(_MIN_ const DDyVector3& iParentPosition)
 {
   this->mWorldRelativeOriginPosition = iParentPosition;
 
@@ -552,18 +552,18 @@ void CDyTransform::MDY_PRIVATE_SPECIFIER(SetRelativeWorldOrigin)(_MIN_ const DDy
   this->mIsModelMatrixDirty         = true;
 
   // (3) Try update final position without relative local position (aka fwpos wo rlpos)
-  this->MDY_PRIVATE_SPECIFIER(TryUpdateAlignedWorldSumPosition)();
+  this->MDY_PRIVATE(TryUpdateAlignedWorldSumPosition)();
 
   // (4) Try update `fwpos wo rlpos` into children's transform.
   auto& childrenContainer = this->GetBindedActor()->GetChildrenContainer();
   for (auto& [specifier, ptrsmtObject] : childrenContainer)
   {
     if (MDY_CHECK_ISEMPTY(ptrsmtObject)) { continue; }
-    ptrsmtObject->GetTransform()->MDY_PRIVATE_SPECIFIER(SetRelativeWorldOrigin(this->mWorldSumAlignedPosition));
+    ptrsmtObject->GetTransform()->MDY_PRIVATE(SetRelativeWorldOrigin(this->mWorldSumAlignedPosition));
   }
 }
 
-void CDyTransform::MDY_PRIVATE_SPECIFIER(TryUpdateWorldSumRotAngle)()
+void CDyTransform::MDY_PRIVATE(TryUpdateWorldSumRotAngle)()
 {
   if (this->mIsWorldSumRotationAngleDirty == false) { return; }
 
@@ -574,10 +574,10 @@ void CDyTransform::MDY_PRIVATE_SPECIFIER(TryUpdateWorldSumRotAngle)()
   this->mIsModelMatrixDirty           = true;
 }
 
-void CDyTransform::MDY_PRIVATE_SPECIFIER(TryUpdateFinalWorldRotAngle)() noexcept
+void CDyTransform::MDY_PRIVATE(TryUpdateFinalWorldRotAngle)() noexcept
 {
   if (this->mIsFinalRotationAngleDirty == false)   { return; }
-  if (this->mIsWorldSumRotationAngleDirty == true) { this->MDY_PRIVATE_SPECIFIER(TryUpdateWorldSumRotAngle)(); }
+  if (this->mIsWorldSumRotationAngleDirty == true) { this->MDY_PRIVATE(TryUpdateWorldSumRotAngle)(); }
 
   // Set final rendering angles, and... update quaternion to setup new model matrix.
   this->mFinalRenderingEulerAngle  = this->mWorldSumEulerAngle + this->mLocalEulerAngle;
@@ -588,10 +588,10 @@ void CDyTransform::MDY_PRIVATE_SPECIFIER(TryUpdateFinalWorldRotAngle)() noexcept
   this->mIsModelMatrixDirty        = true;
 }
 
-void CDyTransform::MDY_PRIVATE_SPECIFIER(TryUpdateToChildBasis)() noexcept
+void CDyTransform::MDY_PRIVATE(TryUpdateToChildBasis)() noexcept
 {
   if (this->mToChildBasisAxisDirty == false)    { return; }
-  if (this->mIsFinalRotationAngleDirty == true) { this->MDY_PRIVATE_SPECIFIER(TryUpdateFinalWorldRotAngle)(); }
+  if (this->mIsFinalRotationAngleDirty == true) { this->MDY_PRIVATE(TryUpdateFinalWorldRotAngle)(); }
 
   const auto m = DDyQuaternion{this->mFinalRenderingEulerAngle}.GetRotationMatrix3x3();
   this->mToChildBasis[0] = DDyVector3{m[0][0], m[0][1], m[0][2]};
@@ -600,7 +600,7 @@ void CDyTransform::MDY_PRIVATE_SPECIFIER(TryUpdateToChildBasis)() noexcept
   this->mToChildBasisAxisDirty = false;
 }
 
-void CDyTransform::MDY_PRIVATE_SPECIFIER(SetRotationAngleOrigin)(_MIN_ const DDyVector3& iParentSumRotAngle)
+void CDyTransform::MDY_PRIVATE(SetRotationAngleOrigin)(_MIN_ const DDyVector3& iParentSumRotAngle)
 {
   this->mFromParentWorldEulerAngle = iParentSumRotAngle;
 
@@ -616,18 +616,18 @@ void CDyTransform::MDY_PRIVATE_SPECIFIER(SetRotationAngleOrigin)(_MIN_ const DDy
   this->mIsModelMatrixDirty        = true;
 
   // (1) Try update final position without relative local position (aka fwpos wo rlpos)
-  this->MDY_PRIVATE_SPECIFIER(TryUpdateWorldSumRotAngle)();
+  this->MDY_PRIVATE(TryUpdateWorldSumRotAngle)();
 
   // (2) Try update children's transform recursively.
   auto& childrenContainer = this->GetBindedActor()->GetChildrenContainer();
   for (auto& [specifier, ptrsmtObject] : childrenContainer)
   {
     if (MDY_CHECK_ISEMPTY(ptrsmtObject)) { continue; }
-    ptrsmtObject->GetTransform()->MDY_PRIVATE_SPECIFIER(SetRotationAngleOrigin)(this->mWorldSumAlignedPosition);
+    ptrsmtObject->GetTransform()->MDY_PRIVATE(SetRotationAngleOrigin)(this->mWorldSumAlignedPosition);
   }
 }
 
-void CDyTransform::MDY_PRIVATE_SPECIFIER(TryUpdateWorldPrdScale)()
+void CDyTransform::MDY_PRIVATE(TryUpdateWorldPrdScale)()
 {
   if (this->mIsWorldPrdScaleDirty == false) { return; }
   
@@ -637,17 +637,17 @@ void CDyTransform::MDY_PRIVATE_SPECIFIER(TryUpdateWorldPrdScale)()
   this->mIsModelMatrixDirty   = true;
 }
 
-void CDyTransform::MDY_PRIVATE_SPECIFIER(UpdateFinalRenderingScale)() noexcept
+void CDyTransform::MDY_PRIVATE(UpdateFinalRenderingScale)() noexcept
 {
   if (this->mIsFinalScaleDirty == false)   { return; }
-  if (this->mIsWorldPrdScaleDirty == true) { this->MDY_PRIVATE_SPECIFIER(TryUpdateWorldPrdScale)(); }
+  if (this->mIsWorldPrdScaleDirty == true) { this->MDY_PRIVATE(TryUpdateWorldPrdScale)(); }
 
   this->mFinalRenderingScale  = this->mWorldProductScale * this->mLocalScale;
   this->mIsFinalScaleDirty    = false;
   this->mIsModelMatrixDirty   = true;
 }
 
-void CDyTransform::MDY_PRIVATE_SPECIFIER(SetWorldScaleOrigin)(_MIN_ const DDyVector3& iParentPrdScale)
+void CDyTransform::MDY_PRIVATE(SetWorldScaleOrigin)(_MIN_ const DDyVector3& iParentPrdScale)
 {
   this->mFromParentWorldScale = iParentPrdScale;
   this->mIsWorldPrdScaleDirty = true;
@@ -655,14 +655,14 @@ void CDyTransform::MDY_PRIVATE_SPECIFIER(SetWorldScaleOrigin)(_MIN_ const DDyVec
   this->mIsModelMatrixDirty   = true;
 
   // (1) Try update scale.
-  this->MDY_PRIVATE_SPECIFIER(TryUpdateWorldPrdScale)();
+  this->MDY_PRIVATE(TryUpdateWorldPrdScale)();
 
   // (2) Try update children's transform recursively.
   auto& childrenContainer = this->GetBindedActor()->GetChildrenContainer();
   for (auto& [specifier, ptrsmtObject] : childrenContainer)
   {
     if (MDY_CHECK_ISEMPTY(ptrsmtObject)) { continue; }
-    ptrsmtObject->GetTransform()->MDY_PRIVATE_SPECIFIER(SetWorldScaleOrigin)(this->mWorldProductScale);
+    ptrsmtObject->GetTransform()->MDY_PRIVATE(SetWorldScaleOrigin)(this->mWorldProductScale);
   }
 }
 

@@ -136,10 +136,10 @@ EDySuccess FDyLevelCascadeShadowRenderer::TrySetupRendering()
   glClearBufferfv(GL_DEPTH, 0, &one);
 
   this->mDirLightShaderResource->UseShader();
-  this->mDirLightShaderResource.TryUpdateUniform<EDyUniformVariableType::Integer>("uFrustumSegmentCount", static_cast<TI32>(kCSMSegment));
-  this->mDirLightShaderResource.TryUpdateUniform<EDyUniformVariableType::Matrix4>("mProjMatrix", mProjMatrix);
-  this->mDirLightShaderResource.TryUpdateUniform<EDyUniformVariableType::Matrix4>("mViewMatrix", mViewMatrix);
-  this->mDirLightShaderResource.TryUpdateUniformList();
+  this->mDirLightShaderResource->TryUpdateUniform<EDyUniformVariableType::Integer>("uFrustumSegmentCount", static_cast<TI32>(kCSMSegment));
+  this->mDirLightShaderResource->TryUpdateUniform<EDyUniformVariableType::Matrix4>("mProjMatrix", mProjMatrix);
+  this->mDirLightShaderResource->TryUpdateUniform<EDyUniformVariableType::Matrix4>("mViewMatrix", mViewMatrix);
+  this->mDirLightShaderResource->TryUpdateUniformList();
   return DY_SUCCESS;
 }
 
@@ -156,8 +156,8 @@ void FDyLevelCascadeShadowRenderer::RenderScreen(
   this->mDirLightShaderResource->UseShader();
 
   const auto& refModelMatrix = iRefRenderer.mPtrModelRenderer->GetBindedActor()->GetTransform()->GetTransform();
-  this->mDirLightShaderResource.TryUpdateUniform<EDyUniformVariableType::Matrix4>("uModelMatrix", refModelMatrix);
-  this->mDirLightShaderResource.TryUpdateUniformList();
+  this->mDirLightShaderResource->TryUpdateUniform<EDyUniformVariableType::Matrix4>("uModelMatrix", refModelMatrix);
+  this->mDirLightShaderResource->TryUpdateUniformList();
   iRefMesh.BindVertexArray();
 
   // Call function call drawing array or element. (not support instancing yet) TODO IMPLEMENT BATCHING SYSTEM.

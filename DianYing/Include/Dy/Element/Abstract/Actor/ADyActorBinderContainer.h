@@ -31,7 +31,7 @@ public:
   }
 
   MDY_NODISCARD EDySuccess 
-  MDY_PRIVATE_SPECIFIER(DetachBinderFromList)(_MIN_ DDyActorBinder& iRefBinder) noexcept
+  MDY_PRIVATE(DetachBinderFromList)(_MIN_ DDyActorBinder& iRefBinder) noexcept
   {
     TU32 id = 0;
     const TU32 size = this->mPtrBinderList.size();
@@ -46,14 +46,14 @@ public:
   }
 
   MDY_NODISCARD EDySuccess 
-  MDY_PRIVATE_SPECIFIER(AttachBinderFromList)(_MIN_ DDyActorBinder& iRefBinder) noexcept
+  MDY_PRIVATE(AttachBinderFromList)(_MIN_ DDyActorBinder& iRefBinder) noexcept
   {
     this->mPtrBinderList.emplace_back(&iRefBinder);
     return DY_SUCCESS;
   }
 
   /// @brief
-  void MDY_PRIVATE_SPECIFIER(SetPtr)(_MIN_ TType& ptrObject) noexcept { this->ptrObject = ptrObject; }
+  void MDY_PRIVATE(SetPtr)(_MIN_ TType& ptrObject) noexcept { this->ptrObject = ptrObject; }
 
 private:
   std::vector<NotNull<DDyActorBinder*>> mPtrBinderList;

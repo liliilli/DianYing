@@ -340,7 +340,7 @@ EDySuccess CDyDirectionalLight::pTryActivateDirectionalLight()
   this->mIsBindedToRenderingManagerAsLighting = true;
 
   // Bind and get a index of UBO array.
-  MDyRendering::GetInstance().MDY_PRIVATE_SPECIFIER(BindMainDirectionalLight)(*this);
+  MDyRendering::GetInstance().MDY_PRIVATE(BindMainDirectionalLight)(*this);
   return DY_SUCCESS;
 }
 
@@ -351,7 +351,7 @@ EDySuccess CDyDirectionalLight::pTryDeactivateDirectionalLight()
   this->mIsBindedToRenderingManagerAsLighting = false;
 
   // Try Unbind from lighting system.
-  MDyRendering::GetInstance().MDY_PRIVATE_SPECIFIER(UnbindMainDirectionalLight)(*this);
+  MDyRendering::GetInstance().MDY_PRIVATE(UnbindMainDirectionalLight)(*this);
   return DY_SUCCESS;
 }
 
@@ -362,7 +362,7 @@ EDySuccess CDyDirectionalLight::pTryActivateCastingShadow()
   this->mIsBindedToRenderingManagerAsShadow = true;
 
   // Try bind to lighting system.
-  MDyRendering::GetInstance().MDY_PRIVATE_SPECIFIER(BindMainDirectionalShadow)(*this);
+  MDyRendering::GetInstance().MDY_PRIVATE(BindMainDirectionalShadow)(*this);
   return DY_SUCCESS;
 }
 
@@ -373,7 +373,7 @@ EDySuccess CDyDirectionalLight::pTryDeactivateCastingShadow()
   this->mIsBindedToRenderingManagerAsShadow = false;
 
   // Unbind from shadow system.
-  MDyRendering::GetInstance().MDY_PRIVATE_SPECIFIER(UnbindMainDirectionalShadow)(*this);
+  MDyRendering::GetInstance().MDY_PRIVATE(UnbindMainDirectionalShadow)(*this);
   return DY_SUCCESS;
 }
 

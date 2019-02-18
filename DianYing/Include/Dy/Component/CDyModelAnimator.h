@@ -106,9 +106,9 @@ private:
   /// @brief Status instance.
   DDyAnimatorStatus mStatus;
   /// @brief Valid model animation scrap reference handle.
-  TDyLInformationBinderAnimScrap  mBinderAnimationScrap;
+  TDyInformationBinderAnimScrap  mBinderAnimationScrap;
   /// @brief Valid skeleton reference handle.
-  TDyLInformationBinderSkeleton   mBinderSkeleton;
+  TDyInformationBinderSkeleton   mBinderSkeleton;
 };
 
 } /// ::dy namespace

@@ -26,6 +26,7 @@
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 #include <Dy/Meta/Information/MetaInfoMaterial.h>
 #include "Dy/Core/Resource/Resource/FDyMaterialResource.h"
+#include "Dy/Management/Rendering/RenderingManager.h"
 
 namespace dy
 {
@@ -47,54 +48,128 @@ GetVertexPosition(
   return { dy::DDyVector2{ru.X, lb.Y}, ru, dy::DDyVector2{lb.X, ru.Y}, lb };
 }
 
-/// Sample UI projection code
-dy::DDyMatrix4x4 uUiProjTempMatrix = dy::DDyMatrix4x4{};
-
-CDyImageRenderer::CDyImageRenderer(FDyImage& mRefObject) : 
-    mPtrObject{&mRefObject}
+CDyImageRenderer::CDyImageRenderer(FDyImage& mRefObject) : mPtrObject{&mRefObject}
 {
+  this->mBinderRenderable = std::make_unique<TDyResourceBinderMaterial>();
   this->mBinderQuadMesh.TryRequireResource(MSVSTR(FDyBtMsUiImageQuad::sName));
-  this->mPtrObject->SetShaderSpecifier(MSVSTR(builtin::FDyBuiltinShaderGLRenderUiImage::sName));
-  uUiProjTempMatrix = glm::ortho(0.f, static_cast<float>(1280), 0.f, static_cast<float>(720), 0.2f, 10.0f);
 }
 
 void CDyImageRenderer::Render()
 {
   using EUniformType = EDyUniformVariableType;
-  if (this->mBinderMaterial.IsResourceExist() == false
-  ||  this->mBinderQuadMesh.IsResourceExist() == false) { return; }
+  if (const auto type = this->mBinderRenderable->mRenderType; type == EDyResourceType::Texture)
+  {
+    auto& refTexture = static_cast<TDyResourceBinderTexture&>(*this->mBinderRenderable);  // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
+    if (refTexture.IsResourceExist() == false || this->mBinderQuadMesh.IsResourceExist() == false) { return; }
 
-  auto& sourceBinder = this->mBinderMaterial->GetShaderResourceBinder();
-  sourceBinder->UseShader();
-  sourceBinder.TryUpdateUniform<EUniformType::Matrix4>("uUiProjMatrix", uUiProjTempMatrix);
-  sourceBinder.TryUpdateUniform<EUniformType::Vector4>("uTintColor", this->mPtrObject->GetTintColor());
-  sourceBinder.TryUpdateUniformList();
+    // Set shader.
+    mDefaultImageShader->UseShader();
+    mDefaultImageShader->TryUpdateUniform<EUniformType::Matrix4>("uUiProjMatrix", MDyRendering::GetInstance().GetGeneralUiProjectionMatrix());
+    mDefaultImageShader->TryUpdateUniform<EUniformType::Vector4>("uTintColor", this->mPtrObject->GetTintColor());
 
-  glDepthFunc(GL_ALWAYS);
-  this->mBinderQuadMesh->BindVertexArray();
-  this->mBinderMaterial->TryUpdateTextureList();
+    MDY_ASSERT(this->mDefaultImageShader->GetAvailableTextureCount() == 1, "Unexpected error occurred.");
+    mDefaultImageShader->TryInsertTextureRequisition(0, refTexture->GetTextureId());
+    mDefaultImageShader->TryUpdateUniformList();
 
-  const auto buffer = GetVertexPosition(this->mPtrObject->GetFinalPosition(EDyOrigin::Center_Center), this->mPtrObject->GetFrameSize());
-  FDyGLWrapper::MapBufferExt(
-      EDyDirectBufferType::VertexBuffer, 
-      this->mBinderQuadMesh->GetVertexBufferId(), 
-      (void*)buffer.data(), 
-      sizeof(buffer),
-      8, 8, 0);
-  FDyGLWrapper::Draw(EDyDrawType::TriangleFan, false, 4);
+    // Render
+    glDepthFunc(GL_ALWAYS);
+    this->mBinderQuadMesh->BindVertexArray();
 
-  FDyGLWrapper::UnbindVertexArrayObject();
-  sourceBinder->DisuseShader();
-  glDepthFunc(GL_LEQUAL);
+    const auto buffer = GetVertexPosition(this->mPtrObject->GetFinalPosition(EDyOrigin::Center_Center), this->mPtrObject->GetFrameSize());
+    FDyGLWrapper::MapBufferExt(
+        EDyDirectBufferType::VertexBuffer, 
+        this->mBinderQuadMesh->GetVertexBufferId(), 
+        (void*)buffer.data(), 
+        sizeof(buffer),
+        8, 8, 0);
+    FDyGLWrapper::Draw(EDyDrawType::TriangleFan, false, 4);
+
+    FDyGLWrapper::UnbindVertexArrayObject();
+    mDefaultImageShader->DisuseShader();
+    glDepthFunc(GL_LEQUAL);
+  }
+  else if (type == EDyResourceType::Material)
+  {
+    auto& refMaterial = static_cast<TDyResourceBinderMaterial&>(*this->mBinderRenderable);  // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
+    if (refMaterial.IsResourceExist() == false || this->mBinderQuadMesh.IsResourceExist() == false) { return; }
+
+    auto& refMatShader = refMaterial->GetShaderResourceBinder();
+    refMatShader->UseShader();
+    refMatShader->TryUpdateUniform<EUniformType::Matrix4>("uUiProjMatrix", MDyRendering::GetInstance().GetGeneralUiProjectionMatrix());
+    refMatShader->TryUpdateUniform<EUniformType::Vector4>("uTintColor", this->mPtrObject->GetTintColor());
+    refMatShader->TryUpdateUniformList();
+
+    glDepthFunc(GL_ALWAYS);
+    this->mBinderQuadMesh->BindVertexArray();
+    refMaterial->TryUpdateTextureList();
+
+    const auto buffer = GetVertexPosition(this->mPtrObject->GetFinalPosition(EDyOrigin::Center_Center), this->mPtrObject->GetFrameSize());
+    FDyGLWrapper::MapBufferExt(
+        EDyDirectBufferType::VertexBuffer, 
+        this->mBinderQuadMesh->GetVertexBufferId(), 
+        (void*)buffer.data(), 
+        sizeof(buffer),
+        8, 8, 0);
+    FDyGLWrapper::Draw(EDyDrawType::TriangleFan, false, 4);
+
+    FDyGLWrapper::UnbindVertexArrayObject();
+    refMatShader->DisuseShader();
+    glDepthFunc(GL_LEQUAL);
+  }
 }
 
-void CDyImageRenderer::UpdateMaterial() noexcept
-{
+/*
+ * OLD CODE
+#ifdef false
   PDyMaterialInstanceMetaInfo info{};
-  info.mShaderSpecifier = mPtrObject->GetShaderSpecifier();
-  info.mTextureNames[0] = {mPtrObject->GetImageName(), EDyTextureMapType::Unknown};
+  info.mShaderSpecifier = mDefaultImageShader->GetSpecifierName();
+  info.mTextureNames[0] = {mPtrObject->GetRenderableImageName().first, EDyTextureMapType::Unknown};
   info.mBlendMode       = EDyMaterialBlendMode::Opaque;
-  SDyIOConnectionHelper::PopulateInstantMaterialResource(info, this->mBinderMaterial);
+  SDyIOConnectionHelper::PopulateInstantMaterialResource(info, static_cast<TDyResourceBinderMaterial&>(*this->mBinderRenderable));
+#endif
+ */
+void CDyImageRenderer::UpdateRenderableTarget() noexcept
+{
+  const auto& [specifier, isMaterial] = this->mPtrObject->GetRenderableImageName();
+  if (isMaterial == true)
+  {
+    if (this->mBinderRenderable->mRenderType == EDyResourceType::Material)
+    {
+      auto& refBinder = static_cast<TDyResourceBinderMaterial&>(*this->mBinderRenderable);
+      refBinder.TryRequireResource(specifier);
+    }
+    else
+    {
+      this->mBinderRenderable = nullptr;
+      this->mBinderRenderable = std::make_unique<TDyResourceBinderMaterial>(specifier);
+    }
+  }
+  else
+  {
+    if (this->mBinderRenderable->mRenderType == EDyResourceType::Texture)
+    {
+      auto& refBinder = static_cast<TDyResourceBinderTexture&>(*this->mBinderRenderable);
+      refBinder.TryRequireResource(specifier);
+    }
+    else
+    {
+      this->mBinderRenderable = nullptr;
+      this->mBinderRenderable = std::make_unique<TDyResourceBinderTexture>(specifier);
+    }
+  }
+}
+
+TDyResourceBinderMaterial* CDyImageRenderer::GetUsingMaterial()
+{
+  // Check
+  if (this->mBinderRenderable == nullptr
+  ||  this->mBinderRenderable->mRenderType != EDyResourceType::Material)
+  {
+    return nullptr;
+  }
+
+  // Return
+  return &static_cast<TDyResourceBinderMaterial&>(*this->mBinderRenderable);
 }
 
 } /// ::dy namespace

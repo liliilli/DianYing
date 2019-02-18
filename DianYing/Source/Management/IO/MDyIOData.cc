@@ -88,7 +88,7 @@ void MDyIOData::InsertResult(_MIN_ EDyResourceType type, _MIN_ void* ptrrawInsta
   }
 }
 
-EDySuccess MDyIOData::MDY_PRIVATE_SPECIFIER(TryRemove)(_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType)
+EDySuccess MDyIOData::MDY_PRIVATE(TryRemove)(_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType)
 {
   switch (iType)
   {

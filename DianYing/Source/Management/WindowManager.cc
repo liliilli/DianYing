@@ -97,7 +97,7 @@ bool MDyWindow::IsWindowShouldClose() const noexcept
   return glfwWindowShouldClose(this->mGlfwWindow);
 }
 
-EDySuccess MDyWindow::MDY_PRIVATE_SPECIFIER(TerminateWindow)() noexcept
+EDySuccess MDyWindow::MDY_PRIVATE(TerminateWindow)() noexcept
 {
   bool terminated = false;
   if (terminated == true) { return DY_FAILURE; }

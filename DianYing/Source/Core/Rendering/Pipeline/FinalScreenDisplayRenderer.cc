@@ -33,7 +33,7 @@ FDyFinalScreenDisplayRenderer::FDyFinalScreenDisplayRenderer()
   MDY_ASSERT(this->mBinderAttDbgFinal.IsResourceExist() == true,    "Debug final output must be valid.");
 
   this->mBinderShader->UseShader();
-  this->mBinderShader.TryUpdateUniformList();
+  this->mBinderShader->TryUpdateUniformList();
   this->mBinderShader->DisuseShader();
 }
 

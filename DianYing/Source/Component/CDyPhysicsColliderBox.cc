@@ -68,7 +68,7 @@ void CDyPhysicsColliderBox::InitializeInternalResource(_MINOUT_ CDyPhysicsRigidb
   const physx::PxBoxGeometry geometry{this->mHalfExtent.X, this->mHalfExtent.Y, this->mHalfExtent.Z};
 
   // Create shape.
-  auto& physics = MDyPhysics::GetInstance().MDY_PRIVATE_SPECIFIER(GetRefInternalSdk)();
+  auto& physics = MDyPhysics::GetInstance().MDY_PRIVATE(GetRefInternalSdk)();
   const auto& defaultMaterial = MDyPhysics::GetInstance().GetDefaultPhysicsMaterial();
   this->mPtrInternalShape = physics.createShape(geometry, defaultMaterial);
   MDY_ASSERT_FORCE(MDY_CHECK_ISNOTNULL(this->mPtrInternalShape), "Unexpected error occurred.");

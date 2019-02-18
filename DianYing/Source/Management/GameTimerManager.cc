@@ -37,7 +37,7 @@ void MDyGameTimer::PauseActorTimer(_MIN_ FDyTimerHandle& iRefHandler)
   // Bound is false only when aborted or not exist on list.
   if (iRefHandler.IsBound() == false) { return; }
   
-  const auto validId = iRefHandler.MDY_PRIVATE_SPECIFIER(GetIndex)();
+  const auto validId = iRefHandler.MDY_PRIVATE(GetIndex)();
   auto it = std::find_if(
       MDY_BIND_BEGIN_END(this->mActorTimerList), 
       [validId](const decltype(mActorTimerList)::value_type& iTimerItem) { return iTimerItem.GetIndex() == validId; });
@@ -54,7 +54,7 @@ void MDyGameTimer::ResumeActorTimer(_MIN_ FDyTimerHandle& iRefHandler)
   // Bound is false only when aborted or not exist on list.
   if (iRefHandler.IsBound() == false) { return; }
 
-  const auto validId = iRefHandler.MDY_PRIVATE_SPECIFIER(GetIndex)();
+  const auto validId = iRefHandler.MDY_PRIVATE(GetIndex)();
   auto it = std::find_if(
       MDY_BIND_BEGIN_END(this->mActorTimerList), 
       [validId](const decltype(mActorTimerList)::value_type& iTimerItem) { return iTimerItem.GetIndex() == validId; });
@@ -71,13 +71,13 @@ void MDyGameTimer::StopActorTimer(_MIN_ FDyTimerHandle& iRefHandler)
   // Bound is false only when aborted or not exist on list.
   if (iRefHandler.IsBound() == false) { return; }
 
-  const auto validId = iRefHandler.MDY_PRIVATE_SPECIFIER(GetIndex)();
+  const auto validId = iRefHandler.MDY_PRIVATE(GetIndex)();
   auto it = std::find_if(
       MDY_BIND_BEGIN_END(this->mActorTimerList), 
       [validId](const decltype(mActorTimerList)::value_type& iTimerItem) { return iTimerItem.GetIndex() == validId; });
   MDY_ASSERT(it != this->mActorTimerList.end(), "Unexpected error occurred.");
   
-  it->MDY_PRIVATE_SPECIFIER(Abort)();
+  it->MDY_PRIVATE(Abort)();
 }
 
 void MDyGameTimer::PauseWidgetTimer(FDyTimerHandle& iRefHandler)
@@ -85,7 +85,7 @@ void MDyGameTimer::PauseWidgetTimer(FDyTimerHandle& iRefHandler)
   // Bound is false only when aborted or not exist on list.
   if (iRefHandler.IsBound() == false) { return; }
 
-  const auto validId = iRefHandler.MDY_PRIVATE_SPECIFIER(GetIndex)();
+  const auto validId = iRefHandler.MDY_PRIVATE(GetIndex)();
   auto it = std::find_if(
       MDY_BIND_BEGIN_END(this->mWidgetTimerList), 
       [validId](const decltype(mWidgetTimerList)::value_type& iTimerItem) { return iTimerItem.GetIndex() == validId; });
@@ -102,7 +102,7 @@ void MDyGameTimer::ResumeWidgetTimer(FDyTimerHandle& iRefHandler)
   // Bound is false only when aborted or not exist on list.
   if (iRefHandler.IsBound() == false) { return; }
 
-  const auto validId = iRefHandler.MDY_PRIVATE_SPECIFIER(GetIndex)();
+  const auto validId = iRefHandler.MDY_PRIVATE(GetIndex)();
   auto it = std::find_if(
       MDY_BIND_BEGIN_END(this->mWidgetTimerList), 
       [validId](const decltype(mWidgetTimerList)::value_type& iTimerItem) { return iTimerItem.GetIndex() == validId; });
@@ -114,7 +114,7 @@ void MDyGameTimer::ResumeWidgetTimer(FDyTimerHandle& iRefHandler)
   }
 }
 
-void MDyGameTimer::MDY_PRIVATE_SPECIFIER(pSetTimer)(
+void MDyGameTimer::MDY_PRIVATE(pSetTimer)(
     _MIN_ FDyTimerHandle& iRefHandler, 
     _MIN_ ADyActorCppScript& iRefScript,
     _MIN_ std::function<void(void)> iFunction,
@@ -128,17 +128,17 @@ void MDyGameTimer::MDY_PRIVATE_SPECIFIER(pSetTimer)(
   }
   else
   { // If handler is bound and exist on list (paused or played)
-    const auto oldId = iRefHandler.MDY_PRIVATE_SPECIFIER(GetIndex)();
+    const auto oldId = iRefHandler.MDY_PRIVATE(GetIndex)();
     auto it = std::find_if(
         MDY_BIND_BEGIN_END(this->mActorTimerList), 
         [oldId](const decltype(mActorTimerList)::value_type& iTimerItem) { return iTimerItem.GetIndex() == oldId; });
     MDY_ASSERT(it != this->mActorTimerList.end(), "Unexpected error occurred.");
 
-    it->MDY_PRIVATE_SPECIFIER(ResetTimerProperties)(iDelayTime, iTickTime, iIsLooped, iFunction);
+    it->MDY_PRIVATE(ResetTimerProperties)(iDelayTime, iTickTime, iIsLooped, iFunction);
   }
 }
 
-void MDyGameTimer::MDY_PRIVATE_SPECIFIER(pSetTimer)(
+void MDyGameTimer::MDY_PRIVATE(pSetTimer)(
     _MIN_ FDyTimerHandle& iRefHandler, 
     _MIN_ ADyWidgetCppScript& iRefScript,
     _MIN_ std::function<void(void)> iFunction,
@@ -152,13 +152,13 @@ void MDyGameTimer::MDY_PRIVATE_SPECIFIER(pSetTimer)(
   }
   else
   { // If handler is bound and exist on list (paused or played)
-    const auto oldId = iRefHandler.MDY_PRIVATE_SPECIFIER(GetIndex)();
+    const auto oldId = iRefHandler.MDY_PRIVATE(GetIndex)();
     auto it = std::find_if(
         MDY_BIND_BEGIN_END(this->mWidgetTimerList), 
         [oldId](const decltype(mWidgetTimerList)::value_type& iTimerItem) { return iTimerItem.GetIndex() == oldId; });
     MDY_ASSERT(it != this->mWidgetTimerList.end(), "Unexpected error occurred.");
 
-    it->MDY_PRIVATE_SPECIFIER(ResetTimerProperties)(iDelayTime, iTickTime, iIsLooped, iFunction);
+    it->MDY_PRIVATE(ResetTimerProperties)(iDelayTime, iTickTime, iIsLooped, iFunction);
   }
 }
 
@@ -171,7 +171,7 @@ void MDyGameTimer::Update(_MIN_ TF32 iDt)
       timerItem.Update(iDt);
       if (timerItem.Checked() == true) { timerItem.CallFunction(false); }
       // Check game end signal is called.
-      if (gEngine->MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() == true) { return; }
+      if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
     }
   }
 
@@ -182,7 +182,7 @@ void MDyGameTimer::Update(_MIN_ TF32 iDt)
       timerItem.Update(iDt);
       if (timerItem.Checked() == true) { timerItem.CallFunction(false); }
       // Check game end signal is called.
-      if (gEngine->MDY_PRIVATE_SPECIFIER(IsGameEndCalled)() == true) { return; }
+      if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
     }
   }
 }
@@ -192,13 +192,13 @@ void MDyGameTimer::StopWidgetTimer(_MIN_ FDyTimerHandle& iRefHandler)
   // Bound is false only when aborted or not exist on list.
   if (iRefHandler.IsBound() == false) { return; }
 
-  const auto validId = iRefHandler.MDY_PRIVATE_SPECIFIER(GetIndex)();
+  const auto validId = iRefHandler.MDY_PRIVATE(GetIndex)();
   auto it = std::find_if(
       MDY_BIND_BEGIN_END(this->mWidgetTimerList), 
       [validId](const decltype(mWidgetTimerList)::value_type& iTimerItem) { return iTimerItem.GetIndex() == validId; });
   MDY_ASSERT(it != this->mWidgetTimerList.end(), "Unexpected error occurred.");
   
-  it->MDY_PRIVATE_SPECIFIER(Abort)();
+  it->MDY_PRIVATE(Abort)();
 }
 
 void MDyGameTimer::__TryGcRemoveAbortedTimerInstance()

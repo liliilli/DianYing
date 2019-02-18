@@ -699,8 +699,6 @@
     <ClInclude Include="Include\Dy\Core\Rendering\Type\EDyDrawType.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\TDyResourceBinderBase.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\TemplateUniformType.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\TDyShaderBinder.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\DDyUniformValue.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\ADyUniformContainer.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Material\TDyMaterialBinder.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Material\ADyUniformHelper.h" />
@@ -836,6 +834,7 @@
     <ClInclude Include="Include\Dy\Helper\Type\Area3D.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Internal\Uniform\IDyUniformValueBase.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Uniform\UniformValueTypes.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Interface\IDyRenderableBinder.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

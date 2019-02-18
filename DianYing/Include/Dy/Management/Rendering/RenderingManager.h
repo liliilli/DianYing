@@ -27,6 +27,7 @@
 #include <Dy/Management/Type/Render/DDyModelHandler.h>
 #include <Dy/Core/Rendering/Pipeline/DebugRenderer.h>
 #include <Dy/Core/Rendering/Pipeline/PostEffectSky.h>
+#include <Dy/Helper/Pointer.h>
 
 //!
 //! Forward declaration
@@ -81,21 +82,24 @@ public:
   void Integrate();
 
   /// @brief Render only loading widget.
-  void MDY_PRIVATE_SPECIFIER(RenderLoading());
+  void MDY_PRIVATE(RenderLoading());
   
   /// @brief Get ptr main directional light. If not exist, just return nullptr.
   MDY_NODISCARD CDyDirectionalLight* GetPtrMainDirectionalLight() const noexcept;
   /// @brief Private function, bind directional light as main light.
-  void MDY_PRIVATE_SPECIFIER(BindMainDirectionalLight)(_MIN_ CDyDirectionalLight& iRefLight);
+  void MDY_PRIVATE(BindMainDirectionalLight)(_MIN_ CDyDirectionalLight& iRefLight);
   /// @brief Private function, unbind directional light of main light.
-  EDySuccess MDY_PRIVATE_SPECIFIER(UnbindMainDirectionalLight)(_MIN_ CDyDirectionalLight& iRefLight);
+  EDySuccess MDY_PRIVATE(UnbindMainDirectionalLight)(_MIN_ CDyDirectionalLight& iRefLight);
     
   /// @brief Get ptr main directional shadow. If not exist, just return nullptr.
   MDY_NODISCARD CDyDirectionalLight* GetPtrMainDirectionalShadow() const noexcept;
   /// @brief Private function, bind directional light as main light.
-  void MDY_PRIVATE_SPECIFIER(BindMainDirectionalShadow)(_MIN_ CDyDirectionalLight& iRefLight);
+  void MDY_PRIVATE(BindMainDirectionalShadow)(_MIN_ CDyDirectionalLight& iRefLight);
   /// @brief Private function, unbind directional light of main light.
-  EDySuccess MDY_PRIVATE_SPECIFIER(UnbindMainDirectionalShadow)(_MIN_ CDyDirectionalLight& iRefLight);
+  EDySuccess MDY_PRIVATE(UnbindMainDirectionalShadow)(_MIN_ CDyDirectionalLight& iRefLight);
+
+  /// @brief Get General (Default) ui projection matrix.
+  const DDyMatrix4x4& GetGeneralUiProjectionMatrix() const noexcept;
 
 private:
   /// @brief Enqueue static draw call to mesh with material.
@@ -144,7 +148,8 @@ private:
   /// If rendered, skybox pointer will be nulled again.
   CDySkybox* mPtrRequiredSkybox = nullptr;
 
-  std::queue<TI32>    mDirLightAvailableList  = {};
+  std::queue<TI32>  mDirLightAvailableList      = {};
+  DDyMatrix4x4      mUiGeneralProjectionMatrix  = {};
 
 #if defined(MDY_FLAG_IN_EDITOR)
   std::unique_ptr<FDyGrid>                    mGridEffect           = nullptr;

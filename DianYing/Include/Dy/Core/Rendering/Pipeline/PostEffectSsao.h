@@ -36,17 +36,17 @@ public:
 
 private:
 
-  TDyIResourceBinderModel       mBinderTriangle     { "dyBtModelScrProjTri" };
+  TDyResourceBinderModel       mBinderTriangle     { "dyBtModelScrProjTri" };
 
-  TDyIResourceBinderFrameBuffer mBinderFbSSAO       { "dyBtFbSSAO" };
-  TDyIResourceBinderShader      mBinderShSSAO       { "dyBtShSSAO" };
-  TDyIResourceBinderAttachment  mBinderAttWorldPos  { "dyBtModelPosition" };
-  TDyIResourceBinderAttachment  mBinderAttWorldNorm { "dyBtNormal" };
-  TDyIResourceBinderTexture     mBinderTexNoise     { "dyBtTexSSAONoiseMap" };
+  TDyResourceBinderFrameBuffer mBinderFbSSAO       { "dyBtFbSSAO" };
+  TDyResourceBinderShader      mBinderShSSAO       { "dyBtShSSAO" };
+  TDyResourceBinderAttachment  mBinderAttWorldPos  { "dyBtModelPosition" };
+  TDyResourceBinderAttachment  mBinderAttWorldNorm { "dyBtNormal" };
+  TDyResourceBinderTexture     mBinderTexNoise     { "dyBtTexSSAONoiseMap" };
 
-  TDyIResourceBinderFrameBuffer mBinderFbSSAOBlur   { "dyBtFbSSAOBlur" };
-  TDyIResourceBinderShader      mBinderShSSAOBlur   { "dyBtPostEffectSsaoBlur" };
-  TDyIResourceBinderAttachment  mBinderAttSSAOOpt   { "dyBtAtSSAOOutput" };
+  TDyResourceBinderFrameBuffer mBinderFbSSAOBlur   { "dyBtFbSSAOBlur" };
+  TDyResourceBinderShader      mBinderShSSAOBlur   { "dyBtPostEffectSsaoBlur" };
+  TDyResourceBinderAttachment  mBinderAttSSAOOpt   { "dyBtAtSSAOOutput" };
 
   std::vector<DDyVector3> mRayContainer;
   bool mIsRayInserted = false;

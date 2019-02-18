@@ -33,7 +33,7 @@ CDyActorScriptCpp::CDyActorScriptCpp(_MIN_ FDyActor& iRefActor, _MIN_ const PDyS
   this->mIsScriptInstanceBinded = true;
 }
 
-ADyActorCppScript* CDyActorScriptCpp::MDY_PRIVATE_SPECIFIER(GetScriptInstance)() const noexcept
+ADyActorCppScript* CDyActorScriptCpp::MDY_PRIVATE(GetScriptInstance)() const noexcept
 {
   MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance), "Script instance must be valid, not empty.");
   return this->mScriptInstance.get();

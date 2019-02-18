@@ -144,7 +144,7 @@ private:
   std::string mChannelSpecifier; // If blank, this sound just use master channel.
 
   DAttenuation mAttenuation; // 3D Atteunation properties.
-  TDyLInformationBinderSound mBinderClipResource;
+  TDyInformationBinderSound mBinderClipResource;
   
   FMOD::Sound*    mPtrInternalSound   = nullptr;
   FMOD::Channel*  mPtrInternalChannel = nullptr;

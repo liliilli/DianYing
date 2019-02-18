@@ -64,9 +64,9 @@ void FDyDebugRenderer::RenderScreen(_MIN_ CDyPhysicsCollider& iRefCollider, _MIN
 
   // Update uniform.
   this->mBinderShader->UseShader();
-  this->mBinderShader.TryUpdateUniform<EDyUniformVariableType::Matrix4>("uTransform", iTransformMatrix);
-  this->mBinderShader.TryUpdateUniform<EDyUniformVariableType::Integer>("uColorIndex", 0);
-  this->mBinderShader.TryUpdateUniformList();
+  this->mBinderShader->TryUpdateUniform<EDyUniformVariableType::Matrix4>("uTransform", iTransformMatrix);
+  this->mBinderShader->TryUpdateUniform<EDyUniformVariableType::Integer>("uColorIndex", 0);
+  this->mBinderShader->TryUpdateUniformList();
 
   // Binding Mesh information
   switch (iRefCollider.GetColliderType())

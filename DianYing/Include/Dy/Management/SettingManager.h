@@ -128,11 +128,11 @@ public:
 
   /// @brief Check Specified tag is in object tag list.
   MDY_NODISCARD EDySuccess 
-  MDY_PRIVATE_SPECIFIER(CheckObjectTagIsExist)(_MIN_ const std::string& iSpecifiedTag) const noexcept;
+  MDY_PRIVATE(CheckObjectTagIsExist)(_MIN_ const std::string& iSpecifiedTag) const noexcept;
 
   /// @brief Get entry setting file path.
   MDY_NODISCARD const std::string& 
-  MDY_PRIVATE_SPECIFIER(GetEntrySettingFile)() const noexcept;
+  MDY_PRIVATE(GetEntrySettingFile)() const noexcept;
 
   //!
   //! Sound

@@ -123,7 +123,7 @@ void MDySynchronization::pRunFrameGameRuntime()
     // Remove GC actor list.
     if (world.CheckIsGcActorExist() == true)
     {
-      world.MDY_PRIVATE_SPECIFIER(TryRemoveActorGCList)();
+      world.MDY_PRIVATE(TryRemoveActorGCList)();
       // Check Resource GC to IO Thread,...
     }
   }

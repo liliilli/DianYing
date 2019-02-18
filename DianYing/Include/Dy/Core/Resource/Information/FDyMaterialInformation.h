@@ -37,7 +37,7 @@ namespace dy
 class FDyMaterialInformation final
 {
 public:
-  using TPtrTextureInfoList = std::vector<std::unique_ptr<TDyIInformationBinderTexture>>;
+  using TPtrTextureInfoList = std::vector<std::unique_ptr<TDyInformationBinderTexture>>;
 
   MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(FDyMaterialInformation);
   FDyMaterialInformation(_MIN_ const PDyMaterialInstanceMetaInfo& metaInfo);
@@ -71,8 +71,8 @@ private:
   std::string          mSpecifierName    = MDY_INITIALIZE_EMPTYSTR;
   EDyMaterialBlendMode mBlendMode        = EDyMaterialBlendMode::Opaque;
 
-  TDyLInformatinBinderShader  mBinderShaderInfo = {};
-  std::vector<std::unique_ptr<TDyIInformationBinderTexture>> mBinderTextureInfoList = {};
+  TDyInformationBinderShader  mBinderShaderInfo = {};
+  std::vector<std::unique_ptr<TDyInformationBinderTexture>> mBinderTextureInfoList = {};
 };
 
 } /// ::dy namespace

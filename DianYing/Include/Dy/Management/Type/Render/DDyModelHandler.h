@@ -90,11 +90,11 @@ public:
   MDY_NODISCARD TContainer& GetActorContainer() noexcept;
 
   /// @brief
-  MDY_NODISCARD const TDyLResourceBinderModel& GetModelBinderReference() const noexcept;
+  MDY_NODISCARD const TDyResourceBinderModel& GetModelBinderReference() const noexcept;
 
 private:
   /// Only specifies one valid model.
-  TDyLResourceBinderModel mModelBinder;
+  TDyResourceBinderModel mModelBinder;
   /// Have pointer of actor and components information.
   TContainer mActorInformation;
 };

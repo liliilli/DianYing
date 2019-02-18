@@ -20,7 +20,7 @@ namespace dy
 /// @interface __FDyBinderBase
 /// @brief Using interface for binding resource & information instance. Must use this, not __TDyResourceBinderBase.
 ///
-MDY_INTERFACE MDY_PRIVATE_SPECIFIER(FDyBinderBase)
+MDY_INTERFACE MDY_PRIVATE(FDyBinderBase)
 {
   virtual ~__FDyBinderBase() = default;
 

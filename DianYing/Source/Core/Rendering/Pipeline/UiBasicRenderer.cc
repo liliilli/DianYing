@@ -39,8 +39,8 @@ void FDyUIBasicRenderer::RenderScreen()
 
   {
     auto& refWorld = MDyWorld::GetInstance();
-    if (refWorld.IsLoadingUiExist() == true)  { refWorld.MDY_PRIVATE_SPECIFIER(TryRenderLoadingUi)(); }
-    if (refWorld.IsDebugUiExist() == true)    { refWorld.MDY_PRIVATE_SPECIFIER(TryRenderDebugUi)(); }
+    if (refWorld.IsLoadingUiExist() == true)  { refWorld.MDY_PRIVATE(TryRenderLoadingUi)(); }
+    if (refWorld.IsDebugUiExist() == true)    { refWorld.MDY_PRIVATE(TryRenderDebugUi)(); }
   }
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0);

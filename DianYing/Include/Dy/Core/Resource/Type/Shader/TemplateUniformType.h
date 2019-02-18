@@ -22,30 +22,30 @@ namespace dy
 {
 
 template <EDyUniformVariableType TType>
-struct MDY_PRIVATE_SPECIFIER(UniformBinder);
+struct MDY_PRIVATE(UniformBinder);
 
-template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::Matrix4Array> final
+template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Matrix4Array> final
 { using ValueType = std::vector<DDyMatrix4x4>; };
-template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::Vector3Array> final  
+template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Vector3Array> final  
 { using ValueType = std::vector<DDyVector3>; };
 
-template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::Matrix4> final  { using ValueType = DDyMatrix4x4; };
-template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::Matrix3> final  { using ValueType = DDyMatrix3x3; };
-template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::Vector4> final  { using ValueType = DDyVector4; };
-template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::Vector3> final  { using ValueType = DDyVector3; };
-template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::Vector2> final  { using ValueType = DDyVector2; };
-//template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyAttributeVariableType::IVec4> final  { using ValueType = DDyVectorInt4; };
-//template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyAttributeVariableType::IVec3> final  { using ValueType = DDyVector4; };
-template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::IVec2> final    { using ValueType = DDyVectorInt2; };
-template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::Integer> final  { using ValueType = TI32; };
-template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::Float> final    { using ValueType = TF32; };
-template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::Bool> final     { using ValueType = bool; };
-template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::Texture1D>      final { using ValueType = TU32; };
-template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::Texture2D>      final { using ValueType = TU32; };
-template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::Texture2DArray> final { using ValueType = TU32; };
-template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::Texture2DRectangle> final { using ValueType = TU32; };
-template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::Texture2DShadowArray> final { using ValueType = TU32; };
-template <> struct MDY_PRIVATE_SPECIFIER(UniformBinder)<EDyUniformVariableType::Texture2DCubemap> final { using ValueType = TU32; };
+template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Matrix4> final  { using ValueType = DDyMatrix4x4; };
+template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Matrix3> final  { using ValueType = DDyMatrix3x3; };
+template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Vector4> final  { using ValueType = DDyVector4; };
+template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Vector3> final  { using ValueType = DDyVector3; };
+template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Vector2> final  { using ValueType = DDyVector2; };
+//template <> struct MDY_PRIVATE(UniformBinder)<EDyAttributeVariableType::IVec4> final  { using ValueType = DDyVectorInt4; };
+//template <> struct MDY_PRIVATE(UniformBinder)<EDyAttributeVariableType::IVec3> final  { using ValueType = DDyVector4; };
+template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::IVec2> final    { using ValueType = DDyVectorInt2; };
+template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Integer> final  { using ValueType = TI32; };
+template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Float> final    { using ValueType = TF32; };
+template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Bool> final     { using ValueType = bool; };
+template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Texture1D>      final { using ValueType = TU32; };
+template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Texture2D>      final { using ValueType = TU32; };
+template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Texture2DArray> final { using ValueType = TU32; };
+template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Texture2DRectangle> final { using ValueType = TU32; };
+template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Texture2DShadowArray> final { using ValueType = TU32; };
+template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Texture2DCubemap> final { using ValueType = TU32; };
 
 template <typename TType, std::size_t Amount>
 MDY_NODISCARD std::vector<TType> 

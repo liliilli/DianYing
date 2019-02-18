@@ -146,22 +146,12 @@ void TDyIO::outTryStop()
   MDY_SLEEP_FOR_ATOMIC_TIME();
 }
 
-EDySuccess TDyIO::outCreateReferenceInstance(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style, _MIN_ EDyScope scope)
-{
-  switch (style)
-  {
-  case EDyResourceStyle::Information: return this->mRIInformationMap.CreateReferenceInstance(specifier, type, style, scope);
-  case EDyResourceStyle::Resource:    return this->mRIResourceMap.CreateReferenceInstance(specifier, type, style, scope);
-  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
-  }
-}
-
 EDySuccess TDyIO::outTryEnqueueTask(
     _MIN_ const std::string& iSpecifier,
     _MIN_ EDyResourceType iResourceType, _MIN_ EDyResourceStyle iResourceStyle,
     _MIN_ EDyScope iScope, _MIN_ bool iIsDerivedFromResource)
 {
-  MDY_ASSERT(this->outIsMetaInformationExist(iSpecifier, iResourceType) == true, "Meta information must be exist.");
+  MDY_ASSERT_FORCE(this->outIsMetaInformationExist(iSpecifier, iResourceType) == true, "Meta information must be exist.");
 
   { // Query there is Reference Instance for myself. If found, just return do nothing.
     std::vector<PRIVerificationItem> itselfRIItem{};
@@ -225,6 +215,16 @@ EDySuccess TDyIO::outTryEnqueueTask(
   }
 
   return DY_SUCCESS;
+}
+
+EDySuccess TDyIO::outCreateReferenceInstance(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style, _MIN_ EDyScope scope)
+{
+  switch (style)
+  {
+  case EDyResourceStyle::Information: return this->mRIInformationMap.CreateReferenceInstance(specifier, type, style, scope);
+  case EDyResourceStyle::Resource:    return this->mRIResourceMap.CreateReferenceInstance(specifier, type, style, scope);
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
+  }
 }
 
 std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(
@@ -307,7 +307,7 @@ std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(
 
 EDySuccess TDyIO::InstantPopulateMaterialResource(
     _MIN_ const PDyMaterialInstanceMetaInfo& iDesc,
-    _MIN_ TDyResourceBinder<EDyResourceType::Material, EDyLazy::Yes>& refMat, 
+    _MIN_ TDyResourceBinder<EDyResourceType::Material>& refMat, 
     _MIN_ EDyScope iScope, 
     _MIN_ bool(*callback)())
 {
@@ -379,27 +379,29 @@ EDySuccess TDyIO::InstantPopulateMaterialResource(
   return DY_SUCCESS;
 }
 
-  TDyIO::TDependencyList TDyIO::pCheckAndUpdateReferenceInstance(_MIN_ const std::vector<PRIVerificationItem>& dependencies) noexcept
+TDyIO::TDependencyList TDyIO::pCheckAndUpdateReferenceInstance(_MIN_ const std::vector<PRIVerificationItem>& dependencies) noexcept
 {
   TDependencyList resultNotFoundList = {};
 
   for (const auto& [specifier, type, style, scope] : dependencies)
-  { // Find dependencies is on memory (not GCed, and avoid duplicated task queing)
-    if (this->pIsReferenceInstanceExist(specifier, type, style) == true)
-    {
-      this->pTryEnlargeResourceScope(scope, specifier, type, style);
-      if (this->pIsReferenceInstanceBound(specifier, type, style) == true) { continue; }
-      else
-      {
-        resultNotFoundList.emplace_back(PRIVerificationItem{specifier, type, style, scope}, EDyRIStatus::NotBoundYet);
-        continue;
-      }
-    }
-
+  { 
+    // Find if reference instance is on garbage collector.
     if (this->mGarbageCollector.IsReferenceInstanceExist(specifier, type, style) == true)
     {
       MDY_CALL_ASSERT_SUCCESS(this->outTryRetrieveReferenceInstanceFromGC(specifier, type, style));
-      //this->mGarbageCollector.MoveInstanceFromGC(specifier, resourceType, resourceStyle);
+      continue;
+    }
+
+    // Find dependencies is on memory (not GCed, and avoid duplicated task queing)
+    if (this->pIsReferenceInstanceExist(specifier, type, style) == true)
+    {
+      // Try enlarge scope of RI. RI scope is large following by Global > Level > Temporal.
+      this->pTryEnlargeResourceScope(scope, specifier, type, style);
+      // Check if RI is bound by actual resource.
+      if (this->pIsReferenceInstanceBound(specifier, type, style) == false)
+      {
+        resultNotFoundList.emplace_back(PRIVerificationItem{specifier, type, style, scope}, EDyRIStatus::NotBoundYet);
+      }
       continue;
     }
 
@@ -411,13 +413,27 @@ EDySuccess TDyIO::InstantPopulateMaterialResource(
 
 void TDyIO::pTryEnlargeResourceScope(_MIN_ EDyScope scope, _MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style)
 {
-  // @TODO IMPELEMNT THIS
+  switch (style)
+  {
+  case EDyResourceStyle::Information: this->mRIInformationMap.TryEnlargeResourceScope(scope, specifier, type);  break;
+  case EDyResourceStyle::Resource:    this->mRIResourceMap.TryEnlargeResourceScope(scope, specifier, type);     break;
+  default: MDY_UNEXPECTED_BRANCH();
+  }
 }
 
 EDySuccess TDyIO::outTryRetrieveReferenceInstanceFromGC(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style)
 {
-  // @TODO IMPELEMNT THIS
-  return DY_SUCCESS;
+  // Get RI from gc list.
+  auto optRI = this->mGarbageCollector.MoveInstanceFromGC(specifier, type, style);
+  if (optRI.has_value() == false) { return DY_FAILURE; }
+
+  // Reinsert RI to appropriate position.
+  switch (style)
+  {
+  case EDyResourceStyle::Information: return this->mRIInformationMap.MoveReferenceInstance(std::move(*optRI));
+  case EDyResourceStyle::Resource:    return this->mRIResourceMap.MoveReferenceInstance(std::move(*optRI));
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
+  }
 }
 
 void TDyIO::outInsertDeferredTaskList(_MIN_ const DDyIOTaskDeferred& task)

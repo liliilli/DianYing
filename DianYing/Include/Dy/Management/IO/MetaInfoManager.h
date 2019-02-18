@@ -129,7 +129,7 @@ public:
 
   /// @brief Get loading widget pointer if exist, or return nullptr (nothing) value
   MDY_NODISCARD const PDyMetaWidgetRootDescriptor* 
-  MDY_PRIVATE_SPECIFIER(TryGetLoadingWidgetMetaLoading)() const noexcept;
+  MDY_PRIVATE(TryGetLoadingWidgetMetaLoading)() const noexcept;
 
   /// @brief  Check script meta information is exist.
   /// @return Return value is false if not found.
@@ -183,14 +183,14 @@ public:
 
   /// @brief Get booting loading resource specifier list. \n
   /// This function must not be called twice.
-  void MDY_PRIVATE_SPECIFIER(PopulateBootResourceSpecifierList)() const noexcept;
+  void MDY_PRIVATE(PopulateBootResourceSpecifierList)() const noexcept;
 
   /// @brief Get global loading resource specifier list. \n
   /// THis function must not be called twice. 
-  void MDY_PRIVATE_SPECIFIER(PopulateGlobalResourceSpecifierList)() const noexcept;
+  void MDY_PRIVATE(PopulateGlobalResourceSpecifierList)() const noexcept;
 
-  void MDY_PRIVATE_SPECIFIER(InitiateMetaInformation)();
-  void MDY_PRIVATE_SPECIFIER(InitiateMetaInformationComp)(_MIN_ const nlohmann::json& iJson);
+  void MDY_PRIVATE(InitiateMetaInformation)();
+  void MDY_PRIVATE(InitiateMetaInformationComp)(_MIN_ const nlohmann::json& iJson);
 
 private:
   MDY_NODISCARD EDySuccess pReadScriptResourceMetaInformation(_MIN_ const std::string& metaFilePath);
@@ -231,10 +231,10 @@ private:
   MDY_NODISCARD EDySuccess pfAddMaterialMetaInfo      (_MIN_ const PDyMaterialInstanceMetaInfo& metaInfo);
   MDY_NODISCARD EDySuccess pfAddGLAttachmentMetaInfo  (_MIN_ const PDyGlAttachmentInstanceMetaInfo& metaInfo);
   MDY_NODISCARD EDySuccess pfAddGLFrameBufferMetaInfo (_MIN_ const PDyGlFrameBufferInstanceMetaInfo& metaInfo);
-  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(AddLoadingWidgetMetaInformation)(_MIN_ const std::string& widgetMetaInfo);
+  MDY_NODISCARD EDySuccess MDY_PRIVATE(AddLoadingWidgetMetaInformation)(_MIN_ const std::string& widgetMetaInfo);
 
-  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(AddBootResourceSpecifierList)(_MIN_ const TResourceSpecifierList& list);
-  MDY_NODISCARD EDySuccess MDY_PRIVATE_SPECIFIER(AddGlobalResourceSpecifierList)(_MIN_ const TResourceSpecifierList& list);
+  MDY_NODISCARD EDySuccess MDY_PRIVATE(AddBootResourceSpecifierList)(_MIN_ const TResourceSpecifierList& list);
+  MDY_NODISCARD EDySuccess MDY_PRIVATE(AddGlobalResourceSpecifierList)(_MIN_ const TResourceSpecifierList& list);
 
   /// Level meta information map.
   THashMap<PDyLevelConstructMetaInfo>   mLevelInfoMap   = {};

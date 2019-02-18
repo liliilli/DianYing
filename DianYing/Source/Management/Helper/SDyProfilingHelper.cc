@@ -21,52 +21,52 @@ namespace dy
 
 void SDyProfilingHelper::IncreaseOnBindTextureCount(_MIN_ TU32 iInput) noexcept
 {
-  MDyProfiling::GetInstance().MDY_PRIVATE_SPECIFIER(AddTextureCount)(iInput);
+  MDyProfiling::GetInstance().MDY_PRIVATE(AddTextureCount)(iInput);
 }
 
 void SDyProfilingHelper::DecreaseOnBindTextureCount(_MIN_ TU32 iInput) noexcept
 {
-  MDyProfiling::GetInstance().MDY_PRIVATE_SPECIFIER(AddTextureCount)(-static_cast<TI32>(iInput));
+  MDyProfiling::GetInstance().MDY_PRIVATE(AddTextureCount)(-static_cast<TI32>(iInput));
 }
 
 void SDyProfilingHelper::IncreaseOnBindVertexCount(_MIN_ TU32 iInput) noexcept
 {
-  MDyProfiling::GetInstance().MDY_PRIVATE_SPECIFIER(AddOnBindVertexCount)(iInput);
+  MDyProfiling::GetInstance().MDY_PRIVATE(AddOnBindVertexCount)(iInput);
 }
 
 void SDyProfilingHelper::DecreaseOnBindVertexCount(_MIN_ TU32 iInput) noexcept
 {
-  MDyProfiling::GetInstance().MDY_PRIVATE_SPECIFIER(AddOnBindVertexCount)(-static_cast<TI32>(iInput));
+  MDyProfiling::GetInstance().MDY_PRIVATE(AddOnBindVertexCount)(-static_cast<TI32>(iInput));
 }
 
 void SDyProfilingHelper::IncreaseOnBindShaderCount(_MIN_ TU32 iInput) noexcept
 {
-  MDyProfiling::GetInstance().MDY_PRIVATE_SPECIFIER(AddOnBindShaderCount)(iInput);
+  MDyProfiling::GetInstance().MDY_PRIVATE(AddOnBindShaderCount)(iInput);
 }
 
 void SDyProfilingHelper::DecreaseOnBindShaderCount(_MIN_ TU32 iInput) noexcept
 {
-  MDyProfiling::GetInstance().MDY_PRIVATE_SPECIFIER(AddOnBindShaderCount)(-static_cast<TI32>(iInput));
+  MDyProfiling::GetInstance().MDY_PRIVATE(AddOnBindShaderCount)(-static_cast<TI32>(iInput));
 }
 
 void SDyProfilingHelper::IncreaseOnBindActorCount(_MIN_ TU32 iInput) noexcept
 {
-  MDyProfiling::GetInstance().MDY_PRIVATE_SPECIFIER(AddOnBindActorCount)(iInput);
+  MDyProfiling::GetInstance().MDY_PRIVATE(AddOnBindActorCount)(iInput);
 }
 
 void SDyProfilingHelper::DecreaseOnBindActorCount(_MIN_ TU32 iInput) noexcept
 {
-  MDyProfiling::GetInstance().MDY_PRIVATE_SPECIFIER(AddOnBindActorCount)(-static_cast<TI32>(iInput));
+  MDyProfiling::GetInstance().MDY_PRIVATE(AddOnBindActorCount)(-static_cast<TI32>(iInput));
 }
 
 void SDyProfilingHelper::AddScreenRenderedActorCount(TI32 iInput) noexcept
 {
-  MDyProfiling::GetInstance().MDY_PRIVATE_SPECIFIER(AddScreenRenderedActorCount)(iInput);
+  MDyProfiling::GetInstance().MDY_PRIVATE(AddScreenRenderedActorCount)(iInput);
 }
 
 void SDyProfilingHelper::ResetFrameDependentCounts() noexcept
 {
-  MDyProfiling::GetInstance().MDY_PRIVATE_SPECIFIER(ResetFrameDependentCounts)();
+  MDyProfiling::GetInstance().MDY_PRIVATE(ResetFrameDependentCounts)();
 }
 
 } /// ::dy namespace

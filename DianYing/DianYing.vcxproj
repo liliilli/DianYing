@@ -704,6 +704,7 @@
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDySoundInformation.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyTextureCubemapInformation.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyTextureGeneralInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Interface\IDyRenderableBinder.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Internal\FDyMeshVBOIntermediate.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Internal\Uniform\IDyUniformValueBase.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyAttachmentResource.h" />
@@ -726,11 +727,9 @@
     <ClInclude Include="Include\Dy\Core\Resource\Type\ModelMesh\DDyMeshData.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\ModelMesh\DDySkeletonBone.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\ADyUniformContainer.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\DDyUniformValue.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\TDyInformationBinder.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\TDyResourceBinder.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\TDyResourceBinderBase.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\TDyShaderBinder.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\TemplateRescInfoType.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\TemplateUniformType.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Uniform\UniformValueTypes.h" />

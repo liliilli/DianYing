@@ -49,6 +49,8 @@ private:
 
   void CbMoveBar();
   void CbChangeImageTexture();
+
+  bool flag = false;
 };
 
 } /// ::dy namespace

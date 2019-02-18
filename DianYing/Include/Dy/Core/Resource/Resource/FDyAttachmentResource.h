@@ -65,7 +65,7 @@ private:
   std::string mSpecifierName   = MDY_INITIALIZE_EMPTYSTR;
   TU32        mAttachmentId    = MDY_INITIALIZE_DEFUINT;
   bool        mIsRenderBuffer  = false;
-  TDyIInformationBinderAttachment mInformationBinder;
+  TDyInformationBinderAttachment mInformationBinder;
 };
 
 } /// ::dy namespace
