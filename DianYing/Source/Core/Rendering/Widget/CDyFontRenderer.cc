@@ -162,28 +162,31 @@ void CDyFontRenderer::Render()
       this->mBinderFontMesh->BindVertexArray();
 
       this->mBinderShader->TryUpdateUniformList();
-#ifdef false
       glBindBuffer(GL_ARRAY_BUFFER, this->mBinderFontMesh->GetVertexBufferId());
       glBufferData(GL_ARRAY_BUFFER, buffer.size() * sizeof(TBuffer), buffer.data()->data(), GL_DYNAMIC_DRAW);
 
+      glEnableVertexAttribArray(0);
+      glVertexBindingDivisor(0, 1);
+      glEnableVertexAttribArray(1);
+      glVertexBindingDivisor(1, 1);
+
+#ifdef false
       glBindBuffer(GL_ARRAY_BUFFER, this->mBinderFontMesh->GetVertexBufferId());
       glBindVertexBuffer(0, this->mBinderFontMesh->GetVertexBufferId(), 0, sizeof(DDyVector2) * 2);
-      glEnableVertexAttribArray(0);
       glVertexAttribFormat(0, 2, GL_FLOAT, GL_FALSE, 0);
-      glVertexAttribDivisor(0, 1);
+      VertexAttribDivisor // DO NOT USE IN CASE OF THiS.
 
-      glEnableVertexAttribArray(1);
       glVertexAttribFormat(1, 2, GL_FLOAT, GL_FALSE, 8);
-      glVertexAttribDivisor(1, 1);
 
-      // Render texture glyph
-      glActiveTexture(GL_TEXTURE0);
-      glBindTexture(GL_TEXTURE_2D_ARRAY, container.GetFontTextureArrayId());
 
       //glDrawArrays(GL_TRIANGLE_FAN, 0, 4);  
       glBindVertexArray(0);
       glDepthFunc(GL_LEQUAL);
 #endif
+      // Render texture glyph
+      glActiveTexture(GL_TEXTURE0);
+      glBindTexture(GL_TEXTURE_2D_ARRAY, container.GetFontTextureArrayId());
+      glDrawArraysInstanced(GL_TRIANGLE_FAN, 0, 4, buffer.size());  
       this->mBinderShader->DisuseShader();
     }
   }
