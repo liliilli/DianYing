@@ -211,7 +211,6 @@ public:
   static void MDY_PRIVATE(UnlockMutex)();
 
 private:
-  static std::mutex mGLMutex;
   static std::mutex mGLCriticalSectionMutex;
 
   /// @brief

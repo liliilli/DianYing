@@ -100,7 +100,6 @@ DyGlGetUniformVariableTypeFrom(_MIN_ GLenum type) noexcept
 namespace dy
 {
 
-std::mutex FDyGLWrapper::mGLMutex;
 std::mutex FDyGLWrapper::mGLCriticalSectionMutex;
 
 GLFWwindow* FDyGLWrapper::CreateGLWindow(_MIN_ const PDyGLWindowContextDescriptor& descriptor)
@@ -150,54 +149,50 @@ std::optional<TU32> FDyGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescript
 
   TU32 mTextureResourceId = MDY_INITIALIZE_DEFUINT;
 
-  { // Critical section.
-    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
-
-    // Make texture.
-    switch (descriptor.mType)
-    {
-    case EDyTextureStyleType::D1:
-    {
-      glGenTextures(1, &mTextureResourceId);
-      glBindTexture(GL_TEXTURE_1D, mTextureResourceId);
-      glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, descriptor.mTextureSize.X, 0, 
-          descriptor.mImageFormat, descriptor.mImagePixelType, descriptor.mPtrBuffer->data());
-    } break;
-    case EDyTextureStyleType::D2:
-    { // Border parameter must be 0.
-      glGenTextures(1, &mTextureResourceId);
-      glBindTexture(GL_TEXTURE_2D, mTextureResourceId);
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, MDY_VECTOR_XY(descriptor.mTextureSize), 0, 
-          descriptor.mImageFormat, descriptor.mImagePixelType, descriptor.mPtrBuffer->data());
-    } break;
-    default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
-    }
-    MDY_CHECK_OPENGL();
-
-    // Make mipmap by following option.
-    const GLenum glTextureType = DyGLGetLowTextureType(descriptor.mType);
-    if (descriptor.mIsUsingDefaultMipmap == true) { glGenerateMipmap(glTextureType); }
-    MDY_CHECK_OPENGL();
-
-    // Set texture parameters.
-    if (descriptor.mIsUsingCustomizedParameter == true)
-    { // Apply parameter option list to attachment.
-      bool isUsingClampToBorder = false;
-      for (const auto& parameter : *descriptor.mPtrParameterList)
-      { // Check there is ClmapToBorder for border coloring and set parameter
-        if (parameter.mParameterValue == EDyGlParameterValue::ClampToBorder) { isUsingClampToBorder = true; }
-        glTexParameteri(glTextureType, DyGetTexParameterNameValue(parameter.mParameterOption), DyGetTexParameterValueValue(parameter.mParameterValue));
-      }
-
-      if (isUsingClampToBorder == true)
-      { // If isThisAttachmentUsingClampToBorder is true, apply border color to texture.
-        glTexParameterfv(glTextureType, GL_TEXTURE_BORDER_COLOR, descriptor.mBorderColor.Data());
-      }
-    }
-    glBindTexture(glTextureType, 0);
-    glFlush();
-    MDY_CHECK_OPENGL();
+  // Make texture.
+  switch (descriptor.mType)
+  {
+  case EDyTextureStyleType::D1:
+  {
+    glGenTextures(1, &mTextureResourceId);
+    glBindTexture(GL_TEXTURE_1D, mTextureResourceId);
+    glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, descriptor.mTextureSize.X, 0, 
+        descriptor.mImageFormat, descriptor.mImagePixelType, descriptor.mPtrBuffer->data());
+  } break;
+  case EDyTextureStyleType::D2:
+  { // Border parameter must be 0.
+    glGenTextures(1, &mTextureResourceId);
+    glBindTexture(GL_TEXTURE_2D, mTextureResourceId);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, MDY_VECTOR_XY(descriptor.mTextureSize), 0, 
+        descriptor.mImageFormat, descriptor.mImagePixelType, descriptor.mPtrBuffer->data());
+  } break;
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
   }
+  MDY_CHECK_OPENGL();
+
+  // Make mipmap by following option.
+  const GLenum glTextureType = DyGLGetLowTextureType(descriptor.mType);
+  if (descriptor.mIsUsingDefaultMipmap == true) { glGenerateMipmap(glTextureType); }
+  MDY_CHECK_OPENGL();
+
+  // Set texture parameters.
+  if (descriptor.mIsUsingCustomizedParameter == true)
+  { // Apply parameter option list to attachment.
+    bool isUsingClampToBorder = false;
+    for (const auto& parameter : *descriptor.mPtrParameterList)
+    { // Check there is ClmapToBorder for border coloring and set parameter
+      if (parameter.mParameterValue == EDyGlParameterValue::ClampToBorder) { isUsingClampToBorder = true; }
+      glTexParameteri(glTextureType, DyGetTexParameterNameValue(parameter.mParameterOption), DyGetTexParameterValueValue(parameter.mParameterValue));
+    }
+
+    if (isUsingClampToBorder == true)
+    { // If isThisAttachmentUsingClampToBorder is true, apply border color to texture.
+      glTexParameterfv(glTextureType, GL_TEXTURE_BORDER_COLOR, descriptor.mBorderColor.Data());
+    }
+  }
+  glBindTexture(glTextureType, 0);
+  glFlush();
+  MDY_CHECK_OPENGL();
 
   return mTextureResourceId;
 }
@@ -222,7 +217,7 @@ std::optional<TU32> FDyGLWrapper::CreateTexture(const PDyGLTextureCubemapDescrip
 
   TU32 mTextureResourceId = MDY_INITIALIZE_DEFUINT;
   { // Critical section.
-    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
+    
 
     // Make cubemap texture.  
     glGenTextures(1, &mTextureResourceId);
@@ -274,7 +269,6 @@ std::optional<TU32> FDyGLWrapper::CreateTexture(const PDyGLTextureCubemapDescrip
 
 void FDyGLWrapper::DeleteTexture(_MIN_ const TU32 validTextureId)
 {
-  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
   glDeleteTextures(1, &validTextureId);
 }
 
@@ -283,65 +277,61 @@ std::optional<TU32> FDyGLWrapper::CreateShaderFragment(_MIN_ const PDyGLShaderFr
   TU32 shaderFragmentId;
 
   // Get OpenGL Shader type
+  switch (descriptor.mType)
   {
-    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
-    switch (descriptor.mType)
-    {
-    case EDyShaderFragmentType::Vertex:   shaderFragmentId = glCreateShader(GL_VERTEX_SHADER);          break;
-    case EDyShaderFragmentType::Hull:     shaderFragmentId = glCreateShader(GL_TESS_CONTROL_SHADER);    break;
-    case EDyShaderFragmentType::Domain:   shaderFragmentId = glCreateShader(GL_TESS_EVALUATION_SHADER); break;
-    case EDyShaderFragmentType::Geometry: shaderFragmentId = glCreateShader(GL_GEOMETRY_SHADER);        break;
-    case EDyShaderFragmentType::Pixel:    shaderFragmentId = glCreateShader(GL_FRAGMENT_SHADER);        break;
-    default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
-    }
+  case EDyShaderFragmentType::Vertex:   shaderFragmentId = glCreateShader(GL_VERTEX_SHADER);          break;
+  case EDyShaderFragmentType::Hull:     shaderFragmentId = glCreateShader(GL_TESS_CONTROL_SHADER);    break;
+  case EDyShaderFragmentType::Domain:   shaderFragmentId = glCreateShader(GL_TESS_EVALUATION_SHADER); break;
+  case EDyShaderFragmentType::Geometry: shaderFragmentId = glCreateShader(GL_GEOMETRY_SHADER);        break;
+  case EDyShaderFragmentType::Pixel:    shaderFragmentId = glCreateShader(GL_FRAGMENT_SHADER);        break;
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
   }
 
   MDY_ASSERT(shaderFragmentId > 0,                        "Failed to create shader.");
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mPtrBuffer),  "Shader fragment buffer must not be null.");
 
-  {
-    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
-    glShaderSource(shaderFragmentId, 1, &descriptor.mPtrBuffer, nullptr);
-    glCompileShader(shaderFragmentId);
-  }
-
+  // Compile shader fragment.
+  glShaderSource(shaderFragmentId, 1, &descriptor.mPtrBuffer, nullptr);
+  glCompileShader(shaderFragmentId);
   return shaderFragmentId;
 }
 
 void FDyGLWrapper::DeleteShaderFragment(_MIN_ const TU32 shaderFragmentId)
 {
-  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
   glDeleteShader(shaderFragmentId);
 }
 
 std::optional<TU32> FDyGLWrapper::CreateShaderProgram(_MIN_ const TFragmentList& fragmentList)
 {
-  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
   const TU32 shaderProgramId = glCreateProgram();
 
   // Create GlShaderProgram, and attach fragments to link them.
-  for (auto& [shaderFragmentType, shaderFragmentId] : fragmentList) { glAttachShader(shaderProgramId, shaderFragmentId); }
+  for (auto& [shaderFragmentType, shaderFragmentId] : fragmentList) 
+  { 
+    glAttachShader(shaderProgramId, shaderFragmentId); 
+  }
   glLinkProgram(shaderProgramId);
-  for (auto& [shaderFragmentType, shaderFragmentId] : fragmentList) { glDetachShader(shaderProgramId, shaderFragmentId); }
+  // Delete obsolete & redundant fragment item.
+  for (auto& [shaderFragmentType, shaderFragmentId] : fragmentList) 
+  { 
+    glDetachShader(shaderProgramId, shaderFragmentId); 
+  }
 
   return shaderProgramId;
 }
 
 void FDyGLWrapper::DeleteShaderProgram(_MIN_ const TU32 shaderProgramId)
 {
-  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
   glDeleteProgram(shaderProgramId);
 }
 
 void FDyGLWrapper::UseShaderProgram(_MIN_ TU32 iShaderProgramId)
 {
-  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
   glUseProgram(iShaderProgramId);
 }
 
 void FDyGLWrapper::DisuseShaderProgram()
 {
-  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
   glUseProgram(0);
 }
 
@@ -353,13 +343,13 @@ std::optional<TU32> FDyGLWrapper::CreateBuffer(_MIN_ const PDyGLBufferDescriptor
   {
   case EDyMeshUsage::StaticDraw:  usage = GL_STATIC_DRAW;   break;
   case EDyMeshUsage::DynamicDraw: usage = GL_DYNAMIC_DRAW;  break;
+  case EDyMeshUsage::StreamDraw:  usage = GL_STREAM_DRAW;   break;
   }
 
   switch (descriptor.mBufferType)
   {
   case EDyDirectBufferType::VertexBuffer:
   { // VBO
-    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
     glGenBuffers(1, &id);
     glBindBuffer(GL_ARRAY_BUFFER, id);
     { // Make buffer space first,
@@ -374,7 +364,6 @@ std::optional<TU32> FDyGLWrapper::CreateBuffer(_MIN_ const PDyGLBufferDescriptor
   } break;
   case EDyDirectBufferType::ElementBuffer:
   { // EBO
-    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
     glGenBuffers(1, &id);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, descriptor.mBufferByteSize, descriptor.mPtrBuffer, usage);
@@ -393,11 +382,12 @@ std::optional<TU32> FDyGLWrapper::CreateBuffer(_MIN_ const PDyGLBufferDescriptor
 
 void FDyGLWrapper::DeleteBuffer(_MIN_ const TU32 directBufferId)
 {
-  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
   glDeleteBuffers(1, &directBufferId);
 }
 
-void FDyGLWrapper::MapBuffer(EDyDirectBufferType iBufferType, TU32 iBufferId, void* iPtrBuffer, TU32 iBufferSize)
+void FDyGLWrapper::MapBuffer(
+    _MIN_ EDyDirectBufferType iBufferType, _MIN_ TU32 iBufferId, 
+    _MIN_ void* iPtrBuffer, _MIN_ TU32 iBufferSize)
 {
   GLenum bufferType = GL_NONE;
   switch (iBufferType)
@@ -407,11 +397,8 @@ void FDyGLWrapper::MapBuffer(EDyDirectBufferType iBufferType, TU32 iBufferId, vo
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 
-  {
-    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
-    glBindBuffer(bufferType, iBufferId);
-    glBufferSubData(bufferType, 0, iBufferSize, iPtrBuffer);
-  }
+  glBindBuffer(bufferType, iBufferId);
+  glBufferSubData(bufferType, 0, iBufferSize, iPtrBuffer);
 }
 
 void FDyGLWrapper::MapBufferExt(
@@ -419,7 +406,7 @@ void FDyGLWrapper::MapBufferExt(
     _MIN_ TU32 iItemByteSize, _MIN_ TU32 iGapByteSize, _MIN_ TU32 iStartPoint)
 {
   GLenum  bufferType = GL_NONE;
-  char*   ptrInput   = static_cast<char*>(iPtrBuffer);
+  auto*   ptrInput   = static_cast<char*>(iPtrBuffer);
   switch (iBufferType)
   {
   case EDyDirectBufferType::VertexBuffer:   { bufferType = GL_ARRAY_BUFFER; } break;
@@ -427,28 +414,22 @@ void FDyGLWrapper::MapBufferExt(
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 
-  { 
-    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
-    glBindBuffer(bufferType, iBufferId);
-    char* ptr = static_cast<char*>(glMapBuffer(bufferType, GL_WRITE_ONLY));
-    ptr += iStartPoint;
-    while (ptrdiff_t(ptrInput) - ptrdiff_t(iPtrBuffer) < iBufferSize)
-    {
-      memcpy(ptr, ptrInput, iItemByteSize);
-      ptr       += iItemByteSize + iGapByteSize;
-      ptrInput  += iItemByteSize;
-    }
-    glUnmapBuffer(bufferType);
-  } 
+  glBindBuffer(bufferType, iBufferId);
+  char* ptr = static_cast<char*>(glMapBuffer(bufferType, GL_WRITE_ONLY));
+  ptr += iStartPoint;
+  while (ptrdiff_t(ptrInput) - ptrdiff_t(iPtrBuffer) < iBufferSize)
+  {
+    memcpy(ptr, ptrInput, iItemByteSize);
+    ptr       += iItemByteSize + iGapByteSize;
+    ptrInput  += iItemByteSize;
+  }
+  glUnmapBuffer(bufferType);
 }
 
 TU32 FDyGLWrapper::CreateVertexArrayObject()
 {
   TU32 vaoId = MDY_INITIALIZE_DEFUINT;
-  {
-    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
-    glGenVertexArrays(1, &vaoId);
-  }
+  glGenVertexArrays(1, &vaoId);
   return vaoId;
 }
 
@@ -468,43 +449,43 @@ void FDyGLWrapper::BindVertexArrayObject(_MIN_ const PDyGLVaoBindDescriptor& iDe
 
   const auto& attributeInfo = iDescriptor.mAttributeInfo;
   const auto attributeCount = attributeInfo.mAttributeFormatList.size();
-  { // Critical section.
-    MDY_SYNC_LOCK_GUARD (FDyGLWrapper::mGLMutex);
-    glBindVertexArray   (iDescriptor.mVaoId);
-    glBindBuffer(GL_ARRAY_BUFFER, iDescriptor.mBoundVboId);
-    glBindVertexBuffer  (0, iDescriptor.mBoundVboId, attributeInfo.mOffsetByteSize, attributeInfo.mStrideByteSize);
-    if (iDescriptor.mBoundEboId > 0) { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iDescriptor.mBoundEboId); }
 
-    for (auto i = 0u; i < attributeCount; ++i)
-    { // Set up vbo attribute formats.
-      const auto&   attributeFormat = attributeInfo.mAttributeFormatList[i];
-      const GLenum  type            = DyGetGLTypeFrom(attributeFormat.mType);
-      const GLenum  isMustNormalized= attributeFormat.mIsMustNormalized == true ? GL_TRUE : GL_FALSE;
+  glBindVertexArray   (iDescriptor.mVaoId);
+  glBindBuffer(GL_ARRAY_BUFFER, iDescriptor.mBoundVboId);
+  glBindVertexBuffer  (0, iDescriptor.mBoundVboId, attributeInfo.mOffsetByteSize, attributeInfo.mStrideByteSize);
+  if (iDescriptor.mBoundEboId > 0) { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iDescriptor.mBoundEboId); }
 
-      glEnableVertexAttribArray(i);
-      if (type == GL_INT) { glVertexAttribIFormat(i, attributeFormat.mElementCount, type, attributeFormat.mOffsetByteSize); }
-      else                { glVertexAttribFormat(i, attributeFormat.mElementCount, type, isMustNormalized, attributeFormat.mOffsetByteSize); }
-      glVertexAttribBinding(i, 0);
-    }
-    glBindVertexArray(MDY_GL_NONE_VAO);
-    glFlush();
+  for (auto i = 0u; i < attributeCount; ++i)
+  { // Set up vbo attribute formats.
+    const auto&   attributeFormat = attributeInfo.mAttributeFormatList[i];
+    const GLenum  type            = DyGetGLTypeFrom(attributeFormat.mType);
+    const GLenum  isMustNormalized= attributeFormat.mIsMustNormalized == true ? GL_TRUE : GL_FALSE;
+
+    glEnableVertexAttribArray(i);
+    if (type == GL_INT) { glVertexAttribIFormat(i, attributeFormat.mElementCount, type, attributeFormat.mOffsetByteSize); }
+    else                { glVertexAttribFormat(i, attributeFormat.mElementCount, type, isMustNormalized, attributeFormat.mOffsetByteSize); }
+    glVertexAttribBinding(i, 0);
   }
+  glBindVertexArray(MDY_GL_NONE_VAO);
+  glFlush();
 }
 
 void FDyGLWrapper::DeleteVertexArrayObject(_MIN_ const TU32 vertexArrayObjectId)
 {
-  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
   glDeleteVertexArrays(1, &vertexArrayObjectId);
 }
 
 std::optional<TU32> FDyGLWrapper::CreateAttachment(_MIN_ const PDyGLAttachmentDescriptor& iDescriptor)
 {
   // Validation check.
-  MDY_ASSERT(iDescriptor.mBufferSize.X > 0 && iDescriptor.mBufferSize.Y > 0, "Buffer size must be positive value.");
-  MDY_ASSERT(iDescriptor.mBufferFormat != EDyGlBufferDataInternalFormat::NoneError, "Attachment buffer format must be specified.");
+  MDY_ASSERT(iDescriptor.mBufferSize.X > 0 && iDescriptor.mBufferSize.Y > 0, 
+      "Buffer size must be positive value.");
+  MDY_ASSERT(iDescriptor.mBufferFormat != EDyGlBufferDataInternalFormat::NoneError, 
+      "Attachment buffer format must be specified.");
   if (iDescriptor.mIsUsingCustomizedParameter == true)
   {
-    MDY_ASSERT(DyCheckTextureParameterList(iDescriptor.mParameterList) == DY_SUCCESS, "Attachment Parameter validation failed.");
+    MDY_ASSERT(DyCheckTextureParameterList(iDescriptor.mParameterList) == DY_SUCCESS, 
+        "Attachment Parameter validation failed.");
   }
 
   TU32 attachmentId = MDY_INITIALIZE_DEFUINT;
@@ -512,54 +493,52 @@ std::optional<TU32> FDyGLWrapper::CreateAttachment(_MIN_ const PDyGLAttachmentDe
   const auto mipmapLv         = iDescriptor.mSpecifiedMipmapLevel;
   const auto glInternalFormat = DyGlGetLowDataFormatType(iDescriptor.mBufferFormat);
 
-  { // Create attachment (texture only now)
-    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
-    glGenTextures(1, &attachmentId);
-    glBindTexture(glTextureType, attachmentId);
+  // Create attachment (texture only now)
+  glGenTextures(1, &attachmentId);
+  glBindTexture(glTextureType, attachmentId);
 
-    switch (iDescriptor.mAttachmentType)
-    {
-    case EDyTextureStyleType::D2: 
-    case EDyTextureStyleType::D2Shadow:
-    case EDyTextureStyleType::D2Rectangle:
-    {
-      glTexStorage2D(glTextureType, mipmapLv, glInternalFormat, MDY_VECTOR_XY(iDescriptor.mBufferSize));
-    } break;
-    case EDyTextureStyleType::D1:
-    case EDyTextureStyleType::D1Array: 
-    {
-      glTexStorage2D(glTextureType, mipmapLv, glInternalFormat, iDescriptor.mBufferSize.X, iDescriptor.mDepthNumber);
-    } break;
-    case EDyTextureStyleType::D2Array:
-    case EDyTextureStyleType::D2ShadowArray: 
-    {
-      glTexStorage3D(glTextureType, mipmapLv, glInternalFormat, MDY_VECTOR_XY(iDescriptor.mBufferSize), iDescriptor.mDepthNumber);
-    } break;
-    default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
-    }
-
-    // Apply parameter option list to attachment.
-    bool isThisAttachmentUsingClampToBorder = false;
-    for (const auto& parameter : iDescriptor.mParameterList)
-    {
-      if (parameter.mParameterValue == EDyGlParameterValue::ClampToBorder) { isThisAttachmentUsingClampToBorder = true; }
-      glTexParameteri(glTextureType, 
-          DyGetTexParameterNameValue(parameter.mParameterOption), 
-          DyGetTexParameterValueValue(parameter.mParameterValue));
-    }
-    if (isThisAttachmentUsingClampToBorder == true)
-    {
-      glTexParameterfv(glTextureType, GL_TEXTURE_BORDER_COLOR, iDescriptor.mBorderColor.Data());
-    }
-
-    glBindTexture(glTextureType, 0);
-    glFlush();
-
-    {
-      const auto _ = glGetError();
-      MDY_ASSERT(_ == GL_NO_ERROR, "Attachment creation failed.");
-    }
+  switch (iDescriptor.mAttachmentType)
+  {
+  case EDyTextureStyleType::D2: 
+  case EDyTextureStyleType::D2Shadow:
+  case EDyTextureStyleType::D2Rectangle:
+  {
+    glTexStorage2D(glTextureType, mipmapLv, glInternalFormat, 
+        MDY_VECTOR_XY(iDescriptor.mBufferSize));
+  } break;
+  case EDyTextureStyleType::D1:
+  case EDyTextureStyleType::D1Array: 
+  {
+    glTexStorage2D(glTextureType, mipmapLv, glInternalFormat, 
+        iDescriptor.mBufferSize.X, iDescriptor.mDepthNumber);
+  } break;
+  case EDyTextureStyleType::D2Array:
+  case EDyTextureStyleType::D2ShadowArray: 
+  {
+    glTexStorage3D(glTextureType, mipmapLv, glInternalFormat, 
+        MDY_VECTOR_XY(iDescriptor.mBufferSize), iDescriptor.mDepthNumber);
+  } break;
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
   }
+
+  // Apply parameter option list to attachment.
+  bool isThisAttachmentUsingClampToBorder = false;
+  for (const auto& parameter : iDescriptor.mParameterList)
+  {
+    if (parameter.mParameterValue == EDyGlParameterValue::ClampToBorder) { isThisAttachmentUsingClampToBorder = true; }
+    glTexParameteri(glTextureType, 
+        DyGetTexParameterNameValue(parameter.mParameterOption), 
+        DyGetTexParameterValueValue(parameter.mParameterValue));
+  }
+  if (isThisAttachmentUsingClampToBorder == true)
+  {
+    glTexParameterfv(glTextureType, GL_TEXTURE_BORDER_COLOR, iDescriptor.mBorderColor.Data());
+  }
+
+  glBindTexture(glTextureType, 0);
+  glFlush();
+
+  MDY_CHECK_OPENGL();
   return attachmentId;
 }
 
@@ -568,12 +547,10 @@ EDySuccess FDyGLWrapper::DeleteAttachment(_MIN_ TU32 iAttachmentId, _MIN_ bool i
   // Delete attachment (only texture attachment now)
   if (iIsRenderBuffer == true) 
   { 
-    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
     glDeleteRenderbuffers(1, &iAttachmentId); 
   }
   else 
   { 
-    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
     glDeleteTextures(1, &iAttachmentId); 
   }
   return DY_SUCCESS;
@@ -585,71 +562,61 @@ std::optional<TU32> FDyGLWrapper::CreateFrameBuffer(_MIN_ const PDyGLFrameBuffer
   std::vector<GLenum> attachmentTypeList = {};
   attachmentTypeList.reserve(attachmentBindingSize);
 
+  // Make frame buffer resource and attachment.
   TU32 framebufferId = MDY_INITIALIZE_DEFUINT;
+  glGenFramebuffers(1, &framebufferId);
+  glBindFramebuffer(GL_FRAMEBUFFER, framebufferId);
 
-  { // Critical Section
-    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
-
-    // Make frame buffer resource and attachment.
-    glGenFramebuffers(1, &framebufferId);
-    glBindFramebuffer(GL_FRAMEBUFFER, framebufferId);
-
-    for (TU32 i = 0; i < attachmentBindingSize; ++i)
-    {
-      const auto [attachmentId, attachmentType, attachmentFormat, isRenderBuffer] = iDescriptor.mAttachmentBindingList[i];
-      if (isRenderBuffer == false)
-      { // If attachment is texture.
-        glBindTexture(DyGLGetLowTextureType(attachmentType), attachmentId);
-        const auto typeValue = DyGetAttachmentTypeValue(attachmentFormat);
-        glFramebufferTexture(GL_FRAMEBUFFER, typeValue, attachmentId, 0);
-        attachmentTypeList.emplace_back(typeValue);
-      }
-      else
-      { // @TODO RENDER BUFFER IS NOT SUPPORTED YET.
-        MDY_NOT_IMPLEMENTED_ASSERT();
-      }
+  for (TU32 i = 0; i < attachmentBindingSize; ++i)
+  {
+    const auto [attachmentId, attachmentType, attachmentFormat, isRenderBuffer] = iDescriptor.mAttachmentBindingList[i];
+    if (isRenderBuffer == false)
+    { // If attachment is texture.
+      glBindTexture(DyGLGetLowTextureType(attachmentType), attachmentId);
+      const auto typeValue = DyGetAttachmentTypeValue(attachmentFormat);
+      glFramebufferTexture(GL_FRAMEBUFFER, typeValue, attachmentId, 0);
+      attachmentTypeList.emplace_back(typeValue);
     }
-
-    if (iDescriptor.mIsUsingDepthBuffer == true)
-    { // Bind Depth Buffer
-      const auto [depthId, attachmentType, attachmentFormat, isRenderBuffer] = iDescriptor.mDepthBufferBinding;
-      if (isRenderBuffer == false)
-      {
-        glBindTexture(DyGLGetLowTextureType(attachmentType), depthId);
-        glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthId, 0);
-      }
-      else
-      {
-        MDY_NOT_IMPLEMENTED_ASSERT();
-#ifdef false
-        glGenRenderbuffers(1, &depthId);
-        glBindRenderbuffer(GL_RENDERBUFFER, depthId);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, MDY_VECTOR_XY(iDescriptor.mFrameBufferSize));
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthId);
-#endif
-      }
-    }
-
-    // Let framebuffer know that attachmentBuffer's id will be drawn at framebuffer.
-    // @WARNING TODO BE CAREFUL OF INSERTING DEPTH ATTACHMENTS AS COLOR ATTACHMENT!.
-    if (iDescriptor.mIsUsingPixelShader == false) { glDrawBuffer(GL_NONE); glReadBuffer(GL_NONE); }
-    else { glDrawBuffers(attachmentBindingSize, attachmentTypeList.data()); }
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glFlush();
-
-    {
-      const auto _ = glGetError();
-      MDY_ASSERT(_ == GL_NO_ERROR, "Attachment creation failed.");
+    else
+    { // @TODO RENDER BUFFER IS NOT SUPPORTED YET.
+      MDY_NOT_IMPLEMENTED_ASSERT();
     }
   }
 
+  if (iDescriptor.mIsUsingDepthBuffer == true)
+  { // Bind Depth Buffer
+    const auto [depthId, attachmentType, attachmentFormat, isRenderBuffer] = iDescriptor.mDepthBufferBinding;
+    if (isRenderBuffer == false)
+    {
+      glBindTexture(DyGLGetLowTextureType(attachmentType), depthId);
+      glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthId, 0);
+    }
+    else
+    {
+      MDY_NOT_IMPLEMENTED_ASSERT();
+#ifdef false
+      glGenRenderbuffers(1, &depthId);
+      glBindRenderbuffer(GL_RENDERBUFFER, depthId);
+      glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, MDY_VECTOR_XY(iDescriptor.mFrameBufferSize));
+      glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthId);
+#endif
+    }
+  }
+
+  // Let framebuffer know that attachmentBuffer's id will be drawn at framebuffer.
+  // @WARNING TODO BE CAREFUL OF INSERTING DEPTH ATTACHMENTS AS COLOR ATTACHMENT!.
+  if (iDescriptor.mIsUsingPixelShader == false) { glDrawBuffer(GL_NONE); glReadBuffer(GL_NONE); }
+  else { glDrawBuffers(attachmentBindingSize, attachmentTypeList.data()); }
+
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  glFlush();
+
+  MDY_CHECK_OPENGL();
   return framebufferId;
 }
 
 EDySuccess FDyGLWrapper::DeleteFrameBuffer(_MIN_ const TU32 framebufferId)
 {
-  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
   glDeleteFramebuffers(1, &framebufferId);
   return DY_SUCCESS;
 }
@@ -664,7 +631,6 @@ void FDyGLWrapper::SetViewport(_MIN_ const std::array<TI32, 4>& iViewportRegion)
 
 void FDyGLWrapper::SetViewport(_MIN_ const DDyArea2D& iViewportRegion)
 {
-  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
   glViewport(
       static_cast<TI32>(iViewportRegion.mLeftDown.X), 
       static_cast<TI32>(iViewportRegion.mLeftDown.Y), 
@@ -682,7 +648,6 @@ void FDyGLWrapper::SetViewportIndexed(_MIN_ TU32 iIndex,_MIN_ const std::array<T
 
 void FDyGLWrapper::SetViewportIndexed(_MIN_ TU32 iIndex, _MIN_ const DDyArea2D& iViewportRegion)
 {
-  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
   glViewportIndexedf(iIndex, 
       iViewportRegion.mLeftDown.X, 
       iViewportRegion.mLeftDown.Y, 
@@ -692,32 +657,28 @@ void FDyGLWrapper::SetViewportIndexed(_MIN_ TU32 iIndex, _MIN_ const DDyArea2D& 
 
 void FDyGLWrapper::BindFrameBufferObject(_MIN_ TU32 iFboId)
 {
-  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
   glBindFramebuffer(GL_FRAMEBUFFER, iFboId);
 }
 
 void FDyGLWrapper::UnbindFrameBufferObject()
 {
-  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void FDyGLWrapper::BindVertexArrayObject(_MIN_ TU32 iVaoId)
 {
-  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
   glBindVertexArray(iVaoId);
 }
 
 void FDyGLWrapper::UnbindVertexArrayObject()
 {
-  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
   glBindVertexArray(0);
 }
 
-void FDyGLWrapper::BindTexture(_MIN_ TU32 activeTextureIndex, _MIN_ EDyTextureStyleType type, _MIN_ TU32 textureId)
+void FDyGLWrapper::BindTexture(
+    _MIN_ TU32 activeTextureIndex, 
+    _MIN_ EDyTextureStyleType type, _MIN_ TU32 textureId)
 {
-  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
-
   #if defined(NDEBUG) == false 
   {
     MDY_ASSERT(glIsTexture(textureId) == GL_TRUE, "given `textureId` is not texture.");
@@ -733,9 +694,8 @@ void FDyGLWrapper::BindTexture(_MIN_ TU32 activeTextureIndex, _MIN_ EDyTextureSt
   }
 }
 
-void FDyGLWrapper::UnbindTexture(TU32 textureIndex, _MIN_ EDyTextureStyleType type)
+void FDyGLWrapper::UnbindTexture(_MIN_ TU32 textureIndex, _MIN_ EDyTextureStyleType type)
 {
-  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
   glActiveTexture(GL_TEXTURE0 + textureIndex);
   switch (type)
   {
@@ -745,7 +705,7 @@ void FDyGLWrapper::UnbindTexture(TU32 textureIndex, _MIN_ EDyTextureStyleType ty
   }
 }
 
-void FDyGLWrapper::Draw(EDyDrawType iType, bool iIsElement, TU32 iCount)
+void FDyGLWrapper::Draw(_MIN_ EDyDrawType iType, _MIN_ bool iIsElement, _MIN_ TU32 iCount)
 {
   GLenum drawType = GL_POINT;
   switch (iType)
@@ -761,12 +721,10 @@ void FDyGLWrapper::Draw(EDyDrawType iType, bool iIsElement, TU32 iCount)
 
   if (iIsElement == true)
   {
-    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
     glDrawElements(drawType, iCount, GL_UNSIGNED_INT, nullptr);
   }
   else
   {
-    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
     glDrawArrays(drawType, 0, iCount);
   }
 }
@@ -774,16 +732,12 @@ void FDyGLWrapper::Draw(EDyDrawType iType, bool iIsElement, TU32 iCount)
 TI32 FDyGLWrapper::QueryShaderProgramIV(_MIN_ TU32 iShaderProgramId, _MIN_ GLenum iQueryEnum)
 {
   TI32 result = 0;
-  {
-    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
-    glGetProgramiv(iShaderProgramId, iQueryEnum, &result);
-  }
+  glGetProgramiv(iShaderProgramId, iQueryEnum, &result);
   return result;
 }
 
 void FDyGLWrapper::QueryFloatVector(_MIN_ GLenum iGLLowEnumCommand, _MIN_ TF32* iPtrRawFloatVector)
 {
-  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
   glGetFloatv(iGLLowEnumCommand, iPtrRawFloatVector);
 }
 
@@ -796,12 +750,9 @@ FDyGLWrapper::GetShaderProgramAttributeInfo(_MIN_ TU32 iShaderProgramId, _MIN_ T
   GLsizei attributelength = 0;
   GLint   attributeSize   = 0;
   GLenum  attributeType   = GL_NONE;
-  TI32    attrLocation;
-  { // Critical section
-    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
-    glGetActiveAttrib(iShaderProgramId, iAttrIndex, attrBufferLength, &attributelength, &attributeSize, &attributeType, attributeName);
-    attrLocation = glGetAttribLocation(iShaderProgramId, attributeName);
-  }
+
+  glGetActiveAttrib(iShaderProgramId, iAttrIndex, attrBufferLength, &attributelength, &attributeSize, &attributeType, attributeName);
+  const TI32 attrLocation = glGetAttribLocation(iShaderProgramId, attributeName);
 
   MDY_ASSERT(attrLocation != -1, "Attribute location did not find.");
   const auto type = DyGlGetAttributeVariableTypeFrom(attributeType);
@@ -821,12 +772,8 @@ FDyGLWrapper::GetShaderProgramUniformInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU3
   GLsizei uniLength = 0;
   GLint   uniSize   = 0;
   GLenum  uniType   = GL_NONE;
-  TI32    uniLocId;
-  { // Critical section
-    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
-    glGetActiveUniform(iShaderProgramId, iUniformIndex, uniformBufLength, &uniLength, &uniSize, &uniType, uniformName);
-    uniLocId = glGetUniformLocation(iShaderProgramId, uniformName);
-  }
+  glGetActiveUniform(iShaderProgramId, iUniformIndex, uniformBufLength, &uniLength, &uniSize, &uniType, uniformName);
+  const auto uniLocId = glGetUniformLocation(iShaderProgramId, uniformName);
 
   if (uniLocId == -1)
   { // Uniform location will be -1 when uniform varaible is in ubo.
@@ -863,10 +810,8 @@ FDyGLWrapper::GetShaderProgramUniformBlockInfo(_MIN_ TU32 iShaderProgramId, _MIN
   auto* uniformName = static_cast<char*>(std::calloc(uboNameMaxLength, sizeof(GLchar)));
 
   GLsizei uniformLength = 0;
-  {
-    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
-    glGetActiveUniformBlockName(iShaderProgramId, iUniformBlockIndex, uboNameMaxLength, &uniformLength, uniformName);
-  }
+  glGetActiveUniformBlockName(iShaderProgramId, iUniformBlockIndex, uboNameMaxLength, &uniformLength, uniformName);
+
   if (uniformLength <= 0) 
   { 
     free(uniformName); uniformName = nullptr;
@@ -883,10 +828,7 @@ void FDyGLWrapper::UpdateUniformMatrix4(_MIN_ TU32 iId, _MIN_ const DDyMatrix4x4
   GLenum transposed = GL_FALSE;
   if (iTransposed == true) { transposed = GL_TRUE; }
 
-  {
-    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
-    glUniformMatrix4fv(iId, 1, transposed, &iBuffer[0].X);
-  }
+  glUniformMatrix4fv(iId, 1, transposed, &iBuffer[0].X);
 }
 
 void FDyGLWrapper::UpdateUniformMatrix3(_MIN_ TU32 iId, _MIN_ const DDyMatrix3x3& iBuffer, _MIN_ bool iTransposed)
@@ -894,10 +836,7 @@ void FDyGLWrapper::UpdateUniformMatrix3(_MIN_ TU32 iId, _MIN_ const DDyMatrix3x3
   GLenum transposed = GL_FALSE;
   if (iTransposed == true) { transposed = GL_TRUE; }
 
-  {
-    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
-    glUniformMatrix3fv(iId, 1, transposed, &iBuffer[0].X);
-  }
+  glUniformMatrix3fv(iId, 1, transposed, &iBuffer[0].X);
 }
 
 void FDyGLWrapper::UpdateUniformMatrix4Array(_MIN_ TU32 iId, _MIN_ const std::vector<DDyMatrix4x4>& iBuffer, _MIN_ bool iIransposed)
@@ -908,10 +847,7 @@ void FDyGLWrapper::UpdateUniformMatrix4Array(_MIN_ TU32 iId, _MIN_ const std::ve
   GLenum transposed = GL_FALSE;
   if (iIransposed == true) { transposed = GL_TRUE; }
 
-  {
-    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
-    glUniformMatrix4fv(iId, size, transposed, &iBuffer[0][0].X);
-  }
+  glUniformMatrix4fv(iId, size, transposed, &iBuffer[0][0].X);
 }
 
 void FDyGLWrapper::UpdateUniformVector3Array(_MIN_ TU32 iId, _MIN_ const std::vector<DDyVector3>& iBuffer)
@@ -919,33 +855,26 @@ void FDyGLWrapper::UpdateUniformVector3Array(_MIN_ TU32 iId, _MIN_ const std::ve
   if (iBuffer.empty() == true) { return; }
 
   const TU32 size = static_cast<TU32>(iBuffer.size());
-  {
-    MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
-    glUniform3fv(iId, size, &iBuffer[0].X);
-  }
+  glUniform3fv(iId, size, &iBuffer[0].X);
 }
 
 void FDyGLWrapper::UpdateUniformVector4(_MIN_ TU32 iId, _MIN_ const DDyVector4& iBuffer)
 {
-  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
   glUniform4fv(iId, 1, &iBuffer.X);
 }
 
 void FDyGLWrapper::UpdateUniformVector3(_MIN_ TU32 iId, _MIN_ const DDyVector3& iBuffer)
 {
-  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
   glUniform3fv(iId, 1, &iBuffer.X);
 }
 
 void FDyGLWrapper::UpdateUniformInteger(_MIN_ TU32 iId, _MIN_ const TI32& iBuffer)
 {
-  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
   glUniform1i(iId, iBuffer);
 }
 
 void FDyGLWrapper::UpdateUniformFloat(_MIN_ TU32 iId, _MIN_ const TF32& iBuffer)
 {
-  MDY_SYNC_LOCK_GUARD(FDyGLWrapper::mGLMutex);
   glUniform1f(iId, iBuffer);
 }
 

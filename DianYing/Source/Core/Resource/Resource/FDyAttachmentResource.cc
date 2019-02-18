@@ -47,9 +47,8 @@ FDyAttachmentResource::FDyAttachmentResource(_MIN_ const FDyAttachmentInformatio
 
 FDyAttachmentResource::~FDyAttachmentResource()
 {
-  { MDY_GRAPHIC_SET_CRITICALSECITON();
-    MDY_CALL_ASSERT_SUCCESS(FDyGLWrapper::DeleteAttachment(this->mAttachmentId, this->IsRenderBuffer()));
-  }
+  MDY_GRAPHIC_SET_CRITICALSECITON();
+  MDY_CALL_ASSERT_SUCCESS(FDyGLWrapper::DeleteAttachment(this->mAttachmentId, this->IsRenderBuffer()));
 }
 
 const EDyGlBufferDataInternalFormat& FDyAttachmentResource::GetBufferType() const noexcept

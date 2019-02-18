@@ -103,9 +103,11 @@ void FDyLevelCascadeShadowRenderer::SetupViewport()
       "CSM Renderer light handle is not matched to given light.");
 
   const auto& lightViewports = ptrLight->GetCSMIndexedViewports();
-  for (TU32 i = 0; i < kCSMSegment; ++i)
-  {
-    FDyGLWrapper::SetViewportIndexed(i, lightViewports[i]);
+  { MDY_GRAPHIC_SET_CRITICALSECITON();
+    for (TU32 i = 0; i < kCSMSegment; ++i)
+    {
+      FDyGLWrapper::SetViewportIndexed(i, lightViewports[i]);
+    }
   }
 }
 

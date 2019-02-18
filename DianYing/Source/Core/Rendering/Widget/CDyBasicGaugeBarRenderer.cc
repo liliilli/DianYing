@@ -77,15 +77,15 @@ void CDyBasicGaugeBarRenderer::Render()
   if (this->mBinderShader.IsResourceExist() == false
   ||  this->mBinderBarMesh.IsResourceExist() == false) { return; }
 
-  this->mBinderShader->UseShader();
   this->mBinderShader->TryUpdateUniform<EUniformType::Matrix4>("uUiProjMatrix", MDyRendering::GetInstance().GetGeneralUiProjectionMatrix());
-
-  glDepthFunc(GL_ALWAYS);
-  glBindVertexArray(this->mBinderBarMesh->GetVertexArrayId());
-
   const DDyVector2 pos     = this->mPtrBarObject->GetRenderPosition();
   const DDyVectorInt2 size = this->mPtrBarObject->GetFrameSize();
   const auto vboId = this->mBinderBarMesh->GetVertexBufferId();
+
+  MDY_GRAPHIC_SET_CRITICALSECITON();
+  this->mBinderShader->UseShader();
+  glDepthFunc(GL_ALWAYS);
+  glBindVertexArray(this->mBinderBarMesh->GetVertexArrayId());
 
   if (this->mPtrBarObject->CheckIsUsingBackgroundColor() == true)
   { // If backgroud is used, try render.

@@ -172,28 +172,27 @@ EDySuccess MDyWindow::pfInitialize()
   {
     glfwInit();
 
-    { // Create descriptor.
-      PDyGLWindowContextDescriptor descriptor{};
-      descriptor.mWindowName          = "DianYing";
-      descriptor.mIsWindowResizable   = false;
-      descriptor.mIsWindowVisible     = true;
-      descriptor.mIsWindowShouldFocus = true;
-      descriptor.mIsUsingDefaultDoubleBuffer = true;
+    // Create descriptor.
+    PDyGLWindowContextDescriptor descriptor{};
+    descriptor.mWindowName          = "DianYing";
+    descriptor.mIsWindowResizable   = false;
+    descriptor.mIsWindowVisible     = true;
+    descriptor.mIsWindowShouldFocus = true;
+    descriptor.mIsUsingDefaultDoubleBuffer = true;
 
-      const auto& settingManager = MDySetting::GetInstance();
-      descriptor.mWindowSize = DDyVectorInt2{
-          settingManager.GetWindowSizeWidth(),
-          settingManager.GetWindowSizeHeight()
-      };
+    const auto& settingManager = MDySetting::GetInstance();
+    descriptor.mWindowSize = DDyVectorInt2{
+        settingManager.GetWindowSizeWidth(),
+        settingManager.GetWindowSizeHeight()
+    };
 
-      this->mGlfwWindow = FDyGLWrapper::CreateGLWindow(descriptor);
+    this->mGlfwWindow = FDyGLWrapper::CreateGLWindow(descriptor);
 
-      // Create window instance for giving context to I/O worker thread.
-      descriptor.mIsWindowShouldFocus = false;
-      descriptor.mIsWindowVisible     = false;
-      descriptor.mSharingContext      = this->mGlfwWindow;
-      for (auto& ptrWindow : this->mGlfwWorkerWnds) { ptrWindow = FDyGLWrapper::CreateGLWindow(descriptor); }
-    }
+    // Create window instance for giving context to I/O worker thread.
+    descriptor.mIsWindowShouldFocus = false;
+    descriptor.mIsWindowVisible     = false;
+    descriptor.mSharingContext      = this->mGlfwWindow;
+    for (auto& ptrWindow : this->mGlfwWorkerWnds) { ptrWindow = FDyGLWrapper::CreateGLWindow(descriptor); }
 
     // Check validity
     if (this->mGlfwWindow == nullptr) { glfwTerminate(); return DY_FAILURE; }

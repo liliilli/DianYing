@@ -76,9 +76,8 @@ FDyFrameBufferResource::FDyFrameBufferResource(const FDyFrameBufferInformation& 
 
 FDyFrameBufferResource::~FDyFrameBufferResource()
 {
-  { MDY_GRAPHIC_SET_CRITICALSECITON();
-    MDY_CALL_ASSERT_SUCCESS(FDyGLWrapper::DeleteFrameBuffer(this->mFrameBufferId));
-  }
+  MDY_GRAPHIC_SET_CRITICALSECITON();
+  MDY_CALL_ASSERT_SUCCESS(FDyGLWrapper::DeleteFrameBuffer(this->mFrameBufferId));
 }
 
 EDySuccess FDyFrameBufferResource::BindFrameBuffer() const noexcept

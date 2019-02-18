@@ -62,59 +62,64 @@ void CDyImageRenderer::Render()
     auto& refTexture = static_cast<TDyResourceBinderTexture&>(*this->mBinderRenderable);  // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
     if (refTexture.IsResourceExist() == false || this->mBinderQuadMesh.IsResourceExist() == false) { return; }
 
-    // Set shader.
-    mDefaultImageShader->UseShader();
+    // Set shader uniforms
     mDefaultImageShader->TryUpdateUniform<EUniformType::Matrix4>("uUiProjMatrix", MDyRendering::GetInstance().GetGeneralUiProjectionMatrix());
     mDefaultImageShader->TryUpdateUniform<EUniformType::Vector4>("uTintColor", this->mPtrObject->GetTintColor());
-
     MDY_ASSERT(this->mDefaultImageShader->GetAvailableTextureCount() == 1, "Unexpected error occurred.");
     mDefaultImageShader->TryInsertTextureRequisition(0, refTexture->GetTextureId());
-    mDefaultImageShader->TryUpdateUniformList();
+    // Set buffer.
+    const auto buffer = GetVertexPosition(this->mPtrObject->GetFinalPosition(EDyOrigin::Center_Center), this->mPtrObject->GetFrameSize());
 
     // Render
-    glDepthFunc(GL_ALWAYS);
-    this->mBinderQuadMesh->BindVertexArray();
+    { MDY_GRAPHIC_SET_CRITICALSECITON();
+      mDefaultImageShader->UseShader();
+      mDefaultImageShader->TryUpdateUniformList();
 
-    const auto buffer = GetVertexPosition(this->mPtrObject->GetFinalPosition(EDyOrigin::Center_Center), this->mPtrObject->GetFrameSize());
-    FDyGLWrapper::MapBufferExt(
-        EDyDirectBufferType::VertexBuffer, 
-        this->mBinderQuadMesh->GetVertexBufferId(), 
-        (void*)buffer.data(), 
-        sizeof(buffer),
-        8, 8, 0);
-    FDyGLWrapper::Draw(EDyDrawType::TriangleFan, false, 4);
+      glDepthFunc(GL_ALWAYS);
+      this->mBinderQuadMesh->BindVertexArray();
 
-    FDyGLWrapper::UnbindVertexArrayObject();
-    mDefaultImageShader->DisuseShader();
-    glDepthFunc(GL_LEQUAL);
+      FDyGLWrapper::MapBufferExt(
+          EDyDirectBufferType::VertexBuffer, 
+          this->mBinderQuadMesh->GetVertexBufferId(), 
+          (void*)buffer.data(), sizeof(buffer), 8, 8, 0);
+      FDyGLWrapper::Draw(EDyDrawType::TriangleFan, false, 4);
+
+      FDyGLWrapper::UnbindVertexArrayObject();
+      mDefaultImageShader->DisuseShader();
+      glDepthFunc(GL_LEQUAL);
+    }
   }
   else if (type == EDyResourceType::Material)
   {
     auto& refMaterial = static_cast<TDyResourceBinderMaterial&>(*this->mBinderRenderable);  // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
     if (refMaterial.IsResourceExist() == false || this->mBinderQuadMesh.IsResourceExist() == false) { return; }
 
+    // Set shader uniforms
     auto& refMatShader = refMaterial->GetShaderResourceBinder();
-    refMatShader->UseShader();
     refMatShader->TryUpdateUniform<EUniformType::Matrix4>("uUiProjMatrix", MDyRendering::GetInstance().GetGeneralUiProjectionMatrix());
     refMatShader->TryUpdateUniform<EUniformType::Vector4>("uTintColor", this->mPtrObject->GetTintColor());
-    refMatShader->TryUpdateUniformList();
-
-    glDepthFunc(GL_ALWAYS);
-    this->mBinderQuadMesh->BindVertexArray();
-    refMaterial->TryUpdateTextureList();
-
+    // Set buffer.
     const auto buffer = GetVertexPosition(this->mPtrObject->GetFinalPosition(EDyOrigin::Center_Center), this->mPtrObject->GetFrameSize());
-    FDyGLWrapper::MapBufferExt(
-        EDyDirectBufferType::VertexBuffer, 
-        this->mBinderQuadMesh->GetVertexBufferId(), 
-        (void*)buffer.data(), 
-        sizeof(buffer),
-        8, 8, 0);
-    FDyGLWrapper::Draw(EDyDrawType::TriangleFan, false, 4);
 
-    FDyGLWrapper::UnbindVertexArrayObject();
-    refMatShader->DisuseShader();
-    glDepthFunc(GL_LEQUAL);
+    // Render
+    { MDY_GRAPHIC_SET_CRITICALSECITON();
+      refMatShader->UseShader();
+      refMatShader->TryUpdateUniformList();
+
+      glDepthFunc(GL_ALWAYS);
+      this->mBinderQuadMesh->BindVertexArray();
+      refMaterial->TryUpdateTextureList();
+
+      FDyGLWrapper::MapBufferExt(
+          EDyDirectBufferType::VertexBuffer, 
+          this->mBinderQuadMesh->GetVertexBufferId(), 
+          (void*)buffer.data(), sizeof(buffer), 8, 8, 0);
+      FDyGLWrapper::Draw(EDyDrawType::TriangleFan, false, 4);
+
+      FDyGLWrapper::UnbindVertexArrayObject();
+      refMatShader->DisuseShader();
+      glDepthFunc(GL_LEQUAL);
+    }
   }
 }
 
