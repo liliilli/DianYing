@@ -204,7 +204,6 @@
     <ClCompile Include="Source\Builtin\Mesh\FDyBtMsPlain.cc" />
     <ClCompile Include="Source\Builtin\Mesh\FDyBtMsScrTriangle.cc" />
     <ClCompile Include="Source\Builtin\Mesh\FDyBtMsSphere.cc" />
-    <ClCompile Include="Source\Builtin\Mesh\FDyBtMsUiFontQuad.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyMeshInformation.cc" />
     <ClCompile Include="Source\Builtin\Model\UiFontQuad.cc" />
     <ClCompile Include="Source\Management\Type\Time\DDyTimepoint.cc" />
@@ -220,7 +219,6 @@
     <ClCompile Include="Source\Component\Internal\Script\Actor\CDyActorScriptCpp.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Actor\CDyActorScriptLua.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Actor\FDyActorScriptStatus.cc" />
-    <ClCompile Include="Source\Builtin\Mesh\FDyBtMsUiImgQuad.cc" />
     <ClCompile Include="Source\Builtin\Mesh\Widget\FDyBtMsUiBarQuad.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\Widget\RenderUiBasicGaugeBar.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\Widget\RenderUIImage.cc" />
@@ -339,6 +337,8 @@
     <ClCompile Include="Source\Meta\Type\Physics\EDyRigidbodyType.cc" />
     <ClCompile Include="data\Script\DebugActor\BtScCollisionTest1.cc" />
     <ClCompile Include="Source\Helper\Type\Area3D.cc" />
+    <ClCompile Include="Source\Builtin\Mesh\Widget\FDyBtMsUiFontQuad.cc" />
+    <ClCompile Include="Source\Builtin\Mesh\Widget\FDyBtMsUiImgQuad.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />

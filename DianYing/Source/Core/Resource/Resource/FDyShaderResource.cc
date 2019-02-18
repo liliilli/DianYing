@@ -71,22 +71,20 @@ FDyShaderResource::FDyShaderResource(_MIN_ const FDyShaderInformation& informati
 
   // Section.
   { MDY_GRAPHIC_SET_CRITICALSECITON();
-  { // Create shader program.
-      auto optFragmentList    = this->pCreateShaderFragments(information.GetShaderFragmentList());
-      MDY_ASSERT(optFragmentList.has_value() == true, "OpenGL Shader Fragment compilation failed.");
+    // Create shader program.
+    auto optFragmentList = this->pCreateShaderFragments(information.GetShaderFragmentList());
+    MDY_ASSERT(optFragmentList.has_value() == true, "OpenGL Shader Fragment compilation failed.");
 
-      auto optShaderProgramId = this->pInitializeShaderProgram(optFragmentList.value());
-      MDY_ASSERT(optShaderProgramId.has_value() == true, "OpenGL shader program compilation failed.");
-      this->mShaderProgramId = optShaderProgramId.value();
+    auto optShaderProgramId = this->pInitializeShaderProgram(optFragmentList.value());
+    MDY_ASSERT(optShaderProgramId.has_value() == true, "OpenGL shader program compilation failed.");
+    this->mShaderProgramId = optShaderProgramId.value();
 
-      this->pDeleteShaderFragments(optFragmentList.value());
-    }
+    this->pDeleteShaderFragments(optFragmentList.value());
 
-    { // Get attribute, uniform, ubo information from shader program.
-      this->pStoreAttributeProperties();
-      this->pStoreUniformProperties();
-      this->pStoreUniformBufferObjectProperties();
-    }
+    // Get attribute, uniform, ubo information from shader program.
+    this->pStoreAttributeProperties();
+    this->pStoreUniformProperties();
+    this->pStoreUniformBufferObjectProperties();
   }
 
   // Setup common uniform value list.
@@ -109,24 +107,25 @@ FDyShaderResource::pCreateShaderFragments(_MIN_ const FDyShaderInformation::TSha
     fragDesc.mPtrBuffer = fragmentInformation.mShaderFragmentCode.data();
 
     // Create shader fragment.
+    TU32 fragmentId = 0;
     const auto optShaderFragmentId = FDyGLWrapper::CreateShaderFragment(fragDesc);
     MDY_ASSERT(optShaderFragmentId.has_value() == true, "Shader fragment compilation must be succeeded.");
-    const auto shaderFragmentId = optShaderFragmentId.value();
+    fragmentId = optShaderFragmentId.value();
 
     // Check shader fragment compiliation status only in debug mode.
-#if defined(NDEBUG) == false
+    #if defined(NDEBUG) == false
     {
       TI32 err;
-      if (glGetShaderiv(shaderFragmentId, GL_COMPILE_STATUS, &err); !err)
+      if (glGetShaderiv(fragmentId, GL_COMPILE_STATUS, &err); !err)
       {
-        DyPrintShaderErrorLog(shaderFragmentId);
+        DyPrintShaderErrorLog(fragmentId);
         MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
       }
     }
-#endif
+    #endif
 
     // Insert newly compiled shader fragment for __pInitilaizeShaderProgram.
-    resultList.emplace_back(fragmentInformation.mShaderType, shaderFragmentId);
+    resultList.emplace_back(fragmentInformation.mShaderType, fragmentId);
   }
 
   return resultList;
@@ -134,7 +133,7 @@ FDyShaderResource::pCreateShaderFragments(_MIN_ const FDyShaderInformation::TSha
 
 std::optional<TU32> FDyShaderResource::pInitializeShaderProgram(_MIN_ const TFragmentList& fragmentList)
 {
-  auto optProgramId = FDyGLWrapper::CreateShaderProgram(fragmentList);
+  std::optional<TU32> optProgramId = FDyGLWrapper::CreateShaderProgram(fragmentList);
   MDY_ASSERT(optProgramId.has_value() == true, "Unexpected error occurred.");
 
   // Check shader program linking status only in debug mode.

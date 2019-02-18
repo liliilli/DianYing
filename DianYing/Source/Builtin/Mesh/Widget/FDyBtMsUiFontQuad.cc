@@ -24,18 +24,26 @@ void FDyBtMsUiFontQuad::ConstructBuffer(_MOUT_ PDyMeshInstanceMetaInfo& property
   property.mMeshUsage             = EDyMeshUsage::DynamicDraw;
 
   // (Position, Texture coord) stride.
-  //DDyVector2{}, DDyVector2{1, 1}, DDyVector2{}, DDyVector2{1, 0},
-  //DDyVector2{}, DDyVector2{0, 0}, DDyVector2{}, DDyVector2{0, 1}
+  //DDyVector2{}, DDyVector2{1, 1}, channel, map.
+  //DDyVector2{}, DDyVector2{1, 0}, channel, map.
+  //DDyVector2{}, DDyVector2{0, 0}, 
+  //DDyVector2{}, DDyVector2{0, 1}
   property.mCustomMeshBuffer.emplace_back(0.f);
   property.mCustomMeshBuffer.emplace_back(0.f);
   property.mCustomMeshBuffer.emplace_back(1.f);
   property.mCustomMeshBuffer.emplace_back(1.f);
+  property.mCustomMeshBuffer.emplace_back(0.f); // For channel.
+  property.mCustomMeshBuffer.emplace_back(0.f); // For map index.
 
   property.mCustomMeshBuffer.emplace_back(0.f);
   property.mCustomMeshBuffer.emplace_back(0.f);
   property.mCustomMeshBuffer.emplace_back(1.f);
   property.mCustomMeshBuffer.emplace_back(0.f);
+  property.mCustomMeshBuffer.emplace_back(0.f);
+  property.mCustomMeshBuffer.emplace_back(0.f);
 
+  property.mCustomMeshBuffer.emplace_back(0.f);
+  property.mCustomMeshBuffer.emplace_back(0.f);
   property.mCustomMeshBuffer.emplace_back(0.f);
   property.mCustomMeshBuffer.emplace_back(0.f);
   property.mCustomMeshBuffer.emplace_back(0.f);
@@ -45,10 +53,11 @@ void FDyBtMsUiFontQuad::ConstructBuffer(_MOUT_ PDyMeshInstanceMetaInfo& property
   property.mCustomMeshBuffer.emplace_back(0.f);
   property.mCustomMeshBuffer.emplace_back(0.f);
   property.mCustomMeshBuffer.emplace_back(1.f);
+  property.mCustomMeshBuffer.emplace_back(0.f);
+  property.mCustomMeshBuffer.emplace_back(0.f);
 
   /*
-   *glBufferData(GL_ARRAY_BUFFER, stride * 4, value.data(), GL_DYNAMIC_DRAW);
-
+   *glBufferData(GL_ARRAY_BUFFER,  sizeof(DDyVector2) * 3, value.data(), GL_DYNAMIC_DRAW);
     glBindVertexBuffer(0, mTestVbo, 0, stride);
 
     glEnableVertexAttribArray(0);
@@ -58,13 +67,18 @@ void FDyBtMsUiFontQuad::ConstructBuffer(_MOUT_ PDyMeshInstanceMetaInfo& property
     glEnableVertexAttribArray(1);
     glVertexAttribFormat(1, 2, GL_FLOAT, GL_FALSE, 8);
     glVertexAttribBinding(1, 0);
+    
+    glEnableVertexAttribArray(2);
+    glVertexAttribFormat(2, 2, GL_FLOAT, GL_FALSE, 16);
+    glVertexAttribBinding(2, 0);
    */
 
   property.mVAOBindingInfo.mIsUsingDefaultDyAttributeModel = false;
   property.mVAOBindingInfo.mOffsetByteSize = 0;
-  property.mVAOBindingInfo.mStrideByteSize = sizeof(DDyVector2) * 2;
+  property.mVAOBindingInfo.mStrideByteSize = sizeof(DDyVector2) * 3;
   property.mVAOBindingInfo.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Float, false, 2, 0);
   property.mVAOBindingInfo.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Float, false, 2, 8);
+  property.mVAOBindingInfo.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Float, false, 2, 16);
 }
 
 } /// ::dy namespace

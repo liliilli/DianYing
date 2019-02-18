@@ -24,23 +24,35 @@ namespace
 MDY_SET_IMMUTABLE_STRING(sVertexShaderCode, R"dy(
 #version 430 core
 
-layout (location = 0) in vec2 dyPosition;
-layout (location = 1) in vec2 dyTexCoord0;
+layout (location = 0) in vec2   dyPosition;
+layout (location = 1) in vec2   dyTexCoord0;
+layout (location = 2) in vec2   dyChanMap;
 
 uniform mat4 uUiProjMatrix;
 
-out VS_OUT { vec2 texCoord; } vs_out;
+out VS_OUT { 
+  vec2  texCoord; 
+  flat int channel;
+  flat int mapIndex;
+} vs_out;
 
 void main() {
 	gl_Position     = vec4((uUiProjMatrix * vec4(dyPosition, 0, 1)).xy, 0, 1);
+
 	vs_out.texCoord = dyTexCoord0.xy;
+  vs_out.channel  = int(dyChanMap.x);
+  vs_out.mapIndex = int(dyChanMap.y);
 }
 )dy");
 
 MDY_SET_IMMUTABLE_STRING(sFragmentShaderCode, R"dy(
 #version 430 core
 
-in VS_OUT { vec2 texCoord; } fs_in;
+in VS_OUT { 
+  vec2 texCoord; 
+  flat int channel;
+  flat int mapIndex;
+} fs_in;
 
 layout (binding = 0) uniform sampler2DArray uCharTexture;
 
@@ -49,8 +61,6 @@ uniform vec4  uFgColor;
 uniform vec4  uEdgeColor;
 uniform bool  uIsUsingEdge;
 uniform bool  uIsUsingBackground;
-uniform int   uChannel;
-uniform int   uMapIndex;
 
 layout (location = 0) out vec4 gOutput;
 
@@ -60,8 +70,9 @@ const float uEdgeUpper = 0.05f;
 const float uEdgeLimit = 0.00001f;
 
 void main() {
+  int uChannel = fs_in.channel;
   float dist      = 0.0f;
-  vec3  texCoord  = vec3(fs_in.texCoord, uMapIndex);
+  vec3  texCoord  = vec3(fs_in.texCoord, fs_in.mapIndex);
        if (uChannel == 0) { dist = texture(uCharTexture, texCoord).r; }
   else if (uChannel == 1) { dist = texture(uCharTexture, texCoord).g; }
   else if (uChannel == 2) { dist = texture(uCharTexture, texCoord).b; }
