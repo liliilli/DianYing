@@ -102,6 +102,9 @@ CDyFontRenderer::CDyFontRenderer(FDyText& iPtrWidget) :
 #ifdef false
     glVertexBindingDivisor(0, 1);
     // https://forums.khronos.org/showthread.php/81978
+    // https://gamedev.stackexchange.com/questions/104239/instanced-rendering-with-arb-vertex-attrib-binding
+    // https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glVertexBindingDivisor.xhtml
+    // https://stackoverflow.com/questions/50650457/what-is-the-difference-between-glvertexattribdivisor-and-glvertexbindingdivisor
     glEnableVertexAttribArray(0);
     glVertexBindingDivisor(0, 1);
     glEnableVertexAttribArray(1);
