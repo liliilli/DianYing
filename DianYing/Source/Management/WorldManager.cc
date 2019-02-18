@@ -297,13 +297,16 @@ EDySuccess MDyWorld::MDY_PRIVATE(RemoveLevel)()
   
   // Release physx components which are dependent on physx::PxScene, FDyLevel.
   this->mLevel = nullptr;
+  this->MDY_PRIVATE(TryRemoveActorGCList)();
+  this->mActivatedModelRenderers.clear();
+  this->mActivatedOnRenderingCameras.clear();
+  this->mActivatedModelAnimatorPtrs.clear();
+  this->mActivatedSkyboxPtrList.clear();
 
   // Just remove script instance without `Destroy` function intentionally.
   MDyScript::GetInstance().ClearWidgetScriptGCList();
-  this->MDY_PRIVATE(TryRemoveActorGCList)();
+  MDyScript::GetInstance().ClearActorScriptGCList();
 
-  this->mActivatedModelRenderers.clear();
-  this->mActivatedOnRenderingCameras.clear();
   SDyIOConnectionHelper::TryGC(EDyScope::Temporal, EDyResourceStyle::Resource);
   SDyIOConnectionHelper::TryGC(EDyScope::Temporal, EDyResourceStyle::Information);
   SDyIOConnectionHelper::TryGC(EDyScope::Temporal, EDyResourceStyle::Resource);
