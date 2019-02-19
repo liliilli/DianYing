@@ -22,11 +22,11 @@
 
 namespace dy {
 
-///
 /// @class FDyLevel
 /// @brief Level class type for managing run-time interactive world space.
-///
-class FDyLevel final : public FDyObject, public IDyUpdatable, public FDyNameGenerator
+class FDyLevel final : public FDyObject, public IDyUpdatable, 
+    public FDyNameGenerator,
+    public TDyIdDistributor<TU32, FDyLevel>
 {
   using TNameCounterMap   = std::unordered_map<std::string, int32_t>;
 

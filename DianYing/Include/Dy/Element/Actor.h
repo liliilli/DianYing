@@ -24,13 +24,17 @@
 #include <Dy/Element/Abstract/Actor/ADyActorBinderContainer.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Helper/Internal/FDyNameGenerator.h>
+#include <Dy/Element/Internal/TDyIdDistributor.h>
 
 namespace dy
 {
 
 /// @class FDyActor
 /// @brief Dy Actor type which consist of almost every object in Level of Dy.
-class FDyActor : public FDyObject, public FDyNameGenerator, public ADyActorBinderContainer<FDyActor>, public FDy3WaySwitcher
+class FDyActor : public FDyObject, public FDyNameGenerator, 
+    public ADyActorBinderContainer<FDyActor>, 
+    public FDy3WaySwitcher,
+    public TDyIdDistributor<TU32, FDyActor>
 {
   using TComponentList = std::vector<std::pair<EDyComponentType, std::unique_ptr<ADyGeneralBaseComponent>>>;
   using TScriptList    = std::vector<std::unique_ptr<CDyActorScript>>;

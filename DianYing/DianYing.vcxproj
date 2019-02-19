@@ -738,6 +738,7 @@
     <ClInclude Include="Include\Dy\Core\Thread\SDyIOBindingHelper.h" />
     <ClInclude Include="Include\DyMacroPlatformSetting.h" />
     <ClInclude Include="Include\Dy\Element\Abstract\Actor\ADyActorBinderContainer.h" />
+    <ClInclude Include="Include\Dy\Element\Internal\TDyIdDistributor.h" />
     <ClInclude Include="Include\Dy\Element\Type\DDyActorBinder.h" />
     <ClInclude Include="Include\Dy\Element\Type\DDyTransform.h" />
     <ClInclude Include="Include\Dy\Element\Type\DDyUiBinder.h" />
