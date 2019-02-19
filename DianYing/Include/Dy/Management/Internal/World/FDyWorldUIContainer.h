@@ -50,8 +50,16 @@ public:
   /// If already remove or not exist, return DY_FAILURE.
   MDY_NODISCARD EDySuccess  TryRemoveLoadingUi();
 
+  /// @brief IsUiObjectExist
+  MDY_NODISCARD bool IsUiObjectExist(_MIN_ const std::string& iUiObjectName) const noexcept;
+  
   /// @brief Create UI widget.
-  /// If 
+  MDY_NODISCARD DDyUiBinder CreateUiObject(
+    _MIN_ const std::string& iUiName, 
+    _MIN_ const PDyMetaWidgetRootDescriptor& iRoot,
+    _MIN_ TU32 ZOrder);
+  /// @brief Remove UI Widget.
+  MDY_NODISCARD EDySuccess RemoveUiObject(_MIN_ const std::string& iUiName);
 
   /// @brief Get activated UI widget list.
   MDY_NODISCARD std::vector<NotNull<FDyUiWidget*>>& GetActivatedUiWidgetList() noexcept; 
@@ -61,7 +69,7 @@ private:
   std::unique_ptr<FDyUiWidget> mLoadingUi = MDY_INITIALIZE_NULL;
 
   /// @brief Ui Widget for general UI map.
-  TUiWidgetMap              mGeneralUiWidgetMap {};
+  TUiWidgetMap mGeneralUiWidgetMap {};
   /// @brief Activated UI widget ptr list.
   std::vector<NotNull<FDyUiWidget*>> mPtrActivatedGeneralUiWidgetList {};
 };

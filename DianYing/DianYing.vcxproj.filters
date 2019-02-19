@@ -339,6 +339,7 @@
     <ClCompile Include="Source\Helper\Type\Area3D.cc" />
     <ClCompile Include="Source\Builtin\Mesh\Widget\FDyBtMsUiFontQuad.cc" />
     <ClCompile Include="Source\Builtin\Mesh\Widget\FDyBtMsUiImgQuad.cc" />
+    <ClCompile Include="Source\Element\Type\DDyUiBinder.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -835,6 +836,7 @@
     <ClInclude Include="Include\Dy\Core\Resource\Internal\Uniform\IDyUniformValueBase.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Uniform\UniformValueTypes.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Interface\IDyRenderableBinder.h" />
+    <ClInclude Include="Include\Dy\Element\Type\DDyUiBinder.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

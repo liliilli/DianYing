@@ -25,6 +25,7 @@
 #include <Dy/Component/CDyModelRenderer.h>
 #include <Dy/Component/CDyCamera.h>
 #include <Dy/Component/CDyModelAnimator.h>
+#include <Dy/Element/Type/DDyUiBinder.h>
 
 namespace dy
 {
@@ -228,6 +229,57 @@ void MDyWorld::DestroyActor(_MIN_ FDyActor& iRefActor)
     this->mGCedActorList.back()->MDY_PRIVATE(TryDetachDependentComponents)();
     container.erase(it);
   }
+}
+
+std::optional<DDyUiBinder> 
+MDyWorld::CreateUiObject(
+    _MIN_ const std::string& iUiName, 
+    _MIN_ bool isForced, 
+    _MIN_ bool isForcedZOrder,
+    _MIN_ TU32 ZOrder)
+{
+  // Check
+  const auto& refMetaInfo = MDyMetaInfo::GetInstance();
+  if (refMetaInfo.IsWidgetMetaInfoExist(iUiName) == false)
+  {
+    MDY_LOG_ERROR("Failed to create UI Widget object, {}.", iUiName);
+    return std::nullopt;
+  }
+
+  if (this->mUiInstanceContainer.IsUiObjectExist(iUiName) == true && isForced == false)
+  {
+    MDY_LOG_ERROR(
+        "Failed to create UI Widget object, meta information is exist but already exist on Container. {}", 
+        iUiName);
+    return std::nullopt;
+  }
+
+  // Get anyway
+  const auto& refDescriptor = refMetaInfo.GetWidgetMetaInformation(iUiName);
+  const auto keyName = this->mUiInstanceContainer.TryGetGeneratedName(refDescriptor.mWidgetSpecifierName);
+
+  // If zorder must be customized, do that.
+  TU32 insertZorder = refDescriptor.mZOrder;
+  if (isForcedZOrder == true) { insertZorder = ZOrder; }
+
+  return this->mUiInstanceContainer.CreateUiObject(keyName, refDescriptor, insertZorder);
+}
+
+EDySuccess MDyWorld::DestoryUiObject(_MINOUT_ DDyUiBinder& iRefUi)
+{
+  // Check
+  if (iRefUi.IsUiObjectValid() == false) 
+  { 
+    MDY_LOG_ERROR("Failed to destroy Ui object. Ui binder does not bind anything.");
+    return DY_FAILURE; 
+  }
+
+  return this->mUiInstanceContainer.RemoveUiObject((*iRefUi).GetUiObjectName());
+}
+
+EDySuccess MDyWorld::DestroyUiObject(_MIN_ const std::string& iUiName)
+{
+  return this->mUiInstanceContainer.RemoveUiObject(iUiName);
 }
 
 CDyCamera* MDyWorld::GetPtrMainLevelCamera() const noexcept

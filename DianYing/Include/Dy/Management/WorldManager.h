@@ -92,6 +92,19 @@ public:
   /// @brief Destroy Actor
   void DestroyActor(_MINOUT_ FDyActor& iRefActor);
 
+  /// @brief Create UI Object. 
+  /// If ui object wraps over exist Ui Object, but flag is true, create anyway with auto-generated UI name.
+  std::optional<DDyUiBinder> CreateUiObject(
+      _MIN_ const std::string& iUiName,
+      _MIN_ bool isForced = false,
+      _MIN_ bool isForcedZOrder = false,
+      _MIN_ TU32 ZOrder = 0);
+
+  /// @brief Destroy UI Object.
+  EDySuccess DestoryUiObject(_MINOUT_ DDyUiBinder& iRefUi);
+  /// @brief Destroy UI Object.
+  EDySuccess DestroyUiObject(_MIN_ const std::string& iUiName);
+
   /// @brief Get `Focused` and `Main` camera of level.
   MDY_NODISCARD CDyCamera* GetPtrMainLevelCamera() const noexcept;
   /// @brief Get binded level camra counts.
