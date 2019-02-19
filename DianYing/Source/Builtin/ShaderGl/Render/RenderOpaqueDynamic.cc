@@ -27,7 +27,6 @@ MDY_SET_IMMUTABLE_STRING(sVert, R"dy(
 #import <Input_DefaultVao>; 
 #import <Input_SkinAnimation>;
 #import <Input_UboCamera>;
-
 uniform mat4 uModelMatrix;
 
 out gl_PerVertex { vec4 gl_Position; };
@@ -60,6 +59,7 @@ in VS_OUT {
 } fs_in;
 
 void main() {
+  DyBindActorId();
 	gUnlit	  = vec4(texture(uTexture0, fs_in.texCoord).rgb, 1.0f);
 	gNormal	  = vec4(normalize(fs_in.normal) * 0.5f + 0.5f, 1.0f);
 	gSpecular = vec4(1, 0, 1, 1);

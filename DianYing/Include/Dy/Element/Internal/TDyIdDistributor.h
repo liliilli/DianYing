@@ -24,7 +24,7 @@ template <typename TIdType, typename TType>
 class TDyIdDistributor
 {
 public:
-  TDyIdDistributor() : mIsGivenIdValid{true} { this->GetNewUniqueId(); }
+  TDyIdDistributor() : mIsGivenIdValid{true} { this->CreateNewUniqueId(); }
   virtual ~TDyIdDistributor() { this->ResetGivenUniqueId(); }
   
   TDyIdDistributor(const TDyIdDistributor&) = delete; 
@@ -56,7 +56,7 @@ public:
     this->mGivenId = kExclusiveId;
   }
 
-  void GetNewUniqueId()
+  void CreateNewUniqueId()
   {
     // Try reset given unique id.
     this->ResetGivenUniqueId();
@@ -72,6 +72,8 @@ public:
     this->mGivenId = sIdCounter++;
     sUsingIdList.emplace(this->mGivenId);
   }
+
+  MDY_NODISCARD const TIdType& GetId() { return this->mGivenId; }
 
   static constexpr TIdType kExclusiveId = TIdType{};
 

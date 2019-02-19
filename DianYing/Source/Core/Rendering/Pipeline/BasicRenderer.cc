@@ -110,7 +110,8 @@ void FDyBasicRenderer::RenderScreen(
   if (MDY_CHECK_ISNULL(ptrCamera)) { return; }
 
   // General deferred rendering
-  const auto& transform = iRefRenderer.mPtrModelRenderer->GetBindedActor()->GetTransform();
+  auto& refActor = *iRefRenderer.mPtrModelRenderer->GetBindedActor();
+  const auto& transform = refActor.GetTransform();
   const auto& refModelMatrix    = transform->GetTransform();
   const auto& refRotationMatrix = transform->GetRotationMatrix();
   auto& shaderBinder = iRefMaterial.GetShaderResourceBinder();
@@ -120,6 +121,7 @@ void FDyBasicRenderer::RenderScreen(
   shaderBinder->TryUpdateUniform<EDyUniformVariableType::Matrix4>("uModelMatrix", refModelMatrix);
   shaderBinder->TryUpdateUniform<EDyUniformVariableType::Matrix4>("modelMatrix", refModelMatrix);
   shaderBinder->TryUpdateUniform<EDyUniformVariableType::Matrix3>("uRotationMatrix", DDyMatrix3x3{refModelMatrix});
+  shaderBinder->TryUpdateUniform<EDyUniformVariableType::Float>("uBtDyActorId", TF32(refActor.GetId()));
 
   // If this model has animator, update uniform.
   if (iRefRenderer.mPtrModelAnimator != nullptr)

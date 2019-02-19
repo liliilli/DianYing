@@ -69,6 +69,7 @@ MDY_NODISCARD GLenum DyGLGetLowTextureType(_MIN_ EDyTextureStyleType iType) noex
 enum class EDyGlBufferDataInternalFormat : unsigned char
 {
   RED8,
+  RED32Float,
   RED32UnsignedInt,
   RG8,
   RGB8,
