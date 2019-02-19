@@ -55,6 +55,7 @@ PDyMetaWidgetBarDescriptor::CreateMetaInformation(const nlohmann::json& itemAtla
   instance->mUiObjectSpecifierName  = DyJsonGetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Name);
   instance->mComponentType          = EDyWidgetComponentType::BasicGaugeBar;
   instance->mParentSpecifierName    = DyJsonGetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Parent);
+  DyJsonGetValueFromTo(itemAtlas, "ZOrder", instance->mZOrder);
 
   const auto& detailAtlas = itemAtlas[MSVSTR(TPDyMWCBD::sHeader_Details)];
   instance->mInitialPosition    = DyJsonGetValueFrom<DDyVectorInt2>(detailAtlas, "InitialPosition");
@@ -72,6 +73,7 @@ PDyMetaWidgetBarDescriptor::CreateMetaInformation(const nlohmann::json& itemAtla
   instance->mMin                = DyJsonGetValueFrom<TF32>(detailAtlas, "Min");
   instance->mMax                = DyJsonGetValueFrom<TF32>(detailAtlas, "Max");
   instance->mIsUsingBackground  = DyJsonGetValueFrom<bool>(detailAtlas, "IsUsingBackgroundColor");
+
 
   return instance;
 }

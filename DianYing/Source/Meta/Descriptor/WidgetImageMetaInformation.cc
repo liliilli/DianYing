@@ -54,6 +54,7 @@ PDyMetaWidgetImageDescriptor::CreateMetaInformation(const nlohmann::json& itemAt
   resultInstance->mUiObjectSpecifierName  = DyJsonGetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Name);
   resultInstance->mComponentType          = EDyWidgetComponentType::Image;
   resultInstance->mParentSpecifierName    = DyJsonGetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Parent);
+  DyJsonGetValueFromTo(itemAtlas, "ZOrder", resultInstance->mZOrder);
 
   const auto& detailAtlas           = itemAtlas[MSVSTR(TPDyMWCBD::sHeader_Details)];
   resultInstance->mInitialPosition  = DyJsonGetValueFrom<DDyVectorInt2>(detailAtlas, "InitialPosition");
@@ -67,6 +68,7 @@ PDyMetaWidgetImageDescriptor::CreateMetaInformation(const nlohmann::json& itemAt
   DDyColorRGBA tintColor      = DyJsonGetValueFrom<DDyColorRGB24>(detailAtlas, "ImageTintColor");
   tintColor.A                 = DyJsonGetValueFrom<TF32>(detailAtlas, "ImageAlpha");
   resultInstance->mTintColor  = tintColor;
+
 
   return resultInstance;
 }

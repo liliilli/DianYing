@@ -70,6 +70,9 @@ struct PDyMetaWidgetCommonBaseDesc : public PDyMetaWidgetChildableBaseDesc
   PDyMetaWidgetCommonBaseDesc*  mParentRawPtr           = MDY_INITIALIZE_NULL;
   /// Parent component specifier name.
   std::string                   mParentSpecifierName    = MDY_INITIALIZE_EMPTYSTR;
+  /// Z-order value of overall UI ordering from root.
+  /// Slots with larger ZOrder values will draw above slots with smaller ZOrder values.
+  TU32                          mZOrder = 0;
 
   //!
   //! Json header file
@@ -81,36 +84,25 @@ struct PDyMetaWidgetCommonBaseDesc : public PDyMetaWidgetChildableBaseDesc
   inline static MDY_SET_IMMUTABLE_STRING(sHeader_Details,"Details");
 };
 
-///
 /// @struct PDyMetaWidgetRootDescriptor
 /// @brief Text component of widget descriptor
-///
 struct PDyMetaWidgetRootDescriptor final : public PDyMetaWidgetChildableBaseDesc
 {
   /// Widget specifier name
-  std::string   mWidgetSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
+  std::string mWidgetSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
+  /// Zorder value for ordering UI rendering.
+  TU32        mZOrder = 0;
   /// Script component variable.
   PDyScriptComponentMetaInfo mScriptReference = {};
 
-  ///
   /// @brief Factory function for PDyMetaWidgetTextDescriptor.
   /// @param itemAtlas valid json atlas instance.
   /// @return If succeeded, return heap instance of PDyMetaWidgetTextDescriptor.
-  ///
   static std::unique_ptr<PDyMetaWidgetRootDescriptor>
   CreateMetaInformation(_MIN_ const nlohmann::json& itemAtlas);
 
   inline static MDY_SET_IMMUTABLE_STRING(sHeader_Name,  "Name");
   inline static MDY_SET_IMMUTABLE_STRING(sHeader_Script,"Script");
-};
-
-///
-/// @struct PDyMetaWidgetPositionDescriptor
-/// @brief Position descriptor (initial position, origin, position axis, frame size)
-///
-struct PDyMetaWidgetPositionDescriptor final
-{
-
 };
 
 } /// ::dy namespace

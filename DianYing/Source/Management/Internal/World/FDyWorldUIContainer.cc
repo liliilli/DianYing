@@ -17,6 +17,7 @@
 #include <Dy/Element/Canvas/Widget.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Management/ScriptManager.h>
+#include <Dy/Element/Type/DDyUiBinder.h>
 
 namespace dy
 {
@@ -34,6 +35,11 @@ EDySuccess FDyWorldUIContainer::TryCreateDebugUi()
   this->mDebugUi->SetPropagateMode(true, EDySearchMode::Recursive);
   this->mDebugUi->TryPropagatePositionToChildren();
   return DY_SUCCESS;
+}
+
+FDyUiWidget* FDyWorldUIContainer::GetPtrDebugUi() const noexcept
+{
+  return this->mDebugUi.get();
 }
 
 EDySuccess FDyWorldUIContainer::TryRemoveDebugUi()
@@ -63,6 +69,11 @@ EDySuccess FDyWorldUIContainer::TryCreateLoadingUi()
   return DY_SUCCESS;
 }
 
+FDyUiWidget* FDyWorldUIContainer::GetPtrLoadingUi() const noexcept
+{
+  return this->mLoadingUi.get();
+}
+
 EDySuccess FDyWorldUIContainer::TryRemoveLoadingUi()
 {
   if (MDY_CHECK_ISEMPTY(this->mLoadingUi)) { return DY_FAILURE; }
@@ -71,16 +82,49 @@ EDySuccess FDyWorldUIContainer::TryRemoveLoadingUi()
   return DY_SUCCESS;
 }
 
-void FDyWorldUIContainer::TryRenderDebugUi()
+bool FDyWorldUIContainer::IsUiObjectExist(_MIN_ const std::string& iUiObjectName) const noexcept
 {
-  if (MDY_CHECK_ISEMPTY(this->mDebugUi)) { return; }
-  this->mDebugUi->Render();
+  return DyIsMapContains(this->mGeneralUiWidgetMap, iUiObjectName);
 }
 
-void FDyWorldUIContainer::TryRenderLoadingUi()
+DDyUiBinder FDyWorldUIContainer::CreateUiObject(
+    _MIN_ const std::string& iUiName, 
+    _MIN_ const PDyMetaWidgetRootDescriptor& iRoot,
+    _MIN_ TU32 ZOrder)
 {
-  if (MDY_CHECK_ISEMPTY(this->mLoadingUi)) { return; }
-  this->mLoadingUi->Render();
+  auto [it, isSuccessful] = this->mGeneralUiWidgetMap.try_emplace(
+      iUiName, std::make_unique<FDyUiWidget>(iRoot));
+  MDY_ASSERT_FORCE(isSuccessful == true, "Unexpected error occurred.");
+
+  auto& [key, object] = *it;
+  object->SetPropagateMode(true, EDySearchMode::Recursive);
+  object->TryPropagatePositionToChildren();
+
+  object->MDY_PRIVATE(SetName)(key);
+  object->mZOrder = ZOrder;
+
+  MDyScript::GetInstance().UpdateWidgetScript(0.0f, EDyScriptState::CalledNothing);
+  MDyScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
+
+  return DDyUiBinder{*object};
+}
+
+EDySuccess FDyWorldUIContainer::RemoveUiObject(_MIN_ const std::string& iUiName)
+{
+  const auto it = this->mGeneralUiWidgetMap.find(iUiName);
+  if (it == this->mGeneralUiWidgetMap.end())
+  {
+    MDY_LOG_ERROR("Failed to remove {} Ui Object. Could not found matched UI Object.", iUiName);
+    return DY_FAILURE;
+  }
+
+  this->mGeneralUiWidgetMap.erase(it);
+  return DY_SUCCESS;
+}
+
+std::vector<NotNull<FDyUiWidget*>>& FDyWorldUIContainer::GetActivatedUiWidgetList() noexcept
+{
+  return this->mPtrActivatedGeneralUiWidgetList;
 }
 
 bool FDyWorldUIContainer::IsDebugUiExist() const noexcept { return MDY_CHECK_ISNOTEMPTY(this->mDebugUi); }

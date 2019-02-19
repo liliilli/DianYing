@@ -17,16 +17,18 @@
 #include <Dy/Meta/Descriptor/WidgetTextMetaInformation.h>
 #include <Dy/Meta/Descriptor/WidgetBarMetaInformation.h>
 #include <Dy/Meta/Descriptor/WidgetImageMetaInformation.h>
+#include <Dy/Component/Internal/Widget/CDyWidgetScriptCpp.h>
+#include <Dy/Component/Internal/Widget/CDyWidgetScriptLua.h>
 #include <Dy/Meta/Type/EDyWidgetTypes.h>
 #include <Dy/Element/Canvas/Text.h>
 #include <Dy/Element/Canvas/FDyBasicGaugeBar.h>
+#include <Dy/Element/Canvas/FDyImage.h>
+#include <Dy/Element/Type/DDyUiBinder.h>
+#include <Dy/Helper/System/Idioms.h>
 #include <Dy/Management/WindowManager.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
-
-#include <Dy/Component/Internal/Widget/CDyWidgetScriptCpp.h>
-#include <Dy/Component/Internal/Widget/CDyWidgetScriptLua.h>
-#include <Dy/Element/Canvas/FDyImage.h>
 #include <Dy/Management/ScriptManager.h>
+
 
 namespace dy
 {
@@ -34,8 +36,10 @@ namespace dy
 FDyUiWidget::FDyUiWidget(_MIN_ const PDyMetaWidgetRootDescriptor& widgetMetaDesc)
 {
   // (1) Get position and frame size from meta.
+  // @TODO TEMPORARY CODE
   this->SetFrameSize      ({ 1280, 720 });
   this->SetRelativePosition({ 640, 360 });
+  this->mZOrder = widgetMetaDesc.mZOrder;
 
   // (2) Create UI objects.
   for (const auto& [specifier, objectMetaInfoPair] : widgetMetaDesc.mChildComponentList)
@@ -68,6 +72,40 @@ FDyUiWidget::FDyUiWidget(_MIN_ const PDyMetaWidgetRootDescriptor& widgetMetaDesc
   }
 }
 
+FDyUiWidget::~FDyUiWidget()
+{
+  // If there are binder to being bound with this, detach them from this.
+  if (this->mBoundUiBinderList.empty() == false)
+  {
+    for (auto& ptrBind : this->mBoundUiBinderList)
+    {
+      ptrBind->MDY_PRIVATE(DetachUiObjectFromUiObject)();
+    }
+    this->mBoundUiBinderList.clear();
+  }
+}
+
 void FDyUiWidget::Render() { FDyUiObjectChildrenable::Render(); }
+
+void FDyUiWidget::__TryAttachBinderFromBinder(DDyUiBinder& iRefUiBinder)
+{
+  this->mBoundUiBinderList.emplace_back(DyMakeNotNull(&iRefUiBinder));
+}
+
+void FDyUiWidget::__TryDetachBinderFromBinder(DDyUiBinder& iRefUiBinder)
+{
+  const auto it = std::find_if(
+      MDY_BIND_BEGIN_END(this->mBoundUiBinderList), 
+      [ptrSource = &iRefUiBinder](const auto& ptrBinder) { return ptrBinder.Get() == ptrSource; });
+  MDY_ASSERT_FORCE(it != this->mBoundUiBinderList.end(), "Failed guarantee UiBinder binding integrity.");
+
+  // Fast erase.
+  DyFastErase(this->mBoundUiBinderList, it);
+}
+
+void FDyUiWidget::__SetName(_MIN_ const std::string& iNewName)
+{
+  this->pSetObjectName(iNewName);
+}
 
 } /// ::dy namespace

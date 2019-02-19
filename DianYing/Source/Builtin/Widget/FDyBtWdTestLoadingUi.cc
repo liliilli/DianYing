@@ -25,27 +25,22 @@ namespace
 MDY_SET_IMMUTABLE_STRING(sBuffer, R"dy(
 {
   "Meta":
-  {
-    "Name": "dyBtWdTestLoadingUi",
+  { "Name": "dyBtWdTestLoadingUi", "ZOrder" : 100,
     "Script": {
-      "Type"      : "Script",
-      "Activated" : true,
-      "Details"   : { "Specifier": "FDyBtScTestLoadingUi" }
+      "Type" : "Script", "Activated" : true,
+      "Details" : { "Specifier": "FDyBtScTestLoadingUi" }
     }
   },
   "ObjectList":
   [
-    {
-      "Name": "LoadingText",
-      "Type": "Text",
-      "Parent": "",
+    { "Name": "LoadingText", "Type": "Text", "Parent": "", "ZOrder" : 0,
       "Details":
       {
         "InitialPosition": { "X":0, "Y": 0 },
         "WidgetSize": { "X": 1, "Y": 1 },
         "Origin": "Center_Center",
         "InitialString": "LOADING...", "InitialColor": 16777215, "InitialAlpha": 1.0,
-        "EdgeColor": 0, "FontSize": 18, "FontAlignment": "Left",
+        "EdgeColor": 0, "FontSize": 18, "Alignment": "Center",
         "FontSpecifierName": "Arial", "IsUsingEdge": false
       }
     }

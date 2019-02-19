@@ -126,13 +126,12 @@ void DyEngine::operator()()
         // If game level should be changed to new one.
         if (this->MDY_PRIVATE(IsGameNeedTransitLevel)() == true) 
         { this->SetNextGameStatus(EDyGlobalGameStatus::Loading); }
+        break;
       }
-      else 
-      { 
-        // This function is internal update function for Dy Engine before rendering.
-        this->MDY_PRIVATE(PreRender)(this->mStatus, dt);
-        this->MDY_PRIVATE(Render)(this->mStatus); 
-      }
+
+      // This function is internal update function for Dy Engine before rendering.
+      this->MDY_PRIVATE(PreRender)(this->mStatus, dt);
+      this->MDY_PRIVATE(Render)(this->mStatus); 
     } break;
     case EDyGlobalGameStatus::Shutdown: 
     { // Just wait I/O Worker thread is slept.
@@ -345,6 +344,10 @@ void DyEngine::MDY_PRIVATE(PreRender)(_MIN_ EDyGlobalGameStatus iEngineStatus, _
 {
   switch (iEngineStatus)
   {
+  case EDyGlobalGameStatus::FirstLoading: 
+  case EDyGlobalGameStatus::Loading:
+  { MDyRendering::GetInstance().PreRender(dt);
+  } break;
   case EDyGlobalGameStatus::GameRuntime: 
   {
     // Reset frame dependent profiling count.

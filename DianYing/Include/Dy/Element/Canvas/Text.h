@@ -38,33 +38,25 @@ class FDyText final : public FDyUiObject, public IDyInitializeHelper<PDyMetaWidg
   MDY_SET_TYPEMATCH_FUNCTION(FDyUiObject, FDyText);
   MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(FDyText);
 public:
-  ///
   /// @brief Text component (stand-alone) constructor.
   /// In initialization time of this class, initial text and position and color set.
   /// position parameter was based on screen or parent's size where component
   /// is in hierarchy structrue of parent.
-  ///
   FDyText() : mRenderer{*this} {};
   virtual ~FDyText()  = default;
 
-  ///
   /// @brief
   /// @return
   /// @TODO NOT IMPLEMENTED YET
-  ///
   MDY_NODISCARD std::string ToString() override;
 
-  ///
   /// @brief Initialize FDyActor.
   /// @param objectMetaDesc Meta descriptor information instance for FDyActor.
   /// @return Success / Failure flag.
-  ///
   MDY_NODISCARD EDySuccess Initialize(_MIN_ const PDyMetaWidgetTextDescriptor& objectMetaDesc) override;
 
-  ///
   /// @brief Release function (virtual) because Initialize function has different parameter but release does not need any parameter.
   /// @return Success flag.
-  ///
   MDY_NODISCARD void Release() override;
 
   ///
@@ -73,95 +65,73 @@ public:
   ///
   MDY_NODISCARD const DDyString& GetText() const noexcept;
 
-  ///
   /// @brief  Return reference of valid font container.
   /// @return Valid font container reference.
-  ///
   MDY_NODISCARD IDyFontContainer& GetFontContainer() const noexcept
   {
     return *this->mPtrFontContainer;
   }
 
-  ///
   /// @brief Get font size which this instance has.
   /// @return unsigned font size value.
-  ///
   MDY_NODISCARD TU32 GetFontSize() const noexcept;
 
-  ///
   /// @brief  Get DDyColor foreground color of text component.
   /// @return Return foreground color.
-  ///
   MDY_NODISCARD const DDyColorRGBA& GetForegroundColor() const noexcept;
 
-  ///
   /// @brief  Get DDyColor background color of text component.
   /// @return Return background color.
-  ///
   MDY_NODISCARD const DDyColorRGBA& GetBackgroundColor() const noexcept;
 
-  ///
   /// @brief  Get DDyColor edge color of text component.
   /// @return Return edge color.
-  ///
   MDY_NODISCARD const DDyColorRGBA& GetEdgeColor() const noexcept;
 
-  ///
   /// @brief  Get position to be rendered in UI.
   /// @return Final rendered posiiton.
-  ///
   MDY_NODISCARD const DDyVector2& GetRenderPosition() const noexcept;
 
-  ///
   /// @brief  Check if this text component is using edge rendering feature.
   /// @return If used, return true or false.
-  ///
-  FORCEINLINE MDY_NODISCARD bool CheckIsUsingEdgeRendering() const noexcept
+  FORCEINLINE bool CheckIsUsingEdgeRendering() const noexcept
   {
     return this->mIsUsingEdgeRendering;
   }
 
-  ///
   /// @brief  Check if this text component is using background color.
   /// @return If used, return true or false.
-  ///
-  FORCEINLINE MDY_NODISCARD bool CheckIsUsingBackgroundColor() const noexcept
+  FORCEINLINE bool CheckIsUsingBackgroundColor() const noexcept
   {
     return this->mIsUsingBackgroundColor;
   }
 
-  ///
-  /// @brief Set text string to display.
-  /// @param[in] new_text New text string.
-  ///
-	void SetText(_MIN_ const std::string& new_text) noexcept;
+  /// @brief Set text alignment.
+  void SetAlignment(_MIN_ EDyHorizontalAlignment iAlignment) noexcept;
+  /// @brief Get text alignment value.
+  MDY_NODISCARD EDyHorizontalAlignment GetAlignment() const noexcept;
 
-	///
+  /// @brief Set text string to display.
+  /// @param[in] newText New text string.
+	void SetText(_MIN_ const std::string& newText) noexcept;
+
 	/// @brief Set font size of string.
   /// This method has side-effect for accessing FontManager.
 	/// @param fontSize
-	///
 	void SetFontSize(_MIN_ TU32 fontSize) noexcept;
 
-	///
 	/// @brief Set this object font to render with.
 	/// If FontManager doesn't find font, return false to inform method was failed.
 	/// @param[in] fontName Font name tag.
 	/// @return Success flag.
-	///
 	EDySuccess SetFontName(_MIN_ const std::string& fontName);
 
-  ///
   /// @brief Set string color, single color with composited of {r, g, b}.
-  ///
   /// @param[in] color New color value with consists of {r, g, b} glm::vec3 vector.
   /// each value must be in range of [0, 1], otherwise clamped to 0 or 1.
-  ///
   void SetColor(_MIN_ const DDyColorRGBA& color);
 
-  ///
   /// @brief Render font (old-way)
-  ///
   void Render() override final;
 
 private:
@@ -177,7 +147,9 @@ private:
   DDyColorRGBA      mEdgeColor        = DDyColorRGBA::Black;
   /// Font size
   TU32              mFontSize         = 16;
-  ///
+  /// Text alignment value.
+  EDyHorizontalAlignment mAlignment   = EDyHorizontalAlignment::Left;
+  /// internal renderer.
   CDyFontRenderer   mRenderer;
 
   ///

@@ -19,15 +19,24 @@
 #include <Dy/Component/UI/CDyWidgetScript.h>
 #include <Dy/Helper/Type/ThreeStateBool.h>
 
+//!
+//! Forward declaration
+//!
+
 namespace dy
 {
-
+class DDyUiBinder;
 class CDyWidgetScriptBase;
+} /// ::dy namespace
 
-///
+//!
+//! Implementation
+//!
+
+namespace dy
+{
 /// @class FDyUiWidget
-/// @brief FFF
-///
+/// @brief Root UI Widget or Children but wrapped UI Widget object.
 class FDyUiWidget final : public FDyUiObjectChildrenable 
 {
   using TUiObject       = std::unique_ptr<FDyUiObject>;
@@ -40,23 +49,13 @@ public:
   /// @param widgetMetaDesc Meta descriptor information instance for FDyUiWidget.
   /// @return Success / Failure flag.
   FDyUiWidget(_MIN_ const PDyMetaWidgetRootDescriptor& widgetMetaDesc);
-  virtual ~FDyUiWidget() = default;
+  virtual ~FDyUiWidget();
 
-  /// @brief Activate FDyUiWidget instance.
-  /// @TODO IMPLEMENT THIS
-  void Activate() noexcept;
-
-  /// @brief Deactivate FDyUiWidget instance.
-  /// @TODO IMPLEMENT THIS
-  void Deactivate() noexcept;
-
-  ///
   /// @brief Render object.
-  ///
   void Render() override final;
 
   ///
-  /// @brief  Check FDyUiWidget is activated or not.
+  /// @brief Check FDyUiWidget is activated or not.
   /// @return Check flag for activation checking.
   ///
   MDY_NODISCARD FORCEINLINE bool IsActivated() const noexcept
@@ -64,10 +63,8 @@ public:
     return this->mActivationFlag.GetOutput();
   }
 
-  ///
   /// @brief Get present actor name on runtime.
   /// @return Actor name of this instance.
-  ///
   MDY_NODISCARD const std::string& GetActorName() const noexcept
   {
     return this->pGetObjectName();
@@ -82,12 +79,21 @@ public:
     return MDY_INITIALIZE_EMPTYSTR;
   }
 
-  /// @brief  Get script component pointer from script list using scriptName to verify.
+  /// @brief Get script component pointer from script list using scriptName to verify.
   /// @return The pointer instance of CDyScript. If not found, return just no value.
   MDY_NODISCARD CDyWidgetScriptBase* GetScript() noexcept;
 
-private:
+  /// @brief Create 
 
+  /// @brief Attach DDyUiBinder.
+  void MDY_PRIVATE(TryAttachBinderFromBinder)(_MIN_ DDyUiBinder& iRefUiBinder);
+  /// @brief Detach DDyUiBinder. This function called from Binder.
+  void MDY_PRIVATE(TryDetachBinderFromBinder)(_MIN_ DDyUiBinder& iRefUiBinder);
+
+  /// @brief Set name internally.
+  void MDY_PRIVATE(SetName)(_MIN_ const std::string& iNewName);
+
+private:
   DDy3StateBool                     mActivationFlag = {};
   /// Parent FDyUiWidget raw-pointer data.
   FDyUiWidget*                      mParentFDyUiWidgetRawPtr= MDY_INITIALIZE_NULL;
@@ -95,6 +101,9 @@ private:
   TUiObjectMap                      mObjectList     = {};
   /// @brief 
   std::unique_ptr<CDyWidgetScript>  mWidgetScript = MDY_INITIALIZE_NULL;
+
+  /// @brief Managing DDyUiBinder instance.
+  std::vector<NotNull<DDyUiBinder*>> mBoundUiBinderList {};
 };
 
 } /// ::dy namespace

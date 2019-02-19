@@ -17,6 +17,7 @@
 #include <nlohmann/json.hpp>
 
 #include <Dy/Helper/Type/VectorInt2.h>
+#include <Dy/Helper/StringSwitch.h>
 
 //!
 //! Forward declaration & local translation unit data
@@ -67,12 +68,13 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyHorizontalAlignment& p)
 
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ EDyHorizontalAlignment& p)
 {
-  const auto valueString = j.get<std::string>();
-
-  if      (valueString == sValue_Hori_Left)   { p = EDyHorizontalAlignment::Left; }
-  else if (valueString == sValue_Hori_Center) { p = EDyHorizontalAlignment::Center; }
-  else if (valueString == sValue_Hori_Right)  { p = EDyHorizontalAlignment::Right; }
-  else                                        { MDY_UNEXPECTED_BRANCH(); }
+  switch (DyStrSwitchInput(j.get<std::string>()))
+  {
+  case DyStrCase("Left"): { p = EDyHorizontalAlignment::Left; } break;
+  case DyStrCase("Center"): { p = EDyHorizontalAlignment::Center; } break;
+  case DyStrCase("Right"): { p = EDyHorizontalAlignment::Right; } break;
+  default: MDY_UNEXPECTED_BRANCH();
+  }
 }
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyVerticalAlignment& p)

@@ -47,6 +47,8 @@ struct PDyMetaWidgetTextDescriptor final : public PDyMetaWidgetCommonBaseDesc
   TU32          mFontSize           = MDY_INITIALIZE_DEFUINT;
   /// If empty, just use default font.
   std::string   mFontSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
+  /// Text alignment.
+  EDyHorizontalAlignment mAlignment = EDyHorizontalAlignment::Left;
   /// Check rendering edge to text.
   bool          mIsUsingEdge        = false;
   /// Check use background outside of font region.

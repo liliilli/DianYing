@@ -60,6 +60,7 @@ EDySuccess FDyText::Initialize(_MIN_ const PDyMetaWidgetTextDescriptor& objectMe
   this->mIsUsingEdgeRendering   = objectMetaDesc.mIsUsingEdge;
   this->mIsUsingBackgroundColor = objectMetaDesc.mIsUsingBackground;
   this->mFontSize               = objectMetaDesc.mFontSize;
+  this->mAlignment              = objectMetaDesc.mAlignment;
   this->mPtrFontContainer       = GetFontResource(objectMetaDesc.mFontSpecifierName);
 
   return DY_SUCCESS;
@@ -105,33 +106,40 @@ const DDyVector2& FDyText::GetRenderPosition() const noexcept
 //! Setter
 //!
 
-void FDyText::SetText(const std::string& newU8Text) noexcept
+void FDyText::SetAlignment(_MIN_ EDyHorizontalAlignment iAlignment) noexcept
+{
+  this->mAlignment = iAlignment;
+}
+
+EDyHorizontalAlignment FDyText::GetAlignment() const noexcept
+{
+  return this->mAlignment;
+}
+
+void FDyText::SetText(_MIN_ const std::string& newU8Text) noexcept
 {
   this->mTextString = DDyString{newU8Text};
 }
 
-void FDyText::SetFontSize(TU32 fontSize) noexcept
+void FDyText::SetFontSize(_MIN_ TU32 fontSize) noexcept
 {
-  MDY_NOT_IMPLEMENTED_ASSERT();
   this->mFontSize = fontSize;
 }
 
-EDySuccess FDyText::SetFontName(const std::string& fontName)
+EDySuccess FDyText::SetFontName(_MIN_ const std::string& fontName)
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
   return DY_FAILURE;
 }
 
-void FDyText::SetColor(const DDyColorRGBA& color)
+void FDyText::SetColor(_MIN_ const DDyColorRGBA& color)
 {
-  MDY_NOT_IMPLEMENTED_ASSERT();
   this->mForegroundColor = color;
 }
 
 void FDyText::Render()
 {
   this->mRenderer.Render();
-
 }
 
 } /// ::dy namespace

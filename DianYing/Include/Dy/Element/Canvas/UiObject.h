@@ -84,8 +84,11 @@ public:
   /// If parent is not exist, just recalculate with fibot.
   void UpdateFinalPosition();
 
-  /// @brief  Get name of UiObject instance.
+  /// @brief Get name of UiObject instance.
   MDY_NODISCARD const std::string& GetUiObjectName() const noexcept;
+
+  /// @brief ZOrder value.
+  TU32 mZOrder = 0;
 
 private:
   FDyUiObjectChildrenable* mPtrParentUiObject       = MDY_INITIALIZE_NULL;
