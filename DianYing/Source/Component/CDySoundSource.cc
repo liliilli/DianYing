@@ -206,11 +206,12 @@ std::string CDySoundSource::ToString()
 
 void CDySoundSource::TryActivateInstance()
 {
-
+  // What we have to do?
 }
 
 void CDySoundSource::TryDeactivateInstance()
 {
+  // What we have to do?
 
 }
 
