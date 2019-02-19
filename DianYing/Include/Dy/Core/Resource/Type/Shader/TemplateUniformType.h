@@ -38,6 +38,7 @@ template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Vector2> f
 //template <> struct MDY_PRIVATE(UniformBinder)<EDyAttributeVariableType::IVec3> final  { using ValueType = DDyVector4; };
 template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::IVec2> final    { using ValueType = DDyVectorInt2; };
 template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Integer> final  { using ValueType = TI32; };
+template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Unsigned> final { using ValueType = TU32; };
 template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Float> final    { using ValueType = TF32; };
 template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Bool> final     { using ValueType = bool; };
 template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Texture1D>      final { using ValueType = TU32; };

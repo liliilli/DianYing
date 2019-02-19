@@ -78,6 +78,7 @@ DyGlGetUniformVariableTypeFrom(_MIN_ GLenum type) noexcept
   case GL_FLOAT_MAT3: case GL_DOUBLE_MAT3:  return dy::EDyUniformVariableType::Matrix3;
   case GL_FLOAT_MAT4: case GL_DOUBLE_MAT4:  return dy::EDyUniformVariableType::Matrix4;
   case GL_INT:                              return dy::EDyUniformVariableType::Integer;
+  case GL_UNSIGNED_INT:                     return dy::EDyUniformVariableType::Unsigned;
   case GL_INT_VEC2:                         return dy::EDyUniformVariableType::IVec2;
   case GL_INT_VEC3:                         return dy::EDyUniformVariableType::IVec3;
   case GL_INT_VEC4:                         return dy::EDyUniformVariableType::IVec4;
@@ -879,6 +880,11 @@ void FDyGLWrapper::UpdateUniformVector3(_MIN_ TU32 iId, _MIN_ const DDyVector3& 
 void FDyGLWrapper::UpdateUniformInteger(_MIN_ TU32 iId, _MIN_ const TI32& iBuffer)
 {
   glUniform1i(iId, iBuffer);
+}
+
+void FDyGLWrapper::UpdateUniformUnsigned(_MIN_ TU32 iId, _MIN_ const TU32& iBuffer)
+{
+  glUniform1ui(iId, iBuffer);
 }
 
 void FDyGLWrapper::UpdateUniformFloat(_MIN_ TU32 iId, _MIN_ const TF32& iBuffer)

@@ -191,6 +191,8 @@ public:
   static void UpdateUniformVector3(_MIN_ TU32 iId, _MIN_ const DDyVector3& iBuffer);
   /// @brief
   static void UpdateUniformInteger(_MIN_ TU32 iId, _MIN_ const TI32& iBuffer);
+  /// @brief Update uniform one unsigend (32-bit) value. Specified shader must be valid and activated when updating.
+  static void UpdateUniformUnsigned(_MIN_ TU32 iId, _MIN_ const TU32& iBuffer);
   /// @brief Update uniform one float value. Specified shader must be valid and activated.
   static void UpdateUniformFloat(_MIN_ TU32 iId, _MIN_ const TF32& iBuffer);
 
