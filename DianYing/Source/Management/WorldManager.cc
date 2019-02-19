@@ -265,6 +265,11 @@ MDyWorld::CreateUiObject(
   return this->mUiInstanceContainer.CreateUiObject(keyName, refDescriptor, insertZorder);
 }
 
+std::optional<DDyUiBinder> MDyWorld::GetUiObject(_MIN_ const std::string& iUiName)
+{
+  return this->mUiInstanceContainer.GetUiObject(iUiName);
+}
+
 EDySuccess MDyWorld::DestoryUiObject(_MINOUT_ DDyUiBinder& iRefUi)
 {
   // Check
@@ -354,6 +359,7 @@ EDySuccess MDyWorld::MDY_PRIVATE(RemoveLevel)()
   this->mActivatedOnRenderingCameras.clear();
   this->mActivatedModelAnimatorPtrs.clear();
   this->mActivatedSkyboxPtrList.clear();
+  this->mUiInstanceContainer.ClearGeneralUiObjectList();
 
   // Just remove script instance without `Destroy` function intentionally.
   MDyScript::GetInstance().ClearWidgetScriptGCList();

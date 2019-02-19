@@ -113,6 +113,18 @@ DDyUiBinder FDyWorldUIContainer::CreateUiObject(
   return DDyUiBinder{*object};
 }
 
+std::optional<DDyUiBinder> FDyWorldUIContainer::GetUiObject(const std::string& iUiName)
+{
+  const auto it = this->mGeneralUiWidgetMap.find(iUiName);
+  if (it == this->mGeneralUiWidgetMap.end())
+  {
+    MDY_LOG_ERROR("Failed to get {} Ui Object. Could not found matched UI Object.", iUiName);
+    return std::nullopt;
+  }
+
+  return DDyUiBinder{*it->second};
+}
+
 EDySuccess FDyWorldUIContainer::RemoveUiObject(_MIN_ const std::string& iUiName)
 {
   const auto it = this->mGeneralUiWidgetMap.find(iUiName);
@@ -124,6 +136,11 @@ EDySuccess FDyWorldUIContainer::RemoveUiObject(_MIN_ const std::string& iUiName)
 
   this->mGeneralUiWidgetMap.erase(it);
   return DY_SUCCESS;
+}
+
+void FDyWorldUIContainer::ClearGeneralUiObjectList()
+{
+  this->mGeneralUiWidgetMap.clear();
 }
 
 std::vector<NotNull<FDyUiWidget*>>& FDyWorldUIContainer::GetActivatedUiWidgetList() noexcept

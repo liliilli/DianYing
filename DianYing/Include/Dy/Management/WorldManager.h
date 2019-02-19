@@ -100,7 +100,8 @@ public:
       _MIN_ const std::string& iNewCustomizedName = "",
       _MIN_ bool isForcedZOrder = false,
       _MIN_ TU32 ZOrder = 0);
-
+  /// @brief Get UI Object as binder.
+  MDY_NODISCARD std::optional<DDyUiBinder> GetUiObject(_MIN_ const std::string& iUiName);
   /// @brief Destroy UI Object.
   EDySuccess DestoryUiObject(_MINOUT_ DDyUiBinder& iRefUi);
   /// @brief Destroy UI Object.

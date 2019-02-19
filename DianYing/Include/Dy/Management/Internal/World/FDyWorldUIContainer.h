@@ -58,8 +58,12 @@ public:
     _MIN_ const std::string& iUiName, 
     _MIN_ const PDyMetaWidgetRootDescriptor& iRoot,
     _MIN_ TU32 ZOrder);
+  /// @brief Get Ui Object as a binder.
+  MDY_NODISCARD std::optional<DDyUiBinder> GetUiObject(_MIN_ const std::string& iUiName);
   /// @brief Remove UI Widget.
   MDY_NODISCARD EDySuccess RemoveUiObject(_MIN_ const std::string& iUiName);
+  /// @brief Clear & Remove Ui general object list.
+  void ClearGeneralUiObjectList();
 
   /// @brief Get activated UI widget list.
   MDY_NODISCARD std::vector<NotNull<FDyUiWidget*>>& GetActivatedUiWidgetList() noexcept; 
