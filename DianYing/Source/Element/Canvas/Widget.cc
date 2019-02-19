@@ -37,6 +37,7 @@ FDyUiWidget::FDyUiWidget(_MIN_ const PDyMetaWidgetRootDescriptor& widgetMetaDesc
   // @TODO TEMPORARY CODE
   this->SetFrameSize      ({ 1280, 720 });
   this->SetRelativePosition({ 640, 360 });
+  this->mZOrder = widgetMetaDesc.mZOrder;
 
   // (2) Create UI objects.
   for (const auto& [specifier, objectMetaInfoPair] : widgetMetaDesc.mChildComponentList)

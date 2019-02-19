@@ -36,6 +36,11 @@ EDySuccess FDyWorldUIContainer::TryCreateDebugUi()
   return DY_SUCCESS;
 }
 
+FDyUiWidget* FDyWorldUIContainer::GetPtrDebugUi() const noexcept
+{
+  return this->mDebugUi.get();
+}
+
 EDySuccess FDyWorldUIContainer::TryRemoveDebugUi()
 {
   if (MDY_CHECK_ISEMPTY(this->mDebugUi)) { return DY_FAILURE; }
@@ -63,6 +68,11 @@ EDySuccess FDyWorldUIContainer::TryCreateLoadingUi()
   return DY_SUCCESS;
 }
 
+FDyUiWidget* FDyWorldUIContainer::GetPtrLoadingUi() const noexcept
+{
+  return this->mLoadingUi.get();
+}
+
 EDySuccess FDyWorldUIContainer::TryRemoveLoadingUi()
 {
   if (MDY_CHECK_ISEMPTY(this->mLoadingUi)) { return DY_FAILURE; }
@@ -71,16 +81,9 @@ EDySuccess FDyWorldUIContainer::TryRemoveLoadingUi()
   return DY_SUCCESS;
 }
 
-void FDyWorldUIContainer::TryRenderDebugUi()
+std::vector<NotNull<FDyUiWidget*>>& FDyWorldUIContainer::GetActivatedUiWidgetList() noexcept
 {
-  if (MDY_CHECK_ISEMPTY(this->mDebugUi)) { return; }
-  this->mDebugUi->Render();
-}
-
-void FDyWorldUIContainer::TryRenderLoadingUi()
-{
-  if (MDY_CHECK_ISEMPTY(this->mLoadingUi)) { return; }
-  this->mLoadingUi->Render();
+  return this->mPtrActivatedGeneralUiWidgetList;
 }
 
 bool FDyWorldUIContainer::IsDebugUiExist() const noexcept { return MDY_CHECK_ISNOTEMPTY(this->mDebugUi); }

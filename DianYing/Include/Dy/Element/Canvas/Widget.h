@@ -50,13 +50,11 @@ public:
   /// @TODO IMPLEMENT THIS
   void Deactivate() noexcept;
 
-  ///
   /// @brief Render object.
-  ///
   void Render() override final;
 
   ///
-  /// @brief  Check FDyUiWidget is activated or not.
+  /// @brief Check FDyUiWidget is activated or not.
   /// @return Check flag for activation checking.
   ///
   MDY_NODISCARD FORCEINLINE bool IsActivated() const noexcept
@@ -82,12 +80,13 @@ public:
     return MDY_INITIALIZE_EMPTYSTR;
   }
 
-  /// @brief  Get script component pointer from script list using scriptName to verify.
+  /// @brief Get script component pointer from script list using scriptName to verify.
   /// @return The pointer instance of CDyScript. If not found, return just no value.
   MDY_NODISCARD CDyWidgetScriptBase* GetScript() noexcept;
 
-private:
+  /// @brief Create 
 
+private:
   DDy3StateBool                     mActivationFlag = {};
   /// Parent FDyUiWidget raw-pointer data.
   FDyUiWidget*                      mParentFDyUiWidgetRawPtr= MDY_INITIALIZE_NULL;

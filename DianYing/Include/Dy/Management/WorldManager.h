@@ -139,8 +139,6 @@ public:
   /// @brief Try remove debug ui layout from screen. \n
   /// If already removed, just return DY_FAILURE
   MDY_NODISCARD EDySuccess TryRemoveDebugUi();
-  /// @brief Try draw debug ui if exist.
-  void MDY_PRIVATE(TryRenderDebugUi)();
 
   /// @brief Try create loading ui layout. \n
   /// If Loading UI Widget meta information is not exist, just return DY_FAILURE doing nothing.
@@ -150,8 +148,6 @@ public:
   /// @brief Try remove debug ui layout from screen. \n
   /// If already remove or not exist, return DY_FAILURE.
   MDY_NODISCARD EDySuccess  TryRemoveLoadingUi();
-  /// @brief Try draw loading ui if exist.
-  void MDY_PRIVATE(TryRenderLoadingUi)();
 
   /// @brief
   MDY_NODISCARD bool CheckCreationActorExist() const noexcept;
@@ -179,6 +175,9 @@ public:
   void MDY_PRIVATE(BindActiveSkybox)(_MIN_ CDySkybox& iRefComponent);
   /// @brief Unbind deactivated skybox component. This function must be called in `CDySkybox`.
   EDySuccess MDY_PRIVATE(UnbindActiveSkybox)(_MIN_ CDySkybox& iRefComponent);
+
+  /// @brief Get Internal World UI container list.
+  FDyWorldUIContainer& MDY_PRIVATE(GetUiContainer)() noexcept;
 
 #ifdef false
   ///

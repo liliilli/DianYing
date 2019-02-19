@@ -409,11 +409,6 @@ EDySuccess MDyWorld::TryRemoveDebugUi()
   return this->mUiInstanceContainer.TryRemoveDebugUi();
 }
 
-void MDyWorld::MDY_PRIVATE(TryRenderDebugUi)()
-{
-  this->mUiInstanceContainer.TryRenderDebugUi();
-}
-
 EDySuccess MDyWorld::TryCreateLoadingUi()
 {
   return this->mUiInstanceContainer.TryCreateLoadingUi();
@@ -427,11 +422,6 @@ bool MDyWorld::IsLoadingUiExist() const noexcept
 EDySuccess MDyWorld::TryRemoveLoadingUi()
 {
   return this->mUiInstanceContainer.TryRemoveLoadingUi();
-}
-
-void MDyWorld::MDY_PRIVATE(TryRenderLoadingUi)()
-{
-  this->mUiInstanceContainer.TryRenderLoadingUi();
 }
 
 bool MDyWorld::CheckCreationActorExist() const noexcept
@@ -564,6 +554,11 @@ EDySuccess MDyWorld::__UnbindActiveSkybox(_MIN_ CDySkybox& iRefComponent)
   // Erase pointer of found component.
   this->mActivatedSkyboxPtrList.erase(it);
   return DY_SUCCESS;
+}
+
+FDyWorldUIContainer& MDyWorld::MDY_PRIVATE(GetUiContainer)() noexcept
+{
+  return this->mUiInstanceContainer;
 }
 
 #ifdef false

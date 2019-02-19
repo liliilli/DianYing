@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Core/Resource/Type/TDyResourceBinder.h>
+#include <Dy/Helper/Pointer.h>
 
 //!
 //! Forward declaration
@@ -21,8 +22,9 @@
 
 namespace dy
 {
-class   CDyCamera;
-class   CDyModelRenderer;
+class CDyCamera;
+class CDyModelRenderer;
+class FDyUiObject;
 } /// ::dy namespace
 
 //!
@@ -40,7 +42,7 @@ public:
   ~FDyUIBasicRenderer();
 
   /// @brief Rendering deferred contexts to framebuffer.
-  void RenderScreen();
+  void RenderScreen(_MIN_ std::vector<NotNull<FDyUiObject*>>& uiRenderList);
 
   /// @brief Clear properties of given framebuffer.
   void Clear();

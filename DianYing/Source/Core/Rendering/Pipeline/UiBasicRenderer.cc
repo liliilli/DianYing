@@ -33,17 +33,16 @@ FDyUIBasicRenderer::FDyUIBasicRenderer()
 FDyUIBasicRenderer::~FDyUIBasicRenderer()
 { }
 
-void FDyUIBasicRenderer::RenderScreen()
+void FDyUIBasicRenderer::RenderScreen(_MIN_ std::vector<NotNull<FDyUiObject*>>& uiRenderList)
 {
-  glBindFramebuffer(GL_FRAMEBUFFER, this->mBinderFrameBuffer->GetFrameBufferId());
-
+  this->mBinderFrameBuffer->BindFrameBuffer();
+  
+  for (auto& ptrRenderUi : uiRenderList)
   {
-    auto& refWorld = MDyWorld::GetInstance();
-    if (refWorld.IsLoadingUiExist() == true)  { refWorld.MDY_PRIVATE(TryRenderLoadingUi)(); }
-    if (refWorld.IsDebugUiExist() == true)    { refWorld.MDY_PRIVATE(TryRenderDebugUi)(); }
+    ptrRenderUi->Render();
   }
-
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  
+  this->mBinderFrameBuffer->UnbindFrameBuffer();
 }
 
 void FDyUIBasicRenderer::Clear()

@@ -41,6 +41,7 @@ class   CDyModelRenderer;
 class   CDyDirectionalLight;
 class   CDyPhysicsCollider;
 class   CDySkybox;
+class   FDyUiObject;
 } /// ::dy namespace
 
 namespace dy::editor
@@ -136,10 +137,12 @@ private:
   >;
 
   using TDrawColliderItem = std::pair<NotNull<CDyPhysicsCollider*>, DDyMatrix4x4>; 
+  using TUiDrawCallItem = NotNull<FDyUiObject*>;
 
   std::vector<TMeshDrawCallItem> mOpaqueMeshDrawingList = {};
   std::vector<TMeshDrawCallItem> mTranslucentMeshDrawingList = {};
   std::vector<TDrawColliderItem> mDebugColliderDrawingList = {};
+  std::vector<TUiDrawCallItem>   mUiObjectDrawingList = {};
 
   CDyDirectionalLight* mMainDirectionalLight   = nullptr;
   CDyDirectionalLight* mMainDirectionalShadow  = nullptr;

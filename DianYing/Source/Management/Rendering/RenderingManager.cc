@@ -205,6 +205,29 @@ void MDyRendering::PreRender(_MIN_ TF32 dt)
     this->mPtrRequiredSkybox = *optSkybox;
   }
 
+  // Set ordering of UI (If Debug and Loading UI is exist, also include them but as highest order. 
+  // (so rendered as final.)
+  auto& uiContainer = refWorld.MDY_PRIVATE(GetUiContainer)();
+
+  // Order UI.
+  auto& candidateUIList = uiContainer.GetActivatedUiWidgetList();
+  std::sort(
+      MDY_BIND_BEGIN_END(candidateUIList), 
+      [](const auto& lhs, const auto& rhs) { return lhs->mZOrder > rhs->mZOrder; });
+  this->mUiObjectDrawingList.insert(this->mUiObjectDrawingList.end(), MDY_BIND_BEGIN_END(candidateUIList));
+
+  if (uiContainer.IsLoadingUiExist() == true)
+  {
+    auto* ptrLoadingUi = uiContainer.GetPtrLoadingUi();
+    MDY_ASSERT_FORCE(ptrLoadingUi != nullptr, "Unexpected error occurred.");
+    this->mUiObjectDrawingList.emplace_back(DyMakeNotNull(ptrLoadingUi));
+  }
+  if (uiContainer.IsDebugUiExist() == true)
+  {
+    auto* ptrDebugUi = uiContainer.GetPtrDebugUi();
+    MDY_ASSERT_FORCE(ptrDebugUi != nullptr, "Unexpected error occurred.");
+    this->mUiObjectDrawingList.emplace_back(DyMakeNotNull(ptrDebugUi));
+  }
 }
 
 void MDyRendering::SetupDrawModelTaskQueue()
@@ -448,7 +471,11 @@ void MDyRendering::RenderDebugInformation()
 
 void MDyRendering::RenderUIInformation()
 {
-  if (MDY_CHECK_ISNOTEMPTY(this->mUiBasicRenderer)) { this->mUiBasicRenderer->RenderScreen(); }
+  if (MDY_CHECK_ISNOTEMPTY(this->mUiBasicRenderer)) 
+  { 
+    this->mUiBasicRenderer->RenderScreen(this->mUiObjectDrawingList); 
+  }
+  this->mUiObjectDrawingList.clear();
 }
 
 void MDyRendering::Integrate()
@@ -465,8 +492,10 @@ void MDyRendering::MDY_PRIVATE(RenderLoading)()
   if (MDY_CHECK_ISNOTEMPTY(this->mUiBasicRenderer))       { this->mUiBasicRenderer->Clear(); }
   if (MDY_CHECK_ISNOTEMPTY(this->mFinalDisplayRenderer))  { this->mFinalDisplayRenderer->Clear(); }
 
-  if (MDY_CHECK_ISNOTEMPTY(this->mUiBasicRenderer))       { this->mUiBasicRenderer->RenderScreen(); }
+  if (MDY_CHECK_ISNOTEMPTY(this->mUiBasicRenderer))       { this->mUiBasicRenderer->RenderScreen(this->mUiObjectDrawingList); }
   if (MDY_CHECK_ISNOTEMPTY(this->mFinalDisplayRenderer))  { this->mFinalDisplayRenderer->RenderScreen(); }
+
+  this->mUiObjectDrawingList.clear();
 }
 
 CDyDirectionalLight* MDyRendering::GetPtrMainDirectionalLight() const noexcept
