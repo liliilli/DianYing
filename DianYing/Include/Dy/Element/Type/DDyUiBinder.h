@@ -63,6 +63,8 @@ private:
   FDyUiObject* mPtrUiObject = nullptr;
 };
 
+static_assert(std::is_destructible_v<DDyUiBinder> == true, "");
+
 } /// ::dy namespace
 
 #endif // !GUARD_DY_ELEMENT_TYPE_DDyUiBinder_H

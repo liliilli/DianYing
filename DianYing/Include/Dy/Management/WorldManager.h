@@ -16,6 +16,7 @@
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Management/Internal/World/FDyWorldUIContainer.h>
 #include <Dy/Element/Type/DDyActorBinder.h>
+#include <Dy/Element/Type/DDyUiBinder.h>
 #include <Dy/Element/Type/PDyActorCreationDescriptor.h>
 #include <Dy/Element/Interface/IDyUpdatable.h>
 #include <Dy/Element/Level.h>
