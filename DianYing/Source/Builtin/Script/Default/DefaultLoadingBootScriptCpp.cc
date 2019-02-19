@@ -115,6 +115,8 @@ FDyDefaultLoadingBootScript::FDyDefaultLoadingBootScript()
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLAttachment,  "dyBtAtWBOITWeight"sv);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLAttachment,  "dyBtAtSSAOOutput"sv);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLAttachment,  "dyBtAtSSAOOutputFinal"sv);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLAttachment,  "dyBtAtUiId"sv);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLAttachment,  "dyBtAtActorId"sv);
 }
 
 } /// ::dy namespace

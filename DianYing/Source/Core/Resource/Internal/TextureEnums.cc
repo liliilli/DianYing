@@ -104,6 +104,7 @@ GLenum DyGlGetLowDataFormatType(_MIN_ EDyGlBufferDataInternalFormat iValue) noex
   switch (iValue)
   {
   case EDyGlBufferDataInternalFormat::RED8:   return GL_R8;
+  case EDyGlBufferDataInternalFormat::RED32UnsignedInt: return GL_R32UI;
   case EDyGlBufferDataInternalFormat::RG8:    return GL_RG8;
   case EDyGlBufferDataInternalFormat::RGB8:   return GL_RGB8;
   case EDyGlBufferDataInternalFormat::RGBA8:  return GL_RGBA8;

@@ -256,15 +256,6 @@ private:
   void pfMoveActorToGc(_MIN_ NotNull<FDyActor*> actorRawPtr) noexcept;
 
   ///
-  /// @brief  Unenroll activated FDyPawn raw pointer from list.
-  /// raw pointer value will be nullptr at first, and erase actual memory space at next frame.
-  /// erasion pawn candidate index list will be cleared when next frame starts.
-  ///
-  /// @param  index Index to erase.
-  ///
-  void pfUnenrollActiveScript(_MIN_ TI32 index) noexcept;
-
-  ///
   /// @brief
   /// @param  index
   /// @return

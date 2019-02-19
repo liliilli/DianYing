@@ -177,9 +177,11 @@
     <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAttachmentPosition.cc" />
     <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAttachmentSpecular.cc" />
     <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAttachmentUnlit.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\SceneIntegration\FDyBtAtActorId.cc" />
     <ClCompile Include="Source\Builtin\Attachment\SceneIntegration\FDyBtAtOpaqueOutput.cc" />
     <ClCompile Include="Source\Builtin\Attachment\SceneIntegration\FDyBtAtLevelOutput.cc" />
     <ClCompile Include="Source\Builtin\Attachment\UIIntegration\FDyBtAttUiBasic.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\UIIntegration\FDyBtAtUiId.cc" />
     <ClCompile Include="Source\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITColor.cc" />
     <ClCompile Include="Source\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITWeight.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\BasicShadow\FDyBtFBBasicShadow.cc" />
@@ -585,9 +587,11 @@
     <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAttachmentPosition.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAttachmentSpecular.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAttachmentUnlit.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\SceneIntegration\FDyBtAtActorId.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\SceneIntegration\FDyBtAtOpaqueOutput.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\SceneIntegration\FDyBtAttOutput.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\UIIntegration\FDyBtAttUiBasic.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\UIIntegration\FDyBtAtUiId.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITColor.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITWeight.h" />
     <ClInclude Include="Include\Dy\Builtin\Constant\CSM.h" />
