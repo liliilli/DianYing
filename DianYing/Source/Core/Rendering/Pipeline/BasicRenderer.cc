@@ -119,8 +119,6 @@ void FDyBasicRenderer::RenderScreen(
 
   shaderBinder->UseShader();
   shaderBinder->TryUpdateUniform<EDyUniformVariableType::Matrix4>("uModelMatrix", refModelMatrix);
-  shaderBinder->TryUpdateUniform<EDyUniformVariableType::Matrix4>("modelMatrix", refModelMatrix);
-  shaderBinder->TryUpdateUniform<EDyUniformVariableType::Matrix3>("uRotationMatrix", DDyMatrix3x3{refModelMatrix});
   shaderBinder->TryUpdateUniform<EDyUniformVariableType::Float>("uBtDyActorId", TF32(refActor.GetId()));
 
   // If this model has animator, update uniform.
