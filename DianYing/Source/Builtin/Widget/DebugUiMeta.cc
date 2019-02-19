@@ -22,7 +22,7 @@ MDY_SET_IMMUTABLE_STRING(sBuffer, R"dy(
 {
   "Meta":
   {
-    "Name": "DebugUi", "ZOrder" : 101,
+    "Name": "DebugUi", "ZOrder" : 102, "IsUsingScript": true,
     "Script": {
       "Type" : "Script", "Activated" : true,
       "Details" : { "Specifier": "FDyBuiltinDebugUiScript" }

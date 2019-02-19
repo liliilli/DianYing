@@ -216,6 +216,7 @@ void MDyRendering::PreRender(_MIN_ TF32 dt)
       [](const auto& lhs, const auto& rhs) { return lhs->mZOrder > rhs->mZOrder; });
   this->mUiObjectDrawingList.insert(this->mUiObjectDrawingList.end(), MDY_BIND_BEGIN_END(candidateUIList));
 
+#ifdef false
   if (uiContainer.IsLoadingUiExist() == true)
   {
     auto* ptrLoadingUi = uiContainer.GetPtrLoadingUi();
@@ -228,6 +229,7 @@ void MDyRendering::PreRender(_MIN_ TF32 dt)
     MDY_ASSERT_FORCE(ptrDebugUi != nullptr, "Unexpected error occurred.");
     this->mUiObjectDrawingList.emplace_back(DyMakeNotNull(ptrDebugUi));
   }
+#endif
 }
 
 void MDyRendering::SetupDrawModelTaskQueue()

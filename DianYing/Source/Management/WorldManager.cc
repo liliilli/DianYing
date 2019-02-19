@@ -234,7 +234,7 @@ void MDyWorld::DestroyActor(_MIN_ FDyActor& iRefActor)
 std::optional<DDyUiBinder> 
 MDyWorld::CreateUiObject(
     _MIN_ const std::string& iUiName, 
-    _MIN_ bool isForced, 
+    _MIN_ const std::string& iNewCustomizedName, 
     _MIN_ bool isForcedZOrder,
     _MIN_ TU32 ZOrder)
 {
@@ -246,7 +246,7 @@ MDyWorld::CreateUiObject(
     return std::nullopt;
   }
 
-  if (this->mUiInstanceContainer.IsUiObjectExist(iUiName) == true && isForced == false)
+  if (this->mUiInstanceContainer.IsUiObjectExist(iUiName) == true && iNewCustomizedName.empty() == true)
   {
     MDY_LOG_ERROR(
         "Failed to create UI Widget object, meta information is exist but already exist on Container. {}", 
@@ -256,7 +256,7 @@ MDyWorld::CreateUiObject(
 
   // Get anyway
   const auto& refDescriptor = refMetaInfo.GetWidgetMetaInformation(iUiName);
-  const auto keyName = this->mUiInstanceContainer.TryGetGeneratedName(refDescriptor.mWidgetSpecifierName);
+  const auto keyName = iNewCustomizedName.empty() == true ? refDescriptor.mWidgetSpecifierName : iNewCustomizedName;
 
   // If zorder must be customized, do that.
   TU32 insertZorder = refDescriptor.mZOrder;
@@ -611,6 +611,16 @@ EDySuccess MDyWorld::__UnbindActiveSkybox(_MIN_ CDySkybox& iRefComponent)
 FDyWorldUIContainer& MDyWorld::MDY_PRIVATE(GetUiContainer)() noexcept
 {
   return this->mUiInstanceContainer;
+}
+
+void MDyWorld::MDY_PRIVATE(BindActiveUiObject)(_MIN_ FDyUiWidget& iRefWidget)
+{
+  this->mUiInstanceContainer.BindActiveUiObject(iRefWidget);
+}
+
+EDySuccess MDyWorld::MDY_PRIVATE(UnbindActiveUiObject)(_MIN_ FDyUiWidget& iRefWidget)
+{
+  return this->mUiInstanceContainer.UnbindActiveUiObject(iRefWidget);
 }
 
 #ifdef false

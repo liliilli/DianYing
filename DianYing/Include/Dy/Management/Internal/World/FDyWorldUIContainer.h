@@ -23,7 +23,7 @@ namespace dy
 /// @class FDyWorldUIContainer
 /// @brief UI Container type.
 ///
-class FDyWorldUIContainer final : public FDyNameGenerator
+class FDyWorldUIContainer final 
 {
 public:
   using TUiWidgetMap = std::unordered_map<std::string, std::unique_ptr<FDyUiWidget>>;
@@ -63,6 +63,12 @@ public:
 
   /// @brief Get activated UI widget list.
   MDY_NODISCARD std::vector<NotNull<FDyUiWidget*>>& GetActivatedUiWidgetList() noexcept; 
+
+  /// @brief Bind (Enroll) active Ui object (widget) into internal container.
+  /// This function must be called in `FDyUiWidget`.
+  void BindActiveUiObject(_MIN_ FDyUiWidget& iRefWidget);
+  /// @brief Unbind deactivated ui object component. This function must be called in `FDyUiWidget`.
+  MDY_NODISCARD EDySuccess UnbindActiveUiObject(_MIN_ FDyUiWidget& iRefWidget);
 
 private:
   std::unique_ptr<FDyUiWidget> mDebugUi   = MDY_INITIALIZE_NULL;

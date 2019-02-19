@@ -69,6 +69,9 @@ public:
   void MDY_PRIVATE(SetUpdateRendererFlag)(_MIN_ bool iIsActivated) noexcept;
 
 private:
+  void TryActivateInstance() override final;
+  void TryDeactivateInstance() override final;
+
   /// Tint color for image rendering (with alpha)
   DDyColorRGBA      mTintColor = DDyColorRGBA::White;
   /// Size to content.

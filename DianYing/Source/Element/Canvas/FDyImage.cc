@@ -125,4 +125,14 @@ void FDyImage::MDY_PRIVATE(SetUpdateRendererFlag)(_MIN_ bool iIsActivated) noexc
   }
 }
 
+void FDyImage::TryActivateInstance()
+{
+
+}
+
+void FDyImage::TryDeactivateInstance()
+{
+
+}
+
 } /// ::dy namespace

@@ -42,6 +42,16 @@ EDySuccess FDyBasicGaugeBar::Initialize(const PDyMetaWidgetBarDescriptor& object
   return DY_SUCCESS;
 }
 
+void FDyBasicGaugeBar::TryActivateInstance()
+{
+
+}
+
+void FDyBasicGaugeBar::TryDeactivateInstance()
+{
+
+}
+
 void FDyBasicGaugeBar::Release()
 {
   this->mRenderer.Release();

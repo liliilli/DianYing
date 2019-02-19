@@ -135,6 +135,9 @@ public:
   MDY_NODISCARD std::string ToString() override;
 
 private:
+  void TryActivateInstance() override final;
+  void TryDeactivateInstance() override final;
+
   /// @brief Set transient variable, `mValues::mPercentage`.
   void pUpdatePercentage();
 

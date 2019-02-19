@@ -135,6 +135,9 @@ public:
   void Render() override final;
 
 private:
+  void TryActivateInstance() override final;
+  void TryDeactivateInstance() override final;
+
   /// Text to display on screen. String must be following UTF-8 encoding.
   DDyString         mTextString       = {""};
   /// Text container instance to display font.

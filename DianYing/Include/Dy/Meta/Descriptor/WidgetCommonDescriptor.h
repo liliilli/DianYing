@@ -92,6 +92,8 @@ struct PDyMetaWidgetRootDescriptor final : public PDyMetaWidgetChildableBaseDesc
   std::string mWidgetSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
   /// Zorder value for ordering UI rendering.
   TU32        mZOrder = 0;
+  /// Using script.
+  bool        mIsUsingScript = false;
   /// Script component variable.
   PDyScriptComponentMetaInfo mScriptReference = {};
 

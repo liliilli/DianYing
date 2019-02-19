@@ -28,7 +28,7 @@
 #include <Dy/Management/WindowManager.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Management/ScriptManager.h>
-
+#include <Dy/Management/WorldManager.h>
 
 namespace dy
 {
@@ -64,16 +64,24 @@ FDyUiWidget::FDyUiWidget(_MIN_ const PDyMetaWidgetRootDescriptor& widgetMetaDesc
   }
 
   // (3) Make script instance following meta information.
-  this->pSetObjectName(widgetMetaDesc.mWidgetSpecifierName);
-  if (const auto& scriptName = widgetMetaDesc.mScriptReference.mDetails.mSpecifierName;
-      scriptName.empty() == false)
+  if (widgetMetaDesc.mIsUsingScript == true)
   {
-    this->mWidgetScript = std::make_unique<CDyWidgetScript>(scriptName, *this);
+    this->pSetObjectName(widgetMetaDesc.mWidgetSpecifierName);
+    if (const auto& scriptName = widgetMetaDesc.mScriptReference.mDetails.mSpecifierName;
+        scriptName.empty() == false)
+    {
+      this->mWidgetScript = std::make_unique<CDyWidgetScript>(scriptName, *this);
+    }
   }
+
+  // (4) Activate?
+  this->Activate();
 }
 
 FDyUiWidget::~FDyUiWidget()
 {
+  if (this->IsActivated() == true) { this->Deactivate(); }
+
   // If there are binder to being bound with this, detach them from this.
   if (this->mBoundUiBinderList.empty() == false)
   {
@@ -106,6 +114,18 @@ void FDyUiWidget::__TryDetachBinderFromBinder(DDyUiBinder& iRefUiBinder)
 void FDyUiWidget::__SetName(_MIN_ const std::string& iNewName)
 {
   this->pSetObjectName(iNewName);
+}
+
+void FDyUiWidget::TryActivateInstance()
+{
+  auto& refWorld = MDyWorld::GetInstance();
+  refWorld.MDY_PRIVATE(BindActiveUiObject)(*this);
+}
+
+void FDyUiWidget::TryDeactivateInstance()
+{
+  auto& refWorld = MDyWorld::GetInstance();
+  refWorld.MDY_PRIVATE(UnbindActiveUiObject)(*this);
 }
 
 } /// ::dy namespace

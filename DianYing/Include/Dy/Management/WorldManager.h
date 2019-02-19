@@ -97,7 +97,7 @@ public:
   /// If ui object wraps over exist Ui Object, but flag is true, create anyway with auto-generated UI name.
   std::optional<DDyUiBinder> CreateUiObject(
       _MIN_ const std::string& iUiName,
-      _MIN_ bool isForced = false,
+      _MIN_ const std::string& iNewCustomizedName = "",
       _MIN_ bool isForcedZOrder = false,
       _MIN_ TU32 ZOrder = 0);
 
@@ -192,6 +192,11 @@ public:
 
   /// @brief Get Internal World UI container list.
   FDyWorldUIContainer& MDY_PRIVATE(GetUiContainer)() noexcept;
+  /// @brief Bind (Enroll) active Ui object (widget) into internal container.
+  /// This function must be called in `FDyUiWidget`.
+  void MDY_PRIVATE(BindActiveUiObject)(_MIN_ FDyUiWidget& iRefWidget);
+  /// @brief Unbind deactivated ui object component. This function must be called in `FDyUiWidget`.
+  EDySuccess MDY_PRIVATE(UnbindActiveUiObject)(_MIN_ FDyUiWidget& iRefWidget);
 
 #ifdef false
   ///

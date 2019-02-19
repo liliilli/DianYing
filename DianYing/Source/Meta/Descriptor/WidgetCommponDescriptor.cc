@@ -63,7 +63,12 @@ PDyMetaWidgetRootDescriptor::CreateMetaInformation(_MIN_ const nlohmann::json& i
 
   DyJsonGetValueFromTo(itemAtlas, sHeader_Name,   instance->mWidgetSpecifierName);
   DyJsonGetValueFromTo(itemAtlas, "ZOrder",       instance->mZOrder);
-  DyJsonGetValueFromTo(itemAtlas, sHeader_Script, instance->mScriptReference);
+  DyJsonGetValueFromTo(itemAtlas, "IsUsingScript",instance->mIsUsingScript);
+
+  if (instance->mIsUsingScript == true)
+  {
+    DyJsonGetValueFromTo(itemAtlas, sHeader_Script, instance->mScriptReference);
+  }
 
   return instance;
 }

@@ -18,6 +18,7 @@
 #include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Management/ScriptManager.h>
 #include <Dy/Element/Type/DDyUiBinder.h>
+#include "Dy/Helper/System/Idioms.h"
 
 namespace dy
 {
@@ -34,6 +35,7 @@ EDySuccess FDyWorldUIContainer::TryCreateDebugUi()
 
   this->mDebugUi->SetPropagateMode(true, EDySearchMode::Recursive);
   this->mDebugUi->TryPropagatePositionToChildren();
+  this->mDebugUi->SetupFlagAsParent(true);
   return DY_SUCCESS;
 }
 
@@ -66,6 +68,7 @@ EDySuccess FDyWorldUIContainer::TryCreateLoadingUi()
   this->mLoadingUi = std::make_unique<FDyUiWidget>(*MDyMetaInfo::GetInstance().MDY_PRIVATE(TryGetLoadingWidgetMetaLoading)());
   this->mLoadingUi->SetPropagateMode(true, EDySearchMode::Recursive);
   this->mLoadingUi->TryPropagatePositionToChildren();
+  this->mLoadingUi->SetupFlagAsParent(true);
   return DY_SUCCESS;
 }
 
@@ -102,6 +105,7 @@ DDyUiBinder FDyWorldUIContainer::CreateUiObject(
 
   object->MDY_PRIVATE(SetName)(key);
   object->mZOrder = ZOrder;
+  object->SetupFlagAsParent(true);
 
   MDyScript::GetInstance().UpdateWidgetScript(0.0f, EDyScriptState::CalledNothing);
   MDyScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
@@ -125,6 +129,22 @@ EDySuccess FDyWorldUIContainer::RemoveUiObject(_MIN_ const std::string& iUiName)
 std::vector<NotNull<FDyUiWidget*>>& FDyWorldUIContainer::GetActivatedUiWidgetList() noexcept
 {
   return this->mPtrActivatedGeneralUiWidgetList;
+}
+
+void FDyWorldUIContainer::BindActiveUiObject(_MIN_ FDyUiWidget& iRefWidget)
+{
+  this->mPtrActivatedGeneralUiWidgetList.emplace_back(DyMakeNotNull(&iRefWidget));
+}
+
+EDySuccess FDyWorldUIContainer::UnbindActiveUiObject(_MIN_ FDyUiWidget& iRefWidget)
+{
+  const auto it = std::find_if(
+      MDY_BIND_BEGIN_END(this->mPtrActivatedGeneralUiWidgetList), 
+      [ptr = &iRefWidget](const auto& ptrWidget) { return ptrWidget == ptr; });
+  if (it == this->mPtrActivatedGeneralUiWidgetList.end()) { return DY_FAILURE; }
+  
+  DyFastErase(this->mPtrActivatedGeneralUiWidgetList, it);
+  return DY_SUCCESS;
 }
 
 bool FDyWorldUIContainer::IsDebugUiExist() const noexcept { return MDY_CHECK_ISNOTEMPTY(this->mDebugUi); }

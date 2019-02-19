@@ -54,15 +54,6 @@ public:
   /// @brief Render object.
   void Render() override final;
 
-  ///
-  /// @brief Check FDyUiWidget is activated or not.
-  /// @return Check flag for activation checking.
-  ///
-  MDY_NODISCARD FORCEINLINE bool IsActivated() const noexcept
-  {
-    return this->mActivationFlag.GetOutput();
-  }
-
   /// @brief Get present actor name on runtime.
   /// @return Actor name of this instance.
   MDY_NODISCARD const std::string& GetActorName() const noexcept
@@ -70,10 +61,8 @@ public:
     return this->pGetObjectName();
   }
 
-  ///
   /// @brief Return actor's information
   /// @return information string.
-  ///
   MDY_NODISCARD std::string ToString() override
   {
     return MDY_INITIALIZE_EMPTYSTR;
@@ -94,7 +83,9 @@ public:
   void MDY_PRIVATE(SetName)(_MIN_ const std::string& iNewName);
 
 private:
-  DDy3StateBool                     mActivationFlag = {};
+  void TryActivateInstance() override final;
+  void TryDeactivateInstance() override final;
+
   /// Parent FDyUiWidget raw-pointer data.
   FDyUiWidget*                      mParentFDyUiWidgetRawPtr= MDY_INITIALIZE_NULL;
   /// Component list (randomly) which attached to FDyUiWidget instance (this!)

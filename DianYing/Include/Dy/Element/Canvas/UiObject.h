@@ -17,6 +17,7 @@
 #include <Dy/Helper/Type/Vector2.h>
 #include <Dy/Helper/Type/VectorInt2.h>
 #include <Dy/Meta/Type/EDyWidgetTypes.h>
+#include <Dy/Element/Type/FDy3WaySwitcher.h>
 
 //!
 //! Forward declaration
@@ -34,11 +35,9 @@ class FDyUiObjectChildrenable;
 namespace dy
 {
 
-///
 /// @class FDyUiObject
-/// @brief
-///
-class FDyUiObject : public FDyRenderableObject
+/// @brief Ui object type.
+class FDyUiObject : public FDyRenderableObject, public FDy3WaySwitcher
 {
 public:
   FDyUiObject() = default;

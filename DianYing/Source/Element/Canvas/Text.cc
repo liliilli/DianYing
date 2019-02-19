@@ -142,4 +142,14 @@ void FDyText::Render()
   this->mRenderer.Render();
 }
 
+void FDyText::TryActivateInstance()
+{
+
+}
+
+void FDyText::TryDeactivateInstance()
+{
+
+}
+
 } /// ::dy namespace
