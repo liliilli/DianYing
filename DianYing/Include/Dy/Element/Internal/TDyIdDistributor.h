@@ -52,7 +52,7 @@ public:
     if (this->mIsGivenIdValid == false) { return; }
 
     this->mIsGivenIdValid = false;
-    sUsingIdList.erase(this->mGivenId);
+    GetContainer().erase(this->mGivenId);
     this->mGivenId = kExclusiveId;
   }
 
@@ -63,14 +63,15 @@ public:
 
     // Loop to find available id.
     while(sIdCounter == kExclusiveId 
-      ||  sUsingIdList.count(sIdCounter) >= 1) 
+      ||  GetContainer().count(sIdCounter) >= 1) 
     { 
       ++sIdCounter; 
     }
 
     // Set
     this->mGivenId = sIdCounter++;
-    sUsingIdList.emplace(this->mGivenId);
+    this->mIsGivenIdValid = true;
+    GetContainer().emplace(this->mGivenId);
   }
 
   MDY_NODISCARD const TIdType& GetId() { return this->mGivenId; }
@@ -84,7 +85,14 @@ protected:
   bool    mIsGivenIdValid = false;
 
 private:
-  inline static std::unordered_set<TIdType> sUsingIdList {};
+  /// Do not convert this to `inline static` or `static` because
+  /// access violation might be occurred.
+  MDY_NODISCARD std::unordered_set<TIdType>& GetContainer()
+  {
+    static std::unordered_set<TIdType> sUsingIdList;
+    return sUsingIdList;
+  }
+
   inline static TIdType sIdCounter;
 };
 
