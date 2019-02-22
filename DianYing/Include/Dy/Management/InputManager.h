@@ -63,16 +63,9 @@ public:
   MDY_NODISCARD TF32 GetAxisValue(_MIN_ const std::string& axisKeyName) noexcept;
 
   /// @brief Return present-frame mouse position.
-  MDY_NODISCARD const DDyVector2& GetPresentMousePosition() const noexcept
-  {
-    return this->mMousePresentPosition;
-  }
-
+  MDY_NODISCARD const DDyVector2& GetPresentMousePosition() const noexcept;
   /// @brief Return old-frame mouse position.
-  MDY_NODISCARD const DDyVector2& GetPresentLastPosition() const noexcept
-  {
-    return this->mMouseLastPosition;
-  }
+  MDY_NODISCARD const DDyVector2& GetPresentLastMousePosition() const noexcept;
 
   /// @brief Return original value which is not calculated and calibrated at all.
   MDY_NODISCARD TF32 GetJoystickStickValue(_MIN_ DDyClamp<TU32, 0, 5> index) const noexcept;
@@ -166,8 +159,24 @@ public:
   /// @brief Get low-level key status value.
   MDY_NODISCARD EDyInputButtonStatus MDY_PRIVATE(GetLowlevelKeyStatus)(_MIN_ EDyButton iId) noexcept;
 
+  using TPickingCallbackFunction = void(*)(FDyActor*);
+  template <typename TType>
+  using TCPickingCallbackFunction = void(TType::*)(FDyActor*);
   /// @brief Try pick actor object and bind to input system.
   EDySuccess TryPickObject();
+  /// @brief Set picking target normal callback function.
+  void SetPickingTargetCallbackFunction(_MIN_ TPickingCallbackFunction iPtrGlobalFunction);
+  /// @brief Set picking target normal member callback function.
+  template <typename TType>
+  void SetPickingTargetCallbackFunction(
+      _MIN_ TType& iRefType, 
+      _MIN_ TCPickingCallbackFunction<TType> iPtrMemberFunction)
+  {
+    using namespace std::placeholders;
+    this->mActorPickingCallback = std::bind(iPtrMemberFunction, &iRefType, _1);
+  }
+  /// @brief Reset picking target callback function.
+  void ResetPickingTargetCallback() noexcept;
   /// @brief Get pointer of pointer of picking target variable.
   MDY_NODISCARD FDyActor** MDY_PRIVATE(GetPPtrPickingTarget)() noexcept;
 
@@ -194,7 +203,7 @@ private:
   using TActionMap  = std::unordered_map<std::string, DDyActionBindingInformation>;
 
   // Window handle pointer (temporal)
-  GLFWwindow* mPtrGlfwWindowContext = nullptr;;
+  GLFWwindow* mPtrGlfwWindowContext = nullptr;
   GLFWcursor* mGlfwWindowCursorPtr  = nullptr;
 
   TAxisMap    mBindedAxisMap        = {};
@@ -208,9 +217,11 @@ private:
   bool        mIsMouseMoved = false;
 
   /// @brief Manages mouse clicking input mode.
-  std::stack<EDyMouseMode> mPresentMouseMode;
+  std::stack<EDyMouseMode>        mPresentMouseMode;
   /// @brief Pointer of actor picking target.
-  FDyActor*   mPtrActorPickingTarget = nullptr;
+  FDyActor*                       mPtrActorPickingTarget = nullptr;
+  /// @brief Functor for actor picking in normal mode.
+  std::function<void(FDyActor*)>  mActorPickingCallback = nullptr;
 
   friend class DyEngine;
 };

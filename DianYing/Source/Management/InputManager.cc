@@ -358,6 +358,16 @@ float MDyInput::GetAxisValue(_MIN_ const std::string& axisKeyName) noexcept
   return keyIt->second.mAxisValue;
 }
 
+const DDyVector2& MDyInput::GetPresentMousePosition() const noexcept
+{
+  return this->mMousePresentPosition;
+}
+
+const DDyVector2& MDyInput::GetPresentLastMousePosition() const noexcept
+{
+  return this->mMouseLastPosition;
+}
+
 TF32 MDyInput::GetJoystickStickValue(_MIN_ DDyClamp<TU32, 0, 5> index) const noexcept
 {
   return mInputAnalogStickList[index].GetValue();
@@ -830,23 +840,48 @@ EDySuccess MDyInput::TryPickObject()
     auto& refWorld = MDyWorld::GetInstance();
     auto* ptrActor = refWorld.GetActorWithObjectId(static_cast<TU32>(pixel.ObjectID));
     if (ptrActor == nullptr)
-    {
-      /* Do nothing if not exist */
+    { /* Do nothing if not exist */
       return DY_FAILURE;
     }
     else
     {
-      if (this->mPtrActorPickingTarget != nullptr)
+      switch (this->GetMouseMode())
       {
-        this->mPtrActorPickingTarget->MDY_PRIVATE(DetachPickingTargetFromSystem)();
+      case EDyMouseMode::Normal: 
+      {
+        // If normal mode, when picking callback function is exist, 
+        // call callback function with argument.
+        if (this->mActorPickingCallback != nullptr)
+        {
+          this->mActorPickingCallback(this->mPtrActorPickingTarget);
+        }
+      } break;
+      case EDyMouseMode::Picking: 
+      {
+        // If picking mode, do fixed routine.
+        if (this->mPtrActorPickingTarget != nullptr)
+        {
+          this->mPtrActorPickingTarget->MDY_PRIVATE(DetachPickingTargetFromSystem)();
+        }
+        // Bind ptrActor as Binder type.
+        MDY_LOG_INFO_D("Picked {}", ptrActor->ToString());
+        ptrActor->MDY_PRIVATE(AttachPickingTargetFromSystem)(&this->mPtrActorPickingTarget);
+      } break;
       }
-      // Bind ptrActor as Binder type.
-      MDY_LOG_INFO_D("Picked {}", ptrActor->ToString());
-      ptrActor->MDY_PRIVATE(AttachPickingTargetFromSystem)(&this->mPtrActorPickingTarget);
     }
   }
 
   return DY_SUCCESS;
+}
+
+void MDyInput::SetPickingTargetCallbackFunction(_MIN_ TPickingCallbackFunction iPtrGlobalFunction)
+{
+  this->mActorPickingCallback = iPtrGlobalFunction;
+}
+
+void MDyInput::ResetPickingTargetCallback() noexcept
+{
+  mActorPickingCallback = nullptr;
 }
 
 FDyActor** MDyInput::MDY_PRIVATE(GetPPtrPickingTarget)() noexcept
