@@ -842,6 +842,9 @@
     <ClInclude Include="Include\Dy\Element\Internal\TDyIdDistributor.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\SceneIntegration\FDyBtAtActorId.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\UIIntegration\FDyBtAtUiId.h" />
+    <ClInclude Include="Include\Dy\Helper\Internal\FDyCallStack.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Render\DDyPixelInfo.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Render\DDyGlGlobalStatus.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

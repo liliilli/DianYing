@@ -16,6 +16,7 @@
 #include <queue>
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
+#include <Dy/Management/Type/Render/DDyModelHandler.h>
 #include <Dy/Core/Resource/Object/Grid.h>
 #include <Dy/Core/Rendering/Pipeline/BasicRenderer.h>
 #include <Dy/Core/Rendering/Pipeline/FinalScreenDisplayRenderer.h>
@@ -24,10 +25,11 @@
 #include <Dy/Core/Rendering/Pipeline/LevelCascadeShadowRenderer.h>
 #include <Dy/Core/Rendering/Pipeline/LevelCSMIntegration.h>
 #include <Dy/Core/Rendering/Pipeline/LevelOITRenderer.h>
-#include <Dy/Management/Type/Render/DDyModelHandler.h>
 #include <Dy/Core/Rendering/Pipeline/DebugRenderer.h>
 #include <Dy/Core/Rendering/Pipeline/PostEffectSky.h>
 #include <Dy/Helper/Pointer.h>
+#include <Dy/Helper/Internal/FDyCallStack.h>
+#include "Dy/Management/Type/Render/DDyGlGlobalStatus.h"
 
 //!
 //! Forward declaration
@@ -151,8 +153,15 @@ private:
   /// If rendered, skybox pointer will be nulled again.
   CDySkybox* mPtrRequiredSkybox = nullptr;
 
+  /// @brief Activated directional light list.
   std::queue<TI32>  mDirLightAvailableList      = {};
+  /// @brief Default UI projection matrix. (Orthogonal)
   DDyMatrix4x4      mUiGeneralProjectionMatrix  = {};
+
+  /// @brief Global status stack for management. \n
+  /// This container will be push & popped automatically by following rendering pipeline.
+  /// This container must not be empty before termination of Dy application.
+  FDyCallStack<DDyGlGlobalStatus> mInternalGlobalStatusStack;
 
 #if defined(MDY_FLAG_IN_EDITOR)
   std::unique_ptr<FDyGrid>                    mGridEffect           = nullptr;
