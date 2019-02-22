@@ -810,7 +810,7 @@ EDyInputButtonStatus MDyInput::MDY_PRIVATE(GetLowlevelKeyStatus)(_MIN_ EDyButton
   return mInputButtonList[iId].Get();
 }
 
-EDySuccess MDyInput::TryPickObject()
+EDySuccess MDyInput::TryPickObject(_MIN_ const DDyVector2& iScreenPosition)
 {
   // Get position of present frame.
   const auto& position = this->mMousePresentPosition;

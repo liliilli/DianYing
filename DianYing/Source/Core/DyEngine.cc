@@ -16,7 +16,6 @@
 #include <Dy/Core/DyEngine.h>
 
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
-#include <Dy/Helper/MCS/Functions.h>
 #include <Dy/Management/InputManager.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
@@ -29,7 +28,6 @@
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Management/FontManager.h>
 #include <Dy/Management/ScriptManager.h>
-#include <Dy/Management/Editor/GuiManager.h>
 #include <Dy/Management/Internal/MDySynchronization.h>
 #include <Dy/Management/Internal/MDyProfiling.h>
 #include <Dy/Management/GameTimerManager.h>
@@ -423,7 +421,7 @@ void DyEngine::MDY_PRIVATE(PostRender)(_MIN_ EDyGlobalGameStatus iEngineStatus, 
       &&  refInput.GetMouseMode() == EDyMouseMode::Picking 
       &&  value == true)
       {
-        refInput.TryPickObject();
+        refInput.TryPickObject(refInput.GetPresentMousePosition());
         isPicked = true;
       }
       else if (value == false) 

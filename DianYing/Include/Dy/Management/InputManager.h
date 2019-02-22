@@ -163,7 +163,7 @@ public:
   template <typename TType>
   using TCPickingCallbackFunction = void(TType::*)(FDyActor*);
   /// @brief Try pick actor object and bind to input system.
-  EDySuccess TryPickObject();
+  EDySuccess TryPickObject(_MIN_ const DDyVector2& iScreenPosition);
   /// @brief Set picking target normal callback function.
   void SetPickingTargetCallbackFunction(_MIN_ TPickingCallbackFunction iPtrGlobalFunction);
   /// @brief Set picking target normal member callback function.
