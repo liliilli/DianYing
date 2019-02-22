@@ -16,7 +16,6 @@
 #include <Dy/Core/DyEngine.h>
 
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
-#include <Dy/Helper/MCS/Functions.h>
 #include <Dy/Management/InputManager.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
@@ -29,7 +28,6 @@
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Management/FontManager.h>
 #include <Dy/Management/ScriptManager.h>
-#include <Dy/Management/Editor/GuiManager.h>
 #include <Dy/Management/Internal/MDySynchronization.h>
 #include <Dy/Management/Internal/MDyProfiling.h>
 #include <Dy/Management/GameTimerManager.h>
@@ -132,6 +130,7 @@ void DyEngine::operator()()
       // This function is internal update function for Dy Engine before rendering.
       this->MDY_PRIVATE(PreRender)(this->mStatus, dt);
       this->MDY_PRIVATE(Render)(this->mStatus); 
+      this->MDY_PRIVATE(PostRender)(this->mStatus, dt);
     } break;
     case EDyGlobalGameStatus::Shutdown: 
     { // Just wait I/O Worker thread is slept.
@@ -405,6 +404,37 @@ void DyEngine::MDY_PRIVATE(Render)(_MIN_ EDyGlobalGameStatus iEngineStatus)
   }
 
   this->GetWindowManager().TempSwapBuffers();
+}
+
+void DyEngine::MDY_PRIVATE(PostRender)(_MIN_ EDyGlobalGameStatus iEngineStatus, _MIN_ TF32 dt)
+{
+  switch (iEngineStatus)
+  {
+  case EDyGlobalGameStatus::GameRuntime: 
+  {
+    // Object picking routine.
+    {
+      static bool isPicked = false;
+      auto& refInput = MDyInput::GetInstance();
+      if (const bool value = refInput.IsKeyPressed(EDyInputButton::Mouse0Lmb);
+          isPicked == false
+      &&  refInput.GetMouseMode() == EDyMouseMode::Picking 
+      &&  value == true)
+      {
+        refInput.TryPickObject(refInput.GetPresentMousePosition());
+        isPicked = true;
+      }
+      else if (value == false) 
+      { 
+        isPicked = false; 
+      }
+    }
+
+    // Do other things...
+
+  } break;
+  default: break;
+  }
 }
 
 void DyEngine::pfInitializeIndependentManager()

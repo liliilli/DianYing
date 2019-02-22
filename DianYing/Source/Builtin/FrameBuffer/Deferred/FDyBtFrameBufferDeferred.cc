@@ -27,6 +27,7 @@ void FDyBtFrameBufferDeferred::ConstructBuffer(_MOUT_ PDyGlFrameBufferInstanceMe
   property.mColorAttachmentList.emplace_back("dyBtNormal",   EDyGlAttachmentType::Color1);
   property.mColorAttachmentList.emplace_back("dyBtSpecular", EDyGlAttachmentType::Color2);
   property.mColorAttachmentList.emplace_back("dyBtModelPosition", EDyGlAttachmentType::Color3);
+  property.mColorAttachmentList.emplace_back("dyBtAtActorId", EDyGlAttachmentType::Color4);
 
   property.mIsUsingDepthBuffer  = true;
   property.mDepthAttachmentSpecifier = "dyBtDefZValue";

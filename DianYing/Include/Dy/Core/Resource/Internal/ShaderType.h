@@ -58,6 +58,7 @@ enum class EDyUniformVariableType
   IVec2,
   Integer,
   IntegerPointer,
+  Unsigned,
   Float,
   FloatPointer,
   Bool,

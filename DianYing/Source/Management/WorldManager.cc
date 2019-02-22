@@ -155,6 +155,15 @@ MDyWorld::GetAllActorsWithNameRecursive(_MIN_ const std::string& iNameSpecifier)
   return this->mLevel->GetAllActorsWithNameRecursive(iNameSpecifier);
 }
 
+FDyActor* MDyWorld::GetActorWithObjectId(_MIN_ TU32 iObjectId) noexcept
+{
+  // Check
+  if (MDY_CHECK_ISNULL(this->mLevel)) { return nullptr; }
+
+  // Trying to get pointer of given obejct id.
+  return this->mLevel->GetActorWithObjectId(iObjectId);
+}
+
 DDyActorBinder MDyWorld::CreateActor(
     _MIN_ const std::string& iActorName, 
     _MIN_ const std::string& iPrefabName,

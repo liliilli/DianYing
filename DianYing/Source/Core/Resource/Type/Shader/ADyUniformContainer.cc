@@ -76,6 +76,7 @@ void ADyUniformContainer::__TryConstructDefaultUniformList(const FDyShaderResour
     case TEnum::Vector3Array:  { MDY_DOCONSTRUCTUNIFORMLIST(Vector3Array, specifier, id); } break;
     case TEnum::Vector2:       { MDY_DOCONSTRUCTUNIFORMLIST(Vector2, specifier, id); } break;
     case TEnum::Integer:       { MDY_DOCONSTRUCTUNIFORMLIST(Integer, specifier, id); } break;
+    case TEnum::Unsigned:      { MDY_DOCONSTRUCTUNIFORMLIST(Unsigned, specifier, id); } break;
     case TEnum::Bool:          { MDY_DOCONSTRUCTUNIFORMLIST(Bool, specifier, id); } break;
     case TEnum::Float:         { MDY_DOCONSTRUCTUNIFORMLIST(Float, specifier, id); } break;
     case TEnum::Texture1D:             { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture1D, specifier, id); } break;
@@ -161,6 +162,10 @@ EDySuccess ADyUniformContainer::TryUpdateUniformList()
     case EDyUniformVariableType::Integer:
     { const auto* item = static_cast<FDyUniformValue<TEnum::Integer>*>(ptrItem);
       FDyGLWrapper::UpdateUniformInteger(item->mId, item->mValue);
+    } break;
+    case EDyUniformVariableType::Unsigned:
+    { const auto* item = static_cast<FDyUniformValue<TEnum::Unsigned>*>(ptrItem);
+      FDyGLWrapper::UpdateUniformUnsigned(item->mId, item->mValue);
     } break;
     case EDyUniformVariableType::Float:
     { const auto* item = static_cast<FDyUniformValue<TEnum::Float>*>(ptrItem);

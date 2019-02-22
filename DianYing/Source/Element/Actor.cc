@@ -29,6 +29,7 @@
 #include <Dy/Component/CDyPhysicsColliderCapsule.h>
 #include <Dy/Component/CDyPhysicsColliderBox.h>
 #include <Dy/Component/CDySkybox.h>
+#include <Dy/Management/InputManager.h>
 
 //!
 //! Implementation
@@ -202,6 +203,9 @@ FDyActor::~FDyActor()
   }
   this->mComponentList.clear();
 
+  // Detach if alreayd attached to picking target of system.
+  if (this->mIsAttachedToPickingTarget == true) { this->MDY_PRIVATE(DetachPickingTargetFromSystem)(); }
+  // Release rigidbody also.
   if (this->mRigidbody != nullptr) { this->mRigidbody->Release(); }
 }
 
@@ -271,6 +275,28 @@ void FDyActor::pUpdateActivateFlagFromParent() noexcept
   { this->SetupFlagAsParent(this->mPtrParentActor->IsActivated()); }
 
   this->pPropagateActivationFlag();
+}
+
+void FDyActor::MDY_PRIVATE(AttachPickingTargetFromSystem)(_MINOUT_ FDyActor** iPPtrTarget)
+{
+  *iPPtrTarget = this;
+  this->mIsAttachedToPickingTarget = true;
+}
+
+EDySuccess FDyActor::MDY_PRIVATE(DetachPickingTargetFromSystem)()
+{
+  // Check 1 : flag
+  if (this->mIsAttachedToPickingTarget == false) { return DY_FAILURE; }
+
+  // Check 2 : address
+  auto& refInput = MDyInput::GetInstance();
+  auto** pptrPickingTarget = refInput.MDY_PRIVATE(GetPPtrPickingTarget)();
+  if (*pptrPickingTarget != this) { return DY_FAILURE; }
+  
+  // Detach actually.
+  *pptrPickingTarget = nullptr;
+  this->mIsAttachedToPickingTarget = false;
+  return DY_SUCCESS;
 }
 
 void FDyActor::TryActivateInstance()
@@ -394,6 +420,20 @@ FDyActor::GetAllActorsWithNameRecursive(_MIN_ const std::string& iNameSpecifier)
   return result;
 }
 
+FDyActor* FDyActor::GetActorWithObjectId(_MIN_ TU32 iObjectId) noexcept
+{
+  for (auto& [actorName, smtptrObject] : this->mChildActorMap)
+  {
+    if (smtptrObject == nullptr) { continue; }
+    // Check id.
+    if (smtptrObject->GetId() == iObjectId) { return smtptrObject.get(); }
+    // Iterate id.
+    auto* ptrReturnedObject = smtptrObject->GetActorWithObjectId(iObjectId);
+    if (ptrReturnedObject != nullptr) { return ptrReturnedObject; }
+  }
+  return nullptr;
+}
+
 std::unique_ptr<CDyActorScript> 
 FDyActor::MDY_PRIVATE(MakeScriptComponent)(_MIN_ const PDyScriptComponentMetaInfo& info)
 {
@@ -432,7 +472,7 @@ FDyActor::TActorMap& FDyActor::GetChildrenContainer() noexcept
 
 std::string FDyActor::ToString()
 {
-  return MDY_INITIALIZE_EMPTYSTR;
+  return fmt::format("Actor name : {}, Id : {}", this->GetActorName(), this->GetId());
 }
 
 #ifdef false

@@ -89,6 +89,8 @@ private:
   void MDY_PRIVATE(Update)(_MIN_ EDyGlobalGameStatus iEngineStatus, _MIN_ TF32 dt);
   /// @brief Update sequence before render phase.
   void MDY_PRIVATE(PreRender)(_MIN_ EDyGlobalGameStatus iEngineStatus, _MIN_ TF32 dt);
+  /// @brief Update sequence afterward render phase.
+  void MDY_PRIVATE(PostRender)(_MIN_ EDyGlobalGameStatus iEngineStatus, _MIN_ TF32 dt);
 
   /// @brief Try update status. if changed, `mIsStatusTransitionDone` be falsed.
   /// This function must be called at final.

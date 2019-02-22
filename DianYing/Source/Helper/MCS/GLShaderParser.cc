@@ -152,6 +152,11 @@ layout (location = 0) out vec4 gUnlit;
 layout (location = 1) out vec4 gNormal;
 layout (location = 2) out vec4 gSpecular;
 layout (location = 3) out vec4 gPosition;
+layout (location = 4) out vec4 gActorId;
+
+uniform float uBtDyActorId = 0;
+
+void DyBindActorId() { gActorId = vec4(uBtDyActorId, 0, 0, 1); }
 )dy");
 
 } /// ::anonymous namespace

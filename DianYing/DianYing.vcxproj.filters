@@ -340,6 +340,8 @@
     <ClCompile Include="Source\Builtin\Mesh\Widget\FDyBtMsUiFontQuad.cc" />
     <ClCompile Include="Source\Builtin\Mesh\Widget\FDyBtMsUiImgQuad.cc" />
     <ClCompile Include="Source\Element\Type\DDyUiBinder.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\SceneIntegration\FDyBtAtActorId.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\UIIntegration\FDyBtAtUiId.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -837,6 +839,12 @@
     <ClInclude Include="Include\Dy\Core\Resource\Type\Uniform\UniformValueTypes.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Interface\IDyRenderableBinder.h" />
     <ClInclude Include="Include\Dy\Element\Type\DDyUiBinder.h" />
+    <ClInclude Include="Include\Dy\Element\Internal\TDyIdDistributor.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\SceneIntegration\FDyBtAtActorId.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\UIIntegration\FDyBtAtUiId.h" />
+    <ClInclude Include="Include\Dy\Helper\Internal\FDyCallStack.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Render\DDyPixelInfo.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Render\DDyGlGlobalStatus.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

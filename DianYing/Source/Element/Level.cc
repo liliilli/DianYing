@@ -73,6 +73,20 @@ FDyLevel::~FDyLevel()
   this->mInitialized = false;
 }
 
+FDyActor* FDyLevel::GetActorWithObjectId(_MIN_ TU32 iObjectId) noexcept
+{
+  for (auto& [actorName, smtptrObject] : this->mActorMap)
+  {
+    if (smtptrObject == nullptr) { continue; }
+    // Check id.
+    if (smtptrObject->GetId() == iObjectId) { return smtptrObject.get(); }
+    // Iterate id.
+    auto* ptrReturnedObject = smtptrObject->GetActorWithObjectId(iObjectId);
+    if (ptrReturnedObject != nullptr) { return ptrReturnedObject; }
+  }
+  return nullptr;
+}
+
 std::vector<NotNull<FDyActor*>> 
 FDyLevel::GetAllActorsWithTag(_MIN_ const std::string& iTagSpecifier) const noexcept
 {

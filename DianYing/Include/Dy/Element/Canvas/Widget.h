@@ -72,8 +72,6 @@ public:
   /// @return The pointer instance of CDyScript. If not found, return just no value.
   MDY_NODISCARD CDyWidgetScriptBase* GetScript() noexcept;
 
-  /// @brief Create 
-
   /// @brief Attach DDyUiBinder.
   void MDY_PRIVATE(TryAttachBinderFromBinder)(_MIN_ DDyUiBinder& iRefUiBinder);
   /// @brief Detach DDyUiBinder. This function called from Binder.

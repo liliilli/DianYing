@@ -23,7 +23,11 @@
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/Type/Input/DDyInputButton.h>
 #include <Dy/Management/Type/Input/DDyJoystickAnalog.h>
+#include <Dy/Management/Type/Render/DDyPixelInfo.h>
+#include <Dy/Management/WorldManager.h>
 #include <Dy/Core/DyEngine.h>
+#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Element/Internal/TDyIdDistributor.h>
 
 //!
 //! Data
@@ -48,11 +52,9 @@ bool              mIsControllerConnected= false;
 
 void DyCallbackCheckJoystickConnection(_MIN_ int joy, _MIN_ int event);
 
-///
 /// @brief
 /// Polling notification of physical key input.
 /// If key is notified glfw library execute this function as callback.
-///
 /// In this now, just print what key was pressed on console.
 ///
 /// @param[in] window GLFW window instance.
@@ -60,7 +62,6 @@ void DyCallbackCheckJoystickConnection(_MIN_ int joy, _MIN_ int event);
 /// @param[in] scancode Not be used now.
 /// @param[in] action Key pressed, released, keeping pushed states.
 /// @param[in] mod Not be used now.
-///
 void DyCallbackInputKeyboard(MDY_NOTUSED GLFWwindow* window, _MIN_ int key, MDY_NOTUSED int scancode, _MIN_ int action, MDY_NOTUSED int mod)
 {
   using namespace dy;
@@ -167,11 +168,9 @@ void DyCallbackInputKeyboard(MDY_NOTUSED GLFWwindow* window, _MIN_ int key, MDY_
   }
 }
 
-///
 /// @brief Polling notification of mouse movement input.
 /// @param xPos width position.
 /// @param yPos height position.
-///
 void DyCallbackMouseMoving(MDY_NOTUSED GLFWwindow* window, _MIN_ double xPos, _MIN_ double yPos)
 {
   if (sIsFirstMouseMovement == true)
@@ -190,15 +189,10 @@ void DyCallbackMouseMoving(MDY_NOTUSED GLFWwindow* window, _MIN_ double xPos, _M
   sMousePositionDirty     = true;
 }
 
-///
 /// @brief Polling notification of mouse button trigger input. \n
 /// The action is one of `GLFW_PRESS` or `GLFW_RELEASE`.
-/// @link http://www.glfw.org/docs/latest/group__buttons.html
-/// @link http://www.glfw.org/docs/latest/group__mods.html
-///
-/// @TODO IMPLEMENT MOUSE BUTTON ALSO REPEATED, \n
-/// USING `glfwGetMouseButton(window, button);` and callback.
-///
+/// @reference http://www.glfw.org/docs/latest/group__buttons.html
+/// @reference http://www.glfw.org/docs/latest/group__mods.html
 void DyCallbackMouseInput(MDY_NOTUSED GLFWwindow* window, _MIN_ int button, _MIN_ int action, MDY_NOTUSED int mods)
 {
   using namespace dy;
@@ -293,6 +287,7 @@ void DyProceedAxisGravity(_MINOUT_ dy::DDyAxisBindingInformation& axisInfo)
 
 namespace dy
 {
+class FDyActor;
 
 EDySuccess MDyInput::pfInitialize()
 {
@@ -305,6 +300,9 @@ EDySuccess MDyInput::pfInitialize()
     mIsControllerConnected = true;
   }
 
+  // Set mouse mode to normal.
+  this->PushMouseMode(EDyMouseMode::Normal);
+  this->PushMouseMode(EDyMouseMode::Picking);
   return DY_SUCCESS;
 }
 
@@ -358,6 +356,16 @@ float MDyInput::GetAxisValue(_MIN_ const std::string& axisKeyName) noexcept
 	}
 
   return keyIt->second.mAxisValue;
+}
+
+const DDyVector2& MDyInput::GetPresentMousePosition() const noexcept
+{
+  return this->mMousePresentPosition;
+}
+
+const DDyVector2& MDyInput::GetPresentLastMousePosition() const noexcept
+{
+  return this->mMouseLastPosition;
 }
 
 TF32 MDyInput::GetJoystickStickValue(_MIN_ DDyClamp<TU32, 0, 5> index) const noexcept
@@ -452,6 +460,24 @@ bool MDyInput::IsJoystickConnected() const noexcept
   return mIsControllerConnected;
 }
 
+EDyMouseMode MDyInput::GetMouseMode() const noexcept
+{
+  MDY_ASSERT(this->mPresentMouseMode.empty() == false, "Unexpected error occurred.");
+  return this->mPresentMouseMode.top();
+}
+
+void MDyInput::PushMouseMode(_MIN_ EDyMouseMode iMouseMode) noexcept
+{
+  this->mPresentMouseMode.push(iMouseMode);
+}
+
+EDyMouseMode MDyInput::PopMouseMode() noexcept
+{
+  const auto mouseModeValue = this->GetMouseMode();
+  this->mPresentMouseMode.pop();
+  return mouseModeValue;
+}
+
 bool MDyInput::IsKeyPressed(_MIN_ EDyInputButton keyValue) const noexcept
 {
   return mInputButtonList[keyValue].Get() == EDyInputButtonStatus::Pressed; 
@@ -483,7 +509,10 @@ void MDyInput::MDY_PRIVATE(pUpdateJoystickSticks)()
   int supportingStickCount;
   const float* stickValueList = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &supportingStickCount);
 
-  const auto stickCount = supportingStickCount < kMaximumStickCount ? supportingStickCount : kMaximumStickCount;
+  const auto stickCount = 
+      static_cast<TU32>(supportingStickCount) < kMaximumStickCount 
+    ? supportingStickCount 
+    : kMaximumStickCount;
   for (TU32 i = 0; i < stickCount; ++i)
   {
     mInputAnalogStickList[i].Update(stickValueList[i]);
@@ -779,6 +808,85 @@ EDySuccess MDyInput::MDY_PRIVATE(TryDetachContollerActor)(_MIN_ ADyActorCppScrip
 EDyInputButtonStatus MDyInput::MDY_PRIVATE(GetLowlevelKeyStatus)(_MIN_ EDyButton iId) noexcept
 {
   return mInputButtonList[iId].Get();
+}
+
+EDySuccess MDyInput::TryPickObject(_MIN_ const DDyVector2& iScreenPosition)
+{
+  // Get position of present frame.
+  const auto& position = this->mMousePresentPosition;
+  
+  // Get actor id from rendering manager.
+  auto* ptrFramebuffer = MDyIOResource::GetInstance().
+      GetPtrInformation<EDyResourceType::GLFrameBuffer>("dyBtBasicRender");
+  DDyPixelInfo pixel;
+  pixel.ObjectID = TActorIdContainer::kExclusiveId;
+
+  // Critical section of getting object id information from attachment.
+  { MDY_GRAPHIC_SET_CRITICALSECITON();
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, ptrFramebuffer->GetFrameBufferId());
+    glReadBuffer(GL_COLOR_ATTACHMENT4);
+
+    const auto& framebufferSize = ptrFramebuffer->GetFrameBufferSize();
+    glReadPixels(position.X, framebufferSize.Y - position.Y, 1, 1, GL_RGB, GL_FLOAT, &pixel);
+    glReadBuffer(GL_NONE);
+
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+  }
+
+  // Check whether this is successful of getting object id from framebuffer attachment.
+  if (static_cast<TU32>(pixel.ObjectID) != TActorIdContainer::kExclusiveId)
+  {
+    // If successful, try to bind object into binder of this.
+    auto& refWorld = MDyWorld::GetInstance();
+    auto* ptrActor = refWorld.GetActorWithObjectId(static_cast<TU32>(pixel.ObjectID));
+    if (ptrActor == nullptr)
+    { /* Do nothing if not exist */
+      return DY_FAILURE;
+    }
+    else
+    {
+      switch (this->GetMouseMode())
+      {
+      case EDyMouseMode::Normal: 
+      {
+        // If normal mode, when picking callback function is exist, 
+        // call callback function with argument.
+        if (this->mActorPickingCallback != nullptr)
+        {
+          this->mActorPickingCallback(this->mPtrActorPickingTarget);
+        }
+      } break;
+      case EDyMouseMode::Picking: 
+      {
+        // If picking mode, do fixed routine.
+        if (this->mPtrActorPickingTarget != nullptr)
+        {
+          this->mPtrActorPickingTarget->MDY_PRIVATE(DetachPickingTargetFromSystem)();
+        }
+        // Bind ptrActor as Binder type.
+        MDY_LOG_INFO_D("Picked {}", ptrActor->ToString());
+        ptrActor->MDY_PRIVATE(AttachPickingTargetFromSystem)(&this->mPtrActorPickingTarget);
+      } break;
+      }
+    }
+  }
+
+  return DY_SUCCESS;
+}
+
+void MDyInput::SetPickingTargetCallbackFunction(_MIN_ TPickingCallbackFunction iPtrGlobalFunction)
+{
+  this->mActorPickingCallback = iPtrGlobalFunction;
+}
+
+void MDyInput::ResetPickingTargetCallback() noexcept
+{
+  mActorPickingCallback = nullptr;
+}
+
+FDyActor** MDyInput::MDY_PRIVATE(GetPPtrPickingTarget)() noexcept
+{
+  return &this->mPtrActorPickingTarget;
 }
 
 } /// ::dy namespace

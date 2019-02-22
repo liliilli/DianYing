@@ -23,8 +23,6 @@
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Management/SettingManager.h>
 
-#include <Dy/Management/Editor/GuiSetting.h>
-
 #include <Dy/Component/CDyDirectionalLight.h>
 #include <Dy/Management/Rendering/FramebufferManager.h>
 #include <Dy/Management/Rendering/UniformBufferObjectManager.h>
@@ -37,6 +35,24 @@
 #include "Dy/Core/Resource/Resource/FDyModelResource.h"
 #include "Dy/Management/WindowManager.h"
 #include "Dy/Management/PhysicsManager.h"
+
+//!
+//! Forward declaration & Local translation unit function and data.
+//!
+
+namespace 
+{
+
+void CbGlGlobalStatus(const dy::DDyGlGlobalStatus& iTopStatus)
+{
+
+}
+
+} /// ::unnamed namespace
+
+//!
+//! Implementation
+//!
 
 namespace dy
 {
@@ -58,18 +74,28 @@ EDySuccess MDyRendering::pfInitialize()
   this->mSkyPostEffect        = std::make_unique<decltype(this->mSkyPostEffect)::element_type>();
   this->mDebugRenderer        = std::make_unique<decltype(this->mDebugRenderer)::element_type>();
 
+  // Set callback function for altering global render status.
+  this->mInternalGlobalStatusStack.SetCallback(CbGlGlobalStatus);
+
   switch (MDySetting::GetInstance().GetRenderingType())
   {
   case EDyRenderingApi::Vulkan: 
   case EDyRenderingApi::DirectX11: 
-  case EDyRenderingApi::DirectX12: 
-  { MDY_NOT_IMPLEMENTED_ASSERT();
-  } break;
+  case EDyRenderingApi::DirectX12: { MDY_NOT_IMPLEMENTED_ASSERT(); } break;
   case EDyRenderingApi::OpenGL: 
   {
     glEnable(GL_PRIMITIVE_RESTART);
     glPrimitiveRestartIndex(0xFFFFFFFF);
     glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+
+    //! Push initial OpenGL global status.
+    //! But we don't have to call callback function because it is alreay set on OpenGL system.
+    DDyGlGlobalStatus initialStatus;
+    initialStatus.mIsEnableBlend        = glIsEnabled(GL_BLEND); 
+    initialStatus.mIsEnableCullface     = glIsEnabled(GL_CULL_FACE);
+    initialStatus.mIsEnableDepthTest    = glIsEnabled(GL_DEPTH_TEST);
+    initialStatus.mIsEnableScissorTest  = glIsEnabled(GL_SCISSOR_TEST);
+    this->mInternalGlobalStatusStack.Push(initialStatus, false);
     
     { // IMGUI Setting
       IMGUI_CHECKVERSION();

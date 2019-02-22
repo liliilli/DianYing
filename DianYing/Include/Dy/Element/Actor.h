@@ -24,13 +24,17 @@
 #include <Dy/Element/Abstract/Actor/ADyActorBinderContainer.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Helper/Internal/FDyNameGenerator.h>
+#include <Dy/Element/Internal/TDyIdDistributor.h>
 
 namespace dy
 {
 
 /// @class FDyActor
 /// @brief Dy Actor type which consist of almost every object in Level of Dy.
-class FDyActor : public FDyObject, public FDyNameGenerator, public ADyActorBinderContainer<FDyActor>, public FDy3WaySwitcher
+class FDyActor : public FDyObject, public FDyNameGenerator, 
+    public ADyActorBinderContainer<FDyActor>, 
+    public FDy3WaySwitcher,
+    public TDyIdDistributor<TU32, FDyActor>
 {
   using TComponentList = std::vector<std::pair<EDyComponentType, std::unique_ptr<ADyGeneralBaseComponent>>>;
   using TScriptList    = std::vector<std::unique_ptr<CDyActorScript>>;
@@ -97,22 +101,22 @@ public:
   /// @return Valid level reference. when level is not specified, unexpected behaviour.
   MDY_NODISCARD std::vector<NotNull<FDyActor*>> 
   GetAllActorsWithTag(_MIN_ const std::string& iTagSpecifier) const noexcept;
-
   /// @brief Get all actors with tag. Tag must be valid. \n
   /// If iTagSpecifier is empty, this function get all actors which is not specified any tag. \n
   /// and this function search all actor of object tree from root to leaf, so might take some time.
   MDY_NODISCARD std::vector<NotNull<FDyActor*>>
   GetAllActorsWithTagRecursive(_MIN_ const std::string& iTagSpecifier) const noexcept;
- 
   /// @brief Get all actors with matched name within only one depth of level object tree. \n
   /// If iNameSpecifier is empty, just return empty list.
   MDY_NODISCARD std::vector<NotNull<FDyActor*>>
   GetAllActorsWithName(_MIN_ const std::string& iNameSpecifier) const noexcept; 
-
   /// @brief Get all actors with matched name within overall level object tree. \n
   /// If iNameSpecifier is empty, just return empty list.
   MDY_NODISCARD std::vector<NotNull<FDyActor*>>
   GetAllActorsWithNameRecursive(_MIN_ const std::string& iNameSpecifier) const noexcept; 
+  /// @brief Get pointer of actor with object id.
+  /// If not found, just return nullptr.
+  FDyActor* GetActorWithObjectId(_MIN_ TU32 iObjectId) noexcept;
   
   ///
   /// @brief  Add component and bind to this object instance.
@@ -258,86 +262,37 @@ public:
   /// @brief Try remove script instances list. \n
   /// But this funtion does not remove script instance actually, but just forward script list to GC-list.
   void MDY_PRIVATE(TryRemoveScriptInstances)() noexcept;
-
   /// @brief Try detach dependent components from dy level management system.
   void MDY_PRIVATE(TryDetachDependentComponents)() noexcept;
 
-  ///
   /// @brief  Get script component pointer from script list using scriptName to verify.
   /// @param  scriptName Script name to verify and get.
   /// @return The pointer instance of CDyScript. If not found, return just no value.
-  ///
   MDY_NODISCARD CDyActorScript* GetScriptComponent(_MIN_ const std::string& scriptName) noexcept;
-
-  ///
   /// @brief  Remove script component manually from script list using scriptName to verify.
   /// @param  scriptName  Script name to verify and remove from FDyActor.
   /// @return The pointer instance of CDyScript. If not found, return just no value.
-  ///
   MDY_NODISCARD EDySuccess RemoveScriptComponent(_MIN_ const std::string& scriptName) noexcept;
 
   /// @brief  Get tranform component pointer from FDyActor instance.
   /// @return Valid transform pointer instance.
   MDY_NODISCARD NotNull<CDyTransform*> GetTransform() noexcept;
-
   /// @brief  Get rigidbody component pointer from FDyActor instance.
   /// @return Valid rigidbody component pointer instance.
   MDY_NODISCARD CDyPhysicsRigidbody* GetRigidbody() noexcept;
 
-#ifdef false
-  ///
-  /// @brief Get non-owning components list from component list of object.
-  /// All components's bound object reference are undefined, so you should control
-  /// these components well not touching object reference like a GetBindObject().
-  ///
-  template <class TComponent,
-    typename = std::enable_if_t<std::is_base_of_v<_Component, TComponent>>
-  >
-  std::vector<std::unique_ptr<TComponent>> pPopComponents()
-  {
-
-    using opgs16::component::_internal::EComponentType;
-    if (m_components.empty()) return decltype(pPopComponents<TComponent>()){};
-
-    std::vector<std::unique_ptr<TComponent>> result_list;
-
-    // m_componentsからTTypeであるコンポネントに対して他のところに移す。
-    auto it = --m_components.end();
-    int32_t remove_back_count = 0;
-    for (auto& [component, item] : m_components) {
-      if (!component) continue;
-      if (component->DoesTypeMatch(OP16_GET_HASH(TComponent), TComponent::__string_literal)) {
-        result_list.push_back(std::unique_ptr<TComponent>(static_cast<TComponent*>(component.release())));
-        ++remove_back_count;
-
-        while (it->second == EComponentType::Particle && &(it->first) != &component) {
-          --it;
-        }
-        if (&(it->first) == &component) continue;
-        component.swap(it->first);
-        // ReSharper disable CppAssignedValueIsNeverUsed
-        item = it->second;
-        // ReSharper restore CppAssignedValueIsNeverUsed
-        --it;
-      }
-    }
-    // 移動した分だけ真後ろから削除する。
-    while (remove_back_count > 0) {
-      m_components.pop_back();
-      --remove_back_count;
-    }
-    return std::move(result_list);
-  }
-#endif
-
-  ///
-  /// @brief
-  ///
+  /// @brief Propagate activation flag from parent. This function could not be called independently.
   void pUpdateActivateFlagFromParent() noexcept;
+
+  /// @brief Attach this actor to picking target pointer variable of internal system.
+  void MDY_PRIVATE(AttachPickingTargetFromSystem)(_MINOUT_ FDyActor** iPPtrTarget);
+  /// @brief Detach this actor from target pointer variable of internal system.
+  /// If already or not attached to pointer, just do nothing but return DY_FAILURE.
+  EDySuccess MDY_PRIVATE(DetachPickingTargetFromSystem)();
 
 protected:
   /// Actual actor type to discriminate actor type is so cast object with statically.
-  MDY_TRANSIENT EDyMetaObjectType   mActorType = EDyMetaObjectType::NoneError;
+  MDY_TRANSIENT EDyMetaObjectType mActorType = EDyMetaObjectType::NoneError;
 
 private:
   void TryActivateInstance() override final;
@@ -362,6 +317,9 @@ private:
   TActorMap                     mChildActorMap     = {};
   /// @brief Tag specifier 
   std::string                   mActorTagSpecifier = MDY_INITIALIZE_EMPTYSTR;
+
+  /// @brief Internal variable.
+  bool mIsAttachedToPickingTarget = false;
 };
 
 } /// ::dy namespace

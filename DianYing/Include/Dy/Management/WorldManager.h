@@ -81,6 +81,10 @@ public:
   MDY_NODISCARD std::vector<NotNull<FDyActor*>>
   GetAllActorsWithNameRecursive(_MIN_ const std::string& iNameSpecifier) const noexcept; 
 
+  /// @brief Get pointer of actor with object id.
+  /// If not found, just return nullptr.
+  MDY_NODISCARD FDyActor* GetActorWithObjectId(_MIN_ TU32 iObjectId) noexcept;
+
   /// @brief Create actor.
   DDyActorBinder CreateActor(
       _MIN_ const std::string& iActorName, 
@@ -254,15 +258,6 @@ private:
   /// @param  actorRawPtr Valid FDyActor pointer instance.
   ///
   void pfMoveActorToGc(_MIN_ NotNull<FDyActor*> actorRawPtr) noexcept;
-
-  ///
-  /// @brief  Unenroll activated FDyPawn raw pointer from list.
-  /// raw pointer value will be nullptr at first, and erase actual memory space at next frame.
-  /// erasion pawn candidate index list will be cleared when next frame starts.
-  ///
-  /// @param  index Index to erase.
-  ///
-  void pfUnenrollActiveScript(_MIN_ TI32 index) noexcept;
 
   ///
   /// @brief

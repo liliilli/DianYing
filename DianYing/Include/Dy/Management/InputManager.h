@@ -21,8 +21,23 @@
 #include <Dy/Management/Type/KeyAxisBindingInformation.h>
 #include <Dy/Management/Type/KeyActionBindingInformation.h>
 #include <Dy/Management/Type/Input/EDyInputButtonStatus.h>
+#include "Type/Input/EDyMouseMode.h"
 #include <Dy/Management/Internal/Input/FDyInputDelegateManager.h>
 #include <Dy/Helper/Type/Clamp.h>
+#include <stack>
+
+//!
+//! Forward declaration
+//!
+
+namespace dy
+{
+class FDyActor; 
+} /// ::dy namespace
+
+//!
+//! Implementation
+//!
 
 namespace dy
 {
@@ -48,20 +63,12 @@ public:
   MDY_NODISCARD TF32 GetAxisValue(_MIN_ const std::string& axisKeyName) noexcept;
 
   /// @brief Return present-frame mouse position.
-  MDY_NODISCARD const DDyVector2& GetPresentMousePosition() const noexcept
-  {
-    return this->mMousePresentPosition;
-  }
-
+  MDY_NODISCARD const DDyVector2& GetPresentMousePosition() const noexcept;
   /// @brief Return old-frame mouse position.
-  MDY_NODISCARD const DDyVector2& GetPresentLastPosition() const noexcept
-  {
-    return this->mMouseLastPosition;
-  }
+  MDY_NODISCARD const DDyVector2& GetPresentLastMousePosition() const noexcept;
 
   /// @brief Return original value which is not calculated and calibrated at all.
   MDY_NODISCARD TF32 GetJoystickStickValue(_MIN_ DDyClamp<TU32, 0, 5> index) const noexcept;
-
   /// @brief Return button status of supported keyboard, mouse, and joystick button. \n
   /// button input value must not be `NoneError`.
   MDY_NODISCARD EDyInputButtonStatus GetButtonStatusValue(_MIN_ EDyButton button) const noexcept;
@@ -89,6 +96,12 @@ public:
   MDY_NODISCARD bool IsMouseMoved() const noexcept { return this->mIsMouseMoved; }
   /// @brief Check joystick is connected (JOYSTICK 1)
   MDY_NODISCARD bool IsJoystickConnected() const noexcept;
+  /// @brief Get present mouse mode.
+  MDY_NODISCARD EDyMouseMode GetMouseMode() const noexcept;
+  /// @brief Set present mouse mode.
+  void PushMouseMode(_MIN_ EDyMouseMode iMouseMode) noexcept;
+  /// @brief Get present mouse mode with popping status stack.
+  EDyMouseMode PopMouseMode() noexcept;
   
   /// @brief Low-level api for checking key is just pressed. Not recommeneded, use `Action` or `Axis` instead.
   MDY_NODISCARD bool IsKeyPressed(_MIN_ EDyInputButton keyValue) const noexcept;
@@ -146,6 +159,27 @@ public:
   /// @brief Get low-level key status value.
   MDY_NODISCARD EDyInputButtonStatus MDY_PRIVATE(GetLowlevelKeyStatus)(_MIN_ EDyButton iId) noexcept;
 
+  using TPickingCallbackFunction = void(*)(FDyActor*);
+  template <typename TType>
+  using TCPickingCallbackFunction = void(TType::*)(FDyActor*);
+  /// @brief Try pick actor object and bind to input system.
+  EDySuccess TryPickObject(_MIN_ const DDyVector2& iScreenPosition);
+  /// @brief Set picking target normal callback function.
+  void SetPickingTargetCallbackFunction(_MIN_ TPickingCallbackFunction iPtrGlobalFunction);
+  /// @brief Set picking target normal member callback function.
+  template <typename TType>
+  void SetPickingTargetCallbackFunction(
+      _MIN_ TType& iRefType, 
+      _MIN_ TCPickingCallbackFunction<TType> iPtrMemberFunction)
+  {
+    using namespace std::placeholders;
+    this->mActorPickingCallback = std::bind(iPtrMemberFunction, &iRefType, _1);
+  }
+  /// @brief Reset picking target callback function.
+  void ResetPickingTargetCallback() noexcept;
+  /// @brief Get pointer of pointer of picking target variable.
+  MDY_NODISCARD FDyActor** MDY_PRIVATE(GetPPtrPickingTarget)() noexcept;
+
 private:
   void MDY_PRIVATE(pInitializeAxisNAction)();
   void MDY_PRIVATE(pInitializeCallbacks)();
@@ -169,18 +203,25 @@ private:
   using TActionMap  = std::unordered_map<std::string, DDyActionBindingInformation>;
 
   // Window handle pointer (temporal)
-  GLFWwindow*       mPtrGlfwWindowContext = nullptr;;
-  GLFWcursor*       mGlfwWindowCursorPtr  = nullptr;
+  GLFWwindow* mPtrGlfwWindowContext = nullptr;
+  GLFWcursor* mGlfwWindowCursorPtr  = nullptr;
 
-  TAxisMap          mBindedAxisMap        = {};
-  TActionMap        mBindedActionMap      = {};
+  TAxisMap    mBindedAxisMap        = {};
+  TActionMap  mBindedActionMap      = {};
 
-  DDyVector2        mMouseLastPosition    = {};
-  DDyVector2        mMousePresentPosition = {};
+  DDyVector2  mMouseLastPosition    = {};
+  DDyVector2  mMousePresentPosition = {};
 
   FDyInputDelegateManager mDelegateManger = {};
 
-  bool              mIsMouseMoved           = false;
+  bool        mIsMouseMoved = false;
+
+  /// @brief Manages mouse clicking input mode.
+  std::stack<EDyMouseMode>        mPresentMouseMode;
+  /// @brief Pointer of actor picking target.
+  FDyActor*                       mPtrActorPickingTarget = nullptr;
+  /// @brief Functor for actor picking in normal mode.
+  std::function<void(FDyActor*)>  mActorPickingCallback = nullptr;
 
   friend class DyEngine;
 };
