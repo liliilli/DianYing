@@ -394,6 +394,20 @@ FDyActor::GetAllActorsWithNameRecursive(_MIN_ const std::string& iNameSpecifier)
   return result;
 }
 
+FDyActor* FDyActor::GetActorWithObjectId(_MIN_ TU32 iObjectId) noexcept
+{
+  for (auto& [actorName, smtptrObject] : this->mChildActorMap)
+  {
+    if (smtptrObject == nullptr) { continue; }
+    // Check id.
+    if (smtptrObject->GetId() == iObjectId) { return smtptrObject.get(); }
+    // Iterate id.
+    auto* ptrReturnedObject = smtptrObject->GetActorWithObjectId(iObjectId);
+    if (ptrReturnedObject != nullptr) { return ptrReturnedObject; }
+  }
+  return nullptr;
+}
+
 std::unique_ptr<CDyActorScript> 
 FDyActor::MDY_PRIVATE(MakeScriptComponent)(_MIN_ const PDyScriptComponentMetaInfo& info)
 {

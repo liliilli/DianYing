@@ -81,6 +81,10 @@ public:
   MDY_NODISCARD std::vector<NotNull<FDyActor*>>
   GetAllActorsWithNameRecursive(_MIN_ const std::string& iNameSpecifier) const noexcept; 
 
+  /// @brief Get pointer of actor with object id.
+  /// If not found, just return nullptr.
+  MDY_NODISCARD FDyActor* GetActorWithObjectId(_MIN_ TU32 iObjectId) noexcept;
+
   /// @brief Create actor.
   DDyActorBinder CreateActor(
       _MIN_ const std::string& iActorName, 

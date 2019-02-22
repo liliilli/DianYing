@@ -15,6 +15,20 @@
 
 #include <unordered_set>
 
+//!
+//! Forward declaration
+//!
+
+namespace dy
+{
+class FDyActor;
+class FDyUiObject;
+} /// ::dy namespace
+
+//!
+//! Implementation
+//!
+
 namespace dy
 {
 
@@ -95,6 +109,9 @@ private:
 
   inline static TIdType sIdCounter;
 };
+
+using TActorIdContainer   = TDyIdDistributor<TU32, FDyActor>;
+using TWidgetIdContainer  = TDyIdDistributor<TU32, FDyUiObject>;
 
 } /// ::dy namespace
 

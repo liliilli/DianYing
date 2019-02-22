@@ -132,6 +132,7 @@ void DyEngine::operator()()
       // This function is internal update function for Dy Engine before rendering.
       this->MDY_PRIVATE(PreRender)(this->mStatus, dt);
       this->MDY_PRIVATE(Render)(this->mStatus); 
+      this->MDY_PRIVATE(PostRender)(this->mStatus, dt);
     } break;
     case EDyGlobalGameStatus::Shutdown: 
     { // Just wait I/O Worker thread is slept.
@@ -405,6 +406,23 @@ void DyEngine::MDY_PRIVATE(Render)(_MIN_ EDyGlobalGameStatus iEngineStatus)
   }
 
   this->GetWindowManager().TempSwapBuffers();
+}
+
+void DyEngine::MDY_PRIVATE(PostRender)(_MIN_ EDyGlobalGameStatus iEngineStatus, _MIN_ TF32 dt)
+{
+  switch (iEngineStatus)
+  {
+  case EDyGlobalGameStatus::GameRuntime: 
+  {
+    if (auto& refInput = MDyInput::GetInstance();
+        refInput.GetMouseMode() == EDyMouseMode::Picking &&
+        refInput.IsKeyPressed(EDyInputButton::Mouse0Lmb) == true)
+    {
+      refInput.TryPickObject();
+    }
+  } break;
+  default: break;
+  }
 }
 
 void DyEngine::pfInitializeIndependentManager()

@@ -21,8 +21,10 @@
 #include <Dy/Management/Type/KeyAxisBindingInformation.h>
 #include <Dy/Management/Type/KeyActionBindingInformation.h>
 #include <Dy/Management/Type/Input/EDyInputButtonStatus.h>
+#include "Type/Input/EDyMouseMode.h"
 #include <Dy/Management/Internal/Input/FDyInputDelegateManager.h>
 #include <Dy/Helper/Type/Clamp.h>
+#include <stack>
 
 namespace dy
 {
@@ -61,7 +63,6 @@ public:
 
   /// @brief Return original value which is not calculated and calibrated at all.
   MDY_NODISCARD TF32 GetJoystickStickValue(_MIN_ DDyClamp<TU32, 0, 5> index) const noexcept;
-
   /// @brief Return button status of supported keyboard, mouse, and joystick button. \n
   /// button input value must not be `NoneError`.
   MDY_NODISCARD EDyInputButtonStatus GetButtonStatusValue(_MIN_ EDyButton button) const noexcept;
@@ -89,6 +90,12 @@ public:
   MDY_NODISCARD bool IsMouseMoved() const noexcept { return this->mIsMouseMoved; }
   /// @brief Check joystick is connected (JOYSTICK 1)
   MDY_NODISCARD bool IsJoystickConnected() const noexcept;
+  /// @brief Get present mouse mode.
+  MDY_NODISCARD EDyMouseMode GetMouseMode() const noexcept;
+  /// @brief Set present mouse mode.
+  void PushMouseMode(_MIN_ EDyMouseMode iMouseMode) noexcept;
+  /// @brief Get present mouse mode with popping status stack.
+  EDyMouseMode PopMouseMode() noexcept;
   
   /// @brief Low-level api for checking key is just pressed. Not recommeneded, use `Action` or `Axis` instead.
   MDY_NODISCARD bool IsKeyPressed(_MIN_ EDyInputButton keyValue) const noexcept;
@@ -146,6 +153,9 @@ public:
   /// @brief Get low-level key status value.
   MDY_NODISCARD EDyInputButtonStatus MDY_PRIVATE(GetLowlevelKeyStatus)(_MIN_ EDyButton iId) noexcept;
 
+  /// @brief Try pick actor object and bind to input system.
+  EDySuccess TryPickObject();
+
 private:
   void MDY_PRIVATE(pInitializeAxisNAction)();
   void MDY_PRIVATE(pInitializeCallbacks)();
@@ -180,7 +190,8 @@ private:
 
   FDyInputDelegateManager mDelegateManger = {};
 
-  bool              mIsMouseMoved           = false;
+  std::stack<EDyMouseMode> mPresentMouseMode;
+  bool              mIsMouseMoved         = false;
 
   friend class DyEngine;
 };
