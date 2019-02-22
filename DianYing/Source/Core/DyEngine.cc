@@ -414,20 +414,25 @@ void DyEngine::MDY_PRIVATE(PostRender)(_MIN_ EDyGlobalGameStatus iEngineStatus, 
   {
   case EDyGlobalGameStatus::GameRuntime: 
   {
-    static bool isPicked = false;
-    auto& refInput = MDyInput::GetInstance();
-    if (const bool value = refInput.IsKeyPressed(EDyInputButton::Mouse0Lmb);
-        isPicked == false
-    &&  refInput.GetMouseMode() == EDyMouseMode::Picking 
-    &&  value == true)
+    // Object picking routine.
     {
-      refInput.TryPickObject();
-      isPicked = true;
+      static bool isPicked = false;
+      auto& refInput = MDyInput::GetInstance();
+      if (const bool value = refInput.IsKeyPressed(EDyInputButton::Mouse0Lmb);
+          isPicked == false
+      &&  refInput.GetMouseMode() == EDyMouseMode::Picking 
+      &&  value == true)
+      {
+        refInput.TryPickObject();
+        isPicked = true;
+      }
+      else if (value == false) 
+      { 
+        isPicked = false; 
+      }
     }
-    else if (value == false) 
-    { 
-      isPicked = false; 
-    }
+
+    // Do other things...
 
   } break;
   default: break;

@@ -836,12 +836,22 @@ EDySuccess MDyInput::TryPickObject()
     }
     else
     {
+      if (this->mPtrActorPickingTarget != nullptr)
+      {
+        this->mPtrActorPickingTarget->MDY_PRIVATE(DetachPickingTargetFromSystem)();
+      }
       // Bind ptrActor as Binder type.
-      MDY_LOG_INFO_D("{}", ptrActor->ToString());
+      MDY_LOG_INFO_D("Picked {}", ptrActor->ToString());
+      ptrActor->MDY_PRIVATE(AttachPickingTargetFromSystem)(&this->mPtrActorPickingTarget);
     }
   }
 
   return DY_SUCCESS;
+}
+
+FDyActor** MDyInput::MDY_PRIVATE(GetPPtrPickingTarget)() noexcept
+{
+  return &this->mPtrActorPickingTarget;
 }
 
 } /// ::dy namespace

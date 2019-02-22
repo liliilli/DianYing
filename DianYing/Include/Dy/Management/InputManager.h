@@ -26,6 +26,19 @@
 #include <Dy/Helper/Type/Clamp.h>
 #include <stack>
 
+//!
+//! Forward declaration
+//!
+
+namespace dy
+{
+class FDyActor; 
+} /// ::dy namespace
+
+//!
+//! Implementation
+//!
+
 namespace dy
 {
 
@@ -155,6 +168,8 @@ public:
 
   /// @brief Try pick actor object and bind to input system.
   EDySuccess TryPickObject();
+  /// @brief Get pointer of pointer of picking target variable.
+  MDY_NODISCARD FDyActor** MDY_PRIVATE(GetPPtrPickingTarget)() noexcept;
 
 private:
   void MDY_PRIVATE(pInitializeAxisNAction)();
@@ -179,19 +194,23 @@ private:
   using TActionMap  = std::unordered_map<std::string, DDyActionBindingInformation>;
 
   // Window handle pointer (temporal)
-  GLFWwindow*       mPtrGlfwWindowContext = nullptr;;
-  GLFWcursor*       mGlfwWindowCursorPtr  = nullptr;
+  GLFWwindow* mPtrGlfwWindowContext = nullptr;;
+  GLFWcursor* mGlfwWindowCursorPtr  = nullptr;
 
-  TAxisMap          mBindedAxisMap        = {};
-  TActionMap        mBindedActionMap      = {};
+  TAxisMap    mBindedAxisMap        = {};
+  TActionMap  mBindedActionMap      = {};
 
-  DDyVector2        mMouseLastPosition    = {};
-  DDyVector2        mMousePresentPosition = {};
+  DDyVector2  mMouseLastPosition    = {};
+  DDyVector2  mMousePresentPosition = {};
 
   FDyInputDelegateManager mDelegateManger = {};
 
+  bool        mIsMouseMoved = false;
+
+  /// @brief Manages mouse clicking input mode.
   std::stack<EDyMouseMode> mPresentMouseMode;
-  bool              mIsMouseMoved         = false;
+  /// @brief Pointer of actor picking target.
+  FDyActor*   mPtrActorPickingTarget = nullptr;
 
   friend class DyEngine;
 };

@@ -13,8 +13,6 @@
 /// SOFTWARE.
 ///
 
-#include <memory>
-
 #include <Dy/Helper/Type/ColorRGBA.h>
 #include <Dy/Element/Object.h>
 #include <Dy/Element/Actor.h>
