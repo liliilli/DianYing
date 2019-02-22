@@ -816,7 +816,8 @@ EDySuccess MDyInput::TryPickObject()
     glBindFramebuffer(GL_READ_FRAMEBUFFER, ptrFramebuffer->GetFrameBufferId());
     glReadBuffer(GL_COLOR_ATTACHMENT4);
 
-    glReadPixels(position.X, position.Y, 1, 1, GL_RGB, GL_FLOAT, &pixel);
+    const auto& framebufferSize = ptrFramebuffer->GetFrameBufferSize();
+    glReadPixels(position.X, framebufferSize.Y - position.Y, 1, 1, GL_RGB, GL_FLOAT, &pixel);
     glReadBuffer(GL_NONE);
 
     glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
@@ -836,7 +837,7 @@ EDySuccess MDyInput::TryPickObject()
     else
     {
       // Bind ptrActor as Binder type.
-      MDY_NOT_IMPLEMENTED_ASSERT();
+      MDY_LOG_INFO_D("{}", ptrActor->ToString());
     }
   }
 

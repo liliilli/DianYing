@@ -39,17 +39,19 @@ public:
 
   /// @brief Get specifier name of framebuffer resource.
   MDY_NODISCARD const std::string& GetSpecifierName() const noexcept { return this->mSpecifierName; }
-
   /// @brief Get framebuffer id.
   MDY_NODISCARD TU32 GetFrameBufferId() const noexcept { return this->mFrameBufferId; }
+  /// @brief Get framebuffer size.
+  MDY_NODISCARD const DDyVectorInt2& GetFrameBufferSize() const noexcept { return this->mFrameBufferSize; } 
 
   /// @brid Framebuffer.
   EDySuccess BindFrameBuffer()   const noexcept;
   void       UnbindFrameBuffer() const noexcept; 
 
 private:
-  std::string mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
-  TU32        mFrameBufferId = MDY_INITIALIZE_DEFUINT;
+  std::string   mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
+  TU32          mFrameBufferId = MDY_INITIALIZE_DEFUINT;
+  DDyVectorInt2 mFrameBufferSize = {};
 
   using TAttachmentBinder = std::unique_ptr<TDyResourceBinderAttachment>;
   using TAttachmentBinderList = std::vector<TAttachmentBinder>;

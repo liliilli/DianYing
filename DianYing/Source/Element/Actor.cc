@@ -446,7 +446,7 @@ FDyActor::TActorMap& FDyActor::GetChildrenContainer() noexcept
 
 std::string FDyActor::ToString()
 {
-  return MDY_INITIALIZE_EMPTYSTR;
+  return fmt::format("Actor name : {}, Id : {}", this->GetActorName(), this->GetId());
 }
 
 #ifdef false
