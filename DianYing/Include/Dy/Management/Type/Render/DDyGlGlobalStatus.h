@@ -23,7 +23,7 @@ namespace dy
 struct DDyGlGlobalStatus final
 {
   /// @struct DPolygonMode
-  /// @breif Polygon mode descriptor.
+  /// @brief Polygon mode descriptor.
   struct DPolygonMode final
   {
     enum class EMode { Front, Back, FrontAndBack, };
@@ -35,11 +35,33 @@ struct DDyGlGlobalStatus final
     DPolygonMode(EMode iMode, EValue iValue) : mMode{iMode}, mValue{iValue} {};
   };
 
+  /// @struct DBlendMode
+  /// @brief Blend mode descriptor.
+  struct DBlendMode final
+  {
+    enum class EEqut { SrcAddDst, SrcSubDst, DstSubSrc, CompareMin, CompareMax };
+    enum class EFunc { Zero, One, SrcColor, OneMinusSrcColor, SrcAlpha, OneMinusSrcAlpha };
+
+    /// @struct DItem
+    struct DItem
+    {
+      EEqut mEquation;
+      EFunc mSourceFunc;
+      EFunc mDestinationFunc;
+
+      DItem(EEqut iEquation, EFunc iSrcFunc, EFunc iDstFunc) : 
+          mEquation{iEquation}, mSourceFunc{iSrcFunc}, mDestinationFunc{iDstFunc} {};
+    };
+
+    std::vector<DItem> mBlendingSettingList;
+  };
+
   std::optional<bool> mIsEnableBlend;
   std::optional<bool> mIsEnableCullface;
   std::optional<bool> mIsEnableDepthTest;
   std::optional<bool> mIsEnableScissorTest;
   std::optional<DPolygonMode> mPolygonMode;
+  std::optional<DBlendMode>   mBlendMode;
 };
 
 } /// ::dy namespace

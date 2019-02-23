@@ -44,32 +44,99 @@
 namespace 
 {
 
-void CbGlGlobalStatus(const dy::DDyGlGlobalStatus& iTopStatus)
+/// @brief 
+void CbGlFeatBlendStack(const bool& iTopStatus)
 {
-  if (iTopStatus.mPolygonMode.has_value() == true)
+  if (iTopStatus == true) { glEnable(GL_BLEND); } 
+  else                    { glDisable(GL_BLEND); }
+}
+
+/// @brief
+void CbGlFeatCullfaceStack(const bool& iTopStatus)
+{
+  if (iTopStatus == true) { glEnable(GL_CULL_FACE); } 
+  else                    { glDisable(GL_CULL_FACE); }
+}
+
+/// @brief
+void CbGlFeatDepthTestStack(const bool& iTopStatus)
+{
+  if (iTopStatus == true) { glEnable(GL_DEPTH_TEST); } 
+  else                    { glDisable(GL_DEPTH_TEST); }
+}
+
+/// @brief
+void CbGlFeatScissorTestStack(const bool& iTopStatus)
+{
+  if (iTopStatus == true) { glEnable(GL_SCISSOR_TEST); } 
+  else                    { glDisable(GL_SCISSOR_TEST); }
+}
+
+/// @brief
+void CbGlPolygonModeStack(const dy::DDyGlGlobalStatus::DPolygonMode& iTopStatus)
+{
+  // Get value from structure.
+  const auto& polygonMode = iTopStatus;
+  GLenum mode   = GL_NONE;
+  GLenum value  = GL_NONE;
+
+  // Set mode
+  switch (polygonMode.mMode)
   {
-    // Get value from structure.
-    const auto& polygonMode = iTopStatus.mPolygonMode.value();
-    GLenum mode   = GL_NONE;
-    GLenum value  = GL_NONE;
+  case dy::DDyGlGlobalStatus::DPolygonMode::EMode::Front: mode = GL_FRONT;  break;
+  case dy::DDyGlGlobalStatus::DPolygonMode::EMode::Back:  mode = GL_BACK;   break;
+  case dy::DDyGlGlobalStatus::DPolygonMode::EMode::FrontAndBack: mode = GL_FRONT_AND_BACK; break;
+  }
+  // Set value
+  switch (polygonMode.mValue)
+  {
+  case dy::DDyGlGlobalStatus::DPolygonMode::EValue::Triangle: value = GL_FILL; break;
+  case dy::DDyGlGlobalStatus::DPolygonMode::EValue::Line:     value = GL_LINE; break;
+  case dy::DDyGlGlobalStatus::DPolygonMode::EValue::Point:    value = GL_POINT; break;
+  }
 
-    // Set mode
-    switch (polygonMode.mMode)
+  // Issue into OpenGL system.
+  glPolygonMode(mode, value);
+}
+
+void CbGlBlendModeStatus(const dy::DDyGlGlobalStatus::DBlendMode& iTopStatus)
+{
+  const auto& blendMode = iTopStatus;
+
+  for (TU32 i = 0, size = static_cast<TU32>(blendMode.mBlendingSettingList.size());
+       i < size; ++i)
+  {
+    const auto& [equation, src, dst] = blendMode.mBlendingSettingList[i];
+    switch (equation)
     {
-    case dy::DDyGlGlobalStatus::DPolygonMode::EMode::Front: mode = GL_FRONT;  break;
-    case dy::DDyGlGlobalStatus::DPolygonMode::EMode::Back:  mode = GL_BACK;   break;
-    case dy::DDyGlGlobalStatus::DPolygonMode::EMode::FrontAndBack: mode = GL_FRONT_AND_BACK; break;
-    }
-    // Set value
-    switch (polygonMode.mValue)
-    {
-    case dy::DDyGlGlobalStatus::DPolygonMode::EValue::Triangle: value = GL_FILL; break;
-    case dy::DDyGlGlobalStatus::DPolygonMode::EValue::Line:     value = GL_LINE; break;
-    case dy::DDyGlGlobalStatus::DPolygonMode::EValue::Point:    value = GL_POINT; break;
+    case dy::DDyGlGlobalStatus::DBlendMode::EEqut::SrcAddDst: glBlendEquationi(i, GL_FUNC_ADD); break;
+    case dy::DDyGlGlobalStatus::DBlendMode::EEqut::SrcSubDst: glBlendEquationi(i, GL_FUNC_SUBTRACT); break;
+    case dy::DDyGlGlobalStatus::DBlendMode::EEqut::DstSubSrc: glBlendEquationi(i, GL_FUNC_REVERSE_SUBTRACT); break;
+    case dy::DDyGlGlobalStatus::DBlendMode::EEqut::CompareMin: glBlendEquationi(i, GL_MIN); break;
+    case dy::DDyGlGlobalStatus::DBlendMode::EEqut::CompareMax: glBlendEquationi(i, GL_MAX); break;
     }
 
-    // Issue into OpenGL system.
-    glPolygonMode(mode, value);
+    GLenum srcEnum = GL_NONE, dstEnum = GL_NONE;
+    switch (src)
+    {
+    case dy::DDyGlGlobalStatus::DBlendMode::EFunc::Zero: srcEnum = GL_ZERO; break;
+    case dy::DDyGlGlobalStatus::DBlendMode::EFunc::One:  srcEnum = GL_ONE; break;
+    case dy::DDyGlGlobalStatus::DBlendMode::EFunc::SrcColor: srcEnum = GL_SRC_COLOR; break;
+    case dy::DDyGlGlobalStatus::DBlendMode::EFunc::OneMinusSrcColor: srcEnum = GL_ONE_MINUS_SRC_COLOR; break;
+    case dy::DDyGlGlobalStatus::DBlendMode::EFunc::SrcAlpha: srcEnum = GL_SRC_ALPHA; break;
+    case dy::DDyGlGlobalStatus::DBlendMode::EFunc::OneMinusSrcAlpha: srcEnum = GL_ONE_MINUS_SRC_ALPHA; break;
+    }
+    switch (dst)
+    {
+    case dy::DDyGlGlobalStatus::DBlendMode::EFunc::Zero: dstEnum = GL_ZERO; break;
+    case dy::DDyGlGlobalStatus::DBlendMode::EFunc::One:  dstEnum = GL_ONE; break;
+    case dy::DDyGlGlobalStatus::DBlendMode::EFunc::SrcColor: dstEnum = GL_SRC_COLOR; break;
+    case dy::DDyGlGlobalStatus::DBlendMode::EFunc::OneMinusSrcColor: dstEnum = GL_ONE_MINUS_SRC_COLOR; break;
+    case dy::DDyGlGlobalStatus::DBlendMode::EFunc::SrcAlpha: dstEnum = GL_SRC_ALPHA; break;
+    case dy::DDyGlGlobalStatus::DBlendMode::EFunc::OneMinusSrcAlpha: dstEnum = GL_ONE_MINUS_SRC_ALPHA; break;
+    }
+
+    glBlendFunci(i, srcEnum, dstEnum);
   }
 }
 
@@ -99,14 +166,16 @@ EDySuccess MDyRendering::pfInitialize()
   this->mSkyPostEffect        = std::make_unique<decltype(this->mSkyPostEffect)::element_type>();
   this->mDebugRenderer        = std::make_unique<decltype(this->mDebugRenderer)::element_type>();
 
-  // Set callback function for altering global render status.
-  this->mInternalGlobalStatusStack.SetCallback(CbGlGlobalStatus);
+  // Set callback function for global internal status stack.
+  this->mInternal_FeatBlendStack.SetCallback(CbGlFeatBlendStack);
+  this->mInternal_FeatDepthTestStack.SetCallback(CbGlFeatDepthTestStack);
+  this->mInternal_FeatCullfaceStack.SetCallback(CbGlFeatCullfaceStack);
+  this->mInternal_FeatScissorTestStack.SetCallback(CbGlFeatScissorTestStack);
+  this->mInternal_PolygonModeStack.SetCallback(CbGlPolygonModeStack);
+  this->mInternal_BlendModeStack.SetCallback(CbGlBlendModeStatus);
 
   switch (MDySetting::GetInstance().GetRenderingType())
   {
-  case EDyRenderingApi::Vulkan: 
-  case EDyRenderingApi::DirectX11: 
-  case EDyRenderingApi::DirectX12: { MDY_NOT_IMPLEMENTED_ASSERT(); } break;
   case EDyRenderingApi::OpenGL: 
   {
     glEnable(GL_PRIMITIVE_RESTART);
@@ -119,13 +188,22 @@ EDySuccess MDyRendering::pfInitialize()
     {
       using EMode  = DDyGlGlobalStatus::DPolygonMode::EMode;
       using EValue = DDyGlGlobalStatus::DPolygonMode::EValue;
+      using EEqut  = DDyGlGlobalStatus::DBlendMode::EEqut;
+      using EFunc  = DDyGlGlobalStatus::DBlendMode::EFunc;
+      using DPolygonMode  = DDyGlGlobalStatus::DPolygonMode;
+      using DBlendMode    = DDyGlGlobalStatus::DBlendMode;
       // Set value.
       initialStatus.mIsEnableBlend       = glIsEnabled(GL_BLEND); 
       initialStatus.mIsEnableCullface    = glIsEnabled(GL_CULL_FACE);
       initialStatus.mIsEnableDepthTest   = glIsEnabled(GL_DEPTH_TEST);
       initialStatus.mIsEnableScissorTest = glIsEnabled(GL_SCISSOR_TEST);
-      initialStatus.mPolygonMode         = DDyGlGlobalStatus::DPolygonMode{EMode::FrontAndBack, EValue::Triangle}; 
-      this->mInternalGlobalStatusStack.Push(initialStatus, false);
+      initialStatus.mPolygonMode         = DPolygonMode{EMode::FrontAndBack, EValue::Triangle}; 
+      // Get blend mode.
+      DBlendMode mode{};
+      mode.mBlendingSettingList.emplace_back(EEqut::SrcAddDst, EFunc::SrcAlpha, EFunc::OneMinusSrcAlpha);
+      initialStatus.mBlendMode = mode;
+      // Insert
+      this->InsertInternalGlobalStatus(initialStatus);
     }
       
     { // IMGUI Setting
@@ -137,6 +215,9 @@ EDySuccess MDyRendering::pfInitialize()
       ImGui_ImplOpenGL3_Init("#version 430");
     }
   } break;
+  case EDyRenderingApi::Vulkan: 
+  case EDyRenderingApi::DirectX11: 
+  case EDyRenderingApi::DirectX12: { MDY_NOT_IMPLEMENTED_ASSERT(); } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 
@@ -376,14 +457,14 @@ void MDyRendering::RenderLevelInformation()
     {
       initialStatus.mPolygonMode = DPolygonMode{EMode::FrontAndBack, EValue::Triangle}; 
       { MDY_GRAPHIC_SET_CRITICALSECITON();
-        this->mInternalGlobalStatusStack.Push(initialStatus);
+        this->InsertInternalGlobalStatus(initialStatus);
       }
     } break;
     case EDyModelRenderingMode::WireFrame: 
     {
       initialStatus.mPolygonMode = DPolygonMode{EMode::FrontAndBack, EValue::Line}; 
       { MDY_GRAPHIC_SET_CRITICALSECITON();
-        this->mInternalGlobalStatusStack.Push(initialStatus);
+        this->InsertInternalGlobalStatus(initialStatus);
       }
     } break;
     }
@@ -395,9 +476,8 @@ void MDyRendering::RenderLevelInformation()
 
   // (1) Draw opaque call list. Get valid Main CDyCamera instance pointer address.
   if (MDY_GRAPHIC_SET_CRITICALSECITON(); 
-      this->mBasicOpaqueRenderer->TrySetupRendering() == DY_SUCCESS)
+      this->mBasicOpaqueRenderer->TryPushRenderingSetting() == DY_SUCCESS)
   {
-    glDisable(GL_CULL_FACE);
     for (auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] : this->mOpaqueMeshDrawingList)
     { // Render
       this->mBasicOpaqueRenderer->RenderScreen(
@@ -408,12 +488,14 @@ void MDyRendering::RenderLevelInformation()
     }
 
     // Pop setting.
-    this->mBasicOpaqueRenderer->PopRenderingSetting();
+    this->mBasicOpaqueRenderer->TryPopRenderingSetting();
   }
   SDyProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(this->mOpaqueMeshDrawingList.size()));
 
   // (2) Draw transparent call list with OIT.
-  if (this->mTranslucentOIT->TrySetupRendering() == DY_SUCCESS)
+  if (MDY_GRAPHIC_SET_CRITICALSECITON();
+      this->mTranslucentMeshDrawingList.empty() == false
+  &&  this->mTranslucentOIT->TryPushRenderingSetting() == DY_SUCCESS)
   {
     for (auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] : this->mTranslucentMeshDrawingList)
     { // Render
@@ -423,16 +505,14 @@ void MDyRendering::RenderLevelInformation()
           const_cast<FDyMaterialResource&>(*iPtrValidMat)
       );
     }
-    SDyProfilingHelper::AddScreenRenderedActorCount(
-        static_cast<TI32>(this->mTranslucentMeshDrawingList.size()));
     
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_BLEND);
-    glBlendFunci(0, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glBlendFunci(1, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    this->mTranslucentOIT->TryPopRenderingSetting(); // Pop setting.
   }
+  SDyProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(this->mTranslucentMeshDrawingList.size()));
   this->mTranslucentMeshDrawingList.clear();
-  this->mInternalGlobalStatusStack.Pop();
+
+  // Pop.
+  this->PopInternalGlobalStatus();
   
   //!
   //! Effects ▽
@@ -470,13 +550,13 @@ void MDyRendering::RenderLevelInformation()
   //! Default Post processing effects
   if (information.mGraphics.mIsEnabledDefaultSsao == true)
   { 
-    if (this->mSSAOPostEffect->TrySetupRendering() == DY_SUCCESS) { this->mSSAOPostEffect->RenderScreen(); }
+    if (this->mSSAOPostEffect->TryPushRenderingSetting() == DY_SUCCESS) { this->mSSAOPostEffect->RenderScreen(); }
   }
   else { this->mSSAOPostEffect->Clear(); }
 
   // https://www.khronos.org/opengl/wiki/Cubemap_Texture
   if (MDY_CHECK_ISNOTNULL(this->mPtrRequiredSkybox)
-  &&  this->mSkyPostEffect->TrySetupRendering() == DY_SUCCESS)
+  &&  this->mSkyPostEffect->TryPushRenderingSetting() == DY_SUCCESS)
   {
     this->mSkyPostEffect->RenderScreen();
   }
@@ -508,7 +588,7 @@ void MDyRendering::RenderDebugInformation()
     SDyProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(this->mOpaqueMeshDrawingList.size()));
     // (1) Draw opaque call list. Get valid Main CDyCamera instance pointer address.
     if (this->mDebugRenderer->IsReady() == true
-    &&  this->mDebugRenderer->TrySetupRendering() == DY_SUCCESS)
+    &&  this->mDebugRenderer->TryPushRenderingSetting() == DY_SUCCESS)
     {
       for (auto& [ptrCollider, transformMatrix] : this->mDebugColliderDrawingList)
       {
@@ -564,16 +644,8 @@ void MDyRendering::pClearRenderingFramebufferInstances() noexcept
 {
   if (MDyWorld::GetInstance().IsLevelPresentValid() == false) { return; }
 
-  // @TODO DO NOTHING NOW.
-  const auto& information = MDySetting::GetInstance().GetGameplaySettingInformation();
-  if (information.mGraphics.mIsEnabledDefaultSsao == true) { }
-  // Reset all shadow framebuffer setting.
-  //if (information.mGraphics.mIsEnabledDefaultShadow == true) { this->mShadowRenderer->Clear(); }
-
-#if defined(MDY_FLAG_IN_EDITOR) == false
   // Reset final rendering mesh setting.
   if (MDY_CHECK_ISNOTEMPTY(this->mLevelFinalRenderer))    { this->mLevelFinalRenderer->Clear(); }
-#endif
   if (MDY_CHECK_ISNOTEMPTY(this->mUiBasicRenderer))       { this->mUiBasicRenderer->Clear(); }
   if (MDY_CHECK_ISNOTEMPTY(this->mFinalDisplayRenderer))  { this->mFinalDisplayRenderer->Clear(); }
 }
@@ -620,6 +692,43 @@ EDySuccess MDyRendering::MDY_PRIVATE(UnbindMainDirectionalShadow)(_MIN_ CDyDirec
 const DDyMatrix4x4& MDyRendering::GetGeneralUiProjectionMatrix() const noexcept
 {
   return this->mUiGeneralProjectionMatrix;
+}
+
+void MDyRendering::InsertInternalGlobalStatus(_MIN_ const DDyGlGlobalStatus& iNewStatus)
+{
+  //
+  this->mInternalGlobalStatusStack.Push(iNewStatus, false);
+
+  const auto& topStatusChunk = this->mInternalGlobalStatusStack.Top();
+  // Set
+  if (topStatusChunk.mIsEnableBlend.has_value() == true)
+  { this->mInternal_FeatBlendStack.Push(*topStatusChunk.mIsEnableBlend); }
+  if (topStatusChunk.mIsEnableCullface.has_value() == true)
+  { this->mInternal_FeatCullfaceStack.Push(*topStatusChunk.mIsEnableCullface); }
+  if (topStatusChunk.mIsEnableDepthTest.has_value() == true)
+  { this->mInternal_FeatDepthTestStack.Push(*topStatusChunk.mIsEnableDepthTest); }
+  if (topStatusChunk.mIsEnableScissorTest.has_value() == true)
+  { this->mInternal_FeatScissorTestStack.Push(*topStatusChunk.mIsEnableScissorTest); }
+
+  if (topStatusChunk.mBlendMode.has_value() == true)
+  { this->mInternal_BlendModeStack.Push(*topStatusChunk.mBlendMode); }
+  if (topStatusChunk.mPolygonMode.has_value() == true)
+  { this->mInternal_PolygonModeStack.Push(*topStatusChunk.mPolygonMode); }
+}
+
+void MDyRendering::PopInternalGlobalStatus()
+{
+  if (this->mInternalGlobalStatusStack.IsEmpty() == true) { return; }
+
+  auto extracted = this->mInternalGlobalStatusStack.ExtractTop(false);
+
+  if (extracted.mIsEnableBlend.has_value() == true)       { this->mInternal_FeatBlendStack.Pop(); }
+  if (extracted.mIsEnableCullface.has_value() == true)    { this->mInternal_FeatCullfaceStack.Pop(); }
+  if (extracted.mIsEnableDepthTest.has_value() == true)   { this->mInternal_FeatDepthTestStack.Pop(); }
+  if (extracted.mIsEnableScissorTest.has_value() == true) { this->mInternal_FeatScissorTestStack.Pop(); }
+
+  if (extracted.mBlendMode.has_value() == true)   { this->mInternal_BlendModeStack.Pop(); }
+  if (extracted.mPolygonMode.has_value() == true) { this->mInternal_PolygonModeStack.Pop(); }
 }
 
 } /// ::dy namespace

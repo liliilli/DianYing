@@ -155,18 +155,17 @@ bool FDyBasicRenderer::IsReady() const noexcept
   return this->mBinderFrameBuffer.IsResourceExist() == true;
 }
 
-EDySuccess FDyBasicRenderer::TrySetupRendering()
+EDySuccess FDyBasicRenderer::TryPushRenderingSetting()
 {
   if (this->IsReady() == false) { return DY_FAILURE; }
 
   this->mBinderFrameBuffer->BindFrameBuffer();
   glClearColor(0, 0, 0, 0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glBlendFunci(1, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   return DY_SUCCESS;
 }
 
-EDySuccess FDyBasicRenderer::PopRenderingSetting()
+EDySuccess FDyBasicRenderer::TryPopRenderingSetting()
 {
   if (this->IsReady() == false) { return DY_FAILURE; }
 

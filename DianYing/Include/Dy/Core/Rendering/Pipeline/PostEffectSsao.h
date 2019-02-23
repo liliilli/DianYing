@@ -30,9 +30,11 @@ public:
 
   bool IsReady() const noexcept override final;
 
-  EDySuccess TrySetupRendering() override final;
+  EDySuccess TryPushRenderingSetting() override final;
 
   void Clear() override final;
+
+  EDySuccess TryPopRenderingSetting() override final { return DY_SUCCESS; }
 
 private:
 

@@ -73,7 +73,7 @@ bool FDyPostEffectSky::IsReady() const noexcept
       && this->mBinderMeshSkybox.IsResourceExist() == true;
 }
 
-EDySuccess FDyPostEffectSky::TrySetupRendering()
+EDySuccess FDyPostEffectSky::TryPushRenderingSetting()
 {
   if (this->IsReady() == false) { return DY_FAILURE; }
 

@@ -21,6 +21,8 @@
 #include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
 #include <Dy/Component/CDyModelRenderer.h>
 #include <Dy/Element/Actor.h>
+#include <Dy/Management/Type/Render/DDyGlGlobalStatus.h>
+#include <Dy/Management/Rendering/RenderingManager.h>
 
 namespace dy
 {
@@ -30,19 +32,34 @@ bool FDyLevelOITRenderer::IsReady() const noexcept
   return this->mBinderFrameBuffer.IsResourceExist() == true;
 }
 
-EDySuccess FDyLevelOITRenderer::TrySetupRendering()
+EDySuccess FDyLevelOITRenderer::TryPushRenderingSetting()
 {
   if (this->IsReady() == false) { return DY_FAILURE; }
 
   this->mBinderFrameBuffer->BindFrameBuffer();
-  glDisable(GL_DEPTH_TEST);
-  glDisable(GL_CULL_FACE);
-  glBlendEquation(GL_FUNC_ADD);
-  glBlendFunci(0, GL_ONE,  GL_ONE);
-  glBlendFunci(1, GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
+  DDyGlGlobalStatus status;
+  using EMode   = DDyGlGlobalStatus::DPolygonMode::EMode;
+  using EValue  = DDyGlGlobalStatus::DPolygonMode::EValue;
+  using EEqut   = DDyGlGlobalStatus::DBlendMode::EEqut;
+  using EFunc   = DDyGlGlobalStatus::DBlendMode::EFunc;
+  using DBlendMode = DDyGlGlobalStatus::DBlendMode;
+
+  status.mIsEnableBlend = true;
+  status.mIsEnableDepthTest = false;
+  status.mIsEnableCullface  = false;
+
+  DBlendMode blendingList{};
+  blendingList.mBlendingSettingList.emplace_back(EEqut::SrcAddDst, EFunc::One, EFunc::One);
+  blendingList.mBlendingSettingList.emplace_back(EEqut::SrcAddDst, EFunc::Zero, EFunc::OneMinusSrcColor);
+  status.mBlendMode = blendingList;
+
+  auto& refRendering = MDyRendering::GetInstance();
+  refRendering.InsertInternalGlobalStatus(status);
 
   glClearBufferfv(GL_COLOR, 0, &DDyColorRGBA::Black.R);
   glClearBufferfv(GL_COLOR, 1, &DDyColorRGBA::White.R);
+
+  this->mBinderFrameBuffer->BindFrameBuffer();
   return DY_SUCCESS;
 }
 
@@ -51,19 +68,19 @@ void FDyLevelOITRenderer::RenderScreen(
     _MIN_ FDyMeshResource& iRefMesh, 
     _MIN_ FDyMaterialResource& iRefMaterial)
 {
-  if (this->mBinderFrameBuffer.IsResourceExist() == false) { return; }
-  this->mBinderFrameBuffer->BindFrameBuffer();
+  if (this->IsReady() == false) { return; }
 
   // General deferred rendering
   auto ptrModelTransform = iRefRenderer.GetBindedActor()->GetTransform();
   auto& shaderBinder = iRefMaterial.GetShaderResourceBinder();
   if (shaderBinder.IsResourceExist() == false) { return; }
 
-  shaderBinder->UseShader();
   shaderBinder->TryUpdateUniform<EDyUniformVariableType::Matrix4>("uModelMatrix", ptrModelTransform->GetTransform());
   shaderBinder->TryUpdateUniform<EDyUniformVariableType::Matrix4>("uRotationMatrix", ptrModelTransform->GetRotationMatrix());
   shaderBinder->TryUpdateUniform<EDyUniformVariableType::Float>("uAlphaOffset", 0.75f);
   shaderBinder->TryUpdateUniform<EDyUniformVariableType::Float>("uDepthScale",  0.1f);
+
+  shaderBinder->UseShader();
   shaderBinder->TryUpdateUniformList();
   iRefMaterial.TryUpdateTextureList();
   iRefMesh.BindVertexArray();
@@ -78,7 +95,19 @@ void FDyLevelOITRenderer::RenderScreen(
   // Unbind, unset, deactivate settings for this submesh and material.
   FDyGLWrapper::UnbindVertexArrayObject();
   shaderBinder->DisuseShader();
+}
+
+EDySuccess FDyLevelOITRenderer::TryPopRenderingSetting()
+{
+  if (this->IsReady() == false) { return DY_FAILURE; }
+
   this->mBinderFrameBuffer->UnbindFrameBuffer();
+
+  auto& refRendering = MDyRendering::GetInstance();
+  refRendering.PopInternalGlobalStatus();
+  glBlendFunci(1, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+  return DY_SUCCESS;
 }
 
 void FDyLevelOITRenderer::Clear()

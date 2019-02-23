@@ -40,13 +40,18 @@ public:
 
   /// @brief Check rendering phase is ready.
   MDY_NODISCARD bool IsReady() const noexcept override final;
+
   /// @brief Try setup rendering, if failed, return DY_FAILURE.
-  MDY_NODISCARD EDySuccess TrySetupRendering() override final;
+  MDY_NODISCARD EDySuccess TryPushRenderingSetting() override final;
+
   /// @brief Rendering deferred contexts to default framebuffer.
   void RenderScreen(
     _MIN_ CDyModelRenderer& iRefRenderer,
     _MIN_ FDyMeshResource& iRefMesh, 
     _MIN_ FDyMaterialResource& iRefMaterial);
+
+  EDySuccess TryPopRenderingSetting() override;
+
   /// @brief Clear properties of given framebuffer.
   void Clear() override final;
 

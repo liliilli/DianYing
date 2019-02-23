@@ -91,7 +91,7 @@ bool FDyPostEffectSsao::IsReady() const noexcept
   &&  this->mBinderTriangle.IsResourceExist() == true;
 }
 
-EDySuccess FDyPostEffectSsao::TrySetupRendering()
+EDySuccess FDyPostEffectSsao::TryPushRenderingSetting()
 {
   if (this->IsReady() == false) { return DY_FAILURE; }
 

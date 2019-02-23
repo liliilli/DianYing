@@ -51,7 +51,10 @@ public:
   bool IsReady() const noexcept override final;
 
   /// @brief
-  EDySuccess TrySetupRendering() override final;
+  EDySuccess TryPushRenderingSetting() override final;
+
+  /// @brief
+  EDySuccess TryPopRenderingSetting() override final;
 
 private:
   TDyResourceBinderShader      mBinderShader     {"dyBtShDebugLine"};

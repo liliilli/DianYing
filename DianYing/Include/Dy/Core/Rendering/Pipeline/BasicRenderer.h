@@ -62,9 +62,9 @@ public:
   bool IsReady() const noexcept override final;
 
   /// @brief Try setup rendering.
-  EDySuccess TrySetupRendering() override final;
+  EDySuccess TryPushRenderingSetting() override final;
   /// @brief Pop rendering setting.
-  EDySuccess PopRenderingSetting();
+  EDySuccess TryPopRenderingSetting() override final;
 
 private:
   TDyResourceBinderFrameBuffer mBinderFrameBuffer{"dyBtBasicRender"};

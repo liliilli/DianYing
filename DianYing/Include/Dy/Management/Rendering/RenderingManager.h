@@ -17,7 +17,6 @@
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Management/Type/Render/DDyModelHandler.h>
-#include <Dy/Core/Resource/Object/Grid.h>
 #include <Dy/Core/Rendering/Pipeline/BasicRenderer.h>
 #include <Dy/Core/Rendering/Pipeline/FinalScreenDisplayRenderer.h>
 #include <Dy/Core/Rendering/Pipeline/PostEffectSsao.h>
@@ -103,6 +102,10 @@ public:
 
   /// @brief Get General (Default) ui projection matrix.
   const DDyMatrix4x4& GetGeneralUiProjectionMatrix() const noexcept;
+  /// @brief Insert GL global status.
+  void InsertInternalGlobalStatus(_MIN_ const DDyGlGlobalStatus& iNewStatus); 
+  /// @brief Pop GL global status.
+  void PopInternalGlobalStatus();
 
 private:
   /// @brief Enqueue static draw call to mesh with material.
@@ -162,6 +165,13 @@ private:
   /// This container will be push & popped automatically by following rendering pipeline.
   /// This container must not be empty before termination of Dy application.
   FDyCallStack<DDyGlGlobalStatus> mInternalGlobalStatusStack;
+  /// ▽ Actual state machine change logic will be operated in these stack.
+  FDyCallStack<bool> mInternal_FeatBlendStack;
+  FDyCallStack<bool> mInternal_FeatCullfaceStack;
+  FDyCallStack<bool> mInternal_FeatDepthTestStack;
+  FDyCallStack<bool> mInternal_FeatScissorTestStack;
+  FDyCallStack<DDyGlGlobalStatus::DPolygonMode> mInternal_PolygonModeStack;
+  FDyCallStack<DDyGlGlobalStatus::DBlendMode>   mInternal_BlendModeStack;
 
 #if defined(MDY_FLAG_IN_EDITOR)
   std::unique_ptr<FDyGrid>                    mGridEffect           = nullptr;

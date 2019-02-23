@@ -29,7 +29,7 @@ bool FDyDebugRenderer::IsReady() const noexcept
       && this->mBinderFrameBuffer.IsResourceExist() == true;
 }
 
-EDySuccess FDyDebugRenderer::TrySetupRendering()
+EDySuccess FDyDebugRenderer::TryPushRenderingSetting()
 {
   if (this->IsReady() == false) { return DY_FAILURE; }
 
@@ -41,6 +41,11 @@ EDySuccess FDyDebugRenderer::TrySetupRendering()
 
   // We need not update camera. Because already updated.
 
+  return DY_SUCCESS;
+}
+
+EDySuccess FDyDebugRenderer::TryPopRenderingSetting()
+{
   return DY_SUCCESS;
 }
 
