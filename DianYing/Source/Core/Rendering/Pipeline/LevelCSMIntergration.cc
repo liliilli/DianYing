@@ -54,7 +54,7 @@ bool FDyLevelCSMIntergration::IsReady() const noexcept
   &&  this->mBinderTriangle.IsResourceExist() == true;
 }
 
-EDySuccess FDyLevelCSMIntergration::TrySetupRendering()
+EDySuccess FDyLevelCSMIntergration::TryPushRenderingSetting()
 {
   if (this->IsReady() == false) { return DY_FAILURE; }
   if (this->pSetupOpaqueCSMIntegration() == DY_FAILURE)       { return DY_FAILURE; }
@@ -63,59 +63,20 @@ EDySuccess FDyLevelCSMIntergration::TrySetupRendering()
   return DY_SUCCESS;
 }
 
-void FDyLevelCSMIntergration::RenderScreen()
-{
-  if (this->IsReady() == false) { return; }
-  
-  this->mBinderFrameBuffer->BindFrameBuffer();
-  this->mBinderOpaqueShader->UseShader();
-  // Check Textures.
-  glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, this->mBinderAttUnlit->GetAttachmentId());
-  glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, this->mBinderAttNormal->GetAttachmentId());
-  glActiveTexture(GL_TEXTURE2); glBindTexture(GL_TEXTURE_2D, this->mBinderAttSpecular->GetAttachmentId());
-  glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, this->mBinderAttPosition->GetAttachmentId());
-  glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D_ARRAY, this->mBinderAttShadow->GetAttachmentId());
-  glActiveTexture(GL_TEXTURE5); glBindTexture(GL_TEXTURE_2D, this->mBinderAttZValue->GetAttachmentId());
-  glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, this->mBinderAttSSAO->GetAttachmentId());
-  glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, this->mBinderAttSky->GetAttachmentId());
-
-  const auto& submeshList = this->mBinderTriangle->GetMeshResourceList();
-  MDY_ASSERT(submeshList.size() == 1, "Unexpected error occurred.");
-  submeshList[0]->Get()->BindVertexArray();
-  FDyGLWrapper::Draw(EDyDrawType::Triangle, true, 3);
-
-  this->mBinderFbTranslucent->BindFrameBuffer();
-  this->mBinderTransShader->UseShader();
-  glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, this->mBinderAttOpaque->GetAttachmentId());
-  glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, this->mBinderAttOITColor->GetAttachmentId());
-  glActiveTexture(GL_TEXTURE2); glBindTexture(GL_TEXTURE_2D, this->mBinderAttOITWeigh->GetAttachmentId());
-  FDyGLWrapper::Draw(EDyDrawType::Triangle, true, 3);
-
-  this->mBinderTransShader->DisuseShader();
-  this->mBinderFbTranslucent->UnbindFrameBuffer();
-  FDyGLWrapper::UnbindVertexArrayObject();
-}
-
 EDySuccess FDyLevelCSMIntergration::pSetupOpaqueCSMIntegration()
 {
-  this->mBinderFrameBuffer->BindFrameBuffer();
-  const auto& backgroundColor = MDyWorld::GetInstance().GetValidLevelReference().GetBackgroundColor();
-  glClearColor(backgroundColor.R, backgroundColor.G, backgroundColor.B, backgroundColor.A);
-  glClear(GL_COLOR_BUFFER_BIT);
-
   // Update shader's uniform information.
-  this->mBinderOpaqueShader->UseShader();
-  const auto* ptr = MDyRendering::GetInstance().GetPtrMainDirectionalShadow();
-  if (MDY_CHECK_ISNOTNULL(ptr)) 
+  if (const auto* ptr = MDyRendering::GetInstance().GetPtrMainDirectionalShadow();
+      ptr != nullptr) 
   { 
+    using EUniform = EDyUniformVariableType;
     // DyConvertToVector
-    this->mBinderOpaqueShader->TryUpdateUniform<EDyUniformVariableType::Vector4>(
+    this->mBinderOpaqueShader->TryUpdateUniform<EUniform::Vector4>(
         "uNormalizedFarPlanes", 
         ptr->GetCSMNormalizedFarPlanes());
-    this->mBinderOpaqueShader->TryUpdateUniform<EDyUniformVariableType::Matrix4Array>(
+    this->mBinderOpaqueShader->TryUpdateUniform<EUniform::Matrix4Array>(
         "uLightVPSBMatrix[0]", 
         DyConvertToVector<DDyMatrix4x4>(ptr->GetCSMLightSegmentVPSBMatrix()));
-    this->mBinderOpaqueShader->TryUpdateUniformList();
   }
 
   // Update directional light property.
@@ -127,14 +88,20 @@ EDySuccess FDyLevelCSMIntergration::pSetupOpaqueCSMIntegration()
     if (this->mAddrMainLight == 0)
     {
       DDyUboDirectionalLight light;
-      MDY_CALL_ASSERT_SUCCESS(uboManager.UpdateUboContainer("dyBtUboDirLight", 0, sizeof(DDyUboDirectionalLight), &light));
+      uboManager.UpdateUboContainer("dyBtUboDirLight", 0, sizeof(DDyUboDirectionalLight), &light);
     }
     else
     {
       DDyUboDirectionalLight light = ptrLight->GetUboLightInfo();
-      MDY_CALL_ASSERT_SUCCESS(uboManager.UpdateUboContainer("dyBtUboDirLight", 0, sizeof(DDyUboDirectionalLight), &light));
+      uboManager.UpdateUboContainer("dyBtUboDirLight", 0, sizeof(DDyUboDirectionalLight), &light);
     }
   }
+
+  this->mBinderFrameBuffer->BindFrameBuffer();
+  const auto& backgroundColor = MDyWorld::GetInstance().GetValidLevelReference().GetBackgroundColor();
+  glClearColor(backgroundColor.R, backgroundColor.G, backgroundColor.B, backgroundColor.A);
+  glClear(GL_COLOR_BUFFER_BIT);
+
   return DY_SUCCESS;
 }
 
@@ -145,9 +112,51 @@ EDySuccess FDyLevelCSMIntergration::pSetupTranslucentOITIntegration()
   glClear(GL_COLOR_BUFFER_BIT);
   this->mBinderFbTranslucent->UnbindFrameBuffer(); 
 
-  this->mBinderTransShader->UseShader();
-  this->mBinderTransShader->TryUpdateUniformList();
   return DY_SUCCESS;
+}
+
+
+void FDyLevelCSMIntergration::RenderScreen()
+{
+  if (this->IsReady() == false) { return; }
+  
+  const auto& submeshList = this->mBinderTriangle->GetMeshResourceList();
+  MDY_ASSERT(submeshList.size() == 1, "Unexpected error occurred.");
+  submeshList[0]->Get()->BindVertexArray();
+
+  {
+    this->mBinderFrameBuffer->BindFrameBuffer();
+    // Check Textures.
+    this->mBinderOpaqueShader->TryInsertTextureRequisition(0, this->mBinderAttUnlit->GetAttachmentId());
+    this->mBinderOpaqueShader->TryInsertTextureRequisition(1, this->mBinderAttNormal->GetAttachmentId());
+    this->mBinderOpaqueShader->TryInsertTextureRequisition(2, this->mBinderAttSpecular->GetAttachmentId());
+    this->mBinderOpaqueShader->TryInsertTextureRequisition(3, this->mBinderAttPosition->GetAttachmentId());
+    this->mBinderOpaqueShader->TryInsertTextureRequisition(4, this->mBinderAttShadow->GetAttachmentId());
+    this->mBinderOpaqueShader->TryInsertTextureRequisition(5, this->mBinderAttZValue->GetAttachmentId());
+    this->mBinderOpaqueShader->TryInsertTextureRequisition(6, this->mBinderAttSSAO->GetAttachmentId());
+    this->mBinderOpaqueShader->TryInsertTextureRequisition(7, this->mBinderAttSky->GetAttachmentId());
+    this->mBinderOpaqueShader->UseShader();
+    this->mBinderOpaqueShader->TryUpdateUniformList();
+
+    FDyGLWrapper::Draw(EDyDrawType::Triangle, true, 3);
+  }
+
+  {
+    this->mBinderFbTranslucent->BindFrameBuffer();
+    // 
+    this->mBinderTransShader->TryInsertTextureRequisition(0, this->mBinderAttOpaque->GetAttachmentId());
+    this->mBinderTransShader->TryInsertTextureRequisition(1, this->mBinderAttOITColor->GetAttachmentId());
+    this->mBinderTransShader->TryInsertTextureRequisition(2, this->mBinderAttOITWeigh->GetAttachmentId());
+    this->mBinderTransShader->UseShader();
+    this->mBinderTransShader->TryUpdateUniformList();
+
+    FDyGLWrapper::Draw(EDyDrawType::Triangle, true, 3);
+
+    this->mBinderTransShader->DisuseShader();
+    this->mBinderFbTranslucent->UnbindFrameBuffer();
+  }
+
+  FDyGLWrapper::UnbindVertexArrayObject();
 }
 
 void FDyLevelCSMIntergration::Clear()
@@ -161,6 +170,11 @@ void FDyLevelCSMIntergration::Clear()
   glClear(GL_COLOR_BUFFER_BIT);
 
   this->mBinderFrameBuffer->UnbindFrameBuffer();
+}
+
+EDySuccess FDyLevelCSMIntergration::TryPopRenderingSetting()
+{
+  return DY_SUCCESS;
 }
 
 } /// ::dy namespace

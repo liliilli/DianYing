@@ -53,28 +53,36 @@ FDyPostEffectSsao::FDyPostEffectSsao()
 void FDyPostEffectSsao::RenderScreen()
 {
   if (this->IsReady() == false) { return; }
-  
-  this->mBinderFbSSAO->BindFrameBuffer();
-  this->mBinderShSSAO->UseShader();
-  glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, this->mBinderAttWorldNorm->GetAttachmentId());
-  glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, this->mBinderAttWorldPos->GetAttachmentId());
-  glActiveTexture(GL_TEXTURE2); glBindTexture(GL_TEXTURE_2D, this->mBinderTexNoise->GetTextureId());
 
   const auto& submeshList = this->mBinderTriangle->GetMeshResourceList();
   MDY_ASSERT(submeshList.size() == 1, "Unexpected error occurred.");
-
   submeshList[0]->Get()->BindVertexArray();
-  FDyGLWrapper::Draw(EDyDrawType::Triangle, true, 3);
 
-  this->mBinderFbSSAOBlur->BindFrameBuffer();
-  this->mBinderShSSAOBlur->UseShader();
-  glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, this->mBinderAttSSAOOpt->GetAttachmentId());
+  { // Check SSAO target.
+    this->mBinderFbSSAO->BindFrameBuffer();
 
-  FDyGLWrapper::Draw(EDyDrawType::Triangle, true, 3);
+    this->mBinderShSSAO->TryInsertTextureRequisition(0, this->mBinderAttWorldNorm->GetAttachmentId());
+    this->mBinderShSSAO->TryInsertTextureRequisition(1, this->mBinderAttWorldPos->GetAttachmentId());
+    this->mBinderShSSAO->TryInsertTextureRequisition(2, this->mBinderTexNoise->GetTextureId());
+    this->mBinderShSSAO->UseShader();
+    this->mBinderShSSAO->TryUpdateUniformList();
+
+    FDyGLWrapper::Draw(EDyDrawType::Triangle, true, 3);
+  }
+
+  { // Box Blurring (Fast and easy!)
+    this->mBinderFbSSAOBlur->BindFrameBuffer();
+    this->mBinderShSSAOBlur->TryInsertTextureRequisition(0, this->mBinderAttSSAOOpt->GetAttachmentId());
+    this->mBinderShSSAOBlur->UseShader();
+    this->mBinderShSSAOBlur->TryUpdateUniformList();
+
+    FDyGLWrapper::Draw(EDyDrawType::Triangle, true, 3);
+
+    this->mBinderShSSAOBlur->DisuseShader();
+    this->mBinderFbSSAOBlur->UnbindFrameBuffer();
+  }
 
   FDyGLWrapper::UnbindVertexArrayObject();
-  this->mBinderShSSAOBlur->DisuseShader();
-  this->mBinderFbSSAOBlur->UnbindFrameBuffer();
 }
 
 bool FDyPostEffectSsao::IsReady() const noexcept
@@ -97,14 +105,12 @@ EDySuccess FDyPostEffectSsao::TryPushRenderingSetting()
 
   // SSAO (Opaque -> SSAO output)
   // SSAO Blur (SSAO Output -> SSAO Blurred) does not have to setup.
-  this->mBinderShSSAO->UseShader();
   if (this->mIsRayInserted == false)
   {
-    this->mBinderShSSAO->TryUpdateUniform<EDyUniformVariableType::Vector3Array>("uRaySamples[0]", this->mRayContainer);
-    this->mBinderShSSAO->TryUpdateUniformList();
+    using EUniform = EDyUniformVariableType;
+    this->mBinderShSSAO->TryUpdateUniform<EUniform::Vector3Array>("uRaySamples[0]", this->mRayContainer);
     this->mIsRayInserted = true;
   }
-  this->mBinderShSSAO->DisuseShader();
 
   return DY_SUCCESS;
 }

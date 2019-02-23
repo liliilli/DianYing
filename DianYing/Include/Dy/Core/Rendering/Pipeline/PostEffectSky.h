@@ -37,7 +37,7 @@ public:
 
   void Clear() override final;
 
-  EDySuccess TryPopRenderingSetting() override final { return DY_SUCCESS; }
+  EDySuccess TryPopRenderingSetting() override final;
 
 private:
   // Output

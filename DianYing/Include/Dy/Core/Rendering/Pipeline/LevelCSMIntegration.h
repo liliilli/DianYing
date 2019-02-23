@@ -14,35 +14,32 @@
 ///
 
 #include <Dy/Core/Resource/Type/TDyResourceBinder.h>
+#include <Dy/Core/Rendering/Interface/IDyRenderer.h>
 
 namespace dy
 {
 
-class FDyLevelCSMIntergration final
+class FDyLevelCSMIntergration final : public IDyRenderer
 {
 public:
   FDyLevelCSMIntergration();
   ~FDyLevelCSMIntergration();
 
   /// @brief Check rendering phase is ready.
-  MDY_NODISCARD bool IsReady() const noexcept;
-  /// @brief Try setup rendering, if failed, return DY_FAILURE.
-  MDY_NODISCARD EDySuccess TrySetupRendering();
+  MDY_NODISCARD bool IsReady() const noexcept override final;
   /// @brief Rendering deferred contexts to default framebuffer.
   void RenderScreen();
   /// @brief Clear properties of given framebuffer.
-  void Clear();
+  void Clear() override final;
+
+  /// @brief Try setup rendering, if failed, return DY_FAILURE.
+  EDySuccess TryPushRenderingSetting() override final;
+  /// @brief
+  EDySuccess TryPopRenderingSetting() override final;
 
 private:
-  ///
   MDY_NODISCARD EDySuccess pSetupOpaqueCSMIntegration();
-  ///
   MDY_NODISCARD EDySuccess pSetupTranslucentOITIntegration();
-
-  ///
-  void pRenderCSMIntegration();
-  ///
-  void pRenderOITIntegration();
 
   TDyResourceBinderModel       mBinderTriangle   { "dyBtModelScrProjTri" };
 

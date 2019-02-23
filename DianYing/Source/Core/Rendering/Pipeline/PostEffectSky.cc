@@ -34,22 +34,20 @@ void FDyPostEffectSky::RenderScreen()
   auto optSkybox = MDyWorld::GetInstance().GetPtrMainLevelSkybox();
   MDY_ASSERT(optSkybox.has_value() == true, "Unexpected error occurred.");
 
-  auto ptrSkyboxTexture   = optSkybox.value();
-  auto& refBinderTexture  = ptrSkyboxTexture->MDY_PRIVATE(GetTextureBinderReference)();
+  auto ptrSkyboxTexture  = optSkybox.value();
+  auto& refBinderTexture = ptrSkyboxTexture->MDY_PRIVATE(GetTextureBinderReference)();
+  if (refBinderTexture.IsResourceExist() == false) { return; } // Failure check
 
-  if (refBinderTexture.IsResourceExist() == false) { return; } // Failed
-
-  this->mBinderFbSkyRend->BindFrameBuffer();
   this->mBinderMeshSkybox->BindVertexArray();
 
+  using EUniform = EDyUniformVariableType;
+  this->mBinderShdSkybox->TryUpdateUniform<EUniform::Float>("uExposure",       ptrSkyboxTexture->GetExposure());
+  this->mBinderShdSkybox->TryUpdateUniform<EUniform::Float>("uRotationDegree", ptrSkyboxTexture->GetRotationDegree());
+  this->mBinderShdSkybox->TryUpdateUniform<EUniform::Vector3>("uTintColor",    static_cast<DDyVector3>(ptrSkyboxTexture->GetTintColor()));
+  this->mBinderShdSkybox->TryInsertTextureRequisition(0, refBinderTexture->GetTextureId());
+  //this->mBinderShdSkybox->TryInsertTextureRequisition(1, this->mBinderAttUnlit->GetAttachmentId());
+
   this->mBinderShdSkybox->UseShader();
-  this->mBinderShdSkybox->TryUpdateUniform<EDyUniformVariableType::Float>("uExposure",       ptrSkyboxTexture->GetExposure());
-  this->mBinderShdSkybox->TryUpdateUniform<EDyUniformVariableType::Float>("uRotationDegree", ptrSkyboxTexture->GetRotationDegree());
-  this->mBinderShdSkybox->TryUpdateUniform<EDyUniformVariableType::Vector3>("uTintColor",    static_cast<DDyVector3>(ptrSkyboxTexture->GetTintColor()));
-
-  glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_CUBE_MAP, refBinderTexture->GetTextureId());
-  glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, this->mBinderAttUnlit->GetAttachmentId());
-
   this->mBinderShdSkybox->TryUpdateUniformList();
 
   if (this->mBinderMeshSkybox->IsEnabledIndices() == true)
@@ -62,7 +60,6 @@ void FDyPostEffectSky::RenderScreen()
   }
 
   this->mBinderShdSkybox->DisuseShader();
-  this->mBinderFbSkyRend->UnbindFrameBuffer();
 }
 
 bool FDyPostEffectSky::IsReady() const noexcept
@@ -91,6 +88,14 @@ void FDyPostEffectSky::Clear()
   const GLfloat one = 0.0f;
   glClearBufferfv(GL_COLOR, 0, &one);
   this->mBinderFbSkyRend->UnbindFrameBuffer();
+}
+
+EDySuccess FDyPostEffectSky::TryPopRenderingSetting()
+{
+  if (this->IsReady() == false) { return DY_FAILURE; }
+
+  this->mBinderFbSkyRend->UnbindFrameBuffer();
+  return DY_SUCCESS;
 }
 
 } /// ::dy namespace

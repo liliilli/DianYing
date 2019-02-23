@@ -584,28 +584,33 @@ void MDyRendering::RenderLevelInformation()
   this->mOpaqueMeshDrawingList.clear();
 
   //! Default Post processing effects
-  if (information.mGraphics.mIsEnabledDefaultSsao == true)
+  if (MDY_GRAPHIC_SET_CRITICALSECITON();
+      information.mGraphics.mIsEnabledDefaultSsao == true
+  &&  this->mSSAOPostEffect->TryPushRenderingSetting() == DY_SUCCESS)
   { 
-    if (this->mSSAOPostEffect->TryPushRenderingSetting() == DY_SUCCESS) { this->mSSAOPostEffect->RenderScreen(); }
+    this->mSSAOPostEffect->RenderScreen();
+    // Pop Setting.
+    this->mSSAOPostEffect->TryPopRenderingSetting();
   }
   else { this->mSSAOPostEffect->Clear(); }
 
   // https://www.khronos.org/opengl/wiki/Cubemap_Texture
-  if (MDY_CHECK_ISNOTNULL(this->mPtrRequiredSkybox)
+  if (MDY_GRAPHIC_SET_CRITICALSECITON();
+      this->mPtrRequiredSkybox != nullptr
   &&  this->mSkyPostEffect->TryPushRenderingSetting() == DY_SUCCESS)
   {
-    glEnable(GL_DEPTH_TEST);
-    glDisable(GL_CULL_FACE);
     this->mSkyPostEffect->RenderScreen();
+    this->mSkyPostEffect->TryPopRenderingSetting();
   }
 
   // Final. 
   // Level information without debug information is integrated in one renderbuffer.
-  if (MDY_CHECK_ISNOTEMPTY(this->mLevelFinalRenderer) 
-  &&  this->mLevelFinalRenderer->IsReady() == true 
-  &&  this->mLevelFinalRenderer->TrySetupRendering() == DY_SUCCESS)
+  if (MDY_GRAPHIC_SET_CRITICALSECITON();
+      this->mLevelFinalRenderer != nullptr 
+  &&  this->mLevelFinalRenderer->TryPushRenderingSetting() == DY_SUCCESS)
   { 
     this->mLevelFinalRenderer->RenderScreen(); 
+    this->mLevelFinalRenderer->TryPopRenderingSetting();
   }
 }
 
