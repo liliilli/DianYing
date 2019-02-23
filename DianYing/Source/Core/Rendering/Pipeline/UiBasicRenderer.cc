@@ -30,27 +30,45 @@ FDyUIBasicRenderer::FDyUIBasicRenderer()
   MDY_CALL_ASSERT_SUCCESS(MDyFont::GetInstance().CreateFontResourceContainer("Arial"));
 }
 
-FDyUIBasicRenderer::~FDyUIBasicRenderer()
-{ }
-
 void FDyUIBasicRenderer::RenderScreen(_MIN_ std::vector<NotNull<FDyUiObject*>>& uiRenderList)
 {
-  this->mBinderFrameBuffer->BindFrameBuffer();
-  
   for (auto& ptrRenderUi : uiRenderList)
   {
     ptrRenderUi->Render();
   }
-  
-  this->mBinderFrameBuffer->UnbindFrameBuffer();
 }
 
 void FDyUIBasicRenderer::Clear()
 { 
-  glBindFramebuffer(GL_FRAMEBUFFER, this->mBinderFrameBuffer->GetFrameBufferId());
+  if (this->IsReady() == false) { return; }
+
+  this->mBinderFrameBuffer->BindFrameBuffer();
   glClearColor(0, 0, 0, 0);
   glClear(GL_COLOR_BUFFER_BIT);
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  this->mBinderFrameBuffer->UnbindFrameBuffer();
+}
+
+bool FDyUIBasicRenderer::IsReady() const noexcept
+{
+  return this->mBinderFrameBuffer.IsResourceExist();
+}
+
+EDySuccess FDyUIBasicRenderer::TryPushRenderingSetting()
+{
+  if (this->IsReady() == false) { return DY_FAILURE; }
+
+  this->mBinderFrameBuffer->BindFrameBuffer();
+  glClearColor(0, 0, 0, 0);
+  glClear(GL_COLOR_BUFFER_BIT);
+  return DY_SUCCESS;
+}
+
+EDySuccess FDyUIBasicRenderer::TryPopRenderingSetting()
+{
+  if (this->IsReady() == false) { return DY_FAILURE; }
+
+  this->mBinderFrameBuffer->UnbindFrameBuffer();
+  return DY_SUCCESS;
 }
 
 } /// ::dy namespace

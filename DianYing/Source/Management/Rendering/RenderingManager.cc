@@ -622,24 +622,27 @@ void MDyRendering::RenderDebugInformation()
   //!
 
   const auto* ptrCamera = MDyWorld::GetInstance().GetPtrMainLevelCamera();
+  if (ptrCamera == nullptr) { return; }
+
   const auto& setting   = MDySetting::GetInstance();
 
   // Draw collider shapes. (NOT AABB!)
   // If main camera is not exist, do not render level.
-  if (MDY_CHECK_ISNOTNULL(ptrCamera) && setting.IsRenderPhysicsCollisionShape() == true)
+  if (setting.IsRenderPhysicsCollisionShape() == true)
   {
-    SDyProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(this->mOpaqueMeshDrawingList.size()));
     // (1) Draw opaque call list. Get valid Main CDyCamera instance pointer address.
-    if (this->mDebugRenderer->IsReady() == true
+    if (MDY_GRAPHIC_SET_CRITICALSECITON();
+        this->mDebugRenderer != nullptr
     &&  this->mDebugRenderer->TryPushRenderingSetting() == DY_SUCCESS)
     {
       for (auto& [ptrCollider, transformMatrix] : this->mDebugColliderDrawingList)
       {
         this->mDebugRenderer->RenderScreen(*ptrCollider, transformMatrix);
       }
-
-      glEnable(GL_DEPTH_TEST);
+      // Pop setting.
+      this->mDebugRenderer->TryPopRenderingSetting();
     }
+    SDyProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(this->mOpaqueMeshDrawingList.size()));
   }
 
   this->mDebugColliderDrawingList.clear();
@@ -651,9 +654,12 @@ void MDyRendering::RenderDebugInformation()
 
 void MDyRendering::RenderUIInformation()
 {
-  if (MDY_CHECK_ISNOTEMPTY(this->mUiBasicRenderer)) 
+  if (MDY_GRAPHIC_SET_CRITICALSECITON();
+      this->mUiBasicRenderer != nullptr
+  &&  this->mUiBasicRenderer->TryPushRenderingSetting() == DY_SUCCESS) 
   { 
     this->mUiBasicRenderer->RenderScreen(this->mUiObjectDrawingList); 
+    this->mUiBasicRenderer->TryPopRenderingSetting();
   }
   this->mUiObjectDrawingList.clear();
 }

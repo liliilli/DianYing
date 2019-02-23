@@ -221,7 +221,7 @@ void CDyFontRenderer::Render()
     indices.emplace_back(0xFFFFFFFF);
   }
 
-  { MDY_GRAPHIC_SET_CRITICALSECITON();
+  { 
     glDepthFunc(GL_ALWAYS);
 
     this->mBinderShader->UseShader();

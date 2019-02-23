@@ -82,7 +82,6 @@ void CDyBasicGaugeBarRenderer::Render()
   const DDyVectorInt2 size = this->mPtrBarObject->GetFrameSize();
   const auto vboId = this->mBinderBarMesh->GetVertexBufferId();
 
-  MDY_GRAPHIC_SET_CRITICALSECITON();
   this->mBinderShader->UseShader();
   glDepthFunc(GL_ALWAYS);
   glBindVertexArray(this->mBinderBarMesh->GetVertexArrayId());

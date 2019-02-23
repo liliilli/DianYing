@@ -17,8 +17,10 @@
 #include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
 #include <Dy/Core/Resource/Resource/FDyMeshResource.h>
-#include <Dy/Component/CDyPhysicsCollider.h>
 #include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Component/CDyPhysicsCollider.h>
+#include <Dy/Management/Type/Render/DDyGlGlobalStatus.h>
+#include "Dy/Management/Rendering/RenderingManager.h"
 
 namespace dy
 {
@@ -33,19 +35,31 @@ EDySuccess FDyDebugRenderer::TryPushRenderingSetting()
 {
   if (this->IsReady() == false) { return DY_FAILURE; }
 
-  glDisable(GL_DEPTH_TEST);
+  // Set status
+  DDyGlGlobalStatus statusSetting;
+  statusSetting.mIsEnableDepthTest = false;
+  auto& mngRendering = MDyRendering::GetInstance();
+  mngRendering.InsertInternalGlobalStatus(statusSetting);
   
+  // Bind
+  // We need not update camera. Because already updated.
   this->mBinderFrameBuffer->BindFrameBuffer();
   glClearColor(0, 0, 0, 0);
   glClear(GL_COLOR_BUFFER_BIT);
-
-  // We need not update camera. Because already updated.
-
   return DY_SUCCESS;
 }
 
 EDySuccess FDyDebugRenderer::TryPopRenderingSetting()
 {
+  if (this->IsReady() == false) { return DY_FAILURE; }
+
+  // Unbind
+  this->mBinderFrameBuffer->UnbindFrameBuffer();
+
+  // Pop status
+  auto& mngRendering = MDyRendering::GetInstance();
+  mngRendering.PopInternalGlobalStatus();
+
   return DY_SUCCESS;
 }
 
@@ -68,9 +82,9 @@ void FDyDebugRenderer::RenderScreen(_MIN_ CDyPhysicsCollider& iRefCollider, _MIN
   }
 
   // Update uniform.
-  this->mBinderShader->UseShader();
   this->mBinderShader->TryUpdateUniform<EDyUniformVariableType::Matrix4>("uTransform", iTransformMatrix);
   this->mBinderShader->TryUpdateUniform<EDyUniformVariableType::Integer>("uColorIndex", 0);
+  this->mBinderShader->UseShader();
   this->mBinderShader->TryUpdateUniformList();
 
   // Binding Mesh information
@@ -105,8 +119,6 @@ void FDyDebugRenderer::RenderScreen(_MIN_ CDyPhysicsCollider& iRefCollider, _MIN
   } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
-
-  
 }
 
 } /// ::dy namespace

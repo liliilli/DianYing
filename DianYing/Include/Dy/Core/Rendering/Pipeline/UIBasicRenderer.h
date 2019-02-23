@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Core/Resource/Type/TDyResourceBinder.h>
+#include <Dy/Core/Rendering/Interface/IDyRenderer.h>
 #include <Dy/Helper/Pointer.h>
 
 //!
@@ -34,18 +35,22 @@ class FDyUiObject;
 namespace dy
 {
 
-class FDyUIBasicRenderer final
+class FDyUIBasicRenderer final : IDyRenderer
 {
 public:
   MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(FDyUIBasicRenderer);
   FDyUIBasicRenderer();
-  ~FDyUIBasicRenderer();
+  ~FDyUIBasicRenderer() = default;
 
   /// @brief Rendering deferred contexts to framebuffer.
   void RenderScreen(_MIN_ std::vector<NotNull<FDyUiObject*>>& uiRenderList);
 
   /// @brief Clear properties of given framebuffer.
-  void Clear();
+  void Clear() override final;
+
+  bool IsReady() const noexcept override final;
+  EDySuccess TryPushRenderingSetting() override final;
+  EDySuccess TryPopRenderingSetting() override final;
 
 private:
   TDyResourceBinderFrameBuffer mBinderFrameBuffer{ "dyBtFbUiBasic" };

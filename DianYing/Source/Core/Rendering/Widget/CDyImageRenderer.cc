@@ -71,7 +71,7 @@ void CDyImageRenderer::Render()
     const auto buffer = GetVertexPosition(this->mPtrObject->GetFinalPosition(EDyOrigin::Center_Center), this->mPtrObject->GetFrameSize());
 
     // Render
-    { MDY_GRAPHIC_SET_CRITICALSECITON();
+    { 
       mDefaultImageShader->UseShader();
       mDefaultImageShader->TryUpdateUniformList();
 
@@ -102,7 +102,7 @@ void CDyImageRenderer::Render()
     const auto buffer = GetVertexPosition(this->mPtrObject->GetFinalPosition(EDyOrigin::Center_Center), this->mPtrObject->GetFrameSize());
 
     // Render
-    { MDY_GRAPHIC_SET_CRITICALSECITON();
+    { 
       refMatShader->UseShader();
       refMatShader->TryUpdateUniformList();
 
