@@ -242,6 +242,7 @@ EDySuccess MDyRendering::pfInitialize()
             -1, // Global 
             DDyArea2D{defaultSize[0], defaultSize[1], defaultSize[2], defaultSize[3]}
         );
+        initialStatus.mViewportSettingList = defaultViewport;
       }
       // Insert
       this->InsertInternalGlobalStatus(initialStatus);
@@ -576,15 +577,11 @@ void MDyRendering::RenderLevelInformation()
       );
     }
     // Pop Setting
+    // Set global viewport values to camera's properties.
     this->mCSMRenderer->TryPopRenderingSetting();
   }
   else { this->mCSMRenderer->Clear(); }
   this->mOpaqueMeshDrawingList.clear();
-
-  // Set global viewport values to camera's properties.
-  { MDY_GRAPHIC_SET_CRITICALSECITON();
-    FDyGLWrapper::SetViewport(ptrCamera->GetPixelizedViewportRectangle());
-  }
 
   //! Default Post processing effects
   if (information.mGraphics.mIsEnabledDefaultSsao == true)

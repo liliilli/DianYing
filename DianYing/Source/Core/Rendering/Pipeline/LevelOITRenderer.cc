@@ -105,7 +105,6 @@ EDySuccess FDyLevelOITRenderer::TryPopRenderingSetting()
 
   auto& refRendering = MDyRendering::GetInstance();
   refRendering.PopInternalGlobalStatus();
-  glBlendFunci(1, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   return DY_SUCCESS;
 }
@@ -114,15 +113,12 @@ void FDyLevelOITRenderer::Clear()
 {
   if (this->IsReady() == false) { return; }
 
-  this->mBinderFrameBuffer->BindFrameBuffer();
-
-#ifdef false
-  const auto& backgroundColor = MDyWorld::GetInstance().GetValidLevelReference().GetBackgroundColor();
-  glClearColor(backgroundColor.R, backgroundColor.G, backgroundColor.B, backgroundColor.A);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-#endif
-
-  this->mBinderFrameBuffer->UnbindFrameBuffer();
+  { MDY_GRAPHIC_SET_CRITICALSECITON();
+    this->mBinderFrameBuffer->BindFrameBuffer();
+    glClearBufferfv(GL_COLOR, 0, &DDyColorRGBA::Black.R);
+    glClearBufferfv(GL_COLOR, 1, &DDyColorRGBA::White.R);
+    this->mBinderFrameBuffer->UnbindFrameBuffer();
+  }
 }
 
 } /// ::dy namespace

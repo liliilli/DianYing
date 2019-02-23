@@ -36,18 +36,6 @@
 #endif
 
 //!
-//! Forward declaration
-//!
-
-namespace
-{
-
-dy::DDyMatrix4x4 mViewMatrix;
-dy::DDyMatrix4x4 mProjMatrix;
-
-}
-
-//!
 //! Implementation
 //!
 
@@ -67,47 +55,34 @@ void FDyLevelCascadeShadowRenderer::PreRender()
     isFirst = false;
   }
 
-  const auto* ptrCamera = MDyWorld::GetInstance().GetPtrMainLevelCamera();
-  if (MDY_CHECK_ISNULL(ptrCamera)) { return; }
-
   auto* ptrLight  = MDyRendering::GetInstance().GetPtrMainDirectionalShadow();
   if (this->mAddrMainDirectionalShadow != reinterpret_cast<ptrdiff_t>(ptrLight))
   {
     this->mAddrMainDirectionalShadow = reinterpret_cast<ptrdiff_t>(ptrLight);
     if (this->mAddrMainDirectionalShadow == 0) 
     {
-      mViewMatrix = DDyMatrix4x4{};
+      this->mViewMatrix = DDyMatrix4x4{};
     }
     else
     { 
       ptrLight->UpdateLightViewMatrix(); 
-      mViewMatrix = ptrLight->GetLightViewMatrix(); 
+      this->mViewMatrix = ptrLight->GetLightViewMatrix(); 
     }
   }
 
-  if (ptrLight != nullptr)
+  if (const auto* ptrCamera = MDyWorld::GetInstance().GetPtrMainLevelCamera();
+      ptrLight != nullptr)
   {
+    //
     ptrLight->UpdateSegmentFarPlanes(*ptrCamera);
     ptrLight->UpdateCSMFrustum(*ptrCamera);
     ptrLight->UpdateProjectionMatrix();
-    ptrLight->UpdateLightProjectionAndViewports(*ptrCamera, ptrLight->GetCSMFarPlanes(), ptrLight->GetCSMNormalizedFarPlanes());
-
-    mProjMatrix = ptrLight->GetProjectionMatrix();
-  }
-}
-
-void FDyLevelCascadeShadowRenderer::SetupViewport()
-{
-  auto* ptrLight  = MDyRendering::GetInstance().GetPtrMainDirectionalShadow();
-  MDY_ASSERT(this->mAddrMainDirectionalShadow == reinterpret_cast<ptrdiff_t>(ptrLight), 
-      "CSM Renderer light handle is not matched to given light.");
-
-  const auto& lightViewports = ptrLight->GetCSMIndexedViewports();
-  { MDY_GRAPHIC_SET_CRITICALSECITON();
-    for (TU32 i = 0; i < kCSMSegment; ++i)
-    {
-      FDyGLWrapper::SetViewportIndexed(i, lightViewports[i]);
-    }
+    ptrLight->UpdateLightProjectionAndViewports(
+        *ptrCamera, 
+        ptrLight->GetCSMFarPlanes(), 
+        ptrLight->GetCSMNormalizedFarPlanes());
+    //
+    this->mProjMatrix = ptrLight->GetProjectionMatrix();
   }
 }
 
@@ -117,31 +92,71 @@ void FDyLevelCascadeShadowRenderer::Clear()
   ||  this->mBinderFrameBuffer.IsResourceExist() == false) { return; }
 
   this->mBinderFrameBuffer->BindFrameBuffer();
-
   const GLfloat one = 1.0f;
   glClearBufferfv(GL_DEPTH, 0, &one);
-
   this->mBinderFrameBuffer->UnbindFrameBuffer();
 }
 
-EDySuccess FDyLevelCascadeShadowRenderer::TrySetupRendering()
+bool FDyLevelCascadeShadowRenderer::IsReady() const noexcept
 {
-  if (this->mDirLightShaderResource.IsResourceExist() == false
-  ||  this->mBinderFrameBuffer.IsResourceExist() == false) { return DY_FAILURE; }
+  return this->mBinderFrameBuffer.IsResourceExist() == true
+      && this->mDirLightShaderResource.IsResourceExist() == true;
+}
 
-  glEnable(GL_DEPTH_TEST);
-  glEnable(GL_CULL_FACE);
-  glCullFace(GL_BACK);
-  
+EDySuccess FDyLevelCascadeShadowRenderer::TryPushRenderingSetting()
+{
+  if (this->IsReady() == false) { return DY_FAILURE; }
+
+  auto* ptrLight = MDyRendering::GetInstance().GetPtrMainDirectionalShadow();
+  if (ptrLight == nullptr) { return DY_FAILURE; }
+
+  // Update view frustum for shadow mapping.
+  // Do not move the order of `PreRender` and checking assert statement.
+  this->PreRender();
+  MDY_ASSERT(this->mAddrMainDirectionalShadow == reinterpret_cast<ptrdiff_t>(ptrLight), 
+      "CSM Renderer light handle is not matched to given light.");
+
+  // Try update uniform value.
+  using EUniform = EDyUniformVariableType;
+  this->mDirLightShaderResource->TryUpdateUniform<EUniform::Integer>("uFrustumSegmentCount", static_cast<TI32>(kCSMSegment));
+  this->mDirLightShaderResource->TryUpdateUniform<EUniform::Matrix4>("mProjMatrix", this->mProjMatrix);
+  this->mDirLightShaderResource->TryUpdateUniform<EUniform::Matrix4>("mViewMatrix", this->mViewMatrix);
+
+  // Set and push global internal setting.
+  DDyGlGlobalStatus status;
+  using EValue = DDyGlGlobalStatus::DCullfaceMode::EValue;
+  status.mIsEnableDepthTest = true;
+  status.mIsEnableCullface  = true;
+  status.mCullfaceMode = EValue::Back;
+
+  using DViewport = DDyGlGlobalStatus::DViewport;
+  DViewport viewport;
+
+  /// @brief Setup indexed viewports of light shadow map segments for writing.
+  const auto& lightViewports = ptrLight->GetCSMIndexedViewports();
+  for (TU32 i = 0; i < kCSMSegment; ++i)
+  {
+    viewport.mViewportSettingList.emplace_back(i, lightViewports[i]);
+  }
+  status.mViewportSettingList = viewport;
+
+  auto& refRendering = MDyRendering::GetInstance();
+  refRendering.InsertInternalGlobalStatus(status);
+
   this->mBinderFrameBuffer->BindFrameBuffer();
   const GLfloat one = 1.0f;
   glClearBufferfv(GL_DEPTH, 0, &one);
+  return DY_SUCCESS;
+}
 
-  this->mDirLightShaderResource->UseShader();
-  this->mDirLightShaderResource->TryUpdateUniform<EDyUniformVariableType::Integer>("uFrustumSegmentCount", static_cast<TI32>(kCSMSegment));
-  this->mDirLightShaderResource->TryUpdateUniform<EDyUniformVariableType::Matrix4>("mProjMatrix", mProjMatrix);
-  this->mDirLightShaderResource->TryUpdateUniform<EDyUniformVariableType::Matrix4>("mViewMatrix", mViewMatrix);
-  this->mDirLightShaderResource->TryUpdateUniformList();
+EDySuccess FDyLevelCascadeShadowRenderer::TryPopRenderingSetting()
+{
+  if (this->IsReady() == false) { return DY_FAILURE; }
+
+  this->mBinderFrameBuffer->UnbindFrameBuffer();
+  auto& refRendering = MDyRendering::GetInstance();
+  refRendering.PopInternalGlobalStatus();
+
   return DY_SUCCESS;
 }
 
@@ -152,13 +167,12 @@ void FDyLevelCascadeShadowRenderer::RenderScreen(
 {
   // Validation test
   const auto* ptrModelBinder = iRefRenderer.mPtrModelRenderer->GetModelResourceBinder();
-  if (MDY_CHECK_ISNULL(ptrModelBinder)) { return; }
-
-  const auto& meshList = (*ptrModelBinder)->GetMeshResourceList();
-  this->mDirLightShaderResource->UseShader();
+  if (ptrModelBinder == nullptr) { return; }
 
   const auto& refModelMatrix = iRefRenderer.mPtrModelRenderer->GetBindedActor()->GetTransform()->GetTransform();
   this->mDirLightShaderResource->TryUpdateUniform<EDyUniformVariableType::Matrix4>("uModelMatrix", refModelMatrix);
+
+  this->mDirLightShaderResource->UseShader();
   this->mDirLightShaderResource->TryUpdateUniformList();
   iRefMesh.BindVertexArray();
 

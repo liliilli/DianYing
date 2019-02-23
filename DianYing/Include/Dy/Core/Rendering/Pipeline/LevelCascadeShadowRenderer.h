@@ -17,6 +17,7 @@
 #include <Dy/Builtin/Constant/CSM.h>
 #include <Dy/Helper/Type/Area2D.h>
 #include <Dy/Management/Type/Render/DDyModelHandler.h>
+#include <Dy/Core/Rendering/Interface/IDyRenderer.h>
 
 //!
 //! Forward declaration
@@ -37,7 +38,7 @@ namespace dy
 
 /// @class FDyLevelCascadeShadowRenderer
 /// @brief Cascade shadow mapping effect renderer.
-class FDyLevelCascadeShadowRenderer final
+class FDyLevelCascadeShadowRenderer final : public IDyRenderer
 {
 public:
   FDyLevelCascadeShadowRenderer();
@@ -49,25 +50,27 @@ public:
       _MIN_ FDyMeshResource& iRefMesh, 
       _MIN_ FDyMaterialResource& iRefMaterial);
 
-  /// @TODO TEMPORARY
+  /// @brief Clear properties of given framebuffer.
+  void Clear() override final;
+
+  bool IsReady() const noexcept override final;
+
+  /// @brief Try setup rendering, if failed, return DY_FAILURE.
+  EDySuccess TryPushRenderingSetting() override final;
+  EDySuccess TryPopRenderingSetting() override final;
+
+private:
   /// @brief Update 
   void PreRender();
 
-  /// @brief Setup indexed viewports of light shadow map segments for writing.
-  void SetupViewport();
+  TDyResourceBinderShader      mDirLightShaderResource { "dyBtGlslRenderCsmLightNormal" };
+  TDyResourceBinderFrameBuffer mBinderFrameBuffer      { "dyBtFbCSM" };
 
-  /// @brief Clear properties of given framebuffer.
-  void Clear();
+  static std::array<TF32, 2>   sViewportDims;
+  std::ptrdiff_t               mAddrMainDirectionalShadow = 0;
 
-  /// @brief Try setup rendering, if failed, return DY_FAILURE.
-  MDY_NODISCARD EDySuccess TrySetupRendering();
-
-private:
-  TDyResourceBinderShader        mDirLightShaderResource { "dyBtGlslRenderCsmLightNormal" };
-  TDyResourceBinderFrameBuffer   mBinderFrameBuffer      { "dyBtFbCSM" };
-
-  static std::array<TF32, 2>      sViewportDims;
-  std::ptrdiff_t                  mAddrMainDirectionalShadow = 0;
+  DDyMatrix4x4 mViewMatrix;
+  DDyMatrix4x4 mProjMatrix;
 };
 
 } /// ::dy namespace
