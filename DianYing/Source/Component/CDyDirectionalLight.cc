@@ -216,7 +216,7 @@ void CDyDirectionalLight::UpdateLightProjectionAndViewports(
     pixelFrustumSize   *= scaleFactor;
 
     mLightViewports[i].mLeftDown  = pixelOffsetTopLeft * -1;
-    mLightViewports[i].mRightUp   = pixelFrustumSize;
+    mLightViewports[i].mRightUp   = pixelFrustumSize + mLightViewports[i].mLeftDown;
 
     // Update light view-projection matrices per segments.
     DDyMatrix4x4 lightProjMatrix = glm::ortho(minSegment.X, minSegment.X + segmentSize, minSegment.Y, minSegment.Y + segmentSize, -maxFrustum.Z, -minFrustum.Z);

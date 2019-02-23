@@ -643,8 +643,8 @@ void FDyGLWrapper::SetViewport(_MIN_ const DDyArea2D& iViewportRegion)
   glViewport(
       static_cast<TI32>(iViewportRegion.mLeftDown.X), 
       static_cast<TI32>(iViewportRegion.mLeftDown.Y), 
-      static_cast<TI32>(iViewportRegion.mRightUp.X), 
-      static_cast<TI32>(iViewportRegion.mRightUp.Y));
+      static_cast<TI32>(iViewportRegion.mRightUp.X - iViewportRegion.mLeftDown.X), 
+      static_cast<TI32>(iViewportRegion.mRightUp.Y - iViewportRegion.mLeftDown.Y));
 }
 
 void FDyGLWrapper::SetViewportIndexed(_MIN_ TU32 iIndex,_MIN_ const std::array<TI32, 4>& iViewportRegion)
@@ -660,8 +660,8 @@ void FDyGLWrapper::SetViewportIndexed(_MIN_ TU32 iIndex, _MIN_ const DDyArea2D& 
   glViewportIndexedf(iIndex, 
       iViewportRegion.mLeftDown.X, 
       iViewportRegion.mLeftDown.Y, 
-      iViewportRegion.mRightUp.X, 
-      iViewportRegion.mRightUp.Y);
+      iViewportRegion.mRightUp.X - iViewportRegion.mLeftDown.X, 
+      iViewportRegion.mRightUp.Y - iViewportRegion.mLeftDown.Y);
 }
 
 void FDyGLWrapper::BindFrameBufferObject(_MIN_ TU32 iFboId)
