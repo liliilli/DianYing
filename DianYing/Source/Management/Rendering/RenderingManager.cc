@@ -140,6 +140,17 @@ void CbGlBlendModeStatus(const dy::DDyGlGlobalStatus::DBlendMode& iTopStatus)
   }
 }
 
+void CbGlCullfaceModeStack(const dy::DDyGlGlobalStatus::DCullfaceMode& iTopStatus)
+{
+  using EValue = dy::DDyGlGlobalStatus::DCullfaceMode::EValue;
+  switch (iTopStatus.mValue)
+  {
+  case EValue::Front:         glCullFace(GL_FRONT);           break;
+  case EValue::Back:          glCullFace(GL_BACK);            break;
+  case EValue::FrontAndBack:  glCullFace(GL_FRONT_AND_BACK);  break;
+  }
+}
+
 } /// ::unnamed namespace
 
 //!
@@ -173,6 +184,7 @@ EDySuccess MDyRendering::pfInitialize()
   this->mInternal_FeatScissorTestStack.SetCallback(CbGlFeatScissorTestStack);
   this->mInternal_PolygonModeStack.SetCallback(CbGlPolygonModeStack);
   this->mInternal_BlendModeStack.SetCallback(CbGlBlendModeStatus);
+  this->mInternal_CullfaceModeStack.SetCallback(CbGlCullfaceModeStack);
 
   switch (MDySetting::GetInstance().GetRenderingType())
   {
@@ -192,6 +204,7 @@ EDySuccess MDyRendering::pfInitialize()
       using EFunc  = DDyGlGlobalStatus::DBlendMode::EFunc;
       using DPolygonMode  = DDyGlGlobalStatus::DPolygonMode;
       using DBlendMode    = DDyGlGlobalStatus::DBlendMode;
+      using DCullfaceMode = DDyGlGlobalStatus::DCullfaceMode;
       // Set value.
       initialStatus.mIsEnableBlend       = glIsEnabled(GL_BLEND); 
       initialStatus.mIsEnableCullface    = glIsEnabled(GL_CULL_FACE);
@@ -202,6 +215,9 @@ EDySuccess MDyRendering::pfInitialize()
       DBlendMode mode{};
       mode.mBlendingSettingList.emplace_back(EEqut::SrcAddDst, EFunc::SrcAlpha, EFunc::OneMinusSrcAlpha);
       initialStatus.mBlendMode = mode;
+      // Get cullface mode.
+      DCullfaceMode cullface{DCullfaceMode::EValue::Back};
+      initialStatus.mCullfaceMode = cullface;
       // Insert
       this->InsertInternalGlobalStatus(initialStatus);
     }
@@ -505,8 +521,8 @@ void MDyRendering::RenderLevelInformation()
           const_cast<FDyMaterialResource&>(*iPtrValidMat)
       );
     }
-    
-    this->mTranslucentOIT->TryPopRenderingSetting(); // Pop setting.
+    // Pop Setting
+    this->mTranslucentOIT->TryPopRenderingSetting(); 
   }
   SDyProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(this->mTranslucentMeshDrawingList.size()));
   this->mTranslucentMeshDrawingList.clear();
@@ -520,24 +536,22 @@ void MDyRendering::RenderLevelInformation()
 
   // (3) Cascaded Shadow mapping to opaque call list. Pre-render update for update Segments.
   const auto& information = MDySetting::GetInstance().GetGameplaySettingInformation();
-  if (information.mGraphics.mIsEnabledDefaultShadow == true)
+  if (MDY_GRAPHIC_SET_CRITICALSECITON();
+      information.mGraphics.mIsEnabledDefaultShadow == true
+  &&  this->mCSMRenderer->TryPushRenderingSetting() == DY_SUCCESS)
   {
-    // pre-render update.
-    this->mCSMRenderer->PreRender();
-    if (this->mCSMRenderer->TrySetupRendering() == DY_SUCCESS)
-    {
-      // Cascade shadow mapping use different and mutliple viewport.
-      this->mCSMRenderer->SetupViewport();
-      // Render only opaque mesh list.
-      for (auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] : this->mOpaqueMeshDrawingList)
-      { // Render
-        this->mCSMRenderer->RenderScreen(
-            *iPtrModel, 
-            const_cast<FDyMeshResource&>(*iPtrValidMesh),
-            const_cast<FDyMaterialResource&>(*iPtrValidMat)
-        );
-      }
+    // Cascade shadow mapping use different and mutliple viewport.
+    // Render only opaque mesh list.
+    for (auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] : this->mOpaqueMeshDrawingList)
+    { // Render
+      this->mCSMRenderer->RenderScreen(
+          *iPtrModel, 
+          const_cast<FDyMeshResource&>(*iPtrValidMesh),
+          const_cast<FDyMaterialResource&>(*iPtrValidMat)
+      );
     }
+    // Pop Setting
+    this->mCSMRenderer->TryPopRenderingSetting();
   }
   else { this->mCSMRenderer->Clear(); }
   this->mOpaqueMeshDrawingList.clear();
@@ -558,6 +572,8 @@ void MDyRendering::RenderLevelInformation()
   if (MDY_CHECK_ISNOTNULL(this->mPtrRequiredSkybox)
   &&  this->mSkyPostEffect->TryPushRenderingSetting() == DY_SUCCESS)
   {
+    glEnable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
     this->mSkyPostEffect->RenderScreen();
   }
 
@@ -714,6 +730,8 @@ void MDyRendering::InsertInternalGlobalStatus(_MIN_ const DDyGlGlobalStatus& iNe
   { this->mInternal_BlendModeStack.Push(*topStatusChunk.mBlendMode); }
   if (topStatusChunk.mPolygonMode.has_value() == true)
   { this->mInternal_PolygonModeStack.Push(*topStatusChunk.mPolygonMode); }
+  if (topStatusChunk.mCullfaceMode.has_value() == true)
+  { this->mInternal_CullfaceModeStack.Push(*topStatusChunk.mCullfaceMode); }
 }
 
 void MDyRendering::PopInternalGlobalStatus()
@@ -727,8 +745,9 @@ void MDyRendering::PopInternalGlobalStatus()
   if (extracted.mIsEnableDepthTest.has_value() == true)   { this->mInternal_FeatDepthTestStack.Pop(); }
   if (extracted.mIsEnableScissorTest.has_value() == true) { this->mInternal_FeatScissorTestStack.Pop(); }
 
-  if (extracted.mBlendMode.has_value() == true)   { this->mInternal_BlendModeStack.Pop(); }
-  if (extracted.mPolygonMode.has_value() == true) { this->mInternal_PolygonModeStack.Pop(); }
+  if (extracted.mBlendMode.has_value() == true)     { this->mInternal_BlendModeStack.Pop(); }
+  if (extracted.mPolygonMode.has_value() == true)   { this->mInternal_PolygonModeStack.Pop(); }
+  if (extracted.mCullfaceMode.has_value() == true)  { this->mInternal_CullfaceModeStack.Pop(); }
 }
 
 } /// ::dy namespace

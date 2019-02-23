@@ -170,8 +170,9 @@ private:
   FDyCallStack<bool> mInternal_FeatCullfaceStack;
   FDyCallStack<bool> mInternal_FeatDepthTestStack;
   FDyCallStack<bool> mInternal_FeatScissorTestStack;
-  FDyCallStack<DDyGlGlobalStatus::DPolygonMode> mInternal_PolygonModeStack;
-  FDyCallStack<DDyGlGlobalStatus::DBlendMode>   mInternal_BlendModeStack;
+  FDyCallStack<DDyGlGlobalStatus::DPolygonMode>   mInternal_PolygonModeStack;
+  FDyCallStack<DDyGlGlobalStatus::DBlendMode>     mInternal_BlendModeStack;
+  FDyCallStack<DDyGlGlobalStatus::DCullfaceMode>  mInternal_CullfaceModeStack;
 
 #if defined(MDY_FLAG_IN_EDITOR)
   std::unique_ptr<FDyGrid>                    mGridEffect           = nullptr;

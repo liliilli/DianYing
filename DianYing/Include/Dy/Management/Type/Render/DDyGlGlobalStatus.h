@@ -56,12 +56,24 @@ struct DDyGlGlobalStatus final
     std::vector<DItem> mBlendingSettingList;
   };
 
+  /// @struct DCullfaceMode
+  /// @brief Cullface mode descriptor.
+  struct DCullfaceMode final
+  {
+    enum class EValue { Front, Back, FrontAndBack };
+
+    EValue mValue = EValue::Front;
+    DCullfaceMode(EValue iValue) : mValue{iValue} {};
+  };
+
   std::optional<bool> mIsEnableBlend;
   std::optional<bool> mIsEnableCullface;
   std::optional<bool> mIsEnableDepthTest;
   std::optional<bool> mIsEnableScissorTest;
-  std::optional<DPolygonMode> mPolygonMode;
-  std::optional<DBlendMode>   mBlendMode;
+
+  std::optional<DPolygonMode>   mPolygonMode;
+  std::optional<DBlendMode>     mBlendMode;
+  std::optional<DCullfaceMode>  mCullfaceMode;
 };
 
 } /// ::dy namespace
