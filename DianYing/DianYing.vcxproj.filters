@@ -342,6 +342,7 @@
     <ClCompile Include="Source\Element\Type\DDyUiBinder.cc" />
     <ClCompile Include="Source\Builtin\Attachment\SceneIntegration\FDyBtAtActorId.cc" />
     <ClCompile Include="Source\Builtin\Attachment\UIIntegration\FDyBtAtUiId.cc" />
+    <ClCompile Include="Source\Builtin\Model\BoxOIT.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -845,6 +846,7 @@
     <ClInclude Include="Include\Dy\Helper\Internal\FDyCallStack.h" />
     <ClInclude Include="Include\Dy\Management\Type\Render\DDyPixelInfo.h" />
     <ClInclude Include="Include\Dy\Management\Type\Render\DDyGlGlobalStatus.h" />
+    <ClInclude Include="Include\Dy\Builtin\Model\BoxOIT.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />
