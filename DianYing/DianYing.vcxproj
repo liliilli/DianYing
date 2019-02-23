@@ -305,11 +305,11 @@
     <ClCompile Include="Source\Core\Thread\SDyIOConnectionHelper.cc" />
     <ClCompile Include="Source\Core\Thread\IO\TDYIOWorker.cc" />
     <ClCompile Include="Source\Core\Thread\SDyIOWorkerConnHelper.cc" />
-    <ClCompile Include="Source\Element\Canvas\FDyBasicGuageBar.cc" />
-    <ClCompile Include="Source\Element\Canvas\FDyImage.cc" />
-    <ClCompile Include="Source\Element\Canvas\UiObject.cc" />
-    <ClCompile Include="Source\Element\Canvas\UiObjectChildrenable.cc" />
-    <ClCompile Include="Source\Element\Canvas\Widget.cc" />
+    <ClCompile Include="Source\Element\Widget\FDyBasicGuageBar.cc" />
+    <ClCompile Include="Source\Element\Widget\FDyImage.cc" />
+    <ClCompile Include="Source\Element\Widget\UiObject.cc" />
+    <ClCompile Include="Source\Element\Widget\UiObjectChildrenable.cc" />
+    <ClCompile Include="Source\Element\Widget\Widget.cc" />
     <ClCompile Include="Source\Element\Descriptor\GlobalEnums.cc" />
     <ClCompile Include="Libraries\glad\src\glad.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
@@ -432,7 +432,7 @@
     <ClCompile Include="Source\Element\Abstract\ADyBaseComponent.cc" />
     <ClCompile Include="Source\Element\Abstract\ADyTransformable.cc" />
     <ClCompile Include="Source\Element\Actor.cc" />
-    <ClCompile Include="Source\Element\Canvas\Text.cc" />
+    <ClCompile Include="Source\Element\Widget\FDyText.cc" />
     <ClCompile Include="Source\Element\Type\DDyActorBinder.cc" />
     <ClCompile Include="Source\Element\Type\DDyUiBinder.cc" />
     <ClCompile Include="Source\Element\Type\FDy3WaySwitcher.cc" />
