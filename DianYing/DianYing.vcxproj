@@ -198,6 +198,7 @@
     <ClCompile Include="Source\Builtin\GlobalInstance\FDyBtGiDebugStatus.cc" />
     <ClCompile Include="Source\Builtin\Material\BtMtCheckerWorldPos.cc" />
     <ClCompile Include="Source\Builtin\Material\Transparent\StaticTransparentChecker.cc" />
+    <ClCompile Include="Source\Builtin\Mesh\Debug\FDyBtMsDebugAABB.cc" />
     <ClCompile Include="Source\Builtin\Mesh\Debug\FDyBtMsDebugBox.cc" />
     <ClCompile Include="Source\Builtin\Mesh\Debug\FDyBtMsDebugCapsule.cc" />
     <ClCompile Include="Source\Builtin\Mesh\Debug\FDyBtMsDebugSphere.cc" />
@@ -252,7 +253,8 @@
     <ClCompile Include="Source\Component\Internal\Script\Global\FDyGlobalScriptStatus.cc" />
     <ClCompile Include="Source\Component\Internal\Sound\FDySoundInstance.cc" />
     <ClCompile Include="Source\Core\Reflection\RDyGlobalInstanceManager.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\DebugRenderer.cc" />
+    <ClCompile Include="Source\Core\Rendering\Pipeline\DebugAABBRenderer.cc" />
+    <ClCompile Include="Source\Core\Rendering\Pipeline\DebugShapeRenderer.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\LevelCascadeShadowRenderer.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\LevelCSMIntergration.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\LevelOITRenderer.cc" />
@@ -596,6 +598,7 @@
     <ClInclude Include="Include\Dy\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITColor.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITWeight.h" />
     <ClInclude Include="Include\Dy\Builtin\Constant\CSM.h" />
+    <ClInclude Include="Include\Dy\Builtin\Constant\GeneralValue.h" />
     <ClInclude Include="Include\Dy\Builtin\Constant\GeneralLevel.h" />
     <ClInclude Include="Include\Dy\Builtin\Constant\SSAO.h" />
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\BasicShadow\FDyBtFBBasicShadow.h" />
@@ -612,6 +615,7 @@
     <ClInclude Include="Include\Dy\Builtin\Material\BtMtCheckerWorldPos.h" />
     <ClInclude Include="Include\Dy\Builtin\Material\OpaqueStaticPlain.h" />
     <ClInclude Include="Include\Dy\Builtin\Material\Transparent\StaticTransparentChecker.h" />
+    <ClInclude Include="Include\Dy\Builtin\Mesh\Debug\FDyBtMsDebugAABB.h" />
     <ClInclude Include="Include\Dy\Builtin\Mesh\Debug\FDyBtMsDebugBox.h" />
     <ClInclude Include="Include\Dy\Builtin\Mesh\Debug\FDyBtMsDebugCapsule.h" />
     <ClInclude Include="Include\Dy\Builtin\Mesh\Debug\FDyBtMsDebugSphere.h" />
@@ -687,7 +691,8 @@
     <ClInclude Include="Include\Dy\Core\EDyAppMode.h" />
     <ClInclude Include="Include\Dy\Core\Reflection\RDyGlobalInstanceManager.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Interface\IDyRenderer.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\DebugRenderer.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\DebugAABBRenderer.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\DebugShapeRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\LevelCascadeShadowRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\LevelCSMIntegration.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\LevelOITRenderer.h" />

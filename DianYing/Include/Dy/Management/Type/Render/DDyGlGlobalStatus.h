@@ -14,6 +14,7 @@
 ///
 
 #include <optional>
+#include <Dy/Helper/Type/Area2D.h>
 
 namespace dy
 {

@@ -276,6 +276,16 @@ bool MDySetting::IsRenderPhysicsCollisionShape() const noexcept
   return this->mIsRenderPhysicsCollisionShape;
 }
 
+void MDySetting::SetRenderingPhysicsCollisionAABB(_MIN_ bool iIsEnabled) noexcept
+{
+  this->mIsRenderPhysicsCollisionAABB = iIsEnabled;
+}
+
+bool MDySetting::IsRenderPhysicsCollisionAABB() const noexcept
+{
+  return this->mIsRenderPhysicsCollisionAABB;
+}
+
 void MDySetting::pSetupExecutableArgumentSettings()
 {
   /// @brief Setup rendering api type from argument.

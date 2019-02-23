@@ -161,6 +161,10 @@ public:
   void SetRenderingPhysicsCollisionShape(_MIN_ bool iIsEnabled) noexcept;
   /// @brief Check `Physics Collision Shape` rendering is enabled.
   MDY_NODISCARD bool IsRenderPhysicsCollisionShape() const noexcept;
+  /// @brief Set rendering physcis collision AABB mode.
+  void SetRenderingPhysicsCollisionAABB(_MIN_ bool iIsEnabled) noexcept;
+  /// @brief Check `Physics Collision AABB` rendering is enabled.
+  MDY_NODISCARD bool IsRenderPhysicsCollisionAABB() const noexcept;
 
 private:
   /// @brief Setup executable argument settings.
@@ -202,6 +206,8 @@ private:
   EDyModelRenderingMode mModelRenderingMode = EDyModelRenderingMode::FillNormal;
   /// @brief If true, rendering manager should draw physics collision shape.
   bool mIsRenderPhysicsCollisionShape = false;
+  /// @brief If true, rendering manager should draw physics collision AABB as fixed color.
+  bool mIsRenderPhysicsCollisionAABB = false;
 
   friend class DyEngine;
 };

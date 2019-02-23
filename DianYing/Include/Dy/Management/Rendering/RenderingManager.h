@@ -17,6 +17,7 @@
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Management/Type/Render/DDyModelHandler.h>
+#include <Dy/Management/Type/Render/DDyGlGlobalStatus.h>
 #include <Dy/Core/Rendering/Pipeline/BasicRenderer.h>
 #include <Dy/Core/Rendering/Pipeline/FinalScreenDisplayRenderer.h>
 #include <Dy/Core/Rendering/Pipeline/PostEffectSsao.h>
@@ -24,11 +25,11 @@
 #include <Dy/Core/Rendering/Pipeline/LevelCascadeShadowRenderer.h>
 #include <Dy/Core/Rendering/Pipeline/LevelCSMIntegration.h>
 #include <Dy/Core/Rendering/Pipeline/LevelOITRenderer.h>
-#include <Dy/Core/Rendering/Pipeline/DebugRenderer.h>
+#include <Dy/Core/Rendering/Pipeline/DebugShapeRenderer.h>
 #include <Dy/Core/Rendering/Pipeline/PostEffectSky.h>
+#include <Dy/Core/Rendering/Pipeline/DebugAABBRenderer.h>
 #include <Dy/Helper/Pointer.h>
 #include <Dy/Helper/Internal/FDyCallStack.h>
-#include "Dy/Management/Type/Render/DDyGlGlobalStatus.h"
 
 //!
 //! Forward declaration
@@ -133,7 +134,8 @@ private:
   std::unique_ptr<FDyPostEffectSky>               mSkyPostEffect        = MDY_INITIALIZE_NULL;
   std::unique_ptr<FDyUIBasicRenderer>             mUiBasicRenderer      = MDY_INITIALIZE_NULL;
   std::unique_ptr<FDyFinalScreenDisplayRenderer>  mFinalDisplayRenderer = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyDebugRenderer>               mDebugRenderer        = MDY_INITIALIZE_NULL;
+  std::unique_ptr<FDyDebugShapeRenderer>          mDebugShapeRenderer   = MDY_INITIALIZE_NULL;
+  std::unique_ptr<FDyDebugAABBRenderer>           mDebugAABBRenderer    = MDY_INITIALIZE_NULL;
 
   using TMeshDrawCallItem = std::tuple<
       NotNull<DDyModelHandler::DActorInfo*>,

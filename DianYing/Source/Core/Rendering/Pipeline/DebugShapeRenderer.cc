@@ -13,34 +13,26 @@
 ///
 
 /// Header file
-#include <Dy/Core/Rendering/Pipeline/DebugRenderer.h>
+#include <Dy/Core/Rendering/Pipeline/DebugShapeRenderer.h>
 #include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
 #include <Dy/Core/Resource/Resource/FDyMeshResource.h>
 #include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
 #include <Dy/Component/CDyPhysicsCollider.h>
-#include <Dy/Management/Type/Render/DDyGlGlobalStatus.h>
-#include "Dy/Management/Rendering/RenderingManager.h"
 
 namespace dy
 {
   
-bool FDyDebugRenderer::IsReady() const noexcept
+bool FDyDebugShapeRenderer::IsReady() const noexcept
 {
   return this->mBinderShader.IsResourceExist() == true 
       && this->mBinderFrameBuffer.IsResourceExist() == true;
 }
 
-EDySuccess FDyDebugRenderer::TryPushRenderingSetting()
+EDySuccess FDyDebugShapeRenderer::TryPushRenderingSetting()
 {
   if (this->IsReady() == false) { return DY_FAILURE; }
-
-  // Set status
-  DDyGlGlobalStatus statusSetting;
-  statusSetting.mIsEnableDepthTest = false;
-  auto& mngRendering = MDyRendering::GetInstance();
-  mngRendering.InsertInternalGlobalStatus(statusSetting);
-  
+ 
   // Bind
   // We need not update camera. Because already updated.
   this->mBinderFrameBuffer->BindFrameBuffer();
@@ -49,21 +41,16 @@ EDySuccess FDyDebugRenderer::TryPushRenderingSetting()
   return DY_SUCCESS;
 }
 
-EDySuccess FDyDebugRenderer::TryPopRenderingSetting()
+EDySuccess FDyDebugShapeRenderer::TryPopRenderingSetting()
 {
   if (this->IsReady() == false) { return DY_FAILURE; }
 
   // Unbind
   this->mBinderFrameBuffer->UnbindFrameBuffer();
-
-  // Pop status
-  auto& mngRendering = MDyRendering::GetInstance();
-  mngRendering.PopInternalGlobalStatus();
-
   return DY_SUCCESS;
 }
 
-void FDyDebugRenderer::Clear()
+void FDyDebugShapeRenderer::Clear()
 {
   if (this->IsReady() == false) { return; }
 
@@ -73,7 +60,7 @@ void FDyDebugRenderer::Clear()
   this->mBinderFrameBuffer->UnbindFrameBuffer();
 }
 
-void FDyDebugRenderer::RenderScreen(_MIN_ CDyPhysicsCollider& iRefCollider, _MIN_ const DDyMatrix4x4& iTransformMatrix)
+void FDyDebugShapeRenderer::RenderScreen(_MIN_ CDyPhysicsCollider& iRefCollider, _MIN_ const DDyMatrix4x4& iTransformMatrix)
 {
   // Check update collider mesh information.
   if (iRefCollider.IsNeedToUpdateColliderMesh() == true)

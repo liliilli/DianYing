@@ -36,6 +36,7 @@
 #include "Dy/Management/WindowManager.h"
 #include "Dy/Management/PhysicsManager.h"
 #include "Dy/Component/CDyModelFilter.h"
+#include <Dy/Builtin/Constant/GeneralValue.h>
 
 //!
 //! Forward declaration & Local translation unit function and data.
@@ -184,7 +185,8 @@ EDySuccess MDyRendering::pfInitialize()
   this->mCSMRenderer          = std::make_unique<decltype(this->mCSMRenderer)::element_type>();
   this->mSSAOPostEffect       = std::make_unique<decltype(mSSAOPostEffect)::element_type>();
   this->mSkyPostEffect        = std::make_unique<decltype(this->mSkyPostEffect)::element_type>();
-  this->mDebugRenderer        = std::make_unique<decltype(this->mDebugRenderer)::element_type>();
+  this->mDebugShapeRenderer   = std::make_unique<decltype(this->mDebugShapeRenderer)::element_type>();
+  this->mDebugAABBRenderer    = std::make_unique<decltype(mDebugAABBRenderer)::element_type>();
 
   // Set callback function for global internal status stack.
   this->mInternal_FeatBlendStack.SetCallback(CbGlFeatBlendStack);
@@ -201,7 +203,7 @@ EDySuccess MDyRendering::pfInitialize()
   case EDyRenderingApi::OpenGL: 
   {
     glEnable(GL_PRIMITIVE_RESTART);
-    glPrimitiveRestartIndex(0xFFFFFFFF);
+    glPrimitiveRestartIndex(kIndiceSeparator);
     glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
     //! Push initial OpenGL global status.
@@ -355,7 +357,8 @@ EDySuccess MDyRendering::pfRelease()
   this->mUiBasicRenderer      = MDY_INITIALIZE_NULL;
   this->mFinalDisplayRenderer = MDY_INITIALIZE_NULL;
   this->mTranslucentOIT       = MDY_INITIALIZE_NULL;
-  this->mDebugRenderer        = MDY_INITIALIZE_NULL;
+  this->mDebugShapeRenderer   = MDY_INITIALIZE_NULL;
+  this->mDebugAABBRenderer    = nullptr;
 
   // Initialize internal management singleton instance.
   MDY_CALL_ASSERT_SUCCESS(FDyModelHandlerManager::Release());
@@ -371,7 +374,7 @@ void MDyRendering::PreRender(_MIN_ TF32 dt)
     auto& settingManager = MDySetting::GetInstance();
     if (const auto flag = settingManager.IsRenderPhysicsCollisionShape(); flag != lock)
     {
-      this->mDebugRenderer->Clear();
+      this->mDebugShapeRenderer->Clear();
       lock = flag;
     }
   }
@@ -625,31 +628,46 @@ void MDyRendering::RenderDebugInformation()
   if (ptrCamera == nullptr) { return; }
 
   const auto& setting   = MDySetting::GetInstance();
-
-  // Draw collider shapes. (NOT AABB!)
-  // If main camera is not exist, do not render level.
+  
+  // Set status
+  DDyGlGlobalStatus statusSetting;
+  statusSetting.mIsEnableDepthTest = false;
+  this->InsertInternalGlobalStatus(statusSetting);
+ 
   if (setting.IsRenderPhysicsCollisionShape() == true)
-  {
+  { // Draw collider shapes. (NOT AABB!) If main camera is not exist, do not render level.
     // (1) Draw opaque call list. Get valid Main CDyCamera instance pointer address.
     if (MDY_GRAPHIC_SET_CRITICALSECITON();
-        this->mDebugRenderer != nullptr
-    &&  this->mDebugRenderer->TryPushRenderingSetting() == DY_SUCCESS)
+        this->mDebugShapeRenderer != nullptr
+    &&  this->mDebugShapeRenderer->TryPushRenderingSetting() == DY_SUCCESS)
     {
       for (auto& [ptrCollider, transformMatrix] : this->mDebugColliderDrawingList)
       {
-        this->mDebugRenderer->RenderScreen(*ptrCollider, transformMatrix);
+        this->mDebugShapeRenderer->RenderScreen(*ptrCollider, transformMatrix);
       }
       // Pop setting.
-      this->mDebugRenderer->TryPopRenderingSetting();
+      this->mDebugShapeRenderer->TryPopRenderingSetting();
     }
-    SDyProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(this->mOpaqueMeshDrawingList.size()));
   }
 
+  if (setting.IsRenderPhysicsCollisionAABB() == true) 
+  { // Draw collider AABB.
+    // (2) Draw opaque call list. Get valid Main CDyCamera instance pointer address.
+    if (MDY_GRAPHIC_SET_CRITICALSECITON();
+        this->mDebugAABBRenderer != nullptr
+    &&  this->mDebugAABBRenderer->TryPushRenderingSetting() == DY_SUCCESS)
+    {
+      for (auto& [ptrCollider, transformMatrix] : this->mDebugColliderDrawingList)
+      {
+        this->mDebugAABBRenderer->RenderScreen(*ptrCollider, transformMatrix);
+      }
+      // Pop setting.
+      this->mDebugAABBRenderer->TryPopRenderingSetting();
+    }
+  }
   this->mDebugColliderDrawingList.clear();
 
-  // Draw collider AABB.
-
-
+  this->PopInternalGlobalStatus();
 }
 
 void MDyRendering::RenderUIInformation()

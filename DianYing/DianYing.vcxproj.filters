@@ -313,7 +313,6 @@
     <ClCompile Include="Source\Builtin\Attachment\Debug\FDyBtAtDebug.cc" />
     <ClCompile Include="Source\Builtin\Mesh\Debug\FDyBtMsDebugSphere.cc" />
     <ClCompile Include="Source\Builtin\ShaderGl\Debug\BtShDebugLine.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\DebugRenderer.cc" />
     <ClCompile Include="Source\Builtin\Mesh\Debug\FDyBtMsDebugBox.cc" />
     <ClCompile Include="Source\Builtin\Mesh\Debug\FDyBtMsDebugCapsule.cc" />
     <ClCompile Include="Source\Component\CDySkybox.cc" />
@@ -343,6 +342,9 @@
     <ClCompile Include="Source\Element\Widget\UiObject.cc" />
     <ClCompile Include="Source\Element\Widget\UiObjectChildrenable.cc" />
     <ClCompile Include="Source\Element\Widget\Widget.cc" />
+    <ClCompile Include="Source\Core\Rendering\Pipeline\DebugShapeRenderer.cc" />
+    <ClCompile Include="Source\Core\Rendering\Pipeline\DebugAABBRenderer.cc" />
+    <ClCompile Include="Source\Builtin\Mesh\Debug\FDyBtMsDebugAABB.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -810,7 +812,6 @@
     <ClInclude Include="Include\Dy\Builtin\Attachment\Debug\FDyBtAtDebug.h" />
     <ClInclude Include="Include\Dy\Builtin\Mesh\Debug\FDyBtMsDebugSphere.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Debug\BtShDebugLine.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\DebugRenderer.h" />
     <ClInclude Include="Include\Dy\Builtin\Mesh\Debug\FDyBtMsDebugBox.h" />
     <ClInclude Include="Include\Dy\Builtin\Mesh\Debug\FDyBtMsDebugCapsule.h" />
     <ClInclude Include="Include\Dy\Component\CDySkybox.h" />
@@ -847,6 +848,10 @@
     <ClInclude Include="Include\Dy\Management\Type\Render\DDyPixelInfo.h" />
     <ClInclude Include="Include\Dy\Management\Type\Render\DDyGlGlobalStatus.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\BoxOIT.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\DebugShapeRenderer.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\DebugAABBRenderer.h" />
+    <ClInclude Include="Include\Dy\Builtin\Mesh\Debug\FDyBtMsDebugAABB.h" />
+    <ClInclude Include="Include\Dy\Builtin\Constant\GeneralValue.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

@@ -32,14 +32,14 @@ class CDyPhysicsCollider;
 namespace dy
 {
 
-/// @class FDyDebugRenderer
+/// @class FDyDebugShapeRenderer
 /// @brief Debug renderer.
-class FDyDebugRenderer final : public IDyRenderer
+class FDyDebugShapeRenderer final : public IDyRenderer
 {
 public:
-  MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(FDyDebugRenderer);
-  FDyDebugRenderer() = default;
-  ~FDyDebugRenderer() = default;
+  MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(FDyDebugShapeRenderer);
+  FDyDebugShapeRenderer() = default;
+  ~FDyDebugShapeRenderer() = default;
 
   /// @brief Rendering deferred contexts to default framebuffer.
   void RenderScreen(_MIN_ CDyPhysicsCollider& iRefCollider, _MIN_ const DDyMatrix4x4& iTransformMatrix);
