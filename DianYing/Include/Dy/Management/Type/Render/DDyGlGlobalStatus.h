@@ -65,6 +65,22 @@ struct DDyGlGlobalStatus final
     EValue mValue = EValue::Front;
     DCullfaceMode(EValue iValue) : mValue{iValue} {};
   };
+  
+  /// @struct DViewport
+  /// @brief Viewport mode descriptor.
+  struct DViewport final
+  {
+    /// @struct DItem
+    struct DItem final
+    {
+      TI32      mIndex;
+      DDyArea2D mArea;
+
+      DItem(TI32 iIndex, DDyArea2D iArea) : mIndex{iIndex}, mArea{iArea} {};
+    };
+
+    std::vector<DItem> mViewportSettingList;
+  };
 
   std::optional<bool> mIsEnableBlend;
   std::optional<bool> mIsEnableCullface;
@@ -74,6 +90,7 @@ struct DDyGlGlobalStatus final
   std::optional<DPolygonMode>   mPolygonMode;
   std::optional<DBlendMode>     mBlendMode;
   std::optional<DCullfaceMode>  mCullfaceMode;
+  std::optional<DViewport>      mViewportSettingList;
 };
 
 } /// ::dy namespace

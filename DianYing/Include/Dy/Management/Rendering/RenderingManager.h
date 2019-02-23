@@ -173,6 +173,7 @@ private:
   FDyCallStack<DDyGlGlobalStatus::DPolygonMode>   mInternal_PolygonModeStack;
   FDyCallStack<DDyGlGlobalStatus::DBlendMode>     mInternal_BlendModeStack;
   FDyCallStack<DDyGlGlobalStatus::DCullfaceMode>  mInternal_CullfaceModeStack;
+  FDyCallStack<DDyGlGlobalStatus::DViewport>      mInternal_ViewportStack;
 
 #if defined(MDY_FLAG_IN_EDITOR)
   std::unique_ptr<FDyGrid>                    mGridEffect           = nullptr;

@@ -27,6 +27,15 @@ struct DDyArea2D final
 {
   DDyVector2 mLeftDown = {};
   DDyVector2 mRightUp  = {};
+
+  DDyArea2D() = default;
+  DDyArea2D(_MIN_ const DDyVector2& iLeftDown, _MIN_ const DDyVector2& iRightUp) :
+      mLeftDown{iLeftDown},
+      mRightUp{iRightUp} {};
+  DDyArea2D(_MIN_ TI32 x, _MIN_ TI32 y, _MIN_ TI32 width, _MIN_ TI32 height) :
+      DDyArea2D{
+          DDyVector2{static_cast<TF32>(x), static_cast<TF32>(y)},
+          DDyVector2{static_cast<TF32>(x + width), static_cast<TF32>(y + height)}} {};
 };
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDyArea2D& p);

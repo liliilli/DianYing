@@ -66,14 +66,14 @@ void CbGlFeatDepthTestStack(const bool& iTopStatus)
 }
 
 /// @brief
-void CbGlFeatScissorTestStack(const bool& iTopStatus)
+void CbGlFeatScissorTestStack(_MIN_ const bool& iTopStatus)
 {
   if (iTopStatus == true) { glEnable(GL_SCISSOR_TEST); } 
   else                    { glDisable(GL_SCISSOR_TEST); }
 }
 
 /// @brief
-void CbGlPolygonModeStack(const dy::DDyGlGlobalStatus::DPolygonMode& iTopStatus)
+void CbGlPolygonModeStack(_MIN_ const dy::DDyGlGlobalStatus::DPolygonMode& iTopStatus)
 {
   // Get value from structure.
   const auto& polygonMode = iTopStatus;
@@ -99,7 +99,7 @@ void CbGlPolygonModeStack(const dy::DDyGlGlobalStatus::DPolygonMode& iTopStatus)
   glPolygonMode(mode, value);
 }
 
-void CbGlBlendModeStatus(const dy::DDyGlGlobalStatus::DBlendMode& iTopStatus)
+void CbGlBlendModeStatus(_MIN_ const dy::DDyGlGlobalStatus::DBlendMode& iTopStatus)
 {
   const auto& blendMode = iTopStatus;
 
@@ -140,7 +140,7 @@ void CbGlBlendModeStatus(const dy::DDyGlGlobalStatus::DBlendMode& iTopStatus)
   }
 }
 
-void CbGlCullfaceModeStack(const dy::DDyGlGlobalStatus::DCullfaceMode& iTopStatus)
+void CbGlCullfaceModeStack(_MIN_ const dy::DDyGlGlobalStatus::DCullfaceMode& iTopStatus)
 {
   using EValue = dy::DDyGlGlobalStatus::DCullfaceMode::EValue;
   switch (iTopStatus.mValue)
@@ -148,6 +148,15 @@ void CbGlCullfaceModeStack(const dy::DDyGlGlobalStatus::DCullfaceMode& iTopStatu
   case EValue::Front:         glCullFace(GL_FRONT);           break;
   case EValue::Back:          glCullFace(GL_BACK);            break;
   case EValue::FrontAndBack:  glCullFace(GL_FRONT_AND_BACK);  break;
+  }
+}
+
+void CbGlViewportStack(_MIN_ const dy::DDyGlGlobalStatus::DViewport& iTopStatus)
+{
+  for (auto& [index, area] : iTopStatus.mViewportSettingList)
+  {
+    if (index <= -1)  { dy::FDyGLWrapper::SetViewport(area); }
+    else              { dy::FDyGLWrapper::SetViewportIndexed(static_cast<TU32>(index), area); }
   }
 }
 
@@ -185,6 +194,7 @@ EDySuccess MDyRendering::pfInitialize()
   this->mInternal_PolygonModeStack.SetCallback(CbGlPolygonModeStack);
   this->mInternal_BlendModeStack.SetCallback(CbGlBlendModeStatus);
   this->mInternal_CullfaceModeStack.SetCallback(CbGlCullfaceModeStack);
+  this->mInternal_ViewportStack.SetCallback(CbGlViewportStack);
 
   switch (MDySetting::GetInstance().GetRenderingType())
   {
@@ -200,11 +210,7 @@ EDySuccess MDyRendering::pfInitialize()
     {
       using EMode  = DDyGlGlobalStatus::DPolygonMode::EMode;
       using EValue = DDyGlGlobalStatus::DPolygonMode::EValue;
-      using EEqut  = DDyGlGlobalStatus::DBlendMode::EEqut;
-      using EFunc  = DDyGlGlobalStatus::DBlendMode::EFunc;
       using DPolygonMode  = DDyGlGlobalStatus::DPolygonMode;
-      using DBlendMode    = DDyGlGlobalStatus::DBlendMode;
-      using DCullfaceMode = DDyGlGlobalStatus::DCullfaceMode;
       // Set value.
       initialStatus.mIsEnableBlend       = glIsEnabled(GL_BLEND); 
       initialStatus.mIsEnableCullface    = glIsEnabled(GL_CULL_FACE);
@@ -212,12 +218,31 @@ EDySuccess MDyRendering::pfInitialize()
       initialStatus.mIsEnableScissorTest = glIsEnabled(GL_SCISSOR_TEST);
       initialStatus.mPolygonMode         = DPolygonMode{EMode::FrontAndBack, EValue::Triangle}; 
       // Get blend mode.
-      DBlendMode mode{};
-      mode.mBlendingSettingList.emplace_back(EEqut::SrcAddDst, EFunc::SrcAlpha, EFunc::OneMinusSrcAlpha);
-      initialStatus.mBlendMode = mode;
+      {
+        using DBlendMode = DDyGlGlobalStatus::DBlendMode;
+        using EEqut = DDyGlGlobalStatus::DBlendMode::EEqut;
+        using EFunc = DDyGlGlobalStatus::DBlendMode::EFunc;
+        DBlendMode mode{};
+        mode.mBlendingSettingList.emplace_back(EEqut::SrcAddDst, EFunc::SrcAlpha, EFunc::OneMinusSrcAlpha);
+        initialStatus.mBlendMode = mode;
+      }
       // Get cullface mode.
-      DCullfaceMode cullface{DCullfaceMode::EValue::Back};
-      initialStatus.mCullfaceMode = cullface;
+      {
+        using DCullfaceMode = DDyGlGlobalStatus::DCullfaceMode;
+        DCullfaceMode cullface{DCullfaceMode::EValue::Back};
+        initialStatus.mCullfaceMode = cullface;
+      }
+      // Get default viewport.
+      {
+        using DViewport = DDyGlGlobalStatus::DViewport;
+        DViewport defaultViewport;
+        // Get global size. 
+        GLint defaultSize[4]; glGetIntegerv(GL_VIEWPORT, defaultSize); 
+        defaultViewport.mViewportSettingList.emplace_back(
+            -1, // Global 
+            DDyArea2D{defaultSize[0], defaultSize[1], defaultSize[2], defaultSize[3]}
+        );
+      }
       // Insert
       this->InsertInternalGlobalStatus(initialStatus);
     }
@@ -732,6 +757,8 @@ void MDyRendering::InsertInternalGlobalStatus(_MIN_ const DDyGlGlobalStatus& iNe
   { this->mInternal_PolygonModeStack.Push(*topStatusChunk.mPolygonMode); }
   if (topStatusChunk.mCullfaceMode.has_value() == true)
   { this->mInternal_CullfaceModeStack.Push(*topStatusChunk.mCullfaceMode); }
+  if (topStatusChunk.mViewportSettingList.has_value() == true)
+  { this->mInternal_ViewportStack.Push(*topStatusChunk.mViewportSettingList); }
 }
 
 void MDyRendering::PopInternalGlobalStatus()
@@ -748,6 +775,7 @@ void MDyRendering::PopInternalGlobalStatus()
   if (extracted.mBlendMode.has_value() == true)     { this->mInternal_BlendModeStack.Pop(); }
   if (extracted.mPolygonMode.has_value() == true)   { this->mInternal_PolygonModeStack.Pop(); }
   if (extracted.mCullfaceMode.has_value() == true)  { this->mInternal_CullfaceModeStack.Pop(); }
+  if (extracted.mViewportSettingList.has_value() == true)  { this->mInternal_ViewportStack.Pop(); }
 }
 
 } /// ::dy namespace
