@@ -15,7 +15,8 @@
 
 #include <vector>
 #include <Dy/Core/Resource/Type/TDyResourceBinder.h>
-#include "Dy/Management/Type/Render/DDyModelHandler.h"
+#include <Dy/Core/Rendering/Interface/IDyRenderer.h>
+#include <Dy/Management/Type/Render/DDyModelHandler.h>
 
 //!
 //! Forward declaration
@@ -38,7 +39,7 @@ namespace dy
 /// @class FDyBasicRenderer
 /// @brief
 ///
-class FDyBasicRenderer final
+class FDyBasicRenderer final : public IDyRenderer
 {
 public:
   MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(FDyBasicRenderer);
@@ -55,13 +56,18 @@ public:
       _MIN_ FDyMaterialResource& iRefMaterial);
 
   /// @brief Clear properties of given framebuffer.
-  void Clear();
+  void Clear() override final;
+
+  /// @brief Check ready status.
+  bool IsReady() const noexcept override final;
+
+  /// @brief Try setup rendering.
+  EDySuccess TrySetupRendering() override final;
+  /// @brief Pop rendering setting.
+  EDySuccess PopRenderingSetting();
 
 private:
-
   TDyResourceBinderFrameBuffer mBinderFrameBuffer{"dyBtBasicRender"};
-
-  friend class FDyDeferredRenderingMesh;
 };
 
 } /// ::dy namespace

@@ -91,9 +91,6 @@ void FDyBasicRenderer::PreRender()
         &ptrValidCamera.GetProjectionMatrix()[0].X);
     MDY_ASSERT(flag == DY_SUCCESS, "");
   }
-
-  glDisable(GL_CULL_FACE);
-
 }
 
 void FDyBasicRenderer::RenderScreen(
@@ -101,13 +98,7 @@ void FDyBasicRenderer::RenderScreen(
     _MIN_ FDyMeshResource& iRefMesh, 
     _MIN_ FDyMaterialResource& iRefMaterial)
 { 
-  if (this->mBinderFrameBuffer.IsResourceExist() == false) { return; }
-  this->mBinderFrameBuffer->BindFrameBuffer();
-  glBlendFunci(1, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-  // Get valid Main CDyCamera instance pointer address.
-  const auto* ptrCamera = MDyWorld::GetInstance().GetPtrMainLevelCamera();
-  if (MDY_CHECK_ISNULL(ptrCamera)) { return; }
+  if (this->IsReady() == false) { return; }
 
   // General deferred rendering
   auto& refActor = *iRefRenderer.mPtrModelRenderer->GetBindedActor();
@@ -117,48 +108,70 @@ void FDyBasicRenderer::RenderScreen(
   auto& shaderBinder = iRefMaterial.GetShaderResourceBinder();
   if (shaderBinder.IsResourceExist() == false) { return; }
 
-  shaderBinder->UseShader();
-  shaderBinder->TryUpdateUniform<EDyUniformVariableType::Matrix4>("uModelMatrix", refModelMatrix);
-  shaderBinder->TryUpdateUniform<EDyUniformVariableType::Float>("uBtDyActorId", TF32(refActor.GetId()));
-
+  using EUniform = EDyUniformVariableType;
+  shaderBinder->TryUpdateUniform<EUniform::Matrix4>("uModelMatrix", refModelMatrix);
+  shaderBinder->TryUpdateUniform<EUniform::Float>("uBtDyActorId", TF32(refActor.GetId()));
   // If this model has animator, update uniform.
   if (iRefRenderer.mPtrModelAnimator != nullptr)
   {
     const auto& finalTransformList = iRefRenderer.mPtrModelAnimator->GetFinalTransformList();
-    shaderBinder->TryUpdateUniform<EDyUniformVariableType::Matrix4Array>("mBoneTransform[0]", finalTransformList);
-    shaderBinder->TryUpdateUniform<EDyUniformVariableType::Integer>("mNumBoneTransform", static_cast<TI32>(finalTransformList.size()));
+    shaderBinder->TryUpdateUniform<EUniform::Matrix4Array>("mBoneTransform[0]", finalTransformList);
+    shaderBinder->TryUpdateUniform<EUniform::Integer>("mNumBoneTransform", static_cast<TI32>(finalTransformList.size()));
   }
 
+  shaderBinder->UseShader();
   shaderBinder->TryUpdateUniformList();
   iRefMaterial.TryUpdateTextureList();
-
   iRefMesh.BindVertexArray();
 
-  // Call function call drawing array or element. (not support instancing yet) TODO IMPLEMENT BATCHING SYSTEM.
+  // Call function call drawing array or element. 
+  // (not support instancing yet) TODO IMPLEMENT BATCHING SYSTEM.
   if (iRefMesh.IsEnabledIndices() == true)
   { FDyGLWrapper::Draw(EDyDrawType::Triangle, true, iRefMesh.GetIndicesCounts()); }
   else
   { FDyGLWrapper::Draw(EDyDrawType::Triangle, false, iRefMesh.GetVertexCounts()); }
 
-  // Unbind present submesh vertex array object.
-  FDyGLWrapper::UnbindVertexArrayObject();
-
   // Unbind, unset, deactivate settings for this submesh and material.
+  // Unbind present submesh vertex array object.
   iRefMaterial.TryDetachTextureListFromShader();
+  FDyGLWrapper::UnbindVertexArrayObject();
   shaderBinder->DisuseShader();
-
-  this->mBinderFrameBuffer->UnbindFrameBuffer();
 }
 
 void FDyBasicRenderer::Clear()
-{ // Integrity test
-  if (this->mBinderFrameBuffer.IsResourceExist() == false) { return; }
-  glBindFramebuffer(GL_FRAMEBUFFER, this->mBinderFrameBuffer->GetFrameBufferId());
+{ 
+  if (this->IsReady() == false) { return; }
 
-  glClearColor(0, 0, 0, 0);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  { MDY_GRAPHIC_SET_CRITICALSECITON();
+    this->mBinderFrameBuffer->BindFrameBuffer();
+    glClearColor(0, 0, 0, 0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    this->mBinderFrameBuffer->UnbindFrameBuffer();
+  }
 }
 
+bool FDyBasicRenderer::IsReady() const noexcept
+{
+  return this->mBinderFrameBuffer.IsResourceExist() == true;
+}
+
+EDySuccess FDyBasicRenderer::TrySetupRendering()
+{
+  if (this->IsReady() == false) { return DY_FAILURE; }
+
+  this->mBinderFrameBuffer->BindFrameBuffer();
+  glClearColor(0, 0, 0, 0);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glBlendFunci(1, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  return DY_SUCCESS;
+}
+
+EDySuccess FDyBasicRenderer::PopRenderingSetting()
+{
+  if (this->IsReady() == false) { return DY_FAILURE; }
+
+  this->mBinderFrameBuffer->UnbindFrameBuffer();
+  return DY_SUCCESS;
+}
 
 } /// ::dy namespace

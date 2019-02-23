@@ -35,6 +35,7 @@
 #include "Dy/Core/Resource/Resource/FDyModelResource.h"
 #include "Dy/Management/WindowManager.h"
 #include "Dy/Management/PhysicsManager.h"
+#include "Dy/Component/CDyModelFilter.h"
 
 //!
 //! Forward declaration & Local translation unit function and data.
@@ -45,7 +46,31 @@ namespace
 
 void CbGlGlobalStatus(const dy::DDyGlGlobalStatus& iTopStatus)
 {
+  if (iTopStatus.mPolygonMode.has_value() == true)
+  {
+    // Get value from structure.
+    const auto& polygonMode = iTopStatus.mPolygonMode.value();
+    GLenum mode   = GL_NONE;
+    GLenum value  = GL_NONE;
 
+    // Set mode
+    switch (polygonMode.mMode)
+    {
+    case dy::DDyGlGlobalStatus::DPolygonMode::EMode::Front: mode = GL_FRONT;  break;
+    case dy::DDyGlGlobalStatus::DPolygonMode::EMode::Back:  mode = GL_BACK;   break;
+    case dy::DDyGlGlobalStatus::DPolygonMode::EMode::FrontAndBack: mode = GL_FRONT_AND_BACK; break;
+    }
+    // Set value
+    switch (polygonMode.mValue)
+    {
+    case dy::DDyGlGlobalStatus::DPolygonMode::EValue::Triangle: value = GL_FILL; break;
+    case dy::DDyGlGlobalStatus::DPolygonMode::EValue::Line:     value = GL_LINE; break;
+    case dy::DDyGlGlobalStatus::DPolygonMode::EValue::Point:    value = GL_POINT; break;
+    }
+
+    // Issue into OpenGL system.
+    glPolygonMode(mode, value);
+  }
 }
 
 } /// ::unnamed namespace
@@ -91,12 +116,18 @@ EDySuccess MDyRendering::pfInitialize()
     //! Push initial OpenGL global status.
     //! But we don't have to call callback function because it is alreay set on OpenGL system.
     DDyGlGlobalStatus initialStatus;
-    initialStatus.mIsEnableBlend        = glIsEnabled(GL_BLEND); 
-    initialStatus.mIsEnableCullface     = glIsEnabled(GL_CULL_FACE);
-    initialStatus.mIsEnableDepthTest    = glIsEnabled(GL_DEPTH_TEST);
-    initialStatus.mIsEnableScissorTest  = glIsEnabled(GL_SCISSOR_TEST);
-    this->mInternalGlobalStatusStack.Push(initialStatus, false);
-    
+    {
+      using EMode  = DDyGlGlobalStatus::DPolygonMode::EMode;
+      using EValue = DDyGlGlobalStatus::DPolygonMode::EValue;
+      // Set value.
+      initialStatus.mIsEnableBlend       = glIsEnabled(GL_BLEND); 
+      initialStatus.mIsEnableCullface    = glIsEnabled(GL_CULL_FACE);
+      initialStatus.mIsEnableDepthTest   = glIsEnabled(GL_DEPTH_TEST);
+      initialStatus.mIsEnableScissorTest = glIsEnabled(GL_SCISSOR_TEST);
+      initialStatus.mPolygonMode         = DDyGlGlobalStatus::DPolygonMode{EMode::FrontAndBack, EValue::Triangle}; 
+      this->mInternalGlobalStatusStack.Push(initialStatus, false);
+    }
+      
     { // IMGUI Setting
       IMGUI_CHECKVERSION();
       ImGui::CreateContext();
@@ -212,10 +243,9 @@ EDySuccess MDyRendering::pfRelease()
 
 void MDyRendering::PreRender(_MIN_ TF32 dt)
 {
-  auto& settingManager = MDySetting::GetInstance();
-
   { // Checking 
     static bool lock = false;
+    auto& settingManager = MDySetting::GetInstance();
     if (const auto flag = settingManager.IsRenderPhysicsCollisionShape(); flag != lock)
     {
       this->mDebugRenderer->Clear();
@@ -230,6 +260,18 @@ void MDyRendering::PreRender(_MIN_ TF32 dt)
   { // Bind
     this->mPtrRequiredSkybox = *optSkybox;
   }
+
+  // Do cpu frustum culling.
+  const auto* ptrCamera = MDyWorld::GetInstance().GetPtrMainLevelCamera();
+  DyEraseRemoveIf(this->mOpaqueMeshDrawingList, [ptrCamera](TMeshDrawCallItem& iPtrOpaqueRenderer)
+  {
+    auto& [actorInfo, _, __] = iPtrOpaqueRenderer;
+    const auto& worldPos = actorInfo->mPtrCompModelFilter
+        ->GetBindedActor()->GetTransform()
+        ->GetFinalWorldPosition();
+    // Check
+    return ptrCamera->CheckIsPointInFrustum(worldPos) == false;
+  });
 
   // Set ordering of UI (If Debug and Loading UI is exist, also include them but as highest order. 
   // (so rendered as final.)
@@ -314,45 +356,48 @@ void MDyRendering::EnqueueDebugDrawCollider(
   this->mDebugColliderDrawingList.emplace_back(std::make_pair(&iRefCollider, iTransformMatrix));
 }
 
-  void MDyRendering::RenderLevelInformation()
+void MDyRendering::RenderLevelInformation()
 {
   if (MDyWorld::GetInstance().IsLevelPresentValid() == false) { return; }
-  const auto& information = MDySetting::GetInstance().GetGameplaySettingInformation();
+  
+  // If main camera is not exist, do not render level.
+  const auto* ptrCamera = MDyWorld::GetInstance().GetPtrMainLevelCamera();
+  if (ptrCamera == nullptr) { return; }
 
+  { // Set overall rendering mode.
+    DDyGlGlobalStatus initialStatus{};
+    using DPolygonMode = DDyGlGlobalStatus::DPolygonMode;
+    using EMode  = DDyGlGlobalStatus::DPolygonMode::EMode;
+    using EValue = DDyGlGlobalStatus::DPolygonMode::EValue;
+    //
+    switch (MDySetting::GetInstance().GetRenderingMode())
+    {
+    case EDyModelRenderingMode::FillNormal: 
+    {
+      initialStatus.mPolygonMode = DPolygonMode{EMode::FrontAndBack, EValue::Triangle}; 
+      { MDY_GRAPHIC_SET_CRITICALSECITON();
+        this->mInternalGlobalStatusStack.Push(initialStatus);
+      }
+    } break;
+    case EDyModelRenderingMode::WireFrame: 
+    {
+      initialStatus.mPolygonMode = DPolygonMode{EMode::FrontAndBack, EValue::Line}; 
+      { MDY_GRAPHIC_SET_CRITICALSECITON();
+        this->mInternalGlobalStatusStack.Push(initialStatus);
+      }
+    } break;
+    }
+  }
+  
   // (0) Clear previous frame results of each framebuffers.
   this->pClearRenderingFramebufferInstances();
+  this->mBasicOpaqueRenderer->PreRender();
 
-  // @TODO TEMPORAL. MAKE STACK-BASED GL STATE MACHINE MANAGER.
-  switch (MDySetting::GetInstance().GetRenderingMode())
+  // (1) Draw opaque call list. Get valid Main CDyCamera instance pointer address.
+  if (MDY_GRAPHIC_SET_CRITICALSECITON(); 
+      this->mBasicOpaqueRenderer->TrySetupRendering() == DY_SUCCESS)
   {
-  case EDyModelRenderingMode::FillNormal: 
-  {
-    MDY_GRAPHIC_SET_CRITICALSECITON();
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-  } break;
-  case EDyModelRenderingMode::WireFrame: 
-  {
-    MDY_GRAPHIC_SET_CRITICALSECITON();
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-  } break;
-  }
-
-  const auto* ptrCamera = MDyWorld::GetInstance().GetPtrMainLevelCamera();
-  // DO CPU VIEW-FRUSTUM CULLING.
-#ifdef false
-  DyEraseRemoveIf(this->mOpaqueDrawCallList, [ptrCamera](auto& iPtrOpaqueRenderer)
-  {
-    const auto& worldPos = iPtrOpaqueRenderer->GetBindedActor()->GetTransform()->GetFinalWorldPosition();
-    return ptrCamera->CheckIsPointInFrustum(worldPos) == false;
-  });
-#endif
-
-  // If main camera is not exist, do not render level.
-  if (MDY_CHECK_ISNOTNULL(ptrCamera))
-  {
-    SDyProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(this->mOpaqueMeshDrawingList.size()));
-    // (1) Draw opaque call list. Get valid Main CDyCamera instance pointer address.
-    this->mBasicOpaqueRenderer->PreRender();
+    glDisable(GL_CULL_FACE);
     for (auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] : this->mOpaqueMeshDrawingList)
     { // Render
       this->mBasicOpaqueRenderer->RenderScreen(
@@ -361,7 +406,11 @@ void MDyRendering::EnqueueDebugDrawCollider(
           const_cast<FDyMaterialResource&>(*iPtrValidMat)
       );
     }
+
+    // Pop setting.
+    this->mBasicOpaqueRenderer->PopRenderingSetting();
   }
+  SDyProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(this->mOpaqueMeshDrawingList.size()));
 
   // (2) Draw transparent call list with OIT.
   if (this->mTranslucentOIT->TrySetupRendering() == DY_SUCCESS)
@@ -374,7 +423,8 @@ void MDyRendering::EnqueueDebugDrawCollider(
           const_cast<FDyMaterialResource&>(*iPtrValidMat)
       );
     }
-    SDyProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(this->mTranslucentMeshDrawingList.size()));
+    SDyProfilingHelper::AddScreenRenderedActorCount(
+        static_cast<TI32>(this->mTranslucentMeshDrawingList.size()));
     
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
@@ -382,19 +432,15 @@ void MDyRendering::EnqueueDebugDrawCollider(
     glBlendFunci(1, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   }
   this->mTranslucentMeshDrawingList.clear();
+  this->mInternalGlobalStatusStack.Pop();
   
   //!
   //! Effects ▽
   //!
-  
-  // @TODO TEMPORARY CODE
-  {
-    MDY_GRAPHIC_SET_CRITICALSECITON();
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-  }
 
   // (3) Cascaded Shadow mapping to opaque call list. Pre-render update for update Segments.
-  if (MDY_CHECK_ISNOTNULL(ptrCamera) && information.mGraphics.mIsEnabledDefaultShadow == true)
+  const auto& information = MDySetting::GetInstance().GetGameplaySettingInformation();
+  if (information.mGraphics.mIsEnabledDefaultShadow == true)
   {
     // pre-render update.
     this->mCSMRenderer->PreRender();
@@ -443,8 +489,6 @@ void MDyRendering::EnqueueDebugDrawCollider(
   { 
     this->mLevelFinalRenderer->RenderScreen(); 
   }
-
-
 }
 
 void MDyRendering::RenderDebugInformation()
@@ -519,8 +563,6 @@ CDyDirectionalLight* MDyRendering::GetPtrMainDirectionalLight() const noexcept
 void MDyRendering::pClearRenderingFramebufferInstances() noexcept
 {
   if (MDyWorld::GetInstance().IsLevelPresentValid() == false) { return; }
-
-  if (MDY_CHECK_ISNOTEMPTY(this->mBasicOpaqueRenderer))   { this->mBasicOpaqueRenderer->Clear(); }
 
   // @TODO DO NOTHING NOW.
   const auto& information = MDySetting::GetInstance().GetGameplaySettingInformation();

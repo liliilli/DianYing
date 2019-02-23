@@ -13,6 +13,8 @@
 /// SOFTWARE.
 ///
 
+#include <optional>
+
 namespace dy
 {
 
@@ -20,10 +22,24 @@ namespace dy
 /// @brief Global status type for managing OpenGL internal rendering library safely.
 struct DDyGlGlobalStatus final
 {
-  bool mIsEnableBlend;
-  bool mIsEnableCullface;
-  bool mIsEnableDepthTest;
-  bool mIsEnableScissorTest;
+  /// @struct DPolygonMode
+  /// @breif Polygon mode descriptor.
+  struct DPolygonMode final
+  {
+    enum class EMode { Front, Back, FrontAndBack, };
+    enum class EValue { Triangle, Line, Point, };
+
+    EMode   mMode   = EMode::FrontAndBack;
+    EValue  mValue  = EValue::Triangle;
+
+    DPolygonMode(EMode iMode, EValue iValue) : mMode{iMode}, mValue{iValue} {};
+  };
+
+  std::optional<bool> mIsEnableBlend;
+  std::optional<bool> mIsEnableCullface;
+  std::optional<bool> mIsEnableDepthTest;
+  std::optional<bool> mIsEnableScissorTest;
+  std::optional<DPolygonMode> mPolygonMode;
 };
 
 } /// ::dy namespace

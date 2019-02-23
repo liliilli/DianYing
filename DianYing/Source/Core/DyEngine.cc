@@ -368,6 +368,7 @@ void DyEngine::MDY_PRIVATE(PreRender)(_MIN_ EDyGlobalGameStatus iEngineStatus, _
     }
 
     // Pre-render update of rendering manager.
+    MDyRendering::GetInstance().SetupDrawModelTaskQueue();
     MDyRendering::GetInstance().PreRender(dt);
   } break;
   default: break;
@@ -387,7 +388,6 @@ void DyEngine::MDY_PRIVATE(Render)(_MIN_ EDyGlobalGameStatus iEngineStatus)
   {
     // Request render call.
     auto& render = MDyRendering::GetInstance();
-    render.SetupDrawModelTaskQueue();
     render.RenderLevelInformation();
     render.RenderUIInformation();
     render.RenderDebugInformation();
