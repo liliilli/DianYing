@@ -80,10 +80,10 @@ public:
   /// @brief Extract top value and return value.
   /// If callback function is exist but first parameter value is false, do not call function.
   /// Otherwise, just call function with next top value.
-  MDY_NODISCARD TType&& ExtractTop(_MIN_ const bool isCallCallback = true)
+  MDY_NODISCARD TType ExtractTop(_MIN_ const bool isCallCallback = true)
   {
     //
-    TType&& result = std::move(this->mInternalStack.top());
+    TType result = std::move(this->mInternalStack.top());
     this->mInternalStack.pop();
     //
     if (isCallCallback == true) { this->CallCallback(); }
