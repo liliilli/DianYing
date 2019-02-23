@@ -83,7 +83,7 @@ public:
   /// This function does not update texture binding status but need to call `TryUpdateUniformList` function.
   EDySuccess TryInsertTextureRequisition(_MIN_ TU32 insertId, _MIN_ TU32 textureId);
 
-  /// @brief Try update uniform variables. \n
+  /// @brief Try update uniform variables and new texture requisition. \n
   /// Do nothing when update list is empty or binding flag is not set up
   /// by calling MDY_PRIVATE(TryConstructDefaultUniformList)().
   EDySuccess TryUpdateUniformList();
