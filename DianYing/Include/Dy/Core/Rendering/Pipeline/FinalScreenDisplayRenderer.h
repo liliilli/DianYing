@@ -14,30 +14,28 @@
 ///
 
 #include <Dy/Core/Resource/Type/TDyResourceBinder.h>
+#include <Dy/Core/Rendering/Interface/IDyRenderer.h>
 
 namespace dy
 {
 
-///
 /// @class FDyFinalScreenDisplayRenderer
-/// @brief
-///
-class FDyFinalScreenDisplayRenderer final
+/// @brief Final screen integrator pipeline.
+class FDyFinalScreenDisplayRenderer final : public IDyRenderer
 {
 public:
   MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(FDyFinalScreenDisplayRenderer);
-  FDyFinalScreenDisplayRenderer();
-  ~FDyFinalScreenDisplayRenderer();
+  FDyFinalScreenDisplayRenderer() = default;
 
-  ///
   /// @brief Rendering deferred contexts to default framebuffer.
-  ///
   void RenderScreen();
 
-  ///
   /// @brief Clear properties of given framebuffer.
-  ///
-  void Clear();
+  void Clear() override final;
+
+  bool IsReady() const noexcept override final;
+  EDySuccess TryPushRenderingSetting() override final;
+  EDySuccess TryPopRenderingSetting() override final;
 
 private:
   TDyResourceBinderShader      mBinderShader     {"dyBtShaderGlScreenOut"};

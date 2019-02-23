@@ -666,22 +666,28 @@ void MDyRendering::RenderUIInformation()
 
 void MDyRendering::Integrate()
 {
-  //!
-  //! Level & Ui integration section.
+  //! Level & Ui & Debug integration section.
   //! ImGUI rendering will be held outside and after this function call.
-  //!
-  if (MDY_CHECK_ISNOTEMPTY(this->mFinalDisplayRenderer)) { this->mFinalDisplayRenderer->RenderScreen(); }
+  if (MDY_GRAPHIC_SET_CRITICALSECITON();
+      this->mFinalDisplayRenderer != nullptr
+  &&  this->mFinalDisplayRenderer->TryPushRenderingSetting() == DY_SUCCESS) 
+  { 
+    this->mFinalDisplayRenderer->RenderScreen(); 
+    this->mFinalDisplayRenderer->TryPopRenderingSetting();
+  }
 }
 
 void MDyRendering::MDY_PRIVATE(RenderLoading)()
 {
-  if (MDY_CHECK_ISNOTEMPTY(this->mUiBasicRenderer))       { this->mUiBasicRenderer->Clear(); }
-  if (MDY_CHECK_ISNOTEMPTY(this->mFinalDisplayRenderer))  { this->mFinalDisplayRenderer->Clear(); }
-
-  if (MDY_CHECK_ISNOTEMPTY(this->mUiBasicRenderer))       { this->mUiBasicRenderer->RenderScreen(this->mUiObjectDrawingList); }
-  if (MDY_CHECK_ISNOTEMPTY(this->mFinalDisplayRenderer))  { this->mFinalDisplayRenderer->RenderScreen(); }
-
+  if (MDY_GRAPHIC_SET_CRITICALSECITON();
+      this->mUiBasicRenderer != nullptr
+  &&  this->mUiBasicRenderer->TryPushRenderingSetting() == DY_SUCCESS) 
+  { 
+    this->mUiBasicRenderer->RenderScreen(this->mUiObjectDrawingList); 
+    this->mUiBasicRenderer->TryPopRenderingSetting();
+  }
   this->mUiObjectDrawingList.clear();
+  this->Integrate();
 }
 
 CDyDirectionalLight* MDyRendering::GetPtrMainDirectionalLight() const noexcept

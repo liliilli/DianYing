@@ -26,45 +26,29 @@
 namespace dy
 {
 
-FDyFinalScreenDisplayRenderer::FDyFinalScreenDisplayRenderer()
+void FDyFinalScreenDisplayRenderer::RenderScreen()
 {
-  MDY_ASSERT(this->mBinderAttSceneFinal.IsResourceExist() == true,  "Scene final output must be valid.");
-  MDY_ASSERT(this->mBinderAttUIFinal.IsResourceExist() == true,     "UI final output must be valid.");
-  MDY_ASSERT(this->mBinderAttDbgFinal.IsResourceExist() == true,    "Debug final output must be valid.");
+  if (this->IsReady() == false) { return; }
+
+  // Bind vertex array object.
+  const auto& submeshList = this->mBinderTriangle->GetMeshResourceList();
+  MDY_ASSERT(submeshList.size() == 1, "");
+  (*submeshList[0])->BindVertexArray();
+
+  // Set shader 
+  this->mBinderShader->TryInsertTextureRequisition(0, this->mBinderAttSceneFinal->GetAttachmentId());
+  this->mBinderShader->TryInsertTextureRequisition(1, this->mBinderAttUIFinal->GetAttachmentId());
+  this->mBinderShader->TryInsertTextureRequisition(2, this->mBinderAttDbgFinal->GetAttachmentId());
 
   this->mBinderShader->UseShader();
   this->mBinderShader->TryUpdateUniformList();
-  this->mBinderShader->DisuseShader();
-}
-
-FDyFinalScreenDisplayRenderer::~FDyFinalScreenDisplayRenderer() { }
-
-void FDyFinalScreenDisplayRenderer::RenderScreen()
-{
-  if (this->mBinderShader.IsResourceExist() == false
-  ||  this->mBinderTriangle.IsResourceExist() == false
-  ||  this->mBinderAttSceneFinal.IsResourceExist() == false) { return; }
-
-  const auto& submeshList = this->mBinderTriangle->GetMeshResourceList();
-  MDY_ASSERT(submeshList.size() == 1, "");
-  // Bind vertex array
-
-  // Set
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
-  this->mBinderShader->UseShader();
-  (*submeshList[0])->BindVertexArray();
 
   // Bind g-buffers as textures and draw.
-
-  glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, this->mBinderAttSceneFinal->GetAttachmentId());
-  glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, this->mBinderAttUIFinal->GetAttachmentId());
-  glActiveTexture(GL_TEXTURE2); glBindTexture(GL_TEXTURE_2D, this->mBinderAttDbgFinal->GetAttachmentId());
-  glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
+  FDyGLWrapper::Draw(EDyDrawType::Triangle, false, 3);
 
   // Rewind
-  glBindVertexArray(0);
+  FDyGLWrapper::UnbindVertexArrayObject();
   this->mBinderShader->DisuseShader();
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void FDyFinalScreenDisplayRenderer::Clear()
@@ -75,6 +59,33 @@ void FDyFinalScreenDisplayRenderer::Clear()
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+bool FDyFinalScreenDisplayRenderer::IsReady() const noexcept
+{
+  if (this->mBinderShader.IsResourceExist() == false
+  ||  this->mBinderTriangle.IsResourceExist() == false
+  ||  this->mBinderAttSceneFinal.IsResourceExist() == false) { return false; }
+
+  return true;
+}
+
+EDySuccess FDyFinalScreenDisplayRenderer::TryPushRenderingSetting()
+{
+  if (this->IsReady() == false) { return DY_FAILURE; }
+
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  glClearColor(0, 0, 0, 0);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  return DY_SUCCESS;
+}
+
+EDySuccess FDyFinalScreenDisplayRenderer::TryPopRenderingSetting()
+{
+  if (this->IsReady() == false) { return DY_FAILURE; }
+
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  return DY_SUCCESS;
 }
 
 } /// ::dy namespace
