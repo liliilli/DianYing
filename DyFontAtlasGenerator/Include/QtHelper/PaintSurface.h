@@ -1,8 +1,8 @@
 #ifndef EXAMPLEPAINTSURFACE_H
 #define EXAMPLEPAINTSURFACE_H
 
-#include "GLOffscreenSurface.h"
-#include "CoordinateBounds.h"
+#include <Include/QtHelper/GLOffscreenSurface.h>
+#include <Include/Type/CoordinateBounds.h>
 
 class CPaintSurface : public GlOffscreenSurface, public QOpenGLFunctions
 {

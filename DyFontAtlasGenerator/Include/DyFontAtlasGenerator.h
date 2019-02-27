@@ -1,14 +1,29 @@
 #pragma once
+///
+/// MIT License
+/// Copyright (c) 2018-2019 Jongmin Yun
+///
+/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+/// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+/// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+/// SOFTWARE.
+///
 
 #include <QtWidgets/QMainWindow>
+#include <Include/Type/GlobalEnums.h>
 #include "ui_DyFontAtlasGenerator.h"
-#include "Helper/GlobalEnums.h"
 
 //!
 //! Forward declaration
 //!
 
+namespace dy
+{
 class DyWindowAbout;
+} /// dy namespace
 
 //!
 //! Implementation
@@ -23,6 +38,9 @@ struct DDyFontInformation final
   ///
   std::string fontStyle = "";
 };
+
+namespace dy
+{
 
 class DyFontAtlasGenerator : public QMainWindow
 {
@@ -86,3 +104,5 @@ private:
   ///
   DyWindowAbout*            mChildAbout = nullptr;
 };
+
+} /// dy namespace

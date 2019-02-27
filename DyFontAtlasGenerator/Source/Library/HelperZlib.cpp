@@ -1,7 +1,20 @@
 #include <precompiled.h>
+///
+/// MIT License
+/// Copyright (c) 2018-2019 Jongmin Yun
+///
+/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+/// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+/// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+/// SOFTWARE.
+///
 
 /// Header file
-#include "HelperZlib.h"
+#include <Include/Library/HelperZlib.h>
+
 #include <cstdlib>
 #include <QByteArray>
 #include <zlib/zlib.h>
@@ -14,10 +27,8 @@
 namespace
 {
 
-///
 /// @struct DHeaderStructure
 /// @brief
-///
 struct DHeaderStructure final
 {
   uint64_t mPlainBufferLength {};
@@ -30,9 +41,7 @@ struct DHeaderStructure final
 //! Implementation
 //!
 
-namespace dy
-{
-namespace zlib
+namespace dy::zlib
 {
 
 DZlibResult CompressBuffer(const char* plainBuffer, const uint64_t bufferSize)
@@ -231,4 +240,3 @@ std::string DecompressString_Deprecated(const std::string& compressedBuffer)
 }
 
 } /// ::dy::zlib namespace
-} /// ::dy       namespace

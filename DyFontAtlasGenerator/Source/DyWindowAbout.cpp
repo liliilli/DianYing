@@ -12,22 +12,36 @@
 /// SOFTWARE.
 ///
 
-#include <QtWidgets/QApplication>
+/// Header file
+#include <Include/DyWindowAbout.h>
 #include <Include/DyFontAtlasGenerator.h>
 
-int main(int argc, char *argv[])
+namespace dy
 {
-  QApplication a(argc, argv);
-  dy::DyFontAtlasGenerator w;
-  w.show();
 
-#ifdef false
-  CPaintSurface paintSurface;
-  paintSurface.resize(1024, 1024);
-  paintSurface.render();
-  QImage image = paintSurface.grabFramebuffer();
-  image.save(QString("image.png"));
-#endif
+DyWindowAbout::DyWindowAbout(QWidget *parent)
+    : QWidget(parent)
+{
+  ui.setupUi(this);
 
-  return a.exec();
+  // Connect signal and slot.
+  connect(ui.PB_OK, &QPushButton::clicked, this, &QWidget::close);
+  connect(this, &DyWindowAbout::ReturnFocusToParent, this->mParentMainWindow, &DyFontAtlasGenerator::ResumeFocus);
 }
+
+DyWindowAbout::~DyWindowAbout()
+{
+
+}
+
+void DyWindowAbout::SetParentMainWindow(DyFontAtlasGenerator& parentWindow)
+{
+  this->mParentMainWindow = &parentWindow;
+}
+
+void DyWindowAbout::closeEvent(QCloseEvent* event)
+{
+  event->accept();
+}
+
+} /// dy namespace

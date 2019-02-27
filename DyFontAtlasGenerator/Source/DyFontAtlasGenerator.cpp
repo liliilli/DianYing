@@ -1,6 +1,19 @@
 #include "precompiled.h"
+///
+/// MIT License
+/// Copyright (c) 2018-2019 Jongmin Yun
+///
+/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+/// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+/// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+/// SOFTWARE.
+///
+
 /// Header file
-#include "DyFontAtlasGenerator.h"
+#include <Include/DyFontAtlasGenerator.h>
 
 #include <thread>
 
@@ -17,54 +30,18 @@
 #include <spdlog/fmt/fmt.h>
 #include <nlohmann/json.hpp>
 
-#include <Helper/MsdfgenHelper.h>
-#include <Helper/JsonTypeWriterHelper.h>
-#include <Helper/CoordinateBounds.h>
-#include <Helper/HelperZlib.h>
-#include <Helper/PaintSurface.h>
-#include <Helper/Structure.h>
-#include <DyWindowAbout.h>
+#include <Include/Library/MsdfgenHelper.h>
+#include <Include/Library/HelperZlib.h>
+#include <Include/Library/JsonTypeWriterHelper.h>
+#include <Include/Type/CoordinateBounds.h>
+#include <Include/QtHelper/PaintSurface.h>
+#include <Include/Structure.h>
 
-namespace
+#include <Include/AConstantLangRange.h>
+#include <Include/DyWindowAbout.h>
+
+namespace dy
 {
-
-//!
-//!
-//!
-
-///
-/// @brief Get range with [start, end].
-/// This must be proceeded with compiled time.
-///
-constexpr auto GetRangeFrom(const int start, const int end) noexcept
-{
-  return end - start + 1;
-}
-
-static constexpr auto STANDARD_UNITPEREM = 256;
-static constexpr auto TEXTURE_CANVAS_S   = 1024;
-static constexpr auto TEXTURE_CANVAS_T   = 1024;
-static constexpr auto TEXTURE_SIZE_S     = 64;
-static constexpr auto TEXTURE_SIZE_T     = 64;
-static constexpr auto CHANNEL_LIMIT      = 4;
-static constexpr auto TEXTURE_MAPLIMIT   = (TEXTURE_CANVAS_S / TEXTURE_SIZE_S) * (TEXTURE_CANVAS_T / TEXTURE_SIZE_T) * CHANNEL_LIMIT;
-static constexpr auto TEXTURE_PXRANGE    = 12.0;
-
-constexpr auto ENGLISH_CHR_START = 0x0000;
-constexpr auto ENGLISH_CHR_END   = 0x007F;
-constexpr auto ENGLISH_CHR_RANGE = GetRangeFrom(ENGLISH_CHR_START, ENGLISH_CHR_END);
-
-constexpr auto HANGUL_CHR_START = 0xAC00;
-constexpr auto HANGUL_CHR_END   = 0xD7AF;
-constexpr auto HANGUL_CHR_RANGE = GetRangeFrom(HANGUL_CHR_START, HANGUL_CHR_END);
-
-constexpr auto KANA_CHR_START = 0x3000;
-constexpr auto KANA_CHR_END   = 0x30FF;
-constexpr auto KANA_CHR_RANGE = GetRangeFrom(KANA_CHR_START, KANA_CHR_END);
-
-constexpr auto CJK_CHR_START = 0x4E00;
-constexpr auto CJK_CHR_END   = 0x9FFF;
-constexpr auto CJK_CHR_RANGE = GetRangeFrom(CJK_CHR_START, CJK_CHR_END);
 
 auto sFtLibraryList {std::vector<FT_Library>{}};
 auto sFtFaceList    {std::vector<FT_Face>{}};
@@ -90,11 +67,9 @@ using TCharMapRangePair = std::pair<uint64_t, uint64_t>;
     .............................EOF
  */
 
-///
-/// @struct DBounds
+/// @struct DBound2D
 /// @brief
-///
-struct DBounds final
+struct DBound2D final
 {
   double l = std::numeric_limits<double>::max();
   double b = std::numeric_limits<double>::max();
@@ -102,10 +77,8 @@ struct DBounds final
   double t = std::numeric_limits<double>::lowest();
 };
 
-///
 /// @struct DResult
 /// @brief
-///
 struct DResult final
 {
   dy::DDyCoordinateBounds mCoordinateBound;
@@ -114,10 +87,8 @@ struct DResult final
   FT_ULong                mCharCode{};
 };
 
-///
 /// @struct DAlignedBBoxInfo
 /// @brief
-///
 struct DAlignedBBoxInfo final
 {
   double            range;
@@ -125,21 +96,15 @@ struct DAlignedBBoxInfo final
   msdfgen::Vector2  translate;
 };
 
-//!
-//!
-//!
-
-///
 /// @brief
 /// @param value
-///
 void DyResizeFreetypeList(const int32_t value)
 {
   Q_ASSERT(value > 0);
   Q_ASSERT(sFtIsInitiailzed.load() == false);
 
   sFtLibraryList.resize(value);
-  sFtFaceList   .resize(value);
+  sFtFaceList.resize(value);
 }
 
 void DyInitializeFreetype() noexcept
@@ -193,7 +158,7 @@ void DyReleaseFreetype() noexcept
 ///
 [[nodiscard]] QImage CreateQImageFromSDFBuffer(const TSdfType& buffer)
 {
-  auto imageBuffer {QImage{TEXTURE_SIZE_S, TEXTURE_SIZE_T, QImage::Format::Format_RGB32}};
+  auto imageBuffer {QImage{dy::TEXTURE_SIZE_S, TEXTURE_SIZE_T, QImage::Format::Format_RGB32}};
 
   for (auto y{ 0 }; y < TEXTURE_SIZE_T; ++y)
   {
@@ -211,7 +176,7 @@ void DyReleaseFreetype() noexcept
 };
 
 /// @brief Checks Bounds boundary veridity.
-void CheckAndChangeBounds(DBounds& bounds)
+void CheckAndChangeBounds(DBound2D& bounds)
 {
   if (bounds.l >= bounds.r || bounds.b >= bounds.t)
   {
@@ -220,7 +185,7 @@ void CheckAndChangeBounds(DBounds& bounds)
 };
 
 /// @brief
-[[nodiscard]] DAlignedBBoxInfo AlignSDFBBoxFrame(const DBounds& bounds)
+[[nodiscard]] DAlignedBBoxInfo AlignSDFBBoxFrame(const DBound2D& bounds)
 {
   const auto dims{ msdfgen::Vector2{bounds.r - bounds.l, bounds.t - bounds.b} };
   auto translate{ msdfgen::Vector2{} };
@@ -287,7 +252,7 @@ void Process(std::vector<DResult>& charResultList, const std::vector<FT_ULong>& 
     Q_ASSERT(outlineErrorFlag == 0);
 
     // Set bounds
-    DBounds bounds{};
+    DBound2D bounds{};
     shape.normalize(); shape.bounds(bounds.l, bounds.b, bounds.r, bounds.t); shape.inverseYAxis = true;
     CheckAndChangeBounds(bounds);
 
@@ -518,8 +483,6 @@ void CreateFontBuffer(const DDyFontInformation information,
   return true;
 }
 
-} /// unnamed namespace
-
 //!
 //! Implementation
 //!
@@ -684,3 +647,4 @@ void DyFontAtlasGenerator::ResumeFocus()
   this->mChildAbout = nullptr;
 }
 
+} /// dy namespace

@@ -7,11 +7,17 @@
 //! Forward declaration
 //!
 
+namespace dy
+{
 class DyFontAtlasGenerator;
+}
 
 //!
 //! Implementation
 //!
+
+namespace dy
+{
 
 class DyWindowAbout : public QWidget
 {
@@ -21,10 +27,8 @@ public:
   DyWindowAbout(QWidget *parent = Q_NULLPTR);
   ~DyWindowAbout();
 
-  ///
   /// @brief
   /// @param parentWindow
-  ///
   void SetParentMainWindow(DyFontAtlasGenerator& parentWindow);
 
 signals:
@@ -39,3 +43,5 @@ private:
   /// Close Event
   void closeEvent(QCloseEvent* event) override;
 };
+
+} /// dy namespace
