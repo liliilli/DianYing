@@ -201,6 +201,9 @@
     </property>
    </widget>
    <widget class="QCheckBox" name="CB_MapEnglish">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -272,6 +275,9 @@
     </property>
    </widget>
    <widget class="QCheckBox" name="CB_MapHangul">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>160</x>
@@ -301,6 +307,9 @@
     </property>
    </widget>
    <widget class="QCheckBox" name="CB_MapKana">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>250</x>
@@ -315,7 +324,7 @@
    </widget>
    <widget class="QCheckBox" name="CB_MapCJKHanbun">
     <property name="enabled">
-     <bool>true</bool>
+     <bool>false</bool>
     </property>
     <property name="geometry">
      <rect>
@@ -331,7 +340,7 @@
    </widget>
    <widget class="QLabel" name="label_4">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
@@ -350,7 +359,7 @@
    </widget>
    <widget class="QPlainTextEdit" name="TV_TextFilePath">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
@@ -403,7 +412,7 @@
      <bool>true</bool>
     </property>
     <property name="plainText">
-     <string notr="true">NOT AVAILABLE NOW...</string>
+     <string notr="true"/>
     </property>
     <property name="placeholderText">
      <string notr="true"/>
@@ -411,7 +420,7 @@
    </widget>
    <widget class="QPushButton" name="BT_FindTextFile">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>

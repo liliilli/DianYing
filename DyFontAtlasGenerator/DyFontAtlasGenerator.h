@@ -14,6 +14,8 @@
 
 #include <QtWidgets/QMainWindow>
 #include <Include/Type/GlobalEnums.h>
+#include <Include/Type/DFileInformations.h>
+#include <Include/Type/TCallVar.h>
 #include "ui_DyFontAtlasGenerator.h"
 
 //!
@@ -28,16 +30,6 @@ class DyWindowAbout;
 //!
 //! Implementation
 //!
-
-struct DDyFontInformation final
-{
-  /// File path on focus.
-  std::string fontPath  = "";
-  ///
-  std::string fontName  = "";
-  ///
-  std::string fontStyle = "";
-};
 
 namespace dy
 {
@@ -55,35 +47,24 @@ public:
   void IncrementProgress();
 
 public slots:
-  ///
-  /// @brief
-  ///
+  /// @brief Callback function that find font file to populate.
   void FindFontFile();
-  ///
+  /// @brief That Find text file callback function.
+  void FindTextFile();
+
   /// @brief
-  /// @param value NOT USED
-  ///
   void UpdateCharmapFlag(int value);
-  ///
   /// @brief
-  /// @param value NOT USED
-  ///
   void UpdateOptionFlag(int value);
-  ///
+
   /// @brief Make batch file. from BT_
-  ///
   void CreateBatchFile();
-  ///
   /// @brief
-  ///
   void CreationTaskFinished();
-  ///
+
   /// @brief
-  ///
   void ShowAbout();
-  ///
   /// @brief
-  ///
   void ResumeFocus();
 
 signals:
@@ -93,16 +74,26 @@ private:
   ///
   Ui::DyFontAtlasGeneratorClass ui;
   ///
-  QFutureWatcher<void>      mFutureWatcher;
+  QFutureWatcher<void> mFutureWatcher;
 
   /// Charmap flag.
-  dy::EDyCharmapCollections mCharmapFlag = dy::EDyCharmapCollections::None;
+  EDyCharmapCollections   mCharmapFlag = EDyCharmapCollections::None;
   /// Option flag.
-  dy::EDyOptionCollections  mOptionFlag  = dy::EDyOptionCollections::None;
-  ///
-  DDyFontInformation        mFontInformation = {};
-  ///
-  DyWindowAbout*            mChildAbout = nullptr;
+  EDyOptionCollections    mOptionFlag  = EDyOptionCollections::None;
+  /// Loaded font file information.
+  DDyFontInformation      mFontInformation = {};
+  /// Loaded text file information.
+  DDyTextFileInformation  mTextGlyphs;
+  /// Callback for `mIsCanSelectWithTextGlyph` variable.
+  void UpdateFlags(const bool& iNewValue);
+  /// If true, charmap will be start
+  FDyCallVar<bool>        mIsCanSelectCharmap;
+  /// Callback for `mIsCanSelectWithTextGlyph` variable.
+  void UpdateTextFlag(const bool& iNewValue);
+  /// If true, charmap will be created with text file information.
+  FDyCallVar<bool>        mIsCanSelectWithTextGlyph;
+  ///mIsCanSelectWithTextGlyph
+  DyWindowAbout*          mChildAbout = nullptr;
 };
 
 } /// dy namespace

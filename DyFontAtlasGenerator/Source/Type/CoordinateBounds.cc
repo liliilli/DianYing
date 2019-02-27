@@ -47,7 +47,7 @@ DDyCoordinateBounds CreateCoordinateInformation(
   const auto YId {canvasHoriMaxCount - (localId / canvasHoriMaxCount) - 1};
   const auto XId {localId % canvasHoriMaxCount};
 
-  auto resultInstance { DDyCoordinateBounds{} };
+  DDyCoordinateBounds resultInstance;
   resultInstance.mLeftDown = DDyVector2{coordWidth * XId      , coordHeight * YId};
   resultInstance.mRightUp  = DDyVector2{coordWidth * (XId + 1), coordHeight * (YId + 1)};
   resultInstance.mMapIndex = mapId;

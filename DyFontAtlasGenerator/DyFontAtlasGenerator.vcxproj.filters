@@ -95,13 +95,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="Include\DyFontAtlasGenerator.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="Include\DyWindowAbout.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
     <QtMoc Include="Include\QtHelper\GLOffscreenSurface.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="DyFontAtlasGenerator.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="DyWindowAbout.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -189,6 +189,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\Type\GlobalEnums.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Library\HelperString.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Type\DFileInformations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Type\TCallVar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

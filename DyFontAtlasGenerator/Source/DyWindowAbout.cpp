@@ -13,8 +13,8 @@
 ///
 
 /// Header file
-#include <Include/DyWindowAbout.h>
-#include <Include/DyFontAtlasGenerator.h>
+#include <DyWindowAbout.h>
+#include <DyFontAtlasGenerator.h>
 
 namespace dy
 {

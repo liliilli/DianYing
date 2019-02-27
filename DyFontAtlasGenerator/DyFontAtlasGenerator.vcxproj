@@ -188,22 +188,25 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\Library\HelperString.h" />
     <ClInclude Include="Include\Type\CoordinateBounds.h" />
     <QtMoc Include="Include\QtHelper\GLOffscreenSurface.h">
       <ForceInclude Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">precompiled.h;../../Helper/%(Filename)%(Extension)</ForceInclude>
       <ForceInclude Condition="'$(Configuration)|$(Platform)'=='Release|x64'">precompiled.h;../../Helper/%(Filename)%(Extension)</ForceInclude>
     </QtMoc>
     <ClInclude Include="Include\Library\MsdfgenHelper.h" />
+    <ClInclude Include="Include\Type\DFileInformations.h" />
     <ClInclude Include="Include\Type\GlobalEnums.h" />
-    <QtMoc Include="Include\DyWindowAbout.h">
+    <QtMoc Include="DyWindowAbout.h">
       <ForceInclude Condition="'$(Configuration)|$(Platform)'=='Release|x64'">precompiled.h;../../%(Filename)%(Extension)</ForceInclude>
     </QtMoc>
-    <QtMoc Include="Include\DyFontAtlasGenerator.h">
+    <QtMoc Include="DyFontAtlasGenerator.h">
       <ForceInclude Condition="'$(Configuration)|$(Platform)'=='Release|x64'">precompiled.h;../../%(Filename)%(Extension)</ForceInclude>
     </QtMoc>
     <ClInclude Include="Include\Library\JsonTypeWriterHelper.h" />
     <ClInclude Include="Include\QtHelper\PaintSurface.h" />
     <ClInclude Include="Include\Structure.h" />
+    <ClInclude Include="Include\Type\TCallVar.h" />
     <ClInclude Include="Include\Type\Vector2.h" />
     <ClInclude Include="Include\Library\HelperZlib.h" />
     <ClInclude Include="Include\AConstantLangRange.h" />

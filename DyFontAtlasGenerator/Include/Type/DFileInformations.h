@@ -1,4 +1,5 @@
-#include "precompiled.h"
+#ifndef GUARD_TYPE_DFILEINFORMATIONS_H
+#define GUARD_TYPE_DFILEINFORMATIONS_H
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -12,14 +13,27 @@
 /// SOFTWARE.
 ///
 
-#include <QtWidgets/QApplication>
-#include <DyFontAtlasGenerator.h>
+#include <string>
+#include <set>
 
-int main(int argc, char *argv[])
+namespace dy
 {
-  QApplication a(argc, argv);
-  dy::DyFontAtlasGenerator w;
-  w.show();
 
-  return a.exec();
-}
+struct DDyFontInformation final
+{
+  /// File path on focus.
+  std::string fontPath  = "";
+  /// File name on focus.
+  std::string fontName  = "";
+  /// Font style on focus.
+  std::string fontStyle = "";
+};
+
+struct DDyTextFileInformation final
+{
+  std::set<uint16_t> mCharGlyphs;
+};
+
+} /// ::dy namespace
+
+#endif /// GUARD_TYPE_DFILEINFORMATIONS_H
