@@ -13,6 +13,8 @@
 ///
 
 #include <QtWidgets/QMainWindow>
+#include <ft2build.h>
+#include FT_FREETYPE_H
 #include <Include/Type/GlobalEnums.h>
 #include <Include/Type/DFileInformations.h>
 #include <Include/Type/TCallVar.h>
@@ -71,29 +73,36 @@ signals:
   void SetProgressBarValue(int);
 
 private:
+  void CreateFontBuffer(const DDyFontInformation information,
+                        const std::vector<FT_ULong> targetCharMap,
+                        const dy::EDyOptionCollections option);
+
   ///
   Ui::DyFontAtlasGeneratorClass ui;
   ///
   QFutureWatcher<void> mFutureWatcher;
 
-  /// Charmap flag.
+  /// @brief Charmap flag.
   EDyCharmapCollections   mCharmapFlag = EDyCharmapCollections::None;
-  /// Option flag.
+  /// @brief Option flag.
   EDyOptionCollections    mOptionFlag  = EDyOptionCollections::None;
-  /// Loaded font file information.
+  /// @brief Loaded font file information.
   DDyFontInformation      mFontInformation = {};
-  /// Loaded text file information.
+  /// @brief Loaded text file information.
   DDyTextFileInformation  mTextGlyphs;
-  /// Callback for `mIsCanSelectWithTextGlyph` variable.
+  /// @brief Callback for `mIsCanSelectWithTextGlyph` variable.
   void UpdateFlags(const bool& iNewValue);
-  /// If true, charmap will be start
+  /// @brief If true, charmap will be start
   FDyCallVar<bool>        mIsCanSelectCharmap;
-  /// Callback for `mIsCanSelectWithTextGlyph` variable.
+  /// @brief Callback for `mIsCanSelectWithTextGlyph` variable.
   void UpdateTextFlag(const bool& iNewValue);
-  /// If true, charmap will be created with text file information.
+  /// @brief If true, charmap will be created with text file information.
   FDyCallVar<bool>        mIsCanSelectWithTextGlyph;
-  ///mIsCanSelectWithTextGlyph
+  /// @brief 
   DyWindowAbout*          mChildAbout = nullptr;
-};
+
+  /// @brief
+  std::mutex mMutexProgressIncrement;
+}; 
 
 } /// dy namespace

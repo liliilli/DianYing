@@ -29,7 +29,7 @@
    <enum>Qt::NoContextMenu</enum>
   </property>
   <property name="windowTitle">
-   <string notr="true">DianYing Font Atlas generator (v2)</string>
+   <string notr="true">DianYing SDF FontAtlas generator (v190227)</string>
   </property>
   <property name="toolTip">
    <string notr="true"/>

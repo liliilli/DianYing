@@ -19,7 +19,7 @@ enum class EDyCharmapCollections : uint32_t
   Hangul    = 0b00000010,
   Kana      = 0b00000100,
   CJK       = 0b00001000,
-  Automatic = 0b00010000 // If Automatic flag is checked, other flags will be passed.
+  Automatic = 0b00010000 
 };
 
 ///

@@ -74,7 +74,7 @@ public:
         DyFontAtlasGeneratorClass->setSizePolicy(sizePolicy);
         DyFontAtlasGeneratorClass->setMinimumSize(QSize(500, 0));
         DyFontAtlasGeneratorClass->setContextMenuPolicy(Qt::NoContextMenu);
-        DyFontAtlasGeneratorClass->setWindowTitle(QStringLiteral("DianYing Font Atlas generator (v2)"));
+        DyFontAtlasGeneratorClass->setWindowTitle(QStringLiteral("DianYing SDF FontAtlas generator (v190227)"));
 #ifndef QT_NO_TOOLTIP
         DyFontAtlasGeneratorClass->setToolTip(QStringLiteral(""));
 #endif // QT_NO_TOOLTIP
