@@ -15,6 +15,30 @@
 /// Header file
 #include <DyWindowAbout.h>
 #include <DyFontAtlasGenerator.h>
+#include <QListWidget>
+
+//!
+//! Forward declaration
+//!
+
+namespace
+{
+
+std::array<std::pair<std::string, std::string>, 5> sLibraryDescriptors = 
+{
+  std::pair
+  {"freetype", ""},
+  {"msdfgen", ""},
+  {"nlohmann", ""},
+  {"spdlog & fmt", ""},
+  {"zlib", ""},
+};
+
+} /// ::unnamed namespace
+
+//!
+//! Implementation
+//!
 
 namespace dy
 {
@@ -26,12 +50,11 @@ DyWindowAbout::DyWindowAbout(QWidget *parent)
 
   // Connect signal and slot.
   connect(ui.PB_OK, &QPushButton::clicked, this, &QWidget::close);
-  connect(this, &DyWindowAbout::ReturnFocusToParent, this->mParentMainWindow, &DyFontAtlasGenerator::ResumeFocus);
-}
 
-DyWindowAbout::~DyWindowAbout()
-{
-
+  for (const auto& [libraryName, libraryUrl] : sLibraryDescriptors)
+  {
+    ui.LW_Library->addItem(libraryName.c_str());
+  }
 }
 
 void DyWindowAbout::SetParentMainWindow(DyFontAtlasGenerator& parentWindow)

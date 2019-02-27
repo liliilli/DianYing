@@ -25,7 +25,7 @@ class DyWindowAbout : public QWidget
 
 public:
   DyWindowAbout(QWidget *parent = Q_NULLPTR);
-  ~DyWindowAbout();
+  ~DyWindowAbout() = default;
 
   /// @brief
   /// @param parentWindow

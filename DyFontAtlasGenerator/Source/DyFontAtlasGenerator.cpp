@@ -110,8 +110,9 @@ DyFontAtlasGenerator::DyFontAtlasGenerator(QWidget *parent) : QMainWindow(parent
 
   connect(ui.CB_OptionSeperate,     &QCheckBox::stateChanged, this, &DyFontAtlasGenerator::UpdateOptionFlag);
   connect(ui.CB_OptionCompressJson, &QCheckBox::stateChanged, this, &DyFontAtlasGenerator::UpdateOptionFlag);
+
   connect(ui.BT_Create,             &QPushButton::clicked,    this, &DyFontAtlasGenerator::CreateBatchFile);
-  //connect(ui.AC_About,            &QAction::triggered,      this, &DyFontAtlasGenerator::ShowAbout);
+  connect(ui.AC_About,              &QAction::triggered,      this, &DyFontAtlasGenerator::ShowAbout);
 
   connect(this, &DyFontAtlasGenerator::SetProgressBarValue, ui.PG_Loading, &QProgressBar::setValue);
 
@@ -193,6 +194,7 @@ DyFontAtlasGenerator::GetFontGeneralInformation(const QString& iFontPath)
   result.fontName  = sFtFace->family_name;
   result.fontStyle = sFtFace->style_name;
   result.fontPath  = iFontPath.toStdString();
+  // https://stackoverflow.com/questions/28009564/new-line-pixel-distance-in-freetype
   result.mLineFeedHeight        = sFtFace->height;
   result.mScaledLineFeedHeight  = sFtFace->size->metrics.height;
 
@@ -610,17 +612,12 @@ void DyFontAtlasGenerator::CreationTaskFinished()
 }
 
 void DyFontAtlasGenerator::ShowAbout()
-{ // NOT IMPLEMENTED YET
+{ 
   this->mChildAbout = new DyWindowAbout();
   this->mChildAbout->setWindowModality(Qt::WindowModality::ApplicationModal);
+  this->mChildAbout->setAttribute(Qt::WA_DeleteOnClose);
   this->mChildAbout->SetParentMainWindow(*this);
   this->mChildAbout->show();
-}
-
-void DyFontAtlasGenerator::ResumeFocus()
-{ // NOT IMPLEMENTED YET
-  delete this->mChildAbout;
-  this->mChildAbout = nullptr;
 }
 
 } /// dy namespace

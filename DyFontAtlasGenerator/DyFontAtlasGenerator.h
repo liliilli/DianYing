@@ -71,8 +71,6 @@ public slots:
 
   /// @brief
   void ShowAbout();
-  /// @brief
-  void ResumeFocus();
 
 signals:
   void SetProgressBarValue(int);
