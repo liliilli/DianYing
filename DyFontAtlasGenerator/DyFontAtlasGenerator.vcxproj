@@ -125,6 +125,7 @@
   <ItemGroup>
     <ClCompile Include="Source\DyFontAtlasGenerator.cpp" />
     <ClCompile Include="Source\DyWindowAbout.cpp" />
+    <ClCompile Include="Source\FTaskThread.cc" />
     <ClCompile Include="Source\Type\CoordinateBounds.cc" />
     <ClCompile Include="Source\QtHelper\GLOffscreenSurface.cc" />
     <ClCompile Include="Source\Library\HelperZlib.cpp" />
@@ -188,6 +189,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\FTaskThread.h" />
     <ClInclude Include="Include\Library\HelperString.h" />
     <ClInclude Include="Include\Type\CoordinateBounds.h" />
     <QtMoc Include="Include\QtHelper\GLOffscreenSurface.h">
@@ -196,6 +198,7 @@
     </QtMoc>
     <ClInclude Include="Include\Library\MsdfgenHelper.h" />
     <ClInclude Include="Include\Type\DFileInformations.h" />
+    <ClInclude Include="Include\Type\DResult.h" />
     <ClInclude Include="Include\Type\GlobalEnums.h" />
     <QtMoc Include="DyWindowAbout.h">
       <ForceInclude Condition="'$(Configuration)|$(Platform)'=='Release|x64'">precompiled.h;../../%(Filename)%(Extension)</ForceInclude>

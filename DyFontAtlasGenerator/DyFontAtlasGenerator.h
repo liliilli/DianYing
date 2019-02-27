@@ -12,9 +12,12 @@
 /// SOFTWARE.
 ///
 
+#include <array>
+#include <optional>
 #include <QtWidgets/QMainWindow>
 #include <ft2build.h>
 #include FT_FREETYPE_H
+
 #include <Include/Type/GlobalEnums.h>
 #include <Include/Type/DFileInformations.h>
 #include <Include/Type/TCallVar.h>
@@ -49,8 +52,10 @@ public:
   void IncrementProgress();
 
 public slots:
-  /// @brief Callback function that find font file to populate.
-  void FindFontFile();
+  /// @brief Callback function that find first(primary) font file to populate.
+  void FindFirstFontFile();
+  /// @brief Callback function that find second(secondary) font file to populate.
+  void FindSecondFontFile();
   /// @brief That Find text file callback function.
   void FindTextFile();
 
@@ -73,9 +78,15 @@ signals:
   void SetProgressBarValue(int);
 
 private:
-  void CreateFontBuffer(const DDyFontInformation information,
-                        const std::vector<FT_ULong> targetCharMap,
-                        const dy::EDyOptionCollections option);
+  /// @brief 
+  bool CreateFontFileInformation(uint32_t id);
+  /// @brief This function must be called when single thread is running.
+  [[nodiscard]] std::optional<DDyFontInformation> GetFontGeneralInformation(const QString& iFontPath);
+
+  /// @brief
+  void CreateFontBuffer(const std::vector<DDyFontInformation>& informations,
+                        const std::vector<FT_ULong>& targetCharMap,
+                        const EDyOptionCollections& option);
 
   ///
   Ui::DyFontAtlasGeneratorClass ui;
@@ -86,8 +97,10 @@ private:
   EDyCharmapCollections   mCharmapFlag = EDyCharmapCollections::None;
   /// @brief Option flag.
   EDyOptionCollections    mOptionFlag  = EDyOptionCollections::None;
-  /// @brief Loaded font file information.
-  DDyFontInformation      mFontInformation = {};
+  /// @brief Loaded font file (primary, secondary) information.
+  std::array<DDyFontInformation, 2> mFontInformations = {};
+  /// @brief If true, secondary font will be accessed when creating atlas.
+  bool                    mIsSecondaryFontAvailable = false;
   /// @brief Loaded text file information.
   DDyTextFileInformation  mTextGlyphs;
   /// @brief Callback for `mIsCanSelectWithTextGlyph` variable.

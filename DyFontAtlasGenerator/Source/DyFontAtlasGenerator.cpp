@@ -20,100 +20,28 @@
 
 #include <QtOpenGL>
 #include <QtConcurrent/QtConcurrentRun>
-#include <QThread>
 
-#include <ft2build.h>
-#if !defined(FT_FREETYPE_H)
-#define FT_FREETYPE_H
-#endif
 #include <freetype/freetype.h>
-#include <freetype/ftoutln.h>
 #include <spdlog/fmt/fmt.h>
 #include <nlohmann/json.hpp>
 
-#include <Include/Library/MsdfgenHelper.h>
+#include <Include/AConstantLangRange.h>
+#include <Include/FTaskThread.h>
+#include <Include/Structure.h>
+#include <Include/Library/HelperString.h>
 #include <Include/Library/HelperZlib.h>
 #include <Include/Library/JsonTypeWriterHelper.h>
-#include <Include/Type/CoordinateBounds.h>
 #include <Include/QtHelper/PaintSurface.h>
-#include <Include/Structure.h>
-
-#include <Include/AConstantLangRange.h>
-#include <Include/Library/HelperString.h>
 #include <Include/Type/DFileInformations.h>
+#include <Include/Type/DResult.h>
+
 #include <DyWindowAbout.h>
 
 namespace dy
 {
 
-auto sFtLibraryList {std::vector<FT_Library>{}};
-auto sFtFaceList    {std::vector<FT_Face>{}};
-std::atomic<bool> sFtIsInitiailzed {false};
-
-using TSdfType          = msdfgen::Bitmap<float>;
-using TCharMapRangePair = std::pair<uint64_t, uint64_t>;
-
 [[nodiscard]] bool ExportAsSeparateJsonAndPng (const DDyFontInformation& fontMetaInfo, const nlohmann::json& fontJsonInfo, const std::vector<QImage>& fontImage);
 [[nodiscard]] bool ExportAsIntegratedFile     (const DDyFontInformation& fontMetaInfo, const nlohmann::json& fontJsonInfo, const std::vector<QImage>& fontImage);
-
-/*  TEMPLATE
- *  00......`.......08......`.......
-    [PrevFontPtr   ][NextFontPtr   ]
-    16......`.......24......`.......
-    [PlainInfoLen  ][CompInfoLength]
-    32......`.......48......`.......
-    [PlainImgLength][CompImgLength ]
-    64..............................
-    [Compressed Information Buffer ]
-    64+CompInfoLen..................
-    [Compressed Image Buffer       ]
-    .............................EOF
- */
-
-/// @struct DBound2D
-/// @brief
-struct DBound2D final
-{
-  double l = std::numeric_limits<double>::max();
-  double b = std::numeric_limits<double>::max();
-  double r = std::numeric_limits<double>::lowest();
-  double t = std::numeric_limits<double>::lowest();
-};
-
-/// @brief Checks Bounds boundary validity.
-void CheckAndChangeBounds(DBound2D& bounds)
-{
-  if (bounds.l >= bounds.r || bounds.b >= bounds.t)
-  {
-    bounds.l = 0; bounds.b = 0; bounds.r = 1; bounds.t = 1;
-  }
-};
-
-/// @struct DResult
-/// @brief Result instance type of each font character glyph.
-struct DResult final
-{
-  DDyCoordinateBounds mCoordinateBound;
-  QImage              mImageBuffer;
-  nlohmann::json      mItemJsonAtlas;
-  FT_ULong            mCharCode{};
-};
-
-/// @struct DAlignedBBoxInfo
-/// @brief
-struct DAlignedBBoxInfo final
-{
-  double            range{};
-  msdfgen::Vector2  scale;
-  msdfgen::Vector2  translate;
-};
-
-[[nodiscard]] DAlignedBBoxInfo AlignSDFBBoxFrame(const DBound2D& bounds);
-
-/// @brief
-/// @param  buffer
-/// @return RVOed QImage (copyable)
-[[nodiscard]] QImage CreateQImageFromSDFBuffer(const TSdfType& buffer);
 
 /// @brief
 [[nodiscard]] bool ExportAsSeparateJsonAndPng(
@@ -121,88 +49,13 @@ struct DAlignedBBoxInfo final
     const nlohmann::json& fontJsonInfo, 
     const std::vector<QImage>& fontImage);
 
-/// @brief
-/// @param value
-void DyResizeFreetypeList(const int32_t value)
-{
-  Q_ASSERT(value > 0);
-  Q_ASSERT(sFtIsInitiailzed.load() == false);
-
-  sFtLibraryList.resize(value);
-  sFtFaceList.resize(value);
-}
-
-void DyInitializeFreetype() noexcept
-{
-  // Check Freetype is we`ll.
-  for (size_t i = 0; i < sFtLibraryList.size(); ++i)
-  {
-    if (FT_Init_FreeType(&sFtLibraryList[i]) != 0) { }
-  }
-
-  bool previous = false;
-  while (sFtIsInitiailzed.compare_exchange_strong(previous, true, std::memory_order::memory_order_seq_cst) == false)
-    ;
-}
-
-void DyLoadFontFreetype(const QString& iFontPath) noexcept
-{
-  Q_ASSERT(sFtIsInitiailzed.load() == true);
-  for (size_t i = 0; i < sFtFaceList.size(); ++i)
-  {
-    Q_ASSERT(sFtLibraryList[i] != nullptr);
-    FT_New_Face(sFtLibraryList[i], iFontPath.toStdString().c_str(), 0, &sFtFaceList[i]);
-  }
-}
-
-void DyReleaseFreetype() noexcept
-{
-  Q_ASSERT(sFtIsInitiailzed.load() == true);
-
-  for (size_t i = 0; i < sFtFaceList.size(); ++i)
-  {
-    Q_ASSERT(sFtLibraryList[i]  != nullptr);
-    Q_ASSERT(sFtFaceList[i]     != nullptr);
-
-    if (FT_Done_Face(sFtFaceList[i]) != 0) { }
-    if (FT_Done_FreeType(sFtLibraryList[i]) != 0) { }
-
-    sFtFaceList[i]    = nullptr;
-    sFtLibraryList[i] = nullptr;
-  }
-
-  auto previous {true};
-  while (sFtIsInitiailzed.compare_exchange_strong(previous, false, std::memory_order::memory_order_seq_cst) == false)
-    ;
-}
-
-[[nodiscard]] DDyFontInformation GetFontGeneralInformation(const QString fontPath)
-{
-  FT_Library sFtLibrary = nullptr;
-  FT_Face    sFtFace    = nullptr;
-
-  if (FT_Init_FreeType(&sFtLibrary) != 0) { }
-  if (FT_New_Face(sFtLibrary, fontPath.toStdString().c_str(), 0, &sFtFace)) { }
-
-  DDyFontInformation result = {};
-  result.fontName   = sFtFace->family_name;
-  result.fontStyle  = sFtFace->style_name;
-  result.fontPath   = fontPath.toStdString();
-
-  if (FT_Done_Face(sFtFace) != 0)         { }
-  if (FT_Done_FreeType(sFtLibrary) != 0)  { }
-  return result;
-}
-
-[[nodiscard]] std::optional<DDyTextFileInformation> GetTextGlyphs(const QString iFontPath)
+[[nodiscard]] std::optional<DDyTextFileInformation> GetTextGlyphs(const QString& iFontPath)
 {
   // Open file.
   const std::string fontPath = iFontPath.toStdString();
+  // ReSharper disable CppDeprecatedEntity
   FILE* fdFile = fopen(fontPath.c_str(), "r");
-  if (fdFile == nullptr)
-  {
-    return std::nullopt;
-  }
+  if (fdFile == nullptr) { return std::nullopt; }
 
   // Make staging buffer.
   std::fseek(fdFile, 0, SEEK_END);
@@ -215,7 +68,7 @@ void DyReleaseFreetype() noexcept
   assert(std::feof(fdFile));
 
   // Check.
-  std::set<uint16_t> returnedCharGlyphs;
+  std::set<uint16_t> returnedCharGlyphs;  // NOLINT
   for (auto it = buffer.data(); *it != '\0'; it += DyGetByteOfUtf8Char(it))
   {
     const auto chr = DyGetRawUtf16CharacterFrom(it);
@@ -226,120 +79,6 @@ void DyReleaseFreetype() noexcept
   fclose(fdFile);
   return DDyTextFileInformation{returnedCharGlyphs};
 }
-
-void Process(
-    std::vector<DResult>& charResultList, 
-    const std::vector<FT_ULong>& charMapList, 
-    const TCharMapRangePair charRangePair, 
-    const FT_Face ftFace,
-    DyFontAtlasGenerator& iProcessHandler)
-{
-  const auto itStart  = charMapList.cbegin() + charRangePair.first;
-  const auto itEnd    = charMapList.cbegin() + charRangePair.second;
-
-  FT_Outline_Funcs ftFunctions;
-  ftFunctions.move_to = &ftMoveTo;    ftFunctions.line_to = &ftLineTo;
-  ftFunctions.conic_to = &ftConicTo;  ftFunctions.cubic_to = &ftCubicTo;
-  ftFunctions.shift = 0;              ftFunctions.delta = 0;
-
-  for (auto charCodeIt = itStart; charCodeIt != itEnd; ++charCodeIt)
-  {
-    const FT_Error loadCharErrorFlag = FT_Load_Char(ftFace, *charCodeIt, FT_LOAD_NO_SCALE);
-    Q_ASSERT(loadCharErrorFlag == 0);
-
-    msdfgen::Shape     shape = {};
-    DDyFreeTypeContext context = {}; context.mShape = &shape;
-
-    const auto outlineErrorFlag = FT_Outline_Decompose(&ftFace->glyph->outline, &ftFunctions, &context);
-    Q_ASSERT(outlineErrorFlag == 0);
-
-    // Set bounds
-    DBound2D bounds{};
-    shape.normalize(); shape.bounds(bounds.l, bounds.b, bounds.r, bounds.t); shape.inverseYAxis = true;
-    CheckAndChangeBounds(bounds);
-
-    // Set translate (non scaled)
-    const auto alignedInfo = AlignSDFBBoxFrame(bounds);
-
-    // Generate information
-    msdfgen::edgeColoringSimple(shape, 3.0);
-    auto sdfFloatBuffer{ TSdfType{TEXTURE_SIZE_S, TEXTURE_SIZE_T} };
-    msdfgen::generateSDF(sdfFloatBuffer, shape, alignedInfo.range, alignedInfo.scale, alignedInfo.translate);
-
-    // Realign and scale translate for saving.
-    const auto glyphScale{ static_cast<float>(STANDARD_UNITPEREM) / ftFace->units_per_EM };
-    auto translate{ alignedInfo.translate };
-    translate -= TEXTURE_PXRANGE / alignedInfo.scale;
-    translate *= glyphScale;
-    translate += TEXTURE_PXRANGE / alignedInfo.scale * glyphScale;
-
-    const auto id = static_cast<uint64_t>(std::distance(charMapList.cbegin(), charCodeIt));
-    const auto texCoord = CreateCoordinateInformation(TEXTURE_CANVAS_S, TEXTURE_CANVAS_T, TEXTURE_SIZE_S, TEXTURE_SIZE_T, id);
-
-    // Make json information and return.
-    nlohmann::json jsonWrite;
-    jsonWrite["Size"] = DDyVector2{ float(ftFace->glyph->metrics.width), float(ftFace->glyph->metrics.height) } * glyphScale;
-    jsonWrite["HoriBearing"] = DDyVector2{ float(ftFace->glyph->metrics.horiBearingX), float(ftFace->glyph->metrics.horiBearingY) } *glyphScale;
-    jsonWrite["Scale"] = DDyVector2{ float(alignedInfo.scale.x), float(alignedInfo.scale.y) } / glyphScale;
-    jsonWrite["Translate"] = DDyVector2{ float(translate.x), float(translate.y) } *16;
-    jsonWrite["TexCoordBox"] = texCoord;
-    jsonWrite["HoriAdvance"] = ftFace->glyph->metrics.horiAdvance * glyphScale / 64.0;
-
-    charResultList[id] = DResult{ texCoord, CreateQImageFromSDFBuffer(sdfFloatBuffer), jsonWrite, *charCodeIt};
-    iProcessHandler.IncrementProgress();
-  }
-};
-
-QImage CreateQImageFromSDFBuffer(const TSdfType& buffer)
-{
-  // Create blank image buffer, S, T size and ~~RGB32~~ Format_Grayscale8.
-  QImage imageBuffer = {TEXTURE_SIZE_S, TEXTURE_SIZE_T, QImage::Format::Format_Grayscale8};
-
-  // Fille pixel information to QImage texel.
-  for (auto y{ 0 }; y < TEXTURE_SIZE_T; ++y)
-  {
-    for (auto x{ 0 }; x < TEXTURE_SIZE_S; ++x)
-    {
-      // Gray-scalized value.
-      const auto changedUCharValue = static_cast<uint8_t>(std::floor(std::max(buffer(x, y), 0.f) * 255));
-
-      // Insert with QRgb (QRgb will be converted to grayscalized value).
-      const QRgb value = qRgb(changedUCharValue, changedUCharValue, changedUCharValue);
-      imageBuffer.setPixel(x, y, value);
-    }
-  }
-
-  // Return it.
-  return imageBuffer;
-};
-
-/// @brief
-DAlignedBBoxInfo AlignSDFBBoxFrame(const DBound2D& bounds)
-{
-  const msdfgen::Vector2 dims = {bounds.r - bounds.l, bounds.t - bounds.b};
-  msdfgen::Vector2 translate = {};
-  msdfgen::Vector2 scale = {1, 1};
-  msdfgen::Vector2 frame = {
-      static_cast<double>(TEXTURE_SIZE_S),
-      static_cast<double>(TEXTURE_SIZE_T)
-  };
-  frame -= 2 * TEXTURE_PXRANGE;
-
-  if (dims.x * frame.y < dims.y * frame.x)
-  {
-    translate.set(.5 * (frame.x / frame.y * dims.y - dims.x) - bounds.l, -bounds.b);
-    scale = frame.y / dims.y;
-  }
-  else
-  {
-    translate.set(-bounds.l, .5 * (frame.y / frame.x * dims.x - dims.y) - bounds.b);
-    scale = frame.x / dims.x;
-  }
-  translate += TEXTURE_PXRANGE / scale;
-
-  const double range = TEXTURE_PXRANGE / msdfgen::min(scale.x, scale.y);
-  return DAlignedBBoxInfo{range, scale, translate};
-};
 
 //!
 //! Implementation
@@ -359,7 +98,8 @@ DyFontAtlasGenerator::DyFontAtlasGenerator(QWidget *parent) : QMainWindow(parent
 
   // Connect signal and slot.
   connect(&this->mFutureWatcher,    SIGNAL(finished()),       this, SLOT(CreationTaskFinished()));
-  connect(ui.BT_FindFile,           SIGNAL(clicked()),        this, SLOT(FindFontFile()));
+  connect(ui.BT_FirstFindFile,      SIGNAL(clicked()),        this, SLOT(FindFirstFontFile()));
+  connect(ui.BT_SecondFindFile,     SIGNAL(clicked()),        this, SLOT(FindSecondFontFile()));
   connect(ui.BT_FindTextFile,       SIGNAL(clicked()),        this, SLOT(FindTextFile()));
 
   connect(ui.CB_MapEnglish,         &QCheckBox::stateChanged, this, &DyFontAtlasGenerator::UpdateCharmapFlag);
@@ -386,33 +126,79 @@ void DyFontAtlasGenerator::IncrementProgress()
   emit SetProgressBarValue(ui.PG_Loading->value() + 1);
 }
 
-void DyFontAtlasGenerator::FindFontFile()
+void DyFontAtlasGenerator::FindFirstFontFile()  
 { 
+  const auto flag = this->CreateFontFileInformation(0); 
+  if (flag == false)
+  {
+    this->ui.TV_FirstFilePath->clear(); 
+    this->mIsCanSelectCharmap = false;
+  }
+  else
+  {
+    this->ui.TV_FirstFilePath->setPlainText(DyString("Font Name : {}, Style : {}",
+        this->mFontInformations[0].fontName,
+        this->mFontInformations[0].fontStyle).c_str()
+    );
+
+    this->mIsCanSelectCharmap = true; // Enable check box.
+  }
+}
+
+void DyFontAtlasGenerator::FindSecondFontFile() 
+{ 
+  const auto flag = this->CreateFontFileInformation(1); 
+  if (flag == false)
+  {
+    this->ui.TV_SecondFilePath->clear(); 
+    this->mIsSecondaryFontAvailable = false;
+  }
+  else
+  {
+    this->ui.TV_SecondFilePath->setPlainText(DyString("Font Name : {}, Style : {}",
+        this->mFontInformations[1].fontName,
+        this->mFontInformations[1].fontStyle).c_str()
+    );
+    this->mIsSecondaryFontAvailable = true;
+  }
+}
+
+bool DyFontAtlasGenerator::CreateFontFileInformation(uint32_t id)
+{
   // Find font file using file explorer.
   const QString file = QFileDialog::getOpenFileName(
       this, tr("Open File"), "",
       tr("TrueType Collection (*.ttc);;TrueType Font (*.ttf);;OpenType Font (*.otf)"));;
 
   // If not given specified font file, just do nothing.
-  if (file.isEmpty() == true) 
-  { 
-    ui.TV_FilePath->clear(); 
-    this->mIsCanSelectCharmap = false;
-  }
-  else
-  { //
-    QFuture<DDyFontInformation> function1 = QtConcurrent::run(GetFontGeneralInformation, file);
-    function1.waitForFinished();
-    this->mFontInformation = function1.result();
-    // 
-    ui.TV_FilePath->setPlainText(fmt::format("Font Name : {}, Style : {}",
-        this->mFontInformation.fontName,
-        this->mFontInformation.fontStyle).c_str()
-    );
+  if (file.isEmpty() == true) { return false; }
 
-    // Enable check box.
-    this->mIsCanSelectCharmap = true;
-  }
+  std::optional<DDyFontInformation> optResult = GetFontGeneralInformation(file);
+  if(optResult.has_value() == false) { return false; }
+
+  this->mFontInformations[id] = *optResult;
+  return true;
+}
+
+[[nodiscard]] std::optional<DDyFontInformation> 
+DyFontAtlasGenerator::GetFontGeneralInformation(const QString& iFontPath)
+{
+  FT_Library sFtLibrary = nullptr;
+  FT_Face    sFtFace    = nullptr;
+
+  if (FT_Init_FreeType(&sFtLibrary) != 0) { return std::nullopt; }
+  if (FT_New_Face(sFtLibrary, iFontPath.toStdString().c_str(), 0, &sFtFace)) { return std::nullopt; }
+
+  DDyFontInformation result;
+  result.fontName  = sFtFace->family_name;
+  result.fontStyle = sFtFace->style_name;
+  result.fontPath  = iFontPath.toStdString();
+  result.mLineFeedHeight        = sFtFace->height;
+  result.mScaledLineFeedHeight  = sFtFace->size->metrics.height;
+
+  if (FT_Done_Face(sFtFace) != 0)         { return std::nullopt; }
+  if (FT_Done_FreeType(sFtLibrary) != 0)  { return std::nullopt; }
+  return result;
 }
 
 void DyFontAtlasGenerator::UpdateFlags(const bool& iNewValue)
@@ -425,14 +211,20 @@ void DyFontAtlasGenerator::UpdateFlags(const bool& iNewValue)
     { 
       ui.CB_MapAutomatic->setEnabled(true); 
     }
+    // Enable second font file path also.
+    ui.TV_SecondFilePath->setEnabled(true); ui.BT_SecondFindFile->setEnabled(true);
   }
   else
   {
+    // Disable all buttons.
     ui.CB_MapCJKHanbun->setChecked(false);  ui.CB_MapCJKHanbun->setEnabled(false);
     ui.CB_MapEnglish->setChecked(false);    ui.CB_MapEnglish->setEnabled(false);
     ui.CB_MapHangul->setChecked(false);     ui.CB_MapHangul->setEnabled(false);
     ui.CB_MapKana->setChecked(false);       ui.CB_MapKana->setEnabled(false);
     ui.CB_MapAutomatic->setChecked(false);  ui.CB_MapAutomatic->setEnabled(false); 
+    // Clear editor text.
+    ui.TV_SecondFilePath->clear();          ui.TV_SecondFilePath->setEnabled(false);
+    ui.BT_SecondFindFile->setEnabled(false); this->mIsSecondaryFontAvailable = false;
   }
 }
 
@@ -559,31 +351,38 @@ void DyFontAtlasGenerator::CreateBatchFile()
   ui.PG_Loading->setValue(ui.PG_Loading->minimum());
   ui.PG_Loading->show();
 
-  // Start the computation in other thread.
+  // Set final list of glyph
   std::vector<FT_ULong> finalCharCodeList = {};
   finalCharCodeList.insert(finalCharCodeList.end(), targetCharMap.begin(), targetCharMap.end());
-  this->CreateFontBuffer(this->mFontInformation, std::move(finalCharCodeList), this->mOptionFlag);
+
+  // Check secondary font is avilable.
+  std::vector<DDyFontInformation> informations = {this->mFontInformations[0]};
+  if (this->mIsSecondaryFontAvailable == true)
+  {
+    informations.emplace_back(this->mFontInformations[1]);
+  }
+
+  // Start the computation in other thread.
+  const QString windowTitle = this->windowTitle();
+  this->setWindowTitle(DyString("[1/2] Populating {} glyphs...", finalCharCodeList.size()).c_str());
+
+  this->CreateFontBuffer(informations, finalCharCodeList, this->mOptionFlag);
   this->CreationTaskFinished();
+
+  this->setWindowTitle(windowTitle);
 }
 
 /// @brief Create font buffer and export outside by following option.
 void DyFontAtlasGenerator::CreateFontBuffer(
-    const DDyFontInformation information,
-    const std::vector<FT_ULong> targetCharMap,
-    const EDyOptionCollections option)
+    const std::vector<DDyFontInformation>& information,
+    const std::vector<FT_ULong>& targetCharMap,
+    const EDyOptionCollections& option)
 {
-  /// @brief Insert meta information of specified font.
-  static auto InsertMetaInformationToJson = [&](nlohmann::json& json)
-  {
-    DMeta metaInformation;
-    metaInformation.mFontSpecifierName   = information.fontName;
-    metaInformation.mFontStyleSpecifier  = information.fontStyle;
-    metaInformation.mHoriLinefeed        = sFtFaceList[0]->height;
-    json["Meta"] = metaInformation;
-  };
-
   /// @brief Calculate range for searching of each thread.
-  static auto CalculateRangeTo = [](uint64_t charMapSize, uint64_t threadCount, std::vector<TCharMapRangePair>& result)
+  static auto CalculateRangeTo = [](
+      uint64_t charMapSize, 
+      uint64_t threadCount, 
+      std::vector<FTaskThread::TCharMapRangePair>& result)
   {
     result.reserve(threadCount);
     for (uint64_t threadId = 0; threadId < threadCount; ++threadId)
@@ -594,61 +393,67 @@ void DyFontAtlasGenerator::CreateFontBuffer(
     }
   };
 
-  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  //! FunctionBody
-  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
   // Get concurrent thread number.
   const uint32_t concurrentThreadNumber = std::thread::hardware_concurrency();
   const auto     targetCharMapSize      = static_cast<uint64_t>(targetCharMap.size());
 
-  // Freetype initialization with the number of threads to instantiate.
-  DyResizeFreetypeList(concurrentThreadNumber);
-  DyInitializeFreetype();
-  DyLoadFontFreetype  (information.fontPath.c_str());
+  // Make json information instance for font glyphs.
+  nlohmann::json jsonDescriptor;  
+  // Insert meta information of specified font.
+  DMeta metaInformation;
+  metaInformation.mFontSpecifierName   = information.front().fontName;
+  metaInformation.mFontStyleSpecifier  = information.front().fontStyle;
+  metaInformation.mHoriLinefeed        = information.front().mLineFeedHeight;
+  jsonDescriptor["Meta"] = metaInformation;
 
+  // Set thread's result list and font glyph creation tasks of each spawned thread.
+  std::vector<DResult>                        charResultList(targetCharMapSize);
+  std::vector<FTaskThread::TCharMapRangePair> charRangeList = {};
+  CalculateRangeTo(targetCharMapSize, concurrentThreadNumber, charRangeList);
+
+  // Freetype initialization with the number of threads to instantiate.
+  std::vector<FTaskThread> workerThreadInstances;
+  std::vector<std::thread> workerThreads;
+  workerThreadInstances.reserve(concurrentThreadNumber);
+  workerThreads.reserve(concurrentThreadNumber);
+
+  for (uint32_t threadId = 0; threadId < concurrentThreadNumber; ++threadId)
+  {
+    workerThreadInstances.emplace_back(information);
+
+  }
+  for (uint32_t threadId = 0; threadId < concurrentThreadNumber; ++threadId)
+  {
+    workerThreads.emplace_back(
+        std::ref(workerThreadInstances[threadId]), 
+        std::ref(charResultList), 
+        std::cref(targetCharMap),
+        charRangeList[threadId]
+    );
+  }
+  for (uint32_t threadId = 0; threadId < concurrentThreadNumber; ++threadId)
+  {
+    workerThreads[threadId].join();
+  }
+
+  workerThreads.clear();
+  workerThreadInstances.clear();
+  
   // Make paint surface of off-screen rendering.
   CPaintSurface paintSurface;
   paintSurface.resize(TEXTURE_CANVAS_S, TEXTURE_CANVAS_T);
   paintSurface.InitializeContext();
   paintSurface.ClearSurface();
-  // Make json information instance for font glyphs.
-  nlohmann::json jsonDescriptor;  InsertMetaInformationToJson(jsonDescriptor);
-
-  std::vector<DResult>            charResultList(targetCharMapSize);
-  std::vector<TCharMapRangePair>  charRangeList = {};
-  std::vector<std::future<void>>  threadResultList = {}; threadResultList.reserve(concurrentThreadNumber);
-  CalculateRangeTo(targetCharMapSize, concurrentThreadNumber, charRangeList);
-
-  // Create information.
-  for (auto thread = 0u; thread < concurrentThreadNumber; ++thread)
-  { // Mutli-thread processing.
-    threadResultList.emplace_back(
-        std::async(std::launch::async, Process,
-            std::ref(charResultList), std::cref(targetCharMap), charRangeList[thread], sFtFaceList[thread],
-            std::ref(*this)
-        )
-    );
-  }
-  for (auto thread = 0u; thread < concurrentThreadNumber; ++thread) 
-  { 
-    using namespace std::chrono_literals;
-    std::future_status status;
-    do
-    {
-      status = threadResultList[thread].wait_for(500ms);
-    } while (status != std::future_status::ready);
-    // Get
-    threadResultList[thread].get(); 
-  }
 
   // Create texture atlas.
   std::vector<QImage> drawnImageList {};
+  this->setWindowTitle(DyString("[2/2] Rendering {} glyph of {}...", 0, targetCharMapSize).c_str());
+
   for (uint64_t id = 0u; id < targetCharMapSize; ++id)
   {
     // Get result from charRangeList.
     const auto& result = charResultList[id];
-    jsonDescriptor["Characters"][fmt::format("{0}", result.mCharCode)] = result.mItemJsonAtlas;
+    jsonDescriptor["Characters"][DyString("{0}", result.mCharCode)] = result.mItemJsonAtlas;
 
     // Make QImage from Bitmap<float> and texture from QImage. (RVO guaranted)
     paintSurface.UpdateBufferInformation(result.mCoordinateBound);
@@ -656,7 +461,11 @@ void DyFontAtlasGenerator::CreateFontBuffer(
     paintSurface.BindTexturePointer(result.mImageBuffer);
     paintSurface.render();
 
+    // Update GUI
     this->IncrementProgress();
+    this->setWindowTitle(DyString("[2/2] Rendering {} glyph of {}...", id, targetCharMapSize).c_str());
+
+    // If we hit limit per one texture, initialize new texture to render more glyphs.
     if ((id + 1) % TEXTURE_MAPLIMIT == 0)
     { // Export off-screen texture buffer to png or file information (binary).
       drawnImageList.emplace_back(paintSurface.GetImageFromGLFBO());
@@ -664,23 +473,19 @@ void DyFontAtlasGenerator::CreateFontBuffer(
     }
   }
 
-  threadResultList.clear();
   drawnImageList.emplace_back(paintSurface.GetImageFromGLFBO());
   paintSurface.ClearSurface();
 
   if (IsHavingFlags(option, EDyOptionCollections::SeparateJsonAndPng) == true)
   {
-    const auto isSuccessful = ExportAsSeparateJsonAndPng(information, jsonDescriptor, drawnImageList);
+    const auto isSuccessful = ExportAsSeparateJsonAndPng(information.front(), jsonDescriptor, drawnImageList);
     Q_ASSERT(isSuccessful == true);
   }
   else
   {
-    const auto isSuccessful = ExportAsIntegratedFile(information, jsonDescriptor, drawnImageList);
+    const auto isSuccessful = ExportAsIntegratedFile(information.front(), jsonDescriptor, drawnImageList);
     Q_ASSERT(isSuccessful == true);
   }
-
-  // We must release freetype fonts.
-  DyReleaseFreetype();
 }
 
 bool ExportAsSeparateJsonAndPng(
@@ -744,16 +549,16 @@ bool ExportAsSeparateJsonAndPng(
 
   static auto CompressImageBufferList = [](const std::vector<QByteArray>& imageBufferList)
   {
-    std::vector<dy::zlib::DZlibResult> resultList(imageBufferList.size());
+    std::vector<zlib::DZlibResult> resultList(imageBufferList.size());
     for (auto imageId = 0u; imageId < imageBufferList.size(); ++imageId)
     {
-      resultList[imageId] = dy::zlib::CompressBuffer(imageBufferList[imageId]);
+      resultList[imageId] = zlib::CompressBuffer(imageBufferList[imageId]);
     }
     return resultList;
   };
 
-  const auto compressedJsonResult       = dy::zlib::CompressBuffer(fontJsonInfo);
-  const auto compressedImageBufferList  = CompressImageBufferList(ConvertToQByteArrayBuffers(fontImage));
+  const auto compressedJsonResult      = zlib::CompressBuffer(fontJsonInfo);
+  const auto compressedImageBufferList = CompressImageBufferList(ConvertToQByteArrayBuffers(fontImage));
 
   DHeaderStructure header{};
   header.mPtrPreviousFontAddress  = 0;
@@ -767,7 +572,20 @@ bool ExportAsSeparateJsonAndPng(
     length.mCompressedBufferLength  = imageResult.mCompressedLength;
     header.mImageBufferLength.emplace_back(length);
   }
-
+    
+  /*  TEMPLATE
+   *  00......`.......08......`.......
+      [PrevFontPtr   ][NextFontPtr   ]
+      16......`.......24......`.......
+      [PlainInfoLen  ][CompInfoLength]
+      32......`.......48......`.......
+      [PlainImgLength][CompImgLength ]
+      64..............................
+      [Compressed Information Buffer ]
+      64+CompInfoLen..................
+      [Compressed Image Buffer       ]
+      .............................EOF
+   */
   DBufferSerializer serializer{};
   serializer << header.mPtrPreviousFontAddress << header.mPtrNextFontAddress;
   serializer << header.mInformationBufferLength;
@@ -775,7 +593,7 @@ bool ExportAsSeparateJsonAndPng(
   serializer << compressedJsonResult.mCompressedBuffer;
   for (const auto& imageBufferResult : compressedImageBufferList) { serializer << imageBufferResult.mCompressedBuffer; }
 
-  QFile file(fmt::format("./{}_{}.dyFont", fontMetaInfo.fontName, fontMetaInfo.fontStyle).c_str());
+  QFile file(DyString("./{}_{}.dyFont", fontMetaInfo.fontName, fontMetaInfo.fontStyle).c_str());
   if (file.open(QIODevice::WriteOnly))
   {
     QDataStream out(&file);
@@ -784,7 +602,6 @@ bool ExportAsSeparateJsonAndPng(
   file.close();
   return true;
 }
-
 
 void DyFontAtlasGenerator::CreationTaskFinished()
 {

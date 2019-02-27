@@ -27,6 +27,10 @@ struct DDyFontInformation final
   std::string fontName  = "";
   /// Font style on focus.
   std::string fontStyle = "";
+  /// Font line feed height (64ths of pixel)
+  int32_t     mLineFeedHeight = 0;
+  /// Font line scaled height (also measured 64th of pixel)
+  int32_t     mScaledLineFeedHeight = 0;
 };
 
 struct DDyTextFileInformation final

@@ -93,6 +93,9 @@
     <ClCompile Include="Source\Type\CoordinateBounds.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\FTaskThread.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Include\QtHelper\GLOffscreenSurface.h">
@@ -198,6 +201,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\Type\TCallVar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\FTaskThread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Type\DResult.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
