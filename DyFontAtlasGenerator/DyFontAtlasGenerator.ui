@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>500</width>
-    <height>350</height>
+    <width>540</width>
+    <height>380</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -29,7 +29,7 @@
    <enum>Qt::NoContextMenu</enum>
   </property>
   <property name="windowTitle">
-   <string notr="true">DianYing Font Atlas generator (v2)</string>
+   <string notr="true">DianYing SDF FontAtlas generator (v190227)</string>
   </property>
   <property name="toolTip">
    <string notr="true"/>
@@ -58,23 +58,23 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>61</width>
+      <width>91</width>
       <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string>Font       :</string>
+     <string>Primary Font</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignCenter</set>
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
     </property>
    </widget>
-   <widget class="QPlainTextEdit" name="TV_FilePath">
+   <widget class="QPlainTextEdit" name="TV_FirstFilePath">
     <property name="geometry">
      <rect>
-      <x>80</x>
+      <x>110</x>
       <y>10</y>
-      <width>311</width>
+      <width>331</width>
       <height>21</height>
      </rect>
     </property>
@@ -127,10 +127,10 @@
      <string notr="true"/>
     </property>
    </widget>
-   <widget class="QPushButton" name="BT_FindFile">
+   <widget class="QPushButton" name="BT_FirstFindFile">
     <property name="geometry">
      <rect>
-      <x>410</x>
+      <x>450</x>
       <y>10</y>
       <width>75</width>
       <height>23</height>
@@ -144,8 +144,8 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>70</y>
-      <width>501</width>
+      <y>105</y>
+      <width>541</width>
       <height>21</height>
      </rect>
     </property>
@@ -157,7 +157,7 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>80</y>
+      <y>115</y>
       <width>501</width>
       <height>21</height>
      </rect>
@@ -188,8 +188,8 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>290</y>
-      <width>500</width>
+      <y>325</y>
+      <width>541</width>
       <height>20</height>
      </rect>
     </property>
@@ -201,10 +201,13 @@
     </property>
    </widget>
    <widget class="QCheckBox" name="CB_MapEnglish">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>110</y>
+      <y>145</y>
       <width>111</width>
       <height>21</height>
      </rect>
@@ -217,8 +220,8 @@
     <property name="geometry">
      <rect>
       <x>-1</x>
-      <y>169</y>
-      <width>501</width>
+      <y>204</y>
+      <width>541</width>
       <height>21</height>
      </rect>
     </property>
@@ -230,8 +233,8 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>180</y>
-      <width>499</width>
+      <y>215</y>
+      <width>541</width>
       <height>19</height>
      </rect>
     </property>
@@ -249,7 +252,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>210</y>
+      <y>245</y>
       <width>271</width>
       <height>21</height>
      </rect>
@@ -261,8 +264,8 @@
    <widget class="QPushButton" name="BT_Create">
     <property name="geometry">
      <rect>
-      <x>410</x>
-      <y>250</y>
+      <x>450</x>
+      <y>285</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -272,10 +275,13 @@
     </property>
    </widget>
    <widget class="QCheckBox" name="CB_MapHangul">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>160</x>
-      <y>110</y>
+      <y>145</y>
       <width>71</width>
       <height>21</height>
      </rect>
@@ -291,7 +297,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>240</y>
+      <y>275</y>
       <width>271</width>
       <height>21</height>
      </rect>
@@ -301,10 +307,13 @@
     </property>
    </widget>
    <widget class="QCheckBox" name="CB_MapKana">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>250</x>
-      <y>110</y>
+      <y>145</y>
       <width>141</width>
       <height>21</height>
      </rect>
@@ -315,12 +324,12 @@
    </widget>
    <widget class="QCheckBox" name="CB_MapCJKHanbun">
     <property name="enabled">
-     <bool>true</bool>
+     <bool>false</bool>
     </property>
     <property name="geometry">
      <rect>
       <x>390</x>
-      <y>110</y>
+      <y>145</y>
       <width>101</width>
       <height>21</height>
      </rect>
@@ -331,12 +340,12 @@
    </widget>
    <widget class="QLabel" name="label_4">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>45</y>
+      <y>80</y>
       <width>61</width>
       <height>21</height>
      </rect>
@@ -345,18 +354,18 @@
      <string>Text File :</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignCenter</set>
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
     </property>
    </widget>
    <widget class="QPlainTextEdit" name="TV_TextFilePath">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>45</y>
-      <width>311</width>
+      <x>110</x>
+      <y>80</y>
+      <width>331</width>
       <height>21</height>
      </rect>
     </property>
@@ -403,7 +412,7 @@
      <bool>true</bool>
     </property>
     <property name="plainText">
-     <string notr="true">NOT AVAILABLE NOW...</string>
+     <string notr="true"/>
     </property>
     <property name="placeholderText">
      <string notr="true"/>
@@ -411,12 +420,12 @@
    </widget>
    <widget class="QPushButton" name="BT_FindTextFile">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
-      <x>410</x>
-      <y>45</y>
+      <x>450</x>
+      <y>80</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -432,7 +441,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>140</y>
+      <y>175</y>
       <width>461</width>
       <height>21</height>
      </rect>
@@ -441,13 +450,106 @@
      <string>Automatically create textures of all font characters at text file.</string>
     </property>
    </widget>
+   <widget class="QPlainTextEdit" name="TV_SecondFilePath">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>40</y>
+      <width>331</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="contextMenuPolicy">
+     <enum>Qt::NoContextMenu</enum>
+    </property>
+    <property name="acceptDrops">
+     <bool>true</bool>
+    </property>
+    <property name="toolTip">
+     <string notr="true"/>
+    </property>
+    <property name="statusTip">
+     <string notr="true"/>
+    </property>
+    <property name="whatsThis">
+     <string notr="true"/>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Plain</enum>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="documentTitle">
+     <string notr="true"/>
+    </property>
+    <property name="undoRedoEnabled">
+     <bool>false</bool>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+    <property name="plainText">
+     <string notr="true"/>
+    </property>
+    <property name="placeholderText">
+     <string notr="true"/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="BT_SecondFindFile">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>450</x>
+      <y>40</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Find</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>40</y>
+      <width>111</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Secondary Font</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="MNB_Menu">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>500</width>
+     <width>540</width>
      <height>21</height>
     </rect>
    </property>

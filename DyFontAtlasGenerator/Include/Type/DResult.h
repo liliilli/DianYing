@@ -1,4 +1,4 @@
-#include "precompiled.h"
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -12,14 +12,22 @@
 /// SOFTWARE.
 ///
 
-#include <QtWidgets/QApplication>
-#include <DyFontAtlasGenerator.h>
+#include "CoordinateBounds.h"
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
-int main(int argc, char *argv[])
+namespace dy
 {
-  QApplication a(argc, argv);
-  dy::DyFontAtlasGenerator w;
-  w.show();
 
-  return a.exec();
-}
+/// @struct DResult
+/// @brief Result instance type of each font character glyph.
+struct DResult final
+{
+  DDyCoordinateBounds mCoordinateBound;
+  QImage              mImageBuffer;
+  nlohmann::json      mItemJsonAtlas;
+  FT_ULong            mCharCode{};
+};
+
+} /// ::dy namespace
+

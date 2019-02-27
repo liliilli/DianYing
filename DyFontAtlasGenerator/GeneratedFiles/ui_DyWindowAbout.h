@@ -13,7 +13,7 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QGraphicsView>
 #include <QtWidgets/QLabel>
-#include <QtWidgets/QListView>
+#include <QtWidgets/QListWidget>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QWidget>
 
@@ -26,10 +26,9 @@ public:
     QLabel *label_2;
     QLabel *label_3;
     QLabel *label_4;
-    QListView *LV_Library;
     QPushButton *PB_OK;
     QGraphicsView *GV_Logo;
-    QPushButton *PB_Log;
+    QListWidget *LW_Library;
 
     void setupUi(QWidget *DyWindowAbout)
     {
@@ -56,9 +55,6 @@ public:
         label_4 = new QLabel(DyWindowAbout);
         label_4->setObjectName(QStringLiteral("label_4"));
         label_4->setGeometry(QRect(20, 190, 191, 16));
-        LV_Library = new QListView(DyWindowAbout);
-        LV_Library->setObjectName(QStringLiteral("LV_Library"));
-        LV_Library->setGeometry(QRect(10, 210, 360, 101));
         PB_OK = new QPushButton(DyWindowAbout);
         PB_OK->setObjectName(QStringLiteral("PB_OK"));
         PB_OK->setGeometry(QRect(390, 290, 75, 23));
@@ -69,9 +65,9 @@ public:
         GV_Logo->setSizePolicy(sizePolicy);
         GV_Logo->setFrameShape(QFrame::NoFrame);
         GV_Logo->setFrameShadow(QFrame::Plain);
-        PB_Log = new QPushButton(DyWindowAbout);
-        PB_Log->setObjectName(QStringLiteral("PB_Log"));
-        PB_Log->setGeometry(QRect(390, 110, 75, 23));
+        LW_Library = new QListWidget(DyWindowAbout);
+        LW_Library->setObjectName(QStringLiteral("LW_Library"));
+        LW_Library->setGeometry(QRect(10, 211, 361, 101));
 
         retranslateUi(DyWindowAbout);
 
@@ -82,11 +78,10 @@ public:
     {
         DyWindowAbout->setWindowTitle(QApplication::translate("DyWindowAbout", "About", nullptr));
         label->setText(QApplication::translate("DyWindowAbout", "DianYing Font Atlas Generator", nullptr));
-        label_2->setText(QApplication::translate("DyWindowAbout", "Version 2", nullptr));
+        label_2->setText(QApplication::translate("DyWindowAbout", "Version v190227", nullptr));
         label_3->setText(QApplication::translate("DyWindowAbout", "This product reserved by GNU LGPL v3 license.", nullptr));
         label_4->setText(QApplication::translate("DyWindowAbout", "Used third-party libraries", nullptr));
         PB_OK->setText(QApplication::translate("DyWindowAbout", "OK", nullptr));
-        PB_Log->setText(QApplication::translate("DyWindowAbout", "Update Log", nullptr));
     } // retranslateUi
 
 };

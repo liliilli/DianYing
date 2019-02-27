@@ -14,11 +14,12 @@ namespace dy
 ///
 enum class EDyCharmapCollections : uint32_t
 {
-  None    = 0b0000,
-  English = 0b0001,
-  Hangul  = 0b0010,
-  Kana    = 0b0100,
-  CJK     = 0b1000,
+  None      = 0b00000000,
+  English   = 0b00000001,
+  Hangul    = 0b00000010,
+  Kana      = 0b00000100,
+  CJK       = 0b00001000,
+  Automatic = 0b00010000 
 };
 
 ///
