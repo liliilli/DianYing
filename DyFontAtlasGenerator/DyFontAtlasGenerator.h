@@ -15,6 +15,7 @@
 #include <array>
 #include <optional>
 #include <QtWidgets/QMainWindow>
+#include <mutex>
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
@@ -60,9 +61,10 @@ public slots:
   void FindTextFile();
 
   /// @brief
+  void CbStateChangedOptionSeperate(int value);
   void UpdateCharmapFlag(int value);
   /// @brief
-  void UpdateOptionFlag(int value);
+  void UpdateOptionFlag(int value = 0);
 
   /// @brief Make batch file. from BT_
   void CreateBatchFile();
@@ -86,10 +88,8 @@ private:
                         const std::vector<FT_ULong>& targetCharMap,
                         const EDyOptionCollections& option);
 
-  ///
+  /// @brief
   Ui::DyFontAtlasGeneratorClass ui;
-  ///
-  QFutureWatcher<void> mFutureWatcher;
 
   /// @brief Charmap flag.
   EDyCharmapCollections   mCharmapFlag = EDyCharmapCollections::None;
@@ -109,6 +109,10 @@ private:
   void UpdateTextFlag(const bool& iNewValue);
   /// @brief If true, charmap will be created with text file information.
   FDyCallVar<bool>        mIsCanSelectWithTextGlyph;
+  /// @brief Callback for `mIsOptionalSeparate` variable.
+  void UpdateOptionSeparateFlag(const bool& iNewValue);
+  /// @brief If true, json compresion & decompression export option will be enabled.
+  FDyCallVar<bool>        mIsOptionalSeparate;
   /// @brief 
   DyWindowAbout*          mChildAbout = nullptr;
 

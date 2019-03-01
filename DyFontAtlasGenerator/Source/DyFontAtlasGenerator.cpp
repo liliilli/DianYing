@@ -24,6 +24,7 @@
 #include <freetype/freetype.h>
 #include <spdlog/fmt/fmt.h>
 #include <nlohmann/json.hpp>
+#include <boost/uuid/uuid_generators.hpp>
 
 #include <Include/AConstantLangRange.h>
 #include <Include/FTaskThread.h>
@@ -40,14 +41,8 @@
 namespace dy
 {
 
-[[nodiscard]] bool ExportAsSeparateJsonAndPng (const DDyFontInformation& fontMetaInfo, const nlohmann::json& fontJsonInfo, const std::vector<QImage>& fontImage);
+[[nodiscard]] bool ExportAsSeparateJsonAndPng (const DDyFontInformation& fontMetaInfo, const std::vector<QImage>& fontImage);
 [[nodiscard]] bool ExportAsIntegratedFile     (const DDyFontInformation& fontMetaInfo, const nlohmann::json& fontJsonInfo, const std::vector<QImage>& fontImage);
-
-/// @brief
-[[nodiscard]] bool ExportAsSeparateJsonAndPng(
-    const DDyFontInformation& fontMetaInfo,   
-    const nlohmann::json& fontJsonInfo, 
-    const std::vector<QImage>& fontImage);
 
 [[nodiscard]] std::optional<DDyTextFileInformation> GetTextGlyphs(const QString& iFontPath)
 {
@@ -97,7 +92,6 @@ DyFontAtlasGenerator::DyFontAtlasGenerator(QWidget *parent) : QMainWindow(parent
   ui.PG_Loading->setVisible(false);
 
   // Connect signal and slot.
-  connect(&this->mFutureWatcher,    SIGNAL(finished()),       this, SLOT(CreationTaskFinished()));
   connect(ui.BT_FirstFindFile,      SIGNAL(clicked()),        this, SLOT(FindFirstFontFile()));
   connect(ui.BT_SecondFindFile,     SIGNAL(clicked()),        this, SLOT(FindSecondFontFile()));
   connect(ui.BT_FindTextFile,       SIGNAL(clicked()),        this, SLOT(FindTextFile()));
@@ -108,7 +102,7 @@ DyFontAtlasGenerator::DyFontAtlasGenerator(QWidget *parent) : QMainWindow(parent
   connect(ui.CB_MapKana,            &QCheckBox::stateChanged, this, &DyFontAtlasGenerator::UpdateCharmapFlag);
   connect(ui.CB_MapAutomatic,       &QCheckBox::stateChanged, this, &DyFontAtlasGenerator::UpdateCharmapFlag);
 
-  connect(ui.CB_OptionSeperate,     &QCheckBox::stateChanged, this, &DyFontAtlasGenerator::UpdateOptionFlag);
+  connect(ui.CB_OptionSeperate,     &QCheckBox::stateChanged, this, &DyFontAtlasGenerator::CbStateChangedOptionSeperate);
   connect(ui.CB_OptionCompressJson, &QCheckBox::stateChanged, this, &DyFontAtlasGenerator::UpdateOptionFlag);
 
   connect(ui.BT_Create,             &QPushButton::clicked,    this, &DyFontAtlasGenerator::CreateBatchFile);
@@ -280,6 +274,27 @@ void DyFontAtlasGenerator::FindTextFile()
   }
 }
 
+void DyFontAtlasGenerator::CbStateChangedOptionSeperate([[maybe_unused]] int value)
+{
+  // Update option seperate flag.
+  this->UpdateOptionSeparateFlag(ui.CB_OptionSeperate->isChecked());
+  // Update option flag.
+  this->UpdateOptionFlag();
+}
+
+void DyFontAtlasGenerator::UpdateOptionSeparateFlag(const bool& iNewValue)
+{
+  if (iNewValue == true)
+  {
+    ui.CB_OptionCompressJson->setEnabled(true);
+  }
+  else
+  {
+    ui.CB_OptionCompressJson->setChecked(false);
+    ui.CB_OptionCompressJson->setEnabled(false);
+  }
+}
+
 void DyFontAtlasGenerator::UpdateCharmapFlag([[maybe_unused]] int value)
 {
   auto resultFlag {EDyCharmapCollections::None};
@@ -294,11 +309,11 @@ void DyFontAtlasGenerator::UpdateCharmapFlag([[maybe_unused]] int value)
   else                                                    { ui.BT_Create->setEnabled(false); }
  }
 
-void DyFontAtlasGenerator::UpdateOptionFlag(int value)
+void DyFontAtlasGenerator::UpdateOptionFlag([[maybe_unused]] int value)
 {
   auto resultFlag {EDyOptionCollections::None};
   if (ui.CB_OptionSeperate->isChecked() == true)     { resultFlag |= EDyOptionCollections::SeparateJsonAndPng; }
-  if (ui.CB_OptionCompressJson->isChecked() == true) { resultFlag |= EDyOptionCollections::CompressJsonString_Deprecated; }
+  if (ui.CB_OptionCompressJson->isChecked() == true) { resultFlag |= EDyOptionCollections::ExportPlainJson; }
 
   this->mOptionFlag = resultFlag;
 }
@@ -380,7 +395,7 @@ void DyFontAtlasGenerator::CreateFontBuffer(
     const std::vector<FT_ULong>& targetCharMap,
     const EDyOptionCollections& option)
 {
-  /// @brief Calculate range for searching of each thread.
+  // Calculate range for searching of each thread.
   static auto CalculateRangeTo = [](
       uint64_t charMapSize, 
       uint64_t threadCount, 
@@ -403,9 +418,10 @@ void DyFontAtlasGenerator::CreateFontBuffer(
   nlohmann::json jsonDescriptor;  
   // Insert meta information of specified font.
   DMeta metaInformation;
-  metaInformation.mFontSpecifierName   = information.front().fontName;
-  metaInformation.mFontStyleSpecifier  = information.front().fontStyle;
-  metaInformation.mHoriLinefeed        = information.front().mLineFeedHeight;
+  metaInformation.mFontSpecifierName  = information.front().fontName;
+  metaInformation.mFontStyleSpecifier = information.front().fontStyle;
+  metaInformation.mHoriLinefeed       = information.front().mLineFeedHeight;
+  metaInformation.mUuid               = boost::uuids::random_generator()();
   jsonDescriptor["Meta"] = metaInformation;
 
   // Set thread's result list and font glyph creation tasks of each spawned thread.
@@ -419,11 +435,12 @@ void DyFontAtlasGenerator::CreateFontBuffer(
   workerThreadInstances.reserve(concurrentThreadNumber);
   workerThreads.reserve(concurrentThreadNumber);
 
+  // Populate worker threads.
   for (uint32_t threadId = 0; threadId < concurrentThreadNumber; ++threadId)
-  {
-    workerThreadInstances.emplace_back(information);
-
+  { 
+    workerThreadInstances.emplace_back(information); 
   }
+
   for (uint32_t threadId = 0; threadId < concurrentThreadNumber; ++threadId)
   {
     workerThreads.emplace_back(
@@ -433,11 +450,8 @@ void DyFontAtlasGenerator::CreateFontBuffer(
         charRangeList[threadId]
     );
   }
-  for (uint32_t threadId = 0; threadId < concurrentThreadNumber; ++threadId)
-  {
-    workerThreads[threadId].join();
-  }
 
+  for (uint32_t threadId = 0; threadId < concurrentThreadNumber; ++threadId) { workerThreads[threadId].join(); }
   workerThreads.clear();
   workerThreadInstances.clear();
   
@@ -447,7 +461,7 @@ void DyFontAtlasGenerator::CreateFontBuffer(
   paintSurface.InitializeContext();
   paintSurface.ClearSurface();
 
-  // Create texture atlas.
+  // Create texture atlases.
   std::vector<QImage> drawnImageList {};
   this->setWindowTitle(DyString("[2/2] Rendering {} glyph of {}...", 0, targetCharMapSize).c_str());
 
@@ -480,7 +494,32 @@ void DyFontAtlasGenerator::CreateFontBuffer(
 
   if (IsHavingFlags(option, EDyOptionCollections::SeparateJsonAndPng) == true)
   {
-    const auto isSuccessful = ExportAsSeparateJsonAndPng(information.front(), jsonDescriptor, drawnImageList);
+    // Write information file (seperated).
+    const auto& fontInformation = information.front();
+    if (IsHavingFlags(option, EDyOptionCollections::ExportPlainJson) == true)
+    {
+      // Open file descriptor.
+      const auto filename = DyString("./{}_{}.json", fontInformation.fontName, fontInformation.fontStyle);
+      FILE* fd = std::fopen(filename.c_str(), "w");
+      // Write json information.
+      const auto buffer = jsonDescriptor.dump(0);
+      std::fwrite(buffer.c_str(), sizeof(char), buffer.size(), fd);
+      std::fclose(fd);
+    }
+    else
+    {
+      // Open file descriptor.
+      const auto filename = DyString("./{}_{}.dyFntRes", fontInformation.fontName, fontInformation.fontStyle);
+      FILE* fd = std::fopen(filename.c_str(), "wb");
+      // Write compressed json information.
+      const auto compressedJsonResult = zlib::CompressBuffer(jsonDescriptor);
+      std::fwrite(compressedJsonResult.mCompressedBuffer.data(), 
+          sizeof(char), 
+          compressedJsonResult.mCompressedLength, fd);
+      std::fclose(fd);
+    }
+
+    const auto isSuccessful = ExportAsSeparateJsonAndPng(fontInformation, drawnImageList);
     Q_ASSERT(isSuccessful == true);
   }
   else
@@ -492,20 +531,9 @@ void DyFontAtlasGenerator::CreateFontBuffer(
 
 bool ExportAsSeparateJsonAndPng(
     const DDyFontInformation& fontMetaInfo,   
-    const nlohmann::json& fontJsonInfo, 
     const std::vector<QImage>& fontImage)
 {
-  const QString filename = DyString("./{}_{}.dyFntRes", fontMetaInfo.fontName, fontMetaInfo.fontStyle).c_str();
-  if (QFile file(filename); file.open(QIODevice::WriteOnly))
-  {
-    const auto compressedJsonResult = zlib::CompressBuffer(fontJsonInfo);
-    QDataStream stream(&file);
-    stream.writeBytes(compressedJsonResult.mCompressedBuffer.data(), compressedJsonResult.mCompressedLength);
-    file.close();
-  }
-
-  const auto imageListCount = fontImage.size();
-  for (auto imageId = 0u; imageId < imageListCount; ++imageId)
+  for (size_t imageId = 0, imageListCount = fontImage.size(); imageId < imageListCount; ++imageId)
   {
     const auto isSuccessful = fontImage[imageId].save(
         DyString("./{}_{}_{}.png", fontMetaInfo.fontName, fontMetaInfo.fontStyle, imageId).c_str(), "PNG"

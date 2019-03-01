@@ -52,7 +52,7 @@ enum class EDyOptionCollections : uint32_t
   None                = 0b0000,
   SeparateJsonAndPng  = 0b0001,
   /// @deprecated This is deprecated because of compression is default and must be.
-  CompressJsonString_Deprecated  = 0b0010,
+  ExportPlainJson  = 0b0010,
 };
 
 ///
