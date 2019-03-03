@@ -828,4 +828,12 @@ void MDyRendering::PopInternalGlobalStatus()
   if (extracted.mViewportSettingList.has_value() == true)  { this->mInternal_ViewportStack.Pop(); }
 }
 
+void MDyRendering::SwapBuffers()
+{
+  auto& managerWindow = MDyWindow::GetInstance();
+  
+  if (managerWindow.IsWindowShouldClose() == true) { return; }
+  glfwSwapBuffers(managerWindow.GetGLMainWindow());
+  glfwPollEvents();
+}
 } /// ::dy namespace

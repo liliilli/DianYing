@@ -109,6 +109,9 @@ public:
   /// @brief Pop GL global status.
   void PopInternalGlobalStatus();
 
+  /// @brief Swap buffer.
+  void SwapBuffers();
+
 private:
   /// @brief Enqueue static draw call to mesh with material.
   void EnqueueDrawMesh(

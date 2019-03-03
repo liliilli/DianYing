@@ -866,5 +866,6 @@
     <None Include="Include\Dy\Management\Inline\MLogHelper.inl" />
     <None Include="Include\Dy\Management\Inline\MScriptImpl.inl" />
     <None Include="Include\Dy\Management\Inline\MSoundImpl.inl" />
+    <None Include="Include\Dy\Management\Inline\MLogImpl.inl" />
   </ItemGroup>
 </Project>

@@ -403,7 +403,7 @@ void DyEngine::MDY_PRIVATE(Render)(_MIN_ EDyGlobalGameStatus iEngineStatus)
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 
-  this->GetWindowManager().TempSwapBuffers();
+  MDyRendering::GetInstance().SwapBuffers();
 }
 
 void DyEngine::MDY_PRIVATE(PostRender)(_MIN_ EDyGlobalGameStatus iEngineStatus, _MIN_ TF32 dt)
