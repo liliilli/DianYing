@@ -14,9 +14,11 @@
 
 /// Header file
 #include <Dy/Management/Type/Sound/FDyInstantSound2D.h>
-#include <Dy/Management/SoundManager.h>
+
 #include <Dy/Core/Resource/Information/FDySoundInformation.h>
-#include "Dy/Management/Internal/Sound/CallbackChannel.h"
+#include <Dy/Management/SoundManager.h>
+#include <Dy/Management/Internal/Sound/CallbackChannel.h>
+#include <Dy/Management/Type/Sound/FDySoundChannel.h>
 
 namespace dy
 {

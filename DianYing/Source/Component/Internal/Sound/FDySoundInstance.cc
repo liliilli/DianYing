@@ -14,10 +14,12 @@
 
 /// Header file
 #include <Dy/Component/Internal/Sound/FDySoundInstance.h>
+
 #include <Dy/Meta/Information/PrefabMetaInformation.h>
-#include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/SoundManager.h>
+#include <Dy/Management/IO/MetaInfoManager.h>
+#include <Dy/Management/Type/Sound/FDySoundChannel.h>
 #include <Dy/Core/Resource/Information/FDySoundInformation.h>
 #include <Dy/Management/Internal/Sound/CallbackChannel.h>
 #include "Dy/Element/Actor.h"

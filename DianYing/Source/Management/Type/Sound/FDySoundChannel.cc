@@ -14,6 +14,7 @@
 
 /// Header file
 #include <Dy/Management/Type/Sound/FDySoundChannel.h>
+#include <Dy/Management/Type/Sound/FDySoundGroup.h>
 #include <Dy/Management/SoundManager.h>
 
 namespace dy

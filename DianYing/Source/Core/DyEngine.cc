@@ -327,7 +327,7 @@ void DyEngine::MDY_PRIVATE(Update)(_MIN_ EDyGlobalGameStatus iEngineStatus, _MIN
       MDyWorld::GetInstance().UpdateObjects(dt);
 
       auto& soundManager = MDySound::GetInstance();
-      if (soundManager.mIsSoundSystemAvailable == true) { soundManager.Update(dt); }
+      if (soundManager.IsSoundSystemAvailable() == true) { soundManager.Update(dt); }
     }
     else
     {
