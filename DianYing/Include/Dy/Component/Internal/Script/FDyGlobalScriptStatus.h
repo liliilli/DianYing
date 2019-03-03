@@ -13,7 +13,6 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Component/Internal/ScriptState.h>
 #include <Dy/Meta/Information/ScriptMetaInformation.h>
 #include <Dy/Component/Internal/Global/CDyGlobalScriptBase.h>
 

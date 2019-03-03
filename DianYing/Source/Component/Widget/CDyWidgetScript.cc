@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Component/UI/CDyWidgetScript.h>
 #include <Dy/Component/Internal/Widget/CDyWidgetScriptCpp.h>
+#include <Dy/Component/Internal/Script/FDyWidgetScriptStatus.h>
 #include <Dy/Management/ScriptManager.h>
 #include <Dy/Management/InputManager.h>
 

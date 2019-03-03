@@ -14,12 +14,7 @@
 ///
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
-
-#define SOL_CHECK_ARGUMENT 1
-#include <sol2/sol.hpp>
-#include <Dy/Component/Internal/Actor/FDyActorScriptStatus.h>
-#include <Dy/Component/Internal/Script/FDyWidgetScriptStatus.h>
-#include "Dy/Component/Internal/Script/FDyGlobalScriptStatus.h"
+#include <Dy/Component/Internal/ScriptState.h>
 
 //!
 //! Forward declaration
@@ -28,8 +23,16 @@
 namespace dy
 {
 enum class EDyScriptType;
+class FDyActor;
 class FDyUiWidget;
-} /// ::dy namespace
+class FDyActorScriptState;
+class FDyWidgetScriptState;
+} /// ::dy namespace.
+
+namespace sol
+{
+class state;
+} /// ::sol namespace.
 
 //!
 //! Implementation
@@ -38,15 +41,14 @@ class FDyUiWidget;
 namespace dy
 {
 
-///
 /// @class MDyScript
-/// @brief
-///
+/// @brief Manages script (resource loading, animation, actor script, ui script, etc).
 class MDyScript final : public IDySingleton<MDyScript>
 {
+public:
   MDY_SINGLETON_DERIVED(MDyScript);
   MDY_SINGLETON_PROPERTIES(MDyScript);
-public:
+
   /// @brief Get reference of lua instance.
   /// @return lua instance l-value reference.
   MDY_NODISCARD sol::state& GetLuaInstance() noexcept;
@@ -57,7 +59,7 @@ public:
   /// @param iRefWidget
   /// @param iIsAwakened
   MDY_NODISCARD FDyWidgetScriptState* 
-  CreateWidgetScript(_MIN_ const std::string& iScriptSpecifier, _MIN_ FDyUiWidget& iRefWidget, _MIN_ bool iIsAwakened);
+  CreateWidgetScript(const std::string& iScriptSpecifier, FDyUiWidget& iRefWidget, bool iIsAwakened);
   /// @brief Try remove widget script from dy system.
   /// But, removed widget script does not actually removed instantly, \n
   /// moved gc list and removed actually on next frame prior to update.
@@ -71,7 +73,7 @@ public:
   /// @param iRefActor
   /// @param iIsAwakened
   MDY_NODISCARD FDyActorScriptState* 
-  CreateActorScript(_MIN_ const std::string& iScriptSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ bool iIsAwakened);
+  CreateActorScript(const std::string& iScriptSpecifier, FDyActor& iRefActor, bool iIsAwakened);
   /// @brief Try remove actor script from dy system.
   /// But, removed actor script does not actually removed instantly, \n
   /// moved gc list and removed actually on next frame prior to update.
@@ -83,7 +85,7 @@ public:
   void UpdateWidgetScript(_MIN_ TF32 dt);
   /// @brief Update widget script if only script present type is type.
   void UpdateWidgetScript(_MIN_ TF32 dt, _MIN_ EDyScriptState type);
-  /// @brief 
+  /// @brief Check widget script that must be gced is exist on list.
   MDY_NODISCARD bool IsGcedWidgetScriptExist() const noexcept;
   /// @brief Call `destroy` GCed widget script 
   void CallDestroyFuncWidgetScriptGCList();
@@ -115,24 +117,7 @@ public:
   void CallonEndGlobalScriptList();
 
 private:
-  sol::state mLua;
-
-  using TDyGlobalScriptList = std::unordered_map<std::string, std::unique_ptr<FDyGlobalScriptState>>;
-  TDyGlobalScriptList mGlobalScriptContainer;
-
-  using TDyWidgetScriptList = std::vector<std::unique_ptr<FDyWidgetScriptState>>;
-  TDyWidgetScriptList mInsertWidgetScriptList = {};
-  TDyWidgetScriptList mWidgetScriptList       = {};
-  TDyWidgetScriptList mGCedWidgetScriptList   = {};
-
-  /// Activated CDyScript component list.
-  /// this list must not be invalidated when iterating list, but except for unenrolling.
-  using TDyActorScriptList = std::vector<std::unique_ptr<FDyActorScriptState>>;
-  TDyActorScriptList  mInsertActorScriptList  = {};
-  TDyActorScriptList  mActorScriptList        = {};
-  TDyActorScriptList  mGCedActorScriptList    = {};
-
-
+  class Impl; Impl* mPimpl = nullptr;
 };
 
 } /// ::dy namespace
