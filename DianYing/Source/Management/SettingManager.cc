@@ -145,7 +145,7 @@ void MDySetting::SetFeatureLogging(_MIN_ bool isEnabled) noexcept
 {
   if (this->mIsEnabledLogging != isEnabled)
   {
-    auto& logManager = dy::MDyLog::GetInstance();
+    auto& logManager = MDyLog::GetInstance();
     DyPushLogDebugInfo("{} | Logging : {}", "Feature", isEnabled ? "ON" : "OFF");
     switch (isEnabled)
     {
