@@ -28,6 +28,7 @@
 #include <Dy/Element/Type/DDyUiBinder.h>
 #include <Dy/Element/Type/PDyActorCreationDescriptor.h>
 #include <Dy/Element/Level.h>
+#include <Dy/Management/Internal/World/FDyWorldUIContainer.h>
 
 //!
 //! Implementation

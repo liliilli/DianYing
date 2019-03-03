@@ -53,6 +53,8 @@
 #include <Dy/Helper/Pointer.h>
 #include <Dy/Helper/Internal/FDyCallStack.h>
 #include <Dy/Element/Actor.h>
+#include "Dy/Management/Internal/World/FDyWorldUIContainer.h"
+
 #include <queue>
 
 //!

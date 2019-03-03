@@ -17,7 +17,7 @@
 #include <Dy/Core/Rendering/Helper/FrameAttachmentString.h>
 #include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
 #include <Dy/Management/FontManager.h>
-#include <Dy/Management/WorldManager.h>
+#include <Dy/Element/Canvas/UiObject.h>
 
 namespace dy
 {
