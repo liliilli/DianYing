@@ -868,5 +868,6 @@
     <None Include="Include\Dy\Management\Inline\MSoundImpl.inl" />
     <None Include="Include\Dy\Management\Inline\MLogImpl.inl" />
     <None Include="Include\Dy\Management\Inline\MWindowImpl.inl" />
+    <None Include="Include\Dy\Management\Inline\MRenderingImpl.inl" />
   </ItemGroup>
 </Project>

@@ -13,24 +13,9 @@
 /// SOFTWARE.
 ///
 
-#include <queue>
-
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Management/Type/Render/DDyModelHandler.h>
 #include <Dy/Management/Type/Render/DDyGlGlobalStatus.h>
-#include <Dy/Core/Rendering/Pipeline/BasicRenderer.h>
-#include <Dy/Core/Rendering/Pipeline/FinalScreenDisplayRenderer.h>
-#include <Dy/Core/Rendering/Pipeline/PostEffectSsao.h>
-#include <Dy/Core/Rendering/Pipeline/UIBasicRenderer.h>
-#include <Dy/Core/Rendering/Pipeline/LevelCascadeShadowRenderer.h>
-#include <Dy/Core/Rendering/Pipeline/LevelCSMIntegration.h>
-#include <Dy/Core/Rendering/Pipeline/LevelOITRenderer.h>
-#include <Dy/Core/Rendering/Pipeline/DebugShapeRenderer.h>
-#include <Dy/Core/Rendering/Pipeline/PostEffectSky.h>
-#include <Dy/Core/Rendering/Pipeline/DebugAABBRenderer.h>
-#include <Dy/Core/Rendering/Pipeline/Debug/PickingRenderer.h>
-#include <Dy/Helper/Pointer.h>
-#include <Dy/Helper/Internal/FDyCallStack.h>
 
 //!
 //! Forward declaration
@@ -59,10 +44,8 @@ class   FDyMainViewport;
 namespace dy
 {
 
-///
 /// @class MDyRendering
 /// @brief Rendering maanger
-///
 class MDyRendering final : public IDySingleton<MDyRendering>
 {
   MDY_SINGLETON_PROPERTIES(MDyRendering);
@@ -91,21 +74,21 @@ public:
   /// @brief Get ptr main directional light. If not exist, just return nullptr.
   MDY_NODISCARD CDyDirectionalLight* GetPtrMainDirectionalLight() const noexcept;
   /// @brief Private function, bind directional light as main light.
-  void MDY_PRIVATE(BindMainDirectionalLight)(_MIN_ CDyDirectionalLight& iRefLight);
+  void MDY_PRIVATE(BindMainDirectionalLight)(CDyDirectionalLight& iRefLight);
   /// @brief Private function, unbind directional light of main light.
-  EDySuccess MDY_PRIVATE(UnbindMainDirectionalLight)(_MIN_ CDyDirectionalLight& iRefLight);
+  EDySuccess MDY_PRIVATE(UnbindMainDirectionalLight)(CDyDirectionalLight& iRefLight);
     
   /// @brief Get ptr main directional shadow. If not exist, just return nullptr.
   MDY_NODISCARD CDyDirectionalLight* GetPtrMainDirectionalShadow() const noexcept;
   /// @brief Private function, bind directional light as main light.
-  void MDY_PRIVATE(BindMainDirectionalShadow)(_MIN_ CDyDirectionalLight& iRefLight);
+  void MDY_PRIVATE(BindMainDirectionalShadow)(CDyDirectionalLight& iRefLight);
   /// @brief Private function, unbind directional light of main light.
-  EDySuccess MDY_PRIVATE(UnbindMainDirectionalShadow)(_MIN_ CDyDirectionalLight& iRefLight);
+  EDySuccess MDY_PRIVATE(UnbindMainDirectionalShadow)(CDyDirectionalLight& iRefLight);
 
   /// @brief Get General (Default) ui projection matrix.
   const DDyMatrix4x4& GetGeneralUiProjectionMatrix() const noexcept;
   /// @brief Insert GL global status.
-  void InsertInternalGlobalStatus(_MIN_ const DDyGlGlobalStatus& iNewStatus); 
+  void InsertInternalGlobalStatus(const DDyGlGlobalStatus& iNewStatus); 
   /// @brief Pop GL global status.
   void PopInternalGlobalStatus();
 
@@ -115,81 +98,16 @@ public:
 private:
   /// @brief Enqueue static draw call to mesh with material.
   void EnqueueDrawMesh(
-      _MIN_ DDyModelHandler::DActorInfo& iRefModelRenderer,
-      _MIN_ const FDyMeshResource& iRefValidMesh, 
-      _MIN_ const FDyMaterialResource& iRefValidMat);
+      DDyModelHandler::DActorInfo& iRefModelRenderer,
+      const FDyMeshResource& iRefValidMesh, 
+      const FDyMaterialResource& iRefValidMat);
 
   /// @brief Enqueue debug collider draw call.
   void EnqueueDebugDrawCollider(
-      _MIN_ CDyPhysicsCollider& iRefCollider, 
-      _MIN_ const DDyMatrix4x4& iTransformMatrix);
-  
-  ///
-  /// @brief Reset all of rendering framebuffers related to rendering of scene for new frame rendering.
-  ///
-  void pClearRenderingFramebufferInstances() noexcept;
+      CDyPhysicsCollider& iRefCollider, 
+      const DDyMatrix4x4& iTransformMatrix);
 
-  ///
-  std::unique_ptr<FDyBasicRenderer>               mBasicOpaqueRenderer  = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyLevelCascadeShadowRenderer>  mCSMRenderer          = MDY_INITIALIZE_NULL; 
-  std::unique_ptr<FDyLevelCSMIntergration>        mLevelFinalRenderer   = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyLevelOITRenderer>            mTranslucentOIT       = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyPostEffectSsao>              mSSAOPostEffect       = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyPostEffectSky>               mSkyPostEffect        = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyUIBasicRenderer>             mUiBasicRenderer      = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyFinalScreenDisplayRenderer>  mFinalDisplayRenderer = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyDebugShapeRenderer>          mDebugShapeRenderer   = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyDebugAABBRenderer>           mDebugAABBRenderer    = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyDebugPickingRenderer>        mDebugPickingRenderer = MDY_INITIALIZE_NULL;
-
-  using TMeshDrawCallItem = std::tuple<
-      NotNull<DDyModelHandler::DActorInfo*>,
-      NotNull<const FDyMeshResource*>, 
-      NotNull<const FDyMaterialResource*>
-  >;
-
-  using TDrawColliderItem = std::pair<NotNull<CDyPhysicsCollider*>, DDyMatrix4x4>; 
-  using TUiDrawCallItem = NotNull<FDyUiObject*>;
-
-  std::vector<TMeshDrawCallItem> mOpaqueMeshDrawingList = {};
-  std::vector<TMeshDrawCallItem> mTranslucentMeshDrawingList = {};
-  std::vector<TDrawColliderItem> mDebugColliderDrawingList = {};
-  std::vector<TUiDrawCallItem>   mUiObjectDrawingList = {};
-
-  CDyDirectionalLight* mMainDirectionalLight   = nullptr;
-  CDyDirectionalLight* mMainDirectionalShadow  = nullptr;
-
-  /// @brief Required skybox pointer for rendering on present frame.
-  /// If rendered, skybox pointer will be nulled again.
-  CDySkybox* mPtrRequiredSkybox = nullptr;
-
-  /// @brief Activated directional light list.
-  std::queue<TI32>  mDirLightAvailableList      = {};
-  /// @brief Default UI projection matrix. (Orthogonal)
-  DDyMatrix4x4      mUiGeneralProjectionMatrix  = {};
-
-  /// @brief Global status stack for management. \n
-  /// This container will be push & popped automatically by following rendering pipeline.
-  /// This container must not be empty before termination of Dy application.
-  FDyCallStack<DDyGlGlobalStatus> mInternalGlobalStatusStack;
-  /// ▽ Actual state machine change logic will be operated in these stack.
-  FDyCallStack<bool> mInternal_FeatBlendStack;
-  FDyCallStack<bool> mInternal_FeatCullfaceStack;
-  FDyCallStack<bool> mInternal_FeatDepthTestStack;
-  FDyCallStack<bool> mInternal_FeatScissorTestStack;
-  FDyCallStack<DDyGlGlobalStatus::DPolygonMode>   mInternal_PolygonModeStack;
-  FDyCallStack<DDyGlGlobalStatus::DBlendMode>     mInternal_BlendModeStack;
-  FDyCallStack<DDyGlGlobalStatus::DCullfaceMode>  mInternal_CullfaceModeStack;
-  FDyCallStack<DDyGlGlobalStatus::DViewport>      mInternal_ViewportStack;
-
-#if defined(MDY_FLAG_IN_EDITOR)
-  std::unique_ptr<FDyGrid>                    mGridEffect           = nullptr;
-#endif /// MDY_FLAG_IN_EDITOR
-
-  friend class CDyDirectionalLight;
-  friend class FDyDeferredRenderingMesh;
-  friend class FDyPostEffectSsao;
-  friend class editor::FDyMainViewport;
+  class Impl; Impl* mInternal = nullptr;
 
   friend class MDyPhysics;
 };
