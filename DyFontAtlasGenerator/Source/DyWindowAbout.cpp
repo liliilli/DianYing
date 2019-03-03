@@ -14,6 +14,9 @@
 
 /// Header file
 #include <DyWindowAbout.h>
+#include "Include/Library/HelperString.h"
+#include "Include/Constant.h"
+
 #include <DyFontAtlasGenerator.h>
 #include <QListWidget>
 
@@ -49,7 +52,11 @@ DyWindowAbout::DyWindowAbout(QWidget *parent)
   ui.setupUi(this);
 
   // Connect signal and slot.
-  connect(ui.PB_OK, &QPushButton::clicked, this, &QWidget::close);
+  ui.LB_Version->setText(DyString("Version v{}", kVersionValue).c_str());
+
+  connect(ui.PB_OK,     &QPushButton::clicked, this, &QWidget::close);
+  connect(ui.BT_Github, &QPushButton::clicked, this, &DyWindowAbout::CbOpenGithubUrl);
+  connect(ui.BT_Home,   &QPushButton::clicked, this, &DyWindowAbout::CbOpenBlogUrl);
 
   for (const auto& [libraryName, libraryUrl] : sLibraryDescriptors)
   {
@@ -60,6 +67,18 @@ DyWindowAbout::DyWindowAbout(QWidget *parent)
 void DyWindowAbout::SetParentMainWindow(DyFontAtlasGenerator& parentWindow)
 {
   this->mParentMainWindow = &parentWindow;
+}
+
+void DyWindowAbout::CbOpenGithubUrl([[maybe_unused]] int value)
+{
+  // Open github url with default web browser.
+  QDesktopServices::openUrl(QUrl(R"dy(https://github.com/liliilli)dy"));
+}
+
+void DyWindowAbout::CbOpenBlogUrl([[maybe_unused]] int value)
+{
+  // Open blog url with default web browser.
+  QDesktopServices::openUrl(QUrl(R"dy(https://neuliliilli.hatenablog.com/)dy"));
 }
 
 void DyWindowAbout::closeEvent(QCloseEvent* event)

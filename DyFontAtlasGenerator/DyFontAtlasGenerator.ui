@@ -258,7 +258,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Export as separated information and png files.</string>
+     <string>Export as separated setting and png files.</string>
     </property>
    </widget>
    <widget class="QPushButton" name="BT_Create">
@@ -298,12 +298,12 @@
      <rect>
       <x>20</x>
       <y>275</y>
-      <width>271</width>
+      <width>311</width>
       <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string>Compress JSON String (Binary)</string>
+     <string>Export with decompressed plain JSON setting file</string>
     </property>
    </widget>
    <widget class="QCheckBox" name="CB_MapKana">

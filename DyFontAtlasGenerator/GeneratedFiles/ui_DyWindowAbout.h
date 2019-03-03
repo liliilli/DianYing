@@ -23,12 +23,14 @@ class Ui_DyWindowAbout
 {
 public:
     QLabel *label;
-    QLabel *label_2;
+    QLabel *LB_Version;
     QLabel *label_3;
     QLabel *label_4;
     QPushButton *PB_OK;
     QGraphicsView *GV_Logo;
     QListWidget *LW_Library;
+    QPushButton *BT_Github;
+    QPushButton *BT_Home;
 
     void setupUi(QWidget *DyWindowAbout)
     {
@@ -44,10 +46,10 @@ public:
         label->setObjectName(QStringLiteral("label"));
         label->setGeometry(QRect(20, 120, 201, 16));
         label->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop);
-        label_2 = new QLabel(DyWindowAbout);
-        label_2->setObjectName(QStringLiteral("label_2"));
-        label_2->setGeometry(QRect(20, 140, 201, 16));
-        label_2->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop);
+        LB_Version = new QLabel(DyWindowAbout);
+        LB_Version->setObjectName(QStringLiteral("LB_Version"));
+        LB_Version->setGeometry(QRect(20, 140, 201, 16));
+        LB_Version->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop);
         label_3 = new QLabel(DyWindowAbout);
         label_3->setObjectName(QStringLiteral("label_3"));
         label_3->setGeometry(QRect(20, 160, 281, 16));
@@ -68,6 +70,12 @@ public:
         LW_Library = new QListWidget(DyWindowAbout);
         LW_Library->setObjectName(QStringLiteral("LW_Library"));
         LW_Library->setGeometry(QRect(10, 211, 361, 101));
+        BT_Github = new QPushButton(DyWindowAbout);
+        BT_Github->setObjectName(QStringLiteral("BT_Github"));
+        BT_Github->setGeometry(QRect(390, 120, 75, 23));
+        BT_Home = new QPushButton(DyWindowAbout);
+        BT_Home->setObjectName(QStringLiteral("BT_Home"));
+        BT_Home->setGeometry(QRect(390, 150, 75, 23));
 
         retranslateUi(DyWindowAbout);
 
@@ -77,11 +85,13 @@ public:
     void retranslateUi(QWidget *DyWindowAbout)
     {
         DyWindowAbout->setWindowTitle(QApplication::translate("DyWindowAbout", "About", nullptr));
-        label->setText(QApplication::translate("DyWindowAbout", "DianYing Font Atlas Generator", nullptr));
-        label_2->setText(QApplication::translate("DyWindowAbout", "Version v190227", nullptr));
+        label->setText(QApplication::translate("DyWindowAbout", "DianYing SDF FontAtlas Generator", nullptr));
+        LB_Version->setText(QApplication::translate("DyWindowAbout", "Version v190227", nullptr));
         label_3->setText(QApplication::translate("DyWindowAbout", "This product reserved by GNU LGPL v3 license.", nullptr));
         label_4->setText(QApplication::translate("DyWindowAbout", "Used third-party libraries", nullptr));
         PB_OK->setText(QApplication::translate("DyWindowAbout", "OK", nullptr));
+        BT_Github->setText(QApplication::translate("DyWindowAbout", "Github", nullptr));
+        BT_Home->setText(QApplication::translate("DyWindowAbout", "Home", nullptr));
     } // retranslateUi
 
 };

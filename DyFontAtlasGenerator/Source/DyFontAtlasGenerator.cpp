@@ -27,6 +27,7 @@
 #include <boost/uuid/uuid_generators.hpp>
 
 #include <Include/AConstantLangRange.h>
+#include <Include/Constant.h>
 #include <Include/FTaskThread.h>
 #include <Include/Structure.h>
 #include <Include/Library/HelperString.h>
@@ -88,6 +89,7 @@ DyFontAtlasGenerator::DyFontAtlasGenerator(QWidget *parent) : QMainWindow(parent
   this->statusBar()->hide();
 
   // Set visibility and enablility.
+  this->setWindowTitle(DyString("DY SDF Font Atlas Generator v{}", kVersionValue).c_str());
   ui.BT_Create->setEnabled(false);
   ui.PG_Loading->setVisible(false);
 
