@@ -70,19 +70,19 @@ CDyActorScriptLua::CDyActorScriptLua(_MIN_ FDyActor& actorReference, _MIN_ const
 void CDyActorScriptLua::Initiate()
 {
   MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
-  this->mScriptInstance[MSVSTR(sFunction_Initiate)](this->mScriptInstance);
+  this->mScriptInstance[(sFunction_Initiate)](this->mScriptInstance);
 }
 
 void CDyActorScriptLua::Start()
 {
   MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
-  this->mScriptInstance[MSVSTR(sFunction_Start)](this->mScriptInstance);
+  this->mScriptInstance[(sFunction_Start)](this->mScriptInstance);
 }
 
 void CDyActorScriptLua::Update(float dt)
 {
   MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
-  this->mScriptInstance[MSVSTR(sFunction_Update)](this->mScriptInstance);
+  this->mScriptInstance[(sFunction_Update)](this->mScriptInstance);
 
 #ifdef false
   auto* obj = this->GetBindedActor();
@@ -94,19 +94,19 @@ void CDyActorScriptLua::Update(float dt)
 void CDyActorScriptLua::OnEnabled()
 {
   MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
-  this->mScriptInstance[MSVSTR(sFunction_OnEnabled)](this->mScriptInstance);
+  this->mScriptInstance[(sFunction_OnEnabled)](this->mScriptInstance);
 }
 
 void CDyActorScriptLua::OnDisabled()
 {
   MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
-  this->mScriptInstance[MSVSTR(sFunction_OnDisabled)](this->mScriptInstance);
+  this->mScriptInstance[(sFunction_OnDisabled)](this->mScriptInstance);
 }
 
 void CDyActorScriptLua::Destroy()
 {
   MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
-  this->mScriptInstance[MSVSTR(sFunction_Destroy)](this->mScriptInstance);
+  this->mScriptInstance[(sFunction_Destroy)](this->mScriptInstance);
 }
 
 } /// ::dy namespace

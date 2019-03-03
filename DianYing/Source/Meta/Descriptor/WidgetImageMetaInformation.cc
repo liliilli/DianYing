@@ -56,7 +56,7 @@ PDyMetaWidgetImageDescriptor::CreateMetaInformation(const nlohmann::json& itemAt
   resultInstance->mParentSpecifierName    = DyJsonGetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Parent);
   DyJsonGetValueFromTo(itemAtlas, "ZOrder", resultInstance->mZOrder);
 
-  const auto& detailAtlas           = itemAtlas[MSVSTR(TPDyMWCBD::sHeader_Details)];
+  const auto& detailAtlas           = itemAtlas[(TPDyMWCBD::sHeader_Details)];
   resultInstance->mInitialPosition  = DyJsonGetValueFrom<DDyVectorInt2>(detailAtlas, "InitialPosition");
   resultInstance->mOrigin           = DyJsonGetValueFrom<EDyOrigin>(detailAtlas, "Origin");
   resultInstance->mWidgetSize       = DyJsonGetValueFrom<DDyVectorInt2>(detailAtlas, "WidgetSize");

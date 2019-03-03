@@ -26,8 +26,8 @@ void FDyBtFbWeightBlendedOIT::ConstructBuffer(_MOUT_ PDyGlFrameBufferInstanceMet
   property.mFrameBufferSize       = DDyVectorInt2{1280, 720};
 
   property.mIsNotUsingPixelShader = false;
-  property.mColorAttachmentList.emplace_back(MSVSTR(FDyBtAtWBOITColor::sName), EDyGlAttachmentType::Color0);
-  property.mColorAttachmentList.emplace_back(MSVSTR(FDyBtAtWBOITWeight::sName), EDyGlAttachmentType::Color1);
+  property.mColorAttachmentList.emplace_back((FDyBtAtWBOITColor::sName), EDyGlAttachmentType::Color0);
+  property.mColorAttachmentList.emplace_back((FDyBtAtWBOITWeight::sName), EDyGlAttachmentType::Color1);
 
   property.mIsUsingDepthBuffer    = false;
 }

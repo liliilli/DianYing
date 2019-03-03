@@ -178,12 +178,4 @@ PDyGlAttachmentInformation* MDyFramebuffer::GetAttachmentPointer(_MIN_ const std
   return attachmentIt->second.get();
 }
 
-PDyGlAttachmentInformation* MDyFramebuffer::GetAttachmentPointer(const std::string_view& attachmentName)
-{
-  auto attachmentIt = this->mValidAttachmentList.find(MSVSTR(attachmentName));
-  if (attachmentIt == this->mValidAttachmentList.end()) { return nullptr; }
-
-  return attachmentIt->second.get();;
-}
-
 } /// ::dy namespace

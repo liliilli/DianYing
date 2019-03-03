@@ -65,7 +65,7 @@ FDyBasicRenderer::FDyBasicRenderer()
 FDyBasicRenderer::~FDyBasicRenderer()
 {
   auto& uboManager = MDyUniformBufferObject::GetInstance();
-  MDY_CALL_ASSERT_SUCCESS(uboManager.RemoveUboContainer(MSVSTR(sUboCameraBlock)));
+  MDY_CALL_ASSERT_SUCCESS(uboManager.RemoveUboContainer((sUboCameraBlock)));
 }
 
 void FDyBasicRenderer::PreRender()
@@ -77,7 +77,7 @@ void FDyBasicRenderer::PreRender()
   auto& uboManager = MDyUniformBufferObject::GetInstance();
   {
     const auto flag = uboManager.UpdateUboContainer(
-        MSVSTR(sUboCameraBlock),
+        (sUboCameraBlock),
         offsetof(DDyUboCameraBlock, mViewMatrix),
         sizeof(DDyUboCameraBlock::mViewMatrix),
         &ptrValidCamera.GetViewMatrix()[0].X);
@@ -85,7 +85,7 @@ void FDyBasicRenderer::PreRender()
   }
   {
     const auto flag = uboManager.UpdateUboContainer(
-        MSVSTR(sUboCameraBlock),
+        (sUboCameraBlock),
         offsetof(DDyUboCameraBlock, mProjMatrix),
         sizeof(DDyUboCameraBlock::mProjMatrix),
         &ptrValidCamera.GetProjectionMatrix()[0].X);

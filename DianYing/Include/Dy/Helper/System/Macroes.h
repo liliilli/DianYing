@@ -198,12 +198,6 @@
 #define MDY_INITIALIZE_NULL nullptr
 
 ///
-/// @macro MSVSTR
-/// @brief M(MDY) read SV(std::string_view) as STR(std::string or const char*) using .data()
-///
-#define MSVSTR(__MAStringView__) __MAStringView__.data()
-
-///
 /// @macro MDY_BIND_BEGIN_END
 /// @brief Help forward iteratable type to bind .begin() and .end() to function.
 ///
@@ -220,7 +214,7 @@
 /// @brief Set immutable compile string_view variable __MAName__ with __MAString__.
 ///
 #define MDY_SET_IMMUTABLE_STRING(__MAName__, __MAString__) \
-  constexpr std::string_view __MAName__ = __MAString__
+  constexpr const char* __MAName__ = __MAString__
 
 ///
 /// @macro MDY_UNEXEPCTED_BRANCH_BUT_RETURN
@@ -485,36 +479,6 @@ private:                                                  \
     friend class IDySingleton<__MADerivedSingletonType__>;\
 public:                                                   \
     virtual ~__MADerivedSingletonType__() = default;
-
-#if defined(MDY_FLAG_IN_EDITOR)
-///
-/// @macro MDY_GUISINGLETON_PROPERTIES
-/// @brief Set properties of gui window singleton types.
-/// This macro must not be attached to whichever class inherits IDyGuiWindowSingleton<>.
-///
-#define MDY_GUISINGLETON_PROPERTIES(__MASingletonType__) \
-public: \
-    __MASingletonType__(const __MASingletonType__##&) = delete; \
-    __MASingletonType__(__MASingletonType__##&&) = delete; \
-    __MASingletonType__##& operator=(const __MASingletonType__##&) = delete; \
-    __MASingletonType__##& operator=(__MASingletonType__##&&) = delete
-
-///
-/// @macro MDY_GUISINGLETON_DERIVED
-/// @brief Set boilerplate functions for gui window singleton types.
-/// This macro must not be attached to whichever class inherits IDyGuiWindowSingleton<>.
-///
-#define MDY_GUISINGLETON_DERIVED(__MADerivedSingletonType__, __MAConstructionDescriptorType__)  \
-public:                                                   \
-    __MADerivedSingletonType__() = default;               \
-    virtual ~__MADerivedSingletonType__() = default;      \
-private:                                                  \
-    [[nodiscard]] EDySuccess pfInitialize([[maybe_unused]] const __MAConstructionDescriptorType__& desc); \
-    [[nodiscard]] EDySuccess pfRelease();                 \
-    MDY_SET_CRC32_HASH_WITH_TYPE(__MADerivedSingletonType__); \
-    MDY_SET_TYPEMATCH_FUNCTION(IDyGuiComponentBase, __MADerivedSingletonType__); \
-    friend class IDyGuiWinSingleton<__MADerivedSingletonType__, __MAConstructionDescriptorType__>
-#endif /// MDY_FLAG_IN_EDITOR
 
 #define MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(__MAType__)\
   __MAType__(const __MAType__&)             = delete;   \

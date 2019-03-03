@@ -33,8 +33,8 @@ struct PDyModelInstanceMetaInfo final : public PDyCommonResourceMetaInfo
     std::string mMaterialSpecifier  = MDY_INITIALIZE_EMPTYSTR;
 
     DMesh(_MIN_ const std::string_view& mesh, _MIN_ const std::string_view& mat) :
-        mMeshSpecifier{MSVSTR(mesh)},
-        mMaterialSpecifier{MSVSTR(mat)} {};
+        mMeshSpecifier{(mesh)},
+        mMaterialSpecifier{(mat)} {};
     DMesh(_MIN_ const char* mesh, _MIN_ const char* mat) :
         mMeshSpecifier{mesh},
         mMaterialSpecifier{mat} {};

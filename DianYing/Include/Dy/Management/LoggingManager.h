@@ -39,24 +39,18 @@ enum class EDyLogLevel
   Critical,
 };
 
-///
 /// @class MDyLog
 /// @brief Manages logging.
-///
 class MDyLog final : public IDySingleton<MDyLog>
 {
   MDY_SINGLETON_DERIVED(MDyLog);
   MDY_SINGLETON_PROPERTIES(MDyLog);
 public:
-  ///
   /// @brief Set logging output visibility level.
-  ///
   void SetVisibleLevel(EDyLogLevel newLogLevel);
 
-  ///
   /// @brief This function can push the log manually.
   /// In case of being intentialiy, recommend use MACRO version (MDY_LOG_INFO_D)
-  ///
   template <typename... TArgs>
   void PushLog(EDyLogLevel logLevel, const std::string_view& name, const TArgs&... args)
   {

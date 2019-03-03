@@ -313,7 +313,7 @@ EDySuccess MDySound::InitializeSoundSystem()
   ||  this->mSoundSystem->getVersion(&this->mVersion) != FMOD_OK 
   ||  this->mSoundSystem->getNumDrivers(&this->mSoundDriverCount) != FMOD_OK)
   {
-    MDY_LOG_CRITICAL(sErrorSystemCreationFailed.data());
+    MDY_LOG_CRITICAL(sErrorSystemCreationFailed);
     // Release.
     if (this->mSoundSystem != nullptr) { this->mSoundSystem->release(); this->mSoundSystem = nullptr; }
     this->mIsSoundSystemAvailable = false;
@@ -321,7 +321,7 @@ EDySuccess MDySound::InitializeSoundSystem()
   }
   if (this->mVersion < FMOD_VERSION || this->mSoundDriverCount < 0)
   {
-    MDY_LOG_CRITICAL(sErrorSystemCreationFailed.data());
+    MDY_LOG_CRITICAL(sErrorSystemCreationFailed);
     // Release.
     if (this->mSoundSystem != nullptr) { this->mSoundSystem->release(); this->mSoundSystem = nullptr; }
     this->mIsSoundSystemAvailable = false;
@@ -336,7 +336,7 @@ EDySuccess MDySound::InitializeSoundSystem()
   // We must use RIGHT_HANDED_COORDINATE
   if (this->mSoundSystem->init(128, FMOD_INIT_NORMAL | FMOD_INIT_3D_RIGHTHANDED, nullptr) != FMOD_OK)
   {
-    MDY_LOG_CRITICAL(sErrorSystemCreationFailed.data());
+    MDY_LOG_CRITICAL(sErrorSystemCreationFailed);
     if (this->mSoundSystem != nullptr) { this->mSoundSystem->release(); this->mSoundSystem = nullptr; }
     this->mIsSoundSystemAvailable = false;
     return DY_FAILURE;

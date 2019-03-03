@@ -62,7 +62,7 @@ PDyMetaWidgetHorizontalLayout::CreateMetaInformation(_MIN_ const nlohmann::json&
   DyJsonGetValueFromTo(itemAtlas, "ZOrder", instance->mZOrder);
 
   // Detail (PDyMetaWidgetHorizontalLayout)
-  const auto& detailAtlas     = itemAtlas[MSVSTR(TPDyMWCBD::sHeader_Details)];
+  const auto& detailAtlas     = itemAtlas[(TPDyMWCBD::sHeader_Details)];
   instance->mAlignment        = DyJsonGetValueFrom<EDyHorizontalAlignment>(detailAtlas, sHeader_Alignment);
   instance->mArea             = DyJsonGetValueFrom<DDyArea2D>             (detailAtlas, sHeader_Area);
 
@@ -96,7 +96,7 @@ PDyMetaWidgetVerticalLayout::CreateMetaInformation(_MIN_ const nlohmann::json& i
   DyJsonGetValueFromTo(itemAtlas, "ZOrder", instance->mZOrder);
 
   // Detail (PDyMetaWidgetHorizontalLayout)
-  const auto& detailAtlas     = itemAtlas[MSVSTR(TPDyMWCBD::sHeader_Details)];
+  const auto& detailAtlas     = itemAtlas[(TPDyMWCBD::sHeader_Details)];
   instance->mAlignment        = DyJsonGetValueFrom<EDyVerticalAlignment>(detailAtlas, sHeader_Alignment);
   instance->mArea             = DyJsonGetValueFrom<DDyArea2D>           (detailAtlas, sHeader_Area);
 

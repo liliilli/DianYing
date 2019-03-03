@@ -96,16 +96,16 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingDescription& p)
 {
   j = nlohmann::json
   {
-      {MSVSTR(sProjectName),  p.mProjectName},
-      {MSVSTR(sWindowName),   p.mWindowName},
+      {(sProjectName),  p.mProjectName},
+      {(sWindowName),   p.mWindowName},
 
-      {MSVSTR(sVersionHigh),  p.mVersionHigh},
-      {MSVSTR(sVersionMid),   p.mVersionMid},
-      {MSVSTR(sVersionLow),   p.mVersionLow},
+      {(sVersionHigh),  p.mVersionHigh},
+      {(sVersionMid),   p.mVersionMid},
+      {(sVersionLow),   p.mVersionLow},
 
-      {MSVSTR(sCompanyName),    p.mCompanyName},
-      {MSVSTR(sHomepage),       p.mHomepage},
-      {MSVSTR(sSupportContact), p.mSupportContact},
+      {(sCompanyName),    p.mCompanyName},
+      {(sHomepage),       p.mHomepage},
+      {(sSupportContact), p.mSupportContact},
   };
 }
 
@@ -131,10 +131,10 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingGameplay& p)
 {
   j = nlohmann::json
   {
-      {MSVSTR(sInitialScene),       p.mInitialSceneSpecifier},
-      {MSVSTR(sInitialResolution),  p.mInitialResolution},
-      {MSVSTR(sGamePlay_Shadow),    p.mShadow},
-      {MSVSTR(sGamePlay_Graphics),  p.mGraphics},
+      {(sInitialScene),       p.mInitialSceneSpecifier},
+      {(sInitialResolution),  p.mInitialResolution},
+      {(sGamePlay_Shadow),    p.mShadow},
+      {(sGamePlay_Graphics),  p.mGraphics},
   };
 }
 
@@ -150,7 +150,7 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingGameplay::DDyShad
 {
   j = nlohmann::json
   {
-      {MSVSTR(sGamePlay_Shadow_GlobalDefaultMapSize), p.mShadowGlobalDefaultMap},
+      {(sGamePlay_Shadow_GlobalDefaultMapSize), p.mShadowGlobalDefaultMap},
   };
 }
 
@@ -163,8 +163,8 @@ void to_json(nlohmann::json& j, const DDySettingGameplay::DDyGraphics& p)
 {
   j = nlohmann::json
   {
-    {MSVSTR(sGamePlay_Graphics_EnableDefaultSsao),    p.mIsEnabledDefaultSsao},
-    {MSVSTR(sGamePlay_Graphics_EnableDefaultShadow),  p.mIsEnabledDefaultShadow},
+    {(sGamePlay_Graphics_EnableDefaultSsao),    p.mIsEnabledDefaultSsao},
+    {(sGamePlay_Graphics_EnableDefaultShadow),  p.mIsEnabledDefaultShadow},
   };
 }
 
@@ -182,25 +182,25 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingInput& p)
 {
   j = nlohmann::json
   {
-      {MSVSTR(sAction),   p.mActionMap},
-      {MSVSTR(sAxis),     p.mAxisMap},
+      {(sAction),   p.mActionMap},
+      {(sAxis),     p.mAxisMap},
   };
 }
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingInput::DAction& p)
 {
-  if (p.mKey.empty() == false) { j[MSVSTR(sKey)] = p.mKey; }
+  if (p.mKey.empty() == false) { j[(sKey)] = p.mKey; }
 }
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingInput::DAxis& p)
 {
   j = nlohmann::json
   {
-      {MSVSTR(sGravity),  p.mGravity},
+      {(sGravity),  p.mGravity},
   };
 
-  if (p.mPositive.empty() == false) { j[MSVSTR(sPositive)] = p.mPositive; }
-  if (p.mNegative.empty() == false) { j[MSVSTR(sNegative)] = p.mNegative; }
+  if (p.mPositive.empty() == false) { j[(sPositive)] = p.mPositive; }
+  if (p.mNegative.empty() == false) { j[(sNegative)] = p.mNegative; }
 }
 
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingInput& p)
@@ -213,15 +213,15 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingInput::DAction& p
 {
   using TKeyListType = DDySettingInput::TKeyListType;
   
-  if (DyIsJsonKeyExist(j, MSVSTR(sKey)) == true) { p.mKey = DyJsonGetValueFrom<TKeyListType>(j, sKey); }
+  if (DyIsJsonKeyExist(j, (sKey)) == true) { p.mKey = DyJsonGetValueFrom<TKeyListType>(j, sKey); }
 }
 
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingInput::DAxis& p)
 {
   using TKeyListType = DDySettingInput::TKeyListType;
 
-  if (DyIsJsonKeyExist(j, MSVSTR(sPositive)) == true) { p.mPositive = DyJsonGetValueFrom<TKeyListType>(j, sPositive); }
-  if (DyIsJsonKeyExist(j, MSVSTR(sNegative)) == true) { p.mNegative = DyJsonGetValueFrom<TKeyListType>(j, sNegative); }
+  if (DyIsJsonKeyExist(j, (sPositive)) == true) { p.mPositive = DyJsonGetValueFrom<TKeyListType>(j, sPositive); }
+  if (DyIsJsonKeyExist(j, (sNegative)) == true) { p.mNegative = DyJsonGetValueFrom<TKeyListType>(j, sNegative); }
 
   p.mGravity        = DyJsonGetValueFrom<TI32>(j, sGravity);
 }
@@ -248,8 +248,8 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingTag& p)
 {
   j = nlohmann::json
   {
-      {MSVSTR(sObject),     p.mObjectTag},
-      {MSVSTR(sCollision),  p.mCollisionTag},
+      {(sObject),     p.mObjectTag},
+      {(sCollision),  p.mCollisionTag},
   };
 }
 
@@ -345,20 +345,20 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingMetaPath& p)
 {
   j = nlohmann::json
   {
-      {MSVSTR(sHeader_MetaPath_Scene),  p.mSceneMetaPath},
-      {MSVSTR(sHeader_MetaPath_Widget), p.mWidgetMetaPath},
-      {MSVSTR(sHeader_MetaPath_Prefab), p.mPrefabMetaPath},
-      {MSVSTR(sHeader_MetaPath_Script), p.mScriptMetaPath},
+      {(sHeader_MetaPath_Scene),  p.mSceneMetaPath},
+      {(sHeader_MetaPath_Widget), p.mWidgetMetaPath},
+      {(sHeader_MetaPath_Prefab), p.mPrefabMetaPath},
+      {(sHeader_MetaPath_Script), p.mScriptMetaPath},
 
-      {MSVSTR(sHeader_MetaPath_Font),     p.mFontMetaPath},
-      {MSVSTR(sHeader_MetaPath_Texture),  p.mTextureMetaPath},
-      {MSVSTR(sHeader_MetaPath_Material), p.mMaterialMetaPath},
-      {MSVSTR(sHeader_MetaPath_Shader),   p.mGLShaderMetaPath},
+      {(sHeader_MetaPath_Font),     p.mFontMetaPath},
+      {(sHeader_MetaPath_Texture),  p.mTextureMetaPath},
+      {(sHeader_MetaPath_Material), p.mMaterialMetaPath},
+      {(sHeader_MetaPath_Shader),   p.mGLShaderMetaPath},
 
-      {MSVSTR(sHeader_MetaPath_Model),    p.mModelMetaPath},
-      {MSVSTR(sHeader_MetaPath_ModelMesh),p.mModelMeshMetaPath},
-      {MSVSTR(sHeader_MetaPath_ModelAnim),p.mModelAnimMetaPath},
-      {MSVSTR(sHeader_MetaPath_ModelSkeleton),p.mModelSkeletonMetaPath},
+      {(sHeader_MetaPath_Model),    p.mModelMetaPath},
+      {(sHeader_MetaPath_ModelMesh),p.mModelMeshMetaPath},
+      {(sHeader_MetaPath_ModelAnim),p.mModelAnimMetaPath},
+      {(sHeader_MetaPath_ModelSkeleton),p.mModelSkeletonMetaPath},
 
       {"Sound", p.mSoundMetaPath},
   };

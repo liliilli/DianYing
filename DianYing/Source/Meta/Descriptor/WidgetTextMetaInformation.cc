@@ -68,7 +68,7 @@ PDyMetaWidgetTextDescriptor::CreateMetaInformation(_MIN_ const nlohmann::json& i
   DyJsonGetValueFromTo(itemAtlas, "ZOrder", instance->mZOrder);
 
   // Detail (TEXT)
-  const auto& detailAtlas = itemAtlas[MSVSTR(TPDyMWCBD::sHeader_Details)];
+  const auto& detailAtlas = itemAtlas[(TPDyMWCBD::sHeader_Details)];
   const auto string = DyJsonGetValueFrom<std::string>(detailAtlas, sHeader_InitialString);
   instance->mInitialString      = string;
 

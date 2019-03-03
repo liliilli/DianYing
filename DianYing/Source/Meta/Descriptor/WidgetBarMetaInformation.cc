@@ -57,7 +57,7 @@ PDyMetaWidgetBarDescriptor::CreateMetaInformation(const nlohmann::json& itemAtla
   instance->mParentSpecifierName    = DyJsonGetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Parent);
   DyJsonGetValueFromTo(itemAtlas, "ZOrder", instance->mZOrder);
 
-  const auto& detailAtlas = itemAtlas[MSVSTR(TPDyMWCBD::sHeader_Details)];
+  const auto& detailAtlas = itemAtlas[(TPDyMWCBD::sHeader_Details)];
   instance->mInitialPosition    = DyJsonGetValueFrom<DDyVectorInt2>(detailAtlas, "InitialPosition");
   instance->mOrigin             = DyJsonGetValueFrom<EDyOrigin>(detailAtlas, "Origin");
   instance->mWidgetSize         = DyJsonGetValueFrom<DDyVectorInt2>(detailAtlas, "WidgetSize");

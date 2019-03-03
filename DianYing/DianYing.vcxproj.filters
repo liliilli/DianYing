@@ -859,5 +859,6 @@
     <None Include="TestResource\Lua\variables.lua" />
     <None Include="TestResource\Lua\player_script.lua" />
     <None Include="TestResource\Lua\test_bindingscript.lua" />
+    <None Include="Include\Dy\Helper\Library\HelperJson.inl" />
   </ItemGroup>
 </Project>

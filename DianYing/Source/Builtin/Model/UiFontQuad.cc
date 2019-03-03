@@ -24,7 +24,7 @@ void FDyBtMdUIFontQuad::ConstructBuffer(_MOUT_ PDyModelInstanceMetaInfo& buffer)
 {
   buffer.mSourceType          = EDyResourceSource::Builtin;
   buffer.mSpecifierName       = sName;
-  buffer.mMeshList.emplace_back(MSVSTR(FDyBtMsUiFontQuad::sName), MSVSTR(FDyBtMtCheckerWorldPos::sName));
+  buffer.mMeshList.emplace_back((FDyBtMsUiFontQuad::sName), (FDyBtMtCheckerWorldPos::sName));
 }
 
 } /// ::dy::builtin namespace

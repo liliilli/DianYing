@@ -69,7 +69,6 @@ public:
   /// @return
   ///
   MDY_NODISCARD PDyGlAttachmentInformation* GetAttachmentPointer(_MIN_ const std::string& attachmentName);
-  MDY_NODISCARD PDyGlAttachmentInformation* GetAttachmentPointer(_MIN_ const std::string_view& attachmentName);
 
 private:
   /// Valid framebuffer container

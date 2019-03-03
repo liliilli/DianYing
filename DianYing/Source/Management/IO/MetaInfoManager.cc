@@ -98,7 +98,7 @@ std::unique_ptr<dy::PDyMetaWidgetRootDescriptor> DyCreateWidgetMetaInformation(_
   }
 
   // (3) Make widget component meta information instance sequencially.
-  const auto& componentAtlas = jsonAtlas[MSVSTR(sCategoryObjectList)];
+  const auto& componentAtlas = jsonAtlas[(sCategoryObjectList)];
   MDyMetaInfo::THashMap<PDyMetaWidgetChildableBaseDesc::TElementType> tempWidgetObjectMap = {};
 
   for (const auto& componentInfo : componentAtlas)
@@ -175,7 +175,7 @@ std::unique_ptr<dy::PDyMetaWidgetRootDescriptor> DyCreateWidgetMetaInformation(_
 
   // (5) Make root widget meta instance and retrieve information from headers.
   //     ...and Make heap.
-  auto rootInstance = PDyMetaWidgetRootDescriptor::CreateMetaInformation(jsonAtlas[MSVSTR(sCategoryMeta)]);
+  auto rootInstance = PDyMetaWidgetRootDescriptor::CreateMetaInformation(jsonAtlas[(sCategoryMeta)]);
   for (auto it = tempWidgetObjectMap.begin(); it != tempWidgetObjectMap.end(); ++it)
   {
     auto [_, result] = rootInstance->mChildComponentList.try_emplace(it->first, std::move(it->second));
@@ -637,7 +637,7 @@ EDySuccess MDyMetaInfo::pReadScriptMetaAtlas(_MIN_ const nlohmann::json& iJson)
   // Check "List" Category is exist.
   MDY_ASSERT(DyCheckHeaderIsExist(iJson, sCategoryList) == DY_SUCCESS, "Unexpecte error occurred.");
 
-  const auto& scriptResourceListAtlas = iJson[MSVSTR(sCategoryList)];
+  const auto& scriptResourceListAtlas = iJson[(sCategoryList)];
   for (const auto& scriptResource : scriptResourceListAtlas)
   {
     auto metaInfo = scriptResource.get<PDyScriptInstanceMetaInfo>();
@@ -656,7 +656,7 @@ EDySuccess MDyMetaInfo::pReadScriptMetaAtlas(_MIN_ const nlohmann::json& iJson)
 EDySuccess MDyMetaInfo::pReadPrefabMetaAtlas(_MIN_ const nlohmann::json& iJson)
 {
   // Make prefab meta information instance sequencially.
-  const auto& prefabAtlas = iJson.at(MSVSTR(sCategoryObjectList));
+  const auto& prefabAtlas = iJson.at((sCategoryObjectList));
 
   TPrefabMetaInfoList prefabObjectList = {};
   for (const auto& prefabInfo : prefabAtlas)

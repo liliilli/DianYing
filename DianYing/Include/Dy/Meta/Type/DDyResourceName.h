@@ -28,8 +28,6 @@ struct DDyResourceName final
 
   DDyResourceName(_MIN_ EDyResourceType type, _MIN_ const std::string& name)
       : mResourceType{type}, mName{name} {};
-  DDyResourceName(_MIN_ EDyResourceType type, _MIN_ const std::string_view& name)
-      : mResourceType{type}, mName{MSVSTR(name)} {};
 };
 
 /// @brief operator== overloading for `unordered_set` container.

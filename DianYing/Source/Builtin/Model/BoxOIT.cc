@@ -24,7 +24,7 @@ void FDyBuiltinModelBoxOIT::ConstructBuffer(PDyModelInstanceMetaInfo& buffer) no
 {
   buffer.mSourceType    = EDyResourceSource::Builtin;
   buffer.mSpecifierName = sName;
-  buffer.mMeshList.emplace_back(MSVSTR(FDyBtMsBox::sName), MSVSTR(FDyBtStaticTransparentChecker::sName));
+  buffer.mMeshList.emplace_back((FDyBtMsBox::sName), (FDyBtStaticTransparentChecker::sName));
 }
 
 } /// ::dy::builtin namespace

@@ -94,9 +94,9 @@ namespace dy
 CDyFontRenderer::CDyFontRenderer(FDyText& iPtrWidget) :
   mPtrWidget{&iPtrWidget}
 {
-  this->mBinderFontMesh.TryRequireResource(MSVSTR(FDyBtMsUiFontQuad::sName));
+  this->mBinderFontMesh.TryRequireResource((FDyBtMsUiFontQuad::sName));
   MDY_ASSERT(this->mBinderFontMesh.IsResourceExist() == true, "True");
-  this->mBinderShader.TryRequireResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderFontArraySDF::sName));
+  this->mBinderShader.TryRequireResource((builtin::FDyBuiltinShaderGLRenderFontArraySDF::sName));
 }
 
 #ifdef false

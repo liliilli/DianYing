@@ -118,8 +118,8 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyTransformComponentMetaIn
 {
   j = nlohmann::json
   {
-    {MSVSTR(sHeader_Type),    p.mType},
-    {MSVSTR(sHeader_Details), p.mDetails},
+    {(sHeader_Type),    p.mType},
+    {(sHeader_Details), p.mDetails},
   };
 }
 
@@ -134,13 +134,13 @@ void to_json(nlohmann::json& j, const PDyTransformComponentMetaInfo::DDetails& p
 {
   j = nlohmann::json
   {
-    {MSVSTR(sHeaderLocalPosition),  p.mLocalPosition},
-    {MSVSTR(sHeaderLocalAngle),     p.mLocalRotation},
-    {MSVSTR(sHeaderLocalScale),     p.mLocalScale},
+    {(sHeaderLocalPosition),  p.mLocalPosition},
+    {(sHeaderLocalAngle),     p.mLocalRotation},
+    {(sHeaderLocalScale),     p.mLocalScale},
 
-    {MSVSTR(sHeaderWorldPosition),  p.mWorldPosition},
-    {MSVSTR(sHeaderWorldAngle),     p.mWorldRotation},
-    {MSVSTR(sHeaderWorldScale),     p.mWorldScale},
+    {(sHeaderWorldPosition),  p.mWorldPosition},
+    {(sHeaderWorldAngle),     p.mWorldRotation},
+    {(sHeaderWorldScale),     p.mWorldScale},
   };;
 }
 
@@ -163,9 +163,9 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyScriptComponentMetaInfo&
 {
   j = nlohmann::json
   {
-    {MSVSTR(sHeader_Type),      p.mType},
-    {MSVSTR(sHeader_Details),   p.mDetails},
-    {MSVSTR(sHeader_Activated), p.mInitiallyActivated},
+    {(sHeader_Type),      p.mType},
+    {(sHeader_Details),   p.mDetails},
+    {(sHeader_Activated), p.mInitiallyActivated},
   };
 }
 
@@ -185,8 +185,8 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelFilterComponentMeta
 {
   j = nlohmann::json
   {
-    {MSVSTR(sHeader_Type),      p.mType},
-    {MSVSTR(sHeader_Details),   p.mDetails},
+    {(sHeader_Type),      p.mType},
+    {(sHeader_Details),   p.mDetails},
   };
 }
 
@@ -201,7 +201,7 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelFilterComponentMeta
 {
   j = nlohmann::json
   {
-    {MSVSTR(sHeaderModelName), p.mModelSpecifierName}
+    {(sHeaderModelName), p.mModelSpecifierName}
   };
 }
 
@@ -218,9 +218,9 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelRendererComponentMe
 {
   j = nlohmann::json
   {
-    {MSVSTR(sHeader_Type),      p.mType},
-    {MSVSTR(sHeader_Details),   p.mDetails},
-    {MSVSTR(sHeader_Activated), p.mInitiallyActivated},
+    {(sHeader_Type),      p.mType},
+    {(sHeader_Details),   p.mDetails},
+    {(sHeader_Activated), p.mInitiallyActivated},
   };
 }
 
@@ -236,7 +236,7 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelRendererComponentMe
 {
   j = nlohmann::json
   {
-    {MSVSTR(sHeaderShadow),      p.mIsEnabledCreateShadow},
+    {(sHeaderShadow),      p.mIsEnabledCreateShadow},
   };
 }
 
@@ -253,9 +253,9 @@ void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelAnimatorComponent
 {
   j = nlohmann::json
   {
-    {MSVSTR(sHeader_Type),      p.mType},
-    {MSVSTR(sHeader_Details),   p.mDetails},
-    {MSVSTR(sHeader_Activated), p.mInitiallyActivated},
+    {(sHeader_Type),      p.mType},
+    {(sHeader_Details),   p.mDetails},
+    {(sHeader_Activated), p.mInitiallyActivated},
   };
 }
 
@@ -290,9 +290,9 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyCameraComponentMetaInfo&
 {
   j = nlohmann::json
   {
-    {MSVSTR(sHeader_Type),      p.mType},
-    {MSVSTR(sHeader_Details),   p.mDetails},
-    {MSVSTR(sHeader_Activated), p.mInitiallyActivated},
+    {(sHeader_Type),      p.mType},
+    {(sHeader_Details),   p.mDetails},
+    {(sHeader_Activated), p.mInitiallyActivated},
   };
 }
 
@@ -307,15 +307,15 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyCameraComponentMetaInfo:
 {
   j = nlohmann::json
   {
-    {MSVSTR(sHeaderFieldOfView),      p.mInitialFieldOfView},
-    {MSVSTR(sHeaderProjection),       p.mProjectionType},
+    {(sHeaderFieldOfView),      p.mInitialFieldOfView},
+    {(sHeaderProjection),       p.mProjectionType},
 
-    {MSVSTR(sHeaderClippingNear),     p.mNear},
-    {MSVSTR(sHeaderClippingFar),      p.mFar},
-    {MSVSTR(sHeaderViewportRect),     p.mViewportSize},
+    {(sHeaderClippingNear),     p.mNear},
+    {(sHeaderClippingFar),      p.mFar},
+    {(sHeaderViewportRect),     p.mViewportSize},
 
-    {MSVSTR(sHeaderIsFocusInstantly), p.mIsFocusInstantly},
-    {MSVSTR(sHeaderIsMeshUnclipped),  p.mIsEnableMeshUnClipped},
+    {(sHeaderIsFocusInstantly), p.mIsFocusInstantly},
+    {(sHeaderIsMeshUnclipped),  p.mIsEnableMeshUnClipped},
     {"Is3DListener",                  p.mIs3DListener},
   };
 }
@@ -342,9 +342,9 @@ void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDySoundSourceComponentMe
 {
   j = nlohmann::json
   {
-    {MSVSTR(sHeader_Type),      p.mType},
-    {MSVSTR(sHeader_Details),   p.mDetails},
-    {MSVSTR(sHeader_Activated), p.mInitiallyActivated},
+    {(sHeader_Type),      p.mType},
+    {(sHeader_Details),   p.mDetails},
+    {(sHeader_Activated), p.mInitiallyActivated},
   };;
 }
 

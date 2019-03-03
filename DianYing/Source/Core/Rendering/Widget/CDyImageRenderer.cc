@@ -51,7 +51,7 @@ GetVertexPosition(
 CDyImageRenderer::CDyImageRenderer(FDyImage& mRefObject) : mPtrObject{&mRefObject}
 {
   this->mBinderRenderable = std::make_unique<TDyResourceBinderMaterial>();
-  this->mBinderQuadMesh.TryRequireResource(MSVSTR(FDyBtMsUiImageQuad::sName));
+  this->mBinderQuadMesh.TryRequireResource((FDyBtMsUiImageQuad::sName));
 }
 
 void CDyImageRenderer::Render()

@@ -71,7 +71,7 @@ void RDyBuiltinResource::BindBuiltinResourcesToMetaManager()
     case EDyResourceType::WidgetMeta:
     { // WidgetMeta
       auto metaInfo = std::any_cast<std::string_view>(function()->GetMetaInfo());
-      MDY_CALL_ASSERT_SUCCESS(metaManager.pfAddWidgetMetaInformation(MSVSTR(metaInfo)));
+      MDY_CALL_ASSERT_SUCCESS(metaManager.pfAddWidgetMetaInformation(metaInfo.data()));
     } break;
     case EDyResourceType::Mesh:
     { // Mesh
@@ -98,7 +98,7 @@ void RDyBuiltinResource::BindBuiltinResourcesToMetaManager()
   if (IsLoadingWidgetMetaInfoExist() == true)
   { // If loading widget is exist, insert it to meta manager.
     auto metaInfo = std::any_cast<std::string_view>(GetLoadingWidgetResourceMetaInfo().second()->GetMetaInfo());
-    MDY_CALL_ASSERT_SUCCESS(metaManager.MDY_PRIVATE(AddLoadingWidgetMetaInformation)(MSVSTR(metaInfo)));
+    MDY_CALL_ASSERT_SUCCESS(metaManager.MDY_PRIVATE(AddLoadingWidgetMetaInformation)(metaInfo.data()));
   }
 }
 

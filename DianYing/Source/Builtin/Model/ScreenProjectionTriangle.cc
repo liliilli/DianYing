@@ -24,7 +24,7 @@ void FDyBuiltinModelScreenProjectionTriangle::ConstructBuffer(PDyModelInstanceMe
 {
   buffer.mSourceType          = EDyResourceSource::Builtin;
   buffer.mSpecifierName       = sName;
-  buffer.mMeshList.emplace_back(MSVSTR(FDyBtMsScrTriangle::sName), MSVSTR(FDyBtMtCheckerWorldPos::sName));
+  buffer.mMeshList.emplace_back((FDyBtMsScrTriangle::sName), (FDyBtMtCheckerWorldPos::sName));
 }
 
 } /// ::dy::builtin namespace

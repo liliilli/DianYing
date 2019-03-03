@@ -70,7 +70,7 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyScriptReferenceMetaInfo&
 {
   j = nlohmann::json
   {
-      {MSVSTR(sHeader_Specifier),  p.mSpecifierName},
+      {(sHeader_Specifier),  p.mSpecifierName},
   };
 }
 
@@ -83,11 +83,11 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyScriptInstanceMetaInfo& 
 {
   j = nlohmann::json
   {
-      {MSVSTR(sHeader_Specifier),   p.mSpecifierName},
-      {MSVSTR(sHeader_Type),        p.mScriptType},
-      {MSVSTR(sHeader_Path),        p.mFilePath},
+      {(sHeader_Specifier),   p.mSpecifierName},
+      {(sHeader_Type),        p.mScriptType},
+      {(sHeader_Path),        p.mFilePath},
       {"Mode", p.mScriptMode},
-      {MSVSTR(sHeader_IsCompressed),p.mIsCompressed}
+      {(sHeader_IsCompressed),p.mIsCompressed}
   };
 }
 

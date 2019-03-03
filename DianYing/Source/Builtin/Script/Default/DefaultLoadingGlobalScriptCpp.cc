@@ -28,11 +28,10 @@ MDY_PRIVATE(FDyDefaultLoadingGlobalScript)::MDY_PRIVATE(FDyDefaultLoadingGlobalS
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Material, builtin::FDyBtMtCheckerWorldPos::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Material, builtin::FDyBtStaticTransparentChecker::sName);
 
-  using namespace std::string_view_literals;
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Material, "M_Wall1"sv);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Material, "M_TestDynamicAnimation"sv);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Material, "M_Wall1");
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Material, "M_TestDynamicAnimation");
 
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Sound, "TestEffect_C"sv);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Sound, "TestEffect_C");
 }
 
 } /// ::dy namespace

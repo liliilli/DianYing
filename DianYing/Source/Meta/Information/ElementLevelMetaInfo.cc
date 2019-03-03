@@ -116,8 +116,8 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyLevelConstructMetaInfo& 
 {
   j = nlohmann::json
   {
-      {MSVSTR(sCategoryMeta),   p.mMetaCategory},
-      {MSVSTR(sCategoryObject), p.mLevelObjectMetaInfoList},
+      {(sCategoryMeta),   p.mMetaCategory},
+      {(sCategoryObject), p.mLevelObjectMetaInfoList},
   };
 }
 
@@ -134,9 +134,9 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyLevelConstructMetaInfo::
   // @TODO p.mLevelBackgroundColor to DDyColorRGB24.
   j = nlohmann::json
   {
-    {MSVSTR(sHeader_SpecifierName),               p.mLevelName},
-    {MSVSTR(sHeader_IsUsingUUIDForSpecification), p.mIsUsingUUIDForSpecification},
-    {MSVSTR(sHeader_BackgroundColor),             p.mLevelBackgroundColor},
+    {(sHeader_SpecifierName),               p.mLevelName},
+    {(sHeader_IsUsingUUIDForSpecification), p.mIsUsingUUIDForSpecification},
+    {(sHeader_BackgroundColor),             p.mLevelBackgroundColor},
   };
 }
 

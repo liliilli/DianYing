@@ -62,8 +62,8 @@ EDySuccess CDyBasicGaugeBarRenderer::Initialize(const PDyBasicGaugeBarRendererCt
 {
   MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mPtrUiObject), "descriptor.mPtrUiObject must not be null.");
   this->mPtrBarObject  = descriptor.mPtrUiObject;
-  this->mBinderShader .TryRequireResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderUiBasicGaugeBar::sName));
-  this->mBinderBarMesh.TryRequireResource(MSVSTR(builtin::FDyBtMsUiBarQuad::sName));
+  this->mBinderShader .TryRequireResource((builtin::FDyBuiltinShaderGLRenderUiBasicGaugeBar::sName));
+  this->mBinderBarMesh.TryRequireResource((builtin::FDyBtMsUiBarQuad::sName));
 
   return DY_SUCCESS;
 }

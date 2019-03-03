@@ -42,9 +42,9 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyDirLightComponentMetaInf
 {
   j = nlohmann::json
   {
-    {MSVSTR(sHeader_Type),      p.mType},
-    {MSVSTR(sHeader_Details),   p.mDetails},
-    {MSVSTR(sHeader_Activated), p.mInitiallyActivated},
+    {(sHeader_Type),      p.mType},
+    {(sHeader_Details),   p.mDetails},
+    {(sHeader_Activated), p.mInitiallyActivated},
   };
 }
 
