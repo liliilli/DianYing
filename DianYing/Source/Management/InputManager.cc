@@ -28,6 +28,7 @@
 #include <Dy/Core/DyEngine.h>
 #include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
 #include <Dy/Element/Internal/TDyIdDistributor.h>
+#include <Dy/Element/Actor.h>
 
 //!
 //! Data

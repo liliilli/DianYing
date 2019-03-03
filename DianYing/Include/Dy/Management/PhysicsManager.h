@@ -79,8 +79,7 @@ public:
   void MDY_PRIVATE(UnregisterRigidbody)(_MIN_ CDyPhysicsRigidbody& iRefRigidbody);
 
 private:
-  class Impl;
-  Impl* mPimpl = nullptr;
+  class Impl; Impl* mPimpl = nullptr;
 };
 
 } /// ::dy namespace

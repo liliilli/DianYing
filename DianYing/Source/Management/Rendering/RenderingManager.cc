@@ -52,6 +52,7 @@
 #include <Dy/Core/Rendering/Pipeline/Debug/PickingRenderer.h>
 #include <Dy/Helper/Pointer.h>
 #include <Dy/Helper/Internal/FDyCallStack.h>
+#include <Dy/Element/Actor.h>
 #include <queue>
 
 //!
