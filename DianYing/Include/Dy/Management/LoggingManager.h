@@ -54,92 +54,19 @@ private:
 
 } /// ::dy namespace
 
-//!
-//! Global log macro
-//!
+/// @brief Use this when logging even though build mode is release.
+template <typename... TArgs> void MDY_LOG_INFO(const std::string& iFormatString, TArgs&&... iArgs);
+template <typename... TArgs> void MDY_LOG_WARNING(const std::string& iFormatString, TArgs&&... iArgs);
+template <typename... TArgs> void MDY_LOG_ERROR(const std::string& iFormatString, TArgs&&... iArgs);
+template <typename... TArgs> void MDY_LOG_CRITICAL(const std::string& iFormatString, TArgs&&... iArgs);
 
-#define MDY_LOG_INFO(__MAString__, ...) \
-{ \
-  using __ELevel = ::dy::MDyLog::ELevel; \
-  const auto __String = ::dy::MakeStringU8(__MAString__, __VA_ARGS__); \
-  ::dy::MDyLog::GetInstance().PushLog(__ELevel::Information, __String); \
-}
-
-#define MDY_LOG_WARNING(__MAString__, ...) \
-{ \
-  using __ELevel = ::dy::MDyLog::ELevel; \
-  const auto __String = ::dy::MakeStringU8(__MAString__, __VA_ARGS__); \
-  ::dy::MDyLog::GetInstance().PushLog(__ELevel::Warning, __String); \
-}
-
-#define MDY_LOG_ERROR(__MAString__, ...) \
-{ \
-  using __ELevel = ::dy::MDyLog::ELevel; \
-  const auto __String = ::dy::MakeStringU8(__MAString__, __VA_ARGS__); \
-  ::dy::MDyLog::GetInstance().PushLog(__ELevel::Error, __String); \
-}
-
-#define MDY_LOG_CRITICAL(__MAString__, ...) \
-{ \
-  using __ELevel = ::dy::MDyLog::ELevel; \
-  const auto __String = ::dy::MakeStringU8(__MAString__, __VA_ARGS__); \
-  ::dy::MDyLog::GetInstance().PushLog(__ELevel::Critical, __String); \
-}
-
-//!
-//! Debug log macro for just only debug mode
-//!
-
-#if (defined(NDEBUG) == false)
-  #define MDY_LOG_TRACE_D(__MAString__, ...) \
-  { \
-    using __ELevel = ::dy::MDyLog::ELevel; \
-    const auto __String = ::dy::MakeStringU8(__MAString__, __VA_ARGS__); \
-    ::dy::MDyLog::GetInstance().PushLog(__ELevel::Trace, __String); \
-  }
-
-  #define MDY_LOG_DEBUG_D(__MAString__, ...) \
-  { \
-    using __ELevel = ::dy::MDyLog::ELevel; \
-    const auto __String = ::dy::MakeStringU8(__MAString__, __VA_ARGS__); \
-    ::dy::MDyLog::GetInstance().PushLog(__ELevel::Debug, __String); \
-  }
-
-  #define MDY_LOG_INFO_D(__MAString__, ...) \
-  { \
-    using __ELevel = ::dy::MDyLog::ELevel; \
-    const auto __String = ::dy::MakeStringU8(__MAString__, __VA_ARGS__); \
-    ::dy::MDyLog::GetInstance().PushLog(__ELevel::Information, __String); \
-  }
-
-  #define MDY_LOG_WARNING_D(__MAString__, ...) \
-  { \
-    using __ELevel = ::dy::MDyLog::ELevel; \
-    const auto __String = ::dy::MakeStringU8(__MAString__, __VA_ARGS__); \
-    ::dy::MDyLog::GetInstance().PushLog(__ELevel::Warning, __String); \
-  }
-
-  #define MDY_LOG_ERROR_D(__MAString__, ...) \
-  { \
-    using __ELevel = ::dy::MDyLog::ELevel; \
-    const auto __String = ::dy::MakeStringU8(__MAString__, __VA_ARGS__); \
-    ::dy::MDyLog::GetInstance().PushLog(__ELevel::Error, __String); \
-  }
-
-  #define MDY_LOG_CRITICAL_D(__MAString__, ...) \
-  { \
-    using __ELevel = ::dy::MDyLog::ELevel; \
-    const auto __String = ::dy::MakeStringU8(__MAString__, __VA_ARGS__); \
-    ::dy::MDyLog::GetInstance().PushLog(__ELevel::Critical, __String); \
-  }
-
-#else
-  #define MDY_LOG_TRACE_D(__MAString__, ...)    ((void*)0)
-  #define MDY_LOG_INFO_D(__MAString__, ...)     ((void*)0)
-  #define MDY_LOG_DEBUG_D(__MAString__, ...)    ((void*)0)
-  #define MDY_LOG_WARNING_D(__MAString__, ...)  ((void*)0)
-  #define MDY_LOG_CRITICAL_D(__MAString__, ...) ((void*)0)
-  #define MDY_LOG_ERROR_D(__MAString__, ...)    ((void*)0)
-#endif /// opgs16::debug::PushLog only on _DEBUG
+/// @brief Use this when logging only if build mdoe is debug.
+template <typename... TArgs> void MDY_LOG_TRACE_D(const std::string& iFormatString, TArgs&&... iArgs);
+template <typename... TArgs> void MDY_LOG_DEBUG_D(const std::string& iFormatString, TArgs&&... iArgs);
+template <typename... TArgs> void MDY_LOG_INFO_D(const std::string& iFormatString, TArgs&&... iArgs);
+template <typename... TArgs> void MDY_LOG_WARNING_D(const std::string& iFormatString, TArgs&&... iArgs);
+template <typename... TArgs> void MDY_LOG_ERROR_D(const std::string& iFormatString, TArgs&&... iArgs);
+template <typename... TArgs> void MDY_LOG_CRITICAL_D(const std::string& iFormatString, TArgs&&... iArgs);
 
 #endif /// GUARD_DY_MANAGEMENT_LOGGING_MANAGER_H
+#include <Dy/Management/Inline/MLog.inl>
