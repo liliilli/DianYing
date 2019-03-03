@@ -58,14 +58,14 @@ LDyScript = {
 void DyInitializeMDyLog(_MIO_ sol::state& lua)
 {
   /// Binding lua
-  lua.new_enum<dy::EDyLogLevel>("EDyLogLevel",
+  lua.new_enum<MDyLog::ELevel>("EDyLogLevel",
     {
-      { "Trace",        EDyLogLevel::Trace },
-      { "Debug",        EDyLogLevel::Debug },
-      { "Information",  EDyLogLevel::Information },
-      { "Warning",      EDyLogLevel::Warning },
-      { "Error",        EDyLogLevel::Error },
-      { "Critical",     EDyLogLevel::Critical }
+      { "Trace",        MDyLog::ELevel::Trace },
+      { "Debug",        MDyLog::ELevel::Debug },
+      { "Information",  MDyLog::ELevel::Information },
+      { "Warning",      MDyLog::ELevel::Warning },
+      { "Error",        MDyLog::ELevel::Error },
+      { "Critical",     MDyLog::ELevel::Critical }
     }
   );
 
@@ -73,7 +73,7 @@ void DyInitializeMDyLog(_MIO_ sol::state& lua)
   lua.new_usertype<dy::MDyLog>("MDyLog",
       "new",            sol::no_constructor,
       "GetInstance",    &MDyLog::GetInstance,
-      "PushLog",        &MDyLog::PushLog<>,
+      //"PushLog",        &MDyLog::PushLog,
       "SetVisibleLevel",&MDyLog::SetVisibleLevel
   );
 }

@@ -854,11 +854,13 @@
     <ClInclude Include="Include\Dy\Builtin\Mesh\Debug\FDyBtMsDebugAABB.h" />
     <ClInclude Include="Include\Dy\Builtin\Constant\GeneralValue.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\Debug\PickingRenderer.h" />
+    <ClInclude Include="Include\Dy\Helper\Library\HelperString.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />
     <None Include="TestResource\Lua\player_script.lua" />
     <None Include="TestResource\Lua\test_bindingscript.lua" />
     <None Include="Include\Dy\Helper\Library\HelperJson.inl" />
+    <None Include="Include\Dy\Helper\Library\HelperString.inl" />
   </ItemGroup>
 </Project>

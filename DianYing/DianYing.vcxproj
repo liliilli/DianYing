@@ -767,6 +767,7 @@
     <ClInclude Include="Include\Dy\Helper\Internal\FDyNameGenerator.h" />
     <ClInclude Include="Include\Dy\Helper\Library\HelperAssimp.h" />
     <ClInclude Include="Include\Dy\Helper\Library\HelperFilesystem.h" />
+    <ClInclude Include="Include\Dy\Helper\Library\HelperString.h" />
     <ClInclude Include="Include\Dy\Helper\MCS\GLShaderParser.h" />
     <ClInclude Include="Include\Dy\Helper\StringSwitch.h" />
     <ClInclude Include="Include\Dy\Helper\System\Idioms.h" />
@@ -1073,6 +1074,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Include\Dy\Helper\Library\HelperJson.inl" />
+    <None Include="Include\Dy\Helper\Library\HelperString.inl" />
     <None Include="TestResource\Lua\player_script.lua" />
     <None Include="TestResource\Lua\test_bindingscript.lua" />
     <None Include="TestResource\Lua\variables.lua">
