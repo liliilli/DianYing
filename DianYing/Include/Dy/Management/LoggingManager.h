@@ -69,4 +69,4 @@ template <typename... TArgs> void DyPushLogDebugError(const std::string& iFormat
 template <typename... TArgs> void DyPushLogDebugCritical(const std::string& iFormatString, TArgs&&... iArgs);
 
 #endif /// GUARD_DY_MANAGEMENT_LOGGING_MANAGER_H
-#include <Dy/Management/Inline/MLog.inl>
+#include <Dy/Management/Inline/MLogHelper.inl>
