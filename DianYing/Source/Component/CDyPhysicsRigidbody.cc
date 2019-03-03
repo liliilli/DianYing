@@ -15,11 +15,14 @@
 /// Header file
 #include <Dy/Component/CDyPhysicsRigidbody.h>
 #include <Dy/Element/Actor.h>
-#include <Dy/Management/SettingManager.h>
 #include <Dy/Helper/ContainerHelper.h>
 #include <Dy/Helper/System/Idioms.h>
 #include <Dy/Component/CDyPhysicsCollider.h>
+#include <Dy/Management/SettingManager.h>
 #include <Dy/Management/PhysicsManager.h>
+#include <Dy/Management/Type/Physics/DDyCollisionIssueItem.h>
+#include <extensions/PxRigidActorExt.h>
+#include <PxPhysicsAPI.h>
 
 namespace dy
 {
@@ -209,7 +212,7 @@ void CDyPhysicsRigidbody::pActivateDynamicNKinematicActor()
   const auto& defaultSetting = refPhysics.GetDefaultSetting();
 
   {
-    MDY_PHYSX_WRITE_LOCK();
+    ::physx::PxSceneWriteLock lock(::dy::MDyPhysics::GetInstance().MDY_PRIVATE(GetRefScene)());
     MDY_ASSERT_FORCE(MDY_CHECK_ISNULL(this->mOwnerInternalActor), "Internal rigidbody actor must be null.");
 
     // Create RigidDynamic instance.
@@ -292,7 +295,7 @@ void CDyPhysicsRigidbody::TryDeactivateInstance()
   this->mRigidbodySpecifierId = 0;
 
   {
-    MDY_PHYSX_WRITE_LOCK();
+    ::physx::PxSceneWriteLock lock(::dy::MDyPhysics::GetInstance().MDY_PRIVATE(GetRefScene)());
     MDY_ASSERT_FORCE(MDY_CHECK_ISNOTNULL(this->mOwnerInternalActor), "Internal rigidbody actor must be valid.");
     MDY_ASSERT_FORCE(this->mOwnerInternalActor->isReleasable() == true, "Internal rigidbody actor is not releasable.");
 

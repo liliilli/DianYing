@@ -1075,7 +1075,8 @@
   <ItemGroup>
     <None Include="Include\Dy\Helper\Library\HelperJson.inl" />
     <None Include="Include\Dy\Helper\Library\HelperString.inl" />
-    <None Include="Include\Dy\Management\Inline\MLog.inl" />
+    <None Include="Include\Dy\Management\Inline\MLogHelper.inl" />
+    <None Include="Include\Dy\Management\Inline\MPhysicsImpl.inl" />
     <None Include="TestResource\Lua\player_script.lua" />
     <None Include="TestResource\Lua\test_bindingscript.lua" />
     <None Include="TestResource\Lua\variables.lua">

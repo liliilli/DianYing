@@ -17,6 +17,7 @@
 #include <geometry/PxCapsuleGeometry.h>
 #include <Dy/Management/PhysicsManager.h>
 #include <Dy/Component/CDyPhysicsRigidbody.h>
+#include <PxPhysics.h>
 
 namespace dy
 {
