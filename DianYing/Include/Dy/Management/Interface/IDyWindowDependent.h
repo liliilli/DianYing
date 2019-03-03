@@ -16,52 +16,35 @@
 namespace dy
 {
 
-///
 /// @interface IDyWindowDependent
 /// @brief Window depdenent base type.
-///
 MDY_INTERFACE MDY_NO_VTABLE IDyWindowDependent
 {
 public:
   virtual ~IDyWindowDependent() = default;
 
-  ///
   /// @brief Initialize dependent platform window manager.
-  ///
   virtual void InitializeDep() = 0;
-
-  ///
   /// @brief Release dependent platform window manager.
-  ///
   virtual void ReleaseDep() = 0;
 
-  ///
   /// @brief  Create console window if OS supports. Even though OS does not support console window,
   /// This function will return DY_SUCCESS because of conformity with remove function.
   /// @return If succeeded, return DY_SUCCESS or DY_FAILURE. \n
-  ///
   MDY_NODISCARD virtual EDySuccess CreateConsoleWindow() = 0;
-
-  ///
   /// @brief  Check if console window is created or not.
   /// @return If created anyway, return true or false.
-  ///
   MDY_NODISCARD virtual bool IsCreatedConsoleWindow() const noexcept = 0;
-
-  ///
   /// @brief  Remove console window when console window is initiailzed before.
   /// @return If succeeded, return DY_SUCCESS or DY_FAILURE.
-  ///
   MDY_NODISCARD virtual EDySuccess RemoveConsoleWindow() = 0;
 
   /// @brief Get cpu usage overall percentage. (0 ~ 100%)
   MDY_NODISCARD virtual TF32 GetCpuUsage() = 0;
-
   /// @brief Get ram usage as byte.
   MDY_NODISCARD virtual TU64 GetRamUsage() = 0;
-
+  /// @brief Check font exist on system path.
   MDY_NODISCARD virtual bool IsFontExistOnSystem(_MIN_ const std::string& iFontKey) const = 0;
-
   /// @brief Get system font path with iFontKey. If not found, just return null value.
   MDY_NODISCARD virtual std::optional<std::string> GetFontPathOnSystem(_MIN_ const std::string& iFontKey) const = 0;
 };

@@ -58,7 +58,7 @@ void DyGLFWErrorFunction(int errorcode, const char* message)
 //! Platform depdendent anonymous namespace
 //!
 
-#if defined(MDY_PLATFORM_FLAG_WINDOWS)
+#if defined(_WIN32) == true
 namespace
 {
 
@@ -99,36 +99,64 @@ bool MDyWindow::IsWindowShouldClose() const noexcept
 
 EDySuccess MDyWindow::MDY_PRIVATE(TerminateWindow)() noexcept
 {
-  bool terminated = false;
-  if (terminated == true) { return DY_FAILURE; }
-
-  terminated = true;
   glfwSetWindowShouldClose(this->GetGLMainWindow(), GLFW_TRUE);
   return DY_SUCCESS;
 }
 
+GLFWwindow* MDyWindow::GetGLMainWindow() const noexcept
+{
+  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mGlfwWindow), "GlfwWindow is not initiailized.");
+  return this->mGlfwWindow;
+}
+
 const std::array<GLFWwindow*, 2>& MDyWindow::GetGLWorkerWindowList() const noexcept
 {
-#if defined (NDEBUG) == false 
+  #if defined (NDEBUG) == false 
   for (const auto& ptrWindow : this->mGlfwWorkerWnds)
   { // Validation check.
     MaybeNotUsed(ptrWindow);
     MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptrWindow), "GLFWwindow must be valid.");
   }
-#endif
+  #endif
+
   return this->mGlfwWorkerWnds;
 }
 
-void MDyWindow::TempSwapBuffers()
+EDySuccess MDyWindow::CreateConsoleWindow()
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mGlfwWindow), "OpenGL Context must not be null when running.");
-
-  if (this->IsWindowShouldClose() == true) { return; }
-  glfwSwapBuffers(this->mGlfwWindow);
-  glfwPollEvents();
+  return this->mDependentWindowContext->CreateConsoleWindow();
 }
 
-#if defined(MDY_PLATFORM_FLAG_WINDOWS)
+bool MDyWindow::IsCreatedConsoleWindow() const noexcept
+{
+  return this->mDependentWindowContext->IsCreatedConsoleWindow();
+}
+
+EDySuccess MDyWindow::RemoveConsoleWindow()
+{
+  return this->mDependentWindowContext->RemoveConsoleWindow();
+}
+
+TF32 MDyWindow::GetCpuUsage()
+{
+  return this->mDependentWindowContext->GetCpuUsage();
+}
+
+TU64 MDyWindow::GetRamUsage()
+{
+  return this->mDependentWindowContext->GetRamUsage();
+}
+
+bool MDyWindow::IsFontExistOnSystem(const std::string& iFontKey) const
+{
+  return this->mDependentWindowContext->IsFontExistOnSystem(iFontKey);
+}
+
+std::optional<std::string> MDyWindow::GetFontPathOnSystem(const std::string& iFontKey) const
+{
+  return this->mDependentWindowContext->GetFontPathOnSystem(iFontKey);
+}
+
 EDySuccess MDyWindow::pfInitialize()
 {
   /// @brief This function is not implemented yet.
@@ -231,8 +259,20 @@ EDySuccess MDyWindow::pfInitialize()
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   DyPushLogDebugInfo("{} | MDyWindow::pfInitialize().", "FunctionCall");
-  MDY_INHERITENCE_WINDOW_INFORMATION_SUPER::InitializeDep();
+  #if defined(_WIN32)
+    this->mDependentWindowContext = new DDyWindowInformationWindows();
+  #else
+    static_assert(false, "Other platform does not support yet.");
+  #endif
+  this->mDependentWindowContext->InitializeDep();
 
+  // If we should create console window...
+  if (MDySetting::GetInstance().IsEnabledSubFeatureLoggingToConsole() == true)
+  {
+    MDY_CALL_ASSERT_SUCCESS(this->mDependentWindowContext->CreateConsoleWindow());
+  }
+
+  // @TODO TEMP
   switch (MDySetting::GetInstance().GetRenderingType())
   {
   default: MDY_UNEXPECTED_BRANCH(); break;
@@ -263,12 +303,15 @@ EDySuccess MDyWindow::pfRelease()
     break;
   }
 
-  MDY_INHERITENCE_WINDOW_INFORMATION_SUPER::ReleaseDep();
+  if (this->mDependentWindowContext->IsCreatedConsoleWindow() == true)
+  {
+    MDY_CALL_ASSERT_SUCCESS(this->mDependentWindowContext->RemoveConsoleWindow());
+  }
+
+  this->mDependentWindowContext->ReleaseDep();
+  delete this->mDependentWindowContext;
+  this->mDependentWindowContext = nullptr;
   return DY_SUCCESS;
 }
-
-#elif defined(MDY_PLATFORM_FLAG_LINUX)
-#elif defined(MDY_PLATFORM_FLAG_MACOS)
-#endif
 
 } /// ::dy namespace
