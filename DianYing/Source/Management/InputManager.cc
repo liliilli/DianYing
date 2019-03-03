@@ -884,6 +884,11 @@ void MDyInput::ResetPickingTargetCallback() noexcept
   mActorPickingCallback = nullptr;
 }
 
+bool MDyInput::IsActorPicked() const noexcept
+{
+  return this->mPtrActorPickingTarget != nullptr;
+}
+
 FDyActor** MDyInput::MDY_PRIVATE(GetPPtrPickingTarget)() noexcept
 {
   return &this->mPtrActorPickingTarget;

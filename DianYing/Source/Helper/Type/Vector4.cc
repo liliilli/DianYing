@@ -25,30 +25,21 @@ namespace dy {
 
 DDyVector4 DDyVector4::MultiplyMatrix(const dy::DDyMatrix4x4& matrix) const noexcept
 {
-  return DDyVector4{
-      this->X * matrix[0][0] + this->Y * matrix[0][1] + this->Z * matrix[0][2] + this->W * matrix[0][3],
-      this->X * matrix[1][0] + this->Y * matrix[1][1] + this->Z * matrix[1][2] + this->W * matrix[1][3],
-      this->X * matrix[2][0] + this->Y * matrix[2][1] + this->Z * matrix[2][2] + this->W * matrix[2][3],
-      this->X * matrix[3][0] + this->Y * matrix[3][1] + this->Z * matrix[3][2] + this->W * matrix[3][3]
-  };
-}
+  DDyVector4 result{};
 
-bool DDyVector4::IsAllZero() const noexcept
-{
-  return math::IsAllZero(*this);
-}
+  for (size_t i = 0; i < 4; ++i)
+  {
+    float value[4];
+    _mm_store_ps(value, _mm_mul_ps(this->__Simd, matrix[i].__Simd));
+    result[i] += value[0] + value[1] + value[2] + value[3];
+  }
 
-bool DDyVector4::IsAllZero(const DDyVector4& vector) noexcept
-{
-  return math::IsAllZero(vector);
+  return result;
 }
 
 bool operator==(_MIN_ const DDyVector4& lhs, _MIN_ const DDyVector4& rhs) noexcept
 {
-  return lhs.X == rhs.X 
-      && lhs.Y == rhs.Y
-      && lhs.Z == rhs.Z
-      && lhs.W == rhs.W;
+  return _mm_movemask_ps(_mm_cmpeq_ps(lhs.__Simd, rhs.__Simd)) == 0xF;
 }
 
 bool operator!=(_MIN_ const DDyVector4& lhs, _MIN_ const DDyVector4& rhs) noexcept

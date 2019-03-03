@@ -37,6 +37,7 @@
 #include "Dy/Management/PhysicsManager.h"
 #include "Dy/Component/CDyModelFilter.h"
 #include <Dy/Builtin/Constant/GeneralValue.h>
+#include <Dy/Management/InputManager.h>
 
 //!
 //! Forward declaration & Local translation unit function and data.
@@ -187,6 +188,7 @@ EDySuccess MDyRendering::pfInitialize()
   this->mSkyPostEffect        = std::make_unique<decltype(this->mSkyPostEffect)::element_type>();
   this->mDebugShapeRenderer   = std::make_unique<decltype(this->mDebugShapeRenderer)::element_type>();
   this->mDebugAABBRenderer    = std::make_unique<decltype(mDebugAABBRenderer)::element_type>();
+  this->mDebugPickingRenderer = std::make_unique<decltype(this->mDebugPickingRenderer)::element_type>();
 
   // Set callback function for global internal status stack.
   this->mInternal_FeatBlendStack.SetCallback(CbGlFeatBlendStack);
@@ -359,6 +361,7 @@ EDySuccess MDyRendering::pfRelease()
   this->mTranslucentOIT       = MDY_INITIALIZE_NULL;
   this->mDebugShapeRenderer   = MDY_INITIALIZE_NULL;
   this->mDebugAABBRenderer    = nullptr;
+  this->mDebugPickingRenderer = nullptr;
 
   // Initialize internal management singleton instance.
   MDY_CALL_ASSERT_SUCCESS(FDyModelHandlerManager::Release());
@@ -666,6 +669,21 @@ void MDyRendering::RenderDebugInformation()
     }
   }
   this->mDebugColliderDrawingList.clear();
+
+  // If picking actor is exist, render it only edge using kernel & ping-pong.
+  if (auto& refInput = MDyInput::GetInstance();
+      refInput.IsActorPicked() == true)
+  {
+    auto& refActor = *(*refInput.__GetPPtrPickingTarget());
+    if (MDY_GRAPHIC_SET_CRITICALSECITON();
+        this->mDebugPickingRenderer != nullptr
+    &&  this->mDebugPickingRenderer->TryPushRenderingSetting() == DY_SUCCESS)
+    {
+      this->mDebugPickingRenderer->RenderScreen(refActor);
+    }
+    // Pop setting.
+    this->mDebugPickingRenderer->TryPopRenderingSetting();
+  }
 
   this->PopInternalGlobalStatus();
 }

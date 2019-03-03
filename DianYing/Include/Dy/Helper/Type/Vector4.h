@@ -37,10 +37,11 @@ class DDyMatrix4x4;
 ///
 struct DDyVector4 final
 {
-  float X = 0.f;
-  float Y = 0.f;
-  float Z = 0.f;
-  float W = 1.f;
+  union 
+  { 
+    __m128 __Simd{}; 
+    struct { float X; float Y; float Z; float W; };
+  };
 
   DDyVector4() = default;
   DDyVector4(const DDyVector4&) = default;
@@ -251,70 +252,44 @@ struct DDyVector4 final
 
   friend DDyVector4 operator+(DDyVector4 lhs, const DDyVector4& rhs) noexcept
   {
-    lhs.X += rhs.X;
-    lhs.Y += rhs.Y;
-    lhs.Z += rhs.Z;
-    lhs.W += rhs.W;
+    lhs.__Simd = _mm_add_ps(lhs.__Simd, rhs.__Simd);
     return lhs;
   }
 
   friend DDyVector4 operator-(DDyVector4 lhs, const DDyVector4& rhs) noexcept
   {
-    lhs.X -= rhs.X;
-    lhs.Y -= rhs.Y;
-    lhs.Z -= rhs.Z;
-    lhs.W -= rhs.W;
+    lhs.__Simd = _mm_sub_ps(lhs.__Simd, rhs.__Simd);
     return lhs;
   }
 
-  ///
   /// DDyVector4 $$ v = (x, y, z) $$ and value $$ a $$
   /// $$ av $$.
-  ///
   friend DDyVector4 operator*(DDyVector4 lhs, const float rhs) noexcept
   {
-    lhs.X *= rhs;
-    lhs.Y *= rhs;
-    lhs.Z *= rhs;
-    lhs.W *= rhs;
+    lhs.__Simd = _mm_mul_ps(lhs.__Simd, _mm_set_ps(rhs, rhs, rhs, rhs));
     return lhs;
   }
 
-  ///
   /// If lhs and rhs are DDyVector4, element multiplication happens.
-  ///
   friend DDyVector4 operator*(DDyVector4 lhs, const DDyVector4& rhs) noexcept
   {
-    lhs.X *= rhs.X;
-    lhs.Y *= rhs.Y;
-    lhs.Z *= rhs.Z;
-    lhs.W *= rhs.W;
+    lhs.__Simd = _mm_mul_ps(lhs.__Simd, rhs.__Simd);
     return lhs;
   }
 
-  ///
   /// If rhs has 0 value, this function just do nothing.
-  ///
   friend DDyVector4 operator/(DDyVector4 lhs, const float rhs) noexcept
   {
-    if (rhs == 0.0f)
-    {
-      MDY_LOG_CRITICAL_D("DDyVector4 could not be divided by {0}.", rhs);
-    }
+    if (rhs == 0.0f) { MDY_LOG_CRITICAL_D("DDyVector4 could not be divided by {0}.", rhs); }
     else
     {
-      lhs.X /= rhs;
-      lhs.Y /= rhs;
-      lhs.Z /= rhs;
-      lhs.W /= rhs;
+      lhs.__Simd = _mm_div_ps(lhs.__Simd, _mm_set_ps(rhs, rhs, rhs, rhs));
     }
 
     return lhs;
   }
 
-  ///
   /// If rhs vector has any 0 value, this function just do nothing.
-  ///
   friend DDyVector4 operator/(DDyVector4 lhs, const DDyVector4& rhs) noexcept
   {
     if (rhs.X == 0.0f || rhs.Y == 0.0f || rhs.Z == 0.0f || rhs.W == 0.0f)
@@ -323,10 +298,7 @@ struct DDyVector4 final
     }
     else
     {
-      lhs.X /= rhs.X;
-      lhs.Y /= rhs.Y;
-      lhs.Z /= rhs.Z;
-      lhs.W /= rhs.W;
+      lhs.__Simd = _mm_div_ps(lhs.__Simd, rhs.__Simd);
     }
 
     return lhs;
@@ -334,43 +306,29 @@ struct DDyVector4 final
 
   DDyVector4& operator+=(const DDyVector4& value) noexcept
   {
-    this->X += value.X;
-    this->Y += value.Y;
-    this->Z += value.Z;
-    this->W += value.W;
+    this->__Simd = _mm_add_ps(this->__Simd, value.__Simd);
     return *this;
   }
 
   DDyVector4& operator-=(const DDyVector4& value) noexcept
   {
-    this->X -= value.X;
-    this->Y -= value.Y;
-    this->Z -= value.Z;
-    this->W -= value.W;
+    this->__Simd = _mm_sub_ps(this->__Simd, value.__Simd);
     return *this;
   }
 
   DDyVector4& operator*=(const float value) noexcept
   {
-    this->X *= value;
-    this->Y *= value;
-    this->Z *= value;
-    this->W *= value;
+    this->__Simd = _mm_mul_ps(this->__Simd, _mm_set_ps(value, value, value, value));
     return *this;
   }
 
   DDyVector4& operator*=(const DDyVector4& value) noexcept
   {
-    this->X *= value.X;
-    this->Y *= value.Y;
-    this->Z *= value.Z;
-    this->W *= value.W;
+    this->__Simd = _mm_sub_ps(this->__Simd, value.__Simd);
     return *this;
   }
 
-  ///
   /// If lhs and rhs are DDyVector4, element multiplication happens.
-  ///
   DDyVector4& operator/=(const float value) noexcept
   {
     if (value == 0.0f)
@@ -379,18 +337,13 @@ struct DDyVector4 final
     }
     else
     {
-      this->X /= value;
-      this->Y /= value;
-      this->Z /= value;
-      this->W /= value;
+      this->__Simd = _mm_div_ps(this->__Simd, _mm_set_ps(value, value, value, value));
     }
 
     return *this;
   }
 
-  ///
   /// If rhs vector has any 0 value, this function just do nothing.
-  ///
   DDyVector4& operator/=(const DDyVector4& value) noexcept
   {
     if (value.X == 0.0f || value.Y == 0.0f || value.Z == 0.0f || value.W == 0.0f)
@@ -399,10 +352,7 @@ struct DDyVector4 final
     }
     else
     {
-      this->X /= value.X;
-      this->Y /= value.Y;
-      this->Z /= value.Z;
-      this->W /= value.W;
+      this->__Simd = _mm_div_ps(this->__Simd, value.__Simd);
     }
 
     return *this;
@@ -410,16 +360,6 @@ struct DDyVector4 final
 
   friend bool operator==(_MIN_ const DDyVector4& lhs, _MIN_ const DDyVector4& rhs) noexcept;
   friend bool operator!=(_MIN_ const DDyVector4& lhs, _MIN_ const DDyVector4& rhs) noexcept;
-
-  ///
-  /// @brief Check if this DDyVector4 is all zero or nearly equal to zero.
-  ///
-  [[nodiscard]] bool IsAllZero() const noexcept;
-
-  ///
-  /// @brief Check if vector DDyVector4 is all zero or nearly equal to zero.
-  ///
-  [[nodiscard]] static bool IsAllZero(const DDyVector4& vector) noexcept;
 };
 
 } /// ::dy namespace

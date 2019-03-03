@@ -28,6 +28,7 @@
 #include <Dy/Core/Rendering/Pipeline/DebugShapeRenderer.h>
 #include <Dy/Core/Rendering/Pipeline/PostEffectSky.h>
 #include <Dy/Core/Rendering/Pipeline/DebugAABBRenderer.h>
+#include <Dy/Core/Rendering/Pipeline/Debug/PickingRenderer.h>
 #include <Dy/Helper/Pointer.h>
 #include <Dy/Helper/Internal/FDyCallStack.h>
 
@@ -136,6 +137,7 @@ private:
   std::unique_ptr<FDyFinalScreenDisplayRenderer>  mFinalDisplayRenderer = MDY_INITIALIZE_NULL;
   std::unique_ptr<FDyDebugShapeRenderer>          mDebugShapeRenderer   = MDY_INITIALIZE_NULL;
   std::unique_ptr<FDyDebugAABBRenderer>           mDebugAABBRenderer    = MDY_INITIALIZE_NULL;
+  std::unique_ptr<FDyDebugPickingRenderer>        mDebugPickingRenderer = MDY_INITIALIZE_NULL;
 
   using TMeshDrawCallItem = std::tuple<
       NotNull<DDyModelHandler::DActorInfo*>,

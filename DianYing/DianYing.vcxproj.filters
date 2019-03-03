@@ -345,6 +345,7 @@
     <ClCompile Include="Source\Core\Rendering\Pipeline\DebugShapeRenderer.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\DebugAABBRenderer.cc" />
     <ClCompile Include="Source\Builtin\Mesh\Debug\FDyBtMsDebugAABB.cc" />
+    <ClCompile Include="Source\Core\Rendering\Pipeline\Debug\PickingRenderer.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -852,6 +853,7 @@
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\DebugAABBRenderer.h" />
     <ClInclude Include="Include\Dy\Builtin\Mesh\Debug\FDyBtMsDebugAABB.h" />
     <ClInclude Include="Include\Dy\Builtin\Constant\GeneralValue.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\Debug\PickingRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

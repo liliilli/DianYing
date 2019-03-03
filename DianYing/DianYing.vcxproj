@@ -255,6 +255,7 @@
     <ClCompile Include="Source\Core\Reflection\RDyGlobalInstanceManager.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\DebugAABBRenderer.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\DebugShapeRenderer.cc" />
+    <ClCompile Include="Source\Core\Rendering\Pipeline\Debug\PickingRenderer.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\LevelCascadeShadowRenderer.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\LevelCSMIntergration.cc" />
     <ClCompile Include="Source\Core\Rendering\Pipeline\LevelOITRenderer.cc" />
@@ -692,6 +693,7 @@
     <ClInclude Include="Include\Dy\Core\Reflection\RDyGlobalInstanceManager.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Interface\IDyRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\DebugAABBRenderer.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\Debug\PickingRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\DebugShapeRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\LevelCascadeShadowRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\LevelCSMIntegration.h" />
