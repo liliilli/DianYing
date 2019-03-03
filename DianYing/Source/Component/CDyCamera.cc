@@ -284,7 +284,7 @@ EDySuccess CDyCamera::Focus()
 {
   if (this->mIsFocused == true)
   { // FAILURE!
-    MDY_LOG_WARNING("{}::{} | From FDyActor : {} | This camera is already binded to main camera.",
+    DyPushLogWarning("{}::{} | From FDyActor : {} | This camera is already binded to main camera.",
                     "CDyCamera", "Focus()", this->GetBindedActor()->GetActorName());
     return DY_FAILURE;
   }
@@ -299,7 +299,7 @@ EDySuccess CDyCamera::Unfocus()
 {
   if (this->mIsFocused == false)
   { // FAILURE!
-    MDY_LOG_WARNING("{}::{} | From FDyActor : {} | This camera is not binded to main camera.",
+    DyPushLogWarning("{}::{} | From FDyActor : {} | This camera is not binded to main camera.",
                     "CDyCamera", "Unfocus()", this->GetBindedActor()->GetActorName());
     return DY_FAILURE;
   }

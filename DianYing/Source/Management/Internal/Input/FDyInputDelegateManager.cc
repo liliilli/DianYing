@@ -23,7 +23,7 @@ EDySuccess FDyInputDelegateManager::TryRequireControllerActor(_MIN_ ADyActorCppS
 {
   if (this->mPtrActorScript == &iRefActor) 
   { 
-    MDY_LOG_WARNING("Controller Actor reference on input delegate and requiring is same. Process is neglected.");
+    DyPushLogWarning("Controller Actor reference on input delegate and requiring is same. Process is neglected.");
     return DY_FAILURE; 
   }
 
@@ -33,7 +33,7 @@ EDySuccess FDyInputDelegateManager::TryRequireControllerActor(_MIN_ ADyActorCppS
   }
 
   this->mPtrActorScript = &iRefActor;
-  MDY_LOG_DEBUG_D("Controller UI binding succeeded. ptr : {:x}", std::ptrdiff_t(this->mPtrActorScript));
+  DyPushLogDebugDebug("Controller UI binding succeeded. ptr : {:x}", std::ptrdiff_t(this->mPtrActorScript));
   return DY_SUCCESS;
 }
 
@@ -41,18 +41,18 @@ EDySuccess FDyInputDelegateManager::TryDetachContollerActor(_MIN_ ADyActorCppScr
 {
   if (MDY_CHECK_ISNULL(this->mPtrActorScript))
   {
-    MDY_LOG_WARNING("Failed to detach controller actor. Controller Actor reference on input delegate is not bound anything.");
+    DyPushLogWarning("Failed to detach controller actor. Controller Actor reference on input delegate is not bound anything.");
     return DY_FAILURE;
   }
   if (this->mPtrActorScript != &iRefActor) 
   { // If `mPtrActorScript` is not null but not matched to inputted reference. 
-    MDY_LOG_WARNING("Failed to detach controller actor. Controller UI reference on input delegate is not bound anything.");
+    DyPushLogWarning("Failed to detach controller actor. Controller UI reference on input delegate is not bound anything.");
     return DY_FAILURE;
   }
 
   this->mActorActionDelegateList.clear();
   this->mActorAxisDelegateList.clear();
-  MDY_LOG_DEBUG_D("Controller Actor detachment succeeded. ptr : {:x}", std::ptrdiff_t(this->mPtrActorScript));
+  DyPushLogDebugDebug("Controller Actor detachment succeeded. ptr : {:x}", std::ptrdiff_t(this->mPtrActorScript));
   this->mPtrActorScript = nullptr;
   return DY_SUCCESS;
 }
@@ -61,7 +61,7 @@ EDySuccess FDyInputDelegateManager::TryRequireControllerUi(_MIN_ ADyWidgetCppScr
 {
   if (this->mPtrUiScript == &iRefUiScript) 
   { 
-    MDY_LOG_WARNING("Controller UI reference on input delegate and requiring is same. Process is neglected.");
+    DyPushLogWarning("Controller UI reference on input delegate and requiring is same. Process is neglected.");
     return DY_FAILURE; 
   }
 
@@ -71,7 +71,7 @@ EDySuccess FDyInputDelegateManager::TryRequireControllerUi(_MIN_ ADyWidgetCppScr
   }
 
   this->mPtrUiScript = &iRefUiScript;
-  MDY_LOG_DEBUG_D("Controller UI binding succeeded. ptr : {:x}", std::ptrdiff_t(this->mPtrUiScript));
+  DyPushLogDebugDebug("Controller UI binding succeeded. ptr : {:x}", std::ptrdiff_t(this->mPtrUiScript));
   return DY_SUCCESS;
 }
 
@@ -79,18 +79,18 @@ EDySuccess FDyInputDelegateManager::TryDetachContollerUi(_MIN_ ADyWidgetCppScrip
 {
   if (MDY_CHECK_ISNULL(this->mPtrUiScript))
   {
-    MDY_LOG_WARNING("Failed to detach controller ui. Controller UI reference on input delegate is not bound anything.");
+    DyPushLogWarning("Failed to detach controller ui. Controller UI reference on input delegate is not bound anything.");
     return DY_FAILURE;
   }
   if (this->mPtrUiScript != &iRefUiScript) 
   { // If `mPtrUiScript` is not null but not matched to inputted reference. 
-    MDY_LOG_WARNING("Failed to detach controller ui. Controller UI reference on input delegate is not bound anything.");
+    DyPushLogWarning("Failed to detach controller ui. Controller UI reference on input delegate is not bound anything.");
     return DY_FAILURE;
   }
 
   this->mUiActionDelegateList.clear();
   this->mUiAxisDelegateList.clear();
-  MDY_LOG_DEBUG_D("Controller UI detachment succeeded. ptr : {:x}", std::ptrdiff_t(this->mPtrUiScript));
+  DyPushLogDebugDebug("Controller UI detachment succeeded. ptr : {:x}", std::ptrdiff_t(this->mPtrUiScript));
   this->mPtrUiScript = nullptr;
   return DY_SUCCESS;
 }

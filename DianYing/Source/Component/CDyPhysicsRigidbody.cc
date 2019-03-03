@@ -91,7 +91,7 @@ EDySuccess CDyPhysicsRigidbody::Initialize(_MIN_ const PDyRigidbodyComponentMeta
     // If we can not find `lockPreset` lock preset, just let it be.
     if (DyIsMapContains(physics.mLockPresetContainer, lockPreset) == false)
     {
-      MDY_LOG_ERROR("Failed to find lock preset item from setting, {}.", lockPreset);
+      DyPushLogError("Failed to find lock preset item from setting, {}.", lockPreset);
     }
     else
     { // Otherwise, override values.
@@ -260,7 +260,7 @@ void CDyPhysicsRigidbody::RegisterCollider(_MIN_ CDyPhysicsCollider& iRefCollide
       [iPtrCollider = &iRefCollider](const auto& ptrCollider) { return ptrCollider == iPtrCollider; });
   if (isExist == true)
   {
-    MDY_LOG_WARNING("Collider component may be duplicated.");
+    DyPushLogWarning("Collider component may be duplicated.");
     return;
   }
 

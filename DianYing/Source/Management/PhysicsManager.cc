@@ -552,7 +552,7 @@ void MDyPhysics::onContact(
 	// Check actors are not destroyed
 	if(pairHeader.flags & (physx::PxContactPairHeaderFlag::eREMOVED_ACTOR_0 | physx::PxContactPairHeaderFlag::eREMOVED_ACTOR_1) )
 	{
-		MDY_LOG_ERROR("onContact(): Actors have been deleted!");
+		DyPushLogError("onContact(): Actors have been deleted!");
 		return;
 	}
 

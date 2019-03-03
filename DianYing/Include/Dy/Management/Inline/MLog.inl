@@ -16,7 +16,7 @@
 #include <Dy/Management/LoggingManager.h>
 
 template <typename... TArgs>
-void MDY_LOG_INFO(const std::string& iFormatString, TArgs&&... iArgs)
+void DyPushLogInfo(const std::string& iFormatString, TArgs&&... iArgs)
 {
   ::dy::MDyLog::GetInstance().PushLog(
       ::dy::MDyLog::ELevel::Information, 
@@ -25,7 +25,7 @@ void MDY_LOG_INFO(const std::string& iFormatString, TArgs&&... iArgs)
 }
 
 template <typename... TArgs>
-void MDY_LOG_WARNING(const std::string& iFormatString, TArgs&&... iArgs)
+void DyPushLogWarning(const std::string& iFormatString, TArgs&&... iArgs)
 {
   ::dy::MDyLog::GetInstance().PushLog(
       ::dy::MDyLog::ELevel::Warning, 
@@ -34,7 +34,7 @@ void MDY_LOG_WARNING(const std::string& iFormatString, TArgs&&... iArgs)
 }
 
 template <typename... TArgs>
-void MDY_LOG_ERROR(const std::string& iFormatString, TArgs&&... iArgs)
+void DyPushLogError(const std::string& iFormatString, TArgs&&... iArgs)
 {
   ::dy::MDyLog::GetInstance().PushLog(
       ::dy::MDyLog::ELevel::Error, 
@@ -43,7 +43,7 @@ void MDY_LOG_ERROR(const std::string& iFormatString, TArgs&&... iArgs)
 }
 
 template <typename... TArgs>
-void MDY_LOG_CRITICAL(const std::string& iFormatString, TArgs&&... iArgs)
+void DyPushLogCritical(const std::string& iFormatString, TArgs&&... iArgs)
 {
   ::dy::MDyLog::GetInstance().PushLog(
       ::dy::MDyLog::ELevel::Critical, 
@@ -53,7 +53,7 @@ void MDY_LOG_CRITICAL(const std::string& iFormatString, TArgs&&... iArgs)
 
 #if (defined(NDEBUG) == false)
   template <typename... TArgs>
-  void MDY_LOG_TRACE_D(const std::string& iFormatString, TArgs&&... iArgs)
+  void DyPushLogDebugTrace(const std::string& iFormatString, TArgs&&... iArgs)
   {
     ::dy::MDyLog::GetInstance().PushLog(
         ::dy::MDyLog::ELevel::Trace, 
@@ -62,7 +62,7 @@ void MDY_LOG_CRITICAL(const std::string& iFormatString, TArgs&&... iArgs)
   }
 
   template <typename... TArgs>
-  void MDY_LOG_DEBUG_D(const std::string& iFormatString, TArgs&&... iArgs)
+  void DyPushLogDebugDebug(const std::string& iFormatString, TArgs&&... iArgs)
   {
     ::dy::MDyLog::GetInstance().PushLog(
         ::dy::MDyLog::ELevel::Debug, 
@@ -71,7 +71,7 @@ void MDY_LOG_CRITICAL(const std::string& iFormatString, TArgs&&... iArgs)
   }
 
   template <typename... TArgs>
-  void MDY_LOG_INFO_D(const std::string& iFormatString, TArgs&&... iArgs)
+  void DyPushLogDebugInfo(const std::string& iFormatString, TArgs&&... iArgs)
   {
     ::dy::MDyLog::GetInstance().PushLog(
         ::dy::MDyLog::ELevel::Information, 
@@ -80,7 +80,7 @@ void MDY_LOG_CRITICAL(const std::string& iFormatString, TArgs&&... iArgs)
   }
 
   template <typename... TArgs>
-  void MDY_LOG_WARNING_D(const std::string& iFormatString, TArgs&&... iArgs)
+  void DyPushLogDebugWarning(const std::string& iFormatString, TArgs&&... iArgs)
   {
     ::dy::MDyLog::GetInstance().PushLog(
         ::dy::MDyLog::ELevel::Warning, 
@@ -89,7 +89,7 @@ void MDY_LOG_CRITICAL(const std::string& iFormatString, TArgs&&... iArgs)
   }
 
   template <typename... TArgs>
-  void MDY_LOG_ERROR_D(const std::string& iFormatString, TArgs&&... iArgs)
+  void DyPushLogDebugError(const std::string& iFormatString, TArgs&&... iArgs)
   {
     ::dy::MDyLog::GetInstance().PushLog(
         ::dy::MDyLog::ELevel::Error, 
@@ -98,7 +98,7 @@ void MDY_LOG_CRITICAL(const std::string& iFormatString, TArgs&&... iArgs)
   }
 
   template <typename... TArgs>
-  void MDY_LOG_CRITICAL_D(const std::string& iFormatString, TArgs&&... iArgs)
+  void DyPushLogDebugCritical(const std::string& iFormatString, TArgs&&... iArgs)
   {
     ::dy::MDyLog::GetInstance().PushLog(
         ::dy::MDyLog::ELevel::Critical, 
@@ -107,12 +107,12 @@ void MDY_LOG_CRITICAL(const std::string& iFormatString, TArgs&&... iArgs)
   }
 
 #else
-  #define MDY_LOG_TRACE_D(__MAString__, ...)    ((void*)0)
-  #define MDY_LOG_INFO_D(__MAString__, ...)     ((void*)0)
-  #define MDY_LOG_DEBUG_D(__MAString__, ...)    ((void*)0)
-  #define MDY_LOG_WARNING_D(__MAString__, ...)  ((void*)0)
-  #define MDY_LOG_CRITICAL_D(__MAString__, ...) ((void*)0)
-  #define MDY_LOG_ERROR_D(__MAString__, ...)    ((void*)0)
+  #define DyPushLogDebugTrace(__MAString__, ...)    ((void*)0)
+  #define DyPushLogDebugInfo(__MAString__, ...)     ((void*)0)
+  #define DyPushLogDebugDebug(__MAString__, ...)    ((void*)0)
+  #define DyPushLogDebugWarning(__MAString__, ...)  ((void*)0)
+  #define DyPushLogDebugCritical(__MAString__, ...) ((void*)0)
+  #define DyPushLogDebugError(__MAString__, ...)    ((void*)0)
 #endif /// opgs16::debug::PushLog only on _DEBUG
 
 #endif /// GUARD_DY_MANAGEMENT_INLINE_MLOG_INL

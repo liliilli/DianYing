@@ -141,7 +141,7 @@ void DyEngine::operator()()
     }
   };
 
-  MDY_LOG_INFO("Game End. bye!");
+  DyPushLogInfo("Game End. bye!");
 }
 
 void DyEngine::MDY_PRIVATE(ReflectGameStatusTransition)()
@@ -549,7 +549,7 @@ EDySuccess DyEngine::TryEndGame() noexcept
 {
   if (this->MDY_PRIVATE(IsGameEndCalled)() == true) 
   { 
-    MDY_LOG_CRITICAL("Quering game ending is already done.");
+    DyPushLogCritical("Quering game ending is already done.");
     return DY_FAILURE; 
   }
 

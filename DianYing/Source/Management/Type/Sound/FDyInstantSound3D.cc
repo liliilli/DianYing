@@ -133,7 +133,7 @@ EDySuccess FDyInstantSound3D::TryStop()
 {
   if (this->mSoundStatus == EDySoundStatus::NotValid)
   {
-    MDY_LOG_WARNING("Failed to try stop instant sound 2d. Sound status is either NotValid or Stop.");
+    DyPushLogWarning("Failed to try stop instant sound 2d. Sound status is either NotValid or Stop.");
     this->mSoundStatus = EDySoundStatus::Stop;
     return DY_FAILURE;
   }

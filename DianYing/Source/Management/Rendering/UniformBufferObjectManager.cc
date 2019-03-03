@@ -59,7 +59,7 @@ EDySuccess MDyUniformBufferObject::CreateUboContainer(_MIN_ const PDyUboConstruc
 { // Duplication check
   if (MDY_CHECK_ISNOTNULL(this->GetUboContainer(descriptor.mUboSpecifierName)))
   {
-    MDY_LOG_ERROR("{} | Failed to create UBO container. Name is duplicated. | Name : {}",
+    DyPushLogError("{} | Failed to create UBO container. Name is duplicated. | Name : {}",
                   (sFunc_CreateUboContainer),
                   descriptor.mUboSpecifierName);
     return DY_FAILURE;
@@ -69,7 +69,7 @@ EDySuccess MDyUniformBufferObject::CreateUboContainer(_MIN_ const PDyUboConstruc
   if (this->mBeingUsedUboBufferIndexSet.find(descriptor.mBindingIndex) !=
       this->mBeingUsedUboBufferIndexSet.end())
   {
-    MDY_LOG_ERROR("{} | Failed to create UBO container. Binding Index is duplicated. | Binding Index : {}",
+    DyPushLogError("{} | Failed to create UBO container. Binding Index is duplicated. | Binding Index : {}",
                   (sFunc_CreateUboContainer),
                   descriptor.mBindingIndex);
     return DY_FAILURE;
@@ -120,7 +120,7 @@ EDySuccess MDyUniformBufferObject::UpdateUboContainer(
   const DDyUboInstanceInformation* uboPtr = this->GetUboContainer(specifier);
   if (MDY_CHECK_ISNULL(uboPtr))
   {
-    MDY_LOG_ERROR("{} | Failed to update UBO container. Given name is not exist. | Name : {}",
+    DyPushLogError("{} | Failed to update UBO container. Given name is not exist. | Name : {}",
         (sFunc_CreateUboContainer),
         specifier);
     return DY_FAILURE;
@@ -128,7 +128,7 @@ EDySuccess MDyUniformBufferObject::UpdateUboContainer(
   // Integrity Test :: OOB Test
   if (bufferStartByte + bufferWrapSize > uboPtr->GetContainerSize())
   {
-    MDY_LOG_ERROR("{} | Failed to update UBO container. Buffer size out of bound detected. | {} + {} > {}",
+    DyPushLogError("{} | Failed to update UBO container. Buffer size out of bound detected. | {} + {} > {}",
         (sFunc_CreateUboContainer),
         bufferStartByte, bufferWrapSize,
         uboPtr->GetContainerSize());
@@ -150,13 +150,13 @@ EDySuccess MDyUniformBufferObject::ClearUboContainer(
   const DDyUboInstanceInformation* uboPtr = this->GetUboContainer(specifier);
   if (MDY_CHECK_ISNULL(uboPtr))
   {
-    MDY_LOG_ERROR("{} | Failed to clear UBO container. Given name is not exist. | Name : {}", (sFunc_CreateUboContainer), specifier);
+    DyPushLogError("{} | Failed to clear UBO container. Given name is not exist. | Name : {}", (sFunc_CreateUboContainer), specifier);
     return DY_FAILURE;
   }
   // Integrity Test :: OOB Test
   if (bufferStartByte + bufferWrapSize > uboPtr->GetContainerSize())
   {
-    MDY_LOG_ERROR("{} | Failed to clear UBO container. Buffer size out of bound detected. | {} + {} > {}",
+    DyPushLogError("{} | Failed to clear UBO container. Buffer size out of bound detected. | {} + {} > {}",
         (sFunc_CreateUboContainer),
         bufferStartByte, bufferWrapSize,
         uboPtr->GetContainerSize());
@@ -176,7 +176,7 @@ EDySuccess MDyUniformBufferObject::RemoveUboContainer(_MIN_ const std::string& s
   const DDyUboInstanceInformation* uboPtr = this->GetUboContainer(specifier);
   if (MDY_CHECK_ISNULL(uboPtr))
   {
-    MDY_LOG_ERROR("{} | Failed to clear UBO container. Given name is not exist. | Name : {}",
+    DyPushLogError("{} | Failed to clear UBO container. Given name is not exist. | Name : {}",
         (sFunc_CreateUboContainer),
         specifier);
     return DY_FAILURE;

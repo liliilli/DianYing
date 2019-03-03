@@ -201,7 +201,7 @@ struct DDyVectorInt2 final {
   friend DDyVectorInt2 operator/(_MIN_ DDyVectorInt2 lhs, _MIN_ const TI32 rhs) noexcept {
     if (rhs == 0)
     {
-      MDY_LOG_CRITICAL_D("DDyVectorInt2 could not be divided by {0}.", rhs);
+      DyPushLogDebugCritical("DDyVectorInt2 could not be divided by {0}.", rhs);
     }
     else
     {
@@ -218,7 +218,7 @@ struct DDyVectorInt2 final {
   friend DDyVectorInt2 operator/(_MIN_ DDyVectorInt2 lhs, _MIN_ const DDyVectorInt2& rhs) noexcept {
     if (rhs.X == 0 || rhs.Y == 0)
     {
-      MDY_LOG_CRITICAL_D( "DDyVectorInt2 could not be devided by 0 included DDyVectorInt2, ({0}, {1})", rhs.X, rhs.Y);
+      DyPushLogDebugCritical( "DDyVectorInt2 could not be devided by 0 included DDyVectorInt2, ({0}, {1})", rhs.X, rhs.Y);
     }
     else
     {
@@ -264,7 +264,7 @@ struct DDyVectorInt2 final {
   {
     if (value == 0)
     {
-      MDY_LOG_CRITICAL_D("DDyVectorInt2 could not be divided by {0}.", value);
+      DyPushLogDebugCritical("DDyVectorInt2 could not be divided by {0}.", value);
     }
     else
     {
@@ -282,7 +282,7 @@ struct DDyVectorInt2 final {
   {
     if (value.X == 0 || value.Y == 0)
     {
-      MDY_LOG_CRITICAL_D("DDyVectorInt2 could not be devided by 0 included DDyVectorInt2, ({0}, {1})", value.X, value.Y);
+      DyPushLogDebugCritical("DDyVectorInt2 could not be devided by 0 included DDyVectorInt2, ({0}, {1})", value.X, value.Y);
     }
     else
     {

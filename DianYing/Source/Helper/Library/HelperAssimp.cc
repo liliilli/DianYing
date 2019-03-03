@@ -33,7 +33,7 @@ ReadModel(_MIN_ const std::string& iFilePath)
     | aiProcess_GenUVCoords);
   if (MDY_CHECK_ISNULL(ptrModelScene))
   { // If failed to load model, just return no-value so have it processed from outside.
-    MDY_LOG_CRITICAL_D("Failed to read model file, %s.", iFilePath);
+    DyPushLogDebugCritical("Failed to read model file, %s.", iFilePath);
     return std::nullopt;
   }
   else
@@ -41,7 +41,7 @@ ReadModel(_MIN_ const std::string& iFilePath)
     if (ptrModelScene->mRootNode == nullptr 
     ||  MDY_BITMASK_FLAG_TRUE(ptrModelScene->mFlags, AI_SCENE_FLAGS_INCOMPLETE))
     {
-      MDY_LOG_CRITICAL_D("Failed to read model file, %s.", iFilePath);
+      DyPushLogDebugCritical("Failed to read model file, %s.", iFilePath);
       return std::nullopt;
     }
 

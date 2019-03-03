@@ -60,7 +60,7 @@ void FDyImage::SetRenderableImageName(_MIN_ const std::string& iName, _MIN_ bool
     // Check
     if (refMetaInfo.IsMaterialMetaInfoExist(iName) == false)
     {
-      MDY_LOG_ERROR("Failed to set image name, name : {}, material : {}", iName, iIsMaterial);
+      DyPushLogError("Failed to set image name, name : {}, material : {}", iName, iIsMaterial);
       return;
     }
 
@@ -75,7 +75,7 @@ void FDyImage::SetRenderableImageName(_MIN_ const std::string& iName, _MIN_ bool
     // Check
     if (refMetaInfo.IsTextureMetaInfoExist(iName) == false)
     {
-      MDY_LOG_ERROR("Failed to set image name, name : {}, material : {}", iName, iIsMaterial);
+      DyPushLogError("Failed to set image name, name : {}, material : {}", iName, iIsMaterial);
       return;
     }
 

@@ -32,13 +32,13 @@ namespace dy
 
 EDySuccess MDyWorld::pfInitialize()
 {
-  MDY_LOG_INFO_D("{} | MDyWorld::pfInitialize().", "FunctionCall");
+  DyPushLogDebugInfo("{} | MDyWorld::pfInitialize().", "FunctionCall");
   return DY_SUCCESS;
 }
 
 EDySuccess MDyWorld::pfRelease()
 {
-  MDY_LOG_INFO_D("{} | MDyWorld::pfRelease().", "FunctionCall");
+  DyPushLogDebugInfo("{} | MDyWorld::pfRelease().", "FunctionCall");
   return DY_SUCCESS;
 }
 
@@ -251,13 +251,13 @@ MDyWorld::CreateUiObject(
   const auto& refMetaInfo = MDyMetaInfo::GetInstance();
   if (refMetaInfo.IsWidgetMetaInfoExist(iUiName) == false)
   {
-    MDY_LOG_ERROR("Failed to create UI Widget object, {}.", iUiName);
+    DyPushLogError("Failed to create UI Widget object, {}.", iUiName);
     return std::nullopt;
   }
 
   if (this->mUiInstanceContainer.IsUiObjectExist(iUiName) == true && iNewCustomizedName.empty() == true)
   {
-    MDY_LOG_ERROR(
+    DyPushLogError(
         "Failed to create UI Widget object, meta information is exist but already exist on Container. {}", 
         iUiName);
     return std::nullopt;
@@ -284,7 +284,7 @@ EDySuccess MDyWorld::DestoryUiObject(_MINOUT_ DDyUiBinder& iRefUi)
   // Check
   if (iRefUi.IsUiObjectValid() == false) 
   { 
-    MDY_LOG_ERROR("Failed to destroy Ui object. Ui binder does not bind anything.");
+    DyPushLogError("Failed to destroy Ui object. Ui binder does not bind anything.");
     return DY_FAILURE; 
   }
 
@@ -331,7 +331,7 @@ EDySuccess MDyWorld::OpenLevel(_MIN_ const std::string& levelName)
 {
   if (MDyMetaInfo::GetInstance().GetLevelMetaInformation(levelName) == nullptr)
   {
-    MDY_LOG_ERROR("{} | Failed to find and travel next level. Level name is not found. | Level name : {}", levelName);
+    DyPushLogError("{} | Failed to find and travel next level. Level name is not found. | Level name : {}", levelName);
     return DY_FAILURE;
   }
 
@@ -420,7 +420,7 @@ EDySuccess MDyWorld::MDY_PRIVATE(PopulateNextLevelResources)()
 void MDyWorld::MDY_PRIVATE(BuildNextLevel)()
 {
   // GSS 14
-  MDY_LOG_DEBUG_D("Building Next Level : {}", this->mNextLevelName);
+  DyPushLogDebugDebug("Building Next Level : {}", this->mNextLevelName);
 
   const auto* levelMetaInfo = MDyMetaInfo::GetInstance().GetLevelMetaInformation(this->mNextLevelName);
   // Must reset depedent manager on this.
@@ -435,16 +435,16 @@ EDySuccess MDyWorld::MDY_PRIVATE(TransitionToNextLevel)()
   this->mPresentLevelName   = this->mNextLevelName;
   this->mNextLevelName      = MDY_INITIALIZE_EMPTYSTR;
   this->mIsNeedTransitNextLevel = false;
-  MDY_LOG_DEBUG_D("Present  Level Name : {}", this->mPresentLevelName);
-  MDY_LOG_DEBUG_D("Previous Level Name : {}", this->mPreviousLevelName);
+  DyPushLogDebugDebug("Present  Level Name : {}", this->mPresentLevelName);
+  DyPushLogDebugDebug("Previous Level Name : {}", this->mPreviousLevelName);
 
   // Need to call initiate funciton maually.
-  MDY_LOG_DEBUG_D("Initiate Actor script : {}", this->mPresentLevelName);
+  DyPushLogDebugDebug("Initiate Actor script : {}", this->mPresentLevelName);
   MDyScript::GetInstance().UpdateActorScript(0.0f, EDyScriptState::CalledNothing);
   MDyScript::GetInstance().TryMoveInsertActorScriptToMainContainer();
 
   // Need to realign position following actor tree.
-  MDY_LOG_DEBUG_D("Align Position of Actors on level : {}", this->mPresentLevelName);
+  DyPushLogDebugDebug("Align Position of Actors on level : {}", this->mPresentLevelName);
   this->mLevel->MDY_PRIVATE(AlignActorsPosition)();
 
   return DY_SUCCESS;
@@ -527,7 +527,7 @@ void MDyWorld::SetLevelTransition(_MIN_ const std::string& iSpecifier)
 {
   if (MDyMetaInfo::GetInstance().IsLevelMetaInformation(iSpecifier) == false)
   {
-    MDY_LOG_ERROR("Failed to transit next level, `{0}`. `{0}` level is not exist.", iSpecifier);
+    DyPushLogError("Failed to transit next level, `{0}`. `{0}` level is not exist.", iSpecifier);
     return;
   }
 

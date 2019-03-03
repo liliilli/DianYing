@@ -27,28 +27,28 @@ void FDyPhysXErrorCallback::reportError(physx::PxErrorCode::Enum code, const cha
   {
   default: break;
   case physx::PxErrorCode::eDEBUG_INFO:
-    MDY_LOG_INFO_D(logTemplate,   MDY_TO_STRING(physx::PxErrorCode::eDEBUG_INFO), message, file, line);
+    DyPushLogDebugInfo(logTemplate,   MDY_TO_STRING(physx::PxErrorCode::eDEBUG_INFO), message, file, line);
     break;
   case physx::PxErrorCode::eDEBUG_WARNING:
-    MDY_LOG_WARNING(logTemplate,  MDY_TO_STRING(physx::PxErrorCode::eDEBUG_WARNING), message, file, line);
+    DyPushLogWarning(logTemplate,  MDY_TO_STRING(physx::PxErrorCode::eDEBUG_WARNING), message, file, line);
     break;
   case physx::PxErrorCode::eINVALID_PARAMETER:
-    MDY_LOG_ERROR(logTemplate,    MDY_TO_STRING(physx::PxErrorCode::eINVALID_PARAMETER), message, file, line);
+    DyPushLogError(logTemplate,    MDY_TO_STRING(physx::PxErrorCode::eINVALID_PARAMETER), message, file, line);
     break;
   case physx::PxErrorCode::eINVALID_OPERATION:
-    MDY_LOG_ERROR(logTemplate,    MDY_TO_STRING(physx::PxErrorCode::eINVALID_OPERATION), message, file, line);
+    DyPushLogError(logTemplate,    MDY_TO_STRING(physx::PxErrorCode::eINVALID_OPERATION), message, file, line);
     break;
   case physx::PxErrorCode::eOUT_OF_MEMORY:
-    MDY_LOG_CRITICAL(logTemplate, MDY_TO_STRING(physx::PxErrorCode::eOUT_OF_MEMORY), message, file, line);
+    DyPushLogCritical(logTemplate, MDY_TO_STRING(physx::PxErrorCode::eOUT_OF_MEMORY), message, file, line);
     break;
   case physx::PxErrorCode::eINTERNAL_ERROR:
-    MDY_LOG_CRITICAL(logTemplate, MDY_TO_STRING(physx::PxErrorCode::eINTERNAL_ERROR), message, file, line);
+    DyPushLogCritical(logTemplate, MDY_TO_STRING(physx::PxErrorCode::eINTERNAL_ERROR), message, file, line);
     break;
   case physx::PxErrorCode::eABORT:
-    MDY_LOG_CRITICAL(logTemplate, MDY_TO_STRING(physx::PxErrorCode::eABORT), message, file, line);
+    DyPushLogCritical(logTemplate, MDY_TO_STRING(physx::PxErrorCode::eABORT), message, file, line);
     break;
   case physx::PxErrorCode::ePERF_WARNING:
-    MDY_LOG_WARNING(logTemplate,  MDY_TO_STRING(physx::PxErrorCode::ePERF_WARNING), message, file, line);
+    DyPushLogWarning(logTemplate,  MDY_TO_STRING(physx::PxErrorCode::ePERF_WARNING), message, file, line);
     break;
   }
 }

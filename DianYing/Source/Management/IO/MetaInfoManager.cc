@@ -93,7 +93,7 @@ std::unique_ptr<dy::PDyMetaWidgetRootDescriptor> DyCreateWidgetMetaInformation(_
 
   if (const auto flag = CheckWidgetCategories(jsonAtlas); flag == DY_FAILURE)
   {
-    MDY_LOG_CRITICAL("Json log : {}", jsonAtlas.dump(2));
+    DyPushLogCritical("Json log : {}", jsonAtlas.dump(2));
     MDY_UNEXPECTED_BRANCH(); return nullptr;
   }
 

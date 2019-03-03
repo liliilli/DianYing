@@ -55,13 +55,13 @@ FDyLevel::FDyLevel(_MIN_ const PDyLevelConstructMetaInfo& desc)
     }
   }
 
-  MDY_LOG_INFO("{} | Initialize level context. | Level name : {}", "FDyLevel::Initialize()", this->mLevelName);
+  DyPushLogInfo("{} | Initialize level context. | Level name : {}", "FDyLevel::Initialize()", this->mLevelName);
   this->mInitialized = true;
 }
 
 FDyLevel::~FDyLevel()
 {
-  MDY_LOG_INFO("{} | Release level context. | Level name : {}", "FDyLevel::Release()", this->mLevelName);
+  DyPushLogInfo("{} | Release level context. | Level name : {}", "FDyLevel::Release()", this->mLevelName);
   for (auto& [name, actor] : this->mActorMap)
   {
     if (MDY_CHECK_ISEMPTY(actor)) { continue; }

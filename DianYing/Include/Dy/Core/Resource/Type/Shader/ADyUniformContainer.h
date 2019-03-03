@@ -56,7 +56,7 @@ public:
     if (it == this->mUniformMap.end())
     { // If not found, just insert it anyway.
       auto [createdPair, _] = this->mUniformMap.try_emplace(iSpecifier, std::make_unique<FDyUniformValue<TType>>(-1, iValue)); \
-      MDY_LOG_ERROR("Could not find uniform value but insert anyway as id -1. {}", iSpecifier);
+      DyPushLogError("Could not find uniform value but insert anyway as id -1. {}", iSpecifier);
       return DY_FAILURE;
     }
     else
@@ -64,7 +64,7 @@ public:
       auto& [_, smtptrInstance] = *it;
       if (smtptrInstance->mType != TType)
       {
-        MDY_LOG_ERROR("Could not insert uniform value becasue of different type. {}", iSpecifier);
+        DyPushLogError("Could not insert uniform value becasue of different type. {}", iSpecifier);
         return DY_FAILURE;
       }
       // In case of success.

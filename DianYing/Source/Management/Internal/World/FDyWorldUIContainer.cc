@@ -57,7 +57,7 @@ EDySuccess FDyWorldUIContainer::TryCreateLoadingUi()
   auto& metaManager = MDyMetaInfo::GetInstance();
   if (metaManager.IsLoadingWidgetMetaInfoExist() == false)
   {
-    MDY_LOG_WARNING("Loading widget is not exist, loading screen will not be presented.");
+    DyPushLogWarning("Loading widget is not exist, loading screen will not be presented.");
     return DY_FAILURE;
   }
 
@@ -118,7 +118,7 @@ std::optional<DDyUiBinder> FDyWorldUIContainer::GetUiObject(const std::string& i
   const auto it = this->mGeneralUiWidgetMap.find(iUiName);
   if (it == this->mGeneralUiWidgetMap.end())
   {
-    MDY_LOG_ERROR("Failed to get {} Ui Object. Could not found matched UI Object.", iUiName);
+    DyPushLogError("Failed to get {} Ui Object. Could not found matched UI Object.", iUiName);
     return std::nullopt;
   }
 
@@ -130,7 +130,7 @@ EDySuccess FDyWorldUIContainer::RemoveUiObject(_MIN_ const std::string& iUiName)
   const auto it = this->mGeneralUiWidgetMap.find(iUiName);
   if (it == this->mGeneralUiWidgetMap.end())
   {
-    MDY_LOG_ERROR("Failed to remove {} Ui Object. Could not found matched UI Object.", iUiName);
+    DyPushLogError("Failed to remove {} Ui Object. Could not found matched UI Object.", iUiName);
     return DY_FAILURE;
   }
 

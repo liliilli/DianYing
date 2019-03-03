@@ -504,7 +504,7 @@ EDySuccess FDyActor::RemoveScriptComponent(_MIN_ const std::string& scriptName) 
 
   if (it == this->mScriptList.end())
   {
-    MDY_LOG_WARNING("FDyActor::RemoveComponent | Can not find script to remove. | Name : {}", scriptName);
+    DyPushLogWarning("FDyActor::RemoveComponent | Can not find script to remove. | Name : {}", scriptName);
     return DY_FAILURE;
   }
   else

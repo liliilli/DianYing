@@ -38,7 +38,7 @@ namespace
 
 void GLAPIENTRY DyGlMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
-  MDY_LOG_CRITICAL_D(
+  DyPushLogDebugCritical(
       "DianYing OpenGL callback : %s type = 0x%x, severity = 0x%x, message = %s",
       (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
       type,
@@ -49,7 +49,7 @@ void GLAPIENTRY DyGlMessageCallback(GLenum source, GLenum type, GLuint id, GLenu
 
 void DyGLFWErrorFunction(int errorcode, const char* message)
 {
-  MDY_LOG_CRITICAL_D("GLFW Error occurred. Error code : {}, Message : {}", errorcode, message);
+  DyPushLogDebugCritical("GLFW Error occurred. Error code : {}, Message : {}", errorcode, message);
 }
 
 } /// unnamed namespace
@@ -230,7 +230,7 @@ EDySuccess MDyWindow::pfInitialize()
   //! FUNCTIONBODY ∨
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  MDY_LOG_INFO_D("{} | MDyWindow::pfInitialize().", "FunctionCall");
+  DyPushLogDebugInfo("{} | MDyWindow::pfInitialize().", "FunctionCall");
   MDY_INHERITENCE_WINDOW_INFORMATION_SUPER::InitializeDep();
 
   switch (MDySetting::GetInstance().GetRenderingType())
@@ -240,7 +240,7 @@ EDySuccess MDyWindow::pfInitialize()
   case EDyRenderingApi::Vulkan:     MDY_NOT_IMPLEMENTED_ASSERT(); break;
   case EDyRenderingApi::DirectX11:  MDY_NOT_IMPLEMENTED_ASSERT(); break;
   case EDyRenderingApi::OpenGL:
-    MDY_LOG_INFO_D("Initialize OpenGL Context.");
+    DyPushLogDebugInfo("Initialize OpenGL Context.");
     MDY_CALL_ASSERT_SUCCESS(InitializeOpenGL());
     break;
   }
@@ -250,14 +250,14 @@ EDySuccess MDyWindow::pfInitialize()
 
 EDySuccess MDyWindow::pfRelease()
 {
-  MDY_LOG_INFO_D("{} | MDyWindow::pfRelease().", "FunctionCall");
+  DyPushLogDebugInfo("{} | MDyWindow::pfRelease().", "FunctionCall");
 
   switch (MDySetting::GetInstance().GetRenderingType())
   {
   default: MDY_UNEXPECTED_BRANCH(); return DY_FAILURE;
-  case EDyRenderingApi::DirectX11:  MDY_LOG_INFO_D("Release DirectX11 Context.");  MDY_NOT_IMPLEMENTED_ASSERT(); break;
-  case EDyRenderingApi::DirectX12:  MDY_LOG_INFO_D("Release DirectX12 Context.");  MDY_NOT_IMPLEMENTED_ASSERT(); break;
-  case EDyRenderingApi::Vulkan:     MDY_LOG_INFO_D("Release Vulkan Context.");     MDY_NOT_IMPLEMENTED_ASSERT(); break;
+  case EDyRenderingApi::DirectX11:  DyPushLogDebugInfo("Release DirectX11 Context.");  MDY_NOT_IMPLEMENTED_ASSERT(); break;
+  case EDyRenderingApi::DirectX12:  DyPushLogDebugInfo("Release DirectX12 Context.");  MDY_NOT_IMPLEMENTED_ASSERT(); break;
+  case EDyRenderingApi::Vulkan:     DyPushLogDebugInfo("Release Vulkan Context.");     MDY_NOT_IMPLEMENTED_ASSERT(); break;
   case EDyRenderingApi::OpenGL:
     glfwTerminate();
     break;

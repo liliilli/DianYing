@@ -56,7 +56,7 @@ public:
     using namespace std::placeholders;
     if (this->IsBoundCallback(iPredicate) == true)
     { 
-      MDY_LOG_WARNING_D("You are binding callback predicate that is already bound to rigidbody.");
+      DyPushLogDebugWarning("You are binding callback predicate that is already bound to rigidbody.");
       return nullptr; 
     }
 

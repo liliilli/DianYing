@@ -54,7 +54,7 @@ void FDyEditor_MainMenu::Draw(_MIN_ MDY_NOTUSED TF32 dt) noexcept
         {
           if (ImGui::MenuItem("Edit mode", nullptr, false) == true)
           {
-            MDY_LOG_CRITICAL("Enter Edit mode...");
+            DyPushLogCritical("Enter Edit mode...");
 
           }
         }
@@ -62,7 +62,7 @@ void FDyEditor_MainMenu::Draw(_MIN_ MDY_NOTUSED TF32 dt) noexcept
         {
           if (ImGui::MenuItem("Return to play mode", nullptr, false) == true)
           {
-            MDY_LOG_CRITICAL("Return to play mode...");
+            DyPushLogCritical("Return to play mode...");
           }
         }
         ImGui::Separator();
@@ -132,10 +132,10 @@ void FDyEditor_MainMenu::Draw(_MIN_ MDY_NOTUSED TF32 dt) noexcept
           switch (newFlag)
           {
           case EDyModelRenderingMode::FillNormal: 
-          { MDY_LOG_INFO("Changed model rendering mode flag to {}.", "Normal");
+          { DyPushLogInfo("Changed model rendering mode flag to {}.", "Normal");
           } break;
           case EDyModelRenderingMode::WireFrame: 
-          { MDY_LOG_INFO("Changed model rendering mode flag to {}.", "Wireframe");
+          { DyPushLogInfo("Changed model rendering mode flag to {}.", "Wireframe");
           } break;
           }
 

@@ -280,7 +280,7 @@ struct DDyVector4 final
   /// If rhs has 0 value, this function just do nothing.
   friend DDyVector4 operator/(DDyVector4 lhs, const float rhs) noexcept
   {
-    if (rhs == 0.0f) { MDY_LOG_CRITICAL_D("DDyVector4 could not be divided by {0}.", rhs); }
+    if (rhs == 0.0f) { DyPushLogDebugCritical("DDyVector4 could not be divided by {0}.", rhs); }
     else
     {
       lhs.__Simd = _mm_div_ps(lhs.__Simd, _mm_set_ps(rhs, rhs, rhs, rhs));
@@ -294,7 +294,7 @@ struct DDyVector4 final
   {
     if (rhs.X == 0.0f || rhs.Y == 0.0f || rhs.Z == 0.0f || rhs.W == 0.0f)
     {
-      MDY_LOG_CRITICAL_D("DDyVector4 could not be devided by 0 included DDyVector4, ({0}, {1}, {2})", rhs.X, rhs.Y, rhs.Z);
+      DyPushLogDebugCritical("DDyVector4 could not be devided by 0 included DDyVector4, ({0}, {1}, {2})", rhs.X, rhs.Y, rhs.Z);
     }
     else
     {
@@ -333,7 +333,7 @@ struct DDyVector4 final
   {
     if (value == 0.0f)
     {
-      MDY_LOG_CRITICAL_D("DDyVector4 could not be divided by {0}.", value);
+      DyPushLogDebugCritical("DDyVector4 could not be divided by {0}.", value);
     }
     else
     {
@@ -348,7 +348,7 @@ struct DDyVector4 final
   {
     if (value.X == 0.0f || value.Y == 0.0f || value.Z == 0.0f || value.W == 0.0f)
     {
-      MDY_LOG_CRITICAL_D("DDyVector4 could not be devided by 0 included DDyVector4, ({0}, {1}, {2})", value.X, value.Y, value.Z);
+      DyPushLogDebugCritical("DDyVector4 could not be devided by 0 included DDyVector4, ({0}, {1}, {2})", value.X, value.Y, value.Z);
     }
     else
     {

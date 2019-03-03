@@ -23,7 +23,7 @@ EDySuccess FDySoundChannel::Initialize(_MIN_ FMOD::System& iPtrSystem, _MIN_ con
 {
   if (this->mIsInitilaized == true)
   {
-    MDY_LOG_WARNING("Initialized sound channel can not be initialized twice.");
+    DyPushLogWarning("Initialized sound channel can not be initialized twice.");
     return DY_FAILURE;
   }
 
@@ -65,7 +65,7 @@ EDySuccess FDySoundChannel::Release()
 {
   if (this->mIsInitilaized == false)
   {
-    MDY_LOG_WARNING("Initialized sound channel can not be released twice.");
+    DyPushLogWarning("Initialized sound channel can not be released twice.");
     return DY_FAILURE;
   }
 

@@ -173,7 +173,7 @@ bool FDyModelHandlerManager::IsActorInfoNeedToBeGc(_MIN_ const std::string& iSpe
   // Check
   if (this->IsBoundModelExist(iSpecifier) == false) 
   { 
-    MDY_LOG_ERROR_D("Could not find bound model instance. {}", iSpecifier);
+    DyPushLogDebugError("Could not find bound model instance. {}", iSpecifier);
     return DY_FAILURE; 
   }
 
@@ -181,7 +181,7 @@ bool FDyModelHandlerManager::IsActorInfoNeedToBeGc(_MIN_ const std::string& iSpe
   const auto& ptrsmtHandler = this->mModelHandlerContainer.at(iSpecifier);
   if (ptrsmtHandler->IsActorItemExist(iRefActor) == false) 
   { 
-    MDY_LOG_ERROR_D("Could not find actor in model instance, {}.", iSpecifier);
+    DyPushLogDebugError("Could not find actor in model instance, {}.", iSpecifier);
     return DY_FAILURE; 
   }
 
@@ -193,7 +193,7 @@ EDySuccess FDyModelHandlerManager::TryRemoveBoundActor(_MIN_ const std::string& 
   // Check
   if (this->IsBoundModelExist(iSpecifier) == false)
   { 
-    MDY_LOG_ERROR_D("Could not find bound model instance, {}.", iSpecifier);
+    DyPushLogDebugError("Could not find bound model instance, {}.", iSpecifier);
     return DY_FAILURE; 
   }
 

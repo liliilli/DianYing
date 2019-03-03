@@ -220,7 +220,7 @@ void DyCallbackMouseInput(MDY_NOTUSED GLFWwindow* window, _MIN_ int button, _MIN
 ///
 void DyCallbackMouseScroll(MDY_NOTUSED GLFWwindow* window, _MIN_ double xoffset, _MIN_ double yoffset)
 {
-  MDY_LOG_DEBUG_D("Mouse button scrolling : X: {0}, Y: {1}", xoffset, yoffset);
+  DyPushLogDebugDebug("Mouse button scrolling : X: {0}, Y: {1}", xoffset, yoffset);
 }
 
 /// 
@@ -235,12 +235,12 @@ void DyCallbackCheckJoystickConnection(_MIN_ int joy, _MIN_ int event)
 
   if (event == GLFW_CONNECTED)
   {
-    MDY_LOG_CRITICAL("Joystick {0} Name : {1} Supported.", 0, glfwGetJoystickName(GLFW_JOYSTICK_1));
+    DyPushLogCritical("Joystick {0} Name : {1} Supported.", 0, glfwGetJoystickName(GLFW_JOYSTICK_1));
     mIsControllerConnected = true;
   }
   else if (event == GLFW_DISCONNECTED)
   {
-    MDY_LOG_CRITICAL("Joystick {0} Disconnected.", 0);
+    DyPushLogCritical("Joystick {0} Disconnected.", 0);
     mIsControllerConnected = false;
   }
 }
@@ -296,7 +296,7 @@ EDySuccess MDyInput::pfInitialize()
 
   if (DyCheckIsJoystickConnected() == true)
   { // Check joystick binding manually at first time.
-    MDY_LOG_CRITICAL("Joystick {0} Name : {1} Supported.", 0, glfwGetJoystickName(GLFW_JOYSTICK_1));
+    DyPushLogCritical("Joystick {0} Name : {1} Supported.", 0, glfwGetJoystickName(GLFW_JOYSTICK_1));
     mIsControllerConnected = true;
   }
 
@@ -351,7 +351,7 @@ float MDyInput::GetAxisValue(_MIN_ const std::string& axisKeyName) noexcept
   const auto keyIt = this->mBindedAxisMap.find(axisKeyName);
   if (keyIt == this->mBindedAxisMap.end())
   {
-    MDY_LOG_ERROR_D(err_input_key_not_exist, axisKeyName);
+    DyPushLogDebugError(err_input_key_not_exist, axisKeyName);
 		return 0.f;
 	}
 
@@ -385,7 +385,7 @@ bool MDyInput::IsAxisPressed(_MIN_ const std::string& axisSpecifierName) noexcep
   const auto keyIt = this->mBindedAxisMap.find(axisSpecifierName);
   if (keyIt == mBindedAxisMap.end())
   {
-    MDY_LOG_ERROR_D(err_input_key_not_exist, axisSpecifierName);
+    DyPushLogDebugError(err_input_key_not_exist, axisSpecifierName);
 		return false;
   }
 
@@ -406,7 +406,7 @@ bool MDyInput::IsAxisReleased(_MIN_ const std::string& axisSpecifierName) noexce
   const auto keyIt = this->mBindedAxisMap.find(axisSpecifierName);
   if (keyIt == mBindedAxisMap.end())
   {
-    MDY_LOG_ERROR_D(err_input_key_not_exist, axisSpecifierName);
+    DyPushLogDebugError(err_input_key_not_exist, axisSpecifierName);
 		return false;
   }
 
@@ -430,7 +430,7 @@ bool MDyInput::IsActionPressed(_MIN_ const std::string& actionSpecifier) const n
   const auto keyIt = this->mBindedActionMap.find(actionSpecifier);
   if (keyIt == mBindedActionMap.end())
   {
-    MDY_LOG_ERROR_D(err_input_key_not_exist, actionSpecifier);
+    DyPushLogDebugError(err_input_key_not_exist, actionSpecifier);
 		return false;
   }
 
@@ -443,7 +443,7 @@ bool MDyInput::IsActionReleased(_MIN_ const std::string& actionSpecifier) const 
   const auto keyIt = this->mBindedActionMap.find(actionSpecifier);
   if (keyIt == mBindedActionMap.end())
   {
-    MDY_LOG_ERROR_D(err_input_key_not_exist, actionSpecifier);
+    DyPushLogDebugError(err_input_key_not_exist, actionSpecifier);
 		return false;
   }
 
@@ -716,13 +716,13 @@ EDySuccess MDyInput::MDY_PRIVATE(TryBindAxisDelegate)(
 {
   if (this->mDelegateManger.GetPtrUiScriptOnBinding() != &iRefUiScript)
   { // Check ui is binding to delegate now. If not matched, just return DY_FAILURE with error log.
-    MDY_LOG_ERROR("Failed to binding axis function of UI script. Instance reference did not match.");
+    DyPushLogError("Failed to binding axis function of UI script. Instance reference did not match.");
     return DY_FAILURE;
   }
 
   if (this->IsAxisExist(iAxisName) == false)
   { // Check `Axis` is exist. if not, return DY_FAILURE.
-    MDY_LOG_ERROR("Failed to binding axis function of UI script. Axis `{}` does not exist.", iAxisName);
+    DyPushLogError("Failed to binding axis function of UI script. Axis `{}` does not exist.", iAxisName);
     return DY_FAILURE;
   }
 
@@ -738,13 +738,13 @@ EDySuccess MDyInput::MDY_PRIVATE(TryBindActionDelegate)(
 {
   if (this->mDelegateManger.GetPtrUiScriptOnBinding() != &iRefUiScript)
   { // Check ui is binding to delegate now. If not matched, just return DY_FAILURE with error log.
-    MDY_LOG_ERROR("Failed to binding action function of UI script. Instance reference did not match.");
+    DyPushLogError("Failed to binding action function of UI script. Instance reference did not match.");
     return DY_FAILURE;
   }
 
   if (this->IsActionExist(iActionName) == false)
   { // Check `Action` is exist. if not, return DY_FAILURE.
-    MDY_LOG_ERROR("Failed to binding action function of UI script. Action `{}` does not exist.", iActionName);
+    DyPushLogError("Failed to binding action function of UI script. Action `{}` does not exist.", iActionName);
     return DY_FAILURE;
   }
 
@@ -759,13 +759,13 @@ EDySuccess MDyInput::MDY_PRIVATE(TryBindAxisDelegate)(
 {
   if (this->mDelegateManger.GetPtrActorScriptOnBinding() != &iRefUiScript)
   { // Check actor is binding to delegate now. If not matched, just return DY_FAILURE with error log.
-    MDY_LOG_ERROR("Failed to binding axis function of Actor script. Instance reference did not match.");
+    DyPushLogError("Failed to binding axis function of Actor script. Instance reference did not match.");
     return DY_FAILURE;
   }
 
   if (this->IsAxisExist(iAxisName) == false)
   { // Check `Axis` is exist. if not, return DY_FAILURE.
-    MDY_LOG_ERROR("Failed to binding axis function of Actor script. Axis `{}` does not exist.", iAxisName);
+    DyPushLogError("Failed to binding axis function of Actor script. Axis `{}` does not exist.", iAxisName);
     return DY_FAILURE;
   }
 
@@ -781,13 +781,13 @@ EDySuccess MDyInput::MDY_PRIVATE(TryBindActionDelegate)(
 {
   if (this->mDelegateManger.GetPtrActorScriptOnBinding() != &iRefUiScript)
   { // Check Actor is binding to delegate now. If not matched, just return DY_FAILURE with error log.
-    MDY_LOG_ERROR("Failed to binding action function of Actor script. Instance reference did not match.");
+    DyPushLogError("Failed to binding action function of Actor script. Instance reference did not match.");
     return DY_FAILURE;
   }
 
   if (this->IsActionExist(iActionName) == false)
   { // Check `Action` is exist. if not, return DY_FAILURE.
-    MDY_LOG_ERROR("Failed to binding action function of Actor script. Action `{}` does not exist.", iActionName);
+    DyPushLogError("Failed to binding action function of Actor script. Action `{}` does not exist.", iActionName);
     return DY_FAILURE;
   }
 
@@ -864,7 +864,7 @@ EDySuccess MDyInput::TryPickObject(_MIN_ const DDyVector2& iScreenPosition)
           this->mPtrActorPickingTarget->MDY_PRIVATE(DetachPickingTargetFromSystem)();
         }
         // Bind ptrActor as Binder type.
-        MDY_LOG_INFO_D("Picked {}", ptrActor->ToString());
+        DyPushLogDebugInfo("Picked {}", ptrActor->ToString());
         ptrActor->MDY_PRIVATE(AttachPickingTargetFromSystem)(&this->mPtrActorPickingTarget);
       } break;
       }

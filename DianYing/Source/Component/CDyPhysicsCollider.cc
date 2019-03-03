@@ -33,7 +33,7 @@ EDySuccess CDyPhysicsCollider::Initialize(_MIN_ const PDyColliderComponentMetaIn
     const auto& setting = MDyPhysics::GetInstance().GetDefaultSetting();
     // Try to getting collision filter preset.
     if (DyIsMapContains(setting.mFilterPresetContainer, this->mFilterPresetSpecifier) == false)
-    { MDY_LOG_ERROR("Failed to get collision filter preset values, {}", this->mFilterPresetSpecifier); }
+    { DyPushLogError("Failed to get collision filter preset values, {}", this->mFilterPresetSpecifier); }
     else
     {
       const auto& refValue = setting.mFilterPresetContainer.at(this->mFilterPresetSpecifier);

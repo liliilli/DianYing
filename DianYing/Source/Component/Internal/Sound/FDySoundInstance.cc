@@ -72,7 +72,7 @@ void FDySoundInstance::SetSound(_MIN_ const std::string& iSpecifier)
   const auto& infoManager = MDyMetaInfo::GetInstance();
   if (infoManager.IsSoundMetaInfoExist(iSpecifier) == false)
   {
-    MDY_LOG_ERROR("Failed to set sound. Sound is not exist, `{}`.", iSpecifier);
+    DyPushLogError("Failed to set sound. Sound is not exist, `{}`.", iSpecifier);
     return;
   }
 

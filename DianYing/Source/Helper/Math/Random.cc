@@ -92,7 +92,7 @@ int32_t RandomIntegerRange(const int32_t from, const int32_t inclusive_to) noexc
 {
   if (from > inclusive_to)
   {
-    MDY_LOG_WARNING("'from' must be equal or less than 'inclusive_to'. From : {}, Inclusive_to : {}", from, inclusive_to);
+    DyPushLogWarning("'from' must be equal or less than 'inclusive_to'. From : {}, Inclusive_to : {}", from, inclusive_to);
     return 0;
   }
 
@@ -107,7 +107,7 @@ float RandomFloatRange(const float from, const float prior_to) noexcept
 {
   if (from >= prior_to)
   {
-    MDY_LOG_WARNING("'from' must be less than 'prior_to'. From : {}, Prior to : {}", from, prior_to);
+    DyPushLogWarning("'from' must be less than 'prior_to'. From : {}, Prior to : {}", from, prior_to);
     return from;
   }
 
@@ -119,7 +119,7 @@ DDyVector2 RandomVector2Length(float length) noexcept
 {
   if (length < 0)
   {
-    MDY_LOG_WARNING("{} | Length must be bigger than or equal to 0. Input length : {}", "RandomVector2Length", length);
+    DyPushLogWarning("{} | Length must be bigger than or equal to 0. Input length : {}", "RandomVector2Length", length);
     return {};
   }
 
@@ -141,7 +141,7 @@ DDyVector3 RandomVector3Length(float length) noexcept
 {
   if (length < 0)
   {
-    MDY_LOG_WARNING("{} | Length must be bigger than or equal to 0. Input length : {}", "RandomVector3Length", length);
+    DyPushLogWarning("{} | Length must be bigger than or equal to 0. Input length : {}", "RandomVector3Length", length);
     return {};
   }
 
@@ -164,7 +164,7 @@ DDyVector2 RandomVector2Range(EDyRandomPolicy policy, float from, float prior_to
 {
   if (from >= prior_to)
   {
-    MDY_LOG_WARNING("{} | 'from' must be less than 'prior_to'. From : {}, Prior to : {}", "RandomVector2Range", from, prior_to);
+    DyPushLogWarning("{} | 'from' must be less than 'prior_to'. From : {}, Prior to : {}", "RandomVector2Range", from, prior_to);
     return {};
   }
 
@@ -174,7 +174,7 @@ DDyVector2 RandomVector2Range(EDyRandomPolicy policy, float from, float prior_to
     return RandomVector2Length(1.f) * RandomFloatRange(from, prior_to);
   case EDyRandomPolicy::Discrete:
     // @todo Implement this
-    MDY_LOG_WARNING("{} | Discrete distribution is not implemented now.", "RandomVector2Range");
+    DyPushLogWarning("{} | Discrete distribution is not implemented now.", "RandomVector2Range");
     return {};
   default: return {};
   }
@@ -184,7 +184,7 @@ DDyVector3 RandomVector3Range(EDyRandomPolicy policy, float from, float prior_to
 {
   if (from >= prior_to)
   {
-    MDY_LOG_WARNING("{} | 'from' must be less than 'prior_to'. From : {}, Prior to : {}", "RandomVector3Range", from, prior_to);
+    DyPushLogWarning("{} | 'from' must be less than 'prior_to'. From : {}, Prior to : {}", "RandomVector3Range", from, prior_to);
     return {};
   }
 
@@ -193,7 +193,7 @@ DDyVector3 RandomVector3Range(EDyRandomPolicy policy, float from, float prior_to
   case EDyRandomPolicy::Uniform:
     return RandomVector3Length(1.f) * RandomFloatRange(from, prior_to);
   case EDyRandomPolicy::Discrete:
-    MDY_LOG_WARNING("{} | Discrete distribution is not implemented now.", "RandomVector3Range");
+    DyPushLogWarning("{} | Discrete distribution is not implemented now.", "RandomVector3Range");
     return {};
   default: return {};
   }

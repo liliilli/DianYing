@@ -189,7 +189,7 @@ bool MDyDebug::IsActionPressed(_MIN_ const std::string& iSpecifier) const noexce
   const auto keyIt = this->mBindedActionMap.find(iSpecifier);
   if (keyIt == mBindedActionMap.end())
   {
-    MDY_LOG_ERROR("Could not find action, {}. Return always false.", iSpecifier);
+    DyPushLogError("Could not find action, {}. Return always false.", iSpecifier);
 		return false;
   }
 
@@ -202,7 +202,7 @@ bool MDyDebug::IsActionReleased(_MIN_ const std::string& iSpecifier) const noexc
   const auto keyIt = this->mBindedActionMap.find(iSpecifier);
   if (keyIt == mBindedActionMap.end())
   {
-    MDY_LOG_ERROR("Could not find action, {}. Return always false.", iSpecifier);
+    DyPushLogError("Could not find action, {}. Return always false.", iSpecifier);
 		return false;
   }
 

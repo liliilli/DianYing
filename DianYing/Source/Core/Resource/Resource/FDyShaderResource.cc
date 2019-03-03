@@ -179,7 +179,7 @@ void FDyShaderResource::pStoreAttributeProperties() noexcept
   // Output activated attirbute variable information on console and file in debug_mode.
   for (const auto& variable : this->mAttributeVariableList)
   {
-    MDY_LOG_DEBUG_D("{} | Shader attribute information | Name : {} | Slotsize : {} | Location : {}",
+    DyPushLogDebugDebug("{} | Shader attribute information | Name : {} | Slotsize : {} | Location : {}",
                     this->mSpecifierName, variable.mVariableName, variable.mVariableSlotSize, variable.mVariableLocation);
   }
 #endif
@@ -204,7 +204,7 @@ void FDyShaderResource::pStoreUniformProperties() noexcept
   // Output activated attirbute variable information on console and file in debug_mode.
   for (const auto& variable : this->mPlainUniformVariableLists)
   {
-    MDY_LOG_DEBUG_D("{} | Shader uniform variable information | Name : {} | Slotsize : {} | Type : {} | Location : {}",
+    DyPushLogDebugDebug("{} | Shader uniform variable information | Name : {} | Slotsize : {} | Type : {} | Location : {}",
                     this->mShaderName,
                     variable.mVariableName, variable.mVariableSlotSize,
                     DyGetDebugStringOfUniformVariableType(variable.mVariableType).data(), variable.mVariableLocation);
@@ -229,7 +229,7 @@ void FDyShaderResource::pStoreUniformBufferObjectProperties() noexcept
   // Output activated attirbute variable information on console and file in debug_mode.
   for (const auto& variable : this->mUniformBufferObjectList)
   {
-    MDY_LOG_DEBUG_D("{} | Shader UBO information | Buffer name : {}", this->mSpecifierName, variable.mUboSpecifierName);
+    DyPushLogDebugDebug("{} | Shader UBO information | Buffer name : {}", this->mSpecifierName, variable.mUboSpecifierName);
   }
 #endif
 }

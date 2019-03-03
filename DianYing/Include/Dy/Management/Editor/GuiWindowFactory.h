@@ -69,19 +69,19 @@ public:
     auto it = parentWindow.mSubWindows.find(TGuiComponentType::__mHashVal);
     if (it == parentWindow.mSubWindows.end())
     {
-      MDY_LOG_ERROR("{} | Failed to find gui window instance. | Name : {}", "FDyEditorGuiWindowFactory::RemoveGuiComponent", MDY_TO_STRING(TGuiComponentType));
+      DyPushLogError("{} | Failed to find gui window instance. | Name : {}", "FDyEditorGuiWindowFactory::RemoveGuiComponent", MDY_TO_STRING(TGuiComponentType));
       return DY_FAILURE;
     }
     else
     {
       if (static_cast<TGuiComponentType*>(it->second.get())->Release() == DY_FAILURE)
       {
-        MDY_LOG_ERROR("{} | Failed to release gui window. | Name : {}", "FDyEditorGuiWindowFactory::RemoveGuiComponent", MDY_TO_STRING(TGuiComponentType));
+        DyPushLogError("{} | Failed to release gui window. | Name : {}", "FDyEditorGuiWindowFactory::RemoveGuiComponent", MDY_TO_STRING(TGuiComponentType));
         return DY_FAILURE;
       }
 
       pInsertDeleteComponentToGuiManager(it->second.release());
-      MDY_LOG_INFO("{} | Remove gui component window. | Name : {}", "FDyEditorGuiWindowFactory::RemoveGuiComponent", MDY_TO_STRING(TGuiComponentType));
+      DyPushLogInfo("{} | Remove gui component window. | Name : {}", "FDyEditorGuiWindowFactory::RemoveGuiComponent", MDY_TO_STRING(TGuiComponentType));
       return DY_SUCCESS;
     }
   }

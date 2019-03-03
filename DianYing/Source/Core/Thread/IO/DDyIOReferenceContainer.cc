@@ -139,7 +139,7 @@ EDySuccess DDyIOReferenceContainer::TryDetachBinderFromResourceRI(
   // If target RI need to be GCed (so should be moved into GCList), move it.
   if ((*ptrRiMap)[iSpecifier].IsNeedToBeGced() == true)
   {
-    MDY_LOG_DEBUG_D("Moved Reference Instance to GClist. {}", iSpecifier);
+    DyPushLogDebugDebug("Moved Reference Instance to GClist. {}", iSpecifier);
     SDyIOConnectionHelper::InsertGcCandidate((*ptrRiMap)[iSpecifier]);
     ptrRiMap->erase(iSpecifier);
   }

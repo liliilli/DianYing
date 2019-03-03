@@ -43,7 +43,7 @@ EDySuccess FDyDialog::pfRelease()
     *(this->mParentBoolFlagPtr) = false;
   }
 
-  MDY_LOG_INFO("Released");
+  DyPushLogInfo("Released");
   return DY_SUCCESS;
 }
 
@@ -63,7 +63,7 @@ void FDyDialog::DrawWindow(float dt) noexcept
     ImGui::Text("%s", this->mDialogTextBody.c_str());
     if (ImGui::Button("OK"))
     {
-      MDY_LOG_INFO("{} | Pressed OK button.", "FDyDialog::DrawWindow");
+      DyPushLogInfo("{} | Pressed OK button.", "FDyDialog::DrawWindow");
       ImGui::CloseCurrentPopup();
       // @todo DELETE THIS!
       if (this->mParentRawPtr && FDyEditorGuiWindowFactory::RemoveGuiComponent<FDyDialog>(*(this->mParentRawPtr)))

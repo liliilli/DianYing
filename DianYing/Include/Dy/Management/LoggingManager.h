@@ -34,7 +34,7 @@ public:
   void SetVisibleLevel(ELevel newLogLevel);
  
   /// @brief This function can push the log manually.
-  /// In case of being intentialiy, recommend use MACRO version (MDY_LOG_INFO_D)
+  /// In case of being intentialiy, recommend use MACRO version (DyPushLogDebugInfo)
   void PushLog(ELevel logLevel, const std::string& iLogString);
 
 private:
@@ -55,18 +55,18 @@ private:
 } /// ::dy namespace
 
 /// @brief Use this when logging even though build mode is release.
-template <typename... TArgs> void MDY_LOG_INFO(const std::string& iFormatString, TArgs&&... iArgs);
-template <typename... TArgs> void MDY_LOG_WARNING(const std::string& iFormatString, TArgs&&... iArgs);
-template <typename... TArgs> void MDY_LOG_ERROR(const std::string& iFormatString, TArgs&&... iArgs);
-template <typename... TArgs> void MDY_LOG_CRITICAL(const std::string& iFormatString, TArgs&&... iArgs);
+template <typename... TArgs> void DyPushLogInfo(const std::string& iFormatString, TArgs&&... iArgs);
+template <typename... TArgs> void DyPushLogWarning(const std::string& iFormatString, TArgs&&... iArgs);
+template <typename... TArgs> void DyPushLogError(const std::string& iFormatString, TArgs&&... iArgs);
+template <typename... TArgs> void DyPushLogCritical(const std::string& iFormatString, TArgs&&... iArgs);
 
 /// @brief Use this when logging only if build mdoe is debug.
-template <typename... TArgs> void MDY_LOG_TRACE_D(const std::string& iFormatString, TArgs&&... iArgs);
-template <typename... TArgs> void MDY_LOG_DEBUG_D(const std::string& iFormatString, TArgs&&... iArgs);
-template <typename... TArgs> void MDY_LOG_INFO_D(const std::string& iFormatString, TArgs&&... iArgs);
-template <typename... TArgs> void MDY_LOG_WARNING_D(const std::string& iFormatString, TArgs&&... iArgs);
-template <typename... TArgs> void MDY_LOG_ERROR_D(const std::string& iFormatString, TArgs&&... iArgs);
-template <typename... TArgs> void MDY_LOG_CRITICAL_D(const std::string& iFormatString, TArgs&&... iArgs);
+template <typename... TArgs> void DyPushLogDebugTrace(const std::string& iFormatString, TArgs&&... iArgs);
+template <typename... TArgs> void DyPushLogDebugDebug(const std::string& iFormatString, TArgs&&... iArgs);
+template <typename... TArgs> void DyPushLogDebugInfo(const std::string& iFormatString, TArgs&&... iArgs);
+template <typename... TArgs> void DyPushLogDebugWarning(const std::string& iFormatString, TArgs&&... iArgs);
+template <typename... TArgs> void DyPushLogDebugError(const std::string& iFormatString, TArgs&&... iArgs);
+template <typename... TArgs> void DyPushLogDebugCritical(const std::string& iFormatString, TArgs&&... iArgs);
 
 #endif /// GUARD_DY_MANAGEMENT_LOGGING_MANAGER_H
 #include <Dy/Management/Inline/MLog.inl>

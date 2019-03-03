@@ -31,7 +31,7 @@ std::optional<nlohmann::json> DyGetJsonAtlasFromFile(const std::string& filePath
 {
   if (std::filesystem::exists(filePath) == false)
   {
-    MDY_LOG_CRITICAL("DyGetJsonAtlasFromFile | File path is not exist so failed to read serialization file. | Path : {}", filePath);
+    DyPushLogCritical("DyGetJsonAtlasFromFile | File path is not exist so failed to read serialization file. | Path : {}", filePath);
     return std::nullopt;
   }
 

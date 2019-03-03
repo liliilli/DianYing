@@ -146,7 +146,7 @@ void MDySetting::SetFeatureLogging(_MIN_ bool isEnabled) noexcept
   if (this->mIsEnabledLogging != isEnabled)
   {
     auto& logManager = dy::MDyLog::GetInstance();
-    MDY_LOG_INFO_D("{} | Logging : {}", "Feature", isEnabled ? "ON" : "OFF");
+    DyPushLogDebugInfo("{} | Logging : {}", "Feature", isEnabled ? "ON" : "OFF");
     switch (isEnabled)
     {
     case false: logManager.pfTurnOff(); break;
@@ -160,25 +160,25 @@ void MDySetting::SetFeatureLogging(_MIN_ bool isEnabled) noexcept
 void MDySetting::SetSubFeatureLoggingToConsole(_MIN_ bool isEnabled) noexcept
 {
   this->mIsEnabledLoggingToConsole = isEnabled;
-  MDY_LOG_INFO_D("{} | Logging Console : {}. Need to be restart logger.", "SubFeature", isEnabled ? "ON" : "OFF");
+  DyPushLogDebugInfo("{} | Logging Console : {}. Need to be restart logger.", "SubFeature", isEnabled ? "ON" : "OFF");
 }
 
 void MDySetting::SetSubFeatureLoggingToFile(_MIN_ bool isEnabled) noexcept
 {
   this->mIsEnabledLoggingToFile = isEnabled;
-  MDY_LOG_INFO_D("{} | Logging File : {}. Need to be restart logger.", "SubFeature", isEnabled ? "ON" : "OFF");
+  DyPushLogDebugInfo("{} | Logging File : {}. Need to be restart logger.", "SubFeature", isEnabled ? "ON" : "OFF");
 }
 
 void MDySetting::SetLogFilePath(_MIN_ const std::string& path) noexcept
 {
   if (path.empty() == true)
   {
-    MDY_LOG_ERROR_D("{} | new log file path is empty. Log file path did not change. Log file path : {}", this->mLogFilePath);
+    DyPushLogDebugError("{} | new log file path is empty. Log file path did not change. Log file path : {}", this->mLogFilePath);
   }
   else
   {
     this->mLogFilePath = path;
-    MDY_LOG_INFO_D("{} | Update Log file path : {}. Need to be restart logger.", "SubFeature", this->mLogFilePath);
+    DyPushLogDebugInfo("{} | Update Log file path : {}. Need to be restart logger.", "SubFeature", this->mLogFilePath);
   }
 }
 
@@ -415,7 +415,7 @@ EDySuccess MDySetting::pfInitialize()
     case EDyRenderingApi::Vulkan:     MDY_NOT_IMPLEMENTED_ASSERT(); break;
     case EDyRenderingApi::DirectX11:  MDY_NOT_IMPLEMENTED_ASSERT(); break;
     case EDyRenderingApi::DirectX12:  MDY_NOT_IMPLEMENTED_ASSERT(); break;
-    case EDyRenderingApi::OpenGL:     MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "OpenGL"); break;
+    case EDyRenderingApi::OpenGL:     DyPushLogDebugInfo("{} | Graphics API : {}", "Feature", "OpenGL"); break;
     default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE); 
     }
     return DY_SUCCESS;
@@ -426,12 +426,12 @@ EDySuccess MDySetting::pfInitialize()
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   // Output setting options at debug mode.
-  MDY_LOG_INFO_D("{} | MDySetting::pfInitialize().",          "FunctionCall");
-  MDY_LOG_INFO_D("{} | Logging : {}", "Feature",              this->mIsEnabledLogging ? "ON" : "OFF");
-  MDY_LOG_INFO_D("{} | Logging Console : {}", "SubFeature",   this->mIsEnabledLoggingToConsole ? "ON" : "OFF");
-  MDY_LOG_INFO_D("{} | Logging File : {}", "SubFeature",      this->mIsEnabledLoggingToFile ? "ON" : "OFF");
-  MDY_LOG_INFO_D("{} | Logging File path : {}", "SubFeature", this->mLogFilePath);
-  MDY_LOG_INFO_D("{} | Vsync : {}", "Feature",                this->mIsEnabledVsync ? "ON" : "OFF");
+  DyPushLogDebugInfo("{} | MDySetting::pfInitialize().",          "FunctionCall");
+  DyPushLogDebugInfo("{} | Logging : {}", "Feature",              this->mIsEnabledLogging ? "ON" : "OFF");
+  DyPushLogDebugInfo("{} | Logging Console : {}", "SubFeature",   this->mIsEnabledLoggingToConsole ? "ON" : "OFF");
+  DyPushLogDebugInfo("{} | Logging File : {}", "SubFeature",      this->mIsEnabledLoggingToFile ? "ON" : "OFF");
+  DyPushLogDebugInfo("{} | Logging File path : {}", "SubFeature", this->mLogFilePath);
+  DyPushLogDebugInfo("{} | Vsync : {}", "Feature",                this->mIsEnabledVsync ? "ON" : "OFF");
   MDY_CALL_ASSERT_SUCCESS(InitializeGraphicsApi(*this));
 
   if (this->mFileLoadingMode == EDyFileLoadingMode::LoadSeperatedFile) 
@@ -477,7 +477,7 @@ EDySuccess MDySetting::pfInitialize()
 
 EDySuccess MDySetting::pfRelease()
 {
-  MDY_LOG_INFO_D("{} | MDySetting::pfRelease()", "Function call");
+  DyPushLogDebugInfo("{} | MDySetting::pfRelease()", "Function call");
   return DY_SUCCESS;
 }
 

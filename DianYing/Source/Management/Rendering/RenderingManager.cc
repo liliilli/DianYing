@@ -346,7 +346,7 @@ EDySuccess MDyRendering::pfRelease()
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
-    MDY_LOG_INFO_D("Released ImGui Context.");
+    DyPushLogDebugInfo("Released ImGui Context.");
   } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }

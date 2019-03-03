@@ -159,7 +159,7 @@ void MDySound::PlaySound2D(
   // Check error.
   if (this->IsSoundClipExist(iSoundSpecifier) == false) 
   { 
-    MDY_LOG_ERROR("Sound clip {} is not found, so Failed to play 2D sound.", iSoundSpecifier);
+    DyPushLogError("Sound clip {} is not found, so Failed to play 2D sound.", iSoundSpecifier);
     return; 
   }
 
@@ -179,7 +179,7 @@ std::unique_ptr<FDyInstantSound2D> MDySound::CreateSound2D(
   // Check error.
   if (this->IsSoundClipExist(iSoundSpecifier) == false) 
   { 
-    MDY_LOG_ERROR("Sound clip {} is not found, so Failed to play 2D sound.", iSoundSpecifier);
+    DyPushLogError("Sound clip {} is not found, so Failed to play 2D sound.", iSoundSpecifier);
     return nullptr; 
   }
 
@@ -196,7 +196,7 @@ std::optional<TDyBinderSound2D> MDySound::PlaySound2DLooped(
   // Check error.
   if (this->IsSoundClipExist(iSoundSpecifier) == false) 
   { 
-    MDY_LOG_ERROR("Sound clip {} is not found, so Failed to play 2D sound.", iSoundSpecifier);
+    DyPushLogError("Sound clip {} is not found, so Failed to play 2D sound.", iSoundSpecifier);
     return std::nullopt; 
   } 
 
@@ -220,7 +220,7 @@ void MDySound::PlaySound3D(
   // Check error.
   if (this->IsSoundClipExist(iSoundSpecifier) == false) 
   { 
-    MDY_LOG_ERROR("Sound clip {} is not found, so Failed to play 3D sound.", iSoundSpecifier);
+    DyPushLogError("Sound clip {} is not found, so Failed to play 3D sound.", iSoundSpecifier);
     return; 
   }
 
@@ -247,7 +247,7 @@ std::optional<TDyBinderSound3D> MDySound::PlaySound3DLooped(
   // Check error.
   if (this->IsSoundClipExist(iSoundSpecifier) == false) 
   { 
-    MDY_LOG_ERROR("Sound clip {} is not found, so Failed to play 2D sound.", iSoundSpecifier);
+    DyPushLogError("Sound clip {} is not found, so Failed to play 2D sound.", iSoundSpecifier);
     return std::nullopt; 
   } 
 
@@ -274,7 +274,7 @@ FDySoundChannel* MDySound::GetPtrChannel(_MIN_ const std::string& iSpecifier)
   // Check validity.
   if (DyIsMapContains(this->mChannelContainer, iSpecifier) == false)
   {
-    MDY_LOG_ERROR("Failed to find sound channel, {}.", iSpecifier);
+    DyPushLogError("Failed to find sound channel, {}.", iSpecifier);
     return nullptr;
   }
 
@@ -287,7 +287,7 @@ EDySuccess MDySound::InitializeSoundSystem()
   // Check sound system is available.
   if (this->mIsSoundSystemAvailable == false)
   {
-    MDY_LOG_CRITICAL("Sound system is not available.");
+    DyPushLogCritical("Sound system is not available.");
     return DY_FAILURE;
   }
 
@@ -313,7 +313,7 @@ EDySuccess MDySound::InitializeSoundSystem()
   ||  this->mSoundSystem->getVersion(&this->mVersion) != FMOD_OK 
   ||  this->mSoundSystem->getNumDrivers(&this->mSoundDriverCount) != FMOD_OK)
   {
-    MDY_LOG_CRITICAL(sErrorSystemCreationFailed);
+    DyPushLogCritical(sErrorSystemCreationFailed);
     // Release.
     if (this->mSoundSystem != nullptr) { this->mSoundSystem->release(); this->mSoundSystem = nullptr; }
     this->mIsSoundSystemAvailable = false;
@@ -321,7 +321,7 @@ EDySuccess MDySound::InitializeSoundSystem()
   }
   if (this->mVersion < FMOD_VERSION || this->mSoundDriverCount < 0)
   {
-    MDY_LOG_CRITICAL(sErrorSystemCreationFailed);
+    DyPushLogCritical(sErrorSystemCreationFailed);
     // Release.
     if (this->mSoundSystem != nullptr) { this->mSoundSystem->release(); this->mSoundSystem = nullptr; }
     this->mIsSoundSystemAvailable = false;
@@ -336,7 +336,7 @@ EDySuccess MDySound::InitializeSoundSystem()
   // We must use RIGHT_HANDED_COORDINATE
   if (this->mSoundSystem->init(128, FMOD_INIT_NORMAL | FMOD_INIT_3D_RIGHTHANDED, nullptr) != FMOD_OK)
   {
-    MDY_LOG_CRITICAL(sErrorSystemCreationFailed);
+    DyPushLogCritical(sErrorSystemCreationFailed);
     if (this->mSoundSystem != nullptr) { this->mSoundSystem->release(); this->mSoundSystem = nullptr; }
     this->mIsSoundSystemAvailable = false;
     return DY_FAILURE;
@@ -391,7 +391,7 @@ EDySuccess MDySound::ReleaseSoundSystem()
   // Check
   if (this->mIsSoundSystemAvailable == false)
   {
-    MDY_LOG_CRITICAL("Sound system is already not available, so does not have to release system.");
+    DyPushLogCritical("Sound system is already not available, so does not have to release system.");
     return DY_FAILURE;
   }
 

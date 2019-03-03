@@ -285,7 +285,7 @@ struct DDyVector3 final {
   {
     if (rhs == 0.0f)
     {
-      MDY_LOG_CRITICAL_D("DDyVector3 could not be divided by {0}.", rhs);
+      DyPushLogDebugCritical("DDyVector3 could not be divided by {0}.", rhs);
     }
     else
     {
@@ -304,7 +304,7 @@ struct DDyVector3 final {
   {
     if (rhs.X == 0.0f || rhs.Y == 0.0f || rhs.Z == 0.0f)
     {
-      MDY_LOG_CRITICAL_D("DDyVector3 could not be devided by 0 included DDyVector3, ({0}, {1}, {2})", rhs.X, rhs.Y, rhs.Z);
+      DyPushLogDebugCritical("DDyVector3 could not be devided by 0 included DDyVector3, ({0}, {1}, {2})", rhs.X, rhs.Y, rhs.Z);
     }
     else
     {
@@ -355,7 +355,7 @@ struct DDyVector3 final {
   {
     if (value == 0.0f)
     {
-      MDY_LOG_CRITICAL_D("DDyVector3 could not be divided by {0}.", value);
+      DyPushLogDebugCritical("DDyVector3 could not be divided by {0}.", value);
     }
     else
     {
@@ -374,7 +374,7 @@ struct DDyVector3 final {
   {
     if (value.X == 0.0f || value.Y == 0.0f || value.Z == 0.0f)
     {
-      MDY_LOG_CRITICAL_D("DDyVector3 could not be devided by 0 included DDyVector3, ({0}, {1}, {2})", value.X, value.Y, value.Z);
+      DyPushLogDebugCritical("DDyVector3 could not be devided by 0 included DDyVector3, ({0}, {1}, {2})", value.X, value.Y, value.Z);
     }
     else
     {

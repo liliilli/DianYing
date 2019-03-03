@@ -23,7 +23,7 @@ EDySuccess FDySoundGroup::Initialize(_MIN_ FMOD::System& iPtrSystem, _MIN_ const
 {
   if (this->mIsInitilaized == true)
   {
-    MDY_LOG_WARNING("Initialized sound group can not be initialized twice.");
+    DyPushLogWarning("Initialized sound group can not be initialized twice.");
     return DY_FAILURE;
   }
 
@@ -59,7 +59,7 @@ EDySuccess FDySoundGroup::Release()
 {
   if (this->mIsInitilaized == false)
   {
-    MDY_LOG_WARNING("Initialized sound group can not be released twice.");
+    DyPushLogWarning("Initialized sound group can not be released twice.");
     return DY_FAILURE;
   }
 

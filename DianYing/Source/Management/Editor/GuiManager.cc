@@ -30,7 +30,7 @@ namespace dy::editor
 
 EDySuccess MDyEditorGui::pfInitialize()
 {
-  MDY_LOG_INFO_D("MDyEditorGui manager initialized.");
+  DyPushLogDebugInfo("MDyEditorGui manager initialized.");
   MDY_CALL_ASSERT_SUCCESS(MDyEditorSetting::Initialize());
 
   auto [hashVal, ptr] = FDyEditorGuiWindowFactory::CreateGuiComponent<FDyMainMenu>(PDyGuiComponentEmptyDescriptor{});
@@ -42,7 +42,7 @@ EDySuccess MDyEditorGui::pfInitialize()
 
 EDySuccess MDyEditorGui::pfRelease()
 {
-  MDY_LOG_INFO_D("MDyEditorGui manager released.");
+  DyPushLogDebugInfo("MDyEditorGui manager released.");
   MDY_CALL_ASSERT_SUCCESS(MDyEditorSetting::Release());
   return DY_SUCCESS;
 }
