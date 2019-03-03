@@ -24,6 +24,7 @@
 #include <Dy/Management/Rendering/RenderingManager.h>
 #include <Dy/Management/Rendering/UniformBufferObjectManager.h>
 #include <Dy/Component/CDyDirectionalLight.h>
+#include <Dy/Element/Level.h>
 
 namespace dy
 {

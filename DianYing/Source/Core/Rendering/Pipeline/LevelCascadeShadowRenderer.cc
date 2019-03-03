@@ -24,8 +24,9 @@
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
 #include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
 #include <Dy/Management/Rendering/RenderingManager.h>
-#include "Dy/Component/CDyDirectionalLight.h"
-#include "Dy/Core/Resource/Resource/FDyMaterialResource.h"
+#include <Dy/Component/CDyDirectionalLight.h>
+#include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
+#include <Dy/Element/Actor.h>
 
 #ifdef near
 #undef near

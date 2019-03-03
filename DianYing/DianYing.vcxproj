@@ -1082,6 +1082,7 @@
     <None Include="Include\Dy\Management\Inline\MScriptImpl.inl" />
     <None Include="Include\Dy\Management\Inline\MSoundImpl.inl" />
     <None Include="Include\Dy\Management\Inline\MWindowImpl.inl" />
+    <None Include="Include\Dy\Management\Inline\MWorldImpl.inl" />
     <None Include="TestResource\Lua\player_script.lua" />
     <None Include="TestResource\Lua\test_bindingscript.lua" />
     <None Include="TestResource\Lua\variables.lua">

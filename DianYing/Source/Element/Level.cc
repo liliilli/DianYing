@@ -17,6 +17,7 @@
 #include <Dy/Helper/HashCompileCrc32.h>
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
+#include <Dy/Element/Type/PDyActorCreationDescriptor.h>
 
 //!
 //! Local translation unit function & data
@@ -64,7 +65,7 @@ FDyLevel::~FDyLevel()
   DyPushLogInfo("{} | Release level context. | Level name : {}", "FDyLevel::Release()", this->mLevelName);
   for (auto& [name, actor] : this->mActorMap)
   {
-    if (MDY_CHECK_ISEMPTY(actor)) { continue; }
+    if (actor == nullptr) { continue; }
     MDyWorld::GetInstance().pfMoveActorToGc(DyMakeNotNull(actor.release()));
   }
 

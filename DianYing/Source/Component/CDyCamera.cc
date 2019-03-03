@@ -16,6 +16,7 @@
 #include <Dy/Component/CDyCamera.h>
 
 #include <glm/gtc/matrix_transform.hpp>
+#include <Dy/Element/Actor.h>
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/WorldManager.h>
 
