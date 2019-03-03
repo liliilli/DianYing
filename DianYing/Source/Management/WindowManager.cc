@@ -36,14 +36,17 @@
 namespace
 {
 
-void GLAPIENTRY DyGlMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
+void GLAPIENTRY DyGlMessageCallback(
+  GLenum source, GLenum type, GLuint id, 
+  GLenum severity, GLsizei length, const GLchar* message, 
+  const void* userParam)
 {
   DyPushLogDebugCritical(
-      "DianYing OpenGL callback : %s type = 0x%x, severity = 0x%x, message = %s",
-      (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
-      type,
-      severity,
-      message
+    "DianYing OpenGL callback : %s type = 0x%x, severity = 0x%x, message = %s",
+    (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
+    type,
+    severity,
+    message
   );
 }
 
@@ -52,27 +55,13 @@ void DyGLFWErrorFunction(int errorcode, const char* message)
   DyPushLogDebugCritical("GLFW Error occurred. Error code : {}, Message : {}", errorcode, message);
 }
 
-} /// unnamed namespace
-
-//!
-//! Platform depdendent anonymous namespace
-//!
-
-#if defined(_WIN32) == true
-namespace
-{
-
-///
 /// @brief Callback method for size check and resizing.
-///
 void DyGlCallbackFrameBufferSize(GLFWwindow* window, int width, int height)
 {
   glViewport(0, 0, width, height);
 }
 
-///
 /// @brief Callback method for closing arbitary glfw window window handle.
-///
 void DyGlCallbackWindowClose(GLFWwindow* window)
 {
   glfwSetKeyCallback(window, nullptr);
@@ -81,9 +70,6 @@ void DyGlCallbackWindowClose(GLFWwindow* window)
 }
 
 } /// unnamed namespace
-#elif defined(MDY_PLATFORM_FLAG_LINUX)
-#elif defined(MDY_PLATFORM_FLAG_MACOS)
-#endif
 
 //!
 //! Implementations
@@ -92,225 +78,121 @@ void DyGlCallbackWindowClose(GLFWwindow* window)
 namespace dy
 {
 
+class MDyWindow::Impl final : public IDyWindowDependent
+{
+public:
+  Impl();
+  virtual ~Impl();
+
+  /// @brief Check window is should closed this time.
+  bool IsWindowShouldClose() const noexcept;
+
+  /// @brief Terminate window. if terminated already, just return DY_FAILURE. \n
+  /// This function must be called in main thread.
+  EDySuccess MDY_PRIVATE(TerminateWindow)() noexcept;
+
+  /// @brief Get window context.
+  GLFWwindow* GetGLMainWindow() const noexcept;
+  /// @brief Get glfw worker window context list
+  const std::array<GLFWwindow*, 2>& GetGLWorkerWindowList() const noexcept;
+
+  /// @brief  Create console window if OS supports. Even though OS does not support console window,
+  /// This function will return DY_SUCCESS because of conformity with remove function.
+  /// @return If succeeded, return DY_SUCCESS or DY_FAILURE. \n
+  EDySuccess CreateConsoleWindow() override final;
+  /// @brief  Check if console window is created or not.
+  /// @return If created anyway, return true or false
+  bool IsCreatedConsoleWindow() const noexcept override final;
+  /// @brief  Remove console window when console window is initiailzed before.
+  /// @return If succeeded, return DY_SUCCESS or DY_FAILURE
+  EDySuccess RemoveConsoleWindow() override final;
+
+  /// @brief Get cpu usage overall percentage. (0 ~ 100%)
+  TF32 GetCpuUsage() override final;
+  /// @brief Get ram usage as byte.
+  TU64 GetRamUsage() override final;
+
+  /// @brief Check font exist on system path.
+  bool IsFontExistOnSystem(const std::string& iFontKey) const override final;
+  /// @brief Get system font path with iFontKey. If not found, just return null value.
+  std::optional<std::string> GetFontPathOnSystem(const std::string& iFontKey) const override final;
+
+private:
+  void InitializeDep() override final {}; 
+  void ReleaseDep() override final {};
+  
+  GLFWwindow*                 mGlfwWindow     = nullptr;
+  std::array<GLFWwindow*, 2>  mGlfwWorkerWnds = {};
+  IDyWindowDependent*         mDependentWindowContext = nullptr;
+};
+
+} /// ::dy namespace
+#include <Dy/Management/Inline/MWindowImpl.inl>
+
+//!
+//! Proxy
+//!
+
+namespace dy
+{
+
 bool MDyWindow::IsWindowShouldClose() const noexcept
 {
-  return glfwWindowShouldClose(this->mGlfwWindow);
+  return this->mInternal->IsWindowShouldClose();
 }
 
 EDySuccess MDyWindow::MDY_PRIVATE(TerminateWindow)() noexcept
 {
-  glfwSetWindowShouldClose(this->GetGLMainWindow(), GLFW_TRUE);
-  return DY_SUCCESS;
+  return this->mInternal->MDY_PRIVATE(TerminateWindow)();
 }
 
 GLFWwindow* MDyWindow::GetGLMainWindow() const noexcept
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mGlfwWindow), "GlfwWindow is not initiailized.");
-  return this->mGlfwWindow;
+  return this->mInternal->GetGLMainWindow();
 }
 
 const std::array<GLFWwindow*, 2>& MDyWindow::GetGLWorkerWindowList() const noexcept
 {
-  #if defined (NDEBUG) == false 
-  for (const auto& ptrWindow : this->mGlfwWorkerWnds)
-  { // Validation check.
-    MaybeNotUsed(ptrWindow);
-    MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptrWindow), "GLFWwindow must be valid.");
-  }
-  #endif
-
-  return this->mGlfwWorkerWnds;
+  return this->mInternal->GetGLWorkerWindowList();
 }
 
 EDySuccess MDyWindow::CreateConsoleWindow()
 {
-  return this->mDependentWindowContext->CreateConsoleWindow();
+  return this->mInternal->CreateConsoleWindow();
 }
 
 bool MDyWindow::IsCreatedConsoleWindow() const noexcept
 {
-  return this->mDependentWindowContext->IsCreatedConsoleWindow();
+  return this->mInternal->IsCreatedConsoleWindow();
 }
 
-EDySuccess MDyWindow::RemoveConsoleWindow()
-{
-  return this->mDependentWindowContext->RemoveConsoleWindow();
+EDySuccess MDyWindow::RemoveConsoleWindow() 
+{ 
+  return this->mInternal->RemoveConsoleWindow(); 
 }
 
-TF32 MDyWindow::GetCpuUsage()
-{
-  return this->mDependentWindowContext->GetCpuUsage();
-}
-
-TU64 MDyWindow::GetRamUsage()
-{
-  return this->mDependentWindowContext->GetRamUsage();
-}
+TF32 MDyWindow::GetCpuUsage() { return this->mInternal->GetCpuUsage(); }
+TU64 MDyWindow::GetRamUsage() { return this->mInternal->GetRamUsage(); }
 
 bool MDyWindow::IsFontExistOnSystem(const std::string& iFontKey) const
 {
-  return this->mDependentWindowContext->IsFontExistOnSystem(iFontKey);
+  return this->mInternal->IsFontExistOnSystem(iFontKey);
 }
 
 std::optional<std::string> MDyWindow::GetFontPathOnSystem(const std::string& iFontKey) const
 {
-  return this->mDependentWindowContext->GetFontPathOnSystem(iFontKey);
+  return this->mInternal->GetFontPathOnSystem(iFontKey);
 }
 
 EDySuccess MDyWindow::pfInitialize()
 {
-  /// @brief This function is not implemented yet.
-  static auto InitializeVulkan = [this]()
-  {
-    #ifdef false
-    dy::DyVkInitialize(windowHandle, hInstance);
-
-    ShowWindow(windowHandle, SW_SHOW);
-    SetForegroundWindow(windowHandle);
-    SetFocus(windowHandle);
-
-    dy::DyVkRenderLoop();
-    dy::DyVkCleanupResources();
-    #endif
-    return DY_FAILURE;
-  };
-
-  /// @brief This function is not implemented yet.
-  static auto InitializeDirectX11 = [this]()
-  {
-    #ifdef false
-    MDY_CALL_ASSERT_SUCCESS(DyWin32InitializeWindow(hInstance));
-    MDY_CALL_ASSERT_SUCCESS(DyD11InitializeDirect3D());
-
-    ShowWindow(windowHandle, SW_SHOW);
-    SetForegroundWindow(windowHandle);
-    SetFocus(windowHandle);
-
-    DyD11CreateEffectFx();
-    DyD11BindVertexLayout();
-    DyD11CreateVertexBuffer();
-    DyD11RenderLoop();
-    #endif
-    return DY_FAILURE;
-  };
-
-  /// @brief Initialize OpenGL Context.
-  /// This function must be returned `DY_SUCCESS`.
-  static auto InitializeOpenGL = [this]()
-  {
-    glfwInit();
-
-    // Create descriptor.
-    PDyGLWindowContextDescriptor descriptor{};
-    descriptor.mWindowName          = "DianYing";
-    descriptor.mIsWindowResizable   = false;
-    descriptor.mIsWindowVisible     = true;
-    descriptor.mIsWindowShouldFocus = true;
-    descriptor.mIsUsingDefaultDoubleBuffer = true;
-
-    const auto& settingManager = MDySetting::GetInstance();
-    descriptor.mWindowSize = DDyVectorInt2{
-        settingManager.GetWindowSizeWidth(),
-        settingManager.GetWindowSizeHeight()
-    };
-
-    this->mGlfwWindow = FDyGLWrapper::CreateGLWindow(descriptor);
-
-    // Create window instance for giving context to I/O worker thread.
-    descriptor.mIsWindowShouldFocus = false;
-    descriptor.mIsWindowVisible     = false;
-    descriptor.mSharingContext      = this->mGlfwWindow;
-    for (auto& ptrWindow : this->mGlfwWorkerWnds) { ptrWindow = FDyGLWrapper::CreateGLWindow(descriptor); }
-
-    // Check validity
-    if (this->mGlfwWindow == nullptr) { glfwTerminate(); return DY_FAILURE; }
-    FDyGLWrapper::CreateGLContext(this->mGlfwWindow);
-
-    gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
-    glfwSetInputMode(this->mGlfwWindow, GLFW_STICKY_KEYS, GL_FALSE);
-    glfwSetFramebufferSizeCallback(this->mGlfwWindow, &DyGlCallbackFrameBufferSize);
-    glfwSetWindowCloseCallback(this->mGlfwWindow, &DyGlCallbackWindowClose);
-
-    // If in debug build environment, enable debug output logging.
-    #if defined(_DEBUG) || !defined(_NDEBUG)
-      glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-      glDebugMessageCallback(DyGlMessageCallback, nullptr);
-      GLuint unusedIds = 0;
-      glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, &unusedIds, GL_TRUE);
-      glfwSetErrorCallback(&DyGLFWErrorFunction);
-    #endif
-
-    // Setting rendering.
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    { // Make initialized screen to black for giving liability to users XD
-      glClear(GL_COLOR_BUFFER_BIT);
-      glClearColor(0.f, 0.f, 0.f, 1.0f);
-      glfwSwapBuffers(this->mGlfwWindow);
-      glfwPollEvents();
-    }
-    return DY_SUCCESS;
-  };
-
-  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  //! FUNCTIONBODY ∨
-  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  DyPushLogDebugInfo("{} | MDyWindow::pfInitialize().", "FunctionCall");
-  #if defined(_WIN32)
-    this->mDependentWindowContext = new DDyWindowInformationWindows();
-  #else
-    static_assert(false, "Other platform does not support yet.");
-  #endif
-  this->mDependentWindowContext->InitializeDep();
-
-  // If we should create console window...
-  if (MDySetting::GetInstance().IsEnabledSubFeatureLoggingToConsole() == true)
-  {
-    MDY_CALL_ASSERT_SUCCESS(this->mDependentWindowContext->CreateConsoleWindow());
-  }
-
-  // @TODO TEMP
-  switch (MDySetting::GetInstance().GetRenderingType())
-  {
-  default: MDY_UNEXPECTED_BRANCH(); break;
-  case EDyRenderingApi::DirectX12:  MDY_NOT_IMPLEMENTED_ASSERT(); break;
-  case EDyRenderingApi::Vulkan:     MDY_NOT_IMPLEMENTED_ASSERT(); break;
-  case EDyRenderingApi::DirectX11:  MDY_NOT_IMPLEMENTED_ASSERT(); break;
-  case EDyRenderingApi::OpenGL:
-    DyPushLogDebugInfo("Initialize OpenGL Context.");
-    MDY_CALL_ASSERT_SUCCESS(InitializeOpenGL());
-    break;
-  }
-
+  this->mInternal = new (std::nothrow) Impl();
   return DY_SUCCESS;
 }
 
 EDySuccess MDyWindow::pfRelease()
 {
-  DyPushLogDebugInfo("{} | MDyWindow::pfRelease().", "FunctionCall");
-
-  switch (MDySetting::GetInstance().GetRenderingType())
-  {
-  default: MDY_UNEXPECTED_BRANCH(); return DY_FAILURE;
-  case EDyRenderingApi::DirectX11:  DyPushLogDebugInfo("Release DirectX11 Context.");  MDY_NOT_IMPLEMENTED_ASSERT(); break;
-  case EDyRenderingApi::DirectX12:  DyPushLogDebugInfo("Release DirectX12 Context.");  MDY_NOT_IMPLEMENTED_ASSERT(); break;
-  case EDyRenderingApi::Vulkan:     DyPushLogDebugInfo("Release Vulkan Context.");     MDY_NOT_IMPLEMENTED_ASSERT(); break;
-  case EDyRenderingApi::OpenGL:
-    glfwTerminate();
-    break;
-  }
-
-  if (this->mDependentWindowContext->IsCreatedConsoleWindow() == true)
-  {
-    MDY_CALL_ASSERT_SUCCESS(this->mDependentWindowContext->RemoveConsoleWindow());
-  }
-
-  this->mDependentWindowContext->ReleaseDep();
-  delete this->mDependentWindowContext;
-  this->mDependentWindowContext = nullptr;
+  delete this->mInternal; this->mInternal = nullptr;
   return DY_SUCCESS;
 }
 

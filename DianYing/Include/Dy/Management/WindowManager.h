@@ -62,10 +62,8 @@ public:
 private:
   void InitializeDep() override final {}; 
   void ReleaseDep() override final {};
-
-  GLFWwindow*                 mGlfwWindow     = nullptr;
-  std::array<GLFWwindow*, 2>  mGlfwWorkerWnds = {};
-  IDyWindowDependent*         mDependentWindowContext = nullptr;
+  
+  class Impl; Impl* mInternal = nullptr;
 };
 
 } /// ::dy namespace
