@@ -109,7 +109,7 @@ FDyLevel::GetAllActorsWithTagRecursive(_MIN_ const std::string& iTagSpecifier) c
   {
     if (MDY_CHECK_ISEMPTY(ptrsmtActor)) { continue; }
     if (ptrsmtActor->GetActorTag() == iTagSpecifier) { result.emplace_back(ptrsmtActor.get()); }
-    if (ptrsmtActor->IsHavingChildrenObject() == true)
+    if (ptrsmtActor->HasChildrenActor() == true)
     {
       const auto subResult = ptrsmtActor->GetAllActorsWithTagRecursive(iTagSpecifier);
       result.insert(result.end(), MDY_BIND_BEGIN_END(subResult));
@@ -144,7 +144,7 @@ FDyLevel::GetAllActorsWithNameRecursive(_MIN_ const std::string& iNameSpecifier)
   {
     if (MDY_CHECK_ISEMPTY(ptrsmtActor)) { continue; }
     if (ptrsmtActor->GetActorName() == iNameSpecifier) { result.emplace_back(ptrsmtActor.get()); }
-    if (ptrsmtActor->IsHavingChildrenObject() == true)
+    if (ptrsmtActor->HasChildrenActor() == true)
     {
       const auto subResult = ptrsmtActor->GetAllActorsWithNameRecursive(iNameSpecifier);
       result.insert(result.end(), MDY_BIND_BEGIN_END(subResult));
@@ -167,21 +167,26 @@ FDyActor::TActorMap& FDyLevel::GetActorContainer() noexcept
 
 void FDyLevel::CreateActorInstantly(_MIN_ const PDyActorCreationDescriptor& descriptor)
 {
+  // If parent full specifier name is empty so descripor requires make actor on root.
   if (descriptor.mParentFullSpecifierName.empty() == true)
   {
-    auto instancePtr  = std::make_unique<FDyActor>(descriptor);
+    // Get Auto generated name.
+    PDyActorCreationDescriptor desc = descriptor;
+    desc.mActorSpecifierName = this->TryGetGeneratedName(descriptor.mActorSpecifierName);
+
+    auto instancePtr  = std::make_unique<FDyActor>(desc);
     auto [it, result] = this->mActorMap.try_emplace(instancePtr->GetActorName(), std::move(instancePtr));
     MDY_ASSERT(result == true, "Unexpected error occured in inserting FDyActor to object map.");
      
     // Try propagate transform.
     auto& [specifier, ptrsmtActor] = *it;
-    if (ptrsmtActor->IsHaveParent() == true)
+    if (ptrsmtActor->HasParent() == true)
     {
-      ptrsmtActor->GetParent()->GetTransform()->TryPropagateTransformToChildren();
+      ptrsmtActor->GetPtrParent()->GetTransform()->TryPropagateTransformToChildren();
     }
   }
   else
-  {
+  { // Or otherwise...
     auto* ptrParent = this->GetActorWithFullName(descriptor.mParentFullSpecifierName);
     // If parent is not exist because removed or will be removed on this frame, do nothing and do not create.
     if (MDY_CHECK_ISNULL(ptrParent)) { return; }

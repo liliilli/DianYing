@@ -1073,6 +1073,8 @@
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\Deferred\FDyBtFbSSAOBlur.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Include\Dy\Element\Inline\FActorImpl.inl" />
+    <None Include="Include\Dy\Element\Inline\FActorTmp.inl" />
     <None Include="Include\Dy\Helper\Library\HelperJson.inl" />
     <None Include="Include\Dy\Helper\Library\HelperString.inl" />
     <None Include="Include\Dy\Management\Inline\MLogHelper.inl" />

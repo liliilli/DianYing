@@ -250,8 +250,7 @@ private:
 
   /// @brief Action creation descriptor list for present level. \n
   /// This list must be processed and cleaned each frame prior to update of logic.
-  std::vector<std::unique_ptr<PDyActorCreationDescriptor>> 
-  mActorCreationDescList = {};
+  std::vector<std::unique_ptr<PDyActorCreationDescriptor>> mActorCreationDescList = {};
   /// Garbage collection actor instance list.
   std::vector<std::unique_ptr<FDyActor>> mGCedActorList = {};
 

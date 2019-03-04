@@ -261,13 +261,13 @@ inline void MDyRendering::Impl::SetupDrawModelTaskQueue()
   auto& handlerManager = FDyModelHandlerManager::GetInstance();
 
   const auto& modelHandleContainer = handlerManager.GetContainer();
-  for (const auto& [specifier, ptrsmtInstance] : modelHandleContainer)
+  for (const auto& [specifier, smtInstance] : modelHandleContainer)
   {
-    if (MDY_CHECK_ISEMPTY(ptrsmtInstance)) { continue; }
-    if (ptrsmtInstance->IsModelResourceValid() == false) { continue; }
+    if (smtInstance == nullptr) { continue; }
+    if (smtInstance->IsModelResourceValid() == false) { continue; }
 
     // Loop handler's actor information instance.
-    auto& actorContainer = ptrsmtInstance->GetActorContainer();
+    auto& actorContainer = smtInstance->GetActorContainer();
     std::vector<NotNull<DDyModelHandler::DActorInfo*>> renderableActorList;
 
     // Insert satisfied render actor information instance.
@@ -279,7 +279,7 @@ inline void MDyRendering::Impl::SetupDrawModelTaskQueue()
     }
   
     // Get 
-    const auto& refBinder = ptrsmtInstance->GetModelBinderReference();
+    const auto& refBinder = smtInstance->GetModelBinderReference();
     const FDyModelResource* ptrModelResc = refBinder.Get();
 
     const auto& bindMeshList = ptrModelResc->GetMeshResourceList();

@@ -146,30 +146,29 @@ inline DDyActorBinder MDyWorld::Impl::CreateActor(
   const std::string& iObjectTag, 
   bool iDoSweep)
 {
+  // Check prefab is exist on meta information manager.
+  MDY_ASSERT_FORCE(
+    MDyMetaInfo::GetInstance().IsPrefabMetaInformationExist(iPrefabName) == true,
+    "Failed to find prefab with specified `iPrefabName`.");
+
   PDyActorCreationDescriptor descriptor = {};
-  descriptor.mActorSpecifierName      = 
-      iPtrParent != nullptr 
-    ? iPtrParent->TryGetGeneratedName(iActorName) 
-    : this->mLevel->TryGetGeneratedName(iActorName);
-  descriptor.mParentFullSpecifierName = 
-      iPtrParent != nullptr 
-    ? iPtrParent->MDY_PRIVATE(GetFullSpecifierName)() 
-    : MDY_INITIALIZE_EMPTYSTR;
+  descriptor.mParentFullSpecifierName = iPtrParent != nullptr ? iPtrParent->GetActorFullName() : "";
+  // Actor speciier name will be auto-generated when creation.
+  descriptor.mActorSpecifierName = iActorName;
   descriptor.mTransform = iSpawnTransform;
   descriptor.mIsDoSweep = iDoSweep;
-
-  // Check prefab is exist on meta information manager.
-  MDY_ASSERT(MDyMetaInfo::GetInstance().IsPrefabMetaInformationExist(iPrefabName) == true,
-             "Failed to find prefab with specified `iPrefabName`.");
   descriptor.mPrefabSpecifierName = iPrefabName;
-
+  // Check tag is exist, when tag is not empty.
   if (iObjectTag.empty() == false)
-  { // Check tag is exist, when tag is not empty.
+  { 
     MDY_CALL_ASSERT_SUCCESS(MDySetting::GetInstance().MDY_PRIVATE(CheckObjectTagIsExist)(iObjectTag));
     descriptor.mObjectTag = iObjectTag;
   }
 
+  // Push requisition actor item.
   DySafeUniquePtrEmplaceBack(this->mActorCreationDescList, descriptor);
+
+  // Bind actor.
   DDyActorBinder resultBinder {};
   resultBinder.MDY_PRIVATE(BindDescriptor)(this->mActorCreationDescList.back().get());
   return resultBinder;
@@ -177,10 +176,10 @@ inline DDyActorBinder MDyWorld::Impl::CreateActor(
 
 inline void MDyWorld::Impl::DestroyActor(FDyActor& iRefActor)
 {
-  if (iRefActor.IsHaveParent() == true)
+  if (iRefActor.HasParent() == true)
   { // If iRefActor has parent, let parent detach and remove iRefActor from object tree.
     // and move it to MDyWorld::Impl::GC LIST.
-    auto& container = iRefActor.GetParent()->GetChildrenContainer();
+    auto& container = iRefActor.GetPtrParent()->GetChildrenContainer();
     auto  it = std::find_if(MDY_BIND_BEGIN_END(container), 
         [ptr = &iRefActor](const std::decay_t<decltype(container)>::value_type& iPair)
         {
