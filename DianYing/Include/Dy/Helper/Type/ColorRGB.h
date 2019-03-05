@@ -108,8 +108,8 @@ struct DDyColorRGB final
   static const DDyColorRGB Yellow;
 };
 
-void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDyColorRGB& p);
-void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ DDyColorRGB& p);
+void to_json(nlohmann::json& oJson, const DDyColorRGB& iItem);
+void from_json(const nlohmann::json& iJson, DDyColorRGB& oItem);
 
 } /// ::dy namespace
 

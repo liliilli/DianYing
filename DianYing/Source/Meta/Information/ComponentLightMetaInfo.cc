@@ -16,7 +16,7 @@
 #include <Dy/Meta/Information/ComponentLightMetaInfo.h>
 #include <Dy/Element/Helper/DescriptorComponentHeaderString.h>
 #include <Dy/Helper/Library/HelperJson.h>
-#include <Dy/Helper/Type/ColorRGB24.h>
+#include <Dy/Helper/Type/ColorRGB.h>
 
 //!
 //! Forward declaration
@@ -65,9 +65,9 @@ void from_json(const nlohmann::json& j, PDyDirLightComponentMetaInfo::DDetails& 
   DyJsonGetValueFromTo(j, sHeaderLightDirection, p.mDirection);
   DyJsonGetValueFromTo(j, sHeaderLightIntensity, p.mIntensity);
 
-  p.mDiffuse   = DyJsonGetValueFrom<DDyColorRGB24>(j, sHeaderLightDiffuse);
-  p.mSpecular  = DyJsonGetValueFrom<DDyColorRGB24>(j, sHeaderLightSpecular);
-  p.mAmbient   = DyJsonGetValueFrom<DDyColorRGB24>(j, sHeaderLightAmbient);
+  p.mDiffuse  = DyJsonGetValueFrom<DDyColorRGB>(j, sHeaderLightDiffuse);
+  p.mSpecular = DyJsonGetValueFrom<DDyColorRGB>(j, sHeaderLightSpecular);
+  p.mAmbient  = DyJsonGetValueFrom<DDyColorRGB>(j, sHeaderLightAmbient);
 
   DyJsonGetValueFromTo(j, sHeaderShadowType,      p.mShadowType);
   DyJsonGetValueFromTo(j, sHeaderShadowStrength,  p.mShadowStrength);

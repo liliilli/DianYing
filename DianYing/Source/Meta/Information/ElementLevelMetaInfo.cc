@@ -16,7 +16,7 @@
 #include <Dy/Meta/Information/ElementLevelMetaInfo.h>
 
 #include <nlohmann/json.hpp>
-#include <Dy/Helper/Type/ColorRGB24.h>
+#include <Dy/Helper/Type/ColorRGB.h>
 #include <Dy/Helper/Library/HelperJson.h>
 #include <Dy/Element/Helper/DescriptorComponentHeaderString.h>
 
@@ -142,9 +142,9 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyLevelConstructMetaInfo::
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyLevelConstructMetaInfo::DMeta& p)
 {
-  DyJsonGetValueFromTo(j, sHeader_SpecifierName,                p.mLevelName);
-  DyJsonGetValueFromTo(j, sHeader_IsUsingUUIDForSpecification,  p.mIsUsingUUIDForSpecification);
-  p.mLevelBackgroundColor = DyJsonGetValueFrom<DDyColorRGB24>(j, sHeader_BackgroundColor);
+  DyJsonGetValueFromTo(j, sHeader_SpecifierName,               p.mLevelName);
+  DyJsonGetValueFromTo(j, sHeader_IsUsingUUIDForSpecification, p.mIsUsingUUIDForSpecification);
+  DyJsonGetValueFromTo(j, sHeader_BackgroundColor, p.mLevelBackgroundColor);
 }
 
 } /// ::dy namespace

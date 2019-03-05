@@ -19,11 +19,16 @@
 namespace dy
 {
 
-void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ DDyColorRGB& p)
+void to_json(nlohmann::json& oJson, const DDyColorRGB& iItem)
 {
-  DyJsonGetValueFromTo(j, "R", p.R);
-  DyJsonGetValueFromTo(j, "G", p.G);
-  DyJsonGetValueFromTo(j, "B", p.B);
+  oJson = nlohmann::json { {"R", iItem.R}, {"G", iItem.G}, {"B", iItem.B} }; 
+}
+
+void from_json(const nlohmann::json& iJson, DDyColorRGB& oItem)
+{
+  DyJsonGetValueFromTo(iJson, "R", oItem.R);
+  DyJsonGetValueFromTo(iJson, "G", oItem.G);
+  DyJsonGetValueFromTo(iJson, "B", oItem.B);
 }
 
 } /// ::dy namespace

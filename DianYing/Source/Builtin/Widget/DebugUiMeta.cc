@@ -75,8 +75,7 @@ MDY_SET_IMMUTABLE_STRING(sBuffer, R"dy(
           "RightUp" : { "X": 1.0, "Y": 1.0 }
         },
         "ImageSpecifierName": "dyBtTextureChecker",
-        "ImageTintColor": 16777215,
-        "ImageAlpha": 1.0,
+        "TintColor": { "R": 1.0, "G": 1.0, "B": 1.0, "A": 1.0 },
         "IsSizeToContent": false
       }
     }
