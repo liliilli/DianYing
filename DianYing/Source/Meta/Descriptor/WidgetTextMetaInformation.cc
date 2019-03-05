@@ -26,22 +26,19 @@ PDyMetaWidgetTextDescriptor::CreateMetaInformation(_MIN_ const nlohmann::json& i
 {
   /* Template
   {
-    "Name": "WidgetName",
-    "Type": "Text",
-    "Parent": "Root",
-    "Details":
-    {
-      "WidgetSize": { "X": 200, "Y": 100 },
-      "InitialString": "Hello world!",
-      "Origin": { "Center-Center" },
-      "InitialPosition": { "X":0, "Y":0 },
-      "InitialColor": 16777215,
-      "InitialAlpha": 1.0,
-      "FontSize": 10,
-      "EdgeColor": 0,
-      "FontSpecifierName": "Arial",
-      "Alignment": "Left" // "Center" // "Right",
-      "IsUsingEdge": false,
+    { "Name": "WidgetName", "Type": "Text", "Parent": "", "ZOrder": 0,
+      "Details": {
+        "InitialPosition": { "X": 0, "Y": 0 },
+        "WidgetSize": { "X": 200, "Y": 100 },
+        "Origin": "Center_Center",
+        "InitialString": "This is test for general UI.",
+        "InitialColor": { "R": 1.0, "G": 1.0, "B": 1.0, "A": 1.0 },
+        "EdgeColor": { "R": 1.0, "G": 1.0, "B": 1.0 },
+        "FontSize": 10, 
+        "FontSpecifierName": "Arial",
+        "IsUsingEdge": false,
+        "Alignment": "Left"
+      }
     }
   }
   */
@@ -49,7 +46,6 @@ PDyMetaWidgetTextDescriptor::CreateMetaInformation(_MIN_ const nlohmann::json& i
   static MDY_SET_IMMUTABLE_STRING(sHeader_InitialString,     "InitialString");
   static MDY_SET_IMMUTABLE_STRING(sHeader_InitialPosition,   "InitialPosition");
   static MDY_SET_IMMUTABLE_STRING(sHeader_InitialColor,      "InitialColor");
-  static MDY_SET_IMMUTABLE_STRING(sHeader_InitialAlpha,      "InitialAlpha");
   static MDY_SET_IMMUTABLE_STRING(sHeader_FontSize,          "FontSize");
   static MDY_SET_IMMUTABLE_STRING(sHeader_FontSpecifierName, "FontSpecifierName");
   static MDY_SET_IMMUTABLE_STRING(sHeader_IsUsingEdge,       "IsUsingEdge");
@@ -63,8 +59,8 @@ PDyMetaWidgetTextDescriptor::CreateMetaInformation(_MIN_ const nlohmann::json& i
   // Common
   auto instance = std::make_unique<PDyMetaWidgetTextDescriptor>();
   instance->mUiObjectSpecifierName = DyJsonGetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Name);
-  instance->mComponentType          = EDyWidgetComponentType::Text;
-  instance->mParentSpecifierName    = DyJsonGetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Parent);
+  instance->mComponentType         = EDyWidgetComponentType::Text;
+  instance->mParentSpecifierName   = DyJsonGetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Parent);
   DyJsonGetValueFromTo(itemAtlas, "ZOrder", instance->mZOrder);
 
   // Detail (TEXT)
@@ -72,13 +68,10 @@ PDyMetaWidgetTextDescriptor::CreateMetaInformation(_MIN_ const nlohmann::json& i
   const auto string = DyJsonGetValueFrom<std::string>(detailAtlas, sHeader_InitialString);
   instance->mInitialString      = string;
 
-  DDyColorRGBA colorRgb         = DyJsonGetValueFrom<DDyColorRGB24>(detailAtlas, sHeader_InitialColor);
-  colorRgb.A                    = DyJsonGetValueFrom<float>(detailAtlas, sHeader_InitialAlpha);
-
-  instance->mInitialColor       = colorRgb;
+  instance->mInitialColor       = DyJsonGetValueFrom<DDyColorRGBA>(detailAtlas, sHeader_InitialColor);;
   instance->mFontSize           = DyJsonGetValueFrom<TU32>(detailAtlas, sHeader_FontSize);
   instance->mFontSpecifierName  = DyJsonGetValueFrom<std::string>(detailAtlas, sHeader_FontSpecifierName);
-  instance->mEdgeColor          = DyJsonGetValueFrom<DDyColorRGB24>(detailAtlas, "EdgeColor");
+  instance->mEdgeColor          = DyJsonGetValueFrom<DDyColorRGB>(detailAtlas, "EdgeColor");
   instance->mIsUsingEdge        = DyJsonGetValueFrom<bool>(detailAtlas, sHeader_IsUsingEdge);
 
   instance->mInitialPosition    = DDyVectorInt2{DyJsonGetValueFrom<DDyVector2>(detailAtlas, sHeader_InitialPosition)};
