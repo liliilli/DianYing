@@ -104,6 +104,29 @@ float ComputeShadowCoefficient(vec3 iWorldPosition, float iZValue)
   return texture(uTexture4, shadowCoords); 
 }
 
+vec3 CalculateSpecularColor(vec3 iWorldLightDir, vec3 iWorldNormal, 
+                            vec3 iLightRgb, vec3 iSpecularRgb, 
+                            float iRoughness, float iIntensity)
+{
+  const mat3 viewDirectionMatrix = transpose(inverse(mat3(uCamera.mViewMatrix)));
+
+  // Calculate specular value.
+  const vec3 viewLightDirection = viewDirectionMatrix * normalize(iWorldLightDir);
+  const vec3 viewNormal = viewDirectionMatrix * normalize(iWorldNormal);
+  const vec3 cameraView = vec3(0, 0, 1);
+
+  const vec3 halfwayVector = cameraView + viewLightDirection;
+  const float d_slvd_n = 
+    pow(
+      max(
+        dot(viewNormal, halfwayVector)
+      , 0.0f)
+    , 32 * (1 + 64 * max(1 - iRoughness, 0.0f))
+  );
+
+  return iSpecularRgb * iLightRgb * (d_slvd_n * iIntensity);
+}
+
 vec3 GetOpaqueColor()
 {
   vec3 resultColor    = vec3(0);
@@ -135,16 +158,13 @@ vec3 GetOpaqueColor()
     vec3  diffuseColor   = diffuseFactor * uLightDir[i].mDiffuse.rgb * unlitValue.rgb;
 
     // Calculate specular value.
-    mat3 viewDirectionMatrix = transpose(inverse(mat3(uCamera.mViewMatrix)));
-    vec3 viewLightDirection = viewDirectionMatrix * uLightDir[i].mDirection;
-    vec3 viewNormal = viewDirectionMatrix * normalValue.xyz;
-    vec3 cameraView = vec3(0, 0, -1);
-
-    vec3 halfwayVector = cameraView + viewLightDirection;
-    float d_slvd_n     = pow(max(dot(viewNormal, halfwayVector), 0.0f), 4 * (1 + 1 * specularValue.a));
-
-    float specularFactor = d_slvd_n * uLightDir[i].mIntensity * 0.05f;
-    vec3  specularColor  = specularValue.rgb * uLightDir[i].mSpecular.rgb * specularFactor;
+    const vec3 specularColor = CalculateSpecularColor(
+      uLightDir[i].mDirection,
+      normalValue.xyz,
+      uLightDir[i].mSpecular.rgb,
+      specularValue.rgb,
+      specularValue.a,
+      uLightDir[i].mIntensity * 0.0001f);
 
     resultColor  = ambientColor;
     resultColor += clamp(ComputeShadowCoefficient(modelPosition, GetZValue()), 0.1f, 1.0f) * (diffuseColor);
