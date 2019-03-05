@@ -37,7 +37,7 @@ void FDyBuiltinDebugUiScript::Initiate()
 {
 #ifdef false
   const auto i = MDY_ACQUIRE_CONTROLLER_UI(); // Use this for acquire controller exclusive right for UI.
-  MDY_ASSERT(i == DY_SUCCESS, "Unexpected error occurred.");
+  MDY_ASSERT_MSG(i == DY_SUCCESS, "Unexpected error occurred.");
 
   MDY_BIND_INPUT_AXIS("XAxis", &FDyBuiltinDebugUiScript::Bar_MoveLeft);
   MDY_BIND_INPUT_AXIS("YAxis", &FDyBuiltinDebugUiScript::Bar_MoveUp);
@@ -64,8 +64,8 @@ void FDyBuiltinDebugUiScript::Update(_MIN_ TF32 dt)
   FDyText* infoText     = widgetRef.GetUiObject<FDyText>("DebugTestText");
   FDyText* joystickText = widgetRef.GetUiObject<FDyText>("JoystickTest");
   FDyBasicGaugeBar* bar = widgetRef.GetUiObject<FDyBasicGaugeBar>("BasicBarTest");
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(infoText), "Unexpected error occurred.");
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(bar),  "Unexpected error occurred.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(infoText), "Unexpected error occurred.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(bar),  "Unexpected error occurred.");
 
 #ifdef false
   static auto SetTemporaryInitialSetting = [&] {

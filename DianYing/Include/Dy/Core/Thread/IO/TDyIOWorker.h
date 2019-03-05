@@ -13,9 +13,19 @@
 /// SOFTWARE.
 ///
 
+#include <atomic>
 #include <Dy/Core/Thread/IO/DDyIOTask.h>
 #include <Dy/Core/Thread/IO/DDyIOWorkerResult.h>
-#include <Dy/Management/IO/MetaInfoManager.h>
+#include <Dy/Helper/Pointer.h>
+
+namespace dy
+{
+class MDyMetaInfo;
+} /// ::dy namespace
+
+//!
+//! Implementation
+//!
 
 namespace dy
 {

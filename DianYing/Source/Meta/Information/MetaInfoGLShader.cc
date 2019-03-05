@@ -85,7 +85,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyGLShaderInstanceMetaIn
     else
     { // If builtin shader code is not exist, read external path.
       const auto filePath = DyJsonGetValueFrom<std::string>(refFragmentItemValue, "ExternalShaderPath");
-      MDY_ASSERT_FORCE(
+      MDY_ASSERT_MSG_FORCE(
           filePath.empty() == false && DyFsIsFileExist(filePath) == true, 
           "External shader fragment file path is not valid.");
       refFragment.mExternalFilePath = filePath;

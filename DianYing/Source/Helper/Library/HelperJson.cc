@@ -51,7 +51,7 @@ std::optional<nlohmann::json> DyGetJsonAtlasFromFile(const std::string& filePath
   }
   catch (nlohmann::json::parse_error& e)
   {
-    MDY_ASSERT_FORCE(false, e.what());
+    MDY_ASSERT_MSG_FORCE(false, e.what());
   }
   return json;
 }

@@ -114,7 +114,7 @@ EDySuccess FDyLevelCascadeShadowRenderer::TryPushRenderingSetting()
   // Update view frustum for shadow mapping.
   // Do not move the order of `PreRender` and checking assert statement.
   this->PreRender();
-  MDY_ASSERT(this->mAddrMainDirectionalShadow == reinterpret_cast<ptrdiff_t>(ptrLight), 
+  MDY_ASSERT_MSG(this->mAddrMainDirectionalShadow == reinterpret_cast<ptrdiff_t>(ptrLight), 
       "CSM Renderer light handle is not matched to given light.");
 
   // Try update uniform value.

@@ -122,7 +122,7 @@ void FDyLevelCSMIntergration::RenderScreen()
   if (this->IsReady() == false) { return; }
   
   const auto& submeshList = this->mBinderTriangle->GetMeshResourceList();
-  MDY_ASSERT(submeshList.size() == 1, "Unexpected error occurred.");
+  MDY_ASSERT_MSG(submeshList.size() == 1, "Unexpected error occurred.");
   submeshList[0]->Get()->BindVertexArray();
 
   {

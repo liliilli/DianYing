@@ -14,15 +14,21 @@
 
 /// Header file
 #include <Dy/Core/Thread/TDyIO.h>
+
+#include <assimp/Importer.hpp>
+
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
+#include <Dy/Core/Resource/Resource/FDyModelResource.h>
+#include <Dy/Core/Resource/Internal/FDyModelVBOIntermediate.h>
+
+#include <Dy/Meta/Information/MetaInfoMaterial.h>
+#include <Dy/Meta/Information/MetaInfoModelAnim.h>
+#include <Dy/Meta/Information/MetaInfoFrameBuffer.h>
 
 #include <Dy/Management/IO/MDyIOData.h>
 #include <Dy/Management/IO/MDyIOResource.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Management/WindowManager.h>
-#include <Dy/Core/Resource/Resource/FDyModelResource.h>
-#include <Dy/Core/Resource/Internal/FDyModelVBOIntermediate.h>
-#include <assimp/Importer.hpp>
 
 constexpr TU08 kDefaultPriority = 128;
 
@@ -48,7 +54,7 @@ EDySuccess TDyIO::Initialize()
   // Initialize IOWorkers with context.
   const auto& windowManager = MDyWindow::GetInstance();
   const auto& workerWndList = windowManager.GetGLWorkerWindowList();
-  MDY_ASSERT(workerWndList.size() == this->mWorkerList.size(), "WndList and I/O Worker list size must be same.");
+  MDY_ASSERT_MSG(workerWndList.size() == this->mWorkerList.size(), "WndList and I/O Worker list size must be same.");
 
   for (auto i = 0u; i < this->mWorkerList.size(); ++i)
   {
@@ -137,7 +143,7 @@ void TDyIO::outTryForwardToMainTaskList(_MIN_ const DDyIOTask& task) noexcept
 
 void TDyIO::outTryStop()
 {
-  MDY_ASSERT(this->outIsIOThreadSlept() == true, "To stop io thread, IO Thread must be slept.");
+  MDY_ASSERT_MSG(this->outIsIOThreadSlept() == true, "To stop io thread, IO Thread must be slept.");
   {
     MDY_SYNC_LOCK_GUARD(this->mQueueMutex);
     this->mIsThreadStopped = true;
@@ -151,7 +157,7 @@ EDySuccess TDyIO::outTryEnqueueTask(
     _MIN_ EDyResourceType iResourceType, _MIN_ EDyResourceStyle iResourceStyle,
     _MIN_ EDyScope iScope, _MIN_ bool iIsDerivedFromResource)
 {
-  MDY_ASSERT_FORCE(this->outIsMetaInformationExist(iSpecifier, iResourceType) == true, "Meta information must be exist.");
+  MDY_ASSERT_MSG_FORCE(this->outIsMetaInformationExist(iSpecifier, iResourceType) == true, "Meta information must be exist.");
 
   { // Query there is Reference Instance for myself. If found, just return do nothing.
     std::vector<PRIVerificationItem> itselfRIItem{};
@@ -256,7 +262,7 @@ std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(
     // If framebuffer also use depth buffer, enqueue it. 
     if (metaInfo.mIsUsingDepthBuffer == true)
     { 
-      MDY_ASSERT(metaInfo.mDepthAttachmentSpecifier.empty() == false, "Depth attachment must be specified if use depth buffer.");
+      MDY_ASSERT_MSG(metaInfo.mDepthAttachmentSpecifier.empty() == false, "Depth attachment must be specified if use depth buffer.");
       checkList.emplace_back(metaInfo.mDepthAttachmentSpecifier, EDyResourceType::GLAttachment, iResourceStyle, iScope);
     }
   }
@@ -281,7 +287,7 @@ std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(
   else if (iResourceType == EDyResourceType::AnimationScrap)
   { // If resource type is `AnimationScrap`, `Skeleton` must be populated also.
     const auto& metaInfo = this->mMetaInfoManager->GetModelAnimScrapMetaInformation(iSpecifier);
-    MDY_ASSERT_FORCE(metaInfo.mSkeletonSpeicfier.empty() == false, "Skeleton specifier of animation scrap must not be empty.");
+    MDY_ASSERT_MSG_FORCE(metaInfo.mSkeletonSpeicfier.empty() == false, "Skeleton specifier of animation scrap must not be empty.");
 
     // `AnimationScrap` could only be populated as `Information`, so dependent Skeleton also be a `Information`.
     checkList.emplace_back(metaInfo.mSkeletonSpeicfier, EDyResourceType::Skeleton, iResourceStyle, iScope);
@@ -311,8 +317,8 @@ EDySuccess TDyIO::InstantPopulateMaterialResource(
     _MIN_ EDyScope iScope, 
     _MIN_ bool(*callback)())
 {
-  MDY_ASSERT(MDY_CHECK_ISNULL(callback),  "Callback material resource population is not supported yet.");
-  MDY_ASSERT(iScope == EDyScope::Temporal, "Temporary material resource population must be inputted.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNULL(callback),  "Callback material resource population is not supported yet.");
+  MDY_ASSERT_MSG(iScope == EDyScope::Temporal, "Temporary material resource population must be inputted.");
 
   // If resource type is `Material`, bind all dependencies of `Material` to checkList.
   std::vector<PRIVerificationItem> checkList = {};
@@ -448,7 +454,7 @@ void TDyIO::outForceProcessIOInsertPhase() noexcept
   MDY_SYNC_LOCK_GUARD(this->mResultListMutex);
   for (auto& resultItem : this->mWorkerResultList)
   {
-    MDY_ASSERT(resultItem.mResourceType != EDyResourceType::NoneError
+    MDY_ASSERT_MSG(resultItem.mResourceType != EDyResourceType::NoneError
             && resultItem.mResourceType != EDyResourceType::Script
             && resultItem.mResourceType != EDyResourceType::WidgetMeta, "Unexpected error occurred.");
     if (resultItem.mSmtPtrResultInstance == nullptr) { continue; }
@@ -536,7 +542,7 @@ DDyIOWorkerResult TDyIO::outMainProcessTask(_MIN_ const DDyIOTask& task)
     result.mIsHaveDeferredTask  = task.mIsResourceDeferred;
   }
 
-  MDY_ASSERT(task.mResourcecStyle == EDyResourceStyle::Resource, "Main deferred task must be resource style.");
+  MDY_ASSERT_MSG(task.mResourcecStyle == EDyResourceStyle::Resource, "Main deferred task must be resource style.");
   const auto& infoManager = MDyIOData::GetInstance();
 
   switch (task.mResourceType) {
@@ -613,7 +619,7 @@ bool TDyIO::pIsReferenceInstanceBound(_MIN_ const std::string& specifier, _MIN_ 
 
 bool TDyIO::outIsMetaInformationExist(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type)
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mMetaInfoManager), "MetaInformation manager must not be null.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->mMetaInfoManager), "MetaInformation manager must not be null.");
   switch (type)
   {
   case EDyResourceType::Script:         return this->mMetaInfoManager->IsScriptMetaInformationExist(specifier);

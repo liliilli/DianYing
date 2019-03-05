@@ -40,12 +40,12 @@ void Compress(_MIN_ const std::filesystem::path& iPath, _MIN_ bool iOverride)
       if (entry.path().has_filename() == false) { continue; }
 
       const auto flag = dy::DyRegexCheckIsCompressedDataFile(entry.path().filename().string());
-      MDY_ASSERT(flag == false, R"(There is already any Data###.dydat file in "./data" directory. Compression failed.)");
+      MDY_ASSERT_MSG(flag == false, R"(There is already any Data###.dydat file in "./data" directory. Compression failed.)");
     }
   }
 
   const auto opSettingAtlas = DyGetJsonAtlasFromFile(iPath.string());
-  MDY_ASSERT(opSettingAtlas.has_value() == true, "Failed to open application setting file.");
+  MDY_ASSERT_MSG(opSettingAtlas.has_value() == true, "Failed to open application setting file.");
 
   DDySettingMetaPath mDevMetaPath = {};
   DyJsonGetValueFromTo(opSettingAtlas.value(), "MetaPath", mDevMetaPath);
@@ -58,67 +58,67 @@ void Compress(_MIN_ const std::filesystem::path& iPath, _MIN_ bool iOverride)
 
     { // Font container.
       const auto opt = dy::DyGetJsonAtlasFromFile(mDevMetaPath.mFontMetaPath);
-      MDY_ASSERT(opt.has_value() == true, "Failed to open font file.");
+      MDY_ASSERT_MSG(opt.has_value() == true, "Failed to open font file.");
       j["Font"] = opt.value();
     }
     { // Prefab container.
       const auto opt = dy::DyGetJsonAtlasFromFile(mDevMetaPath.mPrefabMetaPath);
-      MDY_ASSERT(opt.has_value() == true, "Failed to open prefab file.");
+      MDY_ASSERT_MSG(opt.has_value() == true, "Failed to open prefab file.");
       j["Prefab"] = opt.value();
     }
     { // Shader container.
       const auto opt = dy::DyGetJsonAtlasFromFile(mDevMetaPath.mGLShaderMetaPath);
-      MDY_ASSERT(opt.has_value() == true, "Failed to open shader meta file.");
+      MDY_ASSERT_MSG(opt.has_value() == true, "Failed to open shader meta file.");
       j["Shader"] = opt.value();
     }
     { // Material container.
       const auto opt = dy::DyGetJsonAtlasFromFile(mDevMetaPath.mMaterialMetaPath);
-      MDY_ASSERT(opt.has_value() == true, "Failed to open material meta file.");
+      MDY_ASSERT_MSG(opt.has_value() == true, "Failed to open material meta file.");
       j["Material"] = opt.value();
     }
     { // Model animation container.
       const auto opt = dy::DyGetJsonAtlasFromFile(mDevMetaPath.mModelAnimMetaPath);
-      MDY_ASSERT(opt.has_value() == true, "Failed to open model animation meta file.");
+      MDY_ASSERT_MSG(opt.has_value() == true, "Failed to open model animation meta file.");
       j["ModelAnim"] = opt.value();
     }
     { // Model mesh container.
       const auto opt = dy::DyGetJsonAtlasFromFile(mDevMetaPath.mModelMeshMetaPath);
-      MDY_ASSERT(opt.has_value() == true, "Failed to open model mesh meta file.");
+      MDY_ASSERT_MSG(opt.has_value() == true, "Failed to open model mesh meta file.");
       j["ModelMesh"] = opt.value();
     }
     { // Model container.
       const auto opt = dy::DyGetJsonAtlasFromFile(mDevMetaPath.mModelMetaPath);
-      MDY_ASSERT(opt.has_value() == true, "Failed to open model meta file.");
+      MDY_ASSERT_MSG(opt.has_value() == true, "Failed to open model meta file.");
       j["Model"] = opt.value();
     }
     { // Model skeleton container.
       const auto opt = dy::DyGetJsonAtlasFromFile(mDevMetaPath.mModelSkeletonMetaPath);
-      MDY_ASSERT(opt.has_value() == true, "Failed to open model skeleton meta file.");
+      MDY_ASSERT_MSG(opt.has_value() == true, "Failed to open model skeleton meta file.");
       j["ModelSkel"] = opt.value();
     }
     { // Sound container.
       const auto opt = dy::DyGetJsonAtlasFromFile(mDevMetaPath.mSoundMetaPath);
-      MDY_ASSERT(opt.has_value() == true, "Failed to open sound meta file.");
+      MDY_ASSERT_MSG(opt.has_value() == true, "Failed to open sound meta file.");
       j["Sound"] = opt.value();
     }
     { // Texture container.
       const auto opt = dy::DyGetJsonAtlasFromFile(mDevMetaPath.mTextureMetaPath);
-      MDY_ASSERT(opt.has_value() == true, "Failed to open texture meta file.");
+      MDY_ASSERT_MSG(opt.has_value() == true, "Failed to open texture meta file.");
       j["Texture"] = opt.value();
     }
     { // Level container.
       const auto opt = dy::DyGetJsonAtlasFromFile(mDevMetaPath.mSceneMetaPath);
-      MDY_ASSERT(opt.has_value() == true, "Failed to open level meta file.");
+      MDY_ASSERT_MSG(opt.has_value() == true, "Failed to open level meta file.");
       j["Level"] = opt.value(); 
     }
     { // Script container.
       const auto opt = dy::DyGetJsonAtlasFromFile(mDevMetaPath.mScriptMetaPath);
-      MDY_ASSERT(opt.has_value() == true, "Failed to open script meta file.");
+      MDY_ASSERT_MSG(opt.has_value() == true, "Failed to open script meta file.");
       j["Script"] = opt.value();
     }
     { // Widget container.
       const auto opt = dy::DyGetJsonAtlasFromFile(mDevMetaPath.mWidgetMetaPath);
-      MDY_ASSERT(opt.has_value() == true, "Failed to open widget meta file.");
+      MDY_ASSERT_MSG(opt.has_value() == true, "Failed to open widget meta file.");
       j["Widget"] = opt.value();
     }
 

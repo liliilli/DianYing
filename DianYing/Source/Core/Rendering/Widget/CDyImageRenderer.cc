@@ -65,7 +65,7 @@ void CDyImageRenderer::Render()
     // Set shader uniforms
     mDefaultImageShader->TryUpdateUniform<EUniformType::Matrix4>("uUiProjMatrix", MDyRendering::GetInstance().GetGeneralUiProjectionMatrix());
     mDefaultImageShader->TryUpdateUniform<EUniformType::Vector4>("uTintColor", this->mPtrObject->GetTintColor());
-    MDY_ASSERT(this->mDefaultImageShader->GetAvailableTextureCount() == 1, "Unexpected error occurred.");
+    MDY_ASSERT_MSG(this->mDefaultImageShader->GetAvailableTextureCount() == 1, "Unexpected error occurred.");
     mDefaultImageShader->TryInsertTextureRequisition(0, refTexture->GetTextureId());
     // Set buffer.
     const auto buffer = GetVertexPosition(this->mPtrObject->GetFinalPosition(EDyOrigin::Center_Center), this->mPtrObject->GetFrameSize());

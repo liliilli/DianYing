@@ -333,8 +333,7 @@ void DyEngine::MDY_PRIVATE(Update)(_MIN_ EDyGlobalGameStatus iEngineStatus, _MIN
     {
     }
   } break;
-  case EDyGlobalGameStatus::Shutdown: 
-    break;
+  case EDyGlobalGameStatus::Shutdown: break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 }
@@ -518,7 +517,7 @@ void DyEngine::pfReleaseIndependentManager()
 
 NotNull<TDyIO*> DyEngine::pfGetIOThread()
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mSynchronization), "Synchronization manager must be valid.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->mSynchronization), "Synchronization manager must be valid.");
   return this->mSynchronization->pfGetIOThread();
 }
 

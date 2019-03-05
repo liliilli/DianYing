@@ -13,6 +13,8 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Meta/Information/ElementObjectMetaInfo.h>
+
 namespace dy
 {
   
@@ -26,7 +28,7 @@ inline EDySuccess FDyActor::Impl::pInitilaize(
   auto metaComponentInfo = objectMetaDesc.mMetaComponentInfo;
   if (objectMetaDesc.mProperties.mIsUsingPrefab == true)
   {
-    MDY_ASSERT(
+    MDY_ASSERT_MSG(
       objectMetaDesc.mProperties.mPrefabSpecifierName.empty() == false, 
       "Unexpected error occurred.");
 
@@ -71,7 +73,7 @@ inline EDySuccess FDyActor::Impl::pInitilaize(
     { // General object type. Make FDyActor instance.
       auto smtChild = std::make_unique<FDyActor>(*objectInformation, &mRefActor);
       auto [it, result] = this->mChildrenActors.try_emplace(smtChild->GetActorName(), std::move(smtChild));
-      MDY_ASSERT_FORCE(
+      MDY_ASSERT_MSG_FORCE(
         result == true, 
         "Unexpected error occured in inserting FDyActor to object map.");
     } break;
@@ -114,7 +116,7 @@ inline EDySuccess FDyActor::Impl::pInitilaize(const PDyActorCreationDescriptor& 
   this->pUpdateActivateFlagFromParent();
   this->mRefActor.Activate(); 
 
-  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mTransform), "CDyTransform component must be created to all FDyActor.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTEMPTY(this->mTransform), "CDyTransform component must be created to all FDyActor.");
   SDyProfilingHelper::IncreaseOnBindActorCount(1);
   
   return DY_SUCCESS;
@@ -461,7 +463,7 @@ inline FDyActor::TActorMap& FDyActor::Impl::GetChildrenContainer() noexcept
 #ifdef false
 CDyActorScript* FDyActor::Impl::GetScriptComponent(_MIN_ const std::string& scriptName) noexcept
 {
-  MDY_ASSERT(scriptName.empty() == false, "scriptName must not be empty at FDyActor::Impl::GetScriptComponent()");
+  MDY_ASSERT_MSG(scriptName.empty() == false, "scriptName must not be empty at FDyActor::Impl::GetScriptComponent()");
 
   using TInstanceType = decltype(this->mScriptList)::value_type;
   const auto it = std::find_if(MDY_BIND_BEGIN_END(this->mScriptList), [&scriptName](const TInstanceType& instance)
@@ -475,7 +477,7 @@ CDyActorScript* FDyActor::Impl::GetScriptComponent(_MIN_ const std::string& scri
 
 EDySuccess FDyActor::Impl::RemoveScriptComponent(_MIN_ const std::string& scriptName) noexcept
 {
-  MDY_ASSERT(scriptName.empty() == false, "scriptName must not be empty at FDyActor::Impl::GetScriptComponent()");
+  MDY_ASSERT_MSG(scriptName.empty() == false, "scriptName must not be empty at FDyActor::Impl::GetScriptComponent()");
 
   // Find script instance that has scriptName.
   using TInstanceType = decltype(this->mScriptList)::value_type;

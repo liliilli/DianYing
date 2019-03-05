@@ -22,12 +22,12 @@ namespace dy
 DDyMeshCompressedBuffer DyCreateMeshBufferInfoFromDyMeshFile(_MIN_ const std::string& iFilePath)
 {
   namespace fs = std::filesystem;
-  MDY_ASSERT_FORCE(
+  MDY_ASSERT_MSG_FORCE(
       fs::exists(iFilePath) == true, 
       "Model external file path must be valid. Could not found file path.");
 
   FILE* fdFile = fopen(iFilePath.c_str(), "r");
-  MDY_ASSERT_FORCE(fdFile != nullptr, "Failed to read file.");
+  MDY_ASSERT_MSG_FORCE(fdFile != nullptr, "Failed to read file.");
 
   DDyMeshCompressedBuffer buffer;
   #if defined(NDEBUG) == false
@@ -43,17 +43,17 @@ DDyMeshCompressedBuffer DyCreateMeshBufferInfoFromDyMeshFile(_MIN_ const std::st
   #endif
   { // mRawBufferBytes
     const auto byte = std::fread(&buffer.mRawBufferBytes, sizeof(buffer.mRawBufferBytes), 1, fdFile);
-    MDY_ASSERT_FORCE(byte == 1, "Failed to read file properly.");
+    MDY_ASSERT_MSG_FORCE(byte == 1, "Failed to read file properly.");
   }
   { // mCompressedBufferBytes
     const auto byte = std::fread(&buffer.mCompressedBufferBytes, sizeof(buffer.mCompressedBufferBytes), 1, fdFile);
-    MDY_ASSERT_FORCE(byte == 1, "Failed to read file properly.");
+    MDY_ASSERT_MSG_FORCE(byte == 1, "Failed to read file properly.");
   }
   { // mCompressedBuffer
     buffer.mCompressedBuffer.resize(buffer.mCompressedBufferBytes);
 
     const auto byte = std::fread(buffer.mCompressedBuffer.data(), sizeof(char), buffer.mCompressedBufferBytes, fdFile);
-    MDY_ASSERT_FORCE(byte == buffer.mCompressedBufferBytes, "Failed to read file properly.");
+    MDY_ASSERT_MSG_FORCE(byte == buffer.mCompressedBufferBytes, "Failed to read file properly.");
   }
 
   fclose(fdFile);

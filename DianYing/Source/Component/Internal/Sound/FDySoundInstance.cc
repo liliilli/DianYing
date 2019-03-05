@@ -83,7 +83,7 @@ void FDySoundInstance::SetSound(_MIN_ const std::string& iSpecifier)
     if (this->mPtrInternalSound != nullptr)
     {
       const auto flag = this->mPtrInternalSound->release();
-      MDY_ASSERT(flag == FMOD_OK, "Failed to play sound instance.");
+      MDY_ASSERT_MSG(flag == FMOD_OK, "Failed to play sound instance.");
       this->mPtrInternalSound = nullptr;
     }
     this->mPtrInternalChannel = nullptr;
@@ -113,7 +113,7 @@ void FDySoundInstance::SetChannel(_MIN_ const std::string& iChannelSpecifier)
     if (this->mPtrInternalSound != nullptr)
     {
       const auto flag = this->mPtrInternalSound->release();
-      MDY_ASSERT(flag == FMOD_OK, "Failed to play sound instance.");
+      MDY_ASSERT_MSG(flag == FMOD_OK, "Failed to play sound instance.");
       this->mPtrInternalSound = nullptr;
     }
     this->mPtrInternalChannel = nullptr;
@@ -134,7 +134,7 @@ void FDySoundInstance::Set2DSound(_MIN_ bool i2DActivated)
     if (this->mPtrInternalSound != nullptr)
     {
       const auto flag = this->mPtrInternalSound->release();
-      MDY_ASSERT(flag == FMOD_OK, "Failed to play sound instance.");
+      MDY_ASSERT_MSG(flag == FMOD_OK, "Failed to play sound instance.");
       this->mPtrInternalSound = nullptr;
     }
     this->mPtrInternalChannel = nullptr;
@@ -162,7 +162,7 @@ EDySuccess FDySoundInstance::TryInitialize()
     if (this->m2DSound == true) { soundFlag |= FMOD_2D; } else { soundFlag |= (FMOD_3D | FMOD_3D_WORLDRELATIVE | FMOD_3D_LINEARROLLOFF); }
 
     const auto flag = refSystem.createSound(soundPath.string().c_str(), soundFlag, nullptr, &this->mPtrInternalSound);
-    MDY_ASSERT(flag == FMOD_OK, "Failed to create sound instance.");
+    MDY_ASSERT_MSG(flag == FMOD_OK, "Failed to create sound instance.");
   }
 
   this->__SetStatus(EDySoundStatus::Stop);
@@ -208,12 +208,12 @@ void FDySoundInstance::PlaySound()
     if (MDY_CHECK_ISNULL(ptrInternalChannel))
     { // If failed to find channel, just play it with master channel.
       const auto flag = refSystem.playSound(this->mPtrInternalSound, nullptr, false, &this->mPtrInternalChannel);
-      MDY_ASSERT(flag == FMOD_OK, "Failed to set sound instance.");
+      MDY_ASSERT_MSG(flag == FMOD_OK, "Failed to set sound instance.");
     }
     else
     {
       const auto flag = refSystem.playSound(this->mPtrInternalSound, ptrInternalChannel, false, &this->mPtrInternalChannel);
-      MDY_ASSERT(flag == FMOD_OK, "Failed to set sound instance.");
+      MDY_ASSERT_MSG(flag == FMOD_OK, "Failed to set sound instance.");
     }
 
     // Set volume and pitch. & Set callback and user data.
@@ -261,7 +261,7 @@ void FDySoundInstance::PauseSound()
   if (this->mSoundStatus == EDySoundStatus::Play)
   {
     const auto flag = this->mPtrInternalChannel->setPaused(true);
-    MDY_ASSERT(flag == FMOD_OK, "Failed to pause sound instance.");
+    MDY_ASSERT_MSG(flag == FMOD_OK, "Failed to pause sound instance.");
 
     this->__SetStatus(EDySoundStatus::Paused);
   }
@@ -273,7 +273,7 @@ void FDySoundInstance::StopSound()
   ||  this->mSoundStatus == EDySoundStatus::Paused)
   {
     const auto flag = this->mPtrInternalChannel->stop();
-    MDY_ASSERT(flag == FMOD_OK, "Failed to play sound instance.");
+    MDY_ASSERT_MSG(flag == FMOD_OK, "Failed to play sound instance.");
     this->mPtrInternalChannel = nullptr;
 
     this->__SetStatus(EDySoundStatus::Stop);
@@ -381,7 +381,7 @@ void FDySoundInstance::UpdateInternalAttenuationProperty()
   const auto flag = this->mPtrInternalSound->set3DMinMaxDistance(
       this->mAttenuation.mNearDistance, 
       this->mAttenuation.mFarDistance);
-  MDY_ASSERT(flag == FMOD_OK, "Failed to create sound instance.");
+  MDY_ASSERT_MSG(flag == FMOD_OK, "Failed to create sound instance.");
 
   // If this instance will use attenuation or not, set 3D level to disable / enable feature.
   if (this->Is2DSound() == false)

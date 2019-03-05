@@ -53,7 +53,7 @@ EDySuccess CDyWidgetScriptLua::Initialize(const PDyScriptComponentMetaInfo& meta
 
   // (1) Get script meta information.
   auto& metaInfoManager = MDyMetaInfo::GetInstance();
-  MDY_ASSERT(metaInfoManager.IsScriptMetaInformationExist(this->mScriptName) == true, (sErrorScriptNotFound));
+  MDY_ASSERT_MSG(metaInfoManager.IsScriptMetaInformationExist(this->mScriptName) == true, (sErrorScriptNotFound));
   const auto& validScriptMetaInfo = metaInfoManager.GetScriptMetaInformation(this->mScriptName);
 
   // (2) Bind script, but need to check integrity test also.

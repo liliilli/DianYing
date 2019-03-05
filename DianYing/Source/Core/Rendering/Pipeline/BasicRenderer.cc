@@ -81,7 +81,7 @@ void FDyBasicRenderer::PreRender()
         offsetof(DDyUboCameraBlock, mViewMatrix),
         sizeof(DDyUboCameraBlock::mViewMatrix),
         &ptrValidCamera.GetViewMatrix()[0].X);
-    MDY_ASSERT(flag == DY_SUCCESS, "");
+    MDY_ASSERT_MSG(flag == DY_SUCCESS, "");
   }
   {
     const auto flag = uboManager.UpdateUboContainer(
@@ -89,7 +89,7 @@ void FDyBasicRenderer::PreRender()
         offsetof(DDyUboCameraBlock, mProjMatrix),
         sizeof(DDyUboCameraBlock::mProjMatrix),
         &ptrValidCamera.GetProjectionMatrix()[0].X);
-    MDY_ASSERT(flag == DY_SUCCESS, "");
+    MDY_ASSERT_MSG(flag == DY_SUCCESS, "");
   }
 }
 

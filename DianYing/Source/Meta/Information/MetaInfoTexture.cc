@@ -55,7 +55,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyTextureInstanceMetaInf
   else
   { // std::string.
     p.mExternalFilePath = DyJsonGetValueFrom<std::string>(j, "ExternalPath");
-    MDY_ASSERT_FORCE(DyFsIsFileExist(std::get<std::string>(p.mExternalFilePath)) == true, "File path is not valid.");
+    MDY_ASSERT_MSG_FORCE(DyFsIsFileExist(std::get<std::string>(p.mExternalFilePath)) == true, "File path is not valid.");
   }
 
   p.mTextureColorType = DyJsonGetValueFrom<EDyImageColorFormatStyle>(j, "TextureColorType");
@@ -76,12 +76,12 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyTextureInstanceMetaInf
   DyJsonGetValueFromTo(j, "Top", p.mTopPath);
   DyJsonGetValueFromTo(j, "Bottom", p.mBottomPath);
 
-  MDY_ASSERT_FORCE(DyFsIsFileExist(p.mFrontPath) == true, "File path is not exist.");
-  MDY_ASSERT_FORCE(DyFsIsFileExist(p.mBackPath) == true, "File path is not exist.");
-  MDY_ASSERT_FORCE(DyFsIsFileExist(p.mRightPath) == true, "File path is not exist.");
-  MDY_ASSERT_FORCE(DyFsIsFileExist(p.mLeftPath) == true, "File path is not exist.");
-  MDY_ASSERT_FORCE(DyFsIsFileExist(p.mTopPath) == true, "File path is not exist.");
-  MDY_ASSERT_FORCE(DyFsIsFileExist(p.mBottomPath) == true, "File path is not exist.");
+  MDY_ASSERT_MSG_FORCE(DyFsIsFileExist(p.mFrontPath) == true, "File path is not exist.");
+  MDY_ASSERT_MSG_FORCE(DyFsIsFileExist(p.mBackPath) == true, "File path is not exist.");
+  MDY_ASSERT_MSG_FORCE(DyFsIsFileExist(p.mRightPath) == true, "File path is not exist.");
+  MDY_ASSERT_MSG_FORCE(DyFsIsFileExist(p.mLeftPath) == true, "File path is not exist.");
+  MDY_ASSERT_MSG_FORCE(DyFsIsFileExist(p.mTopPath) == true, "File path is not exist.");
+  MDY_ASSERT_MSG_FORCE(DyFsIsFileExist(p.mBottomPath) == true, "File path is not exist.");
 }
 
 } /// ::dy namespace

@@ -48,13 +48,13 @@ void FDyGlobalScriptState::CallEnd()
 
 EDyScriptType FDyGlobalScriptState::GetScriptType() const noexcept
 {
-  MDY_ASSERT(this->mType != decltype(this->mType)::NoneError, "Script type must be specified properly.");
+  MDY_ASSERT_MSG(this->mType != decltype(this->mType)::NoneError, "Script type must be specified properly.");
   return this->mType;
 }
 
 CDyGlobalScriptBase* FDyGlobalScriptState::__GetPtrInternalGlobalScript() const noexcept
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance), "Internal script instance must be valid.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance), "Internal script instance must be valid.");
   return this->mScriptInstance.get();
 }
 

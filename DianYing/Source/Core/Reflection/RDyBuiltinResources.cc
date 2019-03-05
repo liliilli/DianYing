@@ -19,6 +19,10 @@
 #include <Dy/Meta/Information/MetaInfoTexture.h>
 #include <Dy/Meta/Information/MetaInfoAttachment.h>
 #include <Dy/Meta/Information/MetaInfoFrameBuffer.h>
+#include <Dy/Meta/Information/GLShaderMetaInformation.h>
+#include <Dy/Meta/Information/MetaInfoMaterial.h>
+#include <Dy/Meta/Information/MetaInfoModelMesh.h>
+#include <Dy/Meta/Information/ScriptMetaInformation.h>
 
 namespace dy::reflect
 {

@@ -56,7 +56,7 @@ EDySuccess MDyDebug::pfInitialize()
   for (const auto& [specifierName, info] : map)
   {
     auto [_, isSucceeded] = this->mBindedActionMap.try_emplace(specifierName, info);
-    MDY_ASSERT(isSucceeded == true, "Unexpected error occurred.");
+    MDY_ASSERT_MSG(isSucceeded == true, "Unexpected error occurred.");
 
     // Set specifier name.
     _->second.mAxisSpecifierName = specifierName;

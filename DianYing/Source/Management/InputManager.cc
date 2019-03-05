@@ -314,17 +314,17 @@ void MDyInput::MDY_PRIVATE(pInitializeAxisNAction)()
   // AXIS MAP
   for (const auto& [specifierName, info] : keyInformation.mAxisMap)
   {
-    MDY_ASSERT(this->IsAxisExist(specifierName) == false, "Duplicated axis-key specifier name is already binded.");
+    MDY_ASSERT_MSG(this->IsAxisExist(specifierName) == false, "Duplicated axis-key specifier name is already binded.");
     auto [_, isSucceeded] = this->mBindedAxisMap.try_emplace(specifierName, info);
-    MDY_ASSERT(isSucceeded == true, "");
+    MDY_ASSERT_MSG(isSucceeded == true, "");
   }
 
   // ACTION MAP
   for (const auto& [specifierName, info] : keyInformation.mActionMap)
   {
-    MDY_ASSERT(this->IsActionExist(specifierName) == false, "Duplicated action-key specifier name is already binded.");
+    MDY_ASSERT_MSG(this->IsActionExist(specifierName) == false, "Duplicated action-key specifier name is already binded.");
     auto [_, isSucceeded] = this->mBindedActionMap.try_emplace(specifierName, info);
-    MDY_ASSERT(isSucceeded == true, "");
+    MDY_ASSERT_MSG(isSucceeded == true, "");
   }
 }
 
@@ -376,7 +376,7 @@ TF32 MDyInput::GetJoystickStickValue(_MIN_ DDyClamp<TU32, 0, 5> index) const noe
 
 EDyInputButtonStatus MDyInput::GetButtonStatusValue(_MIN_ EDyButton button) const noexcept
 {
-  MDY_ASSERT(button != EDyButton::NoneError, "Button value must not be `NoneErorr`.");
+  MDY_ASSERT_MSG(button != EDyButton::NoneError, "Button value must not be `NoneErorr`.");
   return mInputButtonList[button].Get();
 }
 
@@ -463,7 +463,7 @@ bool MDyInput::IsJoystickConnected() const noexcept
 
 EDyMouseMode MDyInput::GetMouseMode() const noexcept
 {
-  MDY_ASSERT(this->mPresentMouseMode.empty() == false, "Unexpected error occurred.");
+  MDY_ASSERT_MSG(this->mPresentMouseMode.empty() == false, "Unexpected error occurred.");
   return this->mPresentMouseMode.top();
 }
 

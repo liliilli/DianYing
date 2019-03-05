@@ -25,7 +25,7 @@ MDY_NODISCARD EDySuccess
 SDyIOBindingHelper::MDY_PRIVATE(pTryRequireInformation)
 (_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder)
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
   auto& ioThread = *gEngine->pfGetIOThread();
 
   if (ioThread.pIsReferenceInstanceExist(iSpecifier, iType, EDyResourceStyle::Information) == false)
@@ -52,7 +52,7 @@ SDyIOBindingHelper::MDY_PRIVATE(pTryRequireInformation_GLShader)
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
   const auto* ptr = MDyIOData::GetInstance().GetPtrInformation<EDyResourceType::GLShader>(iSpecifier);
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
   return ptr;
 }
 
@@ -65,7 +65,7 @@ SDyIOBindingHelper::MDY_PRIVATE(pTryRequireInformation_Texture)
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
   const auto* ptr = MDyIOData::GetInstance().GetPtrInformation<EDyResourceType::Texture>(iSpecifier);
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
   return ptr;
 }
 
@@ -78,7 +78,7 @@ SDyIOBindingHelper::MDY_PRIVATE(pTryRequireInformation_Attachment)
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
   const auto* ptr = MDyIOData::GetInstance().GetPtrInformation<EDyResourceType::GLAttachment>(iSpecifier);
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
   return ptr;
 }
 
@@ -91,7 +91,7 @@ SDyIOBindingHelper::MDY_PRIVATE(pTryRequireInformation_GLFrameBuffer)
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
   const auto* ptr = MDyIOData::GetInstance().GetPtrInformation<EDyResourceType::GLFrameBuffer>(iSpecifier);
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
   return ptr;
 }
 
@@ -104,7 +104,7 @@ SDyIOBindingHelper::MDY_PRIVATE(pTryRequireInformation_Material)
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
   const auto* ptr = MDyIOData::GetInstance().GetPtrInformation<EDyResourceType::Material>(iSpecifier);
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
   return ptr;
 }
 
@@ -117,7 +117,7 @@ SDyIOBindingHelper::MDY_PRIVATE(pTryRequireInformation_Mesh)
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
   const auto* ptr = MDyIOData::GetInstance().GetPtrInformation<EDyResourceType::Mesh>(iSpecifier);
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
   return ptr;
 }
 
@@ -130,7 +130,7 @@ SDyIOBindingHelper::MDY_PRIVATE(pTryRequireInformation_Model)
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
   const auto* ptr = MDyIOData::GetInstance().GetPtrInformation<EDyResourceType::Model>(iSpecifier);
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
   return ptr;
 }
 
@@ -143,7 +143,7 @@ SDyIOBindingHelper::MDY_PRIVATE(pTryRequireInformation_Skeleton)
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
   const auto* ptr = MDyIOData::GetInstance().GetPtrInformation<EDyResourceType::Skeleton>(iSpecifier);
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
   return ptr;
 }
 
@@ -156,7 +156,7 @@ SDyIOBindingHelper::MDY_PRIVATE(pTryRequireInformation_AnimationScrap)
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
   const auto* ptr = MDyIOData::GetInstance().GetPtrInformation<EDyResourceType::AnimationScrap>(iSpecifier);
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
   return ptr;
 }
 
@@ -169,15 +169,15 @@ SDyIOBindingHelper::MDY_PRIVATE(pTryRequireInformation_Sound)
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
   const auto* ptr = MDyIOData::GetInstance().GetPtrInformation<EDyResourceType::Sound>(iSpecifier);
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(ptr), "Ptr must be valid.");
   return ptr;
 }
 
 EDySuccess SDyIOBindingHelper::MDY_PRIVATE(pTryDetachInformation)
 (_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder)
 {
-  MDY_ASSERT(iType != EDyResourceType::NoneError, "iType must be valid resource type.");
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
+  MDY_ASSERT_MSG(iType != EDyResourceType::NoneError, "iType must be valid resource type.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
   auto& ioThread = *gEngine->pfGetIOThread();
 
   // If binding is failed, it specifies that RI has not been created (Related task queue was not created neither).

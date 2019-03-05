@@ -83,7 +83,7 @@ EDySuccess MDyUniformBufferObject::CreateUboContainer(_MIN_ const PDyUboConstruc
 
   // ~~~ AFTER THAT.... CREATE AND ISSUE BINDING ID.
   auto [it, result] = this->mUboMap.try_emplace(descriptor.mUboSpecifierName, nullptr);
-  MDY_ASSERT(result == true, "Unexpected error occurred.");
+  MDY_ASSERT_MSG(result == true, "Unexpected error occurred.");
 
   auto uboInstance = std::make_unique<DDyUboInstanceInformation>(descriptor);
   glGenBuffers(1, &uboInstance->mBufferIndex);

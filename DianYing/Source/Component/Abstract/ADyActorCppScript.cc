@@ -24,7 +24,7 @@ namespace dy
 
 FDyActor& ADyActorCppScript::GetActorReference()
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mOutside), "Unexpected error occurred.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->mOutside), "Unexpected error occurred.");
   return this->mOutside->GetActorReference();
 }
 
@@ -77,7 +77,7 @@ EDySuccess ADyActorCppScript::MDY_PRIVATE(DetachCollisionCbHandle)(_MIN_ const v
 
   // Find and remove.
   const auto it = std::find_if(MDY_BIND_BEGIN_END(this->mCollisionCbHandleList), lambda);
-  MDY_ASSERT(it != this->mCollisionCbHandleList.end(), "Unexpected error occurred.");
+  MDY_ASSERT_MSG(it != this->mCollisionCbHandleList.end(), "Unexpected error occurred.");
 
   DyFastErase(this->mCollisionCbHandleList, it);
   return DY_SUCCESS;
@@ -91,7 +91,7 @@ void ADyActorCppScript::MDY_PRIVATE(AbortAllCollisionCallback)()
     auto& [rigidbody, type, id] = this->mCollisionCbHandleList.back();
     // 
     const auto flag = rigidbody->RemoveCollisionCallback(type, id);
-    MDY_ASSERT_FORCE(flag == DY_SUCCESS, "");
+    MDY_ASSERT_MSG_FORCE(flag == DY_SUCCESS, "");
 
     this->mCollisionCbHandleList.erase(this->mCollisionCbHandleList.cbegin() + (this->mCollisionCbHandleList.size() - 1));
   }

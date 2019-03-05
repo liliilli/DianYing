@@ -18,20 +18,20 @@ namespace dy
 
 inline MDyPhysics::Impl::Impl()
 {
-  MDY_ASSERT(MDY_CHECK_ISNULL(this->gFoundation), "Foundation is already exist.");
-  MDY_ASSERT(MDY_CHECK_ISNULL(this->gPhysicx), "Physics is already exist.");
-  MDY_ASSERT(MDY_CHECK_ISNULL(this->mCooking), "Cooking is already exist.");
-  MDY_ASSERT(MDY_CHECK_ISNULL(this->mDefaultMaterial), "Default material is already exist.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNULL(this->gFoundation), "Foundation is already exist.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNULL(this->gPhysicx), "Physics is already exist.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNULL(this->mCooking), "Cooking is already exist.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNULL(this->mDefaultMaterial), "Default material is already exist.");
 
   this->gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, this->defaultAllocatorCallback, MDY_PRIVATE(GetPhysXErrorCallback)());
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gFoundation), "PhysX Foundation must be created successfully.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->gFoundation), "PhysX Foundation must be created successfully.");
 
   // Get scale from setting manager, but we use defualt value temporary. 
   physx::PxTolerancesScale temporalScale{};
   // MDySetting::GetInstance().GetGridScale();
 
   this->gPhysicx = PxCreatePhysics(PX_PHYSICS_VERSION, *this->gFoundation, temporalScale, false, this->gPvd);
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gPhysicx), "PhysX Physics Instance must be created successfully.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->gPhysicx), "PhysX Physics Instance must be created successfully.");
 
   if (PxInitExtensions(*this->gPhysicx, this->gPvd) == false) { MDY_UNEXPECTED_BRANCH(); }
 
@@ -40,7 +40,7 @@ inline MDyPhysics::Impl::Impl()
   params.meshPreprocessParams = physx::PxMeshPreprocessingFlags(physx::PxMeshPreprocessingFlag::eWELD_VERTICES);
   params.buildGPUData = true; //Enable GRB data being produced in cooking
   this->mCooking = PxCreateCooking(PX_PHYSICS_VERSION, *this->gFoundation, params);
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mCooking), "PhysX Cooking Instance must be created successfully.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->mCooking), "PhysX Cooking Instance must be created successfully.");
 
   this->gPhysicx->registerDeletionListener(*this, physx::PxDeletionEventFlag::eUSER_RELEASE);
 
@@ -52,7 +52,7 @@ inline MDyPhysics::Impl::Impl()
     defaultSetting.mCommonProperty.mDefaultDynamicFriction,
     defaultSetting.mCommonProperty.mDefaultRestitution);
   //
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mDefaultMaterial), "PhysX Default material must be created.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->mDefaultMaterial), "PhysX Default material must be created.");
 
 #ifdef false
   ///
@@ -118,10 +118,10 @@ inline MDyPhysics::Impl::Impl()
   static physx::PxDefaultErrorCallback gDefaultErrorCallback;
 
   this->gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, this->defaultAllocatorCallback, gDefaultErrorCallback);
-  MDY_ASSERT_FORCE(MDY_CHECK_ISNOTNULL(this->gFoundation), "PxCreateFoundation Failed!");
+  MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNOTNULL(this->gFoundation), "PxCreateFoundation Failed!");
 
   this->gPhysicx = PxCreatePhysics(PX_PHYSICS_VERSION, *this->gFoundation, physx::PxTolerancesScale(), true, this->gPvd);
-  MDY_ASSERT_FORCE(MDY_CHECK_ISNOTNULL(this->gPhysicx), "PxCreatePhysics Failed!");
+  MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNOTNULL(this->gPhysicx), "PxCreatePhysics Failed!");
 
   physx::PxSceneDesc sceneDescriptor{ this->gPhysicx->getTolerancesScale() };
   sceneDescriptor.filterShader = DyFilterShader;
@@ -142,7 +142,7 @@ inline MDyPhysics::Impl::Impl()
   if (sceneDescriptor.cpuDispatcher == nullptr)
   {
     this->gDispatcher = physx::PxDefaultCpuDispatcherCreate(2);
-    MDY_ASSERT_FORCE(MDY_CHECK_ISNOTNULL(this->gDispatcher), "PxDefaultCpuDispatcherCreate Failed!");
+    MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNOTNULL(this->gDispatcher), "PxDefaultCpuDispatcherCreate Failed!");
     sceneDescriptor.cpuDispatcher = this->gDispatcher;
   }
   if (sceneDescriptor.filterShader == nullptr)
@@ -203,12 +203,12 @@ inline MDyPhysics::Impl::~Impl()
   this->gFoundation = nullptr;
 
   // This function just check all resource is released.
-  MDY_ASSERT_FORCE(MDY_CHECK_ISNULL(this->gScene), "PhysX scene is not released before release Physics manager.");
-  MDY_ASSERT_FORCE(MDY_CHECK_ISNULL(this->gDispatcher), "PhysX cpu dispatcher is not released before release Physics manager.");
-  MDY_ASSERT_FORCE(MDY_CHECK_ISNULL(this->gPhysicx), "PhysX physics is not released before release Physics manager.");
-  MDY_ASSERT_FORCE(MDY_CHECK_ISNULL(this->gPvd), "PhysX pvd is not released before release Physics manager.");
-  MDY_ASSERT_FORCE(MDY_CHECK_ISNULL(this->mCooking), "PhysX mesh cooker is not released before release Physics manager.");
-  MDY_ASSERT_FORCE(MDY_CHECK_ISNULL(this->gFoundation), "PhysX foundation is not released before release Physics manager.");
+  MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNULL(this->gScene), "PhysX scene is not released before release Physics manager.");
+  MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNULL(this->gDispatcher), "PhysX cpu dispatcher is not released before release Physics manager.");
+  MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNULL(this->gPhysicx), "PhysX physics is not released before release Physics manager.");
+  MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNULL(this->gPvd), "PhysX pvd is not released before release Physics manager.");
+  MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNULL(this->mCooking), "PhysX mesh cooker is not released before release Physics manager.");
+  MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNULL(this->gFoundation), "PhysX foundation is not released before release Physics manager.");
 }
 
 inline void MDyPhysics::Impl::UpdateRenderObjectTransform(TF32 iDt)
@@ -225,7 +225,7 @@ inline void MDyPhysics::Impl::UpdateRenderObjectTransform(TF32 iDt)
     {
       physx::PxShape* shape = nullptr;
       MDY_NOTUSED const TU32 n = refRigidActor.getShapes(&shape, 1, i);
-      MDY_ASSERT(n == 1, "Unexpected error occurred.");
+      MDY_ASSERT_MSG(n == 1, "Unexpected error occurred.");
 
       // Get transform and copy physics pose to graphics pose.
       const auto pxTransform = physx::PxShapeExt::getGlobalPose(*shape, refRigidActor);
@@ -235,7 +235,7 @@ inline void MDyPhysics::Impl::UpdateRenderObjectTransform(TF32 iDt)
       // Set AABB (Axis-aligned bounding box) bound to each collider.
       const auto pxBound = physx::PxShapeExt::getWorldBounds(*shape, refRigidActor);
       auto* ptrCollider = static_cast<CDyPhysicsCollider*>(shape->userData);
-      MDY_ASSERT(ptrCollider != nullptr, "Unexpected error occurred.");
+      MDY_ASSERT_MSG(ptrCollider != nullptr, "Unexpected error occurred.");
       ptrCollider->UpdateBound(pxBound);
     }
   }
@@ -248,7 +248,7 @@ inline void MDyPhysics::Impl::CallCallbackIssueOnce()
     auto& refIssue = this->mCollisionCallbackIssueQueue.front();
     //
     auto* ptrSelfRigidbody = refIssue.mPtrSelfActor->GetRigidbody();
-    MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptrSelfRigidbody), "Unexpected error occurred.");
+    MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(ptrSelfRigidbody), "Unexpected error occurred.");
 
     //
     ptrSelfRigidbody->CallCollisionCallback(refIssue.mType, refIssue);
@@ -276,7 +276,7 @@ inline void MDyPhysics::Impl::InitScene()
   if (MDY_CHECK_ISNULL(tempSceneDesc.cpuDispatcher))
   {
     this->gDispatcher = physx::PxDefaultCpuDispatcherCreate(1);
-    MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gDispatcher), "PhysX Cpu dispatcher must be created validly.");
+    MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->gDispatcher), "PhysX Cpu dispatcher must be created validly.");
     tempSceneDesc.cpuDispatcher = this->gDispatcher;
   }
 
@@ -294,7 +294,7 @@ inline void MDyPhysics::Impl::InitScene()
   tempSceneDesc.filterShader = DyFilterShader;
 
   this->gScene = this->gPhysicx->createScene(tempSceneDesc);
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gScene), "PhysX Scene must be created successfully.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->gScene), "PhysX Scene must be created successfully.");
 
   // Set Scene setting (atomically)
   {
@@ -319,8 +319,8 @@ inline void MDyPhysics::Impl::InitScene()
 
 inline void MDyPhysics::Impl::ReleaseScene()
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gScene), "PhysX Scene must be valid.");
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->gDispatcher), "PhysX Dispatcher must be valid.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->gScene), "PhysX Scene must be valid.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->gDispatcher), "PhysX Dispatcher must be valid.");
 
   {
     physx::PxSceneWriteLock scopedLock(*this->gScene);
@@ -465,14 +465,14 @@ inline void MDyPhysics::Impl::onContact(
     if (cp.flags.isSet(physx::PxContactPairFlag::eREMOVED_SHAPE_0) == false
       && cp.flags.isSet(physx::PxContactPairFlag::eREMOVED_SHAPE_1) == false)
     {
-      const auto* shape0 = cp.shapes[0]; MDY_ASSERT_FORCE(shape0 != nullptr, "Test failed.");
-      const auto* shape1 = cp.shapes[1]; MDY_ASSERT_FORCE(shape1 != nullptr, "Test failed.");
+      const auto* shape0 = cp.shapes[0]; MDY_ASSERT_MSG_FORCE(shape0 != nullptr, "Test failed.");
+      const auto* shape1 = cp.shapes[1]; MDY_ASSERT_MSG_FORCE(shape1 != nullptr, "Test failed.");
 
       // Get collider components.
       auto* ptrCollider0 = static_cast<CDyPhysicsCollider*>(shape0->userData);
-      MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptrCollider0), "Unexpected error occurred.");
+      MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(ptrCollider0), "Unexpected error occurred.");
       auto* ptrCollider1 = static_cast<CDyPhysicsCollider*>(shape1->userData);
-      MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptrCollider1), "Unexpected error occurred.");
+      MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(ptrCollider1), "Unexpected error occurred.");
 
       const auto filterFlag0 = shape0->getSimulationFilterData();
       const auto filterFlag1 = shape1->getSimulationFilterData();

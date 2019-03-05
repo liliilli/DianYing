@@ -21,32 +21,33 @@
 namespace dy
 {
 
-bool FDyIOGC::IsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style)
+bool FDyIOGC::IsReferenceInstanceExist(const std::string& specifier, EDyResourceType type, EDyResourceStyle style)
 {
   return ContainsIf(
-      this->mRIGarbageCandidateList, 
-      [&specifier, type, style](const auto& item) 
-      { 
-        const auto& iname  = item.mSpecifierName;
-        const auto  itype  = item.mResourceType;
-        const auto  istyle = item.mResourcecStyle;;
-        return istyle == style && itype == type && iname == specifier;
-      }
+    this->mRIGarbageCandidateList, 
+    [&specifier, type, style](const auto& item) 
+    { 
+      const auto& iname  = item.mSpecifierName;
+      const auto  itype  = item.mResourceType;
+      const auto  istyle = item.mResourcecStyle;;
+      return istyle == style && itype == type && iname == specifier;
+    }
   );
 }
 
 std::optional<DDyIOReferenceInstance> 
-FDyIOGC::MoveInstanceFromGC(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style)
+FDyIOGC::MoveInstanceFromGC(const std::string& specifier, EDyResourceType type, EDyResourceStyle style)
 {
   // Check nullility.
   auto it = std::find_if(
-      MDY_BIND_BEGIN_END(this->mRIGarbageCandidateList), 
-      [&specifier, type, style](const auto& item) { 
-        const auto& iname  = item.mSpecifierName;
-        const auto  itype  = item.mResourceType;
-        const auto  istyle = item.mResourcecStyle;;
-        return istyle == style && itype == type && iname == specifier;
-      }
+    MDY_BIND_BEGIN_END(this->mRIGarbageCandidateList), 
+    [&specifier, type, style](const auto& item) 
+    { 
+      const auto& iname  = item.mSpecifierName;
+      const auto  itype  = item.mResourceType;
+      const auto  istyle = item.mResourcecStyle;;
+      return istyle == style && itype == type && iname == specifier;
+    }
   );
   if (it == this->mRIGarbageCandidateList.end()) { return std::nullopt; }
 
@@ -56,14 +57,17 @@ FDyIOGC::MoveInstanceFromGC(_MIN_ const std::string& specifier, _MIN_ EDyResourc
   return std::move(result);
 }
 
-void FDyIOGC::InsertGcCandidate(_MIN_ DDyIOReferenceInstance iRICandidateList) noexcept
+void FDyIOGC::InsertGcCandidate(DDyIOReferenceInstance iRICandidateList) noexcept
 {
   this->mRIGarbageCandidateList.emplace_back(std::move(iRICandidateList));
 }
 
-void FDyIOGC::InsertGcCandidateList(_MIN_ const std::vector<DDyIOReferenceInstance>& iRICandidateList) noexcept
+void FDyIOGC::InsertGcCandidateList(const std::vector<DDyIOReferenceInstance>& iRICandidateList) noexcept
 {
-  this->mRIGarbageCandidateList.insert(this->mRIGarbageCandidateList.end(), MDY_BIND_BEGIN_END(iRICandidateList));
+  this->mRIGarbageCandidateList.insert(
+    this->mRIGarbageCandidateList.end(),
+    MDY_BIND_BEGIN_END(iRICandidateList)
+  );
 }
 
 EDySuccess FDyIOGC::TryGarbageCollectCandidateList() noexcept

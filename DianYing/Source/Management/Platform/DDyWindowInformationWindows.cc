@@ -80,7 +80,7 @@ void DDyWindowInformationWindows::ReleaseDep()
 
 EDySuccess DDyWindowInformationWindows::CreateConsoleWindow()
 {
-  MDY_ASSERT(
+  MDY_ASSERT_MSG(
     this->mIsConsoleWindowInitialized.load() == false, 
     "MDyWindow::mIsConsoleWindowInitialized must be falsed.");
 
@@ -106,7 +106,7 @@ bool DDyWindowInformationWindows::IsCreatedConsoleWindow() const noexcept
 
 EDySuccess DDyWindowInformationWindows::RemoveConsoleWindow()
 {
-  MDY_ASSERT(this->mIsConsoleWindowInitialized.load() == true, "MDyWIndow::mIsConsoleWindowInitialized must be trued.");
+  MDY_ASSERT_MSG(this->mIsConsoleWindowInitialized.load() == true, "MDyWIndow::mIsConsoleWindowInitialized must be trued.");
 
   // Release console.
   fclose(this->mFp);

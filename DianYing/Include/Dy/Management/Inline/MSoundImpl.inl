@@ -230,7 +230,7 @@ inline FDySoundChannel* MDySound::Impl::GetPtrChannel(const std::string& iSpecif
 inline FDySoundGroup& MDySound::Impl::MDY_PRIVATE(GetGroupChannel)(const std::string& iSpecifier)
 {
   auto it = this->mGroupContainer.find(iSpecifier);
-  MDY_ASSERT_FORCE(
+  MDY_ASSERT_MSG_FORCE(
     it != this->mGroupContainer.end(), 
     "Unexpected error occurred. Given group channel not found.");
 
@@ -239,7 +239,7 @@ inline FDySoundGroup& MDySound::Impl::MDY_PRIVATE(GetGroupChannel)(const std::st
 
 inline FMOD::System& MDySound::Impl::MDY_PRIVATE(GetSystem)()
 {
-  MDY_ASSERT(
+  MDY_ASSERT_MSG(
     this->mIsSoundSystemAvailable == true, 
     "Failed to getting sound system instance. Sound system must be initialized.");
 
@@ -314,7 +314,7 @@ inline void MDySound::Impl::Set3DListenerActorSetting(TU32 iId, CDyCamera& iCame
   const FMOD_VECTOR applyUp = {up.X, up.Y, up.Z};
 
   const auto flag = this->mSoundSystem->set3DListenerAttributes(iId, &applyPos, &applyVelocity, &applyForward, &applyUp);
-  MDY_ASSERT(flag == FMOD_OK, "Unexpected error occurred.");
+  MDY_ASSERT_MSG(flag == FMOD_OK, "Unexpected error occurred.");
 }
 
 inline EDySuccess MDySound::Impl::InitializeSoundSystem()
@@ -390,7 +390,7 @@ inline EDySuccess MDySound::Impl::InitializeSoundSystem()
   {
     // 
     auto [it, isSucceeded] = this->mGroupContainer.try_emplace(specifier, FDySoundGroup{});
-    MDY_ASSERT(isSucceeded == true, "Unexpected error.");
+    MDY_ASSERT_MSG(isSucceeded == true, "Unexpected error.");
     // 
     auto& [_, instance] = *it;
     MDY_CALL_ASSERT_SUCCESS(instance.Initialize(*this->mSoundSystem, specifier, detail));
@@ -401,7 +401,7 @@ inline EDySuccess MDySound::Impl::InitializeSoundSystem()
   {
     // 
     auto [it, isSucceeded] = this->mChannelContainer.try_emplace(specifier, FDySoundChannel{});
-    MDY_ASSERT(isSucceeded == true, "Unexpected error.");
+    MDY_ASSERT_MSG(isSucceeded == true, "Unexpected error.");
     // 
     auto& [_, instance] = *it;
     MDY_CALL_ASSERT_SUCCESS(instance.Initialize(*this->mSoundSystem, specifier, detail));

@@ -73,7 +73,7 @@ EDySuccess FDySoundChannel::Release()
   // Remove channel from master channel. 
   // But added channel does not have to unbind registration from master channel.
   const auto flag = this->mInternalGroup->release();
-  MDY_ASSERT_FORCE(flag == FMOD_OK, "FMOD release must be succceded, Unexpected error occurred.");
+  MDY_ASSERT_MSG_FORCE(flag == FMOD_OK, "FMOD release must be succceded, Unexpected error occurred.");
   this->mInternalGroup = nullptr;
   this->mIsInitilaized = false;
   return DY_SUCCESS;
@@ -81,18 +81,18 @@ EDySuccess FDySoundChannel::Release()
 
 void FDySoundChannel::SetVolume(_MIN_ const DDyClamp<TF32, 0, 1>& iVolume)
 {
-  MDY_ASSERT_FORCE(this->mIsInitilaized == true, "Given sound channel must be initialized when use this function.");
+  MDY_ASSERT_MSG_FORCE(this->mIsInitilaized == true, "Given sound channel must be initialized when use this function.");
 
   const auto flag = this->mInternalGroup->setVolume(iVolume);
-  MDY_ASSERT(flag == FMOD_OK, "Unexpected error occurred.");
+  MDY_ASSERT_MSG(flag == FMOD_OK, "Unexpected error occurred.");
 }
 
 void FDySoundChannel::SetMute(_MIN_ bool iMuted)
 {
-  MDY_ASSERT_FORCE(this->mIsInitilaized == true, "Given sound channel must be initialized when use this function.");
+  MDY_ASSERT_MSG_FORCE(this->mIsInitilaized == true, "Given sound channel must be initialized when use this function.");
 
   const auto flag = this->mInternalGroup->setMute(iMuted);
-  MDY_ASSERT(flag == FMOD_OK, "Unexpected error occurred.");
+  MDY_ASSERT_MSG(flag == FMOD_OK, "Unexpected error occurred.");
 }
 
 FMOD::ChannelGroup* FDySoundChannel::MDY_PRIVATE(GetPtrChannel)() noexcept

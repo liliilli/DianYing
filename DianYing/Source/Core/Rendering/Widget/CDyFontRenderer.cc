@@ -95,7 +95,7 @@ CDyFontRenderer::CDyFontRenderer(FDyText& iPtrWidget) :
   mPtrWidget{&iPtrWidget}
 {
   this->mBinderFontMesh.TryRequireResource((FDyBtMsUiFontQuad::sName));
-  MDY_ASSERT(this->mBinderFontMesh.IsResourceExist() == true, "True");
+  MDY_ASSERT_MSG(this->mBinderFontMesh.IsResourceExist() == true, "True");
   this->mBinderShader.TryRequireResource((builtin::FDyBuiltinShaderGLRenderFontArraySDF::sName));
 }
 

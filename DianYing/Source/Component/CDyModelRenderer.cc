@@ -68,7 +68,7 @@ const FDyMeshResource& CDyModelRenderer::GetSubmeshResourcePtr(_MIN_ TU32 index)
 
 const FDyMaterialResource& CDyModelRenderer::GetMaterialResourcePtr(_MIN_ TU32 index) const noexcept
 {
-  //MDY_ASSERT(index < this->mBinderMaterialListSize, "Index for CDyModelRenderer::mMaterialResourcePtr is out of bound.");
+  //MDY_ASSERT_MSG(index < this->mBinderMaterialListSize, "Index for CDyModelRenderer::mMaterialResourcePtr is out of bound.");
   const auto& materialResourceList = this->mPtrModelFilterComponent->GetModelReference()->GetMaterialResourceList();
   return *materialResourceList[index]->Get();
 }
@@ -100,7 +100,7 @@ void CDyModelRenderer::TryActivateInstance()
   CDyModelFilter& filterRef = *opRenderer.value();
   if (filterRef.IsComponentActivated() == false) { return; }
 
-  MDY_ASSERT(MDY_CHECK_ISNULL(this->mPtrModelFilterComponent), "CDyModelFilter::mModelRendererReferencePtr must be null when unbinding.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNULL(this->mPtrModelFilterComponent), "CDyModelFilter::mModelRendererReferencePtr must be null when unbinding.");
   this->BindModelFilterReference(filterRef);
 
   // Check and rebind script instance to MDyWorld.
@@ -110,7 +110,7 @@ void CDyModelRenderer::TryActivateInstance()
 
 void CDyModelRenderer::TryDeactivateInstance()
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mPtrModelFilterComponent), "CDyModelFilter::mModelRendererReferencePtr must not be null when unbinding.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->mPtrModelFilterComponent), "CDyModelFilter::mModelRendererReferencePtr must not be null when unbinding.");
   this->UnbindModelFilterReference();
 
   MDyWorld::GetInstance().pfUnenrollActiveModelRenderer(this->mActivatedUpdateListId);
@@ -119,7 +119,7 @@ void CDyModelRenderer::TryDeactivateInstance()
 
 void CDyModelRenderer::BindModelFilterReference(CDyModelFilter& validReference)
 {
-  MDY_ASSERT(MDY_CHECK_ISNULL(this->mPtrModelFilterComponent), "CDyModelRenderer::mPtrModelFilterComponent must be a nullptr when binding.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNULL(this->mPtrModelFilterComponent), "CDyModelRenderer::mPtrModelFilterComponent must be a nullptr when binding.");
   this->mPtrModelFilterComponent = &validReference;
   this->mPtrModelFilterComponent->fBindModelRendererReference(*this);
 
@@ -137,7 +137,7 @@ void CDyModelRenderer::BindModelFilterReference(CDyModelFilter& validReference)
 
 void CDyModelRenderer::UnbindModelFilterReference()
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mPtrModelFilterComponent), "CDyModelRenderer::mPtrModelFilterComponent must not be a nullptr when binding.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->mPtrModelFilterComponent), "CDyModelRenderer::mPtrModelFilterComponent must not be a nullptr when binding.");
   this->mPtrModelFilterComponent->fUnbindModelRendererReference();
 
   // GC renderer ptr to given handler.

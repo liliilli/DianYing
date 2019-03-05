@@ -183,7 +183,7 @@ inline EDySuccess MDyWindow::Impl::MDY_PRIVATE(TerminateWindow)() noexcept
 
 inline GLFWwindow* MDyWindow::Impl::GetGLMainWindow() const noexcept
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mGlfwWindow), "GlfwWindow is not initiailized.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->mGlfwWindow), "GlfwWindow is not initiailized.");
   return this->mGlfwWindow;
 }
 
@@ -193,7 +193,7 @@ inline const std::array<GLFWwindow*, 2>& MDyWindow::Impl::GetGLWorkerWindowList(
   for (const auto& ptrWindow : this->mGlfwWorkerWnds)
   { // Validation check.
     MaybeNotUsed(ptrWindow);
-    MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptrWindow), "GLFWwindow must be valid.");
+    MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(ptrWindow), "GLFWwindow must be valid.");
   }
   #endif
 

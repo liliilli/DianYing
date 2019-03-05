@@ -13,6 +13,8 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Meta/Information/ElementLevelMetaInfo.h>
+
 namespace dy
 {
 
@@ -147,7 +149,7 @@ inline DDyActorBinder MDyWorld::Impl::CreateActor(
   bool iDoSweep)
 {
   // Check prefab is exist on meta information manager.
-  MDY_ASSERT_FORCE(
+  MDY_ASSERT_MSG_FORCE(
     MDyMetaInfo::GetInstance().IsPrefabMetaInformationExist(iPrefabName) == true,
     "Failed to find prefab with specified `iPrefabName`.");
 
@@ -196,7 +198,7 @@ inline void MDyWorld::Impl::DestroyActor(FDyActor& iRefActor)
   else
   { // If iRefActor has not parent, regard it is on root, and remove iRefActor from level.
     // and move it to MDYWorld::Impl::GC List.
-    MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mLevel), "Unexpected error occurred.");
+    MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->mLevel), "Unexpected error occurred.");
     auto& container = this->mLevel->GetActorContainer();
     auto  it = std::find_if(MDY_BIND_BEGIN_END(container),
         [ptr = &iRefActor](const std::decay_t<decltype(container)>::value_type& iPair)
@@ -291,7 +293,7 @@ inline TI32 MDyWorld::Impl::GetFocusedCameraCount() const noexcept
 
 inline std::optional<CDyCamera*> MDyWorld::Impl::GetFocusedCameraValidReference(const TI32 index) const noexcept
 {
-  MDY_ASSERT(
+  MDY_ASSERT_MSG(
       index < this->mActivatedOnRenderingCameras.size(),
       R"dy(Input parameter "index" for "MDyWorld::Impl::GetFocusedCameraValidReferenc" must be equal or less than "MDyWorld::Impl::mActivatedOnRenderingCameras".)dy");
 
@@ -430,7 +432,7 @@ inline bool MDyWorld::Impl::IsLevelPresentValid() const noexcept
 
 inline FDyLevel& MDyWorld::Impl::GetValidLevelReference() noexcept
 {
-  MDY_ASSERT(IsLevelPresentValid() == true, "Level must be valid when retrieving level reference.");
+  MDY_ASSERT_MSG(IsLevelPresentValid() == true, "Level must be valid when retrieving level reference.");
   return *this->mLevel;
 }
 
@@ -516,7 +518,7 @@ inline void MDyWorld::Impl::pfMoveActorToGc(NotNull<FDyActor*> actorRawPtr) noex
 
 inline void MDyWorld::Impl::pfUnenrollActiveModelRenderer(TI32 index) noexcept
 {
-  MDY_ASSERT(
+  MDY_ASSERT_MSG(
     index < this->mActivatedModelRenderers.size(), 
     "index must be smaller than this->mActivatedModelRenderers.size().");
 
@@ -526,7 +528,7 @@ inline void MDyWorld::Impl::pfUnenrollActiveModelRenderer(TI32 index) noexcept
 
 inline void MDyWorld::Impl::pfUnenrollActiveCamera(TI32& ioIndex) noexcept
 {
-  MDY_ASSERT(
+  MDY_ASSERT_MSG(
     ioIndex < this->mActivatedOnRenderingCameras.size(), 
     "ioIndex must be smaller than this->mActivatedOnRenderingCameras.size().");
 
@@ -618,7 +620,7 @@ inline EDySuccess MDyWorld::Impl::MDY_PRIVATE(UnbindActiveUiObject)(FDyUiWidget&
 #ifdef false
 void MDyWorld::Impl::pfUnenrollActiveScript(_MIN_ TI32 index) noexcept
 {
-  MDY_ASSERT(index < this->mActivatedScripts.size(), "index must be smaller than this->mActivatedScripts.size().");
+  MDY_ASSERT_MSG(index < this->mActivatedScripts.size(), "index must be smaller than this->mActivatedScripts.size().");
 
   this->mActivatedScripts[index] = MDY_INITIALIZE_NULL;
   this->mErasionScriptCandidateList.emplace_back(index);

@@ -21,7 +21,7 @@ namespace dy
 
 std::any ADyTextureResource::GetMetaInfo()
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mPtrBuffer), "Builtin texture buffer must be valid.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->mPtrBuffer), "Builtin texture buffer must be valid.");
 
   this->mTextureMetaInfo.mPtrBuiltinBuffer  = this->mPtrBuffer;
   this->mTextureMetaInfo.mSourceType        = EDyResourceSource::Builtin;

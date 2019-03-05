@@ -29,7 +29,7 @@ FDyAttachmentInformation::FDyAttachmentInformation(_MIN_ const PDyGlAttachmentIn
     mMipmapLevels{metaInfo.mMipmapLevels},
     mDepthNumber{metaInfo.mDepthNumber}
 {
-  MDY_ASSERT(this->mSpecifierName.empty() == false, "Attachment specifier name must be specified.");
+  MDY_ASSERT_MSG(this->mSpecifierName.empty() == false, "Attachment specifier name must be specified.");
 }
 
 } /// ::dy namespace

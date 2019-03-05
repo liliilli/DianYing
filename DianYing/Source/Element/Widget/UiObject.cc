@@ -81,7 +81,7 @@ void FDyUiObject::UpdateFinalPosition()
   if (this->CheckIsParentExist() == true)
   { // If parent is exist, retrieve values.
     const auto* ptrParent = this->GetPtrParentUiObject();
-    MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptrParent), "Parent must be valid.");
+    MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(ptrParent), "Parent must be valid.");
     mParentFinalPosition   = ptrParent->GetFinalPosition(this->GetOrigin());
   }
 
@@ -90,7 +90,7 @@ void FDyUiObject::UpdateFinalPosition()
 
 const std::string& FDyUiObject::GetUiObjectName() const noexcept
 {
-  MDY_ASSERT(this->pGetObjectName().empty() == false, "Unexpected error occurred.");
+  MDY_ASSERT_MSG(this->pGetObjectName().empty() == false, "Unexpected error occurred.");
   return this->pGetObjectName();
 }
 

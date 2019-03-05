@@ -95,11 +95,11 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
     {
       //
       const auto matPath = j["ExternalPath"].get<std::string>();
-      MDY_ASSERT_FORCE(DyFsIsFileExist(matPath) == true, "Material file must be exist on specified path.");
+      MDY_ASSERT_MSG_FORCE(DyFsIsFileExist(matPath) == true, "Material file must be exist on specified path.");
 
       //
       const auto optJson = DyGetJsonAtlasFromFile(matPath);
-      MDY_ASSERT_FORCE(optJson.has_value() == true, "Failed to load extenral material meta information file.");
+      MDY_ASSERT_MSG_FORCE(optJson.has_value() == true, "Failed to load extenral material meta information file.");
 
       //
       {

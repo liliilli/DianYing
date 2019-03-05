@@ -77,7 +77,7 @@ PDyMetaFontInformation PDyMetaFontInformation::CreateWithJson(const nlohmann::js
   //!
 
   // (1) Pre-validity test.
-  MDY_ASSERT(CheckHeaderValidity(fontAtlas) == DY_SUCCESS, "Font meta object must have all headers correctly.");
+  MDY_ASSERT_MSG(CheckHeaderValidity(fontAtlas) == DY_SUCCESS, "Font meta object must have all headers correctly.");
 
   // (2) Get Information from json atlas.
   PDyMetaFontInformation resultInstance   = {};
@@ -91,15 +91,15 @@ PDyMetaFontInformation PDyMetaFontInformation::CreateWithJson(const nlohmann::js
 
   // (3) Post-validity test.
   using namespace std::filesystem;
-  MDY_ASSERT(resultInstance.mFontType != EFontType::NoneError,    "FontType must not be null type (error type).");
-  MDY_ASSERT(exists(resultInstance.mFontInformationPath) == true, "Font information `.dyFntRes` must be exist but not exist.");
+  MDY_ASSERT_MSG(resultInstance.mFontType != EFontType::NoneError,    "FontType must not be null type (error type).");
+  MDY_ASSERT_MSG(exists(resultInstance.mFontInformationPath) == true, "Font information `.dyFntRes` must be exist but not exist.");
   for (const auto& texturePath : resultInstance.mFontTexturePathList)
   {
-    MDY_ASSERT(exists(texturePath) == true, "Font texture specified but doesn't exist in filesystem.");
+    MDY_ASSERT_MSG(exists(texturePath) == true, "Font texture specified but doesn't exist in filesystem.");
   }
   if (resultInstance.mIsUsingRuntimeCreateionWhenGlyphNotExist == true)
   {
-    MDY_ASSERT(exists(resultInstance.mFontAlternativeFilePath) == true, "Alternative font file path must be exist.");
+    MDY_ASSERT_MSG(exists(resultInstance.mFontAlternativeFilePath) == true, "Alternative font file path must be exist.");
   }
 
   return resultInstance;

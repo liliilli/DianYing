@@ -24,6 +24,20 @@
 #include <Dy/Element/Abstract/Actor/ADyActorBinderContainer.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Element/Internal/TDyIdDistributor.h>
+#include <Dy/Element/Descriptor/GlobalEnums.h>
+
+//!
+//! Forward declaration
+//!
+
+namespace dy
+{
+struct PDyObjectMetaInfo;
+}
+
+//!
+//! Implementation
+//!
 
 namespace dy
 {

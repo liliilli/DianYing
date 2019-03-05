@@ -335,7 +335,7 @@ void MDySetting::pSetupExecutableArgumentSettings()
   //! FUNCTIONBODY ∨
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  MDY_ASSERT(
+  MDY_ASSERT_MSG(
       this->mIsInitialized == false,
       "MDySetting::pSetupExecutableArgumentSettings must be called only before Initialization.");
 
@@ -380,10 +380,10 @@ void MDySetting::pSetupExecutableArgumentSettings()
       if (const auto r = result["run_separated_data"].as<std::string>(); r.empty() == false)
       {
         namespace fs = std::filesystem;
-        MDY_ASSERT_FORCE(
+        MDY_ASSERT_MSG_FORCE(
             this->mFileLoadingMode == EDyFileLoadingMode::LoadCompressedFile,
             "Application running mode should not be duplicated by any mode flag.");
-        MDY_ASSERT_FORCE(fs::exists(r) == true, "Compressed data entry setting file is not exist on given path.");
+        MDY_ASSERT_MSG_FORCE(fs::exists(r) == true, "Compressed data entry setting file is not exist on given path.");
 
         this->mEntrySettingPath = r;
         this->mFileLoadingMode  = EDyFileLoadingMode::LoadSeperatedFile;
@@ -437,7 +437,7 @@ EDySuccess MDySetting::pfInitialize()
   if (this->mFileLoadingMode == EDyFileLoadingMode::LoadSeperatedFile) 
   { // If Application loading mode is `Load separated file` like a json, dydat.
     const auto opSettingAtlas = DyGetJsonAtlasFromFile(this->mEntrySettingPath);
-    MDY_ASSERT(opSettingAtlas.has_value() == true, "Failed to open application setting file.");
+    MDY_ASSERT_MSG(opSettingAtlas.has_value() == true, "Failed to open application setting file.");
     const auto& settingAtlas = opSettingAtlas.value();
 
     // Apply setting to project before everthing starts to working.
@@ -453,10 +453,10 @@ EDySuccess MDySetting::pfInitialize()
   }
   else if (this->mFileLoadingMode == EDyFileLoadingMode::LoadCompressedFile)
   { // If Application loading mode is `Load compressed file` like a `Data###.dydat`.
-    MDY_ASSERT(std::filesystem::exists(this->mEntrySettingPath) == true, "Data file is not exist.");
+    MDY_ASSERT_MSG(std::filesystem::exists(this->mEntrySettingPath) == true, "Data file is not exist.");
 
     const auto opMetaInfo = DyGetJsonAtlasFromFile(this->mEntrySettingPath);
-    MDY_ASSERT_FORCE(opMetaInfo.has_value() == true, "Failed to open meta data file.");
+    MDY_ASSERT_MSG_FORCE(opMetaInfo.has_value() == true, "Failed to open meta data file.");
     const auto& metaAtlas = opMetaInfo.value();
 
     // Apply setting to project before everthing starts to working.

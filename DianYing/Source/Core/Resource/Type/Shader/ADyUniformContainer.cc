@@ -272,7 +272,7 @@ ADYUNIFORMCONTAINER_TRYUPDATEUNIFORMLIST_TEXTURE:
     {
       if (itemType == type) { internalTextureType = enumValue; break; }
     }
-    MDY_ASSERT_FORCE(internalTextureType != GL_NONE, "Failed to find texture type.");
+    MDY_ASSERT_MSG_FORCE(internalTextureType != GL_NONE, "Failed to find texture type.");
 
     {
       // Critical section?

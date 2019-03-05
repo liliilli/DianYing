@@ -213,7 +213,7 @@ void CDyPhysicsRigidbody::pActivateDynamicNKinematicActor()
 
   {
     ::physx::PxSceneWriteLock lock(::dy::MDyPhysics::GetInstance().MDY_PRIVATE(GetRefScene)());
-    MDY_ASSERT_FORCE(MDY_CHECK_ISNULL(this->mOwnerInternalActor), "Internal rigidbody actor must be null.");
+    MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNULL(this->mOwnerInternalActor), "Internal rigidbody actor must be null.");
 
     // Create RigidDynamic instance.
     this->mOwnerInternalActor = refSdk.createRigidDynamic(physx::PxTransform(worldPos, worldRot));
@@ -247,7 +247,7 @@ void CDyPhysicsRigidbody::pActivateStaticActor()
 
   {
     MDY_PHYSX_WRITE_LOCK();
-    MDY_ASSERT_FORCE(MDY_CHECK_ISNULL(this->mOwnerInternalActor), "Internal rigidbody actor must be null.");
+    MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNULL(this->mOwnerInternalActor), "Internal rigidbody actor must be null.");
 
     // Create RigidDynamic instance.
     this->mOwnerInternalActor = refSdk.createRigidStatic(physx::PxTransform(worldPos, worldRot));
@@ -296,8 +296,8 @@ void CDyPhysicsRigidbody::TryDeactivateInstance()
 
   {
     ::physx::PxSceneWriteLock lock(::dy::MDyPhysics::GetInstance().MDY_PRIVATE(GetRefScene)());
-    MDY_ASSERT_FORCE(MDY_CHECK_ISNOTNULL(this->mOwnerInternalActor), "Internal rigidbody actor must be valid.");
-    MDY_ASSERT_FORCE(this->mOwnerInternalActor->isReleasable() == true, "Internal rigidbody actor is not releasable.");
+    MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNOTNULL(this->mOwnerInternalActor), "Internal rigidbody actor must be valid.");
+    MDY_ASSERT_MSG_FORCE(this->mOwnerInternalActor->isReleasable() == true, "Internal rigidbody actor is not releasable.");
 
     this->mOwnerInternalActor->release();
     this->mOwnerInternalActor = nullptr;
@@ -310,7 +310,7 @@ void CDyPhysicsRigidbody::UnregisterCollider(_MIN_ CDyPhysicsCollider& iRefColli
   const auto it = std::find_if(
       MDY_BIND_BEGIN_END(this->mPtrColliderList),
       [iPtrCollider = &iRefCollider](const auto& ptrCollider) { return ptrCollider == iPtrCollider; });
-  MDY_ASSERT_FORCE(it != this->mPtrColliderList.end(), "Unexpected error occurred.");
+  MDY_ASSERT_MSG_FORCE(it != this->mPtrColliderList.end(), "Unexpected error occurred.");
 
   // If found, release internal resource from collider.
   it->Get()->ReleaseInternalResource(*this);
@@ -329,7 +329,7 @@ EDySuccess CDyPhysicsRigidbody::BindShapeToRigidbody(_MIN_ CDyPhysicsCollider& i
   const auto geometryHolder = iRefShape.__GetPtrInternalShape()->getGeometry();
   // Create new shape (with default materia) and set pose.
   auto* newShape = physx::PxRigidActorExt::createExclusiveShape(*this->mOwnerInternalActor,  geometryHolder.any(), mat);
-  MDY_ASSERT_FORCE(newShape != nullptr, "Unexpected error occurred.");
+  MDY_ASSERT_MSG_FORCE(newShape != nullptr, "Unexpected error occurred.");
   // CAUTION(!) settin filter data must be hald afterward createExclusiveShape.
   newShape->setSimulationFilterData(iRefShape.mInternalFilterData);
   // Set user data for handling collision callback, and etc.

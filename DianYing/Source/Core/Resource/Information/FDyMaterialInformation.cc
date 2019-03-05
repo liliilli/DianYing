@@ -26,7 +26,7 @@ FDyMaterialInformation::FDyMaterialInformation(_MIN_ const PDyMaterialInstanceMe
 {
   // Bind informations RI.
   this->mBinderShaderInfo.TryRequireResource(metaInfo.mShaderSpecifier);
-  MDY_ASSERT(this->mBinderShaderInfo.IsResourceExist() == true, "Unexpected error occurred.");
+  MDY_ASSERT_MSG(this->mBinderShaderInfo.IsResourceExist() == true, "Unexpected error occurred.");
   for (const auto& bindingTextureItem : metaInfo.mTextureNames)
   {
     if (bindingTextureItem.mTextureSpecifier.empty() == true) { break; }

@@ -85,7 +85,7 @@ template <EDyResourceType TType>
 typename __TDyResourceBinderBase<TType>::TPtrResource 
 __TDyResourceBinderBase<TType>::Get() const noexcept
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mPtrResource), "Resource pointer address must not be null when use it.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->mPtrResource), "Resource pointer address must not be null when use it.");
   return this->mPtrResource;
 }
 
@@ -93,7 +93,7 @@ template <EDyResourceType TType>
 EDySuccess __TDyResourceBinderBase<TType>::pTryRequireResource
 (_MIN_ const std::string& iNewSpecifier) noexcept
 {
-  MDY_ASSERT(iNewSpecifier.empty() == false, "Resource specifier name must be valid to require resource.");
+  MDY_ASSERT_MSG(iNewSpecifier.empty() == false, "Resource specifier name must be valid to require resource.");
 
   auto ptrResult = SDyIOBindingHelper::TryRequireResource<TType>(iNewSpecifier, this);
   if (ptrResult.has_value() == false) 

@@ -105,7 +105,7 @@ void FDyUiWidget::__TryDetachBinderFromBinder(DDyUiBinder& iRefUiBinder)
   const auto it = std::find_if(
       MDY_BIND_BEGIN_END(this->mBoundUiBinderList), 
       [ptrSource = &iRefUiBinder](const auto& ptrBinder) { return ptrBinder.Get() == ptrSource; });
-  MDY_ASSERT_FORCE(it != this->mBoundUiBinderList.end(), "Failed guarantee UiBinder binding integrity.");
+  MDY_ASSERT_MSG_FORCE(it != this->mBoundUiBinderList.end(), "Failed guarantee UiBinder binding integrity.");
 
   // Fast erase.
   DyFastErase(this->mBoundUiBinderList, it);

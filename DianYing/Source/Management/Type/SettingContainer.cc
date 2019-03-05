@@ -290,7 +290,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingSound::DChannelDe
   from_json(j, static_cast<DDySettingSound::DDetail&>(p));
   DyJsonGetValueFromTo(j, "Group", p.mGroupSpecifier);
 
-  MDY_ASSERT_FORCE(p.mGroupSpecifier.empty() == false, "Channel's group must be specified.");
+  MDY_ASSERT_MSG_FORCE(p.mGroupSpecifier.empty() == false, "Channel's group must be specified.");
 }
 
 ///

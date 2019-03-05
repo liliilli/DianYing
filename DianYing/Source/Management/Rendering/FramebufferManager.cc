@@ -32,18 +32,18 @@ EDySuccess MDyFramebuffer::SetAttachmentInformation(const PDyGlAttachmentInforma
 {
   if (this->mValidAttachmentList.find(attachmentInfo.mAttachmentName) != this->mValidAttachmentList.end())
   {
-    MDY_ASSERT(false, "attachmentInfo.mAttachmentName must not be duplicated in container's any arbitary attachment instance.");
+    MDY_ASSERT_MSG(false, "attachmentInfo.mAttachmentName must not be duplicated in container's any arbitary attachment instance.");
     return DY_FAILURE;
   }
 
   // First, make a vacant space for information.
   auto [it, result] = this->mValidAttachmentList.try_emplace(attachmentInfo.mAttachmentName, nullptr);
-  MDY_ASSERT(result == true, "Unexpected error occurred.");
+  MDY_ASSERT_MSG(result == true, "Unexpected error occurred.");
 
   // Make heap instance and swap to vacant space.
   auto heapInstance = std::make_unique<PDyGlAttachmentInformation>(attachmentInfo);
   it->second.swap(heapInstance);
-  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(it->second), "Failed to swapping address for attachmentInfo. Unexpected error occurred");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTEMPTY(it->second), "Failed to swapping address for attachmentInfo. Unexpected error occurred");
 
   return DY_SUCCESS;
 }
@@ -52,25 +52,25 @@ EDySuccess MDyFramebuffer::InitializeNewFrameBuffer(const PDyGlFrameBufferInform
 {
   if (this->mValidFramebufferList.find(bufferInfo.mFrameBufferName) != this->mValidFramebufferList.end())
   {
-    MDY_ASSERT(false, "bufferInfo.mFrameBufferName must not be duplicated in container's any arbitary framebuffer instance.");
+    MDY_ASSERT_MSG(false, "bufferInfo.mFrameBufferName must not be duplicated in container's any arbitary framebuffer instance.");
     return DY_FAILURE;
   }
 
   // First, make a vacant space for information.
   auto [it, result] = this->mValidFramebufferList.try_emplace(bufferInfo.mFrameBufferName, nullptr);
-  MDY_ASSERT(result == true, "Unexpected error occurred.");
+  MDY_ASSERT_MSG(result == true, "Unexpected error occurred.");
 
   // Make heap instance and swap to vacant space.
   auto heapInstance = std::make_unique<PDyGlFrameBufferInformation>(bufferInfo);
   it->second.swap(heapInstance);
-  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(it->second), "Failed to swapping address for framebufferInfo. Unexpected error occurred.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTEMPTY(it->second), "Failed to swapping address for framebufferInfo. Unexpected error occurred.");
 
   // Find if there is attachment information in container.
   // If not found any attachment, just return FAILURE.
   PDyGlFrameBufferInformation& framebuffer = *it->second;
   for (const auto& attachment : framebuffer.mAttachmentList)
   {
-    MDY_ASSERT(this->mValidAttachmentList.find(attachment.mAttachmentName) != this->mValidAttachmentList.end(),
+    MDY_ASSERT_MSG(this->mValidAttachmentList.find(attachment.mAttachmentName) != this->mValidAttachmentList.end(),
         "Failed to find specified attachment instance from container. Unexpected error occurred.");
   }
 
@@ -90,7 +90,7 @@ EDySuccess MDyFramebuffer::InitializeNewFrameBuffer(const PDyGlFrameBufferInform
     PDyGlAttachmentInformation& attachmentInstance = *this->mValidAttachmentList[attachmentCursor.mAttachmentName];
 
     // Check for parameter types.
-    MDY_ASSERT(DyCheckTextureParameterList(attachmentInstance.mParameterList) == DY_SUCCESS, "FFFFFFFF");
+    MDY_ASSERT_MSG(DyCheckTextureParameterList(attachmentInstance.mParameterList) == DY_SUCCESS, "FFFFFFFF");
     attachmentInstance.mAttachmentId = attachmentBufferIdList[i];
 
     // Bind texture.

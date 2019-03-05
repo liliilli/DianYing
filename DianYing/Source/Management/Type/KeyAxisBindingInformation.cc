@@ -25,7 +25,7 @@ DDyAxisBindingInformation::DDyAxisBindingInformation(_MIN_ const DDySettingInput
   this->mPositiveButtonId   = axisInfo.mPositive;
   this->mNegativeButtonId   = axisInfo.mNegative;
 
-  MDY_ASSERT(this->mGravity > 0, "Gravity must be bigger than 0.");
+  MDY_ASSERT_MSG(this->mGravity > 0, "Gravity must be bigger than 0.");
 }
 
 } /// ::dy namespace

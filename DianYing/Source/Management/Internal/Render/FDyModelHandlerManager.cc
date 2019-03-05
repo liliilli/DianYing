@@ -60,7 +60,7 @@ EDySuccess FDyModelHandlerManager::TryCreateHandler(_MIN_ const std::string& iMo
     // If model (not instantiated) is exist on container, just create and require model resource.
     auto ptrsmtHandler = std::make_unique<DDyModelHandler>(iModelSpecifier);
     auto [it, isSucceeded] = this->mModelHandlerContainer.try_emplace(iModelSpecifier, std::move(ptrsmtHandler));
-    MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
+    MDY_ASSERT_MSG_FORCE(isSucceeded == true, "Unexpected error occurred.");
 
     return DY_SUCCESS;
   }
@@ -69,7 +69,7 @@ EDySuccess FDyModelHandlerManager::TryCreateHandler(_MIN_ const std::string& iMo
     // If model (not instantiated) is exist, just create and require model resource.
     auto ptrsmtHandler = std::make_unique<DDyModelHandler>(iModelSpecifier);
     auto [it, isSucceeded] = this->mModelHandlerContainer.try_emplace(iModelSpecifier, std::move(ptrsmtHandler));
-    MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
+    MDY_ASSERT_MSG_FORCE(isSucceeded == true, "Unexpected error occurred.");
     
     return DY_SUCCESS;
   }

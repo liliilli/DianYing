@@ -28,9 +28,9 @@ FDyTextureCubemapResource::FDyTextureCubemapResource(_MIN_ const FDyTextureCubem
   const auto& temp = static_cast<const FDyTextureCubemapInformation&>(information);
 
   const auto optGlImageFormat = DyGLGetImageFormatFrom(information.GetFormat());
-  MDY_ASSERT_FORCE(optGlImageFormat.has_value() == true, "Image format type must be valid.");
+  MDY_ASSERT_MSG_FORCE(optGlImageFormat.has_value() == true, "Image format type must be valid.");
   const auto glImagePixelType = DyGlGetImagePixelTypeFrom(information.GetPixelReadType());
-  MDY_ASSERT_FORCE(glImagePixelType != GL_NONE, "Image pixel format must be valid.");
+  MDY_ASSERT_MSG_FORCE(glImagePixelType != GL_NONE, "Image pixel format must be valid.");
 
   PDyGLTextureCubemapDescriptor descriptor {};
   { // Make internal descriptor for creating texture.
@@ -61,7 +61,7 @@ FDyTextureCubemapResource::FDyTextureCubemapResource(_MIN_ const FDyTextureCubem
   { MDY_GRAPHIC_SET_CRITICALSECITON();
     optTextureId = FDyGLWrapper::CreateTexture(descriptor);
   }
-  MDY_ASSERT(optTextureId.has_value() == true, "Texture id creation must be succeeded.");
+  MDY_ASSERT_MSG(optTextureId.has_value() == true, "Texture id creation must be succeeded.");
   this->mTextureResourceId = *optTextureId;
 
   SDyProfilingHelper::IncreaseOnBindTextureCount(1);

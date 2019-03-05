@@ -30,7 +30,7 @@ TComponent* FDyActor::AddComponent(TArgs&&... args)
     // Add and initialize component itself.
     // If component which just added is CDyScript, Call Initiate script first.
     auto* ptrComponent = this->pAddScriptComponent(std::forward<TArgs...>(args)...); 
-    MDY_ASSERT_FORCE(ptrComponent != nullptr, "");
+    MDY_ASSERT_MSG_FORCE(ptrComponent != nullptr, "");
     return DyMakeNotNull(ptrComponent);
   }
   else
@@ -42,7 +42,7 @@ TComponent* FDyActor::AddComponent(TArgs&&... args)
     // If it is transform, move it to separated space. 
     if constexpr (std::is_same_v<CDyTransform, TComponent> == true)
     { // If component is not CDyScript but related to ADyBaseTransform (Transform components)
-      MDY_ASSERT_FORCE(
+      MDY_ASSERT_MSG_FORCE(
         this->mTransform != nullptr, 
         "FDyActor::mTransform must be empty when insert transform component.");
       this->mTransform = std::move(componentPtr);
@@ -50,7 +50,7 @@ TComponent* FDyActor::AddComponent(TArgs&&... args)
     }
     else if constexpr (IsSameClass<TComponent, CDyPhysicsRigidbody> == true)
     { // If component is CDyPhysicsRigidbody...
-      MDY_ASSERT_FORCE(
+      MDY_ASSERT_MSG_FORCE(
         this->mRigidbody != nullptr, 
         "FDyActor::mRigidbody must be empty when insert rigidbody component.");
       this->mRigidbody = std::move(componentPtr);

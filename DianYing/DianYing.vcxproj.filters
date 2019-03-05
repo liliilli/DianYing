@@ -872,5 +872,6 @@
     <None Include="Include\Dy\Management\Inline\MWorldImpl.inl" />
     <None Include="Include\Dy\Element\Inline\FActorImpl.inl" />
     <None Include="Include\Dy\Element\Inline\FActorTmp.inl" />
+    <None Include="Include\Dy\Management\Inline\MMetaInfoImpl.inl" />
   </ItemGroup>
 </Project>

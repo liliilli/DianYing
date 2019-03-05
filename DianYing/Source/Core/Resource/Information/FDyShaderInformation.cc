@@ -38,9 +38,9 @@ FDyShaderInformation::FDyShaderInformation(_MIN_ const PDyGLShaderInstanceMetaIn
     // Otherwise, it regards as a fragment of shader so load it.
     if (p.mExternalFilePath.empty() == false)
     {
-      MDY_ASSERT(std::filesystem::exists(p.mExternalFilePath) == true, "OpenGL Shader external file path exist but not valid.");
+      MDY_ASSERT_MSG(std::filesystem::exists(p.mExternalFilePath) == true, "OpenGL Shader external file path exist but not valid.");
       auto ptrBuffer = DyReadBinaryFileAll(p.mExternalFilePath);
-      MDY_ASSERT(ptrBuffer.has_value() == true, "Unexpected error occurred while reading file.");
+      MDY_ASSERT_MSG(ptrBuffer.has_value() == true, "Unexpected error occurred while reading file.");
 
       // Parse shader code, and save buffer to chunk.
       shader.mShaderFragmentCode = mcs::ParseGLShader(ptrBuffer.value().data());

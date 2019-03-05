@@ -51,14 +51,14 @@ EDySuccess MDyFont::CreateFontResourceContainer(const std::string& fontSpecifier
   if (fontMetaInformation.mIsUsingRuntimeCreateionWhenGlyphNotExist == false)
   { // Make space
     auto [it, isSucceeded] = this->mFontResourceContainerMap.try_emplace(fontSpecifierName, nullptr);
-    MDY_ASSERT(isSucceeded == true, "Font resource creation must be succeeded.");
+    MDY_ASSERT_MSG(isSucceeded == true, "Font resource creation must be succeeded.");
 
     // Create font resource.
     auto instance = std::make_unique<FDyFontResourceContainer>(fontMetaInformation);
     { // Swapping
       std::unique_ptr<IDyFontContainer> tempSwap{static_cast<IDyFontContainer*>(instance.release())};
       it->second.swap(tempSwap);
-      MDY_ASSERT(it->second.get() != nullptr, "Unexpected error occurred");
+      MDY_ASSERT_MSG(it->second.get() != nullptr, "Unexpected error occurred");
     }
 
     //

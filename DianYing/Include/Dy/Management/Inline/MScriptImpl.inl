@@ -47,8 +47,8 @@ inline FDyWidgetScriptState* MDyScript::Impl::CreateWidgetScript(
   bool iIsAwakened)
 {
   const auto& instanceInfo = MDyMetaInfo::GetInstance().GetScriptMetaInformation(iScriptSpecifier);
-  MDY_ASSERT(instanceInfo.mScriptType != EDyScriptType::NoneError, "");
-  MDY_ASSERT(iIsAwakened == true, "Unexpected error occurred.");
+  MDY_ASSERT_MSG(instanceInfo.mScriptType != EDyScriptType::NoneError, "");
+  MDY_ASSERT_MSG(iIsAwakened == true, "Unexpected error occurred.");
 
   auto component = std::make_unique<FDyWidgetScriptState>(iRefWidget, instanceInfo);
   this->mInsertWidgetScriptList.emplace_back(std::move(component));
@@ -97,8 +97,8 @@ inline FDyActorScriptState* MDyScript::Impl::CreateActorScript(
   bool iIsAwakened)
 {
   const auto& instanceInfo = MDyMetaInfo::GetInstance().GetScriptMetaInformation(iScriptSpecifier);
-  MDY_ASSERT(instanceInfo.mScriptType != EDyScriptType::NoneError, "");
-  MDY_ASSERT(iIsAwakened == true, "Unexpected error occurred.");
+  MDY_ASSERT_MSG(instanceInfo.mScriptType != EDyScriptType::NoneError, "");
+  MDY_ASSERT_MSG(iIsAwakened == true, "Unexpected error occurred.");
 
   auto component = std::make_unique<FDyActorScriptState>(iRefActor, instanceInfo);
   this->mInsertActorScriptList.emplace_back(std::move(component));
@@ -232,12 +232,12 @@ inline void MDyScript::Impl::CallDestroyFuncActorScriptGcList()
 inline void MDyScript::Impl::CreateGlobalScriptInstances()
 {
   const auto& metaManager = MDyMetaInfo::GetInstance();
-  const auto& container = metaManager.GetRefGlobalScriptMetaInfoContainer();
-  for (const auto&[scriptName, scriptMeta] : container)
+  const auto& list = metaManager.GetGlobalScriptMetaInfos();
+  for (const auto& [scriptName, scriptMeta] : list)
   {
     this->mGlobalScriptContainer.try_emplace(
       scriptName,
-      std::make_unique<FDyGlobalScriptState>(scriptMeta));
+      std::make_unique<FDyGlobalScriptState>(*scriptMeta));
   }
 }
 

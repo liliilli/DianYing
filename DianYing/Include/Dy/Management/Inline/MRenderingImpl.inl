@@ -127,7 +127,7 @@ inline MDyRendering::Impl::Impl()
       {
         // Get system font path from manager.
         const auto optPath = windowManager.GetFontPathOnSystem(japaneseFontName);
-        MDY_ASSERT_FORCE(optPath.has_value() == true, "Unexpected error occurred.");
+        MDY_ASSERT_MSG_FORCE(optPath.has_value() == true, "Unexpected error occurred.");
         // Create glyphs.
         io.Fonts->AddFontFromFileTTF(optPath.value().c_str(), 14.0f, nullptr, io.Fonts->GetGlyphRangesDefault());
       }
@@ -144,7 +144,7 @@ inline MDyRendering::Impl::Impl()
       {
         // Get system font path from manager.
         const auto optPath = windowManager.GetFontPathOnSystem(koreanFontName);
-        MDY_ASSERT_FORCE(optPath.has_value() == true, "Unexpected error occurred.");
+        MDY_ASSERT_MSG_FORCE(optPath.has_value() == true, "Unexpected error occurred.");
         // Create korean glyphs.
         io.Fonts->AddFontFromFileTTF(optPath.value().c_str(), 14.0f, nullptr, io.Fonts->GetGlyphRangesKorean());
       }
@@ -160,7 +160,7 @@ inline MDyRendering::Impl::Impl()
       {
         // Get system font path from manager.
         const auto optPath = windowManager.GetFontPathOnSystem(japaneseFontName);
-        MDY_ASSERT_FORCE(optPath.has_value() == true, "Unexpected error occurred.");
+        MDY_ASSERT_MSG_FORCE(optPath.has_value() == true, "Unexpected error occurred.");
         // Create glyphs.
         io.Fonts->AddFontFromFileTTF(optPath.value().c_str(), 18.0f, nullptr, io.Fonts->GetGlyphRangesJapanese());
       }

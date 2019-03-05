@@ -18,10 +18,8 @@
 namespace dy
 {
 
-///
 /// @enum   EDyMetaObjectType
 /// @brief  Meta object type for using DDyObjectInformation and PDyPrefabInstanceMetaInfo
-///
 enum class EDyMetaObjectType
 {
   Actor,

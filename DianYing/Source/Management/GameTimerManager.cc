@@ -41,7 +41,7 @@ void MDyGameTimer::PauseActorTimer(_MIN_ FDyTimerHandle& iRefHandler)
   auto it = std::find_if(
       MDY_BIND_BEGIN_END(this->mActorTimerList), 
       [validId](const decltype(mActorTimerList)::value_type& iTimerItem) { return iTimerItem.GetIndex() == validId; });
-  MDY_ASSERT(it != this->mActorTimerList.end(), "Unexpected error occurred.");
+  MDY_ASSERT_MSG(it != this->mActorTimerList.end(), "Unexpected error occurred.");
  
   if (it->GetTimerStatus() == EDyTimerStatus::Play) 
   { 
@@ -58,7 +58,7 @@ void MDyGameTimer::ResumeActorTimer(_MIN_ FDyTimerHandle& iRefHandler)
   auto it = std::find_if(
       MDY_BIND_BEGIN_END(this->mActorTimerList), 
       [validId](const decltype(mActorTimerList)::value_type& iTimerItem) { return iTimerItem.GetIndex() == validId; });
-  MDY_ASSERT(it != this->mActorTimerList.end(), "Unexpected error occurred.");
+  MDY_ASSERT_MSG(it != this->mActorTimerList.end(), "Unexpected error occurred.");
    
   if (it->GetTimerStatus() == EDyTimerStatus::Paused) 
   { 
@@ -75,7 +75,7 @@ void MDyGameTimer::StopActorTimer(_MIN_ FDyTimerHandle& iRefHandler)
   auto it = std::find_if(
       MDY_BIND_BEGIN_END(this->mActorTimerList), 
       [validId](const decltype(mActorTimerList)::value_type& iTimerItem) { return iTimerItem.GetIndex() == validId; });
-  MDY_ASSERT(it != this->mActorTimerList.end(), "Unexpected error occurred.");
+  MDY_ASSERT_MSG(it != this->mActorTimerList.end(), "Unexpected error occurred.");
   
   it->MDY_PRIVATE(Abort)();
 }
@@ -89,7 +89,7 @@ void MDyGameTimer::PauseWidgetTimer(FDyTimerHandle& iRefHandler)
   auto it = std::find_if(
       MDY_BIND_BEGIN_END(this->mWidgetTimerList), 
       [validId](const decltype(mWidgetTimerList)::value_type& iTimerItem) { return iTimerItem.GetIndex() == validId; });
-  MDY_ASSERT(it != this->mWidgetTimerList.end(), "Unexpected error occurred.");
+  MDY_ASSERT_MSG(it != this->mWidgetTimerList.end(), "Unexpected error occurred.");
    
   if (it->GetTimerStatus() == EDyTimerStatus::Paused) 
   { 
@@ -106,7 +106,7 @@ void MDyGameTimer::ResumeWidgetTimer(FDyTimerHandle& iRefHandler)
   auto it = std::find_if(
       MDY_BIND_BEGIN_END(this->mWidgetTimerList), 
       [validId](const decltype(mWidgetTimerList)::value_type& iTimerItem) { return iTimerItem.GetIndex() == validId; });
-  MDY_ASSERT(it != this->mWidgetTimerList.end(), "Unexpected error occurred.");
+  MDY_ASSERT_MSG(it != this->mWidgetTimerList.end(), "Unexpected error occurred.");
    
   if (it->GetTimerStatus() == EDyTimerStatus::Paused) 
   { 
@@ -132,7 +132,7 @@ void MDyGameTimer::MDY_PRIVATE(pSetTimer)(
     auto it = std::find_if(
         MDY_BIND_BEGIN_END(this->mActorTimerList), 
         [oldId](const decltype(mActorTimerList)::value_type& iTimerItem) { return iTimerItem.GetIndex() == oldId; });
-    MDY_ASSERT(it != this->mActorTimerList.end(), "Unexpected error occurred.");
+    MDY_ASSERT_MSG(it != this->mActorTimerList.end(), "Unexpected error occurred.");
 
     it->MDY_PRIVATE(ResetTimerProperties)(iDelayTime, iTickTime, iIsLooped, iFunction);
   }
@@ -156,7 +156,7 @@ void MDyGameTimer::MDY_PRIVATE(pSetTimer)(
     auto it = std::find_if(
         MDY_BIND_BEGIN_END(this->mWidgetTimerList), 
         [oldId](const decltype(mWidgetTimerList)::value_type& iTimerItem) { return iTimerItem.GetIndex() == oldId; });
-    MDY_ASSERT(it != this->mWidgetTimerList.end(), "Unexpected error occurred.");
+    MDY_ASSERT_MSG(it != this->mWidgetTimerList.end(), "Unexpected error occurred.");
 
     it->MDY_PRIVATE(ResetTimerProperties)(iDelayTime, iTickTime, iIsLooped, iFunction);
   }
@@ -196,7 +196,7 @@ void MDyGameTimer::StopWidgetTimer(_MIN_ FDyTimerHandle& iRefHandler)
   auto it = std::find_if(
       MDY_BIND_BEGIN_END(this->mWidgetTimerList), 
       [validId](const decltype(mWidgetTimerList)::value_type& iTimerItem) { return iTimerItem.GetIndex() == validId; });
-  MDY_ASSERT(it != this->mWidgetTimerList.end(), "Unexpected error occurred.");
+  MDY_ASSERT_MSG(it != this->mWidgetTimerList.end(), "Unexpected error occurred.");
   
   it->MDY_PRIVATE(Abort)();
 }

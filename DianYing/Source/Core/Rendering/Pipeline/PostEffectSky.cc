@@ -32,7 +32,7 @@ void FDyPostEffectSky::RenderScreen()
 
   // Render
   auto optSkybox = MDyWorld::GetInstance().GetPtrMainLevelSkybox();
-  MDY_ASSERT(optSkybox.has_value() == true, "Unexpected error occurred.");
+  MDY_ASSERT_MSG(optSkybox.has_value() == true, "Unexpected error occurred.");
 
   auto ptrSkyboxTexture  = optSkybox.value();
   auto& refBinderTexture = ptrSkyboxTexture->MDY_PRIVATE(GetTextureBinderReference)();

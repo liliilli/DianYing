@@ -149,13 +149,13 @@ public:
 
   auto& MDY_PRIVATE(GetRefInternalSdk)()
   {
-    MDY_ASSERT_FORCE(MDY_CHECK_ISNOTNULL(this->gPhysicx), "Internal PhysX PxPhysics must be initailized.");
+    MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNOTNULL(this->gPhysicx), "Internal PhysX PxPhysics must be initailized.");
     return *this->gPhysicx;
   }
 
   auto& MDY_PRIVATE(GetRefScene)()
   {
-    MDY_ASSERT_FORCE(MDY_CHECK_ISNOTNULL(this->gScene), "Internal PhysX PxScene must be initailized.");
+    MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNOTNULL(this->gScene), "Internal PhysX PxScene must be initailized.");
     return *this->gScene;
   }
 
@@ -169,7 +169,7 @@ public:
 
     auto ptrRigidbodyComponent = this->mActivatedRigidbodyList.back();
 
-    MDY_ASSERT_FORCE(this->gScene != nullptr, "Physics scene must be valid.");
+    MDY_ASSERT_MSG_FORCE(this->gScene != nullptr, "Physics scene must be valid.");
     this->gScene->addActor(ptrRigidbodyComponent->__GetRefInternalRigidbody());
   }
 
@@ -181,7 +181,7 @@ public:
       [ptrSource = &iRefRigidbody](const auto& ptrTarget) { return ptrTarget.Get() == ptrSource; }
     );
 
-    MDY_ASSERT_FORCE(it != this->mActivatedRigidbodyList.end(), "Unexpected error occurred.");
+    MDY_ASSERT_MSG_FORCE(it != this->mActivatedRigidbodyList.end(), "Unexpected error occurred.");
 
     this->gScene->removeActor(it->Get()->__GetRefInternalRigidbody());
     DyFastErase(this->mActivatedRigidbodyList, it);

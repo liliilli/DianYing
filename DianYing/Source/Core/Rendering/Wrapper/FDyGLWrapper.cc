@@ -31,7 +31,7 @@
 #define MDY_GL_NONE_VAO 0
 #if defined(NDEBUG) == false
 #define MDY_CHECK_OPENGL() \
-  { const auto _ = glGetError(); MDY_ASSERT(_ == GL_NO_ERROR, "OpenGL Command failed."); }
+  { const auto _ = glGetError(); MDY_ASSERT_MSG(_ == GL_NO_ERROR, "OpenGL Command failed."); }
 #else
 #define MDY_CHECK_OPENGL() (void)0;
 #endif
@@ -105,8 +105,8 @@ std::mutex FDyGLWrapper::mGLCriticalSectionMutex;
 
 GLFWwindow* FDyGLWrapper::CreateGLWindow(_MIN_ const PDyGLWindowContextDescriptor& descriptor)
 {
-  MDY_ASSERT(descriptor.mWindowName.empty() == false, "Window name must not be empty.");
-  MDY_ASSERT(descriptor.mWindowSize.X > 0 && descriptor.mWindowSize.Y > 0, "Window size must be valid.");
+  MDY_ASSERT_MSG(descriptor.mWindowName.empty() == false, "Window name must not be empty.");
+  MDY_ASSERT_MSG(descriptor.mWindowSize.X > 0 && descriptor.mWindowSize.Y > 0, "Window size must be valid.");
 
   if (descriptor.mIsUsingDefaultDoubleBuffer == true) { glfwWindowHint(GLFW_DOUBLEBUFFER, GL_TRUE); }
   if (descriptor.mIsUsingDefaultMSAA == true)         { glfwWindowHint(GLFW_SAMPLES, 4); }
@@ -138,14 +138,14 @@ void FDyGLWrapper::CreateGLContext(_MIN_ GLFWwindow* window)
 std::optional<TU32> FDyGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescriptor& descriptor)
 {
   // Validation check.
-  MDY_ASSERT(descriptor.mImageFormat != GL_NONE, "Texture Image format must be specified.");
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mPtrBuffer), "Texture Image buffer must not be null.");
-  MDY_ASSERT(descriptor.mTextureSize.X > 0 && descriptor.mTextureSize.Y > 0, "Texture size must be positive value.");
-  MDY_ASSERT(descriptor.mType != EDyTextureStyleType::NoneError, "Texture Image type must be specified.");
+  MDY_ASSERT_MSG(descriptor.mImageFormat != GL_NONE, "Texture Image format must be specified.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(descriptor.mPtrBuffer), "Texture Image buffer must not be null.");
+  MDY_ASSERT_MSG(descriptor.mTextureSize.X > 0 && descriptor.mTextureSize.Y > 0, "Texture size must be positive value.");
+  MDY_ASSERT_MSG(descriptor.mType != EDyTextureStyleType::NoneError, "Texture Image type must be specified.");
   if (descriptor.mIsUsingCustomizedParameter == true)
   {
-    MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mPtrParameterList), "Parameter list must not be null.");
-    MDY_ASSERT(DyCheckTextureParameterList(*descriptor.mPtrParameterList) == DY_SUCCESS, "Texture Parameter validation failed.");
+    MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(descriptor.mPtrParameterList), "Parameter list must not be null.");
+    MDY_ASSERT_MSG(DyCheckTextureParameterList(*descriptor.mPtrParameterList) == DY_SUCCESS, "Texture Parameter validation failed.");
   }
 
   TU32 mTextureResourceId = MDY_INITIALIZE_DEFUINT;
@@ -201,19 +201,19 @@ std::optional<TU32> FDyGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescript
 std::optional<TU32> FDyGLWrapper::CreateTexture(const PDyGLTextureCubemapDescriptor& descriptor)
 {
   // Validation check.
-  MDY_ASSERT(descriptor.mImageFormat != GL_NONE, "Texture Image format must be specified.");
-  MDY_ASSERT(descriptor.mType == EDyTextureStyleType::D2Cubemap, "Texture Image type must be D2Cubemap.");
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mTopBuffer),    "Texture Image buffer must not be null.");
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mBottomBuffer), "Texture Image buffer must not be null.");
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mFrontBuffer),  "Texture Image buffer must not be null.");
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mBackBuffer),   "Texture Image buffer must not be null.");
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mRightBuffer),  "Texture Image buffer must not be null.");
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mLeftBuffer),   "Texture Image buffer must not be null.");
+  MDY_ASSERT_MSG(descriptor.mImageFormat != GL_NONE, "Texture Image format must be specified.");
+  MDY_ASSERT_MSG(descriptor.mType == EDyTextureStyleType::D2Cubemap, "Texture Image type must be D2Cubemap.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(descriptor.mTopBuffer),    "Texture Image buffer must not be null.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(descriptor.mBottomBuffer), "Texture Image buffer must not be null.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(descriptor.mFrontBuffer),  "Texture Image buffer must not be null.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(descriptor.mBackBuffer),   "Texture Image buffer must not be null.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(descriptor.mRightBuffer),  "Texture Image buffer must not be null.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(descriptor.mLeftBuffer),   "Texture Image buffer must not be null.");
 
   if (descriptor.mIsUsingCustomizedParameter == true)
   {
-    MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mPtrParameterList), "Parameter list must not be null.");
-    MDY_ASSERT(DyCheckTextureParameterList(*descriptor.mPtrParameterList) == DY_SUCCESS, "Texture Parameter validation failed.");
+    MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(descriptor.mPtrParameterList), "Parameter list must not be null.");
+    MDY_ASSERT_MSG(DyCheckTextureParameterList(*descriptor.mPtrParameterList) == DY_SUCCESS, "Texture Parameter validation failed.");
   }
 
   TU32 mTextureResourceId = MDY_INITIALIZE_DEFUINT;
@@ -288,8 +288,8 @@ std::optional<TU32> FDyGLWrapper::CreateShaderFragment(_MIN_ const PDyGLShaderFr
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
   }
 
-  MDY_ASSERT(shaderFragmentId > 0,                        "Failed to create shader.");
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mPtrBuffer),  "Shader fragment buffer must not be null.");
+  MDY_ASSERT_MSG(shaderFragmentId > 0,                        "Failed to create shader.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(descriptor.mPtrBuffer),  "Shader fragment buffer must not be null.");
 
   // Compile shader fragment.
   glShaderSource(shaderFragmentId, 1, &descriptor.mPtrBuffer, nullptr);
@@ -487,13 +487,13 @@ void FDyGLWrapper::DeleteVertexArrayObject(_MIN_ const TU32 vertexArrayObjectId)
 std::optional<TU32> FDyGLWrapper::CreateAttachment(_MIN_ const PDyGLAttachmentDescriptor& iDescriptor)
 {
   // Validation check.
-  MDY_ASSERT(iDescriptor.mBufferSize.X > 0 && iDescriptor.mBufferSize.Y > 0, 
+  MDY_ASSERT_MSG(iDescriptor.mBufferSize.X > 0 && iDescriptor.mBufferSize.Y > 0, 
       "Buffer size must be positive value.");
-  MDY_ASSERT(iDescriptor.mBufferFormat != EDyGlBufferDataInternalFormat::NoneError, 
+  MDY_ASSERT_MSG(iDescriptor.mBufferFormat != EDyGlBufferDataInternalFormat::NoneError, 
       "Attachment buffer format must be specified.");
   if (iDescriptor.mIsUsingCustomizedParameter == true)
   {
-    MDY_ASSERT(DyCheckTextureParameterList(iDescriptor.mParameterList) == DY_SUCCESS, 
+    MDY_ASSERT_MSG(DyCheckTextureParameterList(iDescriptor.mParameterList) == DY_SUCCESS, 
         "Attachment Parameter validation failed.");
   }
 
@@ -690,7 +690,7 @@ void FDyGLWrapper::BindTexture(
 {
   #if defined(NDEBUG) == false 
   {
-    MDY_ASSERT(glIsTexture(textureId) == GL_TRUE, "given `textureId` is not texture.");
+    MDY_ASSERT_MSG(glIsTexture(textureId) == GL_TRUE, "given `textureId` is not texture.");
   }
   #endif
 
@@ -763,9 +763,9 @@ FDyGLWrapper::GetShaderProgramAttributeInfo(_MIN_ TU32 iShaderProgramId, _MIN_ T
   glGetActiveAttrib(iShaderProgramId, iAttrIndex, attrBufferLength, &attributelength, &attributeSize, &attributeType, attributeName);
   const TI32 attrLocation = glGetAttribLocation(iShaderProgramId, attributeName);
 
-  MDY_ASSERT(attrLocation != -1, "Attribute location did not find.");
+  MDY_ASSERT_MSG(attrLocation != -1, "Attribute location did not find.");
   const auto type = DyGlGetAttributeVariableTypeFrom(attributeType);
-  MDY_ASSERT(type != EDyAttributeVariableType::NoneError, "Not supported attribute type.");
+  MDY_ASSERT_MSG(type != EDyAttributeVariableType::NoneError, "Not supported attribute type.");
 
   const auto result = std::make_tuple(std::string(attributeName), attributelength, attributeSize, type, attrLocation);
   free(attributeName); attributeName = nullptr;
@@ -787,13 +787,13 @@ FDyGLWrapper::GetShaderProgramUniformInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU3
   if (uniLocId == -1)
   { // Uniform location will be -1 when uniform varaible is in ubo.
     const GLchar* uboNameLastPtr = std::strchr(uniformName, '.');
-    MDY_ASSERT(MDY_CHECK_ISNOTNULL(uboNameLastPtr), "Unsupported uniform value type.");
+    MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(uboNameLastPtr), "Unsupported uniform value type.");
     free(uniformName); uniformName = nullptr;
     return std::nullopt;
   }
 
   auto type = DyGlGetUniformVariableTypeFrom(uniType);
-  MDY_ASSERT(type != EDyUniformVariableType::NoneError, "Not supported uniform type.");
+  MDY_ASSERT_MSG(type != EDyUniformVariableType::NoneError, "Not supported uniform type.");
 
   // If array type.. 
   if (std::strchr(uniformName, '[') != nullptr)

@@ -75,7 +75,7 @@ EDySuccess FDyInstantSound2D::TryInitialize()
                 | FMOD_3D_INVERSEROLLOFF;
     }
     const auto flag = refSystem.createSound(soundPath.string().c_str(), soundFlag, nullptr, &this->mPtrInternalSound);
-    MDY_ASSERT(flag == FMOD_OK, "Failed to create sound instance.");
+    MDY_ASSERT_MSG(flag == FMOD_OK, "Failed to create sound instance.");
   }
 
   // Set sound instance properties.
@@ -88,7 +88,7 @@ EDySuccess FDyInstantSound2D::TryInitialize()
       // If failed to find channel, just play it with master channel.
       const auto flag = refSystem.playSound(this->mPtrInternalSound, 
           nullptr, true, &this->mPtrInternalChannel);
-      MDY_ASSERT(flag == FMOD_OK, "Failed to play sound instance.");
+      MDY_ASSERT_MSG(flag == FMOD_OK, "Failed to play sound instance.");
     }
     else
     {
@@ -96,7 +96,7 @@ EDySuccess FDyInstantSound2D::TryInitialize()
           this->mPtrInternalSound, 
           ptrChannel->MDY_PRIVATE(GetPtrChannel)(), 
           true, &this->mPtrInternalChannel);
-      MDY_ASSERT(flag == FMOD_OK, "Failed to play sound instance.");
+      MDY_ASSERT_MSG(flag == FMOD_OK, "Failed to play sound instance.");
     }
 
     // Set volume and pitch.
@@ -127,7 +127,7 @@ EDySuccess FDyInstantSound2D::TryStop()
   }
 
   const auto flag = this->mPtrInternalChannel->stop();
-  MDY_ASSERT(flag == FMOD_OK, "Failed to play sound instance.");
+  MDY_ASSERT_MSG(flag == FMOD_OK, "Failed to play sound instance.");
   return DY_SUCCESS;
 }
 

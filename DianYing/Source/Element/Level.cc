@@ -14,10 +14,9 @@
 
 /// Header file
 #include <Dy/Element/Level.h>
-#include <Dy/Helper/HashCompileCrc32.h>
 #include <Dy/Management/WorldManager.h>
-#include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Element/Type/PDyActorCreationDescriptor.h>
+#include <Dy/Meta/Information/ElementLevelMetaInfo.h>
 
 //!
 //! Local translation unit function & data
@@ -48,7 +47,7 @@ FDyLevel::FDyLevel(_MIN_ const PDyLevelConstructMetaInfo& desc)
     { // General object type. Make FDyActor instance.
       auto instancePtr = std::make_unique<FDyActor>(*objectInformation);
       auto [it, result] = this->mActorMap.try_emplace(instancePtr->GetActorName(), std::move(instancePtr));
-      MDY_ASSERT(result == true, "Unexpected error occured in inserting FDyActor to object map.");
+      MDY_ASSERT_MSG(result == true, "Unexpected error occured in inserting FDyActor to object map.");
     } break;
     case EDyMetaObjectType::SceneScriptor:  MDY_NOT_IMPLEMENTED_ASSERT(); break;
     case EDyMetaObjectType::Object:         MDY_NOT_IMPLEMENTED_ASSERT(); break;
@@ -176,7 +175,7 @@ void FDyLevel::CreateActorInstantly(_MIN_ const PDyActorCreationDescriptor& desc
 
     auto instancePtr  = std::make_unique<FDyActor>(desc);
     auto [it, result] = this->mActorMap.try_emplace(instancePtr->GetActorName(), std::move(instancePtr));
-    MDY_ASSERT(result == true, "Unexpected error occured in inserting FDyActor to object map.");
+    MDY_ASSERT_MSG(result == true, "Unexpected error occured in inserting FDyActor to object map.");
      
     // Try propagate transform.
     auto& [specifier, ptrsmtActor] = *it;

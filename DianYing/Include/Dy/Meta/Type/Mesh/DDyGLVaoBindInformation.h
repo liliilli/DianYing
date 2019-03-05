@@ -52,8 +52,8 @@ struct PDyVaoAttributeFormat final
       mElementCount{ elementCount }, 
       mOffsetByteSize{ offsetByteSize }
   {
-    MDY_ASSERT(mType != EDyGLPixelFormatType::NoneError, "Attribute format type must not be ::NullError.");
-    MDY_ASSERT(mElementCount != 0, "Attribute element count must be positive.");
+    MDY_ASSERT_MSG(mType != EDyGLPixelFormatType::NoneError, "Attribute format type must not be ::NullError.");
+    MDY_ASSERT_MSG(mElementCount != 0, "Attribute element count must be positive.");
   }
 };
 

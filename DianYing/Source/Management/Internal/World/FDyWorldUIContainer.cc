@@ -97,7 +97,7 @@ DDyUiBinder FDyWorldUIContainer::CreateUiObject(
 {
   auto [it, isSuccessful] = this->mGeneralUiWidgetMap.try_emplace(
       iUiName, std::make_unique<FDyUiWidget>(iRoot));
-  MDY_ASSERT_FORCE(isSuccessful == true, "Unexpected error occurred.");
+  MDY_ASSERT_MSG_FORCE(isSuccessful == true, "Unexpected error occurred.");
 
   auto& [key, object] = *it;
   object->SetPropagateMode(true, EDySearchMode::Recursive);

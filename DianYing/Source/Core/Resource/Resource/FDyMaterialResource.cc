@@ -34,7 +34,7 @@ FDyMaterialResource::FDyMaterialResource(_MIN_ const FDyMaterialInformation& inf
   const auto& ptrTextureInfoList = information.GetPtrTextureInformationList();
   for (const auto& ptrTextureInfo : ptrTextureInfoList)
   { // Bind texture resource of this material.
-    MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(ptrTextureInfo), "Unexpected error occurred.");
+    MDY_ASSERT_MSG(MDY_CHECK_ISNOTEMPTY(ptrTextureInfo), "Unexpected error occurred.");
     DySafeUniquePtrEmplaceBack(this->mBinderTextureList, (*ptrTextureInfo)->GetSpecifierName());
   }
   this->mIsInstant = false;

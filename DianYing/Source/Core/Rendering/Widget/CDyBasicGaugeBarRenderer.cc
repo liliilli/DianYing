@@ -60,7 +60,7 @@ namespace dy
 
 EDySuccess CDyBasicGaugeBarRenderer::Initialize(const PDyBasicGaugeBarRendererCtorInformation& descriptor)
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mPtrUiObject), "descriptor.mPtrUiObject must not be null.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(descriptor.mPtrUiObject), "descriptor.mPtrUiObject must not be null.");
   this->mPtrBarObject  = descriptor.mPtrUiObject;
   this->mBinderShader .TryRequireResource((builtin::FDyBuiltinShaderGLRenderUiBasicGaugeBar::sName));
   this->mBinderBarMesh.TryRequireResource((builtin::FDyBtMsUiBarQuad::sName));
@@ -73,7 +73,7 @@ void CDyBasicGaugeBarRenderer::Release() { }
 void CDyBasicGaugeBarRenderer::Render()
 {
   using EUniformType = EDyUniformVariableType;
-  MDY_ASSERT(this->mPtrBarObject != nullptr, "CDyBasicGaugeBarRenderer::mPtrBarObject must not be nullptr.");
+  MDY_ASSERT_MSG(this->mPtrBarObject != nullptr, "CDyBasicGaugeBarRenderer::mPtrBarObject must not be nullptr.");
   if (this->mBinderShader.IsResourceExist() == false
   ||  this->mBinderBarMesh.IsResourceExist() == false) { return; }
 

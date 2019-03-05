@@ -35,8 +35,8 @@ public:
   /// @brief Initialize singleton.
   FORCEINLINE MDY_NODISCARD EDySuccess static Initialize() noexcept
   {
-    MDY_ASSERT(IDySingleton<TType>::mIsInitialized == false, "Singleton instance must be initialized only once.");
-    MDY_ASSERT(IDySingleton<TType>::mIsShutdown    == false, "Singleton instance can not be reinitialized after shutting down.");
+    MDY_ASSERT_MSG(IDySingleton<TType>::mIsInitialized == false, "Singleton instance must be initialized only once.");
+    MDY_ASSERT_MSG(IDySingleton<TType>::mIsShutdown    == false, "Singleton instance can not be reinitialized after shutting down.");
 
     const auto flag = GetInstance().pfInitialize();
 
@@ -48,8 +48,8 @@ public:
   /// @brief Shutdown singleton.
   FORCEINLINE MDY_NODISCARD EDySuccess static Release() noexcept
   {
-    MDY_ASSERT(IDySingleton<TType>::mIsInitialized == true , "Singleton instance must be initialized before shutting down.");
-    MDY_ASSERT(IDySingleton<TType>::mIsShutdown    == false, "Singleton instance can not be shutted down again.");
+    MDY_ASSERT_MSG(IDySingleton<TType>::mIsInitialized == true , "Singleton instance must be initialized before shutting down.");
+    MDY_ASSERT_MSG(IDySingleton<TType>::mIsShutdown    == false, "Singleton instance can not be shutted down again.");
 
     const auto flag = GetInstance().pfRelease();
 

@@ -29,9 +29,9 @@ FDyModelSkeletonInformation::FDyModelSkeletonInformation(_MIN_ const PDyModelSke
     MDY_NOT_IMPLEMENTED_ASSERT();
   }
 
-  MDY_ASSERT_FORCE(DyFsIsFileExist(metaInfo.mExternalPath) == true, "Skeleton file is not exist.");
+  MDY_ASSERT_MSG_FORCE(DyFsIsFileExist(metaInfo.mExternalPath) == true, "Skeleton file is not exist.");
   const auto optJsonSkeleton = DyGetJsonAtlasFromFile(metaInfo.mExternalPath);
-  MDY_ASSERT_FORCE(optJsonSkeleton.has_value() == true, "Failed to load skeleton file.");
+  MDY_ASSERT_MSG_FORCE(optJsonSkeleton.has_value() == true, "Failed to load skeleton file.");
 
   const auto& jsonSkeleton = optJsonSkeleton.value();
   this->mSkeletonInfo = jsonSkeleton.get<decltype(mSkeletonInfo)>();
@@ -54,7 +54,7 @@ TU32 FDyModelSkeletonInformation::GetInputBoneCount() const noexcept
 
 const DDySkeletonBone& FDyModelSkeletonInformation::GetRefSkeletonNode(_MIN_ TU32 iIndex) const noexcept
 {
-  MDY_ASSERT_FORCE(iIndex < this->GetNodeCount(), "Index must be within skeleton bone range.");
+  MDY_ASSERT_MSG_FORCE(iIndex < this->GetNodeCount(), "Index must be within skeleton bone range.");
   return this->mSkeletonInfo.mExportedSkeleton[iIndex];
 }
 

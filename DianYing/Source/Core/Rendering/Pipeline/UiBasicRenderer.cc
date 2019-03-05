@@ -24,7 +24,7 @@ namespace dy
 
 FDyUIBasicRenderer::FDyUIBasicRenderer()
 {
-  MDY_ASSERT(this->mBinderFrameBuffer.IsResourceExist() == true, "UI Framebuffer must be valid.");
+  MDY_ASSERT_MSG(this->mBinderFrameBuffer.IsResourceExist() == true, "UI Framebuffer must be valid.");
 
   // @TODO TEMPORAL
   MDY_CALL_ASSERT_SUCCESS(MDyFont::GetInstance().CreateFontResourceContainer("Arial"));

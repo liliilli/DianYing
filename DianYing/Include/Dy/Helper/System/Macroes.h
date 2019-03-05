@@ -144,7 +144,7 @@
   { \
     auto result = (__MAFunctionCall__); \
     result = result; \
-    MDY_ASSERT(result == DY_SUCCESS, "Failed to execute expression successfully."); \
+    MDY_ASSERT_MSG(result == DY_SUCCESS, "Failed to execute expression successfully."); \
   }
 
 /// 

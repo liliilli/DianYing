@@ -186,7 +186,7 @@ public:
 
     // Get information of script to be created.
     const auto& instanceInfo = metaManager.GetScriptMetaInformation(specifierName);
-    MDY_ASSERT(
+    MDY_ASSERT_MSG(
       instanceInfo.mScriptType != EDyScriptType::NoneError, 
       "Script type must be valid.");
 
@@ -208,7 +208,7 @@ public:
       // Add and initialize component itself.
       // If component which just added is CDyScript, Call Initiate script first.
       auto* ptrComponent = this->pAddScriptComponent(std::forward<TArgs...>(args)...); 
-      MDY_ASSERT_FORCE(ptrComponent != nullptr, "");
+      MDY_ASSERT_MSG_FORCE(ptrComponent != nullptr, "");
       return DyMakeNotNull(ptrComponent);
     }
     else
@@ -220,7 +220,7 @@ public:
       // If it is transform, move it to separated space. 
       if constexpr (IsSameClass<CDyTransform, TComponent> == true)
       { // If component is not CDyScript but related to ADyBaseTransform (Transform components)
-        MDY_ASSERT_FORCE(
+        MDY_ASSERT_MSG_FORCE(
           this->mTransform == nullptr, 
           "FDyActor::mTransform must be empty when insert transform component.");
 
@@ -229,7 +229,7 @@ public:
       }
       else if constexpr (IsSameClass<TComponent, CDyPhysicsRigidbody> == true)
       { // If component is CDyPhysicsRigidbody...
-        MDY_ASSERT_FORCE(
+        MDY_ASSERT_MSG_FORCE(
           this->mRigidbody == nullptr, 
           "FDyActor::mRigidbody must be empty when insert rigidbody component.");
 
@@ -516,7 +516,7 @@ public:
 
       // Get information of script to be created.
       const auto& instanceInfo = metaManager.GetScriptMetaInformation(specifierName);
-      MDY_ASSERT(
+      MDY_ASSERT_MSG(
         instanceInfo.mScriptType != EDyScriptType::NoneError, 
         "Script type must be valid.");
 

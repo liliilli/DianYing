@@ -32,7 +32,7 @@ void FDyFinalScreenDisplayRenderer::RenderScreen()
 
   // Bind vertex array object.
   const auto& submeshList = this->mBinderTriangle->GetMeshResourceList();
-  MDY_ASSERT(submeshList.size() == 1, "");
+  MDY_ASSERT_MSG(submeshList.size() == 1, "");
   (*submeshList[0])->BindVertexArray();
 
   // Set shader 

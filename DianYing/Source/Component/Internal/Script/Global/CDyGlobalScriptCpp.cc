@@ -20,19 +20,19 @@ namespace dy
 
 CDyGlobalScriptCpp::CDyGlobalScriptCpp(_MIN_ const PDyScriptInstanceMetaInfo& descriptor)
 {
-  MDY_ASSERT(descriptor.mScriptType == EDyScriptType::Cpp,    "Script type is not matched to CDyWidgetScriptCpp.");
-  MDY_ASSERT(descriptor.mScriptMode == EDyScriptMode::Global, "Given script must be global type.");
+  MDY_ASSERT_MSG(descriptor.mScriptType == EDyScriptType::Cpp,    "Script type is not matched to CDyWidgetScriptCpp.");
+  MDY_ASSERT_MSG(descriptor.mScriptMode == EDyScriptMode::Global, "Given script must be global type.");
 
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mBtInstantiationFunction), "Cpp script instantiation function must be not null.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(descriptor.mBtInstantiationFunction), "Cpp script instantiation function must be not null.");
   this->mScriptInstance = DyConvertUniquePtrTo<ADyGlobalCppScript>(descriptor.mBtInstantiationFunction());
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mScriptInstance),    "Script instance could not bound to system.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->mScriptInstance),    "Script instance could not bound to system.");
 
   this->mScriptName = descriptor.mSpecifierName;
 }
 
 ADyGlobalCppScript* CDyGlobalScriptCpp::__GetScriptInstance() const noexcept
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance), "Script instance must be valid, not empty.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance), "Script instance must be valid, not empty.");
   return this->mScriptInstance.get();
 }
 
