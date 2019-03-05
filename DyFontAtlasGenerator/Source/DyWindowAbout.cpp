@@ -52,7 +52,7 @@ DyWindowAbout::DyWindowAbout(QWidget *parent)
   ui.setupUi(this);
 
   // Connect signal and slot.
-  ui.LB_Version->setText(DyString("Version v{}", kVersionValue).c_str());
+  ui.LB_Version->setText(MakeStringU8("Version v{}", kVersionValue).c_str());
 
   connect(ui.PB_OK,     &QPushButton::clicked, this, &QWidget::close);
   connect(ui.BT_Github, &QPushButton::clicked, this, &DyWindowAbout::CbOpenGithubUrl);

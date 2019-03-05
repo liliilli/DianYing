@@ -20,7 +20,7 @@ namespace dy
 {
 
 template <typename... TArgs>
-[[nodiscard]] std::string DyString(const std::string& iStringFormat, TArgs&&... iArgs)
+[[nodiscard]] std::string MakeStringU8(const std::string& iStringFormat, TArgs&&... iArgs)
 {
   return fmt::format(iStringFormat, std::forward<TArgs>(iArgs)...);
 }

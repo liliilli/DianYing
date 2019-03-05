@@ -88,7 +88,7 @@ DZlibResult CompressBuffer(const std::string& plainBuffer)
 
 DZlibResult CompressBuffer(const nlohmann::json& plainBuffer)
 {
-  return CompressBuffer(plainBuffer.dump(2));
+  return CompressBuffer(plainBuffer.dump(0));
 }
 
 std::vector<char> DecompressString(const DZlibResult& compressedStructure)

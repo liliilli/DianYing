@@ -89,7 +89,7 @@ DyFontAtlasGenerator::DyFontAtlasGenerator(QWidget *parent) : QMainWindow(parent
   this->statusBar()->hide();
 
   // Set visibility and enablility.
-  this->setWindowTitle(DyString("DY SDF Font Atlas Generator v{}", kVersionValue).c_str());
+  this->setWindowTitle(MakeStringU8("DY SDF Font Atlas Generator v{}", kVersionValue).c_str());
   ui.BT_Create->setEnabled(false);
   ui.PG_Loading->setVisible(false);
 
@@ -133,7 +133,7 @@ void DyFontAtlasGenerator::FindFirstFontFile()
   }
   else
   {
-    this->ui.TV_FirstFilePath->setPlainText(DyString("Font Name : {}, Style : {}",
+    this->ui.TV_FirstFilePath->setPlainText(MakeStringU8("Font Name : {}, Style : {}",
         this->mFontInformations[0].fontName,
         this->mFontInformations[0].fontStyle).c_str()
     );
@@ -152,7 +152,7 @@ void DyFontAtlasGenerator::FindSecondFontFile()
   }
   else
   {
-    this->ui.TV_SecondFilePath->setPlainText(DyString("Font Name : {}, Style : {}",
+    this->ui.TV_SecondFilePath->setPlainText(MakeStringU8("Font Name : {}, Style : {}",
         this->mFontInformations[1].fontName,
         this->mFontInformations[1].fontStyle).c_str()
     );
@@ -268,7 +268,7 @@ void DyFontAtlasGenerator::FindTextFile()
     // Set up
     this->mTextGlyphs = *optResult;
     // Set plain text.
-    ui.TV_TextFilePath->setPlainText(DyString(
+    ui.TV_TextFilePath->setPlainText(MakeStringU8(
         "{} glyphs will be created.", 
         this->mTextGlyphs.mCharGlyphs.size()).c_str()
     );
@@ -383,7 +383,7 @@ void DyFontAtlasGenerator::CreateBatchFile()
 
   // Start the computation in other thread.
   const QString windowTitle = this->windowTitle();
-  this->setWindowTitle(DyString("[1/2] Populating {} glyphs...", finalCharCodeList.size()).c_str());
+  this->setWindowTitle(MakeStringU8("[1/2] Populating {} glyphs...", finalCharCodeList.size()).c_str());
 
   this->CreateFontBuffer(informations, finalCharCodeList, this->mOptionFlag);
   this->CreationTaskFinished();
@@ -465,13 +465,13 @@ void DyFontAtlasGenerator::CreateFontBuffer(
 
   // Create texture atlases.
   std::vector<QImage> drawnImageList {};
-  this->setWindowTitle(DyString("[2/2] Rendering {} glyph of {}...", 0, targetCharMapSize).c_str());
+  this->setWindowTitle(MakeStringU8("[2/2] Rendering {} glyph of {}...", 0, targetCharMapSize).c_str());
 
   for (uint64_t id = 0u; id < targetCharMapSize; ++id)
   {
     // Get result from charRangeList.
     const auto& result = charResultList[id];
-    jsonDescriptor["Characters"][DyString("{0}", result.mCharCode)] = result.mItemJsonAtlas;
+    jsonDescriptor["Characters"][MakeStringU8("{0}", result.mCharCode)] = result.mItemJsonAtlas;
 
     // Make QImage from Bitmap<float> and texture from QImage. (RVO guaranted)
     paintSurface.UpdateBufferInformation(result.mCoordinateBound);
@@ -481,7 +481,7 @@ void DyFontAtlasGenerator::CreateFontBuffer(
 
     // Update GUI
     this->IncrementProgress();
-    this->setWindowTitle(DyString("[2/2] Rendering {} glyph of {}...", id, targetCharMapSize).c_str());
+    this->setWindowTitle(MakeStringU8("[2/2] Rendering {} glyph of {}...", id, targetCharMapSize).c_str());
 
     // If we hit limit per one texture, initialize new texture to render more glyphs.
     if ((id + 1) % TEXTURE_MAPLIMIT == 0)
@@ -501,7 +501,7 @@ void DyFontAtlasGenerator::CreateFontBuffer(
     if (IsHavingFlags(option, EDyOptionCollections::ExportPlainJson) == true)
     {
       // Open file descriptor.
-      const auto filename = DyString("./{}_{}.json", fontInformation.fontName, fontInformation.fontStyle);
+      const auto filename = MakeStringU8("./{}_{}.json", fontInformation.fontName, fontInformation.fontStyle);
       FILE* fd = std::fopen(filename.c_str(), "w");
       // Write json information.
       const auto buffer = jsonDescriptor.dump(0);
@@ -511,10 +511,12 @@ void DyFontAtlasGenerator::CreateFontBuffer(
     else
     {
       // Open file descriptor.
-      const auto filename = DyString("./{}_{}.dyFntRes", fontInformation.fontName, fontInformation.fontStyle);
+      const auto filename = MakeStringU8("./{}_{}.dyFntRes", fontInformation.fontName, fontInformation.fontStyle);
       FILE* fd = std::fopen(filename.c_str(), "wb");
       // Write compressed json information.
       const auto compressedJsonResult = zlib::CompressBuffer(jsonDescriptor);
+      std::fwrite(&compressedJsonResult.mDecompressedLength, sizeof(uint64_t), 1, fd);
+      std::fwrite(&compressedJsonResult.mCompressedLength, sizeof(uint64_t), 1, fd);
       std::fwrite(compressedJsonResult.mCompressedBuffer.data(), 
           sizeof(char), 
           compressedJsonResult.mCompressedLength, fd);
@@ -538,7 +540,7 @@ bool ExportAsSeparateJsonAndPng(
   for (size_t imageId = 0, imageListCount = fontImage.size(); imageId < imageListCount; ++imageId)
   {
     const auto isSuccessful = fontImage[imageId].save(
-        DyString("./{}_{}_{}.png", fontMetaInfo.fontName, fontMetaInfo.fontStyle, imageId).c_str(), "PNG"
+        MakeStringU8("./{}_{}_{}.png", fontMetaInfo.fontName, fontMetaInfo.fontStyle, imageId).c_str(), "PNG"
     );
     Q_ASSERT(isSuccessful == true);
   }
@@ -625,7 +627,7 @@ bool ExportAsSeparateJsonAndPng(
   serializer << compressedJsonResult.mCompressedBuffer;
   for (const auto& imageBufferResult : compressedImageBufferList) { serializer << imageBufferResult.mCompressedBuffer; }
 
-  QFile file(DyString("./{}_{}.dyFont", fontMetaInfo.fontName, fontMetaInfo.fontStyle).c_str());
+  QFile file(MakeStringU8("./{}_{}.dyFont", fontMetaInfo.fontName, fontMetaInfo.fontStyle).c_str());
   if (file.open(QIODevice::WriteOnly))
   {
     QDataStream out(&file);
