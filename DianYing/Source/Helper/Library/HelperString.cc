@@ -13,13 +13,13 @@
 ///
 
 /// Header file
-#include <Dy/Helper/HelperString.h>
+#include <Dy/Helper/Library/HelperString.h>
+#include <random>
 
 namespace dy
 {
 
-/// @brief Get random string wich length count.
-MDY_NODISCARD std::string DyGetRandomString(_MIN_ TU32 length)
+MDY_NODISCARD std::string CreateRandomString(TU32 length)
 {
   static std::default_random_engine Rng(std::random_device{}());
   auto randchar = []() -> char
@@ -32,6 +32,60 @@ MDY_NODISCARD std::string DyGetRandomString(_MIN_ TU32 length)
   std::string str(length, 0);
   std::generate_n(str.begin(), length, randchar);
   return str;
+}
+
+void ToLower(std::string& ioString)
+{
+  std::transform(
+    MDY_BIND_BEGIN_END(ioString), ioString.begin(), 
+    [](const char in) 
+    {
+      if (in <= 'Z' && in >= 'A') { return static_cast<char>(in - ('Z' - 'z')); };
+      return in;
+    }
+  );
+}
+
+std::string ToLowerCopy(const std::string& iString)
+{
+  std::string resultString(iString);
+  std::transform(
+    MDY_BIND_BEGIN_END(resultString), resultString.begin(), 
+    [](const char in) 
+    {
+      if (in <= 'Z' && in >= 'A') { return static_cast<char>(in - ('Z' - 'z')); };
+      return in;
+    }
+  );
+
+  return resultString;
+}
+
+void ToUpper(std::string& ioString)
+{
+  std::transform(
+    MDY_BIND_BEGIN_END(ioString), ioString.begin(), 
+    [](const char in) 
+    {
+      if (in <= 'z' && in >= 'a') { return static_cast<char>(in + ('Z' - 'z')); };
+      return in;
+    }
+  );
+}
+
+std::string ToUpperCopy(const std::string& iString)
+{
+  std::string resultString(iString);
+  std::transform(
+    MDY_BIND_BEGIN_END(resultString), resultString.begin(), 
+    [](const char in) 
+    {
+      if (in <= 'z' && in >= 'a') { return static_cast<char>(in + ('Z' - 'z')); };
+      return in;
+    }
+  );
+
+  return resultString;
 }
 
 } /// ::dy namespace
