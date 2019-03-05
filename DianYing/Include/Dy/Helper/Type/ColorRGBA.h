@@ -15,101 +15,48 @@
 
 #include <Dy/Helper/Type/Vector3.h>
 #include <Dy/Helper/Type/Vector4.h>
+#include <nlohmann/json_fwd.hpp>
 
 namespace dy {
 
-///
 /// @class DDyColorRGBA
-/// @brief Float color type which stores 4 components (R, G, B, A)
+/// @brief Float color [0, 1) type which stores 4 components (R, G, B, A)
 /// (h, s, v) does not support but can be converted calling HsvToRgb().
-///
 struct DDyColorRGBA final
 {
-  float R = 0.0f;
-  float G = 0.0f;
-  float B = 0.0f;
-  float A = 0.0f;
+  TF32 R = 0.0f, G = 0.0f, B = 0.0f, A = 0.0f; 
 
-  constexpr DDyColorRGBA() = default;
-
-  constexpr explicit DDyColorRGBA(float r, float g, float b) noexcept : R{r}, G{g}, B{b}, A{1.0f} {
-    if (this->R < 0.0f) this->R = 0.0f; else if (this->R > 1.0f) this->R = 1.0f;
-    if (this->G < 0.0f) this->G = 0.0f; else if (this->G > 1.0f) this->G = 1.0f;
-    if (this->B < 0.0f) this->B = 0.0f; else if (this->B > 1.0f) this->B = 1.0f;
-  };
-
-  constexpr explicit DDyColorRGBA(float r, float g, float b, float a) noexcept : R{r}, G{g}, B{b}, A{a} {
-    if (this->R < 0.0f) this->R = 0.0f; else if (this->R > 1.0f) this->R = 1.0f;
-    if (this->G < 0.0f) this->G = 0.0f; else if (this->G > 1.0f) this->G = 1.0f;
-    if (this->B < 0.0f) this->B = 0.0f; else if (this->B > 1.0f) this->B = 1.0f;
-    if (this->A < 0.0f) this->A = 0.0f; else if (this->A > 1.0f) this->A = 1.0f;
-  };
+  DDyColorRGBA() = default;
+  explicit DDyColorRGBA(TF32 r, TF32 g, TF32 b) noexcept;
+  explicit DDyColorRGBA(TF32 r, TF32 g, TF32 b, TF32 a) noexcept;
 
   //!
   //! Methods
   //!
 
-  ///
   /// @brief Check it is opaque (A == 1.0f) or not (otherwise).
-  ///
-  [[nodiscard]] constexpr bool IsOpaque() const noexcept {
-    return this->A == 1.0f;
-  }
+  MDY_NODISCARD bool IsOpaque() const noexcept;
 
-  ///
   /// @brief Set this color to be opaque.
-  ///
-  constexpr void SetOpaque() noexcept {
-    this->A = 1.0f;
-  }
+  void SetOpaque() noexcept;
 
-  ///
   /// @brief Get color's grayscale value following sRGB.
-  ///
-  [[nodiscard]] constexpr float GetGrayScale() const noexcept {
-    return 0.2126f * this->R + 0.7152f * this->G + 0.0722f * this->B;
-  }
+  MDY_NODISCARD TF32 GetGrayScale() const noexcept;
 
-  ///
   /// @brief  Data pointer
   /// @return Data pointer sequence.
-  ///
-  MDY_NODISCARD const float* Data() const noexcept
-  {
-    return &this->R;
-  }
-
-  //!
-  //! Operator overloading
-  //!
-
+  MDY_NODISCARD const TF32* Data() const noexcept;
 
   //!
   //! Conversion operators
   //!
 
-  ///
   /// @brief Can be convert DDyVector3 explicitly, but alpha information passed.
-  ///
-  explicit operator DDyVector3() const noexcept
-  {
-    return DDyVector3{this->R, this->G, this->B};
-  }
+  explicit operator DDyVector3() const noexcept;
+  explicit operator glm::vec3() const noexcept;
 
-  explicit operator glm::vec3() const noexcept
-  {
-    return glm::vec3{this->R, this->G, this->B};
-  }
-
-  operator glm::vec4() const noexcept
-  {
-    return glm::vec4{this->R, this->G, this->B, this->A};
-  }
-
-  operator DDyVector4() const noexcept
-  {
-    return DDyVector4{this->R, this->G, this->B, this->A};
-  }
+  operator glm::vec4() const noexcept;
+  operator DDyVector4() const noexcept;
 
   //!
   //! Statics
@@ -131,6 +78,9 @@ struct DDyColorRGBA final
   static const DDyColorRGBA White;
   static const DDyColorRGBA Yellow;
 };
+
+void to_json(nlohmann::json& oJson, const DDyColorRGBA& iItem);
+void from_json(const nlohmann::json& iJson, DDyColorRGBA& oItem);
 
 } /// ::dy namespace
 
