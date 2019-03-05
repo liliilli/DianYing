@@ -158,15 +158,6 @@ public:
   /// @brief Try detach dependent components from dy level management system.
   void MDY_PRIVATE(TryDetachDependentComponents)() noexcept;
 
-  /// @brief  Get script component pointer from script list using scriptName to verify.
-  /// @param  scriptName Script name to verify and get.
-  /// @return The pointer instance of CDyScript. If not found, return just no value.
-  MDY_NODISCARD CDyActorScript* GetScriptComponent(const std::string& scriptName) noexcept;
-  /// @brief  Remove script component manually from script list using scriptName to verify.
-  /// @param  scriptName  Script name to verify and remove from FDyActor.
-  /// @return The pointer instance of CDyScript. If not found, return just no value.
-  EDySuccess RemoveScriptComponent(const std::string& scriptName) noexcept;
-
   /// @brief  Get tranform component pointer from FDyActor instance.
   /// @return Valid transform pointer instance.
   MDY_NODISCARD NotNull<CDyTransform*> GetTransform() noexcept;
