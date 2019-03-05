@@ -58,9 +58,11 @@ void main() {
   ts.y    += fs_in.modelPosition.y / 25.0f;
 
   DyBindActorId();
+
 	gUnlit	  = vec4(texture(uTexture0, ts).rgb, 1.0f);
 	gNormal	  = vec4(normalize(fs_in.normal) * 0.5f + 0.5f, 1.0f);
-	gSpecular = vec4(1, 0, 1, 1);
+  // RGB must be used specular color, and A must be used roughness.
+	gSpecular = vec4(1, 1, 1, 1);
 	gPosition = fs_in.modelPosition;
 }
 )dy");

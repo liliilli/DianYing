@@ -85,7 +85,6 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
   } break;
   case DyStrCase("External"):
   {
-    DyJsonGetValueFromTo(j, "ShaderSpecifier", p.mShaderSpecifier);
     // If `IsCompressed` is true, load file from `ExternalPath` and decompress.
     if (j["IsCompressed"].get<bool>() == true)
     {
@@ -95,22 +94,30 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
     {
       //
       const auto matPath = j["ExternalPath"].get<std::string>();
-      MDY_ASSERT_MSG_FORCE(DyFsIsFileExist(matPath) == true, "Material file must be exist on specified path.");
+      MDY_ASSERT_MSG_FORCE(
+        DyFsIsFileExist(matPath) == true, 
+        "Material file must be exist on specified path.");
 
       //
       const auto optJson = DyGetJsonAtlasFromFile(matPath);
-      MDY_ASSERT_MSG_FORCE(optJson.has_value() == true, "Failed to load extenral material meta information file.");
+      MDY_ASSERT_MSG_FORCE(
+        optJson.has_value() == true, 
+        "Failed to load extenral material meta information file.");
 
       //
       {
         const auto& jsonAtlas = optJson.value();
-        DyJsonGetValueFromTo(jsonAtlas, "BlendMode",       p.mBlendMode);
+        DyJsonGetValueFromTo(jsonAtlas, "BlendMode", p.mBlendMode);
+        DyJsonGetValueFromTo(jsonAtlas, "ShaderSpecifier", p.mShaderSpecifier);
 
         // nlohmann::json does not support serialization between std::array, 
         // so we need to convert list to vector, and convert vector to array again.
         std::vector<DDyMaterialTextureItem> texList;
         DyJsonGetValueFromTo(jsonAtlas, "TextureSpecifierList", texList);
-        for (TU32 i = 0, size = static_cast<TU32>(texList.size()); i < size; ++i) { p.mTextureNames[i] = texList[i]; }
+        for (size_t i = 0, size = texList.size(); i < size; ++i) 
+        { 
+          p.mTextureNames[i] = texList[i]; 
+        }
       }
     }
   } break;

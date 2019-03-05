@@ -39,6 +39,7 @@ void main() {
 
 MDY_SET_IMMUTABLE_STRING(sFrag, R"dy(
 #version 430
+#import <Input_UboCamera>;
 
 in VS_OUT 
 { 
@@ -49,15 +50,15 @@ layout (location = 0) out vec4 outColor;
 
 layout (binding = 0) uniform sampler2D uTexture0;       // Unlit
 layout (binding = 1) uniform sampler2D uTexture1;       // Normal
-layout (binding = 2) uniform sampler2D uTexture2;       // View vector
-layout (binding = 3) uniform sampler2D uTexture3;       // Modelposition, Use it CSM shadowing.
+layout (binding = 2) uniform sampler2D uTexture2;       // Specular
+layout (binding = 3) uniform sampler2D uTexture3;       // Model position, Use it CSM shadowing.
 layout (binding = 4) uniform sampler2DArrayShadow uTexture4; // Shadow
 layout (binding = 5) uniform sampler2D uTexture5;       // ZValue
 layout (binding = 6) uniform sampler2D uTexture6;       // SSAO
 layout (binding = 7) uniform sampler2D uTexture7;       // Sky
 
-uniform mat4  uLightVPSBMatrix[4];
-uniform vec4  uNormalizedFarPlanes;
+uniform mat4    uLightVPSBMatrix[4];
+uniform vec4    uNormalizedFarPlanes;
 //uniform float uShadowBias;
 //uniform float uShadowStrength;
 
@@ -107,25 +108,25 @@ vec3 GetOpaqueColor()
 {
   vec3 resultColor    = vec3(0);
   vec4 unlitValue	    = texture(uTexture0, fs_in.texCoord);
+
+  // If alpha is zero, discard but check skymap is activated.
   if (unlitValue.a == 0) 
-  { // If alpha is zero, discard.
+  { 
     vec4 sky = texture(uTexture7, fs_in.texCoord);
     if (sky.a == 0) { discard; } else { return sky.rgb; }
   }
 
-  vec4 normalValue	  = GetNormal(); 
-  vec4 specularValue  = GetSpecular();
-  vec3 modelPosition  = GetModelPos();
+  vec4 normalValue	 = GetNormal(); 
+  vec4 specularValue = GetSpecular();
+  vec3 modelPosition = GetModelPos();
 
   for (int i = 0; i < uLightDir.length; ++i)
   { 
     // Validation test
     if (length(uLightDir[i].mDirection) < 0.001) { continue; }
 
-    // Function body
+    // Function body (in world space)
     float d_n_dl    = dot(normalValue.xyz, uLightDir[i].mDirection);
-    vec3  s_l_vd    = normalize(uLightDir[i].mDirection + specularValue.xyz);
-    float d_slvd_n  = pow(max(dot(s_l_vd, normalValue.xyz), 0.0f), 32);
 
     float ambientFactor  = 0.02f;
     vec3  ambientColor   = ambientFactor * uLightDir[i].mAmbient.rgb * unlitValue.rgb;
@@ -133,12 +134,23 @@ vec3 GetOpaqueColor()
     float diffuseFactor  = max(d_n_dl, 0.1f) * uLightDir[i].mIntensity * 0.03f;
     vec3  diffuseColor   = diffuseFactor * uLightDir[i].mDiffuse.rgb * unlitValue.rgb;
 
-    float specularFactor = d_slvd_n * uLightDir[i].mIntensity * 0.03f;
-    vec3  specularColor  = specularFactor * uLightDir[i].mSpecular.rgb * unlitValue.rgb;
+    // Calculate specular value.
+    mat3 viewDirectionMatrix = transpose(inverse(mat3(uCamera.mViewMatrix)));
+    vec3 viewLightDirection = viewDirectionMatrix * uLightDir[i].mDirection;
+    vec3 viewNormal = viewDirectionMatrix * normalValue.xyz;
+    vec3 cameraView = vec3(0, 0, -1);
+
+    vec3 halfwayVector = cameraView + viewLightDirection;
+    float d_slvd_n     = pow(max(dot(viewNormal, halfwayVector), 0.0f), 4 * (1 + 1 * specularValue.a));
+
+    float specularFactor = d_slvd_n * uLightDir[i].mIntensity * 0.05f;
+    vec3  specularColor  = specularValue.rgb * uLightDir[i].mSpecular.rgb * specularFactor;
 
     resultColor  = ambientColor;
     resultColor += clamp(ComputeShadowCoefficient(modelPosition, GetZValue()), 0.1f, 1.0f) * (diffuseColor);
+    resultColor += specularColor;
   }
+
   return resultColor;
 }
 
