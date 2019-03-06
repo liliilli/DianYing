@@ -52,6 +52,8 @@
 #include <Dy/Meta/Information/FontMetaInformation.h>
 #include <Dy/Meta/Information/PrefabMetaInformation.h>
 #include <Dy/Meta/Information/ElementLevelMetaInfo.h>
+#include <Dy/Meta/Information/MetaInfoRenderPipeline.h>
+#include <Dy/Meta/Information/MetaInfoRenderItem.h>
 
 //!
 //! Local tranlation unit variables
@@ -388,6 +390,10 @@ public:
   THashMap<PDyTextureInstanceMetaInfo>  mTextureMetaInfo= {};
   /// Material meta information map.
   THashMap<PDyMaterialInstanceMetaInfo> mMaterialMetaInfo = {};
+  /// Render pipeline meta information map.
+  THashMap<PDyRenderPipelineInstanceMetaInfo> mRenderPipelineMetaInfo = {};
+  /// Render item meta information map.
+  THashMap<PDyRenderItemInstanceMetaInfo> mRenderItemMetaInfo = {};
   /// @brief Sound meta information map.
   THashMap<PDySoundInstanceMetaInfo>    mSoundMetaInfo = {};
 
@@ -824,6 +830,30 @@ EDySuccess MDyMetaInfo::pfAddGLAttachmentMetaInfo(const PDyGlAttachmentInstanceM
 EDySuccess MDyMetaInfo::pfAddGLFrameBufferMetaInfo(const PDyGlFrameBufferInstanceMetaInfo& metaInfo)
 {
   return this->mInternal->pfAddGLFrameBufferMetaInfo(metaInfo);
+}
+
+EDySuccess MDyMetaInfo::pfAddRenderPipelineMetaInfo(const PDyRenderPipelineInstanceMetaInfo& metaInfo)
+{
+  MDY_ASSERT_MSG(
+    DyIsMapContains(this->mInternal->mRenderPipelineMetaInfo, metaInfo.mSpecifierName) == false, 
+    "Duplicated render pipeline name is exist.");
+
+  this->mInternal->mRenderPipelineMetaInfo.try_emplace(
+    metaInfo.mSpecifierName, 
+    metaInfo);
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pfAddRenderItemMetaInfo(const PDyRenderItemInstanceMetaInfo& metaInfo)
+{
+  MDY_ASSERT_MSG(
+    DyIsMapContains(this->mInternal->mRenderItemMetaInfo, metaInfo.mSpecifierName) == false, 
+    "Duplicated render pipeline name is exist.");
+
+  this->mInternal->mRenderItemMetaInfo.try_emplace(
+    metaInfo.mSpecifierName, 
+    metaInfo);
+  return DY_SUCCESS;
 }
 
 EDySuccess MDyMetaInfo::MDY_PRIVATE(AddBootResourceSpecifierList)(const TResourceSpecifierList& list)

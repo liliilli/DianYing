@@ -18,6 +18,23 @@
 namespace dy
 {
 
+void ADyGLFrameBufferResource::SetDefaultSettings()
+{
+  // Check blending list count is matched to attachments count.
+  const auto blendingsSize    = this->mMetaInfo.mBlendingEquationList.size();
+  const auto attachmentsSize  = this->mMetaInfo.mColorAttachmentList.size();
+
+  // If not matched, resize blending list to attachment list.
+  if (blendingsSize != attachmentsSize)
+  {
+    this->mMetaInfo.mBlendingEquationList.resize(attachmentsSize);
+  }
+
+  // Make hash value for verifying common framebuffer object in list
+  // binding for performance.
+  // @TODO DO IT
+}
+
 std::any ADyGLFrameBufferResource::GetMetaInfo()
 {
   return this->mMetaInfo;

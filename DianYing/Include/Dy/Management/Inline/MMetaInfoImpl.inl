@@ -682,6 +682,7 @@ inline EDySuccess MDyMetaInfo::Impl::pfAddGLAttachmentMetaInfo(const PDyGlAttach
 
 inline EDySuccess MDyMetaInfo::Impl::pfAddGLFrameBufferMetaInfo(const PDyGlFrameBufferInstanceMetaInfo& metaInfo)
 {
+
 #if defined(_DEBUG) == true
   // Validation test check.
   MDY_ASSERT_MSG(

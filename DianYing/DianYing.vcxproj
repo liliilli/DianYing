@@ -215,6 +215,8 @@
     <ClCompile Include="data\Script\DebugActor\BtScActorTest1.cc" />
     <ClCompile Include="data\Script\DebugActor\BtScActorTest2.cc" />
     <ClCompile Include="data\Script\DebugActor\BtScActorTest3.cc" />
+    <ClCompile Include="Source\Builtin\RenderItem\FBtOpaqueDefault.cc" />
+    <ClCompile Include="Source\Builtin\RenderPipeline\FBtDefault.cc" />
     <ClCompile Include="Source\Builtin\Script\DebugUiScriptCpp.cc" />
     <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingBootScriptCpp.cc" />
     <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingGlobalScriptCpp.cc" />
@@ -451,6 +453,7 @@
     <ClCompile Include="Source\Helper\MCS\GLShaderParser.cc" />
     <ClCompile Include="Source\Helper\Type\Area3D.cc" />
     <ClCompile Include="Source\Helper\Type\ColorRGB.cc" />
+    <ClCompile Include="Source\Helper\Type\DUuid.cc" />
     <ClCompile Include="Source\Helper\Type\Plane.cc" />
     <ClCompile Include="Source\Management\GameTimerManager.cc" />
     <ClCompile Include="Source\Management\Helper\SDyProfilingHelper.cc" />
@@ -546,6 +549,7 @@
     <ClCompile Include="Source\Meta\Information\MetaInfoModelAnim.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoModelMesh.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoModelSkeleton.cc" />
+    <ClCompile Include="Source\Meta\Information\MetaInfoRenderPipeline.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoSound.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoTexture.cc" />
     <ClCompile Include="Source\Meta\Information\Physics\DColliderMetaInfo.cc" />
@@ -581,6 +585,8 @@
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyScriptResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyTextureResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyWidgetMetaResource.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ARenderPipeline.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ARenderItem.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\BasicShadow\BasicShadow.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\CSM\FDyBtAtLight.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\Debug\FDyBtAtDebug.h" />
@@ -638,6 +644,8 @@
     <ClInclude Include="Include\Dy\Builtin\Object\Light\DirectionalLight.h" />
     <ClInclude Include="data\Script\DebugActor\BtScActorTest2.h" />
     <ClInclude Include="data\Script\DebugActor\BtScActorTest3.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderItem\FBtOpaqueDefault.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderPipeline\FBtDefault.h" />
     <ClInclude Include="Include\Dy\Builtin\Script\DebugUiScriptCpp.h" />
     <ClInclude Include="Include\Dy\Builtin\Script\Default\DefaultLoadingBootScriptCpp.h" />
     <ClInclude Include="Include\Dy\Builtin\Script\Default\DefaultLoadingGlobalScriptCpp.h" />
@@ -693,6 +701,8 @@
     <ClInclude Include="Include\Dy\Core\EDyAppMode.h" />
     <ClInclude Include="Include\Dy\Core\Reflection\RDyGlobalInstanceManager.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Interface\IDyRenderer.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Interface\IRenderItem.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Interface\IRenderPipeline.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\DebugAABBRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\Debug\PickingRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\DebugShapeRenderer.h" />
@@ -775,6 +785,7 @@
     <ClInclude Include="Include\Dy\Helper\MCS\Functions.h" />
     <ClInclude Include="Include\Dy\Helper\Type\Area3D.h" />
     <ClInclude Include="Include\Dy\Helper\Type\Plane.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\DUuid.h" />
     <ClInclude Include="Include\Dy\Helper\Type\VectorInt4.h" />
     <ClInclude Include="Include\Dy\Helper\Wrapper\DDyMutexUniqueHashMap.h" />
     <ClInclude Include="Include\Dy\Include\Entry.h" />
@@ -796,7 +807,9 @@
     <ClInclude Include="Include\Dy\Management\Type\Render\DDyGlGlobalStatus.h" />
     <ClInclude Include="Include\Dy\Management\Type\Render\DDyPixelInfo.h" />
     <ClInclude Include="Include\Dy\Management\Type\Render\EDyModelRenderingMode.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoRenderItem.h" />
     <ClInclude Include="Include\Dy\Meta\Information\Physics\DColliderMetaInfo.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoRenderPipeline.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Physics\EDyColliderType.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Physics\EDyCollisionFilter.h" />
     <ClInclude Include="Include\Dy\Management\Type\Render\DDyModelHandler.h" />
@@ -1073,6 +1086,7 @@
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\Deferred\FDyBtFbSSAOBlur.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Include\Dy\Core\Reflection\RBuiltinResourcesTmp.inl" />
     <None Include="Include\Dy\Core\Resource\Type\Inline\AUniformContainerTmp.inl" />
     <None Include="Include\Dy\Element\Inline\FActorImpl.inl" />
     <None Include="Include\Dy\Element\Inline\FActorTmp.inl" />

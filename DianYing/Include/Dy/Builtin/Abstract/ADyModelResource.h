@@ -21,6 +21,15 @@
 
 namespace dy
 {
+  
+/// @macro MDY_REGISTER_RESOURCE_MODEL
+/// @brief Register model meta information source.
+#define MDY_REGISTER_RESOURCE_MODEL(__MAType__, __MASpecifierName__) \
+  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(__MAType__, __MASpecifierName__) \
+  private: \
+  void ConstructBuffer(_MOUT_ PDyModelInstanceMetaInfo& buffer) noexcept; \
+  public: \
+  __MAType__() { ConstructBuffer(this->mMetaInfo); }
 
 struct ADyModelResource : public IDyResource
 {

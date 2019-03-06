@@ -15,6 +15,7 @@
 
 #include <Dy/Core/Resource/Type/TDyInformationBinder.h>
 #include <Dy/Core/Resource/Type/TDyResourceBinder.h>
+#include <Dy/Management/Type/AttachmentInformation.h>
 
 //!
 //! Forward declaration
@@ -34,30 +35,32 @@ namespace dy
 class FDyFrameBufferResource final
 {
 public:
-  FDyFrameBufferResource(_MIN_ const FDyFrameBufferInformation& iInformation);
+  FDyFrameBufferResource(const FDyFrameBufferInformation& iInformation);
   ~FDyFrameBufferResource();
 
   /// @brief Get specifier name of framebuffer resource.
-  MDY_NODISCARD const std::string& GetSpecifierName() const noexcept { return this->mSpecifierName; }
+  MDY_NODISCARD const std::string& GetSpecifierName();
   /// @brief Get framebuffer id.
-  MDY_NODISCARD TU32 GetFrameBufferId() const noexcept { return this->mFrameBufferId; }
+  MDY_NODISCARD TU32 GetFrameBufferId() const noexcept;
   /// @brief Get framebuffer size.
-  MDY_NODISCARD const DDyVectorInt2& GetFrameBufferSize() const noexcept { return this->mFrameBufferSize; } 
+  MDY_NODISCARD const DDyVectorInt2& GetFrameBufferSize();
 
   /// @brid Framebuffer.
   EDySuccess BindFrameBuffer()   const noexcept;
   void       UnbindFrameBuffer() const noexcept; 
 
 private:
-  std::string   mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
-  TU32          mFrameBufferId = MDY_INITIALIZE_DEFUINT;
-  DDyVectorInt2 mFrameBufferSize = {};
+  std::string   mSpecifierName;
+  TU32          mFrameBufferId    = 0;
+  DDyVectorInt2 mFrameBufferSize  = {};
 
   using TAttachmentBinder = std::unique_ptr<TDyResourceBinderAttachment>;
   using TAttachmentBinderList = std::vector<TAttachmentBinder>;
-  TDyInformationBinderFrameBuffer  mBinderFrameBuffer;
-  TAttachmentBinderList             mBinderAttachmentList = {};
-  TDyResourceBinderAttachment      mBinderDepthBuffer    = {};
+
+  TDyInformationBinderFrameBuffer mBinderFrameBuffer;
+  TAttachmentBinderList           mBinderAttachmentList   = {};
+  TBlendingEquationList           mAttachmentBlendingList = {};
+  TDyResourceBinderAttachment     mBinderDepthBuffer      = {};
 };
 
 } /// ::dy namespace

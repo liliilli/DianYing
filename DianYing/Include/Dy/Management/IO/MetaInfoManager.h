@@ -31,6 +31,8 @@ class RDyBuiltinResource;
 
 namespace dy
 {
+struct PDyRenderItemInstanceMetaInfo;
+struct PDyRenderPipelineInstanceMetaInfo;
 struct PDyGLShaderInstanceMetaInfo;
 struct PDyMeshInstanceMetaInfo;
 struct PDyModelInstanceMetaInfo;
@@ -235,6 +237,8 @@ private:
   MDY_NODISCARD EDySuccess pfAddMaterialMetaInfo      (const PDyMaterialInstanceMetaInfo& metaInfo);
   MDY_NODISCARD EDySuccess pfAddGLAttachmentMetaInfo  (const PDyGlAttachmentInstanceMetaInfo& metaInfo);
   MDY_NODISCARD EDySuccess pfAddGLFrameBufferMetaInfo (const PDyGlFrameBufferInstanceMetaInfo& metaInfo);
+  MDY_NODISCARD EDySuccess pfAddRenderPipelineMetaInfo(const PDyRenderPipelineInstanceMetaInfo& metaInfo);
+  MDY_NODISCARD EDySuccess pfAddRenderItemMetaInfo    (const PDyRenderItemInstanceMetaInfo& metaInfo);
   MDY_NODISCARD EDySuccess MDY_PRIVATE(AddLoadingWidgetMetaInformation)(const std::string& widgetMetaInfo);
 
   MDY_NODISCARD EDySuccess MDY_PRIVATE(AddBootResourceSpecifierList)(const TResourceSpecifierList& list);

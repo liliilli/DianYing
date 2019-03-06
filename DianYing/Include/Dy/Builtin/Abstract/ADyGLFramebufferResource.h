@@ -20,11 +20,27 @@
 namespace dy
 {
 
+/// @macro MDY_REGISTER_RESOURCE_FRAMEBUFFER
+/// @brief Register OpenGL framebuffer meta information source.
+#define MDY_REGISTER_RESOURCE_FRAMEBUFFER(__MAType__, __MASpecifierName__) \
+  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(__MAType__, __MASpecifierName__) \
+  private: \
+  void ConstructBuffer(PDyGlFrameBufferInstanceMetaInfo& property) noexcept; \
+  public: \
+  __MAType__() \
+  { \
+    this->ConstructBuffer(this->mMetaInfo); \
+    this->SetDefaultSettings(); \
+  }
+
 struct ADyGLFrameBufferResource : public IDyResource
 {
 protected:
-  /// Temporary frame buffer object meta info.
+  /// @brief Temporary Framebuffer object meta information to be inserted in Dy system.
   PDyGlFrameBufferInstanceMetaInfo mMetaInfo{};
+  /// @brief Set default setting to be 
+  /// specified condition of framebuffer object description.
+  void SetDefaultSettings();
 public:
   static constexpr auto value = EDyResourceType::GLFrameBuffer;
 

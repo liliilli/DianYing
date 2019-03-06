@@ -347,6 +347,10 @@
     <ClCompile Include="Source\Builtin\Shader\RenderPass.cc" />
     <ClCompile Include="Source\Builtin\Shader\RenderScreenOutput.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\EShaderTypes.cc" />
+    <ClCompile Include="Source\Helper\Type\DUuid.cc" />
+    <ClCompile Include="Source\Meta\Information\MetaInfoRenderPipeline.cc" />
+    <ClCompile Include="Source\Builtin\RenderPipeline\FBtDefault.cc" />
+    <ClCompile Include="Source\Builtin\RenderItem\FBtOpaqueDefault.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -855,6 +859,15 @@
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\Debug\PickingRenderer.h" />
     <ClInclude Include="Include\Dy\Helper\Library\HelperString.h" />
     <ClInclude Include="Include\Dy\Helper\System\HashCompileCrc32.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ARenderPipeline.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ARenderItem.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Interface\IRenderItem.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Interface\IRenderPipeline.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoRenderPipeline.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\DUuid.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderPipeline\FBtDefault.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderItem\FBtOpaqueDefault.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoRenderItem.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />
@@ -875,5 +888,6 @@
     <None Include="Include\Dy\Management\Inline\MMetaInfoImpl.inl" />
     <None Include="Include\Dy\Core\Resource\Type\Inline\AUniformContainerTmp.inl" />
     <None Include="Include\Dy\Meta\Information\Inline\DMetaMetarialInstanceTmp.inl" />
+    <None Include="Include\Dy\Core\Reflection\RBuiltinResourcesTmp.inl" />
   </ItemGroup>
 </Project>

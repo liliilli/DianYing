@@ -20,6 +20,15 @@
 namespace dy
 {
 
+/// @macro MDY_REGISTER_RESOURCE_ATTACHMENT
+/// @brief Register OpenGL attachment meta information source.
+#define MDY_REGISTER_RESOURCE_ATTACHMENT(__MAType__, __MASpecifierName__) \
+  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(__MAType__, __MASpecifierName__) \
+  private: \
+  void ConstructBuffer(_MOUT_ PDyGlAttachmentInstanceMetaInfo& property) noexcept; \
+  public: \
+  __MAType__() { this->ConstructBuffer(this->mAttachmentMetaInfo); }
+
 struct ADyGLAttachmentResource : public IDyResource
 {
 protected:

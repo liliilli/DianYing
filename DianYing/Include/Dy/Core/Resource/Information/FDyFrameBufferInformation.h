@@ -34,10 +34,8 @@ class FDyAttachmentInformation;
 namespace dy
 {
 
-///
 /// @class FDyFrameBufferInformation
 /// @brief FrameBuffer information resource.
-///
 class FDyFrameBufferInformation final
 {
 public:
@@ -48,13 +46,16 @@ public:
   ~FDyFrameBufferInformation() = default;
 
   /// @brief Get framebuffer specifier name.
-  FORCEINLINE MDY_NODISCARD const std::string& GetSpecifierName() const noexcept { return this->mSpecifierName; }
+  MDY_NODISCARD const std::string& GetSpecifierName() const noexcept { return this->mSpecifierName; }
 
   /// @brief Get frame buffer size.
-  FORCEINLINE MDY_NODISCARD const auto& GetFrameBufferSize() const noexcept { return this->mFrameBufferSize; }
+  MDY_NODISCARD const DDyVectorInt2& GetFrameBufferSize() const noexcept { return this->mFrameBufferSize; }
 
   /// @brief Get attachment info list.
   MDY_NODISCARD const auto& GetAttachmentInformationBinderList() const noexcept { return this->mAttachmentInfoList; }
+
+  /// @brief Get attachment binding mode list.
+  MDY_NODISCARD const TBlendingEquationList& GetAttachmentBlendings() const noexcept; 
 
   /// @brief Check populated frame buffer is using default depth buffer.
   MDY_NODISCARD bool IsUsingDepthBuffer() const noexcept { return this->mIsUsingDepthBuffer; }
@@ -66,17 +67,19 @@ public:
   MDY_NODISCARD bool IsUsingPixelShader() const noexcept { return this->mIsNotUsingPixelShader == false; }
 
 private:
-  using TAttachmentInformation = std::pair<PDyGlAttachmentBinderInformation, std::unique_ptr<TDyInformationBinderAttachment>>;
+  using TAttachmentInformation = std::pair<
+    PDyGlAttachmentBinderInformation, std::unique_ptr<TDyInformationBinderAttachment>
+  >;
   using TAttachmentInfoBinderList = std::vector<TAttachmentInformation>;
 
-  std::string               mSpecifierName      = MDY_INITIALIZE_EMPTYSTR;
+  std::string               mSpecifierName;
   TAttachmentInfoBinderList mAttachmentInfoList = {};
+  TBlendingEquationList     mAttachmentBlendings = {};
   DDyVectorInt2             mFrameBufferSize    = {};
 
-  // @TODO NOT USED YET BUT IMPLEMENT FOR COLOR ATTACHMENT BINDING FLAW SO REPLACE EXISTING BOOL FLAG BELOW.
-  TAttachmentInformation    mDepthAttachment        = {};
-  bool                      mIsUsingDepthBuffer     = false;
-  bool                      mIsNotUsingPixelShader  = false;
+  TAttachmentInformation    mDepthAttachment    = {};
+  bool                      mIsUsingDepthBuffer = false;
+  bool                      mIsNotUsingPixelShader = false;
 };
 
 } /// ::dy namespace
