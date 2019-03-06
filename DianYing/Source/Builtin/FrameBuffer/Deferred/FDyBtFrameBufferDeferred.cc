@@ -18,10 +18,10 @@
 namespace dy
 {
 
-void FDyBtFrameBufferDeferred::ConstructBuffer(_MOUT_ PDyGlFrameBufferInstanceMetaInfo& property) noexcept
+void FDyBtFrameBufferDeferred::ConstructBuffer(PDyGlFrameBufferInstanceMetaInfo& property) noexcept
 {
-  property.mSpecifierName       = "dyBtBasicRender";
-  property.mFrameBufferSize     = DDyVectorInt2{1280, 720};
+  property.mSpecifierName   = "dyBtBasicRender";
+  property.mFrameBufferSize = DDyVectorInt2{1280, 720};
 
   property.mColorAttachmentList.emplace_back("dyBtUnlit",    EDyGlAttachmentType::Color0);
   property.mColorAttachmentList.emplace_back("dyBtNormal",   EDyGlAttachmentType::Color1);
@@ -29,7 +29,7 @@ void FDyBtFrameBufferDeferred::ConstructBuffer(_MOUT_ PDyGlFrameBufferInstanceMe
   property.mColorAttachmentList.emplace_back("dyBtModelPosition", EDyGlAttachmentType::Color3);
   property.mColorAttachmentList.emplace_back("dyBtAtActorId", EDyGlAttachmentType::Color4);
 
-  property.mIsUsingDepthBuffer  = true;
+  property.mIsUsingDepthBuffer = true;
   property.mDepthAttachmentSpecifier = "dyBtDefZValue";
 }
 
