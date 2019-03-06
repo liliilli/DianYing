@@ -27,7 +27,7 @@
 #include <Dy/Helper/Pointer.h>
 #include <Dy/Helper/ContainerHelper.h>
 #include <Dy/Helper/Library/HelperJson.h>
-#include <Dy/Helper/HelperString.h>
+#include <Dy/Helper/Library/HelperString.h>
 #include <Dy/Helper/Library/HelperRegex.h>
 
 #include <Dy/Management/SettingManager.h>

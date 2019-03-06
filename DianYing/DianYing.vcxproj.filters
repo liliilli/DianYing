@@ -346,6 +346,7 @@
     <ClCompile Include="Source\Builtin\Shader\RenderColorGeometry.cc" />
     <ClCompile Include="Source\Builtin\Shader\RenderPass.cc" />
     <ClCompile Include="Source\Builtin\Shader\RenderScreenOutput.cc" />
+    <ClCompile Include="Source\Core\Resource\Internal\EShaderTypes.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -382,7 +383,6 @@
     <ClInclude Include="Include\Dy\Helper\GlobalType.h" />
     <ClInclude Include="Include\Dy\Editor\Literals\LibraryLicenseString.h" />
     <ClInclude Include="Include\Dy\Editor\Interface\IDyGuiWindowSingletonCrtp.h" />
-    <ClInclude Include="Include\Dy\Helper\HashCompileCrc32.h" />
     <ClInclude Include="Include\Dy\Management\Editor\GuiManager.h" />
     <ClInclude Include="Include\Dy\Editor\Interface\IDyGuiComponentBase.h" />
     <ClInclude Include="Include\Dy\Editor\Interface\IDyGuiHasChildren.h" />
@@ -663,7 +663,6 @@
     <ClInclude Include="Include\Dy\Builtin\Attachment\UIIntegration\FDyBtAttUiBasic.h" />
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\UIIntegration\FDyBtFbUiBasic.h" />
     <ClInclude Include="Include\Dy\Core\Thread\SDyIOBindingHelper.h" />
-    <ClInclude Include="Include\Dy\Helper\HelperString.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\EDyInputButtonStatus.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyInputButton.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyJoystickAnalog.h" />
@@ -855,6 +854,7 @@
     <ClInclude Include="Include\Dy\Builtin\Constant\GeneralValue.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\Debug\PickingRenderer.h" />
     <ClInclude Include="Include\Dy\Helper\Library\HelperString.h" />
+    <ClInclude Include="Include\Dy\Helper\System\HashCompileCrc32.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />
@@ -873,5 +873,7 @@
     <None Include="Include\Dy\Element\Inline\FActorImpl.inl" />
     <None Include="Include\Dy\Element\Inline\FActorTmp.inl" />
     <None Include="Include\Dy\Management\Inline\MMetaInfoImpl.inl" />
+    <None Include="Include\Dy\Core\Resource\Type\Inline\AUniformContainerTmp.inl" />
+    <None Include="Include\Dy\Meta\Information\Inline\DMetaMetarialInstanceTmp.inl" />
   </ItemGroup>
 </Project>

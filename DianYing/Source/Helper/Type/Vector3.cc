@@ -1,15 +1,15 @@
 #include <precompiled.h>
 ///
-/// @license BSD 2-Clause License
+/// MIT License
+/// Copyright (c) 2018-2019 Jongmin Yun
 ///
-/// Copyright (c) 2018, Jongmin Yun(Neu.), All rights reserved.
-/// If you want to read full statements, read LICENSE file.
-///
-/// @file Helper/Type/Vector3.cc
-///
-/// @brief Introduce opgs16 dependent vector series classes.
-///
-/// @author Jongmin Yun
+/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+/// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+/// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+/// SOFTWARE.
 ///
 
 /// Header file
@@ -20,22 +20,50 @@
 #include <Dy/Helper/Type/Matrix3.h>
 #include <Dy/Helper/Library/HelperJson.h>
 
-namespace dy {
-
-DDyVector3 DDyVector3::MultiplyMatrix(const dy::DDyMatrix3x3& matrix) const noexcept
+namespace dy 
 {
-  return DDyVector3{
-      this->X * matrix[0][0] + this->Y * matrix[0][1] + this->Z * matrix[0][2],
-      this->X * matrix[1][0] + this->Y * matrix[1][1] + this->Z * matrix[1][2],
-      this->X * matrix[2][0] + this->Y * matrix[2][1] + this->Z * matrix[2][2]
+
+DDyVector3& DDyVector3::operator=(const aiVector2D& iVector) noexcept
+{
+  this->X = iVector.x; this->Y = iVector.y; this->Z = 0.0f;
+  return *this;
+}
+
+DDyVector3& DDyVector3::operator=(const aiVector3D& iVector) noexcept
+{
+  this->X = iVector.x;
+  this->Y = iVector.y;
+  this->Z = iVector.z;
+  return *this;
+}
+
+TF32* DDyVector3::Data() noexcept
+{
+  return &this->X;
+}
+
+const TF32* DDyVector3::Data() const noexcept
+{
+  return &this->X;
+}
+
+DDyVector3 DDyVector3::MultiplyMatrix(const DDyMatrix3x3& matrix) const noexcept
+{
+  return DDyVector3
+  {
+    this->X * matrix[0][0] + this->Y * matrix[0][1] + this->Z * matrix[0][2],
+    this->X * matrix[1][0] + this->Y * matrix[1][1] + this->Z * matrix[1][2],
+    this->X * matrix[2][0] + this->Y * matrix[2][1] + this->Z * matrix[2][2]
   };
 }
 
-bool DDyVector3::IsAllZero(const DDyVector3& vector) noexcept {
+bool DDyVector3::IsAllZero(const DDyVector3& vector) noexcept 
+{
   return math::IsAllZero(vector);
 }
 
-bool DDyVector3::IsAllZero() const noexcept {
+bool DDyVector3::IsAllZero() const noexcept 
+{
   return math::IsAllZero(*this);
 }
 
@@ -53,19 +81,14 @@ bool operator!=(_MIN_ const DDyVector3& lhs, _MIN_ const DDyVector3& rhs) noexce
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDyVector3& p)
 {
-  j = nlohmann::json
-  {
-    {"X", p.X},
-    {"Y", p.Y},
-    {"Z", p.Z}
-  };
+  j = nlohmann::json{ {"X", p.X}, {"Y", p.Y}, {"Z", p.Z} };
 }
 
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDyVector3& p)
 {
-  p.X = DyJsonGetValueFrom<TF32>(j, "X");
-  p.Y = DyJsonGetValueFrom<TF32>(j, "Y");
-  p.Z = DyJsonGetValueFrom<TF32>(j, "Z");
+  DyJsonGetValueFromTo(j, "X", p.X);
+  DyJsonGetValueFromTo(j, "Y", p.Y);
+  DyJsonGetValueFromTo(j, "Z", p.Z);
 }
 
 } /// ::dy namespace

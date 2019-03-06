@@ -18,7 +18,6 @@
 #include <Dy/Core/Resource/Internal/ShaderType.h>
 #include <Dy/Core/Resource/Internal/Uniform/IDyUniformValueBase.h>
 #include <Dy/Core/Resource/Type/Shader/TemplateUniformType.h>
-#include <Dy/Core/Resource/Type/Uniform/UniformValueTypes.h>
 
 //!
 //! Forward declaration
@@ -47,41 +46,21 @@ public:
   /// If already have value, do nothing.
   void __TryConstructDefaultUniformList(_MIN_ const FDyShaderResource& iResc);
 
+  /// @brief Try update uniform value.
+  /// If uniform value is not exist on binding shader, just insert value with -1 id (garbage value)
+  /// and if uniform value is exist but value is same, do not update value for performance.
+  /// If uniform value is exsit but need to be updated, overwrite value and push value item into queue
+  /// for updating uniform values.
   template <EDyUniformVariableType TType>
   EDySuccess TryUpdateUniform(
-      _MIN_ const std::string& iSpecifier, 
-      _MIN_ const typename MDY_PRIVATE(UniformBinder)<TType>::ValueType& iValue)
-  {
-    const auto it = this->mUniformMap.find(iSpecifier);
-    if (it == this->mUniformMap.end())
-    { // If not found, just insert it anyway.
-      auto [createdPair, _] = this->mUniformMap.try_emplace(iSpecifier, std::make_unique<FDyUniformValue<TType>>(-1, iValue)); \
-      DyPushLogError("Could not find uniform value but insert anyway as id -1. {}", iSpecifier);
-      return DY_FAILURE;
-    }
-    else
-    { // Check type but not matched, pass it.
-      auto& [_, smtptrInstance] = *it;
-      if (smtptrInstance->mType != TType)
-      {
-        DyPushLogError("Could not insert uniform value becasue of different type. {}", iSpecifier);
-        return DY_FAILURE;
-      }
-      // In case of success.
-      auto* ptrInstance = static_cast<FDyUniformValue<TType>*>(smtptrInstance.get());
-      if (ptrInstance->mValue == iValue) { return DY_SUCCESS; }
-
-      ptrInstance->mValue = iValue;
-      this->mUpdatedItemList.emplace_back(ptrInstance);
-      return DY_SUCCESS;
-    }
-  }
+    const std::string& iSpecifier, 
+    const typename MDY_PRIVATE(UniformBinder)<TType>::ValueType& iValue);
 
   /// @brief Try insert texture requisition. \n
   /// If required `insertId` is out of bound of count of available texture, just do nothing but return DY_FAILURE.
   /// When successful, find proper texture type from container, make requisition issue item and insert to queue. \n
   /// This function does not update texture binding status but need to call `TryUpdateUniformList` function.
-  EDySuccess TryInsertTextureRequisition(_MIN_ TU32 insertId, _MIN_ TU32 textureId);
+  EDySuccess TryInsertTextureRequisition(TU32 insertId, TU32 textureId);
 
   /// @brief Try update uniform variables and new texture requisition. \n
   /// Do nothing when update list is empty or binding flag is not set up
@@ -100,8 +79,9 @@ private:
     EDyUniformVariableType mType = EDyUniformVariableType::NoneError;
     TU32 mTextureId = 0;
 
-    DTextureUpdateItem(_MIN_ TU32 insertId, _MIN_ EDyUniformVariableType type, _MIN_ TU32 textureId) :
-        mInsertId{insertId}, mType{type}, mTextureId{textureId} {};
+    DTextureUpdateItem(TU32 insertId, EDyUniformVariableType type, TU32 textureId) 
+      : mInsertId{insertId}, mType{type}, mTextureId{textureId} 
+    {};
   };
 
   template <EDyUniformVariableType TType> using TValueType = typename MDY_PRIVATE(UniformBinder)<TType>::ValueType;
@@ -123,3 +103,4 @@ inline ADyUniformContainer::~ADyUniformContainer() = default;
 } /// ::dy namespace
 
 #endif /// !GUARD_DY_CORE_TYPE_SHADER_ADYUNIFORMCONTAINER_H
+#include <Dy/Core/Resource/Type/Inline/AUniformContainerTmp.inl>

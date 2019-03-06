@@ -63,7 +63,7 @@ void ADyUniformContainer::__TryConstructDefaultUniformList(const FDyShaderResour
   const auto& uniformList = iResc.GetUniformVariableList();
   static std::regex textureRegex{"uTexture\\d+(_\\w*)?"};
 
-  for (const auto& [specifier, _, type, id] : uniformList)
+  for (const auto& [specifier, MDY_NOUSEVAR, type, id] : uniformList)
   {
     // Check there is already specifier value, if exist do nothing
     // but not exist, insert with default value and bring it to update list.
@@ -81,12 +81,12 @@ void ADyUniformContainer::__TryConstructDefaultUniformList(const FDyShaderResour
     case TEnum::Unsigned:      { MDY_DOCONSTRUCTUNIFORMLIST(Unsigned, specifier, id); } break;
     case TEnum::Bool:          { MDY_DOCONSTRUCTUNIFORMLIST(Bool, specifier, id); } break;
     case TEnum::Float:         { MDY_DOCONSTRUCTUNIFORMLIST(Float, specifier, id); } break;
-    case TEnum::Texture1D:             { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture1D, specifier, id); } break;
-    case TEnum::Texture2D:             { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2D, specifier, id); } break;
-    case TEnum::Texture2DArray:        { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2DArray, specifier, id); } break;
-    case TEnum::Texture2DRectangle:    { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2DRectangle, specifier, id); } break;
-    case TEnum::Texture2DShadowArray:  { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2DShadowArray, specifier, id); } break;
-    case TEnum::Texture2DCubemap:      { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2DCubemap, specifier, id); } break;
+    case TEnum::Texture1D:            { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture1D, specifier, id); } break;
+    case TEnum::Texture2D:            { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2D, specifier, id); } break;
+    case TEnum::Texture2DArray:       { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2DArray, specifier, id); } break;
+    case TEnum::Texture2DRectangle:   { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2DRectangle, specifier, id); } break;
+    case TEnum::Texture2DShadowArray: { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2DShadowArray, specifier, id); } break;
+    case TEnum::Texture2DCubemap:     { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2DCubemap, specifier, id); } break;
     default: MDY_UNEXPECTED_BRANCH(); break;
     }
   }
@@ -95,7 +95,7 @@ void ADyUniformContainer::__TryConstructDefaultUniformList(const FDyShaderResour
   this->mIsShaderSetuped = true;
 }
 
-EDySuccess ADyUniformContainer::TryInsertTextureRequisition(_MIN_ TU32 insertId, _MIN_ TU32 textureId)
+EDySuccess ADyUniformContainer::TryInsertTextureRequisition(TU32 insertId, TU32 textureId)
 {
   // Find
   using TEnum = EDyUniformVariableType;
@@ -203,7 +203,7 @@ EDySuccess ADyUniformContainer::TryUpdateUniformList()
     } break;
     case EDyUniformVariableType::Vector2: 
     { const auto* item = static_cast<FDyUniformValue<TEnum::Vector2>*>(ptrItem);
-      //FDyGLWrapper::UpdateUniformVector2(item->mId, item->mValue);
+      FDyGLWrapper::UpdateUniformVector2(item->mId, item->mValue);
     } break;
     case EDyUniformVariableType::Integer:
     { const auto* item = static_cast<FDyUniformValue<TEnum::Integer>*>(ptrItem);

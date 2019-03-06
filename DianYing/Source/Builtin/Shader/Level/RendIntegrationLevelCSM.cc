@@ -108,20 +108,20 @@ vec3 CalculateSpecularColor(vec3 iWorldLightDir, vec3 iWorldNormal,
                             vec3 iLightRgb, vec3 iSpecularRgb, 
                             float iRoughness, float iIntensity)
 {
-  const mat3 viewDirectionMatrix = transpose(inverse(mat3(uCamera.mViewMatrix)));
+  const mat3 viewDirectionMatrix = mat3(uCamera.mViewMatrix);
 
   // Calculate specular value.
   const vec3 viewLightDirection = viewDirectionMatrix * normalize(iWorldLightDir);
   const vec3 viewNormal = viewDirectionMatrix * normalize(iWorldNormal);
-  const vec3 cameraView = vec3(0, 0, 1);
 
-  const vec3 halfwayVector = cameraView + viewLightDirection;
+  const vec3 cameraView = vec3(0, 0, 1);
+  const vec3 halfwayVector = normalize(cameraView + viewLightDirection);
   const float d_slvd_n = 
     pow(
       max(
         dot(viewNormal, halfwayVector)
       , 0.0f)
-    , 32 * (1 + 64 * max(1 - iRoughness, 0.0f))
+    , 8 * (1 + 24 * clamp(iRoughness, 0.0f, 1.0f))
   );
 
   return iSpecularRgb * iLightRgb * (d_slvd_n * iIntensity);
@@ -164,7 +164,7 @@ vec3 GetOpaqueColor()
       uLightDir[i].mSpecular.rgb,
       specularValue.rgb,
       specularValue.a,
-      uLightDir[i].mIntensity * 0.0001f);
+      uLightDir[i].mIntensity * 0.01f);
 
     resultColor  = ambientColor;
     resultColor += clamp(ComputeShadowCoefficient(modelPosition, GetZValue()), 0.1f, 1.0f) * (diffuseColor);

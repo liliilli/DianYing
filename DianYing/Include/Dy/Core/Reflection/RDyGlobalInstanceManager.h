@@ -15,7 +15,7 @@
 
 #include <memory>
 #include <Dy/Builtin/Abstract/ADyGlobalInstance.h>
-#include <Dy/Helper/HashCompileCrc32.h>
+#include <Dy/Helper/System/HashCompileCrc32.h>
 #include <Dy/Helper/System/TypeTraits.h>
 #include <Dy/Helper/System/Macroes.h>
 

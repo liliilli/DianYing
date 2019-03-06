@@ -53,6 +53,8 @@ in VS_OUT {
 	vec4 modelPosition;
 } fs_in;
 
+uniform float uRoughness;
+
 void main() {
   vec2 ts = fs_in.modelPosition.xz / 25.0f;
   ts.y    += fs_in.modelPosition.y / 25.0f;
@@ -62,7 +64,7 @@ void main() {
 	gUnlit	  = vec4(texture(uTexture0, ts).rgb, 1.0f);
 	gNormal	  = vec4(normalize(fs_in.normal) * 0.5f + 0.5f, 1.0f);
   // RGB must be used specular color, and A must be used roughness.
-	gSpecular = vec4(1, 1, 1, 1);
+	gSpecular = vec4(1, 1, 1, uRoughness);
 	gPosition = fs_in.modelPosition;
 }
 )dy");

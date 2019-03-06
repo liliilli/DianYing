@@ -281,6 +281,7 @@
     <ClCompile Include="Source\Core\Resource\Information\FDyTextureCubemapInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyTextureGeneralInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyTextureInformation.cc" />
+    <ClCompile Include="Source\Core\Resource\Internal\EShaderTypes.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\FDyMeshVBOIntermediate.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\GeometryType.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\TextureEnums.cc" />
@@ -761,7 +762,6 @@
     <ClInclude Include="Include\Dy\Element\Type\Timer\FDyTimerHandle.h" />
     <ClInclude Include="Include\Dy\Element\Type\Timer\FDyActorTimerItem.h" />
     <ClInclude Include="Include\Dy\Element\Type\Timer\FDyWidgetTimerItem.h" />
-    <ClInclude Include="Include\Dy\Helper\HelperString.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\FDyCallStack.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\RWLockAtomic.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\FDyNameGenerator.h" />
@@ -937,7 +937,7 @@
     <ClInclude Include="Include\Dy\Helper\ContainerHelper.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\Contracts.h" />
     <ClInclude Include="Include\Dy\Helper\GlobalType.h" />
-    <ClInclude Include="Include\Dy\Helper\HashCompileCrc32.h" />
+    <ClInclude Include="Include\Dy\Helper\System\HashCompileCrc32.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\CheckingRule.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\TmpCheckTypeParams.h" />
     <ClInclude Include="Include\Dy\Helper\Library\HelperJson.h" />
@@ -1073,6 +1073,7 @@
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\Deferred\FDyBtFbSSAOBlur.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Include\Dy\Core\Resource\Type\Inline\AUniformContainerTmp.inl" />
     <None Include="Include\Dy\Element\Inline\FActorImpl.inl" />
     <None Include="Include\Dy\Element\Inline\FActorTmp.inl" />
     <None Include="Include\Dy\Helper\Library\HelperJson.inl" />
@@ -1086,6 +1087,7 @@
     <None Include="Include\Dy\Management\Inline\MSoundImpl.inl" />
     <None Include="Include\Dy\Management\Inline\MWindowImpl.inl" />
     <None Include="Include\Dy\Management\Inline\MWorldImpl.inl" />
+    <None Include="Include\Dy\Meta\Information\Inline\DMetaMetarialInstanceTmp.inl" />
     <None Include="TestResource\Lua\player_script.lua" />
     <None Include="TestResource\Lua\test_bindingscript.lua" />
     <None Include="TestResource\Lua\variables.lua">

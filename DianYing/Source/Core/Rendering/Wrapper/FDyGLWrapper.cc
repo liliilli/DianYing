@@ -832,7 +832,7 @@ FDyGLWrapper::GetShaderProgramUniformBlockInfo(_MIN_ TU32 iShaderProgramId, _MIN
   return result;
 }
 
-void FDyGLWrapper::UpdateUniformMatrix4(_MIN_ TU32 iId, _MIN_ const DDyMatrix4x4& iBuffer, _MIN_ bool iTransposed)
+void FDyGLWrapper::UpdateUniformMatrix4(TU32 iId, const DDyMatrix4x4& iBuffer, bool iTransposed)
 {
   GLenum transposed = GL_FALSE;
   if (iTransposed == true) { transposed = GL_TRUE; }
@@ -840,7 +840,7 @@ void FDyGLWrapper::UpdateUniformMatrix4(_MIN_ TU32 iId, _MIN_ const DDyMatrix4x4
   glUniformMatrix4fv(iId, 1, transposed, &iBuffer[0].X);
 }
 
-void FDyGLWrapper::UpdateUniformMatrix3(_MIN_ TU32 iId, _MIN_ const DDyMatrix3x3& iBuffer, _MIN_ bool iTransposed)
+void FDyGLWrapper::UpdateUniformMatrix3(TU32 iId, const DDyMatrix3x3& iBuffer, bool iTransposed)
 {
   GLenum transposed = GL_FALSE;
   if (iTransposed == true) { transposed = GL_TRUE; }
@@ -848,7 +848,7 @@ void FDyGLWrapper::UpdateUniformMatrix3(_MIN_ TU32 iId, _MIN_ const DDyMatrix3x3
   glUniformMatrix3fv(iId, 1, transposed, &iBuffer[0].X);
 }
 
-void FDyGLWrapper::UpdateUniformMatrix4Array(_MIN_ TU32 iId, _MIN_ const std::vector<DDyMatrix4x4>& iBuffer, _MIN_ bool iIransposed)
+void FDyGLWrapper::UpdateUniformMatrix4Array(TU32 iId, const std::vector<DDyMatrix4x4>& iBuffer, bool iIransposed)
 {
   if (iBuffer.empty() == true) { return; }
 
@@ -859,35 +859,40 @@ void FDyGLWrapper::UpdateUniformMatrix4Array(_MIN_ TU32 iId, _MIN_ const std::ve
   glUniformMatrix4fv(iId, size, transposed, &iBuffer[0][0].X);
 }
 
-void FDyGLWrapper::UpdateUniformVector3Array(_MIN_ TU32 iId, _MIN_ const std::vector<DDyVector3>& iBuffer)
+void FDyGLWrapper::UpdateUniformVector3Array(TU32 iId, const std::vector<DDyVector3>& iBuffer)
 {
   if (iBuffer.empty() == true) { return; }
 
   const TU32 size = static_cast<TU32>(iBuffer.size());
-  glUniform3fv(iId, size, &iBuffer[0].X);
+  glUniform3fv(iId, size, iBuffer.front().Data());
 }
 
-void FDyGLWrapper::UpdateUniformVector4(_MIN_ TU32 iId, _MIN_ const DDyVector4& iBuffer)
+void FDyGLWrapper::UpdateUniformVector4(TU32 iId, const DDyVector4& iBuffer)
 {
-  glUniform4fv(iId, 1, &iBuffer.X);
+  glUniform4fv(iId, 1, iBuffer.Data());
 }
 
-void FDyGLWrapper::UpdateUniformVector3(_MIN_ TU32 iId, _MIN_ const DDyVector3& iBuffer)
+void FDyGLWrapper::UpdateUniformVector3(TU32 iId, const DDyVector3& iBuffer)
 {
-  glUniform3fv(iId, 1, &iBuffer.X);
+  glUniform3fv(iId, 1, iBuffer.Data());
 }
 
-void FDyGLWrapper::UpdateUniformInteger(_MIN_ TU32 iId, _MIN_ const TI32& iBuffer)
+void FDyGLWrapper::UpdateUniformVector2(TU32 iId, const DDyVector2& iBuffer)
+{
+  glUniform2fv(iId, 1, iBuffer.Data());
+}
+
+void FDyGLWrapper::UpdateUniformInteger(TU32 iId, const TI32& iBuffer)
 {
   glUniform1i(iId, iBuffer);
 }
 
-void FDyGLWrapper::UpdateUniformUnsigned(_MIN_ TU32 iId, _MIN_ const TU32& iBuffer)
+void FDyGLWrapper::UpdateUniformUnsigned(TU32 iId, const TU32& iBuffer)
 {
   glUniform1ui(iId, iBuffer);
 }
 
-void FDyGLWrapper::UpdateUniformFloat(_MIN_ TU32 iId, _MIN_ const TF32& iBuffer)
+void FDyGLWrapper::UpdateUniformFloat(TU32 iId, const TF32& iBuffer)
 {
   glUniform1f(iId, iBuffer);
 }

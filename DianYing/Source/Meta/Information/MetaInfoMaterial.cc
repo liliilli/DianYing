@@ -15,8 +15,10 @@
 /// Header file
 #include <Dy/Meta/Information/MetaInfoMaterial.h>
 #include <Dy/Helper/Library/HelperJson.h>
-#include "Dy/Helper/StringSwitch.h"
-#include "Dy/Helper/Library/HelperFilesystem.h"
+#include <Dy/Helper/StringSwitch.h>
+#include <Dy/Helper/Library/HelperFilesystem.h>
+#include <Dy/Helper/Type/Matrix4.h>
+#include <Dy/Core/Resource/Type/Uniform/UniformValueTypes.h>
 
 namespace dy
 {
@@ -38,7 +40,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ DDyMaterialTextureItem& p
 
 std::string PDyMaterialInstanceMetaInfo::ToString()
 {
-  auto log = fmt::format(
+  auto log = MakeStringU8(
 R"dy(PDyMaterialInstanceMetaInfo
 Material Name : {0}
 Shader Name : {1}
@@ -66,7 +68,23 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
         ]
       },
       "M_nanosuit_Arm": 
-      { "ShaderSpecifier": "", "ExternalPath": "./data/Material/M_nanosuit_Arm.json", "IsCompressed": false }
+      { "ExternalPath": "./data/Material/M_nanosuit_Arm.json", "IsCompressed": false }
+   */
+
+  /* External file template.
+   *{
+      "BlendMode": "Opaque",
+      "ShaderSpecifier": "nanosuit_DNS", 
+      "TextureSpecifierList": [
+        { "DefaultType": "Diffuse", "Specifier": "nanosuit_Body_body_dif" },
+        { "DefaultType": "Normal", "Specifier": "nanosuit_Body_body_showroom_ddn" },
+        { "DefaultType": "Shininess", "Specifier": "nanosuit_Body_body_showroom_spec" }
+      ],
+      "UniformValues": {
+        "uRoughness": { "Type": "float", "Value": 1.0 },
+        ...
+      }
+    }
    */
 
   const auto loadingTypeString = DyJsonGetValueFrom<std::string>(j, "LoadingType");
@@ -105,18 +123,124 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
         "Failed to load extenral material meta information file.");
 
       //
-      {
-        const auto& jsonAtlas = optJson.value();
-        DyJsonGetValueFromTo(jsonAtlas, "BlendMode", p.mBlendMode);
-        DyJsonGetValueFromTo(jsonAtlas, "ShaderSpecifier", p.mShaderSpecifier);
+      const auto& jsonAtlas = optJson.value();
+      DyJsonGetValueFromTo(jsonAtlas, "BlendMode", p.mBlendMode);
+      DyJsonGetValueFromTo(jsonAtlas, "ShaderSpecifier", p.mShaderSpecifier);
 
-        // nlohmann::json does not support serialization between std::array, 
-        // so we need to convert list to vector, and convert vector to array again.
-        std::vector<DDyMaterialTextureItem> texList;
-        DyJsonGetValueFromTo(jsonAtlas, "TextureSpecifierList", texList);
-        for (size_t i = 0, size = texList.size(); i < size; ++i) 
+      // nlohmann::json does not support serialization between std::array, 
+      // so we need to convert list to vector, and convert vector to array again.
+      std::vector<DDyMaterialTextureItem> textureSpecifierList;
+      DyJsonGetValueFromTo(jsonAtlas, "TextureSpecifierList", textureSpecifierList);
+      for (size_t i = 0, size = textureSpecifierList.size(); i < size; ++i) 
+      { 
+        p.mTextureNames[i] = textureSpecifierList[i]; 
+      }
+
+      // Get "UniformValues" and get chunk of uniform initial values.
+      const auto& jsonUniform = jsonAtlas["UniformValues"];
+      for (const auto& uniformItem : jsonUniform.items())
+      {
+        const auto& uniformName = uniformItem.key();
+        const auto& itemValue   = uniformItem.value();
+        const auto type = DyJsonGetValueFrom<EDyUniformVariableType>(itemValue, "Type");
+
+        switch (type)
+        {
+        case EDyUniformVariableType::Matrix4: 
         { 
-          p.mTextureNames[i] = texList[i]; 
+          const auto value = DyJsonGetValueFrom<DDyMatrix4x4>(itemValue, "Value");
+          p.mUniformValues.try_emplace(
+            uniformName,
+            std::make_unique<FDyUniformValue<EDyUniformVariableType::Matrix4>>(-1, value)
+          );
+        } break;
+        case EDyUniformVariableType::Matrix3: 
+        {
+          MDY_NOT_IMPLEMENTED_ASSERT();
+        } break;
+        case EDyUniformVariableType::Matrix2:
+        {
+          MDY_NOT_IMPLEMENTED_ASSERT();
+        } break;
+        case EDyUniformVariableType::Vector4:
+        {
+          const auto value = DyJsonGetValueFrom<DDyVector4>(itemValue, "Value");
+          p.mUniformValues.try_emplace(
+            uniformName,
+            std::make_unique<FDyUniformValue<EDyUniformVariableType::Vector4>>(-1, value)
+          );
+        } break;
+        case EDyUniformVariableType::Vector3:
+        {
+          const auto value = DyJsonGetValueFrom<DDyVector3>(itemValue, "Value");
+          p.mUniformValues.try_emplace(
+            uniformName,
+            std::make_unique<FDyUniformValue<EDyUniformVariableType::Vector3>>(-1, value)
+          );
+        } break;
+        case EDyUniformVariableType::Vector2:
+        {
+          const auto value = DyJsonGetValueFrom<DDyVector2>(itemValue, "Value");
+          p.mUniformValues.try_emplace(
+            uniformName,
+            std::make_unique<FDyUniformValue<EDyUniformVariableType::Vector2>>(-1, value)
+          );
+        } break;
+        case EDyUniformVariableType::IVec4: 
+        case EDyUniformVariableType::IVec3: 
+        case EDyUniformVariableType::IVec2: 
+        {
+          MDY_NOT_IMPLEMENTED_ASSERT();
+        } break;
+        case EDyUniformVariableType::Integer:
+        {
+          const auto value = DyJsonGetValueFrom<TI32>(itemValue, "Value");
+          p.mUniformValues.try_emplace(
+            uniformName,
+            std::make_unique<FDyUniformValue<EDyUniformVariableType::Integer>>(-1, value)
+          );
+        } break;
+        case EDyUniformVariableType::Unsigned:
+        {
+          const auto value = DyJsonGetValueFrom<TU32>(itemValue, "Value");
+          p.mUniformValues.try_emplace(
+            uniformName,
+            std::make_unique<FDyUniformValue<EDyUniformVariableType::Unsigned>>(-1, value)
+          );
+        } break;
+        case EDyUniformVariableType::Float: 
+        {
+          const auto value = DyJsonGetValueFrom<TF32>(itemValue, "Value");
+          p.mUniformValues.try_emplace(
+            uniformName,
+            std::make_unique<FDyUniformValue<EDyUniformVariableType::Float>>(-1, value)
+          );
+        } break;
+        case EDyUniformVariableType::Bool:
+        {
+          const auto value = DyJsonGetValueFrom<bool>(itemValue, "Value");
+          p.mUniformValues.try_emplace(
+            uniformName,
+            std::make_unique<FDyUniformValue<EDyUniformVariableType::Bool>>(-1, value)
+          );
+        } break;
+        case EDyUniformVariableType::Matrix4Array: 
+        {
+          const auto value = DyJsonGetValueFrom<std::vector<DDyMatrix4x4>>(itemValue, "Value");
+          p.mUniformValues.try_emplace(
+            uniformName,
+            std::make_unique<FDyUniformValue<EDyUniformVariableType::Matrix4Array>>(-1, value)
+          );
+        } break;
+        case EDyUniformVariableType::Vector3Array: 
+        {
+          const auto value = DyJsonGetValueFrom<std::vector<DDyVector3>>(itemValue, "Value");
+          p.mUniformValues.try_emplace(
+            uniformName,
+            std::make_unique<FDyUniformValue<EDyUniformVariableType::Vector3Array>>(-1, value)
+          );
+        }
+        default: MDY_UNEXPECTED_BRANCH(); break;
         }
       }
     }

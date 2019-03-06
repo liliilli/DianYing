@@ -16,20 +16,15 @@
 #include <Dy/Core/Rendering/Pipeline/BasicRenderer.h>
 
 #include <Dy/Component/CDyModelRenderer.h>
-#include <Dy/Core/Resource/Internal/TextureEnums.h>
 #include <Dy/Element/Actor.h>
 #include <Dy/Management/WorldManager.h>
-#include <Dy/Management/SettingManager.h>
 #include <Dy/Management/Rendering/UniformBufferObjectManager.h>
 #include <Dy/Core/Rendering/Helper/FrameAttachmentString.h>
 #include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
 #include "Dy/Core/Resource/Resource/FDyMeshResource.h"
-#include "Dy/Core/Resource/Resource/FDyTextureResource.h"
 #include "Dy/Core/Resource/Resource/FDyFrameBufferResource.h"
 #include <Dy/Component/CDyCamera.h>
-#include "Dy/Management/Helper/SDyProfilingHelper.h"
-#include "Dy/Core/Resource/Resource/FDyModelResource.h"
 #include "Dy/Core/Rendering/Wrapper/FDyGLWrapper.h"
 #include "Dy/Component/CDyModelAnimator.h"
 

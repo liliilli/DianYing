@@ -15,7 +15,7 @@
 /// Header file
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 #include <Dy/Core/DyEngine.h>
-#include <Dy/Helper/HelperString.h>
+#include <Dy/Helper/Library/HelperString.h>
 #include <Dy/Meta/Information/MetaInfoMaterial.h>
 
 namespace dy
@@ -122,7 +122,7 @@ void SDyIOConnectionHelper::PopulateInstantMaterialResource(
   // Set instant specifier name.
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
   auto& ioThread = *gEngine->pfGetIOThread();
-  desc.mSpecifierName = fmt::format("instant{}{:04}", DyGetRandomString(5), instantMatId++);
+  desc.mSpecifierName = fmt::format("instant{}{:04}", CreateRandomString(5), instantMatId++);
   
   // Require population instant mateiral resource.
   MDY_CALL_ASSERT_SUCCESS(ioThread.InstantPopulateMaterialResource(desc, refMat, scope, callback));
