@@ -13,7 +13,9 @@
 /// SOFTWARE.
 ///
 
+#include <unordered_set>
 #include <nlohmann/json_fwd.hpp>
+
 #include <Dy/Core/Rendering/Interface/IRenderPipeline.h>
 #include <Dy/Meta/Information/CommonResourceMetaInfo.h>
 #include <Dy/Helper/Type/DUuid.h>
@@ -37,6 +39,25 @@ struct PDyRenderPipelineInstanceMetaInfo final : public PDyCommonResourceMetaInf
   using TPipelineFunction = std::unique_ptr<IRenderPipeline>(*)();
   /// @brief do not touch, this will be handled automatically in Dy System.
   TPipelineFunction mBtInstantiationFunction = nullptr;
+
+  /// @brief Check given render pipeline meta information is valid item
+  /// to all local & child render pipeline, by searching metainfo manager.
+  ///
+  /// This function must not be called prior to initialization of metainfo manager.
+  /// and release of manager.
+  [[nodiscard]] static bool 
+  HasValidChildItems(const PDyRenderPipelineInstanceMetaInfo& iRenderPipeline);
+
+  /// @brief Get all children pipeline names recursively.
+  /// If given child pipeline name is not valid on Dy system, just return no value.
+  [[nodiscard]] static std::optional<std::unordered_set<std::string>> 
+  GetAllChildPipelineNames(const PDyRenderPipelineInstanceMetaInfo& iRenderPipeline);
+
+  /// @brief Get all children and local render item names recursively.
+  /// If given child render pipeline and render item not valid on Dy system, 
+  /// just return not value.
+  [[nodiscard]] static std::optional<std::unordered_set<std::string>>
+  GetAllRenderItemNames(const PDyRenderPipelineInstanceMetaInfo& iRenderPipeline);
 };
 
 void to_json(nlohmann::json& oJson, const PDyRenderPipelineInstanceMetaInfo& iMeta);

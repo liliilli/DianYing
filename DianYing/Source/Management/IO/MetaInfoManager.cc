@@ -546,6 +546,20 @@ const PDySoundInstanceMetaInfo& MDyMetaInfo::GetSoundMetaInformation(const std::
   return this->mInternal->GetSoundMetaInformation(specifier);
 }
 
+const PDyRenderPipelineInstanceMetaInfo& 
+MDyMetaInfo::GetRenderPipeline(const std::string& iRenderPipelineSpecifier) const
+{
+  MDY_ASSERT_FORCE(this->IsRenderPipelineExist(iRenderPipelineSpecifier) == true);
+  return this->mInternal->mRenderPipelineMetaInfo.at(iRenderPipelineSpecifier);
+}
+
+const PDyRenderItemInstanceMetaInfo& 
+MDyMetaInfo::GetRenderItem(const std::string& iRenderItemSpecifier) const
+{
+  MDY_ASSERT_FORCE(this->IsRenderItemExist(iRenderItemSpecifier) == true);
+  return this->mInternal->mRenderItemMetaInfo.at(iRenderItemSpecifier);
+}
+
 MDY_NODISCARD const PDyMetaWidgetRootDescriptor* 
 MDyMetaInfo::MDY_PRIVATE(TryGetLoadingWidgetMetaLoading)() const noexcept
 {
@@ -625,6 +639,16 @@ bool MDyMetaInfo::IsFrameBufferMetaInfoExist(const std::string& speicfierName) c
 bool MDyMetaInfo::IsSoundMetaInfoExist(const std::string& specifierName) const noexcept
 {
   return DyIsMapContains(this->mInternal->mSoundMetaInfo, specifierName);
+}
+
+bool MDyMetaInfo::IsRenderPipelineExist(const std::string& iRenderPipelineName) const noexcept
+{
+  return DyIsMapContains(this->mInternal->mRenderPipelineMetaInfo, iRenderPipelineName);
+}
+
+bool MDyMetaInfo::IsRenderItemExist(const std::string& iRenderItemName) const noexcept
+{
+  return DyIsMapContains(this->mInternal->mRenderItemMetaInfo, iRenderItemName);
 }
 
 bool MDyMetaInfo::IsLoadingWidgetMetaInfoExist() const noexcept

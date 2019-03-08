@@ -16,6 +16,7 @@
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Management/Type/Render/DDyModelHandler.h>
 #include <Dy/Management/Type/Render/DDyGlGlobalStatus.h>
+#include <Dy/Helper/Pointer.h>
 
 //!
 //! Forward declaration
@@ -23,6 +24,8 @@
 
 namespace dy
 {
+class   FWrapperRenderItem;
+class   FWrapperRenderPipeline;
 struct  DDyUboDirectionalLight;
 class   CDyCamera;
 class   CDyModelRenderer;
@@ -51,6 +54,15 @@ class MDyRendering final : public IDySingleton<MDyRendering>
   MDY_SINGLETON_PROPERTIES(MDyRendering);
   MDY_SINGLETON_DERIVED(MDyRendering);
 public:
+  using TMeshDrawCallItem = std::tuple<
+      NotNull<DDyModelHandler::DActorInfo*>,
+      NotNull<const FDyMeshResource*>, 
+      NotNull<const FDyMaterialResource*>
+  >;
+
+  using TDrawColliderItem = std::pair<NotNull<CDyPhysicsCollider*>, DDyMatrix4x4>; 
+  using TUiDrawCallItem = NotNull<FDyUiObject*>;
+
   /// @brief PreRender update functin.
   void PreRender(_MIN_ TF32 dt);
 
@@ -94,6 +106,24 @@ public:
 
   /// @brief Swap buffer.
   void SwapBuffers();
+
+  /// @todo TEMPORARY API
+  std::vector<TMeshDrawCallItem>& GetOpaqueMeshQueueList();
+  /// @todo TEMPORARY API
+  std::vector<TMeshDrawCallItem>& GetTranclucentOitMeshQueueList(); 
+  /// @todo TEMPORARY API
+  std::vector<TDrawColliderItem>& GetColliderMeshQueueList(); 
+  /// @todo TEMPORARY API
+  std::vector<TUiDrawCallItem>& GetUiObjectQueuelist();
+
+  /// @brief Check RenderItem is exist on rendering system.
+  MDY_NODISCARD bool HasRenderItem(const std::string& iRenderItemName);
+  /// @brief Get handle instance of RenderItem into handle.
+  MDY_NODISCARD FWrapperRenderItem* GetRenderItem(const std::string& iRenderItemName);
+  /// @brief Check RenderPipeline is exist on rendering system.
+  MDY_NODISCARD bool HasRenderPipeline(const std::string& iRenderPipelineName);
+  /// @brief Get handle instance of RenderPipeline into handle.
+  MDY_NODISCARD FWrapperRenderPipeline* GetRenderPipeline(const std::string& iRenderPipelineName);
 
 private:
   /// @brief Enqueue static draw call to mesh with material.

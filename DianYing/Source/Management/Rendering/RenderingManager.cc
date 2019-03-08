@@ -56,6 +56,9 @@
 #include "Dy/Management/Internal/World/FDyWorldUIContainer.h"
 
 #include <queue>
+#include <Dy/Core/Rendering/Wrapper/FWrapperRenderPipeline.h>
+#include <Dy/Core/Rendering/Wrapper/FWrapperRenderItem.h>
+#include <Dy/Core/Rendering/Wrapper/FWrapperHandleRenderPipeline.h>
 
 //!
 //! Forward declaration & Local translation unit function and data.
@@ -190,14 +193,27 @@ void CbGlViewportStack(_MIN_ const dy::DDyGlGlobalStatus::DViewport& iTopStatus)
 namespace dy
 {
 
-class MDyRendering::Impl final
+class MDyRendering::Impl final : IDyInitializeHelper<void>
 {
 public:
   Impl();
+  EDySuccess Initialize() override final;
+  void Release() override final;
   ~Impl();
 
   /// @brief PreRender update functin.
-  void PreRender(_MIN_ TF32 dt);
+  void PreRender(TF32 dt);
+
+  /// @brief Create render pipeline with specifier.
+  /// If not found, just return DY_FAILURE.
+  EDySuccess CreateRenderPipeline(const std::string& iPipelineSpecifier);
+  /// @brief Create entry render pipeline handle into list.
+  /// Created render pipeline will be rendered following order of child and local render item.
+  void CreateHandleRenderPipeline(const PDyRenderPipelineInstanceMetaInfo& iEntryRenderPipeline);
+
+  /// @brief Remove render pipeline with specifier.
+  /// If not found in list, just return DY_FAILURE.
+  EDySuccess RemoveRenderPipeline(const std::string& iPipelineSpecifier);
 
   /// @brief 
   /// @TODO LOGIC IS TEMPORARY.
@@ -254,7 +270,6 @@ public:
   /// @brief Reset all of rendering framebuffers related to rendering of scene for new frame rendering.
   void pClearRenderingFramebufferInstances() noexcept;
 
-private:
   std::unique_ptr<FDyBasicRenderer>               mBasicOpaqueRenderer  = MDY_INITIALIZE_NULL;
   std::unique_ptr<FDyLevelCascadeShadowRenderer>  mCSMRenderer          = MDY_INITIALIZE_NULL; 
   std::unique_ptr<FDyLevelCSMIntergration>        mLevelFinalRenderer   = MDY_INITIALIZE_NULL;
@@ -267,14 +282,13 @@ private:
   std::unique_ptr<FDyDebugAABBRenderer>           mDebugAABBRenderer    = MDY_INITIALIZE_NULL;
   std::unique_ptr<FDyDebugPickingRenderer>        mDebugPickingRenderer = MDY_INITIALIZE_NULL;
 
-  using TMeshDrawCallItem = std::tuple<
-      NotNull<DDyModelHandler::DActorInfo*>,
-      NotNull<const FDyMeshResource*>, 
-      NotNull<const FDyMaterialResource*>
-  >;
+  std::unordered_map<std::string, std::unique_ptr<FWrapperRenderPipeline>> 
+    mRenderPipelines = {};
 
-  using TDrawColliderItem = std::pair<NotNull<CDyPhysicsCollider*>, DDyMatrix4x4>; 
-  using TUiDrawCallItem = NotNull<FDyUiObject*>;
+  std::unordered_map<std::string, std::unique_ptr<FWrapperRenderItem>> 
+    mRenderItems = {};
+
+  std::vector<FWrapperHandleRenderPipeline> mEntryRenderPipelines;
 
   std::vector<TMeshDrawCallItem> mOpaqueMeshDrawingList = {};
   std::vector<TMeshDrawCallItem> mTranslucentMeshDrawingList = {};
@@ -325,6 +339,7 @@ namespace dy
 EDySuccess MDyRendering::pfInitialize()
 { 
   this->mInternal = new (std::nothrow) Impl();
+  this->mInternal->Initialize();
   return DY_SUCCESS;
 }
 
@@ -397,5 +412,55 @@ void MDyRendering::InsertInternalGlobalStatus(const DDyGlGlobalStatus& iNewStatu
 void MDyRendering::PopInternalGlobalStatus() { this->mInternal->PopInternalGlobalStatus(); }
 
 void MDyRendering::SwapBuffers() { this->mInternal->SwapBuffers(); }
+
+std::vector<MDyRendering::TMeshDrawCallItem>& MDyRendering::GetOpaqueMeshQueueList()
+{
+  return this->mInternal->mOpaqueMeshDrawingList;
+}
+
+std::vector<MDyRendering::TMeshDrawCallItem>& MDyRendering::GetTranclucentOitMeshQueueList()
+{
+  return this->mInternal->mTranslucentMeshDrawingList;
+}
+
+std::vector<MDyRendering::TDrawColliderItem>& MDyRendering::GetColliderMeshQueueList()
+{
+  return this->mInternal->mDebugColliderDrawingList;
+}
+
+std::vector<MDyRendering::TUiDrawCallItem>& MDyRendering::GetUiObjectQueuelist()
+{
+  return this->mInternal->mUiObjectDrawingList;
+}
+
+bool MDyRendering::HasRenderItem(const std::string& iRenderItemName)
+{
+  return DyIsMapContains(this->mInternal->mRenderItems, iRenderItemName);
+}
+
+FWrapperRenderItem* MDyRendering::GetRenderItem(const std::string& iRenderItemName)
+{
+  if (this->HasRenderItem(iRenderItemName) == false) 
+  { 
+    return nullptr; 
+  }
+
+  return this->mInternal->mRenderItems.at(iRenderItemName).get();
+}
+
+bool MDyRendering::HasRenderPipeline(const std::string& iRenderPipelineName)
+{
+  return DyIsMapContains(this->mInternal->mRenderPipelines, iRenderPipelineName);
+}
+
+FWrapperRenderPipeline* MDyRendering::GetRenderPipeline(const std::string& iRenderPipelineName)
+{
+  if (this->HasRenderPipeline(iRenderPipelineName) == false)
+  {
+    return nullptr;
+  }
+
+  return this->mInternal->mRenderPipelines.at(iRenderPipelineName).get();
+}
 
 } /// ::dy namespace

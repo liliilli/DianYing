@@ -16,6 +16,7 @@
 #include <Dy/Helper/Internal/FProxyHandler.h>
 #include <Dy/Core/Rendering/Interface/IRenderPipeline.h>
 #include <Dy/Helper/Type/DUuid.h>
+#include <Dy/Helper/Internal/FProxyHandle.h>
 
 //!
 //! Forward declaration

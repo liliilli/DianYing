@@ -99,7 +99,6 @@ void FDyBasicRenderer::RenderScreen(
   auto& refActor = *iRefRenderer.mPtrModelRenderer->GetBindedActor();
   const auto& transform = refActor.GetTransform();
   const auto& refModelMatrix    = transform->GetTransform();
-  const auto& refRotationMatrix = transform->GetRotationMatrix();
   auto& shaderBinder = iRefMaterial.GetShaderResourceBinder();
   if (shaderBinder.IsResourceExist() == false) { return; }
 

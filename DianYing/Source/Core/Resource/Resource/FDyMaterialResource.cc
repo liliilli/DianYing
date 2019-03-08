@@ -68,7 +68,10 @@ FDyMaterialResource::FDyMaterialResource(const FDyMaterialInformation& iInformat
       { const auto& item = static_cast<FDyUniformValue<EUniform::Vector3>&>(*smtValueInstance);
         this->mBinderShader->TryUpdateUniform<EUniform::Vector3>(uniformName, item.mValue);
       } break;
-      case EUniform::Vector2: break;
+      case EUniform::Vector2: 
+      { const auto& item = static_cast<FDyUniformValue<EUniform::Vector2>&>(*smtValueInstance);
+        this->mBinderShader->TryUpdateUniform<EUniform::Vector2>(uniformName, item.mValue);
+      } break;
       case EUniform::IVec4: break;
       case EUniform::IVec3: break;
       case EUniform::IVec2: break;
