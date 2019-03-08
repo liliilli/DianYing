@@ -67,6 +67,7 @@ namespace dy
 
 #define PHITOS_SET_RELEASE_FUNCTION(__MAFunc__) (void(0))
 #define MDY_ASSERT_MSG(__MAExpr__, __MAMessage__) (void(0))
+#define MDY_ASSERT(__MAExpr__) (void(0))
 #define MDY_NOT_IMPLEMENTED_ASSERT() (void(0));
 #define MDY_UNEXPECTED_BRANCH() (void(0))
 
@@ -77,6 +78,12 @@ namespace dy
 /// If expression is false, Assert application with __MAMessage__.
 #define MDY_ASSERT_MSG_FORCE(__MAExpr__, __MAMessage__) \
   ::dy::__EnhancedAssert(#__MAExpr__, __MAExpr__, __FILE__, __LINE__, __MAMessage__)
+
+/// @def MDY_ASSERT_MSG(__MAExpr__)
+/// @brief Do runtime check for __MAExpr__ (Macro Argument Expression) in anymode,
+/// If expression is false, Assert application with __MAExpr__.
+#define MDY_ASSERT_FORCE(__MAExpr__) \
+  ::dy::__EnhancedAssert(#__MAExpr__, __MAExpr__, __FILE__, __LINE__, "Failed to assert " #__MAExpr__)
 
 /// ---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*
 /// Implementation
