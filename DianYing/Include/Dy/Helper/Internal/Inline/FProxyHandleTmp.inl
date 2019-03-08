@@ -30,10 +30,7 @@ FProxyHandle<TType>::FProxyHandle(const FProxyHandle& iHandle)
   : mHandlerAddress{iHandle.mHandlerAddress}
 {
   // Attach to handler.
-  if (this->IsBinding() == true)
-  {
-    this->mHandlerAddress->AttachHandle(*this);
-  }
+  if (this->IsBinding() == true) { this->mHandlerAddress->AttachHandle(*this); }
 }
 
 template <typename TType>
@@ -47,7 +44,8 @@ FProxyHandle<TType>& FProxyHandle<TType>::operator=(const FProxyHandle& iHandle)
 
   // Attach.
   this->mHandlerAddress = iHandle.mHandlerAddress;
-  this->mHandlerAddress->AttachHandle(*this);
+  if (this->IsBinding() == true) { this->mHandlerAddress->AttachHandle(*this); }
+
   return *this;
 }
 
@@ -56,12 +54,10 @@ FProxyHandle<TType>::FProxyHandle(FProxyHandle&& iHandle) noexcept
 {
   if (iHandle.IsBinding() == true)
   {
-    iHandle.mHandlerAddress->DetachHandle(iHandle);
-
     this->mHandlerAddress = iHandle.mHandlerAddress;
-    iHandle.mHandlerAddress = nullptr;
-
-    this->mHandlerAddress->AttachHandle(*this);
+    iHandle.Reset();
+    
+    if (this->IsBinding() == true) { this->mHandlerAddress->AttachHandle(*this); }
   }
 }
 
@@ -76,13 +72,11 @@ FProxyHandle<TType>& FProxyHandle<TType>::operator=(FProxyHandle&& iHandle) noex
   else
   {
     this->Reset();
-    
-    iHandle.mHandlerAddress->DetachHandle(iHandle);
 
     this->mHandlerAddress = iHandle.mHandlerAddress;
-    iHandle.mHandlerAddress = nullptr;
+    iHandle.Reset();
 
-    this->mHandlerAddress->AttachHandle(*this);
+    if (this->IsBinding() == true) { this->mHandlerAddress->AttachHandle(*this); }
   }
 
   return *this;
