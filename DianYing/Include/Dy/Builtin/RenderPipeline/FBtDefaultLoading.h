@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_BUILTIN_RENDERPIPELINE_FBTDEFAULT_H
-#define GUARD_DY_BUILTIN_RENDERPIPELINE_FBTDEFAULT_H
+#ifndef GUARD_DY_BUILTIN_RENDERPIPELINE_FBTDEFAULTLOADING_H
+#define GUARD_DY_BUILTIN_RENDERPIPELINE_FBTDEFAULTLOADING_H
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -20,19 +20,19 @@
 namespace dy
 {
 
-/// @class FBtRenderPipelineDefault
-/// @brief Instantiate default pipeline
-class FBtRenderPipelineDefault final : public ARenderPipeline
+/// @class FBtRenderPipelineDefaultLoading
+/// @brief Instantiate default pipeline but only rendering loading scene and debug ui.
+class FBtRenderPipelineDefaultLoading final : public ARenderPipeline
 {
-  MDY_REGISTER_RESOURCE_RENDER_PIPELINE(FBtRenderPipelineDefault, "dyBtDefault")
+  MDY_REGISTER_RESOURCE_RENDER_PIPELINE(FBtRenderPipelineDefaultLoading, "dyBtDefaultLoading")
 public:
   EDySuccess OnPreRenderCheckCondition() override final;
-  void OnFailedCheckCondition() override final {}
-  void OnSetupRenderingSetting() override final {}
-  void OnReleaseRenderingSetting() override final {}
-  void OnPostRender() override final {}
+  void OnFailedCheckCondition() override final {};
+  void OnSetupRenderingSetting() override final {};
+  void OnReleaseRenderingSetting() override final {};
+  void OnPostRender() override final {};
 };
 
 } /// ::dy namespace
 
-#endif /// GUARD_DY_BUILTIN_RENDERPIPELINE_FBTDEFAULT_H
+#endif /// GUARD_DY_BUILTIN_RENDERPIPELINE_FBTDEFAULTLOADING_H

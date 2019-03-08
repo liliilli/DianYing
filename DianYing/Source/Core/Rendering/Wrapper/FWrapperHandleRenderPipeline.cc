@@ -50,6 +50,16 @@ FWrapperHandleRenderPipeline::FWrapperHandleRenderPipeline(const PDyRenderPipeli
   }
 }
 
+bool FWrapperHandleRenderPipeline::IsActivated() const noexcept
+{
+  return this->mIsActivated;
+}
+
+void FWrapperHandleRenderPipeline::Activate(bool iIsActivated) noexcept
+{
+  this->mIsActivated = iIsActivated;
+}
+
 void FWrapperHandleRenderPipeline::TryRender()
 {
   if (this->mHandleRenderPipeline->OnPreRenderCheckCondition() == DY_SUCCESS)

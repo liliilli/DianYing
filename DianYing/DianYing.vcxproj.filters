@@ -369,6 +369,7 @@
     <ClCompile Include="Source\Builtin\RenderPipeline\Widget\FBtWidget.cc" />
     <ClCompile Include="Source\Builtin\RenderItem\Widget\FBtWidgetGeneral.cc" />
     <ClCompile Include="Source\Builtin\RenderItem\FBtScreenIntegration.cc" />
+    <ClCompile Include="Source\Builtin\RenderPipeline\FBtDefaultLoading.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -906,6 +907,7 @@
     <ClInclude Include="Include\Dy\Builtin\RenderPipeline\Widget\FBtWidget.h" />
     <ClInclude Include="Include\Dy\Builtin\RenderItem\FBtScreenIntegration.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\FProxyHandle.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderPipeline\FBtDefaultLoading.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

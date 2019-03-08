@@ -228,6 +228,7 @@
     <ClCompile Include="Source\Builtin\RenderItem\Widget\FBtWidgetGeneral.cc" />
     <ClCompile Include="Source\Builtin\RenderPipeline\Debug\FBtDebug.cc" />
     <ClCompile Include="Source\Builtin\RenderPipeline\FBtDefault.cc" />
+    <ClCompile Include="Source\Builtin\RenderPipeline\FBtDefaultLoading.cc" />
     <ClCompile Include="Source\Builtin\RenderPipeline\Level\FBtDefaultLevel.cc" />
     <ClCompile Include="Source\Builtin\RenderPipeline\Level\FBtDefaultLevelPostProcess.cc" />
     <ClCompile Include="Source\Builtin\RenderPipeline\Level\FBtDefaultLevelRender.cc" />
@@ -675,6 +676,7 @@
     <ClInclude Include="Include\Dy\Builtin\RenderItem\Widget\FBtWidgetGeneral.h" />
     <ClInclude Include="Include\Dy\Builtin\RenderPipeline\Debug\FBtDebug.h" />
     <ClInclude Include="Include\Dy\Builtin\RenderPipeline\FBtDefault.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderPipeline\FBtDefaultLoading.h" />
     <ClInclude Include="Include\Dy\Builtin\RenderPipeline\Level\FBtDefaultLevel.h" />
     <ClInclude Include="Include\Dy\Builtin\RenderPipeline\Level\FBtDefaultLevelPostProcess.h" />
     <ClInclude Include="Include\Dy\Builtin\RenderPipeline\Level\FBtDefaultLevelRender.h" />

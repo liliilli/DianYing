@@ -12,7 +12,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/RenderPipeline/FBtDefault.h>
+#include <Dy/Builtin/RenderPipeline/FBtDefaultLoading.h>
 
 #include <Dy/Builtin/RenderPipeline/Level/FBtDefaultLevel.h>
 #include <Dy/Builtin/RenderPipeline/Debug/FBtDebug.h>
@@ -23,20 +23,19 @@
 namespace dy
 {
 
-void FBtRenderPipelineDefault::__ConstructionHelper
+void FBtRenderPipelineDefaultLoading::__ConstructionHelper
   ::ConstructBuffer(PDyRenderPipelineInstanceMetaInfo& oMeta)
 {
   oMeta.mSpecifierName    = sName;
-  oMeta.mUuid             = DUuid("a6506841-bc7c-45b4-bb4e-5f614cff2a1c");
+  oMeta.mUuid             = DUuid("b7807ea8-1c1b-422e-bb12-cc18802679c6");
 
-  oMeta.mChildPipelineNames.emplace_back(FBtRenderPipelineDefaultLevel::sName);
-  oMeta.mChildPipelineNames.emplace_back(FBtRenderPipelineDebug::sName);
+  //oMeta.mChildPipelineNames.emplace_back(FBtRenderPipelineDebug::sName);
   oMeta.mChildPipelineNames.emplace_back(FBtRenderPipelineWidget::sName);
 
   oMeta.mLocalRenderItemNames.emplace_back(FBtRenderItemScreenIntegeration::sName);
 }
 
-EDySuccess FBtRenderPipelineDefault::OnPreRenderCheckCondition()
+EDySuccess FBtRenderPipelineDefaultLoading::OnPreRenderCheckCondition()
 {
   return DY_SUCCESS;
 }

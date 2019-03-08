@@ -111,6 +111,8 @@ inline EDySuccess MDyRendering::Impl::Initialize()
   // Setup default render pipeline
   this->mEntryRenderPipelines.reserve(8);
   this->CreateRenderPipeline("dyBtDefault");
+  this->CreateRenderPipeline("dyBtDefaultLoading");
+  //this->ActivateEntryRenderPipeline("dyBtDefault", true);
   
   // Check Rendering API.
   switch (renderingApiType)
@@ -301,6 +303,8 @@ inline MDyRendering::Impl::~Impl()
 
   // Clear all render pipelines.
   this->RemoveRenderPipeline("dyBtDefault");
+  this->RemoveRenderPipeline("dyBtDefaultLoading");
+
   MDY_ASSERT(
     std::all_of(MDY_BIND_CBEGIN_CEND(this->mRenderItems), 
     [](const auto& renderItem) { return renderItem.second->IsBeingBinded() == false; }));
@@ -465,132 +469,21 @@ inline void MDyRendering::Impl::EnqueueDebugDrawCollider(
   this->mDebugColliderDrawingList.emplace_back(std::make_pair(&iRefCollider, iTransformMatrix));
 }
 
-inline void MDyRendering::Impl::RenderLevelInformation()
+inline void MDyRendering::Impl::RenderPipelines()
 {
   //this->pClearRenderingFramebufferInstances();
   for (auto& renderPipeline : this->mEntryRenderPipelines)
   {
+    // Need to check activation flag manually.
+    if (renderPipeline.IsActivated() == false) { continue; }
+
+    MDY_GRAPHIC_SET_CRITICALSECITON();
     renderPipeline.TryRender();
   }
-#ifdef false
-  // Final. 
-  // Level information without debug information is integrated in one renderbuffer.
-  if (MDY_GRAPHIC_SET_CRITICALSECITON();
-      this->mLevelFinalRenderer != nullptr 
-  &&  this->mLevelFinalRenderer->TryPushRenderingSetting() == DY_SUCCESS)
-  { 
-    this->mLevelFinalRenderer->RenderScreen(); 
-    this->mLevelFinalRenderer->TryPopRenderingSetting();
-  }
-#endif
 
   this->mOpaqueMeshDrawingList.clear();
-}
-
-inline void MDyRendering::Impl::RenderDebugInformation()
-{
-  //!
-  //! Debug rendering.
-  //! https://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/guide/Manual/DebugVisualization.html#debugvisualization
-  //!
-#ifdef false
-  const auto* ptrCamera = MDyWorld::GetInstance().GetPtrMainLevelCamera();
-  if (ptrCamera == nullptr) { return; }
-
-
-  if (setting.IsRenderPhysicsCollisionShape() == true)
-  { // Draw collider shapes. (NOT AABB!) If main camera is not exist, do not render level.
-    // (1) Draw opaque call list. Get valid Main CDyCamera instance pointer address.
-    if (MDY_GRAPHIC_SET_CRITICALSECITON();
-        this->mDebugShapeRenderer != nullptr
-    &&  this->mDebugShapeRenderer->TryPushRenderingSetting() == DY_SUCCESS)
-    {
-      for (auto& [ptrCollider, transformMatrix] : this->mDebugColliderDrawingList)
-      {
-        this->mDebugShapeRenderer->RenderScreen(*ptrCollider, transformMatrix);
-      }
-      // Pop setting.
-      this->mDebugShapeRenderer->TryPopRenderingSetting();
-    }
-  }
-
-  const auto& setting = MDySetting::GetInstance();
-  if (setting.IsRenderPhysicsCollisionAABB() == true) 
-  { // Draw collider AABB.
-    // (2) Draw opaque call list. Get valid Main CDyCamera instance pointer address.
-    if (MDY_GRAPHIC_SET_CRITICALSECITON();
-        this->mDebugAABBRenderer != nullptr
-    &&  this->mDebugAABBRenderer->TryPushRenderingSetting() == DY_SUCCESS)
-    {
-      for (auto& [ptrCollider, transformMatrix] : this->mDebugColliderDrawingList)
-      {
-        this->mDebugAABBRenderer->RenderScreen(*ptrCollider, transformMatrix);
-      }
-      // Pop setting.
-      this->mDebugAABBRenderer->TryPopRenderingSetting();
-    }
-  }
-
-  // If picking actor is exist, render it only edge using kernel & ping-pong.
-  if (auto& refInput = MDyInput::GetInstance();
-      refInput.IsActorPicked() == true)
-  {
-    auto& refActor = *(*refInput.__GetPPtrPickingTarget());
-    if (MDY_GRAPHIC_SET_CRITICALSECITON();
-        this->mDebugPickingRenderer != nullptr
-    &&  this->mDebugPickingRenderer->TryPushRenderingSetting() == DY_SUCCESS)
-    {
-      this->mDebugPickingRenderer->RenderScreen(refActor);
-    }
-    // Pop setting.
-    this->mDebugPickingRenderer->TryPopRenderingSetting();
-  }
-#endif
-
   this->mDebugColliderDrawingList.clear();
-}
-
-inline void MDyRendering::Impl::RenderUIInformation()
-{
-#ifdef false
-  if (MDY_GRAPHIC_SET_CRITICALSECITON();
-      this->mUiBasicRenderer != nullptr
-  &&  this->mUiBasicRenderer->TryPushRenderingSetting() == DY_SUCCESS) 
-  { 
-    this->mUiBasicRenderer->RenderScreen(this->mUiObjectDrawingList); 
-    this->mUiBasicRenderer->TryPopRenderingSetting();
-  }
-#endif
-
   this->mUiObjectDrawingList.clear();
-}
-
-inline void MDyRendering::Impl::Integrate()
-{
-  //! Level & Ui & Debug integration section.
-  //! ImGUI rendering will be held outside and after this function call.
-#ifdef false
-  if (MDY_GRAPHIC_SET_CRITICALSECITON();
-      this->mFinalDisplayRenderer != nullptr
-  &&  this->mFinalDisplayRenderer->TryPushRenderingSetting() == DY_SUCCESS) 
-  { 
-    this->mFinalDisplayRenderer->RenderScreen(); 
-    this->mFinalDisplayRenderer->TryPopRenderingSetting();
-  }
-#endif
-}
-
-inline void MDyRendering::Impl::MDY_PRIVATE(RenderLoading)()
-{
-  if (MDY_GRAPHIC_SET_CRITICALSECITON();
-      this->mUiBasicRenderer != nullptr
-  &&  this->mUiBasicRenderer->TryPushRenderingSetting() == DY_SUCCESS) 
-  { 
-    this->mUiBasicRenderer->RenderScreen(this->mUiObjectDrawingList); 
-    this->mUiBasicRenderer->TryPopRenderingSetting();
-  }
-  this->mUiObjectDrawingList.clear();
-  this->Integrate();
 }
 
 inline CDyDirectionalLight* MDyRendering::Impl::GetPtrMainDirectionalLight() const noexcept

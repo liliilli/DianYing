@@ -71,18 +71,8 @@ public:
   void SetupDrawModelTaskQueue();
 
   /// @brief Render level information.
-  void RenderLevelInformation();
-  /// @brief Render level debug information. This function must be called in render phase.
-  /// @reference https://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/guide/Manual/DebugVisualization.html#debugvisualization
-  void RenderDebugInformation();
-  /// @brief Render UI information.
-  void RenderUIInformation();
-  /// @brief Integrate Level information + Debug Information + UI Information.
-  void Integrate();
+  void RenderPipelines();
 
-  /// @brief Render only loading widget.
-  void MDY_PRIVATE(RenderLoading());
-  
   /// @brief Get ptr main directional light. If not exist, just return nullptr.
   MDY_NODISCARD CDyDirectionalLight* GetPtrMainDirectionalLight() const noexcept;
   /// @brief Private function, bind directional light as main light.
@@ -124,6 +114,14 @@ public:
   MDY_NODISCARD bool HasRenderPipeline(const std::string& iRenderPipelineName);
   /// @brief Get handle instance of RenderPipeline into handle.
   MDY_NODISCARD FWrapperRenderPipeline* GetRenderPipeline(const std::string& iRenderPipelineName);
+  /// @brief Check Entry RenderPipeline is exist on rendering system.
+  MDY_NODISCARD bool HasEntryRenderPipeline(const std::string& iEntryPipelineName);
+  /// @brief Set activation of entry renderpipeline.
+  /// If Activated, this pipeline will be rendered with arbitary order.
+  /// If Deactivated, this pipeline will not be rendered but leave render resources valid.
+  ///
+  /// If not found, just do nothing.
+  EDySuccess ActivateEntryRenderPipeline(const std::string& iEntryPipelineName, bool iIsActivated);
 
 private:
   /// @brief Enqueue static draw call to mesh with material.

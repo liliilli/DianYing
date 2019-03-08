@@ -220,17 +220,7 @@ public:
   void SetupDrawModelTaskQueue();
 
   /// @brief Render level information.
-  void RenderLevelInformation();
-  /// @brief Render level debug information. This function must be called in render phase.
-  /// @reference https://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/guide/Manual/DebugVisualization.html#debugvisualization
-  void RenderDebugInformation();
-  /// @brief Render UI information.
-  void RenderUIInformation();
-  /// @brief Integrate Level information + Debug Information + UI Information.
-  void Integrate();
-
-  /// @brief Render only loading widget.
-  void MDY_PRIVATE(RenderLoading());
+  void RenderPipelines();
   
   /// @brief Get ptr main directional light. If not exist, just return nullptr.
   CDyDirectionalLight* GetPtrMainDirectionalLight() const noexcept;
@@ -269,6 +259,15 @@ public:
   
   /// @brief Reset all of rendering framebuffers related to rendering of scene for new frame rendering.
   void pClearRenderingFramebufferInstances() noexcept;
+
+  /// @brief Check Entry RenderPipeline is exist on rendering system.
+  MDY_NODISCARD bool HasEntryRenderPipeline(const std::string& iEntryPipelineName);
+  /// @brief Set activation of entry renderpipeline.
+  /// If Activated, this pipeline will be rendered with arbitary order.
+  /// If Deactivated, this pipeline will not be rendered but leave render resources valid.
+  ///
+  /// If not found, just do nothing.
+  EDySuccess ActivateEntryRenderPipeline(const std::string& iEntryPipelineName, bool iIsActivated);
 
   std::unique_ptr<FDyBasicRenderer>               mBasicOpaqueRenderer  = MDY_INITIALIZE_NULL;
   std::unique_ptr<FDyLevelCascadeShadowRenderer>  mCSMRenderer          = MDY_INITIALIZE_NULL; 
@@ -326,6 +325,34 @@ public:
 #endif /// MDY_FLAG_IN_EDITOR
 };
 
+bool MDyRendering::Impl::HasEntryRenderPipeline(const std::string& iEntryPipelineName)
+{
+  if (ContainsIf(this->mEntryRenderPipelines,
+    [iEntryPipelineName](const auto& pipeline) 
+    { return pipeline.GetName() == iEntryPipelineName; }) == false)
+  {
+    return false;
+  }
+
+  return true;
+}
+
+EDySuccess MDyRendering::Impl::ActivateEntryRenderPipeline(const std::string& iEntryPipelineName, bool iIsActivated)
+{
+  if (this->HasEntryRenderPipeline(iEntryPipelineName) == false)
+  {
+    DyPushLogDebugError("Failed to find entry render pipeline, {}.", iEntryPipelineName);
+    return DY_FAILURE;
+  }
+
+  auto it = std::find_if(
+    MDY_BIND_BEGIN_END(this->mEntryRenderPipelines),
+    [iEntryPipelineName](const auto& pipeline) 
+    { return pipeline.GetName() == iEntryPipelineName; });
+  it->Activate(iIsActivated);
+  return DY_SUCCESS;
+}
+
 } /// ::dy namespace
 #include <Dy/Management/Inline/MRenderingImpl.inl>
 
@@ -367,12 +394,10 @@ void MDyRendering::EnqueueDebugDrawCollider(
   this->mInternal->EnqueueDebugDrawCollider(iRefCollider, iTransformMatrix);
 }
 
-void MDyRendering::RenderLevelInformation() { this->mInternal->RenderLevelInformation(); }
-void MDyRendering::RenderDebugInformation() { this->mInternal->RenderDebugInformation(); }
-void MDyRendering::RenderUIInformation()    { this->mInternal->RenderUIInformation(); }
-void MDyRendering::Integrate()              { this->mInternal->Integrate(); }
-
-void MDyRendering::MDY_PRIVATE(RenderLoading)() { this->mInternal->MDY_PRIVATE(RenderLoading)(); }
+void MDyRendering::RenderPipelines() 
+{ 
+  this->mInternal->RenderPipelines(); 
+}
 
 void MDyRendering::MDY_PRIVATE(BindMainDirectionalLight)(CDyDirectionalLight& iRefLight)
 {
@@ -461,6 +486,16 @@ FWrapperRenderPipeline* MDyRendering::GetRenderPipeline(const std::string& iRend
   }
 
   return this->mInternal->mRenderPipelines.at(iRenderPipelineName).get();
+}
+
+bool MDyRendering::HasEntryRenderPipeline(const std::string& iEntryPipelineName)
+{
+  return this->mInternal->HasEntryRenderPipeline(iEntryPipelineName);
+}
+
+EDySuccess MDyRendering::ActivateEntryRenderPipeline(const std::string& iEntryPipelineName, bool iIsActivated)
+{
+  return this->mInternal->ActivateEntryRenderPipeline(iEntryPipelineName, iIsActivated);
 }
 
 } /// ::dy namespace

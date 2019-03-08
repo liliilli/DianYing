@@ -51,6 +51,12 @@ public:
   /// @brief Get Uuid of this render pipeline.
   MDY_NODISCARD const DUuid& GetUuid() const noexcept;
 
+  /// @brief Get activation flag of this entry render pipeline instance.
+  MDY_NODISCARD bool IsActivated() const noexcept;
+
+  /// @brief Set activation flag of this entry render pipeline instance.
+  void Activate(bool iIsActivated) noexcept;
+
 private:
   /// @brief
   FProxyHandle<IRenderPipeline> mHandleRenderPipeline;
@@ -60,10 +66,12 @@ private:
   /// @brief
   std::vector<FProxyHandle<IRenderItem>>    mHandleRenderItems;
 
-  /// @brief
+  /// @brief Specifier string of entry render pipeline.
   std::string mSpecifierName;
-  /// @brief
+  /// @brief Uuid of entry render pipeline.
   DUuid       mUuid;
+  /// @brief Activation flag.
+  bool        mIsActivated = false;
 };
 
 } /// ::dy namespace
