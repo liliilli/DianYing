@@ -173,7 +173,6 @@ void DyEngine::MDY_PRIVATE(ReflectGameStatusTransition)()
 
       MDY_CALL_BUT_NOUSE_RESULT (MDyWorld::GetInstance().TryCreateLoadingUi());
       MDyMetaInfo::GetInstance().MDY_PRIVATE(PopulateGlobalResourceSpecifierList)();
-      MDyRendering::GetInstance().ActivateEntryRenderPipeline("dyBtDefaultLoading", true);
     } break;
     default: MDY_UNEXPECTED_BRANCH();
     }
@@ -185,6 +184,8 @@ void DyEngine::MDY_PRIVATE(ReflectGameStatusTransition)()
     default: MDY_UNEXPECTED_BRANCH();
     case EDyGlobalGameStatus::Loading: 
     { // FirstLoading => Loading.
+      MDyRendering::GetInstance().ActivateEntryRenderPipeline("dyBtDefaultLoading", true);
+
       MDY_CALL_ASSERT_SUCCESS(MDyWorld::GetInstance().MDY_PRIVATE(OpenFirstLevel)());
     } break;
     }
