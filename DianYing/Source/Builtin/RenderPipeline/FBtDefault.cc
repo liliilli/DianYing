@@ -14,6 +14,12 @@
 
 #include <Dy/Builtin/RenderPipeline/FBtDefault.h>
 
+#include <Dy/Builtin/RenderPipeline/Level/FBtDefaultLevel.h>
+#include <Dy/Builtin/RenderPipeline/Debug/FBtDebug.h>
+#include <Dy/Builtin/RenderPipeline/Widget/FBtWidget.h>
+
+#include <Dy/Builtin/RenderItem/FBtScreenIntegration.h>
+
 namespace dy
 {
 
@@ -22,11 +28,17 @@ void FBtRenderPipelineDefault::__ConstructionHelper
 {
   oMeta.mSpecifierName    = sName;
   oMeta.mUuid             = DUuid("a6506841-bc7c-45b4-bb4e-5f614cff2a1c");
+
+  oMeta.mChildPipelineNames.emplace_back(FBtRenderPipelineDefaultLevel::sName);
+  oMeta.mChildPipelineNames.emplace_back(FBtRenderPipelineDebug::sName);
+  oMeta.mChildPipelineNames.emplace_back(FBtRenderPipelineWidget::sName);
+
+  oMeta.mLocalRenderItemNames.emplace_back(FBtRenderItemScreenIntegeration::sName);
 }
 
 EDySuccess FBtRenderPipelineDefault::OnPreRenderCheckCondition()
 {
-  return DY_FAILURE;
+  return DY_SUCCESS;
 }
 
 void FBtRenderPipelineDefault::OnFailedCheckCondition()

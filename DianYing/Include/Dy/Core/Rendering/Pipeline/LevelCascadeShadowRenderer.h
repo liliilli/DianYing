@@ -46,9 +46,9 @@ public:
 
   /// @brief Rendering deferred contexts to default framebuffer.
   void RenderScreen(
-      _MIN_ DDyModelHandler::DActorInfo& iRefRenderer,
-      _MIN_ FDyMeshResource& iRefMesh, 
-      _MIN_ FDyMaterialResource& iRefMaterial);
+      DDyModelHandler::DActorInfo& iRefRenderer,
+      FDyMeshResource& iRefMesh, 
+      FDyMaterialResource& iRefMaterial);
 
   /// @brief Clear properties of given framebuffer.
   void Clear() override final;

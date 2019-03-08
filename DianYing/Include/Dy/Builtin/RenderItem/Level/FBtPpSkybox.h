@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_BUILTIN_RENDERITEM_FBTOPAQUEDEFAULT_H
-#define GUARD_DY_BUILTIN_RENDERITEM_FBTOPAQUEDEFAULT_H
+#ifndef GUARD_DY_BUILTIN_RENDERITEM_FBTPPSKYBOX_H
+#define GUARD_DY_BUILTIN_RENDERITEM_FBTPPSKYBOX_H
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -16,17 +16,19 @@
 #include <Dy/Builtin/Abstract/ARenderItem.h>
 #include <Dy/Core/Reflection/RDyBuiltinResources.h>
 #include <Dy/Meta/Information/MetaInfoRenderItem.h>
+#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
 
 namespace dy
 {
 
-/// @class FBtRenderItemOpaqueDefault
-/// @brief Instantiate opaque default item
-class FBtRenderItemOpaqueDefault final : public ARenderItem
+/// @class FBtRenderItemSkybox
+/// @brief Instantiate post-processing Skybox (using environment cube map) default item
+class FBtRenderItemSkybox final : public ARenderItem
 {
-  MDY_REGISTER_RESOURCE_RENDER_ITEM(FBtRenderItemOpaqueDefault, "dyBtOpaqueDefault");
+  MDY_REGISTER_RESOURCE_RENDER_ITEM(FBtRenderItemSkybox, "dyBtPpSkybox");
 public:
   EDySuccess OnPreRenderCheckCondition() override final;
+  bool AreResourcesValid();
 
   void OnFailedCheckCondition() override final;
 
@@ -37,8 +39,18 @@ public:
   void OnReleaseRenderingSetting() override final;
 
   void OnPostRender() override final;
+
+private:
+  // Output
+  TDyResourceBinderFrameBuffer mBinderFbSkyRend    { "dyBtFbSkybox" };
+  // Shader
+  TDyResourceBinderShader      mBinderShdSkybox    { "dyBtShGlSkyboxDefault" };
+  // Mesh for skybox
+  TDyResourceBinderMesh        mBinderMeshSkybox   { "dyBtMsBox" };
+  // uTexture1 (Source)
+  TDyResourceBinderAttachment  mBinderAttUnlit     { "dyBtUnlit" };
 };
 
 } /// ::dy namespace
 
-#endif /// GUARD_DY_BUILTIN_RENDERITEM_FBTOPAQUEDEFAULT_H
+#endif /// GUARD_DY_BUILTIN_RENDERITEM_FBTPPSKYBOX_H
