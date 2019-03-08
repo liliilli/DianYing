@@ -33,7 +33,7 @@ struct DUuid final
 public:
   /// @brief If true, create new value when creating uuid instance.
   /// Otherwise, just let it empty value (00000000-0000-0000-0000-000000000000)
-  explicit DUuid(bool iCreateValue);
+  explicit DUuid(bool iCreateValue = false);
 
   /// @brief Check string whether it is uuid string in runtime,
   /// and if true, convert string into uuid value. 
