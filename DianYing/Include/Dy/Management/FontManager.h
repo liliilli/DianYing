@@ -30,17 +30,14 @@ public:
   /// @param  fontSpecifierName
   /// @return If succeeded return DY_SUCCESS or DY_FAILURE.
   ///
-  MDY_NODISCARD EDySuccess CreateFontResourceContainer(_MIN_ const std::string& fontSpecifierName);
+  EDySuccess CreateFontResourceContainer(_MIN_ const std::string& fontSpecifierName);
 
   ///
   /// @brief  Check there is valid font container with name is fontSpecifierName.
   /// @param  specifierName Font container specifier name.
   /// @return If found just return true or false.
   ///
-  FORCEINLINE MDY_NODISCARD bool IsFontResourceContainerExist(_MIN_ const std::string& specifierName)
-  {
-    return this->mFontResourceContainerMap.find(specifierName) != this->mFontResourceContainerMap.end();
-  }
+  MDY_NODISCARD bool IsFontResourceContainerExist(_MIN_ const std::string& specifierName);
 
   ///
   /// @brief  Remove and release resource of valid font container.
