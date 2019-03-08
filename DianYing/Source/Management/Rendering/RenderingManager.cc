@@ -39,17 +39,6 @@
 #include <Dy/Builtin/Constant/GeneralValue.h>
 #include <Dy/Management/InputManager.h>
 
-#include <Dy/Core/Rendering/Pipeline/BasicRenderer.h>
-#include <Dy/Core/Rendering/Pipeline/FinalScreenDisplayRenderer.h>
-#include <Dy/Core/Rendering/Pipeline/PostEffectSsao.h>
-#include <Dy/Core/Rendering/Pipeline/UIBasicRenderer.h>
-#include <Dy/Core/Rendering/Pipeline/LevelCascadeShadowRenderer.h>
-#include <Dy/Core/Rendering/Pipeline/LevelCSMIntegration.h>
-#include <Dy/Core/Rendering/Pipeline/LevelOITRenderer.h>
-#include <Dy/Core/Rendering/Pipeline/DebugShapeRenderer.h>
-#include <Dy/Core/Rendering/Pipeline/PostEffectSky.h>
-#include <Dy/Core/Rendering/Pipeline/DebugAABBRenderer.h>
-#include <Dy/Core/Rendering/Pipeline/Debug/PickingRenderer.h>
 #include <Dy/Helper/Pointer.h>
 #include <Dy/Helper/Internal/FDyCallStack.h>
 #include <Dy/Element/Actor.h>
@@ -257,9 +246,6 @@ public:
       _MIN_ CDyPhysicsCollider& iRefCollider, 
       _MIN_ const DDyMatrix4x4& iTransformMatrix);
   
-  /// @brief Reset all of rendering framebuffers related to rendering of scene for new frame rendering.
-  void pClearRenderingFramebufferInstances() noexcept;
-
   /// @brief Check Entry RenderPipeline is exist on rendering system.
   MDY_NODISCARD bool HasEntryRenderPipeline(const std::string& iEntryPipelineName);
   /// @brief Set activation of entry renderpipeline.
@@ -268,18 +254,6 @@ public:
   ///
   /// If not found, just do nothing.
   EDySuccess ActivateEntryRenderPipeline(const std::string& iEntryPipelineName, bool iIsActivated);
-
-  std::unique_ptr<FDyBasicRenderer>               mBasicOpaqueRenderer  = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyLevelCascadeShadowRenderer>  mCSMRenderer          = MDY_INITIALIZE_NULL; 
-  std::unique_ptr<FDyLevelCSMIntergration>        mLevelFinalRenderer   = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyLevelOITRenderer>            mTranslucentOIT       = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyPostEffectSsao>              mSSAOPostEffect       = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyPostEffectSky>               mSkyPostEffect        = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyUIBasicRenderer>             mUiBasicRenderer      = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyFinalScreenDisplayRenderer>  mFinalDisplayRenderer = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyDebugShapeRenderer>          mDebugShapeRenderer   = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyDebugAABBRenderer>           mDebugAABBRenderer    = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyDebugPickingRenderer>        mDebugPickingRenderer = MDY_INITIALIZE_NULL;
 
   std::unordered_map<std::string, std::unique_ptr<FWrapperRenderPipeline>> 
     mRenderPipelines = {};

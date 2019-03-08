@@ -28,8 +28,6 @@ class FBtRenderItemOpaqueDefault final : public ARenderItem
 {
   MDY_REGISTER_RESOURCE_RENDER_ITEM(FBtRenderItemOpaqueDefault, "dyBtOpaqueDefault");
 public:
-  FBtRenderItemOpaqueDefault();
-
   EDySuccess OnPreRenderCheckCondition() override final;
 
   void OnFailedCheckCondition() override final;

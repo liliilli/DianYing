@@ -27,18 +27,6 @@ inline EDySuccess MDyRendering::Impl::Initialize()
   MDY_CALL_ASSERT_SUCCESS(MDyUniformBufferObject::Initialize());
   MDY_CALL_ASSERT_SUCCESS(FDyModelHandlerManager::Initialize());
 
-  this->mBasicOpaqueRenderer  = std::make_unique<decltype(this->mBasicOpaqueRenderer)::element_type>();
-  this->mTranslucentOIT       = std::make_unique<decltype(this->mTranslucentOIT)::element_type>();
-  this->mUiBasicRenderer      = std::make_unique<decltype(this->mUiBasicRenderer)::element_type>();
-  this->mLevelFinalRenderer   = std::make_unique<decltype(this->mLevelFinalRenderer)::element_type>();
-  this->mFinalDisplayRenderer = std::make_unique<decltype(this->mFinalDisplayRenderer)::element_type>();
-  this->mCSMRenderer          = std::make_unique<decltype(this->mCSMRenderer)::element_type>();
-  this->mSSAOPostEffect       = std::make_unique<decltype(mSSAOPostEffect)::element_type>();
-  this->mSkyPostEffect        = std::make_unique<decltype(this->mSkyPostEffect)::element_type>();
-  this->mDebugShapeRenderer   = std::make_unique<decltype(this->mDebugShapeRenderer)::element_type>();
-  this->mDebugAABBRenderer    = std::make_unique<decltype(mDebugAABBRenderer)::element_type>();
-  this->mDebugPickingRenderer = std::make_unique<decltype(this->mDebugPickingRenderer)::element_type>();
-
   // Set callback function for global internal status stack.
   this->mInternal_FeatBlendStack.SetCallback(CbGlFeatBlendStack);
   this->mInternal_FeatDepthTestStack.SetCallback(CbGlFeatDepthTestStack);
@@ -112,7 +100,6 @@ inline EDySuccess MDyRendering::Impl::Initialize()
   this->mEntryRenderPipelines.reserve(8);
   this->CreateRenderPipeline("dyBtDefault");
   this->CreateRenderPipeline("dyBtDefaultLoading");
-  //this->ActivateEntryRenderPipeline("dyBtDefault", true);
   
   // Check Rendering API.
   switch (renderingApiType)
@@ -314,18 +301,6 @@ inline MDyRendering::Impl::~Impl()
   this->mRenderItems.clear();
   this->mRenderPipelines.clear();
 
-  this->mLevelFinalRenderer   = MDY_INITIALIZE_NULL;
-  this->mCSMRenderer          = MDY_INITIALIZE_NULL;
-  this->mSkyPostEffect        = MDY_INITIALIZE_NULL;
-  this->mSSAOPostEffect       = MDY_INITIALIZE_NULL;
-  this->mBasicOpaqueRenderer  = MDY_INITIALIZE_NULL;
-  this->mUiBasicRenderer      = MDY_INITIALIZE_NULL;
-  this->mFinalDisplayRenderer = MDY_INITIALIZE_NULL;
-  this->mTranslucentOIT       = MDY_INITIALIZE_NULL;
-  this->mDebugShapeRenderer   = MDY_INITIALIZE_NULL;
-  this->mDebugAABBRenderer    = nullptr;
-  this->mDebugPickingRenderer = nullptr;
-
   // Initialize internal management singleton instance.
   MDY_CALL_ASSERT_SUCCESS(FDyModelHandlerManager::Release());
   MDY_CALL_ASSERT_SUCCESS(MDyFramebuffer::Release());
@@ -356,16 +331,6 @@ inline EDySuccess MDyRendering::Impl::RemoveRenderPipeline(const std::string& iP
 
 inline void MDyRendering::Impl::PreRender(TF32 dt)
 {
-  { // Checking 
-    static bool lock = false;
-    auto& settingManager = MDySetting::GetInstance();
-    if (const auto flag = settingManager.IsRenderPhysicsCollisionShape(); flag != lock)
-    {
-      this->mDebugShapeRenderer->Clear();
-      lock = flag;
-    }
-  }
-
   // Get skybox pointer from present level.
   auto& refWorld = MDyWorld::GetInstance();
   auto optSkybox = refWorld.GetPtrMainLevelSkybox();
@@ -489,16 +454,6 @@ inline void MDyRendering::Impl::RenderPipelines()
 inline CDyDirectionalLight* MDyRendering::Impl::GetPtrMainDirectionalLight() const noexcept
 {
   return this->mMainDirectionalLight;
-}
-
-inline void MDyRendering::Impl::pClearRenderingFramebufferInstances() noexcept
-{
-  if (MDyWorld::GetInstance().IsLevelPresentValid() == false) { return; }
-
-  // Reset final rendering mesh setting.
-  if (MDY_CHECK_ISNOTEMPTY(this->mLevelFinalRenderer))    { this->mLevelFinalRenderer->Clear(); }
-  if (MDY_CHECK_ISNOTEMPTY(this->mUiBasicRenderer))       { this->mUiBasicRenderer->Clear(); }
-  if (MDY_CHECK_ISNOTEMPTY(this->mFinalDisplayRenderer))  { this->mFinalDisplayRenderer->Clear(); }
 }
 
 inline void MDyRendering::Impl::MDY_PRIVATE(BindMainDirectionalLight)(CDyDirectionalLight& iRefLight)

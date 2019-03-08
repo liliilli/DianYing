@@ -29,8 +29,6 @@ class FBtRenderWidgetGeneral final : public ARenderItem
     FBtRenderWidgetGeneral, 
     "dyBtWidgetGeneral");
 public:
-  FBtRenderWidgetGeneral();
-
   EDySuccess OnPreRenderCheckCondition() override final;
   bool AreResourcesValid();
 

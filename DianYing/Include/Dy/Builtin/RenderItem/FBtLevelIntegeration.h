@@ -27,9 +27,6 @@ class FBtRenderItemLevelIntegeration final : public ARenderItem
 {
   MDY_REGISTER_RESOURCE_RENDER_ITEM(FBtRenderItemLevelIntegeration, "dyBtLevelIntegration");
 public:
-  FBtRenderItemLevelIntegeration();
-  virtual ~FBtRenderItemLevelIntegeration();
-
   EDySuccess OnPreRenderCheckCondition() override final;
 
   void OnFailedCheckCondition() override final {};

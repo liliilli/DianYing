@@ -36,28 +36,6 @@ void FBtRenderItemLevelIntegeration::__ConstructionHelper
   oMeta.mUuid = DUuid("1a8757c9-2406-41a7-a222-e8a726e65ec5", true);
 }
 
-FBtRenderItemLevelIntegeration::FBtRenderItemLevelIntegeration()
-{
-#ifdef false
-  auto& uboManager = MDyUniformBufferObject::GetInstance();
-  PDyUboConstructionDescriptor desc = {};
-  desc.mBindingIndex      = 1;
-  desc.mUboSpecifierName  = "dyBtUboDirLight";
-  desc.mBufferDrawType    = EDyBufferDrawType::DynamicDraw;
-  desc.mUboElementSize    = sizeof(DDyUboDirectionalLight);
-  desc.mUboArraySize      = 1;
-  MDY_CALL_ASSERT_SUCCESS(uboManager.CreateUboContainer(desc))
-#endif
-}
-
-FBtRenderItemLevelIntegeration::~FBtRenderItemLevelIntegeration()
-{
-#ifdef false
-  auto& uboManager = MDyUniformBufferObject::GetInstance();
-  MDY_CALL_ASSERT_SUCCESS(uboManager.RemoveUboContainer("dyBtUboDirLight"));
-#endif
-}
-
 EDySuccess FBtRenderItemLevelIntegeration::OnPreRenderCheckCondition()
 {
   return 

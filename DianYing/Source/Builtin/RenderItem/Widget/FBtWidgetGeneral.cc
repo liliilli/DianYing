@@ -27,12 +27,6 @@ void FBtRenderWidgetGeneral::__ConstructionHelper
   oMeta.mUuid = DUuid("60f1256a-a515-4bbe-9dc7-fe55f16d541e", true);
 }
 
-FBtRenderWidgetGeneral::FBtRenderWidgetGeneral()
-{
-  // @TODO TEMPORARY
-  MDY_CALL_ASSERT_SUCCESS(MDyFont::GetInstance().CreateFontResourceContainer("Arial"))
-}
-
 EDySuccess FBtRenderWidgetGeneral::OnPreRenderCheckCondition()
 {
   return this->AreResourcesValid() ? DY_SUCCESS : DY_FAILURE;

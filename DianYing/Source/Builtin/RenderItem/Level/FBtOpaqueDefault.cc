@@ -37,21 +37,6 @@ void FBtRenderItemOpaqueDefault::__ConstructionHelper
   oMeta.mUuid = DUuid("aaa116de-6210-46fb-a551-a50554a08d95", true);
 }
 
-FBtRenderItemOpaqueDefault::FBtRenderItemOpaqueDefault()
-{
-#ifdef false
-  // Create ubo information for "CameraBlock"
-  auto& uboManager = MDyUniformBufferObject::GetInstance();
-  PDyUboConstructionDescriptor desc = {};
-  desc.mBindingIndex      = 0;
-  desc.mUboSpecifierName  = sUboCameraBlock;
-  desc.mBufferDrawType    = EDyBufferDrawType::DynamicDraw;
-  desc.mUboElementSize    = sizeof(DDyUboCameraBlock);
-  desc.mUboArraySize      = 1;
-  MDY_CALL_ASSERT_SUCCESS(uboManager.CreateUboContainer(desc));
-#endif
-}
-
 EDySuccess FBtRenderItemOpaqueDefault::OnPreRenderCheckCondition()
 {
   // Whether camera is focused by main camera is true, by parent RenderPipeline
