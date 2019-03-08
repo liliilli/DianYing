@@ -13,12 +13,12 @@
 ///
 
 /// Header file
-#include <Dy/Builtin/Attachment/Deferred/FDyBtAtEmissive.h>
+#include <Dy/Builtin/Attachment/Emissive/FTempBtAtEmissiveBlur.h>
 
 namespace dy
 {
 
-void FDyBtAttachmentEmissive::ConstructBuffer(PDyGlAttachmentInstanceMetaInfo& oProperty) noexcept
+void FDyBtAttachmentEmissiveTempBlur::ConstructBuffer(PDyGlAttachmentInstanceMetaInfo& oProperty) noexcept
 {
   oProperty.mSpecifierName  = sName;
   oProperty.mAttachmentSize = DDyVectorInt2{1280, 720};
@@ -31,6 +31,6 @@ void FDyBtAttachmentEmissive::ConstructBuffer(PDyGlAttachmentInstanceMetaInfo& o
     {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::Repeat},
   };
   oProperty.mBufferFormat = EDyGlBufferDataInternalFormat::RGBA16Float;
-} 
+}
 
 } /// ::dy namespace

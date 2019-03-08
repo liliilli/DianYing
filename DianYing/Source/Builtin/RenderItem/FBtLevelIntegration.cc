@@ -115,7 +115,7 @@ void FBtRenderItemLevelIntegeration::OnRender()
     this->mBinderOpaqueShader->TryInsertTextureRequisition(5, this->mBinderAttZValue->GetAttachmentId());
     this->mBinderOpaqueShader->TryInsertTextureRequisition(6, this->mBinderAttSSAO->GetAttachmentId());
     this->mBinderOpaqueShader->TryInsertTextureRequisition(7, this->mBinderAttSky->GetAttachmentId());
-    this->mBinderOpaqueShader->TryInsertTextureRequisition(8, this->mBinderAttEmissive->GetAttachmentId());
+    //this->mBinderOpaqueShader->TryInsertTextureRequisition(8, this->mBinderAttEmissive->GetAttachmentId());
     this->mBinderOpaqueShader->UseShader();
     this->mBinderOpaqueShader->TryUpdateUniformList();
 
