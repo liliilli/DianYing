@@ -64,7 +64,7 @@ public:
   using TUiDrawCallItem = NotNull<FDyUiObject*>;
 
   /// @brief PreRender update functin.
-  void PreRender(_MIN_ TF32 dt);
+  void PreRender(TF32 dt);
 
   /// @brief 
   /// @TODO LOGIC IS TEMPORARY.
