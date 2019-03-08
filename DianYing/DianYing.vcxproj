@@ -233,6 +233,7 @@
     <ClCompile Include="Source\Builtin\RenderPipeline\Level\FBtDefaultLevelPostProcess.cc" />
     <ClCompile Include="Source\Builtin\RenderPipeline\Level\FBtDefaultLevelRender.cc" />
     <ClCompile Include="Source\Builtin\RenderPipeline\Widget\FBtWidget.cc" />
+    <ClCompile Include="Source\Builtin\Script\BtScrGlobalDefaultUniformBuffer.cc" />
     <ClCompile Include="Source\Builtin\Script\DebugUiScriptCpp.cc" />
     <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingBootScriptCpp.cc" />
     <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingGlobalScriptCpp.cc" />
@@ -271,13 +272,6 @@
     <ClCompile Include="Source\Component\Internal\Script\Global\FDyGlobalScriptStatus.cc" />
     <ClCompile Include="Source\Component\Internal\Sound\FDySoundInstance.cc" />
     <ClCompile Include="Source\Core\Reflection\RDyGlobalInstanceManager.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\DebugAABBRenderer.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\DebugShapeRenderer.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\Debug\PickingRenderer.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\LevelCascadeShadowRenderer.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\LevelCSMIntergration.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\LevelOITRenderer.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\PostEffectSky.cc" />
     <ClCompile Include="Source\Core\Rendering\Widget\CDyBasicGaugeBarRenderer.cc" />
     <ClCompile Include="Source\Core\Rendering\Widget\CDyImageRenderer.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Widget\FDyWidgetScriptStatus.cc" />
@@ -437,10 +431,6 @@
     <ClCompile Include="Source\Core\Resource\Internal\MaterialType.cc" />
     <ClCompile Include="Source\Core\Resource\Object\Grid.cc" />
     <ClCompile Include="Source\Core\DyEngine.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\PostEffectSsao.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\BasicRenderer.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\FinalScreenDisplayRenderer.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\UiBasicRenderer.cc" />
     <ClCompile Include="Source\Core\Thread\TDyIO.cc" />
     <ClCompile Include="Source\Editor\Gui\Dialog\ProjectCreator.cc" />
     <ClCompile Include="Source\Editor\Gui\EtcDialog.cc" />
@@ -686,6 +676,7 @@
     <ClInclude Include="Include\Dy\Builtin\Script\Default\DefaultLoadingGlobalScriptCpp.h" />
     <ClInclude Include="data\Script\FDyBtScTestLoadingUi.h" />
     <ClInclude Include="data\Script\DebugActor\BtScActorTest1.h" />
+    <ClInclude Include="Include\Dy\Builtin\Script\BtScrGlobalDefaultUniformBuffer.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Debug\BtShDebugLine.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Level\BtShOITAccumulation.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Level\BtShOITIntegration.h" />
@@ -738,13 +729,6 @@
     <ClInclude Include="Include\Dy\Core\Rendering\Interface\IDyRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Interface\IRenderItem.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Interface\IRenderPipeline.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\DebugAABBRenderer.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\Debug\PickingRenderer.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\DebugShapeRenderer.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\LevelCascadeShadowRenderer.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\LevelCSMIntegration.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\LevelOITRenderer.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\PostEffectSky.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Type\EDyDrawType.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\FDyGLWrapper.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\FWrapperHandleRenderPipeline.h" />
@@ -904,10 +888,7 @@
     <ClInclude Include="Include\Dy\Core\Resource\Type\EDyScope.h" />
     <ClInclude Include="Include\Dy\Core\DyEngine.h" />
     <ClInclude Include="Include\Dy\Core\Reflection\RDyBuiltinResources.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\BasicRenderer.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\FinalScreenDisplayRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Helper\FrameAttachmentString.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\UIBasicRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOReferenceInstance.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOTask.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOReferenceContainer.h" />
@@ -963,7 +944,6 @@
     <ClInclude Include="Include\Dy\Core\Resource\Internal\TextureType.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Object\Grid.h" />
     <ClInclude Include="Include\Dy\Element\Object.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\PostEffectSsao.h" />
     <ClInclude Include="Include\Dy\Editor\Descriptor\AboutMainDescriptor.h" />
     <ClInclude Include="Include\Dy\Editor\Descriptor\DialogDescriptor.h" />
     <ClInclude Include="Include\Dy\Editor\Descriptor\EmptyDescriptor.h" />
