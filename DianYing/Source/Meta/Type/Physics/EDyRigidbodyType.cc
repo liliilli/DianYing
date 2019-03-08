@@ -35,7 +35,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyRigidbodyType& p)
   case DyStrCase("Dynamic"):
   { p = EDyRigidbodyType::Dynamic;
   } break;
-  default: MDY_ASSERT_FORCE(false, "Rigidbody type is not valid."); break;
+  default: MDY_ASSERT_MSG_FORCE(false, "Rigidbody type is not valid."); break;
   }
 }
 

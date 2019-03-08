@@ -25,11 +25,9 @@
 namespace
 {
 
-///
 /// @brief Get DDyColor32 RGB color from TU32 24 bit value.
 /// @param bit24Value 24bit value, [23...16] R [15...8] G [7...0] B
 /// @return RGB Color with alpha 1.0 (always alpha 1.0)
-///
 MDY_NODISCARD dy::DDyColorRGB24 DyGetRGBColorFromTU32(_MIN_ const TU32 bit24Value) noexcept
 {
   std::bitset<24>   backgroundColorBit = bit24Value;
@@ -72,14 +70,38 @@ MDY_NODISCARD dy::DDyColorRGB24 DyGetRGBColorFromTU32(_MIN_ const TU32 bit24Valu
 namespace dy
 {
 
-void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDyColorRGB24& p)
+DDyColorRGB24::DDyColorRGB24(TU08 r, TU08 g, TU08 b) noexcept
+  : R{r}, G{g}, B{b} {}
+
+TF32 DDyColorRGB24::GetGrayScale() const noexcept
+{
+  return 0.2126f * this->R + 0.7152f * this->G + 0.0722f * this->B;
+}
+
+DDyColorRGB24::operator DDyColorRGBA() const noexcept
+{
+  return DDyColorRGBA
+  {
+    static_cast<TF32>(this->R) / 0xFF,
+    static_cast<TF32>(this->G) / 0xFF,
+    static_cast<TF32>(this->B) / 0xFF,
+    1.0f
+  };
+}
+
+DDyColorRGB24::operator DDyColorRGBA32() const noexcept
+{
+  return DDyColorRGBA32{this->R, this->G, this->B, 0xFF};
+}
+
+void to_json(nlohmann::json& oJson, const DDyColorRGB24& iItem)
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
 }
 
-void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ DDyColorRGB24& p)
+void from_json(const nlohmann::json& iJson, DDyColorRGB24& oItem)
 {
-  p = DyGetRGBColorFromTU32(j.get<TU32>());
+  oItem = DyGetRGBColorFromTU32(iJson.get<TU32>());
 }
 
 } /// ::dy namespace

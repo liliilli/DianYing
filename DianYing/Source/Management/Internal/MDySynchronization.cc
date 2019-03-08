@@ -41,7 +41,7 @@ EDySuccess MDySynchronization::pfRelease()
 
 NotNull<TDyIO*> MDySynchronization::pfGetIOThread()
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mIOThreadInstance), "IOThread Instance must not be null except for initialization and destruction.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTEMPTY(this->mIOThreadInstance), "IOThread Instance must not be null except for initialization and destruction.");
   return DyMakeNotNull(this->mIOThreadInstance.get());
 }
 

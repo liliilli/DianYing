@@ -13,6 +13,9 @@
 /// SOFTWARE.
 ///
 
+#include <optional>
+#include <Dy/Helper/Type/Area2D.h>
+
 namespace dy
 {
 
@@ -20,10 +23,75 @@ namespace dy
 /// @brief Global status type for managing OpenGL internal rendering library safely.
 struct DDyGlGlobalStatus final
 {
-  bool mIsEnableBlend;
-  bool mIsEnableCullface;
-  bool mIsEnableDepthTest;
-  bool mIsEnableScissorTest;
+  /// @struct DPolygonMode
+  /// @brief Polygon mode descriptor.
+  struct DPolygonMode final
+  {
+    enum class EMode { Front, Back, FrontAndBack, };
+    enum class EValue { Triangle, Line, Point, };
+
+    EMode   mMode   = EMode::FrontAndBack;
+    EValue  mValue  = EValue::Triangle;
+
+    DPolygonMode(EMode iMode, EValue iValue) : mMode{iMode}, mValue{iValue} {};
+  };
+
+  /// @struct DBlendMode
+  /// @brief Blend mode descriptor.
+  struct DBlendMode final
+  {
+    enum class EEqut { SrcAddDst, SrcSubDst, DstSubSrc, CompareMin, CompareMax };
+    enum class EFunc { Zero, One, SrcColor, OneMinusSrcColor, SrcAlpha, OneMinusSrcAlpha };
+
+    /// @struct DItem
+    struct DItem
+    {
+      EEqut mEquation;
+      EFunc mSourceFunc;
+      EFunc mDestinationFunc;
+
+      DItem(EEqut iEquation, EFunc iSrcFunc, EFunc iDstFunc) : 
+          mEquation{iEquation}, mSourceFunc{iSrcFunc}, mDestinationFunc{iDstFunc} {};
+    };
+
+    std::vector<DItem> mBlendingSettingList;
+  };
+
+  /// @struct DCullfaceMode
+  /// @brief Cullface mode descriptor.
+  struct DCullfaceMode final
+  {
+    enum class EValue { Front, Back, FrontAndBack };
+
+    EValue mValue = EValue::Front;
+    DCullfaceMode(EValue iValue) : mValue{iValue} {};
+  };
+  
+  /// @struct DViewport
+  /// @brief Viewport mode descriptor.
+  struct DViewport final
+  {
+    /// @struct DItem
+    struct DItem final
+    {
+      TI32      mIndex;
+      DDyArea2D mArea;
+
+      DItem(TI32 iIndex, DDyArea2D iArea) : mIndex{iIndex}, mArea{iArea} {};
+    };
+
+    std::vector<DItem> mViewportSettingList;
+  };
+
+  std::optional<bool> mIsEnableBlend;
+  std::optional<bool> mIsEnableCullface;
+  std::optional<bool> mIsEnableDepthTest;
+  std::optional<bool> mIsEnableScissorTest;
+
+  std::optional<DPolygonMode>   mPolygonMode;
+  std::optional<DBlendMode>     mBlendMode;
+  std::optional<DCullfaceMode>  mCullfaceMode;
+  std::optional<DViewport>      mViewportSettingList;
 };
 
 } /// ::dy namespace

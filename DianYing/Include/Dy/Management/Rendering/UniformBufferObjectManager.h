@@ -54,7 +54,7 @@ public:
   /// @param  bufferCopyPtr
   /// @return If succeeded return DY_SUCCESS or DY_FAILURE;
   ///
-  MDY_NODISCARD EDySuccess UpdateUboContainer(
+  EDySuccess UpdateUboContainer(
       _MIN_ const std::string& specifier,
       _MIN_ const TU32 bufferStartByte,
       _MIN_ const TU32 bufferWrapSize,

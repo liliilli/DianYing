@@ -14,7 +14,6 @@
 ///
 
 #include <array>
-#include <glm/vec2.hpp>
 #include <nlohmann/json_fwd.hpp>
 
 #include <Dy/Helper/System/Macroes.h>
@@ -24,22 +23,18 @@
 namespace dy
 {
 
-///
 /// @struct DDyVectorInt2
 /// @brief TI32 type 2-element vector struct.
-///
-struct DDyVectorInt2 final {
+struct DDyVectorInt2 final 
+{
   TI32 X = 0;
   TI32 Y = 0;
 
   DDyVectorInt2() = default;
-
-  DDyVectorInt2(_MIN_ const TI32 x, _MIN_ const TI32 y) noexcept :
-      X{x}, Y{y} {}
-  explicit DDyVectorInt2(_MIN_ const TI32 value) noexcept :
-      X{value}, Y{value} {}
-  explicit DDyVectorInt2(_MIN_ const DDyVector2& value) noexcept :
-      X{static_cast<decltype(this->X)>(value.X)},
+  DDyVectorInt2(const TI32 x, const TI32 y) noexcept : X{x}, Y{y} {}
+  explicit DDyVectorInt2(const TI32 value) noexcept : X{value}, Y{value} {}
+  explicit DDyVectorInt2(const DDyVector2& value) noexcept 
+    : X{static_cast<decltype(this->X)>(value.X)},
       Y{static_cast<decltype(this->Y)>(value.Y)}
   {};
 
@@ -134,28 +129,22 @@ struct DDyVectorInt2 final {
   //! Methods
   //!
 
-  ///
   /// @brief Return one-dimensional data chunk of DDyVectorInt2.
-  ///
-  FORCEINLINE MDY_NODISCARD std::array<TI32, 2> Data() const noexcept
+  FORCEINLINE std::array<TI32, 2> Data() const noexcept
   {
     return {this->X, this->Y};
   }
 
-  ///
   /// @brief Return squared length of this vector.
   /// @return Squared length of this DDyVectorInt2.
-  ///
-  FORCEINLINE MDY_NODISCARD TI32 GetSquareLength() const noexcept
+  FORCEINLINE TI32 GetSquareLength() const noexcept
   {
     return this->X * this->X + this->Y * this->Y;
   }
 
-  ///
   /// @brief Returns the length of this vector.
   /// @return Length of this DDyVectorInt2.
-  ///
-  FORCEINLINE MDY_NODISCARD float GetLength() const noexcept
+  FORCEINLINE float GetLength() const noexcept
   {
     return std::sqrtf(static_cast<float>(this->GetSquareLength()));
   }
@@ -201,7 +190,7 @@ struct DDyVectorInt2 final {
   friend DDyVectorInt2 operator/(_MIN_ DDyVectorInt2 lhs, _MIN_ const TI32 rhs) noexcept {
     if (rhs == 0)
     {
-      MDY_LOG_CRITICAL_D("DDyVectorInt2 could not be divided by {0}.", rhs);
+      DyPushLogDebugCritical("DDyVectorInt2 could not be divided by {0}.", rhs);
     }
     else
     {
@@ -218,7 +207,7 @@ struct DDyVectorInt2 final {
   friend DDyVectorInt2 operator/(_MIN_ DDyVectorInt2 lhs, _MIN_ const DDyVectorInt2& rhs) noexcept {
     if (rhs.X == 0 || rhs.Y == 0)
     {
-      MDY_LOG_CRITICAL_D( "DDyVectorInt2 could not be devided by 0 included DDyVectorInt2, ({0}, {1})", rhs.X, rhs.Y);
+      DyPushLogDebugCritical( "DDyVectorInt2 could not be devided by 0 included DDyVectorInt2, ({0}, {1})", rhs.X, rhs.Y);
     }
     else
     {
@@ -264,7 +253,7 @@ struct DDyVectorInt2 final {
   {
     if (value == 0)
     {
-      MDY_LOG_CRITICAL_D("DDyVectorInt2 could not be divided by {0}.", value);
+      DyPushLogDebugCritical("DDyVectorInt2 could not be divided by {0}.", value);
     }
     else
     {
@@ -282,7 +271,7 @@ struct DDyVectorInt2 final {
   {
     if (value.X == 0 || value.Y == 0)
     {
-      MDY_LOG_CRITICAL_D("DDyVectorInt2 could not be devided by 0 included DDyVectorInt2, ({0}, {1})", value.X, value.Y);
+      DyPushLogDebugCritical("DDyVectorInt2 could not be devided by 0 included DDyVectorInt2, ({0}, {1})", value.X, value.Y);
     }
     else
     {
@@ -329,7 +318,7 @@ public:
   ///
   /// @brief Check if this DDyVectorInt2 is all zero or nearly equal to zero.
   ///
-  FORCEINLINE MDY_NODISCARD bool IsAllZero() const noexcept
+  MDY_NODISCARD bool IsAllZero() const noexcept
   {
     return this->X == 0 && this->Y == 0;
   }
@@ -338,7 +327,9 @@ public:
   //! Static functions
   //!
 public:
-  [[nodiscard]] static FORCEINLINE const DDyVectorInt2& CompareMaxLength(const DDyVectorInt2& lhs, const DDyVectorInt2& rhs) noexcept
+  [[nodiscard]] static const DDyVectorInt2& CompareMaxLength(
+    const DDyVectorInt2& lhs, 
+    const DDyVectorInt2& rhs) noexcept
   {
     return (lhs >= rhs) ? lhs : rhs;
   }
@@ -352,9 +343,23 @@ public:
   }
 };
 
-void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDyVectorInt2& p);
+void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const DDyVectorInt2& p);
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDyVectorInt2& p);
 
 } /// ::dy namespace
+
+namespace std
+{
+
+template <> struct hash<dy::DDyVectorInt2>
+{
+  size_t operator()(const dy::DDyVectorInt2& iVertex) const 
+  {
+    return ((hash<TI32>()(iVertex.X) 
+          ^ (hash<TI32>()(iVertex.Y) << 1)) >> 1);
+  }
+};
+
+} /// ::std namespace
 
 #endif /// GUARD_DY_HELPER_TYPE_VECTORINT2_H

@@ -170,7 +170,7 @@ void CDyTransform::SetRelativeWorldPosition(_MIN_ const DDyVector3& worldPositio
   this->mIsModelMatrixDirty       = true;
 
   auto* validActorPtr = this->GetBindedActor();
-  if (validActorPtr->IsHavingChildrenObject() == true)
+  if (validActorPtr->HasChildrenActor() == true)
   { 
     // (1) Try update movement basis.
     this->MDY_PRIVATE(TryUpdateMovementBasis)();
@@ -263,7 +263,7 @@ void CDyTransform::AddWorldEulerAngle(_MIN_ const DDyVector3& eulerAngleValue) n
   this->mIsModelMatrixDirty           = true;
 
   auto* validActorPtr = this->GetBindedActor();
-  if (validActorPtr->IsHavingChildrenObject() == true)
+  if (validActorPtr->HasChildrenActor() == true)
   { 
     // (1) Try update sum of world (without each local) rotation angle.
     this->MDY_PRIVATE(TryUpdateWorldSumRotAngle)();
@@ -320,7 +320,7 @@ void CDyTransform::SetWorldScale(_MIN_ const DDyVector3& xyz_value) noexcept
   this->mIsFinalScaleDirty    = true;
   this->mIsModelMatrixDirty   = true;
 
-  if (auto* validActorPtr = this->GetBindedActor(); validActorPtr->IsHavingChildrenObject() == true)
+  if (auto* validActorPtr = this->GetBindedActor(); validActorPtr->HasChildrenActor() == true)
   { 
     // (1) Try update product of world (without each local) scale.
     this->MDY_PRIVATE(TryUpdateWorldPrdScale)();
@@ -384,7 +384,7 @@ void CDyTransform::TryPropagateTransformToChildren()
 {
   MDY_CALL_BUT_NOUSE_RESULT(this->GetTransform());
 
-  if (auto* validActorPtr = this->GetBindedActor(); validActorPtr->IsHavingChildrenObject() == true)
+  if (auto* validActorPtr = this->GetBindedActor(); validActorPtr->HasChildrenActor() == true)
   { 
     // (1) Try update movement basis.
     this->MDY_PRIVATE(TryUpdateMovementBasis)();
@@ -437,7 +437,7 @@ void CDyTransform::MDY_PRIVATE(PropagateTransform)(
     this->mIsModelMatrixDirty        = true;
   }
 
-  if (auto* validActorPtr = this->GetBindedActor(); validActorPtr->IsHavingChildrenObject() == true)
+  if (auto* validActorPtr = this->GetBindedActor(); validActorPtr->HasChildrenActor() == true)
   { 
     // (1) Try update movement basis.
     this->MDY_PRIVATE(TryUpdateMovementBasis)();

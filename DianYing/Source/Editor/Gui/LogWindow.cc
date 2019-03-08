@@ -39,7 +39,7 @@ EDySuccess FDyLogWindow::pfRelease()
     while (!TGuiLogStreamSinkMt::mLogChunk.empty()) { TGuiLogStreamSinkMt::mLogChunk.pop(); }
   }
 
-  MDY_LOG_INFO("FDyLogWindow::pfRelease");
+  DyPushLogInfo("FDyLogWindow::pfRelease");
   return DY_SUCCESS;
 }
 

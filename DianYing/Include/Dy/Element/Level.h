@@ -17,17 +17,18 @@
 #include <Dy/Element/Object.h>
 #include <Dy/Element/Actor.h>
 #include <Dy/Element/Interface/IDyUpdatable.h>
+#include <Dy/Helper/Internal/FDyNameGenerator.h>
 
 namespace dy {
 
 /// @class FDyLevel
 /// @brief Level class type for managing run-time interactive world space.
-class FDyLevel final : public FDyObject, public IDyUpdatable, 
-    public FDyNameGenerator,
-    public TDyIdDistributor<TU32, FDyLevel>
+class FDyLevel final : 
+  public FDyObject, 
+  public IDyUpdatable, 
+  public FDyNameGenerator,
+  public TDyIdDistributor<TU32, FDyLevel>
 {
-  using TNameCounterMap   = std::unordered_map<std::string, int32_t>;
-
 public:
   /// Initialize level context with valid descriptor.
   FDyLevel(_MIN_ const PDyLevelConstructMetaInfo& desc);
@@ -121,7 +122,7 @@ public:
         object_final_name,
         nullptr);
     if (!result) {
-      MDY_ASSERT(result, "Object did not be made properly.");
+      MDY_ASSERT_MSG(result, "Object did not be made properly.");
       return nullptr;
     }
 
@@ -153,7 +154,7 @@ public:
 
     auto [result_pair, result] = m_object_list.try_emplace(object_final_name, nullptr);
     if (!result) {
-      MDY_ASSERT(result, "Object did not be made properly.");
+      MDY_ASSERT_MSG(result, "Object did not be made properly.");
       return nullptr;
     }
 

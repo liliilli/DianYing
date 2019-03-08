@@ -68,13 +68,13 @@ EDySuccess MDyTime::SetGameTimeScale(_MIN_ const TF32 timeScale) noexcept
   if (timeScale <= 0.f)
   {
     this->mGameTimeScale = 0.0001f;
-    MDY_LOG_WARNING_D("{} | Time scaling failed because of zero value or negative. Input timeScale : {}", "MDyTime::SetGameTimeScale", timeScale);
+    DyPushLogDebugWarning("{} | Time scaling failed because of zero value or negative. Input timeScale : {}", "MDyTime::SetGameTimeScale", timeScale);
     return DY_FAILURE;
   }
   else
   {
     this->mGameTimeScale = timeScale;
-    MDY_LOG_INFO_D("{} | MDyTime::mGameTimeScale : {}.", "MDyTime::SetGameTimeScale", this->mGameTimeScale);
+    DyPushLogDebugInfo("{} | MDyTime::mGameTimeScale : {}.", "MDyTime::SetGameTimeScale", this->mGameTimeScale);
     return DY_SUCCESS;
   }
 }
@@ -129,19 +129,19 @@ void MDyTime::pfSetVsync(_MIN_ bool isVsyncEnabled) noexcept
 
 EDySuccess MDyTime::pfInitialize()
 {
-  MDY_LOG_INFO_D("{} | MDyTime::pfInitialize().", "FunctionCall");
+  DyPushLogDebugInfo("{} | MDyTime::pfInitialize().", "FunctionCall");
 
   this->mGameTickFragment = 1.0f / static_cast<TF32>(this->mGameGoalFps);
 
-  MDY_LOG_INFO_D("MDyTime::mGameGoalFps : {}."      , this->mGameGoalFps);
-  MDY_LOG_INFO_D("MDyTime::mGameTickFragment : {}." , this->mGameTickFragment);
-  MDY_LOG_INFO_D("MDyTime::mGameTimeScale : {}."    , this->mGameTimeScale);
+  DyPushLogDebugInfo("MDyTime::mGameGoalFps : {}."      , this->mGameGoalFps);
+  DyPushLogDebugInfo("MDyTime::mGameTickFragment : {}." , this->mGameTickFragment);
+  DyPushLogDebugInfo("MDyTime::mGameTimeScale : {}."    , this->mGameTimeScale);
   return DY_SUCCESS;
 }
 
 EDySuccess MDyTime::pfRelease()
 {
-  MDY_LOG_INFO_D("{} | MDyTime::pfRelease().", "FunctionCall");
+  DyPushLogDebugInfo("{} | MDyTime::pfRelease().", "FunctionCall");
   return DY_SUCCESS;
 }
 

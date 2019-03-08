@@ -24,7 +24,7 @@ void FDyBtFbUiBasic::ConstructBuffer(_MOUT_ PDyGlFrameBufferInstanceMetaInfo& pr
   property.mSpecifierName       = sName;
   property.mFrameBufferSize     = DDyVectorInt2{1280, 720};
   property.mIsUsingDepthBuffer  = true;
-  property.mColorAttachmentList.emplace_back(MSVSTR(FDyBtAttUiBasic::sName), EDyGlAttachmentType::Color0);
+  property.mColorAttachmentList.emplace_back((FDyBtAttUiBasic::sName), EDyGlAttachmentType::Color0);
 }
 
 } /// ::dy namespace

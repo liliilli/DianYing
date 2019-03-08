@@ -14,24 +14,10 @@
 ///
 
 #include <unordered_map>
+#include <nlohmann/json_fwd.hpp>
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
-#include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
-#include <Dy/Meta/Information/ElementLevelMetaInfo.h>
-#include <Dy/Meta/Information/FontMetaInformation.h>
-#include <Dy/Meta/Information/PrefabMetaInformation.h>
 #include <Dy/Helper/ContainerHelper.h>
-#include <Dy/Meta/Information/GLShaderMetaInformation.h>
-#include <Dy/Meta/Information/ModelMetaInformation.h>
-#include <Dy/Meta/Information/MetaInfoModel.h>
-#include <Dy/Meta/Information/MetaInfoTexture.h>
-#include <Dy/Meta/Information/MetaInfoMaterial.h>
-#include <Dy/Meta/Information/MetaInfoAttachment.h>
-#include <Dy/Meta/Information/MetaInfoFrameBuffer.h>
-#include <Dy/Meta/Information/MetaInfoModelMesh.h>
-#include <Dy/Meta/Information/MetaInfoModelSkeleton.h>
-#include <Dy/Meta/Information/MetaInfoModelAnim.h>
-#include <Dy/Meta/Information/MetaInfoSound.h>
 #include <Dy/Meta/Type/DDyResourceName.h>
 
 //!
@@ -43,6 +29,27 @@ namespace dy::reflect
 class RDyBuiltinResource;
 } /// ::dy::reflect namespace
 
+namespace dy
+{
+struct PDyRenderItemInstanceMetaInfo;
+struct PDyRenderPipelineInstanceMetaInfo;
+struct PDyGLShaderInstanceMetaInfo;
+struct PDyMeshInstanceMetaInfo;
+struct PDyModelInstanceMetaInfo;
+struct PDyModelSkelInstanceMetaInfo;
+struct PDyModelAnimInstanceMetaInfo;
+struct PDyTextureInstanceMetaInfo;
+struct PDyMaterialInstanceMetaInfo;
+struct PDyGlFrameBufferInstanceMetaInfo;
+struct PDyGlAttachmentInstanceMetaInfo;
+struct PDySoundInstanceMetaInfo;
+struct PDyMetaWidgetRootDescriptor;
+struct PDyMetaFontInformation;
+struct PDyPrefabInstanceMetaInfo;
+struct PDyLevelConstructMetaInfo;
+struct PDyScriptInstanceMetaInfo;
+} /// ::dy namespace
+
 //!
 //! Implementation
 //!
@@ -50,10 +57,8 @@ class RDyBuiltinResource;
 namespace dy
 {
 
-///
 /// @class MDyMetaInfo
 /// @brief Resource path and information (not populaized) container type
-///
 class MDyMetaInfo final : public IDySingleton<MDyMetaInfo>
 {
   MDY_SINGLETON_PROPERTIES(MDyMetaInfo);
@@ -61,71 +66,76 @@ class MDyMetaInfo final : public IDySingleton<MDyMetaInfo>
 public:
   template <typename TType>
   using THashMap = std::unordered_map<std::string, TType>;
-
   using TResourceSpecifierList = std::vector<DDyResourceName>;
 
-  /// @brief Get level construction descriptor meta information from levelName which is same to actual level instance to be created.
+  /// @brief Get level construction descriptor meta information from levelName 
+  /// which is same to actual level instance to be created.
   /// @return Return value is nullable if not found.
   const PDyLevelConstructMetaInfo* GetLevelMetaInformation(const std::string& levelName) const noexcept;
+
+  MDY_NODISCARD std::vector<std::pair<std::string, const PDyScriptInstanceMetaInfo*>> 
+  GetGlobalScriptMetaInfos() const noexcept;
 
   /// @brief  Get valid script meta information instance.
   /// @return valid general script meta information instance.
   MDY_NODISCARD const PDyScriptInstanceMetaInfo&    
-  GetScriptMetaInformation(_MIN_ const std::string& specifierName) const;
-  /// @brief  Get const reference container of global script meta information.
-  /// @return valid global script meta information instance.
-  MDY_NODISCARD const THashMap<PDyScriptInstanceMetaInfo>& 
-  GetRefGlobalScriptMetaInfoContainer() const noexcept;
+  GetScriptMetaInformation(const std::string& specifierName) const;
   /// @brief  Get prefab meta information instance.
   /// @return valid prefab meta information instance.
   MDY_NODISCARD const PDyPrefabInstanceMetaInfo&    
-  GetPrefabMetaInformation(_MIN_ const std::string& specifierName) const;
+  GetPrefabMetaInformation(const std::string& specifierName) const;
   /// @brief
   MDY_NODISCARD const PDyMetaFontInformation&       
-  GetFontMetaInformation(_MIN_ const std::string& specifierName) const;
+  GetFontMetaInformation(const std::string& specifierName) const;
   /// @brief
   MDY_NODISCARD const PDyMetaWidgetRootDescriptor&  
-  GetWidgetMetaInformation(_MIN_ const std::string& specifierName) const;
+  GetWidgetMetaInformation(const std::string& specifierName) const;
   /// @brief  Get shader instance meta information from container.
   /// @return Return value is undefined if not found.
   MDY_NODISCARD const PDyGLShaderInstanceMetaInfo&  
-  GetGLShaderMetaInformation(_MIN_ const std::string& specifier) const;
+  GetGLShaderMetaInformation(const std::string& specifier) const;
   /// @brief  Get builtin mesh instance meta information from container.
   /// @return Return value is undefined if not found.
   MDY_NODISCARD const PDyMeshInstanceMetaInfo&     
-  GetBtMeshMetaInformation(_MIN_ const std::string& specifier) const;
+  GetBtMeshMetaInformation(const std::string& specifier) const;
   /// @brief  Get model instance meta information from container.
   /// @return Return value is undefined if not found.
   MDY_NODISCARD const PDyModelInstanceMetaInfo&     
-  GetModelMetaInformation(_MIN_ const std::string& specifier) const;
+  GetModelMetaInformation(const std::string& specifier) const;
   /// @brief  Get model instance meta information from container.
   /// @return Return value is undefined if not found.
   MDY_NODISCARD const PDyModelSkelInstanceMetaInfo&
-  GetModelSkeletonMetaInformation(_MIN_ const std::string& specifier) const;
+  GetModelSkeletonMetaInformation(const std::string& specifier) const;
   /// @brief  Get model animation scrap meta information from container.
   /// @return Return value is undefined if not found.
   MDY_NODISCARD const PDyModelAnimInstanceMetaInfo& 
-  GetModelAnimScrapMetaInformation(_MIN_ const std::string& specifier) const;
+  GetModelAnimScrapMetaInformation(const std::string& specifier) const;
   /// @brief  Get texture instance meta information from container.
   /// @return Return value is undefined if not found.
   MDY_NODISCARD const PDyTextureInstanceMetaInfo&   
-  GetTextureMetaInformation(_MIN_ const std::string& specifier) const;
+  GetTextureMetaInformation(const std::string& specifier) const;
   /// @brief  Get material instance meta information from container.
   /// @return Return value is undefined if not found.
   MDY_NODISCARD const PDyMaterialInstanceMetaInfo&  
-  GetMaterialMetaInformation(_MIN_ const std::string& specifier) const;
+  GetMaterialMetaInformation(const std::string& specifier) const;
   /// @brief  Get framebuffer instance meta information from container.
   /// @return Return value is undefined if not found.
   MDY_NODISCARD const PDyGlFrameBufferInstanceMetaInfo&
-  GetGlFrameBufferMetaInformation(_MIN_ const std::string& specifier) const;
+  GetGlFrameBufferMetaInformation(const std::string& specifier) const;
   /// @brief  Get attachment instance meta information from container.
   /// @return Return value is undefined if not found.
   MDY_NODISCARD const PDyGlAttachmentInstanceMetaInfo&  
-  GetGLAttachmentMetaInformation(_MIN_ const std::string& specifier) const;
+  GetGLAttachmentMetaInformation(const std::string& specifier) const;
   /// @brief  Get sound instance meta information from container.
   /// @return Return value is undefined if not found.
   MDY_NODISCARD const PDySoundInstanceMetaInfo&
-  GetSoundMetaInformation(_MIN_ const std::string& specifier) const;
+  GetSoundMetaInformation(const std::string& specifier) const;
+  /// @brief  Get render pipeline meta information.
+  MDY_NODISCARD const PDyRenderPipelineInstanceMetaInfo&
+  GetRenderPipeline(const std::string& iRenderPipelineSpecifier) const;
+  /// @brief  Get render item meta information.
+  MDY_NODISCARD const PDyRenderItemInstanceMetaInfo&
+  GetRenderItem(const std::string& iRenderItemSpecifier) const;
 
   /// @brief Get loading widget pointer if exist, or return nullptr (nothing) value
   MDY_NODISCARD const PDyMetaWidgetRootDescriptor* 
@@ -133,49 +143,55 @@ public:
 
   /// @brief  Check script meta information is exist.
   /// @return Return value is false if not found.
-  MDY_NODISCARD bool IsGLShaderMetaInfoExist(_MIN_ const std::string& specifier) const noexcept;
+  MDY_NODISCARD bool IsGLShaderMetaInfoExist(const std::string& specifier) const noexcept;
   /// @brief  Check mesh meta information is exist.
   /// @return Return value is false if not found.
-  MDY_NODISCARD bool IsMeshMetaInfoExist(_MIN_ const std::string& specifier) const noexcept;
+  MDY_NODISCARD bool IsMeshMetaInfoExist(const std::string& specifier) const noexcept;
   /// @brief  Check scene meta information is exist.
   /// @return Return value is false if not found.
-  MDY_NODISCARD bool IsLevelMetaInformation(_MIN_ const std::string& specifier) const noexcept;
+  MDY_NODISCARD bool IsLevelMetaInformation(const std::string& specifier) const noexcept;
   /// @brief  Check model meta information is exist.
   /// @return Return value is false if not found.
-  MDY_NODISCARD bool IsModelMetaInfoExist(_MIN_ const std::string& specifier) const noexcept;
+  MDY_NODISCARD bool IsModelMetaInfoExist(const std::string& specifier) const noexcept;
   /// @brief  Check model skeleton meta information is exist.
   /// @return Return value is false if not found.
-  MDY_NODISCARD bool IsModelSkeletonMetaInfoExist(_MIN_ const std::string& specifier) const noexcept;
+  MDY_NODISCARD bool IsModelSkeletonMetaInfoExist(const std::string& specifier) const noexcept;
   /// @brief  Check model animation scrap meta information is exist.
   /// @return Return value is falue if not found.
-  MDY_NODISCARD bool IsModelAnimScrapMetaInfoExist(_MIN_ const std::string& specifier) const noexcept;
+  MDY_NODISCARD bool IsModelAnimScrapMetaInfoExist(const std::string& specifier) const noexcept;
   /// @brief  Check texture meta information is exist.
   /// @return Return value is false if not found.
-  MDY_NODISCARD bool IsTextureMetaInfoExist(_MIN_ const std::string& specifier) const noexcept;
+  MDY_NODISCARD bool IsTextureMetaInfoExist(const std::string& specifier) const noexcept;
   /// @brief  Check material meta information is exist.
   /// @return Return value is false if not found.
-  MDY_NODISCARD bool IsMaterialMetaInfoExist(_MIN_ const std::string& specifier) const noexcept;
+  MDY_NODISCARD bool IsMaterialMetaInfoExist(const std::string& specifier) const noexcept;
   /// @brief  Check widget meta information is exist.
   /// @return Return value is false if not found.
-  MDY_NODISCARD bool IsWidgetMetaInfoExist(_MIN_ const std::string& specifier) const noexcept;
+  MDY_NODISCARD bool IsWidgetMetaInfoExist(const std::string& specifier) const noexcept;
   /// @brief  Check script meta information is exist.
   /// @return If found, return true or false.
-  MDY_NODISCARD bool IsScriptMetaInformationExist(_MIN_ const std::string& specifierName) const noexcept;
+  MDY_NODISCARD bool IsScriptMetaInformationExist(const std::string& specifierName) const noexcept;
   /// @brief  Check prefab meta information is exist.
   /// @return If found, return true or false.
-  MDY_NODISCARD bool IsPrefabMetaInformationExist(_MIN_ const std::string& specifierName) const noexcept;
+  MDY_NODISCARD bool IsPrefabMetaInformationExist(const std::string& specifierName) const noexcept;
   /// @brief  Check font meta information is exist.
   /// @return If found, return true or false.
-  MDY_NODISCARD bool IsFontMetaInformationExist(_MIN_ const std::string& specifierName) const noexcept;
+  MDY_NODISCARD bool IsFontMetaInformationExist(const std::string& specifierName) const noexcept;
   /// @brief  Check attachment meta information is exist.
   /// @return If found, return true or false.
-  MDY_NODISCARD bool IsAttachmentMetaInfoExist(_MIN_ const std::string& specifierName) const noexcept;
+  MDY_NODISCARD bool IsAttachmentMetaInfoExist(const std::string& specifierName) const noexcept;
   /// @brief  Check framebuffer meta information is exist.
   /// @return If found, return true or false.
-  MDY_NODISCARD bool IsFrameBufferMetaInfoExist(_MIN_ const std::string& speicfierName) const noexcept;
+  MDY_NODISCARD bool IsFrameBufferMetaInfoExist(const std::string& speicfierName) const noexcept;
   /// @brief  Check sound meta information is exist.
   /// @return If found, return true or false.
-  MDY_NODISCARD bool IsSoundMetaInfoExist(_MIN_ const std::string& specifierName) const noexcept;
+  MDY_NODISCARD bool IsSoundMetaInfoExist(const std::string& specifierName) const noexcept;
+  /// @brief  Check render pipeline meta information is exist.
+  /// @return If found, return true or false.
+  MDY_NODISCARD bool IsRenderPipelineExist(const std::string& iRenderPipelineName) const noexcept;
+  /// @brief  Check render item is exist.
+  /// @return If found, return true or false.
+  MDY_NODISCARD bool IsRenderItemExist(const std::string& iRenderItemName) const noexcept;
 
   /// @brief Check loading widget is exist and ready.
   /// @return If found, return true or false.
@@ -190,99 +206,55 @@ public:
   void MDY_PRIVATE(PopulateGlobalResourceSpecifierList)() const noexcept;
 
   void MDY_PRIVATE(InitiateMetaInformation)();
-  void MDY_PRIVATE(InitiateMetaInformationComp)(_MIN_ const nlohmann::json& iJson);
+  void MDY_PRIVATE(InitiateMetaInformationComp)(const nlohmann::json& iJson);
 
 private:
-  MDY_NODISCARD EDySuccess pReadScriptResourceMetaInformation(_MIN_ const std::string& metaFilePath);
-  MDY_NODISCARD EDySuccess pReadPrefabResourceMetaInformation(_MIN_ const std::string& metaFilePath);
-  MDY_NODISCARD EDySuccess pReadWidgetResourceMetaInformation(_MIN_ const std::string& metaFilePath);
-  MDY_NODISCARD EDySuccess pReadLevelResourceMetaInformation (_MIN_ const std::string& metaFilepath);
+  class Impl; Impl* mInternal = nullptr;
 
-  MDY_NODISCARD EDySuccess pReadFontResourceMetaInformation     (_MIN_ const std::string& metaFilePath);
-  MDY_NODISCARD EDySuccess pReadModelResourceMetaInformation    (_MIN_ const std::string& metaFilePath);
-  MDY_NODISCARD EDySuccess pReadModelMeshResourceMetaInformation(_MIN_ const std::string& metaFilePath);
-  MDY_NODISCARD EDySuccess pReadModelSkeletonMetaInformation    (_MIN_ const std::string& metaFilePath);
-  MDY_NODISCARD EDySuccess pReadModelAnimationMetaInformation   (_MIN_ const std::string& metaFilePath);
-  MDY_NODISCARD EDySuccess pReadTextureResourceMetaInformation  (_MIN_ const std::string& metaFilePath);
-  MDY_NODISCARD EDySuccess pReadShaderResourceMetaInformation   (_MIN_ const std::string& metaFilePath);
-  MDY_NODISCARD EDySuccess pReadMaterialResourceMetaInformation (_MIN_ const std::string& metaFilePath);
-  MDY_NODISCARD EDySuccess pReadSoundResourceMetaInformation    (_MIN_ const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadScriptResourceMetaInformation(const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadPrefabResourceMetaInformation(const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadWidgetResourceMetaInformation(const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadLevelResourceMetaInformation (const std::string& metaFilepath);
 
-  MDY_NODISCARD EDySuccess pReadScriptMetaAtlas(_MIN_ const nlohmann::json& iJson);
-  MDY_NODISCARD EDySuccess pReadPrefabMetaAtlas(_MIN_ const nlohmann::json& iJson);
-  MDY_NODISCARD EDySuccess pReadWidgetMetaAtlas(_MIN_ const nlohmann::json& iJson);
-  MDY_NODISCARD EDySuccess pReadFontMetaAtlas  (_MIN_ const nlohmann::json& iJson);
-  MDY_NODISCARD EDySuccess pReadLevelMetaAtlas (_MIN_ const nlohmann::json& iJson);
-  MDY_NODISCARD EDySuccess pReadShaderMetaAtlas(_MIN_ const nlohmann::json& iJson);
-  MDY_NODISCARD EDySuccess pReadSoundMetaAtlas    (_MIN_ const nlohmann::json& iJson);
-  MDY_NODISCARD EDySuccess pReadTextureMetaAtlas  (_MIN_ const nlohmann::json& iJson);
-  MDY_NODISCARD EDySuccess pReadMaterialMetaAtlas (_MIN_ const nlohmann::json& iJson);
-  MDY_NODISCARD EDySuccess pReadModelAnimMetaAtlas(_MIN_ const nlohmann::json& iJson);
-  MDY_NODISCARD EDySuccess pReadModelMeshMetaAtlas(_MIN_ const nlohmann::json& iJson);
-  MDY_NODISCARD EDySuccess pReadModelSkelMetaAtlas(_MIN_ const nlohmann::json& iJson);
-  MDY_NODISCARD EDySuccess pReadModelMetaAtlas    (_MIN_ const nlohmann::json& iJson);
+  MDY_NODISCARD EDySuccess pReadFontResourceMetaInformation     (const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadModelResourceMetaInformation    (const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadModelMeshResourceMetaInformation(const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadModelSkeletonMetaInformation    (const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadModelAnimationMetaInformation   (const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadTextureResourceMetaInformation  (const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadShaderResourceMetaInformation   (const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadMaterialResourceMetaInformation (const std::string& metaFilePath);
+  MDY_NODISCARD EDySuccess pReadSoundResourceMetaInformation    (const std::string& metaFilePath);
 
-  MDY_NODISCARD EDySuccess pfAddWidgetMetaInformation (_MIN_ const std::string& metaInformationString);
-  MDY_NODISCARD EDySuccess pfAddScriptMetaInformation (_MIN_ const PDyScriptInstanceMetaInfo& metaInfo);
-  MDY_NODISCARD EDySuccess pfAddGLShaderMetaInfo      (_MIN_ const PDyGLShaderInstanceMetaInfo& metaInfo);
-  MDY_NODISCARD EDySuccess pfAddBuiltinMeshMetaInfo   (_MIN_ const PDyMeshInstanceMetaInfo& metaInfo);
-  MDY_NODISCARD EDySuccess pfAddModelMetaInfo         (_MIN_ const PDyModelInstanceMetaInfo& metaInfo);
-  MDY_NODISCARD EDySuccess pfAddTextureMetaInfo       (_MIN_ const PDyTextureInstanceMetaInfo& metaInfo);
-  MDY_NODISCARD EDySuccess pfAddMaterialMetaInfo      (_MIN_ const PDyMaterialInstanceMetaInfo& metaInfo);
-  MDY_NODISCARD EDySuccess pfAddGLAttachmentMetaInfo  (_MIN_ const PDyGlAttachmentInstanceMetaInfo& metaInfo);
-  MDY_NODISCARD EDySuccess pfAddGLFrameBufferMetaInfo (_MIN_ const PDyGlFrameBufferInstanceMetaInfo& metaInfo);
-  MDY_NODISCARD EDySuccess MDY_PRIVATE(AddLoadingWidgetMetaInformation)(_MIN_ const std::string& widgetMetaInfo);
+  MDY_NODISCARD EDySuccess pReadScriptMetaAtlas(const nlohmann::json& iJson);
+  MDY_NODISCARD EDySuccess pReadPrefabMetaAtlas(const nlohmann::json& iJson);
+  MDY_NODISCARD EDySuccess pReadWidgetMetaAtlas(const nlohmann::json& iJson);
+  MDY_NODISCARD EDySuccess pReadFontMetaAtlas  (const nlohmann::json& iJson);
+  MDY_NODISCARD EDySuccess pReadLevelMetaAtlas (const nlohmann::json& iJson);
+  MDY_NODISCARD EDySuccess pReadShaderMetaAtlas(const nlohmann::json& iJson);
+  MDY_NODISCARD EDySuccess pReadSoundMetaAtlas    (const nlohmann::json& iJson);
+  MDY_NODISCARD EDySuccess pReadTextureMetaAtlas  (const nlohmann::json& iJson);
+  MDY_NODISCARD EDySuccess pReadMaterialMetaAtlas (const nlohmann::json& iJson);
+  MDY_NODISCARD EDySuccess pReadModelAnimMetaAtlas(const nlohmann::json& iJson);
+  MDY_NODISCARD EDySuccess pReadModelMeshMetaAtlas(const nlohmann::json& iJson);
+  MDY_NODISCARD EDySuccess pReadModelSkelMetaAtlas(const nlohmann::json& iJson);
+  MDY_NODISCARD EDySuccess pReadModelMetaAtlas    (const nlohmann::json& iJson);
 
-  MDY_NODISCARD EDySuccess MDY_PRIVATE(AddBootResourceSpecifierList)(_MIN_ const TResourceSpecifierList& list);
-  MDY_NODISCARD EDySuccess MDY_PRIVATE(AddGlobalResourceSpecifierList)(_MIN_ const TResourceSpecifierList& list);
+  MDY_NODISCARD EDySuccess pfAddWidgetMetaInformation (const std::string& metaInformationString);
+  MDY_NODISCARD EDySuccess pfAddScriptMetaInformation (const PDyScriptInstanceMetaInfo& metaInfo);
+  MDY_NODISCARD EDySuccess pfAddGLShaderMetaInfo      (const PDyGLShaderInstanceMetaInfo& metaInfo);
+  MDY_NODISCARD EDySuccess pfAddBuiltinMeshMetaInfo   (const PDyMeshInstanceMetaInfo& metaInfo);
+  MDY_NODISCARD EDySuccess pfAddModelMetaInfo         (const PDyModelInstanceMetaInfo& metaInfo);
+  MDY_NODISCARD EDySuccess pfAddTextureMetaInfo       (const PDyTextureInstanceMetaInfo& metaInfo);
+  MDY_NODISCARD EDySuccess pfAddMaterialMetaInfo      (const PDyMaterialInstanceMetaInfo& metaInfo);
+  MDY_NODISCARD EDySuccess pfAddGLAttachmentMetaInfo  (const PDyGlAttachmentInstanceMetaInfo& metaInfo);
+  MDY_NODISCARD EDySuccess pfAddGLFrameBufferMetaInfo (const PDyGlFrameBufferInstanceMetaInfo& metaInfo);
+  MDY_NODISCARD EDySuccess pfAddRenderPipelineMetaInfo(const PDyRenderPipelineInstanceMetaInfo& metaInfo);
+  MDY_NODISCARD EDySuccess pfAddRenderItemMetaInfo    (const PDyRenderItemInstanceMetaInfo& metaInfo);
+  MDY_NODISCARD EDySuccess MDY_PRIVATE(AddLoadingWidgetMetaInformation)(const std::string& widgetMetaInfo);
 
-  /// Level meta information map.
-  THashMap<PDyLevelConstructMetaInfo>   mLevelInfoMap   = {};
-  /// Script meta information map.
-  THashMap<PDyScriptInstanceMetaInfo>   mScriptMetaInfo = {};
-  /// @brief Global script meta information hash-map.
-  THashMap<PDyScriptInstanceMetaInfo>   mGlobalScriptMetaInfo = {};
-  /// Font meta information map.
-  THashMap<PDyMetaFontInformation>      mFontMetaInfo   = {};
-  /// GL shader meta information map.
-  THashMap<PDyGLShaderInstanceMetaInfo> mShaderMetaInfo = {};
-  /// Model meta information map.
-  THashMap<PDyModelInstanceMetaInfo>    mModelMetaInfo  = {};
-  /// Model Mesh meta information map.
-  THashMap<PDyMeshInstanceMetaInfo>     mModelMeshMetaInfo = {};
-  /// Model Skeleton meta information map.
-  THashMap<PDyModelSkelInstanceMetaInfo>mModelSkeletonMetaInfo = {};
-  /// Model Skeleton meta information map.
-  THashMap<PDyModelAnimInstanceMetaInfo>mModelAnimScrapMetaInfo = {};
-  /// Texture meta information map.
-  THashMap<PDyTextureInstanceMetaInfo>  mTextureMetaInfo= {};
-  /// Material meta information map.
-  THashMap<PDyMaterialInstanceMetaInfo> mMaterialMetaInfo = {};
-  /// @brief Sound meta information map.
-  THashMap<PDySoundInstanceMetaInfo>    mSoundMetaInfo = {};
-
-  //! Internal
-
-  /// Attahchment meta information map
-  THashMap<PDyGlAttachmentInstanceMetaInfo>   mAttachmentMetaInfo = {};
-  /// Framebuffer object meta information map
-  THashMap<PDyGlFrameBufferInstanceMetaInfo>  mFrameBufferMetaInfo = {};
-
-  /// Resource specifier name list for loading in boot sequence of MDySync.
-  TResourceSpecifierList              mBootResourceSpecifierList    = {};
-  std::vector<TResourceSpecifierList> mGlobalResourceSpecifierList  = {};  
-
-  //!
-  //! Hierarchial meta information containers.
-  //!
-
-  /// Prefab meta information map. (Temporary use std::unique_ptr, for reconstructing children tree)
-  THashMap<std::unique_ptr<PDyPrefabInstanceMetaInfo>>   mPrefabMetaInfo = {};
-  /// Widget meta information map.
-  THashMap<std::unique_ptr<PDyMetaWidgetRootDescriptor>> mWidgetMetaInfo = {};
-
-  /// Loading widget meta information map.
-  std::unique_ptr<PDyMetaWidgetRootDescriptor> mLoadingWidgetMetaInfo = MDY_INITIALIZE_NULL;
+  MDY_NODISCARD EDySuccess MDY_PRIVATE(AddBootResourceSpecifierList)(const TResourceSpecifierList& list);
+  MDY_NODISCARD EDySuccess MDY_PRIVATE(AddGlobalResourceSpecifierList)(const TResourceSpecifierList& list);
 
   friend class ::dy::reflect::RDyBuiltinResource;
 };

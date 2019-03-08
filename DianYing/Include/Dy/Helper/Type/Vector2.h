@@ -157,28 +157,18 @@ struct DDyVector2 final {
   //! Methods
   //!
 
-  ///
   /// @brief Return one-dimensional data chunk of DDyVector2.
-  ///
-  [[nodiscard]] FORCEINLINE std::array<float, 2> Data() const noexcept
-  {
-    return {this->X, this->Y};
-  }
+  MDY_NODISCARD TF32* Data() noexcept;
+  /// @brief Return one-dimensional data chunk of DDyVector2.
+  MDY_NODISCARD const TF32* Data() const noexcept;
 
-  ///
   /// @brief Return squared length of this vector.
   /// @return Squared length of this DDyVector2.
-  ///
-  [[nodiscard]] FORCEINLINE float GetSquareLength() const noexcept
-  {
-    return this->X * this->X + this->Y * this->Y;
-  }
+  MDY_NODISCARD TF32 GetSquareLength() const noexcept;
 
-  ///
   /// @brief Returns the length of this vector.
   /// @return Length of this DDyVector2.
-  ///
-  [[nodiscard]] FORCEINLINE float GetLength() const noexcept
+  MDY_NODISCARD TF32 GetLength() const noexcept
   {
     return std::sqrtf(this->GetSquareLength());
   }
@@ -234,7 +224,7 @@ struct DDyVector2 final {
   friend DDyVector2 operator/(DDyVector2 lhs, const float rhs) noexcept {
     if (rhs == 0.0f)
     {
-      MDY_LOG_CRITICAL_D("DDyVector2 could not be divided by {0}.", rhs);
+      DyPushLogDebugCritical("DDyVector2 could not be divided by {0}.", rhs);
     }
     else
     {
@@ -251,7 +241,7 @@ struct DDyVector2 final {
   friend DDyVector2 operator/(DDyVector2 lhs, const DDyVector2& rhs) noexcept {
     if (rhs.X == 0.0f || rhs.Y == 0.0f)
     {
-      MDY_LOG_CRITICAL_D( "DDyVector2 could not be devided by 0 included DDyVector2, ({0}, {1})", rhs.X, rhs.Y);
+      DyPushLogDebugCritical( "DDyVector2 could not be devided by 0 included DDyVector2, ({0}, {1})", rhs.X, rhs.Y);
     }
     else
     {
@@ -297,7 +287,7 @@ struct DDyVector2 final {
   {
     if (value == 0.0f)
     {
-      MDY_LOG_CRITICAL_D("DDyVector2 could not be divided by {0}.", value);
+      DyPushLogDebugCritical("DDyVector2 could not be divided by {0}.", value);
     }
     else
     {
@@ -315,7 +305,7 @@ struct DDyVector2 final {
   {
     if (value.X == 0.0f || value.Y == 0.0f)
     {
-      MDY_LOG_CRITICAL_D("DDyVector2 could not be devided by 0 included DDyVector2, ({0}, {1})", value.X, value.Y);
+      DyPushLogDebugCritical("DDyVector2 could not be devided by 0 included DDyVector2, ({0}, {1})", value.X, value.Y);
     }
     else
     {

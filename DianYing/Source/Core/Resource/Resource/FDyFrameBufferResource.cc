@@ -23,10 +23,11 @@
 namespace dy
 {
 
-FDyFrameBufferResource::FDyFrameBufferResource(const FDyFrameBufferInformation& iInformation) :
-    mSpecifierName{iInformation.GetSpecifierName()},
-    mBinderFrameBuffer{iInformation.GetSpecifierName()},
-    mFrameBufferSize{iInformation.GetFrameBufferSize()}
+FDyFrameBufferResource::FDyFrameBufferResource(const FDyFrameBufferInformation& iInformation) 
+  : mSpecifierName{iInformation.GetSpecifierName()},
+    mFrameBufferSize{iInformation.GetFrameBufferSize()},
+    mAttachmentBlendingList{iInformation.GetAttachmentBlendings()},
+    mBinderFrameBuffer{iInformation.GetSpecifierName()}
 {
   PDyGLFrameBufferDescriptor descriptor;
   descriptor.mFrameBufferSize    = iInformation.GetFrameBufferSize();
@@ -37,12 +38,18 @@ FDyFrameBufferResource::FDyFrameBufferResource(const FDyFrameBufferInformation& 
     const auto& colorAttachmentList = iInformation.GetAttachmentInformationBinderList();
     for (const auto& [binderInfo, ptrInfo] : colorAttachmentList)
     {
-      MDY_ASSERT(MDY_CHECK_ISNOTNULL(ptrInfo), "colorAttachment pointer must not be null. (TEMPORAL)");
+      MDY_ASSERT_MSG(
+        ptrInfo != nullptr, 
+        "colorAttachment pointer must not be null. (TEMPORAL)");
+
       const auto& [specifier, attachmentType] = binderInfo;
-
       DySafeUniquePtrEmplaceBack(this->mBinderAttachmentList, specifier);
-      MDY_ASSERT(this->mBinderAttachmentList.back()->IsResourceExist() == true, "Resource must be valid.");
 
+      MDY_ASSERT_MSG(
+        this->mBinderAttachmentList.back()->IsResourceExist() == true, 
+        "Resource must be valid.");
+
+      // Make attachment binding list information into creation descriptor.
       const auto& rescPtr = this->mBinderAttachmentList.back()->Get();
       descriptor.mAttachmentBindingList.emplace_back(
           rescPtr->GetAttachmentId(), 
@@ -56,7 +63,7 @@ FDyFrameBufferResource::FDyFrameBufferResource(const FDyFrameBufferInformation& 
   { // If using depth buffer, bind depth buffer also.
     const auto& [info, binder] = iInformation.GetDepthBufferBinder();
     this->mBinderDepthBuffer.TryRequireResource(info.mAttachmentName);
-    MDY_ASSERT(this->mBinderDepthBuffer.IsResourceExist() == true, "Resource must be valid.");
+    MDY_ASSERT_MSG(this->mBinderDepthBuffer.IsResourceExist() == true, "Resource must be valid.");
 
     const auto& ptrDepth = this->mBinderDepthBuffer;
     descriptor.mIsUsingDepthBuffer = true;
@@ -67,11 +74,13 @@ FDyFrameBufferResource::FDyFrameBufferResource(const FDyFrameBufferInformation& 
         ptrDepth->IsRenderBuffer());
   }
 
+  // Create frame buffer.
   std::optional<TU32> optFrameBufferId;
   { MDY_GRAPHIC_SET_CRITICALSECITON();
     optFrameBufferId = FDyGLWrapper::CreateFrameBuffer(descriptor);
   }
-  MDY_ASSERT(optFrameBufferId.has_value() == true, "Frame buffer creation must be succeeded.");
+  MDY_ASSERT_MSG(optFrameBufferId.has_value() == true, "Frame buffer creation must be succeeded.");
+
   this->mFrameBufferId = optFrameBufferId.value();
 }
 
@@ -81,16 +90,33 @@ FDyFrameBufferResource::~FDyFrameBufferResource()
   MDY_CALL_ASSERT_SUCCESS(FDyGLWrapper::DeleteFrameBuffer(this->mFrameBufferId));
 }
 
+const std::string& FDyFrameBufferResource::GetSpecifierName()
+{
+  return this->mSpecifierName;
+}
+
+TU32 FDyFrameBufferResource::GetFrameBufferId() const noexcept
+{
+  return this->mFrameBufferId;
+}
+
+const DDyVectorInt2& FDyFrameBufferResource::GetFrameBufferSize()
+{
+  return this->mFrameBufferSize;
+}
+
 EDySuccess FDyFrameBufferResource::BindFrameBuffer() const noexcept
 {
   if (this->GetFrameBufferId() == 0) { return DY_FAILURE; }
 
   FDyGLWrapper::BindFrameBufferObject(this->GetFrameBufferId());
+  //FDyGLWrapper::PushBlendingModes(this->mAttachmentBlendingList);
   return DY_SUCCESS;
 }
 
 void FDyFrameBufferResource::UnbindFrameBuffer() const noexcept
 {
+  //FDyGLWrapper::PopBlendingModes(this->mAttachmentBlendingList);
   FDyGLWrapper::UnbindFrameBufferObject();
 }
 

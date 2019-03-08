@@ -14,6 +14,7 @@
 
 #include <Dy/Component/Internal/Actor/CDyActorScriptCpp.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
+#include <Dy/Meta/Information/ScriptMetaInformation.h>
 
 namespace dy
 {
@@ -21,12 +22,12 @@ namespace dy
 CDyActorScriptCpp::CDyActorScriptCpp(_MIN_ FDyActor& iRefActor, _MIN_ const PDyScriptInstanceMetaInfo& iDesc) :
     CDyActorScriptBase{iRefActor}
 {
-  MDY_ASSERT(iDesc.mScriptType == EDyScriptType::Cpp,   "Script type is not matched to CDyActorScriptCpp.");
-  MDY_ASSERT(iDesc.mScriptMode == EDyScriptMode::Actor, "Given script must be actor type.");
+  MDY_ASSERT_MSG(iDesc.mScriptType == EDyScriptType::Cpp,   "Script type is not matched to CDyActorScriptCpp.");
+  MDY_ASSERT_MSG(iDesc.mScriptMode == EDyScriptMode::Actor, "Given script must be actor type.");
 
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(iDesc.mBtInstantiationFunction), "Cpp script instantiation function must be not null.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(iDesc.mBtInstantiationFunction), "Cpp script instantiation function must be not null.");
   this->mScriptInstance = DyConvertUniquePtrTo<ADyActorCppScript>(iDesc.mBtInstantiationFunction());
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mScriptInstance),    "Script instance could not bound to system.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->mScriptInstance),    "Script instance could not bound to system.");
 
   this->mScriptName = iDesc.mSpecifierName;
   this->mScriptInstance->pfSetOutsideReference(*this);
@@ -35,43 +36,43 @@ CDyActorScriptCpp::CDyActorScriptCpp(_MIN_ FDyActor& iRefActor, _MIN_ const PDyS
 
 ADyActorCppScript* CDyActorScriptCpp::MDY_PRIVATE(GetScriptInstance)() const noexcept
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance), "Script instance must be valid, not empty.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance), "Script instance must be valid, not empty.");
   return this->mScriptInstance.get();
 }
 
 void CDyActorScriptCpp::Initiate()
 {
-  MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
+  MDY_ASSERT_MSG(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
   this->mScriptInstance->Initiate();
 }
 
 void CDyActorScriptCpp::Start()
 {
-  MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
+  MDY_ASSERT_MSG(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
   this->mScriptInstance->Start();
 }
 
 void CDyActorScriptCpp::Update(_MIN_ float dt)
 {
-  MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
+  MDY_ASSERT_MSG(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
   this->mScriptInstance->Update(dt);
 }
 
 void CDyActorScriptCpp::OnEnabled()
 {
-  MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
+  MDY_ASSERT_MSG(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
   this->mScriptInstance->OnEnabled();
 }
 
 void CDyActorScriptCpp::OnDisabled()
 {
-  MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
+  MDY_ASSERT_MSG(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
   this->mScriptInstance->OnDisabled();
 }
 
 void CDyActorScriptCpp::Destroy()
 {
-  MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
+  MDY_ASSERT_MSG(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
   this->mScriptInstance->Destroy();
 }
 

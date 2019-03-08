@@ -41,8 +41,8 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDyArea2D& p)
 {
   j = nlohmann::json
   {
-      {MSVSTR(sHeader_LeftDown), p.mLeftDown},
-      {MSVSTR(sHeader_RightUp),  p.mRightUp}
+      {(sHeader_LeftDown), p.mLeftDown},
+      {(sHeader_RightUp),  p.mRightUp}
   };
 }
 

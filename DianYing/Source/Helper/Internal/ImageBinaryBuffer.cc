@@ -130,7 +130,7 @@ DDyImageBinaryDataBuffer::DDyImageBinaryDataBuffer(const std::string& imagePath)
   if (this->mImageFormat == EDyImageColorFormatStyle::NoneError)
   {
     stbi_image_free(this->mBufferStartPoint);
-    MDY_LOG_ERROR("{}", stbi_failure_reason());
+    DyPushLogError("{}", stbi_failure_reason());
     this->mIsBufferCreatedProperly = false;
   }
   else if (this->mBufferStartPoint == nullptr)

@@ -13,23 +13,10 @@
 /// SOFTWARE.
 ///
 
-#include <queue>
-
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Management/Type/Render/DDyModelHandler.h>
-#include <Dy/Core/Resource/Object/Grid.h>
-#include <Dy/Core/Rendering/Pipeline/BasicRenderer.h>
-#include <Dy/Core/Rendering/Pipeline/FinalScreenDisplayRenderer.h>
-#include <Dy/Core/Rendering/Pipeline/PostEffectSsao.h>
-#include <Dy/Core/Rendering/Pipeline/UIBasicRenderer.h>
-#include <Dy/Core/Rendering/Pipeline/LevelCascadeShadowRenderer.h>
-#include <Dy/Core/Rendering/Pipeline/LevelCSMIntegration.h>
-#include <Dy/Core/Rendering/Pipeline/LevelOITRenderer.h>
-#include <Dy/Core/Rendering/Pipeline/DebugRenderer.h>
-#include <Dy/Core/Rendering/Pipeline/PostEffectSky.h>
+#include <Dy/Management/Type/Render/DDyGlGlobalStatus.h>
 #include <Dy/Helper/Pointer.h>
-#include <Dy/Helper/Internal/FDyCallStack.h>
-#include "Dy/Management/Type/Render/DDyGlGlobalStatus.h"
 
 //!
 //! Forward declaration
@@ -37,6 +24,8 @@
 
 namespace dy
 {
+class   FWrapperRenderItem;
+class   FWrapperRenderPipeline;
 struct  DDyUboDirectionalLight;
 class   CDyCamera;
 class   CDyModelRenderer;
@@ -58,80 +47,13 @@ class   FDyMainViewport;
 namespace dy
 {
 
-///
 /// @class MDyRendering
 /// @brief Rendering maanger
-///
 class MDyRendering final : public IDySingleton<MDyRendering>
 {
   MDY_SINGLETON_PROPERTIES(MDyRendering);
   MDY_SINGLETON_DERIVED(MDyRendering);
 public:
-  /// @brief PreRender update functin.
-  void PreRender(_MIN_ TF32 dt);
-
-  /// @brief 
-  /// @TODO LOGIC IS TEMPORARY.
-  void SetupDrawModelTaskQueue();
-
-  /// @brief Render level information.
-  void RenderLevelInformation();
-  /// @brief Render level debug information. This function must be called in render phase.
-  /// @reference https://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/guide/Manual/DebugVisualization.html#debugvisualization
-  void RenderDebugInformation();
-  /// @brief Render UI information.
-  void RenderUIInformation();
-  /// @brief Integrate Level information + Debug Information + UI Information.
-  void Integrate();
-
-  /// @brief Render only loading widget.
-  void MDY_PRIVATE(RenderLoading());
-  
-  /// @brief Get ptr main directional light. If not exist, just return nullptr.
-  MDY_NODISCARD CDyDirectionalLight* GetPtrMainDirectionalLight() const noexcept;
-  /// @brief Private function, bind directional light as main light.
-  void MDY_PRIVATE(BindMainDirectionalLight)(_MIN_ CDyDirectionalLight& iRefLight);
-  /// @brief Private function, unbind directional light of main light.
-  EDySuccess MDY_PRIVATE(UnbindMainDirectionalLight)(_MIN_ CDyDirectionalLight& iRefLight);
-    
-  /// @brief Get ptr main directional shadow. If not exist, just return nullptr.
-  MDY_NODISCARD CDyDirectionalLight* GetPtrMainDirectionalShadow() const noexcept;
-  /// @brief Private function, bind directional light as main light.
-  void MDY_PRIVATE(BindMainDirectionalShadow)(_MIN_ CDyDirectionalLight& iRefLight);
-  /// @brief Private function, unbind directional light of main light.
-  EDySuccess MDY_PRIVATE(UnbindMainDirectionalShadow)(_MIN_ CDyDirectionalLight& iRefLight);
-
-  /// @brief Get General (Default) ui projection matrix.
-  const DDyMatrix4x4& GetGeneralUiProjectionMatrix() const noexcept;
-
-private:
-  /// @brief Enqueue static draw call to mesh with material.
-  void EnqueueDrawMesh(
-      _MIN_ DDyModelHandler::DActorInfo& iRefModelRenderer,
-      _MIN_ const FDyMeshResource& iRefValidMesh, 
-      _MIN_ const FDyMaterialResource& iRefValidMat);
-
-  /// @brief Enqueue debug collider draw call.
-  void EnqueueDebugDrawCollider(
-      _MIN_ CDyPhysicsCollider& iRefCollider, 
-      _MIN_ const DDyMatrix4x4& iTransformMatrix);
-  
-  ///
-  /// @brief Reset all of rendering framebuffers related to rendering of scene for new frame rendering.
-  ///
-  void pClearRenderingFramebufferInstances() noexcept;
-
-  ///
-  std::unique_ptr<FDyBasicRenderer>               mBasicOpaqueRenderer  = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyLevelCascadeShadowRenderer>  mCSMRenderer          = MDY_INITIALIZE_NULL; 
-  std::unique_ptr<FDyLevelCSMIntergration>        mLevelFinalRenderer   = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyLevelOITRenderer>            mTranslucentOIT       = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyPostEffectSsao>              mSSAOPostEffect       = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyPostEffectSky>               mSkyPostEffect        = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyUIBasicRenderer>             mUiBasicRenderer      = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyFinalScreenDisplayRenderer>  mFinalDisplayRenderer = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyDebugRenderer>               mDebugRenderer        = MDY_INITIALIZE_NULL;
-
   using TMeshDrawCallItem = std::tuple<
       NotNull<DDyModelHandler::DActorInfo*>,
       NotNull<const FDyMeshResource*>, 
@@ -141,36 +63,79 @@ private:
   using TDrawColliderItem = std::pair<NotNull<CDyPhysicsCollider*>, DDyMatrix4x4>; 
   using TUiDrawCallItem = NotNull<FDyUiObject*>;
 
-  std::vector<TMeshDrawCallItem> mOpaqueMeshDrawingList = {};
-  std::vector<TMeshDrawCallItem> mTranslucentMeshDrawingList = {};
-  std::vector<TDrawColliderItem> mDebugColliderDrawingList = {};
-  std::vector<TUiDrawCallItem>   mUiObjectDrawingList = {};
+  /// @brief PreRender update functin.
+  void PreRender(TF32 dt);
 
-  CDyDirectionalLight* mMainDirectionalLight   = nullptr;
-  CDyDirectionalLight* mMainDirectionalShadow  = nullptr;
+  /// @brief 
+  /// @TODO LOGIC IS TEMPORARY.
+  void SetupDrawModelTaskQueue();
 
-  /// @brief Required skybox pointer for rendering on present frame.
-  /// If rendered, skybox pointer will be nulled again.
-  CDySkybox* mPtrRequiredSkybox = nullptr;
+  /// @brief Render level information.
+  void RenderPipelines();
 
-  /// @brief Activated directional light list.
-  std::queue<TI32>  mDirLightAvailableList      = {};
-  /// @brief Default UI projection matrix. (Orthogonal)
-  DDyMatrix4x4      mUiGeneralProjectionMatrix  = {};
+  /// @brief Get ptr main directional light. If not exist, just return nullptr.
+  MDY_NODISCARD CDyDirectionalLight* GetPtrMainDirectionalLight() const noexcept;
+  /// @brief Private function, bind directional light as main light.
+  void MDY_PRIVATE(BindMainDirectionalLight)(CDyDirectionalLight& iRefLight);
+  /// @brief Private function, unbind directional light of main light.
+  EDySuccess MDY_PRIVATE(UnbindMainDirectionalLight)(CDyDirectionalLight& iRefLight);
+    
+  /// @brief Get ptr main directional shadow. If not exist, just return nullptr.
+  MDY_NODISCARD CDyDirectionalLight* GetPtrMainDirectionalShadow() const noexcept;
+  /// @brief Private function, bind directional light as main light.
+  void MDY_PRIVATE(BindMainDirectionalShadow)(CDyDirectionalLight& iRefLight);
+  /// @brief Private function, unbind directional light of main light.
+  EDySuccess MDY_PRIVATE(UnbindMainDirectionalShadow)(CDyDirectionalLight& iRefLight);
 
-  /// @brief Global status stack for management. \n
-  /// This container will be push & popped automatically by following rendering pipeline.
-  /// This container must not be empty before termination of Dy application.
-  FDyCallStack<DDyGlGlobalStatus> mInternalGlobalStatusStack;
+  /// @brief Get General (Default) ui projection matrix.
+  const DDyMatrix4x4& GetGeneralUiProjectionMatrix() const noexcept;
+  /// @brief Insert GL global status.
+  void InsertInternalGlobalStatus(const DDyGlGlobalStatus& iNewStatus); 
+  /// @brief Pop GL global status.
+  void PopInternalGlobalStatus();
 
-#if defined(MDY_FLAG_IN_EDITOR)
-  std::unique_ptr<FDyGrid>                    mGridEffect           = nullptr;
-#endif /// MDY_FLAG_IN_EDITOR
+  /// @brief Swap buffer.
+  void SwapBuffers();
 
-  friend class CDyDirectionalLight;
-  friend class FDyDeferredRenderingMesh;
-  friend class FDyPostEffectSsao;
-  friend class editor::FDyMainViewport;
+  /// @todo TEMPORARY API
+  std::vector<TMeshDrawCallItem>& GetOpaqueMeshQueueList();
+  /// @todo TEMPORARY API
+  std::vector<TMeshDrawCallItem>& GetTranclucentOitMeshQueueList(); 
+  /// @todo TEMPORARY API
+  std::vector<TDrawColliderItem>& GetColliderMeshQueueList(); 
+  /// @todo TEMPORARY API
+  std::vector<TUiDrawCallItem>& GetUiObjectQueuelist();
+
+  /// @brief Check RenderItem is exist on rendering system.
+  MDY_NODISCARD bool HasRenderItem(const std::string& iRenderItemName);
+  /// @brief Get handle instance of RenderItem into handle.
+  MDY_NODISCARD FWrapperRenderItem* GetRenderItem(const std::string& iRenderItemName);
+  /// @brief Check RenderPipeline is exist on rendering system.
+  MDY_NODISCARD bool HasRenderPipeline(const std::string& iRenderPipelineName);
+  /// @brief Get handle instance of RenderPipeline into handle.
+  MDY_NODISCARD FWrapperRenderPipeline* GetRenderPipeline(const std::string& iRenderPipelineName);
+  /// @brief Check Entry RenderPipeline is exist on rendering system.
+  MDY_NODISCARD bool HasEntryRenderPipeline(const std::string& iEntryPipelineName);
+  /// @brief Set activation of entry renderpipeline.
+  /// If Activated, this pipeline will be rendered with arbitary order.
+  /// If Deactivated, this pipeline will not be rendered but leave render resources valid.
+  ///
+  /// If not found, just do nothing.
+  EDySuccess ActivateEntryRenderPipeline(const std::string& iEntryPipelineName, bool iIsActivated);
+
+private:
+  /// @brief Enqueue static draw call to mesh with material.
+  void EnqueueDrawMesh(
+      DDyModelHandler::DActorInfo& iRefModelRenderer,
+      const FDyMeshResource& iRefValidMesh, 
+      const FDyMaterialResource& iRefValidMat);
+
+  /// @brief Enqueue debug collider draw call.
+  void EnqueueDebugDrawCollider(
+      CDyPhysicsCollider& iRefCollider, 
+      const DDyMatrix4x4& iTransformMatrix);
+
+  class Impl; Impl* mInternal = nullptr;
 
   friend class MDyPhysics;
 };

@@ -18,6 +18,7 @@
 #include <geometry/PxSphereGeometry.h>
 #include <Dy/Management/PhysicsManager.h>
 #include <Dy/Component/CDyPhysicsRigidbody.h>
+#include <PxPhysics.h>
 
 namespace dy
 {
@@ -71,7 +72,7 @@ void CDyPhysicsColliderSphere::InitializeInternalResource(_MINOUT_ CDyPhysicsRig
   auto& physics = MDyPhysics::GetInstance().MDY_PRIVATE(GetRefInternalSdk)();
   const auto& defaultMaterial = MDyPhysics::GetInstance().GetDefaultPhysicsMaterial();
   this->mPtrInternalShape = physics.createShape(geometry, defaultMaterial);
-  MDY_ASSERT_FORCE(MDY_CHECK_ISNOTNULL(this->mPtrInternalShape), "Unexpected error occurred.");
+  MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNOTNULL(this->mPtrInternalShape), "Unexpected error occurred.");
   
   // Make filter value (PxFilterData)
   this->mInternalFilterData = CreateFilterDataValue(iRefRigidbody, this->mCollisionTagName, this->mFilterValues);

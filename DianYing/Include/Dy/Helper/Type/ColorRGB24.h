@@ -20,55 +20,26 @@
 namespace dy
 {
 
-///
 /// @class DDyColorRGB24
-/// @brief 8-bit color type which stores 3 components (R, G, B)
+/// @brief 8-bit color type which stores 3 components (R, G, B).
 /// (h, s, v) does not support but can be converted calling HsvToRgb().
-///
 struct alignas(4) DDyColorRGB24 final
 {
-  TU08 R = MDY_INITIALIZE_DEFUINT;
-  TU08 G = MDY_INITIALIZE_DEFUINT;
-  TU08 B = MDY_INITIALIZE_DEFUINT;
+  TU08 R = 0, G = 0, B = 0;
 
-  constexpr DDyColorRGB24() = default;
+  DDyColorRGB24() = default;
+  DDyColorRGB24(TU08 r, TU08 g, TU08 b) noexcept;
 
-  constexpr DDyColorRGB24(_MIN_ const TU08 r, _MIN_ const TU08 g, _MIN_ const TU08 b) noexcept
-  {
-    this->R = r;
-    this->G = g;
-    this->B = b;
-  }
-
-  ///
   /// @brief Get color's grayscale value following sRGB.
-  ///
-  MDY_NODISCARD constexpr TF32 GetGrayScale() const noexcept
-  {
-    return 0.2126f * this->R + 0.7152f * this->G + 0.0722f * this->B;
-  }
+  MDY_NODISCARD TF32 GetGrayScale() const noexcept;
+  
+  /// @brief Can be convert DDyColorRGBA. 
+  /// When converted to RGBA type, Alpha will be 1.0. (opaque)
+  operator DDyColorRGBA() const noexcept;
 
-  ///
   /// @brief Can be convert DDyColorRGBA.
-  ///
-  constexpr operator DDyColorRGBA() const noexcept
-  {
-    return DDyColorRGBA
-    {
-      static_cast<float>(this->R) / 0xFF,
-      static_cast<float>(this->G) / 0xFF,
-      static_cast<float>(this->B) / 0xFF,
-      1.0f
-    };
-  }
-
-  ///
-  /// @brief Can be convert DDyColorRGBA.
-  ///
-  constexpr operator DDyColorRGBA32() const noexcept
-  {
-    return DDyColorRGBA32 { this->R, this->G, this->B, 0xFF };
-  }
+  /// When converted to RGBA type, Alpha will be 255. (opaque)
+  operator DDyColorRGBA32() const noexcept;
 
   static const DDyColorRGB24 Aqua;
   static const DDyColorRGB24 Black;
@@ -87,8 +58,8 @@ struct alignas(4) DDyColorRGB24 final
   static const DDyColorRGB24 Yellow;
 };
 
-void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDyColorRGB24& p);
-void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ DDyColorRGB24& p);
+void to_json  (nlohmann::json& oJson, const DDyColorRGB24& iItem);
+void from_json(const nlohmann::json& iJson, DDyColorRGB24& oJson);
 
 } /// ::dy namespace
 

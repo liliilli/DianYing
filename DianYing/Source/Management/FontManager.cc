@@ -37,13 +37,19 @@ EDySuccess MDyFont::CreateFontResourceContainer(const std::string& fontSpecifier
 {
   if (this->IsFontResourceContainerExist(fontSpecifierName) == true)
   {
-    MDY_UNEXPECTED_BRANCH(); return DY_FAILURE;
+    DyPushLogError(
+      "Failed to create font resource, {}. This font is already created in container.", 
+      fontSpecifierName);
+    return DY_SUCCESS;
   }
 
   // Create font information and move it.
   auto& metaManager = MDyMetaInfo::GetInstance();
   if (metaManager.IsFontMetaInformationExist(fontSpecifierName) == false)
   {
+    DyPushLogCritical(
+      "Failed to create font resource, {}. This font information is not exist on meta system.", 
+      fontSpecifierName);
     return DY_FAILURE;
   }
 
@@ -51,14 +57,14 @@ EDySuccess MDyFont::CreateFontResourceContainer(const std::string& fontSpecifier
   if (fontMetaInformation.mIsUsingRuntimeCreateionWhenGlyphNotExist == false)
   { // Make space
     auto [it, isSucceeded] = this->mFontResourceContainerMap.try_emplace(fontSpecifierName, nullptr);
-    MDY_ASSERT(isSucceeded == true, "Font resource creation must be succeeded.");
+    MDY_ASSERT_MSG(isSucceeded == true, "Font resource creation must be succeeded.");
 
     // Create font resource.
     auto instance = std::make_unique<FDyFontResourceContainer>(fontMetaInformation);
     { // Swapping
       std::unique_ptr<IDyFontContainer> tempSwap{static_cast<IDyFontContainer*>(instance.release())};
       it->second.swap(tempSwap);
-      MDY_ASSERT(it->second.get() != nullptr, "Unexpected error occurred");
+      MDY_ASSERT_MSG(it->second.get() != nullptr, "Unexpected error occurred");
     }
 
     //
@@ -72,7 +78,12 @@ EDySuccess MDyFont::CreateFontResourceContainer(const std::string& fontSpecifier
   return DY_SUCCESS;
 }
 
-IDyFontContainer* MDyFont::GetFontResourceContainer(_MIN_ const std::string& specifierName)
+bool MDyFont::IsFontResourceContainerExist(const std::string& specifierName)
+{
+  return DyIsMapContains(this->mFontResourceContainerMap, specifierName);
+}
+
+  IDyFontContainer* MDyFont::GetFontResourceContainer(_MIN_ const std::string& specifierName)
 {
   if (this->IsFontResourceContainerExist(specifierName) == false) { return nullptr; }
 

@@ -42,7 +42,7 @@ FDyFontResourceContainer::FDyFontResourceContainer(_MIN_ const PDyMetaFontInform
   static auto GetPlainInformationString = [](_MIN_ const std::string& filePath) -> std::string
   {
     FILE* fpRes = std::fopen(filePath.c_str(), "rb");
-    MDY_ASSERT(fpRes != nullptr, "fpRes must not be nullptr.");
+    MDY_ASSERT_MSG(fpRes != nullptr, "fpRes must not be nullptr.");
 
     std::fseek(fpRes, 0, SEEK_END);
     auto fileSize = std::ftell(fpRes);
@@ -66,12 +66,12 @@ FDyFontResourceContainer::FDyFontResourceContainer(_MIN_ const PDyMetaFontInform
   for (auto objIterator = characterAtlas.begin(); objIterator != characterAtlas.end(); ++objIterator)
   {
     const TC16 charCode = std::stoi(objIterator.key());
-    MDY_ASSERT(this->mCharContainer.find(charCode) == this->mCharContainer.end(), "Unexpected error occurred.");
+    MDY_ASSERT_MSG(this->mCharContainer.find(charCode) == this->mCharContainer.end(), "Unexpected error occurred.");
 
     auto [_, isSucceeded] = mCharContainer.try_emplace(
         charCode,
         DDyFontCharacterInfo::CreateInstance(objIterator.value(), charCode));
-    MDY_ASSERT(isSucceeded == true, "Unexpected error occurred.");
+    MDY_ASSERT_MSG(isSucceeded == true, "Unexpected error occurred.");
   }
 
   // (3) Allocate GL2DArray for font textures.
@@ -87,7 +87,7 @@ FDyFontResourceContainer::FDyFontResourceContainer(_MIN_ const PDyMetaFontInform
   for (TI32 i = 0; i < texturePackSize; ++i)
   {
     auto dataBuffer = std::make_unique<DDyImageBinaryDataBuffer>(fontInformation.mFontTexturePathList[i]);
-    MDY_ASSERT(dataBuffer->IsBufferCreatedProperly() == true, "Unexpected error occurred.");
+    MDY_ASSERT_MSG(dataBuffer->IsBufferCreatedProperly() == true, "Unexpected error occurred.");
     glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, 1024, 1024, 1, GL_RGBA, GL_UNSIGNED_BYTE, dataBuffer->GetBufferStartPoint());
   }
   glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

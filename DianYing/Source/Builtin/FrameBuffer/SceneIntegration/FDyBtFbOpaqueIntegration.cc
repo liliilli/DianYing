@@ -24,7 +24,7 @@ void FDyBtFbOpaqueIntegration::ConstructBuffer(_MOUT_ PDyGlFrameBufferInstanceMe
   property.mSpecifierName       = sName;
   property.mFrameBufferSize     = DDyVectorInt2{1280, 720};
   property.mIsUsingDepthBuffer  = false;
-  property.mColorAttachmentList.emplace_back(MSVSTR(FDyBtAtOpaqueOutput::sName), EDyGlAttachmentType::Color0);
+  property.mColorAttachmentList.emplace_back((FDyBtAtOpaqueOutput::sName), EDyGlAttachmentType::Color0);
 }
 
 } /// ::dy namespace

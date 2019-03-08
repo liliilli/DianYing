@@ -53,7 +53,7 @@ void MoveMetaObjectIntoParentRecursively(
 {
   for (auto& parentObject : p)
   { 
-    MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(object), "Unexpected error occurred");
+    MDY_ASSERT_MSG(MDY_CHECK_ISNOTEMPTY(object), "Unexpected error occurred");
     if (parentObject == object)           { continue; }
     if (MDY_CHECK_ISEMPTY(parentObject))  { continue; }
 

@@ -53,7 +53,7 @@
     <ClCompile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PreprocessorDefinitions>UNICODE;_UNICODE;WIN32;WIN64;QT_WIDGETS_LIB;QT_OPENGL_LIB;QT_GUI_LIB;QT_CONCURRENT_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(ProjectDir)Libraries\freetype\include;$(ProjectDir)Libraries\spdlog\include;$(ProjectDir)Libraries\msdfgen;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\zlib;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtConcurrent;$(QTDIR)\include\QtCore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);C:\TPLibraries\boost_1_67_0;$(ProjectDir)Libraries\freetype\include;$(ProjectDir)Libraries\spdlog\include;$(ProjectDir)Libraries\msdfgen;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\zlib;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtConcurrent;$(QTDIR)\include\QtCore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -90,7 +90,7 @@
     <ClCompile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PreprocessorDefinitions>UNICODE;_UNICODE;WIN32;WIN64;QT_NO_DEBUG;NDEBUG;QT_WIDGETS_LIB;QT_OPENGL_LIB;QT_GUI_LIB;QT_CONCURRENT_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(ProjectDir)Libraries\spdlog\include;$(ProjectDir)Libraries\freetype\include;$(ProjectDir)Libraries\msdfgen;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\zlib;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtConcurrent;$(QTDIR)\include\QtCore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);C:\TPLibraries\boost_1_67_0;$(ProjectDir)Libraries\spdlog\include;$(ProjectDir)Libraries\freetype\include;$(ProjectDir)Libraries\msdfgen;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\zlib;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtConcurrent;$(QTDIR)\include\QtCore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat />
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
@@ -123,12 +123,14 @@
     </QtRcc>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DyFontAtlasGenerator.cpp" />
-    <ClCompile Include="DyWindowAbout.cpp" />
-    <ClCompile Include="Helper\CoordinateBounds.cc" />
-    <ClCompile Include="Helper\GLOffscreenSurface.cc" />
-    <ClCompile Include="Helper\HelperZlib.cpp" />
-    <ClCompile Include="Helper\PaintSurface.cc" />
+    <ClCompile Include="Source\DyFontAtlasGenerator.cpp" />
+    <ClCompile Include="Source\DyWindowAbout.cpp" />
+    <ClCompile Include="Source\FTaskThread.cc" />
+    <ClCompile Include="Source\Library\JsonTypeWriterHelper.cc" />
+    <ClCompile Include="Source\Type\CoordinateBounds.cc" />
+    <ClCompile Include="Source\QtHelper\GLOffscreenSurface.cc" />
+    <ClCompile Include="Source\Library\HelperZlib.cpp" />
+    <ClCompile Include="Source\QtHelper\PaintSurface.cc" />
     <ClCompile Include="Libraries\msdfgen\core\Bitmap.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
@@ -188,24 +190,31 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Helper\CoordinateBounds.h" />
-    <QtMoc Include="Helper\GLOffscreenSurface.h">
+    <ClInclude Include="Include\Constant.h" />
+    <ClInclude Include="Include\FTaskThread.h" />
+    <ClInclude Include="Include\Library\HelperString.h" />
+    <ClInclude Include="Include\Type\CoordinateBounds.h" />
+    <QtMoc Include="Include\QtHelper\GLOffscreenSurface.h">
       <ForceInclude Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">precompiled.h;../../Helper/%(Filename)%(Extension)</ForceInclude>
       <ForceInclude Condition="'$(Configuration)|$(Platform)'=='Release|x64'">precompiled.h;../../Helper/%(Filename)%(Extension)</ForceInclude>
     </QtMoc>
-    <ClInclude Include="Helper\MsdfgenHelper.h" />
-    <ClInclude Include="Helper\GlobalEnums.h" />
+    <ClInclude Include="Include\Library\MsdfgenHelper.h" />
+    <ClInclude Include="Include\Type\DFileInformations.h" />
+    <ClInclude Include="Include\Type\DResult.h" />
+    <ClInclude Include="Include\Type\GlobalEnums.h" />
     <QtMoc Include="DyWindowAbout.h">
       <ForceInclude Condition="'$(Configuration)|$(Platform)'=='Release|x64'">precompiled.h;../../%(Filename)%(Extension)</ForceInclude>
     </QtMoc>
     <QtMoc Include="DyFontAtlasGenerator.h">
       <ForceInclude Condition="'$(Configuration)|$(Platform)'=='Release|x64'">precompiled.h;../../%(Filename)%(Extension)</ForceInclude>
     </QtMoc>
-    <ClInclude Include="Helper\JsonTypeWriterHelper.h" />
-    <ClInclude Include="Helper\PaintSurface.h" />
-    <ClInclude Include="Helper\Structure.h" />
-    <ClInclude Include="Helper\Vector2.h" />
-    <ClInclude Include="Helper\HelperZlib.h" />
+    <ClInclude Include="Include\Library\JsonTypeWriterHelper.h" />
+    <ClInclude Include="Include\QtHelper\PaintSurface.h" />
+    <ClInclude Include="Include\Structure.h" />
+    <ClInclude Include="Include\Type\TCallVar.h" />
+    <ClInclude Include="Include\Type\Vector2.h" />
+    <ClInclude Include="Include\Library\HelperZlib.h" />
+    <ClInclude Include="Include\AConstantLangRange.h" />
     <ClInclude Include="Libraries\msdfgen\core\arithmetics.hpp" />
     <ClInclude Include="Libraries\msdfgen\core\Bitmap.h" />
     <ClInclude Include="Libraries\msdfgen\core\Contour.h" />

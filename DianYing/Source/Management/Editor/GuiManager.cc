@@ -30,11 +30,11 @@ namespace dy::editor
 
 EDySuccess MDyEditorGui::pfInitialize()
 {
-  MDY_LOG_INFO_D("MDyEditorGui manager initialized.");
+  DyPushLogDebugInfo("MDyEditorGui manager initialized.");
   MDY_CALL_ASSERT_SUCCESS(MDyEditorSetting::Initialize());
 
   auto [hashVal, ptr] = FDyEditorGuiWindowFactory::CreateGuiComponent<FDyMainMenu>(PDyGuiComponentEmptyDescriptor{});
-  MDY_ASSERT(static_cast<bool>(ptr), "Failed to create MainMenu!");
+  MDY_ASSERT_MSG(static_cast<bool>(ptr), "Failed to create MainMenu!");
   this->mMainMenu = std::unique_ptr<FDyMainMenu>(static_cast<FDyMainMenu*>(ptr.release()));
 
   return DY_SUCCESS;
@@ -42,7 +42,7 @@ EDySuccess MDyEditorGui::pfInitialize()
 
 EDySuccess MDyEditorGui::pfRelease()
 {
-  MDY_LOG_INFO_D("MDyEditorGui manager released.");
+  DyPushLogDebugInfo("MDyEditorGui manager released.");
   MDY_CALL_ASSERT_SUCCESS(MDyEditorSetting::Release());
   return DY_SUCCESS;
 }

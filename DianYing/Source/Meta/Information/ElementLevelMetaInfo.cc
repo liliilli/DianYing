@@ -16,7 +16,7 @@
 #include <Dy/Meta/Information/ElementLevelMetaInfo.h>
 
 #include <nlohmann/json.hpp>
-#include <Dy/Helper/Type/ColorRGB24.h>
+#include <Dy/Helper/Type/ColorRGB.h>
 #include <Dy/Helper/Library/HelperJson.h>
 #include <Dy/Element/Helper/DescriptorComponentHeaderString.h>
 
@@ -116,8 +116,8 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyLevelConstructMetaInfo& 
 {
   j = nlohmann::json
   {
-      {MSVSTR(sCategoryMeta),   p.mMetaCategory},
-      {MSVSTR(sCategoryObject), p.mLevelObjectMetaInfoList},
+      {(sCategoryMeta),   p.mMetaCategory},
+      {(sCategoryObject), p.mLevelObjectMetaInfoList},
   };
 }
 
@@ -134,17 +134,17 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyLevelConstructMetaInfo::
   // @TODO p.mLevelBackgroundColor to DDyColorRGB24.
   j = nlohmann::json
   {
-    {MSVSTR(sHeader_SpecifierName),               p.mLevelName},
-    {MSVSTR(sHeader_IsUsingUUIDForSpecification), p.mIsUsingUUIDForSpecification},
-    {MSVSTR(sHeader_BackgroundColor),             p.mLevelBackgroundColor},
+    {(sHeader_SpecifierName),               p.mLevelName},
+    {(sHeader_IsUsingUUIDForSpecification), p.mIsUsingUUIDForSpecification},
+    {(sHeader_BackgroundColor),             p.mLevelBackgroundColor},
   };
 }
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyLevelConstructMetaInfo::DMeta& p)
 {
-  DyJsonGetValueFromTo(j, sHeader_SpecifierName,                p.mLevelName);
-  DyJsonGetValueFromTo(j, sHeader_IsUsingUUIDForSpecification,  p.mIsUsingUUIDForSpecification);
-  p.mLevelBackgroundColor = DyJsonGetValueFrom<DDyColorRGB24>(j, sHeader_BackgroundColor);
+  DyJsonGetValueFromTo(j, sHeader_SpecifierName,               p.mLevelName);
+  DyJsonGetValueFromTo(j, sHeader_IsUsingUUIDForSpecification, p.mIsUsingUUIDForSpecification);
+  DyJsonGetValueFromTo(j, sHeader_BackgroundColor, p.mLevelBackgroundColor);
 }
 
 } /// ::dy namespace

@@ -26,7 +26,7 @@ void FDyBtStaticTransparentChecker::ConstructBuffer(PDyMaterialInstanceMetaInfo&
   property.mShaderSpecifier = FDyBtShOITAccumulation::sName;
   property.mBlendMode       = EDyMaterialBlendMode::TranslucentOIT;
 
-  property.mTextureNames[0] = {MSVSTR(FDyBtTexCheckerBright::sName), EDyTextureMapType::Unknown};
+  property.mTextureNames[0] = {(FDyBtTexCheckerBright::sName), EDyTextureMapType::Unknown};
 }
 
 } /// ::dy::builtin namespace

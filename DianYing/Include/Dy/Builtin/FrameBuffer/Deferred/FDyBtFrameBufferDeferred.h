@@ -19,10 +19,8 @@
 namespace dy
 {
 
-///
 /// @class FDyBtFrameBufferDeferred
 /// @brief Basic render (OPAQUE, DEFERRED) framebuffer object descriptor.
-///
 class FDyBtFrameBufferDeferred final : public ADyGLFrameBufferResource
 {
   MDY_REGISTER_RESOURCE_FRAMEBUFFER(FDyBtFrameBufferDeferred, "dyBtBasicRender")

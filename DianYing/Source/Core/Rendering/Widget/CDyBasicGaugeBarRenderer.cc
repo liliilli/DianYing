@@ -60,10 +60,10 @@ namespace dy
 
 EDySuccess CDyBasicGaugeBarRenderer::Initialize(const PDyBasicGaugeBarRendererCtorInformation& descriptor)
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(descriptor.mPtrUiObject), "descriptor.mPtrUiObject must not be null.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(descriptor.mPtrUiObject), "descriptor.mPtrUiObject must not be null.");
   this->mPtrBarObject  = descriptor.mPtrUiObject;
-  this->mBinderShader .TryRequireResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderUiBasicGaugeBar::sName));
-  this->mBinderBarMesh.TryRequireResource(MSVSTR(builtin::FDyBtMsUiBarQuad::sName));
+  this->mBinderShader .TryRequireResource((builtin::FDyBuiltinShaderGLRenderUiBasicGaugeBar::sName));
+  this->mBinderBarMesh.TryRequireResource((builtin::FDyBtMsUiBarQuad::sName));
 
   return DY_SUCCESS;
 }
@@ -73,7 +73,7 @@ void CDyBasicGaugeBarRenderer::Release() { }
 void CDyBasicGaugeBarRenderer::Render()
 {
   using EUniformType = EDyUniformVariableType;
-  MDY_ASSERT(this->mPtrBarObject != nullptr, "CDyBasicGaugeBarRenderer::mPtrBarObject must not be nullptr.");
+  MDY_ASSERT_MSG(this->mPtrBarObject != nullptr, "CDyBasicGaugeBarRenderer::mPtrBarObject must not be nullptr.");
   if (this->mBinderShader.IsResourceExist() == false
   ||  this->mBinderBarMesh.IsResourceExist() == false) { return; }
 
@@ -82,7 +82,6 @@ void CDyBasicGaugeBarRenderer::Render()
   const DDyVectorInt2 size = this->mPtrBarObject->GetFrameSize();
   const auto vboId = this->mBinderBarMesh->GetVertexBufferId();
 
-  MDY_GRAPHIC_SET_CRITICALSECITON();
   this->mBinderShader->UseShader();
   glDepthFunc(GL_ALWAYS);
   glBindVertexArray(this->mBinderBarMesh->GetVertexArrayId());

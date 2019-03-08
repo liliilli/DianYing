@@ -79,7 +79,7 @@ void FDyMainSetting::DrawWindow(float dt) noexcept
             ImGui::Text("Project Name"); ImGui::SameLine(); ImGui::PushItemWidth(200);
             if (ImGui::InputText("ProjectName", this->mProjectName, 64, ImGuiInputTextFlags_EnterReturnsTrue))
             {
-              MDY_LOG_CRITICAL("{}!", this->mProjectName);
+              DyPushLogCritical("{}!", this->mProjectName);
             };
             ImGui::PopItemWidth();
           }

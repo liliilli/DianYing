@@ -64,7 +64,7 @@ public:
   /// @brief Get mutable reference of actor.
   MDY_NODISCARD FDyActor& GetActorReference() noexcept
   {
-    MDY_ASSERT(this->mPtrBoundActor != nullptr, "Unexpected error occurred.");
+    MDY_ASSERT_MSG(this->mPtrBoundActor != nullptr, "Unexpected error occurred.");
     return *this->mPtrBoundActor;
   }
 

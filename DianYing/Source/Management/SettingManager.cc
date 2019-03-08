@@ -145,8 +145,8 @@ void MDySetting::SetFeatureLogging(_MIN_ bool isEnabled) noexcept
 {
   if (this->mIsEnabledLogging != isEnabled)
   {
-    auto& logManager = dy::MDyLog::GetInstance();
-    MDY_LOG_INFO_D("{} | Logging : {}", "Feature", isEnabled ? "ON" : "OFF");
+    auto& logManager = MDyLog::GetInstance();
+    DyPushLogDebugInfo("{} | Logging : {}", "Feature", isEnabled ? "ON" : "OFF");
     switch (isEnabled)
     {
     case false: logManager.pfTurnOff(); break;
@@ -160,25 +160,25 @@ void MDySetting::SetFeatureLogging(_MIN_ bool isEnabled) noexcept
 void MDySetting::SetSubFeatureLoggingToConsole(_MIN_ bool isEnabled) noexcept
 {
   this->mIsEnabledLoggingToConsole = isEnabled;
-  MDY_LOG_INFO_D("{} | Logging Console : {}. Need to be restart logger.", "SubFeature", isEnabled ? "ON" : "OFF");
+  DyPushLogDebugInfo("{} | Logging Console : {}. Need to be restart logger.", "SubFeature", isEnabled ? "ON" : "OFF");
 }
 
 void MDySetting::SetSubFeatureLoggingToFile(_MIN_ bool isEnabled) noexcept
 {
   this->mIsEnabledLoggingToFile = isEnabled;
-  MDY_LOG_INFO_D("{} | Logging File : {}. Need to be restart logger.", "SubFeature", isEnabled ? "ON" : "OFF");
+  DyPushLogDebugInfo("{} | Logging File : {}. Need to be restart logger.", "SubFeature", isEnabled ? "ON" : "OFF");
 }
 
 void MDySetting::SetLogFilePath(_MIN_ const std::string& path) noexcept
 {
   if (path.empty() == true)
   {
-    MDY_LOG_ERROR_D("{} | new log file path is empty. Log file path did not change. Log file path : {}", this->mLogFilePath);
+    DyPushLogDebugError("{} | new log file path is empty. Log file path did not change. Log file path : {}", this->mLogFilePath);
   }
   else
   {
     this->mLogFilePath = path;
-    MDY_LOG_INFO_D("{} | Update Log file path : {}. Need to be restart logger.", "SubFeature", this->mLogFilePath);
+    DyPushLogDebugInfo("{} | Update Log file path : {}. Need to be restart logger.", "SubFeature", this->mLogFilePath);
   }
 }
 
@@ -276,6 +276,16 @@ bool MDySetting::IsRenderPhysicsCollisionShape() const noexcept
   return this->mIsRenderPhysicsCollisionShape;
 }
 
+void MDySetting::SetRenderingPhysicsCollisionAABB(_MIN_ bool iIsEnabled) noexcept
+{
+  this->mIsRenderPhysicsCollisionAABB = iIsEnabled;
+}
+
+bool MDySetting::IsRenderPhysicsCollisionAABB() const noexcept
+{
+  return this->mIsRenderPhysicsCollisionAABB;
+}
+
 void MDySetting::pSetupExecutableArgumentSettings()
 {
   /// @brief Setup rendering api type from argument.
@@ -325,7 +335,7 @@ void MDySetting::pSetupExecutableArgumentSettings()
   //! FUNCTIONBODY ∨
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  MDY_ASSERT(
+  MDY_ASSERT_MSG(
       this->mIsInitialized == false,
       "MDySetting::pSetupExecutableArgumentSettings must be called only before Initialization.");
 
@@ -370,10 +380,10 @@ void MDySetting::pSetupExecutableArgumentSettings()
       if (const auto r = result["run_separated_data"].as<std::string>(); r.empty() == false)
       {
         namespace fs = std::filesystem;
-        MDY_ASSERT_FORCE(
+        MDY_ASSERT_MSG_FORCE(
             this->mFileLoadingMode == EDyFileLoadingMode::LoadCompressedFile,
             "Application running mode should not be duplicated by any mode flag.");
-        MDY_ASSERT_FORCE(fs::exists(r) == true, "Compressed data entry setting file is not exist on given path.");
+        MDY_ASSERT_MSG_FORCE(fs::exists(r) == true, "Compressed data entry setting file is not exist on given path.");
 
         this->mEntrySettingPath = r;
         this->mFileLoadingMode  = EDyFileLoadingMode::LoadSeperatedFile;
@@ -405,7 +415,7 @@ EDySuccess MDySetting::pfInitialize()
     case EDyRenderingApi::Vulkan:     MDY_NOT_IMPLEMENTED_ASSERT(); break;
     case EDyRenderingApi::DirectX11:  MDY_NOT_IMPLEMENTED_ASSERT(); break;
     case EDyRenderingApi::DirectX12:  MDY_NOT_IMPLEMENTED_ASSERT(); break;
-    case EDyRenderingApi::OpenGL:     MDY_LOG_INFO_D("{} | Graphics API : {}", "Feature", "OpenGL"); break;
+    case EDyRenderingApi::OpenGL:     DyPushLogDebugInfo("{} | Graphics API : {}", "Feature", "OpenGL"); break;
     default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE); 
     }
     return DY_SUCCESS;
@@ -416,18 +426,18 @@ EDySuccess MDySetting::pfInitialize()
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   // Output setting options at debug mode.
-  MDY_LOG_INFO_D("{} | MDySetting::pfInitialize().",          "FunctionCall");
-  MDY_LOG_INFO_D("{} | Logging : {}", "Feature",              this->mIsEnabledLogging ? "ON" : "OFF");
-  MDY_LOG_INFO_D("{} | Logging Console : {}", "SubFeature",   this->mIsEnabledLoggingToConsole ? "ON" : "OFF");
-  MDY_LOG_INFO_D("{} | Logging File : {}", "SubFeature",      this->mIsEnabledLoggingToFile ? "ON" : "OFF");
-  MDY_LOG_INFO_D("{} | Logging File path : {}", "SubFeature", this->mLogFilePath);
-  MDY_LOG_INFO_D("{} | Vsync : {}", "Feature",                this->mIsEnabledVsync ? "ON" : "OFF");
+  DyPushLogDebugInfo("{} | MDySetting::pfInitialize().",          "FunctionCall");
+  DyPushLogDebugInfo("{} | Logging : {}", "Feature",              this->mIsEnabledLogging ? "ON" : "OFF");
+  DyPushLogDebugInfo("{} | Logging Console : {}", "SubFeature",   this->mIsEnabledLoggingToConsole ? "ON" : "OFF");
+  DyPushLogDebugInfo("{} | Logging File : {}", "SubFeature",      this->mIsEnabledLoggingToFile ? "ON" : "OFF");
+  DyPushLogDebugInfo("{} | Logging File path : {}", "SubFeature", this->mLogFilePath);
+  DyPushLogDebugInfo("{} | Vsync : {}", "Feature",                this->mIsEnabledVsync ? "ON" : "OFF");
   MDY_CALL_ASSERT_SUCCESS(InitializeGraphicsApi(*this));
 
   if (this->mFileLoadingMode == EDyFileLoadingMode::LoadSeperatedFile) 
   { // If Application loading mode is `Load separated file` like a json, dydat.
     const auto opSettingAtlas = DyGetJsonAtlasFromFile(this->mEntrySettingPath);
-    MDY_ASSERT(opSettingAtlas.has_value() == true, "Failed to open application setting file.");
+    MDY_ASSERT_MSG(opSettingAtlas.has_value() == true, "Failed to open application setting file.");
     const auto& settingAtlas = opSettingAtlas.value();
 
     // Apply setting to project before everthing starts to working.
@@ -443,10 +453,10 @@ EDySuccess MDySetting::pfInitialize()
   }
   else if (this->mFileLoadingMode == EDyFileLoadingMode::LoadCompressedFile)
   { // If Application loading mode is `Load compressed file` like a `Data###.dydat`.
-    MDY_ASSERT(std::filesystem::exists(this->mEntrySettingPath) == true, "Data file is not exist.");
+    MDY_ASSERT_MSG(std::filesystem::exists(this->mEntrySettingPath) == true, "Data file is not exist.");
 
     const auto opMetaInfo = DyGetJsonAtlasFromFile(this->mEntrySettingPath);
-    MDY_ASSERT_FORCE(opMetaInfo.has_value() == true, "Failed to open meta data file.");
+    MDY_ASSERT_MSG_FORCE(opMetaInfo.has_value() == true, "Failed to open meta data file.");
     const auto& metaAtlas = opMetaInfo.value();
 
     // Apply setting to project before everthing starts to working.
@@ -467,7 +477,7 @@ EDySuccess MDySetting::pfInitialize()
 
 EDySuccess MDySetting::pfRelease()
 {
-  MDY_LOG_INFO_D("{} | MDySetting::pfRelease()", "Function call");
+  DyPushLogDebugInfo("{} | MDySetting::pfRelease()", "Function call");
   return DY_SUCCESS;
 }
 

@@ -13,12 +13,17 @@
 /// SOFTWARE.
 ///
 
+#include <unordered_map>
+#include <memory>
 #include <nlohmann/json_fwd.hpp>
-#include <Dy/Helper/Type/VectorInt2.h>
-#include <Dy/Meta/Information/CommonResourceMetaInfo.h>
-#include <Dy/Element/Interface/IDyToString.h>
+
 #include <Dy/Core/Resource/Internal/MaterialType.h>
 #include <Dy/Core/Resource/Internal/TextureEnums.h>
+#include <Dy/Core/Resource/Internal/Uniform/IDyUniformValueBase.h>
+#include <Dy/Element/Interface/IDyToString.h>
+#include <Dy/Helper/Type/VectorInt2.h>
+#include <Dy/Meta/Information/CommonResourceMetaInfo.h>
+#include <Dy/Core/Resource/Type/Shader/TemplateUniformType.h>
 
 namespace dy
 {
@@ -34,18 +39,19 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDyMaterialTextureItem& p);
 /// @brief Deserialization function.
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ DDyMaterialTextureItem& p);
 
-///
 /// @struct PDyMaterialInstanceMetaInfo
 /// @brief Descriptor instance which saves information to create material information.
-///
 struct PDyMaterialInstanceMetaInfo final : public PDyCommonResourceMetaInfo, public IDyToString
 {
   using TTextureList = std::array<DDyMaterialTextureItem, 16>;
+  using TUniformList = std::unordered_map<std::string, std::shared_ptr<IDyUniformValueBase>>;
 
-  std::string                 mSpecifierName    = MDY_INITIALIZE_EMPTYSTR;
-  std::string                 mShaderSpecifier  = MDY_INITIALIZE_EMPTYSTR;
-  EDyMaterialBlendMode        mBlendMode        = EDyMaterialBlendMode::Opaque;
-  TTextureList                mTextureNames{};
+  std::string          mSpecifierName;
+  std::string          mShaderSpecifier;
+  EDyMaterialBlendMode mBlendMode = EDyMaterialBlendMode::Opaque;
+  TTextureList         mTextureNames;
+  /// @brief Uniform values but not specifies id but initial value.
+  TUniformList         mUniformValues;       
 
   ///
   /// @brief Return information string.
@@ -53,18 +59,27 @@ struct PDyMaterialInstanceMetaInfo final : public PDyCommonResourceMetaInfo, pub
   /// PDyMaterialInstanceMetaInfo
   /// Material Name : ""
   /// Shader Name : ""
+  /// Blend Mode : ""
+  /// Uniform Values(0) : "", Type : "", Value : ""
+  /// ...
+  /// Uniform Values(N) : "", Type : "", Value : ""
   /// Texture Name (0) : ""
   /// ...
   /// Texture Name (N) : ""
-  /// Blend Mode : ""
-  /// Is shader lazy initialized : False / True
   ///
   MDY_NODISCARD std::string ToString() override final;
+
+  template <EDyUniformVariableType TType>
+  static void InsertValue(
+    PDyMaterialInstanceMetaInfo& ioMaterialInfo, 
+    const std::string& iSpecifier, 
+    const typename MDY_PRIVATE(UniformBinder)<TType>::ValueType& iValue);
 };
 
-void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyMaterialInstanceMetaInfo& p);
-void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaInfo& p);
+void to_json(nlohmann::json& oJson, const PDyMaterialInstanceMetaInfo& iMaterial);
+void from_json(const nlohmann::json& iJson, PDyMaterialInstanceMetaInfo& iMaterial);
 
 } /// ::dy namespace
 
 #endif /// GUARD_DY_META_INFORMATION_METAINFOMATERIAL_H
+#include <Dy/Meta/Information/Inline/DMetaMetarialInstanceTmp.inl>

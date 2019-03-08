@@ -23,7 +23,7 @@ namespace dy
 
 FDyUiWidget& ADyWidgetCppScript::GetWidgetReference()
 {
-  MDY_ASSERT(this->mOutside != nullptr, "Unexpected error occurred.");
+  MDY_ASSERT_MSG(this->mOutside != nullptr, "Unexpected error occurred.");
   return this->mOutside->GetWidgetReference();
 }
 

@@ -49,8 +49,8 @@ namespace dy
 CDyActorScriptLua::CDyActorScriptLua(_MIN_ FDyActor& actorReference, _MIN_ const PDyScriptInstanceMetaInfo& iDesc) : 
     CDyActorScriptBase{actorReference}
 {
-  MDY_ASSERT(iDesc.mScriptType == EDyScriptType::Lua,   "Script type is not matched to CDyActorScriptLua.");
-  MDY_ASSERT(iDesc.mScriptMode == EDyScriptMode::Actor, "Given script must be actor type.");
+  MDY_ASSERT_MSG(iDesc.mScriptType == EDyScriptType::Lua,   "Script type is not matched to CDyActorScriptLua.");
+  MDY_ASSERT_MSG(iDesc.mScriptMode == EDyScriptMode::Actor, "Given script must be actor type.");
 
     // (2) Bind script, but need to check integrity test also.
   auto& scriptManager   = MDyScript::GetInstance();
@@ -69,20 +69,20 @@ CDyActorScriptLua::CDyActorScriptLua(_MIN_ FDyActor& actorReference, _MIN_ const
 
 void CDyActorScriptLua::Initiate()
 {
-  MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
-  this->mScriptInstance[MSVSTR(sFunction_Initiate)](this->mScriptInstance);
+  MDY_ASSERT_MSG(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
+  this->mScriptInstance[(sFunction_Initiate)](this->mScriptInstance);
 }
 
 void CDyActorScriptLua::Start()
 {
-  MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
-  this->mScriptInstance[MSVSTR(sFunction_Start)](this->mScriptInstance);
+  MDY_ASSERT_MSG(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
+  this->mScriptInstance[(sFunction_Start)](this->mScriptInstance);
 }
 
 void CDyActorScriptLua::Update(float dt)
 {
-  MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
-  this->mScriptInstance[MSVSTR(sFunction_Update)](this->mScriptInstance);
+  MDY_ASSERT_MSG(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
+  this->mScriptInstance[(sFunction_Update)](this->mScriptInstance);
 
 #ifdef false
   auto* obj = this->GetBindedActor();
@@ -93,20 +93,20 @@ void CDyActorScriptLua::Update(float dt)
 
 void CDyActorScriptLua::OnEnabled()
 {
-  MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
-  this->mScriptInstance[MSVSTR(sFunction_OnEnabled)](this->mScriptInstance);
+  MDY_ASSERT_MSG(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
+  this->mScriptInstance[(sFunction_OnEnabled)](this->mScriptInstance);
 }
 
 void CDyActorScriptLua::OnDisabled()
 {
-  MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
-  this->mScriptInstance[MSVSTR(sFunction_OnDisabled)](this->mScriptInstance);
+  MDY_ASSERT_MSG(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
+  this->mScriptInstance[(sFunction_OnDisabled)](this->mScriptInstance);
 }
 
 void CDyActorScriptLua::Destroy()
 {
-  MDY_ASSERT(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
-  this->mScriptInstance[MSVSTR(sFunction_Destroy)](this->mScriptInstance);
+  MDY_ASSERT_MSG(this->mIsScriptInstanceBinded == true, "Unexpected error occurred.");
+  this->mScriptInstance[(sFunction_Destroy)](this->mScriptInstance);
 }
 
 } /// ::dy namespace

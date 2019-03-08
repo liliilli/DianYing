@@ -40,7 +40,7 @@ void FDyMeshVBOIntermediate::MDY_PRIVATE(CreateVertexArrayBuffer)(_MIN_ const FD
     }
     else
     {
-      MDY_ASSERT(info.mVAOBindingInfo.mStrideByteSize > 0, "Stride byte size must be valid.");
+      MDY_ASSERT_MSG(info.mVAOBindingInfo.mStrideByteSize > 0, "Stride byte size must be valid.");
       this->mMeshFlagInformation.mVertexCount = sizeof(TF32) * info.mCustomMeshBuffer.size() / info.mVAOBindingInfo.mStrideByteSize;
     }
   }
@@ -66,7 +66,7 @@ void FDyMeshVBOIntermediate::MDY_PRIVATE(CreateVertexArrayBuffer)(_MIN_ const FD
     { MDY_GRAPHIC_SET_CRITICALSECITON();
       optVboId = FDyGLWrapper::CreateBuffer(descriptor);
     }
-    MDY_ASSERT(optVboId.has_value() == true, "VBO creation must be succeeded.");
+    MDY_ASSERT_MSG(optVboId.has_value() == true, "VBO creation must be succeeded.");
     this->mBufferIdInformation.mVbo = optVboId.value();
   }
 }
@@ -91,7 +91,7 @@ void FDyMeshVBOIntermediate::MDY_PRIVATE(CreateElementArrayBuffer)(_MIN_ const F
     { MDY_GRAPHIC_SET_CRITICALSECITON();
       optEboId = FDyGLWrapper::CreateBuffer(descriptor);
     }
-    MDY_ASSERT(optEboId.has_value() == true, "EBO creation must be succeeded.");
+    MDY_ASSERT_MSG(optEboId.has_value() == true, "EBO creation must be succeeded.");
     this->mBufferIdInformation.mEbo = optEboId.value();
   };
 }
@@ -114,7 +114,7 @@ void FDyMeshVBOIntermediate::ResetAllProperties() noexcept
 
 const std::string & FDyMeshVBOIntermediate::GetSpecifierName() const noexcept
 {
-  MDY_ASSERT(this->mSpecifierName.empty() == false, "Mesh specifier name must be valid.");
+  MDY_ASSERT_MSG(this->mSpecifierName.empty() == false, "Mesh specifier name must be valid.");
   return this->mSpecifierName;
 }
 

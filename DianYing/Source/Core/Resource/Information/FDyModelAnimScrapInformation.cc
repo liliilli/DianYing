@@ -23,11 +23,11 @@ namespace dy
 FDyModelAnimScrapInformation::FDyModelAnimScrapInformation(_MIN_ const PDyModelAnimInstanceMetaInfo& metaInfo) :
     mSpecifierName{metaInfo.mSpecifierName}
 {
-  MDY_ASSERT_FORCE(DyFsIsFileExist(metaInfo.mExternalPath) == true, "Animation scrap file is not exist.");
+  MDY_ASSERT_MSG_FORCE(DyFsIsFileExist(metaInfo.mExternalPath) == true, "Animation scrap file is not exist.");
   
   // Open file.
   std::FILE* fdFile = std::fopen(metaInfo.mExternalPath.c_str(), "rb");
-  MDY_ASSERT_FORCE(MDY_CHECK_ISNOTNULL(fdFile), "Unexpected error occurred.");
+  MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNOTNULL(fdFile), "Unexpected error occurred.");
   
   // Open `mAnimationHeader` of given animation. 
   std::fread(&this->mAnimation.mAnimationHeader, sizeof(decltype(mAnimation)::mAnimationHeader), 1, fdFile);

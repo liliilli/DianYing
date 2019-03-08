@@ -35,8 +35,10 @@ MDY_SET_IMMUTABLE_STRING(sBuffer, R"dy(
       { "InitialPosition": { "X":32, "Y": -64 },
         "WidgetSize": { "X": 1, "Y": 1 },
         "Origin": "Left_Top",
-        "InitialString": "", "InitialColor": 16777215, "InitialAlpha": 1.0,
-        "EdgeColor": 0, "FontSize": 9, "Alignment": "Left",
+        "InitialString": "", 
+        "InitialColor": { "R": 1.0, "G": 1.0, "B": 1.0, "A": 1.0 },
+        "EdgeColor": { "R": 0.0, "G": 0.0, "B": 0.0 },
+        "FontSize": 9, "Alignment": "Left",
         "FontSpecifierName": "Arial", "IsUsingEdge": true
       }
     },
@@ -45,8 +47,10 @@ MDY_SET_IMMUTABLE_STRING(sBuffer, R"dy(
       { "InitialPosition": { "X":32, "Y": 64 },
         "WidgetSize": { "X": 1, "Y": 1 },
         "Origin": "Left_Bottom",
-        "InitialString": "", "InitialColor": 16776960, "InitialAlpha": 1.0,
-        "EdgeColor": 0, "FontSize": 9, "Alignment": "Left",
+        "InitialString": "", 
+        "InitialColor": { "R": 1.0, "G": 1.0, "B": 0.0, "A": 1.0 },
+        "EdgeColor": { "R": 0.0, "G": 0.0, "B": 0.0 },
+        "FontSize": 9, "Alignment": "Left",
         "FontSpecifierName": "Arial", "IsUsingEdge": true
       }
     },
@@ -55,8 +59,8 @@ MDY_SET_IMMUTABLE_STRING(sBuffer, R"dy(
         "InitialPosition": { "X": 0, "Y": -32 },
         "WidgetSize": { "X": 320, "Y": 8 },
         "Origin": "Center_Top",
-        "ForegroundColor": 16776960, "ForegroundAlpha": 1.0,
-        "BackgroundColor": 0, "BackgroundAlpha": 0.85,
+        "ForegroundColor": { "R": 1.0, "G": 1.0, "B": 0.0, "A": 1.0 },
+        "BackgroundColor": { "R": 0.0, "G": 0.0, "B": 0.0, "A": 0.85 },
         "Padding": 2, "Min": 0, "Max": 100,
         "IsUsingBackgroundColor": true
       }
@@ -71,8 +75,7 @@ MDY_SET_IMMUTABLE_STRING(sBuffer, R"dy(
           "RightUp" : { "X": 1.0, "Y": 1.0 }
         },
         "ImageSpecifierName": "dyBtTextureChecker",
-        "ImageTintColor": 16777215,
-        "ImageAlpha": 1.0,
+        "TintColor": { "R": 1.0, "G": 1.0, "B": 1.0, "A": 1.0 },
         "IsSizeToContent": false
       }
     }

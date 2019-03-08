@@ -81,14 +81,14 @@ void CDyModelFilter::TryActivateInstance()
   CDyModelRenderer& rendererRef = *opRenderer.value();
   if (rendererRef.IsComponentActivated() == false) { return; }
 
-  MDY_ASSERT(MDY_CHECK_ISNULL(this->mModelRendererReferencePtr), "CDyModelFilter::mModelRendererReferencePtr must be null when unbinding.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNULL(this->mModelRendererReferencePtr), "CDyModelFilter::mModelRendererReferencePtr must be null when unbinding.");
   rendererRef.BindModelFilterReference(*this);
 }
 
 void CDyModelFilter::TryDeactivateInstance()
 {
   // Check final activation flag and unbind instance from CDyModelRenderer.
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mModelRendererReferencePtr), "CDyModelFilter::mModelRendererReferencePtr must not be null when unbinding.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->mModelRendererReferencePtr), "CDyModelFilter::mModelRendererReferencePtr must not be null when unbinding.");
   this->mModelRendererReferencePtr->UnbindModelFilterReference();
 }
 
@@ -109,13 +109,13 @@ const std::string& CDyModelFilter::GetModelSpecifier() const noexcept
 
 void CDyModelFilter::fBindModelRendererReference(CDyModelRenderer& validReference)
 {
-  MDY_ASSERT(MDY_CHECK_ISNULL(this->mModelRendererReferencePtr), "CDyModelFilter::mModelRendererReferencePtr must be null when unbinding.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNULL(this->mModelRendererReferencePtr), "CDyModelFilter::mModelRendererReferencePtr must be null when unbinding.");
   this->mModelRendererReferencePtr = &validReference;
 }
 
 void CDyModelFilter::fUnbindModelRendererReference()
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mModelRendererReferencePtr), "CDyModelFilter::mModelRendererReferencePtr must not be null when unbinding.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->mModelRendererReferencePtr), "CDyModelFilter::mModelRendererReferencePtr must not be null when unbinding.");
   this->mModelRendererReferencePtr = MDY_INITIALIZE_NULL;
 }
 

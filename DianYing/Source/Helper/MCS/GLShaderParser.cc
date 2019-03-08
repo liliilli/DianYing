@@ -181,7 +181,7 @@ std::string ParseGLShader(_MIN_ const std::string& iShaderString)
 
   // Get Dy shader module keywords.
   const auto optMatchedKeywordList = DyRegexGetMatchedKeyword(optMid.value(), R"(#import <([\w]+)>;)");
-  MDY_ASSERT_FORCE(optMatchedKeywordList.has_value() == true, "Undefined Dy shader module. Failed to load shader.");
+  MDY_ASSERT_MSG_FORCE(optMatchedKeywordList.has_value() == true, "Undefined Dy shader module. Failed to load shader.");
 
   // Check module keyword. If not found anything, output error.
   // If found any module, just replace `#import phrase` with given string to buffer.

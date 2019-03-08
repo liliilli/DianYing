@@ -14,10 +14,7 @@
 
 /// Header file
 #include <Dy/Element/Actor.h>
-#include <Dy/Element/Type/PDyActorCreationDescriptor.h>
-#include <Dy/Management/IO/MetaInfoManager.h>
-#include <Dy/Management/WorldManager.h>
-#include <Dy/Management/Helper/SDyProfilingHelper.h>
+
 #include <Dy/Component/CDyTransform.h>
 #include <Dy/Component/CDyModelFilter.h>
 #include <Dy/Component/CDyModelRenderer.h>
@@ -29,7 +26,12 @@
 #include <Dy/Component/CDyPhysicsColliderCapsule.h>
 #include <Dy/Component/CDyPhysicsColliderBox.h>
 #include <Dy/Component/CDySkybox.h>
+#include <Dy/Element/Type/PDyActorCreationDescriptor.h>
+#include <Dy/Helper/Internal/FDyNameGenerator.h>
 #include <Dy/Management/InputManager.h>
+#include <Dy/Management/WorldManager.h>
+#include <Dy/Management/IO/MetaInfoManager.h>
+#include <Dy/Management/Helper/SDyProfilingHelper.h>
 
 //!
 //! Implementation
@@ -38,517 +40,507 @@
 namespace dy
 {
 
-FDyActor::FDyActor(_MIN_ const PDyObjectMetaInfo& objectMetaDesc, _MIN_ FDyActor* iPtrParent)
+class FDyActor::PImplDesc
 {
-  // (1) Set properties.
-  this->pSetObjectName(objectMetaDesc.mSpecifierName);
+public:
+  PImplDesc(
+    const PDyObjectMetaInfo* iObjectMetaDesc,
+    const PDyActorCreationDescriptor* iObjectCreationDesc, 
+    FDyActor* iPtrParentActor)
+    : mObjectMetaDesc(iObjectMetaDesc),
+      mObjectCreationDesc(iObjectCreationDesc),
+      mPtrParentActor(iPtrParentActor) {}
 
-  // (1-1) Insert prefab information if prefab exist.
-  auto metaComponentInfo = objectMetaDesc.mMetaComponentInfo;
-  if (objectMetaDesc.mProperties.mIsUsingPrefab == true)
-  { 
-    MDY_ASSERT(objectMetaDesc.mProperties.mPrefabSpecifierName.empty() == false, "Unexpected error occurred.");
-    const auto& prefab = MDyMetaInfo::GetInstance().GetPrefabMetaInformation(objectMetaDesc.mProperties.mPrefabSpecifierName);
+  const PDyObjectMetaInfo* mObjectMetaDesc = nullptr;
+  const PDyActorCreationDescriptor* mObjectCreationDesc = nullptr;
+  FDyActor* mPtrParentActor = nullptr;
+};
 
-    metaComponentInfo.insert(metaComponentInfo.end(), MDY_BIND_BEGIN_END(prefab.mMetaComponentInfo));
+class FDyActor::Impl final : public FDyNameGenerator, public IDyInitializeHelper<PImplDesc>
+{
+public:
+  Impl(FDyActor& iActor);
+  virtual ~Impl() = default;
 
-    if (objectMetaDesc.mProperties.mIsOverridePrefabTag == true)
-    { this->mActorTagSpecifier = objectMetaDesc.mProperties.mTagSpecifier; }
-    else
-    { this->mActorTagSpecifier = prefab.mCommonProperties.mTagSpecifier; }
-  }
-  else { this->mActorTagSpecifier = objectMetaDesc.mProperties.mTagSpecifier; } 
+  /// @brief Initialize FDyActor.
+  EDySuccess pInitilaize(const PDyObjectMetaInfo& objectMetaDesc, FDyActor* iPtrParent);
+  EDySuccess pInitilaize(const PDyActorCreationDescriptor& iDesc, FDyActor* iPtrParent);
 
-  // (2) Create components
-  // Check activation flags and execute sub-routines of each components.
-  this->MDY_PRIVATE(CreateComponentList)(metaComponentInfo);
-  // If transform is not exist, just create default transform.
-  if (MDY_CHECK_ISNULL(this->mTransform))
+  EDySuccess Initialize(const PImplDesc& descriptor) override final
   {
-    const PDyTransformComponentMetaInfo defaultTransform{};
-    this->AddComponent<CDyTransform>(defaultTransform);
-  }
-
-  if (MDY_CHECK_ISNOTNULL(iPtrParent)) { this->SetParent(*iPtrParent); }
-  this->pUpdateActivateFlagFromParent();
-  if (objectMetaDesc.mProperties.mInitialActivated == true) { this->Activate(); }
-
-  // (3) Make children actors.
-  for (const auto& objectInformation : objectMetaDesc.mChildrenList)
-  { // Create object, FDyActor
-    switch (objectInformation->mObjectType)
+    if (descriptor.mObjectCreationDesc == nullptr)
     {
-    case EDyMetaObjectType::Actor:
-    { // General object type. Make FDyActor instance.
-      auto instancePtr = std::make_unique<FDyActor>(*objectInformation, this);
-
-      auto [it, result] = this->mChildActorMap.try_emplace(instancePtr->GetActorName(), std::move(instancePtr));
-      MDY_ASSERT(result == true, "Unexpected error occured in inserting FDyActor to object map.");
-    } break;
-    case EDyMetaObjectType::SceneScriptor:  MDY_NOT_IMPLEMENTED_ASSERT(); break;
-    case EDyMetaObjectType::Object:         MDY_NOT_IMPLEMENTED_ASSERT(); break;
-    default: MDY_UNEXPECTED_BRANCH(); break;
+      return this->pInitilaize(*descriptor.mObjectMetaDesc, descriptor.mPtrParentActor);
+    }
+    else
+    {
+      return this->pInitilaize(*descriptor.mObjectCreationDesc, descriptor.mPtrParentActor);
     }
   }
 
-  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mTransform), "CDyTransform component must be created to all FDyActor.");
-  SDyProfilingHelper::IncreaseOnBindActorCount(1);
-}
-
-FDyActor::FDyActor(_MIN_ const PDyActorCreationDescriptor& iDesc, _MIN_ FDyActor* iPtrParent)
-{
-  // (1) Set properties.
-  this->pSetObjectName(iDesc.mActorSpecifierName);
-
-  // (1-1) Insert prefab information if prefab exist.
-  TComponentMetaList metaComponentInfo;
-  if (iDesc.mPrefabSpecifierName.empty() == false)
-  { 
-    const auto& prefab = MDyMetaInfo::GetInstance().GetPrefabMetaInformation(iDesc.mPrefabSpecifierName);
-    metaComponentInfo.insert(metaComponentInfo.end(), MDY_BIND_BEGIN_END(prefab.mMetaComponentInfo));
-
-    if (iDesc.mIsOverridePrefabTag == true)
-    { this->mActorTagSpecifier = iDesc.mObjectTag; }
-    else
-    { this->mActorTagSpecifier = prefab.mCommonProperties.mTagSpecifier; }
-  }
-  else { this->mActorTagSpecifier = iDesc.mObjectTag; }
-
-  // (2) Create components
-  // Check activation flags and execute sub-routines of each components.
-  this->MDY_PRIVATE(CreateComponentList)(metaComponentInfo);
-  // (3) Create Transform component using Given transform
-  this->AddComponent<CDyTransform>(iDesc.mTransform);
-
-  if (MDY_CHECK_ISNOTNULL(iPtrParent)) { this->SetParent(*iPtrParent); }
-  this->pUpdateActivateFlagFromParent();
-  this->Activate();
-
-  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mTransform), "CDyTransform component must be created to all FDyActor.");
-  SDyProfilingHelper::IncreaseOnBindActorCount(1);
-}
-
-void FDyActor::MDY_PRIVATE(CreateComponentList)(const TComponentMetaList& iMetaComponentList)
-{
-  for (const auto& [type, componentInfo] : iMetaComponentList)
+  void Release() override final
   {
-    switch (type)
+    SDyProfilingHelper::DecreaseOnBindActorCount(1);
+    for (auto& item : this->mComponentList)
     {
-    default: MDY_UNEXPECTED_BRANCH(); break;
-    case EDyComponentMetaType::Transform:
-      this->AddComponent<CDyTransform>(std::any_cast<const PDyTransformComponentMetaInfo&>(componentInfo));
-      break;
-    case EDyComponentMetaType::Script:
-      this->AddComponent<CDyActorScript>(std::any_cast<const PDyScriptComponentMetaInfo&>(componentInfo));
-      break;
-    case EDyComponentMetaType::DirectionalLight:
-      this->AddComponent<CDyDirectionalLight>(std::any_cast<const PDyDirLightComponentMetaInfo&>(componentInfo));
-      break;
-    case EDyComponentMetaType::ModelFilter:
-      this->AddComponent<CDyModelFilter>(std::any_cast<const PDyModelFilterComponentMetaInfo&>(componentInfo));
-      break;
-    case EDyComponentMetaType::ModelRenderer:
-      this->AddComponent<CDyModelRenderer>(std::any_cast<const PDyModelRendererComponentMetaInfo&>(componentInfo));
-      break;
-    case EDyComponentMetaType::ModelAnimator:
-      this->AddComponent<CDyModelAnimator>(std::any_cast<const PDyModelAnimatorComponentMetaInfo&>(componentInfo));
-      break;
-    case EDyComponentMetaType::Camera:
-      this->AddComponent<CDyCamera>(std::any_cast<const PDyCameraComponentMetaInfo&>(componentInfo));
-      break;
-    case EDyComponentMetaType::SoundSource:
-      this->AddComponent<CDySoundSource>(std::any_cast<const PDySoundSourceComponentMetaInfo&>(componentInfo));
-      break;
-    case EDyComponentMetaType::Rigidbody:
-      this->AddComponent<CDyPhysicsRigidbody>(std::any_cast<const PDyRigidbodyComponentMetaInfo&>(componentInfo));
-      break;
-    case EDyComponentMetaType::Skybox:
-      this->AddComponent<CDySkybox>(std::any_cast<const PDySkyboxComponentMetaInfo&>(componentInfo));
-      break;
-    case EDyComponentMetaType::Collider:
+      this->ReleaseComponent(item);
+    }
+    this->mComponentList.clear();
+
+    // Detach if alreayd attached to picking target of system.
+    if (this->mIsAttachedToPickingTarget == true) { this->MDY_PRIVATE(DetachPickingTargetFromSystem)(); }
+    // Release rigidbody also.
+    if (this->mRigidbody != nullptr) { this->mRigidbody->Release(); }
+  }
+
+  FDyActor& mRefActor;
+
+  void DestroySelf();
+
+  void SetParent(FDyActor& refParentActor) noexcept;
+  void SetParentAsRoot() noexcept;
+  /// @brief  Check FDyActor has a parent FDyActor.
+  /// @return If it has valid parent, return true but false.
+  bool HasParent() const noexcept;
+  /// @brief  Return valid parent FDyActor pointer instance with wrapping optional.
+  /// @return If parent is binded and exist, return optional valid pointer but just no value.
+  FDyActor* GetPtrParent() const noexcept;
+
+  /// @brief  Return this actor has children object, empty object will be neglected.
+  /// @return If having children, return true.
+  bool HasChildrenActor() const noexcept;
+  /// @brief Return this actor.
+  TActorMap& GetChildrenContainer() noexcept;
+
+  /// @brief  Get actual actor type
+  /// @return Object type specifier
+  EDyMetaObjectType GetActorType() const noexcept;
+  /// @brief Get actor's tag name.
+  const std::string& GetActorTag() const noexcept;
+
+  /// @brief  Get valid level reference.
+  /// @return Valid level reference. when level is not specified, unexpected behaviour.
+  std::vector<NotNull<FDyActor*>> 
+  GetAllActorsWithTag(const std::string& iTagSpecifier) const noexcept;
+  /// @brief Get all actors with tag. Tag must be valid. \n
+  /// If iTagSpecifier is empty, this function get all actors which is not specified any tag. \n
+  /// and this function search all actor of object tree from root to leaf, so might take some time.
+  std::vector<NotNull<FDyActor*>>
+  GetAllActorsWithTagRecursive(const std::string& iTagSpecifier) const noexcept;
+  /// @brief Get all actors with matched name within only one depth of level object tree. \n
+  /// If iNameSpecifier is empty, just return empty list.
+  std::vector<NotNull<FDyActor*>>
+  GetAllActorsWithName(const std::string& iNameSpecifier) const noexcept; 
+  /// @brief Get all actors with matched name within overall level object tree. \n
+  /// If iNameSpecifier is empty, just return empty list.
+  std::vector<NotNull<FDyActor*>>
+  GetAllActorsWithNameRecursive(const std::string& iNameSpecifier) const noexcept; 
+  /// @brief Get pointer of actor with object id.
+  /// If not found, just return nullptr.
+  FDyActor* GetActorWithObjectId(TU32 iObjectId) noexcept;
+  
+  /// @brief Helper function for release component.
+  void ReleaseComponent(_MINOUT_ TComponentList::value_type& iItem);
+
+  /// @brief Try remove script instances list. \n
+  /// But this funtion does not remove script instance actually, but just forward script list to GC-list.
+  void MDY_PRIVATE(TryRemoveScriptInstances)() noexcept;
+  /// @brief Try detach dependent components from dy level management system.
+  void MDY_PRIVATE(TryDetachDependentComponents)() noexcept;
+
+  /// @brief  Get script component pointer from script list using scriptName to verify.
+  /// @param  scriptName Script name to verify and get.
+  /// @return The pointer instance of CDyScript. If not found, return just no value.
+  MDY_NODISCARD CDyActorScript* GetScriptComponent(_MIN_ const std::string& scriptName) noexcept;
+  /// @brief  Remove script component manually from script list using scriptName to verify.
+  /// @param  scriptName  Script name to verify and remove from FDyActor.
+  /// @return The pointer instance of CDyScript. If not found, return just no value.
+  MDY_NODISCARD EDySuccess RemoveScriptComponent(_MIN_ const std::string& scriptName) noexcept;
+
+  /// @brief  Get tranform component pointer from FDyActor instance.
+  /// @return Valid transform pointer instance.
+  MDY_NODISCARD NotNull<CDyTransform*> GetTransform() noexcept;
+  /// @brief  Get rigidbody component pointer from FDyActor instance.
+  /// @return Valid rigidbody component pointer instance.
+  MDY_NODISCARD CDyPhysicsRigidbody* GetRigidbody() noexcept;
+
+  /// @brief Propagate activation flag from parent. This function could not be called independently.
+  void pUpdateActivateFlagFromParent() noexcept;
+
+  /// @brief Attach this actor to picking target pointer variable of internal system.
+  void MDY_PRIVATE(AttachPickingTargetFromSystem)(_MINOUT_ FDyActor** iPPtrTarget);
+  /// @brief Detach this actor from target pointer variable of internal system.
+  /// If already or not attached to pointer, just do nothing but return DY_FAILURE.
+  EDySuccess MDY_PRIVATE(DetachPickingTargetFromSystem)();
+    
+  CDyActorScript* pAddScriptComponent(const PDyScriptComponentMetaInfo& iInfo)
+  {
+    // Validation check.
+    const auto specifierName = iInfo.mDetails.mSpecifierName;
+    auto& metaManager = MDyMetaInfo::GetInstance();
+    if (metaManager.IsScriptMetaInformationExist(specifierName) == false)
     {
-      const auto& refMetaInfo = std::any_cast<const PDyColliderComponentMetaInfo&>(componentInfo);
-      switch (refMetaInfo.mDetails.mColliderType)
-      {
-      case EDyColliderType::Sphere: 
-      { this->AddComponent<CDyPhysicsColliderSphere>(refMetaInfo);
-      } break;
-      case EDyColliderType::Capsule: 
-      { this->AddComponent<CDyPhysicsColliderCapsule>(refMetaInfo);
-      } break;
-      case EDyColliderType::Box:
-      { this->AddComponent<CDyPhysicsColliderBox>(refMetaInfo);
-      } break;
-      default: MDY_UNEXPECTED_BRANCH(); break;
+      DyPushLogDebugError("Failed to create script, {}. Script information is not exist.", specifierName);
+      return nullptr;
+    };
+
+    // Get information of script to be created.
+    const auto& instanceInfo = metaManager.GetScriptMetaInformation(specifierName);
+    MDY_ASSERT_MSG(
+      instanceInfo.mScriptType != EDyScriptType::NoneError, 
+      "Script type must be valid.");
+
+    return this->AddScriptComponent(instanceInfo);
+  }
+  CDyActorScript* AddScriptComponent(const PDyScriptInstanceMetaInfo& iComponentInfo);
+  
+  template<class TComponent, typename... TArgs>
+  NotNull<TComponent*> AddComponent(TArgs&&... args)
+  {
+    // Validation test
+    static_assert(
+      IsInheritancedFrom<TComponent, ADyBaseComponent>,
+      "Failed to create component, required component type is not inheritenced from ADyBaseComponent");
+
+    // If component is script, process the other subroutine. 
+    if constexpr (IsSameClass<CDyActorScript, TComponent> == true)
+    {
+      // Add and initialize component itself.
+      // If component which just added is CDyScript, Call Initiate script first.
+      auto* ptrComponent = this->pAddScriptComponent(std::forward<TArgs...>(args)...); 
+      MDY_ASSERT_MSG_FORCE(ptrComponent != nullptr, "");
+      return DyMakeNotNull(ptrComponent);
+    }
+    else
+    {
+      // Add and initialize component itself.
+      auto componentPtr = std::make_unique<TComponent>(std::ref(this->mRefActor));
+      MDY_CALL_ASSERT_SUCCESS(componentPtr->Initialize(std::forward<TArgs>(args)...));
+
+      // If it is transform, move it to separated space. 
+      if constexpr (IsSameClass<CDyTransform, TComponent> == true)
+      { // If component is not CDyScript but related to ADyBaseTransform (Transform components)
+        MDY_ASSERT_MSG_FORCE(
+          this->mTransform == nullptr, 
+          "FDyActor::mTransform must be empty when insert transform component.");
+
+        this->mTransform = std::move(componentPtr);
+        return DyMakeNotNull(this->mTransform.get());
+      }
+      else if constexpr (IsSameClass<TComponent, CDyPhysicsRigidbody> == true)
+      { // If component is CDyPhysicsRigidbody...
+        MDY_ASSERT_MSG_FORCE(
+          this->mRigidbody == nullptr, 
+          "FDyActor::mRigidbody must be empty when insert rigidbody component.");
+
+        this->mRigidbody = std::move(componentPtr);
+        return DyMakeNotNull(this->mRigidbody.get());
+      }
+      else
+      { // Otherwise remain, just return Ptr.
+        auto& [value, reference] = this->mComponentList.emplace_back(
+          std::make_pair(TComponentUnbindingType<TComponent>::Value, std::move(componentPtr))
+        );
+        return DyMakeNotNull(static_cast<TComponent*>(reference.get()));
       }
     }
-      break;
-    }
   }
 
-  // If rigidbody is not exist, just create default rigidbody.
-  if (MDY_CHECK_ISNULL(this->mRigidbody))
+  template<class TGeneralComponent>
+  std::optional<TGeneralComponent*> GetGeneralComponent()
   {
-    const PDyRigidbodyComponentMetaInfo defaultMetaInfo{};
-    this->AddComponent<CDyPhysicsRigidbody>(defaultMetaInfo);
-  }
-}
+    static_assert(
+      IsInheritancedFrom<TGeneralComponent, ADyBaseComponent>,
+      "Failed to get component, required component type is not inheritenced from ADyBaseComponent");
 
-FDyActor::~FDyActor()
-{
-  SDyProfilingHelper::DecreaseOnBindActorCount(1);
-  for (auto& item : this->mComponentList)
-  {
-    this->ReleaseComponent(item);
-  }
-  this->mComponentList.clear();
-
-  // Detach if alreayd attached to picking target of system.
-  if (this->mIsAttachedToPickingTarget == true) { this->MDY_PRIVATE(DetachPickingTargetFromSystem)(); }
-  // Release rigidbody also.
-  if (this->mRigidbody != nullptr) { this->mRigidbody->Release(); }
-}
-
-void FDyActor::ReleaseComponent(_MINOUT_ TComponentList::value_type& iItem)
-{
-  auto& [typeVal, ptrsmtComponent] = iItem;
-  if (MDY_CHECK_ISEMPTY(ptrsmtComponent)) { return; }
-
-  using _ = EDyComponentType;
-  // ActorScript, Transform does not release in this logic.
-  // We use downcasting intentionally to call Release() function.
-  switch (typeVal)
-  {
-  case EDyComponentType::DirectionalLight: 
-  { static_cast<TComponentBindingType<_::DirectionalLight>::Type&>(*ptrsmtComponent).Release(); } break;
-  case EDyComponentType::Camera:
-  { static_cast<TComponentBindingType<_::Camera>::Type&>(*ptrsmtComponent).Release(); } break;
-  case EDyComponentType::ModelAnimator:
-  { static_cast<TComponentBindingType<_::ModelAnimator>::Type&>(*ptrsmtComponent).Release(); } break;
-  case EDyComponentType::ModelFilter:
-  { static_cast<TComponentBindingType<_::ModelFilter>::Type&>(*ptrsmtComponent).Release(); } break;
-  case EDyComponentType::ModelRenderer:
-  { static_cast<TComponentBindingType<_::ModelRenderer>::Type&>(*ptrsmtComponent).Release(); } break;
-  case EDyComponentType::SoundSource:
-  { static_cast<TComponentBindingType<_::SoundSource>::Type&>(*ptrsmtComponent).Release(); } break;
-  case EDyComponentType::Rigidbody:
-  { static_cast<TComponentBindingType<_::Rigidbody>::Type&>(*ptrsmtComponent).Release(); } break;
-  case EDyComponentType::ColliderSphere:
-  { static_cast<TComponentBindingType<_::ColliderSphere>::Type&>(*ptrsmtComponent).Release(); } break;
-  case EDyComponentType::ColliderBox:
-  { static_cast<TComponentBindingType<_::ColliderBox>::Type&>(*ptrsmtComponent).Release(); } break;
-  case EDyComponentType::ColliderCapsule:
-  { static_cast<TComponentBindingType<_::ColliderCapsule>::Type&>(*ptrsmtComponent).Release(); } break;
-  case EDyComponentType::Skybox:
-  { static_cast<TComponentBindingType<_::Skybox>::Type&>(*ptrsmtComponent).Release(); } break;
-  default: MDY_UNEXPECTED_BRANCH(); break;
-  }
-}
-
-void FDyActor::DestroySelf()
-{
-  MDyWorld::GetInstance().DestroyActor(*this);
-}
-
-const std::string& FDyActor::GetActorName() const noexcept
-{
-  return this->pGetObjectName();
-}
-
-std::string FDyActor::MDY_PRIVATE(GetFullSpecifierName)() const noexcept
-{
-  if (this->IsHaveParent() == false) { return this->GetActorName(); }
-  else
-  {
-    const auto headFullSpecifierName = this->GetParent()->MDY_PRIVATE(GetFullSpecifierName)();
-    return fmt::format("{}.{}", headFullSpecifierName, this->GetActorName());
-  }
-}
-
-void FDyActor::pUpdateActivateFlagFromParent() noexcept
-{
-  // If parent actor is not exist, it regards as a root object.
-  // Otherwise, get parent actor flag.
-  if (MDY_CHECK_ISNULL(this->mPtrParentActor))
-  { this->SetupFlagAsParent(true); }
-  else
-  { this->SetupFlagAsParent(this->mPtrParentActor->IsActivated()); }
-
-  this->pPropagateActivationFlag();
-}
-
-void FDyActor::MDY_PRIVATE(AttachPickingTargetFromSystem)(_MINOUT_ FDyActor** iPPtrTarget)
-{
-  *iPPtrTarget = this;
-  this->mIsAttachedToPickingTarget = true;
-}
-
-EDySuccess FDyActor::MDY_PRIVATE(DetachPickingTargetFromSystem)()
-{
-  // Check 1 : flag
-  if (this->mIsAttachedToPickingTarget == false) { return DY_FAILURE; }
-
-  // Check 2 : address
-  auto& refInput = MDyInput::GetInstance();
-  auto** pptrPickingTarget = refInput.MDY_PRIVATE(GetPPtrPickingTarget)();
-  if (*pptrPickingTarget != this) { return DY_FAILURE; }
-  
-  // Detach actually.
-  *pptrPickingTarget = nullptr;
-  this->mIsAttachedToPickingTarget = false;
-  return DY_SUCCESS;
-}
-
-void FDyActor::TryActivateInstance()
-{
-  this->pPropagateActivationFlag();
-}
-
-void FDyActor::TryDeactivateInstance()
-{
-  this->pPropagateActivationFlag();
-}
-
-void FDyActor::pPropagateActivationFlag() noexcept
-{
-  for (auto& [type, unknownComponent] : mComponentList)
-  {
-    if (MDY_CHECK_ISEMPTY(unknownComponent)) { continue; }
-    unknownComponent->SetupFlagAsParent(this->IsActivated());
-  }
-
-  for (auto& unknownScript : this->mScriptList)
-  {
-    if (MDY_CHECK_ISEMPTY(unknownScript)) { continue; }
-    unknownScript->SetupFlagAsParent(this->IsActivated());
-  }
-
-  if (this->mRigidbody != nullptr) { this->mRigidbody->SetupFlagAsParent(this->IsActivated()); }
-
-  // @TODO PROPAGATE ACTIVATION FLAG TO SUBACTOR ALSO.
-  for (const auto& [specifier, instance] : this->mChildActorMap)
-  {
-    if (MDY_CHECK_ISEMPTY(instance)) { continue; }
-    instance->SetupFlagAsParent(this->IsActivated());
-  }
-}
-
-void FDyActor::SetParent(_MIN_ FDyActor& validParentRawPtr) noexcept
-{
-  this->mPtrParentActor = &validParentRawPtr;
-}
-
-void FDyActor::SetParentAsRoot() noexcept
-{
-  MDY_NOT_IMPLEMENTED_ASSERT();
-  this->mPtrParentActor = nullptr;
-}
-
-EDyMetaObjectType FDyActor::GetActorType() const noexcept
-{
-  return this->mActorType;
-}
-
-const std::string& FDyActor::GetActorTag() const noexcept
-{
-  return this->mActorTagSpecifier;
-}
-
-std::vector<NotNull<FDyActor*>> 
-FDyActor::GetAllActorsWithTag(const std::string& iTagSpecifier) const noexcept
-{
-  std::vector<NotNull<FDyActor*>> result;
-  for (const auto& [specifier, ptrsmtActor] : this->mChildActorMap)
-  {
-    if (MDY_CHECK_ISEMPTY(ptrsmtActor)) { continue; }
-    if (ptrsmtActor->GetActorTag() == iTagSpecifier) { result.emplace_back(ptrsmtActor.get()); }
-  }
-
-  return result;
-}
-
-std::vector<NotNull<FDyActor*>> 
-FDyActor::GetAllActorsWithTagRecursive(_MIN_ const std::string& iTagSpecifier) const noexcept
-{
-  std::vector<NotNull<FDyActor*>> result;
-  for (const auto& [specifier, ptrsmtActor] : this->mChildActorMap)
-  {
-    if (MDY_CHECK_ISEMPTY(ptrsmtActor)) { continue; }
-    if (ptrsmtActor->GetActorTag() == iTagSpecifier) { result.emplace_back(ptrsmtActor.get()); }
-    if (ptrsmtActor->IsHavingChildrenObject() == true)
+    // Component matching process is using recursion of each component
+    // from last derived component class to highest base component class.
+    for (auto& [type, component] : this->mComponentList)
     {
-      const auto subResult = ptrsmtActor->GetAllActorsWithTagRecursive(iTagSpecifier);
-      result.insert(result.end(), MDY_BIND_BEGIN_END(subResult));
+      if (component != nullptr) { continue; }
+      if (component->IsTypeMatched(TGeneralComponent::__mHashVal) == true)
+      {
+        return static_cast<TGeneralComponent*>(component.get());
+      }
     }
+
+    // If there is no component to find.
+    return std::nullopt;
   }
 
-  return result;
-}
-
-std::vector<NotNull<FDyActor*>> 
-FDyActor::GetAllActorsWithName(_MIN_ const std::string& iNameSpecifier) const noexcept
-{
-  if (iNameSpecifier.empty() == true) { return {}; }
-
-  std::vector<NotNull<FDyActor*>> result;
-  for (const auto& [specifier, ptrsmtActor] : this->mChildActorMap)
+  template <class TGeneralComponent>
+  std::vector<NotNull<TGeneralComponent*>> GetGeneralComponentList()
   {
-    if (MDY_CHECK_ISEMPTY(ptrsmtActor)) { continue; }
-    if (ptrsmtActor->GetActorName() == iNameSpecifier) { result.emplace_back(ptrsmtActor.get()); }
-  }
+    static_assert(
+      IsInheritancedFrom<TGeneralComponent, ADyGeneralBaseComponent>,
+      "Failed to get component list, required component type is not inheritenced from ADyBaseComponent");
 
-  return result;
-}
+    // Component matching process is using recursion of each component
+    // from last derived component class to highest base component class.
+    std::vector<NotNull<TGeneralComponent*>> resultList = {};
 
-std::vector<NotNull<FDyActor*>> 
-FDyActor::GetAllActorsWithNameRecursive(_MIN_ const std::string& iNameSpecifier) const noexcept
-{
-  if (iNameSpecifier.empty() == true) { return {}; }
-
-  std::vector<NotNull<FDyActor*>> result;
-  for (const auto& [specifier, ptrsmtActor] : this->mChildActorMap)
-  {
-    if (MDY_CHECK_ISEMPTY(ptrsmtActor)) { continue; }
-    if (ptrsmtActor->GetActorName() == iNameSpecifier) { result.emplace_back(ptrsmtActor.get()); }
-    if (ptrsmtActor->IsHavingChildrenObject() == true)
+    for (auto& [type, component] : this->mComponentList)
     {
-      const auto subResult = ptrsmtActor->GetAllActorsWithNameRecursive(iNameSpecifier);
-      result.insert(result.end(), MDY_BIND_BEGIN_END(subResult));
+      if (component == nullptr) { continue; }
+      if (component->IsTypeMatched(TGeneralComponent::__mHashVal) == true)
+      {
+        resultList.emplace_back(static_cast<TGeneralComponent*>(component.get()));
+      }
     }
+
+    return resultList;
   }
 
-  return result;
-}
-
-FDyActor* FDyActor::GetActorWithObjectId(_MIN_ TU32 iObjectId) noexcept
-{
-  for (auto& [actorName, smtptrObject] : this->mChildActorMap)
+  template <class TComponent, typename... TArgs>
+  EDySuccess RemoveComponent(TArgs&&... args)
   {
-    if (smtptrObject == nullptr) { continue; }
-    // Check id.
-    if (smtptrObject->GetId() == iObjectId) { return smtptrObject.get(); }
-    // Iterate id.
-    auto* ptrReturnedObject = smtptrObject->GetActorWithObjectId(iObjectId);
-    if (ptrReturnedObject != nullptr) { return ptrReturnedObject; }
-  }
-  return nullptr;
-}
+    static_assert(
+      IsInheritancedFrom<TComponent, ADyBaseComponent>,
+      "Failed to remove component, required component type is not inheritenced from ADyBaseComponent");
+    DyCheckComponentRemoveFunctionParams<TComponent, TArgs...>();
 
-std::unique_ptr<CDyActorScript> 
-FDyActor::MDY_PRIVATE(MakeScriptComponent)(_MIN_ const PDyScriptComponentMetaInfo& info)
-{
-  auto& metaManager = MDyMetaInfo::GetInstance();
-  MDY_ASSERT(metaManager.IsScriptMetaInformationExist(info.mDetails.mSpecifierName) == true, "");
+    if constexpr (std::is_base_of_v<ADyGeneralBaseComponent, TComponent>)
+    {
+      auto it = std::find_if(
+        MDY_BIND_BEGIN_END(this->mComponentList),
+        [](const auto& item) { return item->IsTypeMatched(TComponent::__mHashVal); }
+      );
 
-  const auto& instanceInfo = metaManager.GetScriptMetaInformation(info.mDetails.mSpecifierName);
-  MDY_ASSERT(instanceInfo.mScriptType != EDyScriptType::NoneError, "");
+      if (it == this->mComponentList.end()) { return DY_FAILURE; }
+      this->ReleaseComponent(*it);
+      this->mComponentList.erase(it);
+      return DY_SUCCESS;
+    }
+    else if constexpr (std::is_same_v<CDyActorScript, TComponent>)
+    {
+      // @TODO IMPLEMENT SCRIPT DELETION USING DESCRIPTOR OR SCRIPT NAME.
+      return this->RemoveScriptComponent(std::forward<TArgs>(args)...);
+    }
 
-  return std::make_unique<CDyActorScript>(*this, info.mDetails.mSpecifierName);
-}
-
-bool FDyActor::IsHaveParent() const noexcept
-{
-  return MDY_CHECK_ISNOTNULL(this->mPtrParentActor);
-}
-
-FDyActor* FDyActor::GetParent() const noexcept
-{
-  if (MDY_CHECK_ISNULL(this->mPtrParentActor)) { return nullptr; }
-  else                                         { return this->mPtrParentActor; }
-}
-
-bool FDyActor::IsHavingChildrenObject() const noexcept
-{
-  return std::any_of(MDY_BIND_BEGIN_END(this->mChildActorMap), [](const auto& iPair) 
-  {
-    return MDY_CHECK_ISNOTEMPTY(iPair.second);
-  });
-}
-
-FDyActor::TActorMap& FDyActor::GetChildrenContainer() noexcept
-{
-  return this->mChildActorMap;
-}
-
-std::string FDyActor::ToString()
-{
-  return fmt::format("Actor name : {}, Id : {}", this->GetActorName(), this->GetId());
-}
-
-#ifdef false
-CDyActorScript* FDyActor::GetScriptComponent(_MIN_ const std::string& scriptName) noexcept
-{
-  MDY_ASSERT(scriptName.empty() == false, "scriptName must not be empty at FDyActor::GetScriptComponent()");
-
-  using TInstanceType = decltype(this->mScriptList)::value_type;
-  const auto it = std::find_if(MDY_BIND_BEGIN_END(this->mScriptList), [&scriptName](const TInstanceType& instance)
-  {
-    return instance->GetScriptVerificationName() == scriptName;
-  });
-
-  if (it == this->mScriptList.end())  { return std::nullopt; }
-  else                                { return it->get(); }
-}
-
-EDySuccess FDyActor::RemoveScriptComponent(_MIN_ const std::string& scriptName) noexcept
-{
-  MDY_ASSERT(scriptName.empty() == false, "scriptName must not be empty at FDyActor::GetScriptComponent()");
-
-  // Find script instance that has scriptName.
-  using TInstanceType = decltype(this->mScriptList)::value_type;
-  const auto it = std::find_if(MDY_BIND_BEGIN_END(this->mScriptList), [&scriptName](const TInstanceType& instance)
-  {
-    if (MDY_CHECK_ISEMPTY(instance))  { return false; }
-    else                              { return instance->GetScriptVerificationName() == scriptName; }
-  });
-
-  if (it == this->mScriptList.end())
-  {
-    MDY_LOG_WARNING("FDyActor::RemoveComponent | Can not find script to remove. | Name : {}", scriptName);
     return DY_FAILURE;
   }
-  else
-  {
-    // @TODO MOVE DESTROY FUNCTION CALL TO AFTERWARD COMPONENT UPDATE() (BEFORE TRANFORM SYNCHRONIZATION)
-    // @TODO FUCTION
-    //(*it)->Destroy();
-    (*it)->Release();
-    this->mScriptList.erase(it);
-    return DY_SUCCESS;
-  }
-}
-#endif
 
-void FDyActor::MDY_PRIVATE(TryRemoveScriptInstances)() noexcept
-{
-  return this->mScriptList.clear();
-}
+  /// Actual actor type to discriminate actor type is so cast object with statically.
+  MDY_TRANSIENT EDyMetaObjectType mActorType = EDyMetaObjectType::NoneError;
 
-void FDyActor::MDY_PRIVATE(TryDetachDependentComponents)() noexcept
-{
-  this->MDY_PRIVATE(TryRemoveScriptInstances)();
-  auto rendererList = this->GetGeneralComponentList<CDyModelRenderer>();
-  for (auto& ptrRenderer : rendererList)
-  { // Try detach renderer from list, if not exist already just do nothing.
-    MDyWorld::GetInstance().MDY_PRIVATE(TryDetachActiveModelRenderer)(ptrRenderer);
-  }
+  void TryActivateInstance();
+  void TryDeactivateInstance();
+  
+  /// @brief
+  void CreateComponentsWithList(_MIN_ const TComponentMetaList& iMetaComponentList);
+  /// @brief
+  void pPropagateActivationFlag() noexcept;
 
-  for (auto& [specifier, ptrsmtChild] : this->mChildActorMap)
-  {
-    if (MDY_CHECK_ISEMPTY(ptrsmtChild)) { return; }
-    ptrsmtChild->MDY_PRIVATE(TryDetachDependentComponents)();
-  }
-}
+  /// Parent FDyActor raw-pointer data.
+  FDyActor*      mPtrParentActor = MDY_INITIALIZE_NULL;
+  /// Transform component.
+  std::unique_ptr<CDyTransform> mTransform         = MDY_INITIALIZE_NULL;
+  /// Rigidbody component.
+  std::unique_ptr<CDyPhysicsRigidbody> mRigidbody  = MDY_INITIALIZE_NULL;
+  /// Component list (randomly) which attached to FDyActor instance (this!)
+  TComponentList mComponentList  = {};
+  /// Script list (specialized!)
+  TScriptList    mScriptList     = {};
+  /// Actor list (hierarchial version)
+  TActorMap      mChildrenActors = {};
+  /// @brief Tag specifier 
+  std::string    mActorTagSpecifier = MDY_INITIALIZE_EMPTYSTR;
 
-NotNull<CDyTransform*> FDyActor::GetTransform() noexcept
-{
-  return DyMakeNotNull(this->mTransform.get());
-}
-
-CDyPhysicsRigidbody* FDyActor::GetRigidbody() noexcept
-{
-  if (MDY_CHECK_ISEMPTY(this->mRigidbody))  { return nullptr; } 
-  else        { return DyMakeNotNull(this->mRigidbody.get()); }
-}
+  /// @brief Internal variable.
+  bool mIsAttachedToPickingTarget = false;
+  };
 
 } /// ::dy namespace
+#include <Dy/Element/Inline/FActorImpl.inl>
+
+  //!
+//! Proxy
+//!
+
+  namespace dy
+  {
+
+    FDyActor::FDyActor(const PDyObjectMetaInfo& objectMetaDesc, FDyActor* iPtrParent)
+    {
+      this->mInternal = new (std::nothrow) Impl(*this);
+      this->pSetObjectName(objectMetaDesc.mSpecifierName);
+      this->mInternal->Initialize(PImplDesc{&objectMetaDesc, nullptr, iPtrParent});
+    }
+
+    FDyActor::FDyActor(const PDyActorCreationDescriptor& iDesc, FDyActor* iPtrParent)
+    {
+      this->mInternal = new (std::nothrow) Impl(*this);
+      this->pSetObjectName(iDesc.mActorSpecifierName);
+      this->mInternal->Initialize(PImplDesc{nullptr, &iDesc, iPtrParent});
+    }
+
+    FDyActor::~FDyActor()
+    {
+      this->mInternal->Release();
+      delete this->mInternal; this->mInternal = nullptr;
+    }
+
+    void FDyActor::DestroySelf()
+    {
+      MDyWorld::GetInstance().DestroyActor(*this);
+    }
+
+    const std::string& FDyActor::GetActorName() const noexcept
+    {
+      return this->pGetObjectName();
+    }
+
+    std::string FDyActor::GetActorFullName() const noexcept
+    {
+      if (this->HasParent() == false) 
+      { 
+        return this->GetActorName(); 
+      }
+      else
+      {
+        const auto headFullSpecifierName = this->GetPtrParent()->GetActorFullName();
+        return MakeStringU8("{}.{}", headFullSpecifierName, this->GetActorName());
+      }
+    }
+
+    void FDyActor::pUpdateActivateFlagFromParent() noexcept
+    {
+      this->mInternal->pUpdateActivateFlagFromParent();
+    }
+
+    void FDyActor::MDY_PRIVATE(AttachPickingTargetFromSystem)(_MINOUT_ FDyActor** iPPtrTarget)
+    {
+      this->mInternal->__AttachPickingTargetFromSystem(iPPtrTarget);
+    }
+
+    EDySuccess FDyActor::MDY_PRIVATE(DetachPickingTargetFromSystem)()
+    {
+      return this->mInternal->__DetachPickingTargetFromSystem();
+    }
+
+    void FDyActor::SetParent(FDyActor& iValidParent) noexcept
+    {
+      return this->mInternal->SetParent(iValidParent);
+    }
+
+    void FDyActor::SetParentAsRoot() noexcept
+    {
+      return this->mInternal->SetParentAsRoot();
+    }
+
+    EDyMetaObjectType FDyActor::GetActorType() const noexcept
+    {
+      return this->mInternal->GetActorType();
+    }
+
+    const std::string& FDyActor::GetActorTag() const noexcept
+    {
+      return this->mInternal->GetActorTag();
+    }
+
+    std::vector<NotNull<FDyActor*>> 
+    FDyActor::GetAllActorsWithTag(const std::string& iTagSpecifier) const noexcept
+    {
+      return this->mInternal->GetAllActorsWithTag(iTagSpecifier);
+    }
+
+    std::vector<NotNull<FDyActor*>> 
+    FDyActor::GetAllActorsWithTagRecursive(const std::string& iTagSpecifier) const noexcept
+    {
+      return this->mInternal->GetAllActorsWithTagRecursive(iTagSpecifier);
+    }
+
+    std::vector<NotNull<FDyActor*>> 
+    FDyActor::GetAllActorsWithName(const std::string& iNameSpecifier) const noexcept
+    {
+      return this->mInternal->GetAllActorsWithName(iNameSpecifier);
+    }
+
+    std::vector<NotNull<FDyActor*>> 
+    FDyActor::GetAllActorsWithNameRecursive(const std::string& iNameSpecifier) const noexcept
+    {
+      return this->mInternal->GetAllActorsWithNameRecursive(iNameSpecifier);
+    }
+
+    FDyActor* FDyActor::GetActorWithObjectId(TU32 iObjectId) noexcept
+    {
+      return this->mInternal->GetActorWithObjectId(iObjectId);
+    }
+
+    bool FDyActor::HasParent() const noexcept { return this->mInternal->HasParent(); }
+
+    FDyActor* FDyActor::GetPtrParent() const noexcept { return this->mInternal->GetPtrParent(); }
+
+    bool FDyActor::HasChildrenActor() const noexcept { return this->mInternal->HasChildrenActor(); }
+
+    FDyActor::TActorMap& FDyActor::GetChildrenContainer() noexcept
+    {
+      return this->mInternal->GetChildrenContainer();
+    }
+
+    std::string FDyActor::ToString()
+    {
+      return MakeStringU8("Actor name : {}, Id : {}", this->GetActorName(), this->GetId());
+    }
+
+    void FDyActor::MDY_PRIVATE(TryRemoveScriptInstances)() noexcept
+    {
+      this->mInternal->__TryRemoveScriptInstances();
+    }
+
+    void FDyActor::MDY_PRIVATE(TryDetachDependentComponents)() noexcept
+    {
+      this->mInternal->__TryDetachDependentComponents();
+    }
+
+    NotNull<CDyTransform*> FDyActor::GetTransform() noexcept
+    {
+      return this->mInternal->GetTransform();
+    }
+
+    CDyPhysicsRigidbody* FDyActor::GetRigidbody() noexcept
+    {
+      return this->mInternal->GetRigidbody();
+    }
+
+    CDyActorScript* FDyActor::pAddScriptComponent(const PDyScriptComponentMetaInfo& iInfo)
+    {
+      // Validation check.
+      const auto specifierName = iInfo.mDetails.mSpecifierName;
+      auto& metaManager = MDyMetaInfo::GetInstance();
+      if (metaManager.IsScriptMetaInformationExist(specifierName) == false)
+      {
+        DyPushLogDebugError("Failed to create script, {}. Script information is not exist.", specifierName);
+        return nullptr;
+      };
+
+      // Get information of script to be created.
+      const auto& instanceInfo = metaManager.GetScriptMetaInformation(specifierName);
+      MDY_ASSERT_MSG(
+        instanceInfo.mScriptType != EDyScriptType::NoneError, 
+        "Script type must be valid.");
+
+      return this->mInternal->AddScriptComponent(instanceInfo);
+    }
+
+    FDyActor::TComponentList& FDyActor::pGetComponentList() noexcept
+    {
+      return this->mInternal->mComponentList;
+    }
+
+    void FDyActor::pReleaseComponent(TComponentItem& ioItem)
+    {
+      this->mInternal->ReleaseComponent(ioItem);
+    }
+
+    void FDyActor::TryActivateInstance()
+    {
+      this->mInternal->TryActivateInstance();
+    }
+
+    void FDyActor::TryDeactivateInstance()
+    {
+      this->mInternal->TryDeactivateInstance();
+    }
+
+  } /// ::dy namespace

@@ -14,16 +14,14 @@
 
 /// Header file
 #include <Dy/Core/Resource/Object/Grid.h>
-#include <Dy/Core/Resource/Internal/ShaderType.h>
-#include <Dy/Management/WorldManager.h>
 #include <Dy/Builtin/ShaderGl/Editor/RenderGrid.h>
+#include <Dy/Helper/Type/Vector3.h>
 
 namespace dy
 {
 
 FDyGrid::FDyGrid()
 {
-
   glGenVertexArrays(1, &this->mVao);
   glGenBuffers(1, &this->mVbo);
   glBindVertexArray(this->mVao);

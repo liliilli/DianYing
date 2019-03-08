@@ -40,7 +40,7 @@ FDyAttachmentResource::FDyAttachmentResource(_MIN_ const FDyAttachmentInformatio
 
   { MDY_GRAPHIC_SET_CRITICALSECITON();
     const auto optAttachmentId = FDyGLWrapper::CreateAttachment(descriptor);
-    MDY_ASSERT(optAttachmentId.has_value() == true, "Attachment creation must be succeeded.");
+    MDY_ASSERT_MSG(optAttachmentId.has_value() == true, "Attachment creation must be succeeded.");
     this->mAttachmentId = optAttachmentId.value();
   }
 }
@@ -53,25 +53,25 @@ FDyAttachmentResource::~FDyAttachmentResource()
 
 const EDyGlBufferDataInternalFormat& FDyAttachmentResource::GetBufferType() const noexcept
 {
-  MDY_ASSERT(this->mInformationBinder.IsResourceExist() == true, "Unexpected error occurred. Information must be valid.");
+  MDY_ASSERT_MSG(this->mInformationBinder.IsResourceExist() == true, "Unexpected error occurred. Information must be valid.");
   return this->mInformationBinder->GetBufferType();
 }
 
 const EDyTextureStyleType& FDyAttachmentResource::GetAttachmentType() const noexcept
 {
-  MDY_ASSERT(this->mInformationBinder.IsResourceExist() == true, "Unexpected error occurred. Information must be valid.");
+  MDY_ASSERT_MSG(this->mInformationBinder.IsResourceExist() == true, "Unexpected error occurred. Information must be valid.");
   return this->mInformationBinder->GetAttachmentType();
 }
 
 TU32 FDyAttachmentResource::GetMipmapLevel() const noexcept
 {
-  MDY_ASSERT(this->mInformationBinder.IsResourceExist() == true, "Unexpected error occurred. Information must be valid.");
+  MDY_ASSERT_MSG(this->mInformationBinder.IsResourceExist() == true, "Unexpected error occurred. Information must be valid.");
   return this->mInformationBinder->GetMipmapLevel();
 }
 
 TU32 FDyAttachmentResource::GetDepthNumber() const noexcept
 {
-  MDY_ASSERT(this->mInformationBinder.IsResourceExist() == true, "Unexpected error occurred. Information must be valid.");
+  MDY_ASSERT_MSG(this->mInformationBinder.IsResourceExist() == true, "Unexpected error occurred. Information must be valid.");
   return this->mInformationBinder->GetDepthNumber();
 }
 

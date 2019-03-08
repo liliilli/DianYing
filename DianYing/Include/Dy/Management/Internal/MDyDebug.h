@@ -39,6 +39,8 @@ public:
 
   /// @brief Update with dt (from MDyTime) and render ui object.
   void UpdateAndRender();
+  /// @brief Check debug menu is opened.
+  MDY_NODISCARD bool IsDebugMenuOpened() const noexcept { return this->mIsDebugMenuOpened; }
 
 private:
   /// @brief Check action is pressed.

@@ -34,6 +34,8 @@
 #include <Dy/Core/Resource/Information/FDyTextureGeneralInformation.h>
 #include <Dy/Core/Resource/Resource/FDyTextureCubemapResource.h>
 #include <Dy/Management/IO/MDyIOData.h>
+#include <Dy/Management/IO/MetaInfoManager.h>
+#include <Dy/Meta/Information/MetaInfoMaterial.h>
 
 namespace dy
 {
@@ -214,12 +216,16 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceResource(_MIN_ const DDyIOTask
     //result.mSmtPtrResultInstance = new FDyMeshResource(*infoManager.GetPtrInformation<EDyResourceType::Mesh>(result.mSpecifierName));
     auto task = assignedTask;
     task.mResourceType = EDyResourceType::Mesh;
-    task.mRawInstanceForUsingLater = new FDyMeshVBOIntermediate(*infoManager.GetPtrInformation<EDyResourceType::Mesh>(result.mSpecifierName));
+    task.mRawInstanceForUsingLater = new FDyMeshVBOIntermediate(
+      *infoManager.GetPtrInformation<EDyResourceType::Mesh>(result.mSpecifierName)
+    );
     SDyIOWorkerConnHelper::TryForwardToMainTaskList(task);
   } break;
   case EDyResourceType::Model:
   { // 
-    result.mSmtPtrResultInstance = new FDyModelResource(*infoManager.GetPtrInformation<EDyResourceType::Model>(result.mSpecifierName));
+    result.mSmtPtrResultInstance = new FDyModelResource(
+      *infoManager.GetPtrInformation<EDyResourceType::Model>(result.mSpecifierName)
+    );
   } break;
   case EDyResourceType::Material:
   { // Material resource is just for binding allocated textures and shader instance ptr list.
@@ -230,13 +236,16 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceResource(_MIN_ const DDyIOTask
     }
     else
     {
-      result.mSmtPtrResultInstance = 
-      new FDyMaterialResource(*infoManager.GetPtrInformation<EDyResourceType::Material>(result.mSpecifierName));
+      result.mSmtPtrResultInstance = new FDyMaterialResource(
+        *infoManager.GetPtrInformation<EDyResourceType::Material>(result.mSpecifierName)
+      );
     }
   } break;
   case EDyResourceType::GLAttachment:
   { // Attachment resource can be created on another context. (It can be shared)
-    result.mSmtPtrResultInstance = new FDyAttachmentResource(*infoManager.GetPtrInformation<EDyResourceType::GLAttachment>(result.mSpecifierName));
+    result.mSmtPtrResultInstance = new FDyAttachmentResource(
+      *infoManager.GetPtrInformation<EDyResourceType::GLAttachment>(result.mSpecifierName)
+    );
   } break;
   case EDyResourceType::GLFrameBuffer:
   { // Framebuffer object must be created on main thread. so forward it to main deferred list.

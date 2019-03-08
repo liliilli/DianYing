@@ -15,7 +15,9 @@
 /// Header file
 #include <Dy/Management/Platform/DDyWindowInformationWindows.h>
 #include <sstream>
-#if (defined(MDY_PLATFORM_FLAG_WINDOWS) == true)
+
+#if (defined(_WIN32) == true)
+
 #include <Psapi.h>
 #include <strsafe.h>
 #include <atlconv.h>
@@ -78,7 +80,9 @@ void DDyWindowInformationWindows::ReleaseDep()
 
 EDySuccess DDyWindowInformationWindows::CreateConsoleWindow()
 {
-  MDY_ASSERT(this->mIsConsoleWindowInitialized.load() == false, "MDyWindow::mIsConsoleWindowInitialized must be falsed.");
+  MDY_ASSERT_MSG(
+    this->mIsConsoleWindowInitialized.load() == false, 
+    "MDyWindow::mIsConsoleWindowInitialized must be falsed.");
 
   // Allocate console and forward stdout to console.
   if (AllocConsole() == false)
@@ -89,7 +93,8 @@ EDySuccess DDyWindowInformationWindows::CreateConsoleWindow()
   freopen_s(&this->mFp, "CONOUT$", "w", stdout);
 
   bool before = false;
-  while (this->mIsConsoleWindowInitialized.compare_exchange_strong(before, true, std::memory_order_seq_cst) == false)
+  while (this->mIsConsoleWindowInitialized.compare_exchange_strong(
+    before, true, std::memory_order_seq_cst) == false)
       ;
   return DY_SUCCESS;
 }
@@ -101,7 +106,7 @@ bool DDyWindowInformationWindows::IsCreatedConsoleWindow() const noexcept
 
 EDySuccess DDyWindowInformationWindows::RemoveConsoleWindow()
 {
-  MDY_ASSERT(this->mIsConsoleWindowInitialized.load() == true, "MDyWIndow::mIsConsoleWindowInitialized must be trued.");
+  MDY_ASSERT_MSG(this->mIsConsoleWindowInitialized.load() == true, "MDyWIndow::mIsConsoleWindowInitialized must be trued.");
 
   // Release console.
   fclose(this->mFp);

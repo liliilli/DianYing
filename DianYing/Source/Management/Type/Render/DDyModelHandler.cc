@@ -55,7 +55,7 @@ EDySuccess DDyModelHandler::TryCreateActorBinding(_MIN_ FDyActor& iRefActor)
 
   // Otherwise, just return DY_SUCCESS with creation.
   auto [it, isSucceeded] = this->mActorInformation.try_emplace(&iRefActor, DActorInfo{});
-  MDY_ASSERT_FORCE(isSucceeded == true, "Unexpected error occurred.");
+  MDY_ASSERT_MSG_FORCE(isSucceeded == true, "Unexpected error occurred.");
 
   return DY_SUCCESS;
 }

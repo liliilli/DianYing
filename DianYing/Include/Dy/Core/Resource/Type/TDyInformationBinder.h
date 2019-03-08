@@ -51,7 +51,7 @@ public:
   /// @brief Get resource pointer which is not nullable.
   MDY_NODISCARD TPtrResource Get() const noexcept
   {
-    MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mPtrResource), "Resource pointer address must not be null when use it.");
+    MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->mPtrResource), "Resource pointer address must not be null when use it.");
     return this->mPtrResource;
   }
 
@@ -62,7 +62,7 @@ protected:
   /// @brief Require resource.
   MDY_NODISCARD EDySuccess pTryRequireResource(_MIN_ const std::string& iNewSpecifier) noexcept
   {
-    MDY_ASSERT(iNewSpecifier.empty() == false, "Resource specifier name must be valid to require resource.");
+    MDY_ASSERT_MSG(iNewSpecifier.empty() == false, "Resource specifier name must be valid to require resource.");
 
     auto ptrResult = SDyIOBindingHelper::TryRequireInformation<TType>(iNewSpecifier, this);
     if (ptrResult.has_value() == false) 

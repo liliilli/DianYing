@@ -1,21 +1,16 @@
 #ifndef GUARD_DY_HELPER_TYPE_VECTOR3_H
 #define GUARD_DY_HELPER_TYPE_VECTOR3_H
-
 ///
-/// @license BSD 2-Clause License
+/// MIT License
+/// Copyright (c) 2018-2019 Jongmin Yun
 ///
-/// Copyright (c) 2018, Jongmin Yun(Neu.), All rights reserved.
-/// If you want to read full statements, read LICENSE file.
-///
-/// @file Dy/Helper/Type/Vector3.h
-///
-/// @brief
-/// Introduce opgs16 dependent vector series classes.
-///
-/// @author Jongmin Yun
-///
-/// @log
-/// 2018-08-28 Create file.
+/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+/// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+/// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+/// SOFTWARE.
 ///
 
 #include <array>
@@ -26,52 +21,43 @@
 #include <foundation/PxVec3.h>
 
 #include <Dy/Helper/Type/Vector2.h>
-#include <Dy/Helper/Math/Math.h>
 
-namespace dy {
-  class DDyMatrix3x3;
+//!
+//! Forward declaration
+//!
 
-///
+namespace dy
+{
+class DDyMatrix3x3;
+} /// ::dy namespace
+
+//!
+//! Implementation
+//! 
+
+namespace dy 
+{
+
 /// @struct DDyVector3
 /// @brief Float type 3-element vector struct.
-///
-struct DDyVector3 final {
-  float X = 0.f;
-  float Y = 0.f;
-  float Z = 0.f;
+struct DDyVector3 final 
+{
+  TF32 X = 0.f, Y = 0.f, Z = 0.f;
 
   DDyVector3() = default;
 
-  explicit DDyVector3(const float value)        noexcept : X{value}, Y{value}, Z{value} {};
-  explicit DDyVector3(const DDyVector2& value)  noexcept : X{value.X}, Y{value.Y}, Z{0.0f} {};
-  DDyVector3(const float x, const float y, const float z) noexcept : X(x), Y(y), Z(z) {};
-  DDyVector3(const DDyVector3& value)                     noexcept = default;
+  explicit DDyVector3(TF32 value) noexcept : X{value}, Y{value}, Z{value} {};
+  explicit DDyVector3(const DDyVector2& value) noexcept : X{value.X}, Y{value.Y}, Z{0.0f} {};
+  DDyVector3(TF32 x, TF32 y, TF32 z) noexcept : X(x), Y(y), Z(z) {};
+  DDyVector3(const DDyVector3& value) noexcept = default;
 
-  //!
-  //! Constructor and assign operator for dependencies.
-  //!
-
-  DDyVector3(const aiVector2D& value) noexcept : X{value.x}, Y{value.y} {}
   DDyVector3(const aiVector3D& value) noexcept : X{value.x}, Y{value.y}, Z{value.z} {}
   DDyVector3(const glm::vec2& value)  noexcept : X{value.x}, Y{value.y} {};
   DDyVector3(const glm::vec3& value)  noexcept : X{value.x}, Y{value.y}, Z{value.z} {};
   DDyVector3(const physx::PxVec3& value) noexcept : X{value.x}, Y{value.y}, Z{value.z} {};
 
-  DDyVector3& operator=(const aiVector2D& value) noexcept
-  {
-    this->X = value.x;
-    this->Y = value.y;
-    this->Z = 0.0f;
-    return *this;
-  }
-
-  DDyVector3& operator=(const aiVector3D& value) noexcept
-  {
-    this->X = value.x;
-    this->Y = value.y;
-    this->Z = value.z;
-    return *this;
-  }
+  DDyVector3& operator=(const aiVector2D& iVector) noexcept;
+  DDyVector3& operator=(const aiVector3D& iVector) noexcept;
 
   DDyVector3& operator=(const glm::vec2& value) noexcept
   {
@@ -199,13 +185,11 @@ struct DDyVector3 final {
   //! Methods
   //!
 
-  ///
   /// @brief Return sequence data of this instance.
-  ///
-  [[nodiscard]] std::array<float, 3> Data() const noexcept
-  {
-    return {this->X, this->Y, this->Z};
-  }
+  MDY_NODISCARD TF32* Data() noexcept;
+
+  /// @brief Return sequence data of this instance.
+  MDY_NODISCARD const TF32* Data() const noexcept;
 
   ///
   /// @brief Returns the length of this vector.
@@ -285,7 +269,7 @@ struct DDyVector3 final {
   {
     if (rhs == 0.0f)
     {
-      MDY_LOG_CRITICAL_D("DDyVector3 could not be divided by {0}.", rhs);
+      DyPushLogDebugCritical("DDyVector3 could not be divided by {0}.", rhs);
     }
     else
     {
@@ -304,7 +288,7 @@ struct DDyVector3 final {
   {
     if (rhs.X == 0.0f || rhs.Y == 0.0f || rhs.Z == 0.0f)
     {
-      MDY_LOG_CRITICAL_D("DDyVector3 could not be devided by 0 included DDyVector3, ({0}, {1}, {2})", rhs.X, rhs.Y, rhs.Z);
+      DyPushLogDebugCritical("DDyVector3 could not be devided by 0 included DDyVector3, ({0}, {1}, {2})", rhs.X, rhs.Y, rhs.Z);
     }
     else
     {
@@ -355,7 +339,7 @@ struct DDyVector3 final {
   {
     if (value == 0.0f)
     {
-      MDY_LOG_CRITICAL_D("DDyVector3 could not be divided by {0}.", value);
+      DyPushLogDebugCritical("DDyVector3 could not be divided by {0}.", value);
     }
     else
     {
@@ -374,7 +358,7 @@ struct DDyVector3 final {
   {
     if (value.X == 0.0f || value.Y == 0.0f || value.Z == 0.0f)
     {
-      MDY_LOG_CRITICAL_D("DDyVector3 could not be devided by 0 included DDyVector3, ({0}, {1}, {2})", value.X, value.Y, value.Z);
+      DyPushLogDebugCritical("DDyVector3 could not be devided by 0 included DDyVector3, ({0}, {1}, {2})", value.X, value.Y, value.Z);
     }
     else
     {

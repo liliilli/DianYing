@@ -179,7 +179,7 @@ struct DDyVectorInt4 final {
   ///
   friend DDyVectorInt4 operator/(_MIN_ DDyVectorInt4& lhs, _MIN_ const TI32 rhs) noexcept {
     if (rhs == 0)
-    { MDY_LOG_CRITICAL_D("DDyVectorInt4 could not be divided by {0}.", rhs); }
+    { DyPushLogDebugCritical("DDyVectorInt4 could not be divided by {0}.", rhs); }
     else
     { lhs.X /= rhs; lhs.Y /= rhs; lhs.Z /= rhs; lhs.W /= rhs; }
 
@@ -192,7 +192,7 @@ struct DDyVectorInt4 final {
   friend DDyVectorInt4 operator/(_MIN_ DDyVectorInt4 lhs, _MIN_ const DDyVectorInt4& rhs) noexcept {
     if (rhs.X == 0 || rhs.Y == 0 || rhs.Z == 0 || rhs.W == 0)
     {
-      MDY_LOG_CRITICAL_D(
+      DyPushLogDebugCritical(
           "DDyVectorInt4 could not be devided by 0 included DDyVectorInt4, ({0}, {1}, {2}, {3})", 
           rhs.X, rhs.Y, rhs.Z, rhs.W);
     }
@@ -234,7 +234,7 @@ struct DDyVectorInt4 final {
   DDyVectorInt4& operator/=(const TI32 value) noexcept
   {
     if (value == 0)
-    { MDY_LOG_CRITICAL_D("DDyVectorInt4 could not be divided by {0}.", value); }
+    { DyPushLogDebugCritical("DDyVectorInt4 could not be divided by {0}.", value); }
     else
     { this->X /= value; this->Y /= value; this->W /= value; this->Z /= value; }
 
@@ -248,7 +248,7 @@ struct DDyVectorInt4 final {
   {
     if (value.X == 0 || value.Y == 0 || value.Z == 0 || value.W == 0)
     {
-      MDY_LOG_CRITICAL_D(
+      DyPushLogDebugCritical(
           "DDyVectorInt4 could not be devided by 0 included DDyVectorInt4, ({0}, {1}, {2}, {3})", 
           value.X, value.Y, value.Z, value.W);
     }

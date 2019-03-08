@@ -22,7 +22,9 @@ public:
   /// @brief Check rendering phase is ready.
   [[nodiscard]] virtual bool IsReady() const noexcept = 0;
   /// @brief Try setup rendering, if failed, return DY_FAILURE.
-  [[nodiscard]] virtual EDySuccess TrySetupRendering() = 0;
+  [[nodiscard]] virtual EDySuccess TryPushRenderingSetting() = 0;
+  /// @brief Try pop(reset) rendering setting of this, if failed, return DY_FAILURE.
+  [[nodiscard]] virtual EDySuccess TryPopRenderingSetting() = 0;
   /// @brief Clear properties of given framebuffer.
   virtual void Clear() = 0;
 

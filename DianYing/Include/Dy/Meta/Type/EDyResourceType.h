@@ -31,6 +31,10 @@ enum class EDyResourceType
   Skeleton,       // Skeleton is dynamic model skeleton data type for begin used in model animation and model (not for each mesh)
   AnimationScrap, // AnimationScrap is data of model animation, but not reformed and just have binary data for animation.
 
+  // Render type
+  RenderPipeline,
+  RenderItem,
+
   __MeshVBO,
   NoneError
 };

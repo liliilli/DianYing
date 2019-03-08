@@ -31,6 +31,7 @@ protected:
 
 public:
   DDyCompUpdator<bool> mLogFlag { false, std::bind(&FDyBtGiDebugStatus::OnCallbackLogFlag, std::placeholders::_1) };
+  bool mEditMode = false;
 };
 
 }

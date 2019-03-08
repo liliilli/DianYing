@@ -33,13 +33,7 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DyFontAtlasGenerator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="precompiled.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DyWindowAbout.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Libraries\msdfgen\core\Bitmap.cpp">
@@ -81,27 +75,39 @@
     <ClCompile Include="Libraries\msdfgen\core\Vector2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Helper\HelperZlib.cpp">
+    <ClCompile Include="Source\DyFontAtlasGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Helper\GLOffscreenSurface.cc">
+    <ClCompile Include="Source\DyWindowAbout.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Helper\PaintSurface.cc">
+    <ClCompile Include="Source\Library\HelperZlib.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Helper\CoordinateBounds.cc">
+    <ClCompile Include="Source\QtHelper\GLOffscreenSurface.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\QtHelper\PaintSurface.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Type\CoordinateBounds.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\FTaskThread.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Library\JsonTypeWriterHelper.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="Include\QtHelper\GLOffscreenSurface.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
     <QtMoc Include="DyFontAtlasGenerator.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="DyWindowAbout.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="Helper\GLOffscreenSurface.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -164,28 +170,49 @@
     <ClInclude Include="Libraries\msdfgen\core\Vector2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Helper\GlobalEnums.h">
+    <ClInclude Include="Include\AConstantLangRange.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Helper\JsonTypeWriterHelper.h">
+    <ClInclude Include="Include\Library\HelperZlib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Helper\MsdfgenHelper.h">
+    <ClInclude Include="Include\Library\MsdfgenHelper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Helper\CoordinateBounds.h">
+    <ClInclude Include="Include\Library\JsonTypeWriterHelper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Helper\Vector2.h">
+    <ClInclude Include="Include\Type\Vector2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Helper\HelperZlib.h">
+    <ClInclude Include="Include\QtHelper\PaintSurface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Helper\PaintSurface.h">
+    <ClInclude Include="Include\Type\CoordinateBounds.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Helper\Structure.h">
+    <ClInclude Include="Include\Structure.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Type\GlobalEnums.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Library\HelperString.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Type\DFileInformations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Type\TCallVar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\FTaskThread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Type\DResult.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Constant.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

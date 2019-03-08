@@ -144,7 +144,7 @@
   { \
     auto result = (__MAFunctionCall__); \
     result = result; \
-    MDY_ASSERT(result == DY_SUCCESS, "Failed to execute expression successfully."); \
+    MDY_ASSERT_MSG(result == DY_SUCCESS, "Failed to execute expression successfully."); \
   }
 
 /// 
@@ -198,12 +198,6 @@
 #define MDY_INITIALIZE_NULL nullptr
 
 ///
-/// @macro MSVSTR
-/// @brief M(MDY) read SV(std::string_view) as STR(std::string or const char*) using .data()
-///
-#define MSVSTR(__MAStringView__) __MAStringView__.data()
-
-///
 /// @macro MDY_BIND_BEGIN_END
 /// @brief Help forward iteratable type to bind .begin() and .end() to function.
 ///
@@ -220,7 +214,7 @@
 /// @brief Set immutable compile string_view variable __MAName__ with __MAString__.
 ///
 #define MDY_SET_IMMUTABLE_STRING(__MAName__, __MAString__) \
-  constexpr std::string_view __MAName__ = __MAString__
+  constexpr const char* __MAName__ = __MAString__
 
 ///
 /// @macro MDY_UNEXEPCTED_BRANCH_BUT_RETURN
@@ -292,14 +286,6 @@
 ///
 #define MDY_UNQMVCAST(__MACastType__, __MAInstance__) \
   std::unqiue_ptr<__MACastType__*>(static_cast<__MACastType__*>(__MAInstance__.release()))
-
-///
-/// @macro MDY_TEST_IS_BASE_OF
-/// @brief Check __MADerivedType__ is derived from __MABaseType__.
-///
-#define MDY_TEST_IS_BASE_OF(__MABaseType__, __MADerivedType__) \
-  static_assert(std::is_base_of_v<__MABaseType__, __MADerivedType__>, \
-                MDY_TO_STRING(__MADerivedType__) " is not a derived type of " MDY_TO_STRING(__MABaseType__) ".")
 
 ///
 /// @macro MDY_TEST_PARAM_PACK_COUNT
@@ -486,36 +472,6 @@ private:                                                  \
 public:                                                   \
     virtual ~__MADerivedSingletonType__() = default;
 
-#if defined(MDY_FLAG_IN_EDITOR)
-///
-/// @macro MDY_GUISINGLETON_PROPERTIES
-/// @brief Set properties of gui window singleton types.
-/// This macro must not be attached to whichever class inherits IDyGuiWindowSingleton<>.
-///
-#define MDY_GUISINGLETON_PROPERTIES(__MASingletonType__) \
-public: \
-    __MASingletonType__(const __MASingletonType__##&) = delete; \
-    __MASingletonType__(__MASingletonType__##&&) = delete; \
-    __MASingletonType__##& operator=(const __MASingletonType__##&) = delete; \
-    __MASingletonType__##& operator=(__MASingletonType__##&&) = delete
-
-///
-/// @macro MDY_GUISINGLETON_DERIVED
-/// @brief Set boilerplate functions for gui window singleton types.
-/// This macro must not be attached to whichever class inherits IDyGuiWindowSingleton<>.
-///
-#define MDY_GUISINGLETON_DERIVED(__MADerivedSingletonType__, __MAConstructionDescriptorType__)  \
-public:                                                   \
-    __MADerivedSingletonType__() = default;               \
-    virtual ~__MADerivedSingletonType__() = default;      \
-private:                                                  \
-    [[nodiscard]] EDySuccess pfInitialize([[maybe_unused]] const __MAConstructionDescriptorType__& desc); \
-    [[nodiscard]] EDySuccess pfRelease();                 \
-    MDY_SET_CRC32_HASH_WITH_TYPE(__MADerivedSingletonType__); \
-    MDY_SET_TYPEMATCH_FUNCTION(IDyGuiComponentBase, __MADerivedSingletonType__); \
-    friend class IDyGuiWinSingleton<__MADerivedSingletonType__, __MAConstructionDescriptorType__>
-#endif /// MDY_FLAG_IN_EDITOR
-
 #define MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(__MAType__)\
   __MAType__(const __MAType__&)             = delete;   \
   __MAType__& operator=(const __MAType__&)  = delete;   \
@@ -574,125 +530,6 @@ private:                                                  \
   inline static MDY_SET_IMMUTABLE_STRING(sName, __MAName__); \
   private: \
   inline static ::dy::reflect::RDyBuiltinResourceRegister<__MAType__> __rfc__register{sName};
-
-///
-/// @macro MDY_REGISTER_RESOURCE_SCRIPT
-/// @brief Register cpp script source as builtin script resource.
-/// @param __MAType__ Type for being enabled.
-///
-#define MDY_REGISTER_RESOURCE_SCRIPT(__MAType__, __MASpecifier__) \
-  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(__MAType__, __MASpecifier__); \
-private: \
-  std::any GetMetaInfo() override final { return 0; }; \
-public: \
-  class __ConstructionHelper final : public ::dy::IDyResource \
-  { \
-    using TScriptableFunction = ::dy::PDyScriptInstanceMetaInfo::TScriptableFunction; \
-    using TFunctionReturn = std::invoke_result_t<TScriptableFunction>; \
-    \
-    template<typename TType> \
-    static TFunctionReturn GetInstance() { return std::make_unique<TType>(); } \
-    using  TSuper = __MAType__; \
-    \
-    inline static auto function = GetInstance<TSuper>; \
-    \
-    std::any GetMetaInfo() override final \
-    { \
-      using namespace dy; \
-      PDyScriptInstanceMetaInfo metaInfo = {}; \
-      metaInfo.mScriptType = EDyScriptType::Cpp; \
-      if constexpr (IsInheritancedFrom<__MAType__, ADyWidgetCppScript> == true) \
-      { metaInfo.mScriptMode = EDyScriptMode::Widget; } \
-      else if constexpr (IsInheritancedFrom<__MAType__, ADyActorCppScript> == true) \
-      { metaInfo.mScriptMode = EDyScriptMode::Actor; } \
-      else if constexpr (IsInheritancedFrom<__MAType__, ADyGlobalCppScript> == true) \
-      { metaInfo.mScriptMode = EDyScriptMode::Global; } \
-      else { metaInfo.mScriptMode = EDyScriptMode::NoneError; } \
-      \
-      metaInfo.mSpecifierName = __MASpecifier__; \
-      metaInfo.mBtInstantiationFunction = function; \
-      return metaInfo; \
-    } \
-  }; \
-private:
-
-///
-/// @macro MDY_REGISTER_RESOURCE_MESH
-/// @brief Register mesh meta information source.
-///
-#define MDY_REGISTER_RESOURCE_MESH(__MAType__, __MASpecifierName__) \
-  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(__MAType__, __MASpecifierName__) \
-  private: \
-  void ConstructBuffer(_MOUT_ PDyMeshInstanceMetaInfo& property) noexcept; \
-  public: \
-  __MAType__() { this->ConstructBuffer(this->mMetaInfo); }
-  
-///
-/// @macro MDY_REGISTER_RESOURCE_MODEL
-/// @brief Register model meta information source.
-///
-#define MDY_REGISTER_RESOURCE_MODEL(__MAType__, __MASpecifierName__) \
-  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(__MAType__, __MASpecifierName__) \
-  private: \
-  void ConstructBuffer(_MOUT_ PDyModelInstanceMetaInfo& buffer) noexcept; \
-  public: \
-  __MAType__() { ConstructBuffer(this->mMetaInfo); }
-
-///
-/// @macro MDY_REGISTER_RESOURCE_TEXTURE
-/// @brief Register texture meta information source.
-///
-#define MDY_REGISTER_RESOURCE_TEXTURE(__MAType__, __MASpecifierName__) \
-  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(__MAType__, __MASpecifierName__) \
-  private: \
-  static TBufferType& __Get() noexcept \
-  { \
-    static TBufferType instance{}; \
-    return instance; \
-  } \
-  void ConstructBuffer(_MOUT_ TBufferType& buffer, _MOUT_ PDyTextureInstanceMetaInfo& property) noexcept; \
-  public: \
-  __MAType__() \
-  { \
-    ConstructBuffer(__Get(), this->mTextureMetaInfo); \
-    this->mPtrBuffer = &__Get(); \
-  }
-
-///
-/// @macro MDY_REGISTER_RESOURCE_MATERIAL
-/// @brief Register material meta information source.
-///
-#define MDY_REGISTER_RESOURCE_MATERIAL(__MAType__, __MASpecifier__) \
-  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(__MAType__, __MASpecifier__) \
-  private: \
-    void ConstructBuffer(_MOUT_ PDyMaterialInstanceMetaInfo& property) noexcept; \
-  public: \
-  __MAType__() \
-  { \
-    ConstructBuffer(this->mMetaInfo); \
-  }
-
-///
-/// @macro MDY_REGISTER_RESOURCE_ATTACHMENT
-/// @brief Register OpenGL attachment meta information source.
-///
-#define MDY_REGISTER_RESOURCE_ATTACHMENT(__MAType__, __MASpecifierName__) \
-  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(__MAType__, __MASpecifierName__) \
-  private: \
-  void ConstructBuffer(_MOUT_ PDyGlAttachmentInstanceMetaInfo& property) noexcept; \
-  public: \
-  __MAType__() { this->ConstructBuffer(this->mAttachmentMetaInfo); }
-
-///
-/// @macro MDY_REGISTER_RESOURCE_FRAMEBUFFER
-/// @brief Register OpenGL framebuffer meta information source.
-///
-#define MDY_REGISTER_RESOURCE_FRAMEBUFFER(__MAType__, __MASpecifierName__) \
-  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(__MAType__, __MASpecifierName__) \
-  private: \
-  void ConstructBuffer(_MOUT_ PDyGlFrameBufferInstanceMetaInfo& property) noexcept; \
-  public: \
-  __MAType__() { this->ConstructBuffer(this->mMetaInfo); }
 
 ///
 /// @macro MDY_REGISTER_BOOT_RESOURCE_LIST

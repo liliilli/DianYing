@@ -58,7 +58,6 @@ FDyDefaultLoadingBootScript::FDyDefaultLoadingBootScript()
 {
   using namespace builtin;
   using namespace dy;
-  using namespace std::string_view_literals;
 
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Texture, FDyBuiltinTextureChecker::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Texture, FDyBuiltinTextureErrorBlue::sName);
@@ -76,11 +75,11 @@ FDyDefaultLoadingBootScript::FDyDefaultLoadingBootScript()
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBuiltinShaderGLRenderUiImage::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBtGlslRenderCSMLightNormal::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBtGlslRenderIntegrationLevelCSM::sName);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, "dyBtShOITAccumulation"sv);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, "dyBtShOITIntegration"sv);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, "dyBtShGlOpaqueDynamic"sv);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, "dyBtShDebugLine"sv);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, "dyBtShGlSkyboxDefault"sv);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, "dyBtShOITAccumulation");
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, "dyBtShOITIntegration");
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, "dyBtShGlOpaqueDynamic");
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, "dyBtShDebugLine");
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, "dyBtShGlSkyboxDefault");
 
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLShader, FDyBtGlslRenderCSMLightNormal::sName);
 
@@ -92,31 +91,32 @@ FDyDefaultLoadingBootScript::FDyDefaultLoadingBootScript()
 
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Mesh, FDyBtMsUiBarQuad::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::Mesh, FDyBtMsUiImageQuad::sName);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Mesh, "dyBtMsScrOITTriangle"sv);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Mesh, "dyBtMsDebugSphere"sv);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Mesh, "dyBtMsDebugBox"sv);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Mesh, "dyBtMsDebugCapsule"sv);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Mesh, "dyBtMsScrOITTriangle");
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Mesh, "dyBtMsDebugSphere");
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Mesh, "dyBtMsDebugBox");
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Mesh, "dyBtMsDebugCapsule");
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Mesh, "dyBtMsDebugAABB");
 
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, FDyBtFrameBufferDeferred::sName);
   //MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, FDyBtFBBasicShadow::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, builtin::FDyBtFbCSM::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, FDyBtFbUiBasic::sName);
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, builtin::FDyBtFbWeightBlendedOIT::sName);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, "dyBtFbWBOIT"sv);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, "dyBtFbWBOIT");
   MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, FDyBtFbOpaqueIntegration::sName);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, "dyBtFbIntgLevelTrans"sv);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, "dyBtFbSSAO"sv);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, "dyBtFbSSAOBlur"sv);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, "dyBtFbDebug"sv);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, "dyBtFbSkybox"sv);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, "dyBtFbIntgLevelTrans");
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, "dyBtFbSSAO");
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, "dyBtFbSSAOBlur");
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, "dyBtFbDebug");
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLFrameBuffer, "dyBtFbSkybox");
 
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLAttachment,  "dyBtAtOpaqueOutput"sv);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLAttachment,  "dyBtAtWBOITColor"sv);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLAttachment,  "dyBtAtWBOITWeight"sv);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLAttachment,  "dyBtAtSSAOOutput"sv);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLAttachment,  "dyBtAtSSAOOutputFinal"sv);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLAttachment,  "dyBtAtUiId"sv);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLAttachment,  "dyBtAtActorId"sv);
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLAttachment,  "dyBtAtOpaqueOutput");
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLAttachment,  "dyBtAtWBOITColor");
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLAttachment,  "dyBtAtWBOITWeight");
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLAttachment,  "dyBtAtSSAOOutput");
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLAttachment,  "dyBtAtSSAOOutputFinal");
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLAttachment,  "dyBtAtUiId");
+  MDY_LOADING_RESOURCE_BIND(EDyResourceType::GLAttachment,  "dyBtAtActorId");
 }
 
 } /// ::dy namespace

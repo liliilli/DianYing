@@ -33,7 +33,7 @@ enum class EDyTimeDay : char
 
 inline EDyTimeDay MDY_PRIVATE(DyConverTmDayToDyType)(_MIN_ TI32 iInput) noexcept
 {
-  MDY_ASSERT(iInput >= 0 && iInput <= 6, "iInput is not valid value.");
+  MDY_ASSERT_MSG(iInput >= 0 && iInput <= 6, "iInput is not valid value.");
   return static_cast<EDyTimeDay>(iInput);
 }
 

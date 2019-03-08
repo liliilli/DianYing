@@ -34,4 +34,74 @@ const DDyColorRGBA DDyColorRGBA::Red        = DDyColorRGBA32{0xFF, 0x00, 0x00};
 const DDyColorRGBA DDyColorRGBA::White      = DDyColorRGBA32{0xFF, 0xFF, 0xFF};
 const DDyColorRGBA DDyColorRGBA::Yellow     = DDyColorRGBA32{0xFF, 0xFF, 0x00};
 
+DDyColorRGBA::DDyColorRGBA(TF32 r, TF32 g, TF32 b) noexcept 
+  : R{r}, G{g}, B{b}, A{1.0f} 
+{
+  if (this->R < 0.0f) this->R = 0.0f; else if (this->R > 1.0f) this->R = 1.0f;
+  if (this->G < 0.0f) this->G = 0.0f; else if (this->G > 1.0f) this->G = 1.0f;
+  if (this->B < 0.0f) this->B = 0.0f; else if (this->B > 1.0f) this->B = 1.0f;
+}
+
+DDyColorRGBA::DDyColorRGBA(TF32 r, TF32 g, TF32 b, TF32 a) noexcept 
+  : R{r}, G{g}, B{b}, A{a} 
+{
+  if (this->R < 0.0f) this->R = 0.0f; else if (this->R > 1.0f) this->R = 1.0f;
+  if (this->G < 0.0f) this->G = 0.0f; else if (this->G > 1.0f) this->G = 1.0f;
+  if (this->B < 0.0f) this->B = 0.0f; else if (this->B > 1.0f) this->B = 1.0f;
+  if (this->A < 0.0f) this->A = 0.0f; else if (this->A > 1.0f) this->A = 1.0f;
+}
+
+bool DDyColorRGBA::IsOpaque() const noexcept
+{
+  return this->A == 1.0f;
+}
+
+void DDyColorRGBA::SetOpaque() noexcept
+{
+  this->A = 1.0f;
+}
+
+TF32 DDyColorRGBA::GetGrayScale() const noexcept
+{
+  return 0.2126f * this->R + 0.7152f * this->G + 0.0722f * this->B;
+}
+
+const TF32* DDyColorRGBA::Data() const noexcept
+{
+  return &this->R;
+}
+
+DDyColorRGBA::operator DDyVector3() const noexcept
+{
+  return DDyVector3{this->R, this->G, this->B};
+}
+
+DDyColorRGBA::operator glm::vec3() const noexcept
+{
+  return glm::vec3{this->R, this->G, this->B};
+}
+
+DDyColorRGBA::operator glm::vec4() const noexcept
+{
+  return glm::vec4{this->R, this->G, this->B, this->A};
+}
+
+DDyColorRGBA::operator DDyVector4() const noexcept
+{
+  return DDyVector4{this->R, this->G, this->B, this->A};
+}
+
+void to_json(nlohmann::json& oJson, const DDyColorRGBA& iItem)
+{
+  oJson = nlohmann::json { {"R", iItem.R}, {"G", iItem.G}, {"B", iItem.B}, {"A", iItem.A} };
+}
+
+void from_json(const nlohmann::json& iJson, DDyColorRGBA& oItem)
+{
+  DyJsonGetValueFromTo(iJson, "R", oItem.R);
+  DyJsonGetValueFromTo(iJson, "G", oItem.G);
+  DyJsonGetValueFromTo(iJson, "B", oItem.B);
+  DyJsonGetValueFromTo(iJson, "A", oItem.A);
+}
+
 } /// ::dy namespace

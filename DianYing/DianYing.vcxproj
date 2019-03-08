@@ -87,7 +87,7 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <AdditionalIncludeDirectories>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;C:\TPLibraries\PhysX\pxshared\include;C:\TPLibraries\PhysX\physx\include;$(ProjectDir)Libraries\msdfgen;$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDir)Libraries\freetype\include;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;$(ProjectDir)Libraries\zlib;$(ProjectDir)Libraries\cxxopts\include;C:\VulkanSDK\1.1.85.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;$(ProjectDir)Libraries\PhysX\pxshared\include;$(ProjectDir)Libraries\physX\include;$(ProjectDir)Libraries\msdfgen;$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDir)Libraries\freetype\include;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;$(ProjectDir)Libraries\zlib;$(ProjectDir)Libraries\cxxopts\include;$(ProjectDir)Libraries\boost;C:\VulkanSDK\1.1.85.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4244;4267;4189;4100;4458</DisableSpecificWarnings>
       <PreprocessorDefinitions>__MDY_FLAG_IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -116,7 +116,7 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <AdditionalIncludeDirectories>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;C:\TPLibraries\PhysX\pxshared\include;C:\TPLibraries\PhysX\physx\include;$(ProjectDir)Libraries\msdfgen;$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDir)Libraries\freetype\include;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;$(ProjectDir)Libraries\zlib;$(ProjectDir)Libraries\cxxopts\include;C:\VulkanSDK\1.1.85.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;$(ProjectDir)Libraries\PhysX\pxshared\include;$(ProjectDir)Libraries\physX\include;$(ProjectDir)Libraries\msdfgen;$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDir)Libraries\freetype\include;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;$(ProjectDir)Libraries\zlib;$(ProjectDir)Libraries\cxxopts\include;$(ProjectDir)Libraries\boost;C:\VulkanSDK\1.1.85.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
       <PreprocessorDefinitions>MDY_FLAG_IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -144,7 +144,7 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <AdditionalIncludeDirectories>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;C:\TPLibraries\PhysX\pxshared\include;C:\TPLibraries\PhysX\physx\include;$(ProjectDir)Libraries\msdfgen;$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDir)Libraries\freetype\include;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;$(ProjectDir)Libraries\zlib;$(ProjectDir)Libraries\cxxopts\include;C:\VulkanSDK\1.1.85.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;$(ProjectDir)Libraries\PhysX\pxshared\include;$(ProjectDir)Libraries\physX\include;$(ProjectDir)Libraries\msdfgen;$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(ProjectDir)Libraries\assimp\assimp\$(Platform);$(ProjectDir)Libraries\assimp;$(ProjectDir)Libraries\glm;$(ProjectDir)Libraries\freetype\include;$(ProjectDIr)Libraries\spdlog\include;$(ProjectDir)Libraries\FX11\inc;$(ProjectDir)Libraries\zlib;$(ProjectDir)Libraries\cxxopts\include;$(ProjectDir)Libraries\boost;C:\VulkanSDK\1.1.85.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;__MDY_FLAG_IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4996;4244;4267;4189;4100;4458</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -198,6 +198,7 @@
     <ClCompile Include="Source\Builtin\GlobalInstance\FDyBtGiDebugStatus.cc" />
     <ClCompile Include="Source\Builtin\Material\BtMtCheckerWorldPos.cc" />
     <ClCompile Include="Source\Builtin\Material\Transparent\StaticTransparentChecker.cc" />
+    <ClCompile Include="Source\Builtin\Mesh\Debug\FDyBtMsDebugAABB.cc" />
     <ClCompile Include="Source\Builtin\Mesh\Debug\FDyBtMsDebugBox.cc" />
     <ClCompile Include="Source\Builtin\Mesh\Debug\FDyBtMsDebugCapsule.cc" />
     <ClCompile Include="Source\Builtin\Mesh\Debug\FDyBtMsDebugSphere.cc" />
@@ -209,26 +210,46 @@
     <ClCompile Include="Source\Builtin\Mesh\Widget\FDyBtMsUiImgQuad.cc" />
     <ClCompile Include="Source\Builtin\Mesh\Plane\FDyBtMsOITTrinagle.cc" />
     <ClCompile Include="Source\Builtin\Mesh\Widget\FDyBtMsUiBarQuad.cc" />
+    <ClCompile Include="Source\Builtin\Model\BoxOIT.cc" />
     <ClCompile Include="Source\Builtin\Model\UiFontQuad.cc" />
     <ClCompile Include="data\Script\DebugActor\BtScActorTest1.cc" />
     <ClCompile Include="data\Script\DebugActor\BtScActorTest2.cc" />
     <ClCompile Include="data\Script\DebugActor\BtScActorTest3.cc" />
+    <ClCompile Include="Source\Builtin\RenderItem\Debug\FBtDebugCollisionAabb.cc" />
+    <ClCompile Include="Source\Builtin\RenderItem\Debug\FBtDebugCollisionShape.cc" />
+    <ClCompile Include="Source\Builtin\RenderItem\Debug\FBtDebugPicking.cc" />
+    <ClCompile Include="Source\Builtin\RenderItem\FBtLevelIntegration.cc" />
+    <ClCompile Include="Source\Builtin\RenderItem\FBtScreenIntegration.cc" />
+    <ClCompile Include="Source\Builtin\RenderItem\Level\FBtLevelOITDefault.cc" />
+    <ClCompile Include="Source\Builtin\RenderItem\Level\FBtOpaqueDefault.cc" />
+    <ClCompile Include="Source\Builtin\RenderItem\Level\FBtPpCsmShadow.cc" />
+    <ClCompile Include="Source\Builtin\RenderItem\Level\FbtPpSkybox.cc" />
+    <ClCompile Include="Source\Builtin\RenderItem\Level\FBtPpSsao.cc" />
+    <ClCompile Include="Source\Builtin\RenderItem\Widget\FBtWidgetGeneral.cc" />
+    <ClCompile Include="Source\Builtin\RenderPipeline\Debug\FBtDebug.cc" />
+    <ClCompile Include="Source\Builtin\RenderPipeline\FBtDefault.cc" />
+    <ClCompile Include="Source\Builtin\RenderPipeline\FBtDefaultLoading.cc" />
+    <ClCompile Include="Source\Builtin\RenderPipeline\Level\FBtDefaultLevel.cc" />
+    <ClCompile Include="Source\Builtin\RenderPipeline\Level\FBtDefaultLevelPostProcess.cc" />
+    <ClCompile Include="Source\Builtin\RenderPipeline\Level\FBtDefaultLevelRender.cc" />
+    <ClCompile Include="Source\Builtin\RenderPipeline\Widget\FBtWidget.cc" />
+    <ClCompile Include="Source\Builtin\Script\BtScrGlobalDefaultUniformBuffer.cc" />
     <ClCompile Include="Source\Builtin\Script\DebugUiScriptCpp.cc" />
     <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingBootScriptCpp.cc" />
     <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingGlobalScriptCpp.cc" />
     <ClCompile Include="data\Script\FDyBtScTestLoadingUi.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\Debug\BtShDebugLine.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\Level\BtShOITAccumulation.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\Level\BtShOITIntegration.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\Level\RenderCSMLightNormal.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\Level\RendIntegrationLevelCSM.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\PostEffect\RenderDefaultSSAOBlurring.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\PostEffect\RenderDefaultSSAO.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\Render\BtShSkyboxDefault.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\Render\BtShUvWorldPos.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\Render\RenderOpaqueDynamic.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\Widget\RenderUiBasicGaugeBar.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\Widget\RenderUIImage.cc" />
+    <ClCompile Include="Source\Builtin\Shader\Debug\BtShDebugLine.cc" />
+    <ClCompile Include="Source\Builtin\Shader\Level\BtShOITAccumulation.cc" />
+    <ClCompile Include="Source\Builtin\Shader\Level\BtShOITIntegration.cc" />
+    <ClCompile Include="Source\Builtin\Shader\Level\RenderCSMLightNormal.cc" />
+    <ClCompile Include="Source\Builtin\Shader\Level\RendIntegrationLevelCSM.cc" />
+    <ClCompile Include="Source\Builtin\Shader\PostEffect\RenderDefaultSSAOBlurring.cc" />
+    <ClCompile Include="Source\Builtin\Shader\PostEffect\RenderDefaultSSAO.cc" />
+    <ClCompile Include="Source\Builtin\Shader\Render\BtShSkyboxDefault.cc" />
+    <ClCompile Include="Source\Builtin\Shader\Render\BtShUvWorldPos.cc" />
+    <ClCompile Include="Source\Builtin\Shader\Render\RenderOpaqueDynamic.cc" />
+    <ClCompile Include="Source\Builtin\Shader\Widget\RenderUiBasicGaugeBar.cc" />
+    <ClCompile Include="Source\Builtin\Shader\Widget\RenderUIImage.cc" />
     <ClCompile Include="Source\Builtin\Texture\CheckerBright.cc" />
     <ClCompile Include="Source\Builtin\Texture\SSAONoiseMap.cc" />
     <ClCompile Include="Source\Builtin\Widget\FDyBtWdTestLoadingUi.cc" />
@@ -251,11 +272,6 @@
     <ClCompile Include="Source\Component\Internal\Script\Global\FDyGlobalScriptStatus.cc" />
     <ClCompile Include="Source\Component\Internal\Sound\FDySoundInstance.cc" />
     <ClCompile Include="Source\Core\Reflection\RDyGlobalInstanceManager.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\DebugRenderer.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\LevelCascadeShadowRenderer.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\LevelCSMIntergration.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\LevelOITRenderer.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\PostEffectSky.cc" />
     <ClCompile Include="Source\Core\Rendering\Widget\CDyBasicGaugeBarRenderer.cc" />
     <ClCompile Include="Source\Core\Rendering\Widget\CDyImageRenderer.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Widget\FDyWidgetScriptStatus.cc" />
@@ -265,6 +281,9 @@
     <ClCompile Include="Source\Core\Reflection\RDyBuiltinResources.cc" />
     <ClCompile Include="Source\Core\Rendering\Wrapper\FDyGLWrapper.cc" />
     <ClCompile Include="Source\Core\Rendering\Wrapper\FDyGLWrapperSub.cc" />
+    <ClCompile Include="Source\Core\Rendering\Wrapper\FWrapperHandleRenderPipeline.cc" />
+    <ClCompile Include="Source\Core\Rendering\Wrapper\FWrapperRenderItem.cc" />
+    <ClCompile Include="Source\Core\Rendering\Wrapper\FWrapperRenderPipeline.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyAttachmentInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyFrameBufferInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyMaterialInformation.cc" />
@@ -277,6 +296,7 @@
     <ClCompile Include="Source\Core\Resource\Information\FDyTextureCubemapInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyTextureGeneralInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyTextureInformation.cc" />
+    <ClCompile Include="Source\Core\Resource\Internal\EShaderTypes.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\FDyMeshVBOIntermediate.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\GeometryType.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\TextureEnums.cc" />
@@ -304,11 +324,11 @@
     <ClCompile Include="Source\Core\Thread\SDyIOConnectionHelper.cc" />
     <ClCompile Include="Source\Core\Thread\IO\TDYIOWorker.cc" />
     <ClCompile Include="Source\Core\Thread\SDyIOWorkerConnHelper.cc" />
-    <ClCompile Include="Source\Element\Canvas\FDyBasicGuageBar.cc" />
-    <ClCompile Include="Source\Element\Canvas\FDyImage.cc" />
-    <ClCompile Include="Source\Element\Canvas\UiObject.cc" />
-    <ClCompile Include="Source\Element\Canvas\UiObjectChildrenable.cc" />
-    <ClCompile Include="Source\Element\Canvas\Widget.cc" />
+    <ClCompile Include="Source\Element\Widget\FDyBasicGuageBar.cc" />
+    <ClCompile Include="Source\Element\Widget\FDyImage.cc" />
+    <ClCompile Include="Source\Element\Widget\UiObject.cc" />
+    <ClCompile Include="Source\Element\Widget\UiObjectChildrenable.cc" />
+    <ClCompile Include="Source\Element\Widget\Widget.cc" />
     <ClCompile Include="Source\Element\Descriptor\GlobalEnums.cc" />
     <ClCompile Include="Libraries\glad\src\glad.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
@@ -390,13 +410,13 @@
     <ClCompile Include="Source\Builtin\Model\ScreenProjectionTriangle.cc" />
     <ClCompile Include="Source\Builtin\Model\Sphere.cc" />
     <ClCompile Include="Source\Builtin\Object\Light\DirectionalLight.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\RenderColorGeometry.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\Font\RenderDefaultFont.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\Font\RenderFontArraySDF.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\Editor\RenderGrid.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\Render\RenderOpaqueStatic.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\RenderPass.cc" />
-    <ClCompile Include="Source\Builtin\ShaderGl\RenderScreenOutput.cc" />
+    <ClCompile Include="Source\Builtin\Shader\RenderColorGeometry.cc" />
+    <ClCompile Include="Source\Builtin\Shader\Font\RenderDefaultFont.cc" />
+    <ClCompile Include="Source\Builtin\Shader\Font\RenderFontArraySDF.cc" />
+    <ClCompile Include="Source\Builtin\Shader\Editor\RenderGrid.cc" />
+    <ClCompile Include="Source\Builtin\Shader\Render\RenderOpaqueStatic.cc" />
+    <ClCompile Include="Source\Builtin\Shader\RenderPass.cc" />
+    <ClCompile Include="Source\Builtin\Shader\RenderScreenOutput.cc" />
     <ClCompile Include="Source\Builtin\Texture\Checker.cc" />
     <ClCompile Include="Source\Builtin\Texture\ErrorBlue.cc" />
     <ClCompile Include="Source\Builtin\Widget\DebugUiMeta.cc" />
@@ -411,10 +431,6 @@
     <ClCompile Include="Source\Core\Resource\Internal\MaterialType.cc" />
     <ClCompile Include="Source\Core\Resource\Object\Grid.cc" />
     <ClCompile Include="Source\Core\DyEngine.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\PostEffectSsao.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\BasicRenderer.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\FinalScreenDisplayRenderer.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\UiBasicRenderer.cc" />
     <ClCompile Include="Source\Core\Thread\TDyIO.cc" />
     <ClCompile Include="Source\Editor\Gui\Dialog\ProjectCreator.cc" />
     <ClCompile Include="Source\Editor\Gui\EtcDialog.cc" />
@@ -431,7 +447,7 @@
     <ClCompile Include="Source\Element\Abstract\ADyBaseComponent.cc" />
     <ClCompile Include="Source\Element\Abstract\ADyTransformable.cc" />
     <ClCompile Include="Source\Element\Actor.cc" />
-    <ClCompile Include="Source\Element\Canvas\Text.cc" />
+    <ClCompile Include="Source\Element\Widget\FDyText.cc" />
     <ClCompile Include="Source\Element\Type\DDyActorBinder.cc" />
     <ClCompile Include="Source\Element\Type\DDyUiBinder.cc" />
     <ClCompile Include="Source\Element\Type\FDy3WaySwitcher.cc" />
@@ -446,6 +462,7 @@
     <ClCompile Include="Source\Helper\MCS\GLShaderParser.cc" />
     <ClCompile Include="Source\Helper\Type\Area3D.cc" />
     <ClCompile Include="Source\Helper\Type\ColorRGB.cc" />
+    <ClCompile Include="Source\Helper\Type\DUuid.cc" />
     <ClCompile Include="Source\Helper\Type\Plane.cc" />
     <ClCompile Include="Source\Management\GameTimerManager.cc" />
     <ClCompile Include="Source\Management\Helper\SDyProfilingHelper.cc" />
@@ -541,6 +558,7 @@
     <ClCompile Include="Source\Meta\Information\MetaInfoModelAnim.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoModelMesh.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoModelSkeleton.cc" />
+    <ClCompile Include="Source\Meta\Information\MetaInfoRenderPipeline.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoSound.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoTexture.cc" />
     <ClCompile Include="Source\Meta\Information\Physics\DColliderMetaInfo.cc" />
@@ -576,6 +594,8 @@
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyScriptResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyTextureResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyWidgetMetaResource.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ARenderPipeline.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ARenderItem.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\BasicShadow\BasicShadow.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\CSM\FDyBtAtLight.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\Debug\FDyBtAtDebug.h" />
@@ -595,6 +615,7 @@
     <ClInclude Include="Include\Dy\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITColor.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITWeight.h" />
     <ClInclude Include="Include\Dy\Builtin\Constant\CSM.h" />
+    <ClInclude Include="Include\Dy\Builtin\Constant\GeneralValue.h" />
     <ClInclude Include="Include\Dy\Builtin\Constant\GeneralLevel.h" />
     <ClInclude Include="Include\Dy\Builtin\Constant\SSAO.h" />
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\BasicShadow\FDyBtFBBasicShadow.h" />
@@ -611,6 +632,7 @@
     <ClInclude Include="Include\Dy\Builtin\Material\BtMtCheckerWorldPos.h" />
     <ClInclude Include="Include\Dy\Builtin\Material\OpaqueStaticPlain.h" />
     <ClInclude Include="Include\Dy\Builtin\Material\Transparent\StaticTransparentChecker.h" />
+    <ClInclude Include="Include\Dy\Builtin\Mesh\Debug\FDyBtMsDebugAABB.h" />
     <ClInclude Include="Include\Dy\Builtin\Mesh\Debug\FDyBtMsDebugBox.h" />
     <ClInclude Include="Include\Dy\Builtin\Mesh\Debug\FDyBtMsDebugCapsule.h" />
     <ClInclude Include="Include\Dy\Builtin\Mesh\Debug\FDyBtMsDebugSphere.h" />
@@ -623,6 +645,7 @@
     <ClInclude Include="Include\Dy\Builtin\Mesh\Plane\FDyBtMsOITTriangle.h" />
     <ClInclude Include="Include\Dy\Builtin\Mesh\Widget\FDyBtMsUiBarQuad.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\Box.h" />
+    <ClInclude Include="Include\Dy\Builtin\Model\BoxOIT.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\Plain.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\ScreenProjectionTriangle.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\Sphere.h" />
@@ -630,11 +653,30 @@
     <ClInclude Include="Include\Dy\Builtin\Object\Light\DirectionalLight.h" />
     <ClInclude Include="data\Script\DebugActor\BtScActorTest2.h" />
     <ClInclude Include="data\Script\DebugActor\BtScActorTest3.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderItem\Debug\FBtDebugCollisionAabb.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderItem\Debug\FBtDebugCollisionShape.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderItem\Debug\FBtDebugPicking.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderItem\FBtLevelIntegeration.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderItem\FBtScreenIntegration.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderItem\Level\FBtLevelOITDefault.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderItem\Level\FBtOpaqueDefault.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderItem\Level\FBtPpCsmShadow.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderItem\Level\FBtPpSkybox.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderItem\Level\FBtPpSsao.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderItem\Widget\FBtWidgetGeneral.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderPipeline\Debug\FBtDebug.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderPipeline\FBtDefault.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderPipeline\FBtDefaultLoading.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderPipeline\Level\FBtDefaultLevel.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderPipeline\Level\FBtDefaultLevelPostProcess.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderPipeline\Level\FBtDefaultLevelRender.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderPipeline\Widget\FBtWidget.h" />
     <ClInclude Include="Include\Dy\Builtin\Script\DebugUiScriptCpp.h" />
     <ClInclude Include="Include\Dy\Builtin\Script\Default\DefaultLoadingBootScriptCpp.h" />
     <ClInclude Include="Include\Dy\Builtin\Script\Default\DefaultLoadingGlobalScriptCpp.h" />
     <ClInclude Include="data\Script\FDyBtScTestLoadingUi.h" />
     <ClInclude Include="data\Script\DebugActor\BtScActorTest1.h" />
+    <ClInclude Include="Include\Dy\Builtin\Script\BtScrGlobalDefaultUniformBuffer.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Debug\BtShDebugLine.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Level\BtShOITAccumulation.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Level\BtShOITIntegration.h" />
@@ -685,13 +727,13 @@
     <ClInclude Include="Include\Dy\Core\EDyAppMode.h" />
     <ClInclude Include="Include\Dy\Core\Reflection\RDyGlobalInstanceManager.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Interface\IDyRenderer.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\DebugRenderer.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\LevelCascadeShadowRenderer.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\LevelCSMIntegration.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\LevelOITRenderer.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\PostEffectSky.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Interface\IRenderItem.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Interface\IRenderPipeline.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Type\EDyDrawType.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\FDyGLWrapper.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\FWrapperHandleRenderPipeline.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\FWrapperRenderItem.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\FWrapperRenderPipeline.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLAttachmentDescriptor.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLBufferDescriptor.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLFrameBufferDescriptor.h" />
@@ -752,12 +794,14 @@
     <ClInclude Include="Include\Dy\Element\Type\Timer\FDyTimerHandle.h" />
     <ClInclude Include="Include\Dy\Element\Type\Timer\FDyActorTimerItem.h" />
     <ClInclude Include="Include\Dy\Element\Type\Timer\FDyWidgetTimerItem.h" />
-    <ClInclude Include="Include\Dy\Helper\HelperString.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\FDyCallStack.h" />
+    <ClInclude Include="Include\Dy\Helper\Internal\FProxyHandle.h" />
+    <ClInclude Include="Include\Dy\Helper\Internal\FProxyHandler.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\RWLockAtomic.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\FDyNameGenerator.h" />
     <ClInclude Include="Include\Dy\Helper\Library\HelperAssimp.h" />
     <ClInclude Include="Include\Dy\Helper\Library\HelperFilesystem.h" />
+    <ClInclude Include="Include\Dy\Helper\Library\HelperString.h" />
     <ClInclude Include="Include\Dy\Helper\MCS\GLShaderParser.h" />
     <ClInclude Include="Include\Dy\Helper\StringSwitch.h" />
     <ClInclude Include="Include\Dy\Helper\System\Idioms.h" />
@@ -765,6 +809,7 @@
     <ClInclude Include="Include\Dy\Helper\MCS\Functions.h" />
     <ClInclude Include="Include\Dy\Helper\Type\Area3D.h" />
     <ClInclude Include="Include\Dy\Helper\Type\Plane.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\DUuid.h" />
     <ClInclude Include="Include\Dy\Helper\Type\VectorInt4.h" />
     <ClInclude Include="Include\Dy\Helper\Wrapper\DDyMutexUniqueHashMap.h" />
     <ClInclude Include="Include\Dy\Include\Entry.h" />
@@ -786,7 +831,9 @@
     <ClInclude Include="Include\Dy\Management\Type\Render\DDyGlGlobalStatus.h" />
     <ClInclude Include="Include\Dy\Management\Type\Render\DDyPixelInfo.h" />
     <ClInclude Include="Include\Dy\Management\Type\Render\EDyModelRenderingMode.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoRenderItem.h" />
     <ClInclude Include="Include\Dy\Meta\Information\Physics\DColliderMetaInfo.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoRenderPipeline.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Physics\EDyColliderType.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Physics\EDyCollisionFilter.h" />
     <ClInclude Include="Include\Dy\Management\Type\Render\DDyModelHandler.h" />
@@ -841,10 +888,7 @@
     <ClInclude Include="Include\Dy\Core\Resource\Type\EDyScope.h" />
     <ClInclude Include="Include\Dy\Core\DyEngine.h" />
     <ClInclude Include="Include\Dy\Core\Reflection\RDyBuiltinResources.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\BasicRenderer.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\FinalScreenDisplayRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Helper\FrameAttachmentString.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\UIBasicRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOReferenceInstance.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOTask.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOReferenceContainer.h" />
@@ -900,7 +944,6 @@
     <ClInclude Include="Include\Dy\Core\Resource\Internal\TextureType.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Object\Grid.h" />
     <ClInclude Include="Include\Dy\Element\Object.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\PostEffectSsao.h" />
     <ClInclude Include="Include\Dy\Editor\Descriptor\AboutMainDescriptor.h" />
     <ClInclude Include="Include\Dy\Editor\Descriptor\DialogDescriptor.h" />
     <ClInclude Include="Include\Dy\Editor\Descriptor\EmptyDescriptor.h" />
@@ -927,7 +970,7 @@
     <ClInclude Include="Include\Dy\Helper\ContainerHelper.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\Contracts.h" />
     <ClInclude Include="Include\Dy\Helper\GlobalType.h" />
-    <ClInclude Include="Include\Dy\Helper\HashCompileCrc32.h" />
+    <ClInclude Include="Include\Dy\Helper\System\HashCompileCrc32.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\CheckingRule.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\TmpCheckTypeParams.h" />
     <ClInclude Include="Include\Dy\Helper\Library\HelperJson.h" />
@@ -1063,6 +1106,24 @@
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\Deferred\FDyBtFbSSAOBlur.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Include\Dy\Core\Reflection\RBuiltinResourcesTmp.inl" />
+    <None Include="Include\Dy\Core\Resource\Type\Inline\AUniformContainerTmp.inl" />
+    <None Include="Include\Dy\Element\Inline\FActorImpl.inl" />
+    <None Include="Include\Dy\Element\Inline\FActorTmp.inl" />
+    <None Include="Include\Dy\Helper\Internal\Inline\FProxyHandlerTmp.inl" />
+    <None Include="Include\Dy\Helper\Internal\Inline\FProxyHandleTmp.inl" />
+    <None Include="Include\Dy\Helper\Library\HelperJson.inl" />
+    <None Include="Include\Dy\Helper\Library\HelperString.inl" />
+    <None Include="Include\Dy\Management\Inline\MLogHelper.inl" />
+    <None Include="Include\Dy\Management\Inline\MLogImpl.inl" />
+    <None Include="Include\Dy\Management\Inline\MMetaInfoImpl.inl" />
+    <None Include="Include\Dy\Management\Inline\MPhysicsImpl.inl" />
+    <None Include="Include\Dy\Management\Inline\MRenderingImpl.inl" />
+    <None Include="Include\Dy\Management\Inline\MScriptImpl.inl" />
+    <None Include="Include\Dy\Management\Inline\MSoundImpl.inl" />
+    <None Include="Include\Dy\Management\Inline\MWindowImpl.inl" />
+    <None Include="Include\Dy\Management\Inline\MWorldImpl.inl" />
+    <None Include="Include\Dy\Meta\Information\Inline\DMetaMetarialInstanceTmp.inl" />
     <None Include="TestResource\Lua\player_script.lua" />
     <None Include="TestResource\Lua\test_bindingscript.lua" />
     <None Include="TestResource\Lua\variables.lua">

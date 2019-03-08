@@ -33,7 +33,7 @@ void FDyPxSimulationEventCallback::onContact(const physx::PxContactPairHeader& p
 #ifdef false
       pairHeader.actors[0]->userData
 #endif
-      MDY_LOG_CRITICAL("onContact | Left : {}, Right : {}", leftActorName.data(), rightActorName.data());
+      DyPushLogCritical("onContact | Left : {}, Right : {}", leftActorName.data(), rightActorName.data());
     }
   }
 #ifdef false

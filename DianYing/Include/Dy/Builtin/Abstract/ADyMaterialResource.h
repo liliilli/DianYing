@@ -20,6 +20,18 @@
 namespace dy
 {
 
+/// @macro MDY_REGISTER_RESOURCE_MATERIAL
+/// @brief Register material meta information source.
+#define MDY_REGISTER_RESOURCE_MATERIAL(__MAType__, __MASpecifier__) \
+  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(__MAType__, __MASpecifier__) \
+  private: \
+    void ConstructBuffer(_MOUT_ PDyMaterialInstanceMetaInfo& property) noexcept; \
+  public: \
+  __MAType__() \
+  { \
+    ConstructBuffer(this->mMetaInfo); \
+  }
+
 struct ADyMaterialResource : public IDyResource
 {
 protected:

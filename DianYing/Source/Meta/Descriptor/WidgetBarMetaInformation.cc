@@ -24,24 +24,19 @@ std::unique_ptr<PDyMetaWidgetBarDescriptor>
 PDyMetaWidgetBarDescriptor::CreateMetaInformation(const nlohmann::json& itemAtlas)
 {
   /* Template
-   * {
-        "Name": "BasicBarTest",
-        "Type": "BasicBar",
-        "Parent": "",
-        "Details": {
-          "InitialPosition": { "X": 0, "Y": 32 },
-          "WidgetSize": { "X": 600, "Y": 32 },
-          "Origin": "Center_Bottom",
-          "ForegroundColor": 16777215,
-          "ForegroundAlpha": 1.0,
-          "BackgroundColor": 16777215,
-          "BackgroundAlpha": 1.0,
-          "Padding": 4,
-          "Min": 0,
-          "Max": 100,
-          "IsUsingBackgroundColor": false
-        }
+    { "Name": "BasicBarTest", "Type": "BasicBar", "Parent": "", "ZOrder": 0,
+      "Details": {
+        "InitialPosition": { "X": 0, "Y": 32 },
+        "WidgetSize": { "X": 600, "Y": 32 },
+        "Origin": "Center_Bottom",
+        "ForegroundColor": { "R": 1.0, "G": 1.0, "B": 1.0, "A": 1.0 },
+        "BackgroundColor": { "R": 1.0, "G": 1.0, "B": 1.0, "A": 1.0 },
+        "Padding": 4,
+        "Min": 0,
+        "Max": 100,
+        "IsUsingBackgroundColor": false
       }
+    }
    */
 
   using TPDyMWCBD = PDyMetaWidgetCommonBaseDesc;
@@ -57,23 +52,17 @@ PDyMetaWidgetBarDescriptor::CreateMetaInformation(const nlohmann::json& itemAtla
   instance->mParentSpecifierName    = DyJsonGetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Parent);
   DyJsonGetValueFromTo(itemAtlas, "ZOrder", instance->mZOrder);
 
-  const auto& detailAtlas = itemAtlas[MSVSTR(TPDyMWCBD::sHeader_Details)];
+  const auto& detailAtlas = itemAtlas[(TPDyMWCBD::sHeader_Details)];
   instance->mInitialPosition    = DyJsonGetValueFrom<DDyVectorInt2>(detailAtlas, "InitialPosition");
   instance->mOrigin             = DyJsonGetValueFrom<EDyOrigin>(detailAtlas, "Origin");
   instance->mWidgetSize         = DyJsonGetValueFrom<DDyVectorInt2>(detailAtlas, "WidgetSize");
 
-  DDyColorRGBA foregroundColor  = DyJsonGetValueFrom<DDyColorRGB24>(detailAtlas, "ForegroundColor");
-  foregroundColor.A             = DyJsonGetValueFrom<TF32>(detailAtlas, "ForegroundAlpha");
-  DDyColorRGBA backgroundColor  = DyJsonGetValueFrom<DDyColorRGB24>(detailAtlas, "BackgroundColor");
-  backgroundColor.A             = DyJsonGetValueFrom<TF32>(detailAtlas, "BackgroundAlpha");
-  instance->mForegroundColor    = foregroundColor;
-  instance->mBackgroundColor    = backgroundColor;
-
+  instance->mForegroundColor    = DyJsonGetValueFrom<DDyColorRGBA>(detailAtlas, "ForegroundColor");
+  instance->mBackgroundColor    = DyJsonGetValueFrom<DDyColorRGBA>(detailAtlas, "BackgroundColor");
   instance->mPadding            = DyJsonGetValueFrom<TI32>(detailAtlas, "Padding");
   instance->mMin                = DyJsonGetValueFrom<TF32>(detailAtlas, "Min");
   instance->mMax                = DyJsonGetValueFrom<TF32>(detailAtlas, "Max");
   instance->mIsUsingBackground  = DyJsonGetValueFrom<bool>(detailAtlas, "IsUsingBackgroundColor");
-
 
   return instance;
 }

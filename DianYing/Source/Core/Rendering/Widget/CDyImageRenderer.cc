@@ -51,7 +51,7 @@ GetVertexPosition(
 CDyImageRenderer::CDyImageRenderer(FDyImage& mRefObject) : mPtrObject{&mRefObject}
 {
   this->mBinderRenderable = std::make_unique<TDyResourceBinderMaterial>();
-  this->mBinderQuadMesh.TryRequireResource(MSVSTR(FDyBtMsUiImageQuad::sName));
+  this->mBinderQuadMesh.TryRequireResource((FDyBtMsUiImageQuad::sName));
 }
 
 void CDyImageRenderer::Render()
@@ -65,13 +65,13 @@ void CDyImageRenderer::Render()
     // Set shader uniforms
     mDefaultImageShader->TryUpdateUniform<EUniformType::Matrix4>("uUiProjMatrix", MDyRendering::GetInstance().GetGeneralUiProjectionMatrix());
     mDefaultImageShader->TryUpdateUniform<EUniformType::Vector4>("uTintColor", this->mPtrObject->GetTintColor());
-    MDY_ASSERT(this->mDefaultImageShader->GetAvailableTextureCount() == 1, "Unexpected error occurred.");
+    MDY_ASSERT_MSG(this->mDefaultImageShader->GetAvailableTextureCount() == 1, "Unexpected error occurred.");
     mDefaultImageShader->TryInsertTextureRequisition(0, refTexture->GetTextureId());
     // Set buffer.
     const auto buffer = GetVertexPosition(this->mPtrObject->GetFinalPosition(EDyOrigin::Center_Center), this->mPtrObject->GetFrameSize());
 
     // Render
-    { MDY_GRAPHIC_SET_CRITICALSECITON();
+    { 
       mDefaultImageShader->UseShader();
       mDefaultImageShader->TryUpdateUniformList();
 
@@ -102,7 +102,7 @@ void CDyImageRenderer::Render()
     const auto buffer = GetVertexPosition(this->mPtrObject->GetFinalPosition(EDyOrigin::Center_Center), this->mPtrObject->GetFrameSize());
 
     // Render
-    { MDY_GRAPHIC_SET_CRITICALSECITON();
+    { 
       refMatShader->UseShader();
       refMatShader->TryUpdateUniformList();
 

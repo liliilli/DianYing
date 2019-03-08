@@ -139,7 +139,7 @@ EDySuccess DDyIOReferenceContainer::TryDetachBinderFromResourceRI(
   // If target RI need to be GCed (so should be moved into GCList), move it.
   if ((*ptrRiMap)[iSpecifier].IsNeedToBeGced() == true)
   {
-    MDY_LOG_DEBUG_D("Moved Reference Instance to GClist. {}", iSpecifier);
+    DyPushLogDebugDebug("Moved Reference Instance to GClist. {}", iSpecifier);
     SDyIOConnectionHelper::InsertGcCandidate((*ptrRiMap)[iSpecifier]);
     ptrRiMap->erase(iSpecifier);
   }
@@ -204,7 +204,7 @@ EDySuccess DDyIOReferenceContainer::CreateReferenceInstance(
   }
 
   auto [it, isSuccessful] = ptrRIHashMap->try_emplace(specifier, specifier, style, type, scope);
-  MDY_ASSERT(isSuccessful == true, "RI Container creation must be successful.");
+  MDY_ASSERT_MSG(isSuccessful == true, "RI Container creation must be successful.");
   return DY_SUCCESS;
 }
 
@@ -227,7 +227,7 @@ EDySuccess DDyIOReferenceContainer::MoveReferenceInstance(_MINOUT_ DDyIOReferenc
   }
 
   auto [it, isSuccessful] = ptrRIHashMap->try_emplace(iRi.mSpecifierName, std::move(iRi));
-  MDY_ASSERT(isSuccessful == true, "RI Container creation must be successful.");
+  MDY_ASSERT_MSG(isSuccessful == true, "RI Container creation must be successful.");
   return DY_SUCCESS;
 }
 

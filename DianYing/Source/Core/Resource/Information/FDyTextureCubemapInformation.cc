@@ -21,7 +21,7 @@ namespace dy
 FDyTextureCubemapInformation::FDyTextureCubemapInformation(_MIN_ const PDyTextureInstanceMetaInfo& metaInfo) :
   FDyTextureInformation(metaInfo)
 {
-  MDY_ASSERT_FORCE(metaInfo.mSourceType != EDyResourceSource::Builtin, "Cubemap can not support builtin type textures.");
+  MDY_ASSERT_MSG_FORCE(metaInfo.mSourceType != EDyResourceSource::Builtin, "Cubemap can not support builtin type textures.");
 
   // But external, read buffer from file, get width, height and image format and convert raw buffer to buffer type.
   // Width and Height would be saved into mTextureInformation.
@@ -70,7 +70,7 @@ FDyTextureCubemapInformation::FDyTextureCubemapInformation(_MIN_ const PDyTextur
     default: MDY_UNEXPECTED_BRANCH(); break;
     }
 
-    MDY_ASSERT_FORCE(ptrBufferData->IsBufferCreatedProperly() == true, "Texture buffer can not be created properly.");
+    MDY_ASSERT_MSG_FORCE(ptrBufferData->IsBufferCreatedProperly() == true, "Texture buffer can not be created properly.");
     ptrSize->X = ptrBufferData->GetImageWidth(); ptrSize->Y = ptrBufferData->GetImageHeight();
 
     TI32 pixelSize = 0;

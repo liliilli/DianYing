@@ -33,7 +33,7 @@ EDySuccess CDyPhysicsCollider::Initialize(_MIN_ const PDyColliderComponentMetaIn
     const auto& setting = MDyPhysics::GetInstance().GetDefaultSetting();
     // Try to getting collision filter preset.
     if (DyIsMapContains(setting.mFilterPresetContainer, this->mFilterPresetSpecifier) == false)
-    { MDY_LOG_ERROR("Failed to get collision filter preset values, {}", this->mFilterPresetSpecifier); }
+    { DyPushLogError("Failed to get collision filter preset values, {}", this->mFilterPresetSpecifier); }
     else
     {
       const auto& refValue = setting.mFilterPresetContainer.at(this->mFilterPresetSpecifier);
@@ -58,7 +58,7 @@ EDySuccess CDyPhysicsCollider::Initialize(_MIN_ const PDyColliderComponentMetaIn
   {
     // If we got non-empty string as collision tag (layer), check this is valid.
     const auto it = std::find(MDY_BIND_BEGIN_END(collisionLayerList.mCollisionTag), this->mCollisionTagName);
-    MDY_ASSERT_FORCE(it != collisionLayerList.mCollisionTag.end(), "Not valid collision tag name.");
+    MDY_ASSERT_MSG_FORCE(it != collisionLayerList.mCollisionTag.end(), "Not valid collision tag name.");
   }
 
   return DY_SUCCESS;
@@ -154,7 +154,7 @@ physx::PxFilterData CDyPhysicsCollider::CreateFilterDataValue(
     _MIN_ std::vector<EDyCollisionFilter>& iFilterData)
 {
   const auto optSpecifier = iRigidbody.MDY_PRIVATE(GetRigidbodySpecifier)();
-  MDY_ASSERT_FORCE(optSpecifier.has_value() == true, "Unexpected error occurred. Target rigidbody must be activated and valid.");
+  MDY_ASSERT_MSG_FORCE(optSpecifier.has_value() == true, "Unexpected error occurred. Target rigidbody must be activated and valid.");
 
   physx::PxFilterData resultFilterData;
 
@@ -167,13 +167,13 @@ physx::PxFilterData CDyPhysicsCollider::CreateFilterDataValue(
   const auto& defaultSetting = MDyPhysics::GetInstance().GetDefaultSetting();
 
   const auto it = std::find(MDY_BIND_BEGIN_END(defaultSetting.mCollisionTag), iLayerName);
-  MDY_ASSERT(it != defaultSetting.mCollisionTag.end(), "Unexpected error occurred.");
+  MDY_ASSERT_MSG(it != defaultSetting.mCollisionTag.end(), "Unexpected error occurred.");
 
   const TU08 TagId = static_cast<TU08>(std::distance(defaultSetting.mCollisionTag.begin(), it));
   resultFilterData.word0 |= TagId;
 
   // Set filter data from word1... to word3.
-  MDY_ASSERT_FORCE(this->mFilterValues.size() <= 48, "Filter value size is not valid. Must be equal or less than 48.");
+  MDY_ASSERT_MSG_FORCE(this->mFilterValues.size() <= 48, "Filter value size is not valid. Must be equal or less than 48.");
   const auto valueCount = static_cast<TI32>(this->mFilterValues.size());
   for (TI32 i = 0; i < 16 && i < valueCount; ++i)
   {

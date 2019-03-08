@@ -128,13 +128,13 @@ std::string DyDecompressString(_MIN_ const std::string& compressedBuffer)
 
     for (auto i {0}; i < 8; ++i)
     {
-      *plainBufferPtr = (unsigned char)buffer[4 + i];
+      *plainBufferPtr = (unsigned char)buffer[i];
       plainBufferPtr++;
     }
 
     for (auto i {0}; i < 8; ++i)
     {
-      *compressedBufferPtr = (unsigned char)buffer[4 + 8 + i];
+      *compressedBufferPtr = (unsigned char)buffer[8 + i];
       compressedBufferPtr++;
     }
 
@@ -157,7 +157,7 @@ std::string DyDecompressString(_MIN_ const std::string& compressedBuffer)
   // setup `compressedStrin` as the input.
   auto plainBuffer {std::vector<unsigned char>(header.mPlainBufferLength)};
   decompressStream.avail_in   = header.mCompressedBufferLength;
-  decompressStream.next_in    = (Bytef*)(compressedBuffer.data() + sizeof(DHeaderStructure) + 4);
+  decompressStream.next_in    = (Bytef*)(compressedBuffer.data() + sizeof(DHeaderStructure));
   decompressStream.avail_out  = header.mPlainBufferLength;
   decompressStream.next_out   = (Bytef*)plainBuffer.data();
 

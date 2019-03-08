@@ -23,7 +23,7 @@ namespace dy
 template <typename TType, typename TAllocator>
 void DyFastErase(_MINOUT_ std::vector<TType, TAllocator>& iVector, _MIN_ TU32 iIndex)
 {
-  MDY_ASSERT(iIndex < iVector.size(), "Unexpected error occurred.");
+  MDY_ASSERT_MSG(iIndex < iVector.size(), "Unexpected error occurred.");
 
   std::swap(iVector[iIndex], iVector.back());
   iVector.pop_back();
@@ -96,11 +96,11 @@ void DySafeUniquePtrEmplaceBack(
     _MINOUT_ TCtorArgs&&... args)
 {
   list.emplace_back(nullptr);
-  MDY_ASSERT(list.back() == nullptr, "Unexpected error occurred.");
+  MDY_ASSERT_MSG(list.back() == nullptr, "Unexpected error occurred.");
 
   auto ptrsmtInstance = std::make_unique<TType>(std::forward<TCtorArgs>(args)...);
   list.back() = std::move(ptrsmtInstance);
-  MDY_ASSERT(list.back() != nullptr, "Unexpected error occurred.");
+  MDY_ASSERT_MSG(list.back() != nullptr, "Unexpected error occurred.");
 }
 
 }

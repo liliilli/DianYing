@@ -177,6 +177,8 @@ public:
   }
   /// @brief Reset picking target callback function.
   void ResetPickingTargetCallback() noexcept;
+  /// @brief Check any actor is picked now.
+  MDY_NODISCARD bool IsActorPicked() const noexcept;
   /// @brief Get pointer of pointer of picking target variable.
   MDY_NODISCARD FDyActor** MDY_PRIVATE(GetPPtrPickingTarget)() noexcept;
 

@@ -46,7 +46,7 @@ struct PDyLevelConstructMetaInfo final
     /// Is Using UUID For Specification
     bool          mIsUsingUUIDForSpecification  = false;
     /// Initial background of scene to create
-    DDyColorRGB24 mLevelBackgroundColor         = {255, 255, 255};
+    DDyColorRGB   mLevelBackgroundColor         = DDyColorRGB{1, 1, 1};
   };
 
   /// DMeta scene common information.

@@ -32,8 +32,8 @@ namespace
 
 MDY_SET_IMMUTABLE_STRING(sKeyBinding, R"dy(
 {
-  "PauseInGameUpdate": { "Key": [ "KB_F1" ] },
-  "CallDebugMenu": { "Key": [ "KB_F2" ] }
+  "DyPauseInGameUpdate": { "Key": [ "KB_F1" ] },
+  "DyCallDebugMenu": { "Key": [ "KB_F2" ] }
 }
 )dy");
 
@@ -56,7 +56,7 @@ EDySuccess MDyDebug::pfInitialize()
   for (const auto& [specifierName, info] : map)
   {
     auto [_, isSucceeded] = this->mBindedActionMap.try_emplace(specifierName, info);
-    MDY_ASSERT(isSucceeded == true, "Unexpected error occurred.");
+    MDY_ASSERT_MSG(isSucceeded == true, "Unexpected error occurred.");
 
     // Set specifier name.
     _->second.mAxisSpecifierName = specifierName;
@@ -79,7 +79,7 @@ EDySuccess MDyDebug::CheckInput(_MIN_ MDY_NOTUSED TF32 dt) noexcept
     this->pUpdateInputKeys();
 
     // Check F1.
-    if (this->IsActionPressed("PauseInGameUpdate") == true)
+    if (this->IsActionPressed("DyPauseInGameUpdate") == true)
     {
       if (gEngine->IsInGameUpdatePaused() == true)  { gEngine->SetInGameUpdatePause(false); }
       else                                          { gEngine->SetInGameUpdatePause(true); }
@@ -88,7 +88,7 @@ EDySuccess MDyDebug::CheckInput(_MIN_ MDY_NOTUSED TF32 dt) noexcept
     }
 
     // Check F2.
-    if (this->IsActionPressed("CallDebugMenu") == true)
+    if (this->IsActionPressed("DyCallDebugMenu") == true)
     {
       if (this->mIsDebugMenuOpened == false)
       {
@@ -97,9 +97,12 @@ EDySuccess MDyDebug::CheckInput(_MIN_ MDY_NOTUSED TF32 dt) noexcept
         // Create debug menu.
         this->mMainMenu = std::make_unique<editor::FDyEditor_MainMenu>();
         this->mIsDebugMenuOpened = true;
+        MDyInput::GetInstance().PushMouseMode(EDyMouseMode::Picking);
       }
       else
       {
+        // Pop MouseMode::Picking.
+        MDyInput::GetInstance().PopMouseMode();
         // Release debug menu.
         this->mIsDebugMenuOpened = false;
         this->mMainMenu = nullptr;
@@ -186,7 +189,7 @@ bool MDyDebug::IsActionPressed(_MIN_ const std::string& iSpecifier) const noexce
   const auto keyIt = this->mBindedActionMap.find(iSpecifier);
   if (keyIt == mBindedActionMap.end())
   {
-    MDY_UNEXPECTED_BRANCH();
+    DyPushLogError("Could not find action, {}. Return always false.", iSpecifier);
 		return false;
   }
 
@@ -199,7 +202,7 @@ bool MDyDebug::IsActionReleased(_MIN_ const std::string& iSpecifier) const noexc
   const auto keyIt = this->mBindedActionMap.find(iSpecifier);
   if (keyIt == mBindedActionMap.end())
   {
-    MDY_UNEXPECTED_BRANCH();
+    DyPushLogError("Could not find action, {}. Return always false.", iSpecifier);
 		return false;
   }
 
@@ -220,8 +223,6 @@ void MDyDebug::UpdateAndRender()
 
   ImGui::Render();
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-
 }
 
 } /// ::dy namespace

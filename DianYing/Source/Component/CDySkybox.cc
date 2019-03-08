@@ -114,7 +114,7 @@ void CDySkybox::TryDeactivateInstance()
   auto& worldManager = MDyWorld::GetInstance();
   const auto flag = worldManager.MDY_PRIVATE(UnbindActiveSkybox)(*this);
   // Procedure must be succeeded.
-  MDY_ASSERT_FORCE(flag == DY_SUCCESS, "Unexpected error occurred.");
+  MDY_ASSERT_MSG_FORCE(flag == DY_SUCCESS, "Unexpected error occurred.");
 }
 
 } /// ::dy namespace

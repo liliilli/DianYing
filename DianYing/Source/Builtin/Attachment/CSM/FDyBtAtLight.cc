@@ -22,7 +22,10 @@ namespace dy::builtin
 void FDyBtAtCSMLight::ConstructBuffer(_MOUT_ PDyGlAttachmentInstanceMetaInfo& property) noexcept
 {
   property.mSpecifierName  = sName;
-  property.mAttachmentSize = DDyVectorInt2{static_cast<TI32>(kCSMAttachmentTextureSize), static_cast<TI32>(kCSMAttachmentTextureSize)};
+  property.mAttachmentSize = DDyVectorInt2{
+    static_cast<TI32>(kCSMAttachmentTextureSize), 
+    static_cast<TI32>(kCSMAttachmentTextureSize)
+  };
   property.mParameterList  =
   {
     PDyGlTexParameterInformation\

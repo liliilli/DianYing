@@ -56,7 +56,7 @@ public:
     using namespace std::placeholders;
     if (this->IsBoundCallback(iPredicate) == true)
     { 
-      MDY_LOG_WARNING_D("You are binding callback predicate that is already bound to rigidbody.");
+      DyPushLogDebugWarning("You are binding callback predicate that is already bound to rigidbody.");
       return nullptr; 
     }
 
@@ -126,7 +126,7 @@ void IDyonColliderBaseDelegator<TPredicate>::RemoveAll()
   for (auto& item : this->mBoundCallbackList)
   {
     const auto flag = item.mPtrController->MDY_PRIVATE(DetachCollisionCbHandle)(item.mSpecificationId);
-    MDY_ASSERT(flag == DY_SUCCESS, "Unexpected error occurred.");
+    MDY_ASSERT_MSG(flag == DY_SUCCESS, "Unexpected error occurred.");
   }
   this->mBoundCallbackList.clear();
 }

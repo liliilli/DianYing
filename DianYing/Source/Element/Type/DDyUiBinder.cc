@@ -65,7 +65,7 @@ void DDyUiBinder::MDY_PRIVATE(DetachUiObjectFromUiObject)()
 
 void DDyUiBinder::pAttachBinderToUiObject()
 {
-  MDY_ASSERT_FORCE(this->mPtrUiObject != nullptr, "Ptr Ui Object must be valid when attaching.");
+  MDY_ASSERT_MSG_FORCE(this->mPtrUiObject != nullptr, "Ptr Ui Object must be valid when attaching.");
   auto& rootWidget = static_cast<FDyUiWidget&>(*this->mPtrUiObject);
 
   rootWidget.MDY_PRIVATE(TryAttachBinderFromBinder)(*this);
@@ -73,7 +73,7 @@ void DDyUiBinder::pAttachBinderToUiObject()
 
 void DDyUiBinder::pDetachBinderFromUiObject()
 {
-  MDY_ASSERT_FORCE(this->mPtrUiObject != nullptr, "Ptr Ui Object must be valid when detaching.");
+  MDY_ASSERT_MSG_FORCE(this->mPtrUiObject != nullptr, "Ptr Ui Object must be valid when detaching.");
   auto& rootWidget = static_cast<FDyUiWidget&>(*this->mPtrUiObject);
 
   rootWidget.MDY_PRIVATE(TryDetachBinderFromBinder)(*this);

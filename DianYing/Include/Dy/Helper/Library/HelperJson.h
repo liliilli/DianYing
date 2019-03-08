@@ -15,26 +15,6 @@
 
 #include <nlohmann/json.hpp>
 #include <optional>
-#include <Dy/Helper/Type/Vector3.h>
-#include <Dy/Helper/Type/Vector2.h>
-
-//!
-//! Forward declaration
-//!
-
-namespace dy
-{
-
-template <typename TReturnType, typename TParam1>
-MDY_NODISCARD TReturnType DyJsonGetValueFrom(_MIN_ const TParam1& jsonAtlas, _MIN_ const std::string_view& name);
-template <typename TReturnType, typename TParam1>
-MDY_NODISCARD TReturnType DyJsonGetValueFrom(_MIN_ const TParam1& jsonAtlas, _MIN_ const char* name);
-
-template <typename TReturnType, typename TJsonAtlas>
-void DyJsonGetValueFromTo(_MIN_ const TJsonAtlas& jsonAtlas, _MIN_ const std::string_view& key, _MINOUT_ TReturnType& destination);
-template <typename TReturnType, typename TJsonAtlas>
-void DyJsonGetValueFromTo(_MIN_ const TJsonAtlas& jsonAtlas, _MIN_ const char* key, _MINOUT_ TReturnType& destination);
-} /// ::dy namespace
 
 //!
 //! Implementation
@@ -49,66 +29,40 @@ bool DyIsJsonKeyExist(const nlohmann::json& json, const std::string& key) noexce
 /// @brief Read json file and return json container. If any error has happened just return nullopt.
 MDY_NODISCARD std::optional<nlohmann::json> DyGetJsonAtlasFromFile(const std::string& filePath) noexcept;
 
-///
 /// @brief  Exceptionable.
 /// @param  jsonAtlas Immutable valid json atlas like-a types.
 /// @param  name Header string to find.
 /// @tparam TReturnType Type to retrieve from json atlas instance.
 /// @tparam TParam1 Json binding type parameter
-///
 template <typename TReturnType, typename TParam1>
-MDY_NODISCARD TReturnType DyJsonGetValueFrom(_MIN_ const TParam1& jsonAtlas, _MIN_ const std::string_view& name)
-{
-  return DyJsonGetValueFrom<TParam1>(jsonAtlas, MSVSTR(name));
-}
-template <typename TReturnType, typename TParam1>
-MDY_NODISCARD TReturnType DyJsonGetValueFrom(_MIN_ const TParam1& jsonAtlas, _MIN_ const char* name)
-{
-  return jsonAtlas.at(name).template get<TReturnType>();
-}
+MDY_NODISCARD TReturnType DyJsonGetValueFrom(_MIN_ const TParam1& jsonAtlas, _MIN_ const char* name);
 
-///
+template <typename TReturnType, typename TParam1>
+MDY_NODISCARD TReturnType DyJsonGetValueFrom(_MIN_ const TParam1& jsonAtlas, _MIN_ const std::string_view& name);
+
 /// @brief  Get value from json and bind value to destination automatically.
 /// Destination type must implement copy assignment operator or default behavior.
 /// @param  jsonAtlas Immutable valid json atlas like-a types.
-/// @param  key Header string to find.
+/// @param  iKey Header string to find.
 /// @param  destination Destination value.
 /// @tparam TReturnType Type to retrieve from json atlas instance.
 /// @tparam TJsonAtlas Json binding type paramter.
-/// @return
-///
 template <typename TReturnType, typename TJsonAtlas>
-void DyJsonGetValueFromTo(_MIN_ const TJsonAtlas& jsonAtlas, _MIN_ const std::string_view& key, _MINOUT_ TReturnType& destination)
-{
-  DyJsonGetValueFromTo(jsonAtlas, MSVSTR(key), destination);
-}
+void DyJsonGetValueFromTo(
+    _MIN_ const TJsonAtlas& jsonAtlas, 
+    _MIN_ const std::string& iKey, 
+    _MINOUT_ TReturnType& destination);
 
-template <typename TReturnType, typename TJsonAtlas>
-void DyJsonGetValueFromTo(_MIN_ const TJsonAtlas& jsonAtlas, _MIN_ const char* key, _MINOUT_ TReturnType& destination)
-{
-  if constexpr (std::is_move_assignable_v<TReturnType> == true)
-  {
-    destination = std::move(jsonAtlas.at(key).template get<TReturnType>());
-  }
-  else
-  {
-    destination = jsonAtlas.at(key).template get<TReturnType>();
-  }
-}
-
-///
 /// @brief  Find "Header" String is exist on given json atlas.
 /// @param  atlas Valid immutable json atlas instance.
-/// @param  string Header string to verify.
+/// @param  iString Header string to verify.
 /// @return If found, return DY_SUCCESS or DY_FAILURE.
-///
-inline MDY_NODISCARD EDySuccess
-DyCheckHeaderIsExist(_MIN_ const nlohmann::json& atlas, _MIN_ const std::string_view& string) noexcept
-{
-  if (atlas.find(MSVSTR(string)) == atlas.end())  { return DY_FAILURE; }
-  else                                            { return DY_SUCCESS; }
-}
+MDY_NODISCARD inline EDySuccess
+DyCheckHeaderIsExist(
+    _MIN_ const nlohmann::json& atlas, 
+    _MIN_ const std::string& iString) noexcept;
 
 } /// ::dy namespace
 
 #endif /// GUARD_DY_HELPER_JSON_HELPER_H
+#include <Dy/Helper/Library/HelperJson.inl>

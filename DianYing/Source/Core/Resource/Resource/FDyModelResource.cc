@@ -28,19 +28,19 @@ FDyModelResource::FDyModelResource(_MINOUT_ const FDyModelInformation& input) :
 {
   for (const auto& meshInformation : input.GetMeshInformationList())
   {
-    MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(meshInformation), "Unexpected error occurred.");
-    MDY_ASSERT(meshInformation->IsResourceExist() == true, "Unexpected error occurred.");
+    MDY_ASSERT_MSG(MDY_CHECK_ISNOTEMPTY(meshInformation), "Unexpected error occurred.");
+    MDY_ASSERT_MSG(meshInformation->IsResourceExist() == true, "Unexpected error occurred.");
 
     DySafeUniquePtrEmplaceBack(this->mMeshResource, meshInformation->Get()->GetSpecifierName());
-    MDY_ASSERT(this->mMeshResource.back()->IsResourceExist() == true, "Unexpected error occurred.");
+    MDY_ASSERT_MSG(this->mMeshResource.back()->IsResourceExist() == true, "Unexpected error occurred.");
   }
   for (const auto& materialInformation : input.GetMaterialInformationList())
   {
-    MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(materialInformation), "Unexpected error occurred.");
-    MDY_ASSERT(materialInformation->IsResourceExist() == true, "Unexpected error occurred.");
+    MDY_ASSERT_MSG(MDY_CHECK_ISNOTEMPTY(materialInformation), "Unexpected error occurred.");
+    MDY_ASSERT_MSG(materialInformation->IsResourceExist() == true, "Unexpected error occurred.");
 
     DySafeUniquePtrEmplaceBack(this->mMaterialResource, materialInformation->Get()->GetSpecifierName());
-    MDY_ASSERT(this->mMaterialResource.back()->IsResourceExist() == true, "Unexpected error occurred.");
+    MDY_ASSERT_MSG(this->mMaterialResource.back()->IsResourceExist() == true, "Unexpected error occurred.");
   }
 
   const auto& transform = input.GetInitialTransform();

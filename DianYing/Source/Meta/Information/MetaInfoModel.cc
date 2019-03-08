@@ -83,7 +83,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo:
   // 
   if (p.mMaterialSpecifier.empty() == true)
   {
-    p.mMaterialSpecifier = MSVSTR(builtin::FDyBtMtCheckerWorldPos::sName);
+    p.mMaterialSpecifier = (builtin::FDyBtMtCheckerWorldPos::sName);
   }
 }
 

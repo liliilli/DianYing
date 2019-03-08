@@ -105,7 +105,7 @@ bool FDyActorTimerItem::Checked() const noexcept
 
 void FDyActorTimerItem::CallFunction(_MIN_ bool iCallOnlyOnce) noexcept
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mCallbackFunction), "Callback function of timer must be valid.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->mCallbackFunction), "Callback function of timer must be valid.");
   if (this->mStatus != EDyTimerStatus::Play) { return; }
 
   if (this->mIsLooped == false)

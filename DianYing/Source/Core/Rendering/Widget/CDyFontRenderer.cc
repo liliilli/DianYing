@@ -94,9 +94,9 @@ namespace dy
 CDyFontRenderer::CDyFontRenderer(FDyText& iPtrWidget) :
   mPtrWidget{&iPtrWidget}
 {
-  this->mBinderFontMesh.TryRequireResource(MSVSTR(FDyBtMsUiFontQuad::sName));
-  MDY_ASSERT(this->mBinderFontMesh.IsResourceExist() == true, "True");
-  this->mBinderShader.TryRequireResource(MSVSTR(builtin::FDyBuiltinShaderGLRenderFontArraySDF::sName));
+  this->mBinderFontMesh.TryRequireResource((FDyBtMsUiFontQuad::sName));
+  MDY_ASSERT_MSG(this->mBinderFontMesh.IsResourceExist() == true, "True");
+  this->mBinderShader.TryRequireResource((builtin::FDyBuiltinShaderGLRenderFontArraySDF::sName));
 }
 
 #ifdef false
@@ -221,7 +221,7 @@ void CDyFontRenderer::Render()
     indices.emplace_back(0xFFFFFFFF);
   }
 
-  { MDY_GRAPHIC_SET_CRITICALSECITON();
+  { 
     glDepthFunc(GL_ALWAYS);
 
     this->mBinderShader->UseShader();

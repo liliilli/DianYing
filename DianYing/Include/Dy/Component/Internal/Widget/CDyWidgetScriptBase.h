@@ -46,7 +46,7 @@ public:
   /// @brief Get mutable reference of widget.
   MDY_NODISCARD FDyUiWidget& GetWidgetReference() noexcept
   {
-    MDY_ASSERT(this->mBindedWidget != nullptr, "Unexpected error occurred.");
+    MDY_ASSERT_MSG(this->mBindedWidget != nullptr, "Unexpected error occurred.");
     return *this->mBindedWidget;
   }
 

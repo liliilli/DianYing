@@ -26,644 +26,484 @@
 #include <Dy/Component/CDyCamera.h>
 #include <Dy/Component/CDyModelAnimator.h>
 #include <Dy/Element/Type/DDyUiBinder.h>
+#include <Dy/Element/Type/PDyActorCreationDescriptor.h>
+#include <Dy/Element/Level.h>
+#include <Dy/Management/Internal/World/FDyWorldUIContainer.h>
+
+//!
+//! Implementation
+//!
+
+namespace dy
+{
+
+class MDyWorld::Impl final : public IDyUpdatable
+{
+public:
+  /// @brief Update scene structures prior to dive in scene objects tree hierarchy.
+  /// Level transition will be executed maybe.
+  void Update(TF32 dt) override final;
+
+  /// @brief Update valid objects. this function must be called after this->Update().
+  /// @param dt Delta time
+  void UpdateObjects(TF32 dt);
+  /// @brief Update animator component (pre-render phase).
+  void UpdateAnimator(TF32 dt);
+
+  /// @brief Get all actors with tag. Tag must be valid. \n
+  /// If iTagSpecifier is empty, this function get all actors which is not specified any tag.
+  std::vector<NotNull<FDyActor*>>
+  GetAllActorsWithTag(const std::string& iTagSpecifier) const noexcept;
+
+  /// @brief Get all actors with tag. Tag must be valid. \n
+  /// If iTagSpecifier is empty, this function get all actors which is not specified any tag. \n
+  /// and this function search all actor of object tree from root to leaf, so might take some time.
+  std::vector<NotNull<FDyActor*>>
+  GetAllActorsWithTagRecursive(const std::string& iTagSpecifier) const noexcept;
+
+  /// @brief Get all actors with matched name within only one depth of level object tree. \n
+  /// If iNameSpecifier is empty, just return empty list.
+  std::vector<NotNull<FDyActor*>>
+  GetAllActorsWithName(const std::string& iNameSpecifier) const noexcept; 
+
+  /// @brief Get all actors with matched name within overall level object tree. \n
+  /// If iNameSpecifier is empty, just return empty list.
+  std::vector<NotNull<FDyActor*>>
+  GetAllActorsWithNameRecursive(const std::string& iNameSpecifier) const noexcept; 
+
+  /// @brief Get pointer of actor with object id.
+  /// If not found, just return nullptr.
+  FDyActor* GetActorWithObjectId(TU32 iObjectId) noexcept;
+
+  /// @brief Create actor.
+  DDyActorBinder CreateActor(
+    const std::string& iActorName, 
+    const std::string& iPrefabName, 
+    const DDyTransform& iSpawnTransform,
+    FDyActor* iPtrParent = MDY_INITIALIZE_NULL,
+    const std::string& iObjectTag = MDY_INITIALIZE_EMPTYSTR,
+    bool iDoSweep = false);
+
+  /// @brief Destroy Actor
+  void DestroyActor(FDyActor& ioRefActor);
+
+  /// @brief Create UI Object. 
+  /// If ui object wraps over exist Ui Object, but flag is true, create anyway with auto-generated UI name.
+  std::optional<DDyUiBinder> CreateUiObject(
+    const std::string& iUiName,
+    const std::string& iNewCustomizedName = "",
+    bool isForcedZOrder = false,
+    TU32 ZOrder = 0);
+  /// @brief Get UI Object as binder.
+  std::optional<DDyUiBinder> GetUiObject(const std::string& iUiName);
+  /// @brief Destroy UI Object.
+  EDySuccess DestoryUiObject(DDyUiBinder& ioRefUi);
+  /// @brief Destroy UI Object.
+  EDySuccess DestroyUiObject(const std::string& iUiName);
+
+  /// @brief Get `Focused` and `Main` camera of level.
+  CDyCamera* GetPtrMainLevelCamera() const noexcept;
+  /// @brief Get binded level camra counts.
+  TI32 GetFocusedCameraCount() const noexcept;
+  /// @brief
+  /// @param  index
+  /// @return
+  std::optional<CDyCamera*> GetFocusedCameraValidReference(const TI32 index) const noexcept;
+
+  /// @brief  Ask it for opening level with levelName next frame.
+  /// @param  levelName valid level meta information name
+  /// @return If level is created successfully, return true or false.
+  EDySuccess OpenLevel(const std::string& levelName);
+  /// @brief Check we must to transit to next level.
+  bool IsNeedTransitNextLevel() const noexcept;
+
+  /// @brief Open first level. This function must be called in first-loading level.
+  EDySuccess MDY_PRIVATE(OpenFirstLevel)();
+  /// @brief Try Remove level. If level is not exist, just return DY_FAILURE.
+  EDySuccess MDY_PRIVATE(RemoveLevel)();
+  /// @brief Populate next level resource. If next level specifier is not exist, do nothing and return DY_FAILURE.
+  EDySuccess MDY_PRIVATE(PopulateNextLevelResources)();
+
+  /// @brief 
+  void MDY_PRIVATE(BuildNextLevel)();
+  /// @brief
+  EDySuccess MDY_PRIVATE(TransitionToNextLevel)();
+
+  /// @brief  Check scene is initialized and valid.
+  /// @return
+  bool IsLevelPresentValid() const noexcept;
+
+  /// @brief  Get valid level reference.
+  /// @return Valid level reference. when level is not specified, unexpected behaviour.
+  FDyLevel& GetValidLevelReference() noexcept;
+
+  /// @brief Try create debug ui layout to screen as highest priority. (10xx) \n
+  /// If debug ui is already spawned, just return DY_FAILURE, or DY_SUCCESS
+  EDySuccess TryCreateDebugUi();
+  /// @brief Check debug Ui is now on exist.
+  bool IsDebugUiExist() const noexcept;
+  /// @brief Try remove debug ui layout from screen. \n
+  /// If already removed, just return DY_FAILURE
+  EDySuccess TryRemoveDebugUi();
+
+  /// @brief Try create loading ui layout. \n
+  /// If Loading UI Widget meta information is not exist, just return DY_FAILURE doing nothing.
+  EDySuccess  TryCreateLoadingUi();
+  /// @brief Check loading ui is now on exist.
+  bool        IsLoadingUiExist() const noexcept;
+  /// @brief Try remove debug ui layout from screen. \n
+  /// If already remove or not exist, return DY_FAILURE.
+  EDySuccess  TryRemoveLoadingUi();
+
+  /// @brief
+  bool CheckCreationActorExist() const noexcept;
+  /// @brief
+  void TryCreateActorsOfCreationActorList() noexcept;
+  /// @brief
+  void CleanCreationActorList() noexcept;
+  /// @brief Check Gc-candidate actor list is not empty and exist something.
+  bool CheckIsGcActorExist() const noexcept;
+  /// @brief Try remove actor gc list anyway. \n
+  /// If there is something to do actors in GC list, call something to do prior to this.
+  void MDY_PRIVATE(TryRemoveActorGCList)() noexcept;
+
+  /// @brief Try detach active model renderer.
+  EDySuccess MDY_PRIVATE(TryDetachActiveModelRenderer)(CDyModelRenderer* iPtrRenderer);
+
+  /// @brief Bind (Enroll) active model animator component. This function must be called in `CDyModelAnimator`.
+  void MDY_PRIVATE(BindActiveModelAnimator)(CDyModelAnimator& iRefComponent);
+  /// @brief Unbind deactivated model animator component This function must be called in `CDyModelAnimator`.
+  EDySuccess MDY_PRIVATE(UnbindActiveModelAnimator)(CDyModelAnimator& iRefComponent);
+
+  /// @brief Try get valid pointer instance (not-null) of CDySkybox target to be rendered on renderer.
+  std::optional<NotNull<CDySkybox*>> GetPtrMainLevelSkybox() const noexcept;
+  /// @brief Bind (Enroll) active skybox component. This function must be called in `CDySkybox`.
+  void MDY_PRIVATE(BindActiveSkybox)(CDySkybox& iRefComponent);
+  /// @brief Unbind deactivated skybox component. This function must be called in `CDySkybox`.
+  EDySuccess MDY_PRIVATE(UnbindActiveSkybox)(CDySkybox& iRefComponent);
+
+  /// @brief Get Internal World UI container list.
+  FDyWorldUIContainer& MDY_PRIVATE(GetUiContainer)() noexcept;
+  /// @brief Bind (Enroll) active Ui object (widget) into internal container.
+  /// This function must be called in `FDyUiWidget`.
+  void MDY_PRIVATE(BindActiveUiObject)(FDyUiWidget& iRefWidget);
+  /// @brief Unbind deactivated ui object component. This function must be called in `FDyUiWidget`.
+  EDySuccess MDY_PRIVATE(UnbindActiveUiObject)(FDyUiWidget& iRefWidget);
+
+  /// @brief Set level transition. Flag will be set and all dependent processing will be halted.
+  /// Until level is translated.
+  void SetLevelTransition(const std::string& iSpecifier);
+
+  /// @brief This function must be called in MDyWorld::Update() function.
+  /// Wipe out deactivated components from activated component lists.
+  void pGcAcitvatedComponents();
+
+  /// @brief  Move FDyActor instance to gc.
+  /// @param  actorRawPtr Valid FDyActor pointer instance.
+  void pfMoveActorToGc(NotNull<FDyActor*> actorRawPtr) noexcept;
+
+  /// @brief
+  /// @param  index
+  void pfUnenrollActiveModelRenderer(TI32 index) noexcept;
+
+  /// @brief
+  /// @param  index
+  void pfUnenrollActiveCamera(TI32& index) noexcept;
+
+  /// @brief
+  /// @param  validComponent
+  TI32 pfEnrollActiveModelRenderer(CDyModelRenderer& validComponent) noexcept;
+
+  /// @brief
+  /// @param  validComponent
+  TI32 pfEnrollActiveCamera(CDyCamera& validComponent) noexcept;
+
+private:
+  std::string mNextLevelName     = MDY_INITIALIZE_EMPTYSTR;
+  std::string mPresentLevelName  = MDY_INITIALIZE_EMPTYSTR;
+  std::string mPreviousLevelName = MDY_INITIALIZE_EMPTYSTR;
+
+  /// Present valid level instance.
+  std::unique_ptr<FDyLevel> mLevel = nullptr;
+
+  /// Erasion (activated) script candidate list. this list must be sorted descendently not to invalidate order.
+  std::vector<TI32> mErasionScriptCandidateList = {};
+
+  /// Activated CDyModelRenderer component list.
+  /// this list must not be invalidated when iterating list, but except for unenrolling.
+  std::vector<CDyModelRenderer*>  mActivatedModelRenderers = {};
+  /// Erasion (activated) model rendrerer list. this list must be sorted descendently not to invalidate order.
+  std::vector<TI32> mErasionModelRenderersCandidateList = {};
+
+  /// Valid camera ptr which to be used rendering sequence.
+  /// this list must not be invalidated when interating list, but except for unenrolling.
+  std::vector<CDyCamera*>   mActivatedOnRenderingCameras = {};
+  /// Erasion (activated) model renderer list. this list must be sorted descendently not to invalidate order.
+  std::vector<TI32> mErasionCamerasCandidateList = {};
+
+  /// Valid animator ptr which to be used update animation sequence.
+  /// This list is not invalidated because animation updating is not change list order.
+  std::vector<NotNull<CDyModelAnimator*>> mActivatedModelAnimatorPtrs = {};
+
+  /// Valid & Activated skybox component pointer list. 
+  std::vector<NotNull<CDySkybox*>> mActivatedSkyboxPtrList {};
+
+  /// @brief Action creation descriptor list for present level. \n
+  /// This list must be processed and cleaned each frame prior to update of logic.
+  std::vector<std::unique_ptr<PDyActorCreationDescriptor>> mActorCreationDescList = {};
+  /// Garbage collection actor instance list.
+  std::vector<std::unique_ptr<FDyActor>> mGCedActorList = {};
+
+  /// @brief UI Instance container.
+  FDyWorldUIContainer mUiInstanceContainer;
+
+  bool mIsNeedTransitNextLevel = false;
+};
+
+} /// ::dy namespace
+#include <Dy/Management/Inline/MWorldImpl.inl>
+
+//!
+//! Proxy
+//!
 
 namespace dy
 {
 
 EDySuccess MDyWorld::pfInitialize()
 {
-  MDY_LOG_INFO_D("{} | MDyWorld::pfInitialize().", "FunctionCall");
+  this->mInternal = new Impl();
   return DY_SUCCESS;
 }
 
 EDySuccess MDyWorld::pfRelease()
 {
-  MDY_LOG_INFO_D("{} | MDyWorld::pfRelease().", "FunctionCall");
+  delete this->mInternal; this->mInternal = nullptr;
   return DY_SUCCESS;
 }
 
-void MDyWorld::Update(_MIN_ float dt)
-{
-  if (this->mLevel)
-  {
-    this->mLevel->Update(dt);
-  }
-}
-
-void MDyWorld::pGcAcitvatedComponents()
-{
-  // Remove activated script update list reversely.
-  if (this->mErasionScriptCandidateList.empty() == false)
-  {
-    std::sort(MDY_BIND_BEGIN_END(this->mErasionScriptCandidateList), std::greater<TI32>());
-    for (const auto& index : this->mErasionScriptCandidateList)
-    { // Remove!
-      // @TODO CALL SCRIPT MANAGE TO GC.
-      //this->mActivatedScripts.erase(this->mActivatedScripts.begin() + index);
-    }
-    // Clear!
-    this->mErasionScriptCandidateList.clear();
-  }
-
-  // Remove activated model renderer (CDyModelRenderer) list reversely to avoiding invalidation index.
-  if (this->mErasionModelRenderersCandidateList.empty() == false)
-  {
-    std::sort(MDY_BIND_BEGIN_END(this->mErasionModelRenderersCandidateList), std::greater<>());
-    for (const auto& index : this->mErasionModelRenderersCandidateList)
-    { // Remove!
-      this->mActivatedModelRenderers.erase(this->mActivatedModelRenderers.begin() + index);
-    }
-    // Clear!
-    this->mErasionModelRenderersCandidateList.clear();
-  }
-
-  // Remove activated camera (CDyCamera) list reversely to avoiding invalidation index.
-  if (this->mErasionCamerasCandidateList.empty() == false)
-  {
-    std::sort(MDY_BIND_BEGIN_END(this->mErasionCamerasCandidateList), std::greater<>());
-    for (const auto& index : this->mErasionCamerasCandidateList)
-    { // Remove!
-      this->mActivatedOnRenderingCameras.erase(this->mActivatedOnRenderingCameras.begin() + index);
-    }
-    // Clear!
-    this->mErasionCamerasCandidateList.clear();
-  }
-}
-
-void MDyWorld::UpdateObjects(_MIN_ float dt)
-{
-  if (this->mLevel)
-  { 
-    // CDyModelRenderer update
-    for (auto& modelRenderer : this->mActivatedModelRenderers)
-    {
-      if (MDY_CHECK_ISNULL(modelRenderer)) { continue; }
-      modelRenderer->Update(dt);
-    }
-
-    // CDyCamera update
-    for (_MIO_ auto& camera : this->mActivatedOnRenderingCameras)
-    {
-      if (MDY_CHECK_ISNULL(camera)) { continue; }
-      camera->Update(dt);
-    }
-
-    // After update, check
-  }
-}
-
-void MDyWorld::UpdateAnimator(_MIN_ TF32 dt)
-{
-  // Update animation transformation information 
-  // using linear-interpolation of given skeleton and animation.
-  for (auto& ptrCompAnimator : this->mActivatedModelAnimatorPtrs)
-  {
-    ptrCompAnimator->Update(dt);
-  }
-}
+void MDyWorld::Update(TF32 iDt)         { this->mInternal->Update(iDt); }
+void MDyWorld::UpdateObjects(TF32 iDt)  { this->mInternal->UpdateObjects(iDt); }
+void MDyWorld::UpdateAnimator(TF32 iDt) { this->mInternal->UpdateAnimator(iDt); }
 
 std::vector<NotNull<FDyActor*>> 
-MDyWorld::GetAllActorsWithTag(_MIN_ const std::string& iTagSpecifier) const noexcept
+MDyWorld::GetAllActorsWithTag(const std::string& iTagSpecifier) const noexcept
 {
-  // If level is not constructed, just return empty list.
-  if (MDY_CHECK_ISEMPTY(this->mLevel)) { return {}; }
-  return this->mLevel->GetAllActorsWithTag(iTagSpecifier);
+  return this->mInternal->GetAllActorsWithTag(iTagSpecifier);
 }
 
 std::vector<NotNull<FDyActor*>>
-MDyWorld::GetAllActorsWithTagRecursive(_MIN_ const std::string& iTagSpecifier) const noexcept
+MDyWorld::GetAllActorsWithTagRecursive(const std::string& iTagSpecifier) const noexcept
 {
-  // If level is not constructed, just return empty list.
-  if (MDY_CHECK_ISEMPTY(this->mLevel)) { return {}; }
-  return this->mLevel->GetAllActorsWithTagRecursive(iTagSpecifier);
+  return this->mInternal->GetAllActorsWithTagRecursive(iTagSpecifier);
 }
 
 std::vector<NotNull<FDyActor*>> 
-MDyWorld::GetAllActorsWithName(_MIN_ const std::string& iNameSpecifier) const noexcept
+MDyWorld::GetAllActorsWithName(const std::string& iNameSpecifier) const noexcept
 {
-  // If iNameSpacifier is empyt, just return empyt list.
-  if (iNameSpecifier.empty() == true)   { return {}; }
-  if (MDY_CHECK_ISEMPTY(this->mLevel))  { return {}; }
-  return this->mLevel->GetAllActorsWithName(iNameSpecifier);
+  return this->mInternal->GetAllActorsWithName(iNameSpecifier);
 }
 
 std::vector<NotNull<FDyActor*>> 
-MDyWorld::GetAllActorsWithNameRecursive(_MIN_ const std::string& iNameSpecifier) const noexcept
+MDyWorld::GetAllActorsWithNameRecursive(const std::string& iNameSpecifier) const noexcept
 {
-  if (iNameSpecifier.empty() == true)   { return {}; }
-  if (MDY_CHECK_ISEMPTY(this->mLevel))  { return {}; }
-  return this->mLevel->GetAllActorsWithNameRecursive(iNameSpecifier);
+  return this->mInternal->GetAllActorsWithNameRecursive(iNameSpecifier);
 }
 
-FDyActor* MDyWorld::GetActorWithObjectId(_MIN_ TU32 iObjectId) noexcept
+FDyActor* MDyWorld::GetActorWithObjectId(TU32 iObjectId) noexcept
 {
-  // Check
-  if (MDY_CHECK_ISNULL(this->mLevel)) { return nullptr; }
-
-  // Trying to get pointer of given obejct id.
-  return this->mLevel->GetActorWithObjectId(iObjectId);
+  return this->mInternal->GetActorWithObjectId(iObjectId);
 }
 
 DDyActorBinder MDyWorld::CreateActor(
-    _MIN_ const std::string& iActorName, 
-    _MIN_ const std::string& iPrefabName,
-    _MIN_ const DDyTransform& iSpawnTransform, 
-    _MIN_ FDyActor* iPtrParent, 
-    _MIN_ const std::string& iObjectTag, 
-    _MIN_ bool iDoSweep)
+  const std::string& iActorName, 
+  const std::string& iPrefabName,
+  const DDyTransform& iSpawnTransform, 
+  FDyActor* iPtrParent, 
+  const std::string& iObjectTag, 
+  bool iDoSweep)
 {
-  PDyActorCreationDescriptor descriptor = {};
-  descriptor.mActorSpecifierName      = 
-      iPtrParent != nullptr 
-    ? iPtrParent->TryGetGeneratedName(iActorName) 
-    : this->mLevel->TryGetGeneratedName(iActorName);
-  descriptor.mParentFullSpecifierName = 
-      iPtrParent != nullptr 
-    ? iPtrParent->MDY_PRIVATE(GetFullSpecifierName)() 
-    : MDY_INITIALIZE_EMPTYSTR;
-  descriptor.mTransform = iSpawnTransform;
-  descriptor.mIsDoSweep = iDoSweep;
-
-  // Check prefab is exist on meta information manager.
-  MDY_ASSERT(MDyMetaInfo::GetInstance().IsPrefabMetaInformationExist(iPrefabName) == true,
-             "Failed to find prefab with specified `iPrefabName`.");
-  descriptor.mPrefabSpecifierName = iPrefabName;
-
-  if (iObjectTag.empty() == false)
-  { // Check tag is exist, when tag is not empty.
-    MDY_CALL_ASSERT_SUCCESS(MDySetting::GetInstance().MDY_PRIVATE(CheckObjectTagIsExist)(iObjectTag));
-    descriptor.mObjectTag = iObjectTag;
-  }
-
-  DySafeUniquePtrEmplaceBack(this->mActorCreationDescList, descriptor);
-  DDyActorBinder resultBinder {};
-  resultBinder.MDY_PRIVATE(BindDescriptor)(this->mActorCreationDescList.back().get());
-  return resultBinder;
+  return this->mInternal->CreateActor(iActorName, iPrefabName, iSpawnTransform, iPtrParent, iObjectTag, iDoSweep);
 }
 
 void MDyWorld::DestroyActor(_MIN_ FDyActor& iRefActor)
 {
-  if (iRefActor.IsHaveParent() == true)
-  { // If iRefActor has parent, let parent detach and remove iRefActor from object tree.
-    // and move it to MDyWorld::GC LIST.
-    auto& container = iRefActor.GetParent()->GetChildrenContainer();
-    auto  it = std::find_if(MDY_BIND_BEGIN_END(container), 
-        [ptr = &iRefActor](const std::decay_t<decltype(container)>::value_type& iPair)
-        {
-          return iPair.second.get() == ptr;
-        }
-    );
-    // If not found, (might be requiring duplicated destruction) just do nothing and return.
-    if (it == container.end()) { return; }
-
-    this->mGCedActorList.emplace_back(std::move(it->second));
-    this->mGCedActorList.back()->MDY_PRIVATE(TryDetachDependentComponents)();
-    container.erase(it);
-  }
-  else
-  { // If iRefActor has not parent, regard it is on root, and remove iRefActor from level.
-    // and move it to MDYWorld::GC List.
-    MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mLevel), "Unexpected error occurred.");
-    auto& container = this->mLevel->GetActorContainer();
-    auto  it = std::find_if(MDY_BIND_BEGIN_END(container),
-        [ptr = &iRefActor](const std::decay_t<decltype(container)>::value_type& iPair)
-        {
-          return iPair.second.get() == ptr;
-        }
-    );
-    // If not found, (might be requiring duplicated destruction) just do nothing and return.
-    if (it == container.end()) { return; }
-
-    this->mGCedActorList.emplace_back(std::move(it->second));
-    this->mGCedActorList.back()->MDY_PRIVATE(TryDetachDependentComponents)();
-    container.erase(it);
-  }
+  return this->mInternal->DestroyActor(iRefActor);
 }
 
 std::optional<DDyUiBinder> 
 MDyWorld::CreateUiObject(
-    _MIN_ const std::string& iUiName, 
-    _MIN_ const std::string& iNewCustomizedName, 
-    _MIN_ bool isForcedZOrder,
-    _MIN_ TU32 ZOrder)
+  const std::string& iUiName, 
+  const std::string& iNewCustomizedName, 
+  bool isForcedZOrder,
+  TU32 ZOrder)
 {
-  // Check
-  const auto& refMetaInfo = MDyMetaInfo::GetInstance();
-  if (refMetaInfo.IsWidgetMetaInfoExist(iUiName) == false)
-  {
-    MDY_LOG_ERROR("Failed to create UI Widget object, {}.", iUiName);
-    return std::nullopt;
-  }
-
-  if (this->mUiInstanceContainer.IsUiObjectExist(iUiName) == true && iNewCustomizedName.empty() == true)
-  {
-    MDY_LOG_ERROR(
-        "Failed to create UI Widget object, meta information is exist but already exist on Container. {}", 
-        iUiName);
-    return std::nullopt;
-  }
-
-  // Get anyway
-  const auto& refDescriptor = refMetaInfo.GetWidgetMetaInformation(iUiName);
-  const auto keyName = iNewCustomizedName.empty() == true ? refDescriptor.mWidgetSpecifierName : iNewCustomizedName;
-
-  // If zorder must be customized, do that.
-  TU32 insertZorder = refDescriptor.mZOrder;
-  if (isForcedZOrder == true) { insertZorder = ZOrder; }
-
-  return this->mUiInstanceContainer.CreateUiObject(keyName, refDescriptor, insertZorder);
+  return this->mInternal->CreateUiObject(iUiName, iNewCustomizedName, isForcedZOrder, ZOrder);
 }
 
-std::optional<DDyUiBinder> MDyWorld::GetUiObject(_MIN_ const std::string& iUiName)
+std::optional<DDyUiBinder> MDyWorld::GetUiObject(const std::string& iUiName)
 {
-  return this->mUiInstanceContainer.GetUiObject(iUiName);
+  return this->mInternal->GetUiObject(iUiName);
 }
 
-EDySuccess MDyWorld::DestoryUiObject(_MINOUT_ DDyUiBinder& iRefUi)
+EDySuccess MDyWorld::DestoryUiObject(DDyUiBinder& ioUiBInder)
 {
-  // Check
-  if (iRefUi.IsUiObjectValid() == false) 
-  { 
-    MDY_LOG_ERROR("Failed to destroy Ui object. Ui binder does not bind anything.");
-    return DY_FAILURE; 
-  }
-
-  return this->mUiInstanceContainer.RemoveUiObject((*iRefUi).GetUiObjectName());
+  return this->mInternal->DestoryUiObject(ioUiBInder);
 }
 
-EDySuccess MDyWorld::DestroyUiObject(_MIN_ const std::string& iUiName)
+EDySuccess MDyWorld::DestroyUiObject(const std::string& iUiName)
 {
-  return this->mUiInstanceContainer.RemoveUiObject(iUiName);
+  return this->mInternal->DestroyUiObject(iUiName);
 }
 
 CDyCamera* MDyWorld::GetPtrMainLevelCamera() const noexcept
 {
-  // @TODO TEMPORARY.
-  if (this->mActivatedOnRenderingCameras.empty() == true) 
-  { 
-    return nullptr; 
-  }
-
-  if (MDY_CHECK_ISNULL(this->mActivatedOnRenderingCameras.front())) 
-  { 
-    return nullptr; 
-  }
-  else { return this->mActivatedOnRenderingCameras.front(); }
+  return this->mInternal->GetPtrMainLevelCamera();
 }
 
 TI32 MDyWorld::GetFocusedCameraCount() const noexcept
 {
-  return static_cast<TI32>(this->mActivatedOnRenderingCameras.size());
+  return this->mInternal->GetFocusedCameraCount();
 }
 
-std::optional<CDyCamera*> MDyWorld::GetFocusedCameraValidReference(_MIN_ const TI32 index) const noexcept
+std::optional<CDyCamera*> MDyWorld::GetFocusedCameraValidReference(const TI32 index) const noexcept
 {
-  MDY_ASSERT(
-      index < this->mActivatedOnRenderingCameras.size(),
-      R"dy(Input parameter "index" for "MDyWorld::GetFocusedCameraValidReferenc" must be equal or less than "MDyWorld::mActivatedOnRenderingCameras".)dy");
-
-  auto* camera = this->mActivatedOnRenderingCameras[index];
-  if (MDY_CHECK_ISNULL(camera)) { return std::nullopt; }
-  else                          { return camera; }
+  return this->mInternal->GetFocusedCameraValidReference(index);
 }
 
-EDySuccess MDyWorld::OpenLevel(_MIN_ const std::string& levelName)
+EDySuccess MDyWorld::OpenLevel(const std::string& levelName)
 {
-  if (MDyMetaInfo::GetInstance().GetLevelMetaInformation(levelName) == nullptr)
-  {
-    MDY_LOG_ERROR("{} | Failed to find and travel next level. Level name is not found. | Level name : {}", levelName);
-    return DY_FAILURE;
-  }
-
-  this->SetLevelTransition(levelName);
-  return DY_SUCCESS;
+  return this->mInternal->OpenLevel(levelName);
 }
 
 bool MDyWorld::IsNeedTransitNextLevel() const noexcept
 {
-  return this->mIsNeedTransitNextLevel;
+  return this->mInternal->IsNeedTransitNextLevel();
 }
 
 EDySuccess MDyWorld::MDY_PRIVATE(OpenFirstLevel)()
 {
-  this->SetLevelTransition(MDySetting::GetInstance().GetInitialSceneInformationName());
-
-  // Let present level do release sequence
-  // Game Status Sequence 12-13.
-  this->MDY_PRIVATE(RemoveLevel)();
-  this->MDY_PRIVATE(PopulateNextLevelResources)();
-  return DY_SUCCESS;
+  return this->mInternal->MDY_PRIVATE(OpenFirstLevel)();
 }
 
 EDySuccess MDyWorld::MDY_PRIVATE(RemoveLevel)()
 {
-  // Let present level do release sequence
-  // And level must be nullptr. and... Remove RI and Resource & Informations with Scope is `Level`.
-  if (MDY_CHECK_ISEMPTY(this->mLevel)) { return DY_FAILURE; }
-  
-  // Release physx components which are dependent on physx::PxScene, FDyLevel.
-  this->mLevel = nullptr;
-  this->MDY_PRIVATE(TryRemoveActorGCList)();
-  this->mActivatedModelRenderers.clear();
-  this->mActivatedOnRenderingCameras.clear();
-  this->mActivatedModelAnimatorPtrs.clear();
-  this->mActivatedSkyboxPtrList.clear();
-  this->mUiInstanceContainer.ClearGeneralUiObjectList();
-
-  // Just remove script instance without `Destroy` function intentionally.
-  MDyScript::GetInstance().ClearWidgetScriptGCList();
-  MDyScript::GetInstance().ClearActorScriptGCList();
-
-  SDyIOConnectionHelper::TryGC(EDyScope::Temporal, EDyResourceStyle::Resource);
-  SDyIOConnectionHelper::TryGC(EDyScope::Temporal, EDyResourceStyle::Information);
-  SDyIOConnectionHelper::TryGC(EDyScope::Temporal, EDyResourceStyle::Resource);
-  SDyIOConnectionHelper::TryGC(EDyScope::Temporal, EDyResourceStyle::Information);
-  SDyIOConnectionHelper::TryGC(EDyScope::Temporal, EDyResourceStyle::Resource);
-  SDyIOConnectionHelper::TryGC(EDyScope::Temporal, EDyResourceStyle::Information);
-
-  SDyIOConnectionHelper::TryGC(EDyScope::Level, EDyResourceStyle::Resource);
-  SDyIOConnectionHelper::TryGC(EDyScope::Level, EDyResourceStyle::Information);
-  SDyIOConnectionHelper::TryGC(EDyScope::Level, EDyResourceStyle::Resource);
-  SDyIOConnectionHelper::TryGC(EDyScope::Level, EDyResourceStyle::Information);
-  SDyIOConnectionHelper::TryGC(EDyScope::Level, EDyResourceStyle::Resource);
-  SDyIOConnectionHelper::TryGC(EDyScope::Level, EDyResourceStyle::Information);
-
-  // Must reset depedent manager on this.
-  MDyPhysics::GetInstance().ReleaseScene();
-  return DY_SUCCESS;
+  return this->mInternal->MDY_PRIVATE(RemoveLevel)();
 }
 
 EDySuccess MDyWorld::MDY_PRIVATE(PopulateNextLevelResources)()
 {
-  if (this->mNextLevelName.empty() == true) { return DY_FAILURE; }
-  if (MDyMetaInfo::GetInstance().IsLevelMetaInformation(this->mNextLevelName) == false) { return DY_FAILURE; }
-
-  // Get level meta information, and construct resource list.
-  const auto& levMetaInfo = *MDyMetaInfo::GetInstance().GetLevelMetaInformation(this->mNextLevelName);
-  const TDDyResourceNameSet levelResourceSet = levMetaInfo.GetLevelResourceSet();
-
-  // Populate resource and wait until resource populating is done.
-  // If done, call `build next level` in outside (MDySync). (GSS 12-13)
-  SDyIOConnectionHelper::PopulateResourceList(
-      levelResourceSet, 
-      EDyScope::Level,
-      []() 
-  { 
-    auto& mWorld = MDyWorld::GetInstance();
-    mWorld.MDY_PRIVATE(BuildNextLevel)(); 
-    mWorld.MDY_PRIVATE(TransitionToNextLevel)();
-    DyEngine::GetInstance().SetNextGameStatus(EDyGlobalGameStatus::GameRuntime);
-  });
-  return DY_SUCCESS;
+  return this->mInternal->MDY_PRIVATE(PopulateNextLevelResources)();
 }
 
 void MDyWorld::MDY_PRIVATE(BuildNextLevel)()
 {
-  // GSS 14
-  MDY_LOG_DEBUG_D("Building Next Level : {}", this->mNextLevelName);
-
-  const auto* levelMetaInfo = MDyMetaInfo::GetInstance().GetLevelMetaInformation(this->mNextLevelName);
-  // Must reset depedent manager on this.
-  MDyPhysics::GetInstance().InitScene();
-  this->mLevel = std::make_unique<FDyLevel>(*levelMetaInfo);
+  this->mInternal->__BuildNextLevel();
 }
 
-EDySuccess MDyWorld::MDY_PRIVATE(TransitionToNextLevel)()
-{
-  // GSS 15
-  this->mPreviousLevelName  = this->mPresentLevelName;
-  this->mPresentLevelName   = this->mNextLevelName;
-  this->mNextLevelName      = MDY_INITIALIZE_EMPTYSTR;
-  this->mIsNeedTransitNextLevel = false;
-  MDY_LOG_DEBUG_D("Present  Level Name : {}", this->mPresentLevelName);
-  MDY_LOG_DEBUG_D("Previous Level Name : {}", this->mPreviousLevelName);
+EDySuccess MDyWorld::MDY_PRIVATE(TransitionToNextLevel)() { return this->mInternal->__TransitionToNextLevel(); }
 
-  // Need to call initiate funciton maually.
-  MDY_LOG_DEBUG_D("Initiate Actor script : {}", this->mPresentLevelName);
-  MDyScript::GetInstance().UpdateActorScript(0.0f, EDyScriptState::CalledNothing);
-  MDyScript::GetInstance().TryMoveInsertActorScriptToMainContainer();
+bool MDyWorld::IsLevelPresentValid() const noexcept { return this->mInternal->IsLevelPresentValid(); }
+FDyLevel& MDyWorld::GetValidLevelReference() noexcept { return this->mInternal->GetValidLevelReference(); }
 
-  // Need to realign position following actor tree.
-  MDY_LOG_DEBUG_D("Align Position of Actors on level : {}", this->mPresentLevelName);
-  this->mLevel->MDY_PRIVATE(AlignActorsPosition)();
+EDySuccess MDyWorld::TryCreateDebugUi()        { return this->mInternal->TryCreateDebugUi(); }
+bool MDyWorld::IsDebugUiExist() const noexcept { return this->mInternal->IsDebugUiExist(); }
+EDySuccess MDyWorld::TryRemoveDebugUi()        { return this->mInternal->TryRemoveDebugUi(); }
 
-  return DY_SUCCESS;
-}
+EDySuccess MDyWorld::TryCreateLoadingUi()        { return this->mInternal->TryCreateLoadingUi(); }
+bool MDyWorld::IsLoadingUiExist() const noexcept { return this->mInternal->IsLoadingUiExist(); } 
+EDySuccess MDyWorld::TryRemoveLoadingUi()        { return this->mInternal->TryRemoveLoadingUi(); }
 
-bool MDyWorld::IsLevelPresentValid() const noexcept
-{
-  return MDY_CHECK_ISNOTEMPTY(this->mLevel);
-}
-
-FDyLevel& MDyWorld::GetValidLevelReference() noexcept
-{
-  MDY_ASSERT(IsLevelPresentValid() == true, "Level must be valid when retrieving level reference.");
-  return *this->mLevel;
-}
-
-EDySuccess MDyWorld::TryCreateDebugUi()
-{
-  return this->mUiInstanceContainer.TryCreateDebugUi();
-}
-
-bool MDyWorld::IsDebugUiExist() const noexcept
-{
-  return this->mUiInstanceContainer.IsDebugUiExist();
-}
-
-EDySuccess MDyWorld::TryRemoveDebugUi()
-{
-  return this->mUiInstanceContainer.TryRemoveDebugUi();
-}
-
-EDySuccess MDyWorld::TryCreateLoadingUi()
-{
-  return this->mUiInstanceContainer.TryCreateLoadingUi();
-}
-
-bool MDyWorld::IsLoadingUiExist() const noexcept
-{
-  return this->mUiInstanceContainer.IsLoadingUiExist();
-}
-
-EDySuccess MDyWorld::TryRemoveLoadingUi()
-{
-  return this->mUiInstanceContainer.TryRemoveLoadingUi();
-}
-
-bool MDyWorld::CheckCreationActorExist() const noexcept
-{
-  return this->mActorCreationDescList.empty() == false;
-}
+bool MDyWorld::CheckCreationActorExist() const noexcept { return this->mInternal->CheckCreationActorExist(); }
 
 void MDyWorld::TryCreateActorsOfCreationActorList() noexcept
 {
-  // Check level is not empty.
-  if (MDY_CHECK_ISEMPTY(this->mLevel)) { return; }
-
-  //
-  for (const auto& ptrsmtDescriptor : this->mActorCreationDescList)
-  {
-    this->mLevel->CreateActorInstantly(*ptrsmtDescriptor);
-  }
+  this->mInternal->TryCreateActorsOfCreationActorList();
 }
 
 void MDyWorld::CleanCreationActorList() noexcept
 {
-  this->mActorCreationDescList.clear();
+  this->mInternal->CleanCreationActorList();
 }
 
 bool MDyWorld::CheckIsGcActorExist() const noexcept
 {
-  return this->mGCedActorList.empty() == false;
+  return this->mInternal->CheckIsGcActorExist();
 }
 
 void MDyWorld::MDY_PRIVATE(TryRemoveActorGCList)() noexcept
 {
-  this->mGCedActorList.clear();
+  this->mInternal->__TryRemoveActorGCList();
 }
 
-void MDyWorld::SetLevelTransition(_MIN_ const std::string& iSpecifier)
+void MDyWorld::pfMoveActorToGc(NotNull<FDyActor*> actorRawPtr) noexcept
 {
-  if (MDyMetaInfo::GetInstance().IsLevelMetaInformation(iSpecifier) == false)
-  {
-    MDY_LOG_ERROR("Failed to transit next level, `{0}`. `{0}` level is not exist.", iSpecifier);
-    return;
-  }
-
-  this->mNextLevelName          = iSpecifier;
-  this->mIsNeedTransitNextLevel = true;
+  this->mInternal->pfMoveActorToGc(actorRawPtr);
 }
 
-void MDyWorld::pfMoveActorToGc(_MIN_ NotNull<FDyActor*> actorRawPtr) noexcept
+void MDyWorld::pfUnenrollActiveModelRenderer(TI32 index) noexcept
 {
-  this->mGCedActorList.emplace_back(std::unique_ptr<FDyActor>(actorRawPtr));
-  this->mGCedActorList.back()->MDY_PRIVATE(TryRemoveScriptInstances)();
+  this->mInternal->pfUnenrollActiveModelRenderer(index);
 }
 
-void MDyWorld::pfUnenrollActiveModelRenderer(_MIN_ TI32 index) noexcept
+void MDyWorld::pfUnenrollActiveCamera(TI32& index) noexcept
 {
-  MDY_ASSERT(index < this->mActivatedModelRenderers.size(), "index must be smaller than this->mActivatedModelRenderers.size().");
-
-  this->mActivatedModelRenderers[index] = MDY_INITIALIZE_NULL;
-  this->mErasionModelRenderersCandidateList.emplace_back(index);
+  this->mInternal->pfUnenrollActiveCamera(index);
 }
 
-void MDyWorld::pfUnenrollActiveCamera(_MIO_ TI32& index) noexcept
+EDySuccess MDyWorld::MDY_PRIVATE(TryDetachActiveModelRenderer)(CDyModelRenderer* iPtrRenderer)
 {
-  MDY_ASSERT(index < this->mActivatedOnRenderingCameras.size(), "index must be smaller than this->mActivatedOnRenderingCameras.size().");
-
-  this->mActivatedOnRenderingCameras[index] = MDY_INITIALIZE_NULL;
-  this->mErasionCamerasCandidateList.emplace_back(index);
-
-  index = MDY_INITIALIZE_DEFINT;
+  return this->mInternal->__TryDetachActiveModelRenderer(iPtrRenderer);
 }
 
-EDySuccess MDyWorld::MDY_PRIVATE(TryDetachActiveModelRenderer)(_MIN_ CDyModelRenderer* iPtrRenderer)
+void MDyWorld::__BindActiveModelAnimator(CDyModelAnimator& iRefComponent)
 {
-  auto it = std::find_if(
-      MDY_BIND_BEGIN_END(this->mActivatedModelRenderers), 
-      [iPtrRenderer](_MIN_ const CDyModelRenderer* ptrRenderer) { return iPtrRenderer == ptrRenderer; });
-  if (it == this->mActivatedModelRenderers.end()) { return DY_SUCCESS; }
-
-  DyFastErase(this->mActivatedModelRenderers, std::distance(this->mActivatedModelRenderers.begin(), it));
-  return DY_SUCCESS;
+  this->mInternal->__BindActiveModelAnimator(iRefComponent);
 }
 
-void MDyWorld::__BindActiveModelAnimator(_MIN_ CDyModelAnimator& iRefComponent)
+EDySuccess MDyWorld::__UnbindActiveModelAnimator(CDyModelAnimator& iRefComponent)
 {
-  this->mActivatedModelAnimatorPtrs.emplace_back(DyMakeNotNull(&iRefComponent));
-}
-
-EDySuccess MDyWorld::__UnbindActiveModelAnimator(_MIN_ CDyModelAnimator& iRefComponent)
-{
-  // Check address. component's address is not changed unless actor is destroyed.
-  const auto it = std::find_if(
-      MDY_BIND_BEGIN_END(this->mActivatedModelAnimatorPtrs), 
-      [ptr = &iRefComponent](const auto& ptrValidComponent)
-    {
-      return ptrValidComponent.Get() == ptr;
-    });
-
-  if (it == this->mActivatedModelAnimatorPtrs.end()) { return DY_FAILURE; }
-
-  // Erase pointer of found component.
-  this->mActivatedModelAnimatorPtrs.erase(it);
-  return DY_SUCCESS;
+  return this->mInternal->__UnbindActiveModelAnimator(iRefComponent);
 }
 
 std::optional<NotNull<CDySkybox*>> MDyWorld::GetPtrMainLevelSkybox() const noexcept
 {
-  // If activated skybox instance is not exist, just return null value.
-  if (this->mActivatedSkyboxPtrList.empty() == true) { return std::nullopt; }
-
-  // Otherwise, always get first pointer of CDySkybox.
-  return this->mActivatedSkyboxPtrList.front();
+  return this->mInternal->GetPtrMainLevelSkybox();
 }
 
-void MDyWorld::__BindActiveSkybox(_MIN_ CDySkybox& iRefComponent)
+void MDyWorld::__BindActiveSkybox(CDySkybox& iRefComponent)
 {
-  this->mActivatedSkyboxPtrList.emplace_back(DyMakeNotNull(&iRefComponent));
+  this->mInternal->__BindActiveSkybox(iRefComponent);
 }
 
-EDySuccess MDyWorld::__UnbindActiveSkybox(_MIN_ CDySkybox& iRefComponent)
+EDySuccess MDyWorld::__UnbindActiveSkybox(CDySkybox& iRefComponent)
 {
-  // Check address. component's address is not changed unless actor is destroyed.
-  const auto it = std::find_if(
-      MDY_BIND_BEGIN_END(this->mActivatedSkyboxPtrList), 
-      [ptr = &iRefComponent](const auto& ptrValidComponent)
-    {
-      return ptrValidComponent.Get() == ptr;
-    });
-
-  if (it == this->mActivatedSkyboxPtrList.end()) { return DY_FAILURE; }
-
-  // Erase pointer of found component.
-  this->mActivatedSkyboxPtrList.erase(it);
-  return DY_SUCCESS;
+  return this->mInternal->__UnbindActiveSkybox(iRefComponent);
 }
 
 FDyWorldUIContainer& MDyWorld::MDY_PRIVATE(GetUiContainer)() noexcept
 {
-  return this->mUiInstanceContainer;
+  return this->mInternal->__GetUiContainer();
 }
 
-void MDyWorld::MDY_PRIVATE(BindActiveUiObject)(_MIN_ FDyUiWidget& iRefWidget)
+void MDyWorld::MDY_PRIVATE(BindActiveUiObject)(FDyUiWidget& iRefWidget)
 {
-  this->mUiInstanceContainer.BindActiveUiObject(iRefWidget);
+  this->mInternal->__BindActiveUiObject(iRefWidget);
 }
 
-EDySuccess MDyWorld::MDY_PRIVATE(UnbindActiveUiObject)(_MIN_ FDyUiWidget& iRefWidget)
+EDySuccess MDyWorld::MDY_PRIVATE(UnbindActiveUiObject)(FDyUiWidget& iRefWidget)
 {
-  return this->mUiInstanceContainer.UnbindActiveUiObject(iRefWidget);
+  return this->mInternal->__UnbindActiveUiObject(iRefWidget);
 }
 
-#ifdef false
-void MDyWorld::pfUnenrollActiveScript(_MIN_ TI32 index) noexcept
+TI32 MDyWorld::pfEnrollActiveModelRenderer(CDyModelRenderer& validComponent) noexcept
 {
-  MDY_ASSERT(index < this->mActivatedScripts.size(), "index must be smaller than this->mActivatedScripts.size().");
-
-  this->mActivatedScripts[index] = MDY_INITIALIZE_NULL;
-  this->mErasionScriptCandidateList.emplace_back(index);
+  return this->mInternal->pfEnrollActiveModelRenderer(validComponent);
 }
 
-TI32 MDyWorld::pfEnrollActiveScript(_MIN_ const NotNull<CDyScript*>& pawnRawPtr) noexcept
+TI32 MDyWorld::pfEnrollActiveCamera(CDyCamera& validComponent) noexcept
 {
-  this->mActivatedScripts.emplace_back(pawnRawPtr);
-  return static_cast<TI32>(this->mActivatedScripts.size()) - 1;
-}
-#endif
-
-TI32 MDyWorld::pfEnrollActiveModelRenderer(_MIN_ CDyModelRenderer& validComponent) noexcept
-{
-  this->mActivatedModelRenderers.emplace_back(&validComponent);
-  return static_cast<TI32>(this->mActivatedModelRenderers.size()) - 1;
-}
-
-TI32 MDyWorld::pfEnrollActiveCamera(_MIN_ CDyCamera& validComponent) noexcept
-{
-  this->mActivatedOnRenderingCameras.emplace_back(&validComponent);
-  return static_cast<TI32>(this->mActivatedOnRenderingCameras.size()) - 1;
+  return this->mInternal->pfEnrollActiveCamera(validComponent);
 }
 
 } /// ::dy namespace

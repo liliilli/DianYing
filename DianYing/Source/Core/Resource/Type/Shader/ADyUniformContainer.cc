@@ -19,6 +19,8 @@
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
 #include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
 #include <Dy/Core/Resource/Type/Uniform/UniformValueTypes.h>
+#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
+#include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
 
 #define MDY_DOCONSTRUCTUNIFORMLIST(__MATypeSpecifier__, __MASpecifier__, __MAId__) \
     auto [it2, MDY_NOUSEVAR] = this->mUniformMap.try_emplace(__MASpecifier__, std::make_unique<FDyUniformValue<TEnum::__MATypeSpecifier__>>(__MAId__)); \
@@ -61,7 +63,7 @@ void ADyUniformContainer::__TryConstructDefaultUniformList(const FDyShaderResour
   const auto& uniformList = iResc.GetUniformVariableList();
   static std::regex textureRegex{"uTexture\\d+(_\\w*)?"};
 
-  for (const auto& [specifier, _, type, id] : uniformList)
+  for (const auto& [specifier, MDY_NOUSEVAR, type, id] : uniformList)
   {
     // Check there is already specifier value, if exist do nothing
     // but not exist, insert with default value and bring it to update list.
@@ -79,12 +81,12 @@ void ADyUniformContainer::__TryConstructDefaultUniformList(const FDyShaderResour
     case TEnum::Unsigned:      { MDY_DOCONSTRUCTUNIFORMLIST(Unsigned, specifier, id); } break;
     case TEnum::Bool:          { MDY_DOCONSTRUCTUNIFORMLIST(Bool, specifier, id); } break;
     case TEnum::Float:         { MDY_DOCONSTRUCTUNIFORMLIST(Float, specifier, id); } break;
-    case TEnum::Texture1D:             { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture1D, specifier, id); } break;
-    case TEnum::Texture2D:             { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2D, specifier, id); } break;
-    case TEnum::Texture2DArray:        { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2DArray, specifier, id); } break;
-    case TEnum::Texture2DRectangle:    { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2DRectangle, specifier, id); } break;
-    case TEnum::Texture2DShadowArray:  { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2DShadowArray, specifier, id); } break;
-    case TEnum::Texture2DCubemap:      { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2DCubemap, specifier, id); } break;
+    case TEnum::Texture1D:            { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture1D, specifier, id); } break;
+    case TEnum::Texture2D:            { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2D, specifier, id); } break;
+    case TEnum::Texture2DArray:       { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2DArray, specifier, id); } break;
+    case TEnum::Texture2DRectangle:   { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2DRectangle, specifier, id); } break;
+    case TEnum::Texture2DShadowArray: { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2DShadowArray, specifier, id); } break;
+    case TEnum::Texture2DCubemap:     { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2DCubemap, specifier, id); } break;
     default: MDY_UNEXPECTED_BRANCH(); break;
     }
   }
@@ -93,15 +95,8 @@ void ADyUniformContainer::__TryConstructDefaultUniformList(const FDyShaderResour
   this->mIsShaderSetuped = true;
 }
 
-EDySuccess ADyUniformContainer::TryInsertTextureRequisition(_MIN_ TU32 insertId, _MIN_ TU32 textureId)
+EDySuccess ADyUniformContainer::TryInsertTextureRequisition(TU32 insertId, TU32 textureId)
 {
-  // Check
-  if (insertId >= this->GetAvailableTextureCount()) 
-  { 
-    MDY_LOG_ERROR("Failed to binding texture to given shader because not available insertId. {}", insertId);
-    return DY_FAILURE; 
-  }
-
   // Find
   using TEnum = EDyUniformVariableType;
   static std::array<TEnum, 6> textureTypes = {
@@ -111,10 +106,61 @@ EDySuccess ADyUniformContainer::TryInsertTextureRequisition(_MIN_ TU32 insertId,
   {
     if (Contains(textureTypes, item->mType) == false) { continue; }
     // Insert.
-    this->mUpdatedTextureList.emplace_back(insertId, item->mType, textureId);
+    switch (item->mType)
+    {
+    case TEnum::Texture1D: 
+    { auto& ref = static_cast<FDyUniformValue<TEnum::Texture1D>&>(*item);
+      if (ref.mValue == TI32(insertId))
+      {
+        this->mUpdatedTextureList.emplace_back(insertId, item->mType, textureId);
+        return DY_SUCCESS;
+      }
+    } break;
+    case EDyUniformVariableType::Texture2D:
+    { auto& ref = static_cast<FDyUniformValue<TEnum::Texture2D>&>(*item);
+      if (ref.mValue == TI32(insertId))
+      {
+        this->mUpdatedTextureList.emplace_back(insertId, item->mType, textureId);
+        return DY_SUCCESS;
+      }
+    } break;
+    case EDyUniformVariableType::Texture2DArray:
+    { auto& ref = static_cast<FDyUniformValue<TEnum::Texture2DArray>&>(*item);
+      if (ref.mValue == TI32(insertId))
+      {
+        this->mUpdatedTextureList.emplace_back(insertId, item->mType, textureId);
+        return DY_SUCCESS;
+      }
+    } break;
+    case EDyUniformVariableType::Texture2DShadowArray:
+    { auto& ref = static_cast<FDyUniformValue<TEnum::Texture2DShadowArray>&>(*item);
+      if (ref.mValue == TI32(insertId))
+      {
+        this->mUpdatedTextureList.emplace_back(insertId, item->mType, textureId);
+        return DY_SUCCESS;
+      }
+    } break;
+    case EDyUniformVariableType::Texture2DRectangle:
+    { auto& ref = static_cast<FDyUniformValue<TEnum::Texture2DRectangle>&>(*item);
+      if (ref.mValue == TI32(insertId))
+      {
+        this->mUpdatedTextureList.emplace_back(insertId, item->mType, textureId);
+        return DY_SUCCESS;
+      }
+    } break;
+    case EDyUniformVariableType::Texture2DCubemap: 
+    { auto& ref = static_cast<FDyUniformValue<TEnum::Texture2DCubemap>&>(*item);
+      if (ref.mValue == TI32(insertId))
+      {
+        this->mUpdatedTextureList.emplace_back(insertId, item->mType, textureId);
+        return DY_SUCCESS;
+      }
+    } break;
+    default: MDY_UNEXPECTED_BRANCH(); break;
+    }
   }
 
-  return DY_SUCCESS;
+  return DY_FAILURE;
 }
 
 EDySuccess ADyUniformContainer::TryUpdateUniformList()
@@ -157,7 +203,7 @@ EDySuccess ADyUniformContainer::TryUpdateUniformList()
     } break;
     case EDyUniformVariableType::Vector2: 
     { const auto* item = static_cast<FDyUniformValue<TEnum::Vector2>*>(ptrItem);
-      //FDyGLWrapper::UpdateUniformVector2(item->mId, item->mValue);
+      FDyGLWrapper::UpdateUniformVector2(item->mId, item->mValue);
     } break;
     case EDyUniformVariableType::Integer:
     { const auto* item = static_cast<FDyUniformValue<TEnum::Integer>*>(ptrItem);
@@ -226,7 +272,7 @@ ADYUNIFORMCONTAINER_TRYUPDATEUNIFORMLIST_TEXTURE:
     {
       if (itemType == type) { internalTextureType = enumValue; break; }
     }
-    MDY_ASSERT_FORCE(internalTextureType != GL_NONE, "Failed to find texture type.");
+    MDY_ASSERT_MSG_FORCE(internalTextureType != GL_NONE, "Failed to find texture type.");
 
     {
       // Critical section?

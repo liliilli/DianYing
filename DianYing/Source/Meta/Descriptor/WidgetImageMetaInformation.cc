@@ -37,8 +37,7 @@ PDyMetaWidgetImageDescriptor::CreateMetaInformation(const nlohmann::json& itemAt
             "RightUp" : { "X": 1.0, "Y": 1.0 }
           },
           "ImageSpecifierName": "TestImageImage",
-          "ImageTintColor": 16777215,
-          "ImageAlpha": 1.0,
+          "TintColor": { "R": 1.0, "G": 1.0, "B": 1.0, "A": 1.0 },
           "IsSizeToContent": false
         }
       }
@@ -56,18 +55,15 @@ PDyMetaWidgetImageDescriptor::CreateMetaInformation(const nlohmann::json& itemAt
   resultInstance->mParentSpecifierName    = DyJsonGetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Parent);
   DyJsonGetValueFromTo(itemAtlas, "ZOrder", resultInstance->mZOrder);
 
-  const auto& detailAtlas           = itemAtlas[MSVSTR(TPDyMWCBD::sHeader_Details)];
+  const auto& detailAtlas           = itemAtlas[(TPDyMWCBD::sHeader_Details)];
   resultInstance->mInitialPosition  = DyJsonGetValueFrom<DDyVectorInt2>(detailAtlas, "InitialPosition");
   resultInstance->mOrigin           = DyJsonGetValueFrom<EDyOrigin>(detailAtlas, "Origin");
   resultInstance->mWidgetSize       = DyJsonGetValueFrom<DDyVectorInt2>(detailAtlas, "WidgetSize");
 
   resultInstance->mImageRegion        = DyJsonGetValueFrom<DDyArea2D>(detailAtlas, "ImageRegion");
   resultInstance->mImageSpecifierName = DyJsonGetValueFrom<std::string>(detailAtlas, "ImageSpecifierName");
-  resultInstance->mIsSizeToContent = DyJsonGetValueFrom<bool>(detailAtlas, "IsSizeToContent");
-
-  DDyColorRGBA tintColor      = DyJsonGetValueFrom<DDyColorRGB24>(detailAtlas, "ImageTintColor");
-  tintColor.A                 = DyJsonGetValueFrom<TF32>(detailAtlas, "ImageAlpha");
-  resultInstance->mTintColor  = tintColor;
+  resultInstance->mIsSizeToContent  = DyJsonGetValueFrom<bool>(detailAtlas, "IsSizeToContent");
+  resultInstance->mTintColor        = DyJsonGetValueFrom<DDyColorRGBA>(detailAtlas, "TintColor");;
 
 
   return resultInstance;

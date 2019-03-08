@@ -49,7 +49,22 @@ void FDyEditor_MainMenu::Draw(_MIN_ MDY_NOTUSED TF32 dt) noexcept
       // 
       if (ImGui::BeginMenu("Menu") == true)
       {
-        ImGui::MenuItem("(dummy menu)", nullptr, false, false);
+        // Edit mode 
+        if (this->mPtrGlobalInstance->mEditMode == false)
+        {
+          if (ImGui::MenuItem("Edit mode", nullptr, false) == true)
+          {
+            DyPushLogCritical("Enter Edit mode...");
+
+          }
+        }
+        else
+        {
+          if (ImGui::MenuItem("Return to play mode", nullptr, false) == true)
+          {
+            DyPushLogCritical("Return to play mode...");
+          }
+        }
         ImGui::Separator();
 
         // We need to push item flag to display modal dialog window.
@@ -117,10 +132,10 @@ void FDyEditor_MainMenu::Draw(_MIN_ MDY_NOTUSED TF32 dt) noexcept
           switch (newFlag)
           {
           case EDyModelRenderingMode::FillNormal: 
-          { MDY_LOG_INFO("Changed model rendering mode flag to {}.", "Normal");
+          { DyPushLogInfo("Changed model rendering mode flag to {}.", "Normal");
           } break;
           case EDyModelRenderingMode::WireFrame: 
-          { MDY_LOG_INFO("Changed model rendering mode flag to {}.", "Wireframe");
+          { DyPushLogInfo("Changed model rendering mode flag to {}.", "Wireframe");
           } break;
           }
 

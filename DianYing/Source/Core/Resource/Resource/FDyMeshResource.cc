@@ -56,7 +56,7 @@ FDyMeshResource::~FDyMeshResource()
 
 const std::string& FDyMeshResource::GetSpecifierName() const noexcept
 {
-  MDY_ASSERT(this->mSpecifierName.empty() == false, "Mesh specifier name must be valid.");
+  MDY_ASSERT_MSG(this->mSpecifierName.empty() == false, "Mesh specifier name must be valid.");
   return this->mSpecifierName;
 }
 

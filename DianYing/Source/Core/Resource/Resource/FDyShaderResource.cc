@@ -64,8 +64,8 @@ void DyPrintShaderProgramErrorLog(_MIN_ TU32 shaderProgramId)
 namespace dy
 {
 
-FDyShaderResource::FDyShaderResource(_MIN_ const FDyShaderInformation& information) :
-    mBinderShader{information.GetSpecifierName()}
+FDyShaderResource::FDyShaderResource(_MIN_ const FDyShaderInformation& information) 
+  : mBinderShader{information.GetSpecifierName()}
 {
   this->mSpecifierName = information.GetSpecifierName();
 
@@ -73,10 +73,10 @@ FDyShaderResource::FDyShaderResource(_MIN_ const FDyShaderInformation& informati
   { MDY_GRAPHIC_SET_CRITICALSECITON();
     // Create shader program.
     auto optFragmentList = this->pCreateShaderFragments(information.GetShaderFragmentList());
-    MDY_ASSERT(optFragmentList.has_value() == true, "OpenGL Shader Fragment compilation failed.");
+    MDY_ASSERT_MSG(optFragmentList.has_value() == true, "OpenGL Shader Fragment compilation failed.");
 
     auto optShaderProgramId = this->pInitializeShaderProgram(optFragmentList.value());
-    MDY_ASSERT(optShaderProgramId.has_value() == true, "OpenGL shader program compilation failed.");
+    MDY_ASSERT_MSG(optShaderProgramId.has_value() == true, "OpenGL shader program compilation failed.");
     this->mShaderProgramId = optShaderProgramId.value();
 
     this->pDeleteShaderFragments(optFragmentList.value());
@@ -109,7 +109,7 @@ FDyShaderResource::pCreateShaderFragments(_MIN_ const FDyShaderInformation::TSha
     // Create shader fragment.
     TU32 fragmentId = 0;
     const auto optShaderFragmentId = FDyGLWrapper::CreateShaderFragment(fragDesc);
-    MDY_ASSERT(optShaderFragmentId.has_value() == true, "Shader fragment compilation must be succeeded.");
+    MDY_ASSERT_MSG(optShaderFragmentId.has_value() == true, "Shader fragment compilation must be succeeded.");
     fragmentId = optShaderFragmentId.value();
 
     // Check shader fragment compiliation status only in debug mode.
@@ -134,7 +134,7 @@ FDyShaderResource::pCreateShaderFragments(_MIN_ const FDyShaderInformation::TSha
 std::optional<TU32> FDyShaderResource::pInitializeShaderProgram(_MIN_ const TFragmentList& fragmentList)
 {
   std::optional<TU32> optProgramId = FDyGLWrapper::CreateShaderProgram(fragmentList);
-  MDY_ASSERT(optProgramId.has_value() == true, "Unexpected error occurred.");
+  MDY_ASSERT_MSG(optProgramId.has_value() == true, "Unexpected error occurred.");
 
   // Check shader program linking status only in debug mode.
 #if defined(NDEBUG) == false
@@ -167,7 +167,7 @@ void FDyShaderResource::pStoreAttributeProperties() noexcept
   for (TU32 i = 0; i < activatedAttrCount; ++i)
   {
     auto result = FDyGLWrapper::GetShaderProgramAttributeInfo(this->mShaderProgramId, i);
-    MDY_ASSERT(result.has_value() == true, "Unexpected error occurred.");
+    MDY_ASSERT_MSG(result.has_value() == true, "Unexpected error occurred.");
 
     auto [specifier, length, size, type, locId] = result.value();
     if (specifier == "gl_VertexID") { continue; }
@@ -179,7 +179,7 @@ void FDyShaderResource::pStoreAttributeProperties() noexcept
   // Output activated attirbute variable information on console and file in debug_mode.
   for (const auto& variable : this->mAttributeVariableList)
   {
-    MDY_LOG_DEBUG_D("{} | Shader attribute information | Name : {} | Slotsize : {} | Location : {}",
+    DyPushLogDebugDebug("{} | Shader attribute information | Name : {} | Slotsize : {} | Location : {}",
                     this->mSpecifierName, variable.mVariableName, variable.mVariableSlotSize, variable.mVariableLocation);
   }
 #endif
@@ -204,7 +204,7 @@ void FDyShaderResource::pStoreUniformProperties() noexcept
   // Output activated attirbute variable information on console and file in debug_mode.
   for (const auto& variable : this->mPlainUniformVariableLists)
   {
-    MDY_LOG_DEBUG_D("{} | Shader uniform variable information | Name : {} | Slotsize : {} | Type : {} | Location : {}",
+    DyPushLogDebugDebug("{} | Shader uniform variable information | Name : {} | Slotsize : {} | Type : {} | Location : {}",
                     this->mShaderName,
                     variable.mVariableName, variable.mVariableSlotSize,
                     DyGetDebugStringOfUniformVariableType(variable.mVariableType).data(), variable.mVariableLocation);
@@ -229,7 +229,7 @@ void FDyShaderResource::pStoreUniformBufferObjectProperties() noexcept
   // Output activated attirbute variable information on console and file in debug_mode.
   for (const auto& variable : this->mUniformBufferObjectList)
   {
-    MDY_LOG_DEBUG_D("{} | Shader UBO information | Buffer name : {}", this->mSpecifierName, variable.mUboSpecifierName);
+    DyPushLogDebugDebug("{} | Shader UBO information | Buffer name : {}", this->mSpecifierName, variable.mUboSpecifierName);
   }
 #endif
 }
@@ -249,7 +249,7 @@ TU32 FDyShaderResource::GetShaderProgramId() const noexcept
 
 void FDyShaderResource::UseShader() const noexcept
 {
-  MDY_ASSERT(this->mShaderProgramId > 0, "Shader program must be valid.");
+  MDY_ASSERT_MSG(this->mShaderProgramId > 0, "Shader program must be valid.");
   FDyGLWrapper::UseShaderProgram(this->mShaderProgramId);
 }
 

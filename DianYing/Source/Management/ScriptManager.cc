@@ -14,10 +14,15 @@
 
 /// Header file
 #include <Dy/Management/ScriptManager.h>
+
+#define SOL_CHECK_ARGUMENT 1
+#include <sol2/sol.hpp>
+
 #include <Dy/Core/DyEngine.h>
 #include <Dy/Component/Internal/Widget/CDyWidgetScriptCpp.h>
+#include <Dy/Component/Internal/Script/FDyWidgetScriptStatus.h>
+#include <Dy/Component/Internal/Script/FDyGlobalScriptStatus.h>
 #include <Dy/Element/Actor.h>
-#include <Dy/Management/LoggingManager.h>
 #include <Dy/Management/Helper/LuaBindingEntry.h>
 
 //!
@@ -58,14 +63,14 @@ LDyScript = {
 void DyInitializeMDyLog(_MIO_ sol::state& lua)
 {
   /// Binding lua
-  lua.new_enum<dy::EDyLogLevel>("EDyLogLevel",
+  lua.new_enum<MDyLog::ELevel>("EDyLogLevel",
     {
-      { "Trace",        EDyLogLevel::Trace },
-      { "Debug",        EDyLogLevel::Debug },
-      { "Information",  EDyLogLevel::Information },
-      { "Warning",      EDyLogLevel::Warning },
-      { "Error",        EDyLogLevel::Error },
-      { "Critical",     EDyLogLevel::Critical }
+      { "Trace",        MDyLog::ELevel::Trace },
+      { "Debug",        MDyLog::ELevel::Debug },
+      { "Information",  MDyLog::ELevel::Information },
+      { "Warning",      MDyLog::ELevel::Warning },
+      { "Error",        MDyLog::ELevel::Error },
+      { "Critical",     MDyLog::ELevel::Critical }
     }
   );
 
@@ -73,7 +78,7 @@ void DyInitializeMDyLog(_MIO_ sol::state& lua)
   lua.new_usertype<dy::MDyLog>("MDyLog",
       "new",            sol::no_constructor,
       "GetInstance",    &MDyLog::GetInstance,
-      "PushLog",        &MDyLog::PushLog<>,
+      //"PushLog",        &MDyLog::PushLog,
       "SetVisibleLevel",&MDyLog::SetVisibleLevel
   );
 }
@@ -136,275 +141,190 @@ void DyInitilaizeFDyActor(_MIO_ sol::state& lua)
 //! Implementation
 //!
 
+
+namespace dy
+{
+
+class MDyScript::Impl final
+{
+public:
+  Impl();
+  ~Impl();
+
+  /// @brief Get reference of lua instance.
+  /// @return lua instance l-value reference.
+  sol::state& GetLuaInstance() noexcept;
+
+  /// @brief Create widget script. \n
+  /// @TODO IMPLEMENT LUA VERSION. 
+  /// @param iScriptSpecifier
+  /// @param iRefWidget
+  /// @param iIsAwakened
+  FDyWidgetScriptState* 
+  CreateWidgetScript(const std::string& iScriptSpecifier, FDyUiWidget& iRefWidget, bool iIsAwakened);
+
+  /// @brief Try remove widget script from dy system.
+  /// But, removed widget script does not actually removed instantly, \n
+  /// moved gc list and removed actually on next frame prior to update.
+  EDySuccess TryForwardWidgetScriptToGCList(const FDyWidgetScriptState* iPtrWidgetScriptState);
+  /// @brief Try move inserted widget script to main container.
+  void TryMoveInsertWidgetScriptToMainContainer();
+  
+  /// @brief Create widget script. \n
+  /// @TODO IMPLEMENT LUA VERSION. 
+  /// @param iScriptSpecifier
+  /// @param iRefActor
+  /// @param iIsAwakened
+  FDyActorScriptState* 
+  CreateActorScript(const std::string& iScriptSpecifier, FDyActor& iRefActor, bool iIsAwakened);
+  /// @brief Try remove actor script from dy system.
+  /// But, removed actor script does not actually removed instantly, \n
+  /// moved gc list and removed actually on next frame prior to update.
+  EDySuccess TryForwardActorScriptToGCList(const FDyActorScriptState* iPtrActorScriptStatus);
+  /// @brief Try move inserted actor script to main container.
+  void TryMoveInsertActorScriptToMainContainer();
+
+  /// @brief Update widget script.
+  void UpdateWidgetScript(TF32 dt);
+  /// @brief Update widget script if only script present type is type.
+  void UpdateWidgetScript(TF32 dt, EDyScriptState type);
+  /// @brief Check widget script that must be gced is exist on list.
+  bool IsGcedWidgetScriptExist() const noexcept { return this->mGCedWidgetScriptList.empty() == false; }
+  /// @brief Call `destroy` GCed widget script 
+  void CallDestroyFuncWidgetScriptGCList();
+  /// @brief Clear widget script gc list `mGCedWidgetScriptList` anyway.
+  void ClearWidgetScriptGCList() { this->mGCedWidgetScriptList.clear(); }
+  /// @brief remove emptied script list.
+  void RemoveEmptyOnWidgetScriptList();
+
+  /// @brief Update actor script.
+  void UpdateActorScript(TF32 iDt);
+  /// @brief Update actor script if only script present type is type.
+  void UpdateActorScript(TF32 dt, EDyScriptState type);
+  /// @brief Check there are gced -candidate actor script instances.
+  bool IsGcedActorScriptExist() const noexcept { return this->mGCedActorScriptList.empty() == false; }
+  /// @brief Call `destroy` actor script 
+  void CallDestroyFuncActorScriptGcList();
+  /// @brief Clear actor script gc list `mGCedActorScriptList` anyway.
+  void ClearActorScriptGCList() { this->mGCedActorScriptList.clear(); }
+
+  /// @brief Create global script instance list.
+  /// This function must be called once per application runtime.
+  void CreateGlobalScriptInstances();
+  /// @brief Remove global script instance list.
+  /// This function must be called once per application runtime.
+  void RemoveGlobalScriptInstances() { this->mGlobalScriptContainer.clear(); }
+  /// @brief Call `onStart` function to all global script.
+  void CallonStartGlobalScriptList() 
+  {
+    for (const auto& [scriptName, ptrsmtScript] : this->mGlobalScriptContainer)
+    {
+      ptrsmtScript->CallStart();
+    }
+  }
+  /// @brief Call `onEnd` function to all global script.
+  void CallonEndGlobalScriptList()
+  {
+    for (const auto&[scriptName, ptrsmtScript] : this->mGlobalScriptContainer)
+    {
+      ptrsmtScript->CallEnd();
+    }
+  }
+
+private:
+  sol::state mLua;
+
+  using TDyGlobalScriptList = std::unordered_map<std::string, std::unique_ptr<FDyGlobalScriptState>>;
+  TDyGlobalScriptList mGlobalScriptContainer;
+
+  using TDyWidgetScriptList = std::vector<std::unique_ptr<FDyWidgetScriptState>>;
+  TDyWidgetScriptList mInsertWidgetScriptList = {};
+  TDyWidgetScriptList mWidgetScriptList       = {};
+  TDyWidgetScriptList mGCedWidgetScriptList   = {};
+
+  /// Activated CDyScript component list.
+  /// this list must not be invalidated when iterating list, but except for unenrolling.
+  using TDyActorScriptList = std::vector<std::unique_ptr<FDyActorScriptState>>;
+  TDyActorScriptList  mInsertActorScriptList  = {};
+  TDyActorScriptList  mActorScriptList        = {};
+  TDyActorScriptList  mGCedActorScriptList    = {};
+};
+
+} /// ::dy namespace
+#include <Dy/Management/Inline/MScriptImpl.inl>
+
+//!
+//! Proxy
+//!
+
 namespace dy
 {
 
 EDySuccess MDyScript::pfInitialize()
 {
-  this->mLua.open_libraries(sol::lib::base, sol::lib::string, sol::lib::math);
-  /// Manager binding
-  DyBindLuaEntry(this->mLua);
-  DyInitializeMDyLog(mLua);
-  DyInitilaizeFDyObject(mLua);
-  DyInitilaizeFDyActor(mLua);
-  this->mLua.safe_script(sCDyScriptFrame);
+  this->mPimpl = new (std::nothrow) Impl();
   return DY_SUCCESS;
 }
 
 EDySuccess MDyScript::pfRelease()
 {
-  // sol::state is RAII, so does release automatically.
-  this->mInsertActorScriptList.clear();
-  this->mInsertWidgetScriptList.clear();
-  this->mGCedActorScriptList.clear();
-  this->mGCedWidgetScriptList.clear();
+  delete this->mPimpl;
   return DY_SUCCESS;
 }
 
-sol::state& MDyScript::GetLuaInstance() noexcept
-{
-  return this->mLua;
-}
+sol::state& MDyScript::GetLuaInstance() noexcept { return this->mPimpl->GetLuaInstance(); }
 
 FDyWidgetScriptState* MDyScript::CreateWidgetScript(
-    _MIN_ const std::string& iScriptSpecifier, 
-    _MIN_ FDyUiWidget& iRefWidget, 
-    _MIN_ bool iIsAwakened)
+    const std::string& iScriptSpecifier, 
+    FDyUiWidget& iRefWidget, 
+    bool iIsAwakened)
 {
-  const auto& instanceInfo = MDyMetaInfo::GetInstance().GetScriptMetaInformation(iScriptSpecifier);
-  MDY_ASSERT(instanceInfo.mScriptType != EDyScriptType::NoneError, "");
-  MDY_ASSERT(iIsAwakened == true, "Unexpected error occurred.");
-
-  auto component = std::make_unique<FDyWidgetScriptState>(iRefWidget, instanceInfo);
-  this->mInsertWidgetScriptList.emplace_back(std::move(component));
-  return this->mInsertWidgetScriptList.back().get();
+  return this->mPimpl->CreateWidgetScript(iScriptSpecifier, iRefWidget, iIsAwakened);
 }
 
-void MDyScript::CreateGlobalScriptInstances()
-{
-  const auto& metaManager = MDyMetaInfo::GetInstance();
-  const auto& container   = metaManager.GetRefGlobalScriptMetaInfoContainer();
-  for (const auto& [scriptName, scriptMeta] : container)
-  {
-    this->mGlobalScriptContainer.try_emplace(
-        scriptName, 
-        std::make_unique<FDyGlobalScriptState>(scriptMeta));
-  }
-}
-
-void MDyScript::RemoveGlobalScriptInstances()
-{
-  this->mGlobalScriptContainer.clear();
-}
-
-void MDyScript::CallonStartGlobalScriptList()
-{
-  for (const auto& [scriptName, ptrsmtScript] : this->mGlobalScriptContainer)
-  {
-    ptrsmtScript->CallStart();
-  }
-}
-
-void MDyScript::CallonEndGlobalScriptList()
-{
-    for (const auto& [scriptName, ptrsmtScript] : this->mGlobalScriptContainer)
-  {
-    ptrsmtScript->CallEnd();
-  }
-}
+void MDyScript::CreateGlobalScriptInstances() { this->mPimpl->CreateGlobalScriptInstances(); }
+void MDyScript::RemoveGlobalScriptInstances() { this->mPimpl->RemoveGlobalScriptInstances(); }
+void MDyScript::CallonStartGlobalScriptList() { this->mPimpl->CallonStartGlobalScriptList(); }
+void MDyScript::CallonEndGlobalScriptList()   { this->mPimpl->CallonEndGlobalScriptList(); }
 
 FDyActorScriptState* MDyScript::CreateActorScript(
-    _MIN_ const std::string& iScriptSpecifier, 
-    _MIN_ FDyActor& iRefActor, 
-    _MIN_ bool iIsAwakened)
+    const std::string& iScriptSpecifier, 
+    FDyActor& iRefActor, 
+    bool iIsAwakened)
 {
-  const auto& instanceInfo = MDyMetaInfo::GetInstance().GetScriptMetaInformation(iScriptSpecifier);
-  MDY_ASSERT(instanceInfo.mScriptType != EDyScriptType::NoneError, "");
-  MDY_ASSERT(iIsAwakened == true, "Unexpected error occurred.");
-
-  auto component = std::make_unique<FDyActorScriptState>(iRefActor, instanceInfo);
-  this->mInsertActorScriptList.emplace_back(std::move(component));
-  return this->mInsertActorScriptList.back().get();
+  return this->mPimpl->CreateActorScript(iScriptSpecifier, iRefActor, iIsAwakened);
 }
 
-EDySuccess MDyScript::TryForwardWidgetScriptToGCList(_MIN_ const FDyWidgetScriptState* iPtrWidgetScriptState)
+EDySuccess MDyScript::TryForwardWidgetScriptToGCList(const FDyWidgetScriptState* iPtrWidgetScriptState)
 {
-  for (auto& ptrsmtScript : this->mInsertWidgetScriptList)
-  {
-    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
-    if (ptrsmtScript.get() == iPtrWidgetScriptState) 
-    { // If exist, move script to gc list.
-      this->mGCedWidgetScriptList.emplace_back(std::move(ptrsmtScript)); 
-      return DY_SUCCESS;
-    }
-  }
-
-  for (auto& ptrsmtScript : this->mWidgetScriptList)
-  {
-    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
-    if (ptrsmtScript.get() == iPtrWidgetScriptState) 
-    { // If exist, move script to gc list.
-      this->mGCedWidgetScriptList.emplace_back(std::move(ptrsmtScript)); 
-      return DY_SUCCESS;
-    }
-  }
-
-  return DY_FAILURE;
+  return this->mPimpl->TryForwardWidgetScriptToGCList(iPtrWidgetScriptState);
 }
 
-EDySuccess MDyScript::TryForwardActorScriptToGCList(_MIN_ const FDyActorScriptState* iPtrActorScriptStatus)
+EDySuccess MDyScript::TryForwardActorScriptToGCList(const FDyActorScriptState* iPtrActorScriptStatus)
 {
-  for (auto& ptrsmtScript : this->mInsertActorScriptList)
-  {
-    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
-    if (ptrsmtScript.get() == iPtrActorScriptStatus) 
-    { // If exist, move script to gc list.
-      this->mGCedActorScriptList.emplace_back(std::move(ptrsmtScript)); 
-      return DY_SUCCESS;
-    }
-  }
-
-  for (auto& ptrsmtScript : this->mActorScriptList)
-  {
-    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
-    if (ptrsmtScript.get() == iPtrActorScriptStatus) 
-    { // If exist, move script to gc list.
-      this->mGCedActorScriptList.emplace_back(std::move(ptrsmtScript)); 
-      return DY_SUCCESS;
-    }
-  }
-
-  return DY_FAILURE;
+  return this->mPimpl->TryForwardActorScriptToGCList(iPtrActorScriptStatus);
 }
 
 void MDyScript::TryMoveInsertWidgetScriptToMainContainer()
 {
-  if (this->mInsertWidgetScriptList.empty() == true) { return; }
-
-  for (auto& insertWidgetScript : this->mInsertWidgetScriptList)
-  { // `insertWidgetScript` is always not empty.
-    this->mWidgetScriptList.emplace_back(std::move(insertWidgetScript));
-  }
-  this->mInsertWidgetScriptList.clear();
+  this->mPimpl->TryMoveInsertWidgetScriptToMainContainer();
 }
 
 void MDyScript::TryMoveInsertActorScriptToMainContainer()
 {
-  if (this->mInsertActorScriptList.empty() == true) { return; }
-
-  for (auto& actorScript : this->mInsertActorScriptList)
-  { // `actorScript` is always not empty.
-    this->mActorScriptList.emplace_back(std::move(actorScript));
-  }
-  this->mInsertActorScriptList.clear();
+  this->mPimpl->TryMoveInsertActorScriptToMainContainer();
 }
 
-void MDyScript::UpdateWidgetScript(_MIN_ TF32 dt)
-{
-  for (auto& ptrsmtScript : this->mWidgetScriptList)
-  {
-    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
-    ptrsmtScript->CallScriptFunction(dt);
-    // If engine must be stopped and end application, return instantly.
-    if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
-  }
-}
-
-void MDyScript::UpdateWidgetScript(_MIN_ TF32 dt, _MIN_ EDyScriptState type)
-{
-  for (auto& ptrsmtScript : this->mInsertWidgetScriptList)
-  {
-    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
-    if (ptrsmtScript->GetScriptStatus() == type) { ptrsmtScript->CallScriptFunction(dt); }
-    // If engine must be stopped and end application, return instantly.
-    if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
-  }
-
-  for (auto& ptrsmtScript : this->mWidgetScriptList)
-  {
-    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
-    if (ptrsmtScript->GetScriptStatus() == type) { ptrsmtScript->CallScriptFunction(dt); }
-    // If engine must be stopped and end application, return instantly.
-    if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
-  }
-}
-
-bool MDyScript::IsGcedWidgetScriptExist() const noexcept
-{
-  return this->mGCedWidgetScriptList.empty() == false;
-}
-
-void MDyScript::CallDestroyFuncWidgetScriptGCList()
-{
-  for (auto& ptrsmtScript : this->mGCedWidgetScriptList)
-  {
-    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
-    ptrsmtScript->MDY_PRIVATE(CallDestroyFunctionAnyway)();
-    // If engine must be stopped and end application, return instantly.
-    if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
-  }
-}
-
-void MDyScript::ClearWidgetScriptGCList()
-{
-  this->mGCedWidgetScriptList.clear();
-}
-
-void MDyScript::RemoveEmptyOnWidgetScriptList()
-{
-  this->mInsertWidgetScriptList.erase(std::remove(MDY_BIND_BEGIN_END(this->mInsertWidgetScriptList), nullptr), this->mInsertWidgetScriptList.end());
-  this->mWidgetScriptList.erase(std::remove(MDY_BIND_BEGIN_END(this->mWidgetScriptList), nullptr), this->mWidgetScriptList.end());
-}
-
-void MDyScript::UpdateActorScript(TF32 dt)
-{
-  for (auto& ptrsmtScript : this->mActorScriptList)
-  {
-    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
-    ptrsmtScript->CallScriptFunction(dt);
-    // If engine must be stopped and end application, return instantly.
-    if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
-  }
-}
-
-void MDyScript::UpdateActorScript(TF32 dt, EDyScriptState type)
-{
-  for (auto& ptrsmtScript : this->mInsertActorScriptList)
-  {
-    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
-    if (ptrsmtScript->GetScriptStatus() == type) { ptrsmtScript->CallScriptFunction(dt); }
-    // If engine must be stopped and end application, return instantly.
-    if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
-  }
-
-  for (auto& ptrsmtScript : this->mActorScriptList)
-  {
-    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
-    if (ptrsmtScript->GetScriptStatus() == type) { ptrsmtScript->CallScriptFunction(dt); }
-    // If engine must be stopped and end application, return instantly.
-    if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
-  }
-}
-
-bool MDyScript::IsGcedActorScriptExist() const noexcept
-{
-  return this->mGCedActorScriptList.empty() == false;
-}
-
-void MDyScript::CallDestroyFuncActorScriptGCList()
-{
-  for (auto& ptrsmtScript : this->mGCedActorScriptList)
-  {
-    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
-    ptrsmtScript->MDY_PRIVATE(CallDestroyFunctionAnyway)();
-    // If engine must be stopped and end application, return instantly.
-    if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
-  }
-}
-
-void MDyScript::ClearActorScriptGCList()
-{
-  this->mGCedActorScriptList.clear();
-}
+void MDyScript::UpdateWidgetScript(TF32 dt) { this->mPimpl->UpdateWidgetScript(dt); }
+void MDyScript::UpdateWidgetScript(TF32 dt, EDyScriptState type) { this->mPimpl->UpdateWidgetScript(dt, type); }
+bool MDyScript::IsGcedWidgetScriptExist() const noexcept { return this->mPimpl->IsGcedWidgetScriptExist(); }
+void MDyScript::CallDestroyFuncWidgetScriptGCList() { this->mPimpl->CallDestroyFuncWidgetScriptGCList(); }
+void MDyScript::ClearWidgetScriptGCList() { this->mPimpl->ClearWidgetScriptGCList(); }
+void MDyScript::RemoveEmptyOnWidgetScriptList() { return this->mPimpl->RemoveEmptyOnWidgetScriptList(); }
+void MDyScript::UpdateActorScript(TF32 dt) { this->mPimpl->UpdateActorScript(dt); }
+void MDyScript::UpdateActorScript(TF32 dt, EDyScriptState type) { this->mPimpl->UpdateActorScript(dt, type); }
+bool MDyScript::IsGcedActorScriptExist() const noexcept { return this->mPimpl->IsGcedActorScriptExist(); }
+void MDyScript::CallDestroyFuncActorScriptGCList() { this->mPimpl->CallDestroyFuncActorScriptGcList(); }
+void MDyScript::ClearActorScriptGCList() { this->mPimpl->ClearActorScriptGCList(); }
 
 } /// ::dy namespace

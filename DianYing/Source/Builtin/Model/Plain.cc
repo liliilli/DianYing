@@ -24,7 +24,7 @@ void FDyBuiltinModelPlain::ConstructBuffer(PDyModelInstanceMetaInfo& buffer) noe
 {
   buffer.mSourceType          = EDyResourceSource::Builtin;
   buffer.mSpecifierName       = sName;
-  buffer.mMeshList.emplace_back(MSVSTR(FDyBtMsPlain::sName), MSVSTR(FDyBtMtCheckerWorldPos::sName));
+  buffer.mMeshList.emplace_back((FDyBtMsPlain::sName), (FDyBtMtCheckerWorldPos::sName));
 }
 
 } /// ::dy::builtin namespace

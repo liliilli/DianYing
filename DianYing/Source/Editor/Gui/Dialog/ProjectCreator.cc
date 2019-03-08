@@ -144,7 +144,7 @@ EDySuccess FDyProjectCreator::pfRelease()
 {
   if (this->mParentBoolFlagPtr) { *(this->mParentBoolFlagPtr) = false; }
 
-  MDY_LOG_INFO("Released");
+  DyPushLogInfo("Released");
   return DY_SUCCESS;
 }
 
@@ -190,31 +190,31 @@ void FDyProjectCreator::DrawWindow(float dt) noexcept
 
     if (ImGui::Button("Create Project"))
     {
-      MDY_LOG_INFO("{} | Pressed OK button.", "FDyProjectCreator::DrawWindow");
+      DyPushLogInfo("{} | Pressed OK button.", "FDyProjectCreator::DrawWindow");
 
       // Check path and project name are not vacant.
       switch (const auto flag = CheckIntegrity(directoryPath, projectName); flag)
       {
       case FailedByDirectoryPathEmpty:
-        MDY_LOG_ERROR(sErrorDirectoryPathEmpty.data());
+        DyPushLogError(sErrorDirectoryPathEmpty.data());
 #ifdef false
         pCreateNotSupportYetDialogMsg(DyMakeNotNull(&this->mErrorDialogVisible), sErrorDirectoryPathEmpty);
 #endif
         break;
       case FailedByProjectNameEmpty:
-        MDY_LOG_ERROR(sErrorProjectNameEmpty.data());
+        DyPushLogError(sErrorProjectNameEmpty.data());
 #ifdef false
         pCreateNotSupportYetDialogMsg(DyMakeNotNull(&this->mErrorDialogVisible), sErrorProjectNameEmpty);
 #endif
         break;
       case FailedByProjectNameFirstAlpha:
-        MDY_LOG_ERROR(sErrorProjectNameFirstAlpha.data());
+        DyPushLogError(sErrorProjectNameFirstAlpha.data());
 #ifdef false
         pCreateNotSupportYetDialogMsg(DyMakeNotNull(&this->mErrorDialogVisible), sErrorProjectNameFirstAlpha);
 #endif
         break;
       case FailedByProjectNameNotCorrect:
-        MDY_LOG_ERROR(sErrorProjectNameNotCorrect.data());
+        DyPushLogError(sErrorProjectNameNotCorrect.data());
 #ifdef false
         pCreateNotSupportYetDialogMsg(DyMakeNotNull(&this->mErrorDialogVisible), sErrorProjectNameNotCorrect);
 #endif

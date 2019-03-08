@@ -42,8 +42,8 @@ FDyActorScriptState::FDyActorScriptState(_MIN_ FDyActor& iRefActor, _MIN_ const 
 
 void FDyActorScriptState::CallScriptFunction(_MIN_ TF32 dt) noexcept
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance),"Script instace must be activated!");
-  MDY_ASSERT(this->mStatus != EDyScriptState::NoneError, "FDyActorScriptState must be initialized!");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance),"Script instace must be activated!");
+  MDY_ASSERT_MSG(this->mStatus != EDyScriptState::NoneError, "FDyActorScriptState must be initialized!");
 
   switch (this->mStatus)
   {
@@ -65,13 +65,13 @@ void FDyActorScriptState::CallScriptFunction(_MIN_ TF32 dt) noexcept
 
 void FDyActorScriptState::MDY_PRIVATE(CallDestroyFunctionAnyway)() noexcept
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance), "Script instace must be activated!");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance), "Script instace must be activated!");
   this->mScriptInstance->Destroy();
 }
 
 EDyScriptType FDyActorScriptState::GetScriptType() const noexcept
 {
-  MDY_ASSERT(this->mType != decltype(this->mType)::NoneError, "Script type must be specified properly.");
+  MDY_ASSERT_MSG(this->mType != decltype(this->mType)::NoneError, "Script type must be specified properly.");
   return this->mType;
 }
 
@@ -82,7 +82,7 @@ EDyScriptState FDyActorScriptState::GetScriptStatus() const noexcept
 
 CDyActorScriptBase* FDyActorScriptState::MDY_PRIVATE(GetPtrInternalActorScript)() const noexcept
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance), "Internal script instance must be valid.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance), "Internal script instance must be valid.");
   return this->mScriptInstance.get();
 }
 

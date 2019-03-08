@@ -24,12 +24,12 @@ namespace dy
 CDyWidgetScriptCpp::CDyWidgetScriptCpp(_MIN_ FDyUiWidget& widgetReference, _MIN_ const PDyScriptInstanceMetaInfo& metaInfo) :
     CDyWidgetScriptBase{widgetReference}
 {
-  MDY_ASSERT(metaInfo.mScriptType == EDyScriptType::Cpp,    "Script type is not matched to CDyWidgetScriptCpp.");
-  MDY_ASSERT(metaInfo.mScriptMode == EDyScriptMode::Widget, "Given script must be widget type.");
+  MDY_ASSERT_MSG(metaInfo.mScriptType == EDyScriptType::Cpp,    "Script type is not matched to CDyWidgetScriptCpp.");
+  MDY_ASSERT_MSG(metaInfo.mScriptMode == EDyScriptMode::Widget, "Given script must be widget type.");
 
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(metaInfo.mBtInstantiationFunction), "Cpp script instantiation function must be not null.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(metaInfo.mBtInstantiationFunction), "Cpp script instantiation function must be not null.");
   this->mScriptInstance = DyConvertUniquePtrTo<ADyWidgetCppScript>(metaInfo.mBtInstantiationFunction());
-  MDY_ASSERT(MDY_CHECK_ISNOTNULL(this->mScriptInstance),    "Script instance could not bound to system.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->mScriptInstance),    "Script instance could not bound to system.");
 
   this->mScriptName = metaInfo.mSpecifierName;
   this->mScriptInstance->pfSetOutsideReference(*this);
@@ -38,7 +38,7 @@ CDyWidgetScriptCpp::CDyWidgetScriptCpp(_MIN_ FDyUiWidget& widgetReference, _MIN_
 
 ADyWidgetCppScript* CDyWidgetScriptCpp::MDY_PRIVATE(GetScriptInstance)() const noexcept
 {
-  MDY_ASSERT(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance), "Script instance must be valid, not empty.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance), "Script instance must be valid, not empty.");
   return this->mScriptInstance.get();
 }
 

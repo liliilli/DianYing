@@ -20,7 +20,7 @@ namespace dy
 
 void FDyBtGiDebugStatus::OnCallbackLogFlag(_MIN_ const bool& iValue)
 {
-  MDY_LOG_CRITICAL("Value is {}", iValue ? "True" : "False");
+  DyPushLogCritical("Value is {}", iValue ? "True" : "False");
 }
 
 } /// ::dy namespace

@@ -27,10 +27,10 @@ void DDyIOReferenceInstance::AttachBinder(_MIN_ const __FDyBinderBase* iPtrBase)
 
 void DDyIOReferenceInstance::DetachBinder(const __FDyBinderBase* iPtrBase) noexcept
 {
-  MDY_ASSERT(this->mPtrBoundBinderList.empty() == false, "Reference count must be positive value when detach any binder.");
+  MDY_ASSERT_MSG(this->mPtrBoundBinderList.empty() == false, "Reference count must be positive value when detach any binder.");
 
   const auto itPtr = std::find(MDY_BIND_BEGIN_END(this->mPtrBoundBinderList), iPtrBase);
-  MDY_ASSERT(itPtr != this->mPtrBoundBinderList.end(), "Given binder pointer address must be exist in given RI list.");
+  MDY_ASSERT_MSG(itPtr != this->mPtrBoundBinderList.end(), "Given binder pointer address must be exist in given RI list.");
 
   DyFastErase(this->mPtrBoundBinderList, std::distance(this->mPtrBoundBinderList.begin(), itPtr));
 }

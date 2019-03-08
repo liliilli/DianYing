@@ -19,8 +19,6 @@
 ///
 
 #include <array>
-
-#include <assimp/vector3.h>
 #include <glm/glm.hpp>
 
 #include <Dy/Helper/Type/Vector2.h>
@@ -31,16 +29,15 @@ namespace dy
 
 class DDyMatrix4x4;
 
-///
 /// @struct DDyVector4
 /// @brief Float type 4-element vector struct.
-///
 struct DDyVector4 final
 {
-  float X = 0.f;
-  float Y = 0.f;
-  float Z = 0.f;
-  float W = 1.f;
+  union 
+  { 
+    __m128 __Simd{}; 
+    struct { float X; float Y; float Z; float W; };
+  };
 
   DDyVector4() = default;
   DDyVector4(const DDyVector4&) = default;
@@ -57,39 +54,10 @@ struct DDyVector4 final
   //! Constructor and assign operator for dependencies.
   //!
 
-  DDyVector4(const aiVector2D& value) noexcept : X{value.x}, Y{value.y} {}
-  DDyVector4(const aiVector3D& value) noexcept : X{value.x}, Y{value.y}, Z{value.z} {}
-  DDyVector4(const glm::vec2& value) noexcept : X{value.x}, Y{value.y} {}
-  DDyVector4(const glm::vec3& value) noexcept : X{value.x}, Y{value.y}, Z{value.z} {}
+  explicit DDyVector4(const glm::vec2& value) noexcept : X{value.x}, Y{value.y} {}
+  explicit DDyVector4(const glm::vec3& value) noexcept : X{value.x}, Y{value.y}, Z{value.z} {}
   DDyVector4(const glm::vec4& value) noexcept : X{value.x}, Y{value.y}, Z{value.z}, W{value.w} {}
   DDyVector4(const std::array<TF32, 4>& value) noexcept : X{value[0]}, Y{value[1]}, Z{value[2]}, W{value[3]} {}
-
-  DDyVector4& operator=(const aiVector2D& value) noexcept
-  {
-    this->X = value.x;
-    this->Y = value.y;
-    this->Z = 0.0f;
-    this->W = 1.0f;
-    return *this;
-  }
-
-  DDyVector4& operator=(const aiVector3D& value) noexcept
-  {
-    this->X = value.x;
-    this->Y = value.y;
-    this->Z = value.z;
-    this->W = 1.0f;
-    return *this;
-  }
-
-  DDyVector4& operator=(const glm::vec2& value) noexcept
-  {
-    this->X = value.x;
-    this->Y = value.y;
-    this->Z = 0.0f;
-    this->W = 1.0f;
-    return *this;
-  }
 
   DDyVector4& operator=(const glm::vec3& value) noexcept
   {
@@ -109,28 +77,9 @@ struct DDyVector4 final
     return *this;
   }
 
-  auto& operator[](std::size_t index)
-  {
-    switch (index)
-    {
-    case 0: return this->X;
-    case 1: return this->Y;
-    case 2: return this->Z;
-    case 3: return this->W;
-    default: throw std::out_of_range("DDyVector2 range is out of bound.");
-    }
-  }
+  TF32& operator[](std::size_t index);
 
-  const auto& operator[](std::size_t index) const
-  {
-    switch (index) {
-    case 0: return this->X;
-    case 1: return this->Y;
-    case 2: return this->Z;
-    case 3: return this->W;
-    default: throw std::out_of_range("DDyVector2 range is out of bound.");
-    }
-  }
+  const TF32& operator[](std::size_t index) const;
 
 #if defined(_WIN32)
   explicit DDyVector4(const DirectX::XMFLOAT2& value) noexcept :
@@ -202,16 +151,6 @@ struct DDyVector4 final
   //! Conversion operators for dependencies.
   //!
 
-  explicit operator aiVector2D() const noexcept
-  {
-    return aiVector2D{this->X, this->Y};
-  }
-
-  explicit operator aiVector3D() const noexcept
-  {
-    return aiVector3D{this->X, this->Y, this->Z};
-  }
-
   explicit operator glm::vec2() const noexcept
   {
     return glm::vec2{this->X, this->Y};
@@ -231,196 +170,55 @@ struct DDyVector4 final
   //! Methods
   //!
 
-  ///
-  /// @brief
-  /// Return sequence data of this instance.
-  ///
-  [[nodiscard]] FORCEINLINE std::array<float, 4> Data() const noexcept
-  {
-    return {this->X, this->Y, this->Z, this->W};
-  }
+  /// @brief Return sequence data of this instance.
+  MDY_NODISCARD const TF32* Data() const noexcept;
 
-  ///
-  /// @brief
-  ///
-  DDyVector4 MultiplyMatrix(const dy::DDyMatrix4x4& matrix) const noexcept;
+  /// @brief Return sequence data of this instance.
+  MDY_NODISCARD TF32* Data() noexcept;
+
+  /// @brief Multiply with matrix and return new vector4.
+  /// If origin vector is V, and matrix is M, so new vector4 V' = (V^T)M.
+  DDyVector4 MultiplyMatrix(const DDyMatrix4x4& matrix) const noexcept;
 
   //!
   //! Operators
   //!
 
-  friend DDyVector4 operator+(DDyVector4 lhs, const DDyVector4& rhs) noexcept
-  {
-    lhs.X += rhs.X;
-    lhs.Y += rhs.Y;
-    lhs.Z += rhs.Z;
-    lhs.W += rhs.W;
-    return lhs;
-  }
+  DDyVector4& operator+=(const DDyVector4& value) noexcept;
 
-  friend DDyVector4 operator-(DDyVector4 lhs, const DDyVector4& rhs) noexcept
-  {
-    lhs.X -= rhs.X;
-    lhs.Y -= rhs.Y;
-    lhs.Z -= rhs.Z;
-    lhs.W -= rhs.W;
-    return lhs;
-  }
+  DDyVector4& operator-=(const DDyVector4& value) noexcept;
 
-  ///
-  /// DDyVector4 $$ v = (x, y, z) $$ and value $$ a $$
-  /// $$ av $$.
-  ///
-  friend DDyVector4 operator*(DDyVector4 lhs, const float rhs) noexcept
-  {
-    lhs.X *= rhs;
-    lhs.Y *= rhs;
-    lhs.Z *= rhs;
-    lhs.W *= rhs;
-    return lhs;
-  }
+  DDyVector4& operator*=(const float value) noexcept;
 
-  ///
+  DDyVector4& operator*=(const DDyVector4& value) noexcept;
+
   /// If lhs and rhs are DDyVector4, element multiplication happens.
-  ///
-  friend DDyVector4 operator*(DDyVector4 lhs, const DDyVector4& rhs) noexcept
-  {
-    lhs.X *= rhs.X;
-    lhs.Y *= rhs.Y;
-    lhs.Z *= rhs.Z;
-    lhs.W *= rhs.W;
-    return lhs;
-  }
+  DDyVector4& operator/=(const float value) noexcept;
 
-  ///
-  /// If rhs has 0 value, this function just do nothing.
-  ///
-  friend DDyVector4 operator/(DDyVector4 lhs, const float rhs) noexcept
-  {
-    if (rhs == 0.0f)
-    {
-      MDY_LOG_CRITICAL_D("DDyVector4 could not be divided by {0}.", rhs);
-    }
-    else
-    {
-      lhs.X /= rhs;
-      lhs.Y /= rhs;
-      lhs.Z /= rhs;
-      lhs.W /= rhs;
-    }
-
-    return lhs;
-  }
-
-  ///
   /// If rhs vector has any 0 value, this function just do nothing.
-  ///
-  friend DDyVector4 operator/(DDyVector4 lhs, const DDyVector4& rhs) noexcept
-  {
-    if (rhs.X == 0.0f || rhs.Y == 0.0f || rhs.Z == 0.0f || rhs.W == 0.0f)
-    {
-      MDY_LOG_CRITICAL_D("DDyVector4 could not be devided by 0 included DDyVector4, ({0}, {1}, {2})", rhs.X, rhs.Y, rhs.Z);
-    }
-    else
-    {
-      lhs.X /= rhs.X;
-      lhs.Y /= rhs.Y;
-      lhs.Z /= rhs.Z;
-      lhs.W /= rhs.W;
-    }
-
-    return lhs;
-  }
-
-  DDyVector4& operator+=(const DDyVector4& value) noexcept
-  {
-    this->X += value.X;
-    this->Y += value.Y;
-    this->Z += value.Z;
-    this->W += value.W;
-    return *this;
-  }
-
-  DDyVector4& operator-=(const DDyVector4& value) noexcept
-  {
-    this->X -= value.X;
-    this->Y -= value.Y;
-    this->Z -= value.Z;
-    this->W -= value.W;
-    return *this;
-  }
-
-  DDyVector4& operator*=(const float value) noexcept
-  {
-    this->X *= value;
-    this->Y *= value;
-    this->Z *= value;
-    this->W *= value;
-    return *this;
-  }
-
-  DDyVector4& operator*=(const DDyVector4& value) noexcept
-  {
-    this->X *= value.X;
-    this->Y *= value.Y;
-    this->Z *= value.Z;
-    this->W *= value.W;
-    return *this;
-  }
-
-  ///
-  /// If lhs and rhs are DDyVector4, element multiplication happens.
-  ///
-  DDyVector4& operator/=(const float value) noexcept
-  {
-    if (value == 0.0f)
-    {
-      MDY_LOG_CRITICAL_D("DDyVector4 could not be divided by {0}.", value);
-    }
-    else
-    {
-      this->X /= value;
-      this->Y /= value;
-      this->Z /= value;
-      this->W /= value;
-    }
-
-    return *this;
-  }
-
-  ///
-  /// If rhs vector has any 0 value, this function just do nothing.
-  ///
-  DDyVector4& operator/=(const DDyVector4& value) noexcept
-  {
-    if (value.X == 0.0f || value.Y == 0.0f || value.Z == 0.0f || value.W == 0.0f)
-    {
-      MDY_LOG_CRITICAL_D("DDyVector4 could not be devided by 0 included DDyVector4, ({0}, {1}, {2})", value.X, value.Y, value.Z);
-    }
-    else
-    {
-      this->X /= value.X;
-      this->Y /= value.Y;
-      this->Z /= value.Z;
-      this->W /= value.W;
-    }
-
-    return *this;
-  }
-
-  friend bool operator==(_MIN_ const DDyVector4& lhs, _MIN_ const DDyVector4& rhs) noexcept;
-  friend bool operator!=(_MIN_ const DDyVector4& lhs, _MIN_ const DDyVector4& rhs) noexcept;
-
-  ///
-  /// @brief Check if this DDyVector4 is all zero or nearly equal to zero.
-  ///
-  [[nodiscard]] bool IsAllZero() const noexcept;
-
-  ///
-  /// @brief Check if vector DDyVector4 is all zero or nearly equal to zero.
-  ///
-  [[nodiscard]] static bool IsAllZero(const DDyVector4& vector) noexcept;
+  DDyVector4& operator/=(const DDyVector4& value) noexcept;
 };
+
+DDyVector4 operator+(DDyVector4 lhs, const DDyVector4& rhs) noexcept;
+DDyVector4 operator-(DDyVector4 lhs, const DDyVector4& rhs) noexcept;
+
+/// DDyVector4 $$ v = (x, y, z) $$ and value $$ a $$ $$ av $$.
+DDyVector4 operator*(DDyVector4 lhs, const float rhs) noexcept;
+/// DDyVector4 $$ v = (x, y, z) $$ and value $$ a $$ $$ av $$.
+DDyVector4 operator*(TF32 lhs, const DDyVector4& rhs) noexcept;
+/// If lhs and rhs are DDyVector4, element multiplication happens.
+DDyVector4 operator*(DDyVector4 lhs, const DDyVector4& rhs) noexcept;
+
+/// If rhs has 0 value, this function just do nothing.
+DDyVector4 operator/(DDyVector4 lhs, const float rhs) noexcept;
+/// If rhs vector has any 0 value, this function just do nothing.
+DDyVector4 operator/(DDyVector4 lhs, const DDyVector4& rhs) noexcept;
+
+bool operator==(const DDyVector4& lhs, const DDyVector4& rhs) noexcept;
+bool operator!=(const DDyVector4& lhs, const DDyVector4& rhs) noexcept;
+
+void to_json(nlohmann::json& oJson, const DDyVector4& iVector);
+void from_json(const nlohmann::json& iJson, DDyVector4& oVector);
 
 } /// ::dy namespace
 
