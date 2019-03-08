@@ -13,19 +13,19 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/HashCompileCrc32.h>
+#include <Dy/Helper/System/HashCompileCrc32.h>
 
 namespace dy
 {
 
-/// @brief
-inline TU32 DyStrSwitchInput(_MIN_ const std::string& iInput)
+/// @brief Get runtime string to crc-32 hash value for using switch-case statements.
+inline TU32 DyStrSwitchInput(const std::string& iInput)
 {
   return hash::DyToCrc32Hash(iInput.c_str());
 }
 
-/// @brief
-constexpr TU32 DyStrCase(_MIN_ const char* iLiteral)
+/// @brief Do compile time or runtime conversion of literal string to hash value.
+constexpr TU32 DyStrCase(const char* iLiteral)
 {
   return hash::DyToCrc32Hash(iLiteral);
 }

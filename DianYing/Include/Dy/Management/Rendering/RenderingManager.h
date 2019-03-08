@@ -16,6 +16,7 @@
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Management/Type/Render/DDyModelHandler.h>
 #include <Dy/Management/Type/Render/DDyGlGlobalStatus.h>
+#include <Dy/Helper/Pointer.h>
 
 //!
 //! Forward declaration
@@ -23,6 +24,8 @@
 
 namespace dy
 {
+class   FWrapperRenderItem;
+class   FWrapperRenderPipeline;
 struct  DDyUboDirectionalLight;
 class   CDyCamera;
 class   CDyModelRenderer;
@@ -51,6 +54,15 @@ class MDyRendering final : public IDySingleton<MDyRendering>
   MDY_SINGLETON_PROPERTIES(MDyRendering);
   MDY_SINGLETON_DERIVED(MDyRendering);
 public:
+  using TMeshDrawCallItem = std::tuple<
+      NotNull<DDyModelHandler::DActorInfo*>,
+      NotNull<const FDyMeshResource*>, 
+      NotNull<const FDyMaterialResource*>
+  >;
+
+  using TDrawColliderItem = std::pair<NotNull<CDyPhysicsCollider*>, DDyMatrix4x4>; 
+  using TUiDrawCallItem = NotNull<FDyUiObject*>;
+
   /// @brief PreRender update functin.
   void PreRender(_MIN_ TF32 dt);
 
@@ -59,18 +71,8 @@ public:
   void SetupDrawModelTaskQueue();
 
   /// @brief Render level information.
-  void RenderLevelInformation();
-  /// @brief Render level debug information. This function must be called in render phase.
-  /// @reference https://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/guide/Manual/DebugVisualization.html#debugvisualization
-  void RenderDebugInformation();
-  /// @brief Render UI information.
-  void RenderUIInformation();
-  /// @brief Integrate Level information + Debug Information + UI Information.
-  void Integrate();
+  void RenderPipelines();
 
-  /// @brief Render only loading widget.
-  void MDY_PRIVATE(RenderLoading());
-  
   /// @brief Get ptr main directional light. If not exist, just return nullptr.
   MDY_NODISCARD CDyDirectionalLight* GetPtrMainDirectionalLight() const noexcept;
   /// @brief Private function, bind directional light as main light.
@@ -94,6 +96,32 @@ public:
 
   /// @brief Swap buffer.
   void SwapBuffers();
+
+  /// @todo TEMPORARY API
+  std::vector<TMeshDrawCallItem>& GetOpaqueMeshQueueList();
+  /// @todo TEMPORARY API
+  std::vector<TMeshDrawCallItem>& GetTranclucentOitMeshQueueList(); 
+  /// @todo TEMPORARY API
+  std::vector<TDrawColliderItem>& GetColliderMeshQueueList(); 
+  /// @todo TEMPORARY API
+  std::vector<TUiDrawCallItem>& GetUiObjectQueuelist();
+
+  /// @brief Check RenderItem is exist on rendering system.
+  MDY_NODISCARD bool HasRenderItem(const std::string& iRenderItemName);
+  /// @brief Get handle instance of RenderItem into handle.
+  MDY_NODISCARD FWrapperRenderItem* GetRenderItem(const std::string& iRenderItemName);
+  /// @brief Check RenderPipeline is exist on rendering system.
+  MDY_NODISCARD bool HasRenderPipeline(const std::string& iRenderPipelineName);
+  /// @brief Get handle instance of RenderPipeline into handle.
+  MDY_NODISCARD FWrapperRenderPipeline* GetRenderPipeline(const std::string& iRenderPipelineName);
+  /// @brief Check Entry RenderPipeline is exist on rendering system.
+  MDY_NODISCARD bool HasEntryRenderPipeline(const std::string& iEntryPipelineName);
+  /// @brief Set activation of entry renderpipeline.
+  /// If Activated, this pipeline will be rendered with arbitary order.
+  /// If Deactivated, this pipeline will not be rendered but leave render resources valid.
+  ///
+  /// If not found, just do nothing.
+  EDySuccess ActivateEntryRenderPipeline(const std::string& iEntryPipelineName, bool iIsActivated);
 
 private:
   /// @brief Enqueue static draw call to mesh with material.

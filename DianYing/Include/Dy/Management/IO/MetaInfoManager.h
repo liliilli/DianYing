@@ -31,6 +31,8 @@ class RDyBuiltinResource;
 
 namespace dy
 {
+struct PDyRenderItemInstanceMetaInfo;
+struct PDyRenderPipelineInstanceMetaInfo;
 struct PDyGLShaderInstanceMetaInfo;
 struct PDyMeshInstanceMetaInfo;
 struct PDyModelInstanceMetaInfo;
@@ -128,6 +130,12 @@ public:
   /// @return Return value is undefined if not found.
   MDY_NODISCARD const PDySoundInstanceMetaInfo&
   GetSoundMetaInformation(const std::string& specifier) const;
+  /// @brief  Get render pipeline meta information.
+  MDY_NODISCARD const PDyRenderPipelineInstanceMetaInfo&
+  GetRenderPipeline(const std::string& iRenderPipelineSpecifier) const;
+  /// @brief  Get render item meta information.
+  MDY_NODISCARD const PDyRenderItemInstanceMetaInfo&
+  GetRenderItem(const std::string& iRenderItemSpecifier) const;
 
   /// @brief Get loading widget pointer if exist, or return nullptr (nothing) value
   MDY_NODISCARD const PDyMetaWidgetRootDescriptor* 
@@ -178,6 +186,12 @@ public:
   /// @brief  Check sound meta information is exist.
   /// @return If found, return true or false.
   MDY_NODISCARD bool IsSoundMetaInfoExist(const std::string& specifierName) const noexcept;
+  /// @brief  Check render pipeline meta information is exist.
+  /// @return If found, return true or false.
+  MDY_NODISCARD bool IsRenderPipelineExist(const std::string& iRenderPipelineName) const noexcept;
+  /// @brief  Check render item is exist.
+  /// @return If found, return true or false.
+  MDY_NODISCARD bool IsRenderItemExist(const std::string& iRenderItemName) const noexcept;
 
   /// @brief Check loading widget is exist and ready.
   /// @return If found, return true or false.
@@ -235,6 +249,8 @@ private:
   MDY_NODISCARD EDySuccess pfAddMaterialMetaInfo      (const PDyMaterialInstanceMetaInfo& metaInfo);
   MDY_NODISCARD EDySuccess pfAddGLAttachmentMetaInfo  (const PDyGlAttachmentInstanceMetaInfo& metaInfo);
   MDY_NODISCARD EDySuccess pfAddGLFrameBufferMetaInfo (const PDyGlFrameBufferInstanceMetaInfo& metaInfo);
+  MDY_NODISCARD EDySuccess pfAddRenderPipelineMetaInfo(const PDyRenderPipelineInstanceMetaInfo& metaInfo);
+  MDY_NODISCARD EDySuccess pfAddRenderItemMetaInfo    (const PDyRenderItemInstanceMetaInfo& metaInfo);
   MDY_NODISCARD EDySuccess MDY_PRIVATE(AddLoadingWidgetMetaInformation)(const std::string& widgetMetaInfo);
 
   MDY_NODISCARD EDySuccess MDY_PRIVATE(AddBootResourceSpecifierList)(const TResourceSpecifierList& list);

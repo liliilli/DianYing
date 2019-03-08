@@ -64,8 +64,8 @@ void DyPrintShaderProgramErrorLog(_MIN_ TU32 shaderProgramId)
 namespace dy
 {
 
-FDyShaderResource::FDyShaderResource(_MIN_ const FDyShaderInformation& information) :
-    mBinderShader{information.GetSpecifierName()}
+FDyShaderResource::FDyShaderResource(_MIN_ const FDyShaderInformation& information) 
+  : mBinderShader{information.GetSpecifierName()}
 {
   this->mSpecifierName = information.GetSpecifierName();
 

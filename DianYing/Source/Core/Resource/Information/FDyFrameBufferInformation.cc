@@ -22,6 +22,7 @@ namespace dy
 
 FDyFrameBufferInformation::FDyFrameBufferInformation(_MIN_ const PDyGlFrameBufferInstanceMetaInfo& metaInfo) :
     mSpecifierName{metaInfo.mSpecifierName},
+    mAttachmentBlendings{metaInfo.mBlendingEquationList},
     mFrameBufferSize{metaInfo.mFrameBufferSize},
     mIsUsingDepthBuffer{metaInfo.mIsUsingDepthBuffer},
     mIsNotUsingPixelShader{metaInfo.mIsNotUsingPixelShader}
@@ -42,6 +43,11 @@ FDyFrameBufferInformation::FDyFrameBufferInformation(_MIN_ const PDyGlFrameBuffe
         std::make_unique<TDyInformationBinderAttachment>(metaInfo.mDepthAttachmentSpecifier)
     );
   }
+}
+
+const TBlendingEquationList& FDyFrameBufferInformation::GetAttachmentBlendings() const noexcept
+{
+  return this->mAttachmentBlendings;
 }
 
 } /// ::dy namespace

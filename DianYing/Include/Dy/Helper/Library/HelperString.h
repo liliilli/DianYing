@@ -19,9 +19,31 @@ namespace dy
 {
 
 /// @brief  Make UTF-8 string with arbitary number of arguments.
+/// If iFormatString is "{} World{1}", and following args are "Hello", and "!",
+/// Returned string will be "Hello World!".
+///
 /// @return UTF-8 string.
 template <typename... TArgs>
-[[nodiscard]] std::string MakeStringU8(const std::string& iFormatString, TArgs&&... iArgs);
+MDY_NODISCARD std::string MakeStringU8(const std::string& iFormatString, TArgs&&... iArgs);
+
+/// @brief Convert given string to lower string.
+/// This function does not detect UTF-8, but only ANSI, so need to be checked prior to calling function.
+void ToLower(std::string& ioString);
+
+/// @brief Convert given string to lower string and return as new string.
+/// This function does not detect UTF-8, but only ANSI, so need to be checked prior to calling function.
+MDY_NODISCARD std::string ToLowerCopy(const std::string& iString);
+
+/// @brief Convert given string to upper string.
+/// This function does not detect UTF-8, but only ANSI, so need to be checked prior to calling function.
+void ToUpper(std::string& ioString);
+
+/// @brief Convert given string to upper string and return as new string.
+/// This function does not detect UTF-8, but only ANSI, so need to be checked prior to calling function.
+MDY_NODISCARD std::string ToUpperCopy(const std::string& iString);
+
+/// @brief Get random string wich length count.
+MDY_NODISCARD std::string CreateRandomString(TU32 iLength);
 
 } /// ::dy namesapce
 

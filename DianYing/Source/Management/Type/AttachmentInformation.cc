@@ -27,11 +27,11 @@
 namespace dy
 {
 
-GLenum DyGetAttachmentTypeValue(_MIN_ const EDyGlAttachmentType attachment) noexcept
+GLenum DyGetAttachmentTypeValue(EDyGlAttachmentType iAttType) noexcept
 { // Integrity test
-  if (attachment == EDyGlAttachmentType::NoneError) { return GL_NONE; }
-  if (attachment == EDyGlAttachmentType::Depth)     { return GL_DEPTH_ATTACHMENT; }
-  return GL_COLOR_ATTACHMENT0 + static_cast<TI32>(attachment);
+  if (iAttType == EDyGlAttachmentType::NoneError) { return GL_NONE; }
+  if (iAttType == EDyGlAttachmentType::Depth)     { return GL_DEPTH_ATTACHMENT; }
+  return GL_COLOR_ATTACHMENT0 + static_cast<TI32>(iAttType);
 }
 
 GLenum DyGetTexParameterNameValue(_MIN_ const EDyGlParameterName attachment) noexcept

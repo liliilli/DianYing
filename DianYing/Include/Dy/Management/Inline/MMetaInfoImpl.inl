@@ -682,6 +682,7 @@ inline EDySuccess MDyMetaInfo::Impl::pfAddGLAttachmentMetaInfo(const PDyGlAttach
 
 inline EDySuccess MDyMetaInfo::Impl::pfAddGLFrameBufferMetaInfo(const PDyGlFrameBufferInstanceMetaInfo& metaInfo)
 {
+
 #if defined(_DEBUG) == true
   // Validation test check.
   MDY_ASSERT_MSG(
@@ -715,7 +716,7 @@ inline EDySuccess MDyMetaInfo::Impl::pfAddGLFrameBufferMetaInfo(const PDyGlFrame
     // and bind it.
     PDyGlAttachmentInstanceMetaInfo defaultDepthBuffer;
     {
-      defaultDepthBuffer.mSpecifierName   = fmt::format("{}_D_{}", specifier, DyGetRandomString(5));
+      defaultDepthBuffer.mSpecifierName   = fmt::format("{}_D_{}", specifier, CreateRandomString(5));
       defaultDepthBuffer.mBufferFormat    = EDyGlBufferDataInternalFormat::DEPTH32;
       defaultDepthBuffer.mSourceType      = EDyResourceSource::Builtin;
       defaultDepthBuffer.mAttachmentSize  = instance.mFrameBufferSize;

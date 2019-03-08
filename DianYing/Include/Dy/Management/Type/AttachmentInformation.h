@@ -20,10 +20,8 @@
 namespace dy
 {
 
-///
 /// @enum   EDyGlAttachmentType
 /// @brief  Attachment type for binding textures to framebuffer.
-///
 enum class EDyGlAttachmentType : TI32
 {
   Color0 = 0, Color1, Color2, Color3,
@@ -34,40 +32,76 @@ enum class EDyGlAttachmentType : TI32
   NoneError = 0xFF
 };
 
-///
 /// @brief  Get attachment type value from EDyGlAttachmentType.
-/// @param  attachment
+/// @param  iAttType
 /// @return GL_COLOR_ATTACHMENT_X
-///
-MDY_NODISCARD GLenum DyGetAttachmentTypeValue(_MIN_ const EDyGlAttachmentType attachment) noexcept;
+MDY_NODISCARD GLenum DyGetAttachmentTypeValue(EDyGlAttachmentType iAttType) noexcept;
 
-///
+/// @struct PBlendingEquation
+/// @brief Describes blending equation [src, mode, dst] 
+/// when setting blending option to attachment.
+struct PBlendingEquation final
+{
+  enum class EMode
+  {
+    SrcAddDst,  // Operator will be Src + Dst.
+    SrcSubDst,  // Operator will be Src - Dst.
+    DstSubSrc,  // Operator will be Dst - Src.
+    CompareMin, // Operator will be min(Src, Dst) to each element.
+    CompareMax, // Operator will be max(Src, Dst) to each element.
+  };
+
+  enum class EFunc
+  {
+    Zero,               // Factor will be (0, 0, 0, 0)
+    One,                // Factor will be (1, 1, 1, 1)
+    SrcColor,           // Factor will be (Sr, Sg, Sb, Sa)
+    OneMinusSrcColor,   // Factor will be 1 - (Sr, Sg, Sb, Sa)
+    DstColor,           // Factor will be (Dr, Dg, Db, Da)
+    OneMinusDstColor,   // Factor will be 1 - (Dr, Dg, Db, Da)
+    SrcAlpha,           // Factor will be vec4(Sa)
+    OneMinusSrcAlpha,   // Factor will be 1 - vec4(Sa)
+    DstAlpha,           // Factor will be vec4(Da)
+    OneMinusDstAlpha,   // Factor will be 1 - vec4(Da)
+    ConstColor,         // Factor will be mConstColor.
+    OneMinusConstColor, // Factor will be 1 - mConstColor.
+  };
+
+  /// @brief Result color will be R = S*(mSrcFunc) mBlendMode D*(mDstFunc).
+  /// D is destination, commonly canvas color of attachment.
+  /// S is source, commonly blending color from shader.
+  EMode mBlendMode = EMode::SrcAddDst;
+  EFunc mSrcFunc   = EFunc::SrcAlpha;
+  EFunc mDstFunc   = EFunc::OneMinusSrcAlpha;
+  /// @brief This variable will be used 
+  /// when using EFunc::ConstColor, EFunc::OneMinusConstColor
+  DDyColorRGBA mConstantColor = DDyColorRGBA{};
+};
+using TBlendingEquationList = std::vector<PBlendingEquation>;
+
 /// @struct PDyGlAttachmentBinderInformation
 /// @brief Helper binder type for creating FBO with arbitary attachments.
-///
 struct PDyGlAttachmentBinderInformation final
 {
   std::string         mAttachmentName = MDY_INITIALIZE_EMPTYSTR;
   EDyGlAttachmentType mAttachmentType = EDyGlAttachmentType::NoneError;
 
   PDyGlAttachmentBinderInformation() = default;
-  PDyGlAttachmentBinderInformation(_MIN_ const std::string& iSpecifier, _MIN_ EDyGlAttachmentType iType) :
-      mAttachmentName{iSpecifier},
+  PDyGlAttachmentBinderInformation(const std::string& iSpecifier, EDyGlAttachmentType iType) 
+    : mAttachmentName{iSpecifier},
       mAttachmentType{iType}
   {};
 };
 using TAttachmentBinderList = std::vector<PDyGlAttachmentBinderInformation>;
 
-///
 /// @struct PDyGlAttachmentInformation
 /// @brief
-///
 struct PDyGlAttachmentInformation final
 {
   std::string                               mAttachmentName = MDY_INITIALIZE_EMPTYSTR;
   std::vector<PDyGlTexParameterInformation> mParameterList  = {};
   DDyVectorInt2                             mAttachmentSize = {};
-  DDyColorRGBA                                  mBorderColor    = DDyColorRGBA::Black;
+  DDyColorRGBA                              mBorderColor    = DDyColorRGBA::Black;
 
   ///
   /// @brief  Get attachment id. If attachment is not initialized yet, just return 0.

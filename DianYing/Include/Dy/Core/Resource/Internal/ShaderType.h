@@ -15,15 +15,14 @@
 
 #include <string>
 #include <vector>
+#include <nlohmann/json_fwd.hpp>
 #include <Dy/Meta/Type/EDyResourceTypes.h>
 
 namespace dy
 {
 
-///
 /// @enum EDyAttributeVariableType
 /// @brief Shader internal variable type for attributes.
-///
 enum class EDyAttributeVariableType
 {
   Matrix4 = 0,
@@ -41,10 +40,8 @@ enum class EDyAttributeVariableType
   NoneError,
 };
 
-///
 /// @enum EDyUniformVariableType
 /// @brief Shader internal variable type for uniform and textures.
-///
 enum class EDyUniformVariableType
 {
   Matrix4 = 0,
@@ -74,6 +71,9 @@ enum class EDyUniformVariableType
   Texture2DCubemap,   // GL_SAMPLER_CUBE (samplerCube)
 };
 
+void to_json(nlohmann::json& oJson, const EDyUniformVariableType& iUniformType);
+void from_json(const nlohmann::json& iJson, EDyUniformVariableType& iUniformType);
+
 /// @struct DDyAttributeVariableInformation
 /// @brief Store attribute variable information.
 struct DDyAttributeVariableInformation final
@@ -84,10 +84,10 @@ struct DDyAttributeVariableInformation final
   TU32                      mVariableLocation = MDY_INITIALIZE_DEFUINT;
 
   DDyAttributeVariableInformation(
-      _MIN_ const std::string& iSpecifier,
-      _MIN_ const TU32 iSlotSize,
-      _MIN_ const EDyAttributeVariableType iType,
-      _MIN_ const TU32 iLocation) :
+      const std::string& iSpecifier,
+      const TU32 iSlotSize,
+      const EDyAttributeVariableType iType,
+      const TU32 iLocation) :
       mVariableName {iSpecifier},
       mVariableSlotSize { iSlotSize },
       mVariableType {iType},
@@ -104,25 +104,24 @@ struct DDyUniformVariableInformation final
   TU32                      mVariableLocation = MDY_INITIALIZE_DEFUINT;
 
   DDyUniformVariableInformation(
-      _MIN_ const std::string& iSpecifier,
-      _MIN_ const TU32 iSlotSize,
-      _MIN_ const EDyUniformVariableType iType,
-      _MIN_ const TU32 iLocation) :
-      mVariableName {iSpecifier},
+      const std::string& iSpecifier,
+      const TU32 iSlotSize,
+      const EDyUniformVariableType iType,
+      const TU32 iLocation) 
+    : mVariableName {iSpecifier},
       mVariableSlotSize { iSlotSize },
       mVariableType {iType},
       mVariableLocation {iLocation} {};
 };
 
-///
 /// @struct DDyUniformBufferObjectInformation
 ///
 struct DDyUniformBufferObjectInformation final
 {
   std::string mUboSpecifierName = MDY_INITIALIZE_EMPTYSTR;
 
-  DDyUniformBufferObjectInformation(_MIN_ const std::string& iName) :
-      mUboSpecifierName { iName } {};
+  DDyUniformBufferObjectInformation(const std::string& iName) 
+    : mUboSpecifierName { iName } {};
 };
 
 ///

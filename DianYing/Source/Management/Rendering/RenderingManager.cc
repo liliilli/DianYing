@@ -39,23 +39,15 @@
 #include <Dy/Builtin/Constant/GeneralValue.h>
 #include <Dy/Management/InputManager.h>
 
-#include <Dy/Core/Rendering/Pipeline/BasicRenderer.h>
-#include <Dy/Core/Rendering/Pipeline/FinalScreenDisplayRenderer.h>
-#include <Dy/Core/Rendering/Pipeline/PostEffectSsao.h>
-#include <Dy/Core/Rendering/Pipeline/UIBasicRenderer.h>
-#include <Dy/Core/Rendering/Pipeline/LevelCascadeShadowRenderer.h>
-#include <Dy/Core/Rendering/Pipeline/LevelCSMIntegration.h>
-#include <Dy/Core/Rendering/Pipeline/LevelOITRenderer.h>
-#include <Dy/Core/Rendering/Pipeline/DebugShapeRenderer.h>
-#include <Dy/Core/Rendering/Pipeline/PostEffectSky.h>
-#include <Dy/Core/Rendering/Pipeline/DebugAABBRenderer.h>
-#include <Dy/Core/Rendering/Pipeline/Debug/PickingRenderer.h>
 #include <Dy/Helper/Pointer.h>
 #include <Dy/Helper/Internal/FDyCallStack.h>
 #include <Dy/Element/Actor.h>
 #include "Dy/Management/Internal/World/FDyWorldUIContainer.h"
 
 #include <queue>
+#include <Dy/Core/Rendering/Wrapper/FWrapperRenderPipeline.h>
+#include <Dy/Core/Rendering/Wrapper/FWrapperRenderItem.h>
+#include <Dy/Core/Rendering/Wrapper/FWrapperHandleRenderPipeline.h>
 
 //!
 //! Forward declaration & Local translation unit function and data.
@@ -190,31 +182,34 @@ void CbGlViewportStack(_MIN_ const dy::DDyGlGlobalStatus::DViewport& iTopStatus)
 namespace dy
 {
 
-class MDyRendering::Impl final
+class MDyRendering::Impl final : IDyInitializeHelper<void>
 {
 public:
   Impl();
+  EDySuccess Initialize() override final;
+  void Release() override final;
   ~Impl();
 
   /// @brief PreRender update functin.
-  void PreRender(_MIN_ TF32 dt);
+  void PreRender(TF32 dt);
+
+  /// @brief Create render pipeline with specifier.
+  /// If not found, just return DY_FAILURE.
+  EDySuccess CreateRenderPipeline(const std::string& iPipelineSpecifier);
+  /// @brief Create entry render pipeline handle into list.
+  /// Created render pipeline will be rendered following order of child and local render item.
+  void CreateHandleRenderPipeline(const PDyRenderPipelineInstanceMetaInfo& iEntryRenderPipeline);
+
+  /// @brief Remove render pipeline with specifier.
+  /// If not found in list, just return DY_FAILURE.
+  EDySuccess RemoveRenderPipeline(const std::string& iPipelineSpecifier);
 
   /// @brief 
   /// @TODO LOGIC IS TEMPORARY.
   void SetupDrawModelTaskQueue();
 
   /// @brief Render level information.
-  void RenderLevelInformation();
-  /// @brief Render level debug information. This function must be called in render phase.
-  /// @reference https://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/guide/Manual/DebugVisualization.html#debugvisualization
-  void RenderDebugInformation();
-  /// @brief Render UI information.
-  void RenderUIInformation();
-  /// @brief Integrate Level information + Debug Information + UI Information.
-  void Integrate();
-
-  /// @brief Render only loading widget.
-  void MDY_PRIVATE(RenderLoading());
+  void RenderPipelines();
   
   /// @brief Get ptr main directional light. If not exist, just return nullptr.
   CDyDirectionalLight* GetPtrMainDirectionalLight() const noexcept;
@@ -251,30 +246,22 @@ public:
       _MIN_ CDyPhysicsCollider& iRefCollider, 
       _MIN_ const DDyMatrix4x4& iTransformMatrix);
   
-  /// @brief Reset all of rendering framebuffers related to rendering of scene for new frame rendering.
-  void pClearRenderingFramebufferInstances() noexcept;
+  /// @brief Check Entry RenderPipeline is exist on rendering system.
+  MDY_NODISCARD bool HasEntryRenderPipeline(const std::string& iEntryPipelineName);
+  /// @brief Set activation of entry renderpipeline.
+  /// If Activated, this pipeline will be rendered with arbitary order.
+  /// If Deactivated, this pipeline will not be rendered but leave render resources valid.
+  ///
+  /// If not found, just do nothing.
+  EDySuccess ActivateEntryRenderPipeline(const std::string& iEntryPipelineName, bool iIsActivated);
 
-private:
-  std::unique_ptr<FDyBasicRenderer>               mBasicOpaqueRenderer  = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyLevelCascadeShadowRenderer>  mCSMRenderer          = MDY_INITIALIZE_NULL; 
-  std::unique_ptr<FDyLevelCSMIntergration>        mLevelFinalRenderer   = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyLevelOITRenderer>            mTranslucentOIT       = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyPostEffectSsao>              mSSAOPostEffect       = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyPostEffectSky>               mSkyPostEffect        = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyUIBasicRenderer>             mUiBasicRenderer      = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyFinalScreenDisplayRenderer>  mFinalDisplayRenderer = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyDebugShapeRenderer>          mDebugShapeRenderer   = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyDebugAABBRenderer>           mDebugAABBRenderer    = MDY_INITIALIZE_NULL;
-  std::unique_ptr<FDyDebugPickingRenderer>        mDebugPickingRenderer = MDY_INITIALIZE_NULL;
+  std::unordered_map<std::string, std::unique_ptr<FWrapperRenderPipeline>> 
+    mRenderPipelines = {};
 
-  using TMeshDrawCallItem = std::tuple<
-      NotNull<DDyModelHandler::DActorInfo*>,
-      NotNull<const FDyMeshResource*>, 
-      NotNull<const FDyMaterialResource*>
-  >;
+  std::unordered_map<std::string, std::unique_ptr<FWrapperRenderItem>> 
+    mRenderItems = {};
 
-  using TDrawColliderItem = std::pair<NotNull<CDyPhysicsCollider*>, DDyMatrix4x4>; 
-  using TUiDrawCallItem = NotNull<FDyUiObject*>;
+  std::vector<FWrapperHandleRenderPipeline> mEntryRenderPipelines;
 
   std::vector<TMeshDrawCallItem> mOpaqueMeshDrawingList = {};
   std::vector<TMeshDrawCallItem> mTranslucentMeshDrawingList = {};
@@ -312,6 +299,34 @@ private:
 #endif /// MDY_FLAG_IN_EDITOR
 };
 
+bool MDyRendering::Impl::HasEntryRenderPipeline(const std::string& iEntryPipelineName)
+{
+  if (ContainsIf(this->mEntryRenderPipelines,
+    [iEntryPipelineName](const auto& pipeline) 
+    { return pipeline.GetName() == iEntryPipelineName; }) == false)
+  {
+    return false;
+  }
+
+  return true;
+}
+
+EDySuccess MDyRendering::Impl::ActivateEntryRenderPipeline(const std::string& iEntryPipelineName, bool iIsActivated)
+{
+  if (this->HasEntryRenderPipeline(iEntryPipelineName) == false)
+  {
+    DyPushLogDebugError("Failed to find entry render pipeline, {}.", iEntryPipelineName);
+    return DY_FAILURE;
+  }
+
+  auto it = std::find_if(
+    MDY_BIND_BEGIN_END(this->mEntryRenderPipelines),
+    [iEntryPipelineName](const auto& pipeline) 
+    { return pipeline.GetName() == iEntryPipelineName; });
+  it->Activate(iIsActivated);
+  return DY_SUCCESS;
+}
+
 } /// ::dy namespace
 #include <Dy/Management/Inline/MRenderingImpl.inl>
 
@@ -325,6 +340,7 @@ namespace dy
 EDySuccess MDyRendering::pfInitialize()
 { 
   this->mInternal = new (std::nothrow) Impl();
+  this->mInternal->Initialize();
   return DY_SUCCESS;
 }
 
@@ -352,12 +368,10 @@ void MDyRendering::EnqueueDebugDrawCollider(
   this->mInternal->EnqueueDebugDrawCollider(iRefCollider, iTransformMatrix);
 }
 
-void MDyRendering::RenderLevelInformation() { this->mInternal->RenderLevelInformation(); }
-void MDyRendering::RenderDebugInformation() { this->mInternal->RenderDebugInformation(); }
-void MDyRendering::RenderUIInformation()    { this->mInternal->RenderUIInformation(); }
-void MDyRendering::Integrate()              { this->mInternal->Integrate(); }
-
-void MDyRendering::MDY_PRIVATE(RenderLoading)() { this->mInternal->MDY_PRIVATE(RenderLoading)(); }
+void MDyRendering::RenderPipelines() 
+{ 
+  this->mInternal->RenderPipelines(); 
+}
 
 void MDyRendering::MDY_PRIVATE(BindMainDirectionalLight)(CDyDirectionalLight& iRefLight)
 {
@@ -397,5 +411,65 @@ void MDyRendering::InsertInternalGlobalStatus(const DDyGlGlobalStatus& iNewStatu
 void MDyRendering::PopInternalGlobalStatus() { this->mInternal->PopInternalGlobalStatus(); }
 
 void MDyRendering::SwapBuffers() { this->mInternal->SwapBuffers(); }
+
+std::vector<MDyRendering::TMeshDrawCallItem>& MDyRendering::GetOpaqueMeshQueueList()
+{
+  return this->mInternal->mOpaqueMeshDrawingList;
+}
+
+std::vector<MDyRendering::TMeshDrawCallItem>& MDyRendering::GetTranclucentOitMeshQueueList()
+{
+  return this->mInternal->mTranslucentMeshDrawingList;
+}
+
+std::vector<MDyRendering::TDrawColliderItem>& MDyRendering::GetColliderMeshQueueList()
+{
+  return this->mInternal->mDebugColliderDrawingList;
+}
+
+std::vector<MDyRendering::TUiDrawCallItem>& MDyRendering::GetUiObjectQueuelist()
+{
+  return this->mInternal->mUiObjectDrawingList;
+}
+
+bool MDyRendering::HasRenderItem(const std::string& iRenderItemName)
+{
+  return DyIsMapContains(this->mInternal->mRenderItems, iRenderItemName);
+}
+
+FWrapperRenderItem* MDyRendering::GetRenderItem(const std::string& iRenderItemName)
+{
+  if (this->HasRenderItem(iRenderItemName) == false) 
+  { 
+    return nullptr; 
+  }
+
+  return this->mInternal->mRenderItems.at(iRenderItemName).get();
+}
+
+bool MDyRendering::HasRenderPipeline(const std::string& iRenderPipelineName)
+{
+  return DyIsMapContains(this->mInternal->mRenderPipelines, iRenderPipelineName);
+}
+
+FWrapperRenderPipeline* MDyRendering::GetRenderPipeline(const std::string& iRenderPipelineName)
+{
+  if (this->HasRenderPipeline(iRenderPipelineName) == false)
+  {
+    return nullptr;
+  }
+
+  return this->mInternal->mRenderPipelines.at(iRenderPipelineName).get();
+}
+
+bool MDyRendering::HasEntryRenderPipeline(const std::string& iEntryPipelineName)
+{
+  return this->mInternal->HasEntryRenderPipeline(iEntryPipelineName);
+}
+
+EDySuccess MDyRendering::ActivateEntryRenderPipeline(const std::string& iEntryPipelineName, bool iIsActivated)
+{
+  return this->mInternal->ActivateEntryRenderPipeline(iEntryPipelineName, iIsActivated);
+}
 
 } /// ::dy namespace

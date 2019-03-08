@@ -159,10 +159,6 @@
     <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceInstance.cc" />
     <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingGlobalScriptCpp.cc" />
     <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingBootScriptCpp.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\BasicRenderer.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\FinalScreenDisplayRenderer.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\PostEffectSsao.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\UiBasicRenderer.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoAttachment.cc" />
     <ClCompile Include="Source\Builtin\Abstract\ADyGLAttachmentResource.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoFrameBuffer.cc" />
@@ -231,15 +227,12 @@
     <ClCompile Include="Source\Builtin\FrameBuffer\CSM\FDyBtFbCSM.cc" />
     <ClCompile Include="Source\Builtin\Attachment\CSM\FDyBtAtLight.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\TextureEnums.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\LevelCascadeShadowRenderer.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\LevelCSMIntergration.cc" />
     <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAtDepthZValue.cc" />
     <ClCompile Include="Source\Builtin\Material\BtMtCheckerWorldPos.cc" />
     <ClCompile Include="Source\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITColor.cc" />
     <ClCompile Include="Source\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITWeight.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\WeightBlendOIT\FDyBtFbWeightBlendedOIT.cc" />
     <ClCompile Include="Source\Builtin\Mesh\Plane\FDyBtMsOITTrinagle.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\LevelOITRenderer.cc" />
     <ClCompile Include="Source\Builtin\Material\Transparent\StaticTransparentChecker.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\SceneIntegration\FDyBtFbTransIntegration.cc" />
     <ClCompile Include="Source\Builtin\Attachment\SceneIntegration\FDyBtAtOpaqueOutput.cc" />
@@ -304,7 +297,6 @@
     <ClCompile Include="Source\Core\Resource\Resource\FDyTextureCubemapResource.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\Deferred\FDyBtFbSkybox.cc" />
     <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAtSkyOutput.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\PostEffectSky.cc" />
     <ClCompile Include="Source\Helper\Type\ColorRGB.cc" />
     <ClCompile Include="Source\Core\Reflection\RDyGlobalInstanceManager.cc" />
     <ClCompile Include="Source\Builtin\GlobalInstance\FDyBtGiDebugStatus.cc" />
@@ -323,10 +315,7 @@
     <ClCompile Include="Source\Element\Widget\UiObject.cc" />
     <ClCompile Include="Source\Element\Widget\UiObjectChildrenable.cc" />
     <ClCompile Include="Source\Element\Widget\Widget.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\DebugShapeRenderer.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\DebugAABBRenderer.cc" />
     <ClCompile Include="Source\Builtin\Mesh\Debug\FDyBtMsDebugAABB.cc" />
-    <ClCompile Include="Source\Core\Rendering\Pipeline\Debug\PickingRenderer.cc" />
     <ClCompile Include="Source\Builtin\Shader\Debug\BtShDebugLine.cc" />
     <ClCompile Include="Source\Builtin\Shader\Editor\RenderGrid.cc" />
     <ClCompile Include="Source\Builtin\Shader\Font\RenderDefaultFont.cc" />
@@ -346,6 +335,31 @@
     <ClCompile Include="Source\Builtin\Shader\RenderColorGeometry.cc" />
     <ClCompile Include="Source\Builtin\Shader\RenderPass.cc" />
     <ClCompile Include="Source\Builtin\Shader\RenderScreenOutput.cc" />
+    <ClCompile Include="Source\Core\Resource\Internal\EShaderTypes.cc" />
+    <ClCompile Include="Source\Helper\Type\DUuid.cc" />
+    <ClCompile Include="Source\Meta\Information\MetaInfoRenderPipeline.cc" />
+    <ClCompile Include="Source\Builtin\RenderPipeline\FBtDefault.cc" />
+    <ClCompile Include="Source\Builtin\RenderItem\Level\FBtOpaqueDefault.cc" />
+    <ClCompile Include="Source\Builtin\RenderItem\Level\FBtLevelOITDefault.cc" />
+    <ClCompile Include="Source\Builtin\RenderPipeline\Level\FBtDefaultLevel.cc" />
+    <ClCompile Include="Source\Builtin\RenderPipeline\Level\FBtDefaultLevelRender.cc" />
+    <ClCompile Include="Source\Core\Rendering\Wrapper\FWrapperRenderPipeline.cc" />
+    <ClCompile Include="Source\Core\Rendering\Wrapper\FWrapperRenderItem.cc" />
+    <ClCompile Include="Source\Core\Rendering\Wrapper\FWrapperHandleRenderPipeline.cc" />
+    <ClCompile Include="Source\Builtin\RenderPipeline\Level\FBtDefaultLevelPostProcess.cc" />
+    <ClCompile Include="Source\Builtin\RenderItem\Level\FBtPpCsmShadow.cc" />
+    <ClCompile Include="Source\Builtin\RenderItem\Level\FBtPpSsao.cc" />
+    <ClCompile Include="Source\Builtin\RenderItem\Level\FbtPpSkybox.cc" />
+    <ClCompile Include="Source\Builtin\RenderItem\FBtLevelIntegration.cc" />
+    <ClCompile Include="Source\Builtin\RenderPipeline\Debug\FBtDebug.cc" />
+    <ClCompile Include="Source\Builtin\RenderItem\Debug\FBtDebugCollisionShape.cc" />
+    <ClCompile Include="Source\Builtin\RenderItem\Debug\FBtDebugCollisionAabb.cc" />
+    <ClCompile Include="Source\Builtin\RenderItem\Debug\FBtDebugPicking.cc" />
+    <ClCompile Include="Source\Builtin\RenderPipeline\Widget\FBtWidget.cc" />
+    <ClCompile Include="Source\Builtin\RenderItem\Widget\FBtWidgetGeneral.cc" />
+    <ClCompile Include="Source\Builtin\RenderItem\FBtScreenIntegration.cc" />
+    <ClCompile Include="Source\Builtin\RenderPipeline\FBtDefaultLoading.cc" />
+    <ClCompile Include="Source\Builtin\Script\BtScrGlobalDefaultUniformBuffer.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -382,7 +396,6 @@
     <ClInclude Include="Include\Dy\Helper\GlobalType.h" />
     <ClInclude Include="Include\Dy\Editor\Literals\LibraryLicenseString.h" />
     <ClInclude Include="Include\Dy\Editor\Interface\IDyGuiWindowSingletonCrtp.h" />
-    <ClInclude Include="Include\Dy\Helper\HashCompileCrc32.h" />
     <ClInclude Include="Include\Dy\Management\Editor\GuiManager.h" />
     <ClInclude Include="Include\Dy\Editor\Interface\IDyGuiComponentBase.h" />
     <ClInclude Include="Include\Dy\Editor\Interface\IDyGuiHasChildren.h" />
@@ -631,12 +644,8 @@
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDySoundResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\TDyResourceBinder.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\TemplateRescInfoType.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\BasicRenderer.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\FinalScreenDisplayRenderer.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\UIBasicRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\FDyBinderBase.h" />
     <ClInclude Include="Include\Dy\Helper\System\Idioms.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\PostEffectSsao.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyLoadingGlobalResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Script\Default\DefaultLoadingGlobalScriptCpp.h" />
     <ClInclude Include="Include\Dy\Builtin\Script\Default\DefaultLoadingBootScriptCpp.h" />
@@ -663,7 +672,6 @@
     <ClInclude Include="Include\Dy\Builtin\Attachment\UIIntegration\FDyBtAttUiBasic.h" />
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\UIIntegration\FDyBtFbUiBasic.h" />
     <ClInclude Include="Include\Dy\Core\Thread\SDyIOBindingHelper.h" />
-    <ClInclude Include="Include\Dy\Helper\HelperString.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\EDyInputButtonStatus.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyInputButton.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyJoystickAnalog.h" />
@@ -733,11 +741,9 @@
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Level\RenderCSMLightNormal.h" />
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\CSM\FDyBtFbCSM.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\CSM\FDyBtAtLight.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\LevelCascadeShadowRenderer.h" />
     <ClInclude Include="Include\Dy\Builtin\Constant\CSM.h" />
     <ClInclude Include="Include\Dy\Builtin\Constant\GeneralLevel.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Level\RendIntegrationLevelCSM.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\LevelCSMIntegration.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAtDepthZValue.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Render\RenderOpaqueStatic.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Render\BtShUvWorldPos.h" />
@@ -747,7 +753,6 @@
     <ClInclude Include="Include\Dy\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITWeight.h" />
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\WeightBlendOIT\FDyBtFbWeightBlendedOIT.h" />
     <ClInclude Include="Include\Dy\Builtin\Mesh\Plane\FDyBtMsOITTriangle.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\LevelOITRenderer.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Interface\IDyRenderer.h" />
     <ClInclude Include="Include\Dy\Builtin\Material\Transparent\StaticTransparentChecker.h" />
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\SceneIntegration\FDyBtFbTransIntegration.h" />
@@ -823,7 +828,6 @@
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Render\BtShSkyboxDefault.h" />
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\Deferred\FDyBtFbSkybox.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAtSkyOutput.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\PostEffectSky.h" />
     <ClInclude Include="Include\Dy\Core\Reflection\RDyGlobalInstanceManager.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGlobalInstance.h" />
     <ClInclude Include="Include\Dy\Builtin\GlobalInstance\FDyBtGiDebugStatus.h" />
@@ -849,12 +853,41 @@
     <ClInclude Include="Include\Dy\Management\Type\Render\DDyPixelInfo.h" />
     <ClInclude Include="Include\Dy\Management\Type\Render\DDyGlGlobalStatus.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\BoxOIT.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\DebugShapeRenderer.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\DebugAABBRenderer.h" />
     <ClInclude Include="Include\Dy\Builtin\Mesh\Debug\FDyBtMsDebugAABB.h" />
     <ClInclude Include="Include\Dy\Builtin\Constant\GeneralValue.h" />
-    <ClInclude Include="Include\Dy\Core\Rendering\Pipeline\Debug\PickingRenderer.h" />
     <ClInclude Include="Include\Dy\Helper\Library\HelperString.h" />
+    <ClInclude Include="Include\Dy\Helper\System\HashCompileCrc32.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ARenderPipeline.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\ARenderItem.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Interface\IRenderItem.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Interface\IRenderPipeline.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoRenderPipeline.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\DUuid.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderPipeline\FBtDefault.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoRenderItem.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderItem\Level\FBtOpaqueDefault.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderItem\Level\FBtLevelOITDefault.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderPipeline\Level\FBtDefaultLevel.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderPipeline\Level\FBtDefaultLevelRender.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\FWrapperRenderPipeline.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\FWrapperRenderItem.h" />
+    <ClInclude Include="Include\Dy\Helper\Internal\FProxyHandler.h" />
+    <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\FWrapperHandleRenderPipeline.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderPipeline\Level\FBtDefaultLevelPostProcess.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderItem\Level\FBtPpCsmShadow.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderItem\Level\FBtPpSsao.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderItem\Level\FBtPpSkybox.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderItem\FBtLevelIntegeration.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderPipeline\Debug\FBtDebug.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderItem\Debug\FBtDebugCollisionShape.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderItem\Debug\FBtDebugCollisionAabb.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderItem\Debug\FBtDebugPicking.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderItem\Widget\FBtWidgetGeneral.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderPipeline\Widget\FBtWidget.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderItem\FBtScreenIntegration.h" />
+    <ClInclude Include="Include\Dy\Helper\Internal\FProxyHandle.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderPipeline\FBtDefaultLoading.h" />
+    <ClInclude Include="Include\Dy\Builtin\Script\BtScrGlobalDefaultUniformBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />
@@ -873,5 +906,10 @@
     <None Include="Include\Dy\Element\Inline\FActorImpl.inl" />
     <None Include="Include\Dy\Element\Inline\FActorTmp.inl" />
     <None Include="Include\Dy\Management\Inline\MMetaInfoImpl.inl" />
+    <None Include="Include\Dy\Core\Resource\Type\Inline\AUniformContainerTmp.inl" />
+    <None Include="Include\Dy\Meta\Information\Inline\DMetaMetarialInstanceTmp.inl" />
+    <None Include="Include\Dy\Core\Reflection\RBuiltinResourcesTmp.inl" />
+    <None Include="Include\Dy\Helper\Internal\Inline\FProxyHandleTmp.inl" />
+    <None Include="Include\Dy\Helper\Internal\Inline\FProxyHandlerTmp.inl" />
   </ItemGroup>
 </Project>

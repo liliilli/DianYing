@@ -13,27 +13,19 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Meta/Information/MetaInfoRenderPipeline.h>
+
 namespace dy
 {
 
-inline MDyRendering::Impl::Impl()
-{ 
+inline MDyRendering::Impl::Impl() { }
+
+inline EDySuccess MDyRendering::Impl::Initialize()
+{
   // Initialize framebuffer management singleton instance.
   MDY_CALL_ASSERT_SUCCESS(MDyFramebuffer::Initialize());
   MDY_CALL_ASSERT_SUCCESS(MDyUniformBufferObject::Initialize());
   MDY_CALL_ASSERT_SUCCESS(FDyModelHandlerManager::Initialize());
-
-  this->mBasicOpaqueRenderer  = std::make_unique<decltype(this->mBasicOpaqueRenderer)::element_type>();
-  this->mTranslucentOIT       = std::make_unique<decltype(this->mTranslucentOIT)::element_type>();
-  this->mUiBasicRenderer      = std::make_unique<decltype(this->mUiBasicRenderer)::element_type>();
-  this->mLevelFinalRenderer   = std::make_unique<decltype(this->mLevelFinalRenderer)::element_type>();
-  this->mFinalDisplayRenderer = std::make_unique<decltype(this->mFinalDisplayRenderer)::element_type>();
-  this->mCSMRenderer          = std::make_unique<decltype(this->mCSMRenderer)::element_type>();
-  this->mSSAOPostEffect       = std::make_unique<decltype(mSSAOPostEffect)::element_type>();
-  this->mSkyPostEffect        = std::make_unique<decltype(this->mSkyPostEffect)::element_type>();
-  this->mDebugShapeRenderer   = std::make_unique<decltype(this->mDebugShapeRenderer)::element_type>();
-  this->mDebugAABBRenderer    = std::make_unique<decltype(mDebugAABBRenderer)::element_type>();
-  this->mDebugPickingRenderer = std::make_unique<decltype(this->mDebugPickingRenderer)::element_type>();
 
   // Set callback function for global internal status stack.
   this->mInternal_FeatBlendStack.SetCallback(CbGlFeatBlendStack);
@@ -45,7 +37,8 @@ inline MDyRendering::Impl::Impl()
   this->mInternal_CullfaceModeStack.SetCallback(CbGlCullfaceModeStack);
   this->mInternal_ViewportStack.SetCallback(CbGlViewportStack);
 
-  switch (MDySetting::GetInstance().GetRenderingType())
+  const auto renderingApiType = MDySetting::GetInstance().GetRenderingType();
+  switch (renderingApiType)
   {
   case EDyRenderingApi::OpenGL: 
   {
@@ -96,19 +89,35 @@ inline MDyRendering::Impl::Impl()
       // Insert
       this->InsertInternalGlobalStatus(initialStatus);
     }
-      
-    { // IMGUI Setting
-      IMGUI_CHECKVERSION();
-      ImGui::CreateContext();
-      ImGui::StyleColorsDark();
-
-      ImGui_ImplGlfw_InitForOpenGL(MDyWindow::GetInstance().GetGLMainWindow(), true);
-      ImGui_ImplOpenGL3_Init("#version 430");
-    }
   } break;
   case EDyRenderingApi::Vulkan: 
   case EDyRenderingApi::DirectX11: 
   case EDyRenderingApi::DirectX12: { MDY_NOT_IMPLEMENTED_ASSERT(); } break;
+  default: MDY_UNEXPECTED_BRANCH(); break;
+  }
+
+  // Setup default render pipeline
+  this->mEntryRenderPipelines.reserve(8);
+  this->CreateRenderPipeline("dyBtDefault");
+  this->CreateRenderPipeline("dyBtDefaultLoading");
+  
+  // Check Rendering API.
+  switch (renderingApiType)
+  {
+  case EDyRenderingApi::Vulkan: 
+  case EDyRenderingApi::DirectX11: 
+  case EDyRenderingApi::DirectX12: 
+    MDY_NOT_IMPLEMENTED_ASSERT();
+    break;
+  case EDyRenderingApi::OpenGL:
+  { // IMGUI Setting
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGui::StyleColorsDark();
+
+    ImGui_ImplGlfw_InitForOpenGL(MDyWindow::GetInstance().GetGLMainWindow(), true);
+    ImGui_ImplOpenGL3_Init("#version 430");
+  } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 
@@ -173,6 +182,91 @@ inline MDyRendering::Impl::Impl()
   const auto width  = refSetting.GetWindowSizeWidth();
   const auto height = refSetting.GetWindowSizeHeight();
   this->mUiGeneralProjectionMatrix = DDyMatrix4x4::OrthoProjection(0.f, TF32(width), 0.f, TF32(height), -1.f, 100.0f);
+
+  return DY_SUCCESS;
+}
+
+inline EDySuccess MDyRendering::Impl::CreateRenderPipeline(const std::string& iPipelineSpecifier)
+{
+  if (ContainsIf(this->mEntryRenderPipelines, 
+    [iPipelineSpecifier](const auto& pipeline)
+    {
+      return pipeline.GetName() == iPipelineSpecifier;
+    }) == true)
+  {
+
+    return DY_FAILURE;
+  }
+
+  const auto& managerMeta = MDyMetaInfo::GetInstance();
+  // At first, check render pipeline is exist.
+  if (managerMeta.IsRenderPipelineExist(iPipelineSpecifier) == false)
+  {
+    DyPushLogError(
+      "Failed to create render pipeline, {}. Meta information is not exist.", 
+      iPipelineSpecifier);
+    return DY_FAILURE;
+  }
+
+  // Second, check child render pipeline and local render item is exist on Dy system.
+  auto& entryRenderPipeline = managerMeta.GetRenderPipeline(iPipelineSpecifier);
+  if (PDyRenderPipelineInstanceMetaInfo::HasValidChildItems(entryRenderPipeline) == false)
+  {
+    return DY_FAILURE;
+  }
+
+  // Create each render pipeline and render item into list, with wrapping to control handlers.
+  // First, try to create render pipeline.
+  auto optPipelineList = PDyRenderPipelineInstanceMetaInfo::GetAllChildPipelineNames(entryRenderPipeline);
+  if (optPipelineList.has_value() == false) { return DY_FAILURE; }
+
+  (*optPipelineList).emplace(iPipelineSpecifier);
+  for (auto& renderPipelineName : (*optPipelineList))
+  {
+    if (DyIsMapContains(this->mRenderPipelines, renderPipelineName) == false)
+    {
+      const auto& metaRenderPipeline = managerMeta.GetRenderPipeline(renderPipelineName);
+      auto[_, isSucceeded] = this->mRenderPipelines.try_emplace(
+        renderPipelineName,
+        std::make_unique<FWrapperRenderPipeline>(metaRenderPipeline)
+      );
+      MDY_ASSERT_FORCE(isSucceeded == true);
+    }
+  }
+  
+  // Second, try to create render item.
+  auto optItemList = PDyRenderPipelineInstanceMetaInfo::GetAllRenderItemNames(entryRenderPipeline);
+  if (optItemList.has_value() == false) { return DY_FAILURE; }
+
+  for (auto& renderItemName : (*optItemList))
+  {
+    if (DyIsMapContains(this->mRenderItems, renderItemName) == false)
+    {
+      const auto& metaRenderItem = managerMeta.GetRenderItem(renderItemName);
+      auto[_, isSucceeded] = this->mRenderItems.try_emplace(
+        renderItemName,
+        std::make_unique<FWrapperRenderItem>(metaRenderItem)
+      );
+      MDY_ASSERT_FORCE(isSucceeded == true);
+    }
+  }
+
+  // And create actual render pipeline that just have handles of each render pipeline and items.
+  this->CreateHandleRenderPipeline(entryRenderPipeline);
+  return EDySuccess();
+}
+
+inline void MDyRendering::Impl::CreateHandleRenderPipeline(
+  const PDyRenderPipelineInstanceMetaInfo& iEntryRenderPipeline)
+{
+  this->mEntryRenderPipelines.emplace_back(iEntryRenderPipeline);
+  DyPushLogInfo("Create rendering pipeline, {} with uuid {}.", 
+    iEntryRenderPipeline.mSpecifierName,
+    iEntryRenderPipeline.mUuid.ToString());
+}
+
+inline void MDyRendering::Impl::Release()
+{
 }
 
 inline MDyRendering::Impl::~Impl()
@@ -194,17 +288,18 @@ inline MDyRendering::Impl::~Impl()
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 
-  this->mLevelFinalRenderer   = MDY_INITIALIZE_NULL;
-  this->mCSMRenderer          = MDY_INITIALIZE_NULL;
-  this->mSkyPostEffect        = MDY_INITIALIZE_NULL;
-  this->mSSAOPostEffect       = MDY_INITIALIZE_NULL;
-  this->mBasicOpaqueRenderer  = MDY_INITIALIZE_NULL;
-  this->mUiBasicRenderer      = MDY_INITIALIZE_NULL;
-  this->mFinalDisplayRenderer = MDY_INITIALIZE_NULL;
-  this->mTranslucentOIT       = MDY_INITIALIZE_NULL;
-  this->mDebugShapeRenderer   = MDY_INITIALIZE_NULL;
-  this->mDebugAABBRenderer    = nullptr;
-  this->mDebugPickingRenderer = nullptr;
+  // Clear all render pipelines.
+  this->RemoveRenderPipeline("dyBtDefault");
+  this->RemoveRenderPipeline("dyBtDefaultLoading");
+
+  MDY_ASSERT(
+    std::all_of(MDY_BIND_CBEGIN_CEND(this->mRenderItems), 
+    [](const auto& renderItem) { return renderItem.second->IsBeingBinded() == false; }));
+  MDY_ASSERT(
+    std::all_of(MDY_BIND_CBEGIN_CEND(this->mRenderPipelines), 
+    [](const auto& renderPipeline) { return renderPipeline.second->IsBeingBinded() == false; }));
+  this->mRenderItems.clear();
+  this->mRenderPipelines.clear();
 
   // Initialize internal management singleton instance.
   MDY_CALL_ASSERT_SUCCESS(FDyModelHandlerManager::Release());
@@ -212,18 +307,30 @@ inline MDyRendering::Impl::~Impl()
   MDY_CALL_ASSERT_SUCCESS(MDyUniformBufferObject::Release());
 }
 
-inline void MDyRendering::Impl::PreRender(TF32 dt)
+inline EDySuccess MDyRendering::Impl::RemoveRenderPipeline(const std::string& iPipelineSpecifier)
 {
-  { // Checking 
-    static bool lock = false;
-    auto& settingManager = MDySetting::GetInstance();
-    if (const auto flag = settingManager.IsRenderPhysicsCollisionShape(); flag != lock)
+  // Check there is a render pipeline.
+  if (ContainsIf(this->mEntryRenderPipelines, 
+    [iPipelineSpecifier](const auto& pipeline)
     {
-      this->mDebugShapeRenderer->Clear();
-      lock = flag;
-    }
+      return pipeline.GetName() == iPipelineSpecifier;
+    }) == false)
+  {
+    DyPushLogError(
+      "Failed to remove render pipeline, {}. Matched specifier is not exist.",
+      iPipelineSpecifier);
+    return DY_FAILURE;
   }
 
+  // Remove.
+  DyEraseRemoveIf(this->mEntryRenderPipelines, 
+    [iPipelineSpecifier](const auto& pipeline) { return pipeline.GetName() == iPipelineSpecifier; }
+  );
+  return DY_SUCCESS;
+}
+
+inline void MDyRendering::Impl::PreRender(TF32 dt)
+{
   // Get skybox pointer from present level.
   auto& refWorld = MDyWorld::GetInstance();
   auto optSkybox = refWorld.GetPtrMainLevelSkybox();
@@ -327,260 +434,26 @@ inline void MDyRendering::Impl::EnqueueDebugDrawCollider(
   this->mDebugColliderDrawingList.emplace_back(std::make_pair(&iRefCollider, iTransformMatrix));
 }
 
-inline void MDyRendering::Impl::RenderLevelInformation()
+inline void MDyRendering::Impl::RenderPipelines()
 {
-  if (MDyWorld::GetInstance().IsLevelPresentValid() == false) { return; }
-  
-  // If main camera is not exist, do not render level.
-  const auto* ptrCamera = MDyWorld::GetInstance().GetPtrMainLevelCamera();
-  if (ptrCamera == nullptr) { return; }
-
-  { // Set overall rendering mode.
-    DDyGlGlobalStatus initialStatus{};
-    using DPolygonMode = DDyGlGlobalStatus::DPolygonMode;
-    using EMode  = DDyGlGlobalStatus::DPolygonMode::EMode;
-    using EValue = DDyGlGlobalStatus::DPolygonMode::EValue;
-    //
-    switch (MDySetting::GetInstance().GetRenderingMode())
-    {
-    case EDyModelRenderingMode::FillNormal: 
-    {
-      initialStatus.mPolygonMode = DPolygonMode{EMode::FrontAndBack, EValue::Triangle}; 
-      { MDY_GRAPHIC_SET_CRITICALSECITON();
-        this->InsertInternalGlobalStatus(initialStatus);
-      }
-    } break;
-    case EDyModelRenderingMode::WireFrame: 
-    {
-      initialStatus.mPolygonMode = DPolygonMode{EMode::FrontAndBack, EValue::Line}; 
-      { MDY_GRAPHIC_SET_CRITICALSECITON();
-        this->InsertInternalGlobalStatus(initialStatus);
-      }
-    } break;
-    }
-  }
-  
-  // (0) Clear previous frame results of each framebuffers.
-  this->pClearRenderingFramebufferInstances();
-  this->mBasicOpaqueRenderer->PreRender();
-
-  // (1) Draw opaque call list. Get valid Main CDyCamera instance pointer address.
-  if (MDY_GRAPHIC_SET_CRITICALSECITON(); 
-      this->mBasicOpaqueRenderer->TryPushRenderingSetting() == DY_SUCCESS)
+  //this->pClearRenderingFramebufferInstances();
+  for (auto& renderPipeline : this->mEntryRenderPipelines)
   {
-    for (auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] : this->mOpaqueMeshDrawingList)
-    { // Render
-      this->mBasicOpaqueRenderer->RenderScreen(
-          *iPtrModel,
-          const_cast<FDyMeshResource&>(*iPtrValidMesh),
-          const_cast<FDyMaterialResource&>(*iPtrValidMat)
-      );
-    }
+    // Need to check activation flag manually.
+    if (renderPipeline.IsActivated() == false) { continue; }
 
-    // Pop setting.
-    this->mBasicOpaqueRenderer->TryPopRenderingSetting();
+    MDY_GRAPHIC_SET_CRITICALSECITON();
+    renderPipeline.TryRender();
   }
-  SDyProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(this->mOpaqueMeshDrawingList.size()));
 
-  // (2) Draw transparent call list with OIT.
-  if (MDY_GRAPHIC_SET_CRITICALSECITON();
-      this->mTranslucentMeshDrawingList.empty() == false
-  &&  this->mTranslucentOIT->TryPushRenderingSetting() == DY_SUCCESS)
-  {
-    for (auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] : this->mTranslucentMeshDrawingList)
-    { // Render
-      this->mTranslucentOIT->RenderScreen(
-          *iPtrModel->mPtrModelRenderer, 
-          const_cast<FDyMeshResource&>(*iPtrValidMesh),
-          const_cast<FDyMaterialResource&>(*iPtrValidMat)
-      );
-    }
-    // Pop Setting
-    this->mTranslucentOIT->TryPopRenderingSetting(); 
-  }
-  SDyProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(this->mTranslucentMeshDrawingList.size()));
-  this->mTranslucentMeshDrawingList.clear();
-
-  // Pop.
-  this->PopInternalGlobalStatus();
-  
-  //!
-  //! Effects ▽
-  //!
-
-  // (3) Cascaded Shadow mapping to opaque call list. Pre-render update for update Segments.
-  const auto& information = MDySetting::GetInstance().GetGameplaySettingInformation();
-  if (MDY_GRAPHIC_SET_CRITICALSECITON();
-      information.mGraphics.mIsEnabledDefaultShadow == true
-  &&  this->mCSMRenderer->TryPushRenderingSetting() == DY_SUCCESS)
-  {
-    // Cascade shadow mapping use different and mutliple viewport.
-    // Render only opaque mesh list.
-    for (auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] : this->mOpaqueMeshDrawingList)
-    { // Render
-      this->mCSMRenderer->RenderScreen(
-          *iPtrModel, 
-          const_cast<FDyMeshResource&>(*iPtrValidMesh),
-          const_cast<FDyMaterialResource&>(*iPtrValidMat)
-      );
-    }
-    // Pop Setting
-    // Set global viewport values to camera's properties.
-    this->mCSMRenderer->TryPopRenderingSetting();
-  }
-  else { this->mCSMRenderer->Clear(); }
   this->mOpaqueMeshDrawingList.clear();
-
-  //! Default Post processing effects
-  if (MDY_GRAPHIC_SET_CRITICALSECITON();
-      information.mGraphics.mIsEnabledDefaultSsao == true
-  &&  this->mSSAOPostEffect->TryPushRenderingSetting() == DY_SUCCESS)
-  { 
-    this->mSSAOPostEffect->RenderScreen();
-    // Pop Setting.
-    this->mSSAOPostEffect->TryPopRenderingSetting();
-  }
-  else { this->mSSAOPostEffect->Clear(); }
-
-  // https://www.khronos.org/opengl/wiki/Cubemap_Texture
-  if (MDY_GRAPHIC_SET_CRITICALSECITON();
-      this->mPtrRequiredSkybox != nullptr
-  &&  this->mSkyPostEffect->TryPushRenderingSetting() == DY_SUCCESS)
-  {
-    this->mSkyPostEffect->RenderScreen();
-    this->mSkyPostEffect->TryPopRenderingSetting();
-  }
-
-  // Final. 
-  // Level information without debug information is integrated in one renderbuffer.
-  if (MDY_GRAPHIC_SET_CRITICALSECITON();
-      this->mLevelFinalRenderer != nullptr 
-  &&  this->mLevelFinalRenderer->TryPushRenderingSetting() == DY_SUCCESS)
-  { 
-    this->mLevelFinalRenderer->RenderScreen(); 
-    this->mLevelFinalRenderer->TryPopRenderingSetting();
-  }
-}
-
-inline void MDyRendering::Impl::RenderDebugInformation()
-{
-  //!
-  //! Debug rendering.
-  //! https://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/guide/Manual/DebugVisualization.html#debugvisualization
-  //!
-
-  const auto* ptrCamera = MDyWorld::GetInstance().GetPtrMainLevelCamera();
-  if (ptrCamera == nullptr) { return; }
-
-  const auto& setting   = MDySetting::GetInstance();
-  
-  // Set status
-  DDyGlGlobalStatus statusSetting;
-  statusSetting.mIsEnableDepthTest = false;
-  this->InsertInternalGlobalStatus(statusSetting);
- 
-  if (setting.IsRenderPhysicsCollisionShape() == true)
-  { // Draw collider shapes. (NOT AABB!) If main camera is not exist, do not render level.
-    // (1) Draw opaque call list. Get valid Main CDyCamera instance pointer address.
-    if (MDY_GRAPHIC_SET_CRITICALSECITON();
-        this->mDebugShapeRenderer != nullptr
-    &&  this->mDebugShapeRenderer->TryPushRenderingSetting() == DY_SUCCESS)
-    {
-      for (auto& [ptrCollider, transformMatrix] : this->mDebugColliderDrawingList)
-      {
-        this->mDebugShapeRenderer->RenderScreen(*ptrCollider, transformMatrix);
-      }
-      // Pop setting.
-      this->mDebugShapeRenderer->TryPopRenderingSetting();
-    }
-  }
-
-  if (setting.IsRenderPhysicsCollisionAABB() == true) 
-  { // Draw collider AABB.
-    // (2) Draw opaque call list. Get valid Main CDyCamera instance pointer address.
-    if (MDY_GRAPHIC_SET_CRITICALSECITON();
-        this->mDebugAABBRenderer != nullptr
-    &&  this->mDebugAABBRenderer->TryPushRenderingSetting() == DY_SUCCESS)
-    {
-      for (auto& [ptrCollider, transformMatrix] : this->mDebugColliderDrawingList)
-      {
-        this->mDebugAABBRenderer->RenderScreen(*ptrCollider, transformMatrix);
-      }
-      // Pop setting.
-      this->mDebugAABBRenderer->TryPopRenderingSetting();
-    }
-  }
   this->mDebugColliderDrawingList.clear();
-
-  // If picking actor is exist, render it only edge using kernel & ping-pong.
-  if (auto& refInput = MDyInput::GetInstance();
-      refInput.IsActorPicked() == true)
-  {
-    auto& refActor = *(*refInput.__GetPPtrPickingTarget());
-    if (MDY_GRAPHIC_SET_CRITICALSECITON();
-        this->mDebugPickingRenderer != nullptr
-    &&  this->mDebugPickingRenderer->TryPushRenderingSetting() == DY_SUCCESS)
-    {
-      this->mDebugPickingRenderer->RenderScreen(refActor);
-    }
-    // Pop setting.
-    this->mDebugPickingRenderer->TryPopRenderingSetting();
-  }
-
-  this->PopInternalGlobalStatus();
-}
-
-inline void MDyRendering::Impl::RenderUIInformation()
-{
-  if (MDY_GRAPHIC_SET_CRITICALSECITON();
-      this->mUiBasicRenderer != nullptr
-  &&  this->mUiBasicRenderer->TryPushRenderingSetting() == DY_SUCCESS) 
-  { 
-    this->mUiBasicRenderer->RenderScreen(this->mUiObjectDrawingList); 
-    this->mUiBasicRenderer->TryPopRenderingSetting();
-  }
   this->mUiObjectDrawingList.clear();
-}
-
-inline void MDyRendering::Impl::Integrate()
-{
-  //! Level & Ui & Debug integration section.
-  //! ImGUI rendering will be held outside and after this function call.
-  if (MDY_GRAPHIC_SET_CRITICALSECITON();
-      this->mFinalDisplayRenderer != nullptr
-  &&  this->mFinalDisplayRenderer->TryPushRenderingSetting() == DY_SUCCESS) 
-  { 
-    this->mFinalDisplayRenderer->RenderScreen(); 
-    this->mFinalDisplayRenderer->TryPopRenderingSetting();
-  }
-}
-
-inline void MDyRendering::Impl::MDY_PRIVATE(RenderLoading)()
-{
-  if (MDY_GRAPHIC_SET_CRITICALSECITON();
-      this->mUiBasicRenderer != nullptr
-  &&  this->mUiBasicRenderer->TryPushRenderingSetting() == DY_SUCCESS) 
-  { 
-    this->mUiBasicRenderer->RenderScreen(this->mUiObjectDrawingList); 
-    this->mUiBasicRenderer->TryPopRenderingSetting();
-  }
-  this->mUiObjectDrawingList.clear();
-  this->Integrate();
 }
 
 inline CDyDirectionalLight* MDyRendering::Impl::GetPtrMainDirectionalLight() const noexcept
 {
   return this->mMainDirectionalLight;
-}
-
-inline void MDyRendering::Impl::pClearRenderingFramebufferInstances() noexcept
-{
-  if (MDyWorld::GetInstance().IsLevelPresentValid() == false) { return; }
-
-  // Reset final rendering mesh setting.
-  if (MDY_CHECK_ISNOTEMPTY(this->mLevelFinalRenderer))    { this->mLevelFinalRenderer->Clear(); }
-  if (MDY_CHECK_ISNOTEMPTY(this->mUiBasicRenderer))       { this->mUiBasicRenderer->Clear(); }
-  if (MDY_CHECK_ISNOTEMPTY(this->mFinalDisplayRenderer))  { this->mFinalDisplayRenderer->Clear(); }
 }
 
 inline void MDyRendering::Impl::MDY_PRIVATE(BindMainDirectionalLight)(CDyDirectionalLight& iRefLight)

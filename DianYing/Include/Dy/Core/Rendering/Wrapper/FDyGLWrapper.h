@@ -178,23 +178,29 @@ public:
   GetShaderProgramUniformBlockInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iUniformBlockIndex);
 
   /// @brief Update uniform matrix4x4 item. Specified shader must be valid and activated.
-  static void UpdateUniformMatrix4(_MIN_ TU32 iId, _MIN_ const DDyMatrix4x4& iBuffer, _MIN_ bool iTransposed = false);
+  static void UpdateUniformMatrix4(TU32 iId, const DDyMatrix4x4& iBuffer, bool iTransposed = false);
   /// @brief Update uniform matrix3x3 item. Specified shader must be valid and activated.
-  static void UpdateUniformMatrix3(_MIN_ TU32 iId, _MIN_ const DDyMatrix3x3& iBuffer, _MIN_ bool iTransposed = false);
+  static void UpdateUniformMatrix3(TU32 iId, const DDyMatrix3x3& iBuffer, bool iTransposed = false);
   /// @brief Update uniform matrix4x4 array. Specified shader must be valid and activated.
-  static void UpdateUniformMatrix4Array(_MIN_ TU32 iId, _MIN_ const std::vector<DDyMatrix4x4>& iBuffer, _MIN_ bool iIransposed = false);
+  static void UpdateUniformMatrix4Array(
+    TU32 iId, 
+    const std::vector<DDyMatrix4x4>& iBuffer, 
+    bool iIransposed = false);
   /// @brief Update uniform vector3 (float) array. Specified shader must be valid and activated.
-  static void UpdateUniformVector3Array(_MIN_ TU32 iId, _MIN_ const std::vector<DDyVector3>& iBfuffer);
-  /// @brief
-  static void UpdateUniformVector4(_MIN_ TU32 iId, _MIN_ const DDyVector4& iBuffer);
-  /// @brief
-  static void UpdateUniformVector3(_MIN_ TU32 iId, _MIN_ const DDyVector3& iBuffer);
-  /// @brief
-  static void UpdateUniformInteger(_MIN_ TU32 iId, _MIN_ const TI32& iBuffer);
-  /// @brief Update uniform one unsigend (32-bit) value. Specified shader must be valid and activated when updating.
-  static void UpdateUniformUnsigned(_MIN_ TU32 iId, _MIN_ const TU32& iBuffer);
+  static void UpdateUniformVector3Array(TU32 iId, const std::vector<DDyVector3>& iBfuffer);
+  /// @brief Update uniform vector4 (float) item. Specified shader must be valid and activated.
+  static void UpdateUniformVector4(TU32 iId, const DDyVector4& iBuffer);
+  /// @brief Update uniform vector3 (float) item. Specified shader must be valid and activated.
+  static void UpdateUniformVector3(TU32 iId, const DDyVector3& iBuffer);
+  /// @brief Update uniform vector2 (float) item. Specified shader must be valid and activated.
+  static void UpdateUniformVector2(TU32 iId, const DDyVector2& iBuffer);
+  /// @brief Update uniform integer item. Specified shader must be valid and activated.
+  static void UpdateUniformInteger(TU32 iId, const TI32& iBuffer);
+  /// @brief Update uniform one unsigend (32-bit) value. 
+  /// Specified shader must be valid and activated when updating.
+  static void UpdateUniformUnsigned(TU32 iId, const TU32& iBuffer);
   /// @brief Update uniform one float value. Specified shader must be valid and activated.
-  static void UpdateUniformFloat(_MIN_ TU32 iId, _MIN_ const TF32& iBuffer);
+  static void UpdateUniformFloat(TU32 iId, const TF32& iBuffer);
 
   struct MDY_PRIVATE(OutsideLockguard) final
   {

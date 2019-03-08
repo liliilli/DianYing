@@ -20,24 +20,37 @@
 namespace dy
 {
 
-///
 /// @struct PDyGlFrameBufferInstanceMetaInfo
 /// @brief Meta information for constructing Frame buffer object.
-///
 struct PDyGlFrameBufferInstanceMetaInfo final : public PDyCommonResourceMetaInfo
 {
-  std::string             mSpecifierName    = MDY_INITIALIZE_EMPTYSTR;
-  TAttachmentBinderList   mColorAttachmentList   = {};
-  DDyVectorInt2           mFrameBufferSize  = {};
+  std::string           mSpecifierName;
+  TAttachmentBinderList mColorAttachmentList = {};
+  TBlendingEquationList mBlendingEquationList = {};
 
-  std::string             mDepthAttachmentSpecifier = MDY_INITIALIZE_EMPTYSTR;
-  bool                    mIsUsingDepthBuffer       = true;
-  bool                    mIsNotUsingPixelShader    = false;
+  DDyVectorInt2         mFrameBufferSize = {};
+
+  std::string           mDepthAttachmentSpecifier;
+  bool                  mIsUsingDepthBuffer = true;
+  bool                  mIsNotUsingPixelShader = false;
 };
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyGlFrameBufferInstanceMetaInfo& p);
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyGlFrameBufferInstanceMetaInfo& p);
 
 } /// ::dy namespace
+
+namespace std
+{
+
+template <> struct hash<dy::PDyGlFrameBufferInstanceMetaInfo>
+{
+  size_t operator()(const dy::PDyGlFrameBufferInstanceMetaInfo& iVertex) const 
+  {
+    return hash<dy::DDyVectorInt2>()(iVertex.mFrameBufferSize); 
+  }
+};
+
+} /// ::std namespace
 
 #endif /// GUARD_DY_META_INFORMATION_METAINFOFRAMEBUFFER_H

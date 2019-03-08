@@ -157,28 +157,18 @@ struct DDyVector2 final {
   //! Methods
   //!
 
-  ///
   /// @brief Return one-dimensional data chunk of DDyVector2.
-  ///
-  [[nodiscard]] FORCEINLINE std::array<float, 2> Data() const noexcept
-  {
-    return {this->X, this->Y};
-  }
+  MDY_NODISCARD TF32* Data() noexcept;
+  /// @brief Return one-dimensional data chunk of DDyVector2.
+  MDY_NODISCARD const TF32* Data() const noexcept;
 
-  ///
   /// @brief Return squared length of this vector.
   /// @return Squared length of this DDyVector2.
-  ///
-  [[nodiscard]] FORCEINLINE float GetSquareLength() const noexcept
-  {
-    return this->X * this->X + this->Y * this->Y;
-  }
+  MDY_NODISCARD TF32 GetSquareLength() const noexcept;
 
-  ///
   /// @brief Returns the length of this vector.
   /// @return Length of this DDyVector2.
-  ///
-  [[nodiscard]] FORCEINLINE float GetLength() const noexcept
+  MDY_NODISCARD TF32 GetLength() const noexcept
   {
     return std::sqrtf(this->GetSquareLength());
   }

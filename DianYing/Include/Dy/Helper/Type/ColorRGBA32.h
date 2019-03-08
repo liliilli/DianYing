@@ -84,7 +84,7 @@ struct alignas(4) DDyColorRGBA32 final
   ///
   /// @brief Can be convert DDyColor explicitly.
   ///
-  constexpr operator DDyColorRGBA() const noexcept
+  operator DDyColorRGBA() const noexcept
   {
     return DDyColorRGBA
     {

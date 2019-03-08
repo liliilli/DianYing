@@ -22,8 +22,24 @@
 
 namespace dy {
 
-bool DDyVector2::IsAllZero(const DDyVector2& vector) noexcept {
+bool DDyVector2::IsAllZero(const DDyVector2& vector) noexcept 
+{
   return math::IsAllZero(vector);
+}
+
+TF32* DDyVector2::Data() noexcept
+{
+  return &this->X;
+}
+
+const TF32* DDyVector2::Data() const noexcept
+{
+  return &this->X;
+}
+
+TF32 DDyVector2::GetSquareLength() const noexcept
+{
+  return this->X * this->X + this->Y * this->Y;
 }
 
 DDyVector2 DDyVector2::MultiplyMatrix(const dy::DDyMatrix2x2& matrix) const noexcept
@@ -34,7 +50,8 @@ DDyVector2 DDyVector2::MultiplyMatrix(const dy::DDyMatrix2x2& matrix) const noex
   };
 }
 
-bool DDyVector2::IsAllZero() const noexcept {
+bool DDyVector2::IsAllZero() const noexcept 
+{
   return math::IsAllZero(*this);
 }
 

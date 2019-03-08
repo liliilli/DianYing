@@ -27,7 +27,7 @@
 #include <Dy/Helper/Pointer.h>
 #include <Dy/Helper/ContainerHelper.h>
 #include <Dy/Helper/Library/HelperJson.h>
-#include <Dy/Helper/HelperString.h>
+#include <Dy/Helper/Library/HelperString.h>
 #include <Dy/Helper/Library/HelperRegex.h>
 
 #include <Dy/Management/SettingManager.h>
@@ -52,6 +52,8 @@
 #include <Dy/Meta/Information/FontMetaInformation.h>
 #include <Dy/Meta/Information/PrefabMetaInformation.h>
 #include <Dy/Meta/Information/ElementLevelMetaInfo.h>
+#include <Dy/Meta/Information/MetaInfoRenderPipeline.h>
+#include <Dy/Meta/Information/MetaInfoRenderItem.h>
 
 //!
 //! Local tranlation unit variables
@@ -388,6 +390,10 @@ public:
   THashMap<PDyTextureInstanceMetaInfo>  mTextureMetaInfo= {};
   /// Material meta information map.
   THashMap<PDyMaterialInstanceMetaInfo> mMaterialMetaInfo = {};
+  /// Render pipeline meta information map.
+  THashMap<PDyRenderPipelineInstanceMetaInfo> mRenderPipelineMetaInfo = {};
+  /// Render item meta information map.
+  THashMap<PDyRenderItemInstanceMetaInfo> mRenderItemMetaInfo = {};
   /// @brief Sound meta information map.
   THashMap<PDySoundInstanceMetaInfo>    mSoundMetaInfo = {};
 
@@ -540,6 +546,20 @@ const PDySoundInstanceMetaInfo& MDyMetaInfo::GetSoundMetaInformation(const std::
   return this->mInternal->GetSoundMetaInformation(specifier);
 }
 
+const PDyRenderPipelineInstanceMetaInfo& 
+MDyMetaInfo::GetRenderPipeline(const std::string& iRenderPipelineSpecifier) const
+{
+  MDY_ASSERT_FORCE(this->IsRenderPipelineExist(iRenderPipelineSpecifier) == true);
+  return this->mInternal->mRenderPipelineMetaInfo.at(iRenderPipelineSpecifier);
+}
+
+const PDyRenderItemInstanceMetaInfo& 
+MDyMetaInfo::GetRenderItem(const std::string& iRenderItemSpecifier) const
+{
+  MDY_ASSERT_FORCE(this->IsRenderItemExist(iRenderItemSpecifier) == true);
+  return this->mInternal->mRenderItemMetaInfo.at(iRenderItemSpecifier);
+}
+
 MDY_NODISCARD const PDyMetaWidgetRootDescriptor* 
 MDyMetaInfo::MDY_PRIVATE(TryGetLoadingWidgetMetaLoading)() const noexcept
 {
@@ -619,6 +639,16 @@ bool MDyMetaInfo::IsFrameBufferMetaInfoExist(const std::string& speicfierName) c
 bool MDyMetaInfo::IsSoundMetaInfoExist(const std::string& specifierName) const noexcept
 {
   return DyIsMapContains(this->mInternal->mSoundMetaInfo, specifierName);
+}
+
+bool MDyMetaInfo::IsRenderPipelineExist(const std::string& iRenderPipelineName) const noexcept
+{
+  return DyIsMapContains(this->mInternal->mRenderPipelineMetaInfo, iRenderPipelineName);
+}
+
+bool MDyMetaInfo::IsRenderItemExist(const std::string& iRenderItemName) const noexcept
+{
+  return DyIsMapContains(this->mInternal->mRenderItemMetaInfo, iRenderItemName);
 }
 
 bool MDyMetaInfo::IsLoadingWidgetMetaInfoExist() const noexcept
@@ -824,6 +854,30 @@ EDySuccess MDyMetaInfo::pfAddGLAttachmentMetaInfo(const PDyGlAttachmentInstanceM
 EDySuccess MDyMetaInfo::pfAddGLFrameBufferMetaInfo(const PDyGlFrameBufferInstanceMetaInfo& metaInfo)
 {
   return this->mInternal->pfAddGLFrameBufferMetaInfo(metaInfo);
+}
+
+EDySuccess MDyMetaInfo::pfAddRenderPipelineMetaInfo(const PDyRenderPipelineInstanceMetaInfo& metaInfo)
+{
+  MDY_ASSERT_MSG(
+    DyIsMapContains(this->mInternal->mRenderPipelineMetaInfo, metaInfo.mSpecifierName) == false, 
+    "Duplicated render pipeline name is exist.");
+
+  this->mInternal->mRenderPipelineMetaInfo.try_emplace(
+    metaInfo.mSpecifierName, 
+    metaInfo);
+  return DY_SUCCESS;
+}
+
+EDySuccess MDyMetaInfo::pfAddRenderItemMetaInfo(const PDyRenderItemInstanceMetaInfo& metaInfo)
+{
+  MDY_ASSERT_MSG(
+    DyIsMapContains(this->mInternal->mRenderItemMetaInfo, metaInfo.mSpecifierName) == false, 
+    "Duplicated render pipeline name is exist.");
+
+  this->mInternal->mRenderItemMetaInfo.try_emplace(
+    metaInfo.mSpecifierName, 
+    metaInfo);
+  return DY_SUCCESS;
 }
 
 EDySuccess MDyMetaInfo::MDY_PRIVATE(AddBootResourceSpecifierList)(const TResourceSpecifierList& list)

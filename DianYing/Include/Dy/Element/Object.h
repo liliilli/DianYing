@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Element/Interface/IDyToString.h>
-#include <Dy/Helper/HashCompileCrc32.h>
+#include <Dy/Helper/System/HashCompileCrc32.h>
 
 namespace dy
 {

@@ -184,6 +184,8 @@ void DyEngine::MDY_PRIVATE(ReflectGameStatusTransition)()
     default: MDY_UNEXPECTED_BRANCH();
     case EDyGlobalGameStatus::Loading: 
     { // FirstLoading => Loading.
+      MDyRendering::GetInstance().ActivateEntryRenderPipeline("dyBtDefaultLoading", true);
+
       MDY_CALL_ASSERT_SUCCESS(MDyWorld::GetInstance().MDY_PRIVATE(OpenFirstLevel)());
     } break;
     }
@@ -198,6 +200,9 @@ void DyEngine::MDY_PRIVATE(ReflectGameStatusTransition)()
       // Remove Loading UI, and detach resource with RAII & Script.
       MDY_CALL_BUT_NOUSE_RESULT(MDyWorld::GetInstance().TryRemoveLoadingUi());
       auto& scriptManager = MDyScript::GetInstance(); 
+      MDyRendering::GetInstance().ActivateEntryRenderPipeline("dyBtDefaultLoading", false);
+      MDyRendering::GetInstance().ActivateEntryRenderPipeline("dyBtDefault", true);
+
       if (scriptManager.IsGcedWidgetScriptExist() == true)
       { // Remove ui script manually.
         scriptManager.CallDestroyFuncWidgetScriptGCList();
@@ -218,6 +223,9 @@ void DyEngine::MDY_PRIVATE(ReflectGameStatusTransition)()
       MDyWorld::GetInstance().MDY_PRIVATE(RemoveLevel)();
       MDY_CALL_BUT_NOUSE_RESULT(MDyWorld::GetInstance().TryCreateLoadingUi());
 
+      MDyRendering::GetInstance().ActivateEntryRenderPipeline("dyBtDefault", false);
+      MDyRendering::GetInstance().ActivateEntryRenderPipeline("dyBtDefaultLoading", true);
+
       SDyIOConnectionHelper::PopulateResourceList(
           std::vector<DDyResourceName>{}, EDyScope::Global, 
           []() { 
@@ -228,6 +236,8 @@ void DyEngine::MDY_PRIVATE(ReflectGameStatusTransition)()
     } break;
     case EDyGlobalGameStatus::Shutdown: 
     { // GameRuntime => Shutdown. Just wait IO Thread is slept.
+      MDyRendering::GetInstance().ActivateEntryRenderPipeline("dyBtDefault", false);
+
       SDyIOConnectionHelper::PopulateResourceList(
           std::vector<DDyResourceName>{}, EDyScope::Global, 
           []() { DyEngine::GetInstance().SetNextGameStatus(EDyGlobalGameStatus::Ended); }
@@ -381,16 +391,14 @@ void DyEngine::MDY_PRIVATE(Render)(_MIN_ EDyGlobalGameStatus iEngineStatus)
   case EDyGlobalGameStatus::FirstLoading: 
   case EDyGlobalGameStatus::Loading: 
   {
-    MDyRendering::GetInstance().MDY_PRIVATE(RenderLoading)();
+    auto& render = MDyRendering::GetInstance();
+    render.RenderPipelines();
   } break;
   case EDyGlobalGameStatus::GameRuntime: 
   {
     // Request render call.
     auto& render = MDyRendering::GetInstance();
-    render.RenderLevelInformation();
-    render.RenderUIInformation();
-    render.RenderDebugInformation();
-    render.Integrate();
+    render.RenderPipelines();
 
     // If debug mode is enabled, update and render ui item.
     // imgui has unified update & render architecture, so can not separate update and render routine.

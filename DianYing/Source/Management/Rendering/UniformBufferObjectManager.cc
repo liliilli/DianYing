@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Management/Rendering/UniformBufferObjectManager.h>
 #include <Dy/Management/LoggingManager.h>
+#include <Dy/Helper/ContainerHelper.h>
 
 //!
 //! Forward declaration & Local translation unit data.
@@ -56,8 +57,9 @@ EDySuccess MDyUniformBufferObject::pfRelease()
 }
 
 EDySuccess MDyUniformBufferObject::CreateUboContainer(_MIN_ const PDyUboConstructionDescriptor& descriptor)
-{ // Duplication check
-  if (MDY_CHECK_ISNOTNULL(this->GetUboContainer(descriptor.mUboSpecifierName)))
+{ 
+  // Duplication check
+  if (this->GetUboContainer(descriptor.mUboSpecifierName) != nullptr)
   {
     DyPushLogError("{} | Failed to create UBO container. Name is duplicated. | Name : {}",
                   (sFunc_CreateUboContainer),
@@ -66,8 +68,7 @@ EDySuccess MDyUniformBufferObject::CreateUboContainer(_MIN_ const PDyUboConstruc
   }
 
   // Binding index duplication check
-  if (this->mBeingUsedUboBufferIndexSet.find(descriptor.mBindingIndex) !=
-      this->mBeingUsedUboBufferIndexSet.end())
+  if (DyIsSetContains(this->mBeingUsedUboBufferIndexSet, descriptor.mBindingIndex) == true)
   {
     DyPushLogError("{} | Failed to create UBO container. Binding Index is duplicated. | Binding Index : {}",
                   (sFunc_CreateUboContainer),

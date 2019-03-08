@@ -39,40 +39,25 @@ public:
 
 protected:
   /// @brief Check booting meta information is exist.
-  static bool IsBootingMetaInfoScriptExist() noexcept { return MDY_CHECK_ISNOTNULL(GetBootResourceMetaInfo().second); }
+  static bool IsBootingMetaInfoScriptExist() noexcept;
 
   /// @brief Check loading widget resource meta information is exist.
-  static bool IsLoadingWidgetMetaInfoExist() noexcept { return MDY_CHECK_ISNOTNULL(GetLoadingWidgetResourceMetaInfo().second); }
+  static bool IsLoadingWidgetMetaInfoExist() noexcept;
 
-  static TMapType& GetResourceMapReference()
-  {
-    static TMapType typeMap;
-    return typeMap;
-  }
+  /// @brief Get resource map reference container.
+  static TMapType& GetResourceMapReference();
 
   /// @brief Loading booting resource script meta information
-  static TValueType& GetBootResourceMetaInfo()
-  {
-    static TValueType mLoadingBootingMetaInfoCustomized = {};
-    return mLoadingBootingMetaInfoCustomized;
-  }
+  static TValueType& GetBootResourceMetaInfo();
 
   /// @brief Get global resource script meta information list.
-  static std::vector<TValueType>& GetGlobalResourceMetaInfo()
-  {
-    static std::vector<TValueType> mLoadingGlobalMetaInfoCustomizedList = {};
-    return mLoadingGlobalMetaInfoCustomizedList;
-  }
+  static std::vector<TValueType>& GetGlobalResourceMetaInfo();
 
   /// @brief Loading widget resource meta information
-  static TValueType& GetLoadingWidgetResourceMetaInfo()
-  {
-    static TValueType mLoadingWidgetResourceMetaInfo = {};
-    return mLoadingWidgetResourceMetaInfo;
-  }
+  static TValueType& GetLoadingWidgetResourceMetaInfo();
 
   template <typename TType>
-  static void RegisterScriptResource(_MIN_ const std::string& specifier);
+  static void RegisterScriptResource(const std::string& specifier);
 };
 
 template<typename TType>
@@ -84,17 +69,35 @@ struct RDyBuiltinResourceRegister final : public RDyBuiltinResource
   inline static bool mFlag = false;
   RDyBuiltinResourceRegister(const std::string_view& name)
   {
+    // Need to avoid duplicated initiation.
     if (mFlag == true) { return; }
 
-    static_assert(IsInheritancedFrom<TType, IDyResource> == true, "TType must be IResource derived type.");
+    static_assert(
+      IsInheritancedFrom<TType, IDyResource> == true, 
+      "TType must be IResource derived type.");
+
+    // This dirty avoidance will be cleaned by using uuid... (weep)
     std::string specifier = name.data(); specifier += std::to_string(count);
 
     if constexpr (TType::value == EDyResourceType::Script) 
-    { this->template RegisterScriptResource<TType>(specifier); }
+    { 
+      this->RegisterScriptResource<TType>(specifier); 
+    }
+    else if constexpr (TType::value == EDyResourceType::RenderPipeline
+                    || TType::value == EDyResourceType::RenderItem)
+    {
+      GetResourceMapReference().try_emplace(
+      specifier, 
+      TType::value, &__Rfc__GetInstance<TType::__ConstructionHelper>);
+    }
     else if constexpr (IsInheritancedFrom<TType, ADyLoadingWidgetMetaResource> == true)
-    { GetLoadingWidgetResourceMetaInfo() = std::make_pair(TType::value, &__Rfc__GetInstance<TType>); }
+    { 
+      GetLoadingWidgetResourceMetaInfo() = std::make_pair(TType::value, &__Rfc__GetInstance<TType>); 
+    }
     else 
-    { GetResourceMapReference().try_emplace(specifier, TType::value, &__Rfc__GetInstance<TType>); }
+    { 
+      GetResourceMapReference().try_emplace(specifier, TType::value, &__Rfc__GetInstance<TType>); 
+    }
 
     count += 1;
     mFlag = true;
@@ -102,7 +105,7 @@ struct RDyBuiltinResourceRegister final : public RDyBuiltinResource
 };
 
 template <typename TType>
-void RDyBuiltinResource::RegisterScriptResource(_MIN_ const std::string& specifier)
+void RDyBuiltinResource::RegisterScriptResource(const std::string& specifier)
 {
   if constexpr (IsBaseClassOf<TType, ADyLoadingBootResource> == true)
   { // Bind boot resource script to container.
@@ -114,7 +117,9 @@ void RDyBuiltinResource::RegisterScriptResource(_MIN_ const std::string& specifi
   }
   else
   { // Bind general (widget, actor) script to container.
-    GetResourceMapReference().try_emplace(specifier, TType::value, &__Rfc__GetInstance<TType::__ConstructionHelper>);
+    GetResourceMapReference().try_emplace(
+      specifier, 
+      TType::value, &__Rfc__GetInstance<TType::__ConstructionHelper>);
   }
 }
 

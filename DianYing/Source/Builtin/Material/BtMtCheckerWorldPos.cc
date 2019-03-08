@@ -33,6 +33,7 @@ void FDyBtMtCheckerWorldPos::ConstructBuffer(PDyMaterialInstanceMetaInfo& proper
   property.mBlendMode       = EDyMaterialBlendMode::Opaque;
 
   property.mTextureNames[0] = {(FDyBuiltinTextureChecker::sName), EDyTextureMapType::Unknown};
+  PDyMaterialInstanceMetaInfo::InsertValue<EDyUniformVariableType::Float>(property, "uRoughness", 0.35f);
 }
 
 } /// ::dy::builtin namespac

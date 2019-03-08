@@ -32,8 +32,8 @@ DDyMatrix4x4::DDyMatrix4x4(const DDyVector4& column1, const DDyVector4& column2,
 
 DDyMatrix4x4::DDyMatrix4x4(const glm::mat2& glmMatrix) noexcept
 {
-  mMatrixValue[0] = glmMatrix[0];
-  mMatrixValue[1] = glmMatrix[1];
+  mMatrixValue[0] = DDyVector4(glmMatrix[0]);
+  mMatrixValue[1] = DDyVector4(glmMatrix[1]);
 }
 
 DDyMatrix4x4::DDyMatrix4x4(const glm::mat3& glmMatrix) noexcept
@@ -88,8 +88,8 @@ DDyMatrix4x4::DDyMatrix4x4(_MIN_ const physx::PxTransform& physxTransform) noexc
 
 DDyMatrix4x4& DDyMatrix4x4::operator=(const glm::mat2& value) noexcept
 {
-  this->mMatrixValue[0] = value[0];
-  this->mMatrixValue[1] = value[1];
+  this->mMatrixValue[0] = DDyVector4(value[0]);
+  this->mMatrixValue[1] = DDyVector4(value[1]);
   this->mMatrixValue[2] = DDyVector4{};
   this->mMatrixValue[3] = DDyVector4{};
   return *this;

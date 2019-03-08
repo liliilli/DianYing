@@ -21,6 +21,24 @@
 namespace dy
 {
 
+/// @macro MDY_REGISTER_RESOURCE_TEXTURE
+/// @brief Register texture meta information source.
+#define MDY_REGISTER_RESOURCE_TEXTURE(__MAType__, __MASpecifierName__) \
+  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(__MAType__, __MASpecifierName__) \
+  private: \
+  static TBufferType& __Get() noexcept \
+  { \
+    static TBufferType instance{}; \
+    return instance; \
+  } \
+  void ConstructBuffer(_MOUT_ TBufferType& buffer, _MOUT_ PDyTextureInstanceMetaInfo& property) noexcept; \
+  public: \
+  __MAType__() \
+  { \
+    ConstructBuffer(__Get(), this->mTextureMetaInfo); \
+    this->mPtrBuffer = &__Get(); \
+  }
+
 struct ADyTextureResource : public IDyResource
 {
 protected:
