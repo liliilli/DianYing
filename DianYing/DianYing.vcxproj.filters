@@ -360,6 +360,10 @@
     <ClCompile Include="Source\Builtin\RenderItem\FBtScreenIntegration.cc" />
     <ClCompile Include="Source\Builtin\RenderPipeline\FBtDefaultLoading.cc" />
     <ClCompile Include="Source\Builtin\Script\BtScrGlobalDefaultUniformBuffer.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAtEmissive.cc" />
+    <ClCompile Include="Source\Builtin\Shader\Render\OpaqueEmissiveStatic.cc" />
+    <ClCompile Include="Source\Builtin\Material\Opaque\MatOpaqueEmissiveStatic.cc" />
+    <ClCompile Include="Source\Builtin\Model\EmissiveSphere.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -888,6 +892,10 @@
     <ClInclude Include="Include\Dy\Helper\Internal\FProxyHandle.h" />
     <ClInclude Include="Include\Dy\Builtin\RenderPipeline\FBtDefaultLoading.h" />
     <ClInclude Include="Include\Dy\Builtin\Script\BtScrGlobalDefaultUniformBuffer.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAtEmissive.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\Render\OpaqueEmissiveStatic.h" />
+    <ClInclude Include="Include\Dy\Builtin\Material\Opaque\MatOpaqueEmissiveStatic.h" />
+    <ClInclude Include="Include\Dy\Builtin\Model\EmissiveSphere.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

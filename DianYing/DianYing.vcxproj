@@ -170,6 +170,7 @@
     <ClCompile Include="Source\Builtin\Attachment\CSM\FDyBtAtLight.cc" />
     <ClCompile Include="Source\Builtin\Attachment\Debug\FDyBtAtDebug.cc" />
     <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAtDepthZValue.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAtEmissive.cc" />
     <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAtSkyOutput.cc" />
     <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAtSSAOFinalOutput.cc" />
     <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAtSSAOOutput.cc" />
@@ -197,6 +198,7 @@
     <ClCompile Include="Source\Builtin\FrameBuffer\WeightBlendOIT\FDyBtFbWeightBlendedOIT.cc" />
     <ClCompile Include="Source\Builtin\GlobalInstance\FDyBtGiDebugStatus.cc" />
     <ClCompile Include="Source\Builtin\Material\BtMtCheckerWorldPos.cc" />
+    <ClCompile Include="Source\Builtin\Material\Opaque\MatOpaqueEmissiveStatic.cc" />
     <ClCompile Include="Source\Builtin\Material\Transparent\StaticTransparentChecker.cc" />
     <ClCompile Include="Source\Builtin\Mesh\Debug\FDyBtMsDebugAABB.cc" />
     <ClCompile Include="Source\Builtin\Mesh\Debug\FDyBtMsDebugBox.cc" />
@@ -211,6 +213,7 @@
     <ClCompile Include="Source\Builtin\Mesh\Plane\FDyBtMsOITTrinagle.cc" />
     <ClCompile Include="Source\Builtin\Mesh\Widget\FDyBtMsUiBarQuad.cc" />
     <ClCompile Include="Source\Builtin\Model\BoxOIT.cc" />
+    <ClCompile Include="Source\Builtin\Model\EmissiveSphere.cc" />
     <ClCompile Include="Source\Builtin\Model\UiFontQuad.cc" />
     <ClCompile Include="data\Script\DebugActor\BtScActorTest1.cc" />
     <ClCompile Include="data\Script\DebugActor\BtScActorTest2.cc" />
@@ -247,6 +250,7 @@
     <ClCompile Include="Source\Builtin\Shader\PostEffect\RenderDefaultSSAO.cc" />
     <ClCompile Include="Source\Builtin\Shader\Render\BtShSkyboxDefault.cc" />
     <ClCompile Include="Source\Builtin\Shader\Render\BtShUvWorldPos.cc" />
+    <ClCompile Include="Source\Builtin\Shader\Render\OpaqueEmissiveStatic.cc" />
     <ClCompile Include="Source\Builtin\Shader\Render\RenderOpaqueDynamic.cc" />
     <ClCompile Include="Source\Builtin\Shader\Widget\RenderUiBasicGaugeBar.cc" />
     <ClCompile Include="Source\Builtin\Shader\Widget\RenderUIImage.cc" />
@@ -600,6 +604,7 @@
     <ClInclude Include="Include\Dy\Builtin\Attachment\CSM\FDyBtAtLight.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\Debug\FDyBtAtDebug.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAtDepthZValue.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAtEmissive.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAtSkyOutput.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAtSSAOFinalOutput.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAtSSAOOutput.h" />
@@ -630,6 +635,7 @@
     <ClInclude Include="Include\Dy\Builtin\GlobalInstance\FDyBtGiDebugStatus.h" />
     <ClInclude Include="Include\Dy\Builtin\Interface\IDyResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Material\BtMtCheckerWorldPos.h" />
+    <ClInclude Include="Include\Dy\Builtin\Material\Opaque\MatOpaqueEmissiveStatic.h" />
     <ClInclude Include="Include\Dy\Builtin\Material\OpaqueStaticPlain.h" />
     <ClInclude Include="Include\Dy\Builtin\Material\Transparent\StaticTransparentChecker.h" />
     <ClInclude Include="Include\Dy\Builtin\Mesh\Debug\FDyBtMsDebugAABB.h" />
@@ -646,6 +652,7 @@
     <ClInclude Include="Include\Dy\Builtin\Mesh\Widget\FDyBtMsUiBarQuad.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\Box.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\BoxOIT.h" />
+    <ClInclude Include="Include\Dy\Builtin\Model\EmissiveSphere.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\Plain.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\ScreenProjectionTriangle.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\Sphere.h" />
@@ -690,6 +697,7 @@
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Editor\RenderGrid.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Render\BtShSkyboxDefault.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Render\BtShUvWorldPos.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\Render\OpaqueEmissiveStatic.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Render\RenderOpaqueDynamic.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Render\RenderOpaqueStatic.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderPass.h" />

@@ -151,8 +151,9 @@ MDY_SET_IMMUTABLE_STRING(Buffer_Output_OpaqueStream, R"dy(
 layout (location = 0) out vec4 gUnlit;
 layout (location = 1) out vec4 gNormal;
 layout (location = 2) out vec4 gSpecular;
-layout (location = 3) out vec4 gPosition;
-layout (location = 4) out vec4 gActorId;
+layout (location = 3) out vec4 gEmissive;
+layout (location = 4) out vec4 gPosition;
+layout (location = 5) out vec4 gActorId;
 
 uniform float uBtDyActorId = 0;
 

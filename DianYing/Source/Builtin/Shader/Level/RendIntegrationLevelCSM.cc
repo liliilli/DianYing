@@ -56,6 +56,7 @@ layout (binding = 4) uniform sampler2DArrayShadow uTexture4; // Shadow
 layout (binding = 5) uniform sampler2D uTexture5;       // ZValue
 layout (binding = 6) uniform sampler2D uTexture6;       // SSAO
 layout (binding = 7) uniform sampler2D uTexture7;       // Sky
+layout (binding = 8) uniform sampler2D uTexture8;       // Emissive
 
 uniform mat4    uLightVPSBMatrix[4];
 uniform vec4    uNormalizedFarPlanes;
@@ -76,10 +77,11 @@ layout(std140, binding = 1) uniform DirectionalLightBlock
 
 vec4 layerColor = vec4(1.0, 0.5f, 1.0f, 1.0f); // DEBUG
 
-vec4 GetNormal()    { return (texture(uTexture1, fs_in.texCoord) - 0.5f) * 2.0f; }
-vec4 GetSpecular()  { return (texture(uTexture2, fs_in.texCoord) - 0.5f) * 2.0f; }
-vec3 GetModelPos()  { return texture(uTexture3, fs_in.texCoord).xyz; }
-float GetZValue()   { return texture(uTexture5, fs_in.texCoord).x; }
+vec4 GetNormal()      { return (texture(uTexture1, fs_in.texCoord) - 0.5f) * 2.0f; }
+vec4 GetSpecular()    { return (texture(uTexture2, fs_in.texCoord) - 0.5f) * 2.0f; }
+vec3 GetModelPos()    { return texture(uTexture3, fs_in.texCoord).xyz; }
+vec3 GetEmissive()    { return texture(uTexture8, fs_in.texCoord).xyz; }
+float GetZValue()     { return texture(uTexture5, fs_in.texCoord).x; }
 float GetSSAOOffset() { return texture(uTexture6, fs_in.texCoord).x; }
 
 vec3 ComputeShadowCoords(int iSlice, vec3 iWorldPosition)
@@ -180,6 +182,8 @@ void main()
 
   outColor.a    = 1.0f;
   outColor.rgb  = opaqueColor * GetSSAOOffset();
+
+  outColor.rgb += GetEmissive();
 }
 )dy");
 
