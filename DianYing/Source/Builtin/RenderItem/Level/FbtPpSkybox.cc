@@ -94,7 +94,7 @@ void FBtRenderItemSkybox::OnRender()
     "uTintColor",    
     static_cast<DDyVector3>(ptrSkyboxTexture->GetTintColor()));
   this->mBinderShdSkybox->TryInsertTextureRequisition(0, refBinderTexture->GetTextureId());
-  //this->mBinderShdSkybox->TryInsertTextureRequisition(1, this->mBinderAttUnlit->GetAttachmentId());
+  //this->mBinderShdSkybox->TryInsertTextureRequisition(1, this->mBinderAttUnlit->GetSourceAttachmentId());
 
   this->mBinderShdSkybox->UseShader();
   this->mBinderShdSkybox->TryUpdateUniformList();

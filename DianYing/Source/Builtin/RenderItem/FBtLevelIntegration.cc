@@ -107,15 +107,15 @@ void FBtRenderItemLevelIntegeration::OnRender()
   {
     this->mBinderFrameBuffer->BindFrameBuffer();
     // Check Textures.
-    this->mBinderOpaqueShader->TryInsertTextureRequisition(0, this->mBinderAttUnlit->GetAttachmentId());
-    this->mBinderOpaqueShader->TryInsertTextureRequisition(1, this->mBinderAttNormal->GetAttachmentId());
-    this->mBinderOpaqueShader->TryInsertTextureRequisition(2, this->mBinderAttSpecular->GetAttachmentId());
-    this->mBinderOpaqueShader->TryInsertTextureRequisition(3, this->mBinderAttPosition->GetAttachmentId());
-    this->mBinderOpaqueShader->TryInsertTextureRequisition(4, this->mBinderAttShadow->GetAttachmentId());
-    this->mBinderOpaqueShader->TryInsertTextureRequisition(5, this->mBinderAttZValue->GetAttachmentId());
-    this->mBinderOpaqueShader->TryInsertTextureRequisition(6, this->mBinderAttSSAO->GetAttachmentId());
-    this->mBinderOpaqueShader->TryInsertTextureRequisition(7, this->mBinderAttSky->GetAttachmentId());
-    this->mBinderOpaqueShader->TryInsertTextureRequisition(8, this->mBinderAttEmissive->GetAttachmentId());
+    this->mBinderOpaqueShader->TryInsertTextureRequisition(0, this->mBinderAttUnlit->GetSourceAttachmentId());
+    this->mBinderOpaqueShader->TryInsertTextureRequisition(1, this->mBinderAttNormal->GetSourceAttachmentId());
+    this->mBinderOpaqueShader->TryInsertTextureRequisition(2, this->mBinderAttSpecular->GetSourceAttachmentId());
+    this->mBinderOpaqueShader->TryInsertTextureRequisition(3, this->mBinderAttPosition->GetSourceAttachmentId());
+    this->mBinderOpaqueShader->TryInsertTextureRequisition(4, this->mBinderAttShadow->GetSourceAttachmentId());
+    this->mBinderOpaqueShader->TryInsertTextureRequisition(5, this->mBinderAttZValue->GetSourceAttachmentId());
+    this->mBinderOpaqueShader->TryInsertTextureRequisition(6, this->mBinderAttSSAO->GetSourceAttachmentId());
+    this->mBinderOpaqueShader->TryInsertTextureRequisition(7, this->mBinderAttSky->GetSourceAttachmentId());
+    this->mBinderOpaqueShader->TryInsertTextureRequisition(8, this->mBinderAttEmissive->GetSourceAttachmentId());
     this->mBinderOpaqueShader->UseShader();
     this->mBinderOpaqueShader->TryUpdateUniformList();
 
@@ -125,9 +125,9 @@ void FBtRenderItemLevelIntegeration::OnRender()
   {
     this->mBinderFbTranslucent->BindFrameBuffer();
     // 
-    this->mBinderTransShader->TryInsertTextureRequisition(0, this->mBinderAttOpaque->GetAttachmentId());
-    this->mBinderTransShader->TryInsertTextureRequisition(1, this->mBinderAttOITColor->GetAttachmentId());
-    this->mBinderTransShader->TryInsertTextureRequisition(2, this->mBinderAttOITWeigh->GetAttachmentId());
+    this->mBinderTransShader->TryInsertTextureRequisition(0, this->mBinderAttOpaque->GetSourceAttachmentId());
+    this->mBinderTransShader->TryInsertTextureRequisition(1, this->mBinderAttOITColor->GetSourceAttachmentId());
+    this->mBinderTransShader->TryInsertTextureRequisition(2, this->mBinderAttOITWeigh->GetSourceAttachmentId());
     this->mBinderTransShader->UseShader();
     this->mBinderTransShader->TryUpdateUniformList();
 

@@ -112,8 +112,8 @@ void FBtRenderItemSsao::OnRender()
   { // Check SSAO target.
     this->mBinderFbSSAO->BindFrameBuffer();
 
-    this->mBinderShSSAO->TryInsertTextureRequisition(0, this->mBinderAttWorldNorm->GetAttachmentId());
-    this->mBinderShSSAO->TryInsertTextureRequisition(1, this->mBinderAttWorldPos->GetAttachmentId());
+    this->mBinderShSSAO->TryInsertTextureRequisition(0, this->mBinderAttWorldNorm->GetSourceAttachmentId());
+    this->mBinderShSSAO->TryInsertTextureRequisition(1, this->mBinderAttWorldPos->GetSourceAttachmentId());
     this->mBinderShSSAO->TryInsertTextureRequisition(2, this->mBinderTexNoise->GetTextureId());
     this->mBinderShSSAO->UseShader();
     this->mBinderShSSAO->TryUpdateUniformList();
@@ -123,7 +123,7 @@ void FBtRenderItemSsao::OnRender()
 
   { // Box Blurring (Fast and easy!)
     this->mBinderFbSSAOBlur->BindFrameBuffer();
-    this->mBinderShSSAOBlur->TryInsertTextureRequisition(0, this->mBinderAttSSAOOpt->GetAttachmentId());
+    this->mBinderShSSAOBlur->TryInsertTextureRequisition(0, this->mBinderAttSSAOOpt->GetSourceAttachmentId());
     this->mBinderShSSAOBlur->UseShader();
     this->mBinderShSSAOBlur->TryUpdateUniformList();
 
