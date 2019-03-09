@@ -32,26 +32,33 @@ class FDyFrameBufferInformation;
 
 namespace dy
 {
-class FDyFrameBufferResource final
+
+/// @class FDyFrameBufferResource
+/// @brief Frame buffer resource type (abstract)
+class FDyFrameBufferResource 
 {
 public:
-  FDyFrameBufferResource(const FDyFrameBufferInformation& iInformation);
-  ~FDyFrameBufferResource();
+  FDyFrameBufferResource() = default;
+  virtual ~FDyFrameBufferResource() = 0;
 
   /// @brief Get specifier name of framebuffer resource.
   MDY_NODISCARD const std::string& GetSpecifierName();
   /// @brief Get framebuffer id.
-  MDY_NODISCARD TU32 GetFrameBufferId() const noexcept;
+  MDY_NODISCARD virtual TU32 GetFrameBufferId() const noexcept = 0;
   /// @brief Get framebuffer size.
   MDY_NODISCARD const DDyVectorInt2& GetFrameBufferSize();
 
-  /// @brid Framebuffer.
-  EDySuccess BindFrameBuffer()   const noexcept;
-  void       UnbindFrameBuffer() const noexcept; 
+  /// @brid Bind Framebuffer.
+  EDySuccess virtual BindFrameBuffer() const noexcept = 0;
 
-private:
+  /// @brief Unbind framebuffer and revert to default framebuffer.
+  void UnbindFrameBuffer() const noexcept; 
+
+  /// @brief Swap.
+  void virtual Swap() = 0;
+
+protected:
   std::string   mSpecifierName;
-  TU32          mFrameBufferId    = 0;
   DDyVectorInt2 mFrameBufferSize  = {};
 
   using TAttachmentBinder = std::unique_ptr<TDyResourceBinderAttachment>;
@@ -62,6 +69,8 @@ private:
   TBlendingEquationList           mAttachmentBlendingList = {};
   TDyResourceBinderAttachment     mBinderDepthBuffer      = {};
 };
+
+inline FDyFrameBufferResource::~FDyFrameBufferResource() = default;
 
 } /// ::dy namespace
 

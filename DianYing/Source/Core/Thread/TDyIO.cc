@@ -29,6 +29,7 @@
 #include <Dy/Management/IO/MDyIOResource.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Management/WindowManager.h>
+#include "Dy/Core/Resource/Resource/FrameBuffer/FDyFrameBufferGeneralResource.h"
 
 constexpr TU08 kDefaultPriority = 128;
 
@@ -560,7 +561,9 @@ DDyIOWorkerResult TDyIO::outMainProcessTask(_MIN_ const DDyIOTask& task)
   } break;
   case EDyResourceType::GLFrameBuffer:
   { // Only Resource, create fbo with attachment.
-    const auto instance = new FDyFrameBufferResource(*infoManager.GetPtrInformation<EDyResourceType::GLFrameBuffer>(result.mSpecifierName));
+    const auto instance = new FDyFrameBufferGeneralResource(
+      *infoManager.GetPtrInformation<EDyResourceType::GLFrameBuffer>(result.mSpecifierName)
+    );
     result.mSmtPtrResultInstance = instance;
   } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
