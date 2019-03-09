@@ -25,7 +25,8 @@ FDyFrameBufferInformation::FDyFrameBufferInformation(_MIN_ const PDyGlFrameBuffe
     mAttachmentBlendings{metaInfo.mBlendingEquationList},
     mFrameBufferSize{metaInfo.mFrameBufferSize},
     mIsUsingDepthBuffer{metaInfo.mIsUsingDepthBuffer},
-    mIsNotUsingPixelShader{metaInfo.mIsNotUsingPixelShader}
+    mIsNotUsingPixelShader{metaInfo.mIsNotUsingPixelShader},
+    mIsPingpong{metaInfo.mIsPingpong}
 {
   for (const auto& attachmentInfo : metaInfo.mColorAttachmentList)
   {
@@ -48,6 +49,11 @@ FDyFrameBufferInformation::FDyFrameBufferInformation(_MIN_ const PDyGlFrameBuffe
 const TBlendingEquationList& FDyFrameBufferInformation::GetAttachmentBlendings() const noexcept
 {
   return this->mAttachmentBlendings;
+}
+
+bool FDyFrameBufferInformation::IsPingPong() const noexcept
+{
+  return this->mIsPingpong;
 }
 
 } /// ::dy namespace

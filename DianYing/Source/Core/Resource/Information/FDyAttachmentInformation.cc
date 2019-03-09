@@ -19,7 +19,7 @@
 namespace dy
 {
 
-FDyAttachmentInformation::FDyAttachmentInformation(_MIN_ const PDyGlAttachmentInstanceMetaInfo& metaInfo) :
+FDyAttachmentInformation::FDyAttachmentInformation(const PDyGlAttachmentInstanceMetaInfo& metaInfo) :
     mSpecifierName{metaInfo.mSpecifierName},
     mParameterList{metaInfo.mParameterList},
     mAttachmentSize{metaInfo.mAttachmentSize},
@@ -27,9 +27,17 @@ FDyAttachmentInformation::FDyAttachmentInformation(_MIN_ const PDyGlAttachmentIn
     mBufferType{metaInfo.mBufferFormat},
     mAttachmentType{metaInfo.mAttachmentType},
     mMipmapLevels{metaInfo.mMipmapLevels},
-    mDepthNumber{metaInfo.mDepthNumber}
+    mDepthNumber{metaInfo.mDepthNumber},
+    mIsPingpong{metaInfo.mIsPingpong}
 {
-  MDY_ASSERT_MSG(this->mSpecifierName.empty() == false, "Attachment specifier name must be specified.");
+  MDY_ASSERT_MSG(
+    this->mSpecifierName.empty() == false, 
+    "Attachment specifier name must be specified.");
+}
+
+bool FDyAttachmentInformation::IsPingPong() const noexcept
+{
+  return this->mIsPingpong;
 }
 
 } /// ::dy namespace

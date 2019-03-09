@@ -17,21 +17,6 @@
 #include <Dy/Core/Resource/Type/TDyInformationBinder.h>
 #include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
 
-//!
-//! Forward declaration
-//!
-
-namespace dy
-{
-class FDyAttachmentInformation;
-enum class EDyGlBufferDataInternalFormat : unsigned char;
-enum class EDyTextureStyleType : unsigned char;
-} /// ::dy namespace
-
-//!
-//! Implementation
-//!
-
 namespace dy
 {
 

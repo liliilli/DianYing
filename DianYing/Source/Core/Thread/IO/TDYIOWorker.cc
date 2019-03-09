@@ -33,6 +33,8 @@
 #include <Dy/Core/Resource/Information/FDySoundInformation.h>
 #include <Dy/Core/Resource/Information/FDyTextureGeneralInformation.h>
 #include <Dy/Core/Resource/Resource/FDyTextureCubemapResource.h>
+#include <Dy/Core/Resource/Resource/Attachment/FDyAttachmentGeneralResource.h>
+#include <Dy/Core/Resource/Resource/Attachment/FDyAttachmentPingpongResource.h>
 #include <Dy/Management/IO/MDyIOData.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Meta/Information/MetaInfoMaterial.h>
@@ -243,9 +245,16 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceResource(_MIN_ const DDyIOTask
   } break;
   case EDyResourceType::GLAttachment:
   { // Attachment resource can be created on another context. (It can be shared)
-    result.mSmtPtrResultInstance = new FDyAttachmentResource(
-      *infoManager.GetPtrInformation<EDyResourceType::GLAttachment>(result.mSpecifierName)
-    );
+    const auto& refInfo = 
+      *infoManager.GetPtrInformation<EDyResourceType::GLAttachment>(result.mSpecifierName);
+    if (refInfo.IsPingPong() == false)
+    { // Create general attachment.
+      result.mSmtPtrResultInstance = new FDyAttachmentGeneralResource(refInfo);
+    }
+    else
+    { // Create ping-pong attachment.
+      result.mSmtPtrResultInstance = new FDyAttachmentPingpongResource(refInfo);
+    }
   } break;
   case EDyResourceType::GLFrameBuffer:
   { // Framebuffer object must be created on main thread. so forward it to main deferred list.

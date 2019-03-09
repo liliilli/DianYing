@@ -46,14 +46,14 @@ public:
   MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(FDyAttachmentInformation);
 
   /// @brief Construct attachment information.
-  FDyAttachmentInformation(_MIN_ const PDyGlAttachmentInstanceMetaInfo& metaInfo);
+  FDyAttachmentInformation(const PDyGlAttachmentInstanceMetaInfo& metaInfo);
   ~FDyAttachmentInformation() = default;
 
   /// @brief Get attachment's specifier name.
-  FORCEINLINE MDY_NODISCARD const std::string& GetSpecifierName() const noexcept { return this->mSpecifierName; }
+  MDY_NODISCARD const std::string& GetSpecifierName() const noexcept { return this->mSpecifierName; }
 
    /// @brief Get attachment size.
-  FORCEINLINE MDY_NODISCARD const DDyVectorInt2& GetBufferSize() const noexcept { return this->mAttachmentSize; }
+  MDY_NODISCARD const DDyVectorInt2& GetBufferSize() const noexcept { return this->mAttachmentSize; }
 
   /// @brief Get attachments' parameter list.
   MDY_NODISCARD const auto& GetParameterList() const noexcept { return this->mParameterList; }
@@ -73,6 +73,9 @@ public:
   /// @brief Get the number of depth of this attahchment.
   MDY_NODISCARD TU32 GetDepthNumber() const noexcept { return this->mDepthNumber; }
 
+  /// @brief Check information is ping-pong enabled.
+  MDY_NODISCARD bool IsPingPong() const noexcept;
+
 private:
   std::string                   mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
   TTextureParameterList         mParameterList  = {};
@@ -81,8 +84,10 @@ private:
   EDyGlBufferDataInternalFormat mBufferType     = EDyGlBufferDataInternalFormat::NoneError;
   EDyTextureStyleType           mAttachmentType = EDyTextureStyleType::D2;
   DDyClamp<TU32, 1, 16>         mMipmapLevels   = 1;
-  // This variable is only enabled if only mAttachmentType is `Array` type.
+  /// @brief This variable is only enabled if only mAttachmentType is `Array` type.
   TU32                          mDepthNumber    = 0;
+  /// @brief When enabled, attachment will be created as ping-pong (two-attachment) attachment.
+  bool                          mIsPingpong     = false;
 };
 
 } /// ::dy namespace

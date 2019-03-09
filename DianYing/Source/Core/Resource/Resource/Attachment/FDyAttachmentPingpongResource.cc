@@ -38,53 +38,37 @@ FDyAttachmentPingpongResource::FDyAttachmentPingpongResource(const FDyAttachment
   }
 
   // Target,
-  { MDY_GRAPHIC_SET_CRITICALSECITON();
-    const auto optAttachmentId = FDyGLWrapper::CreateAttachment(descriptor);
-    MDY_ASSERT_MSG(optAttachmentId.has_value() == true, "Attachment creation must be succeeded.");
-    this->mAttachmentIds.first = optAttachmentId.value();
-  }
-
   // Attachment binding for texture.
-  { MDY_GRAPHIC_SET_CRITICALSECITON();
+  for (auto& id : this->mAttachmentIds)
+  {
+    MDY_GRAPHIC_SET_CRITICALSECITON();
     const auto optAttachmentId = FDyGLWrapper::CreateAttachment(descriptor);
     MDY_ASSERT_MSG(optAttachmentId.has_value() == true, "Attachment creation must be succeeded.");
-    this->mAttachmentIds.second = optAttachmentId.value();
+    id = optAttachmentId.value();
   }
 }
 
 FDyAttachmentPingpongResource::~FDyAttachmentPingpongResource()
 {
-  MDY_GRAPHIC_SET_CRITICALSECITON();
-  MDY_CALL_ASSERT_SUCCESS(
-    FDyGLWrapper::DeleteAttachment(this->mAttachmentIds.first, this->IsRenderBuffer())
-  );
-  MDY_CALL_ASSERT_SUCCESS(
-    FDyGLWrapper::DeleteAttachment(this->mAttachmentIds.second, this->IsRenderBuffer())
-  );
+  for (auto& id : this->mAttachmentIds)
+  {
+    MDY_GRAPHIC_SET_CRITICALSECITON();
+    MDY_CALL_ASSERT_SUCCESS(
+      FDyGLWrapper::DeleteAttachment(id, this->IsRenderBuffer())
+    )
+  }
 }
 
 TU32 FDyAttachmentPingpongResource::GetSourceAttachmentId() const noexcept
 {
-  if (this->mIsLeftTarget == true)
-  {
-    return this->mAttachmentIds.second;
-  }
-  else
-  {
-    return this->mAttachmentIds.first;
-  }
+  if (this->mIsLeftTarget == true)  { return this->mAttachmentIds[1]; }
+  else                              { return this->mAttachmentIds[0]; }
 }
 
 TU32 FDyAttachmentPingpongResource::GetTargetAttachmentId() const noexcept
 {
-  if (this->mIsLeftTarget == true)
-  {
-    return this->mAttachmentIds.first;
-  }
-  else
-  {
-    return this->mAttachmentIds.second;
-  }
+  if (this->mIsLeftTarget == true)  { return this->mAttachmentIds[0]; }
+  else                              { return this->mAttachmentIds[1]; }
 }
 
 void FDyAttachmentPingpongResource::Swap()

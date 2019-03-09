@@ -51,8 +51,8 @@ public:
   void Swap() override final;
 
 private:
-  std::pair<TU32, TU32> mAttachmentIds;
-  bool mIsLeftTarget = false;
+  std::array<TU32, 2> mAttachmentIds = {};
+  bool mIsLeftTarget = true;
 };
 
 } /// ::dy namespace
