@@ -348,7 +348,7 @@ inline void MDyRendering::Impl::PreRender(TF32 dt)
         ->GetBindedActor()->GetTransform()
         ->GetFinalWorldPosition();
     // Check
-    return ptrCamera->CheckIsPointInFrustum(worldPos) == false;
+    return ptrCamera->IsSphereInFrustum(worldPos, 10) == false;
   });
 
   // Set ordering of UI (If Debug and Loading UI is exist, also include them but as highest order. 

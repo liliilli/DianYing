@@ -99,7 +99,10 @@ public:
   MDY_NODISCARD const DDyVector3& GetPosition() const noexcept;
 
   /// @brief Check point is in camera frustum.
-  MDY_NODISCARD bool CheckIsPointInFrustum(_MIN_ const DDyVector3& iPoint) const noexcept;
+  MDY_NODISCARD bool IsPointInFrustum(const DDyVector3& iPoint) const noexcept;
+
+  /// @brief Check virtual sphere that is consisted of point and radius, is in camera frustum.
+  MDY_NODISCARD bool IsSphereInFrustum(const DDyVector3& iPoint, TF32 iRadius) const noexcept;
 
   /// @brief Check this camera is using 3d listener.
   MDY_NODISCARD bool IsUsing3DListener() const noexcept;

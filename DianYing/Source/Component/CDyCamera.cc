@@ -186,9 +186,14 @@ const DDyVector3& CDyCamera::GetPosition() const noexcept
   return this->mPosition;
 }
 
-bool CDyCamera::CheckIsPointInFrustum(_MIN_ const DDyVector3& iPoint) const noexcept
+bool CDyCamera::IsPointInFrustum(const DDyVector3& iPoint) const noexcept
 {
   return this->mFrustum.IsPointInFrustum(iPoint);
+}
+
+bool CDyCamera::IsSphereInFrustum(const DDyVector3& iPoint, TF32 iRadius) const noexcept
+{
+  return this->mFrustum.IsSphereInFrustum(iPoint, iRadius);
 }
 
 bool CDyCamera::IsUsing3DListener() const noexcept

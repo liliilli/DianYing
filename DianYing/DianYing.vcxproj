@@ -838,6 +838,7 @@
     <ClInclude Include="Include\Dy\Helper\Library\HelperRegex.h" />
     <ClInclude Include="Include\Dy\Helper\MCS\Functions.h" />
     <ClInclude Include="Include\Dy\Helper\Type\Area3D.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\DSphere.h" />
     <ClInclude Include="Include\Dy\Helper\Type\Plane.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DUuid.h" />
     <ClInclude Include="Include\Dy\Helper\Type\VectorInt4.h" />

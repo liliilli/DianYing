@@ -918,6 +918,7 @@
     <ClInclude Include="Include\Dy\Core\Resource\Resource\Attachment\FDyAttachmentGeneralResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FrameBuffer\FDyFrameBufferGeneralResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FrameBuffer\FDyFrameBufferPingPongResource.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\DSphere.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />
