@@ -63,6 +63,10 @@ void FBtRenderItemEmissive::ClearFramebuffers()
 
   this->mFbBlur->BindFrameBuffer();
   glClearBufferfv(GL_COLOR, 0, &one);
+  this->mFbBlur->Swap();
+  this->mFbBlur->BindFrameBuffer();
+  glClearBufferfv(GL_COLOR, 0, &one);
+  this->mFbBlur->Swap();
 
   this->mFbTone->BindFrameBuffer();
   glClearBufferfv(GL_COLOR, 0, &one);
@@ -79,20 +83,27 @@ void FBtRenderItemEmissive::OnRender()
   MDY_ASSERT_MSG(submeshList.size() == 1, "Unexpected error occurred.");
   submeshList[0]->Get()->BindVertexArray();
 
-  { // Blurring with gaussian filtering.
+  for (size_t i = 0; i < 4; ++i)
+  { 
+    // Blurring with gaussian filtering.
     this->mFbBlur->BindFrameBuffer();
 
-    this->mShBlur->TryInsertTextureRequisition(0, this->mAtEmissive->GetAttachmentId());
-    this->mShBlur->TryUpdateUniform<EDyUniformVariableType::Bool>("uIsHorizon", true);
+    this->mShBlur->TryInsertTextureRequisition(0, 
+      i == 0 
+      ? this->mAtEmissive->GetSourceAttachmentId()
+      : this->mAtBlur->GetSourceAttachmentId());
+    this->mShBlur->TryUpdateUniform<EDyUniformVariableType::Bool>("uIsHorizon", i % 2 == 0 ? true : false);
     this->mShBlur->UseShader();
     this->mShBlur->TryUpdateUniformList();
 
     FDyGLWrapper::Draw(EDyDrawType::Triangle, true, 3);
+    this->mFbBlur->Swap();
   }
 
   { // Tone mapping.
     this->mFbTone->BindFrameBuffer();
-    this->mShTone->TryInsertTextureRequisition(0, this->mAtBlur->GetAttachmentId());
+    this->mShTone->TryInsertTextureRequisition(0, this->mAtBlur->GetSourceAttachmentId());
+    this->mShTone->TryInsertTextureRequisition(1, this->mAtEmissive->GetSourceAttachmentId());
     this->mShTone->UseShader();
     this->mShTone->TryUpdateUniformList();
 

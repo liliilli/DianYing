@@ -41,6 +41,7 @@ MDY_SET_IMMUTABLE_STRING(sFragmentShaderCode, R"dy(
 #import <Input_DefaultTexture2D>;
 /*
 layout (binding = 0) uniform sampler2D uTexture0; // uBlurredEmissive;
+layout (binding = 1) uniform sampler2D uTexture1; // uEmissive;
  */
 
 layout (location = 0) out vec4 oResult;
@@ -52,6 +53,9 @@ void main()
   // DO TONE_MAPPING
   const float gamma = 2.2;
   vec3 hdrColor = texture(uTexture0, vs_out.texCoord).rgb;
+
+  const vec4 origColor = texture(uTexture1, vs_out.texCoord);
+  hdrColor = hdrColor * (1 - origColor.a) + origColor.rgb * origColor.a; 
 
   // reinhard tone mapping
   // lim_{hdrColor -> inf} f(hdrColor) ~= 1.0f.

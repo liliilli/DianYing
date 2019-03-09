@@ -23,6 +23,7 @@ void FDyBtFbEmissiveBlur::ConstructBuffer(PDyGlFrameBufferInstanceMetaInfo& oPro
   oProperty.mSpecifierName   = sName;
   oProperty.mFrameBufferSize = DDyVectorInt2{1280, 720};
   oProperty.mIsUsingDepthBuffer = false;
+  oProperty.mIsPingpong = true;
 
   // dyBtEmissive => dyBtEmissiveTempBlur
   oProperty.mColorAttachmentList.emplace_back("dyBtEmissiveTempBlur", EDyGlAttachmentType::Color0);

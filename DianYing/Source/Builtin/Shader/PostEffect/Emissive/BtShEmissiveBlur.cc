@@ -74,7 +74,7 @@ void main()
     for (int i = 1; i < 10; ++i)
     {
       result += texture(uTexture0, texCoord + vec2(texOffset.x * i, 0)).rgb * uBlurWeight[i];
-      result -= texture(uTexture0, texCoord - vec2(texOffset.x * i, 0)).rgb * uBlurWeight[i];
+      result += texture(uTexture0, texCoord - vec2(texOffset.x * i, 0)).rgb * uBlurWeight[i];
     }
   }
   else
@@ -82,7 +82,7 @@ void main()
     for (int i = 1; i < 10; ++i)
     {
       result += texture(uTexture0, texCoord + vec2(0, texOffset.y * i)).rgb * uBlurWeight[i];
-      result -= texture(uTexture0, texCoord - vec2(0, texOffset.y * i)).rgb * uBlurWeight[i];
+      result += texture(uTexture0, texCoord - vec2(0, texOffset.y * i)).rgb * uBlurWeight[i];
     }
   }
 

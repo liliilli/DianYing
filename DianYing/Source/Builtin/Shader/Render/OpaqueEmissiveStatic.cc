@@ -64,7 +64,7 @@ void main() {
 	gNormal	  = vec4(normalize(fs_in.normal) * 0.5f + 0.5f, 1.0f);
   // RGB must be used specular color, and A must be used roughness.
 	//gSpecular = vec4(1, 1, 1, uRoughness);
-  gEmissive = vec4(0, gUnlit.r * uEmissiveFactor, 0, 1);
+  gEmissive = vec4(0, 1 * uEmissiveFactor, 0, 1);
 	gPosition = fs_in.modelPosition;
 }
 )dy");
