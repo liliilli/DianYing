@@ -129,6 +129,15 @@ vec3 CalculateSpecularColor(vec3 iWorldLightDir, vec3 iWorldNormal,
   return iSpecularRgb * iLightRgb * (d_slvd_n * iIntensity);
 }
 
+float GetHalfLambertFactor(const vec3 iNormal, const vec3 iLight, const float iPow)
+{
+  return pow(
+    max(
+      dot(iNormal, iLight)
+    , 0) / 2 + 0.5f
+  , iPow);
+}
+
 vec3 GetOpaqueColor()
 {
   vec3 resultColor    = vec3(0);
@@ -151,7 +160,7 @@ vec3 GetOpaqueColor()
     if (length(uLightDir[i].mDirection) < 0.001) { continue; }
 
     // Function body (in world space)
-    float d_n_dl    = dot(normalValue.xyz, uLightDir[i].mDirection);
+    float d_n_dl    = GetHalfLambertFactor(normalValue.xyz, uLightDir[i].mDirection, 2.0f);
 
     float ambientFactor  = 0.02f;
     vec3  ambientColor   = ambientFactor * uLightDir[i].mAmbient.rgb * unlitValue.rgb;
