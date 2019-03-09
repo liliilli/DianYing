@@ -34,17 +34,20 @@ enum class EDyTextureStyleType : unsigned char;
 namespace dy
 {
 
-class FDyAttachmentResource final
+class FDyAttachmentResource
 {
 public:
-  FDyAttachmentResource(_MIN_ const FDyAttachmentInformation& information);
-  ~FDyAttachmentResource();
+  FDyAttachmentResource() = default;
+  virtual ~FDyAttachmentResource() = 0;
 
   /// @brief Get specifier name of attachment information.
-  MDY_NODISCARD const std::string& GetSpecifierName() const noexcept { return this->mSpecifierName; }
+  MDY_NODISCARD const std::string& GetSpecifierName() const noexcept; 
 
-  /// @brief Get binded attachment resource id.
-  MDY_NODISCARD FORCEINLINE TU32 GetAttachmentId() const noexcept { return this->mAttachmentId; };
+  /// @brief Get binded source attachment resource id.
+  MDY_NODISCARD virtual TU32 GetSourceAttachmentId() const noexcept = 0;
+
+  /// @brief Get target (destination) attachment resource id.
+  MDY_NODISCARD virtual TU32 GetTargetAttachmentId() const noexcept = 0;
 
   /// @brief Check this attachment resource is render buffer.
   MDY_NODISCARD bool IsRenderBuffer() const noexcept { return this->mIsRenderBuffer; }
@@ -61,12 +64,21 @@ public:
   /// @brief Get the number of depth of this attahchment.
   MDY_NODISCARD TU32 GetDepthNumber() const noexcept;
 
-private:
-  std::string mSpecifierName   = MDY_INITIALIZE_EMPTYSTR;
-  TU32        mAttachmentId    = MDY_INITIALIZE_DEFUINT;
-  bool        mIsRenderBuffer  = false;
+  /// @brief Check this resource is ping-pong resource.
+  MDY_NODISCARD bool IsPingPong() const noexcept;
+
+  /// @brief Swap target and texture binding indexes.
+  virtual void Swap() = 0;
+
+protected:
   TDyInformationBinderAttachment mInformationBinder;
+
+  std::string mSpecifierName;
+  bool        mIsRenderBuffer  = false;
+  bool        mIsPingpong      = false;
 };
+
+inline FDyAttachmentResource::~FDyAttachmentResource() = default;
 
 } /// ::dy namespace
 
