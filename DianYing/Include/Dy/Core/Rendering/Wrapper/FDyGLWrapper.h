@@ -201,6 +201,8 @@ public:
   static void UpdateUniformUnsigned(TU32 iId, const TU32& iBuffer);
   /// @brief Update uniform one float value. Specified shader must be valid and activated.
   static void UpdateUniformFloat(TU32 iId, const TF32& iBuffer);
+  /// @brief Update uniform float array. Specified shader must be valid and activated.
+  static void UpdateUniformFloatArray(TU32 iId, const std::vector<TF32>& iBuffer);
 
   struct MDY_PRIVATE(OutsideLockguard) final
   {

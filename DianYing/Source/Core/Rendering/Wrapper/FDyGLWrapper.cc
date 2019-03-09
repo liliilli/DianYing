@@ -30,10 +30,10 @@
 #define MDY_GL_NONE 0
 #define MDY_GL_NONE_VAO 0
 #if defined(NDEBUG) == false
-#define MDY_CHECK_OPENGL() \
+#define MDY_CHECK_OPENGL \
   { const auto _ = glGetError(); MDY_ASSERT_MSG(_ == GL_NO_ERROR, "OpenGL Command failed."); }
 #else
-#define MDY_CHECK_OPENGL() (void)0;
+#define MDY_CHECK_OPENGL (void)0;
 #endif
 
 //!
@@ -169,12 +169,12 @@ std::optional<TU32> FDyGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescript
   } break;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
   }
-  MDY_CHECK_OPENGL();
+  MDY_CHECK_OPENGL;
 
   // Make mipmap by following option.
   const GLenum glTextureType = DyGLGetLowTextureType(descriptor.mType);
   if (descriptor.mIsUsingDefaultMipmap == true) { glGenerateMipmap(glTextureType); }
-  MDY_CHECK_OPENGL();
+  MDY_CHECK_OPENGL;
 
   // Set texture parameters.
   if (descriptor.mIsUsingCustomizedParameter == true)
@@ -193,7 +193,7 @@ std::optional<TU32> FDyGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescript
   }
   glBindTexture(glTextureType, 0);
   glFlush();
-  MDY_CHECK_OPENGL();
+  MDY_CHECK_OPENGL;
 
   return mTextureResourceId;
 }
@@ -238,12 +238,12 @@ std::optional<TU32> FDyGLWrapper::CreateTexture(const PDyGLTextureCubemapDescrip
           descriptor.mImageFormat, descriptor.mImagePixelType, descriptor.mFrontBuffer->data());
     glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA, MDY_VECTOR_XY(descriptor.mBackSize), 0, 
           descriptor.mImageFormat, descriptor.mImagePixelType, descriptor.mBackBuffer->data());
-    MDY_CHECK_OPENGL();
+    MDY_CHECK_OPENGL;
 
     // Make mipmap by following option.
     const GLenum glTextureType = DyGLGetLowTextureType(descriptor.mType);
     if (descriptor.mIsUsingDefaultMipmap == true) { glGenerateMipmap(glTextureType); }
-    MDY_CHECK_OPENGL();
+    MDY_CHECK_OPENGL;
 
     // Set texture parameters.
     if (descriptor.mIsUsingCustomizedParameter == true)
@@ -262,7 +262,7 @@ std::optional<TU32> FDyGLWrapper::CreateTexture(const PDyGLTextureCubemapDescrip
     }
     glBindTexture(glTextureType, 0);
     glFlush();
-    MDY_CHECK_OPENGL();
+    MDY_CHECK_OPENGL;
   }
 
   return mTextureResourceId;
@@ -547,7 +547,7 @@ std::optional<TU32> FDyGLWrapper::CreateAttachment(_MIN_ const PDyGLAttachmentDe
   glBindTexture(glTextureType, 0);
   glFlush();
 
-  MDY_CHECK_OPENGL();
+  MDY_CHECK_OPENGL;
   return attachmentId;
 }
 
@@ -620,7 +620,7 @@ std::optional<TU32> FDyGLWrapper::CreateFrameBuffer(_MIN_ const PDyGLFrameBuffer
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   glFlush();
 
-  MDY_CHECK_OPENGL();
+  MDY_CHECK_OPENGL;
   return framebufferId;
 }
 
@@ -802,6 +802,7 @@ FDyGLWrapper::GetShaderProgramUniformInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU3
     {
     case EDyUniformVariableType::Matrix4: { type = EDyUniformVariableType::Matrix4Array; } break;
     case EDyUniformVariableType::Vector3: { type = EDyUniformVariableType::Vector3Array; } break;
+    case EDyUniformVariableType::Float:   { type = EDyUniformVariableType::FloatArray; } break;
     default: MDY_NOT_IMPLEMENTED_ASSERT(); break;
     }
   }
@@ -895,6 +896,13 @@ void FDyGLWrapper::UpdateUniformUnsigned(TU32 iId, const TU32& iBuffer)
 void FDyGLWrapper::UpdateUniformFloat(TU32 iId, const TF32& iBuffer)
 {
   glUniform1f(iId, iBuffer);
+}
+
+void FDyGLWrapper::UpdateUniformFloatArray(TU32 iId, const std::vector<TF32>& iBuffer)
+{
+  if (iBuffer.empty() == true) { return; }
+
+  glUniform1fv(iId, iBuffer.size(), iBuffer.data());
 }
 
 FDyGLWrapper::__OutsideLockguard::MDY_PRIVATE(OutsideLockguard)

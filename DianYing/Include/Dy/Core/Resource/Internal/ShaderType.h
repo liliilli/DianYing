@@ -57,7 +57,7 @@ enum class EDyUniformVariableType
   IntegerPointer,
   Unsigned,
   Float,
-  FloatPointer,
+  FloatArray,
   Bool,
   Texture1D,
   Texture2D,
