@@ -22,7 +22,6 @@
 #include <Dy/Management/Rendering/RenderingManager.h>
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
 #include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
-#include <Dy/Core/Resource/Resource/FDyTextureResource.h>
 
 namespace dy
 {
@@ -40,66 +39,70 @@ EDySuccess FBtRenderItemEmissive::OnPreRenderCheckCondition()
 
 bool FBtRenderItemEmissive::AreResourcesValid()
 {
-#ifdef false
   return 
-      this->mBinderFbSSAO.IsResourceExist() == true
-  &&  this->mBinderFbSSAOBlur.IsResourceExist() == true
-  &&  this->mBinderAttWorldNorm.IsResourceExist() == true
-  &&  this->mBinderAttWorldPos.IsResourceExist() == true
-  &&  this->mBinderAttSSAOOpt.IsResourceExist() == true
-  &&  this->mBinderShSSAO.IsResourceExist() == true
-  &&  this->mBinderTexNoise.IsResourceExist() == true
-  &&  this->mBinderShSSAOBlur.IsResourceExist() == true
+      this->mFbBlur.IsResourceExist() == true
+  &&  this->mFbTone.IsResourceExist() == true
+  &&  this->mAtEmissive.IsResourceExist() == true
+  &&  this->mAtBlur.IsResourceExist() == true
+  &&  this->mShBlur.IsResourceExist() == true
+  &&  this->mShTone.IsResourceExist() == true
   &&  this->mBinderTriangle.IsResourceExist() == true;
-#endif
-  return false;
 }
 
 void FBtRenderItemEmissive::OnFailedCheckCondition()
 {
-#ifdef false
   if (this->AreResourcesValid() == false) { return; }
 
-  this->mBinderFbSSAOBlur->BindFrameBuffer();
+  this->ClearFramebuffers();
+  this->mFbTone->UnbindFrameBuffer();
+}
+
+void FBtRenderItemEmissive::ClearFramebuffers()
+{
   const GLfloat one = 1.0f;
+
+  this->mFbBlur->BindFrameBuffer();
   glClearBufferfv(GL_COLOR, 0, &one);
-  this->mBinderFbSSAOBlur->UnbindFrameBuffer();
-#endif
+
+  this->mFbTone->BindFrameBuffer();
+  glClearBufferfv(GL_COLOR, 0, &one);
+}
+
+void FBtRenderItemEmissive::OnSetupRenderingSetting()
+{
+  this->ClearFramebuffers();
 }
 
 void FBtRenderItemEmissive::OnRender()
 {
-#ifdef false
   const auto& submeshList = this->mBinderTriangle->GetMeshResourceList();
   MDY_ASSERT_MSG(submeshList.size() == 1, "Unexpected error occurred.");
   submeshList[0]->Get()->BindVertexArray();
 
-  { // Check SSAO target.
-    this->mBinderFbSSAO->BindFrameBuffer();
+  { // Blurring with gaussian filtering.
+    this->mFbBlur->BindFrameBuffer();
 
-    this->mBinderShSSAO->TryInsertTextureRequisition(0, this->mBinderAttWorldNorm->GetAttachmentId());
-    this->mBinderShSSAO->TryInsertTextureRequisition(1, this->mBinderAttWorldPos->GetAttachmentId());
-    this->mBinderShSSAO->TryInsertTextureRequisition(2, this->mBinderTexNoise->GetTextureId());
-    this->mBinderShSSAO->UseShader();
-    this->mBinderShSSAO->TryUpdateUniformList();
+    this->mShBlur->TryInsertTextureRequisition(0, this->mAtEmissive->GetAttachmentId());
+    this->mShBlur->TryUpdateUniform<EDyUniformVariableType::Bool>("uIsHorizon", true);
+    this->mShBlur->UseShader();
+    this->mShBlur->TryUpdateUniformList();
 
     FDyGLWrapper::Draw(EDyDrawType::Triangle, true, 3);
   }
 
-  { // Box Blurring (Fast and easy!)
-    this->mBinderFbSSAOBlur->BindFrameBuffer();
-    this->mBinderShSSAOBlur->TryInsertTextureRequisition(0, this->mBinderAttSSAOOpt->GetAttachmentId());
-    this->mBinderShSSAOBlur->UseShader();
-    this->mBinderShSSAOBlur->TryUpdateUniformList();
+  { // Tone mapping.
+    this->mFbTone->BindFrameBuffer();
+    this->mShTone->TryInsertTextureRequisition(0, this->mAtBlur->GetAttachmentId());
+    this->mShTone->UseShader();
+    this->mShTone->TryUpdateUniformList();
 
     FDyGLWrapper::Draw(EDyDrawType::Triangle, true, 3);
 
-    this->mBinderShSSAOBlur->DisuseShader();
-    this->mBinderFbSSAOBlur->UnbindFrameBuffer();
+    this->mShTone->DisuseShader();
+    this->mFbTone->UnbindFrameBuffer();
   }
 
   FDyGLWrapper::UnbindVertexArrayObject();
-#endif
 }
 
 } /// ::dy namespace

@@ -58,7 +58,7 @@ in VS_OUT { vec2 texCoord; } vs_out;
 uniform bool uIsHorizon;
 // Sum is 5.0, so must multiply summed value to 0.2.
 // http://dev.theomader.com/gaussian-kernel-calculator/
-uniform float uBlurWeight[10] = float[]
+float uBlurWeight[10] = float[]
 (0.084509, 0.082841, 0.078033, 0.07063, 0.061432, 0.051343, 0.041234, 0.031821, 0.023597, 0.016815); 
 
 void main()
@@ -73,20 +73,20 @@ void main()
   {
     for (int i = 1; i < 10; ++i)
     {
-      result += texture(uTexture0, texCorod + vec2(texOffset * i, 0)).rgb * uBlurWeight[i];
-      result -= texture(uTexture0, texCorod - vec2(texOffset * i, 0)).rgb * uBlurWeight[i];
+      result += texture(uTexture0, texCoord + vec2(texOffset.x * i, 0)).rgb * uBlurWeight[i];
+      result -= texture(uTexture0, texCoord - vec2(texOffset.x * i, 0)).rgb * uBlurWeight[i];
     }
   }
   else
   {
     for (int i = 1; i < 10; ++i)
     {
-      result += texture(uTexture0, texCorod + vec2(0, texOffset * i)).rgb * uBlurWeight[i];
-      result -= texture(uTexture0, texCorod - vec2(0, texOffset * i)).rgb * uBlurWeight[i];
+      result += texture(uTexture0, texCoord + vec2(0, texOffset.y * i)).rgb * uBlurWeight[i];
+      result -= texture(uTexture0, texCoord - vec2(0, texOffset.y * i)).rgb * uBlurWeight[i];
     }
   }
 
-  result *= 0.2f;
+  result *= 0.5f;
   oBlurredEmissive = vec4(result, 1.0f);
 }
 )dy");

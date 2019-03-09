@@ -32,25 +32,24 @@ public:
   bool AreResourcesValid();
 
   void OnFailedCheckCondition() override final;
+  void ClearFramebuffers();
 
   void OnRender() override final;
 
-  void OnSetupRenderingSetting() override final {};
+  void OnSetupRenderingSetting() override final;
   void OnReleaseRenderingSetting() override final {};
   void OnPostRender() override final {};
 
 private:
-  TDyResourceBinderModel       mBinderTriangle     { "dyBtModelScrProjTri" };
+  TDyResourceBinderModel       mBinderTriangle { "dyBtModelScrProjTri" };
 
-  TDyResourceBinderFrameBuffer mBinderFbSSAO       { "dyBtFbEmissiveBlur" };
-  TDyResourceBinderShader      mBinderShSSAO       { "dyBtShSSAO" };
-  TDyResourceBinderAttachment  mBinderAttWorldPos  { "dyBtModelPosition" };
-  TDyResourceBinderAttachment  mBinderAttWorldNorm { "dyBtNormal" };
-  TDyResourceBinderTexture     mBinderTexNoise     { "dyBtTexSSAONoiseMap" };
+  TDyResourceBinderFrameBuffer mFbBlur { "dyBtFbEmissiveBlur" };
+  TDyResourceBinderShader      mShBlur { "dyBtShEmissiveBlur" };
+  TDyResourceBinderAttachment  mAtEmissive { "dyBtEmissive" };
 
-  TDyResourceBinderFrameBuffer mBinderFbSSAOBlur   { "dyBtFbEmissiveToneMap" };
-  TDyResourceBinderShader      mBinderShSSAOBlur   { "dyBtPostEffectSsaoBlur" };
-  TDyResourceBinderAttachment  mBinderAttSSAOOpt   { "dyBtAtSSAOOutput" };
+  TDyResourceBinderFrameBuffer mFbTone { "dyBtFbEmissiveToneMap" };
+  TDyResourceBinderShader      mShTone { "dyBtShEmissiveToneMap" };
+  TDyResourceBinderAttachment  mAtBlur { "dyBtEmissiveTempBlur" };
 };
 
 } /// ::dy namespace

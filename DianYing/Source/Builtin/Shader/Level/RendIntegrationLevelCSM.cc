@@ -183,7 +183,7 @@ void main()
   outColor.a    = 1.0f;
   outColor.rgb  = opaqueColor * GetSSAOOffset();
 
-  //outColor.rgb += GetEmissive();
+  outColor.rgb += GetEmissive();
 }
 )dy");
 
