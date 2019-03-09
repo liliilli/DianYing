@@ -27,10 +27,11 @@ void FDyBtAttachmentEmissiveTempBlur::ConstructBuffer(PDyGlAttachmentInstanceMet
     PDyGlTexParameterInformation\
     {EDyGlParameterName::TextureMinFilter, EDyGlParameterValue::Nearest},
     {EDyGlParameterName::TextureMagFilter, EDyGlParameterValue::Nearest},
-    {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::Repeat},
-    {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::Repeat},
+    {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::ClampToEdge},
+    {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::ClampToEdge},
   };
   oProperty.mBufferFormat = EDyGlBufferDataInternalFormat::RGBA16Float;
+  oProperty.mIsPingpong = true;
 }
 
 } /// ::dy namespace
