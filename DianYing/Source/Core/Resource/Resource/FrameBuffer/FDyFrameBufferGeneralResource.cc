@@ -53,10 +53,10 @@ FDyFrameBufferGeneralResource::FDyFrameBufferGeneralResource(const FDyFrameBuffe
       // Make attachment binding list information into creation descriptor.
       const auto& rescPtr = this->mBinderAttachmentList.back()->Get();
       descriptor.mAttachmentBindingList.emplace_back(
-          rescPtr->GetAttachmentId(), 
-          rescPtr->GetAttachmentType(), 
-          attachmentType, 
-          rescPtr->IsRenderBuffer());
+        rescPtr->GetTargetAttachmentId(), 
+        rescPtr->GetAttachmentType(), 
+        attachmentType, 
+        rescPtr->IsRenderBuffer());
     }
   }
   
@@ -69,10 +69,10 @@ FDyFrameBufferGeneralResource::FDyFrameBufferGeneralResource(const FDyFrameBuffe
     const auto& ptrDepth = this->mBinderDepthBuffer;
     descriptor.mIsUsingDepthBuffer = true;
     descriptor.mDepthBufferBinding = std::make_tuple(
-        ptrDepth->GetAttachmentId(), 
-        ptrDepth->GetAttachmentType(), 
-        EDyGlAttachmentType::Depth, 
-        ptrDepth->IsRenderBuffer());
+      ptrDepth->GetTargetAttachmentId(), 
+      ptrDepth->GetAttachmentType(), 
+      EDyGlAttachmentType::Depth, 
+      ptrDepth->IsRenderBuffer());
   }
 
   // Create frame buffer.
@@ -91,16 +91,16 @@ FDyFrameBufferGeneralResource::~FDyFrameBufferGeneralResource()
   MDY_CALL_ASSERT_SUCCESS(FDyGLWrapper::DeleteFrameBuffer(this->mFrameBufferId));
 }
 
-TU32 FDyFrameBufferGeneralResource::GetFrameBufferId() const noexcept
+TU32 FDyFrameBufferGeneralResource::GetTargetFrameBufferId() const noexcept
 {
   return this->mFrameBufferId;
 }
 
 EDySuccess FDyFrameBufferGeneralResource::BindFrameBuffer() const noexcept
 {
-  if (this->GetFrameBufferId() == 0) { return DY_FAILURE; }
+  if (this->GetTargetFrameBufferId() == 0) { return DY_FAILURE; }
 
-  FDyGLWrapper::BindFrameBufferObject(this->GetFrameBufferId());
+  FDyGLWrapper::BindFrameBufferObject(this->GetTargetFrameBufferId());
   return DY_SUCCESS;
 }
 

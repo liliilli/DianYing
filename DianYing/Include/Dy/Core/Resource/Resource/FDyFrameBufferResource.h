@@ -44,7 +44,7 @@ public:
   /// @brief Get specifier name of framebuffer resource.
   MDY_NODISCARD const std::string& GetSpecifierName();
   /// @brief Get framebuffer id.
-  MDY_NODISCARD virtual TU32 GetFrameBufferId() const noexcept = 0;
+  MDY_NODISCARD virtual TU32 GetTargetFrameBufferId() const noexcept = 0;
   /// @brief Get framebuffer size.
   MDY_NODISCARD const DDyVectorInt2& GetFrameBufferSize();
 

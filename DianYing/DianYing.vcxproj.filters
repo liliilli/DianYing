@@ -371,6 +371,10 @@
     <ClCompile Include="Source\Builtin\RenderItem\Level\FBtPpEmissive.cc" />
     <ClCompile Include="Source\Builtin\Shader\PostEffect\Emissive\BtShEmissiveBlur.cc" />
     <ClCompile Include="Source\Builtin\Shader\PostEffect\Emissive\BtShEmissiveToneMap.cc" />
+    <ClCompile Include="Source\Core\Resource\Resource\Attachment\FDyAttachmentGeneralResource.cc" />
+    <ClCompile Include="Source\Core\Resource\Resource\Attachment\FDyAttachmentPingpongResource.cc" />
+    <ClCompile Include="Source\Core\Resource\Resource\FrameBuffer\FDyFrameBufferGeneralResource.cc" />
+    <ClCompile Include="Source\Core\Resource\Resource\FrameBuffer\FDyFrameBufferPingPongResource.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -910,6 +914,10 @@
     <ClInclude Include="Include\Dy\Builtin\RenderItem\Level\FBtPpEmissive.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\PostEffect\Emissive\BtShEmissiveBlur.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\PostEffect\Emissive\BtShEmissiveToneMap.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\Attachment\FDyAttachmentPingpongResource.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\Attachment\FDyAttachmentGeneralResource.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\FrameBuffer\FDyFrameBufferGeneralResource.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\FrameBuffer\FDyFrameBufferPingPongResource.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

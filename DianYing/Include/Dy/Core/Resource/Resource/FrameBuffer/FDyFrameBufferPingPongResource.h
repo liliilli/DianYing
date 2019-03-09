@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_CORE_RESOURCE_INFORMATION_FDyFrameBufferGeneralResource_H
-#define GUARD_DY_CORE_RESOURCE_INFORMATION_FDyFrameBufferGeneralResource_H
+#ifndef GUARD_DY_CORE_RESOURCE_INFORMATION_FDyFrameBufferPingPongResource_H
+#define GUARD_DY_CORE_RESOURCE_INFORMATION_FDyFrameBufferPingPongResource_H
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -19,25 +19,29 @@
 namespace dy
 {
 
-/// @class FDyFrameBufferGeneralResource
-/// @brief Framebuffer resource that supports color attachments that is one-attachment.
-class FDyFrameBufferGeneralResource final : public FDyFrameBufferResource
+/// @class FDyFrameBufferPingPongResource
+/// @brief Framebuffer resource that supports color attachments 
+/// that is one-attachment & two-attachment.
+class FDyFrameBufferPingPongResource final : public FDyFrameBufferResource
 {
 public:
-  FDyFrameBufferGeneralResource(const FDyFrameBufferInformation& iInformation);
-  virtual ~FDyFrameBufferGeneralResource();
+  FDyFrameBufferPingPongResource(const FDyFrameBufferInformation& iInformation);
+  virtual ~FDyFrameBufferPingPongResource();
 
-  /// @brief Get framebuffer id.
+  /// @brief Get Framebuffer id on target.
   MDY_NODISCARD TU32 GetTargetFrameBufferId() const noexcept override final;
+
   /// @brief Bind framebuffer to system.
   EDySuccess BindFrameBuffer() const noexcept override final;
+
   /// @brief Do nothing.
-  void Swap() override final { /* Do nothing */ }
+  void Swap() override final;
 
 private:
-  TU32 mFrameBufferId = 0;
+  std::array<TU32, 2> mFrameBufferIds = {};
+  bool mIsLeftTarget = true;
 };
 
 } /// ::dy namespace
 
-#endif /// GUARD_DY_CORE_RESOURCE_INFORMATION_FDyFrameBufferGeneralResource_H
+#endif /// GUARD_DY_CORE_RESOURCE_INFORMATION_FDyFrameBufferPingPongResource_H

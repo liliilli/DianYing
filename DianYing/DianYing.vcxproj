@@ -311,6 +311,8 @@
     <ClCompile Include="Source\Core\Resource\Internal\FDyMeshVBOIntermediate.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\GeometryType.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\TextureEnums.cc" />
+    <ClCompile Include="Source\Core\Resource\Resource\Attachment\FDyAttachmentGeneralResource.cc" />
+    <ClCompile Include="Source\Core\Resource\Resource\Attachment\FDyAttachmentPingpongResource.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\FDyAttachmentResource.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\FDyFrameBufferResource.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\FDyMaterialResource.cc" />
@@ -320,6 +322,8 @@
     <ClCompile Include="Source\Core\Resource\Resource\FDyTextureCubemapResource.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\FDyTextureGeneralResource.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\FDyTextureResource.cc" />
+    <ClCompile Include="Source\Core\Resource\Resource\FrameBuffer\FDyFrameBufferGeneralResource.cc" />
+    <ClCompile Include="Source\Core\Resource\Resource\FrameBuffer\FDyFrameBufferPingPongResource.cc" />
     <ClCompile Include="Source\Core\Resource\Type\Material\ADyUniformHelper.cc" />
     <ClCompile Include="Source\Core\Resource\Type\Material\TDyMaterialBinder.cc" />
     <ClCompile Include="Source\Core\Resource\Type\ModelMesh\DDyMeshCompressedBuffer.cc" />
@@ -776,6 +780,8 @@
     <ClInclude Include="Include\Dy\Core\Resource\Interface\IDyRenderableBinder.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Internal\FDyMeshVBOIntermediate.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Internal\Uniform\IDyUniformValueBase.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\Attachment\FDyAttachmentGeneralResource.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\Attachment\FDyAttachmentPingpongResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyAttachmentResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyFrameBufferResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyMaterialResource.h" />
@@ -787,6 +793,8 @@
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyTextureGeneralResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyTextureResource.h" />
     <ClInclude Include="Include\Dy\Component\Type\EDyComponentType.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\FrameBuffer\FDyFrameBufferGeneralResource.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\FrameBuffer\FDyFrameBufferPingPongResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\EDyLazy.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\FDyBinderBase.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Material\ADyUniformHelper.h" />

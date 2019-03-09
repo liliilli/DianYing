@@ -20,6 +20,8 @@
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
 #include <Dy/Core/Resource/Internal/FDyModelVBOIntermediate.h>
+#include <Dy/Core/Resource/Resource/FrameBuffer/FDyFrameBufferGeneralResource.h>
+#include <Dy/Core/Resource/Resource/FrameBuffer/FDyFrameBufferPingPongResource.h>
 
 #include <Dy/Meta/Information/MetaInfoMaterial.h>
 #include <Dy/Meta/Information/MetaInfoModelAnim.h>
@@ -29,7 +31,6 @@
 #include <Dy/Management/IO/MDyIOResource.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Management/WindowManager.h>
-#include "Dy/Core/Resource/Resource/FrameBuffer/FDyFrameBufferGeneralResource.h"
 
 constexpr TU08 kDefaultPriority = 128;
 
@@ -561,10 +562,18 @@ DDyIOWorkerResult TDyIO::outMainProcessTask(_MIN_ const DDyIOTask& task)
   } break;
   case EDyResourceType::GLFrameBuffer:
   { // Only Resource, create fbo with attachment.
-    const auto instance = new FDyFrameBufferGeneralResource(
-      *infoManager.GetPtrInformation<EDyResourceType::GLFrameBuffer>(result.mSpecifierName)
-    );
-    result.mSmtPtrResultInstance = instance;
+    const auto& refInfo =
+      *infoManager.GetPtrInformation<EDyResourceType::GLFrameBuffer>(result.mSpecifierName);
+    if (refInfo.IsPingPong() == true)
+    {
+      const auto instance = new FDyFrameBufferPingPongResource(refInfo);
+      result.mSmtPtrResultInstance = instance;
+    }
+    else
+    {
+      const auto instance = new FDyFrameBufferGeneralResource(refInfo);
+      result.mSmtPtrResultInstance = instance;
+    }
   } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   };
