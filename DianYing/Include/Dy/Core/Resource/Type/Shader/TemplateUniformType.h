@@ -28,6 +28,8 @@ template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Matrix4Arr
 { using ValueType = std::vector<DDyMatrix4x4>; };
 template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Vector3Array> final  
 { using ValueType = std::vector<DDyVector3>; };
+template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::FloatArray> final
+{ using ValueType = std::vector<TF32>; };
 
 template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Matrix4> final  { using ValueType = DDyMatrix4x4; };
 template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Matrix3> final  { using ValueType = DDyMatrix3x3; };
