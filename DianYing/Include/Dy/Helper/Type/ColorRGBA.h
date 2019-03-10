@@ -29,6 +29,7 @@ struct DDyColorRGBA final
   DDyColorRGBA() = default;
   explicit DDyColorRGBA(TF32 r, TF32 g, TF32 b) noexcept;
   explicit DDyColorRGBA(TF32 r, TF32 g, TF32 b, TF32 a) noexcept;
+  explicit DDyColorRGBA(const std::array<TF32, 4>& iGlRgbaColor) noexcept;
 
   //!
   //! Methods
@@ -46,6 +47,9 @@ struct DDyColorRGBA final
   /// @brief  Data pointer
   /// @return Data pointer sequence.
   MDY_NODISCARD const TF32* Data() const noexcept;
+
+  /// @brief Get array version of RGBA.
+  std::array<TF32, 4> ToArray() const noexcept;
 
   //!
   //! Conversion operators
