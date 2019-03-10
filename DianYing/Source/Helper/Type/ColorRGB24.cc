@@ -14,6 +14,7 @@
 
 /// Header file
 #include <Dy/Helper/Type/ColorRGB24.h>
+#include <Dy/Helper/Type/ColorRGB.h>
 
 #include <bitset>
 #include <nlohmann/json.hpp>
@@ -76,6 +77,16 @@ DDyColorRGB24::DDyColorRGB24(TU08 r, TU08 g, TU08 b) noexcept
 TF32 DDyColorRGB24::GetGrayScale() const noexcept
 {
   return 0.2126f * this->R + 0.7152f * this->G + 0.0722f * this->B;
+}
+
+DDyColorRGB24::operator DDyColorRGB() const noexcept
+{
+  return DDyColorRGB
+  {
+    static_cast<TF32>(this->R) / 0xFF,
+    static_cast<TF32>(this->G) / 0xFF,
+    static_cast<TF32>(this->B) / 0xFF,
+  };
 }
 
 DDyColorRGB24::operator DDyColorRGBA() const noexcept

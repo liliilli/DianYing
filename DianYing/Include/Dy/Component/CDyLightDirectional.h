@@ -16,9 +16,9 @@
 #include <Dy/Builtin/Constant/CSM.h>
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
-#include <Dy/Component/Internal/Lights/DLightUbos.h>
+#include <Dy/Component/Internal/Lights/DUboDirLight.h>
 #include <Dy/Helper/Type/Matrix4.h>
-#include <Dy/Meta/Information/ComponentLightMetaInfo.h>
+#include <Dy/Meta/Components/PCompDirLightMetaInfo.h>
 
 //!
 //! Forward declaration

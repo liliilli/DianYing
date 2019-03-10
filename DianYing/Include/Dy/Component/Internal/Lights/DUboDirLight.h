@@ -17,6 +17,7 @@
 #include <Dy/Helper/Type/ColorRGBA.h>
 #include <Dy/Helper/Type/Clamp.h>
 #include <Dy/Helper/Type/Matrix4.h>
+#include <Dy/Builtin/Constant/CSM.h>
 
 #define MDY_BYTEPADDING(__Type__) MDY_NOTUSED __Type__ MDY_TOKENPASTE2(____padding, __LINE__){};
 

@@ -17,6 +17,19 @@
 #include <Dy/Helper/Type/ColorRGBA32.h>
 #include <Dy/Helper/Type/ColorRGBA.h>
 
+//!
+//! Forward declaration
+//!
+
+namespace dy
+{
+struct DDyColorRGB;
+} /// ::dy namespace
+
+//!
+//! Implementation
+//!
+
 namespace dy
 {
 
@@ -32,7 +45,11 @@ struct alignas(4) DDyColorRGB24 final
 
   /// @brief Get color's grayscale value following sRGB.
   MDY_NODISCARD TF32 GetGrayScale() const noexcept;
-  
+
+   /// @brief Can be convert DDyColorRGB. 
+  /// When converted to RGB type, Alpha will be 1.0. (opaque)
+  operator DDyColorRGB() const noexcept;
+
   /// @brief Can be convert DDyColorRGBA. 
   /// When converted to RGBA type, Alpha will be 1.0. (opaque)
   operator DDyColorRGBA() const noexcept;

@@ -21,11 +21,9 @@
 namespace dy
 {
 
-///
 /// @class DDyColorRGB
 /// @brief Float color type which stores 3 components (R, G, B)
 /// (h, s, v) does not support but can be converted calling HsvToRgb().
-///
 struct DDyColorRGB final
 {
   DDyClamp<TF32, 0, 1> R = 0.0f;
@@ -38,22 +36,11 @@ struct DDyColorRGB final
       R{r}, G{g}, B{b}
   {};
 
-  ///
   /// @brief Get color's grayscale value following sRGB.
-  ///
-  constexpr MDY_NODISCARD TF32 GetGrayScale() const noexcept
-  {
-    return 0.2126f * this->R + 0.7152f * this->G + 0.0722f * this->B;
-  }
+  MDY_NODISCARD TF32 GetGrayScale() const noexcept;
 
-  ///
-  /// @brief  Data pointer
-  /// @return Data pointer sequence.
-  ///
-  MDY_NODISCARD const TF32* Data() const noexcept
-  {
-    return this->R.Data();
-  }
+  /// @brief  Get Data pointer
+  MDY_NODISCARD const TF32* Data() const noexcept;
 
   //!
   //! Operator overloading

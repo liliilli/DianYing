@@ -56,7 +56,7 @@ EDySuccess CDyLightDirectional::Initialize(const PDyDirLightComponentMetaInfo& m
   }
 
   // Set first time flag to false to use second time flag logics.
-  if (metaInfo.mInitiallyActivated) { this->Activate(); }
+  if (metaInfo.mInitiallyActivated == true) { this->Activate(); }
   return DY_SUCCESS;
 }
 
