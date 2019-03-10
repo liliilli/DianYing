@@ -66,7 +66,7 @@ MDY_NODISCARD dy::EDyShadowType DyGetShadowTypeFromString(_MIN_ const std::strin
   else if (value == sSoftShadow)  { return EDyShadowType::Soft; }
 
   MDY_UNEXPECTED_BRANCH();
-  return EDyShadowType::NoneError;
+  return EDyShadowType::__Error;
 }
 
 }

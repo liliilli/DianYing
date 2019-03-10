@@ -396,17 +396,17 @@ inline void MDyRendering::Impl::RenderPipelines()
   this->mUiObjectDrawingList.clear();
 }
 
-inline CDyDirectionalLight* MDyRendering::Impl::GetPtrMainDirectionalLight() const noexcept
+inline CDyLightDirectional* MDyRendering::Impl::GetPtrMainDirectionalLight() const noexcept
 {
   return this->mMainDirectionalLight;
 }
 
-inline void MDyRendering::Impl::MDY_PRIVATE(BindMainDirectionalLight)(CDyDirectionalLight& iRefLight)
+inline void MDyRendering::Impl::MDY_PRIVATE(BindMainDirectionalLight)(CDyLightDirectional& iRefLight)
 {
   this->mMainDirectionalLight = &iRefLight;
 }
 
-inline EDySuccess MDyRendering::Impl::MDY_PRIVATE(UnbindMainDirectionalLight)(CDyDirectionalLight& iRefLight)
+inline EDySuccess MDyRendering::Impl::MDY_PRIVATE(UnbindMainDirectionalLight)(CDyLightDirectional& iRefLight)
 {
   if (this->mMainDirectionalLight == &iRefLight) 
   {
@@ -416,17 +416,17 @@ inline EDySuccess MDyRendering::Impl::MDY_PRIVATE(UnbindMainDirectionalLight)(CD
   else { return DY_FAILURE; }
 }
 
-inline CDyDirectionalLight* MDyRendering::Impl::GetPtrMainDirectionalShadow() const noexcept
+inline CDyLightDirectional* MDyRendering::Impl::GetPtrMainDirectionalShadow() const noexcept
 {
   return this->mMainDirectionalShadow;
 }
 
-inline void MDyRendering::Impl::MDY_PRIVATE(BindMainDirectionalShadow)(CDyDirectionalLight& iRefLight)
+inline void MDyRendering::Impl::MDY_PRIVATE(BindMainDirectionalShadow)(CDyLightDirectional& iRefLight)
 {
   this->mMainDirectionalShadow = &iRefLight;
 }
 
-inline EDySuccess MDyRendering::Impl::MDY_PRIVATE(UnbindMainDirectionalShadow)(CDyDirectionalLight& iRefLight)
+inline EDySuccess MDyRendering::Impl::MDY_PRIVATE(UnbindMainDirectionalShadow)(CDyLightDirectional& iRefLight)
 {
   if (this->mMainDirectionalShadow == &iRefLight) 
   {

@@ -19,7 +19,7 @@
 #include <Dy/Component/CDyModelFilter.h>
 #include <Dy/Component/CDyModelRenderer.h>
 #include <Dy/Component/CDyCamera.h>
-#include <Dy/Component/CDyDirectionalLight.h>
+#include <Dy/Component/CDyLightDirectional.h>
 #include <Dy/Component/CDyModelAnimator.h>
 #include <Dy/Component/CDySoundSource.h>
 #include <Dy/Component/CDyPhysicsColliderSphere.h>

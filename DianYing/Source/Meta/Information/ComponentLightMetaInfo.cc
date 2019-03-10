@@ -66,8 +66,6 @@ void from_json(const nlohmann::json& iJson, PDyDirLightComponentMetaInfo::DDetai
   DyJsonGetValueFromTo(iJson, sHeaderLightIntensity, oDetail.mIntensity);
 
   oDetail.mDiffuse  = DyJsonGetValueFrom<DDyColorRGB>(iJson, sHeaderLightDiffuse);
-  oDetail.mSpecular = DyJsonGetValueFrom<DDyColorRGB>(iJson, sHeaderLightSpecular);
-  oDetail.mAmbient  = DyJsonGetValueFrom<DDyColorRGB>(iJson, sHeaderLightAmbient);
 
   DyJsonGetValueFromTo(iJson, sHeaderShadowType, oDetail.mShadowType);
   DyJsonGetValueFromTo(iJson, sHeaderShadowStrength, oDetail.mShadowStrength);

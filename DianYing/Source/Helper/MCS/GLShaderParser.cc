@@ -111,6 +111,35 @@ layout(std140, binding = 0) uniform CameraBlock
 mat4 Dy_GetCameraPv() { return uCamera.mProjMatrix * uCamera.mViewMatrix; }
 )dy");
 
+/// @brief Default Light input unfiorm variables.
+/// #import <Input_UboDirLight>;
+MDY_SET_IMMUTABLE_STRING(Buffer_Input_UboDirLight, R"dy(
+// binding = 1 is DirectionalLightBlock uniform block.
+layout(std140, binding = 1) uniform DDyUboDirectionalLight
+{
+  vec3  mDirection; // World space
+  vec4  mColor;   // Not use alpha value
+  float mIntensity; // Intensity
+} uLightDir;
+
+// binding = 2 is CSM Shadow mapping attaching uniform block.
+layout(std140, binding = 2) uniform DDyUboDirShadow
+{
+  uniform mat4    uLightVPSBMatrix[4];
+  uniform vec4    uNormalizedFarPlanes;
+  uniform float   uShadowBias;
+  uniform float   uShadowStrength;
+} uDyShadowMapping;
+)dy");
+
+/*
+layout(std140, binding = 2) uniform PointLightBlock
+{
+  vec3  mColor;
+  float mIntensity;
+} uLightPoint[16];
+ */
+
 /// @brief Skinned animation input uniform variables.
 /// #import <Input_SkinAnimation>;
 MDY_SET_IMMUTABLE_STRING(Buffer_Input_SkinAnimation, R"dy(
@@ -130,7 +159,7 @@ mat4 Dy_GetBoneTransform()
 }
 )dy");
 
-/// @brief Default Texture2D input uniform varaibles.
+/// @brief Default Texture2D input uniform variables.
 /// #import <Input_DefaultTexture2D>;
 MDY_SET_IMMUTABLE_STRING(Buffer_Input_DefaultTexture2D, R"dy(
 layout (binding = 0) uniform sampler2D uTexture0;
@@ -204,6 +233,7 @@ std::string ParseGLShader(_MIN_ const std::string& iShaderString)
     case DyStrCase("Input_UboCamera"):        exportShaderBuffer += Buffer_Input_UboCamera; break;
     case DyStrCase("Input_SkinAnimation"):    exportShaderBuffer += Buffer_Input_SkinAnimation; break;
     case DyStrCase("Input_DefaultTexture2D"): exportShaderBuffer += Buffer_Input_DefaultTexture2D; break;
+    case DyStrCase("Input_UboDirLight"):      exportShaderBuffer += Buffer_Input_UboDirLight; break;
     case DyStrCase("Output_OpaqueStream"):    exportShaderBuffer += Buffer_Output_OpaqueStream; break;
     case DyStrCase("Etc_Miscellaneous"):      exportShaderBuffer += Buffer_Etc_Miscellaneous; break;
     default: MDY_NOT_IMPLEMENTED_ASSERT(); break;

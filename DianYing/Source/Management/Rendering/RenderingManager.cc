@@ -23,7 +23,7 @@
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Management/SettingManager.h>
 
-#include <Dy/Component/CDyDirectionalLight.h>
+#include <Dy/Component/CDyLightDirectional.h>
 #include <Dy/Management/Rendering/FramebufferManager.h>
 #include <Dy/Management/Rendering/UniformBufferObjectManager.h>
 #include <Dy/Component/CDyCamera.h>
@@ -95,18 +95,18 @@ public:
   void RenderPipelines();
   
   /// @brief Get ptr main directional light. If not exist, just return nullptr.
-  CDyDirectionalLight* GetPtrMainDirectionalLight() const noexcept;
+  CDyLightDirectional* GetPtrMainDirectionalLight() const noexcept;
   /// @brief Private function, bind directional light as main light.
-  void MDY_PRIVATE(BindMainDirectionalLight)(_MIN_ CDyDirectionalLight& iRefLight);
+  void MDY_PRIVATE(BindMainDirectionalLight)(_MIN_ CDyLightDirectional& iRefLight);
   /// @brief Private function, unbind directional light of main light.
-  EDySuccess MDY_PRIVATE(UnbindMainDirectionalLight)(_MIN_ CDyDirectionalLight& iRefLight);
+  EDySuccess MDY_PRIVATE(UnbindMainDirectionalLight)(_MIN_ CDyLightDirectional& iRefLight);
     
   /// @brief Get ptr main directional shadow. If not exist, just return nullptr.
-  CDyDirectionalLight* GetPtrMainDirectionalShadow() const noexcept;
+  CDyLightDirectional* GetPtrMainDirectionalShadow() const noexcept;
   /// @brief Private function, bind directional light as main light.
-  void MDY_PRIVATE(BindMainDirectionalShadow)(_MIN_ CDyDirectionalLight& iRefLight);
+  void MDY_PRIVATE(BindMainDirectionalShadow)(_MIN_ CDyLightDirectional& iRefLight);
   /// @brief Private function, unbind directional light of main light.
-  EDySuccess MDY_PRIVATE(UnbindMainDirectionalShadow)(_MIN_ CDyDirectionalLight& iRefLight);
+  EDySuccess MDY_PRIVATE(UnbindMainDirectionalShadow)(_MIN_ CDyLightDirectional& iRefLight);
 
   /// @brief Get General (Default) ui projection matrix.
   const DDyMatrix4x4& GetGeneralUiProjectionMatrix() const noexcept;
@@ -147,8 +147,8 @@ public:
   std::vector<TDrawColliderItem> mDebugColliderDrawingList = {};
   std::vector<TUiDrawCallItem>   mUiObjectDrawingList = {};
 
-  CDyDirectionalLight* mMainDirectionalLight   = nullptr;
-  CDyDirectionalLight* mMainDirectionalShadow  = nullptr;
+  CDyLightDirectional* mMainDirectionalLight   = nullptr;
+  CDyLightDirectional* mMainDirectionalShadow  = nullptr;
 
   /// @brief Required skybox pointer for rendering on present frame.
   /// If rendered, skybox pointer will be nulled again.
@@ -238,28 +238,28 @@ void MDyRendering::RenderPipelines()
   this->mInternal->RenderPipelines(); 
 }
 
-void MDyRendering::MDY_PRIVATE(BindMainDirectionalLight)(CDyDirectionalLight& iRefLight)
+void MDyRendering::MDY_PRIVATE(BindMainDirectionalLight)(CDyLightDirectional& iRefLight)
 {
   return this->mInternal->MDY_PRIVATE(BindMainDirectionalLight)(iRefLight);
 }
-CDyDirectionalLight* MDyRendering::GetPtrMainDirectionalLight() const noexcept
+CDyLightDirectional* MDyRendering::GetPtrMainDirectionalLight() const noexcept
 {
   return this->mInternal->GetPtrMainDirectionalLight();
 }
-EDySuccess MDyRendering::MDY_PRIVATE(UnbindMainDirectionalLight)(CDyDirectionalLight& iRefLight)
+EDySuccess MDyRendering::MDY_PRIVATE(UnbindMainDirectionalLight)(CDyLightDirectional& iRefLight)
 {
   return this->mInternal->MDY_PRIVATE(UnbindMainDirectionalLight)(iRefLight);
 }
 
-void MDyRendering::MDY_PRIVATE(BindMainDirectionalShadow)(CDyDirectionalLight& iRefLight)
+void MDyRendering::MDY_PRIVATE(BindMainDirectionalShadow)(CDyLightDirectional& iRefLight)
 {
   this->mInternal->MDY_PRIVATE(BindMainDirectionalShadow)(iRefLight);
 }
-CDyDirectionalLight* MDyRendering::GetPtrMainDirectionalShadow() const noexcept
+CDyLightDirectional* MDyRendering::GetPtrMainDirectionalShadow() const noexcept
 {
   return this->mInternal->GetPtrMainDirectionalShadow();
 }
-EDySuccess MDyRendering::MDY_PRIVATE(UnbindMainDirectionalShadow)(CDyDirectionalLight& iRefLight)
+EDySuccess MDyRendering::MDY_PRIVATE(UnbindMainDirectionalShadow)(CDyLightDirectional& iRefLight)
 {
   return this->mInternal->MDY_PRIVATE(UnbindMainDirectionalShadow)(iRefLight);
 }

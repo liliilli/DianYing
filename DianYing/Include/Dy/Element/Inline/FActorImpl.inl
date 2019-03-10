@@ -136,7 +136,7 @@ inline void FDyActor::Impl::CreateComponentsWithList(const TComponentMetaList& i
       this->AddComponent<CDyActorScript>(std::any_cast<const PDyScriptComponentMetaInfo&>(componentInfo));
       break;
     case EDyComponentMetaType::DirectionalLight:
-      this->AddComponent<CDyDirectionalLight>(std::any_cast<const PDyDirLightComponentMetaInfo&>(componentInfo));
+      this->AddComponent<CDyLightDirectional>(std::any_cast<const PDyDirLightComponentMetaInfo&>(componentInfo));
       break;
     case EDyComponentMetaType::ModelFilter:
       this->AddComponent<CDyModelFilter>(std::any_cast<const PDyModelFilterComponentMetaInfo&>(componentInfo));

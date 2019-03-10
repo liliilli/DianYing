@@ -42,12 +42,13 @@ EDySuccess MDyUniformBufferObject::pfInitialize()
 
 EDySuccess MDyUniformBufferObject::pfRelease()
 { // Release all UBO buffer before release management instance.
-  for (auto it = this->mUboMap.begin(); it != this->mUboMap.end(); ++it)
+  for (auto it = this->mUboMap.begin(); it != this->mUboMap.end();)
   {
     const DDyUboInstanceInformation& instance = *it->second;
     const TU32 bufferIndex  = instance.GetBufferInternalIndex();
     const TU32 bindingIndex = instance.mBindingIndex;
     glDeleteBuffers(1, &bufferIndex);
+
     it = this->mUboMap.erase(it);
     this->mBeingUsedUboBufferIndexSet.erase(bindingIndex);
   }

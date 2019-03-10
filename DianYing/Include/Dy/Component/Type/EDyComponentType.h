@@ -17,7 +17,7 @@ namespace dy
 {
 
 class CDyActorScript;
-class CDyDirectionalLight;
+class CDyLightDirectional;
 class CDyCamera;
 class CDyModelAnimator;
 class CDyModelFilter;
@@ -55,7 +55,7 @@ struct TComponentBindingType
 
 template <> struct TComponentBindingType<EDyComponentType::ActorScript> { using Type = CDyActorScript; };
 template <> struct TComponentBindingType<EDyComponentType::Transform> { using Type = CDyTransform; };
-template <> struct TComponentBindingType<EDyComponentType::DirectionalLight> { using Type = CDyDirectionalLight; };
+template <> struct TComponentBindingType<EDyComponentType::DirectionalLight> { using Type = CDyLightDirectional; };
 template <> struct TComponentBindingType<EDyComponentType::Camera> { using Type = CDyCamera; };
 template <> struct TComponentBindingType<EDyComponentType::ModelAnimator> { using Type = CDyModelAnimator; };
 template <> struct TComponentBindingType<EDyComponentType::ModelFilter> { using Type = CDyModelFilter; };
@@ -72,7 +72,7 @@ struct TComponentUnbindingType;
 
 template <> struct TComponentUnbindingType<CDyActorScript> { static constexpr EDyComponentType Value = EDyComponentType::ActorScript; };
 template <> struct TComponentUnbindingType<CDyTransform> { static constexpr EDyComponentType Value = EDyComponentType::Transform; };
-template <> struct TComponentUnbindingType<CDyDirectionalLight> { static constexpr EDyComponentType Value = EDyComponentType::DirectionalLight; };
+template <> struct TComponentUnbindingType<CDyLightDirectional> { static constexpr EDyComponentType Value = EDyComponentType::DirectionalLight; };
 template <> struct TComponentUnbindingType<CDyCamera> { static constexpr EDyComponentType Value = EDyComponentType::Camera; };
 template <> struct TComponentUnbindingType<CDyModelAnimator> { static constexpr EDyComponentType Value = EDyComponentType::ModelAnimator; };
 template <> struct TComponentUnbindingType<CDyModelFilter> { static constexpr EDyComponentType Value = EDyComponentType::ModelFilter; };

@@ -43,7 +43,7 @@ MDY_SET_IMMUTABLE_STRING(sHeaderName,   "Name");
 
 
 //!
-//! CDyDirectionalLight
+//! CDyLightDirectional
 //!
 
 MDY_SET_IMMUTABLE_STRING(sHeaderLightDirection,   "LightDirection");
