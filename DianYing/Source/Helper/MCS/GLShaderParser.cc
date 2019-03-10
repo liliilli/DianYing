@@ -130,6 +130,34 @@ layout(std140, binding = 2) uniform DDyUboDirShadow
   uniform float   uShadowBias;
   uniform float   uShadowStrength;
 } uDyShadowMapping;
+
+vec3 DyComputeShadowCoords(int iSlice, vec3 iWorldPosition)
+{
+  // Orthographic projection doesn't need division by w.
+  return (uDyShadowMapping.uLightVPSBMatrix[iSlice] * vec4(iWorldPosition, 1.0f)).xyz;
+}
+
+float DyComputeShadowCoefficient(sampler2DArrayShadow iShadowMap, vec3 iWorldPosition, float iZValue)
+{
+  int slice = 3;
+  const vec4 normalizedFarPlanes = uDyShadowMapping.uNormalizedFarPlanes;
+  vec4 layerColor = vec4(1.0, 0.5f, 1.0f, 1.0f); // DEBUG
+
+       if (iZValue < normalizedFarPlanes.x) { slice = 0; layerColor = vec4(1.0, 0.5, 0.5, 1.0); }
+  else if (iZValue < normalizedFarPlanes.y) { slice = 1; layerColor = vec4(0.5, 1.0, 0.5, 1.0); }
+  else if (iZValue < normalizedFarPlanes.z) { slice = 2; layerColor = vec4(0.5, 0.5, 1.0, 1.0); }
+
+  vec4 shadowCoords;
+  // Swizzling specific for shadow sampler.
+  shadowCoords.xyw = DyComputeShadowCoords(slice, iWorldPosition);
+  shadowCoords.w  -= uDyShadowMapping.uShadowBias;
+  shadowCoords.z   = float(slice);
+  
+  return (
+    1.0f - 
+    (1.0f - clamp(texture(iShadowMap, shadowCoords), 0.0f, 1.0f)) * uDyShadowMapping.uShadowStrength
+  ); 
+}
 )dy");
 
 /*

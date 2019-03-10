@@ -66,38 +66,12 @@ uniform vec4    uNormalizedFarPlanes;
 //uniform float uShadowStrength;
 */
 
-vec4 layerColor = vec4(1.0, 0.5f, 1.0f, 1.0f); // DEBUG
-
 vec4 GetNormal()      { return (texture(uTexture1, fs_in.texCoord) - 0.5f) * 2.0f; }
 vec4 GetSpecular()    { return (texture(uTexture2, fs_in.texCoord) - 0.5f) * 2.0f; }
 vec3 GetModelPos()    { return texture(uTexture3, fs_in.texCoord).xyz; }
 vec3 GetEmissive()    { return texture(uTexture8, fs_in.texCoord).xyz; }
 float GetZValue()     { return texture(uTexture5, fs_in.texCoord).x; }
 float GetSSAOOffset() { return texture(uTexture6, fs_in.texCoord).x; }
-
-vec3 ComputeShadowCoords(int iSlice, vec3 iWorldPosition)
-{
-  // Orthographic projection doesn't need division by w.
-  return (uDyShadowMapping.uLightVPSBMatrix[iSlice] * vec4(iWorldPosition, 1.0f)).xyz;
-}
-
-float ComputeShadowCoefficient(vec3 iWorldPosition, float iZValue)
-{
-  int slice = 3;
-  const vec4 normalizedFarPlanes = uDyShadowMapping.uNormalizedFarPlanes;
-
-       if (iZValue < normalizedFarPlanes.x) { slice = 0; layerColor = vec4(1.0, 0.5, 0.5, 1.0); }
-  else if (iZValue < normalizedFarPlanes.y) { slice = 1; layerColor = vec4(0.5, 1.0, 0.5, 1.0); }
-  else if (iZValue < normalizedFarPlanes.z) { slice = 2; layerColor = vec4(0.5, 0.5, 1.0, 1.0); }
-
-  vec4 shadowCoords;
-  // Swizzling specific for shadow sampler.
-  shadowCoords.xyw = ComputeShadowCoords(slice, iWorldPosition);
-  shadowCoords.w  -= uDyShadowMapping.uShadowBias;
-  shadowCoords.z   = float(slice);
-  
-  return texture(uTexture4, shadowCoords); 
-}
 
 vec3 CalculateSpecularColor(vec3 iWorldLightDir, vec3 iWorldNormal, 
                             vec3 iLightRgb, vec3 iSpecularRgb, 
@@ -154,7 +128,7 @@ vec3 DyCalculateDirectionalLight(const vec3 iUnlit, const vec3 iNormal, const ve
     uLightDir.mIntensity * 0.01f);
 
   vec3 resultColor = ambientColor;
-  resultColor += clamp(ComputeShadowCoefficient(iModelPos, GetZValue()), 0.1f, 1.0f) * (diffuseColor);
+  resultColor += DyComputeShadowCoefficient(uTexture4, iModelPos, GetZValue()) * (diffuseColor);
   resultColor += specularColor; 
 
   return resultColor;

@@ -45,7 +45,7 @@ struct alignas(16) DDyUboDirShadow final
   /// @brief CSM normalized far planes.
   std::array<TF32, kCSMSegment> mNormalizedFarPlanes = {};
   DDyClamp<float, 0, 2>         mBias     = 0.02f;
-  DDyClamp<float, 0, 1>         mStrength = 0.5f;
+  DDyClamp<float, 0, 1>         mStrength = 0.8f;
 };
 
 } /// ::dy namespace
