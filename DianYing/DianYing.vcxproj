@@ -859,7 +859,7 @@
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyInputButton.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\DDyJoystickAnalog.h" />
     <ClInclude Include="Include\Dy\Management\Type\Physics\DDyCollisionIssueItem.h" />
-    <ClInclude Include="Include\Dy\Management\Type\Render\DDyGlGlobalStatus.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Render\DDyGlGlobalStates.h" />
     <ClInclude Include="Include\Dy\Management\Type\Render\DDyPixelInfo.h" />
     <ClInclude Include="Include\Dy\Management\Type\Render\EDyModelRenderingMode.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoRenderItem.h" />

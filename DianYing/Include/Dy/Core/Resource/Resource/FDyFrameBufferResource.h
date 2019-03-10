@@ -48,11 +48,15 @@ public:
   /// @brief Get framebuffer size.
   MDY_NODISCARD const DDyVectorInt2& GetFrameBufferSize();
 
-  /// @brid Bind Framebuffer.
+  /// @brief Bind Framebuffer.
   EDySuccess virtual BindFrameBuffer() const noexcept = 0;
-
   /// @brief Unbind framebuffer and revert to default framebuffer.
   void UnbindFrameBuffer() const noexcept; 
+
+  /// @brief Push framebuffer's internal gl states.
+  void PushGlobalStates();
+  /// @brief Pop framebuffer's internal gl states.
+  void PopGlobalStates();
 
   /// @brief Swap.
   void virtual Swap() = 0;

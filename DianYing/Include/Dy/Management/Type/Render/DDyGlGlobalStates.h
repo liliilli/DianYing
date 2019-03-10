@@ -15,13 +15,14 @@
 
 #include <optional>
 #include <Dy/Helper/Type/Area2D.h>
+#include <Dy/Management/Type/AttachmentInformation.h>
 
 namespace dy
 {
 
-/// @struct DDyGlGlobalStatus
+/// @struct DDyGlGlobalStates
 /// @brief Global status type for managing OpenGL internal rendering library safely.
-struct DDyGlGlobalStatus final
+struct DDyGlGlobalStates final
 {
   /// @struct DPolygonMode
   /// @brief Polygon mode descriptor.
@@ -92,6 +93,8 @@ struct DDyGlGlobalStatus final
   std::optional<DBlendMode>     mBlendMode;
   std::optional<DCullfaceMode>  mCullfaceMode;
   std::optional<DViewport>      mViewportSettingList;
+
+  std::optional<std::vector<PBlendingEquation>> mAttachmentBlendings;
 };
 
 } /// ::dy namespace

@@ -49,6 +49,8 @@ struct PBlendingEquation final
     DstSubSrc,  // Operator will be Dst - Src.
     CompareMin, // Operator will be min(Src, Dst) to each element.
     CompareMax, // Operator will be max(Src, Dst) to each element.
+
+    __Error
   };
 
   enum class EFunc
@@ -65,6 +67,8 @@ struct PBlendingEquation final
     OneMinusDstAlpha,   // Factor will be 1 - vec4(Da)
     ConstColor,         // Factor will be mConstColor.
     OneMinusConstColor, // Factor will be 1 - mConstColor.
+
+    __Error
   };
 
   /// @brief Result color will be R = S*(mSrcFunc) mBlendMode D*(mDstFunc).
@@ -76,6 +80,17 @@ struct PBlendingEquation final
   /// @brief This variable will be used 
   /// when using EFunc::ConstColor, EFunc::OneMinusConstColor
   DDyColorRGBA mConstantColor = DDyColorRGBA{};
+
+  PBlendingEquation() = default;
+  PBlendingEquation(
+    EFunc iSrc, EMode iMode, EFunc iDst, 
+    const DDyColorRGBA& iConstantColor = DDyColorRGBA{});
+
+  MDY_NODISCARD static GLenum ToGLenum(EMode iMode);
+  MDY_NODISCARD static EMode  ToMode(GLenum iGlMode);
+
+  MDY_NODISCARD static GLint ToGLenum(EFunc iFunc);
+  MDY_NODISCARD static EFunc ToFunc(GLenum iGlFunc);
 };
 using TBlendingEquationList = std::vector<PBlendingEquation>;
 

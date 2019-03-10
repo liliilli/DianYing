@@ -36,4 +36,17 @@ void FDyFrameBufferResource::UnbindFrameBuffer() const noexcept
   FDyGLWrapper::UnbindFrameBufferObject();
 }
 
+void FDyFrameBufferResource::PushGlobalStates()
+{
+  DDyGlGlobalStates states;
+  states.mAttachmentBlendings = this->mAttachmentBlendingList;
+
+  FDyGLWrapper::PushInternalGlobalState(states);
+}
+
+void FDyFrameBufferResource::PopGlobalStates()
+{
+  FDyGLWrapper::PopInternalGlobalState();
+}
+
 } /// ::dy namespace

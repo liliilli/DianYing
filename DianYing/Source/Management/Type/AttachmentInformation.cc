@@ -34,6 +34,81 @@ GLenum DyGetAttachmentTypeValue(EDyGlAttachmentType iAttType) noexcept
   return GL_COLOR_ATTACHMENT0 + static_cast<TI32>(iAttType);
 }
 
+PBlendingEquation::PBlendingEquation(
+  EFunc iSrc, EMode iMode, EFunc iDst, 
+  const DDyColorRGBA& iConstantColor) 
+  : mBlendMode{iMode},
+    mSrcFunc{iSrc},
+    mDstFunc{iDst},
+    mConstantColor{iConstantColor}
+{ }
+
+GLenum PBlendingEquation::ToGLenum(EMode iMode)
+{
+  switch (iMode)
+  {
+  case EMode::SrcAddDst:  return GL_FUNC_ADD;
+  case EMode::SrcSubDst:  return GL_FUNC_SUBTRACT;
+  case EMode::DstSubSrc:  return GL_FUNC_REVERSE_SUBTRACT;
+  case EMode::CompareMin: return GL_MIN;
+  case EMode::CompareMax: return GL_MAX;
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(GL_NONE);
+  }
+}
+
+PBlendingEquation::EMode PBlendingEquation::ToMode(GLenum iGlMode)
+{
+  switch (iGlMode)
+  {
+  case GL_FUNC_ADD:       return EMode::SrcAddDst;
+  case GL_FUNC_SUBTRACT:  return EMode::SrcSubDst;
+  case GL_MIN:            return EMode::CompareMin;
+  case GL_MAX:            return EMode::CompareMax;
+  case GL_FUNC_REVERSE_SUBTRACT: return EMode::DstSubSrc;
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(EMode::__Error);
+  }
+}
+
+GLint PBlendingEquation::ToGLenum(EFunc iFunc)
+{
+  switch (iFunc)
+  {
+  case EFunc::Zero:             return GL_ZERO;
+  case EFunc::One:              return GL_ONE;
+  case EFunc::SrcColor:         return GL_SRC_COLOR;
+  case EFunc::OneMinusSrcColor: return GL_ONE_MINUS_SRC_COLOR;
+  case EFunc::DstColor:         return GL_DST_COLOR;
+  case EFunc::OneMinusDstColor: return GL_ONE_MINUS_DST_COLOR;
+  case EFunc::SrcAlpha:         return GL_SRC_ALPHA;
+  case EFunc::OneMinusSrcAlpha: return GL_ONE_MINUS_SRC_ALPHA;
+  case EFunc::DstAlpha:         return GL_DST_ALPHA;
+  case EFunc::OneMinusDstAlpha: return GL_ONE_MINUS_DST_ALPHA;
+  case EFunc::ConstColor:       return GL_CONSTANT_COLOR;
+  case EFunc::OneMinusConstColor: return GL_ONE_MINUS_CONSTANT_COLOR;
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(GL_NONE);
+  }
+}
+
+PBlendingEquation::EFunc PBlendingEquation::ToFunc(GLenum iGlFunc)
+{
+  switch (iGlFunc)
+  {
+  case GL_ZERO:       return EFunc::Zero;
+  case GL_ONE:        return EFunc::One;
+  case GL_SRC_COLOR:  return EFunc::SrcColor;
+  case GL_ONE_MINUS_SRC_COLOR:  return EFunc::OneMinusSrcColor;
+  case GL_DST_COLOR:            return EFunc::DstColor;
+  case GL_ONE_MINUS_DST_COLOR:  return EFunc::OneMinusDstColor;
+  case GL_SRC_ALPHA:            return EFunc::SrcAlpha;
+  case GL_ONE_MINUS_SRC_ALPHA:  return EFunc::OneMinusSrcAlpha;
+  case GL_DST_ALPHA:            return EFunc::DstAlpha;
+  case GL_ONE_MINUS_DST_ALPHA:  return EFunc::OneMinusDstAlpha;
+  case GL_CONSTANT_COLOR:       return EFunc::ConstColor;
+  case GL_ONE_MINUS_CONSTANT_COLOR: return EFunc::OneMinusConstColor;
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(EFunc::__Error);
+  }
+}
+
 GLenum DyGetTexParameterNameValue(_MIN_ const EDyGlParameterName attachment) noexcept
 {
   switch (attachment)
