@@ -24,6 +24,7 @@
 
 namespace dy
 {
+class   CDyLightPoint;
 class   FWrapperRenderItem;
 class   FWrapperRenderPipeline;
 struct  DDyUboDirectionalLight;
@@ -86,6 +87,13 @@ public:
   void MDY_PRIVATE(BindMainDirectionalShadow)(CDyLightDirectional& iRefLight);
   /// @brief Private function, unbind directional light of main light.
   EDySuccess MDY_PRIVATE(UnbindMainDirectionalShadow)(CDyLightDirectional& iRefLight);
+
+  /// @brief Private function, bind activated point light into candidate list.
+  void        MDY_PRIVATE(BindPointLight)(CDyLightPoint& iRefLight);
+  /// @brief Private function, unbind directional light of main light.
+  EDySuccess  MDY_PRIVATE(UnbindPointLight)(CDyLightPoint& iRefLight);
+
+  /// @brief Private function, unbind activated point light from candidate list.
 
   /// @brief Get General (Default) ui projection matrix.
   const DDyMatrix4x4& GetGeneralUiProjectionMatrix() const noexcept;

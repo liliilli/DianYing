@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Meta/Information/ElementObjectMetaInfo.h>
+#include <Dy/Component/CDyLightPoint.h>
 
 namespace dy
 {
@@ -138,6 +139,9 @@ inline void FDyActor::Impl::CreateComponentsWithList(const TComponentMetaList& i
     case EDyComponentMetaType::DirectionalLight:
       this->AddComponent<CDyLightDirectional>(std::any_cast<const PDyDirLightComponentMetaInfo&>(componentInfo));
       break;
+    case EDyComponentMetaType::PointLight:
+      this->AddComponent<CDyLightPoint>(std::any_cast<const PDyCompPointLightMetaInfo&>(componentInfo));
+      break;
     case EDyComponentMetaType::ModelFilter:
       this->AddComponent<CDyModelFilter>(std::any_cast<const PDyModelFilterComponentMetaInfo&>(componentInfo));
       break;
@@ -196,54 +200,46 @@ inline void FDyActor::Impl::ReleaseComponent(_MINOUT_ TComponentList::value_type
   auto& [typeVal, ptrsmtComponent] = iItem;
   if (MDY_CHECK_ISEMPTY(ptrsmtComponent)) { return; }
 
-  using _ = EDyComponentType;
+  using EType = EDyComponentType;
   // ActorScript, Transform does not release in this logic.
   // We use downcasting intentionally to call Release() function.
   switch (typeVal)
   {
   case EDyComponentType::DirectionalLight: 
-    {
-      static_cast<TComponentBindingType<_::DirectionalLight>::Type&>(*ptrsmtComponent).Release();
+    { static_cast<TComponentBindingType<EType::DirectionalLight>::Type&>(*ptrsmtComponent).Release();
+    } break;
+  case EDyComponentType::PointLight: 
+    { static_cast<TComponentBindingType<EType::PointLight>::Type&>(*ptrsmtComponent).Release();
     } break;
   case EDyComponentType::Camera:
-    {
-      static_cast<TComponentBindingType<_::Camera>::Type&>(*ptrsmtComponent).Release();
+    { static_cast<TComponentBindingType<EType::Camera>::Type&>(*ptrsmtComponent).Release();
     } break;
   case EDyComponentType::ModelAnimator:
-    {
-      static_cast<TComponentBindingType<_::ModelAnimator>::Type&>(*ptrsmtComponent).Release();
+    { static_cast<TComponentBindingType<EType::ModelAnimator>::Type&>(*ptrsmtComponent).Release();
     } break;
   case EDyComponentType::ModelFilter:
-    {
-      static_cast<TComponentBindingType<_::ModelFilter>::Type&>(*ptrsmtComponent).Release();
+    { static_cast<TComponentBindingType<EType::ModelFilter>::Type&>(*ptrsmtComponent).Release();
     } break;
   case EDyComponentType::ModelRenderer:
-    {
-      static_cast<TComponentBindingType<_::ModelRenderer>::Type&>(*ptrsmtComponent).Release();
+    { static_cast<TComponentBindingType<EType::ModelRenderer>::Type&>(*ptrsmtComponent).Release();
     } break;
   case EDyComponentType::SoundSource:
-    {
-      static_cast<TComponentBindingType<_::SoundSource>::Type&>(*ptrsmtComponent).Release();
+    { static_cast<TComponentBindingType<EType::SoundSource>::Type&>(*ptrsmtComponent).Release();
     } break;
   case EDyComponentType::Rigidbody:
-    {
-      static_cast<TComponentBindingType<_::Rigidbody>::Type&>(*ptrsmtComponent).Release();
+    { static_cast<TComponentBindingType<EType::Rigidbody>::Type&>(*ptrsmtComponent).Release();
     } break;
   case EDyComponentType::ColliderSphere:
-    {
-      static_cast<TComponentBindingType<_::ColliderSphere>::Type&>(*ptrsmtComponent).Release();
+    { static_cast<TComponentBindingType<EType::ColliderSphere>::Type&>(*ptrsmtComponent).Release();
     } break;
   case EDyComponentType::ColliderBox:
-    {
-      static_cast<TComponentBindingType<_::ColliderBox>::Type&>(*ptrsmtComponent).Release();
+    { static_cast<TComponentBindingType<EType::ColliderBox>::Type&>(*ptrsmtComponent).Release();
     } break;
   case EDyComponentType::ColliderCapsule:
-    {
-      static_cast<TComponentBindingType<_::ColliderCapsule>::Type&>(*ptrsmtComponent).Release();
+    { static_cast<TComponentBindingType<EType::ColliderCapsule>::Type&>(*ptrsmtComponent).Release();
     } break;
   case EDyComponentType::Skybox:
-    {
-      static_cast<TComponentBindingType<_::Skybox>::Type&>(*ptrsmtComponent).Release();
+    { static_cast<TComponentBindingType<EType::Skybox>::Type&>(*ptrsmtComponent).Release();
     } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }

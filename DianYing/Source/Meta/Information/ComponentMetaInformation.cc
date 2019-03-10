@@ -17,7 +17,8 @@
 #include <nlohmann/json.hpp>
 #include <Dy/Helper/Library/HelperJson.h>
 #include <Dy/Element/Helper/DescriptorComponentHeaderString.h>
-#include <Dy/Meta/Information/ComponentLightMetaInfo.h>
+#include <Dy/Meta/Components/PCompDirLightMetaInfo.h>
+#include <Dy/Meta/Components/PCompPointLightMetaInfo.h>
 
 //!
 //! Forward declaration & local translation unit functions.
@@ -29,27 +30,6 @@ namespace
 MDY_SET_IMMUTABLE_STRING(sHeader_Type,      "Type");
 MDY_SET_IMMUTABLE_STRING(sHeader_Details,   "Details");
 MDY_SET_IMMUTABLE_STRING(sHeader_Activated, "Activated");
-
-///
-/// @brief  Get viewport rectangle size from proper jsonAtlas, save it to metaInfo as input value.
-/// @param  jsonAtlas
-/// @param  metaInfo
-///
-void DyGetViewportRectFromJson(_MIN_ const nlohmann::json& jsonAtlas, _MOUT_ dy::PDyCameraComponentMetaInfo& metaInfo)
-{
-  // Calculate
-  dy::DDyVector2 viewportRectXY = {};
-  viewportRectXY.X = jsonAtlas.at("X").get<TF32>();
-  viewportRectXY.Y = jsonAtlas.at("Y").get<TF32>();
-
-  dy::DDyVector2 viewportRectWH = {};
-  viewportRectWH.X = jsonAtlas.at("W").get<TF32>();
-  viewportRectWH.Y = jsonAtlas.at("H").get<TF32>();
-
-  // Update value.
-  metaInfo.mDetails.mViewportSize.mLeftDown = viewportRectXY;
-  metaInfo.mDetails.mViewportSize.mRightUp  = viewportRectWH;
-}
 
 } /// ::unnamed namespace
 
@@ -65,46 +45,49 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const TComponentMetaList& p)
   MDY_NOT_IMPLEMENTED_ASSERT();
 }
 
-void from_json(_MIN_ const nlohmann::json& j, _MOUT_ TComponentMetaList& p)
+void from_json(const nlohmann::json& iJson, TComponentMetaList& oMeta)
 {
-  for (const auto& componentAtlas : j)
+  for (const auto& componentAtlas : iJson)
   {
     const auto type = DyJsonGetValueFrom<EDyComponentMetaType>(componentAtlas, sHeader_Type);
     switch (type)
     {
     default: MDY_UNEXPECTED_BRANCH(); break;
     case EDyComponentMetaType::Transform:
-      p.emplace_back(type, componentAtlas.get<PDyTransformComponentMetaInfo>());
+      oMeta.emplace_back(type, componentAtlas.get<PDyTransformComponentMetaInfo>());
       break;
     case EDyComponentMetaType::Script:
-      p.emplace_back(type, componentAtlas.get<PDyScriptComponentMetaInfo>());
+      oMeta.emplace_back(type, componentAtlas.get<PDyScriptComponentMetaInfo>());
       break;
     case EDyComponentMetaType::DirectionalLight:
-      p.emplace_back(type, componentAtlas.get<PDyDirLightComponentMetaInfo>());
+      oMeta.emplace_back(type, componentAtlas.get<PDyDirLightComponentMetaInfo>());
+      break;
+    case EDyComponentMetaType::PointLight:
+      oMeta.emplace_back(type, componentAtlas.get<PDyCompPointLightMetaInfo>());
       break;
     case EDyComponentMetaType::ModelFilter:
-      p.emplace_back(type, componentAtlas.get<PDyModelFilterComponentMetaInfo>());
+      oMeta.emplace_back(type, componentAtlas.get<PDyModelFilterComponentMetaInfo>());
       break;
     case EDyComponentMetaType::ModelRenderer:
-      p.emplace_back(type, componentAtlas.get<PDyModelRendererComponentMetaInfo>());
+      oMeta.emplace_back(type, componentAtlas.get<PDyModelRendererComponentMetaInfo>());
       break;
     case EDyComponentMetaType::ModelAnimator:
-      p.emplace_back(type, componentAtlas.get<PDyModelAnimatorComponentMetaInfo>());
+      oMeta.emplace_back(type, componentAtlas.get<PDyModelAnimatorComponentMetaInfo>());
       break;
     case EDyComponentMetaType::Camera:
-      p.emplace_back(type, componentAtlas.get<PDyCameraComponentMetaInfo>());
+      oMeta.emplace_back(type, componentAtlas.get<PDyCameraComponentMetaInfo>());
       break;
     case EDyComponentMetaType::SoundSource:
-      p.emplace_back(type, componentAtlas.get<PDySoundSourceComponentMetaInfo>());
+      oMeta.emplace_back(type, componentAtlas.get<PDySoundSourceComponentMetaInfo>());
       break;
     case EDyComponentMetaType::Rigidbody:
-      p.emplace_back(type, componentAtlas.get<PDyRigidbodyComponentMetaInfo>());
+      oMeta.emplace_back(type, componentAtlas.get<PDyRigidbodyComponentMetaInfo>());
       break;
     case EDyComponentMetaType::Collider:
-      p.emplace_back(type, componentAtlas.get<PDyColliderComponentMetaInfo>());
+      oMeta.emplace_back(type, componentAtlas.get<PDyColliderComponentMetaInfo>());
       break;
     case EDyComponentMetaType::Skybox:
-      p.emplace_back(type, componentAtlas.get<PDySkyboxComponentMetaInfo>());
+      oMeta.emplace_back(type, componentAtlas.get<PDySkyboxComponentMetaInfo>());
       break;
     }
   }

@@ -267,6 +267,7 @@
     <ClCompile Include="Source\Component\Abstract\ADyActorCppScript.cc" />
     <ClCompile Include="Source\Component\Abstract\ADyWidgetCppScript.cc" />
     <ClCompile Include="Source\Component\Actor\CDyActorScript.cc" />
+    <ClCompile Include="Source\Component\CDyLightPoint.cc" />
     <ClCompile Include="Source\Component\CDyModelAnimator.cc" />
     <ClCompile Include="Source\Component\CDyPhysicsCollider.cc" />
     <ClCompile Include="Source\Component\CDyPhysicsColliderBox.cc" />
@@ -437,7 +438,7 @@
     <ClCompile Include="Source\Builtin\Widget\DebugUiMeta.cc" />
     <ClCompile Include="Source\Component\Abstract\ADyGeneralBaseComponent.cc" />
     <ClCompile Include="Source\Component\CDyCamera.cc" />
-    <ClCompile Include="Source\Component\CDyDirectionalLight.cc" />
+    <ClCompile Include="Source\Component\CDyLightDirectional.cc" />
     <ClCompile Include="Source\Component\CDyModelFilter.cc" />
     <ClCompile Include="Source\Component\CDyModelRenderer.cc" />
     <ClCompile Include="Source\Component\CDyTransform.cc" />
@@ -501,6 +502,7 @@
     <ClCompile Include="Source\Management\Type\Sound\TDyBinderSound2D.cc" />
     <ClCompile Include="Source\Management\Type\Sound\TDyBinderSound3D.cc" />
     <ClCompile Include="Source\Management\Type\Time\DDyTimepoint.cc" />
+    <ClCompile Include="Source\Meta\Components\PCompPointLightMetaInfo.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetBarMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetImageMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Information\ElementLevelMetaInfo.cc" />
@@ -561,7 +563,7 @@
     <ClCompile Include="Source\Meta\Descriptor\WidgetCommponDescriptor.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetLayoutMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetTextMetaInformation.cc" />
-    <ClCompile Include="Source\Meta\Information\ComponentLightMetaInfo.cc" />
+    <ClCompile Include="Source\Meta\Components\PCompDirLightMetaInfo.cc" />
     <ClCompile Include="Source\Meta\Information\ComponentMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Information\ElementObjectMetaInfo.cc" />
     <ClCompile Include="Source\Meta\Information\FontMetaInformation.cc" />
@@ -733,6 +735,7 @@
     <ClInclude Include="Include\Dy\Component\CDyPhysicsColliderBox.h" />
     <ClInclude Include="Include\Dy\Component\CDyPhysicsColliderCapsule.h" />
     <ClInclude Include="Include\Dy\Component\CDyPhysicsColliderSphere.h" />
+    <ClInclude Include="Include\Dy\Component\CDyLightPoint.h" />
     <ClInclude Include="Include\Dy\Component\CDySkybox.h" />
     <ClInclude Include="Include\Dy\Component\CDySoundSource.h" />
     <ClInclude Include="Include\Dy\Component\CDyModelAnimator.h" />
@@ -742,6 +745,8 @@
     <ClInclude Include="Include\Dy\Component\Internal\Camera\DDyFrustumTester.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Global\CDyGlobalScriptBase.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Global\CDyGlobalScriptCpp.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Lights\DUboDirLight.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Lights\DUboPointLight.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Physics\CallbackSpecifier.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Physics\DDyCollisionCallbackItem.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Physics\FDyCollisionSignatureContainer.h" />
@@ -862,6 +867,7 @@
     <ClInclude Include="Include\Dy\Management\Type\Render\DDyGlGlobalStates.h" />
     <ClInclude Include="Include\Dy\Management\Type\Render\DDyPixelInfo.h" />
     <ClInclude Include="Include\Dy\Management\Type\Render\EDyModelRenderingMode.h" />
+    <ClInclude Include="Include\Dy\Meta\Components\PCompPointLightMetaInfo.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoRenderItem.h" />
     <ClInclude Include="Include\Dy\Meta\Information\Physics\DColliderMetaInfo.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoRenderPipeline.h" />
@@ -893,7 +899,7 @@
     <ClInclude Include="Include\Dy\Component\Abstract\ADyLoadingGlobalScript.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyWidgetCppScript.h" />
     <ClInclude Include="Include\Dy\Component\CDyCamera.h" />
-    <ClInclude Include="Include\Dy\Component\CDyDirectionalLight.h" />
+    <ClInclude Include="Include\Dy\Component\CDyLightDirectional.h" />
     <ClInclude Include="Include\Dy\Component\Ctor\PDyBarTypeRenderer.h" />
     <ClInclude Include="Include\Dy\Component\Ctor\PDyFontRenderer.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyActorCppScript.h" />
@@ -955,7 +961,7 @@
     <ClInclude Include="Include\Dy\Meta\Information\ElementLevelMetaInfo.h" />
     <ClInclude Include="Include\Dy\Helper\Type\ColorRGB.h" />
     <ClInclude Include="Include\Dy\Helper\Type\ColorRGB24.h" />
-    <ClInclude Include="Include\Dy\Meta\Information\ComponentLightMetaInfo.h" />
+    <ClInclude Include="Include\Dy\Meta\Components\PCompDirLightMetaInfo.h" />
     <ClInclude Include="Include\Dy\Meta\Information\ComponentMetaInformation.h" />
     <ClInclude Include="Include\Dy\Meta\Information\ElementObjectMetaInfo.h" />
     <ClInclude Include="Include\Dy\Meta\Information\GLShaderMetaInformation.h" />

@@ -150,6 +150,9 @@ public:
   CDyLightDirectional* mMainDirectionalLight   = nullptr;
   CDyLightDirectional* mMainDirectionalShadow  = nullptr;
 
+  /// @brief The pointer handle list of activated point lights.
+  std::vector<CDyLightPoint*> mActivatedPointLights = {};
+
   /// @brief Required skybox pointer for rendering on present frame.
   /// If rendered, skybox pointer will be nulled again.
   CDySkybox* mPtrRequiredSkybox = nullptr;
@@ -262,6 +265,32 @@ CDyLightDirectional* MDyRendering::GetPtrMainDirectionalShadow() const noexcept
 EDySuccess MDyRendering::MDY_PRIVATE(UnbindMainDirectionalShadow)(CDyLightDirectional& iRefLight)
 {
   return this->mInternal->MDY_PRIVATE(UnbindMainDirectionalShadow)(iRefLight);
+}
+
+void MDyRendering::__BindPointLight(CDyLightPoint& iRefLight)
+{
+  auto& handleList = this->mInternal->mActivatedPointLights;
+  if (Contains(handleList, &iRefLight) == true)
+  {
+    MDY_UNEXPECTED_BRANCH();
+    return;
+  }
+
+  handleList.emplace_back(&iRefLight);
+}
+
+EDySuccess MDyRendering::__UnbindPointLight(CDyLightPoint& iRefLight)
+{
+  auto& handleList = this->mInternal->mActivatedPointLights;
+  if (Contains(handleList, &iRefLight) == false)
+  {
+    DyPushLogCritical("Failed to unbind handle of point light.");
+    return DY_FAILURE;
+  }
+
+  const auto it = std::find(MDY_BIND_BEGIN_END(handleList), &iRefLight);
+  handleList.erase(it);
+  return DY_SUCCESS;
 }
 
 const DDyMatrix4x4& MDyRendering::GetGeneralUiProjectionMatrix() const noexcept

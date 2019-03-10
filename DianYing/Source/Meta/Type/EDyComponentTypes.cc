@@ -26,24 +26,23 @@
 namespace
 {
 
-///
 /// @brief  Get additional type for constructing properties of object.
 /// @param  typeString Dependency type string from json.
 /// @return Dependency component properties type
-///
 MDY_NODISCARD dy::EDyComponentMetaType
-DyGetComponentTypeFrom(_MIN_ const std::string& typeString) noexcept
+DyGetComponentTypeFrom(const std::string& typeString) noexcept
 {
   switch (dy::DyStrSwitchInput(typeString))
   {
   case dy::DyStrCase("DirectionalLight"): return dy::EDyComponentMetaType::DirectionalLight; 
-  case dy::DyStrCase("Script"):         return dy::EDyComponentMetaType::Script; 
-  case dy::DyStrCase("Transform"):      return dy::EDyComponentMetaType::Transform; 
-  case dy::DyStrCase("ModelFilter"):    return dy::EDyComponentMetaType::ModelFilter;
-  case dy::DyStrCase("ModelRenderer"):  return dy::EDyComponentMetaType::ModelRenderer; 
-  case dy::DyStrCase("ModelAnimator"):  return dy::EDyComponentMetaType::ModelAnimator;
-  case dy::DyStrCase("Camera"):         return dy::EDyComponentMetaType::Camera;
-  case dy::DyStrCase("SoundSource"):    return dy::EDyComponentMetaType::SoundSource;
+  case dy::DyStrCase("PointLight"):       return dy::EDyComponentMetaType::PointLight;
+  case dy::DyStrCase("Script"):           return dy::EDyComponentMetaType::Script; 
+  case dy::DyStrCase("Transform"):        return dy::EDyComponentMetaType::Transform; 
+  case dy::DyStrCase("ModelFilter"):      return dy::EDyComponentMetaType::ModelFilter;
+  case dy::DyStrCase("ModelRenderer"):    return dy::EDyComponentMetaType::ModelRenderer; 
+  case dy::DyStrCase("ModelAnimator"):    return dy::EDyComponentMetaType::ModelAnimator;
+  case dy::DyStrCase("Camera"):           return dy::EDyComponentMetaType::Camera;
+  case dy::DyStrCase("SoundSource"):      return dy::EDyComponentMetaType::SoundSource;
   case dy::DyStrCase("PhysicsRigidbody"): return dy::EDyComponentMetaType::Rigidbody;
   case dy::DyStrCase("PhysicsCollider"):  return dy::EDyComponentMetaType::Collider;
   case dy::DyStrCase("Skybox"):           return dy::EDyComponentMetaType::Skybox;
@@ -51,12 +50,9 @@ DyGetComponentTypeFrom(_MIN_ const std::string& typeString) noexcept
   }
 }
 
-///
 /// @brief  Get EDyShadowType from valid std::string.
-/// @param  value
 /// @return Shadow type, if not found just cause assertion.
-///
-MDY_NODISCARD dy::EDyShadowType DyGetShadowTypeFromString(_MIN_ const std::string& value)
+MDY_NODISCARD dy::EDyShadowType DyGetShadowTypeFromString(const std::string& value)
 {
   using dy::EDyShadowType;
   static MDY_SET_IMMUTABLE_STRING(sHardShadow, "Hard");
