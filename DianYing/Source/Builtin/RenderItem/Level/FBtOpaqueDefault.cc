@@ -52,6 +52,7 @@ void FBtRenderItemOpaqueDefault::OnFailedCheckCondition()
 void FBtRenderItemOpaqueDefault::OnSetupRenderingSetting()
 {
   this->mBinderFrameBuffer->BindFrameBuffer();
+  this->mBinderFrameBuffer->PushGlobalStates();
   glClearColor(0, 0, 0, 0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -143,6 +144,7 @@ void FBtRenderItemOpaqueDefault::RenderObject(
 
 void FBtRenderItemOpaqueDefault::OnReleaseRenderingSetting()
 {
+  this->mBinderFrameBuffer->PopGlobalStates();
   this->mBinderFrameBuffer->UnbindFrameBuffer();
 }
 
