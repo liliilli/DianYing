@@ -19,7 +19,7 @@
 namespace dy
 {
 
-void DDyFrustumTester::UpdateFrustum(_MIN_ const DDyMatrix4x4& mProjection, _MIN_ const DDyMatrix4x4& mView)
+void DDyFrustumTester::UpdateFrustum(const DDyMatrix4x4& mProjection, const DDyMatrix4x4& mView)
 {
   const auto clipMatrix = mProjection.Multiply(mView);
 
@@ -66,11 +66,40 @@ void DDyFrustumTester::UpdateFrustum(_MIN_ const DDyMatrix4x4& mProjection, _MIN
   mFrustum[DirFront].Normalize();
 }
 
-bool DDyFrustumTester::IsPointInFrustum(_MIN_ const DDyVector3& mPoint) const noexcept
+bool DDyFrustumTester::IsPointInFrustum(const DDyVector3& mPoint) const noexcept
 {
   for (auto i = 0; i < 6; ++i)
-  { // Calculate the plane equation and check if the point is behind a side of the frustum.
-    if (mFrustum[i].CheckPointStatusOnPlane(mPoint) == DDyPlane::EStatus::Behind) { return false; }
+  { 
+    // Calculate the plane equation and check if the point is behind a side of the frustum.
+    if (mFrustum[i].CheckPointStatusOnPlane(mPoint) == DDyPlane::EStatus::Behind) 
+    { 
+      return false; 
+    }
+  }
+  return true;
+}
+
+bool DDyFrustumTester::IsSphereInFrustum(const DDyVector3& iPoint, TF32 iRadius) const noexcept
+{
+  if (iRadius < 0)
+  {
+    DyPushLogDebugError(
+      "Given radius is negative value {}, Failed to calculate frustum testing.",
+      iRadius);
+    return false;
+  }
+
+  for (auto i = 0; i < 6; ++i)
+  {
+    // Calculate the plane equation and check if the point is behind a side of the frustum.
+    if (mFrustum[i].CheckPointStatusOnPlane(iPoint) == DDyPlane::EStatus::Behind) 
+    { 
+      const auto distance = mFrustum[i].GetDistanceFrom(iPoint);
+      if (distance > iRadius) 
+      { 
+        return false; 
+      }
+    }    
   }
   return true;
 }

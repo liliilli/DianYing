@@ -257,6 +257,9 @@
 #endif // Optimized conversion routines using a KB or so off the stack
 
 // end of sol/config.hpp
+#ifdef new
+#undef new
+#endif
 
 // beginning of sol/config_setup.hpp
 

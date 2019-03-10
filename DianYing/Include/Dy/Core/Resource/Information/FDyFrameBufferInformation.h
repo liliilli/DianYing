@@ -66,6 +66,9 @@ public:
   /// @brief Check populated frame buffer is using pixel shader.
   MDY_NODISCARD bool IsUsingPixelShader() const noexcept { return this->mIsNotUsingPixelShader == false; }
 
+  /// @brief Check framebuffer will be created as ping-pong framebuffer.
+  MDY_NODISCARD bool IsPingPong() const noexcept;
+
 private:
   using TAttachmentInformation = std::pair<
     PDyGlAttachmentBinderInformation, std::unique_ptr<TDyInformationBinderAttachment>
@@ -80,6 +83,8 @@ private:
   TAttachmentInformation    mDepthAttachment    = {};
   bool                      mIsUsingDepthBuffer = false;
   bool                      mIsNotUsingPixelShader = false;
+  /// @brief When enabled, attachment will be created as ping-pong (two-attachment) attachment.
+  bool                      mIsPingpong     = false;
 };
 
 } /// ::dy namespace

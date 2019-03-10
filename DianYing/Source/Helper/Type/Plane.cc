@@ -32,15 +32,28 @@ DDyVector3 DDyPlane::GetNormalVector() const noexcept
   return DDyVector3{this->A, this->B, this->C};
 }
 
-DDyPlane::EStatus DDyPlane::CheckPointStatusOnPlane(_MIN_ const DDyVector3& iPoint) const noexcept
+DDyPlane::EStatus DDyPlane::CheckPointStatusOnPlane(const DDyVector3& iPoint) const noexcept
 {
-  const auto result = iPoint.X * this->A + iPoint.Y * this->B * iPoint.Z * this->C + this->D;
+  const auto result = GetDistanceFrom(iPoint);
   if (math::IsNearlyZero(result, 0.001f) == true) 
   { return DDyPlane::EStatus::OnPlane; }
   else if (result > 0.0f) 
   { return DDyPlane::EStatus::Front; }
   else 
   { return DDyPlane::EStatus::Behind; }
+}
+
+TF32 DDyPlane::GetDistanceFrom(const DDyVector3& iPoint, bool iIsAbs) const noexcept
+{
+  const auto result = iPoint.X * this->A + iPoint.Y * this->B * iPoint.Z * this->C + this->D;
+  if (result < 0 && iIsAbs == true)
+  {
+    return std::abs(result);
+  }
+  else
+  {
+    return result;
+  }
 }
 
 } /// ::dy namespace

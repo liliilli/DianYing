@@ -54,6 +54,7 @@ private:
   TDyResourceBinderAttachment  mBinderAttZValue  { "dyBtDefZValue" };
   TDyResourceBinderAttachment  mBinderAttSSAO    { "dyBtAtSSAOOutputFinal" };
   TDyResourceBinderAttachment  mBinderAttSky     { "dyBtAtSkyOutput" };
+  TDyResourceBinderAttachment  mBinderAttEmissive{ "dyBtEmissiveResult" };
 
   TDyResourceBinderFrameBuffer mBinderFbTranslucent { "dyBtFbIntgLevelTrans" };
   TDyResourceBinderShader      mBinderTransShader{ "dyBtShOITIntegration" };

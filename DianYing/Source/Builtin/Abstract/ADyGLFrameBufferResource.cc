@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Builtin/Abstract/ADyGLFrameBufferResource.h>
+#include <Dy/Builtin/Abstract/ADyGLFramebufferResource.h>
 
 namespace dy
 {

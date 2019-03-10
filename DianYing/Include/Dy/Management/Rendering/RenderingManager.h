@@ -64,7 +64,7 @@ public:
   using TUiDrawCallItem = NotNull<FDyUiObject*>;
 
   /// @brief PreRender update functin.
-  void PreRender(_MIN_ TF32 dt);
+  void PreRender(TF32 dt);
 
   /// @brief 
   /// @TODO LOGIC IS TEMPORARY.
@@ -89,11 +89,6 @@ public:
 
   /// @brief Get General (Default) ui projection matrix.
   const DDyMatrix4x4& GetGeneralUiProjectionMatrix() const noexcept;
-  /// @brief Insert GL global status.
-  void InsertInternalGlobalStatus(const DDyGlGlobalStatus& iNewStatus); 
-  /// @brief Pop GL global status.
-  void PopInternalGlobalStatus();
-
   /// @brief Swap buffer.
   void SwapBuffers();
 

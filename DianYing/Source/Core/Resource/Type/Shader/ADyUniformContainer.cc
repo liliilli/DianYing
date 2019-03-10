@@ -23,7 +23,8 @@
 #include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
 
 #define MDY_DOCONSTRUCTUNIFORMLIST(__MATypeSpecifier__, __MASpecifier__, __MAId__) \
-    auto [it2, MDY_NOUSEVAR] = this->mUniformMap.try_emplace(__MASpecifier__, std::make_unique<FDyUniformValue<TEnum::__MATypeSpecifier__>>(__MAId__)); \
+    auto [it2, MDY_NOUSEVAR] = this->mUniformMap.try_emplace( \
+      __MASpecifier__, std::make_unique<FDyUniformValue<TEnum::__MATypeSpecifier__>>(__MAId__)); \
     auto& [MDY_NOUSEVAR##_2, smtptrInstance] = *it2; \
     /* Insert default to update list. */ \
     this->mUpdatedItemList.emplace_back(smtptrInstance.get());
@@ -81,6 +82,7 @@ void ADyUniformContainer::__TryConstructDefaultUniformList(const FDyShaderResour
     case TEnum::Unsigned:      { MDY_DOCONSTRUCTUNIFORMLIST(Unsigned, specifier, id); } break;
     case TEnum::Bool:          { MDY_DOCONSTRUCTUNIFORMLIST(Bool, specifier, id); } break;
     case TEnum::Float:         { MDY_DOCONSTRUCTUNIFORMLIST(Float, specifier, id); } break;
+    case TEnum::FloatArray:    { MDY_DOCONSTRUCTUNIFORMLIST(FloatArray, specifier, id); } break;
     case TEnum::Texture1D:            { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture1D, specifier, id); } break;
     case TEnum::Texture2D:            { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2D, specifier, id); } break;
     case TEnum::Texture2DArray:       { MDY_DOCONSTRUCTUNIFORMLISTTEXTURE(Texture2DArray, specifier, id); } break;
@@ -216,6 +218,10 @@ EDySuccess ADyUniformContainer::TryUpdateUniformList()
     case EDyUniformVariableType::Float:
     { const auto* item = static_cast<FDyUniformValue<TEnum::Float>*>(ptrItem);
       FDyGLWrapper::UpdateUniformFloat(item->mId, item->mValue);
+    } break;
+    case EDyUniformVariableType::FloatArray:
+    { const auto* item = static_cast<FDyUniformValue<TEnum::FloatArray>*>(ptrItem);
+      FDyGLWrapper::UpdateUniformFloatArray(item->mId, item->mValue);
     } break;
     case EDyUniformVariableType::Bool:
     { const auto* item = static_cast<FDyUniformValue<TEnum::Bool>*>(ptrItem);

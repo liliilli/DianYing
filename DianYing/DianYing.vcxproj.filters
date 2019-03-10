@@ -360,6 +360,21 @@
     <ClCompile Include="Source\Builtin\RenderItem\FBtScreenIntegration.cc" />
     <ClCompile Include="Source\Builtin\RenderPipeline\FBtDefaultLoading.cc" />
     <ClCompile Include="Source\Builtin\Script\BtScrGlobalDefaultUniformBuffer.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAtEmissive.cc" />
+    <ClCompile Include="Source\Builtin\Shader\Render\OpaqueEmissiveStatic.cc" />
+    <ClCompile Include="Source\Builtin\Material\Opaque\MatOpaqueEmissiveStatic.cc" />
+    <ClCompile Include="Source\Builtin\Model\EmissiveSphere.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\Emissive\FTempBtAtEmissiveBlur.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\Emissive\FTempBtAtEmissiveResult.cc" />
+    <ClCompile Include="Source\Builtin\FrameBuffer\Emissive\FDyBtFbEmissiveBlur.cc" />
+    <ClCompile Include="Source\Builtin\FrameBuffer\Emissive\FDyBtFbEmissiveToneMap.cc" />
+    <ClCompile Include="Source\Builtin\RenderItem\Level\FBtPpEmissive.cc" />
+    <ClCompile Include="Source\Builtin\Shader\PostEffect\Emissive\BtShEmissiveBlur.cc" />
+    <ClCompile Include="Source\Builtin\Shader\PostEffect\Emissive\BtShEmissiveToneMap.cc" />
+    <ClCompile Include="Source\Core\Resource\Resource\Attachment\FDyAttachmentGeneralResource.cc" />
+    <ClCompile Include="Source\Core\Resource\Resource\Attachment\FDyAttachmentPingpongResource.cc" />
+    <ClCompile Include="Source\Core\Resource\Resource\FrameBuffer\FDyFrameBufferGeneralResource.cc" />
+    <ClCompile Include="Source\Core\Resource\Resource\FrameBuffer\FDyFrameBufferPingPongResource.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -888,6 +903,22 @@
     <ClInclude Include="Include\Dy\Helper\Internal\FProxyHandle.h" />
     <ClInclude Include="Include\Dy\Builtin\RenderPipeline\FBtDefaultLoading.h" />
     <ClInclude Include="Include\Dy\Builtin\Script\BtScrGlobalDefaultUniformBuffer.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAtEmissive.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\Render\OpaqueEmissiveStatic.h" />
+    <ClInclude Include="Include\Dy\Builtin\Material\Opaque\MatOpaqueEmissiveStatic.h" />
+    <ClInclude Include="Include\Dy\Builtin\Model\EmissiveSphere.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\Emissive\FTempBtAtEmissiveBlur.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\Emissive\FTempBtAtEmissiveResult.h" />
+    <ClInclude Include="Include\Dy\Builtin\FrameBuffer\Emissive\FDyBtFbEmissiveBlur.h" />
+    <ClInclude Include="Include\Dy\Builtin\FrameBuffer\Emissive\FDyBtFbEmissiveToneMap.h" />
+    <ClInclude Include="Include\Dy\Builtin\RenderItem\Level\FBtPpEmissive.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\PostEffect\Emissive\BtShEmissiveBlur.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\PostEffect\Emissive\BtShEmissiveToneMap.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\Attachment\FDyAttachmentPingpongResource.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\Attachment\FDyAttachmentGeneralResource.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\FrameBuffer\FDyFrameBufferGeneralResource.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\FrameBuffer\FDyFrameBufferPingPongResource.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\DSphere.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

@@ -60,9 +60,9 @@ void FBtRenderItemScreenIntegeration::OnRender()
   (*submeshList[0])->BindVertexArray();
 
   // Set shader 
-  this->mBinderShader->TryInsertTextureRequisition(0, this->mBinderAttSceneFinal->GetAttachmentId());
-  this->mBinderShader->TryInsertTextureRequisition(1, this->mBinderAttUIFinal->GetAttachmentId());
-  this->mBinderShader->TryInsertTextureRequisition(2, this->mBinderAttDbgFinal->GetAttachmentId());
+  this->mBinderShader->TryInsertTextureRequisition(0, this->mBinderAttSceneFinal->GetSourceAttachmentId());
+  this->mBinderShader->TryInsertTextureRequisition(1, this->mBinderAttUIFinal->GetSourceAttachmentId());
+  this->mBinderShader->TryInsertTextureRequisition(2, this->mBinderAttDbgFinal->GetSourceAttachmentId());
 
   this->mBinderShader->UseShader();
   this->mBinderShader->TryUpdateUniformList();

@@ -142,8 +142,7 @@ void FBtRenderItemCsmShadow::OnSetupRenderingSetting()
   }
   status.mViewportSettingList = viewport;
 
-  auto& refRendering = MDyRendering::GetInstance();
-  refRendering.InsertInternalGlobalStatus(status);
+  FDyGLWrapper::InsertInternalGlobalStatus(status);
 
   this->mBinderFrameBuffer->BindFrameBuffer();
   const GLfloat one = 1.0f;
@@ -196,8 +195,7 @@ void FBtRenderItemCsmShadow::RenderObject(
 void FBtRenderItemCsmShadow::OnReleaseRenderingSetting()
 {
   this->mBinderFrameBuffer->UnbindFrameBuffer();
-  auto& refRendering = MDyRendering::GetInstance();
-  refRendering.PopInternalGlobalStatus();
+  FDyGLWrapper::PopInternalGlobalStatus();
 }
 
 void FBtRenderItemCsmShadow::OnPostRender()

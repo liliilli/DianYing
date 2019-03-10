@@ -353,194 +353,193 @@ public:
 } /// ::dy namespace
 #include <Dy/Element/Inline/FActorImpl.inl>
 
-  //!
+//!
 //! Proxy
 //!
 
-  namespace dy
+namespace dy
+{
+  FDyActor::FDyActor(const PDyObjectMetaInfo& objectMetaDesc, FDyActor* iPtrParent)
   {
+    this->mInternal = new Impl(*this);
+    this->pSetObjectName(objectMetaDesc.mSpecifierName);
+    this->mInternal->Initialize(PImplDesc{&objectMetaDesc, nullptr, iPtrParent});
+  }
 
-    FDyActor::FDyActor(const PDyObjectMetaInfo& objectMetaDesc, FDyActor* iPtrParent)
-    {
-      this->mInternal = new (std::nothrow) Impl(*this);
-      this->pSetObjectName(objectMetaDesc.mSpecifierName);
-      this->mInternal->Initialize(PImplDesc{&objectMetaDesc, nullptr, iPtrParent});
+  FDyActor::FDyActor(const PDyActorCreationDescriptor& iDesc, FDyActor* iPtrParent)
+  {
+    this->mInternal = new Impl(*this);
+    this->pSetObjectName(iDesc.mActorSpecifierName);
+    this->mInternal->Initialize(PImplDesc{nullptr, &iDesc, iPtrParent});
+  }
+
+  FDyActor::~FDyActor()
+  {
+    this->mInternal->Release();
+    delete this->mInternal; this->mInternal = nullptr;
+  }
+
+  void FDyActor::DestroySelf()
+  {
+    MDyWorld::GetInstance().DestroyActor(*this);
+  }
+
+  const std::string& FDyActor::GetActorName() const noexcept
+  {
+    return this->pGetObjectName();
+  }
+
+  std::string FDyActor::GetActorFullName() const noexcept
+  {
+    if (this->HasParent() == false) 
+    { 
+      return this->GetActorName(); 
     }
-
-    FDyActor::FDyActor(const PDyActorCreationDescriptor& iDesc, FDyActor* iPtrParent)
+    else
     {
-      this->mInternal = new (std::nothrow) Impl(*this);
-      this->pSetObjectName(iDesc.mActorSpecifierName);
-      this->mInternal->Initialize(PImplDesc{nullptr, &iDesc, iPtrParent});
+      const auto headFullSpecifierName = this->GetPtrParent()->GetActorFullName();
+      return MakeStringU8("{}.{}", headFullSpecifierName, this->GetActorName());
     }
+  }
 
-    FDyActor::~FDyActor()
+  void FDyActor::pUpdateActivateFlagFromParent() noexcept
+  {
+    this->mInternal->pUpdateActivateFlagFromParent();
+  }
+
+  void FDyActor::MDY_PRIVATE(AttachPickingTargetFromSystem)(_MINOUT_ FDyActor** iPPtrTarget)
+  {
+    this->mInternal->__AttachPickingTargetFromSystem(iPPtrTarget);
+  }
+
+  EDySuccess FDyActor::MDY_PRIVATE(DetachPickingTargetFromSystem)()
+  {
+    return this->mInternal->__DetachPickingTargetFromSystem();
+  }
+
+  void FDyActor::SetParent(FDyActor& iValidParent) noexcept
+  {
+    return this->mInternal->SetParent(iValidParent);
+  }
+
+  void FDyActor::SetParentAsRoot() noexcept
+  {
+    return this->mInternal->SetParentAsRoot();
+  }
+
+  EDyMetaObjectType FDyActor::GetActorType() const noexcept
+  {
+    return this->mInternal->GetActorType();
+  }
+
+  const std::string& FDyActor::GetActorTag() const noexcept
+  {
+    return this->mInternal->GetActorTag();
+  }
+
+  std::vector<NotNull<FDyActor*>> 
+  FDyActor::GetAllActorsWithTag(const std::string& iTagSpecifier) const noexcept
+  {
+    return this->mInternal->GetAllActorsWithTag(iTagSpecifier);
+  }
+
+  std::vector<NotNull<FDyActor*>> 
+  FDyActor::GetAllActorsWithTagRecursive(const std::string& iTagSpecifier) const noexcept
+  {
+    return this->mInternal->GetAllActorsWithTagRecursive(iTagSpecifier);
+  }
+
+  std::vector<NotNull<FDyActor*>> 
+  FDyActor::GetAllActorsWithName(const std::string& iNameSpecifier) const noexcept
+  {
+    return this->mInternal->GetAllActorsWithName(iNameSpecifier);
+  }
+
+  std::vector<NotNull<FDyActor*>> 
+  FDyActor::GetAllActorsWithNameRecursive(const std::string& iNameSpecifier) const noexcept
+  {
+    return this->mInternal->GetAllActorsWithNameRecursive(iNameSpecifier);
+  }
+
+  FDyActor* FDyActor::GetActorWithObjectId(TU32 iObjectId) noexcept
+  {
+    return this->mInternal->GetActorWithObjectId(iObjectId);
+  }
+
+  bool FDyActor::HasParent() const noexcept { return this->mInternal->HasParent(); }
+
+  FDyActor* FDyActor::GetPtrParent() const noexcept { return this->mInternal->GetPtrParent(); }
+
+  bool FDyActor::HasChildrenActor() const noexcept { return this->mInternal->HasChildrenActor(); }
+
+  FDyActor::TActorMap& FDyActor::GetChildrenContainer() noexcept
+  {
+    return this->mInternal->GetChildrenContainer();
+  }
+
+  std::string FDyActor::ToString()
+  {
+    return MakeStringU8("Actor name : {}, Id : {}", this->GetActorName(), this->GetId());
+  }
+
+  void FDyActor::MDY_PRIVATE(TryRemoveScriptInstances)() noexcept
+  {
+    this->mInternal->__TryRemoveScriptInstances();
+  }
+
+  void FDyActor::MDY_PRIVATE(TryDetachDependentComponents)() noexcept
+  {
+    this->mInternal->__TryDetachDependentComponents();
+  }
+
+  NotNull<CDyTransform*> FDyActor::GetTransform() noexcept
+  {
+    return this->mInternal->GetTransform();
+  }
+
+  CDyPhysicsRigidbody* FDyActor::GetRigidbody() noexcept
+  {
+    return this->mInternal->GetRigidbody();
+  }
+
+  CDyActorScript* FDyActor::pAddScriptComponent(const PDyScriptComponentMetaInfo& iInfo)
+  {
+    // Validation check.
+    const auto specifierName = iInfo.mDetails.mSpecifierName;
+    auto& metaManager = MDyMetaInfo::GetInstance();
+    if (metaManager.IsScriptMetaInformationExist(specifierName) == false)
     {
-      this->mInternal->Release();
-      delete this->mInternal; this->mInternal = nullptr;
-    }
+      DyPushLogDebugError("Failed to create script, {}. Script information is not exist.", specifierName);
+      return nullptr;
+    };
 
-    void FDyActor::DestroySelf()
-    {
-      MDyWorld::GetInstance().DestroyActor(*this);
-    }
+    // Get information of script to be created.
+    const auto& instanceInfo = metaManager.GetScriptMetaInformation(specifierName);
+    MDY_ASSERT_MSG(
+      instanceInfo.mScriptType != EDyScriptType::NoneError, 
+      "Script type must be valid.");
 
-    const std::string& FDyActor::GetActorName() const noexcept
-    {
-      return this->pGetObjectName();
-    }
+    return this->mInternal->AddScriptComponent(instanceInfo);
+  }
 
-    std::string FDyActor::GetActorFullName() const noexcept
-    {
-      if (this->HasParent() == false) 
-      { 
-        return this->GetActorName(); 
-      }
-      else
-      {
-        const auto headFullSpecifierName = this->GetPtrParent()->GetActorFullName();
-        return MakeStringU8("{}.{}", headFullSpecifierName, this->GetActorName());
-      }
-    }
+  FDyActor::TComponentList& FDyActor::pGetComponentList() noexcept
+  {
+    return this->mInternal->mComponentList;
+  }
 
-    void FDyActor::pUpdateActivateFlagFromParent() noexcept
-    {
-      this->mInternal->pUpdateActivateFlagFromParent();
-    }
+  void FDyActor::pReleaseComponent(TComponentItem& ioItem)
+  {
+    this->mInternal->ReleaseComponent(ioItem);
+  }
 
-    void FDyActor::MDY_PRIVATE(AttachPickingTargetFromSystem)(_MINOUT_ FDyActor** iPPtrTarget)
-    {
-      this->mInternal->__AttachPickingTargetFromSystem(iPPtrTarget);
-    }
+  void FDyActor::TryActivateInstance()
+  {
+    this->mInternal->TryActivateInstance();
+  }
 
-    EDySuccess FDyActor::MDY_PRIVATE(DetachPickingTargetFromSystem)()
-    {
-      return this->mInternal->__DetachPickingTargetFromSystem();
-    }
+  void FDyActor::TryDeactivateInstance()
+  {
+    this->mInternal->TryDeactivateInstance();
+  }
 
-    void FDyActor::SetParent(FDyActor& iValidParent) noexcept
-    {
-      return this->mInternal->SetParent(iValidParent);
-    }
-
-    void FDyActor::SetParentAsRoot() noexcept
-    {
-      return this->mInternal->SetParentAsRoot();
-    }
-
-    EDyMetaObjectType FDyActor::GetActorType() const noexcept
-    {
-      return this->mInternal->GetActorType();
-    }
-
-    const std::string& FDyActor::GetActorTag() const noexcept
-    {
-      return this->mInternal->GetActorTag();
-    }
-
-    std::vector<NotNull<FDyActor*>> 
-    FDyActor::GetAllActorsWithTag(const std::string& iTagSpecifier) const noexcept
-    {
-      return this->mInternal->GetAllActorsWithTag(iTagSpecifier);
-    }
-
-    std::vector<NotNull<FDyActor*>> 
-    FDyActor::GetAllActorsWithTagRecursive(const std::string& iTagSpecifier) const noexcept
-    {
-      return this->mInternal->GetAllActorsWithTagRecursive(iTagSpecifier);
-    }
-
-    std::vector<NotNull<FDyActor*>> 
-    FDyActor::GetAllActorsWithName(const std::string& iNameSpecifier) const noexcept
-    {
-      return this->mInternal->GetAllActorsWithName(iNameSpecifier);
-    }
-
-    std::vector<NotNull<FDyActor*>> 
-    FDyActor::GetAllActorsWithNameRecursive(const std::string& iNameSpecifier) const noexcept
-    {
-      return this->mInternal->GetAllActorsWithNameRecursive(iNameSpecifier);
-    }
-
-    FDyActor* FDyActor::GetActorWithObjectId(TU32 iObjectId) noexcept
-    {
-      return this->mInternal->GetActorWithObjectId(iObjectId);
-    }
-
-    bool FDyActor::HasParent() const noexcept { return this->mInternal->HasParent(); }
-
-    FDyActor* FDyActor::GetPtrParent() const noexcept { return this->mInternal->GetPtrParent(); }
-
-    bool FDyActor::HasChildrenActor() const noexcept { return this->mInternal->HasChildrenActor(); }
-
-    FDyActor::TActorMap& FDyActor::GetChildrenContainer() noexcept
-    {
-      return this->mInternal->GetChildrenContainer();
-    }
-
-    std::string FDyActor::ToString()
-    {
-      return MakeStringU8("Actor name : {}, Id : {}", this->GetActorName(), this->GetId());
-    }
-
-    void FDyActor::MDY_PRIVATE(TryRemoveScriptInstances)() noexcept
-    {
-      this->mInternal->__TryRemoveScriptInstances();
-    }
-
-    void FDyActor::MDY_PRIVATE(TryDetachDependentComponents)() noexcept
-    {
-      this->mInternal->__TryDetachDependentComponents();
-    }
-
-    NotNull<CDyTransform*> FDyActor::GetTransform() noexcept
-    {
-      return this->mInternal->GetTransform();
-    }
-
-    CDyPhysicsRigidbody* FDyActor::GetRigidbody() noexcept
-    {
-      return this->mInternal->GetRigidbody();
-    }
-
-    CDyActorScript* FDyActor::pAddScriptComponent(const PDyScriptComponentMetaInfo& iInfo)
-    {
-      // Validation check.
-      const auto specifierName = iInfo.mDetails.mSpecifierName;
-      auto& metaManager = MDyMetaInfo::GetInstance();
-      if (metaManager.IsScriptMetaInformationExist(specifierName) == false)
-      {
-        DyPushLogDebugError("Failed to create script, {}. Script information is not exist.", specifierName);
-        return nullptr;
-      };
-
-      // Get information of script to be created.
-      const auto& instanceInfo = metaManager.GetScriptMetaInformation(specifierName);
-      MDY_ASSERT_MSG(
-        instanceInfo.mScriptType != EDyScriptType::NoneError, 
-        "Script type must be valid.");
-
-      return this->mInternal->AddScriptComponent(instanceInfo);
-    }
-
-    FDyActor::TComponentList& FDyActor::pGetComponentList() noexcept
-    {
-      return this->mInternal->mComponentList;
-    }
-
-    void FDyActor::pReleaseComponent(TComponentItem& ioItem)
-    {
-      this->mInternal->ReleaseComponent(ioItem);
-    }
-
-    void FDyActor::TryActivateInstance()
-    {
-      this->mInternal->TryActivateInstance();
-    }
-
-    void FDyActor::TryDeactivateInstance()
-    {
-      this->mInternal->TryDeactivateInstance();
-    }
-
-  } /// ::dy namespace
+} /// ::dy namespace

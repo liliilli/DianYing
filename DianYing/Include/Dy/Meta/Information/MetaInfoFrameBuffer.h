@@ -31,8 +31,14 @@ struct PDyGlFrameBufferInstanceMetaInfo final : public PDyCommonResourceMetaInfo
   DDyVectorInt2         mFrameBufferSize = {};
 
   std::string           mDepthAttachmentSpecifier;
+  /// @brief When enabled, depth buffer will be attached,
+  /// If depth attachment specifier is not specified, default (DEPTH32) depth attachment
+  /// will be attached.
   bool                  mIsUsingDepthBuffer = true;
+  /// @brief When enabled, this framebuffer does not proceed rasterization stage.
   bool                  mIsNotUsingPixelShader = false;
+  /// @brief When enabled, attachment will be created as ping-pong (two-attachment) attachment.
+  bool                  mIsPingpong = false;
 };
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyGlFrameBufferInstanceMetaInfo& p);

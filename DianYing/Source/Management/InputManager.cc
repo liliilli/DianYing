@@ -824,7 +824,7 @@ EDySuccess MDyInput::TryPickObject(_MIN_ const DDyVector2& iScreenPosition)
 
   // Critical section of getting object id information from attachment.
   { MDY_GRAPHIC_SET_CRITICALSECITON();
-    glBindFramebuffer(GL_READ_FRAMEBUFFER, ptrFramebuffer->GetFrameBufferId());
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, ptrFramebuffer->GetTargetFrameBufferId());
     glReadBuffer(GL_COLOR_ATTACHMENT4);
 
     const auto& framebufferSize = ptrFramebuffer->GetFrameBufferSize();

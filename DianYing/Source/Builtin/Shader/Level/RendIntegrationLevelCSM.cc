@@ -56,6 +56,7 @@ layout (binding = 4) uniform sampler2DArrayShadow uTexture4; // Shadow
 layout (binding = 5) uniform sampler2D uTexture5;       // ZValue
 layout (binding = 6) uniform sampler2D uTexture6;       // SSAO
 layout (binding = 7) uniform sampler2D uTexture7;       // Sky
+layout (binding = 8) uniform sampler2D uTexture8;       // Emissive
 
 uniform mat4    uLightVPSBMatrix[4];
 uniform vec4    uNormalizedFarPlanes;
@@ -76,10 +77,11 @@ layout(std140, binding = 1) uniform DirectionalLightBlock
 
 vec4 layerColor = vec4(1.0, 0.5f, 1.0f, 1.0f); // DEBUG
 
-vec4 GetNormal()    { return (texture(uTexture1, fs_in.texCoord) - 0.5f) * 2.0f; }
-vec4 GetSpecular()  { return (texture(uTexture2, fs_in.texCoord) - 0.5f) * 2.0f; }
-vec3 GetModelPos()  { return texture(uTexture3, fs_in.texCoord).xyz; }
-float GetZValue()   { return texture(uTexture5, fs_in.texCoord).x; }
+vec4 GetNormal()      { return (texture(uTexture1, fs_in.texCoord) - 0.5f) * 2.0f; }
+vec4 GetSpecular()    { return (texture(uTexture2, fs_in.texCoord) - 0.5f) * 2.0f; }
+vec3 GetModelPos()    { return texture(uTexture3, fs_in.texCoord).xyz; }
+vec3 GetEmissive()    { return texture(uTexture8, fs_in.texCoord).xyz; }
+float GetZValue()     { return texture(uTexture5, fs_in.texCoord).x; }
 float GetSSAOOffset() { return texture(uTexture6, fs_in.texCoord).x; }
 
 vec3 ComputeShadowCoords(int iSlice, vec3 iWorldPosition)
@@ -127,6 +129,15 @@ vec3 CalculateSpecularColor(vec3 iWorldLightDir, vec3 iWorldNormal,
   return iSpecularRgb * iLightRgb * (d_slvd_n * iIntensity);
 }
 
+float GetHalfLambertFactor(const vec3 iNormal, const vec3 iLight, const float iPow)
+{
+  return pow(
+    max(
+      dot(iNormal, iLight)
+    , 0) / 2 + 0.5f
+  , iPow);
+}
+
 vec3 GetOpaqueColor()
 {
   vec3 resultColor    = vec3(0);
@@ -149,7 +160,7 @@ vec3 GetOpaqueColor()
     if (length(uLightDir[i].mDirection) < 0.001) { continue; }
 
     // Function body (in world space)
-    float d_n_dl    = dot(normalValue.xyz, uLightDir[i].mDirection);
+    float d_n_dl    = GetHalfLambertFactor(normalValue.xyz, uLightDir[i].mDirection, 2.0f);
 
     float ambientFactor  = 0.02f;
     vec3  ambientColor   = ambientFactor * uLightDir[i].mAmbient.rgb * unlitValue.rgb;
@@ -180,6 +191,8 @@ void main()
 
   outColor.a    = 1.0f;
   outColor.rgb  = opaqueColor * GetSSAOOffset();
+
+  outColor.rgb += GetEmissive();
 }
 )dy");
 

@@ -151,12 +151,23 @@ MDY_SET_IMMUTABLE_STRING(Buffer_Output_OpaqueStream, R"dy(
 layout (location = 0) out vec4 gUnlit;
 layout (location = 1) out vec4 gNormal;
 layout (location = 2) out vec4 gSpecular;
-layout (location = 3) out vec4 gPosition;
-layout (location = 4) out vec4 gActorId;
+layout (location = 3) out vec4 gEmissive;
+layout (location = 4) out vec4 gPosition;
+layout (location = 5) out vec4 gActorId;
 
 uniform float uBtDyActorId = 0;
 
 void DyBindActorId() { gActorId = vec4(uBtDyActorId, 0, 0, 1); }
+)dy");
+
+/// @brief miscellaneous functional-style functions module.
+/// #import <Etc_Miscellaneous>
+MDY_SET_IMMUTABLE_STRING(Buffer_Etc_Miscellaneous, R"dy(
+/// @brief Convert r, g, b (SRGB) value to gray value.
+float DyToGrayScale(float iR, float iG, float iB) 
+{ 
+  return 0.2126 * iR + 0.7152 * iG + 0.0722 * iB;
+}
 )dy");
 
 } /// ::anonymous namespace
@@ -194,6 +205,7 @@ std::string ParseGLShader(_MIN_ const std::string& iShaderString)
     case DyStrCase("Input_SkinAnimation"):    exportShaderBuffer += Buffer_Input_SkinAnimation; break;
     case DyStrCase("Input_DefaultTexture2D"): exportShaderBuffer += Buffer_Input_DefaultTexture2D; break;
     case DyStrCase("Output_OpaqueStream"):    exportShaderBuffer += Buffer_Output_OpaqueStream; break;
+    case DyStrCase("Etc_Miscellaneous"):      exportShaderBuffer += Buffer_Etc_Miscellaneous; break;
     default: MDY_NOT_IMPLEMENTED_ASSERT(); break;
     }
   }

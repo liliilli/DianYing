@@ -34,6 +34,7 @@ MDY_SET_IMMUTABLE_STRING(sVectorInt2, "vectorint2");
 MDY_SET_IMMUTABLE_STRING(sInteger, "integer");
 MDY_SET_IMMUTABLE_STRING(sUnsigned, "unsigned");
 MDY_SET_IMMUTABLE_STRING(sFloat, "float");
+MDY_SET_IMMUTABLE_STRING(sArrayFloat, "arrayfloat");
 MDY_SET_IMMUTABLE_STRING(sBool, "bool");
 MDY_SET_IMMUTABLE_STRING(sArrayMatrix4, "arraymatrix4");
 MDY_SET_IMMUTABLE_STRING(sArrayVector3, "arrayvector3");
@@ -89,6 +90,7 @@ void from_json(const nlohmann::json& iJson, EDyUniformVariableType& iUniformType
   case DyStrCase(sBool): iUniformType = EDyUniformVariableType::Bool; break;
   case DyStrCase(sArrayMatrix4): iUniformType = EDyUniformVariableType::Matrix4Array; break;
   case DyStrCase(sArrayVector3): iUniformType = EDyUniformVariableType::Vector3Array; break;
+  case DyStrCase(sArrayFloat): iUniformType = EDyUniformVariableType::FloatArray; break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 }

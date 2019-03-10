@@ -28,10 +28,13 @@ class DDyFrustumTester final
 {
 public:
   /// @brief Update frustum.
-  void UpdateFrustum(_MIN_ const DDyMatrix4x4& mProjection, _MIN_ const DDyMatrix4x4& mView);
+  void UpdateFrustum(const DDyMatrix4x4& mProjection, const DDyMatrix4x4& mView);
 
   /// @brief Check point is in frustum.
-  MDY_NODISCARD bool IsPointInFrustum(_MIN_ const DDyVector3& mPoint) const noexcept;
+  MDY_NODISCARD bool IsPointInFrustum(const DDyVector3& mPoint) const noexcept;
+
+  /// @brief Check virtual sphere that has point and radius is in frustum.
+  MDY_NODISCARD bool IsSphereInFrustum(const DDyVector3& iPoint, TF32 iRadius) const noexcept;
 
 private:
   /// @enum EDirection
