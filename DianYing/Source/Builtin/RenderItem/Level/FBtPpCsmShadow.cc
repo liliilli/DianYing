@@ -27,7 +27,7 @@
 #include <Dy/Component/CDyModelAnimator.h>
 #include <Dy/Management/Rendering/RenderingManager.h>
 #include <Dy/Management/Helper/SDyProfilingHelper.h>
-#include <Dy/Component/CDyDirectionalLight.h>
+#include <Dy/Component/CDyLightDirectional.h>
 #include <Dy/Management/SettingManager.h>
 
 namespace dy
@@ -108,7 +108,7 @@ void FBtRenderItemCsmShadow::OnSetupRenderingSetting()
     ptrLight->UpdateLightProjectionAndViewports(
       *ptrCamera, 
       ptrLight->GetCSMFarPlanes(), 
-      ptrLight->GetCSMNormalizedFarPlanes()
+      ptrLight->GetUboShadowInfo().mNormalizedFarPlanes
     );
     //
     this->mProjMatrix = ptrLight->GetProjectionMatrix();

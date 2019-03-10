@@ -20,7 +20,7 @@
 #include <Dy/Management/FontManager.h>
 #include <Dy/Management/Rendering/UniformBufferObjectManager.h>
 #include <Dy/Component/CDyCamera.h>
-#include <Dy/Component/CDyDirectionalLight.h>
+#include <Dy/Component/CDyLightDirectional.h>
 
 namespace dy
 {
@@ -28,8 +28,8 @@ namespace dy
 void BtScrGlobalDefaultUniformBuffer::OnStart()
 {
   // Create ubo information for "CameraBlock"
+  auto& uboManager = MDyUniformBufferObject::GetInstance();
   {
-    auto& uboManager = MDyUniformBufferObject::GetInstance();
     PDyUboConstructionDescriptor desc = {};
     desc.mBindingIndex = 0;
     desc.mUboSpecifierName = sUboCameraBlock;
@@ -38,9 +38,7 @@ void BtScrGlobalDefaultUniformBuffer::OnStart()
     desc.mUboArraySize = 1;
     MDY_CALL_ASSERT_SUCCESS(uboManager.CreateUboContainer(desc));
   }
-
   {
-    auto& uboManager = MDyUniformBufferObject::GetInstance();
     PDyUboConstructionDescriptor desc = {};
     desc.mBindingIndex = 1;
     desc.mUboSpecifierName = "dyBtUboDirLight";
@@ -49,7 +47,27 @@ void BtScrGlobalDefaultUniformBuffer::OnStart()
     desc.mUboArraySize = 1;
     MDY_CALL_ASSERT_SUCCESS(uboManager.CreateUboContainer(desc))
   }
- 
+  {
+    PDyUboConstructionDescriptor desc = {};
+    desc.mBindingIndex = 2;
+    desc.mUboSpecifierName = "dyBtUboDirShadow";
+    desc.mBufferDrawType = EDyBufferDrawType::DynamicDraw;
+    desc.mUboElementSize = sizeof(DDyUboDirShadow);
+    desc.mUboArraySize = 1;
+    MDY_CALL_ASSERT_SUCCESS(uboManager.CreateUboContainer(desc))
+  }
+#ifdef false
+  {
+    PDyUboConstructionDescriptor desc = {};
+    desc.mBindingIndex = 2;
+    desc.mUboSpecifierName = "dyBtUboPointLight";
+    desc.mBufferDrawType = EDyBufferDrawType::DynamicDraw;
+    desc.mUboElementSize = sizeof(DDyUboDirectionalLight);
+    desc.mUboArraySize = 1;
+    MDY_CALL_ASSERT_SUCCESS(uboManager.CreateUboContainer(desc))
+  }
+#endif
+
   MDyFont::GetInstance().CreateFontResourceContainer("Arial");
 }
 

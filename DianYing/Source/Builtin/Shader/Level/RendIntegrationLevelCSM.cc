@@ -40,6 +40,7 @@ void main() {
 MDY_SET_IMMUTABLE_STRING(sFrag, R"dy(
 #version 430
 #import <Input_UboCamera>;
+#import <Input_UboDirLight>;
 
 in VS_OUT 
 { 
@@ -58,22 +59,12 @@ layout (binding = 6) uniform sampler2D uTexture6;       // SSAO
 layout (binding = 7) uniform sampler2D uTexture7;       // Sky
 layout (binding = 8) uniform sampler2D uTexture8;       // Emissive
 
+/*
 uniform mat4    uLightVPSBMatrix[4];
 uniform vec4    uNormalizedFarPlanes;
 //uniform float uShadowBias;
 //uniform float uShadowStrength;
-
-float sShadowBias = 0.001f;
-
-// binding = 1 is DirectionalLightBlock uniform block.
-layout(std140, binding = 1) uniform DirectionalLightBlock
-{
-  vec3  mDirection; // World space
-  vec4  mDiffuse;   // Not use alpha value
-  vec4  mSpecular;  // Not use alpha value
-  vec4  mAmbient;   // Not use alpha value
-  float mIntensity; // Intensity
-} uLightDir[1];
+*/
 
 vec4 layerColor = vec4(1.0, 0.5f, 1.0f, 1.0f); // DEBUG
 
@@ -87,20 +78,22 @@ float GetSSAOOffset() { return texture(uTexture6, fs_in.texCoord).x; }
 vec3 ComputeShadowCoords(int iSlice, vec3 iWorldPosition)
 {
   // Orthographic projection doesn't need division by w.
-  return (uLightVPSBMatrix[iSlice] * vec4(iWorldPosition, 1.0f)).xyz;
+  return (uDyShadowMapping.uLightVPSBMatrix[iSlice] * vec4(iWorldPosition, 1.0f)).xyz;
 }
 
 float ComputeShadowCoefficient(vec3 iWorldPosition, float iZValue)
 {
   int slice = 3;
-       if (iZValue < uNormalizedFarPlanes.x) { slice = 0; layerColor = vec4(1.0, 0.5, 0.5, 1.0); }
-  else if (iZValue < uNormalizedFarPlanes.y) { slice = 1; layerColor = vec4(0.5, 1.0, 0.5, 1.0); }
-  else if (iZValue < uNormalizedFarPlanes.z) { slice = 2; layerColor = vec4(0.5, 0.5, 1.0, 1.0); }
+  const vec4 normalizedFarPlanes = uDyShadowMapping.uNormalizedFarPlanes;
+
+       if (iZValue < normalizedFarPlanes.x) { slice = 0; layerColor = vec4(1.0, 0.5, 0.5, 1.0); }
+  else if (iZValue < normalizedFarPlanes.y) { slice = 1; layerColor = vec4(0.5, 1.0, 0.5, 1.0); }
+  else if (iZValue < normalizedFarPlanes.z) { slice = 2; layerColor = vec4(0.5, 0.5, 1.0, 1.0); }
 
   vec4 shadowCoords;
   // Swizzling specific for shadow sampler.
   shadowCoords.xyw = ComputeShadowCoords(slice, iWorldPosition);
-  shadowCoords.w  -= sShadowBias;
+  shadowCoords.w  -= uDyShadowMapping.uShadowBias;
   shadowCoords.z   = float(slice);
   
   return texture(uTexture4, shadowCoords); 
@@ -138,6 +131,35 @@ float GetHalfLambertFactor(const vec3 iNormal, const vec3 iLight, const float iP
   , iPow);
 }
 
+vec3 DyCalculateDirectionalLight(const vec3 iUnlit, const vec3 iNormal, const vec4 iSpecular, const vec3 iModelPos)
+{
+  const float ambientFactor = 0.02f;
+  vec3  ambientColor  = ambientFactor * iUnlit;
+
+  // Validation test
+  if (length(uLightDir.mDirection) < 0.001) 
+  { 
+    return ambientColor;
+  }
+
+  // Function body (in world space)
+  const float lambert = GetHalfLambertFactor(iNormal, uLightDir.mDirection, 2.0f);
+  const float diffuseFactor = lambert * uLightDir.mIntensity * 0.03f;
+  vec3  diffuseColor  = diffuseFactor * uLightDir.mColor.rgb * iUnlit;
+
+  // Calculate specular value.
+  const vec3 specularColor = CalculateSpecularColor(
+    uLightDir.mDirection, iNormal,
+    uLightDir.mColor.rgb, iSpecular.rgb, iSpecular.a,
+    uLightDir.mIntensity * 0.01f);
+
+  vec3 resultColor = ambientColor;
+  resultColor += clamp(ComputeShadowCoefficient(iModelPos, GetZValue()), 0.1f, 1.0f) * (diffuseColor);
+  resultColor += specularColor; 
+
+  return resultColor;
+}
+
 vec3 GetOpaqueColor()
 {
   vec3 resultColor    = vec3(0);
@@ -154,35 +176,7 @@ vec3 GetOpaqueColor()
   vec4 specularValue = GetSpecular();
   vec3 modelPosition = GetModelPos();
 
-  for (int i = 0; i < uLightDir.length; ++i)
-  { 
-    // Validation test
-    if (length(uLightDir[i].mDirection) < 0.001) { continue; }
-
-    // Function body (in world space)
-    float d_n_dl    = GetHalfLambertFactor(normalValue.xyz, uLightDir[i].mDirection, 2.0f);
-
-    float ambientFactor  = 0.02f;
-    vec3  ambientColor   = ambientFactor * uLightDir[i].mAmbient.rgb * unlitValue.rgb;
-
-    float diffuseFactor  = max(d_n_dl, 0.1f) * uLightDir[i].mIntensity * 0.03f;
-    vec3  diffuseColor   = diffuseFactor * uLightDir[i].mDiffuse.rgb * unlitValue.rgb;
-
-    // Calculate specular value.
-    const vec3 specularColor = CalculateSpecularColor(
-      uLightDir[i].mDirection,
-      normalValue.xyz,
-      uLightDir[i].mSpecular.rgb,
-      specularValue.rgb,
-      specularValue.a,
-      uLightDir[i].mIntensity * 0.01f);
-
-    resultColor  = ambientColor;
-    resultColor += clamp(ComputeShadowCoefficient(modelPosition, GetZValue()), 0.1f, 1.0f) * (diffuseColor);
-    resultColor += specularColor;
-  }
-
-  return resultColor;
+  return DyCalculateDirectionalLight(unlitValue.xyz, normalValue.xyz, specularValue, modelPosition);
 }
 
 void main()

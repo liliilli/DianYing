@@ -22,7 +22,7 @@
 #include <Dy/Core/Resource/Resource/FDyMeshResource.h>
 #include <Dy/Management/Rendering/RenderingManager.h>
 #include <Dy/Management/Rendering/UniformBufferObjectManager.h>
-#include <Dy/Component/CDyDirectionalLight.h>
+#include <Dy/Component/CDyLightDirectional.h>
 #include <Dy/Element/Level.h>
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
 #include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
@@ -53,17 +53,17 @@ void FBtRenderItemLevelIntegeration::OnSetupRenderingSetting()
 void FBtRenderItemLevelIntegeration::pSetupOpaqueCSMIntegration()
 {
   // Update shader's uniform information.
+  auto& uboManager = MDyUniformBufferObject::GetInstance();
   if (const auto* ptr = MDyRendering::GetInstance().GetPtrMainDirectionalShadow();
       ptr != nullptr) 
   { 
-    using EUniform = EDyUniformVariableType;
-    // DyConvertToVector
-    this->mBinderOpaqueShader->TryUpdateUniform<EUniform::Vector4>(
-        "uNormalizedFarPlanes", 
-        ptr->GetCSMNormalizedFarPlanes());
-    this->mBinderOpaqueShader->TryUpdateUniform<EUniform::Matrix4Array>(
-        "uLightVPSBMatrix[0]", 
-        DyConvertToVector<DDyMatrix4x4>(ptr->GetCSMLightSegmentVPSBMatrix()));
+    DDyUboDirShadow shadow = ptr->GetUboShadowInfo();
+    uboManager.UpdateUboContainer("dyBtUboDirShadow", 0, sizeof(DDyUboDirShadow), &shadow);
+  }
+  else
+  {
+    DDyUboDirShadow shadow;
+    uboManager.UpdateUboContainer("dyBtUboDirShadow", 0, sizeof(DDyUboDirShadow), &shadow);
   }
 
   // Update directional light property.
@@ -71,7 +71,6 @@ void FBtRenderItemLevelIntegeration::pSetupOpaqueCSMIntegration()
   if (this->mAddrMainLight != reinterpret_cast<ptrdiff_t>(ptrLight))
   {
     this->mAddrMainLight = reinterpret_cast<ptrdiff_t>(ptrLight);
-    auto& uboManager = MDyUniformBufferObject::GetInstance();
     if (this->mAddrMainLight == 0)
     {
       DDyUboDirectionalLight light;
