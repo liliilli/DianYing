@@ -866,7 +866,6 @@
     <ClInclude Include="Include\Dy\Builtin\Attachment\UIIntegration\FDyBtAtUiId.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\FDyCallStack.h" />
     <ClInclude Include="Include\Dy\Management\Type\Render\DDyPixelInfo.h" />
-    <ClInclude Include="Include\Dy\Management\Type\Render\DDyGlGlobalStatus.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\BoxOIT.h" />
     <ClInclude Include="Include\Dy\Builtin\Mesh\Debug\FDyBtMsDebugAABB.h" />
     <ClInclude Include="Include\Dy\Builtin\Constant\GeneralValue.h" />
@@ -919,6 +918,7 @@
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FrameBuffer\FDyFrameBufferGeneralResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FrameBuffer\FDyFrameBufferPingPongResource.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DSphere.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Render\DDyGlGlobalStates.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

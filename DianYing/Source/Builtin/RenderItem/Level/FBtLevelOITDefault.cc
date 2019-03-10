@@ -50,12 +50,12 @@ void FBtRenderLevelOitDefault::OnFailedCheckCondition()
 void FBtRenderLevelOitDefault::OnSetupRenderingSetting()
 {
   this->mBinderFrameBuffer->BindFrameBuffer();
-  DDyGlGlobalStatus status;
-  using EMode   = DDyGlGlobalStatus::DPolygonMode::EMode;
-  using EValue  = DDyGlGlobalStatus::DPolygonMode::EValue;
-  using EEqut   = DDyGlGlobalStatus::DBlendMode::EEqut;
-  using EFunc   = DDyGlGlobalStatus::DBlendMode::EFunc;
-  using DBlendMode = DDyGlGlobalStatus::DBlendMode;
+  DDyGlGlobalStates status;
+  using EMode   = DDyGlGlobalStates::DPolygonMode::EMode;
+  using EValue  = DDyGlGlobalStates::DPolygonMode::EValue;
+  using EEqut   = DDyGlGlobalStates::DBlendMode::EEqut;
+  using EFunc   = DDyGlGlobalStates::DBlendMode::EFunc;
+  using DBlendMode = DDyGlGlobalStates::DBlendMode;
 
   status.mIsEnableBlend = true;
   status.mIsEnableDepthTest = false;
@@ -66,7 +66,7 @@ void FBtRenderLevelOitDefault::OnSetupRenderingSetting()
   blendingList.mBlendingSettingList.emplace_back(EEqut::SrcAddDst, EFunc::Zero, EFunc::OneMinusSrcColor);
   status.mBlendMode = blendingList;
 
-  FDyGLWrapper::InsertInternalGlobalStatus(status);
+  FDyGLWrapper::PushInternalGlobalState(status);
 
   glClearBufferfv(GL_COLOR, 0, &DDyColorRGBA::Black.R);
   glClearBufferfv(GL_COLOR, 1, &DDyColorRGBA::White.R);
@@ -130,7 +130,7 @@ void FBtRenderLevelOitDefault::OnReleaseRenderingSetting()
 {
   this->mBinderFrameBuffer->UnbindFrameBuffer();
 
-  FDyGLWrapper::PopInternalGlobalStatus();
+  FDyGLWrapper::PopInternalGlobalState();
 }
 
 void FBtRenderLevelOitDefault::OnPostRender()

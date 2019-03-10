@@ -114,14 +114,14 @@ void CbGlFeatDepthTestStack(const bool& iTopStatus)
 }
 
 /// @brief
-void CbGlFeatScissorTestStack(_MIN_ const bool& iTopStatus)
+void CbGlFeatScissorTestStack(const bool& iTopStatus)
 {
   if (iTopStatus == true) { glEnable(GL_SCISSOR_TEST); } 
   else                    { glDisable(GL_SCISSOR_TEST); }
 }
 
 /// @brief
-void CbGlPolygonModeStack(_MIN_ const dy::DDyGlGlobalStatus::DPolygonMode& iTopStatus)
+void CbGlPolygonModeStack(const dy::DDyGlGlobalStates::DPolygonMode& iTopStatus)
 {
   // Get value from structure.
   const auto& polygonMode = iTopStatus;
@@ -131,23 +131,23 @@ void CbGlPolygonModeStack(_MIN_ const dy::DDyGlGlobalStatus::DPolygonMode& iTopS
   // Set mode
   switch (polygonMode.mMode)
   {
-  case dy::DDyGlGlobalStatus::DPolygonMode::EMode::Front: mode = GL_FRONT;  break;
-  case dy::DDyGlGlobalStatus::DPolygonMode::EMode::Back:  mode = GL_BACK;   break;
-  case dy::DDyGlGlobalStatus::DPolygonMode::EMode::FrontAndBack: mode = GL_FRONT_AND_BACK; break;
+  case dy::DDyGlGlobalStates::DPolygonMode::EMode::Front: mode = GL_FRONT;  break;
+  case dy::DDyGlGlobalStates::DPolygonMode::EMode::Back:  mode = GL_BACK;   break;
+  case dy::DDyGlGlobalStates::DPolygonMode::EMode::FrontAndBack: mode = GL_FRONT_AND_BACK; break;
   }
   // Set value
   switch (polygonMode.mValue)
   {
-  case dy::DDyGlGlobalStatus::DPolygonMode::EValue::Triangle: value = GL_FILL; break;
-  case dy::DDyGlGlobalStatus::DPolygonMode::EValue::Line:     value = GL_LINE; break;
-  case dy::DDyGlGlobalStatus::DPolygonMode::EValue::Point:    value = GL_POINT; break;
+  case dy::DDyGlGlobalStates::DPolygonMode::EValue::Triangle: value = GL_FILL; break;
+  case dy::DDyGlGlobalStates::DPolygonMode::EValue::Line:     value = GL_LINE; break;
+  case dy::DDyGlGlobalStates::DPolygonMode::EValue::Point:    value = GL_POINT; break;
   }
 
   // Issue into OpenGL system.
   glPolygonMode(mode, value);
 }
 
-void CbGlBlendModeStatus(_MIN_ const dy::DDyGlGlobalStatus::DBlendMode& iTopStatus)
+void CbGlBlendModeStatus(const dy::DDyGlGlobalStates::DBlendMode& iTopStatus)
 {
   const auto& blendMode = iTopStatus;
 
@@ -157,40 +157,40 @@ void CbGlBlendModeStatus(_MIN_ const dy::DDyGlGlobalStatus::DBlendMode& iTopStat
     const auto& [equation, src, dst] = blendMode.mBlendingSettingList[i];
     switch (equation)
     {
-    case dy::DDyGlGlobalStatus::DBlendMode::EEqut::SrcAddDst: glBlendEquationi(i, GL_FUNC_ADD); break;
-    case dy::DDyGlGlobalStatus::DBlendMode::EEqut::SrcSubDst: glBlendEquationi(i, GL_FUNC_SUBTRACT); break;
-    case dy::DDyGlGlobalStatus::DBlendMode::EEqut::DstSubSrc: glBlendEquationi(i, GL_FUNC_REVERSE_SUBTRACT); break;
-    case dy::DDyGlGlobalStatus::DBlendMode::EEqut::CompareMin: glBlendEquationi(i, GL_MIN); break;
-    case dy::DDyGlGlobalStatus::DBlendMode::EEqut::CompareMax: glBlendEquationi(i, GL_MAX); break;
+    case dy::DDyGlGlobalStates::DBlendMode::EEqut::SrcAddDst: glBlendEquationi(i, GL_FUNC_ADD); break;
+    case dy::DDyGlGlobalStates::DBlendMode::EEqut::SrcSubDst: glBlendEquationi(i, GL_FUNC_SUBTRACT); break;
+    case dy::DDyGlGlobalStates::DBlendMode::EEqut::DstSubSrc: glBlendEquationi(i, GL_FUNC_REVERSE_SUBTRACT); break;
+    case dy::DDyGlGlobalStates::DBlendMode::EEqut::CompareMin: glBlendEquationi(i, GL_MIN); break;
+    case dy::DDyGlGlobalStates::DBlendMode::EEqut::CompareMax: glBlendEquationi(i, GL_MAX); break;
     }
 
     GLenum srcEnum = GL_NONE, dstEnum = GL_NONE;
     switch (src)
     {
-    case dy::DDyGlGlobalStatus::DBlendMode::EFunc::Zero: srcEnum = GL_ZERO; break;
-    case dy::DDyGlGlobalStatus::DBlendMode::EFunc::One:  srcEnum = GL_ONE; break;
-    case dy::DDyGlGlobalStatus::DBlendMode::EFunc::SrcColor: srcEnum = GL_SRC_COLOR; break;
-    case dy::DDyGlGlobalStatus::DBlendMode::EFunc::OneMinusSrcColor: srcEnum = GL_ONE_MINUS_SRC_COLOR; break;
-    case dy::DDyGlGlobalStatus::DBlendMode::EFunc::SrcAlpha: srcEnum = GL_SRC_ALPHA; break;
-    case dy::DDyGlGlobalStatus::DBlendMode::EFunc::OneMinusSrcAlpha: srcEnum = GL_ONE_MINUS_SRC_ALPHA; break;
+    case dy::DDyGlGlobalStates::DBlendMode::EFunc::Zero: srcEnum = GL_ZERO; break;
+    case dy::DDyGlGlobalStates::DBlendMode::EFunc::One:  srcEnum = GL_ONE; break;
+    case dy::DDyGlGlobalStates::DBlendMode::EFunc::SrcColor: srcEnum = GL_SRC_COLOR; break;
+    case dy::DDyGlGlobalStates::DBlendMode::EFunc::OneMinusSrcColor: srcEnum = GL_ONE_MINUS_SRC_COLOR; break;
+    case dy::DDyGlGlobalStates::DBlendMode::EFunc::SrcAlpha: srcEnum = GL_SRC_ALPHA; break;
+    case dy::DDyGlGlobalStates::DBlendMode::EFunc::OneMinusSrcAlpha: srcEnum = GL_ONE_MINUS_SRC_ALPHA; break;
     }
     switch (dst)
     {
-    case dy::DDyGlGlobalStatus::DBlendMode::EFunc::Zero: dstEnum = GL_ZERO; break;
-    case dy::DDyGlGlobalStatus::DBlendMode::EFunc::One:  dstEnum = GL_ONE; break;
-    case dy::DDyGlGlobalStatus::DBlendMode::EFunc::SrcColor: dstEnum = GL_SRC_COLOR; break;
-    case dy::DDyGlGlobalStatus::DBlendMode::EFunc::OneMinusSrcColor: dstEnum = GL_ONE_MINUS_SRC_COLOR; break;
-    case dy::DDyGlGlobalStatus::DBlendMode::EFunc::SrcAlpha: dstEnum = GL_SRC_ALPHA; break;
-    case dy::DDyGlGlobalStatus::DBlendMode::EFunc::OneMinusSrcAlpha: dstEnum = GL_ONE_MINUS_SRC_ALPHA; break;
+    case dy::DDyGlGlobalStates::DBlendMode::EFunc::Zero: dstEnum = GL_ZERO; break;
+    case dy::DDyGlGlobalStates::DBlendMode::EFunc::One:  dstEnum = GL_ONE; break;
+    case dy::DDyGlGlobalStates::DBlendMode::EFunc::SrcColor: dstEnum = GL_SRC_COLOR; break;
+    case dy::DDyGlGlobalStates::DBlendMode::EFunc::OneMinusSrcColor: dstEnum = GL_ONE_MINUS_SRC_COLOR; break;
+    case dy::DDyGlGlobalStates::DBlendMode::EFunc::SrcAlpha: dstEnum = GL_SRC_ALPHA; break;
+    case dy::DDyGlGlobalStates::DBlendMode::EFunc::OneMinusSrcAlpha: dstEnum = GL_ONE_MINUS_SRC_ALPHA; break;
     }
 
     glBlendFunci(i, srcEnum, dstEnum);
   }
 }
 
-void CbGlCullfaceModeStack(_MIN_ const dy::DDyGlGlobalStatus::DCullfaceMode& iTopStatus)
+void CbGlCullfaceModeStack(const dy::DDyGlGlobalStates::DCullfaceMode& iTopStatus)
 {
-  using EValue = dy::DDyGlGlobalStatus::DCullfaceMode::EValue;
+  using EValue = dy::DDyGlGlobalStates::DCullfaceMode::EValue;
   switch (iTopStatus.mValue)
   {
   case EValue::Front:         glCullFace(GL_FRONT);           break;
@@ -199,12 +199,30 @@ void CbGlCullfaceModeStack(_MIN_ const dy::DDyGlGlobalStatus::DCullfaceMode& iTo
   }
 }
 
-void CbGlViewportStack(_MIN_ const dy::DDyGlGlobalStatus::DViewport& iTopStatus)
+void CbGlViewportStack(const dy::DDyGlGlobalStates::DViewport& iTopStatus)
 {
   for (auto& [index, area] : iTopStatus.mViewportSettingList)
   {
     if (index <= -1)  { dy::FDyGLWrapper::SetViewport(area); }
     else              { dy::FDyGLWrapper::SetViewportIndexed(static_cast<TU32>(index), area); }
+  }
+}
+
+void CbGlAttachmentBlendingStack(const std::vector<dy::PBlendingEquation>& iTopStatus)
+{
+  using namespace dy;
+  for (size_t i = 0, size = iTopStatus.size(); i < size; ++i)
+  {
+    const auto& [mode, src, dst, color] = iTopStatus[i];
+    const auto glMode     = PBlendingEquation::ToGLenum(mode);
+    const auto glSrcFunc  = PBlendingEquation::ToGLenum(src);
+    const auto glDstsFunc = PBlendingEquation::ToGLenum(dst);
+
+    const auto glColorRgba = color.ToArray();
+
+    glBlendEquationi(i, glMode);
+    glBlendFunci(i, glSrcFunc, glDstsFunc);
+    glBlendColor(glColorRgba[0], glColorRgba[1], glColorRgba[2], glColorRgba[3]);
   }
 }
 
@@ -219,15 +237,16 @@ namespace dy
 
 std::mutex FDyGLWrapper::mGLCriticalSectionMutex;
 
-FDyCallStack<DDyGlGlobalStatus> FDyGLWrapper::mInternalGlobalStatusStack;
+FDyCallStack<DDyGlGlobalStates> FDyGLWrapper::mInternalGlobalStatusStack;
 FDyCallStack<bool> FDyGLWrapper::mInternal_FeatBlendStack;
 FDyCallStack<bool> FDyGLWrapper::mInternal_FeatCullfaceStack;
 FDyCallStack<bool> FDyGLWrapper::mInternal_FeatDepthTestStack;
 FDyCallStack<bool> FDyGLWrapper::mInternal_FeatScissorTestStack;
-FDyCallStack<DDyGlGlobalStatus::DPolygonMode>   FDyGLWrapper::mInternal_PolygonModeStack;
-FDyCallStack<DDyGlGlobalStatus::DBlendMode>     FDyGLWrapper::mInternal_BlendModeStack;
-FDyCallStack<DDyGlGlobalStatus::DCullfaceMode>  FDyGLWrapper::mInternal_CullfaceModeStack;
-FDyCallStack<DDyGlGlobalStatus::DViewport>      FDyGLWrapper::mInternal_ViewportStack;
+FDyCallStack<DDyGlGlobalStates::DPolygonMode>   FDyGLWrapper::mInternal_PolygonModeStack;
+FDyCallStack<DDyGlGlobalStates::DBlendMode>     FDyGLWrapper::mInternal_BlendModeStack;
+FDyCallStack<DDyGlGlobalStates::DCullfaceMode>  FDyGLWrapper::mInternal_CullfaceModeStack;
+FDyCallStack<DDyGlGlobalStates::DViewport>      FDyGLWrapper::mInternal_ViewportStack;
+FDyCallStack<std::vector<PBlendingEquation>>    FDyGLWrapper::sAttachmentBlendings;
 
 GLFWwindow* FDyGLWrapper::CreateGLWindow(_MIN_ const PDyGLWindowContextDescriptor& descriptor)
 {
@@ -259,6 +278,7 @@ GLFWwindow* FDyGLWrapper::CreateGLWindow(_MIN_ const PDyGLWindowContextDescripto
   mInternal_BlendModeStack.SetCallback(CbGlBlendModeStatus);
   mInternal_CullfaceModeStack.SetCallback(CbGlCullfaceModeStack);
   mInternal_ViewportStack.SetCallback(CbGlViewportStack);
+  sAttachmentBlendings.SetCallback(CbGlAttachmentBlendingStack);
 
   return glfwCreateWindow(
       descriptor.mWindowSize.X, descriptor.mWindowSize.Y,
@@ -1041,7 +1061,7 @@ void FDyGLWrapper::UpdateUniformFloatArray(TU32 iId, const std::vector<TF32>& iB
   glUniform1fv(iId, iBuffer.size(), iBuffer.data());
 }
 
-void FDyGLWrapper::InsertInternalGlobalStatus(const DDyGlGlobalStatus& iNewStatus)
+void FDyGLWrapper::PushInternalGlobalState(const DDyGlGlobalStates& iNewStatus)
 {
   //
   mInternalGlobalStatusStack.Push(iNewStatus, false);
@@ -1065,9 +1085,11 @@ void FDyGLWrapper::InsertInternalGlobalStatus(const DDyGlGlobalStatus& iNewStatu
   { mInternal_CullfaceModeStack.Push(*topStatusChunk.mCullfaceMode); }
   if (topStatusChunk.mViewportSettingList.has_value() == true)
   { mInternal_ViewportStack.Push(*topStatusChunk.mViewportSettingList); }
+  if (topStatusChunk.mAttachmentBlendings.has_value() == true)
+  { sAttachmentBlendings.Push(*topStatusChunk.mAttachmentBlendings); }
 }
 
-void FDyGLWrapper::PopInternalGlobalStatus()
+void FDyGLWrapper::PopInternalGlobalState()
 {
   if (mInternalGlobalStatusStack.IsEmpty() == true) { return; }
 
@@ -1081,7 +1103,8 @@ void FDyGLWrapper::PopInternalGlobalStatus()
   if (extracted.mBlendMode.has_value() == true)     { mInternal_BlendModeStack.Pop(); }
   if (extracted.mPolygonMode.has_value() == true)   { mInternal_PolygonModeStack.Pop(); }
   if (extracted.mCullfaceMode.has_value() == true)  { mInternal_CullfaceModeStack.Pop(); }
-  if (extracted.mViewportSettingList.has_value() == true)  { mInternal_ViewportStack.Pop(); }
+  if (extracted.mViewportSettingList.has_value() == true) { mInternal_ViewportStack.Pop(); }
+  if (extracted.mAttachmentBlendings.has_value() == true) { sAttachmentBlendings.Pop(); }
 }
 
 FDyGLWrapper::__OutsideLockguard::MDY_PRIVATE(OutsideLockguard)
@@ -1105,35 +1128,38 @@ void FDyGLWrapper::SetupInitialGlobalStatus()
 {
   //! Push initial OpenGL global status.
   //! But we don't have to call callback function because it is alreay set on OpenGL system.
-  DDyGlGlobalStatus initialStatus;
+  DDyGlGlobalStates initialStatus;
   {
-    using EMode = DDyGlGlobalStatus::DPolygonMode::EMode;
-    using EValue = DDyGlGlobalStatus::DPolygonMode::EValue;
-    using DPolygonMode = DDyGlGlobalStatus::DPolygonMode;
-    // Set value.
-    initialStatus.mIsEnableBlend = glIsEnabled(GL_BLEND);
-    initialStatus.mIsEnableCullface = glIsEnabled(GL_CULL_FACE);
-    initialStatus.mIsEnableDepthTest = glIsEnabled(GL_DEPTH_TEST);
-    initialStatus.mIsEnableScissorTest = glIsEnabled(GL_SCISSOR_TEST);
-    initialStatus.mPolygonMode = DPolygonMode{ EMode::FrontAndBack, EValue::Triangle };
-    // Get blend mode.
     {
-      using DBlendMode = DDyGlGlobalStatus::DBlendMode;
-      using EEqut = DDyGlGlobalStatus::DBlendMode::EEqut;
-      using EFunc = DDyGlGlobalStatus::DBlendMode::EFunc;
+      using EMode = DDyGlGlobalStates::DPolygonMode::EMode;
+      using EValue = DDyGlGlobalStates::DPolygonMode::EValue;
+      using DPolygonMode = DDyGlGlobalStates::DPolygonMode;
+      // Set value.
+      initialStatus.mIsEnableBlend = glIsEnabled(GL_BLEND);
+      initialStatus.mIsEnableCullface = glIsEnabled(GL_CULL_FACE);
+      initialStatus.mIsEnableDepthTest = glIsEnabled(GL_DEPTH_TEST);
+      initialStatus.mIsEnableScissorTest = glIsEnabled(GL_SCISSOR_TEST);
+      initialStatus.mPolygonMode = DPolygonMode{ EMode::FrontAndBack, EValue::Triangle };
+    }
+    // Get blend mode.
+    // @TODO DELETE THIS 
+    {
+      using DBlendMode = DDyGlGlobalStates::DBlendMode;
+      using EEqut = DDyGlGlobalStates::DBlendMode::EEqut;
+      using EFunc = DDyGlGlobalStates::DBlendMode::EFunc;
       DBlendMode mode{};
       mode.mBlendingSettingList.emplace_back(EEqut::SrcAddDst, EFunc::SrcAlpha, EFunc::OneMinusSrcAlpha);
       initialStatus.mBlendMode = mode;
     }
     // Get cullface mode.
     {
-      using DCullfaceMode = DDyGlGlobalStatus::DCullfaceMode;
+      using DCullfaceMode = DDyGlGlobalStates::DCullfaceMode;
       DCullfaceMode cullface{ DCullfaceMode::EValue::Back };
       initialStatus.mCullfaceMode = cullface;
     }
     // Get default viewport.
     {
-      using DViewport = DDyGlGlobalStatus::DViewport;
+      using DViewport = DDyGlGlobalStates::DViewport;
       DViewport defaultViewport;
       // Get global size. 
       GLint defaultSize[4]; glGetIntegerv(GL_VIEWPORT, defaultSize);
@@ -1143,8 +1169,33 @@ void FDyGLWrapper::SetupInitialGlobalStatus()
       );
       initialStatus.mViewportSettingList = defaultViewport;
     }
-    // Insert
-    InsertInternalGlobalStatus(initialStatus);
+    // Get default blending equation of default framebuffer.
+    {
+      using EFunc = PBlendingEquation::EFunc;
+      using EMode = PBlendingEquation::EMode;
+      GLint blendSrc, blendDst, blendMode;
+      glGetIntegerv(GL_BLEND_SRC, &blendSrc);
+      glGetIntegerv(GL_BLEND_DST, &blendDst);
+      glGetIntegerv(GL_BLEND_EQUATION_RGB, &blendMode);
+
+      // Get wrapped type from glenum.
+      const auto defaultMode  = PBlendingEquation::ToMode(blendMode);
+      const auto defaultSrc   = PBlendingEquation::ToFunc(blendSrc);
+      const auto defaultDst   = PBlendingEquation::ToFunc(blendDst);
+
+      // Get default constant blend color from gl api (this sucks XP)
+      std::array<TF32, 4> glDefaultBlendColor;
+      glGetFloatv(GL_BLEND_COLOR, glDefaultBlendColor.data());
+      const DDyColorRGBA defaultColor = DDyColorRGBA{glDefaultBlendColor}; 
+
+      // Insert
+      decltype(initialStatus.mAttachmentBlendings)::value_type defaultBlendings;
+      defaultBlendings.emplace_back(defaultSrc, defaultMode, defaultDst, defaultColor);
+      initialStatus.mAttachmentBlendings = defaultBlendings;
+    }
+
+    // Insert default status
+    PushInternalGlobalState(initialStatus);
   }
 }
 

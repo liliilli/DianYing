@@ -18,7 +18,8 @@
 #include <Dy/Core/Rendering/Wrapper/PDyGLBufferDescriptor.h>
 #include <Dy/Core/Resource/Internal/ShaderType.h>
 #include <Dy/Helper/Internal/FDyCallStack.h>
-#include <Dy/Management/Type/Render/DDyGlGlobalStatus.h>
+#include <Dy/Management/Type/Render/DDyGlGlobalStates.h>
+#include <Dy/Management/Type/AttachmentInformation.h>
 
 //!
 //! Forward declaration
@@ -227,8 +228,8 @@ public:
   static void SetupInitialGlobalStatus();
 
   /// @brief Insert global status of GL.
-  static void InsertInternalGlobalStatus(const DDyGlGlobalStatus& iNewStatus);
-  static void PopInternalGlobalStatus();
+  static void PushInternalGlobalState(const DDyGlGlobalStates& iNewStatus);
+  static void PopInternalGlobalState();
 
 private:
   static std::mutex mGLCriticalSectionMutex;
@@ -239,17 +240,18 @@ private:
   /// @brief Global status stack for management. \n
   /// This container will be push & popped automatically by following rendering pipeline.
   /// This container must not be empty before termination of Dy application.
-  static FDyCallStack<DDyGlGlobalStatus> mInternalGlobalStatusStack;
+  static FDyCallStack<DDyGlGlobalStates> mInternalGlobalStatusStack;
 
   /// ▽ Actual state machine change logic will be operated in these stack.
   static FDyCallStack<bool> mInternal_FeatBlendStack;
   static FDyCallStack<bool> mInternal_FeatCullfaceStack;
   static FDyCallStack<bool> mInternal_FeatDepthTestStack;
   static FDyCallStack<bool> mInternal_FeatScissorTestStack;
-  static FDyCallStack<DDyGlGlobalStatus::DPolygonMode>   mInternal_PolygonModeStack;
-  static FDyCallStack<DDyGlGlobalStatus::DBlendMode>     mInternal_BlendModeStack;
-  static FDyCallStack<DDyGlGlobalStatus::DCullfaceMode>  mInternal_CullfaceModeStack;
-  static FDyCallStack<DDyGlGlobalStatus::DViewport>      mInternal_ViewportStack;
+  static FDyCallStack<DDyGlGlobalStates::DPolygonMode>   mInternal_PolygonModeStack;
+  static FDyCallStack<DDyGlGlobalStates::DBlendMode>     mInternal_BlendModeStack;
+  static FDyCallStack<DDyGlGlobalStates::DCullfaceMode>  mInternal_CullfaceModeStack;
+  static FDyCallStack<DDyGlGlobalStates::DViewport>      mInternal_ViewportStack;
+  static FDyCallStack<std::vector<PBlendingEquation>> sAttachmentBlendings;
 };
 
 /// @brief Critical section macro for graphic GL API.

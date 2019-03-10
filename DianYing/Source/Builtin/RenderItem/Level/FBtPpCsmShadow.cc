@@ -125,13 +125,13 @@ void FBtRenderItemCsmShadow::OnSetupRenderingSetting()
   this->mDirLightShaderResource->TryUpdateUniform<EUniform::Matrix4>("mViewMatrix", this->mViewMatrix);
 
   // Set and push global internal setting.
-  DDyGlGlobalStatus status;
-  using EValue = DDyGlGlobalStatus::DCullfaceMode::EValue;
+  DDyGlGlobalStates status;
+  using EValue = DDyGlGlobalStates::DCullfaceMode::EValue;
   status.mIsEnableDepthTest = true;
   status.mIsEnableCullface  = true;
   status.mCullfaceMode = EValue::Back;
 
-  using DViewport = DDyGlGlobalStatus::DViewport;
+  using DViewport = DDyGlGlobalStates::DViewport;
   DViewport viewport;
 
   /// @brief Setup indexed viewports of light shadow map segments for writing.
@@ -142,7 +142,7 @@ void FBtRenderItemCsmShadow::OnSetupRenderingSetting()
   }
   status.mViewportSettingList = viewport;
 
-  FDyGLWrapper::InsertInternalGlobalStatus(status);
+  FDyGLWrapper::PushInternalGlobalState(status);
 
   this->mBinderFrameBuffer->BindFrameBuffer();
   const GLfloat one = 1.0f;
@@ -195,7 +195,7 @@ void FBtRenderItemCsmShadow::RenderObject(
 void FBtRenderItemCsmShadow::OnReleaseRenderingSetting()
 {
   this->mBinderFrameBuffer->UnbindFrameBuffer();
-  FDyGLWrapper::PopInternalGlobalStatus();
+  FDyGLWrapper::PopInternalGlobalState();
 }
 
 void FBtRenderItemCsmShadow::OnPostRender()

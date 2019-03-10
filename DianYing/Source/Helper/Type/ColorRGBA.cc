@@ -37,18 +37,27 @@ const DDyColorRGBA DDyColorRGBA::Yellow     = DDyColorRGBA32{0xFF, 0xFF, 0x00};
 DDyColorRGBA::DDyColorRGBA(TF32 r, TF32 g, TF32 b) noexcept 
   : R{r}, G{g}, B{b}, A{1.0f} 
 {
-  if (this->R < 0.0f) this->R = 0.0f; else if (this->R > 1.0f) this->R = 1.0f;
-  if (this->G < 0.0f) this->G = 0.0f; else if (this->G > 1.0f) this->G = 1.0f;
-  if (this->B < 0.0f) this->B = 0.0f; else if (this->B > 1.0f) this->B = 1.0f;
+  this->R = std::clamp(this->R, 0.f, 1.f);
+  this->G = std::clamp(this->G, 0.f, 1.f);
+  this->B = std::clamp(this->B, 0.f, 1.f);
 }
 
 DDyColorRGBA::DDyColorRGBA(TF32 r, TF32 g, TF32 b, TF32 a) noexcept 
   : R{r}, G{g}, B{b}, A{a} 
 {
-  if (this->R < 0.0f) this->R = 0.0f; else if (this->R > 1.0f) this->R = 1.0f;
-  if (this->G < 0.0f) this->G = 0.0f; else if (this->G > 1.0f) this->G = 1.0f;
-  if (this->B < 0.0f) this->B = 0.0f; else if (this->B > 1.0f) this->B = 1.0f;
-  if (this->A < 0.0f) this->A = 0.0f; else if (this->A > 1.0f) this->A = 1.0f;
+  this->R = std::clamp(this->R, 0.f, 1.f);
+  this->G = std::clamp(this->G, 0.f, 1.f);
+  this->B = std::clamp(this->B, 0.f, 1.f);
+  this->A = std::clamp(this->A, 0.f, 1.f);
+}
+
+DDyColorRGBA::DDyColorRGBA(const std::array<TF32, 4>& iGlRgbaColor) noexcept
+  : R{iGlRgbaColor[0]}, G{iGlRgbaColor[1]}, B{iGlRgbaColor[2]}, A{iGlRgbaColor[3]}
+{ 
+  this->R = std::clamp(this->R, 0.f, 1.f);
+  this->G = std::clamp(this->G, 0.f, 1.f);
+  this->B = std::clamp(this->B, 0.f, 1.f);
+  this->A = std::clamp(this->A, 0.f, 1.f);
 }
 
 bool DDyColorRGBA::IsOpaque() const noexcept
@@ -69,6 +78,11 @@ TF32 DDyColorRGBA::GetGrayScale() const noexcept
 const TF32* DDyColorRGBA::Data() const noexcept
 {
   return &this->R;
+}
+
+std::array<TF32, 4> DDyColorRGBA::ToArray() const noexcept
+{
+  return {this->R, this->G, this->B, this->A};
 }
 
 DDyColorRGBA::operator DDyVector3() const noexcept

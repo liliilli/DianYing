@@ -15,7 +15,7 @@
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Management/Type/Render/DDyModelHandler.h>
-#include <Dy/Management/Type/Render/DDyGlGlobalStatus.h>
+#include <Dy/Management/Type/Render/DDyGlGlobalStates.h>
 #include <Dy/Helper/Pointer.h>
 
 //!
