@@ -66,8 +66,7 @@ void FBtRenderLevelOitDefault::OnSetupRenderingSetting()
   blendingList.mBlendingSettingList.emplace_back(EEqut::SrcAddDst, EFunc::Zero, EFunc::OneMinusSrcColor);
   status.mBlendMode = blendingList;
 
-  auto& refRendering = MDyRendering::GetInstance();
-  refRendering.InsertInternalGlobalStatus(status);
+  FDyGLWrapper::InsertInternalGlobalStatus(status);
 
   glClearBufferfv(GL_COLOR, 0, &DDyColorRGBA::Black.R);
   glClearBufferfv(GL_COLOR, 1, &DDyColorRGBA::White.R);
@@ -131,8 +130,7 @@ void FBtRenderLevelOitDefault::OnReleaseRenderingSetting()
 {
   this->mBinderFrameBuffer->UnbindFrameBuffer();
 
-  auto& refRendering = MDyRendering::GetInstance();
-  refRendering.PopInternalGlobalStatus();
+  FDyGLWrapper::PopInternalGlobalStatus();
 }
 
 void FBtRenderLevelOitDefault::OnPostRender()

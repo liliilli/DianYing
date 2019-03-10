@@ -48,7 +48,6 @@ void FBtRenderPipelineDefaultLevelRender::OnFailedCheckCondition()
 
 void FBtRenderPipelineDefaultLevelRender::OnSetupRenderingSetting()
 {
-#ifdef false
   { // Set overall rendering mode.
     DDyGlGlobalStatus initialStatus{};
     using DPolygonMode = DDyGlGlobalStatus::DPolygonMode;
@@ -60,25 +59,24 @@ void FBtRenderPipelineDefaultLevelRender::OnSetupRenderingSetting()
     case EDyModelRenderingMode::FillNormal: 
     {
       initialStatus.mPolygonMode = DPolygonMode{EMode::FrontAndBack, EValue::Triangle}; 
-      { MDY_GRAPHIC_SET_CRITICALSECITON();
-        this->InsertInternalGlobalStatus(initialStatus);
+      { 
+        FDyGLWrapper::InsertInternalGlobalStatus(initialStatus);
       }
     } break;
     case EDyModelRenderingMode::WireFrame: 
     {
       initialStatus.mPolygonMode = DPolygonMode{EMode::FrontAndBack, EValue::Line}; 
-      { MDY_GRAPHIC_SET_CRITICALSECITON();
-        this->InsertInternalGlobalStatus(initialStatus);
+      { 
+        FDyGLWrapper::InsertInternalGlobalStatus(initialStatus);
       }
     } break;
     }
   }
-#endif
 }
 
 void FBtRenderPipelineDefaultLevelRender::OnReleaseRenderingSetting()
 {
-  //this->PopInternalGlobalStatus();
+  FDyGLWrapper::PopInternalGlobalStatus();
 }
 
 void FBtRenderPipelineDefaultLevelRender::OnPostRender()

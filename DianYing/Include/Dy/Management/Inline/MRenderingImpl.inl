@@ -18,24 +18,12 @@
 namespace dy
 {
 
-inline MDyRendering::Impl::Impl() { }
-
 inline EDySuccess MDyRendering::Impl::Initialize()
 {
   // Initialize framebuffer management singleton instance.
   MDY_CALL_ASSERT_SUCCESS(MDyFramebuffer::Initialize());
   MDY_CALL_ASSERT_SUCCESS(MDyUniformBufferObject::Initialize());
   MDY_CALL_ASSERT_SUCCESS(FDyModelHandlerManager::Initialize());
-
-  // Set callback function for global internal status stack.
-  this->mInternal_FeatBlendStack.SetCallback(CbGlFeatBlendStack);
-  this->mInternal_FeatDepthTestStack.SetCallback(CbGlFeatDepthTestStack);
-  this->mInternal_FeatCullfaceStack.SetCallback(CbGlFeatCullfaceStack);
-  this->mInternal_FeatScissorTestStack.SetCallback(CbGlFeatScissorTestStack);
-  this->mInternal_PolygonModeStack.SetCallback(CbGlPolygonModeStack);
-  this->mInternal_BlendModeStack.SetCallback(CbGlBlendModeStatus);
-  this->mInternal_CullfaceModeStack.SetCallback(CbGlCullfaceModeStack);
-  this->mInternal_ViewportStack.SetCallback(CbGlViewportStack);
 
   const auto renderingApiType = MDySetting::GetInstance().GetRenderingType();
   switch (renderingApiType)
@@ -45,50 +33,7 @@ inline EDySuccess MDyRendering::Impl::Initialize()
     glEnable(GL_PRIMITIVE_RESTART);
     glPrimitiveRestartIndex(kIndiceSeparator);
     glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
-
-    //! Push initial OpenGL global status.
-    //! But we don't have to call callback function because it is alreay set on OpenGL system.
-    DDyGlGlobalStatus initialStatus;
-    {
-      using EMode  = DDyGlGlobalStatus::DPolygonMode::EMode;
-      using EValue = DDyGlGlobalStatus::DPolygonMode::EValue;
-      using DPolygonMode  = DDyGlGlobalStatus::DPolygonMode;
-      // Set value.
-      initialStatus.mIsEnableBlend       = glIsEnabled(GL_BLEND); 
-      initialStatus.mIsEnableCullface    = glIsEnabled(GL_CULL_FACE);
-      initialStatus.mIsEnableDepthTest   = glIsEnabled(GL_DEPTH_TEST);
-      initialStatus.mIsEnableScissorTest = glIsEnabled(GL_SCISSOR_TEST);
-      initialStatus.mPolygonMode         = DPolygonMode{EMode::FrontAndBack, EValue::Triangle}; 
-      // Get blend mode.
-      {
-        using DBlendMode = DDyGlGlobalStatus::DBlendMode;
-        using EEqut = DDyGlGlobalStatus::DBlendMode::EEqut;
-        using EFunc = DDyGlGlobalStatus::DBlendMode::EFunc;
-        DBlendMode mode{};
-        mode.mBlendingSettingList.emplace_back(EEqut::SrcAddDst, EFunc::SrcAlpha, EFunc::OneMinusSrcAlpha);
-        initialStatus.mBlendMode = mode;
-      }
-      // Get cullface mode.
-      {
-        using DCullfaceMode = DDyGlGlobalStatus::DCullfaceMode;
-        DCullfaceMode cullface{DCullfaceMode::EValue::Back};
-        initialStatus.mCullfaceMode = cullface;
-      }
-      // Get default viewport.
-      {
-        using DViewport = DDyGlGlobalStatus::DViewport;
-        DViewport defaultViewport;
-        // Get global size. 
-        GLint defaultSize[4]; glGetIntegerv(GL_VIEWPORT, defaultSize); 
-        defaultViewport.mViewportSettingList.emplace_back(
-            -1, // Global 
-            DDyArea2D{defaultSize[0], defaultSize[1], defaultSize[2], defaultSize[3]}
-        );
-        initialStatus.mViewportSettingList = defaultViewport;
-      }
-      // Insert
-      this->InsertInternalGlobalStatus(initialStatus);
-    }
+    FDyGLWrapper::SetupInitialGlobalStatus();
   } break;
   case EDyRenderingApi::Vulkan: 
   case EDyRenderingApi::DirectX11: 
@@ -494,49 +439,6 @@ inline EDySuccess MDyRendering::Impl::MDY_PRIVATE(UnbindMainDirectionalShadow)(C
 inline const DDyMatrix4x4& MDyRendering::Impl::GetGeneralUiProjectionMatrix() const noexcept
 {
   return this->mUiGeneralProjectionMatrix;
-}
-
-inline void MDyRendering::Impl::InsertInternalGlobalStatus(_MIN_ const DDyGlGlobalStatus& iNewStatus)
-{
-  //
-  this->mInternalGlobalStatusStack.Push(iNewStatus, false);
-
-  const auto& topStatusChunk = this->mInternalGlobalStatusStack.Top();
-  // Set
-  if (topStatusChunk.mIsEnableBlend.has_value() == true)
-  { this->mInternal_FeatBlendStack.Push(*topStatusChunk.mIsEnableBlend); }
-  if (topStatusChunk.mIsEnableCullface.has_value() == true)
-  { this->mInternal_FeatCullfaceStack.Push(*topStatusChunk.mIsEnableCullface); }
-  if (topStatusChunk.mIsEnableDepthTest.has_value() == true)
-  { this->mInternal_FeatDepthTestStack.Push(*topStatusChunk.mIsEnableDepthTest); }
-  if (topStatusChunk.mIsEnableScissorTest.has_value() == true)
-  { this->mInternal_FeatScissorTestStack.Push(*topStatusChunk.mIsEnableScissorTest); }
-
-  if (topStatusChunk.mBlendMode.has_value() == true)
-  { this->mInternal_BlendModeStack.Push(*topStatusChunk.mBlendMode); }
-  if (topStatusChunk.mPolygonMode.has_value() == true)
-  { this->mInternal_PolygonModeStack.Push(*topStatusChunk.mPolygonMode); }
-  if (topStatusChunk.mCullfaceMode.has_value() == true)
-  { this->mInternal_CullfaceModeStack.Push(*topStatusChunk.mCullfaceMode); }
-  if (topStatusChunk.mViewportSettingList.has_value() == true)
-  { this->mInternal_ViewportStack.Push(*topStatusChunk.mViewportSettingList); }
-}
-
-inline void MDyRendering::Impl::PopInternalGlobalStatus()
-{
-  if (this->mInternalGlobalStatusStack.IsEmpty() == true) { return; }
-
-  auto extracted = this->mInternalGlobalStatusStack.ExtractTop(false);
-
-  if (extracted.mIsEnableBlend.has_value() == true)       { this->mInternal_FeatBlendStack.Pop(); }
-  if (extracted.mIsEnableCullface.has_value() == true)    { this->mInternal_FeatCullfaceStack.Pop(); }
-  if (extracted.mIsEnableDepthTest.has_value() == true)   { this->mInternal_FeatDepthTestStack.Pop(); }
-  if (extracted.mIsEnableScissorTest.has_value() == true) { this->mInternal_FeatScissorTestStack.Pop(); }
-
-  if (extracted.mBlendMode.has_value() == true)     { this->mInternal_BlendModeStack.Pop(); }
-  if (extracted.mPolygonMode.has_value() == true)   { this->mInternal_PolygonModeStack.Pop(); }
-  if (extracted.mCullfaceMode.has_value() == true)  { this->mInternal_CullfaceModeStack.Pop(); }
-  if (extracted.mViewportSettingList.has_value() == true)  { this->mInternal_ViewportStack.Pop(); }
 }
 
 inline void MDyRendering::Impl::SwapBuffers()

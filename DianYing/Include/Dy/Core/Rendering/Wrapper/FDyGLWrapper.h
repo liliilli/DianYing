@@ -17,6 +17,8 @@
 #include <Dy/Core/Rendering/Type/EDyDrawType.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLBufferDescriptor.h>
 #include <Dy/Core/Resource/Internal/ShaderType.h>
+#include <Dy/Helper/Internal/FDyCallStack.h>
+#include <Dy/Management/Type/Render/DDyGlGlobalStatus.h>
 
 //!
 //! Forward declaration
@@ -45,10 +47,8 @@ struct DDyGLVaoBindInformation;
 namespace dy
 {
 
-///
 /// @class FDyGLWrapper
 /// @brief OpenGL Wrapping container.
-///
 class FDyGLWrapper
 {
 public:
@@ -204,6 +204,9 @@ public:
   /// @brief Update uniform float array. Specified shader must be valid and activated.
   static void UpdateUniformFloatArray(TU32 iId, const std::vector<TF32>& iBuffer);
 
+  /// @struct __OutsideLockguard
+  /// @brief GL graphics locking mutex instance.
+  /// If this instance is out of scope, automatically resolve locking of mutex.
   struct MDY_PRIVATE(OutsideLockguard) final
   {
   public:
@@ -220,14 +223,38 @@ public:
   static MDY_PRIVATE(OutsideLockguard) MDY_PRIVATE(LockMutex)();
   static void MDY_PRIVATE(UnlockMutex)();
 
+  /// @brief 
+  static void SetupInitialGlobalStatus();
+
+  /// @brief Insert global status of GL.
+  static void InsertInternalGlobalStatus(const DDyGlGlobalStatus& iNewStatus);
+  static void PopInternalGlobalStatus();
+
 private:
   static std::mutex mGLCriticalSectionMutex;
 
-  /// @brief
-  static MDY_NODISCARD const DDyGLVaoBindInformation& GetDefaultAttributeFormatDescriptor() noexcept;
+  /// @brief Default format descriptor of VAO.
+  MDY_NODISCARD static const DDyGLVaoBindInformation& GetDefaultAttributeFormatDescriptor() noexcept;
+
+  /// @brief Global status stack for management. \n
+  /// This container will be push & popped automatically by following rendering pipeline.
+  /// This container must not be empty before termination of Dy application.
+  static FDyCallStack<DDyGlGlobalStatus> mInternalGlobalStatusStack;
+
+  /// ▽ Actual state machine change logic will be operated in these stack.
+  static FDyCallStack<bool> mInternal_FeatBlendStack;
+  static FDyCallStack<bool> mInternal_FeatCullfaceStack;
+  static FDyCallStack<bool> mInternal_FeatDepthTestStack;
+  static FDyCallStack<bool> mInternal_FeatScissorTestStack;
+  static FDyCallStack<DDyGlGlobalStatus::DPolygonMode>   mInternal_PolygonModeStack;
+  static FDyCallStack<DDyGlGlobalStatus::DBlendMode>     mInternal_BlendModeStack;
+  static FDyCallStack<DDyGlGlobalStatus::DCullfaceMode>  mInternal_CullfaceModeStack;
+  static FDyCallStack<DDyGlGlobalStatus::DViewport>      mInternal_ViewportStack;
 };
 
-#define MDY_GRAPHIC_SET_CRITICALSECITON() const auto MDY_TOKENPASTE2(_, __LINE__) = ::dy::FDyGLWrapper::MDY_PRIVATE(LockMutex)()
+/// @brief Critical section macro for graphic GL API.
+#define MDY_GRAPHIC_SET_CRITICALSECITON() \
+  const auto MDY_TOKENPASTE2(_, __LINE__) = ::dy::FDyGLWrapper::MDY_PRIVATE(LockMutex)()
 
 } /// ::dy namespace
 
