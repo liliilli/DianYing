@@ -58,11 +58,12 @@ EDySuccess MDY_PRIVATE(DyInitializeWin32Debug)()
 /// @brief Main function of win32 / win64 platform.
 int APIENTRY WinMain(_MIN_ HINSTANCE hInstance, _MIN_ HINSTANCE hPrevInstance, _MIN_ LPSTR pCmdLine, _MIN_ int nCmdShow)
 {
-
   ghInstance      = hInstance;
   ghPrevInstance  = hPrevInstance;
   gpCmdLine       = pCmdLine;
   gnCmdShow       = nCmdShow;
+
+  //_crtBreakAlloc = 681;
 
   MDY_WIN32_TRY_TURN_ON_DEBUG();
   MDY_CALL_ASSERT_SUCCESS(dy::DyEngine::Initialize());
