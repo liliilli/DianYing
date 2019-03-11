@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Component/CDyDirectionalLight.h>
+#include <Dy/Component/CDyLightDirectional.h>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <Dy/Builtin/Constant/GeneralLevel.h>
@@ -25,19 +25,19 @@
 namespace dy
 {
 
-CDyDirectionalLight::CDyDirectionalLight(FDyActor& actorReference) : ADyGeneralBaseComponent(actorReference)
+CDyLightDirectional::CDyLightDirectional(FDyActor& actorReference)
+  : ADyGeneralBaseComponent(actorReference),
+    mFarPlanes()
 { }
 
-EDySuccess CDyDirectionalLight::Initialize(const PDyDirLightComponentMetaInfo& metaInfo)
+EDySuccess CDyLightDirectional::Initialize(const PDyDirLightComponentMetaInfo& metaInfo)
 {
   this->mData.mDirection  = metaInfo.mDetails.mDirection.Normalize();
   this->mData.mIntensity  = metaInfo.mDetails.mIntensity;
+  this->mData.mDiffuse    = metaInfo.mDetails.mDiffuse;
+
   this->mIsCastingLight   = metaInfo.mDetails.mIsCastingLight;
   this->mIsCastingShadow  = metaInfo.mDetails.mIsCastingShadow;
-
-  this->mData.mDiffuse    = metaInfo.mDetails.mDiffuse;
-  this->mData.mSpecular   = metaInfo.mDetails.mSpecular;
-  this->mData.mAmbient    = metaInfo.mDetails.mAmbient;
 
   this->mShadowType             = metaInfo.mDetails.mShadowType;
   this->mShadowCullingLayerList = metaInfo.mDetails.mShadowCullingMaskLayer;
@@ -56,17 +56,17 @@ EDySuccess CDyDirectionalLight::Initialize(const PDyDirLightComponentMetaInfo& m
   }
 
   // Set first time flag to false to use second time flag logics.
-  if (metaInfo.mInitiallyActivated) { this->Activate(); }
+  if (metaInfo.mInitiallyActivated == true) { this->Activate(); }
   return DY_SUCCESS;
 }
 
-void CDyDirectionalLight::Release()
+void CDyLightDirectional::Release()
 {
   MDY_NOUSE_RTVAL_EXPR(pTryDeactivateDirectionalLight());
   MDY_NOUSE_RTVAL_EXPR(pTryDeactivateCastingShadow());
 }
 
-void CDyDirectionalLight::Update(float dt)
+void CDyLightDirectional::Update(float dt)
 {
   if (this->mIsCastingLight == true && this->mIsNeededUpdateValueToGpu == true)
   {
@@ -79,13 +79,13 @@ void CDyDirectionalLight::Update(float dt)
   }
 }
 
-MDY_NODISCARD std::string CDyDirectionalLight::ToString()
+MDY_NODISCARD std::string CDyLightDirectional::ToString()
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
   return MDY_INITIALIZE_EMPTYSTR;
 }
 
-void CDyDirectionalLight::SetCastingLightFlag(const bool flag) noexcept
+void CDyLightDirectional::SetCastingLightFlag(bool flag) noexcept
 {
   if (this->mIsCastingLight == flag) { return; }
   //
@@ -94,7 +94,7 @@ void CDyDirectionalLight::SetCastingLightFlag(const bool flag) noexcept
   else              { MDY_NOTUSED auto _ = pTryDeactivateDirectionalLight(); }
 }
 
-void CDyDirectionalLight::SetCastingShadowFlag(const bool flag) noexcept
+void CDyLightDirectional::SetCastingShadowFlag(bool flag) noexcept
 {
   if (this->mIsCastingShadow == flag) { return; }
   //
@@ -103,7 +103,34 @@ void CDyDirectionalLight::SetCastingShadowFlag(const bool flag) noexcept
   else              { MDY_NOTUSED auto _ = pTryDeactivateCastingShadow(); }
 }
 
-void CDyDirectionalLight::UpdateLightViewMatrix()
+const DDyVector3& CDyLightDirectional::GetLightDirection() const noexcept
+{
+  return this->mData.mDirection;
+}
+
+float CDyLightDirectional::GetIntensity() const noexcept
+{
+  return this->mData.mIntensity;
+}
+
+void CDyLightDirectional::SetDiffuseColor(const DDyColorRGBA& iColor) noexcept
+{
+  this->mData.mDiffuse = iColor;
+  this->mIsNeededUpdateValueToGpu = true;
+}
+
+const DDyColorRGBA& CDyLightDirectional::GetDiffuseColor() const noexcept
+{
+  return this->mData.mDiffuse;
+}
+
+void CDyLightDirectional::SetLightDirection(const DDyVector3& direction) noexcept
+{
+  this->mData.mDirection = direction.Normalize();
+  this->mIsNeededUpdateValueToGpu = true;
+}
+
+void CDyLightDirectional::UpdateLightViewMatrix()
 {
   auto fwd = this->GetLightDirection();
   if (fwd == kLevelUpDir) { fwd += DDyVector3{0.01f, 0.01f, 0.01f}; }
@@ -117,12 +144,12 @@ void CDyDirectionalLight::UpdateLightViewMatrix()
     static_cast<glm::vec3>(kLevelUpDir)); 
 }
 
-const DDyMatrix4x4& CDyDirectionalLight::GetLightViewMatrix() const noexcept
+const DDyMatrix4x4& CDyLightDirectional::GetLightViewMatrix() const noexcept
 {
   return this->mLightViewMatrix;
 }
 
-void CDyDirectionalLight::UpdateCSMFrustum(const CDyCamera& iRefCamera)
+void CDyLightDirectional::UpdateCSMFrustum(const CDyCamera& iRefCamera)
 {
   this->FrustumBoundingBoxLightViewSpace(
       iRefCamera.GetNear(), iRefCamera.GetFar(), 
@@ -130,7 +157,7 @@ void CDyDirectionalLight::UpdateCSMFrustum(const CDyCamera& iRefCamera)
       this->minFrustum, this->maxFrustum);
 }
 
-void CDyDirectionalLight::UpdateProjectionMatrix()
+void CDyLightDirectional::UpdateProjectionMatrix()
 {
   this->mLightProjMatrix = glm::ortho(
       this->minFrustum.X, this->maxFrustum.X, 
@@ -139,12 +166,12 @@ void CDyDirectionalLight::UpdateProjectionMatrix()
       //0.0f, this->minFrustum.Z);
 }
 
-const DDyMatrix4x4& CDyDirectionalLight::GetProjectionMatrix() const noexcept
+const DDyMatrix4x4& CDyLightDirectional::GetProjectionMatrix() const noexcept
 {
   return this->mLightProjMatrix;
 }
 
-void CDyDirectionalLight::UpdateSegmentFarPlanes(_MIN_ const CDyCamera& iPtrCamera)
+void CDyLightDirectional::UpdateSegmentFarPlanes(_MIN_ const CDyCamera& iPtrCamera)
 {
   if (const auto& proj = iPtrCamera.GetProjectionMatrix(); 
       this->mOldProjectionMatrix == proj) 
@@ -167,24 +194,19 @@ void CDyDirectionalLight::UpdateSegmentFarPlanes(_MIN_ const CDyCamera& iPtrCame
 
     const auto projectedDepth = this->mOldProjectionMatrix.MultiplyVector({0, 0, -viewDepth, 1});
     this->mFarPlanes[i - 1] = viewDepth;
-    this->mNormalizedFarPlanes[i - 1] = (projectedDepth.Z / projectedDepth.W) * 0.5f + 0.5f;
+    this->mDataShadow.mNormalizedFarPlanes[i - 1] = (projectedDepth.Z / projectedDepth.W) * 0.5f + 0.5f;
   }
 }
 
-const std::array<TF32, kCSMSegment>& CDyDirectionalLight::GetCSMFarPlanes() const noexcept
+const std::array<TF32, kCSMSegment>& CDyLightDirectional::GetCSMFarPlanes() const noexcept
 {
   return this->mFarPlanes;
 }
 
-const std::array<TF32, kCSMSegment>& CDyDirectionalLight::GetCSMNormalizedFarPlanes() const noexcept
-{
-  return this->mNormalizedFarPlanes;
-}
-
-void CDyDirectionalLight::UpdateLightProjectionAndViewports(
-    _MIN_ const CDyCamera& iRefCamera, 
-    _MIN_ const std::array<TF32, kCSMSegment>& iFarPlanes,
-    _MIN_ const std::array<TF32, kCSMSegment>& iNormalizedFarPlanes)
+void CDyLightDirectional::UpdateLightProjectionAndViewports(
+  const CDyCamera& iRefCamera, 
+  const std::array<TF32, kCSMSegment>& iFarPlanes,
+  const std::array<TF32, kCSMSegment>& iNormalizedFarPlanes)
 {
    // Find a bounding box of segment in light view space.
   TF32 nearSegmentPlane = 0.0f;
@@ -220,30 +242,33 @@ void CDyDirectionalLight::UpdateLightProjectionAndViewports(
 
     // Update light view-projection matrices per segments.
     DDyMatrix4x4 lightProjMatrix = glm::ortho(minSegment.X, minSegment.X + segmentSize, minSegment.Y, minSegment.Y + segmentSize, -maxFrustum.Z, -minFrustum.Z);
-    //DDyMatrix4x4 lightProjMatrix = glm::ortho(minSegment.X, minSegment.X + segmentSize, minSegment.Y, minSegment.Y + segmentSize, 0.0f, minFrustum.Z);
-    DDyMatrix4x4 lightScale = DDyMatrix4x4::CreateWithScale(DDyVector3{0.5f * scaleFactor.X, 0.5f * scaleFactor.Y, 0.5f});
-    DDyMatrix4x4 lightBias  = DDyMatrix4x4::CreateWithTranslation(DDyVector3{0.5f * scaleFactor.X, 0.5f * scaleFactor.Y, 0.5f});
+    DDyMatrix4x4 lightScale = DDyMatrix4x4::CreateWithScale(
+      DDyVector3{0.5f * scaleFactor.X, 0.5f * scaleFactor.Y, 0.5f});
+    DDyMatrix4x4 lightBias  = DDyMatrix4x4::CreateWithTranslation(
+      DDyVector3{0.5f * scaleFactor.X, 0.5f * scaleFactor.Y, 0.5f});
 
-    this->mLightSegmentVPSBMatrices[i] = lightBias.Multiply(lightScale).Multiply(lightProjMatrix).Multiply(this->mLightViewMatrix);
+    this->mDataShadow.mLightVPSBMatrix[i] = 
+      lightBias.Multiply(lightScale).Multiply(lightProjMatrix).Multiply(this->mLightViewMatrix);
     nearSegmentPlane = iNormalizedFarPlanes[i];
   }
 }
 
-const std::array<DDyArea2D, kCSMSegment>& CDyDirectionalLight::GetCSMIndexedViewports() const noexcept
+const std::array<DDyArea2D, kCSMSegment>& CDyLightDirectional::GetCSMIndexedViewports() const noexcept
 {
   return this->mLightViewports;
 }
 
-const std::array<DDyMatrix4x4, kCSMSegment>& 
-CDyDirectionalLight::GetCSMLightSegmentVPSBMatrix() const noexcept
+void CDyLightDirectional::SetIntensity(TF32 iIntensity) noexcept
 {
-  return this->mLightSegmentVPSBMatrices;
+  if (iIntensity < 0.f) { this->mData.mIntensity = 0.001f; }
+  else                  { this->mData.mIntensity = iIntensity; }
+  this->mIsNeededUpdateValueToGpu = true;
 }
 
-void CDyDirectionalLight::FrustumBoundingBoxLightViewSpace(
-    _MIN_ TF32 iNear, _MIN_ TF32 iFar, 
-    _MIN_ const CDyCamera& iRefCamera,
-    _MIN_ DDyVector4& iMin, DDyVector4& iMax) const
+void CDyLightDirectional::FrustumBoundingBoxLightViewSpace(
+    TF32 iNear, TF32 iFar, 
+    const CDyCamera& iRefCamera,
+    DDyVector4& iMin, DDyVector4& iMax) const
 {
    DDyVector4 minResult {NumericalMax<TF32>};
   DDyVector4 maxResult {NumericalMin<TF32>};
@@ -293,19 +318,24 @@ void CDyDirectionalLight::FrustumBoundingBoxLightViewSpace(
   iMax = maxResult;
 }
 
-EDySuccess CDyDirectionalLight::pTryUpdateDirectionalLight()
+EDySuccess CDyLightDirectional::pTryUpdateDirectionalLight()
 {
   if (this->mIsBindedToRenderingManagerAsLighting == false) { return DY_FAILURE; }
   this->mIsNeededUpdateValueToGpu = false;
   return DY_SUCCESS;
 }
   
-DDyUboDirectionalLight CDyDirectionalLight::GetUboLightInfo() const noexcept
+const DDyUboDirectionalLight& CDyLightDirectional::GetUboLightInfo() const noexcept
 {
   return this->mData;
 }
 
-void CDyDirectionalLight::TryActivateInstance()
+const DDyUboDirShadow& CDyLightDirectional::GetUboShadowInfo() const noexcept
+{
+  return this->mDataShadow;
+}
+
+void CDyLightDirectional::TryActivateInstance()
 {
   if (this->IsCastingLight() == true)
   {
@@ -319,7 +349,7 @@ void CDyDirectionalLight::TryActivateInstance()
   }
 }
 
-void CDyDirectionalLight::TryDeactivateInstance()
+void CDyLightDirectional::TryDeactivateInstance()
 {
   if (this->mIsBindedToRenderingManagerAsLighting == true)
   {
@@ -333,7 +363,7 @@ void CDyDirectionalLight::TryDeactivateInstance()
   }
 }
 
-EDySuccess CDyDirectionalLight::pTryActivateDirectionalLight()
+EDySuccess CDyLightDirectional::pTryActivateDirectionalLight()
 {
   if (this->mIsBindedToRenderingManagerAsLighting == true)  { return DY_FAILURE; }
   if (this->mIsCastingLight == false)                       { return DY_FAILURE; }
@@ -344,7 +374,7 @@ EDySuccess CDyDirectionalLight::pTryActivateDirectionalLight()
   return DY_SUCCESS;
 }
 
-EDySuccess CDyDirectionalLight::pTryDeactivateDirectionalLight()
+EDySuccess CDyLightDirectional::pTryDeactivateDirectionalLight()
 {
   if (this->mIsBindedToRenderingManagerAsLighting == false) { return DY_FAILURE; }
   if (this->mIsCastingLight == true)                        { return DY_FAILURE; }
@@ -355,7 +385,7 @@ EDySuccess CDyDirectionalLight::pTryDeactivateDirectionalLight()
   return DY_SUCCESS;
 }
 
-EDySuccess CDyDirectionalLight::pTryActivateCastingShadow()
+EDySuccess CDyLightDirectional::pTryActivateCastingShadow()
 {
   if (this->mIsBindedToRenderingManagerAsShadow == true)    { return DY_FAILURE; }
   if (this->mIsCastingShadow == false)                      { return DY_FAILURE; }
@@ -366,7 +396,7 @@ EDySuccess CDyDirectionalLight::pTryActivateCastingShadow()
   return DY_SUCCESS;
 }
 
-EDySuccess CDyDirectionalLight::pTryDeactivateCastingShadow()
+EDySuccess CDyLightDirectional::pTryDeactivateCastingShadow()
 {
   if (this->mIsBindedToRenderingManagerAsShadow == false)   { return DY_FAILURE; }
   if (this->mIsCastingShadow == true)                       { return DY_FAILURE; }

@@ -44,6 +44,21 @@ MDY_SET_IMMUTABLE_STRING(sArrayVector3, "arrayvector3");
 namespace dy
 {
 
+EDyUniformVariableType ToUniformItemType(EDyUniformVariableType iType)
+{
+  using EUniform = EDyUniformVariableType;
+  switch (iType) 
+  { 
+  case EUniform::IntegerPointer:  return EUniform::Integer;
+  case EUniform::FloatArray:      return EUniform::Float;
+  case EUniform::Texture2DArray:  return EUniform::Texture2D;
+  case EUniform::Texture2DShadowArray: return EUniform::Texture2DShadow;
+  case EUniform::Matrix4Array:    return EUniform::Matrix4;
+  case EUniform::Vector3Array:    return EUniform::Vector3;
+  default: return iType;
+  }
+}
+
 void to_json(nlohmann::json& oJson, const EDyUniformVariableType& iUniformType)
 {
   std::string typeString = "";

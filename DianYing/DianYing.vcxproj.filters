@@ -67,7 +67,6 @@
     <ClCompile Include="Source\Builtin\Texture\ErrorBlue.cc" />
     <ClCompile Include="Source\Helper\Type\DyString.cc" />
     <ClCompile Include="Source\Management\ScriptManager.cc" />
-    <ClCompile Include="Source\Component\CDyDirectionalLight.cc" />
     <ClCompile Include="Source\Management\Type\AttachmentInformation.cc" />
     <ClCompile Include="Source\Management\BindingLua\BindingGlobalType.cc" />
     <ClCompile Include="Source\Management\BindingLua\Entry.cc" />
@@ -113,7 +112,6 @@
     <ClCompile Include="Source\Element\Descriptor\GlobalEnums.cc" />
     <ClCompile Include="Source\Meta\Type\EDyComponentTypes.cc" />
     <ClCompile Include="Source\Meta\Information\ComponentMetaInformation.cc" />
-    <ClCompile Include="Source\Meta\Information\ComponentLightMetaInfo.cc" />
     <ClCompile Include="Source\Helper\Type\ColorRGBA32.cc" />
     <ClCompile Include="Source\Helper\Type\ColorRGBA.cc" />
     <ClCompile Include="Source\Helper\Type\ColorRGB24.cc" />
@@ -375,6 +373,11 @@
     <ClCompile Include="Source\Core\Resource\Resource\Attachment\FDyAttachmentPingpongResource.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\FrameBuffer\FDyFrameBufferGeneralResource.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\FrameBuffer\FDyFrameBufferPingPongResource.cc" />
+    <ClCompile Include="Source\Component\CDyLightDirectional.cc" />
+    <ClCompile Include="Source\Component\CDyLightPoint.cc" />
+    <ClCompile Include="Source\Meta\Components\PCompDirLightMetaInfo.cc" />
+    <ClCompile Include="Source\Meta\Components\PCompPointLightMetaInfo.cc" />
+    <ClCompile Include="Source\Core\Reflection\Internal\EReflectionType.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -504,7 +507,6 @@
     <ClInclude Include="Include\Dy\Management\ScriptManager.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\GlobalEnums.h" />
     <ClInclude Include="Include\Dy\Element\Helper\DescriptorComponentHeaderString.h" />
-    <ClInclude Include="Include\Dy\Component\CDyDirectionalLight.h" />
     <ClInclude Include="Include\Dy\Helper\Type\Clamp.h" />
     <ClInclude Include="Include\Dy\Helper\Type\VectorInt2.h" />
     <ClInclude Include="Include\Dy\Management\Type\FramebufferInformation.h" />
@@ -567,7 +569,6 @@
     <ClInclude Include="Include\Dy\Meta\Information\PrefabMetaInformation.h" />
     <ClInclude Include="Include\Dy\Meta\Information\ComponentMetaInformation.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyComponentTypes.h" />
-    <ClInclude Include="Include\Dy\Meta\Information\ComponentLightMetaInfo.h" />
     <ClInclude Include="Include\Dy\Helper\Type\ColorRGBA.h" />
     <ClInclude Include="Include\Dy\Helper\Type\ColorRGBA32.h" />
     <ClInclude Include="Include\Dy\Helper\Type\ColorRGB.h" />
@@ -919,6 +920,15 @@
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FrameBuffer\FDyFrameBufferPingPongResource.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DSphere.h" />
     <ClInclude Include="Include\Dy\Management\Type\Render\DDyGlGlobalStates.h" />
+    <ClInclude Include="Include\Dy\Component\CDyLightPoint.h" />
+    <ClInclude Include="Include\Dy\Component\CDyLightDirectional.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Lights\DUboDirLight.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Lights\DUboPointLight.h" />
+    <ClInclude Include="Include\Dy\Meta\Components\PCompPointLightMetaInfo.h" />
+    <ClInclude Include="Include\Dy\Meta\Components\PCompDirLightMetaInfo.h" />
+    <ClInclude Include="Include\Dy\Core\Reflection\RReflection.h" />
+    <ClInclude Include="Include\Dy\Core\Reflection\Internal\EReflectionType.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Internal\Uniform\IDyUniformStruct.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />
@@ -942,5 +952,6 @@
     <None Include="Include\Dy\Core\Reflection\RBuiltinResourcesTmp.inl" />
     <None Include="Include\Dy\Helper\Internal\Inline\FProxyHandleTmp.inl" />
     <None Include="Include\Dy\Helper\Internal\Inline\FProxyHandlerTmp.inl" />
+    <None Include="Include\Dy\Core\Reflection\Inline\RReflectionTmp.inl" />
   </ItemGroup>
 </Project>

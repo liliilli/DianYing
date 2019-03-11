@@ -22,11 +22,14 @@ namespace dy
 /// @brief Uniform value base type.
 struct IDyUniformValueBase
 {
-  IDyUniformValueBase(TI32 iId, EDyUniformVariableType iType) : mId{iId}, mType{iType} {};
+  IDyUniformValueBase(TI32 iId, EDyUniformVariableType iType) 
+    : mId{iId}, mType{iType} 
+  { };
   virtual ~IDyUniformValueBase() = 0;
 
   TI32                    mId   = -1;
   EDyUniformVariableType  mType = EDyUniformVariableType::NoneError;
+  std::string             mSpecifier;
 };
 
   inline IDyUniformValueBase::~IDyUniformValueBase() = default;

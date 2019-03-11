@@ -29,7 +29,8 @@ enum class EDyComponentMetaType
   ModelFilter,      // CDyModelFilter
   ModelRenderer,    // CDyModelRenderer
   ModelAnimator,    // CDyModelAnimator
-  DirectionalLight, // CDyDirectionalLight
+  DirectionalLight, // CDyLightDirectional
+  PointLight, // CDyLightPoint
   Camera,     // CDyCamera
   SoundSource,// CDySoundSource
   Rigidbody,  // CDyPhysicsRigidbody
@@ -51,7 +52,7 @@ enum class EDyShadowType
 {
   Hard,
   Soft,
-  NoneError
+  __Error
 };
 
 void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const EDyShadowType& p);

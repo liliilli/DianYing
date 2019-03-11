@@ -33,6 +33,10 @@ public:
 
   void OnSetupRenderingSetting() override final;
   void pSetupOpaqueCSMIntegration();
+  /// Update directional light property.
+  void pUpdateUboShadowInfo();
+  void pUpdateUboDirectionalLightInfo();
+  void pUpdateUboPointLightsInfo();
   void pSetupTranslucentOITIntegration();
 
   void OnRender() override final;

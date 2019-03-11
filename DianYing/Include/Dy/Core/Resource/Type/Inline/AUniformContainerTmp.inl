@@ -13,8 +13,6 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Resource/Type/Uniform/UniformValueTypes.h>
-
 namespace dy
 {
 

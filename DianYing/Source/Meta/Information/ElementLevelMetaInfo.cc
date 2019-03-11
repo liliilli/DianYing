@@ -21,7 +21,7 @@
 #include <Dy/Element/Helper/DescriptorComponentHeaderString.h>
 
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
-#include <Dy/Meta/Information/ComponentLightMetaInfo.h>
+#include <Dy/Meta/Components/PCompDirLightMetaInfo.h>
 
 //!
 //! Local translation unit function & varaible data

@@ -19,7 +19,7 @@
 #include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
 #include <Dy/Core/Resource/Resource/FDyMeshResource.h>
 #include <Dy/Management/Rendering/UniformBufferObjectManager.h>
-#include <Dy/Component/CDyDirectionalLight.h>
+#include <Dy/Component/CDyLightDirectional.h>
 #include <Dy/Element/Level.h>
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
 #include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>

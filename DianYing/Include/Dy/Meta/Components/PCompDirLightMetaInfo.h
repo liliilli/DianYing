@@ -21,44 +21,40 @@
 namespace dy
 {
 
-///
 /// @struct PDyDirLightComponentMetaInfo
 /// @brief Dependency information to DDyObjectInformation::mMetaComponentInfo when mType is FDyDirectionalLight.
-///
 struct PDyDirLightComponentMetaInfo final : public IDyMetaInformation
 {
   struct DDetails final
   {
-    ///
-    EDyShadowType         mShadowType = EDyShadowType::NoneError;
-    ///
+    /// Shadow type. (@TODO IMPLEMENT THIS)
+    EDyShadowType mShadowType = EDyShadowType::__Error;
+    /// Shadow strength. 
     DDyClamp<float, 0, 1> mShadowStrength = MDY_INITIALIZE_DEFINT;
-    ///
+    /// Shadow bias.
     DDyClamp<float, 0, 2> mShadowBias = 0.02;
-    ///
-    DDyVector2            mShadowResolution = {};
+    /// NOT USED
+    MDY_NOTUSED DDyVector2    mShadowResolution = {};
     /// Normalized light direction vector.
-    DDyVector3            mDirection  = {};
+    DDyVector3    mDirection  = {};
     /// Tinting color
-    DDyColorRGBA              mDiffuse    = DDyColorRGBA::White;
-    DDyColorRGBA              mSpecular   = DDyColorRGBA::White;
-    DDyColorRGBA              mAmbient    = DDyColorRGBA::White;
+    DDyColorRGBA  mDiffuse    = DDyColorRGBA::White;
     /// Intensity of light must be set up to 0~.
-    TF32                  mIntensity  = MDY_INITIALIZE_DEFINT;
+    TF32          mIntensity  = MDY_INITIALIZE_DEFINT;
+    /// 
+    MDY_NOTUSED std::vector<std::string> mShadowCullingMaskLayer = {};
     ///
-    std::vector<std::string> mShadowCullingMaskLayer = {};
+    MDY_NOTUSED bool mIsUsingGlobalShadowResolution = false;
     ///
-    bool                  mIsUsingGlobalShadowResolution = false;
+    bool mIsCastingLight = false;
     ///
-    bool                  mIsCastingLight = false;
-    ///
-    bool                  mIsCastingShadow = false;
+    bool mIsCastingShadow = false;
   };
 
   /// Details information
-  DDetails            mDetails = {};
+  DDetails mDetails = {};
   /// Component is initially activated or not.
-  bool                mInitiallyActivated = false;
+  bool     mInitiallyActivated = false;
 
 };
 

@@ -46,31 +46,27 @@ public:
   ///
   MDY_NODISCARD const DDyUboInstanceInformation* GetUboContainer(_MIN_ const std::string& specifier);
 
-  ///
   /// @brief  Update UBO resource buffer with valid buffer instance and pointer.
   /// @param  specifier
   /// @param  bufferStartByte
   /// @param  bufferWrapSize
   /// @param  bufferCopyPtr
   /// @return If succeeded return DY_SUCCESS or DY_FAILURE;
-  ///
   EDySuccess UpdateUboContainer(
-      _MIN_ const std::string& specifier,
-      _MIN_ const TU32 bufferStartByte,
-      _MIN_ const TU32 bufferWrapSize,
-      _MIN_ const void* bufferCopyPtr);
+    const std::string& specifier,
+    TU32 bufferStartByte,
+    TU32 bufferWrapSize,
+    const void* bufferCopyPtr);
 
-  ///
   /// @brief  Clear UBO resource buffer with start byte pointer and wrapping byte size.
   /// @param  specifier
   /// @param  bufferStartByte
   /// @param  bufferWrapSize
   /// @return
-  ///
-  MDY_NODISCARD EDySuccess ClearUboContainer(
-      _MIN_ const std::string& specifier,
-      _MIN_ const TU32 bufferStartByte,
-      _MIN_ const TU32 bufferWrapSize);
+  EDySuccess ClearUboContainer(
+    const std::string& specifier,
+    TU32 bufferStartByte,
+    TU32 bufferWrapSize);
 
   ///
   /// @brief  Remove UBO resource buffer with valid specifier name.
