@@ -27,6 +27,9 @@ MDY_NODISCARD bool DyRegexCheckIsCompressedDataFile(_MIN_ const std::string& iFi
 MDY_NODISCARD std::optional<std::vector<std::string>>
 DyRegexGetMatchedKeyword(_MIN_ std::string iBuffer, _MIN_ const std::string& iRegex);
 
+/// @brief Check given specifier is matched to given regular expression.
+MDY_NODISCARD bool RegexIsMatched(const std::string& iString, const std::string& iRegex);
+
 } /// ::dy namespace
 
 #endif /// GUARD_DY_HELPER_SYSTEM_REGEX_H
