@@ -25,14 +25,16 @@ namespace dy
 /// @brief This structure must be aligned by 16 bytes. (for std140 GL standard block layout)
 struct alignas(16) DDyUboPointLight final
 {
+  REGISTER_UNIFORM_STRUCT(DDyUboPointLight)
+
   /// @brief Light's position.
   alignas(16) mutable DDyVector3 mPosition = DDyVector3{};
   /// @brief Light color
-  alignas(16) DDyColorRGB mColor = DDyColorRGB::White;
+  alignas(16) DDyColorRGB mColor = DDyColorRGB::Black;
   /// @brief Light intensity for point light component.
-              TF32 mIntensity = 1.0f;
+              TF32 mIntensity = 0.0f;
   /// @brief Light range for point light component.
-  alignas(16) TF32 mRange = 1.0f;
+  alignas(16) TF32 mRange = 0.0f;
 };
 
 MDyReflectionStart
