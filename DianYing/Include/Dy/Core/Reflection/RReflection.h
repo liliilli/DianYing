@@ -103,6 +103,23 @@ public:
     GetAliasContainer()[iSubName] = iTypeName;
   }
 
+  static const std::string& GetTypeNameOf(const std::string& iAlias)
+  {
+    return GetAliasContainer()[iAlias];
+  }
+
+  static const std::string& GetFirstAliasOf(const std::string& iTypeName)
+  {
+    const auto& container = GetAliasContainer();
+    for (const auto& [alias, typeName] : container)
+    {
+      if (typeName == iTypeName) { return alias; }
+    }
+
+    MDY_UNEXPECTED_BRANCH();
+    throw 0;
+  }
+
   static bool IsSubNameExist(const std::string& iSubName)
   {
     return GetAliasContainer().find(iSubName) != GetAliasContainer().end();
@@ -192,6 +209,11 @@ static ::dy::reflect::MDy_ReflectionStartName MDY_MAKENAME(_____, __LINE__)
 #define REGISTER_VARIABLE(__Type__, __Variable__, __Alias__) \
   RegisterVariable<decltype(__Type__::__Variable__)>(#__Variable__, offsetof(__Type__, __Variable__)) \
   .RegisterVariableSubname(#__Alias__, #__Variable__)
+
+/// @define REGISTER_UNIFORM_STRUCT
+/// @brief
+#define REGISTER_UNIFORM_STRUCT(__Type__) \
+  static constexpr const char* __sTypeName = #__Type__;
 
 /* Example for registering type information.
 struct DTest

@@ -39,7 +39,7 @@ inline const std::string& DType::GetVarNameOf(const std::string& iAlias) const
 template <typename TType>
 size_t DType::GetAddressOf(const TType& iInstance, const std::string& iVariable) const
 {
-  return static_cast<size_t>(&iInstance) + this->GetOffsetOf(iVariable); 
+  return (size_t)(&iInstance) + this->GetOffsetOf(iVariable); 
 }
 
 template <typename TValueType, typename TType>
@@ -55,11 +55,11 @@ TValueType& DType::GetValueOf(TType& iInstance, const std::string& iVariable) co
 template <typename TValueType, typename TType>
 const TValueType& DType::GetValueOf(const TType& iInstance, const std::string& iVariable) const
 {
-  if (ToVariableType<TValueType>::Type != this->GetTypeOf(iVariable))
+  if (ToVariableType<TValueType>::Value != this->GetTypeOf(iVariable))
   {
     throw std::runtime_error("Failed to get value");
   }
-  return *static_cast<const TValueType*>(this->GetAddressOf(iInstance, iVariable));
+  return *((const TValueType*)(this->GetAddressOf(iInstance, iVariable)));
 }
 
 template <typename TType>
