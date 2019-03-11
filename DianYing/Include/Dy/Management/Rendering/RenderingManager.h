@@ -63,6 +63,7 @@ public:
 
   using TDrawColliderItem = std::pair<NotNull<CDyPhysicsCollider*>, DDyMatrix4x4>; 
   using TUiDrawCallItem = NotNull<FDyUiObject*>;
+  using TPointLightHandleList = std::vector<CDyLightPoint*>; 
 
   /// @brief PreRender update functin.
   void PreRender(TF32 dt);
@@ -92,8 +93,8 @@ public:
   void        MDY_PRIVATE(BindPointLight)(CDyLightPoint& iRefLight);
   /// @brief Private function, unbind directional light of main light.
   EDySuccess  MDY_PRIVATE(UnbindPointLight)(CDyLightPoint& iRefLight);
-
-  /// @brief Private function, unbind activated point light from candidate list.
+  /// @brief Get activated point light components.
+  TPointLightHandleList& MDY_PRIVATE(GetActivatedPointLights)() noexcept;
 
   /// @brief Get General (Default) ui projection matrix.
   const DDyMatrix4x4& GetGeneralUiProjectionMatrix() const noexcept;
