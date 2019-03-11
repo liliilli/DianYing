@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Component/CDyLightPoint.h>
 #include <Dy/Management/Rendering/RenderingManager.h>
+#include <Dy/Element/Actor.h>
 
 namespace dy
 {
@@ -37,7 +38,10 @@ EDySuccess CDyLightPoint::Initialize(const PDyCompPointLightMetaInfo& iMetaInfo)
 
 void CDyLightPoint::Release()
 {
-
+  if (this->IsActivated() == true) 
+  {
+    this->Deactivate();
+  }
 }
 
 std::string CDyLightPoint::ToString()
@@ -46,13 +50,19 @@ std::string CDyLightPoint::ToString()
   return "";
 }
 
-bool CDyLightPoint::IsCastingLight() const noexcept
+void CDyLightPoint::ActivateLighting(bool iFlag) noexcept
+{
+  this->mIsCastingLight = iFlag;
+}
+
+bool CDyLightPoint::IsActiveLighting() const noexcept
 { 
   return this->mIsCastingLight; 
 }
 
-const DDyUboPointLight& CDyLightPoint::GetUboLightInfo() const noexcept
+const DDyUboPointLight& CDyLightPoint::GetUboLightInfo() noexcept
 {
+  this->mData.mPosition = this->GetBindedActor()->GetTransform()->GetFinalWorldPosition();
   return this->mData;
 }
 

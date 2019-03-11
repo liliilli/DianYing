@@ -41,11 +41,9 @@ MDY_SET_IMMUTABLE_STRING(sFrag, R"dy(
 #version 430
 #import <Input_UboCamera>;
 #import <Input_UboDirLight>;
+#import <Input_UStrPointLight>;
 
-in VS_OUT 
-{ 
-  vec2 texCoord; 
-} fs_in;
+in VS_OUT { vec2 texCoord; } fs_in;
 
 layout (location = 0) out vec4 outColor;
 

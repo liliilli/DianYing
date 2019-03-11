@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Meta/Information/ComponentLightMetaInfo.h>
+#include <Dy/Meta/Components/PCompDirLightMetaInfo.h>
 #include <Dy/Element/Helper/DescriptorComponentHeaderString.h>
 #include <Dy/Helper/Library/HelperJson.h>
 #include <Dy/Helper/Type/ColorRGB.h>

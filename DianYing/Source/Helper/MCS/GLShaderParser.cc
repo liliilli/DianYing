@@ -160,13 +160,20 @@ float DyComputeShadowCoefficient(sampler2DArrayShadow iShadowMap, vec3 iWorldPos
 }
 )dy");
 
-/*
-layout(std140, binding = 2) uniform PointLightBlock
+/// @brief Default Light input unfiorm variables but not uniform block.
+/// #import <Input_UStrPointLight>;
+MDY_SET_IMMUTABLE_STRING(Buffer_Input_UStrPointLight, R"dy(
+// Point lights uniform structure for lighting.
+// If intensity is 0, light item will be passed.
+struct DDyPointLight
 {
+  vec3  mWorldPosition;
   vec3  mColor;
   float mIntensity;
-} uLightPoint[16];
- */
+  float mRange;
+};
+uniform DDyPointLight uDyLightPoint[16];
+)dy");
 
 /// @brief Skinned animation input uniform variables.
 /// #import <Input_SkinAnimation>;
@@ -262,6 +269,7 @@ std::string ParseGLShader(_MIN_ const std::string& iShaderString)
     case DyStrCase("Input_SkinAnimation"):    exportShaderBuffer += Buffer_Input_SkinAnimation; break;
     case DyStrCase("Input_DefaultTexture2D"): exportShaderBuffer += Buffer_Input_DefaultTexture2D; break;
     case DyStrCase("Input_UboDirLight"):      exportShaderBuffer += Buffer_Input_UboDirLight; break;
+    case DyStrCase("Input_UStrPointLight"):    exportShaderBuffer += Buffer_Input_UStrPointLight; break;
     case DyStrCase("Output_OpaqueStream"):    exportShaderBuffer += Buffer_Output_OpaqueStream; break;
     case DyStrCase("Etc_Miscellaneous"):      exportShaderBuffer += Buffer_Etc_Miscellaneous; break;
     default: MDY_NOT_IMPLEMENTED_ASSERT(); break;

@@ -81,7 +81,7 @@ public:
   MDY_NODISCARD const DDyColorRGBA& GetColor() const noexcept;
 
   /// @brief Get uniform-buffer-object information of this light.
-  MDY_NODISCARD const DDyUboPointLight& GetUboLightInfo() const noexcept;
+  MDY_NODISCARD const DDyUboPointLight& GetUboLightInfo() noexcept;
 
 private:
   /// @brief This function must be implemented. 
