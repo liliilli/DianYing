@@ -31,10 +31,10 @@ struct PDyDirLightComponentMetaInfo final : public IDyMetaInformation
     EDyShadowType mShadowType = EDyShadowType::__Error;
     /// Shadow strength. 
     DDyClamp<float, 0, 1> mShadowStrength = MDY_INITIALIZE_DEFINT;
-    ///
+    /// Shadow bias.
     DDyClamp<float, 0, 2> mShadowBias = 0.02;
-    /// 
-    DDyVector2    mShadowResolution = {};
+    /// NOT USED
+    MDY_NOTUSED DDyVector2    mShadowResolution = {};
     /// Normalized light direction vector.
     DDyVector3    mDirection  = {};
     /// Tinting color
@@ -42,19 +42,19 @@ struct PDyDirLightComponentMetaInfo final : public IDyMetaInformation
     /// Intensity of light must be set up to 0~.
     TF32          mIntensity  = MDY_INITIALIZE_DEFINT;
     /// 
-    std::vector<std::string> mShadowCullingMaskLayer = {};
+    MDY_NOTUSED std::vector<std::string> mShadowCullingMaskLayer = {};
     ///
-    bool          mIsUsingGlobalShadowResolution = false;
+    MDY_NOTUSED bool mIsUsingGlobalShadowResolution = false;
     ///
-    bool          mIsCastingLight = false;
+    bool mIsCastingLight = false;
     ///
-    bool          mIsCastingShadow = false;
+    bool mIsCastingShadow = false;
   };
 
   /// Details information
-  DDetails            mDetails = {};
+  DDetails mDetails = {};
   /// Component is initially activated or not.
-  bool                mInitiallyActivated = false;
+  bool     mInitiallyActivated = false;
 
 };
 

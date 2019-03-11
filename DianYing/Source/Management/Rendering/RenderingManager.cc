@@ -151,7 +151,7 @@ public:
   CDyLightDirectional* mMainDirectionalShadow  = nullptr;
 
   /// @brief The pointer handle list of activated point lights.
-  std::vector<CDyLightPoint*> mActivatedPointLights = {};
+  TPointLightHandleList mActivatedPointLights = {};
 
   /// @brief Required skybox pointer for rendering on present frame.
   /// If rendered, skybox pointer will be nulled again.
@@ -218,20 +218,27 @@ EDySuccess MDyRendering::pfRelease()
   return DY_SUCCESS;
 }
 
-void MDyRendering::PreRender(TF32 iDt) { this->mInternal->PreRender(iDt); }
-void MDyRendering::SetupDrawModelTaskQueue() { this->mInternal->SetupDrawModelTaskQueue(); }
+void MDyRendering::PreRender(TF32 iDt) 
+{ 
+  this->mInternal->PreRender(iDt); 
+}
+
+void MDyRendering::SetupDrawModelTaskQueue() 
+{ 
+  this->mInternal->SetupDrawModelTaskQueue(); 
+}
 
 void MDyRendering::EnqueueDrawMesh(
-    DDyModelHandler::DActorInfo& iRefModelRenderer,
-    const FDyMeshResource& iRefValidMesh, 
-    const FDyMaterialResource& iRefValidMat)
+  DDyModelHandler::DActorInfo& iRefModelRenderer,
+  const FDyMeshResource& iRefValidMesh, 
+  const FDyMaterialResource& iRefValidMat)
 {
   this->mInternal->EnqueueDrawMesh(iRefModelRenderer, iRefValidMesh, iRefValidMat);
 }
 
 void MDyRendering::EnqueueDebugDrawCollider(
-    CDyPhysicsCollider& iRefCollider, 
-    const DDyMatrix4x4& iTransformMatrix)
+  CDyPhysicsCollider& iRefCollider, 
+  const DDyMatrix4x4& iTransformMatrix)
 {
   this->mInternal->EnqueueDebugDrawCollider(iRefCollider, iTransformMatrix);
 }
@@ -267,7 +274,7 @@ EDySuccess MDyRendering::MDY_PRIVATE(UnbindMainDirectionalShadow)(CDyLightDirect
   return this->mInternal->MDY_PRIVATE(UnbindMainDirectionalShadow)(iRefLight);
 }
 
-void MDyRendering::__BindPointLight(CDyLightPoint& iRefLight)
+void MDyRendering::MDY_PRIVATE(BindPointLight)(CDyLightPoint& iRefLight)
 {
   auto& handleList = this->mInternal->mActivatedPointLights;
   if (Contains(handleList, &iRefLight) == true)
@@ -279,7 +286,7 @@ void MDyRendering::__BindPointLight(CDyLightPoint& iRefLight)
   handleList.emplace_back(&iRefLight);
 }
 
-EDySuccess MDyRendering::__UnbindPointLight(CDyLightPoint& iRefLight)
+EDySuccess MDyRendering::MDY_PRIVATE(UnbindPointLight)(CDyLightPoint& iRefLight)
 {
   auto& handleList = this->mInternal->mActivatedPointLights;
   if (Contains(handleList, &iRefLight) == false)
@@ -291,6 +298,12 @@ EDySuccess MDyRendering::__UnbindPointLight(CDyLightPoint& iRefLight)
   const auto it = std::find(MDY_BIND_BEGIN_END(handleList), &iRefLight);
   handleList.erase(it);
   return DY_SUCCESS;
+}
+
+MDyRendering::TPointLightHandleList&
+MDyRendering::MDY_PRIVATE(GetActivatedPointLights)() noexcept
+{
+  return this->mInternal->mActivatedPointLights;
 }
 
 const DDyMatrix4x4& MDyRendering::GetGeneralUiProjectionMatrix() const noexcept
