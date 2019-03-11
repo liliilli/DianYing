@@ -26,6 +26,9 @@
 #include <Dy/Element/Level.h>
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
 #include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
+#include <Dy/Component/Internal/Lights/DUboPointLight.h>
+#include <Dy/Component/CDyLightPoint.h>
+#include "Dy/Core/Reflection/RReflection.h"
 
 namespace dy
 {
@@ -53,6 +56,18 @@ void FBtRenderItemLevelIntegeration::OnSetupRenderingSetting()
 void FBtRenderItemLevelIntegeration::pSetupOpaqueCSMIntegration()
 {
   // Update shader's uniform information.
+  this->pUpdateUboShadowInfo();
+  this->pUpdateUboDirectionalLightInfo();
+  this->pUpdateUboPointLightsInfo();
+
+  this->mBinderFrameBuffer->BindFrameBuffer();
+  const auto& backgroundColor = MDyWorld::GetInstance().GetValidLevelReference().GetBackgroundColor();
+  glClearColor(backgroundColor.R, backgroundColor.G, backgroundColor.B, backgroundColor.A);
+  glClear(GL_COLOR_BUFFER_BIT);
+}
+
+void FBtRenderItemLevelIntegeration::pUpdateUboShadowInfo()
+{
   auto& uboManager = MDyUniformBufferObject::GetInstance();
   if (const auto* ptr = MDyRendering::GetInstance().GetPtrMainDirectionalShadow();
       ptr != nullptr) 
@@ -65,8 +80,11 @@ void FBtRenderItemLevelIntegeration::pSetupOpaqueCSMIntegration()
     DDyUboDirShadow shadow;
     uboManager.UpdateUboContainer("dyBtUboDirShadow", 0, sizeof(DDyUboDirShadow), &shadow);
   }
+}
 
-  // Update directional light property.
+void FBtRenderItemLevelIntegeration::pUpdateUboDirectionalLightInfo()
+{
+  auto& uboManager = MDyUniformBufferObject::GetInstance();
   auto* ptrLight = MDyRendering::GetInstance().GetPtrMainDirectionalLight();
   if (this->mAddrMainLight != reinterpret_cast<ptrdiff_t>(ptrLight))
   {
@@ -82,11 +100,28 @@ void FBtRenderItemLevelIntegeration::pSetupOpaqueCSMIntegration()
       uboManager.UpdateUboContainer("dyBtUboDirLight", 0, sizeof(DDyUboDirectionalLight), &light);
     }
   }
+}
 
-  this->mBinderFrameBuffer->BindFrameBuffer();
-  const auto& backgroundColor = MDyWorld::GetInstance().GetValidLevelReference().GetBackgroundColor();
-  glClearColor(backgroundColor.R, backgroundColor.G, backgroundColor.B, backgroundColor.A);
-  glClear(GL_COLOR_BUFFER_BIT);
+void FBtRenderItemLevelIntegeration::pUpdateUboPointLightsInfo()
+{
+  auto& lightPtrList  = MDyRendering::GetInstance().__GetActivatedPointLights();
+
+  std::vector<DDyUboPointLight> pointLightChunk; pointLightChunk.reserve(16);
+  for (auto& ptrLight : lightPtrList)
+  {
+    pointLightChunk.emplace_back(ptrLight->GetUboLightInfo());
+  }
+
+  for (size_t i = 0, size = pointLightChunk.size(); i < size; ++i)
+  {
+    this->mBinderOpaqueShader->TryUpdateUniformStruct(i, pointLightChunk[i]);
+  }
+
+  for (size_t i = pointLightChunk.size(); i < 16; ++i)
+  {
+    static const DDyUboPointLight blank{};
+    this->mBinderOpaqueShader->TryUpdateUniformStruct(i, blank);
+  }
 }
 
 void FBtRenderItemLevelIntegeration::pSetupTranslucentOITIntegration()

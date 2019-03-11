@@ -377,6 +377,7 @@
     <ClCompile Include="Source\Component\CDyLightPoint.cc" />
     <ClCompile Include="Source\Meta\Components\PCompDirLightMetaInfo.cc" />
     <ClCompile Include="Source\Meta\Components\PCompPointLightMetaInfo.cc" />
+    <ClCompile Include="Source\Core\Reflection\Internal\EReflectionType.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -925,6 +926,9 @@
     <ClInclude Include="Include\Dy\Component\Internal\Lights\DUboPointLight.h" />
     <ClInclude Include="Include\Dy\Meta\Components\PCompPointLightMetaInfo.h" />
     <ClInclude Include="Include\Dy\Meta\Components\PCompDirLightMetaInfo.h" />
+    <ClInclude Include="Include\Dy\Core\Reflection\RReflection.h" />
+    <ClInclude Include="Include\Dy\Core\Reflection\Internal\EReflectionType.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Internal\Uniform\IDyUniformStruct.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />
@@ -948,5 +952,6 @@
     <None Include="Include\Dy\Core\Reflection\RBuiltinResourcesTmp.inl" />
     <None Include="Include\Dy\Helper\Internal\Inline\FProxyHandleTmp.inl" />
     <None Include="Include\Dy\Helper\Internal\Inline\FProxyHandlerTmp.inl" />
+    <None Include="Include\Dy\Core\Reflection\Inline\RReflectionTmp.inl" />
   </ItemGroup>
 </Project>

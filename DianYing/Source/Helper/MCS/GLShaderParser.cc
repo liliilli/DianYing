@@ -232,6 +232,12 @@ float DyToGrayScale(float iR, float iG, float iB)
 { 
   return 0.2126 * iR + 0.7152 * iG + 0.0722 * iB;
 }
+
+/// @brief Check float value is nearly equal to target value.
+bool DyIsNearlyEqual(float iValue, float iTarget)
+{
+  return abs(iValue - iTarget) < 0.00001;
+}
 )dy");
 
 } /// ::anonymous namespace

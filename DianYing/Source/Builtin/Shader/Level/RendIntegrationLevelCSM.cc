@@ -42,13 +42,14 @@ MDY_SET_IMMUTABLE_STRING(sFrag, R"dy(
 #import <Input_UboCamera>;
 #import <Input_UboDirLight>;
 #import <Input_UStrPointLight>;
+#import <Etc_Miscellaneous>;
 
 in VS_OUT { vec2 texCoord; } fs_in;
 
 layout (location = 0) out vec4 outColor;
 
 layout (binding = 0) uniform sampler2D uTexture0;       // Unlit
-layout (binding = 1) uniform sampler2D uTexture1;       // Normal
+layout (binding = 1) uniform sampler2D uTexture1;       // World Normal
 layout (binding = 2) uniform sampler2D uTexture2;       // Specular
 layout (binding = 3) uniform sampler2D uTexture3;       // Model position, Use it CSM shadowing.
 layout (binding = 4) uniform sampler2DArrayShadow uTexture4; // Shadow
@@ -148,7 +149,32 @@ vec3 GetOpaqueColor()
   vec4 specularValue = GetSpecular();
   vec3 modelPosition = GetModelPos();
 
-  return DyCalculateDirectionalLight(unlitValue.xyz, normalValue.xyz, specularValue, modelPosition);
+  const vec3 dirColor = 
+    DyCalculateDirectionalLight(unlitValue.xyz, normalValue.xyz, specularValue, modelPosition);
+
+  vec3 pointColor = vec3(0);
+  for (int i = 0; i < uDyLightPoint.length; ++i)
+  {
+    const float intensity = uDyLightPoint[i].mIntensity;
+    if (DyIsNearlyEqual(intensity, 0.0f) == true) { continue; }
+    
+    const vec3 fromTo = uDyLightPoint[i].mWorldPosition - modelPosition;
+    const float dist  = length(fromTo);
+    if (dist > uDyLightPoint[i].mRange) { continue; }
+
+    float invFactor = 1.0f;
+    if (DyIsNearlyEqual(dist, 0.0f) == false) { invFactor *= pow(dist, 2.0f); }
+    
+    const float factor = 
+      GetHalfLambertFactor(normalValue.xyz, normalize(fromTo), 2.0f) 
+    * uDyLightPoint[i].mIntensity 
+    / invFactor;
+
+    const vec3 lightColor = uDyLightPoint[i].mColor * factor * 0.0625f;
+    pointColor += lightColor;
+  }
+
+  return dirColor + pointColor;
 }
 
 void main()
