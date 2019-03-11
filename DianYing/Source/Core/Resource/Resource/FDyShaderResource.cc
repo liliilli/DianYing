@@ -18,7 +18,9 @@
 #include <Dy/Core/Rendering/Wrapper/PDyGLShaderFragmentDescriptor.h>
 #include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
 #include <Dy/Management/Helper/SDyProfilingHelper.h>
-#include "Dy/Helper/MCS/GLShaderParser.h"
+#include <Dy/Helper/MCS/GLShaderParser.h>
+#include <Dy/Helper/Library/HelperRegex.h>
+#include <Dy/Core/Reflection/RReflection.h>
 
 //!
 //! Forward declaration
@@ -187,7 +189,8 @@ void FDyShaderResource::pStoreAttributeProperties() noexcept
 
 void FDyShaderResource::pStoreUniformProperties() noexcept
 {
-  const TU32 activatedUniformCount = FDyGLWrapper::QueryShaderProgramIV(this->mShaderProgramId, GL_ACTIVE_UNIFORMS);
+  const TU32 activatedUniformCount = 
+    FDyGLWrapper::QueryShaderProgramIV(this->mShaderProgramId, GL_ACTIVE_UNIFORMS);
   this->mUniformVariableList.reserve(activatedUniformCount);
 
   // Retrieve uniform variable information.
@@ -197,17 +200,87 @@ void FDyShaderResource::pStoreUniformProperties() noexcept
     if (result.has_value() == false) { continue; }
 
     auto [specifier, length, size, type, locId] = result.value();
-    this->mUniformVariableList.emplace_back(specifier, size, type, locId);
+
+    // Check whether this is structurized uniform variable specifier.
+    static MDY_SET_IMMUTABLE_STRING(kStructurized, R"dy((\w+)[\[\d+\]]*[.](\w+))dy");
+    if (RegexIsMatched(specifier, kStructurized) == true)
+    {
+      // If regex is matched to array version, 
+      static MDY_SET_IMMUTABLE_STRING(kArrayVersion, R"dy((\w+)\[(\d+)\]*[.](\w+))dy");
+      if (RegexIsMatched(specifier, kArrayVersion) == true)
+      {
+        const auto optValue = DyRegexGetMatchedKeyword(specifier, kArrayVersion);
+        const auto prefix   = (*optValue)[0];
+        const auto number   = static_cast<size_t>(std::stoi((*optValue)[1]));
+        const auto postfix  = (*optValue)[2];
+        MDY_ASSERT_FORCE(reflect::RUniformReflection::IsSubNameExist(prefix) == true);
+
+        // Check prefix structure is in map.
+        if (DyIsMapContains(this->mUniformStructVarListMap, prefix) == false)
+        {
+          this->mUniformStructVarListMap.try_emplace(
+            prefix, 
+            std::pair(prefix, std::vector<DDyUniformStructVarInformation>{})
+          );
+        }
+
+        // Resize of structure item.
+        auto& [_, uniformStructVarList] = this->mUniformStructVarListMap[prefix];
+        if (number >= uniformStructVarList.size()) 
+        { 
+          uniformStructVarList.resize(number + 1); 
+        }
+
+        // Verification check.
+        const auto& reflectData = reflect::RUniformReflection::GetDataOfSubName(prefix);
+        MDY_ASSERT_FORCE(reflectData.IsAliasExist(postfix) == true);
+        const auto reflectType = reflectData.GetTypeOf(reflectData.GetVarNameOf(postfix));
+        // Structure arrayed each component type should be converted to item type.
+        type = ToUniformItemType(type);
+        MDY_ASSERT_FORCE(reflect::ToUniformVariableType(reflectType) == type);
+
+        uniformStructVarList[number].mMemberValues.emplace_back(postfix, size, type, locId);
+      }
+      else
+      {
+        const auto optValue = DyRegexGetMatchedKeyword(specifier, kStructurized);
+        const auto prefix   = (*optValue)[0];
+        const auto postfix  = (*optValue)[1];
+
+        // Check prefix structure is in map.
+        if (DyIsMapContains(this->mUniformStructVarItemMap, prefix) == false)
+        {
+          this->mUniformStructVarItemMap.try_emplace(
+            prefix, 
+            std::pair(prefix, DDyUniformStructVarInformation{})
+          );
+        }
+        auto& [_, uniformStructVarList] = this->mUniformStructVarItemMap[prefix];
+
+        // Verification check.
+        const auto& reflectData = reflect::RUniformReflection::GetDataOfSubName(prefix);
+        MDY_ASSERT_FORCE(reflectData.IsAliasExist(postfix) == true);
+        const auto reflectType = reflectData.GetTypeOf(reflectData.GetVarNameOf(postfix));
+        MDY_ASSERT_FORCE(reflect::ToUniformVariableType(reflectType) == type);
+
+        uniformStructVarList.mMemberValues.emplace_back(postfix, size, type, locId);
+      }
+    }
+    else
+    {
+      this->mUniformVariableList.emplace_back(specifier, size, type, locId);
+    }
   }
 
 #ifdef false
   // Output activated attirbute variable information on console and file in debug_mode.
   for (const auto& variable : this->mPlainUniformVariableLists)
   {
-    DyPushLogDebugDebug("{} | Shader uniform variable information | Name : {} | Slotsize : {} | Type : {} | Location : {}",
-                    this->mShaderName,
-                    variable.mVariableName, variable.mVariableSlotSize,
-                    DyGetDebugStringOfUniformVariableType(variable.mVariableType).data(), variable.mVariableLocation);
+    DyPushLogDebugDebug(
+      "{} | Shader uniform variable information | Name : {} | Slotsize : {} | Type : {} | Location : {}",
+      this->mShaderName,
+      variable.mVariableName, variable.mVariableSlotSize,
+      DyGetDebugStringOfUniformVariableType(variable.mVariableType).data(), variable.mVariableLocation);
   }
 #endif
 }
@@ -229,7 +302,9 @@ void FDyShaderResource::pStoreUniformBufferObjectProperties() noexcept
   // Output activated attirbute variable information on console and file in debug_mode.
   for (const auto& variable : this->mUniformBufferObjectList)
   {
-    DyPushLogDebugDebug("{} | Shader UBO information | Buffer name : {}", this->mSpecifierName, variable.mUboSpecifierName);
+    DyPushLogDebugDebug(
+      "{} | Shader UBO information | Buffer name : {}", 
+      this->mSpecifierName, variable.mUboSpecifierName);
   }
 #endif
 }
@@ -256,6 +331,24 @@ void FDyShaderResource::UseShader() const noexcept
 void FDyShaderResource::DisuseShader() const noexcept
 {
   FDyGLWrapper::DisuseShaderProgram();
+}
+
+const std::vector<DDyUniformVariableInformation>& 
+FDyShaderResource::GetUniformVariableList() const noexcept
+{
+  return this->mUniformVariableList;
+}
+
+const FDyShaderResource::TUniformStructListMap& 
+FDyShaderResource::GetUniformStructListMap() const noexcept
+{
+  return this->mUniformStructVarListMap;
+}
+
+const FDyShaderResource::TUniformStructItemMap& 
+FDyShaderResource::GetUniformStructItemMap() const noexcept
+{
+  return this->mUniformStructVarItemMap;
 }
 
 } /// ::dy namespace

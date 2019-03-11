@@ -63,6 +63,7 @@ enum class EDyUniformVariableType
   Texture2D,
   NoneError,
   Texture2DArray,
+  Texture2DShadow,
   Texture2DShadowArray,
 
   Matrix4Array,
@@ -70,6 +71,10 @@ enum class EDyUniformVariableType
   Texture2DRectangle, // Could not create mipmap from this, and texel retriving uv is texuture's width and height.
   Texture2DCubemap,   // GL_SAMPLER_CUBE (samplerCube)
 };
+
+/// @brief Convert uniform array type to uniform item type.
+/// If given argument is already item type, do not but just return iType.
+MDY_NODISCARD EDyUniformVariableType ToUniformItemType(EDyUniformVariableType iType);
 
 void to_json(nlohmann::json& oJson, const EDyUniformVariableType& iUniformType);
 void from_json(const nlohmann::json& iJson, EDyUniformVariableType& iUniformType);
@@ -112,6 +117,11 @@ struct DDyUniformVariableInformation final
       mVariableSlotSize { iSlotSize },
       mVariableType {iType},
       mVariableLocation {iLocation} {};
+};
+
+struct DDyUniformStructVarInformation final
+{
+  std::vector<DDyUniformVariableInformation> mMemberValues;
 };
 
 /// @struct DDyUniformBufferObjectInformation

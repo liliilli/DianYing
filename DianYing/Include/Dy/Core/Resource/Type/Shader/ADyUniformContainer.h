@@ -18,6 +18,7 @@
 #include <Dy/Core/Resource/Internal/ShaderType.h>
 #include <Dy/Core/Resource/Internal/Uniform/IDyUniformValueBase.h>
 #include <Dy/Core/Resource/Type/Shader/TemplateUniformType.h>
+#include "Dy/Core/Resource/Internal/Uniform/IDyUniformStruct.h"
 
 //!
 //! Forward declaration
@@ -44,7 +45,7 @@ public:
   void __TryClearUniformList();
   /// @brief Try construct default uniform variable list.
   /// If already have value, do nothing.
-  void __TryConstructDefaultUniformList(_MIN_ const FDyShaderResource& iResc);
+  void __TryConstructDefaultUniformList(const FDyShaderResource& iResc);
 
   /// @brief Try update uniform value.
   /// If uniform value is not exist on binding shader, just insert value with -1 id (garbage value)
@@ -62,6 +63,9 @@ public:
   /// This function does not update texture binding status but need to call `TryUpdateUniformList` function.
   EDySuccess TryInsertTextureRequisition(TU32 insertId, TU32 textureId);
 
+  /// @brief Get the type of given string of uniform variable.
+  MDY_NODISCARD EDyUniformVariableType GetTypeOfUniform(const std::string& iSpecifier) const noexcept;
+
   /// @brief Try update uniform variables and new texture requisition. \n
   /// Do nothing when update list is empty or binding flag is not set up
   /// by calling MDY_PRIVATE(TryConstructDefaultUniformList)().
@@ -71,6 +75,21 @@ public:
   MDY_NODISCARD TU32 GetAvailableTextureCount() const noexcept;
 
 private:
+  void pTryConstructDefaultUniformVariables(
+    const std::vector<DDyUniformVariableInformation>& iUniformList);
+  void pTryConstructDefaultUniformStructLists(
+    const std::unordered_map<
+    std::string, 
+    std::pair<std::string, std::vector<DDyUniformStructVarInformation>>>& iUniformList);
+  void pTryConstructDefaultUniformItemList(
+    const std::unordered_map<
+    std::string, 
+    std::pair<std::string, DDyUniformStructVarInformation>>& iUniformList);
+
+  void pTryUpdateUniformVariables();
+  void pTryUpdateUniformTextureVars();
+  void pTryUpdateUniformStructVars();
+
   /// @struct DTextureUpdateItem
   /// @brief Texture binding requisition item type. This type is used only in ADyUniformContainer.
   struct DTextureUpdateItem final
@@ -84,18 +103,24 @@ private:
     {};
   };
 
-  template <EDyUniformVariableType TType> using TValueType = typename MDY_PRIVATE(UniformBinder)<TType>::ValueType;
+  template <EDyUniformVariableType TType> using TValueType 
+    = typename MDY_PRIVATE(UniformBinder)<TType>::ValueType;
 
   using TUniformMap         = std::unordered_map<std::string, std::unique_ptr<IDyUniformValueBase>>;
   using TUpdatedItemList    = std::vector<IDyUniformValueBase*>;
+  using TUpdatedStructList  = std::vector<std::tuple<std::string, TI32, IDyUniformValueBase*>>;
   using TUpdatedTextureList = std::vector<DTextureUpdateItem>;
 
-  TUniformMap         mUniformMap {};
+  TUniformMap mUniformMap {};
+  std::unordered_map<std::string, IDyUniformStructItem> mUniformStructItemMap;
+  std::unordered_map<std::string, IDyUniformStructList> mUniformStructListMap;
+
   TUpdatedItemList    mUpdatedItemList = {};
+  TUpdatedStructList  mUpdatedStructList = {};
   TUpdatedTextureList mUpdatedTextureList = {};
 
-  bool              mIsShaderSetuped = false;
-  TU32              mAvailableTextureCount = 0;
+  bool mIsShaderSetuped = false;
+  TU32 mAvailableTextureCount = 0;
 };
 
 inline ADyUniformContainer::~ADyUniformContainer() = default;
