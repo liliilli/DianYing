@@ -29,6 +29,7 @@
 #include <Dy/Component/Internal/Lights/DUboPointLight.h>
 #include <Dy/Component/CDyLightPoint.h>
 #include "Dy/Core/Reflection/RReflection.h"
+#include "Dy/Component/CDyCamera.h"
 
 namespace dy
 {
@@ -104,12 +105,19 @@ void FBtRenderItemLevelIntegeration::pUpdateUboDirectionalLightInfo()
 
 void FBtRenderItemLevelIntegeration::pUpdateUboPointLightsInfo()
 {
-  auto& lightPtrList  = MDyRendering::GetInstance().__GetActivatedPointLights();
+  auto& activateLightPtrList  = MDyRendering::GetInstance().__GetActivatedPointLights();
+  std::vector<DDyUboPointLight> pointLightChunk; 
+  pointLightChunk.reserve(16);
 
-  std::vector<DDyUboPointLight> pointLightChunk; pointLightChunk.reserve(16);
-  for (auto& ptrLight : lightPtrList)
+  // Do cpu frustum culling.
+  const auto* ptrCamera = MDyWorld::GetInstance().GetPtrMainLevelCamera();
+  for (auto& ptrLight : activateLightPtrList)
   {
-    pointLightChunk.emplace_back(ptrLight->GetUboLightInfo());
+    const auto& lightInfo = ptrLight->GetUboLightInfo();
+    if (ptrCamera->IsSphereInFrustum(lightInfo.mPosition, lightInfo.mRange) == true)
+    {
+      pointLightChunk.emplace_back(lightInfo);
+    }
   }
 
   for (size_t i = 0, size = pointLightChunk.size(); i < size; ++i)

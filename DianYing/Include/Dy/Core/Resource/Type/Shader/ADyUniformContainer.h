@@ -18,9 +18,7 @@
 #include <Dy/Core/Resource/Internal/ShaderType.h>
 #include <Dy/Core/Resource/Internal/Uniform/IDyUniformValueBase.h>
 #include <Dy/Core/Resource/Type/Shader/TemplateUniformType.h>
-#include <Dy/Core/Resource/Type/Uniform/UniformValueTypes.h>
 #include <Dy/Core/Resource/Internal/Uniform/IDyUniformStruct.h>
-#include <Dy/Core/Reflection/RReflection.h>
 #include <Dy/Helper/Type/ColorRGB.h>
 
 //!
@@ -62,99 +60,7 @@ public:
 
   /// @brief Try update with structurized value instance.
   template <typename TType>
-  EDySuccess TryUpdateUniformStruct(
-    TU32 iIndex,
-    const TType& iContainer)
-  {
-    const auto& aliasName = reflect::RUniformReflection::GetFirstAliasOf(TType::__sTypeName);
-    if (DyIsMapContains(this->mUniformStructListMap, aliasName) == false) { return DY_FAILURE; }
-
-    const auto& typeName = reflect::RUniformReflection::GetData(TType::__sTypeName);
-    auto& data = this->mUniformStructListMap.at(aliasName);
-    for (auto& memberValue : data.mItems[iIndex].mMemberValues)
-    {
-      const auto& varName = typeName.GetVarNameOf(memberValue->mSpecifier);
-      using ERefl = reflect::EReflectScopeType; 
-      using EUnif = EDyUniformVariableType;
-      const ERefl varType = typeName.GetTypeOf(varName);
-      switch (varType)
-      {
-      case ERefl::Int: 
-      {
-        const auto& value = typeName.template GetValueOf<int>(iContainer, varName);
-        if (auto* ptrInstance = static_cast<FDyUniformValue<EUnif::Integer>*>(memberValue.get());
-            ptrInstance->mValue != value)
-        {
-          ptrInstance->mValue = value;
-          this->mUpdatedStructList.emplace_back(aliasName, TI32(iIndex), ptrInstance);
-        }
-      } break;
-      case reflect::EReflectScopeType::Float:
-      {
-        const auto& value = typeName.template GetValueOf<float>(iContainer, varName);
-        if (auto* ptrInstance = static_cast<FDyUniformValue<EUnif::Float>*>(memberValue.get());
-            ptrInstance->mValue != value)
-        {
-          ptrInstance->mValue = value;
-          this->mUpdatedStructList.emplace_back(aliasName, TI32(iIndex), ptrInstance);
-        }
-      } break;
-      case reflect::EReflectScopeType::Vector2:
-      {
-        const auto& value = typeName.template GetValueOf<DDyVector2>(iContainer, varName);
-        if (auto* ptrInstance = static_cast<FDyUniformValue<EUnif::Vector2>*>(memberValue.get());
-            ptrInstance->mValue != value)
-        {
-          ptrInstance->mValue = value;
-          this->mUpdatedStructList.emplace_back(aliasName, TI32(iIndex), ptrInstance);
-        }
-      } break;
-      case reflect::EReflectScopeType::Vector3:
-      {
-        const auto& value = typeName.template GetValueOf<DDyVector3>(iContainer, varName);
-        if (auto* ptrInstance = static_cast<FDyUniformValue<EUnif::Vector3>*>(memberValue.get());
-            ptrInstance->mValue != value)
-        {
-          ptrInstance->mValue = value;
-          this->mUpdatedStructList.emplace_back(aliasName, TI32(iIndex), ptrInstance);
-        }
-      } break;
-      case reflect::EReflectScopeType::Vector4:
-      {
-        const auto& value = typeName.template GetValueOf<DDyVector4>(iContainer, varName);
-        if (auto* ptrInstance = static_cast<FDyUniformValue<EUnif::Vector4>*>(memberValue.get());
-            ptrInstance->mValue != value)
-        {
-          ptrInstance->mValue = value;
-          this->mUpdatedStructList.emplace_back(aliasName, TI32(iIndex), ptrInstance);
-        }
-      } break;
-      case reflect::EReflectScopeType::Matrix4:
-      {
-        const auto& value = typeName.template GetValueOf<DDyMatrix4x4>(iContainer, varName);
-        if (auto* ptrInstance = static_cast<FDyUniformValue<EUnif::Matrix4>*>(memberValue.get());
-            ptrInstance->mValue != value)
-        {
-          ptrInstance->mValue = value;
-          this->mUpdatedStructList.emplace_back(aliasName, TI32(iIndex), ptrInstance);
-        }
-      } break;
-      case reflect::EReflectScopeType::ColorRGB: 
-      {
-        const auto& value = typeName.template GetValueOf<DDyColorRGB>(iContainer, varName);
-        if (auto* ptrInstance = static_cast<FDyUniformValue<EUnif::Vector3>*>(memberValue.get());
-            ptrInstance->mValue != static_cast<DDyVector3>(value))
-        {
-          ptrInstance->mValue = static_cast<DDyVector3>(value);
-          this->mUpdatedStructList.emplace_back(aliasName, TI32(iIndex), ptrInstance);
-        }
-      } break;
-      default: MDY_NOT_IMPLEMENTED_ASSERT(); break;
-      }
-    }
-
-    return DY_SUCCESS;
-  }
+  EDySuccess TryUpdateUniformStruct(TU32 iIndex, const TType& iContainer);
 
   /// @brief Try insert texture requisition. \n
   /// If required `insertId` is out of bound of count of available texture, just do nothing but return DY_FAILURE.
