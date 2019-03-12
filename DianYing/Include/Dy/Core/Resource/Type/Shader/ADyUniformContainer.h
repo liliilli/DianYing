@@ -62,6 +62,10 @@ public:
   template <typename TType>
   EDySuccess TryUpdateUniformStruct(TU32 iIndex, const TType& iContainer);
 
+  /// @brief Try update with structurized value instance but without item index.
+  template <typename TType>
+  EDySuccess TryUpdateUniformStruct(const TType& iContainer);
+
   /// @brief Try insert texture requisition. \n
   /// If required `insertId` is out of bound of count of available texture, just do nothing but return DY_FAILURE.
   /// When successful, find proper texture type from container, make requisition issue item and insert to queue. \n
