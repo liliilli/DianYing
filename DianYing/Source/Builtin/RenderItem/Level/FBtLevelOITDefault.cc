@@ -68,8 +68,8 @@ void FBtRenderLevelOitDefault::OnSetupRenderingSetting()
 
   FDyGLWrapper::PushInternalGlobalState(status);
 
-  glClearBufferfv(GL_COLOR, 0, &DDyColorRGBA::Black.R);
-  glClearBufferfv(GL_COLOR, 1, &DDyColorRGBA::White.R);
+  glClearBufferfv(GL_COLOR, 0, &DColorRGBA::Black.R);
+  glClearBufferfv(GL_COLOR, 1, &DColorRGBA::White.R);
 
   this->mBinderFrameBuffer->BindFrameBuffer();
 }

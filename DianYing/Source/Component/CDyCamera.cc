@@ -107,7 +107,7 @@ void CDyCamera::pUpdateViewMatrix()
   this->mViewMatrix = glm::lookAt(
       static_cast<glm::vec3>(this->mPosition),
       static_cast<glm::vec3>(this->mPosition + this->mLookingAtDirection),
-      static_cast<glm::vec3>(DDyVector3::UpY())
+      static_cast<glm::vec3>(DVector3::UpY())
   );
 
   this->mIsViewMatrixDirty = false;
@@ -151,12 +151,12 @@ void CDyCamera::TryDeactivateInstance()
   if (this->mIsFocused == true) { this->Unfocus(); }
 }
 
-const DDyMatrix4x4& CDyCamera::GetViewMatrix() const noexcept
+const DMatrix4x4& CDyCamera::GetViewMatrix() const noexcept
 {
   return this->mViewMatrix;
 }
 
-const DDyMatrix4x4& CDyCamera::GetProjectionMatrix() const noexcept
+const DMatrix4x4& CDyCamera::GetProjectionMatrix() const noexcept
 {
   return this->mProjectionMatrix;
 }
@@ -181,17 +181,17 @@ TF32 CDyCamera::GetFieldOfView() const noexcept
   return this->mFieldOfView;
 }
 
-const DDyVector3& CDyCamera::GetPosition() const noexcept
+const DVector3& CDyCamera::GetPosition() const noexcept
 {
   return this->mPosition;
 }
 
-bool CDyCamera::IsPointInFrustum(const DDyVector3& iPoint) const noexcept
+bool CDyCamera::IsPointInFrustum(const DVector3& iPoint) const noexcept
 {
   return this->mFrustum.IsPointInFrustum(iPoint);
 }
 
-bool CDyCamera::IsSphereInFrustum(const DDyVector3& iPoint, TF32 iRadius) const noexcept
+bool CDyCamera::IsSphereInFrustum(const DVector3& iPoint, TF32 iRadius) const noexcept
 {
   return this->mFrustum.IsSphereInFrustum(iPoint, iRadius);
 }

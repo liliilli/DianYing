@@ -203,20 +203,20 @@ void FDyShaderResource::pStoreUniformProperties() noexcept
 
     // Check whether this is structurized uniform variable specifier.
     static MDY_SET_IMMUTABLE_STRING(kStructurized, R"dy((\w+)[\[\d+\]]*[.](\w+))dy");
-    if (RegexIsMatched(specifier, kStructurized) == true)
+    if (regex::IsMatched(specifier, kStructurized) == true)
     {
       // If regex is matched to array version, 
       static MDY_SET_IMMUTABLE_STRING(kArrayVersion, R"dy((\w+)\[(\d+)\]*[.](\w+))dy");
-      if (RegexIsMatched(specifier, kArrayVersion) == true)
+      if (regex::IsMatched(specifier, kArrayVersion) == true)
       {
-        const auto optValue = DyRegexGetMatchedKeyword(specifier, kArrayVersion);
+        const auto optValue = regex::GetMatchedKeywordFrom(specifier, kArrayVersion);
         const auto prefix   = (*optValue)[0];
         const auto number   = static_cast<size_t>(std::stoi((*optValue)[1]));
         const auto postfix  = (*optValue)[2];
         MDY_ASSERT_FORCE(reflect::RUniformReflection::IsSubNameExist(prefix) == true);
 
         // Check prefix structure is in map.
-        if (DyIsMapContains(this->mUniformStructVarListMap, prefix) == false)
+        if (Contains(this->mUniformStructVarListMap, prefix) == false)
         {
           this->mUniformStructVarListMap.try_emplace(
             prefix, 
@@ -243,12 +243,12 @@ void FDyShaderResource::pStoreUniformProperties() noexcept
       }
       else
       {
-        const auto optValue = DyRegexGetMatchedKeyword(specifier, kStructurized);
+        const auto optValue = regex::GetMatchedKeywordFrom(specifier, kStructurized);
         const auto prefix   = (*optValue)[0];
         const auto postfix  = (*optValue)[1];
 
         // Check prefix structure is in map.
-        if (DyIsMapContains(this->mUniformStructVarItemMap, prefix) == false)
+        if (Contains(this->mUniformStructVarItemMap, prefix) == false)
         {
           this->mUniformStructVarItemMap.try_emplace(
             prefix, 

@@ -40,7 +40,7 @@ FDyFrameBufferPingPongResource::FDyFrameBufferPingPongResource(
       "colorAttachment pointer must not be null. (TEMPORAL)");
 
     const auto& [specifier, _] = binderInfo;
-    DySafeUniquePtrEmplaceBack(this->mBinderAttachmentList, specifier);
+    SafeUniquePtrEmplaceBack(this->mBinderAttachmentList, specifier);
 
     MDY_ASSERT_MSG(
       this->mBinderAttachmentList.back()->IsResourceExist() == true, 

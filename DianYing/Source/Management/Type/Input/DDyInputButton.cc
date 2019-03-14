@@ -14,7 +14,7 @@
 
 /// Header file
 #include <Dy/Management/Type/Input/DDyInputButton.h>
-#include <Dy/Management/LoggingManager.h>
+#include <Dy/Management/MLog.h>
 
 //!
 //! Local translation unit functions.

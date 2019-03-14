@@ -61,7 +61,7 @@ private:
   std::vector<std::unique_ptr<TDyResourceBinderMesh>>      mMeshResource     = {};
   std::vector<std::unique_ptr<TDyResourceBinderMaterial>>  mMaterialResource = {};
 
-  DDyMatrix4x4 mModelInitialTransform = DDyMatrix4x4::IdentityMatrix();
+  DMatrix4x4 mModelInitialTransform = DMatrix4x4::IdentityMatrix();
 };
 
 } /// ::dy namespace

@@ -15,7 +15,7 @@
 /// Header file
 #include <Dy/Core/Resource/Internal/TextureEnums.h>
 #include <nlohmann/json.hpp>
-#include "Dy/Helper/StringSwitch.h"
+#include "Dy/Helper/Internal/XStringSwitch.h"
 
 namespace dy
 {
@@ -46,20 +46,20 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyTextureMapType& p)
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyTextureMapType& p)
 {
   const auto serializedString = j.get<std::string>();
-  switch (DyStrSwitchInput(serializedString))
+  switch (SwitchStrInput(serializedString))
   {
-  case DyStrCase("Diffuse"):  p = EDyTextureMapType::Diffuse; break;
-  case DyStrCase("Specular"): p = EDyTextureMapType::Specular; break;
-  case DyStrCase("Ambient"):  p = EDyTextureMapType::Ambient; break;
-  case DyStrCase("Emissive"): p = EDyTextureMapType::Emissive; break;
-  case DyStrCase("Height"):   p = EDyTextureMapType::Height; break;
-  case DyStrCase("Normal"):   p = EDyTextureMapType::Normal; break;
-  case DyStrCase("Shininess"):p = EDyTextureMapType::Shininess; break;
-  case DyStrCase("Opacity"):  p = EDyTextureMapType::Opacity; break;
-  case DyStrCase("Displacement"): p = EDyTextureMapType::Displacement; break;
-  case DyStrCase("LightMap"):   p = EDyTextureMapType::LightMap; break;
-  case DyStrCase("Reflection"): p = EDyTextureMapType::Reflection; break;
-  case DyStrCase("Unknown"):    p = EDyTextureMapType::Unknown; break;
+  case CaseStr("Diffuse"):  p = EDyTextureMapType::Diffuse; break;
+  case CaseStr("Specular"): p = EDyTextureMapType::Specular; break;
+  case CaseStr("Ambient"):  p = EDyTextureMapType::Ambient; break;
+  case CaseStr("Emissive"): p = EDyTextureMapType::Emissive; break;
+  case CaseStr("Height"):   p = EDyTextureMapType::Height; break;
+  case CaseStr("Normal"):   p = EDyTextureMapType::Normal; break;
+  case CaseStr("Shininess"):p = EDyTextureMapType::Shininess; break;
+  case CaseStr("Opacity"):  p = EDyTextureMapType::Opacity; break;
+  case CaseStr("Displacement"): p = EDyTextureMapType::Displacement; break;
+  case CaseStr("LightMap"):   p = EDyTextureMapType::LightMap; break;
+  case CaseStr("Reflection"): p = EDyTextureMapType::Reflection; break;
+  case CaseStr("Unknown"):    p = EDyTextureMapType::Unknown; break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 }

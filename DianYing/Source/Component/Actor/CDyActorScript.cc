@@ -14,8 +14,8 @@
 
 /// Header file
 #include <Dy/Component/Actor/CDyActorScript.h>
-#include <Dy/Management/ScriptManager.h>
-#include <Dy/Management/InputManager.h>
+#include <Dy/Management/MScript.h>
+#include <Dy/Management/MInput.h>
 #include <Dy/Component/Internal/Actor/CDyActorScriptCpp.h>
 
 namespace dy
@@ -23,7 +23,7 @@ namespace dy
 
 CDyActorScript::CDyActorScript(_MIN_ FDyActor& iActor, _MIN_ const std::string& iScriptSpecifier) :
   ADyBaseComponent{ iActor },
-  mPtrScriptStatus{ MDyScript::GetInstance().CreateActorScript(iScriptSpecifier, *ADyBaseComponent::GetBindedActor(), true) }
+  mPtrScriptStatus{ MScript::GetInstance().CreateActorScript(iScriptSpecifier, *ADyBaseComponent::GetBindedActor(), true) }
 { }
 
 CDyActorScript::~CDyActorScript()
@@ -32,7 +32,7 @@ CDyActorScript::~CDyActorScript()
   {
   case EDyScriptType::Cpp: 
   { // If Widget type is `Cpp`, do the thing.
-    auto& i = MDyInput::GetInstance();
+    auto& i = MInput::GetInstance();
 
     // intentional.
     auto& ref = static_cast<CDyActorScriptCpp&>(*mPtrScriptStatus->MDY_PRIVATE(GetPtrInternalActorScript)());
@@ -44,7 +44,7 @@ CDyActorScript::~CDyActorScript()
     script.MDY_PRIVATE(AbortAllValidTimerHandler)();
     script.MDY_PRIVATE(AbortAllCollisionCallback)();
 
-    MDyScript::GetInstance().TryForwardActorScriptToGCList(mPtrScriptStatus);
+    MScript::GetInstance().TryForwardActorScriptToGCList(mPtrScriptStatus);
   } break;
   case EDyScriptType::Lua: 
   { // If Widget type is `Lua`, do the thing. but not supported yet.

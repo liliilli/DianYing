@@ -57,7 +57,7 @@ private:
   TDyResourceBinderShader      mBinderShSSAOBlur   { "dyBtPostEffectSsaoBlur" };
   TDyResourceBinderAttachment  mBinderAttSSAOOpt   { "dyBtAtSSAOOutput" };
 
-  std::vector<DDyVector3> mRayContainer;
+  std::vector<DVector3> mRayContainer;
   bool mIsRayInserted = false;
 };
 

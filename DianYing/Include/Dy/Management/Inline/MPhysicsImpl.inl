@@ -16,7 +16,7 @@
 namespace dy
 {
 
-inline MDyPhysics::Impl::Impl()
+inline MPhysics::Impl::Impl()
 {
   MDY_ASSERT_MSG(MDY_CHECK_ISNULL(this->gFoundation), "Foundation is already exist.");
   MDY_ASSERT_MSG(MDY_CHECK_ISNULL(this->gPhysicx), "Physics is already exist.");
@@ -180,7 +180,7 @@ inline MDyPhysics::Impl::Impl()
   // Do nothing because when initialize level, all resource will be populated.
 }
 
-inline MDyPhysics::Impl::~Impl()
+inline MPhysics::Impl::~Impl()
 {
   this->mDefaultMaterial->release();
   this->mDefaultMaterial = nullptr;
@@ -211,7 +211,7 @@ inline MDyPhysics::Impl::~Impl()
   MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNULL(this->gFoundation), "PhysX foundation is not released before release Physics manager.");
 }
 
-inline void MDyPhysics::Impl::UpdateRenderObjectTransform(TF32 iDt)
+inline void MPhysics::Impl::UpdateRenderObjectTransform(TF32 iDt)
 {
   // Lock
   physx::PxSceneWriteLock scopedLock(*this->gScene);
@@ -241,7 +241,7 @@ inline void MDyPhysics::Impl::UpdateRenderObjectTransform(TF32 iDt)
   }
 }
 
-inline void MDyPhysics::Impl::CallCallbackIssueOnce()
+inline void MPhysics::Impl::CallCallbackIssueOnce()
 {
   while (this->mCollisionCallbackIssueQueue.empty() == false)
   {
@@ -257,7 +257,7 @@ inline void MDyPhysics::Impl::CallCallbackIssueOnce()
   // List will be cleard automatically.
 }
 
-inline void MDyPhysics::Impl::Update(TF32 iDt)
+inline void MPhysics::Impl::Update(TF32 iDt)
 {
   if (iDt > 0)
   {
@@ -268,7 +268,7 @@ inline void MDyPhysics::Impl::Update(TF32 iDt)
   }
 }
 
-inline void MDyPhysics::Impl::InitScene()
+inline void MPhysics::Impl::InitScene()
 {
   physx::PxSceneDesc tempSceneDesc{ this->gPhysicx->getTolerancesScale() };
   tempSceneDesc.gravity = physx::PxVec3{ 0.0f, -9.81f, 0.0f };
@@ -317,7 +317,7 @@ inline void MDyPhysics::Impl::InitScene()
   }
 }
 
-inline void MDyPhysics::Impl::ReleaseScene()
+inline void MPhysics::Impl::ReleaseScene()
 {
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->gScene), "PhysX Scene must be valid.");
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->gDispatcher), "PhysX Dispatcher must be valid.");
@@ -334,7 +334,7 @@ inline void MDyPhysics::Impl::ReleaseScene()
   this->gDispatcher = nullptr;
 }
 
-inline void MDyPhysics::Impl::UpdateInternalPxSceneParameter()
+inline void MPhysics::Impl::UpdateInternalPxSceneParameter()
 {
   // If gScene is null, just return to outside and do nothing.
   if (MDY_CHECK_ISNULL(this->gScene)) { return; }
@@ -357,7 +357,7 @@ inline void MDyPhysics::Impl::UpdateInternalPxSceneParameter()
   }
 }
 
-inline void MDyPhysics::Impl::TryEnqueueDebugDrawCall()
+inline void MPhysics::Impl::TryEnqueueDebugDrawCall()
 {
   // If gScene is null, just return to outside and do nothing.
   if (MDY_CHECK_ISNULL(this->gScene)) { return; }
@@ -376,7 +376,7 @@ inline void MDyPhysics::Impl::TryEnqueueDebugDrawCall()
     {
       auto* ptrPxShape = ptrCollider->MDY_PRIVATE(GetPtrInternalShape)();
       const auto localPose = ptrPxShape->getLocalPose();
-      const auto transformMatrix = DDyMatrix4x4(globalTransform * localPose);
+      const auto transformMatrix = DMatrix4x4(globalTransform * localPose);
       // Enqueue draw list.
       // Iterate `Collider` and insert queue with transform + mesh.
       renderingManager.EnqueueDebugDrawCollider(*ptrCollider, transformMatrix);
@@ -384,7 +384,7 @@ inline void MDyPhysics::Impl::TryEnqueueDebugDrawCall()
   }
 }
 
-inline void MDyPhysics::Impl::onRelease(
+inline void MPhysics::Impl::onRelease(
     const physx::PxBase* observed, 
     void* userData,
     physx::PxDeletionEventFlag::Enum deletionEvent)
@@ -403,7 +403,7 @@ inline void MDyPhysics::Impl::onRelease(
 #endif
 }
 
-inline void MDyPhysics::Impl::pTryEnqueueCollisionIssue(
+inline void MPhysics::Impl::pTryEnqueueCollisionIssue(
     EDyCollisionCbType iHitType, 
     physx::PxPairFlags iInternalFlag,
     CDyPhysicsCollider* i0, 
@@ -440,7 +440,7 @@ inline void MDyPhysics::Impl::pTryEnqueueCollisionIssue(
   }
 }
 
-inline void MDyPhysics::Impl::onContact(
+inline void MPhysics::Impl::onContact(
     const physx::PxContactPairHeader& pairHeader,
     const physx::PxContactPair* pairs, 
     physx::PxU32 nbPairs)
@@ -511,4 +511,4 @@ inline void MDyPhysics::Impl::onContact(
 
 }
 
-#endif /// GUARD_DY_MANAGEMENT_PHYSICSMANAGER_IMPL_INL
+#endif /// GUARD_DY_MANAGEMENT_PHYSICSMANAGER_IMPL_INL_PHYSICSMANAGER_IMPL_INL

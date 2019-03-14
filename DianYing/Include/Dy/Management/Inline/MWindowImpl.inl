@@ -68,7 +68,7 @@ inline MDyWindow::Impl::Impl()
     descriptor.mIsUsingDefaultDoubleBuffer = true;
 
     const auto& settingManager = MDySetting::GetInstance();
-    descriptor.mWindowSize = DDyVectorInt2{
+    descriptor.mWindowSize = DVectorInt2{
         settingManager.GetWindowSizeWidth(),
         settingManager.GetWindowSizeHeight()
     };

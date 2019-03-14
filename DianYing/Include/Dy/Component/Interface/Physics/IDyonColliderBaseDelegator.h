@@ -92,7 +92,7 @@ public:
     auto lambda = [addr](const auto& item) { return item.mSpecificationId == addr; };
     if (ContainsIf(this->mBoundCallbackList, lambda) == false) { return DY_FAILURE; }
 
-    DyEraseRemoveIf(this->mBoundCallbackList, lambda);
+    EraseRemoveIf(this->mBoundCallbackList, lambda);
     return DY_SUCCESS;
   }
 
@@ -102,7 +102,7 @@ public:
     auto lambda = [iId](const auto& item) { return item.mSpecificationId == iId; };
     if (ContainsIf(this->mBoundCallbackList, lambda) == false) { return DY_FAILURE; }
 
-    DyEraseRemoveIf(this->mBoundCallbackList, lambda);
+    EraseRemoveIf(this->mBoundCallbackList, lambda);
     return DY_SUCCESS;
   }
 

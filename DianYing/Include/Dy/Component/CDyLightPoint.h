@@ -40,7 +40,7 @@ namespace dy
 /// @TODO IMPLEMENT POINT SHADOW.
 class CDyLightPoint final : 
   public ADyGeneralBaseComponent, 
-  public IDyInitializeHelper<PDyCompPointLightMetaInfo>
+  public IDyInitializeHelper<PCompPointLightMetaInfo>
 {
 public:
   explicit CDyLightPoint(FDyActor& actorReference);
@@ -48,7 +48,7 @@ public:
 
   /// @brief  Initialize component
   /// @return If successful just return DY_SUCCESS or DY_FAILURE.
-  MDY_NODISCARD EDySuccess Initialize(const PDyCompPointLightMetaInfo& metaInfo) override final;
+  MDY_NODISCARD EDySuccess Initialize(const PCompPointLightMetaInfo& metaInfo) override final;
   /// @brief  Release component.
   void Release() override final;
 
@@ -76,9 +76,9 @@ public:
   MDY_NODISCARD float GetIntensity() const noexcept;
   
   /// @brief Set light's diffuse color.
-  void SetColor(const DDyColorRGB& iColor) noexcept;
+  void SetColor(const DColorRGB& iColor) noexcept;
   /// @brief Get light's diffuse color.
-  MDY_NODISCARD const DDyColorRGB& GetColor() const noexcept;
+  MDY_NODISCARD const DColorRGB& GetColor() const noexcept;
 
   /// @brief Get uniform-buffer-object information of this light.
   MDY_NODISCARD const DDyUboPointLight& GetUboLightInfo() noexcept;

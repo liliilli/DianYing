@@ -16,7 +16,7 @@
 #include <Dy/Component/Abstract/ADyWidgetCppScript.h>
 #include <Dy/Component/Internal/Widget/CDyWidgetScriptCpp.h>
 #include <Dy/Helper/System/Idioms.h>
-#include <Dy/Management/GameTimerManager.h>
+#include <Dy/Management/MGameTimer.h>
 
 namespace dy
 {
@@ -27,9 +27,9 @@ FDyUiWidget& ADyWidgetCppScript::GetWidgetReference()
   return this->mOutside->GetWidgetReference();
 }
 
-MDyGameTimer& ADyWidgetCppScript::GetGameTimerManager() noexcept
+MGameTimer& ADyWidgetCppScript::GetGameTimerManager() noexcept
 {
-  return MDyGameTimer::GetInstance();
+  return MGameTimer::GetInstance();
 }
 
 void ADyWidgetCppScript::MDY_PRIVATE(BindPtrTimerHandle)(_MIN_ FDyTimerHandle& iRefTimerHandler)
@@ -47,7 +47,7 @@ void ADyWidgetCppScript::MDY_PRIVATE(DetachPtrTimerHandle)(_MIN_ FDyTimerHandle&
   });
   if (it == this->mPtrTimerHandleList.end()) { return; }
 
-  DyFastErase(this->mPtrTimerHandleList, it);
+  FaseErase(this->mPtrTimerHandleList, it);
 }
 
 void ADyWidgetCppScript::MDY_PRIVATE(AbortAllValidTimerHandler)()

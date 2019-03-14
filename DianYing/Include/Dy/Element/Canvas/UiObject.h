@@ -14,8 +14,8 @@
 ///
 
 #include <Dy/Element/RenderableObject.h>
-#include <Dy/Helper/Type/Vector2.h>
-#include <Dy/Helper/Type/VectorInt2.h>
+#include <Dy/Helper/Type/DVector2.h>
+#include <Dy/Helper/Type/DVectorInt2.h>
 #include <Dy/Meta/Type/EDyWidgetTypes.h>
 #include <Dy/Element/Type/FDy3WaySwitcher.h>
 #include <Dy/Element/Internal/TDyIdDistributor.h>
@@ -59,18 +59,18 @@ public:
 
   /// @brief Set central position of widget.
   /// @param position Position value.
-  virtual void SetRelativePosition(_MIN_ const DDyVector2& position) noexcept;
+  virtual void SetRelativePosition(_MIN_ const DVector2& position) noexcept;
   /// @brief Get widget relative position following origin anchor input (not final position)
   /// @return widget position from parent.
-  MDY_NODISCARD DDyVector2 GetRelativePosition(_MIN_ const EDyOrigin& origin) const noexcept;
+  MDY_NODISCARD DVector2 GetRelativePosition(_MIN_ const EDyOrigin& origin) const noexcept;
   /// @brief Get widget final position following origin anchor input (not final position)
   /// @return widget final position of screen.
-  MDY_NODISCARD DDyVector2 GetFinalPosition(_MIN_ const EDyOrigin& origin) const noexcept;
+  MDY_NODISCARD DVector2 GetFinalPosition(_MIN_ const EDyOrigin& origin) const noexcept;
 
   /// @brief Set frame size of widget.
-  virtual void SetFrameSize(_MIN_ const DDyVectorInt2& size) noexcept;
+  virtual void SetFrameSize(_MIN_ const DVectorInt2& size) noexcept;
   /// @brief Get frame size of widget.
-  MDY_NODISCARD const DDyVectorInt2& GetFrameSize() const noexcept;
+  MDY_NODISCARD const DVectorInt2& GetFrameSize() const noexcept;
 
   /// @brief Set origin axis value.
   virtual void SetOrigin(_MIN_ EDyOrigin iOrigin) noexcept;
@@ -94,11 +94,11 @@ public:
 
 private:
   FDyUiObjectChildrenable* mPtrParentUiObject       = MDY_INITIALIZE_NULL;
-  DDyVector2               mCentralRelativePosition = {};
-  DDyVectorInt2            mFrameSize               = {};
+  DVector2               mCentralRelativePosition = {};
+  DVectorInt2            mFrameSize               = {};
 
 protected:
-  DDyVector2  mCentralFinalPosition  = {};
+  DVector2  mCentralFinalPosition  = {};
   EDyOrigin   mOrigin = EDyOrigin::Center_Center;
   EDyOrigin   mFibot  = EDyOrigin::Center_Center;
 };

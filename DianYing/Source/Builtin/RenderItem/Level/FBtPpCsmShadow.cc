@@ -89,7 +89,7 @@ void FBtRenderItemCsmShadow::OnSetupRenderingSetting()
     this->mAddrMainDirectionalShadow = reinterpret_cast<ptrdiff_t>(ptrLight);
     if (this->mAddrMainDirectionalShadow == 0) 
     {
-      this->mViewMatrix = DDyMatrix4x4{};
+      this->mViewMatrix = DMatrix4x4{};
     }
     else
     { 

@@ -16,7 +16,7 @@
 #include <Dy/Builtin/Texture/ErrorBlue.h>
 
 #include <Dy/Core/Resource/Internal/TextureType.h>
-#include <Dy/Helper/Type/ColorRGBA32.h>
+#include <Dy/Helper/Type/DColorRGBA32.h>
 
 //!
 //! Local variables
@@ -25,8 +25,8 @@
 namespace
 {
 
-constexpr const dy::DDyColorRGBA32 _0 = dy::DDyColorRGBA32(  0,   0, 255);
-constexpr const dy::DDyColorRGBA32 _1 = dy::DDyColorRGBA32(255, 255, 255);
+constexpr const dy::DColorRGBA32 _0 = dy::DColorRGBA32(  0,   0, 255);
+constexpr const dy::DColorRGBA32 _1 = dy::DColorRGBA32(255, 255, 255);
 
 } /// ::unnamed namespace
 
@@ -42,10 +42,10 @@ void FDyBuiltinTextureErrorBlue::ConstructBuffer(_MOUT_ TBufferType& buffer, _MO
   property.mSpecifierName     = FDyBuiltinTextureErrorBlue::sName;
   property.mTextureType       = EDyTextureStyleType::D2;
   property.mTextureColorType  = EDyImageColorFormatStyle::RGBA;
-  property.mBuiltinBufferSize = DDyVectorInt2{ 16, 16 };
+  property.mBuiltinBufferSize = DVectorInt2{ 16, 16 };
   property.mTextureMapType_Deprecated = EDyTextureMapType::Diffuse;
 
-  std::array<DDyColorRGBA32, 256> infoChunk =
+  std::array<DColorRGBA32, 256> infoChunk =
   { //      0          4           8           12
     /* 0 */_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,
     /*   */_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,_0,

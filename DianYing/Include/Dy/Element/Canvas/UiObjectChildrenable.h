@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Element/Canvas/UiObject.h>
-#include "Dy/Helper/Pointer.h"
+#include "Dy/Helper/System/Pointer.h"
 
 namespace dy
 {
@@ -44,10 +44,10 @@ public:
 
   /// @brief Set central position of widget.
   /// @param position Position value.
-  void SetRelativePosition(_MIN_ const DDyVector2& position) noexcept override final;
+  void SetRelativePosition(_MIN_ const DVector2& position) noexcept override final;
   /// @brief Set frame size of widget.
   /// @param size Frame size. Must be full size, not half size.
-  void SetFrameSize(_MIN_ const DDyVectorInt2& size) noexcept override final;
+  void SetFrameSize(_MIN_ const DVectorInt2& size) noexcept override final;
   /// @brief Set origin axis value.
   void SetOrigin(_MIN_ EDyOrigin iOrigin) noexcept override final;
   /// @brief Set fibot axis value. 

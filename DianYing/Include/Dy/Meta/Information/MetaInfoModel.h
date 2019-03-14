@@ -15,7 +15,7 @@
 
 #include <nlohmann/json_fwd.hpp>
 #include <Dy/Meta/Information/CommonResourceMetaInfo.h>
-#include <Dy/Helper/Type/Vector3.h>
+#include <Dy/Helper/Type/DVector3.h>
 
 namespace dy
 {
@@ -53,9 +53,9 @@ struct PDyModelInstanceMetaInfo final : public PDyCommonResourceMetaInfo
 
   struct DTransform final
   {
-    DDyVector3 mPosition  = DDyVector3{0, 0, 0};
-    DDyVector3 mRotation  = DDyVector3{0, 0, 0};
-    DDyVector3 mScale     = DDyVector3{1, 1, 1};
+    DVector3 mPosition  = DVector3{0, 0, 0};
+    DVector3 mRotation  = DVector3{0, 0, 0};
+    DVector3 mScale     = DVector3{1, 1, 1};
   };
 
   std::string               mSpecifierName            = MDY_INITIALIZE_EMPTYSTR;

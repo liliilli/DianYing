@@ -15,7 +15,7 @@
 /// Header file
 #include <Dy/Component/CDyPhysicsColliderBox.h>
 #include <geometry/PxBoxGeometry.h>
-#include <Dy/Management/PhysicsManager.h>
+#include <Dy/Management/MPhysics.h>
 #include <Dy/Component/CDyPhysicsRigidbody.h>
 #include <PxPhysics.h>
 
@@ -69,8 +69,8 @@ void CDyPhysicsColliderBox::InitializeInternalResource(_MINOUT_ CDyPhysicsRigidb
   const physx::PxBoxGeometry geometry{this->mHalfExtent.X, this->mHalfExtent.Y, this->mHalfExtent.Z};
 
   // Create shape.
-  auto& physics = MDyPhysics::GetInstance().MDY_PRIVATE(GetRefInternalSdk)();
-  const auto& defaultMaterial = MDyPhysics::GetInstance().GetDefaultPhysicsMaterial();
+  auto& physics = MPhysics::GetInstance().MDY_PRIVATE(GetRefInternalSdk)();
+  const auto& defaultMaterial = MPhysics::GetInstance().GetDefaultPhysicsMaterial();
   this->mPtrInternalShape = physics.createShape(geometry, defaultMaterial);
   MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNOTNULL(this->mPtrInternalShape), "Unexpected error occurred.");
   
@@ -85,7 +85,7 @@ void CDyPhysicsColliderBox::InitializeInternalResource(_MINOUT_ CDyPhysicsRigidb
   iRefRigidbody.BindShapeToRigidbody(*this);
 }
 
-const DDyVector3& CDyPhysicsColliderBox::GetHalfExtent() const noexcept
+const DVector3& CDyPhysicsColliderBox::GetHalfExtent() const noexcept
 {
   return this->mHalfExtent;
 }
@@ -102,15 +102,15 @@ void CDyPhysicsColliderBox::UpdateColliderMesh()
   //!   |/      |/    \n
   //! lbf-----rbf
 
-  const auto ruf = DDyVector3{this->mHalfExtent};
-  const auto rud = DDyVector3{this->mHalfExtent.X, this->mHalfExtent.Y, -this->mHalfExtent.Z};
-  const auto lud = DDyVector3{-this->mHalfExtent.X, this->mHalfExtent.Y, -this->mHalfExtent.Z};
-  const auto luf = DDyVector3{-this->mHalfExtent.X, this->mHalfExtent.Y, this->mHalfExtent.Z};
+  const auto ruf = DVector3{this->mHalfExtent};
+  const auto rud = DVector3{this->mHalfExtent.X, this->mHalfExtent.Y, -this->mHalfExtent.Z};
+  const auto lud = DVector3{-this->mHalfExtent.X, this->mHalfExtent.Y, -this->mHalfExtent.Z};
+  const auto luf = DVector3{-this->mHalfExtent.X, this->mHalfExtent.Y, this->mHalfExtent.Z};
  
-  const auto rbf = DDyVector3{this->mHalfExtent.X, -this->mHalfExtent.Y, this->mHalfExtent.Z};
-  const auto rbd = DDyVector3{this->mHalfExtent.X, -this->mHalfExtent.Y, -this->mHalfExtent.Z};
-  const auto lbd = DDyVector3{-this->mHalfExtent.X, -this->mHalfExtent.Y, -this->mHalfExtent.Z};
-  const auto lbf = DDyVector3{-this->mHalfExtent.X, -this->mHalfExtent.Y, this->mHalfExtent.Z};
+  const auto rbf = DVector3{this->mHalfExtent.X, -this->mHalfExtent.Y, this->mHalfExtent.Z};
+  const auto rbd = DVector3{this->mHalfExtent.X, -this->mHalfExtent.Y, -this->mHalfExtent.Z};
+  const auto lbd = DVector3{-this->mHalfExtent.X, -this->mHalfExtent.Y, -this->mHalfExtent.Z};
+  const auto lbf = DVector3{-this->mHalfExtent.X, -this->mHalfExtent.Y, this->mHalfExtent.Z};
 
   // We do not need insert information for up & bottom plane.
   // Becasuse collider mesh will be drawn by line_strip.

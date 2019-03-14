@@ -32,7 +32,7 @@ void DDyIOReferenceInstance::DetachBinder(const __FDyBinderBase* iPtrBase) noexc
   const auto itPtr = std::find(MDY_BIND_BEGIN_END(this->mPtrBoundBinderList), iPtrBase);
   MDY_ASSERT_MSG(itPtr != this->mPtrBoundBinderList.end(), "Given binder pointer address must be exist in given RI list.");
 
-  DyFastErase(this->mPtrBoundBinderList, std::distance(this->mPtrBoundBinderList.begin(), itPtr));
+  FaseErase(this->mPtrBoundBinderList, std::distance(this->mPtrBoundBinderList.begin(), itPtr));
 }
 
 void DDyIOReferenceInstance::SetValid(_MIN_ void*& iPtrInstance) noexcept

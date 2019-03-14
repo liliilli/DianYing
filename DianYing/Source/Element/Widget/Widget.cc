@@ -27,7 +27,7 @@
 #include <Dy/Helper/System/Idioms.h>
 #include <Dy/Management/WindowManager.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
-#include <Dy/Management/ScriptManager.h>
+#include <Dy/Management/MScript.h>
 #include <Dy/Management/WorldManager.h>
 
 namespace dy
@@ -108,7 +108,7 @@ void FDyUiWidget::__TryDetachBinderFromBinder(DDyUiBinder& iRefUiBinder)
   MDY_ASSERT_MSG_FORCE(it != this->mBoundUiBinderList.end(), "Failed guarantee UiBinder binding integrity.");
 
   // Fast erase.
-  DyFastErase(this->mBoundUiBinderList, it);
+  FaseErase(this->mBoundUiBinderList, it);
 }
 
 void FDyUiWidget::__SetName(_MIN_ const std::string& iNewName)

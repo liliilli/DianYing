@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Element/Canvas/Widget.h>
-#include <Dy/Helper/Internal/FDyNameGenerator.h>
+#include <Dy/Helper/Internal/FNameGenerator.h>
 
 namespace dy
 {

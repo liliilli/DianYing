@@ -14,8 +14,8 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/ColorRGBA.h>
-#include <Dy/Helper/Type/VectorInt2.h>
+#include <Dy/Helper/Type/DColorRGBA.h>
+#include <Dy/Helper/Type/DVectorInt2.h>
 #include <Dy/Meta/Type/EDyTextureParameter.h>
 #include <Dy/Meta/Type/EDyResourceTypes.h>
 #include "Dy/Core/Resource/Information/FDyAttachmentInformation.h"
@@ -29,8 +29,8 @@ namespace dy
 ///
 struct PDyGLAttachmentDescriptor final
 {
-  DDyVectorInt2                 mBufferSize     = {};
-  DDyColorRGBA                  mBorderColor    = {};
+  DVectorInt2                 mBufferSize     = {};
+  DColorRGBA                  mBorderColor    = {};
   TTextureParameterList         mParameterList  = {};
   bool                          mIsUsingCustomizedParameter = false;
   EDyGlBufferDataInternalFormat mBufferFormat   = EDyGlBufferDataInternalFormat::NoneError;

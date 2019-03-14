@@ -76,12 +76,12 @@ TF32 CDySkybox::GetRotationDegree() const noexcept
   return this->mRotationDegree;
 }
 
-void CDySkybox::SetTintColor(_MIN_ const DDyColorRGB& iTintColor) noexcept
+void CDySkybox::SetTintColor(_MIN_ const DColorRGB& iTintColor) noexcept
 {
   this->mTintColor = iTintColor;
 }
 
-const DDyColorRGB& CDySkybox::GetTintColor() const noexcept
+const DColorRGB& CDySkybox::GetTintColor() const noexcept
 {
   return this->mTintColor;
 }

@@ -92,12 +92,12 @@ std::pair<const std::string&, bool> FDyImage::GetRenderableImageName() const noe
   return {this->mImageName, this->mIsMaterial};
 }
 
-void FDyImage::SetTintColor(_MIN_ const DDyColorRGBA& iTintColor) noexcept
+void FDyImage::SetTintColor(_MIN_ const DColorRGBA& iTintColor) noexcept
 {
   this->mTintColor = iTintColor;
 }
 
-const DDyColorRGBA& FDyImage::GetTintColor() const noexcept
+const DColorRGBA& FDyImage::GetTintColor() const noexcept
 {
   return this->mTintColor;
 }

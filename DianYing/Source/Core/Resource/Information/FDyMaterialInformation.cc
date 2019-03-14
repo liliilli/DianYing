@@ -30,7 +30,7 @@ FDyMaterialInformation::FDyMaterialInformation(_MIN_ const PDyMaterialInstanceMe
   for (const auto& bindingTextureItem : metaInfo.mTextureNames)
   {
     if (bindingTextureItem.mTextureSpecifier.empty() == true) { break; }
-    DySafeUniquePtrEmplaceBack(this->mBinderTextureInfoList, bindingTextureItem.mTextureSpecifier);
+    SafeUniquePtrEmplaceBack(this->mBinderTextureInfoList, bindingTextureItem.mTextureSpecifier);
   }
 }
 

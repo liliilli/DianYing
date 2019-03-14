@@ -16,7 +16,7 @@
 #include <Dy/Component/CDyPhysicsColliderSphere.h>
 
 #include <geometry/PxSphereGeometry.h>
-#include <Dy/Management/PhysicsManager.h>
+#include <Dy/Management/MPhysics.h>
 #include <Dy/Component/CDyPhysicsRigidbody.h>
 #include <PxPhysics.h>
 
@@ -69,8 +69,8 @@ void CDyPhysicsColliderSphere::InitializeInternalResource(_MINOUT_ CDyPhysicsRig
   const physx::PxSphereGeometry geometry{this->mRadius};
 
   // Create shape.
-  auto& physics = MDyPhysics::GetInstance().MDY_PRIVATE(GetRefInternalSdk)();
-  const auto& defaultMaterial = MDyPhysics::GetInstance().GetDefaultPhysicsMaterial();
+  auto& physics = MPhysics::GetInstance().MDY_PRIVATE(GetRefInternalSdk)();
+  const auto& defaultMaterial = MPhysics::GetInstance().GetDefaultPhysicsMaterial();
   this->mPtrInternalShape = physics.createShape(geometry, defaultMaterial);
   MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNOTNULL(this->mPtrInternalShape), "Unexpected error occurred.");
   

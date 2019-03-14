@@ -77,12 +77,12 @@ TF32 FDyBasicGaugeBar::GetPercentage() const noexcept
   return this->mValues.mPercentage;
 }
 
-const DDyColorRGBA& FDyBasicGaugeBar::GetForegroundColor() const noexcept
+const DColorRGBA& FDyBasicGaugeBar::GetForegroundColor() const noexcept
 {
   return this->mForegroundColor;
 }
 
-const DDyColorRGBA& FDyBasicGaugeBar::GetBackgroundColor() const noexcept
+const DColorRGBA& FDyBasicGaugeBar::GetBackgroundColor() const noexcept
 {
   return this->mBackgroundColor;
 }
@@ -93,12 +93,12 @@ void FDyBasicGaugeBar::SetPresentValue(_MIN_ const TF32 value) noexcept
   this->pUpdatePercentage();
 }
 
-void FDyBasicGaugeBar::SetForegroundColor(_MIN_ const DDyColorRGBA& color)
+void FDyBasicGaugeBar::SetForegroundColor(_MIN_ const DColorRGBA& color)
 {
   this->mForegroundColor = color;
 }
 
-void FDyBasicGaugeBar::SetBackgroundColor(_MIN_ const DDyColorRGBA& color)
+void FDyBasicGaugeBar::SetBackgroundColor(_MIN_ const DColorRGBA& color)
 {
   this->mBackgroundColor = color;
 }
@@ -108,7 +108,7 @@ void FDyBasicGaugeBar::Render()
   this->mRenderer.Render();
 }
 
-const DDyVector2& FDyBasicGaugeBar::GetRenderPosition() const noexcept
+const DVector2& FDyBasicGaugeBar::GetRenderPosition() const noexcept
 {
   return this->mCentralFinalPosition;
 }

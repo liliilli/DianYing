@@ -25,7 +25,7 @@ struct PDyGLFrameBufferDescriptor final
   using TAttachmentBinding  = std::tuple<TU32, EDyTextureStyleType, EDyGlAttachmentType, TIsRenderBuffer>;
   using TAttachmentBindingList = std::vector<TAttachmentBinding>;
 
-  DDyVectorInt2           mFrameBufferSize = {};
+  DVectorInt2           mFrameBufferSize = {};
   TAttachmentBindingList  mAttachmentBindingList = {};
   TAttachmentBinding      mDepthBufferBinding = {};
   bool                    mIsUsingDepthBuffer = true;

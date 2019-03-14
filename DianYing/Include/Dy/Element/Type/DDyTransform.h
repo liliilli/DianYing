@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/Vector3.h>
+#include <Dy/Helper/Type/DVector3.h>
 
 namespace dy
 {
@@ -22,14 +22,14 @@ namespace dy
 /// @brief Primal transform list.
 struct DDyTransform
 {
-  DDyVector3 mLocalRelPosition  = {0, 0, 0};
-  DDyVector3 mWorldRelPosition  = {0, 0, 0};
+  DVector3 mLocalRelPosition  = {0, 0, 0};
+  DVector3 mWorldRelPosition  = {0, 0, 0};
 
-  DDyVector3 mLocalEulerAngle   = {0, 0, 0};
-  DDyVector3 mWorldEulerAngle   = {0, 0, 0};
+  DVector3 mLocalEulerAngle   = {0, 0, 0};
+  DVector3 mWorldEulerAngle   = {0, 0, 0};
 
-  DDyVector3 mLocalScale        = {1, 1, 1};
-  DDyVector3 mWorldScale        = {1, 1, 1};
+  DVector3 mLocalScale        = {1, 1, 1};
+  DVector3 mWorldScale        = {1, 1, 1};
 };
 
 } /// ::dy namespace

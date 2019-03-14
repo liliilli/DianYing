@@ -16,7 +16,7 @@
 #include <vector>
 #include <nlohmann/json_fwd.hpp>
 #include <Dy/Element/Interface/IDyToString.h>
-#include <Dy/Helper/Pointer.h>
+#include <Dy/Helper/System/Pointer.h>
 
 //!
 //! Forward declaration

@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Helper/System/TypeTraits.h>
-#include <Dy/Helper/Pointer.h>
+#include <Dy/Helper/System/Pointer.h>
 
 //!
 //! Forward declaration

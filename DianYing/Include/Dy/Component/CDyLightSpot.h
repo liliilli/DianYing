@@ -39,7 +39,7 @@ namespace dy
 /// @brief Spot light component that has range-angle, distance-range, direction.
 class CDyLightSpot final : 
   public ADyGeneralBaseComponent, 
-  public IDyInitializeHelper<PDyCompSpotLightMetaInfo>
+  public IDyInitializeHelper<PCompSpotLightMetaInfo>
 {
 public:
   explicit CDyLightSpot(FDyActor& actorReference);
@@ -47,7 +47,7 @@ public:
 
   /// @brief  Initialize component
   /// @return If successful just return DY_SUCCESS or DY_FAILURE.
-  MDY_NODISCARD EDySuccess Initialize(const PDyCompSpotLightMetaInfo& metaInfo) override final;
+  MDY_NODISCARD EDySuccess Initialize(const PCompSpotLightMetaInfo& metaInfo) override final;
   /// @brief  Release component.
   void Release() override final;
 
@@ -75,9 +75,9 @@ public:
   MDY_NODISCARD float GetIntensity() const noexcept;
   
   /// @brief Set light's diffuse color.
-  void SetColor(const DDyColorRGB& iColor) noexcept;
+  void SetColor(const DColorRGB& iColor) noexcept;
   /// @brief Get light's diffuse color.
-  MDY_NODISCARD const DDyColorRGB& GetColor() const noexcept;
+  MDY_NODISCARD const DColorRGB& GetColor() const noexcept;
 
   /// @brief Set angle range of spot light.
   void SetAngle(TF32 iDegree) noexcept;
@@ -85,9 +85,9 @@ public:
   MDY_NODISCARD TF32 GetAngle() const noexcept;
 
   /// @brief Set direction of spot light. input direction will be normalized automatically.
-  void SetDirection(const DDyVector3& iDirection);
+  void SetDirection(const DVector3& iDirection);
   /// @brief Get direction of spot light.
-  MDY_NODISCARD const DDyVector3& GetDirection() const noexcept;
+  MDY_NODISCARD const DVector3& GetDirection() const noexcept;
 
   /// @brief Get uniform-buffer-object information of this light.
   MDY_NODISCARD const DDyUboSpotLight& GetUboLightInfo() noexcept;

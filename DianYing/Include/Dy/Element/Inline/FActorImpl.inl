@@ -139,13 +139,13 @@ inline void FDyActor::Impl::CreateComponentsWithList(const TComponentMetaList& i
       this->AddComponent<CDyActorScript>(std::any_cast<const PDyScriptComponentMetaInfo&>(componentInfo));
       break;
     case EDyComponentMetaType::DirectionalLight:
-      this->AddComponent<CDyLightDirectional>(std::any_cast<const PDyDirLightComponentMetaInfo&>(componentInfo));
+      this->AddComponent<CDyLightDirectional>(std::any_cast<const PDirLightComponentMetaInfo&>(componentInfo));
       break;
     case EDyComponentMetaType::PointLight:
-      this->AddComponent<CDyLightPoint>(std::any_cast<const PDyCompPointLightMetaInfo&>(componentInfo));
+      this->AddComponent<CDyLightPoint>(std::any_cast<const PCompPointLightMetaInfo&>(componentInfo));
       break;
     case EDyComponentMetaType::SpotLight:
-      this->AddComponent<CDyLightSpot>(std::any_cast<const PDyCompSpotLightMetaInfo&>(componentInfo));
+      this->AddComponent<CDyLightSpot>(std::any_cast<const PCompSpotLightMetaInfo&>(componentInfo));
       break;
     case EDyComponentMetaType::ModelFilter:
       this->AddComponent<CDyModelFilter>(std::any_cast<const PDyModelFilterComponentMetaInfo&>(componentInfo));
@@ -284,7 +284,7 @@ inline EDySuccess FDyActor::Impl::MDY_PRIVATE(DetachPickingTargetFromSystem)()
   if (this->mIsAttachedToPickingTarget == false) { return DY_FAILURE; }
 
   // Check 2 : address
-  auto& refInput = MDyInput::GetInstance();
+  auto& refInput = MInput::GetInstance();
   auto** pptrPickingTarget = refInput.MDY_PRIVATE(GetPPtrPickingTarget)();
   if (*pptrPickingTarget != &this->mRefActor) { return DY_FAILURE; }
   

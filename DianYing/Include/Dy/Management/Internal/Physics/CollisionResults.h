@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/Vector3.h>
+#include <Dy/Helper/Type/DVector3.h>
 
 namespace dy
 {
@@ -23,7 +23,7 @@ namespace dy
 struct FDyHitResult final
 {
   /// @brief specifies contact position between two physics shapes.
-  DDyVector3 mContactPosition{};
+  DVector3 mContactPosition{};
 };
 
 } /// ::dy namespace

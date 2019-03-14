@@ -15,7 +15,7 @@
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Element/Interface/IDyUpdatable.h>
-#include <Dy/Helper/Type/Clamp.h>
+#include <Dy/Helper/Type/DClamp.h>
 #include <Dy/Management/Type/Sound/FDyInstantSound2D.h>
 #include <Dy/Management/Type/Sound/FDyInstantSound3D.h>
 #include <Dy/Management/Type/Sound/TDyBinderSound2D.h>
@@ -61,8 +61,8 @@ public:
   std::unique_ptr<FDyInstantSound2D> CreateSound2D(
       const std::string& iSoundSpecifier, 
       const std::string& iSoundChannel,
-      const DDyClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
-      const DDyClamp<TF32, 0, 5>& iPitchMultiplier = 1.0f,
+      const DClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
+      const DClamp<TF32, 0, 5>& iPitchMultiplier = 1.0f,
       const TF32 iDelay = 0.0f);
   
   /// @brief Play a sound directly with no attenuation, perfect for UI Sounds.
@@ -70,8 +70,8 @@ public:
   void PlaySound2D(
       const std::string& iSoundSpecifier, 
       const std::string& iSoundChannel,
-      const DDyClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
-      const DDyClamp<TF32, 0, 5>& iPitchMultiplier = 1.0f,
+      const DClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
+      const DClamp<TF32, 0, 5>& iPitchMultiplier = 1.0f,
       const TF32 iDelay = 0.0f);
 
   /// @brief Play a sound directly with no attenuation, with looped.
@@ -79,8 +79,8 @@ public:
   MDY_NODISCARD std::optional<TDyBinderSound2D> PlaySound2DLooped(
       const std::string& iSoundSpecifier,
       const std::string& iSoundChannel,
-      const DDyClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
-      const DDyClamp<TF32, 0, 5>& iPitchMultiplier = 1.0f);
+      const DClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
+      const DClamp<TF32, 0, 5>& iPitchMultiplier = 1.0f);
     
   inline static constexpr TF32 s3DMinDistance = 0.5f;
   inline static constexpr TF32 s3DMaxDistance = 500.f;
@@ -89,9 +89,9 @@ public:
   void PlaySound3D(
       const std::string& iSoundSpecifier, 
       const std::string& iSoundChannel,
-      const DDyVector3& iWorldPosition,
-      const DDyClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
-      const DDyClamp<TF32, 0, 5>& iPitchMultiplier = 1.0f,
+      const DVector3& iWorldPosition,
+      const DClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
+      const DClamp<TF32, 0, 5>& iPitchMultiplier = 1.0f,
       const TF32 iDelay = 0.0f,
       const TF32 iMinDistance = s3DMinDistance,
       const TF32 iMaxDistance = s3DMaxDistance);
@@ -101,9 +101,9 @@ public:
   MDY_NODISCARD std::optional<TDyBinderSound3D> PlaySound3DLooped(
       const std::string& iSoundSpecifier, 
       const std::string& iSoundChannel,
-      const DDyVector3& iWorldPosition,
-      const DDyClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
-      const DDyClamp<TF32, 0, 5>& iPitchMultiplier = 1.0f,
+      const DVector3& iWorldPosition,
+      const DClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
+      const DClamp<TF32, 0, 5>& iPitchMultiplier = 1.0f,
       const TF32 iMinDistance = s3DMinDistance,
       const TF32 iMaxDistance = s3DMaxDistance);
 

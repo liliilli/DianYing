@@ -25,7 +25,7 @@
 #include <Dy/Core/Rendering/Wrapper/PDyGLVaoBindDescriptor.h>
 #include <Dy/Core/Resource/Internal/ShaderType.h>
 #include <Dy/Meta/Type/Mesh/DDyGLVaoBindInformation.h>
-#include "Dy/Helper/Type/Area2D.h"
+#include "Dy/Helper/Type/DArea2D.h"
 
 #define MDY_GL_NONE 0
 #define MDY_GL_NONE_VAO 0
@@ -237,16 +237,16 @@ namespace dy
 
 std::mutex FDyGLWrapper::mGLCriticalSectionMutex;
 
-FDyCallStack<DDyGlGlobalStates> FDyGLWrapper::mInternalGlobalStatusStack;
-FDyCallStack<bool> FDyGLWrapper::mInternal_FeatBlendStack;
-FDyCallStack<bool> FDyGLWrapper::mInternal_FeatCullfaceStack;
-FDyCallStack<bool> FDyGLWrapper::mInternal_FeatDepthTestStack;
-FDyCallStack<bool> FDyGLWrapper::mInternal_FeatScissorTestStack;
-FDyCallStack<DDyGlGlobalStates::DPolygonMode>   FDyGLWrapper::mInternal_PolygonModeStack;
-FDyCallStack<DDyGlGlobalStates::DBlendMode>     FDyGLWrapper::mInternal_BlendModeStack;
-FDyCallStack<DDyGlGlobalStates::DCullfaceMode>  FDyGLWrapper::mInternal_CullfaceModeStack;
-FDyCallStack<DDyGlGlobalStates::DViewport>      FDyGLWrapper::mInternal_ViewportStack;
-FDyCallStack<std::vector<PBlendingEquation>>    FDyGLWrapper::sAttachmentBlendings;
+FCallStack<DDyGlGlobalStates> FDyGLWrapper::mInternalGlobalStatusStack;
+FCallStack<bool> FDyGLWrapper::mInternal_FeatBlendStack;
+FCallStack<bool> FDyGLWrapper::mInternal_FeatCullfaceStack;
+FCallStack<bool> FDyGLWrapper::mInternal_FeatDepthTestStack;
+FCallStack<bool> FDyGLWrapper::mInternal_FeatScissorTestStack;
+FCallStack<DDyGlGlobalStates::DPolygonMode>   FDyGLWrapper::mInternal_PolygonModeStack;
+FCallStack<DDyGlGlobalStates::DBlendMode>     FDyGLWrapper::mInternal_BlendModeStack;
+FCallStack<DDyGlGlobalStates::DCullfaceMode>  FDyGLWrapper::mInternal_CullfaceModeStack;
+FCallStack<DDyGlGlobalStates::DViewport>      FDyGLWrapper::mInternal_ViewportStack;
+FCallStack<std::vector<PBlendingEquation>>    FDyGLWrapper::sAttachmentBlendings;
 
 GLFWwindow* FDyGLWrapper::CreateGLWindow(_MIN_ const PDyGLWindowContextDescriptor& descriptor)
 {
@@ -788,13 +788,13 @@ EDySuccess FDyGLWrapper::DeleteFrameBuffer(_MIN_ const TU32 framebufferId)
 
 void FDyGLWrapper::SetViewport(_MIN_ const std::array<TI32, 4>& iViewportRegion)
 {
-  DDyArea2D area; 
-  area.mLeftDown  = DDyVector2{static_cast<TF32>(iViewportRegion[0]), static_cast<TF32>(iViewportRegion[1])};
-  area.mRightUp   = DDyVector2{static_cast<TF32>(iViewportRegion[2]), static_cast<TF32>(iViewportRegion[3])};
+  DArea2D area; 
+  area.mLeftDown  = DVector2{static_cast<TF32>(iViewportRegion[0]), static_cast<TF32>(iViewportRegion[1])};
+  area.mRightUp   = DVector2{static_cast<TF32>(iViewportRegion[2]), static_cast<TF32>(iViewportRegion[3])};
   FDyGLWrapper::SetViewport(area);
 }
 
-void FDyGLWrapper::SetViewport(_MIN_ const DDyArea2D& iViewportRegion)
+void FDyGLWrapper::SetViewport(_MIN_ const DArea2D& iViewportRegion)
 {
   glViewport(
       static_cast<TI32>(iViewportRegion.mLeftDown.X), 
@@ -805,13 +805,13 @@ void FDyGLWrapper::SetViewport(_MIN_ const DDyArea2D& iViewportRegion)
 
 void FDyGLWrapper::SetViewportIndexed(_MIN_ TU32 iIndex,_MIN_ const std::array<TI32, 4>& iViewportRegion)
 {
-  DDyArea2D area; 
-  area.mLeftDown  = DDyVector2{static_cast<TF32>(iViewportRegion[0]), static_cast<TF32>(iViewportRegion[1])};
-  area.mRightUp   = DDyVector2{static_cast<TF32>(iViewportRegion[2]), static_cast<TF32>(iViewportRegion[3])};
+  DArea2D area; 
+  area.mLeftDown  = DVector2{static_cast<TF32>(iViewportRegion[0]), static_cast<TF32>(iViewportRegion[1])};
+  area.mRightUp   = DVector2{static_cast<TF32>(iViewportRegion[2]), static_cast<TF32>(iViewportRegion[3])};
   FDyGLWrapper::SetViewportIndexed(iIndex, area);
 }
 
-void FDyGLWrapper::SetViewportIndexed(_MIN_ TU32 iIndex, _MIN_ const DDyArea2D& iViewportRegion)
+void FDyGLWrapper::SetViewportIndexed(_MIN_ TU32 iIndex, _MIN_ const DArea2D& iViewportRegion)
 {
   glViewportIndexedf(iIndex, 
       iViewportRegion.mLeftDown.X, 
@@ -989,7 +989,7 @@ FDyGLWrapper::GetShaderProgramUniformBlockInfo(_MIN_ TU32 iShaderProgramId, _MIN
   return result;
 }
 
-void FDyGLWrapper::UpdateUniformMatrix4(TU32 iId, const DDyMatrix4x4& iBuffer, bool iTransposed)
+void FDyGLWrapper::UpdateUniformMatrix4(TU32 iId, const DMatrix4x4& iBuffer, bool iTransposed)
 {
   GLenum transposed = GL_FALSE;
   if (iTransposed == true) { transposed = GL_TRUE; }
@@ -997,7 +997,7 @@ void FDyGLWrapper::UpdateUniformMatrix4(TU32 iId, const DDyMatrix4x4& iBuffer, b
   glUniformMatrix4fv(iId, 1, transposed, &iBuffer[0].X);
 }
 
-void FDyGLWrapper::UpdateUniformMatrix3(TU32 iId, const DDyMatrix3x3& iBuffer, bool iTransposed)
+void FDyGLWrapper::UpdateUniformMatrix3(TU32 iId, const DMatrix3x3& iBuffer, bool iTransposed)
 {
   GLenum transposed = GL_FALSE;
   if (iTransposed == true) { transposed = GL_TRUE; }
@@ -1005,7 +1005,7 @@ void FDyGLWrapper::UpdateUniformMatrix3(TU32 iId, const DDyMatrix3x3& iBuffer, b
   glUniformMatrix3fv(iId, 1, transposed, &iBuffer[0].X);
 }
 
-void FDyGLWrapper::UpdateUniformMatrix4Array(TU32 iId, const std::vector<DDyMatrix4x4>& iBuffer, bool iIransposed)
+void FDyGLWrapper::UpdateUniformMatrix4Array(TU32 iId, const std::vector<DMatrix4x4>& iBuffer, bool iIransposed)
 {
   if (iBuffer.empty() == true) { return; }
 
@@ -1016,7 +1016,7 @@ void FDyGLWrapper::UpdateUniformMatrix4Array(TU32 iId, const std::vector<DDyMatr
   glUniformMatrix4fv(iId, size, transposed, &iBuffer[0][0].X);
 }
 
-void FDyGLWrapper::UpdateUniformVector3Array(TU32 iId, const std::vector<DDyVector3>& iBuffer)
+void FDyGLWrapper::UpdateUniformVector3Array(TU32 iId, const std::vector<DVector3>& iBuffer)
 {
   if (iBuffer.empty() == true) { return; }
 
@@ -1024,17 +1024,17 @@ void FDyGLWrapper::UpdateUniformVector3Array(TU32 iId, const std::vector<DDyVect
   glUniform3fv(iId, size, iBuffer.front().Data());
 }
 
-void FDyGLWrapper::UpdateUniformVector4(TU32 iId, const DDyVector4& iBuffer)
+void FDyGLWrapper::UpdateUniformVector4(TU32 iId, const DVector4& iBuffer)
 {
   glUniform4fv(iId, 1, iBuffer.Data());
 }
 
-void FDyGLWrapper::UpdateUniformVector3(TU32 iId, const DDyVector3& iBuffer)
+void FDyGLWrapper::UpdateUniformVector3(TU32 iId, const DVector3& iBuffer)
 {
   glUniform3fv(iId, 1, iBuffer.Data());
 }
 
-void FDyGLWrapper::UpdateUniformVector2(TU32 iId, const DDyVector2& iBuffer)
+void FDyGLWrapper::UpdateUniformVector2(TU32 iId, const DVector2& iBuffer)
 {
   glUniform2fv(iId, 1, iBuffer.Data());
 }
@@ -1165,7 +1165,7 @@ void FDyGLWrapper::SetupInitialGlobalStatus()
       GLint defaultSize[4]; glGetIntegerv(GL_VIEWPORT, defaultSize);
       defaultViewport.mViewportSettingList.emplace_back(
         -1, // Global 
-        DDyArea2D{ defaultSize[0], defaultSize[1], defaultSize[2], defaultSize[3] }
+        DArea2D{ defaultSize[0], defaultSize[1], defaultSize[2], defaultSize[3] }
       );
       initialStatus.mViewportSettingList = defaultViewport;
     }
@@ -1186,7 +1186,7 @@ void FDyGLWrapper::SetupInitialGlobalStatus()
       // Get default constant blend color from gl api (this sucks XP)
       std::array<TF32, 4> glDefaultBlendColor;
       glGetFloatv(GL_BLEND_COLOR, glDefaultBlendColor.data());
-      const DDyColorRGBA defaultColor = DDyColorRGBA{glDefaultBlendColor}; 
+      const DColorRGBA defaultColor = DColorRGBA{glDefaultBlendColor}; 
 
       // Insert
       decltype(initialStatus.mAttachmentBlendings)::value_type defaultBlendings;

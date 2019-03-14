@@ -14,11 +14,11 @@
 ///
 
 #include <array>
-#include <Dy/Helper/Type/Plane.h>
+#include <Dy/Helper/Type/DPlane.h>
 
 namespace dy
 {
-class DDyMatrix4x4;
+class DMatrix4x4;
 } /// ::dy namespace
 
 namespace dy
@@ -28,13 +28,13 @@ class DDyFrustumTester final
 {
 public:
   /// @brief Update frustum.
-  void UpdateFrustum(const DDyMatrix4x4& mProjection, const DDyMatrix4x4& mView);
+  void UpdateFrustum(const DMatrix4x4& mProjection, const DMatrix4x4& mView);
 
   /// @brief Check point is in frustum.
-  MDY_NODISCARD bool IsPointInFrustum(const DDyVector3& mPoint) const noexcept;
+  MDY_NODISCARD bool IsPointInFrustum(const DVector3& mPoint) const noexcept;
 
   /// @brief Check virtual sphere that has point and radius is in frustum.
-  MDY_NODISCARD bool IsSphereInFrustum(const DDyVector3& iPoint, TF32 iRadius) const noexcept;
+  MDY_NODISCARD bool IsSphereInFrustum(const DVector3& iPoint, TF32 iRadius) const noexcept;
 
 private:
   /// @enum EDirection
@@ -45,7 +45,7 @@ private:
     DirTop    = 3, DirBack   = 4, DirFront  = 5
   };
 
-  std::array<DDyPlane, 6> mFrustum = {};
+  std::array<DPlane, 6> mFrustum = {};
 };
 
 } /// ::dy namespace

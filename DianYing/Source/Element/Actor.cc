@@ -27,8 +27,8 @@
 #include <Dy/Component/CDyPhysicsColliderBox.h>
 #include <Dy/Component/CDySkybox.h>
 #include <Dy/Element/Type/PDyActorCreationDescriptor.h>
-#include <Dy/Helper/Internal/FDyNameGenerator.h>
-#include <Dy/Management/InputManager.h>
+#include <Dy/Helper/Internal/FNameGenerator.h>
+#include <Dy/Management/MInput.h>
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Management/Helper/SDyProfilingHelper.h>
@@ -56,7 +56,7 @@ public:
   FDyActor* mPtrParentActor = nullptr;
 };
 
-class FDyActor::Impl final : public FDyNameGenerator, public IDyInitializeHelper<PImplDesc>
+class FDyActor::Impl final : public FNameGenerator, public IDyInitializeHelper<PImplDesc>
 {
 public:
   Impl(FDyActor& iActor);

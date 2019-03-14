@@ -63,7 +63,7 @@ void CDyModelAnimator::Update(_MIN_ TF32 dt)
     this->mStatus.mFinalTransformList.resize(this->mBinderSkeleton->GetInputBoneCount());
     for (auto& transform : this->mStatus.mFinalTransformList)
     {
-      transform = DDyMatrix4x4::IdentityMatrix();
+      transform = DMatrix4x4::IdentityMatrix();
     }
     this->mStatus.mStatus = EDyAnimatorStatus::Play; 
   } break;
@@ -76,7 +76,7 @@ void CDyModelAnimator::Update(_MIN_ TF32 dt)
     const auto rootBoneIdList = this->mBinderSkeleton->GetChildrenNodeIdList(-1);
     for (const auto& idBone : rootBoneIdList)
     {
-      this->TryUpdateFinalTransform(idBone, DDyMatrix4x4::IdentityMatrix(), isLooped);
+      this->TryUpdateFinalTransform(idBone, DMatrix4x4::IdentityMatrix(), isLooped);
     }
   } break;
   case EDyAnimatorStatus::Pause: break;
@@ -84,7 +84,7 @@ void CDyModelAnimator::Update(_MIN_ TF32 dt)
   }
 }
 
-void CDyModelAnimator::TryUpdateFinalTransform(_MIN_ TI32 idSkelNode, _MIN_ const DDyMatrix4x4& parentTransform, _MIN_ bool iIsLooped)
+void CDyModelAnimator::TryUpdateFinalTransform(_MIN_ TI32 idSkelNode, _MIN_ const DMatrix4x4& parentTransform, _MIN_ bool iIsLooped)
 {
   const auto& animScrap = this->mStatus.mPtrPresentAnimatorInfo->GetAnimNodeList();
   const auto& refNode = this->mBinderSkeleton->GetRefSkeletonNode(idSkelNode);
@@ -107,11 +107,11 @@ void CDyModelAnimator::TryUpdateFinalTransform(_MIN_ TI32 idSkelNode, _MIN_ cons
     const auto inpPos = this->mStatus.mPtrPresentAnimatorInfo->GetInterpolatedPosition(
         this->mStatus.mElapsedTime, animNodeId, iIsLooped);
 
-    localTransform = DDyMatrix4x4::CreateWithTranslation(inpPos).Rotate(inpRot).Scale(inpScl);
+    localTransform = DMatrix4x4::CreateWithTranslation(inpPos).Rotate(inpRot).Scale(inpScl);
   }
 
   // Calculate final transform without offset matrix.
-  const DDyMatrix4x4 finalTransform = parentTransform.Multiply(localTransform);
+  const DMatrix4x4 finalTransform = parentTransform.Multiply(localTransform);
 
   const auto& offsetBoneList = this->mBinderSkeleton->GetOffsetBoneList();
   const auto itBone = std::find_if(
@@ -140,7 +140,7 @@ std::string CDyModelAnimator::ToString()
   return "";
 }
 
-const std::vector<DDyMatrix4x4>& CDyModelAnimator::GetFinalTransformList() const noexcept
+const std::vector<DMatrix4x4>& CDyModelAnimator::GetFinalTransformList() const noexcept
 {
   return this->mStatus.mFinalTransformList;
 }

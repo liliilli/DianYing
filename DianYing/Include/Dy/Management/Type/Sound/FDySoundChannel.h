@@ -35,7 +35,7 @@ public:
   MDY_NODISCARD EDySuccess Release();
 
   /// @brief Set volume.
-  void SetVolume(_MIN_ const DDyClamp<TF32, 0, 1>& iVolume);
+  void SetVolume(_MIN_ const DClamp<TF32, 0, 1>& iVolume);
   /// @brief Set mute flag.
   void SetMute(_MIN_ bool iMuted);
 

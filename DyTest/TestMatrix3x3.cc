@@ -1,5 +1,5 @@
 #include "pch.h"
-#include <Dy/Helper/Type/Matrix3.h>
+#include <Dy/Helper/Type/DMatrix3x3.h>
 #include <glm/glm.hpp>
 
 #define MDY_TEST_CATEGORY_MATRIX3x3 DyTestDDyMatrix3x3

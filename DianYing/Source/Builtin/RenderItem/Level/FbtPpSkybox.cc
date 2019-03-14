@@ -92,7 +92,7 @@ void FBtRenderItemSkybox::OnRender()
     ptrSkyboxTexture->GetRotationDegree());
   this->mBinderShdSkybox->TryUpdateUniform<EUniform::Vector3>(
     "uTintColor",    
-    static_cast<DDyVector3>(ptrSkyboxTexture->GetTintColor()));
+    static_cast<DVector3>(ptrSkyboxTexture->GetTintColor()));
   this->mBinderShdSkybox->TryInsertTextureRequisition(0, refBinderTexture->GetTextureId());
   //this->mBinderShdSkybox->TryInsertTextureRequisition(1, this->mBinderAttUnlit->GetSourceAttachmentId());
 

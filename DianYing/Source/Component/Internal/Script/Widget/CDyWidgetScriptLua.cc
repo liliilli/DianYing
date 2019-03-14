@@ -16,7 +16,7 @@
 #include <Dy/Component/Internal/Widget/CDyWidgetScriptLua.h>
 
 #include <Dy/Management/IO/MetaInfoManager.h>
-#include <Dy/Management/ScriptManager.h>
+#include <Dy/Management/MScript.h>
 
 //!
 //! Forward declaration
@@ -57,7 +57,7 @@ EDySuccess CDyWidgetScriptLua::Initialize(const PDyScriptComponentMetaInfo& meta
   const auto& validScriptMetaInfo = metaInfoManager.GetScriptMetaInformation(this->mScriptName);
 
   // (2) Bind script, but need to check integrity test also.
-  auto& scriptManager   = MDyScript::GetInstance();
+  auto& scriptManager   = MScript::GetInstance();
   auto& luaInstance     = scriptManager.GetLuaInstance();
 
   MDY_NOTUSED auto _    = luaInstance.safe_script_file(validScriptMetaInfo.mFilePath);

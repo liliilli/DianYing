@@ -15,9 +15,9 @@
 /// Header file
 #include <Dy/Component/Abstract/ADyActorCppScript.h>
 #include <Dy/Component/Internal/Actor/CDyActorScriptCpp.h>
-#include <Dy/Management/GameTimerManager.h>
-#include <Dy/Helper/System/Idioms.h>
+#include <Dy/Management/MGameTimer.h>
 #include <Dy/Component/CDyPhysicsRigidbody.h>
+#include <Dy/Helper/Library/HelperContainer.h>
 
 namespace dy
 {
@@ -28,9 +28,9 @@ FDyActor& ADyActorCppScript::GetActorReference()
   return this->mOutside->GetActorReference();
 }
 
-MDyGameTimer& ADyActorCppScript::GetGameTimerManager() noexcept
+MGameTimer& ADyActorCppScript::GetGameTimerManager() noexcept
 {
-  return MDyGameTimer::GetInstance();
+  return MGameTimer::GetInstance();
 }
 
 void ADyActorCppScript::MDY_PRIVATE(BindPtrTimerHandle)(_MIN_ FDyTimerHandle& iRefTimerHandler)
@@ -48,7 +48,7 @@ void ADyActorCppScript::MDY_PRIVATE(DetachPtrTimerHandle)(_MIN_ FDyTimerHandle& 
   });
   if (it == this->mPtrTimerHandleList.end()) { return; }
 
-  DyFastErase(this->mPtrTimerHandleList, it);
+  FaseErase(this->mPtrTimerHandleList, it);
 }
 
 void ADyActorCppScript::MDY_PRIVATE(AbortAllValidTimerHandler)()
@@ -79,7 +79,7 @@ EDySuccess ADyActorCppScript::MDY_PRIVATE(DetachCollisionCbHandle)(_MIN_ const v
   const auto it = std::find_if(MDY_BIND_BEGIN_END(this->mCollisionCbHandleList), lambda);
   MDY_ASSERT_MSG(it != this->mCollisionCbHandleList.end(), "Unexpected error occurred.");
 
-  DyFastErase(this->mCollisionCbHandleList, it);
+  FaseErase(this->mCollisionCbHandleList, it);
   return DY_SUCCESS;
 }
 

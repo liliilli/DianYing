@@ -53,8 +53,8 @@ private:
   std::array<TF32, 2>           sViewportDims;
   std::ptrdiff_t                mAddrMainDirectionalShadow = 0;
 
-  DDyMatrix4x4 mViewMatrix;
-  DDyMatrix4x4 mProjMatrix;
+  DMatrix4x4 mViewMatrix;
+  DMatrix4x4 mProjMatrix;
 };
 
 } /// ::dy namespace

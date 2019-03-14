@@ -18,7 +18,7 @@
 #include <Dy/Core/DyEngine.h>
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Management/SettingManager.h>
-#include <Dy/Management/ScriptManager.h>
+#include <Dy/Management/MScript.h>
 
 namespace dy
 {
@@ -97,7 +97,7 @@ void MDySynchronization::pRunFrameGameRuntime()
 {
   // Try call script, destroy function when level is alive.
   {
-    auto& manager = MDyScript::GetInstance();
+    auto& manager = MScript::GetInstance();
     if (manager.IsGcedActorScriptExist() == true)
     {
       manager.CallDestroyFuncActorScriptGCList();

@@ -14,7 +14,7 @@
 
 /// Header file
 #include <Dy/Meta/Type/Physics/EDyColliderType.h>
-#include <Dy/Helper/StringSwitch.h>
+#include <Dy/Helper/Internal/XStringSwitch.h>
 
 namespace dy
 {
@@ -23,11 +23,11 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyColliderType& p)
 {
   const auto stringValue = j.get<std::string>();
   
-  switch (DyStrSwitchInput(stringValue))
+  switch (SwitchStrInput(stringValue))
   {
-  case DyStrCase("Sphere"):   p = EDyColliderType::Sphere; break;
-  case DyStrCase("Capsule"):  p = EDyColliderType::Capsule; break;
-  case DyStrCase("Box"):      p = EDyColliderType::Box; break;
+  case CaseStr("Sphere"):   p = EDyColliderType::Sphere; break;
+  case CaseStr("Capsule"):  p = EDyColliderType::Capsule; break;
+  case CaseStr("Box"):      p = EDyColliderType::Box; break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 }

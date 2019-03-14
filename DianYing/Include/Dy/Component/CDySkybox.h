@@ -73,9 +73,9 @@ public:
   MDY_NODISCARD TF32 GetRotationDegree() const noexcept;
 
   /// @brief
-  void SetTintColor(_MIN_ const DDyColorRGB& iTintColor) noexcept;
+  void SetTintColor(_MIN_ const DColorRGB& iTintColor) noexcept;
   /// @brief
-  MDY_NODISCARD const DDyColorRGB& GetTintColor() const noexcept;
+  MDY_NODISCARD const DColorRGB& GetTintColor() const noexcept;
 
 private:
   void TryActivateInstance() override final;
@@ -84,8 +84,8 @@ private:
   TDyResourceBinderTexture mBinderTexture;
 
   std::string           mTextureSpecifier = MDY_INITIALIZE_EMPTYSTR;
-  DDyClamp<TF32, 0, 10> mExposure         = 0.0f;
-  DDyColorRGB           mTintColor        = {};
+  DClamp<TF32, 0, 10> mExposure         = 0.0f;
+  DColorRGB           mTintColor        = {};
   TF32                  mRotationDegree   = 0.0f;
 
   MDY_SET_TYPEMATCH_FUNCTION(::dy::ADyGeneralBaseComponent, CDySkybox);

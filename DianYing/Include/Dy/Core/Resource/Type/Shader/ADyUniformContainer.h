@@ -13,13 +13,13 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/ContainerHelper.h>
+#include <Dy/Helper/Library/HelperContainer.h>
 #include <Dy/Helper/System/Idioms.h>
 #include <Dy/Core/Resource/Internal/ShaderType.h>
 #include <Dy/Core/Resource/Internal/Uniform/IDyUniformValueBase.h>
 #include <Dy/Core/Resource/Type/Shader/TemplateUniformType.h>
 #include <Dy/Core/Resource/Internal/Uniform/IDyUniformStruct.h>
-#include <Dy/Helper/Type/ColorRGB.h>
+#include <Dy/Helper/Type/DColorRGB.h>
 
 //!
 //! Forward declaration

@@ -14,7 +14,7 @@
 
 /// Header file
 #include <Dy/Management/Helper/PhysXErrorCallback.h>
-#include <Dy/Management/LoggingManager.h>
+#include <Dy/Management/MLog.h>
 
 namespace dy
 {

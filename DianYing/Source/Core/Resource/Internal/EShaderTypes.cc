@@ -16,7 +16,7 @@
 #include <Dy/Core/Resource/Internal/ShaderType.h>
 
 #include <nlohmann/json.hpp>
-#include <Dy/Helper/StringSwitch.h>
+#include <Dy/Helper/Internal/XStringSwitch.h>
 #include <Dy/Helper/Library/HelperString.h>
 
 namespace
@@ -88,24 +88,24 @@ void to_json(nlohmann::json& oJson, const EDyUniformVariableType& iUniformType)
 void from_json(const nlohmann::json& iJson, EDyUniformVariableType& iUniformType)
 {
   const auto typeString = iJson.get<std::string>();
-  switch (DyStrSwitchInput(ToLowerCopy(typeString)))
+  switch (SwitchStrInput(ToLowerCopy(typeString)))
   {
-  case DyStrCase(sMatrix4): iUniformType = EDyUniformVariableType::Matrix4; break;
-  case DyStrCase(sMatrix3): iUniformType = EDyUniformVariableType::Matrix3; break;
-  case DyStrCase(sMatrix2): iUniformType = EDyUniformVariableType::Matrix2; break;
-  case DyStrCase(sVector4): iUniformType = EDyUniformVariableType::Vector4; break;
-  case DyStrCase(sVector3): iUniformType = EDyUniformVariableType::Vector3; break;
-  case DyStrCase(sVector2): iUniformType = EDyUniformVariableType::Vector2; break;
-  case DyStrCase(sVectorInt4): iUniformType = EDyUniformVariableType::IVec4; break;
-  case DyStrCase(sVectorInt3): iUniformType = EDyUniformVariableType::IVec3; break;
-  case DyStrCase(sVectorInt2): iUniformType = EDyUniformVariableType::IVec2; break;
-  case DyStrCase(sInteger): iUniformType = EDyUniformVariableType::Integer; break;
-  case DyStrCase(sUnsigned): iUniformType = EDyUniformVariableType::Unsigned; break;
-  case DyStrCase(sFloat): iUniformType = EDyUniformVariableType::Float; break;
-  case DyStrCase(sBool): iUniformType = EDyUniformVariableType::Bool; break;
-  case DyStrCase(sArrayMatrix4): iUniformType = EDyUniformVariableType::Matrix4Array; break;
-  case DyStrCase(sArrayVector3): iUniformType = EDyUniformVariableType::Vector3Array; break;
-  case DyStrCase(sArrayFloat): iUniformType = EDyUniformVariableType::FloatArray; break;
+  case CaseStr(sMatrix4): iUniformType = EDyUniformVariableType::Matrix4; break;
+  case CaseStr(sMatrix3): iUniformType = EDyUniformVariableType::Matrix3; break;
+  case CaseStr(sMatrix2): iUniformType = EDyUniformVariableType::Matrix2; break;
+  case CaseStr(sVector4): iUniformType = EDyUniformVariableType::Vector4; break;
+  case CaseStr(sVector3): iUniformType = EDyUniformVariableType::Vector3; break;
+  case CaseStr(sVector2): iUniformType = EDyUniformVariableType::Vector2; break;
+  case CaseStr(sVectorInt4): iUniformType = EDyUniformVariableType::IVec4; break;
+  case CaseStr(sVectorInt3): iUniformType = EDyUniformVariableType::IVec3; break;
+  case CaseStr(sVectorInt2): iUniformType = EDyUniformVariableType::IVec2; break;
+  case CaseStr(sInteger): iUniformType = EDyUniformVariableType::Integer; break;
+  case CaseStr(sUnsigned): iUniformType = EDyUniformVariableType::Unsigned; break;
+  case CaseStr(sFloat): iUniformType = EDyUniformVariableType::Float; break;
+  case CaseStr(sBool): iUniformType = EDyUniformVariableType::Bool; break;
+  case CaseStr(sArrayMatrix4): iUniformType = EDyUniformVariableType::Matrix4Array; break;
+  case CaseStr(sArrayVector3): iUniformType = EDyUniformVariableType::Vector3Array; break;
+  case CaseStr(sArrayFloat): iUniformType = EDyUniformVariableType::FloatArray; break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 }

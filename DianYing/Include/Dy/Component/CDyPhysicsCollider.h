@@ -17,7 +17,7 @@
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
-#include "Dy/Helper/Type/Area3D.h"
+#include "Dy/Helper/Type/DArea3D.h"
 
 //!
 //! Forward declaration
@@ -62,9 +62,9 @@ public:
   /// @brief Update collider mesh information.
   virtual void UpdateColliderMesh() = 0;
   /// @brief Update AABB bound.
-  void UpdateBound(_MIN_ const DDyArea3D& iArea);
+  void UpdateBound(_MIN_ const DArea3D& iArea);
   /// @brief Get const reference instance of collider mesh.
-  MDY_NODISCARD const std::vector<DDyVector3>& GetColliderMesh() const noexcept;
+  MDY_NODISCARD const std::vector<DVector3>& GetColliderMesh() const noexcept;
 
   /// @brief Check notify hit event.
   MDY_NODISCARD bool IsNotifyHitEvent() const noexcept; 
@@ -77,7 +77,7 @@ public:
   /// @brief Get collider type of this component.
   MDY_NODISCARD EDyColliderType GetColliderType() const noexcept;
   /// @brief Get bound of collider.
-  MDY_NODISCARD const DDyArea3D& GetBound() const noexcept;
+  MDY_NODISCARD const DArea3D& GetBound() const noexcept;
 
   /// @brief Set register flag.
   void MDY_PRIVATE(SetRegisterFlag)(_MIN_ bool iFlag) noexcept;
@@ -127,9 +127,9 @@ protected:
   /// @brief Collision mesh information need to be updated.
   bool mIsCollisionMeshDirty = true;
   /// @brief Collision mesh information.
-  std::vector<DDyVector3> mColliderMeshInformation; 
+  std::vector<DVector3> mColliderMeshInformation; 
   /// @brief AABB bound information.
-  DDyArea3D mAABBBound;
+  DArea3D mAABBBound;
 };
 
 } /// ::dy namespace

@@ -17,7 +17,7 @@
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 #include <Dy/Component/Internal/Lights/DUboDirLight.h>
-#include <Dy/Helper/Type/Matrix4.h>
+#include <Dy/Helper/Type/DMatrix4x4.h>
 #include <Dy/Meta/Components/PCompDirLightMetaInfo.h>
 
 //!
@@ -40,7 +40,7 @@ namespace dy
 /// @brief Direction light component.
 class CDyLightDirectional final : 
   public ADyGeneralBaseComponent, 
-  public IDyInitializeHelper<PDyDirLightComponentMetaInfo>
+  public IDyInitializeHelper<PDirLightComponentMetaInfo>
 {
 public:
   CDyLightDirectional(FDyActor& actorReference);
@@ -49,7 +49,7 @@ public:
   /// @brief  Initialize component
   /// @param  metaInfo
   /// @return If successful just return DY_SUCCESS or DY_FAILURE.
-  MDY_NODISCARD EDySuccess Initialize(const PDyDirLightComponentMetaInfo& metaInfo) override final;
+  MDY_NODISCARD EDySuccess Initialize(const PDirLightComponentMetaInfo& metaInfo) override final;
 
   /// @brief  Release component.
   void Release() override final;
@@ -80,7 +80,7 @@ public:
   MDY_NODISCARD bool IsCastingShadow() const noexcept { return this->mIsCastingShadow; }
 
   /// @brief Get light's direction. Direction forwards to outside from origin.
-  MDY_NODISCARD const DDyVector3& GetLightDirection() const noexcept;
+  MDY_NODISCARD const DVector3& GetLightDirection() const noexcept;
 
   /// @brief Set intensity of light.
   void SetIntensity(TF32 iIntensity) noexcept;
@@ -88,24 +88,24 @@ public:
   MDY_NODISCARD float GetIntensity() const noexcept;
   
   /// @brief Set light's diffuse color.
-  void SetDiffuseColor(const DDyColorRGBA& iColor) noexcept;
+  void SetDiffuseColor(const DColorRGBA& iColor) noexcept;
   /// @brief Get light's diffuse color.
-  MDY_NODISCARD const DDyColorRGBA& GetDiffuseColor() const noexcept;
+  MDY_NODISCARD const DColorRGBA& GetDiffuseColor() const noexcept;
 
   /// @brief Set light's direction. direction must be forward from origin to outside.
-  void SetLightDirection(const DDyVector3& direction) noexcept;
+  void SetLightDirection(const DVector3& direction) noexcept;
 
   /// @brief Update view matrix agian.
   void UpdateLightViewMatrix();
   /// @brief Get view matrix of light.
-  MDY_NODISCARD const DDyMatrix4x4& GetLightViewMatrix() const noexcept;
+  MDY_NODISCARD const DMatrix4x4& GetLightViewMatrix() const noexcept;
 
   /// @brief
   void UpdateCSMFrustum(const CDyCamera& iRefCamera);
   /// @brief Update projection matrix again.
   void UpdateProjectionMatrix();
   /// @brief Get projection matrix of light.
-  MDY_NODISCARD const DDyMatrix4x4& GetProjectionMatrix() const noexcept;
+  MDY_NODISCARD const DMatrix4x4& GetProjectionMatrix() const noexcept;
 
   /// @brief Update segment far planes.
   void UpdateSegmentFarPlanes(_MIN_ const CDyCamera& iPtrCamera);
@@ -119,7 +119,7 @@ public:
       const std::array<TF32, kCSMSegment>& iNormalizedFarPlanes);
   
   /// @brief Get Cascaded-indexed viewports for shadow map array.
-  MDY_NODISCARD const std::array<DDyArea2D, kCSMSegment>& GetCSMIndexedViewports() const noexcept;
+  MDY_NODISCARD const std::array<DArea2D, kCSMSegment>& GetCSMIndexedViewports() const noexcept;
 
   /// @brief Get uniform-buffer-object information of this light.
   MDY_NODISCARD const DDyUboDirectionalLight& GetUboLightInfo() const noexcept;
@@ -156,8 +156,8 @@ private:
       TF32 iNear,
       TF32 iFar,
       const CDyCamera& iRefCamera, 
-      DDyVector4& iMin, 
-      DDyVector4& iMax) const;
+      DVector4& iMin, 
+      DVector4& iMax) const;
 
   /// Data for uniform buffer object. <Direction, Diffuse, Specular, Ambient, Intensity>
   DDyUboDirectionalLight    mData       = {};
@@ -166,20 +166,20 @@ private:
   /// Shadow type.
   EDyShadowType             mShadowType = EDyShadowType::__Error;
   /// Shadow map resolution for shadow.
-  DDyVector2                mShadowResolution = {};
+  DVector2                mShadowResolution = {};
   /// Shadow culling layer.
   std::vector<std::string>  mShadowCullingLayerList = {};
  
   /// Find a bounding box of whole camera frustum in light view space.
-  DDyVector4 minFrustum {NumericalMax<TF32>};
-  DDyVector4 maxFrustum {NumericalMin<TF32>};
-  std::array<DDyArea2D, kCSMSegment>    mLightViewports;
+  DVector4 minFrustum {NumericalMax<TF32>};
+  DVector4 maxFrustum {NumericalMin<TF32>};
+  std::array<DArea2D, kCSMSegment>    mLightViewports;
 
   std::array<TF32, kCSMSegment> mFarPlanes;
-  DDyMatrix4x4                  mOldProjectionMatrix; 
+  DMatrix4x4                  mOldProjectionMatrix; 
     
-  DDyMatrix4x4 mLightViewMatrix;
-  DDyMatrix4x4 mLightProjMatrix;
+  DMatrix4x4 mLightViewMatrix;
+  DMatrix4x4 mLightProjMatrix;
 
   /// Flag for casting light (binding to lighting system)
   MDY_NOTUSED bool mIsCastingLight   = false;

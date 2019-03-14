@@ -14,7 +14,7 @@
 
 /// Header file
 #include <Dy/Core/Thread/IO/FDyIOGC.h>
-#include <Dy/Management/LoggingManager.h>
+#include <Dy/Management/MLog.h>
 #include <Dy/Management/IO/MDyIOData.h>
 #include <Dy/Management/IO/MDyIOResource.h>
 
@@ -53,7 +53,7 @@ FDyIOGC::MoveInstanceFromGC(const std::string& specifier, EDyResourceType type, 
 
   // Get value and remove memory space of item in list.
   auto result = *it;
-  DyFastErase(this->mRIGarbageCandidateList, it);
+  FaseErase(this->mRIGarbageCandidateList, it);
   return std::move(result);
 }
 

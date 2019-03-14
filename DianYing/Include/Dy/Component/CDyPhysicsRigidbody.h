@@ -20,7 +20,7 @@
 #include <Dy/Component/Internal/Physics/FDyCollisionSignatureContainer.h>
 #include <Dy/Component/Type/Physics/EDyCollisionCbType.h>
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
-#include <Dy/Helper/Pointer.h>
+#include <Dy/Helper/System/Pointer.h>
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
 
 //!
@@ -153,11 +153,11 @@ private:
   /// Enable gravity or not.
   bool mIsEnableGravity = false;
   /// Mass of sum of collider.
-  DDyClamp<TF32, 0, 100'000>  mMassInKg = 0.001f;
+  DClamp<TF32, 0, 100'000>  mMassInKg = 0.001f;
   /// Linear damping of rigidbody
-  DDyClamp<TF32, 0, 10'000>   mLinearDamping = 1.0f;
+  DClamp<TF32, 0, 10'000>   mLinearDamping = 1.0f;
   /// Angular damping of rigidbody
-  DDyClamp<TF32, 0, 10'000>   mAngularDamping = 1.0f; 
+  DClamp<TF32, 0, 10'000>   mAngularDamping = 1.0f; 
   /// Lock position axis.
   DLockPreset::D3DAxis mLockPosition{};
   /// Lock rotation axis.

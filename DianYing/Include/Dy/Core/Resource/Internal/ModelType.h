@@ -17,7 +17,7 @@
 
 #include <Dy/Core/Resource/Internal/GeometryType.h>
 #include <Dy/Element/Interface/IDyToString.h>
-#include <Dy/Helper/Type/Quaternion.h>
+#include <Dy/Helper/Type/DQuaternion.h>
 
 namespace dy
 {
@@ -39,9 +39,9 @@ struct DMoeAnimationInformation final
     // Anim channel name == bondId name == node name.
     std::string                 mName         = "";
 
-    std::vector<DDyQuaternion>  mRotationKeys = {};
-    std::vector<DDyVector3>     mPositionKeys = {};
-    std::vector<DDyVector3>     mScalingKeys  = {};
+    std::vector<DQuaternion>  mRotationKeys = {};
+    std::vector<DVector3>     mPositionKeys = {};
+    std::vector<DVector3>     mScalingKeys  = {};
 
     std::vector<float>          mRotationTime = {};
     std::vector<float>          mPositionTime = {};
@@ -65,8 +65,8 @@ struct DMoeBoneNodeInformation final
 
   std::string                           mName           = "";
   std::vector<DMoeBoneNodeInformation>  mChildrenNodes  = {};
-  DDyMatrix4x4                          mNodeTransform  = DDyMatrix4x4::IdentityMatrix();
-  DDyMatrix4x4                          mOffsetMatrix   = DDyMatrix4x4::IdentityMatrix();
+  DMatrix4x4                          mNodeTransform  = DMatrix4x4::IdentityMatrix();
+  DMatrix4x4                          mOffsetMatrix   = DMatrix4x4::IdentityMatrix();
 };
 
 } /// ::dy namespace

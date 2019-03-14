@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Pointer.h>
+#include <Dy/Helper/System/Pointer.h>
 #include <Dy/Meta/Type/EDyResourceType.h>
 #include <Dy/Core/Thread/SDyIOBindingHelper.h>
 #include <Dy/Core/Resource/Type/EDyLazy.h>

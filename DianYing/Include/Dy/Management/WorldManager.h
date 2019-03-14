@@ -17,7 +17,7 @@
 #include <Dy/Element/Type/DDyActorBinder.h>
 #include <Dy/Element/Type/DDyUiBinder.h>
 #include <Dy/Element/Interface/IDyUpdatable.h>
-#include <Dy/Helper/Pointer.h>
+#include <Dy/Helper/System/Pointer.h>
 
 //!
 //! Forward declaration

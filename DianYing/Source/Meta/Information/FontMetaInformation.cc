@@ -51,12 +51,12 @@ PDyMetaFontInformation PDyMetaFontInformation::CreateWithJson(const nlohmann::js
   ///
   static auto CheckHeaderValidity = [](const nlohmann::json& fontAtlas) -> EDySuccess
   {
-    if (DyCheckHeaderIsExist(fontAtlas, header_SpecifierName) == DY_FAILURE)            { return DY_FAILURE; }
-    if (DyCheckHeaderIsExist(fontAtlas, header_FontType) == DY_FAILURE)                 { return DY_FAILURE; }
-    if (DyCheckHeaderIsExist(fontAtlas, header_FontInformationPath) == DY_FAILURE)      { return DY_FAILURE; }
-    if (DyCheckHeaderIsExist(fontAtlas, header_FontTexturePathList) == DY_FAILURE)      { return DY_FAILURE; }
-    if (DyCheckHeaderIsExist(fontAtlas, header_FontAlternativeFilePath) == DY_FAILURE)  { return DY_FAILURE; }
-    if (DyCheckHeaderIsExist(fontAtlas, header_IsUsingRuntimeCreateionWhenGlyphNotExist) == DY_FAILURE) { return DY_FAILURE; }
+    if (json::HasJsonKey(fontAtlas, header_SpecifierName) == false)            { return DY_FAILURE; }
+    if (json::HasJsonKey(fontAtlas, header_FontType) == false)                 { return DY_FAILURE; }
+    if (json::HasJsonKey(fontAtlas, header_FontInformationPath) == false)      { return DY_FAILURE; }
+    if (json::HasJsonKey(fontAtlas, header_FontTexturePathList) == false)      { return DY_FAILURE; }
+    if (json::HasJsonKey(fontAtlas, header_FontAlternativeFilePath) == false)  { return DY_FAILURE; }
+    if (json::HasJsonKey(fontAtlas, header_IsUsingRuntimeCreateionWhenGlyphNotExist) == false) { return DY_FAILURE; }
     return DY_SUCCESS;
   };
 
@@ -82,12 +82,12 @@ PDyMetaFontInformation PDyMetaFontInformation::CreateWithJson(const nlohmann::js
   // (2) Get Information from json atlas.
   PDyMetaFontInformation resultInstance   = {};
 
-  resultInstance.mSpecifierName           = DyJsonGetValueFrom<std::string>(fontAtlas, header_SpecifierName);
-  resultInstance.mFontType                = GetEFontTypeFrom(DyJsonGetValueFrom<std::string>(fontAtlas, header_FontType));
-  resultInstance.mFontInformationPath     = DyJsonGetValueFrom<std::string>(fontAtlas, header_FontInformationPath);
-  resultInstance.mFontTexturePathList     = DyJsonGetValueFrom<std::vector<std::string>>(fontAtlas, header_FontTexturePathList);
-  resultInstance.mFontAlternativeFilePath = DyJsonGetValueFrom<std::string>(fontAtlas, header_FontAlternativeFilePath);
-  resultInstance.mIsUsingRuntimeCreateionWhenGlyphNotExist = DyJsonGetValueFrom<bool>(fontAtlas, header_IsUsingRuntimeCreateionWhenGlyphNotExist);
+  resultInstance.mSpecifierName           = json::GetValueFrom<std::string>(fontAtlas, header_SpecifierName);
+  resultInstance.mFontType                = GetEFontTypeFrom(json::GetValueFrom<std::string>(fontAtlas, header_FontType));
+  resultInstance.mFontInformationPath     = json::GetValueFrom<std::string>(fontAtlas, header_FontInformationPath);
+  resultInstance.mFontTexturePathList     = json::GetValueFrom<std::vector<std::string>>(fontAtlas, header_FontTexturePathList);
+  resultInstance.mFontAlternativeFilePath = json::GetValueFrom<std::string>(fontAtlas, header_FontAlternativeFilePath);
+  resultInstance.mIsUsingRuntimeCreateionWhenGlyphNotExist = json::GetValueFrom<bool>(fontAtlas, header_IsUsingRuntimeCreateionWhenGlyphNotExist);
 
   // (3) Post-validity test.
   using namespace std::filesystem;

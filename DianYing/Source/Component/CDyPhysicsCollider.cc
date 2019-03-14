@@ -15,7 +15,8 @@
 /// Header file
 #include <Dy/Component/CDyPhysicsCollider.h>
 #include <Dy/Element/Actor.h>
-#include <Dy/Management/PhysicsManager.h>
+#include <Dy/Management/MPhysics.h>
+#include <Dy/Helper/Library/HelperContainer.h>
 
 namespace dy
 {
@@ -30,9 +31,9 @@ EDySuccess CDyPhysicsCollider::Initialize(_MIN_ const PDyColliderComponentMetaIn
   // If filter preset specifier is not empty (get values from setting)
   if (this->mFilterPresetSpecifier.empty() == false)
   {
-    const auto& setting = MDyPhysics::GetInstance().GetDefaultSetting();
+    const auto& setting = MPhysics::GetInstance().GetDefaultSetting();
     // Try to getting collision filter preset.
-    if (DyIsMapContains(setting.mFilterPresetContainer, this->mFilterPresetSpecifier) == false)
+    if (Contains(setting.mFilterPresetContainer, this->mFilterPresetSpecifier) == false)
     { DyPushLogError("Failed to get collision filter preset values, {}", this->mFilterPresetSpecifier); }
     else
     {
@@ -47,7 +48,7 @@ EDySuccess CDyPhysicsCollider::Initialize(_MIN_ const PDyColliderComponentMetaIn
   }
 
   this->mCollisionTagName = desc.mDetails.mCollisionLayerName;
-  const auto& collisionLayerList = MDyPhysics::GetInstance().GetDefaultSetting();
+  const auto& collisionLayerList = MPhysics::GetInstance().GetDefaultSetting();
 
   // Get collision layer name but if empty, just get first name.
   if (this->mCollisionTagName.empty() == true)
@@ -64,12 +65,12 @@ EDySuccess CDyPhysicsCollider::Initialize(_MIN_ const PDyColliderComponentMetaIn
   return DY_SUCCESS;
 }
 
-void CDyPhysicsCollider::UpdateBound(_MIN_ const DDyArea3D& iArea)
+void CDyPhysicsCollider::UpdateBound(_MIN_ const DArea3D& iArea)
 {
   this->mAABBBound = iArea;
 }
 
-const std::vector<DDyVector3>& CDyPhysicsCollider::GetColliderMesh() const noexcept
+const std::vector<DVector3>& CDyPhysicsCollider::GetColliderMesh() const noexcept
 {
   return this->mColliderMeshInformation;
 }
@@ -104,7 +105,7 @@ EDyColliderType CDyPhysicsCollider::GetColliderType() const noexcept
   return this->mColliderType;
 }
 
-const DDyArea3D& CDyPhysicsCollider::GetBound() const noexcept
+const DArea3D& CDyPhysicsCollider::GetBound() const noexcept
 {
   return this->mAABBBound;
 }
@@ -164,7 +165,7 @@ physx::PxFilterData CDyPhysicsCollider::CreateFilterDataValue(
   resultFilterData.word0 |= value24 << 8; // [31..8] Rigidbody specifier id.
 
   // Find layer integer id from iLayerName to [7..0] word0
-  const auto& defaultSetting = MDyPhysics::GetInstance().GetDefaultSetting();
+  const auto& defaultSetting = MPhysics::GetInstance().GetDefaultSetting();
 
   const auto it = std::find(MDY_BIND_BEGIN_END(defaultSetting.mCollisionTag), iLayerName);
   MDY_ASSERT_MSG(it != defaultSetting.mCollisionTag.end(), "Unexpected error occurred.");

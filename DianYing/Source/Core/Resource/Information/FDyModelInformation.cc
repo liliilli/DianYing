@@ -27,8 +27,8 @@ FDyModelInformation::FDyModelInformation(_MIN_ const PDyModelInstanceMetaInfo& m
 {
   for (const auto& [meshSpecifier, materialSpecifier] : metaInfo.mMeshList)
   {
-    DySafeUniquePtrEmplaceBack(this->mMeshInformations, meshSpecifier);
-    DySafeUniquePtrEmplaceBack(this->mMaterialInformations, materialSpecifier);
+    SafeUniquePtrEmplaceBack(this->mMeshInformations, meshSpecifier);
+    SafeUniquePtrEmplaceBack(this->mMaterialInformations, materialSpecifier);
   }
 
   if (metaInfo.mSkeleton.mIsUsingSkeleton == true)

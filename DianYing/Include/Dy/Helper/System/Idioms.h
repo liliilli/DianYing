@@ -21,86 +21,53 @@ namespace dy
 
 /// @brief Vector fast erase.
 template <typename TType, typename TAllocator>
-void DyFastErase(_MINOUT_ std::vector<TType, TAllocator>& iVector, _MIN_ TU32 iIndex)
+void FaseErase(std::vector<TType, TAllocator>& ioVector, TU32 iIndex)
 {
-  MDY_ASSERT_MSG(iIndex < iVector.size(), "Unexpected error occurred.");
+  MDY_ASSERT_MSG(iIndex < ioVector.size(), "Unexpected error occurred.");
 
-  std::swap(iVector[iIndex], iVector.back());
-  iVector.pop_back();
+  std::swap(ioVector[iIndex], ioVector.back());
+  ioVector.pop_back();
 }
 
 /// @brief Vector fast erase.
 template <typename TType, typename TAllocator>
-void DyFastErase(
-    _MINOUT_ std::vector<TType, TAllocator>& iVector, 
-    _MIN_ const typename std::vector<TType, TAllocator>::iterator& iIndex)
+void FaseErase(
+    std::vector<TType, TAllocator>& ioVector, 
+    const typename std::vector<TType, TAllocator>::iterator& iIndex)
 {
-  if (iIndex == iVector.end()) { return; }
-  DyFastErase(iVector, static_cast<TU32>(std::distance(iVector.begin(), iIndex)));
+  if (iIndex == ioVector.end()) { return; }
+  FaseErase(ioVector, static_cast<TU32>(std::distance(ioVector.begin(), iIndex)));
 }
 
 /// @brief Vector fast erase.
 template <typename TType, typename TAllocator>
-void DyEraseRemove(
-    _MINOUT_ std::vector<TType, TAllocator>& p, 
-    _MIN_ const typename std::vector<TType, TAllocator>::value_type& iValue)
+void EraseRemove(
+    std::vector<TType, TAllocator>& ioVector, 
+    const typename std::vector<TType, TAllocator>::value_type& iValue)
 {
-  p.erase( std::remove( p.begin(), p.end(), iValue ), p.end() );
+  ioVector.erase( std::remove( ioVector.begin(), ioVector.end(), iValue ), ioVector.end() );
 }
 
 /// @brief Vector fast erase.
 template <typename TType, typename TAllocator, typename TFunctor>
-void DyEraseRemoveIf(_MINOUT_ std::vector<TType, TAllocator>& p, _MIN_ TFunctor&& iPredcate)
+void EraseRemoveIf(std::vector<TType, TAllocator>& p, _MIN_ TFunctor&& iPredcate)
 {
   p.erase( std::remove_if( p.begin(), p.end(), iPredcate ), p.end() );
 }
 
-/// @brief Vector contains.
-template <typename TType, typename TAllocator, typename TFunctor>
-MDY_NODISCARD bool ContainsIf(_MIN_ const std::vector<TType, TAllocator>& p, _MIN_ TFunctor&& iPredcate)
-{
-  return std::any_of(p.begin(), p.end(), iPredcate);
-}
-
-/// @brief Vector contains.
-template <typename TType, typename TAllocator>
-MDY_NODISCARD bool Contains(_MIN_ const std::vector<TType, TAllocator>& p, _MIN_ const TType& target)
-{
-  for (const auto& item : p) { if (item == target) { return true; } }
-  return false;
-}
-
-/// @brief Array contains.
-template <typename TType, std::size_t TAmount, typename TFunctor>
-MDY_NODISCARD bool ContainsIf(_MIN_ const std::array<TType, TAmount>& p, _MIN_ TFunctor&& iPredicate)
-{
-  return std::any_of(MDY_BIND_CBEGIN_CEND(p), iPredicate);
-}
-
-/// @brief Array contains.
-template <typename TType, std::size_t TAmount>
-MDY_NODISCARD bool Contains(_MIN_ const std::array<TType, TAmount>& p, _MIN_ const TType& target)
-{
-  for (const auto& item : p) { if (item == target) { return true; } }
-  return false;
-}
-
-///
-/// @brief 
-/// @param 
-/// @tparam TCtorArgs
-///
+/// @brief Insert heap (unique_ptr) instance into list safely.
+/// Heap instance will be created internally using args.
 template <typename TType, typename TAllocator, typename... TCtorArgs>
-void DySafeUniquePtrEmplaceBack(
-    _MINOUT_ std::vector<std::unique_ptr<TType>, TAllocator>& list,
-    _MINOUT_ TCtorArgs&&... args)
+void SafeUniquePtrEmplaceBack(
+    std::vector<std::unique_ptr<TType>, TAllocator>& ioList,
+    TCtorArgs&&... args)
 {
-  list.emplace_back(nullptr);
-  MDY_ASSERT_MSG(list.back() == nullptr, "Unexpected error occurred.");
+  ioList.emplace_back(nullptr);
+  MDY_ASSERT_MSG(ioList.back() == nullptr, "Unexpected error occurred.");
 
   auto ptrsmtInstance = std::make_unique<TType>(std::forward<TCtorArgs>(args)...);
-  list.back() = std::move(ptrsmtInstance);
-  MDY_ASSERT_MSG(list.back() != nullptr, "Unexpected error occurred.");
+  ioList.back() = std::move(ptrsmtInstance);
+  MDY_ASSERT_MSG(ioList.back() != nullptr, "Unexpected error occurred.");
 }
 
 }

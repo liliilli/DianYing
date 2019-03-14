@@ -17,7 +17,7 @@
 #include <Dy/Helper/Library/HelperZlib.h>
 #include <nlohmann/json.hpp>
 
-#include <Dy/Helper/Internal/ImageBinaryBuffer.h>
+#include <Dy/Helper/Internal/DImageBinaryBuffer.h>
 
 //!
 //! Local translation unit files
@@ -52,7 +52,7 @@ FDyFontResourceContainer::FDyFontResourceContainer(_MIN_ const PDyMetaFontInform
     std::fread(buffer.data(), sizeof(TU08), buffer.size(), fpRes);
     std::fclose(fpRes);
 
-    return zlib::DyDecompressString({buffer.begin(), buffer.end()});
+    return zlib::DecompressString({buffer.begin(), buffer.end()});
   };
 
   //! FUNCTIONBODY ∨
@@ -86,7 +86,7 @@ FDyFontResourceContainer::FDyFontResourceContainer(_MIN_ const PDyMetaFontInform
   glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, 1024, 1024, texturePackSize);
   for (TI32 i = 0; i < texturePackSize; ++i)
   {
-    auto dataBuffer = std::make_unique<DDyImageBinaryDataBuffer>(fontInformation.mFontTexturePathList[i]);
+    auto dataBuffer = std::make_unique<DImageBinaryBuffer>(fontInformation.mFontTexturePathList[i]);
     MDY_ASSERT_MSG(dataBuffer->IsBufferCreatedProperly() == true, "Unexpected error occurred.");
     glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, 1024, 1024, 1, GL_RGBA, GL_UNSIGNED_BYTE, dataBuffer->GetBufferStartPoint());
   }

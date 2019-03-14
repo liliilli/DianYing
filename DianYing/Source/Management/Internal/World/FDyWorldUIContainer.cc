@@ -16,9 +16,10 @@
 #include <Dy/Management/Internal/World/FDyWorldUIContainer.h>
 #include <Dy/Element/Canvas/Widget.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
-#include <Dy/Management/ScriptManager.h>
+#include <Dy/Management/MScript.h>
 #include <Dy/Element/Type/DDyUiBinder.h>
-#include "Dy/Helper/System/Idioms.h"
+#include <Dy/Helper/System/Idioms.h>
+#include <Dy/Helper/Library/HelperContainer.h>
 
 namespace dy
 {
@@ -30,8 +31,8 @@ EDySuccess FDyWorldUIContainer::TryCreateDebugUi()
   this->mDebugUi = std::make_unique<FDyUiWidget>(MDyMetaInfo::GetInstance().GetWidgetMetaInformation("DebugUi"));
 
   // CALL `Initiate()`
-  MDyScript::GetInstance().UpdateWidgetScript(0.0f, EDyScriptState::CalledNothing);
-  MDyScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
+  MScript::GetInstance().UpdateWidgetScript(0.0f, EDyScriptState::CalledNothing);
+  MScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
 
   this->mDebugUi->SetPropagateMode(true, EDySearchMode::Recursive);
   this->mDebugUi->TryPropagatePositionToChildren();
@@ -62,8 +63,8 @@ EDySuccess FDyWorldUIContainer::TryCreateLoadingUi()
   }
 
   // CALL `Initiate()`
-  MDyScript::GetInstance().UpdateWidgetScript(0.0f, EDyScriptState::CalledNothing);
-  MDyScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
+  MScript::GetInstance().UpdateWidgetScript(0.0f, EDyScriptState::CalledNothing);
+  MScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
 
   this->mLoadingUi = std::make_unique<FDyUiWidget>(*MDyMetaInfo::GetInstance().MDY_PRIVATE(TryGetLoadingWidgetMetaLoading)());
   this->mLoadingUi->SetPropagateMode(true, EDySearchMode::Recursive);
@@ -87,7 +88,7 @@ EDySuccess FDyWorldUIContainer::TryRemoveLoadingUi()
 
 bool FDyWorldUIContainer::IsUiObjectExist(_MIN_ const std::string& iUiObjectName) const noexcept
 {
-  return DyIsMapContains(this->mGeneralUiWidgetMap, iUiObjectName);
+  return Contains(this->mGeneralUiWidgetMap, iUiObjectName);
 }
 
 DDyUiBinder FDyWorldUIContainer::CreateUiObject(
@@ -107,8 +108,8 @@ DDyUiBinder FDyWorldUIContainer::CreateUiObject(
   object->mZOrder = ZOrder;
   object->SetupFlagAsParent(true);
 
-  MDyScript::GetInstance().UpdateWidgetScript(0.0f, EDyScriptState::CalledNothing);
-  MDyScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
+  MScript::GetInstance().UpdateWidgetScript(0.0f, EDyScriptState::CalledNothing);
+  MScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
 
   return DDyUiBinder{*object};
 }
@@ -160,7 +161,7 @@ EDySuccess FDyWorldUIContainer::UnbindActiveUiObject(_MIN_ FDyUiWidget& iRefWidg
       [ptr = &iRefWidget](const auto& ptrWidget) { return ptrWidget == ptr; });
   if (it == this->mPtrActivatedGeneralUiWidgetList.end()) { return DY_FAILURE; }
   
-  DyFastErase(this->mPtrActivatedGeneralUiWidgetList, it);
+  FaseErase(this->mPtrActivatedGeneralUiWidgetList, it);
   return DY_SUCCESS;
 }
 

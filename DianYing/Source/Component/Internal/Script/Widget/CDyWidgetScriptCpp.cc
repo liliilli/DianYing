@@ -16,7 +16,7 @@
 #include <Dy/Component/Internal/Widget/CDyWidgetScriptCpp.h>
 
 #include <Dy/Management/IO/MetaInfoManager.h>
-#include <Dy/Helper/Pointer.h>
+#include <Dy/Helper/System/Pointer.h>
 
 namespace dy
 {

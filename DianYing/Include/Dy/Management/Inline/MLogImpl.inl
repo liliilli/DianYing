@@ -16,12 +16,12 @@
 namespace dy
 {
 
-inline MDyLog::Impl::~Impl()
+inline MLog::Impl::~Impl()
 {
   spdlog::shutdown();
 }
 
-inline void MDyLog::Impl::SetVisibleLevel(ELevel iLogLevel)
+inline void MLog::Impl::SetVisibleLevel(ELevel iLogLevel)
 {
   this->mLogLevel = iLogLevel;
 
@@ -30,11 +30,11 @@ inline void MDyLog::Impl::SetVisibleLevel(ELevel iLogLevel)
     const auto logLevelValue = DyGetLogLevel(this->mLogLevel);
 
     this->mLogger->set_level(logLevelValue);
-    DyPushLogDebugDebug("MDyLog::mLogger level : {}.", logLevelValue);
+    DyPushLogDebugDebug("MLog::mLogger level : {}.", logLevelValue);
   }
 }
 
-inline void MDyLog::Impl::PushLog(ELevel logLevel, const std::string& iLogString)
+inline void MLog::Impl::PushLog(ELevel logLevel, const std::string& iLogString)
 {
   if (this->mLogger == nullptr) { return; }
 
@@ -49,13 +49,13 @@ inline void MDyLog::Impl::PushLog(ELevel logLevel, const std::string& iLogString
   }
 }
 
-inline EDySuccess MDyLog::Impl::pfTurnOn()
+inline EDySuccess MLog::Impl::pfTurnOn()
 {
-  DyPushLogDebugDebug("{} | MDyLog::pfTurnOn()", "Function call");
+  DyPushLogDebugDebug("{} | MLog::pfTurnOn()", "Function call");
 
   if (this->mLogger != nullptr)
   {
-    DyPushLogDebugInfo("MDyLog::mLogger already allocated.");
+    DyPushLogDebugInfo("MLog::mLogger already allocated.");
     return DY_SUCCESS;
   }
 
@@ -107,18 +107,18 @@ inline EDySuccess MDyLog::Impl::pfTurnOn()
     spdlog::async_overflow_policy::overrun_oldest);
   this->mLogger->set_level(DyGetLogLevel(this->mLogLevel));
 
-  DyPushLogDebugDebug("MDyLog::mLogger level : {}.", DyGetLogLevel(this->mLogLevel));
-  DyPushLogDebugDebug("MDyLog::mLogger resource allocated.");
+  DyPushLogDebugDebug("MLog::mLogger level : {}.", DyGetLogLevel(this->mLogLevel));
+  DyPushLogDebugDebug("MLog::mLogger resource allocated.");
   spdlog::register_logger(this->mLogger);
-  DyPushLogDebugDebug("MDyLog::mLogger resource registered.");
+  DyPushLogDebugDebug("MLog::mLogger resource registered.");
   spdlog::set_error_handler(DyCallbackLoggerError);
 
   return DY_SUCCESS;
 }
 
-inline EDySuccess MDyLog::Impl::pfTurnOff()
+inline EDySuccess MLog::Impl::pfTurnOff()
 {
-  DyPushLogDebugInfo("{} | MDyLog::pfTurnOff().", "FunctionCall");
+  DyPushLogDebugInfo("{} | MLog::pfTurnOff().", "FunctionCall");
 
   // Drop all registration of logging sink, instance.
   spdlog::drop_all();

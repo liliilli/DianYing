@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/VectorInt2.h>
+#include <Dy/Helper/Type/DVectorInt2.h>
 #include <Dy/Core/Resource/Internal/TextureEnums.h>
 #include <Dy/Meta/Information/MetaInfoTexture.h>
 
@@ -31,7 +31,7 @@ struct PDyGLTextureBase
   bool                mIsUsingCustomizedParameter = false;
   TI32                mImageFormat    = MDY_INITIALIZE_DEFINT;
   GLenum              mImagePixelType = GL_NONE;
-  DDyColorRGBA        mBorderColor    = {};
+  DColorRGBA        mBorderColor    = {};
 
   const TTextureParameterList* mPtrParameterList = MDY_INITIALIZE_NULL;
   TU32                mOutputTextureId = MDY_INITIALIZE_DEFUINT;
@@ -45,7 +45,7 @@ inline PDyGLTextureBase::~PDyGLTextureBase() = default;
 struct PDyGLTextureDescriptor final : public PDyGLTextureBase
 {
   TPtrBuffer    mPtrBuffer    = MDY_INITIALIZE_NULL;
-  DDyVectorInt2 mTextureSize  = {};
+  DVectorInt2 mTextureSize  = {};
 };
 
 /// @struct PDyGLTextureCubemapDescriptor
@@ -59,12 +59,12 @@ struct PDyGLTextureCubemapDescriptor final : public PDyGLTextureBase
   TPtrBuffer    mFrontBuffer  = MDY_INITIALIZE_NULL;
   TPtrBuffer    mBackBuffer   = MDY_INITIALIZE_NULL;
 
-  DDyVectorInt2 mTopSize    = {};
-  DDyVectorInt2 mBottomSize = {};
-  DDyVectorInt2 mLeftSize   = {};
-  DDyVectorInt2 mRightSize  = {};
-  DDyVectorInt2 mFrontSize  = {};
-  DDyVectorInt2 mBackSize   = {};
+  DVectorInt2 mTopSize    = {};
+  DVectorInt2 mBottomSize = {};
+  DVectorInt2 mLeftSize   = {};
+  DVectorInt2 mRightSize  = {};
+  DVectorInt2 mFrontSize  = {};
+  DVectorInt2 mBackSize   = {};
 };
 
 } /// ::dy namespace

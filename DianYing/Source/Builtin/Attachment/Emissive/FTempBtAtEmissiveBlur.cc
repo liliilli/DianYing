@@ -21,7 +21,7 @@ namespace dy
 void FDyBtAttachmentEmissiveTempBlur::ConstructBuffer(PDyGlAttachmentInstanceMetaInfo& oProperty) noexcept
 {
   oProperty.mSpecifierName  = sName;
-  oProperty.mAttachmentSize = DDyVectorInt2{1280, 720};
+  oProperty.mAttachmentSize = DVectorInt2{1280, 720};
   oProperty.mParameterList  =
   {
     PDyGlTexParameterInformation\

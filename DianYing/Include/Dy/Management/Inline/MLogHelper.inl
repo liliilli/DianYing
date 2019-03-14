@@ -13,13 +13,13 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Management/LoggingManager.h>
+#include <Dy/Management/MLog.h>
 
 template <typename... TArgs>
 void DyPushLogInfo(const std::string& iFormatString, TArgs&&... iArgs)
 {
-  ::dy::MDyLog::GetInstance().PushLog(
-      ::dy::MDyLog::ELevel::Information, 
+  ::dy::MLog::GetInstance().PushLog(
+      ::dy::MLog::ELevel::Information, 
       ::dy::MakeStringU8(iFormatString, std::forward<TArgs>(iArgs)...)
   );
 }
@@ -27,8 +27,8 @@ void DyPushLogInfo(const std::string& iFormatString, TArgs&&... iArgs)
 template <typename... TArgs>
 void DyPushLogWarning(const std::string& iFormatString, TArgs&&... iArgs)
 {
-  ::dy::MDyLog::GetInstance().PushLog(
-      ::dy::MDyLog::ELevel::Warning, 
+  ::dy::MLog::GetInstance().PushLog(
+      ::dy::MLog::ELevel::Warning, 
       ::dy::MakeStringU8(iFormatString, std::forward<TArgs>(iArgs)...)
   );
 }
@@ -36,8 +36,8 @@ void DyPushLogWarning(const std::string& iFormatString, TArgs&&... iArgs)
 template <typename... TArgs>
 void DyPushLogError(const std::string& iFormatString, TArgs&&... iArgs)
 {
-  ::dy::MDyLog::GetInstance().PushLog(
-      ::dy::MDyLog::ELevel::Error, 
+  ::dy::MLog::GetInstance().PushLog(
+      ::dy::MLog::ELevel::Error, 
       ::dy::MakeStringU8(iFormatString, std::forward<TArgs>(iArgs)...)
   );
 }
@@ -45,8 +45,8 @@ void DyPushLogError(const std::string& iFormatString, TArgs&&... iArgs)
 template <typename... TArgs>
 void DyPushLogCritical(const std::string& iFormatString, TArgs&&... iArgs)
 {
-  ::dy::MDyLog::GetInstance().PushLog(
-      ::dy::MDyLog::ELevel::Critical, 
+  ::dy::MLog::GetInstance().PushLog(
+      ::dy::MLog::ELevel::Critical, 
       ::dy::MakeStringU8(iFormatString, std::forward<TArgs>(iArgs)...)
   );
 }
@@ -55,8 +55,8 @@ void DyPushLogCritical(const std::string& iFormatString, TArgs&&... iArgs)
   template <typename... TArgs>
   void DyPushLogDebugTrace(const std::string& iFormatString, TArgs&&... iArgs)
   {
-    ::dy::MDyLog::GetInstance().PushLog(
-        ::dy::MDyLog::ELevel::Trace, 
+    ::dy::MLog::GetInstance().PushLog(
+        ::dy::MLog::ELevel::Trace, 
         ::dy::MakeStringU8(iFormatString, std::forward<TArgs>(iArgs)...)
     );
   }
@@ -64,8 +64,8 @@ void DyPushLogCritical(const std::string& iFormatString, TArgs&&... iArgs)
   template <typename... TArgs>
   void DyPushLogDebugDebug(const std::string& iFormatString, TArgs&&... iArgs)
   {
-    ::dy::MDyLog::GetInstance().PushLog(
-        ::dy::MDyLog::ELevel::Debug, 
+    ::dy::MLog::GetInstance().PushLog(
+        ::dy::MLog::ELevel::Debug, 
         ::dy::MakeStringU8(iFormatString, std::forward<TArgs>(iArgs)...)
     );
   }
@@ -73,8 +73,8 @@ void DyPushLogCritical(const std::string& iFormatString, TArgs&&... iArgs)
   template <typename... TArgs>
   void DyPushLogDebugInfo(const std::string& iFormatString, TArgs&&... iArgs)
   {
-    ::dy::MDyLog::GetInstance().PushLog(
-        ::dy::MDyLog::ELevel::Information, 
+    ::dy::MLog::GetInstance().PushLog(
+        ::dy::MLog::ELevel::Information, 
         ::dy::MakeStringU8(iFormatString, std::forward<TArgs>(iArgs)...)
     );
   }
@@ -82,8 +82,8 @@ void DyPushLogCritical(const std::string& iFormatString, TArgs&&... iArgs)
   template <typename... TArgs>
   void DyPushLogDebugWarning(const std::string& iFormatString, TArgs&&... iArgs)
   {
-    ::dy::MDyLog::GetInstance().PushLog(
-        ::dy::MDyLog::ELevel::Warning, 
+    ::dy::MLog::GetInstance().PushLog(
+        ::dy::MLog::ELevel::Warning, 
         ::dy::MakeStringU8(iFormatString, std::forward<TArgs>(iArgs)...)
     );
   }
@@ -91,8 +91,8 @@ void DyPushLogCritical(const std::string& iFormatString, TArgs&&... iArgs)
   template <typename... TArgs>
   void DyPushLogDebugError(const std::string& iFormatString, TArgs&&... iArgs)
   {
-    ::dy::MDyLog::GetInstance().PushLog(
-        ::dy::MDyLog::ELevel::Error, 
+    ::dy::MLog::GetInstance().PushLog(
+        ::dy::MLog::ELevel::Error, 
         ::dy::MakeStringU8(iFormatString, std::forward<TArgs>(iArgs)...)
     );
   }
@@ -100,8 +100,8 @@ void DyPushLogCritical(const std::string& iFormatString, TArgs&&... iArgs)
   template <typename... TArgs>
   void DyPushLogDebugCritical(const std::string& iFormatString, TArgs&&... iArgs)
   {
-    ::dy::MDyLog::GetInstance().PushLog(
-        ::dy::MDyLog::ELevel::Critical, 
+    ::dy::MLog::GetInstance().PushLog(
+        ::dy::MLog::ELevel::Critical, 
         ::dy::MakeStringU8(iFormatString, std::forward<TArgs>(iArgs)...)
     );
   }

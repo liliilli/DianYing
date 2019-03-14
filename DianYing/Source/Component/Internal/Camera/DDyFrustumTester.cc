@@ -14,12 +14,12 @@
 
 /// Header file
 #include <Dy/Component/Internal/Camera/DDyFrustumTester.h>
-#include "Dy/Helper/Type/Matrix4.h"
+#include "Dy/Helper/Type/DMatrix4x4.h"
 
 namespace dy
 {
 
-void DDyFrustumTester::UpdateFrustum(const DDyMatrix4x4& mProjection, const DDyMatrix4x4& mView)
+void DDyFrustumTester::UpdateFrustum(const DMatrix4x4& mProjection, const DMatrix4x4& mView)
 {
   const auto clipMatrix = mProjection.Multiply(mView);
 
@@ -66,12 +66,12 @@ void DDyFrustumTester::UpdateFrustum(const DDyMatrix4x4& mProjection, const DDyM
   mFrustum[DirFront].Normalize();
 }
 
-bool DDyFrustumTester::IsPointInFrustum(const DDyVector3& mPoint) const noexcept
+bool DDyFrustumTester::IsPointInFrustum(const DVector3& mPoint) const noexcept
 {
   for (auto i = 0; i < 6; ++i)
   { 
     // Calculate the plane equation and check if the point is behind a side of the frustum.
-    if (mFrustum[i].CheckPointStatusOnPlane(mPoint) == DDyPlane::EStatus::Behind) 
+    if (mFrustum[i].CheckPointStatusOnPlane(mPoint) == DPlane::EStatus::Behind) 
     { 
       return false; 
     }
@@ -79,7 +79,7 @@ bool DDyFrustumTester::IsPointInFrustum(const DDyVector3& mPoint) const noexcept
   return true;
 }
 
-bool DDyFrustumTester::IsSphereInFrustum(const DDyVector3& iPoint, TF32 iRadius) const noexcept
+bool DDyFrustumTester::IsSphereInFrustum(const DVector3& iPoint, TF32 iRadius) const noexcept
 {
   if (iRadius < 0)
   {
@@ -92,7 +92,7 @@ bool DDyFrustumTester::IsSphereInFrustum(const DDyVector3& iPoint, TF32 iRadius)
   for (auto i = 0; i < 6; ++i)
   {
     // Calculate the plane equation and check if the point is behind a side of the frustum.
-    if (mFrustum[i].CheckPointStatusOnPlane(iPoint) == DDyPlane::EStatus::Behind) 
+    if (mFrustum[i].CheckPointStatusOnPlane(iPoint) == DPlane::EStatus::Behind) 
     { 
       const auto distance = mFrustum[i].GetDistanceFrom(iPoint);
       if (distance > iRadius) 

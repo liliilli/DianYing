@@ -79,7 +79,7 @@ EDySuccess FDySoundChannel::Release()
   return DY_SUCCESS;
 }
 
-void FDySoundChannel::SetVolume(_MIN_ const DDyClamp<TF32, 0, 1>& iVolume)
+void FDySoundChannel::SetVolume(_MIN_ const DClamp<TF32, 0, 1>& iVolume)
 {
   MDY_ASSERT_MSG_FORCE(this->mIsInitilaized == true, "Given sound channel must be initialized when use this function.");
 

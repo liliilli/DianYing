@@ -14,7 +14,7 @@
 
 /// Header file
 #include <Dy/Core/Reflection/RDyGlobalInstanceManager.h>
-#include <Dy/Helper/ContainerHelper.h>
+#include <Dy/Helper/Library/HelperContainer.h>
 
 namespace dy::reflect
 {
@@ -24,7 +24,7 @@ bool RDyGlobalInstanceManager::IsGlobalInstanceExist(const char* iSpecifier)
   const auto hashVal = ::dy::hash::DyToCrc32Hash(iSpecifier);
 
   auto& map = GetInstanceMap();
-  return DyIsMapContains(map, hashVal);
+  return Contains(map, hashVal);
 }
 
 bool RDyGlobalInstanceManager::IsGlobalInstanceExist(const std::string& iSpecifier)
@@ -37,7 +37,7 @@ ADyGlobalInstance* RDyGlobalInstanceManager::GetGlobalInstance(const char* iSpec
   const auto hashVal = ::dy::hash::DyToCrc32Hash(iSpecifier);
   
   auto& map = GetInstanceMap();
-  if (DyIsMapContains(map, hashVal) == false) { return nullptr; }
+  if (Contains(map, hashVal) == false) { return nullptr; }
 
   return map.at(hashVal).get();
 }

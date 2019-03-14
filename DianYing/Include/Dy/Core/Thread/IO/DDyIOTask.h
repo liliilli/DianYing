@@ -17,7 +17,7 @@
 #include <Dy/Core/Reflection/RDyBuiltinResources.h>
 #include <Dy/Core/Thread/IO/EDyIOTask.h>
 
-#include <Dy/Helper/Type/Clamp.h>
+#include <Dy/Helper/Type/DClamp.h>
 
 namespace dy
 {
@@ -29,7 +29,7 @@ namespace dy
 struct DDyIOTask final
 {
 private:
-  using TPriority = DDyClamp<TU08, 0, 255>;
+  using TPriority = DClamp<TU08, 0, 255>;
 public:
   /// Must be moved except for Requiring.
   std::string       mSpecifierName  = {};

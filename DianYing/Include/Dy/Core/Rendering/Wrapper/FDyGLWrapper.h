@@ -17,7 +17,7 @@
 #include <Dy/Core/Rendering/Type/EDyDrawType.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLBufferDescriptor.h>
 #include <Dy/Core/Resource/Internal/ShaderType.h>
-#include <Dy/Helper/Internal/FDyCallStack.h>
+#include <Dy/Helper/Internal/FCallStack.h>
 #include <Dy/Management/Type/Render/DDyGlGlobalStates.h>
 #include <Dy/Management/Type/AttachmentInformation.h>
 
@@ -28,7 +28,7 @@
 namespace dy
 {
 struct PDyGLTextureCubemapDescriptor;
-struct DDyArea2D;
+struct DArea2D;
 enum class EDyTextureStyleType : unsigned char;
 enum class EDyDrawType;
 struct PDyGLVaoBindDescriptor;
@@ -136,12 +136,12 @@ public:
   /// ...You always need to call glViewport() before starting to draw to a framebuffer with a different size. 
   /// This is necessary because the viewport is not part of the framebuffer state...
   static void SetViewport(_MIN_ const std::array<TI32, 4>& iViewportRegion);
-  static void SetViewport(_MIN_ const DDyArea2D& iViewportRegion);
+  static void SetViewport(_MIN_ const DArea2D& iViewportRegion);
   /// @brief Set global indexed viewport region. Keep caution to use this, it's different from general `SetViewport`.
   /// ...You always need to call glViewport() before starting to draw to a framebuffer with a different size. 
   /// This is necessary because the viewport is not part of the framebuffer state...
   static void SetViewportIndexed(_MIN_ TU32 iIndex, _MIN_ const std::array<TI32, 4>& iViewportRegion);
-  static void SetViewportIndexed(_MIN_ TU32 iIndex, _MIN_ const DDyArea2D& iViewportRegion);
+  static void SetViewportIndexed(_MIN_ TU32 iIndex, _MIN_ const DArea2D& iViewportRegion);
 
   /// @brief Bind frame buffer object.
   static void BindFrameBufferObject(_MIN_ TU32 iFboId);
@@ -179,22 +179,22 @@ public:
   GetShaderProgramUniformBlockInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iUniformBlockIndex);
 
   /// @brief Update uniform matrix4x4 item. Specified shader must be valid and activated.
-  static void UpdateUniformMatrix4(TU32 iId, const DDyMatrix4x4& iBuffer, bool iTransposed = false);
+  static void UpdateUniformMatrix4(TU32 iId, const DMatrix4x4& iBuffer, bool iTransposed = false);
   /// @brief Update uniform matrix3x3 item. Specified shader must be valid and activated.
-  static void UpdateUniformMatrix3(TU32 iId, const DDyMatrix3x3& iBuffer, bool iTransposed = false);
+  static void UpdateUniformMatrix3(TU32 iId, const DMatrix3x3& iBuffer, bool iTransposed = false);
   /// @brief Update uniform matrix4x4 array. Specified shader must be valid and activated.
   static void UpdateUniformMatrix4Array(
     TU32 iId, 
-    const std::vector<DDyMatrix4x4>& iBuffer, 
+    const std::vector<DMatrix4x4>& iBuffer, 
     bool iIransposed = false);
   /// @brief Update uniform vector3 (float) array. Specified shader must be valid and activated.
-  static void UpdateUniformVector3Array(TU32 iId, const std::vector<DDyVector3>& iBfuffer);
+  static void UpdateUniformVector3Array(TU32 iId, const std::vector<DVector3>& iBfuffer);
   /// @brief Update uniform vector4 (float) item. Specified shader must be valid and activated.
-  static void UpdateUniformVector4(TU32 iId, const DDyVector4& iBuffer);
+  static void UpdateUniformVector4(TU32 iId, const DVector4& iBuffer);
   /// @brief Update uniform vector3 (float) item. Specified shader must be valid and activated.
-  static void UpdateUniformVector3(TU32 iId, const DDyVector3& iBuffer);
+  static void UpdateUniformVector3(TU32 iId, const DVector3& iBuffer);
   /// @brief Update uniform vector2 (float) item. Specified shader must be valid and activated.
-  static void UpdateUniformVector2(TU32 iId, const DDyVector2& iBuffer);
+  static void UpdateUniformVector2(TU32 iId, const DVector2& iBuffer);
   /// @brief Update uniform integer item. Specified shader must be valid and activated.
   static void UpdateUniformInteger(TU32 iId, const TI32& iBuffer);
   /// @brief Update uniform one unsigend (32-bit) value. 
@@ -240,18 +240,18 @@ private:
   /// @brief Global status stack for management. \n
   /// This container will be push & popped automatically by following rendering pipeline.
   /// This container must not be empty before termination of Dy application.
-  static FDyCallStack<DDyGlGlobalStates> mInternalGlobalStatusStack;
+  static FCallStack<DDyGlGlobalStates> mInternalGlobalStatusStack;
 
   /// ▽ Actual state machine change logic will be operated in these stack.
-  static FDyCallStack<bool> mInternal_FeatBlendStack;
-  static FDyCallStack<bool> mInternal_FeatCullfaceStack;
-  static FDyCallStack<bool> mInternal_FeatDepthTestStack;
-  static FDyCallStack<bool> mInternal_FeatScissorTestStack;
-  static FDyCallStack<DDyGlGlobalStates::DPolygonMode>   mInternal_PolygonModeStack;
-  static FDyCallStack<DDyGlGlobalStates::DBlendMode>     mInternal_BlendModeStack;
-  static FDyCallStack<DDyGlGlobalStates::DCullfaceMode>  mInternal_CullfaceModeStack;
-  static FDyCallStack<DDyGlGlobalStates::DViewport>      mInternal_ViewportStack;
-  static FDyCallStack<std::vector<PBlendingEquation>> sAttachmentBlendings;
+  static FCallStack<bool> mInternal_FeatBlendStack;
+  static FCallStack<bool> mInternal_FeatCullfaceStack;
+  static FCallStack<bool> mInternal_FeatDepthTestStack;
+  static FCallStack<bool> mInternal_FeatScissorTestStack;
+  static FCallStack<DDyGlGlobalStates::DPolygonMode>   mInternal_PolygonModeStack;
+  static FCallStack<DDyGlGlobalStates::DBlendMode>     mInternal_BlendModeStack;
+  static FCallStack<DDyGlGlobalStates::DCullfaceMode>  mInternal_CullfaceModeStack;
+  static FCallStack<DDyGlGlobalStates::DViewport>      mInternal_ViewportStack;
+  static FCallStack<std::vector<PBlendingEquation>> sAttachmentBlendings;
 };
 
 /// @brief Critical section macro for graphic GL API.

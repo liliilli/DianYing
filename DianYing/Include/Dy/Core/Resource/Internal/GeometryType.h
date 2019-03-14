@@ -16,9 +16,9 @@
 #include <array>
 #include <vector>
 
-#include <Dy/Helper/Type/Vector4.h>
-#include <Dy/Helper/Type/Matrix4.h>
-#include <Dy/Helper/Type/VectorInt4.h>
+#include <Dy/Helper/Type/DVector4.h>
+#include <Dy/Helper/Type/DMatrix4x4.h>
+#include <Dy/Helper/Type/DVectorInt4.h>
 
 namespace dy
 {
@@ -37,15 +37,15 @@ struct DDyVertexBoneData final
 ///
 struct DDyVertexInformation final
 {
-  DDyVector3          mPosition   = {};
-  DDyVector3          mNormal     = {};
-  DDyVector2          mTexCoord0  = {};
-  DDyVector2          mTexCoord1  = {};
-  DDyVector3          mTangent    = {};
-  DDyVector3          mBitangent  = {};
+  DVector3          mPosition   = {};
+  DVector3          mNormal     = {};
+  DVector2          mTexCoord0  = {};
+  DVector2          mTexCoord1  = {};
+  DVector3          mTangent    = {};
+  DVector3          mBitangent  = {};
   // Below elements are used when skeletal animation is applied.
-  DDyVectorInt4       mBoneId     = {-1, -1, -1, -1};
-  DDyVector4          mWeights    = { 0,  0,  0,  0};
+  DVectorInt4       mBoneId     = {-1, -1, -1, -1};
+  DVector4          mWeights    = { 0,  0,  0,  0};
 };
 
 /// @brief Deserialization function.
@@ -57,8 +57,8 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ DDyVertexInformation& p);
 ///
 struct DDyGeometryBoneInformation final
 {
-  DDyMatrix4x4        mBoneOffsetMatrix     = {};
-  DDyMatrix4x4        mFinalTransformation  = DDyMatrix4x4::IdentityMatrix();
+  DMatrix4x4        mBoneOffsetMatrix     = {};
+  DMatrix4x4        mFinalTransformation  = DMatrix4x4::IdentityMatrix();
 };
 
 ///
@@ -83,7 +83,7 @@ struct PDySubmeshInformationDescriptor_Deprecated final
   std::string                       mMaterialName     = "";
   TU32                              mBaseVertices     = 0;
   TU32                              mBaseIndices      = 0;
-  DDyMatrix4x4                      mBaseModelMatrix  = DDyMatrix4x4::IdentityMatrix();
+  DMatrix4x4                      mBaseModelMatrix  = DMatrix4x4::IdentityMatrix();
 
   bool                              mIsEnabledSkeletalAnimation = false;
   bool                              mIsUsingDefaultBinding      = true;

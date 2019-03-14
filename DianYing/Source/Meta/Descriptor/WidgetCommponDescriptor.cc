@@ -61,13 +61,13 @@ PDyMetaWidgetRootDescriptor::CreateMetaInformation(_MIN_ const nlohmann::json& i
 {
   auto instance = std::make_unique<PDyMetaWidgetRootDescriptor>();
 
-  DyJsonGetValueFromTo(itemAtlas, sHeader_Name,   instance->mWidgetSpecifierName);
-  DyJsonGetValueFromTo(itemAtlas, "ZOrder",       instance->mZOrder);
-  DyJsonGetValueFromTo(itemAtlas, "IsUsingScript",instance->mIsUsingScript);
+  json::GetValueFromTo(itemAtlas, sHeader_Name,   instance->mWidgetSpecifierName);
+  json::GetValueFromTo(itemAtlas, "ZOrder",       instance->mZOrder);
+  json::GetValueFromTo(itemAtlas, "IsUsingScript",instance->mIsUsingScript);
 
   if (instance->mIsUsingScript == true)
   {
-    DyJsonGetValueFromTo(itemAtlas, sHeader_Script, instance->mScriptReference);
+    json::GetValueFromTo(itemAtlas, sHeader_Script, instance->mScriptReference);
   }
 
   return instance;

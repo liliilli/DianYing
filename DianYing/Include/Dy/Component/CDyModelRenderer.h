@@ -16,7 +16,7 @@
 #include <Dy/Core/Resource/Type/TDyResourceBinder.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
-#include <Dy/Helper/Internal/CheckingRule.h>
+#include <Dy/Helper/Internal/XCheckingRule.h>
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
 
 //!

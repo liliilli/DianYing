@@ -28,9 +28,9 @@ FDyTextureGeneralResource::FDyTextureGeneralResource(_MIN_ const FDyTextureGener
   const auto& temp = static_cast<const FDyTextureGeneralInformation&>(information);
   this->mTextureSize = temp.GetSize();
 
-  const auto optGlImageFormat = DyGLGetImageFormatFrom(information.GetFormat());
+  const auto optGlImageFormat = GlGetImageFormatFrom(information.GetFormat());
   MDY_ASSERT_MSG_FORCE(optGlImageFormat.has_value() == true, "Image format type must be valid.");
-  const auto glImagePixelType = DyGlGetImagePixelTypeFrom(information.GetPixelReadType());
+  const auto glImagePixelType = GlGetImagePixelTypeFrom(information.GetPixelReadType());
   MDY_ASSERT_MSG_FORCE(glImagePixelType != GL_NONE, "Image pixel format must be valid.");
 
   PDyGLTextureDescriptor descriptor {};

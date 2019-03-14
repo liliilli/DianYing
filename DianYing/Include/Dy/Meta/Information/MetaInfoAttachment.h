@@ -15,10 +15,10 @@
 
 #include <Dy/Meta/Information/CommonResourceMetaInfo.h>
 #include <Dy/Meta/Type/EDyTextureParameter.h>
-#include <Dy/Helper/Type/VectorInt2.h>
-#include <Dy/Helper/Type/ColorRGBA.h>
+#include <Dy/Helper/Type/DVectorInt2.h>
+#include <Dy/Helper/Type/DColorRGBA.h>
 #include <Dy/Core/Resource/Internal/TextureEnums.h>
-#include <Dy/Helper/Type/Clamp.h>
+#include <Dy/Helper/Type/DClamp.h>
 
 namespace dy
 {
@@ -31,11 +31,11 @@ struct PDyGlAttachmentInstanceMetaInfo final : public PDyCommonResourceMetaInfo
 {
   std::string                   mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
   TTextureParameterList         mParameterList  = {};
-  DDyVectorInt2                 mAttachmentSize = {};
-  DDyColorRGBA                  mBorderColor    = DDyColorRGBA::Black;
+  DVectorInt2                 mAttachmentSize = {};
+  DColorRGBA                  mBorderColor    = DColorRGBA::Black;
   EDyGlBufferDataInternalFormat mBufferFormat   = EDyGlBufferDataInternalFormat::NoneError;
   EDyTextureStyleType           mAttachmentType = EDyTextureStyleType::D2;
-  DDyClamp<TU32, 1, 16>         mMipmapLevels   = 1;
+  DClamp<TU32, 1, 16>         mMipmapLevels   = 1;
   /// @brief This variable is only enabled if only mAttachmentType is `Array` type.
   TU32                          mDepthNumber    = 0;
   /// @brief When enabled, attachment will be created as ping-pong (two-attachment) attachment.

@@ -199,7 +199,7 @@ void FDyLevel::Update(_MIN_ float dt)
   if (this->mInitialized == false) { return; }
 }
 
-const DDyColorRGBA& FDyLevel::GetBackgroundColor() const noexcept
+const DColorRGBA& FDyLevel::GetBackgroundColor() const noexcept
 {
   return this->mLevelBackgroundColor;
 }
@@ -209,7 +209,7 @@ const std::string& FDyLevel::GetLevelName() const noexcept
   return this->mLevelName;
 }
 
-void FDyLevel::SetBackgroundColor(_MIN_ const DDyColorRGBA& backgroundColor) noexcept
+void FDyLevel::SetBackgroundColor(_MIN_ const DColorRGBA& backgroundColor) noexcept
 {
   this->mLevelBackgroundColor = backgroundColor;
 }

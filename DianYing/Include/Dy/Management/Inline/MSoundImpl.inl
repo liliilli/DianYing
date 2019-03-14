@@ -13,6 +13,8 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Helper/Library/HelperContainer.h>
+
 namespace dy
 {
 
@@ -82,7 +84,7 @@ void MDySound::Impl::Update(TF32 iDt)
     // If instance must be removed, remove.
     if (ptrsmtInstance->GetStatus() == EDySoundStatus::Component_Vanished) { ptrsmtInstance = nullptr; }
   }
-  DyEraseRemove(this->mGeneralSoundInstanceList, nullptr);
+  EraseRemove(this->mGeneralSoundInstanceList, nullptr);
 
   // Update system to make sound.
   this->mSoundSystem->update(); 
@@ -91,8 +93,8 @@ void MDySound::Impl::Update(TF32 iDt)
 inline std::unique_ptr<FDyInstantSound2D> MDySound::Impl::CreateSound2D(
   const std::string& iSoundSpecifier,
   const std::string& iSoundChannel, 
-  const DDyClamp<TF32, 0, 5>& iVolumeMultiplier,
-  const DDyClamp<TF32, 0, 5>& iPitchMultiplier, 
+  const DClamp<TF32, 0, 5>& iVolumeMultiplier,
+  const DClamp<TF32, 0, 5>& iPitchMultiplier, 
   TF32 iDelay)
 {
   // Check error.
@@ -115,8 +117,8 @@ inline std::unique_ptr<FDyInstantSound2D> MDySound::Impl::CreateSound2D(
 inline void MDySound::Impl::PlaySound2D(
   const std::string& iSoundSpecifier, 
   const std::string& iSoundChannel,
-  const DDyClamp<TF32, 0, 5>& iVolumeMultiplier, 
-  const DDyClamp<TF32, 0, 5>& iPitchMultiplier, 
+  const DClamp<TF32, 0, 5>& iVolumeMultiplier, 
+  const DClamp<TF32, 0, 5>& iPitchMultiplier, 
   TF32 iDelay)
 {
   // Check error.
@@ -141,8 +143,8 @@ inline void MDySound::Impl::PlaySound2D(
 inline std::optional<TDyBinderSound2D> MDySound::Impl::PlaySound2DLooped(
   const std::string& iSoundSpecifier,
   const std::string& iSoundChannel, 
-  const DDyClamp<TF32, 0, 5>& iVolumeMultiplier,
-  const DDyClamp<TF32, 0, 5>& iPitchMultiplier)
+  const DClamp<TF32, 0, 5>& iVolumeMultiplier,
+  const DClamp<TF32, 0, 5>& iPitchMultiplier)
 {
   // Check error.
   if (this->IsSoundClipExist(iSoundSpecifier) == false)
@@ -161,9 +163,9 @@ inline std::optional<TDyBinderSound2D> MDySound::Impl::PlaySound2DLooped(
 inline void MDySound::Impl::PlaySound3D(
   const std::string& iSoundSpecifier, 
   const std::string& iSoundChannel,
-  const DDyVector3& iWorldPosition, 
-  const DDyClamp<TF32, 0, 5>& iVolumeMultiplier,
-  const DDyClamp<TF32, 0, 5>& iPitchMultiplier, 
+  const DVector3& iWorldPosition, 
+  const DClamp<TF32, 0, 5>& iVolumeMultiplier,
+  const DClamp<TF32, 0, 5>& iPitchMultiplier, 
   TF32 iDelay, 
   TF32 iMinDistance, 
   TF32 iMaxDistance)
@@ -189,9 +191,9 @@ inline void MDySound::Impl::PlaySound3D(
 inline std::optional<TDyBinderSound3D> MDySound::Impl::PlaySound3DLooped(
   const std::string& iSoundSpecifier, 
   const std::string& iSoundChannel, 
-  const DDyVector3& iWorldPosition, 
-  const DDyClamp<TF32, 0, 5>& iVolumeMultiplier, 
-  const DDyClamp<TF32, 0, 5>& iPitchMultiplier, 
+  const DVector3& iWorldPosition, 
+  const DClamp<TF32, 0, 5>& iVolumeMultiplier, 
+  const DClamp<TF32, 0, 5>& iPitchMultiplier, 
   TF32 iMinDistance, 
   TF32 iMaxDistance)
 {
@@ -217,7 +219,7 @@ inline std::optional<TDyBinderSound3D> MDySound::Impl::PlaySound3DLooped(
 inline FDySoundChannel* MDySound::Impl::GetPtrChannel(const std::string& iSpecifier)
 {
   // Check validity.
-  if (DyIsMapContains(this->mChannelContainer, iSpecifier) == false)
+  if (Contains(this->mChannelContainer, iSpecifier) == false)
   {
     DyPushLogError("Failed to find sound channel, {}.", iSpecifier);
     return nullptr;
@@ -263,7 +265,7 @@ inline FDySoundInstance* MDySound::Impl::__CreateSoundInstance(
   if (metaInfo.mDetails.mChannelSpecifier.empty() == false)
   {
     // If not found given channel, just leave it master channel.
-    if (DyIsMapContains(this->mChannelContainer, metaInfo.mDetails.mChannelSpecifier) == false)
+    if (Contains(this->mChannelContainer, metaInfo.mDetails.mChannelSpecifier) == false)
     {
       metaInfo.mDetails.mChannelSpecifier.clear();
     }

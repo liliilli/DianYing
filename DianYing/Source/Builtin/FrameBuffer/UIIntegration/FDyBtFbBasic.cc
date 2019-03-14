@@ -22,7 +22,7 @@ namespace dy
 void FDyBtFbUiBasic::ConstructBuffer(_MOUT_ PDyGlFrameBufferInstanceMetaInfo& property) noexcept
 {
   property.mSpecifierName       = sName;
-  property.mFrameBufferSize     = DDyVectorInt2{1280, 720};
+  property.mFrameBufferSize     = DVectorInt2{1280, 720};
   property.mIsUsingDepthBuffer  = true;
   property.mColorAttachmentList.emplace_back((FDyBtAttUiBasic::sName), EDyGlAttachmentType::Color0);
 }

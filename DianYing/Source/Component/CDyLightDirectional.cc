@@ -30,7 +30,7 @@ CDyLightDirectional::CDyLightDirectional(FDyActor& actorReference)
     mFarPlanes()
 { }
 
-EDySuccess CDyLightDirectional::Initialize(const PDyDirLightComponentMetaInfo& metaInfo)
+EDySuccess CDyLightDirectional::Initialize(const PDirLightComponentMetaInfo& metaInfo)
 {
   this->mData.mDirection  = metaInfo.mDetails.mDirection.Normalize();
   this->mData.mIntensity  = metaInfo.mDetails.mIntensity;
@@ -52,7 +52,7 @@ EDySuccess CDyLightDirectional::Initialize(const PDyDirLightComponentMetaInfo& m
   {
     auto& settingManager = MDySetting::GetInstance();
     const auto& i = settingManager.GetGlobalDefaultShadowMapResolution();
-    this->mShadowResolution = DDyVector2{static_cast<TF32>(i.X), static_cast<TF32>(i.Y)};
+    this->mShadowResolution = DVector2{static_cast<TF32>(i.X), static_cast<TF32>(i.Y)};
   }
 
   // Set first time flag to false to use second time flag logics.
@@ -103,7 +103,7 @@ void CDyLightDirectional::SetCastingShadowFlag(bool flag) noexcept
   else              { MDY_NOTUSED auto _ = pTryDeactivateCastingShadow(); }
 }
 
-const DDyVector3& CDyLightDirectional::GetLightDirection() const noexcept
+const DVector3& CDyLightDirectional::GetLightDirection() const noexcept
 {
   return this->mData.mDirection;
 }
@@ -113,18 +113,18 @@ float CDyLightDirectional::GetIntensity() const noexcept
   return this->mData.mIntensity;
 }
 
-void CDyLightDirectional::SetDiffuseColor(const DDyColorRGBA& iColor) noexcept
+void CDyLightDirectional::SetDiffuseColor(const DColorRGBA& iColor) noexcept
 {
   this->mData.mDiffuse = iColor;
   this->mIsNeededUpdateValueToGpu = true;
 }
 
-const DDyColorRGBA& CDyLightDirectional::GetDiffuseColor() const noexcept
+const DColorRGBA& CDyLightDirectional::GetDiffuseColor() const noexcept
 {
   return this->mData.mDiffuse;
 }
 
-void CDyLightDirectional::SetLightDirection(const DDyVector3& direction) noexcept
+void CDyLightDirectional::SetLightDirection(const DVector3& direction) noexcept
 {
   this->mData.mDirection = direction.Normalize();
   this->mIsNeededUpdateValueToGpu = true;
@@ -133,7 +133,7 @@ void CDyLightDirectional::SetLightDirection(const DDyVector3& direction) noexcep
 void CDyLightDirectional::UpdateLightViewMatrix()
 {
   auto fwd = this->GetLightDirection();
-  if (fwd == kLevelUpDir) { fwd += DDyVector3{0.01f, 0.01f, 0.01f}; }
+  if (fwd == kLevelUpDir) { fwd += DVector3{0.01f, 0.01f, 0.01f}; }
   fwd *= -1.0f;
 
   const auto& pos = this->GetBindedActor()->GetTransform()->GetFinalWorldPosition();
@@ -144,7 +144,7 @@ void CDyLightDirectional::UpdateLightViewMatrix()
     static_cast<glm::vec3>(kLevelUpDir)); 
 }
 
-const DDyMatrix4x4& CDyLightDirectional::GetLightViewMatrix() const noexcept
+const DMatrix4x4& CDyLightDirectional::GetLightViewMatrix() const noexcept
 {
   return this->mLightViewMatrix;
 }
@@ -166,7 +166,7 @@ void CDyLightDirectional::UpdateProjectionMatrix()
       //0.0f, this->minFrustum.Z);
 }
 
-const DDyMatrix4x4& CDyLightDirectional::GetProjectionMatrix() const noexcept
+const DMatrix4x4& CDyLightDirectional::GetProjectionMatrix() const noexcept
 {
   return this->mLightProjMatrix;
 }
@@ -212,25 +212,25 @@ void CDyLightDirectional::UpdateLightProjectionAndViewports(
   TF32 nearSegmentPlane = 0.0f;
   for (TU32 i = 0; i < kCSMSegment; ++i)
   {
-    DDyVector4 minSegment {NumericalMax<TF32>};
-    DDyVector4 maxSegment {NumericalMin<TF32>};
+    DVector4 minSegment {NumericalMax<TF32>};
+    DVector4 maxSegment {NumericalMin<TF32>};
     this->FrustumBoundingBoxLightViewSpace(nearSegmentPlane, iFarPlanes[i], iRefCamera, minSegment, maxSegment);
 
     // Update viewports.
-    const DDyVector2 frustumSize {maxFrustum.X - minFrustum.X, maxFrustum.Y - minFrustum.Y};
+    const DVector2 frustumSize {maxFrustum.X - minFrustum.X, maxFrustum.Y - minFrustum.Y};
     const TF32 segmentSizeX = maxSegment.X - minSegment.X;
     const TF32 segmentSizeY = maxSegment.Y - minSegment.Y;
     const TF32 segmentSize  = std::max(segmentSizeX, segmentSizeY);
 
-    const DDyVector2 offsetBottomLeft         {minSegment.X - minFrustum.X, minSegment.Y - minFrustum.Y};
-    const DDyVector2 offsetSegmentSizeRatio   {offsetBottomLeft.X / segmentSize, offsetBottomLeft.Y / segmentSize};
-    const DDyVector2 frustumSegmentSizeRatio  {frustumSize.X / segmentSize, frustumSize.Y / segmentSize};
+    const DVector2 offsetBottomLeft         {minSegment.X - minFrustum.X, minSegment.Y - minFrustum.Y};
+    const DVector2 offsetSegmentSizeRatio   {offsetBottomLeft.X / segmentSize, offsetBottomLeft.Y / segmentSize};
+    const DVector2 frustumSegmentSizeRatio  {frustumSize.X / segmentSize, frustumSize.Y / segmentSize};
 
-    DDyVector2 pixelOffsetTopLeft = offsetSegmentSizeRatio * kCSMAttachmentTextureSize;
-    DDyVector2 pixelFrustumSize   = frustumSegmentSizeRatio * kCSMAttachmentTextureSize;
+    DVector2 pixelOffsetTopLeft = offsetSegmentSizeRatio * kCSMAttachmentTextureSize;
+    DVector2 pixelFrustumSize   = frustumSegmentSizeRatio * kCSMAttachmentTextureSize;
 
     // Scale factor that helps if frustum size is supposed to be bigger than maximum viewport size.
-    const DDyVector2 scaleFactor{
+    const DVector2 scaleFactor{
         32768 < pixelFrustumSize.X ? 32768 / pixelFrustumSize.X : 1.0f,
         32768 < pixelFrustumSize.Y ? 32768 / pixelFrustumSize.Y : 1.0f
     };
@@ -241,11 +241,11 @@ void CDyLightDirectional::UpdateLightProjectionAndViewports(
     mLightViewports[i].mRightUp   = pixelFrustumSize + mLightViewports[i].mLeftDown;
 
     // Update light view-projection matrices per segments.
-    DDyMatrix4x4 lightProjMatrix = glm::ortho(minSegment.X, minSegment.X + segmentSize, minSegment.Y, minSegment.Y + segmentSize, -maxFrustum.Z, -minFrustum.Z);
-    DDyMatrix4x4 lightScale = DDyMatrix4x4::CreateWithScale(
-      DDyVector3{0.5f * scaleFactor.X, 0.5f * scaleFactor.Y, 0.5f});
-    DDyMatrix4x4 lightBias  = DDyMatrix4x4::CreateWithTranslation(
-      DDyVector3{0.5f * scaleFactor.X, 0.5f * scaleFactor.Y, 0.5f});
+    DMatrix4x4 lightProjMatrix = glm::ortho(minSegment.X, minSegment.X + segmentSize, minSegment.Y, minSegment.Y + segmentSize, -maxFrustum.Z, -minFrustum.Z);
+    DMatrix4x4 lightScale = DMatrix4x4::CreateWithScale(
+      DVector3{0.5f * scaleFactor.X, 0.5f * scaleFactor.Y, 0.5f});
+    DMatrix4x4 lightBias  = DMatrix4x4::CreateWithTranslation(
+      DVector3{0.5f * scaleFactor.X, 0.5f * scaleFactor.Y, 0.5f});
 
     this->mDataShadow.mLightVPSBMatrix[i] = 
       lightBias.Multiply(lightScale).Multiply(lightProjMatrix).Multiply(this->mLightViewMatrix);
@@ -253,7 +253,7 @@ void CDyLightDirectional::UpdateLightProjectionAndViewports(
   }
 }
 
-const std::array<DDyArea2D, kCSMSegment>& CDyLightDirectional::GetCSMIndexedViewports() const noexcept
+const std::array<DArea2D, kCSMSegment>& CDyLightDirectional::GetCSMIndexedViewports() const noexcept
 {
   return this->mLightViewports;
 }
@@ -268,10 +268,10 @@ void CDyLightDirectional::SetIntensity(TF32 iIntensity) noexcept
 void CDyLightDirectional::FrustumBoundingBoxLightViewSpace(
     TF32 iNear, TF32 iFar, 
     const CDyCamera& iRefCamera,
-    DDyVector4& iMin, DDyVector4& iMax) const
+    DVector4& iMin, DVector4& iMax) const
 {
-   DDyVector4 minResult {NumericalMax<TF32>};
-  DDyVector4 maxResult {NumericalMin<TF32>};
+   DVector4 minResult {NumericalMax<TF32>};
+  DVector4 maxResult {NumericalMin<TF32>};
 
   const TF32 fov  = math::DegToRadVal<TF32> * iRefCamera.GetFieldOfView();
   const auto xywh = iRefCamera.GetPixelizedViewportRectangle();
@@ -282,25 +282,25 @@ void CDyLightDirectional::FrustumBoundingBoxLightViewSpace(
   const TF32 farWidth   = farHeight * xywh[2] / xywh[3];
   
   const auto& camViewMatrix = iRefCamera.GetViewMatrix();
-  const auto rightDir = DDyVector3{camViewMatrix[0]};
-  const auto upDir    = DDyVector3{camViewMatrix[1]};
-  const auto forDir   = DDyVector3{camViewMatrix[2]};
+  const auto rightDir = DVector3{camViewMatrix[0]};
+  const auto upDir    = DVector3{camViewMatrix[1]};
+  const auto forDir   = DVector3{camViewMatrix[2]};
 
   const auto nc = pos + forDir * iNear;
   const auto fc = pos + forDir * iFar;
 
   // Vertices in a world space.
-  std::array<DDyVector4, 8> boundingBoxVertices =
+  std::array<DVector4, 8> boundingBoxVertices =
   { //         z    y                             x
-    DDyVector4{nc - (upDir * nearHeight * 0.5f) - (rightDir * nearWidth * 0.5f), 1.0f}, // NBL
-    DDyVector4{nc - (upDir * nearHeight * 0.5f) + (rightDir * nearWidth * 0.5f), 1.0f}, // NBR
-    DDyVector4{nc + (upDir * nearHeight * 0.5f) + (rightDir * nearWidth * 0.5f), 1.0f}, // NTR
-    DDyVector4{nc + (upDir * nearHeight * 0.5f) - (rightDir * nearWidth * 0.5f), 1.0f}, // NTL
+    DVector4{nc - (upDir * nearHeight * 0.5f) - (rightDir * nearWidth * 0.5f), 1.0f}, // NBL
+    DVector4{nc - (upDir * nearHeight * 0.5f) + (rightDir * nearWidth * 0.5f), 1.0f}, // NBR
+    DVector4{nc + (upDir * nearHeight * 0.5f) + (rightDir * nearWidth * 0.5f), 1.0f}, // NTR
+    DVector4{nc + (upDir * nearHeight * 0.5f) - (rightDir * nearWidth * 0.5f), 1.0f}, // NTL
 
-    DDyVector4{fc - (upDir * farHeight * 0.5f) - (rightDir * farWidth * 0.5f), 1.0f}, // FBL
-    DDyVector4{fc - (upDir * farHeight * 0.5f) + (rightDir * farWidth * 0.5f), 1.0f}, // FBR
-    DDyVector4{fc + (upDir * farHeight * 0.5f) + (rightDir * farWidth * 0.5f), 1.0f}, // FTR
-    DDyVector4{fc + (upDir * farHeight * 0.5f) - (rightDir * farWidth * 0.5f), 1.0f}, // FTL
+    DVector4{fc - (upDir * farHeight * 0.5f) - (rightDir * farWidth * 0.5f), 1.0f}, // FBL
+    DVector4{fc - (upDir * farHeight * 0.5f) + (rightDir * farWidth * 0.5f), 1.0f}, // FBR
+    DVector4{fc + (upDir * farHeight * 0.5f) + (rightDir * farWidth * 0.5f), 1.0f}, // FTR
+    DVector4{fc + (upDir * farHeight * 0.5f) - (rightDir * farWidth * 0.5f), 1.0f}, // FTL
   };
 
   for (TU32 vertId = 0; vertId < 8; ++vertId)

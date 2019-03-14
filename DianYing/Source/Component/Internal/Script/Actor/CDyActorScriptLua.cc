@@ -14,7 +14,7 @@
 
 #include <Dy/Component/Internal/Actor/CDyActorScriptLua.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
-#include <Dy/Management/ScriptManager.h>
+#include <Dy/Management/MScript.h>
 #include <Dy/Element/Actor.h>
 
 //!
@@ -53,7 +53,7 @@ CDyActorScriptLua::CDyActorScriptLua(_MIN_ FDyActor& actorReference, _MIN_ const
   MDY_ASSERT_MSG(iDesc.mScriptMode == EDyScriptMode::Actor, "Given script must be actor type.");
 
     // (2) Bind script, but need to check integrity test also.
-  auto& scriptManager   = MDyScript::GetInstance();
+  auto& scriptManager   = MScript::GetInstance();
   auto& luaInstance     = scriptManager.GetLuaInstance();
 
   MDY_NOTUSED auto _    = luaInstance.safe_script_file(iDesc.mFilePath);
@@ -87,7 +87,7 @@ void CDyActorScriptLua::Update(float dt)
 #ifdef false
   auto* obj = this->GetBindedActor();
   auto transform = obj->GetTransform();
-  transform->AddWorldEulerAngle(EDyAxis3D::Z, 0.16f);
+  transform->AddWorldEulerAngle(EAxis3D::Z, 0.16f);
 #endif
 }
 

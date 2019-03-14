@@ -65,7 +65,7 @@ template <typename TType>
 EDySuccess ADyUniformContainer::TryUpdateUniformStruct(TU32 iIndex, const TType& iContainer)
 {
   const auto& aliasName = reflect::RUniformReflection::GetFirstAliasOf(TType::__sTypeName);
-  if (DyIsMapContains(this->mUniformStructListMap, aliasName) == false) { return DY_FAILURE; }
+  if (Contains(this->mUniformStructListMap, aliasName) == false) { return DY_FAILURE; }
 
   const auto& reflData = reflect::RUniformReflection::GetData(TType::__sTypeName);
   auto& data = this->mUniformStructListMap.at(aliasName);
@@ -79,17 +79,17 @@ EDySuccess ADyUniformContainer::TryUpdateUniformStruct(TU32 iIndex, const TType&
     {
     case ERefl::Int:      { __MDY_UNIFORM_STRUCT_COMPARE_AND_INSERT(Integer, int); } break;
     case ERefl::Float:    { __MDY_UNIFORM_STRUCT_COMPARE_AND_INSERT(Float, float); } break;
-    case ERefl::Vector2:  { __MDY_UNIFORM_STRUCT_COMPARE_AND_INSERT(Vector2, DDyVector2); } break;
-    case ERefl::Vector3:  { __MDY_UNIFORM_STRUCT_COMPARE_AND_INSERT(Vector3, DDyVector3); } break;
-    case ERefl::Vector4:  { __MDY_UNIFORM_STRUCT_COMPARE_AND_INSERT(Vector4, DDyVector4); } break;
-    case ERefl::Matrix4:  { __MDY_UNIFORM_STRUCT_COMPARE_AND_INSERT(Matrix4, DDyMatrix4x4); } break;
+    case ERefl::Vector2:  { __MDY_UNIFORM_STRUCT_COMPARE_AND_INSERT(Vector2, DVector2); } break;
+    case ERefl::Vector3:  { __MDY_UNIFORM_STRUCT_COMPARE_AND_INSERT(Vector3, DVector3); } break;
+    case ERefl::Vector4:  { __MDY_UNIFORM_STRUCT_COMPARE_AND_INSERT(Vector4, DVector4); } break;
+    case ERefl::Matrix4:  { __MDY_UNIFORM_STRUCT_COMPARE_AND_INSERT(Matrix4, DMatrix4x4); } break;
     case ERefl::ColorRGB: 
     {
-      const auto& value = reflData.template GetValueOf<DDyColorRGB>(iContainer, varName);
+      const auto& value = reflData.template GetValueOf<DColorRGB>(iContainer, varName);
       if (auto* ptrInstance = static_cast<FDyUniformValue<EUnif::Vector3>*>(memberValue.get());
-          ptrInstance->mValue != static_cast<DDyVector3>(value))
+          ptrInstance->mValue != static_cast<DVector3>(value))
       {
-        ptrInstance->mValue = static_cast<DDyVector3>(value);
+        ptrInstance->mValue = static_cast<DVector3>(value);
         this->mUpdatedStructList.emplace_back(aliasName, TI32(iIndex), ptrInstance);
       }
     } break;
@@ -113,7 +113,7 @@ template<typename TType>
 EDySuccess ADyUniformContainer::TryUpdateUniformStruct(const TType& iContainer)
 {
   const auto& aliasName = reflect::RUniformReflection::GetFirstAliasOf(TType::__sTypeName);
-  if (DyIsMapContains(this->mUniformStructItemMap, aliasName) == false) { return DY_FAILURE; }
+  if (Contains(this->mUniformStructItemMap, aliasName) == false) { return DY_FAILURE; }
 
   const auto& reflData = reflect::RUniformReflection::GetData(TType::__sTypeName);
   auto& data = this->mUniformStructItemMap.at(aliasName);
@@ -127,17 +127,17 @@ EDySuccess ADyUniformContainer::TryUpdateUniformStruct(const TType& iContainer)
     {
     case ERefl::Int:      { __MDY_UNIFORM_STRUCT_ITEM_COMPARE_AND_INSERT(Integer, int); } break;
     case ERefl::Float:    { __MDY_UNIFORM_STRUCT_ITEM_COMPARE_AND_INSERT(Float, float); } break;
-    case ERefl::Vector2:  { __MDY_UNIFORM_STRUCT_ITEM_COMPARE_AND_INSERT(Vector2, DDyVector2); } break;
-    case ERefl::Vector3:  { __MDY_UNIFORM_STRUCT_ITEM_COMPARE_AND_INSERT(Vector3, DDyVector3); } break;
-    case ERefl::Vector4:  { __MDY_UNIFORM_STRUCT_ITEM_COMPARE_AND_INSERT(Vector4, DDyVector4); } break;
-    case ERefl::Matrix4:  { __MDY_UNIFORM_STRUCT_ITEM_COMPARE_AND_INSERT(Matrix4, DDyMatrix4x4); } break;
+    case ERefl::Vector2:  { __MDY_UNIFORM_STRUCT_ITEM_COMPARE_AND_INSERT(Vector2, DVector2); } break;
+    case ERefl::Vector3:  { __MDY_UNIFORM_STRUCT_ITEM_COMPARE_AND_INSERT(Vector3, DVector3); } break;
+    case ERefl::Vector4:  { __MDY_UNIFORM_STRUCT_ITEM_COMPARE_AND_INSERT(Vector4, DVector4); } break;
+    case ERefl::Matrix4:  { __MDY_UNIFORM_STRUCT_ITEM_COMPARE_AND_INSERT(Matrix4, DMatrix4x4); } break;
     case ERefl::ColorRGB: 
     {
-      const auto& value = reflData.template GetValueOf<DDyColorRGB>(iContainer, varName);
+      const auto& value = reflData.template GetValueOf<DColorRGB>(iContainer, varName);
       if (auto* ptrInstance = static_cast<FDyUniformValue<EUnif::Vector3>*>(memberValue.get());
-          ptrInstance->mValue != static_cast<DDyVector3>(value))
+          ptrInstance->mValue != static_cast<DVector3>(value))
       {
-        ptrInstance->mValue = static_cast<DDyVector3>(value);
+        ptrInstance->mValue = static_cast<DVector3>(value);
         this->mUpdatedStructList.emplace_back(aliasName, -1, ptrInstance);
       }
     } break;

@@ -15,7 +15,7 @@
 
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
-#include <Dy/Helper/Type/Matrix4.h>
+#include <Dy/Helper/Type/DMatrix4x4.h>
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
 #include "Internal/Camera/DDyFrustumTester.h"
 
@@ -34,8 +34,8 @@ MDY_SET_IMMUTABLE_STRING(sUboCameraBlock, "dyBtUboCameraBlock");
 ///
 struct alignas(16) DDyUboCameraBlock final
 {
-  DDyMatrix4x4 mProjMatrix = {};
-  DDyMatrix4x4 mViewMatrix = {};
+  DMatrix4x4 mProjMatrix = {};
+  DMatrix4x4 mViewMatrix = {};
 };
 
 ///
@@ -77,11 +77,11 @@ public:
 
   /// @brief  Get view matrix.
   /// @return Valid immutable view matrix reference.
-  MDY_NODISCARD const DDyMatrix4x4& GetViewMatrix() const noexcept;
+  MDY_NODISCARD const DMatrix4x4& GetViewMatrix() const noexcept;
 
   /// @brief  Get projection matrix
   /// @return Valid immutable projection matirx reference.
-  MDY_NODISCARD const DDyMatrix4x4& GetProjectionMatrix() const noexcept;
+  MDY_NODISCARD const DMatrix4x4& GetProjectionMatrix() const noexcept;
 
   /// @brief  Get feature flag about mesh unclipping of this camera component.
   MDY_NODISCARD bool IsEnabledMeshUnclipping() const noexcept;
@@ -96,27 +96,27 @@ public:
   MDY_NODISCARD TF32 GetFieldOfView() const noexcept;
 
   /// @brief  Get camera's world position.
-  MDY_NODISCARD const DDyVector3& GetPosition() const noexcept;
+  MDY_NODISCARD const DVector3& GetPosition() const noexcept;
 
   /// @brief Check point is in camera frustum.
-  MDY_NODISCARD bool IsPointInFrustum(const DDyVector3& iPoint) const noexcept;
+  MDY_NODISCARD bool IsPointInFrustum(const DVector3& iPoint) const noexcept;
 
   /// @brief Check virtual sphere that is consisted of point and radius, is in camera frustum.
-  MDY_NODISCARD bool IsSphereInFrustum(const DDyVector3& iPoint, TF32 iRadius) const noexcept;
+  MDY_NODISCARD bool IsSphereInFrustum(const DVector3& iPoint, TF32 iRadius) const noexcept;
 
   /// @brief Check this camera is using 3d listener.
   MDY_NODISCARD bool IsUsing3DListener() const noexcept;
 
   /// @brief  Get scale value of xy (start point) of viewport rectangle.
   /// @return Scaled start point of viewport rectangle.
-  MDY_NODISCARD const DDyVector2& GetViewportRectScaleXy() const noexcept
+  MDY_NODISCARD const DVector2& GetViewportRectScaleXy() const noexcept
   {
     return this->mViewportRectXY;
   }
 
   /// @brief  Get scale value of wh (start point) of viewport rectangle.
   /// @return Scaled width and height of viewport rectangle.
-  MDY_NODISCARD const DDyVector2& GetViewportRectScaleWh() const noexcept
+  MDY_NODISCARD const DVector2& GetViewportRectScaleWh() const noexcept
   {
     return this->mViewportRectWH;
   }
@@ -218,13 +218,13 @@ private:
   /// |  ux uy uz  0  ||   0  0  0 -y  | == |  ux uy uz -u*t  |  v(x, y, z) is camera's z-axis normal vector.
   /// |  vx vy vz  0  ||   0  0  0 -z  | == |  vx vy vz -v*t  |  u(x, y, z) is camera's y-axis normal vector.
   /// '-  0  0  0  0 -``-  0  0  0  1 -`    `-  0  0  0    1 -`  We need to translate all object's in view frustum as camera's origin.
-  DDyMatrix4x4      mViewMatrix;
+  DMatrix4x4      mViewMatrix;
   /// Projection matrix.
-  DDyMatrix4x4      mProjectionMatrix;
+  DMatrix4x4      mProjectionMatrix;
   /// Normalized Lookat direction vector
-  DDyVector3        mLookingAtDirection = {};
+  DVector3        mLookingAtDirection = {};
   /// Camera final posittion
-  DDyVector3        mPosition = {};
+  DVector3        mPosition = {};
   /// Frustum varaible.
   DDyFrustumTester  mFrustum  = {};
 
@@ -252,9 +252,9 @@ private:
   //!
 
   /// Viewport rect X, Y
-  DDyVector2  mViewportRectXY         = {0, 0};
+  DVector2  mViewportRectXY         = {0, 0};
   /// Viewport rect W, H
-  DDyVector2  mViewportRectWH         = {1, 1};
+  DVector2  mViewportRectWH         = {1, 1};
 
   /// Check flag if mesh is unclipped even though vertex position is out of bound.
   bool        mIsEnableMeshUnClipped  = false;

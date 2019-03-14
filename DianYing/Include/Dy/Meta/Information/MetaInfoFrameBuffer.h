@@ -15,7 +15,7 @@
 
 #include <Dy/Meta/Information/CommonResourceMetaInfo.h>
 #include <Dy/Management/Type/AttachmentInformation.h>
-#include <Dy/Helper/Type/VectorInt2.h>
+#include <Dy/Helper/Type/DVectorInt2.h>
 
 namespace dy
 {
@@ -28,7 +28,7 @@ struct PDyGlFrameBufferInstanceMetaInfo final : public PDyCommonResourceMetaInfo
   TAttachmentBinderList mColorAttachmentList = {};
   TBlendingEquationList mBlendingEquationList = {};
 
-  DDyVectorInt2         mFrameBufferSize = {};
+  DVectorInt2         mFrameBufferSize = {};
 
   std::string           mDepthAttachmentSpecifier;
   /// @brief When enabled, depth buffer will be attached,
@@ -53,7 +53,7 @@ template <> struct hash<dy::PDyGlFrameBufferInstanceMetaInfo>
 {
   size_t operator()(const dy::PDyGlFrameBufferInstanceMetaInfo& iVertex) const 
   {
-    return hash<dy::DDyVectorInt2>()(iVertex.mFrameBufferSize); 
+    return hash<dy::DVectorInt2>()(iVertex.mFrameBufferSize); 
   }
 };
 

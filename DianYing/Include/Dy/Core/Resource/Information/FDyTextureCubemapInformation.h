@@ -39,7 +39,7 @@ public:
   /// @brief Get buffer of image.
   MDY_NODISCARD const std::vector<TU08>& GetBufferOf(_MIN_ EDyCubemapFragment iValue) const noexcept;
   /// @brief Get texture's size.
-  MDY_NODISCARD const DDyVectorInt2& GetSizeOf(_MIN_ EDyCubemapFragment iValue) const noexcept;
+  MDY_NODISCARD const DVectorInt2& GetSizeOf(_MIN_ EDyCubemapFragment iValue) const noexcept;
 
 private:
   std::vector<TU08> mTopTextureImageBuffer = {};
@@ -49,12 +49,12 @@ private:
   std::vector<TU08> mLeftTextureImageBuffer = {};
   std::vector<TU08> mRightTextureImageBuffer = {};
 
-  DDyVectorInt2     mTopTextureSize = {};
-  DDyVectorInt2     mBottomTextureSize = {};
-  DDyVectorInt2     mFrontTextureSize = {};
-  DDyVectorInt2     mBackTextureSize = {};
-  DDyVectorInt2     mLeftTextureSize = {};
-  DDyVectorInt2     mRightTextureSize = {};
+  DVectorInt2     mTopTextureSize = {};
+  DVectorInt2     mBottomTextureSize = {};
+  DVectorInt2     mFrontTextureSize = {};
+  DVectorInt2     mBackTextureSize = {};
+  DVectorInt2     mLeftTextureSize = {};
+  DVectorInt2     mRightTextureSize = {};
 };
 
 } /// ::dy namespace

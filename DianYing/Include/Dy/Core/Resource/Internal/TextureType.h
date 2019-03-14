@@ -13,9 +13,9 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/ColorRGBA.h>
+#include <Dy/Helper/Type/DColorRGBA.h>
 #include <Dy/Core/Resource/Internal/TextureEnums.h>
-#include <Dy/Helper/Internal/ImageBinaryBuffer.h>
+#include <Dy/Helper/Internal/DImageBinaryBuffer.h>
 #include <Dy/Meta/Type/EDyTextureParameter.h>
 
 namespace dy
@@ -36,7 +36,7 @@ struct PDyTextureConstructionBaseDesc
   /// Use default opengl generated mipmap if true.
   bool mIsUsingDefaultMipmapGeneration    = false;
   /// Border color
-  DDyColorRGBA mBorderColor           = DDyColorRGBA::Black;
+  DColorRGBA mBorderColor           = DColorRGBA::Black;
 };
 
 ///

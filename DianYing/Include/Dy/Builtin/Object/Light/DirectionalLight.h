@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/Vector3.h>
+#include <Dy/Helper/Type/DVector3.h>
 
 namespace dy::builtin
 {
@@ -24,8 +24,8 @@ public:
   FDyDirectionalLight();
 
 private:
-  DDyVector3 mPosition;
-  DDyVector3 mSunDirection;
+  DVector3 mPosition;
+  DVector3 mSunDirection;
 
 };
 

@@ -23,7 +23,7 @@ namespace dy
 FDyModelAnimScrapInformation::FDyModelAnimScrapInformation(_MIN_ const PDyModelAnimInstanceMetaInfo& metaInfo) :
     mSpecifierName{metaInfo.mSpecifierName}
 {
-  MDY_ASSERT_MSG_FORCE(DyFsIsFileExist(metaInfo.mExternalPath) == true, "Animation scrap file is not exist.");
+  MDY_ASSERT_MSG_FORCE(IsFileExist(metaInfo.mExternalPath) == true, "Animation scrap file is not exist.");
   
   // Open file.
   std::FILE* fdFile = std::fopen(metaInfo.mExternalPath.c_str(), "rb");
@@ -81,7 +81,7 @@ const std::string& FDyModelAnimScrapInformation::GetSpecifierName() const noexce
   return this->mSpecifierName;
 }
 
-DDyVector3 FDyModelAnimScrapInformation::GetInterpolatedScaling(_MIN_ TF32 iElapsedTime, _MIN_ TU32 iBoneIndex, _MIN_ bool iIsLooped) const
+DVector3 FDyModelAnimScrapInformation::GetInterpolatedScaling(_MIN_ TF32 iElapsedTime, _MIN_ TU32 iBoneIndex, _MIN_ bool iIsLooped) const
 {
   const auto& refBone = this->mAnimation.mAnimationNodeList[iBoneIndex];
   
@@ -138,7 +138,7 @@ DDyVector3 FDyModelAnimScrapInformation::GetInterpolatedScaling(_MIN_ TF32 iElap
   }
 }
 
-DDyQuaternion FDyModelAnimScrapInformation::GetInterpolatedRotation(_MIN_ TF32 iElapsedTime, _MIN_ TU32 iBoneIndex, _MIN_ bool iIsLooped) const
+DQuaternion FDyModelAnimScrapInformation::GetInterpolatedRotation(_MIN_ TF32 iElapsedTime, _MIN_ TU32 iBoneIndex, _MIN_ bool iIsLooped) const
 {
   const auto& refBone = this->mAnimation.mAnimationNodeList[iBoneIndex];
   
@@ -155,7 +155,7 @@ DDyQuaternion FDyModelAnimScrapInformation::GetInterpolatedRotation(_MIN_ TF32 i
   if (num == 1)
   {
     const auto& refRot = refBone.mRotationList.front();
-    return DDyQuaternion{refRot.mX, refRot.mY, refRot.mZ, refRot.mW};
+    return DQuaternion{refRot.mX, refRot.mY, refRot.mZ, refRot.mW};
   }
 
   for (TU32 i = 0; i < num; ++i)
@@ -178,8 +178,8 @@ DDyQuaternion FDyModelAnimScrapInformation::GetInterpolatedRotation(_MIN_ TF32 i
         / (this->mAnimation.mAnimationHeader.mDurationSecond - refLastBone.mStartSecond);
 
       // Get s-interpolated quaternion.
-      const DDyQuaternion left  = {refLastBone.mX, refLastBone.mY, refLastBone.mZ, refLastBone.mW};
-      const DDyQuaternion right = {refFirstBone.mX, refFirstBone.mY, refFirstBone.mZ, refFirstBone.mW};
+      const DQuaternion left  = {refLastBone.mX, refLastBone.mY, refLastBone.mZ, refLastBone.mW};
+      const DQuaternion right = {refFirstBone.mX, refFirstBone.mY, refFirstBone.mZ, refFirstBone.mW};
       return math::Slerp(left, right, v);
     }
   }
@@ -192,13 +192,13 @@ DDyQuaternion FDyModelAnimScrapInformation::GetInterpolatedRotation(_MIN_ TF32 i
       / (refRhs.mStartSecond - refLhs.mStartSecond);
 
     // Get s-interpolated quaternion.
-    const DDyQuaternion left  = {refLhs.mX, refLhs.mY, refLhs.mZ, refLhs.mW};
-    const DDyQuaternion right = {refRhs.mX, refRhs.mY, refRhs.mZ, refRhs.mW};
+    const DQuaternion left  = {refLhs.mX, refLhs.mY, refLhs.mZ, refLhs.mW};
+    const DQuaternion right = {refRhs.mX, refRhs.mY, refRhs.mZ, refRhs.mW};
     return math::Slerp(left, right, v);
   }
 }
 
-DDyVector3 FDyModelAnimScrapInformation::GetInterpolatedPosition(_MIN_ TF32 iElapsedTime, _MIN_ TU32 iIdAnimNode, _MIN_ bool iIsLooped) const
+DVector3 FDyModelAnimScrapInformation::GetInterpolatedPosition(_MIN_ TF32 iElapsedTime, _MIN_ TU32 iIdAnimNode, _MIN_ bool iIsLooped) const
 {
   const auto& refBone = this->mAnimation.mAnimationNodeList[iIdAnimNode];
   

@@ -17,60 +17,25 @@
 
 #include <filesystem>
 #include <nlohmann/json.hpp>
-#include <Dy/Management/LoggingManager.h>
+#include <Dy/Management/MLog.h>
+#include <Dy/Helper/Library/HelperIO.h>
 
-namespace dy
+namespace dy::json
 {
 
-bool DyIsJsonKeyExist(const nlohmann::json& json, const std::string& key) noexcept
+bool HasJsonKey(const nlohmann::json& json, const std::string& key) noexcept
 {
   return json.find(key) != json.end();
 }
 
-std::optional<nlohmann::json> DyGetJsonAtlasFromFile(const std::string& filePath) noexcept
+std::optional<nlohmann::json> GetAtlasFromFile(const std::string& filePath) noexcept
 {
-  if (std::filesystem::exists(filePath) == false)
-  {
-    DyPushLogCritical("File path is not exist, so failed to read serialization file. {}", filePath);
-    return std::nullopt;
-  }
-
-  std::FILE* fd = std::fopen(filePath.c_str(), "r");
-  std::fseek(fd, 0, SEEK_END);
-  const auto size = ftell(fd);
-  std::fseek(fd, 0, SEEK_SET);
-
-  std::vector<char> buffer(size + 1);
-  std::fread(buffer.data(), sizeof(char), size, fd);
-  std::fclose(fd);
-
-  nlohmann::json json;
-  try 
-  {
-    json = nlohmann::json::parse(buffer);
-  }
-  catch (nlohmann::json::parse_error& e)
-  {
-    MDY_ASSERT_MSG_FORCE(false, e.what());
-  }
-  return json;
-}
-
-std::optional<nlohmann::json> 
-DyGetJsonAtlasFromFile(const std::filesystem::path& iFilePath) noexcept
-{
-  std::FILE* fd = std::fopen(iFilePath.string().c_str(), "r");
-  std::fseek(fd, 0, SEEK_END);
-  const auto size = ftell(fd);
-  std::fseek(fd, 0, SEEK_SET); 
-
-  std::vector<char> buffer(size + 1);
-  std::fread(buffer.data(), sizeof(char), size, fd);
-  std::fclose(fd);
+  const auto optBuffer = GetBufferFromFile(filePath);
+  if (optBuffer.has_value() == false) { return std::nullopt; }
 
   try 
   {
-    return nlohmann::json::parse(buffer);
+    return nlohmann::json::parse(*optBuffer);
   }
   catch (nlohmann::json::parse_error& e)
   {
@@ -80,7 +45,13 @@ DyGetJsonAtlasFromFile(const std::filesystem::path& iFilePath) noexcept
 }
 
 std::optional<nlohmann::json> 
-GetJsonAtlasFromString(const std::string& iSerializedString) noexcept
+GetAtlasFromFile(const std::filesystem::path& iFilePath) noexcept
+{
+  return GetAtlasFromFile(iFilePath.string());
+}
+
+std::optional<nlohmann::json> 
+GetAtlasFromString(const std::string& iSerializedString) noexcept
 {
   try
   {
@@ -94,4 +65,4 @@ GetJsonAtlasFromString(const std::string& iSerializedString) noexcept
   }
 }
 
-} /// ::dy namespace
+} /// ::dy::json namespace

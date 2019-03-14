@@ -16,7 +16,7 @@
 #include <Dy/Management/Internal/Render/FDyModelHandlerManager.h>
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
-#include <Dy/Management/LoggingManager.h>
+#include <Dy/Helper/Library/HelperContainer.h>
 
 namespace dy
 {
@@ -43,7 +43,7 @@ const FDyModelHandlerManager::TContainer& FDyModelHandlerManager::GetContainer()
 
 bool FDyModelHandlerManager::IsBoundModelExist(_MIN_ const std::string& iModelSpecifier) const noexcept
 {
-  return DyIsMapContains(this->mModelHandlerContainer, iModelSpecifier);
+  return Contains(this->mModelHandlerContainer, iModelSpecifier);
 }
 
 EDySuccess FDyModelHandlerManager::TryCreateHandler(_MIN_ const std::string& iModelSpecifier) noexcept

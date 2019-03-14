@@ -16,15 +16,15 @@
 #include <Dy/Component/UI/CDyWidgetScript.h>
 #include <Dy/Component/Internal/Widget/CDyWidgetScriptCpp.h>
 #include <Dy/Component/Internal/Script/FDyWidgetScriptStatus.h>
-#include <Dy/Management/ScriptManager.h>
-#include <Dy/Management/InputManager.h>
+#include <Dy/Management/MScript.h>
+#include <Dy/Management/MInput.h>
 
 namespace dy
 {
 
 CDyWidgetScript::CDyWidgetScript(_MIN_ const std::string& iScriptSpecifier, _MINOUT_ FDyUiWidget& iWidget) :
   mPtrWidget{&iWidget},
-  mPtrWidgetStatus{ MDyScript::GetInstance().CreateWidgetScript(iScriptSpecifier, *mPtrWidget, true) }
+  mPtrWidgetStatus{ MScript::GetInstance().CreateWidgetScript(iScriptSpecifier, *mPtrWidget, true) }
 { }
 
 CDyWidgetScript::~CDyWidgetScript()
@@ -33,7 +33,7 @@ CDyWidgetScript::~CDyWidgetScript()
   {
   case EDyScriptType::Cpp: 
   { // If Widget type is `Cpp`, do the thing.
-    auto& i = MDyInput::GetInstance();
+    auto& i = MInput::GetInstance();
 
     // intentional.
     auto& ref = static_cast<CDyWidgetScriptCpp&>(*mPtrWidgetStatus->MDY_PRIVATE(GetPtrInternalWidgetScript)());
@@ -41,7 +41,7 @@ CDyWidgetScript::~CDyWidgetScript()
     // Change related Actor timer status to abort for avoiding callback function call.
     auto& script = *ref.__GetScriptInstance();
     script.MDY_PRIVATE(AbortAllValidTimerHandler)();
-    MDyScript::GetInstance().TryForwardWidgetScriptToGCList(mPtrWidgetStatus);
+    MScript::GetInstance().TryForwardWidgetScriptToGCList(mPtrWidgetStatus);
   } break;
   case EDyScriptType::Lua: 
   { // If Widget type is `Lua`, do the thing. but not supported yet.

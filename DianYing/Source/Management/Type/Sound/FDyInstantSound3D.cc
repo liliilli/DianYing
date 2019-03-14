@@ -26,7 +26,7 @@ namespace dy
 FDyInstantSound3D::FDyInstantSound3D(
     _MIN_ const std::string& iSoundSpecifier, 
     _MIN_ const std::string& iSoundChannel,
-    _MIN_ const DDyVector3& iPosition,
+    _MIN_ const DVector3& iPosition,
     _MIN_ TF32 iVolumeMultiplier, _MIN_ TF32 iPitchMultiplier, _MIN_ TF32 iDelay,
     _MIN_ TF32 iMinDistance, _MIN_ TF32 iMaxDistance,
     _MIN_ bool iIsLooped) :

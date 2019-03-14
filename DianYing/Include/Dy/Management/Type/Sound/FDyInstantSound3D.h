@@ -16,7 +16,7 @@
 #include <fmod.hpp>
 #include <Dy/Core/Resource/Type/TDyInformationBinder.h>
 #include <Dy/Management/Type/Sound/ADySoundInstance.h>
-#include <Dy/Helper/Type/Vector3.h>
+#include <Dy/Helper/Type/DVector3.h>
 
 namespace dy
 {
@@ -29,7 +29,7 @@ public:
   FDyInstantSound3D(
       _MIN_ const std::string& iSoundSpecifier, 
       _MIN_ const std::string& iSoundChannel,
-      _MIN_ const DDyVector3& iPosition,
+      _MIN_ const DVector3& iPosition,
       _MIN_ TF32 iVolumeMultiplier, _MIN_ TF32 iPitchMultiplier, _MIN_ TF32 iDelay,
       _MIN_ TF32 iMinDistance, _MIN_ TF32 iMaxDistance,
       _MIN_ bool iIsLooped);
@@ -46,7 +46,7 @@ private:
   TDyInformationBinderSound mBinderClipResource;
   /// @brief For lazy initialization of sound resource.
   std::string mSoundChannelSpecifier = "";
-  DDyVector3  mWorldPosition;
+  DVector3  mWorldPosition;
   TF32        mMaxVolumeDistance;
   TF32        mMinVolumeDistance;
   TF32        mInitVolume;

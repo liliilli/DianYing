@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Component/Interface/IDyScriptable.h>
-#include <Dy/Helper/Pointer.h>
+#include <Dy/Helper/System/Pointer.h>
 
 //!
 //! Forward declaration
@@ -25,7 +25,7 @@ namespace dy
 class CDyWidgetScriptCpp;
 class FDyUiWidget;
 class FDyTimerHandle;
-class MDyGameTimer;
+class MGameTimer;
 } /// ::dy namespace
 
 //!
@@ -42,7 +42,7 @@ public:
   MDY_NODISCARD FDyUiWidget& GetWidgetReference();
   
   /// @brief Get Game-Timer manager.
-  MDY_NODISCARD MDyGameTimer& GetGameTimerManager() noexcept;
+  MDY_NODISCARD MGameTimer& GetGameTimerManager() noexcept;
 
   void MDY_PRIVATE(BindPtrTimerHandle)(_MIN_ FDyTimerHandle& iRefTimerHandler);
   void MDY_PRIVATE(DetachPtrTimerHandle)(_MIN_ FDyTimerHandle& iRefTimerHandler);

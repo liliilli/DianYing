@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Core/Thread/TDyIO.h>
-#include <Dy/Helper/Pointer.h>
+#include <Dy/Helper/System/Pointer.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Management/Type/EDyGlobalGameStatus.h>
 

@@ -16,7 +16,7 @@
 ///
 
 #include <Dy/Core/EDyAppMode.h>
-#include <Dy/Helper/Type/VectorInt2.h>
+#include <Dy/Helper/Type/DVectorInt2.h>
 #include <Dy/Meta/Type/EDyRenderingApi.h>
 #include <Dy/Management/Type/SettingContainer.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
@@ -76,9 +76,9 @@ public:
     return this->mGamePlay.mInitialSceneSpecifier;
   }
 
-  /// @brief  Get global default shadow map resolution as DDyVector2
-  /// @return DDyVector2 size of default shadow map resolution.
-  MDY_NODISCARD const DDyVectorInt2& GetGlobalDefaultShadowMapResolution() const noexcept
+  /// @brief  Get global default shadow map resolution as DVector2
+  /// @return DVector2 size of default shadow map resolution.
+  MDY_NODISCARD const DVectorInt2& GetGlobalDefaultShadowMapResolution() const noexcept
   {
     return this->mGamePlay.mShadow.mShadowGlobalDefaultMap;
   }
@@ -115,7 +115,7 @@ public:
   void SetLogFilePath(_MIN_ const std::string& path) noexcept;
 
   /// @brief Set global default shadow map resolution.
-  void SetGlobalDefaultShadowMapResolution(_MIN_ const DDyVector2& size) noexcept;
+  void SetGlobalDefaultShadowMapResolution(_MIN_ const DVector2& size) noexcept;
 
   /// @brief Set vsync mode.
   /// If vsync mode is off, application will be running by more 60 fps but unstable. \n

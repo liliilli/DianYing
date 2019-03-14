@@ -16,7 +16,7 @@
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Management/Type/Render/DDyModelHandler.h>
 #include <Dy/Management/Type/Render/DDyGlGlobalStates.h>
-#include <Dy/Helper/Pointer.h>
+#include <Dy/Helper/System/Pointer.h>
 
 //!
 //! Forward declaration
@@ -62,7 +62,7 @@ public:
       NotNull<const FDyMaterialResource*>
   >;
 
-  using TDrawColliderItem = std::pair<NotNull<CDyPhysicsCollider*>, DDyMatrix4x4>; 
+  using TDrawColliderItem = std::pair<NotNull<CDyPhysicsCollider*>, DMatrix4x4>; 
   using TUiDrawCallItem = NotNull<FDyUiObject*>;
   using TPointLightHandleList = std::vector<CDyLightPoint*>; 
   using TSpotLightHandleList  = std::vector<CDyLightSpot*>; 
@@ -106,7 +106,7 @@ public:
   TSpotLightHandleList& MDY_PRIVATE(GetActivatedSpotLights)() noexcept;
 
   /// @brief Get General (Default) ui projection matrix.
-  const DDyMatrix4x4& GetGeneralUiProjectionMatrix() const noexcept;
+  const DMatrix4x4& GetGeneralUiProjectionMatrix() const noexcept;
   /// @brief Swap buffer.
   void SwapBuffers();
 
@@ -146,11 +146,11 @@ private:
   /// @brief Enqueue debug collider draw call.
   void EnqueueDebugDrawCollider(
       CDyPhysicsCollider& iRefCollider, 
-      const DDyMatrix4x4& iTransformMatrix);
+      const DMatrix4x4& iTransformMatrix);
 
   class Impl; Impl* mInternal = nullptr;
 
-  friend class MDyPhysics;
+  friend class MPhysics;
 };
 
 } /// ::dy namespace

@@ -22,7 +22,7 @@
 #include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
 
 #include <Dy/Core/Resource/Type/TemplateRescInfoType.h>
-#include <Dy/Helper/Wrapper/DDyMutexUniqueHashMap.h>
+#include <Dy/Helper/Wrapper/DMutexUniqueHashMap.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Meta/Type/EDyResourceType.h>
 
@@ -86,7 +86,7 @@ private:
   MDY_NODISCARD EDySuccess MDY_PRIVATE(TryRemove)(_MIN_ const std::string& iSpcifier, _MIN_ EDyResourceType iType);
 
   template <typename TType>
-  using __THashMap = DDyMutexUniqueHashMap<std::string, TType>;
+  using __THashMap = DMutexUniqueHashMap<std::string, TType>;
 
   __THashMap<FDyShaderResource>   __mShaderContainer    = {};
   __THashMap<FDyTextureResource>  __mTextureContainer   = {};

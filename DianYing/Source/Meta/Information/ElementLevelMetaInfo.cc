@@ -16,7 +16,7 @@
 #include <Dy/Meta/Information/ElementLevelMetaInfo.h>
 
 #include <nlohmann/json.hpp>
-#include <Dy/Helper/Type/ColorRGB.h>
+#include <Dy/Helper/Type/DColorRGB.h>
 #include <Dy/Helper/Library/HelperJson.h>
 #include <Dy/Element/Helper/DescriptorComponentHeaderString.h>
 
@@ -123,15 +123,15 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyLevelConstructMetaInfo& 
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyLevelConstructMetaInfo& p)
 {
-  DyJsonGetValueFromTo(j, sCategoryMeta,    p.mMeta);
-  DyJsonGetValueFromTo(j, sCategoryObject,  p.mLevelObjectMetaInfoList);
+  json::GetValueFromTo(j, sCategoryMeta,    p.mMeta);
+  json::GetValueFromTo(j, sCategoryObject,  p.mLevelObjectMetaInfoList);
 }
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyLevelConstructMetaInfo::DMeta& p)
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
 
-  // @TODO p.mLevelBackgroundColor to DDyColorRGB24.
+  // @TODO p.mLevelBackgroundColor to DColorRGB24.
   j = nlohmann::json
   {
     {(sHeader_BackgroundColor), p.mLevelBackgroundColor},
@@ -140,7 +140,7 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyLevelConstructMetaInfo::
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyLevelConstructMetaInfo::DMeta& p)
 {
-  DyJsonGetValueFromTo(j, sHeader_BackgroundColor, p.mLevelBackgroundColor);
+  json::GetValueFromTo(j, sHeader_BackgroundColor, p.mLevelBackgroundColor);
 }
 
 } /// ::dy namespace

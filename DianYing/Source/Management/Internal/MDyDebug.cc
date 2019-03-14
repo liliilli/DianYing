@@ -20,7 +20,7 @@
 
 #include <Dy/Management/Type/SettingContainer.h>
 #include <Dy/Management/Type/Input/EDyInputButtonStatus.h>
-#include <Dy/Management/InputManager.h>
+#include <Dy/Management/MInput.h>
 #include <Dy/Core/DyEngine.h>
 
 //!
@@ -97,12 +97,12 @@ EDySuccess MDyDebug::CheckInput(_MIN_ MDY_NOTUSED TF32 dt) noexcept
         // Create debug menu.
         this->mMainMenu = std::make_unique<editor::FDyEditor_MainMenu>();
         this->mIsDebugMenuOpened = true;
-        MDyInput::GetInstance().PushMouseMode(EDyMouseMode::Picking);
+        MInput::GetInstance().PushMouseMode(EDyMouseMode::Picking);
       }
       else
       {
         // Pop MouseMode::Picking.
-        MDyInput::GetInstance().PopMouseMode();
+        MInput::GetInstance().PopMouseMode();
         // Release debug menu.
         this->mIsDebugMenuOpened = false;
         this->mMainMenu = nullptr;
@@ -126,7 +126,7 @@ void MDyDebug::pUpdateInputKeys()
     return std::any_of(
         MDY_BIND_CBEGIN_CEND(actionInfo.mActionId),
         [goalState](_MIN_ const auto& id) 
-        { return MDyInput::GetInstance().MDY_PRIVATE(GetLowlevelKeyStatus(id)) == goalState; }
+        { return MInput::GetInstance().MDY_PRIVATE(GetLowlevelKeyStatus(id)) == goalState; }
     );
   };
 
@@ -137,7 +137,7 @@ void MDyDebug::pUpdateInputKeys()
     return std::all_of(
         MDY_BIND_CBEGIN_CEND(actionInfo.mActionId),
         [goalState](_MIN_ const auto& id) 
-        { return MDyInput::GetInstance().MDY_PRIVATE(GetLowlevelKeyStatus(id)) == goalState; }
+        { return MInput::GetInstance().MDY_PRIVATE(GetLowlevelKeyStatus(id)) == goalState; }
     );
   };
 

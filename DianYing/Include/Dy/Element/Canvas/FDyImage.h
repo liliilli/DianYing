@@ -60,9 +60,9 @@ public:
   MDY_NODISCARD TDyResourceBinderMaterial* GetUsingMaterial();
 
   /// @brief Set tint color.
-  void SetTintColor(_MIN_ const DDyColorRGBA& iTintColor) noexcept;
+  void SetTintColor(_MIN_ const DColorRGBA& iTintColor) noexcept;
   /// @brief Get tint color.
-  MDY_NODISCARD const DDyColorRGBA& GetTintColor() const noexcept;
+  MDY_NODISCARD const DColorRGBA& GetTintColor() const noexcept;
 
 
   /// @brief Set update renderer flag from inside renderer to this.
@@ -73,7 +73,7 @@ private:
   void TryDeactivateInstance() override final;
 
   /// Tint color for image rendering (with alpha)
-  DDyColorRGBA      mTintColor = DDyColorRGBA::White;
+  DColorRGBA      mTintColor = DColorRGBA::White;
   /// Size to content.
   bool              mIsSizeToContent = false;
   /// Image name list

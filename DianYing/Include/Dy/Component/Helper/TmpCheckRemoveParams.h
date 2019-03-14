@@ -15,7 +15,7 @@
 
 #include <Dy/Component/CDyTransform.h>
 #include <Dy/Component/Actor/CDyActorScript.h>
-#include <Dy/Helper/Internal/TmpCheckTypeParams.h>
+#include <Dy/Helper/Internal/XCheckTypeParams.h>
 
 namespace dy
 {

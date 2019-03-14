@@ -1,6 +1,6 @@
 #include "pch.h"
-#include <Dy/Helper/Type/Matrix2.h>
-#include <Dy/Helper/Type/Vector2.h>
+#include <Dy/Helper/Type/DMatrix2x2.h>
+#include <Dy/Helper/Type/DVector2.h>
 
 #define MDY_TEST_CATEGORY_MATRIX2x2 DyTestDDyMatrix2x2
 

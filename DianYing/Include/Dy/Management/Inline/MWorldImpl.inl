@@ -169,7 +169,7 @@ inline DDyActorBinder MDyWorld::Impl::CreateActor(
   }
 
   // Push requisition actor item.
-  DySafeUniquePtrEmplaceBack(this->mActorCreationDescList, descriptor);
+  SafeUniquePtrEmplaceBack(this->mActorCreationDescList, descriptor);
 
   // Bind actor.
   DDyActorBinder resultBinder {};
@@ -347,8 +347,8 @@ inline EDySuccess MDyWorld::Impl::MDY_PRIVATE(RemoveLevel)()
   this->mUiInstanceContainer.ClearGeneralUiObjectList();
 
   // Just remove script instance without `Destroy` function intentionally.
-  MDyScript::GetInstance().ClearWidgetScriptGCList();
-  MDyScript::GetInstance().ClearActorScriptGCList();
+  MScript::GetInstance().ClearWidgetScriptGCList();
+  MScript::GetInstance().ClearActorScriptGCList();
 
   SDyIOConnectionHelper::TryGC(EDyScope::Temporal, EDyResourceStyle::Resource);
   SDyIOConnectionHelper::TryGC(EDyScope::Temporal, EDyResourceStyle::Information);
@@ -365,7 +365,7 @@ inline EDySuccess MDyWorld::Impl::MDY_PRIVATE(RemoveLevel)()
   SDyIOConnectionHelper::TryGC(EDyScope::Level, EDyResourceStyle::Information);
 
   // Must reset depedent manager on this.
-  MDyPhysics::GetInstance().ReleaseScene();
+  MPhysics::GetInstance().ReleaseScene();
   return DY_SUCCESS;
 }
 
@@ -400,7 +400,7 @@ inline void MDyWorld::Impl::MDY_PRIVATE(BuildNextLevel)()
   DyPushLogDebugDebug("Building Next Level : {}", this->mNextLevelName);
 
   // Must reset depedent manager on this.
-  MDyPhysics::GetInstance().InitScene();
+  MPhysics::GetInstance().InitScene();
 
   // Create level information from abstract file.
   const auto& levelMetaInfo = *MDyMetaInfo::GetInstance().GetLevelMetaInformation(this->mNextLevelName);
@@ -422,8 +422,8 @@ inline EDySuccess MDyWorld::Impl::MDY_PRIVATE(TransitionToNextLevel)()
 
   // Need to call initiate funciton maually.
   DyPushLogDebugDebug("Initiate Actor script : {}", this->mPresentLevelName);
-  MDyScript::GetInstance().UpdateActorScript(0.0f, EDyScriptState::CalledNothing);
-  MDyScript::GetInstance().TryMoveInsertActorScriptToMainContainer();
+  MScript::GetInstance().UpdateActorScript(0.0f, EDyScriptState::CalledNothing);
+  MScript::GetInstance().TryMoveInsertActorScriptToMainContainer();
 
   // Need to realign position following actor tree.
   DyPushLogDebugDebug("Align Position of Actors on level : {}", this->mPresentLevelName);
@@ -552,7 +552,7 @@ inline EDySuccess MDyWorld::Impl::MDY_PRIVATE(TryDetachActiveModelRenderer)(CDyM
       [iPtrRenderer](_MIN_ const CDyModelRenderer* ptrRenderer) { return iPtrRenderer == ptrRenderer; });
   if (it == this->mActivatedModelRenderers.end()) { return DY_SUCCESS; }
 
-  DyFastErase(this->mActivatedModelRenderers, std::distance(this->mActivatedModelRenderers.begin(), it));
+  FaseErase(this->mActivatedModelRenderers, std::distance(this->mActivatedModelRenderers.begin(), it));
   return DY_SUCCESS;
 }
 

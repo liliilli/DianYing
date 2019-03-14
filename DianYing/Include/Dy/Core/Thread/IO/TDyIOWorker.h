@@ -16,7 +16,7 @@
 #include <atomic>
 #include <Dy/Core/Thread/IO/DDyIOTask.h>
 #include <Dy/Core/Thread/IO/DDyIOWorkerResult.h>
-#include <Dy/Helper/Pointer.h>
+#include <Dy/Helper/System/Pointer.h>
 
 namespace dy
 {

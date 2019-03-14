@@ -17,7 +17,7 @@
 #include <Dy/Core/Resource/Type/TDyInformationBinder.h>
 #include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
-#include "Dy/Helper/Type/Matrix4.h"
+#include "Dy/Helper/Type/DMatrix4x4.h"
 
 //!
 //! Forward declaration
@@ -61,7 +61,7 @@ public:
   std::string ToString() override final;
 
   /// @brief Get final transform list.
-  MDY_NODISCARD const std::vector<DDyMatrix4x4>& GetFinalTransformList() const noexcept;
+  MDY_NODISCARD const std::vector<DMatrix4x4>& GetFinalTransformList() const noexcept;
 
 private:
   /// @brief
@@ -70,7 +70,7 @@ private:
   void TryDeactivateInstance() override final;
 
   /// @brief Update final transform of given animation. This function must be called when `Play`.
-  void TryUpdateFinalTransform(_MIN_ TI32 idSkelNode, _MIN_ const DDyMatrix4x4& parentTransform, _MIN_ bool iIsLooped);
+  void TryUpdateFinalTransform(_MIN_ TI32 idSkelNode, _MIN_ const DMatrix4x4& parentTransform, _MIN_ bool iIsLooped);
 
   /// @enum EDyAnimatorStatus
   /// @brief Blending is not implemented yet.
@@ -100,7 +100,7 @@ private:
     const FDyModelAnimScrapInformation* mPtrPresentAnimatorInfo = nullptr; 
     
     /// @brief
-    std::vector<DDyMatrix4x4> mFinalTransformList;
+    std::vector<DMatrix4x4> mFinalTransformList;
   };
 
   /// @brief Status instance.

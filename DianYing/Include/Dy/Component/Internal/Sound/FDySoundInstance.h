@@ -15,7 +15,7 @@
 
 #include <fmod.hpp>
 #include <Dy/Management/Type/Sound/ADySoundInstance.h>
-#include <Dy/Helper/Type/Clamp.h>
+#include <Dy/Helper/Type/DClamp.h>
 #include <Dy/Core/Resource/Type/TDyInformationBinder.h>
 
 #ifdef PlaySound
@@ -129,8 +129,8 @@ private:
   struct DAttenuation final
   {
     bool mActivated = false;
-    DDyClamp<TF32, 0, 1'000'000> mNearDistance  = 0.5f;
-    DDyClamp<TF32, 0, 1'000'000> mFarDistance   = 5000.f;
+    DClamp<TF32, 0, 1'000'000> mNearDistance  = 0.5f;
+    DClamp<TF32, 0, 1'000'000> mFarDistance   = 5000.f;
   };
 
   std::string mSoundSpecifier; // Sound specifier.
@@ -139,8 +139,8 @@ private:
   bool mMuted   = false; // Check this component is muted.
   bool mLooped  = false; // Check this component's sound will be played looped.
 
-  DDyClamp<TF32, 0, 5> mVolumeMultiplier  = 1.0f; // Sound channel's volume multiplication.
-  DDyClamp<TF32, 0, 5> mPitchMultiplier   = 1.0f; // Sound channel's pitch multiplication.
+  DClamp<TF32, 0, 5> mVolumeMultiplier  = 1.0f; // Sound channel's volume multiplication.
+  DClamp<TF32, 0, 5> mPitchMultiplier   = 1.0f; // Sound channel's pitch multiplication.
   std::string mChannelSpecifier; // If blank, this sound just use master channel.
 
   DAttenuation mAttenuation; // 3D Atteunation properties.

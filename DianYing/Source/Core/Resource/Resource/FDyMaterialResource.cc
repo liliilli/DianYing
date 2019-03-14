@@ -37,7 +37,7 @@ FDyMaterialResource::FDyMaterialResource(const FDyMaterialInformation& iInformat
   for (const auto& ptrTextureInfo : ptrTextureInfoList)
   { // Bind texture resource of this material.
     MDY_ASSERT_MSG(MDY_CHECK_ISNOTEMPTY(ptrTextureInfo), "Unexpected error occurred.");
-    DySafeUniquePtrEmplaceBack(this->mBinderTextureList, (*ptrTextureInfo)->GetSpecifierName());
+    SafeUniquePtrEmplaceBack(this->mBinderTextureList, (*ptrTextureInfo)->GetSpecifierName());
   }
 
   // If default uniform value is exist, apply them to shader.
@@ -115,7 +115,7 @@ FDyMaterialResource::FDyMaterialResource(const PDyMaterialInstanceMetaInfo& iIns
   for (const auto& bindingTextureItem : iInstanceInfo.mTextureNames)
   { // Bind texture resource of this material.
     if (bindingTextureItem.mTextureSpecifier.empty() == true) { continue; }
-    DySafeUniquePtrEmplaceBack(this->mBinderTextureList, bindingTextureItem.mTextureSpecifier);
+    SafeUniquePtrEmplaceBack(this->mBinderTextureList, bindingTextureItem.mTextureSpecifier);
   }
   this->mIsInstant = true;
 }

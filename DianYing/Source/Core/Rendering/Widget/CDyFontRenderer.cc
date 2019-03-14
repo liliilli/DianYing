@@ -40,10 +40,10 @@ namespace
 /// @return Character glyph render vertices information.
 /// @see https://www.freetype.org/freetype2/docs/tutorial/step2.html
 ///
-MDY_NODISCARD std::array<dy::DDyVector2, 12>
+MDY_NODISCARD std::array<dy::DVector2, 12>
 GetCharacterVertices(
     _MIN_ const dy::DDyFontCharacterInfo& ch_info, 
-    _MIN_ const dy::DDyVector2& position, 
+    _MIN_ const dy::DVector2& position, 
     _MIN_ const TI32 fontSize)
 {
   const TF32 scale        = fontSize / 64.0f;
@@ -56,24 +56,24 @@ GetCharacterVertices(
   const auto& texLd = ch_info.mTexCoordInfo.mLeftDown;
   const auto& texRu = ch_info.mTexCoordInfo.mRightUp;
 
-  const auto chanMap = dy::DDyVector2{
+  const auto chanMap = dy::DVector2{
       static_cast<TF32>(ch_info.mTexCoordInfo.mChannel), 
       static_cast<TF32>(ch_info.mTexCoordInfo.mMapIndex)};
 
   return {
-    dy::DDyVector2{r, b}, dy::DDyVector2{texRu.X, texLd.Y}, chanMap,
-    dy::DDyVector2{r, t}, dy::DDyVector2{texRu.X, texRu.Y}, chanMap,
-    dy::DDyVector2{l, t}, dy::DDyVector2{texLd.X, texRu.Y}, chanMap,
-    dy::DDyVector2{l, b}, dy::DDyVector2{texLd.X, texLd.Y}, chanMap };
+    dy::DVector2{r, b}, dy::DVector2{texRu.X, texLd.Y}, chanMap,
+    dy::DVector2{r, t}, dy::DVector2{texRu.X, texRu.Y}, chanMap,
+    dy::DVector2{l, t}, dy::DVector2{texLd.X, texRu.Y}, chanMap,
+    dy::DVector2{l, b}, dy::DVector2{texLd.X, texLd.Y}, chanMap };
 }
 
-MDY_NODISCARD std::vector<std::array<dy::DDyVector2, 12>> 
+MDY_NODISCARD std::vector<std::array<dy::DVector2, 12>> 
 GetCharacterVertices(
     dy::IDyFontContainer& container, 
-    const std::vector<std::pair<TC16, dy::DDyVector2>>& lineList, 
+    const std::vector<std::pair<TC16, dy::DVector2>>& lineList, 
     TI32 fontSize)
 {
-   std::vector<std::array<dy::DDyVector2, 12>> result;
+   std::vector<std::array<dy::DVector2, 12>> result;
    result.reserve(lineList.size());
    for (const auto& [charCode, position] : lineList)
    {
@@ -113,7 +113,7 @@ CDyFontRenderer::CDyFontRenderer(FDyText& iPtrWidget) :
     glVertexBindingDivisor(2, 1);
 
     glBindBuffer(GL_ARRAY_BUFFER, this->mBinderFontMesh->GetVertexBufferId());
-    glBindVertexBuffer(0, this->mBinderFontMesh->GetVertexBufferId(), 0, sizeof(DDyVector2) * 2);
+    glBindVertexBuffer(0, this->mBinderFontMesh->GetVertexBufferId(), 0, sizeof(DVector2) * 2);
     VertexAttribDivisor // DO NOT USE IN CASE OF THiS.
 #endif
 void CDyFontRenderer::Render()
@@ -133,10 +133,10 @@ void CDyFontRenderer::Render()
   
   IDyFontContainer& container = this->mPtrWidget->GetFontContainer();
   const TI32 fontSize         = this->mPtrWidget->GetFontSize();
-  const DDyVector2 initPos    = this->mPtrWidget->GetRenderPosition();
-  DDyVector2 renderPosition   = initPos;
+  const DVector2 initPos    = this->mPtrWidget->GetRenderPosition();
+  DVector2 renderPosition   = initPos;
 
-  using TLineCharCodeList = std::vector<std::pair<TC16, DDyVector2>>;
+  using TLineCharCodeList = std::vector<std::pair<TC16, DVector2>>;
   std::vector<TLineCharCodeList>  charCodeList{};
   std::vector<TI32>               lineActualWidthList{};
 
@@ -150,7 +150,7 @@ void CDyFontRenderer::Render()
         const auto& charInfo = container[ucs2Char];
         if (container.IsCharacterGlyphExist(ucs2Char) == false) { continue; }
         // Insert and relocate next position.
-        lineCharCodeList.emplace_back(std::pair(ucs2Char, DDyVector2{renderPosition.X, renderPosition.Y}));
+        lineCharCodeList.emplace_back(std::pair(ucs2Char, DVector2{renderPosition.X, renderPosition.Y}));
         // Calculate width.
         const auto calculatedWidth = static_cast<TI32>(charInfo.mHorizontalAdvance * fontSize / 2);
         renderPosition.X += calculatedWidth;
@@ -208,7 +208,7 @@ void CDyFontRenderer::Render()
   }
 
   // Render
-  using TBuffer = std::array<DDyVector2, 12>;
+  using TBuffer = std::array<DVector2, 12>;
   const std::vector<TBuffer> buffer = GetCharacterVertices(container, actualCharCodeList, fontSize);
   std::vector<TU32> indices = {};
   for (TU32 i = 0, num = static_cast<TU32>(buffer.size()); i < num; ++i)

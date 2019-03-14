@@ -24,7 +24,7 @@ CDyLightSpot::CDyLightSpot(FDyActor& actorReference)
   : ADyGeneralBaseComponent(actorReference)
 { }
 
-EDySuccess CDyLightSpot::Initialize(const PDyCompSpotLightMetaInfo& iMetaInfo)
+EDySuccess CDyLightSpot::Initialize(const PCompSpotLightMetaInfo& iMetaInfo)
 {
   this->mData.mColor      = iMetaInfo.mDetails.mColor;
   this->mData.mIntensity  = iMetaInfo.mDetails.mIntensity;
@@ -72,12 +72,12 @@ float CDyLightSpot::GetIntensity() const noexcept
   return this->mData.mIntensity;
 }
 
-void CDyLightSpot::SetColor(const DDyColorRGB& iColor) noexcept
+void CDyLightSpot::SetColor(const DColorRGB& iColor) noexcept
 {
   this->mData.mColor = iColor;
 }
 
-const DDyColorRGB& CDyLightSpot::GetColor() const noexcept
+const DColorRGB& CDyLightSpot::GetColor() const noexcept
 {
   return this->mData.mColor;
 }
@@ -92,12 +92,12 @@ TF32 CDyLightSpot::GetAngle() const noexcept
   return this->mData.mRangeAngle;
 }
 
-void CDyLightSpot::SetDirection(const DDyVector3& iDirection)
+void CDyLightSpot::SetDirection(const DVector3& iDirection)
 {
   this->mData.mDirection = iDirection.Normalize();
 }
 
-const DDyVector3& CDyLightSpot::GetDirection() const noexcept
+const DVector3& CDyLightSpot::GetDirection() const noexcept
 {
   return this->mData.mDirection;
 }

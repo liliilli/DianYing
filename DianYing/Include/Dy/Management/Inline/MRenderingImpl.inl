@@ -126,7 +126,7 @@ inline EDySuccess MDyRendering::Impl::Initialize()
   auto& refSetting  = MDySetting::GetInstance();
   const auto width  = refSetting.GetWindowSizeWidth();
   const auto height = refSetting.GetWindowSizeHeight();
-  this->mUiGeneralProjectionMatrix = DDyMatrix4x4::OrthoProjection(0.f, TF32(width), 0.f, TF32(height), -1.f, 100.0f);
+  this->mUiGeneralProjectionMatrix = DMatrix4x4::OrthoProjection(0.f, TF32(width), 0.f, TF32(height), -1.f, 100.0f);
 
   return DY_SUCCESS;
 }
@@ -168,7 +168,7 @@ inline EDySuccess MDyRendering::Impl::CreateRenderPipeline(const std::string& iP
   (*optPipelineList).emplace(iPipelineSpecifier);
   for (auto& renderPipelineName : (*optPipelineList))
   {
-    if (DyIsMapContains(this->mRenderPipelines, renderPipelineName) == false)
+    if (Contains(this->mRenderPipelines, renderPipelineName) == false)
     {
       const auto& metaRenderPipeline = managerMeta.GetRenderPipeline(renderPipelineName);
       auto[_, isSucceeded] = this->mRenderPipelines.try_emplace(
@@ -185,7 +185,7 @@ inline EDySuccess MDyRendering::Impl::CreateRenderPipeline(const std::string& iP
 
   for (auto& renderItemName : (*optItemList))
   {
-    if (DyIsMapContains(this->mRenderItems, renderItemName) == false)
+    if (Contains(this->mRenderItems, renderItemName) == false)
     {
       const auto& metaRenderItem = managerMeta.GetRenderItem(renderItemName);
       auto[_, isSucceeded] = this->mRenderItems.try_emplace(
@@ -268,7 +268,7 @@ inline EDySuccess MDyRendering::Impl::RemoveRenderPipeline(const std::string& iP
   }
 
   // Remove.
-  DyEraseRemoveIf(this->mEntryRenderPipelines, 
+  EraseRemoveIf(this->mEntryRenderPipelines, 
     [iPipelineSpecifier](const auto& pipeline) { return pipeline.GetName() == iPipelineSpecifier; }
   );
   return DY_SUCCESS;
@@ -286,7 +286,7 @@ inline void MDyRendering::Impl::PreRender(TF32 dt)
 
   // Do cpu frustum culling.
   const auto* ptrCamera = MDyWorld::GetInstance().GetPtrMainLevelCamera();
-  DyEraseRemoveIf(this->mOpaqueMeshDrawingList, [ptrCamera](TMeshDrawCallItem& iPtrOpaqueRenderer)
+  EraseRemoveIf(this->mOpaqueMeshDrawingList, [ptrCamera](TMeshDrawCallItem& iPtrOpaqueRenderer)
   {
     auto& [actorInfo, _, __] = iPtrOpaqueRenderer;
     const auto& worldPos = actorInfo->mPtrCompModelFilter
@@ -374,7 +374,7 @@ inline void MDyRendering::Impl::EnqueueDrawMesh(
 
 inline void MDyRendering::Impl::EnqueueDebugDrawCollider(
   CDyPhysicsCollider& iRefCollider, 
-  const DDyMatrix4x4& iTransformMatrix)
+  const DMatrix4x4& iTransformMatrix)
 {
   this->mDebugColliderDrawingList.emplace_back(std::make_pair(&iRefCollider, iTransformMatrix));
 }
@@ -436,7 +436,7 @@ inline EDySuccess MDyRendering::Impl::MDY_PRIVATE(UnbindMainDirectionalShadow)(C
   else { return DY_FAILURE; }
 }
 
-inline const DDyMatrix4x4& MDyRendering::Impl::GetGeneralUiProjectionMatrix() const noexcept
+inline const DMatrix4x4& MDyRendering::Impl::GetGeneralUiProjectionMatrix() const noexcept
 {
   return this->mUiGeneralProjectionMatrix;
 }

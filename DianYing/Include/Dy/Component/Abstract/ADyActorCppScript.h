@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Component/Interface/IDyScriptable.h>
-#include <Dy/Helper/Pointer.h>
+#include <Dy/Helper/System/Pointer.h>
 
 //!
 //! Forward declaration
@@ -26,7 +26,7 @@ enum class EDyCollisionCbType;
 class CDyPhysicsRigidbody;
 class FDyActor;
 class CDyActorScriptCpp;
-class MDyGameTimer;
+class MGameTimer;
 class FDyTimerHandle;
 } /// ::dy namespace
 
@@ -48,7 +48,7 @@ public:
   MDY_NODISCARD FDyActor& GetActorReference();
 
   /// @brief Get Game-Timer manager.
-  MDY_NODISCARD MDyGameTimer& GetGameTimerManager() noexcept;
+  MDY_NODISCARD MGameTimer& GetGameTimerManager() noexcept;
 
   void MDY_PRIVATE(BindPtrTimerHandle)(_MIN_ FDyTimerHandle& iRefTimerHandler);
   void MDY_PRIVATE(DetachPtrTimerHandle)(_MIN_ FDyTimerHandle& iRefTimerHandler);

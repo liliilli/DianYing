@@ -29,13 +29,13 @@ void FDyUiObjectChildrenable::Render()
   }
 }
 
-void FDyUiObjectChildrenable::SetRelativePosition(_MIN_ const DDyVector2& position) noexcept
+void FDyUiObjectChildrenable::SetRelativePosition(_MIN_ const DVector2& position) noexcept
 {
   FDyUiObject::SetRelativePosition(position);
   if (this->CheckIsPropagable() == true) { this->TryPropagatePositionToChildren(); }
 }
 
-void FDyUiObjectChildrenable::SetFrameSize(_MIN_ const DDyVectorInt2& size) noexcept
+void FDyUiObjectChildrenable::SetFrameSize(_MIN_ const DVectorInt2& size) noexcept
 {
   FDyUiObject::SetFrameSize(size);
   if (this->CheckIsPropagable() == true) { this->TryPropagatePositionToChildren(); }

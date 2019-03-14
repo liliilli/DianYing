@@ -17,7 +17,7 @@
 #include <Dy/Component/Ctor/PDyFontRenderer.h>
 #include <Dy/Meta/Descriptor/WidgetTextMetaInformation.h>
 #include <Dy/Meta/Type/EDyWidgetTypes.h>
-#include <Dy/Management/FontManager.h>
+#include <Dy/Management/MFont.h>
 
 namespace dy
 {
@@ -34,7 +34,7 @@ EDySuccess FDyText::Initialize(_MIN_ const PDyMetaWidgetTextDescriptor& objectMe
   /// @TODO IMPLEMENT CHECKING DEFAULT FONT CASE.
   static auto GetFontResource = [](_MIN_ const std::string& fontSpecifierName) -> IDyFontContainer*
   {
-    auto& fontManager = MDyFont::GetInstance();
+    auto& fontManager = MFont::GetInstance();
     if (fontManager.IsFontResourceContainerExist(fontSpecifierName) == false)
     {
       MDY_CALL_ASSERT_SUCCESS(fontManager.CreateFontResourceContainer(fontSpecifierName));
@@ -72,7 +72,7 @@ void FDyText::Release() { }
 //! Getter
 //!
 
-const DDyString& FDyText::GetText() const noexcept
+const DString& FDyText::GetText() const noexcept
 {
   return this->mTextString;
 }
@@ -82,22 +82,22 @@ TU32 FDyText::GetFontSize() const noexcept
   return this->mFontSize;
 }
 
-const DDyColorRGBA& FDyText::GetBackgroundColor() const noexcept
+const DColorRGBA& FDyText::GetBackgroundColor() const noexcept
 {
   return this->mBackgroundColor;
 }
 
-const DDyColorRGBA& FDyText::GetEdgeColor() const noexcept
+const DColorRGBA& FDyText::GetEdgeColor() const noexcept
 {
   return this->mEdgeColor;
 }
 
-const DDyColorRGBA& FDyText::GetForegroundColor() const noexcept
+const DColorRGBA& FDyText::GetForegroundColor() const noexcept
 {
   return this->mForegroundColor;
 }
 
-const DDyVector2& FDyText::GetRenderPosition() const noexcept
+const DVector2& FDyText::GetRenderPosition() const noexcept
 {
   return this->mCentralFinalPosition;
 }
@@ -118,7 +118,7 @@ EDyHorizontalAlignment FDyText::GetAlignment() const noexcept
 
 void FDyText::SetText(_MIN_ const std::string& newU8Text) noexcept
 {
-  this->mTextString = DDyString{newU8Text};
+  this->mTextString = DString{newU8Text};
 }
 
 void FDyText::SetFontSize(_MIN_ TU32 fontSize) noexcept
@@ -132,7 +132,7 @@ EDySuccess FDyText::SetFontName(_MIN_ const std::string& fontName)
   return DY_FAILURE;
 }
 
-void FDyText::SetColor(_MIN_ const DDyColorRGBA& color)
+void FDyText::SetColor(_MIN_ const DColorRGBA& color)
 {
   this->mForegroundColor = color;
 }

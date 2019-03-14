@@ -13,7 +13,7 @@
 ///
 
 #include <Dy/Component/Internal/Global/CDyGlobalScriptCpp.h>
-#include "Dy/Helper/Wrapper/DDyMutexUniqueHashMap.h"
+#include "Dy/Helper/Wrapper/DMutexUniqueHashMap.h"
 
 namespace dy
 {

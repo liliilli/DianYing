@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/VectorInt2.h>
+#include <Dy/Helper/Type/DVectorInt2.h>
 #include <Dy/Core/Resource/Internal/TextureEnums.h>
 #include <Dy/Core/Resource/Type/TDyInformationBinder.h>
 

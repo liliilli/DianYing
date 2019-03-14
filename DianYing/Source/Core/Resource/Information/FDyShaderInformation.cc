@@ -17,8 +17,8 @@
 
 #include <filesystem>
 #include <Dy/Meta/Information/GLShaderMetaInformation.h>
-#include <Dy/Helper/IoHelper.h>
 #include "Dy/Helper/MCS/GLShaderParser.h"
+#include <Dy/Helper/Library/HelperIO.h>
 
 namespace dy
 {
@@ -29,7 +29,11 @@ FDyShaderInformation::FDyShaderInformation(_MIN_ const PDyGLShaderInstanceMetaIn
   for (int i = 0; i < 6; ++i)
   {
     PDyShaderFragmentInformation shader{};
-    shader.mIsEnabledRawLoadShaderCode_Deprecated = metaInfo.mSourceType == EDyResourceSource::Builtin ? true : false;
+    shader.mIsEnabledRawLoadShaderCode_Deprecated = 
+        metaInfo.mSourceType == EDyResourceSource::Builtin 
+      ? true 
+      : false;
+
     // Get fragment item chunk.
     const auto& p = metaInfo.GetFragment(static_cast<EDyShaderFragmentType>(i));
     // If nothing is exist, it regards as a blank so does not need to load something from it.
@@ -38,9 +42,13 @@ FDyShaderInformation::FDyShaderInformation(_MIN_ const PDyGLShaderInstanceMetaIn
     // Otherwise, it regards as a fragment of shader so load it.
     if (p.mExternalFilePath.empty() == false)
     {
-      MDY_ASSERT_MSG(std::filesystem::exists(p.mExternalFilePath) == true, "OpenGL Shader external file path exist but not valid.");
-      auto ptrBuffer = DyReadBinaryFileAll(p.mExternalFilePath);
-      MDY_ASSERT_MSG(ptrBuffer.has_value() == true, "Unexpected error occurred while reading file.");
+      MDY_ASSERT_MSG(
+        std::filesystem::exists(p.mExternalFilePath) == true, 
+        "OpenGL Shader external file path exist but not valid.");
+      auto ptrBuffer = GetBufferFromFile(p.mExternalFilePath);
+      MDY_ASSERT_MSG(
+        ptrBuffer.has_value() == true, 
+        "Unexpected error occurred while reading file.");
 
       // Parse shader code, and save buffer to chunk.
       shader.mShaderFragmentCode = mcs::ParseGLShader(ptrBuffer.value().data());

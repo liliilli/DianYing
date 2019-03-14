@@ -24,14 +24,14 @@
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 #include <Dy/Core/DyEngine.h>
 
-#include <Dy/Helper/Pointer.h>
-#include <Dy/Helper/ContainerHelper.h>
+#include <Dy/Helper/System/Pointer.h>
+#include <Dy/Helper/Library/HelperContainer.h>
 #include <Dy/Helper/Library/HelperJson.h>
 #include <Dy/Helper/Library/HelperString.h>
 #include <Dy/Helper/Library/HelperRegex.h>
 
 #include <Dy/Management/SettingManager.h>
-#include <Dy/Management/ScriptManager.h>
+#include <Dy/Management/MScript.h>
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
 #include <Dy/Meta/Descriptor/WidgetTextMetaInformation.h>
 #include <Dy/Meta/Descriptor/WidgetLayoutMetaInformation.h>
@@ -87,8 +87,9 @@ DyCreateWidgetMetaInformation(_MIN_ const nlohmann::json& jsonAtlas)
   ///
   static auto CheckWidgetCategories = [](_MIN_ const nlohmann::json& atlas) -> EDySuccess
   {
-    if (DyCheckHeaderIsExist(atlas, sCategoryMeta) == DY_FAILURE)       { return DY_FAILURE; }
-    if (DyCheckHeaderIsExist(atlas, sCategoryObjectList) == DY_FAILURE) { return DY_FAILURE; }
+    using namespace json;
+    if (json::HasJsonKey(atlas, sCategoryMeta) == false)       { return DY_FAILURE; }
+    if (json::HasJsonKey(atlas, sCategoryObjectList) == false) { return DY_FAILURE; }
     return DY_SUCCESS;
   };
 
@@ -99,10 +100,11 @@ DyCreateWidgetMetaInformation(_MIN_ const nlohmann::json& jsonAtlas)
   ///
   static auto CheckComponentCommonHeaders = [](_MIN_ const nlohmann::json& atlas) -> EDySuccess
   {
-    if (DyCheckHeaderIsExist(atlas, PDyMetaWidgetCommonBaseDesc::sHeader_Name) == DY_FAILURE) { return DY_FAILURE; }
-    if (DyCheckHeaderIsExist(atlas, PDyMetaWidgetCommonBaseDesc::sHeader_Type) == DY_FAILURE) { return DY_FAILURE; }
-    if (DyCheckHeaderIsExist(atlas, PDyMetaWidgetCommonBaseDesc::sHeader_Parent) == DY_FAILURE) { return DY_FAILURE; }
-    if (DyCheckHeaderIsExist(atlas, PDyMetaWidgetCommonBaseDesc::sHeader_Details) == DY_FAILURE) { return DY_FAILURE; }
+    using namespace json;
+    if (json::HasJsonKey(atlas, PDyMetaWidgetCommonBaseDesc::sHeader_Name) == false) { return DY_FAILURE; }
+    if (json::HasJsonKey(atlas, PDyMetaWidgetCommonBaseDesc::sHeader_Type) == false) { return DY_FAILURE; }
+    if (json::HasJsonKey(atlas, PDyMetaWidgetCommonBaseDesc::sHeader_Parent) == false) { return DY_FAILURE; }
+    if (json::HasJsonKey(atlas, PDyMetaWidgetCommonBaseDesc::sHeader_Details) == false) { return DY_FAILURE; }
     return DY_SUCCESS;
   };
 
@@ -124,7 +126,7 @@ DyCreateWidgetMetaInformation(_MIN_ const nlohmann::json& jsonAtlas)
   { // Check Header list integrity
     MDY_ASSERT_MSG(CheckComponentCommonHeaders(componentInfo) == DY_SUCCESS, "Failed to check common headers of item.");
 
-    const auto componentType = DyJsonGetValueFrom<EDyWidgetComponentType>(componentInfo, PDyMetaWidgetCommonBaseDesc::sHeader_Type);
+    const auto componentType = json::GetValueFrom<EDyWidgetComponentType>(componentInfo, PDyMetaWidgetCommonBaseDesc::sHeader_Type);
     switch (componentType)
     {
     case EDyWidgetComponentType::Text:
@@ -572,87 +574,87 @@ MDyMetaInfo::MDY_PRIVATE(TryGetLoadingWidgetMetaLoading)() const noexcept
 
 bool MDyMetaInfo::IsGLShaderMetaInfoExist(const std::string & specifier) const noexcept
 {
-  return DyIsMapContains(this->mInternal->mShaderMetaInfo, specifier);
+  return Contains(this->mInternal->mShaderMetaInfo, specifier);
 }
 
 bool MDyMetaInfo::IsMeshMetaInfoExist(const std::string & specifier) const noexcept
 {
-  return DyIsMapContains(this->mInternal->mModelMeshMetaInfo, specifier);
+  return Contains(this->mInternal->mModelMeshMetaInfo, specifier);
 }
 
 bool MDyMetaInfo::IsLevelMetaInformation(const std::string& specifier) const noexcept
 {
-  return DyIsMapContains(this->mInternal->mLevelMetaInfo, specifier);
+  return Contains(this->mInternal->mLevelMetaInfo, specifier);
 }
 
 bool MDyMetaInfo::IsModelMetaInfoExist(const std::string& specifier) const noexcept
 {
-  return DyIsMapContains(this->mInternal->mModelMetaInfo, specifier);
+  return Contains(this->mInternal->mModelMetaInfo, specifier);
 }
 
 bool MDyMetaInfo::IsModelSkeletonMetaInfoExist(const std::string& specifier) const noexcept
 {
-  return DyIsMapContains(this->mInternal->mModelSkeletonMetaInfo, specifier);
+  return Contains(this->mInternal->mModelSkeletonMetaInfo, specifier);
 }
 
 bool MDyMetaInfo::IsModelAnimScrapMetaInfoExist(const std::string& specifier) const noexcept
 {
-  return DyIsMapContains(this->mInternal->mModelAnimScrapMetaInfo, specifier);
+  return Contains(this->mInternal->mModelAnimScrapMetaInfo, specifier);
 }
 
 bool MDyMetaInfo::IsTextureMetaInfoExist(const std::string& specifier) const noexcept
 {
-  return DyIsMapContains(this->mInternal->mTextureMetaInfo, specifier);
+  return Contains(this->mInternal->mTextureMetaInfo, specifier);
 }
 
 bool MDyMetaInfo::IsMaterialMetaInfoExist(const std::string& specifier) const noexcept
 {
-  return DyIsMapContains(this->mInternal->mMaterialMetaInfo, specifier);
+  return Contains(this->mInternal->mMaterialMetaInfo, specifier);
 }
 
 bool MDyMetaInfo::IsWidgetMetaInfoExist(const std::string& specifier) const noexcept
 {
-  return DyIsMapContains(this->mInternal->mWidgetMetaInfo, specifier);
+  return Contains(this->mInternal->mWidgetMetaInfo, specifier);
 }
 
 bool MDyMetaInfo::IsScriptMetaInformationExist(const std::string& specifierName) const noexcept
 {
-  return DyIsMapContains(this->mInternal->mScriptMetaInfo, specifierName);
+  return Contains(this->mInternal->mScriptMetaInfo, specifierName);
 }
 
 bool MDyMetaInfo::IsPrefabMetaInformationExist(const std::string& specifierName) const noexcept
 {
-  return DyIsMapContains(this->mInternal->mPrefabMetaInfo, specifierName);
+  return Contains(this->mInternal->mPrefabMetaInfo, specifierName);
 }
 
 bool MDyMetaInfo::IsFontMetaInformationExist(const std::string& specifierName) const noexcept
 {
-  return DyIsMapContains(this->mInternal->mFontMetaInfo, specifierName);
+  return Contains(this->mInternal->mFontMetaInfo, specifierName);
 }
 
 bool MDyMetaInfo::IsAttachmentMetaInfoExist(const std::string& specifierName) const noexcept
 {
-  return DyIsMapContains(this->mInternal->mAttachmentMetaInfo, specifierName);
+  return Contains(this->mInternal->mAttachmentMetaInfo, specifierName);
 }
 
 bool MDyMetaInfo::IsFrameBufferMetaInfoExist(const std::string& speicfierName) const noexcept
 {
-  return DyIsMapContains(this->mInternal->mFrameBufferMetaInfo, speicfierName);
+  return Contains(this->mInternal->mFrameBufferMetaInfo, speicfierName);
 }
 
 bool MDyMetaInfo::IsSoundMetaInfoExist(const std::string& specifierName) const noexcept
 {
-  return DyIsMapContains(this->mInternal->mSoundMetaInfo, specifierName);
+  return Contains(this->mInternal->mSoundMetaInfo, specifierName);
 }
 
 bool MDyMetaInfo::IsRenderPipelineExist(const std::string& iRenderPipelineName) const noexcept
 {
-  return DyIsMapContains(this->mInternal->mRenderPipelineMetaInfo, iRenderPipelineName);
+  return Contains(this->mInternal->mRenderPipelineMetaInfo, iRenderPipelineName);
 }
 
 bool MDyMetaInfo::IsRenderItemExist(const std::string& iRenderItemName) const noexcept
 {
-  return DyIsMapContains(this->mInternal->mRenderItemMetaInfo, iRenderItemName);
+  return Contains(this->mInternal->mRenderItemMetaInfo, iRenderItemName);
 }
 
 bool MDyMetaInfo::IsLoadingWidgetMetaInfoExist() const noexcept
@@ -863,7 +865,7 @@ EDySuccess MDyMetaInfo::pfAddGLFrameBufferMetaInfo(const PDyGlFrameBufferInstanc
 EDySuccess MDyMetaInfo::pfAddRenderPipelineMetaInfo(const PDyRenderPipelineInstanceMetaInfo& metaInfo)
 {
   MDY_ASSERT_MSG(
-    DyIsMapContains(this->mInternal->mRenderPipelineMetaInfo, metaInfo.mSpecifierName) == false, 
+    Contains(this->mInternal->mRenderPipelineMetaInfo, metaInfo.mSpecifierName) == false, 
     "Duplicated render pipeline name is exist.");
 
   this->mInternal->mRenderPipelineMetaInfo.try_emplace(
@@ -875,7 +877,7 @@ EDySuccess MDyMetaInfo::pfAddRenderPipelineMetaInfo(const PDyRenderPipelineInsta
 EDySuccess MDyMetaInfo::pfAddRenderItemMetaInfo(const PDyRenderItemInstanceMetaInfo& metaInfo)
 {
   MDY_ASSERT_MSG(
-    DyIsMapContains(this->mInternal->mRenderItemMetaInfo, metaInfo.mSpecifierName) == false, 
+    Contains(this->mInternal->mRenderItemMetaInfo, metaInfo.mSpecifierName) == false, 
     "Duplicated render pipeline name is exist.");
 
   this->mInternal->mRenderItemMetaInfo.try_emplace(

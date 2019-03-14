@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/ThreeStateBool.h>
+#include <Dy/Helper/Type/DTristateBool.h>
 
 namespace dy
 {
@@ -56,7 +56,7 @@ protected:
 
 private:
   /// Activate flag for operating component.
-  DDy3StateBool mActivateFlag = {};
+  DTristateBool mActivateFlag = {};
 };
 
 }

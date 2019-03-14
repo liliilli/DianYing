@@ -14,7 +14,7 @@
 
 /// Header file
 #include <Dy/Management/Type/Render/DDyModelHandler.h>
-#include <Dy/Helper/ContainerHelper.h>
+#include <Dy/Helper/Library/HelperContainer.h>
 
 namespace dy
 {
@@ -27,7 +27,7 @@ DDyModelHandler::DDyModelHandler(_MIN_ const std::string& iModelSpecifier)
 
 bool DDyModelHandler::IsActorItemExist(_MIN_ FDyActor& iRefActor) const noexcept
 {
-  return DyIsMapContains(this->mActorInformation, &iRefActor);
+  return Contains(this->mActorInformation, &iRefActor);
 }
 
 bool DDyModelHandler::IsActorNeedToBeGc(_MIN_ FDyActor& iRefActor) const noexcept

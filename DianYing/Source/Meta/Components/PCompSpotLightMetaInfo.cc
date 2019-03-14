@@ -34,7 +34,7 @@ MDY_SET_IMMUTABLE_STRING(sHeader_Activated, "Activated");
 namespace dy
 {
 
-void to_json(nlohmann::json& oJson, const PDyCompSpotLightMetaInfo& iItem)
+void to_json(nlohmann::json& oJson, const PCompSpotLightMetaInfo& iItem)
 {
   oJson = nlohmann::json
   {
@@ -44,19 +44,19 @@ void to_json(nlohmann::json& oJson, const PDyCompSpotLightMetaInfo& iItem)
   };
 }
 
-void from_json(const nlohmann::json& iJson, PDyCompSpotLightMetaInfo& oItem)
+void from_json(const nlohmann::json& iJson, PCompSpotLightMetaInfo& oItem)
 {
-  oItem.mType    = DyJsonGetValueFrom<EDyComponentMetaType>(iJson, sHeader_Type);
-  oItem.mDetails = DyJsonGetValueFrom<PDyCompSpotLightMetaInfo::DDetails>(iJson, sHeader_Details);
-  oItem.mInitiallyActivated = DyJsonGetValueFrom<bool>(iJson, sHeader_Activated);
+  oItem.mType    = json::GetValueFrom<EDyComponentMetaType>(iJson, sHeader_Type);
+  oItem.mDetails = json::GetValueFrom<PCompSpotLightMetaInfo::DDetails>(iJson, sHeader_Details);
+  oItem.mInitiallyActivated = json::GetValueFrom<bool>(iJson, sHeader_Activated);
 }
 
-void to_json(nlohmann::json& oJson, const PDyCompSpotLightMetaInfo::DDetails& iDetail)
+void to_json(nlohmann::json& oJson, const PCompSpotLightMetaInfo::DDetails& iDetail)
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
 }
 
-void from_json(const nlohmann::json& iJson, PDyCompSpotLightMetaInfo::DDetails& oDetail)
+void from_json(const nlohmann::json& iJson, PCompSpotLightMetaInfo::DDetails& oDetail)
 {
   /*
   { "Type": "PointLight",
@@ -72,12 +72,12 @@ void from_json(const nlohmann::json& iJson, PDyCompSpotLightMetaInfo::DDetails& 
   }
   */
 
-  DyJsonGetValueFromTo(iJson, "Intensity", oDetail.mIntensity);
-  DyJsonGetValueFromTo(iJson, "Direction", oDetail.mDirection);
-  DyJsonGetValueFromTo(iJson, "Range", oDetail.mRange);
-  DyJsonGetValueFromTo(iJson, "RangeAngle", oDetail.mRangeAngle);
-  DyJsonGetValueFromTo(iJson, "Color", oDetail.mColor);
-  DyJsonGetValueFromTo(iJson, "IsCastingLight", oDetail.mIsCastingLight);
+  json::GetValueFromTo(iJson, "Intensity", oDetail.mIntensity);
+  json::GetValueFromTo(iJson, "Direction", oDetail.mDirection);
+  json::GetValueFromTo(iJson, "Range", oDetail.mRange);
+  json::GetValueFromTo(iJson, "RangeAngle", oDetail.mRangeAngle);
+  json::GetValueFromTo(iJson, "Color", oDetail.mColor);
+  json::GetValueFromTo(iJson, "IsCastingLight", oDetail.mIsCastingLight);
 }
 
 } /// ::dy namespace

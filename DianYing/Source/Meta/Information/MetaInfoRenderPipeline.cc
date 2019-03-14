@@ -14,7 +14,7 @@
 
 #include <Dy/Meta/Information/MetaInfoRenderPipeline.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
-#include <Dy/Management/LoggingManager.h>
+#include <Dy/Management/MLog.h>
 
 namespace dy
 {

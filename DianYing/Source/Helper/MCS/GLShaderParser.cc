@@ -17,7 +17,7 @@
 
 #include <algorithm>
 #include <Dy/Helper/Library/HelperRegex.h>
-#include <Dy/Helper/StringSwitch.h>
+#include <Dy/Helper/Internal/XStringSwitch.h>
 
 //!
 //! Local translation unit function & data
@@ -261,23 +261,23 @@ std::string ParseGLShader(_MIN_ const std::string& iShaderString)
   std::string exportShaderBuffer = optPrev.has_value() == false ? "" : optPrev.value();
 
   // Get Dy shader module keywords.
-  const auto optMatchedKeywordList = DyRegexGetMatchedKeyword(optMid.value(), R"(#import <([\w]+)>;)");
+  const auto optMatchedKeywordList = regex::GetMatchedKeywordFrom(optMid.value(), R"(#import <([\w]+)>;)");
   MDY_ASSERT_MSG_FORCE(optMatchedKeywordList.has_value() == true, "Undefined Dy shader module. Failed to load shader.");
 
   // Check module keyword. If not found anything, output error.
   // If found any module, just replace `#import phrase` with given string to buffer.
   for (auto& keyword : optMatchedKeywordList.value())
   {
-    switch (DyStrSwitchInput(keyword))
+    switch (SwitchStrInput(keyword))
     {
-    case DyStrCase("Input_DefaultVao"):       exportShaderBuffer += Buffer_Input_DefaultVao; break;
-    case DyStrCase("Input_UboCamera"):        exportShaderBuffer += Buffer_Input_UboCamera; break;
-    case DyStrCase("Input_SkinAnimation"):    exportShaderBuffer += Buffer_Input_SkinAnimation; break;
-    case DyStrCase("Input_DefaultTexture2D"): exportShaderBuffer += Buffer_Input_DefaultTexture2D; break;
-    case DyStrCase("Input_UboDirLight"):      exportShaderBuffer += Buffer_Input_UboDirLight; break;
-    case DyStrCase("Input_UStrPointLight"):    exportShaderBuffer += Buffer_Input_UStrPointLight; break;
-    case DyStrCase("Output_OpaqueStream"):    exportShaderBuffer += Buffer_Output_OpaqueStream; break;
-    case DyStrCase("Etc_Miscellaneous"):      exportShaderBuffer += Buffer_Etc_Miscellaneous; break;
+    case CaseStr("Input_DefaultVao"):       exportShaderBuffer += Buffer_Input_DefaultVao; break;
+    case CaseStr("Input_UboCamera"):        exportShaderBuffer += Buffer_Input_UboCamera; break;
+    case CaseStr("Input_SkinAnimation"):    exportShaderBuffer += Buffer_Input_SkinAnimation; break;
+    case CaseStr("Input_DefaultTexture2D"): exportShaderBuffer += Buffer_Input_DefaultTexture2D; break;
+    case CaseStr("Input_UboDirLight"):      exportShaderBuffer += Buffer_Input_UboDirLight; break;
+    case CaseStr("Input_UStrPointLight"):    exportShaderBuffer += Buffer_Input_UStrPointLight; break;
+    case CaseStr("Output_OpaqueStream"):    exportShaderBuffer += Buffer_Output_OpaqueStream; break;
+    case CaseStr("Etc_Miscellaneous"):      exportShaderBuffer += Buffer_Etc_Miscellaneous; break;
     default: MDY_NOT_IMPLEMENTED_ASSERT(); break;
     }
   }

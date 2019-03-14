@@ -13,11 +13,11 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/ColorRGBA.h>
+#include <Dy/Helper/Type/DColorRGBA.h>
 #include <Dy/Element/Object.h>
 #include <Dy/Element/Actor.h>
 #include <Dy/Element/Interface/IDyUpdatable.h>
-#include <Dy/Helper/Internal/FDyNameGenerator.h>
+#include <Dy/Helper/Internal/FNameGenerator.h>
 
 namespace dy {
 
@@ -26,7 +26,7 @@ namespace dy {
 class FDyLevel final : 
   public FDyObject, 
   public IDyUpdatable, 
-  public FDyNameGenerator,
+  public FNameGenerator,
   public TDyIdDistributor<TU32, FDyLevel>
 {
 public:
@@ -40,7 +40,7 @@ public:
 
   /// @brief  Get background color of this scene.
   /// @return background color [0, 1] (RGBA)
-  MDY_NODISCARD const DDyColorRGBA& GetBackgroundColor() const noexcept;
+  MDY_NODISCARD const DColorRGBA& GetBackgroundColor() const noexcept;
 
   /// @brief  Get present level name.
   /// @return Level name.
@@ -48,7 +48,7 @@ public:
 
   /// @brief  Set background color of this scene.
   /// @param  backgroundColor New backgrond color value.
-  void SetBackgroundColor(_MIN_ const DDyColorRGBA& backgroundColor) noexcept;
+  void SetBackgroundColor(_MIN_ const DColorRGBA& backgroundColor) noexcept;
 
   /// @brief Align position of actors.
   void MDY_PRIVATE(AlignActorsPosition)() noexcept;
@@ -89,7 +89,7 @@ private:
   /// Level's name. not modifiable
   std::string         mLevelName            = MDY_INITIALIZE_EMPTYSTR;
   /// Level basic color
-  DDyColorRGBA        mLevelBackgroundColor = DDyColorRGBA::White;
+  DColorRGBA        mLevelBackgroundColor = DColorRGBA::White;
   /// Actor list (hierarchial version)
   FDyActor::TActorMap mActorMap             = {};
   /// Check if level is initialized or released. Level is active when only mInitialized is true.

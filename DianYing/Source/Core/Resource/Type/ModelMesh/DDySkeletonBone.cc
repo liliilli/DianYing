@@ -28,24 +28,24 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySkeletonBone& p)
 /// @brief Deserialization function.
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySkeletonBone& p)
 {
-  DyJsonGetValueFromTo(j, "Specifier", p.mSpecifier);
-  DyJsonGetValueFromTo(j, "ParentBoneId", p.mParentSkeletonBoneIndex);
-  DyJsonGetValueFromTo(j, "LocalTf",  p.mLocalTransform);
-  DyJsonGetValueFromTo(j, "BoneOffsetId", p.mBoneOffsetId);
+  json::GetValueFromTo(j, "Specifier", p.mSpecifier);
+  json::GetValueFromTo(j, "ParentBoneId", p.mParentSkeletonBoneIndex);
+  json::GetValueFromTo(j, "LocalTf",  p.mLocalTransform);
+  json::GetValueFromTo(j, "BoneOffsetId", p.mBoneOffsetId);
 }
 
 void from_json(const nlohmann::json& j, DDyBoneOffset& p)
 {
-  DyJsonGetValueFromTo(j, "Specifier", p.mBoneName);
-  DyJsonGetValueFromTo(j, "SkeletonNodeId", p.mIndexSkeletonNode);
-  DyJsonGetValueFromTo(j, "OffsetMatrix", p.mBoneOffsetMatrix);
+  json::GetValueFromTo(j, "Specifier", p.mBoneName);
+  json::GetValueFromTo(j, "SkeletonNodeId", p.mIndexSkeletonNode);
+  json::GetValueFromTo(j, "OffsetMatrix", p.mBoneOffsetMatrix);
 }
 
 void from_json(const nlohmann::json& j, DDySkeleton& p)
 {
-  DyJsonGetValueFromTo(j, "InverseTransform", p.mSkeletonRootInverseTransform);
-  DyJsonGetValueFromTo(j, "SkeletonNodeList", p.mExportedSkeleton);
-  DyJsonGetValueFromTo(j, "BoneOffsetList", p.mBoneOffsetList);
+  json::GetValueFromTo(j, "InverseTransform", p.mSkeletonRootInverseTransform);
+  json::GetValueFromTo(j, "SkeletonNodeList", p.mExportedSkeleton);
+  json::GetValueFromTo(j, "BoneOffsetList", p.mBoneOffsetList);
 }
 
 } /// ::dy namespace

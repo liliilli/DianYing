@@ -15,7 +15,7 @@
 /// Header file
 #include <Dy/Meta/Descriptor/WidgetImageMetaInformation.h>
 #include <Dy/Helper/Library/HelperJson.h>
-#include <Dy/Helper/Type/ColorRGB24.h>
+#include <Dy/Helper/Type/DColorRGB24.h>
 
 namespace dy
 {
@@ -50,20 +50,20 @@ PDyMetaWidgetImageDescriptor::CreateMetaInformation(const nlohmann::json& itemAt
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   auto resultInstance = std::make_unique<PDyMetaWidgetImageDescriptor>();
-  resultInstance->mUiObjectSpecifierName  = DyJsonGetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Name);
+  resultInstance->mUiObjectSpecifierName  = json::GetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Name);
   resultInstance->mComponentType          = EDyWidgetComponentType::Image;
-  resultInstance->mParentSpecifierName    = DyJsonGetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Parent);
-  DyJsonGetValueFromTo(itemAtlas, "ZOrder", resultInstance->mZOrder);
+  resultInstance->mParentSpecifierName    = json::GetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Parent);
+  json::GetValueFromTo(itemAtlas, "ZOrder", resultInstance->mZOrder);
 
   const auto& detailAtlas           = itemAtlas[(TPDyMWCBD::sHeader_Details)];
-  resultInstance->mInitialPosition  = DyJsonGetValueFrom<DDyVectorInt2>(detailAtlas, "InitialPosition");
-  resultInstance->mOrigin           = DyJsonGetValueFrom<EDyOrigin>(detailAtlas, "Origin");
-  resultInstance->mWidgetSize       = DyJsonGetValueFrom<DDyVectorInt2>(detailAtlas, "WidgetSize");
+  resultInstance->mInitialPosition  = json::GetValueFrom<DVectorInt2>(detailAtlas, "InitialPosition");
+  resultInstance->mOrigin           = json::GetValueFrom<EDyOrigin>(detailAtlas, "Origin");
+  resultInstance->mWidgetSize       = json::GetValueFrom<DVectorInt2>(detailAtlas, "WidgetSize");
 
-  resultInstance->mImageRegion        = DyJsonGetValueFrom<DDyArea2D>(detailAtlas, "ImageRegion");
-  resultInstance->mImageSpecifierName = DyJsonGetValueFrom<std::string>(detailAtlas, "ImageSpecifierName");
-  resultInstance->mIsSizeToContent  = DyJsonGetValueFrom<bool>(detailAtlas, "IsSizeToContent");
-  resultInstance->mTintColor        = DyJsonGetValueFrom<DDyColorRGBA>(detailAtlas, "TintColor");;
+  resultInstance->mImageRegion        = json::GetValueFrom<DArea2D>(detailAtlas, "ImageRegion");
+  resultInstance->mImageSpecifierName = json::GetValueFrom<std::string>(detailAtlas, "ImageSpecifierName");
+  resultInstance->mIsSizeToContent  = json::GetValueFrom<bool>(detailAtlas, "IsSizeToContent");
+  resultInstance->mTintColor        = json::GetValueFrom<DColorRGBA>(detailAtlas, "TintColor");;
 
 
   return resultInstance;

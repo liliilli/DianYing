@@ -15,7 +15,7 @@
 
 #include <Dy/Builtin/Interface/IDyResource.h>
 #include <Dy/Core/Reflection/RDyBuiltinResources.h>
-#include <Dy/Helper/Type/ColorRGBA32.h>
+#include <Dy/Helper/Type/DColorRGBA32.h>
 #include <Dy/Meta/Information/MetaInfoTexture.h>
 
 namespace dy
@@ -70,14 +70,14 @@ MDY_NODISCARD std::vector<TU08> ConvertToTU08VectorList(const std::array<std::ar
 }
 
 template <int TV>
-MDY_NODISCARD std::vector<TU08> ConvertToTU08VectorList(const std::array<dy::DDyColorRGBA32, TV>& buffer) noexcept
+MDY_NODISCARD std::vector<TU08> ConvertToTU08VectorList(const std::array<dy::DColorRGBA32, TV>& buffer) noexcept
 {
   std::vector<TU08> result {};
   result.reserve(TV * 4);
 
   for (int y = 0; y < TV; ++y)
   {
-    const dy::DDyColorRGBA32& buf = buffer[y];
+    const dy::DColorRGBA32& buf = buffer[y];
     result.emplace_back(buf.R);
     result.emplace_back(buf.G);
     result.emplace_back(buf.B);

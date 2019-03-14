@@ -13,10 +13,10 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/Vector3.h>
-#include <Dy/Helper/Type/ColorRGBA.h>
-#include <Dy/Helper/Type/Clamp.h>
-#include <Dy/Helper/Type/Matrix4.h>
+#include <Dy/Helper/Type/DVector3.h>
+#include <Dy/Helper/Type/DColorRGBA.h>
+#include <Dy/Helper/Type/DClamp.h>
+#include <Dy/Helper/Type/DMatrix4x4.h>
 #include <Dy/Builtin/Constant/CSM.h>
 
 #define MDY_BYTEPADDING(__Type__) MDY_NOTUSED __Type__ MDY_TOKENPASTE2(____padding, __LINE__){};
@@ -29,10 +29,10 @@ namespace dy
 struct alignas(16) DDyUboDirectionalLight final
 {
   /// World space light direction
-  DDyVector3 mDirection = {};
+  DVector3 mDirection = {};
   MDY_BYTEPADDING(TI32)
   /// Light tint color
-  DDyColorRGBA mDiffuse = DDyColorRGBA::White;
+  DColorRGBA mDiffuse = DColorRGBA::White;
   /// Light intensity for this light component.
   float mIntensity = MDY_INITIALIZE_DEFINT;
 };
@@ -42,11 +42,11 @@ struct alignas(16) DDyUboDirectionalLight final
 struct alignas(16) DDyUboDirShadow final
 {
   /// @brief Calculated Cascaded Shadow Mapping VPSB Matrix list.
-  std::array<DDyMatrix4x4, 4>   mLightVPSBMatrix = {};
+  std::array<DMatrix4x4, 4>   mLightVPSBMatrix = {};
   /// @brief CSM normalized far planes.
   std::array<TF32, kCSMSegment> mNormalizedFarPlanes = {};
-  DDyClamp<float, 0, 2>         mBias     = 0.02f;
-  DDyClamp<float, 0, 1>         mStrength = 0.8f;
+  DClamp<float, 0, 2>         mBias     = 0.02f;
+  DClamp<float, 0, 1>         mStrength = 0.8f;
 };
 
 } /// ::dy namespace

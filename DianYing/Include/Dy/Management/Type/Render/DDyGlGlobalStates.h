@@ -14,7 +14,7 @@
 ///
 
 #include <optional>
-#include <Dy/Helper/Type/Area2D.h>
+#include <Dy/Helper/Type/DArea2D.h>
 #include <Dy/Management/Type/AttachmentInformation.h>
 
 namespace dy
@@ -76,9 +76,9 @@ struct DDyGlGlobalStates final
     struct DItem final
     {
       TI32      mIndex;
-      DDyArea2D mArea;
+      DArea2D mArea;
 
-      DItem(TI32 iIndex, DDyArea2D iArea) : mIndex{iIndex}, mArea{iArea} {};
+      DItem(TI32 iIndex, DArea2D iArea) : mIndex{iIndex}, mArea{iArea} {};
     };
 
     std::vector<DItem> mViewportSettingList;

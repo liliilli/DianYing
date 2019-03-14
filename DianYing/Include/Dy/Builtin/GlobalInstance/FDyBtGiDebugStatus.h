@@ -15,7 +15,7 @@
 
 #include <Dy/Builtin/Abstract/ADyGlobalInstance.h>
 #include <Dy/Core/Reflection/RDyGlobalInstanceManager.h>
-#include <Dy/Helper/Type/DDyCompUpdator.h>
+#include <Dy/Helper/Type/DCompUpdator.h>
 
 namespace dy
 {
@@ -30,7 +30,7 @@ protected:
   static void OnCallbackLogFlag(_MIN_ const bool& iValue);
 
 public:
-  DDyCompUpdator<bool> mLogFlag { false, std::bind(&FDyBtGiDebugStatus::OnCallbackLogFlag, std::placeholders::_1) };
+  DCompUpdator<bool> mLogFlag { false, std::bind(&FDyBtGiDebugStatus::OnCallbackLogFlag, std::placeholders::_1) };
   bool mEditMode = false;
 };
 

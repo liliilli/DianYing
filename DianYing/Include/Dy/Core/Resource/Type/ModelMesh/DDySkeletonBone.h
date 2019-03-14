@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/Matrix4.h>
+#include <Dy/Helper/Type/DMatrix4x4.h>
 
 namespace dy
 {
@@ -29,7 +29,7 @@ struct DDySkeletonBone final
   /// @brief
   int           mBoneOffsetId = -1;
   /// @brief Local trasform of this bone which is relative to parent.
-  DDyMatrix4x4  mLocalTransform = DDyMatrix4x4::IdentityMatrix();
+  DMatrix4x4  mLocalTransform = DMatrix4x4::IdentityMatrix();
 };
 
 struct DDyBoneOffset
@@ -39,13 +39,13 @@ struct DDyBoneOffset
   // @brief
   int           mIndexSkeletonNode = -1;
   /// @brief Offset matrix of bone.
-  DDyMatrix4x4  mBoneOffsetMatrix = DDyMatrix4x4::IdentityMatrix();
+  DMatrix4x4  mBoneOffsetMatrix = DMatrix4x4::IdentityMatrix();
 };
 
 struct DDySkeleton final
 {
   // @brief
-  DDyMatrix4x4                mSkeletonRootInverseTransform;
+  DMatrix4x4                mSkeletonRootInverseTransform;
   // @brief
   std::vector<DDySkeletonBone>mExportedSkeleton;
   // @brief

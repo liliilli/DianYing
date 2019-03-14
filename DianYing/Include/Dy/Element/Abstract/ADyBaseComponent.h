@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Helper/System/HashCompileCrc32.h>
-#include <Dy/Helper/Type/ThreeStateBool.h>
+#include <Dy/Helper/Type/DTristateBool.h>
 #include <Dy/Element/Interface/IDyToString.h>
 #include <Dy/Element/Type/FDy3WaySwitcher.h>
 

@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Helper/System/TypeTraits.h>
-#include <Dy/Helper/Type/Vector3.h>
+#include <Dy/Helper/Type/DVector3.h>
 
 //!
 //! Forward declaration

@@ -17,7 +17,7 @@
 #include <Dy/Element/Canvas/UiObject.h>
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
 #include <Dy/Component/UI/CDyWidgetScript.h>
-#include <Dy/Helper/Type/ThreeStateBool.h>
+#include <Dy/Helper/Type/DTristateBool.h>
 
 //!
 //! Forward declaration

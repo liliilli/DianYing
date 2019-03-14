@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Core/Resource/Type/ModelMesh/DDyAnimationSequence.h>
-#include <Dy/Helper/Type/Quaternion.h>
+#include <Dy/Helper/Type/DQuaternion.h>
 
 //!
 //! Forward declaration
@@ -54,11 +54,11 @@ public:
   ///                       |<-dt(N) When Looped
   ///                       L v = (dt - N) / (elapsed_time - N); result = SN * (1 - v) + S0 * v;
   ///                     |<-dt(N) When not looped, just return SN;
-  MDY_NODISCARD DDyVector3 GetInterpolatedScaling(_MIN_ TF32 iElapsedTime, _MIN_ TU32 iBoneIndex, _MIN_ bool iIsLooped) const;
+  MDY_NODISCARD DVector3 GetInterpolatedScaling(_MIN_ TF32 iElapsedTime, _MIN_ TU32 iBoneIndex, _MIN_ bool iIsLooped) const;
   /// @brief Get interpolated rotation value.
-  MDY_NODISCARD DDyQuaternion GetInterpolatedRotation(_MIN_ TF32 iElapsedTime, _MIN_ TU32 iBoneIndex, _MIN_ bool iIsLooped) const;
+  MDY_NODISCARD DQuaternion GetInterpolatedRotation(_MIN_ TF32 iElapsedTime, _MIN_ TU32 iBoneIndex, _MIN_ bool iIsLooped) const;
   /// @brief Get interpolated position value.
-  MDY_NODISCARD DDyVector3 GetInterpolatedPosition(_MIN_ TF32 iElapsedTime, _MIN_ TU32 iBoneIndex, _MIN_ bool iIsLooped) const;
+  MDY_NODISCARD DVector3 GetInterpolatedPosition(_MIN_ TF32 iElapsedTime, _MIN_ TU32 iBoneIndex, _MIN_ bool iIsLooped) const;
 
   /// @brief Get reference of list of skeleton bone.
   MDY_NODISCARD const decltype(DDyAnimationSequence::mAnimationNodeList)& GetAnimNodeList() const noexcept;

@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/ColorRGB.h>
+#include <Dy/Helper/Type/DColorRGB.h>
 #include <Dy/Core/Reflection/RReflection.h>
 
 #define MDY_BYTEPADDING(__Type__) MDY_NOTUSED __Type__ MDY_TOKENPASTE2(____padding, __LINE__){};
@@ -29,11 +29,11 @@ struct DDyUboSpotLight final
   REGISTER_UNIFORM_STRUCT(DDyUboPointLight)
 
   /// @brief Light's position.
-  mutable DDyVector3 mPosition = DDyVector3{};
+  mutable DVector3 mPosition = DVector3{};
   /// @brief Light direction.
-  DDyVector3  mDirection = DDyVector3{};
+  DVector3  mDirection = DVector3{};
   /// @brief Light color
-  DDyColorRGB mColor = DDyColorRGB::Black;
+  DColorRGB mColor = DColorRGB::Black;
   /// @brief Light intensity for spot light component.
   TF32 mIntensity = 0.0f;
   /// @brief Light range for spot light component.

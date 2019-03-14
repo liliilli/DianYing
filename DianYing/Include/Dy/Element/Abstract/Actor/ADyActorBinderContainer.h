@@ -14,8 +14,7 @@
 ///
 
 #include <Dy/Element/Type/DDyActorBinder.h>
-#include <Dy/Helper/Pointer.h>
-#include <Dy/Helper/System/Idioms.h>
+#include <Dy/Helper/System/Pointer.h>
 
 namespace dy
 {
@@ -41,7 +40,7 @@ public:
     }
     if (id == size) { return DY_FAILURE; }
 
-    DyFastErase(this->mPtrBinderList, id);
+    FaseErase(this->mPtrBinderList, id);
     return DY_SUCCESS;
   }
 

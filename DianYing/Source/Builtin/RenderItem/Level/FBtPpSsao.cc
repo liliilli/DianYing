@@ -41,7 +41,7 @@ FBtRenderItemSsao::FBtRenderItemSsao()
 {
   for (TU32 i = 0; i < kSSAORayCount; ++i)
   {
-    DDyVector3 sample = DDyVector3{
+    DVector3 sample = DVector3{
         random::RandomFloatRange(-1, 1), 
         random::RandomFloatRange(-1, 1), 
         random::RandomFloatRange(0, 1)

@@ -15,11 +15,11 @@
 /// Header file
 #include <Dy/Component/CDyPhysicsRigidbody.h>
 #include <Dy/Element/Actor.h>
-#include <Dy/Helper/ContainerHelper.h>
+#include <Dy/Helper/Library/HelperContainer.h>
 #include <Dy/Helper/System/Idioms.h>
 #include <Dy/Component/CDyPhysicsCollider.h>
 #include <Dy/Management/SettingManager.h>
-#include <Dy/Management/PhysicsManager.h>
+#include <Dy/Management/MPhysics.h>
 #include <Dy/Management/Type/Physics/DDyCollisionIssueItem.h>
 #include <extensions/PxRigidActorExt.h>
 #include <PxPhysicsAPI.h>
@@ -92,7 +92,7 @@ EDySuccess CDyPhysicsRigidbody::Initialize(_MIN_ const PDyRigidbodyComponentMeta
     const auto& settingManager = MDySetting::GetInstance();
     const auto& physics = settingManager.GetPhysicsSetting();
     // If we can not find `lockPreset` lock preset, just let it be.
-    if (DyIsMapContains(physics.mLockPresetContainer, lockPreset) == false)
+    if (Contains(physics.mLockPresetContainer, lockPreset) == false)
     {
       DyPushLogError("Failed to find lock preset item from setting, {}.", lockPreset);
     }
@@ -161,7 +161,7 @@ std::string CDyPhysicsRigidbody::ToString()
 }
 
 #define MDY_PHYSX_WRITE_LOCK() \
-  ::physx::PxSceneWriteLock lock(::dy::MDyPhysics::GetInstance().MDY_PRIVATE(GetRefScene)())
+  ::physx::PxSceneWriteLock lock(::dy::MPhysics::GetInstance().MDY_PRIVATE(GetRefScene)())
 
 void CDyPhysicsRigidbody::TryActivateInstance()
 {
@@ -195,7 +195,7 @@ void CDyPhysicsRigidbody::TryActivateInstance()
   }
   
   // Do something.
-  MDyPhysics::GetInstance().MDY_PRIVATE(RegisterRigidbody)(*this);
+  MPhysics::GetInstance().MDY_PRIVATE(RegisterRigidbody)(*this);
 }
 
 void CDyPhysicsRigidbody::pActivateDynamicNKinematicActor()
@@ -207,12 +207,12 @@ void CDyPhysicsRigidbody::pActivateDynamicNKinematicActor()
   const auto& worldRot = bindedActor.GetTransform()->GetRotationQuaternion();
 
   // Initialize internal resource.
-  auto& refPhysics = MDyPhysics::GetInstance();
+  auto& refPhysics = MPhysics::GetInstance();
   auto& refSdk = refPhysics.MDY_PRIVATE(GetRefInternalSdk)();
   const auto& defaultSetting = refPhysics.GetDefaultSetting();
 
   {
-    ::physx::PxSceneWriteLock lock(::dy::MDyPhysics::GetInstance().MDY_PRIVATE(GetRefScene)());
+    ::physx::PxSceneWriteLock lock(::dy::MPhysics::GetInstance().MDY_PRIVATE(GetRefScene)());
     MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNULL(this->mOwnerInternalActor), "Internal rigidbody actor must be null.");
 
     // Create RigidDynamic instance.
@@ -241,7 +241,7 @@ void CDyPhysicsRigidbody::pActivateStaticActor()
   const auto& worldRot = bindedActor.GetTransform()->GetRotationQuaternion();
 
   // Initialize internal resource.
-  auto& refPhysics = MDyPhysics::GetInstance();
+  auto& refPhysics = MPhysics::GetInstance();
   auto& refSdk = refPhysics.MDY_PRIVATE(GetRefInternalSdk)();
   const auto& defaultSetting = refPhysics.GetDefaultSetting();
 
@@ -277,7 +277,7 @@ void CDyPhysicsRigidbody::RegisterCollider(_MIN_ CDyPhysicsCollider& iRefCollide
 void CDyPhysicsRigidbody::TryDeactivateInstance()
 {
   // Do something.
-  MDyPhysics::GetInstance().MDY_PRIVATE(UnregisterRigidbody)(*this);
+  MPhysics::GetInstance().MDY_PRIVATE(UnregisterRigidbody)(*this);
 
   // And remove collider registration.
   while (this->mPtrColliderList.empty() == false)
@@ -295,7 +295,7 @@ void CDyPhysicsRigidbody::TryDeactivateInstance()
   this->mRigidbodySpecifierId = 0;
 
   {
-    ::physx::PxSceneWriteLock lock(::dy::MDyPhysics::GetInstance().MDY_PRIVATE(GetRefScene)());
+    ::physx::PxSceneWriteLock lock(::dy::MPhysics::GetInstance().MDY_PRIVATE(GetRefScene)());
     MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNOTNULL(this->mOwnerInternalActor), "Internal rigidbody actor must be valid.");
     MDY_ASSERT_MSG_FORCE(this->mOwnerInternalActor->isReleasable() == true, "Internal rigidbody actor is not releasable.");
 
@@ -316,7 +316,7 @@ void CDyPhysicsRigidbody::UnregisterCollider(_MIN_ CDyPhysicsCollider& iRefColli
   it->Get()->ReleaseInternalResource(*this);
   it->Get()->MDY_PRIVATE(SetRegisterFlag)(false);
   // And remove.
-  DyFastErase(this->mPtrColliderList, it);
+  FaseErase(this->mPtrColliderList, it);
 }
 
 EDySuccess CDyPhysicsRigidbody::BindShapeToRigidbody(_MIN_ CDyPhysicsCollider& iRefShape)
@@ -324,7 +324,7 @@ EDySuccess CDyPhysicsRigidbody::BindShapeToRigidbody(_MIN_ CDyPhysicsCollider& i
   if (this->IsComponentActivated() == false)      { return DY_FAILURE; }
   if (MDY_CHECK_ISNULL(this->mOwnerInternalActor)) { return DY_FAILURE; }
 
-  const auto& mat = MDyPhysics::GetInstance().GetDefaultPhysicsMaterial();
+  const auto& mat = MPhysics::GetInstance().GetDefaultPhysicsMaterial();
 
   const auto geometryHolder = iRefShape.__GetPtrInternalShape()->getGeometry();
   // Create new shape (with default materia) and set pose.

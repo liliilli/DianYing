@@ -16,21 +16,21 @@
 #include <Dy/Core/DyEngine.h>
 
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
-#include <Dy/Management/InputManager.h>
-#include <Dy/Management/LoggingManager.h>
+#include <Dy/Management/MInput.h>
+#include <Dy/Management/MLog.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
-#include <Dy/Management/PhysicsManager.h>
+#include <Dy/Management/MPhysics.h>
 #include <Dy/Management/Rendering/RenderingManager.h>
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Management/SoundManager.h>
 #include <Dy/Management/TimeManager.h>
 #include <Dy/Management/WindowManager.h>
 #include <Dy/Management/WorldManager.h>
-#include <Dy/Management/FontManager.h>
-#include <Dy/Management/ScriptManager.h>
+#include <Dy/Management/MFont.h>
+#include <Dy/Management/MScript.h>
 #include <Dy/Management/Internal/MDySynchronization.h>
 #include <Dy/Management/Internal/MDyProfiling.h>
-#include <Dy/Management/GameTimerManager.h>
+#include <Dy/Management/MGameTimer.h>
 #include <Dy/Management/Helper/SDyProfilingHelper.h>
 #include <Dy/Management/Internal/MDyDebug.h>
 
@@ -107,7 +107,7 @@ void DyEngine::operator()()
       if (this->mIsInGameUpdatePaused == false)
       {
         this->mSynchronization->TrySynchronization();
-        MDyGameTimer::GetInstance().MDY_PRIVATE(TryGcRemoveAbortedTimerInstance)();
+        MGameTimer::GetInstance().MDY_PRIVATE(TryGcRemoveAbortedTimerInstance)();
       }
 
       // Get delta-time.
@@ -199,7 +199,7 @@ void DyEngine::MDY_PRIVATE(ReflectGameStatusTransition)()
     { // Loading => GameRuntime.
       // Remove Loading UI, and detach resource with RAII & Script.
       MDY_CALL_BUT_NOUSE_RESULT(MDyWorld::GetInstance().TryRemoveLoadingUi());
-      auto& scriptManager = MDyScript::GetInstance(); 
+      auto& scriptManager = MScript::GetInstance(); 
       MDyRendering::GetInstance().ActivateEntryRenderPipeline("dyBtDefaultLoading", false);
       MDyRendering::GetInstance().ActivateEntryRenderPipeline("dyBtDefault", true);
 
@@ -253,7 +253,7 @@ void DyEngine::MDY_PRIVATE(ReflectGameStatusTransition)()
     { // Shutdown => Ended.
       MDyWorld::GetInstance().MDY_PRIVATE(RemoveLevel)();
 
-      auto& scriptManager = MDyScript::GetInstance();
+      auto& scriptManager = MScript::GetInstance();
       scriptManager.CallonEndGlobalScriptList();
       scriptManager.RemoveGlobalScriptInstances();
 
@@ -285,8 +285,8 @@ void DyEngine::MDY_PRIVATE(Update)(_MIN_ EDyGlobalGameStatus iEngineStatus, _MIN
   case EDyGlobalGameStatus::FirstLoading: 
   case EDyGlobalGameStatus::Loading: 
   {
-    MDyScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
-    MDyScript::GetInstance().UpdateWidgetScript(dt);
+    MScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
+    MScript::GetInstance().UpdateWidgetScript(dt);
   } break;
   case EDyGlobalGameStatus::GameRuntime: 
   {
@@ -296,41 +296,41 @@ void DyEngine::MDY_PRIVATE(Update)(_MIN_ EDyGlobalGameStatus iEngineStatus, _MIN
     {
       if (MDyDebug::GetInstance().CheckInput(dt) == DY_FAILURE)
       {
-        MDyInput::GetInstance().pfGlobalUpdate(dt);
+        MInput::GetInstance().pfGlobalUpdate(dt);
       }
       if (this->mIsInGameUpdatePaused == false)
       {
         // Physics pre-update time.
         // Must get transform from PhysX and rebind transform to render transform.
-        MDyPhysics::GetInstance().UpdateRenderObjectTransform(dt);
+        MPhysics::GetInstance().UpdateRenderObjectTransform(dt);
         // And call callback collision functions once.
-        MDyPhysics::GetInstance().CallCallbackIssueOnce();
+        MPhysics::GetInstance().CallCallbackIssueOnce();
       }
     }
     else
     { // If not debug mode, just poll input key of global.
-      MDyInput::GetInstance().pfGlobalUpdate(dt);
+      MInput::GetInstance().pfGlobalUpdate(dt);
       // Physics pre-update time.
       // Must get transform from PhysX and rebind transform to render transform.
-      MDyPhysics::GetInstance().UpdateRenderObjectTransform(dt);
+      MPhysics::GetInstance().UpdateRenderObjectTransform(dt);
       // And call callback collision functions once.
-      MDyPhysics::GetInstance().CallCallbackIssueOnce();
+      MPhysics::GetInstance().CallCallbackIssueOnce();
     }
 
     // If in-game update should not be passed, just update in-game. Otherwise, neglect.
     if (this->mIsInGameUpdatePaused == false)
     {
-      MDyScript::GetInstance().UpdateActorScript(0.0f, EDyScriptState::CalledNothing);
-      MDyScript::GetInstance().TryMoveInsertActorScriptToMainContainer();
-      MDyScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
+      MScript::GetInstance().UpdateActorScript(0.0f, EDyScriptState::CalledNothing);
+      MScript::GetInstance().TryMoveInsertActorScriptToMainContainer();
+      MScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
 
-      MDyInput::GetInstance().pfInGameUpdate(dt);
+      MInput::GetInstance().pfInGameUpdate(dt);
       if (this->MDY_PRIVATE(IsGameNeedToBeTransitted)() == true) { return; }
-      MDyGameTimer::GetInstance().Update(dt);
+      MGameTimer::GetInstance().Update(dt);
       if (this->MDY_PRIVATE(IsGameNeedToBeTransitted)() == true) { return; }
-      MDyScript::GetInstance().UpdateActorScript(dt);
+      MScript::GetInstance().UpdateActorScript(dt);
       if (this->MDY_PRIVATE(IsGameNeedToBeTransitted)() == true) { return; }
-      MDyScript::GetInstance().UpdateWidgetScript(dt);
+      MScript::GetInstance().UpdateWidgetScript(dt);
       if (this->MDY_PRIVATE(IsGameNeedToBeTransitted)() == true) { return; }
       
       MDyWorld::GetInstance().Update(dt);
@@ -360,20 +360,20 @@ void DyEngine::MDY_PRIVATE(PreRender)(_MIN_ EDyGlobalGameStatus iEngineStatus, _
   {
     // Reset frame dependent profiling count.
     SDyProfilingHelper::ResetFrameDependentCounts();
-    // Update physics `PxScene` parameter. This function must be called before MDyPhysics::Update(dt).
-    MDyPhysics::GetInstance().UpdateInternalPxSceneParameter();
+    // Update physics `PxScene` parameter. This function must be called before MPhysics::Update(dt).
+    MPhysics::GetInstance().UpdateInternalPxSceneParameter();
 
     if (this->mIsInGameUpdatePaused == false)
     {
       MDyWorld::GetInstance().UpdateAnimator(dt);
       // Update physics collision simulation.
-      MDyPhysics::GetInstance().Update(dt);
+      MPhysics::GetInstance().Update(dt);
     }
 
     // Debug render queue requisition.
     if (MDySetting::GetInstance().IsRenderPhysicsCollisionShape() == true)
     {
-      MDyPhysics::GetInstance().TryEnqueueDebugDrawCall();
+      MPhysics::GetInstance().TryEnqueueDebugDrawCall();
     }
 
     // Pre-render update of rendering manager.
@@ -422,7 +422,7 @@ void DyEngine::MDY_PRIVATE(PostRender)(_MIN_ EDyGlobalGameStatus iEngineStatus, 
     // Object picking routine.
     {
       static bool isPicked = false;
-      auto& refInput = MDyInput::GetInstance();
+      auto& refInput = MInput::GetInstance();
       if (const bool value = refInput.IsKeyPressed(EDyInputButton::Mouse0Lmb);
           isPicked == false
       &&  refInput.GetMouseMode() == EDyMouseMode::Picking 
@@ -446,8 +446,8 @@ void DyEngine::MDY_PRIVATE(PostRender)(_MIN_ EDyGlobalGameStatus iEngineStatus, 
 
 void DyEngine::pfInitializeIndependentManager()
 {
-  // `MDyLog` must be initialized first because of logging message from each managers.
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyLog::Initialize());
+  // `MLog` must be initialized first because of logging message from each managers.
+  MDY_CALL_ASSERT_SUCCESS(dy::MLog::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyProfiling::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyMetaInfo::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDySetting::Initialize());
@@ -467,12 +467,12 @@ void DyEngine::pfInitializeIndependentManager()
 void DyEngine::pfInitializeDependentManager()
 {
   MDY_CALL_ASSERT_SUCCESS(dy::MDyRendering::Initialize());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyInput::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MInput::Initialize());
   MDY_CALL_ASSERT_SUCCESS(dy::MDySound::Initialize());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyPhysics::Initialize());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyFont::Initialize());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyGameTimer::Initialize());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyScript::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MPhysics::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MFont::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MGameTimer::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(dy::MScript::Initialize());
 
   MDY_CALL_ASSERT_SUCCESS(dy::MDyWorld::Initialize());
 }
@@ -481,12 +481,12 @@ void DyEngine::pfReleaseDependentManager()
 {
   MDY_CALL_ASSERT_SUCCESS(dy::MDyWorld::Release());
 
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyScript::Release());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyGameTimer::Release());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyFont::Release());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyPhysics::Release());
+  MDY_CALL_ASSERT_SUCCESS(dy::MScript::Release());
+  MDY_CALL_ASSERT_SUCCESS(dy::MGameTimer::Release());
+  MDY_CALL_ASSERT_SUCCESS(dy::MFont::Release());
+  MDY_CALL_ASSERT_SUCCESS(dy::MPhysics::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDySound::Release());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyInput::Release());
+  MDY_CALL_ASSERT_SUCCESS(dy::MInput::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyRendering::Release());
 
   SDyIOConnectionHelper::TryGC(EDyScope::Temporal, EDyResourceStyle::Resource);
@@ -520,7 +520,7 @@ void DyEngine::pfReleaseIndependentManager()
   MDY_CALL_ASSERT_SUCCESS(dy::MDySetting::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyMetaInfo::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MDyProfiling::Release());
-  MDY_CALL_ASSERT_SUCCESS(dy::MDyLog::Release());
+  MDY_CALL_ASSERT_SUCCESS(dy::MLog::Release());
 }
 
 NotNull<TDyIO*> DyEngine::pfGetIOThread()

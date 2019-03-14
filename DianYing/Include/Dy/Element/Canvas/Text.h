@@ -17,7 +17,7 @@
 #include <Dy/Element/Descriptor/CanvasDescriptor.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 #include <Dy/Component/Internal/CDyFontRenderer.h>
-#include <Dy/Helper/Type/DyString.h>
+#include <Dy/Helper/Type/DString.h>
 #include <Dy/Management/Interface/IDyFontContainer.h>
 #include <Dy/Meta/Type/EDyWidgetTypes.h>
 
@@ -63,7 +63,7 @@ public:
   /// @brief Get text string to display.
   /// @return Text string which this instance has.
   ///
-  MDY_NODISCARD const DDyString& GetText() const noexcept;
+  MDY_NODISCARD const DString& GetText() const noexcept;
 
   /// @brief  Return reference of valid font container.
   /// @return Valid font container reference.
@@ -78,19 +78,19 @@ public:
 
   /// @brief  Get DDyColor foreground color of text component.
   /// @return Return foreground color.
-  MDY_NODISCARD const DDyColorRGBA& GetForegroundColor() const noexcept;
+  MDY_NODISCARD const DColorRGBA& GetForegroundColor() const noexcept;
 
   /// @brief  Get DDyColor background color of text component.
   /// @return Return background color.
-  MDY_NODISCARD const DDyColorRGBA& GetBackgroundColor() const noexcept;
+  MDY_NODISCARD const DColorRGBA& GetBackgroundColor() const noexcept;
 
   /// @brief  Get DDyColor edge color of text component.
   /// @return Return edge color.
-  MDY_NODISCARD const DDyColorRGBA& GetEdgeColor() const noexcept;
+  MDY_NODISCARD const DColorRGBA& GetEdgeColor() const noexcept;
 
   /// @brief  Get position to be rendered in UI.
   /// @return Final rendered posiiton.
-  MDY_NODISCARD const DDyVector2& GetRenderPosition() const noexcept;
+  MDY_NODISCARD const DVector2& GetRenderPosition() const noexcept;
 
   /// @brief  Check if this text component is using edge rendering feature.
   /// @return If used, return true or false.
@@ -129,7 +129,7 @@ public:
   /// @brief Set string color, single color with composited of {r, g, b}.
   /// @param[in] color New color value with consists of {r, g, b} glm::vec3 vector.
   /// each value must be in range of [0, 1], otherwise clamped to 0 or 1.
-  void SetColor(_MIN_ const DDyColorRGBA& color);
+  void SetColor(_MIN_ const DColorRGBA& color);
 
   /// @brief Render font (old-way)
   void Render() override final;
@@ -139,15 +139,15 @@ private:
   void TryDeactivateInstance() override final;
 
   /// Text to display on screen. String must be following UTF-8 encoding.
-  DDyString         mTextString       = {""};
+  DString         mTextString       = {""};
   /// Text container instance to display font.
   IDyFontContainer* mPtrFontContainer = nullptr;
   /// Font color
-	DDyColorRGBA      mForegroundColor  = DDyColorRGBA::White;
+	DColorRGBA      mForegroundColor  = DColorRGBA::White;
   /// Font background color
-  DDyColorRGBA      mBackgroundColor  = DDyColorRGBA{0, 0, 0, 0};
+  DColorRGBA      mBackgroundColor  = DColorRGBA{0, 0, 0, 0};
   /// Font Edge color
-  DDyColorRGBA      mEdgeColor        = DDyColorRGBA::Black;
+  DColorRGBA      mEdgeColor        = DColorRGBA::Black;
   /// Font size
   TU32              mFontSize         = 16;
   /// Text alignment value.

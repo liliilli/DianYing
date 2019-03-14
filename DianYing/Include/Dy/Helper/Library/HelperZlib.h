@@ -18,19 +18,15 @@
 namespace dy::zlib
 {
 
-///
 /// @brief  Compress uncompressed plain string to compressed string.
 /// @param  uncompressedString
 /// @return compressed string.
-///
-MDY_NODISCARD std::string DyCompressString(const std::string& uncompressedString);
+MDY_NODISCARD std::string yCompressString(const std::string& uncompressedString);
 
-///
 /// @brief  Decompress compressed string to plain string.
 /// @param  compressedString
 /// @return plain string which have been decompressed.
-///
-MDY_NODISCARD std::string DyDecompressString(const std::string& compressedString);
+MDY_NODISCARD std::string DecompressString(const std::string& compressedString);
 
 } /// ::dy::zlib namespace
 

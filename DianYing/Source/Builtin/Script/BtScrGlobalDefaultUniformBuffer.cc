@@ -13,13 +13,13 @@
 ///
 
 #include <Dy/Builtin/Script/BtScrGlobalDefaultUniformBuffer.h>
-#include <Dy/Management/LoggingManager.h>
+#include <Dy/Management/MLog.h>
 #include <Dy/Management/SettingManager.h>
 #include <Dy/Core/Reflection/RDyGlobalInstanceManager.h>
 #include <Dy/Component/Internal/Lights/DUboDirLight.h>
 #include <Dy/Component/Internal/Lights/DUboPointLight.h>
 #include <Dy/Builtin/GlobalInstance/FDyBtGiDebugStatus.h>
-#include <Dy/Management/FontManager.h>
+#include <Dy/Management/MFont.h>
 #include <Dy/Management/Rendering/UniformBufferObjectManager.h>
 #include <Dy/Component/CDyCamera.h>
 
@@ -67,7 +67,7 @@ void BtScrGlobalDefaultUniformBuffer::OnStart()
     MDY_CALL_ASSERT_SUCCESS(uboManager.CreateUboContainer(desc))
   }
 
-  MDyFont::GetInstance().CreateFontResourceContainer("Arial");
+  MFont::GetInstance().CreateFontResourceContainer("Arial");
 }
 
 void BtScrGlobalDefaultUniformBuffer::OnEnd()

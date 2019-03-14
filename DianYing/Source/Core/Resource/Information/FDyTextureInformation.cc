@@ -57,7 +57,7 @@ EDyTextureStyleType FDyTextureInformation::GetType() const noexcept
   return this->mTextureType;
 }
 
-const DDyColorRGBA& FDyTextureInformation::GetBorderColor() const noexcept
+const DColorRGBA& FDyTextureInformation::GetBorderColor() const noexcept
 {
   return this->mBorderColor;
 }

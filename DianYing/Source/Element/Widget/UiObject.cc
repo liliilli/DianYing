@@ -36,19 +36,19 @@ const FDyUiObjectChildrenable* FDyUiObject::GetPtrParentUiObject() const noexcep
   return this->mPtrParentUiObject;  
 }
 
-void FDyUiObject::SetRelativePosition(_MIN_ const DDyVector2& position) noexcept
+void FDyUiObject::SetRelativePosition(_MIN_ const DVector2& position) noexcept
 {
   this->mCentralRelativePosition = position;
   this->UpdateFinalPosition();
 }
 
-void FDyUiObject::SetFrameSize(_MIN_ const DDyVectorInt2& size) noexcept
+void FDyUiObject::SetFrameSize(_MIN_ const DVectorInt2& size) noexcept
 {
   if (size.X > 0 && size.Y > 0) { this->mFrameSize = size; }
   this->UpdateFinalPosition();
 }
 
-const DDyVectorInt2& FDyUiObject::GetFrameSize() const noexcept
+const DVectorInt2& FDyUiObject::GetFrameSize() const noexcept
 {
   return this->mFrameSize;
 }
@@ -77,7 +77,7 @@ EDyOrigin FDyUiObject::GetFibot() const noexcept
 
 void FDyUiObject::UpdateFinalPosition()
 {
-  DDyVector2 mParentFinalPosition = {};
+  DVector2 mParentFinalPosition = {};
   if (this->CheckIsParentExist() == true)
   { // If parent is exist, retrieve values.
     const auto* ptrParent = this->GetPtrParentUiObject();
@@ -94,12 +94,12 @@ const std::string& FDyUiObject::GetUiObjectName() const noexcept
   return this->pGetObjectName();
 }
 
-DDyVector2 FDyUiObject::GetRelativePosition(const EDyOrigin& origin) const noexcept
+DVector2 FDyUiObject::GetRelativePosition(const EDyOrigin& origin) const noexcept
 {
   return DyGetPositionWithOrigin(this->mCentralRelativePosition, this->mFrameSize, origin);
 }
 
-DDyVector2 FDyUiObject::GetFinalPosition(const EDyOrigin& origin) const noexcept
+DVector2 FDyUiObject::GetFinalPosition(const EDyOrigin& origin) const noexcept
 {
   return DyGetPositionWithOrigin(this->mCentralFinalPosition, this->mFrameSize, origin);
 }

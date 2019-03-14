@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Wrapper/DDyMutexUniqueHashMap.h>
+#include <Dy/Helper/Wrapper/DMutexUniqueHashMap.h>
 #include <Dy/Core/Resource/Information/FDyShaderInformation.h>
 #include <Dy/Core/Resource/Information/FDyTextureInformation.h>
 #include <Dy/Core/Resource/Information/FDyModelInformation.h>
@@ -93,7 +93,7 @@ private:
   MDY_NODISCARD EDySuccess MDY_PRIVATE(TryRemove)(_MIN_ const std::string& iSpcifier, _MIN_ EDyResourceType iType);
 
   template <typename TType>
-  using __THashMap = DDyMutexUniqueHashMap<std::string, TType>;
+  using __THashMap = DMutexUniqueHashMap<std::string, TType>;
 
   __THashMap<FDyShaderInformation>  __mShaderContainer    = {};
   __THashMap<FDyTextureInformation> __mTextureContainer   = {};

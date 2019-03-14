@@ -44,7 +44,7 @@ FDyFrameBufferGeneralResource::FDyFrameBufferGeneralResource(const FDyFrameBuffe
         "colorAttachment pointer must not be null. (TEMPORAL)");
 
       const auto& [specifier, attachmentType] = binderInfo;
-      DySafeUniquePtrEmplaceBack(this->mBinderAttachmentList, specifier);
+      SafeUniquePtrEmplaceBack(this->mBinderAttachmentList, specifier);
 
       MDY_ASSERT_MSG(
         this->mBinderAttachmentList.back()->IsResourceExist() == true, 

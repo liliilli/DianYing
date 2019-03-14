@@ -16,8 +16,8 @@
 #include <Dy/Core/Thread/IO/DDyIOReferenceContainer.h>
 #include <Dy/Core/Resource/Type/FDyBinderBase.h>
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
-#include <Dy/Helper/ContainerHelper.h>
-#include <Dy/Management/LoggingManager.h>
+#include <Dy/Helper/Library/HelperContainer.h>
+#include <Dy/Management/MLog.h>
 
 namespace dy
 {
@@ -26,16 +26,16 @@ bool DDyIOReferenceContainer::IsReferenceInstanceExist(_MIN_ const std::string& 
 {
   switch (type)
   {
-  case EDyResourceType::GLShader: return DyIsMapContains(this->mMapGLShaderReference, specifier);
-  case EDyResourceType::Texture:  return DyIsMapContains(this->mMapTextureReference, specifier);
-  case EDyResourceType::Mesh:     return DyIsMapContains(this->mMapMeshReference, specifier);
-  case EDyResourceType::Model:    return DyIsMapContains(this->mMapModelReference, specifier);
-  case EDyResourceType::Skeleton:       return DyIsMapContains(this->mMapModelSkeletonReference, specifier);
-  case EDyResourceType::AnimationScrap: return DyIsMapContains(this->mMapModelAnimScrapReference, specifier);
-  case EDyResourceType::Material:       return DyIsMapContains(this->mMapMaterialReference, specifier);
-  case EDyResourceType::GLAttachment:   return DyIsMapContains(this->mMapAttachmentReference, specifier);
-  case EDyResourceType::GLFrameBuffer:  return DyIsMapContains(this->mMapFrameBufferReference, specifier);
-  case EDyResourceType::Sound:          return DyIsMapContains(this->mMapSoundReference, specifier);
+  case EDyResourceType::GLShader: return Contains(this->mMapGLShaderReference, specifier);
+  case EDyResourceType::Texture:  return Contains(this->mMapTextureReference, specifier);
+  case EDyResourceType::Mesh:     return Contains(this->mMapMeshReference, specifier);
+  case EDyResourceType::Model:    return Contains(this->mMapModelReference, specifier);
+  case EDyResourceType::Skeleton:       return Contains(this->mMapModelSkeletonReference, specifier);
+  case EDyResourceType::AnimationScrap: return Contains(this->mMapModelAnimScrapReference, specifier);
+  case EDyResourceType::Material:       return Contains(this->mMapMaterialReference, specifier);
+  case EDyResourceType::GLAttachment:   return Contains(this->mMapAttachmentReference, specifier);
+  case EDyResourceType::GLFrameBuffer:  return Contains(this->mMapFrameBufferReference, specifier);
+  case EDyResourceType::Sound:          return Contains(this->mMapSoundReference, specifier);
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
   }
 }

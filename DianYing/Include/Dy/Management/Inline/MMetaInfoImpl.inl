@@ -142,7 +142,7 @@ inline void MDyMetaInfo::Impl::MDY_PRIVATE(PopulateGlobalResourceSpecifierList)(
     [] 
     { 
       // Create global scripts.
-      auto& scriptManager = MDyScript::GetInstance();
+      auto& scriptManager = MScript::GetInstance();
       scriptManager.CreateGlobalScriptInstances();
       scriptManager.CallonStartGlobalScriptList();
       DyEngine::GetInstance().SetNextGameStatus(EDyGlobalGameStatus::Loading); 
@@ -196,7 +196,7 @@ inline void MDyMetaInfo::Impl::MDY_PRIVATE(InitiateMetaInformationComp)(const nl
 inline EDySuccess MDyMetaInfo::Impl::pReadScriptResourceMetaInformation(const std::string& metaFilePath)
 {
   // Validity Test
-  const std::optional<nlohmann::json> opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  const std::optional<nlohmann::json> opJsonAtlas = json::GetAtlasFromFile(metaFilePath);
   MDY_ASSERT_MSG(opJsonAtlas.has_value() == true, "Failed to read script resource meta information. File path is not exist.");
 
   // Check "List" Category is exist.
@@ -209,8 +209,9 @@ inline EDySuccess MDyMetaInfo::Impl::pReadPrefabResourceMetaInformation(const st
   /// @brief Check prefab meta information list.
   static auto CheckPrefabMetaCategory = []( const nlohmann::json& atlas) -> EDySuccess
   {
-    if (DyCheckHeaderIsExist(atlas, sCategoryMeta) == DY_FAILURE)       { return DY_FAILURE; }
-    if (DyCheckHeaderIsExist(atlas, sCategoryObjectList) == DY_FAILURE) { return DY_FAILURE; }
+    using namespace json;
+    if (json::HasJsonKey(atlas, sCategoryMeta) == false)       { return DY_FAILURE; }
+    if (json::HasJsonKey(atlas, sCategoryObjectList) == false) { return DY_FAILURE; }
     return DY_SUCCESS;
   };
 
@@ -219,7 +220,7 @@ inline EDySuccess MDyMetaInfo::Impl::pReadPrefabResourceMetaInformation(const st
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   // Validity Test
-  const std::optional<nlohmann::json> opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  const std::optional<nlohmann::json> opJsonAtlas = json::GetAtlasFromFile(metaFilePath);
   MDY_ASSERT_MSG_FORCE(
     opJsonAtlas.has_value() == true, 
     "Failed to read prefab resource meta information.");
@@ -232,7 +233,7 @@ inline EDySuccess MDyMetaInfo::Impl::pReadPrefabResourceMetaInformation(const st
 inline EDySuccess MDyMetaInfo::Impl::pReadFontResourceMetaInformation(const std::string& metaFilePath)
 { 
   // (1) Validity Test
-  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  const auto opJsonAtlas = json::GetAtlasFromFile(metaFilePath);
   MDY_ASSERT_MSG_FORCE(
     opJsonAtlas.has_value() == true, 
     "Failed to read font meta information. File is not exist.");
@@ -243,7 +244,7 @@ inline EDySuccess MDyMetaInfo::Impl::pReadFontResourceMetaInformation(const std:
 inline EDySuccess MDyMetaInfo::Impl::pReadModelResourceMetaInformation(const std::string& metaFilePath)
 {
   // (1) Validity Test
-  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  const auto opJsonAtlas = json::GetAtlasFromFile(metaFilePath);
   MDY_ASSERT_MSG_FORCE(
     opJsonAtlas.has_value() == true, 
     "Failed to read Model meta information. File is not exist.");
@@ -255,7 +256,7 @@ inline EDySuccess MDyMetaInfo::Impl::pReadModelResourceMetaInformation(const std
 inline EDySuccess MDyMetaInfo::Impl::pReadModelMeshResourceMetaInformation(const std::string& metaFilePath)
 {
   // (1) Validity Test
-  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  const auto opJsonAtlas = json::GetAtlasFromFile(metaFilePath);
   MDY_ASSERT_MSG_FORCE(
     opJsonAtlas.has_value() == true, 
     "Failed to read model meta information. File is not exist.");
@@ -267,7 +268,7 @@ inline EDySuccess MDyMetaInfo::Impl::pReadModelMeshResourceMetaInformation(const
 inline EDySuccess MDyMetaInfo::Impl::pReadModelSkeletonMetaInformation(const std::string& metaFilePath)
 {
   // (1) Validity Test
-  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  const auto opJsonAtlas = json::GetAtlasFromFile(metaFilePath);
   MDY_ASSERT_MSG_FORCE(
     opJsonAtlas.has_value() == true, 
     "Failed to read model skeleton information. File is not exist.");
@@ -279,7 +280,7 @@ inline EDySuccess MDyMetaInfo::Impl::pReadModelSkeletonMetaInformation(const std
 inline EDySuccess MDyMetaInfo::Impl::pReadModelAnimationMetaInformation(const std::string& metaFilePath)
 {
   // (1) Validity Test
-  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  const auto opJsonAtlas = json::GetAtlasFromFile(metaFilePath);
   MDY_ASSERT_MSG_FORCE(
     opJsonAtlas.has_value() == true, 
     "Failed to read model animation sequence information. File is not exist.");
@@ -291,7 +292,7 @@ inline EDySuccess MDyMetaInfo::Impl::pReadModelAnimationMetaInformation(const st
 inline EDySuccess MDyMetaInfo::Impl::pReadTextureResourceMetaInformation(const std::string& metaFilePath)
 {
   // (1) Validity Test
-  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  const auto opJsonAtlas = json::GetAtlasFromFile(metaFilePath);
   MDY_ASSERT_MSG_FORCE(
     opJsonAtlas.has_value() == true, 
     "Failed to read texture meta information. File is not exist.");
@@ -303,7 +304,7 @@ inline EDySuccess MDyMetaInfo::Impl::pReadTextureResourceMetaInformation(const s
 inline EDySuccess MDyMetaInfo::Impl::pReadShaderResourceMetaInformation(const std::string& metaFilePath)
 {
   // (1) Validity Test
-  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  const auto opJsonAtlas = json::GetAtlasFromFile(metaFilePath);
   MDY_ASSERT_MSG_FORCE(
     opJsonAtlas.has_value() == true, 
     "Failed to read shader meta information. File is not exist.");
@@ -314,7 +315,7 @@ inline EDySuccess MDyMetaInfo::Impl::pReadShaderResourceMetaInformation(const st
 inline EDySuccess MDyMetaInfo::Impl::pReadMaterialResourceMetaInformation(const std::string& metaFilePath)
 {
   // (1) Validity Test
-  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  const auto opJsonAtlas = json::GetAtlasFromFile(metaFilePath);
   MDY_ASSERT_MSG_FORCE(
     opJsonAtlas.has_value() == true, 
     "Failed to read material meta information. File is not exist.");
@@ -324,7 +325,7 @@ inline EDySuccess MDyMetaInfo::Impl::pReadMaterialResourceMetaInformation(const 
 
 inline EDySuccess MDyMetaInfo::Impl::pReadLevelResourceMetaInformation(const std::string& metaFilepath)
 {
-  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilepath);
+  const auto opJsonAtlas = json::GetAtlasFromFile(metaFilepath);
   MDY_ASSERT_MSG_FORCE(
     opJsonAtlas.has_value() == true, 
     "Failed to read scene meta information. File is not exist.");
@@ -334,7 +335,7 @@ inline EDySuccess MDyMetaInfo::Impl::pReadLevelResourceMetaInformation(const std
 
 inline EDySuccess MDyMetaInfo::Impl::pReadWidgetResourceMetaInformation(const std::string& metaFilePath)
 { 
-  const std::optional<nlohmann::json> opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  const std::optional<nlohmann::json> opJsonAtlas = json::GetAtlasFromFile(metaFilePath);
   MDY_ASSERT_MSG(
     opJsonAtlas.has_value() == true, 
     "Must be valid json atlas from file path.");
@@ -344,7 +345,7 @@ inline EDySuccess MDyMetaInfo::Impl::pReadWidgetResourceMetaInformation(const st
 
 inline EDySuccess MDyMetaInfo::Impl::pReadSoundResourceMetaInformation(const std::string& metaFilePath)
 {
-  const auto optJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  const auto optJsonAtlas = json::GetAtlasFromFile(metaFilePath);
   MDY_ASSERT_MSG(
     optJsonAtlas.has_value() == true, 
     "Must be valid json atlas from file path.");
@@ -355,9 +356,7 @@ inline EDySuccess MDyMetaInfo::Impl::pReadSoundResourceMetaInformation(const std
 inline EDySuccess MDyMetaInfo::Impl::pReadScriptMetaAtlas(const nlohmann::json& iJson)
 {
   // Check "List" Category is exist.
-  MDY_ASSERT_MSG(
-    DyCheckHeaderIsExist(iJson, sCategoryList) == DY_SUCCESS, 
-    "Unexpecte error occurred.");
+  MDY_ASSERT(json::HasJsonKey(iJson, sCategoryList) == true);
 
   const auto& scriptResourceListAtlas = iJson[(sCategoryList)];
   for (const auto& scriptResource : scriptResourceListAtlas)
@@ -366,7 +365,7 @@ inline EDySuccess MDyMetaInfo::Impl::pReadScriptMetaAtlas(const nlohmann::json& 
 
     // Check Duplicated script specfier integrity
     MDY_ASSERT_MSG(
-      DyIsMapContains(this->mScriptMetaInfo, metaInfo.mSpecifierName) == false, 
+      Contains(this->mScriptMetaInfo, metaInfo.mSpecifierName) == false, 
       "Duplicated script specifier not permitted.");
     MDY_ASSERT_MSG(
       std::filesystem::exists(metaInfo.mFilePath) == true, 
@@ -398,7 +397,7 @@ inline EDySuccess MDyMetaInfo::Impl::pReadPrefabMetaAtlas(const nlohmann::json& 
     &&  object->mCommonProperties.mParentSpecifierName.empty() == false)
     { // If object type is Actor, and have parents specifier name as dec
       // Try move object into any parent's children list.
-      const auto list = DyRegexCreateObjectParentSpecifierList(object->mCommonProperties.mParentSpecifierName);
+      const auto list = regex::CreateObjectParentSpecifierList(object->mCommonProperties.mParentSpecifierName);
       MoveMetaPrefabIntoParentRecursively(prefabObjectList, list, 0, object);
     }
   }
@@ -580,7 +579,7 @@ inline EDySuccess MDyMetaInfo::Impl::pfAddScriptMetaInformation(const PDyScriptI
   if (metaInfo.mScriptMode == decltype(metaInfo.mScriptMode)::Global)
   { // If script mode is `Global`, insert it to separated container.
     MDY_ASSERT_MSG_FORCE(
-      DyIsMapContains(this->mGlobalScriptMetaInfo, metaInfo.mSpecifierName) == false, 
+      Contains(this->mGlobalScriptMetaInfo, metaInfo.mSpecifierName) == false, 
       "Duplicated global script name is exist.");
 
     this->mGlobalScriptMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
@@ -588,7 +587,7 @@ inline EDySuccess MDyMetaInfo::Impl::pfAddScriptMetaInformation(const PDyScriptI
   else
   {
     MDY_ASSERT_MSG_FORCE(
-      DyIsMapContains(this->mScriptMetaInfo, metaInfo.mSpecifierName) == false, 
+      Contains(this->mScriptMetaInfo, metaInfo.mSpecifierName) == false, 
       "Duplicated general script name is exist.");
 
     this->mScriptMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
@@ -600,7 +599,7 @@ inline EDySuccess MDyMetaInfo::Impl::pfAddScriptMetaInformation(const PDyScriptI
 inline EDySuccess MDyMetaInfo::Impl::pfAddGLShaderMetaInfo(const PDyGLShaderInstanceMetaInfo& metaInfo)
 {
   MDY_ASSERT_MSG(
-    DyIsMapContains(this->mShaderMetaInfo, metaInfo.mSpecifierName) == false, 
+    Contains(this->mShaderMetaInfo, metaInfo.mSpecifierName) == false, 
     "Duplicated gl shader name is exist.");
 
   this->mShaderMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
@@ -618,7 +617,7 @@ inline EDySuccess MDyMetaInfo::Impl::pfAddBuiltinMeshMetaInfo(const PDyMeshInsta
   }
 #endif
   MDY_ASSERT_MSG(
-    DyIsMapContains(this->mModelMeshMetaInfo, metaInfo.mSpecifierName) == false, 
+    Contains(this->mModelMeshMetaInfo, metaInfo.mSpecifierName) == false, 
     "Duplicated Mesh name is exist.");
 
   this->mModelMeshMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
@@ -628,7 +627,7 @@ inline EDySuccess MDyMetaInfo::Impl::pfAddBuiltinMeshMetaInfo(const PDyMeshInsta
 inline EDySuccess MDyMetaInfo::Impl::pfAddModelMetaInfo(const PDyModelInstanceMetaInfo& metaInfo)
 {
   MDY_ASSERT_MSG(
-    DyIsMapContains(this->mModelMetaInfo, metaInfo.mSpecifierName) == false, 
+    Contains(this->mModelMetaInfo, metaInfo.mSpecifierName) == false, 
     "Duplicated model name is exist.");
 
   this->mModelMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
@@ -638,7 +637,7 @@ inline EDySuccess MDyMetaInfo::Impl::pfAddModelMetaInfo(const PDyModelInstanceMe
 inline EDySuccess MDyMetaInfo::Impl::pfAddTextureMetaInfo(const PDyTextureInstanceMetaInfo& metaInfo)
 {
   MDY_ASSERT_MSG(
-    DyIsMapContains(this->mTextureMetaInfo, metaInfo.mSpecifierName) == false, 
+    Contains(this->mTextureMetaInfo, metaInfo.mSpecifierName) == false, 
     "Duplicated texture name is exist.");
 
   this->mTextureMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
@@ -648,7 +647,7 @@ inline EDySuccess MDyMetaInfo::Impl::pfAddTextureMetaInfo(const PDyTextureInstan
 inline EDySuccess MDyMetaInfo::Impl::pfAddMaterialMetaInfo(const PDyMaterialInstanceMetaInfo& metaInfo)
 {
   MDY_ASSERT_MSG(
-    DyIsMapContains(this->mMaterialMetaInfo, metaInfo.mSpecifierName) == false, 
+    Contains(this->mMaterialMetaInfo, metaInfo.mSpecifierName) == false, 
     "Duplicated material name is exist.");
 
   this->mMaterialMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
@@ -670,7 +669,7 @@ inline EDySuccess MDyMetaInfo::Impl::pfAddGLAttachmentMetaInfo(const PDyGlAttach
 #endif
 
   MDY_ASSERT_MSG(
-    DyIsMapContains(this->mAttachmentMetaInfo, metaInfo.mSpecifierName) == false, 
+    Contains(this->mAttachmentMetaInfo, metaInfo.mSpecifierName) == false, 
     "Duplicated attachment name is exist.");
 
   this->mAttachmentMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
@@ -700,7 +699,7 @@ inline EDySuccess MDyMetaInfo::Impl::pfAddGLFrameBufferMetaInfo(const PDyGlFrame
 #endif
 
   MDY_ASSERT_MSG(
-    DyIsMapContains(this->mFrameBufferMetaInfo, metaInfo.mSpecifierName) == false, 
+    Contains(this->mFrameBufferMetaInfo, metaInfo.mSpecifierName) == false, 
     "Duplicated framebuffer name is exist.");
 
   auto [it, isSuccessful] = this->mFrameBufferMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);

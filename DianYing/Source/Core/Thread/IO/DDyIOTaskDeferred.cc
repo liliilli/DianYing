@@ -29,7 +29,7 @@ MDY_NODISCARD EDySuccess DDyIOTaskDeferred::TryRemoveDependenciesItem(
   {
     if (*it == item) {
       const auto index = std::distance(this->mCondition.begin(), it);
-      DyFastErase(this->mCondition, static_cast<TU32>(index));
+      FaseErase(this->mCondition, static_cast<TU32>(index));
       return DY_SUCCESS;
     }
   }

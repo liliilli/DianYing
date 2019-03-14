@@ -47,10 +47,10 @@ public:
   void UpdateColliderMesh() override;
 
   /// @brief Get half extent.
-  MDY_NODISCARD const DDyVector3& GetHalfExtent() const noexcept;
+  MDY_NODISCARD const DVector3& GetHalfExtent() const noexcept;
 
 private:
-  DDyVector3 mHalfExtent;
+  DVector3 mHalfExtent;
 };
 
 } /// ::dy namespace

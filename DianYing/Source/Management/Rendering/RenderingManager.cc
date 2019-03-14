@@ -19,7 +19,7 @@
 #include <imgui/imgui_impl_glfw.h>
 #include <imgui/imgui_impl_opengl3.h>
 
-#include <Dy/Management/LoggingManager.h>
+#include <Dy/Management/MLog.h>
 #include <Dy/Management/WorldManager.h>
 #include <Dy/Management/SettingManager.h>
 
@@ -34,13 +34,13 @@
 #include <Dy/Management/Internal/Render/FDyModelHandlerManager.h>
 #include "Dy/Core/Resource/Resource/FDyModelResource.h"
 #include "Dy/Management/WindowManager.h"
-#include "Dy/Management/PhysicsManager.h"
+#include "Dy/Management/MPhysics.h"
 #include "Dy/Component/CDyModelFilter.h"
 #include <Dy/Builtin/Constant/GeneralValue.h>
-#include <Dy/Management/InputManager.h>
+#include <Dy/Management/MInput.h>
 
-#include <Dy/Helper/Pointer.h>
-#include <Dy/Helper/Internal/FDyCallStack.h>
+#include <Dy/Helper/System/Pointer.h>
+#include <Dy/Helper/Internal/FCallStack.h>
 #include <Dy/Element/Actor.h>
 #include "Dy/Management/Internal/World/FDyWorldUIContainer.h"
 
@@ -48,6 +48,7 @@
 #include <Dy/Core/Rendering/Wrapper/FWrapperRenderPipeline.h>
 #include <Dy/Core/Rendering/Wrapper/FWrapperRenderItem.h>
 #include <Dy/Core/Rendering/Wrapper/FWrapperHandleRenderPipeline.h>
+#include <Dy/Helper/Library/HelperContainer.h>
 
 //!
 //! Forward declaration & Local translation unit function and data.
@@ -109,7 +110,7 @@ public:
   EDySuccess MDY_PRIVATE(UnbindMainDirectionalShadow)(_MIN_ CDyLightDirectional& iRefLight);
 
   /// @brief Get General (Default) ui projection matrix.
-  const DDyMatrix4x4& GetGeneralUiProjectionMatrix() const noexcept;
+  const DMatrix4x4& GetGeneralUiProjectionMatrix() const noexcept;
 
   /// @brief Swap buffer.
   void SwapBuffers();
@@ -123,7 +124,7 @@ public:
   /// @brief Enqueue debug collider draw call.
   void EnqueueDebugDrawCollider(
       _MIN_ CDyPhysicsCollider& iRefCollider, 
-      _MIN_ const DDyMatrix4x4& iTransformMatrix);
+      _MIN_ const DMatrix4x4& iTransformMatrix);
   
   /// @brief Check Entry RenderPipeline is exist on rendering system.
   MDY_NODISCARD bool HasEntryRenderPipeline(const std::string& iEntryPipelineName);
@@ -162,7 +163,7 @@ public:
   /// @brief Activated directional light list.
   std::queue<TI32>  mDirLightAvailableList     = {};
   /// @brief Default UI projection matrix. (Orthogonal)
-  DDyMatrix4x4      mUiGeneralProjectionMatrix = {};
+  DMatrix4x4      mUiGeneralProjectionMatrix = {};
 
 #if defined(MDY_FLAG_IN_EDITOR)
   std::unique_ptr<FDyGrid>                    mGridEffect           = nullptr;
@@ -240,7 +241,7 @@ void MDyRendering::EnqueueDrawMesh(
 
 void MDyRendering::EnqueueDebugDrawCollider(
   CDyPhysicsCollider& iRefCollider, 
-  const DDyMatrix4x4& iTransformMatrix)
+  const DMatrix4x4& iTransformMatrix)
 {
   this->mInternal->EnqueueDebugDrawCollider(iRefCollider, iTransformMatrix);
 }
@@ -340,7 +341,7 @@ MDyRendering::MDY_PRIVATE(GetActivatedSpotLights)() noexcept
   return this->mInternal->mActivatedSpotLights;
 }
 
-const DDyMatrix4x4& MDyRendering::GetGeneralUiProjectionMatrix() const noexcept
+const DMatrix4x4& MDyRendering::GetGeneralUiProjectionMatrix() const noexcept
 {
   return this->mInternal->GetGeneralUiProjectionMatrix();
 }
@@ -369,7 +370,7 @@ std::vector<MDyRendering::TUiDrawCallItem>& MDyRendering::GetUiObjectQueuelist()
 
 bool MDyRendering::HasRenderItem(const std::string& iRenderItemName)
 {
-  return DyIsMapContains(this->mInternal->mRenderItems, iRenderItemName);
+  return Contains(this->mInternal->mRenderItems, iRenderItemName);
 }
 
 FWrapperRenderItem* MDyRendering::GetRenderItem(const std::string& iRenderItemName)
@@ -384,7 +385,7 @@ FWrapperRenderItem* MDyRendering::GetRenderItem(const std::string& iRenderItemNa
 
 bool MDyRendering::HasRenderPipeline(const std::string& iRenderPipelineName)
 {
-  return DyIsMapContains(this->mInternal->mRenderPipelines, iRenderPipelineName);
+  return Contains(this->mInternal->mRenderPipelines, iRenderPipelineName);
 }
 
 FWrapperRenderPipeline* MDyRendering::GetRenderPipeline(const std::string& iRenderPipelineName)

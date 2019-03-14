@@ -15,9 +15,9 @@
 /// Header file
 #include <Dy/Meta/Information/MetaInfoMaterial.h>
 #include <Dy/Helper/Library/HelperJson.h>
-#include <Dy/Helper/StringSwitch.h>
+#include <Dy/Helper/Internal/XStringSwitch.h>
 #include <Dy/Helper/Library/HelperFilesystem.h>
-#include <Dy/Helper/Type/Matrix4.h>
+#include <Dy/Helper/Type/DMatrix4x4.h>
 #include <Dy/Core/Resource/Type/Uniform/UniformValueTypes.h>
 
 namespace dy
@@ -34,8 +34,8 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ DDyMaterialTextureItem& p
    * {"Specifier": "T_BrickWall1_Diffuse", "DefaultType": "Unknown"},
    */
 
-  DyJsonGetValueFromTo(j, "Specifier", p.mTextureSpecifier);
-  p.mTextureMapType = DyJsonGetValueFrom<EDyTextureMapType>(j, "DefaultType");
+  json::GetValueFromTo(j, "Specifier", p.mTextureSpecifier);
+  p.mTextureMapType = json::GetValueFrom<EDyTextureMapType>(j, "DefaultType");
 }
 
 std::string PDyMaterialInstanceMetaInfo::ToString()
@@ -87,21 +87,21 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
     }
    */
 
-  const auto loadingTypeString = DyJsonGetValueFrom<std::string>(j, "LoadingType");
-  switch(DyStrSwitchInput(loadingTypeString))
+  const auto loadingTypeString = json::GetValueFrom<std::string>(j, "LoadingType");
+  switch(SwitchStrInput(loadingTypeString))
   {
-  case DyStrCase("Internal"):
+  case CaseStr("Internal"):
   {
-    DyJsonGetValueFromTo(j, "ShaderSpecifier", p.mShaderSpecifier);
-    DyJsonGetValueFromTo(j, "BlendMode",       p.mBlendMode);
+    json::GetValueFromTo(j, "ShaderSpecifier", p.mShaderSpecifier);
+    json::GetValueFromTo(j, "BlendMode",       p.mBlendMode);
 
     // nlohmann::json does not support serialization between std::array, 
     // so we need to convert list to vector, and convert vector to array again.
     std::vector<DDyMaterialTextureItem> texList;
-    DyJsonGetValueFromTo(j, "TextureSpecifierList", texList);
+    json::GetValueFromTo(j, "TextureSpecifierList", texList);
     for (TU32 i = 0, size = static_cast<TU32>(texList.size()); i < size; ++i) { p.mTextureNames[i] = texList[i]; }
   } break;
-  case DyStrCase("External"):
+  case CaseStr("External"):
   {
     // If `IsCompressed` is true, load file from `ExternalPath` and decompress.
     if (j["IsCompressed"].get<bool>() == true)
@@ -113,24 +113,24 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
       //
       const auto matPath = j["ExternalPath"].get<std::string>();
       MDY_ASSERT_MSG_FORCE(
-        DyFsIsFileExist(matPath) == true, 
+        IsFileExist(matPath) == true, 
         "Material file must be exist on specified path.");
 
       //
-      const auto optJson = DyGetJsonAtlasFromFile(matPath);
+      const auto optJson = json::GetAtlasFromFile(matPath);
       MDY_ASSERT_MSG_FORCE(
         optJson.has_value() == true, 
         "Failed to load extenral material meta information file.");
 
       //
       const auto& jsonAtlas = optJson.value();
-      DyJsonGetValueFromTo(jsonAtlas, "BlendMode", p.mBlendMode);
-      DyJsonGetValueFromTo(jsonAtlas, "ShaderSpecifier", p.mShaderSpecifier);
+      json::GetValueFromTo(jsonAtlas, "BlendMode", p.mBlendMode);
+      json::GetValueFromTo(jsonAtlas, "ShaderSpecifier", p.mShaderSpecifier);
 
       // nlohmann::json does not support serialization between std::array, 
       // so we need to convert list to vector, and convert vector to array again.
       std::vector<DDyMaterialTextureItem> textureSpecifierList;
-      DyJsonGetValueFromTo(jsonAtlas, "TextureSpecifierList", textureSpecifierList);
+      json::GetValueFromTo(jsonAtlas, "TextureSpecifierList", textureSpecifierList);
       for (size_t i = 0, size = textureSpecifierList.size(); i < size; ++i) 
       { 
         p.mTextureNames[i] = textureSpecifierList[i]; 
@@ -142,13 +142,13 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
       {
         const auto& uniformName = uniformItem.key();
         const auto& itemValue   = uniformItem.value();
-        const auto type = DyJsonGetValueFrom<EDyUniformVariableType>(itemValue, "Type");
+        const auto type = json::GetValueFrom<EDyUniformVariableType>(itemValue, "Type");
 
         switch (type)
         {
         case EDyUniformVariableType::Matrix4: 
         { 
-          const auto value = DyJsonGetValueFrom<DDyMatrix4x4>(itemValue, "Value");
+          const auto value = json::GetValueFrom<DMatrix4x4>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
             std::make_unique<FDyUniformValue<EDyUniformVariableType::Matrix4>>(-1, value)
@@ -164,7 +164,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
         } break;
         case EDyUniformVariableType::Vector4:
         {
-          const auto value = DyJsonGetValueFrom<DDyVector4>(itemValue, "Value");
+          const auto value = json::GetValueFrom<DVector4>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
             std::make_unique<FDyUniformValue<EDyUniformVariableType::Vector4>>(-1, value)
@@ -172,7 +172,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
         } break;
         case EDyUniformVariableType::Vector3:
         {
-          const auto value = DyJsonGetValueFrom<DDyVector3>(itemValue, "Value");
+          const auto value = json::GetValueFrom<DVector3>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
             std::make_unique<FDyUniformValue<EDyUniformVariableType::Vector3>>(-1, value)
@@ -180,7 +180,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
         } break;
         case EDyUniformVariableType::Vector2:
         {
-          const auto value = DyJsonGetValueFrom<DDyVector2>(itemValue, "Value");
+          const auto value = json::GetValueFrom<DVector2>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
             std::make_unique<FDyUniformValue<EDyUniformVariableType::Vector2>>(-1, value)
@@ -194,7 +194,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
         } break;
         case EDyUniformVariableType::Integer:
         {
-          const auto value = DyJsonGetValueFrom<TI32>(itemValue, "Value");
+          const auto value = json::GetValueFrom<TI32>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
             std::make_unique<FDyUniformValue<EDyUniformVariableType::Integer>>(-1, value)
@@ -202,7 +202,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
         } break;
         case EDyUniformVariableType::Unsigned:
         {
-          const auto value = DyJsonGetValueFrom<TU32>(itemValue, "Value");
+          const auto value = json::GetValueFrom<TU32>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
             std::make_unique<FDyUniformValue<EDyUniformVariableType::Unsigned>>(-1, value)
@@ -210,7 +210,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
         } break;
         case EDyUniformVariableType::Float: 
         {
-          const auto value = DyJsonGetValueFrom<TF32>(itemValue, "Value");
+          const auto value = json::GetValueFrom<TF32>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
             std::make_unique<FDyUniformValue<EDyUniformVariableType::Float>>(-1, value)
@@ -218,7 +218,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
         } break;
         case EDyUniformVariableType::Bool:
         {
-          const auto value = DyJsonGetValueFrom<bool>(itemValue, "Value");
+          const auto value = json::GetValueFrom<bool>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
             std::make_unique<FDyUniformValue<EDyUniformVariableType::Bool>>(-1, value)
@@ -226,7 +226,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
         } break;
         case EDyUniformVariableType::Matrix4Array: 
         {
-          const auto value = DyJsonGetValueFrom<std::vector<DDyMatrix4x4>>(itemValue, "Value");
+          const auto value = json::GetValueFrom<std::vector<DMatrix4x4>>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
             std::make_unique<FDyUniformValue<EDyUniformVariableType::Matrix4Array>>(-1, value)
@@ -234,7 +234,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
         } break;
         case EDyUniformVariableType::Vector3Array: 
         {
-          const auto value = DyJsonGetValueFrom<std::vector<DDyVector3>>(itemValue, "Value");
+          const auto value = json::GetValueFrom<std::vector<DVector3>>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
             std::make_unique<FDyUniformValue<EDyUniformVariableType::Vector3Array>>(-1, value)
@@ -245,7 +245,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
       }
     }
   } break;
-  case DyStrCase("Binary"):
+  case CaseStr("Binary"):
   {
     MDY_NOT_IMPLEMENTED_ASSERT();
   } break;

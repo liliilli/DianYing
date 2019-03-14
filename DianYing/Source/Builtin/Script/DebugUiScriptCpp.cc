@@ -15,17 +15,17 @@
 /// Header file
 #include <Dy/Builtin/Script/DebugUiScriptCpp.h>
 #include <Dy/Management/WindowManager.h>
-#include <Dy/Management/LoggingManager.h>
+#include <Dy/Management/MLog.h>
 #include <Dy/Management/TimeManager.h>
 
 #include <Dy/Element/Canvas/Widget.h>
 #include <Dy/Element/Canvas/Text.h>
 #include <Dy/Element/Canvas/FDyBasicGaugeBar.h>
-#include <Dy/Management/InputManager.h>
+#include <Dy/Management/MInput.h>
 #include <Dy/Management/Internal/MDyProfiling.h>
 #include <Dy/Helper/Math/Math.h>
 #include <Dy/Helper/Math/Random.h>
-#include <Dy/Management/GameTimerManager.h>
+#include <Dy/Management/MGameTimer.h>
 #include "Dy/Element/Canvas/FDyImage.h"
 #include "Dy/Core/Resource/Resource/FDyMaterialResource.h"
 #include "Dy/Core/Resource/Resource/FDyShaderResource.h"
@@ -98,10 +98,10 @@ Camera0 : 2
       this->mProfilingManger->GetScreenRenderedActorCount(),
       usageRam / 1024
   ));
-  //bar->SetRelativePosition(bar->GetRelativePosition(EDyOrigin::Center_Center) + DDyVector2{0, -dt * 16.0f});
+  //bar->SetRelativePosition(bar->GetRelativePosition(EDyOrigin::Center_Center) + DVector2{0, -dt * 16.0f});
   bar->SetPresentValue(usageCpu);
 
-  const auto& inputManager = MDyInput::GetInstance();
+  const auto& inputManager = MInput::GetInstance();
   joystickText->SetText(fmt::format(
       "Analog 01 : X {:05.2f} Y {:05.2f}\n"
       "Analog 02 : X {:05.2f} Y {:05.2f}",
@@ -142,7 +142,7 @@ void FDyBuiltinDebugUiScript::CbMoveBar()
 {
   auto& widgetRef = this->GetWidgetReference();
   FDyBasicGaugeBar* bar = widgetRef.GetUiObject<FDyBasicGaugeBar>("BasicBarTest");
-  bar->SetRelativePosition(random::RandomVector2Range(random::EDyRandomPolicy::Uniform, 0, 320) - DDyVector2{0, 360});
+  bar->SetRelativePosition(random::RandomVector2Range(random::EDyRandomPolicy::Uniform, 0, 320) - DVector2{0, 360});
 }
 
 void FDyBuiltinDebugUiScript::CbChangeImageTexture()

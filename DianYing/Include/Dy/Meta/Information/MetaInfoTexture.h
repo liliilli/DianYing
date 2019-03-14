@@ -15,7 +15,7 @@
 
 #include <nlohmann/json_fwd.hpp>
 #include <Dy/Core/Resource/Internal/TextureType.h>
-#include <Dy/Helper/Type/VectorInt2.h>
+#include <Dy/Helper/Type/DVectorInt2.h>
 #include <Dy/Meta/Information/CommonResourceMetaInfo.h>
 #include <variant>
 
@@ -46,7 +46,7 @@ struct PDyTextureInstanceMetaInfo final : public PDyCommonResourceMetaInfo
   /// Texture is 1D or 2D?
   EDyTextureStyleType mTextureType = EDyTextureStyleType::NoneError;
   /// Border color
-  DDyColorRGBA        mBorderColor = DDyColorRGBA::Black;
+  DColorRGBA        mBorderColor = DColorRGBA::Black;
   /// as R, RG, RGB, RGBA
   EDyImageColorFormatStyle  mTextureColorType = EDyImageColorFormatStyle::NoneError;
   /// 
@@ -58,7 +58,7 @@ struct PDyTextureInstanceMetaInfo final : public PDyCommonResourceMetaInfo
   /// Use customized texture parameters (PDyTextureConstructionBaseDesc::mParameterList)
   bool                mIsEnabledCustomedTextureParameter  = false;
   /// Integer size builtin buffer container.
-  DDyVectorInt2       mBuiltinBufferSize = {};
+  DVectorInt2       mBuiltinBufferSize = {};
   /// Built-In buffer pointer of texture.
   std::vector<TU08>*  mPtrBuiltinBuffer = MDY_INITIALIZE_NULL;
 

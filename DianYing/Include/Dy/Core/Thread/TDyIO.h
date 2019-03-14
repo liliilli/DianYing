@@ -22,7 +22,7 @@
 #include <Dy/Core/Thread/IO/FDyIOGC.h>
 #include <Dy/Core/Thread/IO/TDyIOWorker.h>
 #include <Dy/Core/Thread/IO/DDyIOTaskDeferred.h>
-#include <Dy/Helper/Internal/Semaphore.h>
+#include <Dy/Helper/Internal/FSemaphore.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 
 //!
@@ -279,7 +279,7 @@ private:
   std::condition_variable   mConditionVariable;
   TIOTaskQueue              mIOTaskQueue = {};
 
-  DySemaphore               mWorkerSemaphore{kWorkerThreadCount};
+  FSemaphore               mWorkerSemaphore{kWorkerThreadCount};
   TWorkerList               mWorkerList{};
   std::atomic<TI32>         mIdleWorkerCounter{kWorkerThreadCount};
 

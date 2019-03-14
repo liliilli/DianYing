@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/Vector3.h>
+#include <Dy/Helper/Type/DVector3.h>
 
 namespace dy
 {
@@ -36,7 +36,7 @@ struct DDyAnimationSequence final
     struct DTranslate final
     {
       float       mStartSecond  = 0.0f;
-      DDyVector3  mTranslate    = {};
+      DVector3  mTranslate    = {};
     };
     struct DRotation final
     {
@@ -49,7 +49,7 @@ struct DDyAnimationSequence final
     struct DScale final
     {
       float mStartSecond  = 0.0f;  
-      DDyVector3 mScale   = {1, 1, 1};
+      DVector3 mScale   = {1, 1, 1};
     };
 
     TI32 mSkeletonNodeIndex = 0;

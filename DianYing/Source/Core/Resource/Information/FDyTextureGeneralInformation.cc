@@ -29,7 +29,7 @@ FDyTextureGeneralInformation::FDyTextureGeneralInformation(_MIN_ const PDyTextur
   else
   { // But external, read buffer from file, get width, height and image format and convert raw buffer to buffer type.
     // Width and Height would be saved into mTextureInformation.
-    const auto dataBuffer = std::make_unique<DDyImageBinaryDataBuffer>(std::get<std::string>(metaInfo.mExternalFilePath));
+    const auto dataBuffer = std::make_unique<DImageBinaryBuffer>(std::get<std::string>(metaInfo.mExternalFilePath));
     MDY_ASSERT_MSG(dataBuffer->IsBufferCreatedProperly() == true, "Texture buffer can not be created properly.");
 
     TI32 pixelSize = 0;
@@ -59,7 +59,7 @@ const std::vector<TU08>& FDyTextureGeneralInformation::GetBuffer() const noexcep
   return this->mTextureImageBuffer;
 }
 
-const DDyVectorInt2& FDyTextureGeneralInformation::GetSize() const noexcept
+const DVectorInt2& FDyTextureGeneralInformation::GetSize() const noexcept
 {
   return this->mTextureSize;
 }

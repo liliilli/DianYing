@@ -74,19 +74,19 @@ public:
   /// @brief  Get DDyColor foreground color of component.
   /// @return Return foreground color.
   ///
-  MDY_NODISCARD const DDyColorRGBA& GetForegroundColor() const noexcept;
+  MDY_NODISCARD const DColorRGBA& GetForegroundColor() const noexcept;
 
   ///
   /// @brief  Get DDyColor background color of component.
   /// @return Return background color.
   ///
-  MDY_NODISCARD const DDyColorRGBA& GetBackgroundColor() const noexcept;
+  MDY_NODISCARD const DColorRGBA& GetBackgroundColor() const noexcept;
 
   ///
   /// @brief  Get position to be rendered in UI.
   /// @return Final rendered posiiton.
   ///
-  MDY_NODISCARD const DDyVector2& GetRenderPosition() const noexcept;
+  MDY_NODISCARD const DVector2& GetRenderPosition() const noexcept;
 
   ///
   /// @brief  Get padding value of this bar.
@@ -113,14 +113,14 @@ public:
   /// @param[in] color New color value with consists of {r, g, b, a} glm::vec4 vector.
   /// each value must be in range of [0, 1], otherwise clamped to 0 or 1.
   ///
-  void SetForegroundColor(_MIN_ const DDyColorRGBA& color);
+  void SetForegroundColor(_MIN_ const DColorRGBA& color);
 
   ///
   /// @brief Set string color, single color with composited of {r, g, b, a}.
   /// @param[in] color New color value with consists of {r, g, b, a} glm::vec4 vector.
   /// each value must be in range of [0, 1], otherwise clamped to 0 or 1.
   ///
-  void SetBackgroundColor(_MIN_ const DDyColorRGBA& color);
+  void SetBackgroundColor(_MIN_ const DColorRGBA& color);
 
   ///
   /// @brief Render font (old-way)
@@ -151,9 +151,9 @@ private:
   };
 
   /// Foreground (bar) color
-  DDyColorRGBA      mForegroundColor  = DDyColorRGBA::White;
+  DColorRGBA      mForegroundColor  = DColorRGBA::White;
   /// Bar region background color, `mIsUsingBackgroundColor` must be checked true for using.
-  DDyColorRGBA      mBackgroundColor  = DDyColorRGBA{ 0, 0, 0, 0 };
+  DColorRGBA      mBackgroundColor  = DColorRGBA{ 0, 0, 0, 0 };
   /// Values for describing bar.
   DValue            mValues           = {};
   /// Padding value for rendering foreground region.

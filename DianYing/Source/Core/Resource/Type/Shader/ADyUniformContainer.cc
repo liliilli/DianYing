@@ -297,7 +297,7 @@ EDySuccess ADyUniformContainer::TryInsertTextureRequisition(TU32 insertId, TU32 
 
 EDyUniformVariableType ADyUniformContainer::GetTypeOfUniform(const std::string& iSpecifier) const noexcept
 {
-  if (DyIsMapContains(this->mUniformMap, iSpecifier) == false)
+  if (Contains(this->mUniformMap, iSpecifier) == false)
   {
     return EDyUniformVariableType::NoneError;
   }

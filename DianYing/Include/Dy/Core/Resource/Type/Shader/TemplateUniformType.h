@@ -15,8 +15,8 @@
 
 #include <vector>
 #include <Dy/Core/Resource/Internal/ShaderType.h>
-#include <Dy/Helper/Type/Matrix4.h>
-#include <Dy/Helper/Type/VectorInt2.h>
+#include <Dy/Helper/Type/DMatrix4x4.h>
+#include <Dy/Helper/Type/DVectorInt2.h>
 
 namespace dy
 {
@@ -25,20 +25,20 @@ template <EDyUniformVariableType TType>
 struct MDY_PRIVATE(UniformBinder);
 
 template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Matrix4Array> final
-{ using ValueType = std::vector<DDyMatrix4x4>; };
+{ using ValueType = std::vector<DMatrix4x4>; };
 template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Vector3Array> final  
-{ using ValueType = std::vector<DDyVector3>; };
+{ using ValueType = std::vector<DVector3>; };
 template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::FloatArray> final
 { using ValueType = std::vector<TF32>; };
 
-template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Matrix4> final  { using ValueType = DDyMatrix4x4; };
-template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Matrix3> final  { using ValueType = DDyMatrix3x3; };
-template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Vector4> final  { using ValueType = DDyVector4; };
-template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Vector3> final  { using ValueType = DDyVector3; };
-template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Vector2> final  { using ValueType = DDyVector2; };
-//template <> struct MDY_PRIVATE(UniformBinder)<EDyAttributeVariableType::IVec4> final  { using ValueType = DDyVectorInt4; };
-//template <> struct MDY_PRIVATE(UniformBinder)<EDyAttributeVariableType::IVec3> final  { using ValueType = DDyVector4; };
-template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::IVec2> final    { using ValueType = DDyVectorInt2; };
+template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Matrix4> final  { using ValueType = DMatrix4x4; };
+template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Matrix3> final  { using ValueType = DMatrix3x3; };
+template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Vector4> final  { using ValueType = DVector4; };
+template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Vector3> final  { using ValueType = DVector3; };
+template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Vector2> final  { using ValueType = DVector2; };
+//template <> struct MDY_PRIVATE(UniformBinder)<EDyAttributeVariableType::IVec4> final  { using ValueType = DVectorInt4; };
+//template <> struct MDY_PRIVATE(UniformBinder)<EDyAttributeVariableType::IVec3> final  { using ValueType = DVector4; };
+template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::IVec2> final    { using ValueType = DVectorInt2; };
 template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Integer> final  { using ValueType = TI32; };
 template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Unsigned> final { using ValueType = TU32; };
 template <> struct MDY_PRIVATE(UniformBinder)<EDyUniformVariableType::Float> final    { using ValueType = TF32; };

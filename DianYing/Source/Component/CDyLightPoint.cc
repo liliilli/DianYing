@@ -24,7 +24,7 @@ CDyLightPoint::CDyLightPoint(FDyActor& actorReference)
   : ADyGeneralBaseComponent(actorReference)
 { }
 
-EDySuccess CDyLightPoint::Initialize(const PDyCompPointLightMetaInfo& iMetaInfo)
+EDySuccess CDyLightPoint::Initialize(const PCompPointLightMetaInfo& iMetaInfo)
 {
   this->mData.mColor      = iMetaInfo.mDetails.mColor;
   this->mData.mIntensity  = iMetaInfo.mDetails.mIntensity;
@@ -70,12 +70,12 @@ float CDyLightPoint::GetIntensity() const noexcept
   return this->mData.mIntensity;
 }
 
-void CDyLightPoint::SetColor(const DDyColorRGB& iColor) noexcept
+void CDyLightPoint::SetColor(const DColorRGB& iColor) noexcept
 {
   this->mData.mColor = iColor;
 }
 
-const DDyColorRGB& CDyLightPoint::GetColor() const noexcept
+const DColorRGB& CDyLightPoint::GetColor() const noexcept
 {
   return this->mData.mColor;
 }

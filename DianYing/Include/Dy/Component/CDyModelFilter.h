@@ -17,7 +17,7 @@
 #include <Dy/Core/Resource/Type/TDyResourceBinder.h>
 #include <Dy/Component/Interface/IDyInitializeHelper.h>
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
-#include <Dy/Helper/Pointer.h>
+#include <Dy/Helper/System/Pointer.h>
 
 //!
 //! Forward decalartion

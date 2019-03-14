@@ -16,7 +16,7 @@
 #include <Dy/Component/Internal/Sound/FDySoundInstance.h>
 
 #include <Dy/Meta/Information/PrefabMetaInformation.h>
-#include <Dy/Management/LoggingManager.h>
+#include <Dy/Management/MLog.h>
 #include <Dy/Management/SoundManager.h>
 #include <Dy/Management/IO/MetaInfoManager.h>
 #include <Dy/Management/Type/Sound/FDySoundChannel.h>

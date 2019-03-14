@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
-#include <Dy/Helper/Internal/RWLockAtomic.h>
+#include <Dy/Helper/Internal/FRWLockAtomic.h>
 
 namespace dy
 {
@@ -56,13 +56,13 @@ private:
   /// `mScreenRenderedActorCount` will be reset.
   void MDY_PRIVATE(ResetFrameDependentCounts)() noexcept;
 
-  RWLockAtomic<TI32> mOnBindTextureCount  = MDY_INITIALIZE_DEFUINT;
+  FRWLockAtomic<TI32> mOnBindTextureCount  = MDY_INITIALIZE_DEFUINT;
 
-  RWLockAtomic<TI32> mOnBindVertexCount   = MDY_INITIALIZE_DEFUINT;
-  RWLockAtomic<TI32> mScreenVertexCount   = MDY_INITIALIZE_DEFUINT;
+  FRWLockAtomic<TI32> mOnBindVertexCount   = MDY_INITIALIZE_DEFUINT;
+  FRWLockAtomic<TI32> mScreenVertexCount   = MDY_INITIALIZE_DEFUINT;
 
-  RWLockAtomic<TI32> mOnBindShaderCount   = MDY_INITIALIZE_DEFUINT;
-  RWLockAtomic<TI32> mOnBindActorCount    = MDY_INITIALIZE_DEFUINT;
+  FRWLockAtomic<TI32> mOnBindShaderCount   = MDY_INITIALIZE_DEFUINT;
+  FRWLockAtomic<TI32> mOnBindActorCount    = MDY_INITIALIZE_DEFUINT;
   TI32               mScreenRenderedActorCount = MDY_INITIALIZE_DEFUINT;
 
   friend class SDyProfilingHelper;
