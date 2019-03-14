@@ -76,9 +76,9 @@ public:
   MDY_NODISCARD float GetIntensity() const noexcept;
   
   /// @brief Set light's diffuse color.
-  void SetColor(const DDyColorRGBA& iColor) noexcept;
+  void SetColor(const DDyColorRGB& iColor) noexcept;
   /// @brief Get light's diffuse color.
-  MDY_NODISCARD const DDyColorRGBA& GetColor() const noexcept;
+  MDY_NODISCARD const DDyColorRGB& GetColor() const noexcept;
 
   /// @brief Get uniform-buffer-object information of this light.
   MDY_NODISCARD const DDyUboPointLight& GetUboLightInfo() noexcept;

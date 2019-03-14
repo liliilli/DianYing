@@ -60,6 +60,26 @@ bool CDyLightPoint::IsActiveLighting() const noexcept
   return this->mIsCastingLight; 
 }
 
+void CDyLightPoint::SetIntensity(TF32 iIntensity) noexcept
+{
+  this->mData.mIntensity = std::max(iIntensity, 0.0f);
+}
+
+float CDyLightPoint::GetIntensity() const noexcept
+{
+  return this->mData.mIntensity;
+}
+
+void CDyLightPoint::SetColor(const DDyColorRGB& iColor) noexcept
+{
+  this->mData.mColor = iColor;
+}
+
+const DDyColorRGB& CDyLightPoint::GetColor() const noexcept
+{
+  return this->mData.mColor;
+}
+
 const DDyUboPointLight& CDyLightPoint::GetUboLightInfo() noexcept
 {
   this->mData.mPosition = this->GetBindedActor()->GetTransform()->GetFinalWorldPosition();
