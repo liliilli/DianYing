@@ -36,6 +36,7 @@ DyGetComponentTypeFrom(const std::string& typeString) noexcept
   {
   case dy::DyStrCase("DirectionalLight"): return dy::EDyComponentMetaType::DirectionalLight; 
   case dy::DyStrCase("PointLight"):       return dy::EDyComponentMetaType::PointLight;
+  case dy::DyStrCase("SpotLight"):        return dy::EDyComponentMetaType::SpotLight;
   case dy::DyStrCase("Script"):           return dy::EDyComponentMetaType::Script; 
   case dy::DyStrCase("Transform"):        return dy::EDyComponentMetaType::Transform; 
   case dy::DyStrCase("ModelFilter"):      return dy::EDyComponentMetaType::ModelFilter;

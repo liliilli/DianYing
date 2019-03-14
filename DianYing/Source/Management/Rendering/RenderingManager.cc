@@ -152,6 +152,8 @@ public:
 
   /// @brief The pointer handle list of activated point lights.
   TPointLightHandleList mActivatedPointLights = {};
+  /// @brief The pointer handle list of activated spot lights.
+  TSpotLightHandleList  mActivatedSpotLights = {};
 
   /// @brief Required skybox pointer for rendering on present frame.
   /// If rendered, skybox pointer will be nulled again.
@@ -304,6 +306,38 @@ MDyRendering::TPointLightHandleList&
 MDyRendering::MDY_PRIVATE(GetActivatedPointLights)() noexcept
 {
   return this->mInternal->mActivatedPointLights;
+}
+
+void MDyRendering::MDY_PRIVATE(BindSpotLight)(CDyLightSpot& iRefLight)
+{
+  auto& handleList = this->mInternal->mActivatedSpotLights;
+  if (Contains(handleList, &iRefLight) == true)
+  {
+    MDY_UNEXPECTED_BRANCH();
+    return;
+  }
+
+  handleList.emplace_back(&iRefLight);
+}
+
+EDySuccess MDyRendering::MDY_PRIVATE(UnbindSpotLight)(CDyLightSpot& iRefLight)
+{
+  auto& handleList = this->mInternal->mActivatedSpotLights;
+  if (Contains(handleList, &iRefLight) == false)
+  {
+    DyPushLogCritical("Failed to unbind handle of spot light.");
+    return DY_FAILURE;
+  }
+
+  const auto it = std::find(MDY_BIND_BEGIN_END(handleList), &iRefLight);
+  handleList.erase(it);
+  return DY_SUCCESS;
+}
+
+MDyRendering::TSpotLightHandleList& 
+MDyRendering::MDY_PRIVATE(GetActivatedSpotLights)() noexcept
+{
+  return this->mInternal->mActivatedSpotLights;
 }
 
 const DDyMatrix4x4& MDyRendering::GetGeneralUiProjectionMatrix() const noexcept

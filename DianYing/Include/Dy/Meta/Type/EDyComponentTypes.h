@@ -31,6 +31,7 @@ enum class EDyComponentMetaType
   ModelAnimator,    // CDyModelAnimator
   DirectionalLight, // CDyLightDirectional
   PointLight, // CDyLightPoint
+  SpotLight,  // CDySpotPoint
   Camera,     // CDyCamera
   SoundSource,// CDySoundSource
   Rigidbody,  // CDyPhysicsRigidbody

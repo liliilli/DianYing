@@ -268,6 +268,7 @@
     <ClCompile Include="Source\Component\Abstract\ADyWidgetCppScript.cc" />
     <ClCompile Include="Source\Component\Actor\CDyActorScript.cc" />
     <ClCompile Include="Source\Component\CDyLightPoint.cc" />
+    <ClCompile Include="Source\Component\CDyLightSpot.cc" />
     <ClCompile Include="Source\Component\CDyModelAnimator.cc" />
     <ClCompile Include="Source\Component\CDyPhysicsCollider.cc" />
     <ClCompile Include="Source\Component\CDyPhysicsColliderBox.cc" />
@@ -504,6 +505,7 @@
     <ClCompile Include="Source\Management\Type\Sound\TDyBinderSound3D.cc" />
     <ClCompile Include="Source\Management\Type\Time\DDyTimepoint.cc" />
     <ClCompile Include="Source\Meta\Components\PCompPointLightMetaInfo.cc" />
+    <ClCompile Include="Source\Meta\Components\PCompSpotLightMetaInfo.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetBarMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetImageMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Information\ElementLevelMetaInfo.cc" />
@@ -733,6 +735,7 @@
     <ClInclude Include="Include\Dy\Builtin\Widget\FDyBtWdTestLoadingUi.h" />
     <ClInclude Include="Include\Dy\Component\Abstract\ADyGlobalCppScript.h" />
     <ClInclude Include="Include\Dy\Component\Actor\CDyActorScript.h" />
+    <ClInclude Include="Include\Dy\Component\CDyLightSpot.h" />
     <ClInclude Include="Include\Dy\Component\CDyPhysicsColliderBox.h" />
     <ClInclude Include="Include\Dy\Component\CDyPhysicsColliderCapsule.h" />
     <ClInclude Include="Include\Dy\Component\CDyPhysicsColliderSphere.h" />
@@ -748,6 +751,7 @@
     <ClInclude Include="Include\Dy\Component\Internal\Global\CDyGlobalScriptCpp.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Lights\DUboDirLight.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Lights\DUboPointLight.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Lights\DUboSpotLight.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Physics\CallbackSpecifier.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Physics\DDyCollisionCallbackItem.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Physics\FDyCollisionSignatureContainer.h" />
@@ -872,6 +876,7 @@
     <ClInclude Include="Include\Dy\Management\Type\Render\DDyPixelInfo.h" />
     <ClInclude Include="Include\Dy\Management\Type\Render\EDyModelRenderingMode.h" />
     <ClInclude Include="Include\Dy\Meta\Components\PCompPointLightMetaInfo.h" />
+    <ClInclude Include="Include\Dy\Meta\Components\PCompSpotLightMetaInfo.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoRenderItem.h" />
     <ClInclude Include="Include\Dy\Meta\Information\Physics\DColliderMetaInfo.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoRenderPipeline.h" />

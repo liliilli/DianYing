@@ -25,6 +25,7 @@
 namespace dy
 {
 class   CDyLightPoint;
+class   CDyLightSpot;
 class   FWrapperRenderItem;
 class   FWrapperRenderPipeline;
 struct  DDyUboDirectionalLight;
@@ -64,6 +65,7 @@ public:
   using TDrawColliderItem = std::pair<NotNull<CDyPhysicsCollider*>, DDyMatrix4x4>; 
   using TUiDrawCallItem = NotNull<FDyUiObject*>;
   using TPointLightHandleList = std::vector<CDyLightPoint*>; 
+  using TSpotLightHandleList  = std::vector<CDyLightSpot*>; 
 
   /// @brief PreRender update functin.
   void PreRender(TF32 dt);
@@ -91,10 +93,17 @@ public:
 
   /// @brief Private function, bind activated point light into candidate list.
   void        MDY_PRIVATE(BindPointLight)(CDyLightPoint& iRefLight);
-  /// @brief Private function, unbind directional light of main light.
+  /// @brief Private function, unbind point light from list.
   EDySuccess  MDY_PRIVATE(UnbindPointLight)(CDyLightPoint& iRefLight);
   /// @brief Get activated point light components.
   TPointLightHandleList& MDY_PRIVATE(GetActivatedPointLights)() noexcept;
+
+  /// @brief Private function, bind activated spot light into candidate list.
+  void        MDY_PRIVATE(BindSpotLight)(CDyLightSpot& iRefLight);
+  /// @brief Private function, unbind spot light from list.
+  EDySuccess  MDY_PRIVATE(UnbindSpotLight)(CDyLightSpot& iRefLight);
+  /// @brief Get activated spot light components.
+  TSpotLightHandleList& MDY_PRIVATE(GetActivatedSpotLights)() noexcept;
 
   /// @brief Get General (Default) ui projection matrix.
   const DDyMatrix4x4& GetGeneralUiProjectionMatrix() const noexcept;

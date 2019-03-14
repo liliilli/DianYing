@@ -378,6 +378,8 @@
     <ClCompile Include="Source\Meta\Components\PCompDirLightMetaInfo.cc" />
     <ClCompile Include="Source\Meta\Components\PCompPointLightMetaInfo.cc" />
     <ClCompile Include="Source\Core\Reflection\Internal\EReflectionType.cc" />
+    <ClCompile Include="Source\Meta\Components\PCompSpotLightMetaInfo.cc" />
+    <ClCompile Include="Source\Component\CDyLightSpot.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -929,6 +931,9 @@
     <ClInclude Include="Include\Dy\Core\Reflection\RReflection.h" />
     <ClInclude Include="Include\Dy\Core\Reflection\Internal\EReflectionType.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Internal\Uniform\IDyUniformStruct.h" />
+    <ClInclude Include="Include\Dy\Component\CDyLightSpot.h" />
+    <ClInclude Include="Include\Dy\Meta\Components\PCompSpotLightMetaInfo.h" />
+    <ClInclude Include="Include\Dy\Component\Internal\Lights\DUboSpotLight.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

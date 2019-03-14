@@ -19,6 +19,7 @@ namespace dy
 class CDyActorScript;
 class CDyLightDirectional;
 class CDyLightPoint;
+class CDyLightSpot;
 class CDyCamera;
 class CDyModelAnimator;
 class CDyModelFilter;
@@ -36,6 +37,7 @@ enum class EDyComponentType
   Transform,
   DirectionalLight,
   PointLight,
+  SpotLight,
   Camera,
   ModelAnimator,
   ModelFilter,
@@ -59,6 +61,7 @@ template <> struct TComponentBindingType<EDyComponentType::ActorScript> { using 
 template <> struct TComponentBindingType<EDyComponentType::Transform> { using Type = CDyTransform; };
 template <> struct TComponentBindingType<EDyComponentType::DirectionalLight> { using Type = CDyLightDirectional; };
 template <> struct TComponentBindingType<EDyComponentType::PointLight> { using Type = CDyLightPoint; };
+template <> struct TComponentBindingType<EDyComponentType::SpotLight> { using Type = CDyLightSpot; };
 template <> struct TComponentBindingType<EDyComponentType::Camera> { using Type = CDyCamera; };
 template <> struct TComponentBindingType<EDyComponentType::ModelAnimator> { using Type = CDyModelAnimator; };
 template <> struct TComponentBindingType<EDyComponentType::ModelFilter> { using Type = CDyModelFilter; };
@@ -77,6 +80,7 @@ template <> struct TComponentUnbindingType<CDyActorScript> { static constexpr ED
 template <> struct TComponentUnbindingType<CDyTransform> { static constexpr EDyComponentType Value = EDyComponentType::Transform; };
 template <> struct TComponentUnbindingType<CDyLightDirectional> { static constexpr EDyComponentType Value = EDyComponentType::DirectionalLight; };
 template <> struct TComponentUnbindingType<CDyLightPoint> { static constexpr EDyComponentType Value = EDyComponentType::PointLight; };
+template <> struct TComponentUnbindingType<CDyLightSpot> { static constexpr EDyComponentType Value = EDyComponentType::SpotLight; };
 template <> struct TComponentUnbindingType<CDyCamera> { static constexpr EDyComponentType Value = EDyComponentType::Camera; };
 template <> struct TComponentUnbindingType<CDyModelAnimator> { static constexpr EDyComponentType Value = EDyComponentType::ModelAnimator; };
 template <> struct TComponentUnbindingType<CDyModelFilter> { static constexpr EDyComponentType Value = EDyComponentType::ModelFilter; };

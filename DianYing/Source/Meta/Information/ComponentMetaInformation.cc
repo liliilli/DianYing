@@ -19,6 +19,7 @@
 #include <Dy/Element/Helper/DescriptorComponentHeaderString.h>
 #include <Dy/Meta/Components/PCompDirLightMetaInfo.h>
 #include <Dy/Meta/Components/PCompPointLightMetaInfo.h>
+#include <Dy/Meta/Components/PCompSpotLightMetaInfo.h>
 
 //!
 //! Forward declaration & local translation unit functions.
@@ -64,6 +65,9 @@ void from_json(const nlohmann::json& iJson, TComponentMetaList& oMeta)
       break;
     case EDyComponentMetaType::PointLight:
       oMeta.emplace_back(type, componentAtlas.get<PDyCompPointLightMetaInfo>());
+      break;
+    case EDyComponentMetaType::SpotLight:
+      oMeta.emplace_back(type, componentAtlas.get<PDyCompSpotLightMetaInfo>());
       break;
     case EDyComponentMetaType::ModelFilter:
       oMeta.emplace_back(type, componentAtlas.get<PDyModelFilterComponentMetaInfo>());

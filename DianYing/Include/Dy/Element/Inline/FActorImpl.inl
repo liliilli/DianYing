@@ -14,11 +14,13 @@
 ///
 
 #include <Dy/Meta/Information/ElementObjectMetaInfo.h>
+#include <Dy/Meta/Components/PCompSpotLightMetaInfo.h>
 #include <Dy/Component/CDyLightPoint.h>
+#include <Dy/Component/CDyLightSpot.h>
 
 namespace dy
 {
-  
+
 inline FDyActor::Impl::Impl(FDyActor& iActor) : mRefActor{iActor} { }
 
 inline EDySuccess FDyActor::Impl::pInitilaize(
@@ -142,6 +144,9 @@ inline void FDyActor::Impl::CreateComponentsWithList(const TComponentMetaList& i
     case EDyComponentMetaType::PointLight:
       this->AddComponent<CDyLightPoint>(std::any_cast<const PDyCompPointLightMetaInfo&>(componentInfo));
       break;
+    case EDyComponentMetaType::SpotLight:
+      this->AddComponent<CDyLightSpot>(std::any_cast<const PDyCompSpotLightMetaInfo&>(componentInfo));
+      break;
     case EDyComponentMetaType::ModelFilter:
       this->AddComponent<CDyModelFilter>(std::any_cast<const PDyModelFilterComponentMetaInfo&>(componentInfo));
       break;
@@ -210,6 +215,9 @@ inline void FDyActor::Impl::ReleaseComponent(_MINOUT_ TComponentList::value_type
     } break;
   case EDyComponentType::PointLight: 
     { static_cast<TComponentBindingType<EType::PointLight>::Type&>(*ptrsmtComponent).Release();
+    } break;
+  case EDyComponentType::SpotLight: 
+    { static_cast<TComponentBindingType<EType::SpotLight>::Type&>(*ptrsmtComponent).Release();
     } break;
   case EDyComponentType::Camera:
     { static_cast<TComponentBindingType<EType::Camera>::Type&>(*ptrsmtComponent).Release();
