@@ -26,8 +26,16 @@ namespace dy
 /// @brief Check key is exist in present json instance.
 bool DyIsJsonKeyExist(const nlohmann::json& json, const std::string& key) noexcept;
 
-/// @brief Read json file and return json container. If any error has happened just return nullopt.
-MDY_NODISCARD std::optional<nlohmann::json> DyGetJsonAtlasFromFile(const std::string& filePath) noexcept;
+/// @brief Read json file and return json container. 
+/// If any error has happended, just return nullptr.
+MDY_NODISCARD std::optional<nlohmann::json> 
+DyGetJsonAtlasFromFile(const std::string& iFilePath) noexcept;
+
+MDY_NODISCARD std::optional<nlohmann::json> 
+DyGetJsonAtlasFromFile(const std::filesystem::path& iFilePath) noexcept;
+
+MDY_NODISCARD std::optional<nlohmann::json> 
+GetJsonAtlasFromString(const std::string& iSerializedString) noexcept;
 
 /// @brief  Exceptionable.
 /// @param  jsonAtlas Immutable valid json atlas like-a types.
@@ -35,10 +43,10 @@ MDY_NODISCARD std::optional<nlohmann::json> DyGetJsonAtlasFromFile(const std::st
 /// @tparam TReturnType Type to retrieve from json atlas instance.
 /// @tparam TParam1 Json binding type parameter
 template <typename TReturnType, typename TParam1>
-MDY_NODISCARD TReturnType DyJsonGetValueFrom(_MIN_ const TParam1& jsonAtlas, _MIN_ const char* name);
+MDY_NODISCARD TReturnType DyJsonGetValueFrom(const TParam1& jsonAtlas, const char* name);
 
 template <typename TReturnType, typename TParam1>
-MDY_NODISCARD TReturnType DyJsonGetValueFrom(_MIN_ const TParam1& jsonAtlas, _MIN_ const std::string_view& name);
+MDY_NODISCARD TReturnType DyJsonGetValueFrom(const TParam1& jsonAtlas, const std::string_view& name);
 
 /// @brief  Get value from json and bind value to destination automatically.
 /// Destination type must implement copy assignment operator or default behavior.
