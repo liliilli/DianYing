@@ -16,12 +16,6 @@
 namespace dy
 {
 
-inline const PDyLevelConstructMetaInfo& 
-MDyMetaInfo::Impl::GetLevelMetaInformation(const std::string& iLevelName) const noexcept
-{
-  return this->mLevelInfoMap.at(iLevelName);
-}
-
 inline const PDyScriptInstanceMetaInfo& 
 MDyMetaInfo::Impl::GetScriptMetaInformation(const std::string& iScriptName) const
 {
@@ -175,7 +169,7 @@ inline void MDyMetaInfo::Impl::MDY_PRIVATE(InitiateMetaInformation)()
   MDY_CALL_ASSERT_SUCCESS(this->pReadScriptResourceMetaInformation(metaPath.mScriptMetaPath));
   MDY_CALL_ASSERT_SUCCESS(this->pReadPrefabResourceMetaInformation(metaPath.mPrefabMetaPath));
   MDY_CALL_ASSERT_SUCCESS(this->pReadWidgetResourceMetaInformation(metaPath.mWidgetMetaPath));
-  MDY_CALL_ASSERT_SUCCESS(this->pReadLevelResourceMetaInformation (metaPath.mSceneMetaPath));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadLevelResourceMetaInformation (metaPath.mLevelMetaPath));
 }
 
 inline void MDyMetaInfo::Impl::MDY_PRIVATE(InitiateMetaInformationComp)(const nlohmann::json& iJson)
@@ -445,11 +439,14 @@ inline EDySuccess MDyMetaInfo::Impl::pReadFontMetaAtlas(const nlohmann::json& iJ
 
 inline EDySuccess MDyMetaInfo::Impl::pReadLevelMetaAtlas(const nlohmann::json& iJson)
 {
-  for (const auto& sceneAtlas : iJson)
+  auto levelList = iJson.items();
+  for (auto it = levelList.begin(); it != levelList.end(); ++it)
   {
-    auto desc = sceneAtlas.get<PDyLevelConstructMetaInfo>();
-    auto [it, isSucceeded] = this->mLevelInfoMap.try_emplace(desc.mMetaCategory.mLevelName, std::move(desc));
-    MDY_ASSERT_MSG(isSucceeded == true, "Unexpected error occurred.");
+    auto metaInfo = it.value().get<PLevelInstanceMetaInfo>();
+    metaInfo.mLevelName = it.key();
+
+    auto [_, isSucceeded] = this->mLevelMetaInfo.try_emplace(metaInfo.mLevelName, metaInfo);
+    MDY_ASSERT(isSucceeded == true);
   }
   return DY_SUCCESS;
 }

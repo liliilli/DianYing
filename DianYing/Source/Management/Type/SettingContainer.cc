@@ -68,7 +68,7 @@ MDY_SET_IMMUTABLE_STRING(sCollision,  "Collision");
 
 //! DDySettingMetaPath
 
-MDY_SET_IMMUTABLE_STRING(sHeader_MetaPath_Scene,    "Scene");
+MDY_SET_IMMUTABLE_STRING(sHeader_MetaPath_Level,    "Level");
 MDY_SET_IMMUTABLE_STRING(sHeader_MetaPath_Widget,   "Widget");
 MDY_SET_IMMUTABLE_STRING(sHeader_MetaPath_Prefab,   "Prefab");
 MDY_SET_IMMUTABLE_STRING(sHeader_MetaPath_Script,   "Script");
@@ -345,7 +345,7 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingMetaPath& p)
 {
   j = nlohmann::json
   {
-      {(sHeader_MetaPath_Scene),  p.mSceneMetaPath},
+      {(sHeader_MetaPath_Level),  p.mLevelMetaPath},
       {(sHeader_MetaPath_Widget), p.mWidgetMetaPath},
       {(sHeader_MetaPath_Prefab), p.mPrefabMetaPath},
       {(sHeader_MetaPath_Script), p.mScriptMetaPath},
@@ -366,7 +366,7 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingMetaPath& p)
 
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingMetaPath& p)
 {
-  p.mSceneMetaPath  = DyJsonGetValueFrom<std::string>(j, sHeader_MetaPath_Scene);
+  p.mLevelMetaPath  = DyJsonGetValueFrom<std::string>(j, sHeader_MetaPath_Level);
   p.mWidgetMetaPath = DyJsonGetValueFrom<std::string>(j, sHeader_MetaPath_Widget);
   p.mPrefabMetaPath = DyJsonGetValueFrom<std::string>(j, sHeader_MetaPath_Prefab);
   p.mScriptMetaPath = DyJsonGetValueFrom<std::string>(j, sHeader_MetaPath_Script);

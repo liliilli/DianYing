@@ -380,6 +380,7 @@
     <ClCompile Include="Source\Core\Reflection\Internal\EReflectionType.cc" />
     <ClCompile Include="Source\Meta\Components\PCompSpotLightMetaInfo.cc" />
     <ClCompile Include="Source\Component\CDyLightSpot.cc" />
+    <ClCompile Include="Source\Meta\Resource\PLevelInstanceMetaInfo.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -934,6 +935,7 @@
     <ClInclude Include="Include\Dy\Component\CDyLightSpot.h" />
     <ClInclude Include="Include\Dy\Meta\Components\PCompSpotLightMetaInfo.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Lights\DUboSpotLight.h" />
+    <ClInclude Include="Include\Dy\Meta\Resource\PLevelInstanceMetaInfo.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />
@@ -958,5 +960,8 @@
     <None Include="Include\Dy\Helper\Internal\Inline\FProxyHandleTmp.inl" />
     <None Include="Include\Dy\Helper\Internal\Inline\FProxyHandlerTmp.inl" />
     <None Include="Include\Dy\Core\Reflection\Inline\RReflectionTmp.inl" />
+    <None Include="data\Meta\RescLevelMeta.dydat" />
+    <None Include="data\Level\Test_Physics.json" />
+    <None Include="data\Level\Test_Scene.json" />
   </ItemGroup>
 </Project>

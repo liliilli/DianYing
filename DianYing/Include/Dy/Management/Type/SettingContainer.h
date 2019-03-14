@@ -270,7 +270,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ EDyCollisionFilter& p);
 struct DDySettingMetaPath final
 {
   // Meta strings
-  std::string mSceneMetaPath    = MDY_INITIALIZE_EMPTYSTR;
+  std::string mLevelMetaPath    = MDY_INITIALIZE_EMPTYSTR;
   std::string mWidgetMetaPath   = MDY_INITIALIZE_EMPTYSTR;
   std::string mPrefabMetaPath   = MDY_INITIALIZE_EMPTYSTR;
   std::string mScriptMetaPath   = MDY_INITIALIZE_EMPTYSTR;

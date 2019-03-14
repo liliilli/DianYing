@@ -36,8 +36,8 @@ namespace dy
 
 FDyLevel::FDyLevel(_MIN_ const PDyLevelConstructMetaInfo& desc)
 {
-  this->mLevelName            = desc.mMetaCategory.mLevelName;
-  this->mLevelBackgroundColor = desc.mMetaCategory.mLevelBackgroundColor;
+  this->mLevelName            = desc.mMeta.mLevelName;
+  this->mLevelBackgroundColor = desc.mMeta.mLevelBackgroundColor;
 
   for (const auto& objectInformation : desc.mLevelObjectMetaInfoList)
   { // Create object, FDyActor
