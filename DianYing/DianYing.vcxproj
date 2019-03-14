@@ -584,6 +584,7 @@
     <ClCompile Include="Source\Meta\Information\Physics\DColliderMetaInfo.cc" />
     <ClCompile Include="Source\Meta\Information\PrefabMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Information\ScriptMetaInformation.cc" />
+    <ClCompile Include="Source\Meta\Resource\PLevelInstanceMetaInfo.cc" />
     <ClCompile Include="Source\Meta\Type\EDyComponentTypes.cc" />
     <ClCompile Include="Source\Meta\Type\EDyResourceTypes.cc" />
     <ClCompile Include="Source\Meta\Type\EDyWidgetTypes.cc" />
@@ -880,6 +881,7 @@
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoRenderItem.h" />
     <ClInclude Include="Include\Dy\Meta\Information\Physics\DColliderMetaInfo.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoRenderPipeline.h" />
+    <ClInclude Include="Include\Dy\Meta\Resource\PLevelInstanceMetaInfo.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Physics\EDyColliderType.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Physics\EDyCollisionFilter.h" />
     <ClInclude Include="Include\Dy\Management\Type\Render\DDyModelHandler.h" />
@@ -1152,6 +1154,9 @@
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\Deferred\FDyBtFbSSAOBlur.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="data\Level\Test_Physics.json" />
+    <None Include="data\Level\Test_Scene.json" />
+    <None Include="data\Meta\RescLevelMeta.dydat" />
     <None Include="Include\Dy\Core\Reflection\Inline\RReflectionTmp.inl" />
     <None Include="Include\Dy\Core\Reflection\RBuiltinResourcesTmp.inl" />
     <None Include="Include\Dy\Core\Resource\Type\Inline\AUniformContainerTmp.inl" />

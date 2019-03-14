@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Meta/Information/ElementLevelMetaInfo.h>
+#include "Dy/Meta/Resource/PLevelInstanceMetaInfo.h"
 
 namespace dy
 {
@@ -374,8 +375,9 @@ inline EDySuccess MDyWorld::Impl::MDY_PRIVATE(PopulateNextLevelResources)()
   if (MDyMetaInfo::GetInstance().IsLevelMetaInformation(this->mNextLevelName) == false) { return DY_FAILURE; }
 
   // Get level meta information, and construct resource list.
-  const auto& levMetaInfo = *MDyMetaInfo::GetInstance().GetLevelMetaInformation(this->mNextLevelName);
-  const TDDyResourceNameSet levelResourceSet = levMetaInfo.GetLevelResourceSet();
+  const auto& levMetaInfo = *(MDyMetaInfo::GetInstance().GetLevelMetaInformation(this->mNextLevelName));
+  const TDDyResourceNameSet levelResourceSet = 
+    PLevelInstanceMetaInfo::MakeLevelInformation(levMetaInfo).GetLevelResourceSet();
 
   // Populate resource and wait until resource populating is done.
   // If done, call `build next level` in outside (MDySync). (GSS 12-13)
@@ -397,10 +399,15 @@ inline void MDyWorld::Impl::MDY_PRIVATE(BuildNextLevel)()
   // GSS 14
   DyPushLogDebugDebug("Building Next Level : {}", this->mNextLevelName);
 
-  const auto* levelMetaInfo = MDyMetaInfo::GetInstance().GetLevelMetaInformation(this->mNextLevelName);
   // Must reset depedent manager on this.
   MDyPhysics::GetInstance().InitScene();
-  this->mLevel = std::make_unique<FDyLevel>(*levelMetaInfo);
+
+  // Create level information from abstract file.
+  const auto& levelMetaInfo = *MDyMetaInfo::GetInstance().GetLevelMetaInformation(this->mNextLevelName);
+  auto levelInfo = PLevelInstanceMetaInfo::MakeLevelInformation(levelMetaInfo);
+  levelInfo.mMeta.mLevelName = this->mNextLevelName;
+  
+  this->mLevel = std::make_unique<FDyLevel>(levelInfo);
 }
 
 inline EDySuccess MDyWorld::Impl::MDY_PRIVATE(TransitionToNextLevel)()

@@ -48,6 +48,7 @@ struct PDyMetaFontInformation;
 struct PDyPrefabInstanceMetaInfo;
 struct PDyLevelConstructMetaInfo;
 struct PDyScriptInstanceMetaInfo;
+struct PLevelInstanceMetaInfo;
 } /// ::dy namespace
 
 //!
@@ -71,7 +72,8 @@ public:
   /// @brief Get level construction descriptor meta information from levelName 
   /// which is same to actual level instance to be created.
   /// @return Return value is nullable if not found.
-  const PDyLevelConstructMetaInfo* GetLevelMetaInformation(const std::string& levelName) const noexcept;
+  const PLevelInstanceMetaInfo* 
+  GetLevelMetaInformation(const std::string& levelName) const noexcept;
 
   MDY_NODISCARD std::vector<std::pair<std::string, const PDyScriptInstanceMetaInfo*>> 
   GetGlobalScriptMetaInfos() const noexcept;

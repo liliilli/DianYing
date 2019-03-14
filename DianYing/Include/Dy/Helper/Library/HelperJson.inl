@@ -18,10 +18,6 @@
 namespace dy
 {
 
-bool DyIsJsonKeyExist(const nlohmann::json& json, const std::string& key) noexcept;
-
-MDY_NODISCARD std::optional<nlohmann::json> DyGetJsonAtlasFromFile(const std::string& filePath) noexcept;
-
 template <typename TReturnType, typename TParam1>
 MDY_NODISCARD TReturnType DyJsonGetValueFrom(_MIN_ const TParam1& jsonAtlas, _MIN_ const char* name)
 {

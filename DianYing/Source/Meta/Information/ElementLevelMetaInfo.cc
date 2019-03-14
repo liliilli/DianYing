@@ -116,14 +116,14 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyLevelConstructMetaInfo& 
 {
   j = nlohmann::json
   {
-      {(sCategoryMeta),   p.mMetaCategory},
+      {(sCategoryMeta),   p.mMeta},
       {(sCategoryObject), p.mLevelObjectMetaInfoList},
   };
 }
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyLevelConstructMetaInfo& p)
 {
-  DyJsonGetValueFromTo(j, sCategoryMeta,    p.mMetaCategory);
+  DyJsonGetValueFromTo(j, sCategoryMeta,    p.mMeta);
   DyJsonGetValueFromTo(j, sCategoryObject,  p.mLevelObjectMetaInfoList);
 }
 
@@ -134,16 +134,12 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyLevelConstructMetaInfo::
   // @TODO p.mLevelBackgroundColor to DDyColorRGB24.
   j = nlohmann::json
   {
-    {(sHeader_SpecifierName),               p.mLevelName},
-    {(sHeader_IsUsingUUIDForSpecification), p.mIsUsingUUIDForSpecification},
-    {(sHeader_BackgroundColor),             p.mLevelBackgroundColor},
+    {(sHeader_BackgroundColor), p.mLevelBackgroundColor},
   };
 }
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyLevelConstructMetaInfo::DMeta& p)
 {
-  DyJsonGetValueFromTo(j, sHeader_SpecifierName,               p.mLevelName);
-  DyJsonGetValueFromTo(j, sHeader_IsUsingUUIDForSpecification, p.mIsUsingUUIDForSpecification);
   DyJsonGetValueFromTo(j, sHeader_BackgroundColor, p.mLevelBackgroundColor);
 }
 

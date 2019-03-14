@@ -54,6 +54,7 @@
 #include <Dy/Meta/Information/ElementLevelMetaInfo.h>
 #include <Dy/Meta/Information/MetaInfoRenderPipeline.h>
 #include <Dy/Meta/Information/MetaInfoRenderItem.h>
+#include <Dy/Meta/Resource/PLevelInstanceMetaInfo.h>
 
 //!
 //! Local tranlation unit variables
@@ -249,9 +250,6 @@ public:
   using THashMap = std::unordered_map<std::string, TType>;
   using TResourceSpecifierList = std::vector<DDyResourceName>;
 
-  const PDyLevelConstructMetaInfo& 
-  GetLevelMetaInformation(const std::string& iLevelName) const noexcept;
-
   const PDyScriptInstanceMetaInfo&
   GetScriptMetaInformation(const std::string& iScriptName) const;
 
@@ -369,7 +367,8 @@ public:
   EDySuccess MDY_PRIVATE(AddGlobalResourceSpecifierList)(const TResourceSpecifierList& list);
 
   /// Level meta information map.
-  THashMap<PDyLevelConstructMetaInfo>   mLevelInfoMap   = {};
+  //THashMap<PDyLevelConstructMetaInfo>   mLevelInfoMap   = {};
+  THashMap<PLevelInstanceMetaInfo>      mLevelMetaInfo = {};
   /// Script meta information map.
   THashMap<PDyScriptInstanceMetaInfo>   mScriptMetaInfo = {};
   /// @brief Global script meta information hash-map.
@@ -443,10 +442,15 @@ EDySuccess MDyMetaInfo::pfRelease()
   return DY_SUCCESS;
 }
 
-const PDyLevelConstructMetaInfo* 
+const PLevelInstanceMetaInfo* 
 MDyMetaInfo::GetLevelMetaInformation(const std::string& iLevelName) const noexcept
 {
-  return &this->mInternal->GetLevelMetaInformation(iLevelName);
+  if (this->IsLevelMetaInformation(iLevelName) == false)
+  {
+    return nullptr;
+  }
+
+  return &this->mInternal->mLevelMetaInfo.at(iLevelName);
 }
 
 std::vector<std::pair<std::string, const PDyScriptInstanceMetaInfo*>> 
@@ -578,7 +582,7 @@ bool MDyMetaInfo::IsMeshMetaInfoExist(const std::string & specifier) const noexc
 
 bool MDyMetaInfo::IsLevelMetaInformation(const std::string& specifier) const noexcept
 {
-  return DyIsMapContains(this->mInternal->mLevelInfoMap, specifier);
+  return DyIsMapContains(this->mInternal->mLevelMetaInfo, specifier);
 }
 
 bool MDyMetaInfo::IsModelMetaInfoExist(const std::string& specifier) const noexcept
