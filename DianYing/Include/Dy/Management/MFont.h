@@ -20,7 +20,7 @@
 namespace dy
 {
 
-class MFont final : public IDySingleton<MFont>
+class MFont final : public ISingleton<MFont>
 {
   MDY_SINGLETON_PROPERTIES(MFont);
   MDY_SINGLETON_DERIVED(MFont);
@@ -51,10 +51,10 @@ public:
   /// @param  specifierName Font container speicfier name.
   /// @return Return default font container reference.
   ///
-  MDY_NODISCARD IDyFontContainer* GetFontResourceContainer(_MIN_ const std::string& specifierName);
+  MDY_NODISCARD IFontContainer* GetFontResourceContainer(_MIN_ const std::string& specifierName);
 
 private:
-  using TFontContainerMap = std::unordered_map<std::string, std::unique_ptr<IDyFontContainer>>;
+  using TFontContainerMap = std::unordered_map<std::string, std::unique_ptr<IFontContainer>>;
 
   ///
   TFontContainerMap   mFontResourceContainerMap = {};

@@ -15,8 +15,8 @@
 
 #include <Dy/Meta/Information/ElementObjectMetaInfo.h>
 #include <Dy/Meta/Components/PCompSpotLightMetaInfo.h>
-#include <Dy/Component/CDyLightPoint.h>
-#include <Dy/Component/CDyLightSpot.h>
+#include <Dy/Component/CLightPoint.h>
+#include <Dy/Component/CLightSpot.h>
 
 namespace dy
 {
@@ -35,7 +35,7 @@ inline EDySuccess FDyActor::Impl::pInitilaize(
       objectMetaDesc.mProperties.mPrefabSpecifierName.empty() == false, 
       "Unexpected error occurred.");
 
-    const auto& prefab = MDyMetaInfo::GetInstance().GetPrefabMetaInformation(
+    const auto& prefab = MIOMeta::GetInstance().GetPrefabMetaInformation(
       objectMetaDesc.mProperties.mPrefabSpecifierName);
 
     metaComponentInfo.insert(metaComponentInfo.end(), MDY_BIND_BEGIN_END(prefab.mMetaComponentInfo));
@@ -96,7 +96,7 @@ inline EDySuccess FDyActor::Impl::pInitilaize(const PDyActorCreationDescriptor& 
   TComponentMetaList metaComponentInfo;
   if (iDesc.mPrefabSpecifierName.empty() == false)
   { 
-    const auto& prefab = MDyMetaInfo::GetInstance().GetPrefabMetaInformation(iDesc.mPrefabSpecifierName);
+    const auto& prefab = MIOMeta::GetInstance().GetPrefabMetaInformation(iDesc.mPrefabSpecifierName);
     metaComponentInfo.insert(metaComponentInfo.end(), MDY_BIND_BEGIN_END(prefab.mMetaComponentInfo));
 
     if (iDesc.mIsOverridePrefabTag == true)
@@ -136,28 +136,28 @@ inline void FDyActor::Impl::CreateComponentsWithList(const TComponentMetaList& i
       this->AddComponent<CDyTransform>(std::any_cast<const PDyTransformComponentMetaInfo&>(componentInfo));
       break;
     case EDyComponentMetaType::Script:
-      this->AddComponent<CDyActorScript>(std::any_cast<const PDyScriptComponentMetaInfo&>(componentInfo));
+      this->AddComponent<CActorScript>(std::any_cast<const PDyScriptComponentMetaInfo&>(componentInfo));
       break;
     case EDyComponentMetaType::DirectionalLight:
-      this->AddComponent<CDyLightDirectional>(std::any_cast<const PDirLightComponentMetaInfo&>(componentInfo));
+      this->AddComponent<CLightDirectional>(std::any_cast<const PDirLightComponentMetaInfo&>(componentInfo));
       break;
     case EDyComponentMetaType::PointLight:
-      this->AddComponent<CDyLightPoint>(std::any_cast<const PCompPointLightMetaInfo&>(componentInfo));
+      this->AddComponent<CLightPoint>(std::any_cast<const PCompPointLightMetaInfo&>(componentInfo));
       break;
     case EDyComponentMetaType::SpotLight:
-      this->AddComponent<CDyLightSpot>(std::any_cast<const PCompSpotLightMetaInfo&>(componentInfo));
+      this->AddComponent<CLightSpot>(std::any_cast<const PCompSpotLightMetaInfo&>(componentInfo));
       break;
     case EDyComponentMetaType::ModelFilter:
-      this->AddComponent<CDyModelFilter>(std::any_cast<const PDyModelFilterComponentMetaInfo&>(componentInfo));
+      this->AddComponent<CModelFilter>(std::any_cast<const PDyModelFilterComponentMetaInfo&>(componentInfo));
       break;
     case EDyComponentMetaType::ModelRenderer:
-      this->AddComponent<CDyModelRenderer>(std::any_cast<const PDyModelRendererComponentMetaInfo&>(componentInfo));
+      this->AddComponent<CModelRenderer>(std::any_cast<const PDyModelRendererComponentMetaInfo&>(componentInfo));
       break;
     case EDyComponentMetaType::ModelAnimator:
-      this->AddComponent<CDyModelAnimator>(std::any_cast<const PDyModelAnimatorComponentMetaInfo&>(componentInfo));
+      this->AddComponent<CModelAnimator>(std::any_cast<const PDyModelAnimatorComponentMetaInfo&>(componentInfo));
       break;
     case EDyComponentMetaType::Camera:
-      this->AddComponent<CDyCamera>(std::any_cast<const PDyCameraComponentMetaInfo&>(componentInfo));
+      this->AddComponent<CCamera>(std::any_cast<const PDyCameraComponentMetaInfo&>(componentInfo));
       break;
     case EDyComponentMetaType::SoundSource:
       this->AddComponent<CDySoundSource>(std::any_cast<const PDySoundSourceComponentMetaInfo&>(componentInfo));
@@ -175,15 +175,15 @@ inline void FDyActor::Impl::CreateComponentsWithList(const TComponentMetaList& i
         {
         case EDyColliderType::Sphere: 
           {
-            this->AddComponent<CDyPhysicsColliderSphere>(refMetaInfo);
+            this->AddComponent<CPhysicsColliderSphere>(refMetaInfo);
           } break;
         case EDyColliderType::Capsule: 
           {
-            this->AddComponent<CDyPhysicsColliderCapsule>(refMetaInfo);
+            this->AddComponent<CyPhysicsColliderCapsule>(refMetaInfo);
           } break;
         case EDyColliderType::Box:
           {
-            this->AddComponent<CDyPhysicsColliderBox>(refMetaInfo);
+            this->AddComponent<CPhysicsColliderBox>(refMetaInfo);
           } break;
         default: MDY_UNEXPECTED_BRANCH(); break;
         }
@@ -205,48 +205,48 @@ inline void FDyActor::Impl::ReleaseComponent(_MINOUT_ TComponentList::value_type
   auto& [typeVal, ptrsmtComponent] = iItem;
   if (MDY_CHECK_ISEMPTY(ptrsmtComponent)) { return; }
 
-  using EType = EDyComponentType;
+  using EType = EComponentType;
   // ActorScript, Transform does not release in this logic.
   // We use downcasting intentionally to call Release() function.
   switch (typeVal)
   {
-  case EDyComponentType::DirectionalLight: 
+  case EComponentType::DirectionalLight: 
     { static_cast<TComponentBindingType<EType::DirectionalLight>::Type&>(*ptrsmtComponent).Release();
     } break;
-  case EDyComponentType::PointLight: 
+  case EComponentType::PointLight: 
     { static_cast<TComponentBindingType<EType::PointLight>::Type&>(*ptrsmtComponent).Release();
     } break;
-  case EDyComponentType::SpotLight: 
+  case EComponentType::SpotLight: 
     { static_cast<TComponentBindingType<EType::SpotLight>::Type&>(*ptrsmtComponent).Release();
     } break;
-  case EDyComponentType::Camera:
+  case EComponentType::Camera:
     { static_cast<TComponentBindingType<EType::Camera>::Type&>(*ptrsmtComponent).Release();
     } break;
-  case EDyComponentType::ModelAnimator:
+  case EComponentType::ModelAnimator:
     { static_cast<TComponentBindingType<EType::ModelAnimator>::Type&>(*ptrsmtComponent).Release();
     } break;
-  case EDyComponentType::ModelFilter:
+  case EComponentType::ModelFilter:
     { static_cast<TComponentBindingType<EType::ModelFilter>::Type&>(*ptrsmtComponent).Release();
     } break;
-  case EDyComponentType::ModelRenderer:
+  case EComponentType::ModelRenderer:
     { static_cast<TComponentBindingType<EType::ModelRenderer>::Type&>(*ptrsmtComponent).Release();
     } break;
-  case EDyComponentType::SoundSource:
+  case EComponentType::SoundSource:
     { static_cast<TComponentBindingType<EType::SoundSource>::Type&>(*ptrsmtComponent).Release();
     } break;
-  case EDyComponentType::Rigidbody:
+  case EComponentType::Rigidbody:
     { static_cast<TComponentBindingType<EType::Rigidbody>::Type&>(*ptrsmtComponent).Release();
     } break;
-  case EDyComponentType::ColliderSphere:
+  case EComponentType::ColliderSphere:
     { static_cast<TComponentBindingType<EType::ColliderSphere>::Type&>(*ptrsmtComponent).Release();
     } break;
-  case EDyComponentType::ColliderBox:
+  case EComponentType::ColliderBox:
     { static_cast<TComponentBindingType<EType::ColliderBox>::Type&>(*ptrsmtComponent).Release();
     } break;
-  case EDyComponentType::ColliderCapsule:
+  case EComponentType::ColliderCapsule:
     { static_cast<TComponentBindingType<EType::ColliderCapsule>::Type&>(*ptrsmtComponent).Release();
     } break;
-  case EDyComponentType::Skybox:
+  case EComponentType::Skybox:
     { static_cast<TComponentBindingType<EType::Skybox>::Type&>(*ptrsmtComponent).Release();
     } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
@@ -255,7 +255,7 @@ inline void FDyActor::Impl::ReleaseComponent(_MINOUT_ TComponentList::value_type
 
 inline void FDyActor::Impl::DestroySelf()
 {
-  MDyWorld::GetInstance().DestroyActor(this->mRefActor);
+  MWorld::GetInstance().DestroyActor(this->mRefActor);
 }
 
 inline void FDyActor::Impl::pUpdateActivateFlagFromParent() noexcept
@@ -294,9 +294,9 @@ inline EDySuccess FDyActor::Impl::MDY_PRIVATE(DetachPickingTargetFromSystem)()
   return DY_SUCCESS;
 }
 
-inline CDyActorScript* FDyActor::Impl::AddScriptComponent(const PDyScriptInstanceMetaInfo& iComponentInfo)
+inline CActorScript* FDyActor::Impl::AddScriptComponent(const PDyScriptInstanceMetaInfo& iComponentInfo)
 {
-  auto component = std::make_unique<CDyActorScript>(mRefActor, iComponentInfo.mSpecifierName);
+  auto component = std::make_unique<CActorScript>(mRefActor, iComponentInfo.mSpecifierName);
 
   auto& ref = this->mScriptList.emplace_back(std::move(component));
   return ref.get();
@@ -465,7 +465,7 @@ inline FDyActor::TActorMap& FDyActor::Impl::GetChildrenContainer() noexcept
 }
 
 #ifdef false
-CDyActorScript* FDyActor::Impl::GetScriptComponent(_MIN_ const std::string& scriptName) noexcept
+CActorScript* FDyActor::Impl::GetScriptComponent(_MIN_ const std::string& scriptName) noexcept
 {
   MDY_ASSERT_MSG(scriptName.empty() == false, "scriptName must not be empty at FDyActor::Impl::GetScriptComponent()");
 
@@ -516,11 +516,11 @@ inline void FDyActor::Impl::MDY_PRIVATE(TryRemoveScriptInstances)() noexcept
 inline void FDyActor::Impl::MDY_PRIVATE(TryDetachDependentComponents)() noexcept
 {
   this->MDY_PRIVATE(TryRemoveScriptInstances)();
-  auto rendererList = this->GetGeneralComponentList<CDyModelRenderer>();
+  auto rendererList = this->GetGeneralComponentList<CModelRenderer>();
   for (auto& ptrRenderer : rendererList)
   {
     // Try detach renderer from list, if not exist already just do nothing.
-    MDyWorld::GetInstance().MDY_PRIVATE(TryDetachActiveModelRenderer)(ptrRenderer);
+    MWorld::GetInstance().MDY_PRIVATE(TryDetachActiveModelRenderer)(ptrRenderer);
   }
 
   for (auto& [specifier, ptrsmtChild] : this->mChildrenActors)
@@ -542,7 +542,7 @@ inline CDyPhysicsRigidbody* FDyActor::Impl::GetRigidbody() noexcept
   return DyMakeNotNull(this->mRigidbody.get()); 
 }
 
-inline CDyActorScript* FDyActor::Impl::GetScriptComponent(const std::string& scriptName) noexcept
+inline CActorScript* FDyActor::Impl::GetScriptComponent(const std::string& scriptName) noexcept
 {
   for (auto& smtptrScript : this->mScriptList)
   {

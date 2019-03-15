@@ -15,7 +15,7 @@
 
 #include <Dy/Core/Resource/Type/TDyResourceBinderBase.h>
 #include <Dy/Core/Resource/Type/Material/ADyUniformHelper.h>
-#include <Dy/Meta/Type/EDyResourceType.h>
+#include <Dy/Meta/Type/EResourceType.h>
 
 namespace dy
 {
@@ -23,7 +23,7 @@ namespace dy
 /// @struct __TDyResourceBinderMaterial
 /// @brief Binder base class for each supporting resource type.
 struct __TDyResourceBinderMaterial : 
-    public __TDyResourceBinderBase<EDyResourceType::Material>,
+    public __TDyResourceBinderBase<EResourceType::Material>,
     public ADyUniformHelper
 {
 public:
@@ -33,7 +33,7 @@ public:
   __TDyResourceBinderMaterial() = default;
   virtual ~__TDyResourceBinderMaterial() = default;
 
-  template <EDyUniformVariableType TType>
+  template <EUniformVariableType TType>
   void TryUpdateUniform(
       _MIN_ const std::string& iSpecifier, 
       _MIN_ const typename MDY_PRIVATE(UniformBinder)<TType>::ValueType& iValue)

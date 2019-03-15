@@ -16,7 +16,7 @@
 #include <Dy/Helper/Type/DColorRGBA.h>
 #include <Dy/Element/Object.h>
 #include <Dy/Element/Actor.h>
-#include <Dy/Element/Interface/IDyUpdatable.h>
+#include <Dy/Element/Interface/IUpdatable.h>
 #include <Dy/Helper/Internal/FNameGenerator.h>
 
 namespace dy {
@@ -25,7 +25,7 @@ namespace dy {
 /// @brief Level class type for managing run-time interactive world space.
 class FDyLevel final : 
   public FDyObject, 
-  public IDyUpdatable, 
+  public IUpdatable, 
   public FNameGenerator,
   public TDyIdDistributor<TU32, FDyLevel>
 {

@@ -13,22 +13,22 @@
 ///
 
 /// Header file
-#include <Dy/Component/Internal/Widget/CDyWidgetScriptCpp.h>
+#include <Dy/Component/Internal/Widget/CWidgetScriptCpp.h>
 
-#include <Dy/Management/IO/MetaInfoManager.h>
+#include <Dy/Management/IO/MIOMeta.h>
 #include <Dy/Helper/System/Pointer.h>
 
 namespace dy
 {
 
-CDyWidgetScriptCpp::CDyWidgetScriptCpp(_MIN_ FDyUiWidget& widgetReference, _MIN_ const PDyScriptInstanceMetaInfo& metaInfo) :
-    CDyWidgetScriptBase{widgetReference}
+CWidgetScriptCpp::CWidgetScriptCpp(FDyUiWidget& widgetReference, const PDyScriptInstanceMetaInfo& metaInfo) 
+  : CBaseWidgetScript{widgetReference}
 {
-  MDY_ASSERT_MSG(metaInfo.mScriptType == EDyScriptType::Cpp,    "Script type is not matched to CDyWidgetScriptCpp.");
+  MDY_ASSERT_MSG(metaInfo.mScriptType == EDyScriptType::Cpp,    "Script type is not matched to CWidgetScriptCpp.");
   MDY_ASSERT_MSG(metaInfo.mScriptMode == EDyScriptMode::Widget, "Given script must be widget type.");
 
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(metaInfo.mBtInstantiationFunction), "Cpp script instantiation function must be not null.");
-  this->mScriptInstance = DyConvertUniquePtrTo<ADyWidgetCppScript>(metaInfo.mBtInstantiationFunction());
+  this->mScriptInstance = DyConvertUniquePtrTo<AWidgetCppScript>(metaInfo.mBtInstantiationFunction());
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->mScriptInstance),    "Script instance could not bound to system.");
 
   this->mScriptName = metaInfo.mSpecifierName;
@@ -36,38 +36,38 @@ CDyWidgetScriptCpp::CDyWidgetScriptCpp(_MIN_ FDyUiWidget& widgetReference, _MIN_
   this->mIsScriptInstanceBinded = true;
 }
 
-ADyWidgetCppScript* CDyWidgetScriptCpp::MDY_PRIVATE(GetScriptInstance)() const noexcept
+AWidgetCppScript* CWidgetScriptCpp::MDY_PRIVATE(GetScriptInstance)() const noexcept
 {
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance), "Script instance must be valid, not empty.");
   return this->mScriptInstance.get();
 }
 
-void CDyWidgetScriptCpp::Initiate()
+void CWidgetScriptCpp::Initiate()
 {
   this->mScriptInstance->Initiate();
 }
 
-void CDyWidgetScriptCpp::Start()
+void CWidgetScriptCpp::Start()
 {
   this->mScriptInstance->Start();
 }
 
-void CDyWidgetScriptCpp::Update(_MIN_ float dt)
+void CWidgetScriptCpp::Update(TF32 dt)
 {
   this->mScriptInstance->Update(dt);
 }
 
-void CDyWidgetScriptCpp::OnEnabled()
+void CWidgetScriptCpp::OnEnabled()
 {
   this->mScriptInstance->OnEnabled();
 }
 
-void CDyWidgetScriptCpp::OnDisabled()
+void CWidgetScriptCpp::OnDisabled()
 {
   this->mScriptInstance->OnDisabled();
 }
 
-void CDyWidgetScriptCpp::Destroy()
+void CWidgetScriptCpp::Destroy()
 {
   this->mScriptInstance->Destroy();
 }

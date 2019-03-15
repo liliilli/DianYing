@@ -14,7 +14,6 @@
 
 /// Header file
 #include <Dy/Element/Canvas/Text.h>
-#include <Dy/Component/Ctor/PDyFontRenderer.h>
 #include <Dy/Meta/Descriptor/WidgetTextMetaInformation.h>
 #include <Dy/Meta/Type/EDyWidgetTypes.h>
 #include <Dy/Management/MFont.h>
@@ -28,11 +27,11 @@ std::string FDyText::ToString()
   return "";
 }
 
-EDySuccess FDyText::Initialize(_MIN_ const PDyMetaWidgetTextDescriptor& objectMetaDesc)
+EDySuccess FDyText::Initialize(const PDyMetaWidgetTextDescriptor& objectMetaDesc)
 {
   /// @brief Bind font container resource instance pointer to this.
   /// @TODO IMPLEMENT CHECKING DEFAULT FONT CASE.
-  static auto GetFontResource = [](_MIN_ const std::string& fontSpecifierName) -> IDyFontContainer*
+  static auto GetFontResource = [](const std::string& fontSpecifierName) -> IFontContainer*
   {
     auto& fontManager = MFont::GetInstance();
     if (fontManager.IsFontResourceContainerExist(fontSpecifierName) == false)

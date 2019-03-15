@@ -27,7 +27,7 @@ namespace dy
 struct DDyIOReferenceInstance;
 struct  PDyMaterialInstanceMetaInfo;
 enum class EDyScope;
-template <EDyResourceType TType> class TDyResourceBinder;
+template <EResourceType TType> class TDyResourceBinder;
 } /// ::dy namespace
 
 //!
@@ -50,7 +50,7 @@ public:
   /// If given specifier of resource type could not found in Meta container, causes UB or assertion error in debug mode.
   static void PopulateResource(
       _MIN_ const std::string& specifier, 
-      _MIN_ EDyResourceType resourceType, 
+      _MIN_ EResourceType resourceType, 
       _MIN_ EDyResourceStyle resourceStyle, 
       _MIN_ EDyScope scope);
 
@@ -78,13 +78,13 @@ public:
   /// When callback is setup, instant material scope have callback condition, not temporary.
   static void PopulateInstantMaterialResource(
       _MIN_ PDyMaterialInstanceMetaInfo& desc, 
-      _MIN_ TDyResourceBinder<EDyResourceType::Material>& refMat, 
+      _MIN_ TDyResourceBinder<EResourceType::Material>& refMat, 
       _MIN_ bool(*callback)() = nullptr);
 
   /// @brief Check Reference Instance (RI) which has a given type, style and specifier name is exist.
   static bool IsReferenceInstanceExist(
       _MIN_ const std::string& iSpecifier,
-      _MIN_ EDyResourceType iType,
+      _MIN_ EResourceType iType,
       _MIN_ EDyResourceStyle iStyle);
 
   /// @brief Try Garbage collect of Reference Instance with resource as Scope and Style, which

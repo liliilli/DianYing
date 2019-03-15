@@ -14,8 +14,8 @@
 
 /// Header file
 #include <Dy/Core/Resource/Internal/FDyMeshVBOIntermediate.h>
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
-#include <Dy/Core/Rendering/Wrapper/PDyGLBufferDescriptor.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
+#include <Dy/Core/Rendering/Wrapper/PGLBufferDescriptor.h>
 #include <Dy/Core/Resource/Information/FDyMeshInformation.h>
 #include <Dy/Meta/Information/MetaInfoModelMesh.h>
 
@@ -48,8 +48,8 @@ void FDyMeshVBOIntermediate::MDY_PRIVATE(CreateVertexArrayBuffer)(_MIN_ const FD
   // OPENGL create VBO and EBO phrase.
   // VBO will not be created in this time because we will create VAO at main thread.
   {
-    PDyGLBufferDescriptor descriptor;
-    descriptor.mBufferType  = EDyDirectBufferType::VertexBuffer;
+    PGLBufferDescriptor descriptor;
+    descriptor.mBufferType  = EDirectBufferType::VertexBuffer;
     descriptor.mBufferUsage = info.mMeshUsage;
     if (info.mVAOBindingInfo.mIsUsingDefaultDyAttributeModel == true)
     { // If using default binding (JUST USING DDYVertexInformation structure...) Let it do the thing.
@@ -64,7 +64,7 @@ void FDyMeshVBOIntermediate::MDY_PRIVATE(CreateVertexArrayBuffer)(_MIN_ const FD
 
     std::optional<TU32> optVboId;
     { MDY_GRAPHIC_SET_CRITICALSECITON();
-      optVboId = FDyGLWrapper::CreateBuffer(descriptor);
+      optVboId = XGLWrapper::CreateBuffer(descriptor);
     }
     MDY_ASSERT_MSG(optVboId.has_value() == true, "VBO creation must be succeeded.");
     this->mBufferIdInformation.mVbo = optVboId.value();
@@ -82,14 +82,14 @@ void FDyMeshVBOIntermediate::MDY_PRIVATE(CreateElementArrayBuffer)(_MIN_ const F
 
   if (this->mMeshFlagInformation.mIsNotHaveIndices == false)
   {
-    PDyGLBufferDescriptor descriptor;
-    descriptor.mBufferType = EDyDirectBufferType::ElementBuffer;
+    PGLBufferDescriptor descriptor;
+    descriptor.mBufferType = EDirectBufferType::ElementBuffer;
     descriptor.mPtrBuffer  = &info.mIndiceBuffer[0];
     descriptor.mBufferByteSize = sizeof(decltype(info.mIndiceBuffer)::value_type) * info.mIndiceBuffer.size();
     
     std::optional<TU32> optEboId;
     { MDY_GRAPHIC_SET_CRITICALSECITON();
-      optEboId = FDyGLWrapper::CreateBuffer(descriptor);
+      optEboId = XGLWrapper::CreateBuffer(descriptor);
     }
     MDY_ASSERT_MSG(optEboId.has_value() == true, "EBO creation must be succeeded.");
     this->mBufferIdInformation.mEbo = optEboId.value();
@@ -129,13 +129,13 @@ FDyMeshVBOIntermediate::~FDyMeshVBOIntermediate()
   if (this->mBufferIdInformation.mVbo > 0)
   {
     MDY_GRAPHIC_SET_CRITICALSECITON();
-    FDyGLWrapper::DeleteBuffer(this->mBufferIdInformation.mVbo);
+    XGLWrapper::DeleteBuffer(this->mBufferIdInformation.mVbo);
   }
 
   if (this->mBufferIdInformation.mEbo > 0)
   {
     MDY_GRAPHIC_SET_CRITICALSECITON();
-    FDyGLWrapper::DeleteBuffer(this->mBufferIdInformation.mEbo);
+    XGLWrapper::DeleteBuffer(this->mBufferIdInformation.mEbo);
   }
 }
 

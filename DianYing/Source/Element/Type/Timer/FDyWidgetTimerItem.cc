@@ -15,7 +15,7 @@
 /// Header file
 #include <Dy/Element/Type/Timer/FDyWidgetTimerItem.h>
 
-#include <Dy/Component/Abstract/ADyWidgetCppScript.h>
+#include <Dy/Component/Abstract/AWidgetCppScript.h>
 #include <Dy/Element/Type/Timer/FDyTimerHandle.h>
 #include <Dy/Core/DyEngine.h>
 
@@ -24,7 +24,7 @@ namespace dy
 
 FDyWidgetTimerItem::FDyWidgetTimerItem(
     _MIN_ FDyTimerHandle& iHandle,
-    _MIN_ ADyWidgetCppScript& iRefScript,
+    _MIN_ AWidgetCppScript& iRefScript,
     _MIN_ TF32 iFirstDelay, 
     _MIN_ TF32 iDelayTime, 
     _MIN_ bool iIsLooped, 

@@ -13,14 +13,14 @@
 ///
 
 /// Header file
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <thread>
 
 #include <Dy/Core/Rendering/Wrapper/PDyGLWindowContextDescriptor.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLTextureDescriptor.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLShaderFragmentDescriptor.h>
-#include <Dy/Core/Rendering/Wrapper/PDyGLBufferDescriptor.h>
-#include <Dy/Core/Rendering/Wrapper/PDyGLAttachmentDescriptor.h>
+#include <Dy/Core/Rendering/Wrapper/PGLBufferDescriptor.h>
+#include <Dy/Core/Rendering/Wrapper/PGLAttachmentDescriptor.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLFrameBufferDescriptor.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLVaoBindDescriptor.h>
 #include <Dy/Core/Resource/Internal/ShaderType.h>
@@ -64,31 +64,31 @@ DyGlGetAttributeVariableTypeFrom(_MIN_ GLenum type) noexcept
   }
 }
 
-MDY_NODISCARD dy::EDyUniformVariableType 
+MDY_NODISCARD dy::EUniformVariableType 
 DyGlGetUniformVariableTypeFrom(_MIN_ GLenum type) noexcept
 {
   switch (type)
   {
-  case GL_BOOL:                             return dy::EDyUniformVariableType::Bool;
-  case GL_FLOAT:      case GL_DOUBLE:       return dy::EDyUniformVariableType::Float;
-  case GL_FLOAT_VEC2: case GL_DOUBLE_VEC2:  return dy::EDyUniformVariableType::Vector2;
-  case GL_FLOAT_VEC3: case GL_DOUBLE_VEC3:  return dy::EDyUniformVariableType::Vector3;
-  case GL_FLOAT_VEC4: case GL_DOUBLE_VEC4:  return dy::EDyUniformVariableType::Vector4;
-  case GL_FLOAT_MAT2: case GL_DOUBLE_MAT2:  return dy::EDyUniformVariableType::Matrix2;
-  case GL_FLOAT_MAT3: case GL_DOUBLE_MAT3:  return dy::EDyUniformVariableType::Matrix3;
-  case GL_FLOAT_MAT4: case GL_DOUBLE_MAT4:  return dy::EDyUniformVariableType::Matrix4;
-  case GL_INT:                              return dy::EDyUniformVariableType::Integer;
-  case GL_UNSIGNED_INT:                     return dy::EDyUniformVariableType::Unsigned;
-  case GL_INT_VEC2:                         return dy::EDyUniformVariableType::IVec2;
-  case GL_INT_VEC3:                         return dy::EDyUniformVariableType::IVec3;
-  case GL_INT_VEC4:                         return dy::EDyUniformVariableType::IVec4;
-  case GL_SAMPLER_1D:                       return dy::EDyUniformVariableType::Texture1D;
-  case GL_SAMPLER_2D:                       return dy::EDyUniformVariableType::Texture2D;
-  case GL_SAMPLER_2D_RECT:                  return dy::EDyUniformVariableType::Texture2DRectangle;
-  case GL_SAMPLER_2D_ARRAY:                 return dy::EDyUniformVariableType::Texture2DArray;
-  case GL_SAMPLER_2D_ARRAY_SHADOW:          return dy::EDyUniformVariableType::Texture2DShadowArray;
-  case GL_SAMPLER_CUBE:                     return dy::EDyUniformVariableType::Texture2DCubemap;
-  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(dy::EDyUniformVariableType::NoneError);
+  case GL_BOOL:                             return dy::EUniformVariableType::Bool;
+  case GL_FLOAT:      case GL_DOUBLE:       return dy::EUniformVariableType::Float;
+  case GL_FLOAT_VEC2: case GL_DOUBLE_VEC2:  return dy::EUniformVariableType::Vector2;
+  case GL_FLOAT_VEC3: case GL_DOUBLE_VEC3:  return dy::EUniformVariableType::Vector3;
+  case GL_FLOAT_VEC4: case GL_DOUBLE_VEC4:  return dy::EUniformVariableType::Vector4;
+  case GL_FLOAT_MAT2: case GL_DOUBLE_MAT2:  return dy::EUniformVariableType::Matrix2;
+  case GL_FLOAT_MAT3: case GL_DOUBLE_MAT3:  return dy::EUniformVariableType::Matrix3;
+  case GL_FLOAT_MAT4: case GL_DOUBLE_MAT4:  return dy::EUniformVariableType::Matrix4;
+  case GL_INT:                              return dy::EUniformVariableType::Integer;
+  case GL_UNSIGNED_INT:                     return dy::EUniformVariableType::Unsigned;
+  case GL_INT_VEC2:                         return dy::EUniformVariableType::IVec2;
+  case GL_INT_VEC3:                         return dy::EUniformVariableType::IVec3;
+  case GL_INT_VEC4:                         return dy::EUniformVariableType::IVec4;
+  case GL_SAMPLER_1D:                       return dy::EUniformVariableType::Texture1D;
+  case GL_SAMPLER_2D:                       return dy::EUniformVariableType::Texture2D;
+  case GL_SAMPLER_2D_RECT:                  return dy::EUniformVariableType::Texture2DRectangle;
+  case GL_SAMPLER_2D_ARRAY:                 return dy::EUniformVariableType::Texture2DArray;
+  case GL_SAMPLER_2D_ARRAY_SHADOW:          return dy::EUniformVariableType::Texture2DShadowArray;
+  case GL_SAMPLER_CUBE:                     return dy::EUniformVariableType::Texture2DCubemap;
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(dy::EUniformVariableType::NoneError);
   }
 }
 
@@ -203,8 +203,8 @@ void CbGlViewportStack(const dy::DDyGlGlobalStates::DViewport& iTopStatus)
 {
   for (auto& [index, area] : iTopStatus.mViewportSettingList)
   {
-    if (index <= -1)  { dy::FDyGLWrapper::SetViewport(area); }
-    else              { dy::FDyGLWrapper::SetViewportIndexed(static_cast<TU32>(index), area); }
+    if (index <= -1)  { dy::XGLWrapper::SetViewport(area); }
+    else              { dy::XGLWrapper::SetViewportIndexed(static_cast<TU32>(index), area); }
   }
 }
 
@@ -235,20 +235,20 @@ void CbGlAttachmentBlendingStack(const std::vector<dy::PBlendingEquation>& iTopS
 namespace dy
 {
 
-std::mutex FDyGLWrapper::mGLCriticalSectionMutex;
+std::mutex XGLWrapper::mGLCriticalSectionMutex;
 
-FCallStack<DDyGlGlobalStates> FDyGLWrapper::mInternalGlobalStatusStack;
-FCallStack<bool> FDyGLWrapper::mInternal_FeatBlendStack;
-FCallStack<bool> FDyGLWrapper::mInternal_FeatCullfaceStack;
-FCallStack<bool> FDyGLWrapper::mInternal_FeatDepthTestStack;
-FCallStack<bool> FDyGLWrapper::mInternal_FeatScissorTestStack;
-FCallStack<DDyGlGlobalStates::DPolygonMode>   FDyGLWrapper::mInternal_PolygonModeStack;
-FCallStack<DDyGlGlobalStates::DBlendMode>     FDyGLWrapper::mInternal_BlendModeStack;
-FCallStack<DDyGlGlobalStates::DCullfaceMode>  FDyGLWrapper::mInternal_CullfaceModeStack;
-FCallStack<DDyGlGlobalStates::DViewport>      FDyGLWrapper::mInternal_ViewportStack;
-FCallStack<std::vector<PBlendingEquation>>    FDyGLWrapper::sAttachmentBlendings;
+FCallStack<DDyGlGlobalStates> XGLWrapper::mInternalGlobalStatusStack;
+FCallStack<bool> XGLWrapper::mInternal_FeatBlendStack;
+FCallStack<bool> XGLWrapper::mInternal_FeatCullfaceStack;
+FCallStack<bool> XGLWrapper::mInternal_FeatDepthTestStack;
+FCallStack<bool> XGLWrapper::mInternal_FeatScissorTestStack;
+FCallStack<DDyGlGlobalStates::DPolygonMode>   XGLWrapper::mInternal_PolygonModeStack;
+FCallStack<DDyGlGlobalStates::DBlendMode>     XGLWrapper::mInternal_BlendModeStack;
+FCallStack<DDyGlGlobalStates::DCullfaceMode>  XGLWrapper::mInternal_CullfaceModeStack;
+FCallStack<DDyGlGlobalStates::DViewport>      XGLWrapper::mInternal_ViewportStack;
+FCallStack<std::vector<PBlendingEquation>>    XGLWrapper::sAttachmentBlendings;
 
-GLFWwindow* FDyGLWrapper::CreateGLWindow(_MIN_ const PDyGLWindowContextDescriptor& descriptor)
+GLFWwindow* XGLWrapper::CreateGLWindow(_MIN_ const PDyGLWindowContextDescriptor& descriptor)
 {
   MDY_ASSERT_MSG(descriptor.mWindowName.empty() == false, "Window name must not be empty.");
   MDY_ASSERT_MSG(descriptor.mWindowSize.X > 0 && descriptor.mWindowSize.Y > 0, "Window size must be valid.");
@@ -286,12 +286,12 @@ GLFWwindow* FDyGLWrapper::CreateGLWindow(_MIN_ const PDyGLWindowContextDescripto
       ptrMonitor, descriptor.mSharingContext);
 }
 
-void FDyGLWrapper::CreateGLContext(_MIN_ GLFWwindow* window)
+void XGLWrapper::CreateGLContext(_MIN_ GLFWwindow* window)
 {
   glfwMakeContextCurrent(window);
 }
 
-std::optional<TU32> FDyGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescriptor& descriptor)
+std::optional<TU32> XGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescriptor& descriptor)
 {
   // Validation check.
   MDY_ASSERT_MSG(descriptor.mImageFormat != GL_NONE, "Texture Image format must be specified.");
@@ -354,7 +354,7 @@ std::optional<TU32> FDyGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescript
   return mTextureResourceId;
 }
 
-std::optional<TU32> FDyGLWrapper::CreateTexture(const PDyGLTextureCubemapDescriptor& descriptor)
+std::optional<TU32> XGLWrapper::CreateTexture(const PDyGLTextureCubemapDescriptor& descriptor)
 {
   // Validation check.
   MDY_ASSERT_MSG(descriptor.mImageFormat != GL_NONE, "Texture Image format must be specified.");
@@ -424,12 +424,12 @@ std::optional<TU32> FDyGLWrapper::CreateTexture(const PDyGLTextureCubemapDescrip
   return mTextureResourceId;
 }
 
-void FDyGLWrapper::DeleteTexture(_MIN_ const TU32 validTextureId)
+void XGLWrapper::DeleteTexture(_MIN_ const TU32 validTextureId)
 {
   glDeleteTextures(1, &validTextureId);
 }
 
-std::optional<TU32> FDyGLWrapper::CreateShaderFragment(_MIN_ const PDyGLShaderFragmentDescriptor& descriptor)
+std::optional<TU32> XGLWrapper::CreateShaderFragment(_MIN_ const PDyGLShaderFragmentDescriptor& descriptor)
 {
   TU32 shaderFragmentId;
 
@@ -453,12 +453,12 @@ std::optional<TU32> FDyGLWrapper::CreateShaderFragment(_MIN_ const PDyGLShaderFr
   return shaderFragmentId;
 }
 
-void FDyGLWrapper::DeleteShaderFragment(_MIN_ const TU32 shaderFragmentId)
+void XGLWrapper::DeleteShaderFragment(_MIN_ const TU32 shaderFragmentId)
 {
   glDeleteShader(shaderFragmentId);
 }
 
-std::optional<TU32> FDyGLWrapper::CreateShaderProgram(_MIN_ const TFragmentList& fragmentList)
+std::optional<TU32> XGLWrapper::CreateShaderProgram(_MIN_ const TFragmentList& fragmentList)
 {
   const TU32 shaderProgramId = glCreateProgram();
 
@@ -477,22 +477,22 @@ std::optional<TU32> FDyGLWrapper::CreateShaderProgram(_MIN_ const TFragmentList&
   return shaderProgramId;
 }
 
-void FDyGLWrapper::DeleteShaderProgram(_MIN_ const TU32 shaderProgramId)
+void XGLWrapper::DeleteShaderProgram(_MIN_ const TU32 shaderProgramId)
 {
   glDeleteProgram(shaderProgramId);
 }
 
-void FDyGLWrapper::UseShaderProgram(_MIN_ TU32 iShaderProgramId)
+void XGLWrapper::UseShaderProgram(_MIN_ TU32 iShaderProgramId)
 {
   glUseProgram(iShaderProgramId);
 }
 
-void FDyGLWrapper::DisuseShaderProgram()
+void XGLWrapper::DisuseShaderProgram()
 {
   glUseProgram(0);
 }
 
-std::optional<TU32> FDyGLWrapper::CreateBuffer(_MIN_ const PDyGLBufferDescriptor& descriptor)
+std::optional<TU32> XGLWrapper::CreateBuffer(_MIN_ const PGLBufferDescriptor& descriptor)
 {
   TU32 id = MDY_INITIALIZE_DEFUINT;
   GLenum usage = GL_NONE;
@@ -505,7 +505,7 @@ std::optional<TU32> FDyGLWrapper::CreateBuffer(_MIN_ const PDyGLBufferDescriptor
 
   switch (descriptor.mBufferType)
   {
-  case EDyDirectBufferType::VertexBuffer:
+  case EDirectBufferType::VertexBuffer:
   { // VBO
     glGenBuffers(1, &id);
     glBindBuffer(GL_ARRAY_BUFFER, id);
@@ -519,7 +519,7 @@ std::optional<TU32> FDyGLWrapper::CreateBuffer(_MIN_ const PDyGLBufferDescriptor
     glBindBuffer(GL_ARRAY_BUFFER, MDY_GL_NONE);
     glFlush();
   } break;
-  case EDyDirectBufferType::ElementBuffer:
+  case EDirectBufferType::ElementBuffer:
   { // EBO
     glGenBuffers(1, &id);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id);
@@ -527,9 +527,9 @@ std::optional<TU32> FDyGLWrapper::CreateBuffer(_MIN_ const PDyGLBufferDescriptor
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, MDY_GL_NONE);
     glFlush();
   } break;
-  case EDyDirectBufferType::UniformBuffer:
-  case EDyDirectBufferType::TransformFeedback:
-  case EDyDirectBufferType::ShaderStorage:
+  case EDirectBufferType::UniformBuffer:
+  case EDirectBufferType::TransformFeedback:
+  case EDirectBufferType::ShaderStorage:
     MDY_NOT_IMPLEMENTED_ASSERT();
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
   }
@@ -537,20 +537,20 @@ std::optional<TU32> FDyGLWrapper::CreateBuffer(_MIN_ const PDyGLBufferDescriptor
   return id;
 }
 
-void FDyGLWrapper::DeleteBuffer(_MIN_ const TU32 directBufferId)
+void XGLWrapper::DeleteBuffer(_MIN_ const TU32 directBufferId)
 {
   glDeleteBuffers(1, &directBufferId);
 }
 
-void FDyGLWrapper::MapBuffer(
-    _MIN_ EDyDirectBufferType iBufferType, _MIN_ TU32 iBufferId, 
+void XGLWrapper::MapBuffer(
+    _MIN_ EDirectBufferType iBufferType, _MIN_ TU32 iBufferId, 
     _MIN_ void* iPtrBuffer, _MIN_ TU32 iBufferSize)
 {
   GLenum bufferType = GL_NONE;
   switch (iBufferType)
   {
-  case EDyDirectBufferType::VertexBuffer:   { bufferType = GL_ARRAY_BUFFER; } break;
-  case EDyDirectBufferType::ElementBuffer:  { bufferType = GL_ELEMENT_ARRAY_BUFFER; } break;
+  case EDirectBufferType::VertexBuffer:   { bufferType = GL_ARRAY_BUFFER; } break;
+  case EDirectBufferType::ElementBuffer:  { bufferType = GL_ELEMENT_ARRAY_BUFFER; } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 
@@ -558,16 +558,16 @@ void FDyGLWrapper::MapBuffer(
   glBufferSubData(bufferType, 0, iBufferSize, iPtrBuffer);
 }
 
-void FDyGLWrapper::MapBufferExt(
-    _MIN_ EDyDirectBufferType iBufferType, _MIN_ TU32 iBufferId, _MIN_ void* iPtrBuffer, _MIN_ TU32 iBufferSize,
+void XGLWrapper::MapBufferExt(
+    _MIN_ EDirectBufferType iBufferType, _MIN_ TU32 iBufferId, _MIN_ void* iPtrBuffer, _MIN_ TU32 iBufferSize,
     _MIN_ TU32 iItemByteSize, _MIN_ TU32 iGapByteSize, _MIN_ TU32 iStartPoint)
 {
   GLenum  bufferType = GL_NONE;
   auto*   ptrInput   = static_cast<char*>(iPtrBuffer);
   switch (iBufferType)
   {
-  case EDyDirectBufferType::VertexBuffer:   { bufferType = GL_ARRAY_BUFFER; } break;
-  case EDyDirectBufferType::ElementBuffer:  { bufferType = GL_ELEMENT_ARRAY_BUFFER; } break;
+  case EDirectBufferType::VertexBuffer:   { bufferType = GL_ARRAY_BUFFER; } break;
+  case EDirectBufferType::ElementBuffer:  { bufferType = GL_ELEMENT_ARRAY_BUFFER; } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 
@@ -583,14 +583,14 @@ void FDyGLWrapper::MapBufferExt(
   glUnmapBuffer(bufferType);
 }
 
-TU32 FDyGLWrapper::CreateVertexArrayObject()
+TU32 XGLWrapper::CreateVertexArrayObject()
 {
   TU32 vaoId = MDY_INITIALIZE_DEFUINT;
   glGenVertexArrays(1, &vaoId);
   return vaoId;
 }
 
-void FDyGLWrapper::BindVertexArrayObject(_MIN_ const PDyGLVaoBindDescriptor& iDescriptor)
+void XGLWrapper::BindVertexArrayObject(_MIN_ const PDyGLVaoBindDescriptor& iDescriptor)
 {
   if (iDescriptor.mAttributeInfo.mIsUsingDefaultDyAttributeModel == true)
   { // If descriptor using default attribute structure binding model, retrieve information from another dimesion
@@ -635,12 +635,12 @@ void FDyGLWrapper::BindVertexArrayObject(_MIN_ const PDyGLVaoBindDescriptor& iDe
   glFlush();
 }
 
-void FDyGLWrapper::DeleteVertexArrayObject(_MIN_ const TU32 vertexArrayObjectId)
+void XGLWrapper::DeleteVertexArrayObject(_MIN_ const TU32 vertexArrayObjectId)
 {
   glDeleteVertexArrays(1, &vertexArrayObjectId);
 }
 
-std::optional<TU32> FDyGLWrapper::CreateAttachment(_MIN_ const PDyGLAttachmentDescriptor& iDescriptor)
+std::optional<TU32> XGLWrapper::CreateAttachment(_MIN_ const PGLAttachmentDescriptor& iDescriptor)
 {
   // Validation check.
   MDY_ASSERT_MSG(iDescriptor.mBufferSize.X > 0 && iDescriptor.mBufferSize.Y > 0, 
@@ -707,7 +707,7 @@ std::optional<TU32> FDyGLWrapper::CreateAttachment(_MIN_ const PDyGLAttachmentDe
   return attachmentId;
 }
 
-EDySuccess FDyGLWrapper::DeleteAttachment(_MIN_ TU32 iAttachmentId, _MIN_ bool iIsRenderBuffer)
+EDySuccess XGLWrapper::DeleteAttachment(_MIN_ TU32 iAttachmentId, _MIN_ bool iIsRenderBuffer)
 {
   // Delete attachment (only texture attachment now)
   if (iIsRenderBuffer == true) 
@@ -721,7 +721,7 @@ EDySuccess FDyGLWrapper::DeleteAttachment(_MIN_ TU32 iAttachmentId, _MIN_ bool i
   return DY_SUCCESS;
 }
 
-std::optional<TU32> FDyGLWrapper::CreateFrameBuffer(_MIN_ const PDyGLFrameBufferDescriptor& iDescriptor)
+std::optional<TU32> XGLWrapper::CreateFrameBuffer(_MIN_ const PDyGLFrameBufferDescriptor& iDescriptor)
 {
   const auto attachmentBindingSize = TU32(iDescriptor.mAttachmentBindingList.size());
   std::vector<GLenum> attachmentTypeList = {};
@@ -780,21 +780,21 @@ std::optional<TU32> FDyGLWrapper::CreateFrameBuffer(_MIN_ const PDyGLFrameBuffer
   return framebufferId;
 }
 
-EDySuccess FDyGLWrapper::DeleteFrameBuffer(_MIN_ const TU32 framebufferId)
+EDySuccess XGLWrapper::DeleteFrameBuffer(_MIN_ const TU32 framebufferId)
 {
   glDeleteFramebuffers(1, &framebufferId);
   return DY_SUCCESS;
 }
 
-void FDyGLWrapper::SetViewport(_MIN_ const std::array<TI32, 4>& iViewportRegion)
+void XGLWrapper::SetViewport(_MIN_ const std::array<TI32, 4>& iViewportRegion)
 {
   DArea2D area; 
   area.mLeftDown  = DVector2{static_cast<TF32>(iViewportRegion[0]), static_cast<TF32>(iViewportRegion[1])};
   area.mRightUp   = DVector2{static_cast<TF32>(iViewportRegion[2]), static_cast<TF32>(iViewportRegion[3])};
-  FDyGLWrapper::SetViewport(area);
+  XGLWrapper::SetViewport(area);
 }
 
-void FDyGLWrapper::SetViewport(_MIN_ const DArea2D& iViewportRegion)
+void XGLWrapper::SetViewport(_MIN_ const DArea2D& iViewportRegion)
 {
   glViewport(
       static_cast<TI32>(iViewportRegion.mLeftDown.X), 
@@ -803,15 +803,15 @@ void FDyGLWrapper::SetViewport(_MIN_ const DArea2D& iViewportRegion)
       static_cast<TI32>(iViewportRegion.mRightUp.Y - iViewportRegion.mLeftDown.Y));
 }
 
-void FDyGLWrapper::SetViewportIndexed(_MIN_ TU32 iIndex,_MIN_ const std::array<TI32, 4>& iViewportRegion)
+void XGLWrapper::SetViewportIndexed(_MIN_ TU32 iIndex,_MIN_ const std::array<TI32, 4>& iViewportRegion)
 {
   DArea2D area; 
   area.mLeftDown  = DVector2{static_cast<TF32>(iViewportRegion[0]), static_cast<TF32>(iViewportRegion[1])};
   area.mRightUp   = DVector2{static_cast<TF32>(iViewportRegion[2]), static_cast<TF32>(iViewportRegion[3])};
-  FDyGLWrapper::SetViewportIndexed(iIndex, area);
+  XGLWrapper::SetViewportIndexed(iIndex, area);
 }
 
-void FDyGLWrapper::SetViewportIndexed(_MIN_ TU32 iIndex, _MIN_ const DArea2D& iViewportRegion)
+void XGLWrapper::SetViewportIndexed(_MIN_ TU32 iIndex, _MIN_ const DArea2D& iViewportRegion)
 {
   glViewportIndexedf(iIndex, 
       iViewportRegion.mLeftDown.X, 
@@ -820,27 +820,27 @@ void FDyGLWrapper::SetViewportIndexed(_MIN_ TU32 iIndex, _MIN_ const DArea2D& iV
       iViewportRegion.mRightUp.Y - iViewportRegion.mLeftDown.Y);
 }
 
-void FDyGLWrapper::BindFrameBufferObject(_MIN_ TU32 iFboId)
+void XGLWrapper::BindFrameBufferObject(_MIN_ TU32 iFboId)
 {
   glBindFramebuffer(GL_FRAMEBUFFER, iFboId);
 }
 
-void FDyGLWrapper::UnbindFrameBufferObject()
+void XGLWrapper::UnbindFrameBufferObject()
 {
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void FDyGLWrapper::BindVertexArrayObject(_MIN_ TU32 iVaoId)
+void XGLWrapper::BindVertexArrayObject(_MIN_ TU32 iVaoId)
 {
   glBindVertexArray(iVaoId);
 }
 
-void FDyGLWrapper::UnbindVertexArrayObject()
+void XGLWrapper::UnbindVertexArrayObject()
 {
   glBindVertexArray(0);
 }
 
-void FDyGLWrapper::BindTexture(
+void XGLWrapper::BindTexture(
     _MIN_ TU32 activeTextureIndex, 
     _MIN_ EDyTextureStyleType type, _MIN_ TU32 textureId)
 {
@@ -859,7 +859,7 @@ void FDyGLWrapper::BindTexture(
   }
 }
 
-void FDyGLWrapper::UnbindTexture(_MIN_ TU32 textureIndex, _MIN_ EDyTextureStyleType type)
+void XGLWrapper::UnbindTexture(_MIN_ TU32 textureIndex, _MIN_ EDyTextureStyleType type)
 {
   glActiveTexture(GL_TEXTURE0 + textureIndex);
   switch (type)
@@ -870,18 +870,18 @@ void FDyGLWrapper::UnbindTexture(_MIN_ TU32 textureIndex, _MIN_ EDyTextureStyleT
   }
 }
 
-void FDyGLWrapper::Draw(_MIN_ EDyDrawType iType, _MIN_ bool iIsElement, _MIN_ TU32 iCount)
+void XGLWrapper::Draw(_MIN_ EDrawType iType, _MIN_ bool iIsElement, _MIN_ TU32 iCount)
 {
   GLenum drawType = GL_POINT;
   switch (iType)
   {
-  case EDyDrawType::Point:  drawType = GL_POINT;  break;
-  case EDyDrawType::Line:   drawType = GL_LINE;   break;
-  case EDyDrawType::LineStrip: drawType = GL_LINE_STRIP; break;
-  case EDyDrawType::LineLoop:   drawType = GL_LINE_LOOP; break;
-  case EDyDrawType::Triangle:   drawType = GL_TRIANGLES; break;
-  case EDyDrawType::TriangleStip: drawType = GL_TRIANGLE_STRIP; break;
-  case EDyDrawType::TriangleFan:  drawType = GL_TRIANGLE_FAN;   break;
+  case EDrawType::Point:  drawType = GL_POINT;  break;
+  case EDrawType::Line:   drawType = GL_LINE;   break;
+  case EDrawType::LineStrip: drawType = GL_LINE_STRIP; break;
+  case EDrawType::LineLoop:   drawType = GL_LINE_LOOP; break;
+  case EDrawType::Triangle:   drawType = GL_TRIANGLES; break;
+  case EDrawType::TriangleStip: drawType = GL_TRIANGLE_STRIP; break;
+  case EDrawType::TriangleFan:  drawType = GL_TRIANGLE_FAN;   break;
   }
 
   if (iIsElement == true)
@@ -894,20 +894,20 @@ void FDyGLWrapper::Draw(_MIN_ EDyDrawType iType, _MIN_ bool iIsElement, _MIN_ TU
   }
 }
 
-TI32 FDyGLWrapper::QueryShaderProgramIV(_MIN_ TU32 iShaderProgramId, _MIN_ GLenum iQueryEnum)
+TI32 XGLWrapper::QueryShaderProgramIV(_MIN_ TU32 iShaderProgramId, _MIN_ GLenum iQueryEnum)
 {
   TI32 result = 0;
   glGetProgramiv(iShaderProgramId, iQueryEnum, &result);
   return result;
 }
 
-void FDyGLWrapper::QueryFloatVector(_MIN_ GLenum iGLLowEnumCommand, _MIN_ TF32* iPtrRawFloatVector)
+void XGLWrapper::QueryFloatVector(_MIN_ GLenum iGLLowEnumCommand, _MIN_ TF32* iPtrRawFloatVector)
 {
   glGetFloatv(iGLLowEnumCommand, iPtrRawFloatVector);
 }
 
 std::optional<std::tuple<std::string, GLsizei, GLint, EDyAttributeVariableType, TU32>> 
-FDyGLWrapper::GetShaderProgramAttributeInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iAttrIndex)
+XGLWrapper::GetShaderProgramAttributeInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iAttrIndex)
 {
   const TI32 attrBufferLength = QueryShaderProgramIV(iShaderProgramId, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH);
   auto* attributeName = static_cast<char*>(std::calloc(attrBufferLength, sizeof(GLchar)));
@@ -928,8 +928,8 @@ FDyGLWrapper::GetShaderProgramAttributeInfo(_MIN_ TU32 iShaderProgramId, _MIN_ T
   return result;
 }
 
-std::optional<std::tuple<std::string, GLsizei, GLint, EDyUniformVariableType, TU32>>
-FDyGLWrapper::GetShaderProgramUniformInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iUniformIndex)
+std::optional<std::tuple<std::string, GLsizei, GLint, EUniformVariableType, TU32>>
+XGLWrapper::GetShaderProgramUniformInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iUniformIndex)
 {
   const TI32 uniformBufLength = QueryShaderProgramIV(iShaderProgramId, GL_ACTIVE_UNIFORM_MAX_LENGTH);
   auto* uniformName = static_cast<char*>(std::calloc(uniformBufLength, sizeof(GLchar)));
@@ -949,16 +949,16 @@ FDyGLWrapper::GetShaderProgramUniformInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU3
   }
 
   auto type = DyGlGetUniformVariableTypeFrom(uniType);
-  MDY_ASSERT_MSG(type != EDyUniformVariableType::NoneError, "Not supported uniform type.");
+  MDY_ASSERT_MSG(type != EUniformVariableType::NoneError, "Not supported uniform type.");
 
   // If array type.. 
   if (std::strchr(uniformName, '[') != nullptr)
   {
     switch (type)
     {
-    case EDyUniformVariableType::Matrix4: { type = EDyUniformVariableType::Matrix4Array; } break;
-    case EDyUniformVariableType::Vector3: { type = EDyUniformVariableType::Vector3Array; } break;
-    case EDyUniformVariableType::Float:   { type = EDyUniformVariableType::FloatArray; } break;
+    case EUniformVariableType::Matrix4: { type = EUniformVariableType::Matrix4Array; } break;
+    case EUniformVariableType::Vector3: { type = EUniformVariableType::Vector3Array; } break;
+    case EUniformVariableType::Float:   { type = EUniformVariableType::FloatArray; } break;
     default: MDY_NOT_IMPLEMENTED_ASSERT(); break;
     }
   }
@@ -970,7 +970,7 @@ FDyGLWrapper::GetShaderProgramUniformInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU3
 }
 
 std::optional<std::string> 
-FDyGLWrapper::GetShaderProgramUniformBlockInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iUniformBlockIndex)
+XGLWrapper::GetShaderProgramUniformBlockInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iUniformBlockIndex)
 {
   const TI32 uboNameMaxLength = QueryShaderProgramIV(iShaderProgramId, GL_ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH);
   auto* uniformName = static_cast<char*>(std::calloc(uboNameMaxLength, sizeof(GLchar)));
@@ -989,7 +989,7 @@ FDyGLWrapper::GetShaderProgramUniformBlockInfo(_MIN_ TU32 iShaderProgramId, _MIN
   return result;
 }
 
-void FDyGLWrapper::UpdateUniformMatrix4(TU32 iId, const DMatrix4x4& iBuffer, bool iTransposed)
+void XGLWrapper::UpdateUniformMatrix4(TU32 iId, const DMatrix4x4& iBuffer, bool iTransposed)
 {
   GLenum transposed = GL_FALSE;
   if (iTransposed == true) { transposed = GL_TRUE; }
@@ -997,7 +997,7 @@ void FDyGLWrapper::UpdateUniformMatrix4(TU32 iId, const DMatrix4x4& iBuffer, boo
   glUniformMatrix4fv(iId, 1, transposed, &iBuffer[0].X);
 }
 
-void FDyGLWrapper::UpdateUniformMatrix3(TU32 iId, const DMatrix3x3& iBuffer, bool iTransposed)
+void XGLWrapper::UpdateUniformMatrix3(TU32 iId, const DMatrix3x3& iBuffer, bool iTransposed)
 {
   GLenum transposed = GL_FALSE;
   if (iTransposed == true) { transposed = GL_TRUE; }
@@ -1005,7 +1005,7 @@ void FDyGLWrapper::UpdateUniformMatrix3(TU32 iId, const DMatrix3x3& iBuffer, boo
   glUniformMatrix3fv(iId, 1, transposed, &iBuffer[0].X);
 }
 
-void FDyGLWrapper::UpdateUniformMatrix4Array(TU32 iId, const std::vector<DMatrix4x4>& iBuffer, bool iIransposed)
+void XGLWrapper::UpdateUniformMatrix4Array(TU32 iId, const std::vector<DMatrix4x4>& iBuffer, bool iIransposed)
 {
   if (iBuffer.empty() == true) { return; }
 
@@ -1016,7 +1016,7 @@ void FDyGLWrapper::UpdateUniformMatrix4Array(TU32 iId, const std::vector<DMatrix
   glUniformMatrix4fv(iId, size, transposed, &iBuffer[0][0].X);
 }
 
-void FDyGLWrapper::UpdateUniformVector3Array(TU32 iId, const std::vector<DVector3>& iBuffer)
+void XGLWrapper::UpdateUniformVector3Array(TU32 iId, const std::vector<DVector3>& iBuffer)
 {
   if (iBuffer.empty() == true) { return; }
 
@@ -1024,44 +1024,44 @@ void FDyGLWrapper::UpdateUniformVector3Array(TU32 iId, const std::vector<DVector
   glUniform3fv(iId, size, iBuffer.front().Data());
 }
 
-void FDyGLWrapper::UpdateUniformVector4(TU32 iId, const DVector4& iBuffer)
+void XGLWrapper::UpdateUniformVector4(TU32 iId, const DVector4& iBuffer)
 {
   glUniform4fv(iId, 1, iBuffer.Data());
 }
 
-void FDyGLWrapper::UpdateUniformVector3(TU32 iId, const DVector3& iBuffer)
+void XGLWrapper::UpdateUniformVector3(TU32 iId, const DVector3& iBuffer)
 {
   glUniform3fv(iId, 1, iBuffer.Data());
 }
 
-void FDyGLWrapper::UpdateUniformVector2(TU32 iId, const DVector2& iBuffer)
+void XGLWrapper::UpdateUniformVector2(TU32 iId, const DVector2& iBuffer)
 {
   glUniform2fv(iId, 1, iBuffer.Data());
 }
 
-void FDyGLWrapper::UpdateUniformInteger(TU32 iId, const TI32& iBuffer)
+void XGLWrapper::UpdateUniformInteger(TU32 iId, const TI32& iBuffer)
 {
   glUniform1i(iId, iBuffer);
 }
 
-void FDyGLWrapper::UpdateUniformUnsigned(TU32 iId, const TU32& iBuffer)
+void XGLWrapper::UpdateUniformUnsigned(TU32 iId, const TU32& iBuffer)
 {
   glUniform1ui(iId, iBuffer);
 }
 
-void FDyGLWrapper::UpdateUniformFloat(TU32 iId, const TF32& iBuffer)
+void XGLWrapper::UpdateUniformFloat(TU32 iId, const TF32& iBuffer)
 {
   glUniform1f(iId, iBuffer);
 }
 
-void FDyGLWrapper::UpdateUniformFloatArray(TU32 iId, const std::vector<TF32>& iBuffer)
+void XGLWrapper::UpdateUniformFloatArray(TU32 iId, const std::vector<TF32>& iBuffer)
 {
   if (iBuffer.empty() == true) { return; }
 
   glUniform1fv(iId, iBuffer.size(), iBuffer.data());
 }
 
-void FDyGLWrapper::PushInternalGlobalState(const DDyGlGlobalStates& iNewStatus)
+void XGLWrapper::PushInternalGlobalState(const DDyGlGlobalStates& iNewStatus)
 {
   //
   mInternalGlobalStatusStack.Push(iNewStatus, false);
@@ -1089,7 +1089,7 @@ void FDyGLWrapper::PushInternalGlobalState(const DDyGlGlobalStates& iNewStatus)
   { sAttachmentBlendings.Push(*topStatusChunk.mAttachmentBlendings); }
 }
 
-void FDyGLWrapper::PopInternalGlobalState()
+void XGLWrapper::PopInternalGlobalState()
 {
   if (mInternalGlobalStatusStack.IsEmpty() == true) { return; }
 
@@ -1107,24 +1107,24 @@ void FDyGLWrapper::PopInternalGlobalState()
   if (extracted.mAttachmentBlendings.has_value() == true) { sAttachmentBlendings.Pop(); }
 }
 
-FDyGLWrapper::__OutsideLockguard::MDY_PRIVATE(OutsideLockguard)
-(FDyGLWrapper::MDY_PRIVATE(OutsideLockguard)&& iSource) noexcept
+XGLWrapper::__OutsideLockguard::MDY_PRIVATE(OutsideLockguard)
+(XGLWrapper::MDY_PRIVATE(OutsideLockguard)&& iSource) noexcept
 {
   iSource.mIsMoved = true;
 }
 
-FDyGLWrapper::__OutsideLockguard FDyGLWrapper::__LockMutex()
+XGLWrapper::__OutsideLockguard XGLWrapper::__LockMutex()
 {
-  FDyGLWrapper::mGLCriticalSectionMutex.lock();
+  XGLWrapper::mGLCriticalSectionMutex.lock();
   return __OutsideLockguard{};
 }
 
-void FDyGLWrapper::__UnlockMutex()
+void XGLWrapper::__UnlockMutex()
 {
-  FDyGLWrapper::mGLCriticalSectionMutex.unlock();
+  XGLWrapper::mGLCriticalSectionMutex.unlock();
 }
 
-void FDyGLWrapper::SetupInitialGlobalStatus()
+void XGLWrapper::SetupInitialGlobalStatus()
 {
   //! Push initial OpenGL global status.
   //! But we don't have to call callback function because it is alreay set on OpenGL system.
@@ -1199,12 +1199,12 @@ void FDyGLWrapper::SetupInitialGlobalStatus()
   }
 }
 
-FDyGLWrapper::__OutsideLockguard::~MDY_PRIVATE(OutsideLockguard)() noexcept
+XGLWrapper::__OutsideLockguard::~MDY_PRIVATE(OutsideLockguard)() noexcept
 {
   if (this->mIsMoved == false)
   { // Unlock gl critical section when not moved.
     glFlush();
-    FDyGLWrapper::MDY_PRIVATE(UnlockMutex)();
+    XGLWrapper::MDY_PRIVATE(UnlockMutex)();
   }
 }
 

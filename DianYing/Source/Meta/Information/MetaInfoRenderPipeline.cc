@@ -13,7 +13,7 @@
 ///
 
 #include <Dy/Meta/Information/MetaInfoRenderPipeline.h>
-#include <Dy/Management/IO/MetaInfoManager.h>
+#include <Dy/Management/IO/MIOMeta.h>
 #include <Dy/Management/MLog.h>
 
 namespace dy
@@ -22,7 +22,7 @@ namespace dy
 bool PDyRenderPipelineInstanceMetaInfo::HasValidChildItems(
   const PDyRenderPipelineInstanceMetaInfo& iRenderPipeline)
 {
-  const auto& managerMeta = MDyMetaInfo::GetInstance();
+  const auto& managerMeta = MIOMeta::GetInstance();
   for (const auto& childPipelineName : iRenderPipeline.mChildPipelineNames)
   {
     if (managerMeta.IsRenderPipelineExist(childPipelineName) == false)
@@ -62,7 +62,7 @@ PDyRenderPipelineInstanceMetaInfo::GetAllChildPipelineNames(
 {
   std::unordered_set<std::string> resultNameList;
 
-  const auto& managerMeta = MDyMetaInfo::GetInstance();
+  const auto& managerMeta = MIOMeta::GetInstance();
   for (const auto& childPipelineName : iRenderPipeline.mChildPipelineNames)
   {
     // If not exist, just return nullopt as failure.
@@ -87,7 +87,7 @@ PDyRenderPipelineInstanceMetaInfo::GetAllRenderItemNames(
   const PDyRenderPipelineInstanceMetaInfo& iRenderPipeline)
 {
   std::unordered_set<std::string> resultNameList;
-  const auto& managerMeta = MDyMetaInfo::GetInstance();
+  const auto& managerMeta = MIOMeta::GetInstance();
 
   for (const auto& renderItemName : iRenderPipeline.mLocalRenderItemNames)
   {

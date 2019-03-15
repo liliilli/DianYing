@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
-#include <Dy/Component/Internal/ScriptState.h>
+#include <Dy/Component/Internal/EScriptState.h>
 
 //!
 //! Forward declaration
@@ -25,8 +25,8 @@ namespace dy
 enum class EDyScriptType;
 class FDyActor;
 class FDyUiWidget;
-class FDyActorScriptState;
-class FDyWidgetScriptState;
+class FActorScriptState;
+class FWidgetScriptState;
 } /// ::dy namespace.
 
 namespace sol
@@ -43,7 +43,7 @@ namespace dy
 
 /// @class MScript
 /// @brief Manages script (resource loading, animation, actor script, ui script, etc).
-class MScript final : public IDySingleton<MScript>
+class MScript final : public ISingleton<MScript>
 {
 public:
   MDY_SINGLETON_DERIVED(MScript);
@@ -58,12 +58,12 @@ public:
   /// @param iScriptSpecifier
   /// @param iRefWidget
   /// @param iIsAwakened
-  MDY_NODISCARD FDyWidgetScriptState* 
+  MDY_NODISCARD FWidgetScriptState* 
   CreateWidgetScript(const std::string& iScriptSpecifier, FDyUiWidget& iRefWidget, bool iIsAwakened);
   /// @brief Try remove widget script from dy system.
   /// But, removed widget script does not actually removed instantly, \n
   /// moved gc list and removed actually on next frame prior to update.
-  EDySuccess TryForwardWidgetScriptToGCList(_MIN_ const FDyWidgetScriptState* iPtrWidgetScriptState);
+  EDySuccess TryForwardWidgetScriptToGCList(const FWidgetScriptState* iPtrWidgetScriptState);
   /// @brief Try move inserted widget script to main container.
   void TryMoveInsertWidgetScriptToMainContainer();
   
@@ -72,19 +72,19 @@ public:
   /// @param iScriptSpecifier
   /// @param iRefActor
   /// @param iIsAwakened
-  MDY_NODISCARD FDyActorScriptState* 
+  MDY_NODISCARD FActorScriptState* 
   CreateActorScript(const std::string& iScriptSpecifier, FDyActor& iRefActor, bool iIsAwakened);
   /// @brief Try remove actor script from dy system.
   /// But, removed actor script does not actually removed instantly, \n
   /// moved gc list and removed actually on next frame prior to update.
-  EDySuccess TryForwardActorScriptToGCList(_MIN_ const FDyActorScriptState* iPtrWidgetScriptState);
+  EDySuccess TryForwardActorScriptToGCList(const FActorScriptState* iPtrWidgetScriptState);
   /// @brief Try move inserted actor script to main container.
   void TryMoveInsertActorScriptToMainContainer();
 
   /// @brief Update widget script.
-  void UpdateWidgetScript(_MIN_ TF32 dt);
+  void UpdateWidgetScript(TF32 dt);
   /// @brief Update widget script if only script present type is type.
-  void UpdateWidgetScript(_MIN_ TF32 dt, _MIN_ EDyScriptState type);
+  void UpdateWidgetScript(TF32 dt, EScriptState type);
   /// @brief Check widget script that must be gced is exist on list.
   MDY_NODISCARD bool IsGcedWidgetScriptExist() const noexcept;
   /// @brief Call `destroy` GCed widget script 
@@ -95,9 +95,9 @@ public:
   void RemoveEmptyOnWidgetScriptList();
 
   /// @brief Update actor script.
-  void UpdateActorScript(_MIN_ TF32 dt);
+  void UpdateActorScript(TF32 dt);
   /// @brief Update actor script if only script present type is type.
-  void UpdateActorScript(_MIN_ TF32 dt, _MIN_ EDyScriptState type);
+  void UpdateActorScript(TF32 dt, EScriptState type);
   /// @brief Check there are gced -candidate actor script instances.
   MDY_NODISCARD bool IsGcedActorScriptExist() const noexcept;
   /// @brief Call `destroy` actor script 

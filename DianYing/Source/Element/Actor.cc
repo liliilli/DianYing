@@ -16,21 +16,21 @@
 #include <Dy/Element/Actor.h>
 
 #include <Dy/Component/CDyTransform.h>
-#include <Dy/Component/CDyModelFilter.h>
-#include <Dy/Component/CDyModelRenderer.h>
-#include <Dy/Component/CDyCamera.h>
-#include <Dy/Component/CDyLightDirectional.h>
-#include <Dy/Component/CDyModelAnimator.h>
+#include <Dy/Component/CModelFilter.h>
+#include <Dy/Component/CModelRenderer.h>
+#include <Dy/Component/CCamera.h>
+#include <Dy/Component/CLightDirectional.h>
+#include <Dy/Component/CModelAnimator.h>
 #include <Dy/Component/CDySoundSource.h>
-#include <Dy/Component/CDyPhysicsColliderSphere.h>
-#include <Dy/Component/CDyPhysicsColliderCapsule.h>
-#include <Dy/Component/CDyPhysicsColliderBox.h>
+#include <Dy/Component/CPhysicsColliderSphere.h>
+#include <Dy/Component/CPhysicsColliderCapsule.h>
+#include <Dy/Component/CPhysicsColliderBox.h>
 #include <Dy/Component/CDySkybox.h>
 #include <Dy/Element/Type/PDyActorCreationDescriptor.h>
 #include <Dy/Helper/Internal/FNameGenerator.h>
 #include <Dy/Management/MInput.h>
-#include <Dy/Management/WorldManager.h>
-#include <Dy/Management/IO/MetaInfoManager.h>
+#include <Dy/Management/MWorld.h>
+#include <Dy/Management/IO/MIOMeta.h>
 #include <Dy/Management/Helper/SDyProfilingHelper.h>
 
 //!
@@ -56,7 +56,7 @@ public:
   FDyActor* mPtrParentActor = nullptr;
 };
 
-class FDyActor::Impl final : public FNameGenerator, public IDyInitializeHelper<PImplDesc>
+class FDyActor::Impl final : public FNameGenerator, public IInitializeHelper<PImplDesc>
 {
 public:
   Impl(FDyActor& iActor);
@@ -151,7 +151,7 @@ public:
   /// @brief  Get script component pointer from script list using scriptName to verify.
   /// @param  scriptName Script name to verify and get.
   /// @return The pointer instance of CDyScript. If not found, return just no value.
-  MDY_NODISCARD CDyActorScript* GetScriptComponent(_MIN_ const std::string& scriptName) noexcept;
+  MDY_NODISCARD CActorScript* GetScriptComponent(_MIN_ const std::string& scriptName) noexcept;
   /// @brief  Remove script component manually from script list using scriptName to verify.
   /// @param  scriptName  Script name to verify and remove from FDyActor.
   /// @return The pointer instance of CDyScript. If not found, return just no value.
@@ -173,11 +173,11 @@ public:
   /// If already or not attached to pointer, just do nothing but return DY_FAILURE.
   EDySuccess MDY_PRIVATE(DetachPickingTargetFromSystem)();
     
-  CDyActorScript* pAddScriptComponent(const PDyScriptComponentMetaInfo& iInfo)
+  CActorScript* pAddScriptComponent(const PDyScriptComponentMetaInfo& iInfo)
   {
     // Validation check.
     const auto specifierName = iInfo.mDetails.mSpecifierName;
-    auto& metaManager = MDyMetaInfo::GetInstance();
+    auto& metaManager = MIOMeta::GetInstance();
     if (metaManager.IsScriptMetaInformationExist(specifierName) == false)
     {
       DyPushLogDebugError("Failed to create script, {}. Script information is not exist.", specifierName);
@@ -192,7 +192,7 @@ public:
 
     return this->AddScriptComponent(instanceInfo);
   }
-  CDyActorScript* AddScriptComponent(const PDyScriptInstanceMetaInfo& iComponentInfo);
+  CActorScript* AddScriptComponent(const PDyScriptInstanceMetaInfo& iComponentInfo);
   
   template<class TComponent, typename... TArgs>
   NotNull<TComponent*> AddComponent(TArgs&&... args)
@@ -203,7 +203,7 @@ public:
       "Failed to create component, required component type is not inheritenced from ADyBaseComponent");
 
     // If component is script, process the other subroutine. 
-    if constexpr (IsSameClass<CDyActorScript, TComponent> == true)
+    if constexpr (IsSameClass<CActorScript, TComponent> == true)
     {
       // Add and initialize component itself.
       // If component which just added is CDyScript, Call Initiate script first.
@@ -272,7 +272,7 @@ public:
   std::vector<NotNull<TGeneralComponent*>> GetGeneralComponentList()
   {
     static_assert(
-      IsInheritancedFrom<TGeneralComponent, ADyGeneralBaseComponent>,
+      IsInheritancedFrom<TGeneralComponent, AGeneralBaseComponent>,
       "Failed to get component list, required component type is not inheritenced from ADyBaseComponent");
 
     // Component matching process is using recursion of each component
@@ -297,9 +297,8 @@ public:
     static_assert(
       IsInheritancedFrom<TComponent, ADyBaseComponent>,
       "Failed to remove component, required component type is not inheritenced from ADyBaseComponent");
-    DyCheckComponentRemoveFunctionParams<TComponent, TArgs...>();
 
-    if constexpr (std::is_base_of_v<ADyGeneralBaseComponent, TComponent>)
+    if constexpr (std::is_base_of_v<AGeneralBaseComponent, TComponent>)
     {
       auto it = std::find_if(
         MDY_BIND_BEGIN_END(this->mComponentList),
@@ -311,7 +310,7 @@ public:
       this->mComponentList.erase(it);
       return DY_SUCCESS;
     }
-    else if constexpr (std::is_same_v<CDyActorScript, TComponent>)
+    else if constexpr (std::is_same_v<CActorScript, TComponent>)
     {
       // @TODO IMPLEMENT SCRIPT DELETION USING DESCRIPTOR OR SCRIPT NAME.
       return this->RemoveScriptComponent(std::forward<TArgs>(args)...);
@@ -381,7 +380,7 @@ namespace dy
 
   void FDyActor::DestroySelf()
   {
-    MDyWorld::GetInstance().DestroyActor(*this);
+    MWorld::GetInstance().DestroyActor(*this);
   }
 
   const std::string& FDyActor::GetActorName() const noexcept
@@ -502,11 +501,11 @@ namespace dy
     return this->mInternal->GetRigidbody();
   }
 
-  CDyActorScript* FDyActor::pAddScriptComponent(const PDyScriptComponentMetaInfo& iInfo)
+  CActorScript* FDyActor::pAddScriptComponent(const PDyScriptComponentMetaInfo& iInfo)
   {
     // Validation check.
     const auto specifierName = iInfo.mDetails.mSpecifierName;
-    auto& metaManager = MDyMetaInfo::GetInstance();
+    auto& metaManager = MIOMeta::GetInstance();
     if (metaManager.IsScriptMetaInformationExist(specifierName) == false)
     {
       DyPushLogDebugError("Failed to create script, {}. Script information is not exist.", specifierName);

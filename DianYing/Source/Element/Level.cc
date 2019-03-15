@@ -14,9 +14,10 @@
 
 /// Header file
 #include <Dy/Element/Level.h>
-#include <Dy/Management/WorldManager.h>
+#include <Dy/Management/MWorld.h>
 #include <Dy/Element/Type/PDyActorCreationDescriptor.h>
 #include <Dy/Meta/Information/ElementLevelMetaInfo.h>
+#include <Dy/Component/CDyTransform.h>
 
 //!
 //! Local translation unit function & data
@@ -65,7 +66,7 @@ FDyLevel::~FDyLevel()
   for (auto& [name, actor] : this->mActorMap)
   {
     if (actor == nullptr) { continue; }
-    MDyWorld::GetInstance().pfMoveActorToGc(DyMakeNotNull(actor.release()));
+    MWorld::GetInstance().pfMoveActorToGc(DyMakeNotNull(actor.release()));
   }
 
   // GCed actor have not to be called GCed script `Destroy` function when Level is released.

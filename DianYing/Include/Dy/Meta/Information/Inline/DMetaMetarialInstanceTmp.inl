@@ -18,7 +18,7 @@
 namespace dy
 {
 
-template <EDyUniformVariableType TType>
+template <EUniformVariableType TType>
 void PDyMaterialInstanceMetaInfo::InsertValue(
   PDyMaterialInstanceMetaInfo& ioMaterialInfo, 
   const std::string& iSpecifier, 

@@ -15,7 +15,7 @@
 /// Header file
 #include <Dy/Management/Type/Sound/FDySoundChannel.h>
 #include <Dy/Management/Type/Sound/FDySoundGroup.h>
-#include <Dy/Management/SoundManager.h>
+#include <Dy/Management/MSound.h>
 
 namespace dy
 {
@@ -54,7 +54,7 @@ EDySuccess FDySoundChannel::Initialize(_MIN_ FMOD::System& iPtrSystem, _MIN_ con
     ptrMasterChannel->addGroup(this->mInternalGroup);
     
     // Add this to group channel.
-    auto& soundManager = MDySound::GetInstance();
+    auto& soundManager = MSound::GetInstance();
     auto& group = soundManager.MDY_PRIVATE(GetGroupChannel)(iDetail.mGroupSpecifier);
     group.RegisterChannel(*this);
 

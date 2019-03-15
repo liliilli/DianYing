@@ -18,7 +18,7 @@ namespace dy
 
 ///
 /// @enum EDyGlobalGameStatus
-/// @brief Global game status for synchronization from MDySynchronization.
+/// @brief Global game status for synchronization from MSynchronization.
 ///
 enum class EDyGlobalGameStatus : char
 {

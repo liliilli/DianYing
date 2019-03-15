@@ -13,8 +13,8 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyGLAttachmentResource.h>
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Builtin/Abstract/AGLAttachmentResource.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
 
 namespace dy
 {
@@ -23,7 +23,7 @@ namespace dy
 /// @class FDyBtAttachmentSpecular
 /// @brief Specular information attachment
 ///
-class FDyBtAttachmentSpecular final : public ADyGLAttachmentResource
+class FDyBtAttachmentSpecular final : public AGLAttachmentResource
 {
   MDY_REGISTER_RESOURCE_ATTACHMENT(FDyBtAttachmentSpecular, "dyBtSpecular")
 };

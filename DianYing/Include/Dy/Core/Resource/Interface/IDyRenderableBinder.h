@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Meta/Type/EDyResourceType.h>
+#include <Dy/Meta/Type/EResourceType.h>
 
 namespace dy
 {
@@ -23,10 +23,10 @@ namespace dy
 struct IDyRenderableBinder
 {
 public:
-  IDyRenderableBinder(EDyResourceType type) : mRenderType{type} {};
+  IDyRenderableBinder(EResourceType type) : mRenderType{type} {};
   virtual ~IDyRenderableBinder() = 0;
 
-  EDyResourceType mRenderType = EDyResourceType::NoneError;
+  EResourceType mRenderType = EResourceType::NoneError;
 };
 
 inline IDyRenderableBinder::~IDyRenderableBinder() = default;

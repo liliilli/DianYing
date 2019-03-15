@@ -74,7 +74,7 @@ void FDyMainViewport::DrawWindow(float dt) noexcept
       ImGui::EndMenuBar();
     }
 
-    const auto i = MDyRendering::GetInstance().mAttachmentBuffers[0];
+    const auto i = MRendering::GetInstance().mAttachmentBuffers[0];
     auto viewportSize = ImGui::GetWindowSize(); viewportSize.y -= 56; viewportSize.x -= 16;
     ImGui::Image(reinterpret_cast<void*>(static_cast<intptr_t>(i)), viewportSize, ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 0.5));
     ImGui::End();

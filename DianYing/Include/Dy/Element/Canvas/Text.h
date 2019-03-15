@@ -15,10 +15,10 @@
 
 #include <Dy/Element/Canvas/UiObject.h>
 #include <Dy/Element/Descriptor/CanvasDescriptor.h>
-#include <Dy/Component/Interface/IDyInitializeHelper.h>
-#include <Dy/Component/Internal/CDyFontRenderer.h>
+#include <Dy/Component/Interface/IInitializeHelper.h>
+#include <Dy/Component/Internal/WidgetRenderer/CRendererFont.h>
 #include <Dy/Helper/Type/DString.h>
-#include <Dy/Management/Interface/IDyFontContainer.h>
+#include <Dy/Management/Interface/IFontContainer.h>
 #include <Dy/Meta/Type/EDyWidgetTypes.h>
 
 //!
@@ -32,7 +32,7 @@ namespace dy
 /// @class FDyText
 /// @brief This class display text on position aligned with FontManager.
 ///
-class FDyText final : public FDyUiObject, public IDyInitializeHelper<PDyMetaWidgetTextDescriptor>
+class FDyText final : public FDyUiObject, public IInitializeHelper<PDyMetaWidgetTextDescriptor>
 {
   MDY_SET_CRC32_HASH_WITH_TYPE(FDyText);
   MDY_SET_TYPEMATCH_FUNCTION(FDyUiObject, FDyText);
@@ -53,7 +53,7 @@ public:
   /// @brief Initialize FDyActor.
   /// @param objectMetaDesc Meta descriptor information instance for FDyActor.
   /// @return Success / Failure flag.
-  MDY_NODISCARD EDySuccess Initialize(_MIN_ const PDyMetaWidgetTextDescriptor& objectMetaDesc) override;
+  MDY_NODISCARD EDySuccess Initialize(const PDyMetaWidgetTextDescriptor& objectMetaDesc) override;
 
   /// @brief Release function (virtual) because Initialize function has different parameter but release does not need any parameter.
   /// @return Success flag.
@@ -67,7 +67,7 @@ public:
 
   /// @brief  Return reference of valid font container.
   /// @return Valid font container reference.
-  MDY_NODISCARD IDyFontContainer& GetFontContainer() const noexcept
+  MDY_NODISCARD IFontContainer& GetFontContainer() const noexcept
   {
     return *this->mPtrFontContainer;
   }
@@ -141,7 +141,7 @@ private:
   /// Text to display on screen. String must be following UTF-8 encoding.
   DString         mTextString       = {""};
   /// Text container instance to display font.
-  IDyFontContainer* mPtrFontContainer = nullptr;
+  IFontContainer* mPtrFontContainer = nullptr;
   /// Font color
 	DColorRGBA      mForegroundColor  = DColorRGBA::White;
   /// Font background color
@@ -153,7 +153,7 @@ private:
   /// Text alignment value.
   EDyHorizontalAlignment mAlignment   = EDyHorizontalAlignment::Left;
   /// internal renderer.
-  CDyFontRenderer   mRenderer;
+  CRendererFont   mRenderer;
 
   ///
   bool mIsTextDirty                   = true;

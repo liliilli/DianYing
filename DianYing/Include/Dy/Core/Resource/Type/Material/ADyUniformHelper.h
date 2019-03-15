@@ -34,7 +34,7 @@ namespace dy
 
 class ADyUniformHelper 
 {
-  using TEnum = EDyUniformVariableType;
+  using TEnum = EUniformVariableType;
 protected:
   void UpdateUniform(
       _MIN_ FDyMaterialResource& iRefMaterial, 

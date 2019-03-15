@@ -13,25 +13,23 @@
 ///
 
 /// Header file
-#include <Dy/Component/Internal/Script/FDyWidgetScriptStatus.h>
-#include <Dy/Component/Internal/Widget/CDyWidgetScriptBase.h>
-#include <Dy/Component/Internal/Widget/CDyWidgetScriptCpp.h>
+#include <Dy/Component/Internal/Script/FWidgetScriptState.h>
+#include <Dy/Component/Internal/Widget/CBaseWidgetScript.h>
+#include <Dy/Component/Internal/Widget/CWidgetScriptCpp.h>
 #include <Dy/Meta/Information/ScriptMetaInformation.h>
 
 namespace dy
 {
 
-FDyWidgetScriptState::FDyWidgetScriptState(
-    _MIN_ FDyUiWidget& widgetReference, 
-    _MIN_ const PDyScriptInstanceMetaInfo& descriptor) :
-    mStatus{EDyScriptState::CalledNothing},
+FWidgetScriptState::FWidgetScriptState(FDyUiWidget& widgetReference, const PDyScriptInstanceMetaInfo& descriptor) 
+  : mStatus{EScriptState::CalledNothing},
     mType{descriptor.mScriptType}
 {
   switch (this->mType)
   {
   case EDyScriptType::Cpp: 
   { // Cpp
-    this->mScriptInstance = std::make_unique<CDyWidgetScriptCpp>(widgetReference, descriptor);
+    this->mScriptInstance = std::make_unique<CWidgetScriptCpp>(widgetReference, descriptor);
   } break;
   case EDyScriptType::Lua: 
   { // Lua
@@ -41,47 +39,47 @@ FDyWidgetScriptState::FDyWidgetScriptState(
   }
 }
 
-void FDyWidgetScriptState::CallScriptFunction(_MIN_ float dt) noexcept
+void FWidgetScriptState::CallScriptFunction(TF32 dt) noexcept
 {
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance),"Script instace must be activated!");
-  MDY_ASSERT_MSG(this->mStatus != EDyScriptState::NoneError, "FDyScriptState must be initialized!");
+  MDY_ASSERT_MSG(this->mStatus != EScriptState::NoneError, "FDyScriptState must be initialized!");
 
   switch (this->mStatus)
   {
-  case EDyScriptState::CalledNothing:
+  case EScriptState::CalledNothing:
     this->mScriptInstance->Initiate();
-    this->mStatus = EDyScriptState::CalledInitiate;
+    this->mStatus = EScriptState::CalledInitiate;
     break;
-  case EDyScriptState::CalledInitiate:
+  case EScriptState::CalledInitiate:
     this->mScriptInstance->Start();
     this->mScriptInstance->Update(dt);
-    this->mStatus = EDyScriptState::CalledUpdate;
+    this->mStatus = EScriptState::CalledUpdate;
     break;
-  case EDyScriptState::CalledUpdate:
+  case EScriptState::CalledUpdate:
     this->mScriptInstance->Update(dt);
     break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 }
 
-void FDyWidgetScriptState::MDY_PRIVATE(CallDestroyFunctionAnyway)() noexcept
+void FWidgetScriptState::MDY_PRIVATE(CallDestroyFunctionAnyway)() noexcept
 {
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance),"Script instace must be activated!");
   this->mScriptInstance->Destroy();
 }
 
-EDyScriptType FDyWidgetScriptState::GetScriptType() const noexcept
+EDyScriptType FWidgetScriptState::GetScriptType() const noexcept
 {
   MDY_ASSERT_MSG(this->mType != decltype(this->mType)::NoneError, "Script type must be specified properly.");
   return this->mType;
 }
 
-EDyScriptState FDyWidgetScriptState::GetScriptStatus() const noexcept
+EScriptState FWidgetScriptState::GetScriptStatus() const noexcept
 {
   return this->mStatus;
 }
 
-CDyWidgetScriptBase* FDyWidgetScriptState::MDY_PRIVATE(GetPtrInternalWidgetScript)() const noexcept
+CBaseWidgetScript* FWidgetScriptState::MDY_PRIVATE(GetPtrInternalWidgetScript)() const noexcept
 {
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance), "Internal script instance must be valid.");
   return this->mScriptInstance.get();

@@ -14,9 +14,9 @@
 ///
 
 #include <Dy/Element/Canvas/UiObject.h>
-#include <Dy/Component/Interface/IDyInitializeHelper.h>
+#include <Dy/Component/Interface/IInitializeHelper.h>
 #include <Dy/Meta/Descriptor/WidgetImageMetaInformation.h>
-#include <Dy/Component/Internal/CDyImageRenderer.h>
+#include <Dy/Component/Internal/WidgetRenderer/CRendererImage.h>
 
 namespace dy
 {
@@ -25,7 +25,7 @@ namespace dy
 /// @class FDyImage
 /// @brief This class display image on given position.
 ///
-class FDyImage final : public FDyUiObject, public IDyInitializeHelper<PDyMetaWidgetImageDescriptor>
+class FDyImage final : public FDyUiObject, public IInitializeHelper<PDyMetaWidgetImageDescriptor>
 {
   MDY_SET_CRC32_HASH_WITH_TYPE(FDyImage);
   MDY_SET_TYPEMATCH_FUNCTION(FDyUiObject, FDyImage);
@@ -80,7 +80,7 @@ private:
   std::string       mImageName  = MDY_INITIALIZE_EMPTYSTR;
   bool              mIsMaterial = false;
   /// Renderer for this object.
-  CDyImageRenderer  mRenderer;
+  CRendererImage  mRenderer;
   bool              mIsUpdateRenderer = false;
 };
 

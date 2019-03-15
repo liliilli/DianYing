@@ -16,8 +16,8 @@
 #include <Dy/Management/Type/Sound/FDyInstantSound2D.h>
 
 #include <Dy/Core/Resource/Information/FDySoundInformation.h>
-#include <Dy/Management/SoundManager.h>
-#include <Dy/Management/Internal/Sound/CallbackChannel.h>
+#include <Dy/Management/MSound.h>
+#include <Dy/Management/Internal/Sound/XCallbackChannel.h>
 #include <Dy/Management/Type/Sound/FDySoundChannel.h>
 
 namespace dy
@@ -59,7 +59,7 @@ EDySuccess FDyInstantSound2D::TryInitialize()
   }
 
   // Initiate (Initialize)
-  auto& soundManager = MDySound::GetInstance();
+  auto& soundManager = MSound::GetInstance();
   auto& refSystem = soundManager.MDY_PRIVATE(GetSystem)();
 
   // Create sound

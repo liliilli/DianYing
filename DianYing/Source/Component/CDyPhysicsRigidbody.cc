@@ -17,12 +17,13 @@
 #include <Dy/Element/Actor.h>
 #include <Dy/Helper/Library/HelperContainer.h>
 #include <Dy/Helper/System/Idioms.h>
-#include <Dy/Component/CDyPhysicsCollider.h>
-#include <Dy/Management/SettingManager.h>
+#include <Dy/Component/Internal/Physics/CBasePhysicsCollider.h>
+#include <Dy/Management/MSetting.h>
 #include <Dy/Management/MPhysics.h>
 #include <Dy/Management/Type/Physics/DDyCollisionIssueItem.h>
 #include <extensions/PxRigidActorExt.h>
 #include <PxPhysicsAPI.h>
+#include <Dy/Component/CDyTransform.h>
 
 namespace dy
 {
@@ -42,7 +43,7 @@ TU32 CDyPhysicsRigidbody::sRigidbodyIdCounter = 0;
      }
    }
  */
-CDyPhysicsRigidbody::CDyPhysicsRigidbody(FDyActor& actorReference) : ADyGeneralBaseComponent{actorReference}
+CDyPhysicsRigidbody::CDyPhysicsRigidbody(FDyActor& actorReference) : AGeneralBaseComponent{actorReference}
 { }
 
 EDySuccess CDyPhysicsRigidbody::SetRigidbodyType(_MIN_ EDyRigidbodyType type) noexcept
@@ -89,7 +90,7 @@ EDySuccess CDyPhysicsRigidbody::Initialize(_MIN_ const PDyRigidbodyComponentMeta
   const auto& lockPreset = descriptor.mDetails.mLockPreset;
   if (lockPreset.empty() == false)
   {
-    const auto& settingManager = MDySetting::GetInstance();
+    const auto& settingManager = MSetting::GetInstance();
     const auto& physics = settingManager.GetPhysicsSetting();
     // If we can not find `lockPreset` lock preset, just let it be.
     if (Contains(physics.mLockPresetContainer, lockPreset) == false)
@@ -123,11 +124,11 @@ void CDyPhysicsRigidbody::Release()
   this->mCallbackContainer.onOverlapEnd   .RemoveAll();
 }
 
-void CDyPhysicsRigidbody::CallCollisionCallback(_MIN_ EDyCollisionCbType iType, _MIN_ DDyCollisionIssueItem& iItem)
+void CDyPhysicsRigidbody::CallCollisionCallback(_MIN_ ECollisionCallbackType iType, _MIN_ DDyCollisionIssueItem& iItem)
 {
   switch (iType)
   {
-  case EDyCollisionCbType::OnHit: 
+  case ECollisionCallbackType::OnHit: 
   { // OnHit.
     for (auto& item : this->mCallbackContainer.onHit.GetBoundCallbackList())
     {
@@ -135,7 +136,7 @@ void CDyPhysicsRigidbody::CallCollisionCallback(_MIN_ EDyCollisionCbType iType, 
       item.mCallbackFunction(iItem.mPtrSelfCollider, *iItem.mPtrSelfActor, iItem.mPtrOtherCollider, *iItem.mPtrOtherActor, iItem.mHitResult);      
     }
   } break;
-  case EDyCollisionCbType::OnOverlapBegin: 
+  case ECollisionCallbackType::OnOverlapBegin: 
   { // OnOverlapBegin.
     for (auto& item : this->mCallbackContainer.onOverlapBegin.GetBoundCallbackList())
     {
@@ -143,7 +144,7 @@ void CDyPhysicsRigidbody::CallCollisionCallback(_MIN_ EDyCollisionCbType iType, 
       item.mCallbackFunction(iItem.mPtrSelfCollider, *iItem.mPtrSelfActor, iItem.mPtrOtherCollider, *iItem.mPtrOtherActor, iItem.mHitResult);      
     }
   } break;
-  case EDyCollisionCbType::OnOverlapEnd: 
+  case ECollisionCallbackType::OnOverlapEnd: 
   { // OnOverlapEnd.
     for (auto& item : this->mCallbackContainer.onOverlapEnd.GetBoundCallbackList())
     {
@@ -185,7 +186,7 @@ void CDyPhysicsRigidbody::TryActivateInstance()
     CDyPhysicsRigidbody::sRigidbodyIdCounter = 0;
   }
 
-  auto ptrColliderList =  bindedActor.GetGeneralComponentList<CDyPhysicsCollider>();
+  auto ptrColliderList =  bindedActor.GetGeneralComponentList<CBasePhysicsCollider>();
   // Try insert collider and try populate resource.
   for (auto& ptrCollider : ptrColliderList)
   {
@@ -255,7 +256,7 @@ void CDyPhysicsRigidbody::pActivateStaticActor()
   }
 }
 
-void CDyPhysicsRigidbody::RegisterCollider(_MIN_ CDyPhysicsCollider& iRefCollider)
+void CDyPhysicsRigidbody::RegisterCollider(_MIN_ CBasePhysicsCollider& iRefCollider)
 {
   // Try find duplication.
   const auto isExist = std::any_of(
@@ -304,7 +305,7 @@ void CDyPhysicsRigidbody::TryDeactivateInstance()
   }
 }
 
-void CDyPhysicsRigidbody::UnregisterCollider(_MIN_ CDyPhysicsCollider& iRefCollider)
+void CDyPhysicsRigidbody::UnregisterCollider(_MIN_ CBasePhysicsCollider& iRefCollider)
 {
   // Try find instance.
   const auto it = std::find_if(
@@ -319,7 +320,7 @@ void CDyPhysicsRigidbody::UnregisterCollider(_MIN_ CDyPhysicsCollider& iRefColli
   FaseErase(this->mPtrColliderList, it);
 }
 
-EDySuccess CDyPhysicsRigidbody::BindShapeToRigidbody(_MIN_ CDyPhysicsCollider& iRefShape)
+EDySuccess CDyPhysicsRigidbody::BindShapeToRigidbody(_MIN_ CBasePhysicsCollider& iRefShape)
 {
   if (this->IsComponentActivated() == false)      { return DY_FAILURE; }
   if (MDY_CHECK_ISNULL(this->mOwnerInternalActor)) { return DY_FAILURE; }
@@ -347,13 +348,13 @@ EDySuccess CDyPhysicsRigidbody::UnbindShapeFromRigidbody(_MIN_ physx::PxShape& i
   return DY_SUCCESS;
 }
 
-EDySuccess CDyPhysicsRigidbody::RemoveCollisionCallback(_MIN_ EDyCollisionCbType iType, _MIN_ const void* iId)
+EDySuccess CDyPhysicsRigidbody::RemoveCollisionCallback(_MIN_ ECollisionCallbackType iType, _MIN_ const void* iId)
 {
   switch (iType)
   {
-  case EDyCollisionCbType::OnHit:           return this->mCallbackContainer.onHit.RemoveCallback(iId);
-  case EDyCollisionCbType::OnOverlapBegin:  return this->mCallbackContainer.onOverlapBegin.RemoveCallback(iId);
-  case EDyCollisionCbType::OnOverlapEnd:    return this->mCallbackContainer.onOverlapEnd.RemoveCallback(iId); 
+  case ECollisionCallbackType::OnHit:           return this->mCallbackContainer.onHit.RemoveCallback(iId);
+  case ECollisionCallbackType::OnOverlapBegin:  return this->mCallbackContainer.onOverlapBegin.RemoveCallback(iId);
+  case ECollisionCallbackType::OnOverlapEnd:    return this->mCallbackContainer.onOverlapEnd.RemoveCallback(iId); 
   }
   return DY_FAILURE;
 }

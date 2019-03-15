@@ -14,8 +14,8 @@
 ///
 
 #include <Dy/Core/Resource/Type/TDyResourceBinder.h>
-#include <Dy/Component/Interface/IDyInitializeHelper.h>
-#include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
+#include <Dy/Component/Interface/IInitializeHelper.h>
+#include <Dy/Element/Abstract/AGeneralBaseComponent.h>
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
 
 //!
@@ -25,7 +25,7 @@
 namespace dy
 {
 class FDyMaterialResource;
-class CDyModelFilter;
+class CModelFilter;
 class FDyMeshResource;
 } /// ::dy namespace
 
@@ -39,10 +39,10 @@ namespace dy
 /// @class CDySkybox
 /// @brief Skybox component. If activated, skybox will be rendered after opaque mesh rendering.
 /// @reference https://docs.unity3d.com/kr/530/Manual/class-Skybox.html
-class CDySkybox final : public ADyGeneralBaseComponent, public IDyInitializeHelper<PDySkyboxComponentMetaInfo>
+class CDySkybox final : public AGeneralBaseComponent, public IInitializeHelper<PDySkyboxComponentMetaInfo>
 {
 public:
-  CDySkybox(FDyActor& actorReference) : ADyGeneralBaseComponent{actorReference} {};
+  CDySkybox(FDyActor& actorReference) : AGeneralBaseComponent{actorReference} {};
   virtual ~CDySkybox() = default;
 
   /// @brief  Initialize with descriptor.
@@ -88,7 +88,7 @@ private:
   DColorRGB           mTintColor        = {};
   TF32                  mRotationDegree   = 0.0f;
 
-  MDY_SET_TYPEMATCH_FUNCTION(::dy::ADyGeneralBaseComponent, CDySkybox);
+  MDY_SET_TYPEMATCH_FUNCTION(::dy::AGeneralBaseComponent, CDySkybox);
   MDY_SET_CRC32_HASH_WITH_TYPE(CDySkybox);
 };
 

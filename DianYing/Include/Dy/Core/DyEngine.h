@@ -24,9 +24,9 @@
 
 namespace dy
 {
-class MDyTime;
-class MDyWindow;
-class MDySynchronization;
+class MTime;
+class MWindow;
+class MSynchronization;
 } /// ::dy namespace
 
 //!
@@ -38,7 +38,7 @@ namespace dy
 
 /// @class DyEngine
 /// @brief `Dy`(DianYing) Core engine class.
-class DyEngine final : public IDySingleton<DyEngine>
+class DyEngine final : public ISingleton<DyEngine>
 {
   MDY_SINGLETON_PROPERTIES(DyEngine);
   MDY_SINGLETON_DERIVED(DyEngine);
@@ -49,9 +49,9 @@ public:
   void operator()();
 
   /// @brief Get time manager reference.
-  MDY_NODISCARD MDyTime&    GetTimeManager();
+  MDY_NODISCARD MTime&    GetTimeManager();
   /// @brief Get window manager reference.
-  MDY_NODISCARD MDyWindow&  GetWindowManager();
+  MDY_NODISCARD MWindow&  GetWindowManager();
 
   /// @brief Get game's global status.
   MDY_NODISCARD EDyGlobalGameStatus GetGlobalGameStatus() const noexcept;
@@ -101,7 +101,7 @@ private:
   void pfReleaseDependentManager();
   void pfReleaseIndependentManager();
 
-  MDySynchronization* mSynchronization      = nullptr;
+  MSynchronization* mSynchronization      = nullptr;
 
   EDyGlobalGameStatus mNextStatus           = EDyGlobalGameStatus::Booted;
   EDyGlobalGameStatus mStatus               = EDyGlobalGameStatus::None;
@@ -116,7 +116,7 @@ private:
   friend class SDyIOConnectionHelper;
   friend class SDyIOWorkerConnHelper;
   friend class SDyIOBindingHelper;
-  friend class MDySynchronization;
+  friend class MSynchronization;
 };
 
 extern DyEngine* gEngine;

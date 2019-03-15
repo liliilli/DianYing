@@ -19,9 +19,9 @@
 #include <sol2/sol.hpp>
 
 #include <Dy/Core/DyEngine.h>
-#include <Dy/Component/Internal/Widget/CDyWidgetScriptCpp.h>
-#include <Dy/Component/Internal/Script/FDyWidgetScriptStatus.h>
-#include <Dy/Component/Internal/Script/FDyGlobalScriptStatus.h>
+#include <Dy/Component/Internal/Widget/CWidgetScriptCpp.h>
+#include <Dy/Component/Internal/Script/FWidgetScriptState.h>
+#include <Dy/Component/Internal/Script/FGlobalScriptState.h>
 #include <Dy/Element/Actor.h>
 #include <Dy/Management/Helper/LuaBindingEntry.h>
 
@@ -160,13 +160,13 @@ public:
   /// @param iScriptSpecifier
   /// @param iRefWidget
   /// @param iIsAwakened
-  FDyWidgetScriptState* 
+  FWidgetScriptState* 
   CreateWidgetScript(const std::string& iScriptSpecifier, FDyUiWidget& iRefWidget, bool iIsAwakened);
 
   /// @brief Try remove widget script from dy system.
   /// But, removed widget script does not actually removed instantly, \n
   /// moved gc list and removed actually on next frame prior to update.
-  EDySuccess TryForwardWidgetScriptToGCList(const FDyWidgetScriptState* iPtrWidgetScriptState);
+  EDySuccess TryForwardWidgetScriptToGCList(const FWidgetScriptState* iPtrWidgetScriptState);
   /// @brief Try move inserted widget script to main container.
   void TryMoveInsertWidgetScriptToMainContainer();
   
@@ -175,19 +175,19 @@ public:
   /// @param iScriptSpecifier
   /// @param iRefActor
   /// @param iIsAwakened
-  FDyActorScriptState* 
+  FActorScriptState* 
   CreateActorScript(const std::string& iScriptSpecifier, FDyActor& iRefActor, bool iIsAwakened);
   /// @brief Try remove actor script from dy system.
   /// But, removed actor script does not actually removed instantly, \n
   /// moved gc list and removed actually on next frame prior to update.
-  EDySuccess TryForwardActorScriptToGCList(const FDyActorScriptState* iPtrActorScriptStatus);
+  EDySuccess TryForwardActorScriptToGCList(const FActorScriptState* iPtrActorScriptStatus);
   /// @brief Try move inserted actor script to main container.
   void TryMoveInsertActorScriptToMainContainer();
 
   /// @brief Update widget script.
   void UpdateWidgetScript(TF32 dt);
   /// @brief Update widget script if only script present type is type.
-  void UpdateWidgetScript(TF32 dt, EDyScriptState type);
+  void UpdateWidgetScript(TF32 dt, EScriptState type);
   /// @brief Check widget script that must be gced is exist on list.
   bool IsGcedWidgetScriptExist() const noexcept { return this->mGCedWidgetScriptList.empty() == false; }
   /// @brief Call `destroy` GCed widget script 
@@ -200,7 +200,7 @@ public:
   /// @brief Update actor script.
   void UpdateActorScript(TF32 iDt);
   /// @brief Update actor script if only script present type is type.
-  void UpdateActorScript(TF32 dt, EDyScriptState type);
+  void UpdateActorScript(TF32 dt, EScriptState type);
   /// @brief Check there are gced -candidate actor script instances.
   bool IsGcedActorScriptExist() const noexcept { return this->mGCedActorScriptList.empty() == false; }
   /// @brief Call `destroy` actor script 
@@ -234,17 +234,17 @@ public:
 private:
   sol::state mLua;
 
-  using TDyGlobalScriptList = std::unordered_map<std::string, std::unique_ptr<FDyGlobalScriptState>>;
+  using TDyGlobalScriptList = std::unordered_map<std::string, std::unique_ptr<FGlobalScriptState>>;
   TDyGlobalScriptList mGlobalScriptContainer;
 
-  using TDyWidgetScriptList = std::vector<std::unique_ptr<FDyWidgetScriptState>>;
+  using TDyWidgetScriptList = std::vector<std::unique_ptr<FWidgetScriptState>>;
   TDyWidgetScriptList mInsertWidgetScriptList = {};
   TDyWidgetScriptList mWidgetScriptList       = {};
   TDyWidgetScriptList mGCedWidgetScriptList   = {};
 
   /// Activated CDyScript component list.
   /// this list must not be invalidated when iterating list, but except for unenrolling.
-  using TDyActorScriptList = std::vector<std::unique_ptr<FDyActorScriptState>>;
+  using TDyActorScriptList = std::vector<std::unique_ptr<FActorScriptState>>;
   TDyActorScriptList  mInsertActorScriptList  = {};
   TDyActorScriptList  mActorScriptList        = {};
   TDyActorScriptList  mGCedActorScriptList    = {};
@@ -274,7 +274,7 @@ EDySuccess MScript::pfRelease()
 
 sol::state& MScript::GetLuaInstance() noexcept { return this->mPimpl->GetLuaInstance(); }
 
-FDyWidgetScriptState* MScript::CreateWidgetScript(
+FWidgetScriptState* MScript::CreateWidgetScript(
     const std::string& iScriptSpecifier, 
     FDyUiWidget& iRefWidget, 
     bool iIsAwakened)
@@ -287,7 +287,7 @@ void MScript::RemoveGlobalScriptInstances() { this->mPimpl->RemoveGlobalScriptIn
 void MScript::CallonStartGlobalScriptList() { this->mPimpl->CallonStartGlobalScriptList(); }
 void MScript::CallonEndGlobalScriptList()   { this->mPimpl->CallonEndGlobalScriptList(); }
 
-FDyActorScriptState* MScript::CreateActorScript(
+FActorScriptState* MScript::CreateActorScript(
     const std::string& iScriptSpecifier, 
     FDyActor& iRefActor, 
     bool iIsAwakened)
@@ -295,12 +295,12 @@ FDyActorScriptState* MScript::CreateActorScript(
   return this->mPimpl->CreateActorScript(iScriptSpecifier, iRefActor, iIsAwakened);
 }
 
-EDySuccess MScript::TryForwardWidgetScriptToGCList(const FDyWidgetScriptState* iPtrWidgetScriptState)
+EDySuccess MScript::TryForwardWidgetScriptToGCList(const FWidgetScriptState* iPtrWidgetScriptState)
 {
   return this->mPimpl->TryForwardWidgetScriptToGCList(iPtrWidgetScriptState);
 }
 
-EDySuccess MScript::TryForwardActorScriptToGCList(const FDyActorScriptState* iPtrActorScriptStatus)
+EDySuccess MScript::TryForwardActorScriptToGCList(const FActorScriptState* iPtrActorScriptStatus)
 {
   return this->mPimpl->TryForwardActorScriptToGCList(iPtrActorScriptStatus);
 }
@@ -316,13 +316,13 @@ void MScript::TryMoveInsertActorScriptToMainContainer()
 }
 
 void MScript::UpdateWidgetScript(TF32 dt) { this->mPimpl->UpdateWidgetScript(dt); }
-void MScript::UpdateWidgetScript(TF32 dt, EDyScriptState type) { this->mPimpl->UpdateWidgetScript(dt, type); }
+void MScript::UpdateWidgetScript(TF32 dt, EScriptState type) { this->mPimpl->UpdateWidgetScript(dt, type); }
 bool MScript::IsGcedWidgetScriptExist() const noexcept { return this->mPimpl->IsGcedWidgetScriptExist(); }
 void MScript::CallDestroyFuncWidgetScriptGCList() { this->mPimpl->CallDestroyFuncWidgetScriptGCList(); }
 void MScript::ClearWidgetScriptGCList() { this->mPimpl->ClearWidgetScriptGCList(); }
 void MScript::RemoveEmptyOnWidgetScriptList() { return this->mPimpl->RemoveEmptyOnWidgetScriptList(); }
 void MScript::UpdateActorScript(TF32 dt) { this->mPimpl->UpdateActorScript(dt); }
-void MScript::UpdateActorScript(TF32 dt, EDyScriptState type) { this->mPimpl->UpdateActorScript(dt, type); }
+void MScript::UpdateActorScript(TF32 dt, EScriptState type) { this->mPimpl->UpdateActorScript(dt, type); }
 bool MScript::IsGcedActorScriptExist() const noexcept { return this->mPimpl->IsGcedActorScriptExist(); }
 void MScript::CallDestroyFuncActorScriptGCList() { this->mPimpl->CallDestroyFuncActorScriptGcList(); }
 void MScript::ClearActorScriptGCList() { this->mPimpl->ClearActorScriptGCList(); }

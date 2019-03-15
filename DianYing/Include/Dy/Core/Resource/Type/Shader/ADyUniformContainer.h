@@ -53,7 +53,7 @@ public:
   /// and if uniform value is exist but value is same, do not update value for performance.
   /// If uniform value is exsit but need to be updated, overwrite value and push value item into queue
   /// for updating uniform values.
-  template <EDyUniformVariableType TType>
+  template <EUniformVariableType TType>
   EDySuccess TryUpdateUniform(
     const std::string& iSpecifier, 
     const typename MDY_PRIVATE(UniformBinder)<TType>::ValueType& iValue);
@@ -73,7 +73,7 @@ public:
   EDySuccess TryInsertTextureRequisition(TU32 insertId, TU32 textureId);
 
   /// @brief Get the type of given string of uniform variable.
-  MDY_NODISCARD EDyUniformVariableType GetTypeOfUniform(const std::string& iSpecifier) const noexcept;
+  MDY_NODISCARD EUniformVariableType GetTypeOfUniform(const std::string& iSpecifier) const noexcept;
 
   /// @brief Try update uniform variables and new texture requisition. \n
   /// Do nothing when update list is empty or binding flag is not set up
@@ -104,15 +104,15 @@ private:
   struct DTextureUpdateItem final
   {
     TU32 mInsertId  = 0;
-    EDyUniformVariableType mType = EDyUniformVariableType::NoneError;
+    EUniformVariableType mType = EUniformVariableType::NoneError;
     TU32 mTextureId = 0;
 
-    DTextureUpdateItem(TU32 insertId, EDyUniformVariableType type, TU32 textureId) 
+    DTextureUpdateItem(TU32 insertId, EUniformVariableType type, TU32 textureId) 
       : mInsertId{insertId}, mType{type}, mTextureId{textureId} 
     {};
   };
 
-  template <EDyUniformVariableType TType> using TValueType 
+  template <EUniformVariableType TType> using TValueType 
     = typename MDY_PRIVATE(UniformBinder)<TType>::ValueType;
 
   using TUniformMap         = std::unordered_map<std::string, std::unique_ptr<IDyUniformValueBase>>;

@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Core/Resource/Type/EDyScope.h>
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
 #include <Dy/Core/Thread/IO/EDyIOTask.h>
 
 #include <Dy/Helper/Type/DClamp.h>
@@ -34,7 +34,7 @@ public:
   /// Must be moved except for Requiring.
   std::string       mSpecifierName  = {};
   EDyResourceStyle  mResourcecStyle = EDyResourceStyle::NoneError;
-  EDyResourceType   mResourceType   = EDyResourceType::NoneError;
+  EResourceType   mResourceType   = EResourceType::NoneError;
   EDyScope          mScope          = EDyScope::Global;
   EDyObject         mBoundObjectStyle    = EDyObject::NoneError;
   TPriority         mTaskPriority   = 0;

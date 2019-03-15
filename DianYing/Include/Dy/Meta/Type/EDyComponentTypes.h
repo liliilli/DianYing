@@ -26,16 +26,16 @@ enum class EDyComponentMetaType
 {
   Transform,        // CDyTransform
   Script,           // CDyScript
-  ModelFilter,      // CDyModelFilter
-  ModelRenderer,    // CDyModelRenderer
-  ModelAnimator,    // CDyModelAnimator
-  DirectionalLight, // CDyLightDirectional
-  PointLight, // CDyLightPoint
+  ModelFilter,      // CModelFilter
+  ModelRenderer,    // CModelRenderer
+  ModelAnimator,    // CModelAnimator
+  DirectionalLight, // CLightDirectional
+  PointLight, // CLightPoint
   SpotLight,  // CDySpotPoint
-  Camera,     // CDyCamera
+  Camera,     // CCamera
   SoundSource,// CDySoundSource
   Rigidbody,  // CDyPhysicsRigidbody
-  Collider,   // CDyPhysicsCollider
+  Collider,   // CBasePhysicsCollider
   Skybox,     // CDySkybox
 
   // ERROR!

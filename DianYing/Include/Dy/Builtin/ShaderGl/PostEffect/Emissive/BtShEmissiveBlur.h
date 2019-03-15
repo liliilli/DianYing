@@ -13,14 +13,14 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyGLShaderResource.h>
+#include <Dy/Builtin/Abstract/AGLShaderResource.h>
 
 namespace dy::builtin
 {
 
 /// @class FDyBuiltinShaderGLEmissiveBlur
 /// @brief OpenGL Shader for post-processing blurring HDR emissive attachment.
-class FDyBuiltinShaderGLEmissiveBlur final : public ADyGLShaderResource
+class FDyBuiltinShaderGLEmissiveBlur final : public AGLShaderResource
 {
   MDY_REGISTER_RESOURCE_WITH_SPECIFIER(
     FDyBuiltinShaderGLEmissiveBlur, 

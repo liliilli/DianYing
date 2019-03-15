@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Management/WindowManager.h>
+#include <Dy/Management/MWindow.h>
 
 #include <future>
 
@@ -23,10 +23,10 @@
 
 #include <Dy/Helper/Type/DVector3.h>
 
-#include <Dy/Management/SettingManager.h>
+#include <Dy/Management/MSetting.h>
 #include <Dy/Management/MLog.h>
-#include <Dy/Management/WorldManager.h>
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Management/MWorld.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLWindowContextDescriptor.h>
 
 //!
@@ -78,7 +78,7 @@ void DyGlCallbackWindowClose(GLFWwindow* window)
 namespace dy
 {
 
-class MDyWindow::Impl final : public IDyWindowDependent
+class MWindow::Impl final : public IPlatformDependent
 {
 public:
   Impl();
@@ -123,7 +123,7 @@ private:
   
   GLFWwindow*                 mGlfwWindow     = nullptr;
   std::array<GLFWwindow*, 2>  mGlfwWorkerWnds = {};
-  IDyWindowDependent*         mDependentWindowContext = nullptr;
+  IPlatformDependent*         mDependentWindowContext = nullptr;
 };
 
 } /// ::dy namespace
@@ -136,61 +136,61 @@ private:
 namespace dy
 {
 
-bool MDyWindow::IsWindowShouldClose() const noexcept
+bool MWindow::IsWindowShouldClose() const noexcept
 {
   return this->mInternal->IsWindowShouldClose();
 }
 
-EDySuccess MDyWindow::MDY_PRIVATE(TerminateWindow)() noexcept
+EDySuccess MWindow::MDY_PRIVATE(TerminateWindow)() noexcept
 {
   return this->mInternal->MDY_PRIVATE(TerminateWindow)();
 }
 
-GLFWwindow* MDyWindow::GetGLMainWindow() const noexcept
+GLFWwindow* MWindow::GetGLMainWindow() const noexcept
 {
   return this->mInternal->GetGLMainWindow();
 }
 
-const std::array<GLFWwindow*, 2>& MDyWindow::GetGLWorkerWindowList() const noexcept
+const std::array<GLFWwindow*, 2>& MWindow::GetGLWorkerWindowList() const noexcept
 {
   return this->mInternal->GetGLWorkerWindowList();
 }
 
-EDySuccess MDyWindow::CreateConsoleWindow()
+EDySuccess MWindow::CreateConsoleWindow()
 {
   return this->mInternal->CreateConsoleWindow();
 }
 
-bool MDyWindow::IsCreatedConsoleWindow() const noexcept
+bool MWindow::IsCreatedConsoleWindow() const noexcept
 {
   return this->mInternal->IsCreatedConsoleWindow();
 }
 
-EDySuccess MDyWindow::RemoveConsoleWindow() 
+EDySuccess MWindow::RemoveConsoleWindow() 
 { 
   return this->mInternal->RemoveConsoleWindow(); 
 }
 
-TF32 MDyWindow::GetCpuUsage() { return this->mInternal->GetCpuUsage(); }
-TU64 MDyWindow::GetRamUsage() { return this->mInternal->GetRamUsage(); }
+TF32 MWindow::GetCpuUsage() { return this->mInternal->GetCpuUsage(); }
+TU64 MWindow::GetRamUsage() { return this->mInternal->GetRamUsage(); }
 
-bool MDyWindow::IsFontExistOnSystem(const std::string& iFontKey) const
+bool MWindow::IsFontExistOnSystem(const std::string& iFontKey) const
 {
   return this->mInternal->IsFontExistOnSystem(iFontKey);
 }
 
-std::optional<std::string> MDyWindow::GetFontPathOnSystem(const std::string& iFontKey) const
+std::optional<std::string> MWindow::GetFontPathOnSystem(const std::string& iFontKey) const
 {
   return this->mInternal->GetFontPathOnSystem(iFontKey);
 }
 
-EDySuccess MDyWindow::pfInitialize()
+EDySuccess MWindow::pfInitialize()
 {
   this->mInternal = new (std::nothrow) Impl();
   return DY_SUCCESS;
 }
 
-EDySuccess MDyWindow::pfRelease()
+EDySuccess MWindow::pfRelease()
 {
   delete this->mInternal; this->mInternal = nullptr;
   return DY_SUCCESS;

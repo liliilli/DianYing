@@ -22,7 +22,7 @@
 #include <Dy/Management/Type/KeyActionBindingInformation.h>
 #include <Dy/Management/Type/Input/EDyInputButtonStatus.h>
 #include <Dy/Management/Type/Input/EDyMouseMode.h>
-#include <Dy/Management/Internal/Input/FDyInputDelegateManager.h>
+#include <Dy/Management/Internal/Input/MInputDelegates.h>
 #include <Dy/Helper/Type/DClamp.h>
 #include <stack>
 
@@ -44,7 +44,7 @@ namespace dy
 
 /// @class MInput
 /// @brief Manages input polling, mouse movement and joystick input signaling.
-class MInput final : public IDySingleton<MInput>
+class MInput final : public ISingleton<MInput>
 {
   MDY_SINGLETON_PROPERTIES(MInput);
   MDY_SINGLETON_DERIVED(MInput);
@@ -108,23 +108,23 @@ public:
   /// If there is any actor which is using controller delegate, Actor delegate will be neglected. \n
   /// And if there is same ui script instance reference already, it just do nothing and return DY_FAILURE.
   /// @TODO IMPLEMENT FOR ADYWIDGETLUASCRIPT
-  MDY_NODISCARD EDySuccess MDY_PRIVATE(TryRequireControllerUi)(_MIN_ ADyWidgetCppScript& iRefUiScript) noexcept;
+  MDY_NODISCARD EDySuccess MDY_PRIVATE(TryRequireControllerUi)(_MIN_ AWidgetCppScript& iRefUiScript) noexcept;
 
   /// @brief
   /// @TODO IMPLEMENT FOR ADYWIDGETLUASCRIPT
-  MDY_NODISCARD EDySuccess MDY_PRIVATE(TryDetachContollerUi)(_MIN_ ADyWidgetCppScript& iRefUiScript) noexcept;
+  MDY_NODISCARD EDySuccess MDY_PRIVATE(TryDetachContollerUi)(_MIN_ AWidgetCppScript& iRefUiScript) noexcept;
 
   /// @brief
   /// @TODO IMPLEMENT FOR ADYWIDGETLUASCRIPT
   MDY_NODISCARD EDySuccess MDY_PRIVATE(TryBindAxisDelegate)(
-      _MIN_ ADyWidgetCppScript& iRefUiScript, 
+      _MIN_ AWidgetCppScript& iRefUiScript, 
       _MIN_ std::function<void(TF32)> iFunction,
       _MIN_ const std::string& iAxisName);
 
   /// @brief
   /// @TODO IMPLEMENT FOR ADYWIDGETLUASCRIPT
   MDY_NODISCARD EDySuccess MDY_PRIVATE(TryBindActionDelegate)(
-      _MIN_ ADyWidgetCppScript& iRefUiScript, 
+      _MIN_ AWidgetCppScript& iRefUiScript, 
       _MIN_ EDyInputActionStatus iCondition,
       _MIN_ std::function<void()> iFunction,
       _MIN_ const std::string& iAxisName);
@@ -132,14 +132,14 @@ public:
   /// @brief
   /// @TODO IMPLEMENT FOR ADYACTORLUASCRIPT
   MDY_NODISCARD EDySuccess MDY_PRIVATE(TryBindAxisDelegate)(
-      _MIN_ ADyActorCppScript& iRefUiScript, 
+      _MIN_ AActorCppScript& iRefUiScript, 
       _MIN_ std::function<void(TF32)> iFunction,
       _MIN_ const std::string& iAxisName);
 
   /// @brief
   /// @TODO IMPLEMENT FOR ADYACTORLUASCRIPT
   MDY_NODISCARD EDySuccess MDY_PRIVATE(TryBindActionDelegate)(
-      _MIN_ ADyActorCppScript& iRefUiScript, 
+      _MIN_ AActorCppScript& iRefUiScript, 
       _MIN_ EDyInputActionStatus iCondition,
       _MIN_ std::function<void()> iFunction,
       _MIN_ const std::string& iAxisName);
@@ -148,11 +148,11 @@ public:
   /// If there is any actor which is using controller delegate, Actor delegate will be reset and overwritten by this. \n
   /// And if there is same actor instance reference already, it just do nothing and return DY_FAILURE.
   /// @TODO IMPLEMENT FOR ADYWIDGETLUASCRIPT
-  MDY_NODISCARD EDySuccess MDY_PRIVATE(TryRequireControllerActor)(_MIN_ ADyActorCppScript& iRefActor) noexcept;
+  MDY_NODISCARD EDySuccess MDY_PRIVATE(TryRequireControllerActor)(_MIN_ AActorCppScript& iRefActor) noexcept;
 
   /// @brief
   /// @TODO IMPLEMENT FOR ADYACTORLUASCRIPT
-  MDY_NODISCARD EDySuccess MDY_PRIVATE(TryDetachContollerActor)(_MIN_ ADyActorCppScript& iRefActor) noexcept;
+  MDY_NODISCARD EDySuccess MDY_PRIVATE(TryDetachContollerActor)(_MIN_ AActorCppScript& iRefActor) noexcept;
 
   /// @brief Get low-level key status value.
   MDY_NODISCARD EDyInputButtonStatus MDY_PRIVATE(GetLowlevelKeyStatus)(_MIN_ EDyButton iId) noexcept;
@@ -212,7 +212,7 @@ private:
   DVector2  mMouseLastPosition    = {};
   DVector2  mMousePresentPosition = {};
 
-  FDyInputDelegateManager mDelegateManger = {};
+  MInputDelegates mDelegateManger = {};
 
   bool        mIsMouseMoved = false;
 

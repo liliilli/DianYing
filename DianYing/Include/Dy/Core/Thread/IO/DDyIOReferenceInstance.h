@@ -15,7 +15,7 @@
 
 #include <atomic>
 #include <Dy/Core/Thread/IO/EDyIOTask.h>
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
 #include <Dy/Core/Resource/Type/EDyScope.h>
 
 //!
@@ -44,7 +44,7 @@ struct DDyIOReferenceInstance final
 
   std::string         mSpecifierName = {};
   EDyResourceStyle    mResourcecStyle = EDyResourceStyle::NoneError;
-  EDyResourceType     mResourceType   = EDyResourceType::NoneError;
+  EResourceType     mResourceType   = EResourceType::NoneError;
   EDyScope            mScope          = EDyScope::Global;
 
   bool                mIsResourceValid    = false;
@@ -56,7 +56,7 @@ struct DDyIOReferenceInstance final
   DDyIOReferenceInstance() = default;
   /// @brief Constructor without binding object ptr. \n
   /// In this case, Reference count would be 0 and nothing.
-  DDyIOReferenceInstance(_MIN_ const std::string& specifier, _MIN_ EDyResourceStyle style, _MIN_ EDyResourceType type, _MIN_ EDyScope scope)
+  DDyIOReferenceInstance(_MIN_ const std::string& specifier, _MIN_ EDyResourceStyle style, _MIN_ EResourceType type, _MIN_ EDyScope scope)
     : mSpecifierName(specifier), mResourcecStyle(style), mResourceType(type), mScope(scope)
   {};
 

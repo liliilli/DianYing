@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Management/Rendering/UniformBufferObjectManager.h>
+#include <Dy/Management/Rendering/MUniformBufferObject.h>
 #include <Dy/Management/MLog.h>
 #include <Dy/Helper/Library/HelperContainer.h>
 
@@ -24,7 +24,7 @@
 namespace dy
 {
 
-MDY_SET_IMMUTABLE_STRING(sFunc_CreateUboContainer, "MDyUniformBufferObject::CreateUboContainer");
+MDY_SET_IMMUTABLE_STRING(sFunc_CreateUboContainer, "MUniformBufferObject::CreateUboContainer");
 
 } /// ::dy namespace
 
@@ -35,12 +35,12 @@ MDY_SET_IMMUTABLE_STRING(sFunc_CreateUboContainer, "MDyUniformBufferObject::Crea
 namespace dy
 {
 
-EDySuccess MDyUniformBufferObject::pfInitialize()
+EDySuccess MUniformBufferObject::pfInitialize()
 { // Do nothing.
   return DY_SUCCESS;
 }
 
-EDySuccess MDyUniformBufferObject::pfRelease()
+EDySuccess MUniformBufferObject::pfRelease()
 { 
   // Release all UBO buffer before release management instance.
   for (auto it = this->mUboMap.begin(); it != this->mUboMap.end();)
@@ -58,7 +58,7 @@ EDySuccess MDyUniformBufferObject::pfRelease()
   return DY_SUCCESS;
 }
 
-EDySuccess MDyUniformBufferObject::CreateUboContainer(_MIN_ const PDyUboConstructionDescriptor& descriptor)
+EDySuccess MUniformBufferObject::CreateUboContainer(_MIN_ const PDyUboConstructionDescriptor& descriptor)
 { 
   // Duplication check
   if (this->GetUboContainer(descriptor.mUboSpecifierName) != nullptr)
@@ -108,13 +108,13 @@ EDySuccess MDyUniformBufferObject::CreateUboContainer(_MIN_ const PDyUboConstruc
   return DY_SUCCESS;
 }
 
-const DDyUboInstanceInformation* MDyUniformBufferObject::GetUboContainer(_MIN_ const std::string& specifier)
+const DDyUboInstanceInformation* MUniformBufferObject::GetUboContainer(_MIN_ const std::string& specifier)
 {
   if (auto it = this->mUboMap.find(specifier); it != this->mUboMap.end()) { return it->second.get(); }
   else                                                                    { return nullptr; }
 }
 
-EDySuccess MDyUniformBufferObject::UpdateUboContainer(
+EDySuccess MUniformBufferObject::UpdateUboContainer(
   const std::string& specifier,
   TU32 bufferStartByte,
   TU32 bufferWrapSize,
@@ -146,7 +146,7 @@ EDySuccess MDyUniformBufferObject::UpdateUboContainer(
   return DY_SUCCESS;
 }
 
-EDySuccess MDyUniformBufferObject::ClearUboContainer(
+EDySuccess MUniformBufferObject::ClearUboContainer(
   const std::string& specifier,
   TU32 bufferStartByte,
   TU32 bufferWrapSize)
@@ -178,7 +178,7 @@ EDySuccess MDyUniformBufferObject::ClearUboContainer(
   return DY_SUCCESS;
 }
 
-EDySuccess MDyUniformBufferObject::RemoveUboContainer(_MIN_ const std::string& specifier)
+EDySuccess MUniformBufferObject::RemoveUboContainer(_MIN_ const std::string& specifier)
 { 
   // Validation test :: unvalid specifier test
   const DDyUboInstanceInformation* uboPtr = this->GetUboContainer(specifier);

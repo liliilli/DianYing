@@ -13,14 +13,14 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyGLShaderResource.h>
+#include <Dy/Builtin/Abstract/AGLShaderResource.h>
 
 namespace dy::builtin
 {
 
 /// @class FDyBuiltinShaderGLEmissiveToneMap
 /// @brief OpenGL Shader for post-processing tone-mapping blurred emissive attachment.
-class FDyBuiltinShaderGLEmissiveToneMap final : public ADyGLShaderResource
+class FDyBuiltinShaderGLEmissiveToneMap final : public AGLShaderResource
 {
   MDY_REGISTER_RESOURCE_WITH_SPECIFIER(
     FDyBuiltinShaderGLEmissiveToneMap, 

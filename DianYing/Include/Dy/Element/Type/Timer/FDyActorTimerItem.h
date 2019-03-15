@@ -22,7 +22,7 @@
 namespace dy
 {
 class FDyTimerHandle;
-class ADyActorCppScript;
+class AActorCppScript;
 } /// ::dy namespace
 
 //!
@@ -40,7 +40,7 @@ public:
   /// Ctor.
   FDyActorTimerItem(
       _MIN_ FDyTimerHandle& iHandle,
-      _MIN_ ADyActorCppScript& iRefScript,
+      _MIN_ AActorCppScript& iRefScript,
       _MIN_ TF32 iFirstDelay, 
       _MIN_ TF32 iDelayTime, 
       _MIN_ bool iIsLooped, 
@@ -80,7 +80,7 @@ private:
   inline static TU32 MDY_PRIVATE(sIndex) = 0;
 
   FDyTimerHandle*     mPtrHandle = nullptr;
-  ADyActorCppScript*  mPtrScript = nullptr;
+  AActorCppScript*  mPtrScript = nullptr;
   TU32    mIndex      = 0;
   bool    mIsLooped   = false;
   TF32    mFirstDelay = 0.0f;

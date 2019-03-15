@@ -14,8 +14,7 @@
 
 /// Header file
 #include <Dy/Element/Canvas/FDyImage.h>
-#include <Dy/Component/Ctor/PDyImageRenderer.h>
-#include <Dy/Management/IO/MetaInfoManager.h>
+#include <Dy/Management/IO/MIOMeta.h>
 
 namespace dy
 {
@@ -54,7 +53,7 @@ void FDyImage::SetRenderableImageName(_MIN_ const std::string& iName, _MIN_ bool
   // Check vailidty.
   if (this->mImageName == iName && this->mIsMaterial != iIsMaterial) { return; }
 
-  auto& refMetaInfo = MDyMetaInfo::GetInstance();
+  auto& refMetaInfo = MIOMeta::GetInstance();
   if (iIsMaterial == true)
   {
     // Check

@@ -15,7 +15,7 @@
 /// Header file
 #include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
 #include <Dy/Core/Resource/Information/FDyAttachmentInformation.h>
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 
 namespace dy
 {

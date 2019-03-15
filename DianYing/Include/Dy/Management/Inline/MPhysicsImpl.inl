@@ -13,6 +13,8 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Component/CDyTransform.h>
+
 namespace dy
 {
 
@@ -28,7 +30,7 @@ inline MPhysics::Impl::Impl()
 
   // Get scale from setting manager, but we use defualt value temporary. 
   physx::PxTolerancesScale temporalScale{};
-  // MDySetting::GetInstance().GetGridScale();
+  // MSetting::GetInstance().GetGridScale();
 
   this->gPhysicx = PxCreatePhysics(PX_PHYSICS_VERSION, *this->gFoundation, temporalScale, false, this->gPvd);
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->gPhysicx), "PhysX Physics Instance must be created successfully.");
@@ -234,7 +236,7 @@ inline void MPhysics::Impl::UpdateRenderObjectTransform(TF32 iDt)
 
       // Set AABB (Axis-aligned bounding box) bound to each collider.
       const auto pxBound = physx::PxShapeExt::getWorldBounds(*shape, refRigidActor);
-      auto* ptrCollider = static_cast<CDyPhysicsCollider*>(shape->userData);
+      auto* ptrCollider = static_cast<CBasePhysicsCollider*>(shape->userData);
       MDY_ASSERT_MSG(ptrCollider != nullptr, "Unexpected error occurred.");
       ptrCollider->UpdateBound(pxBound);
     }
@@ -345,7 +347,7 @@ inline void MPhysics::Impl::UpdateInternalPxSceneParameter()
 
   // Set collision shape.
   // https://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/apireference/files/structPxVisualizationParameter.html
-  if (MDySetting::GetInstance().IsRenderPhysicsCollisionShape() == true)
+  if (MSetting::GetInstance().IsRenderPhysicsCollisionShape() == true)
   {
     if (this->gScene->getVisualizationParameter(PxVP::eCOLLISION_SHAPES) == disable)
     { this->gScene->setVisualizationParameter(PxVP::eCOLLISION_SHAPES, enable); }
@@ -362,7 +364,7 @@ inline void MPhysics::Impl::TryEnqueueDebugDrawCall()
   // If gScene is null, just return to outside and do nothing.
   if (MDY_CHECK_ISNULL(this->gScene)) { return; }
 
-  auto& renderingManager = MDyRendering::GetInstance();
+  auto& renderingManager = MRendering::GetInstance();
 
   // https://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/guide/Manual/DebugVisualization.html#debugvisualization
   // https://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/guide/Manual/BestPractices.html
@@ -404,10 +406,10 @@ inline void MPhysics::Impl::onRelease(
 }
 
 inline void MPhysics::Impl::pTryEnqueueCollisionIssue(
-    EDyCollisionCbType iHitType, 
+    ECollisionCallbackType iHitType, 
     physx::PxPairFlags iInternalFlag,
-    CDyPhysicsCollider* i0, 
-    CDyPhysicsCollider* i1, 
+    CBasePhysicsCollider* i0, 
+    CBasePhysicsCollider* i1, 
     const FDyHitResult& iHitResult)
 {
   // Make Collision issue item to be accessed when calling collision callback function.
@@ -416,14 +418,14 @@ inline void MPhysics::Impl::pTryEnqueueCollisionIssue(
   item.mHitResult = iHitResult;
 
   // Check flags.
-  bool (CDyPhysicsCollider::*ConditionFunction)() const = nullptr;
+  bool (CBasePhysicsCollider::*ConditionFunction)() const = nullptr;
   switch (iHitType)
   {
-  case EDyCollisionCbType::OnHit:
-    ConditionFunction = &CDyPhysicsCollider::IsNotifyHitEvent; break;
-  case EDyCollisionCbType::OnOverlapBegin:
-  case EDyCollisionCbType::OnOverlapEnd:
-    ConditionFunction = &CDyPhysicsCollider::IsNotifyOverlapEvent; break;
+  case ECollisionCallbackType::OnHit:
+    ConditionFunction = &CBasePhysicsCollider::IsNotifyHitEvent; break;
+  case ECollisionCallbackType::OnOverlapBegin:
+  case ECollisionCallbackType::OnOverlapEnd:
+    ConditionFunction = &CBasePhysicsCollider::IsNotifyOverlapEvent; break;
   }
 
   if ((i0->*ConditionFunction)() == true)
@@ -469,9 +471,9 @@ inline void MPhysics::Impl::onContact(
       const auto* shape1 = cp.shapes[1]; MDY_ASSERT_MSG_FORCE(shape1 != nullptr, "Test failed.");
 
       // Get collider components.
-      auto* ptrCollider0 = static_cast<CDyPhysicsCollider*>(shape0->userData);
+      auto* ptrCollider0 = static_cast<CBasePhysicsCollider*>(shape0->userData);
       MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(ptrCollider0), "Unexpected error occurred.");
-      auto* ptrCollider1 = static_cast<CDyPhysicsCollider*>(shape1->userData);
+      auto* ptrCollider1 = static_cast<CBasePhysicsCollider*>(shape1->userData);
       MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(ptrCollider1), "Unexpected error occurred.");
 
       const auto filterFlag0 = shape0->getSimulationFilterData();
@@ -482,7 +484,7 @@ inline void MPhysics::Impl::onContact(
       result.mContactPosition = internalBuffer.position;
 
       // We do not process when `ignored` status because `ignored` status will be killed by physx internal system logic.
-      using ECbType = EDyCollisionCbType;
+      using ECbType = ECollisionCallbackType;
       auto[lhsFlag, rhsFlag] = GetFilterResult(filterFlag0, filterFlag1);
       if (lhsFlag == rhsFlag)
       {

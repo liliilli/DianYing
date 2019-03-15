@@ -13,14 +13,14 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyGLShaderResource.h>
+#include <Dy/Builtin/Abstract/AGLShaderResource.h>
 
 namespace dy::builtin
 {
 
 /// @class FDyBtShGlEmissiveStatic
 /// @brief Builtin default deferred opqaue but emit fluorescent.
-class FDyBtShGlEmissiveStatic final : public ADyGLShaderResource
+class FDyBtShGlEmissiveStatic final : public AGLShaderResource
 {
   MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBtShGlEmissiveStatic, "dyBtShGlEmissvieStatic")
 public:

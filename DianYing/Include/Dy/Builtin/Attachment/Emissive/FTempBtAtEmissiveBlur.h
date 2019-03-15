@@ -13,8 +13,8 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyGLAttachmentResource.h>
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Builtin/Abstract/AGLAttachmentResource.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
 
 namespace dy
 {
@@ -22,7 +22,7 @@ namespace dy
 /// @class FDyBtAttachmentEmissiveTempBlur
 /// @brief Emissive information attachment for used to store blurred iamge.
 /// This attachment supports HDR (RGB16F)
-class FDyBtAttachmentEmissiveTempBlur final : public ADyGLAttachmentResource
+class FDyBtAttachmentEmissiveTempBlur final : public AGLAttachmentResource
 {
   MDY_REGISTER_RESOURCE_ATTACHMENT(
     FDyBtAttachmentEmissiveTempBlur, 

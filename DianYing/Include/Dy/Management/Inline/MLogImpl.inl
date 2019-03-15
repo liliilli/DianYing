@@ -25,7 +25,7 @@ inline void MLog::Impl::SetVisibleLevel(ELevel iLogLevel)
 {
   this->mLogLevel = iLogLevel;
 
-  if (MDySetting::GetInstance().IsEnabledFeatureLogging() == true)
+  if (MSetting::GetInstance().IsEnabledFeatureLogging() == true)
   {
     const auto logLevelValue = DyGetLogLevel(this->mLogLevel);
 
@@ -60,7 +60,7 @@ inline EDySuccess MLog::Impl::pfTurnOn()
   }
 
   // Create sinks for logging.
-  const auto& settingManager = MDySetting::GetInstance();
+  const auto& settingManager = MSetting::GetInstance();
   if (settingManager.IsEnabledFeatureLogging() == false) { return DY_FAILURE; }
 
   if (settingManager.IsEnableSubFeatureLoggingToFile() == false
@@ -76,7 +76,7 @@ inline EDySuccess MLog::Impl::pfTurnOn()
   {
     if (settingManager.IsEnabledSubFeatureLoggingToConsole() == true)
     {
-      if (auto& managerWindow = MDyWindow::GetInstance();
+      if (auto& managerWindow = MWindow::GetInstance();
           managerWindow.IsInitialized() == true)
       {
         MDY_CALL_ASSERT_SUCCESS(managerWindow.CreateConsoleWindow());
@@ -125,7 +125,7 @@ inline EDySuccess MLog::Impl::pfTurnOff()
   this->mLogger .reset();
   this->mSinks  .clear();
 
-  auto& windowManager = MDyWindow::GetInstance();
+  auto& windowManager = MWindow::GetInstance();
   if (windowManager.IsCreatedConsoleWindow() == true)
   {
     MDY_CALL_ASSERT_SUCCESS(windowManager.RemoveConsoleWindow());

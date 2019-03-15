@@ -14,15 +14,15 @@
 
 /// Header file
 #include <Dy/Builtin/Script/DebugUiScriptCpp.h>
-#include <Dy/Management/WindowManager.h>
+#include <Dy/Management/MWindow.h>
 #include <Dy/Management/MLog.h>
-#include <Dy/Management/TimeManager.h>
+#include <Dy/Management/MTime.h>
 
 #include <Dy/Element/Canvas/Widget.h>
 #include <Dy/Element/Canvas/Text.h>
 #include <Dy/Element/Canvas/FDyBasicGaugeBar.h>
 #include <Dy/Management/MInput.h>
-#include <Dy/Management/Internal/MDyProfiling.h>
+#include <Dy/Management/Internal/MProfiling.h>
 #include <Dy/Helper/Math/Math.h>
 #include <Dy/Helper/Math/Random.h>
 #include <Dy/Management/MGameTimer.h>
@@ -44,8 +44,8 @@ void FDyBuiltinDebugUiScript::Initiate()
   MDY_BIND_INPUT_ACTION("Enter", EDyInputActionStatus::Pressed, &FDyBuiltinDebugUiScript::EndApplication);
 #endif
 
-  this->mTimeManager      = &MDyTime::GetInstance();
-  this->mProfilingManger  = &MDyProfiling::GetInstance();
+  this->mTimeManager      = &MTime::GetInstance();
+  this->mProfilingManger  = &MProfiling::GetInstance();
 }
 
 void FDyBuiltinDebugUiScript::Start()
@@ -56,7 +56,7 @@ void FDyBuiltinDebugUiScript::Start()
 
 void FDyBuiltinDebugUiScript::Update(_MIN_ TF32 dt)
 {
-  auto& windowManager = MDyWindow::GetInstance(); 
+  auto& windowManager = MWindow::GetInstance(); 
   const TF32 usageCpu = windowManager.GetCpuUsage();
   const auto usageRam = windowManager.GetRamUsage();
   auto& widgetRef = this->GetWidgetReference();
@@ -117,7 +117,7 @@ Camera0 : 2
     auto* ptrImage = this->GetWidgetReference().GetUiObject<FDyImage>("TestImage");;
     if (auto* ptrMat = ptrImage->GetUsingMaterial(); ptrMat != nullptr && ptrMat->IsResourceExist() == true)
     {
-      ptrMat->TryUpdateUniform<EDyUniformVariableType::Float>("uThreshold", (sinf(elapsed * 3) + 1.0f) * 0.5f);
+      ptrMat->TryUpdateUniform<EUniformVariableType::Float>("uThreshold", (sinf(elapsed * 3) + 1.0f) * 0.5f);
     }
   }
 }

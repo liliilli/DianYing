@@ -58,24 +58,24 @@ void GetLevelResourceFromActor(_MIN_ const dy::TComponentMetaList& list, _MINOUT
       const auto& desc = std::any_cast<const PDyModelFilterComponentMetaInfo&>(componentInfo);
       if (desc.mDetails.mModelSpecifierName.empty() == true) { break; }
       
-      iSet.emplace(EDyResourceType::Model, desc.mDetails.mModelSpecifierName);
+      iSet.emplace(EResourceType::Model, desc.mDetails.mModelSpecifierName);
     } break;
     case EDyComponentMetaType::ModelAnimator:
     {
       const auto& desc = std::any_cast<const PDyModelAnimatorComponentMetaInfo&>(componentInfo);
 
       if (desc.mDetails.mSkeletonSpecifier.empty() == false)
-      { iSet.emplace(EDyResourceType::Skeleton, desc.mDetails.mSkeletonSpecifier); }
+      { iSet.emplace(EResourceType::Skeleton, desc.mDetails.mSkeletonSpecifier); }
 
       if (desc.mDetails.mTempAnimationScrap.empty() == false)
-      { iSet.emplace(EDyResourceType::AnimationScrap, desc.mDetails.mTempAnimationScrap); }
+      { iSet.emplace(EResourceType::AnimationScrap, desc.mDetails.mTempAnimationScrap); }
     } break;
     case EDyComponentMetaType::Skybox:
     {
       const auto& desc = std::any_cast<const PDySkyboxComponentMetaInfo&>(componentInfo);
 
       if (desc.mDetails.mCubemapSpecifier.empty() == false)
-      { iSet.emplace(EDyResourceType::Texture, desc.mDetails.mCubemapSpecifier); }
+      { iSet.emplace(EResourceType::Texture, desc.mDetails.mCubemapSpecifier); }
     } break;
     default: /* Do nothing */ break;
     }

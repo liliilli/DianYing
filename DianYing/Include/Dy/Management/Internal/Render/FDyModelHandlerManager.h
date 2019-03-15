@@ -22,7 +22,7 @@
 
 namespace dy
 {
-class CDyModelAnimator;
+class CModelAnimator;
 } /// ::dy namespace
 
 //!
@@ -34,8 +34,8 @@ namespace dy
 
 /// @class FDyModelHandlerManager
 /// @brief Internal model handler manager. \n 
-/// This manager initialized and released automatically in MDyRendering.
-class FDyModelHandlerManager final : public IDySingleton<FDyModelHandlerManager>
+/// This manager initialized and released automatically in MRendering.
+class FDyModelHandlerManager final : public ISingleton<FDyModelHandlerManager>
 {
 public:
   MDY_SINGLETON_DERIVED(FDyModelHandlerManager);
@@ -59,17 +59,17 @@ public:
   MDY_NODISCARD EDySuccess TryCreateHandler(_MIN_ const std::string& iModelSpecifier) noexcept;
 
   /// @brief
-  EDySuccess BindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ CDyModelFilter& iFilter);
+  EDySuccess BindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ CModelFilter& iFilter);
   /// @brief
-  EDySuccess BindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ CDyModelRenderer& iComponent);
+  EDySuccess BindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ CModelRenderer& iComponent);
   /// @brief
-  EDySuccess BindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ CDyModelAnimator& iComponent);
+  EDySuccess BindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ CModelAnimator& iComponent);
   /// @brief
-  EDySuccess UnbindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ CDyModelFilter&);
+  EDySuccess UnbindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ CModelFilter&);
   /// @brief
-  EDySuccess UnbindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ CDyModelRenderer&);
+  EDySuccess UnbindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ CModelRenderer&);
   /// @brief
-  EDySuccess UnbindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ CDyModelAnimator&);
+  EDySuccess UnbindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ CModelAnimator&);
 
   /// @brief 
   MDY_NODISCARD bool IsActorInfoNeedToBeGc(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor) const noexcept;

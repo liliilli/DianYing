@@ -17,7 +17,7 @@
 
 #include <regex>
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Core/Resource/Type/Uniform/UniformValueTypes.h>
 #include <Dy/Core/Resource/Type/TDyResourceBinder.h>
 #include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
@@ -95,7 +95,7 @@ const std::vector<DDyUniformVariableInformation>& iUniformList)
   {
     // Check there is already specifier value, if exist do nothing
     // but not exist, insert with default value and bring it to update list.
-    using TEnum = EDyUniformVariableType;
+    using TEnum = EUniformVariableType;
     switch (type)
     {
     case TEnum::Matrix4:       { MDY_CONSTRUCT_UNIFORM_ITEM(Matrix4, specifier, id); } break;
@@ -144,7 +144,7 @@ void ADyUniformContainer::pTryConstructDefaultUniformStructLists(
       // setup each item. (Should be refactored)
       for (const auto& memberValue : information[i].mMemberValues)
       {
-        using TEnum = EDyUniformVariableType;
+        using TEnum = EUniformVariableType;
         const auto& postfix  = memberValue.mVariableName;
         const auto uniformId = memberValue.mVariableLocation;
         switch (memberValue.mVariableType)
@@ -200,7 +200,7 @@ void ADyUniformContainer::pTryConstructDefaultUniformItemList(
     {
       const auto& postfix   = memberValue.mVariableName;
       const auto uniformId  = memberValue.mVariableLocation;
-      using TEnum = EDyUniformVariableType;
+      using TEnum = EUniformVariableType;
       switch (memberValue.mVariableType) 
       {
       case TEnum::Matrix4: 
@@ -230,7 +230,7 @@ void ADyUniformContainer::pTryConstructDefaultUniformItemList(
 EDySuccess ADyUniformContainer::TryInsertTextureRequisition(TU32 insertId, TU32 textureId)
 {
   // Find
-  using TEnum = EDyUniformVariableType;
+  using TEnum = EUniformVariableType;
   static std::array<TEnum, 6> textureTypes = {
       TEnum::Texture1D, TEnum::Texture2D, TEnum::Texture2DArray, 
       TEnum::Texture2DCubemap, TEnum::Texture2DRectangle, TEnum::Texture2DShadowArray};
@@ -248,7 +248,7 @@ EDySuccess ADyUniformContainer::TryInsertTextureRequisition(TU32 insertId, TU32 
         return DY_SUCCESS;
       }
     } break;
-    case EDyUniformVariableType::Texture2D:
+    case EUniformVariableType::Texture2D:
     { auto& ref = static_cast<FDyUniformValue<TEnum::Texture2D>&>(*item);
       if (ref.mValue == TI32(insertId))
       {
@@ -256,7 +256,7 @@ EDySuccess ADyUniformContainer::TryInsertTextureRequisition(TU32 insertId, TU32 
         return DY_SUCCESS;
       }
     } break;
-    case EDyUniformVariableType::Texture2DArray:
+    case EUniformVariableType::Texture2DArray:
     { auto& ref = static_cast<FDyUniformValue<TEnum::Texture2DArray>&>(*item);
       if (ref.mValue == TI32(insertId))
       {
@@ -264,7 +264,7 @@ EDySuccess ADyUniformContainer::TryInsertTextureRequisition(TU32 insertId, TU32 
         return DY_SUCCESS;
       }
     } break;
-    case EDyUniformVariableType::Texture2DShadowArray:
+    case EUniformVariableType::Texture2DShadowArray:
     { auto& ref = static_cast<FDyUniformValue<TEnum::Texture2DShadowArray>&>(*item);
       if (ref.mValue == TI32(insertId))
       {
@@ -272,7 +272,7 @@ EDySuccess ADyUniformContainer::TryInsertTextureRequisition(TU32 insertId, TU32 
         return DY_SUCCESS;
       }
     } break;
-    case EDyUniformVariableType::Texture2DRectangle:
+    case EUniformVariableType::Texture2DRectangle:
     { auto& ref = static_cast<FDyUniformValue<TEnum::Texture2DRectangle>&>(*item);
       if (ref.mValue == TI32(insertId))
       {
@@ -280,7 +280,7 @@ EDySuccess ADyUniformContainer::TryInsertTextureRequisition(TU32 insertId, TU32 
         return DY_SUCCESS;
       }
     } break;
-    case EDyUniformVariableType::Texture2DCubemap: 
+    case EUniformVariableType::Texture2DCubemap: 
     { auto& ref = static_cast<FDyUniformValue<TEnum::Texture2DCubemap>&>(*item);
       if (ref.mValue == TI32(insertId))
       {
@@ -295,11 +295,11 @@ EDySuccess ADyUniformContainer::TryInsertTextureRequisition(TU32 insertId, TU32 
   return DY_FAILURE;
 }
 
-EDyUniformVariableType ADyUniformContainer::GetTypeOfUniform(const std::string& iSpecifier) const noexcept
+EUniformVariableType ADyUniformContainer::GetTypeOfUniform(const std::string& iSpecifier) const noexcept
 {
   if (Contains(this->mUniformMap, iSpecifier) == false)
   {
-    return EDyUniformVariableType::NoneError;
+    return EUniformVariableType::NoneError;
   }
 
   return this->mUniformMap.at(iSpecifier)->mType;
@@ -338,82 +338,82 @@ EDySuccess ADyUniformContainer::TryUpdateUniformList()
 
 void ADyUniformContainer::pTryUpdateUniformVariables()
 {
-  using TEnum = EDyUniformVariableType;
+  using TEnum = EUniformVariableType;
   for (auto& ptrItem : this->mUpdatedItemList)
   {
     switch (ptrItem->mType)
     {
     case TEnum::Matrix4: 
     { const auto* item = static_cast<FDyUniformValue<TEnum::Matrix4>*>(ptrItem);
-      FDyGLWrapper::UpdateUniformMatrix4(item->mId, item->mValue);
+      XGLWrapper::UpdateUniformMatrix4(item->mId, item->mValue);
     } break;
-    case EDyUniformVariableType::Matrix4Array: 
+    case EUniformVariableType::Matrix4Array: 
     { const auto* item = static_cast<FDyUniformValue<TEnum::Matrix4Array>*>(ptrItem);
-      FDyGLWrapper::UpdateUniformMatrix4Array(item->mId, item->mValue);
+      XGLWrapper::UpdateUniformMatrix4Array(item->mId, item->mValue);
     } break;
-    case EDyUniformVariableType::Matrix3: 
+    case EUniformVariableType::Matrix3: 
     { const auto* item = static_cast<FDyUniformValue<TEnum::Matrix3>*>(ptrItem);
-      FDyGLWrapper::UpdateUniformMatrix3(item->mId, item->mValue);
+      XGLWrapper::UpdateUniformMatrix3(item->mId, item->mValue);
     } break;
-    case EDyUniformVariableType::Vector4: 
+    case EUniformVariableType::Vector4: 
     { const auto* item = static_cast<FDyUniformValue<TEnum::Vector4>*>(ptrItem);
-      FDyGLWrapper::UpdateUniformVector4(item->mId, item->mValue);
+      XGLWrapper::UpdateUniformVector4(item->mId, item->mValue);
     } break;
-    case EDyUniformVariableType::Vector3: 
+    case EUniformVariableType::Vector3: 
     { const auto* item = static_cast<FDyUniformValue<TEnum::Vector3>*>(ptrItem);
-      FDyGLWrapper::UpdateUniformVector3(item->mId, item->mValue);
+      XGLWrapper::UpdateUniformVector3(item->mId, item->mValue);
     } break;
-    case EDyUniformVariableType::Vector3Array: 
+    case EUniformVariableType::Vector3Array: 
     { const auto* item = static_cast<FDyUniformValue<TEnum::Vector3Array>*>(ptrItem);
-      FDyGLWrapper::UpdateUniformVector3Array(item->mId, item->mValue);
+      XGLWrapper::UpdateUniformVector3Array(item->mId, item->mValue);
     } break;
-    case EDyUniformVariableType::Vector2: 
+    case EUniformVariableType::Vector2: 
     { const auto* item = static_cast<FDyUniformValue<TEnum::Vector2>*>(ptrItem);
-      FDyGLWrapper::UpdateUniformVector2(item->mId, item->mValue);
+      XGLWrapper::UpdateUniformVector2(item->mId, item->mValue);
     } break;
-    case EDyUniformVariableType::Integer:
+    case EUniformVariableType::Integer:
     { const auto* item = static_cast<FDyUniformValue<TEnum::Integer>*>(ptrItem);
-      FDyGLWrapper::UpdateUniformInteger(item->mId, item->mValue);
+      XGLWrapper::UpdateUniformInteger(item->mId, item->mValue);
     } break;
-    case EDyUniformVariableType::Unsigned:
+    case EUniformVariableType::Unsigned:
     { const auto* item = static_cast<FDyUniformValue<TEnum::Unsigned>*>(ptrItem);
-      FDyGLWrapper::UpdateUniformUnsigned(item->mId, item->mValue);
+      XGLWrapper::UpdateUniformUnsigned(item->mId, item->mValue);
     } break;
-    case EDyUniformVariableType::Float:
+    case EUniformVariableType::Float:
     { const auto* item = static_cast<FDyUniformValue<TEnum::Float>*>(ptrItem);
-      FDyGLWrapper::UpdateUniformFloat(item->mId, item->mValue);
+      XGLWrapper::UpdateUniformFloat(item->mId, item->mValue);
     } break;
-    case EDyUniformVariableType::FloatArray:
+    case EUniformVariableType::FloatArray:
     { const auto* item = static_cast<FDyUniformValue<TEnum::FloatArray>*>(ptrItem);
-      FDyGLWrapper::UpdateUniformFloatArray(item->mId, item->mValue);
+      XGLWrapper::UpdateUniformFloatArray(item->mId, item->mValue);
     } break;
-    case EDyUniformVariableType::Bool:
+    case EUniformVariableType::Bool:
     { const auto* item = static_cast<FDyUniformValue<TEnum::Bool>*>(ptrItem);
-      FDyGLWrapper::UpdateUniformInteger(item->mId, item->mValue);
+      XGLWrapper::UpdateUniformInteger(item->mId, item->mValue);
     } break;
-    case EDyUniformVariableType::Texture1D: 
+    case EUniformVariableType::Texture1D: 
     { const auto* item = static_cast<FDyUniformValue<TEnum::Texture1D>*>(ptrItem);
-      FDyGLWrapper::UpdateUniformInteger(item->mId, item->mValue);
+      XGLWrapper::UpdateUniformInteger(item->mId, item->mValue);
     } break;
-    case EDyUniformVariableType::Texture2D: 
+    case EUniformVariableType::Texture2D: 
     { const auto* item = static_cast<FDyUniformValue<TEnum::Texture2D>*>(ptrItem);
-      FDyGLWrapper::UpdateUniformInteger(item->mId, item->mValue);
+      XGLWrapper::UpdateUniformInteger(item->mId, item->mValue);
     } break;
-    case EDyUniformVariableType::Texture2DArray:
+    case EUniformVariableType::Texture2DArray:
     { const auto* item = static_cast<FDyUniformValue<TEnum::Texture2DArray>*>(ptrItem);
-      FDyGLWrapper::UpdateUniformInteger(item->mId, item->mValue);
+      XGLWrapper::UpdateUniformInteger(item->mId, item->mValue);
     } break;
-    case EDyUniformVariableType::Texture2DRectangle: 
+    case EUniformVariableType::Texture2DRectangle: 
     { const auto* item = static_cast<FDyUniformValue<TEnum::Texture2DRectangle>*>(ptrItem);
-      FDyGLWrapper::UpdateUniformInteger(item->mId, item->mValue);
+      XGLWrapper::UpdateUniformInteger(item->mId, item->mValue);
     } break;
-    case EDyUniformVariableType::Texture2DShadowArray:
+    case EUniformVariableType::Texture2DShadowArray:
     { const auto* item = static_cast<FDyUniformValue<TEnum::Texture2DShadowArray>*>(ptrItem);
-      FDyGLWrapper::UpdateUniformInteger(item->mId, item->mValue);
+      XGLWrapper::UpdateUniformInteger(item->mId, item->mValue);
     } break;
-    case EDyUniformVariableType::Texture2DCubemap:
+    case EUniformVariableType::Texture2DCubemap:
     { const auto* item = static_cast<FDyUniformValue<TEnum::Texture2DCubemap>*>(ptrItem);
-      FDyGLWrapper::UpdateUniformInteger(item->mId, item->mValue);
+      XGLWrapper::UpdateUniformInteger(item->mId, item->mValue);
     } break;
     default: MDY_UNEXPECTED_BRANCH();
     }
@@ -422,7 +422,7 @@ void ADyUniformContainer::pTryUpdateUniformVariables()
 
 void ADyUniformContainer::pTryUpdateUniformTextureVars()
 {
-  using TEnum = EDyUniformVariableType;
+  using TEnum = EUniformVariableType;
   static const constexpr std::array<std::pair<TEnum, GLenum>, 6> textureTypes = {
     std::pair(TEnum::Texture1D, GL_TEXTURE_1D), 
     std::pair(TEnum::Texture2D, GL_TEXTURE_2D), 
@@ -453,46 +453,46 @@ void ADyUniformContainer::pTryUpdateUniformTextureVars()
 
 void ADyUniformContainer::pTryUpdateUniformStructVars()
 {
- using TEnum = EDyUniformVariableType;
+ using TEnum = EUniformVariableType;
   for (auto& [prefix, index, ptrItem] : this->mUpdatedStructList)
   {
     switch (ptrItem->mType)
     {
     case TEnum::Matrix4: 
     { const auto* item = static_cast<FDyUniformValue<TEnum::Matrix4>*>(ptrItem);
-      FDyGLWrapper::UpdateUniformMatrix4(item->mId, item->mValue);
+      XGLWrapper::UpdateUniformMatrix4(item->mId, item->mValue);
     } break;
-    case EDyUniformVariableType::Matrix3: 
+    case EUniformVariableType::Matrix3: 
     { const auto* item = static_cast<FDyUniformValue<TEnum::Matrix3>*>(ptrItem);
-      FDyGLWrapper::UpdateUniformMatrix3(item->mId, item->mValue);
+      XGLWrapper::UpdateUniformMatrix3(item->mId, item->mValue);
     } break;
-    case EDyUniformVariableType::Vector4: 
+    case EUniformVariableType::Vector4: 
     { const auto* item = static_cast<FDyUniformValue<TEnum::Vector4>*>(ptrItem);
-      FDyGLWrapper::UpdateUniformVector4(item->mId, item->mValue);
+      XGLWrapper::UpdateUniformVector4(item->mId, item->mValue);
     } break;
-    case EDyUniformVariableType::Vector3: 
+    case EUniformVariableType::Vector3: 
     { const auto* item = static_cast<FDyUniformValue<TEnum::Vector3>*>(ptrItem);
-      FDyGLWrapper::UpdateUniformVector3(item->mId, item->mValue);
+      XGLWrapper::UpdateUniformVector3(item->mId, item->mValue);
     } break;
-    case EDyUniformVariableType::Vector2: 
+    case EUniformVariableType::Vector2: 
     { const auto* item = static_cast<FDyUniformValue<TEnum::Vector2>*>(ptrItem);
-      FDyGLWrapper::UpdateUniformVector2(item->mId, item->mValue);
+      XGLWrapper::UpdateUniformVector2(item->mId, item->mValue);
     } break;
-    case EDyUniformVariableType::Integer:
+    case EUniformVariableType::Integer:
     { const auto* item = static_cast<FDyUniformValue<TEnum::Integer>*>(ptrItem);
-      FDyGLWrapper::UpdateUniformInteger(item->mId, item->mValue);
+      XGLWrapper::UpdateUniformInteger(item->mId, item->mValue);
     } break;
-    case EDyUniformVariableType::Unsigned:
+    case EUniformVariableType::Unsigned:
     { const auto* item = static_cast<FDyUniformValue<TEnum::Unsigned>*>(ptrItem);
-      FDyGLWrapper::UpdateUniformUnsigned(item->mId, item->mValue);
+      XGLWrapper::UpdateUniformUnsigned(item->mId, item->mValue);
     } break;
-    case EDyUniformVariableType::Float:
+    case EUniformVariableType::Float:
     { const auto* item = static_cast<FDyUniformValue<TEnum::Float>*>(ptrItem);
-      FDyGLWrapper::UpdateUniformFloat(item->mId, item->mValue);
+      XGLWrapper::UpdateUniformFloat(item->mId, item->mValue);
     } break;
-    case EDyUniformVariableType::Bool:
+    case EUniformVariableType::Bool:
     { const auto* item = static_cast<FDyUniformValue<TEnum::Bool>*>(ptrItem);
-      FDyGLWrapper::UpdateUniformInteger(item->mId, item->mValue);
+      XGLWrapper::UpdateUniformInteger(item->mId, item->mValue);
     } break;
     default: MDY_UNEXPECTED_BRANCH();
     }

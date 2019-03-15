@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Component/Type/Physics/EDyCollisionCbType.h>
+#include <Dy/Component/Type/Physics/ECollisionCallbackType.h>
 #include <Dy/Management/Internal/Physics/CollisionResults.h>
 
 //!
@@ -22,7 +22,7 @@
 
 namespace dy
 {
-class CDyPhysicsCollider;
+class CBasePhysicsCollider;
 class FDyActor;
 } /// ::dy namespace
 
@@ -37,10 +37,10 @@ namespace dy
 /// @brief Collision issue item for queueing collision callback function.
 struct DDyCollisionIssueItem final
 {
-  EDyCollisionCbType  mType = EDyCollisionCbType::OnHit;
-  CDyPhysicsCollider* mPtrSelfCollider  = nullptr;
+  ECollisionCallbackType  mType = ECollisionCallbackType::OnHit;
+  CBasePhysicsCollider* mPtrSelfCollider  = nullptr;
   FDyActor*           mPtrSelfActor     = nullptr;
-  CDyPhysicsCollider* mPtrOtherCollider = nullptr;
+  CBasePhysicsCollider* mPtrOtherCollider = nullptr;
   FDyActor*           mPtrOtherActor    = nullptr;
   FDyHitResult        mHitResult{};
 };

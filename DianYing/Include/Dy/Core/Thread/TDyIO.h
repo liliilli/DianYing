@@ -15,15 +15,15 @@
 
 #include <future>
 #include <queue>
-#include <Dy/Management/IO/MDyIOData.h>
-#include <Dy/Management/IO/MDyIOResource.h>
+#include <Dy/Management/IO/MIORescInfo.h>
+#include <Dy/Management/IO/MIOResource.h>
 #include <Dy/Core/Thread/IO/DDyIOTask.h>
 #include <Dy/Core/Thread/IO/DDyIOReferenceContainer.h>
 #include <Dy/Core/Thread/IO/FDyIOGC.h>
 #include <Dy/Core/Thread/IO/TDyIOWorker.h>
 #include <Dy/Core/Thread/IO/DDyIOTaskDeferred.h>
 #include <Dy/Helper/Internal/FSemaphore.h>
-#include <Dy/Component/Interface/IDyInitializeHelper.h>
+#include <Dy/Component/Interface/IInitializeHelper.h>
 
 //!
 //! Forward declaration
@@ -31,7 +31,7 @@
 
 namespace dy
 {
-class MDyMetaInfo;
+class MIOMeta;
 class SDyIOConnectionHelper;
 MDY_INTERFACE __FDyBinderBase;
 } /// ::dy namespace
@@ -47,7 +47,7 @@ namespace dy
 /// @class TDyIO
 /// @brief File IO Thread
 ///
-class TDyIO final : public IDyInitializeHelper<void>
+class TDyIO final : public IInitializeHelper<void>
 {
 public:
   /// @struct PRIVerificationItem
@@ -55,11 +55,11 @@ public:
   struct PRIVerificationItem final
   {
     const std::string&      mSpecifier  = MDY_INITIALIZE_EMPTYSTR;
-    const EDyResourceType   mType       = EDyResourceType::NoneError;
+    const EResourceType   mType       = EResourceType::NoneError;
     const EDyResourceStyle  mStyle      = EDyResourceStyle::NoneError;
     const EDyScope          mScope      = EDyScope::UserDefined;
 
-    PRIVerificationItem(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style, EDyScope scope) :
+    PRIVerificationItem(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EDyResourceStyle style, EDyScope scope) :
         mSpecifier{specifier}, mType{type}, mStyle{style}, mScope{scope} {};
   };
 
@@ -138,20 +138,20 @@ private:
   /// @brief Enqueue IO Populating task without any binding to dy object.
   MDY_NODISCARD EDySuccess outTryEnqueueTask(
       _MIN_ const std::string& specifier,
-      _MIN_ EDyResourceType resourceType, _MIN_ EDyResourceStyle resourceStyle,
+      _MIN_ EResourceType resourceType, _MIN_ EDyResourceStyle resourceStyle,
       _MIN_ EDyScope scope, _MIN_ bool isDerivedFromResource = false);
 
   /// @brief
   MDY_NODISCARD std::vector<PRIVerificationItem> pMakeDependenciesCheckList(
       _MIN_ const std::string& iSpecifier,
-      _MIN_ EDyResourceType iResourceType,
+      _MIN_ EResourceType iResourceType,
       _MIN_ EDyResourceStyle iResourceStyle,
       _MIN_ EDyScope iScope) const;
 
   /// @brief Enqueue IO Populating `instant` material task.
   MDY_NODISCARD EDySuccess InstantPopulateMaterialResource(
       _MIN_ const PDyMaterialInstanceMetaInfo& iDesc,
-      _MIN_ TDyResourceBinder<EDyResourceType::Material>& refMat, 
+      _MIN_ TDyResourceBinder<EResourceType::Material>& refMat, 
       _MIN_ EDyScope scope,
       _MIN_ bool(*callback)());
 
@@ -161,38 +161,38 @@ private:
 
   /// @brief Check Reference instance is bounded. (resource is bounded or not).
   /// If there is not specified instance in contianer, UB might be happened.
-  MDY_NODISCARD bool pIsReferenceInstanceBound(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style);
+  MDY_NODISCARD bool pIsReferenceInstanceBound(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EDyResourceStyle style);
 
   /// @brief Check specified meta information is exist on meta information.
   /// @param specifier Resource specifier name.
   /// @param type Resource type.
-  MDY_NODISCARD bool outIsMetaInformationExist(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type);
+  MDY_NODISCARD bool outIsMetaInformationExist(_MIN_ const std::string& specifier, _MIN_ EResourceType type);
 
   /// @brief Check whether resource's Reference Instance is exist on now as any kind of information.
   /// @param specifier Resource specifier name.
   /// @param type  Resource type.
   /// @param style Resource style mode.
-  MDY_NODISCARD bool pIsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style);
+  MDY_NODISCARD bool pIsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EDyResourceStyle style);
 
   /// @brief Try bind binder instance to Resource Reference Instance.
   /// If not found RI, just return DY_FAILURE.
   MDY_NODISCARD EDySuccess TryBindBinderToResourceRI
-  (_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder);
+  (_MIN_ const std::string& iSpecifier, _MIN_ EResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder);
 
   /// @brief Try bind binder instance to Information Reference Instance.
   /// If not found RI, just return DY_FAILURE.
   MDY_NODISCARD EDySuccess TryBindBinderToInformationRI
-  (_MIN_ const std::string & iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase * iPtrBinder);
+  (_MIN_ const std::string & iSpecifier, _MIN_ EResourceType iType, _MIN_ const __FDyBinderBase * iPtrBinder);
 
   /// @brief Try detach binder instance from Resource Reference Instance.
   /// If nnot found RI, just return DY_FAILURE.
   MDY_NODISCARD EDySuccess TryDetachBinderFromResourceRI
-  (_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder);
+  (_MIN_ const std::string& iSpecifier, _MIN_ EResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder);
 
   /// @brief Try detach binder instance from Information Reference Instance.
   /// If nnot found RI, just return DY_FAILURE.
   MDY_NODISCARD EDySuccess TryDetachBinderFromInformationRI
-  (_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder);
+  (_MIN_ const std::string& iSpecifier, _MIN_ EResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder);
 
   ///
   /// @brief Try update scope of given style's specifier RI of resource type. \n
@@ -207,7 +207,7 @@ private:
   void pTryEnlargeResourceScope(
       _MIN_ EDyScope scope,
       _MIN_ const std::string& specifier,
-      _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style);
+      _MIN_ EResourceType type, _MIN_ EDyResourceStyle style);
 
   ///
   /// @brief Try retrieve reference instance from gc.
@@ -215,10 +215,10 @@ private:
   /// @param type  Resource type.
   /// @param style Resource style mode.
   ///
-  MDY_NODISCARD EDySuccess outTryRetrieveReferenceInstanceFromGC(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style);
+  MDY_NODISCARD EDySuccess outTryRetrieveReferenceInstanceFromGC(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EDyResourceStyle style);
 
   /// @brief Create reference instance.
-  MDY_NODISCARD EDySuccess outCreateReferenceInstance(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style, _MIN_ EDyScope scope);
+  MDY_NODISCARD EDySuccess outCreateReferenceInstance(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EDyResourceStyle style, _MIN_ EDyScope scope);
 
   /// @brief Force Try process deferred task list which must be processed in main thread, \n
   /// so Insert created resource instance into result instance list for IO GC/IN Phase.
@@ -238,7 +238,7 @@ private:
 
   /// @brief Try update deferred task which can be insered to list insert into queue with more high priority.
   /// This function use mutex, so performance is afraid.
-  void pTryUpdateDeferredTaskList(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style);
+  void pTryUpdateDeferredTaskList(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EDyResourceStyle style);
 
   /// @brief 
   void outForceProcessIOInsertPhase() noexcept;
@@ -301,9 +301,9 @@ private:
   std::function<void(void)> mCbSleepFunction    = nullptr;
   std::function<void(void)> mCbNextSleepFunction= nullptr;
 
-  MDyMetaInfo*              mMetaInfoManager    = nullptr;
-  MDyIOData*                mIODataManager      = nullptr;
-  MDyIOResource*            mIOResourceManager  = nullptr;
+  MIOMeta*              MIOMetaManager    = nullptr;
+  MIORescInfo*                mIODataManager      = nullptr;
+  MIOResource*            mIOResourceManager  = nullptr;
 
   friend class SDyIOConnectionHelper;
   friend class SDyIOWorkerConnHelper;

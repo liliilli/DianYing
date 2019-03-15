@@ -24,9 +24,9 @@
 namespace
 {
 
-MDY_NODISCARD dy::ADyTextureResource::TBufferType Convert(_MIN_ const std::array<dy::DVector2, 16> &iInfo)
+MDY_NODISCARD dy::ATextureResource::TBufferType Convert(_MIN_ const std::array<dy::DVector2, 16> &iInfo)
 {
-  dy::ADyTextureResource::TBufferType result;
+  dy::ATextureResource::TBufferType result;
   for (const auto& [x, y] : iInfo)
   {
     // Insert x

@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Meta/Information/FontMetaInformation.h>
-#include <Dy/Management/Interface/IDyFontContainer.h>
+#include <Dy/Management/Interface/IFontContainer.h>
 
 namespace dy
 {
@@ -23,7 +23,7 @@ namespace dy
 /// @class FDyFontResourceContainer
 /// @brief
 ///
-class FDyFontResourceContainer : public IDyFontContainer
+class FDyFontResourceContainer : public IFontContainer
 {
 public:
   ///

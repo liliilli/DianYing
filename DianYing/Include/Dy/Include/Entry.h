@@ -19,7 +19,7 @@
 #include <Dy/Core/DyEngine.h>
 #include <Dy/Helper/Library/HelperRegex.h>
 #include <Dy/Helper/Library/HelperJson.h>
-#include <Dy/Management/WindowManager.h>
-#include <Dy/Management/SettingManager.h>
+#include <Dy/Management/MWindow.h>
+#include <Dy/Management/MSetting.h>
 
 #endif /// GUARD_DY_INCLUDE_ENTRY_H

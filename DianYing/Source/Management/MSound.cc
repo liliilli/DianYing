@@ -13,19 +13,19 @@
 ///
 
 /// Header file
-#include <Dy/Management/SoundManager.h>
+#include <Dy/Management/MSound.h>
 
 #include <cstdio>
 #include <fmod.hpp>
 
-#include <Dy/Component/CDyCamera.h>
-#include <Dy/Component/Internal/Sound/FDySoundInstance.h>
+#include <Dy/Component/CCamera.h>
+#include <Dy/Component/Internal/Sound/FSoundInstance.h>
 #include <Dy/Helper/System/Pointer.h>
 #include <Dy/Helper/System/Idioms.h>
 #include <Dy/Management/MLog.h>
-#include <Dy/Management/SettingManager.h>
-#include <Dy/Management/WorldManager.h>
-#include <Dy/Management/IO/MetaInfoManager.h>
+#include <Dy/Management/MSetting.h>
+#include <Dy/Management/MWorld.h>
+#include <Dy/Management/IO/MIOMeta.h>
 #include <Dy/Management/Type/Sound/FDySoundGroup.h>
 #include <Dy/Management/Type/Sound/FDySoundChannel.h>
 
@@ -146,7 +146,7 @@ FMOD_RESULT F_CALLBACK DyFmodInternalSystemCallback(
 namespace dy
 {
   
-class MDySound::Impl final : public IDyUpdatable
+class MSound::Impl final : public IUpdatable
 {
 public:
   /// @brief Initialize sound system. If already initialized, (without release) just do nothing and return DY_FAILURE.
@@ -161,7 +161,7 @@ public:
   /// @brief Check sound clip is exist on Dy resource system.
   MDY_NODISCARD bool IsSoundClipExist(const std::string& iSoundSpecifier) const noexcept
   {
-    const auto& manager = MDyMetaInfo::GetInstance();
+    const auto& manager = MIOMeta::GetInstance();
     return manager.IsSoundMetaInfoExist(iSoundSpecifier);
   }
 
@@ -224,7 +224,7 @@ public:
   /// @brief Get reference of internal sound library entry.
   MDY_NODISCARD FMOD::System& MDY_PRIVATE(GetSystem)();
   /// @brief Create sound instance for `CDySoundSource`.
-  MDY_NODISCARD FDySoundInstance* MDY_PRIVATE(CreateSoundInstance)(
+  MDY_NODISCARD FSoundInstance* MDY_PRIVATE(CreateSoundInstance)(
       const PDySoundSourceComponentMetaInfo& iMetaInfo,
       FDyActor& iRefActor);
 
@@ -235,7 +235,7 @@ private:
   /// @brief Set setting of 3D listener.
   void Set3DListenerSetting(bool iActivated);
   /// @brief Set actor setting.
-  void Set3DListenerActorSetting(TU32 iId, CDyCamera& iCamera);
+  void Set3DListenerActorSetting(TU32 iId, CCamera& iCamera);
 
   FMOD::System*       mSoundSystem      = nullptr;
   MDY_TRANSIENT TU32  mVersion          = MDY_INITIALIZE_DEFUINT;
@@ -249,7 +249,7 @@ private:
   /// @brief Instant 3d sound instance list.
   std::forward_list<std::unique_ptr<FDyInstantSound3D>> mInstantSound3DList;
   /// @brief General (CDySoundSource) sound instance list.
-  std::vector<std::unique_ptr<FDySoundInstance>> mGeneralSoundInstanceList;
+  std::vector<std::unique_ptr<FSoundInstance>> mGeneralSoundInstanceList;
 
   /// @brief Specifies sound system can sound 3d sound because 3d listener activated.
   bool mIsUsing3DListener = true;
@@ -265,7 +265,7 @@ private:
 namespace dy
 {
 
-EDySuccess MDySound::pfInitialize()
+EDySuccess MSound::pfInitialize()
 {
   this->mPimpl = new (std::nothrow) Impl();
   const auto flag = this->mPimpl->InitializeSoundSystem();
@@ -277,7 +277,7 @@ EDySuccess MDySound::pfInitialize()
   return DY_SUCCESS;
 }
 
-std::unique_ptr<FDyInstantSound2D> MDySound::CreateSound2D(
+std::unique_ptr<FDyInstantSound2D> MSound::CreateSound2D(
   const std::string& iSoundSpecifier,
   const std::string& iSoundChannel, 
   const DClamp<TF32, 0, 5>& iVolumeMultiplier,
@@ -287,7 +287,7 @@ std::unique_ptr<FDyInstantSound2D> MDySound::CreateSound2D(
   return this->mPimpl->CreateSound2D(iSoundSpecifier, iSoundChannel, iVolumeMultiplier, iPitchMultiplier, iDelay);
 } 
 
-void MDySound::PlaySound2D(
+void MSound::PlaySound2D(
   const std::string& iSoundSpecifier, 
   const std::string& iSoundChannel,
   const DClamp<TF32, 0, 5>& iVolumeMultiplier, 
@@ -297,7 +297,7 @@ void MDySound::PlaySound2D(
   this->mPimpl->PlaySound2D(iSoundSpecifier, iSoundChannel, iVolumeMultiplier, iPitchMultiplier, iDelay);
 }
 
-std::optional<TDyBinderSound2D> MDySound::PlaySound2DLooped(
+std::optional<TDyBinderSound2D> MSound::PlaySound2DLooped(
   const std::string& iSoundSpecifier, 
   const std::string& iSoundChannel,
   const DClamp<TF32, 0, 5>& iVolumeMultiplier, 
@@ -306,7 +306,7 @@ std::optional<TDyBinderSound2D> MDySound::PlaySound2DLooped(
   return this->mPimpl->PlaySound2DLooped(iSoundSpecifier, iSoundChannel, iVolumeMultiplier, iPitchMultiplier);
 }
 
-void MDySound::PlaySound3D(
+void MSound::PlaySound3D(
   const std::string& iSoundSpecifier, 
   const std::string& iSoundChannel,
   const DVector3& iWorldPosition,
@@ -327,7 +327,7 @@ void MDySound::PlaySound3D(
     iMaxDistance);
 }
 
-std::optional<TDyBinderSound3D> MDySound::PlaySound3DLooped(
+std::optional<TDyBinderSound3D> MSound::PlaySound3DLooped(
      const std::string& iSoundSpecifier, 
      const std::string& iSoundChannel,
      const DVector3& iWorldPosition,
@@ -343,43 +343,43 @@ std::optional<TDyBinderSound3D> MDySound::PlaySound3DLooped(
     iMinDistance, iMaxDistance);
 }
 
-bool MDySound::IsSoundClipExist(const std::string& iSoundSpecifier) const noexcept
+bool MSound::IsSoundClipExist(const std::string& iSoundSpecifier) const noexcept
 {
   return this->mPimpl->IsSoundClipExist(iSoundSpecifier);
 }
 
-FDySoundChannel* MDySound::GetPtrChannel(const std::string& iSpecifier)
+FDySoundChannel* MSound::GetPtrChannel(const std::string& iSpecifier)
 {
   return this->mPimpl->GetPtrChannel(iSpecifier);
 }
 
-EDySuccess MDySound::pfRelease()
+EDySuccess MSound::pfRelease()
 {
   this->mPimpl->ReleaseSoundSystem();
   delete this->mPimpl;
   return DY_SUCCESS;
 }
 
-void MDySound::Update(TF32 iDt) { this->mPimpl->Update(iDt); }
+void MSound::Update(TF32 iDt) { this->mPimpl->Update(iDt); }
 
-FDySoundGroup& MDySound::MDY_PRIVATE(GetGroupChannel)(const std::string& iSpecifier)
+FDySoundGroup& MSound::MDY_PRIVATE(GetGroupChannel)(const std::string& iSpecifier)
 {
   return this->mPimpl->__GetGroupChannel(iSpecifier);
 }
 
-FMOD::System& MDySound::MDY_PRIVATE(GetSystem)()
+FMOD::System& MSound::MDY_PRIVATE(GetSystem)()
 {
   return this->mPimpl->__GetSystem();
 }
 
-FDySoundInstance* MDySound::MDY_PRIVATE(CreateSoundInstance)(
+FSoundInstance* MSound::MDY_PRIVATE(CreateSoundInstance)(
      const PDySoundSourceComponentMetaInfo& iMetaInfo,
      FDyActor& iRefActor)
 {
   return this->mPimpl->__CreateSoundInstance(iMetaInfo, iRefActor);
 }
 
-bool MDySound::IsSoundSystemAvailable() const noexcept
+bool MSound::IsSoundSystemAvailable() const noexcept
 {
   return this->mPimpl->mIsSoundSystemAvailable;
 }

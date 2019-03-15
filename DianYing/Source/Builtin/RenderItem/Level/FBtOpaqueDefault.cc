@@ -13,20 +13,22 @@
 ///
 
 #include <Dy/Builtin/RenderItem/Level/FBtOpaqueDefault.h>
-#include <Dy/Management/WorldManager.h>
-#include <Dy/Management/Rendering/UniformBufferObjectManager.h>
+#include <Dy/Management/MWorld.h>
+#include <Dy/Management/Rendering/MUniformBufferObject.h>
 #include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
-#include <Dy/Component/CDyCamera.h>
-#include <Dy/Component/CDyModelRenderer.h>
+#include <Dy/Component/CCamera.h>
+#include <Dy/Component/CModelRenderer.h>
 #include <Dy/Element/Actor.h>
 #include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
-#include <Dy/Core/Rendering/Type/EDyDrawType.h>
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Core/Rendering/Type/EDrawType.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Core/Resource/Resource/FDyMeshResource.h>
-#include <Dy/Component/CDyModelAnimator.h>
-#include <Dy/Management/Rendering/RenderingManager.h>
+#include <Dy/Component/CModelAnimator.h>
+#include <Dy/Management/Rendering/MRendering.h>
 #include <Dy/Management/Helper/SDyProfilingHelper.h>
+#include <Dy/Component/Internal/Camera/DUboCameraBlock.h>
+#include <Dy/Component/CDyTransform.h>
 
 namespace dy
 {
@@ -58,24 +60,24 @@ void FBtRenderItemOpaqueDefault::OnSetupRenderingSetting()
 
   // Set up UBO
 
-  const auto* ptrCamera = MDyWorld::GetInstance().GetPtrMainLevelCamera();
+  const auto* ptrCamera = MWorld::GetInstance().GetPtrMainLevelCamera();
   if (MDY_CHECK_ISNULL(ptrCamera)) { return; }
 
   const auto& ptrValidCamera = *ptrCamera;
-  auto& uboManager = MDyUniformBufferObject::GetInstance();
+  auto& uboManager = MUniformBufferObject::GetInstance();
   {
     const auto flag = uboManager.UpdateUboContainer(
         (sUboCameraBlock),
-        offsetof(DDyUboCameraBlock, mViewMatrix),
-        sizeof(DDyUboCameraBlock::mViewMatrix),
+        offsetof(DUboCameraBlock, mViewMatrix),
+        sizeof(DUboCameraBlock::mViewMatrix),
         &ptrValidCamera.GetViewMatrix()[0].X);
     MDY_ASSERT_MSG(flag == DY_SUCCESS, "");
   }
   {
     const auto flag = uboManager.UpdateUboContainer(
         (sUboCameraBlock),
-        offsetof(DDyUboCameraBlock, mProjMatrix),
-        sizeof(DDyUboCameraBlock::mProjMatrix),
+        offsetof(DUboCameraBlock, mProjMatrix),
+        sizeof(DUboCameraBlock::mProjMatrix),
         &ptrValidCamera.GetProjectionMatrix()[0].X);
     MDY_ASSERT_MSG(flag == DY_SUCCESS, "");
   }
@@ -83,7 +85,7 @@ void FBtRenderItemOpaqueDefault::OnSetupRenderingSetting()
 
 void FBtRenderItemOpaqueDefault::OnRender()
 {
-  auto& drawList = MDyRendering::GetInstance().GetOpaqueMeshQueueList();
+  auto& drawList = MRendering::GetInstance().GetOpaqueMeshQueueList();
   for (auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] : drawList)
   { // Render
     this->RenderObject(
@@ -103,11 +105,11 @@ void FBtRenderItemOpaqueDefault::RenderObject(
  // General deferred rendering
   auto& refActor = *iRefRenderer.mPtrModelRenderer->GetBindedActor();
   const auto& transform = refActor.GetTransform();
-  const auto& refModelMatrix    = transform->GetTransform();
+  const auto& refModelMatrix = transform->GetTransform();
   auto& shaderBinder = iRefMaterial.GetShaderResourceBinder();
   if (shaderBinder.IsResourceExist() == false) { return; }
 
-  using EUniform = EDyUniformVariableType;
+  using EUniform = EUniformVariableType;
   shaderBinder->TryUpdateUniform<EUniform::Matrix4>("uModelMatrix", refModelMatrix);
   shaderBinder->TryUpdateUniform<EUniform::Float>("uBtDyActorId", TF32(refActor.GetId()));
 
@@ -131,14 +133,14 @@ void FBtRenderItemOpaqueDefault::RenderObject(
   // Call function call drawing array or element. 
   // (not support instancing yet) TODO IMPLEMENT BATCHING SYSTEM.
   if (iRefMesh.IsEnabledIndices() == true)
-  { FDyGLWrapper::Draw(EDyDrawType::Triangle, true, iRefMesh.GetIndicesCounts()); }
+  { XGLWrapper::Draw(EDrawType::Triangle, true, iRefMesh.GetIndicesCounts()); }
   else
-  { FDyGLWrapper::Draw(EDyDrawType::Triangle, false, iRefMesh.GetVertexCounts()); }
+  { XGLWrapper::Draw(EDrawType::Triangle, false, iRefMesh.GetVertexCounts()); }
 
   // Unbind, unset, deactivate settings for this submesh and material.
   // Unbind present submesh vertex array object.
   iRefMaterial.TryDetachTextureListFromShader();
-  FDyGLWrapper::UnbindVertexArrayObject();
+  XGLWrapper::UnbindVertexArrayObject();
   shaderBinder->DisuseShader();
 }
 

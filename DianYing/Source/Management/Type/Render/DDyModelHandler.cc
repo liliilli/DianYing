@@ -72,7 +72,7 @@ EDySuccess DDyModelHandler::TryRemoveActorBinding(_MIN_ FDyActor& iRefActor)
   return DY_SUCCESS;
 }
 
-EDySuccess DDyModelHandler::BindFilter(_MIN_ FDyActor& iRefActor, _MIN_ CDyModelFilter& iRefFilter)
+EDySuccess DDyModelHandler::BindFilter(_MIN_ FDyActor& iRefActor, _MIN_ CModelFilter& iRefFilter)
 {
   // If not exist, return DY_FAILURE.
   if (this->IsActorItemExist(iRefActor) == false) { return DY_FAILURE; }
@@ -83,7 +83,7 @@ EDySuccess DDyModelHandler::BindFilter(_MIN_ FDyActor& iRefActor, _MIN_ CDyModel
   return DY_SUCCESS;
 }
 
-EDySuccess DDyModelHandler::BindRenderer(_MIN_ FDyActor& iRefActor, _MIN_ CDyModelRenderer& iRefComp)
+EDySuccess DDyModelHandler::BindRenderer(_MIN_ FDyActor& iRefActor, _MIN_ CModelRenderer& iRefComp)
 {
   // If not exist, return DY_FAILURE.
   if (this->IsActorItemExist(iRefActor) == false) { return DY_FAILURE; }
@@ -94,7 +94,7 @@ EDySuccess DDyModelHandler::BindRenderer(_MIN_ FDyActor& iRefActor, _MIN_ CDyMod
   return DY_SUCCESS;
 }
 
-EDySuccess DDyModelHandler::BindAnimator(_MIN_ FDyActor& iRefActor, _MIN_ CDyModelAnimator& iRefComp)
+EDySuccess DDyModelHandler::BindAnimator(_MIN_ FDyActor& iRefActor, _MIN_ CModelAnimator& iRefComp)
 {
   // If not exist, return DY_FAILURE.
   if (this->IsActorItemExist(iRefActor) == false) { return DY_FAILURE; }

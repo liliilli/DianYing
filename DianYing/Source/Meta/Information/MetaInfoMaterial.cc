@@ -142,102 +142,102 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
       {
         const auto& uniformName = uniformItem.key();
         const auto& itemValue   = uniformItem.value();
-        const auto type = json::GetValueFrom<EDyUniformVariableType>(itemValue, "Type");
+        const auto type = json::GetValueFrom<EUniformVariableType>(itemValue, "Type");
 
         switch (type)
         {
-        case EDyUniformVariableType::Matrix4: 
+        case EUniformVariableType::Matrix4: 
         { 
           const auto value = json::GetValueFrom<DMatrix4x4>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
-            std::make_unique<FDyUniformValue<EDyUniformVariableType::Matrix4>>(-1, value)
+            std::make_unique<FDyUniformValue<EUniformVariableType::Matrix4>>(-1, value)
           );
         } break;
-        case EDyUniformVariableType::Matrix3: 
+        case EUniformVariableType::Matrix3: 
         {
           MDY_NOT_IMPLEMENTED_ASSERT();
         } break;
-        case EDyUniformVariableType::Matrix2:
+        case EUniformVariableType::Matrix2:
         {
           MDY_NOT_IMPLEMENTED_ASSERT();
         } break;
-        case EDyUniformVariableType::Vector4:
+        case EUniformVariableType::Vector4:
         {
           const auto value = json::GetValueFrom<DVector4>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
-            std::make_unique<FDyUniformValue<EDyUniformVariableType::Vector4>>(-1, value)
+            std::make_unique<FDyUniformValue<EUniformVariableType::Vector4>>(-1, value)
           );
         } break;
-        case EDyUniformVariableType::Vector3:
+        case EUniformVariableType::Vector3:
         {
           const auto value = json::GetValueFrom<DVector3>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
-            std::make_unique<FDyUniformValue<EDyUniformVariableType::Vector3>>(-1, value)
+            std::make_unique<FDyUniformValue<EUniformVariableType::Vector3>>(-1, value)
           );
         } break;
-        case EDyUniformVariableType::Vector2:
+        case EUniformVariableType::Vector2:
         {
           const auto value = json::GetValueFrom<DVector2>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
-            std::make_unique<FDyUniformValue<EDyUniformVariableType::Vector2>>(-1, value)
+            std::make_unique<FDyUniformValue<EUniformVariableType::Vector2>>(-1, value)
           );
         } break;
-        case EDyUniformVariableType::IVec4: 
-        case EDyUniformVariableType::IVec3: 
-        case EDyUniformVariableType::IVec2: 
+        case EUniformVariableType::IVec4: 
+        case EUniformVariableType::IVec3: 
+        case EUniformVariableType::IVec2: 
         {
           MDY_NOT_IMPLEMENTED_ASSERT();
         } break;
-        case EDyUniformVariableType::Integer:
+        case EUniformVariableType::Integer:
         {
           const auto value = json::GetValueFrom<TI32>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
-            std::make_unique<FDyUniformValue<EDyUniformVariableType::Integer>>(-1, value)
+            std::make_unique<FDyUniformValue<EUniformVariableType::Integer>>(-1, value)
           );
         } break;
-        case EDyUniformVariableType::Unsigned:
+        case EUniformVariableType::Unsigned:
         {
           const auto value = json::GetValueFrom<TU32>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
-            std::make_unique<FDyUniformValue<EDyUniformVariableType::Unsigned>>(-1, value)
+            std::make_unique<FDyUniformValue<EUniformVariableType::Unsigned>>(-1, value)
           );
         } break;
-        case EDyUniformVariableType::Float: 
+        case EUniformVariableType::Float: 
         {
           const auto value = json::GetValueFrom<TF32>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
-            std::make_unique<FDyUniformValue<EDyUniformVariableType::Float>>(-1, value)
+            std::make_unique<FDyUniformValue<EUniformVariableType::Float>>(-1, value)
           );
         } break;
-        case EDyUniformVariableType::Bool:
+        case EUniformVariableType::Bool:
         {
           const auto value = json::GetValueFrom<bool>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
-            std::make_unique<FDyUniformValue<EDyUniformVariableType::Bool>>(-1, value)
+            std::make_unique<FDyUniformValue<EUniformVariableType::Bool>>(-1, value)
           );
         } break;
-        case EDyUniformVariableType::Matrix4Array: 
+        case EUniformVariableType::Matrix4Array: 
         {
           const auto value = json::GetValueFrom<std::vector<DMatrix4x4>>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
-            std::make_unique<FDyUniformValue<EDyUniformVariableType::Matrix4Array>>(-1, value)
+            std::make_unique<FDyUniformValue<EUniformVariableType::Matrix4Array>>(-1, value)
           );
         } break;
-        case EDyUniformVariableType::Vector3Array: 
+        case EUniformVariableType::Vector3Array: 
         {
           const auto value = json::GetValueFrom<std::vector<DVector3>>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
-            std::make_unique<FDyUniformValue<EDyUniformVariableType::Vector3Array>>(-1, value)
+            std::make_unique<FDyUniformValue<EUniformVariableType::Vector3Array>>(-1, value)
           );
         }
         default: MDY_UNEXPECTED_BRANCH(); break;

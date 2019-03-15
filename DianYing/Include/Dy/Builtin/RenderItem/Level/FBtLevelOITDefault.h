@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Builtin/Abstract/ARenderItem.h>
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
 #include <Dy/Meta/Information/MetaInfoRenderItem.h>
 #include <Dy/Core/Resource/Type/TDyResourceBinder.h>
 
@@ -24,7 +24,7 @@
 
 namespace dy
 {
-class CDyModelRenderer;
+class CModelRenderer;
 } /// ::dy namespace
 
 //!
@@ -48,7 +48,7 @@ public:
 
   void OnRender() override final;
   void RenderObject(
-    CDyModelRenderer& iRefRenderer,
+    CModelRenderer& iRefRenderer,
     FDyMeshResource& iRefMesh, 
     FDyMaterialResource& iRefMaterial);
 

@@ -13,15 +13,15 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyGLAttachmentResource.h>
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Builtin/Abstract/AGLAttachmentResource.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
 
 namespace dy::builtin
 {
 
 /// @class FDyBtAtSkyOutput
 /// @brief Sky color output buffer.
-class FDyBtAtSkyOutput final : public ADyGLAttachmentResource
+class FDyBtAtSkyOutput final : public AGLAttachmentResource
 {
   MDY_REGISTER_RESOURCE_ATTACHMENT(FDyBtAtSkyOutput, "dyBtAtSkyOutput")
 };

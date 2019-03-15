@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Meta/Type/EDyResourceType.h>
+#include <Dy/Meta/Type/EResourceType.h>
 
 //!
 //! Forward declaration
@@ -48,28 +48,28 @@ class FDyFrameBufferResource;
 namespace dy
 {
 
-template <EDyResourceType TType> struct __TDyRscInfo;
-template <> struct __TDyRscInfo<EDyResourceType::Texture> final { using type = FDyTextureInformation; };
-template <> struct __TDyRscInfo<EDyResourceType::GLShader> final { using type = FDyShaderInformation; };
-template <> struct __TDyRscInfo<EDyResourceType::Mesh> final { using type = FDyMeshInformation; };
-template <> struct __TDyRscInfo<EDyResourceType::Model> final { using type = FDyModelInformation; };
-template <> struct __TDyRscInfo<EDyResourceType::Skeleton> final { using type = FDyModelSkeletonInformation; };
-template <> struct __TDyRscInfo<EDyResourceType::Sound> final { using type = FDySoundInformation; };
-template <> struct __TDyRscInfo<EDyResourceType::AnimationScrap> final { using type = FDyModelAnimScrapInformation; };
-template <> struct __TDyRscInfo<EDyResourceType::Material> final { using type = FDyMaterialInformation; };
-template <> struct __TDyRscInfo<EDyResourceType::GLAttachment> final { using type = FDyAttachmentInformation; };
-template <> struct __TDyRscInfo<EDyResourceType::GLFrameBuffer> final { using type = FDyFrameBufferInformation; };
-template <EDyResourceType TType> using __TDyRscInfo_T = typename __TDyRscInfo<TType>::type;
+template <EResourceType TType> struct __TDyRscInfo;
+template <> struct __TDyRscInfo<EResourceType::Texture> final { using type = FDyTextureInformation; };
+template <> struct __TDyRscInfo<EResourceType::GLShader> final { using type = FDyShaderInformation; };
+template <> struct __TDyRscInfo<EResourceType::Mesh> final { using type = FDyMeshInformation; };
+template <> struct __TDyRscInfo<EResourceType::Model> final { using type = FDyModelInformation; };
+template <> struct __TDyRscInfo<EResourceType::Skeleton> final { using type = FDyModelSkeletonInformation; };
+template <> struct __TDyRscInfo<EResourceType::Sound> final { using type = FDySoundInformation; };
+template <> struct __TDyRscInfo<EResourceType::AnimationScrap> final { using type = FDyModelAnimScrapInformation; };
+template <> struct __TDyRscInfo<EResourceType::Material> final { using type = FDyMaterialInformation; };
+template <> struct __TDyRscInfo<EResourceType::GLAttachment> final { using type = FDyAttachmentInformation; };
+template <> struct __TDyRscInfo<EResourceType::GLFrameBuffer> final { using type = FDyFrameBufferInformation; };
+template <EResourceType TType> using __TDyRscInfo_T = typename __TDyRscInfo<TType>::type;
 
-template <EDyResourceType TType> struct __TResourceType;
-template <> struct __TResourceType<EDyResourceType::Texture> final  { using type = FDyTextureResource; };
-template <> struct __TResourceType<EDyResourceType::GLShader> final { using type = FDyShaderResource; };
-template <> struct __TResourceType<EDyResourceType::Mesh> final     { using type = FDyMeshResource; };
-template <> struct __TResourceType<EDyResourceType::Model> final    { using type = FDyModelResource; };
-template <> struct __TResourceType<EDyResourceType::Material> final { using type = FDyMaterialResource; };
-template <> struct __TResourceType<EDyResourceType::GLAttachment> final { using type = FDyAttachmentResource; };
-template <> struct __TResourceType<EDyResourceType::GLFrameBuffer> final { using type = FDyFrameBufferResource; };
-template <EDyResourceType TType> using __TResourceType_T = typename __TResourceType<TType>::type;
+template <EResourceType TType> struct __TResourceType;
+template <> struct __TResourceType<EResourceType::Texture> final  { using type = FDyTextureResource; };
+template <> struct __TResourceType<EResourceType::GLShader> final { using type = FDyShaderResource; };
+template <> struct __TResourceType<EResourceType::Mesh> final     { using type = FDyMeshResource; };
+template <> struct __TResourceType<EResourceType::Model> final    { using type = FDyModelResource; };
+template <> struct __TResourceType<EResourceType::Material> final { using type = FDyMaterialResource; };
+template <> struct __TResourceType<EResourceType::GLAttachment> final { using type = FDyAttachmentResource; };
+template <> struct __TResourceType<EResourceType::GLFrameBuffer> final { using type = FDyFrameBufferResource; };
+template <EResourceType TType> using __TResourceType_T = typename __TResourceType<TType>::type;
 
 } /// ::dy namespace
 

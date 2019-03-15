@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
 #include <Dy/Core/Resource/Internal/GeometryType.h>
 #include <Dy/Meta/Type/Mesh/DDyGLVaoBindInformation.h>
 #include <Dy/Meta/Information/CommonResourceMetaInfo.h>

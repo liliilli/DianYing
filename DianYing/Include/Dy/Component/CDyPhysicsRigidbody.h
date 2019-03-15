@@ -16,10 +16,10 @@
 #include <PxRigidDynamic.h>
 #include <bitset>
 
-#include <Dy/Component/Interface/IDyInitializeHelper.h>
-#include <Dy/Component/Internal/Physics/FDyCollisionSignatureContainer.h>
-#include <Dy/Component/Type/Physics/EDyCollisionCbType.h>
-#include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
+#include <Dy/Component/Interface/IInitializeHelper.h>
+#include <Dy/Component/Internal/Physics/FCollisionSignatureContainer.h>
+#include <Dy/Component/Type/Physics/ECollisionCallbackType.h>
+#include <Dy/Element/Abstract/AGeneralBaseComponent.h>
 #include <Dy/Helper/System/Pointer.h>
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
 
@@ -30,7 +30,7 @@
 namespace dy
 {
 struct DDyCollisionIssueItem;
-class CDyPhysicsCollider;
+class CBasePhysicsCollider;
 } /// ::dy namesapce
 
 //!
@@ -42,14 +42,14 @@ namespace dy
 
 /// @class CDyPhysicsRigidbody
 /// @brief Rigidbody component that process physics simulation & manages collision callback with colliders of actor.
-class CDyPhysicsRigidbody final : public ADyGeneralBaseComponent, public IDyInitializeHelper<PDyRigidbodyComponentMetaInfo>
+class CDyPhysicsRigidbody final : public AGeneralBaseComponent, public IInitializeHelper<PDyRigidbodyComponentMetaInfo>
 {
 public:
   CDyPhysicsRigidbody(FDyActor& actorReference);
   virtual ~CDyPhysicsRigidbody() = default;
     
   MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(CDyPhysicsRigidbody);
-  MDY_SET_TYPEMATCH_FUNCTION(::dy::ADyGeneralBaseComponent, CDyPhysicsRigidbody)
+  MDY_SET_TYPEMATCH_FUNCTION(::dy::AGeneralBaseComponent, CDyPhysicsRigidbody)
   MDY_SET_CRC32_HASH_WITH_TYPE(CDyPhysicsRigidbody);
 
   /// @brief Set rigidbody type. But this component should be deactivated when calling this function,
@@ -69,7 +69,7 @@ public:
   void Release() override final;
 
   /// @brief Call collision callback.
-  void CallCollisionCallback(_MIN_ EDyCollisionCbType iType, _MIN_ DDyCollisionIssueItem& iItem);
+  void CallCollisionCallback(_MIN_ ECollisionCallbackType iType, _MIN_ DDyCollisionIssueItem& iItem);
   /// @brief Update anyway.
   void Update(_MIN_ TF32 dt) override final {};
 
@@ -78,15 +78,15 @@ public:
   
   /// @brief Register activated, valid collider component.
   /// Registered collider will be attached to internal physics system.
-  void RegisterCollider(_MIN_ CDyPhysicsCollider& iRefCollider);
+  void RegisterCollider(_MIN_ CBasePhysicsCollider& iRefCollider);
 
   /// @brief Unregister deactivated, valid collider component.
   /// Unregistred collider will be detached from internal physics system.
-  void UnregisterCollider(_MIN_ CDyPhysicsCollider& iRefCollider);
+  void UnregisterCollider(_MIN_ CBasePhysicsCollider& iRefCollider);
 
   /// @brief
   ///
-  EDySuccess BindShapeToRigidbody(_MIN_ CDyPhysicsCollider& iRefShape);
+  EDySuccess BindShapeToRigidbody(_MIN_ CBasePhysicsCollider& iRefShape);
 
   /// @brief
   ///
@@ -94,13 +94,13 @@ public:
 
   /// @brief Add collision callback. \n 
   /// If given type, there is already collision callback of iRawFunction, do nothing just return DY_FAILURE.
-  template <EDyCollisionCbType TCbType, typename TScriptType>
+  template <ECollisionCallbackType TCbType, typename TScriptType>
   EDySuccess AddCollisionCallback(
       _MIN_ TScriptType& iRefScript, 
       _MIN_ typename TCollisionCbTypeSignature<TCbType>::Type::template RawType<TScriptType> iRawFunction)
   {
-    static_assert(IsInheritancedFrom<TScriptType, ADyActorCppScript> == true, "TScriptType must be inheritenced from ADyActorCppScript.");
-    if constexpr (TCbType == EDyCollisionCbType::OnHit)
+    static_assert(IsInheritancedFrom<TScriptType, AActorCppScript> == true, "TScriptType must be inheritenced from AActorCppScript.");
+    if constexpr (TCbType == ECollisionCallbackType::OnHit)
     {
       // Try insert 
       auto* ptrItem = this->mCallbackContainer.onHit.AddCallback(iRefScript, iRawFunction);
@@ -109,7 +109,7 @@ public:
       iRefScript.MDY_PRIVATE(BindCollisionCbHandle)(*this, TCbType, (void*&)iRawFunction);
       return DY_SUCCESS;
     }
-    else if constexpr (TCbType == EDyCollisionCbType::OnOverlapBegin) 
+    else if constexpr (TCbType == ECollisionCallbackType::OnOverlapBegin) 
     {
       // Try insert 
       auto* ptrItem = this->mCallbackContainer.onOverlapBegin.AddCallback(iRefScript, iRawFunction);
@@ -118,7 +118,7 @@ public:
       iRefScript.MDY_PRIVATE(BindCollisionCbHandle)(*this, TCbType, (void*&)iRawFunction);
       return DY_SUCCESS;
     }
-    else if constexpr (TCbType == EDyCollisionCbType::OnOverlapEnd)
+    else if constexpr (TCbType == ECollisionCallbackType::OnOverlapEnd)
     {
       // Try insert 
       auto* ptrItem = this->mCallbackContainer.onOverlapEnd.AddCallback(iRefScript, iRawFunction);
@@ -130,7 +130,7 @@ public:
   }
   /// @brief Remove collision callback. \n
   /// If not found matched collision callback item given type, just return DY_FAILURE.
-  EDySuccess RemoveCollisionCallback(_MIN_ EDyCollisionCbType iType, _MIN_ const void* iId);
+  EDySuccess RemoveCollisionCallback(_MIN_ ECollisionCallbackType iType, _MIN_ const void* iId);
 
   /// @brief Get binded (registered) activated collider instance list.
   auto& GetBindedActivatedColliderList() noexcept { return this->mPtrColliderList; }
@@ -173,12 +173,12 @@ private:
   void TryDeactivateInstance() override final;
 
   /// @brief Manages collider list.
-  std::vector<NotNull<CDyPhysicsCollider*>> mPtrColliderList{};
+  std::vector<NotNull<CBasePhysicsCollider*>> mPtrColliderList{};
   /// @brief Internal actor.
   physx::PxRigidActor* mOwnerInternalActor = nullptr;
   
   /// @brief Callback container for collision handling.
-  FDyCollisionSignatureContainer mCallbackContainer;
+  FCollisionSignatureContainer mCallbackContainer;
 
   /// @brief 24bit rigidbody specifier unique-id value.
   TU32 mRigidbodySpecifierId : 24;

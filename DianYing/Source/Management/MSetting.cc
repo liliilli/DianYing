@@ -16,7 +16,7 @@
 ///
 
 /// Header file
-#include <Dy/Management/SettingManager.h>
+#include <Dy/Management/MSetting.h>
 
 #include <cassert>
 #include <filesystem>
@@ -31,8 +31,8 @@
 
 #include <Dy/Helper/Library/HelperJson.h>
 #include <Dy/Management/MLog.h>
-#include <Dy/Management/TimeManager.h>
-#include <Dy/Management/IO/MetaInfoManager.h>
+#include <Dy/Management/MTime.h>
+#include <Dy/Management/IO/MIOMeta.h>
 
 //!
 //! Local translation unit variables or functions.
@@ -93,12 +93,12 @@ MDY_NODISCARD dy::EDyRenderingApi DyGetRenderingApiType(_MIN_ const std::string&
 namespace dy
 {
 
-EDyRenderingApi MDySetting::GetRenderingType() const noexcept
+EDyRenderingApi MSetting::GetRenderingType() const noexcept
 {
   return this->mRenderingType;
 }
 
-void MDySetting::SetDefaultShadowOption(_MIN_ bool iFlag) noexcept
+void MSetting::SetDefaultShadowOption(bool iFlag) noexcept
 {
   auto& previousFlag = this->mGamePlay.mGraphics.mIsEnabledDefaultShadow;
   if (iFlag != previousFlag)
@@ -107,12 +107,12 @@ void MDySetting::SetDefaultShadowOption(_MIN_ bool iFlag) noexcept
   }
 }
 
-bool MDySetting::IsDefaultShadowOptionActivated() const noexcept
+bool MSetting::IsDefaultShadowOptionActivated() const noexcept
 {
   return this->mGamePlay.mGraphics.mIsEnabledDefaultShadow;
 }
 
-void MDySetting::SetDefaultSsaoOption(_MIN_ bool iFlag) noexcept
+void MSetting::SetDefaultSsaoOption(bool iFlag) noexcept
 {
   auto& previousFlag = this->mGamePlay.mGraphics.mIsEnabledDefaultSsao;
   if (iFlag != previousFlag)
@@ -121,27 +121,52 @@ void MDySetting::SetDefaultSsaoOption(_MIN_ bool iFlag) noexcept
   }
 }
 
-bool MDySetting::IsDefaultSsaoOptionActivated() const noexcept
+bool MSetting::IsDefaultSsaoOptionActivated() const noexcept
 {
   return this->mGamePlay.mGraphics.mIsEnabledDefaultSsao;
 }
 
-bool MDySetting::IsDebugMode() const noexcept
+bool MSetting::IsDebugMode() const noexcept
 {
   return this->mIsDebugMode;
 }
 
-TI32 MDySetting::GetWindowSizeWidth() const noexcept
+TI32 MSetting::GetWindowSizeWidth() const noexcept
 {
   return this->mGamePlay.mInitialResolution.X;
 }
 
-TI32 MDySetting::GetWindowSizeHeight() const noexcept
+TI32 MSetting::GetWindowSizeHeight() const noexcept
 {
   return this->mGamePlay.mInitialResolution.Y;
 }
 
-void MDySetting::SetFeatureLogging(_MIN_ bool isEnabled) noexcept
+const std::string& MSetting::GetInitialSceneInformationName() const noexcept
+{
+  return this->mGamePlay.mInitialSceneSpecifier;
+}
+
+const DVectorInt2& MSetting::GetGlobalDefaultShadowMapResolution() const noexcept
+{
+  return this->mGamePlay.mShadow.mShadowGlobalDefaultMap;
+}
+
+const DDySettingInput& MSetting::GetInputSettingInformation() const noexcept
+{
+  return this->mInput;
+}
+
+const DDySettingGameplay& MSetting::GetGameplaySettingInformation() const noexcept
+{
+  return this->mGamePlay;
+}
+
+const DDySettingMetaPath& MSetting::GetMetaPathSettingInformation() const noexcept
+{
+  return this->mDevMetaPath;
+}
+
+void MSetting::SetFeatureLogging(bool isEnabled) noexcept
 {
   if (this->mIsEnabledLogging != isEnabled)
   {
@@ -157,80 +182,88 @@ void MDySetting::SetFeatureLogging(_MIN_ bool isEnabled) noexcept
   }
 }
 
-void MDySetting::SetSubFeatureLoggingToConsole(_MIN_ bool isEnabled) noexcept
+void MSetting::SetSubFeatureLoggingToConsole(bool isEnabled) noexcept
 {
   this->mIsEnabledLoggingToConsole = isEnabled;
-  DyPushLogDebugInfo("{} | Logging Console : {}. Need to be restart logger.", "SubFeature", isEnabled ? "ON" : "OFF");
+  DyPushLogDebugInfo(
+    "{} | Logging Console : {}. Need to be restart logger.", 
+    "SubFeature", isEnabled ? "ON" : "OFF");
 }
 
-void MDySetting::SetSubFeatureLoggingToFile(_MIN_ bool isEnabled) noexcept
+void MSetting::SetSubFeatureLoggingToFile(bool isEnabled) noexcept
 {
   this->mIsEnabledLoggingToFile = isEnabled;
-  DyPushLogDebugInfo("{} | Logging File : {}. Need to be restart logger.", "SubFeature", isEnabled ? "ON" : "OFF");
+  DyPushLogDebugInfo(
+    "{} | Logging File : {}. Need to be restart logger.", 
+    "SubFeature", isEnabled ? "ON" : "OFF");
 }
 
-void MDySetting::SetLogFilePath(_MIN_ const std::string& path) noexcept
+void MSetting::SetLogFilePath(const std::string& path) noexcept
 {
   if (path.empty() == true)
   {
-    DyPushLogDebugError("{} | new log file path is empty. Log file path did not change. Log file path : {}", this->mLogFilePath);
+    DyPushLogDebugError(
+      "New log file path is empty. Log file path did not change. Log file path : {}", 
+      this->mLogFilePath);
   }
   else
   {
     this->mLogFilePath = path;
-    DyPushLogDebugInfo("{} | Update Log file path : {}. Need to be restart logger.", "SubFeature", this->mLogFilePath);
+    DyPushLogDebugInfo(
+      "{} | Update Log file path : {}. Need to be restart logger.", 
+      "SubFeature", this->mLogFilePath);
   }
 }
 
-void MDySetting::SetGlobalDefaultShadowMapResolution(_MIN_ const DVector2& size) noexcept
+void MSetting::SetGlobalDefaultShadowMapResolution(const DVector2& size) noexcept
 {
   if (size.X <= 0 || size.Y <= 0) { return; }
   this->mGamePlay.mShadow.mShadowGlobalDefaultMap = DVectorInt2{size};
 }
 
-bool MDySetting::IsEnabledVSync() const noexcept
+bool MSetting::IsEnabledVSync() const noexcept
 {
   return this->mIsEnabledVsync;
 }
 
-bool MDySetting::IsEnabledFeatureLogging() const noexcept
+bool MSetting::IsEnabledFeatureLogging() const noexcept
 {
   return this->mIsEnabledLogging;
 }
 
-bool MDySetting::IsEnabledSubFeatureLoggingToConsole() const noexcept
+bool MSetting::IsEnabledSubFeatureLoggingToConsole() const noexcept
 {
   return this->mIsEnabledLoggingToConsole;
 }
 
-bool MDySetting::IsEnableSubFeatureLoggingToFile() const noexcept
+bool MSetting::IsEnableSubFeatureLoggingToFile() const noexcept
 {
   return this->mIsEnabledLoggingToFile;
 }
 
-EDyAppMode MDySetting::GetApplicationMode() const noexcept
+EDyAppMode MSetting::GetApplicationMode() const noexcept
 {
   return this->mApplicationMode;
 }
 
-const std::string& MDySetting::GetLogFilePath() const noexcept
+const std::string& MSetting::GetLogFilePath() const noexcept
 {
   return this->mLogFilePath;
 }
 
-void MDySetting::SetVSyncMode(bool enableVsync) noexcept
+void MSetting::SetVSyncMode(bool enableVsync) noexcept
 {
   if (this->mIsEnabledVsync != enableVsync)
   {
     this->mIsEnabledVsync = enableVsync;
-    if (MDyTime::IsInitialized() && enableVsync)
+    if (MTime::IsInitialized() && enableVsync)
     {
-      MDyTime::GetInstance().pfSetVsync(enableVsync);
+      MTime::GetInstance().pfSetVsync(enableVsync);
     }
   }
 }
 
-EDySuccess MDySetting::MDY_PRIVATE(CheckObjectTagIsExist)(_MIN_ const std::string& iSpecifiedTag) const noexcept
+EDySuccess MSetting::MDY_PRIVATE(CheckObjectTagIsExist)(const std::string& iSpecifiedTag) const noexcept
 {
   if (iSpecifiedTag.empty() == true) { return DY_SUCCESS; }
   for (const auto& tagSpecifier : this->mTag.mObjectTag)
@@ -241,52 +274,52 @@ EDySuccess MDySetting::MDY_PRIVATE(CheckObjectTagIsExist)(_MIN_ const std::strin
   return DY_FAILURE;
 }
 
-const std::string& MDySetting::MDY_PRIVATE(GetEntrySettingFile)() const noexcept
+const std::string& MSetting::MDY_PRIVATE(GetEntrySettingFile)() const noexcept
 {
   return this->mEntrySettingPath;
 }
 
-const DDySettingSound& MDySetting::GetSoundSetting() const noexcept
+const DDySettingSound& MSetting::GetSoundSetting() const noexcept
 {
   return this->mSound;
 }
 
-const DDySettingPhysics& MDySetting::GetPhysicsSetting() const noexcept
+const DDySettingPhysics& MSetting::GetPhysicsSetting() const noexcept
 {
   return this->mPhysics;
 }
 
-void MDySetting::SetRenderingMode(_MIN_ EDyModelRenderingMode iNewMode) noexcept
+void MSetting::SetRenderingMode(EDyModelRenderingMode iNewMode) noexcept
 {
   this->mModelRenderingMode = iNewMode;
 }
 
-EDyModelRenderingMode MDySetting::GetRenderingMode() const noexcept
+EDyModelRenderingMode MSetting::GetRenderingMode() const noexcept
 {
   return this->mModelRenderingMode;
 }
 
-void MDySetting::SetRenderingPhysicsCollisionShape(_MIN_ bool iIsEnabled) noexcept
+void MSetting::SetRenderingPhysicsCollisionShape(bool iIsEnabled) noexcept
 {
   this->mIsRenderPhysicsCollisionShape = iIsEnabled;
 }
 
-bool MDySetting::IsRenderPhysicsCollisionShape() const noexcept
+bool MSetting::IsRenderPhysicsCollisionShape() const noexcept
 {
   return this->mIsRenderPhysicsCollisionShape;
 }
 
-void MDySetting::SetRenderingPhysicsCollisionAABB(_MIN_ bool iIsEnabled) noexcept
+void MSetting::SetRenderingPhysicsCollisionAABB(bool iIsEnabled) noexcept
 {
   this->mIsRenderPhysicsCollisionAABB = iIsEnabled;
 }
 
-bool MDySetting::IsRenderPhysicsCollisionAABB() const noexcept
+bool MSetting::IsRenderPhysicsCollisionAABB() const noexcept
 {
   return this->mIsRenderPhysicsCollisionAABB;
 }
 
-void MDySetting::pSetupExecutableArgumentSettings()
+void MSetting::pSetupExecutableArgumentSettings()
 {
   /// @brief Setup rendering api type from argument.
   /// @param result ["graphics"] Option value from parsing library.
@@ -337,7 +370,7 @@ void MDySetting::pSetupExecutableArgumentSettings()
 
   MDY_ASSERT_MSG(
       this->mIsInitialized == false,
-      "MDySetting::pSetupExecutableArgumentSettings must be called only before Initialization.");
+      "MSetting::pSetupExecutableArgumentSettings must be called only before Initialization.");
 
   cxxopts::Options options("Dy", "Dy game framework");
   options.add_options()
@@ -404,11 +437,11 @@ void MDySetting::pSetupExecutableArgumentSettings()
   #endif
 }
 
-EDySuccess MDySetting::pfInitialize()
+EDySuccess MSetting::pfInitialize()
 {
   /// @function InitializeGraphicsApi
   /// @brief Initialize graphics api dependencies.
-  static auto InitializeGraphicsApi = [](MDySetting& manager) -> EDySuccess
+  static auto InitializeGraphicsApi = [](MSetting& manager) -> EDySuccess
   { // Set rendering api type.
     switch (manager.mRenderingType)
     {
@@ -426,7 +459,7 @@ EDySuccess MDySetting::pfInitialize()
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   // Output setting options at debug mode.
-  DyPushLogDebugInfo("{} | MDySetting::pfInitialize().",          "FunctionCall");
+  DyPushLogDebugInfo("{} | MSetting::pfInitialize().",          "FunctionCall");
   DyPushLogDebugInfo("{} | Logging : {}", "Feature",              this->mIsEnabledLogging ? "ON" : "OFF");
   DyPushLogDebugInfo("{} | Logging Console : {}", "SubFeature",   this->mIsEnabledLoggingToConsole ? "ON" : "OFF");
   DyPushLogDebugInfo("{} | Logging File : {}", "SubFeature",      this->mIsEnabledLoggingToFile ? "ON" : "OFF");
@@ -449,7 +482,7 @@ EDySuccess MDySetting::pfInitialize()
     json::GetValueFromTo(settingAtlas, "Physics", this->mPhysics);
 
     json::GetValueFromTo(settingAtlas, sCategoryMetaPath, this->mDevMetaPath);
-    MDyMetaInfo::GetInstance().MDY_PRIVATE(InitiateMetaInformation)();
+    MIOMeta::GetInstance().MDY_PRIVATE(InitiateMetaInformation)();
   }
   else if (this->mFileLoadingMode == EDyFileLoadingMode::LoadCompressedFile)
   { // If Application loading mode is `Load compressed file` like a `Data###.dydat`.
@@ -467,7 +500,7 @@ EDySuccess MDySetting::pfInitialize()
     json::GetValueFromTo(settingAtlas, sCategoryTag, this->mTag);
     json::GetValueFromTo(settingAtlas, "Sound", this->mSound);
     json::GetValueFromTo(settingAtlas, "Physics", this->mPhysics);
-    MDyMetaInfo::GetInstance().MDY_PRIVATE(InitiateMetaInformationComp)(metaAtlas);
+    MIOMeta::GetInstance().MDY_PRIVATE(InitiateMetaInformationComp)(metaAtlas);
   }
   else { MDY_UNEXPECTED_BRANCH(); }
 
@@ -475,9 +508,9 @@ EDySuccess MDySetting::pfInitialize()
   return DY_SUCCESS;
 }
 
-EDySuccess MDySetting::pfRelease()
+EDySuccess MSetting::pfRelease()
 {
-  DyPushLogDebugInfo("{} | MDySetting::pfRelease()", "Function call");
+  DyPushLogDebugInfo("{} | MSetting::pfRelease()", "Function call");
   return DY_SUCCESS;
 }
 

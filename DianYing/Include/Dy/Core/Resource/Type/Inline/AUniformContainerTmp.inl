@@ -19,7 +19,7 @@
 namespace dy
 {
 
-template <EDyUniformVariableType TType>
+template <EUniformVariableType TType>
 EDySuccess ADyUniformContainer::TryUpdateUniform(
   const std::string& iSpecifier, 
   const typename MDY_PRIVATE(UniformBinder)<TType>::ValueType& iValue)
@@ -73,7 +73,7 @@ EDySuccess ADyUniformContainer::TryUpdateUniformStruct(TU32 iIndex, const TType&
   {
     const auto& varName = reflData.GetVarNameOf(memberValue->mSpecifier);
     using ERefl = reflect::EReflectScopeType; 
-    using EUnif = EDyUniformVariableType;
+    using EUnif = EUniformVariableType;
     const ERefl varType = reflData.GetTypeOf(varName);
     switch (varType)
     {
@@ -121,7 +121,7 @@ EDySuccess ADyUniformContainer::TryUpdateUniformStruct(const TType& iContainer)
   {
     const auto& varName = reflData.GetVarNameOf(memberValue->mSpecifier);
     using ERefl = reflect::EReflectScopeType; 
-    using EUnif = EDyUniformVariableType;
+    using EUnif = EUniformVariableType;
     const ERefl varType = reflData.GetTypeOf(varName);
     switch (varType)
     {

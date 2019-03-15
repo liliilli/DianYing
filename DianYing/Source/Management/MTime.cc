@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Management/TimeManager.h>
+#include <Dy/Management/MTime.h>
 
 #include <chrono>
 #include <Dy/Management/MLog.h>
@@ -21,7 +21,7 @@
 namespace dy
 {
 
-EDySuccess MDyTime::IsGameFrameTicked() const noexcept
+EDySuccess MTime::IsGameFrameTicked() const noexcept
 {
   if (this->__mIsEnabledVsync == true
   &&  this->mGameElapsedDtFromLastTick < this->mGameTickFragment) { return DY_FAILURE; }
@@ -32,60 +32,60 @@ EDySuccess MDyTime::IsGameFrameTicked() const noexcept
   return DY_SUCCESS;
 }
 
-TI32 MDyTime::GetPresentFpsCountValue() const noexcept
+TI32 MTime::GetPresentFpsCountValue() const noexcept
 {
   return this->mGameTickedFpsCountOld;
 }
 
-TF32 MDyTime::GetGameScaledTickedDeltaTimeValue() const noexcept
+TF32 MTime::GetGameScaledTickedDeltaTimeValue() const noexcept
 {
   const auto dt = this->mGameElapsedDtThisFrame * this->mGameTimeScale;
   return dt;
 }
 
-TF32 MDyTime::GetGameScaledElapsedTimeValue() const noexcept
+TF32 MTime::GetGameScaledElapsedTimeValue() const noexcept
 {
   return this->mGameElapsedTimeFromStartUp;
 }
 
-TF32 MDyTime::GetGameTimeScaleValue() const noexcept
+TF32 MTime::GetGameTimeScaleValue() const noexcept
 {
   return this->mGameTimeScale;
 }
 
-TF32 MDyTime::GetSteadyDeltaTimeValue() const noexcept
+TF32 MTime::GetSteadyDeltaTimeValue() const noexcept
 {
   return this->mSteadyDeltaTime;
 }
 
-TF32 MDyTime::GetSteadyElapsedTimeValue() const noexcept
+TF32 MTime::GetSteadyElapsedTimeValue() const noexcept
 {
   return this->mSteadyElapsedTimeFromStartup;
 }
 
-EDySuccess MDyTime::SetGameTimeScale(_MIN_ const TF32 timeScale) noexcept
+EDySuccess MTime::SetGameTimeScale(_MIN_ const TF32 timeScale) noexcept
 {
   if (timeScale <= 0.f)
   {
     this->mGameTimeScale = 0.0001f;
-    DyPushLogDebugWarning("{} | Time scaling failed because of zero value or negative. Input timeScale : {}", "MDyTime::SetGameTimeScale", timeScale);
+    DyPushLogDebugWarning("{} | Time scaling failed because of zero value or negative. Input timeScale : {}", "MTime::SetGameTimeScale", timeScale);
     return DY_FAILURE;
   }
   else
   {
     this->mGameTimeScale = timeScale;
-    DyPushLogDebugInfo("{} | MDyTime::mGameTimeScale : {}.", "MDyTime::SetGameTimeScale", this->mGameTimeScale);
+    DyPushLogDebugInfo("{} | MTime::mGameTimeScale : {}.", "MTime::SetGameTimeScale", this->mGameTimeScale);
     return DY_SUCCESS;
   }
 }
 
-MDY_NOTUSED DDyTimepoint MDyTime::GetCalendarTime() const noexcept
+MDY_NOTUSED DDyTimepoint MTime::GetCalendarTime() const noexcept
 {
   auto cTime = std::time(nullptr);
   return DDyTimepoint(*std::localtime(&cTime));
 }
 
-void MDyTime::pUpdate() noexcept
+void MTime::pUpdate() noexcept
 {
   using TSeconds = std::chrono::duration<float, std::ratio<1>>;
 
@@ -122,26 +122,26 @@ void MDyTime::pUpdate() noexcept
   steadyOldTimestamp = steadyNewTimestamp;
 }
 
-void MDyTime::pfSetVsync(_MIN_ bool isVsyncEnabled) noexcept
+void MTime::pfSetVsync(_MIN_ bool isVsyncEnabled) noexcept
 {
   this->__mIsEnabledVsync = isVsyncEnabled;
 }
 
-EDySuccess MDyTime::pfInitialize()
+EDySuccess MTime::pfInitialize()
 {
-  DyPushLogDebugInfo("{} | MDyTime::pfInitialize().", "FunctionCall");
+  DyPushLogDebugInfo("{} | MTime::pfInitialize().", "FunctionCall");
 
   this->mGameTickFragment = 1.0f / static_cast<TF32>(this->mGameGoalFps);
 
-  DyPushLogDebugInfo("MDyTime::mGameGoalFps : {}."      , this->mGameGoalFps);
-  DyPushLogDebugInfo("MDyTime::mGameTickFragment : {}." , this->mGameTickFragment);
-  DyPushLogDebugInfo("MDyTime::mGameTimeScale : {}."    , this->mGameTimeScale);
+  DyPushLogDebugInfo("MTime::mGameGoalFps : {}."      , this->mGameGoalFps);
+  DyPushLogDebugInfo("MTime::mGameTickFragment : {}." , this->mGameTickFragment);
+  DyPushLogDebugInfo("MTime::mGameTimeScale : {}."    , this->mGameTimeScale);
   return DY_SUCCESS;
 }
 
-EDySuccess MDyTime::pfRelease()
+EDySuccess MTime::pfRelease()
 {
-  DyPushLogDebugInfo("{} | MDyTime::pfRelease().", "FunctionCall");
+  DyPushLogDebugInfo("{} | MTime::pfRelease().", "FunctionCall");
   return DY_SUCCESS;
 }
 

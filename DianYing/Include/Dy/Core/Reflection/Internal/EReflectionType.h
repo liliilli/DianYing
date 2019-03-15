@@ -16,8 +16,6 @@
 #include <string>
 #include <Dy/Core/Resource/Internal/ShaderType.h>
 
-#define MDY_MAKENAME(__LHS__, __RHS__) MDY_TOKENPASTE2(__LHS__, __RHS__)
-
 namespace dy
 {
 struct DVector2;
@@ -52,7 +50,7 @@ enum class EReflectScopeType
 };
 
 /// @brief Convert given reflect type to uniform variable type.
-[[nodiscard]] EDyUniformVariableType ToUniformVariableType(EReflectScopeType iReflectType);
+[[nodiscard]] EUniformVariableType ToUniformVariableType(EReflectScopeType iReflectType);
 
 template <EReflectScopeType TValue> struct ToActualType;
 template <typename TType> struct ToVariableType;

@@ -24,14 +24,14 @@ namespace dy
 
 MDY_PRIVATE(FDyDefaultLoadingGlobalScript)::MDY_PRIVATE(FDyDefaultLoadingGlobalScript)()
 {
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Material, builtin::FDyBuiltinMaterialOpaqueStaticPlain::sName);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Material, builtin::FDyBtMtCheckerWorldPos::sName);
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Material, builtin::FDyBtStaticTransparentChecker::sName);
+  MDY_LOADING_RESOURCE_BIND(EResourceType::Material, builtin::FDyBuiltinMaterialOpaqueStaticPlain::sName);
+  MDY_LOADING_RESOURCE_BIND(EResourceType::Material, builtin::FDyBtMtCheckerWorldPos::sName);
+  MDY_LOADING_RESOURCE_BIND(EResourceType::Material, builtin::FDyBtStaticTransparentChecker::sName);
 
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Material, "M_Wall1");
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Material, "M_TestDynamicAnimation");
+  MDY_LOADING_RESOURCE_BIND(EResourceType::Material, "M_Wall1");
+  MDY_LOADING_RESOURCE_BIND(EResourceType::Material, "M_TestDynamicAnimation");
 
-  MDY_LOADING_RESOURCE_BIND(EDyResourceType::Sound, "TestEffect_C");
+  MDY_LOADING_RESOURCE_BIND(EResourceType::Sound, "TestEffect_C");
 }
 
 } /// ::dy namespace

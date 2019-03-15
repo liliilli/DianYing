@@ -19,10 +19,10 @@
 #include <Dy/Core/Resource/Information/FDyTextureInformation.h>
 #include <Dy/Core/Resource/Resource/FDyTextureResource.h>
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Helper/System/Idioms.h>
 #include <Dy/Meta/Information/MetaInfoMaterial.h>
-#include <Dy/Management/IO/MetaInfoManager.h>
+#include <Dy/Management/IO/MIOMeta.h>
 
 namespace dy
 {
@@ -42,13 +42,13 @@ FDyMaterialResource::FDyMaterialResource(const FDyMaterialInformation& iInformat
 
   // If default uniform value is exist, apply them to shader.
   MDY_ASSERT(this->mBinderShader.IsResourceExist() == true);
-  auto& managerMetaInfo = MDyMetaInfo::GetInstance();
+  auto& managerMetaInfo = MIOMeta::GetInstance();
   const auto& metaItem  = managerMetaInfo.GetMaterialMetaInformation(mSpecifierName);
   if (metaItem.mUniformValues.empty() == false)
   {
     for (const auto& [uniformName, smtValueInstance] : metaItem.mUniformValues)
     {
-      using EUniform = EDyUniformVariableType;
+      using EUniform = EUniformVariableType;
       switch (smtValueInstance->mType)
       {
       case EUniform::Matrix4: 
@@ -139,7 +139,7 @@ EDySuccess FDyMaterialResource::TryUpdateTextureList() noexcept
   for (TI32 j = 0; j < textureResourceListSize; ++j)
   {
     const auto& textureBinder = (*textureResources[j]);
-    FDyGLWrapper::BindTexture(j, textureBinder->GetTextureType(), textureBinder->GetTextureId());
+    XGLWrapper::BindTexture(j, textureBinder->GetTextureType(), textureBinder->GetTextureId());
   }
   return DY_SUCCESS;
 }
@@ -163,7 +163,7 @@ EDySuccess FDyMaterialResource::TryDetachTextureListFromShader() noexcept
   for (TI32 j = 0; j < textureResourceListSize; ++j)
   {
     const auto& textureBinder = (*textureResources[j]);
-    FDyGLWrapper::UnbindTexture(j, textureBinder->GetTextureType());
+    XGLWrapper::UnbindTexture(j, textureBinder->GetTextureType());
   }
   return DY_SUCCESS;
 }

@@ -13,8 +13,8 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyGLFrameBufferResource.h>
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Builtin/Abstract/AGLFrameBufferResource.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
 
 namespace dy::builtin
 {
@@ -23,7 +23,7 @@ namespace dy::builtin
 /// @class FDyBtFbWeightBlendedOIT
 /// @brief Weight-blended transparency rendering framebuffer object descriptor.
 ///
-class FDyBtFbWeightBlendedOIT final : public ADyGLFrameBufferResource
+class FDyBtFbWeightBlendedOIT final : public AGLFrameBufferResource
 {
   MDY_REGISTER_RESOURCE_FRAMEBUFFER(FDyBtFbWeightBlendedOIT, "dyBtFbWBOIT")
 };

@@ -33,7 +33,7 @@ struct DDySettingDescription final
 {
   /// Project name of this project.
   std::string mProjectName    = MDY_INITIALIZE_EMPTYSTR;
-  /// Window name of this project. if empty, just use MDySetting::mProjectName as window name with version.
+  /// Window name of this project. if empty, just use MSetting::mProjectName as window name with version.
   std::string mWindowName     = MDY_INITIALIZE_EMPTYSTR;
   /// [High. Mid. Low]
   TI32 mVersionHigh           = MDY_INITIALIZE_DEFINT;

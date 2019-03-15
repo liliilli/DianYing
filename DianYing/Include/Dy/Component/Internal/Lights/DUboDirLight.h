@@ -24,9 +24,9 @@
 namespace dy
 {
 
-/// @struct DDyUboDirectionalLight
+/// @struct DUboDirectionalLight
 /// @brief  This structure must be aligned by 16 bytes. (for std140 GL standard block layout)
-struct alignas(16) DDyUboDirectionalLight final
+struct alignas(16) DUboDirectionalLight final
 {
   /// World space light direction
   DVector3 mDirection = {};

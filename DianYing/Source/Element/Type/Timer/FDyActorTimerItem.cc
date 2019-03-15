@@ -16,7 +16,7 @@
 #include <Dy/Element/Type/Timer/FDyActorTimerItem.h>
 #include <utility>
 #include <Dy/Element/Type/Timer/FDyTimerHandle.h>
-#include <Dy/Component/Abstract/ADyActorCppScript.h>
+#include <Dy/Component/Abstract/AActorCppScript.h>
 #include <Dy/Core/DyEngine.h>
 
 namespace dy
@@ -24,7 +24,7 @@ namespace dy
 
 FDyActorTimerItem::FDyActorTimerItem(
     _MIN_ FDyTimerHandle& iHandle,
-    _MIN_ ADyActorCppScript& iRefScript,
+    _MIN_ AActorCppScript& iRefScript,
     _MIN_ TF32 iFirstDelay, 
     _MIN_ TF32 iDelayTime, 
     _MIN_ bool iIsLooped, 

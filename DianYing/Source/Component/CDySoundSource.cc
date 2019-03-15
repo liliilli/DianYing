@@ -14,8 +14,8 @@
 
 /// Header file
 #include <Dy/Component/CDySoundSource.h>
-#include <Dy/Component/Internal/Sound/FDySoundInstance.h>
-#include <Dy/Management/SoundManager.h>
+#include <Dy/Component/Internal/Sound/FSoundInstance.h>
+#include <Dy/Management/MSound.h>
 
 namespace dy
 {
@@ -38,7 +38,7 @@ EDySuccess CDySoundSource::Initialize(_MIN_ const PDySoundSourceComponentMetaInf
   if (descriptor.mInitiallyActivated == true) { this->Activate(); }
   // We have to create internal instance anyway. This instance is created & destroyed when only Initialize & Release,
   // not TryActivateInstance & TryDeactivateInstance function.
-  auto& soundManager = MDySound::GetInstance();
+  auto& soundManager = MSound::GetInstance();
   // We need reference of actor also, because sound instance with 3D option update position from `Transform`.
   this->mPtrInternalSoundInstance = soundManager.__CreateSoundInstance(descriptor, *this->GetBindedActor());
 

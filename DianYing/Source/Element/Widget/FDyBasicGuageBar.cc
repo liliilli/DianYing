@@ -35,7 +35,7 @@ EDySuccess FDyBasicGaugeBar::Initialize(const PDyMetaWidgetBarDescriptor& object
   this->SetOrigin(objectMetaDesc.mOrigin);
 
   // Initialize FontRenderer.
-  PDyBasicGaugeBarRendererCtorInformation desc = {};
+  PCtorBasicGaugeBarRendererInformation desc = {};
   desc.mPtrUiObject = this;
   MDY_CALL_ASSERT_SUCCESS(this->mRenderer.Initialize(desc));
 

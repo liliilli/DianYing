@@ -13,15 +13,15 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyGLFrameBufferResource.h>
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Builtin/Abstract/AGLFrameBufferResource.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
 
 namespace dy::builtin
 {
 
 /// @class FDyBtFbEmissiveToneMap
 /// @brief Framebuffer for tone-mapping emissive attachment.
-class FDyBtFbEmissiveToneMap final : public ADyGLFrameBufferResource
+class FDyBtFbEmissiveToneMap final : public AGLFrameBufferResource
 {
   MDY_REGISTER_RESOURCE_FRAMEBUFFER(FDyBtFbEmissiveToneMap, "dyBtFbEmissiveToneMap")
 };

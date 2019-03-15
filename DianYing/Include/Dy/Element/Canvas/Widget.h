@@ -16,7 +16,7 @@
 #include <Dy/Element/Canvas/UiObjectChildrenable.h>
 #include <Dy/Element/Canvas/UiObject.h>
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
-#include <Dy/Component/UI/CDyWidgetScript.h>
+#include <Dy/Component/Widget/CWidgetScript.h>
 #include <Dy/Helper/Type/DTristateBool.h>
 
 //!
@@ -26,7 +26,7 @@
 namespace dy
 {
 class DDyUiBinder;
-class CDyWidgetScriptBase;
+class CBaseWidgetScript;
 } /// ::dy namespace
 
 //!
@@ -70,7 +70,7 @@ public:
 
   /// @brief Get script component pointer from script list using scriptName to verify.
   /// @return The pointer instance of CDyScript. If not found, return just no value.
-  MDY_NODISCARD CDyWidgetScriptBase* GetScript() noexcept;
+  MDY_NODISCARD CBaseWidgetScript* GetScript() noexcept;
 
   /// @brief Attach DDyUiBinder.
   void MDY_PRIVATE(TryAttachBinderFromBinder)(_MIN_ DDyUiBinder& iRefUiBinder);
@@ -89,7 +89,7 @@ private:
   /// Component list (randomly) which attached to FDyUiWidget instance (this!)
   TUiObjectMap                      mObjectList     = {};
   /// @brief 
-  std::unique_ptr<CDyWidgetScript>  mWidgetScript = MDY_INITIALIZE_NULL;
+  std::unique_ptr<CWidgetScript>  mWidgetScript = MDY_INITIALIZE_NULL;
 
   /// @brief Managing DDyUiBinder instance.
   std::vector<NotNull<DDyUiBinder*>> mBoundUiBinderList {};

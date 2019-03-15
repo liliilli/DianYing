@@ -13,22 +13,23 @@
 ///
 
 #include <Dy/Builtin/RenderItem/Level/FBtPpCsmShadow.h>
-#include <Dy/Management/WorldManager.h>
-#include <Dy/Management/Rendering/UniformBufferObjectManager.h>
+#include <Dy/Management/MWorld.h>
+#include <Dy/Management/Rendering/MUniformBufferObject.h>
 #include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
-#include <Dy/Component/CDyCamera.h>
-#include <Dy/Component/CDyModelRenderer.h>
+#include <Dy/Component/CCamera.h>
+#include <Dy/Component/CModelRenderer.h>
 #include <Dy/Element/Actor.h>
 #include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
-#include <Dy/Core/Rendering/Type/EDyDrawType.h>
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Core/Rendering/Type/EDrawType.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Core/Resource/Resource/FDyMeshResource.h>
-#include <Dy/Component/CDyModelAnimator.h>
-#include <Dy/Management/Rendering/RenderingManager.h>
+#include <Dy/Component/CModelAnimator.h>
+#include <Dy/Management/Rendering/MRendering.h>
 #include <Dy/Management/Helper/SDyProfilingHelper.h>
-#include <Dy/Component/CDyLightDirectional.h>
-#include <Dy/Management/SettingManager.h>
+#include <Dy/Component/CLightDirectional.h>
+#include <Dy/Management/MSetting.h>
+#include <Dy/Component/CDyTransform.h>
 
 namespace dy
 {
@@ -41,13 +42,13 @@ void FBtRenderItemCsmShadow::__ConstructionHelper
 
 FBtRenderItemCsmShadow::FBtRenderItemCsmShadow()
 {
-  FDyGLWrapper::QueryFloatVector(GL_MAX_VIEWPORT_DIMS, sViewportDims.data());
+  XGLWrapper::QueryFloatVector(GL_MAX_VIEWPORT_DIMS, sViewportDims.data());
 }
 
 EDySuccess FBtRenderItemCsmShadow::OnPreRenderCheckCondition()
 {
   // Check CSM Shadow feature is enabled.
-  const auto& information = MDySetting::GetInstance().GetGameplaySettingInformation();
+  const auto& information = MSetting::GetInstance().GetGameplaySettingInformation();
   if (information.mGraphics.mIsEnabledDefaultShadow == false)
   {
     return DY_FAILURE;
@@ -55,7 +56,7 @@ EDySuccess FBtRenderItemCsmShadow::OnPreRenderCheckCondition()
 
   // Whether camera is focused by main camera is true, by parent RenderPipeline
   // `FBtDefaultLevel`, we do not need to check more setting.
-  auto* ptrLight = MDyRendering::GetInstance().GetPtrMainDirectionalShadow();
+  auto* ptrLight = MRendering::GetInstance().GetPtrMainDirectionalShadow();
   if (ptrLight == nullptr) 
   { 
     return DY_FAILURE; 
@@ -83,7 +84,7 @@ void FBtRenderItemCsmShadow::OnSetupRenderingSetting()
 {
   // Update view frustum for shadow mapping.
   // Do not move the order of `PreRender` and checking assert statement.
-  auto* ptrLight = MDyRendering::GetInstance().GetPtrMainDirectionalShadow();
+  auto* ptrLight = MRendering::GetInstance().GetPtrMainDirectionalShadow();
   if (this->mAddrMainDirectionalShadow != reinterpret_cast<ptrdiff_t>(ptrLight))
   {
     this->mAddrMainDirectionalShadow = reinterpret_cast<ptrdiff_t>(ptrLight);
@@ -98,7 +99,7 @@ void FBtRenderItemCsmShadow::OnSetupRenderingSetting()
     }
   }
 
-  if (const auto* ptrCamera = MDyWorld::GetInstance().GetPtrMainLevelCamera();
+  if (const auto* ptrCamera = MWorld::GetInstance().GetPtrMainLevelCamera();
       ptrLight != nullptr)
   {
     //
@@ -119,7 +120,7 @@ void FBtRenderItemCsmShadow::OnSetupRenderingSetting()
     "CSM Renderer light handle is not matched to given light.");
 
   // Try update uniform value.
-  using EUniform = EDyUniformVariableType;
+  using EUniform = EUniformVariableType;
   this->mDirLightShaderResource->TryUpdateUniform<EUniform::Integer>("uFrustumSegmentCount", static_cast<TI32>(kCSMSegment));
   this->mDirLightShaderResource->TryUpdateUniform<EUniform::Matrix4>("mProjMatrix", this->mProjMatrix);
   this->mDirLightShaderResource->TryUpdateUniform<EUniform::Matrix4>("mViewMatrix", this->mViewMatrix);
@@ -142,7 +143,7 @@ void FBtRenderItemCsmShadow::OnSetupRenderingSetting()
   }
   status.mViewportSettingList = viewport;
 
-  FDyGLWrapper::PushInternalGlobalState(status);
+  XGLWrapper::PushInternalGlobalState(status);
 
   this->mBinderFrameBuffer->BindFrameBuffer();
   const GLfloat one = 1.0f;
@@ -153,7 +154,7 @@ void FBtRenderItemCsmShadow::OnRender()
 {
   // Cascade shadow mapping use different and mutliple viewport.
   // Render only opaque mesh list.
-  auto& drawList = MDyRendering::GetInstance().GetOpaqueMeshQueueList();
+  auto& drawList = MRendering::GetInstance().GetOpaqueMeshQueueList();
 
   for (auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] : drawList)
   { // Render
@@ -175,7 +176,7 @@ void FBtRenderItemCsmShadow::RenderObject(
   if (ptrModelBinder == nullptr) { return; }
 
   const auto& refModelMatrix = iRefRenderer.mPtrModelRenderer->GetBindedActor()->GetTransform()->GetTransform();
-  this->mDirLightShaderResource->TryUpdateUniform<EDyUniformVariableType::Matrix4>("uModelMatrix", refModelMatrix);
+  this->mDirLightShaderResource->TryUpdateUniform<EUniformVariableType::Matrix4>("uModelMatrix", refModelMatrix);
 
   this->mDirLightShaderResource->UseShader();
   this->mDirLightShaderResource->TryUpdateUniformList();
@@ -183,19 +184,19 @@ void FBtRenderItemCsmShadow::RenderObject(
 
   // Call function call drawing array or element. (not support instancing yet) TODO IMPLEMENT BATCHING SYSTEM.
   if (iRefMesh.IsEnabledIndices() == true)
-  { FDyGLWrapper::Draw(EDyDrawType::Triangle, true, iRefMesh.GetIndicesCounts()); }
+  { XGLWrapper::Draw(EDrawType::Triangle, true, iRefMesh.GetIndicesCounts()); }
   else
-  { FDyGLWrapper::Draw(EDyDrawType::Triangle, false, iRefMesh.GetVertexCounts()); }
+  { XGLWrapper::Draw(EDrawType::Triangle, false, iRefMesh.GetVertexCounts()); }
 
   // Unbind present submesh vertex array object.
-  FDyGLWrapper::UnbindVertexArrayObject();
+  XGLWrapper::UnbindVertexArrayObject();
   this->mDirLightShaderResource->DisuseShader();
 }
 
 void FBtRenderItemCsmShadow::OnReleaseRenderingSetting()
 {
   this->mBinderFrameBuffer->UnbindFrameBuffer();
-  FDyGLWrapper::PopInternalGlobalState();
+  XGLWrapper::PopInternalGlobalState();
 }
 
 void FBtRenderItemCsmShadow::OnPostRender()

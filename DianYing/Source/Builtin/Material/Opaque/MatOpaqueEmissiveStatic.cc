@@ -33,7 +33,7 @@ void FDyBtMtOpaqueEmissiveStatic::ConstructBuffer(PDyMaterialInstanceMetaInfo& o
   oProperty.mBlendMode       = EDyMaterialBlendMode::Opaque;
 
   oProperty.mTextureNames[0] = {(FDyBuiltinTextureChecker::sName), EDyTextureMapType::Unknown};
-  PDyMaterialInstanceMetaInfo::InsertValue<EDyUniformVariableType::Float>(
+  PDyMaterialInstanceMetaInfo::InsertValue<EUniformVariableType::Float>(
     oProperty, 
     "uEmissiveFactor", 5.0f);
 }

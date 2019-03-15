@@ -14,7 +14,7 @@
 
 /// Header file
 #include <Dy/Core/Resource/Resource/FDyTextureGeneralResource.h>
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Core/Resource/Information/FDyTextureGeneralInformation.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLTextureDescriptor.h>
 #include <Dy/Management/Helper/SDyProfilingHelper.h>
@@ -56,7 +56,7 @@ FDyTextureGeneralResource::FDyTextureGeneralResource(_MIN_ const FDyTextureGener
   // Create texture from shared context.
   std::optional<TU32> optTextureId;
   { MDY_GRAPHIC_SET_CRITICALSECITON();
-    optTextureId = FDyGLWrapper::CreateTexture(descriptor);
+    optTextureId = XGLWrapper::CreateTexture(descriptor);
   }
   MDY_ASSERT_MSG(optTextureId.has_value() == true, "Texture id creation must be succeeded.");
   this->mTextureResourceId = *optTextureId;
@@ -67,7 +67,7 @@ FDyTextureGeneralResource::FDyTextureGeneralResource(_MIN_ const FDyTextureGener
 FDyTextureGeneralResource::~FDyTextureGeneralResource()
 {
   { MDY_GRAPHIC_SET_CRITICALSECITON();
-    FDyGLWrapper::DeleteTexture(this->mTextureResourceId);
+    XGLWrapper::DeleteTexture(this->mTextureResourceId);
   }
   SDyProfilingHelper::DecreaseOnBindTextureCount(1);
 }

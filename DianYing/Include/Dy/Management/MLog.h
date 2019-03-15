@@ -21,7 +21,7 @@ namespace dy
 
 /// @class MLog
 /// @brief Manages logging.
-class MLog final : public IDySingleton<MLog>
+class MLog final : public ISingleton<MLog>
 {
   MDY_SINGLETON_DERIVED(MLog);
   MDY_SINGLETON_PROPERTIES(MLog);
@@ -39,17 +39,17 @@ public:
 
 private:
   /// @brief Allocate and bind logger resource. (Enable)
-  /// This function must be called when only MDySetting::mIsEnabledLogging value is being on.
+  /// This function must be called when only MSetting::mIsEnabledLogging value is being on.
   EDySuccess pfTurnOn();
 
   /// @brief Release logger resource. (Disable)
-  /// This function must be called when only MDySetting::mIsEnabledLogging value is being off.
+  /// This function must be called when only MSetting::mIsEnabledLogging value is being off.
   EDySuccess pfTurnOff();
 
   class Impl;
   Impl* mPimpl = nullptr;
 
-  friend class MDySetting;
+  friend class MSetting;
 };
 
 } /// ::dy namespace

@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
+#include <Dy/Element/Abstract/AGeneralBaseComponent.h>
 #include <Dy/Element/Type/DDyTransform.h>
 #include <Dy/Helper/Type/DVector3.h>
 #include <Dy/Helper/Type/EAxis3D.h>
@@ -33,10 +33,10 @@ namespace dy
 /// @brief
 /// @TODO SCRIPT THIS
 ///
-class CDyTransform final : public ADyGeneralBaseComponent, public DDyTransform
+class CDyTransform final : public AGeneralBaseComponent, public DDyTransform
 {
 public:
-  CDyTransform(FDyActor& actorReference) : ADyGeneralBaseComponent(actorReference) { }
+  CDyTransform(FDyActor& actorReference) : AGeneralBaseComponent(actorReference) { }
   virtual ~CDyTransform() = default;
 
   CDyTransform(const CDyTransform&)                                 = delete;
@@ -263,7 +263,7 @@ private:
 
   MDY_TRANSIENT bool mIsModelMatrixDirty          = true;
 
-  MDY_SET_TYPEMATCH_FUNCTION(::dy::ADyGeneralBaseComponent, CDyTransform);
+  MDY_SET_TYPEMATCH_FUNCTION(::dy::AGeneralBaseComponent, CDyTransform);
   MDY_SET_CRC32_HASH_WITH_TYPE(CDyTransform);
 };
 

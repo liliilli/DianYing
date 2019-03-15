@@ -15,7 +15,7 @@
 /// Header file
 #include <Dy/Component/CDySkybox.h>
 #include <Dy/Core/Resource/Resource/FDyTextureResource.h>
-#include <Dy/Management/WorldManager.h>
+#include <Dy/Management/MWorld.h>
 
 namespace dy
 {
@@ -104,14 +104,14 @@ void CDySkybox::TryActivateInstance()
   }
 
   // And attach to world's activated skybox component list.
-  auto& worldManager = MDyWorld::GetInstance();
+  auto& worldManager = MWorld::GetInstance();
   worldManager.MDY_PRIVATE(BindActiveSkybox)(*this);
 }
 
 void CDySkybox::TryDeactivateInstance()
 {
   // Detach from world's activated skybox component list.
-  auto& worldManager = MDyWorld::GetInstance();
+  auto& worldManager = MWorld::GetInstance();
   const auto flag = worldManager.MDY_PRIVATE(UnbindActiveSkybox)(*this);
   // Procedure must be succeeded.
   MDY_ASSERT_MSG_FORCE(flag == DY_SUCCESS, "Unexpected error occurred.");

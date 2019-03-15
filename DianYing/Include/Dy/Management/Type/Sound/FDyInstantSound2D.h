@@ -15,14 +15,14 @@
 
 #include <fmod.hpp>
 #include <Dy/Core/Resource/Type/TDyInformationBinder.h>
-#include <Dy/Management/Type/Sound/ADySoundInstance.h>
+#include <Dy/Management/Type/Sound/ASoundInstance.h>
 
 namespace dy
 {
 
 /// @class FDyInstantSound2D
 /// @brief Instant 2d sound instance.
-class FDyInstantSound2D final : public ADySoundInstance
+class FDyInstantSound2D final : public ASoundInstance
 {
 public:
   FDyInstantSound2D(

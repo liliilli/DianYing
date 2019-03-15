@@ -17,9 +17,9 @@
 namespace dy::reflect
 {
 
-EDyUniformVariableType ToUniformVariableType(EReflectScopeType iReflectType)
+EUniformVariableType ToUniformVariableType(EReflectScopeType iReflectType)
 {
-  using EReturnType = EDyUniformVariableType;
+  using EReturnType = EUniformVariableType;
 
   switch (iReflectType) 
   { 
@@ -33,7 +33,7 @@ EDyUniformVariableType ToUniformVariableType(EReflectScopeType iReflectType)
   case EReflectScopeType::Matrix3:    return EReturnType::Matrix3;
   case EReflectScopeType::Matrix4:    return EReturnType::Matrix4;
   case EReflectScopeType::ColorRGB:   return EReturnType::Vector3;
-  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(EDyUniformVariableType::NoneError);
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(EUniformVariableType::NoneError);
   }
 }
 

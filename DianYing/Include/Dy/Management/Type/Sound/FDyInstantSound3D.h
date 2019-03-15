@@ -15,7 +15,7 @@
 
 #include <fmod.hpp>
 #include <Dy/Core/Resource/Type/TDyInformationBinder.h>
-#include <Dy/Management/Type/Sound/ADySoundInstance.h>
+#include <Dy/Management/Type/Sound/ASoundInstance.h>
 #include <Dy/Helper/Type/DVector3.h>
 
 namespace dy
@@ -23,7 +23,7 @@ namespace dy
 
 /// @class FDyInstantSound3D
 /// @brief Instant 3d sound instance.
-class FDyInstantSound3D final : public ADySoundInstance
+class FDyInstantSound3D final : public ASoundInstance
 {
 public:
   FDyInstantSound3D(

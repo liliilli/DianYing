@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyMeshResource.h>
+#include <Dy/Builtin/Abstract/AMeshResource.h>
 
 namespace dy
 {
@@ -22,7 +22,7 @@ namespace dy
 /// @class FDyBtMsSphere
 /// @brief Create mesh sphere information and resources.
 ///
-class FDyBtMsSphere final : public ADyMeshResource
+class FDyBtMsSphere final : public AMeshResource
 {
   MDY_REGISTER_RESOURCE_MESH(FDyBtMsSphere, "dyBtMsSphere");
 

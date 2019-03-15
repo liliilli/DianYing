@@ -20,8 +20,8 @@
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/logger.h>
 
-#include <Dy/Management/SettingManager.h>
-#include <Dy/Management/WindowManager.h>
+#include <Dy/Management/MSetting.h>
+#include <Dy/Management/MWindow.h>
 #include <Dy/Management/Helper/GuiLogStreamSink.h>
 
 #if defined(_WIN32) == true
@@ -81,10 +81,10 @@ public:
   void PushLog(ELevel logLevel, const std::string& iLogString);
 
   /// @brief Allocate and bind logger resource. (Enable)
-  /// This function must be called when only MDySetting::mIsEnabledLogging value is being on.
+  /// This function must be called when only MSetting::mIsEnabledLogging value is being on.
   EDySuccess pfTurnOn();
   /// @brief Release logger resource. (Disable)
-  /// This function must be called when only MDySetting::mIsEnabledLogging value is being off.
+  /// This function must be called when only MSetting::mIsEnabledLogging value is being off.
   EDySuccess pfTurnOff();
  
 private:

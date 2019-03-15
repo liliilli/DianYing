@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Builtin/Abstract/ADyGlobalInstance.h>
-#include <Dy/Core/Reflection/RDyGlobalInstanceManager.h>
+#include <Dy/Core/Reflection/RGlobalInstanceManager.h>
 #include <Dy/Helper/Type/DCompUpdator.h>
 
 namespace dy

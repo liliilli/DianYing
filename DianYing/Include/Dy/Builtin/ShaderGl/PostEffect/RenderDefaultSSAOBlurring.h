@@ -14,7 +14,7 @@
 ///
 
 #include <string_view>
-#include <Dy/Builtin/Abstract/ADyGLShaderResource.h>
+#include <Dy/Builtin/Abstract/AGLShaderResource.h>
 
 namespace dy::builtin
 {
@@ -23,7 +23,7 @@ namespace dy::builtin
 /// @class FDyBuiltinShaderGLRenderDefaultSSAOBlurring
 /// @brief OpenGL Shader for post-processing SSAO (Screen-space ambient occlusion).
 ///
-class FDyBuiltinShaderGLRenderDefaultSSAOBlurring final : public ADyGLShaderResource
+class FDyBuiltinShaderGLRenderDefaultSSAOBlurring final : public AGLShaderResource
 {
   MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBuiltinShaderGLRenderDefaultSSAOBlurring, "dyBtPostEffectSsaoBlur")
 public:

@@ -69,7 +69,7 @@ struct PDyMaterialInstanceMetaInfo final : public PDyCommonResourceMetaInfo, pub
   ///
   MDY_NODISCARD std::string ToString() override final;
 
-  template <EDyUniformVariableType TType>
+  template <EUniformVariableType TType>
   static void InsertValue(
     PDyMaterialInstanceMetaInfo& ioMaterialInfo, 
     const std::string& iSpecifier, 

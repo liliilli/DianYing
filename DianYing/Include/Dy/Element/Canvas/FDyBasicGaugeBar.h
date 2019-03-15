@@ -14,9 +14,9 @@
 ///
 
 #include <Dy/Element/Canvas/UiObject.h>
-#include <Dy/Component/Interface/IDyInitializeHelper.h>
+#include <Dy/Component/Interface/IInitializeHelper.h>
 #include <Dy/Meta/Descriptor/WidgetBarMetaInformation.h>
-#include <Dy/Component/Internal/CDyBasicGaugeBarRenderer.h>
+#include <Dy/Component/Internal/WidgetRenderer/CRendererBasicGaugeBar.h>
 
 namespace dy
 {
@@ -25,7 +25,7 @@ namespace dy
 /// @class FDyBasicGaugeBar
 /// @brief This class display gauge bar horizontally with plain colors.
 ///
-class FDyBasicGaugeBar : public FDyUiObject, public IDyInitializeHelper<PDyMetaWidgetBarDescriptor>
+class FDyBasicGaugeBar : public FDyUiObject, public IInitializeHelper<PDyMetaWidgetBarDescriptor>
 {
   MDY_SET_CRC32_HASH_WITH_TYPE(FDyBasicGaugeBar);
   MDY_SET_TYPEMATCH_FUNCTION(FDyUiObject, FDyBasicGaugeBar);
@@ -159,7 +159,7 @@ private:
   /// Padding value for rendering foreground region.
   TI32              mPadding          = MDY_INITIALIZE_DEFINT;;
   /// Renderer for this object.
-  CDyBasicGaugeBarRenderer mRenderer  = {};
+  CRendererBasicGaugeBar mRenderer  = {};
 
   ///
   bool mIsUsingBackgroundColor = false;

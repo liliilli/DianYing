@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Helper/System/Pointer.h>
-#include <Dy/Meta/Type/EDyResourceType.h>
+#include <Dy/Meta/Type/EResourceType.h>
 #include <Dy/Core/Thread/SDyIOBindingHelper.h>
 #include <Dy/Core/Resource/Type/EDyLazy.h>
 #include <Dy/Core/Resource/Type/FDyBinderBase.h>
@@ -25,7 +25,7 @@ namespace dy
 
 /// @struct __TDyInformationBinderBase
 /// @brief Binder base class for each supporting information resource type.
-template <EDyResourceType TType>
+template <EResourceType TType>
 struct __TDyInformationBinderBase : public __FDyBinderBase
 {
 public:
@@ -121,7 +121,7 @@ protected:
 /// @class TDyInformationBinder
 /// @brief Not lazy version of `TDyInformationBinder`.
 /// User have to require resource manually. but detach is held by automatically. (RAII)
-template <EDyResourceType TType>
+template <EResourceType TType>
 class TDyInformationBinder final : public __TDyInformationBinderBase<TType>
 {
 private:
@@ -132,7 +132,7 @@ public:
   TDyInformationBinder() = default;
   virtual ~TDyInformationBinder() = default;
 
-  /// @brief Try require resource with specifier name in given EDyResourceType.
+  /// @brief Try require resource with specifier name in given EResourceType.
   /// If resource is already bound to binder handle, detach it first and newly bind another resource into it.
   void TryRequireResource(_MIN_ const std::string& iNewSpecifier)
   {
@@ -147,16 +147,16 @@ public:
   }
 };
 
-using TDyInformationBinderShader     = TDyInformationBinder<EDyResourceType::GLShader>;
-using TDyInformationBinderMesh       = TDyInformationBinder<EDyResourceType::Mesh>;
-using TDyInformationBinderModel      = TDyInformationBinder<EDyResourceType::Model>;
-using TDyInformationBinderTexture    = TDyInformationBinder<EDyResourceType::Texture>;
-using TDyInformationBinderMaterial   = TDyInformationBinder<EDyResourceType::Material>;
-using TDyInformationBinderAttachment = TDyInformationBinder<EDyResourceType::GLAttachment>;
-using TDyInformationBinderFrameBuffer= TDyInformationBinder<EDyResourceType::GLFrameBuffer>;
-using TDyInformationBinderSkeleton   = TDyInformationBinder<EDyResourceType::Skeleton>;
-using TDyInformationBinderAnimScrap  = TDyInformationBinder<EDyResourceType::AnimationScrap>;
-using TDyInformationBinderSound      = TDyInformationBinder<EDyResourceType::Sound>;
+using TDyInformationBinderShader     = TDyInformationBinder<EResourceType::GLShader>;
+using TDyInformationBinderMesh       = TDyInformationBinder<EResourceType::Mesh>;
+using TDyInformationBinderModel      = TDyInformationBinder<EResourceType::Model>;
+using TDyInformationBinderTexture    = TDyInformationBinder<EResourceType::Texture>;
+using TDyInformationBinderMaterial   = TDyInformationBinder<EResourceType::Material>;
+using TDyInformationBinderAttachment = TDyInformationBinder<EResourceType::GLAttachment>;
+using TDyInformationBinderFrameBuffer= TDyInformationBinder<EResourceType::GLFrameBuffer>;
+using TDyInformationBinderSkeleton   = TDyInformationBinder<EResourceType::Skeleton>;
+using TDyInformationBinderAnimScrap  = TDyInformationBinder<EResourceType::AnimationScrap>;
+using TDyInformationBinderSound      = TDyInformationBinder<EResourceType::Sound>;
 
 } /// ::dy namespace
 

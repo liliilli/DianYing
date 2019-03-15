@@ -13,8 +13,8 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Interface/IDyResource.h>
-#include <Dy/Meta/Type/EDyResourceType.h>
+#include <Dy/Builtin/Interface/IResource.h>
+#include <Dy/Meta/Type/EResourceType.h>
 #include <Dy/Core/Rendering/Interface/IRenderItem.h>
 
 namespace dy
@@ -26,7 +26,7 @@ namespace dy
 #define MDY_REGISTER_RESOURCE_RENDER_ITEM(__MAType__, __MASpecifier__) \
   MDY_REGISTER_RESOURCE_WITH_SPECIFIER(__MAType__, __MASpecifier__); \
 public: \
-  class __ConstructionHelper final : public ::dy::IDyResource \
+  class __ConstructionHelper final : public ::dy::IResource \
   { \
     using TItemFunction = ::dy::PDyRenderItemInstanceMetaInfo::TItemFunction; \
     using TFunctionReturn = std::invoke_result_t<TItemFunction>; \
@@ -50,10 +50,10 @@ private:
 /// @struct ARenderItem
 /// @brief Item for rendering each pass.
 /// Rendering must be held in these items.
-struct ARenderItem : public IDyResource, IRenderItem
+struct ARenderItem : public IResource, IRenderItem
 {
 public:
-  static constexpr auto value = EDyResourceType::RenderItem;
+  static constexpr auto value = EResourceType::RenderItem;
 
 private:
   std::any GetMetaInfo() override final { return 0; };

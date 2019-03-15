@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Component/CDyPhysicsCollider.h>
+#include <Dy/Component/Internal/Physics/CBasePhysicsCollider.h>
 #include <Dy/Element/Actor.h>
 #include <Dy/Management/MPhysics.h>
 #include <Dy/Helper/Library/HelperContainer.h>
@@ -21,7 +21,7 @@
 namespace dy
 {
 
-EDySuccess CDyPhysicsCollider::Initialize(_MIN_ const PDyColliderComponentMetaInfo& desc)
+EDySuccess CBasePhysicsCollider::Initialize(_MIN_ const PDyColliderComponentMetaInfo& desc)
 {
   this->mNotifyHitEvent     = desc.mDetails.mNotifyHitEvent;
   this->mNotifyOverlapEvent = desc.mDetails.mNotifyOverlapEvent;
@@ -65,57 +65,57 @@ EDySuccess CDyPhysicsCollider::Initialize(_MIN_ const PDyColliderComponentMetaIn
   return DY_SUCCESS;
 }
 
-void CDyPhysicsCollider::UpdateBound(_MIN_ const DArea3D& iArea)
+void CBasePhysicsCollider::UpdateBound(_MIN_ const DArea3D& iArea)
 {
   this->mAABBBound = iArea;
 }
 
-const std::vector<DVector3>& CDyPhysicsCollider::GetColliderMesh() const noexcept
+const std::vector<DVector3>& CBasePhysicsCollider::GetColliderMesh() const noexcept
 {
   return this->mColliderMeshInformation;
 }
 
-bool CDyPhysicsCollider::IsNotifyHitEvent() const noexcept
+bool CBasePhysicsCollider::IsNotifyHitEvent() const noexcept
 {
   return this->mNotifyHitEvent;
 }
 
-physx::PxShape* CDyPhysicsCollider::__GetPtrInternalShape() const noexcept
+physx::PxShape* CBasePhysicsCollider::__GetPtrInternalShape() const noexcept
 {
   return this->mPtrInternalShape;
 }
 
-bool CDyPhysicsCollider::IsNotifyOverlapEvent() const noexcept
+bool CBasePhysicsCollider::IsNotifyOverlapEvent() const noexcept
 {
   return this->mNotifyOverlapEvent;
 }
 
-bool CDyPhysicsCollider::IsRegistered() const noexcept
+bool CBasePhysicsCollider::IsRegistered() const noexcept
 {
   return this->mIsRegistered;
 }
 
-bool CDyPhysicsCollider::IsNeedToUpdateColliderMesh() const noexcept
+bool CBasePhysicsCollider::IsNeedToUpdateColliderMesh() const noexcept
 {
   return this->mIsCollisionMeshDirty;
 }
 
-EDyColliderType CDyPhysicsCollider::GetColliderType() const noexcept
+EDyColliderType CBasePhysicsCollider::GetColliderType() const noexcept
 {
   return this->mColliderType;
 }
 
-const DArea3D& CDyPhysicsCollider::GetBound() const noexcept
+const DArea3D& CBasePhysicsCollider::GetBound() const noexcept
 {
   return this->mAABBBound;
 }
 
-void CDyPhysicsCollider::MDY_PRIVATE(SetRegisterFlag)(_MIN_ bool iFlag) noexcept
+void CBasePhysicsCollider::MDY_PRIVATE(SetRegisterFlag)(_MIN_ bool iFlag) noexcept
 {
   this->mIsRegistered = iFlag;
 }
 
-void CDyPhysicsCollider::ReleaseInternalResource(CDyPhysicsRigidbody& iRefRigidbody)
+void CBasePhysicsCollider::ReleaseInternalResource(CDyPhysicsRigidbody& iRefRigidbody)
 {
   iRefRigidbody.UnbindShapeFromRigidbody(*this->mPtrInternalShape);
 
@@ -123,7 +123,7 @@ void CDyPhysicsCollider::ReleaseInternalResource(CDyPhysicsRigidbody& iRefRigidb
   this->mPtrInternalShape = nullptr; 
 }
 
-void CDyPhysicsCollider::TryActivateInstance()
+void CBasePhysicsCollider::TryActivateInstance()
 {
   auto& bindedActor   = *this->GetBindedActor();
   auto* ptrRigidbody  =  bindedActor.GetRigidbody();
@@ -136,7 +136,7 @@ void CDyPhysicsCollider::TryActivateInstance()
   ptrRigidbody->RegisterCollider(*this);
 }
 
-void CDyPhysicsCollider::TryDeactivateInstance()
+void CBasePhysicsCollider::TryDeactivateInstance()
 {
   auto& bindedActor   = *this->GetBindedActor();
   auto* ptrRigidbody  =  bindedActor.GetRigidbody();
@@ -149,7 +149,7 @@ void CDyPhysicsCollider::TryDeactivateInstance()
   ptrRigidbody->UnregisterCollider(*this);
 }
 
-physx::PxFilterData CDyPhysicsCollider::CreateFilterDataValue(
+physx::PxFilterData CBasePhysicsCollider::CreateFilterDataValue(
     _MIN_ const CDyPhysicsRigidbody& iRigidbody,
     _MIN_ const std::string& iLayerName, 
     _MIN_ std::vector<EDyCollisionFilter>& iFilterData)

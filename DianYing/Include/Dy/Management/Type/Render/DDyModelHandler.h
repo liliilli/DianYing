@@ -23,9 +23,9 @@
 namespace dy
 {
 class FDyActor;
-class CDyModelFilter;
-class CDyModelRenderer;
-class CDyModelAnimator;
+class CModelFilter;
+class CModelRenderer;
+class CModelAnimator;
 class CDyTransform;
 } /// ::dy namespace
 
@@ -45,9 +45,9 @@ public:
   /// @brief 
   struct DActorInfo final
   {
-    CDyModelFilter*   mPtrCompModelFilter = nullptr;
-    CDyModelRenderer* mPtrModelRenderer   = nullptr;
-    CDyModelAnimator* mPtrModelAnimator   = nullptr;
+    CModelFilter*   mPtrCompModelFilter = nullptr;
+    CModelRenderer* mPtrModelRenderer   = nullptr;
+    CModelAnimator* mPtrModelAnimator   = nullptr;
   };
   using TContainer = std::unordered_map<FDyActor*, DActorInfo>;
 
@@ -72,11 +72,11 @@ public:
   EDySuccess TryRemoveActorBinding(_MIN_ FDyActor& iRefActor);
   
   /// @brief Bind filter. If Actor information item is not exist yet, just return DY_FAILURE.
-  EDySuccess BindFilter(_MIN_ FDyActor& iRefActor, _MIN_ CDyModelFilter& iRefFilter);
+  EDySuccess BindFilter(_MIN_ FDyActor& iRefActor, _MIN_ CModelFilter& iRefFilter);
   /// @brief Bind renderer. If Actor information item is not exist yet, just return DY_FAILURE.
-  EDySuccess BindRenderer(_MIN_ FDyActor& iRefActor, _MIN_ CDyModelRenderer& iRefComp);
+  EDySuccess BindRenderer(_MIN_ FDyActor& iRefActor, _MIN_ CModelRenderer& iRefComp);
   /// @brief Bind animator. If Actor information item is not exist yet, just return DY_FAILURE.
-  EDySuccess BindAnimator(_MIN_ FDyActor& iRefActor, _MIN_ CDyModelAnimator& iRefComp);
+  EDySuccess BindAnimator(_MIN_ FDyActor& iRefActor, _MIN_ CModelAnimator& iRefComp);
   /// @brief Unbind filter.
   EDySuccess UnbindFilter(_MIN_ FDyActor& iRefActor);
   /// @brief Unbind renderer.

@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Element/Interface/IDyUpdatable.h>
+#include <Dy/Element/Interface/IUpdatable.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 
 //!
@@ -42,7 +42,7 @@ namespace dy
 
 /// @class MPhysics
 /// @brief Manages physical simulation, raytracing, sweeping and overlapping etc.
-class MPhysics final : public IDySingleton<MPhysics>, public IDyUpdatable
+class MPhysics final : public ISingleton<MPhysics>, public IUpdatable
 {
   MDY_SINGLETON_PROPERTIES(MPhysics);
   MDY_SINGLETON_DERIVED(MPhysics);

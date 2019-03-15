@@ -19,7 +19,7 @@
 namespace dy
 {
 
-template <EDyUniformVariableType TType> 
+template <EUniformVariableType TType> 
 class FDyUniformValue final : public IDyUniformValueBase
 {
 protected:

@@ -41,21 +41,21 @@ inline sol::state& MScript::Impl::GetLuaInstance() noexcept
   return this->mLua;
 }
 
-inline FDyWidgetScriptState* MScript::Impl::CreateWidgetScript(
+inline FWidgetScriptState* MScript::Impl::CreateWidgetScript(
   const std::string& iScriptSpecifier,
   FDyUiWidget& iRefWidget, 
   bool iIsAwakened)
 {
-  const auto& instanceInfo = MDyMetaInfo::GetInstance().GetScriptMetaInformation(iScriptSpecifier);
+  const auto& instanceInfo = MIOMeta::GetInstance().GetScriptMetaInformation(iScriptSpecifier);
   MDY_ASSERT_MSG(instanceInfo.mScriptType != EDyScriptType::NoneError, "");
   MDY_ASSERT_MSG(iIsAwakened == true, "Unexpected error occurred.");
 
-  auto component = std::make_unique<FDyWidgetScriptState>(iRefWidget, instanceInfo);
+  auto component = std::make_unique<FWidgetScriptState>(iRefWidget, instanceInfo);
   this->mInsertWidgetScriptList.emplace_back(std::move(component));
   return this->mInsertWidgetScriptList.back().get();
 }
 
-inline EDySuccess MScript::Impl::TryForwardWidgetScriptToGCList(const FDyWidgetScriptState* iPtrWidgetScriptState)
+inline EDySuccess MScript::Impl::TryForwardWidgetScriptToGCList(const FWidgetScriptState* iPtrWidgetScriptState)
 {
   for (auto& ptrsmtScript : this->mInsertWidgetScriptList)
   {
@@ -91,21 +91,21 @@ inline void MScript::Impl::TryMoveInsertWidgetScriptToMainContainer()
   this->mInsertWidgetScriptList.clear();
 }
 
-inline FDyActorScriptState* MScript::Impl::CreateActorScript(
+inline FActorScriptState* MScript::Impl::CreateActorScript(
   const std::string& iScriptSpecifier,
   FDyActor& iRefActor, 
   bool iIsAwakened)
 {
-  const auto& instanceInfo = MDyMetaInfo::GetInstance().GetScriptMetaInformation(iScriptSpecifier);
+  const auto& instanceInfo = MIOMeta::GetInstance().GetScriptMetaInformation(iScriptSpecifier);
   MDY_ASSERT_MSG(instanceInfo.mScriptType != EDyScriptType::NoneError, "");
   MDY_ASSERT_MSG(iIsAwakened == true, "Unexpected error occurred.");
 
-  auto component = std::make_unique<FDyActorScriptState>(iRefActor, instanceInfo);
+  auto component = std::make_unique<FActorScriptState>(iRefActor, instanceInfo);
   this->mInsertActorScriptList.emplace_back(std::move(component));
   return this->mInsertActorScriptList.back().get();
 }
 
-inline EDySuccess MScript::Impl::TryForwardActorScriptToGCList(const FDyActorScriptState* iPtrActorScriptStatus)
+inline EDySuccess MScript::Impl::TryForwardActorScriptToGCList(const FActorScriptState* iPtrActorScriptStatus)
 {
   for (auto& ptrsmtScript : this->mInsertActorScriptList)
   {
@@ -152,7 +152,7 @@ inline void MScript::Impl::UpdateWidgetScript(TF32 dt)
   }
 }
 
-inline void MScript::Impl::UpdateWidgetScript(TF32 dt, EDyScriptState type)
+inline void MScript::Impl::UpdateWidgetScript(TF32 dt, EScriptState type)
 {
   for (auto& ptrsmtScript : this->mInsertWidgetScriptList)
   {
@@ -199,7 +199,7 @@ inline void MScript::Impl::UpdateActorScript(TF32 iDt)
   }
 }
 
-inline void MScript::Impl::UpdateActorScript(TF32 dt, EDyScriptState type)
+inline void MScript::Impl::UpdateActorScript(TF32 dt, EScriptState type)
 {
   for (auto& ptrsmtScript : this->mInsertActorScriptList)
   {
@@ -231,13 +231,13 @@ inline void MScript::Impl::CallDestroyFuncActorScriptGcList()
 
 inline void MScript::Impl::CreateGlobalScriptInstances()
 {
-  const auto& metaManager = MDyMetaInfo::GetInstance();
+  const auto& metaManager = MIOMeta::GetInstance();
   const auto& list = metaManager.GetGlobalScriptMetaInfos();
   for (const auto& [scriptName, scriptMeta] : list)
   {
     this->mGlobalScriptContainer.try_emplace(
       scriptName,
-      std::make_unique<FDyGlobalScriptState>(*scriptMeta));
+      std::make_unique<FGlobalScriptState>(*scriptMeta));
   }
 }
 

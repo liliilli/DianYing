@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyGLShaderResource.h>
+#include <Dy/Builtin/Abstract/AGLShaderResource.h>
 
 namespace dy::builtin
 {
@@ -25,7 +25,7 @@ namespace dy::builtin
 ///
 /// @reference https://github.com/NVIDIAGameWorks/GraphicsSamples/tree/master/samples/gl4-kepler/WeightedBlendedOIT
 ///
-class FDyBtShOITAccumulation final : public ADyGLShaderResource
+class FDyBtShOITAccumulation final : public AGLShaderResource
 {
   MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBtShOITAccumulation, "dyBtShOITAccumulation")
 public:

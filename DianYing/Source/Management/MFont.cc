@@ -16,7 +16,7 @@
 #include <Dy/Management/MFont.h>
 
 #include <string>
-#include <Dy/Management/IO/MetaInfoManager.h>
+#include <Dy/Management/IO/MIOMeta.h>
 #include <Dy/Management/Type/FontResourceContainer.h>
 #include <Dy/Helper/Library/HelperContainer.h>
 
@@ -45,7 +45,7 @@ EDySuccess MFont::CreateFontResourceContainer(const std::string& fontSpecifierNa
   }
 
   // Create font information and move it.
-  auto& metaManager = MDyMetaInfo::GetInstance();
+  auto& metaManager = MIOMeta::GetInstance();
   if (metaManager.IsFontMetaInformationExist(fontSpecifierName) == false)
   {
     DyPushLogCritical(
@@ -63,7 +63,7 @@ EDySuccess MFont::CreateFontResourceContainer(const std::string& fontSpecifierNa
     // Create font resource.
     auto instance = std::make_unique<FDyFontResourceContainer>(fontMetaInformation);
     { // Swapping
-      std::unique_ptr<IDyFontContainer> tempSwap{static_cast<IDyFontContainer*>(instance.release())};
+      std::unique_ptr<IFontContainer> tempSwap{static_cast<IFontContainer*>(instance.release())};
       it->second.swap(tempSwap);
       MDY_ASSERT_MSG(it->second.get() != nullptr, "Unexpected error occurred");
     }
@@ -84,7 +84,7 @@ bool MFont::IsFontResourceContainerExist(const std::string& specifierName)
   return Contains(this->mFontResourceContainerMap, specifierName);
 }
 
-  IDyFontContainer* MFont::GetFontResourceContainer(_MIN_ const std::string& specifierName)
+  IFontContainer* MFont::GetFontResourceContainer(_MIN_ const std::string& specifierName)
 {
   if (this->IsFontResourceContainerExist(specifierName) == false) { return nullptr; }
 

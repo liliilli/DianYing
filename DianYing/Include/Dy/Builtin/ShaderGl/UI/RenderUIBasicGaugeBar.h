@@ -14,7 +14,7 @@
 ///
 
 #include <string_view>
-#include <Dy/Builtin/Abstract/ADyGLShaderResource.h>
+#include <Dy/Builtin/Abstract/AGLShaderResource.h>
 
 namespace dy::builtin
 {
@@ -23,7 +23,7 @@ namespace dy::builtin
 /// @class FDyBuiltinShaderGLRenderUiBasicGaugeBar
 /// @brief OpenGL shader program which renders UI basic gauge bar.
 ///
-class FDyBuiltinShaderGLRenderUiBasicGaugeBar final : public ADyGLShaderResource
+class FDyBuiltinShaderGLRenderUiBasicGaugeBar final : public AGLShaderResource
 {
   MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBuiltinShaderGLRenderUiBasicGaugeBar, "dyBtShaderGlRenderUiBasicGaugeBar")
 public:

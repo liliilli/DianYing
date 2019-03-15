@@ -15,14 +15,13 @@
 
 #include <Dy/Core/Resource/Internal/MaterialType.h>
 #include <Dy/Component/CDyPhysicsRigidbody.h>
-#include <Dy/Component/Helper/TmpCheckRemoveParams.h>
-#include <Dy/Component/Actor/CDyActorScript.h>
-#include <Dy/Component/Type/EDyComponentType.h>
+#include <Dy/Component/Actor/CActorScript.h>
+#include <Dy/Component/Type/EComponentType.h>
 #include <Dy/Element/Object.h>
 #include <Dy/Element/Abstract/ADyBaseComponent.h>
-#include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
+#include <Dy/Element/Abstract/AGeneralBaseComponent.h>
 #include <Dy/Element/Abstract/Actor/ADyActorBinderContainer.h>
-#include <Dy/Management/IO/MetaInfoManager.h>
+#include <Dy/Management/IO/MIOMeta.h>
 #include <Dy/Element/Internal/TDyIdDistributor.h>
 #include <Dy/Element/Descriptor/GlobalEnums.h>
 
@@ -33,6 +32,7 @@
 namespace dy
 {
 struct PDyObjectMetaInfo;
+class CDyTransform;
 }
 
 //!
@@ -52,9 +52,9 @@ class FDyActor final : public FDyObject,
 public:
   MDY_SET_CRC32_HASH_WITH_TYPE(FDyActor);
   MDY_SET_TYPEMATCH_FUNCTION(FDyObject, FDyActor);
-  using TComponentItem = std::pair<EDyComponentType, std::unique_ptr<ADyGeneralBaseComponent>>;
+  using TComponentItem = std::pair<EComponentType, std::unique_ptr<AGeneralBaseComponent>>;
   using TComponentList = std::vector<TComponentItem>;
-  using TScriptList    = std::vector<std::unique_ptr<CDyActorScript>>;
+  using TScriptList    = std::vector<std::unique_ptr<CActorScript>>;
   using TActorSmtPtr   = std::unique_ptr<FDyActor>;
   using TActorMap      = std::unordered_map<std::string, TActorSmtPtr>;
 
@@ -179,7 +179,7 @@ private:
   //! These functions are needed to communicaet with pimpl instance.
   //!
 
-  CDyActorScript* pAddScriptComponent(const PDyScriptComponentMetaInfo& iInfo);
+  CActorScript* pAddScriptComponent(const PDyScriptComponentMetaInfo& iInfo);
   TComponentList& pGetComponentList() noexcept;
   void pReleaseComponent(TComponentItem& ioItem);
 

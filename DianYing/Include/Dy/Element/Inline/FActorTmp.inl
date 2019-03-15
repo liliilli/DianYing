@@ -25,7 +25,7 @@ TComponent* FDyActor::AddComponent(TArgs&&... args)
   MDY_TEST_IS_BASE_OF(ADyBaseComponent, TComponent);
 
   // If component is script, process the other subroutine. 
-  if constexpr (std::is_same_v<CDyActorScript, TComponent> == true)
+  if constexpr (std::is_same_v<CActorScript, TComponent> == true)
   {
     // Add and initialize component itself.
     // If component which just added is CDyScript, Call Initiate script first.
@@ -71,7 +71,7 @@ template<class TGeneralComponent>
 std::optional<TGeneralComponent*> FDyActor::GetGeneralComponent()
 {
   static_assert(
-    IsInheritancedFrom<TGeneralComponent, ADyGeneralBaseComponent>,
+    IsInheritancedFrom<TGeneralComponent, AGeneralBaseComponent>,
     "Failed to compile GetGeneralComponent function.");
 
   // Component matching process is using recursion of each component
@@ -94,7 +94,7 @@ template <class TGeneralComponent>
 std::vector<NotNull<TGeneralComponent*>> FDyActor::GetGeneralComponentList()
 {
   static_assert(
-    IsInheritancedFrom<TGeneralComponent, ADyGeneralBaseComponent>,
+    IsInheritancedFrom<TGeneralComponent, AGeneralBaseComponent>,
     "Failed to get component list, required component type is not inheritenced from ADyBaseComponent");
 
   // Component matching process is using recursion of each component
@@ -120,9 +120,8 @@ EDySuccess FDyActor::RemoveComponent(TArgs&&... args)
   static_assert(
     IsInheritancedFrom<TComponent, ADyBaseComponent>,
     "Failed to remove component, required component type is not inheritenced from ADyBaseComponent");
-  DyCheckComponentRemoveFunctionParams<TComponent, TArgs...>();
 
-  if constexpr (std::is_base_of_v<ADyGeneralBaseComponent, TComponent>)
+  if constexpr (std::is_base_of_v<AGeneralBaseComponent, TComponent>)
   {
     auto& componentList = this->pGetComponentList();
     auto it = std::find_if(
@@ -135,7 +134,7 @@ EDySuccess FDyActor::RemoveComponent(TArgs&&... args)
     componentList.erase(it);
     return DY_SUCCESS;
   }
-  else if constexpr (std::is_same_v<CDyActorScript, TComponent>)
+  else if constexpr (std::is_same_v<CActorScript, TComponent>)
   {
     // @TODO IMPLEMENT SCRIPT DELETION USING DESCRIPTOR OR SCRIPT NAME.
     return this->RemoveScriptComponent(std::forward<TArgs>(args)...);

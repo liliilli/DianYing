@@ -22,10 +22,10 @@
 #include <Dy/Element/Actor.h>
 #include <Dy/Helper/System/Pointer.h>
 #include <Dy/Helper/System/Idioms.h>
-#include <Dy/Management/SettingManager.h>
+#include <Dy/Management/MSetting.h>
 #include <Dy/Component/CDyPhysicsRigidbody.h>
-#include <Dy/Component/CDyPhysicsCollider.h>
-#include <Dy/Management/Rendering/RenderingManager.h>
+#include <Dy/Component/Internal/Physics/CBasePhysicsCollider.h>
+#include <Dy/Management/Rendering/MRendering.h>
 #include <Dy/Management/Type/Physics/DDyCollisionIssueItem.h>
 #include <Dy/Management/Helper/PhysXErrorCallback.h>
 
@@ -112,7 +112,7 @@ namespace dy
 {
 
 class MPhysics::Impl final : 
-    public IDyUpdatable, 
+    public IUpdatable, 
     public physx::PxDeletionListener, 
     public physx::PxSimulationEventCallback
 {
@@ -138,7 +138,7 @@ public:
   /// @brief Get default setting instance.
   const DDySettingPhysics& GetDefaultSetting() const noexcept
   {
-    return MDySetting::GetInstance().GetPhysicsSetting();
+    return MSetting::GetInstance().GetPhysicsSetting();
   }
 
   /// @brief Get default physics material instance reference.
@@ -229,10 +229,10 @@ private:
   /// In enqueueing collision issue item, does not check there is any callback item given type,
   /// and not-nullity of given collider & actor variable.
   void pTryEnqueueCollisionIssue(
-      EDyCollisionCbType iHitType,
+      ECollisionCallbackType iHitType,
       physx::PxPairFlags iInternalFlag, 
-      CDyPhysicsCollider* i0, 
-      CDyPhysicsCollider* i1, 
+      CBasePhysicsCollider* i0, 
+      CBasePhysicsCollider* i1, 
       const FDyHitResult& iHitResult);
  
   /// @brief Collision callback issue queue. This list must be cleared before other-script update phase.

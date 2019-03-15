@@ -14,7 +14,7 @@
 
 /// Header file
 #include <Dy/Core/Resource/Resource/FDyTextureCubemapResource.h>
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Core/Resource/Information/FDyTextureCubemapInformation.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLTextureDescriptor.h>
 #include <Dy/Management/Helper/SDyProfilingHelper.h>
@@ -59,7 +59,7 @@ FDyTextureCubemapResource::FDyTextureCubemapResource(_MIN_ const FDyTextureCubem
   // Create texture from shared context.
   std::optional<TU32> optTextureId;
   { MDY_GRAPHIC_SET_CRITICALSECITON();
-    optTextureId = FDyGLWrapper::CreateTexture(descriptor);
+    optTextureId = XGLWrapper::CreateTexture(descriptor);
   }
   MDY_ASSERT_MSG(optTextureId.has_value() == true, "Texture id creation must be succeeded.");
   this->mTextureResourceId = *optTextureId;
@@ -70,7 +70,7 @@ FDyTextureCubemapResource::FDyTextureCubemapResource(_MIN_ const FDyTextureCubem
 FDyTextureCubemapResource::~FDyTextureCubemapResource()
 {
   { MDY_GRAPHIC_SET_CRITICALSECITON();
-    FDyGLWrapper::DeleteTexture(this->mTextureResourceId);
+    XGLWrapper::DeleteTexture(this->mTextureResourceId);
   }
   SDyProfilingHelper::DecreaseOnBindTextureCount(1);
 }

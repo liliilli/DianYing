@@ -15,7 +15,7 @@
 /// Header file
 #include <Dy/Core/Resource/Resource/FDyMeshResource.h>
 #include <Dy/Core/Resource/Internal/FDyMeshVBOIntermediate.h>
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLVaoBindDescriptor.h>
 #include <Dy/Management/Helper/SDyProfilingHelper.h>
 
@@ -31,14 +31,14 @@ FDyMeshResource::FDyMeshResource(_MINOUT_ FDyMeshVBOIntermediate& intermediateIn
 
   // OPENGL create vao vbo ebo phrase.
   { MDY_GRAPHIC_SET_CRITICALSECITON();
-    this->mBufferIdInformation.mVao = FDyGLWrapper::CreateVertexArrayObject();
+    this->mBufferIdInformation.mVao = XGLWrapper::CreateVertexArrayObject();
 
     PDyGLVaoBindDescriptor descriptor;
     descriptor.mVaoId         = this->mBufferIdInformation.mVao;
     descriptor.mBoundVboId    = this->mBufferIdInformation.mVbo;
     descriptor.mBoundEboId    = this->mBufferIdInformation.mEbo;
     descriptor.mAttributeInfo = intermediateInstance.GetVaoBindingInfo();
-    FDyGLWrapper::BindVertexArrayObject(descriptor);
+    XGLWrapper::BindVertexArrayObject(descriptor);
   }
 
   SDyProfilingHelper::IncreaseOnBindVertexCount(this->mMeshFlagInformation.mVertexCount);
@@ -47,9 +47,9 @@ FDyMeshResource::FDyMeshResource(_MINOUT_ FDyMeshVBOIntermediate& intermediateIn
 FDyMeshResource::~FDyMeshResource()
 {
   { MDY_GRAPHIC_SET_CRITICALSECITON();
-    FDyGLWrapper::DeleteVertexArrayObject(this->mBufferIdInformation.mVao);
-    if (this->mBufferIdInformation.mEbo > 0) { FDyGLWrapper::DeleteBuffer(this->mBufferIdInformation.mEbo); }
-    if (this->mBufferIdInformation.mVbo > 0) { FDyGLWrapper::DeleteBuffer(this->mBufferIdInformation.mVbo); }
+    XGLWrapper::DeleteVertexArrayObject(this->mBufferIdInformation.mVao);
+    if (this->mBufferIdInformation.mEbo > 0) { XGLWrapper::DeleteBuffer(this->mBufferIdInformation.mEbo); }
+    if (this->mBufferIdInformation.mVbo > 0) { XGLWrapper::DeleteBuffer(this->mBufferIdInformation.mVbo); }
   }
   SDyProfilingHelper::DecreaseOnBindVertexCount(this->mMeshFlagInformation.mVertexCount);
 }
@@ -89,7 +89,7 @@ EDySuccess FDyMeshResource::BindVertexArray() const noexcept
 {
   if (this->mBufferIdInformation.mVao == 0) { return DY_FAILURE; }
 
-  FDyGLWrapper::BindVertexArrayObject(this->mBufferIdInformation.mVao);
+  XGLWrapper::BindVertexArrayObject(this->mBufferIdInformation.mVao);
   return DY_SUCCESS;
 }
 

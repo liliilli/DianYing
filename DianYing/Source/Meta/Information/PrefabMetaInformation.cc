@@ -16,7 +16,7 @@
 #include <Dy/Meta/Information/PrefabMetaInformation.h>
 #include <nlohmann/json.hpp>
 #include <Dy/Helper/Library/HelperJson.h>
-#include <Dy/Management/SettingManager.h>
+#include <Dy/Management/MSetting.h>
 
 namespace dy
 {
@@ -53,7 +53,7 @@ void from_json(const nlohmann::json& j, PDyPrefabInstanceMetaInfo::DCommonProper
   json::GetValueFromTo(j, "ObjectTag", p.mTagSpecifier);
 
   /// Validity Test
-  MDY_CALL_ASSERT_SUCCESS(MDySetting::GetInstance().MDY_PRIVATE(CheckObjectTagIsExist)(p.mTagSpecifier));
+  MDY_CALL_ASSERT_SUCCESS(MSetting::GetInstance().MDY_PRIVATE(CheckObjectTagIsExist)(p.mTagSpecifier));
 }
 
 } /// ::dy namespace

@@ -18,15 +18,15 @@
 #include <Dy/Helper/Library/HelperJson.h>
 #include <Dy/Helper/Library/HelperContainer.h>
 #include <Dy/Management/MLog.h>
-#include <Dy/Management/TimeManager.h>
-#include <Dy/Management/WindowManager.h>
-#include <Dy/Management/SettingManager.h>
+#include <Dy/Management/MTime.h>
+#include <Dy/Management/MWindow.h>
+#include <Dy/Management/MSetting.h>
 #include <Dy/Management/Type/Input/DDyInputButton.h>
 #include <Dy/Management/Type/Input/DDyJoystickAnalog.h>
 #include <Dy/Management/Type/Render/DDyPixelInfo.h>
-#include <Dy/Management/WorldManager.h>
+#include <Dy/Management/MWorld.h>
 #include <Dy/Core/DyEngine.h>
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Element/Internal/TDyIdDistributor.h>
 #include <Dy/Element/Actor.h>
 
@@ -257,7 +257,7 @@ MDY_NODISCARD bool DyCheckIsJoystickConnected() noexcept
 /// change key status to neutral status.
 void DyProceedAxisGravity(_MINOUT_ dy::DDyAxisBindingInformation& axisInfo)
 {
-	const auto dt = dy::MDyTime::GetInstance().GetGameScaledTickedDeltaTimeValue();
+	const auto dt = dy::MTime::GetInstance().GetGameScaledTickedDeltaTimeValue();
   static constexpr TF32 kZeroValue = 0.0f;
 
 	if (auto& value = axisInfo.mAxisValue; value < 0) // Negative
@@ -309,7 +309,7 @@ EDySuccess MInput::pfInitialize()
 
 void MInput::MDY_PRIVATE(pInitializeAxisNAction)()
 {
-   const auto& keyInformation = MDySetting::GetInstance().GetInputSettingInformation();
+   const auto& keyInformation = MSetting::GetInstance().GetInputSettingInformation();
 
   // AXIS MAP
   for (const auto& [specifierName, info] : keyInformation.mAxisMap)
@@ -330,7 +330,7 @@ void MInput::MDY_PRIVATE(pInitializeAxisNAction)()
 
 void MInput::MDY_PRIVATE(pInitializeCallbacks)()
 {
-  this->mPtrGlfwWindowContext = MDyWindow::GetInstance().GetGLMainWindow();
+  this->mPtrGlfwWindowContext = MWindow::GetInstance().GetGLMainWindow();
   glfwSetKeyCallback        (this->mPtrGlfwWindowContext, DyCallbackInputKeyboard);
   glfwSetCursorPosCallback  (this->mPtrGlfwWindowContext, DyCallbackMouseMoving);
   glfwSetMouseButtonCallback(this->mPtrGlfwWindowContext, DyCallbackMouseInput);
@@ -700,18 +700,18 @@ void MInput::MDY_PRIVATE(pUpdateMouseMovement)(_MIN_ TF32 dt)
   else { this->mIsMouseMoved = false; }
 }
 
-EDySuccess MInput::MDY_PRIVATE(TryRequireControllerUi)(_MIN_ ADyWidgetCppScript& iRefUiScript) noexcept
+EDySuccess MInput::MDY_PRIVATE(TryRequireControllerUi)(_MIN_ AWidgetCppScript& iRefUiScript) noexcept
 {
   return this->mDelegateManger.TryRequireControllerUi(iRefUiScript);
 }
 
-EDySuccess MInput::MDY_PRIVATE(TryDetachContollerUi)(_MIN_ ADyWidgetCppScript& iRefUiScript) noexcept
+EDySuccess MInput::MDY_PRIVATE(TryDetachContollerUi)(_MIN_ AWidgetCppScript& iRefUiScript) noexcept
 {
   return this->mDelegateManger.TryDetachContollerUi(iRefUiScript);
 }
 
 EDySuccess MInput::MDY_PRIVATE(TryBindAxisDelegate)(
-    _MIN_ ADyWidgetCppScript& iRefUiScript, 
+    _MIN_ AWidgetCppScript& iRefUiScript, 
     _MIN_ std::function<void(TF32)> iFunction,
     _MIN_ const std::string& iAxisName)
 {
@@ -732,7 +732,7 @@ EDySuccess MInput::MDY_PRIVATE(TryBindAxisDelegate)(
 }
 
 EDySuccess MInput::MDY_PRIVATE(TryBindActionDelegate)(
-    _MIN_ ADyWidgetCppScript& iRefUiScript, 
+    _MIN_ AWidgetCppScript& iRefUiScript, 
     _MIN_ EDyInputActionStatus iCondition,
     _MIN_ std::function<void()> iFunction,
     _MIN_ const std::string& iActionName)
@@ -754,7 +754,7 @@ EDySuccess MInput::MDY_PRIVATE(TryBindActionDelegate)(
 }
 
 EDySuccess MInput::MDY_PRIVATE(TryBindAxisDelegate)(
-    _MIN_ ADyActorCppScript& iRefUiScript, 
+    _MIN_ AActorCppScript& iRefUiScript, 
     _MIN_ std::function<void(TF32)> iFunction,
     _MIN_ const std::string& iAxisName)
 {
@@ -775,7 +775,7 @@ EDySuccess MInput::MDY_PRIVATE(TryBindAxisDelegate)(
 }
 
 EDySuccess MInput::MDY_PRIVATE(TryBindActionDelegate)(
-    _MIN_ ADyActorCppScript& iRefUiScript, 
+    _MIN_ AActorCppScript& iRefUiScript, 
     _MIN_ EDyInputActionStatus iCondition,
     _MIN_ std::function<void()> iFunction, 
     _MIN_ const std::string& iActionName)
@@ -796,12 +796,12 @@ EDySuccess MInput::MDY_PRIVATE(TryBindActionDelegate)(
   return DY_SUCCESS;
 }
 
-EDySuccess MInput::MDY_PRIVATE(TryRequireControllerActor)(_MIN_ ADyActorCppScript& iRefActor) noexcept
+EDySuccess MInput::MDY_PRIVATE(TryRequireControllerActor)(_MIN_ AActorCppScript& iRefActor) noexcept
 {
   return this->mDelegateManger.TryRequireControllerActor(iRefActor);
 }
 
-EDySuccess MInput::MDY_PRIVATE(TryDetachContollerActor)(_MIN_ ADyActorCppScript& iRefActor) noexcept
+EDySuccess MInput::MDY_PRIVATE(TryDetachContollerActor)(_MIN_ AActorCppScript& iRefActor) noexcept
 {
   return this->mDelegateManger.TryDetachContollerActor(iRefActor);
 }
@@ -817,8 +817,8 @@ EDySuccess MInput::TryPickObject(_MIN_ const DVector2& iScreenPosition)
   const auto& position = this->mMousePresentPosition;
   
   // Get actor id from rendering manager.
-  auto* ptrFramebuffer = MDyIOResource::GetInstance().
-      GetPtrInformation<EDyResourceType::GLFrameBuffer>("dyBtBasicRender");
+  auto* ptrFramebuffer = MIOResource::GetInstance().
+      GetPtrInformation<EResourceType::GLFrameBuffer>("dyBtBasicRender");
   DDyPixelInfo pixel;
   pixel.ObjectID = TActorIdContainer::kExclusiveId;
 
@@ -838,7 +838,7 @@ EDySuccess MInput::TryPickObject(_MIN_ const DVector2& iScreenPosition)
   if (static_cast<TU32>(pixel.ObjectID) != TActorIdContainer::kExclusiveId)
   {
     // If successful, try to bind object into binder of this.
-    auto& refWorld = MDyWorld::GetInstance();
+    auto& refWorld = MWorld::GetInstance();
     auto* ptrActor = refWorld.GetActorWithObjectId(static_cast<TU32>(pixel.ObjectID));
     if (ptrActor == nullptr)
     { /* Do nothing if not exist */

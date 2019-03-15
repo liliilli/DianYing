@@ -16,14 +16,14 @@
 #include <Dy/Core/Resource/Type/FDyBinderBase.h>
 #include <Dy/Core/Resource/Type/TemplateRescInfoType.h>
 #include <Dy/Core/Thread/SDyIOBindingHelper.h>
-#include <Dy/Meta/Type/EDyResourceType.h>
+#include <Dy/Meta/Type/EResourceType.h>
 
 namespace dy
 {
 
 /// @struct __TDyResourceBinderBase
 /// @brief Binder base class for each supporting resource type.
-template <EDyResourceType TType>
+template <EResourceType TType>
 struct __TDyResourceBinderBase : public __FDyBinderBase
 {
 public:
@@ -72,7 +72,7 @@ protected:
   TPtrResource  mPtrResource    = MDY_INITIALIZE_NULL;
 };
 
-template <EDyResourceType TType>
+template <EResourceType TType>
 __TDyResourceBinderBase<TType>::~__TDyResourceBinderBase()
 {
   if (MDY_CHECK_ISNOTNULL(this->mPtrResource)) 
@@ -81,7 +81,7 @@ __TDyResourceBinderBase<TType>::~__TDyResourceBinderBase()
   }
 }
 
-template <EDyResourceType TType>
+template <EResourceType TType>
 typename __TDyResourceBinderBase<TType>::TPtrResource 
 __TDyResourceBinderBase<TType>::Get() const noexcept
 {
@@ -89,7 +89,7 @@ __TDyResourceBinderBase<TType>::Get() const noexcept
   return this->mPtrResource;
 }
 
-template <EDyResourceType TType>
+template <EResourceType TType>
 EDySuccess __TDyResourceBinderBase<TType>::pTryRequireResource
 (_MIN_ const std::string& iNewSpecifier) noexcept
 {
@@ -109,7 +109,7 @@ EDySuccess __TDyResourceBinderBase<TType>::pTryRequireResource
   }
 }
 
-template <EDyResourceType TType>
+template <EResourceType TType>
 EDySuccess __TDyResourceBinderBase<TType>::pTryDetachResource() noexcept
 {
   // Checking 
@@ -122,13 +122,13 @@ EDySuccess __TDyResourceBinderBase<TType>::pTryDetachResource() noexcept
   return DY_SUCCESS;
 }
 
-template <EDyResourceType TType>
+template <EResourceType TType>
 bool __TDyResourceBinderBase<TType>::IsResourceExist() const noexcept
 {
   return MDY_CHECK_ISNOTNULL(this->mPtrResource);
 }
 
-template <EDyResourceType TType>
+template <EResourceType TType>
 void __TDyResourceBinderBase<TType>::TryUpdateResourcePtr(const void* iPtr) noexcept
 {
   // If there is something already bound to this instance, detach this from resource.
@@ -139,7 +139,7 @@ void __TDyResourceBinderBase<TType>::TryUpdateResourcePtr(const void* iPtr) noex
   this->mDelayedSpecifierName = MDY_INITIALIZE_EMPTYSTR;
 }
 
-template <EDyResourceType TType>
+template <EResourceType TType>
 void __TDyResourceBinderBase<TType>::TryDetachResourcePtr() noexcept
 { 
   this->mPtrResource = nullptr; 

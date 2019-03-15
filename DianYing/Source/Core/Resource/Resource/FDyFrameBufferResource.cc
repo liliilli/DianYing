@@ -15,8 +15,8 @@
 /// Header file
 #include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
 #include <Dy/Core/Resource/Information/FDyFrameBufferInformation.h>
-#include <Dy/Management/IO/MDyIOResource.h>
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Management/IO/MIOResource.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 
 namespace dy
 {
@@ -33,7 +33,7 @@ const DVectorInt2& FDyFrameBufferResource::GetFrameBufferSize()
 
 void FDyFrameBufferResource::UnbindFrameBuffer() const noexcept
 {
-  FDyGLWrapper::UnbindFrameBufferObject();
+  XGLWrapper::UnbindFrameBufferObject();
 }
 
 void FDyFrameBufferResource::PushGlobalStates()
@@ -41,12 +41,12 @@ void FDyFrameBufferResource::PushGlobalStates()
   DDyGlGlobalStates states;
   states.mAttachmentBlendings = this->mAttachmentBlendingList;
 
-  FDyGLWrapper::PushInternalGlobalState(states);
+  XGLWrapper::PushInternalGlobalState(states);
 }
 
 void FDyFrameBufferResource::PopGlobalStates()
 {
-  FDyGLWrapper::PopInternalGlobalState();
+  XGLWrapper::PopInternalGlobalState();
 }
 
 } /// ::dy namespace

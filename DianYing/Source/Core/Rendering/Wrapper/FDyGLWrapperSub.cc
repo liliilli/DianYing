@@ -13,14 +13,14 @@
 ///
 
 /// Header file
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Meta/Type/Mesh/DDyGLVaoBindInformation.h>
 #include <Dy/Core/Resource/Information/FDyModelInformation.h>
 
 namespace dy
 {
 
-const DDyGLVaoBindInformation& FDyGLWrapper::GetDefaultAttributeFormatDescriptor() noexcept
+const DDyGLVaoBindInformation& XGLWrapper::GetDefaultAttributeFormatDescriptor() noexcept
 {
   static DDyGLVaoBindInformation descriptor;
   static bool mIsInitialized = false;

@@ -13,8 +13,8 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyWidgetMetaResource.h>
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Builtin/Abstract/AWidgetMetaResource.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
 
 namespace dy::builtin
 {
@@ -23,7 +23,7 @@ namespace dy::builtin
 /// @class FDyBuiltinWidgetDebugUiMeta
 /// @brief Instantiate rendering pass.
 ///
-class FDyBuiltinWidgetDebugUiMeta final : public ADyWidgetMetaResource
+class FDyBuiltinWidgetDebugUiMeta final : public AWidgetMetaResource
 {
   MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBuiltinWidgetDebugUiMeta, "dyBtWidgetDebugUi")
 public:

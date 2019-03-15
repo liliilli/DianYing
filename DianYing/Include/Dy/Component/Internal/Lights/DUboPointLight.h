@@ -21,11 +21,11 @@
 namespace dy
 {
 
-/// @struct DDyUboPointLight
+/// @struct DUboPointLight
 /// @brief This structure must be aligned by 16 bytes. (for std140 GL standard block layout)
-struct alignas(16) DDyUboPointLight final
+struct alignas(16) DUboPointLight final
 {
-  REGISTER_UNIFORM_STRUCT(DDyUboPointLight)
+  REGISTER_UNIFORM_STRUCT(DUboPointLight)
 
   /// @brief Light's position.
   alignas(16) mutable DVector3 mPosition = DVector3{};
@@ -39,11 +39,11 @@ struct alignas(16) DDyUboPointLight final
 
 MDyReflectionStart
 {
-  REGISTER_TYPE(DDyUboPointLight, uDyLightPoint)
-    .REGISTER_VARIABLE(DDyUboPointLight, mPosition, mWorldPosition)
-    .REGISTER_VARIABLE(DDyUboPointLight, mColor, mColor)
-    .REGISTER_VARIABLE(DDyUboPointLight, mIntensity, mIntensity)
-    .REGISTER_VARIABLE(DDyUboPointLight, mRange, mRange)
+  REGISTER_TYPE(DUboPointLight, uDyLightPoint)
+    .REGISTER_VARIABLE(DUboPointLight, mPosition, mWorldPosition)
+    .REGISTER_VARIABLE(DUboPointLight, mColor, mColor)
+    .REGISTER_VARIABLE(DUboPointLight, mIntensity, mIntensity)
+    .REGISTER_VARIABLE(DUboPointLight, mRange, mRange)
 };
 
 } /// ::dy namespace

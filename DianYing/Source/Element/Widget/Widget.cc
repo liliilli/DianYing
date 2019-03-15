@@ -17,18 +17,18 @@
 #include <Dy/Meta/Descriptor/WidgetTextMetaInformation.h>
 #include <Dy/Meta/Descriptor/WidgetBarMetaInformation.h>
 #include <Dy/Meta/Descriptor/WidgetImageMetaInformation.h>
-#include <Dy/Component/Internal/Widget/CDyWidgetScriptCpp.h>
-#include <Dy/Component/Internal/Widget/CDyWidgetScriptLua.h>
+#include <Dy/Component/Internal/Widget/CWidgetScriptCpp.h>
+#include <Dy/Component/Internal/Widget/CWidgetScriptLua.h>
 #include <Dy/Meta/Type/EDyWidgetTypes.h>
 #include <Dy/Element/Canvas/Text.h>
 #include <Dy/Element/Canvas/FDyBasicGaugeBar.h>
 #include <Dy/Element/Canvas/FDyImage.h>
 #include <Dy/Element/Type/DDyUiBinder.h>
 #include <Dy/Helper/System/Idioms.h>
-#include <Dy/Management/WindowManager.h>
-#include <Dy/Management/IO/MetaInfoManager.h>
+#include <Dy/Management/MWindow.h>
+#include <Dy/Management/IO/MIOMeta.h>
 #include <Dy/Management/MScript.h>
-#include <Dy/Management/WorldManager.h>
+#include <Dy/Management/MWorld.h>
 
 namespace dy
 {
@@ -70,7 +70,7 @@ FDyUiWidget::FDyUiWidget(_MIN_ const PDyMetaWidgetRootDescriptor& widgetMetaDesc
     if (const auto& scriptName = widgetMetaDesc.mScriptReference.mDetails.mSpecifierName;
         scriptName.empty() == false)
     {
-      this->mWidgetScript = std::make_unique<CDyWidgetScript>(scriptName, *this);
+      this->mWidgetScript = std::make_unique<CWidgetScript>(scriptName, *this);
     }
   }
 
@@ -118,13 +118,13 @@ void FDyUiWidget::__SetName(_MIN_ const std::string& iNewName)
 
 void FDyUiWidget::TryActivateInstance()
 {
-  auto& refWorld = MDyWorld::GetInstance();
+  auto& refWorld = MWorld::GetInstance();
   refWorld.MDY_PRIVATE(BindActiveUiObject)(*this);
 }
 
 void FDyUiWidget::TryDeactivateInstance()
 {
-  auto& refWorld = MDyWorld::GetInstance();
+  auto& refWorld = MWorld::GetInstance();
   refWorld.MDY_PRIVATE(UnbindActiveUiObject)(*this);
 }
 

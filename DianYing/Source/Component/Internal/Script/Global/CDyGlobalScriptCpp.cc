@@ -12,25 +12,25 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Component/Internal/Global/CDyGlobalScriptCpp.h>
+#include <Dy/Component/Internal/Global/CGlobalScriptCpp.h>
 #include "Dy/Helper/Wrapper/DMutexUniqueHashMap.h"
 
 namespace dy
 {
 
-CDyGlobalScriptCpp::CDyGlobalScriptCpp(_MIN_ const PDyScriptInstanceMetaInfo& descriptor)
+CDyGlobalScriptCpp::CDyGlobalScriptCpp(const PDyScriptInstanceMetaInfo& descriptor)
 {
   MDY_ASSERT_MSG(descriptor.mScriptType == EDyScriptType::Cpp,    "Script type is not matched to CDyWidgetScriptCpp.");
   MDY_ASSERT_MSG(descriptor.mScriptMode == EDyScriptMode::Global, "Given script must be global type.");
 
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(descriptor.mBtInstantiationFunction), "Cpp script instantiation function must be not null.");
-  this->mScriptInstance = DyConvertUniquePtrTo<ADyGlobalCppScript>(descriptor.mBtInstantiationFunction());
+  this->mScriptInstance = DyConvertUniquePtrTo<AGlobalCppScript>(descriptor.mBtInstantiationFunction());
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->mScriptInstance),    "Script instance could not bound to system.");
 
   this->mScriptName = descriptor.mSpecifierName;
 }
 
-ADyGlobalCppScript* CDyGlobalScriptCpp::__GetScriptInstance() const noexcept
+AGlobalCppScript* CDyGlobalScriptCpp::__GetScriptInstance() const noexcept
 {
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance), "Script instance must be valid, not empty.");
   return this->mScriptInstance.get();

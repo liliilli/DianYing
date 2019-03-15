@@ -32,7 +32,7 @@ EDySuccess MGameTimer::pfRelease()
   return DY_SUCCESS;
 }
 
-void MGameTimer::PauseActorTimer(_MIN_ FDyTimerHandle& iRefHandler)
+void MGameTimer::PauseActorTimer(FDyTimerHandle& iRefHandler)
 {
   // Bound is false only when aborted or not exist on list.
   if (iRefHandler.IsBound() == false) { return; }
@@ -49,7 +49,7 @@ void MGameTimer::PauseActorTimer(_MIN_ FDyTimerHandle& iRefHandler)
   }
 }
 
-void MGameTimer::ResumeActorTimer(_MIN_ FDyTimerHandle& iRefHandler)
+void MGameTimer::ResumeActorTimer(FDyTimerHandle& iRefHandler)
 {
   // Bound is false only when aborted or not exist on list.
   if (iRefHandler.IsBound() == false) { return; }
@@ -66,7 +66,7 @@ void MGameTimer::ResumeActorTimer(_MIN_ FDyTimerHandle& iRefHandler)
   }
 }
 
-void MGameTimer::StopActorTimer(_MIN_ FDyTimerHandle& iRefHandler)
+void MGameTimer::StopActorTimer(FDyTimerHandle& iRefHandler)
 {
   // Bound is false only when aborted or not exist on list.
   if (iRefHandler.IsBound() == false) { return; }
@@ -115,12 +115,12 @@ void MGameTimer::ResumeWidgetTimer(FDyTimerHandle& iRefHandler)
 }
 
 void MGameTimer::MDY_PRIVATE(pSetTimer)(
-    _MIN_ FDyTimerHandle& iRefHandler, 
-    _MIN_ ADyActorCppScript& iRefScript,
-    _MIN_ std::function<void(void)> iFunction,
-    _MIN_ TF32 iTickTime, 
-    _MIN_ bool iIsLooped, 
-    _MIN_ TF32 iDelayTime)
+    FDyTimerHandle& iRefHandler, 
+    AActorCppScript& iRefScript,
+    std::function<void(void)> iFunction,
+    TF32 iTickTime, 
+    bool iIsLooped, 
+    TF32 iDelayTime)
 {
   if (iRefHandler.IsBound() == false)
   { // Create Item, and bind `FDyTimerHandle` handler to `iRefScript`.
@@ -139,12 +139,12 @@ void MGameTimer::MDY_PRIVATE(pSetTimer)(
 }
 
 void MGameTimer::MDY_PRIVATE(pSetTimer)(
-    _MIN_ FDyTimerHandle& iRefHandler, 
-    _MIN_ ADyWidgetCppScript& iRefScript,
-    _MIN_ std::function<void(void)> iFunction,
-    _MIN_ TF32 iTickTime, 
-    _MIN_ bool iIsLooped, 
-    _MIN_ TF32 iDelayTime)
+    FDyTimerHandle& iRefHandler, 
+    AWidgetCppScript& iRefScript,
+    std::function<void(void)> iFunction,
+    TF32 iTickTime, 
+    bool iIsLooped, 
+    TF32 iDelayTime)
 {
   if (iRefHandler.IsBound() == false)
   { // Create Item, and bind `FDyTimerHandle` handler to `iRefScript`.
@@ -162,7 +162,7 @@ void MGameTimer::MDY_PRIVATE(pSetTimer)(
   }
 }
 
-void MGameTimer::Update(_MIN_ TF32 iDt)
+void MGameTimer::Update(TF32 iDt)
 {
   for (auto& timerItem : this->mActorTimerList)
   {
@@ -187,7 +187,7 @@ void MGameTimer::Update(_MIN_ TF32 iDt)
   }
 }
 
-void MGameTimer::StopWidgetTimer(_MIN_ FDyTimerHandle& iRefHandler)
+void MGameTimer::StopWidgetTimer(FDyTimerHandle& iRefHandler)
 {
   // Bound is false only when aborted or not exist on list.
   if (iRefHandler.IsBound() == false) { return; }

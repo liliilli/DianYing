@@ -13,8 +13,8 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
-#include <Dy/Component/Interface/IDyInitializeHelper.h>
+#include <Dy/Element/Abstract/AGeneralBaseComponent.h>
+#include <Dy/Component/Interface/IInitializeHelper.h>
 #include <Dy/Meta/Information/PrefabMetaInformation.h>
 
 #ifdef PlaySound
@@ -27,7 +27,7 @@
 
 namespace dy
 {
-class FDySoundInstance;
+class FSoundInstance;
 } /// ::dy namespace
 
 //!
@@ -39,14 +39,14 @@ namespace dy
 
 /// @class CDySoundSource
 /// @brief Sound source component. This can control sound more detail.
-class CDySoundSource final : public ADyGeneralBaseComponent, public IDyInitializeHelper<PDySoundSourceComponentMetaInfo>
+class CDySoundSource final : public AGeneralBaseComponent, public IInitializeHelper<PDySoundSourceComponentMetaInfo>
 {
 public:
-  CDySoundSource(_MIN_ FDyActor& actorReference) : ADyGeneralBaseComponent(actorReference) {};
+  CDySoundSource(_MIN_ FDyActor& actorReference) : AGeneralBaseComponent(actorReference) {};
   virtual ~CDySoundSource() = default;
   
   MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(CDySoundSource);
-  MDY_SET_TYPEMATCH_FUNCTION(::dy::ADyGeneralBaseComponent, CDySoundSource);
+  MDY_SET_TYPEMATCH_FUNCTION(::dy::AGeneralBaseComponent, CDySoundSource);
   MDY_SET_CRC32_HASH_WITH_TYPE(CDySoundSource);
 
   /// @brief  Initialize with descriptor.
@@ -128,7 +128,7 @@ private:
   void TryActivateInstance() override final;
   void TryDeactivateInstance() override final;
 
-  FDySoundInstance* mPtrInternalSoundInstance = nullptr;
+  FSoundInstance* mPtrInternalSoundInstance = nullptr;
 };
 
 } /// ::dy namespace

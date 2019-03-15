@@ -40,9 +40,9 @@ enum class EDyAttributeVariableType
   NoneError,
 };
 
-/// @enum EDyUniformVariableType
+/// @enum EUniformVariableType
 /// @brief Shader internal variable type for uniform and textures.
-enum class EDyUniformVariableType
+enum class EUniformVariableType
 {
   Matrix4 = 0,
   Matrix3,
@@ -74,10 +74,10 @@ enum class EDyUniformVariableType
 
 /// @brief Convert uniform array type to uniform item type.
 /// If given argument is already item type, do not but just return iType.
-MDY_NODISCARD EDyUniformVariableType ToUniformItemType(EDyUniformVariableType iType);
+MDY_NODISCARD EUniformVariableType ToUniformItemType(EUniformVariableType iType);
 
-void to_json(nlohmann::json& oJson, const EDyUniformVariableType& iUniformType);
-void from_json(const nlohmann::json& iJson, EDyUniformVariableType& iUniformType);
+void to_json(nlohmann::json& oJson, const EUniformVariableType& iUniformType);
+void from_json(const nlohmann::json& iJson, EUniformVariableType& iUniformType);
 
 /// @struct DDyAttributeVariableInformation
 /// @brief Store attribute variable information.
@@ -105,13 +105,13 @@ struct DDyUniformVariableInformation final
 {
   std::string               mVariableName     = MDY_INITIALIZE_EMPTYSTR;
   TU32                      mVariableSlotSize = MDY_INITIALIZE_DEFUINT;
-  EDyUniformVariableType    mVariableType     = EDyUniformVariableType::NoneError;
+  EUniformVariableType    mVariableType     = EUniformVariableType::NoneError;
   TU32                      mVariableLocation = MDY_INITIALIZE_DEFUINT;
 
   DDyUniformVariableInformation(
       const std::string& iSpecifier,
       const TU32 iSlotSize,
-      const EDyUniformVariableType iType,
+      const EUniformVariableType iType,
       const TU32 iLocation) 
     : mVariableName {iSpecifier},
       mVariableSlotSize { iSlotSize },

@@ -23,7 +23,7 @@ namespace dy
 
 void SDyIOConnectionHelper::PopulateResource(
     _MIN_ const std::string& specifier,
-    _MIN_ EDyResourceType resourceType,
+    _MIN_ EResourceType resourceType,
     _MIN_ EDyResourceStyle resourceStyle,
     _MIN_ EDyScope scope)
 {
@@ -31,8 +31,8 @@ void SDyIOConnectionHelper::PopulateResource(
   auto& ioThread = *gEngine->pfGetIOThread();
   
   // Check resourceType is `Skeleton` and `AnimationScrap` which can not be created as `Resource` but only `Information`.
-  if (resourceType == EDyResourceType::Skeleton
-  ||  resourceType == EDyResourceType::AnimationScrap)
+  if (resourceType == EResourceType::Skeleton
+  ||  resourceType == EResourceType::AnimationScrap)
   {
     if (resourceStyle == EDyResourceStyle::Resource) { resourceStyle = EDyResourceStyle::Information; }
   }
@@ -79,9 +79,9 @@ void SDyIOConnectionHelper::PopulateResourceList(
     for (const auto& [type, specifier] : list)
     {
       // If `type` is AnimationScrap or model skeleton, this must be populated only as `Style::Information`.
-      if (type == EDyResourceType::AnimationScrap
-      ||  type == EDyResourceType::Skeleton
-      ||  type == EDyResourceType::Sound)
+      if (type == EResourceType::AnimationScrap
+      ||  type == EResourceType::Skeleton
+      ||  type == EResourceType::Sound)
       { PopulateResource(specifier, type, EDyResourceStyle::Information, iScope); }
       else // Other type can be populated with Resource & Information.
       { PopulateResource(specifier, type, EDyResourceStyle::Resource, iScope); }
@@ -110,7 +110,7 @@ void SDyIOConnectionHelper::PopulateResourceList(
 
 void SDyIOConnectionHelper::PopulateInstantMaterialResource(
     _MIN_ PDyMaterialInstanceMetaInfo& desc,
-    _MIN_ TDyResourceBinder<EDyResourceType::Material>& refMat, 
+    _MIN_ TDyResourceBinder<EResourceType::Material>& refMat, 
     _MIN_ bool(*callback)())
 {
   static TU32 instantMatId = 0;
@@ -131,7 +131,7 @@ void SDyIOConnectionHelper::PopulateInstantMaterialResource(
 
 bool SDyIOConnectionHelper::IsReferenceInstanceExist(
     _MIN_ const std::string& iSpecifier, 
-    _MIN_ EDyResourceType iType, 
+    _MIN_ EResourceType iType, 
     _MIN_ EDyResourceStyle iStyle)
 {
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");

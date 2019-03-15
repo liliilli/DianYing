@@ -66,7 +66,7 @@ void FDyGrid::RenderGrid() noexcept
   const auto viewMatrix = glGetUniformLocation(this->mShaderPtr->GetShaderProgramId(), "viewMatrix");
   const auto projMatirx = glGetUniformLocation(this->mShaderPtr->GetShaderProgramId(), "projectionMatrix");
 
-  auto& sceneManager = MDyWorld::GetInstance();
+  auto& sceneManager = MWorld::GetInstance();
   auto* camera = sceneManager.GetMainCameraPtr();
   if (camera)
   {

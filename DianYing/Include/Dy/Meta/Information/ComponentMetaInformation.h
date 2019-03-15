@@ -171,7 +171,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelAnimatorComponent
 
 ///
 /// @struct PDyCameraComponentMetaInfo
-/// @brief  Dependency information to CDyCamera (NEW! since 0.0.0~) component.
+/// @brief  Dependency information to CCamera (NEW! since 0.0.0~) component.
 ///
 struct PDyCameraComponentMetaInfo final : public IDyMetaInformation
 {
