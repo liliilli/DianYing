@@ -25,7 +25,7 @@ const std::string& FDyAttachmentResource::GetSpecifierName() const noexcept
   return this->mSpecifierName;
 }
 
-const EDyGlBufferDataInternalFormat& FDyAttachmentResource::GetBufferType() const noexcept
+const EGlBufferDataInternalFormat& FDyAttachmentResource::GetBufferType() const noexcept
 {
   MDY_ASSERT_MSG(
     this->mInformationBinder.IsResourceExist() == true, 
@@ -33,7 +33,7 @@ const EDyGlBufferDataInternalFormat& FDyAttachmentResource::GetBufferType() cons
   return this->mInformationBinder->GetBufferType();
 }
 
-const EDyTextureStyleType& FDyAttachmentResource::GetAttachmentType() const noexcept
+const ETextureStyleType& FDyAttachmentResource::GetAttachmentType() const noexcept
 {
   MDY_ASSERT_MSG(
     this->mInformationBinder.IsResourceExist() == true, 

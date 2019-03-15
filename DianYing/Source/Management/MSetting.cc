@@ -289,12 +289,12 @@ const DDySettingPhysics& MSetting::GetPhysicsSetting() const noexcept
   return this->mPhysics;
 }
 
-void MSetting::SetRenderingMode(EDyModelRenderingMode iNewMode) noexcept
+void MSetting::SetRenderingMode(ERenderingModelMode iNewMode) noexcept
 {
   this->mModelRenderingMode = iNewMode;
 }
 
-EDyModelRenderingMode MSetting::GetRenderingMode() const noexcept
+ERenderingModelMode MSetting::GetRenderingMode() const noexcept
 {
   return this->mModelRenderingMode;
 }

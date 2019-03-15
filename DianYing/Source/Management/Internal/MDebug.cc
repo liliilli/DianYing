@@ -19,9 +19,9 @@
 #include <imgui/imgui_impl_glfw.h>
 
 #include <Dy/Management/Type/SettingContainer.h>
-#include <Dy/Management/Type/Input/EDyInputButtonStatus.h>
+#include <Dy/Management/Type/Input/EInputButtonStatus.h>
 #include <Dy/Management/MInput.h>
-#include <Dy/Core/DyEngine.h>
+#include <Dy/Core/GDyEngine.h>
 
 //!
 //! Forward declaration & local translation unit function.
@@ -121,7 +121,7 @@ void MDebug::pUpdateInputKeys()
 {
   /// @brief Check action key status to find if any one is satisfied goalState condition.
   /// @param actionInfo action information
-  static auto CheckActionStatusIfAny = [](_MINOUT_ DDyActionBindingInformation& actionInfo, _MIN_ EDyInputButtonStatus goalState)
+  static auto CheckActionStatusIfAny = [](_MINOUT_ DDyActionBindingInformation& actionInfo, _MIN_ EInputButtonStatus goalState)
   {
     return std::any_of(
         MDY_BIND_CBEGIN_CEND(actionInfo.mActionId),
@@ -132,7 +132,7 @@ void MDebug::pUpdateInputKeys()
 
   /// @brief Check action key status to find if any one is satisfied goalState condition.
   /// @param actionInfo action information
-  static auto CheckActionStatusIfAll = [](_MINOUT_ DDyActionBindingInformation& actionInfo, _MIN_ EDyInputButtonStatus goalState)
+  static auto CheckActionStatusIfAll = [](_MINOUT_ DDyActionBindingInformation& actionInfo, _MIN_ EInputButtonStatus goalState)
   {
     return std::all_of(
         MDY_BIND_CBEGIN_CEND(actionInfo.mActionId),
@@ -145,7 +145,7 @@ void MDebug::pUpdateInputKeys()
   /// @param actionInfo action information
   static auto ProcessAction_Released = [](_MINOUT_ DDyActionBindingInformation& actionInfo)
   {
-    if (CheckActionStatusIfAny(actionInfo, EDyInputButtonStatus::Pressed) == true) 
+    if (CheckActionStatusIfAny(actionInfo, EInputButtonStatus::Pressed) == true) 
     { actionInfo.mKeyStatus = EDyInputActionStatus::Pressed; }
   };
 
@@ -153,7 +153,7 @@ void MDebug::pUpdateInputKeys()
   /// @param actionInfo action information
   static auto ProcessAction_Pressed = [](_MINOUT_ DDyActionBindingInformation& actionInfo)
   {
-    if (CheckActionStatusIfAll(actionInfo, EDyInputButtonStatus::Released) == true) 
+    if (CheckActionStatusIfAll(actionInfo, EInputButtonStatus::Released) == true) 
     { actionInfo.mKeyStatus = EDyInputActionStatus::Released; }
     else
     { actionInfo.mKeyStatus = EDyInputActionStatus::Bottled; }
@@ -163,7 +163,7 @@ void MDebug::pUpdateInputKeys()
   /// @param actionInfo action information
   static auto ProcessAction_Bottled = [](_MINOUT_ DDyActionBindingInformation& actionInfo)
   {
-    if (CheckActionStatusIfAll(actionInfo, EDyInputButtonStatus::Released) == true) 
+    if (CheckActionStatusIfAll(actionInfo, EInputButtonStatus::Released) == true) 
     { actionInfo.mKeyStatus = EDyInputActionStatus::Released; }
   };
 

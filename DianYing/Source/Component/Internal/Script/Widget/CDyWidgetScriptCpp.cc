@@ -21,7 +21,7 @@
 namespace dy
 {
 
-CWidgetScriptCpp::CWidgetScriptCpp(FDyUiWidget& widgetReference, const PDyScriptInstanceMetaInfo& metaInfo) 
+CWidgetScriptCpp::CWidgetScriptCpp(FWidget& widgetReference, const PDyScriptInstanceMetaInfo& metaInfo) 
   : CBaseWidgetScript{widgetReference}
 {
   MDY_ASSERT_MSG(metaInfo.mScriptType == EDyScriptType::Cpp,    "Script type is not matched to CWidgetScriptCpp.");

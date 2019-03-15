@@ -21,7 +21,7 @@
 
 namespace dy
 {
-class FDyActor;
+class FActor;
 } /// ::dy namespace
 
 //!
@@ -57,10 +57,10 @@ class CBaseActorScript : public IScriptable
   //!
 
 public:
-  CBaseActorScript(FDyActor& ioRefActor) : mPtrBoundActor(&ioRefActor) { }
+  CBaseActorScript(FActor& ioRefActor) : mPtrBoundActor(&ioRefActor) { }
 
   /// @brief Get mutable reference of actor.
-  MDY_NODISCARD FDyActor& GetActorReference() noexcept;
+  MDY_NODISCARD FActor& GetActorReference() noexcept;
 
 protected:
   /// Script name for specification and searching.
@@ -69,7 +69,7 @@ protected:
   bool        mIsScriptInstanceBinded = false;
 
 private:
-  FDyActor*   mPtrBoundActor          = MDY_INITIALIZE_NULL;
+  FActor*   mPtrBoundActor          = MDY_INITIALIZE_NULL;
 };
 
 } /// ::dy namespace

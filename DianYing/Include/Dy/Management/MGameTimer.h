@@ -14,8 +14,8 @@
 ///
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
-#include <Dy/Element/Type/Timer/FDyActorTimerItem.h>
-#include <Dy/Element/Type/Timer/FDyWidgetTimerItem.h>
+#include <Dy/Element/Type/Timer/FActorTimerItem.h>
+#include <Dy/Element/Type/Timer/FWidgetTimerItem.h>
 #include <Dy/Helper/System/TypeTraits.h>
 
 //!
@@ -26,7 +26,7 @@ namespace dy
 {
 class AActorCppScript;
 class AWidgetCppScript;
-class FDyTimerHandle;
+class FTimerHandle;
 } /// ::dy namespace
 
 //!
@@ -47,7 +47,7 @@ public:
   /// @brief Set timer.
   template <typename TType>
   void SetTimer(
-      FDyTimerHandle& iRefHandler, 
+      FTimerHandle& iRefHandler, 
       TType& iRefScript, 
       void(TType::*iPtrCallback)(void), 
       TF32 iTickTime, 
@@ -64,24 +64,24 @@ public:
   }
 
   /// @brief Pause timer, this function do nothing when Handler is not bound or paused already.
-  void PauseActorTimer(FDyTimerHandle& iRefHandler);
+  void PauseActorTimer(FTimerHandle& iRefHandler);
   /// @brief Resume timer, this function do nothing when Handler is not bound or already played.
-  void ResumeActorTimer(FDyTimerHandle& iRefHandler);
+  void ResumeActorTimer(FTimerHandle& iRefHandler);
   /// @brief Stop actor timer.
-  void StopActorTimer(FDyTimerHandle& iRefHandler);
+  void StopActorTimer(FTimerHandle& iRefHandler);
 
   /// @brief Pause timer, this function do nothing when Handler is not bound or paused already.
-  void PauseWidgetTimer(FDyTimerHandle& iRefHandler);
+  void PauseWidgetTimer(FTimerHandle& iRefHandler);
   /// @brief Resume timer, this function do nothing when Handler is not bound or already played.
-  void ResumeWidgetTimer(FDyTimerHandle& iRefHandler);
+  void ResumeWidgetTimer(FTimerHandle& iRefHandler);
   /// @brief Stop widget timer.
-  void StopWidgetTimer(FDyTimerHandle& iRefHandler);
+  void StopWidgetTimer(FTimerHandle& iRefHandler);
 
   void MDY_PRIVATE(TryGcRemoveAbortedTimerInstance)();
 
 private:
   void MDY_PRIVATE(pSetTimer)(
-      FDyTimerHandle& iRefHandler, 
+      FTimerHandle& iRefHandler, 
       AActorCppScript& iRefScript,
       std::function<void(void)> iFunction,
       TF32 iTickTime, 
@@ -89,7 +89,7 @@ private:
       TF32 iDelayTime);
 
   void MDY_PRIVATE(pSetTimer)(
-      FDyTimerHandle& iRefHandler, 
+      FTimerHandle& iRefHandler, 
       AWidgetCppScript& iRefScript,
       std::function<void(void)> iFunction,
       TF32 iTickTime, 
@@ -101,8 +101,8 @@ private:
   /// @brief Remove `::Aborted` widget timer instance list.
   void pTryGcRemoveAbortedWidgetTimerInstance();
 
-  std::vector<FDyActorTimerItem>  mActorTimerList   = {};
-  std::vector<FDyWidgetTimerItem> mWidgetTimerList  = {};
+  std::vector<FActorTimerItem>  mActorTimerList   = {};
+  std::vector<FWidgetTimerItem> mWidgetTimerList  = {};
 };
 
 } /// ::dy namespace

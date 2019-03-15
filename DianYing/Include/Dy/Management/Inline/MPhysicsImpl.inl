@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Component/CDyTransform.h>
+#include <Dy/Component/CTransform.h>
 
 namespace dy
 {
@@ -410,10 +410,10 @@ inline void MPhysics::Impl::pTryEnqueueCollisionIssue(
     physx::PxPairFlags iInternalFlag,
     CBasePhysicsCollider* i0, 
     CBasePhysicsCollider* i1, 
-    const FDyHitResult& iHitResult)
+    const FHitResult& iHitResult)
 {
   // Make Collision issue item to be accessed when calling collision callback function.
-  DDyCollisionIssueItem item;
+  DCollisionIssueItem item;
   item.mType = iHitType;
   item.mHitResult = iHitResult;
 
@@ -479,8 +479,8 @@ inline void MPhysics::Impl::onContact(
       const auto filterFlag0 = shape0->getSimulationFilterData();
       const auto filterFlag1 = shape1->getSimulationFilterData();
 
-      // Make FDyHitResult
-      FDyHitResult result;
+      // Make FHitResult
+      FHitResult result;
       result.mContactPosition = internalBuffer.position;
 
       // We do not process when `ignored` status because `ignored` status will be killed by physx internal system logic.

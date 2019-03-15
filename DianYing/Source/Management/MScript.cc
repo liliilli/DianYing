@@ -18,12 +18,12 @@
 #define SOL_CHECK_ARGUMENT 1
 #include <sol2/sol.hpp>
 
-#include <Dy/Core/DyEngine.h>
+#include <Dy/Core/GDyEngine.h>
 #include <Dy/Component/Internal/Widget/CWidgetScriptCpp.h>
 #include <Dy/Component/Internal/Script/FWidgetScriptState.h>
 #include <Dy/Component/Internal/Script/FGlobalScriptState.h>
-#include <Dy/Element/Actor.h>
-#include <Dy/Management/Helper/LuaBindingEntry.h>
+#include <Dy/Element/FActor.h>
+#include <Dy/Management/Helper/XLuaBindingEntry.h>
 
 //!
 //! Local function & forward declaration
@@ -90,7 +90,7 @@ void DyInitializeMLog(_MIO_ sol::state& lua)
 void DyInitilaizeFDyObject(_MIO_ sol::state& lua)
 {
   /// Binding lua
-  lua.new_usertype<dy::FDyObject>("FDyObject",
+  lua.new_usertype<dy::AWorldObject>("AWorldObject",
       "new", sol::constructors<>()
   );
 }
@@ -117,20 +117,20 @@ void DyInitializeCDyComponents(_MIO_ sol::state& lua)
 /// @brief
 /// @param  lua
 ///
-void DyInitilaizeFDyActor(_MIO_ sol::state& lua)
+void DyInitilaizeFActor(_MIO_ sol::state& lua)
 {
 #ifdef false
   /// Binding lua
-  lua.new_usertype<dy::FDyActor>("FDyActor",
+  lua.new_usertype<dy::FActor>("FActor",
       /// Base
-      sol::base_classes, sol::bases<FDyObject>(),
+      sol::base_classes, sol::bases<AWorldObject>(),
       /// Cosntructors
-      "new", sol::constructors<FDyActor(void)>(),
+      "new", sol::constructors<FActor(void)>(),
       ///
-      "Activate",     &FDyActor::Activate,
-      "Deactivate",   &FDyActor::Deactivate,
-      "IsActivated",  &FDyActor::IsActivated,
-      "GetActorName", &FDyActor::GetActorName
+      "Activate",     &FActor::Activate,
+      "Deactivate",   &FActor::Deactivate,
+      "IsActivated",  &FActor::IsActivated,
+      "GetActorName", &FActor::GetActorName
   );
 #endif
 }
@@ -161,7 +161,7 @@ public:
   /// @param iRefWidget
   /// @param iIsAwakened
   FWidgetScriptState* 
-  CreateWidgetScript(const std::string& iScriptSpecifier, FDyUiWidget& iRefWidget, bool iIsAwakened);
+  CreateWidgetScript(const std::string& iScriptSpecifier, FWidget& iRefWidget, bool iIsAwakened);
 
   /// @brief Try remove widget script from dy system.
   /// But, removed widget script does not actually removed instantly, \n
@@ -176,7 +176,7 @@ public:
   /// @param iRefActor
   /// @param iIsAwakened
   FActorScriptState* 
-  CreateActorScript(const std::string& iScriptSpecifier, FDyActor& iRefActor, bool iIsAwakened);
+  CreateActorScript(const std::string& iScriptSpecifier, FActor& iRefActor, bool iIsAwakened);
   /// @brief Try remove actor script from dy system.
   /// But, removed actor script does not actually removed instantly, \n
   /// moved gc list and removed actually on next frame prior to update.
@@ -276,7 +276,7 @@ sol::state& MScript::GetLuaInstance() noexcept { return this->mPimpl->GetLuaInst
 
 FWidgetScriptState* MScript::CreateWidgetScript(
     const std::string& iScriptSpecifier, 
-    FDyUiWidget& iRefWidget, 
+    FWidget& iRefWidget, 
     bool iIsAwakened)
 {
   return this->mPimpl->CreateWidgetScript(iScriptSpecifier, iRefWidget, iIsAwakened);
@@ -289,7 +289,7 @@ void MScript::CallonEndGlobalScriptList()   { this->mPimpl->CallonEndGlobalScrip
 
 FActorScriptState* MScript::CreateActorScript(
     const std::string& iScriptSpecifier, 
-    FDyActor& iRefActor, 
+    FActor& iRefActor, 
     bool iIsAwakened)
 {
   return this->mPimpl->CreateActorScript(iScriptSpecifier, iRefActor, iIsAwakened);

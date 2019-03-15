@@ -16,13 +16,13 @@
 #include <Dy/Component/Abstract/AActorCppScript.h>
 #include <Dy/Component/Internal/Actor/CActorScriptCpp.h>
 #include <Dy/Management/MGameTimer.h>
-#include <Dy/Component/CDyPhysicsRigidbody.h>
+#include <Dy/Component/CPhysicsRigidbody.h>
 #include <Dy/Helper/Library/HelperContainer.h>
 
 namespace dy
 {
 
-FDyActor& AActorCppScript::GetActorReference()
+FActor& AActorCppScript::GetActorReference()
 {
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->mOutside), "Unexpected error occurred.");
   return this->mOutside->GetActorReference();
@@ -33,12 +33,12 @@ MGameTimer& AActorCppScript::GetGameTimerManager() noexcept
   return MGameTimer::GetInstance();
 }
 
-void AActorCppScript::MDY_PRIVATE(BindPtrTimerHandle)(_MIN_ FDyTimerHandle& iRefTimerHandler)
+void AActorCppScript::MDY_PRIVATE(BindPtrTimerHandle)(_MIN_ FTimerHandle& iRefTimerHandler)
 {
   this->mPtrTimerHandleList.emplace_back(&iRefTimerHandler);
 }
 
-void AActorCppScript::MDY_PRIVATE(DetachPtrTimerHandle)(_MIN_ FDyTimerHandle& iRefTimerHandler)
+void AActorCppScript::MDY_PRIVATE(DetachPtrTimerHandle)(_MIN_ FTimerHandle& iRefTimerHandler)
 {
   auto it = std::find_if(
       MDY_BIND_BEGIN_END(this->mPtrTimerHandleList), 
@@ -61,7 +61,7 @@ void AActorCppScript::MDY_PRIVATE(AbortAllValidTimerHandler)()
 }
 
 void AActorCppScript::MDY_PRIVATE(BindCollisionCbHandle)(
-    _MIN_ CDyPhysicsRigidbody& iRefRigidbody, 
+    _MIN_ CPhysicsRigidbody& iRefRigidbody, 
     _MIN_ ECollisionCallbackType iType,
     _MIN_ const void* iUniqueId)
 {

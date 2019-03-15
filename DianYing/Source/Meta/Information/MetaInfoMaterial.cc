@@ -18,7 +18,7 @@
 #include <Dy/Helper/Internal/XStringSwitch.h>
 #include <Dy/Helper/Library/HelperFilesystem.h>
 #include <Dy/Helper/Type/DMatrix4x4.h>
-#include <Dy/Core/Resource/Type/Uniform/UniformValueTypes.h>
+#include <Dy/Core/Resource/Type/Uniform/TUniformValue.h>
 
 namespace dy
 {
@@ -35,7 +35,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ DDyMaterialTextureItem& p
    */
 
   json::GetValueFromTo(j, "Specifier", p.mTextureSpecifier);
-  p.mTextureMapType = json::GetValueFrom<EDyTextureMapType>(j, "DefaultType");
+  p.mTextureMapType = json::GetValueFrom<ETextureMapType>(j, "DefaultType");
 }
 
 std::string PDyMaterialInstanceMetaInfo::ToString()
@@ -151,7 +151,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
           const auto value = json::GetValueFrom<DMatrix4x4>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
-            std::make_unique<FDyUniformValue<EUniformVariableType::Matrix4>>(-1, value)
+            std::make_unique<TUniformValue<EUniformVariableType::Matrix4>>(-1, value)
           );
         } break;
         case EUniformVariableType::Matrix3: 
@@ -167,7 +167,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
           const auto value = json::GetValueFrom<DVector4>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
-            std::make_unique<FDyUniformValue<EUniformVariableType::Vector4>>(-1, value)
+            std::make_unique<TUniformValue<EUniformVariableType::Vector4>>(-1, value)
           );
         } break;
         case EUniformVariableType::Vector3:
@@ -175,7 +175,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
           const auto value = json::GetValueFrom<DVector3>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
-            std::make_unique<FDyUniformValue<EUniformVariableType::Vector3>>(-1, value)
+            std::make_unique<TUniformValue<EUniformVariableType::Vector3>>(-1, value)
           );
         } break;
         case EUniformVariableType::Vector2:
@@ -183,7 +183,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
           const auto value = json::GetValueFrom<DVector2>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
-            std::make_unique<FDyUniformValue<EUniformVariableType::Vector2>>(-1, value)
+            std::make_unique<TUniformValue<EUniformVariableType::Vector2>>(-1, value)
           );
         } break;
         case EUniformVariableType::IVec4: 
@@ -197,7 +197,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
           const auto value = json::GetValueFrom<TI32>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
-            std::make_unique<FDyUniformValue<EUniformVariableType::Integer>>(-1, value)
+            std::make_unique<TUniformValue<EUniformVariableType::Integer>>(-1, value)
           );
         } break;
         case EUniformVariableType::Unsigned:
@@ -205,7 +205,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
           const auto value = json::GetValueFrom<TU32>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
-            std::make_unique<FDyUniformValue<EUniformVariableType::Unsigned>>(-1, value)
+            std::make_unique<TUniformValue<EUniformVariableType::Unsigned>>(-1, value)
           );
         } break;
         case EUniformVariableType::Float: 
@@ -213,7 +213,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
           const auto value = json::GetValueFrom<TF32>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
-            std::make_unique<FDyUniformValue<EUniformVariableType::Float>>(-1, value)
+            std::make_unique<TUniformValue<EUniformVariableType::Float>>(-1, value)
           );
         } break;
         case EUniformVariableType::Bool:
@@ -221,7 +221,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
           const auto value = json::GetValueFrom<bool>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
-            std::make_unique<FDyUniformValue<EUniformVariableType::Bool>>(-1, value)
+            std::make_unique<TUniformValue<EUniformVariableType::Bool>>(-1, value)
           );
         } break;
         case EUniformVariableType::Matrix4Array: 
@@ -229,7 +229,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
           const auto value = json::GetValueFrom<std::vector<DMatrix4x4>>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
-            std::make_unique<FDyUniformValue<EUniformVariableType::Matrix4Array>>(-1, value)
+            std::make_unique<TUniformValue<EUniformVariableType::Matrix4Array>>(-1, value)
           );
         } break;
         case EUniformVariableType::Vector3Array: 
@@ -237,7 +237,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
           const auto value = json::GetValueFrom<std::vector<DVector3>>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
-            std::make_unique<FDyUniformValue<EUniformVariableType::Vector3Array>>(-1, value)
+            std::make_unique<TUniformValue<EUniformVariableType::Vector3Array>>(-1, value)
           );
         }
         default: MDY_UNEXPECTED_BRANCH(); break;

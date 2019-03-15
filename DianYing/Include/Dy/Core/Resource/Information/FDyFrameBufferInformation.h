@@ -15,7 +15,7 @@
 
 #include <Dy/Helper/Type/DVectorInt2.h>
 #include <Dy/Management/Type/AttachmentInformation.h>
-#include <Dy/Core/Resource/Type/TDyInformationBinder.h>
+#include <Dy/Core/Resource/Type/TInformationBinder.h>
 
 //!
 //! Forward declaration

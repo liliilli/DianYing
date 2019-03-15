@@ -16,7 +16,7 @@
 #include <Dy/Core/Resource/Information/FDyMeshInformation.h>
 
 #include <nlohmann/json.hpp>
-#include <Dy/Core/Resource/Type/ModelMesh/DDyMeshCompressedBuffer.h>
+#include <Dy/Core/Resource/Type/ModelMesh/DMeshCompressedBuffer.h>
 #include <Dy/Helper/Library/HelperJson.h>
 #include <future>
 #include "Dy/Helper/Library/HelperFilesystem.h"
@@ -85,7 +85,7 @@ const std::string& FDyMeshInformation::GetSpecifierName() const noexcept
   return this->mSpecifierName;
 }
 
-const DDyMeshData& FDyMeshInformation::GetMeshInformationList() const noexcept
+const DMeshData& FDyMeshInformation::GetMeshInformationList() const noexcept
 {
   return this->mProperty;
 }

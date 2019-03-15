@@ -14,7 +14,7 @@
 ///
 
 #include <unordered_map>
-#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
+#include <Dy/Core/Resource/Type/TResourceBinder.h>
 
 //!
 //! Forward declaration
@@ -22,11 +22,11 @@
 
 namespace dy
 {
-class FDyActor;
+class FActor;
 class CModelFilter;
 class CModelRenderer;
 class CModelAnimator;
-class CDyTransform;
+class CTransform;
 } /// ::dy namespace
 
 //!
@@ -37,7 +37,7 @@ namespace dy
 {
 
 /// @struct DDyModelHandler
-/// @brief Model handler.
+/// @brief Model handler for model rendering.
 struct DDyModelHandler final
 {
 public:
@@ -49,16 +49,16 @@ public:
     CModelRenderer* mPtrModelRenderer   = nullptr;
     CModelAnimator* mPtrModelAnimator   = nullptr;
   };
-  using TContainer = std::unordered_map<FDyActor*, DActorInfo>;
+  using TContainer = std::unordered_map<FActor*, DActorInfo>;
 
   /// @brief
   DDyModelHandler(_MIN_ const std::string& iModelSpecifier);
 
   /// @brief Check there is actor item.
-  MDY_NODISCARD bool IsActorItemExist(_MIN_ FDyActor& iRefActor) const noexcept;
+  MDY_NODISCARD bool IsActorItemExist(_MIN_ FActor& iRefActor) const noexcept;
   /// @brief Check given actor item needs to be GCed.
   /// This function can not check null-ed instance.
-  MDY_NODISCARD bool IsActorNeedToBeGc(_MIN_ FDyActor& iRefActor) const noexcept;
+  MDY_NODISCARD bool IsActorNeedToBeGc(_MIN_ FActor& iRefActor) const noexcept;
   /// @brief Check there is no actor information.
   MDY_NODISCARD bool IsEmpty() const noexcept; 
   /// @brief Check resource binder is actaully valid.
@@ -67,22 +67,22 @@ public:
   /// @brief Try create actor binding information instance to container.
   /// If there is already existed one, just return DY_FAILURE.
   /// This function can not be called independenty
-  EDySuccess TryCreateActorBinding(_MIN_ FDyActor& iRefActor);
+  EDySuccess TryCreateActorBinding(_MIN_ FActor& iRefActor);
   /// @brief 
-  EDySuccess TryRemoveActorBinding(_MIN_ FDyActor& iRefActor);
+  EDySuccess TryRemoveActorBinding(_MIN_ FActor& iRefActor);
   
   /// @brief Bind filter. If Actor information item is not exist yet, just return DY_FAILURE.
-  EDySuccess BindFilter(_MIN_ FDyActor& iRefActor, _MIN_ CModelFilter& iRefFilter);
+  EDySuccess BindFilter(_MIN_ FActor& iRefActor, _MIN_ CModelFilter& iRefFilter);
   /// @brief Bind renderer. If Actor information item is not exist yet, just return DY_FAILURE.
-  EDySuccess BindRenderer(_MIN_ FDyActor& iRefActor, _MIN_ CModelRenderer& iRefComp);
+  EDySuccess BindRenderer(_MIN_ FActor& iRefActor, _MIN_ CModelRenderer& iRefComp);
   /// @brief Bind animator. If Actor information item is not exist yet, just return DY_FAILURE.
-  EDySuccess BindAnimator(_MIN_ FDyActor& iRefActor, _MIN_ CModelAnimator& iRefComp);
+  EDySuccess BindAnimator(_MIN_ FActor& iRefActor, _MIN_ CModelAnimator& iRefComp);
   /// @brief Unbind filter.
-  EDySuccess UnbindFilter(_MIN_ FDyActor& iRefActor);
+  EDySuccess UnbindFilter(_MIN_ FActor& iRefActor);
   /// @brief Unbind renderer.
-  EDySuccess UnbindRenderer(_MIN_ FDyActor& iRefActor);
+  EDySuccess UnbindRenderer(_MIN_ FActor& iRefActor);
   /// @brief Unbind animator.
-  EDySuccess UnbindAnimator(_MIN_ FDyActor& iRefActor);
+  EDySuccess UnbindAnimator(_MIN_ FActor& iRefActor);
 
   /// @brief
   MDY_NODISCARD const TContainer& GetActorContainer() const noexcept;

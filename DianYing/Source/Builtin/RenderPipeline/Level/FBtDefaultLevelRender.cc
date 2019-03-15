@@ -13,8 +13,8 @@
 ///
 
 #include <Dy/Builtin/RenderPipeline/Level/FBtDefaultLevelRender.h>
-#include <Dy/Management/Type/Render/DDyGlGlobalStates.h>
-#include <Dy/Management/Type/Render/EDyModelRenderingMode.h>
+#include <Dy/Management/Type/Render/DGlGlobalStates.h>
+#include <Dy/Management/Type/Render/ERenderingModelMode.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Management/MSetting.h>
 
@@ -49,21 +49,21 @@ void FBtRenderPipelineDefaultLevelRender::OnFailedCheckCondition()
 void FBtRenderPipelineDefaultLevelRender::OnSetupRenderingSetting()
 {
   { // Set overall rendering mode.
-    DDyGlGlobalStates initialStatus{};
-    using DPolygonMode = DDyGlGlobalStates::DPolygonMode;
-    using EMode  = DDyGlGlobalStates::DPolygonMode::EMode;
-    using EValue = DDyGlGlobalStates::DPolygonMode::EValue;
+    DGlGlobalStates initialStatus{};
+    using DPolygonMode = DGlGlobalStates::DPolygonMode;
+    using EMode  = DGlGlobalStates::DPolygonMode::EMode;
+    using EValue = DGlGlobalStates::DPolygonMode::EValue;
     //
     switch (MSetting::GetInstance().GetRenderingMode())
     {
-    case EDyModelRenderingMode::FillNormal: 
+    case ERenderingModelMode::FillNormal: 
     {
       initialStatus.mPolygonMode = DPolygonMode{EMode::FrontAndBack, EValue::Triangle}; 
       { 
         XGLWrapper::PushInternalGlobalState(initialStatus);
       }
     } break;
-    case EDyModelRenderingMode::WireFrame: 
+    case ERenderingModelMode::WireFrame: 
     {
       initialStatus.mPolygonMode = DPolygonMode{EMode::FrontAndBack, EValue::Line}; 
       { 

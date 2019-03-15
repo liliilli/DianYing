@@ -21,7 +21,7 @@
 
 namespace dy
 {
-MDY_INTERFACE __FDyBinderBase;
+MDY_INTERFACE __IBinderBase;
 } /// ::dy namespace
 
 //!
@@ -59,30 +59,30 @@ public:
   /// Level  < Temporal \n
   /// RI's scope will be changed to big range.
   ///
-  bool TryEnlargeResourceScope(_MIN_ EDyScope scope, _MIN_ const std::string& specifier, _MIN_ EResourceType type);
+  bool TryEnlargeResourceScope(_MIN_ EResourceScope scope, _MIN_ const std::string& specifier, _MIN_ EResourceType type);
 
   /// @brief Try to bind binder instance to valid resource Reference Instance.
   /// If not exist, just do nothing and return DY_FAILURE.
   MDY_NODISCARD EDySuccess TryBindBinderToResourceRI(
       _MIN_ const std::string& iSpecifier, 
       _MIN_ EResourceType iType, 
-      _MIN_ const __FDyBinderBase* iPtrBinder);
+      _MIN_ const __IBinderBase* iPtrBinder);
 
   /// @brief Try detach binder instance from valid resource Reference Instance.
   /// If not exist, just do nothing and return DY_FAILURE.
   MDY_NODISCARD EDySuccess TryDetachBinderFromResourceRI(
       _MIN_ const std::string& iSpecifier, 
       _MIN_ EResourceType iType, 
-      _MIN_ const __FDyBinderBase* iPtrBinder);
+      _MIN_ const __IBinderBase* iPtrBinder);
 
   /// @brief Get GC-Candidate Reference instance list from container. \n
   /// Condition-satisfied RI will be removed from container.
-  std::vector<DDyIOReferenceInstance> GetForwardCandidateRIAsList(_MIN_ EDyScope iScope);
+  std::vector<DDyIOReferenceInstance> GetForwardCandidateRIAsList(_MIN_ EResourceScope iScope);
 
   /// @brief Create new reference instance. `specifier` must not be duplicated given type, style container.
   MDY_NODISCARD EDySuccess CreateReferenceInstance(
       _MIN_ const std::string& specifier,
-      _MIN_ EResourceType type, _MIN_ EDyResourceStyle style, _MIN_ EDyScope scope);
+      _MIN_ EResourceType type, _MIN_ EDyResourceStyle style, _MIN_ EResourceScope scope);
   
   /// @brief Move old Reference Instance.
   MDY_NODISCARD EDySuccess MoveReferenceInstance(_MINOUT_ DDyIOReferenceInstance&& iRi);
@@ -99,7 +99,7 @@ private:
   /// @brief Forward GCed candidate Reference Instance list to `iResult`.
   /// Gced candidate must have 0 item of __BinderBase.
   void ForwardCandidateRIFromList(
-      _MIN_ EDyScope iScope,
+      _MIN_ EResourceScope iScope,
       _MINOUT_ TStringHashMap<DDyIOReferenceInstance>& iContainer, 
       _MOUT_ std::vector<DDyIOReferenceInstance>& iResult);
 

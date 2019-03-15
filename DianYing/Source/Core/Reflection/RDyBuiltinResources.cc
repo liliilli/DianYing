@@ -25,6 +25,7 @@
 #include <Dy/Meta/Information/ScriptMetaInformation.h>
 #include <Dy/Meta/Information/MetaInfoRenderPipeline.h>
 #include <Dy/Meta/Information/MetaInfoRenderItem.h>
+#include <Dy/Helper/System/Pointer.h>
 
 namespace dy::reflect
 {

@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Component/Interface/IInitializeHelper.h>
-#include <Dy/Core/Resource/Type/TDyInformationBinder.h>
+#include <Dy/Core/Resource/Type/TInformationBinder.h>
 #include <Dy/Element/Abstract/AGeneralBaseComponent.h>
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
 #include <Dy/Helper/Type/DMatrix4x4.h>
@@ -40,7 +40,7 @@ namespace dy
 class CModelAnimator final : public AGeneralBaseComponent, public IInitializeHelper<PDyModelAnimatorComponentMetaInfo>
 {
 public:
-  CModelAnimator(FDyActor& actorReference);
+  CModelAnimator(FActor& actorReference);
   virtual ~CModelAnimator() = default;
   
   MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(CModelAnimator);

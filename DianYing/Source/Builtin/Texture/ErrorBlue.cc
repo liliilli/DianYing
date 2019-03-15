@@ -15,7 +15,6 @@
 /// Header file
 #include <Dy/Builtin/Texture/ErrorBlue.h>
 
-#include <Dy/Core/Resource/Internal/TextureType.h>
 #include <Dy/Helper/Type/DColorRGBA32.h>
 
 //!
@@ -40,10 +39,10 @@ namespace dy::builtin
 void FDyBuiltinTextureErrorBlue::ConstructBuffer(_MOUT_ TBufferType& buffer, _MOUT_ PDyTextureInstanceMetaInfo& property) noexcept
 {
   property.mSpecifierName     = FDyBuiltinTextureErrorBlue::sName;
-  property.mTextureType       = EDyTextureStyleType::D2;
+  property.mTextureType       = ETextureStyleType::D2;
   property.mTextureColorType  = EDyImageColorFormatStyle::RGBA;
   property.mBuiltinBufferSize = DVectorInt2{ 16, 16 };
-  property.mTextureMapType_Deprecated = EDyTextureMapType::Diffuse;
+  property.mTextureMapType_Deprecated = ETextureMapType::Diffuse;
 
   std::array<DColorRGBA32, 256> infoChunk =
   { //      0          4           8           12

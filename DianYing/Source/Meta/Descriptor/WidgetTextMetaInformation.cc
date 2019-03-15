@@ -61,6 +61,7 @@ PDyMetaWidgetTextDescriptor::CreateMetaInformation(_MIN_ const nlohmann::json& i
   instance->mUiObjectSpecifierName = json::GetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Name);
   instance->mComponentType         = EDyWidgetComponentType::Text;
   instance->mParentSpecifierName   = json::GetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Parent);
+  json::GetValueFromTo(itemAtlas, "IsActivated", instance->mIsActivated);
   json::GetValueFromTo(itemAtlas, "ZOrder", instance->mZOrder);
 
   // Detail (TEXT)

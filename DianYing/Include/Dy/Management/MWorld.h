@@ -14,8 +14,8 @@
 ///
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
-#include <Dy/Element/Type/DDyActorBinder.h>
-#include <Dy/Element/Type/DDyUiBinder.h>
+#include <Dy/Element/Type/DActorBinder.h>
+#include <Dy/Element/Type/DWidgetBinder.h>
 #include <Dy/Element/Interface/IUpdatable.h>
 #include <Dy/Helper/System/Pointer.h>
 
@@ -25,14 +25,14 @@
 
 namespace dy
 {
-struct DDyTransform;
+struct DTransform;
 class CModelRenderer;
 class CModelAnimator;
 class CDyLegacyCamera;
 class CCamera;
-class FDyLevel;
-class CDySkybox;
-class FDyUiWidget;
+class FLevel;
+class CSkybox;
+class FWidget;
 class MWorldUIContainers;
 } /// ::dy namespace
 
@@ -62,52 +62,52 @@ public:
 
   /// @brief Get all actors with tag. Tag must be valid. \n
   /// If iTagSpecifier is empty, this function get all actors which is not specified any tag.
-  MDY_NODISCARD std::vector<NotNull<FDyActor*>>
+  MDY_NODISCARD std::vector<NotNull<FActor*>>
   GetAllActorsWithTag(const std::string& iTagSpecifier) const noexcept;
 
   /// @brief Get all actors with tag. Tag must be valid. \n
   /// If iTagSpecifier is empty, this function get all actors which is not specified any tag. \n
   /// and this function search all actor of object tree from root to leaf, so might take some time.
-  MDY_NODISCARD std::vector<NotNull<FDyActor*>>
+  MDY_NODISCARD std::vector<NotNull<FActor*>>
   GetAllActorsWithTagRecursive(const std::string& iTagSpecifier) const noexcept;
 
   /// @brief Get all actors with matched name within only one depth of level object tree. \n
   /// If iNameSpecifier is empty, just return empty list.
-  MDY_NODISCARD std::vector<NotNull<FDyActor*>>
+  MDY_NODISCARD std::vector<NotNull<FActor*>>
   GetAllActorsWithName(const std::string& iNameSpecifier) const noexcept; 
 
   /// @brief Get all actors with matched name within overall level object tree. \n
   /// If iNameSpecifier is empty, just return empty list.
-  MDY_NODISCARD std::vector<NotNull<FDyActor*>>
+  MDY_NODISCARD std::vector<NotNull<FActor*>>
   GetAllActorsWithNameRecursive(const std::string& iNameSpecifier) const noexcept; 
 
   /// @brief Get pointer of actor with object id.
   /// If not found, just return nullptr.
-  MDY_NODISCARD FDyActor* GetActorWithObjectId(TU32 iObjectId) noexcept;
+  MDY_NODISCARD FActor* GetActorWithObjectId(TU32 iObjectId) noexcept;
 
   /// @brief Create actor.
-  DDyActorBinder CreateActor(
+  DActorBinder CreateActor(
     const std::string& iActorName, 
     const std::string& iPrefabName, 
-    const DDyTransform& iSpawnTransform,
-    FDyActor* iPtrParent = MDY_INITIALIZE_NULL,
+    const DTransform& iSpawnTransform,
+    FActor* iPtrParent = MDY_INITIALIZE_NULL,
     const std::string& iObjectTag = MDY_INITIALIZE_EMPTYSTR,
     bool iDoSweep = false);
 
   /// @brief Destroy Actor
-  void DestroyActor(FDyActor& ioRefActor);
+  void DestroyActor(FActor& ioRefActor);
 
   /// @brief Create UI Object. 
   /// If ui object wraps over exist Ui Object, but flag is true, create anyway with auto-generated UI name.
-  std::optional<DDyUiBinder> CreateUiObject(
+  std::optional<DWidgetBinder> CreateUiObject(
     const std::string& iUiName,
     const std::string& iNewCustomizedName = "",
     bool isForcedZOrder = false,
     TU32 ZOrder = 0);
   /// @brief Get UI Object as binder.
-  MDY_NODISCARD std::optional<DDyUiBinder> GetUiObject(const std::string& iUiName);
+  MDY_NODISCARD std::optional<DWidgetBinder> GetUiObject(const std::string& iUiName);
   /// @brief Destroy UI Object.
-  EDySuccess DestoryUiObject(DDyUiBinder& ioRefUi);
+  EDySuccess DestoryUiObject(DWidgetBinder& ioRefUi);
   /// @brief Destroy UI Object.
   EDySuccess DestroyUiObject(const std::string& iUiName);
 
@@ -148,7 +148,7 @@ public:
 
   /// @brief  Get valid level reference.
   /// @return Valid level reference. when level is not specified, unexpected behaviour.
-  MDY_NODISCARD FDyLevel& GetValidLevelReference() noexcept;
+  MDY_NODISCARD FLevel& GetValidLevelReference() noexcept;
 
   /// @brief Try create debug ui layout to screen as highest priority. (10xx) \n
   /// If debug ui is already spawned, just return DY_FAILURE, or DY_SUCCESS
@@ -188,25 +188,25 @@ public:
   /// @brief Unbind deactivated model animator component This function must be called in `CModelAnimator`.
   EDySuccess MDY_PRIVATE(UnbindActiveModelAnimator)(CModelAnimator& iRefComponent);
 
-  /// @brief Try get valid pointer instance (not-null) of CDySkybox target to be rendered on renderer.
-  MDY_NODISCARD std::optional<NotNull<CDySkybox*>> GetPtrMainLevelSkybox() const noexcept;
-  /// @brief Bind (Enroll) active skybox component. This function must be called in `CDySkybox`.
-  void MDY_PRIVATE(BindActiveSkybox)(CDySkybox& iRefComponent);
-  /// @brief Unbind deactivated skybox component. This function must be called in `CDySkybox`.
-  EDySuccess MDY_PRIVATE(UnbindActiveSkybox)(CDySkybox& iRefComponent);
+  /// @brief Try get valid pointer instance (not-null) of CSkybox target to be rendered on renderer.
+  MDY_NODISCARD std::optional<NotNull<CSkybox*>> GetPtrMainLevelSkybox() const noexcept;
+  /// @brief Bind (Enroll) active skybox component. This function must be called in `CSkybox`.
+  void MDY_PRIVATE(BindActiveSkybox)(CSkybox& iRefComponent);
+  /// @brief Unbind deactivated skybox component. This function must be called in `CSkybox`.
+  EDySuccess MDY_PRIVATE(UnbindActiveSkybox)(CSkybox& iRefComponent);
 
   /// @brief Get Internal World UI container list.
   MWorldUIContainers& MDY_PRIVATE(GetUiContainer)() noexcept;
   /// @brief Bind (Enroll) active Ui object (widget) into internal container.
-  /// This function must be called in `FDyUiWidget`.
-  void MDY_PRIVATE(BindActiveUiObject)(FDyUiWidget& iRefWidget);
-  /// @brief Unbind deactivated ui object component. This function must be called in `FDyUiWidget`.
-  EDySuccess MDY_PRIVATE(UnbindActiveUiObject)(FDyUiWidget& iRefWidget);
+  /// This function must be called in `FWidget`.
+  void MDY_PRIVATE(BindActiveUiObject)(FWidget& iRefWidget);
+  /// @brief Unbind deactivated ui object component. This function must be called in `FWidget`.
+  EDySuccess MDY_PRIVATE(UnbindActiveUiObject)(FWidget& iRefWidget);
 
 private:
-  /// @brief  Move FDyActor instance to gc.
-  /// @param  actorRawPtr Valid FDyActor pointer instance.
-  void pfMoveActorToGc(NotNull<FDyActor*> actorRawPtr) noexcept;
+  /// @brief  Move FActor instance to gc.
+  /// @param  actorRawPtr Valid FActor pointer instance.
+  void pfMoveActorToGc(NotNull<FActor*> actorRawPtr) noexcept;
 
   /// @brief
   /// @param  index
@@ -230,7 +230,7 @@ private:
 
   class Impl; Impl* mInternal = nullptr;
 
-  friend class FDyLevel;
+  friend class FLevel;
   friend class CModelRenderer;
   friend class CCamera;
 };

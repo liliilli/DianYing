@@ -99,12 +99,12 @@ TDDyResourceNameSet PDyLevelConstructMetaInfo::GetLevelResourceSet() const noexc
     const auto type = objectInfo->mObjectType;
     switch (type)
     {
-    case EDyMetaObjectType::Actor: 
+    case EWorldObjectType::Actor: 
     {
       GetLevelResourceFromActor(objectInfo->mMetaComponentInfo, result);
     } break;
-    case EDyMetaObjectType::SceneScriptor: { MDY_NOT_IMPLEMENTED_ASSERT(); } break;
-    case EDyMetaObjectType::Object: { MDY_NOT_IMPLEMENTED_ASSERT(); } break;
+    case EWorldObjectType::SceneScriptor: { MDY_NOT_IMPLEMENTED_ASSERT(); } break;
+    case EWorldObjectType::Object: { MDY_NOT_IMPLEMENTED_ASSERT(); } break;
     default: MDY_UNEXPECTED_BRANCH();
     }
   }

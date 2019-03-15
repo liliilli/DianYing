@@ -23,7 +23,7 @@
 #include <Dy/Core/Rendering/Wrapper/PGLAttachmentDescriptor.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLFrameBufferDescriptor.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLVaoBindDescriptor.h>
-#include <Dy/Core/Resource/Internal/ShaderType.h>
+#include <Dy/Core/Resource/Internal/XShaderTypes.h>
 #include <Dy/Meta/Type/Mesh/DDyGLVaoBindInformation.h>
 #include "Dy/Helper/Type/DArea2D.h"
 
@@ -43,24 +43,24 @@
 namespace
 {
 
-MDY_NODISCARD dy::EDyAttributeVariableType 
+MDY_NODISCARD dy::EAttributeVariableType 
 DyGlGetAttributeVariableTypeFrom(_MIN_ GLenum type) noexcept
 {
   switch (type)
   {
-  case GL_BOOL:                             return dy::EDyAttributeVariableType::Bool;
-  case GL_FLOAT:      case GL_DOUBLE:       return dy::EDyAttributeVariableType::Float;
-  case GL_FLOAT_VEC2: case GL_DOUBLE_VEC2:  return dy::EDyAttributeVariableType::Vector2;
-  case GL_FLOAT_VEC3: case GL_DOUBLE_VEC3:  return dy::EDyAttributeVariableType::Vector3;
-  case GL_FLOAT_VEC4: case GL_DOUBLE_VEC4:  return dy::EDyAttributeVariableType::Vector4;
-  case GL_FLOAT_MAT2: case GL_DOUBLE_MAT2:  return dy::EDyAttributeVariableType::Matrix2;
-  case GL_FLOAT_MAT3: case GL_DOUBLE_MAT3:  return dy::EDyAttributeVariableType::Matrix3;
-  case GL_FLOAT_MAT4: case GL_DOUBLE_MAT4:  return dy::EDyAttributeVariableType::Matrix4;
-  case GL_INT:                              return dy::EDyAttributeVariableType::Integer;
-  case GL_INT_VEC2:                         return dy::EDyAttributeVariableType::IVec2;
-  case GL_INT_VEC3:                         return dy::EDyAttributeVariableType::IVec3;
-  case GL_INT_VEC4:                         return dy::EDyAttributeVariableType::IVec4;
-  default: return dy::EDyAttributeVariableType::NoneError;
+  case GL_BOOL:                             return dy::EAttributeVariableType::Bool;
+  case GL_FLOAT:      case GL_DOUBLE:       return dy::EAttributeVariableType::Float;
+  case GL_FLOAT_VEC2: case GL_DOUBLE_VEC2:  return dy::EAttributeVariableType::Vector2;
+  case GL_FLOAT_VEC3: case GL_DOUBLE_VEC3:  return dy::EAttributeVariableType::Vector3;
+  case GL_FLOAT_VEC4: case GL_DOUBLE_VEC4:  return dy::EAttributeVariableType::Vector4;
+  case GL_FLOAT_MAT2: case GL_DOUBLE_MAT2:  return dy::EAttributeVariableType::Matrix2;
+  case GL_FLOAT_MAT3: case GL_DOUBLE_MAT3:  return dy::EAttributeVariableType::Matrix3;
+  case GL_FLOAT_MAT4: case GL_DOUBLE_MAT4:  return dy::EAttributeVariableType::Matrix4;
+  case GL_INT:                              return dy::EAttributeVariableType::Integer;
+  case GL_INT_VEC2:                         return dy::EAttributeVariableType::IVec2;
+  case GL_INT_VEC3:                         return dy::EAttributeVariableType::IVec3;
+  case GL_INT_VEC4:                         return dy::EAttributeVariableType::IVec4;
+  default: return dy::EAttributeVariableType::NoneError;
   }
 }
 
@@ -121,7 +121,7 @@ void CbGlFeatScissorTestStack(const bool& iTopStatus)
 }
 
 /// @brief
-void CbGlPolygonModeStack(const dy::DDyGlGlobalStates::DPolygonMode& iTopStatus)
+void CbGlPolygonModeStack(const dy::DGlGlobalStates::DPolygonMode& iTopStatus)
 {
   // Get value from structure.
   const auto& polygonMode = iTopStatus;
@@ -131,23 +131,23 @@ void CbGlPolygonModeStack(const dy::DDyGlGlobalStates::DPolygonMode& iTopStatus)
   // Set mode
   switch (polygonMode.mMode)
   {
-  case dy::DDyGlGlobalStates::DPolygonMode::EMode::Front: mode = GL_FRONT;  break;
-  case dy::DDyGlGlobalStates::DPolygonMode::EMode::Back:  mode = GL_BACK;   break;
-  case dy::DDyGlGlobalStates::DPolygonMode::EMode::FrontAndBack: mode = GL_FRONT_AND_BACK; break;
+  case dy::DGlGlobalStates::DPolygonMode::EMode::Front: mode = GL_FRONT;  break;
+  case dy::DGlGlobalStates::DPolygonMode::EMode::Back:  mode = GL_BACK;   break;
+  case dy::DGlGlobalStates::DPolygonMode::EMode::FrontAndBack: mode = GL_FRONT_AND_BACK; break;
   }
   // Set value
   switch (polygonMode.mValue)
   {
-  case dy::DDyGlGlobalStates::DPolygonMode::EValue::Triangle: value = GL_FILL; break;
-  case dy::DDyGlGlobalStates::DPolygonMode::EValue::Line:     value = GL_LINE; break;
-  case dy::DDyGlGlobalStates::DPolygonMode::EValue::Point:    value = GL_POINT; break;
+  case dy::DGlGlobalStates::DPolygonMode::EValue::Triangle: value = GL_FILL; break;
+  case dy::DGlGlobalStates::DPolygonMode::EValue::Line:     value = GL_LINE; break;
+  case dy::DGlGlobalStates::DPolygonMode::EValue::Point:    value = GL_POINT; break;
   }
 
   // Issue into OpenGL system.
   glPolygonMode(mode, value);
 }
 
-void CbGlBlendModeStatus(const dy::DDyGlGlobalStates::DBlendMode& iTopStatus)
+void CbGlBlendModeStatus(const dy::DGlGlobalStates::DBlendMode& iTopStatus)
 {
   const auto& blendMode = iTopStatus;
 
@@ -157,40 +157,40 @@ void CbGlBlendModeStatus(const dy::DDyGlGlobalStates::DBlendMode& iTopStatus)
     const auto& [equation, src, dst] = blendMode.mBlendingSettingList[i];
     switch (equation)
     {
-    case dy::DDyGlGlobalStates::DBlendMode::EEqut::SrcAddDst: glBlendEquationi(i, GL_FUNC_ADD); break;
-    case dy::DDyGlGlobalStates::DBlendMode::EEqut::SrcSubDst: glBlendEquationi(i, GL_FUNC_SUBTRACT); break;
-    case dy::DDyGlGlobalStates::DBlendMode::EEqut::DstSubSrc: glBlendEquationi(i, GL_FUNC_REVERSE_SUBTRACT); break;
-    case dy::DDyGlGlobalStates::DBlendMode::EEqut::CompareMin: glBlendEquationi(i, GL_MIN); break;
-    case dy::DDyGlGlobalStates::DBlendMode::EEqut::CompareMax: glBlendEquationi(i, GL_MAX); break;
+    case dy::DGlGlobalStates::DBlendMode::EEqut::SrcAddDst: glBlendEquationi(i, GL_FUNC_ADD); break;
+    case dy::DGlGlobalStates::DBlendMode::EEqut::SrcSubDst: glBlendEquationi(i, GL_FUNC_SUBTRACT); break;
+    case dy::DGlGlobalStates::DBlendMode::EEqut::DstSubSrc: glBlendEquationi(i, GL_FUNC_REVERSE_SUBTRACT); break;
+    case dy::DGlGlobalStates::DBlendMode::EEqut::CompareMin: glBlendEquationi(i, GL_MIN); break;
+    case dy::DGlGlobalStates::DBlendMode::EEqut::CompareMax: glBlendEquationi(i, GL_MAX); break;
     }
 
     GLenum srcEnum = GL_NONE, dstEnum = GL_NONE;
     switch (src)
     {
-    case dy::DDyGlGlobalStates::DBlendMode::EFunc::Zero: srcEnum = GL_ZERO; break;
-    case dy::DDyGlGlobalStates::DBlendMode::EFunc::One:  srcEnum = GL_ONE; break;
-    case dy::DDyGlGlobalStates::DBlendMode::EFunc::SrcColor: srcEnum = GL_SRC_COLOR; break;
-    case dy::DDyGlGlobalStates::DBlendMode::EFunc::OneMinusSrcColor: srcEnum = GL_ONE_MINUS_SRC_COLOR; break;
-    case dy::DDyGlGlobalStates::DBlendMode::EFunc::SrcAlpha: srcEnum = GL_SRC_ALPHA; break;
-    case dy::DDyGlGlobalStates::DBlendMode::EFunc::OneMinusSrcAlpha: srcEnum = GL_ONE_MINUS_SRC_ALPHA; break;
+    case dy::DGlGlobalStates::DBlendMode::EFunc::Zero: srcEnum = GL_ZERO; break;
+    case dy::DGlGlobalStates::DBlendMode::EFunc::One:  srcEnum = GL_ONE; break;
+    case dy::DGlGlobalStates::DBlendMode::EFunc::SrcColor: srcEnum = GL_SRC_COLOR; break;
+    case dy::DGlGlobalStates::DBlendMode::EFunc::OneMinusSrcColor: srcEnum = GL_ONE_MINUS_SRC_COLOR; break;
+    case dy::DGlGlobalStates::DBlendMode::EFunc::SrcAlpha: srcEnum = GL_SRC_ALPHA; break;
+    case dy::DGlGlobalStates::DBlendMode::EFunc::OneMinusSrcAlpha: srcEnum = GL_ONE_MINUS_SRC_ALPHA; break;
     }
     switch (dst)
     {
-    case dy::DDyGlGlobalStates::DBlendMode::EFunc::Zero: dstEnum = GL_ZERO; break;
-    case dy::DDyGlGlobalStates::DBlendMode::EFunc::One:  dstEnum = GL_ONE; break;
-    case dy::DDyGlGlobalStates::DBlendMode::EFunc::SrcColor: dstEnum = GL_SRC_COLOR; break;
-    case dy::DDyGlGlobalStates::DBlendMode::EFunc::OneMinusSrcColor: dstEnum = GL_ONE_MINUS_SRC_COLOR; break;
-    case dy::DDyGlGlobalStates::DBlendMode::EFunc::SrcAlpha: dstEnum = GL_SRC_ALPHA; break;
-    case dy::DDyGlGlobalStates::DBlendMode::EFunc::OneMinusSrcAlpha: dstEnum = GL_ONE_MINUS_SRC_ALPHA; break;
+    case dy::DGlGlobalStates::DBlendMode::EFunc::Zero: dstEnum = GL_ZERO; break;
+    case dy::DGlGlobalStates::DBlendMode::EFunc::One:  dstEnum = GL_ONE; break;
+    case dy::DGlGlobalStates::DBlendMode::EFunc::SrcColor: dstEnum = GL_SRC_COLOR; break;
+    case dy::DGlGlobalStates::DBlendMode::EFunc::OneMinusSrcColor: dstEnum = GL_ONE_MINUS_SRC_COLOR; break;
+    case dy::DGlGlobalStates::DBlendMode::EFunc::SrcAlpha: dstEnum = GL_SRC_ALPHA; break;
+    case dy::DGlGlobalStates::DBlendMode::EFunc::OneMinusSrcAlpha: dstEnum = GL_ONE_MINUS_SRC_ALPHA; break;
     }
 
     glBlendFunci(i, srcEnum, dstEnum);
   }
 }
 
-void CbGlCullfaceModeStack(const dy::DDyGlGlobalStates::DCullfaceMode& iTopStatus)
+void CbGlCullfaceModeStack(const dy::DGlGlobalStates::DCullfaceMode& iTopStatus)
 {
-  using EValue = dy::DDyGlGlobalStates::DCullfaceMode::EValue;
+  using EValue = dy::DGlGlobalStates::DCullfaceMode::EValue;
   switch (iTopStatus.mValue)
   {
   case EValue::Front:         glCullFace(GL_FRONT);           break;
@@ -199,7 +199,7 @@ void CbGlCullfaceModeStack(const dy::DDyGlGlobalStates::DCullfaceMode& iTopStatu
   }
 }
 
-void CbGlViewportStack(const dy::DDyGlGlobalStates::DViewport& iTopStatus)
+void CbGlViewportStack(const dy::DGlGlobalStates::DViewport& iTopStatus)
 {
   for (auto& [index, area] : iTopStatus.mViewportSettingList)
   {
@@ -237,15 +237,15 @@ namespace dy
 
 std::mutex XGLWrapper::mGLCriticalSectionMutex;
 
-FCallStack<DDyGlGlobalStates> XGLWrapper::mInternalGlobalStatusStack;
+FCallStack<DGlGlobalStates> XGLWrapper::mInternalGlobalStatusStack;
 FCallStack<bool> XGLWrapper::mInternal_FeatBlendStack;
 FCallStack<bool> XGLWrapper::mInternal_FeatCullfaceStack;
 FCallStack<bool> XGLWrapper::mInternal_FeatDepthTestStack;
 FCallStack<bool> XGLWrapper::mInternal_FeatScissorTestStack;
-FCallStack<DDyGlGlobalStates::DPolygonMode>   XGLWrapper::mInternal_PolygonModeStack;
-FCallStack<DDyGlGlobalStates::DBlendMode>     XGLWrapper::mInternal_BlendModeStack;
-FCallStack<DDyGlGlobalStates::DCullfaceMode>  XGLWrapper::mInternal_CullfaceModeStack;
-FCallStack<DDyGlGlobalStates::DViewport>      XGLWrapper::mInternal_ViewportStack;
+FCallStack<DGlGlobalStates::DPolygonMode>   XGLWrapper::mInternal_PolygonModeStack;
+FCallStack<DGlGlobalStates::DBlendMode>     XGLWrapper::mInternal_BlendModeStack;
+FCallStack<DGlGlobalStates::DCullfaceMode>  XGLWrapper::mInternal_CullfaceModeStack;
+FCallStack<DGlGlobalStates::DViewport>      XGLWrapper::mInternal_ViewportStack;
 FCallStack<std::vector<PBlendingEquation>>    XGLWrapper::sAttachmentBlendings;
 
 GLFWwindow* XGLWrapper::CreateGLWindow(_MIN_ const PDyGLWindowContextDescriptor& descriptor)
@@ -297,7 +297,7 @@ std::optional<TU32> XGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescriptor
   MDY_ASSERT_MSG(descriptor.mImageFormat != GL_NONE, "Texture Image format must be specified.");
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(descriptor.mPtrBuffer), "Texture Image buffer must not be null.");
   MDY_ASSERT_MSG(descriptor.mTextureSize.X > 0 && descriptor.mTextureSize.Y > 0, "Texture size must be positive value.");
-  MDY_ASSERT_MSG(descriptor.mType != EDyTextureStyleType::NoneError, "Texture Image type must be specified.");
+  MDY_ASSERT_MSG(descriptor.mType != ETextureStyleType::NoneError, "Texture Image type must be specified.");
   if (descriptor.mIsUsingCustomizedParameter == true)
   {
     MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(descriptor.mPtrParameterList), "Parameter list must not be null.");
@@ -309,14 +309,14 @@ std::optional<TU32> XGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescriptor
   // Make texture.
   switch (descriptor.mType)
   {
-  case EDyTextureStyleType::D1:
+  case ETextureStyleType::D1:
   {
     glGenTextures(1, &mTextureResourceId);
     glBindTexture(GL_TEXTURE_1D, mTextureResourceId);
     glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, descriptor.mTextureSize.X, 0, 
         descriptor.mImageFormat, descriptor.mImagePixelType, descriptor.mPtrBuffer->data());
   } break;
-  case EDyTextureStyleType::D2:
+  case ETextureStyleType::D2:
   { // Border parameter must be 0.
     glGenTextures(1, &mTextureResourceId);
     glBindTexture(GL_TEXTURE_2D, mTextureResourceId);
@@ -328,7 +328,7 @@ std::optional<TU32> XGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescriptor
   MDY_CHECK_OPENGL;
 
   // Make mipmap by following option.
-  const GLenum glTextureType = DyGLGetLowTextureType(descriptor.mType);
+  const GLenum glTextureType = GlGetLowTextureType(descriptor.mType);
   if (descriptor.mIsUsingDefaultMipmap == true) { glGenerateMipmap(glTextureType); }
   MDY_CHECK_OPENGL;
 
@@ -358,7 +358,7 @@ std::optional<TU32> XGLWrapper::CreateTexture(const PDyGLTextureCubemapDescripto
 {
   // Validation check.
   MDY_ASSERT_MSG(descriptor.mImageFormat != GL_NONE, "Texture Image format must be specified.");
-  MDY_ASSERT_MSG(descriptor.mType == EDyTextureStyleType::D2Cubemap, "Texture Image type must be D2Cubemap.");
+  MDY_ASSERT_MSG(descriptor.mType == ETextureStyleType::D2Cubemap, "Texture Image type must be D2Cubemap.");
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(descriptor.mTopBuffer),    "Texture Image buffer must not be null.");
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(descriptor.mBottomBuffer), "Texture Image buffer must not be null.");
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(descriptor.mFrontBuffer),  "Texture Image buffer must not be null.");
@@ -397,7 +397,7 @@ std::optional<TU32> XGLWrapper::CreateTexture(const PDyGLTextureCubemapDescripto
     MDY_CHECK_OPENGL;
 
     // Make mipmap by following option.
-    const GLenum glTextureType = DyGLGetLowTextureType(descriptor.mType);
+    const GLenum glTextureType = GlGetLowTextureType(descriptor.mType);
     if (descriptor.mIsUsingDefaultMipmap == true) { glGenerateMipmap(glTextureType); }
     MDY_CHECK_OPENGL;
 
@@ -645,7 +645,7 @@ std::optional<TU32> XGLWrapper::CreateAttachment(_MIN_ const PGLAttachmentDescri
   // Validation check.
   MDY_ASSERT_MSG(iDescriptor.mBufferSize.X > 0 && iDescriptor.mBufferSize.Y > 0, 
       "Buffer size must be positive value.");
-  MDY_ASSERT_MSG(iDescriptor.mBufferFormat != EDyGlBufferDataInternalFormat::NoneError, 
+  MDY_ASSERT_MSG(iDescriptor.mBufferFormat != EGlBufferDataInternalFormat::NoneError, 
       "Attachment buffer format must be specified.");
   if (iDescriptor.mIsUsingCustomizedParameter == true)
   {
@@ -654,9 +654,9 @@ std::optional<TU32> XGLWrapper::CreateAttachment(_MIN_ const PGLAttachmentDescri
   }
 
   TU32 attachmentId = MDY_INITIALIZE_DEFUINT;
-  const auto glTextureType    = DyGLGetLowTextureType(iDescriptor.mAttachmentType);
+  const auto glTextureType    = GlGetLowTextureType(iDescriptor.mAttachmentType);
   const auto mipmapLv         = iDescriptor.mSpecifiedMipmapLevel;
-  const auto glInternalFormat = DyGlGetLowDataFormatType(iDescriptor.mBufferFormat);
+  const auto glInternalFormat = GlGetLowDataFormatType(iDescriptor.mBufferFormat);
 
   // Create attachment (texture only now)
   glGenTextures(1, &attachmentId);
@@ -664,21 +664,21 @@ std::optional<TU32> XGLWrapper::CreateAttachment(_MIN_ const PGLAttachmentDescri
 
   switch (iDescriptor.mAttachmentType)
   {
-  case EDyTextureStyleType::D2: 
-  case EDyTextureStyleType::D2Shadow:
-  case EDyTextureStyleType::D2Rectangle:
+  case ETextureStyleType::D2: 
+  case ETextureStyleType::D2Shadow:
+  case ETextureStyleType::D2Rectangle:
   {
     glTexStorage2D(glTextureType, mipmapLv, glInternalFormat, 
         MDY_VECTOR_XY(iDescriptor.mBufferSize));
   } break;
-  case EDyTextureStyleType::D1:
-  case EDyTextureStyleType::D1Array: 
+  case ETextureStyleType::D1:
+  case ETextureStyleType::D1Array: 
   {
     glTexStorage2D(glTextureType, mipmapLv, glInternalFormat, 
         iDescriptor.mBufferSize.X, iDescriptor.mDepthNumber);
   } break;
-  case EDyTextureStyleType::D2Array:
-  case EDyTextureStyleType::D2ShadowArray: 
+  case ETextureStyleType::D2Array:
+  case ETextureStyleType::D2ShadowArray: 
   {
     glTexStorage3D(glTextureType, mipmapLv, glInternalFormat, 
         MDY_VECTOR_XY(iDescriptor.mBufferSize), iDescriptor.mDepthNumber);
@@ -737,7 +737,7 @@ std::optional<TU32> XGLWrapper::CreateFrameBuffer(_MIN_ const PDyGLFrameBufferDe
     const auto [attachmentId, attachmentType, attachmentFormat, isRenderBuffer] = iDescriptor.mAttachmentBindingList[i];
     if (isRenderBuffer == false)
     { // If attachment is texture.
-      glBindTexture(DyGLGetLowTextureType(attachmentType), attachmentId);
+      glBindTexture(GlGetLowTextureType(attachmentType), attachmentId);
       const auto typeValue = DyGetAttachmentTypeValue(attachmentFormat);
       glFramebufferTexture(GL_FRAMEBUFFER, typeValue, attachmentId, 0);
       attachmentTypeList.emplace_back(typeValue);
@@ -753,7 +753,7 @@ std::optional<TU32> XGLWrapper::CreateFrameBuffer(_MIN_ const PDyGLFrameBufferDe
     const auto [depthId, attachmentType, attachmentFormat, isRenderBuffer] = iDescriptor.mDepthBufferBinding;
     if (isRenderBuffer == false)
     {
-      glBindTexture(DyGLGetLowTextureType(attachmentType), depthId);
+      glBindTexture(GlGetLowTextureType(attachmentType), depthId);
       glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthId, 0);
     }
     else
@@ -842,7 +842,7 @@ void XGLWrapper::UnbindVertexArrayObject()
 
 void XGLWrapper::BindTexture(
     _MIN_ TU32 activeTextureIndex, 
-    _MIN_ EDyTextureStyleType type, _MIN_ TU32 textureId)
+    _MIN_ ETextureStyleType type, _MIN_ TU32 textureId)
 {
   #if defined(NDEBUG) == false 
   {
@@ -853,19 +853,19 @@ void XGLWrapper::BindTexture(
   glActiveTexture(GL_TEXTURE0 + activeTextureIndex);
   switch (type)
   {
-  case EDyTextureStyleType::D1: { glBindTexture(GL_TEXTURE_1D, textureId); } break;
-  case EDyTextureStyleType::D2: { glBindTexture(GL_TEXTURE_2D, textureId); } break;
+  case ETextureStyleType::D1: { glBindTexture(GL_TEXTURE_1D, textureId); } break;
+  case ETextureStyleType::D2: { glBindTexture(GL_TEXTURE_2D, textureId); } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 }
 
-void XGLWrapper::UnbindTexture(_MIN_ TU32 textureIndex, _MIN_ EDyTextureStyleType type)
+void XGLWrapper::UnbindTexture(_MIN_ TU32 textureIndex, _MIN_ ETextureStyleType type)
 {
   glActiveTexture(GL_TEXTURE0 + textureIndex);
   switch (type)
   {
-  case EDyTextureStyleType::D1: { glBindTexture(GL_TEXTURE_1D, 0); } break;
-  case EDyTextureStyleType::D2: { glBindTexture(GL_TEXTURE_2D, 0); } break;
+  case ETextureStyleType::D1: { glBindTexture(GL_TEXTURE_1D, 0); } break;
+  case ETextureStyleType::D2: { glBindTexture(GL_TEXTURE_2D, 0); } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 }
@@ -906,7 +906,7 @@ void XGLWrapper::QueryFloatVector(_MIN_ GLenum iGLLowEnumCommand, _MIN_ TF32* iP
   glGetFloatv(iGLLowEnumCommand, iPtrRawFloatVector);
 }
 
-std::optional<std::tuple<std::string, GLsizei, GLint, EDyAttributeVariableType, TU32>> 
+std::optional<std::tuple<std::string, GLsizei, GLint, EAttributeVariableType, TU32>> 
 XGLWrapper::GetShaderProgramAttributeInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iAttrIndex)
 {
   const TI32 attrBufferLength = QueryShaderProgramIV(iShaderProgramId, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH);
@@ -921,7 +921,7 @@ XGLWrapper::GetShaderProgramAttributeInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU3
 
   MDY_ASSERT_MSG(attrLocation != -1, "Attribute location did not find.");
   const auto type = DyGlGetAttributeVariableTypeFrom(attributeType);
-  MDY_ASSERT_MSG(type != EDyAttributeVariableType::NoneError, "Not supported attribute type.");
+  MDY_ASSERT_MSG(type != EAttributeVariableType::NoneError, "Not supported attribute type.");
 
   const auto result = std::make_tuple(std::string(attributeName), attributelength, attributeSize, type, attrLocation);
   free(attributeName); attributeName = nullptr;
@@ -1061,7 +1061,7 @@ void XGLWrapper::UpdateUniformFloatArray(TU32 iId, const std::vector<TF32>& iBuf
   glUniform1fv(iId, iBuffer.size(), iBuffer.data());
 }
 
-void XGLWrapper::PushInternalGlobalState(const DDyGlGlobalStates& iNewStatus)
+void XGLWrapper::PushInternalGlobalState(const DGlGlobalStates& iNewStatus)
 {
   //
   mInternalGlobalStatusStack.Push(iNewStatus, false);
@@ -1128,12 +1128,12 @@ void XGLWrapper::SetupInitialGlobalStatus()
 {
   //! Push initial OpenGL global status.
   //! But we don't have to call callback function because it is alreay set on OpenGL system.
-  DDyGlGlobalStates initialStatus;
+  DGlGlobalStates initialStatus;
   {
     {
-      using EMode = DDyGlGlobalStates::DPolygonMode::EMode;
-      using EValue = DDyGlGlobalStates::DPolygonMode::EValue;
-      using DPolygonMode = DDyGlGlobalStates::DPolygonMode;
+      using EMode = DGlGlobalStates::DPolygonMode::EMode;
+      using EValue = DGlGlobalStates::DPolygonMode::EValue;
+      using DPolygonMode = DGlGlobalStates::DPolygonMode;
       // Set value.
       initialStatus.mIsEnableBlend = glIsEnabled(GL_BLEND);
       initialStatus.mIsEnableCullface = glIsEnabled(GL_CULL_FACE);
@@ -1144,22 +1144,22 @@ void XGLWrapper::SetupInitialGlobalStatus()
     // Get blend mode.
     // @TODO DELETE THIS 
     {
-      using DBlendMode = DDyGlGlobalStates::DBlendMode;
-      using EEqut = DDyGlGlobalStates::DBlendMode::EEqut;
-      using EFunc = DDyGlGlobalStates::DBlendMode::EFunc;
+      using DBlendMode = DGlGlobalStates::DBlendMode;
+      using EEqut = DGlGlobalStates::DBlendMode::EEqut;
+      using EFunc = DGlGlobalStates::DBlendMode::EFunc;
       DBlendMode mode{};
       mode.mBlendingSettingList.emplace_back(EEqut::SrcAddDst, EFunc::SrcAlpha, EFunc::OneMinusSrcAlpha);
       initialStatus.mBlendMode = mode;
     }
     // Get cullface mode.
     {
-      using DCullfaceMode = DDyGlGlobalStates::DCullfaceMode;
+      using DCullfaceMode = DGlGlobalStates::DCullfaceMode;
       DCullfaceMode cullface{ DCullfaceMode::EValue::Back };
       initialStatus.mCullfaceMode = cullface;
     }
     // Get default viewport.
     {
-      using DViewport = DDyGlGlobalStates::DViewport;
+      using DViewport = DGlGlobalStates::DViewport;
       DViewport defaultViewport;
       // Get global size. 
       GLint defaultSize[4]; glGetIntegerv(GL_VIEWPORT, defaultSize);

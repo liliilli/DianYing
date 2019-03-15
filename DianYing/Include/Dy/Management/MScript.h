@@ -23,8 +23,8 @@
 namespace dy
 {
 enum class EDyScriptType;
-class FDyActor;
-class FDyUiWidget;
+class FActor;
+class FWidget;
 class FActorScriptState;
 class FWidgetScriptState;
 } /// ::dy namespace.
@@ -59,7 +59,7 @@ public:
   /// @param iRefWidget
   /// @param iIsAwakened
   MDY_NODISCARD FWidgetScriptState* 
-  CreateWidgetScript(const std::string& iScriptSpecifier, FDyUiWidget& iRefWidget, bool iIsAwakened);
+  CreateWidgetScript(const std::string& iScriptSpecifier, FWidget& iRefWidget, bool iIsAwakened);
   /// @brief Try remove widget script from dy system.
   /// But, removed widget script does not actually removed instantly, \n
   /// moved gc list and removed actually on next frame prior to update.
@@ -73,7 +73,7 @@ public:
   /// @param iRefActor
   /// @param iIsAwakened
   MDY_NODISCARD FActorScriptState* 
-  CreateActorScript(const std::string& iScriptSpecifier, FDyActor& iRefActor, bool iIsAwakened);
+  CreateActorScript(const std::string& iScriptSpecifier, FActor& iRefActor, bool iIsAwakened);
   /// @brief Try remove actor script from dy system.
   /// But, removed actor script does not actually removed instantly, \n
   /// moved gc list and removed actually on next frame prior to update.

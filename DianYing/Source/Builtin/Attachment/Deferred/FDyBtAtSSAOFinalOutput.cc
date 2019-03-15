@@ -30,8 +30,8 @@ void FDyBtAtSSAOOutputFinal::ConstructBuffer(_MOUT_ PDyGlAttachmentInstanceMetaI
     {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::ClampToEdge},
     {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::ClampToEdge}
   };
-  property.mAttachmentType = EDyTextureStyleType::D2;
-  property.mBufferFormat   = EDyGlBufferDataInternalFormat::RED8;
+  property.mAttachmentType = ETextureStyleType::D2;
+  property.mBufferFormat   = EGlBufferDataInternalFormat::RED8;
 }
 
 } /// ::dy::builtin namespace

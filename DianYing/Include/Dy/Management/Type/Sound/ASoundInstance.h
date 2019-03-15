@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Management/Type/Sound/EDySoundStatus.h>
+#include <Dy/Management/Type/Sound/ESoundState.h>
 
 namespace dy
 {
@@ -25,12 +25,12 @@ public:
   virtual ~ASoundInstance() = 0;
 
   /// @brief Get status value of sound instance.
-  MDY_NODISCARD const EDySoundStatus& GetStatus() const noexcept; 
+  MDY_NODISCARD const ESoundState& GetStatus() const noexcept; 
   /// @brief private-function. Set status in internal logic.
-  void MDY_PRIVATE(SetStatus)(EDySoundStatus iStatus);
+  void MDY_PRIVATE(SetStatus)(ESoundState iStatus);
 
 protected:
-  EDySoundStatus mSoundStatus = EDySoundStatus::NotValid;
+  ESoundState mSoundStatus = ESoundState::NotValid;
 };
 
 inline ASoundInstance::~ASoundInstance() = default;

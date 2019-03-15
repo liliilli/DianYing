@@ -19,7 +19,6 @@
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 #include <Dy/Core/Thread/SDyIOWorkerConnHelper.h>
 #include <Dy/Core/Resource/Information/FDyModelInformation.h>
-#include <Dy/Core/Resource/Internal/FDyModelVBOIntermediate.h>
 #include <Dy/Core/Resource/Information/FDyTextureCubemapInformation.h>
 #include <Dy/Core/Resource/Information/FDyMaterialInformation.h>
 #include <Dy/Core/Resource/Information/FDyAttachmentInformation.h>
@@ -38,6 +37,7 @@
 #include <Dy/Management/IO/MIORescInfo.h>
 #include <Dy/Management/IO/MIOMeta.h>
 #include <Dy/Meta/Information/MetaInfoMaterial.h>
+#include <Dy/Core/Resource/Internal/FMeshVBOIntermediate.h>
 
 namespace dy
 {
@@ -136,7 +136,7 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceInformation(_MIN_ const DDyIOT
     break;
   case EResourceType::Texture:
   { const auto metaInfo = this->mMetaManager.GetTextureMetaInformation(assignedTask.mSpecifierName);
-    if (metaInfo.mTextureType == EDyTextureStyleType::D2Cubemap)
+    if (metaInfo.mTextureType == ETextureStyleType::D2Cubemap)
     { // When cubemap, we should use separated information type.
       result.mSmtPtrResultInstance = new FDyTextureCubemapInformation(metaInfo);
     }
@@ -202,7 +202,7 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceResource(_MIN_ const DDyIOTask
   case EResourceType::Texture:
   { // Texture buffer can be created on another context. (It can be shared)
     const auto* ptr = infoManager.GetPtrInformation<EResourceType::Texture>(result.mSpecifierName);
-    if (ptr->GetType() == EDyTextureStyleType::D2Cubemap)
+    if (ptr->GetType() == ETextureStyleType::D2Cubemap)
     {
       result.mSmtPtrResultInstance = new FDyTextureCubemapResource(
           static_cast<const FDyTextureCubemapInformation&>(*ptr)); // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
@@ -218,7 +218,7 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceResource(_MIN_ const DDyIOTask
     //result.mSmtPtrResultInstance = new FDyMeshResource(*infoManager.GetPtrInformation<EResourceType::Mesh>(result.mSpecifierName));
     auto task = assignedTask;
     task.mResourceType = EResourceType::Mesh;
-    task.mRawInstanceForUsingLater = new FDyMeshVBOIntermediate(
+    task.mRawInstanceForUsingLater = new FMeshVBOIntermediate(
       *infoManager.GetPtrInformation<EResourceType::Mesh>(result.mSpecifierName)
     );
     SDyIOWorkerConnHelper::TryForwardToMainTaskList(task);

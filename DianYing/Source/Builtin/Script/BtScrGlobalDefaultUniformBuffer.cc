@@ -55,15 +55,6 @@ void BtScrGlobalDefaultUniformBuffer::OnStart()
     desc.mUboArraySize = 1;
     MDY_CALL_ASSERT_SUCCESS(uboManager.CreateUboContainer(desc))
   }
-  {
-    PDyUboConstructionDescriptor desc = {};
-    desc.mBindingIndex = 3;
-    desc.mUboSpecifierName = "dyBtUboPointLight";
-    desc.mBufferDrawType = EDyBufferDrawType::DynamicDraw;
-    desc.mUboElementSize = sizeof(DUboPointLight);
-    desc.mUboArraySize = 16;
-    MDY_CALL_ASSERT_SUCCESS(uboManager.CreateUboContainer(desc))
-  }
 
   MFont::GetInstance().CreateFontResourceContainer("Arial");
 }
@@ -72,7 +63,7 @@ void BtScrGlobalDefaultUniformBuffer::OnEnd()
 {
   auto& uboManager = MUniformBufferObject::GetInstance();
 
-  MDY_CALL_ASSERT_SUCCESS(uboManager.RemoveUboContainer("dyBtUboPointLight"));
+  //MDY_CALL_ASSERT_SUCCESS(uboManager.RemoveUboContainer("dyBtUboPointLight"));
   MDY_CALL_ASSERT_SUCCESS(uboManager.RemoveUboContainer("dyBtUboDirShadow"));
   MDY_CALL_ASSERT_SUCCESS(uboManager.RemoveUboContainer("dyBtUboDirLight"));
   MDY_CALL_ASSERT_SUCCESS(uboManager.RemoveUboContainer(sUboCameraBlock));

@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Management/Type/AttachmentInformation.h>
-#include <Dy/Core/Resource/Internal/TextureEnums.h>
+#include <Dy/Core/Resource/Internal/ETextureEnums.h>
 
 namespace dy
 {
@@ -22,7 +22,7 @@ namespace dy
 struct PDyGLFrameBufferDescriptor final
 {
   using TIsRenderBuffer     = bool;
-  using TAttachmentBinding  = std::tuple<TU32, EDyTextureStyleType, EDyGlAttachmentType, TIsRenderBuffer>;
+  using TAttachmentBinding  = std::tuple<TU32, ETextureStyleType, EDyGlAttachmentType, TIsRenderBuffer>;
   using TAttachmentBindingList = std::vector<TAttachmentBinding>;
 
   DVectorInt2           mFrameBufferSize = {};

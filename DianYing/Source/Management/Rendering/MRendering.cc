@@ -28,7 +28,7 @@
 #include <Dy/Management/Rendering/MUniformBufferObject.h>
 #include <Dy/Component/CCamera.h>
 #include <Dy/Component/CModelRenderer.h>
-#include <Dy/Management/Helper/SDyProfilingHelper.h>
+#include <Dy/Management/Helper/SProfilingHelper.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
 #include <Dy/Management/Internal/Render/FDyModelHandlerManager.h>
@@ -41,7 +41,7 @@
 
 #include <Dy/Helper/System/Pointer.h>
 #include <Dy/Helper/Internal/FCallStack.h>
-#include <Dy/Element/Actor.h>
+#include <Dy/Element/FActor.h>
 #include "Dy/Management/Internal/World/MWorldUIContainers.h"
 
 #include <queue>
@@ -158,7 +158,7 @@ public:
 
   /// @brief Required skybox pointer for rendering on present frame.
   /// If rendered, skybox pointer will be nulled again.
-  CDySkybox* mPtrRequiredSkybox = nullptr;
+  CSkybox* mPtrRequiredSkybox = nullptr;
 
   /// @brief Activated directional light list.
   std::queue<TI32>  mDirLightAvailableList     = {};

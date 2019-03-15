@@ -22,7 +22,7 @@
 
 #include <Dy/Core/Reflection/RBuiltinResources.h>
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
-#include <Dy/Core/DyEngine.h>
+#include <Dy/Core/GDyEngine.h>
 
 #include <Dy/Helper/System/Pointer.h>
 #include <Dy/Helper/Library/HelperContainer.h>

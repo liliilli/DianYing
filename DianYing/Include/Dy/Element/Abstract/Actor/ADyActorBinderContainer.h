@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Element/Type/DDyActorBinder.h>
+#include <Dy/Element/Type/DActorBinder.h>
 #include <Dy/Helper/System/Pointer.h>
 
 namespace dy
@@ -30,7 +30,7 @@ public:
   }
 
   MDY_NODISCARD EDySuccess 
-  MDY_PRIVATE(DetachBinderFromList)(_MIN_ DDyActorBinder& iRefBinder) noexcept
+  MDY_PRIVATE(DetachBinderFromList)(_MIN_ DActorBinder& iRefBinder) noexcept
   {
     TU32 id = 0;
     const TU32 size = this->mPtrBinderList.size();
@@ -45,7 +45,7 @@ public:
   }
 
   MDY_NODISCARD EDySuccess 
-  MDY_PRIVATE(AttachBinderFromList)(_MIN_ DDyActorBinder& iRefBinder) noexcept
+  MDY_PRIVATE(AttachBinderFromList)(_MIN_ DActorBinder& iRefBinder) noexcept
   {
     this->mPtrBinderList.emplace_back(&iRefBinder);
     return DY_SUCCESS;
@@ -55,7 +55,7 @@ public:
   void MDY_PRIVATE(SetPtr)(_MIN_ TType& ptrObject) noexcept { this->ptrObject = ptrObject; }
 
 private:
-  std::vector<NotNull<DDyActorBinder*>> mPtrBinderList;
+  std::vector<NotNull<DActorBinder*>> mPtrBinderList;
   TType* ptrObject = nullptr;
 };
 

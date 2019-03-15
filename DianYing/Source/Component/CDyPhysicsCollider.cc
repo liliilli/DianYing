@@ -14,7 +14,7 @@
 
 /// Header file
 #include <Dy/Component/Internal/Physics/CBasePhysicsCollider.h>
-#include <Dy/Element/Actor.h>
+#include <Dy/Element/FActor.h>
 #include <Dy/Management/MPhysics.h>
 #include <Dy/Helper/Library/HelperContainer.h>
 
@@ -115,7 +115,7 @@ void CBasePhysicsCollider::MDY_PRIVATE(SetRegisterFlag)(_MIN_ bool iFlag) noexce
   this->mIsRegistered = iFlag;
 }
 
-void CBasePhysicsCollider::ReleaseInternalResource(CDyPhysicsRigidbody& iRefRigidbody)
+void CBasePhysicsCollider::ReleaseInternalResource(CPhysicsRigidbody& iRefRigidbody)
 {
   iRefRigidbody.UnbindShapeFromRigidbody(*this->mPtrInternalShape);
 
@@ -150,7 +150,7 @@ void CBasePhysicsCollider::TryDeactivateInstance()
 }
 
 physx::PxFilterData CBasePhysicsCollider::CreateFilterDataValue(
-    _MIN_ const CDyPhysicsRigidbody& iRigidbody,
+    _MIN_ const CPhysicsRigidbody& iRigidbody,
     _MIN_ const std::string& iLayerName, 
     _MIN_ std::vector<EDyCollisionFilter>& iFilterData)
 {

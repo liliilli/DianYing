@@ -23,8 +23,8 @@
 namespace dy
 {
 class CWidgetScriptCpp;
-class FDyUiWidget;
-class FDyTimerHandle;
+class FWidget;
+class FTimerHandle;
 class MGameTimer;
 } /// ::dy namespace
 
@@ -39,13 +39,13 @@ MDY_ABSTRACT AWidgetCppScript : public IScriptable
 {
 public:
   /// @brief Get widget reference.
-  MDY_NODISCARD FDyUiWidget& GetWidgetReference();
+  MDY_NODISCARD FWidget& GetWidgetReference();
   
   /// @brief Get Game-Timer manager.
   MDY_NODISCARD MGameTimer& GetGameTimerManager() noexcept;
 
-  void MDY_PRIVATE(BindPtrTimerHandle)(FDyTimerHandle& iRefTimerHandler);
-  void MDY_PRIVATE(DetachPtrTimerHandle)(FDyTimerHandle& iRefTimerHandler);
+  void MDY_PRIVATE(BindPtrTimerHandle)(FTimerHandle& iRefTimerHandler);
+  void MDY_PRIVATE(DetachPtrTimerHandle)(FTimerHandle& iRefTimerHandler);
   void MDY_PRIVATE(AbortAllValidTimerHandler)();
 private:
   /// @brief Set reference to outside world.
@@ -54,7 +54,7 @@ private:
 
   CWidgetScriptCpp* mOutside = nullptr;
 
-  std::vector<NotNull<FDyTimerHandle*>> mPtrTimerHandleList = {};
+  std::vector<NotNull<FTimerHandle*>> mPtrTimerHandleList = {};
   friend class CWidgetScriptCpp;
 };
 

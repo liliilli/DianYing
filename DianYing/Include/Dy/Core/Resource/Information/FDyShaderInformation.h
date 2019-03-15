@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Resource/Internal/ShaderType.h>
+#include <Dy/Core/Resource/Internal/XShaderTypes.h>
 
 //!
 //! Forward declaration
@@ -38,7 +38,7 @@ namespace dy
 class FDyShaderInformation final
 {
 public:
-  using TShaderFragmentList = std::vector<PDyShaderFragmentInformation>;
+  using TShaderFragmentList = std::vector<PShaderFragmentInformation>;
 
   MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(FDyShaderInformation);
 

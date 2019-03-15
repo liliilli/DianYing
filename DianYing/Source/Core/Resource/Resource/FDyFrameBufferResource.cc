@@ -38,7 +38,7 @@ void FDyFrameBufferResource::UnbindFrameBuffer() const noexcept
 
 void FDyFrameBufferResource::PushGlobalStates()
 {
-  DDyGlGlobalStates states;
+  DGlGlobalStates states;
   states.mAttachmentBlendings = this->mAttachmentBlendingList;
 
   XGLWrapper::PushInternalGlobalState(states);

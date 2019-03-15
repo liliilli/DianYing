@@ -14,7 +14,7 @@
 
 /// Header file
 #include <Dy/Core/Thread/IO/DDyIOReferenceContainer.h>
-#include <Dy/Core/Resource/Type/FDyBinderBase.h>
+#include <Dy/Core/Resource/Type/IBinderBase.h>
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 #include <Dy/Helper/Library/HelperContainer.h>
 #include <Dy/Management/MLog.h>
@@ -58,7 +58,7 @@ bool DDyIOReferenceContainer::IsReferenceInstanceBound(_MIN_ const std::string& 
   }
 }
 
-bool DDyIOReferenceContainer::TryEnlargeResourceScope(_MIN_ EDyScope scope, _MIN_ const std::string& specifier, _MIN_ EResourceType type)
+bool DDyIOReferenceContainer::TryEnlargeResourceScope(_MIN_ EResourceScope scope, _MIN_ const std::string& specifier, _MIN_ EResourceType type)
 {
   // Find given resource type instance. Given specifier and type must be valid on list.
   DDyIOReferenceInstance* instance;
@@ -85,7 +85,7 @@ bool DDyIOReferenceContainer::TryEnlargeResourceScope(_MIN_ EDyScope scope, _MIN
 EDySuccess DDyIOReferenceContainer::TryBindBinderToResourceRI(
     _MIN_ const std::string& iSpecifier,
     _MIN_ EResourceType iType,
-    _MIN_ const __FDyBinderBase* iPtrBinder)
+    _MIN_ const __IBinderBase* iPtrBinder)
 {
   // Check RI is exist, if not found just return failure.
   if (this->IsReferenceInstanceExist(iSpecifier, iType) == false) { return DY_FAILURE; }
@@ -111,7 +111,7 @@ EDySuccess DDyIOReferenceContainer::TryBindBinderToResourceRI(
 EDySuccess DDyIOReferenceContainer::TryDetachBinderFromResourceRI(
     _MIN_ const std::string& iSpecifier, 
     _MIN_ EResourceType iType, 
-    _MIN_ const __FDyBinderBase* iPtrBinder)
+    _MIN_ const __IBinderBase* iPtrBinder)
 {
   // Check RI is exist, if not found just return failure.
   if (this->IsReferenceInstanceExist(iSpecifier, iType) == false) { return DY_FAILURE; }
@@ -148,7 +148,7 @@ EDySuccess DDyIOReferenceContainer::TryDetachBinderFromResourceRI(
 }
 
 std::vector<DDyIOReferenceInstance> 
-DDyIOReferenceContainer::GetForwardCandidateRIAsList(_MIN_ EDyScope iScope)
+DDyIOReferenceContainer::GetForwardCandidateRIAsList(_MIN_ EResourceScope iScope)
 {
   std::vector<DDyIOReferenceInstance> result;
   this->ForwardCandidateRIFromList(iScope, this->mMapTextureReference, result);
@@ -165,7 +165,7 @@ DDyIOReferenceContainer::GetForwardCandidateRIAsList(_MIN_ EDyScope iScope)
 }
 
 void DDyIOReferenceContainer::ForwardCandidateRIFromList(
-    _MIN_ EDyScope iScope,
+    _MIN_ EResourceScope iScope,
     _MINOUT_ TStringHashMap<DDyIOReferenceInstance>& iContainer, 
     _MOUT_ std::vector<DDyIOReferenceInstance>& iResult)
 {
@@ -184,7 +184,7 @@ void DDyIOReferenceContainer::ForwardCandidateRIFromList(
 
 EDySuccess DDyIOReferenceContainer::CreateReferenceInstance(
     _MIN_ const std::string& specifier,
-    _MIN_ EResourceType type, _MIN_ EDyResourceStyle style, _MIN_ EDyScope scope)
+    _MIN_ EResourceType type, _MIN_ EDyResourceStyle style, _MIN_ EResourceScope scope)
 {
   TStringHashMap<DDyIOReferenceInstance>* ptrRIHashMap;
 
@@ -265,7 +265,7 @@ EDySuccess DDyIOReferenceContainer::TryUpdateValidity(
       for (const auto& ptrBinderBase : instance.mPtrBoundBinderList)
       {
         if (MDY_CHECK_ISNULL(ptrBinderBase)) { continue; }
-        const_cast<__FDyBinderBase*>(ptrBinderBase)->TryUpdateResourcePtr(instance.mPtrInstance);
+        const_cast<__IBinderBase*>(ptrBinderBase)->TryUpdateResourcePtr(instance.mPtrInstance);
       }
     }
     else
@@ -275,7 +275,7 @@ EDySuccess DDyIOReferenceContainer::TryUpdateValidity(
       for (const auto& ptrBinderBase : instance.mPtrBoundBinderList)
       {
         if (MDY_CHECK_ISNULL(ptrBinderBase)) { continue; }
-        const_cast<__FDyBinderBase*>(ptrBinderBase)->TryDetachResourcePtr();
+        const_cast<__IBinderBase*>(ptrBinderBase)->TryDetachResourcePtr();
       }
     }
     return DY_SUCCESS; 

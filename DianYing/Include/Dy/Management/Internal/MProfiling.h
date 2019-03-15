@@ -65,7 +65,7 @@ private:
   FRWLockAtomic<TI32> mOnBindActorCount    = MDY_INITIALIZE_DEFUINT;
   TI32               mScreenRenderedActorCount = MDY_INITIALIZE_DEFUINT;
 
-  friend class SDyProfilingHelper;
+  friend class SProfilingHelper;
 };
 
 } /// ::dy namespace

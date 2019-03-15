@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Resource/Type/Uniform/UniformValueTypes.h>
+#include <Dy/Core/Resource/Type/Uniform/TUniformValue.h>
 
 namespace dy
 {
@@ -34,7 +34,7 @@ void PDyMaterialInstanceMetaInfo::InsertValue(
   auto [_, __] = ioMaterialInfo.mUniformValues.try_emplace
   (
     iSpecifier, 
-    std::make_unique<FDyUniformValue<TType>>(-1, iValue)
+    std::make_unique<TUniformValue<TType>>(-1, iValue)
   );
 }
 

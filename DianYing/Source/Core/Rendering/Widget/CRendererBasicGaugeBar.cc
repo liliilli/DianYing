@@ -18,7 +18,7 @@
 #include <Dy/Builtin/ShaderGl/UI/RenderUIBasicGaugeBar.h>
 #include <Dy/Builtin/Mesh/Widget/FDyBtMsUiBarQuad.h>
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
-#include <Dy/Element/Canvas/FDyBasicGaugeBar.h>
+#include <Dy/Element/Canvas/FWidgetBasicGaugeBar.h>
 #include <Dy/Management/MSetting.h>
 #include <Dy/Core/Resource/Resource/FDyMeshResource.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>

@@ -22,7 +22,7 @@
 
 #include <Dy/Management/MSetting.h>
 #include <Dy/Management/MWindow.h>
-#include <Dy/Management/Helper/GuiLogStreamSink.h>
+#include <Dy/Management/Helper/FGuiLogStreamSink.h>
 
 #if defined(_WIN32) == true
 #include <spdlog/sinks/wincolor_sink.h>

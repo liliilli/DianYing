@@ -21,11 +21,11 @@
 namespace dy
 {
 
-CActorScript::CActorScript(FDyActor& iActor, const std::string& iScriptSpecifier) 
-  : ADyBaseComponent{ iActor },
+CActorScript::CActorScript(FActor& iActor, const std::string& iScriptSpecifier) 
+  : ABaseComponent{ iActor },
     mPtrScriptStatus{ MScript::GetInstance().CreateActorScript(
       iScriptSpecifier, 
-      *ADyBaseComponent::GetBindedActor(), true) 
+      *ABaseComponent::GetBindedActor(), true) 
     }
 { }
 

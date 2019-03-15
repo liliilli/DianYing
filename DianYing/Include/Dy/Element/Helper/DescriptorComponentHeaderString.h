@@ -21,7 +21,7 @@ namespace dy
 MDY_SET_IMMUTABLE_STRING(sHeaderActivated,      "Activated");
 
 //!
-//! CDyTransform
+//! CTransform
 //!
 
 MDY_SET_IMMUTABLE_STRING(sHeaderLocalPosition, "LPosition");

@@ -30,7 +30,7 @@ void FDyBtAtActorId::ConstructBuffer(_MOUT_ PDyGlAttachmentInstanceMetaInfo& pro
     {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::ClampToBorder},
     {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::ClampToBorder},
   };
-  property.mBufferFormat  = EDyGlBufferDataInternalFormat::RGB32Float;
+  property.mBufferFormat  = EGlBufferDataInternalFormat::RGB32Float;
   property.mBorderColor   = DColorRGBA{ 0, 0, 0, 0 };
 }
 

@@ -18,12 +18,12 @@
 namespace dy
 {
 
-const EDySoundStatus& ASoundInstance::GetStatus() const noexcept
+const ESoundState& ASoundInstance::GetStatus() const noexcept
 {
   return this->mSoundStatus;
 }
 
-void ASoundInstance::MDY_PRIVATE(SetStatus)(EDySoundStatus iStatus)
+void ASoundInstance::MDY_PRIVATE(SetStatus)(ESoundState iStatus)
 {
   this->mSoundStatus = iStatus;
 }

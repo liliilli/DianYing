@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Resource/Type/ModelMesh/DDyAnimationSequence.h>
+#include <Dy/Core/Resource/Type/ModelMesh/DAnimationSequence.h>
 #include <Dy/Helper/Type/DQuaternion.h>
 
 //!
@@ -61,13 +61,13 @@ public:
   MDY_NODISCARD DVector3 GetInterpolatedPosition(_MIN_ TF32 iElapsedTime, _MIN_ TU32 iBoneIndex, _MIN_ bool iIsLooped) const;
 
   /// @brief Get reference of list of skeleton bone.
-  MDY_NODISCARD const decltype(DDyAnimationSequence::mAnimationNodeList)& GetAnimNodeList() const noexcept;
+  MDY_NODISCARD const decltype(DAnimationSequence::mAnimationNodeList)& GetAnimNodeList() const noexcept;
   /// @brief Get rate scale.
   MDY_NODISCARD TF32 GetRateScale() const noexcept;
 
 private:
   std::string           mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
-  DDyAnimationSequence  mAnimation = {}; 
+  DAnimationSequence  mAnimation = {}; 
   TF32                  mRateScale = 0.0f;
 };
 

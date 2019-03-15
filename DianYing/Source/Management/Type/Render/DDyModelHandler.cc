@@ -25,12 +25,12 @@ DDyModelHandler::DDyModelHandler(_MIN_ const std::string& iModelSpecifier)
   this->mModelBinder.TryRequireResource(iModelSpecifier);
 }
 
-bool DDyModelHandler::IsActorItemExist(_MIN_ FDyActor& iRefActor) const noexcept
+bool DDyModelHandler::IsActorItemExist(_MIN_ FActor& iRefActor) const noexcept
 {
   return Contains(this->mActorInformation, &iRefActor);
 }
 
-bool DDyModelHandler::IsActorNeedToBeGc(_MIN_ FDyActor& iRefActor) const noexcept
+bool DDyModelHandler::IsActorNeedToBeGc(_MIN_ FActor& iRefActor) const noexcept
 {
   const auto& item = this->mActorInformation.at(&iRefActor);
 
@@ -48,7 +48,7 @@ bool DDyModelHandler::IsModelResourceValid() const noexcept
   return this->mModelBinder.IsResourceExist();
 }
 
-EDySuccess DDyModelHandler::TryCreateActorBinding(_MIN_ FDyActor& iRefActor)
+EDySuccess DDyModelHandler::TryCreateActorBinding(_MIN_ FActor& iRefActor)
 {
   // If already exist, just return DY_FAILURE.
   if (this->IsActorItemExist(iRefActor) == true) { return DY_FAILURE; }
@@ -60,7 +60,7 @@ EDySuccess DDyModelHandler::TryCreateActorBinding(_MIN_ FDyActor& iRefActor)
   return DY_SUCCESS;
 }
 
-EDySuccess DDyModelHandler::TryRemoveActorBinding(_MIN_ FDyActor& iRefActor)
+EDySuccess DDyModelHandler::TryRemoveActorBinding(_MIN_ FActor& iRefActor)
 {
   if (this->IsActorNeedToBeGc(iRefActor) == false) 
   { 
@@ -72,7 +72,7 @@ EDySuccess DDyModelHandler::TryRemoveActorBinding(_MIN_ FDyActor& iRefActor)
   return DY_SUCCESS;
 }
 
-EDySuccess DDyModelHandler::BindFilter(_MIN_ FDyActor& iRefActor, _MIN_ CModelFilter& iRefFilter)
+EDySuccess DDyModelHandler::BindFilter(_MIN_ FActor& iRefActor, _MIN_ CModelFilter& iRefFilter)
 {
   // If not exist, return DY_FAILURE.
   if (this->IsActorItemExist(iRefActor) == false) { return DY_FAILURE; }
@@ -83,7 +83,7 @@ EDySuccess DDyModelHandler::BindFilter(_MIN_ FDyActor& iRefActor, _MIN_ CModelFi
   return DY_SUCCESS;
 }
 
-EDySuccess DDyModelHandler::BindRenderer(_MIN_ FDyActor& iRefActor, _MIN_ CModelRenderer& iRefComp)
+EDySuccess DDyModelHandler::BindRenderer(_MIN_ FActor& iRefActor, _MIN_ CModelRenderer& iRefComp)
 {
   // If not exist, return DY_FAILURE.
   if (this->IsActorItemExist(iRefActor) == false) { return DY_FAILURE; }
@@ -94,7 +94,7 @@ EDySuccess DDyModelHandler::BindRenderer(_MIN_ FDyActor& iRefActor, _MIN_ CModel
   return DY_SUCCESS;
 }
 
-EDySuccess DDyModelHandler::BindAnimator(_MIN_ FDyActor& iRefActor, _MIN_ CModelAnimator& iRefComp)
+EDySuccess DDyModelHandler::BindAnimator(_MIN_ FActor& iRefActor, _MIN_ CModelAnimator& iRefComp)
 {
   // If not exist, return DY_FAILURE.
   if (this->IsActorItemExist(iRefActor) == false) { return DY_FAILURE; }
@@ -105,7 +105,7 @@ EDySuccess DDyModelHandler::BindAnimator(_MIN_ FDyActor& iRefActor, _MIN_ CModel
   return DY_SUCCESS;
 }
 
-EDySuccess DDyModelHandler::UnbindFilter(_MIN_ FDyActor& iRefActor)
+EDySuccess DDyModelHandler::UnbindFilter(_MIN_ FActor& iRefActor)
 {
   // If not exist, return DY_FAILURE.
   if (this->IsActorItemExist(iRefActor) == false) { return DY_FAILURE; }
@@ -115,7 +115,7 @@ EDySuccess DDyModelHandler::UnbindFilter(_MIN_ FDyActor& iRefActor)
   return DY_SUCCESS;
 }
 
-EDySuccess DDyModelHandler::UnbindRenderer(_MIN_ FDyActor& iRefActor)
+EDySuccess DDyModelHandler::UnbindRenderer(_MIN_ FActor& iRefActor)
 {
   // If not exist, return DY_FAILURE.
   if (this->IsActorItemExist(iRefActor) == false) { return DY_FAILURE; }
@@ -125,7 +125,7 @@ EDySuccess DDyModelHandler::UnbindRenderer(_MIN_ FDyActor& iRefActor)
   return DY_SUCCESS;
 }
 
-EDySuccess DDyModelHandler::UnbindAnimator(_MIN_ FDyActor& iRefActor)
+EDySuccess DDyModelHandler::UnbindAnimator(_MIN_ FActor& iRefActor)
 {
   // If not exist, return DY_FAILURE.
   if (this->IsActorItemExist(iRefActor) == false) { return DY_FAILURE; }

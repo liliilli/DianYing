@@ -43,7 +43,7 @@ class CLightPoint final :
   public IInitializeHelper<PCompPointLightMetaInfo>
 {
 public:
-  explicit CLightPoint(FDyActor& actorReference);
+  explicit CLightPoint(FActor& actorReference);
   virtual ~CLightPoint() = default;
 
   /// @brief  Initialize component

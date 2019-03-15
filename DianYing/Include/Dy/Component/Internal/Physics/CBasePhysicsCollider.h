@@ -30,7 +30,7 @@ class PxShape;
 
 namespace dy
 {
-class CDyPhysicsRigidbody;
+class CPhysicsRigidbody;
 } /// ::dy namespace
 
 //!
@@ -45,7 +45,7 @@ namespace dy
 class CBasePhysicsCollider : public AGeneralBaseComponent, public IInitializeHelper<PDyColliderComponentMetaInfo>
 {
 public:
-  CBasePhysicsCollider(FDyActor& actorReference) : AGeneralBaseComponent(actorReference) {};
+  CBasePhysicsCollider(FActor& actorReference) : AGeneralBaseComponent(actorReference) {};
   virtual ~CBasePhysicsCollider() = 0;
       
   MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(CBasePhysicsCollider);
@@ -68,7 +68,7 @@ public:
   MDY_NODISCARD bool IsNotifyHitEvent() const noexcept; 
   /// @brief Check notify overlap event.
   MDY_NODISCARD bool IsNotifyOverlapEvent() const noexcept;
-  /// @brief Check this collider is registered into CDyPhysicsRigidbody component.
+  /// @brief Check this collider is registered into CPhysicsRigidbody component.
   MDY_NODISCARD bool IsRegistered() const noexcept;
   /// @brief Check collider need to update internal mesh information.
   MDY_NODISCARD bool IsNeedToUpdateColliderMesh() const noexcept;
@@ -81,9 +81,9 @@ public:
   void MDY_PRIVATE(SetRegisterFlag)(_MIN_ bool iFlag) noexcept;
 
   /// @brief Initialize internal (PhysX) resource.
-  virtual void InitializeInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody) = 0; 
+  virtual void InitializeInternalResource(_MINOUT_ CPhysicsRigidbody& iRefRigidbody) = 0; 
   /// @brief Release internal (PhysX) resource.
-  void ReleaseInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody);
+  void ReleaseInternalResource(_MINOUT_ CPhysicsRigidbody& iRefRigidbody);
 
   /// @brief Get internal shape pointer. Returned value does not guarantee not nullity.
   MDY_NODISCARD physx::PxShape* MDY_PRIVATE(GetPtrInternalShape)() const noexcept;
@@ -109,7 +109,7 @@ private:
 protected:
   /// @brief Make filter data. This function does not have side effects.
   MDY_NODISCARD physx::PxFilterData CreateFilterDataValue(
-      _MIN_ const CDyPhysicsRigidbody& iRigidbody, 
+      _MIN_ const CPhysicsRigidbody& iRigidbody, 
       _MIN_ const std::string& iLayerName,
       _MIN_ std::vector<EDyCollisionFilter>& iFilterData);
 

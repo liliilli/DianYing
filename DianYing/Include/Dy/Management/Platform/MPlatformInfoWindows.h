@@ -15,8 +15,9 @@
 
 #include <atomic>
 #include <Dy/Helper/System/Macroes.h>
-#include <Dy/Core/Resource/Internal/MaterialType.h>
+#include <Dy/Core/Resource/Internal/EMaterialBlendMode.h>
 #include <Dy/Management/Interface/IPlatformDependent.h>
+#include <Dy/Helper/System/Pointer.h>
 
 #if (defined(_WIN32) == true)
 namespace dy

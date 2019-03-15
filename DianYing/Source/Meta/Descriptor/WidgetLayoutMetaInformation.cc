@@ -59,6 +59,7 @@ PDyMetaWidgetHorizontalLayout::CreateMetaInformation(_MIN_ const nlohmann::json&
   instance->mUiObjectSpecifierName = json::GetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Name);
   instance->mComponentType          = EDyWidgetComponentType::HorizontalLayout;
   instance->mParentSpecifierName    = json::GetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Parent);
+  json::GetValueFromTo(itemAtlas, "IsActivated", instance->mIsActivated);
   json::GetValueFromTo(itemAtlas, "ZOrder", instance->mZOrder);
 
   // Detail (PDyMetaWidgetHorizontalLayout)

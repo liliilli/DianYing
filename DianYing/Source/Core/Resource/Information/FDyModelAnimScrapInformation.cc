@@ -252,7 +252,7 @@ DVector3 FDyModelAnimScrapInformation::GetInterpolatedPosition(_MIN_ TF32 iElaps
   }
 }
 
-const decltype(DDyAnimationSequence::mAnimationNodeList)& 
+const decltype(DAnimationSequence::mAnimationNodeList)& 
 FDyModelAnimScrapInformation::GetAnimNodeList() const noexcept
 {
   return this->mAnimation.mAnimationNodeList;

@@ -23,7 +23,7 @@
 
 namespace dy
 {
-class FDyUiWidget;
+class FWidget;
 struct PDyScriptInstanceMetaInfo;
 } /// ::dy namespace
 
@@ -39,7 +39,7 @@ namespace dy
 class FWidgetScriptState final
 {
 public:
-  FWidgetScriptState(FDyUiWidget& iWidgetReference, const PDyScriptInstanceMetaInfo& iDescriptor); 
+  FWidgetScriptState(FWidget& iWidgetReference, const PDyScriptInstanceMetaInfo& iDescriptor); 
 
   /// @brief Call widget script function properly.
   void CallScriptFunction(TF32 dt) noexcept;

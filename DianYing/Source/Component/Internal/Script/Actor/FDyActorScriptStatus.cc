@@ -22,7 +22,7 @@
 namespace dy
 {
 
-FActorScriptState::FActorScriptState(FDyActor& iRefActor, const PDyScriptInstanceMetaInfo& descriptor) 
+FActorScriptState::FActorScriptState(FActor& iRefActor, const PDyScriptInstanceMetaInfo& descriptor) 
   : mStatus {EScriptState::CalledNothing},
     mType   {descriptor.mScriptType}
 {

@@ -17,18 +17,18 @@
 
 #include <Dy/Management/MSound.h>
 #include <Dy/Management/IO/MIOMeta.h>
-#include <Dy/Management/Type/Sound/FDySoundChannel.h>
+#include <Dy/Management/Type/Sound/FSoundChannel.h>
 #include <Dy/Core/Resource/Information/FDySoundInformation.h>
 #include <Dy/Management/Internal/Sound/XCallbackChannel.h>
-#include <Dy/Element/Actor.h>
-#include <Dy/Component/CDyTransform.h>
+#include <Dy/Element/FActor.h>
+#include <Dy/Component/CTransform.h>
 
 namespace dy
 {
 
 FSoundInstance::FSoundInstance(
   const PDySoundSourceComponentMetaInfo& iInputInfo,
-  FDyActor& iRefActor) 
+  FActor& iRefActor) 
   : mSoundSpecifier{iInputInfo.mDetails.mSoundSpecifier},
     m2DSound{iInputInfo.mDetails.m2DSound},
     mMuted{iInputInfo.mDetails.mMuted},
@@ -52,7 +52,7 @@ FSoundInstance::FSoundInstance(
 FSoundInstance::~FSoundInstance()
 {
   // If internal sound & channel resource is initialized, release them.
-  if (this->mSoundStatus != EDySoundStatus::NotValid)
+  if (this->mSoundStatus != ESoundState::NotValid)
   {
     if (this->mPtrInternalSound != nullptr)
     {
@@ -67,7 +67,7 @@ void FSoundInstance::SetSound(const std::string& iSpecifier)
 {
   // If sound is paused or playing...
   if (const auto status = this->GetStatus(); 
-      status == EDySoundStatus::Paused || status == EDySoundStatus::Play) { this->StopSound(); }
+      status == ESoundState::Paused || status == ESoundState::Play) { this->StopSound(); }
 
   // Check validity.
   const auto& infoManager = MIOMeta::GetInstance();
@@ -86,7 +86,7 @@ void FSoundInstance::SetSound(const std::string& iSpecifier)
       this->mPtrInternalSound = nullptr;
     }
     this->mPtrInternalChannel = nullptr;
-    this->__SetStatus(EDySoundStatus::NotValid);
+    this->__SetStatus(ESoundState::NotValid);
   }
 
   // Set and try require resource.
@@ -98,7 +98,7 @@ void FSoundInstance::SetChannel(const std::string& iChannelSpecifier)
 {
   // If sound is paused or playing...
   if (const auto status = this->GetStatus(); 
-      status == EDySoundStatus::Paused || status == EDySoundStatus::Play) { this->StopSound(); }
+      status == ESoundState::Paused || status == ESoundState::Play) { this->StopSound(); }
 
   // Check validity.
   auto& soundManager = MSound::GetInstance();
@@ -116,7 +116,7 @@ void FSoundInstance::SetChannel(const std::string& iChannelSpecifier)
       this->mPtrInternalSound = nullptr;
     }
     this->mPtrInternalChannel = nullptr;
-    this->__SetStatus(EDySoundStatus::NotValid);
+    this->__SetStatus(ESoundState::NotValid);
   }
 }
 
@@ -124,7 +124,7 @@ void FSoundInstance::Set2DSound(bool i2DActivated)
 {
   // If sound is paused or playing...
   if (const auto status = this->GetStatus(); 
-      status == EDySoundStatus::Paused || status == EDySoundStatus::Play) { this->StopSound(); }
+      status == ESoundState::Paused || status == ESoundState::Play) { this->StopSound(); }
 
   this->m2DSound = i2DActivated;
 
@@ -137,7 +137,7 @@ void FSoundInstance::Set2DSound(bool i2DActivated)
       this->mPtrInternalSound = nullptr;
     }
     this->mPtrInternalChannel = nullptr;
-    this->__SetStatus(EDySoundStatus::NotValid);
+    this->__SetStatus(ESoundState::NotValid);
   }
 }
 
@@ -146,7 +146,7 @@ EDySuccess FSoundInstance::TryInitialize()
   // Failure check.
   if (this->mSoundSpecifier.empty() == true) { return DY_FAILURE; }
 
-  if (this->GetStatus() != EDySoundStatus::NotValid 
+  if (this->GetStatus() != ESoundState::NotValid 
   ||  this->mBinderClipResource.IsResourceExist() == false) { return DY_FAILURE; }
 
   // Initiate (Initialize)
@@ -172,15 +172,15 @@ EDySuccess FSoundInstance::TryInitialize()
     MDY_ASSERT_MSG(flag == FMOD_OK, "Failed to create sound instance.");
   }
 
-  this->__SetStatus(EDySoundStatus::Stop);
+  this->__SetStatus(ESoundState::Stop);
 
   return DY_SUCCESS;
 }
 
 void FSoundInstance::Update(TF32 dt)
 {
-  if (this->GetStatus() == EDySoundStatus::NotValid) { this->TryInitialize(); }
-  if (this->GetStatus() == EDySoundStatus::Play)
+  if (this->GetStatus() == ESoundState::NotValid) { this->TryInitialize(); }
+  if (this->GetStatus() == ESoundState::Play)
   {
     if (this->IsMuted() == false && this->Is2DSound() == false)
     {
@@ -192,12 +192,12 @@ void FSoundInstance::Update(TF32 dt)
 void FSoundInstance::PlaySound()
 {
   // `mPtrInternalSound` and `mPtrInternalChannel` is valid on now.
-  if (this->mSoundStatus == EDySoundStatus::Paused)
+  if (this->mSoundStatus == ESoundState::Paused)
   {
     this->mPtrInternalChannel->setPaused(false);
   }
   // `mPtrInternalSound` is valid but `mPtrInternalChannel` is not valid.
-  else if (this->mSoundStatus == EDySoundStatus::Stop)
+  else if (this->mSoundStatus == ESoundState::Stop)
   {
     // Initiate (Initialize)
     auto& soundManager  = MSound::GetInstance();
@@ -230,7 +230,7 @@ void FSoundInstance::PlaySound()
     this->mPtrInternalChannel->setUserData(this);
     this->mPtrInternalChannel->setCallback(__CallbackSoundChannel);
 
-    this->__SetStatus(EDySoundStatus::Play);
+    this->__SetStatus(ESoundState::Play);
 
     // This function must be after setting status to `Play` `Pause`.
     this->UpdateInternalAttenuationProperty();
@@ -245,8 +245,8 @@ void FSoundInstance::UpdateInternal3DPositionVelocity()
   // When `NotValid` and `Stop`, `NotValid` is mPtrInternalSound & mPtrChannel is not valid.
   // and `Stop` is `mPtrInternalSound` is valid but `mPtrChannel` is not valid.
   if (const auto flag = this->GetStatus();
-      flag == EDySoundStatus::NotValid 
-  ||  flag == EDySoundStatus::Stop)
+      flag == ESoundState::NotValid 
+  ||  flag == ESoundState::Stop)
   {
     return;
   }
@@ -266,25 +266,25 @@ void FSoundInstance::UpdateInternal3DPositionVelocity()
 void FSoundInstance::PauseSound()
 {
   // `mPtrInternalSound` and `mPtrInternalChannel` is valid on now.
-  if (this->mSoundStatus == EDySoundStatus::Play)
+  if (this->mSoundStatus == ESoundState::Play)
   {
     const auto flag = this->mPtrInternalChannel->setPaused(true);
     MDY_ASSERT_MSG(flag == FMOD_OK, "Failed to pause sound instance.");
 
-    this->__SetStatus(EDySoundStatus::Paused);
+    this->__SetStatus(ESoundState::Paused);
   }
 }
 
 void FSoundInstance::StopSound()
 {
-  if (this->mSoundStatus == EDySoundStatus::Play
-  ||  this->mSoundStatus == EDySoundStatus::Paused)
+  if (this->mSoundStatus == ESoundState::Play
+  ||  this->mSoundStatus == ESoundState::Paused)
   {
     const auto flag = this->mPtrInternalChannel->stop();
     MDY_ASSERT_MSG(flag == FMOD_OK, "Failed to play sound instance.");
     this->mPtrInternalChannel = nullptr;
 
-    this->__SetStatus(EDySoundStatus::Stop);
+    this->__SetStatus(ESoundState::Stop);
   }
 }
 
@@ -326,8 +326,8 @@ bool FSoundInstance::Is2DSound() const noexcept
 void FSoundInstance::UpdateInternalMute()
 {
   if (const auto flag = this->GetStatus(); 
-      flag == EDySoundStatus::Play
-  ||  flag == EDySoundStatus::Paused)
+      flag == ESoundState::Play
+  ||  flag == ESoundState::Paused)
   {
     this->mPtrInternalChannel->setMute(this->mMuted);
   }
@@ -346,8 +346,8 @@ void FSoundInstance::SetLoop(bool iLooped)
 void FSoundInstance::UpdateInternalLoop()
 {
   if (const auto flag = this->GetStatus(); 
-      flag == EDySoundStatus::Play
-  ||  flag == EDySoundStatus::Paused)
+      flag == ESoundState::Play
+  ||  flag == ESoundState::Paused)
   {
     this->mPtrInternalChannel->setLoopCount(this->mLooped == true ? -1 : 0);
   }
@@ -357,7 +357,7 @@ void FSoundInstance::SetVolume(TF32 iVolume)
 {
   this->mVolumeMultiplier = iVolume;
 
-  if (const auto flag = this->GetStatus(); flag == EDySoundStatus::Play || flag == EDySoundStatus::Paused)
+  if (const auto flag = this->GetStatus(); flag == ESoundState::Play || flag == ESoundState::Paused)
   {
     this->mPtrInternalChannel->setVolume(iVolume);
   }
@@ -372,7 +372,7 @@ void FSoundInstance::SetPitch(TF32 iPitch)
 {
   this->mPitchMultiplier = iPitch;
 
-  if (const auto flag = this->GetStatus(); flag == EDySoundStatus::Play || flag == EDySoundStatus::Paused)
+  if (const auto flag = this->GetStatus(); flag == ESoundState::Play || flag == ESoundState::Paused)
   {
     this->mPtrInternalChannel->setVolume(iPitch);
   }
@@ -424,8 +424,8 @@ void FSoundInstance::UpdateInternalAttenuationProperty()
   // When `NotValid` and `Stop`, `NotValid` is mPtrInternalSound & mPtrChannel is not valid.
   // and `Stop` is `mPtrInternalSound` is valid but `mPtrChannel` is not valid.
   if (const auto flag = this->GetStatus();
-      flag == EDySoundStatus::NotValid 
-  ||  flag == EDySoundStatus::Stop)
+      flag == ESoundState::NotValid 
+  ||  flag == ESoundState::Stop)
   {
     return;
   }

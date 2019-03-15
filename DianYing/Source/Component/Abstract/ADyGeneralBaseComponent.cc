@@ -18,8 +18,8 @@
 namespace dy
 {
 
-AGeneralBaseComponent::AGeneralBaseComponent(FDyActor& actorReference) 
-  : ADyBaseComponent(actorReference)
+AGeneralBaseComponent::AGeneralBaseComponent(FActor& actorReference) 
+  : ABaseComponent(actorReference)
 { }
 
 } /// ::dy namespace

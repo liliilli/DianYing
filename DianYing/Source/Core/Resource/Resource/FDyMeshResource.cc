@@ -14,15 +14,15 @@
 
 /// Header file
 #include <Dy/Core/Resource/Resource/FDyMeshResource.h>
-#include <Dy/Core/Resource/Internal/FDyMeshVBOIntermediate.h>
+#include <Dy/Core/Resource/Internal/FMeshVBOIntermediate.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLVaoBindDescriptor.h>
-#include <Dy/Management/Helper/SDyProfilingHelper.h>
+#include <Dy/Management/Helper/SProfilingHelper.h>
 
 namespace dy
 {
 
-FDyMeshResource::FDyMeshResource(_MINOUT_ FDyMeshVBOIntermediate& intermediateInstance) :
+FDyMeshResource::FDyMeshResource(_MINOUT_ FMeshVBOIntermediate& intermediateInstance) :
     mSpecifierName{ intermediateInstance.GetSpecifierName() }
 {
   this->mBufferIdInformation = intermediateInstance.GetBufferIdInfo();
@@ -41,7 +41,7 @@ FDyMeshResource::FDyMeshResource(_MINOUT_ FDyMeshVBOIntermediate& intermediateIn
     XGLWrapper::BindVertexArrayObject(descriptor);
   }
 
-  SDyProfilingHelper::IncreaseOnBindVertexCount(this->mMeshFlagInformation.mVertexCount);
+  SProfilingHelper::IncreaseOnBindVertexCount(this->mMeshFlagInformation.mVertexCount);
 }
 
 FDyMeshResource::~FDyMeshResource()
@@ -51,7 +51,7 @@ FDyMeshResource::~FDyMeshResource()
     if (this->mBufferIdInformation.mEbo > 0) { XGLWrapper::DeleteBuffer(this->mBufferIdInformation.mEbo); }
     if (this->mBufferIdInformation.mVbo > 0) { XGLWrapper::DeleteBuffer(this->mBufferIdInformation.mVbo); }
   }
-  SDyProfilingHelper::DecreaseOnBindVertexCount(this->mMeshFlagInformation.mVertexCount);
+  SProfilingHelper::DecreaseOnBindVertexCount(this->mMeshFlagInformation.mVertexCount);
 }
 
 const std::string& FDyMeshResource::GetSpecifierName() const noexcept

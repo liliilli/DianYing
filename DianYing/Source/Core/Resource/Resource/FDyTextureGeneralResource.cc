@@ -17,7 +17,7 @@
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Core/Resource/Information/FDyTextureGeneralInformation.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLTextureDescriptor.h>
-#include <Dy/Management/Helper/SDyProfilingHelper.h>
+#include <Dy/Management/Helper/SProfilingHelper.h>
 
 namespace dy
 {
@@ -48,9 +48,9 @@ FDyTextureGeneralResource::FDyTextureGeneralResource(_MIN_ const FDyTextureGener
 
   switch (this->mTextureType)
   { // Align size of texture following texture type.
-  case EDyTextureStyleType::D1: this->mTextureSize.Y = 1; break;
+  case ETextureStyleType::D1: this->mTextureSize.Y = 1; break;
   default: /* Do nothing */ break;
-  case EDyTextureStyleType::NoneError: MDY_UNEXPECTED_BRANCH();
+  case ETextureStyleType::NoneError: MDY_UNEXPECTED_BRANCH();
   }
 
   // Create texture from shared context.
@@ -61,7 +61,7 @@ FDyTextureGeneralResource::FDyTextureGeneralResource(_MIN_ const FDyTextureGener
   MDY_ASSERT_MSG(optTextureId.has_value() == true, "Texture id creation must be succeeded.");
   this->mTextureResourceId = *optTextureId;
 
-  SDyProfilingHelper::IncreaseOnBindTextureCount(1);
+  SProfilingHelper::IncreaseOnBindTextureCount(1);
 }
 
 FDyTextureGeneralResource::~FDyTextureGeneralResource()
@@ -69,7 +69,7 @@ FDyTextureGeneralResource::~FDyTextureGeneralResource()
   { MDY_GRAPHIC_SET_CRITICALSECITON();
     XGLWrapper::DeleteTexture(this->mTextureResourceId);
   }
-  SDyProfilingHelper::DecreaseOnBindTextureCount(1);
+  SProfilingHelper::DecreaseOnBindTextureCount(1);
 }
 
 } /// ::dy namespace

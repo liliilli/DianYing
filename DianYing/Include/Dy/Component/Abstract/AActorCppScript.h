@@ -23,11 +23,11 @@
 namespace dy
 {
 enum class ECollisionCallbackType;
-class CDyPhysicsRigidbody;
-class FDyActor;
+class CPhysicsRigidbody;
+class FActor;
 class CActorScriptCpp;
 class MGameTimer;
-class FDyTimerHandle;
+class FTimerHandle;
 } /// ::dy namespace
 
 //!
@@ -43,16 +43,16 @@ MDY_ABSTRACT AActorCppScript : public IScriptable
 {
 public:
   /// @brief Get widget reference.
-  MDY_NODISCARD FDyActor& GetActorReference();
+  MDY_NODISCARD FActor& GetActorReference();
 
   /// @brief Get Game-Timer manager.
   MDY_NODISCARD MGameTimer& GetGameTimerManager() noexcept;
 
-  void MDY_PRIVATE(BindPtrTimerHandle)(FDyTimerHandle& iRefTimerHandler);
-  void MDY_PRIVATE(DetachPtrTimerHandle)(FDyTimerHandle& iRefTimerHandler);
+  void MDY_PRIVATE(BindPtrTimerHandle)(FTimerHandle& iRefTimerHandler);
+  void MDY_PRIVATE(DetachPtrTimerHandle)(FTimerHandle& iRefTimerHandler);
   void MDY_PRIVATE(AbortAllValidTimerHandler)();
 
-  void MDY_PRIVATE(BindCollisionCbHandle)(CDyPhysicsRigidbody& iRefRigidbody, ECollisionCallbackType iType, const void* iUniqueId);
+  void MDY_PRIVATE(BindCollisionCbHandle)(CPhysicsRigidbody& iRefRigidbody, ECollisionCallbackType iType, const void* iUniqueId);
   EDySuccess MDY_PRIVATE(DetachCollisionCbHandle)(const void * iSpecificationId);
   void MDY_PRIVATE(AbortAllCollisionCallback)();
 
@@ -64,9 +64,9 @@ private:
   /// @brief
   CActorScriptCpp* mOutside = nullptr;
   /// @brief
-  std::vector<NotNull<FDyTimerHandle*>> mPtrTimerHandleList = {};
+  std::vector<NotNull<FTimerHandle*>> mPtrTimerHandleList = {};
 
-  using TCollisionCbHandle = std::tuple<CDyPhysicsRigidbody*, ECollisionCallbackType, const void*>;
+  using TCollisionCbHandle = std::tuple<CPhysicsRigidbody*, ECollisionCallbackType, const void*>;
   /// @brief Collision handle list. 
   std::vector<TCollisionCbHandle> mCollisionCbHandleList = {};
 

@@ -17,11 +17,11 @@
 namespace dy
 {
 
-CBaseWidgetScript::CBaseWidgetScript(FDyUiWidget& ioWidget)
+CBaseWidgetScript::CBaseWidgetScript(FWidget& ioWidget)
   : mBindedWidget(&ioWidget) 
 { }
 
-FDyUiWidget& CBaseWidgetScript::GetWidgetReference() noexcept
+FWidget& CBaseWidgetScript::GetWidgetReference() noexcept
 {
   MDY_ASSERT_MSG(this->mBindedWidget != nullptr, "Unexpected error occurred.");
   return *this->mBindedWidget;

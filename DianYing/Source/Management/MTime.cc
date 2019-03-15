@@ -79,10 +79,10 @@ EDySuccess MTime::SetGameTimeScale(_MIN_ const TF32 timeScale) noexcept
   }
 }
 
-MDY_NOTUSED DDyTimepoint MTime::GetCalendarTime() const noexcept
+MDY_NOTUSED DTimePoint MTime::GetCalendarTime() const noexcept
 {
   auto cTime = std::time(nullptr);
-  return DDyTimepoint(*std::localtime(&cTime));
+  return DTimePoint(*std::localtime(&cTime));
 }
 
 void MTime::pUpdate() noexcept

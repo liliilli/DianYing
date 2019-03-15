@@ -18,7 +18,7 @@
 #include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
 #include <Dy/Component/CCamera.h>
 #include <Dy/Component/CModelRenderer.h>
-#include <Dy/Element/Actor.h>
+#include <Dy/Element/FActor.h>
 #include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
 #include <Dy/Core/Rendering/Type/EDrawType.h>
@@ -26,10 +26,10 @@
 #include <Dy/Core/Resource/Resource/FDyMeshResource.h>
 #include <Dy/Component/CModelAnimator.h>
 #include <Dy/Management/Rendering/MRendering.h>
-#include <Dy/Management/Helper/SDyProfilingHelper.h>
+#include <Dy/Management/Helper/SProfilingHelper.h>
 #include <Dy/Component/CLightDirectional.h>
 #include <Dy/Management/MSetting.h>
-#include <Dy/Component/CDyTransform.h>
+#include <Dy/Component/CTransform.h>
 
 namespace dy
 {
@@ -126,13 +126,13 @@ void FBtRenderItemCsmShadow::OnSetupRenderingSetting()
   this->mDirLightShaderResource->TryUpdateUniform<EUniform::Matrix4>("mViewMatrix", this->mViewMatrix);
 
   // Set and push global internal setting.
-  DDyGlGlobalStates status;
-  using EValue = DDyGlGlobalStates::DCullfaceMode::EValue;
+  DGlGlobalStates status;
+  using EValue = DGlGlobalStates::DCullfaceMode::EValue;
   status.mIsEnableDepthTest = true;
   status.mIsEnableCullface  = true;
   status.mCullfaceMode = EValue::Back;
 
-  using DViewport = DDyGlGlobalStates::DViewport;
+  using DViewport = DGlGlobalStates::DViewport;
   DViewport viewport;
 
   /// @brief Setup indexed viewports of light shadow map segments for writing.

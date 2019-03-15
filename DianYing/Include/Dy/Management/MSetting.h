@@ -20,7 +20,7 @@
 #include <Dy/Meta/Type/EDyRenderingApi.h>
 #include <Dy/Management/Type/SettingContainer.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
-#include <Dy/Management/Type/Render/EDyModelRenderingMode.h>
+#include <Dy/Management/Type/Render/ERenderingModelMode.h>
 
 namespace dy
 {
@@ -138,9 +138,9 @@ public:
   //!
   
   /// @brief Set rendering mode.
-  void SetRenderingMode(EDyModelRenderingMode iNewMode) noexcept; 
+  void SetRenderingMode(ERenderingModelMode iNewMode) noexcept; 
   /// @brief Get rendering mode of model.
-  MDY_NODISCARD EDyModelRenderingMode GetRenderingMode() const noexcept;
+  MDY_NODISCARD ERenderingModelMode GetRenderingMode() const noexcept;
 
   /// @brief Set rendering physics collision shape mode.
   void SetRenderingPhysicsCollisionShape(bool iIsEnabled) noexcept;
@@ -188,13 +188,13 @@ private:
   bool mIsDebugMode     = false;
 
   /// @brief Set model rendering mode.
-  EDyModelRenderingMode mModelRenderingMode = EDyModelRenderingMode::FillNormal;
+  ERenderingModelMode mModelRenderingMode = ERenderingModelMode::FillNormal;
   /// @brief If true, rendering manager should draw physics collision shape.
   bool mIsRenderPhysicsCollisionShape = false;
   /// @brief If true, rendering manager should draw physics collision AABB as fixed color.
   bool mIsRenderPhysicsCollisionAABB = false;
 
-  friend class DyEngine;
+  friend class GDyEngine;
 };
 
 } /// ::dy namespace

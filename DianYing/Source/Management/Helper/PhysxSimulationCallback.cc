@@ -13,7 +13,7 @@
 ///
 
 /// Header field
-#include <Dy/Management/Helper/PhysxSimulationCallback.h>
+#include <Dy/Management/Helper/FPhysxSimulationCallback.h>
 
 #include <PxRigidActor.h>
 #include <Dy/Management/MLog.h>
@@ -21,7 +21,7 @@
 namespace dy
 {
 
-void FDyPxSimulationEventCallback::onContact(const physx::PxContactPairHeader& pairHeader, const physx::PxContactPair* pairs, physx::PxU32 nbPairs)
+void FPhysXSimulationCallback::onContact(const physx::PxContactPairHeader& pairHeader, const physx::PxContactPair* pairs, physx::PxU32 nbPairs)
 {
   for (physx::PxU32 i = 0; i < nbPairs; ++i)
   {
@@ -58,7 +58,7 @@ void FDyPxSimulationEventCallback::onContact(const physx::PxContactPairHeader& p
 #endif
 }
 
-void FDyPxSimulationEventCallback::onTrigger(physx::PxTriggerPair* pairs, physx::PxU32 count)
+void FPhysXSimulationCallback::onTrigger(physx::PxTriggerPair* pairs, physx::PxU32 count)
 {
 #ifdef false
   for(PxU32 i=0; i < count; i++)
@@ -75,22 +75,22 @@ void FDyPxSimulationEventCallback::onTrigger(physx::PxTriggerPair* pairs, physx:
 #endif
 }
 
-void FDyPxSimulationEventCallback::onAdvance(const physx::PxRigidBody* const* bodyBuffer, const physx::PxTransform* poseBuffer, const physx::PxU32 count)
+void FPhysXSimulationCallback::onAdvance(const physx::PxRigidBody* const* bodyBuffer, const physx::PxTransform* poseBuffer, const physx::PxU32 count)
 {
 
 }
 
-void FDyPxSimulationEventCallback::onWake(physx::PxActor** actors, physx::PxU32 count)
+void FPhysXSimulationCallback::onWake(physx::PxActor** actors, physx::PxU32 count)
 {
 
 }
 
-void FDyPxSimulationEventCallback::onSleep(physx::PxActor** actors, physx::PxU32 count)
+void FPhysXSimulationCallback::onSleep(physx::PxActor** actors, physx::PxU32 count)
 {
 
 }
 
-void FDyPxSimulationEventCallback::onConstraintBreak(physx::PxConstraintInfo* constraints, physx::PxU32 count)
+void FPhysXSimulationCallback::onConstraintBreak(physx::PxConstraintInfo* constraints, physx::PxU32 count)
 {
 
 }

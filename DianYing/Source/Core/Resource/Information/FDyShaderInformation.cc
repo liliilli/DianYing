@@ -28,7 +28,7 @@ FDyShaderInformation::FDyShaderInformation(_MIN_ const PDyGLShaderInstanceMetaIn
 {
   for (int i = 0; i < 6; ++i)
   {
-    PDyShaderFragmentInformation shader{};
+    PShaderFragmentInformation shader{};
     shader.mIsEnabledRawLoadShaderCode_Deprecated = 
         metaInfo.mSourceType == EDyResourceSource::Builtin 
       ? true 

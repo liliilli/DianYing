@@ -14,8 +14,6 @@
 
 /// Header file
 #include <Dy/Core/Resource/Information/FDyModelInformation.h>
-#include <Dy/Meta/Information/ModelMetaInformation.h>
-#include <Dy/Core/Resource/Internal/ModelType.h>
 #include <Dy/Helper/System/Idioms.h>
 
 namespace dy

@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
-#include <Dy/Management/Type/Time/DDyTimepoint.h>
+#include <Dy/Management/Type/Time/DTimePoint.h>
 
 namespace dy
 {
@@ -61,7 +61,7 @@ public:
   MDY_NOTUSED EDySuccess SetGameTimeScale(_MIN_ const TF32 timeScale) noexcept;
 
   /// @brief Get calendar time.
-  MDY_NOTUSED DDyTimepoint GetCalendarTime() const noexcept;
+  MDY_NOTUSED DTimePoint GetCalendarTime() const noexcept;
 
 private:
   /// @brief Update game time fragment sequence.
@@ -85,7 +85,7 @@ private:
   MDY_TRANSIENT bool __mIsEnabledVsync          = false;
 
   friend class MSetting;
-  friend class DyEngine;
+  friend class GDyEngine;
 };
 
 } /// ::dy namespace

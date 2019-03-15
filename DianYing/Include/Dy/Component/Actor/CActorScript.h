@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Element/Abstract/ADyBaseComponent.h>
+#include <Dy/Element/Abstract/ABaseComponent.h>
 #include <Dy/Component/Internal/Actor/FActorScriptState.h>
 
 //!
@@ -33,12 +33,12 @@ namespace dy
 
 /// @class CActorScript
 /// @brief actor script component for binding internal script instance.
-class CActorScript final : public ADyBaseComponent
+class CActorScript final : public ABaseComponent
 {
-  MDY_SET_TYPEMATCH_FUNCTION(::dy::ADyBaseComponent, CActorScript);
+  MDY_SET_TYPEMATCH_FUNCTION(::dy::ABaseComponent, CActorScript);
   MDY_SET_CRC32_HASH_WITH_TYPE(CActorScript);
 public:
-  CActorScript(FDyActor& iActor, const std::string& iScriptSpecifier);
+  CActorScript(FActor& iActor, const std::string& iScriptSpecifier);
   ~CActorScript();
 
   /// @brief

@@ -40,7 +40,7 @@ namespace dy
 class CLightSpot final : public AGeneralBaseComponent, public IInitializeHelper<PCompSpotLightMetaInfo>
 {
 public:
-  explicit CLightSpot(FDyActor& actorReference);
+  explicit CLightSpot(FActor& actorReference);
   virtual ~CLightSpot() = default;
 
   /// @brief  Initialize component

@@ -18,15 +18,15 @@
 #include <Dy/Management/MLog.h>
 #include <Dy/Management/MTime.h>
 
-#include <Dy/Element/Canvas/Widget.h>
-#include <Dy/Element/Canvas/Text.h>
-#include <Dy/Element/Canvas/FDyBasicGaugeBar.h>
+#include <Dy/Element/Canvas/FWidget.h>
+#include <Dy/Element/Canvas/FWidgetText.h>
+#include <Dy/Element/Canvas/FWidgetBasicGaugeBar.h>
 #include <Dy/Management/MInput.h>
 #include <Dy/Management/Internal/MProfiling.h>
 #include <Dy/Helper/Math/Math.h>
 #include <Dy/Helper/Math/Random.h>
 #include <Dy/Management/MGameTimer.h>
-#include "Dy/Element/Canvas/FDyImage.h"
+#include "Dy/Element/Canvas/FWidgetImage.h"
 #include "Dy/Core/Resource/Resource/FDyMaterialResource.h"
 #include "Dy/Core/Resource/Resource/FDyShaderResource.h"
 
@@ -61,9 +61,9 @@ void FDyBuiltinDebugUiScript::Update(_MIN_ TF32 dt)
   const auto usageRam = windowManager.GetRamUsage();
   auto& widgetRef = this->GetWidgetReference();
 
-  FDyText* infoText     = widgetRef.GetUiObject<FDyText>("DebugTestText");
-  FDyText* joystickText = widgetRef.GetUiObject<FDyText>("JoystickTest");
-  FDyBasicGaugeBar* bar = widgetRef.GetUiObject<FDyBasicGaugeBar>("BasicBarTest");
+  FWidgetText* infoText     = widgetRef.GetUiObject<FWidgetText>("DebugTestText");
+  FWidgetText* joystickText = widgetRef.GetUiObject<FWidgetText>("JoystickTest");
+  FWidgetBasicGaugeBar* bar = widgetRef.GetUiObject<FWidgetBasicGaugeBar>("BasicBarTest");
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(infoText), "Unexpected error occurred.");
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(bar),  "Unexpected error occurred.");
 
@@ -84,11 +84,11 @@ Camera0 : 2
 #endif
 
   auto t = this->mTimeManager->GetCalendarTime();
-  infoText->SetText(fmt::format(
+  infoText->SetText(MakeStringU8(
       "DEBUG BUILD {:05.2f} %, {:0d} fps | Time : {:04}-{:02}-{:02} {:02}:{:02}:{:02}\n"
       "| Obj : {:03} | Tex : {:03} | Shd : {:03} | Vtx : {:03} |\n"
       "| Ren : {:03} |\n"
-      "Ram Usage : {} KB", 
+      "Ram Usage : {:03} MB", 
       usageCpu, this->mTimeManager->GetPresentFpsCountValue(),
       t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(),
       this->mProfilingManger->GetOnBindActorCount(),
@@ -96,7 +96,7 @@ Camera0 : 2
       this->mProfilingManger->GetOnBindShaderCount(),
       this->mProfilingManger->GetOnBindVertexCount(),
       this->mProfilingManger->GetScreenRenderedActorCount(),
-      usageRam / 1024
+      static_cast<TF32>(usageRam) / (1024 * 1024)
   ));
   //bar->SetRelativePosition(bar->GetRelativePosition(EDyOrigin::Center_Center) + DVector2{0, -dt * 16.0f});
   bar->SetPresentValue(usageCpu);
@@ -108,13 +108,14 @@ Camera0 : 2
       inputManager.GetJoystickStickValue(1), inputManager.GetJoystickStickValue(0),
       inputManager.GetJoystickStickValue(5), inputManager.GetJoystickStickValue(2)
   ));
+  joystickText->Deactivate();
 
   if (this->flag == false) // Is material
   {
     static TF32 elapsed = 0;
     elapsed += dt;
 
-    auto* ptrImage = this->GetWidgetReference().GetUiObject<FDyImage>("TestImage");;
+    auto* ptrImage = this->GetWidgetReference().GetUiObject<FWidgetImage>("TestImage");;
     if (auto* ptrMat = ptrImage->GetUsingMaterial(); ptrMat != nullptr && ptrMat->IsResourceExist() == true)
     {
       ptrMat->TryUpdateUniform<EUniformVariableType::Float>("uThreshold", (sinf(elapsed * 3) + 1.0f) * 0.5f);
@@ -141,14 +142,14 @@ void FDyBuiltinDebugUiScript::EndApplication() noexcept
 void FDyBuiltinDebugUiScript::CbMoveBar()
 {
   auto& widgetRef = this->GetWidgetReference();
-  FDyBasicGaugeBar* bar = widgetRef.GetUiObject<FDyBasicGaugeBar>("BasicBarTest");
+  FWidgetBasicGaugeBar* bar = widgetRef.GetUiObject<FWidgetBasicGaugeBar>("BasicBarTest");
   bar->SetRelativePosition(random::RandomVector2Range(random::EDyRandomPolicy::Uniform, 0, 320) - DVector2{0, 360});
 }
 
 void FDyBuiltinDebugUiScript::CbChangeImageTexture()
 {
   auto& refWidget = this->GetWidgetReference();
-  FDyImage* image = refWidget.GetUiObject<FDyImage>("TestImage");
+  FWidgetImage* image = refWidget.GetUiObject<FWidgetImage>("TestImage");
   if (flag == false)
   {
     image->SetRenderableImageName("T_BrickWall1_Diffuse", false);

@@ -14,7 +14,7 @@
 ///
 
 #include <string>
-#include <Dy/Core/Resource/Internal/ShaderType.h>
+#include <Dy/Core/Resource/Internal/XShaderTypes.h>
 
 namespace dy
 {

@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Element/Abstract/ADyBaseComponent.h>
+#include <Dy/Element/Abstract/ABaseComponent.h>
 #include <Dy/Element/Interface/IUpdatable.h>
 
 namespace dy
@@ -21,10 +21,10 @@ namespace dy
 
 /// @class AGeneralBaseComponent
 /// @brief General base component except for script component.
-MDY_ABSTRACT AGeneralBaseComponent : public ADyBaseComponent, public IUpdatable
+MDY_ABSTRACT AGeneralBaseComponent : public ABaseComponent, public IUpdatable
 {
 public:
-  AGeneralBaseComponent(FDyActor& actorReference);
+  AGeneralBaseComponent(FActor& actorReference);
   virtual ~AGeneralBaseComponent() = default;
 
   AGeneralBaseComponent(const AGeneralBaseComponent&)                           = delete;
@@ -32,7 +32,7 @@ public:
   AGeneralBaseComponent(AGeneralBaseComponent&& instance)             noexcept  = default;
   AGeneralBaseComponent& operator=(AGeneralBaseComponent&& instance)  noexcept  = default;
 
-  MDY_SET_TYPEMATCH_FUNCTION(::dy::ADyBaseComponent, AGeneralBaseComponent);
+  MDY_SET_TYPEMATCH_FUNCTION(::dy::ABaseComponent, AGeneralBaseComponent);
   MDY_SET_CRC32_HASH_WITH_TYPE(AGeneralBaseComponent);
 };
 

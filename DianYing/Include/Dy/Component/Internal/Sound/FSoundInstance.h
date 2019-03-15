@@ -14,9 +14,10 @@
 ///
 
 #include <fmod.hpp>
+#include <Dy/Core/Resource/Type/TInformationBinder.h>
 #include <Dy/Management/Type/Sound/ASoundInstance.h>
 #include <Dy/Helper/Type/DClamp.h>
-#include <Dy/Core/Resource/Type/TDyInformationBinder.h>
+#include <Dy/Helper/System/Pointer.h>
 
 #ifdef PlaySound
 #undef PlaySound
@@ -28,7 +29,7 @@
 
 namespace dy
 {
-class FDyActor;
+class FActor;
 struct PDySoundSourceComponentMetaInfo;
 } /// ::dy namespace
 
@@ -44,7 +45,7 @@ namespace dy
 class FSoundInstance final : public ASoundInstance
 {
 public:
-  FSoundInstance(const PDySoundSourceComponentMetaInfo& iInputInfo, FDyActor& iRefActor);
+  FSoundInstance(const PDySoundSourceComponentMetaInfo& iInputInfo, FActor& iRefActor);
   virtual ~FSoundInstance();
 
   /// @brief Set new sound. If sound instance is playing or paused, sound status will be moved to stop.
@@ -146,7 +147,7 @@ private:
   
   FMOD::Sound*    mPtrInternalSound   = nullptr;
   FMOD::Channel*  mPtrInternalChannel = nullptr;
-  NotNull<FDyActor*> mPtrActor;
+  NotNull<FActor*> mPtrActor;
 };
 
 } /// ::dy namespace

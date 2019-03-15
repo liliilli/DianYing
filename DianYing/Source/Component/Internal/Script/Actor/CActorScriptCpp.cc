@@ -19,7 +19,7 @@
 namespace dy
 {
 
-CActorScriptCpp::CActorScriptCpp(FDyActor& iRefActor, const PDyScriptInstanceMetaInfo& iDesc) 
+CActorScriptCpp::CActorScriptCpp(FActor& iRefActor, const PDyScriptInstanceMetaInfo& iDesc) 
   : CBaseActorScript{iRefActor}
 {
   MDY_ASSERT_MSG(iDesc.mScriptType == EDyScriptType::Cpp,   "Script type is not matched to CActorScriptCpp.");

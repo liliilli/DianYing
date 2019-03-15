@@ -26,7 +26,7 @@ void FDyBtMsScrTriangle::ConstructBuffer(_MOUT_ PDyMeshInstanceMetaInfo& propert
   auto& submeshDesc = property.mDefaultMeshBuffer;
   submeshDesc.mVertexList.reserve(3);
   {
-    DDyVertexInformation vertex;
+    DDefaultVertexInfo vertex;
 
     vertex.mPosition  = DVector3{ -1, -1, 0 };
     vertex.mNormal    = DVector3{ 1 };

@@ -19,7 +19,7 @@
 
 namespace dy
 {
-class FDyUiWidget;
+class FWidget;
 class FWidgetScriptState;
 } /// ::dy namespace
 
@@ -35,11 +35,11 @@ namespace dy
 class CWidgetScript final
 {
 public:
-  CWidgetScript(const std::string& iScriptSpecifier, FDyUiWidget& ioWidget);
+  CWidgetScript(const std::string& iScriptSpecifier, FWidget& ioWidget);
   ~CWidgetScript();
 
 private:
-  FDyUiWidget* mPtrWidget = nullptr;
+  FWidget* mPtrWidget = nullptr;
   FWidgetScriptState* mPtrWidgetStatus = nullptr;
 };
 

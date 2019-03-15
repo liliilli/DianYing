@@ -21,7 +21,7 @@
 
 namespace dy
 {
-class FDyMeshVBOIntermediate;
+class FMeshVBOIntermediate;
 } /// ::dy namespace
 
 //!
@@ -39,7 +39,7 @@ class FDyMeshResource final
 {
 public:
   /// @brief
-  FDyMeshResource(_MINOUT_ FDyMeshVBOIntermediate& intermediateInstance);
+  FDyMeshResource(_MINOUT_ FMeshVBOIntermediate& intermediateInstance);
   ~FDyMeshResource();
 
   /// @brief Get mesh specifier name.
@@ -65,7 +65,7 @@ public:
 
 private:
   std::string               mSpecifierName        = MDY_INITIALIZE_EMPTYSTR;
-  DDyGlBufferIdInformation  mBufferIdInformation  = {};
+  DGlBufferIdInformation  mBufferIdInformation  = {};
   DDySubmeshFlagInformation mMeshFlagInformation  = {};
 };
 

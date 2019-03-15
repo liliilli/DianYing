@@ -19,15 +19,15 @@
 #include <PxPhysicsAPI.h>
 #include <PxFoundation.h>
 
-#include <Dy/Element/Actor.h>
+#include <Dy/Element/FActor.h>
 #include <Dy/Helper/System/Pointer.h>
 #include <Dy/Helper/System/Idioms.h>
 #include <Dy/Management/MSetting.h>
-#include <Dy/Component/CDyPhysicsRigidbody.h>
+#include <Dy/Component/CPhysicsRigidbody.h>
 #include <Dy/Component/Internal/Physics/CBasePhysicsCollider.h>
 #include <Dy/Management/Rendering/MRendering.h>
-#include <Dy/Management/Type/Physics/DDyCollisionIssueItem.h>
-#include <Dy/Management/Helper/PhysXErrorCallback.h>
+#include <Dy/Management/Type/Physics/DCollisionIssueItem.h>
+#include <Dy/Management/Helper/FPhysXErrorCallback.h>
 
 //!
 //! Test
@@ -163,7 +163,7 @@ public:
   void TryEnqueueDebugDrawCall();
   
   /// @brief Register activated rigidbody instance.
-  void MDY_PRIVATE(RegisterRigidbody)(_MIN_ CDyPhysicsRigidbody& iRefRigidbody)
+  void MDY_PRIVATE(RegisterRigidbody)(_MIN_ CPhysicsRigidbody& iRefRigidbody)
   {
     this->mActivatedRigidbodyList.emplace_back(DyMakeNotNull(&iRefRigidbody));
 
@@ -174,7 +174,7 @@ public:
   }
 
   /// @brief Unregister deactivated rigidbody instance.
-  void MDY_PRIVATE(UnregisterRigidbody)(_MIN_ CDyPhysicsRigidbody& iRefRigidbody)
+  void MDY_PRIVATE(UnregisterRigidbody)(_MIN_ CPhysicsRigidbody& iRefRigidbody)
   {
     const auto it = std::find_if(
       MDY_BIND_BEGIN_END(this->mActivatedRigidbodyList),
@@ -208,7 +208,7 @@ private:
     return physx::PxDefaultSimulationFilterShader;
   }
 
-  FDyPhysXErrorCallback         gCallback;
+  FPhysXErrorCallback         gCallback;
 
   physx::PxPvd*                 gPvd        = MDY_INITIALIZE_NULL;
   physx::PxFoundation*          gFoundation = MDY_INITIALIZE_NULL;
@@ -222,7 +222,7 @@ private:
   physx::PxDefaultAllocator     defaultAllocatorCallback;
 
   /// @brief Activated ptr-rigidbody list.
-  std::vector<NotNull<CDyPhysicsRigidbody*>> mActivatedRigidbodyList {};
+  std::vector<NotNull<CPhysicsRigidbody*>> mActivatedRigidbodyList {};
   
   /// @brief Call this function instead of `pEnqueueCollisionIssue`.
   /// Enqueue collision issue item to `mCollisionCallbackIssueQueue`.
@@ -233,10 +233,10 @@ private:
       physx::PxPairFlags iInternalFlag, 
       CBasePhysicsCollider* i0, 
       CBasePhysicsCollider* i1, 
-      const FDyHitResult& iHitResult);
+      const FHitResult& iHitResult);
  
   /// @brief Collision callback issue queue. This list must be cleared before other-script update phase.
-  std::queue<DDyCollisionIssueItem> mCollisionCallbackIssueQueue{};
+  std::queue<DCollisionIssueItem> mCollisionCallbackIssueQueue{};
 
   // Implements PxSimulationEventCallback
 
@@ -299,12 +299,12 @@ void MPhysics::UpdateInternalPxSceneParameter() { this->mPimpl->UpdateInternalPx
 
 void MPhysics::TryEnqueueDebugDrawCall() { this->mPimpl->TryEnqueueDebugDrawCall(); }
 
-void MPhysics::MDY_PRIVATE(RegisterRigidbody)(_MIN_ CDyPhysicsRigidbody& iRefRigidbody)
+void MPhysics::MDY_PRIVATE(RegisterRigidbody)(_MIN_ CPhysicsRigidbody& iRefRigidbody)
 {
   this->mPimpl->MDY_PRIVATE(RegisterRigidbody)(iRefRigidbody);
 }
 
-void MPhysics::MDY_PRIVATE(UnregisterRigidbody)(_MIN_ CDyPhysicsRigidbody& iRefRigidbody)
+void MPhysics::MDY_PRIVATE(UnregisterRigidbody)(_MIN_ CPhysicsRigidbody& iRefRigidbody)
 {
   this->mPimpl->MDY_PRIVATE(UnregisterRigidbody)(iRefRigidbody);
 }

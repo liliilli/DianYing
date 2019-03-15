@@ -26,7 +26,7 @@ void FDyBtMsPlain::ConstructBuffer(_MOUT_ PDyMeshInstanceMetaInfo& property) noe
   auto& submeshDesc = property.mDefaultMeshBuffer;
   submeshDesc.mVertexList.reserve(4);
   {
-    DDyVertexInformation vertex;
+    DDefaultVertexInfo vertex;
 
     vertex.mPosition = DVector3{ 1, 0, 1 };
     vertex.mNormal = DVector3::FrontZ();

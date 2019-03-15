@@ -14,7 +14,6 @@
 
 /// Header file
 #include <Dy/Builtin/Texture/SSAONoiseMap.h>
-#include <Dy/Core/Resource/Internal/TextureType.h>
 #include <Dy/Helper/Math/Random.h>
 
 //!
@@ -51,8 +50,8 @@ namespace dy::builtin
 void FDyBtTexSSAONoiseMap::ConstructBuffer(_MOUT_ TBufferType& buffer, _MOUT_ PDyTextureInstanceMetaInfo& property) noexcept
 {
   property.mSpecifierName             = sName;
-  property.mTextureType               = EDyTextureStyleType::D2;
-  property.mTextureMapType_Deprecated = EDyTextureMapType::Diffuse;
+  property.mTextureType               = ETextureStyleType::D2;
+  property.mTextureMapType_Deprecated = ETextureMapType::Diffuse;
   property.mTextureColorType          = EDyImageColorFormatStyle::RG;
   property.mPixelReadType             = EDyGlImagePixelReadType::Float;
   property.mBuiltinBufferSize.X = 4;

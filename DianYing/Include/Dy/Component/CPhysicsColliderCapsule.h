@@ -24,7 +24,7 @@ namespace dy
 class CyPhysicsColliderCapsule final : public CBasePhysicsCollider
 {
 public:
-  CyPhysicsColliderCapsule(FDyActor& actorReference) : CBasePhysicsCollider(actorReference) {};
+  CyPhysicsColliderCapsule(FActor& actorReference) : CBasePhysicsCollider(actorReference) {};
   virtual ~CyPhysicsColliderCapsule() = default;
       
   MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(CyPhysicsColliderCapsule);
@@ -40,7 +40,7 @@ public:
   MDY_NODISCARD std::string ToString() override final;
 
   /// @brief Initialize internal (PhysX) resource.
-  void InitializeInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody) override final;
+  void InitializeInternalResource(_MINOUT_ CPhysicsRigidbody& iRefRigidbody) override final;
   /// @brief Update collider mesh information.
   void UpdateColliderMesh() override;
 

@@ -16,7 +16,7 @@
 #include <vector>
 #include <nlohmann/json_fwd.hpp>
 
-#include <Dy/Element/Descriptor/GlobalEnums.h>
+#include <Dy/Element/Descriptor/EWorldObjectType.h>
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
 
 namespace dy
@@ -41,7 +41,7 @@ struct PDyPrefabInstanceMetaInfo final
   /// Meta prefab's name.
   std::string         mSpecifierName          = MDY_INITIALIZE_EMPTYSTR;
   /// The type (light, pawn, pp block etc...) of object
-  EDyMetaObjectType   mPrefabType             = EDyMetaObjectType::NoneError;
+  EWorldObjectType   mPrefabType             = EWorldObjectType::NoneError;
   ///
   DCommonProperties   mCommonProperties       = {};
   /// Dependency information which are vary along with mType.

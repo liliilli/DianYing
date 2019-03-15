@@ -16,7 +16,7 @@
 #include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
 #include <Dy/Management/MFont.h>
 #include <Dy/Management/Rendering/MRendering.h>
-#include <Dy/Element/Canvas/UiObject.h>
+#include <Dy/Element/Canvas/AWidgetObject.h>
 
 namespace dy
 {

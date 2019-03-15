@@ -22,7 +22,7 @@
 namespace dy
 {
 
-class FDyUiWidget;
+class FWidget;
 
 } /// ::dy namespace
 
@@ -39,10 +39,10 @@ namespace dy
 class CBaseWidgetScript : public IScriptable
 {
 public:
-  explicit CBaseWidgetScript(FDyUiWidget& ioWidget); 
+  explicit CBaseWidgetScript(FWidget& ioWidget); 
 
   /// @brief Get mutable reference of widget.
-  MDY_NODISCARD FDyUiWidget& GetWidgetReference() noexcept;
+  MDY_NODISCARD FWidget& GetWidgetReference() noexcept;
 
 protected:
   /// Script name for specification and searching.
@@ -51,7 +51,7 @@ protected:
   bool         mIsScriptInstanceBinded = false;
 
 private:
-  FDyUiWidget* mBindedWidget = nullptr;
+  FWidget* mBindedWidget = nullptr;
 };
 
 } /// ::dy namespace

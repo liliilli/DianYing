@@ -16,9 +16,9 @@
 #include <Dy/Meta/Type/EDyResourceTypes.h>
 #include <Dy/Core/Rendering/Type/EDrawType.h>
 #include <Dy/Core/Rendering/Wrapper/PGLBufferDescriptor.h>
-#include <Dy/Core/Resource/Internal/ShaderType.h>
+#include <Dy/Core/Resource/Internal/XShaderTypes.h>
 #include <Dy/Helper/Internal/FCallStack.h>
-#include <Dy/Management/Type/Render/DDyGlGlobalStates.h>
+#include <Dy/Management/Type/Render/DGlGlobalStates.h>
 #include <Dy/Management/Type/AttachmentInformation.h>
 
 //!
@@ -29,7 +29,7 @@ namespace dy
 {
 struct PDyGLTextureCubemapDescriptor;
 struct DArea2D;
-enum class EDyTextureStyleType : unsigned char;
+enum class ETextureStyleType : unsigned char;
 enum class EDrawType;
 struct PDyGLVaoBindDescriptor;
 struct PDyGLShaderFragmentDescriptor;
@@ -154,9 +154,9 @@ public:
   static void UnbindVertexArrayObject();
 
   /// @brief Bind texture to activated shader. Shader must be actiated before use this.
-  static void BindTexture(_MIN_ TU32 activeTextureIndex, _MIN_ EDyTextureStyleType type, _MIN_ TU32 textureId);
+  static void BindTexture(_MIN_ TU32 activeTextureIndex, _MIN_ ETextureStyleType type, _MIN_ TU32 textureId);
   /// @brief Unbind texture from GL_TEXTURE_XX from activated shader.
-  static void UnbindTexture(TU32 textureIndex, _MIN_ EDyTextureStyleType type);
+  static void UnbindTexture(TU32 textureIndex, _MIN_ ETextureStyleType type);
   /// @brief Unbind textures of `textureIndexList` from activated shader.
   static void UnbindTextureList(_MIN_ const std::vector<TU32>& textureIndexList);
 
@@ -169,7 +169,7 @@ public:
   static void QueryFloatVector(_MIN_ GLenum iGLLowEnumCommand, _MIN_ TF32* iPtrRawFloatVector);
 
   /// @brief 
-  MDY_NODISCARD static std::optional<std::tuple<std::string, GLsizei, GLint, EDyAttributeVariableType, TU32>>
+  MDY_NODISCARD static std::optional<std::tuple<std::string, GLsizei, GLint, EAttributeVariableType, TU32>>
   GetShaderProgramAttributeInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iAttrIndex);
   /// @brief
   MDY_NODISCARD static std::optional<std::tuple<std::string, GLsizei, GLint, EUniformVariableType, TU32>>
@@ -228,7 +228,7 @@ public:
   static void SetupInitialGlobalStatus();
 
   /// @brief Insert global status of GL.
-  static void PushInternalGlobalState(const DDyGlGlobalStates& iNewStatus);
+  static void PushInternalGlobalState(const DGlGlobalStates& iNewStatus);
   static void PopInternalGlobalState();
 
 private:
@@ -240,17 +240,17 @@ private:
   /// @brief Global status stack for management. \n
   /// This container will be push & popped automatically by following rendering pipeline.
   /// This container must not be empty before termination of Dy application.
-  static FCallStack<DDyGlGlobalStates> mInternalGlobalStatusStack;
+  static FCallStack<DGlGlobalStates> mInternalGlobalStatusStack;
 
   /// ▽ Actual state machine change logic will be operated in these stack.
   static FCallStack<bool> mInternal_FeatBlendStack;
   static FCallStack<bool> mInternal_FeatCullfaceStack;
   static FCallStack<bool> mInternal_FeatDepthTestStack;
   static FCallStack<bool> mInternal_FeatScissorTestStack;
-  static FCallStack<DDyGlGlobalStates::DPolygonMode>   mInternal_PolygonModeStack;
-  static FCallStack<DDyGlGlobalStates::DBlendMode>     mInternal_BlendModeStack;
-  static FCallStack<DDyGlGlobalStates::DCullfaceMode>  mInternal_CullfaceModeStack;
-  static FCallStack<DDyGlGlobalStates::DViewport>      mInternal_ViewportStack;
+  static FCallStack<DGlGlobalStates::DPolygonMode>   mInternal_PolygonModeStack;
+  static FCallStack<DGlGlobalStates::DBlendMode>     mInternal_BlendModeStack;
+  static FCallStack<DGlGlobalStates::DCullfaceMode>  mInternal_CullfaceModeStack;
+  static FCallStack<DGlGlobalStates::DViewport>      mInternal_ViewportStack;
   static FCallStack<std::vector<PBlendingEquation>> sAttachmentBlendings;
 };
 

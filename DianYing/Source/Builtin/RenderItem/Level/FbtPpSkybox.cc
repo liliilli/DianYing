@@ -21,7 +21,7 @@
 #include <Dy/Core/Resource/Resource/FDyMeshResource.h>
 #include <Dy/Management/Rendering/MRendering.h>
 #include <Dy/Core/Resource/Resource/FDyTextureResource.h>
-#include <Dy/Component/CDySkybox.h>
+#include <Dy/Component/CSkybox.h>
 
 namespace dy
 {

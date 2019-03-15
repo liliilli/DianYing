@@ -15,13 +15,13 @@
 /// Header file
 #include <Dy/Component/CLightPoint.h>
 #include <Dy/Management/Rendering/MRendering.h>
-#include <Dy/Element/Actor.h>
-#include <Dy/Component/CDyTransform.h>
+#include <Dy/Element/FActor.h>
+#include <Dy/Component/CTransform.h>
 
 namespace dy
 {
 
-CLightPoint::CLightPoint(FDyActor& actorReference) 
+CLightPoint::CLightPoint(FActor& actorReference) 
   : AGeneralBaseComponent(actorReference)
 { }
 

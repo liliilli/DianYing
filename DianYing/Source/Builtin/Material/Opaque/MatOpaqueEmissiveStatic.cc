@@ -16,7 +16,7 @@
 #include <Dy/Builtin/Material/Opaque/MatOpaqueEmissiveStatic.h>
 
 #include <Dy/Builtin/Texture/Checker.h>
-#include <Dy/Core/Resource/Internal/MaterialType.h>
+#include <Dy/Core/Resource/Internal/EMaterialBlendMode.h>
 #include <Dy/Builtin/ShaderGl/Render/OpaqueEmissiveStatic.h>
 
 //!
@@ -30,9 +30,9 @@ void FDyBtMtOpaqueEmissiveStatic::ConstructBuffer(PDyMaterialInstanceMetaInfo& o
 {
   oProperty.mSpecifierName   = sName;
   oProperty.mShaderSpecifier = FDyBtShGlEmissiveStatic::sName;
-  oProperty.mBlendMode       = EDyMaterialBlendMode::Opaque;
+  oProperty.mBlendMode       = EMaterialBlendMode::Opaque;
 
-  oProperty.mTextureNames[0] = {(FDyBuiltinTextureChecker::sName), EDyTextureMapType::Unknown};
+  oProperty.mTextureNames[0] = {(FDyBuiltinTextureChecker::sName), ETextureMapType::Unknown};
   PDyMaterialInstanceMetaInfo::InsertValue<EUniformVariableType::Float>(
     oProperty, 
     "uEmissiveFactor", 5.0f);

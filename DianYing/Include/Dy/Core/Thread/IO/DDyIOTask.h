@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Resource/Type/EDyScope.h>
+#include <Dy/Core/Resource/Type/EResourceScope.h>
 #include <Dy/Core/Reflection/RBuiltinResources.h>
 #include <Dy/Core/Thread/IO/EDyIOTask.h>
 
@@ -35,7 +35,7 @@ public:
   std::string       mSpecifierName  = {};
   EDyResourceStyle  mResourcecStyle = EDyResourceStyle::NoneError;
   EResourceType   mResourceType   = EResourceType::NoneError;
-  EDyScope          mScope          = EDyScope::Global;
+  EResourceScope          mScope          = EResourceScope::Global;
   EDyObject         mBoundObjectStyle    = EDyObject::NoneError;
   TPriority         mTaskPriority   = 0;
   bool              mIsResourceDeferred = false;

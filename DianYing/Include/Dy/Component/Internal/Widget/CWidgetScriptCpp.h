@@ -25,7 +25,7 @@ namespace dy
 class CWidgetScriptCpp final : public CBaseWidgetScript 
 {
 public:
-  CWidgetScriptCpp(FDyUiWidget& iWidgetReference, const PDyScriptInstanceMetaInfo& iDescriptor); 
+  CWidgetScriptCpp(FWidget& iWidgetReference, const PDyScriptInstanceMetaInfo& iDescriptor); 
   virtual ~CWidgetScriptCpp() = default;
 
   /// @brief  Get `most derived` `low-level` script instance pointer.

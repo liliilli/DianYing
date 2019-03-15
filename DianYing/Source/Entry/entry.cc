@@ -66,9 +66,9 @@ int APIENTRY WinMain(_MIN_ HINSTANCE hInstance, _MIN_ HINSTANCE hPrevInstance, _
   //_crtBreakAlloc = 681;
 
   MDY_WIN32_TRY_TURN_ON_DEBUG();
-  MDY_CALL_ASSERT_SUCCESS(dy::DyEngine::Initialize());
-  dy::DyEngine::GetInstance()();
-  MDY_CALL_ASSERT_SUCCESS(dy::DyEngine::Release());
+  MDY_CALL_ASSERT_SUCCESS(dy::GDyEngine::Initialize());
+  dy::GDyEngine::GetInstance()();
+  MDY_CALL_ASSERT_SUCCESS(dy::GDyEngine::Release());
   MDY_WIN32_TRY_TURN_OFF_DEBUG();
   return 0;
 }

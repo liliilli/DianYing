@@ -37,7 +37,7 @@ namespace dy
 class CActorScriptCpp final : public CBaseActorScript
 {
 public:
-  CActorScriptCpp(FDyActor& actorReference, const PDyScriptInstanceMetaInfo& iDesc);
+  CActorScriptCpp(FActor& actorReference, const PDyScriptInstanceMetaInfo& iDesc);
   virtual ~CActorScriptCpp() = default;
 
   /// @brief  Get `most derived` `low-level` script instance pointer.

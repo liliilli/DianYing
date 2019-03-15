@@ -20,7 +20,7 @@
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Management/Type/KeyAxisBindingInformation.h>
 #include <Dy/Management/Type/KeyActionBindingInformation.h>
-#include <Dy/Management/Type/Input/EDyInputButtonStatus.h>
+#include <Dy/Management/Type/Input/EInputButtonStatus.h>
 #include <Dy/Management/Type/Input/EDyMouseMode.h>
 #include <Dy/Management/Internal/Input/MInputDelegates.h>
 #include <Dy/Helper/Type/DClamp.h>
@@ -32,7 +32,7 @@
 
 namespace dy
 {
-class FDyActor; 
+class FActor; 
 } /// ::dy namespace
 
 //!
@@ -69,7 +69,7 @@ public:
   MDY_NODISCARD TF32 GetJoystickStickValue(_MIN_ DClamp<TU32, 0, 5> index) const noexcept;
   /// @brief Return button status of supported keyboard, mouse, and joystick button. \n
   /// button input value must not be `NoneError`.
-  MDY_NODISCARD EDyInputButtonStatus GetButtonStatusValue(_MIN_ EDyButton button) const noexcept;
+  MDY_NODISCARD EInputButtonStatus GetButtonStatusValue(_MIN_ EDyButton button) const noexcept;
 
   /// @brief Get whether or not specific axis was pressed.
   /// @param[in] axisSpecifier The axis name which axis instance has.
@@ -155,11 +155,11 @@ public:
   MDY_NODISCARD EDySuccess MDY_PRIVATE(TryDetachContollerActor)(_MIN_ AActorCppScript& iRefActor) noexcept;
 
   /// @brief Get low-level key status value.
-  MDY_NODISCARD EDyInputButtonStatus MDY_PRIVATE(GetLowlevelKeyStatus)(_MIN_ EDyButton iId) noexcept;
+  MDY_NODISCARD EInputButtonStatus MDY_PRIVATE(GetLowlevelKeyStatus)(_MIN_ EDyButton iId) noexcept;
 
-  using TPickingCallbackFunction = void(*)(FDyActor*);
+  using TPickingCallbackFunction = void(*)(FActor*);
   template <typename TType>
-  using TCPickingCallbackFunction = void(TType::*)(FDyActor*);
+  using TCPickingCallbackFunction = void(TType::*)(FActor*);
   /// @brief Try pick actor object and bind to input system.
   EDySuccess TryPickObject(_MIN_ const DVector2& iScreenPosition);
   /// @brief Set picking target normal callback function.
@@ -178,7 +178,7 @@ public:
   /// @brief Check any actor is picked now.
   MDY_NODISCARD bool IsActorPicked() const noexcept;
   /// @brief Get pointer of pointer of picking target variable.
-  MDY_NODISCARD FDyActor** MDY_PRIVATE(GetPPtrPickingTarget)() noexcept;
+  MDY_NODISCARD FActor** MDY_PRIVATE(GetPPtrPickingTarget)() noexcept;
 
 private:
   void MDY_PRIVATE(pInitializeAxisNAction)();
@@ -219,11 +219,11 @@ private:
   /// @brief Manages mouse clicking input mode.
   std::stack<EDyMouseMode>        mPresentMouseMode;
   /// @brief Pointer of actor picking target.
-  FDyActor*                       mPtrActorPickingTarget = nullptr;
+  FActor*                       mPtrActorPickingTarget = nullptr;
   /// @brief Functor for actor picking in normal mode.
-  std::function<void(FDyActor*)>  mActorPickingCallback = nullptr;
+  std::function<void(FActor*)>  mActorPickingCallback = nullptr;
 
-  friend class DyEngine;
+  friend class GDyEngine;
 };
 
 ///

@@ -19,7 +19,7 @@
 
 namespace dy
 {
-class FDyBasicGaugeBar;
+class FWidgetBasicGaugeBar;
 } /// ::dy namespace
 
 //!
@@ -30,10 +30,10 @@ namespace dy
 {
 
 /// @struct PCtorBasicGaugeBarRendererInformation
-/// @brief Descriptor for `FDyBasicGaugeBar` widget object.
+/// @brief Descriptor for `FWidgetBasicGaugeBar` widget object.
 struct PCtorBasicGaugeBarRendererInformation final
 {
-  FDyBasicGaugeBar* mPtrUiObject = nullptr;
+  FWidgetBasicGaugeBar* mPtrUiObject = nullptr;
 };
 
 } /// ::dy namespace

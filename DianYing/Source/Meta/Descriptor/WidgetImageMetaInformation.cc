@@ -24,23 +24,20 @@ std::unique_ptr<PDyMetaWidgetImageDescriptor>
 PDyMetaWidgetImageDescriptor::CreateMetaInformation(const nlohmann::json& itemAtlas)
 {
   /*  Template
-   *  {
-        "Name": "TestImage",
-        "Type": "Image",
-        "Parent": "",
-        "Details": {
-          "InitialPosition": { "X": 0, "Y": 0 },
-          "WidgetSize": { "X": 200, "Y": 100 },
-          "Origin": "Center_Center",
-          "ImageRegion": {
-            "LeftDown": { "X": 0.0, "Y": 0.0 },
-            "RightUp" : { "X": 1.0, "Y": 1.0 }
-          },
-          "ImageSpecifierName": "TestImageImage",
-          "TintColor": { "R": 1.0, "G": 1.0, "B": 1.0, "A": 1.0 },
-          "IsSizeToContent": false
-        }
+    { "Name": "TestImage", "Type": "Image", "Parent": "", "ZOrder": 0, "IsActivated": true,
+      "Details": {
+        "InitialPosition": { "X": -80, "Y": 80 },
+        "WidgetSize": { "X": 128, "Y": 128 },
+        "Origin": "Right_Bottom",
+        "ImageRegion": {
+          "LeftDown": { "X": 0.0, "Y": 0.0 },
+          "RightUp" : { "X": 1.0, "Y": 1.0 }
+        },
+        "ImageSpecifierName": "dyBtTextureChecker",
+        "TintColor": { "R": 1.0, "G": 1.0, "B": 1.0, "A": 1.0 },
+        "IsSizeToContent": false
       }
+    }
    */
 
   using TPDyMWCBD = PDyMetaWidgetCommonBaseDesc;
@@ -50,9 +47,11 @@ PDyMetaWidgetImageDescriptor::CreateMetaInformation(const nlohmann::json& itemAt
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   auto resultInstance = std::make_unique<PDyMetaWidgetImageDescriptor>();
-  resultInstance->mUiObjectSpecifierName  = json::GetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Name);
-  resultInstance->mComponentType          = EDyWidgetComponentType::Image;
-  resultInstance->mParentSpecifierName    = json::GetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Parent);
+  resultInstance->mComponentType = EDyWidgetComponentType::Image;
+
+  json::GetValueFromTo(itemAtlas, "Name", resultInstance->mUiObjectSpecifierName);
+  json::GetValueFromTo(itemAtlas, "Parent", resultInstance->mParentSpecifierName);
+  json::GetValueFromTo(itemAtlas, "IsActivated", resultInstance->mIsActivated);
   json::GetValueFromTo(itemAtlas, "ZOrder", resultInstance->mZOrder);
 
   const auto& detailAtlas           = itemAtlas[(TPDyMWCBD::sHeader_Details)];

@@ -13,9 +13,9 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Resource/Internal/MaterialType.h>
-#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
-#include <Dy/Core/Resource/Type/TDyInformationBinder.h>
+#include <Dy/Core/Resource/Internal/EMaterialBlendMode.h>
+#include <Dy/Core/Resource/Type/TResourceBinder.h>
+#include <Dy/Core/Resource/Type/TInformationBinder.h>
 
 //!
 //! Forward declaration
@@ -50,7 +50,7 @@ public:
   }
 
   /// @brief Get blend mode of material information.
-  MDY_NODISCARD EDyMaterialBlendMode GetBlendMode() const noexcept
+  MDY_NODISCARD EMaterialBlendMode GetBlendMode() const noexcept
   {
     return this->mBlendMode;
   }
@@ -80,7 +80,7 @@ public:
 
 private:
   std::string          mSpecifierName    = MDY_INITIALIZE_EMPTYSTR;
-  EDyMaterialBlendMode mBlendMode        = EDyMaterialBlendMode::Opaque;
+  EMaterialBlendMode mBlendMode        = EMaterialBlendMode::Opaque;
 
   TDyInformationBinderMaterial mBinderMaterial;
   TDyResourceBinderShader      mBinderShader;

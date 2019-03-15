@@ -41,7 +41,7 @@ TU32 FDyTextureResource::GetTextureId() const noexcept
   return this->mTextureResourceId;
 }
 
-EDyTextureStyleType FDyTextureResource::GetTextureType() const noexcept
+ETextureStyleType FDyTextureResource::GetTextureType() const noexcept
 {
   return this->mTextureType;
 }

@@ -23,7 +23,7 @@ namespace dy
 
 ///
 /// @struct PDyMetaWidgetImageDescriptor
-/// @brief image(`FDyImage`) component of widget descriptor
+/// @brief image(`FWidgetImage`) component of widget descriptor
 ///
 struct PDyMetaWidgetImageDescriptor final : public PDyMetaWidgetCommonBaseDesc
 {

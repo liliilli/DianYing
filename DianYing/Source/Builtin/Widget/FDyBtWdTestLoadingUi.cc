@@ -25,7 +25,7 @@ namespace
 MDY_SET_IMMUTABLE_STRING(sBuffer, R"dy(
 {
   "Meta":
-  { "Name": "dyBtWdTestLoadingUi", "ZOrder" : 101, "IsUsingScript": true,
+  { "Name": "dyBtWdTestLoadingUi", "ZOrder" : 101, "IsUsingScript": true, "IsActivated": true,
     "Script": {
       "Type" : "Script", "Activated" : true,
       "Details" : { "Specifier": "FDyBtScTestLoadingUi" }
@@ -33,7 +33,7 @@ MDY_SET_IMMUTABLE_STRING(sBuffer, R"dy(
   },
   "ObjectList":
   [
-    { "Name": "LoadingText", "Type": "Text", "Parent": "", "ZOrder" : 0,
+    { "Name": "LoadingText", "Type": "Text", "Parent": "", "ZOrder" : 0, "IsActivated": true,
       "Details":
       {
         "InitialPosition": { "X":0, "Y": 0 },

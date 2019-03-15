@@ -15,7 +15,7 @@
 #include <Dy/Component/Internal/Actor/CActorScriptLua.h>
 #include <Dy/Management/IO/MIOMeta.h>
 #include <Dy/Management/MScript.h>
-#include <Dy/Element/Actor.h>
+#include <Dy/Element/FActor.h>
 
 //!
 //! Forward declaration
@@ -46,7 +46,7 @@ MDY_SET_IMMUTABLE_STRING(sFunction_OnDisabled,  "OnDisabled");
 namespace dy
 {
 
-CActorScriptLua::CActorScriptLua(FDyActor& actorReference, const PDyScriptInstanceMetaInfo& iDesc) 
+CActorScriptLua::CActorScriptLua(FActor& actorReference, const PDyScriptInstanceMetaInfo& iDesc) 
   : CBaseActorScript{actorReference}
 {
   MDY_ASSERT_MSG(iDesc.mScriptType == EDyScriptType::Lua,   "Script type is not matched to CActorScriptLua.");

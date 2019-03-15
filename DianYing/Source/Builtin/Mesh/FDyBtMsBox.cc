@@ -25,7 +25,7 @@ void FDyBtMsBox::ConstructBuffer(_MOUT_ PDyMeshInstanceMetaInfo& property) noexc
   auto& submeshDesc = property.mDefaultMeshBuffer;
   submeshDesc.mVertexList.reserve(24);
   {
-    DDyVertexInformation vertex;
+    DDefaultVertexInfo vertex;
 
     // Front and back
     vertex.mPosition = DVector3{ 1,  1,  1 };

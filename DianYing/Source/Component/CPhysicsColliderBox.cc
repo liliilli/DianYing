@@ -16,7 +16,7 @@
 #include <Dy/Component/CPhysicsColliderBox.h>
 #include <geometry/PxBoxGeometry.h>
 #include <Dy/Management/MPhysics.h>
-#include <Dy/Component/CDyPhysicsRigidbody.h>
+#include <Dy/Component/CPhysicsRigidbody.h>
 #include <PxPhysics.h>
 
 namespace dy
@@ -63,7 +63,7 @@ std::string CPhysicsColliderBox::ToString()
   return "";
 }
 
-void CPhysicsColliderBox::InitializeInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody)
+void CPhysicsColliderBox::InitializeInternalResource(_MINOUT_ CPhysicsRigidbody& iRefRigidbody)
 {
   // PxSphereGeometry is value type.
   const physx::PxBoxGeometry geometry{this->mHalfExtent.X, this->mHalfExtent.Y, this->mHalfExtent.Z};

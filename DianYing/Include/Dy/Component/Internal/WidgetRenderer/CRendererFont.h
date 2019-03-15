@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
+#include <Dy/Core/Resource/Type/TResourceBinder.h>
 
 //!
 //! Forward declaration
@@ -21,7 +21,7 @@
 
 namespace dy
 {
-class FDyText;
+class FWidgetText;
 } /// ::dy namespace
 
 //!
@@ -36,7 +36,7 @@ namespace dy
 class CRendererFont final 
 {
 public:
-  CRendererFont(FDyText& iWidget);
+  CRendererFont(FWidgetText& iWidget);
   ~CRendererFont() = default;
 
   CRendererFont(const CRendererFont&)            = delete;
@@ -46,7 +46,7 @@ public:
   void Render();
 
 private:
-  FDyText*                mPtrWidget = nullptr; 
+  FWidgetText*                mPtrWidget = nullptr; 
   TDyResourceBinderShader mBinderShader{};
   TDyResourceBinderMesh   mBinderFontMesh{};
 };

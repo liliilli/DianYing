@@ -30,7 +30,7 @@ void FDyBtAttachmentEmissiveTempBlur::ConstructBuffer(PDyGlAttachmentInstanceMet
     {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::ClampToEdge},
     {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::ClampToEdge},
   };
-  oProperty.mBufferFormat = EDyGlBufferDataInternalFormat::RGBA16Float;
+  oProperty.mBufferFormat = EGlBufferDataInternalFormat::RGBA16Float;
   oProperty.mIsPingpong = true;
 }
 

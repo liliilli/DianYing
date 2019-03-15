@@ -52,7 +52,7 @@ EDyGlImagePixelReadType FDyTextureInformation::GetPixelReadType() const noexcept
   return this->mInternalPixelReadType;
 }
 
-EDyTextureStyleType FDyTextureInformation::GetType() const noexcept
+ETextureStyleType FDyTextureInformation::GetType() const noexcept
 {
   return this->mTextureType;
 }

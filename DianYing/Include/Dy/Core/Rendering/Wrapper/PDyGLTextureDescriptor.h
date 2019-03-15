@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Helper/Type/DVectorInt2.h>
-#include <Dy/Core/Resource/Internal/TextureEnums.h>
+#include <Dy/Core/Resource/Internal/ETextureEnums.h>
 #include <Dy/Meta/Information/MetaInfoTexture.h>
 
 namespace dy
@@ -26,7 +26,7 @@ struct PDyGLTextureBase
 {
   virtual ~PDyGLTextureBase() = 0;
 
-  EDyTextureStyleType mType = EDyTextureStyleType::NoneError;
+  ETextureStyleType mType = ETextureStyleType::NoneError;
   bool                mIsUsingDefaultMipmap       = false;
   bool                mIsUsingCustomizedParameter = false;
   TI32                mImageFormat    = MDY_INITIALIZE_DEFINT;

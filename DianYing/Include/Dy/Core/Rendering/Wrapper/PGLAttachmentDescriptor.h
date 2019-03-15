@@ -31,8 +31,8 @@ struct PGLAttachmentDescriptor final
   DColorRGBA                    mBorderColor    = {};
   TTextureParameterList         mParameterList  = {};
   bool                          mIsUsingCustomizedParameter = false;
-  EDyGlBufferDataInternalFormat mBufferFormat   = EDyGlBufferDataInternalFormat::NoneError;
-  EDyTextureStyleType           mAttachmentType = EDyTextureStyleType::NoneError;
+  EGlBufferDataInternalFormat mBufferFormat   = EGlBufferDataInternalFormat::NoneError;
+  ETextureStyleType           mAttachmentType = ETextureStyleType::NoneError;
   TU32                          mSpecifiedMipmapLevel = 1;
   // @brief This variable is only applied into attachment creation when `mAttachmentType` is `Array` only.
   TU32                          mDepthNumber    = 0;

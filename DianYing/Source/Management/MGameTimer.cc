@@ -14,8 +14,8 @@
 
 /// Header file
 #include <Dy/Management/MGameTimer.h>
-#include <Dy/Element/Type/Timer/FDyTimerHandle.h>
-#include <Dy/Core/DyEngine.h>
+#include <Dy/Element/Type/Timer/FTimerHandle.h>
+#include <Dy/Core/GDyEngine.h>
 
 namespace dy
 {
@@ -32,7 +32,7 @@ EDySuccess MGameTimer::pfRelease()
   return DY_SUCCESS;
 }
 
-void MGameTimer::PauseActorTimer(FDyTimerHandle& iRefHandler)
+void MGameTimer::PauseActorTimer(FTimerHandle& iRefHandler)
 {
   // Bound is false only when aborted or not exist on list.
   if (iRefHandler.IsBound() == false) { return; }
@@ -43,13 +43,13 @@ void MGameTimer::PauseActorTimer(FDyTimerHandle& iRefHandler)
       [validId](const decltype(mActorTimerList)::value_type& iTimerItem) { return iTimerItem.GetIndex() == validId; });
   MDY_ASSERT_MSG(it != this->mActorTimerList.end(), "Unexpected error occurred.");
  
-  if (it->GetTimerStatus() == EDyTimerStatus::Play) 
+  if (it->GetTimerStatus() == ETimerState::Play) 
   { 
-    it->SetTimerStatus(EDyTimerStatus::Paused); 
+    it->SetTimerStatus(ETimerState::Paused); 
   }
 }
 
-void MGameTimer::ResumeActorTimer(FDyTimerHandle& iRefHandler)
+void MGameTimer::ResumeActorTimer(FTimerHandle& iRefHandler)
 {
   // Bound is false only when aborted or not exist on list.
   if (iRefHandler.IsBound() == false) { return; }
@@ -60,13 +60,13 @@ void MGameTimer::ResumeActorTimer(FDyTimerHandle& iRefHandler)
       [validId](const decltype(mActorTimerList)::value_type& iTimerItem) { return iTimerItem.GetIndex() == validId; });
   MDY_ASSERT_MSG(it != this->mActorTimerList.end(), "Unexpected error occurred.");
    
-  if (it->GetTimerStatus() == EDyTimerStatus::Paused) 
+  if (it->GetTimerStatus() == ETimerState::Paused) 
   { 
-    it->SetTimerStatus(EDyTimerStatus::Play); 
+    it->SetTimerStatus(ETimerState::Play); 
   }
 }
 
-void MGameTimer::StopActorTimer(FDyTimerHandle& iRefHandler)
+void MGameTimer::StopActorTimer(FTimerHandle& iRefHandler)
 {
   // Bound is false only when aborted or not exist on list.
   if (iRefHandler.IsBound() == false) { return; }
@@ -80,7 +80,7 @@ void MGameTimer::StopActorTimer(FDyTimerHandle& iRefHandler)
   it->MDY_PRIVATE(Abort)();
 }
 
-void MGameTimer::PauseWidgetTimer(FDyTimerHandle& iRefHandler)
+void MGameTimer::PauseWidgetTimer(FTimerHandle& iRefHandler)
 {
   // Bound is false only when aborted or not exist on list.
   if (iRefHandler.IsBound() == false) { return; }
@@ -91,13 +91,13 @@ void MGameTimer::PauseWidgetTimer(FDyTimerHandle& iRefHandler)
       [validId](const decltype(mWidgetTimerList)::value_type& iTimerItem) { return iTimerItem.GetIndex() == validId; });
   MDY_ASSERT_MSG(it != this->mWidgetTimerList.end(), "Unexpected error occurred.");
    
-  if (it->GetTimerStatus() == EDyTimerStatus::Paused) 
+  if (it->GetTimerStatus() == ETimerState::Paused) 
   { 
-    it->SetTimerStatus(EDyTimerStatus::Play); 
+    it->SetTimerStatus(ETimerState::Play); 
   }
 }
 
-void MGameTimer::ResumeWidgetTimer(FDyTimerHandle& iRefHandler)
+void MGameTimer::ResumeWidgetTimer(FTimerHandle& iRefHandler)
 {
   // Bound is false only when aborted or not exist on list.
   if (iRefHandler.IsBound() == false) { return; }
@@ -108,14 +108,14 @@ void MGameTimer::ResumeWidgetTimer(FDyTimerHandle& iRefHandler)
       [validId](const decltype(mWidgetTimerList)::value_type& iTimerItem) { return iTimerItem.GetIndex() == validId; });
   MDY_ASSERT_MSG(it != this->mWidgetTimerList.end(), "Unexpected error occurred.");
    
-  if (it->GetTimerStatus() == EDyTimerStatus::Paused) 
+  if (it->GetTimerStatus() == ETimerState::Paused) 
   { 
-    it->SetTimerStatus(EDyTimerStatus::Play); 
+    it->SetTimerStatus(ETimerState::Play); 
   }
 }
 
 void MGameTimer::MDY_PRIVATE(pSetTimer)(
-    FDyTimerHandle& iRefHandler, 
+    FTimerHandle& iRefHandler, 
     AActorCppScript& iRefScript,
     std::function<void(void)> iFunction,
     TF32 iTickTime, 
@@ -123,7 +123,7 @@ void MGameTimer::MDY_PRIVATE(pSetTimer)(
     TF32 iDelayTime)
 {
   if (iRefHandler.IsBound() == false)
-  { // Create Item, and bind `FDyTimerHandle` handler to `iRefScript`.
+  { // Create Item, and bind `FTimerHandle` handler to `iRefScript`.
     this->mActorTimerList.emplace_back(std::ref(iRefHandler), std::ref(iRefScript), iDelayTime, iTickTime, iIsLooped, iFunction);
   }
   else
@@ -139,7 +139,7 @@ void MGameTimer::MDY_PRIVATE(pSetTimer)(
 }
 
 void MGameTimer::MDY_PRIVATE(pSetTimer)(
-    FDyTimerHandle& iRefHandler, 
+    FTimerHandle& iRefHandler, 
     AWidgetCppScript& iRefScript,
     std::function<void(void)> iFunction,
     TF32 iTickTime, 
@@ -147,7 +147,7 @@ void MGameTimer::MDY_PRIVATE(pSetTimer)(
     TF32 iDelayTime)
 {
   if (iRefHandler.IsBound() == false)
-  { // Create Item, and bind `FDyTimerHandle` handler to `iRefScript`.
+  { // Create Item, and bind `FTimerHandle` handler to `iRefScript`.
     this->mWidgetTimerList.emplace_back(std::ref(iRefHandler), std::ref(iRefScript), iDelayTime, iTickTime, iIsLooped, iFunction);
   }
   else
@@ -166,7 +166,7 @@ void MGameTimer::Update(TF32 iDt)
 {
   for (auto& timerItem : this->mActorTimerList)
   {
-    if (timerItem.GetTimerStatus() == EDyTimerStatus::Play)
+    if (timerItem.GetTimerStatus() == ETimerState::Play)
     {
       timerItem.Update(iDt);
       if (timerItem.Checked() == true) { timerItem.CallFunction(false); }
@@ -177,7 +177,7 @@ void MGameTimer::Update(TF32 iDt)
 
   for (auto& timerItem : this->mWidgetTimerList)
   {
-    if (timerItem.GetTimerStatus() == EDyTimerStatus::Play)
+    if (timerItem.GetTimerStatus() == ETimerState::Play)
     {
       timerItem.Update(iDt);
       if (timerItem.Checked() == true) { timerItem.CallFunction(false); }
@@ -187,7 +187,7 @@ void MGameTimer::Update(TF32 iDt)
   }
 }
 
-void MGameTimer::StopWidgetTimer(FDyTimerHandle& iRefHandler)
+void MGameTimer::StopWidgetTimer(FTimerHandle& iRefHandler)
 {
   // Bound is false only when aborted or not exist on list.
   if (iRefHandler.IsBound() == false) { return; }
@@ -212,7 +212,7 @@ void MGameTimer::pTryGcRemoveAbortedActorTimerInstance()
   if (this->mActorTimerList.empty() == true) { return; }
   EraseRemoveIf(this->mActorTimerList, [](const decltype(mActorTimerList)::value_type& iInstance)
   {
-    return iInstance.GetTimerStatus() == EDyTimerStatus::Aborted;
+    return iInstance.GetTimerStatus() == ETimerState::Aborted;
   });
 }
 
@@ -221,7 +221,7 @@ void MGameTimer::pTryGcRemoveAbortedWidgetTimerInstance()
   if (this->mWidgetTimerList.empty() == true) { return; }
   EraseRemoveIf(this->mWidgetTimerList, [](const decltype(mWidgetTimerList)::value_type& iInstance)
   {
-    return iInstance.GetTimerStatus() == EDyTimerStatus::Aborted;
+    return iInstance.GetTimerStatus() == ETimerState::Aborted;
   });
 }
 

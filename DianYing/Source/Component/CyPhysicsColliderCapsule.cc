@@ -16,7 +16,7 @@
 #include <Dy/Component/CPhysicsColliderCapsule.h>
 #include <geometry/PxCapsuleGeometry.h>
 #include <Dy/Management/MPhysics.h>
-#include <Dy/Component/CDyPhysicsRigidbody.h>
+#include <Dy/Component/CPhysicsRigidbody.h>
 #include <PxPhysics.h>
 
 namespace dy
@@ -63,7 +63,7 @@ std::string CyPhysicsColliderCapsule::ToString()
   return "";
 }
 
-void CyPhysicsColliderCapsule::InitializeInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody)
+void CyPhysicsColliderCapsule::InitializeInternalResource(_MINOUT_ CPhysicsRigidbody& iRefRigidbody)
 {
   // PxSphereGeometry is value type.
   const physx::PxCapsuleGeometry geometry{this->mRadius, this->mHalfHeight};

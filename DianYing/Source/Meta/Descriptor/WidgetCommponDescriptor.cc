@@ -57,13 +57,14 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ EDyWidgetComponentType& p)
 }
 
 std::unique_ptr<PDyMetaWidgetRootDescriptor>
-PDyMetaWidgetRootDescriptor::CreateMetaInformation(_MIN_ const nlohmann::json& itemAtlas)
+PDyMetaWidgetRootDescriptor::CreateMetaInformation(const nlohmann::json& itemAtlas)
 {
   auto instance = std::make_unique<PDyMetaWidgetRootDescriptor>();
 
   json::GetValueFromTo(itemAtlas, sHeader_Name,   instance->mWidgetSpecifierName);
   json::GetValueFromTo(itemAtlas, "ZOrder",       instance->mZOrder);
   json::GetValueFromTo(itemAtlas, "IsUsingScript",instance->mIsUsingScript);
+  json::GetValueFromTo(itemAtlas, "IsActivated",  instance->mIsActivated);
 
   if (instance->mIsUsingScript == true)
   {

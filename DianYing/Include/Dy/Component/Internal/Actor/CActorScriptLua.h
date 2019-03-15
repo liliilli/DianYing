@@ -37,7 +37,7 @@ namespace dy
 class CActorScriptLua final : public CBaseActorScript
 {
 public:
-  CActorScriptLua(FDyActor& actorReference, const PDyScriptInstanceMetaInfo& iDesc);
+  CActorScriptLua(FActor& actorReference, const PDyScriptInstanceMetaInfo& iDesc);
   virtual ~CActorScriptLua() = default;
 
 private:

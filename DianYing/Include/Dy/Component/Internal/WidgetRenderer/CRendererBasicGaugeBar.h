@@ -15,7 +15,7 @@
 
 #include <Dy/Component/Interface/IInitializeHelper.h>
 #include <Dy/Component/Ctor/PBarTypeRenderer.h>
-#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
+#include <Dy/Core/Resource/Type/TResourceBinder.h>
 
 //!
 //! Forward declaration
@@ -24,7 +24,7 @@
 namespace dy
 {
 struct PCtorBasicGaugeBarRendererInformation;
-class FDyBasicGaugeBar;
+class FWidgetBasicGaugeBar;
 } /// ::dy namespace
 
 //!
@@ -35,7 +35,7 @@ namespace dy
 {
 
 /// @class CRendererBasicGaugeBar
-/// @brief Renderer for basic gauge bar. `FDyBasicGaugeBar`.
+/// @brief Renderer for basic gauge bar. `FWidgetBasicGaugeBar`.
 class CRendererBasicGaugeBar final : public IInitializeHelper<PCtorBasicGaugeBarRendererInformation>
 {
 public:
@@ -60,7 +60,7 @@ public:
 
 private:
   /// LAZY NOT NULLABLE POINTER RAW PTR;
-  FDyBasicGaugeBar*         mPtrBarObject = MDY_INITIALIZE_NULL;
+  FWidgetBasicGaugeBar*         mPtrBarObject = MDY_INITIALIZE_NULL;
   TDyResourceBinderMesh    mBinderBarMesh{};
   TDyResourceBinderShader  mBinderShader = {};
 };

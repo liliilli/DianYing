@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Management/Helper/LuaBindingEntry.h>
+#include <Dy/Management/Helper/XLuaBindingEntry.h>
 
 namespace dy
 {

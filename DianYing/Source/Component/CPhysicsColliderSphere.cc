@@ -17,7 +17,7 @@
 
 #include <geometry/PxSphereGeometry.h>
 #include <Dy/Management/MPhysics.h>
-#include <Dy/Component/CDyPhysicsRigidbody.h>
+#include <Dy/Component/CPhysicsRigidbody.h>
 #include <PxPhysics.h>
 
 namespace dy
@@ -37,7 +37,7 @@ namespace dy
   }
  */
 
-CPhysicsColliderSphere::CPhysicsColliderSphere(FDyActor& actorReference)
+CPhysicsColliderSphere::CPhysicsColliderSphere(FActor& actorReference)
   : CBasePhysicsCollider(actorReference) 
 { 
   this->mColliderType = EDyColliderType::Sphere; 
@@ -69,7 +69,7 @@ std::string CPhysicsColliderSphere::ToString()
   return "";
 }
 
-void CPhysicsColliderSphere::InitializeInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody)
+void CPhysicsColliderSphere::InitializeInternalResource(_MINOUT_ CPhysicsRigidbody& iRefRigidbody)
 {
   // PxSphereGeometry is value type.
   const physx::PxSphereGeometry geometry{this->mRadius};

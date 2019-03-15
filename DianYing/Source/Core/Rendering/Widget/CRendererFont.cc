@@ -19,7 +19,7 @@
 #include <Dy/Builtin/Mesh/FDyBtMsUiFontQuad.h>
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
 #include <Dy/Core/Resource/Resource/FDyMeshResource.h>
-#include <Dy/Element/Canvas/Text.h>
+#include <Dy/Element/Canvas/FWidgetText.h>
 #include <Dy/Management/Rendering/MRendering.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 
@@ -91,7 +91,7 @@ GetCharacterVertices(
 namespace dy
 {
 
-CRendererFont::CRendererFont(FDyText& iPtrWidget) :
+CRendererFont::CRendererFont(FWidgetText& iPtrWidget) :
   mPtrWidget{&iPtrWidget}
 {
   this->mBinderFontMesh.TryRequireResource((FDyBtMsUiFontQuad::sName));

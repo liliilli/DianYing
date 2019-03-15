@@ -17,13 +17,13 @@
 #include <memory>
 #include <nlohmann/json_fwd.hpp>
 
-#include <Dy/Core/Resource/Internal/MaterialType.h>
-#include <Dy/Core/Resource/Internal/TextureEnums.h>
-#include <Dy/Core/Resource/Internal/Uniform/IDyUniformValueBase.h>
-#include <Dy/Element/Interface/IDyToString.h>
+#include <Dy/Core/Resource/Internal/EMaterialBlendMode.h>
+#include <Dy/Core/Resource/Internal/ETextureEnums.h>
+#include <Dy/Core/Resource/Internal/Uniform/IUniformValueBase.h>
+#include <Dy/Element/Interface/IToString.h>
 #include <Dy/Helper/Type/DVectorInt2.h>
 #include <Dy/Meta/Information/CommonResourceMetaInfo.h>
-#include <Dy/Core/Resource/Type/Shader/TemplateUniformType.h>
+#include <Dy/Core/Resource/Type/Shader/XTemplateUniformType.h>
 
 namespace dy
 {
@@ -31,7 +31,7 @@ namespace dy
 struct DDyMaterialTextureItem final
 {
   std::string       mTextureSpecifier = "";
-  EDyTextureMapType mTextureMapType   = EDyTextureMapType::Unknown;
+  ETextureMapType mTextureMapType   = ETextureMapType::Unknown;
 };
 
 /// @brief Serialization function.
@@ -41,14 +41,14 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ DDyMaterialTextureItem& p
 
 /// @struct PDyMaterialInstanceMetaInfo
 /// @brief Descriptor instance which saves information to create material information.
-struct PDyMaterialInstanceMetaInfo final : public PDyCommonResourceMetaInfo, public IDyToString
+struct PDyMaterialInstanceMetaInfo final : public PDyCommonResourceMetaInfo, public IToString
 {
   using TTextureList = std::array<DDyMaterialTextureItem, 16>;
-  using TUniformList = std::unordered_map<std::string, std::shared_ptr<IDyUniformValueBase>>;
+  using TUniformList = std::unordered_map<std::string, std::shared_ptr<IUniformValueBase>>;
 
   std::string          mSpecifierName;
   std::string          mShaderSpecifier;
-  EDyMaterialBlendMode mBlendMode = EDyMaterialBlendMode::Opaque;
+  EMaterialBlendMode mBlendMode = EMaterialBlendMode::Opaque;
   TTextureList         mTextureNames;
   /// @brief Uniform values but not specifies id but initial value.
   TUniformList         mUniformValues;       

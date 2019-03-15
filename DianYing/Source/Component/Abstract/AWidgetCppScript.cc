@@ -21,7 +21,7 @@
 namespace dy
 {
 
-FDyUiWidget& AWidgetCppScript::GetWidgetReference()
+FWidget& AWidgetCppScript::GetWidgetReference()
 {
   MDY_ASSERT_MSG(this->mOutside != nullptr, "Unexpected error occurred.");
   return this->mOutside->GetWidgetReference();
@@ -32,12 +32,12 @@ MGameTimer& AWidgetCppScript::GetGameTimerManager() noexcept
   return MGameTimer::GetInstance();
 }
 
-void AWidgetCppScript::MDY_PRIVATE(BindPtrTimerHandle)(FDyTimerHandle& iRefTimerHandler)
+void AWidgetCppScript::MDY_PRIVATE(BindPtrTimerHandle)(FTimerHandle& iRefTimerHandler)
 {
   this->mPtrTimerHandleList.emplace_back(&iRefTimerHandler);
 }
 
-void AWidgetCppScript::MDY_PRIVATE(DetachPtrTimerHandle)(FDyTimerHandle& iRefTimerHandler)
+void AWidgetCppScript::MDY_PRIVATE(DetachPtrTimerHandle)(FTimerHandle& iRefTimerHandler)
 {
   auto it = std::find_if(
       MDY_BIND_BEGIN_END(this->mPtrTimerHandleList), 

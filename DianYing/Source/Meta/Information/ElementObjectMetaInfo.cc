@@ -133,7 +133,7 @@ void from_json(const nlohmann::json& j, TObjectMetaInfoList& p)
   for (auto& object : p)
   {
     if (MDY_CHECK_ISEMPTY(object)) { continue; }
-    if (object->mObjectType == EDyMetaObjectType::Actor
+    if (object->mObjectType == EWorldObjectType::Actor
     &&  object->mProperties.mParentSpecifierName.empty() == false)
     { // If object type is Actor, and have parents specifier name as dec
       const auto list = regex::CreateObjectParentSpecifierList(object->mProperties.mParentSpecifierName);

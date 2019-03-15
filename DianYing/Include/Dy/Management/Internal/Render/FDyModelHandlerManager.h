@@ -59,22 +59,22 @@ public:
   MDY_NODISCARD EDySuccess TryCreateHandler(_MIN_ const std::string& iModelSpecifier) noexcept;
 
   /// @brief
-  EDySuccess BindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ CModelFilter& iFilter);
+  EDySuccess BindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FActor& iRefActor, _MIN_ CModelFilter& iFilter);
   /// @brief
-  EDySuccess BindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ CModelRenderer& iComponent);
+  EDySuccess BindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FActor& iRefActor, _MIN_ CModelRenderer& iComponent);
   /// @brief
-  EDySuccess BindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ CModelAnimator& iComponent);
+  EDySuccess BindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FActor& iRefActor, _MIN_ CModelAnimator& iComponent);
   /// @brief
-  EDySuccess UnbindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ CModelFilter&);
+  EDySuccess UnbindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FActor& iRefActor, _MIN_ CModelFilter&);
   /// @brief
-  EDySuccess UnbindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ CModelRenderer&);
+  EDySuccess UnbindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FActor& iRefActor, _MIN_ CModelRenderer&);
   /// @brief
-  EDySuccess UnbindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ CModelAnimator&);
+  EDySuccess UnbindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FActor& iRefActor, _MIN_ CModelAnimator&);
 
   /// @brief 
-  MDY_NODISCARD bool IsActorInfoNeedToBeGc(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor) const noexcept;
+  MDY_NODISCARD bool IsActorInfoNeedToBeGc(_MIN_ const std::string& iSpecifier, _MIN_ FActor& iRefActor) const noexcept;
   /// @brief 
-  EDySuccess TryRemoveBoundActor(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor);
+  EDySuccess TryRemoveBoundActor(_MIN_ const std::string& iSpecifier, _MIN_ FActor& iRefActor);
 
   /// @brief This function checks valid `iSpecifier` item has no actor item. so can be deleted safely.
   MDY_NODISCARD bool IsBoundModelNeedToGc(_MIN_ const std::string& iSpecifier) const noexcept;

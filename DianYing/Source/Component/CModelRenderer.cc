@@ -16,19 +16,19 @@
 #include <Dy/Component/CModelRenderer.h>
 
 #include <Dy/Component/CModelFilter.h>
-#include <Dy/Element/Actor.h>
+#include <Dy/Element/FActor.h>
 #include <Dy/Management/Rendering/MRendering.h>
 #include <Dy/Management/MWorld.h>
 
-#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
+#include <Dy/Core/Resource/Type/TResourceBinder.h>
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
-#include <Dy/Management/Helper/SDyProfilingHelper.h>
+#include <Dy/Management/Helper/SProfilingHelper.h>
 #include <Dy/Management/Internal/Render/FDyModelHandlerManager.h>
 
 namespace dy
 {
 
-CModelRenderer::CModelRenderer(FDyActor& actorReference) : AGeneralBaseComponent(actorReference)
+CModelRenderer::CModelRenderer(FActor& actorReference) : AGeneralBaseComponent(actorReference)
 { }
 
 EDySuccess CModelRenderer::Initialize(const PDyModelRendererComponentMetaInfo& descriptor)

@@ -23,7 +23,7 @@ inline MScript::Impl::Impl()
   DyBindLuaEntry(this->mLua);
   DyInitializeMLog(mLua);
   DyInitilaizeFDyObject(mLua);
-  DyInitilaizeFDyActor(mLua);
+  DyInitilaizeFActor(mLua);
   this->mLua.safe_script(sCDyScriptFrame);
 }
 
@@ -43,7 +43,7 @@ inline sol::state& MScript::Impl::GetLuaInstance() noexcept
 
 inline FWidgetScriptState* MScript::Impl::CreateWidgetScript(
   const std::string& iScriptSpecifier,
-  FDyUiWidget& iRefWidget, 
+  FWidget& iRefWidget, 
   bool iIsAwakened)
 {
   const auto& instanceInfo = MIOMeta::GetInstance().GetScriptMetaInformation(iScriptSpecifier);
@@ -93,7 +93,7 @@ inline void MScript::Impl::TryMoveInsertWidgetScriptToMainContainer()
 
 inline FActorScriptState* MScript::Impl::CreateActorScript(
   const std::string& iScriptSpecifier,
-  FDyActor& iRefActor, 
+  FActor& iRefActor, 
   bool iIsAwakened)
 {
   const auto& instanceInfo = MIOMeta::GetInstance().GetScriptMetaInformation(iScriptSpecifier);

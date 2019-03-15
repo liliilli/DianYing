@@ -15,7 +15,7 @@
 /// Header file
 #include <Dy/Component/CModelAnimator.h>
 #include <Dy/Management/Internal/Render/FDyModelHandlerManager.h>
-#include <Dy/Element/Actor.h>
+#include <Dy/Element/FActor.h>
 #include <Dy/Component/CModelFilter.h>
 #include <Dy/Management/MWorld.h>
 #include <Dy/Core/Resource/Information/FDyModelAnimScrapInformation.h>
@@ -24,7 +24,7 @@
 namespace dy
 {
 
-CModelAnimator::CModelAnimator(FDyActor& actorReference) : AGeneralBaseComponent{actorReference}
+CModelAnimator::CModelAnimator(FActor& actorReference) : AGeneralBaseComponent{actorReference}
 { }
 
 EDySuccess CModelAnimator::Initialize(const PDyModelAnimatorComponentMetaInfo& descriptor)

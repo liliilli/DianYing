@@ -17,15 +17,15 @@
 #include <Dy/Management/Rendering/MUniformBufferObject.h>
 #include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
 #include <Dy/Component/CModelRenderer.h>
-#include <Dy/Element/Actor.h>
+#include <Dy/Element/FActor.h>
 #include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
 #include <Dy/Core/Rendering/Type/EDrawType.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Core/Resource/Resource/FDyMeshResource.h>
 #include <Dy/Management/Rendering/MRendering.h>
-#include <Dy/Management/Helper/SDyProfilingHelper.h>
-#include <Dy/Component/CDyTransform.h>
+#include <Dy/Management/Helper/SProfilingHelper.h>
+#include <Dy/Component/CTransform.h>
 
 namespace dy
 {
@@ -51,12 +51,12 @@ void FBtRenderLevelOitDefault::OnFailedCheckCondition()
 void FBtRenderLevelOitDefault::OnSetupRenderingSetting()
 {
   this->mBinderFrameBuffer->BindFrameBuffer();
-  DDyGlGlobalStates status;
-  using EMode   = DDyGlGlobalStates::DPolygonMode::EMode;
-  using EValue  = DDyGlGlobalStates::DPolygonMode::EValue;
-  using EEqut   = DDyGlGlobalStates::DBlendMode::EEqut;
-  using EFunc   = DDyGlGlobalStates::DBlendMode::EFunc;
-  using DBlendMode = DDyGlGlobalStates::DBlendMode;
+  DGlGlobalStates status;
+  using EMode   = DGlGlobalStates::DPolygonMode::EMode;
+  using EValue  = DGlGlobalStates::DPolygonMode::EValue;
+  using EEqut   = DGlGlobalStates::DBlendMode::EEqut;
+  using EFunc   = DGlGlobalStates::DBlendMode::EFunc;
+  using DBlendMode = DGlGlobalStates::DBlendMode;
 
   status.mIsEnableBlend = true;
   status.mIsEnableDepthTest = false;
@@ -87,7 +87,7 @@ void FBtRenderLevelOitDefault::OnRender()
     );
   }
 
-  SDyProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(drawList.size()));
+  SProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(drawList.size()));
   drawList.clear();
 }
 

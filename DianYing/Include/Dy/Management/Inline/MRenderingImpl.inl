@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Meta/Information/MetaInfoRenderPipeline.h>
-#include <Dy/Component/CDyTransform.h>
+#include <Dy/Component/CTransform.h>
 
 namespace dy
 {
@@ -361,11 +361,11 @@ inline void MRendering::Impl::EnqueueDrawMesh(
 {
   switch (iRefValidMat.GetBlendMode())
   {
-  case EDyMaterialBlendMode::Opaque: 
+  case EMaterialBlendMode::Opaque: 
   {
     this->mOpaqueMeshDrawingList.emplace_back(&iRefModelRenderer, &iRefValidMesh, &iRefValidMat);
   } break;
-  case EDyMaterialBlendMode::TranslucentOIT: 
+  case EMaterialBlendMode::TranslucentOIT: 
   {
     this->mTranslucentMeshDrawingList.emplace_back(&iRefModelRenderer, &iRefValidMesh, &iRefValidMat);
   } break;

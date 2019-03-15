@@ -13,11 +13,14 @@
 /// SOFTWARE.
 ///
 
+#include <variant>
 #include <nlohmann/json_fwd.hpp>
-#include <Dy/Core/Resource/Internal/TextureType.h>
 #include <Dy/Helper/Type/DVectorInt2.h>
 #include <Dy/Meta/Information/CommonResourceMetaInfo.h>
-#include <variant>
+#include <Dy/Meta/Type/EDyTextureParameter.h>
+#include <Dy/Core/Resource/Internal/ETextureEnums.h>
+#include <Dy/Helper/Type/DColorRGBA.h>
+#include <Dy/Helper/Internal/DImageBinaryBuffer.h>
 
 namespace dy
 {
@@ -41,10 +44,10 @@ struct PDyTextureInstanceMetaInfo final : public PDyCommonResourceMetaInfo
   /// Texture specification name.
   std::string         mSpecifierName    = MDY_INITIALIZE_EMPTYSTR;
   /// Texture external file path.
-  /// DCubemapFilePath only applied when `mTextureType` is EDyTextureStyleType::D2Cubemap;
+  /// DCubemapFilePath only applied when `mTextureType` is ETextureStyleType::D2Cubemap;
   std::variant<std::string, DCubemapFilePath> mExternalFilePath = MDY_INITIALIZE_EMPTYSTR;
   /// Texture is 1D or 2D?
-  EDyTextureStyleType mTextureType = EDyTextureStyleType::NoneError;
+  ETextureStyleType mTextureType = ETextureStyleType::NoneError;
   /// Border color
   DColorRGBA        mBorderColor = DColorRGBA::Black;
   /// as R, RG, RGB, RGBA
@@ -67,7 +70,7 @@ struct PDyTextureInstanceMetaInfo final : public PDyCommonResourceMetaInfo
   /// @deprecated NOT USED NOW
   bool        mIsEnabledAbsolutePath_Deprecated = true;
   /// @deprecated NOT USED NOW.
-  EDyTextureMapType   mTextureMapType_Deprecated = EDyTextureMapType::Unknown;
+  ETextureMapType   mTextureMapType_Deprecated = ETextureMapType::Unknown;
 };
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyTextureInstanceMetaInfo& p);

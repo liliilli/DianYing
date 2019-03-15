@@ -128,13 +128,13 @@ void FDyEditor_MainMenu::Draw(_MIN_ MDY_NOTUSED TF32 dt) noexcept
         if (originValue != underlyingValue)
         {
           // Do logging process
-          const auto newFlag = static_cast<EDyModelRenderingMode>(underlyingValue);
+          const auto newFlag = static_cast<ERenderingModelMode>(underlyingValue);
           switch (newFlag)
           {
-          case EDyModelRenderingMode::FillNormal: 
+          case ERenderingModelMode::FillNormal: 
           { DyPushLogInfo("Changed model rendering mode flag to {}.", "Normal");
           } break;
-          case EDyModelRenderingMode::WireFrame: 
+          case ERenderingModelMode::WireFrame: 
           { DyPushLogInfo("Changed model rendering mode flag to {}.", "Wireframe");
           } break;
           }

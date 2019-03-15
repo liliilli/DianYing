@@ -27,7 +27,7 @@ namespace dy
 class CWidgetScriptLua final : public CBaseWidgetScript, public IInitializeHelper<PDyScriptComponentMetaInfo>
 {
 public:
-  CWidgetScriptLua(FDyUiWidget& actorReference) : CBaseWidgetScript(actorReference) {};
+  CWidgetScriptLua(FWidget& actorReference) : CBaseWidgetScript(actorReference) {};
   virtual ~CWidgetScriptLua() = default;
 
   EDySuccess Initialize(const PDyScriptComponentMetaInfo& descriptor) override final;

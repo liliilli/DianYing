@@ -23,7 +23,7 @@
 namespace dy
 {
 struct DDySettingPhysics;
-class CDyPhysicsRigidbody;
+class CPhysicsRigidbody;
 } /// ::dy namespace
 
 namespace physx
@@ -74,9 +74,9 @@ public:
   void TryEnqueueDebugDrawCall();
 
   /// @brief Register activated rigidbody instance.
-  void MDY_PRIVATE(RegisterRigidbody)(_MIN_ CDyPhysicsRigidbody& iRefRigidbody);
+  void MDY_PRIVATE(RegisterRigidbody)(_MIN_ CPhysicsRigidbody& iRefRigidbody);
   /// @brief Unregister deactivated rigidbody instance.
-  void MDY_PRIVATE(UnregisterRigidbody)(_MIN_ CDyPhysicsRigidbody& iRefRigidbody);
+  void MDY_PRIVATE(UnregisterRigidbody)(_MIN_ CPhysicsRigidbody& iRefRigidbody);
 
 private:
   class Impl; Impl* mPimpl = nullptr;

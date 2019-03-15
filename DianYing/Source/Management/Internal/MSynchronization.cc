@@ -15,7 +15,7 @@
 /// Header file
 #include <Dy/Management/Internal/MSynchronization.h>
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
-#include <Dy/Core/DyEngine.h>
+#include <Dy/Core/GDyEngine.h>
 #include <Dy/Management/MWorld.h>
 #include <Dy/Management/MSetting.h>
 #include <Dy/Management/MScript.h>
@@ -49,11 +49,11 @@ void MSynchronization::TrySynchronization()
 {
   switch (gEngine->GetGlobalGameStatus())
   {
-  case EDyGlobalGameStatus::Booted:       { this->pRunFrameBooted(); }        break;
-  case EDyGlobalGameStatus::FirstLoading: { this->pRunFrameFirstLoading(); }  break; // Syncrhonization
-  case EDyGlobalGameStatus::Loading:      { this->pRunFrameLoading(); }       break;
-  case EDyGlobalGameStatus::GameRuntime:  { this->pRunFrameGameRuntime(); }   break;
-  case EDyGlobalGameStatus::Shutdown:     { this->PRunFrameShutdown(); }      break;
+  case EGlobalGameState::Booted:       { this->pRunFrameBooted(); }        break;
+  case EGlobalGameState::FirstLoading: { this->pRunFrameFirstLoading(); }  break; // Syncrhonization
+  case EGlobalGameState::Loading:      { this->pRunFrameLoading(); }       break;
+  case EGlobalGameState::GameRuntime:  { this->pRunFrameGameRuntime(); }   break;
+  case EGlobalGameState::Shutdown:     { this->PRunFrameShutdown(); }      break;
   default: /* Do nothing */ break;
   }
 }

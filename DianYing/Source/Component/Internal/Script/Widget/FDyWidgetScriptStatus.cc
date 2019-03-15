@@ -21,7 +21,7 @@
 namespace dy
 {
 
-FWidgetScriptState::FWidgetScriptState(FDyUiWidget& widgetReference, const PDyScriptInstanceMetaInfo& descriptor) 
+FWidgetScriptState::FWidgetScriptState(FWidget& widgetReference, const PDyScriptInstanceMetaInfo& descriptor) 
   : mStatus{EScriptState::CalledNothing},
     mType{descriptor.mScriptType}
 {

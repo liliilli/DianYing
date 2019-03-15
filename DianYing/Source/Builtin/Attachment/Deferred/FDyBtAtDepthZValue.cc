@@ -30,8 +30,8 @@ void FDyBtAtDepthZValue::ConstructBuffer(_MOUT_ PDyGlAttachmentInstanceMetaInfo&
     //{EDyGlParameterName::TextureCompareMode, EDyGlParameterValue::CompareRefToTexture},
     //{EDyGlParameterName::TextureCompareFunc, EDyGlParameterValue::LessEqual},
   };
-  property.mAttachmentType = EDyTextureStyleType::D2;
-  property.mBufferFormat   = EDyGlBufferDataInternalFormat::DEPTH32;
+  property.mAttachmentType = ETextureStyleType::D2;
+  property.mBufferFormat   = EGlBufferDataInternalFormat::DEPTH32;
 }
 
 } /// ::dy::builtin namespace

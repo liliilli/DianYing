@@ -18,7 +18,7 @@
 #include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
 #include <Dy/Component/CCamera.h>
 #include <Dy/Component/CModelRenderer.h>
-#include <Dy/Element/Actor.h>
+#include <Dy/Element/FActor.h>
 #include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
 #include <Dy/Core/Rendering/Type/EDrawType.h>
@@ -26,9 +26,9 @@
 #include <Dy/Core/Resource/Resource/FDyMeshResource.h>
 #include <Dy/Component/CModelAnimator.h>
 #include <Dy/Management/Rendering/MRendering.h>
-#include <Dy/Management/Helper/SDyProfilingHelper.h>
+#include <Dy/Management/Helper/SProfilingHelper.h>
 #include <Dy/Component/Internal/Camera/DUboCameraBlock.h>
-#include <Dy/Component/CDyTransform.h>
+#include <Dy/Component/CTransform.h>
 
 namespace dy
 {
@@ -94,7 +94,7 @@ void FBtRenderItemOpaqueDefault::OnRender()
       const_cast<FDyMaterialResource&>(*iPtrValidMat)
     );
   }
-  SDyProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(drawList.size()));
+  SProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(drawList.size()));
 }
 
 void FBtRenderItemOpaqueDefault::RenderObject(

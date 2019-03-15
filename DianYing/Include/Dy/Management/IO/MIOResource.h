@@ -21,7 +21,7 @@
 #include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
 #include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
 
-#include <Dy/Core/Resource/Type/TemplateRescInfoType.h>
+#include <Dy/Core/Resource/Type/XTemplateRescInfoType.h>
 #include <Dy/Helper/Wrapper/DMutexUniqueHashMap.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Meta/Type/EResourceType.h>

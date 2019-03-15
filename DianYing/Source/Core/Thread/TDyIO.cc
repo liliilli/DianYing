@@ -19,9 +19,9 @@
 
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
-#include <Dy/Core/Resource/Internal/FDyModelVBOIntermediate.h>
 #include <Dy/Core/Resource/Resource/FrameBuffer/FDyFrameBufferGeneralResource.h>
 #include <Dy/Core/Resource/Resource/FrameBuffer/FDyFrameBufferPingPongResource.h>
+#include <Dy/Core/Resource/Internal/FMeshVBOIntermediate.h>
 
 #include <Dy/Meta/Information/MetaInfoMaterial.h>
 #include <Dy/Meta/Information/MetaInfoModelAnim.h>
@@ -157,7 +157,7 @@ void TDyIO::outTryStop()
 EDySuccess TDyIO::outTryEnqueueTask(
     _MIN_ const std::string& iSpecifier,
     _MIN_ EResourceType iResourceType, _MIN_ EDyResourceStyle iResourceStyle,
-    _MIN_ EDyScope iScope, _MIN_ bool iIsDerivedFromResource)
+    _MIN_ EResourceScope iScope, _MIN_ bool iIsDerivedFromResource)
 {
   MDY_ASSERT_MSG_FORCE(this->outIsMetaInformationExist(iSpecifier, iResourceType) == true, "Meta information must be exist.");
 
@@ -225,7 +225,7 @@ EDySuccess TDyIO::outTryEnqueueTask(
   return DY_SUCCESS;
 }
 
-EDySuccess TDyIO::outCreateReferenceInstance(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EDyResourceStyle style, _MIN_ EDyScope scope)
+EDySuccess TDyIO::outCreateReferenceInstance(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EDyResourceStyle style, _MIN_ EResourceScope scope)
 {
   switch (style)
   {
@@ -239,7 +239,7 @@ std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(
     _MIN_ const std::string& iSpecifier,
     _MIN_ EResourceType iResourceType,
     _MIN_ EDyResourceStyle iResourceStyle,
-    _MIN_ EDyScope iScope) const
+    _MIN_ EResourceScope iScope) const
 {
   std::vector<PRIVerificationItem> checkList = {};
 
@@ -315,12 +315,12 @@ std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(
 
 EDySuccess TDyIO::InstantPopulateMaterialResource(
     _MIN_ const PDyMaterialInstanceMetaInfo& iDesc,
-    _MIN_ TDyResourceBinder<EResourceType::Material>& refMat, 
-    _MIN_ EDyScope iScope, 
+    _MIN_ TResourceBinder<EResourceType::Material>& refMat, 
+    _MIN_ EResourceScope iScope, 
     _MIN_ bool(*callback)())
 {
   MDY_ASSERT_MSG(MDY_CHECK_ISNULL(callback),  "Callback material resource population is not supported yet.");
-  MDY_ASSERT_MSG(iScope == EDyScope::Temporal, "Temporary material resource population must be inputted.");
+  MDY_ASSERT_MSG(iScope == EResourceScope::Temporal, "Temporary material resource population must be inputted.");
 
   // If resource type is `Material`, bind all dependencies of `Material` to checkList.
   std::vector<PRIVerificationItem> checkList = {};
@@ -364,7 +364,7 @@ EDySuccess TDyIO::InstantPopulateMaterialResource(
     task.mSpecifierName       = iDesc.mSpecifierName;
     task.mResourceType        = EResourceType::Material;
     task.mResourcecStyle      = EDyResourceStyle::Resource;
-    task.mScope               = EDyScope::Temporal;
+    task.mScope               = EResourceScope::Temporal;
     task.mTaskPriority        = 192;
     task.mIsResourceDeferred  = false;
     task.mBoundObjectStyle    = EDyObject::Etc_NotBindedYet;
@@ -419,7 +419,7 @@ TDyIO::TDependencyList TDyIO::pCheckAndUpdateReferenceInstance(_MIN_ const std::
   return resultNotFoundList;
 }
 
-void TDyIO::pTryEnlargeResourceScope(_MIN_ EDyScope scope, _MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EDyResourceStyle style)
+void TDyIO::pTryEnlargeResourceScope(_MIN_ EResourceScope scope, _MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EDyResourceStyle style)
 {
   switch (style)
   {
@@ -555,7 +555,7 @@ DDyIOWorkerResult TDyIO::outMainProcessTask(_MIN_ const DDyIOTask& task)
   } break;
   case EResourceType::Mesh:
   { // Get intermediate instance from task, and make mesh resource.
-    Owner<FDyMeshVBOIntermediate*> ptrrawIntermediateInstance = std::any_cast<FDyMeshVBOIntermediate*>(task.mRawInstanceForUsingLater);
+    Owner<FMeshVBOIntermediate*> ptrrawIntermediateInstance = std::any_cast<FMeshVBOIntermediate*>(task.mRawInstanceForUsingLater);
     const auto instance = new FDyMeshResource(*ptrrawIntermediateInstance);
     MDY_DELETE_RAWHEAP_SAFELY(ptrrawIntermediateInstance);
     result.mSmtPtrResultInstance = instance;
@@ -596,25 +596,25 @@ bool TDyIO::pIsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ 
 }
 
 EDySuccess TDyIO::TryBindBinderToResourceRI
-(_MIN_ const std::string& iSpecifier, _MIN_ EResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder)
+(_MIN_ const std::string& iSpecifier, _MIN_ EResourceType iType, _MIN_ const __IBinderBase* iPtrBinder)
 {
   return this->mRIResourceMap.TryBindBinderToResourceRI(iSpecifier, iType, iPtrBinder);
 }
 
 EDySuccess TDyIO::TryBindBinderToInformationRI
-(_MIN_ const std::string& iSpecifier, _MIN_ EResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder)
+(_MIN_ const std::string& iSpecifier, _MIN_ EResourceType iType, _MIN_ const __IBinderBase* iPtrBinder)
 {
   return this->mRIInformationMap.TryBindBinderToResourceRI(iSpecifier, iType, iPtrBinder);
 }
 
 EDySuccess TDyIO::TryDetachBinderFromResourceRI
-(_MIN_ const std::string& iSpecifier, _MIN_ EResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder)
+(_MIN_ const std::string& iSpecifier, _MIN_ EResourceType iType, _MIN_ const __IBinderBase* iPtrBinder)
 {
   return this->mRIResourceMap.TryDetachBinderFromResourceRI(iSpecifier, iType, iPtrBinder);
 }
 
 EDySuccess TDyIO::TryDetachBinderFromInformationRI
-(_MIN_ const std::string& iSpecifier, _MIN_ EResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder)
+(_MIN_ const std::string& iSpecifier, _MIN_ EResourceType iType, _MIN_ const __IBinderBase* iPtrBinder)
 {
   return this->mRIInformationMap.TryDetachBinderFromResourceRI(iSpecifier, iType, iPtrBinder);
 }
@@ -702,7 +702,7 @@ void TDyIO::outInsertGcCandidate(_MIN_ const DDyIOReferenceInstance& iRefRI)
   this->mGarbageCollector.InsertGcCandidate(iRefRI);
 }
 
-void TDyIO::outTryForwardCandidateRIToGCList(_MIN_ EDyScope iScope, _MIN_ EDyResourceStyle iStyle)
+void TDyIO::outTryForwardCandidateRIToGCList(_MIN_ EResourceScope iScope, _MIN_ EDyResourceStyle iStyle)
 {
   switch (iStyle)
   {

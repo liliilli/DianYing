@@ -24,7 +24,7 @@
 #include <Dy/Core/Resource/Information/FDyMeshInformation.h>
 #include <Dy/Core/Resource/Information/FDyModelAnimScrapInformation.h>
 #include <Dy/Core/Resource/Information/FDySoundInformation.h>
-#include <Dy/Core/Resource/Type/TemplateRescInfoType.h>
+#include <Dy/Core/Resource/Type/XTemplateRescInfoType.h>
 #include <Dy/Meta/Type/EResourceType.h>
 
 //!

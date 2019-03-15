@@ -41,7 +41,7 @@ namespace dy
 class CLightDirectional final : public AGeneralBaseComponent, public IInitializeHelper<PDirLightComponentMetaInfo>
 {
 public:
-  CLightDirectional(FDyActor& actorReference);
+  CLightDirectional(FActor& actorReference);
   virtual ~CLightDirectional() = default;
 
   /// @brief  Initialize component

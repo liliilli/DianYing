@@ -17,7 +17,7 @@
 #include <Dy/Meta/Type/EDyTextureParameter.h>
 #include <Dy/Helper/Type/DVectorInt2.h>
 #include <Dy/Helper/Type/DColorRGBA.h>
-#include <Dy/Core/Resource/Internal/TextureEnums.h>
+#include <Dy/Core/Resource/Internal/ETextureEnums.h>
 #include <Dy/Helper/Type/DClamp.h>
 
 namespace dy
@@ -33,8 +33,8 @@ struct PDyGlAttachmentInstanceMetaInfo final : public PDyCommonResourceMetaInfo
   TTextureParameterList         mParameterList  = {};
   DVectorInt2                 mAttachmentSize = {};
   DColorRGBA                  mBorderColor    = DColorRGBA::Black;
-  EDyGlBufferDataInternalFormat mBufferFormat   = EDyGlBufferDataInternalFormat::NoneError;
-  EDyTextureStyleType           mAttachmentType = EDyTextureStyleType::D2;
+  EGlBufferDataInternalFormat mBufferFormat   = EGlBufferDataInternalFormat::NoneError;
+  ETextureStyleType           mAttachmentType = ETextureStyleType::D2;
   DClamp<TU32, 1, 16>         mMipmapLevels   = 1;
   /// @brief This variable is only enabled if only mAttachmentType is `Array` type.
   TU32                          mDepthNumber    = 0;

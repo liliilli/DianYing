@@ -16,7 +16,6 @@
 #include <string>
 #include <Dy/Core/Thread/IO/EDyIOTask.h>
 #include <Dy/Core/Thread/IO/DDyIOWorkerResult.h>
-#include <Dy/Core/Resource/Type/EDyLazy.h>
 
 //!
 //! Forward declaration
@@ -26,8 +25,8 @@ namespace dy
 {
 struct DDyIOReferenceInstance;
 struct  PDyMaterialInstanceMetaInfo;
-enum class EDyScope;
-template <EResourceType TType> class TDyResourceBinder;
+enum class EResourceScope;
+template <EResourceType TType> class TResourceBinder;
 } /// ::dy namespace
 
 //!
@@ -52,25 +51,25 @@ public:
       _MIN_ const std::string& specifier, 
       _MIN_ EResourceType resourceType, 
       _MIN_ EDyResourceStyle resourceStyle, 
-      _MIN_ EDyScope scope);
+      _MIN_ EResourceScope scope);
 
   /// @brief Create and populate resource list which have specifier that can be found in meta info container. \n
   /// This function is list version of `PopulateResource` function above.
   static void PopulateResourceList(
       _MIN_ const std::vector<DDyResourceName>& specifierList, 
-      _MIN_ const EDyScope iScope,
+      _MIN_ const EResourceScope iScope,
       _MIN_ std::function<void(void)> callback);
 
   /// @brief Overload version of `PopulateResourceList` above.
   static void PopulateResourceList(
       _MIN_ const std::vector<std::vector<DDyResourceName>>& specifierList, 
-      _MIN_ const EDyScope iScope,
+      _MIN_ const EResourceScope iScope,
       _MIN_ std::function<void(void)> callback);
   
   /// @brief Overload version of `PopulateResourceList` above.
   static void PopulateResourceList(
       _MIN_ const TDDyResourceNameSet& iSpecifierSet, 
-      _MIN_ const EDyScope iScope,
+      _MIN_ const EResourceScope iScope,
       _MIN_ std::function<void(void)> iCallback);
 
   /// @brief Create and populate instant material resource, that is not dependent on any material information.
@@ -78,7 +77,7 @@ public:
   /// When callback is setup, instant material scope have callback condition, not temporary.
   static void PopulateInstantMaterialResource(
       _MIN_ PDyMaterialInstanceMetaInfo& desc, 
-      _MIN_ TDyResourceBinder<EResourceType::Material>& refMat, 
+      _MIN_ TResourceBinder<EResourceType::Material>& refMat, 
       _MIN_ bool(*callback)() = nullptr);
 
   /// @brief Check Reference Instance (RI) which has a given type, style and specifier name is exist.
@@ -90,7 +89,7 @@ public:
   /// @brief Try Garbage collect of Reference Instance with resource as Scope and Style, which
   /// is only Valid resource but count is 0. \n
   /// This function may causes time consuming, call this carefully.
-  static void TryGC(_MIN_ EDyScope iScope, _MIN_ EDyResourceStyle iStyle);
+  static void TryGC(_MIN_ EResourceScope iScope, _MIN_ EDyResourceStyle iStyle);
 
   /// @brief Try stop IO thread manually. this function is thread-safe to I/O Thread.
   static void TryStop();

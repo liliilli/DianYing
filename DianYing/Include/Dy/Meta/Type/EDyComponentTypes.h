@@ -24,7 +24,7 @@ namespace dy
 ///
 enum class EDyComponentMetaType
 {
-  Transform,        // CDyTransform
+  Transform,        // CTransform
   Script,           // CDyScript
   ModelFilter,      // CModelFilter
   ModelRenderer,    // CModelRenderer
@@ -33,10 +33,10 @@ enum class EDyComponentMetaType
   PointLight, // CLightPoint
   SpotLight,  // CDySpotPoint
   Camera,     // CCamera
-  SoundSource,// CDySoundSource
-  Rigidbody,  // CDyPhysicsRigidbody
+  SoundSource,// CSoundSource
+  Rigidbody,  // CPhysicsRigidbody
   Collider,   // CBasePhysicsCollider
-  Skybox,     // CDySkybox
+  Skybox,     // CSkybox
 
   // ERROR!
   NoneError

@@ -18,7 +18,7 @@
 
 namespace dy
 {
-class FDyInstantSound2D;
+class FInstantSound2D;
 } /// ::dy namesapce
 
 namespace dy
@@ -42,7 +42,7 @@ FMOD_RESULT F_CALLBACK __CallbackSoundChannel(
       if (ptrUserData != nullptr) { ptrData = reinterpret_cast<ASoundInstance*>(ptrUserData); }
     }
     // Change status if sound is end.
-    if (ptrData != nullptr) { ptrData->__SetStatus(EDySoundStatus::Stop); }
+    if (ptrData != nullptr) { ptrData->__SetStatus(ESoundState::Stop); }
   }
 
   return FMOD_OK;

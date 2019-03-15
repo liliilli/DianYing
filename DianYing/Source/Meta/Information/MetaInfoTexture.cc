@@ -45,7 +45,7 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyTextureInstanceMetaInfo&
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyTextureInstanceMetaInfo& p)
 {
   p.mSourceType  = EDyResourceSource::External;
-  p.mTextureType = json::GetValueFrom<EDyTextureStyleType>(j, "TextureType");
+  p.mTextureType = json::GetValueFrom<ETextureStyleType>(j, "TextureType");
   
   // Cubemap need to read 6 textures.
   if (p.mTextureType == decltype(p.mTextureType)::D2Cubemap)

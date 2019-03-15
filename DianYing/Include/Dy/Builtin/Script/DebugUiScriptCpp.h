@@ -19,7 +19,7 @@
 #include <Dy/Builtin/Abstract/AScriptResource.h>
 #include <Dy/Meta/Information/ScriptMetaInformation.h>
 #include <Dy/Core/Reflection/RBuiltinResources.h>
-#include <Dy/Element/Type/Timer/FDyTimerHandle.h>
+#include <Dy/Element/Type/Timer/FTimerHandle.h>
 
 namespace dy
 {
@@ -44,8 +44,8 @@ private:
   MTime*      mTimeManager      = nullptr;
   MProfiling* mProfilingManger  = nullptr;
 
-  FDyTimerHandle mTimerHandle;
-  FDyTimerHandle mTimerHandle2;
+  FTimerHandle mTimerHandle;
+  FTimerHandle mTimerHandle2;
 
   void CbMoveBar();
   void CbChangeImageTexture();

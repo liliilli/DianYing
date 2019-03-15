@@ -125,8 +125,8 @@ inline void MIOMeta::Impl::MDY_PRIVATE(PopulateBootResourceSpecifierList)() cons
 
   SDyIOConnectionHelper::PopulateResourceList(
       this->mBootResourceSpecifierList, 
-      EDyScope::Global,
-      []() { DyEngine::GetInstance().SetNextGameStatus(EDyGlobalGameStatus::FirstLoading); }
+      EResourceScope::Global,
+      []() { GDyEngine::GetInstance().SetNextGameStatus(EGlobalGameState::FirstLoading); }
   );
 
   mIsCalled = true;
@@ -138,14 +138,14 @@ inline void MIOMeta::Impl::MDY_PRIVATE(PopulateGlobalResourceSpecifierList)() co
   MDY_ASSERT_MSG_FORCE(mIsCalled == false, "This function must not be called twice.");
 
   // Global resource list consists of many sub-global resource list from each global resource script.
-  SDyIOConnectionHelper::PopulateResourceList(mGlobalResourceSpecifierList, EDyScope::Global,
+  SDyIOConnectionHelper::PopulateResourceList(mGlobalResourceSpecifierList, EResourceScope::Global,
     [] 
     { 
       // Create global scripts.
       auto& scriptManager = MScript::GetInstance();
       scriptManager.CreateGlobalScriptInstances();
       scriptManager.CallonStartGlobalScriptList();
-      DyEngine::GetInstance().SetNextGameStatus(EDyGlobalGameStatus::Loading); 
+      GDyEngine::GetInstance().SetNextGameStatus(EGlobalGameState::Loading); 
     }
   );
   mIsCalled = true;
@@ -393,7 +393,7 @@ inline EDySuccess MIOMeta::Impl::pReadPrefabMetaAtlas(const nlohmann::json& iJso
   for (auto& object : prefabObjectList)
   {
     if (MDY_CHECK_ISEMPTY(object)) { continue; }
-    if (object->mPrefabType == EDyMetaObjectType::Actor
+    if (object->mPrefabType == EWorldObjectType::Actor
     &&  object->mCommonProperties.mParentSpecifierName.empty() == false)
     { // If object type is Actor, and have parents specifier name as dec
       // Try move object into any parent's children list.
@@ -661,7 +661,7 @@ inline EDySuccess MIOMeta::Impl::pfAddGLAttachmentMetaInfo(const PDyGlAttachment
     metaInfo.mSpecifierName.empty() != true, 
     "Attachment specifier name must be specifed.");
   MDY_ASSERT_MSG(
-    metaInfo.mBufferFormat != EDyGlBufferDataInternalFormat::NoneError, 
+    metaInfo.mBufferFormat != EGlBufferDataInternalFormat::NoneError, 
     "Attachment format must not none.");
   MDY_ASSERT_MSG(
     metaInfo.mAttachmentSize.X > 0 && metaInfo.mAttachmentSize.Y > 0, 
@@ -713,7 +713,7 @@ inline EDySuccess MIOMeta::Impl::pfAddGLFrameBufferMetaInfo(const PDyGlFrameBuff
     PDyGlAttachmentInstanceMetaInfo defaultDepthBuffer;
     {
       defaultDepthBuffer.mSpecifierName   = fmt::format("{}_D_{}", specifier, CreateRandomString(5));
-      defaultDepthBuffer.mBufferFormat    = EDyGlBufferDataInternalFormat::DEPTH32;
+      defaultDepthBuffer.mBufferFormat    = EGlBufferDataInternalFormat::DEPTH32;
       defaultDepthBuffer.mSourceType      = EDyResourceSource::Builtin;
       defaultDepthBuffer.mAttachmentSize  = instance.mFrameBufferSize;
     }

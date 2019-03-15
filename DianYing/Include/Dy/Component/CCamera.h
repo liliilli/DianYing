@@ -46,7 +46,7 @@ enum class ECameraType
 class CCamera final : public AGeneralBaseComponent, public IInitializeHelper<PDyCameraComponentMetaInfo>
 {
 public:
-  CCamera(FDyActor& actorReference) : AGeneralBaseComponent(actorReference) {};
+  CCamera(FActor& actorReference) : AGeneralBaseComponent(actorReference) {};
   virtual ~CCamera() = default;
 
   CCamera(const CCamera&)                          = delete;
@@ -162,7 +162,7 @@ public:
   /// @brief  Release component safely.
   void Release() override final;
 
-  /// @brief  Update camera properties, like updating view matrix following final position of FDyActor.
+  /// @brief  Update camera properties, like updating view matrix following final position of FActor.
   void Update(TF32) override final;
 
   /// @brief  Return information string of this component.

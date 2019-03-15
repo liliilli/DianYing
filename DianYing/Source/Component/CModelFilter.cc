@@ -14,14 +14,14 @@
 
 /// Header file
 #include <Dy/Component/CModelFilter.h>
-#include <Dy/Element/Actor.h>
+#include <Dy/Element/FActor.h>
 #include <Dy/Component/CModelRenderer.h>
 #include <Dy/Management/Internal/Render/FDyModelHandlerManager.h>
 
 namespace dy
 {
 
-CModelFilter::CModelFilter(FDyActor& actorReference) : AGeneralBaseComponent(actorReference) { }
+CModelFilter::CModelFilter(FActor& actorReference) : AGeneralBaseComponent(actorReference) { }
 
 EDySuccess CModelFilter::Initialize(const PDyModelFilterComponentMetaInfo& metaInfo)
 {

@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
+#include <Dy/Core/Resource/Type/TResourceBinder.h>
 
 //!
 //! Forward declaration
@@ -21,7 +21,7 @@
 
 namespace dy
 {
-class FDyImage;
+class FWidgetImage;
 } /// ::dy namespace
 
 //!
@@ -32,11 +32,11 @@ namespace dy
 {
 
 /// @class CRendererImage
-/// @brief Renderer for basic gauge bar. `FDyImage`.
+/// @brief Renderer for basic gauge bar. `FWidgetImage`.
 class CRendererImage final
 {
 public:
-  CRendererImage(FDyImage& iRefObject);
+  CRendererImage(FWidgetImage& iRefObject);
   ~CRendererImage() = default;
 
   CRendererImage(const CRendererImage&) = delete;
@@ -55,10 +55,10 @@ public:
 
 private:
   /// LAZY NOT NULLABLE POINTER RAW PTR;
-  FDyImage*               mPtrObject = MDY_INITIALIZE_NULL;
+  FWidgetImage*               mPtrObject = MDY_INITIALIZE_NULL;
   TDyResourceBinderMesh   mBinderQuadMesh{};
   TDyResourceBinderShader mDefaultImageShader{"dyBtShaderGlRenderUiImage"};
-  std::unique_ptr<IDyRenderableBinder> mBinderRenderable = nullptr; 
+  std::unique_ptr<IRenderableBinder> mBinderRenderable = nullptr; 
 };
 
 } /// ::dy namespace

@@ -19,7 +19,7 @@
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
 #include <Dy/Core/Resource/Resource/FDyMeshResource.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
-#include <Dy/Element/Canvas/FDyImage.h>
+#include <Dy/Element/Canvas/FWidgetImage.h>
 #include <Dy/Core/Resource/Resource/FDyTextureResource.h>
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 #include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
@@ -45,7 +45,7 @@ GetVertexPosition(
   return { dy::DVector2{ru.X, lb.Y}, ru, dy::DVector2{lb.X, ru.Y}, lb };
 }
 
-CRendererImage::CRendererImage(FDyImage& mRefObject) 
+CRendererImage::CRendererImage(FWidgetImage& mRefObject) 
   : mPtrObject{&mRefObject}
 {
   this->mBinderRenderable = std::make_unique<TDyResourceBinderMaterial>();
@@ -126,8 +126,8 @@ void CRendererImage::Render()
 #ifdef false
   PDyMaterialInstanceMetaInfo info{};
   info.mShaderSpecifier = mDefaultImageShader->GetSpecifierName();
-  info.mTextureNames[0] = {mPtrObject->GetRenderableImageName().first, EDyTextureMapType::Unknown};
-  info.mBlendMode       = EDyMaterialBlendMode::Opaque;
+  info.mTextureNames[0] = {mPtrObject->GetRenderableImageName().first, ETextureMapType::Unknown};
+  info.mBlendMode       = EMaterialBlendMode::Opaque;
   SDyIOConnectionHelper::PopulateInstantMaterialResource(info, static_cast<TDyResourceBinderMaterial&>(*this->mBinderRenderable));
 #endif
  */

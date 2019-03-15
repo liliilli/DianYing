@@ -22,7 +22,7 @@
 namespace dy
 {
 
-CWidgetScript::CWidgetScript(const std::string& iScriptSpecifier, FDyUiWidget& iWidget) 
+CWidgetScript::CWidgetScript(const std::string& iScriptSpecifier, FWidget& iWidget) 
   : mPtrWidget{&iWidget},
     mPtrWidgetStatus{ MScript::GetInstance().CreateWidgetScript(iScriptSpecifier, *mPtrWidget, true) }
 { }

@@ -16,10 +16,10 @@
 #include <Dy/Component/CCamera.h>
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <Dy/Element/Actor.h>
+#include <Dy/Element/FActor.h>
 #include <Dy/Management/MSetting.h>
 #include <Dy/Management/MWorld.h>
-#include <Dy/Component/CDyTransform.h>
+#include <Dy/Component/CTransform.h>
 
 namespace dy
 {
@@ -301,7 +301,7 @@ EDySuccess CCamera::Focus()
 {
   if (this->mIsFocused == true)
   { // FAILURE!
-    DyPushLogWarning("{}::{} | From FDyActor : {} | This camera is already binded to main camera.",
+    DyPushLogWarning("{}::{} | From FActor : {} | This camera is already binded to main camera.",
                     "CCamera", "Focus()", this->GetBindedActor()->GetActorName());
     return DY_FAILURE;
   }
@@ -316,7 +316,7 @@ EDySuccess CCamera::Unfocus()
 {
   if (this->mIsFocused == false)
   { // FAILURE!
-    DyPushLogWarning("{}::{} | From FDyActor : {} | This camera is not binded to main camera.",
+    DyPushLogWarning("{}::{} | From FActor : {} | This camera is not binded to main camera.",
                     "CCamera", "Unfocus()", this->GetBindedActor()->GetActorName());
     return DY_FAILURE;
   }

@@ -18,7 +18,7 @@
 namespace dy
 {
 
-FDyActor& CBaseActorScript::GetActorReference() noexcept
+FActor& CBaseActorScript::GetActorReference() noexcept
 {
   MDY_ASSERT_FORCE(this->mPtrBoundActor != nullptr);
   return *this->mPtrBoundActor;

@@ -28,7 +28,7 @@ namespace dy
 class CPhysicsColliderSphere final : public CBasePhysicsCollider
 {
 public:
-  explicit CPhysicsColliderSphere(FDyActor& actorReference);
+  explicit CPhysicsColliderSphere(FActor& actorReference);
   virtual ~CPhysicsColliderSphere() = default;
       
   MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(CPhysicsColliderSphere);
@@ -44,7 +44,7 @@ public:
   MDY_NODISCARD std::string ToString() override final;
 
   /// @brief Initialize internal (PhysX) resource.
-  void InitializeInternalResource(_MINOUT_ CDyPhysicsRigidbody& iRefRigidbody) override final; 
+  void InitializeInternalResource(_MINOUT_ CPhysicsRigidbody& iRefRigidbody) override final; 
   /// @brief Update collider mesh information.
   void UpdateColliderMesh() override;
 

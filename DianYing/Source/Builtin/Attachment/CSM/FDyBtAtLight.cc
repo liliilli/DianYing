@@ -34,8 +34,8 @@ void FDyBtAtCSMLight::ConstructBuffer(_MOUT_ PDyGlAttachmentInstanceMetaInfo& pr
     {EDyGlParameterName::TextureCompareMode, EDyGlParameterValue::CompareRefToTexture},
     {EDyGlParameterName::TextureCompareFunc, EDyGlParameterValue::LessEqual},
   };
-  property.mAttachmentType  = EDyTextureStyleType::D2ShadowArray;
-  property.mBufferFormat    = EDyGlBufferDataInternalFormat::DEPTH32;
+  property.mAttachmentType  = ETextureStyleType::D2ShadowArray;
+  property.mBufferFormat    = EGlBufferDataInternalFormat::DEPTH32;
   property.mDepthNumber     = kCSMSegment;
 }
 

@@ -16,7 +16,7 @@
 #include <Dy/Builtin/Abstract/ARenderItem.h>
 #include <Dy/Core/Reflection/RBuiltinResources.h>
 #include <Dy/Meta/Information/MetaInfoRenderItem.h>
-#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
+#include <Dy/Core/Resource/Type/TResourceBinder.h>
 
 namespace dy
 {

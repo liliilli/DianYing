@@ -13,9 +13,9 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Resource/Internal/GeometryType.h>
+#include <Dy/Core/Resource/Internal/XGeometryTypes.h>
 #include <Dy/Meta/Information/MetaInfoModel.h>
-#include <Dy/Core/Resource/Type/TDyInformationBinder.h>
+#include <Dy/Core/Resource/Type/TInformationBinder.h>
 
 namespace dy
 {

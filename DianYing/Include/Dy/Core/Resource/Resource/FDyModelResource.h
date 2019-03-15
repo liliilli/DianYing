@@ -14,8 +14,8 @@
 ///
 
 #include <Dy/Core/Resource/Resource/FDyMeshResource.h>
-#include <Dy/Core/Resource/Type/TDyInformationBinder.h>
-#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
+#include <Dy/Core/Resource/Type/TInformationBinder.h>
+#include <Dy/Core/Resource/Type/TResourceBinder.h>
 
 namespace dy
 {

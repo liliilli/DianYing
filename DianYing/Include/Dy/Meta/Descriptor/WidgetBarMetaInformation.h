@@ -23,7 +23,7 @@ namespace dy
 
 ///
 /// @struct PDyMetaWidgetBarDescriptor
-/// @brief basic guage bar(`FDyBasicGaugeBar`) component of widget descriptor
+/// @brief basic guage bar(`FWidgetBasicGaugeBar`) component of widget descriptor
 ///
 struct PDyMetaWidgetBarDescriptor final : public PDyMetaWidgetCommonBaseDesc
 {

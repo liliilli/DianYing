@@ -15,7 +15,7 @@
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Management/Type/Render/DDyModelHandler.h>
-#include <Dy/Management/Type/Render/DDyGlGlobalStates.h>
+#include <Dy/Management/Type/Render/DGlGlobalStates.h>
 #include <Dy/Helper/System/Pointer.h>
 
 //!
@@ -33,8 +33,8 @@ class   CCamera;
 class   CModelRenderer;
 class   CLightDirectional;
 class   CBasePhysicsCollider;
-class   CDySkybox;
-class   FDyUiObject;
+class   CSkybox;
+class   AWidgetObject;
 } /// ::dy namespace
 
 namespace dy::editor
@@ -63,7 +63,7 @@ public:
   >;
 
   using TDrawColliderItem = std::pair<NotNull<CBasePhysicsCollider*>, DMatrix4x4>; 
-  using TUiDrawCallItem = NotNull<FDyUiObject*>;
+  using TUiDrawCallItem = NotNull<AWidgetObject*>;
   using TPointLightHandleList = std::vector<CLightPoint*>; 
   using TSpotLightHandleList  = std::vector<CLightSpot*>; 
 

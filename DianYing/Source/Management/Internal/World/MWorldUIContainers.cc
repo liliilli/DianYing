@@ -14,10 +14,10 @@
 
 /// Header file
 #include <Dy/Management/Internal/World/MWorldUIContainers.h>
-#include <Dy/Element/Canvas/Widget.h>
+#include <Dy/Element/Canvas/FWidget.h>
 #include <Dy/Management/IO/MIOMeta.h>
 #include <Dy/Management/MScript.h>
-#include <Dy/Element/Type/DDyUiBinder.h>
+#include <Dy/Element/Type/DWidgetBinder.h>
 #include <Dy/Helper/System/Idioms.h>
 #include <Dy/Helper/Library/HelperContainer.h>
 
@@ -28,7 +28,7 @@ EDySuccess MWorldUIContainers::TryCreateDebugUi()
 {
   if (MDY_CHECK_ISNOTEMPTY(this->mDebugUi)) { return DY_FAILURE; }
 
-  this->mDebugUi = std::make_unique<FDyUiWidget>(MIOMeta::GetInstance().GetWidgetMetaInformation("DebugUi"));
+  this->mDebugUi = std::make_unique<FWidget>(MIOMeta::GetInstance().GetWidgetMetaInformation("DebugUi"));
 
   // CALL `Initiate()`
   MScript::GetInstance().UpdateWidgetScript(0.0f, EScriptState::CalledNothing);
@@ -40,7 +40,7 @@ EDySuccess MWorldUIContainers::TryCreateDebugUi()
   return DY_SUCCESS;
 }
 
-FDyUiWidget* MWorldUIContainers::GetPtrDebugUi() const noexcept
+FWidget* MWorldUIContainers::GetPtrDebugUi() const noexcept
 {
   return this->mDebugUi.get();
 }
@@ -66,14 +66,14 @@ EDySuccess MWorldUIContainers::TryCreateLoadingUi()
   MScript::GetInstance().UpdateWidgetScript(0.0f, EScriptState::CalledNothing);
   MScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
 
-  this->mLoadingUi = std::make_unique<FDyUiWidget>(*MIOMeta::GetInstance().MDY_PRIVATE(TryGetLoadingWidgetMetaLoading)());
+  this->mLoadingUi = std::make_unique<FWidget>(*MIOMeta::GetInstance().MDY_PRIVATE(TryGetLoadingWidgetMetaLoading)());
   this->mLoadingUi->SetPropagateMode(true, EDySearchMode::Recursive);
   this->mLoadingUi->TryPropagatePositionToChildren();
   this->mLoadingUi->SetupFlagAsParent(true);
   return DY_SUCCESS;
 }
 
-FDyUiWidget* MWorldUIContainers::GetPtrLoadingUi() const noexcept
+FWidget* MWorldUIContainers::GetPtrLoadingUi() const noexcept
 {
   return this->mLoadingUi.get();
 }
@@ -91,13 +91,13 @@ bool MWorldUIContainers::IsUiObjectExist(_MIN_ const std::string& iUiObjectName)
   return Contains(this->mGeneralUiWidgetMap, iUiObjectName);
 }
 
-DDyUiBinder MWorldUIContainers::CreateUiObject(
+DWidgetBinder MWorldUIContainers::CreateUiObject(
     _MIN_ const std::string& iUiName, 
     _MIN_ const PDyMetaWidgetRootDescriptor& iRoot,
     _MIN_ TU32 ZOrder)
 {
   auto [it, isSuccessful] = this->mGeneralUiWidgetMap.try_emplace(
-      iUiName, std::make_unique<FDyUiWidget>(iRoot));
+      iUiName, std::make_unique<FWidget>(iRoot));
   MDY_ASSERT_MSG_FORCE(isSuccessful == true, "Unexpected error occurred.");
 
   auto& [key, object] = *it;
@@ -111,10 +111,10 @@ DDyUiBinder MWorldUIContainers::CreateUiObject(
   MScript::GetInstance().UpdateWidgetScript(0.0f, EScriptState::CalledNothing);
   MScript::GetInstance().TryMoveInsertWidgetScriptToMainContainer();
 
-  return DDyUiBinder{*object};
+  return DWidgetBinder{*object};
 }
 
-std::optional<DDyUiBinder> MWorldUIContainers::GetUiObject(const std::string& iUiName)
+std::optional<DWidgetBinder> MWorldUIContainers::GetUiObject(const std::string& iUiName)
 {
   const auto it = this->mGeneralUiWidgetMap.find(iUiName);
   if (it == this->mGeneralUiWidgetMap.end())
@@ -123,7 +123,7 @@ std::optional<DDyUiBinder> MWorldUIContainers::GetUiObject(const std::string& iU
     return std::nullopt;
   }
 
-  return DDyUiBinder{*it->second};
+  return DWidgetBinder{*it->second};
 }
 
 EDySuccess MWorldUIContainers::RemoveUiObject(_MIN_ const std::string& iUiName)
@@ -144,17 +144,17 @@ void MWorldUIContainers::ClearGeneralUiObjectList()
   this->mGeneralUiWidgetMap.clear();
 }
 
-std::vector<NotNull<FDyUiWidget*>>& MWorldUIContainers::GetActivatedUiWidgetList() noexcept
+std::vector<NotNull<FWidget*>>& MWorldUIContainers::GetActivatedUiWidgetList() noexcept
 {
   return this->mPtrActivatedGeneralUiWidgetList;
 }
 
-void MWorldUIContainers::BindActiveUiObject(_MIN_ FDyUiWidget& iRefWidget)
+void MWorldUIContainers::BindActiveUiObject(_MIN_ FWidget& iRefWidget)
 {
   this->mPtrActivatedGeneralUiWidgetList.emplace_back(DyMakeNotNull(&iRefWidget));
 }
 
-EDySuccess MWorldUIContainers::UnbindActiveUiObject(_MIN_ FDyUiWidget& iRefWidget)
+EDySuccess MWorldUIContainers::UnbindActiveUiObject(_MIN_ FWidget& iRefWidget)
 {
   const auto it = std::find_if(
       MDY_BIND_BEGIN_END(this->mPtrActivatedGeneralUiWidgetList), 

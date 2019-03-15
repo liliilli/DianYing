@@ -1,5 +1,5 @@
-#ifndef GAURD_DY_COMPONENT_INTERNAL_SCRIPT_FDYACTORSCRIPTSTATUS_H
-#define GAURD_DY_COMPONENT_INTERNAL_SCRIPT_FDYACTORSCRIPTSTATUS_H
+#ifndef GAURD_DY_COMPONENT_INTERNAL_SCRIPT_FActorSCRIPTSTATUS_H
+#define GAURD_DY_COMPONENT_INTERNAL_SCRIPT_FActorSCRIPTSTATUS_H
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -23,7 +23,7 @@
 
 namespace dy
 {
-class   FDyActor;
+class   FActor;
 struct  PDyScriptInstanceMetaInfo;
 } /// ::dy namespace
 
@@ -39,7 +39,7 @@ namespace dy
 class FActorScriptState final
 {
 public:
-  FActorScriptState(FDyActor& iRefActor, const PDyScriptInstanceMetaInfo& descriptor); 
+  FActorScriptState(FActor& iRefActor, const PDyScriptInstanceMetaInfo& descriptor); 
 
   /// @brief Call actor script function properly.
   void CallScriptFunction(TF32 dt) noexcept;
@@ -67,4 +67,4 @@ private:
 
 } /// ::dy namespace
 
-#endif /// GAURD_DY_COMPONENT_INTERNAL_SCRIPT_FDYACTORSCRIPTSTATUS_H
+#endif /// GAURD_DY_COMPONENT_INTERNAL_SCRIPT_FActorSCRIPTSTATUS_H

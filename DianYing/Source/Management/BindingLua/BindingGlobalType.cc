@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Management/Helper/LuaBindingEntry.h>
+#include <Dy/Management/Helper/XLuaBindingEntry.h>
 #include <Dy/Helper/Type/DVector2.h>
 
 namespace dy::lua

@@ -17,7 +17,7 @@
 
 #include <Dy/Builtin/Texture/Checker.h>
 #include <Dy/Builtin/ShaderGl/Render/RenderOpaqueStatic.h>
-#include <Dy/Core/Resource/Internal/MaterialType.h>
+#include <Dy/Core/Resource/Internal/EMaterialBlendMode.h>
 
 //!
 //! Implementation
@@ -30,9 +30,9 @@ void FDyBuiltinMaterialOpaqueStaticPlain::ConstructBuffer(PDyMaterialInstanceMet
 {
   property.mSpecifierName   = FDyBuiltinMaterialOpaqueStaticPlain::sName;
   property.mShaderSpecifier = FDyBuiltinShaderGLRenderOpaqueStatic::sName;
-  property.mBlendMode       = EDyMaterialBlendMode::Opaque;
+  property.mBlendMode       = EMaterialBlendMode::Opaque;
 
-  property.mTextureNames[0] = {(FDyBuiltinTextureChecker::sName), EDyTextureMapType::Unknown};
+  property.mTextureNames[0] = {(FDyBuiltinTextureChecker::sName), ETextureMapType::Unknown};
 }
 
 } /// ::dy::builtin namespace

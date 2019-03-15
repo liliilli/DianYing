@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Helper/Type/DVectorInt2.h>
-#include <Dy/Core/Resource/Type/TDyInformationBinder.h>
+#include <Dy/Core/Resource/Type/TInformationBinder.h>
 #include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
 
 //!
@@ -24,8 +24,8 @@
 namespace dy
 {
 class FDyAttachmentInformation;
-enum class EDyGlBufferDataInternalFormat : unsigned char;
-enum class EDyTextureStyleType : unsigned char;
+enum class EGlBufferDataInternalFormat : unsigned char;
+enum class ETextureStyleType : unsigned char;
 } /// ::dy namespace
 
 //!

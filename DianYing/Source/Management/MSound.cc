@@ -26,8 +26,8 @@
 #include <Dy/Management/MSetting.h>
 #include <Dy/Management/MWorld.h>
 #include <Dy/Management/IO/MIOMeta.h>
-#include <Dy/Management/Type/Sound/FDySoundGroup.h>
-#include <Dy/Management/Type/Sound/FDySoundChannel.h>
+#include <Dy/Management/Type/Sound/FSoundGroup.h>
+#include <Dy/Management/Type/Sound/FSoundChannel.h>
 
 //!
 //! Forward declaration
@@ -167,7 +167,7 @@ public:
 
   /// @brief Create a sound directly with no attenuation, perfect for UI Sounds.
   /// If failed to create, just return nullptr.
-  std::unique_ptr<FDyInstantSound2D> CreateSound2D(
+  std::unique_ptr<FInstantSound2D> CreateSound2D(
       const std::string& iSoundSpecifier, 
       const std::string& iSoundChannel,
       const DClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
@@ -184,8 +184,8 @@ public:
       TF32 iDelay = 0.0f);
 
   /// @brief Play a sound directly with no attenuation, with looped.
-  /// Return `TDyBinderSound2D` to control sound2d instance.
-  MDY_NODISCARD std::optional<TDyBinderSound2D> PlaySound2DLooped(
+  /// Return `FSound2DBinder` to control sound2d instance.
+  MDY_NODISCARD std::optional<FSound2DBinder> PlaySound2DLooped(
       const std::string& iSoundSpecifier,
       const std::string& iSoundChannel,
       const DClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
@@ -206,8 +206,8 @@ public:
       TF32 iMaxDistance = s3DMaxDistance);
   
   /// @brief Play a sound directly with attenuation, with looped.
-  /// Return `TDyBinderSound3D` to control sound 3d instance.
-  MDY_NODISCARD std::optional<TDyBinderSound3D> PlaySound3DLooped(
+  /// Return `FSound3DBinder` to control sound 3d instance.
+  MDY_NODISCARD std::optional<FSound3DBinder> PlaySound3DLooped(
       const std::string& iSoundSpecifier, 
       const std::string& iSoundChannel,
       const DVector3& iWorldPosition,
@@ -217,16 +217,16 @@ public:
       TF32 iMaxDistance = s3DMaxDistance);
 
   /// @brief Get channel pointer instance.
-  MDY_NODISCARD FDySoundChannel* GetPtrChannel(const std::string& iSpecifier);
+  MDY_NODISCARD FSoundChannel* GetPtrChannel(const std::string& iSpecifier);
 
   /// @brief Get reference of group channel which have given `iSpecifier` name.
-  MDY_NODISCARD FDySoundGroup& MDY_PRIVATE(GetGroupChannel)(const std::string& iSpecifier);
+  MDY_NODISCARD FSoundGroup& MDY_PRIVATE(GetGroupChannel)(const std::string& iSpecifier);
   /// @brief Get reference of internal sound library entry.
   MDY_NODISCARD FMOD::System& MDY_PRIVATE(GetSystem)();
-  /// @brief Create sound instance for `CDySoundSource`.
+  /// @brief Create sound instance for `CSoundSource`.
   MDY_NODISCARD FSoundInstance* MDY_PRIVATE(CreateSoundInstance)(
       const PDySoundSourceComponentMetaInfo& iMetaInfo,
-      FDyActor& iRefActor);
+      FActor& iRefActor);
 
   /// @brief Check sound system is available.
   bool mIsSoundSystemAvailable = true;
@@ -241,14 +241,14 @@ private:
   MDY_TRANSIENT TU32  mVersion          = MDY_INITIALIZE_DEFUINT;
   MDY_TRANSIENT TI32  mSoundDriverCount = MDY_INITIALIZE_DEFINT;
 
-  TStringHashMap<FDySoundGroup>   mGroupContainer;
-  TStringHashMap<FDySoundChannel> mChannelContainer;
+  TStringHashMap<FSoundGroup>   mGroupContainer;
+  TStringHashMap<FSoundChannel> mChannelContainer;
 
   /// @brief Instant 2d sound instance list.
-  std::forward_list<std::unique_ptr<FDyInstantSound2D>> mInstantSound2DList;
+  std::forward_list<std::unique_ptr<FInstantSound2D>> mInstantSound2DList;
   /// @brief Instant 3d sound instance list.
-  std::forward_list<std::unique_ptr<FDyInstantSound3D>> mInstantSound3DList;
-  /// @brief General (CDySoundSource) sound instance list.
+  std::forward_list<std::unique_ptr<FInstantSound3D>> mInstantSound3DList;
+  /// @brief General (CSoundSource) sound instance list.
   std::vector<std::unique_ptr<FSoundInstance>> mGeneralSoundInstanceList;
 
   /// @brief Specifies sound system can sound 3d sound because 3d listener activated.
@@ -277,7 +277,7 @@ EDySuccess MSound::pfInitialize()
   return DY_SUCCESS;
 }
 
-std::unique_ptr<FDyInstantSound2D> MSound::CreateSound2D(
+std::unique_ptr<FInstantSound2D> MSound::CreateSound2D(
   const std::string& iSoundSpecifier,
   const std::string& iSoundChannel, 
   const DClamp<TF32, 0, 5>& iVolumeMultiplier,
@@ -297,7 +297,7 @@ void MSound::PlaySound2D(
   this->mPimpl->PlaySound2D(iSoundSpecifier, iSoundChannel, iVolumeMultiplier, iPitchMultiplier, iDelay);
 }
 
-std::optional<TDyBinderSound2D> MSound::PlaySound2DLooped(
+std::optional<FSound2DBinder> MSound::PlaySound2DLooped(
   const std::string& iSoundSpecifier, 
   const std::string& iSoundChannel,
   const DClamp<TF32, 0, 5>& iVolumeMultiplier, 
@@ -327,7 +327,7 @@ void MSound::PlaySound3D(
     iMaxDistance);
 }
 
-std::optional<TDyBinderSound3D> MSound::PlaySound3DLooped(
+std::optional<FSound3DBinder> MSound::PlaySound3DLooped(
      const std::string& iSoundSpecifier, 
      const std::string& iSoundChannel,
      const DVector3& iWorldPosition,
@@ -348,7 +348,7 @@ bool MSound::IsSoundClipExist(const std::string& iSoundSpecifier) const noexcept
   return this->mPimpl->IsSoundClipExist(iSoundSpecifier);
 }
 
-FDySoundChannel* MSound::GetPtrChannel(const std::string& iSpecifier)
+FSoundChannel* MSound::GetPtrChannel(const std::string& iSpecifier)
 {
   return this->mPimpl->GetPtrChannel(iSpecifier);
 }
@@ -362,7 +362,7 @@ EDySuccess MSound::pfRelease()
 
 void MSound::Update(TF32 iDt) { this->mPimpl->Update(iDt); }
 
-FDySoundGroup& MSound::MDY_PRIVATE(GetGroupChannel)(const std::string& iSpecifier)
+FSoundGroup& MSound::MDY_PRIVATE(GetGroupChannel)(const std::string& iSpecifier)
 {
   return this->mPimpl->__GetGroupChannel(iSpecifier);
 }
@@ -374,7 +374,7 @@ FMOD::System& MSound::MDY_PRIVATE(GetSystem)()
 
 FSoundInstance* MSound::MDY_PRIVATE(CreateSoundInstance)(
      const PDySoundSourceComponentMetaInfo& iMetaInfo,
-     FDyActor& iRefActor)
+     FActor& iRefActor)
 {
   return this->mPimpl->__CreateSoundInstance(iMetaInfo, iRefActor);
 }

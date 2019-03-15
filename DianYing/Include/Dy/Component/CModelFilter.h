@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Element/Abstract/AGeneralBaseComponent.h>
-#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
+#include <Dy/Core/Resource/Type/TResourceBinder.h>
 #include <Dy/Component/Interface/IInitializeHelper.h>
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
 #include <Dy/Helper/System/Pointer.h>
@@ -40,7 +40,7 @@ namespace dy
 class CModelFilter final : public AGeneralBaseComponent, public IInitializeHelper<PDyModelFilterComponentMetaInfo>
 {
 public:
-  CModelFilter(FDyActor& actorReference);
+  CModelFilter(FActor& actorReference);
   virtual ~CModelFilter() = default;
 
   /// @brief  Initialize component
@@ -65,7 +65,7 @@ public:
   /// @brief Get model specifier name.
   MDY_NODISCARD const std::string& GetModelSpecifier() const noexcept;
 
-  /// @brief Bind valid CModelRenderer pointer from same FDyActor to this component.
+  /// @brief Bind valid CModelRenderer pointer from same FActor to this component.
   /// @param validReference valid CDyModelReference instance.
   void fBindModelRendererReference(CModelRenderer& validReference);
 

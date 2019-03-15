@@ -33,7 +33,7 @@ namespace dy
 {
 class MIOMeta;
 class SDyIOConnectionHelper;
-MDY_INTERFACE __FDyBinderBase;
+MDY_INTERFACE __IBinderBase;
 } /// ::dy namespace
 
 //!
@@ -57,9 +57,9 @@ public:
     const std::string&      mSpecifier  = MDY_INITIALIZE_EMPTYSTR;
     const EResourceType   mType       = EResourceType::NoneError;
     const EDyResourceStyle  mStyle      = EDyResourceStyle::NoneError;
-    const EDyScope          mScope      = EDyScope::UserDefined;
+    const EResourceScope          mScope      = EResourceScope::UserDefined;
 
-    PRIVerificationItem(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EDyResourceStyle style, EDyScope scope) :
+    PRIVerificationItem(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EDyResourceStyle style, EResourceScope scope) :
         mSpecifier{specifier}, mType{type}, mStyle{style}, mScope{scope} {};
   };
 
@@ -91,7 +91,7 @@ public:
   /// @brief Try Garbage collect of Reference Instance with resource as Scope and Style, which
   /// is only Valid resource but count is 0. \n
   /// This function may causes time consuming, call this carefully.
-  void outTryForwardCandidateRIToGCList(_MIN_ EDyScope iScope, _MIN_ EDyResourceStyle iStyle);
+  void outTryForwardCandidateRIToGCList(_MIN_ EResourceScope iScope, _MIN_ EDyResourceStyle iStyle);
 
 private:
   /// @struct FTaskQueueCmpFunctor
@@ -139,20 +139,20 @@ private:
   MDY_NODISCARD EDySuccess outTryEnqueueTask(
       _MIN_ const std::string& specifier,
       _MIN_ EResourceType resourceType, _MIN_ EDyResourceStyle resourceStyle,
-      _MIN_ EDyScope scope, _MIN_ bool isDerivedFromResource = false);
+      _MIN_ EResourceScope scope, _MIN_ bool isDerivedFromResource = false);
 
   /// @brief
   MDY_NODISCARD std::vector<PRIVerificationItem> pMakeDependenciesCheckList(
       _MIN_ const std::string& iSpecifier,
       _MIN_ EResourceType iResourceType,
       _MIN_ EDyResourceStyle iResourceStyle,
-      _MIN_ EDyScope iScope) const;
+      _MIN_ EResourceScope iScope) const;
 
   /// @brief Enqueue IO Populating `instant` material task.
   MDY_NODISCARD EDySuccess InstantPopulateMaterialResource(
       _MIN_ const PDyMaterialInstanceMetaInfo& iDesc,
-      _MIN_ TDyResourceBinder<EResourceType::Material>& refMat, 
-      _MIN_ EDyScope scope,
+      _MIN_ TResourceBinder<EResourceType::Material>& refMat, 
+      _MIN_ EResourceScope scope,
       _MIN_ bool(*callback)());
 
   /// @brief Check RI is exist, so enlarge scope and update properties etc.
@@ -177,22 +177,22 @@ private:
   /// @brief Try bind binder instance to Resource Reference Instance.
   /// If not found RI, just return DY_FAILURE.
   MDY_NODISCARD EDySuccess TryBindBinderToResourceRI
-  (_MIN_ const std::string& iSpecifier, _MIN_ EResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder);
+  (_MIN_ const std::string& iSpecifier, _MIN_ EResourceType iType, _MIN_ const __IBinderBase* iPtrBinder);
 
   /// @brief Try bind binder instance to Information Reference Instance.
   /// If not found RI, just return DY_FAILURE.
   MDY_NODISCARD EDySuccess TryBindBinderToInformationRI
-  (_MIN_ const std::string & iSpecifier, _MIN_ EResourceType iType, _MIN_ const __FDyBinderBase * iPtrBinder);
+  (_MIN_ const std::string & iSpecifier, _MIN_ EResourceType iType, _MIN_ const __IBinderBase * iPtrBinder);
 
   /// @brief Try detach binder instance from Resource Reference Instance.
   /// If nnot found RI, just return DY_FAILURE.
   MDY_NODISCARD EDySuccess TryDetachBinderFromResourceRI
-  (_MIN_ const std::string& iSpecifier, _MIN_ EResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder);
+  (_MIN_ const std::string& iSpecifier, _MIN_ EResourceType iType, _MIN_ const __IBinderBase* iPtrBinder);
 
   /// @brief Try detach binder instance from Information Reference Instance.
   /// If nnot found RI, just return DY_FAILURE.
   MDY_NODISCARD EDySuccess TryDetachBinderFromInformationRI
-  (_MIN_ const std::string& iSpecifier, _MIN_ EResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder);
+  (_MIN_ const std::string& iSpecifier, _MIN_ EResourceType iType, _MIN_ const __IBinderBase* iPtrBinder);
 
   ///
   /// @brief Try update scope of given style's specifier RI of resource type. \n
@@ -205,7 +205,7 @@ private:
   /// RI's scope will be changed to big range.
   ///
   void pTryEnlargeResourceScope(
-      _MIN_ EDyScope scope,
+      _MIN_ EResourceScope scope,
       _MIN_ const std::string& specifier,
       _MIN_ EResourceType type, _MIN_ EDyResourceStyle style);
 
@@ -218,7 +218,7 @@ private:
   MDY_NODISCARD EDySuccess outTryRetrieveReferenceInstanceFromGC(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EDyResourceStyle style);
 
   /// @brief Create reference instance.
-  MDY_NODISCARD EDySuccess outCreateReferenceInstance(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EDyResourceStyle style, _MIN_ EDyScope scope);
+  MDY_NODISCARD EDySuccess outCreateReferenceInstance(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EDyResourceStyle style, _MIN_ EResourceScope scope);
 
   /// @brief Force Try process deferred task list which must be processed in main thread, \n
   /// so Insert created resource instance into result instance list for IO GC/IN Phase.

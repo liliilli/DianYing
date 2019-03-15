@@ -46,7 +46,7 @@ void FDyBtMsSphere::pEmplaceVertex(
     _MIN_ const DVector3& position, _MIN_ const DVector2& texcoord,
     _MOUT_ PDyDefaultMeshInformation& container)
 {
-  DDyVertexInformation vertex;
+  DDefaultVertexInfo vertex;
   vertex.mPosition  = position;
   vertex.mNormal    = position;
   vertex.mTexCoord0 = texcoord;

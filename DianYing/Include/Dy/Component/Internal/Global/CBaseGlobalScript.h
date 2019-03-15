@@ -21,7 +21,7 @@
 
 namespace dy
 {
-class FDyUiWidget;
+class FWidget;
 } /// ::dy namespace
 
 //!

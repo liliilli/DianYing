@@ -58,7 +58,6 @@
   #include <crtdbg.h>
 #endif
 
-#include <Dy/Helper/GlobalEnumFlags.h>
 #include <Dy/Helper/GlobalType.h>
 #include <Dy/Helper/System/DisableWarning.h>
 #include <Dy/Helper/System/Macroes.h>

@@ -17,7 +17,7 @@
 #include <Dy/Core/Resource/Information/FDyShaderInformation.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLShaderFragmentDescriptor.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
-#include <Dy/Management/Helper/SDyProfilingHelper.h>
+#include <Dy/Management/Helper/SProfilingHelper.h>
 #include <Dy/Helper/MCS/GLShaderParser.h>
 #include <Dy/Helper/Library/HelperRegex.h>
 #include <Dy/Core/Reflection/RReflection.h>
@@ -94,7 +94,7 @@ FDyShaderResource::FDyShaderResource(_MIN_ const FDyShaderInformation& informati
   this->MDY_PRIVATE(TryConstructDefaultUniformList)(*this);
 
   // Profiling.
-  SDyProfilingHelper::IncreaseOnBindShaderCount(1);
+  SProfilingHelper::IncreaseOnBindShaderCount(1);
 }
 
 std::optional<TFragmentList>
@@ -220,7 +220,7 @@ void FDyShaderResource::pStoreUniformProperties() noexcept
         {
           this->mUniformStructVarListMap.try_emplace(
             prefix, 
-            std::pair(prefix, std::vector<DDyUniformStructVarInformation>{})
+            std::pair(prefix, std::vector<DUniformStructVarInformation>{})
           );
         }
 
@@ -252,7 +252,7 @@ void FDyShaderResource::pStoreUniformProperties() noexcept
         {
           this->mUniformStructVarItemMap.try_emplace(
             prefix, 
-            std::pair(prefix, DDyUniformStructVarInformation{})
+            std::pair(prefix, DUniformStructVarInformation{})
           );
         }
         auto& [_, uniformStructVarList] = this->mUniformStructVarItemMap[prefix];
@@ -314,7 +314,7 @@ FDyShaderResource::~FDyShaderResource()
   { MDY_GRAPHIC_SET_CRITICALSECITON();
     XGLWrapper::DeleteShaderProgram(this->mShaderProgramId);
   }
-  SDyProfilingHelper::DecreaseOnBindShaderCount(1);
+  SProfilingHelper::DecreaseOnBindShaderCount(1);
 }
 
 TU32 FDyShaderResource::GetShaderProgramId() const noexcept
@@ -333,7 +333,7 @@ void FDyShaderResource::DisuseShader() const noexcept
   XGLWrapper::DisuseShaderProgram();
 }
 
-const std::vector<DDyUniformVariableInformation>& 
+const std::vector<DUniformVariableInformation>& 
 FDyShaderResource::GetUniformVariableList() const noexcept
 {
   return this->mUniformVariableList;

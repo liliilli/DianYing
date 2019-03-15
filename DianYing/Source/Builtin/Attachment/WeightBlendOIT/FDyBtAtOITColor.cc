@@ -30,8 +30,8 @@ void FDyBtAtWBOITColor::ConstructBuffer(_MOUT_ PDyGlAttachmentInstanceMetaInfo& 
     {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::ClampToEdge},
     {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::ClampToEdge},
   };
-  property.mAttachmentType  = EDyTextureStyleType::D2;
-  property.mBufferFormat    = EDyGlBufferDataInternalFormat::RGBA16Float;
+  property.mAttachmentType  = ETextureStyleType::D2;
+  property.mBufferFormat    = EGlBufferDataInternalFormat::RGBA16Float;
 }
 
 } /// ::dy::builtin namespace

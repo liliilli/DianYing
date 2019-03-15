@@ -213,7 +213,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyCameraComponentMetaInf
 
 ///
 /// @struct PDySoundSourceComponentMetaInfo
-/// @brief Dependent information to CDySoundSource component.
+/// @brief Dependent information to CSoundSource component.
 ///
 struct PDySoundSourceComponentMetaInfo final : public IDyMetaInformation
 {
@@ -338,7 +338,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyColliderComponentMetaI
 
 ///
 /// @struct PDySkyboxComponentMetaInfo
-/// @brief Dependent information to CDySkybox.
+/// @brief Dependent information to CSkybox.
 ///
 struct PDySkyboxComponentMetaInfo final : public IDyMetaInformation
 {

@@ -17,7 +17,7 @@
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Core/Resource/Information/FDyTextureCubemapInformation.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLTextureDescriptor.h>
-#include <Dy/Management/Helper/SDyProfilingHelper.h>
+#include <Dy/Management/Helper/SProfilingHelper.h>
 
 namespace dy
 {
@@ -64,7 +64,7 @@ FDyTextureCubemapResource::FDyTextureCubemapResource(_MIN_ const FDyTextureCubem
   MDY_ASSERT_MSG(optTextureId.has_value() == true, "Texture id creation must be succeeded.");
   this->mTextureResourceId = *optTextureId;
 
-  SDyProfilingHelper::IncreaseOnBindTextureCount(1);
+  SProfilingHelper::IncreaseOnBindTextureCount(1);
 }
 
 FDyTextureCubemapResource::~FDyTextureCubemapResource()
@@ -72,7 +72,7 @@ FDyTextureCubemapResource::~FDyTextureCubemapResource()
   { MDY_GRAPHIC_SET_CRITICALSECITON();
     XGLWrapper::DeleteTexture(this->mTextureResourceId);
   }
-  SDyProfilingHelper::DecreaseOnBindTextureCount(1);
+  SProfilingHelper::DecreaseOnBindTextureCount(1);
 }
 
 } /// ::dy namespace

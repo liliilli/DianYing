@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
+#include <Dy/Core/Resource/Type/TResourceBinder.h>
 #include <Dy/Component/Interface/IInitializeHelper.h>
 #include <Dy/Element/Abstract/AGeneralBaseComponent.h>
 #include <Dy/Helper/Internal/XCheckingRule.h>
@@ -42,7 +42,7 @@ namespace dy
 class CModelRenderer final : public AGeneralBaseComponent, public IInitializeHelper<PDyModelRendererComponentMetaInfo>
 {
 public:
-  CModelRenderer(FDyActor& actorReference);
+  CModelRenderer(FActor& actorReference);
   virtual ~CModelRenderer() = default;
 
   CModelRenderer(const CModelRenderer&)            = delete;

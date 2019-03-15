@@ -18,15 +18,15 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <Dy/Builtin/Constant/GeneralLevel.h>
 #include <Dy/Component/CCamera.h>
-#include <Dy/Element/Actor.h>
+#include <Dy/Element/FActor.h>
 #include <Dy/Management/Rendering/MRendering.h>
 #include <Dy/Management/MSetting.h>
-#include <Dy/Component/CDyTransform.h>
+#include <Dy/Component/CTransform.h>
 
 namespace dy
 {
 
-CLightDirectional::CLightDirectional(FDyActor& actorReference)
+CLightDirectional::CLightDirectional(FActor& actorReference)
   : AGeneralBaseComponent(actorReference),
     mFarPlanes()
 { }

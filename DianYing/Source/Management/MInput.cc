@@ -21,14 +21,14 @@
 #include <Dy/Management/MTime.h>
 #include <Dy/Management/MWindow.h>
 #include <Dy/Management/MSetting.h>
-#include <Dy/Management/Type/Input/DDyInputButton.h>
-#include <Dy/Management/Type/Input/DDyJoystickAnalog.h>
+#include <Dy/Management/Type/Input/DButtonInputItem.h>
+#include <Dy/Management/Type/Input/DAnalogInputItem.h>
 #include <Dy/Management/Type/Render/DDyPixelInfo.h>
 #include <Dy/Management/MWorld.h>
-#include <Dy/Core/DyEngine.h>
+#include <Dy/Core/GDyEngine.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
-#include <Dy/Element/Internal/TDyIdDistributor.h>
-#include <Dy/Element/Actor.h>
+#include <Dy/Element/Internal/TIdDistributor.h>
+#include <Dy/Element/FActor.h>
 
 //!
 //! Data
@@ -42,8 +42,8 @@ constexpr TF32 kNegativeValue = -1.0f;
 constexpr TF32 kPositiveValue = +1.0f;
 constexpr TU32 kMaximumStickCount = 6;
 
-std::array<dy::DDyInputButton, dy::kEDyInputButtonCount> mInputButtonList = {};
-std::array<dy::DDyJoystickAnalog, kMaximumStickCount> mInputAnalogStickList = {};
+std::array<dy::DButtonInputItem, dy::kEDyInputButtonCount> mInputButtonList = {};
+std::array<dy::DAnalogInputItem, kMaximumStickCount> mInputAnalogStickList = {};
 
 dy::DVector2    sMouseLastPosition    = {};
 dy::DVector2    sMousePresentPosition = {};
@@ -288,7 +288,7 @@ void DyProceedAxisGravity(_MINOUT_ dy::DDyAxisBindingInformation& axisInfo)
 
 namespace dy
 {
-class FDyActor;
+class FActor;
 
 EDySuccess MInput::pfInitialize()
 {
@@ -374,7 +374,7 @@ TF32 MInput::GetJoystickStickValue(_MIN_ DClamp<TU32, 0, 5> index) const noexcep
   return mInputAnalogStickList[index].GetValue();
 }
 
-EDyInputButtonStatus MInput::GetButtonStatusValue(_MIN_ EDyButton button) const noexcept
+EInputButtonStatus MInput::GetButtonStatusValue(_MIN_ EDyButton button) const noexcept
 {
   MDY_ASSERT_MSG(button != EDyButton::NoneError, "Button value must not be `NoneErorr`.");
   return mInputButtonList[button].Get();
@@ -481,7 +481,7 @@ EDyMouseMode MInput::PopMouseMode() noexcept
 
 bool MInput::IsKeyPressed(_MIN_ EDyInputButton keyValue) const noexcept
 {
-  return mInputButtonList[keyValue].Get() == EDyInputButtonStatus::Pressed; 
+  return mInputButtonList[keyValue].Get() == EInputButtonStatus::Pressed; 
 }
 
 void MInput::pfInGameUpdate(_MIN_ TF32 dt) noexcept
@@ -542,7 +542,7 @@ void MInput::MDY_PRIVATE(pCheckAxisStatus)(_MIN_ TF32 dt)
 {
   /// @brief Check action key status to find if any one is satisfied goalState condition.
   /// @param actionInfo action information
-  static auto CheckAxisStatusIfAny = [](_MINOUT_ DDyAxisBindingInformation& axisInfo, _MIN_ bool isPositive, _MIN_ EDyInputButtonStatus goalState)
+  static auto CheckAxisStatusIfAny = [](_MINOUT_ DDyAxisBindingInformation& axisInfo, _MIN_ bool isPositive, _MIN_ EInputButtonStatus goalState)
   {
     return std::any_of(
         MDY_BIND_CBEGIN_CEND((isPositive == true ? axisInfo.mPositiveButtonId : axisInfo.mNegativeButtonId)),
@@ -552,7 +552,7 @@ void MInput::MDY_PRIVATE(pCheckAxisStatus)(_MIN_ TF32 dt)
 
   /// @brief Check action key status to find if any one is satisfied goalState condition.
   /// @param actionInfo action information
-  static auto CheckAxisStatusIfAll = [](_MINOUT_ DDyAxisBindingInformation& axisInfo, _MIN_ bool isPositive, _MIN_ EDyInputButtonStatus goalState)
+  static auto CheckAxisStatusIfAll = [](_MINOUT_ DDyAxisBindingInformation& axisInfo, _MIN_ bool isPositive, _MIN_ EInputButtonStatus goalState)
   {
     return std::all_of(
         MDY_BIND_CBEGIN_CEND((isPositive == true ? axisInfo.mPositiveButtonId : axisInfo.mNegativeButtonId)),
@@ -564,13 +564,13 @@ void MInput::MDY_PRIVATE(pCheckAxisStatus)(_MIN_ TF32 dt)
   /// @param axisInfo Axis information
   static auto ProcessAxis_CommonNeutral = [](_MINOUT_ DDyAxisBindingInformation& axisInfo)
   {
-    if (CheckAxisStatusIfAny(axisInfo, false, EDyInputButtonStatus::Pressed) == true)
+    if (CheckAxisStatusIfAny(axisInfo, false, EInputButtonStatus::Pressed) == true)
     { // Negative
       axisInfo.mAxisValue = kNegativeValue;
       axisInfo.mKeyStatus = EDyInputAxisStatus::NegativePressed;
       return;
     }
-    if (CheckAxisStatusIfAny(axisInfo, true, EDyInputButtonStatus::Pressed) == true)
+    if (CheckAxisStatusIfAny(axisInfo, true, EInputButtonStatus::Pressed) == true)
     { // Positive
       axisInfo.mAxisValue = kPositiveValue;
       axisInfo.mKeyStatus = EDyInputAxisStatus::PositivePressed;
@@ -582,8 +582,8 @@ void MInput::MDY_PRIVATE(pCheckAxisStatus)(_MIN_ TF32 dt)
   static auto ProcessAxis_NegativePressed = [](_MINOUT_ DDyAxisBindingInformation& axisInfo)
   { 
     // Negative
-    if (CheckAxisStatusIfAll(axisInfo, false, EDyInputButtonStatus::Released) == false) { return; } 
-    if (CheckAxisStatusIfAll(axisInfo, true, EDyInputButtonStatus::Released) == false)
+    if (CheckAxisStatusIfAll(axisInfo, false, EInputButtonStatus::Released) == false) { return; } 
+    if (CheckAxisStatusIfAll(axisInfo, true, EInputButtonStatus::Released) == false)
     { // Positive
       axisInfo.mAxisValue = kPositiveValue;
       axisInfo.mKeyStatus = EDyInputAxisStatus::PositivePressed;
@@ -595,8 +595,8 @@ void MInput::MDY_PRIVATE(pCheckAxisStatus)(_MIN_ TF32 dt)
   /// @param axisInfo Axis information
   static auto ProcessAxis_PositivePressed = [](_MINOUT_ DDyAxisBindingInformation& axisInfo)
   { // Positive
-    if (CheckAxisStatusIfAll(axisInfo, true, EDyInputButtonStatus::Released) == false) { return; }
-    if (CheckAxisStatusIfAll(axisInfo, false, EDyInputButtonStatus::Released) == false)
+    if (CheckAxisStatusIfAll(axisInfo, true, EInputButtonStatus::Released) == false) { return; }
+    if (CheckAxisStatusIfAll(axisInfo, false, EInputButtonStatus::Released) == false)
     { // Negative
       axisInfo.mAxisValue = kPositiveValue;
       axisInfo.mKeyStatus = EDyInputAxisStatus::NegativePressed;
@@ -627,7 +627,7 @@ void MInput::MDY_PRIVATE(pCheckActionStatus)(_MIN_ TF32 dt)
 {
   /// @brief Check action key status to find if any one is satisfied goalState condition.
   /// @param actionInfo action information
-  static auto CheckActionStatusIfAny = [](_MINOUT_ DDyActionBindingInformation& actionInfo, _MIN_ EDyInputButtonStatus goalState)
+  static auto CheckActionStatusIfAny = [](_MINOUT_ DDyActionBindingInformation& actionInfo, _MIN_ EInputButtonStatus goalState)
   {
     return std::any_of(
         MDY_BIND_CBEGIN_CEND(actionInfo.mActionId),
@@ -637,7 +637,7 @@ void MInput::MDY_PRIVATE(pCheckActionStatus)(_MIN_ TF32 dt)
 
   /// @brief Check action key status to find if any one is satisfied goalState condition.
   /// @param actionInfo action information
-  static auto CheckActionStatusIfAll = [](_MINOUT_ DDyActionBindingInformation& actionInfo, _MIN_ EDyInputButtonStatus goalState)
+  static auto CheckActionStatusIfAll = [](_MINOUT_ DDyActionBindingInformation& actionInfo, _MIN_ EInputButtonStatus goalState)
   {
     return std::all_of(
         MDY_BIND_CBEGIN_CEND(actionInfo.mActionId),
@@ -649,7 +649,7 @@ void MInput::MDY_PRIVATE(pCheckActionStatus)(_MIN_ TF32 dt)
   /// @param actionInfo action information
   static auto ProcessAction_Released = [](_MINOUT_ DDyActionBindingInformation& actionInfo)
   {
-    if (CheckActionStatusIfAny(actionInfo, EDyInputButtonStatus::Pressed) == true) 
+    if (CheckActionStatusIfAny(actionInfo, EInputButtonStatus::Pressed) == true) 
     { actionInfo.mKeyStatus = EDyInputActionStatus::Pressed; }
   };
 
@@ -657,7 +657,7 @@ void MInput::MDY_PRIVATE(pCheckActionStatus)(_MIN_ TF32 dt)
   /// @param actionInfo action information
   static auto ProcessAction_Pressed = [](_MINOUT_ DDyActionBindingInformation& actionInfo)
   {
-    if (CheckActionStatusIfAll(actionInfo, EDyInputButtonStatus::Released) == true) 
+    if (CheckActionStatusIfAll(actionInfo, EInputButtonStatus::Released) == true) 
     { actionInfo.mKeyStatus = EDyInputActionStatus::Released; }
     else
     { actionInfo.mKeyStatus = EDyInputActionStatus::Bottled; }
@@ -667,7 +667,7 @@ void MInput::MDY_PRIVATE(pCheckActionStatus)(_MIN_ TF32 dt)
   /// @param actionInfo action information
   static auto ProcessAction_Bottled = [](_MINOUT_ DDyActionBindingInformation& actionInfo)
   {
-    if (CheckActionStatusIfAll(actionInfo, EDyInputButtonStatus::Released) == true) 
+    if (CheckActionStatusIfAll(actionInfo, EInputButtonStatus::Released) == true) 
     { actionInfo.mKeyStatus = EDyInputActionStatus::Released; }
   };
 
@@ -806,7 +806,7 @@ EDySuccess MInput::MDY_PRIVATE(TryDetachContollerActor)(_MIN_ AActorCppScript& i
   return this->mDelegateManger.TryDetachContollerActor(iRefActor);
 }
 
-EDyInputButtonStatus MInput::MDY_PRIVATE(GetLowlevelKeyStatus)(_MIN_ EDyButton iId) noexcept
+EInputButtonStatus MInput::MDY_PRIVATE(GetLowlevelKeyStatus)(_MIN_ EDyButton iId) noexcept
 {
   return mInputButtonList[iId].Get();
 }
@@ -890,7 +890,7 @@ bool MInput::IsActorPicked() const noexcept
   return this->mPtrActorPickingTarget != nullptr;
 }
 
-FDyActor** MInput::MDY_PRIVATE(GetPPtrPickingTarget)() noexcept
+FActor** MInput::MDY_PRIVATE(GetPPtrPickingTarget)() noexcept
 {
   return &this->mPtrActorPickingTarget;
 }

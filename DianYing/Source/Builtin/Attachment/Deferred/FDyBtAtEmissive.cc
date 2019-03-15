@@ -30,7 +30,7 @@ void FDyBtAttachmentEmissive::ConstructBuffer(PDyGlAttachmentInstanceMetaInfo& o
     {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::Repeat},
     {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::Repeat},
   };
-  oProperty.mBufferFormat = EDyGlBufferDataInternalFormat::RGBA16Float;
+  oProperty.mBufferFormat = EGlBufferDataInternalFormat::RGBA16Float;
 } 
 
 } /// ::dy namespace

@@ -24,7 +24,7 @@ std::unique_ptr<PDyMetaWidgetBarDescriptor>
 PDyMetaWidgetBarDescriptor::CreateMetaInformation(const nlohmann::json& itemAtlas)
 {
   /* Template
-    { "Name": "BasicBarTest", "Type": "BasicBar", "Parent": "", "ZOrder": 0,
+    { "Name": "BasicBarTest", "Type": "BasicBar", "Parent": "", "ZOrder": 0, "IsActivated": true,
       "Details": {
         "InitialPosition": { "X": 0, "Y": 32 },
         "WidgetSize": { "X": 600, "Y": 32 },
@@ -50,6 +50,7 @@ PDyMetaWidgetBarDescriptor::CreateMetaInformation(const nlohmann::json& itemAtla
   instance->mUiObjectSpecifierName  = json::GetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Name);
   instance->mComponentType          = EDyWidgetComponentType::BasicGaugeBar;
   instance->mParentSpecifierName    = json::GetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Parent);
+  json::GetValueFromTo(itemAtlas, "IsActivated",  instance->mIsActivated);
   json::GetValueFromTo(itemAtlas, "ZOrder", instance->mZOrder);
 
   const auto& detailAtlas = itemAtlas[(TPDyMWCBD::sHeader_Details)];
