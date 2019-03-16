@@ -26,7 +26,6 @@
     <ClCompile Include="Source\Editor\Gui\Dialog\ProjectCreator.cc" />
     <ClCompile Include="Source\Editor\Gui\Helper\ComponentHelper.cc" />
     <ClCompile Include="Source\Editor\Helper\Win32Helper.cc" />
-    <ClCompile Include="Source\Builtin\Object\Light\DirectionalLight.cc" />
     <ClCompile Include="Source\Management\Helper\PhysXErrorCallback.cc" />
     <ClCompile Include="Source\Management\Helper\PhysxSimulationCallback.cc" />
     <ClCompile Include="Source\Component\Abstract\ADyGeneralBaseComponent.cc" />
@@ -378,6 +377,8 @@
     <ClCompile Include="Source\Management\Type\Input\DAnalogInputItem.cc" />
     <ClCompile Include="Source\Management\Type\Time\DTimePoint.cc" />
     <ClCompile Include="data\Script\Astronaut\AstroidConstructor.cc" />
+    <ClCompile Include="Source\Builtin\Prefab\FBtPbCameraMan.cc" />
+    <ClCompile Include="Source\Builtin\Abstract\APrefabResource.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -417,7 +418,6 @@
     <ClInclude Include="Include\Dy\Editor\Gui\Dialog\ProjectCreator.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\Helper\ComponentHelper.h" />
     <ClInclude Include="Include\Dy\Editor\Helper\Win32Helper.h" />
-    <ClInclude Include="Include\Dy\Builtin\Object\Light\DirectionalLight.h" />
     <ClInclude Include="Libraries\lua\include\lua.hpp" />
     <ClInclude Include="Libraries\lua\include\lua.h" />
     <ClInclude Include="Libraries\lua\include\lapi.h" />
@@ -916,6 +916,8 @@
     <ClInclude Include="Include\Dy\Element\Widget\FWidgetBasicGaugeBar.h" />
     <ClInclude Include="Include\Dy\Element\Widget\FWidgetImage.h" />
     <ClInclude Include="Include\Dy\Element\Widget\FWidgetText.h" />
+    <ClInclude Include="Include\Dy\Builtin\Prefab\FBtPbCameraMan.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\APrefabResource.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

@@ -95,6 +95,11 @@ void RBuiltinResources::BindBuiltinResourcesToMetaManager()
       auto metaInfo = std::any_cast<PDyRenderItemInstanceMetaInfo>(function()->GetMetaInfo());
       MDY_CALL_ASSERT_SUCCESS(metaManager.pfAddRenderIteMIOMeta(metaInfo));
     } break;
+    case EResourceType::Prefab:
+    { // Prefab
+      auto metainfo = std::any_cast<std::string_view>(function()->GetMetaInfo());
+      MDY_CALL_ASSERT_SUCCESS(metaManager.pfAddPrefabMetaInfo(metainfo));
+    } break;
     default: MDY_NOT_IMPLEMENTED_ASSERT(); break;
     }
   }

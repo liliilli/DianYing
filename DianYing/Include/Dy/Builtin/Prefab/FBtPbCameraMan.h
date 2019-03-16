@@ -1,5 +1,5 @@
-#ifndef GUARD_DY_BUILTIN_OBJECT_LIGHT_DIRECTIONALLIGHT_H
-#define GUARD_DY_BUILTIN_OBJECT_LIGHT_DIRECTIONALLIGHT_H
+#ifndef GUARD_DY_BUILTIN_PREFAB_FBtPbCameraMan_H
+#define GUARD_DY_BUILTIN_PREFAB_FBtPbCameraMan_H
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -13,22 +13,19 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/DVector3.h>
+#include <Dy/Builtin/Abstract/APrefabResource.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
 
 namespace dy::builtin
 {
 
-class FDyDirectionalLight final
+/// @class FDyBtPbCameraMan
+/// @brief Default Camera-man prefab.
+class FDyBtPbCameraMan final : public APrefabResource
 {
-public:
-  FDyDirectionalLight();
-
-private:
-  DVector3 mPosition;
-  DVector3 mSunDirection;
-
+  MDY_REGISTER_RESOURCE_PREFAB(FDyBtPbCameraMan, "DyCameraMan")
 };
 
 } /// ::dy::builtin namespace
 
-#endif /// GUARD_DY_BUILTIN_OBJECT_LIGHT_DIRECTIONALLIGHT_H
+#endif /// GUARD_DY_BUILTIN_PREFAB_FBtPbCameraMan_H

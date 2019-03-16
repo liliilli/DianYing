@@ -166,6 +166,7 @@
     <ClCompile Include="Source\Builtin\Abstract\ADyGLShaderResources.cc" />
     <ClCompile Include="Source\Builtin\Abstract\AMeshResource.cc" />
     <ClCompile Include="Source\Builtin\Abstract\AModelResource.cc" />
+    <ClCompile Include="Source\Builtin\Abstract\APrefabResource.cc" />
     <ClCompile Include="Source\Builtin\Abstract\ATextureResource.cc" />
     <ClCompile Include="Source\Builtin\Attachment\BasicShadow\BasicShadow.cc" />
     <ClCompile Include="Source\Builtin\Attachment\CSM\FDyBtAtLight.cc" />
@@ -223,6 +224,7 @@
     <ClCompile Include="data\Script\DebugActor\BtScActorTest1.cc" />
     <ClCompile Include="data\Script\DebugActor\BtScActorTest2.cc" />
     <ClCompile Include="data\Script\DebugActor\BtScActorTest3.cc" />
+    <ClCompile Include="Source\Builtin\Prefab\FBtPbCameraMan.cc" />
     <ClCompile Include="Source\Builtin\RenderItem\Debug\FBtDebugCollisionAabb.cc" />
     <ClCompile Include="Source\Builtin\RenderItem\Debug\FBtDebugCollisionShape.cc" />
     <ClCompile Include="Source\Builtin\RenderItem\Debug\FBtDebugPicking.cc" />
@@ -430,7 +432,6 @@
     <ClCompile Include="Source\Builtin\Model\Plain.cc" />
     <ClCompile Include="Source\Builtin\Model\ScreenProjectionTriangle.cc" />
     <ClCompile Include="Source\Builtin\Model\Sphere.cc" />
-    <ClCompile Include="Source\Builtin\Object\Light\DirectionalLight.cc" />
     <ClCompile Include="Source\Builtin\Shader\RenderColorGeometry.cc" />
     <ClCompile Include="Source\Builtin\Shader\Font\RenderDefaultFont.cc" />
     <ClCompile Include="Source\Builtin\Shader\Font\RenderFontArraySDF.cc" />
@@ -610,6 +611,7 @@
     <ClInclude Include="Include\Dy\Builtin\Abstract\AMaterialResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\AMeshResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\AModelResource.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\APrefabResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\AScriptResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ATextureResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\AWidgetMetaResource.h" />
@@ -676,9 +678,9 @@
     <ClInclude Include="Include\Dy\Builtin\Model\ScreenProjectionTriangle.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\Sphere.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\UIFontQuad.h" />
-    <ClInclude Include="Include\Dy\Builtin\Object\Light\DirectionalLight.h" />
     <ClInclude Include="data\Script\DebugActor\BtScActorTest2.h" />
     <ClInclude Include="data\Script\DebugActor\BtScActorTest3.h" />
+    <ClInclude Include="Include\Dy\Builtin\Prefab\FBtPbCameraMan.h" />
     <ClInclude Include="Include\Dy\Builtin\RenderItem\Debug\FBtDebugCollisionAabb.h" />
     <ClInclude Include="Include\Dy\Builtin\RenderItem\Debug\FBtDebugCollisionShape.h" />
     <ClInclude Include="Include\Dy\Builtin\RenderItem\Debug\FBtDebugPicking.h" />

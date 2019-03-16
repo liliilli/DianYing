@@ -812,6 +812,18 @@ EDySuccess MIOMeta::pReadModelMetaAtlas(const nlohmann::json& iJson)
   return this->mInternal->pReadModelMetaAtlas(iJson);
 }
 
+EDySuccess MIOMeta::pfAddPrefabMetaInfo(const std::string_view& iMetaInfo)
+{
+  const nlohmann::json jsonAtlas = nlohmann::json::parse(iMetaInfo);
+  auto prefabMetaInfo = PDyPrefabInstanceMetaInfo::CreateMetaInformation(jsonAtlas);
+
+  const auto name = prefabMetaInfo->mSpecifierName;
+  auto [_, isSucceeded] = this->mInternal->mPrefabMetaInfo.try_emplace(name, std::move(prefabMetaInfo));
+  if (isSucceeded == false) { return DY_FAILURE; }
+
+  return DY_SUCCESS;
+}
+
 EDySuccess MIOMeta::pfAddWidgetMetaInformation(const std::string& metaInformationString)
 {
   return this->mInternal->pfAddWidgetMetaInformation(metaInformationString);

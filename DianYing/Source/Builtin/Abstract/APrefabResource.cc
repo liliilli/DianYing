@@ -13,14 +13,14 @@
 ///
 
 /// Header file
-#include <Dy/Builtin/Object/Light/DirectionalLight.h>
+#include <Dy/Builtin/Abstract/APrefabResource.h>
 
-namespace dy::builtin
+namespace dy
 {
 
-FDyDirectionalLight::FDyDirectionalLight()
+std::any APrefabResource::GetMetaInfo()
 {
-
+  return mJsonPrefab;
 }
 
-} /// ::dy::builtin namespace
+} /// ::dy namespace
