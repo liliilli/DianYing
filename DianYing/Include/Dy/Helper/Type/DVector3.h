@@ -40,7 +40,7 @@ namespace dy
 
 /// @struct DVector3
 /// @brief Float type 3-element vector struct.
-struct DVector3 final 
+struct DVector3 final
 {
   TF32 X = 0.f, Y = 0.f, Z = 0.f;
 
@@ -491,10 +491,11 @@ struct DVector3 final
     return ret;
   }
 
-  ///
   /// @brief Check if this DVector3 is all zero or nearly equal to zero.
-  ///
   [[nodiscard]] bool IsAllZero() const noexcept;
+
+  /// @brief Get information string of DVector3.
+  [[nodiscard]] std::string ToString() const noexcept;
 };
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DVector3& p);

@@ -79,6 +79,11 @@ bool operator!=(_MIN_ const DVector3& lhs, _MIN_ const DVector3& rhs) noexcept
   return !(lhs == rhs);
 }
 
+std::string DVector3::ToString() const noexcept
+{
+  return MakeStringU8("({:1}, {:1}, {:1})", this->X, this->Y, this->Z);
+}
+
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DVector3& p)
 {
   j = nlohmann::json{ {"X", p.X}, {"Y", p.Y}, {"Z", p.Z} };
