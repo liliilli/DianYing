@@ -31,7 +31,7 @@ void FDyBtAtSkyOutput::ConstructBuffer(_MOUT_ PDyGlAttachmentInstanceMetaInfo& p
     {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::ClampToEdge}
   };
   property.mAttachmentType = ETextureStyleType::D2;
-  property.mBufferFormat   = EGlBufferDataInternalFormat::RGB8;
+  property.mBufferFormat   = EGlBufferDataInternalFormat::RGBA8;
 }
 
 } /// ::dy::builtin namespace

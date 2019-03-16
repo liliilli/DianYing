@@ -45,7 +45,15 @@ EDySuccess FBtRenderLevelOitDefault::OnPreRenderCheckCondition()
 
 void FBtRenderLevelOitDefault::OnFailedCheckCondition()
 {
+  if (this->mBinderFrameBuffer.IsResourceExist() == false) { return; }
+
   /* Do nothing */
+  { 
+    this->mBinderFrameBuffer->BindFrameBuffer();
+    glClearBufferfv(GL_COLOR, 0, &DColorRGBA::Black.R);
+    glClearBufferfv(GL_COLOR, 1, &DColorRGBA::White.R);
+    this->mBinderFrameBuffer->UnbindFrameBuffer();
+  }
 }
 
 void FBtRenderLevelOitDefault::OnSetupRenderingSetting()
