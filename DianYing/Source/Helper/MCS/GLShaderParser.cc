@@ -108,7 +108,7 @@ layout(std140, binding = 0) uniform CameraBlock
 } uCamera;
 
 // @brief Get focused camera's PV matrix.
-mat4 Dy_GetCameraPv() { return uCamera.mProjMatrix * uCamera.mViewMatrix; }
+mat4 DyGetCameraPv() { return uCamera.mProjMatrix * uCamera.mViewMatrix; }
 )dy");
 
 /// @brief Default Light input unfiorm variables.
@@ -173,6 +173,36 @@ struct DDyPointLight
   float mRange;
 };
 uniform DDyPointLight uDyLightPoint[16];
+)dy");
+
+/// @brief Default Model transform input & processing API.
+/// This module is dynamic to instancing flag, so if true, module will support static instancing.
+/// #import <Input_ModelTransform>;
+MDY_SET_IMMUTABLE_STRING(Buffer_Input_ModelTransform_Single, R"dy(
+uniform mat4 uModelMatrix;
+vec4 DyTransform(const vec4 iLocalPos)
+{
+  return uModelMatrix * iLocalPos;
+}
+
+mat3 DyGetRotationMatrix()
+{
+  return transpose(inverse(mat3(uModelMatrix)));
+}
+)dy");
+
+MDY_SET_IMMUTABLE_STRING(Buffer_Input_ModelTransform_Multi, R"dy(
+// This will be attached by another binding index.
+layout (location = 10) in mat4 dyInstanceModelMatrix;
+vec4 DyTransform(const vec4 iLocalPos)
+{
+  return dyInstanceModelMatrix * iLocalPos;
+}
+
+mat3 DyGetRotationMatrix()
+{
+  return transpose(inverse(mat3(dyInstanceModelMatrix)));
+}
 )dy");
 
 /// @brief Skinned animation input uniform variables.
@@ -249,8 +279,15 @@ bool DyIsNearlyEqual(float iValue, float iTarget)
 namespace dy::mcs
 {
 
-std::string ParseGLShader(_MIN_ const std::string& iShaderString)
+std::string ParseGLShader(const DParsingArgs& iArgs)
 {
+  if (iArgs.mShaderString == nullptr)
+  {
+    MDY_ASSERT_MSG(false, "Failed to parse shader, shader buffer must be specified.");
+    return "";
+  }
+  const auto& iShaderString = *iArgs.mShaderString;
+
   // Find `#import `.
   auto optImportIt = DyStrInQuote(iShaderString, "#import ");
   if (optImportIt.has_value() == false) { return iShaderString; }
@@ -262,7 +299,9 @@ std::string ParseGLShader(_MIN_ const std::string& iShaderString)
 
   // Get Dy shader module keywords.
   const auto optMatchedKeywordList = regex::GetMatchedKeywordFrom(optMid.value(), R"(#import <([\w]+)>;)");
-  MDY_ASSERT_MSG_FORCE(optMatchedKeywordList.has_value() == true, "Undefined Dy shader module. Failed to load shader.");
+  MDY_ASSERT_MSG_FORCE(
+    optMatchedKeywordList.has_value() == true, 
+    "Undefined Dy shader module. Failed to load shader.");
 
   // Check module keyword. If not found anything, output error.
   // If found any module, just replace `#import phrase` with given string to buffer.
@@ -275,15 +314,31 @@ std::string ParseGLShader(_MIN_ const std::string& iShaderString)
     case CaseStr("Input_SkinAnimation"):    exportShaderBuffer += Buffer_Input_SkinAnimation; break;
     case CaseStr("Input_DefaultTexture2D"): exportShaderBuffer += Buffer_Input_DefaultTexture2D; break;
     case CaseStr("Input_UboDirLight"):      exportShaderBuffer += Buffer_Input_UboDirLight; break;
-    case CaseStr("Input_UStrPointLight"):    exportShaderBuffer += Buffer_Input_UStrPointLight; break;
+    case CaseStr("Input_UStrPointLight"):   exportShaderBuffer += Buffer_Input_UStrPointLight; break;
     case CaseStr("Output_OpaqueStream"):    exportShaderBuffer += Buffer_Output_OpaqueStream; break;
     case CaseStr("Etc_Miscellaneous"):      exportShaderBuffer += Buffer_Etc_Miscellaneous; break;
+    case CaseStr("Input_ModelTransform"):  
+    {
+      if (iArgs.mIsInstantiable == true)
+      {
+        exportShaderBuffer += Buffer_Input_ModelTransform_Multi;
+      }
+      else
+      {
+        exportShaderBuffer += Buffer_Input_ModelTransform_Single; 
+      }
+    } break;
     default: MDY_NOT_IMPLEMENTED_ASSERT(); break;
     }
   }
 
   // Append next buffer.
-  exportShaderBuffer += optNext.has_value() == true ? ParseGLShader(optNext.value()) : "";
+  if (optNext.has_value() == true)
+  {
+    auto nextArgs = iArgs;
+    nextArgs.mShaderString = &optNext.value();
+    exportShaderBuffer += ParseGLShader(nextArgs);
+  }
   // Return.
   return exportShaderBuffer;
 }
