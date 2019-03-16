@@ -18,16 +18,23 @@
 #include <Dy/Core/Rendering/Wrapper/PGLBufferDescriptor.h>
 #include <Dy/Core/Resource/Information/FDyMeshInformation.h>
 #include <Dy/Meta/Information/MetaInfoModelMesh.h>
+#include <Dy/Builtin/Constant/GeneralValue.h>
 
 namespace dy
 {
 
-FMeshVBOIntermediate::FMeshVBOIntermediate(const FDyMeshInformation& information) :
-    mSpecifierName{information.GetSpecifierName()},
-    mVaoBindAttributeInfo{information.GetMeshInformationList().mVAOBindingInfo}
+FMeshVBOIntermediate::FMeshVBOIntermediate(const FDyMeshInformation& information, bool iIsInstancing) 
+  : mSpecifierName{information.GetSpecifierName()},
+    mVaoBindAttributeInfo{information.GetMeshInformationList().mVAOBindingInfo},
+    mIsSupportingInstancing{iIsInstancing}
 {
   this->MDY_PRIVATE(CreateVertexArrayBuffer)(information);
   this->MDY_PRIVATE(CreateElementArrayBuffer)(information);
+  
+  if (this->IsSupportingInstancing() == true)
+  {
+    this->mSpecifierName += kInstancingPostfix;
+  }
 }
 
 void FMeshVBOIntermediate::MDY_PRIVATE(CreateVertexArrayBuffer)(const FDyMeshInformation& iInformation)
@@ -104,6 +111,11 @@ const DDySubmeshFlagInformation & FMeshVBOIntermediate::GetMeshFlagInfo() const 
 const DDyGLVaoBindInformation & FMeshVBOIntermediate::GetVaoBindingInfo() const noexcept
 {
   return this->mVaoBindAttributeInfo;
+}
+
+bool FMeshVBOIntermediate::IsSupportingInstancing() const noexcept
+{
+  return this->mIsSupportingInstancing;
 }
 
 void FMeshVBOIntermediate::ResetAllProperties() noexcept

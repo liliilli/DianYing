@@ -38,6 +38,7 @@
 #include <Dy/Management/IO/MIOMeta.h>
 #include <Dy/Meta/Information/MetaInfoMaterial.h>
 #include <Dy/Core/Resource/Internal/FMeshVBOIntermediate.h>
+#include <Dy/Builtin/Constant/GeneralValue.h>
 
 namespace dy
 {
@@ -131,9 +132,18 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceInformation(_MIN_ const DDyIOT
   switch (result.mResourceType)
   {
   case EResourceType::GLShader:
+  {
+    const auto shaderName = TryRemovePostfix(assignedTask.mSpecifierName, kInstancingPostfix);
+    // Check this is instancing material
+    auto isInstanced  = false;
+    if (shaderName != assignedTask.mSpecifierName) 
+    { 
+      isInstanced = true; 
+    }
+
     result.mSmtPtrResultInstance = new FDyShaderInformation
-    (this->mMetaManager.GetGLShaderMetaInformation(assignedTask.mSpecifierName));
-    break;
+    (this->mMetaManager.GetGLShaderMetaInformation(shaderName), isInstanced);
+  } break;
   case EResourceType::Texture:
   { const auto metaInfo = this->mMetaManager.GetTextureMetaInformation(assignedTask.mSpecifierName);
     if (metaInfo.mTextureType == ETextureStyleType::D2Cubemap)
@@ -162,9 +172,14 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceInformation(_MIN_ const DDyIOT
     (this->mMetaManager.GetModelAnimScrapMetaInformation(assignedTask.mSpecifierName));
     break;
   case EResourceType::Material:
+  {
+    const auto materialName = TryRemovePostfix(assignedTask.mSpecifierName, kInstancingPostfix);
+    // Check this is instancing material
+    const auto isInstanced  = materialName != assignedTask.mSpecifierName;
+
     result.mSmtPtrResultInstance = new FDyMaterialInformation
-    (this->mMetaManager.GetMaterialMetaInformation(assignedTask.mSpecifierName));
-    break;
+    (this->mMetaManager.GetMaterialMetaInformation(materialName), isInstanced);
+  } break;
   case EResourceType::GLAttachment:
     result.mSmtPtrResultInstance = new FDyAttachmentInformation
     (this->mMetaManager.GetGLAttachmentMetaInformation(assignedTask.mSpecifierName));
@@ -215,12 +230,14 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceResource(_MIN_ const DDyIOTask
   } break;
   case EResourceType::__MeshVBO:
   { // Builtin mesh not be created on another context... so forward it to main thread.
-    //result.mSmtPtrResultInstance = new FDyMeshResource(*infoManager.GetPtrInformation<EResourceType::Mesh>(result.mSpecifierName));
     auto task = assignedTask;
     task.mResourceType = EResourceType::Mesh;
+    const auto meshName = TryRemovePostfix(assignedTask.mSpecifierName, kInstancingPostfix);
+    const auto isInstanced  = meshName != assignedTask.mSpecifierName;
+
     task.mRawInstanceForUsingLater = new FMeshVBOIntermediate(
-      *infoManager.GetPtrInformation<EResourceType::Mesh>(result.mSpecifierName)
-    );
+      *infoManager.GetPtrInformation<EResourceType::Mesh>(meshName), isInstanced);
+
     SDyIOWorkerConnHelper::TryForwardToMainTaskList(task);
   } break;
   case EResourceType::Model:

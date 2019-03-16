@@ -17,15 +17,22 @@
 
 #include <filesystem>
 #include <Dy/Meta/Information/GLShaderMetaInformation.h>
-#include "Dy/Helper/MCS/GLShaderParser.h"
+#include <Dy/Builtin/Constant/GeneralValue.h>
+#include <Dy/Helper/MCS/GLShaderParser.h>
 #include <Dy/Helper/Library/HelperIO.h>
 
 namespace dy
 {
 
-FDyShaderInformation::FDyShaderInformation(_MIN_ const PDyGLShaderInstanceMetaInfo& metaInfo) :
-    mSpecifierName{metaInfo.mSpecifierName}
+FDyShaderInformation::FDyShaderInformation(const PDyGLShaderInstanceMetaInfo& metaInfo, bool iIsInstantiable) 
+  : mSpecifierName{metaInfo.mSpecifierName},
+    mIsInstantiable{iIsInstantiable}
 {
+  if (this->IsInstantiable() == true)
+  {
+    this->mSpecifierName += kInstancingPostfix;
+  }
+
   for (int i = 0; i < 6; ++i)
   {
     PShaderFragmentInformation shader{};
@@ -45,24 +52,44 @@ FDyShaderInformation::FDyShaderInformation(_MIN_ const PDyGLShaderInstanceMetaIn
       MDY_ASSERT_MSG(
         std::filesystem::exists(p.mExternalFilePath) == true, 
         "OpenGL Shader external file path exist but not valid.");
-      auto ptrBuffer = GetBufferFromFile(p.mExternalFilePath);
+      auto optBuffer = GetBufferFromFile(p.mExternalFilePath);
       MDY_ASSERT_MSG(
-        ptrBuffer.has_value() == true, 
+        optBuffer.has_value() == true, 
         "Unexpected error occurred while reading file.");
 
       // Parse shader code, and save buffer to chunk.
-      shader.mShaderFragmentCode = mcs::ParseGLShader(ptrBuffer.value().data());
+      mcs::DParsingArgs args;
+      const std::string primaryBuffer = optBuffer.value().data();
+      {
+        args.mIsInstantiable = this->mIsInstantiable;
+        args.mShaderString = &primaryBuffer;
+      }
+      shader.mShaderFragmentCode = ParseGLShader(args);
     }
     else
     {
+      mcs::DParsingArgs args;
+      {
+        args.mIsInstantiable = this->mIsInstantiable;
+        args.mShaderString = &p.mBuiltinBuffer;
+      }
       // Parse shader code, and save buffer to chunk.
-      shader.mShaderFragmentCode = mcs::ParseGLShader(p.mBuiltinBuffer);
+      shader.mShaderFragmentCode = ParseGLShader(args);
     }
 
-    shader.mShaderType    = static_cast<EDyShaderFragmentType>(i);
+    shader.mShaderType = static_cast<EDyShaderFragmentType>(i);
     this->mShaderFragmentList.emplace_back(shader);
   }
 }
 
+const std::string& FDyShaderInformation::GetSpecifierName() const noexcept
+{
+  return this->mSpecifierName;
+}
+
+bool FDyShaderInformation::IsInstantiable() const noexcept
+{
+  return this->mIsInstantiable;
+}
 
 } /// ::dy namespace

@@ -14,6 +14,7 @@
 
 /// Header file
 #include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
+#include <Dy/Builtin/Constant/GeneralValue.h>
 #include <Dy/Core/Resource/Information/FDyMaterialInformation.h>
 #include <Dy/Core/Resource/Information/FDyShaderInformation.h>
 #include <Dy/Core/Resource/Information/FDyTextureInformation.h>
@@ -43,7 +44,9 @@ FDyMaterialResource::FDyMaterialResource(const FDyMaterialInformation& iInformat
   // If default uniform value is exist, apply them to shader.
   MDY_ASSERT(this->mBinderShader.IsResourceExist() == true);
   auto& managerMetaInfo = MIOMeta::GetInstance();
-  const auto& metaItem  = managerMetaInfo.GetMaterialMetaInformation(mSpecifierName);
+  const auto& metaItem = managerMetaInfo.GetMaterialMetaInformation(
+    TryRemovePostfix(mSpecifierName, kInstancingPostfix)
+  );
   if (metaItem.mUniformValues.empty() == false)
   {
     for (const auto& [uniformName, smtValueInstance] : metaItem.mUniformValues)

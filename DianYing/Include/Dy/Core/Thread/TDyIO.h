@@ -54,13 +54,14 @@ public:
   /// @brief
   struct PRIVerificationItem final
   {
-    const std::string&      mSpecifier  = MDY_INITIALIZE_EMPTYSTR;
-    const EResourceType   mType       = EResourceType::NoneError;
-    const EDyResourceStyle  mStyle      = EDyResourceStyle::NoneError;
-    const EResourceScope          mScope      = EResourceScope::UserDefined;
+    const std::string   mSpecifier  = MDY_INITIALIZE_EMPTYSTR;
+    const EResourceType mType       = EResourceType::NoneError;
+    const EDyResourceStyle mStyle   = EDyResourceStyle::NoneError;
+    const EResourceScope   mScope   = EResourceScope::UserDefined;
 
-    PRIVerificationItem(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EDyResourceStyle style, EResourceScope scope) :
-        mSpecifier{specifier}, mType{type}, mStyle{style}, mScope{scope} {};
+    PRIVerificationItem(
+      const std::string& specifier, EResourceType type, EDyResourceStyle style, EResourceScope scope) 
+      : mSpecifier{specifier}, mType{type}, mStyle{style}, mScope{scope} {};
   };
 
   enum class EDyRIStatus : TU08
@@ -136,10 +137,10 @@ private:
   void outTryStop();
 
   /// @brief Enqueue IO Populating task without any binding to dy object.
-  MDY_NODISCARD EDySuccess outTryEnqueueTask(
-      _MIN_ const std::string& specifier,
-      _MIN_ EResourceType resourceType, _MIN_ EDyResourceStyle resourceStyle,
-      _MIN_ EResourceScope scope, _MIN_ bool isDerivedFromResource = false);
+  EDySuccess outTryEnqueueTask(
+      const std::string& specifier,
+      EResourceType resourceType, EDyResourceStyle resourceStyle,
+      EResourceScope scope, bool isDerivedFromResource = false);
 
   /// @brief
   MDY_NODISCARD std::vector<PRIVerificationItem> pMakeDependenciesCheckList(

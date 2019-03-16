@@ -66,8 +66,9 @@ void DyPrintShaderProgramErrorLog(_MIN_ TU32 shaderProgramId)
 namespace dy
 {
 
-FDyShaderResource::FDyShaderResource(_MIN_ const FDyShaderInformation& information) 
-  : mBinderShader{information.GetSpecifierName()}
+FDyShaderResource::FDyShaderResource(const FDyShaderInformation& information) 
+  : mBinderShader{information.GetSpecifierName()},
+    mIsSupportingInstancing{information.IsInstantiable()}
 {
   this->mSpecifierName = information.GetSpecifierName();
 
@@ -349,6 +350,11 @@ const FDyShaderResource::TUniformStructItemMap&
 FDyShaderResource::GetUniformStructItemMap() const noexcept
 {
   return this->mUniformStructVarItemMap;
+}
+
+bool FDyShaderResource::IsSupportingInstancing() const noexcept
+{
+  return this->mIsSupportingInstancing;
 }
 
 } /// ::dy namespace

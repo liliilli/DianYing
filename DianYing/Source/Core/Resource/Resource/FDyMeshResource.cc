@@ -22,12 +22,25 @@
 namespace dy
 {
 
-FDyMeshResource::FDyMeshResource(_MINOUT_ FMeshVBOIntermediate& intermediateInstance) :
-    mSpecifierName{ intermediateInstance.GetSpecifierName() }
+FDyMeshResource::FDyMeshResource(FMeshVBOIntermediate& ioIntermediateInstance) 
+  : mSpecifierName{ ioIntermediateInstance.GetSpecifierName() }
 {
-  this->mBufferIdInformation = intermediateInstance.GetBufferIdInfo();
-  this->mMeshFlagInformation = intermediateInstance.GetMeshFlagInfo();
-  intermediateInstance.ResetAllProperties();
+  this->mBufferIdInformation = ioIntermediateInstance.GetBufferIdInfo();
+  this->mMeshFlagInformation = ioIntermediateInstance.GetMeshFlagInfo();
+  ioIntermediateInstance.ResetAllProperties();
+  
+  if (ioIntermediateInstance.IsSupportingInstancing() == true)
+  {
+    PGLBufferDescriptor desc;
+    desc.mBufferType      = EDirectBufferType::VertexBuffer;
+    desc.mBufferUsage     = EDyMeshUsage::DynamicDraw;
+    desc.mBufferByteSize  = 0;
+    { MDY_GRAPHIC_SET_CRITICALSECITON();
+      const auto optInstancingBuffer = XGLWrapper::CreateBuffer(desc);
+      MDY_ASSERT(optInstancingBuffer.has_value() == true);
+      this->mInstancingBufferId = optInstancingBuffer;
+    }
+  }
 
   // OPENGL create vao vbo ebo phrase.
   { MDY_GRAPHIC_SET_CRITICALSECITON();
@@ -37,7 +50,11 @@ FDyMeshResource::FDyMeshResource(_MINOUT_ FMeshVBOIntermediate& intermediateInst
     descriptor.mVaoId         = this->mBufferIdInformation.mVao;
     descriptor.mBoundVboId    = this->mBufferIdInformation.mVbo;
     descriptor.mBoundEboId    = this->mBufferIdInformation.mEbo;
-    descriptor.mAttributeInfo = intermediateInstance.GetVaoBindingInfo();
+    descriptor.mAttributeInfo = ioIntermediateInstance.GetVaoBindingInfo();
+    if (this->mInstancingBufferId.has_value() == true)
+    {
+      descriptor.mInstancingVboId = *this->mInstancingBufferId;
+    }
     XGLWrapper::BindVertexArrayObject(descriptor);
   }
 
@@ -91,6 +108,11 @@ EDySuccess FDyMeshResource::BindVertexArray() const noexcept
 
   XGLWrapper::BindVertexArrayObject(this->mBufferIdInformation.mVao);
   return DY_SUCCESS;
+}
+
+bool FDyMeshResource::IsSupportingInstancing() const noexcept
+{
+  return this->mInstancingBufferId.has_value() == true;
 }
 
 } /// ::dy namespace

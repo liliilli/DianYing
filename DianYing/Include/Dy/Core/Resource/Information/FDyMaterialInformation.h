@@ -40,39 +40,33 @@ public:
   using TPtrTextureInfoList = std::vector<std::unique_ptr<TDyInformationBinderTexture>>;
 
   MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(FDyMaterialInformation);
-  FDyMaterialInformation(_MIN_ const PDyMaterialInstanceMetaInfo& metaInfo);
+  FDyMaterialInformation(const PDyMaterialInstanceMetaInfo& metaInfo, bool iIsInstanced);
   ~FDyMaterialInformation() = default;
 
   /// @brief Get specifier name of material information.
-  MDY_NODISCARD const std::string& GetSpecifierName() const noexcept
-  {
-    return this->mSpecifierName;
-  }
+  MDY_NODISCARD const std::string& GetSpecifierName() const noexcept;
 
   /// @brief Get blend mode of material information.
-  MDY_NODISCARD EMaterialBlendMode GetBlendMode() const noexcept
-  {
-    return this->mBlendMode;
-  }
+  MDY_NODISCARD EMaterialBlendMode GetBlendMode() const noexcept;
 
   /// @brief Get const pointer list of texture information (must be valid).
-  MDY_NODISCARD const TPtrTextureInfoList& GetPtrTextureInformationList() const noexcept
-  {
-    return this->mBinderTextureInfoList;
-  }
+  MDY_NODISCARD const TPtrTextureInfoList& GetPtrTextureInformationList() const noexcept;
 
   /// @brief Get const shader information pointer (must be valid)
-  MDY_NODISCARD const auto& GetPtrShaderInformation() const noexcept
-  {
-    return this->mBinderShaderInfo;
-  }
+  MDY_NODISCARD const TDyInformationBinderShader& GetPtrShaderInformation() const noexcept;
+
+  /// @brief Check this material supports instancing.
+  MDY_NODISCARD bool IsInstanced() const noexcept;
 
 private:
-  std::string          mSpecifierName    = MDY_INITIALIZE_EMPTYSTR;
-  EMaterialBlendMode mBlendMode        = EMaterialBlendMode::Opaque;
+  std::string        mSpecifierName;
+  EMaterialBlendMode mBlendMode = EMaterialBlendMode::Opaque;
 
-  TDyInformationBinderShader  mBinderShaderInfo = {};
+  TDyInformationBinderShader mBinderShaderInfo = {};
   std::vector<std::unique_ptr<TDyInformationBinderTexture>> mBinderTextureInfoList = {};
+
+  /// @brief Check this material instance is instancing material.
+  bool mIsInstanced = false;
 };
 
 } /// ::dy namespace

@@ -56,10 +56,14 @@ public:
     return this->mModelTransform;
   }
 
+  /// @brief Get instancing flags list.
+  MDY_NODISCARD const std::vector<bool>& GetInstancingFlags() const noexcept;
+
 private:
   std::string mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
   std::vector<std::unique_ptr<TDyInformationBinderMesh>>     mMeshInformations;
   std::vector<std::unique_ptr<TDyInformationBinderMaterial>> mMaterialInformations;
+  std::vector<bool> mPairInstancingflag;
 
   /// Valid skeleton reference handle.
   TDyInformationBinderSkeleton         mBinderSkeleton;

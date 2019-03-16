@@ -14,24 +14,65 @@
 
 /// Header file
 #include <Dy/Core/Resource/Information/FDyMaterialInformation.h>
-#include <Dy/Meta/Information/MetaInfoMaterial.h>
+#include <Dy/Builtin/Constant/GeneralValue.h>
 #include <Dy/Helper/System/Idioms.h>
+#include <Dy/Meta/Information/MetaInfoMaterial.h>
 
 namespace dy
 {
 
-FDyMaterialInformation::FDyMaterialInformation(_MIN_ const PDyMaterialInstanceMetaInfo& metaInfo) :
-    mSpecifierName{metaInfo.mSpecifierName},
-    mBlendMode{metaInfo.mBlendMode}
+FDyMaterialInformation::FDyMaterialInformation(const PDyMaterialInstanceMetaInfo& metaInfo, bool iIsInstanced) 
+  : mSpecifierName{metaInfo.mSpecifierName},
+    mBlendMode{metaInfo.mBlendMode},
+    mIsInstanced{iIsInstanced}
 {
   // Bind informations RI.
-  this->mBinderShaderInfo.TryRequireResource(metaInfo.mShaderSpecifier);
-  MDY_ASSERT_MSG(this->mBinderShaderInfo.IsResourceExist() == true, "Unexpected error occurred.");
+  if (this->IsInstanced() == false)
+  {
+    this->mBinderShaderInfo.TryRequireResource(metaInfo.mShaderSpecifier);
+    MDY_ASSERT_MSG(this->mBinderShaderInfo.IsResourceExist() == true, "Unexpected error occurred.");
+  }
+  else
+  {
+    // Must do
+    this->mSpecifierName += kInstancingPostfix;
+
+    // If supports instacing, shader specifier should have postfix name, "__inst".
+    this->mBinderShaderInfo.TryRequireResource(metaInfo.mShaderSpecifier + kInstancingPostfix);
+    MDY_ASSERT_MSG(this->mBinderShaderInfo.IsResourceExist() == true, "Unexpected error occurred.");
+  }
+
   for (const auto& bindingTextureItem : metaInfo.mTextureNames)
   {
     if (bindingTextureItem.mTextureSpecifier.empty() == true) { break; }
     SafeUniquePtrEmplaceBack(this->mBinderTextureInfoList, bindingTextureItem.mTextureSpecifier);
   }
+}
+
+const std::string& FDyMaterialInformation::GetSpecifierName() const noexcept
+{
+  return this->mSpecifierName;
+}
+
+EMaterialBlendMode FDyMaterialInformation::GetBlendMode() const noexcept
+{
+  return this->mBlendMode;
+}
+
+const FDyMaterialInformation::TPtrTextureInfoList& 
+FDyMaterialInformation::GetPtrTextureInformationList() const noexcept
+{
+  return this->mBinderTextureInfoList;
+}
+
+bool FDyMaterialInformation::IsInstanced() const noexcept
+{
+  return this->mIsInstanced;
+}
+
+const TDyInformationBinderShader& FDyMaterialInformation::GetPtrShaderInformation() const noexcept
+{
+  return this->mBinderShaderInfo;
 }
 
 } /// ::dy namespace

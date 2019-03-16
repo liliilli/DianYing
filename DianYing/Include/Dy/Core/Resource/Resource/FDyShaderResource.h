@@ -75,6 +75,9 @@ public:
   /// @breif Get uniform struct item map.
   MDY_NODISCARD const TUniformStructItemMap& GetUniformStructItemMap() const noexcept;
 
+  /// @brief Check shader is supporting instancing.
+  MDY_NODISCARD bool IsSupportingInstancing() const noexcept;
+
 private:
   /// @brief Create shader fragment list and return.
   MDY_NODISCARD std::optional<TFragmentList> 
@@ -106,6 +109,7 @@ private:
   std::vector<DUniformBufferObjectInformation>mUniformBufferObjectList;
 
   TDyInformationBinderShader mBinderShader;
+  bool mIsSupportingInstancing = false;
 };
 
 } /// ::dy namespace

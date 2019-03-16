@@ -38,7 +38,7 @@ namespace dy
 class FMeshVBOIntermediate final
 {
 public:
-  FMeshVBOIntermediate(const FDyMeshInformation& information);
+  FMeshVBOIntermediate(const FDyMeshInformation& information, bool iIsInstancing);
   ~FMeshVBOIntermediate();
 
   /// @brief Reset all properties not to use this anymore.
@@ -55,15 +55,20 @@ public:
 
   /// @brief
   MDY_NODISCARD const DDyGLVaoBindInformation& GetVaoBindingInfo() const noexcept;
+
+  /// @brief Check this will support instancing.
+  MDY_NODISCARD bool IsSupportingInstancing() const noexcept;
     
 private:
   void MDY_PRIVATE(CreateVertexArrayBuffer)(const FDyMeshInformation& iInformation);
   void MDY_PRIVATE(CreateElementArrayBuffer)(const FDyMeshInformation& iInformation);
 
-  std::string               mSpecifierName;
+  std::string             mSpecifierName;
   DGlBufferIdInformation  mBufferIdInformation  = {};
   DDySubmeshFlagInformation mMeshFlagInformation  = {};
   DDyGLVaoBindInformation   mVaoBindAttributeInfo = {};
+
+  bool mIsSupportingInstancing = false;
 };
 
 
