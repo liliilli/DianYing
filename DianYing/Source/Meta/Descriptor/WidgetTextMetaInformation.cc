@@ -67,11 +67,11 @@ PDyMetaWidgetTextDescriptor::CreateMetaInformation(_MIN_ const nlohmann::json& i
   // Detail (TEXT)
   const auto& detailAtlas = itemAtlas[(TPDyMWCBD::sHeader_Details)];
   const auto string = json::GetValueFrom<std::string>(detailAtlas, sHeader_InitialString);
-  instance->mInitialString      = string;
+  instance->mTextString      = string;
 
-  instance->mInitialColor       = json::GetValueFrom<DColorRGBA>(detailAtlas, sHeader_InitialColor);;
+  instance->mTextColor       = json::GetValueFrom<DColorRGBA>(detailAtlas, sHeader_InitialColor);;
   instance->mFontSize           = json::GetValueFrom<TU32>(detailAtlas, sHeader_FontSize);
-  instance->mFontSpecifierName  = json::GetValueFrom<std::string>(detailAtlas, sHeader_FontSpecifierName);
+  instance->mFontName  = json::GetValueFrom<std::string>(detailAtlas, sHeader_FontSpecifierName);
   instance->mEdgeColor          = json::GetValueFrom<DColorRGB>(detailAtlas, "EdgeColor");
   instance->mIsUsingEdge        = json::GetValueFrom<bool>(detailAtlas, sHeader_IsUsingEdge);
 

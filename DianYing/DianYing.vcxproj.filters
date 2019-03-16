@@ -874,13 +874,7 @@
     <ClInclude Include="Include\Dy\Component\CSkybox.h" />
     <ClInclude Include="Include\Dy\Component\CSoundSource.h" />
     <ClInclude Include="Include\Dy\Component\CTransform.h" />
-    <ClInclude Include="Include\Dy\Element\Canvas\FWidgetText.h" />
-    <ClInclude Include="Include\Dy\Element\Canvas\FWidgetImage.h" />
-    <ClInclude Include="Include\Dy\Element\Canvas\FWidgetBasicGaugeBar.h" />
     <ClInclude Include="Include\Dy\Element\AWorldObject.h" />
-    <ClInclude Include="Include\Dy\Element\Canvas\AWidgetObject.h" />
-    <ClInclude Include="Include\Dy\Element\Canvas\AWidgetUiObjectChildrenable.h" />
-    <ClInclude Include="Include\Dy\Element\Canvas\FWidget.h" />
     <ClInclude Include="Include\Dy\Element\Internal\TIdDistributor.h" />
     <ClInclude Include="Include\Dy\Element\Descriptor\EWorldObjectType.h" />
     <ClInclude Include="Include\Dy\Element\Type\Timer\ETimerState.h" />
@@ -916,6 +910,12 @@
     <ClInclude Include="Include\Dy\Management\Type\Time\ETimeType.h" />
     <ClInclude Include="Include\Dy\Management\Type\EGlobalGameState.h" />
     <ClInclude Include="data\Script\Astronaut\AstroidConstructor.h" />
+    <ClInclude Include="Include\Dy\Element\Widget\AWidgetObject.h" />
+    <ClInclude Include="Include\Dy\Element\Widget\AWidgetUiObjectChildrenable.h" />
+    <ClInclude Include="Include\Dy\Element\Widget\FWidget.h" />
+    <ClInclude Include="Include\Dy\Element\Widget\FWidgetBasicGaugeBar.h" />
+    <ClInclude Include="Include\Dy\Element\Widget\FWidgetImage.h" />
+    <ClInclude Include="Include\Dy\Element\Widget\FWidgetText.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />
@@ -947,5 +947,6 @@
     <None Include="Include\Dy\Core\Reflection\Inline\RBuiltinResourcesTmp.inl" />
     <None Include="Include\Dy\Component\Inline\CPhysicsRigidbodyTmp.inl" />
     <None Include="data\Level\Test_Astronaut.json" />
+    <None Include="..\..\..\Downloads\Rock\Rock_0.dybMesh" />
   </ItemGroup>
 </Project>

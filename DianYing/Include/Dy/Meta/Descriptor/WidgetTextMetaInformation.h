@@ -22,10 +22,8 @@
 namespace dy
 {
 
-///
 /// @struct PDyMetaWidgetTextDescriptor
 /// @brief Text component of widget descriptor
-///
 struct PDyMetaWidgetTextDescriptor final : public PDyMetaWidgetCommonBaseDesc
 {
   /// Size (px) of text widget (leaf widget).
@@ -33,26 +31,26 @@ struct PDyMetaWidgetTextDescriptor final : public PDyMetaWidgetCommonBaseDesc
   /// Initial position of canvas.
   DVectorInt2 mInitialPosition    = {};
   /// Originable to parent frame (except for list layout)
-  EDyOrigin     mOrigin             = EDyOrigin::Center_Center;
+  EDyOrigin   mOrigin             = EDyOrigin::Center_Center;
 
   /// UCS-2 string
-  DString     mInitialString;
+  DString     mTextString;
   /// InitialColor(rgb) + InitialAlpha(a)
-  DColorRGBA  mInitialColor       = DColorRGBA::White;
+  DColorRGBA  mTextColor = DColorRGBA::White;
   /// Edge color of text. `mIsUsingEdge` must be enabled to use this.
-  DColorRGBA  mEdgeColor          = DColorRGBA{0, 0, 0, 0};
+  DColorRGBA  mEdgeColor = DColorRGBA{0, 0, 0, 0};
   /// Background color of text. `mIsUsingBackground` must be enabled to use this.
-  DColorRGBA  mBackgroundColor    = DColorRGBA{0, 0, 0, 0};
+  DColorRGBA  mBackgroundColor = DColorRGBA{0, 0, 0, 0};
   /// Font Size (px?)
-  TU32          mFontSize           = MDY_INITIALIZE_DEFUINT;
+  TU32        mFontSize = 10;
   /// If empty, just use default font.
-  std::string   mFontSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
+  std::string mFontName;
   /// Text alignment.
   EDyHorizontalAlignment mAlignment = EDyHorizontalAlignment::Left;
   /// Check rendering edge to text.
-  bool          mIsUsingEdge        = false;
+  bool        mIsUsingEdge        = false;
   /// Check use background outside of font region.
-  bool          mIsUsingBackground  = false;
+  bool        mIsUsingBackground  = false;
 
   ///
   /// @brief Factory function for PDyMetaWidgetTextDescriptor.
