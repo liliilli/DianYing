@@ -26,12 +26,6 @@ R"dy(
   "Name": "DyCameraMan", "Type": "Actor",
   "CommonProperties": { "ParentSpecifierName": "", "ObjectTag": "" },
   "ComponentList": [
-    { "Type": "Transform",
-      "Details": {
-        "LPosition": { "X": 0, "Y": 0, "Z": 0 }, "LRotation": { "X": 0, "Y": 0, "Z": 0 }, "LScale": { "X": 1, "Y": 1, "Z": 1 },
-        "WPosition": { "X": 0, "Y": 0, "Z": 0 }, "WRotation": { "X": 0, "Y": 0, "Z": 0 }, "WScale": { "X": 1, "Y": 1, "Z": 1 }
-      }
-    },
     { "Type": "Camera", "Activated": true,
       "Details": {
         "FieldOfView": 70.0, 
