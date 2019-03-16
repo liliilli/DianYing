@@ -937,7 +937,6 @@
     <None Include="Include\Dy\Helper\Internal\Inline\FProxyHandleTmp.inl" />
     <None Include="Include\Dy\Helper\Internal\Inline\FProxyHandlerTmp.inl" />
     <None Include="Include\Dy\Core\Reflection\Inline\RReflectionTmp.inl" />
-    <None Include="data\Meta\RescLevelMeta.dydat" />
     <None Include="data\Level\Test_Physics.json" />
     <None Include="data\Level\Test_Scene.json" />
     <None Include="Include\Dy\Helper\Internal\Inline\FThreadPoolTmp.inl" />

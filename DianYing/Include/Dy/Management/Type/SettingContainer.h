@@ -147,10 +147,8 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingInput::DAxis& p);
 struct DDySettingTag final
 {
   using TObjectTagList    = std::vector<std::string>;
-  using TCollisionTagList = std::vector<std::string>;
 
   TObjectTagList    mObjectTag     = {};
-  TCollisionTagList mCollisionTag  = {};
 };
 
 void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingTag& p);

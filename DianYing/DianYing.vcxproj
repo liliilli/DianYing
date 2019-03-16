@@ -1134,7 +1134,6 @@
   <ItemGroup>
     <None Include="data\Level\Test_Physics.json" />
     <None Include="data\Level\Test_Scene.json" />
-    <None Include="data\Meta\RescLevelMeta.dydat" />
     <None Include="Include\Dy\Component\Inline\CPhysicsRigidbodyTmp.inl" />
     <None Include="Include\Dy\Component\Interface\Internal\IOnColliderBaseDelegatorTmp.inl" />
     <None Include="Include\Dy\Core\Reflection\Inline\RReflectionTmp.inl" />

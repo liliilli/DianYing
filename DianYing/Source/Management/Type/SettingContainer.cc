@@ -248,15 +248,13 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingTag& p)
 {
   j = nlohmann::json
   {
-      {(sObject),     p.mObjectTag},
-      {(sCollision),  p.mCollisionTag},
+    {(sObject), p.mObjectTag},
   };
 }
 
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingTag& p)
 {
   p.mObjectTag    = json::GetValueFrom<DDySettingTag::TObjectTagList>   (j, sObject);
-  p.mCollisionTag = json::GetValueFrom<DDySettingTag::TCollisionTagList>(j, sCollision);
 }
 
 ///
