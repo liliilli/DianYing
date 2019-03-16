@@ -511,11 +511,15 @@ std::optional<TU32> XGLWrapper::CreateBuffer(_MIN_ const PGLBufferDescriptor& de
     glBindBuffer(GL_ARRAY_BUFFER, id);
     { // Make buffer space first,
       glBufferData(GL_ARRAY_BUFFER, descriptor.mBufferByteSize, 0, usage);
-      // fill out with buffers.
-      auto* ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-      memcpy(ptr, descriptor.mPtrBuffer, descriptor.mBufferByteSize);
-      glUnmapBuffer(GL_ARRAY_BUFFER);
+      if (descriptor.mPtrBuffer != nullptr)
+      {
+        // fill out with buffers.
+        auto* ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+        memcpy(ptr, descriptor.mPtrBuffer, descriptor.mBufferByteSize);
+        glUnmapBuffer(GL_ARRAY_BUFFER);
+      }
     }
+    MDY_CHECK_OPENGL;
     glBindBuffer(GL_ARRAY_BUFFER, MDY_GL_NONE);
     glFlush();
   } break;
@@ -524,6 +528,7 @@ std::optional<TU32> XGLWrapper::CreateBuffer(_MIN_ const PGLBufferDescriptor& de
     glGenBuffers(1, &id);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, descriptor.mBufferByteSize, descriptor.mPtrBuffer, usage);
+    MDY_CHECK_OPENGL;
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, MDY_GL_NONE);
     glFlush();
   } break;
@@ -610,7 +615,12 @@ void XGLWrapper::BindVertexArrayObject(_MIN_ const PDyGLVaoBindDescriptor& iDesc
   glBindVertexArray(iDescriptor.mVaoId);
   glBindBuffer(GL_ARRAY_BUFFER, iDescriptor.mBoundVboId);
   glBindVertexBuffer(0, iDescriptor.mBoundVboId, attributeInfo.mOffsetByteSize, attributeInfo.mStrideByteSize);
-  if (iDescriptor.mBoundEboId > 0) { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iDescriptor.mBoundEboId); }
+  MDY_CHECK_OPENGL;
+
+  if (iDescriptor.mBoundEboId > 0) 
+  { 
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iDescriptor.mBoundEboId); 
+  }
 
   for (auto i = 0u; i < attributeCount; ++i)
   { // Set up vbo attribute formats.
@@ -621,16 +631,36 @@ void XGLWrapper::BindVertexArrayObject(_MIN_ const PDyGLVaoBindDescriptor& iDesc
     glEnableVertexAttribArray(i);
     if (type == GL_INT) 
     { 
-      glVertexAttribIFormat(i, attributeFormat.mElementCount, type, 
-          attributeFormat.mOffsetByteSize); 
+      glVertexAttribIFormat(i, attributeFormat.mElementCount, type, attributeFormat.mOffsetByteSize); 
     }
     else 
     { 
       glVertexAttribFormat(i, attributeFormat.mElementCount, type, isMustNormalized, 
-          attributeFormat.mOffsetByteSize); 
+        attributeFormat.mOffsetByteSize); 
     }
     glVertexAttribBinding(i, 0);
   }
+  //glVertexBindingDivisor(0, 0);
+  MDY_CHECK_OPENGL;
+
+  // If instancing buffer is exist, so should binding instancing id also..
+  if (iDescriptor.mInstancingVboId.has_value() == true)
+  {
+    const auto instancingId = *iDescriptor.mInstancingVboId;
+    glBindBuffer(GL_ARRAY_BUFFER, instancingId);
+    glBindVertexBuffer(1, instancingId, 0, sizeof(DMatrix4x4));
+    glEnableVertexAttribArray(10);
+    glVertexAttribFormat(10, 4, GL_FLOAT, GL_FALSE, 0);
+    glEnableVertexAttribArray(11);
+    glVertexAttribFormat(11, 4, GL_FLOAT, GL_FALSE, 16);
+    glEnableVertexAttribArray(12);
+    glVertexAttribFormat(12, 4, GL_FLOAT, GL_FALSE, 32);
+    glEnableVertexAttribArray(13);
+    glVertexAttribFormat(13, 4, GL_FLOAT, GL_FALSE, 48);
+    glVertexBindingDivisor(1, 1);
+    MDY_CHECK_OPENGL;
+  }
+
   glBindVertexArray(MDY_GL_NONE_VAO);
   glFlush();
 }
