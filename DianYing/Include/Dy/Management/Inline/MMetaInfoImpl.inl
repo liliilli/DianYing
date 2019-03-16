@@ -53,7 +53,7 @@ MIOMeta::Impl::GetShaderMetaInformation(const std::string& iShaderName) const
 }
 
 inline const PDyMeshInstanceMetaInfo& 
-MIOMeta::Impl::GetBtMeshMetaInformation( const std::string & specifier) const
+MIOMeta::Impl::GetBtMeshMetaInformation(const std::string& specifier) const
 {
   return this->mModelMeshMetaInfo.at(specifier);
 }

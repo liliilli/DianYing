@@ -20,10 +20,8 @@
 namespace dy
 {
   
-///
 /// @struct PDyModelInstanceMetaInfo
 /// @brief Descriptor instance which saves information to create model meshes.
-///
 struct PDyModelInstanceMetaInfo final : public PDyCommonResourceMetaInfo
 {
   using TBuiltinMeshSpecifierList = std::vector<std::string>;
@@ -31,16 +29,14 @@ struct PDyModelInstanceMetaInfo final : public PDyCommonResourceMetaInfo
   {
     std::string mMeshSpecifier      = MDY_INITIALIZE_EMPTYSTR;
     std::string mMaterialSpecifier  = MDY_INITIALIZE_EMPTYSTR;
+    bool        mInstanced = false;
 
-    DMesh(_MIN_ const std::string_view& mesh, _MIN_ const std::string_view& mat) :
-        mMeshSpecifier{(mesh)},
-        mMaterialSpecifier{(mat)} {};
-    DMesh(_MIN_ const char* mesh, _MIN_ const char* mat) :
-        mMeshSpecifier{mesh},
-        mMaterialSpecifier{mat} {};
-    DMesh(_MIN_ const std::string& mesh, _MIN_ const std::string& mat) :
-        mMeshSpecifier{mesh},
-        mMaterialSpecifier{mat} {};
+    DMesh(const std::string_view& mesh, const std::string_view& mat, bool iInstanced = false) 
+      : mMeshSpecifier{(mesh)}, mMaterialSpecifier{(mat)}, mInstanced{iInstanced} {};
+    DMesh(const char* mesh, const char* mat, bool iInstanced = false) 
+      : mMeshSpecifier{mesh}, mMaterialSpecifier{mat}, mInstanced{iInstanced} {};
+    DMesh(const std::string& mesh, const std::string& mat, bool iInstanced = false) 
+      : mMeshSpecifier{mesh}, mMaterialSpecifier{mat}, mInstanced{iInstanced} {};
     DMesh() = default;
   };
   using TExternalMeshList = std::vector<DMesh>;
@@ -62,9 +58,9 @@ struct PDyModelInstanceMetaInfo final : public PDyCommonResourceMetaInfo
   //TBuiltinMeshSpecifierList mBuiltinMeshSpecifierList = {};
   //bool                      mIsUsingBuiltinMesh       = false;
 
-  TExternalMeshList         mMeshList = {};
-  DSkeleton                 mSkeleton;
-  DTransform                mTransform;
+  TExternalMeshList mMeshList = {};
+  DSkeleton         mSkeleton;
+  DTransform        mTransform;
 };
 
 /// @brief Serialization function

@@ -45,6 +45,12 @@ MDY_NODISCARD std::string ToUpperCopy(const std::string& iString);
 /// @brief Get random string wich length count.
 MDY_NODISCARD std::string CreateRandomString(TU32 iLength);
 
+/// @brief Check given iString has postfix, `iPostfix`.
+MDY_NODISCARD bool HasPostfix(const std::string& iString, const std::string& iPostfix);
+
+/// @brief Try remove postfix, if postfix is exist in given string.
+MDY_NODISCARD std::string TryRemovePostfix(const std::string& iString, const std::string& iPostfix);
+
 } /// ::dy namesapce
 
 #endif /// GUARD_DY_HELPER_LIBRARY_HELPERSTRING_H
