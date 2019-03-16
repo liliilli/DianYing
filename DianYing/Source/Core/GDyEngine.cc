@@ -76,10 +76,11 @@ EDySuccess GDyEngine::pfRelease()
 void GDyEngine::operator()()
 {
   static auto& timeManager = MTime::GetInstance();
-  while (MWindow::GetInstance().IsWindowShouldClose() == false)
+  while (true)
   {
     // Try game status transition and pre-housesholds.
     this->TryUpdateStatus();
+    if (this->GetGlobalGameStatus() == EGlobalGameState::Exit) { return; }
     if (this->mIsStatusTransitionDone == false)
     {
       this->MDY_PRIVATE(ReflectGameStatusTransition)();
@@ -104,6 +105,14 @@ void GDyEngine::operator()()
     case EGlobalGameState::Loading: 
     case EGlobalGameState::GameRuntime: 
     {
+      // IF game is need to be ended from outside world like a clicking X button..
+      if (this->__IsGameEndCalled() == true)
+      {
+        this->SetNextGameStatus(EGlobalGameState::Shutdown);
+        break;
+      }
+
+      // Game need to be updated.
       if (this->mIsInGameUpdatePaused == false)
       {
         this->mSynchronization->TrySynchronization();
@@ -111,8 +120,8 @@ void GDyEngine::operator()()
       }
 
       // Get delta-time.
-      const auto dt = timeManager.GetGameScaledTickedDeltaTimeValue();
       // Update
+      const auto dt = timeManager.GetGameScaledTickedDeltaTimeValue();
       this->MDY_PRIVATE(Update)(this->mStatus, dt);
 
       // `IsGameNeedToBeTransitted` can only be triggered when in `Update` function.
@@ -136,12 +145,10 @@ void GDyEngine::operator()()
     { // Just wait I/O Worker thread is slept.
       this->mSynchronization->TrySynchronization(); 
     } break;
-    case EGlobalGameState::Ended: break;
+    case EGlobalGameState::Ended: this->SetNextGameStatus(EGlobalGameState::Exit); break;
     default: MDY_UNEXPECTED_BRANCH(); break;
     }
   };
-
-  DyPushLogInfo("Game End. bye!");
 }
 
 void GDyEngine::MDY_PRIVATE(ReflectGameStatusTransition)()
@@ -554,6 +561,9 @@ bool GDyEngine::IsInGameUpdatePaused() const noexcept
 
 EDySuccess GDyEngine::TryEndGame() noexcept
 {
+  static std::mutex atomicMutex;
+
+  MDY_SYNC_LOCK_GUARD(atomicMutex);
   if (this->MDY_PRIVATE(IsGameEndCalled)() == true) 
   { 
     DyPushLogCritical("Quering game ending is already done.");

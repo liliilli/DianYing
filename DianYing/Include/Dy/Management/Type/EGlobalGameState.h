@@ -34,6 +34,8 @@ enum class EGlobalGameState : char
   Shutdown,
   // Game end. just exit application.
   Ended,
+  //
+  Exit
 };
 
 } /// ::dy namespace

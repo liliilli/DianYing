@@ -28,6 +28,7 @@
 #include <Dy/Management/MWorld.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLWindowContextDescriptor.h>
+#include <Dy/Core/GDyEngine.h>
 
 //!
 //! Independent anonymous namespace
@@ -66,7 +67,7 @@ void DyGlCallbackWindowClose(GLFWwindow* window)
 {
   glfwSetKeyCallback(window, nullptr);
   glfwSetCursorPosCallback(window, nullptr);
-  glfwDestroyWindow(window);
+  dy::gEngine->TryEndGame();
 }
 
 } /// unnamed namespace

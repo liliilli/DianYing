@@ -377,6 +377,7 @@
     <ClCompile Include="Source\Management\Type\Input\DButtonInputItem.cc" />
     <ClCompile Include="Source\Management\Type\Input\DAnalogInputItem.cc" />
     <ClCompile Include="Source\Management\Type\Time\DTimePoint.cc" />
+    <ClCompile Include="data\Script\Astronaut\AstroidConstructor.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -914,6 +915,7 @@
     <ClInclude Include="Include\Dy\Management\Type\Time\ETimeDST.h" />
     <ClInclude Include="Include\Dy\Management\Type\Time\ETimeType.h" />
     <ClInclude Include="Include\Dy\Management\Type\EGlobalGameState.h" />
+    <ClInclude Include="data\Script\Astronaut\AstroidConstructor.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />
