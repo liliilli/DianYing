@@ -1132,6 +1132,7 @@
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\Deferred\FDyBtFbSSAOBlur.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="data\Level\Test_Astronaut.json" />
     <None Include="data\Level\Test_Physics.json" />
     <None Include="data\Level\Test_Scene.json" />
     <None Include="Include\Dy\Component\Inline\CPhysicsRigidbodyTmp.inl" />

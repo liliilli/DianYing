@@ -56,6 +56,128 @@ inline MPhysics::Impl::Impl()
   //
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->mDefaultMaterial), "PhysX Default material must be created.");
 
+#ifdef false
+  ///
+  /// @function CreateStack
+  /// @brief Test function for create stack actors which consist of shape and rigidbody (dynamic)
+  ///
+  static auto CreateStack = [&](const physx::PxTransform &t, physx::PxU32 size, physx::PxReal halfExtent)
+  {
+    using namespace physx;
+
+    PxShape *shape = gPhysicx->createShape(PxBoxGeometry(halfExtent, halfExtent, halfExtent), *mDefaultMaterial);
+
+    TI32 nmb = 0;
+    for (PxU32 i = 0; i < size; i++)
+    {
+      for (PxU32 j = 0; j < size - i; j++)
+      {
+        const PxTransform localTm(PxVec3(PxReal(j * 2) - PxReal(size - i), PxReal(i * 2 + 1), 0) * halfExtent);
+
+        PxRigidDynamic *body = gPhysicx->createRigidDynamic(t.transform(localTm));
+        body->attachShape(*shape);
+
+        // @TODO FOR DEBUG, REMOVE THIS AT PRODUCTION CODE
+        sDebugActorName.push_back(fmt::format("{}_{}", "Stack", nmb));
+        body->setName(sDebugActorName.rbegin()->c_str());
+
+        //DySetupFiltering(DyMakeNotNull(body), EDyTempCollisionLayer::Stack, EDyTempCollisionLayer::Stack);
+
+        PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
+        gScene->addActor(*body);
+
+        sRigidbodies.emplace_back(DyMakeNotNull(body));
+        nmb += 1;
+      }
+    }
+    shape->release();
+  };
+
+  ///
+  /// @function CreateDynamic
+  /// @brief Test function for creating spherical actor which consists of sphere shape and rigidbody
+  /// by using helper function from PhysX SDK.
+  ///
+  static auto CreateDynamic = [&](const physx::PxTransform &t, const physx::PxGeometry &geometry,
+    const physx::PxVec3 &velocity = physx::PxVec3(0)) -> physx::PxRigidDynamic*
+  {
+    using namespace physx;
+
+    PxRigidDynamic *dynamic = PxCreateDynamic(*gPhysicx, t, geometry, *mDefaultMaterial, 10.0f);
+    dynamic->setAngularDamping(0.5f);
+    dynamic->setLinearVelocity(velocity);
+    DySetupFiltering(DyMakeNotNull(dynamic), EDyTempCollisionLayer::Sphere, EDyTempCollisionLayer::Stack | EDyTempCollisionLayer::Floor);
+
+    // @TODO FOR DEBUG, REMOVE THIS AT PRODUCTION CODE
+    sDebugActorName.push_back(fmt::format("{}_0", "Sphere"));
+    dynamic->setName(sDebugActorName.rbegin()->c_str());
+
+    gScene->addActor(*dynamic);
+    sRigidbodies.emplace_back(DyMakeNotNull(dynamic));
+
+    return dynamic;
+  };
+  static physx::PxDefaultErrorCallback gDefaultErrorCallback;
+
+  this->gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, this->defaultAllocatorCallback, gDefaultErrorCallback);
+  MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNOTNULL(this->gFoundation), "PxCreateFoundation Failed!");
+
+  this->gPhysicx = PxCreatePhysics(PX_PHYSICS_VERSION, *this->gFoundation, physx::PxTolerancesScale(), true, this->gPvd);
+  MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNOTNULL(this->gPhysicx), "PxCreatePhysics Failed!");
+
+  physx::PxSceneDesc sceneDescriptor{ this->gPhysicx->getTolerancesScale() };
+  sceneDescriptor.filterShader = DyFilterShader;
+  sceneDescriptor.simulationEventCallback = &this->mCallback;
+  //sceneDescriptor.flags                    |= physx::PxSceneFlag::eREQUIRE_RW_LOCK;
+  //sceneDesc.frictionType = PxFrictionType::eTWO_DIRECTIONAL;
+  //sceneDesc.frictionType = PxFrictionType::eONE_DIRECTIONAL;
+  //sceneDesc.flags |= PxSceneFlag::eENABLE_GPU_DYNAMICS;
+  //sceneDesc.flags |= PxSceneFlag::eENABLE_AVERAGE_POINT;
+  //sceneDesc.flags |= PxSceneFlag::eADAPTIVE_FORCE;
+  sceneDescriptor.flags |= physx::PxSceneFlag::eENABLE_PCM;
+  sceneDescriptor.flags |= physx::PxSceneFlag::eENABLE_STABILIZATION;
+  sceneDescriptor.flags |= physx::PxSceneFlag::eENABLE_ACTIVE_ACTORS;
+  sceneDescriptor.sceneQueryUpdateMode = physx::PxSceneQueryUpdateMode::eBUILD_ENABLED_COMMIT_DISABLED;
+  sceneDescriptor.gpuMaxNumPartitions = 8;
+  sceneDescriptor.gravity = physx::PxVec3{ 0, -9.81f, 0 };
+
+  if (sceneDescriptor.cpuDispatcher == nullptr)
+  {
+    this->gDispatcher = physx::PxDefaultCpuDispatcherCreate(2);
+    MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNOTNULL(this->gDispatcher), "PxDefaultCpuDispatcherCreate Failed!");
+    sceneDescriptor.cpuDispatcher = this->gDispatcher;
+  }
+  if (sceneDescriptor.filterShader == nullptr)
+  {
+    sceneDescriptor.filterShader = physx::PxDefaultSimulationFilterShader;
+  }
+
+  this->gScene = this->gPhysicx->createScene(sceneDescriptor);
+  physx::PxSceneWriteLock scopedLock(*this->gScene);
+
+  physx::PxPvdSceneClient* pvdClient = this->gScene->getScenePvdClient();
+  if (pvdClient)
+  {
+    pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
+    pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
+    pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
+  }
+
+  //mDefaultMaterial = gPhysicx->createMaterial(0.5f, 0.5f, 0.6f);
+  //physx::PxRigidStatic *groundPlane = PxCreatePlane(*gPhysicx, physx::PxPlane(0, 1, 0, 0), *mDefaultMaterial);
+  //DySetupFiltering(DyMakeNotNull(groundPlane), EDyTempCollisionLayer::Floor, EDyTempCollisionLayer::Sphere);
+
+  sDebugActorName.push_back(fmt::format("{}_0", "Floor"));
+  groundPlane->setName(sDebugActorName.rbegin()->c_str());
+
+  gScene->addActor(*groundPlane);
+
+  for (physx::PxU32 i = 0; i < 5; i++)
+  {
+    CreateStack(physx::PxTransform(physx::PxVec3(0, 0, stackZ -= 10.0f)), 10, 2.0f);
+  }
+  CreateDynamic(physx::PxTransform(physx::PxVec3(0, 40, 100)), physx::PxSphereGeometry(10), physx::PxVec3(0, -50, -100));
+#endif
   // Do nothing because when initialize level, all resource will be populated.
 }
 

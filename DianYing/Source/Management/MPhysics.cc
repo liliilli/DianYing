@@ -131,7 +131,7 @@ public:
   void Update(TF32 iDt) override final;
 
   /// @brief Init PhysX All resource related to scene.
-  void InitScene();
+  void InitLevel();
   /// @brief Release PhysX All Resource related to scene.
   void ReleaseScene();
 
@@ -277,7 +277,7 @@ void MPhysics::UpdateRenderObjectTransform(TF32 dt) { this->mPimpl->UpdateRender
 
 void MPhysics::CallCallbackIssueOnce() { this->mPimpl->CallCallbackIssueOnce(); }
 
-void MPhysics::InitScene() { this->mPimpl->InitScene(); }
+void MPhysics::InitScene() { this->mPimpl->InitLevel(); }
 
 void MPhysics::ReleaseScene() { this->mPimpl->ReleaseScene(); }
 

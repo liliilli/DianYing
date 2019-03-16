@@ -944,5 +944,6 @@
     <None Include="Include\Dy\Component\Interface\Internal\IOnColliderBaseDelegatorTmp.inl" />
     <None Include="Include\Dy\Core\Reflection\Inline\RBuiltinResourcesTmp.inl" />
     <None Include="Include\Dy\Component\Inline\CPhysicsRigidbodyTmp.inl" />
+    <None Include="data\Level\Test_Astronaut.json" />
   </ItemGroup>
 </Project>
