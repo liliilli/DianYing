@@ -13,7 +13,7 @@
 ///
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "Enum_ExportFlags.h"
+#include "../Helper/Enum_ExportFlags.h"
 
 class ProgressDialog_ExportModel : public ThreadWithProgressWindow
 {

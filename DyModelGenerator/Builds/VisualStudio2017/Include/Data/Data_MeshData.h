@@ -12,35 +12,35 @@
 /// SOFTWARE.
 ///
 
-#include <array>
-#include "Data_Vector3.h"
-#include "Data_Vector4.h"
-#include "Data_Matrix4.h"
-#include "Data_VectorInt4.h"
+#include "../Type/Data_Vector3.h"
+#include "../Type/Data_VectorInt4.h"
+#include "../Type/Data_Vector4.h"
 
 /// @struct DDyVertexInformation
 /// @brief Vertex information (Input assembly unit data)
 struct DDyVertexInformation final
 {
-  DDyVector3          mPosition   = {};
-  DDyVector3          mNormal     = {};
-  DDyVector2          mTexCoords0 = {};
-  DDyVector2          mTexCoords1 = {};
+  DDyVector3    mPosition   = {};
+  DDyVector3    mNormal     = {};
+  DDyVector2    mTexCoords0 = {};
+  DDyVector2    mTexCoords1 = {};
   // Tangenet and Bitangent if exist.
-  DDyVector3          mTangent    = {};
-  DDyVector3          mBitangent  = {};
+  DDyVector3    mTangent    = {};
+  DDyVector3    mBitangent  = {};
   // Below elements are used when skeletal animation is applied.
-  DDyVectorInt4       mBoneId     = {-1, -1, -1, -1};
-  DDyVector4          mWeights    = { 0,  0,  0,  0};
+  DDyVectorInt4 mBoneId     = {-1, -1, -1, -1};
+  DDyVector4    mWeights    = { 0,  0,  0,  0};
 };
 
 void to_json(nlohmann::json& j, const DDyVertexInformation& p);
 void from_json(const nlohmann::json& j, DDyVertexInformation& p);
 
+/// @struct DMesh
+/// @brief Each mesh information of model.
 struct DMesh final
 {
-  std::vector<DDyVertexInformation> mVertexList;
-  std::vector<unsigned int>         mIndexList;
+  std::vector<DDyVertexInformation> mVertexList; // For VBO
+  std::vector<unsigned int>         mIndexList;  // For EBO
 };
 
 void to_json(nlohmann::json& j, const DMesh& p);

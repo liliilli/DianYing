@@ -10,39 +10,34 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /// SOFTWARE.
 ///
- 
+
 /// Header file
-#include "Data_Vector4.h"
+#include "../../Include/Type/Data_Vector2.h"
 #include <nlohmann/json.hpp>
 
-bool operator==( const DDyVector4& lhs,  const DDyVector4& rhs) noexcept
+bool operator==(const DDyVector2& lhs, const DDyVector2& rhs) noexcept
 {
-  return lhs.X == rhs.X 
-      && lhs.Y == rhs.Y
-      && lhs.Z == rhs.Z
-      && lhs.W == rhs.W;
+  return lhs.X == rhs.X
+      && lhs.Y == rhs.Y;
 }
 
-bool operator!=( const DDyVector4& lhs,  const DDyVector4& rhs) noexcept
+bool operator!=(const DDyVector2& lhs, const DDyVector2& rhs) noexcept
 {
   return !(lhs == rhs);
 }
 
-void to_json(nlohmann::json& j, const DDyVector4& p)
+void to_json(nlohmann::json& j, const DDyVector2& p)
 {
   j = nlohmann::json
   {
-    {"X", static_cast<float>(p.X)}, 
-    {"Y", static_cast<float>(p.Y)}, 
-    {"Z", static_cast<float>(p.Z)}, 
-    {"W", static_cast<float>(p.W)}
+    {"X", p.X},
+    {"Y", p.Y}
   };
 }
 
-void from_json(const nlohmann::json& j, DDyVector4& p)
+void from_json(const nlohmann::json& j, DDyVector2& p)
 {
   p.X = j["X"].get<float>();
   p.Y = j["Y"].get<float>();
-  p.Z = j["Z"].get<float>();
-  p.W = j["W"].get<float>();
 }
+

@@ -12,33 +12,15 @@
 ///
 
 /// Header file
-#include "Data_Vector3.h"
+#include "../../Include/Data/Data_AssimpModelNode.h"
+#include "../../Include/Library/HelperPointer.h"
+#include <assimp/scene.h>
 
-#include <nlohmann/json.hpp>
-
-bool operator==(const DDyVector3& lhs, const DDyVector3& rhs) noexcept
+Data_AssimpModelNode::Data_AssimpModelNode(NotNull<const aiNode*> iPtrNode) :
+    mPtrNode{iPtrNode}
 {
-  return lhs.X == rhs.X
-      && lhs.Y == rhs.Y;
-}
-
-bool operator!=(const DDyVector3& lhs, const DDyVector3& rhs) noexcept
-{
-  return !(lhs == rhs);
-}
-
-void to_json(nlohmann::json& j, const DDyVector3& p)
-{
-  j = nlohmann::json
+  for (unsigned i = 0; i < iPtrNode->mNumChildren; ++i)
   {
-    {"X", p.X}, {"Y", p.Y}, {"Z", p.Z}
-  };
+    this->mChildNodeList.emplace_back(DyMakeNotNull(iPtrNode->mChildren[i]));
+  }
 }
-
-void from_json(const nlohmann::json& j, DDyVector3& p)
-{
-  p.X = j["X"].get<float>();
-  p.Y = j["Y"].get<float>();
-  p.Z = j["Z"].get<float>();
-}
-

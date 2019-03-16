@@ -12,7 +12,7 @@
 ///
 
 /// Header file
-#include "Data_Quaternion.h"
+#include "../../Include/Type/Data_Quaternion.h"
 #include "juce_core/system/juce_PlatformDefs.h"
 
 DDyQuaternion::DDyQuaternion(const aiQuaternion& aiQuaternion) :

@@ -12,7 +12,18 @@
 /// SOFTWARE.
 ///
 
-enum EDySuccess : bool {
-  DY_FAILURE = false,
-  DY_SUCCESS = true
+#include <vector>
+#include "../Library/HelperPointer.h"
+
+struct aiNode;
+
+/// @struct Data_AssimpModelNode
+/// @brief Assimp mode node for processing internally in this tool.
+struct Data_AssimpModelNode final
+{
+public:
+  Data_AssimpModelNode(NotNull<const aiNode*> iPtrNode);
+
+  NotNull<const aiNode*> mPtrNode;
+  std::vector<Data_AssimpModelNode> mChildNodeList;
 };

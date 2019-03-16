@@ -12,12 +12,12 @@
 ///
 
 /// Header file
-#include "Helper_JsonLz4.h"
+#include "../../Include/Library/Helper_JsonLz4.h"
 #include <nlohmann/json.hpp>
 #include <lz4.h>
 #include "juce_core/system/juce_PlatformDefs.h"
 
-DCompressedBuffer CompressStringBuffer(const std::string& iRawStringBuffer)
+struct DCompressedBuffer CompressStringBuffer(const std::string& iRawStringBuffer)
 {
   const auto srcSize                = static_cast<unsigned>(iRawStringBuffer.length());
   const auto looseCompressedBtSize  = LZ4_compressBound(srcSize);

@@ -1,3 +1,4 @@
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -11,15 +12,8 @@
 /// SOFTWARE.
 ///
 
-/// Header file
-#include "Data_AssimpModelNode.h"
-#include <assimp/scene.h>
-
-Data_AssimpModelNode::Data_AssimpModelNode(NotNull<const aiNode*> iPtrNode) :
-    mPtrNode{iPtrNode}
+enum EDySuccess : bool 
 {
-  for (unsigned i = 0; i < iPtrNode->mNumChildren; ++i)
-  {
-    this->mChildNodeList.emplace_back(DyMakeNotNull(iPtrNode->mChildren[i]));
-  }
-}
+  DY_FAILURE = false,
+  DY_SUCCESS = true
+};

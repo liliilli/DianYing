@@ -12,4 +12,21 @@
 /// SOFTWARE.
 ///
 
+#include "../JuceLibraryCode/JuceHeader.h"
 
+struct GridRightPanel_ModelInformation  : public Component
+{
+  GridRightPanel_ModelInformation(const String& textToUse)
+    : text(textToUse)
+  {}
+
+  void paint(Graphics& g) override
+  {
+    g.fillAll(Colours::blue.withAlpha(0.0f));
+
+    g.setColour(Colours::black);
+    g.drawText(text, getLocalBounds().withSizeKeepingCentre(100, 100), Justification::centred, false);
+  }
+
+  String text;
+};

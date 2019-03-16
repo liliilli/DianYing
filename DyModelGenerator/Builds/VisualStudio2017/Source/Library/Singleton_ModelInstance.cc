@@ -12,13 +12,14 @@
 ///
 
 /// Header file
-#include "Singleton_ModelInstance.h"
+#include "../../Include/Helper/Global_EnumSuccess.h"
+#include "../../Include/Helper/Singleton_ModelInstance.h"
+#include "../../Include/Library/Helper_JsonLz4.h"
 #include <filesystem>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <fmt/core.h>
 #include <nlohmann/json.hpp>
-#include "Helper_JsonLz4.h"
 
 EDySuccess Singleton_ModelInstance::pfInitialize()
 {

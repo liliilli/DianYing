@@ -12,10 +12,10 @@
 ///
 
 /// Header file
-#include "GridUp_BriefInformation.h"
-#include "Singleton_ModelInstance.h"
+#include "../../Include/Panel/GridUp_BriefInformation.h"
 #include <filesystem>
-#include "ProgressDialog_ExportModel.h"
+#include "../../Include/Helper/Singleton_ModelInstance.h"
+#include "../../Include/Panel/ProgressDialog_ExportModel.h"
 
 GridUpPanel_BriefInformation::GridUpPanel_BriefInformation()
 {

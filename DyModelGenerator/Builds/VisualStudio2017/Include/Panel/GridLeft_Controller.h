@@ -11,9 +11,6 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /// SOFTWARE.
 ///
-/// This file is inspired by GSL pointer.h file.
-/// @reference https://github.com/Microsoft/GSL/blob/master/include/gsl/pointers
-///
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
@@ -24,10 +21,7 @@ struct GridLeftPanel_Controller : public Component
 
   void paint(Graphics& g) override
   {
-    g.fillAll(this->mColour.withAlpha(0.5f));
-
-    //g.setColour(Colours::black);
-    //g.drawText(text, getLocalBounds().withSizeKeepingCentre(100, 100), Justification::centred, false);
+    g.fillAll(this->mColour.withAlpha(0.0f));
   }
 
   Colour mColour;

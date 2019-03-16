@@ -13,16 +13,18 @@
 ///
 
 #include <assimp/Importer.hpp>
+#include "HelperMacroes.h"
+#include "Global_EnumSuccess.h"
 #include "Interface_Singleton.h"
-#include "HelperPointer.h"
-#include "Data_AssimpModelNode.h"
-#include "Data_MeshData.h"
+#include "../Library/HelperPointer.h"
+#include "../Data/Data_MeshData.h"
+#include "../Data/Data_Material.h"
+#include "../Data/Data_Animation.h"
+#include "../Data/Data_AssimpModelNode.h"
+#include "../Data/Data_SkeletonBone.h"
 #include "Enum_ExportFlags.h"
 #include <optional>
 #include <unordered_set>
-#include "Data_SkeletonBone.h"
-#include "Data_Material.h"
-#include "Data_Animation.h"
 
 struct aiNode;
 struct aiMesh;

@@ -13,22 +13,26 @@
 ///
 
 #include <vector>
-#include "Enum_MaterialType.h"
 
-struct DMaterial final
+#include "../Helper/HelperMacroes.h"
+#include <nlohmann/json_fwd.hpp>
+
+///
+/// @struct DCompressedBuffer
+/// @brief Compressed buffer.
+///
+struct DCompressedBuffer final
 {
-  struct DTexture final
-  {
-    std::string       mTextureSpecifier;
-    EDyTextureMapType mTextureMapType;
-  };
-
-  std::vector<DTexture>  mTextureSpecifierList;
-  EDyMaterialBlendMode   mBlendMode;
+  // Must contains last `EOF` ('\0').
+  unsigned mRawBufferBytes;
+  // 
+  unsigned mCompressedBufferBytes;
+  // 
+  std::vector<char> mCompressedBuffer;
 };
 
-void to_json(nlohmann::json& j, const DMaterial& p);
-void from_json(const nlohmann::json& j, DMaterial& p);
+/// @brief 
+MDY_NODISCARD DCompressedBuffer CompressStringBuffer(const std::string& iRawStringBuffer);
 
-void to_json(nlohmann::json& j, const DMaterial::DTexture& p);
-void from_json(const nlohmann::json& j, DMaterial::DTexture& p);
+/// @brief
+MDY_NODISCARD std::string DecompressLz4Buffer(const DCompressedBuffer& iBuffer);

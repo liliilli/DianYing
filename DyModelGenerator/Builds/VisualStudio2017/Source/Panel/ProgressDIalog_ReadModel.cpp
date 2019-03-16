@@ -12,9 +12,10 @@
 ///
 
 /// Header file
-#include "ProgressDialog_ReadModel.h"
-#include "HelperConstant.h"
-#include "Singleton_ModelInstance.h"
+#include "../../Include/Panel/ProgressDialog_ReadModel.h"
+#include "../../Include/Helper/HelperConstant.h"
+#include "../../Include/Helper/Singleton_ModelInstance.h"
+#include "../../Include/Helper/Global_EnumSuccess.h"
 
 ProgressDialog_ReadModel::ProgressDialog_ReadModel(const juce::File iFileFd) :
     ThreadWithProgressWindow("busy doing some important things...", true, true),

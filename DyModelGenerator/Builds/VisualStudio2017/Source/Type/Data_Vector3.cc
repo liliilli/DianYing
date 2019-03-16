@@ -12,32 +12,32 @@
 ///
 
 /// Header file
-#include "Data_Vector2.h"
+#include "../../Include/Type/Data_Vector3.h"
 #include <nlohmann/json.hpp>
 
-bool operator==(const DDyVector2& lhs, const DDyVector2& rhs) noexcept
+bool operator==(const DDyVector3& lhs, const DDyVector3& rhs) noexcept
 {
   return lhs.X == rhs.X
       && lhs.Y == rhs.Y;
 }
 
-bool operator!=(const DDyVector2& lhs, const DDyVector2& rhs) noexcept
+bool operator!=(const DDyVector3& lhs, const DDyVector3& rhs) noexcept
 {
   return !(lhs == rhs);
 }
 
-void to_json(nlohmann::json& j, const DDyVector2& p)
+void to_json(nlohmann::json& j, const DDyVector3& p)
 {
   j = nlohmann::json
   {
-    {"X", p.X},
-    {"Y", p.Y}
+    {"X", p.X}, {"Y", p.Y}, {"Z", p.Z}
   };
 }
 
-void from_json(const nlohmann::json& j, DDyVector2& p)
+void from_json(const nlohmann::json& j, DDyVector3& p)
 {
   p.X = j["X"].get<float>();
   p.Y = j["Y"].get<float>();
+  p.Z = j["Z"].get<float>();
 }
 

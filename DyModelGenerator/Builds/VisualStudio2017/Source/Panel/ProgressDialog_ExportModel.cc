@@ -12,10 +12,10 @@
 ///
 
 /// Header file
-#include "ProgressDialog_ExportModel.h"
-#include "HelperConstant.h"
-#include "HelperMacroes.h"
-#include "Singleton_ModelInstance.h"
+#include "../../Include/Panel/ProgressDialog_ExportModel.h"
+#include "../../Include/Helper/Enum_ExportFlags.h"
+#include "../../Include/Helper/HelperConstant.h"
+#include "../../Include/Helper/Singleton_ModelInstance.h"
 
 ProgressDialog_ExportModel::ProgressDialog_ExportModel(const std::string& iSpecifierName, EExportFlags iFlags) :
     ThreadWithProgressWindow("busy doing some important things...", true, true),

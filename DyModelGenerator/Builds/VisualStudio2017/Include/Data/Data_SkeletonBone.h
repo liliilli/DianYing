@@ -14,8 +14,7 @@
 
 #include <string>
 #include <assimp/scene.h>
-#include "Data_Matrix4.h"
-#include "HelperPointer.h"
+#include "../Type/Data_Matrix4.h"
 
 struct DSkeletonBone final
 {
@@ -33,9 +32,9 @@ struct DSkeletonBone final
 
 struct DDyBoneOffset
 {
-  // @brief
+  /// @brief
   std::string   mBoneName = "";
-  // @brief
+  /// @brief
   int           mIndexSkeletonNode = -1;
   /// @brief Offset matrix of bone.
   DDyMatrix4x4  mBoneOffsetMatrix = DDyMatrix4x4::IdentityMatrix();
@@ -43,11 +42,11 @@ struct DDyBoneOffset
 
 struct DDySkeleton final
 {
-  // @brief
+  /// @brief 
   DDyMatrix4x4                mSkeletonRootInverseTransform;
-  // @brief
+  /// @brief
   std::vector<DSkeletonBone>  mExportedSkeleton;
-  // @brief
+  /// @brief
   std::vector<DDyBoneOffset>  mBoneOffsetList;
 };
 
