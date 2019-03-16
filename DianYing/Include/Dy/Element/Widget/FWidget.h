@@ -13,8 +13,8 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Element/Canvas/AWidgetUiObjectChildrenable.h>
-#include <Dy/Element/Canvas/AWidgetObject.h>
+#include <Dy/Element/Widget/AWidgetUiObjectChildrenable.h>
+#include <Dy/Element/Widget/AWidgetObject.h>
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
 #include <Dy/Component/Widget/CWidgetScript.h>
 #include <Dy/Helper/Type/DTristateBool.h>

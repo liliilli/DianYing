@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Element/Canvas/AWidgetObject.h>
+#include <Dy/Element/Widget/AWidgetObject.h>
 
 namespace dy
 {
@@ -58,15 +58,17 @@ public:
   ///
   /// @TODO IMPLEMENT THIS & AUTOMATIC SPECIFIER NAME CREATION.
   template <typename TUiObjectType, typename TArgument>
-  TUiObjectType* AddUiObject(const TArgument& arg)
+  TUiObjectType* CreateWidget(const TArgument& arg)
   {
-    static_assert(std::is_base_of_v<AWidgetObject, TUiObjectType> == true, "TUiObjectType is not derived from AWidgetObject.");
+    static_assert(
+      std::is_base_of_v<AWidgetObject, TUiObjectType> == true, 
+      "TUiObjectType is not derived from AWidgetObject.");
 
     auto object = std::make_unique<TUiObjectType>();
     MDY_CALL_ASSERT_SUCCESS(object->Initialize(arg));
     object->SetParentUiObject(*this);
 
-    auto& it = this->mUiObjectList.emplace_back(static_cast<AWidgetObject*>(object.release()));
+    auto& it = this->mWidgetObjectList.emplace_back(static_cast<AWidgetObject*>(object.release()));
     return static_cast<TUiObjectType*>(it.get());
   }
 
@@ -74,16 +76,16 @@ public:
   /// @TODO IMPLEMENT THIS
   /// @brief UiObject version.
   ///
-  MDY_NODISCARD AWidgetObject* GetUiObject(const std::string& objectName, EDySearchMode searchMode = EDySearchMode::Default);
+  MDY_NODISCARD AWidgetObject* GetWidget(const std::string& objectName, EDySearchMode searchMode = EDySearchMode::Default);
 
   ///
   /// @brief Template version. Able to retrieve object as a TType.
   ///
   template <typename TType>
-  MDY_NODISCARD TType* GetUiObject(const std::string& objectName, EDySearchMode searchMode = EDySearchMode::Default)
+  MDY_NODISCARD TType* GetWidget(const std::string& objectName, EDySearchMode searchMode = EDySearchMode::Default)
   {
     static_assert(std::is_base_of_v<AWidgetObject, TType> == true, "TType is not derived from AWidgetObject.");
-    AWidgetObject* objectPtr = this->GetUiObject(objectName, searchMode);
+    AWidgetObject* objectPtr = this->GetWidget(objectName, searchMode);
     return static_cast<TType*>(objectPtr);
   }
 
@@ -102,7 +104,7 @@ protected:
   void TryDeactivateInstance() override;
 
 private:
-  std::vector<std::unique_ptr<AWidgetObject>> mUiObjectList = {};
+  std::vector<std::unique_ptr<AWidgetObject>> mWidgetObjectList = {};
   std::vector<std::unique_ptr<AWidgetUiObjectChildrenable>> mUiChildrenableObjectList = {};
 
   bool mIsCanPropagatePosition = false;

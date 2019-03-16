@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Element/Canvas/FWidgetBasicGaugeBar.h>
+#include <Dy/Element/Widget/FWidgetBasicGaugeBar.h>
 
 namespace dy
 {

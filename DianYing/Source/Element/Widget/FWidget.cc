@@ -13,16 +13,16 @@
 ///
 
 /// Header file
-#include <Dy/Element/Canvas/FWidget.h>
+#include <Dy/Element/Widget/FWidget.h>
 #include <Dy/Meta/Descriptor/WidgetTextMetaInformation.h>
 #include <Dy/Meta/Descriptor/WidgetBarMetaInformation.h>
 #include <Dy/Meta/Descriptor/WidgetImageMetaInformation.h>
 #include <Dy/Component/Internal/Widget/CWidgetScriptCpp.h>
 #include <Dy/Component/Internal/Widget/CWidgetScriptLua.h>
 #include <Dy/Meta/Type/EDyWidgetTypes.h>
-#include <Dy/Element/Canvas/FWidgetText.h>
-#include <Dy/Element/Canvas/FWidgetBasicGaugeBar.h>
-#include <Dy/Element/Canvas/FWidgetImage.h>
+#include <Dy/Element/Widget/FWidgetText.h>
+#include <Dy/Element/Widget/FWidgetBasicGaugeBar.h>
+#include <Dy/Element/Widget/FWidgetImage.h>
 #include <Dy/Element/Type/DWidgetBinder.h>
 #include <Dy/Helper/System/Idioms.h>
 #include <Dy/Management/MWindow.h>
@@ -50,15 +50,15 @@ FWidget::FWidget(const PDyMetaWidgetRootDescriptor& widgetMetaDesc)
     default: MDY_UNEXPECTED_BRANCH(); break;
     case EDyWidgetComponentType::BasicGaugeBar:
     {
-      this->AddUiObject<FWidgetBasicGaugeBar>(*static_cast<PDyMetaWidgetBarDescriptor*>(objectMetaInfoPtr.get()));
+      this->CreateWidget<FWidgetBasicGaugeBar>(*static_cast<PDyMetaWidgetBarDescriptor*>(objectMetaInfoPtr.get()));
     } break;
     case EDyWidgetComponentType::Text:
     {
-      this->AddUiObject<FWidgetText>(*static_cast<PDyMetaWidgetTextDescriptor*>(objectMetaInfoPtr.get()));
+      this->CreateWidget<FWidgetText>(*static_cast<PDyMetaWidgetTextDescriptor*>(objectMetaInfoPtr.get()));
     } break;
     case EDyWidgetComponentType::Image:
     {
-      this->AddUiObject<FWidgetImage>(*static_cast<PDyMetaWidgetImageDescriptor*>(objectMetaInfoPtr.get()));
+      this->CreateWidget<FWidgetImage>(*static_cast<PDyMetaWidgetImageDescriptor*>(objectMetaInfoPtr.get()));
     } break;
     }
   }

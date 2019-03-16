@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Element/Canvas/AWidgetObject.h>
+#include <Dy/Element/Widget/AWidgetObject.h>
 #include <Dy/Component/Interface/IInitializeHelper.h>
 #include <Dy/Meta/Descriptor/WidgetBarMetaInformation.h>
 #include <Dy/Component/Internal/WidgetRenderer/CRendererBasicGaugeBar.h>

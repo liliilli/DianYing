@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Element/Canvas/AWidgetUiObjectChildrenable.h>
+#include <Dy/Element/Widget/AWidgetUiObjectChildrenable.h>
 
 namespace dy
 {
@@ -22,7 +22,7 @@ void AWidgetUiObjectChildrenable::Render()
 {
   if (this->IsActivated() == false) { return; }
 
-  for (auto& uiObject : this->mUiObjectList)
+  for (auto& uiObject : this->mWidgetObjectList)
   {
     if (uiObject == nullptr) { continue; }
     if (uiObject->IsActivated() == false) { continue; }
@@ -41,7 +41,7 @@ void AWidgetUiObjectChildrenable::Render()
 
 void AWidgetUiObjectChildrenable::PropagateActivationFlag(bool iParentFlag)
 {
-  for (auto& uiObject : this->mUiObjectList)
+  for (auto& uiObject : this->mWidgetObjectList)
   {
     if (uiObject == nullptr) { continue; }
     uiObject->SetupFlagAsParent(iParentFlag);
@@ -109,7 +109,7 @@ void AWidgetUiObjectChildrenable::SetPropagateMode(bool isEnabled, EDySearchMode
 void AWidgetUiObjectChildrenable::TryPropagatePositionToChildren()
 {
   if (this->CheckIsPropagable() == false)   { return; }
-  for (auto& ptrsmtUiReafObject : this->mUiObjectList)
+  for (auto& ptrsmtUiReafObject : this->mWidgetObjectList)
   {
     if (MDY_CHECK_ISEMPTY(ptrsmtUiReafObject)) { continue; }
     ptrsmtUiReafObject->UpdateFinalPosition();
@@ -122,11 +122,11 @@ void AWidgetUiObjectChildrenable::TryPropagatePositionToChildren()
   }
 }
 
-AWidgetObject* AWidgetUiObjectChildrenable::GetUiObject(const std::string& objectName, EDySearchMode searchMode)
+AWidgetObject* AWidgetUiObjectChildrenable::GetWidget(const std::string& objectName, EDySearchMode searchMode)
 {
   if (searchMode == EDySearchMode::Default)
   {
-    for (std::unique_ptr<AWidgetObject>& objectPtr : this->mUiObjectList)
+    for (std::unique_ptr<AWidgetObject>& objectPtr : this->mWidgetObjectList)
     {
       if (MDY_CHECK_ISEMPTY(objectPtr)) { continue; }
       if (objectPtr->GetUiObjectName() == objectName) { return objectPtr.get(); }

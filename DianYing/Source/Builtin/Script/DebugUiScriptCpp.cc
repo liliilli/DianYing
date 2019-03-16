@@ -18,17 +18,19 @@
 #include <Dy/Management/MLog.h>
 #include <Dy/Management/MTime.h>
 
-#include <Dy/Element/Canvas/FWidget.h>
-#include <Dy/Element/Canvas/FWidgetText.h>
-#include <Dy/Element/Canvas/FWidgetBasicGaugeBar.h>
+#include <Dy/Element/Widget/FWidget.h>
+#include <Dy/Element/Widget/FWidgetText.h>
+#include <Dy/Element/Widget/FWidgetBasicGaugeBar.h>
 #include <Dy/Management/MInput.h>
 #include <Dy/Management/Internal/MProfiling.h>
 #include <Dy/Helper/Math/Math.h>
 #include <Dy/Helper/Math/Random.h>
 #include <Dy/Management/MGameTimer.h>
-#include "Dy/Element/Canvas/FWidgetImage.h"
+#include "Dy/Element/Widget/FWidgetImage.h"
 #include "Dy/Core/Resource/Resource/FDyMaterialResource.h"
 #include "Dy/Core/Resource/Resource/FDyShaderResource.h"
+#include "Dy/Management/MWorld.h"
+#include "Dy/Component/CCamera.h"
 
 namespace dy
 {
@@ -46,6 +48,16 @@ void FDyBuiltinDebugUiScript::Initiate()
 
   this->mTimeManager      = &MTime::GetInstance();
   this->mProfilingManger  = &MProfiling::GetInstance();
+
+  auto& widgetRef = this->GetWidgetReference();
+  PDyMetaWidgetTextDescriptor testDescriptor;
+  testDescriptor.mUiObjectSpecifierName = "CheckingCamera";
+  testDescriptor.mTextColor   = DColorRGB::Aqua;
+  testDescriptor.mTextString  = "Hello world! This is camera checking string.";
+  testDescriptor.mFontSize    = 12;
+  testDescriptor.mFontName    = "Arial";
+  testDescriptor.mIsActivated = true;
+  widgetRef.CreateWidget<FWidgetText>(testDescriptor);
 }
 
 void FDyBuiltinDebugUiScript::Start()
@@ -61,15 +73,15 @@ void FDyBuiltinDebugUiScript::Update(_MIN_ TF32 dt)
   const auto usageRam = windowManager.GetRamUsage();
   auto& widgetRef = this->GetWidgetReference();
 
-  FWidgetText* infoText     = widgetRef.GetUiObject<FWidgetText>("DebugTestText");
-  FWidgetText* joystickText = widgetRef.GetUiObject<FWidgetText>("JoystickTest");
-  FWidgetBasicGaugeBar* bar = widgetRef.GetUiObject<FWidgetBasicGaugeBar>("BasicBarTest");
+  FWidgetText* infoText     = widgetRef.GetWidget<FWidgetText>("DebugTestText");
+  FWidgetText* joystickText = widgetRef.GetWidget<FWidgetText>("JoystickTest");
+  FWidgetBasicGaugeBar* bar = widgetRef.GetWidget<FWidgetBasicGaugeBar>("BasicBarTest");
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(infoText), "Unexpected error occurred.");
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(bar),  "Unexpected error occurred.");
 
 #ifdef false
   static auto SetTemporaryInitialSetting = [&] {
-    desc.mInitialString = R"dy(
+    desc.mTextString = R"dy(
 [Task]        A     B     C   DRAW  TOTAL
 Process : 1 0.123 0.456 0.789 0.123 0.123
 ChrPre  : 1 0.123 0.456 0.789 0.456 0.123
@@ -102,12 +114,15 @@ Camera0 : 2
   bar->SetPresentValue(usageCpu);
 
   const auto& inputManager = MInput::GetInstance();
-  joystickText->SetText(fmt::format(
+  if (false)
+  {
+    joystickText->SetText(fmt::format(
       "Analog 01 : X {:05.2f} Y {:05.2f}\n"
       "Analog 02 : X {:05.2f} Y {:05.2f}",
       inputManager.GetJoystickStickValue(1), inputManager.GetJoystickStickValue(0),
       inputManager.GetJoystickStickValue(5), inputManager.GetJoystickStickValue(2)
-  ));
+    ));
+  }
   joystickText->Deactivate();
 
   if (this->flag == false) // Is material
@@ -115,10 +130,23 @@ Camera0 : 2
     static TF32 elapsed = 0;
     elapsed += dt;
 
-    auto* ptrImage = this->GetWidgetReference().GetUiObject<FWidgetImage>("TestImage");;
+    auto* ptrImage = this->GetWidgetReference().GetWidget<FWidgetImage>("TestImage");;
     if (auto* ptrMat = ptrImage->GetUsingMaterial(); ptrMat != nullptr && ptrMat->IsResourceExist() == true)
     {
       ptrMat->TryUpdateUniform<EUniformVariableType::Float>("uThreshold", (sinf(elapsed * 3) + 1.0f) * 0.5f);
+    }
+  }
+
+  {
+    FWidgetText* text = widgetRef.GetWidget<FWidgetText>("CheckingCamera");
+    if (auto* ptrCamera = MWorld::GetInstance().GetPtrMainLevelCamera();
+        ptrCamera != nullptr)
+    {
+      text->SetText(MakeStringU8("Camera 0 : {}", ptrCamera->GetPosition().ToString()));
+    }
+    else
+    {
+      text->SetText("Camera is not available.");
     }
   }
 }
@@ -142,14 +170,14 @@ void FDyBuiltinDebugUiScript::EndApplication() noexcept
 void FDyBuiltinDebugUiScript::CbMoveBar()
 {
   auto& widgetRef = this->GetWidgetReference();
-  FWidgetBasicGaugeBar* bar = widgetRef.GetUiObject<FWidgetBasicGaugeBar>("BasicBarTest");
+  FWidgetBasicGaugeBar* bar = widgetRef.GetWidget<FWidgetBasicGaugeBar>("BasicBarTest");
   bar->SetRelativePosition(random::RandomVector2Range(random::EDyRandomPolicy::Uniform, 0, 320) - DVector2{0, 360});
 }
 
 void FDyBuiltinDebugUiScript::CbChangeImageTexture()
 {
   auto& refWidget = this->GetWidgetReference();
-  FWidgetImage* image = refWidget.GetUiObject<FWidgetImage>("TestImage");
+  FWidgetImage* image = refWidget.GetWidget<FWidgetImage>("TestImage");
   if (flag == false)
   {
     image->SetRenderableImageName("T_BrickWall1_Diffuse", false);

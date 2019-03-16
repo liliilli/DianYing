@@ -19,7 +19,7 @@
 #include <Dy/Builtin/Mesh/FDyBtMsUiFontQuad.h>
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
 #include <Dy/Core/Resource/Resource/FDyMeshResource.h>
-#include <Dy/Element/Canvas/FWidgetText.h>
+#include <Dy/Element/Widget/FWidgetText.h>
 #include <Dy/Management/Rendering/MRendering.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 

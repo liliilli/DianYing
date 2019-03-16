@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Element/Canvas/FWidgetImage.h>
+#include <Dy/Element/Widget/FWidgetImage.h>
 #include <Dy/Management/IO/MIOMeta.h>
 
 namespace dy

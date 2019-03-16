@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Element/Canvas/FWidgetText.h>
+#include <Dy/Element/Widget/FWidgetText.h>
 #include <Dy/Meta/Descriptor/WidgetTextMetaInformation.h>
 #include <Dy/Meta/Type/EDyWidgetTypes.h>
 #include <Dy/Management/MFont.h>
@@ -52,15 +52,15 @@ EDySuccess FWidgetText::Initialize(const PDyMetaWidgetTextDescriptor& objectMeta
   this->SetFrameSize(objectMetaDesc.mWidgetSize);
   this->SetOrigin(objectMetaDesc.mOrigin);
 
-  this->mTextString             = objectMetaDesc.mInitialString;
-  this->mForegroundColor        = objectMetaDesc.mInitialColor;
+  this->mTextString             = objectMetaDesc.mTextString;
+  this->mForegroundColor        = objectMetaDesc.mTextColor;
   this->mBackgroundColor        = objectMetaDesc.mBackgroundColor;
   this->mEdgeColor              = objectMetaDesc.mEdgeColor;
   this->mIsUsingEdgeRendering   = objectMetaDesc.mIsUsingEdge;
   this->mIsUsingBackgroundColor = objectMetaDesc.mIsUsingBackground;
   this->mFontSize               = objectMetaDesc.mFontSize;
   this->mAlignment              = objectMetaDesc.mAlignment;
-  this->mPtrFontContainer       = GetFontResource(objectMetaDesc.mFontSpecifierName);
+  this->mPtrFontContainer       = GetFontResource(objectMetaDesc.mFontName);
 
   // Activate when flag is true.
   if (objectMetaDesc.mIsActivated == true)

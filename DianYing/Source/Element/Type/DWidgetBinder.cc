@@ -14,7 +14,7 @@
 
 /// Header file
 #include <Dy/Element/Type/DWidgetBinder.h>
-#include <Dy/Element/Canvas/FWidget.h>
+#include <Dy/Element/Widget/FWidget.h>
 
 namespace dy
 {

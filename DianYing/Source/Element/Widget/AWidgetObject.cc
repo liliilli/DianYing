@@ -13,9 +13,9 @@
 ///
 
 /// Header file
-#include <Dy/Element/Canvas/AWidgetObject.h>
+#include <Dy/Element/Widget/AWidgetObject.h>
 #include <Dy/Meta/Type/EDyWidgetTypes.h>
-#include <Dy/Element/Canvas/AWidgetUiObjectChildrenable.h>
+#include <Dy/Element/Widget/AWidgetUiObjectChildrenable.h>
 
 namespace dy
 {
@@ -24,6 +24,7 @@ void AWidgetObject::SetParentUiObject(AWidgetUiObjectChildrenable& parent) noexc
 {
   this->mPtrParentUiObject = &parent;
   this->UpdateFinalPosition();
+  this->SetupFlagAsParent(this->mPtrParentUiObject->IsActivated());
 }
 
 bool AWidgetObject::CheckIsParentExist() const noexcept
