@@ -191,6 +191,8 @@ mat3 DyGetRotationMatrix()
 }
 )dy");
 
+/// #import <Input_ModelTransform>; when instancing flag is enabled.
+/// In the other way, #import <Input_ModelTransformInstancing>; explicitly.
 MDY_SET_IMMUTABLE_STRING(Buffer_Input_ModelTransform_Multi, R"dy(
 // This will be attached by another binding index.
 layout (location = 10) in mat4 dyInstanceModelMatrix;
@@ -328,6 +330,9 @@ std::string ParseGLShader(const DParsingArgs& iArgs)
         exportShaderBuffer += Buffer_Input_ModelTransform_Single; 
       }
     } break;
+    case CaseStr("Input_ModelTransformInstancing"):
+      exportShaderBuffer += Buffer_Input_ModelTransform_Multi;
+      break;
     default: MDY_NOT_IMPLEMENTED_ASSERT(); break;
     }
   }

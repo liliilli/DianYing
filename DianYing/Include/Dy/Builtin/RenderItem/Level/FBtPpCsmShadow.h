@@ -41,14 +41,19 @@ public:
     DDyModelHandler::DActorInfo& iRefRenderer,
     FDyMeshResource& iRefMesh, 
     FDyMaterialResource& iRefMaterial);
+  void RenderStaticInstancingObjects(
+    FDyMeshResource& iRefMesh,
+    FDyMaterialResource& iRefMaterial,
+    TU32 iCount);
 
   void OnReleaseRenderingSetting() override final;
 
   void OnPostRender() override final;
 
 private:
-  TDyResourceBinderShader       mDirLightShaderResource { "dyBtGlslRenderCsmLightNormal" };
-  TDyResourceBinderFrameBuffer  mBinderFrameBuffer      { "dyBtFbCSM" };
+  TDyResourceBinderShader       mDirLightShaderResource   { "dyBtGlslRenderCsmLightNormal" };
+  TDyResourceBinderShader       mInstancingShaderResource { "dyBtGlslRenderCsmInstancing" };
+  TDyResourceBinderFrameBuffer  mBinderFrameBuffer        { "dyBtFbCSM" };
 
   std::array<TF32, 2>           sViewportDims;
   std::ptrdiff_t                mAddrMainDirectionalShadow = 0;

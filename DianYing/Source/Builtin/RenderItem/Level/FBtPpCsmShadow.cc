@@ -63,13 +63,16 @@ EDySuccess FBtRenderItemCsmShadow::OnPreRenderCheckCondition()
   }
 
   return this->mBinderFrameBuffer.IsResourceExist() == true
-      && this->mDirLightShaderResource.IsResourceExist() == true ? DY_SUCCESS : DY_FAILURE;
+      && this->mDirLightShaderResource.IsResourceExist() == true 
+      && this->mInstancingShaderResource.IsResourceExist() == true
+      ? DY_SUCCESS : DY_FAILURE;
 }
 
 void FBtRenderItemCsmShadow::OnFailedCheckCondition()
 {
   if (this->mDirLightShaderResource.IsResourceExist() == false
-  ||  this->mBinderFrameBuffer.IsResourceExist() == false) 
+  ||  this->mBinderFrameBuffer.IsResourceExist() == false
+  ||  this->mInstancingShaderResource.IsResourceExist() == false) 
   { 
     return; 
   }
@@ -124,6 +127,10 @@ void FBtRenderItemCsmShadow::OnSetupRenderingSetting()
   this->mDirLightShaderResource->TryUpdateUniform<EUniform::Integer>("uFrustumSegmentCount", static_cast<TI32>(kCSMSegment));
   this->mDirLightShaderResource->TryUpdateUniform<EUniform::Matrix4>("mProjMatrix", this->mProjMatrix);
   this->mDirLightShaderResource->TryUpdateUniform<EUniform::Matrix4>("mViewMatrix", this->mViewMatrix);
+
+  this->mInstancingShaderResource->TryUpdateUniform<EUniform::Integer>("uFrustumSegmentCount", static_cast<TI32>(kCSMSegment));
+  this->mInstancingShaderResource->TryUpdateUniform<EUniform::Matrix4>("mProjMatrix", this->mProjMatrix);
+  this->mInstancingShaderResource->TryUpdateUniform<EUniform::Matrix4>("mViewMatrix", this->mViewMatrix);
 
   // Set and push global internal setting.
   DGlGlobalStates status;
@@ -180,6 +187,54 @@ void FBtRenderItemCsmShadow::OnRender()
 
   for (auto& [_, itemList] : instancingList)
   {
+    if (itemList.empty() == true) { continue; }
+    auto& [__, iMainValidMesh, iMainValidMaterial] = *itemList.front();
+    const auto instancingId = *iMainValidMesh->GetInstancingBufferId();
+
+    std::vector<DMatrix4x4> instancingMatrixes;
+    instancingMatrixes.reserve(itemList.size());
+
+    for (auto& item : itemList)
+    {
+      auto& ptrModel = std::get<0>(*item);
+      instancingMatrixes.emplace_back(
+        ptrModel->mPtrModelRenderer->GetBindedActor()->GetTransform()->GetTransform()
+      );
+    }
+
+    // We need to construct vertex binding and attribute binding connection 
+    // whenever instancing buffer is renewed. (maybe)
+    auto& ptr = const_cast<FDyMeshResource&>(*iMainValidMesh);
+    ptr.BindVertexArray();
+    glBindVertexArray(iMainValidMesh->GetVertexArrayId());
+    glBindBuffer(GL_ARRAY_BUFFER, instancingId);
+    glBufferData(GL_ARRAY_BUFFER, 
+      itemList.size() * sizeof(DMatrix4x4), 
+      instancingMatrixes.data(), 
+      GL_DYNAMIC_DRAW);
+    glBindVertexBuffer(1, instancingId, 0, sizeof(DMatrix4x4));
+
+    glEnableVertexAttribArray(10);
+    glEnableVertexAttribArray(11);
+    glEnableVertexAttribArray(12);
+    glEnableVertexAttribArray(13);
+
+    glVertexAttribFormat(10, 4, GL_FLOAT, GL_FALSE, 0);
+    glVertexAttribFormat(11, 4, GL_FLOAT, GL_FALSE, 16);
+    glVertexAttribFormat(12, 4, GL_FLOAT, GL_FALSE, 32);
+    glVertexAttribFormat(13, 4, GL_FLOAT, GL_FALSE, 48);
+
+    glVertexAttribBinding(10, 1);
+    glVertexAttribBinding(11, 1);
+    glVertexAttribBinding(12, 1);
+    glVertexAttribBinding(13, 1);
+
+    glVertexBindingDivisor(1, 1);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    this->RenderStaticInstancingObjects(
+      const_cast<FDyMeshResource&>(*iMainValidMesh),
+      const_cast<FDyMaterialResource&>(*iMainValidMaterial), itemList.size());
   }
 }
 
@@ -208,6 +263,30 @@ void FBtRenderItemCsmShadow::RenderObject(
   // Unbind present submesh vertex array object.
   XGLWrapper::UnbindVertexArrayObject();
   this->mDirLightShaderResource->DisuseShader();
+}
+
+void FBtRenderItemCsmShadow::RenderStaticInstancingObjects(
+  FDyMeshResource& iRefMesh,
+  FDyMaterialResource& iRefMaterial, 
+  TU32 iCount)
+{
+  this->mInstancingShaderResource->UseShader();
+  this->mInstancingShaderResource->TryUpdateUniformList();
+  iRefMesh.BindVertexArray();
+
+  // Call function call drawing array or element. 
+  if (iRefMesh.IsEnabledIndices() == true)
+  { 
+    XGLWrapper::DrawInstanced(EDrawType::Triangle, true, iRefMesh.GetIndicesCounts(), iCount); 
+  }
+  else
+  { 
+    XGLWrapper::DrawInstanced(EDrawType::Triangle, false, iRefMesh.GetVertexCounts(), iCount); 
+  }
+
+  // Unbind present submesh vertex array object.
+  XGLWrapper::UnbindVertexArrayObject();
+  this->mInstancingShaderResource->DisuseShader(); 
 }
 
 void FBtRenderItemCsmShadow::OnReleaseRenderingSetting()
